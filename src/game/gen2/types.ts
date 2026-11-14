@@ -237,7 +237,12 @@ export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'lia
 export interface LianaSwing {
   amp: number;
   period: number;
+  /** where he is expected to hold it (the `s` dial `grip`, pipeline GRIP): absent, the reach check takes the worse of two low holds;
+   *  'low' only his foot hold (a FAR gap only the foot flies); 'high' only the top (a "hold high" gap: a riser has the foot) */
+  grip?: LianaGrip;
 }
+/** a liana's grip dial (pipeline GRIP: the holds its reach check flies) */
+export type LianaGrip = 'low' | 'high';
 
 /**
  * Where a piece goes, relative to another piece of the same section (never a fixed x, y), so the rolls can stretch a piece and the
@@ -254,12 +259,13 @@ export interface LianaSwing {
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
  *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
  *                        from the end (what a running jump grabs), swinging by itself (`amp` at most 0.45 rad, `period`: LianaSwing;
- *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s; `grip`: LianaSwing). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
  *                        piece that lands from it
  *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
  *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
- *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
- *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
+ *                        ledge the swing started from (a chain's last liana: from the ledge the chain left). A `swing` whose `after`
+ *                        is a liana is a CHAIN (ENG-S5): caught off it in the air, no perch between (levelCheck links ledge -> liana ->
+ *                        liana -> ledge; pipeline chainRelease), `share` along its band of anchors, `top` over the chain's first ledge
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
  *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
@@ -280,8 +286,13 @@ export type PlaceRule =
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
-  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+  /** `share` (a liana `after` a liana: a chain, ENG-S5): where along the band of anchors whose chain window is LIANA.window or more */
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip; len?: Range; share?: Range }
+  /** `window` (a perch past a liana): the release window its band must leave on each setting (s), over LIANA.window's floor: World 1's
+   *  FAR row keeps its perch inside the press windows the lead set (R-165.225: Normal 460-500 px, Easy where the foot keeps ~550 ms) */
+  /** `hurt` (ENG-S5, 1-6 beat 4): on Normal the gap under the swing (or the whole chain) is a hollow with the world's hurt floor (thorns
+   *  in World 1); Easy keeps the soft pit, its stair back up to the take-off (1-6.md: "Easy: moss under every chain") */
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; hurt?: boolean; window?: { normal?: number; easy?: number } }
   | { kind: 'climb'; on: string; at: Range; h: Range }
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
       /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the

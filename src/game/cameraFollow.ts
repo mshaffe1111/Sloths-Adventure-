@@ -357,6 +357,8 @@ export interface Climb {
   x: number;
   topY: number;
   bottomY: number;
+  /** a liana's own swing (radians either side; physics.ts swingSetup sets it at stage start): a climb hangs still (none) */
+  swingAmp?: number;
 }
 /** a box in the world the view should show */
 export interface Box {
@@ -377,12 +379,12 @@ export const heroBox = (px: number, py: number): Box => ({ x0: px - 28, x1: px +
  * The next landing past the end of the ledge he stands on, the way he faces: the nearest ledge or vine across the gap. null when he is
  * not near the end, or the ledge carries straight on (no gap).
  */
-export function landingAhead(px: number, facing: number, ledge: Ledge, plats: readonly Ledge[], vines: readonly Climb[] = []): Box | null {
+export function landingAhead(px: number, facing: number, ledge: Ledge, plats: readonly Ledge[], vines: readonly Climb[] = [], whole = false): Box | null {
   const f = facing < 0 ? -1 : 1;
   const edge = f > 0 ? ledge.x + ledge.width : ledge.x;
   const toEdge = (edge - px) * f;
   if (toEdge > AHEAD.near || toEdge < -40) return null;
-  let best: { x: number; y: number; score: number; under?: boolean } | null = null;
+  let best: { x: number; y: number; score: number; under?: boolean; end?: number; sweep?: number } | null = null;
   for (const q of plats) {
     if (q === ledge || q.broken || q.width <= 0) continue;
     const dy = q.y - ledge.y;
@@ -397,7 +399,12 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     if (gap < 24 && Math.abs(dy) < 40) return null;
     const score = gap + Math.abs(dy) * 0.4;
     // (`under`: the floor of the drop itself, starting right at his edge, well below: 1-6's soft moss under its first liana)
-    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40 };
+    const under = gap < 24 && dy >= 40;
+    // (on a swing, `whole`: the perch across the gap is where he is going, before the floor of the drop under him, however near that
+    // floor scores: ENG-S5's upright still, the thorn hollow's floor under a chain's last liana out-scored its perch and the view never
+    // led to it as he pressed)
+    const better = !best || (whole ? (under ? best.under && score < best.score : best.under || score < best.score) : score < best.score);
+    if (better) best = { x: a + f * 10, y: q.y, score, under, end: b };
   }
   for (const v of vines) {
     const gap = (v.x - edge) * f;
@@ -407,16 +414,182 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     const score = gap + Math.abs(y - ledge.y) * 0.4;
     // a vine across the gap is the way over it, before the floor of the drop under it (which scored nearer: upright, the view showed
     // the moss below the gap and left the liana he was jumping for off screen, QA 2026-10-26)
-    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score };
+    // (a liana that swings: how far its foot swings out, for `whole`)
+    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score, ...(v.swingAmp ? { sweep: (v.bottomY - v.topY) * Math.sin(v.swingAmp) } : {}) };
   }
-  return best ? landingBox(best.x, best.y, f) : null;
+  if (!best) return null;
+  // (a swing's landing, `whole`: the perch end to end, so he sees where it stops before he lets go: SWING_CAM; the next liana of a chain,
+  // its whole swing out to its foot's far side, so he sees all of it coming as he presses: ENG-S5, gen2 chainRelease's SWING_SEEN)
+  if (whole && best.sweep) return lianaBox(best.x, best.sweep, best.y, f);
+  return whole && best.end !== undefined && !best.under ? perchBox(best.x - f * 10, best.end, best.y, f) : landingBox(best.x, best.y, f);
+}
+
+/**
+ * The swing camera (R-165.225; Matt, 2026-11-14 2:02 AM ET, "shorter swings": every liana's landing fits upright). Upright a phone shows
+ * only ~405-440 px of world, and a liana throws him 400 px and more past its anchor (1-6.md), so while he swings the view eases OUT, no
+ * more than `out` (Pokey stays 1 / 1.3 = 77% of his usual size or more), and leads with the WHOLE perch the swing throws him onto
+ * (perchBox, not landingBox's 60 px lip); it eases back in once he is down. Sideways (1168 px of world) it never widens.
+ */
+export const SWING_CAM = {
+  /** the most the view widens while he swings, times the usual view (Matt: ~1.3x; Pokey at 77% of his size) */
+  out: 1.3,
+  /** per second: out from the catch (95% in ~0.67 s, before the first forward sweet spot, as LAND_EASE.rate) and back in once he is
+   *  down (95% in ~1 s) */
+  rateOut: 4.5,
+  rateIn: 3,
+  /** the most of a landing shown whole (px): a perch end to end; of a long bough or the ground, its first this much */
+  perch: 300,
+  /**
+   * the narrowest usual upright view of the phones the gates use (px of world): 412 x 915 and 400 x 880 on a 900 px level (engine.ts
+   * applyZoom: the level's height x 0.45). SWING_SEEN is figured on it, so a perch it passes is whole in view on every one of them
+   */
+  refVw: 405,
+  /**
+   * his DRAWN body on a swing, from his swing point (p.x) (px of world): the swing pose turns about his hands a body's length up the vine
+   * and trails the swing (heroVine.ts drawVineHang), so through the forward sweep he is drawn up to 91 px behind it and 35 px ahead
+   * (swingCam.test.ts measures it from the poses' own frames). The view keeps all of it, not just his 56 px collider (heroBox): the first
+   * cap (471 px) let the forward sweep cut his head off at the back edge (ENG-S1's first still, 412 x 915)
+   */
+  body: { back: 91, ahead: 35 },
+} as const;
+
+/** Pokey's room on a swing, facing `facing` (his feet at px, py): his drawn swing pose (SWING_CAM.body), as tall as heroBox */
+export function swingHeroBox(px: number, py: number, facing: number): Box {
+  const B = SWING_CAM.body;
+  return facing >= 0 ? { x0: px - B.back, x1: px + B.ahead, y0: py - 104, y1: py + 12 } : { x0: px - B.ahead, x1: px + B.back, y0: py - 104, y1: py + 12 };
+}
+
+/** the next liana of a chain (anchor at x, its foot swinging `sweep` px out either side; `y` about his height on it): its anchor's line and
+ *  its swing's far side, the way he faces, and the space over where he catches it (ENG-S5) */
+export function lianaBox(x: number, sweep: number, y: number, facing: number): Box {
+  return facing >= 0 ? { x0: x - 20, x1: x + sweep, y0: y - 80, y1: y + 4 } : { x0: x - sweep, x1: x + 20, y0: y - 80, y1: y + 4 };
+}
+
+/** a swing's landing: the perch from its near end (`near`) to its far end (`far`), at most SWING_CAM.perch of it, and the space over it */
+export function perchBox(near: number, far: number, y: number, facing: number): Box {
+  const end = facing >= 0 ? Math.min(far, near + SWING_CAM.perch) : Math.max(far, near - SWING_CAM.perch);
+  return facing >= 0 ? { x0: near - 10, x1: end, y0: y - 80, y1: y + 4 } : { x0: end, x1: near + 10, y0: y - 80, y1: y + 4 };
+}
+
+// ───── a piece's focus: a threat coming at him kept in view (ENG-S3, CAM-THREAT; 1-6.md "in view 1 s+ before it reaches his grip") ─────
+//
+// Sideways the view keeps his head just under the HUD band, so a vine snake's tell on the bough over his liana (the anchor is 300-400 px
+// over his hands) was above the clear view: 0 of 6 tell frames seen (ENG-S2's shots). A piece now asks the view to keep a box in
+// (PieceHost.focus: him, and the threat from where its tell shows down to his hands), every step it wants it. The view keeps the box
+// between the HUD band and the view's foot, moved from its aim as little as does it; where the box is taller than that, HE stays whole and
+// the side it reaches further from him shows as much as fits (his feet at the foot of the clear view, the rest over him). The view eases
+// there like any aim, never more than the engine's CAM_RISE_STEP a frame, and back the same way. A piece asks FOCUS_CAM.lead s before its
+// tell, so the tell is in view from its first frame. gen2's verdict (vineSnake.ts snakeViewFaults) refuses a lay whose snake is not in
+// the clear view 1 s+ before it reaches his lowest hold on the shortest view the game frames.
+
+/**
+ * A swing over a hollow that hurts (gen2 pit 'hurt': World 1's thorn bed): the box the view keeps while he swings there, from his head
+ * down past the hollow's floor by `HURT_SHOW` (the thorn bed stands on it), so the danger is in the view's lower part, him whole first
+ * (the engine's focus, focusY). null when no hurt floor lies under him. ENG-S5, the lead's 11:38 check: sideways the swing view's foot
+ * sat at the lip and no thorn showed under the chain.
+ */
+export const HURT_SHOW = 12;
+export function hurtFocus(hurt: ReadonlyArray<{ x: number; y: number; width: number }>, px: number, py: number): Box | null {
+  for (const f of hurt) if (px >= f.x && px <= f.x + f.width && f.y > py) return { x0: px - 40, x1: px + 40, y0: py - HERO_HEAD, y1: f.y + HURT_SHOW };
+  return null;
+}
+
+export const FOCUS_CAM = {
+  /** how long before a threat's tell a piece asks for the focus (s): the view moves up to ~200 px at CAM_RISE_STEP (11) a frame, then eases */
+  lead: 1.2,
+  /** how far inside the clear view's edges the focus aims the box (px of world): the eased view is there a few frames before its tail */
+  pad: 8,
+  /** the squattest sideways phone the framing names (css px tall: 782 x 288, FRAME.shortMaxH's case): gen2's view verdicts judge on it */
+  shortest: 288,
+} as const;
+
+/** how tall the world is on a sideways screen (px): every phone sideways shows this much (engine.ts applyZoom, h / WORLD_VIEW_H) */
+export const WORLD_VIEW_H = 540;
+/** the zoom's bounds (screen px per world px) before the intro's dolly and a room's pull-back (engine.ts applyZoom) */
+export const ZOOM_RANGE = { min: 0.5, max: 1.8 } as const;
+/** how wide the world is on an upright screen (px), unless the level's height asks for more zoom (engine.ts applyZoom) */
+export const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
+
+/**
+ * The zoom a screen `w` x `h` css px plays a level `levelH` tall at, before the intro's dolly, a boss's or a room's pull-back and the
+ * swing's widening (engine.ts applyZoom calls this; the view verdicts call it too, so they judge the view the screen shows). Sideways
+ * the world is WORLD_VIEW_H tall; upright PORTRAIT_VIEW_W wide; a stage may ask to show more (`wide`); never taller than the level.
+ */
+export function usualZoom(w: number, h: number, levelH: number, wide?: { port?: number; land?: number }): number {
+  const base = h > w ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
+  return Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, base));
+}
+
+/**
+ * The phones the framing names (css px, w x h), for the view verdicts to judge on. Sideways the squattest is the worst on every level
+ * (the world is WORLD_VIEW_H tall on all of them, so the shorter the screen the taller the HUD band in world px). Upright the band is
+ * tallest on the narrowest (320 x 782) and the clear view shortest on 390 x 844, so all three are judged.
+ */
+export const VIEW_PHONES = {
+  side: [[782, 288]],
+  up: [[320, 782], [390, 844], [412, 915]],
+} as const satisfies { side: ReadonlyArray<readonly [number, number]>; up: ReadonlyArray<readonly [number, number]> };
+
+/**
+ * A settled view on a level `levelH` tall (engine.ts applyZoom + updateCamera's clamp, for the view verdicts): its height `vh` and HUD
+ * band `band` (world px), and the least (`lo`) and most (`hi`) its top may be. A normal stage never shows past its top; upright, a
+ * swing's eased-out view (`widen` > 1, SWING_CAM) may show sky over a level shorter than the view, its foot kept at the level's foot.
+ */
+export function settledView(w: number, h: number, levelH: number, widen = 1): { vh: number; band: number; lo: number; hi: number } {
+  const zoom = Math.max(usualZoom(w, h, levelH), h / levelH) / widen;
+  const vh = h / zoom;
+  const maxY = levelH - vh;
+  const lo = widen > 1 ? Math.min(0, maxY) : 0;
+  return { vh, band: (h > w ? HUD_BAND.port : HUD_BAND.land) / zoom, lo, hi: Math.max(lo, maxY) };
+}
+
+/** his body as the focus keeps it whole, feet at (px, py) */
+export const focusHero = (px: number, py: number): Box => ({ x0: px - 30, x1: px + 30, y0: py - HERO_HEAD, y1: py + 12 });
+
+/** the clear view sideways on a screen `cssH` px tall: its top (the HUD band) and its foot (where his feet are kept above), px of world */
+export function sideClear(cssH: number): { top: number; foot: number } {
+  const zoom = Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, cssH / WORLD_VIEW_H));
+  const vh = cssH / zoom;
+  return { top: HUD_BAND.land / zoom, foot: vh * AHEAD.heroPad.b };
+}
+
+/**
+ * Where the view's top sits (its y, world px) to keep a piece's focus `box` in the clear view of a view `vh` tall: under the HUD band
+ * (`band`, world px) and over the foot his body is kept above (AHEAD.heroPad.b), moved from `ty` (the view's aim) as little as does it.
+ * Where the box is taller than that, `hero` stays whole and the box shows as much as fits on the side it reaches further from him.
+ */
+export function focusY(ty: number, box: Box, hero: Box, vh: number, band: number): number {
+  const foot = vh * AHEAD.heroPad.b;
+  // (the highest top that still shows the box's foot, and the lowest that still shows its top under the HUD, FOCUS_CAM.pad inside)
+  const lo = box.y1 + FOCUS_CAM.pad - foot;
+  const hi = box.y0 - FOCUS_CAM.pad - band;
+  if (lo <= hi) return Math.max(lo, Math.min(hi, ty));
+  return hero.y0 - box.y0 >= box.y1 - hero.y1 ? hero.y1 - foot : hero.y0 - band;
+}
+
+
+/**
+ * How far the view should widen now (1 = the usual view; the engine divides its zoom by it): upright, on a swing or flying off one, as
+ * much as fits him (at the swing's anchor `anchorX`) and the whole of `land` across the clear part of a view `usualVw` wide, up to
+ * SWING_CAM.out. Sideways, on the ground, or with no landing ahead: 1.
+ */
+export function swingWideTarget(upright: boolean, swinging: boolean, anchorX: number, land: Box | null, usualVw: number): number {
+  if (!upright || !swinging || !land || usualVw <= 0) return 1;
+  const reach = Math.max(Math.abs(land.x1 - anchorX), Math.abs(land.x0 - anchorX)) + 28;
+  return Math.max(1, Math.min(SWING_CAM.out, reach / ((AHEAD.pad.r - AHEAD.heroPad.l) * usualVw)));
+}
+
+/** one step of the swing ease from `k` toward `target` (dt s): out at SWING_CAM.rateOut, back in at rateIn; it settles exactly on it */
+export function swingWideEase(k: number, target: number, dt: number): number {
+  const n = k + (target - k) * Math.min(1, dt * (target > k ? SWING_CAM.rateOut : SWING_CAM.rateIn));
+  return Math.abs(target - n) < 0.002 ? target : n;
 }
 
 /**
  * The view's top-left that shows `land` as well as Pokey (feet at px, py), moved as little as it can be from (tx, ty), the view the
  * camera wanted anyway. Pokey's own room comes first.
  */
-export function showBoth(tx: number, ty: number, px: number, py: number, land: Box, vw: number, vh: number): { x: number; y: number } {
+export function showBoth(tx: number, ty: number, px: number, py: number, land: Box, vw: number, vh: number, hero: Box = heroBox(px, py)): { x: number; y: number } {
   const P = AHEAD.pad, Q = AHEAD.heroPad;
   const fit = (t: number, l0: number, l1: number, lo: number, hi: number, a: number, b: number, hlo: number, hhi: number, size: number) => {
     // the landing inside the clear part of the view ...
@@ -426,7 +599,7 @@ export function showBoth(tx: number, ty: number, px: number, py: number, land: B
     v = Math.max(v, b - size * hhi);
     return Math.min(v, a - size * hlo);
   };
-  const h = heroBox(px, py);
+  const h = hero;
   return { x: fit(tx, land.x0, land.x1, P.l, P.r, h.x0, h.x1, Q.l, Q.r, vw), y: fit(ty, land.y0, land.y1, P.t, P.b, h.y0, h.y1, Q.t, Q.b, vh) };
 }
 
@@ -441,3 +614,12 @@ export function keepHeroX(camX: number, px: number, vw: number): number {
   const keep = Math.min(HERO_KEEP, vw / 2);
   return Math.max(px + keep - vw, Math.min(px - keep, camX));
 }
+
+/**
+ * THE FAR CAP, in one place (R-165.225): how far ahead of his middle, at the moment he presses to let go, the far end of a perch may lie
+ * and still be whole in the view at the swing's full ease on the narrowest gate phone: him led to the back edge (ALL of his drawn swing
+ * pose in, SWING_CAM.body, plus AHEAD.heroPad), the perch inside AHEAD.pad's clear part ahead. gen2 counts
+ * a release press only if its perch's far end is within this of him (pipeline lianaRelease), so no liana it lays throws him at a perch
+ * he cannot see whole. 414 px.
+ */
+export const SWING_SEEN = Math.floor(AHEAD.pad.r * SWING_CAM.out * SWING_CAM.refVw - Math.max(HERO_KEEP, SWING_CAM.body.back + AHEAD.heroPad.l * SWING_CAM.out * SWING_CAM.refVw));

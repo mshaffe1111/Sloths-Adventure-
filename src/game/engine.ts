@@ -61,7 +61,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -113,6 +113,9 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
+import { drawPieces, piecesHurt, respawnPieces, startPieces, stepPieces } from './pieces/index.ts';
+import { isFalseLiana } from './vineSnake.ts';
+import type { PieceHost, StagePiece } from './stagePiece.types.ts';
 import { scares } from './dropTrap.ts';
 import { drawTraps, warmTrapArt } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
@@ -137,7 +140,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
+import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -239,7 +242,6 @@ const HELD_RECENT = 0.35;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
-const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
 /**
  * In the air against a wall too tall to catch the lip of, he slides down it: his drawing stands this far off the face, so his reaching paw
@@ -247,7 +249,6 @@ const WORLD_VIEW_H = 540;
  * by their sides). Only the picture moves; the lip catch, his body and every reach stay as they were.
  */
 const WALL_OFF = 9;
-const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
@@ -488,6 +489,8 @@ export class GameEngine {
   private swingVines: Vine[] = [];
   /** the vines the scene paints (a puzzle piece's climb, a kit vine, is the kit's own to draw) */
   private plainVines: Vine[] = [];
+  /** every vine the stage draws as a vine (all but a false liana, which its piece draws as the snake it is) */
+  private drawnVines: Vine[] = [];
   /** which way the thumb steered before a kit trap took the steering (a trap chair counts the wiggles) */
   private kitSteer = 0;
   private paintKit = false;
@@ -623,6 +626,13 @@ export class GameEngine {
   private camRepick = newRepick();
   /** the view was lifted for a bounce (updateCamera's `lift`): its way back down is held to CAM_RISE_STEP a frame too */
   private camLifted = false;
+  /** a piece's focus this step (PieceHost.focus: a threat coming at him kept in view; cleared before the pieces step, so it holds only
+   *  while a piece asks), and whether the view is still easing back from one (its way back is held to CAM_RISE_STEP a frame too) */
+  private camFocus: Box | null = null;
+  /** the stage's hurt floors (pit 'hurt'), for the swing's view over a hollow (hurtFocus), and the platform list they were read off */
+  private hurtFloors: Platform[] = [];
+  private hurtOf: Platform[] | null = null;
+  private camFocused = false;
   private camLookX: number = CAM.lookAhead;
   /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
   private camFacing = 1;
@@ -647,6 +657,28 @@ export class GameEngine {
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
   private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
+  /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
+  private pieces: StagePiece[] = [];
+  /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
+  private readonly pieceHost: PieceHost = ((e: GameEngine): PieceHost => ({
+    get t() { return e.gameTime; },
+    get easy() { return e.easy; },
+    get player() { return e.player; },
+    get standingOnId() { return e.standingOnId; },
+    get platforms() { return e.platforms; },
+    get clock() { return e.clock; },
+    letGo: () => e.letGoOfLiana(),
+    focus: (b) => {
+      e.camFocus = { x0: b.x0, x1: b.x1, y0: b.y0, y1: b.y1 };
+    },
+    view: {
+      get x() { return e.camera.x; },
+      get y() { return e.camera.y; },
+      get w() { return e.camera.viewportWidth; },
+      get h() { return e.camera.viewportHeight; },
+      get zoom() { return e.zoom; },
+    },
+  }))(this);
   /** the moments of play this stage run has had, each named once, in order (a story line can wait on one: wayside.ts StageWay.on).
    *  'cast:<way>': the first animal of the stage's cast that way sent off (a punch, a kick, a stomp, a trap). Emptied at the stage's start */
   readonly moments: string[] = [];
@@ -1030,7 +1062,9 @@ export class GameEngine {
     this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
-    this.plainVines = this.vines.filter((v) => !v.kit);
+    // (a false liana is a snake, drawn by its piece (vineSnakePiece.ts): never drawn as a liana)
+    this.plainVines = this.vines.filter((v) => !v.kit && !isFalseLiana(v));
+    this.drawnVines = this.vines.filter((v) => !isFalseLiana(v));
     this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, !!this.currentStage.pods?.length) : null;
     this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
     this.clustersFreed = 0;
@@ -1039,6 +1073,8 @@ export class GameEngine {
     const st = this.currentStage;
     // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
     this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
+    // (the stage's runtime pieces, once its platforms and its clock are made: pieces/index.ts)
+    this.startPieces();
     this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -1063,7 +1099,7 @@ export class GameEngine {
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
-      this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
+      this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb' && !isFalseLiana(v));
       this.protoScene = { brokeAt: new Map(), movedAt: new Map(), pillars: !!this.proto?.w4?.pillarTrunks };
       protoArtReady(); // start loading the props
     }
@@ -1220,8 +1256,7 @@ export class GameEngine {
     const portrait = h > w;
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
     const wide = this.proto?.view ?? this.proto?.w4?.view;
-    let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
-    base = Math.max(0.5, Math.min(1.8, base));
+    const base = usualZoom(w, h, levelH, wide);
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
     const ease = 1 - Math.pow(1 - t, 3);
     const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
@@ -1231,7 +1266,7 @@ export class GameEngine {
     // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
     // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
     this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
-    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom * this.swimZoom;
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom * this.swimZoom / this.swingWide;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -1764,14 +1799,17 @@ export class GameEngine {
     }
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
+    // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
+    this.camFocus = null;
+    if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
+    // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
+    if (!this.camFocus && this.player.isVineSwinging) {
+      if (this.hurtOf !== this.platforms) { this.hurtOf = this.platforms; this.hurtFloors = this.platforms.filter((pl) => pl.pit === 'hurt'); }
+      if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
+    }
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken) continue;
-      if (plat.ride) {
-        // a ride on a stage beat (ride.ts, ridePlay.ts; gen2/rideLay.ts lays it): where its beat puts it, carrying whoever stands on it
-        const m = moveRide(plat, this.clock);
-        if (p.grounded && this.standingOnId === plat.id) (p.x += m.dx), (p.y += m.dy);
-        continue;
-      }
+      if (plat.type !== 'moving' || plat.broken || plat.ride) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -2037,7 +2075,9 @@ export class GameEngine {
         }
       } else {
         // (the timed swing's catch, physics.ts TIMED.grabX: 60 px, Easy's 76; the stage checks assume it, and it used to be a fixed 48 here)
-        if (canGrabSwing(p.x, p.y, v, this.vineClock)) {
+        // (a liana that is not there now is not caught: Vine.off. protoArt.ts already left an off liana undrawn while it stayed catchable;
+        // a startled false liana is the first piece to set it: vineSnakePiece.ts)
+        if (!v.off && canGrabSwing(p.x, p.y, v, this.vineClock)) {
           nearSwingVine = v;
           break;
         }
@@ -2903,6 +2943,11 @@ export class GameEngine {
     // --- Enemy Behavior & AI ---
     // (a stage that names a cast: those animals are the creature kit's, stepped here with his stillness and his noise)
     if (this.cast) this.stepCast(dt);
+    // (a runtime piece that hurts him: through the one damagePlayer, its safe time and its knock away from the piece)
+    if (this.pieces.length) {
+      const hurt = piecesHurt(this.pieces, this.pieceHost);
+      if (hurt) this.damagePlayer(hurt.amount, hurt.fromX);
+    }
     for (const e of this.enemies) {
       if (e.defeated) {
         this.updateKo(e, dt);
@@ -4577,6 +4622,11 @@ export class GameEngine {
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
   }
 
+  /** the stage's runtime pieces from its own data (pieces/index.ts): every registered kind is asked; a kind it lays none of starts none */
+  private startPieces() {
+    this.pieces = startPieces(this.currentStage, this.pieceHost);
+  }
+
   /** the stage's cast from its own data, at every stage start: the kit takes the animals the brief names (castPlay.ts); none named, none taken */
   private startCast() {
     const world = this.currentStage.config.worldIndex;
@@ -5237,6 +5287,29 @@ export class GameEngine {
     p.hangDip = r ? ropeDip(r, p.x, p.x, ld.amt) : 0;
   }
 
+  /**
+   * A piece makes him let go of the liana he swings on (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop up and
+   * off, keeping a little of the swing's way, never a bite and never a heart. Like a deliberate drop (swing exit 1) his jumps are his
+   * again, and that liana is not caught again until he is down or holds something else (swungOff), so he cannot fall back onto it.
+   */
+  private letGoOfLiana(): boolean {
+    const p = this.player;
+    if (!p.isVineSwinging) return false;
+    const id = p.swingVineId ?? -1;
+    p.isVineSwinging = false;
+    this.vineCooldownTimer = LET_GO.cooldown;
+    this.lastReleasedVineId = id;
+    this.swungOff = id;
+    this.swingLeapWait = 0;
+    this.sweetSnap = null;
+    p.vx *= LET_GO.keep;
+    p.vy = LET_GO.hop;
+    p.jumpsLeft = 2;
+    p.isDoubleJumping = false;
+    p.somersaultAngle = 0;
+    return true;
+  }
+
   /** let go of a rope (hurt, respawn, or a deliberate drop); `cooldown` is how long before it can be grabbed again */
   private letGoOfRope(cooldown: number) {
     const p = this.player;
@@ -5693,6 +5766,7 @@ export class GameEngine {
     this.irisOpen = IRIS_OPEN_SECS;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
+    this.swingWideCut();
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
@@ -5868,6 +5942,7 @@ export class GameEngine {
     this.kickChain = 0;
     this.coyoteTimer = 0;
     this.launched = false;
+    this.swingWideCut();
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
@@ -5885,6 +5960,8 @@ export class GameEngine {
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
+    // (the stage's runtime pieces put back what his run changed: pieces/index.ts)
+    if (this.pieces.length) respawnPieces(this.pieces, this.pieceHost);
   }
 
   /**
@@ -6141,8 +6218,42 @@ export class GameEngine {
     return k * k * (3 - 2 * k);
   }
 
+  /** the swing camera's widening now and where it is easing to (cameraFollow.ts SWING_CAM; the zoom is divided by it, applyZoom) */
+  private swingWide = 1;
+  private swingWideWant = 1;
+  /**
+   * The swing camera (R-165.225): upright, on a swing the view eases out to show him and the whole perch it throws him onto
+   * (swingWideTarget, from the landing the view showed last frame), held through the flight off it until he is down or holds on to
+   * something, then back in. It widens about him: his place on the screen holds while it eases.
+   */
+  private swingWideStep(dt: number) {
+    const p = this.player;
+    const upright = this.viewCssH > this.viewCssW;
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    if (sv) this.swingWideWant = swingWideTarget(upright, true, sv.x, this.camLand, this.camera.viewportWidth / this.swingWide);
+    else if (!upright || p.grounded || p.climbing || p.hanging || p.swim) this.swingWideWant = 1;
+    const was = this.swingWide;
+    this.swingWide = swingWideEase(was, this.swingWideWant, dt);
+    if (this.swingWide === was) return;
+    const sx = p.x - this.camera.x;
+    const sy = p.y - this.camera.y;
+    this.applyZoom();
+    const r = this.swingWide / was;
+    this.camera.x = p.x - sx * r;
+    this.camera.y = p.y - sy * r;
+  }
+  /** a cut (a respawn, a stage's start): the usual view at once */
+  private swingWideCut() {
+    this.swingWideWant = 1;
+    if (this.swingWide === 1) return;
+    this.swingWide = 1;
+    this.applyZoom();
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
+    // the swing camera first (it sets the view's size for this frame)
+    this.swingWideStep(dt);
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
 
     // the framing for this screen's shape: less look-ahead on a narrow upright phone, his feet lower on a squat sideways one (cameraFollow.ts)
@@ -6214,7 +6325,8 @@ export class GameEngine {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
-        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
+        // (on a swing, upright, ALL of his drawn swing pose beside the landing: it trails 91 px behind his swing point, SWING_CAM.body)
+        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh, sv && this.swingWide > 1 ? swingHeroBox(p.x, p.y, facing) : undefined);
         landX = v.x - this.camera.targetX;
         landY = v.y - this.camera.targetY;
       }
@@ -6229,6 +6341,9 @@ export class GameEngine {
     this.camLandY += (landY - this.camLandY) * lk;
     this.camera.targetX += this.camLandX;
     this.camera.targetY += this.camLandY;
+    // (on a widened swing the view leads him by what its easing trails a moving aim (RUN.follow, below): upright the eased view trailed
+    // his forward sweep by ~60 px, and the far end of the perch SWING_SEEN promises fell out of it. It grows with the ease: no snap)
+    if (sv && this.swingWide > 1) this.camera.targetX += (p.vx / RUN.follow) * Math.min(1, (this.swingWide - 1) / (SWING_CAM.out - 1));
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -6276,6 +6391,10 @@ export class GameEngine {
     const lift = !p.grounded && Number.isFinite(this.camAnchorY) && topY + JUMP_RISE < this.camAnchorY;
     const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(topY, 3 * topY + 3 * JUMP_RISE - 2 * this.camAnchorY));
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
+    // a piece's focus (PieceHost.focus: a vine snake on his liana, its tell and its trip down to his hands): the box between the HUD band
+    // and the view's foot where it fits, him whole and as much of the threat's side as fits where not (cameraFollow.ts focusY)
+    const fb = this.camFocus;
+    if (fb) this.camera.targetY = focusY(this.camera.targetY, fb, focusHero(p.x, p.y), vh, band);
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
@@ -6288,6 +6407,12 @@ export class GameEngine {
     const teaK = this.teaAimK();
     const kept = keepHeroX(this.camera.x, p.x, vw);
     this.camera.x = kept + (this.camera.x - kept) * teaK;
+    // (and on a widened swing the eased camera keeps ALL of his drawn pose in, behind him too: SWING_CAM.body, cameraFollow.ts)
+    if (sv && this.swingWide > 1) {
+      const hb = swingHeroBox(p.x, p.y, facing);
+      const pad = AHEAD.heroPad.l * vw;
+      this.camera.x = Math.max(hb.x1 + pad - vw, Math.min(hb.x0 - pad, this.camera.x));
+    }
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
     // (and rising past a plain jump's height, toward the same hold, but never more than CAM_RISE_STEP a frame: the eased view trailed a
@@ -6300,13 +6425,23 @@ export class GameEngine {
       if (this.camera.y > y0 + CAM_RISE_STEP) this.camera.y = y0 + CAM_RISE_STEP;
       if (Math.abs(this.camera.y - this.camera.targetY) < 1 || this.camera.y <= y0) this.camLifted = false;
     }
+    // (a focus moves the view up to ~200 px: there and back never more than CAM_RISE_STEP a frame (the eased step alone was 40 px), but
+    // never at his cost: all of him stays in the clear view, so a let-go's fall is followed at once)
+    if (fb) this.camFocused = true;
+    if (this.camFocused) {
+      const held = Math.max(y0 - CAM_RISE_STEP, Math.min(y0 + CAM_RISE_STEP, this.camera.y));
+      const me = focusHero(p.x, p.y);
+      this.camera.y = Math.max(me.y1 - vh * AHEAD.heroPad.b, Math.min(me.y0 - band, held));
+      if (!fb && Math.abs(this.camera.y - this.camera.targetY) < 1) this.camFocused = false;
+    }
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues), and so may a puzzle room
     // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
-    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1;
+    // (and so may a swing's eased-out view upright, cameraFollow.ts SWING_CAM: on a level shorter than the wider view, the extra is sky)
+    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1 || this.swingWide > 1;
     this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
     markCam(this.camRepick, this.camera.x, this.camera.y);
   }
@@ -6332,7 +6467,8 @@ export class GameEngine {
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     if (sv) {
       const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
-      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      // (upright, the WHOLE perch, so the swing camera widens and leads to show where it ends: cameraFollow.ts SWING_CAM)
+      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv), this.viewCssH > this.viewCssW);
       this.camLandKeep = 1.2;
       return this.camLand;
     }
@@ -6942,7 +7078,7 @@ export class GameEngine {
       ctx,
       world.id,
       this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats),
-      this.paintKit && protoArtReady() ? this.swingVines : this.vines,
+      this.paintKit && protoArtReady() ? this.swingVines : this.drawnVines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime
@@ -7129,6 +7265,8 @@ export class GameEngine {
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
     if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
+    // (the stage's runtime pieces that draw behind him: pieces/index.ts, layer 'world')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'world', this.pieceHost);
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
@@ -7269,6 +7407,8 @@ export class GameEngine {
     // (inside a hollow log, walking through it low: the log over him, half see-through, so he reads as in it: w1NewArt.ts)
     if (this.paintKit) for (const pl of this.platforms) if (pl.hollow && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width) && insideHollow(pl, this.player)) drawHollowLog(ctx, pl, 0.6);
     if (this.proto?.bushes) this.drawBushes(ctx);
+    // (and over him, with the bushes: layer 'front')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'front', this.pieceHost);
     // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
     if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
@@ -7337,6 +7477,8 @@ export class GameEngine {
     if (this.tide?.on) this.drawTideFront(ctx);
     profMark(ctx, 'front');
     ctx.restore(); // end world transform
+    // (the stage's runtime pieces in screen px, with the chase and watch edges: layer 'screen')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'screen', this.pieceHost);
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 

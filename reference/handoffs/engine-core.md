@@ -7,6 +7,128 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
+proven plan; Play is never blocked).
+
+## 0y. Liana to liana: chains (ENG-S5, 1-6 beat 4 "The chain", t-eng-s5, 11-14): what the next engineer must know
+- ONE measure, the engine's press: physics.ts `chainWindow(A, B, flights, grips, seen)` = pressWindow on A hitting canGrabSwing on B at
+  B's own phase (the stage's: swingSetup puts a chain's next liana `chainPhase` ahead). gen2 `chainRelease` (pipeline.ts, beside
+  lianaRelease) sizes the lay: this setting's swing (setTimedSwing), LETGO_FLIGHTS (the double counted, as lianaRelease), A's grip
+  dial holds, and a press counts only with B's WHOLE swing (B.x + its foot's reach) within SWING_SEEN of him as he presses.
+- The walk (levelCheck 3a): on a gen2-built stage only (the `gen2Built` gate, as roofedDrop), each chain pair (isChain) whose
+  `chainLines` (the same press, the stage's double rule) is 6+ lines becomes vine nodes: ledge -> A (lianaCaught, the plain catch),
+  A -> B, B -> platform (`heldLandings`: pressWindow from his holds, no ledge catch). Old-generator stages are NOT given it: 14 of them
+  (1-6, 2-1, 2-3, 2-4, 2-7, 3-1..3-3, 3-5..3-9, 4-4) hang lianas within a chain's reach and their pickups and flags moved (lockall).
+- gen2: a `swing` whose `after` is a liana is a chain liana: `top` over the chain's FIRST ledge, its anchor at `share` of the band of
+  spacings (160..CHAIN.dx, 20 px steps, first contiguous run) where chainRelease >= LIANA.window and chainLines >= 6; both lianas keep
+  `chainAmp` (half the clear space each, swingSetup's rule; the earlier liana's amp is NARROWED in place and the link before it re-flown)
+  and at least VINE.amp / 2 each. A `land` after a chain liana lays from the chain's first ledge, links by heldLandings, and its window
+  counts only presses that see the WHOLE perch (lianaRelease `held`, as a dialled liana's: the press link has no ~370 px cap, so without
+  it the perch lay past the view). `hurt` on the land: Normal the hurt hollow (no steps out), Easy the soft pit with its stair back.
+- Rows: w1Swing.ts `w1Chain`, `w1ChainSection(id, gaps, difficulty, perchW)`, `W1_CHAIN_SECTIONS` (chain2: SHORT, LONG; chain3: SHORT,
+  SHORT, LONG). Ends are moss-stone BANKS (w1Pits paints a thorn hollow only between banks that reach its floor; off 24 px boughs it
+  found no lips). The perch is narrow (120-140, FAR's) so it keeps LONG's distance in view. The kit lists them with withSwing and World
+  1's hurt floor row (THORN_ROW). Laid (lay.out.txt): dx 244-260 px, amps 0.24-0.26, perch 288-336 px past the last liana (Easy 255-284).
+- OPEN: on 1 roll in 4 the LONG perch lands where the top hold still flies it (shareFor's tempo scaling); a `topShort` rule on land (the
+  band's near end where gripsOf('high') gives 0) would make every roll a true "slide down" LONG.
+- The swing camera (cameraFollow.ts landingAhead, upright `whole`): a liana ahead that swings is led with `lianaBox` (its anchor to its
+  foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional). And on a swing a landing ACROSS the
+  gap beats the floor of the drop under him (`under`), however near that floor scores: over a hurt hollow the floor (160 px down, from
+  his anchor on) out-scored the chain's last perch and the view never led to it as he pressed (ENG-S5's upright still). Ground: as before.
+- A swing over a hollow that hurts (pit 'hurt'): engine.ts sets camFocus = cameraFollow.ts `hurtFocus` (his head down to the floor +
+  HURT_SHOW) when no piece asked for one, so focusY keeps the thorn bed in the view's lower part, him whole first (sideways the swing
+  view's foot sat at the lip: the lead's 11:38 check). The hurt floors are listed once per platform array (hurtOf).
+- A floor that carries `floorArt` is a special look to w1Pits (no thorn bed baked): only hurtLooks rows set it; never set it by hand.
+- Shoot: reference/qa-reports/ENG-S5/shoot.mjs (lays the row with gen2 on the page and sets it into 1-6's start; the engine's start-time
+  lists drawnVines / plainVines / swingVines / drawPlats must be refreshed after any runtime edit, or the new lianas are not drawn;
+  input goes through key events: a write to input.state.jumpPressed is cleared by the press buffer).
+
+## 0x. The level's top in the snake verdict, the snake lay, a liana's length (ENG-S4, t-eng-s4, 11-14): what the next engineer must know
+- The view the verdicts judge is the engine's: cameraFollow.ts `usualZoom` IS applyZoom's base zoom (engine.ts calls it), and
+  `settledView(w, h, levelH, widen)` gives the view's height, the HUD band in world px and the least/most the view's top may be (a
+  normal stage never shows past its top; upright a widened swing may show sky over a level shorter than the view). snakeCam.test.ts
+  pins it to the real engine at rest (520 / 900 / 1600 px levels, every phone). Change applyZoom's floors or the clamp: change these too.
+- snakeViewFaults(sn, len, phases, site, phones): site = { anchorY, levelH } (snakeFaults passes Vine.topY and the stage's height);
+  phones default VIEW_PHONES (782x288 sideways; 320x782, 390x844, 412x915 upright, each at no widening, SWING_CAM.out and where sky first
+  shows). Two rules: seen SNAKE.seen before his hands; the whole tell wherever the focus box fits the clear view's height.
+- What it means for a lay (depth-table.md): a snake from the bough needs its anchor >= 270 px under the level's top and a 6 s+ trip
+  (down-off; 7 s down-back) on a 410/420 liana; risers lay anywhere. Every liana laid today hangs 74-222 px down: none can carry one.
+- gen2/snakeLay.ts laySnakes: a stage finish (listed.ts FINISH, finish14's pattern) by section template + liana key (brief tagged),
+  throws on snakeFaults. NODE letter n (key later; dials route incl. still = false liana). Brown catalog rows: a rows file
+  (reference/art/catalog-rows-eng-s4.csv), appended to the master after t-art-678b's rows at integration.
+- The swing rule takes `len` (rolled only when set: no shipped roll moves); w1Liana's 4th argument.
+- OPEN: the false liana's drawn length (chains: done in 0y, ENG-S5) (its liana's length: 410 px draws 4.6x Pokey).
+- Shoot: reference/qa-reports/ENG-S4/shoot.mjs (LOWER=<px> hangs the liana lower at runtime, TRIP=<s>, CLIP=1; labels print the
+  level's top, view top, band, clear view, widening, the verdict on that phone, lives lost). Never edit src/ while it runs (vite reloads).
+
+## 0w. The camera's focus and the false liana's landing (ENG-S3, CAM-THREAT, t-eng-s3, 11-14; STOPPED by the lead, gates UNRUN)
+- PieceHost.focus(box): one step's request (engine clears camFocus before stepPieces); updateCamera applies cameraFollow.ts focusY after
+  the HUD hold; steps capped at CAM_RISE_STEP while focused, never losing him. The vine snake asks FOCUS_CAM.lead (1.2 s) before its tell
+  (clock read ahead), box = vineSnake.ts snakeFocusBox. gen2 verdict snakeViewFaults / snakeFaults share focusY + the box.
+- OPEN, real page: on 6-3 the liana hangs 124 px under the level's top; sideways the view stops at the level's top, so the tell can never
+  be under the HUD (0/6). The verdict must take the level's top into account (REPORT EXACT NEXT STEP 1). Unit tests used a roomy bare world.
+- False liana: flung away (FALSE_LIANA.fling), slither starts clear of him (slitherClear), at its hanging scale (slitherSize); near it the
+  view keeps its foot in. levelCheck skips false lianas (filter unproven by a test: M9 stayed green).
+- WORLD_VIEW_H and ZOOM_RANGE now live in cameraFollow.ts; VINE_HANG in heroVineData.ts (heroVine re-exports).
+
+## 0v. The vine snake, the false liana and the host's let-go (ENG-S2, 1-6.md NEW 2+3, t-eng-s2, 11-14): what the next engineer must know
+- DATA: a liana carries one snake on `Vine.snake` (types.ts, lead ruling 11-14, the Platform.ride precedent): `{ route, clock?, shift?,
+  reach? }` (vineSnake.ts). Routes: 'down-off', 'down-back' (turns at `reach`), 'up' (from the foot to `reach` and back off the foot):
+  each keeps a beat on the stage's ONE clock (stage.clocks; beat.ts beatDef: off, warn = THE TELL, on = the trip); snakeBeatFaults
+  refuses a tell under 0.5 s (SNAKE.tell, PREDATORS §2) or none. 'still' = a FALSE liana: the snake IS the vine (swingAmp 0), no clock.
+- RUNS: pieces/vineSnakePiece.ts on the piece hook (PIECE_KINDS after RIDE). It reads the liana from stage.vines (the engine's own
+  objects; engine.ts writes swingAngle before pieces step). Touch = any of its body within SNAKE.touch (10 px) of his HANDS (swingLength
+  - VINE_HANG, handsAlong) while it TRAVELS; the tell never touches (its body is off the vine by construction). It never hurts: no hurts().
+- LET-GO: PieceHost.letGo() (lead ruling 11-14, stagePiece.types.ts; engine letGoOfLiana; physics LET_GO hop -220, keep 0.3 of vx,
+  cooldown 0.5): off the liana with a hop, jumps 2, swungOff = that liana (not caught again until he is down). Returns false off a liana.
+- FALSE LIANA: caught by the engine like any liana; next step it startles: letGo, `v.off = true`, it falls (FALSE_LIANA.fall) onto the
+  highest platform under it, slithers off AWAY from where he is when it lands, fades; respawn() hangs it again (off = false). The engine
+  now honours Vine.off on a LIANA catch (it already left an off liana undrawn in protoArt.ts while it stayed catchable: a latent bug), and
+  leaves false lianas out of its own liana drawing (drawnVines, plainVines, swingVines). That filter is NOT exercised by any test or shot
+  yet (my shots add the vine after the stage starts): the 1-6 builder's first still must show no liana drawn under a false liana.
+- ART: vineSnakeArt.ts. The travelling snake is ART-678b's GREEN cut (lead ruling GREEN 11-14: the game's liana frame is tan-olive and
+  the brown hid on it); the false liana is the BROWN recolour (tools/art/snakebrown.py: green band only, to bark brown). Sizes: hang
+  115 px (SNAKE.body), hiss 60; a false liana is drawn its vine's length, its slither at the same scale (recommend 115-170 px).
+  Catalog rows: the green hang/hiss come with t-art-678b (rows 9425/9428): integrate t-art-678b first and flip those two to in game;
+  the two brown files have NO rows yet (Content). Preload key 'vine-snake' (stageManifest/stagePreload).
+- OPEN (lead ruling (B), the NEXT packet's first item): sideways the anchor is above the clear view, so the tell (and a false liana) is
+  not seen (0/6 frames, shots/sideways-*). The fix is the camera: a PieceHost focus request (lead-approved, one method like letGo) that
+  keeps the threat box (anchor+60 .. his feet) under HUD_BAND while a snake on HIS liana is in its tell or above his hands; where it
+  can't fit, a gen2 verdict refuses a lay giving the snake < 1 s in view. No stopgap (D40).
+- Shoot it: reference/qa-reports/ENG-S2/shoot.mjs (the snake; CLIP=1 for clips) and shootfalse.mjs (the false liana), both on 6-3.
+
+## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
+- Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts
+  swingWideStep divides the zoom AFTER applyZoom's level-height floor, overTop lets it show sky). Sideways never. A cut snaps it back.
+- THE FAR CAP is SWING_SEEN (414 px) in cameraFollow.ts: a release press counts toward a DIALLED liana's window only if the perch's far end
+  (of a long landing, its first SWING_CAM.perch) is within 414 px ahead of his swing point as he presses (pressWindow's `seen`, pipeline
+  lianaRelease). Dial-free lianas (Worlds 6-8) are untouched (lockall 102/102). Changing SWING_CAM.out/refVw/body or AHEAD's pads moves it.
+- His DRAWN swing pose trails up to 91 px behind his swing point (heroVine drawVineHang): SWING_CAM.body, pinned by a test to the poses'
+  own frames. Any new swing pose art: re-run swingCam.test.ts; the cap follows the body. His collider (heroBox) is NOT his swing picture.
+- The eased camera trails a moving aim by v / RUN.follow (~60 px on a swing): while widened the aim leads by it, and the camera is clamped
+  to keep his pose in. A camera promise needs a REAL-engine test (swingCam.test.ts uses RealPlay with updateCamera put back), not only
+  the pure aim: the pure test passed while the engine lost the perch.
+- A dialled perch's width now matters to its window (its far end must be seen): Easy's landing pad is flown with it (padW) and the
+  recorded window is the laid px. Shoot a swing on the real page: reference/qa-reports/ENG-S1/shoot.mjs (stills, CLIP=1 for a clip).
+
+## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
+- **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and
+  add it to `PIECE_KINDS` (pieces/index.ts). The engine asks every kind to `start(stage, host)` once per stage (after its platforms and
+  clock exist), `step`s each piece where rides used to move (before the moving-platform loop), asks `hurts` after the cast steps (a hurt
+  goes through the ONE damagePlayer: safe time, knock away from `fromX`), calls `respawn` at the end of respawnAtCheckpoint, and draws
+  each piece only on the layers it names: 'world' (after the traps, behind him), 'front' (with the bushes, over him), 'screen' (after
+  the world transform). A piece reads the engine only through `PieceHost` (live getters; one object made once).
+- **RIDE is the first piece** (pieces/ridePiece.ts): the moving-platform loop skips `plat.ride`. No shipped stage lays a ride yet.
+- **A harness that swaps the stage's platforms must re-start the pieces**: RealPlay.bare() calls `e.startPieces()` after the swap
+  (rideLay.test's real-engine rides went red without it: the pieces were started on the old platforms).
+- **The headless canvas cannot run render()** (scenery needs real canvases): pieceHook.test.ts pins the three draw calls' order in
+  render()'s text instead, and proves start/step/hurt/respawn with a planted probe on 1-2, 2-1 and 3-3 through RealPlay.
+- **One letter table: gen2/nodeLetters.ts.** JOB_OF, CONTENT_OF, V13's LATER jobs (nodeCode.ts) and nodeAsks' LATER_CONTENT are derived
+  from it; NODE-KEY.html's Jobs / Made of / pieces rows are written from it by `npx tsx tools/engine/nodekey.ts`, and
+  nodeLetters.test.ts fails when they differ. Add a letter THERE, then run nodekey.ts. Liana is `s` (r is rope + climbing vine);
+  `m` cover and `h`'s rolling dials are named LATER (B3, B2); a letter with no piece rule has no PIECE_WORDS row (no empty Never).
+- **Never edit the tree while the gate script runs** (it reads files as each step starts): run gates in a separate worktree, or wait.
 
 Rewritten for FIX-15 (2026-11-14, branch `t-fix-15`): section 0k's gate bullets (a shut gate is wood from every approach; the lay gap).
 Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.

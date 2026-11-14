@@ -433,6 +433,14 @@ export const reachJumpHeld = (dy: number, dbl: boolean, share = EASY_HOLD) => re
 
 // ---- Swinging lianas -------------------------------------------------------
 
+/**
+ * Let go of a liana because something made him (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop, never a leap.
+ * `hop` his speed up (px/s; a hop clears the hands' height, a jump is JUMP_RISE), `keep` the share of the swing's sideways speed he keeps
+ * (a little: he drops near the liana, onto what is under it, not across the gap), `cooldown` before that liana could be caught again (s;
+ * he cannot catch it again in the air anyway: the engine's swungOff holds it until he is down).
+ */
+export const LET_GO = { hop: -220, keep: 0.3, cooldown: 0.5 } as const;
+
 export const SWING = {
   g: 1600,
   steer: 4.8,
@@ -776,12 +784,15 @@ export const LETGO_FLIGHTS: ReadonlyArray<{ held: number; dbl: number }> = [
  * ms of ONE swing on A in which a press to let go toward +x gets him there (`hits`, asked every frame of the flight with the vines'
  * clock), as the engine plays a press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat
  * late it is the sweet spot's leap; anywhere else a hop off the vine. Caught near the bottom of the vine and higher up: the worse counts.
+ * `seen` (where he is as he presses, his middle and feet): a press counts only if it says yes, asked only of a press that gets him there
+ * (pipeline lianaRelease: the whole perch in view as he presses, cameraFollow.ts SWING_SEEN). Without it every such press counts.
  */
 export function pressWindow(
   A: SwingVine,
   hits: (c: AirBody, t: number, prevY: number) => boolean,
   flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
   grips: readonly number[] = [0.7, 0.95],
+  seen?: (x: number, y: number) => boolean,
 ): number {
   const DT = 1 / 30;
   const len = A.bottomY - A.topY;
@@ -828,11 +839,27 @@ export function pressWindow(
         }
         if (made) break;
       }
-      if (made) ok++;
+      if (made && (!seen || seen(st[k].r.x, st[k].r.y))) ok++;
     }
     worst = Math.min(worst, ok * DT * 1000);
   }
   return worst;
+}
+
+/**
+ * ms of ONE swing on A (the liana he holds) in which a press to let go toward B, the next liana of a chain to the right, puts his hands
+ * on B as it swings (canGrabSwing at the vines' clock, B at its own phase: the stage's, swingSetup's chainPhase): the chain's catch, by
+ * the engine's own press (pressWindow: the sweet spot, a beat early or late, the let-go `flights`) from A's `grips` (undefined: its own
+ * two low holds). `seen`: as pressWindow's (gen2 counts a press only when B's whole swing is in view as he presses). ENG-S5, 1-6 beat 4.
+ */
+export function chainWindow(
+  A: SwingVine,
+  B: SwingVine,
+  flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
+  grips?: readonly number[],
+  seen?: (x: number, y: number) => boolean,
+): number {
+  return pressWindow(A, (c, t) => canGrabSwing(c.x, c.y, B, t), flights, grips, seen);
 }
 
 const chainCache = new Map<string, number>();

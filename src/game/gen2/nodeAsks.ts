@@ -14,6 +14,7 @@
  */
 import type { CodeDials, CodeToken } from './nodeCode.ts';
 import { CONTENT_OF } from './nodeCode.ts';
+import { CONTENT_LETTERS } from './nodeLetters.ts';
 import type { ContentType, NodeJob } from './types.ts';
 
 /** a node's asks: the token's marks and dials that the job does not already imply */
@@ -40,14 +41,9 @@ export const TYPE_OF_LETTER: Readonly<Partial<Record<string, ContentType>>> = {
   g: 'ground', f: 'floating', c: 'climb', b: 'bounce', r: 'rope', k: 'crumble', w: 'water', h: 'hazard',
 };
 
-/** the building blocks with no emitter in this tree yet, and where each is built (packet NODES-2: named, never dropped) */
-export const LATER_CONTENT: Readonly<Record<string, string>> = {
-  s: 'the swing vine (liana) as a content block: its emitter keyed by letter is not built',
-  v: "the vine field (two hands): B14's emitter on t-b14, not merged",
-  p: "beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged",
-  t: "the gate a find opens (the fig gate): B14's emitter on t-b14, not merged",
-  x: "the trap (a limb load over an animal): B15's emitter on t-b15, not merged",
-};
+/** the building blocks with no emitter in this tree yet, and where each is built (packet NODES-2: named, never dropped; the one
+ *  letter table's `unlaid` rows, nodeLetters.ts) */
+export const LATER_CONTENT: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(CONTENT_LETTERS).flatMap(([k, v]) => ('unlaid' in v ? [[k, v.unlaid]] : [])));
 
 /** the hazard kinds the lay reads from the built stage's falls (any other id is a world's own hazard, Later) */
 export const HAZARDS = ['soft', 'water', 'hurt', 'void'] as const;
@@ -56,7 +52,7 @@ export type ElementStatus = 'laid' | 'checked' | 'later';
 /** every element of the key, what it does today (one source: NODE-KEY.html's cards and the tests read it) */
 export const ELEMENTS: ReadonlyArray<{ element: string; mark: string; status: ElementStatus; how: string }> = [
   { element: 'content g f c b r k w h', mark: 'Pg', status: 'laid', how: "the node's type is fixed in the deal; every section laid there is checked to be that type" },
-  { element: 'content s v p t x', mark: 'Ps', status: 'later', how: 'no emitter keyed by the letter in this tree: the roll fails by name' },
+  { element: `content ${Object.keys(LATER_CONTENT).join(' ')}`, mark: 'Ps', status: 'later', how: 'no emitter keyed by the letter in this tree: the roll fails by name' },
   { element: 'move 1 / 2', mark: 'Pg2', status: 'checked', how: "2: a section there asks for the double; 1: none does. A miss fails by name" },
   { element: 'shape ^ _', mark: 'Pg^', status: 'laid', how: "the node's shape and height dial are the ask; its sections' net rise is checked (^ ends higher, _ lower)" },
   { element: 'shape ^^ @ *', mark: 'U^^', status: 'later', how: "V10: a stage must own the shape; the shaft, loop-back and hub have no lay here" },
