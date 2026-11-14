@@ -1,0 +1,10 @@
+rescueXs 34403 44814 44614 44714
+{"x":32537,"y":924,"t":161.8,"dur":8.2,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 145 px up","step":225,"dip":49,"puzzle":false,"rescued":false}
+{"x":34163,"y":827,"t":187.4,"dur":20,"what":"a drop of 48 px ahead","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"x":44955,"y":649,"t":273,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"x":45746,"y":779,"t":282.7,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"x":45937,"y":778,"t":289.9,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+LOOP {"x":3107,"y":941,"n":2,"doubles":2,"deaths":0,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 116 px up","step":225,"dip":49,"puzzle":false}
+LOOP {"x":19163,"y":983,"n":2,"doubles":2,"deaths":0,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 145 px up","step":225,"dip":49,"puzzle":false}
+LOOP {"x":32521,"y":924,"n":5,"doubles":5,"deaths":0,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 145 px up","step":225,"dip":49,"puzzle":false}
+LOOP {"x":45738,"y":777,"n":2,"doubles":2,"deaths":0,"what":"a 60 px waist-high step ahead, the way on is 237 px up","step":60,"dip":null,"puzzle":false}

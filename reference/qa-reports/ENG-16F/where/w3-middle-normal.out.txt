@@ -1,0 +1,11 @@
+middle normal 1 sealed door {"got":93,"need":95} rescues 0 PIT@snake-on-vine:b1
+middle normal 2 shrine {"got":96,"need":94} rescues 0 PIT@snake-on-vine:b1
+middle normal 3 shrine {"got":103,"need":102} rescues 0 PIT@risers:b2 PIT@gorge:d2
+middle normal 4 shrine {"got":101,"need":97} rescues 0 
+middle normal 5 shrine {"got":92,"need":90} rescues 0 
+middle normal 6 shrine {"got":97,"need":95} rescues 0 
+
+TOTALS
+middle normal PIT@gorge:d2 1
+middle normal PIT@risers:b2 1
+middle normal PIT@snake-on-vine:b1 2
