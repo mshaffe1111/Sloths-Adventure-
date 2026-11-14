@@ -12,10 +12,11 @@ import { RealPlay } from './realPlay.ts';
 import { beatClock, beatDef } from './beat.ts';
 import { LET_GO } from './physics.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
-import { handsAlong, VINE_SNAKE_PIECE } from './pieces/vineSnakePiece.ts';
+import { handsAlong, slitherSize, VINE_SNAKE_PIECE } from './pieces/vineSnakePiece.ts';
+import { VINE_SNAKE_ART } from './vineSnakeArt.ts';
 import type { PieceHost, StagePiece } from './stagePiece.types.ts';
 import type { Vine } from './types.ts';
-import { FALSE_LIANA, onVine, SNAKE, snakeBeatFaults, snakeNow, snakeTouches, type VineSnake } from './vineSnake.ts';
+import { FALSE_LIANA, onVine, slitherClear, SNAKE, snakeBeatFaults, snakeNow, snakeTouches, type VineSnake } from './vineSnake.ts';
 
 const LEN = 410;
 const at = (sn: VineSnake, phase: 'off' | 'warn' | 'on', u = 0) => snakeNow(sn, LEN, { phase, u });
@@ -219,3 +220,53 @@ for (const id of ['6-3', '2-4']) {
     assert.equal(piece.startled[0], null);
   });
 }
+
+for (const id of ['6-3', '2-4']) {
+  test(`${id}, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs`, () => {
+    for (const side of [-1, 1] as const) {
+      const r = new RealPlay(id, 1);
+      const e = r.e as unknown as Eng;
+      const v = r.stage.vines.find((q) => q.vineType !== 'tree_climb') as Vine;
+      v.swingAmp = 0;
+      v.snake = { route: 'still' };
+      const moss = { id: 99998, x: v.x - 600, y: v.bottomY + 140, width: 1200, height: 200, type: 'solid' } as const;
+      e.pieces = [];
+      r.bare([moss as never], [v]);
+      r.stage.vines = [v];
+      e.startPieces();
+      const piece = e.pieces.find((q) => q.kind === 'vine-snake') as unknown as { startled: Array<{ x: number; floor: number | null; t: number; away: number } | null> };
+      // (he catches it moving toward its far side, as a leap onto it does: he drifts on that way as he hops off)
+      r.swing(v, { angle: 0, omega: 0, len: 200 });
+      r.p.x = v.x + side * 4;
+      r.p.vx = -side * 300;
+      r.frame();
+      assert.equal(r.p.isVineSwinging, false, `${id}: it startled`);
+      const { w, h } = slitherSize(v);
+      assert.ok(Math.abs(h - (VINE_SNAKE_ART.slide.h * (v.bottomY - v.topY)) / VINE_SNAKE_ART.hang.h) < 1e-9, 'at the scale it hangs on the liana');
+      let overlapped = '';
+      let landedClear = false;
+      for (let i = 0; i < 120; i++) {
+        r.frame();
+        const st = piece.startled[0]!;
+        if (st.floor === null || st.t >= FALSE_LIANA.slither) continue;
+        // (its slithering body on the floor, and his body: never one over the other, from the frame it lands to the frame it is gone)
+        const sx0 = st.x - w / 2, sx1 = st.x + w / 2, sy0 = st.floor - h;
+        const me = { x0: r.p.x - 30, x1: r.p.x + 30, y0: r.p.y - 104, y1: r.p.y + 12 };
+        const over = sx0 < me.x1 && sx1 > me.x0 && sy0 < me.y1 && st.floor > me.y0;
+        if (over) overlapped ||= `frame ${i}: snake ${Math.round(sx0)}..${Math.round(sx1)}, him ${Math.round(me.x0)}..${Math.round(me.x1)}`;
+        if (!landedClear) landedClear = !over;
+        assert.equal(Math.sign(st.x - r.p.x), st.away, `${id}: it heads away from him`);
+      }
+      assert.ok(landedClear, `${id} taken from ${side < 0 ? 'the left' : 'the right'}: it never landed`);
+      assert.equal(overlapped, '', `${id} taken from ${side < 0 ? 'the left' : 'the right'}: it lay over him (${overlapped})`);
+    }
+  });
+}
+
+test('slitherClear: a slither that would lie over him starts FALSE_LIANA.clear past his far side; one already clear is left where it lands', () => {
+  const me = { x0: 100, x1: 160 };
+  assert.equal(slitherClear(400, 120, 1, me), 400);
+  assert.equal(slitherClear(150, 120, 1, me), 160 + FALSE_LIANA.clear + 60);
+  assert.equal(slitherClear(120, 120, -1, me), 100 - FALSE_LIANA.clear - 60);
+  assert.equal(slitherClear(-100, 120, -1, me), -100);
+});

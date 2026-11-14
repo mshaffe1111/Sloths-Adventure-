@@ -66,7 +66,25 @@ export const FALSE_LIANA = {
   fall: 1800,
   slither: 1.1,
   speed: 150,
+  /** startled, it flings itself off the bough AWAY from him (px/s across) so it lands clear of him, never on him (the lead, 11-14: on
+   *  ENG-S2's still it landed overlapping Pokey and read as an attack) */
+  fling: 300,
+  /** the least room (px) between his body and its slithering body on the floor */
+  clear: 16,
+  /** how near (px across) he comes before the view keeps its foot in (its head, the tell, PieceHost.focus): a liana's reach and more */
+  near: 520,
 } as const;
+
+/**
+ * Where a startled false liana's slither starts on the floor, clear of him: its pose `w` px long, centred at `x`, heading `away` (+1 right),
+ * him (his body x0..x1). If any of it would lie over him, it starts FALSE_LIANA.clear past his far side instead: it never lands on him
+ * and never slithers through him.
+ */
+export function slitherClear(x: number, w: number, away: number, me: { x0: number; x1: number }): number {
+  const near = away > 0 ? x - w / 2 : x + w / 2;
+  if (away > 0 ? near >= me.x1 + FALSE_LIANA.clear : near <= me.x0 - FALSE_LIANA.clear) return x;
+  return away > 0 ? me.x1 + FALSE_LIANA.clear + w / 2 : me.x0 - FALSE_LIANA.clear - w / 2;
+}
 
 /** where the snake is now: its head and its tail, px along the vine from the anchor; `dir` +1 heading down the vine, -1 up */
 export interface SnakeNow {

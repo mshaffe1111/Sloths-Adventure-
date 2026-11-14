@@ -21,8 +21,8 @@ import { VINE_HANG } from '../heroVine.ts';
 import type { PieceHost, PieceKind, StagePiece } from '../stagePiece.types.ts';
 import type { Vine } from '../types.ts';
 import type { Platform } from '../types.ts';
-import { FOCUS_CAM } from '../cameraFollow.ts';
-import { FALSE_LIANA, isFalseLiana, onVine, SNAKE, snakeComing, snakeFocusBox, snakeNow, snakeTouches, type SnakeNow } from '../vineSnake.ts';
+import { FOCUS_CAM, focusHero } from '../cameraFollow.ts';
+import { FALSE_LIANA, isFalseLiana, onVine, slitherClear, SNAKE, snakeComing, snakeFocusBox, snakeNow, snakeTouches, type SnakeNow } from '../vineSnake.ts';
 import { VINE_SNAKE_ART, vineSnakeImg } from '../vineSnakeArt.ts';
 
 /** how far down the liana (px from its anchor) his hands are while he swings on it: grip to toes is VINE_HANG (heroVine.ts) */
@@ -40,6 +40,8 @@ interface Startle {
   vy: number;
   /** -1 or 1: the way it slithers off, away from him */
   away: number;
+  /** px/s across: flung off the bough away from him as it drops */
+  vx: number;
   /** the top of what it lands on, once it has */
   floor: number | null;
   /** seconds slithering */
@@ -54,6 +56,13 @@ function floorUnder(platforms: readonly Platform[], x: number, y: number, reach:
     if (best === null || pl.y < best) best = pl.y;
   }
   return best;
+}
+
+/** a false liana's slithering pose on the floor, at the scale its hanging pose is drawn on the liana (the two cuts share one scale, 3 px
+ *  a unit: a 115 px false liana slithers off 130 px long) */
+export function slitherSize(v: { topY: number; bottomY: number }): { w: number; h: number } {
+  const k = (v.bottomY - v.topY) / VINE_SNAKE_ART.hang.h;
+  return { w: VINE_SNAKE_ART.slide.w * k, h: VINE_SNAKE_ART.slide.h * k };
 }
 
 class VineSnakePiece implements StagePiece {
@@ -98,22 +107,37 @@ class VineSnakePiece implements StagePiece {
     const p = host.player;
     const s = this.startled[i];
     if (!s) {
-      // (he took it for a liana: it startles, he lets go, and it drops with him)
+      // (he took it for a liana: it startles, he lets go, and it drops, flinging itself off away from him)
       if (p.isVineSwinging && p.swingVineId === v.id && host.letGo()) {
         this.letGos++;
         v.off = true;
-        this.startled[i] = { x: v.x, y: (v.topY + v.bottomY) / 2, vy: Math.min(p.vy, 0), away: p.x < v.x ? 1 : -1, floor: null, t: 0 };
+        const away = p.x < v.x ? 1 : -1;
+        this.startled[i] = { x: v.x, y: (v.topY + v.bottomY) / 2, vy: Math.min(p.vy, 0), away, vx: away * FALSE_LIANA.fling, floor: null, t: 0 };
+        return;
+      }
+      // (near it and not on it: the view keeps its foot in, its head hanging there (the tell) and a body of it over that, with him)
+      if (!(p.isVineSwinging && p.swingVineId === v.id) && Math.abs(p.x - v.x) <= FALSE_LIANA.near) {
+        const me = focusHero(p.x, p.y);
+        const top = Math.max(v.topY, v.bottomY - SNAKE.body);
+        host.focus({ x0: Math.min(me.x0, v.x - SNAKE.tellH), x1: Math.max(me.x1, v.x + SNAKE.tellH), y0: Math.min(me.y0, top), y1: Math.max(me.y1, v.bottomY) });
       }
       return;
     }
     if (s.floor === null) {
       const half = (v.bottomY - v.topY) / 2;
+      // (the floor under it, read before it moves this step: a step's fall may take it past the floor's top)
       const under = floorUnder(host.platforms, s.x, s.y + half - 2, 1600);
       s.vy += FALSE_LIANA.fall * dt;
       s.y += s.vy * dt;
-      // (down on the floor: it slithers off away from where he is NOW, never back through him; he has fallen on past it meanwhile)
-      if (under !== null && s.y + half >= under) (s.floor = under), (s.y = under), (s.away = p.x <= s.x ? 1 : -1);
-      else if (under === null && s.vy * dt > 0 && s.y > v.bottomY + 1600) s.t = FALSE_LIANA.slither;
+      s.x += s.vx * dt;
+      // (down on the floor: it slithers off away from where he is NOW, starting clear of him (never on him, never through him), at the
+      // scale it was drawn on the liana)
+      if (under !== null && s.y + half >= under) {
+        s.floor = under;
+        s.y = under;
+        s.away = p.x <= s.x ? 1 : -1;
+        s.x = slitherClear(s.x, slitherSize(v).w, s.away, focusHero(p.x, p.y));
+      } else if (under === null && s.vy * dt > 0 && s.y > v.bottomY + 1600) s.t = FALSE_LIANA.slither;
       return;
     }
     s.t += dt;
@@ -192,11 +216,8 @@ class VineSnakePiece implements StagePiece {
     if (s.t >= FALSE_LIANA.slither) return;
     const img = vineSnakeImg('slide-brown');
     if (!img) return;
-    const A = VINE_SNAKE_ART.slide;
-    // (slithering off, its belly on the floor it landed on, head the way it goes, at the scale its hanging pose was drawn (the two cuts share
-    // one scale, 3 px a unit: a 115 px false liana slithers off 130 px long); it fades over the last 40% of its slither)
-    const k = len / VINE_SNAKE_ART.hang.h;
-    const w = A.w * k, h = A.h * k;
+    const { w, h } = slitherSize(v);
+    // (slithering off, its belly on the floor it landed on, head the way it goes; it fades over the last 40% of its slither)
     const fade = Math.min(1, (FALSE_LIANA.slither - s.t) / (FALSE_LIANA.slither * 0.4));
     ctx.save();
     ctx.globalAlpha *= fade;

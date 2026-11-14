@@ -20,13 +20,26 @@ import type { Platform, Vine } from './types.ts';
 import { SNAKE, snakeFocusBox, snakeNow, snakeViewFaults, onVine, type VineSnake } from './vineSnake.ts';
 
 const FLOOR = 900;
+type Eng = {
+  updateCamera: (dt?: number) => void;
+  enemies: unknown[];
+  currentStage: GameEngine['builtStage'] extends () => infer S ? S : never;
+  viewCssW: number;
+  viewCssH: number;
+  introT: number;
+  vines: Vine[];
+  camera: { x: number; y: number; viewportWidth: number; viewportHeight: number };
+  zoom: number;
+  clock: ReturnType<typeof beatClock>;
+  startPieces(): void;
+};
 const STEP = 11; // engine.ts CAM_RISE_STEP
 
 /** the real engine and its real camera on a bare world: a ledge under a liana 400 px long (anchor 500 px over the floor), its snake on a
  *  beat (off 4, tell 0.6, trip `on`): the tell starts 4 s after he is on */
 function setup(w: number, h: number, sn: Omit<VineSnake, 'clock'>, on = 4) {
   const r = new RealPlay('1-3', 1);
-  const e = r.e as unknown as GameEngine & Record<string, unknown> & { camera: { x: number; y: number; viewportWidth: number; viewportHeight: number }; zoom: number; clock: ReturnType<typeof beatClock>; startPieces(): void; pieces: Array<{ kind: string }> };
+  const e = r.e as unknown as Eng;
   e.updateCamera = (GameEngine.prototype as unknown as Record<string, () => void>).updateCamera.bind(e);
   const vine = { id: 9, x: 1300, topY: FLOOR - 500, bottomY: FLOOR - 100, vineType: 'swing_liana', isSwingingVine: true, swaySpeed: 1.1, swayPhase: 0 } as Vine;
   const plats = [{ id: 1, x: 0, y: FLOOR, width: 4000, height: 200, type: 'solid' }] as Platform[];
