@@ -38,6 +38,24 @@ Integrator, Opus 5.5 xhigh. Started 3:03 PM ET 11-14. Lead session_01FhBbYNzGRJB
 - castBots 1-7, seeds 1-12, both settings (castbots-1-7.txt): 108/108 hold: kid, adult, child, middle 12/12 both; expert 12/12 N (BUILD-17b:
   107/108, kid Normal seed 3 rescued once at beat 10). Kid Normal takes 92 hits, 2 lives over 12 runs (the eagle's dives at a fast walker).
 
+## Stills and clips (for the lead's judgement; built setting printed on each; 2x stills; upright 412x915 and sideways 915x412)
+- 1-7 (built seed 2), stills/1-7/: every beat (bush teach, leaves shake, road, bare bark, moss, creaky limb, mossy liana, perch, finale)
+  + the exit, Normal + Easy, both ways (40 PNG; sheet-side-normal/easy.jpg, sheet-up-normal.jpg). clips/1-7/: 18 mp4, Normal, both ways;
+  shoot17-clips.txt names the frame the eagle's look is on him (e.g. b10 liana upright frame 18, 0.9 s: swinging, hidden 1; b5 bare bark
+  frame 55, 2.8 s: hidden 0). Captions read hidden 1 in bush/road/moss/liana/perch/finale, 0 on bare bark and the creaky limb (a heart lost).
+- ROUGH (BUILD-17's own named spots, both still there; D61: they hold the link until fixed or Matt says ship): (1) a pale hard-edged haze
+  block in the backdrop behind the bushes (rough-haze-b3-normal-side.jpg; also beats 5, 7, 8, 14 both ways); (2) the eagle drawn UNDER the
+  lives badge top-left (rough-eagle-hud-exit-normal-side.jpg; beats 3, 14 and the exit, both ways). Also named: Dot's line boxes fire as
+  each still is taken (BUILD-17 (a): the shooter places him past the line's spot).
+- 1-4 layout 0, stills/1-4/: tips in REAL TIME (tipsclip.mjs, fresh save, Dot's bubble): nothing fires on the start floor; "Creaky limbs..."
+  at the creak bough (12.6 s N, 13.1 s E), "Climb under the figs..." at the fig gate's foot (18.0-18.4 s), all four ways (tips-*/fired.json,
+  1-floor.jpg / 3-figs.jpg). Fig gate with real presses (tools/inspect/clip.mjs, every press lift-checked, no JUMP-NO-LIFT): gate-*.mp4
+  (ties strain and snap, head never over the underside: 0 px), gateover-*.txt: HEAD STOP at steps 84 and 98 (N) / 121 (E), WALL at its end
+  step 119 (N). KNOWN RED (R-165.212 "over", carried as the packet says until FIX-15b's lay): from the far-end ledge (N) or dropped over
+  its middle (both) he LANDS ON the shut top (steps 155-224 N, 142 E); FIX-15b's flag waits for the gate.
+- 1-1 first run (seed 9652), stills/1-1/: Normal double clips both ways: one jump fails the 130 px bank and the gap, the double makes both
+  (lands x 7991 on the far bank), as link #2. Easy fills that gap (no double to clip, as link #2): first-easy stills at 7350 / 7700.
+
 ## BUILD-17's ENGINE LINES, reviewed line by line (xhigh)
 - sweepPose.ts:45 SNAG_PERCH 56: PASS. Equals w17Art.ts SNAG_PERCH_DRAWN = (snagB.foot 880 - perch 712) x 1/3 = 56; eaglePerch.test pins it.
 - w17Art.ts:46 snagB.perch 712: PASS (the same measure, the drawn low branch).

@@ -15,3 +15,25 @@ upright-412x915-normal b10-liana {"phase":"hunt","eye":23892,"perched":false,"x"
 upright-412x915-normal b10-liana clip 61 frames at 17.6 fps; the look on him at frame 18 (0.9 s): {"phase":"hunt","eye":23081,"perched":false,"x":23170,"hidden":1,"hearts":3,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
 upright-412x915-normal b12-perch {"phase":"hunt","eye":29363,"perched":true,"x":28648,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
 upright-412x915-normal b12-perch clip 74 frames at 19.3 fps; the look on him at frame 27 (1.4 s): {"phase":"hunt","eye":28563,"perched":true,"x":28648,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b14-finale {"phase":"hunt","eye":33997,"perched":false,"x":33276,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b14-finale clip 77 frames at 20.4 fps; the look on him at frame 25 (1.2 s): {"phase":"hunt","eye":33187,"perched":false,"x":33276,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal {"stage":"1-7","seed":2,"diff":"(unset: Normal)","easy":false,"eagles":9}
+sideways-915x412-normal b1-bush {"phase":"rest","eye":3358,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b1-bush clip 85 frames at 18.4 fps; the look on him at frame 38 (2.1 s): {"phase":"hunt","eye":3107,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b2-shake {"phase":"rest","eye":5164,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b2-shake clip 63 frames at 17.0 fps; the look on him at frame 17 (1.2 s): {"phase":"hunt","eye":4888,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b3-road {"phase":"hunt","eye":6998,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b3-road clip 67 frames at 18.0 fps; the look on him at frame 27 (1.2 s): {"phase":"hunt","eye":6240,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b5-bark {"phase":"rest","eye":11909,"perched":false,"x":11488,"hidden":0,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b5-bark clip 87 frames at 16.7 fps; the look on him at frame 47 (2.7 s): {"phase":"hunt","eye":11389,"perched":false,"x":11475,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b7-moss {"phase":"hunt","eye":16709,"perched":false,"x":15983,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b7-moss clip 65 frames at 16.7 fps; the look on him at frame 25 (1.4 s): {"phase":"hunt","eye":15931,"perched":false,"x":15983,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b8-creak {"phase":"rest","eye":19131,"perched":false,"x":18601,"hidden":0,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b8-creak clip 43 frames at 17.0 fps; the look on him at frame 0 (0.0 s): {"phase":"tell","eye":18527,"perched":false,"x":18588,"hidden":0,"hearts":4,"swinging":false,"hanging":false,"onCreak":true,"grounded":true}
+sideways-915x412-normal b10-liana {"phase":"hunt","eye":24073,"perched":false,"x":23414,"hidden":1,"hearts":3,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+sideways-915x412-normal b10-liana clip 70 frames at 14.2 fps; the look on him at frame 35 (2.4 s): {"phase":"hunt","eye":23262,"perched":false,"x":23339,"hidden":1,"hearts":3,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+sideways-915x412-normal b12-perch {"phase":"hunt","eye":29363,"perched":true,"x":28648,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b12-perch clip 57 frames at 14.8 fps; the look on him at frame 22 (1.4 s): {"phase":"hunt","eye":28574,"perched":true,"x":28648,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b14-finale {"phase":"hunt","eye":33987,"perched":false,"x":33276,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b14-finale clip 71 frames at 19.1 fps; the look on him at frame 22 (1.2 s): {"phase":"hunt","eye":33187,"perched":false,"x":33276,"hidden":1,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+clips exit 0 3:55 PM
