@@ -140,7 +140,9 @@ test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70
   assert.ok(reachJumpHeld(0.85 * JUMP_RISE, false) < 0, 'a 70% hold does not rise 85% of a full jump');
   assert.ok(reachJump(0.85 * JUMP_RISE, false) > 0);
   const make = (rise: number) => {
-    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-3']);
+    // (a shell for the bare course below, a hand-built plan's stage: 1-7's. HAND_STAGES['1-3'] has no plan since 1-3 rolls on gen2, so
+    //  this built the old hand-built 1-6's default proto plan until that went, R-165.238)
+    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-7']);
     const A = floor(0, 900);
     const B = floor(900, 1900, Y - rise, rise + 90);
     Object.assign(st, {

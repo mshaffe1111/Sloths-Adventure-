@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SECTION_HYST, SectionTrack, type Beat } from './sectionTrack.ts';
 import { buildProtoStage } from './protoStage.ts';
-import type { LevelConfig } from './types.ts';
+import { levelConfig } from './realPlay.ts';
 
 const BEATS: Beat[] = [
   [0, 1000, 'Learn'],
@@ -46,12 +46,9 @@ test('section: jitter and swinging across a line between two stretches enter eac
   assert.ok(SECTION_HYST.px >= 40 && SECTION_HYST.sec >= 0.5);
 });
 
-test('section: a straight run through the swing stage, walking or running, enters every stretch once and in order', () => {
-  const cfg = {
-    worldIndex: 1, miniIndex: 6, id: '1-6', name: 'First Lianas', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
-    levelWidth: 16100, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
-  } as LevelConfig;
-  const st = buildProtoStage(cfg, 7, 'proto');
+test('section: a straight run through a hand-built stage, walking or running, enters every stretch once and in order', () => {
+  // (1-7's beats, built as the game builds it; until 11-14 the old hand-built 1-6's (the swing stage), gone with its proto plan, R-165.238)
+  const st = buildProtoStage(levelConfig('1-7'), 7, '1-7');
   const beats = st.proto!.beats;
   const end = beats[beats.length - 1][1];
   for (const speed of [200, 420]) {

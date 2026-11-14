@@ -30,11 +30,20 @@ import type { Platform, Vine } from './types.ts';
  */
 type Mode = 'pump' | 'pumpDown' | 'pumpLate' | 'pumpLateDown' | 'off' | 'offDown' | 'holdLeft' | 'holdRight' | 'downToward';
 
-/** the first liana on a stage (1-6's first, over the soft moss) and the raised ledge left of it, where he came from */
+/**
+ * the first liana on a stage (1-6's first, the one its swing lesson is taught on: gen2 w1Arc16.ts's first-liana brick) and the raised
+ * ledge left of it, where he came from: the nearest platform wholly left of the vine whose top is at or above the vine's foot (at full
+ * length his feet pass its corner). Found by the stage's own data, never by an x or a ground line (R-165.238: until 11-14 this read the
+ * old hand-built 1-6's ground, y 580, which went with its proto plan)
+ */
 function firstVine(r: RealPlay): { v: Vine; ledge: Platform } {
-  const v = r.vines.find((q) => q.vineType !== 'tree_climb')!;
-  const ledge = r.platforms.filter((p) => p.x + p.width < v.x && Math.abs(p.y - 580) < 1).sort((a, b) => b.x - a.x)[0];
+  const v = r.vines.filter((q) => q.vineType !== 'tree_climb').sort((a, b) => a.x - b.x)[0];
+  const ledge = r.platforms.filter((p) => p.x + p.width < v.x && p.y <= v.bottomY).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
   return { v, ledge };
+}
+/** stand him on the take-off ledge's near end (the new 1-6 opens with its arrival before the first liana, which these bots do not play) */
+function toLedge(r: RealPlay, ledge: Platform) {
+  r.stand(ledge.x + 10, ledge.y);
 }
 
 const lagged = new WeakMap<RealPlay, number[]>();
@@ -102,11 +111,42 @@ test('1-6: pumping, a steer held either way, hands off or climbing down a liana 
   assert.ok(oldWould > 0, 'the old landing rule would have set him down in these swings (the test covers the case QA found)');
 });
 
-/** 1-6 from its start: run to the first liana and jump for it (the real grab) */
+/** from the ledge's near end, wait `wait` frames, then run at the first liana and jump off the ledge's end for it */
+function runAt(r: RealPlay, ledge: Platform, wait: number) {
+  for (let i = 0; i < wait; i++) r.frame();
+  for (let i = 0; i < 30 * 4 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
+}
+/**
+ * how long a player waits on the take-off ledge for the first liana to come (frames): the vines swing on their own clock (physics.ts,
+ * the self-swing), so a jump off the ledge's end meets the new 1-6's first liana only at some moments of its swing, as a player times
+ * it (the old 1-6's liana hung where any run caught it). Found by trying, on a roll of its own, from the same clock the stage starts on
+ */
+const waits = new Map<number, number>();
+function catchWait(seed: number): number {
+  const known = waits.get(seed);
+  if (known !== undefined) return known;
+  const r = new RealPlay('1-6', seed);
+  const { ledge } = firstVine(r);
+  const clock0 = r.vineClock;
+  for (let wait = 0; wait < 120; wait += 3) {
+    toLedge(r, ledge);
+    r.vineClock = clock0;
+    runAt(r, ledge, wait);
+    if (r.p.isVineSwinging) {
+      waits.set(seed, wait);
+      return wait;
+    }
+  }
+  assert.fail(`seed ${seed}: no wait on the ledge lets a jump off its end catch the first liana`);
+}
+
+/** 1-6 from the take-off ledge: wait for the first liana to come, run at it and jump for it (the real grab) */
 function grabFirst(seed: number) {
+  const wait = catchWait(seed);
   const r = new RealPlay('1-6', seed);
   const { v, ledge } = firstVine(r);
-  for (let i = 0; i < 30 * 8 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
+  toLedge(r, ledge);
+  runAt(r, ledge, wait);
   assert.ok(r.p.isVineSwinging, `seed ${seed}: he caught the first liana`);
   return { r, v, ledge };
 }
@@ -159,16 +199,18 @@ test('1-6: holding down and toward the ledge as the swing carries him past it pu
   assert.ok(tried >= 1, 'no roll of 1-6 hangs its first liana where the swing reaches the ledge');
 });
 
-test("1-6's swing lesson over the soft moss: pumping its lianas at full length never sets him down on a ledge beside them", () => {
-  // (the subject: soft-moss liana chains, protoStage.ts chain(n, true, 'hollow'). It was the 2026-10-24 control course's 'Swing'
-  //  stretch, chain(1) then chain(2) over a hollow; R-165.151 (FIX-B 03c3a59a) deleted that course, so it is held here on 1-6's
-  //  'Learn: swing over soft moss' beat, the live stage that builds the same chains, its mossy hop rocks below them)
+test("1-6's swing lesson: pumping the lianas it is taught on at full length never sets him down on a ledge beside them", () => {
+  // (the subject: the lianas a stage teaches the swing on. It was the 2026-10-24 control course's 'Swing' stretch, then the old 1-6's
+  //  'Learn: swing over soft moss' beat (protoStage.ts chain(n, true, 'hollow')); R-165.238 deleted that plan, so it is held on the new
+  //  1-6's lesson section: the stage's own section (its gen2 sections) that holds its first liana)
   let checked = 0;
   for (let seed = 1; seed <= 60 && checked < 6; seed++) {
     const probe = new RealPlay('1-6', seed);
-    const beats = ((probe.e.proto?.beats ?? []) as Array<[number, number, string]>).filter((b) => b[2].startsWith('Learn: swing over soft moss'));
-    if (!beats.length) continue;
-    const [x0, x1] = beats[0];
+    const sections = (probe.stage as { gen2?: { sections?: Array<{ x0: number; x1: number }> } }).gen2?.sections ?? [];
+    const first = firstVine(probe).v;
+    const lesson = sections.find((s) => first.x >= s.x0 && first.x <= s.x1);
+    if (!lesson) continue;
+    const { x0, x1 } = lesson;
     const lianas = probe.vines.filter((v) => v.vineType !== 'tree_climb' && v.x >= x0 && v.x <= x1).map((v) => v.id);
     for (const id of lianas) {
       for (const mode of ['pump', 'pumpDown', 'holdLeft', 'holdRight'] as Mode[]) {
@@ -184,7 +226,7 @@ test("1-6's swing lesson over the soft moss: pumping its lianas at full length n
       checked++;
     }
   }
-  assert.ok(checked >= 2, `found ${checked} soft-moss lianas on 1-6`);
+  assert.ok(checked >= 2, `found ${checked} lesson lianas on 1-6`);
 });
 
 test('a floor under the vine is still landed on as he climbs down onto it, pumping or not', () => {
@@ -520,10 +562,11 @@ test('the new look: the swing lesson said while he is already on the vine starts
 });
 
 /**
- * 1-6 from the start, a fresh player (no lesson seen yet), the real camera upright or sideways: run to the first liana, jump for it,
+ * 1-6 at its first liana, a fresh player (no lesson seen yet), the real camera upright or sideways: run to the first liana, jump for it,
  * swing, let go in the sweet spot. When did the swing lesson come, and when did he first let go?
  */
 function firstSwing(seed: number, w: number, h: number) {
+  const wait = catchWait(seed);
   const r = new RealPlay('1-6', seed);
   const e = r.e;
   // the camera and the lessons run here (realPlay.ts skips them as cosmetic)
@@ -541,6 +584,13 @@ function firstSwing(seed: number, w: number, h: number) {
     shown.push({ id, t: e.gameTime });
   };
   const { ledge } = firstVine(r);
+  // (a fresh player at the take-off ledge, the view on him as at a flag: the arrival before it is not played here)
+  toLedge(r, ledge);
+  const c = e.camera;
+  c.x = c.targetX = Math.max(0, r.p.x - c.viewportWidth * 0.45);
+  c.y = c.targetY = Math.max(0, r.p.y - c.viewportHeight * 0.55);
+  // (and he waits there for the liana to come, as a player times it: catchWait)
+  for (let i = 0; i < wait; i++) r.frame();
   let letGoAt = -1;
   let grabAt = -1;
   for (let i = 0; i < 30 * 12 && letGoAt < 0; i++) {
