@@ -1,5 +1,6 @@
 # ENG-S1 REPORT (t-eng-s1 from origin/t-a1-swing@3edc896c; packet reference/packets/2026-11-14/ENG-S1.md on the lead's branch)
-Code head c3a753e8 (gates below ran on it, in its own worktree); later commits are reference/ only (this folder, engine-core.md).
+Code head c3a753e8 (every gate below ran on it, in its own worktree); later commits are reference/ only (this folder, engine-core.md).
+Box: 2:21-3:52 AM ET (90 min + 1 to let the gates finish, D59). Context ~38% of 1M at the end.
 
 ## Done: item 1 of 4 (the swing camera), THE FAR CAP, 1-6.md. Items 2-4 NOT started (box): EXACT NEXT STEP at the end.
 1. **THE FAR CAP, in one place** (Matt 2:02 AM "shorter swings", R-165.225; lead ruling (A) 2:28 AM): cameraFollow.ts `SWING_SEEN` = **414 px**.
@@ -44,11 +45,30 @@ Code head c3a753e8 (gates below ran on it, in its own worktree); later commits a
    A1's w1Swing.test.ts was revised to the cap (FAR on a 120 px perch; the old FAR asserted unlayable; SHORT from the top onto World 1's SHORT perch). Its toy FAR line is the plain check's own 380 px on Normal, and LONG's 340 on Easy (Easy lays FAR as LONG). For the Critic: each test keeps its intent on the geometry Matt's decision allows. No check was loosened to clear a defect.
 5. **1-6.md revised** on t-16-design@c99917f1 (fast-forwards, no PR on it): FAR rows with citations and the correction, beat 7 ("below the
    top"), and the "phone both ways" paragraph (the camera job is done).
-6. **lockall**: 102/102 stages unchanged vs t-a1-swing@3edc896c (16 layouts, both settings: lock-check run on 488a5aac; c3a753e8 changes only
-   dialled lianas and the camera, and no shipped stage lays a dialled liana yet). generality: in the gates.
+6. **lockall**: 102/102 stages unchanged vs t-a1-swing@3edc896c (16 layouts, both settings), on 488a5aac and on the final code: no shipped
+   stage lays a dialled liana yet, so only 1-6's build will feel the cap.
 
-## Gates (full CLAUDE.md Checks + CI's lists, gates.sh, on c3a753e8 in its own worktree, CI=1)
-(filled in when the run ends)
+## Gates (full CLAUDE.md Checks + CI's lists, gates.sh, on c3a753e8 in its own worktree, CI=1 FORCE_COLOR=1, 2:59-3:52 AM ET; gates.log)
+**ALL GREEN** (roadmapcheck after unshallowing the container's clone, below). Nothing is running.
+| gate | result |
+|---|---|
+| tsc | exit 0 |
+| unit (the CLAUDE.md glob, one process) | exit 0: 3391 tests, 3389 pass, 0 fail, 2 TODO (pre-existing 4-3 boulder wall TODOs, not mine), 1719 s |
+| build (BASE_PATH=/Sloths-Adventure-/) | exit 0 |
+| chunkcheck | PASS |
+| artcheck | exit 0 |
+| knowncheck | exit 0 |
+| generalitycheck | exit 0 (no stage literal added) |
+| roadmapcheck | FAIL in the run: "shallow clone, proofs cannot be checked". The container's clone was shallow. Unshallowed (git fetch --unshallow), then re-run on c3a753e8: PASS |
+| seed lists (every list registrycheck names, --check) | exit 0, 433 s |
+| registrycheck | exit 0 |
+| engine tools' tests (gates.yml's list) | exit 0 |
+| tierBots | exit 0 |
+| kbdcheck | PASS (129 s) |
+| buildcheck | PASS (normal p95 104 ms, easy 59, budget 150) |
+| drawcheck | PASS (517 s) |
+| clipcheck | PASS (83 known, unchanged; 301 s) |
+lockall --layouts 16 --check: 102/102 stages unchanged vs t-a1-swing@3edc896c, run on 488a5aac and again on the final code (c3a753e8's src).
 
 ## Polish check (real page, the engine's own camera, Normal read from the game, 6-3's liana with a FAR perch at the cap pushed in)
 - shots/upright-412x915-1-decision.png, upright-390x844-1-decision.png: the press frame. View 527 / 541 px, Pokey 77%, ALL of him in view
@@ -87,6 +107,8 @@ Code head c3a753e8 (gates below ran on it, in its own worktree); later commits a
   - (b) Size a view against his DRAWN pose for that move, never heroBox: the swing pose trails 91 px.
   - (c) Playwright recordVideo on headless Chromium draws the page at half size in a corner. Sample page.screenshot frames and join them with ffmpeg (shoot.mjs CLIP=1).
   - (d) A shooter that spawns `npx vite` must kill the process group and exit, or it hangs after its last shot.
+  - (e) gates.md: run `git fetch --unshallow` before roadmapcheck in a cloud container: its clone is shallow, and the gate fails on that
+    alone (CI checks out with fetch-depth 0).
 - **Learned** (for the next builder):
   1. A still beat my arithmetic in 30 seconds: shoot before telling the lead a number.
   2. A gap rule tied to the camera must count only presses he can see: a window that counts blind presses makes a blind jump fair on paper.
