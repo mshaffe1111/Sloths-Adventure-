@@ -31,9 +31,12 @@ proven plan; Play is never blocked).
 - **Yield** (`npx tsx tools/engine/chaseYield.ts [code] [n] [ends]`, World 1's kit, 1-1's brief, stage 8): `A T P F R K R K R S E`
   **30/30 Normal, 30/30 Easy** (B3: 15/23, 16/19 at my first measure), stretches 822-3,780 px, 2.3 a stage. With an L (`... R L S E`,
   ends finale): 30/30 both, but World 1's pool has NO finale section (pool short): 1-8's arc must bring them (Content).
-- **The edge (C4, B4):** pieces/chasePiece.ts `edgeCanvas(w, h)`: an ember radial glow + a narrow dark band, baked ONCE per screen size,
-  stamped with ONE drawImage at globalAlpha EDGE.max x k (k by the front's gap: 0 at 650 px, full at 150), anchored at the break when it
-  is on screen, else at the trailing edge, at his feet. Re-baked on a size change or canvasLost (D6). No gradient a frame.
+- **The edge (C4, B4):** pieces/chasePiece.ts `edgeCanvas(w, h)`: an ember disc (radius GLOW.radius 0.46 of the screen's SHORT side: by
+  the long side it filled a sideways screen) centred ON the break (the fallen side darkens into it: drawn from the break rightward it cut
+  a hard seam), a squat dark core on the branch line (a tall one read as a smoky pillar); baked ONCE per screen size, stamped with ONE
+  drawImage at globalAlpha EDGE.max (0.8) x k (k by the front's gap: 0 at 650 px, 1 at 150), at the break when on screen, else centred
+  on the trailing edge, at his feet. Re-baked on a size change or canvasLost (D6). No gradient a frame. NOT measured with contrast.mjs.
+- **A catch is a heart:** chaseCaught -> respawnAtCheckpoint('pit', true, lifeNote false): no "N lives left" note (it read as a life).
 - **Bots** (tools/inspect/chaseBots.test.ts, CI): engine.ts guideView.chase is on while he is on a laid stretch; the tier bots then keep
   the thumb down and stand at an edge only if the stand fits the front's stop budget (firsttimer.ts chaseRoom, CHASE_MARGIN 0.8 s).
   Planted: a 2.8 s stopper is caught without the skill (noChaseStride), never with it. No tier bot is ever caught. **OPEN (todo):** the
