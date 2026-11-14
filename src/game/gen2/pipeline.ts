@@ -1280,7 +1280,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + a.w + roll(rng, pl.reach ?? LIANA.reach);
       y = top;
       w = 0;
-      h = Math.min(a.y + 30, top + LIANA.len) - top;
+      // (its length: the row's own (ENG-S4, A1 pushback b: 1-6.md's measured liana is 420), else LIANA.len; rolled only when a row sets
+      // one, so a row without it takes the same rolls as before)
+      h = Math.min(a.y + 30, top + (pl.len ? roll(rng, pl.len) : LIANA.len)) - top;
       hang = { kind: 'liana', swing, from: pl.after };
     } else if (pl.kind === 'land') {
       // a perch past a liana: its near end in the band a release of LIANA.window or more lands on (lianaBand), `share` along it

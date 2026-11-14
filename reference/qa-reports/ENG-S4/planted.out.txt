@@ -1,4 +1,4 @@
-# ENG-S4 planted failures on the working tree over e4c07874 (each mutation applied alone, snakeCam.test.ts run, tree restored)
+# ENG-S4 planted failures on the working tree over 383e3871 (each mutation applied alone, snakeCam.test.ts run, tree restored)
 ## M1 the verdict ignores the level's top and foot (vineSnake.ts: the view's top is the focus's aim)
 not ok 8 - the level check leaves a FALSE liana out of the route (it drops him the step he takes it): 6-3 with every liana false has no swing edge; and the stage's snake faults name a quick snake, a swinging false liana and a missing beat
 not ok 9 - ENG-S4, the level's top on the REAL engine (6-3's geometry: a liana hung 124 px under the top of a level 900 tall): the tell is never in the clear view, on any phone either way, and the verdict refuses it on each; hung where the verdict allows it, the engine shows the tell and the snake
@@ -42,7 +42,11 @@ not ok 2 - Easy: a row marked none is not laid (1-6.md: none rise on Easy); a ro
 not ok 2 - Easy: a row marked none is not laid (1-6.md: none rise on Easy); a row with Easy's own values lays those
 # pass 3
 # fail 1
- M src/game/gen2/nodeLetters.test.ts
- M src/game/gen2/nodeLetters.ts
-?? src/game/gen2/snakeLay.test.ts
-?? src/game/gen2/snakeLay.ts
+## M13 the lay ignores a row's liana length (pipeline.ts)
+not ok 7 - ENG-S4 (A1 pushback b): a liana row may set its own length; a row without one lays LIANA.len and takes the rolls it took before, and a set length still flies its perch at the row's grip
+# pass 6
+# fail 1
+ M src/game/gen2/pipeline.ts
+ M src/game/gen2/types.ts
+ M src/game/gen2/worlds/w1Swing.test.ts
+ M src/game/gen2/worlds/w1Swing.ts

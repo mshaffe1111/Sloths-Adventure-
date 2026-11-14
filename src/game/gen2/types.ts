@@ -285,7 +285,7 @@ export type PlaceRule =
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
-  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip }
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip; len?: Range }
   /** `window` (a perch past a liana): the release window its band must leave on each setting (s), over LIANA.window's floor: World 1's
    *  FAR row keeps its perch inside the press windows the lead set (R-165.225: Normal 460-500 px, Easy where the foot keeps ~550 ms) */
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; window?: { normal?: number; easy?: number } }

@@ -10,7 +10,7 @@ import { LIANA, type LianaSwing, type SectionTemplate, type WorldKit } from '../
 import { generateAllLevels } from '../../worldsData.ts';
 import { w1World } from './w1.ts';
 import { w6Kit } from './w6.ts';
-import { W1_LIANA_GAP, W1_SWING_SECTIONS, withSwing } from './w1Swing.ts';
+import { W1_LIANA_GAP, W1_SWING_SECTIONS, w1Liana, withSwing } from './w1Swing.ts';
 
 // 1-6.md's measured liana: 420 px long, the ledge it leaves 400 px under its anchor; the perch level with that ledge, `near` px past
 // the anchor, `w` wide. Since Matt's "shorter swings" (R-165.225, 11-14) a dialled liana's perch is laid only where he sees it whole as
@@ -153,3 +153,31 @@ test('built: a liana row with the grip dial reaches the stage\'s Vine, and the s
   }
   assert.ok(built > 0, 'no seed laid the FAR liana: the test proves nothing');
 });
+
+test('ENG-S4 (A1 pushback b): a liana row may set its own length; a row without one lays LIANA.len and takes the rolls it took before, and a set length still flies its perch at the row\'s grip', () => {
+  const [id, kit] = KITS[0];
+  const cfg = { ...all.find((l) => l.id === id)!, unlocked: true };
+  for (const d of ['normal', 'easy'] as const) {
+    const b = planBudget(cfg, kit.manifest, d);
+    for (const t of W1_SWING_SECTIONS) {
+      const gap = t.id.replace('w1-liana-', '') as keyof typeof W1_LIANA_GAP;
+      const t420: SectionTemplate = { ...t, pieces: t.pieces.map((q) => (q.key === 'l' ? w1Liana('l', 'a', gap, [420, 420]) : q)) };
+      for (let i = 1; i <= 3; i++) {
+        const P = layLocal(t, b, rngFor(i));
+        const plain = P.pieces.find((q) => q.key === 'l')!;
+        const pa = P.pieces.find((q) => q.key === 'a')!;
+        assert.equal(plain.h, Math.min(LIANA.len, pa.y + 30 - plain.y), `${t.id}: no row length, LIANA.len (${plain.h})`);
+        // (a row without a length takes the rolls it took before: lockall --check 102/102 is the proof across the shipped stages)
+        const L = layLocal(t420, b, rngFor(i));
+        const [a, l, p] = ['a', 'l', 'b'].map((k) => L.pieces.find((q) => q.key === k)!);
+        assert.equal(l.h, Math.min(420, a.y + 30 - l.y), `${d} ${t.id} roll ${i}: the row's 420 px did not reach the liana (${l.h})`);
+        // (the rolls before the length are the plain row's: the anchor and its reach)
+        assert.equal(l.y, plain.y);
+        assert.equal(l.x, plain.x);
+        const w = lianaRelease({ x: l.x, topY: l.y, bottomY: l.y + l.h }, l.hang!.swing!, { x: p.x, y: p.y, w: p.w }, d);
+        assert.ok(w >= LIANA.window[d], `${d} ${t.id} roll ${i}: a ${w} s window at its grip on the 420 px liana`);
+      }
+    }
+  }
+});
+

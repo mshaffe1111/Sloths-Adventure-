@@ -1,5 +1,5 @@
 #!/bin/bash
-# ENG-S4 planted failures: each mutation applied alone, its tests run (snakeCam.test.ts; M10-M12 snakeLay.test.ts), the tree restored
+# ENG-S4 planted failures: each mutation applied alone, its tests run (snakeCam.test.ts; M10-M12 snakeLay.test.ts; M13 w1Swing.test.ts), the tree restored
 cd /home/user/Sloths-Adventure-
 H=$(git rev-parse --short=8 HEAD)
 echo "# ENG-S4 planted failures on the working tree over $H (each mutation applied alone, snakeCam.test.ts run, tree restored)"
@@ -22,4 +22,6 @@ T=src/game/gen2/snakeLay.test.ts
 plant "M10 the lay never asks snakeFaults (snakeLay.ts)" src/game/gen2/snakeLay.ts "const bad = snakeFaults(st);" "const bad: string[] = [];"
 plant "M11 a false liana keeps its swing (snakeLay.ts)" src/game/gen2/snakeLay.ts "        v.swingAmp = 0;" ""
 plant "M12 Easy lays every row as Normal (snakeLay.ts)" src/game/gen2/snakeLay.ts "const e = easy ? row0.easy : undefined;" "const e = undefined as SnakeRow['easy'];"
+T=src/game/gen2/worlds/w1Swing.test.ts
+plant "M13 the lay ignores a row's liana length (pipeline.ts)" src/game/gen2/pipeline.ts "top + (pl.len ? roll(rng, pl.len) : LIANA.len)" "top + LIANA.len"
 git status --short src/

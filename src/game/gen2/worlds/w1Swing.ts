@@ -40,9 +40,10 @@ export const W1_LIANA_GAP: Record<LianaGap, { grip?: LianaGrip; share: Range; wi
 /** a bough (World 1's look): a landing unless told, `main` so the lay may stand a flag on a wide one */
 const bough = (key: string, place: SectionPiece['place'], w: Range, o: Partial<SectionPiece> = {}): SectionPiece =>
   ({ key, shape: 'branch', w, place, style: 'branch', landing: true, main: true, ...o });
-/** a liana past `after`'s end, its anchor 400-420 px over it (1-6.md's measured liana), its reach checked at the gap's grip */
-export const w1Liana = (key: string, after: string, gap: LianaGap): SectionPiece =>
-  ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [400, 420], ...(W1_LIANA_GAP[gap].grip ? { grip: W1_LIANA_GAP[gap].grip } : {}) } });
+/** a liana past `after`'s end, its anchor 400-420 px over it (1-6.md's measured liana), its reach checked at the gap's grip; `len` its
+ *  length where a row sets one (else LIANA.len) */
+export const w1Liana = (key: string, after: string, gap: LianaGap, len?: Range): SectionPiece =>
+  ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [400, 420], ...(W1_LIANA_GAP[gap].grip ? { grip: W1_LIANA_GAP[gap].grip } : {}), ...(len ? { len } : {}) } });
 /** the bough a liana throws him onto, level with the one he left, at the gap's share of its band */
 export const w1Perch = (key: string, liana: string, gap: LianaGap, w: Range): SectionPiece =>
   bough(key, { kind: 'land', after: liana, dy: [0, 0], share: W1_LIANA_GAP[gap].share, ...(W1_LIANA_GAP[gap].window ? { window: W1_LIANA_GAP[gap].window } : {}) }, w);
