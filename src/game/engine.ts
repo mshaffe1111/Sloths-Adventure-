@@ -6146,12 +6146,14 @@ export class GameEngine {
     return k * k * (3 - 2 * k);
   }
 
-  /** the stage's chase span (cameraFollow.ts chaseSpan), worked out once a stage */
-  private chaseSpanFor: GeneratedStage | null = null;
+  /** the stage's chase span (cameraFollow.ts chaseSpan), worked out once for its chase and hazards (again if either is laid anew on the
+   *  same stage: a harness swapping a stage's chase kept the stale span, B5's contrast run) */
+  private chaseSpanFor: [GeneratedStage | null, unknown, unknown] = [null, undefined, undefined];
   private chaseSpanV: ReturnType<typeof chaseSpan> = null;
   private chaseSpanOf(st: GeneratedStage): ReturnType<typeof chaseSpan> {
-    if (this.chaseSpanFor !== st) {
-      this.chaseSpanFor = st;
+    const k = this.chaseSpanFor;
+    if (k[0] !== st || k[1] !== st.chase || k[2] !== st.rolling) {
+      this.chaseSpanFor = [st, st.chase, st.rolling];
       this.chaseSpanV = chaseSpan(st);
     }
     return this.chaseSpanV;

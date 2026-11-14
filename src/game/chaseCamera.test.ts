@@ -92,3 +92,16 @@ test('chase camera: the span is the stage data (its stretches and hazards), and 
   assert.equal(chaseBack(368, 440), 368 * CHASE_VIEW.backMin);
   assert.equal(chaseBack(1000, 440), 1000 * CHASE_VIEW.backMax);
 });
+
+test('chase camera: a chase laid anew on the same stage is framed by its own span (never a stale one)', () => {
+  const r = new RealPlay('1-3', 1);
+  const e = r.e as unknown as { currentStage: GeneratedStage; chaseSpanOf(st: GeneratedStage): { x0: number } | null };
+  const st = e.currentStage;
+  st.chase = undefined;
+  st.rolling = undefined;
+  assert.equal(e.chaseSpanOf(st), null);
+  st.chase = { stretches: [{ start: 3000, end: 5000 }] };
+  assert.equal(e.chaseSpanOf(st)?.x0, 3000 - CHASE_VIEW.leadIn, 'a chase laid on the same stage object');
+  st.rolling = [{ ...NUT, dropX: 2000 }];
+  assert.ok((e.chaseSpanOf(st)?.x0 ?? 0) < 2000, 'and its hazards');
+});
