@@ -38,7 +38,7 @@ stills 4f82c7c5. Fault 4 (requiredMove, old 1-6) is RED by the lead's ruling (a)
 | unit (full CLAUDE.md list) | 892880aa | GATES_UNIT |
 | the 14 reds, file by file | working tree = 892880aa | pickups 4/4, levels 13/13, glideStages 4/4, skills 7/7, stageSheets 8/8, sheetWarm 4/4, w1Pits 16/16, eagleFair 3/3, dotBox 1-7 1/1, movesJournal 5/5, artDress 7/7, puzzleCamera 4/4; requiredMove RED (ruled) |
 | new planted tests | 7c77f501-892880aa | eagleKit 6/6, creak.test 8/8; each plant RED (see faults table) |
-| lock `--layouts 16 --intended 1-7` vs c318fb0a | 82aa6dc3 | GATES_LOCK |
+| lock `--layouts 16 --intended 1-7` vs c318fb0a | 82aa6dc3 | PASS: 101/102 stages unchanged (3264 builds, 16 layouts); 1-7 (intended) moved: platforms, collectibles, gen2, proto.dress |
 | seedlist 1-7 --check | 82aa6dc3 | PASS (100 seeds, each clean on both settings): no relist needed |
 | castBots 1-7 seeds 1-12 both settings | 82aa6dc3 | 107/108 (bots12.jsonl): every bot 12/12 both settings but kid Normal 11/12 (seed 3, accepted 2:36 PM); kid Normal lives lost 4 -> 0 |
 | build (BASE_PATH) / chunkcheck / artcheck / knowncheck / generality | 892880aa | 0 / PASS / 0 / 0 / PASS (27 known) |
