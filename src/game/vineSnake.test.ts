@@ -205,6 +205,7 @@ for (const id of ['6-3', '2-4']) {
     assert.equal(st.floor, moss.y);
     assert.ok(st.x > v.x + 50, `${id}: it slithered off (${Math.round(st.x - v.x)} px)`);
     assert.ok(st.t >= FALSE_LIANA.slither, 'and is gone');
+    assert.equal(Math.sign(st.x - r.p.x), st.away, `${id}: it went off away from where he is, not through him`);
     r.stand(v.x, moss.y);
     r.frame();
     r.fly(v.x, v.topY + len / 2, 0, -50);

@@ -1,6 +1,6 @@
 /**
  * ENG-S2: the FALSE liana on the REAL game (dev page, the engine's own catch, piece loop and let-go: no mock). On a stage with a liana
- * (6-3), a false liana (Vine.snake route 'still': the brown snake hanging stiff, 230 px, never sweeping) is hung 260 px past the first
+ * (6-3), a false liana (Vine.snake route 'still': the brown snake hanging stiff, 150 px (1.3x its ship size), never sweeping) is hung 260 px past the first
  * liana, a moss ledge under both. He is put in the air moving toward it, so the ENGINE catches it; it startles.
  *   node reference/qa-reports/ENG-S2/shootfalse.mjs <sha> [stage] [port]
  * Stills per phone: the disguise beside a real liana; the startle (he hops off); the snake on the moss slithering off; gone.
@@ -42,7 +42,7 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
     const e = window.__engine();
     const st = e.currentStage;
     const sv = e.vines.find((v) => v.vineType === 'swing_liana' && (v.swingAmp ?? 0) > 0);
-    const fl = { id: 99997, x: sv.x + 260, topY: sv.topY, bottomY: sv.topY + 230, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0, snake: { route: 'still' } };
+    const fl = { id: 99997, x: sv.x + 260, topY: sv.topY, bottomY: sv.topY + 150, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0, snake: { route: 'still' } };
     e.vines.push(fl);
     if (st.vines !== e.vines) st.vines.push(fl);
     const moss = { id: 99998, x: sv.x - 260, y: sv.bottomY + 140, width: 900, height: 200, type: 'solid' };
@@ -58,7 +58,7 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
     return { stage: st.config?.id ?? '', diff, easy: !!e.easy, pieces: e.pieces.map((q) => q.kind) };
   });
   const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px sans-serif', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none' }); document.body.appendChild(d); } d.textContent = t; }, t);
-  const lab = (what) => `${what} | ${tag} | ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) | t-eng-s2@${sha} | false liana 230 px (brown, still) 260 px past a real liana`;
+  const lab = (what) => `${what} | ${tag} | ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) | t-eng-s2@${sha} | false liana 150 px (brown, still) 260 px past a real liana`;
   await sleep(1200);
   await stamp(lab('THE DISGUISE: a real liana (left, swinging) and the false one (right: still, browner, head at its foot)'));
   await page.screenshot({ path: path.join(out, `false-${tag}-1-disguise.png`) });

@@ -101,7 +101,8 @@ class VineSnakePiece implements StagePiece {
       const under = floorUnder(host.platforms, s.x, s.y + half - 2, 1600);
       s.vy += FALSE_LIANA.fall * dt;
       s.y += s.vy * dt;
-      if (under !== null && s.y + half >= under) (s.floor = under), (s.y = under);
+      // (down on the floor: it slithers off away from where he is NOW, never back through him; he has fallen on past it meanwhile)
+      if (under !== null && s.y + half >= under) (s.floor = under), (s.y = under), (s.away = p.x <= s.x ? 1 : -1);
       else if (under === null && s.vy * dt > 0 && s.y > v.bottomY + 1600) s.t = FALSE_LIANA.slither;
       return;
     }
@@ -182,8 +183,10 @@ class VineSnakePiece implements StagePiece {
     const img = vineSnakeImg('slide-brown');
     if (!img) return;
     const A = VINE_SNAKE_ART.slide;
-    // (slithering off, its belly on the floor it landed on, head the way it goes; it fades over the last 40% of its slither)
-    const w = len, h = (A.h / A.w) * w;
+    // (slithering off, its belly on the floor it landed on, head the way it goes, at the scale its hanging pose was drawn (the two cuts share
+    // one scale, 3 px a unit: a 115 px false liana slithers off 130 px long); it fades over the last 40% of its slither)
+    const k = len / VINE_SNAKE_ART.hang.h;
+    const w = A.w * k, h = A.h * k;
     const fade = Math.min(1, (FALSE_LIANA.slither - s.t) / (FALSE_LIANA.slither * 0.4));
     ctx.save();
     ctx.globalAlpha *= fade;
