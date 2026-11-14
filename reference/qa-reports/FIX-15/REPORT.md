@@ -1,5 +1,5 @@
 # FIX-15 REPORT: 1-4 fig gate, no way over or through a shut bough (R-165.212). Branch t-fix-15 from origin/t-int-8-clip (315548d1).
-Engine member, Opus 5.5. Started 11:49 AM ET 11-14, gates finished 1:4x PM ET (the lead approved running them past the box). Status: **item 1 (engine) GREEN** (the lead's ruling 12:24 PM ET: push GREEN for
+Engine member, Opus 5.5. Started 11:49 AM ET 11-14, gates finished 1:32 PM ET (the lead approved running them past the box). Status: **item 1 (engine) GREEN** (the lead's ruling 12:24 PM ET: push GREEN for
 item 1 only); **"over" stays RED until FIX-15b's lay rule** (93 of 192 gates have wood from which a side jump lands him ON the shut top).
 
 ## The lead's question: from the shut top, can he carry on past the gate without locking it? **No.**
