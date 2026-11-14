@@ -15,8 +15,7 @@ seedlists, registry, tooltests, tierBots, unit2, unit3, drawcheck (PASS 557 s), 
 real-engine rides: RealPlay.bare() swapped the platforms after the stage started the pieces. Root fixed (lead OK): bare() calls
 e.startPieces() (17423dde), rideLay.test kept whole. Final code (17423dde) re-run in a worktree (rerun/RESULTS.txt): tsc 0, unit 3376/0,
 build 0, chunkcheck PASS, tooltests 74/0, tierBots 7/0 (lock/draw/clip/buildcheck unreachable: only test files call bare()).
-**Polish check:** stills/key-{upright,sideways}-{r,s,m,h,v,K,pick}.png + sheet-upright.png: no overflow at 390 or 844 px. Fixed: the
-unlaid letters showed an empty "Never" line; they now have no Pieces block (test pins it).
+**Polish check:** stills/key-{upright,sideways}-{r,s,m,h,v,K,pick}.png, sheet-upright.png: no overflow at 390/844 px; FIXED an empty "Never" line.
 **Pushback:** (1) RIDE has no hurt and draws nothing of its own (the platform drawer paints it): hurt is proven by the planted probe in
 the real engine (lead OK'd 10:00 PM); draw ORDER is pinned in render()'s text, because the headless canvas cannot paint scenery. The
 first piece that draws (A2's sweeper) must prove its layer with a browser still. (2) The key shows H and L as Later while V13 allows
