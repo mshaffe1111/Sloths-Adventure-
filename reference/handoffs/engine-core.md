@@ -4,9 +4,33 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0w. 1-7's moss cover, the perched eagle, bots that hold still (ENG-E2, t-eng-e2, 11-14): what the next engineer must know
+- **Moss is cover like a bush** (watcher.ts Bush kinds `moss` carpet, `mossPatch` mound, `mossHang` hanging): laid by W1_STILL's rows
+  (w1Cast.ts: w1-hide-moss 346 px, -patch 169, -hang 173 and -curtain 78 with `hanging: true`; stillLay.ts HideRow.hanging ties a hanging hide's
+  top at its socket's spot: a rope's line or a bough's underside). Drawn by w17Art.ts from ART-678b's own files (src/assets/w1-678/, a file is
+  3x its game size: the catalog's units) in front of him; `mossAlpha`: a mound or hanging moss thins as the moss comes (the bush ghost rule), a
+  CARPET NEVER THINS (it covers only his feet: thinned, it vanished exactly when he hid). Preloaded by stageManifest key `w17`.
+- **A mossy liana looks mossy**: engine.ts draws drawLianaMoss on every `Vine.mossy` swing liana right after renderWorldObjects (three
+  clumps of the curtain without its twig, hanging straight under gravity from where the swing puts the rope).
+- **Letter m (cover) is laid**: nodeAsks.ts FILL_LETTER `{ m: 'hide' }`: a node asking m must have laid a prop tagged hide (pipeline
+  dialMisses passes each node's prop tags); NODE-KEY.html regenerated (nodekey.ts). The deal does not filter sections by m.
+- **The perch** (Post.perched, PredatorState.perched; laid by `eagleOver(z, groundY, id, { x })` -> Enemy.kitPerch): its body stays at its
+  post SNAG_PERCH (120 px, sweepPose.ts; the snag's low branch, w17Art.ts SNAG_PERCH_DRAWN, held equal by a test) over the ground under it
+  while its gaze (eyeX) sweeps; core.ts `rides = def.rides && !s.perched` everywhere riding was read; it acts (the dive) from the snag at the
+  act's 700 px/s and flies home through rest. sweepPose perchedPose: rest 'ahead' (an idle blink every 4.3 s), the warn 'turn' (+ the gaze
+  shadow at the start end), the pass 'down' with the shadow, 'blink' when its gaze is on him and he is hidden (SweepScene.hidden =
+  calmNow >= 1); tell/act/recover/flee fly. drawCastSky draws the snag (behind him: it runs before the player) and the perched frames.
+  The perch was 208 px first: sideways (412 tall) its head was off the screen top; 120 shows all of it under the HUD.
+- **Bots**: firsttimer.ts hides from the KIT eagle too (the old block read only proto.watch): a second (`heed`) after a sweeper's look starts
+  over his stretch he heads for `stillCoverNear` (ground cover at his level within 600 px) and takes his thumb off inside (no crouch: the
+  kit hides a STILL sloth). 'hide' is learned from moss/green + still words too. A test harness that steps a FirstTimerRun by hand must call
+  `after()` each frame (a jump ends there; without it his first hop never ended and he never hid).
+- Proof: src/game/eaglePerch.test.ts (7), src/game/gen2/mossLay.test.ts (7), tools/inspect/castBots.test.ts (+3); planted faults 10/10
+  (reference/qa-reports/ENG-E2/planted.out.txt). Real game: reference/qa-reports/ENG-E2/shoot.mjs (stills, CLIP=1 clips), shoot-hang.mjs.
 
 ## 0v. 1-7's eagle and cover on the creature kit (ENG-E1, t-eng-e1, 11-14): what the next engineer must know
 - 1-7 is designed on the KIT's hide rule only (stillness.ts: still 0.5 s in cover; no crouch). watcher.ts still runs the OLD 1-7 (protoStage)
