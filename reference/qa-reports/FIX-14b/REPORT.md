@@ -29,3 +29,23 @@
 - Step 3 numbers (R-165.227): PODS_14 in w1Arc14.ts is the ONE place: on / speed 300 (was 620) / tell 1.5 (was 1.0) / beats 4.6, 4.2,
   3.6 (was 3.6, 3.0, 2.3) / Easy 1.5x. `on: false` lays no pods (Matt's other choice, one line; planted on the real finish). POD.tellMin
   1.5. The relist (addlevel 1-4 --relist on this head): 24/24 clean both settings, 100/100 proven.
+## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
+- gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
+  reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
+  (49 x 108 px as ART-MATT sized them) and the strain shiver is subtle at 1x: the lead should judge the clip at phone size; (2) the old
+  white-gold "pop" still flashes at the tear beside the new snap (two signals at once: drop the pop if the lead agrees); (3) the camera
+  sits Pokey low on screen while he pushes (not this job's, but it hides the push); (4) NO sideways clip yet (clip.mjs failed sideways).
+- Pods: numbers only. The tell is still drawn on the pod (fluff), NOT yet the vine itself: do not show Matt pods as final.
+## Lessons applied: D40 (built on t-len-14 for the fork; nothing patched that a planned job replaces), D59 (no gate left running),
+   D61 (no code-drawn primitive in the lock: all painted), D62 (clips print the built setting), D63 (judged on clips + a cheat probe),
+   D64 (context from the token count).
+## Learned (for the next builder)
+- A "lid" line that slopes (a sagging bough) cannot be tested "from below the line": test against the wood's drawn top. Planted tests
+  of a leap ALONG the slope found it.
+- A gate probe must hold the figs on (or every case after the first fig opens the gate and probes nothing) and must prove it met the
+  wood (`met >= half`), or it passes by never reaching the bough.
+- "Stop at the drawn underside" and "the fig passes the drawn top" conflict on a thick painted bough (56 px at 440 wide): the fig tears
+  at full push instead (Matt's "just enough to get the fruit up").
+- Look a bough lookup up by x AND y: a gate 3000 px below shared the x and capped a climb at the top of the stage.
+## Proposed rule changes (lead decides): level.md "every gate-type piece has a skip probe that holds its keys and proves it met the
+   wood" (check: fieldGate.test.ts's probe shape); FIX-14's "a climbable vine at a ledge's end has >= 80 px of ledge past it" stands.
