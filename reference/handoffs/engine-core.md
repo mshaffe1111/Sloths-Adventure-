@@ -8,6 +8,27 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+
+## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
+- **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
+  or bough is a platform over a gap, never its lip or floor (the lead, 8:50 PM). `earthLine` is the earth's top along x: a HOLE (no earth
+  at any depth) between two banks is a gap at any width from 24 px (no 1,600 cap); a DIP (earth dropping more than SOFT_BELOW and coming
+  back) is a gap when all of it lies deeper than SOFT_BELOW under the gap's line. `gapLine`: the higher lip when the lower is within
+  SOFT_BELOW of it, else the lower (a stump or pillar's top is not the ground). Floor window, SOFT_FLOOR, `lower` (a road running on)
+  read from that line. A drop inside a judged dip is its floor (`dipEnd`). The second "marked drop at any height" pass is gone (holes cover it).
+- **Planted:** w1Pits.test.ts "per-gap ruler" x4 (far ground, a raised hole, a log chain one gap, a 2,000 px hole), red on 1829470f.
+  The x22604 slot test now reads the block (earth 68 px down) as a sunk step, as realFalls always did.
+- **HELD (the lead's C, 9:35 PM): 1-1's openings are R-165.221 (the 1-1/1-4 polish lane).** 1-1 cannot build on t-ruler: its final
+  climb lies over earth holes (946-2,870 px) the old ruler never saw, and from its catch branches and lower logs he walks under the
+  route log and steps off into nothing (seed 769: off 115 at 869, 25947..26218 under 116). realFalls (promises11.ts:44) is NOT the
+  cause: with both its clauses corrected the runs stay (ruler/PUSHBACK.md). 1-1 must lay a soft zone spanning each hole, or catches
+  he cannot walk off into nothing; then seedlist 1-1, lockall, mixlist, full Checks on t-ruler. verdicts.test.ts:322's seed 323 copy
+  needs its real right bank (its slot ends at a log: no gap under earth-only lips). The full EXACT NEXT STEP: ruler/REPORT.md.
+- **Scan tool:** ruler/scan.ts reads the SAME builds (d8d6a97's tree) with both rulers: painted changes 0 (World 1 only is painted,
+  protoArt.ts:1310; only 1-1/1-2/1-3 are judged, stageTable.ts:34-38). ruler/shootAt.mjs: sideways stills pinned at a chosen x, any tree.
+
+
 ## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
 - **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
   must be null-safe for every field but platforms: B15's dressMarks read `st.collectibles` unguarded (fixed, w1Marks.ts `?? []`).
