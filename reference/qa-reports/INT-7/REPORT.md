@@ -14,7 +14,7 @@
   Checked: main = f9671e3b + 8 files (package.json 0.9.8, #ctest 1-5 in playRecorder/App/ControlTestGate, ctest tests, whatsNew, ctest-1-5.webp)
   and t-polish-5 changed none of those 8. So the true 3-way result is t-polish-5's tree + main's own delta since f9671e3b, built that way
   (read-tree + apply, all 8 applied clean; `git diff --cached origin/t-polish-5` = exactly those 8 + PLAN.md). Nothing taken wholesale blind.
-- **tsc RED on t-polish-5's own head (found, fixed, 4d2fd0fd-style docs commit):** reference/qa-reports/POLISH-5/item2/mainscan.mts imports a
+- **tsc RED on t-polish-5's own head (found, fixed in f9f670e8, docs only):** reference/qa-reports/POLISH-5/item2/mainscan.mts imports a
   scratchpad worktree that no longer exists; tsc reads reference/ and failed 6 errors. POLISH-5's gates ran on e1bb16b, BEFORE its report
   commit added the file (D53 again). Renamed to mainscan.mts.txt (POLISH-5 kept its other evidence script the same way, w1Overhang.test.ts.txt).
   tsc 0 after.
@@ -30,7 +30,7 @@
 - The full Checks: unit suite, build (BASE_PATH), chunkcheck, artcheck, knowncheck*, generality*, roadmap*, kbdcheck, registrycheck, the
   9 engine-tool tests, tierBots, drawcheck, clipcheck, buildcheck. (*the seconds-long fast gates ran on the report commit only, below.)
 - Every still and clip (step 4 of the packet). The lead has nothing to judge yet: NO test link from this head.
-## Fast gates on the report commit (docs + tools only since 4fc09159): FASTGATES_LINE
+## Fast gates on the report commit (docs + tools only since 4fc09159): tsc 0, roadmapcheck PASS (after \`git fetch --unshallow\`: it fails a shallow clone by design), knowncheck 0, generality PASS (27 literals, 27 known); logs gates/fast-*.log, 5:35 AM ET
 ## Polish check: none possible yet (no stills shot).
 ## Pushback
 - The packet's "Resolve every conflict by reading BOTH sides' intent" was right and needed more: 9 of the 10 conflicts were not real (only one
