@@ -1,0 +1,5 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-4","seed":1,"orientation":"side","view":[915,412]}
+GATE {"gate":6,"figs":3,"bough":{"x":414,"r":934,"y":1923},"vines":[474,634,874],"ledge":{"x":876,"r":1056,"y":2022}}
+PRESS {"at":[474,2082],"vyAfter":0,"dy":0,"spent":0,"offVine":false,"lifted":false}
+JUMP-NO-LIFT: a jump frame produced no lift (vy 0, no jump spent, still where it was): the clip would show a jump that never happened
+exit 3
