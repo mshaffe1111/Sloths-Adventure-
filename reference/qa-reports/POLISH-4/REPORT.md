@@ -1,11 +1,18 @@
 # POLISH-4 REPORT (t-polish-4 from t-polish-3@a9d6b1bc; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 11:36 PM ET 11-13, stopped at the 40% context line.
-**EXACT NEXT STEP:** 0. Read gates/RESULTS below: the full suite on head e215878 (merged) is the one result this report waits on.
-1. Run the rest of CLAUDE.md Checks on this head: build + chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck (alone,
-   D-note in engine-core 0n), tool tests, and RULER's own asks: `lockall` (1-1 too), mixlist, ruler/scan.ts (RULER REPORT "Then on t-ruler").
-2. R-165.206 1-4's rotten fork, NOT STARTED: w1Arc14.ts ROTTEN_FORK on t-len-14@d56cd91 (not in this base; t-int-6 REPORT step 2): the
-   middle bot jumps for an exit 240 px above. Make the creak the way UP or hide the exit till he is down; castBots before/after on one head;
-   adult Easy >= 100 s; ONE relist; 1-4 stills of the beat, upright + sideways, Normal + Easy, built setting printed (D62).
-3. R-165.209 HUD half (1-4's gate under the HUD sideways) only if time remains; NOT the square posts (ART-678, D40).
+**EXACT NEXT STEP (for POLISH-5, 1-1; the lead 12:08 AM: 1-4's rotten fork R-165.206 moved to FIX-14 with Matt's rocks/fig-gate notes):**
+0. Read RESULTS at the foot: the full suite on e215878 and the 1-2/1-3/1-5 `--check` reds (replay differs from search; verdicts refuse
+   0) with their before/after on 9b45e20 (step 1 only). If the reds come from the t-ruler merge, the root is that the ruler's search re-judges
+   World 1's openings and keeps another roll: relist each in its own order (`--merge <provenSeeds order> --in-order --count <n>`), then
+   --check, tierBots, every seed test (D29), ONLY on the lead's word (a relist moves rolls Matt has played).
+1. Rest of CLAUDE.md Checks on the head: build + chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck (alone), tool tests,
+   RULER's asks (lockall incl. 1-1, mixlist, ruler/scan.ts).
+2. 1-1 (R-165.228: harder than every stage but 1-4; fewer doubles, easier jumps; R-165.226: props over ledges/pits). What I saw in the
+   code this box (no stills shot, so nothing judged on screen): 1-1's double tests are w1.relay "(a) teach first" gaps: a double test is any
+   level gap > SINGLE_GAP (w1.relay.test.ts gapsOf/teachFirst), and Normal must lay at least one; the count per roll is the lever for
+   "fewer doubles" and that test pins the minimum, not a maximum. Its high road ends in a climb over earth holes 946-2,870 px wide (seed 769:
+   25298..27953, 28068..30938, 31047..31993) crossed on logs with catch branches under them (RULER REPORT); falls there are put-backs, so they
+   cost time, not lives. For R-165.226, w1Pits' new ruler (findOpenPits, earthLine) now knows every hole's lips: a prop check can ask
+   "does this prop's footprint stand past a lip/over a hole" from the same earthHoles() (pipeline.ts) instead of a new ruler.
 ## Done (evidence)
 - **Step 1, green the head (R-165.221):** `DropSite = 'hole-under-route'` (verdicts.types.ts), an optional `site` on every Drop and on
   gen2.falls (types.ts). pipeline.ts: softHoles' fall records carry it; dropsOf passes it to the Drop. Root: w1.relay gapsOf read EVERY
@@ -27,7 +34,7 @@
   PASS. Full unit suite: see RESULTS line below. NOT RUN (named, UNRUN): build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck,
   buildcheck, tool tests, lockall/mixlist/scan. The pre-merge suite on 9b45e20 was stopped at test 1517 with 0 failures (superseded).
 ## Polish check: no pixel changes in this work (a type field and a merged ruler that paints 0 changes, RULER scan-3.txt): no stills
-  owed for step 1-2; 1-4 stills belong to step 3 (not started). The rough spots POLISH-3 named (R-165.224) are unchanged.
+  owed for steps 1-2; step 3 (1-4) moved to FIX-14 unstarted. The rough spots POLISH-3 named (R-165.224) are unchanged.
 ## Pushback: none on the ruling. Note: the ask "full suite once after softFall11.test.ts:97's edit" is met by the merged-head run.
 ## Method, lessons, Learned
 Method: level.md, gates.md; merge in a worktree while the suite ran on the main tree. Lessons: D19 (the test reads the same Drop the
