@@ -116,22 +116,99 @@ export class FieldPlay {
     return s ? Math.max(s.top, s.under + GATE.head - HANDS_UP - h + GATE.slack) : v.topY;
   };
 
+  /** the drawn top of gate `g`'s own bough `b` at x (clamped to its span), sagged as drawGate tilts it */
+  private drawnTop(g: ClusterGate, b: Platform, sag: number, x: number): number {
+    const f = Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+    return b.y + sag * f;
+  }
+
+  /** is a body standing at (x, feet y) inside a shut gate's drawn wood: over its span (and GATE.lidSide past its ends: his body's half
+   *  width), his feet under the drawn top and his drawn head (GATE.head) over the drawn underside? */
+  private inWood(g: ClusterGate, b: Platform, sag: number, x: number, y: number): boolean {
+    if (x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) return false;
+    const top = this.drawnTop(g, b, sag, x);
+    return y > top && y - GATE.head < top + GATE.depth * b.width;
+  }
+
+  /** is he (feet at x, y) on or over a shut gate whose bough is over this field vine's top? Then the vine is not his to take: its top is
+   *  under the wood he stands on (FIX-15: walking along a shut bough, up held after a jump took the vine under it and put him through the
+   *  wood; down there would climb down through it) */
+  overShut(v: Vine, x: number, y: number): boolean {
+    for (const g of this.gates) {
+      const b = this.platforms.find((q) => q.id === g.platform);
+      if (!b || v.x < b.x - 4 || v.x > b.x + b.width + 4 || Math.abs(b.y - v.topY) > GATE.under || !gateShut(g, this.clusters)) continue;
+      if (x >= b.x - GATE.lidSide && x <= b.x + b.width + GATE.lidSide && y <= this.drawnTop(g, b, gateSag(g, this.clusters), x) + 1) return true;
+    }
+    return false;
+  }
+
+  /** kept floors for footings() (no allocation a frame) */
+  private readonly floors: Platform[] = [];
+  private readonly floorOf = new Map<number, Platform>();
+
   /**
-   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"; 11-14: "it cannot go above the platform above
-   * it... like on Pokey's head"): rising through the air under its bough (and the boughs held with it), his DRAWN head stops at the drawn
-   * underside (capY), as a head meets wood; the climb stops there too (engine.ts, the field climb). Only from below: feet already over
-   * the bough's drawn top are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it). The engine
-   * calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
+   * The shut gates' boughs as wood met from ABOVE (FIX-15, R-165.212; Matt: "a collision that doesn't open up the platform"): each at its
+   * DRAWN top under x, sagged as drawn, for the engine's floors (engine.ts, the platform collisions). A shut bough is no footing from
+   * under it (lid: his head stops at its underside) nor through its end (lid: a wall), and a body that is over it lands on the wood the
+   * player sees, never through it. Only its own drawn bough: the boughs held with it are not drawn while it is shut, so they are no
+   * footing (a floor nobody can see). Kept objects, refreshed each call.
    */
-  lid(p: PlayerState, dt: number): boolean {
-    if (p.climbing || p.vy >= 0 || !this.gates.length) return false;
+  footings(x: number): readonly Platform[] {
+    const out = this.floors;
+    out.length = 0;
+    for (const g of this.gates) {
+      if (!gateShut(g, this.clusters)) continue;
+      const b = this.platforms.find((q) => q.id === g.platform);
+      if (!b) continue;
+      let f = this.floorOf.get(b.id);
+      if (!f) this.floorOf.set(b.id, (f = { id: b.id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.style } as Platform));
+      f.x = b.x;
+      f.width = b.width;
+      f.y = this.drawnTop(g, b, gateSag(g, this.clusters), x);
+      out.push(f);
+    }
+    return out;
+  }
+
+  /**
+   * A shut gate is wood from every side, met by his DRAWN body (Matt, R-165.212: "it let me go above the platform... a collision that
+   * doesn't open up the platform"; 11-14: "it cannot go above the platform above it... like on Pokey's head"; "a head/shoulder stop so
+   * only the fruit passes"). The engine calls it once a frame, just after it moves him (engine.ts, after `p.y += p.vy * dt`), with
+   * where he was across (`x0`):
+   *   - BESIDE: a move across that would put his body into the bough's drawn wood (its span and GATE.lidSide past its ends; his feet
+   *     under the drawn top, his head over the drawn underside) is stopped at its end, as a wall stops him: he never walks, leaps or
+   *     drifts into it from the side (FIX-15: INT-8's leap from the far-end ledge went in over the sagged end). Coming across from over
+   *     its top is no wall: he is over it, and lands on it (footings).
+   *   - FROM BELOW: rising through the air under its bough (and the boughs held with it), his DRAWN head stops at the drawn underside
+   *     (capY), as a head meets wood; the climb stops there too (engine.ts, the field climb). "Under" is read against the drawn TOP: the
+   *     line falls toward the sagging end, so a leap along it would start over the line there.
+   *   - FROM ABOVE: feet over the drawn top are never pushed up or down here; coming down onto it, he lands on its drawn top (footings,
+   *     the engine's floors), never through it.
+   * The frame its last fig locks it, it is gone (torn() opens it): a sound bough, footing as any.
+   */
+  lid(p: PlayerState, dt: number, x0: number = p.x): boolean {
+    if (p.climbing || !this.gates.length) return false;
     const was = p.y - p.vy * dt;
+    if (x0 !== p.x)
+      for (const g of this.gates) {
+        if (!gateShut(g, this.clusters)) continue;
+        const b = this.platforms.find((q) => q.id === g.platform);
+        if (!b) continue;
+        const sag = gateSag(g, this.clusters);
+        // (the move across put him in, where the move up or down alone did not: the end of the wood, a wall)
+        if (!this.inWood(g, b, sag, p.x, p.y) || this.inWood(g, b, sag, x0, p.y)) continue;
+        const L = b.x - GATE.lidSide, R = b.x + b.width + GATE.lidSide;
+        p.x = x0 < L ? L - 0.01 : x0 > R ? R + 0.01 : x0;
+        p.vx = 0;
+        return true;
+      }
+    if (p.vy >= 0) return false;
     const s = this.shutBoughAt(p.x, was);
     if (!s) return false;
-    // (under the wood is read against the bough's drawn TOP, not the line: the line falls toward the sagging end, so a leap along the
-    // bough toward it starts over the line there and would slip past a from-the-line test: 0.9.8's feet rule had the same hole)
     const line = s.under + GATE.head;
-    if (was > s.top && p.y < line) {
+    // (started under it: his feet under the drawn top by more than GATE.stand, the slope a frame's walk climbs along a sagged bough; a
+    // jump off the bough's own top, walking up its slope, starts ON it, never under it: read as under, he was put down through the wood)
+    if (was > s.top + GATE.stand && p.y < line) {
       p.y = line;
       p.vy = 0;
       return true;
