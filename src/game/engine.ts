@@ -138,7 +138,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
+import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -621,6 +621,9 @@ export class GameEngine {
   /** a piece's focus this step (PieceHost.focus: a threat coming at him kept in view; cleared before the pieces step, so it holds only
    *  while a piece asks), and whether the view is still easing back from one (its way back is held to CAM_RISE_STEP a frame too) */
   private camFocus: Box | null = null;
+  /** the stage's hurt floors (pit 'hurt'), for the swing's view over a hollow (hurtFocus), and the platform list they were read off */
+  private hurtFloors: Platform[] = [];
+  private hurtOf: Platform[] | null = null;
   private camFocused = false;
   private camLookX: number = CAM.lookAhead;
   /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
@@ -1791,6 +1794,12 @@ export class GameEngine {
     // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
     this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
+    // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
+    if (!this.camFocus && this.player.isVineSwinging) {
+      if (this.hurtOf !== this.platforms) { this.hurtOf = this.platforms; this.hurtFloors = this.platforms.filter((pl) => pl.pit === 'hurt'); }
+      if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
+    }
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken || plat.ride) continue;
       if (plat.lift) {

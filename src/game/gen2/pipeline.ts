@@ -18,7 +18,7 @@ import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
 import { STAGE_ART_FRAMES } from '../stageArtData.ts';
-import { doubleAllowed, gripsOf, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
+import { chainLines, doubleAllowed, gripsOf, heldLandings, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
@@ -29,7 +29,7 @@ import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -243,7 +243,7 @@ export const VINE = {
  * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
  * back as it was after).
  */
-export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty): number {
+export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty, held = false): number {
   const was = { ...TIMED };
   setTimedSwing(difficulty === 'easy');
   try {
@@ -253,12 +253,41 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // as he presses, at the swing camera's full ease on the narrowest gate phone (cameraFollow.ts SWING_SEEN; R-165.225, Matt 11-14:
     // "shorter swings" that fit upright). Dial-free lianas (Worlds 6-8's) are as they were)
     // (of a long landing, the part the camera shows whole: cameraFollow.ts perchBox)
-    const seen = swing.grip ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
+    // (and so is the last liana of a chain, `held`: linked by the engine's press (levelCheck heldLandings), not the plain check's ~370 px,
+    // its band runs past the view: ENG-S5's upright still showed its LONG perch off screen as he pressed)
+    const seen = swing.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
   } finally {
     Object.assign(TIMED, was);
   }
 }
+
+/**
+ * A chain's release window (s; ENG-S5, 1-6 beat 4 "The chain"): of ONE swing on liana A, how long a press to let go toward B, the next
+ * liana (no perch between), puts his hands on B as it swings, B at the phase the stage gives it (physics chainPhase, as swingSetup sets
+ * it), the worse of the holds A's grip dial names; a press counts only if B's WHOLE swing (its anchor's x plus its foot's reach, the far
+ * side) is within SWING_SEEN of him as he presses (the swing camera leads with it: cameraFollow.ts landingAhead). The engine's own press
+ * (physics chainWindow, pressWindow) on this difficulty's swing (setTimedSwing, put back as it was after).
+ */
+export function chainRelease(a: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sa: LianaSwing, b: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sb: LianaSwing, difficulty: Difficulty): number {
+  const was = { ...TIMED };
+  setTimedSwing(difficulty === 'easy');
+  try {
+    const A: SwingVine = { x: a.x, topY: a.topY, bottomY: a.bottomY, swingAmp: sa.amp, swingPeriod: sa.period, swingPhase: 0 };
+    const B0: SwingVine = { x: b.x, topY: b.topY, bottomY: b.bottomY, swingAmp: sb.amp, swingPeriod: sb.period };
+    const B = { ...B0, swingPhase: chainPhase(A, B0) };
+    const far = B.x + swingReach(B);
+    return chainWindow(A, B, LETGO_FLIGHTS, gripsOf(sa.grip, a.bottomY - a.topY), (px) => far <= px + SWING_SEEN) / 1000;
+  } finally {
+    Object.assign(TIMED, was);
+  }
+}
+/** the swing two neighbouring lianas `dx` apart may keep, each (radians, at most `amp`): half the clear space between them, as
+ *  physics.ts swingSetup sizes a liana beside another, so their swings never meet (swingClearance) */
+export const chainAmp = (dx: number, len: number, amp: number): number => {
+  const room = (dx - SWING_CLEAR.body - SWING_CLEAR.margin) / 2;
+  return room <= 0 ? 0 : Math.min(amp, Math.asin(Math.min(1, room / Math.max(1, len))));
+};
 
 /**
  * The widest gap levelCheck joins by a jump to a ledge `dyUp` px higher (negative: lower), on stage `world`-`stage`: a jump, a double
@@ -282,15 +311,19 @@ const RELEASE_CACHE = new Map<string, number>();
  * swing starts from. A liana with a grip dial is checked at its hold, with the double if `dbl` (the stage allows it: levelCheck
  * flightLandings), as the window is.
  */
-export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal', dbl = false): [number, number] | null {
+export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal', dbl = false, held = false): [number, number] | null {
   const window = (x: number) => {
-    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
+    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty, held ? 'held' : ''].join(',');
     let r = RELEASE_CACHE.get(key);
-    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty)));
+    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty, held)));
     return r;
   };
   const near: Platform = { id: -1, x: from.x, y: from.y, width: from.w, height: 90, type: 'solid' };
-  const linked = (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6;
+  // (`held`: the last liana of a chain, caught off the one before it, never off `from`: the walk's own link from a held liana, levelCheck
+  // heldLandings, at the swing it is laid with)
+  const linked = held
+    ? (x: number) => (heldLandings({ id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: swing.amp, swingPeriod: swing.period, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6
+    : (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6;
   let lo = -1;
   let hi = -1;
   for (let x = R(Math.max(v.x + 40, min)); x <= v.x + 900; x += 20) {
@@ -1270,6 +1303,65 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y;
       // (`free`: the rope is a try-it, never the way: a soft pit with the plain steps out the far side, to walk down and through)
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, ...(pl.free ? { soft: true, shallow: true } : { back: { lips: [a.y, y] as [number, number] }, ...(pl.soft ? { soft: true } : {}) }) });
+    } else if (pl.kind === 'swing' && ref(pl.after).hang?.kind === 'liana') {
+      // a CHAIN (ENG-S5, 1-6 beat 4 "The chain"): a liana caught off the liana `after`, no perch or pit between (the gap under the whole
+      // chain is its last perch's, `land`). Its anchor `top` over the ledge the chain left, its swing rolled as any liana's; its anchor where
+      // a press on `after` (from the holds `after`'s grip dial names) catches it with a window of LIANA.window or more on this setting
+      // (chainRelease: its whole swing in view as he presses) and the walk links the two (levelCheck chainLines), at `share` of that band.
+      // The two keep half the clear space between them each (chainAmp, swingSetup's rule: `after`'s swing is narrowed to it, and the link
+      // before `after`, if it is itself caught off a liana, is flown again at that swing), and at least half the engine's swing each, so
+      // "the next always coming" is a swing he times, never a vine hanging still
+      const A = ref(pl.after);
+      if (pc.shape !== 'liana') throw new Error(`gen2 section ${tpl.id}: ${pc.key} swings, so its shape is 'liana'`);
+      let root = A;
+      while (root.hang?.kind === 'liana') root = ref(root.hang.from!);
+      const top = root.y - roll(rng, pl.top ?? LIANA.top);
+      const swing: LianaSwing = { amp: Math.min(VINE.amp, roll(rng, pl.amp ?? VINE.amp)), period: roll(rng, pl.period ?? VINE.period[budget.difficulty]), ...(pl.grip ? { grip: pl.grip } : {}) };
+      const share = shareFor(pl.share);
+      h = Math.min(root.y + 30, top + (pl.len ? roll(rng, pl.len) : LIANA.len)) - top;
+      const sA = A.hang!.swing!;
+      const Z = A.hang!.from ? ref(A.hang!.from) : undefined;
+      const zLiana = Z?.hang?.kind === 'liana' ? Z : undefined;
+      const need = LIANA.window[budget.difficulty];
+      const vineOf = (p: { x: number; y: number; h: number }, sw: LianaSwing, id: number): Vine => ({ id, x: p.x, topY: p.y, bottomY: p.y + p.h, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: sw.amp, swingPeriod: sw.period, ...(sw.grip ? { grip: sw.grip } : {}) });
+      const fits = (dx: number): { ampA: number; ampB: number; win: number } | null => {
+        const ampA = chainAmp(dx, A.h, sA.amp), ampB = chainAmp(dx, h, swing.amp);
+        if (ampA < VINE.amp / 2 || ampB < VINE.amp / 2 || Math.abs(top - A.y) >= CHAIN.dTop) return null;
+        const swA = { ...sA, amp: ampA }, swB = { ...swing, amp: ampB }, Bp = { x: A.x + dx, y: top, h };
+        const win = chainRelease({ x: A.x, topY: A.y, bottomY: A.y + A.h }, swA, { x: Bp.x, topY: top, bottomY: top + h }, swB, budget.difficulty);
+        if (win < need) return null;
+        // (the walk's link, at the swings the stage will give them: swingSetup puts B chainPhase ahead of A)
+        const vA = vineOf(A, swA, -1), vB = vineOf(Bp, swB, -2);
+        vB.swingPhase = chainPhase(vA, vB);
+        vA.swingPhase = 0;
+        if (chainLines(vA, vB, dblOK) < 6) return null;
+        if (zLiana) {
+          const sZ = zLiana.hang!.swing!;
+          if (chainRelease({ x: zLiana.x, topY: zLiana.y, bottomY: zLiana.y + zLiana.h }, sZ, { x: A.x, topY: A.y, bottomY: A.y + A.h }, swA, budget.difficulty) < need) return null;
+          const vZ = vineOf(zLiana, sZ, -3);
+          vZ.swingPhase = 0;
+          const vA2 = { ...vA, swingPhase: chainPhase(vZ, vA) };
+          if (chainLines(vZ, vA2, dblOK) < 6) return null;
+        }
+        return { ampA, ampB, win };
+      };
+      let lo = -1, hi = -1;
+      for (let dx = 160; dx < CHAIN.dx; dx += 20) {
+        if (fits(dx)) {
+          if (lo < 0) lo = dx;
+          hi = dx;
+        } else if (lo >= 0) break;
+      }
+      if (lo < 0) throw new Error(`gen2 section ${tpl.id}: no anchor for ${pc.key} past the liana ${pl.after} leaves a chain window of ${need} s with its whole swing in view, both swinging`);
+      let at = R(lo + share * (hi - lo));
+      let got = fits(at);
+      if (!got) got = fits((at = lo))!;
+      sA.amp = got.ampA;
+      swing.amp = got.ampB;
+      x = A.x + at;
+      y = top;
+      w = 0;
+      hang = { kind: 'liana', swing, from: pl.after, window: got.win, gap: [A.x, x] };
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -1288,13 +1380,16 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a perch past a liana: its near end in the band a release of LIANA.window or more lands on (lianaBand), `share` along it
       const lv = ref(pl.after);
       if (lv.hang?.kind !== 'liana') throw new Error(`gen2 section ${tpl.id}: ${pc.key} lands from ${pl.after}, which is not a liana`);
-      const a = ref(lv.hang.from!);
+      // (the last liana of a chain, ENG-S5: caught off the one before it; the perch is laid from the ledge the chain left)
+      let a = ref(lv.hang.from!);
+      const held = a.hang?.kind === 'liana';
+      while (a.hang?.kind === 'liana') a = ref(a.hang.from!);
       const dy0 = pl.dy === undefined ? 0 : roll(rng, pl.dy);
       const share = shareFor(pl.share);
       const need = Math.max(LIANA.window[budget.difficulty], pl.window?.[budget.difficulty] ?? 0);
       // (Easy's landing pad widens the perch once it is placed (below): a dialled liana's perch is flown at the width it will have, for
       // its far end must be in view as he presses (SWING_SEEN). A dial-free liana's window never looks at the width)
-      const padW = lv.hang.swing!.grip ? budget.landingPad : 0;
+      const padW = lv.hang.swing!.grip || held ? budget.landingPad : 0;
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
@@ -1316,7 +1411,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       let dy = dy0;
       for (const d of [...new Set([0, -40, 40, -80, 80, -120, -160].map((o) => dy0 + o).concat([dy0 / 2, -120, -80, -40, 0]))]) {
         for (const extra of [0, 100, 200, 400]) {
-          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra + padW, need, minFor(d), budget.difficulty, dblOK);
+          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra + padW, need, minFor(d), budget.difficulty, dblOK, held);
           if (band) {
             dy = d;
             w += extra;
@@ -1329,10 +1424,12 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
       // (a dialled perch's window is its far end's (SWING_SEEN): recorded at the whole px the piece is laid at)
-      const at = lv.hang.swing!.grip ? { x: R(x), y: R(y), w: R(w + padW) } : { x, y, w };
-      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, at, budget.difficulty);
+      const at = lv.hang.swing!.grip || held ? { x: R(x), y: R(y), w: R(w + padW) } : { x, y, w };
+      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, at, budget.difficulty, held);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
+      // (`hurt`, ENG-S5: Normal's gap is a hollow with the world's hurt floor, no steps out; Easy keeps the soft pit and its stair back)
+      const hurt = !!pl.hurt && !pl.water && budget.difficulty !== 'easy';
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: true, ...(hurt ? { hurt: true } : { back: { lips: [a.y, y] as [number, number] } }), ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);

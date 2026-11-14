@@ -846,6 +846,22 @@ export function pressWindow(
   return worst;
 }
 
+/**
+ * ms of ONE swing on A (the liana he holds) in which a press to let go toward B, the next liana of a chain to the right, puts his hands
+ * on B as it swings (canGrabSwing at the vines' clock, B at its own phase: the stage's, swingSetup's chainPhase): the chain's catch, by
+ * the engine's own press (pressWindow: the sweet spot, a beat early or late, the let-go `flights`) from A's `grips` (undefined: its own
+ * two low holds). `seen`: as pressWindow's (gen2 counts a press only when B's whole swing is in view as he presses). ENG-S5, 1-6 beat 4.
+ */
+export function chainWindow(
+  A: SwingVine,
+  B: SwingVine,
+  flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
+  grips?: readonly number[],
+  seen?: (x: number, y: number) => boolean,
+): number {
+  return pressWindow(A, (c, t) => canGrabSwing(c.x, c.y, B, t), flights, grips, seen);
+}
+
 const chainCache = new Map<string, number>();
 /**
  * How far ahead in its swing (a share of a period) the next liana of a chain swings: the offset that gives the widest moment in A's swing

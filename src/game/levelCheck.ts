@@ -29,6 +29,8 @@ import {
   TAKEOFF_SLACK,
   airStep,
   canGrabSwing,
+  chainWindow,
+  isChain,
   flightReach,
   maxDropReach,
   reachBounce,
@@ -45,6 +47,7 @@ import {
   swingSetup,
   swingStep,
   timedLaunch,
+  TIMED,
   type AirBody,
 } from './physics.ts';
 
@@ -190,26 +193,38 @@ const gripFlights = (dbl: boolean) => (dbl ? LETGO_FLIGHTS : LETGO_FLIGHTS.filte
  * (A flight is asked about each platform in its own right: one that crosses a higher ledge's top on its way to a lower one counts for
  * both.)
  */
-function gripLandings(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean): Map<number, number> {
-  const out = new Map<number, number>();
+/** does a running jump off `a`'s edge (the way `dir`) catch liana `v`, as the plain check and the grip dial's catch it (a jump timed for it)? */
+function lianaCaught(a: Platform, v: Vine, dir: 1 | -1, waterY: number): boolean {
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
   const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
-  let caught = false;
-  for (let s = 0; s <= 90 && !caught; s += 15) {
+  for (let s = 0; s <= 90; s += 15) {
     b.x = edge - dir * s; b.y = a.y; b.vx = dir * PHYS.maxRun; b.vy = -PHYS.jumpV;
-    for (let i = 0; i < 90 && !caught; i++) {
+    for (let i = 0; i < 90; i++) {
       airStep(b, dt, dir, false);
       if (b.y > waterY + 40) break;
-      if (canGrabSwing(b.x, b.y, v) && Math.abs(b.vx) > 25) caught = true;
+      if (canGrabSwing(b.x, b.y, v) && Math.abs(b.vx) > 25) return true;
     }
   }
-  if (!caught) return out;
+  return false;
+}
+function gripLandings(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean): Map<number, number> {
+  return lianaCaught(a, v, dir, waterY) ? heldLandingsIn(v, dir, pack, waterY, dbl, a.id) : new Map();
+}
+
+/**
+ * The platforms he lands on from a liana he already HOLDS (caught off another liana: a chain, ENG-S5), climbing to the holds its grip dial
+ * names (undefined: pressWindow's own two low holds) and letting go as the engine plays a press (pressWindow, the let-go flights, the
+ * double where `dbl`): lines per platform, as gripLandings counts them (6 lines is a 200 ms window). `skip`: a platform left out.
+ */
+function heldLandingsIn(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean, skip?: number): Map<number, number> {
+  const out = new Map<number, number>();
+  const dt = SIM_DTS[0];
   // (pressWindow lets go toward +x: the other way, the platforms are mirrored about the vine)
   const grips = gripsOf(v.grip, v.bottomY - v.topY);
   const flights = gripFlights(dbl);
   for (let q = 0; q < pack.n; q++) {
-    if (pack.id[q] === a.id) continue;
+    if (pack.id[q] === skip) continue;
     const top = pack.y[q], lx = pack.lx[q], rx = pack.rx[q];
     const ms = pressWindow(v, (c, _t, prevY) => {
       const x = dir === 1 ? c.x : 2 * v.x - c.x;
@@ -220,6 +235,37 @@ function gripLandings(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, wate
   }
   return out;
 }
+/** heldLandingsIn, kept by everything a flight reads (the vine, the way, the water, the pack, the setting's swing), as swingLandingsIn */
+function heldCached(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean): Map<number, number> {
+  const key = `held|${JSON.stringify(v)}|${dir}|${waterY}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}|${pack.n}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.id.join(',')}`;
+  const hit = FLIGHTS.get(key);
+  if (hit) return new Map(hit);
+  const out = heldLandingsIn(v, dir, pack, waterY, dbl);
+  if (FLIGHTS.size >= FLIGHTS_MAX) FLIGHTS.clear();
+  FLIGHTS.set(key, new Map(out));
+  return out;
+}
+/** heldLandingsIn over a stage's platforms (gen2 lianaBand links a chain's last liana to its perch by it, the walk's own check) */
+export function heldLandings(v: Vine, dir: 1 | -1, platforms: Platform[], waterY: number, dbl = false): Map<number, number> {
+  return heldLandingsIn(v, dir, landingPack(v, platforms), waterY, dbl);
+}
+/**
+ * A chain's catch (ENG-S5, 1-6 beat 4 "The chain"): the lines (frames of one swing, 6 = 200 ms) in which a press on liana A, from the
+ * holds its grip dial names, puts his hands on B, the next liana, as it swings (physics chainWindow: the engine's press, B at the phase
+ * the stage gives it). Both at the swings the stage gives them (swingSetup). The double where `dbl`.
+ */
+export function chainLines(A: Vine, B: Vine, dbl = false): number {
+  // (pure: by everything the flight reads, the vines' swings and the setting's swing numbers, as physics chainPhase caches)
+  const sw = (v: Vine) => `${v.x},${v.topY},${v.bottomY},${v.swingAmp},${v.swingPeriod},${v.swingPhase},${v.grip ?? ''}`;
+  const key = `${sw(A)}|${sw(B)}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
+  const hit = CHAINS.get(key);
+  if (hit !== undefined) return hit;
+  const lines = Math.round(chainWindow(A, B, gripFlights(dbl), gripsOf(A.grip, A.bottomY - A.topY)) / (SIM_DTS[0] * 1000));
+  if (CHAINS.size >= FLIGHTS_MAX) CHAINS.clear();
+  CHAINS.set(key, lines);
+  return lines;
+}
+const CHAINS = new Map<string, number>();
 
 /**
  * The platforms a flight from one liana can come down on, as flat number arrays sorted by height, so a falling body only looks at
@@ -726,6 +772,32 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
             }
           }
         }
+      }
+    }
+
+    // 3a. liana to liana (ENG-S5, 1-6 beat 4 "The chain"; physics.ts isChain, chainPhase): a liana caught off the one before it, no
+    // perch between. Each liana of a chain is a node of its own: a ledge -> A where a running jump catches A (the plain catch), A -> B
+    // where a press on A catches B (chainLines, 6 lines or more), and B -> a platform where a press from B's holds lands him (heldLandings).
+    // Only lianas that chain are nodes; every other liana keeps step 3's ledge -> ledge flight alone. Only on a stage gen2 built (as
+    // roofedDrop): a stage the old generator built keeps the walk it is locked with (lockall: 1-6, 2-1, 2-3, 2-4, 2-7, 3-1..3-3, 3-5..3-9
+    // and 4-4 hang lianas within a chain's reach, and their pickups and flags, laid on the walk's reach, would move)
+    const lianas = gen2Built ? sized.filter((v) => v.vineType === 'swing_liana') : [];
+    const chained = new Set<Vine>();
+    for (const A of lianas) for (const B of lianas) {
+      if (A === B || !isChain(A, B) || chainLines(A, B, allowDouble) < 6) continue;
+      link(vid(A), vid(B));
+      chained.add(A).add(B);
+      usedSwing.add(A.id).add(B.id);
+      swingEdges++;
+    }
+    for (const v of chained) {
+      for (const a of plats) {
+        if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
+        if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520 && lianaCaught(a, v, 1, waterY)) link(`p${a.id}`, vid(v));
+        if (a.x >= v.x - 40 && a.x - v.x < 520 && lianaCaught(a, v, -1, waterY)) link(`p${a.id}`, vid(v));
+      }
+      for (const dir of [1, -1] as const) {
+        for (const [id, lines] of heldCached(v, dir, landingPack(v, plats), waterY, allowDouble)) if (lines >= 6) link(vid(v), `p${id}`);
       }
     }
 
