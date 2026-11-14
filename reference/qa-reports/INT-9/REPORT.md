@@ -35,6 +35,8 @@ Integrator, Opus 5.5 xhigh. Started 3:03 PM ET 11-14. Lead session_01FhBbYNzGRJB
 - castBots 1-4, seeds 1-12, both settings (castbots-1-4.txt): every pass count equals FIX-15b's branch run: kid 9/12 N 10/12 E, adult
   12/12 both, child 2/12 N 4/12 E, middle 6/12 N 7/12 E, expert 7/12 N. Only failing runs moved: child Normal median 343.5 -> 237 s
   (hits 21 -> 18), middle Normal hits 22 -> 26.
+- castBots 1-7, seeds 1-12, both settings (castbots-1-7.txt): 108/108 hold: kid, adult, child, middle 12/12 both; expert 12/12 N (BUILD-17b:
+  107/108, kid Normal seed 3 rescued once at beat 10). Kid Normal takes 92 hits, 2 lives over 12 runs (the eagle's dives at a fast walker).
 
 ## BUILD-17's ENGINE LINES, reviewed line by line (xhigh)
 - sweepPose.ts:45 SNAG_PERCH 56: PASS. Equals w17Art.ts SNAG_PERCH_DRAWN = (snagB.foot 880 - perch 712) x 1/3 = 56; eaglePerch.test pins it.
