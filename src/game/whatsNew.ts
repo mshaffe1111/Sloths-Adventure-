@@ -20,6 +20,18 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.9.8',
+    date: '2026-11-13',
+    title: 'Two new stages',
+    items: [
+      'New stage, Up the Kapok: I climb a whole field of vines to the top of the giant tree.',
+      'Fig bunches block my way up. I push them free from below, and the bough lifts.',
+      'New stage, Where She Walked: high road or low road, her marks show me where she went.',
+      'Creaky limbs drop me, but only down to the roots.',
+      'My paws catch vines more smoothly now, and every stage starts faster.',
+    ],
+  },
+  {
     version: '0.9.7',
     date: '2026-11-13',
     title: 'Petals and snakes, rebuilt',

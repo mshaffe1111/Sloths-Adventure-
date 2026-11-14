@@ -761,7 +761,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
-  // the testers' stage (#ctest): playRecorder.ts CTEST_LEVEL_ID (1-4 tonight, 1-3 if 1-4 is not ready: R-165.157; 1-1 from 11-06), as Play builds it,
+  // the testers' stage (#ctest): playRecorder.ts CTEST_LEVEL_ID (1-5 from 0.9.8, 1-3 before: R-165.157; 1-1 from 11-06), as Play builds it,
   // its own goal, a fresh roll of its proven list each run on the tester's own setting (stageGenerator.ts: provenSeedFor by the layout)
   const ctestLevel = (): LevelConfig | null => allLevels.find((l) => l.id === CTEST_LEVEL_ID) ?? null;
   const ctestDraw = () => {

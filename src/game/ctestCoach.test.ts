@@ -1,5 +1,5 @@
 /**
- * R-165.157: the testers' link (#ctest) plays playRecorder.ts CTEST_LEVEL_ID (1-4, or 1-3), so a brand-new tester starts there, not on 1-1. The
+ * R-165.157: the testers' link (#ctest) plays playRecorder.ts CTEST_LEVEL_ID (1-5, Matt 11-13 8:48 PM ET), so a brand-new tester starts there, not on 1-1. The
  * first-play coach (touchCoach.ts: slide to run, slide up to jump) was 1-1's alone, so a new tester there got no coaching at all.
  * Planted: with coachWanted's old rule (1-1 only) the #ctest case is false and this fails.
  */
@@ -23,8 +23,8 @@ function freshPhone(hash: string) {
   loc.location.hash = hash;
 }
 
-test("the testers' stage is one of the stages Matt named (1-4 tonight, 1-3 if 1-4 is not ready), and it builds and plays", () => {
-  assert.ok(['1-4', '1-3'].includes(CTEST_LEVEL_ID), CTEST_LEVEL_ID);
+test("the testers' stage is the one Matt named (1-5, Where She Walked: 11-13 8:48 PM ET), and it builds and plays", () => {
+  assert.equal(CTEST_LEVEL_ID, '1-5');
   for (const setting of ['normal', 'easy'] as const) {
     setDifficulty(setting);
     const r = new RealPlay(CTEST_LEVEL_ID, 1);

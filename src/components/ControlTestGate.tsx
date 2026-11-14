@@ -104,14 +104,24 @@ export interface CtestPage {
 const RUN: CtestMove = { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' };
 const JUMP: CtestMove = { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' };
 /**
- * Each stage the testers' link can name (playRecorder.ts CTEST_LEVEL_ID: 1-4, the vine-field climb, Matt 11-13 12:02 PM ET; 1-3 if 1-4 is
- * not ready). The cards' words are the story keeper's (t-story@57ce5589), each checked against the built controls (FIX-B REPORT).
+ * Each stage the testers' link can name (playRecorder.ts CTEST_LEVEL_ID: 1-5, Where She Walked, Matt 11-13 8:48 PM ET). The cards' words
+ * are the story keeper's (t-story@57ce5589; 1-5's through the lead, REL-098), each checked against the built controls (FIX-B REPORT).
  */
+const CLIMB: CtestMove = { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' };
 export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
+  '1-5': {
+    alt: 'Pokey on a row of creaky limbs over the roots, a petal on each',
+    moves: [
+      RUN,
+      JUMP,
+      CLIMB,
+      { frame: 'fall_a', name: 'Creaky limbs', how: 'They give way under you, but only down to the roots.' },
+    ],
+  },
   '1-4': {
     alt: 'Pokey climbing a curtain of vines up a giant kapok tree',
     moves: [
-      { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' },
+      CLIMB,
       { frame: 'hang_b', name: 'Two hands', how: 'Slide toward the next vine to hold both. Two hands climb faster.' },
       { frame: 'climb_6', name: 'Push the figs', how: 'Climb up under a fig bunch to push it free. The branch lifts.' },
       { frame: 'swing_grip', name: 'Heads up', how: 'A creak above means a pod is coming. Move over a vine.' },
