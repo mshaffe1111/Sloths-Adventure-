@@ -7,6 +7,7 @@
  * Then it walks the graph from the spawn point and checks the exit, the checkpoints,
  * and the quota items are all reachable.
  */
+import { withSetting } from './settingDials.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
@@ -496,7 +497,8 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
   if (!builtOnArcs(stage)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
-  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
+  // (on its own setting's dials too, the swing its lianas are flown on: settingDials.ts, R-165.251)
+  return withSetting(d, () => validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) }));
 }
 
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {

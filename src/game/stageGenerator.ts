@@ -1,3 +1,4 @@
+import { dialsKey, withSetting } from './settingDials.ts';
 import { pairPetals } from './vineField.ts';
 import { specFor } from './mixer/stages.ts';
 import { petalPass } from './petalPass.ts';
@@ -2805,7 +2806,9 @@ let lastAccepted: { key: string; ids: number[] } | null = null;
 
 /** the attempt number for a random layout of this stage: the first one from this variant's range that passes the validator */
 export function variantAttemptFor(config: LevelConfig, variant: number, maxAttempts = 14): number {
-  const key = `${config.id}#${variant}`;
+  // (by the setting's dials too, settingDials.ts: the validator flies the lianas on them, so Easy's pick is Easy's even when Normal's
+  // was found first in this process, as a phone that switched setting or a tool building both had it; R-165.251)
+  const key = `${config.id}#${variant}#${dialsKey()}`;
   const hit = variantAttempt.get(key);
   if (hit !== undefined) return hit;
   let found = -1;
@@ -2861,7 +2864,15 @@ export function buildAhead(config: LevelConfig, seed: number, difficulty: Diffic
 /** what is built ahead (tests) */
 export const aheadKeys = (): string[] => [...ahead.keys()];
 
+/**
+ * Every stage is built on its own setting's dials (settingDials.ts, R-165.251: the swing, which every flight off a liana reads), whoever
+ * builds it: the engine (which set them already), the map's build-ahead (which had built on whatever the last run left) and every tool
+ * and test (which had built Easy on Normal's). The caller's dials are put back after.
+ */
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
+  return withSetting(difficulty, () => generateStageOn(config, difficulty));
+}
+function generateStageOn(config: LevelConfig, difficulty: Difficulty): GeneratedStage {
   if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
     const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
     const got = ahead.get(k);
@@ -2931,9 +2942,11 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
     // not a shipped level (or the seed table is stale): find a good layout now
-    attempt = known.get(config.id) ?? findValidAttempt(config).attempt;
+    // (kept by the setting's dials too, as variantAttemptFor)
+    const kk = `${config.id}#${dialsKey()}`;
+    attempt = known.get(kk) ?? findValidAttempt(config).attempt;
     if (attempt < 0) attempt = 0;
-    known.set(config.id, attempt);
+    known.set(kk, attempt);
   }
   if (layoutVariant !== null && config.objectiveType !== 'boss_lair' && !config.secret && config.id !== SECRET_GATE_LEVEL) {
     const a = variantAttemptFor(config, layoutVariant);

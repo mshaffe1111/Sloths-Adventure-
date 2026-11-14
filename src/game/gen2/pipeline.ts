@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { withSetting } from '../settingDials.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -29,7 +30,7 @@ import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -240,13 +241,11 @@ export const VINE = {
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
  * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf), and with a dial only the presses that see the
  * whole perch (SWING_SEEN). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
- * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
- * back as it was after).
+ * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (settingDials.ts
+ * withSetting, put back as it was after).
  */
 export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty, held = false): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
     const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
     // (a liana laid by its grip dial (World 1's rows) is laid by what he SEES: a press counts only if the perch's far end is in the view
@@ -257,9 +256,7 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // its band runs past the view: ENG-S5's upright still showed its LONG perch off screen as he pressed)
     const seen = swing.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 
 /**
@@ -267,20 +264,16 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
  * liana (no perch between), puts his hands on B as it swings, B at the phase the stage gives it (physics chainPhase, as swingSetup sets
  * it), the worse of the holds A's grip dial names; a press counts only if B's WHOLE swing (its anchor's x plus its foot's reach, the far
  * side) is within SWING_SEEN of him as he presses (the swing camera leads with it: cameraFollow.ts landingAhead). The engine's own press
- * (physics chainWindow, pressWindow) on this difficulty's swing (setTimedSwing, put back as it was after).
+ * (physics chainWindow, pressWindow) on this difficulty's swing (settingDials.ts withSetting, put back after).
  */
 export function chainRelease(a: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sa: LianaSwing, b: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sb: LianaSwing, difficulty: Difficulty): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A: SwingVine = { x: a.x, topY: a.topY, bottomY: a.bottomY, swingAmp: sa.amp, swingPeriod: sa.period, swingPhase: 0 };
     const B0: SwingVine = { x: b.x, topY: b.topY, bottomY: b.bottomY, swingAmp: sb.amp, swingPeriod: sb.period };
     const B = { ...B0, swingPhase: chainPhase(A, B0) };
     const far = B.x + swingReach(B);
     return chainWindow(A, B, LETGO_FLIGHTS, gripsOf(sa.grip, a.bottomY - a.topY), (px) => far <= px + SWING_SEEN) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 /** the swing two neighbouring lianas `dx` apart may keep, each (radians, at most `amp`): half the clear space between them, as
  *  physics.ts swingSetup sizes a liana beside another, so their swings never meet (swingClearance) */
@@ -4233,7 +4226,11 @@ export function rollUnmet(st: Gen2Stage, req: BuildRequest): Unmet[] {
   });
 }
 
+/** buildGen2Stage on the request's own setting's dials (settingDials.ts, R-165.251), the caller's put back after: a tool's build is the phone's */
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildGen2StageOn(req));
+}
+function buildGen2StageOn(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
   const pool = stagePool(M0, req.config.id);
