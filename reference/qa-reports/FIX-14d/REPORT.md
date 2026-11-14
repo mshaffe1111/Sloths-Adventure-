@@ -38,4 +38,4 @@
 ## Lessons applied: D57 (queue read at each push), D59, D64 (about 190k tokens of 1M, 19%), D40 (built on 14c's tower turn, nothing replaces it).
 ## Learned: trace the bot's frames (FT_FRAMES=t0,t1) before believing a stuck x: "fell back down at x 1036" is the route point, not where
   he fell. Run tower.test.ts/towerBots.test.ts right after any towerJoin change (I ran them 15 min late).
-## Turnover note: not rewritten (cut at the pause); this REPORT is the handoff. Scratch tools (FT trace, geometry dumps) were not committed.
+## Turnover note: not rewritten (cut at the pause); this REPORT is the handoff. Scratch tools (FT trace, geometry dumps, counts) are in scratch/ (they import ../../src paths from tools/scratch14d: move them back there to run).
