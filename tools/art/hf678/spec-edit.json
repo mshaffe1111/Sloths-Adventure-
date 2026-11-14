@@ -1,0 +1,57 @@
+{
+ "tag": "edit678",
+ "edits": [
+  {
+   "name": "harpy-ahead",
+   "src": "gh:6ae5e17c6295b2880eda267f0ae73871aee758c4:reference/art/hf678/starts/harpy-walkB.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The eagle stands perched upright and still, wings folded tight at its sides, gripping with both feet, head level, looking straight ahead to the right, alert. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, extra head, branch, perch, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "harpy-down",
+   "src": "gh:6ae5e17c6295b2880eda267f0ae73871aee758c4:reference/art/hf678/starts/harpy-walkB.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The eagle stands perched upright, wings folded, and bends its head down low, looking straight down at the ground below its feet, eyes wide and watchful. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, extra head, branch, perch, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "harpy-turn",
+   "src": "gh:6ae5e17c6295b2880eda267f0ae73871aee758c4:reference/art/hf678/starts/harpy-walkB.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The eagle stands perched upright, wings folded, and has turned its head right round to face us, looking straight out of the picture at us with both big eyes. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, extra head, branch, perch, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "harpy-blink",
+   "src": "gh:6ae5e17c6295b2880eda267f0ae73871aee758c4:reference/art/hf678/starts/harpy-walkB.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The eagle stands perched upright, wings folded, head level facing right, its eyes shut in a slow sleepy blink. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, extra head, branch, perch, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  }
+ ]
+}
