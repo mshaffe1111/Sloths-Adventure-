@@ -8,13 +8,13 @@ for (const id of ids.split(',')) {
   await ctx.addInitScript(() => { try { localStorage.setItem('sloth_difficulty', 'normal'); } catch {} });
   const p = await ctx.newPage();
   await p.goto(`http://127.0.0.1:${port}/?lessons=off`); await p.waitForTimeout(2500);
-  await p.evaluate((id) => window.__play(id, 0), id);
+  await p.evaluate(([id, k]) => { window.__cpIndex = k; window.__play(id, 0); }, [id, Number(process.env.CP ?? 0)]);
   await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
   await p.waitForTimeout(5000);
   const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
   const info = await p.evaluate((E) => {
     const e = eval(E); e.isPaused = true;
-    const cp = (e.currentStage.checkpoints ?? []).filter((c) => !c.reached)[0];
+    const cp = (e.currentStage.checkpoints ?? []).filter((c) => !c.reached)[Number(window.__cpIndex ?? 0)];
     Object.assign(e.player, { x: cp.x - 110, y: cp.y, vx: 0, vy: 0, climbing: false, grounded: true });
     for (let i = 0; i < 60; i++) e.update(1 / 30);
     cp.reached = false; e.render();
