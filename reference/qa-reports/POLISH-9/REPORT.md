@@ -2,24 +2,34 @@
 POLISH-9 (5:28-5:32 AM ET) stopped on the lead's pause; POLISH-9b (7:58 AM ET on) resumed at 182bb680. Opus 5.5 high.
 Context at report: about 22% of 1M (my estimate; D64).
 
-## VERDICT: **NOT GREEN: 16 tests went red from the graph ruling's change.** They pin RAW (unlisted) 1-1 seeds, whose B/C rolls are now A/D
-rolls. The listed game, every gate and the list itself are green. The final suite on 660df344: 3,387 tests, 3,369 pass, 16 fail, 2 todo
-(gates/g-unit-fails.txt, g-unit-fail-files.txt). buildcheck ALONE is UNRUN. The box ran over by 50 min, so I stopped for the lead's call.
+## VERDICT: __FINAL__
 
-## EXACT NEXT STEP (the lead's call first; my recommendation is (A))
-**(A) Retarget the 16, about 45-60 min.** Each needs a real retarget, not a number swap. By file:
-- **helpLadder11 (5), helpLadderCadence (4), softFall11 (2 + its plant):** pinned to raw seed 982's w1-log-chain-rise, which 982 no longer
-  lays (it rolled B/C before). Retarget to a LISTED layout that holds w1-log-chain-rise on each setting, found from the list, not copied.
-- **proven.test, seedList.test ("no seed of 200 fails its build: the planted case is gone"):** with B/C off, 1-1's raw rolls nearly all
-  build clean. The plant needs a failing build made on purpose. One option: the 1-1 kit with refuseGraphs removed (exactly the old
-  rolls, so the old failing seeds fail again). Or a seed range that still fails.
-- **landingRepair.test ("no roll was repaired: the repair never ran"):** the same cause. Find fresh rolls that need the repair, or plant one
-  with the old kit as above.
-- **levelCheckRoof (raw 118786):** find a raw seed whose road runs over a log, as the test describes.
-- Then the full suite again, then buildcheck ALONE.
+## EXACT NEXT STEP (the lead)
+Merge t-polish-9 into the integration head, then run the full CLAUDE.md checks there before link #2.
+R-165.235 (sprint-B and -C back on 1-1 with non-double combine pieces) is the next 1-1 content job.
 
-**(B) Revert 660df344's graph change and relist B.** This puts back 163 seeds and the one deal red, and leaves the deal to R-165.235.
-I'd not take it: the deal rule is right, and A/D-only is your ruling.
+## The 16 retargets for the A/D-only ruling (the lead's (A), 10:18 AM; dab5f6ea and the commit before it)
+Each keeps its test's intent, with the reason written in the test. Seeds are found from the list or by search, never copied.
+- **helpLadder11 (5) and helpLadderCadence (4):** the ladder's flight bed moves from raw 982's w1-log-chain-rise to the first run's
+  w1-last-step-up.
+  - Why: 982 left the list at POLISH-7's relist, so the tests had been flying a raw search's stage.
+  - No listed layout has a log over a gap that both sets him back and grows steps on both settings (swept: the first 60 listed layouts).
+  - w1-last-step-up's 60 px hole does both, on both settings.
+  - The take-off and landing are read from the ladder's own walking surface (helpLadder.ts skyline).
+  - The move line Dot must say once is the engine's own reading (engine.ts pieceMove); she said the double on w1-log-chain, the single here.
+  - Steps grown: at least 1 (this rise takes 1-2; the old one took 3+).
+  - Once grown, the step catches him over the hole, so no put-back is left at the piece. putBack says so instead of forcing a fall.
+- **softFall11 (3):**
+  - The sweep runs on the first run plus the list's first two others.
+  - The no-word plant runs on the first run.
+  - The rising-gap walk-off is the first run's w1-last-step-up hole, read from the same skyline.
+- **proven.test and seedList.test:** "a seed whose build fails" is planted on 1-1's kit as it rolled before the ruling (refuseGraphs
+  removed: exactly the old rolls). Today nearly every raw 1-1 roll builds clean, which is the deal fix working.
+- **landingRepair.test:** walks fresh seeds from 50001 to the first roll the repair cleared, checking every clean roll on the way.
+  Refused rolls are skipped; they are never played. Today 2 in 120 need the repair.
+- **levelCheckRoof:** the roofed-log plant goes on the first listed layout whose end road runs on 250 px and more over the spot.
+- **Observation for the Designer, not changed:** w1-log-chain says `needs: ['jump']`, but the ladder reads a join a single can't make
+  and names the double there.
 
 ## The deal red, closed (the lead's ruling, 9:31 AM; 660df344); it opened the 16 above
 - **The red: yield.test "the deal", 52 of 200 graphs.** Since CUT_11_DOUBLES, 1-1's pool has no section for the combine job, and
