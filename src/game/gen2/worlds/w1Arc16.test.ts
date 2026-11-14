@@ -30,12 +30,12 @@ const ofSection = (st: Built, tpl: string) => {
   return st.vines.filter((v) => v.tag?.startsWith(`${uid}:`));
 };
 
-test('1-6: the arc beat for beat on every roll, both settings (1-6.md "The arc", less the chain): arrive, first liana, hang low, snakes met, snake on your vine, creaky landing, risers, false liana, gorge, far bank; a rest between the hard ones', () => {
+test('1-6: the arc beat for beat on every roll, both settings (1-6.md "The arc"): arrive, first liana, hang low, the chain, snakes met, snake on your vine, creaky landing, risers, false liana, gorge, far bank; a rest between the hard ones', () => {
   for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
     const st = built(seed, d);
-    assert.deepEqual(beats(st), ['arrival', 'first-liana', 'hang-low', 'snakes-met', 'snake-on-vine', 'creaky-landing', 'risers', 'false-liana', 'gorge', 'far-bank'], `${d} seed ${seed}`);
+    assert.deepEqual(beats(st), ['arrival', 'first-liana', 'hang-low', 'chain', 'snakes-met', 'snake-on-vine', 'creaky-landing', 'risers', 'false-liana', 'gorge', 'far-bank'], `${d} seed ${seed}`);
     const all = st.gen2.sections.map((s) => s.template.replace('w1-16-', ''));
-    for (const hard of ['snake-on-vine', 'creaky-landing', 'risers', 'false-liana', 'gorge']) assert.ok(all[all.indexOf(hard) - 1].startsWith('rest-') || hard === 'snake-on-vine', `${d} seed ${seed}: no rest before ${hard}`);
+    for (const hard of ['chain', 'snake-on-vine', 'creaky-landing', 'risers', 'false-liana', 'gorge']) assert.ok(all[all.indexOf(hard) - 1].startsWith('rest-') || hard === 'snake-on-vine', `${d} seed ${seed}: no rest before ${hard}`);
     assert.deepEqual((st as { gen2: { errors?: string[] } }).gen2.errors ?? [], [], `${d} seed ${seed}`);
   }
 });

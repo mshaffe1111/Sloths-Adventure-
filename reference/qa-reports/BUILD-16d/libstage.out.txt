@@ -1,0 +1,7 @@
+1-6: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 24 of 24 (100%), thrown 0; 23 distinct beat orders; graphs lianas-16-arc 24
+   cast (no cast) 24; creatures per clean roll none; seconds 259.4-264.7; width 47454-48628 px
+== easy: CLEAN 24 of 24 (100%), thrown 0; 23 distinct beat orders; graphs lianas-16-arc 24
+   cast (no cast) 24; creatures per clean roll none; seconds 257.8-263.7; width 46354-47479 px
+clean on BOTH settings: 24 of 24 seeds (first: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+pool sections never laid: none

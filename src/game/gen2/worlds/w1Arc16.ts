@@ -22,7 +22,8 @@
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { Difficulty } from '../types.ts';
 import { w1World } from './w1.ts';
-import { W1_LIANA_GAP, w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
+import { W1_LIANA_GAP, w1Chain, w1Liana, w1Perch, withSwing, type LianaGap } from './w1Swing.ts';
+import { ROOM_12, THORN_ROW } from './w1Arc12.ts';
 import { laySnakes, type SnakeStage, type SnakeTable } from '../snakeLay.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
@@ -33,13 +34,13 @@ type R2 = [number, number];
  *  graph keeps one teach a move: 1-6.md's second T is the swing's first practise), R, M vine snakes met safely (a flow node: one brick
  *  serves it, so the deal keeps the beats in the design's order), X a snake on your vine, R, C the creaky landing, R, W the risers, R, S
  *  the false liana, R, L the gorge, E the far bank */
-export const ARC_16: Record<string, string> = { 'lianas-16-arc': 'A T P R M X R C R W R S R L E' };
+export const ARC_16: Record<string, string> = { 'lianas-16-arc': 'A T Pc R Pr R M X R C R W R S R L E' };
 /** 1-6's brief, all of it data: it teaches the swing; its snakes are laid by its finish (tagged pieces) */
 export const BRIEF_16: GraphBrief = {
   // (the deal is the arc's own, one type a brick, under V11 (no type on over 40% of the content nodes, never two neighbours alike but a
   //  teach and its practise): climb the first liana and hang low, hazard the snakes met and the risers, rope (the lianas' own type) the
   //  snake on your vine and the gorge, crumble the creaky landing: 2, 2, 2 and 1 of the seven (S is never content)
-  ends: 'finale', trend: 'level', branching: 'none', teaches: ['swing'], deal: { climb: 29, hazard: 29, rope: 28, crumble: 14 }, dealExact: true,
+  ends: 'finale', trend: 'level', branching: 'none', teaches: ['swing'], deal: { climb: 25, hazard: 25, rope: 37, crumble: 13 }, dealExact: true,
   tags: true,
   // (no petal arcs over the gaps (pipeline.ts's jump arcs): over a LIANA gap they hang on a jump's curve, not the swing's, so a swing
   //  that is played right passes them; the bots missed 21-35 petals a run there and met the sealed door on every seed (BUILD-16b, 11-14).
@@ -94,7 +95,7 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): So
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
 /** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; maxPerStage?: number; versions: V[]; uses?: string[] }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; maxPerStage?: number; versions: V[]; uses?: string[]; /** a lesson the stage only RE-shows (1-2's thorns, as 1-5's brick): it still uses the swing */ reshows?: string }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
@@ -102,8 +103,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
-  const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_16], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['swing']), terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  const { versions: _v, uses, reshows, ...rest } = o;
+  return { ...rest, ...(reshows ? { teaches: reshows } : {}), feel: [STAGE_16], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['swing']), terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -258,10 +259,47 @@ function gorge(easy: boolean): Lay {
   };
 }
 
+/** [P, rope] beat 4, the chain (Jungle Hunt's distances; ENG-S5's row, w1Swing.ts w1ChainSection, laid by its recipe): lianas caught
+ *  liana to liana with no perch between (the engine's press on A catching B, physics.ts chainWindow), the last one's LONG leap onto a
+ *  narrow perch (120-140 px, the leap's whole perch in view as he presses: lianaRelease `held`). The gap under each chain is a thorn
+ *  hollow on Normal (the kit's hurtFloor, THORN_ROW, as 1-2's) and the soft moss pit with its stair back on Easy (the perch's `hurt`).
+ *  Normal: two lianas, root hops, then three (1-6.md "Two lianas, then three": SHORT, LONG; SHORT, SHORT, LONG). Easy: the two (one
+ *  chain a beat, the lead's ruling 11-14: Easy lays the fewest lianas a beat can be; a chain is two) */
+function chain(easy: boolean): Lay {
+  // (`show`: the take-off bank the thorns are first seen from, the lesson's showing piece (pipeline hurtMeta): no hollow starts before its
+  //  end, promises11 hazard.untaught; 1-2 taught the thorns, this re-shows them as 1-5's brick does)
+  const pieces: SectionPiece[] = [bank('a', null, 200), bank('show', 'a', 300)];
+  const run = (k: string, from: string, gaps: LianaGap[]): string => {
+    const keys = gaps.map((_, i) => `${k}l${i + 1}`);
+    keys.forEach((key, i) => pieces.push(i === 0 ? w1Liana(key, from, gaps[0]) : w1Chain(key, keys[i - 1], gaps[i - 1], gaps[i])));
+    // (its perch a moss-stone bank, as ENG-S5's row: the thorn bed is painted lip to lip only between banks, w1Pits.ts findW1Pits)
+    const b = `${k}b`;
+    pieces.push({ ...w1Perch(b, keys[keys.length - 1], gaps[gaps.length - 1], [120, 140], { hurt: true }), shape: 'bank', style: 'moss_stone' });
+    return b;
+  };
+  const b1 = run('c', 'show', ['short', 'long']);
+  const h1 = hops('h', b1, easy ? 4 : 2);
+  pieces.push(...h1.pieces);
+  let last = h1.last;
+  const perches = [b1];
+  if (!easy) {
+    pieces.push(bank('m', last, 280, DOWN));
+    const b2 = run('d', 'm', ['short', 'short', 'long']);
+    perches.push(b2);
+    const h2 = hops('k', b2, 2);
+    pieces.push(...h2.pieces);
+    last = h2.last;
+  }
+  pieces.push(bank('z', last, 240, DOWN));
+  // (a narrow perch holds ONE petal, where the leap sets him down; the take-off banks and the root tops hold the rest)
+  return { pieces, sockets: [petals('pa', 'show', 0.5, 1), ...perches.map((b, i) => petals(`pb${i}`, b, 0.6, 1)), petals('ph', 'hu1', LANDED, 1, 60), ...(easy ? [] : [petals('pm', 'm', 0.5, 1), petals('pk', 'ku1', LANDED, 1, 60)]), petals('pz', 'z', 0.5, 2, 120)] };
+}
+
 /** THE ARC'S BRICKS (1-6.md), one job each: the graph's letter in brackets */
 export const BEATS_16: SectionTemplate[] = [
   brick({ id: 'w1-16-first-liana', name: 'the first liana: it carries you', jobs: ['teach'], content: 'climb', teaches: 'swing', difficulty: 2, maxPerStage: 1, versions: [{ id: 'short', lay: firstLiana() }] }),
   brick({ id: 'w1-16-hang-low', name: 'hang low: lower goes further', jobs: ['practise'], content: 'climb', difficulty: 3, maxPerStage: 1, versions: [{ id: 'long-long', lay: hangLow(false), easy: hangLow(true) }] }),
+  brick({ id: 'w1-16-chain', name: 'the chain: liana to liana, over thorns', jobs: ['practise'], content: 'rope', difficulty: 5, maxPerStage: 1, reshows: THORN_ROW.lesson, versions: [{ id: 'two-then-three', lay: chain(false), easy: chain(true) }] }),
   brick({ id: 'w1-16-snakes-met', name: 'vine snakes met safely: they only pass', jobs: ['flow'], content: 'hazard', difficulty: 3, maxPerStage: 1, versions: [{ id: 'pass-and-back', lay: snakesMet(false), easy: snakesMet(true) }] }),
   brick({ id: 'w1-16-snake-on-vine', name: 'a snake on your vine: slide down ahead of it', jobs: ['test'], content: 'rope', difficulty: 6, maxPerStage: 1, versions: [{ id: 'far', lay: snakeOnYourVine(false), easy: snakeOnYourVine(true) }] }),
   brick({ id: 'w1-16-creaky-landing', name: 'the creaky landing: don\'t stop', jobs: ['combine'], content: 'crumble', difficulty: 5, maxPerStage: 1, uses: ['swing', 'creak'], versions: [{ id: 'limb', lay: creakyLanding(false), easy: creakyLanding(true) }] }),
@@ -294,6 +332,8 @@ export const QUIET_16: SectionTemplate[] = [
     id: j ? 'wide' : 'narrow',
     lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m[0], DOWN), bank('c', 'm', 220, UP), bank('z', 'c', 300, DOWN)], sockets: [flag('m', 0.5), petals('pc', 'c', 0.5, 1)] },
   })) }),
+  // (the sixth rest, for beat 4's chain + R (1-6.md): up two roots and down again, a flag on the top one's far side)
+  link({ id: 'w1-16-rest-steps', name: 'a rest: up the root steps and down', job: 'rest', versions: [{ id: 'steps', lay: { pieces: [bank('a', null, 280), bank('b', 'a', 240, UP), bank('c', 'b', 300, UP), bank('d', 'c', 320, DOWN), bank('z', 'd', 260, DOWN)], sockets: [flag('d', 0.5), petals('pc', 'c', LANDED, 1, 60), petals('pd', 'd', 0.3, 1)] } }] }),
   link({ id: 'w1-16-rest-stumps', name: 'a rest: two stumps to hop', job: 'rest', versions: [{ id: 'stumps', lay: { pieces: [bank('a', null, 260), bank('m', 'a', 760), { key: 's1', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.15, 0.16], h: [50, 56] }, style: 'moss_stone', landing: true }, { key: 's2', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.62, 0.63], h: [50, 56] }, style: 'moss_stone', landing: true }, bank('z1', 'm', 200, UP), bank('z', 'z1', 240, DOWN)], sockets: [flag('m', 0.4), petals('ps1', 's1', 0.5, 1), petals('ps2', 's2', 0.5, 1)] } }] }),
 ];
 /** [E] the far bank: the totem */
@@ -346,6 +386,9 @@ export function kitLib16(): WorldKit {
     sections: SECTIONS_16,
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5' },
     required: {},
+    // (beat 4's thorn hollows under the chains: 1-2's hurt floor row, and the room under the floor line for its depth, as 1-5's kit)
+    hurtFloor: THORN_ROW,
+    corridor: { ...M.corridor, bottom: M.ground.y + ROOM_12 },
     tips: { ...M.tips, ...LINES_16 },
     // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
     teachTips: [...(M.teachTips ?? []), ...(Object.keys(LINES_16) as Array<keyof typeof LINES_16>)],
