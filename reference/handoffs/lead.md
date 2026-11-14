@@ -107,10 +107,10 @@ ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-
 **Members running** (report to the session on this file's top line):
 | Member | Session | Branch | Job (report-by time: the new lead sets one for each at step 4 if the packet has none) |
 |---|---|---|---|
-| INT-9b | session_01FhBbYM3Z4oAdZ4pK6nJewd | t-int-9@b288b3fa (xhigh) | phase A: every gate on link #3's head (GREEN gates link #3); phase B: 1-6 from ENG-16G -> link #4 |
+| INT-9b | session_01FhBbYM3Z4oAdZ4pK6nJewd | t-int-9@b288b3fa (xhigh) | phase A: every gate on link #3's head; one red ruled 5:33 (8-3 lock re-pinned to the bank rule, banks 42/43 13.5 px deeper only); report by 6:00 PM ET; phase B: 1-6 from ENG-16G -> link #4 |
 | ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16 from 68e4bce1 (xhigh, started 5:29 PM) | finish 1-6 (ENG-16G.md); report by 7:30 PM ET |
-| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (ENG-B5.md) |
-| TOOLS-1 | session_01FhBbYLQTt1zZAbKfuX1h89 | t-tools-1 (from t-int-9, xhigh) | meter double-count, castBots leak, clipcheck flake (TOOLS-1.md) |
+| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (ENG-B5.md); 48% real at 5:32 (over box): REPORT + EXACT NEXT STEP for BUILD-18 only; report by 6:00 PM ET; its 8 clips (nut hop, fruit pass) to judge by frame |
+| TOOLS-1 | session_01FhBbYLQTt1zZAbKfuX1h89 | t-tools-1 (from t-int-9, xhigh) | meter double-count, castBots leak, clipcheck flake (TOOLS-1.md); 37% at 5:32; report by 6:15 PM ET |
 Story keeper (standing): session_01FhBbYMCa3JXWmyQicbmxuu. Retired today, costs in LEVEL-LOG.md: BUILD-16..16d, BUILD-17/17b, INT-8, INT-9,
 ENG-S5, ENG-E2, ENG-16E, ENG-16F ($41.43, ran to 54%: over the box), FIX-15/15b, TIPS, POLISH-9b/10, ENG-B4, KEEPER-17/17b, CRITIC-PERSONA.
 **Turnover (Matt, 5:25 PM ET):** with link #3 (~6 PM) the outgoing lead sends Matt the persona (reference/roles/LEAD-PERSONA.md; paste
