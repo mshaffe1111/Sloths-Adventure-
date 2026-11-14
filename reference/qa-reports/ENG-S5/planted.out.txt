@@ -1,0 +1,5 @@
+walk: # pass 3 # fail 1  not ok 2 - built: a three-liana chain with no perch between is laid, and the stage's own l;
+lay: # pass 2 # fail 2  not ok 2 - built: a three-liana chain with no perch between is laid, and the stage's own l;not ok 3 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World ;
+seen: # pass 4 # fail 0  
+camera: # pass 3 # fail 1  not ok 4 - upright on a swing, the view leads with the next liana's WHOLE swing (to its fo;
+easy: # pass 3 # fail 1  not ok 3 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World ;

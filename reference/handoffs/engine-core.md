@@ -4,9 +4,31 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0y. Liana to liana: chains (ENG-S5, 1-6 beat 4 "The chain", t-eng-s5, 11-14): what the next engineer must know
+- ONE measure, the engine's press: physics.ts `chainWindow(A, B, flights, grips, seen)` = pressWindow on A hitting canGrabSwing on B at
+  B's own phase (the stage's: swingSetup puts a chain's next liana `chainPhase` ahead). gen2 `chainRelease` (pipeline.ts, beside
+  lianaRelease) sizes the lay: this setting's swing (setTimedSwing), LETGO_FLIGHTS (the double counted, as lianaRelease), A's grip
+  dial holds, and a press counts only with B's WHOLE swing (B.x + its foot's reach) within SWING_SEEN of him as he presses.
+- The walk (levelCheck 3a): on a gen2-built stage only (the `gen2Built` gate, as roofedDrop), each chain pair (isChain) whose
+  `chainLines` (the same press, the stage's double rule) is 6+ lines becomes vine nodes: ledge -> A (lianaCaught, the plain catch),
+  A -> B, B -> platform (`heldLandings`: pressWindow from his holds, no ledge catch). Old-generator stages are NOT given it: 14 of them
+  (1-6, 2-1, 2-3, 2-4, 2-7, 3-1..3-3, 3-5..3-9, 4-4) hang lianas within a chain's reach and their pickups and flags moved (lockall).
+- gen2: a `swing` whose `after` is a liana is a chain liana: `top` over the chain's FIRST ledge, its anchor at `share` of the band of
+  spacings (160..CHAIN.dx, 20 px steps, first contiguous run) where chainRelease >= LIANA.window and chainLines >= 6; both lianas keep
+  `chainAmp` (half the clear space each, swingSetup's rule; the earlier liana's amp is NARROWED in place and the link before it re-flown)
+  and at least VINE.amp / 2 each. A `land` after a chain liana lays from the chain's first ledge and links by heldLandings; `hurt` on
+  the land gives Normal the hurt hollow (no steps out) and Easy the soft pit with its stair back.
+- Rows: w1Swing.ts `w1Chain`, `w1ChainSection(id, gaps, difficulty, perchW)`, `W1_CHAIN_SECTIONS` (chain2: SHORT, LONG; chain3: SHORT,
+  SHORT, LONG). The kit lists them with withSwing and World 1's hurt floor row (THORN_ROW). Laid: dx 244-260 px, amps 0.24-0.26.
+- The swing camera (cameraFollow.ts landingAhead, upright `whole`): a liana ahead that swings is led with `lianaBox` (its anchor to its
+  foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional).
+- Shoot: reference/qa-reports/ENG-S5/shoot.mjs (lays the row with gen2 on the page and sets it into 1-6's start; the engine's start-time
+  lists drawnVines / plainVines / swingVines / drawPlats must be refreshed after any runtime edit, or the new lianas are not drawn;
+  input goes through key events: a write to input.state.jumpPressed is cleared by the press buffer).
 
 ## 0x. The level's top in the snake verdict, the snake lay, a liana's length (ENG-S4, t-eng-s4, 11-14): what the next engineer must know
 - The view the verdicts judge is the engine's: cameraFollow.ts `usualZoom` IS applyZoom's base zoom (engine.ts calls it), and
@@ -22,7 +44,7 @@ proven plan; Play is never blocked).
   throws on snakeFaults. NODE letter n (key later; dials route incl. still = false liana). Brown catalog rows: a rows file
   (reference/art/catalog-rows-eng-s4.csv), appended to the master after t-art-678b's rows at integration.
 - The swing rule takes `len` (rolled only when set: no shipped roll moves); w1Liana's 4th argument.
-- OPEN: chains (REPORT EXACT NEXT STEP 1); the false liana's drawn length (its liana's length: 410 px draws 4.6x Pokey).
+- OPEN: the false liana's drawn length (chains: done in 0y, ENG-S5) (its liana's length: 410 px draws 4.6x Pokey).
 - Shoot: reference/qa-reports/ENG-S4/shoot.mjs (LOWER=<px> hangs the liana lower at runtime, TRIP=<s>, CLIP=1; labels print the
   level's top, view top, band, clear view, widening, the verdict on that phone, lives lost). Never edit src/ while it runs (vite reloads).
 

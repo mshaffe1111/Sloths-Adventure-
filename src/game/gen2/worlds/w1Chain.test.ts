@@ -15,6 +15,7 @@ import { w1World } from './w1.ts';
 import { w6Kit } from './w6.ts';
 import { THORN_ROW } from './w1Arc12.ts';
 import { W1_CHAIN_SECTIONS, withSwing } from './w1Swing.ts';
+import { findW1Pits } from '../../w1Pits.ts';
 
 const liana = (id: number, x: number, o: Partial<Vine> = {}): Vine =>
   ({ id, x, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0.3, swingPeriod: 2.85, ...o });
@@ -155,4 +156,25 @@ test('upright on a swing, the view leads with the next liana\'s WHOLE swing (to 
   // a still climb (no swing) and sideways (not `whole`) keep the old lip
   assert.ok(landingAhead(0, 1, hang, [], [{ ...next, swingAmp: undefined }], true)!.x1 <= 300);
   assert.ok(landingAhead(0, 1, hang, [], [next], false)!.x1 <= 300);
+});
+
+test('built: World 1\'s chain row over a PAINTED thorn hollow on Normal (banks reach down to its floor, w1Pits finds it lip to lip), Easy\'s soft moss pit', () => {
+  // (off a 24 px bough the hollow had no lips and the thorn bed was never painted: a plain block under the chain, ENG-S5's pits probe)
+  const t = { ...W1_CHAIN_SECTIONS[1], archetypes: 'any' as const, weight: 8 };
+  const world: WorldKit = withSwing({ ...toyKit, manifest: { ...toyManifest, pit: 'soft', hurtFloor: THORN_ROW, sections: [...toyManifest.sections, t] } });
+  let built = 0;
+  for (const d of ['normal', 'easy'] as const) {
+    for (let seed = 1; seed <= 2; seed++) {
+      const st = buildGen2Stage({ config: toyCfg('5-7', 'stealth'), kit: world, seed, difficulty: d });
+      assert.deepEqual(validateStage(st).errors, [], `${d} seed ${seed}`);
+      for (const s of st.gen2.sections.filter((x) => x.template === t.id)) {
+        const ls = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x >= s.x0 && v.x <= s.x1).sort((a, b) => a.x - b.x);
+        const hurt = findW1Pits(st.platforms).filter((g) => g.kind === 'hurt' && g.x0 <= ls[0].x && g.x1 >= ls[ls.length - 1].x);
+        if (d === 'normal') assert.equal(hurt.length, 1, `${d} seed ${seed} ${s.uid}: no painted thorn hollow under the chain`);
+        else assert.equal(hurt.length, 0, `${d} seed ${seed} ${s.uid}: Easy lays thorns under the chain`);
+        built++;
+      }
+    }
+  }
+  assert.ok(built > 0, 'no seed laid the chain row: the test proves nothing');
 });

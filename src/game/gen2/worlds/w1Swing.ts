@@ -79,9 +79,12 @@ export function w1ChainSection(id: string, gaps: LianaGap[], difficulty: number,
   const keys = gaps.map((_, i) => `l${i + 1}`);
   const lianas = keys.map((k, i) => (i === 0 ? w1Liana(k, 'a', gaps[0]) : w1Chain(k, keys[i - 1], gaps[i - 1], gaps[i])));
   const last = keys[keys.length - 1];
+  // (its two ends are moss-stone BANKS, as 1-2's thorn hollows (w1Arc12.ts): the hollow is painted lip to lip only where banks reach down
+  // to its floor (w1Pits.ts findW1Pits); off a 24 px bough the thorn bed is never painted, a plain block instead (ENG-S5 pits probe))
+  const bank = (pc: SectionPiece): SectionPiece => ({ ...pc, shape: 'bank', style: 'moss_stone' });
   return {
     id, name: `${gaps.length} lianas, liana to liana: ${gaps.map((g) => g.toUpperCase()).join(', ')} over thorns`, archetypes: ['vine_runner'], phases: ['sho', 'ten', 'ketsu'], difficulty,
-    pieces: [bough('a', { kind: 'start' }, [260, 300]), ...lianas, w1Perch('b', last, gaps[gaps.length - 1], perchW, { hurt: true })],
+    pieces: [bank(bough('a', { kind: 'start' }, [260, 300])), ...lianas, bank(w1Perch('b', last, gaps[gaps.length - 1], perchW, { hurt: true }))],
     entry: { piece: 'a', kind: 'ledge' }, exit: { piece: 'b', kind: 'ledge' }, exitDy: 0,
     sockets: [petals('pa', 'a', 0.4), petals('pb', 'b', 0.5, 2)], mirrorable: false,
   };
