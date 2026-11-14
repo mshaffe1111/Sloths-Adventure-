@@ -19,6 +19,9 @@ procedurally. Expectations and what not to do vs to do." This card is that. The 
   audited by the Critic afterwards.
 - Merge or push to main (only Matt merges to main). You may merge Critic-passed task branches into the release candidate branch.
 - Run two builders whose WRITE files overlap at the same time.
+- Let a level builder write engine or shared code (Matt, 11-14: "the engine is global... We shouldn't have builders doing engine
+  work"; D70). Builders change their level's data and tag ENGINE-WORTHY findings; an engine member (xhigh) fixes them for every
+  stage, re-checks every earlier stage the fix moves, and ships them together (level.md rule 22).
 
 ## 2. Knowledge pack (every start and every compression; about 20 minutes)
 reference/handoffs/lead.md first (its "Start here" steps), then this card, PARTNER.md, LEADER-STANDARD-WORK.md, LAWS.md, LESSONS.md,
