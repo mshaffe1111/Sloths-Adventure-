@@ -1,0 +1,15 @@
+B2 contrast (contrast.mjs, the game canvas, front 142 px behind = full warning, Normal). dE = CIE76 mean vs the unwarned frame.
+Band A = 0-9% of the width (the edge), B = 20-31% (B2 rim). Bar set BEFORE measuring: dE >= 20 in A or B on every backdrop; B >= 15 on the darkest.
+stage  orient    backdropY | B1 dE A / B   | B2 dE A / B   | B2 lum ratio A | bar
+1-2    sideways  0.176     |  21.8 / 5.6   |  30.2 / 16.7  | 3.05           | PASS
+1-2    upright   0.164     |  15.9 / 4.1   |  23.4 / 12    | 2.6            | PASS
+2-1    sideways  0.121     |  16.6 / 4.7   |  25.7 / 12.3  | 2.37           | PASS
+2-1    upright   0.099     |  11.8 / 3     |  18.2 / 10.2  | 2.02           | FAIL
+3-1    sideways  0.025     |  14.3 / 3.1   |  13.4 / 16.7  | 1.3            | FAIL
+3-1    upright   0.013     |  10.9 / 2.1   |   8.5 / 12    | 1.13           | FAIL
+3-2    sideways  0.04      |  17.2 / 4.4   |  22.9 / 18.2  | 1.46           | PASS
+3-2    upright   0.023     |  15.2 / 3.3   |  18.2 / 14.4  | 1.24           | FAIL
+3-4    sideways  0.034     |  15.9 / 3.6   |  16.3 / 17.3  | 1.47           | FAIL
+3-4    upright   0.043     |  14.5 / 2.9   |  16.7 / 12.7  | 1.5            | FAIL
+3-9    sideways  0.027     |  13.6 / 3.1   |  11.4 / 16.7  | 1.25           | FAIL
+3-9    upright   0.012     |  11.6 / 2.2   |   9.3 / 12.4  | 1.15           | FAIL

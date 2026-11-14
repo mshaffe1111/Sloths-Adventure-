@@ -1,7 +1,7 @@
 // B2: the chase piece on screen, judged on CLIPS (D63), from a RealPlay.bare-equivalent world in the real page (world.mjs), never a
 // hand-mixed scene. Per setting and orientation: stills (the crack opening under him, a section mid-collapse with debris, the fork
 // both ways) and a 6 s clip (the front closes to ~60 px, he runs off and pulls away). The camera is the shooter's, framed by the front
-// (camera.x = max(front - 0.4 vw, him - 0.8 vw): at the packet's 0.25 the halves of a broken section fell out of frame at once (B2 trial): the chase camera is B6's); every frame's caption is what the game BUILT (D62).
+// (camera.x = max(front - 0.4 vw, him - 0.6 vw): at the packet's 0.25 the halves of a broken section fell out of frame at once (B2 trial): the chase camera is B6's); every frame's caption is what the game BUILT (D62).
 //   PORT=5199 node reference/qa-reports/B2/shoot.mjs <out dir> <stage> [normal,easy] [upright,sideways] [stills,clip]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,13 +16,25 @@ const b = await chromium.launch();
 
 /** the long-branch sheet loaded, as builtStageKeys 'props3' gets it in behind the card for a stage that lays a chase */
 async function warm(p) {
+  // (through the game's own draw: a module imported here by its plain address can be a second copy of the game's once Vite has
+  // reloaded it, B2's first clip; a fresh dev server and the game's own render ask the game's copy)
+  await p.evaluate((E) => eval(E).render(), E);
   await p.evaluate(async () => (await import('/src/game/protoArt.ts')).warmProto3());
   await p.waitForFunction(async () => {
     const a = await import('/src/game/atlasLoader.ts');
     const u = (await import('/src/game/protoArt.ts')).PROTO3_URL;
     return !a.pendingSheets().includes(u);
   }, null, { timeout: 15000, polling: 200 }).catch(() => console.log('props3 NOT READY'));
-  await p.waitForTimeout(400);
+  await p.waitForTimeout(1500);
+}
+
+/** a held line of Dot's is tapped away, as he would (Easy's petal reminder came up over every Easy shot, B2's first set); true if one was */
+async function tapDot(p) {
+  const loc = p.getByText(/Tap here when you/).first();
+  if (!(await loc.count())) return false;
+  await loc.click({ timeout: 1500 }).catch(() => {});
+  await p.waitForTimeout(350);
+  return true;
 }
 
 /** place him (no piece runs while he settles), start the pieces again, and optionally set the first front (a scene setup) */
@@ -57,7 +69,7 @@ const FRAME = `(() => {
   const vw = e.camera.viewportWidth / (e.zoom || 1);
   const fronts = pc ? pc.run.fronts.filter((f) => f.active) : [];
   const near = fronts.filter((f) => f.front <= e.player.x).sort((a, b) => b.front - a.front)[0] ?? fronts[0];
-  if (near && window.__b2frame !== 'fork') e.camera.x = e.camera.targetX = Math.max(near.front - 0.4 * vw, e.player.x - 0.8 * vw);
+  if (near && window.__b2frame !== 'fork') e.camera.x = e.camera.targetX = Math.max(near.front - 0.4 * vw, e.player.x - 0.6 * vw);
   if (window.__b2frame === 'fork') e.camera.x = e.camera.targetX = window.__b2forkCam;
   e.render();
   return { gap: near ? Math.round(e.player.x - near.front) : null, debris: pc ? pc.debris.length : 0, hp: e.player.hp, t: +window.__b2t.toFixed(2), x: Math.round(e.player.x), easy: e.easy, vw: Math.round(vw) };
@@ -90,6 +102,7 @@ for (const setting of sets.split(',')) {
           s = await p.evaluate(FRAME);
           if (stop(s)) break;
         }
+        await tapDot(p);
         await caption(p, cap(id, built, tag, w, h, name, s));
         await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
         const file = path.join(out, `${id}-${setting}-${name.split(' ')[0]}-${tag}.jpg`);
@@ -108,6 +121,7 @@ for (const setting of sets.split(',')) {
         let s;
         for (let i = 0; i < Math.round(30 * (easyRow ? 1.9 : 1.4)); i++) s = await p.evaluate(FRAME);
         await p.evaluate(() => { window.__b2frame = ''; });
+        await tapDot(p);
         await caption(p, cap(id, built, tag, w, h, `${name} (front stopped at the fork)`, s));
         await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
         const file = path.join(out, `${id}-${setting}-${name}-${tag}.jpg`);
@@ -117,43 +131,41 @@ for (const setting of sets.split(',')) {
       await ctx.close();
     }
     if (what.includes('clip')) {
-      const vdir = path.join(out, 'raw');
-      const { ctx, p } = await openStage(b, { id, setting, w, h, video: vdir });
-      const t0 = p.__t0;
+      // (frame by frame: one engine step, one screenshot, 30 a second of game time, put together at 30 fps; Playwright's recorder put
+      // the page in a corner of a grey frame and its timeline did not keep the game's time, B2's first clips)
+      const fdir = path.join(out, 'frames', `${id}-${setting}-${tag}`);
+      fs.rmSync(fdir, { recursive: true, force: true });
+      fs.mkdirSync(fdir, { recursive: true });
+      const { ctx, p } = await openStage(b, { id, setting, w, h });
       const built = await bareBranch(p);
       await warm(p);
       const st0 = built.lay.stretches[0];
+      // (the stage card is gone before the clip: on Easy it was still up at its first frame)
+      await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => console.log('stage card STILL UP'));
+      await p.getByText(/This stage/).first().waitFor({ state: 'hidden', timeout: 30000 }).catch(() => console.log('card text STILL UP'));
       await place(p, built, st0.start - built.x0 + 10, null);
       await caption(p, '');
-      const from = (Date.now() - t0) / 1000;
-      // real time at 30 fps in the page: he stands till the front is ~60 px behind, then runs off (Right held) and pulls away
-      const log = await p.evaluate(([FRAME, label]) => new Promise((res) => {
-        const rows = [];
-        let ran = false;
-        const start = performance.now();
-        let n = 0;
-        const tick = () => {
-          const s = eval(FRAME);
-          if (!ran && s.gap !== null && s.gap <= 60) {
-            ran = true;
-            (typeof window.__engine === 'function' ? window.__engine() : window.__engine).input.state.right = true;
-          }
-          rows.push(s);
-          document.getElementById('b2cap').textContent = label.replace('%', `${ran ? 'running' : 'standing'} | front ${s.gap ?? 'none'} px behind | hp ${s.hp} | t ${s.t.toFixed(1)} s`);
-          n++;
-          if (performance.now() - start > 6500) return res(rows);
-          setTimeout(tick, Math.max(0, start + (n * 1000) / 30 - performance.now()));
-        };
-        tick();
-      }), [FRAME, `B2 chase | ${id} (World ${built.world}) bare world | built ${built.easy ? 'EASY' : 'NORMAL'} | ${w}x${h} ${tag} | %`]);
-      const v = p.video();
+      const log = [];
+      const taps = [];
+      await tapDot(p);
+      let ran = false;
+      for (let n = 0; n < 30 * 6.5; n++) {
+        const s = await p.evaluate(FRAME);
+        if (!ran && s.gap !== null && s.gap <= 60) {
+          ran = true;
+          await p.evaluate((E) => { eval(E).input.state.right = true; }, E);
+        }
+        log.push(s);
+        if (await tapDot(p)) taps.push(n);
+        await caption(p, `B2 chase | ${id} (World ${built.world}) bare world | built ${s.easy ? 'EASY' : 'NORMAL'} | ${w}x${h} ${tag} | ${ran ? 'running' : 'standing'} | front ${s.gap ?? 'none'} px behind | hp ${s.hp} | t ${s.t.toFixed(1)} s`);
+        await p.screenshot({ path: path.join(fdir, `f${String(n).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 85 });
+      }
       await ctx.close();
-      const raw = await v.path();
       const file = path.join(out, `${id}-${setting}-clip-${tag}.mp4`);
-      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', String(from), '-i', raw, '-t', '6.5', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '26', '-an', file]);
-      const g = log.map((s) => s.gap);
-      const minGap = Math.min(...g.filter((x) => x !== null));
-      console.log('wrote', file, JSON.stringify({ from: from.toFixed(1), frames: log.length, minGap, endGap: g.at(-1), hp: log.at(-1).hp, easy: log.at(-1).easy }));
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', '30', '-i', path.join(fdir, 'f%04d.jpg'), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '27', '-preset', 'slow', '-an', file]);
+      fs.rmSync(fdir, { recursive: true, force: true });
+      const g = log.map((s) => s.gap).filter((x) => x !== null);
+      console.log('wrote', file, JSON.stringify({ frames: log.length, minGap: Math.min(...g), endGap: g.at(-1), hp: log.at(-1).hp, easy: log.at(-1).easy, ranAt: log.findIndex((s, i) => i > 0 && s.x > log[0].x) / 30, dotTappedAtFrames: taps }));
     }
   }
 }

@@ -17,8 +17,16 @@ export async function openStage(b, { id, setting, w, h, video }) {
   p.on('pageerror', (e) => console.log('ERR', e.message));
   await p.goto(`http://127.0.0.1:${process.env.PORT ?? 5199}/?lessons=off`);
   await p.waitForTimeout(2500);
+  // (an old save that has already seen this stage's story asides, wayside.ts: 1-2's line came up over the chase, B2's first clips)
+  await p.evaluate(async (id) => {
+    const w = await import('/src/game/wayside.ts');
+    const [world, mini] = id.split('-').map(Number);
+    for (const f of ['L', 'H', 'F']) w.markShown(world, mini, f);
+  }, id);
   await p.evaluate((id) => window.__play(id, 1), id);
-  await p.waitForTimeout(4000);
+  // (the engine is made, however busy the machine: a fixed wait found none under the gates, B2)
+  await p.waitForFunction((E) => !!eval(E)?.currentStage, E, { timeout: 60000, polling: 250 });
+  await p.waitForTimeout(3000);
   await p.evaluate((E) => { const e = eval(E); for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true; e.clearGuide?.(); }, E);
   await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => console.log('stage card STILL UP'));
   await p.waitForTimeout(2500);
@@ -42,7 +50,9 @@ export async function bareBranch(p) {
     const plats = [];
     let pid = 90000;
     const put = (a, z, chase) => { for (let x = a; x < z; x += 200) plats.push({ id: pid++, x: x0 + x, y, width: Math.min(200, z - x), height: 40, type: 'solid', ...(chase ? { chase: true } : {}) }); };
-    put(0, 600, false);
+    // (the run-up is one piece, as the forks are, so the painted kit draws it: 200 px solids were left to the plain code-drawn
+    // platform, flat bars in B2's first sideways clips)
+    plats.push({ id: pid++, x: x0, y, width: 600, height: 40, type: 'solid' });
     put(600, 3000, true);
     plats.push({ id: pid++, x: x0 + 3000, y, width: 400, height: 40, type: 'solid' });
     put(3400, 6000, true);

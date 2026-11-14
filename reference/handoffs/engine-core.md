@@ -28,6 +28,11 @@ proven plan; Play is never blocked).
   1-8 only: engine.ts updateChase / :3712), the chase camera, liana phase and tip slow motion, per-world collapse look (World 1's art for all).
 - **Traps:** the front sets off from `start - behind`, not from where he stands (stepChase keeps the further-back front): a test's
   budget counts from there. The stills scene (reference/qa-reports/B1/stills.mjs) swaps a test branch into a real stage: tap Dot's held line.
+- **B2 (t-b2-chase, 11-14):** the trailing edge is `edgeTint(gap)` (chasePiece.ts EDGE: dark core + ember rim, 0 at 650 px, 0.75 alpha at
+  150 px and closer, wider as it closes; chasePiece.test.ts pins it). A stage with `chase` asks for the long-branch sheet behind the card
+  (stageManifest.ts builtStageKeys 'props3' -> stagePreload.ts start -> protoArt.ts warmProto3): it used to load on the first section drawn.
+  Clips: reference/qa-reports/B2/shoot.mjs (a RealPlay.bare-equivalent world in the real page, world.mjs; frame-by-frame capture, never
+  Playwright's recorder; never edit src/ while it runs: Vite reloads the page; an old save that has seen the stage's story aside).
 
 ## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
 - **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and

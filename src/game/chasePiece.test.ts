@@ -242,7 +242,7 @@ test('the trailing edge warns by gap: none 650 px back, a dark core with a warm 
       fillRect: () => {},
       fillStyle: '',
     } as unknown as CanvasRenderingContext2D;
-    piece.draw(ctx, 'screen' as PieceLayer, host);
+    piece.draw!(ctx, 'screen' as PieceLayer, host);
     const rgba = stops.map(([, c]) => c.match(/[\d.]+/g)!.map(Number));
     return { width, rgba, alpha: Math.max(0, ...rgba.map((q) => q[3])) };
   };
