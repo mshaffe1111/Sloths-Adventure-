@@ -4,7 +4,7 @@
  * flower, an ash cap, an iron thistle. They were drawn in code (spanArt.ts drawBounce), and in 10-1 the toadstool's pale code stalk read as a white bar standing
  * in the water. The cap's top row is the collision line; it squashes about its rim as it breathes. The stalk runs down off the bottom of
  * the view, darkening as it goes down (baked once per species), so it sinks into the gloom instead of standing as a pale pole. The cue
- * is unchanged: the up-arrow above them. One small sheet (bounce.webp, bounceAtlasData.ts), warmed on the first draw.
+ * is the glow round the cap (bounceAura; the code-drawn white up-arrow above it was dropped, R-165.243). One small sheet (bounce.webp, bounceAtlasData.ts), warmed on the first draw.
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { BOUNCE_FRAMES, BOUNCE_URL, type BounceFrame } from './bounceAtlasData.ts';

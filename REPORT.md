@@ -1,4 +1,4 @@
-# POLISH-10 REPORT (t-polish-10 from t-int-8@0a9be28c; written 3:42 PM ET 11-14). Status: 2 of 3 items GREEN, item 2 and the ring NOT done.
+# POLISH-10 REPORT (t-polish-10 from t-int-8@0a9be28c; written 3:42 PM ET 11-14). Status: items 1, 2 and 3a GREEN; 3b (flag ring) NOT done; drawcheck re-running.
 
 ## Done-items
 1. **R-165.243 line: GREEN, fixed at the root for every world.** Not the backdrop art: a per-draw pixel trace at 1-1 roll A x11560
@@ -15,17 +15,22 @@
    (column step 0.7). Still: canopy-w1c-mid-join-before-after.jpg (two copies tiled as drawStrip tiles them, join mid-view). Commit b3d27f6e.
    Width 2113 -> 1815 (pitch follows the file; journalScenes' blurred crop of it shifts ~1%).
 
+2. **Bounce arrow: GREEN, dropped.** Stills both ways (bounce-arrow-with-vs-without-side.jpg, bounce-no-arrow-up.jpg): the flat white
+   triangle read as a UI glyph over painted art; the glowing cap reads alone as the thing to use (and Dot teaches the first one). Removed
+   from the painted cap (bounceArt.ts) AND its pair, the vector fallback cap (terrain.ts); comments in bounceArt.ts/platformPlan.ts updated.
+   Not shot: the vector fallback's glow (it shows only before the sheet loads). Commits 97dbb994 + next.
+
 ## Not done (named plainly)
-- **Item 2, the bounce arrow (bounceArt.ts:134): NOT started.** Box spent on items 1/3a. Next: shoot the mushroom with and without the arrow
-  (1-1 roll A x11560 is a bounce spot), upright+sideways; if the glow reads alone, delete the arrow draw; else a painted cue.
-- **Item 3b, the flag's gold rim ring: NOT started.** Next: stills ring vs soft filled glow on 1-1/1-4/3-1 (RIM crop on t-int-7).
+- **Item 3b, the flag's gold rim ring: NOT started.** It is drawAura(ctx, 'take', ...) at engine.ts drawWaterAndFlags (readable.ts).
+  Next: stills ring vs a soft filled glow on 1-1/1-4/3-1 upright+sideways (RIM crop on t-int-7), the lead judges.
 - **Other worlds' strip wraps** (same cause as 3a), ratio join/column step: w2mist-mid 22.8, w1kapok-mid 19.5 (1-7, 1-9), w1sunrise-mid
   15.2 (1-3), w8sunset-mid 15.0, w6dawn-mid 12.9, w1rain-mid 10.5 (1-2/1-5/1-8), w3sinkhole-mid 10.1, w6moon-mid 7.9, w1dusk-mid 7.5,
   w1-mid 6.4 (1-4). A forced re-join of w1-mid left floating branch bits: each needs a per-strip look, so not batch-run.
-- drawcheck: running at report time (tools/perf/drawcheck.mjs); result in the message to the lead.
+- drawcheck: the first run was disturbed by my arrow edit mid-run (HMR reload: '1-3 retrying'); re-run on the final head, result in
+  the message to the lead.
 
 ## Gates (scoped, LAWS 5): tsc 0; artcheck PASS; unit: groundSeams, bankCull, groundwork, sceneryStrip, stageBackdrops, stripInk,
-   paintedKeep, w5Backdrop, journal tests 56/56 pass; drawcheck: see above.
+   paintedKeep, w5Backdrop, journal 56/56; bounce/terrain/platformPlan 22/22; drawcheck: see above.
 
 ## Polish check
 - 1-1 roll A x11560 sideways + upright after: no line over sky/trees; lip, mushroom, bank unchanged. 1-4 canopy at (634,1300) sideways
