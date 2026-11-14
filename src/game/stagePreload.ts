@@ -68,7 +68,7 @@ import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stage
 import { W1_PIT_URLS, w1PitsReady } from './w1Pits.ts';
 import { W1_CLUE_URL, W1_NEW_URL, w1ClueReady, w1NewReady } from './w1NewArt.ts';
 import { W1_CUT_URL, w1CutReady } from './w1CutArt.ts';
-import { VINE_SNAKE_HANG_URL, VINE_SNAKE_HISS_URL, vineSnakeArtReady } from './vineSnakeArt.ts';
+import { VINE_SNAKE_URLS, vineSnakeArtReady } from './vineSnakeArt.ts';
 import { W1_CREEK_URL, W1_MUD_SPLASH_URL, w1CreekReady } from './w1Creek.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -207,7 +207,7 @@ export function start(keys: readonly string[]): string[] {
       urls.push(W1_CUT_URL);
     } else if (k === 'vine-snake') {
       vineSnakeArtReady();
-      urls.push(VINE_SNAKE_HANG_URL, VINE_SNAKE_HISS_URL);
+      urls.push(...VINE_SNAKE_URLS);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();

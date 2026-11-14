@@ -20,13 +20,15 @@
 import type { ClockRead } from './clock.ts';
 import type { ClockId } from './stageKit.types.ts';
 
-export type SnakeRoute = 'down-off' | 'down-back' | 'up';
+/** a snake that travels a liana's grip line, or 'still': a FALSE liana, the snake itself hanging stiff from a bough (1-6.md beat 13) */
+export type SnakeRoute = 'down-off' | 'down-back' | 'up' | 'still';
 
 /** a liana's snake, as the stage's data lays it (Vine.snake) */
 export interface VineSnake {
   route: SnakeRoute;
-  /** the beat it keeps on the stage's clock (stage.clocks; beat.ts beatDef): off, warn (its tell), on (its trip) */
-  clock: ClockId;
+  /** the beat a travelling snake keeps on the stage's clock (stage.clocks; beat.ts beatDef): off, warn (its tell), on (its trip). A
+   *  travelling snake with none never shows (snakeBeatFaults names it); a false liana ('still') has none */
+  clock?: ClockId;
   /** its stagger on that clock (StageClock.read's shift, s) */
   shift?: number;
   /** how far its head comes, a share (0..1] of the liana's length from the end it starts at (down-back: from the anchor; up: from the
@@ -44,6 +46,19 @@ export const SNAKE = {
   tell: 0.5,
   /** down-back: the share of its trip it waits at the turn (the middle of the trip), its head toward him */
   wait: 0.2,
+} as const;
+
+/**
+ * A false liana (route 'still'): the snake IS the vine. It hangs straight from its bough and never sweeps (its Vine has no swing), head
+ * at its foot; the engine leaves it out of the lianas it draws (the piece draws the snake) but catches it like any liana. Caught, it
+ * startles: he lets go (a hop), it drops with him onto what is below, slithers off unhurt and is gone until he respawns.
+ */
+export const isFalseLiana = (v: { snake?: VineSnake }): boolean => v.snake?.route === 'still';
+export const FALSE_LIANA = {
+  /** its fall (px/s/s) and how long it slithers off before it is gone (s), at what speed (px/s) */
+  fall: 1800,
+  slither: 1.1,
+  speed: 150,
 } as const;
 
 /** where the snake is now: its head and its tail, px along the vine from the anchor; `dir` +1 heading down the vine, -1 up */
@@ -77,6 +92,7 @@ function along(sn: VineSnake, len: number, s: number): { head: number; dir: 1 | 
 
 /** the snake on a liana `len` px long, for its clock's read now */
 export function snakeNow(sn: VineSnake, len: number, read: Pick<ClockRead, 'phase' | 'u'>): SnakeNow {
+  if (sn.route === 'still') return ABSENT;
   if (read.phase === 'warn') {
     // (at its start end, its head just onto the vine: down from the anchor, or up from the foot)
     const a = along(sn, len, 0);
@@ -107,6 +123,8 @@ export function snakeTouches(n: SnakeNow, len: number, hands: number): boolean {
 /** a snake beat's faults, in words (the builder's check, and the tests'): its tell at least SNAKE.tell, a trip to make */
 export function snakeBeatFaults(sn: VineSnake, phases: ReadonlyArray<{ name: string; seconds: number }>): string[] {
   const bad: string[] = [];
+  if (sn.route === 'still') return bad;
+  if (!sn.clock) return [`a travelling snake (${sn.route}) has no beat`];
   const warn = phases.filter((p) => p.name === 'warn');
   const on = phases.filter((p) => p.name === 'on');
   if (!warn.length) bad.push(`snake on ${sn.clock}: its beat has no tell (warn)`);

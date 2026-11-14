@@ -112,6 +112,7 @@ import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
 import { drawPieces, piecesHurt, respawnPieces, startPieces, stepPieces } from './pieces/index.ts';
+import { isFalseLiana } from './vineSnake.ts';
 import type { PieceHost, StagePiece } from './stagePiece.types.ts';
 import { scares } from './dropTrap.ts';
 import { drawTraps, warmTrapArt } from './castArt.ts';
@@ -484,6 +485,8 @@ export class GameEngine {
   private swingVines: Vine[] = [];
   /** the vines the scene paints (a puzzle piece's climb, a kit vine, is the kit's own to draw) */
   private plainVines: Vine[] = [];
+  /** every vine the stage draws as a vine (all but a false liana, which its piece draws as the snake it is) */
+  private drawnVines: Vine[] = [];
   /** which way the thumb steered before a kit trap took the steering (a trap chair counts the wiggles) */
   private kitSteer = 0;
   private paintKit = false;
@@ -1043,7 +1046,9 @@ export class GameEngine {
     this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
-    this.plainVines = this.vines.filter((v) => !v.kit);
+    // (a false liana is a snake, drawn by its piece (vineSnakePiece.ts): never drawn as a liana)
+    this.plainVines = this.vines.filter((v) => !v.kit && !isFalseLiana(v));
+    this.drawnVines = this.vines.filter((v) => !isFalseLiana(v));
     this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, !!this.currentStage.pods?.length) : null;
     this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
     this.clustersFreed = 0;
@@ -1078,7 +1083,7 @@ export class GameEngine {
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
-      this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
+      this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb' && !isFalseLiana(v));
       this.protoScene = { brokeAt: new Map(), movedAt: new Map(), pillars: !!this.proto?.w4?.pillarTrunks };
       protoArtReady(); // start loading the props
     }
@@ -2046,7 +2051,9 @@ export class GameEngine {
         }
       } else {
         // (the timed swing's catch, physics.ts TIMED.grabX: 60 px, Easy's 76; the stage checks assume it, and it used to be a fixed 48 here)
-        if (canGrabSwing(p.x, p.y, v, this.vineClock)) {
+        // (a liana that is not there now is not caught: Vine.off. protoArt.ts already left an off liana undrawn while it stayed catchable;
+        // a startled false liana is the first piece to set it: vineSnakePiece.ts)
+        if (!v.off && canGrabSwing(p.x, p.y, v, this.vineClock)) {
           nearSwingVine = v;
           break;
         }
@@ -7016,7 +7023,7 @@ export class GameEngine {
       ctx,
       world.id,
       this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats),
-      this.paintKit && protoArtReady() ? this.swingVines : this.vines,
+      this.paintKit && protoArtReady() ? this.swingVines : this.drawnVines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime

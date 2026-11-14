@@ -15,7 +15,7 @@ import { PIECE_KINDS } from './pieces/index.ts';
 import { handsAlong, VINE_SNAKE_PIECE } from './pieces/vineSnakePiece.ts';
 import type { PieceHost, StagePiece } from './stagePiece.types.ts';
 import type { Vine } from './types.ts';
-import { onVine, SNAKE, snakeBeatFaults, snakeNow, snakeTouches, type VineSnake } from './vineSnake.ts';
+import { FALSE_LIANA, onVine, SNAKE, snakeBeatFaults, snakeNow, snakeTouches, type VineSnake } from './vineSnake.ts';
 
 const LEN = 410;
 const at = (sn: VineSnake, phase: 'off' | 'warn' | 'on', u = 0) => snakeNow(sn, LEN, { phase, u });
@@ -167,3 +167,54 @@ test('the vine snake is a registered piece, and a stage with no snake starts non
   const r = new RealPlay('6-3', 1);
   assert.equal((r.e as unknown as Eng).pieces.filter((p) => p.kind === 'vine-snake').length, 0);
 });
+
+for (const id of ['6-3', '2-4']) {
+  test(`${id}, the real engine: a FALSE liana (the snake hanging still) startles when he takes it: he hops off, it is not there to catch again, it drops onto the floor below, slithers off away from him and is gone; whole again when he respawns`, () => {
+    const r = new RealPlay(id, 1);
+    const e = r.e as unknown as Eng & { respawnAtCheckpoint(reason: 'pit', take?: boolean): void };
+    const v = r.stage.vines.find((q) => q.vineType !== 'tree_climb') as Vine;
+    v.swingAmp = 0;
+    v.snake = { route: 'still' };
+    const len = v.bottomY - v.topY;
+    // (1-6's moss under it: a floor 140 px under its foot; anything else between is taken out)
+    const moss = { id: 99998, x: v.x - 300, y: v.bottomY + 140, width: 600, height: 200, type: 'solid' } as const;
+    e.pieces = [];
+    r.bare([moss as never], [v]);
+    r.stage.vines = [v];
+    e.startPieces();
+    const piece = e.pieces.find((q) => q.kind === 'vine-snake') as unknown as { startled: Array<{ x: number; y: number; floor: number | null; t: number; away: number } | null>; letGos: number };
+    assert.ok(piece, 'the piece started from the false liana');
+    assert.equal(r.vines[0].swingAngle ?? 0, 0);
+    r.swing(v, { angle: 0, omega: 0, len: 200 });
+    r.p.x = v.x - 4;
+    r.frame();
+    assert.equal(r.p.isVineSwinging, false, `${id}: he still holds the false liana`);
+    assert.ok(r.p.vy < 0, 'a hop');
+    assert.equal(v.off, true, 'it is not there to catch');
+    assert.equal(piece.letGos, 1);
+    const st = piece.startled[0]!;
+    assert.ok(st && st.away === 1, 'it goes away from him (he took it from its left)');
+    // (it falls with him and lands on the moss; meanwhile he can never catch it again, even jumping at it from the moss)
+    let landed = -1;
+    for (let i = 0; i < 90; i++) {
+      r.frame();
+      assert.ok(!(r.p.isVineSwinging && r.p.swingVineId === v.id), `${id}: caught the startled false liana (frame ${i})`);
+      if (landed < 0 && st.floor !== null) landed = i;
+    }
+    assert.ok(landed >= 0 && landed < 30, `${id}: it landed on the moss (frame ${landed})`);
+    assert.equal(st.floor, moss.y);
+    assert.ok(st.x > v.x + 50, `${id}: it slithered off (${Math.round(st.x - v.x)} px)`);
+    assert.ok(st.t >= FALSE_LIANA.slither, 'and is gone');
+    r.stand(v.x, moss.y);
+    r.frame();
+    r.fly(v.x, v.topY + len / 2, 0, -50);
+    for (let i = 0; i < 10; i++) {
+      r.frame({ up: true });
+      assert.ok(!r.p.isVineSwinging, `${id}: caught a false liana that is gone`);
+    }
+    // (he respawns: it hangs again, and can be taken again)
+    e.respawnAtCheckpoint('pit');
+    assert.equal(v.off, false);
+    assert.equal(piece.startled[0], null);
+  });
+}
