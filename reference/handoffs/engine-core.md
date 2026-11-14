@@ -8,9 +8,20 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
+- Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
+  merged together by INT-9; both sets are true. Read each by its title, not its letter.
+- pipeline.ts pitUnder `deepen`: every bank beside a pit is filled down to the floor + bankH (World 9's rule, every world). The old 48 px
+  exception left a 0-48 px slot under a bank's foot, and a stair stone laid flush against that bank was judged drawn past its ground's
+  lip (w1CutArt.ts groundRun: a bank is the run's wall only 3+ px past the floor), so the settle (R-165.226) swapped the section away:
+  1-7 threw "the pool is spent" on 5 of 8 seeds. Gate: gen2Pits.test.ts 'any slot'. Lock: 1-3 and 17 older-world stages moved
+  platforms only (bank heights). Never fix such a red by easing groundRun's wall test: that reading is POLISH-6's rule.
+- Trap: a merge can make a stage unrollable with every file clean. Roll each listed stage (libstage --seeds 8) right after a merge,
+  before the long gates; bisect by merging two branches alone in a scratch worktree.
 
 ## 0y. Liana to liana: chains (ENG-S5, 1-6 beat 4 "The chain", t-eng-s5, 11-14): what the next engineer must know
 - ONE measure, the engine's press: physics.ts `chainWindow(A, B, flights, grips, seen)` = pressWindow on A hitting canGrabSwing on B at

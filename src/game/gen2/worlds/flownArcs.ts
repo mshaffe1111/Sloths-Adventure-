@@ -27,6 +27,11 @@ const n15 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-5', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-7's own scope (INT-9, 11-14: BUILD-17's step 2, flown on the merged engine) */
+const n17 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-7', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** a Normal row of 1-4's own scope (INT-3, 11-13: flown on the tower once RealPlay.bare opened its walls) */
 const n14 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
@@ -92,5 +97,16 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n14('double-tap-tap', [149, 142], [190, 277, 299], 'chain.md §1 "1-4: double-tap-tap 149 / 142, gap 190 / 277 / 299"'),
   ...n14('bounce', [223, 216], [178, 178, 178], 'chain.md §1 "1-4: bounce 223 / 216, gap 178"'),
   ...n14('bounce-air', [314, 305], [335, 335, 335], 'chain.md §1 "1-4: bounce-air 314 / 305, gap 335"'),
+  // 1-7 on Normal (INT-9, 11-14, BUILD-17's step 2): flown on stage 1-7 on t-int-9@3ad51f04, `FLIGHT_STAGE=1-7 npx tsx
+  // reference/specs/sims/flight.ts normal all` (reference/qa-reports/INT-9/fly/fly-1-7-normal-all.txt: [rise], [dist], [ddist], [bdist]).
+  // Each gap the block column's figure, as 1-2's to 1-5's are; the single hold's any is the flown 244. Easy flies as easy-any
+  ...n17('single-hold', [123, 116], [136, 221, 244], 'INT-9 fly-1-7-normal-all.txt "single hold 123 / 116, gap 136 / 221 / 244"'),
+  ...n17('single-flick', [123, 115], [127, 211, 238], 'INT-9 fly-1-7-normal-all.txt "single flick 123 / 115, gap 127 / 211 / 238"'),
+  ...n17('single-tap', [87, 80], [77, 162, 183], 'INT-9 fly-1-7-normal-all.txt "single tap 87 / 80, gap 77 / 162 / 183"'),
+  ...n17('double-hold', [209, 202], [291, 376, 404], 'INT-9 fly-1-7-normal-all.txt "double hold 209 / 202, gap 291 / 376 / 404"'),
+  ...n17('double-flick', [208, 201], [272, 358, 391], 'INT-9 fly-1-7-normal-all.txt "double flick 208 / 201, gap 272 / 358 / 391"'),
+  ...n17('double-tap-tap', [149, 141], [190, 275, 299], 'INT-9 fly-1-7-normal-all.txt "double tap 149 / 141, gap 190 / 275 / 299"'),
+  ...n17('bounce', [223, 216], [177, 177, 177], 'INT-9 fly-1-7-normal-all.txt "bounce alone 223 / 216, gap 177"'),
+  ...n17('bounce-air', [312, 302], [334, 334, 334], 'INT-9 fly-1-7-normal-all.txt "bounce+double hold 312 / 302, gap 334"'),
 ];
 

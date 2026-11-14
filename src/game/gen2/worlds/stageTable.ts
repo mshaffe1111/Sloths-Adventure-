@@ -44,7 +44,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '1-5': { kit: 'w1-15', judged: 'normal-1-5' },
   // (1-7 A Very Good Bush: the designed arc, w1Arc17.ts, on World 1's kit with its own rows (kitLib17) and its finish (finish17: the mossy
   //  lianas, one eye a beat, the perched eagle); the old hand-built 1-7 (protoStage.ts) is deleted. BUILD-17 11-14)
-  '1-7': { kit: 'w1-17' },
+  // (1-7 A Very Good Bush: judged on its own flown rows, flownArcs.ts normal-1-7, INT-9 11-14)
+  '1-7': { kit: 'w1-17', judged: 'normal-1-7' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
