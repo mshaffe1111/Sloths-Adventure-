@@ -135,7 +135,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -611,6 +611,8 @@ export class GameEngine {
   private vineLashed = false;
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
+  /** the eased subject the camera aims at: a re-picked anchor or a snapped body eases in, never in one frame (cameraFollow.ts repick) */
+  private camRepick = newRepick();
   /** the view was lifted for a bounce (updateCamera's `lift`): its way back down is held to CAM_RISE_STEP a frame too */
   private camLifted = false;
   private camLookX: number = CAM.lookAhead;
@@ -6124,10 +6126,16 @@ export class GameEngine {
     this.camRunSlow = camRun(this.camRunSlow, p.vx, facing, dt, RUN.settle);
     const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt, fr) * Math.max(-1, Math.min(1, this.camLookX / (fr.look || 1)));
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
-    this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
+    const camSub = { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined };
+    const prevAnchor = this.camAnchorY;
+    this.camAnchorY = camAnchor(prevAnchor, camSub, vh);
+    // (the aim follows an eased subject: where the anchor re-picks or his body snaps, the view starts from rest; a cut stays a cut)
+    const feetAt = travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode));
+    const roomUp = vh * feetAt - HERO_HEAD - (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
+    const eased = repick(this.camRepick, p.x, this.camAnchorY, prevAnchor, camSub, vw, vh, dt, this.camera.x, this.camera.y, roomUp);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode));
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : eased.x - vw * FRAME.across + this.camLookX + runX;
+    this.camera.targetY = eased.y - vh * feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
@@ -6266,6 +6274,7 @@ export class GameEngine {
     // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
     const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1;
     this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
+    markCam(this.camRepick, this.camera.x, this.camera.y);
   }
 
   /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
