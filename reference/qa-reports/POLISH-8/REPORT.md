@@ -6,7 +6,12 @@ on Normal for first-timers (kid 9/10, adult 4/10). Both follow-up levers the lea
 rules; neither is committed. Details and evidence below.
 
 ## EXACT NEXT STEP (POLISH-9)
-1. **A ruling first (lead, maybe Matt): how 1-1's double teach TEST stops rescuing first-timers without breaking a rule.** Every Normal
+**The lead's ruling, 5:23 AM ET:** the rules hold; 1-1 Normal keeps its one double test. In order:
+0. **(F) as EVIDENCE first:** the first-timer bots' (castBots kid, adult) double success at 250-256 px against the testers' data (bands.md
+   §2-3's flown shares; reference/qa-reports/R-165.59/calibration-main.jsonl). If the bot under-performs the testers, it is a bot artifact:
+   fix it in the bot (tools/inspect/firsttimer.ts), with a toy test, never in the stage. Then step 2 below (the 17 re-pins, the first-run
+   lock once, the full suite and every gate). (G) goes to Matt with numbers after he plays the new 1-1 (the lead's, not a builder's).
+1. **Background for (F): why the stage itself was not changed.** Every Normal
    rescue is at the double teach's TEST gap (beat `d`, DOUBLE_TEST 253-256 px, a level block: a miss is put back on the take-off), not the
    rise (castBots' own `rescueXs`, below). What was tried and why it is refused:
    - (A) soft miss with a step back up (`climbBack` place flag; patch `climbback-attempt.patch`): **blockBreaches** refuses every teach:
