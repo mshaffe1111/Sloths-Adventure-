@@ -8,9 +8,29 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
+- **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a
+  stage's start, kept for the run), `withSetting(d, fn)` (dials put back after), `dialsKey()` (for caches). Today the one build-time dial
+  is the swing (physics TIMED via setTimedSwing). Swept: difficulty()/runDifficulty() are the player's choice (Engine/InputEngine
+  constructors, build-ahead, menus); forgive, tide, soft pits, input.easy, the help ladder are the engine's own fields. A new dial goes
+  in settingDials.ts only: settingDials.test.ts fails on any setTimedSwing call outside it (tests excepted).
+- **Every build entry builds on its own setting's dials, whoever calls it**: generateStage, buildGen2Stage, easyStage (withSetting);
+  the pipeline's lianaRelease/chainRelease, levelCheck validateAsJudged (a gen2 stage on its own setting) and listRules helpRoomBreaches
+  too. So lockall, seedlist and every tool's Easy is the phone's, and the map's build-ahead no longer builds on whatever the last run left.
+  On the engine path it is a no-op (the engine set them already): lock on t-tools-2, Normal 102/102 unchanged; Easy equals a FRESH
+  phone's Easy on 102/102 (16 layouts); the 21 Easy stages today's tools had wrong: 3-8, 4-4, 5-4, 6-1, 6-3, 6-6, 6-7, 6-8, 7-5, 7-9,
+  8-3, 8-4, 8-5, 9-3, 9-4, 9-5, 9-9, 10-1, 10-3, 10-6, 10-7. World 1's lists (1-1..1-5, 1-7): 1424 builds identical either way.
+- **stageGenerator's layout-pick caches are keyed by dialsKey** (`variantAttempt`, `known`): validateStage flies lianas on the dials, so
+  a process that built Normal first handed Normal's pick to Easy (base: 9-3 layouts 4/14, 9-4 12, 10-6 1/6/10). TRAP (R-165.244 again):
+  any cache of an answer the dials change puts dialsKey in its key.
+- **Known, not changed here**: inside an Easy gen2 build that is not a replay, Normal's sub-build (pipeline buildRolled 'normal') runs
+  on Easy's dials, on the phone as in the tools now (the engine sets Easy first). Listed stages replay with foes, so they skip it.
+- **The test link** (R-165.252, tools/testlink/build.py): exits 1 with no map above 480 files (prints the count); maps against
+  tools/testlink/dist-published, which only `build.py --published` refreshes, run after a successful publish. Gate: tools/testlink/build.test.ts.
 
 ## 0za. TOOLS-1 (t-tools-1, 11-14): three tool faults; one was the engine's
 - **Every cache of a flight off a liana is keyed by the setting's swing** (levelCheck.ts `swingSettingKey`: TIMED's period, grab
