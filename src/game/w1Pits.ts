@@ -108,10 +108,10 @@ function pitWalls(platforms: readonly Platform[], x0: number, x1: number, top: n
 }
 
 /**
- * The stage's pits, from its platforms. The ground line is the commonest top of its banks of earth. A spot is ground where a piece stands
- * in the ground band (a bank, a stump or a pillar reaching down to the line, or a log bridge across it); between two stretches of ground
- * is a gap, a soft pit when a floor lies SOFT_FLOOR to FALL_BELOW px down (1-3's, 130), else a fall. A sunk step (75 px) is not a pit.
- * 1-8's long branch has no ground: its gaps are the holes between the chase's sections (and the branches beside them), all falls.
+ * The stage's pits, from its platforms: its open pits (findOpenPits: each gap judged by its own lips; ground is earth only), a soft pit
+ * when a floor lies SOFT_FLOOR to FALL_BELOW px under the gap's line (1-3's, 130), else a fall; a sunk step (75 px) is not a pit; and its
+ * hollows (hurtPits). 1-8's long branch has no ground: its gaps are the holes between the chase's sections (and the branches beside them),
+ * all falls.
  */
 export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
   const base = findOpenPits(platforms);
@@ -136,84 +136,103 @@ function hurtPits(platforms: readonly Platform[]): PitGap[] {
   }
   return out;
 }
+/**
+ * The stage's open pits, each judged by its OWN lips, never by one ground line read off the whole stage (the lead's rulings 11-13, 3:21,
+ * 3:27 and 8:50 PM ET; R-165.197/.200: the ruler read the commonest top of the stage's banks, so a bank laid 5,000 px away moved what a gap
+ * here was, and gaps away from that line went unseen). Ground is earth only: a piece EARTH_DEEP px deep or more (a bank, a stump, a pillar);
+ * a log or a bough is a platform over a gap, never its lip, and never its floor. The earth's top along x (`earthLine`) has holes, where
+ * no earth is at all, and dips, where it drops deeper than SOFT_BELOW and comes back up. A gap is a hole between two banks at any width
+ * from 24 px, or a dip. Its line is read off its two lips (`gapLine`); from that line a dip lies more than SOFT_BELOW down, its floor is
+ * the earth SOFT_BELOW to FALL_BELOW down, and a soft pit's floor is SOFT_FLOOR down or more. `top` is the lower lip, where its inside begins.
+ */
 function findOpenPits(platforms: readonly Platform[]): PitGap[] {
   const chase = platforms.filter((q) => (q as Platform & { chase?: boolean }).chase && !q.broken);
   if (chase.length) return chaseGaps(platforms, chase);
-  const banks = platforms.filter((q) => q.height >= 90 && floorish(q));
-  if (!banks.length) return [];
-  const tops = new Map<number, number>();
-  for (const b of banks) tops.set(Math.round(b.y), (tops.get(Math.round(b.y)) ?? 0) + b.width);
-  const G = [...tops].sort((p, q) => q[1] - p[1])[0][0];
-  // (ground: reaches the ground band from above, or lies across the line itself)
-  const ground = platforms.filter((q) => floorish(q) && q.y <= G + SOFT_BELOW && (q.y + q.height >= G + 30 || q.y >= G - 20));
-  const under = platforms.filter((q) => floorish(q) && q.y > G + SOFT_BELOW && q.y <= G + FALL_BELOW);
-  if (!ground.length) return [];
-  // (the ground's stretches along x, merged)
-  const spans = ground.map((q) => [q.x, q.x + q.width] as [number, number]).sort((p, q) => p[0] - q[0]);
-  const merged: Array<[number, number]> = [];
-  for (const [a0, a1] of spans) {
-    const m = merged[merged.length - 1];
-    if (m && a0 <= m[1] + 2) m[1] = Math.max(m[1], a1);
-    else merged.push([a0, a1]);
-  }
-  const topAt = (x: number) => Math.min(...ground.filter((q) => x >= q.x - 1 && x <= q.x + q.width + 1).map((q) => q.y));
-  const bankAt = (x: number) => ground.some((q) => x >= q.x - 1 && x <= q.x + q.width + 1 && q.height >= 90);
+  const earth = platforms.filter((q) => q.height >= EARTH_DEEP && floorish(q));
+  if (!earth.length) return [];
+  const line = earthLine(earth);
   const out: PitGap[] = [];
-  for (let i = 0; i + 1 < merged.length; i++) {
-    const x0 = merged[i][1], x1 = merged[i + 1][0];
-    if (x1 - x0 < 24 || x1 - x0 > 1600) continue;
-    const fl = under.filter((q) => q.x < x1 - 4 && q.x + q.width > x0 + 4);
-    const top = Math.max(topAt(x0), topAt(x1));
-    const lip = { lipL: bankAt(x0), lipR: bankAt(x1) };
-    const marked = ground.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
-    if (!fl.length) {
+  const judge = (x0: number, x1: number, yl: number, yr: number, inside: readonly EarthRun[]) => {
+    const g = gapLine(yl, yr);
+    // (a dip's inside lies deeper than SOFT_BELOW under its line, all of it: else it is a step in the ground, not a gap)
+    if (inside.some((s) => s.y <= g + SOFT_BELOW)) return;
+    const top = Math.max(yl, yr);
+    const marked = earth.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
+    const fall = () => {
       const walls = marked ? pitWalls(platforms, x0, x1, top) : undefined;
-      out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}), ...(walls ? { walls } : {}) });
+      out.push({ x0, x1, top, kind: 'fall', lipL: true, lipR: true, ...(marked ? { drop: true } : {}), ...(walls ? { walls } : {}) });
+    };
+    // (its floor: the earth under it, SOFT_BELOW to FALL_BELOW under its line; a hole has none, so it is a fall)
+    const fl = earth.filter((q) => q.y > g + SOFT_BELOW && q.y <= g + FALL_BELOW && q.x < x1 - 4 && q.x + q.width > x0 + 4);
+    if (!fl.length) return fall();
+    // (the floor is the piece under most of the gap: the soil steps at a soft pit's walls are its way out, not its floor)
+    // (and a sunk step's own floor, under all of it, is its floor even with deeper ground below: the highest piece under most of it)
+    const ov = (q: Platform) => Math.min(x1, q.x + q.width) - Math.max(x0, q.x);
+    const most = fl.filter((q) => ov(q) >= 0.7 * (x1 - x0));
+    const floorQ = most.length ? most.reduce((a, b) => (b.y < a.y ? b : a)) : [...fl].sort((p, q) => ov(q) - ov(p))[0];
+    const floor = floorQ.y;
+    // (a soft pit is a hole in the ground: a bank of earth at both lips, its walls, and its floor ending at them (World 1's vault pits:
+    // within 60 px past each wall). A floor that runs on far under a lip is a lower road and the gap open air over it: a fork's high road
+    // over its low road. It is judged as a fall: a marked drop, or open air)
+    // (and a slit narrower than his body is no pit: he cannot fall into it (Easy's wider landings left 40 px between two banks))
+    const lower = x1 - x0 < HERO_BODY || x0 - floorQ.x > SOFT_RUN_ON || floorQ.x + floorQ.width - x1 > SOFT_RUN_ON;
+    // (only what would be a soft pit: a floor nearer than SOFT_FLOOR is a sunk step, no gap at all)
+    if (floor - g < SOFT_FLOOR) return;
+    if (lower) return fall();
+    // (the steps out, and anything else standing in it: x, y, w, h)
+    const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
+    out.push({ x0, x1, top, kind: 'soft', floor, lipL: true, lipR: true, steps });
+  };
+  for (let i = 0; i + 1 < line.length; i++) {
+    const a = line[i], b = line[i + 1];
+    // (a hole: no earth at all between two banks, at any width from 24 px)
+    if (b.x0 > a.x1) {
+      if (b.x0 - a.x1 >= 24) judge(a.x1, b.x0, a.y, b.y, []);
+      continue;
     }
-    else {
-      // (the floor is the piece under most of the gap: the soil steps at a soft pit's walls are its way out, not its floor)
-      // (and a sunk step's own floor, under all of it, is its floor even with deeper ground below: the highest piece under most of it)
-      const ov = (q: Platform) => Math.min(x1, q.x + q.width) - Math.max(x0, q.x);
-      const most = fl.filter((q) => ov(q) >= 0.7 * (x1 - x0));
-      const floorQ = most.length ? most.reduce((a, b) => (b.y < a.y ? b : a)) : [...fl].sort((p, q) => ov(q) - ov(p))[0];
-      const floor = floorQ.y;
-      // (a soft pit is a hole in the ground: a bank of earth at both lips, its walls, and its floor ending at them (World 1's vault pits:
-      // within 60 px past each wall). A floor that runs on far under a lip is a lower road and the gap open air over it: a fork's high road
-      // over its low road (the mixer's 1-1, 21 such gaps over 16 layouts read as pits with no way out, and would have painted pit walls
-      // and a leaf bed over the low road). It is judged as a fall: a marked drop, or open air)
-      // (and a slit narrower than his body is no pit: he cannot fall into it (Easy's wider landings left 40 px between two banks))
-      const lower = x1 - x0 < HERO_BODY || !lip.lipL || !lip.lipR || x0 - floorQ.x > SOFT_RUN_ON || floorQ.x + floorQ.width - x1 > SOFT_RUN_ON;
-      // (only what would be a soft pit: a floor nearer than SOFT_FLOOR is a sunk step, no gap at all, as before)
-      if (lower && floor - G >= SOFT_FLOOR) {
-        const walls = marked ? pitWalls(platforms, x0, x1, top) : undefined;
-        out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}), ...(walls ? { walls } : {}) });
-        continue;
+    // (a dip: the earth drops more than SOFT_BELOW; its far wall is the first top back within SOFT_BELOW of a's, or one that rises more
+    // than SOFT_BELOW out of it; a hole on the way is its own gap)
+    if (b.y <= a.y + SOFT_BELOW) continue;
+    for (let j = i + 2; j < line.length; j++) {
+      const c = line[j], p = line[j - 1];
+      if (c.x0 > p.x1) break;
+      if (c.y <= a.y + SOFT_BELOW || c.y < p.y - SOFT_BELOW) {
+        if (c.x0 - a.x1 >= 24) judge(a.x1, c.x0, a.y, c.y, line.slice(i + 1, j));
+        break;
       }
-      // (the steps out, and anything else standing in it: x, y, w, h)
-      const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
-      if (floor - G >= SOFT_FLOOR) out.push({ x0, x1, top, kind: 'soft', floor, ...lip, steps });
     }
-  }
-  // (a stage that climbs and falls through many heights, the mixer's 1-5: one ground line finds only the gaps at its own height. A marked
-  // drop between two banks of earth at any height is judged against those two banks: their tops, and nothing standing in it)
-  const marked = platforms.filter((q) => paintedBank(q) && floorish(q) && q.pit === 'drop').sort((a, b) => a.x - b.x);
-  for (const a of marked) {
-    const x0 = a.x + a.width;
-    // (the next bank of earth to the right whose top is near a's: the gap's far wall)
-    const b = platforms.filter((q) => paintedBank(q) && floorish(q) && q.x - x0 >= 24 && q.x - x0 <= 1600 && Math.abs(q.y - a.y) <= OWN_STEP).sort((p, q) => p.x - q.x)[0];
-    if (!b) continue;
-    const x1 = b.x, top = Math.max(a.y, b.y);
-    // (inside a wider gap the ground line found, painted or not: a soft pit, water, a painted drop keep it; open air does not)
-    if (out.some((g) => g.x0 < x1 && g.x1 > x0 && (g.kind === 'soft' || !g.drop || g.walls))) continue;
-    // (anything between them at all, at their height or under it: it is not one clean drop, and the ground line's pass judges it)
-    if (platforms.some((q) => !q.broken && q !== a && q !== b && q.x < x1 - 4 && q.x + q.width > x0 + 4 && q.y + q.height > Math.min(a.y, b.y) - 40)) continue;
-    const walls = pitWalls(platforms, x0, x1, top);
-    if (walls) out.push({ x0, x1, top, kind: 'fall', lipL: a.height >= 90, lipR: b.height >= 90, drop: true, walls });
   }
   return out.sort((p, q) => p.x0 - q.x0);
 }
-/** a marked drop's two banks at any height (findW1Pits' own pass) are at most this far apart in height */
-const OWN_STEP = 120;
+/** a piece this deep or more is earth (a bank, a stump, a pillar): only earth is ground, a gap's lip or its floor */
+const EARTH_DEEP = 90;
+/** a stretch of the earth's top: x0..x1 at y */
+interface EarthRun { x0: number; x1: number; y: number }
+/**
+ * the earth's top along x: at each x the highest earth there, in runs at one height; where no earth is at all, a hole (two runs closer
+ * than 2 px are one ground, as the ruler always read them)
+ */
+function earthLine(earth: readonly Platform[]): EarthRun[] {
+  const xs = [...new Set(earth.flatMap((q) => [q.x, q.x + q.width]))].sort((a, b) => a - b);
+  const runs: EarthRun[] = [];
+  for (let k = 0; k + 1 < xs.length; k++) {
+    const x0 = xs[k], x1 = xs[k + 1], mid = (x0 + x1) / 2;
+    let y = Infinity;
+    for (const q of earth) if (q.x < mid && q.x + q.width > mid && q.y < y) y = q.y;
+    if (y === Infinity) continue;
+    const r = runs[runs.length - 1];
+    if (r && x0 - r.x1 <= 2 && Math.abs(r.y - y) < 0.5) r.x1 = x1;
+    else if (r && x0 - r.x1 <= 2) runs.push({ x0: r.x1, x1, y });
+    else runs.push({ x0, x1, y });
+  }
+  return runs;
+}
+/**
+ * a gap's line, from its two lips: the higher when the lower lies within SOFT_BELOW of it (one ground, the lower lip sunk in it, as the
+ * ground band always read it), else the lower (the higher a stump, a pillar or a raised bank over it: its top is not the ground the gap
+ * is cut in)
+ */
+export const gapLine = (yl: number, yr: number) => (Math.abs(yl - yr) <= SOFT_BELOW ? Math.min(yl, yr) : Math.max(yl, yr));
 
 /** 1-8: the holes between the chase's sections (and any branch at their height), with nothing under them within 400 px: falls */
 function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): PitGap[] {
