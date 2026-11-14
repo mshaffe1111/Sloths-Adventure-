@@ -2,505 +2,505 @@ TAP version 13
 # Subtest: 1-2's pool is its own: its seven beats, its arrival, its five rests, its exit; no World 1 library section
 ok 1 - 1-2's pool is its own: its seven beats, its arrival, its five rests, its exit; no World 1 library section
   ---
-  duration_ms: 3.633668
+  duration_ms: 2.148269
   type: 'test'
   ...
 # Subtest: every roll is this level: the fourteen beats in the designed order on both settings, a different rest each time
 ok 2 - every roll is this level: the fourteen beats in the designed order on both settings, a different rest each time
   ---
-  duration_ms: 0.618016
+  duration_ms: 0.590053
   type: 'test'
   ...
 # Subtest: every roll is clean on its own setting's verdicts (Matt's chain.mount, landing.dead-zone, bounce.no-purpose; hazard.untaught; the flags)
 ok 3 - every roll is clean on its own setting's verdicts (Matt's chain.mount, landing.dead-zone, bounce.no-purpose; hazard.untaught; the flags)
   ---
-  duration_ms: 0.200614
+  duration_ms: 0.248477
   type: 'test'
   ...
 # Subtest: the thorn bed lies only under the chain beats: never in the twist, the arrival or a rest, and none within 1,300 px of the spawn
 ok 4 - the thorn bed lies only under the chain beats: never in the twist, the arrival or a rest, and none within 1,300 px of the spawn
   ---
-  duration_ms: 0.955261
+  duration_ms: 0.809726
   type: 'test'
   ...
 # Subtest: every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3
 ok 5 - every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3
   ---
-  duration_ms: 13.721772
+  duration_ms: 4.064365
   type: 'test'
   ...
 # Subtest: the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood
 ok 6 - the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood
   ---
-  duration_ms: 12.273132
+  duration_ms: 2.96168
   type: 'test'
   ...
 # Subtest: PLANTED: a pit between pillars out of chain.md's band (Easy's stair, its last pillar slid 12 px in) is caught
 ok 7 - PLANTED: a pit between pillars out of chain.md's band (Easy's stair, its last pillar slid 12 px in) is caught
   ---
-  duration_ms: 367.872258
+  duration_ms: 181.656817
   type: 'test'
   ...
 # Subtest: PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught
 ok 8 - PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught
   ---
-  duration_ms: 314.236219
+  duration_ms: 184.499314
   type: 'test'
   ...
 # Subtest: petals low on bark the whole way: no petal arc over a gap, every petal within 110 px over a standable top
 ok 9 - petals low on bark the whole way: no petal arc over a gap, every petal within 110 px over a standable top
   ---
-  duration_ms: 4.567721
+  duration_ms: 3.175626
   type: 'test'
   ...
 # Subtest: the story keeper's lines, verbatim, said where the design says: the lesson's two; the roots line held until the note is in the hollow; main's cut "The petals go up" never laid
 ok 10 - the story keeper's lines, verbatim, said where the design says: the lesson's two; the roots line held until the note is in the hollow; main's cut "The petals go up" never laid
   ---
-  duration_ms: 1.163343
+  duration_ms: 1.777736
   type: 'test'
   ...
 # Subtest: Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)
 ok 11 - Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)
   ---
-  duration_ms: 0.465909
+  duration_ms: 0.617024
   type: 'test'
   ...
 # Subtest: PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught
 ok 12 - PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught
   ---
-  duration_ms: 270.375476
+  duration_ms: 156.760133
   type: 'test'
   ...
 # Subtest: Meeca's note lies in the twist's hollow, low against its root, on every roll, both settings (the find's spot: FX's findSpot)
 ok 13 - Meeca's note lies in the twist's hollow, low against its root, on every roll, both settings (the find's spot: FX's findSpot)
   ---
-  duration_ms: 0.959076
+  duration_ms: 1.176957
   type: 'test'
   ...
 # Subtest: PLANTED: the twist without its findSpot has no note spot, and that is caught
 ok 14 - PLANTED: the twist without its findSpot has no note spot, and that is caught
   ---
-  duration_ms: 449.36253
+  duration_ms: 385.33104
   type: 'test'
   ...
 # Subtest: the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)
 ok 15 - the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)
   ---
-  duration_ms: 0.375666
+  duration_ms: 0.342475
   type: 'test'
   ...
 # Subtest: Easy is never harder than Normal: no more caps, no narrower stump, no thorn that costs a heart
 ok 16 - Easy is never harder than Normal: no more caps, no narrower stump, no thorn that costs a heart
   ---
-  duration_ms: 0.255915
+  duration_ms: 0.400897
   type: 'test'
   ...
 # Subtest: the quiet line (the seed list binds 4 s on Normal) holds on these rolls
 ok 17 - the quiet line (the seed list binds 4 s on Normal) holds on these rolls
   ---
-  duration_ms: 468.102955
+  duration_ms: 386.453781
   type: 'test'
   ...
 # Subtest: PLANTED: a beat missing from the pool fails the roll by name (the arc cannot be dealt round it)
 ok 18 - PLANTED: a beat missing from the pool fails the roll by name (the arc cannot be dealt round it)
   ---
-  duration_ms: 10.220989
+  duration_ms: 5.6662
   type: 'test'
   ...
 # Subtest: PLANTED: a line with no words in the kit fails the roll (the tip is never shown)
 ok 19 - PLANTED: a line with no words in the kit fails the roll (the tip is never shown)
   ---
-  duration_ms: 5596.256107
+  duration_ms: 2677.847715
   type: 'test'
   ...
 # Subtest: PLANTED: a thorn hollow laid in the twist is caught (a chain brick in the hollow beat's place)
 ok 20 - PLANTED: a thorn hollow laid in the twist is caught (a chain brick in the hollow beat's place)
   ---
-  duration_ms: 348.861921
+  duration_ms: 239.538755
   type: 'test'
   ...
 # Subtest: the exit is the stage's own, the last section on every roll
 ok 21 - the exit is the stage's own, the last section on every roll
   ---
-  duration_ms: 0.325612
+  duration_ms: 0.311242
   type: 'test'
   ...
 # Subtest: in World 1's SHIPPED kit 1-3's pool is its own, every piece: its eight beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was
 ok 22 - in World 1's SHIPPED kit 1-3's pool is its own, every piece: its eight beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was
   ---
-  duration_ms: 4.188118
+  duration_ms: 2.917141
   type: 'test'
   ...
 # Subtest: the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart
 ok 23 - the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart
   ---
-  duration_ms: 0.338336
+  duration_ms: 0.354263
   type: 'test'
   ...
 # Subtest: every roll is the designed level, on both settings: no throw, no error, the arc beat for beat, a purge laid to its quota, three minutes
 ok 24 - every roll is the designed level, on both settings: no throw, no error, the arc beat for beat, a purge laid to its quota, three minutes
   ---
-  duration_ms: 0.681864
+  duration_ms: 0.438022
   type: 'test'
   ...
 # Subtest: the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once
 ok 25 - the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once
   ---
-  duration_ms: 114.183342
+  duration_ms: 33.858714
   type: 'test'
   ...
 # Subtest: the first snake of the stage is asleep on both settings, under the lesson hive
 ok 26 - the first snake of the stage is asleep on both settings, under the lesson hive
   ---
-  duration_ms: 0.653913
+  duration_ms: 0.741947
   type: 'test'
   ...
 # Subtest: every trap has its handle and a snake under it, at the phone's numbers
 ok 27 - every trap has its handle and a snake under it, at the phone's numbers
   ---
-  duration_ms: 0.625504
+  duration_ms: 0.729136
   type: 'test'
   ...
 # Subtest: arming: a load is a trap only when an animal of the cast stands under it; the trap is hung over the middle of that animal's patch
 ok 28 - arming: a load is a trap only when an animal of the cast stands under it; the trap is hung over the middle of that animal's patch
   ---
-  duration_ms: 0.535735
+  duration_ms: 0.456581
   type: 'test'
   ...
 # Subtest: Easy keeps every trap: the snake under a load stays on Easy, softened (Socket.easy stay), and Easy is still never the harder
 ok 29 - Easy keeps every trap: the snake under a load stays on Easy, softened (Socket.easy stay), and Easy is still never the harder
   ---
-  duration_ms: 0.125021
+  duration_ms: 0.132484
   type: 'test'
   ...
 # Subtest: Dot's trap line is a TEACH line, and she says it three seconds of walking before the first vine, on both settings
 ok 30 - Dot's trap line is a TEACH line, and she says it three seconds of walking before the first vine, on both settings
   ---
-  duration_ms: 2064.04558
+  duration_ms: 686.515692
   type: 'test'
   ...
 # Subtest: the way out: one rope before the totem, a try-it and never the way, a vine between two living trees on its banks; its hollow is one hop deep, so he can walk through it and back
 ok 31 - the way out: one rope before the totem, a try-it and never the way, a vine between two living trees on its banks; its hollow is one hop deep, so he can walk through it and back
   ---
-  duration_ms: 1791.990276
+  duration_ms: 777.836114
   type: 'test'
   ...
 # Subtest: the goal is every vine: Matt's share of the animals (three in four) comes to the snakes the vines send gliding on Normal, so a child who shakes every vine never walks back
 ok 32 - the goal is every vine: Matt's share of the animals (three in four) comes to the snakes the vines send gliding on Normal, so a child who shakes every vine never walks back
   ---
-  duration_ms: 0.585735
+  duration_ms: 0.573208
   type: 'test'
   ...
 # Subtest: the plain-view rule is the builder's own: a pickup laid in front of a hung load refuses the roll by name
 ok 33 - the plain-view rule is the builder's own: a pickup laid in front of a hung load refuses the roll by name
   ---
-  duration_ms: 139.791228
+  duration_ms: 156.439363
   type: 'test'
   ...
 # Subtest: the arc is dealt the same on every seed: the lesson and its practice on the ground, the stair and the perch a climb, the two no-trap beats a hazard
 ok 34 - the arc is dealt the same on every seed: the lesson and its practice on the ground, the stair and the perch a climb, the two no-trap beats a hazard
   ---
-  duration_ms: 39.175339
+  duration_ms: 16.524488
   type: 'test'
   ...
 # Subtest: Normal runs hotter and asks for one real jump; Easy is the same level, flat and gentler
 ok 35 - Normal runs hotter and asks for one real jump; Easy is the same level, flat and gentler
   ---
-  duration_ms: 1781.199577
+  duration_ms: 779.216981
   type: 'test'
   ...
 # Subtest: the shipped kit rolls 1-3 under its own id: the same arc, clean on both settings (not yet the verdicts' clean: it has no flown rows of its own)
 ok 36 - the shipped kit rolls 1-3 under its own id: the same arc, clean on both settings (not yet the verdicts' clean: it has no flown rows of its own)
   ---
-  duration_ms: 1355.237435
+  duration_ms: 906.3929
   type: 'test'
   ...
 # Subtest: the seed list's quiet line holds on the game's own roll: nowhere on 1-3 are 4 s or more with nothing to do (Normal, seeds 1-6)
 ok 37 - the seed list's quiet line holds on the game's own roll: nowhere on 1-3 are 4 s or more with nothing to do (Normal, seeds 1-6)
   ---
-  duration_ms: 2138.074201
+  duration_ms: 1373.640844
   type: 'test'
   ...
 # Subtest: every quiet piece of 1-3's own keeps a root hop near both ends and every few hundred px (the quiet line, by the pieces themselves)
 ok 38 - every quiet piece of 1-3's own keeps a root hop near both ends and every few hundred px (the quiet line, by the pieces themselves)
   ---
-  duration_ms: 0.557684
+  duration_ms: 0.999895
   type: 'test'
   ...
 # Subtest: a stage with no row is refused by name, and rolls report it as thrown, never clean
 ok 39 - a stage with no row is refused by name, and rolls report it as thrown, never clean
   ---
-  duration_ms: 6.315026
+  duration_ms: 1.846178
   type: 'test'
   ...
 # Subtest: every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
 ok 40 - every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
   ---
-  duration_ms: 36377.021344
+  duration_ms: 20478.837607
   type: 'test'
   ...
 # Subtest: the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
 ok 41 - the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
   ---
-  duration_ms: 71919.530517
+  duration_ms: 38050.752678
   type: 'test'
   ...
 # Subtest: planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
 ok 42 - planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
   ---
-  duration_ms: 0.635025
+  duration_ms: 0.829985
   type: 'test'
   ...
 # Subtest: the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
 ok 43 - the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
   ---
-  duration_ms: 20648.160393
+  duration_ms: 11853.468601
   type: 'test'
   ...
 # Subtest: planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
 ok 44 - planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
   ---
-  duration_ms: 0.861242
+  duration_ms: 0.816391
   type: 'test'
   ...
 # Subtest: planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
 ok 45 - planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
   ---
-  duration_ms: 0.396635
+  duration_ms: 0.253231
   type: 'test'
   ...
 # Subtest: planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
 ok 46 - planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
   ---
-  duration_ms: 0.510355
+  duration_ms: 0.223374
   type: 'test'
   ...
 # Subtest: planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
 ok 47 - planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
   ---
-  duration_ms: 0.335728
+  duration_ms: 0.260948
   type: 'test'
   ...
 # Subtest: planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
 ok 48 - planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
   ---
-  duration_ms: 0.375348
+  duration_ms: 0.313954
   type: 'test'
   ...
 # Subtest: planted: a sheet the rolls draw that the preload list lacks fails "sheets"
 ok 49 - planted: a sheet the rolls draw that the preload list lacks fails "sheets"
   ---
-  duration_ms: 0.212553
+  duration_ms: 0.307804
   type: 'test'
   ...
 # Subtest: planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
 ok 50 - planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
   ---
-  duration_ms: 26204.077094
+  duration_ms: 16857.30549
   type: 'test'
   ...
 # Subtest: planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
 ok 51 - planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
   ---
-  duration_ms: 0.848457
+  duration_ms: 0.790751
   type: 'test'
   ...
 # Subtest: a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
 ok 52 - a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
   ---
-  duration_ms: 28778.803388
+  duration_ms: 17790.726287
   type: 'test'
   ...
 # Subtest: an id with no row exits 2, by name
 ok 53 - an id with no row exits 2, by name
   ---
-  duration_ms: 1493.371571
+  duration_ms: 1049.725762
   type: 'test'
   ...
 # Subtest: neither tool holds a stage id or a table of its own: both read the listed-stage table
 ok 54 - neither tool holds a stage id or a table of its own: both read the listed-stage table
   ---
-  duration_ms: 1.03084
+  duration_ms: 0.889426
   type: 'test'
   ...
 # Subtest: searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
 ok 55 - searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
   ---
-  duration_ms: 10.181135
+  duration_ms: 8.11714
   type: 'test'
   ...
 # Subtest: room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
 ok 56 - room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
   ---
-  duration_ms: 7682.846487
+  duration_ms: 4049.207155
   type: 'test'
   ...
 # Subtest: ruleOf names the rule and drops the numbers: two rolls of one rule are one row
 ok 57 - ruleOf names the rule and drops the numbers: two rolls of one rule are one row
   ---
-  duration_ms: 1.173399
+  duration_ms: 1.024323
   type: 'test'
   ...
 # Subtest: tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
 ok 58 - tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
   ---
-  duration_ms: 6.880897
+  duration_ms: 7.146873
   type: 'test'
   ...
 # Subtest: alone: a rule is counted only on rolls nothing else stops
 ok 59 - alone: a rule is counted only on rolls nothing else stops
   ---
-  duration_ms: 0.206262
+  duration_ms: 0.173812
   type: 'test'
   ...
 # Subtest: easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
 ok 60 - easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
   ---
-  duration_ms: 0.121748
+  duration_ms: 0.171771
   type: 'test'
   ...
 # Subtest: told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
 ok 61 - told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
   ---
-  duration_ms: 195.713762
+  duration_ms: 206.419384
   type: 'test'
   ...
 # Subtest: a trap over no animal he passes (it is not worth using)
 ok 62 - a trap over no animal he passes (it is not worth using)
   ---
-  duration_ms: 120.178681
+  duration_ms: 103.109926
   type: 'test'
   ...
 # Subtest: never told of traps, he does not use one (he knows nothing the stage has not told him)
 ok 63 - never told of traps, he does not use one (he knows nothing the stage has not told him)
   ---
-  duration_ms: 85.32161
+  duration_ms: 46.607538
   type: 'test'
   ...
 # Subtest: coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
 ok 64 - coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
   ---
-  duration_ms: 289.708708
+  duration_ms: 64.222032
   type: 'test'
   ...
 # Subtest: his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
 ok 65 - his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
   ---
-  duration_ms: 288.879304
+  duration_ms: 76.36718
   type: 'test'
   ...
 # Subtest: (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
 ok 66 - (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
   ---
-  duration_ms: 2086.97701
+  duration_ms: 874.193725
   type: 'test'
   ...
 # Subtest: the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
 ok 67 - the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
   ---
-  duration_ms: 2308.500041
+  duration_ms: 896.403134
   type: 'test'
   ...
 # Subtest: spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
 ok 68 - spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
   ---
-  duration_ms: 1.682995
+  duration_ms: 1.69321
   type: 'test'
   ...
 # Subtest: progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
 ok 69 - progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
   ---
-  duration_ms: 0.647044
+  duration_ms: 0.630774
   type: 'test'
   ...
 # Subtest: the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
 ok 70 - the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
   ---
-  duration_ms: 12.53129
+  duration_ms: 10.073282
   type: 'test'
   ...
 # Subtest: Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
 ok 71 - Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
   ---
-  duration_ms: 1.021092
+  duration_ms: 0.950322
   type: 'test'
   ...
 # Subtest: the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
 ok 72 - the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
   ---
-  duration_ms: 0.673364
+  duration_ms: 0.729097
   type: 'test'
   ...
 # Subtest: the gates: survival per edge over the tries, and peak stress per burst before a rest
 ok 73 - the gates: survival per edge over the tries, and peak stress per burst before a rest
   ---
-  duration_ms: 0.452729
+  duration_ms: 0.513998
   type: 'test'
   ...
 # Subtest: in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
 ok 74 - in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
   ---
-  duration_ms: 720.396627
+  duration_ms: 499.284558
   type: 'test'
   ...
 # Subtest: in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
 ok 75 - in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
   ---
-  duration_ms: 1307.051082
+  duration_ms: 858.028295
   type: 'test'
   ...
 # Subtest: the findings name the rule each breaks
 ok 76 - the findings name the rule each breaks
   ---
-  duration_ms: 1.033499
+  duration_ms: 1.278763
   type: 'test'
   ...
 # Subtest: no route jump passes over a hump, a stair or a shallow dip (1-1, 1-2, 1-3, both settings)
 ok 77 - no route jump passes over a hump, a stair or a shallow dip (1-1, 1-2, 1-3, both settings)
   ---
-  duration_ms: 8568.679496
+  duration_ms: 6040.325225
   type: 'test'
   ...
 # Subtest: inspectJumps reads 1-2's hump as a hop of its own height, a retry, never a pit
 ok 78 - inspectJumps reads 1-2's hump as a hop of its own height, a retry, never a pit
   ---
-  duration_ms: 8.061739
+  duration_ms: 4.172247
   type: 'test'
   ...
 # Subtest: the inspector builds 1-1, 1-2 and 1-3 as the game does on entry, on both settings (engine.ts:901)
 ok 79 - the inspector builds 1-1, 1-2 and 1-3 as the game does on entry, on both settings (engine.ts:901)
   ---
-  duration_ms: 546.825607
+  duration_ms: 412.922568
   type: 'test'
   ...
 # Subtest: the route is the check's own on 1-1, 1-2 and 1-3, both settings: no presumed hop (1-1's double test gap is judged on its flown arcs)
 ok 80 - the route is the check's own on 1-1, 1-2 and 1-3, both settings: no presumed hop (1-1's double test gap is judged on its flown arcs)
   ---
-  duration_ms: 1594.204009
+  duration_ms: 901.184417
   type: 'test'
   ...
 # Subtest: along and reached: the travel axis and its direction
 ok 81 - along and reached: the travel axis and its direction
   ---
-  duration_ms: 1.304495
+  duration_ms: 1.444823
   type: 'test'
   ...
 # Subtest: the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
 ok 82 - the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
   ---
-  duration_ms: 2301.952546
+  duration_ms: 1584.019595
   type: 'test'
   ...
 # Subtest: the first-timer on a run (1-1): furthest on is still the furthest right
 ok 83 - the first-timer on a run (1-1): furthest on is still the furthest right
   ---
-  duration_ms: 578.223992
+  duration_ms: 445.933324
   type: 'test'
   ...
 # Subtest: the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
 ok 84 - the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
   ---
-  duration_ms: 0.497807
+  duration_ms: 0.505774
   type: 'test'
   ...
 1..84
@@ -511,5 +511,5 @@ ok 84 - the tier bots on a leftward fixture: the pieces he entered and the piece
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 109581.038586
+# duration_ms 59569.191072
 EXIT 0

@@ -1,0 +1,5 @@
+POLISH-9b relist B (1-1 rolls sprint-A and -D only; --merge list order --in-order): 163 -> 162
+dropped (1-based layout, seed): [(117, 31931)]
+order kept: True
+kept seeds whose plan moved (1-based layout in the new list, seed, listed seed/rerolls before -> after): [(63, 36697, '37122301/12 -> 36697/0'), (115, 29807, '30146534/9 -> 29807/0')]
+layouts 1-62 identical (castBots L1-10, calibration 1-40, first run variant 10): True ; variant 10 = 9652
