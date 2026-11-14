@@ -874,7 +874,7 @@ export default function App() {
           // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
           onGuide: (text, seconds, passed, o) =>
             setGuideLine((g) => {
-              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}), ...(o?.teach ? { teach: true as const } : {}) };
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}), ...(o?.teach ? { teach: true as const } : {}), ...(o?.lock ? { lock: true as const } : {}) };
               return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
             }),
           onStageStats: (s) => {

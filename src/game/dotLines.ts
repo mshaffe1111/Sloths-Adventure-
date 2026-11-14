@@ -188,7 +188,7 @@ export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
  */
 /** how long a stage's own teach line (StageHint.teach) may wait for a clear moment: it is the lesson for its beat, never old news */
 export const TEACH_WAIT_MS = 60000;
-export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean } = {}): GuideLine | null {
+export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean; lock?: boolean } = {}): GuideLine | null {
   const sw = swapLine(text, stageId);
   if (sw && sw.text === null) return null;
   // (a puzzle's later step, the move itself, is never said as he walks up: only after struggle there, dotTips.ts)
@@ -209,6 +209,13 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   // (a stage's own teach line, its data says so: taught, not passing information. It waits its turn and stays its reading time; a
   // stock lesson never cuts in over a teach line, GuideQueue.cutsIn)
   if (o.teach && kind !== 'must' && kind !== 'danger') kind = 'teach';
+  // (the locked exit's line, the engine says so (GuideOpts.lock): a must, whatever its words. The keeper's own door lines ("We missed
+  // some of her marks...") read as information and waited behind her mark card at the door, BUILD-16b 11-14; R-165.241)
+  if (o.lock) {
+    kind = 'must';
+    topic = 'exit';
+    move = undefined;
+  }
   // Dot's own flight: she is the one flying, so her tips are read, not watched for
   if (o.flight && kind !== 'must') {
     kind = 'info';

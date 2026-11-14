@@ -25,6 +25,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage, TIP_SAY_S } from './gen2/pipeline.ts';
+import { drawDoorPlate } from './sanctuaryDoor.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
 import { vaultSide as vaultSideOf } from './vineTop.ts';
@@ -282,7 +283,7 @@ export interface GameEngineCallbacks {
   onSlowDevice?: () => void;
   /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
   /** `o.teach`: the stage's own teach line (StageHint.teach): Dot waits for a clear moment and keeps it up its reading time */
-  onGuide?: (text: string, seconds: number, passed?: boolean, o?: { teach?: true }) => void;
+  onGuide?: (text: string, seconds: number, passed?: boolean, o?: GuideOpts) => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -436,6 +437,10 @@ const FAIL_LIMIT = 20;
 
 /** what the engine hands Dot with a stage's own teach line (StageHint.teach) */
 const TEACH_LINE = { teach: true } as const;
+const LOCK_LINE = { lock: true } as const;
+/** what a guiding line is, as the engine knows it (onGuide): the stage's own teach line, or the locked exit's line (`lock`: Dot says it
+ *  at once, whatever its words, R-165.241) */
+export interface GuideOpts { teach?: true; lock?: true }
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -535,6 +540,8 @@ export class GameEngine {
   /** where the next particle goes once the cap is reached (the oldest is reused) */
   private particleWrap = 0
   private floatingTexts: FloatingText[] = [];
+  /** the stage's exit (its door), as the last update found it: its plate is drawn with the words in play (drawPopups) */
+  private exitItemRef: Collectible | undefined;
   /** stage tips said that go once he is past their spot (StageHint.passX), with the words they were said in */
   private passTips: Array<{ x: number; text: string }> = [];
 
@@ -3411,6 +3418,7 @@ export class GameEngine {
 
     // Update Exit Totem locked visual in collectibles list
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
+    this.exitItemRef = exitItem;
     if (exitItem) {
       exitItem.isLocked = !isExitUnlocked;
       // a sealed door shows how many are still missing
@@ -3443,7 +3451,11 @@ export class GameEngine {
           // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
           const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
-          if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
+          // (said at once, over any line still up, and marked the locked exit's, whatever its words: the keeper's own door lines read as
+          // plain lines and waited behind her mark card, BUILD-16b 11-14: 34 s at 1-6's door with no word why. R-165.241, STAGE-RULES:
+          // Dot explains any locked exit)
+          const said = line || 'Finish the goal to open the sanctuary';
+          if (this.stageHint?.text !== said) this.guide(said, 3, LOCK_LINE);
           }
         }
       }
@@ -7795,6 +7807,9 @@ export class GameEngine {
    * already drawn this frame goes up above it (2026-10-26, QA: fast hits piled their pop-ups on top of each other).
    */
   private drawPopups(ctx: CanvasRenderingContext2D) {
+    // (the shut door's "N more" plate: words in play, over Pokey as the door holds him at it, R-165.241; sanctuaryDoor.ts)
+    const door = this.exitItemRef;
+    if (door && door.isLocked && door.missing && !door.collected) drawDoorPlate(ctx, door.x, door.y, door.missing);
     ctx.save();
     ctx.textAlign = 'center';
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
@@ -9010,7 +9025,7 @@ export class GameEngine {
   }
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
-  private guide(text: string, seconds: number, o?: { teach?: true }) {
+  private guide(text: string, seconds: number, o?: GuideOpts) {
     // (the recorder's `dot` moment is logged when she has shown it, takeShown)
     // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
     bindSent(text);
