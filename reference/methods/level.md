@@ -21,6 +21,8 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 16. **No stage id, seed or x in engine code;** a level's facts live in its world's data. Check: `npx tsx tools/engine/generalitycheck.ts`.
 17. **No player words but the story keeper's.** Ask the lead for lines; hold them verbatim in a test.
 18. **Name every rough spot plainly in the report.** Stand-in art, a bot that cannot do something, a number you did not measure.
+19. **When a test refuses a listed layout, its rule moves into the list's judge** (`tools/engine/listRules.ts`) with a planted case, so no relist can list such a layout again (POLISH-9b 11-14: 1-1's room-for-help). Check: the plant goes red with the judge off.
+20. **Never re-pin from a partial suite run;** re-pin once, against the final list, after the whole suite. Check: the REPORT names the full-suite head the pins were taken on.
 
 ## The steps (in the order I would do them now)
 1. **Design doc** `reference/design/<stage>.md` (60 lines or fewer): the sentence, the beat table (what is there, what he does, what he feels), the rules as checks. Score it on LEVEL-BAR.md before building.
