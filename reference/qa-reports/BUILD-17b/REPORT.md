@@ -44,7 +44,7 @@ stills 4f82c7c5. Fault 4 (requiredMove, old 1-6) is RED by the lead's ruling (a)
 | build (BASE_PATH) / chunkcheck / artcheck / knowncheck / generality | 892880aa | 0 / PASS / 0 / 0 / PASS (27 known) |
 | roadmapcheck | 892880aa (unshallowed) | PASS |
 | drawcheck (with 1-7) | 2a2e8adc1 | GATES_DRAW |
-| engine tools tests (CI list + library13, castBots, routeHumps, libstage, registrycheck, pitClimb) | 2a2e8adc1 | GATES_ETOOLS |
+| engine tools tests (CI list + library13, castBots, routeHumps, libstage, registrycheck, pitClimb) | 2a2e8adc1 | 81/82: the one red is registrycheck.test "the shipped table passes the gate": 1-7 not flown (BUILD-17 step 2, not this packet). On c318fb0a the same file had 2 reds; its planted "creature sheets taken out of its preload list" is green now (the listed-stage preload) |
 | registrycheck --stage 1-7 | 2a2e8adc1 | 1 missing: flown (not this packet) |
 Not run (scoped, the integrator's full set): clipcheck, kbdcheck, buildcheck, tierBots, seedlist 1-1 (the lock shows whether 1-1 moved).
 
