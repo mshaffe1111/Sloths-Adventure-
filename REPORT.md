@@ -1,4 +1,4 @@
-# POLISH-10 REPORT (t-polish-10 from t-int-8@0a9be28c; written 3:42 PM ET 11-14). Status: items 1, 2 and 3a GREEN; 3b (flag ring) NOT done; drawcheck re-running.
+# POLISH-10 REPORT (t-polish-10 from t-int-8@0a9be28c; written 3:42 PM ET 11-14). Status: items 1, 2 and 3a GREEN; 3b (flag ring) NOT done (ready packet below); drawcheck PASS.
 
 ## Done-items
 1. **R-165.243 line: GREEN, fixed at the root for every world.** Not the backdrop art: a per-draw pixel trace at 1-1 roll A x11560
@@ -28,11 +28,10 @@
 - **Other worlds' strip wraps** (same cause as 3a), ratio join/column step: w2mist-mid 22.8, w1kapok-mid 19.5 (1-7, 1-9), w1sunrise-mid
   15.2 (1-3), w8sunset-mid 15.0, w6dawn-mid 12.9, w1rain-mid 10.5 (1-2/1-5/1-8), w3sinkhole-mid 10.1, w6moon-mid 7.9, w1dusk-mid 7.5,
   w1-mid 6.4 (1-4). A forced re-join of w1-mid left floating branch bits: each needs a per-strip look, so not batch-run.
-- drawcheck: the first run was disturbed by my arrow edit mid-run (HMR reload: '1-3 retrying'); re-run on the final head, result in
-  the message to the lead.
+- drawcheck: PASS (522 s) on the final source (one 1-1 retry when the shard-free strip was copied in, then re-measured on it).
 
 ## Gates (scoped, LAWS 5): tsc 0; artcheck PASS; unit: groundSeams, bankCull, groundwork, sceneryStrip, stageBackdrops, stripInk,
-   paintedKeep, w5Backdrop, journal 56/56; bounce/terrain/platformPlan 22/22; drawcheck: see above.
+   paintedKeep, w5Backdrop, journal 56/56; bounce/terrain/platformPlan 22/22; drawcheck PASS.
 
 ## Polish check
 - 1-1 roll A x11560 sideways + upright after: no line over sky/trees; lip, mushroom, bank unchanged. 1-4 canopy at (634,1300) sideways
