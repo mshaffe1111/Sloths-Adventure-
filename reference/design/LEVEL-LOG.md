@@ -86,3 +86,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | FIX-14d (Opus high) | turn run-on + rotting-dip hidden edge: kid 1-4 N 19->39, E 35->40; like-for-like mostly better; tower tests red (11): paused | $7.99 | ~25 min |
 | ENG-S3 (Opus xhigh) | PieceHost.focus + focusY, gen2 snakeViewFaults, false-liana landing clear of him (unit-proven); real page still 0/6 (level-top root cause): paused | $8.33 | ~25 min |
 | POLISH-9 (Opus high) | found the 1-1 Normal 'rescue' was a BOT artifact (inputGrace 0.35 s vs stopReact 0.30 s): firsttimer.ts fix, adult 4/10 -> 10/10: paused | $2.86 | ~10 min |
+| INT-7 (Opus xhigh) | merged t-polish-5 + t-fix-14b on main (polish-5's tree + main's 8 files; provenIndex conflict by both sides' intent); all 5 lists --check PASS; fast gates green; full Checks + stills UNRUN: paused | $3.94 | ~12 min |
