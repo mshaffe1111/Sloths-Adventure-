@@ -107,3 +107,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | BUILD-17 (Opus high) | 1-7 built: step 0 redos, hanging-cover game fix, 24/24 both, list 100, planted 14/14, bots 107/108, meter 5.4/2.3, stills + clips; 14 unit reds left (5 old-1-7 tests, 9 faults, several shared) | $33.42 | ~1 h 30 m (ran to 55% context: lead missed it) |
 | BUILD-16d (Opus high) | 1-6 beat 4 chain laid (ENG-S5 recipe), FAR in W1 data, found chain amp floor + petal fill as engine faults; trial A reverted; stopped for ENG-16E | $13.25 | ~60 min |
 | TIPS (Opus xhigh) | tips fire inside their height band (1-4 start floor 0 tips), TIP_NEAR verdict + tipwalk gate in CI, sealed line cuts in + plate over Pokey; 1-1 first-run lock re-recorded with proof | $23.20 | ~1 h 40 m |
+| FIX-15b (Opus xhigh) | proved the lay rule leaves 1-4 unrollable (0/40), shipped the gate-flag rule (planted, no roll moved), mock-up of option A for Matt | $11.48 | ~65 min |
