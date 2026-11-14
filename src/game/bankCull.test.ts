@@ -45,9 +45,10 @@ class FakeImage {
   }
 }
 
-// (the bank: 1-7's, 5,485 px on its first roll. It was 1-2's until fix-petals, 2026-11-01, sank 1-2's stair steps into the ground and
-// broke its long bank into pieces under 1,850 px; the rule is about a long bank, whichever stage has it)
-test("a long ground bank (1-7's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is", async () => {
+// (the bank: 3-3's, 5,091 px on its first roll, drawn with World 1's bank art. It was 1-2's until fix-petals, 2026-11-01, sank 1-2's stair
+// steps into the ground, then the hand-built 1-7's until BUILD-17 moved 1-7 onto gen2 (11-14); the rule is about a long bank, whichever
+// stage has it)
+test("a long ground bank (3-3's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is", async () => {
   const g = globalThis as unknown as { Image?: unknown };
   const had = g.Image;
   g.Image = FakeImage;
@@ -57,8 +58,8 @@ test("a long ground bank (1-7's) draws a handful of pieces a frame at a narrow p
     await new Promise((r) => setTimeout(r, 0));
     assert.ok(protoArtReady(), 'the kit is ready');
     assert.ok(warmGround(1), "World 1's painted ground is ready");
-    const lvl = generateAllLevels().find((l) => l.id === '1-7')!;
-    const st = buildProtoStage(lvl, 1, '1-7');
+    const lvl = generateAllLevels().find((l) => l.id === '3-3')!;
+    const st = buildProtoStage(lvl, 1, '3-3');
     const banks = st.platforms.filter((p: Platform) => p.height >= 90 && !p.push && !p.broken && !p.art);
     const bank = banks.reduce((a: Platform, b: Platform) => (b.width > a.width ? b : a));
     assert.ok(bank.width > 2000, `a long bank (${Math.round(bank.width)} px)`);

@@ -84,6 +84,10 @@ function liana(key: string, after: string, gap: LianaGap, w = 300): SectionPiece
   return [w1Liana(`${key}l`, after, gap), { key, shape: 'bank', w: [w, w], place: { kind: 'land', after: `${key}l`, dy: [0, 0], share: G.share, ...(G.window ? { window: G.window } : {}) }, style: 'moss_stone', main: true, landing: true }];
 }
 
+/** a low mossy rock to hop on `on` at `at` (50-56 px, 1-6's stumps: a 34-40 px rock is walked over with no jump, so it is no beat; LABELS §1 a mossy stone stands on ground). A hop is a beat to the
+ *  quiet line (seedList QUIET_MAX 4 s, judged on the bot's route): a stretch where he only walks and waits in cover reads as quiet */
+const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [120, 140], place: { kind: 'on', on, at: [at, at], h: [50, 56] }, style: 'moss_stone', landing: true });
+
 /** World 1's still props with each row's own id as a tag too, so a socket asks for exactly the cover the beat is designed with */
 const HIDE = { bush: 'w1-hide-bush', wide: 'w1-hide-bush-wide', carpet: 'w1-hide-moss', patch: 'w1-hide-moss-patch', hang: 'w1-hide-moss-hang' } as const;
 type Hide = keyof typeof HIDE;
@@ -122,7 +126,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
  *  (moving in cover is not hidden): the eagle screeches and circles, free this once. Each beat its own stretch (each a lesson) */
 function bushTeach(): Lay {
   return {
-    pieces: [bank('a', null, 300), bank('w1', 'a', 360), bank('w2', 'w1', 340), hop('m', 'w2', 400), bank('n', 'm', 360), bank('o', 'n', 300), bank('s1', 'o', 300), bank('s2', 's1', 320), hop('z', 's2', 360)],
+    pieces: [bank('a', null, 300), bank('w1', 'a', 360), bank('w2', 'w1', 340), hop('m', 'w2', 400), bank('n', 'm', 360), rock('rn', 'n', 0.45), bank('o', 'n', 300), bank('s1', 'o', 300), bank('s2', 's1', 320), hop('z', 's2', 360)],
     sockets: [watch('teach-bush', 'w1'), hide('h1', 'w1', 0.62, 'bush'), petals('pa', 'a', 0.5, 1), petals('pm', 'm', 0.35, 2, 120), tip('t-shake', 'm', 0.6, 'shake'),
       petals('pn', 'n', 0.5, 1), petals('po', 'o', 0.5, 1), watch('teach-shake', 's1'), hide('h2', 's1', 0.6, 'wide'), petals('ps', 's2', 0.15, 1), petals('pz', 'z', 0.5, 2, 120)],
   };
@@ -131,7 +135,7 @@ function bushTeach(): Lay {
  *  gaps, 200 and 260), one rhythm; a flag before it */
 function redGreen(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 300), bank('w2', 'w1', 380), bank('w3', 'w2', easy ? 300 : 440), hop('z', 'w3', 320)],
+    pieces: [bank('a', null, 320), bank('w1', 'a', 300), bank('w2', 'w1', 380), rock('r2', 'w2', 0.85), bank('w3', 'w2', easy ? 300 : 440), hop('z', 'w3', 320)],
     sockets: [flag('a'), petals('pa', 'a', 0.7, 1), watch('road', 'w1'), hide('h1', 'w1', 0.55, 'bush'), hide('h2', 'w2', 0.45, 'bush'), ...(easy ? [] : [hide('h3', 'w3', 0.5, 'bush')]),
       petals('p2', 'w2', 0.9, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-bark', 'z', 0.7, 'bark')],
   };
@@ -139,7 +143,7 @@ function redGreen(easy: boolean): Lay {
 /** [X] beat 5, bare bark (required): ~450 px of bare bark between two bushes (1-7.md 400-480), both inside the warn's 570 px run (Easy ~300) */
 function bareBark(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('b', 'a', 300), bank('w1', 'b', 300), bank('w2', 'w1', easy ? 210 : 360), bank('w3', 'w2', 260), hop('z', 'w3', 320)],
+    pieces: [bank('a', null, 320), bank('b', 'a', 300), bank('w1', 'b', 300), bank('w2', 'w1', easy ? 200 : 360), bank('w3', 'w2', 260), hop('z', 'w3', 320)],
     sockets: [flag('a'), petals('pb', 'b', 0.5, 1), watch('bark', 'w1'), hide('h1', 'w1', 0.55, 'bush'), hide('h2', 'w3', 0.35, 'wide'), petals('pw', 'w2', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-moss', 'z', 0.7, 'moss')],
   };
 }
@@ -147,17 +151,18 @@ function bareBark(easy: boolean): Lay {
  *  300 px, Easy 240); the golden seed in the open between the last two */
 function mossAnywhere(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 360), bank('b', 'a', 300), bank('w1', 'b', 420), bank('w2', 'w1', 420), bank('w3', 'w2', easy ? 360 : 420), hop('z', 'w3', 320)],
+    pieces: [bank('a', null, 360), bank('b', 'a', 300), bank('w1', 'b', 420), bank('w2', 'w1', 420), rock('r2', 'w2', 0.85), bank('w3', 'w2', easy ? 360 : 420), hop('z', 'w3', 320)],
     sockets: [petals('pa', 'a', 0.5, 1), watch('moss', 'w1'), hide('c1', 'w1', 0.55, 'carpet'), hide('m1', 'w2', 0.45, 'patch'), hide('m2', 'w3', 0.55, 'patch'),
       { id: 'seed', role: 'find', on: 'w3', t: 0.12, dn: 34 }, petals('pz', 'z', 0.3, 2, 120), tip('t-creak', 'z', 0.5, 'creak')],
   };
 }
 /** [C] beat 8, never still on a creak: moss patches, a creaky limb the only step between two (Easy: a sound bough); the eagle's eye runs
- *  over the whole beat (W17_JOIN): the screech catches him by the limb, and he crosses it to the moss, never waits on it */
+ *  over the whole beat (W17_JOIN): the screech catches him by the limb, and he crosses it to the moss, never waits on it. Its walk-in
+ *  (700 px, a rock to hop) puts the creak line, said past beat 7's eye, 800+ px before this beat's eye */
 function creakStill(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 360), limb('k', 'w1', !easy), hop('w2', 'k', 360), bank('w3', 'w2', 200), hop('z', 'w3', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('creak', 'w1'), hide('m1', 'w1', 0.4, 'patch'), hide('m2', 'w2', 0.55, 'patch'), petals('pz', 'z', 0.5, 2, 120), tip('t-swing', 'z', 0.7, 'swing')],
+    pieces: [bank('a', null, 360), bank('b', 'a', 340), rock('rb', 'b', 0.5), bank('w1', 'b', 360), limb('k', 'w1', !easy), hop('w2', 'k', 360), bank('w3', 'w2', 200), hop('z', 'w3', 320)],
+    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('creak', 'w1'), hide('m1', 'w1', easy ? 0.75 : 0.4, 'patch'), hide('m2', 'w2', easy ? 0.3 : 0.55, 'patch'), petals('pz', 'z', 0.5, 2, 120), tip('t-swing', 'z', 0.7, 'swing')],
   };
 }
 /** [W] beat 10, the twist, still is not stopped: a gap with no ground cover, crossed only on two mossy lianas (finish17 marks them: holding
@@ -176,7 +181,7 @@ function mossyLianas(easy: boolean): Lay {
  *  slides over the moss; patches thin under the snag. Two empty looks and it gives up and flies off */
 function eagleLands(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 420), bank('w2', 'w1', 420), bank('w3', 'w2', easy ? 300 : 360), hop('z', 'w3', 320)],
+    pieces: [bank('a', null, 320), bank('w1', 'a', 420), bank('w2', 'w1', 420), rock('r2', 'w2', 0.12), bank('w3', 'w2', easy ? 300 : 360), hop('z', 'w3', 320)],
     sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('perch', 'w1'), hide('c1', 'w1', 0.5, 'carpet'), hide('m1', 'w2', 0.62, 'patch'), hide('m2', 'w3', 0.6, 'patch'), petals('pz', 'z', 0.5, 2, 120)],
   };
 }
@@ -222,7 +227,7 @@ export const QUIET_17: SectionTemplate[] = [
   // [A] Dot's bush, "a small, worried dent in it"; far off one screech and no shadow; nothing hurts in 1,300 px. The bush line is said at
   // its far end, 800+ px before beat 1's bush
   link({ id: 'w1-17-arrival', name: "Dot's bush", job: 'arrive', versions: [
-    { id: 'dots-bush', lay: { pieces: [bank('a', null, 360), bank('b', 'a', 360), root('r1', 'b', 240, UP), root('c', 'r1', 340, DOWN), root('r2', 'c', 240, UP), root('z', 'r2', 320, DOWN)],
+    { id: 'dots-bush', lay: { pieces: [bank('a', null, 300), root('r0', 'a', 220, UP), root('b', 'r0', 360, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 340, DOWN), rock('rc', 'c', 0.45), root('r2', 'c', 240, UP), root('z', 'r2', 320, DOWN)],
       sockets: [tip('t-arrive', 'a', 0.6, 'arrive'), hide('dot', 'b', 0.5, 'bush'), petals('pb', 'b', 0.9, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-bush', 'r2', 0.3, 'bush')] } },
   ] }),
   // [R] the rests: each beat's own far bank says the next beat's line, 800+ px before it (a rest between)

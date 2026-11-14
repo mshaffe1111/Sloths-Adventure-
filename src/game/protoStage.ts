@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | '1-1' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, StagePlan> = { '1-1': '1-1', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | '1-1' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, StagePlan> = { '1-1': '1-1', '1-6': 'proto', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -504,8 +504,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const RIVERS: RiverZone[] = [];
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
-  /** the acorn meadows' watched stretches (1-7): their passes are the puzzle, as built */
-  const MEADOWS = new Set<WatchZone>();
   /** World 1's puzzle rooms (the shared puzzle kit, puzzleKit.ts): the seesaw (1-6) and the acorns (1-7) */
   const ROOMS: RoomSpec[] = [];
   let RING: ProtoExtras['ring'];
@@ -1468,7 +1466,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
     chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
     logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
-    bushRow: (n, g, kinds, calm, rocks) => bushRow(n, g, kinds, calm, rocks), secretBush: (c) => secretBush(c), ropeBushes: (c) => ropeBushes(c), acornMeadow: (c) => acornMeadow(c),
+    bushRow: (n, g, kinds, calm, rocks) => bushRow(n, g, kinds, calm, rocks),
     guardBranch: (l) => guardBranch(l), ropeGuard: () => ropeGuard(), trunkGuard: () => trunkGuard(), sleepingGuard: () => sleepingGuard(), snakeRing: () => snakeRing(),
   };
   const w1Stage = (plan === 'proto' ? '1-6' : plan) as W1Stage;
@@ -1846,175 +1844,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     }
     const lastBush = BUSHES[BUSHES.length - 1];
     run(R.r(260, 340));
-    // (1-7, QA 2026-10-29: the eagle watches up to just past the last bush, not the walk on from it: a pass that came as he walked on
-    // caught him 300 px from the bush behind him, off an upright screen)
-    ZONES.push({ x0, x1: plan === '1-7' ? Math.min(x, lastBush.x + lastBush.w + 40) : x, calm });
-    expert += watched(x - x0, (calm[0] + calm[1]) / 2);
-    pieces.push({ k: 'rest', x0, x1: x });
-  }
-
-  /**
-   * one bush with a secret: a short trunk stands inside it, up to a branch path hidden behind leaves (a golden seed at its end).
-   * From outside it looks like any other bush; climb up from inside it.
-   */
-  function secretBush(calm: [number, number]) {
-    const x0 = x;
-    run(R.r(380, 460));
-    const b = bush(x - BUSH_W.tall / 2, 'tall');
-    const tX = Math.round(b.x + b.w / 2);
-    const perchY = Math.round(G - 160);
-    trunk(tX, G, perchY);
-    // (its climbing vine starts a hop up the trunk, QA 2026-10-29, 1-7: Dot's climb lesson, "Flick up into the trunk to grab it", fired
-    // here on the ground, for a trunk hidden in the leaves; the player saw no trunk, walked on to the next wall and flicked up into it six
-    // times, where the spring mushroom is the way. A flick up from inside the bush still catches it: the secret stays a secret)
-    V[V.length - 1].bottomY = G - SECRET_VINE_UP;
-    const end = tX + Math.round(R.r(360, 420));
-    branch(tX - 40, end, perchY);
-    row(tX + 70, end - 90, perchY - 34, 3, 'hibiscus');
-    goldenSeed(end - 40, perchY - 34);
-    covers.push({ x: tX + 30, y: perchY - 90, w: end - tX, h: 110 });
-    run(R.r(520, 620));
-    // (1-7's rebuild: a rock to hop past the end of the secret path, on the way to the next bush)
-    if (plan === '1-7') {
-      const rx = Math.max(end + 40, x - 160);
-      block(rx, rx + 120, 40);
-      flower(rx + 60, G - 74, 'orchid');
-    }
-    // (1-7, QA 2026-10-29: watched to just past the bush, as the bush rows are: the walk on from it was 500 px with no bush on screen)
-    ZONES.push({ x0, x1: plan === '1-7' ? b.x + b.w + 40 : x, calm });
-    expert += watched(x - x0, (calm[0] + calm[1]) / 2);
-    pieces.push({ k: 'rest', x0, x1: x });
-  }
-
-  /** a rope over a wide soft pit with bushes hanging from it: shimmy from one to the next between the eagle's passes */
-  function ropeBushes(calm: [number, number]) {
-    const x0 = x;
-    run(R.r(300, 380));
-    bush(x - 200, 'wide');
-    const edge = x;
-    close();
-    const far = Math.round(edge + R.r(980, 1100));
-    softPit(edge, far);
-    const ry = G - ROPE_RISE;
-    ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: ry, g0: G, g1: G, required: false });
-    const span = far - edge;
-    // hanging just under the rope (by a few vine strands): his body, hanging from his hands, is inside the bush
-    for (const u of [0.26, 0.52, 0.78]) bush(edge + span * u - 52, 'tall', { w: 104, y: ry + 6, hanging: true });
-    for (const u of [0.13, 0.39, 0.65, 0.9]) flower(edge + span * u, ry + HANG_DROP - 26, 'orchid');
-    // (and mossy rocks on the moss below, a petal on each, for whoever drops off the rope and crosses down there)
-    for (const u of [0.33, 0.66]) {
-      const rx = Math.round(edge + span * u - 50);
-      P.push({ id: pid++, x: rx, y: HOLLOW_Y - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' });
-      flower(rx + 50, HOLLOW_Y - 86, 'orchid');
-    }
-    open(far);
-    // (1-7, QA 2026-10-29: a bush on the far bank as he drops off the rope, and the eagle watches to just past it: the walk on from the
-    // rope's end was 500 px with no bush on an upright screen)
-    let x1 = x + R.r(260, 340);
-    if (plan === '1-7') {
-      run(R.r(50, 70));
-      const fb = bush(x, 'tall');
-      x1 = fb.x + fb.w + 40;
-    }
-    run(Math.max(0, x1 - x) + (plan === '1-7' ? R.r(180, 240) : 0));
-    ZONES.push({ x0, x1: Math.min(x, x1), calm });
-    expert += (edge - x0) / RUN + (span + 88) / ROPE_SPEED * ((calm[0] + calm[1]) / 2 + 4) / ((calm[0] + calm[1]) / 2) + (x - far) / RUN;
-    pieces.push({ k: 'snakes', x0, x1: x });
-  }
-
-  /**
-   * the acorn meadow (1-7's puzzle, the shared kit's noise lure, 2026-10-28): open ground the eagle watches, too long to cross between
-   * two of its passes, with an acorn tree by the bush at each end of it. Carry an acorn out (hands full: no jumping), and when the eagle
-   * screeches, flick up to throw it and keep running: it lands behind him with a clack, the eagle circles over the noise instead of
-   * sweeping on, and he is past. The first stretch is short enough to cross without it (a bush at its end: the safe place to try the
-   * throw), the second is not. No rock or dip in the first part of each stretch (carrying, he cannot hop), a rock or two after it.
-   */
-  function acornMeadow(calm: [number, number]) {
-    const x0 = x;
-    run(R.r(260, 320));
-    bush(x - BUSH_W.wide / 2, 'wide');
-    const room = (len: number, first: boolean) => {
-      run(R.r(120, 150));
-      const oakX = x;
-      run(660);
-      const floor = endBank();
-      const n = ROOMS.length;
-      ROOMS.push({
-        id: `acorns-${n}`,
-        left: onP(floor, oakX - 150), right: onP(floor, oakX + 640), above: 380, below: 60,
-        pieces: [
-          { kind: 'reset', id: `post${n}`, at: onP(floor, oakX - 120) },
-          { kind: 'source', id: `oak${n}`, variant: 'acorn', at: onP(floor, oakX), look: 'tree' },
-          { kind: 'item', id: `acorn${n}`, variant: 'acorn', source: `oak${n}` },
-        ],
-        exit: `acorn${n}`, beyond: onP(floor, oakX + 620), ground: [floor.id],
-        // (QA 2026-10-29, 1-7: "Carry one out with you" read as a must, and a player who walked on without one was left wondering. The
-        // first stretch is crossable without it, the second only with it: the first room says what an acorn is for, the second that
-        // this time it is needed. Both lines new, need Matt's approval)
-        tips: first
-          ? { enter: "The squirrels' acorn tree, and that eagle!", hold: 'When it screeches, flick up to throw it.', nudge: 'An acorn could fool that eagle.', move: 'Take an acorn. Throw it when it screeches.' }
-          : { enter: 'Too far to run without an acorn.', nudge: 'That acorn tree again. Hmm.', move: 'Take an acorn!' },
-        // (Dot's lines: the problem on walking in, a nudge on struggle, the move only on Help: dotTips.ts)
-        mech: first ? 'acornDecoy' : undefined,
-      });
-      flower(oakX + 300, G - 34, 'hibiscus');
-      // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
-      const rest = len - 660 - 140;
-      const m = rest > 700 ? 2 : 1;
-      for (let j = 0; j < m; j++) {
-        run(rest / (m + 1) - 70);
-        logHop(R.i(34, 42));
-      }
-      run(Math.max(120, rest / (m + 1) - 60));
-      bush(x - BUSH_W.tall / 2, 'tall');
-    };
-    // the first stretch: crossable in one calm (try the throw here, a bush waits at its end); the second: only with the acorn
-    room(Math.round(R.r(1300, 1420)), true);
-    room(Math.round(R.r(2050, 2200)), false);
-    run(R.r(260, 320));
     ZONES.push({ x0, x1: x, calm });
-    MEADOWS.add(ZONES[ZONES.length - 1]);
-    expert += (x - x0) / RUN + 2 * 4 + watched(x - x0, (calm[0] + calm[1]) / 2) - (x - x0) / RUN;
+    expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
-  }
-
-  if (plan === '1-7') {
-    // 1-7 A Very Good Bush: hide from the eagle. Taught with long calms and big bushes close together, tested with the bushes farther
-    // apart and shorter calms, then twisted onto a rope line with bushes hanging from it. One bush hides a way up to a secret path.
-    // (Rebuilt 2026-10-28: a rock or two to hop between the bushes, and the finish opens with the acorn meadow, the kit's noise lure:
-    // the squirrels' acorns thrown to draw the eagle off; then more of the same until a quick player needs two minutes.)
-    // (QA the same day, an expert took 16 hits: the calms between passes are longer, 9-11 s while it teaches and 6-8 s after, about
-    // half again; the meadow keeps its own, which its puzzle is built on, stage17.test.ts)
-    beat('Start', () => {
-      rest(R.r(380, 430));
-      flag();
-    });
-    beat('Learn: hide in the bushes', () => {
-      hint(x + 20, 'An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide');
-      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [9, 11], true);
-      flag();
-    });
-    beat('Test: farther apart', () => {
-      hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      // (every version keeps the secret bush: w1Sections.ts)
-      section('develop');
-      flag();
-    });
-    beat('Twist: the rope line', () => {
-      hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
-      ropeBushes([7, 8]);
-      flag();
-    });
-    beat('Finish: the acorn meadow', () => {
-      acornMeadow([4.6, 5.4]);
-      flag();
-      // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
-      section('finish');
-      homeRun(['log']);
-    });
-    // (QA 2026-10-29: the first pass over each of 1-7's watched stretches only warns, as the stage's first pass does: World 1's eagle
-    // shows each stretch's rhythm once before it strikes. The acorn meadow keeps its own passes, which its puzzle is built on)
-    for (const z of ZONES) if (!MEADOWS.has(z)) z.freeFirst = true;
   }
 
   /** a coiled boa guarding a spot (it never moves; it rears, lunges about 130 px, and takes three hits) */

@@ -95,7 +95,7 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
   let a = 7;
   const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
   // (the World 1 stages built from section versions, isW1Stage: 1-2 and 1-3 roll on gen2 from 11-12, 1-5 from 11-13, and have no section rows)
-  for (const id of ['1-1', '1-6', '1-7', '1-9']) {
+  for (const id of ['1-1', '1-6', '1-9']) {
     assert.ok(isW1Stage(String(id)), id);
     for (let round = 0; round < 12; round++) {
       const before = layoutForEntry(lv(id), mem, roll, false)!;
@@ -110,11 +110,11 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
   }
 });
 
-test('a World 1 stage rolled on gen2 (no section rows: 1-2, 1-3, 1-5) clears and comes back without throwing (P12S: w1Pick threw on the missing row)', () => {
+test('a World 1 stage rolled on gen2 (no section rows: 1-2, 1-3, 1-5, 1-7) clears and comes back without throwing (P12S: w1Pick threw on the missing row)', () => {
   const mem = memory();
   let a = 11;
   const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
-  for (const id of ['1-2', '1-3', '1-5']) {
+  for (const id of ['1-2', '1-3', '1-5', '1-7']) {
     assert.equal(isW1Stage(id), false, `${id} has no section rows`);
     const first = layoutForEntry(lv(id), mem, roll, false)!;
     forgetLayout(id, mem);
