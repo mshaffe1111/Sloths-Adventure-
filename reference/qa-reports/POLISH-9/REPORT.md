@@ -2,10 +2,10 @@
 POLISH-9 (5:28-5:32 AM ET) stopped on the lead's pause; POLISH-9b (7:58 AM ET on) resumed at 182bb680. Opus 5.5 high.
 Context at report: about 22% of 1M (my estimate; D64).
 
-## VERDICT: __VERDICT__
+## VERDICT: **NOT GREEN: one red, a design call** (the yield deal, below). Everything else this packet asked is done. Every gate I ran passes except that one. buildcheck ALONE is UNRUN (box).
 
 ## EXACT NEXT STEP (the next 1-1 member or the lead, one step)
-__NEXT__
+The lead or Designer rules on the yield deal (item 1 below). Then the ruled change, with ONE more relist only if it moves 1-1's plans. Then buildcheck ALONE and the full suite on that head.
 
 ## What is still red, exactly
 1. **yield.test "the deal" (52 of 200 fresh 1-1 graphs).** This is a design call, not a pin. Since POLISH-7's CUT_11_DOUBLES, 1-1's pool has
@@ -16,7 +16,6 @@ __NEXT__
    - take sprint-B and sprint-C out of 1-1's graph list (1-1 rolls A and D only);
    - add a combine section with no double (a bounce + single-jump combine) to 1-1's pool.
    Never loosen the 2-in-200 line (law 22).
-2. __OTHER_RED__
 
 ## Done (heads named)
 - **Toy planted test for POLISH-9's bot fix** (ae03ef34): tools/inspect/firsttimer.test.ts.
@@ -90,8 +89,17 @@ __NEXT__
 - **Stills** (stills/, 2x, Roll A = seed 9652 with 0 rerolls, the built setting printed by the game for each file):
   rollA-{normal,easy}-1-1-L10-*-x{11560,12090}-{upright,sideways}.jpg (the bounce teach) and -x{22300,23300}-* (the stone stair).
 
-## Gates on __HEAD__
-__GATES__
+## Gates on e0c78137 (src as of b7df7a52; later commits are reports and logs only)
+- **PASS:**
+  - tsc
+  - BASE_PATH build; chunkcheck; artcheck (on 690d4ba5's src; later src changes are tests and tools only, plus listRules and the list file)
+  - knowncheck (ciTests.known 17 -> 16); generality; roadmapcheck (after unshallowing the fresh clone); kbdcheck
+  - drawcheck (607 s); clipcheck (83 known, 453 s)
+  - seedlist --check: 1-1 (163, first-run lock holds, the new room-for-help rule) and 1-2 to 1-5 (before the relist, after the `parked` change)
+  - tierBots.test 7/7; CI tool-test line 84/84 (firsttimer.test and the new plant included); bot-pin suites 62/62
+- **Full unit suite:** the discovery run (gates/g-unit-discovery.txt, mixed heads) had 3,387 tests and 9 failures. Each is fixed above,
+  or is the relist's (b), or is the deal. The final run on b7df7a52 is in gates/g-unit.txt: __UNIT__
+- **RED:** yield.test "the deal" (a design call, item 1).
 
 ## Polish check (judged as Matt will see them on a phone, both orientations)
 - **Bounce teach, Normal and Easy, upright and sideways:** the mushroom glows with an up-arrow cue right before a ~178 px earth bank,
