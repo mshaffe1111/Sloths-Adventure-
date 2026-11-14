@@ -129,7 +129,14 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
 ### 6. The gates on 498f8d61 (the final code head; later commits are reference/ only)
 - Lock re-check vs 68e4bce1 on 498f8d61 (`lock-check-498f8d61.txt`; covers the petal commit and the relist): 101/102 stages unchanged,
   1-6 intended, exit 0. The first check (`lock-check.txt`, before the petal commit): 101/102, 1-6 intended (vines only).
-- The whole suite (CLAUDE.md's glob, 6 shards as CI, 2 workers, from a side worktree at 498f8d61): (SHARDS)
+- The whole suite (CLAUDE.md's glob, 6 shards as CI, 2 workers, from a side worktree at 498f8d61, 6:14-6:48 PM ET): **3438 pass, 1 fail**
+  (shards 649/0, 618/0, 494/0, 463/1, 597/0, 617/0). (A first start on ebbb3eb2 was stopped at 2 min when artCutin.test.ts went red on the
+  w6to10 packing record's sizes; fixed in 8e6a4ea9 + 943adfd4 and restarted on 498f8d61.)
+- The other CLAUDE.md checks on 498f8d61: tsc PASS; `BASE_PATH=/Sloths-Adventure-/ npx vite build` PASS; chunkcheck PASS; artcheck PASS;
+  knowncheck PASS; generalitycheck PASS; buildcheck PASS (easy p95 69 ms); `seedlist.ts 1-1 --check` PASS (257); the engine tools' tests
+  33/33; tierBots 7/7; kbdcheck (`CI=1 FORCE_COLOR=1`) PASS; roadmapcheck PASS (after `git fetch --unshallow` and every branch fetched:
+  on the shallow clone it cannot check proofs and names 8 cited commits on unfetched branches; this branch does not touch ROADMAP.md).
+  drawcheck and clipcheck: (DRAWCLIP)
 - **RED: src/game/requiredMove.test.ts:8** ("the limited bot: without the double or the bounce, it stops short on 1-6"): "without the
   bounce: shrine on 0 rescues, 0 mushroom bounces". Its premise ("1-6 on main needs both the second jump and the bounce") is the OLD
   hand-built 1-6's, deleted by ENG-16F; the new 1-6 lays no mushroom, and on the relisted seed 1 the no-bounce bot reaches the shrine on
