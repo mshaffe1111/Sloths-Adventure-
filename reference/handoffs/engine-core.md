@@ -153,6 +153,22 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
 - Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, and a find that names what was found with its
   picture and stays until read.
 
+## 0o (0k on t-pieces). PIECES (t-pieces, 11-13): pieces any world lays from a table; what the next engineer on a general piece must know
+- **The shape of a general piece** (stillLay.ts, lureLay.ts, rideLay.ts): a world writes a table of rows by prop id; the lay file gives
+  `xProps` (manifest rows by tag), `xSocket` (the world-neutral socket), `xEmitters` (kit.emit: what a filled socket lays), `xFaults` (the
+  fairness check, in words). The look stays the world's (a `note` callback into its extras). kit.emit is the hook: no pipeline change.
+- **Only stage-level outputs need a hook**: `StageSink.clocks` -> the built stage's `clocks` (gen2/types.ts, pipeline.ts, by patch), which
+  the engine runs through B14's `beatClock`. beat.ts here is B14's file, byte-identical: never edit it on this branch.
+- **Open** (reference/qa-reports/PIECES/REPORT.md): ZONES-BY-DATA and CLOCK-ON not started (exact next step there); the ride-only gap needs a 'ride' place
+  rule; RIDE.keep unwired; no stills (nothing lays these on the page yet); the full Checks were not run on the head.
+- **Traps**: the predator kit clamps every move to the animal's patch (core.ts minX/maxX), at rest as in a charge, so anything "it is lured
+  to" must work only while it is after him (lure.ts AFTER_HIM) or it plays itself. A ride does not fit a single jump's gap (114 px on some
+  rolls): lay it over a double's. A lift's carry needs `p.y += dy` or he drops a frame behind it going down (the test counts frames). The
+  lock is byte-exact on proto extras: moving an emitter must keep its extras' shape (W6 hides, W8 roosts). Patches are regenerated with
+  reference/qa-reports/PIECES/mkpatches.sh; planted faults with planted-faults.py (46).
+- **Integrated (ENG-INT5, t-eng-base, 11-13):** merged whole; no patch is applied by hand any more. B14's `beatClock` line in engine.ts and
+  `GeneratedStage.clocks` were already on the head, so the merge keeps ONE of each (the duplicate import and field were dropped).
+
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
   BC-FIX brought it to 105/57 with every result identical (reference/qa-reports/BC-FIX/REPORT.md). Profile before changing code:

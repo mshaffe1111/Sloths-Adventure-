@@ -9,7 +9,13 @@ import { NOISE } from './noise.ts';
 import { inWorld } from './predators/ways.ts';
 import { beat, blocks, checkPredator, foodChain, hear, hurt, newPredator, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';
-import { CAIMAN, CASTS_AFTER_1, FROG, HARPY, JAGUAR, OCELOT, RIVER_GUARD, SENTRY, SPIDER, TAYRA, TURTLE } from './predators/casts.ts';
+import { CASTS_AFTER_1 } from './predators/registry.ts';
+import { CAIMAN, RIVER_GUARD, TURTLE } from './predators/world2.ts';
+import { JAGUAR, OCELOT } from './predators/world3.ts';
+import { SPIDER } from './predators/world5.ts';
+import { FROG, TAYRA } from './predators/world6.ts';
+import { SENTRY } from './predators/world7.ts';
+import { HARPY } from './predators/world8.ts';
 import { HABIT, type Kind } from './predators/roster.ts';
 import type { ClockDef } from './stageKit.types.ts';
 

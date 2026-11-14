@@ -17,6 +17,7 @@ import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
 import type { Zone } from '../zones.ts';
+import type { ClockDef } from '../stageKit.types.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
 
@@ -741,6 +742,9 @@ export interface StageSink {
   /** the stage's zones (zones.ts): the sections' own, and any an emitter lays (a prop's darkness over its span); no animal or flag
    *  is left standing inside one */
   zones: Zone[];
+  /** the stage's beats (beat.ts ClockDef): an emitter that lays a piece on a beat lists the beat here, once by id; the built
+   *  stage carries them as `clocks`, and the engine runs them */
+  clocks?: ClockDef[];
   nextPlatformId: () => number;
   nextCollectibleId: () => number;
   nextEnemyId: () => number;
