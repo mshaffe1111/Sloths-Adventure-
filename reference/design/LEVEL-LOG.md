@@ -90,3 +90,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | INT-7b (Opus xhigh) | INT-7 finished: every gate GREEN on cc015e7f; 1-4 clips + 1-1 stills both ways (first-run off-by-one fixed); found R-165.236 (teach tips by x) + the canopy seam | $12.42 | ~60 min |
 | ENG-S4 (Opus xhigh) | snake verdict counts level top+foot (6-3 refused as laid, passes hung 300 down on 5 phones, clips both ways); SNAKE-LAY + letter n; liana len per row; LONG dial pushback accepted; chains not started | $14.16 | ~95 min |
 | ENG-B3 (Opus xhigh) | B2 owed gates green; B5 CHASE-LAY (chaseCap from Matt's flag span, forks, greedy flags); refusals N 15/30 E 7/30; tint not done | $16.87 | ~85 min |
+| KEEPER-16 (Opus high) | 1-6's 7 lines + 6b sealed + mission, nature check, 2 flags (no petal count; old lines to delete), a STORY-KEEPER method update | $2.28 | ~10 min |
