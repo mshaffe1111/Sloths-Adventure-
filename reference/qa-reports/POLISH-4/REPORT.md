@@ -1,4 +1,5 @@
 # POLISH-4 REPORT (t-polish-4 from t-polish-3@a9d6b1bc; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 11:36 PM ET 11-13, stopped at the 40% context line.
+**NOT GREEN: verdicts.test.ts:323 (seed-323, the engine lane's realFalls clause), plus 1-2/1-3/1-5 --check (item 0).**
 **EXACT NEXT STEP (for POLISH-5, 1-1; the lead 12:08 AM: 1-4's rotten fork R-165.206 moved to FIX-14 with Matt's rocks/fig-gate notes):**
 0. **1-2/1-3/1-5 replays moved by the t-ruler merge (500eb9b, w1Pits.ts findOpenPits), NOT by step 1** (proof below). Seeds whose replay
    differs from its search on the merged head (both settings unless named): 1-2: 20 23 54 63 65 75 99; 1-3: 44; 1-5: 14 44 45 86 139.
@@ -49,4 +50,8 @@ grep every reader and sort them into "counts the route" vs "judges the fall": th
 ## RESULTS (gates/ holds the logs)
 - seedlist --check, 9b45e20 (step 1 only) vs e215878 (+ t-ruler + 1-1 relist): 1-1 PASS / PASS; 1-2 PASS / 14 lines (7 seeds); 1-3 PASS /
   2 lines (seed 44); 1-4 not run / PASS; 1-5 PASS / 10 lines (5 seeds). So the step 1 skip (gapsOf, nodeAsks hazard) moves no roll on 1-1..1-5.
-- Full unit suite on e215878: FULL_SUITE_RESULT
+- Full unit suite on e215878: 3376 tests, 3373 pass, **1 FAIL: verdicts.test.ts:308/323**
+  ("planted: without branch 128 the slot is a fall", the seed-323 copy). It comes in with the t-ruler merge: the pre-merge run on 9b45e20
+  passed it (stopped at test 1517 with 0 fails, after this file had run). RULER's report says this copy needs its real right bank, and
+  POLISH-3 showed a bank does not fix it; the root is realFalls' floor clause (promises11.ts:44), which the packet gives to the engine lane.
+  NOT patched here (LAWS 22). The 4-3 line is a `# TODO`, not a fail. **So this head is NOT GREEN** until the engine lane fixes realFalls.
