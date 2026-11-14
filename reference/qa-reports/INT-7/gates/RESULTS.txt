@@ -18,3 +18,4 @@ drawcheck 0 8:46 AM
 clipcheck 0 8:51 AM
 buildcheck 0 8:51 AM
 done 8:51 AM
+kbdcheck-alone 0 8:53 AM (re-run alone on the idle machine: planted case goes red as it must; PASS 121 s)
