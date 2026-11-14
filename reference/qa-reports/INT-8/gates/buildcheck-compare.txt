@@ -1,0 +1,6 @@
+buildcheck alone, interleaved, this container (INT-8, 12:16 PM)
+== 007f4421 load 1.18 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 71 ms, p95 185 ms, max 192 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 56 ms, p95 104 ms, max 117 ms (30 builds, CPU x4)
+== 2840b63c load 1.15 12:16 PM

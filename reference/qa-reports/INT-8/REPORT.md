@@ -22,6 +22,17 @@
   Line by line in gates/RESULTS.txt; logs are gitignored, failures quoted here.
   - roadmapcheck's first run exited 2: "shallow clone, proofs cannot be checked". The container's clone was shallow, and that is not
     a defect of the branch. After `git fetch --unshallow` it PASSES (roadmap-unshallow line).
+  - **Every runner line exits 0 (11:03 AM to 12:15 PM; gates/gate-summaries.txt):**
+    - tsc, build (BASE_PATH), chunkcheck, artcheck, knowncheck and generality pass.
+    - Unit shards: 1,311 / 1,161 / 928 tests, 0 fail, 2 todo (main's 4-3 boulder and its pair, as on INT-7).
+    - Seed lists: 1-1 162, 1-2 100, 1-3 100, 1-4 100 and 1-5 150 PASS, so no relist was needed. 1-1's check includes the
+      first-run lock, so the lock holds.
+    - registry PASS; tool tests 85/85 (firsttimer.test included); tierBots 7/7 (no calibration moved, nothing recommitted).
+    - drawcheck PASS (528 s); clipcheck PASS (83 known); kbdcheck PASS, run after the shards, and its planted case goes red.
+    - buildcheck PASS: Normal p95 146 ms, Easy 99 ms (budget 150).
+  - **buildcheck is in question.** Normal p95 146 is 4 ms under the budget, against 113 (INT-7) and 120 (POLISH-9). Re-run ALONE right
+    after the runner (load 1.98 at its start), it FAILED: Normal p95 174 ms, max 182; Easy p95 80. The interleaved comparison on this
+    container (link #1 / POLISH-9 / the merge) is in gates/buildcheck-compare.txt; the verdict is under STATUS.
 - **Step 4, stills** from a FROZEN worktree of 595ada5d on :3218 (tools/shoot.sh). 2x, upright 412x915 and sideways 915x412,
   Normal and Easy. The game prints BUILT beside every file (D62): `stage 1-1, seed 9652, rerolls 0, built normal|easy`.
   - The places are read from the game's own build of the first run (layout 10 = list index 9 = seed 9652; play11Seed, firstRun11.ts):

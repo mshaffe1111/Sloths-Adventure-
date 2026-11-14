@@ -8,3 +8,15 @@ generality 0 11:04 AM
 roadmap 2 11:04 AM
 roadmap-unshallow 0 11:10 AM (re-run after git fetch --unshallow: the first run refused the shallow clone, exit 2)
 unit2 0 11:44 AM
+unit1 0 11:45 AM
+unit3 0 11:47 AM
+seedlists 0 11:56 AM
+registry 0 11:56 AM
+tooltests 0 11:57 AM
+tierBots 0 11:58 AM
+drawcheck 0 12:07 PM
+clipcheck 0 12:12 PM
+kbdcheck 0 12:15 PM
+buildcheck 0 12:15 PM
+done 12:15 PM
+buildcheck-alone2 1 12:15 PM (re-run alone, idle machine: the first run's Normal p95 146 ms sat 4 ms under the budget)
