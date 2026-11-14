@@ -25,11 +25,11 @@ import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, 
 import { PROMISES_11, realFalls } from './promises11.ts';
 import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
-import { repairLandings } from './landings.ts';
+import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -324,6 +324,30 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
   const linked = held
     ? (x: number) => (heldLandings({ id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: swing.amp, swingPeriod: swing.period, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6
     : (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6;
+  // (ENG-16E, R-165.246: a perch laid by what he SEES (a grip dial, or a chain's last liana, `held`) is laid only where the testers'
+  // let-go lands him with margin: the press at the swing's forward end (physics FORWARD_END), from every hold the dial names, his middle
+  // half his body inside the perch (LAND_IN, STAGE-RULES §1 "lands with margin"). The window counts every press of a swing, so its far end
+  // could lie past it: 1-6's chain at half the swing landed 8-17 px in (BUILD-16d E1), its FAR perches fell short (BUILD-16c))
+  const forward = swing.grip || held
+    ? (x: number) => {
+      const key = ['fwd', R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
+      let r = RELEASE_CACHE.get(key);
+      if (r === undefined) {
+        const was = { ...TIMED };
+        setTimedSwing(difficulty === 'easy');
+        try {
+          const y = from.y + dy;
+          const A: SwingVine = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
+          const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= y + 14 && c.y >= y && c.x >= x + LAND_IN.px && c.x <= x + w - LAND_IN.px;
+          r = forwardEndLands(A, lands, gripsOf(swing.grip, v.bottomY - v.topY)) ? 1 : 0;
+        } finally {
+          Object.assign(TIMED, was);
+        }
+        RELEASE_CACHE.set(key, r);
+      }
+      return r === 1;
+    }
+    : () => true;
   let lo = -1;
   let hi = -1;
   for (let x = R(Math.max(v.x + 40, min)); x <= v.x + 900; x += 20) {
@@ -333,8 +357,8 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
     } else if (lo >= 0) break;
   }
   if (lo < 0) return null;
-  // (today's check: from the far end of the band in, the first it links)
-  while (hi >= lo && !linked(hi)) hi -= 20;
+  // (today's check: from the far end of the band in, the first it links and the testers' let-go lands)
+  while (hi >= lo && !(linked(hi) && forward(hi))) hi -= 20;
   return hi >= lo ? [lo, hi] : null;
 }
 

@@ -847,6 +847,62 @@ export function pressWindow(
 }
 
 /**
+ * The testers' let-go (RELEASE above: "Testers let go at the FORWARD END of the swing, the natural moment"): the press made as the swing
+ * out in front passes this share of its reach, moving forward (the first-timer bot decides at the same share: tools/inspect/firsttimer.ts
+ * LET_GO_AT, held equal by a test). ENG-16E, R-165.246: the release window counts every press of a swing, so a perch at the far end of its
+ * band can lie past where THIS press lands him (1-6's chain at half the swing, BUILD-16d E1; its FAR perches, BUILD-16c): gen2 lays a perch
+ * he reaches by what he sees only where this press lands him (pipeline lianaBand).
+ */
+export const FORWARD_END = 0.75;
+/**
+ * Does the testers' let-go (FORWARD_END) from every hold in `grips` (shares of the vine's length, pressWindow's) get him there (`hits`,
+ * asked every frame of the flight with the vines' clock, as pressWindow's), the jump held, as the engine plays the press (releaseCall: the
+ * sweet spot's leap, or the leap it just gave when the press comes a beat late)?
+ */
+export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prevY: number) => boolean, grips: readonly number[] = [0.7, 0.95]): boolean {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  for (const g of grips) {
+    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
+    let lastSweet = -1e9;
+    let snap: SwingState | null = null;
+    let pressed = false;
+    // (a swing to settle, then the first forward sweep past FORWARD_END)
+    for (let k = 0; k < 3 * n && !pressed; k++) {
+      const r = swingStep(s0, A, DT, 1, 0);
+      const s = { ...s0 };
+      if (inSweetSpot(s, 1)) { lastSweet = k; snap = s; }
+      const amp = s.amp ?? TIMED.amp;
+      if (k < n || amp < 0.05 || s.omega <= 0 || s.angle / amp < FORWARD_END) continue;
+      pressed = true;
+      const call = releaseCall(s, 1, (k - lastSweet) * DT);
+      // (a press a beat early waits for the sweet spot: at FORWARD_END the sweet spot is on or just past, so it never waits long)
+      let from = s, at = r, t0 = s.t ?? 0;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { const r2 = swingStep(s0, A, DT, 1, 0); at = r2; }
+        from = { ...s0 };
+        t0 = s0.t ?? 0;
+      }
+      const l = timedLaunch(from, 1);
+      const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
+      let t = 0, made = false;
+      for (let i = 1; i <= 90 && !made; i++) {
+        const prevY = c.y;
+        airStep(c, DT, 1, true);
+        t += DT;
+        if (hits(c, t0 + t, prevY)) made = true;
+        if (c.y > A.bottomY + 500) break;
+      }
+      if (!made) return false;
+    }
+    if (!pressed) return false;
+  }
+  return true;
+}
+
+/**
  * ms of ONE swing on A (the liana he holds) in which a press to let go toward B, the next liana of a chain to the right, puts his hands
  * on B as it swings (canGrabSwing at the vines' clock, B at its own phase: the stage's, swingSetup's chainPhase): the chain's catch, by
  * the engine's own press (pressWindow: the sweet spot, a beat early or late, the let-go `flights`) from A's `grips` (undefined: its own

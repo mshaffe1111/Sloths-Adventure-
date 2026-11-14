@@ -266,6 +266,38 @@ const isClimb = (v: GeneratedStage['vines'][number]) => !v.off && !v.isSwingingV
 const firm = (p: Platform) => !p.broken && !p.art && (p.type === 'solid' || p.type === 'bouncy') && p.width >= 170;
 const GOALISH = new Set<Collectible['type']>(['relic', 'cage', 'find', 'seed', 'heart', 'super_heart', 'powerup_speed', 'powerup_invincible', 'powerup_magnet']);
 
+/**
+ * OFF THE PATH (ENG-16E, R-165.246; BUILD-16c/16d 1-6: the fill laid its pairs on soft pits' floors where a creaky limb or a run of lianas
+ * left a stretch over FILL_GAP, and the tier bots met the sealed door for them): a fill petal goes only on the walked and landed path, never
+ * where he must take a fall or a hit to get it. The stage's own record of its falls says where that is, in any world:
+ *   - inside a fall on the route (gen2's `falls`: the route's gaps, each with its take-off lip) or a heart-fall zone (`heartFalls`), a
+ *     spot below the gap's LOWER lip is in the pit: its floor, its stair, its hurt floor (a perch level with the lips is above it);
+ *   - a hurt floor (`pit: 'hurt'`, the thorn bed: touching it is a heart and a set-back), a catch under a gap (`catch`: a fall's floor), a
+ *     creaky limb (`fragile`: it gives way under him) never holds one, nor does a jump that starts or ends on one of them, nor a climb that
+ *     stands in a pit.
+ * A stage with no record of its falls (the hand-built stages: no `gen2`) is judged by the pieces' own marks alone.
+ */
+export interface FallSpan { x0: number; x1: number; lip: number }
+export function fallSpans(stage: GeneratedStage): FallSpan[] {
+  const falls = (stage as { gen2?: { falls?: Array<{ x0: number; x1: number; y: number }> } }).gen2?.falls ?? [];
+  const zones = (stage.heartFalls ?? []).map((z) => ({ x0: z.x0, x1: z.x1, y: NaN }));
+  const out: FallSpan[] = [];
+  for (const f of [...falls, ...zones]) {
+    // (the lower of the two lips: a bank whose end meets the gap's start, one whose start meets its end; the record's own lip when known)
+    const lips = stage.platforms.filter((p) => !p.broken && p.pit !== 'hurt' && (Math.abs(p.x + p.width - f.x0) <= 4 || Math.abs(p.x - f.x1) <= 4)).map((p) => p.y);
+    if (Number.isFinite(f.y)) lips.push(f.y);
+    if (lips.length) out.push({ x0: f.x0, x1: f.x1, lip: Math.max(...lips) });
+  }
+  return out;
+}
+/** a spot inside a fall, lower than its lower lip: getting it means dropping into the gap */
+export const inFall = (spans: readonly FallSpan[], p: Pt): boolean => spans.some((f) => p.x > f.x0 && p.x < f.x1 && p.y > f.lip);
+/** a piece that never holds a fill petal: a hurt floor, a catch, a creaky limb, or a floor or step inside a fall below its lower lip */
+export const offPath = (spans: readonly FallSpan[], p: Platform): boolean =>
+  p.pit === 'hurt' || !!p.catch || p.type === 'fragile' || spans.some((f) => p.x + p.width > f.x0 + 4 && p.x < f.x1 - 4 && p.y > f.lip);
+/** the pieces each trail of the last candidates() rests on (a ledge's ledge, a jump's two ends; a climb's vine foot as a point) */
+const RESTS = new WeakMap<Pt[], { on: Platform[]; foot?: Pt }>();
+
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
 function candidates(stage: GeneratedStage, a: number, b: number, r: () => number): Pt[][][] {
   const ax = routeAxis(stage);
@@ -277,6 +309,7 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     if (span < step * (TRAIL_LEN - 1)) continue;
     const y0 = v.topY + 80 + r() * (span - step * (TRAIL_LEN - 1));
     const t = Array.from({ length: TRAIL_LEN }, (_, i) => ({ x: v.x, y: y0 + i * step }));
+    RESTS.set(t, { on: [], foot: { x: v.x, y: v.bottomY } });
     if (t.some(inGap)) climbs.push(t);
   }
   const jumps: Pt[][] = [];
@@ -290,6 +323,7 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
       const x = j.takeoffX + (j.landX - j.takeoffX) * u;
       return { x, y: arcFeet(j, x) - 34 };
     });
+    RESTS.set(t, { on: [j.from, j.to] });
     if (t.some(inGap)) jumps.push(t);
   }
   const ledges: Pt[][] = [];
@@ -321,6 +355,7 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     for (let k = 0; k < tries; k++) {
       const x0 = lo + ((k0 + k / tries) % 1) * (hi - lo);
       const t = Array.from({ length: len }, (_, i) => ({ x: x0 + i * step, y: p.y - FLOAT }));
+      RESTS.set(t, { on: [p] });
       if (!t.some(inGap)) continue;
       (onFloor ? floor : raised || byGoal ? ledges : plain).push(t);
     }
@@ -345,6 +380,13 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
   const r = rng(layoutHash(stage) ^ (tried.size * 2654435761));
   let id = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const skip = new Set<string>();
+  // (off the path: never a pit's floor or stair, a hurt floor, a catch or a creaky limb, nor a jump from or onto one; judged as a trail is
+  // picked, so a stage whose fill never picked one is laid exactly as before)
+  const spans = fallSpans(stage);
+  const away = (t: Pt[]) => {
+    const rest = RESTS.get(t);
+    return !!rest && (rest.on.some((q) => offPath(spans, q)) || (!!rest.foot && inFall(spans, rest.foot)));
+  };
   for (let guard = 0; guard < 40; guard++) {
     const petals = stage.collectibles.filter((c) => isPetal(c, stage));
     const gap = petalGaps(stage, petals).find(([a, b]) => !skip.has(`${a}:${b}`));
@@ -357,7 +399,8 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
       // (any candidate of the tier, the one the layout's number picks first)
       const order = tier.map((t) => ({ t, k: r() })).sort((p, q) => p.k - q.k).map((o) => o.t);
       for (const t of order) {
-        const spots = t.filter((p) => open(stage, p) && !tried.has(`${Math.round(p.x)},${Math.round(p.y)}`));
+        if (away(t)) continue;
+        const spots = t.filter((p) => open(stage, p) && !inFall(spans, p) && !tried.has(`${Math.round(p.x)},${Math.round(p.y)}`));
         if (spots.length < 2) continue;
         for (const p of spots) {
           // (the nearest petal's look: a row never mixes species)
