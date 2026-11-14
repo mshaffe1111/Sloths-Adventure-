@@ -1,0 +1,5 @@
+upright-412x915-normal {"stage":"1-7","seed":2,"diff":"(unset: Normal)","easy":false,"eagles":9}
+upright-412x915-normal b1-bush {"phase":"rest","eye":3358,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b1-bush clip 76 frames at 16.5 fps; the look on him at frame 37 (2.1 s): {"phase":"hunt","eye":3107,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b2-shake {"phase":"rest","eye":5164,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b2-shake clip 69 frames at 18.8 fps; the look on him at frame 23 (1.2 s): {"phase":"hunt","eye":4877,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
