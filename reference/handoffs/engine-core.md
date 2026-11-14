@@ -4,9 +4,31 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B3 (11-14, t-eng-b3): section 0v (the chase laid by gen2). Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0v. The chase LAID by gen2 (B3 = B5 CHASE-LAY, ENGINE-678 W2, t-eng-b3 from t-b2-chase@42d2d7a6, 11-14): what the next engineer must know
+- **Job K is a chase node now** (nodeLetters.ts: out of LATER; V13 still refuses it in a world's first stage). A K node is filled from
+  the sections a practise or flow node takes (pipeline.ts `servesJob`: ONE rule read by poolFits, the lay's jobFits, the deal's and the
+  asks' views; no pool lists 'pressure', so before this every K slot was "pool short" and the roll failed).
+- **The lay** (gen2/chaseLay.ts `layChase`, called in buildGen2Stage after buildRolled and BEFORE applyVerdicts): each K node's
+  sections = one stretch [x0, x1]; the nodes after it up to the next K = its living fork. Its route ground (PlacedPiece.main, kept per
+  stage in pipeline.ts MAIN_OF; plain solid only, `breakable`) is cut into ~222 px branch sections (`cutSections`: same top, depth and
+  edges, the first IS the piece, so the solids' union the verdicts judged is unchanged), marked `chase`; `st.chase` = the stretches.
+- **Flags** (Matt's span wins): none inside a stretch; the first crack's within 600 px before it; each later one on the fork before its
+  crack, as close as ROLLED_FLAGS.max (4,000 px) from the flag before allows; one where he reaches the last fork; rolled flags within
+  900 px of these go. Then rolledFlagBreaches judges them like every rolled stage. So **a stretch plus its fork must fit 4,000 px**
+  (World 1's practise/flow sections made K 2,200-6,100 px in the probe rolls: many are refused by name; the K `len` dial must be ~2,800 or less).
+- **Refusals by name** (each a gen2.errors line, the seed fails): `chase: stretch N (nK) is P px long`, `runs straight into stretch`,
+  `the fork after stretch N is P px`, `has no plain ground to break`, `no spot for a flag before stretch N`, plus chaseLayProblems.
+- **Easy** (easyMode.ts easyStage) adds its own flags between Normal's: it now never stands one inside a laid stretch.
+- **Tests** (gen2/chaseLay.test.ts): a fixture `1-98` = World 1's real kit, 1-1's brief (no fork, no deal) at stage 8, listed with 1-1's
+  reach scope (listed.ts withTestStage + reach.ts JUDGED); the in-play test plants a seed clean on BOTH settings as a proven list and starts
+  the real engine (drawPlats holds no chase section; the piece starts). Easy re-lays Normal's plan with its own gaps: its x differ.
+- **Not done (B3):** the C4 tint bake; clips of a laid chase (no real stage lays K until 1-8's arc w1Arc08); `last` on a stretch (the
+  finale as the last stretch: B6); props standing on a section that falls, creatures whose patrol spans cut sections (unverified);
+  drawcheck on a chase stage (add it the day 1-8 lays one, D51).
 
 ## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
 - **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's
