@@ -77,6 +77,14 @@ test('the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"
   planted('band.out', 'normal', { asks: [ask('bounce-teach', 168)] }, t);
   planted('band.out', 'easy', { asks: [ask('bounce-teach', 186)] }, t);
 });
+test('the double teach\'s first rise is comfortably doable (POLISH-8, R-165.228, the lead\'s ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal\'s old 136 is over the band, 127 under it, 126 spare-thin', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [128, 130, 132]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-first', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 136)] }, t);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 127)] }, t);
+  planted('block.spare-thin', 'normal', { asks: [ask('double-teach-first', 126)] }, t);
+  // (a later D face in the same teach keeps the block band: 136-140 on Normal)
+  assert.deepEqual(names(roll('normal', { asks: [ask('single-gap', 100), ask('double-teach-first', 130), ask('double-teach-rise', 138)] })), []);
+});
 test('block.spare-thin: a 126 px double rise, 3 px over one jump\'s 123, under the 5 px spare', (t) => {
   planted('block.spare-thin', 'easy', { asks: [ask('double-teach-rise', 126)] }, t);
 });

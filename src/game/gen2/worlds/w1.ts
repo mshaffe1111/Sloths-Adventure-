@@ -138,6 +138,10 @@ const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] =
 const DOUBLE_TEST: [number, number] = [253, 256]; // (the band's easy end: a double flick lands 72% at 250, 67% at 256, 61% at 262; the bots' put-backs, C1)
 /** the D block rise onto a bank (a face 50 px or taller): Normal 136-140; Easy's 128-132 is the pipeline's riseCap (reach.ts) */
 const D_RISE: [number, number] = [-140, -137];
+/** the double's TEACH rise (POLISH-8, R-165.228, the lead's ruling 11-14: a first stage's taught double is comfortably doable, not at the
+ *  edge): Easy's band 128-132 on both settings, laid 1 px inside it; one jump climbs 123, so bands.md §1's 5 px spare holds. Only the
+ *  teach's own first rise (beat T, w1-double-teach's head); every other D face stays at D_RISE (reach.ts 'double-teach-first') */
+const TEACH_RISE: [number, number] = [-131, -129];
 /** a thin double rise (a log or bough top, no lip hoist), from the ground only (a stair must fit in front of it): Normal 128-134;
  *  Easy's 122-128 is riseCap's thin cap */
 const THIN_RISE: [number, number] = [-134, -129];
@@ -158,10 +162,10 @@ const softGap = (key: string, after: string, w: SectionPiece['w'], share: [numbe
 const practiceGap = (key: string, after: string, w: SectionPiece['w']): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump: 'double', gapPx: DOUBLE_TEST, soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a double rise with flat ground before its face (C1, the help's room: a stair of faces 60 px or less, treads 80, the top 160, stands
  *  on the floor `f` right up to the face, no pit in it): the floor, then the bank or log with no gap (gapPx 0) */
-const riseFace = (k: string, after: string | null, thin: boolean, w: [number, number], lead = true): Group => {
+const riseFace = (k: string, after: string | null, thin: boolean, w: [number, number], lead = true, dy: [number, number] = D_RISE): Group => {
   // (`lead` false: `after` is already a flat floor 260 px or longer (a teach's rest), so the face stands at its end)
   const f = lead ? floor(`${k}f`, [260, 300], startOr(after)) : { key: after! } as W1Piece;
-  const b: W1Piece = thin ? { key: `${k}E`, shape: 'branch', w, place: { kind: 'double', after: f.key, dy: THIN_RISE, gapPx: [0, 0] }, style: 'log', main: true, landing: true, block: 'double' } : { key: `${k}D`, shape: 'bank', w, place: { kind: 'double', after: f.key, dy: D_RISE, gapPx: [0, 0] }, style: 'moss_stone', main: true, landing: true, block: 'double' };
+  const b: W1Piece = thin ? { key: `${k}E`, shape: 'branch', w, place: { kind: 'double', after: f.key, dy: THIN_RISE, gapPx: [0, 0] }, style: 'log', main: true, landing: true, block: 'double' } : { key: `${k}D`, shape: 'bank', w, place: { kind: 'double', after: f.key, dy, gapPx: [0, 0] }, style: 'moss_stone', main: true, landing: true, block: 'double' };
   return { pieces: lead ? [f, b] : [b], sockets: [petals(`${k}p`, b.key, [0.4, 0.7], thin ? 1 : 2)], last: b.key };
 };
 /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
@@ -652,11 +656,11 @@ const fallenTrunk13 = section({
 });
 /** #8 */
 const doubleTeach = section({
-  id: 'w1-double-teach', floor: 'hop', name: 'up the tall step', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', maxPerStage: 1, exitDy: -138,
+  id: 'w1-double-teach', floor: 'hop', name: 'up the tall step', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', maxPerStage: 1, exitDy: -130,
   // (C1, bands.md §3: the rise is the lesson (one jump never climbs it, a double always does), then a practice gap and the test on Normal;
   //  Easy has no double gap, so its twin lays single gaps; the test sits inside the 1,500 px promises11 reads from the teach)
   versions: [1, 2].map((n) => {
-    const head: G[] = [(k, after) => { const g = gRest([260, 300])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, (k, after) => riseFace(k, after, false, [280, 320], false)];
+    const head: G[] = [(k, after) => { const g = gRest([260, 300])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, (k, after) => riseFace(k, after, false, [280, 320], false, TEACH_RISE)];
     const tail: G = (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; };
     return { id: n === 1 ? 'rise' : 'rise-two', groups: [...head, ...Array.from({ length: n }, () => gPractice()), gDoubleGaps([[0.85, 0.89]]), gLogHop(), gDip(), tail], easy: [...head, ...Array.from({ length: n + 1 }, () => gLevelHop()), gLogHop(), gDip(), tail] };
   }),
@@ -1011,7 +1015,7 @@ const BEATS: Record<string, G> = {
   D: (k, after) => riseFace(k, after, false, [320, 380]),
   /** the double's TEACH rise (C1): the D face straight off the rest before it (a 'w', flat 260-320: the stair's room), so the test after
    *  it falls inside the 1,500 px the teach promise reads */
-  T: (k, after) => riseFace(k, after, false, [280, 320], false),
+  T: (k, after) => riseFace(k, after, false, [280, 320], false, TEACH_RISE),
   /** a step down a bank (62-78 px) */
   n: (k, after) => { const b = bankW(`${k}n`, after!, [62, 78], [260, 320]); return { pieces: [b], sockets: [], last: b.key }; },
   /** logs that float (platforms may): a double rise block (136-140 px, double place), a climb step (62-78), a level gap a single crosses */
@@ -1079,7 +1083,7 @@ const logTeach = rhythmic({
 });
 /** #33 (teach double): the double gap past a single, share 0.85+ (the Easy rise version is the planner's, no per-setting version) */
 const dipDoubleTeach = rhythmic({
-  id: 'w1-dip-double-teach', floor: 'hop', name: 'the wide dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -138,
+  id: 'w1-dip-double-teach', floor: 'hop', name: 'the wide dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -130,
   // (C1: the rise teaches (T), then the practice gap (t) and the test (d) on Normal; Easy's twin hops the same places (a))
   versions: { a: ['w T t d w j w', 'D t d j', 'w T a a w j w'], b: ['w T t d j j w', 'D t d j j', 'w T a a j j w'] },
   feel: ['1-1'], not: NOT_11, rating: 3,
@@ -1087,7 +1091,7 @@ const dipDoubleTeach = rhythmic({
 });
 /** #34 (teach double): the rise block onto a tall bank */
 const bankDoubleTeach = rhythmic({
-  id: 'w1-bank-double-teach', floor: 'hop', name: 'the tall bank', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -276,
+  id: 'w1-bank-double-teach', floor: 'hop', name: 'the tall bank', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -268,
   // (C1: the teach rise first (T), the practice gap and the test on Normal (Easy's twin hops), then a second rise (D))
   versions: { a: ['w T t d w h D w', 'D t d h D', 'w T a a w h D w'], b: ['w T t d h h D h', 'D t d h h D', 'w T a a h h D h'] },
   feel: ['1-1'], not: NOT_11, rating: 3,

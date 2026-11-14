@@ -35,7 +35,7 @@ export interface RouteAsk { x0: number; x1: number; yTake: number; yLand: number
 
 /** the move each kind is BUILT for (the flick, bands.md §1) and the lesser move it must keep out (a block's) */
 export const TAUGHT: Record<SectionKind, ReachMove> = {
-  'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick',
+  'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick', 'double-teach-first': 'double-flick',
   'double-test-gap': 'double-flick', 'bounce-teach': 'bounce', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
 };
 
@@ -95,7 +95,7 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
   if (q.kind === 'single-rise' && q.figure > link.single.climb.thin) v('arc.single-rise-over', `${where}: ${R(q.figure)} px, over a flick's climb ${link.single.climb.thin}`, meas(q.figure, link.single.climb.thin, true, arc('single-flick', scope).source + ' climb, thin'));
   // (a block: the lesser move at its best must fail with SPARE to spare; the taught move must clear it)
   const lesserOf = (): { px: number; what: string; source: string } | undefined => {
-    if (q.kind === 'double-teach-rise' || q.kind === 'double-teach-rise-thin') return { px: thin ? lesser.single.climb.thin : lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
+    if (q.kind === 'double-teach-rise' || q.kind === 'double-teach-rise-thin' || q.kind === 'double-teach-first') return { px: thin ? lesser.single.climb.thin : lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
     if (q.kind === 'double-test-gap') return { px: lesser.single.gap, what: 'one jump crosses', source: arc('single-hold', scope).source + ' any timing' };
     // (the bounce teach teaches, it does not block (bands.md §4 "the other way", POLISH-7): one jump must not climb it; a double may)
     if (q.kind === 'bounce-teach') return { px: lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };

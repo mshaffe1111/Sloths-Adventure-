@@ -3883,9 +3883,17 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
  *  (a bounce lip in a teach node is the bounce teach) with its clear height, and the gaps the built stage shows (World 1's pits) */
 function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2Stage } {
   const nodes = st.gen2.nodes ?? [];
-  const asks: JudgedStage['asks'][number][] = (ASKS.get(st) ?? []).map((a) => {
+  // (POLISH-8, R-165.228: a teach node's FIRST double rise block is the teach's own rise, judged on its own band, 'double-teach-first';
+  //  the rises after it in the node (a second D) keep the block band)
+  const read = (ASKS.get(st) ?? []).map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
-    const { kind, figure } = classify(a, !!node && JOB_OF[node.token[0]] === 'teach', setting);
+    const teach = !!node && JOB_OF[node.token[0]] === 'teach';
+    return { a, node, teach, ...classify(a, teach, setting) };
+  });
+  const first = new Map<unknown, number>();
+  for (const r of read) if (r.teach && r.kind === 'double-teach-rise' && r.a.x0 < (first.get(r.node) ?? Infinity)) first.set(r.node, r.a.x0);
+  const asks: JudgedStage['asks'][number][] = read.map(({ a, node, teach, kind: k, figure }) => {
+    const kind: typeof k = teach && k === 'double-teach-rise' && first.get(node) === a.x0 ? 'double-teach-first' : k;
     return { section: a.section, kind, x0: a.x0, x1: a.x1, figure, move: TAUGHT[kind], headroom: headroomOf(a, st.platforms) };
   });
   return {
