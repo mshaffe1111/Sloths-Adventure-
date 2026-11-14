@@ -28,7 +28,7 @@ import { CLIMB_CLEAR } from '../vineTop.ts';
 import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
-import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED, WALL_H } from '../physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -64,6 +64,7 @@ import {
   type FilledSocket,
   type Gen2Meta,
   type Gen2Stage,
+  type LianaGrip,
   type LianaSwing,
   type LocalAnchor,
   type LocalRoomSpec,
@@ -235,8 +236,18 @@ export const VINE = {
 } as const;
 
 /**
+ * The holds a liana's reach check flies, by its `grip` dial (LianaSwing.grip), as shares down it from the anchor (physics.ts pressWindow,
+ * whose window is the worse of them). Absent: two low holds (pressWindow's own [0.7, 0.95]), every liana laid before the dial. 'low': the
+ * foot only, the one hold a FAR gap flies from (1-6.md: 530-560 px out, foot 433-467 ms, top and middle 0). 'high': the top only
+ * (SWING.minLen down it, the highest he can hold), so a "hold high" gap is one the top still flies (1-6's risers: the foot is taken).
+ */
+export function gripsOf(grip: LianaGrip | undefined, len: number): number[] | undefined {
+  return grip === 'low' ? [0.95] : grip === 'high' ? [Math.min(1, SWING.minLen / Math.max(1, len))] : undefined;
+}
+
+/**
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
- * `far.x` for `far.w` px), the worse of his two grips. The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
+ * `far.x` for `far.w` px), the worse of the holds its grip dial names (gripsOf). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
  * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
  * back as it was after).
  */
@@ -245,7 +256,8 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
   setTimedSwing(difficulty === 'easy');
   try {
     const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
-    return pressWindow(A, (c, _t, prevY) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w) / 1000;
+    const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
+    return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY)) / 1000;
   } finally {
     Object.assign(TIMED, was);
   }
@@ -274,7 +286,7 @@ const RELEASE_CACHE = new Map<string, number>();
  */
 export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal'): [number, number] | null {
   const window = (x: number) => {
-    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), difficulty].join(',');
+    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
     let r = RELEASE_CACHE.get(key);
     if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty)));
     return r;
@@ -1266,7 +1278,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (pc.shape !== 'liana') throw new Error(`gen2 section ${tpl.id}: ${pc.key} swings, so its shape is 'liana'`);
       const top = a.y - roll(rng, pl.top ?? LIANA.top);
       // (the engine's swing unless the author sets one: VINE.amp at most, the setting's own period)
-      const swing: LianaSwing = { amp: Math.min(VINE.amp, roll(rng, pl.amp ?? VINE.amp)), period: roll(rng, pl.period ?? VINE.period[budget.difficulty]) };
+      const swing: LianaSwing = { amp: Math.min(VINE.amp, roll(rng, pl.amp ?? VINE.amp)), period: roll(rng, pl.period ?? VINE.period[budget.difficulty]), ...(pl.grip ? { grip: pl.grip } : {}) };
       x = a.x + a.w + roll(rng, pl.reach ?? LIANA.reach);
       y = top;
       w = 0;

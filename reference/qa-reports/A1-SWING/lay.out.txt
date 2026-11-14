@@ -1,0 +1,60 @@
+1-6 normal w1-liana-short 
+  gap 233 dy 0 len 410 win def/low/high 1433/1433/2867
+  gap 210 dy 0 len 410 win def/low/high 1533/1533/2867
+  gap 231 dy 0 len 410 win def/low/high 1467/1467/2867
+  gap 200 dy 0 len 410 win def/low/high 1567/1567/2867
+1-6 normal w1-liana-long 
+  gap 356 dy 0 len 410 win def/low/high 800/800/1267
+  gap 340 dy 0 len 410 win def/low/high 833/833/1267
+  gap 364 dy 0 len 410 win def/low/high 800/800/1267
+  gap 344 dy 0 len 410 win def/low/high 833/833/1267
+1-6 normal w1-liana-far 
+  gap 362 dy 0 len 410 win def/low/high 800/800/1267
+  gap 353 dy 0 len 410 win def/low/high 800/800/1267
+  gap 367 dy 0 len 410 win def/low/high 767/767/1267
+  gap 358 dy 0 len 410 win def/low/high 800/800/1267
+1-6 easy w1-liana-short 
+  gap 297 dy 0 len 410 win def/low/high 1300/1300/1900
+  gap 284 dy 0 len 410 win def/low/high 1667/1667/2200
+  gap 290 dy 0 len 410 win def/low/high 1667/1667/2033
+  gap 274 dy 0 len 410 win def/low/high 1667/1667/2367
+1-6 easy w1-liana-long 
+  gap 365 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 357 dy 0 len 410 win def/low/high 1100/1100/1667
+  gap 369 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 360 dy 0 len 410 win def/low/high 1100/1100/1667
+1-6 easy w1-liana-far 
+  gap 368 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 364 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 371 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 368 dy 0 len 410 win def/low/high 1067/1067/1667
+6-3 normal w1-liana-short 
+  gap 327 dy 0 len 410 win def/low/high 1200/1200/1300
+  gap 321 dy 0 len 410 win def/low/high 1267/1267/1333
+  gap 318 dy 0 len 410 win def/low/high 1267/1267/1367
+  gap 309 dy 0 len 410 win def/low/high 1300/1300/1533
+6-3 normal w1-liana-long 
+  gap 368 dy 0 len 410 win def/low/high 767/767/1267
+  gap 364 dy 0 len 410 win def/low/high 800/800/1267
+  gap 371 dy 0 len 410 win def/low/high 767/767/1267
+  gap 367 dy 0 len 410 win def/low/high 767/767/1267
+6-3 normal w1-liana-far 
+  gap 370 dy 0 len 410 win def/low/high 767/767/1267
+  gap 368 dy 0 len 410 win def/low/high 767/767/1267
+  gap 372 dy 0 len 410 win def/low/high 767/767/1267
+  gap 373 dy 0 len 410 win def/low/high 767/767/1267
+6-3 easy w1-liana-short 
+  gap 327 dy 0 len 410 win def/low/high 1233/1233/1667
+  gap 321 dy 0 len 410 win def/low/high 1233/1233/1667
+  gap 318 dy 0 len 410 win def/low/high 1233/1233/1667
+  gap 309 dy 0 len 410 win def/low/high 1267/1267/1767
+6-3 easy w1-liana-long 
+  gap 368 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 364 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 371 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 367 dy 0 len 410 win def/low/high 1067/1067/1667
+6-3 easy w1-liana-far 
+  gap 370 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 368 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 372 dy 0 len 410 win def/low/high 1067/1067/1667
+  gap 373 dy 0 len 410 win def/low/high 1067/1067/1667

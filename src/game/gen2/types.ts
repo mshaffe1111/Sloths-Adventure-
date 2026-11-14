@@ -237,7 +237,12 @@ export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'lia
 export interface LianaSwing {
   amp: number;
   period: number;
+  /** where he is expected to hold it (the `s` dial `grip`, pipeline GRIP): absent, the reach check takes the worse of two low holds;
+   *  'low' only his foot hold (a FAR gap only the foot flies); 'high' only the top (a "hold high" gap: a riser has the foot) */
+  grip?: LianaGrip;
 }
+/** a liana's grip dial (pipeline GRIP: the holds its reach check flies) */
+export type LianaGrip = 'low' | 'high';
 
 /**
  * Where a piece goes, relative to another piece of the same section (never a fixed x, y), so the rolls can stretch a piece and the
@@ -254,7 +259,7 @@ export interface LianaSwing {
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
  *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
  *                        from the end (what a running jump grabs), swinging by itself (`amp` at most 0.45 rad, `period`: LianaSwing;
- *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s; `grip`: LianaSwing). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
  *                        piece that lands from it
  *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
  *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
@@ -280,7 +285,7 @@ export type PlaceRule =
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
-  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
