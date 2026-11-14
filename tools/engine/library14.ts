@@ -27,7 +27,7 @@ export interface Roll14 {
 }
 
 /** the designed order of the beats (the arc's content and quiet jobs, rests as R) */
-export const ORDER_14 = ['roots', 'going-up', 'rotting', 'R', 'field', 'pods', 'push', 'R', 'under-fire', 'R', 'drop-one', 'R', 'hollow', 'R', 'crown', 'view-north'];
+export const ORDER_14 = ['roots', 'going-up', 'rotting', 'R', 'field', 'pods', 'push', 'R', 'under-fire', 'R', 'rotten-fork', 'R', 'push-two', 'R', 'columns', 'R', 'drop-one', 'R', 'hollow', 'R', 'crown', 'view-north'];
 const short = (id: string) => (id.startsWith('w1-14-rest-') ? 'R' : id.replace('w1-14-', ''));
 
 /** one roll of 1-4, built and finished (a throw from the lay or the finish is the roll's error) */

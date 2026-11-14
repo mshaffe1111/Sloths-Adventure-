@@ -7,6 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { FirstTimerRun, FT_MIDDLE, freshPhone, rng } from './firsttimer.ts';
+import { floorSeconds, runHolds, stageFloor } from './castBots.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import type { Enemy, Platform } from '../../src/game/types.ts';
 
@@ -129,4 +130,17 @@ test('the tower route goes down to a sunk vine\'s foot before it climbs (a down-
   assert.ok(sunk[top - 1].y > 1000 + 60, `the climb starts in the air at y ${sunk[top - 1].y}: ${JSON.stringify(sunk)}`);
   const plain = towerCorners(leg(1000) as never, { x: 0, y: 1000 })!;
   assert.ok(at(plain, 300, 1000) >= 0 && at(plain, 300, 760) === at(plain, 300, 1000) + 1, `an ordinary climb is no longer straight up: ${JSON.stringify(plain)}`);
+});
+
+// (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
+//  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
+test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {
+  assert.equal(floorSeconds(true), 100);
+  assert.equal(floorSeconds(false), 120);
+  assert.ok(runHolds({ pass: true, time: 105 }, floorSeconds(true)), 'a climb at 105 s');
+  assert.ok(!runHolds({ pass: true, time: 105 }, floorSeconds(false)), 'a run stage at 105 s');
+  assert.ok(!runHolds({ pass: false, time: 300 }, floorSeconds(true)), 'a run that did not reach the shrine never holds');
+  // (the real stages, read as the rules read them: 1-4 climbs the kapok, 1-5 runs her road)
+  assert.equal(stageFloor('1-4'), 100);
+  assert.equal(stageFloor('1-5'), 120);
 });
