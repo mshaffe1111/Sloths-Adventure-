@@ -16,6 +16,8 @@ proven plan; Play is never blocked).
   each piece only on the layers it names: 'world' (after the traps, behind him), 'front' (with the bushes, over him), 'screen' (after
   the world transform). A piece reads the engine only through `PieceHost` (live getters; one object made once).
 - **RIDE is the first piece** (pieces/ridePiece.ts): the moving-platform loop skips `plat.ride`. No shipped stage lays a ride yet.
+- **A harness that swaps the stage's platforms must re-start the pieces**: RealPlay.bare() calls `e.startPieces()` after the swap
+  (rideLay.test's real-engine rides went red without it: the pieces were started on the old platforms).
 - **The headless canvas cannot run render()** (scenery needs real canvases): pieceHook.test.ts pins the three draw calls' order in
   render()'s text instead, and proves start/step/hurt/respawn with a planted probe on 1-2, 2-1 and 3-3 through RealPlay.
 - **One letter table: gen2/nodeLetters.ts.** JOB_OF, CONTENT_OF, V13's LATER jobs (nodeCode.ts) and nodeAsks' LATER_CONTENT are derived

@@ -9,7 +9,11 @@ RIDE keeps its beat and carries him on 1-2 and 2-1; planted red: the old loop on
 LATER_CONTENT derive from it; tools/engine/nodekey.ts writes NODE-KEY's Jobs / Made of / pieces rows. Liana = s (r = rope + climbing
 vine); rows s v p t x m and the pick `?` added; m (kind, apart) and h (roll, gap, teach) and s (grip, phase, moss) dials named with the
 packet that lays them; K says 1-8. nodeLetters.test.ts 5/5 (planted: a dropped row, liana under r, K 1-5 each caught).
-**Done 3, gates on GATES_HEAD:** GATES_LINE
+**Done 3, gates** (gates/RESULTS.txt, run.sh on 553b125d): tsc, build, chunkcheck, artcheck, knowncheck, generality, kbdcheck,
+seedlists, registry, tooltests, tierBots, unit2, unit3, drawcheck (PASS 557 s), clipcheck (PASS, 83 known), buildcheck (p95 142 ms) all 0;
+**lockall 102/102 unchanged** vs the base 204e3dec (= f9671e3b). roadmap 2 = shallow clone; full clone PASS. unit1: 3 reds, rideLay.test's
+real-engine rides: RealPlay.bare() swapped the platforms after the stage started the pieces. Root fixed (lead OK): bare() calls
+e.startPieces() (17423dde), rideLay.test kept whole. Final code (17423dde) re-run in a worktree (rerun/RESULTS.txt): RERUN_LINE
 **Polish check:** stills/key-{upright,sideways}-{r,s,m,h,v,K,pick}.png + sheet-upright.png: no overflow at 390 or 844 px. Fixed: the
 unlaid letters showed an empty "Never" line; they now have no Pieces block (test pins it).
 **Pushback:** (1) RIDE has no hurt and draws nothing of its own (the platform drawer paints it): hurt is proven by the planted probe in
@@ -19,7 +23,7 @@ them (only K Z B Y V G are LATER in code); the test enforces one way only (code-
 (3) nodeAsks.ts: two statements, not one: LATER_CONTENT derived, and the ELEMENTS "content s v p t x" card derived so it names m.
 **Suggestions:** (a) designer: NODES.md:276 K row still says 1-5's; §8.0 has no s v p t x m rows (the table now holds them).
 (b) nodeAsks TYPE_OF_LETTER (g..h -> ContentType) is still its own list: add `type` to CONTENT_LETTERS, derive it (5 lines + test).
-**Unresolved:** UNRESOLVED_LINE
+**Unresolved:** none in the packet. Not done: a browser still of a piece drawing on its layer (no piece draws yet; A2's job).
 **Method update:** NEW reference/methods/stage-piece.md (indexed). gates: run.sh in its own worktree (I edited the tree mid-run and had
 to re-run tsc/unit/build on the head); a shallow clone fails roadmapcheck: `git fetch --unshallow` first.
 **Learned:** a runtime piece is one file + one PIECE_KINDS line now; the key is generated, so edit nodeLetters.ts, never the HTML.
