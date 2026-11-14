@@ -1677,7 +1677,12 @@ export class FirstTimerRun {
     // a log's face his short pushes between lifts each fell under stopReact, so he stood at it until rescued, P13 11-12, 1-3's logs. Not
     // elsewhere: 1-1's tier runs are calibrated to the testers as they are, tierBots.test)
     const lifted = t < this.gapUntil, holdCount = lifted && !!e.cast && moved < 0.8;
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    // (and never while the game itself holds his steer: after a put-back or a respawn the engine ignores a thumb still held from before
+    // the fall for 0.35 s (engine.ts inputGrace). A person sees he was set back, not a wall. POLISH-9, R-165.228: ADULT's stopReact 0.3
+    // read that hold as being stopped dead on every put-back, so at 1-1's 255 px double test he jumped where he was set down, 116 px short
+    // of the lip with no run-up, and missed until rescued (6 of 10 layouts); the tier bots already waited, backAt below)
+    const graceHeld = (e.inputGrace ?? 0) > 0;
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
