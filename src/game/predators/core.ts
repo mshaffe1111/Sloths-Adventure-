@@ -36,7 +36,10 @@ const enter = (s: PredatorState, phase: Phase): void => {
 /** the tell on a setting (s). Easy is never shorter, whatever the data says */
 export const tellOf = (def: PredatorDef, easy: boolean): number => def.tell * (easy ? Math.max(1, def.easy.tell) : 1);
 /** the beat between attacks on a setting (s) */
-export const coolOf = (def: PredatorDef, easy: boolean): number => def.cool * (easy ? Math.max(1, def.easy.cool) : 1);
+export const coolOf = (def: PredatorDef, easy: boolean, own?: number): number => (own ?? def.cool) * (easy ? Math.max(1, def.easy.cool) : 1);
+
+/** a sweeper's pass over him that cannot hurt: its first over its stretch when it was laid free, and on Easy always (watcher.ts freeFirst) */
+export const sparedPass = (def: PredatorDef, s: PredatorState, easy: boolean): boolean => def.habit === 'sweep' && s.passes === 0 && (s.free || easy);
 /** every speed's multiple on a setting: 1 on Normal, never over 1 on Easy */
 export const speedOf = (def: PredatorDef, easy: boolean): number => (easy ? Math.min(1, def.easy.speed) : 1);
 /** Easy has fewer: the posts a setting uses */
@@ -95,7 +98,7 @@ export function newPredator(def: PredatorDef, post: Post): PredatorState {
     phase: 'rest', t: 0, facing, homeX: post.x, homeY: post.y, minX: post.minX, maxX: post.maxX,
     eyeX: def.habit === 'sweep' ? (facing > 0 ? post.minX : post.maxX) : post.x,
     aimX: post.x, aimY: post.y, goalX: post.x, drawn: false, look: 0, knows: false, leaving: false,
-    lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null,
+    lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null, ownCool: post.cool, passes: 0, free: !!post.free,
   };
 }
 
@@ -257,7 +260,7 @@ function stepFlee(def: PredatorDef, s: PredatorState, sc: Scene): void {
   s.y = toward(s.y, s.homeY, v);
   if (sc.t >= s.awayUntil) {
     enter(s, 'rest');
-    s.cool = Math.max(s.cool, coolOf(def, sc.easy));
+    s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
   }
 }
 
@@ -268,12 +271,13 @@ function endPass(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorEven
   s.drawn = false;
   if (s.saw) s.lost = 0;
   else if (there) s.lost += 1;
+  if (there) s.passes++;
   if (!s.saw && there && sc.hero.still && s.lost >= def.giveUp && beat(def, s, 'still', sc.t)) {
     ev.beaten = 'still';
     return;
   }
   enter(s, 'rest');
-  s.cool = coolOf(def, sc.easy);
+  s.cool = coolOf(def, sc.easy, s.ownCool);
 }
 
 /**
@@ -295,7 +299,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
   }
   if (s.phase === 'stunned') {
     enter(s, 'rest');
-    s.cool = Math.max(s.cool, coolOf(def, easy));
+    s.cool = Math.max(s.cool, coolOf(def, easy, s.ownCool));
   }
   if (s.asleep) {
     if (s.phase !== 'rest') enter(s, 'rest');
@@ -483,7 +487,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       if (sweep) endPass(def, s, sc, ev);
       else {
         enter(s, 'rest');
-        s.cool = coolOf(def, easy);
+        s.cool = coolOf(def, easy, s.ownCool);
       }
       break;
     }

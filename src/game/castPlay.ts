@@ -11,12 +11,12 @@
 import type { CastData, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
-import { STILLNESS, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
+import { STILLNESS, calm, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
 import type { Enemy, Platform } from './types.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
@@ -50,6 +50,8 @@ export interface CastStep {
   noticed: Enemy[];
   told: Enemy[];
   struck: Enemy[];
+  /** a sweeper whose act began on its free pass (core.ts sparedPass): it dives and pulls up short, no box hurts (once an act) */
+  spared: Enemy[];
   /** the boxes that hurt this step, each with its animal */
   hurts: Array<{ e: Enemy; box: Box }>;
   /** animals that just left for good */
@@ -77,7 +79,7 @@ export class CastPlay {
   private readonly loud: boolean;
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
-  private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
+  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
 
@@ -95,7 +97,7 @@ export class CastPlay {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
       if (!def || e.defeated) continue;
       const ground = groundUnder(platforms, e);
-      const s = newPredator(def, { x: e.x, y: ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep });
+      const s = newPredator(def, { x: e.x, y: ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree });
       e.kit = s;
       const m: CastMember = { e, def, s, foot: ground - e.y, cleared: false };
       this.members.push(m);
@@ -108,10 +110,18 @@ export class CastPlay {
     return isStill(this.still, STILLNESS[easy ? 'easy' : 'normal']);
   }
 
+  /**
+   * The moss coming over him, 0..1 (stillness.ts calm): how far the calm has come in while he is IN cover, 0 anywhere else (a still
+   * sloth on bare bark gets no tint: it would say 'hidden' where the eagle sees him, 1-7 beat 5). For the art and the calm sound
+   */
+  calmNow(easy: boolean): number {
+    return this.prey.covered ? calm(this.still, STILLNESS[easy ? 'easy' : 'normal']) : 0;
+  }
+
   /** one fixed step of the whole cast. `t`: game time */
   step(hero: CastHero, dt: number, t: number, easy: boolean): CastStep {
     const o = this.out;
-    o.noticed.length = o.told.length = o.struck.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
+    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
     o.landed = null;
     o.woke = 0;
     const set = STILLNESS[easy ? 'easy' : 'normal'];
@@ -153,8 +163,10 @@ export class CastPlay {
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);
-        if (ev.act) o.struck.push(m.e);
-        const box = hurt(m.def, m.s);
+        // (a sweeper's free pass: the dive comes, and pulls up short of him; no box hurts. watcher.ts freeFirst, in the kit)
+        const spare = sparedPass(m.def, m.s, easy);
+        if (ev.act) (spare ? o.spared : o.struck).push(m.e);
+        const box = spare ? null : hurt(m.def, m.s);
         if (box) o.hurts.push({ e: m.e, box });
       }
       if (!m.cleared && (m.s.leaving || m.s.phase === 'gone')) {
@@ -217,7 +229,7 @@ export class CastPlay {
       s.t = 0;
       s.drawn = false;
       s.lost = 0;
-      s.cool = Math.max(s.cool, coolOf(m.def, easy));
+      s.cool = Math.max(s.cool, coolOf(m.def, easy, s.ownCool));
     }
   }
 

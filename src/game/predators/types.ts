@@ -114,6 +114,11 @@ export interface Post {
   asleep?: boolean;
   /** left out on Easy (Easy has fewer) */
   normalOnly?: boolean;
+  /** this one's own cool between acts (s), over the kind's: a sweeper's calm for ITS stretch (1-7 NEW 7: 5-6 s where taught, 4-5 in a finale) */
+  cool?: number;
+  /** a sweeper whose first pass over him cannot hurt: it dives and pulls up short (watcher.ts freeFirst's rule, in the kit: 1-7 NEW 4).
+   *  On Easy every sweeper's first pass is free */
+  free?: boolean;
 }
 
 export type Phase = 'rest' | 'hunt' | 'tell' | 'act' | 'recover' | 'stunned' | 'flee' | 'gone';
@@ -146,6 +151,12 @@ export interface PredatorState extends Listener {
   lost: number;
   /** seconds before it may tell again */
   cool: number;
+  /** its own cool (Post.cool), when it has one: coolOf reads it over the kind's */
+  ownCool?: number;
+  /** a sweeper: passes it has ended with him in its stretch (the first is the free one, Post.free) */
+  passes: number;
+  /** Post.free */
+  free: boolean;
   /** game time its flight home ends */
   awayUntil: number;
   /** it saw him at some point in this act (a sweeper's pass) */
