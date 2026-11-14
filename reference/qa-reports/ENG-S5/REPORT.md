@@ -1,5 +1,5 @@
 # ENG-S5 REPORT (t-eng-s5 from origin/t-eng-s4@4bafe110; packet reference/packets/2026-11-14/ENG-S5.md on the lead's branch)
-Start 10:29 AM ET (pasted from date). Code head **a71b5c484**. Context at the report: about 40% of the 1M window (my estimate; the lead quoted ~29% at 11:01). Stop 12:37 PM ET (pasted from date): past
+Start 10:29 AM ET (pasted from date). Head **ce31038ee** (the gates ran on a71b5c484; after it one test assertion and one engine comment, their tests re-run). Context at the report: about 40% of the 1M window (my estimate; the lead quoted ~29% at 11:01). Stop 12:37 PM ET (pasted from date): past
 the 90-minute box, for the lead's 11:38 REDO and the gates (nothing left running, D59).
 
 ## Done-items
