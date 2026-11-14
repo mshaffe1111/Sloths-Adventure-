@@ -55,7 +55,7 @@ Branch `t-tools-1` from `origin/t-int-9@fb409960`. Commits: f3312155c (item 2), 
 ## Gates (LAWS 5, as scoped by the packet; head named per line)
 Code head for every run: 56d074c46 (the later commits are docs and evidence only). Run here, 11-14 ET.
 - `npx tsc --noEmit -p .`: exit 0 (f3312155c; no src/ change after it). tools/ is outside tsconfig: its changes are proven by their tests.
-- Whole suite (CLAUDE.md glob, 3 shards `--test-shard=i/3` side by side): SUITE_RESULT
+- Whole suite (CLAUDE.md glob, 3 shards `--test-shard=i/3` side by side): NOT GREEN, 2 reds, both RED ON BASE fb409960 too (same file run alone there): shard 3/3 `# tests 1149, # pass 1148, # fail 1`: src/game/requiredMove.test.ts 'the limited bot: without the double ... stops short on 1-6, where the full bot finishes' (base: 0 pass 1 fail; branch alone: 0 pass 1 fail). Shard 1/3 at 1070 results when reported, 1 not ok: src/game/gen2/softFalls11.test.ts '8-3 Normal lays the same ground ... as origin/main, byte for byte' (base: 6 pass 1 fail). Shard 2/3 STILL RUNNING at 6:10 PM ET (1097 results, 0 not ok so far): its result is the EXACT NEXT STEP below.
 - CI tool-test line (gates.yml, with tools/difficulty/score.test.ts added): `# pass 102`, `# fail 0`.
 - `npx tsx --test tools/inspect/tierBots.test.ts`: `# pass 7`, `# fail 0`.
 - `CI=1 FORCE_COLOR=1 node tools/perf/clipcheck.mjs` (all 6 walks, its own builds): `PASS (83 known) (481 s)`; Dot's first tip at
@@ -124,6 +124,10 @@ full suite before a non-safe push), D19/D57 from LESSONS.
 - engine (engine-core.md 0za, written): "a cache of an answer that reads module-level settings (TIMED, PHYS, difficulty) keys on
   them; its test is A-then-B equals B alone, in a fresh process".
 - difficulty.md: "a liana is one challenge, at its release; a miss costs what lies under it (costAt), as a jump's".
+
+## EXACT NEXT STEP (stopped at the lead's 6:15 PM ET deadline, 39% context)
+1. Read shard 2's end: the log is in the stopped session's scratchpad, so re-run `npx tsx --test --test-shard=2/3 <CLAUDE.md glob>` on t-tools-1 and record its tests, pass and fail counts here.
+2. The two pre-existing reds (requiredMove 1-6, softFalls11 8-3) need owners: both are red on t-int-9@fb409960.
 
 ## Turnover note
 reference/handoffs/engine-core.md section 0za, commit b8df4a365.
