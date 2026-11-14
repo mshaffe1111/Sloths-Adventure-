@@ -1,0 +1,1912 @@
+[
+ {
+  "i": 0,
+  "seed": 1,
+  "code": "A C&&:8 Cs:8 R Xg+<:+seed R Wr> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (fork: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (twist: no rope section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: formation (&&): # creature laid",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: content 'r' (rope): # of # sections are ground",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "32990..33868 in w1-bough-bench-up(n13)",
+   "41919..42849 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-stair-gap-twist(n8) w1-log-walk(n9) w1-leap-stones(n10) w1-fern-bank(n11) w1-two-answers(n12) w1-bough-bench-up(n13) w1-seed-perch(n14) w1-stair-test-back(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "31920..35023 in w1-dipping-boughs-twist(n12)",
+   "35137..36015 in w1-bough-bench-up(n13)",
+   "38769..41343 in w1-log-chain(n15)",
+   "41463..42393 in w1-quiet-arrival(n16)"
+  ]
+ },
+ {
+  "i": 1,
+  "seed": 2,
+  "code": "A M^&&:&snake-asleep*2! Pr^> R X< R M2+<:+seed R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (practise: no rope section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "ask: node: threat snake-asleep awake: this world lays it asleep",
+   "ask: node: content 'r' (rope): # of # sections are ground",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "34610..37306 in w1-canopy-rungs(n14)",
+   "37404..38588 in w1-sunlit-log(n15)"
+  ],
+  "secs": "w1-home-banks(n1) w1-log-teach(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stair-run(n5) w1-stone-zigzag(n6) w1-mushroom-fork-dip(n7) w1-log-walk(n8) w1-stair-test-back(n9) w1-meadow(n10) w1-leap-stones(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-sunlit-log(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "29795..30713 in w1-bough-bench-up(n11)",
+   "33374..35933 in w1-log-chain(n13)",
+   "36052..36983 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 2,
+  "seed": 3,
+  "code": "A Pg1< Px R Xt^ R Cx_< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no floating section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "ask: node: content 'x' (trap): Later: the trap (a limb load over an animal): B#'s emitter ",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Cg2_<\": shape _ (falling): its sections fall -176 px"
+  ],
+  "floor": [
+   "35543..38387 in w1-canopy-rungs-level(n14)",
+   "38504..39450 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-lift(n4) w1-stone-zigzag(n5) w1-mound-log(n6) w1-mushroom-fork(n7) w1-log-walk(n8) w1-stair-test(n9) w1-clearing(n10) w1-mushroom-log(n11) w1-meadow(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "26708..27081 in w1-bounce-bough-combine(n10)",
+   "33364..36132 in w1-canopy-rungs(n13)",
+   "36248..37458 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 3,
+  "seed": 4,
+  "code": "A C:p5 P2+<:+seed R X2> R Pv2 R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: points p#: Later: the meter does not score a node inside the lay",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: content 'v' (field): Later: the vine field (two hands): B#'s emitter on t-b#, n",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Pb_<\": move 2 (the double): no section there asks for it",
+   "ask: node n11 \"Pc1>\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "31528..33891 in w1-canopy-weave-rise(n12)",
+   "33993..34951 in w1-high-walk-up(n13)",
+   "37656..40532 in w1-canopy-rungs-level(n15)",
+   "40646..41574 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-cache-stones(n6) w1-clearing(n7) w1-bank-stair-test-back(n8) w1-fern-bank(n9) w1-hollow-twoway(n10) w1-mound-log(n11) w1-canopy-weave-rise(n12) w1-high-walk-up(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "25605..28104 in w1-canopy-weave(n10)",
+   "28216..29085 in w1-bough-bench-up(n11)",
+   "32271..35235 in w1-canopy-rungs-level(n13)",
+   "35346..36298 in w1-sunlit-log(n14)"
+  ]
+ },
+ {
+  "i": 4,
+  "seed": 5,
+  "code": "A Pb&> Pc_&<:&snake-asleep R X< R W1 R S E",
+  "fair": true,
+  "errs": [
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: creatures (&): no creature laid",
+   "ask: node: threat snake-asleep*#: laid #",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Pc1_<\": shape _ (falling): its sections fall -1 px"
+  ],
+  "floor": [
+   "28361..31521 in w1-dipping-boughs-twist(n11)",
+   "35897..38557 in w1-canopy-rungs(n14)",
+   "38675..39614 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-log-teach(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-cache-stones(n5) w1-mound-log(n6) w1-hollow-twoway(n7) w1-log-walk(n8) w1-stair-test-back(n9) w1-fern-bank(n10) w1-dipping-boughs-twist(n11) w1-clearing(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "27191..30599 in w1-dipping-boughs-twist(n10)",
+   "30697..31634 in w1-high-walk(n11)",
+   "34783..37494 in w1-log-chain(n13)",
+   "37588..38754 in w1-sunlit-log(n14)"
+  ]
+ },
+ {
+  "i": 5,
+  "seed": 6,
+  "code": "A Pg^ P<:#water R X< R W1&>:&snake*1z R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: hazard #water: no fall in its span",
+   "ask: node: threat snake asleep: this world lays it awake",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "29416..32844 in w1-dipping-boughs-twist(n11)",
+   "36930..39518 in w1-log-chain(n14)",
+   "39626..40603 in w1-sunlit-log(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-log-teach(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stone-zigzag(n5) w1-mound-log(n6) w1-mushroom-fork(n7) w1-clearing(n8) w1-bank-stair-test-back(n9) w1-meadow(n10) w1-dipping-boughs-twist(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-sunlit-log(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "25862..29236 in w1-dipping-boughs-twist(n10)",
+   "29325..30194 in w1-bough-bench-up(n11)",
+   "32865..35753 in w1-canopy-rungs-level(n13)",
+   "35867..36820 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 6,
+  "seed": 7,
+  "code": "A Mp:t0.9 C R X1&< R M_:1 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no bounce section left)",
+   "pool short at slot # (flow: no climb section left)",
+   "pool short at slot # (signature: the late rise ended at y #, not # px above y # (V#))",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: 'f' outside its window [#, #]",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B#'s emi",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Mg1_<\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "32063..34861 in w1-canopy-rungs-level(n14)",
+   "34972..35910 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-lift(n4) w1-bank-stair-fork(n5) w1-bank-run(n6) w1-mushroom-log(n7) w1-fern-bank(n8) w1-stump-towers(n9) w1-clearing(n10) w1-floor-dash(n11) w1-meadow(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "25938..28284 in w1-canopy-weave-rise(n10)",
+   "32130..34963 in w1-canopy-rungs-level(n13)",
+   "35058..36017 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 7,
+  "seed": 8,
+  "code": "A Mr1< M_+<:+seed R Xt^< R Ps2> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no rope section left)",
+   "pool short at slot # (flow: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: content 'r' (rope): # of # sections are climb",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: move # (the double): no section there asks for it",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Mg1_<\": shape _ (falling): its sections fall 0 px",
+   "ask: node n8 \"Xg2^<\": shape ^ (rising): its sections rise -1 px",
+   "ask: node n11 \"Pg1>\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "31372..33936 in w1-canopy-weave(n12)",
+   "34049..34958 in w1-high-walk-up(n13)",
+   "37735..40270 in w1-log-chain(n15)",
+   "40386..41321 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stair-run(n5) w1-stone-dips(n6) w1-fern-bank(n7) w1-leap-stones(n8) w1-log-walk(n9) w1-bank-stair-fork(n10) w1-stump-stones(n11) w1-canopy-weave(n12) w1-high-walk-up(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "24269..26505 in w1-canopy-weave(n10)",
+   "31062..33589 in w1-log-chain(n13)",
+   "33699..34645 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 8,
+  "seed": 9,
+  "code": "A P< C:1:#hurt R X&<:&snake*1! R Wc:#water R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no bounce section left)",
+   "pool short at slot # (twist: no climb section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: hazard #hurt: no fall in its span",
+   "ask: node: content 'c' (climb): # of # sections are ground",
+   "ask: node: hazard #water: laid hurt, soft",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "32651..33583 in w1-high-walk(n12)",
+   "41913..42868 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-lift(n4) w1-mound-log(n5) w1-mushroom-fork(n6) w1-mushroom-log(n7) w1-log-walk(n8) w1-leap-stones(n9) w1-meadow(n10) w1-two-answers(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-stair-test-back(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "25606..28698 in w1-dipping-boughs-twist(n10)",
+   "34484..37212 in w1-log-chain(n13)",
+   "37322..38249 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 9,
+  "seed": 10,
+  "code": "A M1^:#hurt Ch< R Xf2> R P+&<:&snake-trapped-asleep*1:+seed R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no hazard section left)",
+   "node code: V#: 'f' outside its window [#, #]",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: hazard #hurt: no fall in its span",
+   "ask: node: content 'h' (hazard): # of # sections are ground",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [
+   "ask: node n8 \"Xf1_>\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "36389..39092 in w1-log-chain(n15)",
+   "39211..40218 in w1-last-step-up(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-run(n5) w1-mushroom-log(n6) w1-meadow(n7) w1-stilt-logs(n8) w1-clearing(n9) w1-bank-stair-fork(n10) w1-stump-descent(n11) w1-mushroom-fork-dip(n12) w1-log-walk(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-last-step-up(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26988..29281 in w1-canopy-weave(n10)",
+   "33380..35929 in w1-log-chain(n13)",
+   "36029..36969 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 10,
+  "seed": 11,
+  "code": "A Cs_< Mp^&&:&snake*2 R X2_< R M^+> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no bounce section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B#'s emi",
+   "ask: node: find (+): no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Cg2_<\": shape _ (falling): its sections fall -173 px"
+  ],
+  "floor": [
+   "34138..36998 in w1-canopy-rungs-level(n14)",
+   "37113..38070 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-mushroom-log(n6) w1-stair-run(n7) w1-fern-bank(n8) w1-stair-test-back(n9) w1-clearing(n10) w1-bank-run(n11) w1-log-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "32896..35755 in w1-canopy-rungs-level(n13)",
+   "35847..36789 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 11,
+  "seed": 12,
+  "code": "A P_ P_<:3 R X:t0.9 R M_ R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Pc1_<\": shape _ (falling): its sections fall -8 px",
+   "ask: node n7 \"Pb_<\": shape _ (falling): its sections fall -1 px",
+   "ask: node n12 \"Mc1_<\": shape _ (falling): its sections fall -282 px"
+  ],
+  "floor": [
+   "31792..32106 in w1-zigzag-run(n12)",
+   "37348..40257 in w1-canopy-rungs-level(n15)",
+   "40354..41289 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-home-banks(n1) w1-step-stones-teach(n2) w1-bank-double-teach(n3) w1-mushroom-lift(n4) w1-mound-log(n5) w1-hollow-twoway(n6) w1-cache-stones(n7) w1-bank-stair-fork(n8) w1-fern-bank(n9) w1-leap-stones(n10) w1-log-walk(n11) w1-zigzag-run(n12) w1-meadow(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26312..28467 in w1-canopy-weave(n10)",
+   "32417..35110 in w1-log-chain(n13)",
+   "35219..36167 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 12,
+  "seed": 13,
+  "code": "A C:p5 M^>:4:$4 R X<:10 R Ps<:1:#hurt R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: points p#: Later: the meter does not score a node inside the lay",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: hazard #hurt: no fall in its span",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "29273..31630 in w1-canopy-weave(n11)",
+   "31734..32759 in w1-high-walk(n12)",
+   "35952..38879 in w1-canopy-rungs-level(n14)",
+   "39000..39960 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-bank-run(n6) w1-fern-bank(n7) w1-stair-test-back(n8) w1-clearing(n9) w1-mound-log(n10) w1-canopy-weave(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "28889..29784 in w1-bough-bench-up(n11)",
+   "32495..35468 in w1-canopy-rungs-level(n13)",
+   "35578..36510 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 13,
+  "seed": 14,
+  "code": "A Mh:4 C1_&&< R Xg_< R C<:#water:t0.9 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no hazard section left)",
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (signature: the late rise ended at y #, not # px above y # (V#))",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'h' (hazard): # of # sections are climb",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: hazard #water: no fall in its span",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Cg2_<\": move 1 (plain jumps): a section there asks for the double",
+   "ask: node n7 \"Cg2_<\": shape _ (falling): its sections fall -163 px",
+   "ask: node n9 \"Xg2_<\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "18112..18449 in w1-zigzag-run(n6)",
+   "30283..31221 in w1-high-walk(n12)",
+   "34354..37160 in w1-canopy-rungs-level(n14)",
+   "37262..38203 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-stair-fork(n5) w1-zigzag-run(n6) w1-mushroom-log(n7) w1-clearing(n8) w1-leap-stones(n9) w1-fern-bank(n10) w1-fallen-trunk(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "27181..28141 in w1-high-walk(n11)",
+   "36439..37386 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 14,
+  "seed": 15,
+  "code": "A Pv>:8 P< R Xk^ R Pk2^&<:8 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no crumble section left)",
+   "pool short at slot # (practise: no crumble section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: # 'k' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'v' (field): Later: the vine field (two hands): B#'s emitter on t-b#, n",
+   "ask: node: content 'k' (crumble): # of # sections are climb",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: content 'k' (crumble): # of # sections are ground",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: creatures (&): no creature laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [
+   "ask: node n8 \"Xc2^>\": shape ^ (rising): its sections rise -2 px",
+   "ask: node n11 \"Pg1^<\": move 2 (the double): no section there asks for it",
+   "ask: node n11 \"Pg1^<\": shape ^ (rising): its sections rise -2 px"
+  ],
+  "floor": [
+   "33114..35399 in w1-canopy-weave-rise(n12)",
+   "39389..42148 in w1-canopy-rungs-level(n15)",
+   "42265..43200 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mound-log(n5) w1-cache-stones(n6) w1-fern-bank(n7) w1-bank-stair-test-back(n8) w1-meadow(n9) w1-bank-stair-fork(n10) w1-stone-zigzag(n11) w1-canopy-weave-rise(n12) w1-clearing(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "27556..30142 in w1-canopy-weave(n10)",
+   "34655..37489 in w1-log-chain-rise(n13)",
+   "37591..38607 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 15,
+  "seed": 16,
+  "code": "A M< Cv+&> R X> R P2+ R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: content 'v' (field): Later: the vine field (two hands): B#'s emitter on t-b#, n",
+   "ask: node: find (+): no find laid",
+   "ask: node: move # (the double): no section there asks for it",
+   "verdict band.out (normal): single-rise",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Pc1>\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "30079..32572 in w1-canopy-weave(n12)",
+   "32680..33469 in w1-bough-bench(n13)",
+   "36606..39170 in w1-log-chain(n15)",
+   "39290..40252 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stair-run(n5) w1-mushroom-log(n6) w1-fern-bank(n7) w1-stair-test-back(n8) w1-log-walk(n9) w1-hollow-twoway(n10) w1-mound-log(n11) w1-canopy-weave(n12) w1-bough-bench(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "24807..27099 in w1-canopy-weave(n10)",
+   "27221..28154 in w1-high-walk-up(n11)",
+   "31269..33834 in w1-log-chain(n13)",
+   "33939..35159 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 16,
+  "seed": 17,
+  "code": "A P+:+seed Mb2< R X:#soft R Cc<:1 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no bounce section left)",
+   "pool short at slot # (combine: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: content 'b' (bounce): # of # sections are ground",
+   "ask: node: content 'c' (climb): # of # sections are ground",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [],
+  "floor": [
+   "33882..34837 in w1-high-walk(n13)",
+   "37619..40369 in w1-canopy-rungs(n15)",
+   "40469..41490 in w1-last-step-up(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-mound-log(n6) w1-floor-dash(n7) w1-leap-stones(n8) w1-meadow(n9) w1-second-jump(n10) w1-log-walk(n11) w1-mushroom-log(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-canopy-rungs(n15) w1-last-step-up(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "27862..28227 in w1-bounce-bough-combine(n11)",
+   "28336..28682 in w1-bounce-bough-combine(n11)",
+   "28779..29735 in w1-high-walk(n12)",
+   "32926..35744 in w1-canopy-rungs-level(n14)",
+   "35851..36791 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 17,
+  "seed": 18,
+  "code": "A Pb1&:&snake-trapped*1z M&&:&snake-trapped-asleep*2! R X<:10:#water R Cr> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no rope section left)",
+   "ask: node: threat snake-trapped asleep: this world lays it awake",
+   "ask: node: threat snake-trapped-asleep awake: this world lays it asleep",
+   "ask: node: hazard #water: laid hurt",
+   "ask: node: content 'r' (rope): # of # sections are floating",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "31205..31586 in w1-bounce-bough-combine(n11)",
+   "32519..33451 in w1-high-walk-up(n12)",
+   "36146..38992 in w1-canopy-rungs-level(n14)",
+   "39088..40031 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-lift(n4) w1-cache-stones(n5) w1-bank-stair-fork(n6) w1-leap-stones(n7) w1-fern-bank(n8) w1-bank-stair-test-back(n9) w1-clearing(n10) w1-bounce-bough-combine(n11) w1-high-walk-up(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "28489..28839 in w1-bounce-bough-combine(n10)",
+   "29380..29695 in w1-bounce-bough-combine(n10)",
+   "29811..30720 in w1-high-walk-up(n11)",
+   "33882..36790 in w1-canopy-rungs-level(n13)",
+   "36880..37900 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 18,
+  "seed": 19,
+  "code": "A Pw1^&>:&snake-trapped C:#water R X:$0 R M< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (practise: no water section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: content 'w' (water): # of # sections are ground",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: hazard #water: no fall in its span",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Pg1^>\": shape ^ (rising): its sections rise -8 px"
+  ],
+  "floor": [
+   "38764..41510 in w1-canopy-rungs(n15)",
+   "41629..42575 in w1-sunlit-log(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-log-teach(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-stair-fork(n5) w1-stone-zigzag(n6) w1-mushroom-fork-dip(n7) w1-mushroom-log(n8) w1-fern-bank(n9) w1-bank-stair-test-back(n10) w1-meadow(n11) w1-leap-stones(n12) w1-clearing(n13) w1-seed-perch(n14) w1-canopy-rungs(n15) w1-sunlit-log(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26191..28704 in w1-canopy-weave(n10)",
+   "32958..35868 in w1-log-chain-rise(n13)",
+   "35991..36918 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 19,
+  "seed": 20,
+  "code": "A M> C1 R X_< R C_> R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (combine: no bounce section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (signature: the late rise ended at y #, not # px above y # (V#))",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Cg2^<\": move 1 (plain jumps): a section there asks for the double",
+   "ask: node n11 \"Cg2_>\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "34772..37612 in w1-canopy-rungs-level(n14)",
+   "37720..38656 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-home-banks(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-stair-run(n6) w1-mushroom-log(n7) w1-fern-bank(n8) w1-stair-test-back(n9) w1-clearing(n10) w1-two-answers(n11) w1-meadow(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "26731..27128 in w1-bounce-bough-combine(n10)",
+   "27233..27583 in w1-bounce-bough-combine(n10)",
+   "27701..28624 in w1-high-walk(n11)",
+   "31302..33873 in w1-log-chain(n13)",
+   "33975..34936 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 20,
+  "seed": 21,
+  "code": "A Cc^< P:$3 R X:2:#water:$2 R M<:#water R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: content 'c' (climb): # of # sections are ground",
+   "ask: node: hazard #water: no fall in its span",
+   "ask: node: hazard #water: laid hurt",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "34504..37100 in w1-canopy-rungs(n14)",
+   "37203..38133 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-cache-stones(n6) w1-bank-stair-fork(n7) w1-meadow(n8) w1-fallen-trunk(n9) w1-fern-bank(n10) w1-leap-stones(n11) w1-clearing(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "24073..26633 in w1-canopy-weave(n10)",
+   "32041..34744 in w1-canopy-rungs(n13)",
+   "34869..35821 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 21,
+  "seed": 22,
+  "code": "A Mk2&< Ck>:7 R Xg&>:6:&snake:$6 R Pk1&&<:9:&snake-trapped-asleep*2z R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no crumble section left)",
+   "pool short at slot # (combine: no crumble section left)",
+   "pool short at slot # (practise: no crumble section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "node code: V#: # 'k' nodes for a deal of #",
+   "flags: none before the hard node Xg#> ##",
+   "ask: node: content 'k' (crumble): # of # sections are climb",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: content 'k' (crumble): # of # sections are ground",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Mc1<\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "28569..30851 in w1-canopy-weave-rise(n12)",
+   "30967..31749 in w1-bough-bench(n13)",
+   "34397..37273 in w1-canopy-rungs-level(n15)",
+   "37381..38590 in w1-last-step-up(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-run(n5) w1-mushroom-log(n6) w1-log-walk(n7) w1-leap-stones(n8) w1-fern-bank(n9) w1-bank-stair-fork(n10) w1-stump-stones(n11) w1-canopy-weave-rise(n12) w1-bough-bench(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-last-step-up(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "25692..27980 in w1-canopy-weave-rise(n10)",
+   "28085..29098 in w1-high-walk(n11)",
+   "31717..34553 in w1-canopy-rungs-level(n13)",
+   "34640..35588 in w1-sunlit-log(n14)"
+  ]
+ },
+ {
+  "i": 22,
+  "seed": 23,
+  "code": "A Mt&<:&snake-trapped-asleep Pt R Xs R Mw^> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no water section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: content 'w' (water): # of # sections are ground",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Mg1^>\": shape ^ (rising): its sections rise 0 px"
+  ],
+  "floor": [
+   "33404..36132 in w1-canopy-rungs(n14)",
+   "36225..37170 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-lift(n4) w1-zigzag-run(n5) w1-cache-stones(n6) w1-bank-stair-fork(n7) w1-log-walk(n8) w1-leap-stones(n9) w1-clearing(n10) w1-stone-dips(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "33926..36565 in w1-log-chain(n13)",
+   "36666..37618 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 23,
+  "seed": 24,
+  "code": "A Pg1&>:t0.9 P< R X^:#hurt R W^&> R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n9 \"Xc2^>\": shape ^ (rising): its sections rise -11 px"
+  ],
+  "floor": [
+   "29606..32857 in w1-dipping-boughs-twist(n11)",
+   "36978..39858 in w1-log-chain-rise(n14)",
+   "39960..40915 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stump-stones(n5) w1-mound-log(n6) w1-mushroom-fork(n7) w1-fern-bank(n8) w1-bank-stair-test-back(n9) w1-log-walk(n10) w1-dipping-boughs-twist(n11) w1-clearing(n12) w1-seed-perch(n13) w1-log-chain-rise(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "23206..26661 in w1-dipping-boughs-twist(n10)",
+   "26751..27712 in w1-bough-bench(n11)",
+   "30425..33215 in w1-canopy-rungs-level(n13)",
+   "33332..34257 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 24,
+  "seed": 25,
+  "code": "A M_> M+&>:+seed R X_ R P<:1 R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Mc1_>\": shape _ (falling): its sections fall -297 px"
+  ],
+  "floor": [
+   "29536..31867 in w1-canopy-weave-rise(n11)",
+   "35851..38692 in w1-canopy-rungs-level(n14)",
+   "38794..39742 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stair-run(n5) w1-leap-stones(n6) w1-log-walk(n7) w1-stair-test-back(n8) w1-meadow(n9) w1-cache-stones(n10) w1-canopy-weave-rise(n11) w1-clearing(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "26629..27538 in w1-high-walk-up(n11)",
+   "30688..33306 in w1-log-chain(n13)",
+   "33408..34371 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 25,
+  "seed": 26,
+  "code": "A M2:8:$4 P1:p5 R X&:#water R M&:&snake-trapped-asleep*1z:#water R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no floating section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "ask: node: points p#: Later: the meter does not score a node inside the lay",
+   "ask: node: hazard #water: laid hurt",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [],
+  "floor": [
+   "38825..41546 in w1-log-chain(n14)",
+   "41648..42576 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-home-banks(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-leap-stones(n5) w1-mound-log(n6) w1-mushroom-fork-dip(n7) w1-log-walk(n8) w1-bank-stair-test-back(n9) w1-fern-bank(n10) w1-stone-dips(n11) w1-meadow(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "30380..31366 in w1-high-walk(n11)",
+   "34069..36757 in w1-canopy-rungs(n13)",
+   "36852..37816 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 26,
+  "seed": 27,
+  "code": "A P P>:3 R X>:6:t0.9 R Mg_&> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (fork: no climb section left)",
+   "node code: V#: # of # content nodes are 'b' (cap #)",
+   "node code: V#: 'b' on two neighbouring content nodes",
+   "node code: V#: # 'c' nodes for a deal of #",
+   "node code: V#: # 'b' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Mg2_>\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "32498..35047 in w1-log-chain(n14)",
+   "35170..36134 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-step-stones-teach(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-stair-fork(n5) w1-cache-stones(n6) w1-mushroom-fork-dip(n7) w1-log-walk(n8) w1-bounce-wall(n9) w1-fern-bank(n10) w1-leap-stones(n11) w1-clearing(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "21976..24475 in w1-canopy-weave(n10)",
+   "29789..32410 in w1-log-chain(n13)",
+   "32532..33466 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 27,
+  "seed": 28,
+  "code": "A C M> R X2 R M_> R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (test: no bounce section left)",
+   "pool short at slot # (flow: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Mg1_>\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "31088..32046 in w1-high-walk(n12)",
+   "34852..37464 in w1-canopy-rungs(n14)",
+   "37565..38499 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-stair-fork(n5) w1-mushroom-log(n6) w1-bank-run(n7) w1-meadow(n8) w1-leap-stones(n9) w1-fern-bank(n10) w1-stone-dips(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "23319..25537 in w1-canopy-weave(n10)",
+   "29617..32250 in w1-log-chain(n13)",
+   "32350..33288 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 28,
+  "seed": 29,
+  "code": "A Pr&<:&snake-trapped*1! P^:2:t0.9 R X:10:#soft R C_< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (practise: no rope section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'r' (rope): # of # sections are ground",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: hazard #soft: no fall in its span",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Pb^<\": shape ^ (rising): its sections rise 0 px",
+   "ask: node n12 \"Cf2_<\": shape _ (falling): its sections fall -241 px"
+  ],
+  "floor": [
+   "29976..30370 in w1-bounce-bough-combine(n12)",
+   "30466..30796 in w1-bounce-bough-combine(n12)",
+   "35341..38236 in w1-canopy-rungs-level(n15)",
+   "38337..39273 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stump-stile(n5) w1-hollow-twoway(n6) w1-cache-stones(n7) w1-bank-stair-fork(n8) w1-log-walk(n9) w1-fallen-trunk(n10) w1-fern-bank(n11) w1-bounce-bough-combine(n12) w1-clearing(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "29847..30803 in w1-high-walk(n12)",
+   "33980..36877 in w1-canopy-rungs-level(n14)",
+   "36997..37949 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 29,
+  "seed": 30,
+  "code": "A C< M&:&snake*1!:t0.9 R Xf2<:$6 R P_+<:+seed R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no floating section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: content 'f' (floating): # of # sections are climb",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n10 \"Pc1_<\": shape _ (falling): its sections fall -8 px"
+  ],
+  "floor": [
+   "28035..30558 in w1-canopy-weave(n11)",
+   "30673..31631 in w1-bough-bench(n12)",
+   "39841..40798 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-log-teach(n2) w1-double-teach(n3) w1-mushroom-lift(n4) w1-mushroom-log(n5) w1-bank-run(n6) w1-fern-bank(n7) w1-stair-test-back(n8) w1-meadow(n9) w1-mound-log(n10) w1-canopy-weave(n11) w1-bough-bench(n12) w1-seed-perch(n13) w1-bank-stair-test-back(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "23312..25482 in w1-canopy-weave(n10)",
+   "25581..26531 in w1-high-walk(n11)",
+   "29669..32190 in w1-log-chain(n13)",
+   "32297..33236 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 30,
+  "seed": 31,
+  "code": "A Pv C&> R X2&&:5 R P1^&&>:&snake-asleep*2 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "ask: node: content 'v' (field): Later: the vine field (two hands): B#'s emitter on t-b#, n",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n11 \"Pb^>\": shape ^ (rising): its sections rise 0 px"
+  ],
+  "floor": [
+   "30151..32492 in w1-canopy-weave-rise(n12)",
+   "32613..33597 in w1-high-walk(n13)",
+   "36717..39263 in w1-log-chain(n15)",
+   "39372..40315 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stones(n5) w1-mushroom-log(n6) w1-meadow(n7) w1-fallen-trunk(n8) w1-log-walk(n9) w1-bank-stair-fork(n10) w1-cache-stones(n11) w1-canopy-weave-rise(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26801..29055 in w1-canopy-weave(n10)",
+   "32882..35562 in w1-canopy-rungs(n13)",
+   "35662..36594 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 31,
+  "seed": 32,
+  "code": "A Pr&<:&snake*1z Ct> R X>:$6 R W^< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (practise: no rope section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: content 'r' (rope): # of # sections are ground",
+   "ask: node: threat snake asleep: this world lays it awake",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [],
+  "floor": [
+   "30590..34087 in w1-dipping-boughs-twist(n12)",
+   "39501..42378 in w1-canopy-rungs-level(n15)",
+   "42480..43414 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-stones(n6) w1-bank-stair-fork(n7) w1-mushroom-log(n8) w1-log-walk(n9) w1-bank-stair-test-back(n10) w1-fern-bank(n11) w1-dipping-boughs-twist(n12) w1-meadow(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "29273..32399 in w1-dipping-boughs-twist(n11)",
+   "32506..33288 in w1-bough-bench(n12)",
+   "36385..39063 in w1-canopy-rungs(n14)",
+   "39179..40112 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 32,
+  "seed": 33,
+  "code": "A P P R X:2 R W R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (signature: no section for the job left)",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [],
+  "floor": [
+   "25294..28659 in w1-dipping-boughs-twist(n10)",
+   "37620..38575 in w1-quiet-arrival(n14)"
+  ],
+  "secs": "w1-meadow(n1) w1-log-teach(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-stair-fork(n5) w1-stone-dips(n6) w1-log-walk(n7) w1-bank-stair-test(n8) w1-clearing(n9) w1-dipping-boughs-twist(n10) w1-fern-bank(n11) w1-seed-perch(n12) w1-stair-test-back(n13) w1-quiet-arrival(n14)",
+  "bareClean": false,
+  "bareFloor": [
+   "25027..28392 in w1-dipping-boughs-twist(n10)",
+   "37615..38570 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 33,
+  "seed": 34,
+  "code": "A C1<:9:$4 M2&:&snake-trapped-asleep! R Xp R C R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: threat snake-trapped-asleep awake: this world lays it asleep",
+   "ask: node: content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B#'s emi",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Cg2<\": move 1 (plain jumps): a section there asks for the double"
+  ],
+  "floor": [
+   "31841..32229 in w1-bounce-bough-combine(n12)",
+   "32753..33112 in w1-bounce-bough-combine(n12)",
+   "37151..39979 in w1-canopy-rungs-level(n15)",
+   "40080..41038 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-leap-stones(n8) w1-clearing(n9) w1-stair-test-back(n10) w1-fern-bank(n11) w1-bounce-bough-combine(n12) w1-log-walk(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "30586..30935 in w1-bounce-bough-combine(n11)",
+   "31450..31800 in w1-bounce-bough-combine(n11)",
+   "35815..38667 in w1-canopy-rungs-level(n14)",
+   "38783..39742 in w1-sunlit-log(n15)"
+  ]
+ },
+ {
+  "i": 34,
+  "seed": 35,
+  "code": "A M<:3 P>:#hurt R Xw2 R Mh2+<:#hurt:+seed R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no water section left)",
+   "pool short at slot # (flow: no hazard section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: # 'c' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: hazard #hurt: no fall in its span",
+   "ask: node: content 'w' (water): # of # sections are climb",
+   "ask: node: content 'h' (hazard): # of # sections are climb",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n12 \"Mc1^<\": move 2 (the double): no section there asks for it"
+  ],
+  "floor": [
+   "34311..35305 in w1-high-walk(n13)",
+   "38012..40914 in w1-canopy-rungs-level(n15)",
+   "41015..41959 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-log-teach(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-run(n5) w1-mushroom-fork-dip(n6) w1-mound-log(n7) w1-hollow-twoway(n8) w1-log-walk(n9) w1-bank-stair-test-back(n10) w1-fern-bank(n11) w1-zigzag-run(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "22645..25242 in w1-canopy-weave(n10)",
+   "25351..26316 in w1-bough-bench(n11)",
+   "29527..32108 in w1-log-chain(n13)",
+   "32215..33148 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 35,
+  "seed": 36,
+  "code": "A Mr&:&snake-trapped-asleep P_&&:&snake-trapped*2!:$6 R Xw_ R P:p5 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no rope section left)",
+   "pool short at slot # (test: no water section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: # 'c' nodes for a deal of #",
+   "ask: node: content 'r' (rope): # of # sections are climb",
+   "ask: node: content 'w' (water): # of # sections are climb",
+   "ask: node: points p#: Later: the meter does not score a node inside the lay",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "13716..14036 in w1-zigzag-run(n5)",
+   "27398..29584 in w1-canopy-weave(n11)",
+   "29687..30580 in w1-high-walk-up(n12)",
+   "33703..36364 in w1-canopy-rungs(n14)",
+   "36463..37401 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-zigzag-run(n5) w1-stump-descent(n6) w1-fern-bank(n7) w1-stair-test-back(n8) w1-log-walk(n9) w1-mound-log(n10) w1-canopy-weave(n11) w1-high-walk-up(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "27485..28493 in w1-high-walk(n11)",
+   "31192..33867 in w1-log-chain(n13)",
+   "33968..34895 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 36,
+  "seed": 37,
+  "code": "A P^<:#void M&>:&snake-trapped-asleep*1 R Xc1& R Px^&&:8 R S E",
+  "fair": false,
+  "errs": [
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: hazard #void: no fall in its span",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: content 'x' (trap): Later: the trap (a limb load over an animal): B#'s emitter ",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Pg1^<\": shape ^ (rising): its sections rise 0 px",
+   "ask: node n8 \"Xc2^>\": move 1 (plain jumps): a section there asks for the double"
+  ],
+  "floor": [
+   "32838..33769 in w1-bough-bench(n12)",
+   "36388..39046 in w1-log-chain(n14)",
+   "39135..40065 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-stone-zigzag(n5) w1-stair-run(n6) w1-log-walk(n7) w1-bank-stair-test-back(n8) w1-meadow(n9) w1-cache-stones(n10) w1-bank-stair-fork(n11) w1-bough-bench(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "27159..29471 in w1-canopy-weave(n10)",
+   "29567..30411 in w1-bough-bench-up(n11)",
+   "33511..36334 in w1-log-chain-rise(n13)",
+   "36437..37363 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 37,
+  "seed": 38,
+  "code": "A P1^&:&snake*1z P_ R X_&:&snake-asleep R Mt R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: threat snake asleep: this world lays it awake",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [],
+  "floor": [
+   "37371..40081 in w1-canopy-rungs(n14)",
+   "40204..41165 in w1-sunlit-log(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-log-teach(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-cache-stones(n5) w1-mound-log(n6) w1-mushroom-fork-dip(n7) w1-meadow(n8) w1-stair-test-back(n9) w1-log-walk(n10) w1-leap-stones(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-canopy-rungs(n14) w1-sunlit-log(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "34405..37161 in w1-log-chain(n13)",
+   "37285..38493 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 38,
+  "seed": 39,
+  "code": "A Cs> C1+:+seed R X< R M_> R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: # 'c' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n12 \"Mc1_>\": shape _ (falling): its sections fall -285 px"
+  ],
+  "floor": [
+   "33333..34343 in w1-high-walk(n13)",
+   "37534..40407 in w1-canopy-rungs-level(n15)",
+   "40503..41430 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-home-banks(n1) w1-log-teach(n2) w1-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-stair-gap-twist(n8) w1-meadow(n9) w1-bank-stair-test-back(n10) w1-fern-bank(n11) w1-stair-run(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "30327..32920 in w1-canopy-weave(n12)",
+   "33026..34036 in w1-high-walk(n13)",
+   "37227..39803 in w1-log-chain(n15)",
+   "39899..41080 in w1-sunlit-log(n16)"
+  ]
+ },
+ {
+  "i": 39,
+  "seed": 40,
+  "code": "A Cg_:#void P R Xs<:1 R M^< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no climb section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: hazard #void: no fall in its span",
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Cg2_<\": shape _ (falling): its sections fall -174 px",
+   "ask: node n10 \"Mg2^<\": shape ^ (rising): its sections rise -1 px"
+  ],
+  "floor": [
+   "26905..27865 in w1-high-walk(n11)",
+   "35604..36534 in w1-quiet-arrival(n14)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-bank-stair-fork(n6) w1-log-walk(n7) w1-bounce-wall(n8) w1-meadow(n9) w1-leap-stones(n10) w1-high-walk(n11) w1-seed-perch(n12) w1-stair-test-back(n13) w1-quiet-arrival(n14)",
+  "bareClean": false,
+  "bareFloor": [
+   "29639..30534 in w1-bough-bench-up(n11)",
+   "33221..36111 in w1-canopy-rungs-level(n13)",
+   "36201..37131 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 40,
+  "seed": 41,
+  "code": "A M&:&snake*1z Mk_:#void R X&:&snake*1z R W:4 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (flow: no crumble section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "ask: node: threat snake asleep: this world lays it awake",
+   "ask: node: content 'k' (crumble): # of # sections are ground",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: hazard #void: laid hurt",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Mg1_>\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "28276..31442 in w1-dipping-boughs-twist(n11)",
+   "31528..32426 in w1-bough-bench-up(n12)",
+   "35560..38316 in w1-canopy-rungs-level(n14)",
+   "38404..39627 in w1-last-step-up(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-log-teach(n2) w1-dip-double-teach(n3) w1-mushroom-lift(n4) w1-bank-stair-fork(n5) w1-leap-stones(n6) w1-stone-dips(n7) w1-fern-bank(n8) w1-bank-stair-test-back(n9) w1-log-walk(n10) w1-dipping-boughs-twist(n11) w1-bough-bench-up(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-last-step-up(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "26354..29514 in w1-dipping-boughs-twist(n10)",
+   "29615..30578 in w1-bough-bench(n11)",
+   "33610..36395 in w1-canopy-rungs-level(n13)",
+   "36498..37669 in w1-sunlit-log(n14)"
+  ]
+ },
+ {
+  "i": 41,
+  "seed": 42,
+  "code": "A Mp2^& C:7 R Xr_ R Ph&< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no rope section left)",
+   "pool short at slot # (practise: no hazard section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: 'f' outside its window [#, #]",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B#'s emi",
+   "ask: node: move # (the double): no section there asks for it",
+   "ask: node: content 'r' (rope): # of # sections are climb",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: content 'h' (hazard): # of # sections are floating",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Mc1^>\": move 2 (the double): no section there asks for it",
+   "ask: node n8 \"Xc2_<\": shape _ (falling): its sections fall -14 px"
+  ],
+  "floor": [
+   "39152..40115 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-log-teach(n2) w1-dip-double-teach(n3) w1-mushroom-lift(n4) w1-zigzag-run(n5) w1-mushroom-log(n6) w1-log-walk(n7) w1-stair-test-back(n8) w1-clearing(n9) w1-log-road(n10) w1-bank-stair-fork(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-bank-stair-test-back(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "32478..35248 in w1-log-chain(n13)",
+   "35356..36592 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 42,
+  "seed": 43,
+  "code": "A C2 C> R X> R M1:9 R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "32739..33756 in w1-high-walk(n13)",
+   "36509..39307 in w1-canopy-rungs-level(n15)",
+   "39422..40354 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-dip-bounce-twist(n8) w1-meadow(n9) w1-fallen-trunk(n10) w1-fern-bank(n11) w1-bank-run(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "31814..34152 in w1-canopy-weave-rise(n12)",
+   "34258..35203 in w1-high-walk-up(n13)",
+   "37956..40818 in w1-canopy-rungs-level(n15)",
+   "40933..42156 in w1-last-step-up(n16)"
+  ]
+ },
+ {
+  "i": 43,
+  "seed": 44,
+  "code": "A P1&&>:#void:$3 Mx&:8 R X> R M&< R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: creatures (&): no creature laid",
+   "ask: node: formation (&&): # creatures laid",
+   "ask: node: hazard #void: no fall in its span",
+   "ask: node: content 'x' (trap): Later: the trap (a limb load over an animal): B#'s emitter ",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "30885..31903 in w1-high-walk(n12)",
+   "35024..37871 in w1-canopy-rungs-level(n14)",
+   "37985..38932 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mound-log(n5) w1-mushroom-fork(n6) w1-stair-run(n7) w1-clearing(n8) w1-leap-stones(n9) w1-log-walk(n10) w1-bank-run(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "28245..29215 in w1-high-walk(n11)",
+   "31936..34757 in w1-canopy-rungs-level(n13)",
+   "34863..35817 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 44,
+  "seed": 45,
+  "code": "A P^< C:t0.9 R Xr2> R W^&&>:&snake*2 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no rope section left)",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: content 'r' (rope): # of # sections are climb",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [],
+  "floor": [
+   "31029..34198 in w1-dipping-boughs-twist(n12)",
+   "38369..41108 in w1-canopy-rungs(n15)",
+   "41221..42186 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-cache-stones(n6) w1-bank-stair-fork(n7) w1-mushroom-log(n8) w1-clearing(n9) w1-bank-stair-test-back(n10) w1-log-walk(n11) w1-dipping-boughs-twist(n12) w1-fern-bank(n13) w1-seed-perch(n14) w1-canopy-rungs(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26965..30143 in w1-dipping-boughs-twist(n11)",
+   "30262..31224 in w1-high-walk(n12)",
+   "33877..36669 in w1-canopy-rungs-level(n14)",
+   "36779..37725 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 45,
+  "seed": 46,
+  "code": "A C2> M^:t0.9 R Xb^:1:#water R W:4 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: content 'b' (bounce): # of # sections are climb",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: hazard #water: laid hurt",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n9 \"Xc2^>\": shape ^ (rising): its sections rise -8 px"
+  ],
+  "floor": [
+   "27765..30804 in w1-dipping-boughs-twist(n11)",
+   "30899..31879 in w1-high-walk(n12)",
+   "35041..37552 in w1-log-chain(n14)",
+   "37648..38607 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-step-stones-teach(n2) w1-double-teach(n3) w1-mushroom-lift(n4) w1-bank-stair-fork(n5) w1-mushroom-log(n6) w1-bank-run(n7) w1-clearing(n8) w1-bank-stair-test-back(n9) w1-fern-bank(n10) w1-dipping-boughs-twist(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "25230..28689 in w1-dipping-boughs-twist(n10)",
+   "32599..35480 in w1-log-chain-rise(n13)",
+   "35592..36544 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 46,
+  "seed": 47,
+  "code": "A M_&>:&snake-asleep*1 Ct&>:9 R X R M2_&&>:&snake*2! R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (flow: no floating section left)",
+   "pool short at slot # (signature: no section for the job left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n6 \"Mc1_>\": shape _ (falling): its sections fall -267 px",
+   "ask: node n11 \"Mg2_>\": shape _ (falling): its sections fall 0 px"
+  ],
+  "floor": [
+   "42949..43877 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-hollow-twoway(n5) w1-zigzag-run(n6) w1-two-answers(n7) w1-fern-bank(n8) w1-stair-test-back(n9) w1-clearing(n10) w1-leap-stones(n11) w1-log-walk(n12) w1-seed-perch(n13) w1-bank-stair-test-back(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "30514..31497 in w1-high-walk(n11)",
+   "34524..37208 in w1-log-chain(n13)",
+   "37322..38253 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 47,
+  "seed": 48,
+  "code": "A C<:6:$4 C< R X&>:&snake-trapped-asleep:$6 R W&> R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "31943..35456 in w1-dipping-boughs-twist(n12)",
+   "39590..42338 in w1-canopy-rungs(n15)",
+   "42435..43371 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-home-banks(n1) w1-log-teach(n2) w1-dip-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-leap-stones(n8) w1-log-walk(n9) w1-bank-stair-test-back(n10) w1-meadow(n11) w1-dipping-boughs-twist(n12) w1-clearing(n13) w1-seed-perch(n14) w1-canopy-rungs(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "30858..34371 in w1-dipping-boughs-twist(n12)",
+   "38505..41383 in w1-canopy-rungs-level(n15)",
+   "41480..42476 in w1-last-step-up(n16)"
+  ]
+ },
+ {
+  "i": 48,
+  "seed": 49,
+  "code": "A C&>:9:&snake-trapped-asleep*1 P> R X+ R Wg:8 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (test: no bounce section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "ask: node: find (+): no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "35296..36225 in w1-high-walk(n13)",
+   "38837..41394 in w1-log-chain(n15)",
+   "41505..42435 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-log-teach(n2) w1-bank-double-teach(n3) w1-mushroom-lift(n4) w1-mushroom-log(n5) w1-hollow-twoway(n6) w1-cache-stones(n7) w1-bank-stair-fork(n8) w1-fern-bank(n9) w1-bank-stair-test-back(n10) w1-meadow(n11) w1-two-answers(n12) w1-high-walk(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "28286..31638 in w1-dipping-boughs-twist(n11)",
+   "35892..38785 in w1-canopy-rungs-level(n14)",
+   "38878..39891 in w1-last-step-up(n15)"
+  ]
+ },
+ {
+  "i": 49,
+  "seed": 50,
+  "code": "A P Cw^< R X1> R Cx:3:t0.9 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no water section left)",
+   "pool short at slot # (combine: no climb section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'f' on two neighbouring content nodes",
+   "node code: V#: 'f' outside its window [#, #]",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'w' (water): # of # sections are ground",
+   "ask: node: content 'x' (trap): Later: the trap (a limb load over an animal): B#'s emitter ",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "27342..27735 in w1-bounce-bough-combine(n11)",
+   "28745..29687 in w1-high-walk(n12)",
+   "32480..35345 in w1-canopy-rungs-level(n14)",
+   "35441..36387 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-clearing(n8) w1-stilt-logs(n9) w1-log-walk(n10) w1-bounce-bough-combine(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "29956..30349 in w1-bounce-bough-combine(n11)",
+   "35221..37748 in w1-log-chain(n14)",
+   "37844..38790 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 50,
+  "seed": 51,
+  "code": "A M+<:+seed:p5 P< R Xc2:2:$4 R Ct^&<:#soft R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: points p#: Later: the meter does not score a node inside the lay",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "ask: node: hazard #soft: laid hurt",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [],
+  "floor": [
+   "32039..32408 in w1-bounce-bough-combine(n11)",
+   "32928..33237 in w1-bounce-bough-combine(n11)",
+   "33329..34339 in w1-high-walk(n12)",
+   "36992..39788 in w1-canopy-rungs-level(n14)",
+   "39885..41081 in w1-last-step-up(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-step-stones-teach(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-leap-stones(n5) w1-mound-log(n6) w1-mushroom-fork(n7) w1-fern-bank(n8) w1-bank-stair-test-back(n9) w1-log-walk(n10) w1-bounce-bough-combine(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-canopy-rungs-level(n14) w1-last-step-up(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "27405..27763 in w1-bounce-bough-combine(n10)",
+   "27853..28156 in w1-bounce-bough-combine(n10)",
+   "28265..29216 in w1-high-walk-up(n11)",
+   "31931..34464 in w1-log-chain(n13)",
+   "34554..35505 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 51,
+  "seed": 52,
+  "code": "A Mt&<:&snake-asleep*1!:$2 C R X_<:$4 R Ph1^ R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (practise: no hazard section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "ask: node: content 't' (gate): Later: the gate a find opens (the fig gate): B#'s emitter o",
+   "ask: node: threat snake-asleep awake: this world lays it asleep",
+   "ask: node: content 'h' (hazard): # of # sections are ground",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "25690..27906 in w1-canopy-weave(n11)",
+   "28015..28982 in w1-high-walk(n12)",
+   "31589..34205 in w1-log-chain(n14)",
+   "34305..35277 in w1-sunlit-log(n15)"
+  ],
+  "secs": "w1-morning-path(n1) w1-log-teach(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-bank-run(n5) w1-mushroom-log(n6) w1-clearing(n7) w1-stair-test-back(n8) w1-log-walk(n9) w1-stone-zigzag(n10) w1-canopy-weave(n11) w1-high-walk(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-sunlit-log(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "23372..25862 in w1-canopy-weave(n10)",
+   "25985..26943 in w1-high-walk(n11)",
+   "29649..32181 in w1-log-chain(n13)",
+   "32281..33240 in w1-sunlit-log(n14)"
+  ]
+ },
+ {
+  "i": 52,
+  "seed": 53,
+  "code": "A Cv1^&:&snake! Pb> R X< R Pf+< R S E",
+  "fair": false,
+  "errs": [
+   "node code: V#: 'f' outside its window [#, #]",
+   "ask: node: content 'v' (field): Later: the vine field (two hands): B#'s emitter on t-b#, n",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: find (+): no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n5 \"Cg2^<\": move 1 (plain jumps): a section there asks for the double"
+  ],
+  "floor": [
+   "35465..38010 in w1-log-chain(n14)",
+   "38126..39108 in w1-sunlit-log(n15)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-cache-stones(n6) w1-fern-bank(n7) w1-stair-test-back(n8) w1-log-walk(n9) w1-log-road(n10) w1-mushroom-fork(n11) w1-clearing(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-sunlit-log(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "32490..35485 in w1-log-chain-rise(n13)",
+   "35587..36525 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 53,
+  "seed": 54,
+  "code": "A C_> Mw1& R X:$3 R Cf:4:#hurt R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (fork: no climb section left)",
+   "pool short at slot # (flow: no water section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'b' on two neighbouring content nodes",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: # 'g' nodes for a deal of #",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "ask: node: content 'w' (water): # of # sections are ground",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Cg2_>\": shape _ (falling): its sections fall -177 px",
+   "ask: node n8 \"Mg2^>\": move 1 (plain jumps): a section there asks for the double"
+  ],
+  "floor": [
+   "32143..32490 in w1-bounce-bough-combine(n12)",
+   "32583..32917 in w1-bounce-bough-combine(n12)",
+   "33023..33951 in w1-high-walk-up(n13)",
+   "37099..39933 in w1-canopy-rungs-level(n15)",
+   "40032..40985 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-meadow(n1) w1-learn(n2) w1-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-mushroom-fork(n6) w1-mushroom-log(n7) w1-leap-stones(n8) w1-log-walk(n9) w1-fallen-trunk(n10) w1-clearing(n11) w1-bounce-bough-combine(n12) w1-high-walk-up(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "32492..33448 in w1-high-walk(n12)",
+   "36638..39478 in w1-canopy-rungs-level(n14)",
+   "39586..40545 in w1-quiet-arrival(n15)"
+  ]
+ },
+ {
+  "i": 54,
+  "seed": 55,
+  "code": "A Cg2:4 P< R X> R P1 R S E",
+  "fair": true,
+  "errs": [
+   "pool short at slot # (practise: no bounce section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "27786..29978 in w1-canopy-weave(n11)",
+   "33726..36392 in w1-log-chain(n14)",
+   "36490..37451 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-home-banks(n1) w1-step-stones-teach(n2) w1-bank-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-cache-stones(n6) w1-meadow(n7) w1-bank-stair-test-back(n8) w1-clearing(n9) w1-stone-zigzag(n10) w1-canopy-weave(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "30772..33482 in w1-canopy-rungs(n13)",
+   "33584..34544 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 55,
+  "seed": 56,
+  "code": "A C2>:1 C&:&snake-asleep*1:$4 R Xf<:$6 R M+<:+seed R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (test: no floating section left)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "node code: V#: # 'c' nodes for a deal of #",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: content 'f' (floating): # of # sections are climb",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [],
+  "floor": [
+   "37448..40290 in w1-canopy-rungs-level(n15)",
+   "40395..41562 in w1-sunlit-log(n16)"
+  ],
+  "secs": "w1-morning-path(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-stair-gap-twist(n8) w1-meadow(n9) w1-stair-test-back(n10) w1-fern-bank(n11) w1-bank-run(n12) w1-clearing(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-sunlit-log(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "30638..33174 in w1-canopy-weave(n12)",
+   "33289..34185 in w1-high-walk-up(n13)",
+   "37242..40084 in w1-canopy-rungs-level(n15)",
+   "40189..41396 in w1-last-step-up(n16)"
+  ]
+ },
+ {
+  "i": 56,
+  "seed": 57,
+  "code": "A Cs<:4 M1:9 R X> R P_< R S E",
+  "fair": false,
+  "errs": [
+   "ask: node: content 's' (swing): Later: the swing vine (liana) as a content block: its emit",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#"
+  ],
+  "askMiss": [],
+  "floor": [
+   "30398..32598 in w1-canopy-weave(n12)",
+   "32715..33660 in w1-bough-bench(n13)",
+   "36900..39453 in w1-log-chain(n15)",
+   "39555..40505 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mushroom-log(n5) w1-bank-run(n6) w1-clearing(n7) w1-fallen-trunk(n8) w1-meadow(n9) w1-mushroom-fork(n10) w1-mound-log(n11) w1-canopy-weave(n12) w1-bough-bench(n13) w1-seed-perch(n14) w1-log-chain(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "26000..28226 in w1-canopy-weave(n10)",
+   "32209..35075 in w1-log-chain-rise(n13)",
+   "35174..36130 in w1-quiet-arrival(n14)"
+  ]
+ },
+ {
+  "i": 57,
+  "seed": 58,
+  "code": "A P1< M> R X1_> R W>:8 R S E",
+  "fair": true,
+  "errs": [
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n9 \"Xc2_>\": move 1 (plain jumps): a section there asks for the double",
+   "ask: node n9 \"Xc2_>\": shape _ (falling): its sections fall -3 px"
+  ],
+  "floor": [
+   "30091..33234 in w1-dipping-boughs-twist(n11)",
+   "37064..39534 in w1-log-chain(n14)",
+   "39646..40606 in w1-quiet-arrival(n15)"
+  ],
+  "secs": "w1-home-banks(n1) w1-learn(n2) w1-dip-double-teach(n3) w1-mushroom-bank-teach(n4) w1-mound-log(n5) w1-mushroom-fork(n6) w1-leap-stones(n7) w1-meadow(n8) w1-stair-test-back(n9) w1-clearing(n10) w1-dipping-boughs-twist(n11) w1-fern-bank(n12) w1-seed-perch(n13) w1-log-chain(n14) w1-quiet-arrival(n15)",
+  "bareClean": false,
+  "bareFloor": [
+   "25670..29036 in w1-dipping-boughs-twist(n10)",
+   "33513..36187 in w1-canopy-rungs(n13)",
+   "36279..37280 in w1-last-step-up(n14)"
+  ]
+ },
+ {
+  "i": 58,
+  "seed": 59,
+  "code": "A M^>:t0.9 P^ R Xh^+:+seed R C_&< R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (test: no hazard section left)",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "ask: node: shape ^ (rising): its sections rise # px",
+   "ask: node: content 'h' (hazard): # of # sections are climb",
+   "ask: node: find (+): no find laid",
+   "ask: node: reward +seed: no find laid",
+   "ask: node: shape _ (falling): its sections fall # px",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap",
+   "verdict teach.double-no-gap-after (normal): no gap only the second jump crosses within #,#",
+   "verdict landing.dead-zone (normal): a dead-zone landing"
+  ],
+  "askMiss": [
+   "ask: node n7 \"Pb^<\": shape ^ (rising): its sections rise -1 px",
+   "ask: node n10 \"Xc2^>\": shape ^ (rising): its sections rise -7 px",
+   "ask: node n12 \"Cf2_<\": shape _ (falling): its sections fall -237 px"
+  ],
+  "floor": [
+   "33682..34056 in w1-bounce-bough-combine(n12)",
+   "34626..34958 in w1-bounce-bough-combine(n12)",
+   "38701..41613 in w1-canopy-rungs-level(n15)",
+   "41734..42923 in w1-sunlit-log(n16)"
+  ],
+  "secs": "w1-home-banks(n1) w1-learn(n2) w1-double-teach(n3) w1-mushroom-bank-teach(n4) w1-zigzag-run(n5) w1-hollow-twoway(n6) w1-cache-stones(n7) w1-bank-stair-fork(n8) w1-meadow(n9) w1-bank-stair-test-back(n10) w1-log-walk(n11) w1-bounce-bough-combine(n12) w1-fern-bank(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-sunlit-log(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "31917..32301 in w1-bounce-bough-combine(n11)",
+   "32858..33183 in w1-bounce-bough-combine(n11)",
+   "37801..40747 in w1-canopy-rungs-level(n14)",
+   "40850..41826 in w1-sunlit-log(n15)"
+  ]
+ },
+ {
+  "i": 59,
+  "seed": 60,
+  "code": "A C>:$1 C_&&:&snake-trapped*2 R X1_< R Wk^:t0.9 R S E",
+  "fair": false,
+  "errs": [
+   "pool short at slot # (combine: no climb section left)",
+   "pool short at slot # (combine: no section for the job left)",
+   "pool short at slot # (twist: no crumble section left)",
+   "node code: V#: # of # content nodes are 'g' (cap #)",
+   "node code: V#: 'g' on two neighbouring content nodes",
+   "node code: V#: 'c' on two neighbouring content nodes",
+   "V#b: the end log at y # is not above y #, where the bough window begins (x #)",
+   "ask: node: move # (plain jumps): a section there asks for the double",
+   "ask: node: content 'k' (crumble): # of # sections are climb",
+   "ask: node: beat t#: Later: no clock piece in this tree keeps a beat",
+   "verdict drop.untyped (normal): a gap",
+   "verdict floor.unmarked (normal): an unmarked floorless gap"
+  ],
+  "askMiss": [
+   "ask: node n10 \"Xc2_<\": move 1 (plain jumps): a section there asks for the double"
+  ],
+  "floor": [
+   "33888..34843 in w1-high-walk-up(n13)",
+   "37509..40370 in w1-canopy-rungs-level(n15)",
+   "40472..41399 in w1-quiet-arrival(n16)"
+  ],
+  "secs": "w1-forest-edge(n1) w1-learn(n2) w1-bank-double-teach(n3) w1-bank-stair-fork(n4) w1-mushroom-bank-teach(n5) w1-hollow-twoway(n6) w1-mushroom-log(n7) w1-leap-stones(n8) w1-log-walk(n9) w1-stair-test-back(n10) w1-fern-bank(n11) w1-backstep-twist(n12) w1-high-walk-up(n13) w1-seed-perch(n14) w1-canopy-rungs-level(n15) w1-quiet-arrival(n16)",
+  "bareClean": false,
+  "bareFloor": [
+   "31265..34758 in w1-dipping-boughs-twist(n12)",
+   "40128..42807 in w1-canopy-rungs(n15)",
+   "42909..43836 in w1-quiet-arrival(n16)"
+  ]
+ }
+]
