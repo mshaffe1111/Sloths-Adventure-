@@ -71,3 +71,28 @@ test('searchYield: per graph, seeds tried and kept, and how many each refusing r
   ]);
   assert.deepEqual(searchYield([]), []);
 });
+
+// (POLISH-9b, R-165.228, the lead's ruling 8:21 AM 11-14: the list's judge and the relay test's (b) disagreed, so POLISH-7's relist
+// listed 4 Easy 1-1 layouts with a rise the help ladder had no room for. The rule is now the judge's own: listRules.ts helpRoomBreaches,
+// ONE definition with the test, src/game/gen2/helpRoom.ts)
+test('room for help is the list judge\'s own rule: planted on 1-1 seed 33825 Easy, as the list\'s search lays it (dropped by the relist that added it)', async () => {
+  await import('../../src/game/headlessDom.ts');
+  const { buildGen2Stage } = await import('../../src/game/gen2/pipeline.ts');
+  const { listedStage } = await import('../../src/game/gen2/listed.ts');
+  const { w1Finish } = await import('../../src/game/gen2/worlds/w1.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { provenSeeds } = await import('../../src/game/gen2/seedList.ts');
+  const { FIRST_RUN_11 } = await import('../../src/game/gen2/firstRun11.ts');
+  const { helpRoomBreaches, quietJudge } = await import('./listRules.ts');
+  const cfg = generateAllLevels().find((l) => l.id === '1-1')!;
+  const lay = (seed: number, difficulty: 'normal' | 'easy') => buildGen2Stage({ config: cfg, kit: listedStage('1-1')!.kit(), seed, difficulty, also: quietJudge(cfg) });
+  // (the planted roll: the search with the list's own quiet rule lays it as POLISH-7's relist listed it, 4 rerolls, seed 34161101)
+  const bad = lay(33825, 'easy');
+  assert.equal(bad.gen2.seed, 34161101, 'the roll POLISH-7 listed');
+  const lines = helpRoomBreaches(bad, 'easy', w1Finish as never);
+  assert.ok(lines.some((l) => /rise at x 26674, 221 px \(thin\): room 17 px of 320/.test(l)), lines.join('; '));
+  assert.deepEqual(helpRoomBreaches(lay(33825, 'normal'), 'normal', w1Finish as never), [], 'Normal has the room');
+  assert.ok(!provenSeeds('1-1').includes(33825), 'and it is no longer listed');
+  // (the first run, as listed, has room on both settings)
+  for (const d of ['normal', 'easy'] as const) assert.deepEqual(helpRoomBreaches(lay(FIRST_RUN_11.seed, d), d, w1Finish as never), [], `first run ${d}`);
+});
