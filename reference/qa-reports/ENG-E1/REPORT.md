@@ -1,6 +1,6 @@
 # ENG-E1 REPORT: 1-7's eagle and cover on the hiding the game already has
 Branch `t-eng-e1` (from t-eng-s1@a1739b43). Code head **43fd281e**; gates on that head: `gates.log` (this folder). Opus 5.5, xhigh.
-Box: started 8:57 AM ET 11-14 (the session clock); context at the report roughly 360k of 1M (36%; I can't see the session's own figure, D64).
+Box: started 8:57 AM ET 11-14 (the session clock); context at the report roughly 375k of 1M (37.5%; I can't see the session's own figure, D64).
 Lessons applied: D40 (built in 1-7.md's order: the eagle works and shows first, then cover), D57 (queue read at each push), D59 (no gate
 left running: the first gate run was stopped by me on purpose for the flare fix below, then rerun whole on the final head), D61 (a
 code-drawn ring and "!" in play view found in my own stills and removed before report), D63 (clips of the whole action, both ways),
@@ -37,7 +37,10 @@ stillLay, the old watcher's art; nothing rebuilt), D67 (no wait loops: gates in 
   from the GAME: 1-1, Normal (no difficulty set), the kit's phase/eye/pass, Pokey's x, moss, hearts): stills `shots/{upright-412x915,
   sideways-915x412}-{1-warn..7-after}.png` (+ `-sheet.jpg`), CLIPS `shots/*-eagle.mp4` (~26 s each: pass 1 free in the open, pass 2 still
   in the bush with the shadow right over him, pass 3 the real dive and a heart). The clip's caption is the last still's label (it lags).
-- **Gates**: the full CLAUDE.md Checks + CI's lists, `gates.sh` on 43fd281e: `gates.log` (each gate's exit and seconds).
+- **Gates: ALL GREEN on 43fd281e** (`gates.sh`, the full CLAUDE.md Checks + CI's lists, 9:30-10:15 AM ET; `gates.log`): tsc, unit
+  3399/3399, build, chunkcheck, artcheck, knowncheck, generality, seed lists, registry, engine tools, tier bots, kbdcheck, buildcheck,
+  drawcheck, clipcheck. roadmapcheck failed the first run only on "shallow clone, proofs cannot be checked" (the container's clone; it fails
+  the same on the base); after `git fetch --unshallow` it PASSES on the same head. Commits after 43fd281e are reference/ only.
 
 ## Polish check (each item, the still that shows it)
 - The warn: the eagle in from the edge, no ring, no "!", the screech (sound only) — `*-1-warn.png`. Sideways its body sits near the HUD
