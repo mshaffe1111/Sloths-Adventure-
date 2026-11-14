@@ -5,7 +5,8 @@
  * World 1 stage whose pit painter is live) at his spawn, the stage's own ground there trimmed away for the gap. Normal: the row's banks
  * and ONE hurt-marked floor, as the pipeline lays them (w1Pits paints the thorn bed); Easy: a moss floor STAND-IN (no root stair). The phases are the engine's (physics swingSetup).
  * The player: put on l1 (as ENG-S4's shooter does: the catch off a bough is the single liana's, proven); on each liana a bot presses to let go only when the
- * engine's own flight from that moment (physics timedLaunch + airStep) catches the next liana (or lands on the perch), after riding at
+ * engine's own flight from that moment (physics timedLaunch + airStep) catches the next liana (or lands on the perch) AND the lay counts
+ * that press (what he aims at whole within SWING_SEEN of him, as chainRelease / lianaRelease count presses), after riding at
  * least RIDE s; on the last liana he slides down first (the LONG leap). Every label prints what the GAME built (D62).
  *   node reference/qa-reports/ENG-S5/shoot.mjs <sha> [port]     PHONES=412x915,915x412 DIFFS=normal,easy CLIP=1
  */
@@ -115,6 +116,7 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
   await page.evaluate(async ([RIDE]) => {
     const P = await import('/src/game/physics.ts');
     const C = window.__chain;
+    C.seen = (await import('/src/game/cameraFollow.ts')).SWING_SEEN;
     // (a flight as physics pressWindow flies it: the jump held, and the second jump at 0.15, 0.3 or 0.45 s, LETGO_FLIGHTS; the answer is
     // the second jump's moment, -1 for none, or null when no flight from this moment gets there)
     const hitsFrom = (e, p, v, next, perch) => {
@@ -176,6 +178,10 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
       e.input.state.down = false;
       if (last) { const r = reachAt(e, p, v, C.perch); if (r !== null && C.reach.length < 60) C.reach.push(`${r}@${Math.round(p.x - v.x)},${Math.round(p.y - v.topY)}`); }
       if (e.vineClock - C.on < RIDE || held.has('Space')) return;
+      // (a press the lay COUNTS: the next liana's whole swing, or the perch's whole width up to SWING_CAM.perch, within SWING_SEEN of him,
+      // as pipeline chainRelease / lianaRelease count them)
+      const far = next ? next.x + (next.bottomY - next.topY) * Math.sin(next.swingAmp ?? 0) : C.perch.x + Math.min(C.perch.w, 300);
+      if (far > p.x + C.seen) return;
       const dbl = hitsFrom(e, p, v, next, last ? C.perch : null);
       if (dbl !== null) { kd('Space'); C.dbl = dbl; C.pressAt = e.vineClock; C.log.push(`press on l${k + 1} at ${e.vineClock.toFixed(2)}${dbl >= 0 ? ` (with the second jump at ${dbl} s)` : ''}`); }
     }, 10);
