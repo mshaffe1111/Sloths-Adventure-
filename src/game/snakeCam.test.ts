@@ -191,3 +191,26 @@ test('gen2\'s view verdict: a snake too quick to be seen 1 s on the squattest ph
   assert.ok(b.y0 === -SNAKE.tellH && b.y1 === 312);
   void FLOOR;
 });
+
+test('the level check leaves a FALSE liana out of the route (it drops him the step he takes it): 6-3 with every liana false has no swing edge; and the stage\'s snake faults name a quick snake, a swinging false liana and a missing beat', async () => {
+  const { validateStage } = await import('./levelCheck.ts');
+  const st = new RealPlay('6-3', 1).stage;
+  const real = validateStage(st);
+  assert.ok(real.stats.swingEdges > 0, `6-3's lianas are a way on (${real.stats.swingEdges} swing edges)`);
+  const lianas = st.vines.filter((v) => v.vineType !== 'tree_climb' && (v.swingAmp ?? 0) > 0);
+  for (const v of lianas) (v.snake = { route: 'still' }), (v.swingAmp = 0);
+  assert.equal(validateStage(st).stats.swingEdges, 0, 'a false liana counted as a way on');
+  // (the stage's snake faults, the lay's check)
+  const { snakeFaults } = await import('./vineSnake.ts');
+  assert.deepEqual(snakeFaults(st), []);
+  const v = lianas[0];
+  v.swingAmp = 0.4;
+  assert.match(snakeFaults(st).join(), /a false liana swings/);
+  v.swingAmp = 0;
+  v.snake = { route: 'down-off', clock: 'sn' };
+  assert.match(snakeFaults(st).join(), /beat sn is not in the stage/);
+  st.clocks = [...(st.clocks ?? []), beatDef('sn', 12, 0.6, 1.5)];
+  assert.match(snakeFaults(st).join(), /in the clear view .* under 1.00 s/);
+  st.clocks = [...st.clocks.filter((c) => c.id !== 'sn'), beatDef('sn', 14, 0.6, 7)];
+  assert.deepEqual(snakeFaults(st), [], snakeFaults(st).join(' | '));
+});

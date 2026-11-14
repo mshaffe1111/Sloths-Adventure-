@@ -241,3 +241,34 @@ export function snakeViewFaults(sn: VineSnake, len: number, phases: ReadonlyArra
   }
   return bad;
 }
+
+/**
+ * What is unfair about the vine snakes a stage carries, in words (none: they may be laid; rideLay.ts rideFaults' shape, for the snake
+ * lay and the stage's builder to call): each travelling snake's beat is in the stage, has a tell of SNAKE.tell s or more and a trip
+ * (snakeBeatFaults), and shows the snake in the clear view SNAKE.seen s before it reaches his hands on the shortest sideways view
+ * (snakeViewFaults); a false liana hangs still (no swing) from a liana.
+ */
+export function snakeFaults(st: { vines: ReadonlyArray<{ id: number; topY: number; bottomY: number; vineType?: string; swingAmp?: number; snake?: VineSnake }>; clocks?: ReadonlyArray<{ id: ClockId; phases: ReadonlyArray<{ name: string; seconds: number }> }> }): string[] {
+  const out: string[] = [];
+  for (const v of st.vines) {
+    const sn = v.snake;
+    if (!sn) continue;
+    const name = `vine ${v.id}`;
+    if (v.vineType === 'tree_climb') {
+      out.push(`${name}: a snake on a climbing vine (it rides a liana's grip line only)`);
+      continue;
+    }
+    if (sn.route === 'still') {
+      if ((v.swingAmp ?? 0) !== 0) out.push(`${name}: a false liana swings (it hangs still: never sweeping an arc is its tell)`);
+      continue;
+    }
+    const def = st.clocks?.find((c) => c.id === sn.clock);
+    if (!def) {
+      out.push(`${name}: its snake's beat ${sn.clock ?? '(none)'} is not in the stage`);
+      continue;
+    }
+    const len = v.bottomY - v.topY;
+    for (const f of [...snakeBeatFaults(sn, def.phases), ...snakeViewFaults(sn, len, def.phases)]) out.push(`${name}: ${f}`);
+  }
+  return out;
+}

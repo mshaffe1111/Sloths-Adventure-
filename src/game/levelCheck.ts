@@ -11,6 +11,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Platform, Vine } from './types.ts';
+import { isFalseLiana } from './vineSnake.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
@@ -536,8 +537,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     return false;
   };
   // (a puzzle piece's climb, a kit vine, is the kit's: a room's own check puts an unrolled ladder in, puzzleCheck.ts; a sapling and a
-  // silk line never are a plain climb)
-  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi && !v.kit && !v.off);
+  // silk line never are a plain climb; a FALSE liana is a snake that drops him the step he takes it, never a way on, vineSnake.ts)
+  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi && !v.kit && !v.off && !isFalseLiana(v));
   const waterY = stage.waterY ?? cfg.levelHeight + 100;
   let maxGapUsed = 0;
   let swingEdges = 0;
