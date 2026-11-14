@@ -1849,10 +1849,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot; World 9's fix,
     // w9-pieces 621554b8, the lead 2026-10-31: every world, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage)
     const deepen = (floor: number) => {
-      // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
-      // fits through (48 px, his height) is filled, so the shipped stages build as curated (five 8-6 Normal rolls change: their dark
-      // glide floors ran 51-85 px under a bank's foot); a thin perch or branch beside the pit is never stretched into a column)
-      for (const q of platforms) if (!wallIds.has(q.id) && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+      // (every world fills a bank beside the pit down past its floor, as World 9 always did (its lava is drawn under it). Until INT-9 only
+      // a bank whose foot left a hole he fits through (48 px, his height) was filled, so the shipped stages built as curated (five 8-6
+      // Normal rolls: dark glide floors 51-85 px under a bank's foot); a smaller slot (0-48 px) was left, and a stair stone laid flush
+      // against that bank read as drawn past its ground's lip (w1CutArt.ts groundRun's wall wants the bank 3+ px past the floor), so the
+      // settle (R-165.226) swapped the section away: 1-7's liana pits, the pool spent on 5 of 8 rolls. A thin perch or branch beside the
+      // pit is never stretched into a column)
+      for (const q of platforms) if (!wallIds.has(q.id) && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, depthNow, hop);
