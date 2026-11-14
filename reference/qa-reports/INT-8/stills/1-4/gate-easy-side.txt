@@ -1,0 +1,5 @@
+BUILT {"difficulty":"easy","builtDifficulty":"easy","stage":"1-4","seed":1,"orientation":"side","view":[915,412]}
+GATE {"gate":6,"figs":2,"bough":{"y":1923,"w":520},"vines":[868,468]}
+PRESS {"at":[868,2103],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+HEAD most over the shut underside (px, <= 0 is under): 0
+FRAMES 121
