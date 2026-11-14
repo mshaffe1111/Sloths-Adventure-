@@ -1,0 +1,14 @@
+CAUGHT  hanging on a rope is not holding (hanging moss never hides him)
+CAUGHT  creeping along the rope counts as still
+CAUGHT  the perch moved on the kit but not on the snag
+CAUGHT  a keeper line reworded ('hold still')
+CAUGHT  the old crouch mission line back
+CAUGHT  the locked-exit line keyed '1:harvest'
+CAUGHT  the twist and finale lianas never marked mossy
+CAUGHT  Easy's first passes not free
+CAUGHT  the perch beat never perches its eagle
+CAUGHT  bare bark 591 px wide
+CAUGHT  the creak line under 800 px before its beat's eye
+CAUGHT  Easy lays a creaky limb
+CAUGHT  Easy lays the twist's second liana  (re-run alone after its text was fixed for the SHORT lianas)
+all 13 CAUGHT on 25f953c2 (run in a frozen worktree)

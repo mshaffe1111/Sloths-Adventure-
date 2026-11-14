@@ -55,7 +55,9 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(1500);
   await page.evaluate(() => window.__play('1-7'));
-  await sleep(6000);
+  // (under load the stage can take a while: wait for the engine and the stage itself, never a fixed sleep alone)
+  for (let t = Date.now(); Date.now() - t < 90000; ) { if (await page.evaluate(() => typeof window.__engine === 'function' && window.__engine()?.currentStage?.config?.id === '1-7' && !!window.__engine().cast)) break; await sleep(500); }
+  await sleep(2500);
   const stamp = (text) => page.evaluate((text) => {
     let d = document.getElementById('__lab');
     if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '4px', bottom: '4px', right: '4px', zIndex: 99999, font: '11px/1.3 monospace', color: '#fff', background: 'rgba(0,0,0,.6)', padding: '3px 5px', pointerEvents: 'none' }); document.body.appendChild(d); }
@@ -160,7 +162,8 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
       fs.rmSync(dir, { recursive: true, force: true });
     }
     // (a respawn if the eagle took him, so the next beat starts whole)
-    await page.evaluate(() => { const e = window.__engine(); e.player.hp = Math.max(e.player.hp, 3); e.input.state.left = e.input.state.right = e.input.state.up = false; });
+    // (and off any liana: the engine keeps a swinging sloth on his vine wherever he is put)
+    await page.evaluate(() => { const e = window.__engine(), p = e.player; p.hp = Math.max(p.hp, 3); p.isVineSwinging = false; p.climbing = false; p.hanging = false; p.swingVineId = undefined; e.input.state.left = e.input.state.right = e.input.state.up = false; });
     await sleep(400);
   }
   await ctx.close();
