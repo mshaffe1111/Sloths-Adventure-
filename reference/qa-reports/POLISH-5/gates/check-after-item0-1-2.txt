@@ -1,0 +1,16 @@
+seedlist 1-2: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-2: FAIL
+  1-2 seed 20 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 20 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 23 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 23 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 54 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 54 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 63 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 63 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 65 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 65 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 75 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 75 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-2 seed 99 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-2 seed 99 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list

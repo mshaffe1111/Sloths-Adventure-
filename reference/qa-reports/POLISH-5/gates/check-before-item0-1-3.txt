@@ -1,0 +1,4 @@
+seedlist 1-3: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-3: FAIL
+  1-3 seed 44 normal: its replay differs from its search (platforms, ropes, enemies, collectibles): rebuild the list
+  1-3 seed 44 easy: its replay differs from its search (platforms, ropes, enemies, collectibles): rebuild the list

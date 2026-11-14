@@ -13,6 +13,7 @@ import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapS
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
+import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
 import { STILLNESS, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
@@ -74,6 +75,8 @@ export class CastPlay {
   private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
+  /** the stage's lure targets (predators/lure.ts) */
+  private readonly lures: readonly LurePost[];
   private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
@@ -85,7 +88,8 @@ export class CastPlay {
   constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
     this.covers = covers;
     this.ground = platforms;
-    this.loud = TAUGHT.landing <= world;
+    this.loud = data.landing ?? TAUGHT.landing <= world;
+    this.lures = data.lures ?? [];
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
@@ -143,6 +147,7 @@ export class CastPlay {
     sc.dt = dt;
     sc.easy = easy;
     foodChain(this.members, t);
+    if (this.lures.length) stepLures(this.members, this.lures, t);
     for (const m of this.members) {
       if (m.s.phase !== 'gone') {
         const ev = stepPredator(m.def, m.s, sc);

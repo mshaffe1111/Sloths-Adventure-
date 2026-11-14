@@ -4,6 +4,15 @@ This covers the planner's own work on `engine-chunks`: the pipeline's verdicts, 
 Last code commit 25d2d115 (the Dot teach fix); 00bd44e8 is notes only. Live status: `reference/notes/planner-status.md`. Work saved but
 not live: `reference/notes/planner-wip/`.
 
+**Added by NODES-TRAVEL (1:04 PM ET, 2026-11-13, t-nodes, R-165.196 / .198; milestone 1 of 4, not merged):** a graph's code may carry LEG MARKS
+(`/R /L /U /D`, legs.ts `legMarks`), taken out before `parseCode`; each node's travel rides with its job through the brief's rules in
+`rolledGraph` (`put` / `keep`: every splice and filter of `jobs` goes through them, or travel slips out of step), and lands on
+`MissionNode.travel`. The parser (nodeCode.ts) also reads the long form (`CodeDials`, `&&`, the pick `?[a|b]`, content letters
+s v p t x; rules V22, V23); `rolledGraph` THROWS by name on a graph that writes a dial or a pick, because the lay honours none yet.
+Next: carry `tok.dials` onto `NodeDials` (types.ts has the fields), honour content / shape / tempo / rating / threat kinds and
+count / hazard hurt, add `gen2.dialMiss` to `rollErrors`, then delete the throw. On a stage of legs the column verdicts
+(towerFalls, towerSkips) run per column, each message tagged "[the column at x N]"; strays run per run leg.
+
 **Added by FA (11:36 AM ET, 2026-11-13, t-fa, R-165.170): a stage laid as a tower has three verdicts of its own**, folded by `rollErrors()` as
 `gen2.towerMiss` and `gen2.flagMiss`, each with a planted test in `src/game/gen2/tower.test.ts` and a planted fault in
 `reference/qa-reports/FA/planted-faults.py`:
@@ -19,6 +28,13 @@ not live: `reference/notes/planner-wip/`.
 A roll with any error never reaches the proven list or a player. `provenGen2Stage` walks `seed + k x 7919` for 24 tries, catching throws;
 `buildPlayStage` replays a listed seed's packed plan (`gen2/seedList.ts`). Every verdict below is folded by `rollErrors()` in
 `src/game/gen2/pipeline.ts`.
+- (VARIETY, 11-13) **towerVaults** (tower.ts, in a tower's `towerMiss`): straight up at every climbing vine's top must land on wood,
+  facing either way, read with the engine's own finder (src/game/vineTop.ts). Runs only on a tower or a stage of legs; shipped runs
+  are covered by tools/engine/vaultscan.ts (0 regressions), not by a verdict. A node's shape/move ask is a rule in the deal and the pick
+  where the slot can keep it (engine-core.md 0l).
+- (VARIETY-2, 11-13) **askRefusal** (pipeline.ts, graph time, before the lay): a '_' asked of a `mustRise` node (the node after a late
+  descent on an up stage) throws `... node nN (job) asks shape _ (falling), but V19 makes it climb ...`; planted gen2/askRefusal.test.ts.
+  floor.unmarked's kills on mixed strings come from findW1Pits' one ground line (engine-core.md 0m; §3 "Floors" below), not the asks.
 
 | Verdict | Enforces | Where | Planted test |
 |---|---|---|---|

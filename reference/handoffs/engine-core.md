@@ -8,6 +8,27 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+
+## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
+- **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
+  or bough is a platform over a gap, never its lip or floor (the lead, 8:50 PM). `earthLine` is the earth's top along x: a HOLE (no earth
+  at any depth) between two banks is a gap at any width from 24 px (no 1,600 cap); a DIP (earth dropping more than SOFT_BELOW and coming
+  back) is a gap when all of it lies deeper than SOFT_BELOW under the gap's line. `gapLine`: the higher lip when the lower is within
+  SOFT_BELOW of it, else the lower (a stump or pillar's top is not the ground). Floor window, SOFT_FLOOR, `lower` (a road running on)
+  read from that line. A drop inside a judged dip is its floor (`dipEnd`). The second "marked drop at any height" pass is gone (holes cover it).
+- **Planted:** w1Pits.test.ts "per-gap ruler" x4 (far ground, a raised hole, a log chain one gap, a 2,000 px hole), red on 1829470f.
+  The x22604 slot test now reads the block (earth 68 px down) as a sunk step, as realFalls always did.
+- **HELD (the lead's C, 9:35 PM): 1-1's openings are R-165.221 (the 1-1/1-4 polish lane).** 1-1 cannot build on t-ruler: its final
+  climb lies over earth holes (946-2,870 px) the old ruler never saw, and from its catch branches and lower logs he walks under the
+  route log and steps off into nothing (seed 769: off 115 at 869, 25947..26218 under 116). realFalls (promises11.ts:44) is NOT the
+  cause: with both its clauses corrected the runs stay (ruler/PUSHBACK.md). 1-1 must lay a soft zone spanning each hole, or catches
+  he cannot walk off into nothing; then seedlist 1-1, lockall, mixlist, full Checks on t-ruler. verdicts.test.ts:322's seed 323 copy
+  needs its real right bank (its slot ends at a log: no gap under earth-only lips). The full EXACT NEXT STEP: ruler/REPORT.md.
+- **Scan tool:** ruler/scan.ts reads the SAME builds (d8d6a97's tree) with both rulers: painted changes 0 (World 1 only is painted,
+  protoArt.ts:1310; only 1-1/1-2/1-3 are judged, stageTable.ts:34-38). ruler/shootAt.mjs: sideways stills pinned at a chosen x, any tree.
+
+
 ## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
 - **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
   must be null-safe for every field but platforms: B15's dressMarks read `st.collectibles` unguarded (fixed, w1Marks.ts `?? []`).
@@ -56,6 +77,91 @@ proven plan; Play is never blocked).
   EVERY proven list via `registrycheck.ts --lists`. No known list: its 3 birth misses were fixed on the branch (1-1 drawcheck
   scenario, 1-2's seed list, 1-3's list in CI), so every miss fails.
 - Trap: tools/ is outside tsconfig; typecheck a new tool with a temporary config at the repo root (types node + vite/client).
+
+Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-nodes`: a stage laid as LEGS (section 0p). Milestone 1 of 4 only. Sections below are still true.
+
+Rewritten again at the stop of VARIETY (2:33 PM ET, 2026-11-13): branch `t-nodes`: one vault finder for the engine and the tower verdict; a node's shape or move ask is a rule where the slot can keep it (section 0r). Sections below are still true.
+
+Rewritten again at the stop of VARIETY-2 (2026-11-13, branch `t-nodes`): a '_' V19 overrules is refused at graph time; why floor.unmarked kills mix strings (section 0s). Sections below are still true.
+
+## 0s (0m on t-nodes). The asks against V19, and what kills World 1's mix (VARIETY-2, R-165.197/.198/.200, t-nodes, 11-13)
+- **askRefusal** (pipeline.ts, called in rolledGraph after V19 marks `mustRise`): a '_' asked of the node after a late descent on an up
+  stage throws by V19's name before anything is laid (planted: gen2/askRefusal.test.ts, red before). ONLY that: a refusal by "no section of
+  the node's job falls / keeps the move" was built, measured and taken out: 12 of its 35 refusals were asks the lay KEPT (a node's net
+  fall also comes from its joins and the corridor; nodeMix string 59's combine '_' laid with no falling combine section). Refuse at graph
+  time only what fails on every seed; everything else is laid or named after the lay.
+- **floor.unmarked is the painter's ruler, not the late sections** (reference/qa-reports/VARIETY-2/PUSHBACK.md): findW1Pits reads one ground
+  line G (the widest bank top over the whole stage); a 24 px log within 20 px of G is "ground", so a log chain or rung row laid at that
+  stage's G reads as falls (water), the same chain on a stage whose G is elsewhere is not judged (string 57 seed 58: asked G 813, bare
+  G 1269, same log chain); holes between two tall banks are judged only at 24-1600 px. 11 bare frames fail the same way. Fixing it moves
+  the painter and the verdict on shipped stages: a lead ruling (planner.md §3 "Floors").
+- **Pool short in mix rolls** (repairs.ts): climb twists and signature sections banned for leaving the corridor out the TOP (route already
+  high), and every reroll short of a bounce test (W1 has two). A spared ban only renames that failure: bans are per roll.
+- **Tools** (reference/qa-reports/VARIETY-2/tools/): mixlist.ts (nodeMix's 60 W1 strings asked + bare, raw ask misses, JSON), floorkind.ts
+  (each floorless gap's lips), secprobe.ts (G and one section's pieces and pits), repairs.ts (the swap record), fallmiss.ts ('_' asks).
+  World 1's falling sections by job: practise twin-bounce; test stair-test-back, bank-stair-test-back (+4); no flow, combine, twist,
+  teach or signature section falls (declared exitDy).
+- **Traps.** (1) `S=...; (cmd) & (cmd2)` sets S in the background only: the second command wrote to `/` (engine-core 0p trap 6, again).
+  (2) A heredoc with regex and template strings can trip the shell's safety parse: write the file with the Write tool instead.
+
+## 0r (0l on t-nodes). The vault and the asks (VARIETY, R-165.197/.198/.200, t-nodes, 11-13): what the next engineer must know
+- **Straight up at a vine's top** vaults him toward the side with more ledge (engine.ts vaultSide -> src/game/vineTop.ts vaultSide /
+  ledgeOut, the ONE finder; the tower verdict towerVaults reads it too, D19). Every climbing vine the lay makes stands CLIMB_CLEAR (26,
+  now in vineTop.ts, re-exported by pipeline.ts) off its bough's end; the finder steps over a gap up to VAULT_GAP (40; the real vault
+  lands on wood 56 out, vineTop.test.ts). Until 11-13 it sampled from 10 px and stopped at the first miss: it never saw a cleared bough,
+  so the vault went the way he faced (1-4's turn-backs: off the storey above). `npx tsx tools/engine/vaultscan.ts 16`: every stage's vine
+  tops old vs new (3,906 fixed, 0 regressed, 0 moved; 2,132 cases on 13 stages land on no wood either way, before and after: the x-10
+  arenas, 4-3, 4-9, 5-M: not looked at). w8Lantern.ts keeps its own CLIMB_CLEAR copy (26).
+- **Asks as a rule** (pipeline.ts): dealContent fixes a node whose shape/move ask only ONE type of its job lays (askServes) to that type,
+  like dealExact; the pick's `keeps`: where any candidate lays every ask (askParts) and is not clamped out, only those are drawn (the bag
+  gave every candidate a ticket and a rated node's draws are sorted by difficulty, so the x20 weight lost); with none, a shape ask never
+  draws a section against it while a level one fits. Shipped graphs ask nothing: no lock moves.
+- **Traps.** (1) RealPlay('1-4', seed) draws from the PROVEN list: its seed n is not library14's seed n. (2) A probe that holds up for 90
+  frames walks onto the next vine (a field's foot vine): judge the vault on the frame he lands. (3) `off` vines (a shut gate's) never take
+  him: a 'miss' there is the gate. (4) pool short on W1 mix rolls is usually the REPAIR loop's bans (FITS_DEBUG-style log in the report),
+  not the deal: fix what drives the repairs first.
+
+## 0q (0k on t-nodes). Node asks (NODES-2, R-165.198, t-nodes, 11-13): what the next engineer on the node code must know
+- gen2/nodeAsks.ts holds the designer's asks (`MissionNode.asked`: a token's marks and dials the job does not imply) and the check
+  `askMisses` / `hazardMiss`. pipeline.ts: rolledGraph carries `tk` beside `jobs` (as `tv` carries travel; a dropped asked node throws
+  by name), applies shape/tempo/rating/dials AFTER the rolled draws (the seed's stream is unchanged), dealContent fixes an asked
+  content letter, the section pick weighs sections that can lay an ask x20 (x0.05 the rest), fillSockets' enemy branch takes only the
+  node's threat kinds up to their counts (`threatAsks`), and applyVerdicts writes `gen2.dialMiss` (folded by rollErrors as `ask: ...`).
+- ELEMENTS (nodeAsks.ts) is the ONE status table: change a status there, run `npx tsx tools/engine/nodekey.ts`, commit NODE-KEY.html.
+- The graph check passes `graph: true` (V11/V12/V14 read the realised roll only) and `known` (earlier lessons + the brief's teaches).
+- Not built: Later elements (s v p t x, beat, points, named clocks, ^^ @ * as run shapes), the pick, marks inside fork roads.
+
+## 0p (0j on t-nodes). Legs (NODES-TRAVEL, R-165.196 / .197 / .198, t-nodes, 11-13): what the next engineer on mixed travel must know
+- **State.** M1 is built and proven on fixtures: right, up and down legs in one stage. NOT built: left legs in a fixture (the mirror
+  is written and unit-tested, never laid in a stage), the descent's own turns, forks across legs (M3), the card road (M4), the
+  lay honouring the long-form dials (item 10), the tier bots on a stage of legs, NODE-KEY.html cards, the blockcheck gate.
+  Plan and report: reference/qa-reports/NODES-TRAVEL/PLAN.md, REPORT.md. Not merged; engine.ts is untouched (engine-hook.patch there).
+- **One lay, per-leg state.** `layStage` (pipeline.ts): `legsOf(graph.nodes, graph.flow)` (legs.ts); `routed = mixed(legs)`. A run
+  and a tower of one leg have `routed` false and read nothing new. On a stage of legs `flow`, `tower`, `frame`, `floorAt` and the
+  run lay's datum (`gy`, `ctop`, `cbot`, `baseline`) are LETS, set by `beginLeg` and closed by `endLeg` at each leg change in the
+  node loop. Every `M.corridor` / `M.ground.y` read inside layStage goes through the datum: never add a raw one.
+- **A column mid-stage** (`columnFrame`, `columnWalls`, `closeColumn`, `layCatches`): begins where he stands; walls are plain
+  `block` pieces just OUTSIDE the frame (`wallIds`: a pit's `deepen` must never stretch one); going up its floor is laid at
+  `beginLeg`, going down at `endLeg` (FA's toFloor). The way out is `towerJoin(..., { way })` plus a ledge over the wall.
+  tower.ts still reads a tower from x 0: a column's pieces are handed to towerCatches / towerFalls / towerSkips moved by `-frame.x0`.
+- **Left** = `reflectLeg` (legs.ts): the leg is laid rightwards `ASIDE` px off to the side, then mirrored about `leftSum / 2`.
+  It refuses lianas and puzzle rooms by name. After all legs, a stage that ran left of x 0 is moved right whole.
+- **Meta.** `gen2.tower.flow` is 'legs' and `gen2.tower.legs` (LaidLeg: travel, i0-i1, box, `ground` of a run leg, `frame`,
+  `floorY`, `turns` of a column). Flags, hearts, quiet time and the clock read `gen2.tower.route` as on a tower. `config.travel`
+  is the LAST leg's (unset when it is right). Strays are judged per run leg against its own corridor (`corridorOf`).
+- **Engine side** (not applied: B14's token): `towerLead(stage, mode, p)` frames by the column he is in, `routeRatio` is the
+  progress bar on a stage of legs. reference/qa-reports/NODES-TRAVEL/engine-hook.patch, 5 lines, `git apply --check` clean on 64bece0f.
+- **Proof tools.** `tools/engine/legsmap.ts` (to-scale map, --png); `tools/engine/towerFly.ts` flyTower now flies a stage of legs
+  (turns found where he stands; a run leg's landing is the next piece of road, never a pit's floor). Fixtures: gen2/toyLegs.ts
+  (UP_CODE, DOWN_CODE, MIXED_CODE; `legsKit(id, code)`); tests gen2/legs.test.ts, legsLay.test.ts, nodeDials.test.ts.
+- **Traps.** (1) A fixture stage id must not be a stage of the game (5-95 here; withFixtureConfig throws on 5-3). (2) One brick a
+  job means the lay cannot steer the route back: a run brick must END LEVEL or its node strays out of the corridor and the repair
+  runs the pool dry ("pool short at slot N"). (3) Size nodes with `chunkSeconds` near one section's seconds (10), or the length
+  repair pads one node with 20 copies. (4) A graph code is jobs and shapes: a content letter on two neighbours breaks V11.
+  (5) The DOWN column lays and passes the verdicts but does not fly: towerCatches' down branch lays a bough across a turn's vine
+  (he stands on it, the vine runs through it), and a vine that leads down is taken in the air past the ledge's tip, never from
+  the ground. Rebuild that branch, add the verdict "no wood across a turn's vine", set TOWER.see to 280 (FA's note), then fly.
+  (6) In a `( ... ) &` shell line a variable set before `&&` is set in the background only.
 
 Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 lays a stage UP as a tower (section 0j). Sections below are still true.
 
@@ -152,6 +258,22 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   time up vs its reading time; tools/dotbox/fixaStills.mjs shoots the card, About, 1-3's teach and the goal sign upright and sideways.
 - Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, and a find that names what was found with its
   picture and stays until read.
+
+## 0o (0k on t-pieces). PIECES (t-pieces, 11-13): pieces any world lays from a table; what the next engineer on a general piece must know
+- **The shape of a general piece** (stillLay.ts, lureLay.ts, rideLay.ts): a world writes a table of rows by prop id; the lay file gives
+  `xProps` (manifest rows by tag), `xSocket` (the world-neutral socket), `xEmitters` (kit.emit: what a filled socket lays), `xFaults` (the
+  fairness check, in words). The look stays the world's (a `note` callback into its extras). kit.emit is the hook: no pipeline change.
+- **Only stage-level outputs need a hook**: `StageSink.clocks` -> the built stage's `clocks` (gen2/types.ts, pipeline.ts, by patch), which
+  the engine runs through B14's `beatClock`. beat.ts here is B14's file, byte-identical: never edit it on this branch.
+- **Open** (reference/qa-reports/PIECES/REPORT.md): ZONES-BY-DATA and CLOCK-ON not started (exact next step there); the ride-only gap needs a 'ride' place
+  rule; RIDE.keep unwired; no stills (nothing lays these on the page yet); the full Checks were not run on the head.
+- **Traps**: the predator kit clamps every move to the animal's patch (core.ts minX/maxX), at rest as in a charge, so anything "it is lured
+  to" must work only while it is after him (lure.ts AFTER_HIM) or it plays itself. A ride does not fit a single jump's gap (114 px on some
+  rolls): lay it over a double's. A lift's carry needs `p.y += dy` or he drops a frame behind it going down (the test counts frames). The
+  lock is byte-exact on proto extras: moving an emitter must keep its extras' shape (W6 hides, W8 roosts). Patches are regenerated with
+  reference/qa-reports/PIECES/mkpatches.sh; planted faults with planted-faults.py (46).
+- **Integrated (ENG-INT5, t-eng-base, 11-13):** merged whole; no patch is applied by hand any more. B14's `beatClock` line in engine.ts and
+  `GeneratedStage.clocks` were already on the head, so the merge keeps ONE of each (the duplicate import and field were dropped).
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;

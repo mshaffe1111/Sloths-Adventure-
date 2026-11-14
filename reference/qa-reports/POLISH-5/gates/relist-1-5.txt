@@ -1,0 +1,4 @@
+  the list file src/game/gen2/proven/seeds-1-5.ts: 32744 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
+seedlist 1-5: 150 proven of 150 tried (100%), 53 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  quiet line (REPORTED, outro excluded; binds at FR9): longest 4 s, median 3.7 s, under 4 s on 150 of 150
+  outro (goal section): 866-938 px

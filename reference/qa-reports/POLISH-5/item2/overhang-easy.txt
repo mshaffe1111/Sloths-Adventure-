@@ -1,0 +1,13 @@
+v0 easy 126 w1-rock-block-big x29803..30055 foot run 29689..31275 drawn past it 35 px; cuts that fit: w1-rock-slabs-stacked,w1-rock-root-block
+v1 easy 55 w1-rock-block-big x13219..13470 foot run 13111..13906 drawn past it 40 px; cuts that fit: w1-rock-root-block
+v1 easy 57 w1-rock-boulder-moss x13592..13848 foot run 13110..13906 drawn past it 72 px; cuts that fit: w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v1 easy 79 w1-rock-slabs-stacked x18042..18247 foot run 15538..18387 drawn past it 24 px; cuts that fit: w1-rock-slabs-low,w1-rock-slabs-stacked-big,w1-rock-block-big,w1-rock-root-block,w1-rock-roots,w1-rock-boulder-moss,w1-rock-boulder-moss-big,w1-boulder-grey-moss,w1-boulder-grey-moss-b
+v1 easy 112 w1-boulder-grey-moss x26828..27070 foot run 24612..27184 drawn past it 53 px; cuts that fit: w1-rock-slabs-low,w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v2 easy 7 w1-rock-boulder-moss x753..1011 foot run 639..2201 drawn past it 92 px; cuts that fit: w1-rock-slabs-stacked,w1-rock-root-block
+v2 easy 71 w1-boulder-grey-moss x16625..16825 foot run 15673..16925 drawn past it 38 px; cuts that fit: w1-rock-slabs-low,w1-rock-slabs-stacked-big,w1-rock-block-big,w1-rock-root-block,w1-rock-roots,w1-rock-boulder-moss
+v3 easy 12 w1-rock-slabs-stacked-big x3292..3490 foot run 1968..3582 drawn past it 8 px; cuts that fit: w1-rock-slabs-low,w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v3 easy 59 w1-rock-slabs-stacked x14511..14712 foot run 13051..14846 drawn past it 27 px; cuts that fit: w1-rock-slabs-low,w1-rock-slabs-stacked-big,w1-rock-block-big,w1-rock-root-block,w1-rock-roots,w1-rock-boulder-moss,w1-rock-boulder-moss-big,w1-boulder-grey-moss,w1-boulder-grey-moss-b
+v4 easy 100 w1-rock-boulder-moss-big x23459..23652 foot run 21859..23738 drawn past it 32 px; cuts that fit: w1-rock-slabs-low,w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v4 easy 147 w1-rock-slabs-stacked-big x32724..32930 foot run 32248..33010 drawn past it 24 px; cuts that fit: w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v4 easy 150 w1-rock-slabs-low x33509..33741 foot run 33377..34957 drawn past it 55 px; cuts that fit: w1-rock-slabs-stacked,w1-rock-block-big,w1-rock-root-block
+1-1 easy layouts 0-256: 8879 stones/stumps, 946 drawn past their ground's edge (>6 px), 887 of them have a cut of the same kind that fits; by cut {"w1-rock-block-big":29,"w1-rock-boulder-moss":120,"w1-rock-slabs-stacked":103,"w1-boulder-grey-moss":141,"w1-rock-slabs-stacked-big":108,"w1-rock-boulder-moss-big":143,"w1-rock-slabs-low":88,"w1-boulder-grey-moss-b":111,"w1-rock-roots":96,"w1-rock-root-block":7}

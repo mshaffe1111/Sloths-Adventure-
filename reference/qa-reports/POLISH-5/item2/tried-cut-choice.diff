@@ -1,0 +1,84 @@
+diff --git a/src/game/gen2/worlds/w1.ts b/src/game/gen2/worlds/w1.ts
+index 9df576298..b69278ffb 100644
+--- a/src/game/gen2/worlds/w1.ts
++++ b/src/game/gen2/worlds/w1.ts
+@@ -18,7 +18,7 @@ import { DOT_LINES } from '../../dotLinesData.ts';
+ import type { CreakRow, Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
+ import { DOUBLE_RISE, reachJump } from '../../physics.ts';
+ import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
+-import { pickCut, W1_CUT } from '../../w1CutArt.ts';
++import { groundRun, pickCut, W1_CUT } from '../../w1CutArt.ts';
+ import type { Platform } from '../../types.ts';
+ import { SPRINT_GRAPHS } from '../graphs.ts';
+ import { BRIEF_13, LESSON_CARD_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
+@@ -1535,7 +1535,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
+   // (a stone or stump stands on the ground: only where a solid piece meets its foot, so a pit's step drawn as a rock never ends in the air,
+   //  Roll 5's upright still; a plank may float)
+   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
+-  for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
++  // (R-165.226: a stone or stump's art stays on the ground run under it, never drawn out over the drop at its edge: pickCut's `run`)
++  for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p, groundRun(p, st.platforms)); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
+   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
+   // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
+   if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
+diff --git a/src/game/w1CutArt.ts b/src/game/w1CutArt.ts
+index 55742b394..6d985d4ed 100644
+--- a/src/game/w1CutArt.ts
++++ b/src/game/w1CutArt.ts
+@@ -100,8 +100,37 @@ function partCut(first: string, i: number): string {
+   return logs[(at + i) % logs.length] ?? first;
+ }
+ 
+-/** a platform's piece: of the kind it is, one of those that fit it about as well as the best (ties by its id) */
+-export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style'>): string | undefined {
++/** how far a piece is drawn past the ground run it stands on (x0..x1: the joined tops at its foot), 0 inside it (R-165.226) */
++export function overRun(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, c: Cut, run: readonly [number, number]): number {
++  const b = cutBox(p, c);
++  return Math.max(0, run[0] - b.x, b.x + b.w - run[1]);
++}
++/** a stone or stump drawn past the edge of its ground by more than this hangs over the drop (Matt, 11-14 12:06 AM ET, R-165.226: "props
++ *  hang over ledges and pits", the first run's mossy boulder drawn ~100 px out over a dip); within it, its moss meets the edge */
++/** a stone's pieces that fit it about as well as the best (stoneMiss within this of the best's) */
++const FIT_BAND = 0.2;
++export const OVER_EDGE = { px: 6, source: 'POLISH-5, R-165.226 (a cut piece\'s drawn edge, sunk 3 px, may meet its ground\'s lip within 6 px)' } as const;
++
++/** the ground run a piece stands on: the solid tops at its foot (within 3 px), joined left and right from under it; undefined when none */
++export function groundRun(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, platforms: ReadonlyArray<Pick<Platform, 'x' | 'y' | 'width' | 'type'> & { broken?: boolean }>): [number, number] | undefined {
++  const foot = p.y + p.height;
++  const ground = platforms.filter((q) => (q as unknown) !== p && q.type === 'solid' && !q.broken && Math.abs(q.y - foot) <= 3);
++  const on = (x: number) => ground.some((q) => x >= q.x - 1 && x <= q.x + q.width + 1);
++  if (!on(p.x + p.width / 2)) return undefined;
++  let x0 = p.x + p.width / 2, x1 = x0;
++  for (let grew = true; grew;) {
++    grew = false;
++    for (const q of ground) {
++      if (q.x - 1 <= x1 && q.x + q.width + 1 >= x0 && (q.x < x0 || q.x + q.width > x1)) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x + q.width); grew = true; }
++    }
++  }
++  return [x0, x1];
++}
++
++/** a platform's piece: of the kind it is, one of those that fit it about as well as the best (ties by its id). Given the ground run it
++ *  stands on (`run`, R-165.226), a stone or stump takes only a piece whose drawn box stays on that ground (OVER_EDGE) when one of its kind
++ *  does: the art changes, never the platform, so no roll moves */
++export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style'>, run?: readonly [number, number]): string | undefined {
+   const kind: Cut['kind'] | null = p.style === 'log' && p.height < 50 ? 'log'
+     : p.style === 'moss_stone' && p.height >= 30 && p.height <= 140 && p.width <= 260 ? (p.height > 90 && p.width < 150 ? 'stump' : 'stone') : null;
+   if (!kind) return undefined;
+@@ -110,9 +139,15 @@ export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height'
+     return { n, miss: kind === 'log' ? Math.abs(cutBox(logPart(p, 0), c).h - 30) / 30 : stoneMiss(p, c) };
+   }).sort((a, b) => a.miss - b.miss);
+   if (!fits.length) return undefined;
++  // (R-165.226: on its ground, among the pieces that fit about as well as the best (FIT_BAND, as below), those drawn past its edge are left
++  // out while one stays on it. Never a worse-fitting piece: forced onto the first run's boulder, a root rock drew a wall 340 px wide behind him)
++  if (run && kind !== 'log') {
++    const stay = fits.filter((f) => f.miss <= fits[0].miss + FIT_BAND && overRun(p, W1_CUT[f.n], run) <= OVER_EDGE.px);
++    if (stay.length) return stay[Math.abs(p.id * 2654435761) % stay.length].n;
++  }
+   // (every piece that fits about as well as the best takes its turn, the round and grey boulders too: the lead, 11-06, "at least 6 kinds
+   // a roll"; a top-three the flat slabs and blocks always filled had cut them off)
+-  const best = kind === 'log' ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + 0.2);
++  const best = kind === 'log' ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + FIT_BAND);
+   return best[Math.abs(p.id * 2654435761) % best.length].n;
+ }
+ 

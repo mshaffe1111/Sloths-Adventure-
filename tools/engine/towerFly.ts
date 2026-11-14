@@ -51,7 +51,7 @@ export interface Flight {
   legT: number[];
 }
 
-type TowerStage = { platforms: Platform[]; vines: Vine[]; exitTotemX: number; exitTotemY: number; gen2?: { tower?: { flow: 'up' | 'down'; route: Route; turns: Array<{ x: number; from: number; to: number }> }; plan: Array<{ join: string }> } };
+type TowerStage = { platforms: Platform[]; vines: Vine[]; exitTotemX: number; exitTotemY: number; gen2?: { tower?: { flow: 'up' | 'down' | 'legs'; legs?: Array<{ travel: 'right' | 'left' | 'up' | 'down'; i0: number; i1: number }>; route: Route; turns: Array<{ x: number; from: number; to: number }> }; plan: Array<{ join: string }> } };
 
 /** fly `sim` (a RealPlay on a tower stage) from its spawn to its shrine; `cap`: s of play at most */
 export function flyTower(sim: RealPlay, cap = 600): Flight {
@@ -61,16 +61,25 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
   const e = sim.e as { exitTotemReached?: boolean };
   const legs = T.route.legs;
   const plan = st.gen2!.plan;
-  const up = T.flow === 'up';
-  // (the turn into leg k: the k-th 'turn' of the plan is the k-th turn laid; one more turn leads to the shrine's ledge)
+  // (which way the section he is on is laid: the tower's own flow, or on a stage of legs its leg's travel, R-165.196)
+  const travelOf = (i: number): 'right' | 'left' | 'up' | 'down' => (T.flow !== 'legs' ? T.flow : T.legs?.find((g) => i >= g.i0 && i < g.i1)?.travel ?? T.legs?.[T.legs.length - 1]?.travel ?? 'right');
+  // (the turn into leg k: the k-th 'turn' of the plan is the k-th turn laid; one more turn leads to the shrine's ledge. On a stage of
+  // legs a column's way out is a turn of its own, in no plan slot: the turn is found where he stands, the vine that leaves his
+  // height toward the height he is going to)
   const turnOf = new Map<number, { x: number; from: number; to: number }>();
   let ti = 0;
-  plan.forEach((s, k) => { if (s.join === 'turn') turnOf.set(k, T.turns[ti++]); });
-  const last = T.turns[ti];
+  if (T.flow !== 'legs') plan.forEach((s, k) => { if (s.join === 'turn') turnOf.set(k, T.turns[ti++]); });
+  const last = T.flow !== 'legs' ? T.turns[ti] : undefined;
+  const turnFrom = (from: { x: number; y: number }, toY: number) => T.turns.filter((t) => Math.abs(t.from - from.y) <= 20 && Math.sign(t.to - t.from) === Math.sign(toY - from.y) && Math.abs(toY - from.y) > 14).sort((a, b) => Math.abs(a.x - from.x) - Math.abs(b.x - from.x))[0];
+  if (T.flow === 'legs') {
+    legs.forEach((g, i) => { const t = turnFrom(i ? legs[i - 1].exit : T.route.spawn, g.entry.y); if (t) turnOf.set(i, t); });
+    const t = legs.length ? turnFrom(legs[legs.length - 1].exit, st.exitTotemY) : undefined;
+    if (t) turnOf.set(legs.length, t);
+  }
   const out: Flight = { end: 'time', t: 0, falls: 0, legs: 0, of: legs.length, climbs: 0, legT: [] };
   let k = 0;
   /** in leg k (true) or still on the way to its entry (false) */
-  let inLeg = plan[0]?.join !== 'turn';
+  let inLeg = !turnOf.has(0);
   let air: { land?: Platform; dbl: boolean; dir: 1 | -1; used: boolean } | null = null;
   let wasClimbing = false, wasGrounded = true;
   let lastMove = 0, lastX = sim.p.x, lastY = sim.p.y;
@@ -83,8 +92,10 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
     const P = p.grounded ? under() : undefined;
     // where he is going: the turn's vine, then the leg's exit, then the totem
     const leg = legs[k];
-    const turn = k < legs.length ? turnOf.get(k) : last;
-    const goal = k >= legs.length ? (inLeg || !last ? { x: st.exitTotemX, y: st.exitTotemY } : { x: last.x, y: last.to }) : inLeg || !turn ? leg.exit : { x: turn.x, y: turn.to };
+    const travel = travelOf(Math.min(k, legs.length - 1));
+    const up = travel === 'up';
+    const turn = k < legs.length ? turnOf.get(k) : last ?? turnOf.get(k);
+    const goal = k >= legs.length ? (inLeg || !turn ? { x: st.exitTotemX, y: st.exitTotemY } : { x: turn.x, y: turn.to }) : inLeg || !turn ? leg.exit : { x: turn.x, y: turn.to };
     const dir: 1 | -1 = goal.x >= p.x ? 1 : -1;
     if (p.climbing) {
       // on a vine: straight up (or down) always climbs; he steps off at its end by himself
@@ -106,18 +117,18 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
         if (Math.abs(into - p.x) > 6) pad[into > p.x ? 'right' : 'left'] = true;
       }
       // (a vine in reach on the way up: grab it)
-      if (vineAt(p.x, p.y, up ? 'up' : 'down') && Math.abs(goal.y - p.y) > 120) pad[up ? 'up' : 'down'] = true;
+      if (Math.abs(goal.y - p.y) > 120 && vineAt(p.x, p.y, T.flow === 'legs' ? (goal.y < p.y ? 'up' : 'down') : up ? 'up' : 'down')) pad[T.flow === 'legs' ? (goal.y < p.y ? 'up' : 'down') : up ? 'up' : 'down'] = true;
     } else {
       air = null;
       // arrived? (a leg's exit, or after a turn its entry)
       // (the goal has changed: read it again before he moves)
       if (k < legs.length && !inLeg && Math.abs(p.y - leg.entry.y) <= 14) { inLeg = true; continue; }
-      if (k >= legs.length && !inLeg && last && Math.abs(p.y - last.to) <= 14) { inLeg = true; continue; }
+      if (k >= legs.length && !inLeg && turn && Math.abs(p.y - turn.to) <= 14) { inLeg = true; continue; }
       if (k < legs.length && inLeg && Math.abs(p.y - leg.exit.y) <= 14 && Math.abs(p.x - leg.exit.x) <= 40) {
         out.legT.push(+(sim.t - start).toFixed(1));
         k++;
         out.legs = k;
-        inLeg = k < legs.length ? plan[k].join !== 'turn' : !last;
+        inLeg = !(k < legs.length ? turnOf.has(k) : last ?? turnOf.get(k));
         continue;
       }
       const wantVine = Math.abs(goal.y - p.y) > 120 ? vineAt(p.x, p.y, goal.y < p.y ? 'up' : 'down') : undefined;
@@ -129,7 +140,9 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
         pad[dir > 0 ? 'right' : 'left'] = true;
         // (a vine ahead on this ledge that leads on: hold the way it goes while he walks into it)
         const ahead = sim.vines.find((v) => v.vineType === 'tree_climb' && (v.x - p.x) * dir >= 0 && Math.abs(v.x - p.x) <= 40 && Math.abs(goal.y - p.y) > 120 && (goal.y < p.y ? v.bottomY >= p.y - 60 && v.topY < p.y - 60 : v.topY <= p.y + 60 && v.bottomY > p.y + 60));
-        if (ahead) pad[goal.y < p.y ? 'up' : 'down'] = true;
+        // (a vine that leads DOWN hangs past the ledge's tip: he walks off toward it and takes it in the air; held on the ground,
+        // down stops him short of it)
+        if (ahead && goal.y < p.y) pad.up = true;
         // an edge ahead with no ground on: jump for the next piece on the way
         if (P) {
           const edge = dir > 0 ? P.x + P.width : P.x;
@@ -139,7 +152,8 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
             // (the nearest piece ahead that is not lower, else the nearest lower one: a hop's landing before its catch)
             const cands = sim.platforms.filter((q) => q !== P && (dir > 0 ? q.x >= edge - 2 : q.x + q.width <= edge + 2) && q.y >= P.y - 190 && q.y <= P.y + 320 && (dir > 0 ? q.x - edge : edge - q.x - q.width) <= 330);
             const near = (q: Platform) => (dir > 0 ? q.x - edge : edge - q.x - q.width);
-            const land = (up ? cands.filter((q) => q.y <= P.y + 3) : cands.filter((q) => q.y >= P.y - 3)).sort((a, b) => near(a) - near(b))[0] ?? cands.sort((a, b) => near(a) - near(b))[0];
+            // (a run leg: the next piece of the road, never the floor of the pit under it)
+            const land = (up ? cands.filter((q) => q.y <= P.y + 3) : travel === 'down' ? (T.flow === 'legs' && cands.some((q) => Math.abs(q.y - P.y) <= 30) ? cands.filter((q) => Math.abs(q.y - P.y) <= 30) : cands.filter((q) => q.y >= P.y - 3)) : cands.filter((q) => q.y <= P.y + 70)).sort((a, b) => near(a) - near(b))[0] ?? cands.sort((a, b) => near(a) - near(b))[0];
             if (land && !(land.y > P.y + 30 && near(land) < 40)) {
               pad.press = true;
               air = { land, dbl: P.y - land.y > 80 || near(land) > 150, dir, used: false };
@@ -147,6 +161,8 @@ export function flyTower(sim: RealPlay, cap = 600): Flight {
           }
         }
       }
+      // (a run leg: a face in his way, a pit's step or a bank's side: a plain hop, held)
+      if (T.flow === 'legs' && !up && travel !== 'down' && (pad.left || pad.right) && !pad.up && !pad.down && sim.t - lastMove > 0.25 && !air) { pad.press = true; air = { dbl: false, dir, used: false }; }
       // a fall: he stands more than a hop under the leg he was on
       if (!wasGrounded && !wasClimbing && k < legs.length && inLeg && (up ? p.y > Math.max(leg.entry.y, leg.exit.y) + 100 : false)) {
         out.falls++;

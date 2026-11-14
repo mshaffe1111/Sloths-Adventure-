@@ -1,0 +1,21 @@
+L13 normal BUILT upright {"stage":"1-5","seed":14,"rerolls":0,"built":"normal","stored":"normal"}
+L13 normal BUILT sideways {"stage":"1-5","seed":14,"rerolls":0,"built":"normal","stored":"normal"}
+L13 easy BUILT upright {"stage":"1-5","seed":14,"rerolls":0,"built":"easy","stored":"easy"}
+L13 easy BUILT sideways {"stage":"1-5","seed":14,"rerolls":0,"built":"easy","stored":"easy"}
+L43 normal BUILT upright {"stage":"1-5","seed":44,"rerolls":0,"built":"normal","stored":"normal"}
+L43 normal BUILT sideways {"stage":"1-5","seed":44,"rerolls":0,"built":"normal","stored":"normal"}
+L43 easy BUILT upright {"stage":"1-5","seed":44,"rerolls":0,"built":"easy","stored":"easy"}
+L43 easy BUILT sideways {"stage":"1-5","seed":44,"rerolls":0,"built":"easy","stored":"easy"}
+L44 normal BUILT upright {"stage":"1-5","seed":45,"rerolls":0,"built":"normal","stored":"normal"}
+L44 normal BUILT sideways {"stage":"1-5","seed":45,"rerolls":0,"built":"normal","stored":"normal"}
+L44 easy BUILT upright {"stage":"1-5","seed":45,"rerolls":0,"built":"easy","stored":"easy"}
+L44 easy BUILT sideways {"stage":"1-5","seed":45,"rerolls":0,"built":"easy","stored":"easy"}
+L85 normal BUILT upright {"stage":"1-5","seed":86,"rerolls":0,"built":"normal","stored":"normal"}
+L85 normal BUILT sideways {"stage":"1-5","seed":86,"rerolls":0,"built":"normal","stored":"normal"}
+L85 easy BUILT upright {"stage":"1-5","seed":86,"rerolls":0,"built":"easy","stored":"easy"}
+L85 easy BUILT sideways {"stage":"1-5","seed":86,"rerolls":0,"built":"easy","stored":"easy"}
+L138 normal BUILT upright {"stage":"1-5","seed":139,"rerolls":0,"built":"normal","stored":"normal"}
+L138 normal BUILT sideways {"stage":"1-5","seed":139,"rerolls":0,"built":"normal","stored":"normal"}
+L138 easy BUILT upright {"stage":"1-5","seed":139,"rerolls":0,"built":"easy","stored":"easy"}
+L138 easy BUILT sideways {"stage":"1-5","seed":139,"rerolls":0,"built":"easy","stored":"easy"}
+done

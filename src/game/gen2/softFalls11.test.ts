@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import '../headlessDom.ts';
-import { buildGen2Stage, softFallStage } from './pipeline.ts';
+import { buildGen2Stage, earthHoles, keptFoes, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
 import { provenSeeds } from './seedList.ts';
@@ -21,6 +21,13 @@ const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!,
  * seeds (reference/qa-reports/window-2026-11-10), which are no longer listed and no longer build on the re-lay
  */
 const WINDOW = provenSeeds('1-1').slice(0, 16);
+
+/** a listed seed's roll built without the word: the word's own build's plan replayed, so it is the same roll (never searched: without the
+ *  word the per-gap ruler refuses 1-1's earth holes, so a search finds no clean seed; R-165.221) */
+function listedWithout(seed: number, setting: 'normal' | 'easy'): Gen2Stage {
+  const a = buildPlayStage(cfg('1-1'), w1World(), seed, setting);
+  return buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting, replay: { seed: a.gen2.seed, rerolls: a.gen2.rerolls, plan: a.gen2.plan, foes: [...keptFoes(a)] } });
+}
 
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
@@ -53,24 +60,34 @@ for (const setting of ['normal', 'easy'] as const) {
 test('planted: without the brief\'s word (origin/main\'s 1-1) the same check finds gaps that cost a life, on Normal and on Easy', () => {
   for (const setting of ['normal', 'easy'] as const) {
     for (const seed of WINDOW.slice(0, 4)) {
-      const st = w1Finish(buildPlayStage(cfg('1-1'), kitWithout(), seed, setting));
+      const st = w1Finish(listedWithout(seed, setting));
       assert.equal(softFallStage(st), false);
       assert.ok(hardFalls(st).length >= 3, `${setting} seed ${seed}: ${hardFalls(st).length} gaps outside a soft zone`);
     }
   }
 });
 
-test('the word lays nothing: 1-1\'s ground, zones and floorless-gap verdicts are the same with and without it (listed seeds and raw rolls)', () => {
+// (changed by POLISH-3, R-165.221: the word now marks its earth's holes, pipeline.ts softHoles; it still lays no ground, and the zones,
+// falls and verdicts it adds are exactly one soft zone and one soft fall per hole, lip to lip)
+test('the word lays no ground: 1-1\'s ground is the same with and without it, and its zones, gaps and floorless-gap verdicts differ only by its holes\' soft marks (listed seeds and raw rolls)', () => {
   const same = (a: Gen2Stage, b: Gen2Stage, what: string) => {
     assert.deepEqual(a.platforms, b.platforms, `${what}: the ground`);
-    assert.deepEqual(a.heartFalls, b.heartFalls, `${what}: the soft zones`);
-    assert.deepEqual(a.gen2.falls, b.gen2.falls, `${what}: the gaps`);
-    assert.deepEqual(floorlessGaps(a), floorlessGaps(b), `${what}: floorlessGaps`);
+    const holes = earthHoles(a.platforms), was = b.heartFalls ?? [];
+    const fresh = holes.filter((h) => !was.some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4));
+    assert.deepEqual(a.heartFalls ?? [], [...was, ...fresh.map((h) => ({ x0: h.x0, x1: h.x1, soft: true }))], `${what}: the soft zones, plus one per hole`);
+    assert.deepEqual(a.gen2.falls, [...(b.gen2.falls ?? []), ...holes.map((h) => ({ x0: h.x0, x1: h.x1, y: a.gen2.falls!.find((f) => f.x0 === h.x0 && f.x1 === h.x1 && f.site === 'hole-under-route')?.y, kind: 'soft', site: 'hole-under-route' }))], `${what}: the gaps, plus one soft fall per hole, typed a hole under the route`);
+    const inHole = ([x0, x1]: [number, number]) => holes.some((h) => x0 >= h.x0 - 4 && x1 <= h.x1 + 4);
+    assert.deepEqual(floorlessGaps(a), floorlessGaps(b).filter((g) => !inHole(g)), `${what}: floorlessGaps, less the holes'`);
   };
   for (const setting of ['normal', 'easy'] as const) {
-    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), buildPlayStage(cfg('1-1'), kitWithout(), seed, setting), `listed ${seed} ${setting}`);
+    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), listedWithout(seed, setting), `listed ${seed} ${setting}`);
     // (raw rolls, as tools/engine/seedlist.ts tries them before its filter: listed or not)
-    for (const seed of [1, 2, 3, 4, 5, 6]) same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting }), buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting }), `roll ${seed} ${setting}`);
+    // (the same roll: the word's marks change which roll a search accepts, R-165.221, so the one without it is replayed with it)
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      const b = buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting });
+      const replay = { seed: b.gen2.seed, rerolls: b.gen2.rerolls, plan: b.gen2.plan, foes: [...keptFoes(b)] };
+      same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting, replay }), b, `roll ${seed} ${setting}`);
+    }
   }
 });
 
