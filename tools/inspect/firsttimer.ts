@@ -44,7 +44,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
-import type { Platform } from '../../src/game/types.ts';
+import type { Platform, PlayerState } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
@@ -1354,6 +1354,27 @@ export class FirstTimerRun {
   }
 
   /**
+   * On a liana, the way on is the first route point past that liana's own swing (ENG-16F, R-165.246). A route point ON its swing (where
+   * the route caught it, or a cut liana hanging inside it) passed under him as it swung him on, so the steer turned him back at the forward
+   * end and the let-go went out facing back with no leap: 1-6 Normal kid seed 6, the gorge's first liana, its route point the cut liana's
+   * foot 85 px behind the anchor (FT_FRAMES 247.5-248.4): he fell into the pit short of the creaky limb, twice, to a rescue. A person on a
+   * liana looks at where it is taking him.
+   */
+  private pastLiana(p: PlayerState): Pt | null {
+    const own = this.sim.vines.find((q) => q.id === p.swingVineId);
+    if (!own) return this.prog.target(p);
+    const reach = (own.bottomY - own.topY) * Math.sin(Math.max(vineAmp(own), 0.1)) + 40;
+    const on = (q: Pt) => Math.abs(q.x - own.x) <= reach && q.y <= own.bottomY + 60 && q.y >= own.topY - 40;
+    const pts = this.prog.pts;
+    // (where the route crosses this liana, from his place on the route on: a liana the route does not cross steers as before)
+    let i = this.prog.cur;
+    while (i < pts.length && !on(pts[i])) i++;
+    if (i >= pts.length) return this.prog.target(p);
+    for (; i < pts.length; i++) if (!on(pts[i])) return pts[i];
+    return this.prog.target(p);
+  }
+
+  /**
    * Near the end of his ledge with a liana on the way ahead to catch, the catch is his own act (null: not here, the steer as before; {}:
    * stand and watch it swing; a press). A liana swings itself (physics.ts, the self-swing), its foot 180 px either way, so a jump at it
    * as it swings away falls short into the pit under it (the kid's short flick, 1-6 Easy seed 1: three misses, no grab, BUILD-16c). He
@@ -1527,7 +1548,7 @@ export class FirstTimerRun {
   /** what he means to do this frame (before the thumb's own fumbles) */
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
-    const tgt = this.prog.target(p);
+    const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
     // which way: along the route; with no route, right
     let dir: -1 | 0 | 1 = 1;
@@ -1766,7 +1787,13 @@ export class FirstTimerRun {
       // spot", which the engine gives the sweet spot's leap): decided at 3/4 of the way out, the thumb's lag on top. Decided at 0.4 it
       // came at about half way, a lower, shorter leap: 1-6's LONG gaps (laid at the far end of the low holds' band, W1_LIANA_GAP) fell
       // short every time, Easy too (BUILD-16c: castBots 1-6 seeds 1-6, adult Easy 0/6 at 0.4, 6/6 at 0.75))
-      if (!this.pending && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || this.swingT > 7)) {
+      // (on a liana 7 s (a snake climbed away from and back, a swing he never liked): he lets go as it next carries him out in front,
+      // never at the back of the swing, which dropped him into the pit he hung over: 1-6 Normal kid seed 4, the risers' liana, round
+      // and round to a rescue (ENG-16F, FT_FRAMES 187-208). A liana that never swings him (no swing of its own) is let go at 7 s as
+      // before; nothing holds him past 14 s)
+      const still = !own || vineAmp(own) < 0.05;
+      const late = this.swingT > 7 && (still || (a * fdir > 0.3 && om * fdir > 0));
+      if (!this.pending && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || late || this.swingT > 14)) {
         this.swingT = 0;
         this.letGoAt = t;
         return this.decide(fdir, 'single', true, side(fdir));

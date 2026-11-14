@@ -1,0 +1,2 @@
+rescueXs 13801
+LOOP {"x":13813,"y":800,"n":3,"doubles":0,"deaths":3,"what":"","step":null,"dip":null,"puzzle":false}

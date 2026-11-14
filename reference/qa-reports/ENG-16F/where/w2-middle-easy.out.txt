@@ -1,0 +1,9 @@
+middle easy 1 shrine {"got":116,"need":82} rescues 0 
+middle easy 2 shrine {"got":118,"need":82} rescues 0 
+middle easy 3 shrine {"got":117,"need":84} rescues 0 
+middle easy 4 shrine {"got":109,"need":80} rescues 0 PIT@snake-on-vine:b1
+middle easy 5 time {"got":109,"need":80} rescues 0 PIT@snake-on-vine:b1 PIT@snake-on-vine:b1 PIT@snake-on-vine:b1 PIT@snake-on-vine:b1 PIT@snake-on-vine:b1
+middle easy 6 shrine {"got":106,"need":74} rescues 0 
+
+TOTALS
+middle easy PIT@snake-on-vine:b1 6
