@@ -87,3 +87,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-S3 (Opus xhigh) | PieceHost.focus + focusY, gen2 snakeViewFaults, false-liana landing clear of him (unit-proven); real page still 0/6 (level-top root cause): paused | $8.33 | ~25 min |
 | POLISH-9 (Opus high) | found the 1-1 Normal 'rescue' was a BOT artifact (inputGrace 0.35 s vs stopReact 0.30 s): firsttimer.ts fix, adult 4/10 -> 10/10: paused | $2.86 | ~10 min |
 | INT-7 (Opus xhigh) | merged t-polish-5 + t-fix-14b on main (polish-5's tree + main's 8 files; provenIndex conflict by both sides' intent); all 5 lists --check PASS; fast gates green; full Checks + stills UNRUN: paused | $3.94 | ~12 min |
+| INT-7b (Opus xhigh) | INT-7 finished: every gate GREEN on cc015e7f; 1-4 clips + 1-1 stills both ways (first-run off-by-one fixed); found R-165.236 (teach tips by x) + the canopy seam | $12.42 | ~60 min |
