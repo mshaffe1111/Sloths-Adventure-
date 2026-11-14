@@ -155,7 +155,8 @@ const GOING_UP: SectionTemplate = {
     branch('foot', { kind: 'start' }, 300),
     climbOn('v1', 'foot', 300, 240, 220),
     branch('b1', { kind: 'over', on: 'v1', at: [0, 0], dy: [0, 0] }, 340),
-    climbOn('v2', 'b1', 340, 290, 320),
+    // (cleared CLIMB_CLEAR off b2's face, it stands 86 px from b1's open end: at 290 it was 76, under the 80 px rule; R-165.206)
+    climbOn('v2', 'b1', 340, 280, 320),
     branch('b2', { kind: 'over', on: 'v2', at: [0, 0], dy: [0, 0] }, 260),
   ],
   entry: { piece: 'foot', kind: 'ledge' }, exit: { piece: 'b2', kind: 'ledge' }, exitDy: -540,

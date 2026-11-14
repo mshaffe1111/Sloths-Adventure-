@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { TOP_ROOM } from '../vineTop.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -1606,16 +1607,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let way: 1 | -1 = roomIn(dir, cur.x) >= ahead + 2 ? dir : (-dir as 1 | -1);
     // (a turn's near end: going up, back over the ledge he leaves, the vine standing on it; going down, out past its tip, under the
     // vine that hangs there, never nearer the tower's side than a bridge is laid)
-    const tipOf = (w: 1 | -1) => (w === dir ? cur.x : flow === 'up' ? cur.x - dir * TOWER.vineIn : Math.max(24, Math.min(TW - 24, cur.x + dir * (CLIMB_CLEAR + 20))));
+    // (going up the same way, the storey over starts back over the ledge he leaves, so its vine, cleared off that storey's face toward
+    //  him, keeps TOP_ROOM to the ledge's open tip (R-165.206: at the tip it stood 26 px from it); turning back, the ledge runs on past
+    //  the vine instead (below), so the storey keeps its room)
+    const tipOf = (w: 1 | -1) => (w === dir ? (flow === 'up' ? cur.x - dir * (TOP_ROOM - CLIMB_CLEAR) : cur.x) : flow === 'up' ? cur.x - dir * (sealedExit ? TOP_ROOM + CLIMB_CLEAR : TOWER.vineIn) : Math.max(24, Math.min(TW - 24, cur.x + dir * (CLIMB_CLEAR + 20))));
     // (from a sealed piece no bough runs on: where the section fits neither on from its tip nor back over it, its storey starts
     // further back ALONG the sealed piece, the vine standing on the piece there; where even that is too narrow the roll fails by name)
     let sealedOx: number | undefined;
     if (way !== dir && roomIn(way, tipOf(way)) < ahead && sealedExit) {
       const g = cur.piece;
-      const backEnd = dir > 0 ? g.x + TOWER.vineIn : g.x + g.width - TOWER.vineIn;
+      const backEnd = dir > 0 ? g.x + TOWER.sealedIn : g.x + g.width - TOWER.sealedIn;
       if (flow !== 'up' || roomIn(dir, backEnd) < ahead + 2) throw new Error(`gen2 ${budget.id}: ${opts.what} (${R(ahead)} px) fits no turn from the sealed piece at x ${R(g.x)}-${R(g.x + g.width)} (room ${R(roomIn(dir, backEnd))} px on, ${R(roomIn(way, tipOf(way)))} px back) and no bough may run on from it`);
       way = dir;
       sealedOx = dir > 0 ? Math.max(backEnd, TW - TOWER.wall - ahead - 2) : Math.min(backEnd, TOWER.wall + ahead + 2);
+      // (its vine, cleared CLIMB_CLEAR back off the storey's face, keeps TOP_ROOM to the sealed piece's far end too (a gate's top drops
+      //  him a storey to its foot): where the section only fits nearer it, the roll fails by name (R-165.206; it stood 32 px from it)
+      const room = dir > 0 ? g.x + g.width - (sealedOx - CLIMB_CLEAR) : sealedOx + CLIMB_CLEAR - g.x;
+      if (room < TOP_ROOM) throw new Error(`gen2 ${budget.id}: ${opts.what} (${R(ahead)} px) fits from the sealed piece at x ${R(g.x)}-${R(g.x + g.width)} only with its vine ${R(room)} px from the piece's end (TOP_ROOM ${TOP_ROOM})`);
     } else if (way !== dir && roomIn(way, tipOf(way)) < ahead) {
       const run = roomIn(dir, cur.x);
       if (run > 1) {
@@ -1634,6 +1642,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const oy = R(flow === 'up' ? Math.min(cur.y - TOWER.turn - (ext.hang ?? 0), lim) : Math.max(cur.y + TOWER.turn, lim));
     // the vine between the two: going up it stands on the ledge he leaves, its top at the new storey's near end; going down it hangs
     // just past the tip of the ledge he leaves, down to the new storey (clearClimbs moves each off its ledge's face)
+    // (a turn back up: its vine stands TOWER.vineIn in from the tip of the ledge he leaves and clearClimbs moves it CLIMB_CLEAR toward that
+    //  tip, so the ledge runs on past the tip until the vine he walks to has TOP_ROOM to its open end (or to the wall): at 18 px a
+    //  first-timer walked past it and off, every kid Normal fail on castBots 1-4 (R-165.206, vineTop.ts footRoom))
+    if (flow === 'up' && way !== dir && !sealedExit) {
+      const need = TOP_ROOM - (TOWER.vineIn - CLIMB_CLEAR), edge = dir > 0 ? TW - cur.x : cur.x;
+      // (short of the wall line it may run into the tower's side: an end at the stage's edge is a wall, no walk-off)
+      const run = roomIn(dir, cur.x) >= need ? need : edge;
+      if (run > 1) opts.seam.push(mk(dir > 0 ? cur.x : cur.x - run, cur.y, run, 'branch', 0));
+    }
     const v: Vine = { id: vines.length + 1, x: R(flow === 'up' ? ox : cur.x), topY: Math.min(oy, R(cur.y)), bottomY: Math.max(oy, R(cur.y)), swaySpeed: 1.1, swayPhase: (ox * 0.013) % 6.28, vineType: 'tree_climb' };
     vines.push(v);
     turns.push({ x: v.x, from: R(cur.y), to: oy, turned: way !== dir, vine: v });

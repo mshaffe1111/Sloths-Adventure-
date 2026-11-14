@@ -92,7 +92,7 @@ test('the real engine: VAULT_GAP promises no more than the vault gives, with mar
 });
 
 // ── the 80 px vine-top rule (R-165.206, FIX-14c): a climbable vine's top keeps TOP_ROOM of ledge to any OPEN end ──────────────────────
-import { TOP_ROOM, topRoom, topRoomShort } from './vineTop.ts';
+import { TOP_ROOM, footRoom, topRoom, topRoomShort } from './vineTop.ts';
 
 /** the real engine: he climbs `v` to its top holding up and `side` (the vault the short way, a thumb that slid), then lets go; where does
  *  he come to rest: the piece he stands on, or -1 (falling past it) */
@@ -135,4 +135,16 @@ test('topRoom: touching pieces at one height are one ledge, the stage\'s edge an
   assert.equal(topRoomShort(trunk(1, 400 - CLIMB_CLEAR, 1000, 1240), [plank(1, 400, 680, 1000)], W), null);
   assert.match(topRoomShort(trunk(1, 400 - CLIMB_CLEAR, 1000, 1240), [plank(1, 400, 440, 1000)], W) ?? '', /open right end 440/);
   assert.equal(TOP_ROOM, 80, 'his grab reach 54 + half his body 22, rounded up (FIX-14)');
+});
+
+test('footRoom: the ledge he walks along to a vine keeps TOP_ROOM to its open tip (planted: 1-4\'s link vine after the rotting boughs, 18 px from it, where every kid Normal fail walked off)', () => {
+  const W = 1280;
+  // (seed 9 Normal before the fix: the vine at 1036 on the rotting section's exit 854..1054, the storey above 570..1010)
+  const z = plank(1, 854, 1054, 10083), b = plank(2, 570, 1010, 9802), v = trunk(1, 1036, 9802, 10083);
+  assert.match(topRoomShort(v, [z, b], W, 'foot') ?? '', /18 px to the open right end 1054/);
+  assert.equal(topRoomShort(v, [z, b], W), null, 'its top is fine: the storey runs back 440 px');
+  // the lay's fix: the ledge runs on past the tip until 80
+  assert.equal(topRoomShort(v, [z, plank(3, 1054, 1116, 10083), b], W, 'foot'), null);
+  // a vine that hangs (no wood at its foot) is no foot case
+  assert.equal(footRoom(trunk(1, 1036, 9802, 10300), [z, b], W), null);
 });

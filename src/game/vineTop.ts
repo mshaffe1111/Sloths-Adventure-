@@ -86,7 +86,20 @@ export interface TopRoom {
  * gate, a vine to nowhere, which other checks own). `width` is the stage's: an end at its edge is a wall, never a walk-off.
  */
 export function topRoom(v: Vine, platforms: readonly Platform[], width: number): TopRoom | null {
-  const at = platforms.filter((q) => lasting(q) && Math.abs(q.y - v.topY) <= 2);
+  return ledgeRoom(v, platforms, width, v.topY);
+}
+
+/**
+ * The ledge at the FOOT of `v`, the one he walks along to it, and the room to its ends (null when no lasting wood is there: a vine that
+ * hangs). The same 80 px holds there: a vine 18 px from an open end (the tower's link vines, TOWER.vineIn 44 less CLIMB_CLEAR) is walked
+ * past and off (castBots 1-4, kid Normal: all 15 of its fails fell off there, "fell back down from here 3 times").
+ */
+export function footRoom(v: Vine, platforms: readonly Platform[], width: number): TopRoom | null {
+  return ledgeRoom(v, platforms, width, v.bottomY);
+}
+
+function ledgeRoom(v: Vine, platforms: readonly Platform[], width: number, y: number): TopRoom | null {
+  const at = platforms.filter((q) => lasting(q) && Math.abs(q.y - y) <= 2);
   const seed = at.find((q) => v.x >= q.x - 2 && v.x <= q.x + q.width + 2)
     ?? at.find((q) => (q.x > v.x && q.x - v.x <= VAULT_GAP) || (q.x + q.width < v.x && v.x - (q.x + q.width) <= VAULT_GAP));
   if (!seed) return null;
@@ -101,22 +114,22 @@ export function topRoom(v: Vine, platforms: readonly Platform[], width: number):
   const open = (e: number, d: 1 | -1): boolean => {
     if (d < 0 ? e <= 2 : e >= width - 2) return false;
     const x = e + d * 4;
-    return !platforms.some((q) => lasting(q) && x >= q.x && x <= q.x + q.width && q.y >= v.topY - STEP_UP && q.y <= v.topY + STEP_DOWN);
+    return !platforms.some((q) => lasting(q) && x >= q.x && x <= q.x + q.width && q.y >= y - STEP_UP && q.y <= y + STEP_DOWN);
   };
   const on = v.x >= x0 - 2 && v.x <= x1 + 2;
   return { x0, x1, on, left: v.x - x0, right: x1 - v.x, openLeft: open(x0, -1), openRight: open(x1, 1) };
 }
 
 /**
- * What is short at the top of `v` (null when it keeps TOP_ROOM to every open end he can reach): over the ledge, both ends; in front of
- * a bough's face (CLIMB_CLEAR), its far end (the near end is the face he climbed beside, the vine still in his hands).
+ * What is short at the top of `v` (or its foot, `end`) (null when it keeps TOP_ROOM to every open end he can reach): over the ledge, both
+ * ends; in front of a bough's face (CLIMB_CLEAR), its far end (the near end is the face he climbed beside, the vine still in his hands).
  */
-export function topRoomShort(v: Vine, platforms: readonly Platform[], width: number): string | null {
-  const t = topRoom(v, platforms, width);
+export function topRoomShort(v: Vine, platforms: readonly Platform[], width: number, end: 'top' | 'foot' = 'top'): string | null {
+  const t = end === 'top' ? topRoom(v, platforms, width) : footRoom(v, platforms, width);
   if (!t) return null;
   const short: string[] = [];
   const far = (d: 1 | -1) => (t.on ? true : d > 0 ? t.x0 > v.x : t.x1 < v.x);
   if (t.openLeft && far(-1) && t.left < TOP_ROOM) short.push(`${Math.round(t.left)} px to the open left end ${Math.round(t.x0)}`);
   if (t.openRight && far(1) && t.right < TOP_ROOM) short.push(`${Math.round(t.right)} px to the open right end ${Math.round(t.x1)}`);
-  return short.length ? `the vine at ${Math.round(v.x)} tops out at ${v.topY} on ${Math.round(t.x0)}..${Math.round(t.x1)}: ${short.join(', ')}` : null;
+  return short.length ? `the vine at ${Math.round(v.x)} ${end === 'top' ? `tops out at ${v.topY}` : `stands at ${v.bottomY}`} on ${Math.round(t.x0)}..${Math.round(t.x1)}: ${short.join(', ')}` : null;
 }
