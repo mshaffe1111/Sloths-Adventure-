@@ -1,4 +1,4 @@
-# FIX-14 REPORT (steps 1-2 done; step 5 diagnosed, pushback; step 3+ waits on Matt's pick). t-fix-14 from origin/main@73e7bed0; mock on t-fix-14-mock
+# FIX-14 REPORT (steps 1-2 done; step 5: route fix landed, fork still short; step 3+ waits on Matt's pick). t-fix-14 from origin/main@73e7bed0; mock on t-fix-14-mock
 ## EXACT NEXT STEP
 The lead judges the two mocks as clips (D63) and asks Matt one question: (a) mockA (two vines faster + petal pair between them, pods
 slow and telegraphed) and (b) mockB (tied thatch that snaps; head stops under the bough). On his pick, build packet step 3 on t-fix-14
@@ -23,28 +23,32 @@ Matt's case, and drops the bramble), then steps 4-5.
 - Two hands still get hit on either vine's line, and he still has to stop to take a hand (engine.ts:2102): step 4 should let a side
   push take a hand while climbing.
 
-## Step 5 (R-165.206 rotten fork), started 12:50 AM ET: ROOT CAUSE FOUND, PUSHBACK, NOT FIXED (evidence in fork/)
-- Same bots, seeds 1-8, both settings (middle + child, castBots on a merge of origin/t-len-14@d56cd91): pre-fork base 2467b5e5 23/32
-  pass; with the fork 4/32. (The relist changed which roll a seed is, so the two are not the same layouts.)
-- Where: the stuck points are the fork's sound vine and the link vine over its top (seed 4 Easy: (326, 6412), (162, 5985); seed 1
-  Easy: (956, 6412), (1120, 6008)). Frames (middle Easy s4, 76-80 s): on the fork floor he paces 290-352 px round the vine (x 326)
-  and never presses up.
-- Cause: tools/inspect/towerRoute.ts within(): a vine that spans his height "leads on", so the route goes along the ENTRY's height
-  (6412) to the vine and up; the vine's foot is on the fork floor 200 px under. The route floats in the air; on the floor the target
-  never reads as up, so he never climbs. A person drops, sees the vine, climbs: the bots' route, not the level, is wrong here.
-- Proof: fork/towerRoute-fix.patch (route: across, DOWN to the vine's foot, then up) lifts the fork runs 4/32 to 14/32. Not
-  committed: it is a bots' tool (outside this packet's level fix; INT-6 asked for the level), and it has no planted test yet.
-- Left after the route fix: "the way on is 281 px down" on the fork floor (seed 7 Normal, (147, 6275)); "in a dip 50 px deep" at the
-  creaks. Not diagnosed.
-- PUSHBACK (lead's call): (A) land the route fix in towerRoute.ts with a planted test (a down-then-up leg), then diagnose the rest; or
-  (B) the level's way: the creak as the way UP, which V9 refuses for job D (nodeCode.ts:158 "a descent is falling"): needs a free job
-  letter from the lead; or (C) hide the exit until he is down (new engine work). My view: (A) first: the level reads fine to a
-  person, and the route bug would bite any future down-then-up section; then judge the fork on the bots again.
+## Step 5 (R-165.206 rotten fork): the lead chose (A), 12:52 AM ET. ROUTE FIX LANDED (tool + planted test); the fork still short of base
+- Cause (unchanged): tools/inspect/towerRoute.ts within() ran the way on along the ENTRY's height to a vine whose foot stands on a
+  floor 200 px under it: in the air; from the floor the way on never read as up, so the tier bots paced round the vine's foot.
+- Fix (towerRoute.ts): a vine that leads on but is sunk (foot more than a hop under him): straight to its foot (the stair down), then up.
+  v1 (across at his height, then down) left 2 adult Normal seeds worse (24 timed out at the cap): replaced by v2, committed.
+- Planted test (castBots.test.ts, a TOY one-leg tower, no stage's): RED on today's within() ("no corner at the sunk vine's foot ...
+  (300,1000),(300,760)"), GREEN with the fix; an ordinary climb still straight up. CI already runs this file.
+- Guards: World 1 on main, castBots 1-1..1-5 x 40 seeds, all bots, both settings, before (main's tool) vs after: every pass count,
+  failure and time IDENTICAL (only the listing order of seeds and clear types differs; fork/w1-*-before-after.txt). tierBots 1-1
+  calibration PASS 7/7 after (not recommitted: unchanged). CI's tool tests 74/74.
+- The fork (t-len-14@d56cd91 + the fix, 40 seeds, fork/fork-1-4-before-after.txt), passes of 360: without the fix 169, with it 209,
+  pre-fork base 242. child N 0->10, child E 3->17, middle N 12->16, middle E 9->26, expert 18->15, adult N 36->34; adult Easy min 113 s
+  (>= the 100 s floor). The expert and adult drops are runs diverging far past the fork (expert s19: stuck at y 549, the crown; it
+  passes the fork), a single 40-seed run each: noise is likely but not proven.
+- Left, diagnosed, NOT fixed (the bot, not the level): on the fork's top bough the next turn's vine stands 18 px from the bough's end.
+  At 32 px from the vine his near target is still level (the corner at its foot), so "up" is false, and the "edge 80 px ahead: jump"
+  check fires before he reaches the vine: he leaps off the end and falls to the fork floor ("the way on is 281 px down" from there).
+  A look-ahead "climb if the way rises up THIS vine" made it worse on seeds 4 and 7 and was reverted. Next: decide in the bot which
+  wins when a turn's vine stands at a ledge's end, with a planted toy test; or (level) give the fork's top bough room past its link vine.
+- The creak dip ("in a dip 50 px deep, the way on is 150 px up", middle N s4 on v1): not yet chased on v2.
 ## Gates (docs, media and read-only tools on t-fix-14: LAWS 5 fast gates) on this head: see the commit message
 ## Learned
 - Matt's "rocks" are pods; name the thing as the code names it before measuring.
 - Playwright recordVideo here paints the page into a corner; step the engine (e.isPaused, e.update(1/30), e.render()) and screenshot
   every 2nd frame, with unrecorded settle frames after any jump cut (the camera lags). Proposed for methods/level.md step 5.
+- Never edit a file in a tree a background bot run is reading: I did (firsttimer.ts mid-run), caught it, killed and re-ran it clean.
 - A shallow clone fails roadmapcheck; `git fetch --unshallow origin` first (proposed for gates.md).
 - I misread my own context use as near the 40% box at 15%: read the session's figure, not an estimate (the lead caught it).
 ## Lessons applied: D61 (judged every frame myself; two rough spots fixed, two named), D62 (BUILT printed from the game), D63 (gate judged
