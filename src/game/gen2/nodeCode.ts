@@ -7,12 +7,14 @@
  * Two kinds of string: a GRAPH (jobs and shapes only, §8.4: the deal fills in the content) and a REALISED roll (every mark). The rules
  * about content, moves and tempo apply only where a token carries them, so one checker reads both.
  */
+import { CONTENT_LETTERS, JOB_LETTERS } from './nodeLetters.ts';
 import type { NodeJob, NodeShape } from './types.ts';
 
 export interface CodeToken {
   /** the job letter (§8.0) */
   job: string;
-  /** the content letter: g ground, f floating, c climb, b bounce, r rope, k crumble, w water, h hazard */
+  /** the content letter (nodeLetters.ts CONTENT_LETTERS): g ground, f floating, c climb, b bounce, r rope, k crumble, w water, h hazard,
+   *  and the blocks s v p t x m */
   content?: string;
   /** the move digit: 1 jump, 2 double */
   move?: '1' | '2';
@@ -54,25 +56,18 @@ export interface CodeDials {
   reward?: { find?: string; pickups?: number };
 }
 
-/** the content letters (§8.0): the first eight are the mix's types; the rest are the building blocks any world's node can name
- *  (R-165.198): s swing vine, v vine field (two hands), p beat pieces on a clock, t gate, x trap */
-export const CONTENT_OF: Readonly<Record<string, string>> = {
-  g: 'ground', f: 'floating', c: 'climb', b: 'bounce', r: 'rope', k: 'crumble', w: 'water', h: 'hazard',
-  s: 'swing', v: 'field', p: 'beat', t: 'gate', x: 'trap',
-};
+/** the content letters (§8.0), from the one letter table (nodeLetters.ts): the first eight are the mix's types; the rest are the
+ *  building blocks any world's node can name (R-165.198): s swing vine, v vine field (two hands), p beat pieces on a clock, t gate,
+ *  x trap, m cover (named; laid by their own emitters, or LATER) */
+export const CONTENT_OF: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(CONTENT_LETTERS).map(([k, v]) => [k, v.name]));
 
-/** the job letters (§8.0's key) */
-export const JOB_OF: Readonly<Record<string, NodeJob>> = {
-  A: 'arrive', T: 'teach', P: 'practise', X: 'test', C: 'combine', W: 'twist', R: 'rest', S: 'signature', F: 'fork', U: 'climb', D: 'descent',
-  M: 'flow', E: 'exit', L: 'finale', H: 'reward', K: 'pressure', Z: 'puzzle', B: 'arena', Y: 'story', V: 'preview', G: 'change',
-  // (the pick, `?[a|b]`: a walked choice lays ONE of two stretches, the card road)
-  '?': 'pick',
-};
+/** the job letters (§8.0's key), from the one letter table (nodeLetters.ts); the pick, `?[a|b]`, lays ONE of two stretches */
+export const JOB_OF: Readonly<Record<string, NodeJob>> = Object.fromEntries(Object.entries(JOB_LETTERS).map(([k, v]) => [k, v.job]));
 export const LETTER_OF: Readonly<Partial<Record<NodeJob, string>>> = Object.fromEntries(Object.entries(JOB_OF).map(([k, v]) => [v, k]));
 /** the structural jobs: no content letter, flat, outside the mix (§7.1, V1) */
 export const STRUCTURAL = new Set(['A', 'R', 'Y', 'L', 'E']);
-/** the jobs not built yet (§6 LATER, §8.0) */
-const LATER = new Set(['K', 'Z', 'B', 'Y', 'V', 'G']);
+/** the jobs not built yet (§6 LATER, §8.0): the table's `later` rows */
+const LATER = new Set(Object.entries(JOB_LETTERS).filter(([, v]) => 'later' in v && v.later).map(([k]) => k));
 export const SHAPE_OF: Readonly<Record<CodeToken['shape'], NodeShape | 'shaft' | 'loop-back' | 'hub'>> = { '': 'flat', '^': 'rising', '_': 'falling', '^^': 'shaft', '@': 'loop-back', '*': 'hub' };
 export const MARK_OF: Readonly<Record<NodeShape, CodeToken['shape']>> = { flat: '', rising: '^', falling: '_', 'two-road': '' };
 

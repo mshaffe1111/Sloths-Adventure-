@@ -118,7 +118,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
   <p class="note">Any element mixes with any other on one node, in any world whose kit has the pieces. Every element a code writes is laid, or the roll fails and names it: nothing a designer writes is dropped. <b>Laid</b>: the lay builds it from the ask, and the built roll is checked. <b>Checked</b>: the lay rolls it as before, and the roll fails by name when it is not there. <b>Later</b>: nothing in the engine lays it yet, so a code that writes it always fails by name.</p>
   <div class="cards">
     <div class="card" data-element="content g f c b r k w h" data-status="laid"><div class="card-top"><span class="code">Pg</span><span class="name">content g f c b r k w h</span><span class="pill now">Laid</span></div><p>the node's type is fixed in the deal; every section laid there is checked to be that type</p></div>
-    <div class="card later" data-element="content s v p t x" data-status="later"><div class="card-top"><span class="code">Ps</span><span class="name">content s v p t x</span><span class="pill later">Later</span></div><p>no emitter keyed by the letter in this tree: the roll fails by name</p></div>
+    <div class="card later" data-element="content s v p t x m" data-status="later"><div class="card-top"><span class="code">Ps</span><span class="name">content s v p t x m</span><span class="pill later">Later</span></div><p>no emitter keyed by the letter in this tree: the roll fails by name</p></div>
     <div class="card" data-element="move 1 / 2" data-status="checked"><div class="card-top"><span class="code">Pg2</span><span class="name">move 1 / 2</span><span class="pill now">Checked</span></div><p>2: a section there asks for the double; 1: none does. A miss fails by name</p></div>
     <div class="card" data-element="shape ^ _" data-status="laid"><div class="card-top"><span class="code">Pg^</span><span class="name">shape ^ _</span><span class="pill now">Laid</span></div><p>the node's shape and height dial are the ask; its sections' net rise is checked (^ ends higher, _ lower)</p></div>
     <div class="card later" data-element="shape ^^ @ *" data-status="later"><div class="card-top"><span class="code">U^^</span><span class="name">shape ^^ @ *</span><span class="pill later">Later</span></div><p>V10: a stage must own the shape; the shaft, loop-back and hub have no lay here</p></div>
@@ -163,22 +163,29 @@ M:["Flow","now","A run of quick beats at the roll's tempo, never more than 2.5 s
 E:["Exit","now","The end piece where the stage's trend arrives. In 1-1: a long high log with the exit totem, and the clue. After a signature it must be a real breath: a calm walk-on, at least a rest long.","You walk out along a long high log to the totem, calm, and the stage is done."],
 L:["Finale","later","15-20 s at the exit, everything taught, dense. Not in 1-1 (it ends quiet).","The last stretch throws everything you've learned at you, fast."],
 H:["Hidden alcove","later","A find off the main route, proven reachable.","A sneaky spot off the path with something to find, if you look."],
-K:["Chase","later","Moving pressure. Never in a world's first stage. World 1's chase is 1-5's, by story.","Something is coming. Keep moving and don't stop."],
+K:["Chase","later","Moving pressure. Never in a world's first stage. World 1's chase is 1-8's, by story.","Something is coming. Keep moving and don't stop."],
 Z:["Puzzle room","later","A hand-built room that stays as built.","A room where you stop and work out how to get through."],
 B:["Arena","later","A fight in a held space, on the combat ladder.","You hold one spot and deal with the creatures that come."],
 Y:["Story beat","later","A beat the brief names (the note, a clue), with no hard input over it.","You stop for a moment and something in the story happens."],
 V:["Boss preview","later","The boss's attack in small form, in a world's 9th stage only.","A small taste of what the boss will throw at you."],
-G:["Change of pace","later","One sense flipped: slow, dark or a puzzle. A world's 6th stage's job.","The stage suddenly feels different: slower, darker or a head-scratcher."]
+G:["Change of pace","later","One sense flipped: slow, dark or a puzzle. A world's 6th stage's job.","The stage suddenly feels different: slower, darker or a head-scratcher."],
+"?":["Pick","later","A walked choice, written ?[a|b]: the roll lays ONE of the two stretches (the card road, NODES.md §8.9). Not laid yet: a graph that writes one fails by name.","Two stretches could go here; only one is laid."]
 };
 const CONTENT={
 g:["Ground jump run","now","Pieces on the moss floor road: hops, gap jumps, stone runs, stump stiles, mounds. Landings 3.5-7 body widths. Rocks sit on the ground, never float.","You jump along the forest floor over stones, stumps and dips. In 1-1 a miss just drops you to the floor."],
 f:["Floating pieces","now","Boughs, floating logs, plank spans. Platforms may float. In 1-1, only in the last third. Moving lifts come later (World 2).","You hop across branches and logs hanging in the air."],
 c:["Climb","now","A rising stair of landings.","Each landing is a little higher than the last, so you go up as you go along."],
 b:["Bounce","now","A mushroom seated on a stump or bank, never floating; a twin bounce; a bounce into a double.","You land on a mushroom and it springs you up high."],
-r:["Rope and vine","later","Shimmy rope (taught 1-3), liana (taught 1-6). Straight up or down on a vine always climbs. Not in 1-1.","You grab a rope or vine and shimmy or swing across."],
+r:["Rope and climbing vine","later","Shimmy rope (taught 1-3), and a climbing vine whose foot reaches a landing. Straight up or down on a vine always climbs. The swinging liana is s. Not in 1-1.","You grab a rope or a vine and shimmy across or climb."],
 k:["Crumble","later","A creaky limb that gives way (0.5 s on Normal). A required one is whole again when he respawns. Taught 1-5.","A branch creaks and drops away soon after you land, so don't wait around."],
 w:["Water","later","Lily pads, stones on the bed, drifting logs.","You cross water on pads, stones and floating logs."],
-h:["Hazard","later","The world's taught hazards, which come back in later worlds.","Something on the way hurts, so you go over or around it."]
+h:["Hazard","later","The world's taught hazards, which come back in later worlds. Dials, named for ENGINE-678 B2 ROLL: roll low|bounce; gap s between rolls; teach nudge (the first one costs no heart).","Something on the way hurts, so you go over or around it."],
+s:["Swing vine (liana)","later","A liana hung from a bough or the canopy, with a landing past its swing (taught 1-6). Dials, named for ENGINE-678 A1 SWING-W1 (grip), B3 COVER (moss), B6 CHASE-FINISH (phase): grip low|high; phase free|runner; moss on (a mossy liana is cover).","You grab a hanging vine, swing, and let go to fly across."],
+v:["Vine field","later","A field of vines he climbs with two hands, hand to hand (vineField.ts).","You climb across a wall of vines, one hand after the other."],
+p:["Beat pieces","later","Pieces on the stage clock, every one reading the one beat: pods, snap stones, a ride (beat.ts, clock.ts).","Things move on a beat: watch the rhythm and go when it is safe."],
+t:["Gate","later","A gate a find opens (the fig gate).","A gate blocks the way until you find what opens it."],
+x:["Trap","later","A trap: a limb's load dropped over an animal.","You drop something on a creature from above to get past it."],
+m:["Cover","later","Cover he keeps still in while a watcher looks: a bush, a moss carpet, a patch, or moss hanging from a liana (stillness.ts Cover). Dials, named for ENGINE-678 B3 COVER: kind bush|carpet|patch|hanging; apart px between covers.","You duck into a bush or under hanging moss and keep still while it looks."]
 };
 const MOVES={"1":["Jump","now","A single jump is enough.","One hop gets you there."],"2":["Double jump","now","Required: a gap or height past a single jump, which a test player without the double fails.","You jump, then jump again in the air to reach it."]};
 const SHAPES={"flat":["Flat","now","Across, in one band. Written with no mark.","You head straight along."],"^":["Rising","now","Across and up.","You climb as you go."],"_":["Falling","now","Across and down.","You work your way down."],"F[ | ]":["Two roads","now","High and low roads that rejoin.","You pick a high road or a low road."],"^^":["Shaft","later","Straight up a column (1-4).","You go straight up a tall trunk."],"@":["Loop-back","later","Under, up a shaft, back over the start, then a drop to the exit.","You run under, climb up, then run back over where you started."],"*":["Hub","later","A centre with an alcove or two off it.","A little clearing with hidden corners to poke into."]};
@@ -188,10 +195,16 @@ g:["The moss floor road under it, plus at least one of: a mossy stone, a log on 
 f:["At least one floating platform: a solid log, a branch, or plank-bridge planks.","Catch branches under each gap; a trunk in the art.","A floating rock or stone; a trunk used as something to land on; a moving lift in World 1."],
 c:["Landings that each sit higher than the last: a log, a branch, or a mossy stone on a bank or its own base.","A stump as a step.","A trunk used as something to land on; climbing a vine up a trunk, except in the stage that owns it (World 1: 1-4)."],
 b:["A bounce mushroom sitting on the floor, a bank, a stump or a log.","","A mushroom in the air; a bouncy branch or bouncing stone in World 1; the small decoration mushrooms used as something to land on."],
-r:["A rope tied at both ends at about the same height; or a vine hung from a branch or the canopy, with a landing past its swing; or a climbing vine that reaches a landing at its foot.","","Any rope or vine in 1-1; a vine hanging from open sky; a trunk used as something to land on."],
+r:["A rope tied at both ends at about the same height; or a climbing vine that reaches a landing at its foot.","","Any rope or vine in 1-1; a vine hanging from open sky; a trunk used as something to land on; a swinging liana (that is s)."],
 k:["A creaky branch on a trunk or bough, in World 1's branch art.","","World 7's crumbling stone floor in World 1; a crumbling stone in the air."],
 w:["Drawn water, with lily pads on its surface, stones sitting on its bed, or drifting logs on a drawn river.","","Lily pads, reeds or drifting logs anywhere off water; a stone floating on the water."],
-h:["The world's own taught hazard (for example World 3's thorn vines hanging or swinging from trunks).","","A hazard before its world teaches it; another world's hazard art."]
+h:["The world's own taught hazard (for example World 3's thorn vines hanging or swinging from trunks).","","A hazard before its world teaches it; another world's hazard art."],
+s:["A liana hung from a bough or the canopy, with a landing past its swing.","","A liana hanging from open sky."],
+v:["Not laid yet: no piece rule.","",""],
+p:["Not laid yet: no piece rule.","",""],
+t:["Not laid yet: no piece rule.","",""],
+x:["Not laid yet: no piece rule.","",""],
+m:["Not laid yet: no piece rule.","",""]
 }; // the designer's MUST / MAY / NEVER column (NODES.md §8.0), checked by rule V18
 const GROUPS=[["Jobs",JOBS,"The capital letter: what the stretch is for."],["Made of",CONTENT,"The small letter: what the stretch is built from."],["Moves",MOVES,"The digit: which jump it needs."],["Shapes",SHAPES,"The mark after the move: where it goes."],["Marks",MARKS,"Extras on the end."]];
 const ROLLS=[
