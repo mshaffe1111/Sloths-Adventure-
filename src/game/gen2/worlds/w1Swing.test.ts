@@ -13,10 +13,11 @@ import { w6Kit } from './w6.ts';
 import { W1_LIANA_GAP, W1_SWING_SECTIONS, withSwing } from './w1Swing.ts';
 
 // 1-6.md's measured liana: 420 px long, the ledge it leaves 400 px under its anchor; the perch level with that ledge, `near` px past
-// the anchor (SHORT at most 430, LONG 480-500, FAR 530-560)
+// the anchor, `w` wide. Since Matt's "shorter swings" (R-165.225, 11-14) a dialled liana's perch is laid only where he sees it whole as
+// he presses (cameraFollow.ts SWING_SEEN): FAR is a narrow perch (120-140 px) 460-500 px out, no longer 530-560 (ENG-S1 cap-seen.out.txt)
 const LIANA_16 = { x: 0, topY: 0, bottomY: 420 };
-const win = (near: number, d: 'normal' | 'easy', grip?: LianaSwing['grip']) =>
-  lianaRelease(LIANA_16, { amp: VINE.amp, period: VINE.period[d], ...(grip ? { grip } : {}) }, { x: near, y: 400, w: 300 }, d);
+const win = (near: number, d: 'normal' | 'easy', grip?: LianaSwing['grip'], w = 300) =>
+  lianaRelease(LIANA_16, { amp: VINE.amp, period: VINE.period[d], ...(grip ? { grip } : {}) }, { x: near, y: 400, w }, d);
 
 test('the grip dial: a liana\'s reach is checked at the holds its row names (pressWindow grips), both settings', () => {
   // no dial: exactly pressWindow's own two low holds, so every liana laid before the dial keeps its window (and every lock)
@@ -25,15 +26,18 @@ test('the grip dial: a liana\'s reach is checked at the holds its row names (pre
   assert.equal(win(500, 'normal'), pressWindow({ ...LIANA_16, swingAmp: VINE.amp, swingPeriod: VINE.period.normal, swingPhase: 0 }, hits) / 1000);
   for (const d of ['normal', 'easy'] as const) {
     const need = LIANA.window[d];
-    // FAR: only the foot flies it. The two low holds' worse (0.7) falls short; the 'low' dial checks the foot alone
-    const far = d === 'normal' ? 540 : 500;
-    assert.ok(win(far, d) < need, `${d} ${far} px: the default holds already fly a FAR gap (${win(far, d)} s): the test proves nothing`);
-    assert.ok(win(far, d, 'low') >= need, `${d} ${far} px: the foot's window ${win(far, d, 'low')} s is under ${need} s`);
+    // FAR (the lead's ruling (A), 11-14): a narrow perch at the cap. The 'low' dial checks the foot alone and flies it; the top never
+    // does; and 1-6.md's old FAR (540 px, a wide bough) is past what he sees as he presses, so it is never laid
+    const far = 480;
+    assert.ok(win(far, d, 'low', 120) >= need, `${d} ${far} px: the foot's window ${win(far, d, 'low', 120)} s is under ${need} s`);
+    assert.equal(win(far, d, 'high', 120), 0, `${d} ${far} px: the top flies FAR`);
+    assert.equal(win(540, d, 'low', 300), 0, `${d}: the old FAR perch (540 px, 300 wide) is still laid`);
     // LONG: the low holds fly it, the top does not (1-6.md: "top 0 ms"): a 'high' liana is never laid over it
     const long = d === 'normal' ? 500 : 480;
     assert.ok(win(long, d) >= need && win(long, d, 'high') === 0, `${d} ${long} px: LONG from the low holds ${win(long, d)} s, from the top ${win(long, d, 'high')} s`);
-    // SHORT: the top still flies it, so every hold does ("climb high, then let go")
-    assert.ok(win(430, d, 'high') >= need, `${d}: SHORT from the top ${win(430, d, 'high')} s`);
+    // SHORT: the top still flies it, so every hold does ("climb high, then let go"), onto World 1's SHORT perch (w1Swing.ts, laid 160-200
+    // px out, 240-320 wide with Easy's pad: lay-s1.out.txt)
+    assert.ok(win(200, d, 'high', 260) >= need, `${d}: SHORT from the top ${win(200, d, 'high', 260)} s`);
   }
   // 'high' is the highest hold he can take (SWING.minLen down it), whatever the liana's length
   assert.deepEqual(gripsOf('high', 420), [80 / 420]);
@@ -44,12 +48,13 @@ test('a perch band is flown at its liana\'s own grip: a cached window of another
   // the same liana and ledge, its band asked at the top first (cached), then at the foot: the foot's band reaches a FAR perch, the
   // top's never past a SHORT one (1-6.md: top 0 ms at 480 px). A cache that forgot the grip handed the foot the top's windows
   const from = { x: -480, y: 400, w: 300 };
-  const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { amp: VINE.amp, period: VINE.period.normal, ...(grip ? { grip } : {}) }, 0, 300, LIANA.window.normal, -Infinity, 'normal', true);
+  // (a FAR perch, 120 px: since R-165.225 a dialled band is flown at the perch's width, SWING_SEEN)
+  const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { amp: VINE.amp, period: VINE.period.normal, ...(grip ? { grip } : {}) }, 0, 120, LIANA.window.normal, -Infinity, 'normal', true);
   const high = band('high')!;
   const low = band('low')!;
   const plain = band()!;
   assert.ok(high[1] < 460, `the top's band reaches ${high[1]} px`);
-  assert.ok(low[1] >= 520, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
+  assert.ok(low[1] >= 500, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
   // and the plain band (no dial) is the level check's of every liana before it: unchanged
   assert.ok(plain[1] < low[1]);
 });
@@ -121,7 +126,8 @@ test('built: a liana row with the grip dial reaches the stage\'s Vine, and the s
     pieces: [
       { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
       { key: 'rope', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near', top: [400, 420], grip: 'low' } },
-      { key: 'far', shape: 'bank', w: [400, 500], place: { kind: 'land', after: 'rope', dy: [0, 0], share: [0.9, 1] } },
+      // (a narrow FAR perch, R-165.225: a dialled liana's perch is laid where he sees it whole as he presses)
+      { key: 'far', shape: 'bank', w: [120, 140], place: { kind: 'land', after: 'rope', dy: [0, 0], share: [0.9, 1] } },
     ],
     entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
   };

@@ -286,7 +286,9 @@ export type PlaceRule =
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+  /** `window` (a perch past a liana): the release window its band must leave on each setting (s), over LIANA.window's floor: World 1's
+   *  FAR row keeps its perch inside the press windows the lead set (R-165.225: Normal 460-500 px, Easy where the foot keeps ~550 ms) */
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; window?: { normal?: number; easy?: number } }
   | { kind: 'climb'; on: string; at: Range; h: Range }
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
       /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the

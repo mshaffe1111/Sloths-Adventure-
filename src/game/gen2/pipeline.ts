@@ -28,7 +28,7 @@ import { CLIMB_CLEAR } from '../vineTop.ts';
 import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
-import { SWING_SEEN } from '../cameraFollow.ts';
+import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
 import { DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
@@ -252,7 +252,8 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // (a liana laid by its grip dial (World 1's rows) is laid by what he SEES: a press counts only if the perch's far end is in the view
     // as he presses, at the swing camera's full ease on the narrowest gate phone (cameraFollow.ts SWING_SEEN; R-165.225, Matt 11-14:
     // "shorter swings" that fit upright). Dial-free lianas (Worlds 6-8's) are as they were)
-    const seen = swing.grip ? (px: number) => far.x + far.w <= px + SWING_SEEN : undefined;
+    // (of a long landing, the part the camera shows whole: cameraFollow.ts perchBox)
+    const seen = swing.grip ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
   } finally {
     Object.assign(TIMED, was);
@@ -1288,7 +1289,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(lv.hang.from!);
       const dy0 = pl.dy === undefined ? 0 : roll(rng, pl.dy);
       const share = shareFor(pl.share);
-      const need = LIANA.window[budget.difficulty];
+      const need = Math.max(LIANA.window[budget.difficulty], pl.window?.[budget.difficulty] ?? 0);
+      // (Easy's landing pad widens the perch once it is placed (below): a dialled liana's perch is flown at the width it will have, for
+      // its far end must be in view as he presses (SWING_SEEN). A dial-free liana's window never looks at the width)
+      const padW = lv.hang.swing!.grip ? budget.landingPad : 0;
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
@@ -1310,7 +1314,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       let dy = dy0;
       for (const d of [...new Set([0, -40, 40, -80, 80, -120, -160].map((o) => dy0 + o).concat([dy0 / 2, -120, -80, -40, 0]))]) {
         for (const extra of [0, 100, 200, 400]) {
-          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d), budget.difficulty, dblOK);
+          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra + padW, need, minFor(d), budget.difficulty, dblOK);
           if (band) {
             dy = d;
             w += extra;
@@ -1322,7 +1326,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after}, however wide or level, both lies past every jump (${R(minFor(0) - a.x - a.w)} px out) and leaves a release window of ${need} s`);
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
-      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
+      // (a dialled perch's window is its far end's (SWING_SEEN): recorded at the whole px the piece is laid at)
+      const at = lv.hang.swing!.grip ? { x: R(x), y: R(y), w: R(w + padW) } : { x, y, w };
+      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, at, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {

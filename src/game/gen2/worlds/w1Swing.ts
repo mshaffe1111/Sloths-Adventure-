@@ -28,10 +28,13 @@ export function withSwing(kit: WorldKit): WorldKit {
 
 /** the three gaps a liana makes: the grip its reach is checked at, and where along its perch band the perch's near end goes */
 export type LianaGap = 'short' | 'long' | 'far';
-export const W1_LIANA_GAP: Record<LianaGap, { grip?: LianaGrip; share: Range }> = {
+export const W1_LIANA_GAP: Record<LianaGap, { grip?: LianaGrip; share: Range; window?: { normal: number; easy: number } }> = {
   short: { grip: 'high', share: [0, 0.35] },
   long: { share: [0.75, 1] },
-  far: { grip: 'low', share: [0.85, 1] },
+  // (R-165.225, Matt 11-14 "shorter swings", the lead's ruling (A): a dialled perch's far end must be in view as he presses
+  // (cameraFollow.ts SWING_SEEN), so FAR's perch is narrow (120-140 px, the row below: its width costs no window, ENG-S1 cap.out.txt)
+  // and it keeps the foot 300 ms on Normal (460-500 px past the anchor) and 550 ms on Easy (500 or under: cap-seen.out.txt))
+  far: { grip: 'low', share: [0.85, 1], window: { normal: 0.3, easy: 0.55 } },
 };
 
 /** a bough (World 1's look): a landing unless told, `main` so the lay may stand a flag on a wide one */
@@ -42,7 +45,7 @@ export const w1Liana = (key: string, after: string, gap: LianaGap): SectionPiece
   ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [400, 420], ...(W1_LIANA_GAP[gap].grip ? { grip: W1_LIANA_GAP[gap].grip } : {}) } });
 /** the bough a liana throws him onto, level with the one he left, at the gap's share of its band */
 export const w1Perch = (key: string, liana: string, gap: LianaGap, w: Range): SectionPiece =>
-  bough(key, { kind: 'land', after: liana, dy: [0, 0], share: W1_LIANA_GAP[gap].share }, w);
+  bough(key, { kind: 'land', after: liana, dy: [0, 0], share: W1_LIANA_GAP[gap].share, ...(W1_LIANA_GAP[gap].window ? { window: W1_LIANA_GAP[gap].window } : {}) }, w);
 const petals = (id: string, on: string, t: Range | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 
 /** one liana over one gap: a bough, the liana, the perch, a bough on (a section a World 1 liana stage builds its beats from) */
@@ -54,4 +57,4 @@ const one = (gap: LianaGap, difficulty: number, perchW: Range): SectionTemplate 
 });
 
 /** World 1's liana sections: one of each gap (the stage's own kit lists them, with withSwing) */
-export const W1_SWING_SECTIONS: SectionTemplate[] = [one('short', 3, [240, 280]), one('long', 5, [220, 260]), one('far', 7, [240, 280])];
+export const W1_SWING_SECTIONS: SectionTemplate[] = [one('short', 3, [240, 280]), one('long', 5, [220, 260]), one('far', 7, [120, 140])];
