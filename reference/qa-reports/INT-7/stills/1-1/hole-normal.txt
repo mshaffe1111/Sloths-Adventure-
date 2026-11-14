@@ -1,0 +1,10 @@
+BUILT upright {"stage":"1-1","seed":769,"rerolls":0,"built":"normal","stored":"normal"}
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x25600-upright.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x26600-upright.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x27600-upright.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x27900-upright.jpg
+BUILT sideways {"stage":"1-1","seed":769,"rerolls":0,"built":"normal","stored":"normal"}
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x25600-sideways.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x26600-sideways.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x27600-sideways.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/hole-1-1-L1-normal-x27900-sideways.jpg

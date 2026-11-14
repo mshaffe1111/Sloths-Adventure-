@@ -1,0 +1,3 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-4","seed":1,"orientation":"side","view":[915,412]}
+POD {"x":710,"top":8606,"land":8856,"speed":300,"clock":"pods-steady"}
+FRAMES 55

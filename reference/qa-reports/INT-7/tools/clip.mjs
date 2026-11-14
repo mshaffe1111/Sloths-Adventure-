@@ -4,6 +4,10 @@
 import fs from 'node:fs';
 const { chromium } = await import(process.env.PW ?? 'playwright');
 const [port, out, MODE, diff = 'normal', ori = 'up', LAYOUT = '0'] = process.argv.slice(2);
+// TEACH=1: every stage teach line is left live; TEACH=<words>: only the lines holding those words are left live (the clip jumps
+// past the earlier teaches, so with all live the queue shows the first unshown one, not this beat's: a fresh player's eyes, D63/D50);
+// by default every line is marked shown so no box covers the action
+const TEACH = process.env.TEACH ?? '';
 const VP = ori === 'side' ? { width: 915, height: 412 } : { width: 412, height: 915 };
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
@@ -19,13 +23,13 @@ await p.waitForTimeout(5000);
 const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
 // (sideways the engine came up later than upright: wait until it has a built stage and a field before touching it)
 await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.field); }, E, { timeout: 60000 });
-await p.evaluate((E) => {
+await p.evaluate(([E, TEACH]) => {
   const e = eval(E); e.isPaused = true;
-  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  if (TEACH !== '1') for (const hh of e.currentStage?.proto?.hints ?? []) if (!TEACH || !String(hh.text ?? '').toLowerCase().includes(TEACH.toLowerCase())) hh.shown = true;
   const d = document.createElement('div'); d.id = 'mockcap';
-  Object.assign(d.style, { position: 'fixed', left: '12px', right: '12px', top: window.innerWidth > window.innerHeight ? '64px' : '120px', zIndex: 99999, font: '700 19px system-ui, sans-serif', color: '#fff', background: 'rgba(20,30,12,0.78)', borderRadius: '12px', padding: '10px 14px', textAlign: 'center', lineHeight: '1.3' });
+  Object.assign(d.style, { position: 'fixed', left: '12px', right: '12px', bottom: window.innerWidth > window.innerHeight ? '8px' : '20px', zIndex: 99999, font: '700 19px system-ui, sans-serif', color: '#fff', background: 'rgba(20,30,12,0.78)', borderRadius: '12px', padding: '10px 14px', textAlign: 'center', lineHeight: '1.3' });
   document.body.appendChild(d);
-}, E);
+}, [E, TEACH]);
 let frame = 0, n = 0;
 const cap = (html) => p.evaluate((h) => { document.getElementById('mockcap').innerHTML = h; }, html);
 const step = async (inp = {}, frames = 1, opt = {}) => {
@@ -65,7 +69,7 @@ if (MODE === 'gate') {
   let worst = -1e9;
   const watch = async (inp, n) => { for (let i = 0; i < n; i++) { await step(inp, 1, { safe: true }); const h = await head(); if (h !== null) worst = Math.max(worst, h); } };
   await hold(40, { safe: true, noShot: true });
-  await cap('A gate of two figs. Each fig is <b>tied</b> to the leaf thatch.'); await hold(24, { safe: true });
+  await cap(`A gate of ${g.figs} figs. Each fig is <b>tied</b> to the leaf thatch.`); await hold(24, { safe: true });
   await cap('Push the fig up: its tie <b>strains</b>…'); await watch({ up: true }, 40);
   await cap('…and <b>SNAPS</b> when it is all the way up.'); await watch({ up: true }, 20);
   await cap('Hold up: his head stops <b>under</b> the bough.'); await watch({ up: true }, 22);

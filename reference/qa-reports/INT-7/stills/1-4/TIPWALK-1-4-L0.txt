@@ -1,0 +1,17 @@
+# tools/tipwalk.mjs on cc015e7f (frozen worktree, :3217), 8:38 AM ET 11-14: from 1-4's real spawn, hold right (a jump every 20 frames)
+normal:
+  spawn x 140 y 11321 built normal seed 1
+  fig gate boughs y 7855 (lowest) .. 1923 (highest); creak boughs lowest y 10139
+  t 0.5 s: "Creaky limbs drop you, but just one bran" (tip x 180) at x 185 y 11321
+  t 1.7 s: "Reach for the next vine! Two hands zoom " (tip x 520) at x 526 y 11321
+  t 1.7 s: "Climb under the figs and push them free!" (tip x 526) at x 535 y 11321
+  t 2.7 s: "Hear it creak? Scoot a vine over!" (tip x 797) at x 802 y 11321
+  after 20 s: x 1260 y 11321
+easy:
+  spawn x 140 y 11265 built easy seed 1
+  fig gate boughs y 7799 (lowest) .. 1923 (highest); creak boughs lowest y 10083
+  t 0.7 s: "Creaky limbs drop you, but just one bran" (tip x 180) at x 185 y 11265
+  t 2.2 s: "Reach for the next vine! Two hands zoom " (tip x 599) at x 599 y 11265
+  t 2.2 s: "Climb under the figs and push them free!" (tip x 605) at x 609 y 11265
+  t 3.2 s: "Hear it creak? Scoot a vine over!" (tip x 876) at x 885 y 11265
+  after 20 s: x 1260 y 11265
