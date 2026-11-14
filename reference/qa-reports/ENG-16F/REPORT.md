@@ -26,6 +26,11 @@ e4322053 (the face count, 1-1 recalibrated again), then this REPORT.
    BUILD-16d's (b), petals hopped over on perches and banks, not traced in this box. Trace first with petalmiss.ts / where-petals:
    which petals, and whether a person's hop over a petal 34 px up takes it (then it is the tier bot's pickup). If not, they are stage
    petals off the walked path (the socket petals ENG-16E's pushback named: `pa`, `pc`, `pg`, w1Arc16.ts).
+   Start point (`petals/`, ENG-16F/petals/petalmiss.ts = BUILD-16d's with castBots' cap 1200 and dotSetting): the expert misses 16-21
+   petals a run (the door wants ~93%), and the SAME spots recur seed after seed: first-liana:b1@0.77 (s1, s2, s3), gorge:b1@0.84 (s1, s2,
+   s3), gorge:in@0.70 and creaky-landing:in@0.70 (s2, s3), risers:b1@0.88, snakes-met:b1@0.10/0.90, hang-low:qe@0.80-0.84,
+   rest-hump:m@0.27 (s2, s3). Middle and child miss thinly everywhere (1-2 a beat). First question: at first-liana:b1@0.77, does the
+   expert take off before 0.77 and hop over it (then whether a person's hop there takes it decides bot or stage)?
 4. Then 1-6 to GREEN as the packet's item 3: `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist`, castBots 1-40 both settings,
    the whole suite, stills of every beat upright and sideways on Normal and Easy, the clips (first liana, the chain, the snake on your
    vine, the false liana, the gorge, the sealed and open exits; name the frame).
