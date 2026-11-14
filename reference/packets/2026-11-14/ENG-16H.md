@@ -5,7 +5,7 @@ Why: 1-6 is the next level on Matt's link. The expert bot ends sealed 22/40 and 
 any stage with lianas or vine creatures can hit, so each is fixed ONCE in the engine (rule 22), for every stage in every world.
 Branch: continue t-build-16 from ENG-16G's last push (git ls-remote first; name the sha).
  (1) WALKED-SPAN PETALS: a petal laid after a release lands on the span he walks (between where the release window lands him and where he
-     walks off), never only on a perch a fluid run skips. Planted: a toy with a perch-only petal RED, the walked-span lay GREEN.
+     walks off), never only on a perch a fluid run skips. Planted: a toy with a perch-only petal RED, the walked-span lay GREEN. It reads the BUILT piece (ENG-16G 6:30: b1's data says 280 px but it is built 83-118 px, and pipeline.ts:3212's 20 px clamp put the 'moved' petal back on the same spot): find why a piece builds narrower than its data and fix that root too, or name it ENGINE-WORTHY with file:line. Lay lives at pipeline.ts:2551, 3199-3214, petals.ts:378.
  (2) LIANA PIT WAY BACK: every soft pit under a liana has a way back to its take-off bank a kid can take. Check ENG-16G's s20/s36 first:
      stair missing = a lay rule (planted, every stage), stair present = a bot fix in firsttimer.ts (planted toy).
  (3) VINE CREATURE TELL: a snake or riser on a vine never starts a hop that moves him inside TELL_MIN (rolling.ts's constant; reuse it) of
