@@ -107,7 +107,7 @@ const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
@@ -222,6 +222,8 @@ import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
+/** how far past the view's edge a log's knock is still heard (px): the bank it slides out from is about to come into view */
+const KNOCK_HEARD = 160;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
 /** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
@@ -836,6 +838,8 @@ export class GameEngine {
   /** px/s: the sideways speed of what carried him this step (a drifting log, a swaying or riding platform; 0 on still ground), which a jump
    *  off it keeps by RIDE.keep (the one carry rule for every carrier and any rider, the lead's ruling 11:36 AM ET 11-15) */
   private carryVx = 0;
+  /** each drifting log's clock reading last step (by platform id), for its knock as it slides out from under its bank (river.ts logKnocks) */
+  private logClocks = new Map<number, number>();
   /** the stage's pickups that ride a carrier (Collectible.rides), found once per pickup and platform list (ridePickups.ts) */
   private riders?: Riders;
   /** the jump forgiveness for the difficulty (physics.ts FORGIVE): coyote time, jump buffer, ledge landing */
@@ -1852,7 +1856,12 @@ export class GameEngine {
       if (plat.type !== 'drift' || !plat.drift || plat.broken) continue;
       const d = plat.drift;
       // (a river a sluice runs keeps its own clock: puzzleKit.ts 'sluice')
-      const nx = driftX(d, logClock(this.currentStage.rivers, d, this.gameTime));
+      const clock = logClock(this.currentStage.rivers, d, this.gameTime);
+      const nx = driftX(d, clock);
+      // the log's knock as it slides out from under its bank (2-1.md NEW 2: the river's own beat, heard where the bank is near the view)
+      const was = this.logClocks.get(plat.id);
+      this.logClocks.set(plat.id, clock);
+      if (was !== undefined && logKnocks(d, was, clock) > 0 && this.onScreen(d.dir === 1 ? d.x0 : d.x1, d.baseY, KNOCK_HEARD)) sound.playLogKnock(this.easy);
       // a log that wraps from one end of the river to the other must not drag its rider across the whole window
       const dx = Math.abs(nx - plat.x) > d.width * 2 ? 0 : nx - plat.x;
       plat.x = nx;
