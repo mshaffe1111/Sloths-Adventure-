@@ -76,6 +76,9 @@ const mushroom = (key: string, on: string, w: number): SectionPiece => ({ key, s
 /** a bank only a mushroom's bounce reaches: `rise` px up, a wall straight off `after`'s end (the lay clamps the rise to the bounce's reach) */
 const bounced = (key: string, after: string, from: string, w: number, rise: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'walk', after, dy: [-rise - 4, -rise + 4] }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from });
 
+/** a root hop up or down (1-6's: the quiet line wants a hop within 450 px of each end of a rest and none 950 px apart, listRules quietJudge) */
+const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
+const root = (key: string, after: string, w: number, dy: R2): SectionPiece => bank(key, after, w, dy);
 const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 const flag = (on: string, t = 0.3): Socket => ({ id: 'flag', role: 'flag', on, t });
 /** a line's id in the kit: its own, `w18.<key>` */
@@ -125,7 +128,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
  *  800+ px of walk with the fruit line said on the way, then the bouncing fruit, safe. Before the crack a touch only bumps him (teach) */
 function teachPair(): Lay {
   return {
-    pieces: [bank('a', null, 300), bank('b', 'a', 360), bank('n', 'b', 560), bank('m', 'n', 320), bank('f1', 'm', 400), bank('f2', 'f1', 420), bank('z', 'f2', 360)],
+    // (root hops between the lessons: the quiet line (4 s, listRules.ts) wants a beat on the walk; each nut's and fruit's run-in stays flat)
+    pieces: [bank('a', null, 240), root('b', 'a', 240, UP), root('c', 'b', 300, DOWN), bank('n', 'c', 560), root('m', 'n', 300, UP), root('f1', 'm', 400, DOWN), bank('f2', 'f1', 420), bank('z', 'f2', 360)],
     sockets: [petals('pb', 'b', 0.5, 1), petals('pn', 'n', 0.25, 1), tip('t-fruit', 'm', 0.3, 'fruit'), petals('pm', 'm', 0.7, 2, 120), petals('pf', 'f1', 0.5, 1), petals('pz', 'z', 0.5, 2, 120)],
     rolls: [{ kind: 'low', on: 'n', t: 0.72 }, { kind: 'high', on: 'f2', t: 0.62 }],
   };
@@ -135,7 +139,8 @@ function teachPair(): Lay {
 function firstRun(easy: boolean): Lay {
   const g: R2 = easy ? [40, 46] : [100, 120];
   return {
-    pieces: [bank('a', null, 300), bank('b', 'a', 360), hop('c', 'b', 480, g), bank('d', 'c', 380), mushroom('dm', 'd', 380), bounced('e', 'd', 'dm', 440, 150), bank('e2', 'e', 240, [50, 56]), bank('e3', 'e2', 240, [50, 56]), hop('f', 'e3', 460, g, [40, 46]), bank('z', 'f', 280)],
+    // (at most chaseCap less the longest run-up from its flag (CHASE_LAY.flagBefore 600) and half a pad: about 3,300 px, or the lay splits it)
+    pieces: [bank('a', null, 300), bank('b', 'a', 360), hop('c', 'b', 440, g), bank('d', 'c', 380), mushroom('dm', 'd', 380), bounced('e', 'd', 'dm', 380, 150), bank('e2', 'e', 200, [50, 56]), bank('e3', 'e2', 200, [50, 56]), hop('f', 'e3', 460, g, [40, 46]), bank('z', 'f', 220)],
     sockets: [tip('t-crack', 'a', 0.15, 'crack'), petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.3, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.3, 1), petals('pz', 'z', 0.5, 1)],
     rolls: easy ? [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'f', t: 0.85 }] : [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'c', t: 0.85 }, { kind: 'low', on: 'f', t: 0.85 }],
   };
@@ -187,7 +192,9 @@ function rhythm(easy: boolean): Lay {
  *  past it, one pass: stillFork.ts), nothing standing on it; then a calm walk on */
 function stillFork(): Lay {
   return {
-    pieces: [bank('a', null, 820), bank('b', 'a', 400), bank('z', 'b', 340)],
+    // (its first bank wide enough that Matt's span puts the fork's flag past the post (ENGINE-WORTHY 3); then a root up and down: the walk on
+    //  after the pass is not quiet (the quiet line, 4 s))
+    pieces: [bank('a', null, 700), root('b', 'a', 240, UP), root('c', 'b', 260, DOWN), root('d', 'c', 240, UP), root('z', 'd', 300, DOWN)],
     // (nothing stands on its first two banks: the fork's flag goes on them, clear of the post, where Matt's span puts it)
     sockets: [petals('pz', 'z', 0.6, 2, 120)],
   };
@@ -203,10 +210,10 @@ function lastStretch(easy: boolean): Lay {
   };
 }
 /** [S] beat 12, the tip: the ground finish18 cuts into the gap off the tip (TIP_18.gap) and the far tree's bough past it, with the runner
- *  liana over the gap; level with the last stretch */
+ *  liana over the gap; level with the last stretch; then a root up and down on the far tree's bough (the quiet line) */
 function theTip(): Lay {
   return {
-    pieces: [bank('a', null, 400), bank('b', 'a', 400), bank('c', 'b', 360), bank('z', 'c', 300)],
+    pieces: [bank('a', null, 400), bank('b', 'a', 400), bank('c', 'b', 320), root('d', 'c', 240, UP), root('z', 'd', 300, DOWN)],
     sockets: [petals('pz', 'z', 0.5, 2, 120)],
   };
 }
@@ -230,9 +237,6 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
   phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: o.job === 'arrive' ? 1 : 6,
 } as SectionTemplate);
-/** a root hop up or down (1-6's: the quiet line wants a hop within 450 px of each end of a rest and none 950 px apart, listRules quietJudge) */
-const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
-const root = (key: string, after: string, w: number, dy: R2): SectionPiece => bank(key, after, w, dy);
 /** a rest on a living fork: a flag on a bank between root hops (chaseLay moves flags to the fork as Matt's span wants) */
 const rest = (id: string): SectionTemplate => link({ id, name: 'a living fork: breathe', job: 'rest', versions: [{
   id: 'roots',
@@ -245,7 +249,7 @@ export const QUIET_18: SectionTemplate[] = [
   // [A] the broad base at the trunk, the branch running off up to the far tree; nothing hurts in 1,300 px. The nut line is said on its far
   // bank, 800+ px before the first nut
   link({ id: 'w1-18-arrival', name: 'the broad base', job: 'arrive', versions: [
-    { id: 'base', lay: { pieces: [bank('a', null, 360), root('r0', 'a', 240, UP), root('b', 'r0', 380, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 360, DOWN), bank('z', 'c', 360)],
+    { id: 'base', lay: { pieces: [bank('a', null, 360), root('r0', 'a', 240, UP), root('b', 'r0', 380, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 300, DOWN), root('r2', 'c', 220, UP), root('z', 'r2', 240, DOWN)],
       sockets: [petals('pb', 'b', 0.6, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-nut', 'z', 0.2, 'nut')] } },
   ] }),
   rest('w1-18-rest'),
