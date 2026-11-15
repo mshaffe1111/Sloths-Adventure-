@@ -6,7 +6,7 @@
  * 1-7's eagle on its snag). The lay puts them together so the fork asks its question on EVERY roll:
  *   - the cover (World 1: the moss carpet) lies on the fork's own ground from `runIn` past where the collapse stops, so a stop from a
  *     full run ends inside it;
- *   - ONE watcher on a post past the cover, its stretch from the fork's near edge out over the next stretch's ground, far enough that a
+ *   - ONE watcher on a post past the cover, near enough that he and it share one upright screen (`postMax`), its stretch from the fork's near edge out over the next stretch's ground, far enough that a
  *     runner who does not stop meets its eye in the open (`reach`: its warn at its longest setting, at his top run, plus its sight and a
  *     margin). Its pass is called the moment he steps onto the fork (the kit calls a pass when it is cool and he is in its stretch: it
  *     starts cool), its warn shows at the far end, and its eye crosses TOWARD him (facing -1): running on is running into it;
@@ -28,6 +28,9 @@ export const STILL_FORK = {
   /** the post stands at least this far past the cover's far end (px), and this far from a flag on the fork */
   postPast: 60,
   flagClear: 90,
+  /** and at most this far past the cover's start (px): with him still in the cover, the eagle on its post is on the same upright screen
+   *  (412 px wide upright shows about 540 px of world, him 10-30% across in the chase lead, cameraFollow.ts CHASE_VIEW: level.md rule 8) */
+  postMax: 420,
   /** past a runner's reach (the eye's warn at his top run and its sight ahead), this much more (px) */
   margin: 60,
 } as const;
@@ -133,13 +136,13 @@ export function layStillFork(st: StillForkStage, fork: number, look: StillForkLo
   // (its post: on the fork's ground past the cover, clear of a flag on the fork)
   const flags = (st.checkpoints ?? []).map((c) => c.x);
   let postX = NaN;
-  for (let x = cover.x + cover.w + STILL_FORK.postPast; x <= x1 - 40; x += 20) {
+  for (let x = cover.x + cover.w + STILL_FORK.postPast; x <= Math.min(x1 - 40, cover.x + STILL_FORK.postMax); x += 20) {
     if (groundAt(st.platforms, x, gy) && flags.every((f) => Math.abs(f - x) >= STILL_FORK.flagClear)) {
       postX = x;
       break;
     }
   }
-  if (!Number.isFinite(postX)) out.push(`${name}: no ground for its post between the cover and the next crack, clear of the flag`);
+  if (!Number.isFinite(postX)) out.push(`${name}: no ground for its post within ${STILL_FORK.postMax} px of the cover's start (on one upright screen with him), clear of the fork's flag`);
   if (out.length) return out;
   const id = st.enemies.reduce((m, e) => Math.max(m, e.id), 0) + 1;
   const w = look.watcher(z, gy, id, postX);

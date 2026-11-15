@@ -6,11 +6,12 @@
 // rolling nut and bouncing fruit are read below (ENG-B5): a hop for the nut, stay down under the fruit; PLANTED with the reading removed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_CHILD, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { FirstTimerRun, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { CHASE_ROWS, type ChaseLay, type ChaseRun } from '../../src/game/chase.ts';
 import { layStillFork, stillForks, type StillForkStage } from '../../src/game/gen2/stillFork.ts';
 import { W1_STILL_FORK } from '../../src/game/gen2/worlds/w1Cast.ts';
+import { CHASE_LAY } from '../../src/game/gen2/chaseLay.ts';
 import type { GeneratedStage } from '../../src/game/stageGenerator.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
 import { PIECE_KINDS } from '../../src/game/pieces/index.ts';
@@ -284,34 +285,38 @@ function onRunnerLiana(who: FirstTimer, phase: number, seed = 1) {
   };
   run.play();
   setDifficulty('normal');
-  return { stood, slowest, inStride: Number.isFinite(caughtAt) && Number.isFinite(tookOff) && caughtAt - tookOff < 1, far, fell, farBank: RL_LIP + RL_D0 + 230 };
+  return { stood, slowest, inStride: Number.isFinite(caughtAt) && Number.isFinite(tookOff) && caughtAt - tookOff < 1, far, fell, farBank: RL_LIP + RL_D0 + 230, caughtAt, tookOff };
 }
 
 const RL_PHASES = [0, 1 / 6, 2 / 6, 3 / 6, 4 / 6, 5 / 6];
 /** the tier's player taking every edge in stride (no calibrated stand or late press: the STOPPER's opposite), so any stand at the lip
  *  is the liana's doing (a tier bot otherwise stands at about half its edges, as its testers did: firsttimer.ts standShare) */
 const strider = (who: FirstTimer): FirstTimer => ({ ...who, name: `${who.name} STRIDER`, standShare: 0, lateShare: 0 });
-for (const who of [FT_EXPERT].map(strider)) {
+for (const who of [FT_MIDDLE, FT_EXPERT, FT_MIDDLE_EASY].map(strider)) {
   test(`chase bots and the runner liana: the ${who.name} bot on ${who.setting}, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank`, () => {
     for (const ph of RL_PHASES) {
       const r = onRunnerLiana(who, ph);
       assert.ok(r.stood < 0.1, `swing at ${ph.toFixed(2)}: stood ${r.stood.toFixed(2)} s at the lip waiting for it`);
-      assert.ok(r.inStride, `swing at ${ph.toFixed(2)}: not caught within a second of his take-off`);
+      assert.ok(r.inStride, `swing at ${ph.toFixed(2)}: not caught within a second of his take-off (off ${r.tookOff.toFixed(2)} s, caught ${r.caughtAt.toFixed(2)} s, ${r.fell} falls)`);
       assert.ok(r.far >= r.farBank + 100, `swing at ${ph.toFixed(2)}: reached ${Math.round(r.far)}, short of the far bank (${r.fell} falls)`);
     }
   });
 }
 
-// (OPEN, todo, named with its numbers (ENG-B6): the MIDDLE tier's strider, Normal and Easy, still stands at the lip from some moments.
-// Not the liana's doing: about 200 px before the lip his own approach stops him (pad empty, liana wait 0, edge 'run'), his full run ends,
-// so the liana keeps its plain swing there (RUNNER.atRun, as promised: a run), and from a stand his hop misses, so he waits (lianaWait).
-// Measured, stood at the lip by the swing's starting moment: plain 1.33 0.87 0.40 0.00 0.00 1.07 s, phased 1.60 1.10 0.40 0.27 0.13 0.00
-// (Normal). Whether the middle tier's approach to a lip should run on in stride on a chase is the bot calibration's call (BOTS.md))
-for (const who of [FT_MIDDLE, FT_MIDDLE_EASY].map(strider)) {
-  test(`chase bots and the runner liana (OPEN, todo): the ${who.name} bot on ${who.setting} never stands at the lip`, { todo: 'his own stop ~200 px before the lip ends the run (see above)' }, () => {
-    for (const ph of RL_PHASES) assert.ok(onRunnerLiana(who, ph).stood < 0.1);
-  });
-}
+// (ENG-B6, the lead's 6:53 PM push-back, traced: the MIDDLE tier stopped ~200 px before the lip, not on the liana's account and not at an
+// edge rule: its open-ground steering rhythm (gapQ, its testers' thumb lifts of 164-1,033 ms, half the time) emptied the pad at x 2405,
+// t 10.90-11.10 s (FT_FRAMES-style trace: gapUntil 11.09), and the liana, eased for a full run that stopped coming, kept its plain swing.
+// Fixed for every stage: a bot running at a runner liana's lip keeps its thumb down (firsttimer.ts runnerAhead), as on a chase and under
+// a fruit. PLANTED below: noRunnerHold)
+test('chase bots, PLANTED (rule 21): the runner liana\'s held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none', () => {
+  const who = strider(FT_MIDDLE);
+  const without = RL_PHASES.map((ph) => onRunnerLiana({ ...who, noRunnerHold: true }, ph).stood);
+  const withIt = RL_PHASES.map((ph) => onRunnerLiana(who, ph).stood);
+  const say = (a: number[]) => a.map((w) => w.toFixed(2)).join(', ');
+  console.log(`MIDDLE strider, stood at the lip (s): without the hold ${say(without)}; with it ${say(withIt)}`);
+  assert.ok(without.filter((w) => w >= 0.3).length >= 2, `without the hold he waited at ${without.filter((w) => w >= 0.3).length} of ${RL_PHASES.length}`);
+  assert.ok(withIt.every((w) => w < 0.1), `with it: ${say(withIt)}`);
+});
 
 test('chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none', () => {
   const who = strider(FT_EXPERT);
@@ -328,4 +333,61 @@ test('chase bots, PLANTED (rule 21): the liana not phased (the piece off the hoo
   console.log(`stood at the lip (s), by the swing's starting moment: plain swing ${say(plain)}; phased ${say(phased)}`);
   assert.ok(plain.filter((w) => w >= 0.3).length >= 2, `without phasing he waited at ${plain.filter((w) => w >= 0.3).length} of ${RL_PHASES.length}`);
   assert.ok(phased.every((w) => w < 0.1), `phased: ${say(phased)}`);
+});
+
+// (ENG-B6, the lead's ruling 11-14 6:10 PM ET: on EASY every chase gap must be one the child bot clears on 3 of 3 seeds, a lay rule in
+// the chase brick: gen2/chaseLay.ts CHASE_LAY.easyGap, refused by name (easyGapProblems). The number is the bot's, measured on this toy:
+// the Easy CHILD (its testers' presses, up to 245 px before an edge) on a stretch of three single gaps clears 40 and 50 px on 3/3 seeds;
+// 60, 80, 100, 120, 140 px each drop seed 1 (2-4 falls; ENG-B6's probe). This toy holds the number to the bot: a raise past what the
+// child clears goes red here)
+function onGaps(who: FirstTimer, seed: number, gap: number) {
+  freshPhone(who.setting);
+  setDifficulty(who.setting);
+  Math.random = rng(seed);
+  const plats: Platform[] = [];
+  let id = 9900;
+  const ground = (x0: number, x1: number, chase: boolean) => {
+    for (let x = x0; x < x1; x += 222) plats.push({ id: id++, x, y: Y, width: Math.min(222, x1 - x), height: 400, type: 'solid', ...(chase ? { chase: true } : {}) } as Platform);
+  };
+  ground(0, 1100, false);
+  let x = 1100;
+  for (let k = 0; k < 3; k++) {
+    ground(x, x + 600, true);
+    x += 600 + gap;
+  }
+  ground(x, x + 500, true);
+  const end = x + 500;
+  ground(end, end + 1700, false);
+  const route = Array.from({ length: Math.ceil((end + 1500 - 300) / 40) }, (_, i) => ({ x: 300 + i * 40, y: Y }));
+  const run = new FirstTimerRun('1-2', seed, who, { route, cap: 60 });
+  const sim = run.sim as unknown as { bare(p: Platform[]): void; stand(x: number, y: number): void; e: { currentStage: GeneratedStage; player: { hp: number; maxHp: number; x: number; y: number }; checkpoint: { x: number; y: number } } };
+  sim.e.currentStage.chase = { stretches: [{ start: 1100, end }] };
+  sim.bare(plats);
+  sim.e.checkpoint = { x: 300, y: Y };
+  sim.stand(300, Y);
+  sim.e.player.hp = sim.e.player.maxHp;
+  let falls = 0, caught = 0, far = 0;
+  const e = sim.e;
+  const frame = (run as unknown as { sim: { frame: (pad: unknown) => void } }).sim.frame.bind(run.sim);
+  (run.sim as unknown as { frame: (pad: unknown) => void }).frame = (pad: unknown) => {
+    const hp = e.player.hp, py = e.player.y;
+    frame(pad);
+    if (e.player.hp < hp) (py > Y + 60 ? falls++ : caught++);
+    far = Math.max(far, e.player.x);
+  };
+  run.play();
+  setDifficulty('normal');
+  return { falls, caught, through: far >= end + 100 };
+}
+
+test(`chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap ${CHASE_LAY.easyGap} px) on 3 of 3 seeds: no fall, no catch, through`, () => {
+  for (const seed of [1, 2, 3]) {
+    const r = onGaps(FT_CHILD_EASY, seed, CHASE_LAY.easyGap);
+    assert.ok(r.falls === 0 && r.caught === 0 && r.through, `seed ${seed}: ${JSON.stringify(r)}`);
+  }
+});
+
+test('chase bots on EASY, PLANTED (rule 21): 10 px past Easy\'s chase gap the same CHILD drops a seed (the number is the edge of what he clears)', () => {
+  const rs = [1, 2, 3].map((seed) => onGaps(FT_CHILD_EASY, seed, CHASE_LAY.easyGap + 10));
+  assert.ok(rs.some((r) => r.falls > 0 || !r.through), `${CHASE_LAY.easyGap + 10} px: ${JSON.stringify(rs)}`);
 });

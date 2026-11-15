@@ -73,6 +73,7 @@ test('the lay: on fork 0 the moss carpet lies on the fork just past where the co
   assert.equal(f.watcher.kitPasses, 1);
   assert.ok(f.watcher.x >= f.cover.x + f.cover.w + STILL_FORK.postPast && f.watcher.x < f.x1, `its post at ${f.watcher.x}, on the fork past the cover`);
   assert.ok(Math.abs(f.watcher.x - 4200) >= STILL_FORK.flagClear, 'clear of the fork\'s flag');
+  assert.ok(f.watcher.x <= f.cover.x + STILL_FORK.postMax, `its post within ${STILL_FORK.postMax} px of the cover's start: one upright screen with him`);
   assert.equal(f.watcher.patrolMinX, 2900);
   assert.equal(f.watcher.patrolMaxX, Math.round(2900 + stillReach('eagle', 1)));
   // (a runner who never stops is still in its stretch when its eye has crossed to him: its warn at Easy's longest, at his top run)
@@ -80,12 +81,15 @@ test('the lay: on fork 0 the moss carpet lies on the fork just past where the co
   assert.deepEqual(st.proto?.cast?.kinds, ['eagle']);
 });
 
-test('the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched', () => {
+test('the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched, the fork\'s flag where its post must stand', () => {
   const cases: Array<[string, StillForkStage, number, RegExp]> = [
     ['short', stage(branch(380)), 0, /px of fork, the cover and the post need/],
     ['gap', stage(branch(1400, 3200)), 0, /its ground breaks at/],
     ['last', stage(), 1, /no crack would set off/],
   ];
+  const flagged = stage();
+  flagged.checkpoints = [{ x: 2900 + STILL_FORK.runIn + 346 + STILL_FORK.postPast + 40 }];
+  cases.push(['flag', flagged, 0, /no ground for its post within 420 px of the cover's start/]);
   const rock = stage();
   rock.platforms.push({ id: 1, x: 3100, y: Y - 40, width: 60, height: 40, type: 'solid' } as Platform);
   cases.push(['rock', rock, 0, /a rock at 3100 stands in the cover/]);

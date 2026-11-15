@@ -32,6 +32,13 @@ export const CHASE_LAY = {
   /** the first stretch's flag stands this far before its crack at most (px): the respawn within about 2 s of it (§0b.8); a later one
    *  stands on the fork before its crack, as close as Matt's span allows (ROLLED_FLAGS.max from the flag before) */
   flagBefore: 600,
+  /**
+   * On EASY, the widest open gap a stretch may have between two of its sections (px): the widest the Easy CHILD bot (FT_CHILD_EASY,
+   * its testers' presses) clears on 3 of 3 seeds on a planted stretch of single gaps (measured, ENG-B6: 40 and 50 px clear, 60 to 140 px
+   * each drop a seed). The lead's ruling, 11-14 6:10 PM ET: on Easy every chase gap is one the child clears 3/3. Held to the bot by
+   * tools/inspect/chaseBots.test.ts (the toy at this width and a plant 10 px past it); measured on flat ground: a gap with a rise is not
+   */
+  easyGap: 50,
 } as const;
 
 /**
@@ -229,6 +236,7 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
   }
   const lay: ChaseLay = { stretches: out.map(({ start, end, last }) => (last ? { start, end, last } : { start, end })) };
   problems.push(...chaseLayProblems(lay).map((w) => `chase: ${w}`));
+  if (st.gen2.budget?.difficulty === 'easy') problems.push(...easyGapProblems(lay, st.platforms).map((w) => `chase: ${w}`));
   problems.push(...chaseStanders(st).map((w) => `chase: ${w}`));
   if (problems.length) return { problems, stretches: out };
   // (every planned flag still stands on ground that never falls, after the cut)
@@ -261,6 +269,30 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
   st.checkpoints = flags;
   st.chase = lay;
   return { lay, problems, stretches: out };
+}
+
+/**
+ * A laid chase's gaps over Easy's (CHASE_LAY.easyGap), by name: between two of a stretch's sections (left to right, past the furthest
+ * reach of those before), open air wider than `max`; a solid piece spanning it at about their height closes it (a log laid across).
+ */
+export function easyGapProblems(lay: ChaseLay, platforms: readonly Platform[], max: number = CHASE_LAY.easyGap): string[] {
+  const out: string[] = [];
+  lay.stretches.forEach((s, k) => {
+    const secs = platforms.filter((p) => p.chase && p.x + p.width / 2 >= s.start && p.x + p.width / 2 <= s.end).sort((a, b) => a.x - b.x);
+    let right = -Infinity, top = 0;
+    for (const p of secs) {
+      const gap = p.x - right;
+      if (gap > max && Number.isFinite(right)) {
+        const bridged = platforms.some((q) => q.type === 'solid' && !q.chase && q.x <= right + 2 && q.x + q.width >= p.x - 2 && Math.min(Math.abs(q.y - top), Math.abs(q.y - p.y)) < 60);
+        if (!bridged) out.push(`stretch ${k + 1} on Easy: a ${Math.round(gap)} px gap at x ${Math.round(right)}, over Easy's ${max} px (the Easy child bot clears ${max} px on 3 of 3 seeds)`);
+      }
+      if (p.x + p.width > right) {
+        right = p.x + p.width;
+        top = p.y;
+      }
+    }
+  });
+  return out;
 }
 
 /**

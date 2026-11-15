@@ -17,6 +17,10 @@ import { buildGen2Stage } from './gen2/pipeline.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { WorldKit } from './gen2/types.ts';
+import { layStillFork, STILL_FORK } from './gen2/stillFork.ts';
+import { W1_STILL_FORK } from './gen2/worlds/w1Cast.ts';
+import { runnerProblems } from './runnerLiana.ts';
+import type { Platform, Vine } from './types.ts';
 
 /** the fixture's id: late in World 1 (V13: a chase is never in a world's first stage), in no world's list */
 export const CHASE_FIXTURE_ID = '1-98';
@@ -132,8 +136,65 @@ export function buildChaseFixtureStage(config: LevelConfig, seed: number, diffic
   // (built under 1-1's own id and reach row, eighth in the world: nothing in the game touches the stage listing, listed.test.ts)
   const st = w1Finish(buildGen2Stage({ config: { ...chaseFixtureLevel(), id: '1-1' }, kit: chaseFixtureKit(CHASE_FIXTURE_CODE, '1-1'), seed, difficulty })) as unknown as GeneratedStage;
   st.rolling = layFixtureRolling(st);
+  // (ENG-B6: the chase's last engine pieces laid by data, so the page plays them: the still fork, the tip and a runner liana off it)
+  layFixturePieces(st);
   // (the built stage's own config, its size and pit line its own: 1-1's config laid over it put the pit line above his ground)
   st.config = { ...st.config, id: config.id };
   return st;
 }
 
+
+/** the gap off the tip (px, two of the lay's branch sections) and where the runner liana hangs in it, as the old 1-8's last liana:
+ *  out from the lip, 380 px up, its foot 30 px under the branch */
+const TIP_GAP = 444;
+/** the far tree's branch the fixture lays past the gap (px) */
+const TIP_LAND = 600;
+const TIP_LIANA = { out: 214, up: 380, foot: 30 } as const;
+
+/**
+ * ENG-B6 (1-8 NEW 4, 7, 8) on the fixture, by its own data: the still fork on the first fork (bare rocks and steps standing in its cover
+ * and post cleared first, never one carrying dressing or a creature: D16), and the last stretch made the branch's tip (ChaseStretch.tip)
+ * with a gap off it and a liana phased to a runner (Vine.runner) to the ground beyond (flags, pickups, hazards and dressing in the gap
+ * moved or left out). Anything that cannot be laid is said in the console and left out, never laid broken.
+ */
+export function layFixturePieces(st: GeneratedStage): void {
+  const lay = st.chase;
+  if (!lay?.stretches.length) return;
+  const fork = lay.stretches[0];
+  if (lay.stretches.length > 1) {
+    const gy = st.platforms.filter((p) => p.type === 'solid' && fork.end + 1 >= p.x && fork.end + 1 <= p.x + p.width).sort((a, b) => b.y - a.y)[0]?.y;
+    const x0 = fork.end, x1 = fork.end + STILL_FORK.runIn + W1_STILL_FORK.cover.w + STILL_FORK.postPast + 60;
+    if (gy !== undefined) st.platforms = st.platforms.filter((p) => !(p.type === 'solid' && p.y < gy - 2 && p.y + p.height >= gy - 2 && p.x + p.width > x0 && p.x < x1 && !carries(st, p)));
+    // (the fork's flag, where the post must stand to share an upright screen with him in the moss, stands past it: nearer the next crack,
+    // as chaseLay's own rule wants it, never further from it than the span allows)
+    for (const c of st.checkpoints ?? []) if (c.x > x0 && c.x < x1 + STILL_FORK.flagClear) c.x = Math.min(x1 + STILL_FORK.flagClear, lay.stretches[1].start - 40);
+    const bad = layStillFork(st as unknown as Parameters<typeof layStillFork>[0], 0, W1_STILL_FORK, 1);
+    if (bad.length) console.warn(`fixture: no still fork: ${bad.join('; ')}`);
+  }
+  const last = lay.stretches[lay.stretches.length - 1];
+  const lip = st.platforms.filter((p) => p.chase && Math.abs(p.x + p.width - last.end) < 2).sort((a, b) => a.y - b.y)[0];
+  if (!lip) return void console.warn('fixture: no tip: the last stretch ends on no section');
+  const g0 = last.end, g1 = last.end + TIP_GAP, g2 = g1 + TIP_LAND;
+  // (the far side: 1-1's stepped finish has no ground level with the tip, so the fixture lays the far tree's branch, TIP_LAND long, at
+  // the tip's height; the ground from the gap to its far end is cut, the ground past it is the stage's own)
+  const cut: Platform[] = [];
+  for (const p of st.platforms) {
+    if (p.x + p.width <= g0 || p.x >= g2) { cut.push(p); continue; }
+    if (p.x + p.width > g2) cut.push({ ...p, x: g2, width: p.x + p.width - g2 });
+  }
+  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: TIP_LAND, height: 400, type: 'solid' } as Platform);
+  const v: Vine = { id: (st.vines ?? []).reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g0 + TIP_LIANA.out, topY: lip.y - TIP_LIANA.up, bottomY: lip.y + TIP_LIANA.foot, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, runner: true };
+  const why = runnerProblems(v, cut).filter((m) => !/px of run to its lip/.test(m));
+  if (why.length) return void console.warn(`fixture: no tip: ${why.join('; ')}`);
+  st.platforms = cut;
+  st.vines = [...(st.vines ?? []), v];
+  last.tip = true;
+  const inGap = (x: number) => x > g0 - 20 && x < g2;
+  // (a flag in the gap stands on the far ground; pickups and dressing over it and hazards on the run to the lip are left out)
+  for (const c of st.checkpoints ?? []) if (inGap(c.x)) c.x = g1 + 120;
+  st.collectibles = (st.collectibles ?? []).filter((c) => !inGap(c.x));
+  st.rolling = (st.rolling ?? []).filter((h) => h.dropX < g0 - 900 || h.dropX > g1 + 300);
+  const pr = (st as unknown as { proto?: Record<string, Array<{ x: number }> | undefined> }).proto;
+  for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if (pr?.[k]) pr[k] = pr[k]!.filter((q) => !inGap(q.x));
+  st.enemies = (st.enemies ?? []).filter((e) => !inGap(e.x));
+}

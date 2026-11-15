@@ -18,3 +18,6 @@ not ok 3 - the tip holds while he stands on it; a respawn before it makes the wh
 ok 4 - the lay refuses a tip on a stretch that is not the last
 # pass 2
 # fail 2
+
+== PLANT 4: the bots' liana hop held as judged (firsttimer.ts startJump), before the fix: chaseBots 'the runner liana: the MIDDLE STRIDER bot on normal' RED: swing at 0.67: not caught within a second of his take-off (off 9.73 s, caught NaN s, 0 falls); after: 6/6 (7:13 PM)
+== PLANT 5: noRunnerHold (the rhythm's thumb lift on the run to a runner liana): MIDDLE strider stood 1.60, 1.10, 0.40, 0.27, 0.13, 0.00 s at the lip; with the hold 0 at all six

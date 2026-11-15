@@ -47,7 +47,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
-import type { Platform, PlayerState } from '../../src/game/types.ts';
+import type { Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
@@ -161,6 +162,10 @@ export interface FirstTimer {
    *  if neither were there. Every bot has it: a small nut rolling at him, a hop as it closes; a big fruit bouncing at him, he stays down
    *  and runs on under it (1-8.md: "small and rolling = hop; big and bouncing = stay down") */
   noRollRead?: boolean;
+  /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
+   *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
+   *  a runner liana's lip (1-8 NEW 4: it swings to meet a full run), his thumb stays down, as on a chase and under a fruit */
+  noRunnerHold?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -2298,6 +2303,29 @@ export class FirstTimerRun {
     return this.edge;
   }
 
+  /** each runner liana's lip (its far end), by the vine's id, found once (runnerLiana.ts runnerLip, the piece's own) */
+  private readonly runnerLips = new Map<number, number | null>();
+  /**
+   * He is on the ground running at a runner liana's lip, within the run it is eased over (runnerLiana.ts RUNNER.from): a liana phased to
+   * meet a full run (1-8 NEW 4), seen swinging toward him, so his thumb stays down: no rhythm lift on the way (ENG-B6: the MIDDLE tier's
+   * gapQ lift 200 px before the lip stopped him dead, and the liana, eased for a run that stopped coming, made him wait at the lip)
+   */
+  private runnerAhead(): boolean {
+    if (this.who.noRunnerHold) return false;
+    const p = this.sim.p;
+    if (!p.grounded) return false;
+    for (const v of this.sim.vines as Vine[]) {
+      if (!v.runner || v.vineType === 'tree_climb') continue;
+      let lip = this.runnerLips.get(v.id);
+      if (lip === undefined) {
+        const l = runnerLip(v, this.sim.platforms);
+        this.runnerLips.set(v.id, (lip = l ? l.x + l.width : null));
+      }
+      if (lip !== null && p.x <= lip && p.x >= lip - RUNNER.from) return true;
+    }
+    return false;
+  }
+
   /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
   private rhythm(want: Pad): Pad {
     const w = this.who, p = this.sim.p, t = this.t;
@@ -2384,7 +2412,7 @@ export class FirstTimerRun {
     this.figTap = false;
     this.rollHeld = false;
     const intended = this.intend();
-    const want = this.rollHeld ? intended : this.rhythm(intended);
+    const want = this.rollHeld || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
@@ -2420,6 +2448,10 @@ export class FirstTimerRun {
     if (this.lianaHop) {
       this.jump.liana = true;
       this.lianaHop = false;
+      // (held at least as long as the hop lianaWait judged would catch it (hopCatches with who.hold[0]): a tier bot's drawn press (holdQ,
+      // 22-231 ms) was often shorter than the hop it decided on, so a hop judged to catch fell short onto the lip's end and he walked off
+      // it into the gap (ENG-B6, the MIDDLE strider at a runner liana, trace in chaseBots.test). The decision and the act now agree)
+      this.jump.hold = Math.max(this.jump.hold, this.who.hold[0]);
     }
     const out: Pad = upOnly > 0 ? {} : dir > 0 ? { right: true } : dir < 0 ? { left: true } : {};
     out.press = true;
