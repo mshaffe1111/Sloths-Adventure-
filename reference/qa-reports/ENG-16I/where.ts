@@ -2,7 +2,7 @@
 //   npx tsx reference/qa-reports/ENG-16I/where.ts <variant> <x> [half-width]
 import '../../../src/game/headlessDom.ts';
 import { RealPlay } from '../../../src/game/realPlay.ts';
-const [v, x, hw = '700'] = process.argv.slice(2).map(Number);
+const [v, x, hw = 700] = process.argv.slice(2).map(Number);
 const rp = new RealPlay('1-6', v);
 const st = rp.stage as unknown as { gen2?: { sections?: Array<{ uid: string; template: string; x0?: number; x1?: number; x?: number; width?: number }> }; proto?: { gen2?: unknown } };
 const g = (st.gen2 ?? (st.proto as { gen2?: typeof st.gen2 })?.gen2)!;
