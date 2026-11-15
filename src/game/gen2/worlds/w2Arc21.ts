@@ -203,9 +203,11 @@ const backRiver = (easy: boolean): Lay => ({
 const highBank = (): Lay => {
   const m = 'm';
   return {
-    // (the high bank 236-240 px up: past a double jump, inside the bounce's climb (the verdicts' bounce band; World 1's bounceWall,
-    //  w1.ts gBounceWall, 225-240), then three plain hops back down the shore, a boulder to hop on the top and one on the way down: the quiet line, listRules quietJudge)
-    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-240, -236]), landing: true, block: 'bounce', from: m }, rock('rw', 'w', 0.5), shore('b', 'w', 280, [76, 80]), shore('c', 'b', 300, [76, 80]), rock('rc', 'c', 0.5), shore('z', 'c', 320, [76, 82])],
+    // (the high bank 174-180 px up, the bounce teach's band (reach.ts 'bounce-teach'): a plain bounce lands it, past one jump's 123. It
+    //  was 236-240, past a double, inside only the bounce + air jump, a combo no stage teaches yet: the lead's ruling 11-15 1:53 PM ET
+    //  (FIX-21, skills.ts COMBO_REQUIRED_FROM), so the builder's bounce cap holds it to the bounce alone. Then three plain hops back down
+    //  the shore, a boulder to hop on the top and one on the way down: the quiet line, listRules quietJudge)
+    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-180, -174]), landing: true, block: 'bounce', from: m }, rock('rw', 'w', 0.5), shore('b', 'w', 280, [76, 80]), shore('c', 'b', 300, [76, 80]), rock('rc', 'c', 0.5), shore('z', 'c', 320, [76, 82])],
     sockets: [petal('pw', 'w', 0.5)],
   };
 };
