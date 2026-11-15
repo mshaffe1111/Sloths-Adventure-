@@ -17,9 +17,9 @@ const block = (id: number, x0: number, x1: number, y: number, h: number): Platfo
 
 /** a bough, a trunk `rise` px over it (with a climbing vine on its near face, or none), and the bough past it at the start's height */
 function stage(rise: number, vine: boolean) {
-  // (a shell for the bare course below, a hand-built plan's stage: 1-7's. HAND_STAGES['1-3'] has no plan since 1-3 rolls on gen2, so this
+  // (a shell for the bare course below, a hand-built plan's stage: 1-8's (ENG-16I: 1-7 rolls on gen2 since BUILD-17, so its plan went in the t-tools-2 merge). HAND_STAGES['1-3'] has no plan since 1-3 rolls on gen2, so this
   //  built the old hand-built 1-6's default proto plan until that went, R-165.238)
-  const st = buildProtoStage(levelConfig('6-3'), 1, HAND_STAGES['1-7']);
+  const st = buildProtoStage(levelConfig('6-3'), 1, HAND_STAGES['1-8']);
   const trunk = block(2, 600, 860, Y - rise, rise + 90);
   const v: Vine = { id: 1, x: 574, topY: Y - rise, bottomY: Y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
   Object.assign(st, {

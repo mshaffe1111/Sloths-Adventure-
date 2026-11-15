@@ -107,9 +107,10 @@ test('the dressing sheets: every piece is in a set, every set piece is on the sh
 });
 
 test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
-  // (World 1's pair is 1-7 and 1-8, two hand-built stages in a row: 1-2 and 1-3 roll on gen2, so HAND_STAGES had no plan for them and
+  // (World 1's pair is 1-8 and 1-9, two hand-built stages in a row (ENG-16I: 1-7 rolls on gen2 since BUILD-17, its plan gone in the
+  //  t-tools-2 merge; before that 1-7 and 1-8): 1-2 and 1-3 roll on gen2, so HAND_STAGES had no plan for them and
   //  this built the old hand-built 1-6's default proto plan twice under their configs until it went, R-165.238)
-  for (const ids of [['1-7', '1-8'], ['5-1', '5-2']]) {
+  for (const ids of [['1-8', '1-9'], ['5-1', '5-2']]) {
     const looks = ids.map((id) => {
       const st = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
       const ds = st.proto.dress ?? [];
