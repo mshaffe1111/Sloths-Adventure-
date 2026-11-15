@@ -2336,7 +2336,10 @@ export class FirstTimerRun {
     // (a pond crossing is a hop from a pad or onto one; any other edge is the edge's own)
     if (!next || (!here.pad && !next.pad)) { this.padSeen = -1; return null; }
     const go: Pad = dir > 0 ? { right: true } : { left: true };
-    const approach = (): Pad => (toEdge > 30 ? go : {});
+    // (he lets go where he comes to a stand before a lip, the clock-ride wait's own distance (clockRide): at 30 px the kid's late lift-off
+    // and his slide ran him off a stone into the breath row while it was under, 2-2 Easy seed 3 (BUILD-22))
+    const stand = who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim;
+    const approach = (): Pad => (toEdge > stand ? go : {});
     // (a person who does not know pads sink treats one as any small floor: he stops on it a beat when he lands, and stands his time at its
     // edge when his tier stands; KEEP-HOPPING is knowing not to)
     if (here.pad && !PAD_SKILL.keepHopping) {
@@ -2353,7 +2356,7 @@ export class FirstTimerRun {
     // (read at the rise; once he has seen it ready he is going, through his reaction: padSeen)
     // (he reads the breath standing at the edge, never on his walk up to it: read from afar, the breath he saw was spent on the walk and
     // a stretched one (Easy) was under by the time he hopped; BUILD-22, the rise toy's child-Easy trace)
-    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat' && toEdge > 30) ready = false;
+    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat' && toEdge > stand) ready = false;
     if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
       const row = this.sim.platforms.filter((q) => Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
       let to = NaN;
@@ -2379,7 +2382,10 @@ export class FirstTimerRun {
     const lands = [0.03, 0.1].every((lag) => flies(0, lag) && flies(0.7, lag)) || (toEdge < 40 && [0.03, 0.1].every((lag) => flies(who.hold[0], lag)));
     // (KEEP-HOPPING: his pad shivers; he does not walk on to his usual press point, he goes now)
     const shiver = here.pad && PAD_SKILL.keepHopping && shows(here).tell > 0;
-    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, this.jumpFor(p, dir, here), false, go);
+    // (a pond hop is a single, its hold his own: every water in a pond is under a held single's reach (padFaults PAD_FAIR.reach). The
+    // plain edge's plan read the next floor at his height, a bank 900 px on, and the spot memory then kept the double a failed double
+    // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
+    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, 'single', false, go);
     return go;
   }
 
@@ -2968,6 +2974,12 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     Math.random = mr;
   }
   const end = run.t;
+  // (FT_MISSED=1: the goal's pickups he never took, by x and what carried them, to trace a sealed door: BUILD-22)
+  if (typeof process !== 'undefined' && process.env.FT_MISSED) {
+    const cs = (run.sim.e as unknown as { collectibles: Array<{ type: string; x: number; y: number; collected: boolean; rides?: { id: number } }> }).collectibles;
+    const left = cs.filter((c) => (c.type === 'flower' || c.type === 'leaf') && !c.collected);
+    process.stderr.write(`  missed ${left.length}: ${left.map((c) => `${Math.round(c.x)},${Math.round(c.y)}${c.rides ? `@${c.rides.id}` : ''}`).join(' ')}\n`);
+  }
   const harms = run.harms.map((h) => ({ ...h, t: +h.t.toFixed(1), x: Math.round(h.x), y: Math.round(h.y) }));
   const mins = Math.max(0.25, end / 60);
   const shown = run.dot.shown;
