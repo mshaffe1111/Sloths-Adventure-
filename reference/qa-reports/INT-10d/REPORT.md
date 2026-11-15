@@ -32,6 +32,22 @@ Started 1:55 PM ET (packet 1:54 PM). Every time below pasted from `TZ=America/Ne
 7. **FIX-21 cherry-picked** (827436784 -> b80451f6): one import conflict in pipeline.ts (kept HEAD's physics imports, took
    comboGuaranteedAt/missionOf); bounceAlone.test 2/2.
 
+8. **Ruling (a)** (lead 3:02 PM ET; a67a91fb): `bounce-air` is a Move; planBudget holds it only where skills.ts comboGuaranteedAt says
+   (no stage yet), pipeline.ts bounceCap and reach.ts bounceLipOverCap read the budget's moves; the 8 W1 sections whose lay moves with the
+   combo declare `needs: [..., 'bounce-air']` (w1-hop-bounce, w1-bounce-run, w1-ledges, w1-two-lifts, w1-bounce-wall,
+   w1-bounce-over-dip, w1-mushroom-log, w1-mushroom-stair), so they leave every pool. w1.test's exitDy test lays each section with the
+   moves it declares (not loosened: same 25 px). comboNeeds.test.ts planted x2 (planted-door-off.txt PLANT 1/2). Other bounce teaches
+   stay in the pool (w1-mushroom-lift, w1-mushroom-bank-teach); w1-hop-bounce, which teaches 'bounce', leaves with the combo.
+9. **Relists**: 1-1 IN ORDER (`--merge` its own 161 seeds `--in-order`: same seeds, same order; a plain relist first rebuilt it from
+   fresh seeds: caught by comparing the seed arrays, redone), 1-4, 1-6. 1-4's index line: the two relists wrote provenIndex.ts at once
+   and the later one put back 1-4's old version; set to the list file's own. 1-1's first-run lock: both hashes are TIPS's f94ccdcb
+   record again exactly (firstrun-lock.txt), the state before ENG-16H's walked lay: the revert proof.
+10. **lockall vs main 73e7bed0** (2 layouts x both settings, lockall-2-vs-main.txt; on f104754b, before ruling (a)): 63/102 unchanged.
+   The wholesale moves, traced by bisecting t-int-10b's first-parent line then the merged branch with lockall on just those stages:
+   **9-3, 9-4, 10-3, 10-6** move at TOOLS-2 ba2b1a21 (R-165.251, merged by ENG-16H 8b8dc02a): every stage builds on its own setting's
+   dials and the hand-built retry's chosen attempt is cached per setting (stageGenerator `known` key gains dialsKey), so their validated
+   attempt follows the setting. Intended by R-165.251; not petals.
+
 ## Pushback
 - None on the ruling. One note: the band numbers in petalArcs.test's title (1-3 0.86, 1-5 1.04) were measured on the stripped lay; under
   main's lay World 1 reads 1.42-1.72. The test still guards 1-6; the title is history.
