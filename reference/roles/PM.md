@@ -157,7 +157,7 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
   mistake: wait for its next result first.
 - **GitHub:** the GitHub MCP tools for PRs, runs (actions_list), logs (get_job_logs) and releases. Branch deletes are refused from the lead's
   machine: ask Matt to delete on GitHub. A member's "pushed" is proven by `git ls-remote`.
-- **EnK5 rebuild:** a worktree of the commit, `npm install --legacy-peer-deps`, `python3 tools/testlink/build.py "<note>"`. The artifact
+- **EnK5 rebuild:** a worktree of the commit, `npm install --legacy-peer-deps`, `python3 tools/testlink/build.py "<note>"` (it refuses above 480 files and maps against tools/testlink/dist-published; after a SUCCESSFUL publish run `python3 tools/testlink/build.py --published`: TOOLS-2, R-165.252). The artifact
   holds at most 511 files: list its files first, map every new dist file and set every stale one to null. Before sending: serve dist,
   open #ctest in Playwright upright and sideways, no page errors.
 - **Tester data:** read the sheet with the Google Sheets connector; decode with tools/playtesters/LOG_EVENTS.md and report.py. Our
