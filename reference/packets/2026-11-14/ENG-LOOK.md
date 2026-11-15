@@ -8,6 +8,8 @@ Branch: t-eng-look from origin/t-build-18's head (git ls-remote), merging origin
      the 7 tests pinned to it at a laid gen2 chase (chasePiece.test's own-collapse, chaseRespawn A-07/A-07b, the four '1-8 out of lives /
      a life lost mid-chase' tests): their RULES stay exactly (one respawn at full hearts with the collapse waiting behind the flag, one Game
      Over, lives never below 0), any chase stage. Whole suite GREEN on your head before (2).
+ (1b) The engine half of 1-8's other reds (BUILD-18 REPORT EXACT NEXT STEP): w1Pits.test's unmarked floorless gap from layTip (the tip's
+     gap must be a marked fall, any stage), and stageChecks' far-bough flag at x 35024 not reachable (layTip's landing: any stage). Planted.
  (2) The 'bough' ground look by world data, any stage, baked into the ground chunks (no per-frame cost), from ENG-CL's EXACT NEXT STEP and
      the lead's three conditions: MASS (about 1.2x Pokey's 89 px, a rounded shaded bark underside fading into the mist, never a flat plank),
      pits as BROKEN ends (chaseBrokenL/R, chaseCrack, chaseDebris; never a square notch), hanging moss/epiphytes as dressing rows by inventory
