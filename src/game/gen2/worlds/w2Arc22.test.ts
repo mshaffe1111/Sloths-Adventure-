@@ -134,3 +134,14 @@ test("the crown's flowers are the pond's own, never her pink (the keeper's fault
     assert.deepEqual([...new Set(fl.map((c) => c.botanicalVariant))].sort(), ['lotus', 'passion'], d);
   }
 });
+
+test("beat 4's spur: its zone names the stone it ends in, on the stage as built (the stage's late shifts move it with the platforms: FIX-22, the kid's 19/40)", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d);
+    const z = (st.rivers ?? []).filter((r) => r.spur);
+    assert.equal(z.length, 1, `${seed} ${d}: one spur`);
+    const stone = st.platforms.find((p) => !p.pad && p.type === 'solid' && Math.abs(p.x + p.width - z[0].x1) <= 1 && p.x >= z[0].x0);
+    assert.ok(stone, `${seed} ${d}: the spur ends in its stone`);
+    assert.deepEqual(z[0].spur, { x: Math.round(stone!.x + stone!.width / 2), y: stone!.y }, `${seed} ${d}: the spur's stand point is on its stone`);
+  }
+});

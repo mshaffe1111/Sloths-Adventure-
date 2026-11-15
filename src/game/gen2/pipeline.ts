@@ -3010,7 +3010,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) v.x += right;
       for (const r of ropes) { r.x0 += right; r.x1 += right; }
       // (a river's water, and each log's window: its platform moved with the rest)
-      for (const r of rivers) { r.x0 += right; r.x1 += right; if (r.safe) r.safe.backX += right; }
+      for (const r of rivers) { r.x0 += right; r.x1 += right; if (r.safe) r.safe.backX += right; if (r.spur) r.spur.x += right; }
       for (const q of platforms) if (q.drift) { q.drift.x0 += right; q.drift.x1 += right; }
       for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
       for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
@@ -3062,8 +3062,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a rope's two ends, the tops of the ledges it is hung between, move with it: left behind, they read 34 px over the ledges on a
       //  roll the shift moved, and whatever asks where a rope's ledge is (the level check, the engine's own jump from it) was wrong)
       for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
-      // (a river's surface and where a splash sets him back, and each log's float line: its platform moved with the rest)
-      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; }
+      // (a river's surface and where a splash sets him back (and a spur's stone, FIX-22: left behind, the bots never stood on it), and each
+      // log's float line: its platform moved with the rest)
+      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; }
       for (const q of platforms) if (q.drift) q.drift.baseY += down;
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
