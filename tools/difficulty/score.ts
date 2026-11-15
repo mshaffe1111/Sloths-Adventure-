@@ -17,10 +17,11 @@
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { RealPlay } from '../../src/game/realPlay.ts';
 import { modelStage, MODEL_TYPICAL } from '../../src/game/stageTime.ts';
-import { PHYS, SIM_DTS, TIMED, vinePeriod, airStep, canGrabSwing, JUMP_AIRTIME, type AirBody } from '../../src/game/physics.ts';
+import { PHYS, SIM_DTS, TIMED, vinePeriod, airStep, canGrabSwing, JUMP_AIRTIME, LETGO_FLIGHTS, pressWindow, chainWindow, swingReach, type AirBody } from '../../src/game/physics.ts';
+import { SWING_CAM, SWING_SEEN } from '../../src/game/cameraFollow.ts';
 import * as CHASE_MOD from '../../src/game/chase.ts';
 import { STILLNESS } from '../../src/game/stillness.ts';
-import { chainLines, doubleAllowed, heldLandings } from '../../src/game/levelCheck.ts';
+import { chainLines, doubleAllowed, gripsOf } from '../../src/game/levelCheck.ts';
 import { withSetting } from '../../src/game/settingDials.ts';
 import { LIANA } from '../../src/game/gen2/types.ts';
 import { findRoute, type Route } from '../inspect/route.ts';
@@ -157,25 +158,39 @@ const stakesOf = (st: any, c: Cost, x: number): number =>
  * 200 ms, is its floor), on the setting's own swing (settingDials withSetting: Easy's slower swing and wider sweet spot). 0: the check
  * flies no press there (the route linked it by an added link): the caller says so and keeps the meter's earlier constant.
  */
-export function releaseWindow(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting, dbl: boolean): Array<{ w: number; plat?: any; vine?: any }> {
+export function releaseWindow(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting, dbl: boolean, held = false): Array<{ w: number; plat?: any; vine?: any }> {
   const dir: 1 | -1 = to.x >= v.x ? 1 : -1;
+  // (the let-go flights: with the double's only where `dbl` (levelCheck gripFlights), from the holds the grip dial names (gripsOf))
+  const flights = dbl ? LETGO_FLIGHTS : LETGO_FLIGHTS.filter((f) => f.dbl > 9);
+  const grips = gripsOf(v.grip, v.bottomY - v.topY);
   return withSetting(setting, () => {
     const out: Array<{ w: number; plat?: any; vine?: any }> = [];
     if (to.vine) {
-      const lines = chainLines(v, to.vine, dbl);
-      if (lines > 0) out.push({ w: lines * SIM_DTS[0], vine: to.vine });
+      // (the chain's catch as gen2 sizes it (pipeline chainRelease): a press counts only when B's whole swing is in the view as he presses,
+      //  SWING_SEEN; B at its own phase on the stage. The other way, the level check's lines (World 1's chains all run right))
+      const far = to.vine.x + swingReach(to.vine);
+      const ms = dir === 1 ? chainWindow(v, to.vine, flights, grips, (px) => far <= px + SWING_SEEN) : chainLines(v, to.vine, dbl) * SIM_DTS[0] * 1000;
+      if (ms > 0) out.push({ w: ms / 1000, vine: to.vine });
     }
     // (the perches the swing really throws him onto, on the route's way: the route's own landing, or any perch between the liana and it
     //  (the route's added links leap a liana to the bank past its perch, and a chain's two lianas over the perch between them: 1-6's lay
     //  throws him onto the perch, then he hops on or grabs the next) and never a pit's floor under the swing (a fall, not a landing:
     //  deeper than a step under the liana's foot and the landing): each its own window, the caller takes the easiest)
-    const far = to.plat ? (dir === 1 ? to.plat.x + to.plat.width : to.plat.x) : to.x;
-    const lo = Math.min(v.x, far), hi = Math.max(v.x, far);
+    const end = to.plat ? (dir === 1 ? to.plat.x + to.plat.width : to.plat.x) : to.x;
+    const lo = Math.min(v.x, end), hi = Math.max(v.x, end);
     const floor = Math.max(v.bottomY, to.plat?.y ?? 0) + STEP_BELOW;
     const way = (st.platforms ?? []).filter((q: any) => !q.broken && (q === to.plat || (q.x < hi && q.x + q.width > lo && q.y <= floor)));
-    const waterY = st.waterY ?? (st.config?.levelHeight ?? 1e4) + 100;
-    const lines = heldLandings(v, dir, way, waterY, dbl);
-    for (const q of way) { const l = lines.get(q.id) ?? 0; if (l > 0) out.push({ w: l * SIM_DTS[0], plat: q }); }
+    for (const q of way) {
+      // (the window as gen2 sizes it, pipeline lianaRelease: the engine's press (pressWindow) landing on the perch, and on a liana with a
+      //  grip dial, or the last of a chain (`held`), only the presses that SEE the perch's far end on the narrowest phone (SWING_SEEN,
+      //  SWING_CAM.perch; R-165.225): a press at a perch he cannot see is a guess, not an aim. pressWindow lets go toward +x, so a perch
+      //  the other way is mirrored about the liana, as levelCheck's heldLandings does)
+      const far = { x: dir === 1 ? q.x : 2 * v.x - (q.x + q.width), y: q.y, w: q.width };
+      const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
+      const seen = v.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
+      const ms = pressWindow(v, hits, flights, grips, seen);
+      if (ms > 0) out.push({ w: ms / 1000, plat: q });
+    }
     return out;
   });
 }
@@ -187,11 +202,11 @@ export const STEP_BELOW = 60;
  * the double (its window with the double's flights, plus the second press, OTHER_BITS.second, as moveOf charges a double), where the
  * stage allows the double (levelCheck doubleAllowed). A window the check cannot fly keeps OTHER_BITS.swing, named NOT FLOWN.
  */
-export function releaseBits(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting): { bits: number; note: string; plat?: any } {
+export function releaseBits(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting, held = false): { bits: number; note: string; plat?: any } {
   const period = withSetting(setting, () => vinePeriod(v));
   const ways: Array<{ bits: number; w: number; how: string; plat?: any }> = [];
   const take = (dbl: boolean) => {
-    for (const o of releaseWindow(st, v, to, setting, dbl)) {
+    for (const o of releaseWindow(st, v, to, setting, dbl, held)) {
       // (crumbling wood where he lands: +1, the crumble's own rule (a crumble +1 on the jump onto it), read at the perch, not the liana)
       const crumb = o.plat?.type === 'fragile' ? 1 : 0;
       ways.push({ bits: windowBits(period, o.w) + (dbl ? OTHER_BITS.second : 0) + crumb, w: o.w, plat: o.plat,
@@ -282,7 +297,7 @@ export function lianaOf(st: any, s: { x0: number; x1: number; from?: any; plat?:
 export function swingChallenges(st: any, route: Route, beats: readonly Beat[], softPits: boolean, setting: Setting = 'normal'): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'> & { vine?: any }> {
   const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'> & { vine?: any }> = [];
   const live = (st.platforms ?? []).filter((p: any) => !p.broken);
-  let base = 0;
+  let base = 0, prevLeap = false;
   for (const s of route.segs) {
     if (s.kind === 'swing' && s.from) {
       // (the catch off a bank: a running jump timed to the liana's swing, its own challenge where the moment matters: catchWindow; the
@@ -316,11 +331,14 @@ export function swingChallenges(st: any, route: Route, beats: readonly Beat[], s
       const chain = v && !s.plat ? all.slice(0, -1) : all;
       chain.forEach((q: any, i: number) => {
         const nx = all[i + 1];
-        const r = q ? releaseBits(st, q, nx ? { x: nx.x, vine: nx } : { x: s.x1, plat: s.plat }, setting) : { bits: OTHER_BITS.swing as number, note: 'window not known (a planted route)' };
+        // (held: he came onto this liana off another, a chain's leap (gen2 lianaRelease `held`: its band is laid by what he sees))
+        const held = i > 0 || prevLeap;
+        const r = q ? releaseBits(st, q, nx ? { x: nx.x, vine: nx } : { x: s.x1, plat: s.plat }, setting, held) : { bits: OTHER_BITS.swing as number, note: 'window not known (a planted route)' };
         const x = q && q !== v ? q.x : s.x0;
         out.push({ t: b?.t ?? base, x, ys: [s.y0, s.y0], kind: 'swing', bits: r.bits, cost, stakes: stakesOf(st, cost, x), threat: false, note: `${b?.what ?? 'swing on a liana'}: ${r.note}`, vine: q });
       });
     }
+    prevLeap = s.kind === 'swing' && !s.from && !s.plat;
     base += s.dt;
   }
   return out;

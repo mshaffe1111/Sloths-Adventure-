@@ -84,7 +84,7 @@ test('on the real World 1 stages: one swing a liana the route hangs on, and none
 import { releaseBits, releaseWindow, chainOf, catchWindow, snakeChallenges, chaseChallenges, rollingChallenges, watchChallenges, memberAt, combine,
   creatureBits, fittsBits, windowBits, BODY, REF_S, type Challenge } from './score.ts';
 import { JUMP_AIRTIME, PHYS, SIM_DTS } from '../../src/game/physics.ts';
-import { heldLandings } from '../../src/game/levelCheck.ts';
+import { lianaRelease } from '../../src/game/gen2/pipeline.ts';
 import { CHASE } from '../../src/game/chase.ts';
 import { STILLNESS } from '../../src/game/stillness.ts';
 
@@ -97,12 +97,23 @@ test('a release is a timed press in the window the engine flies for that perch: 
   const v = LIANA(1, 1000);
   const perch = P(5, 1300, 820, 240);
   const st = STAGE1([v], [P(1, 600, 820, 300), perch]);
-  const lines = heldLandings(v as any, 1, [perch as any], 1500, false).get(5) ?? 0;
-  assert.ok(lines > 0, 'the engine lands him on the perch');
-  const w = releaseWindow(st, v, { x: 1300, plat: perch }, 'normal', false);
-  assert.equal(w.find((o) => o.plat === perch)?.w, lines * SIM_DTS[0], "the perch's window is the engine's own lines");
+  // (with every let-go flight, the double's too, the window is gen2's own: pipeline lianaRelease, the one place a swing is sized)
+  const gen2 = lianaRelease(v, { amp: 0.45, period: 2.85 }, { x: perch.x, y: perch.y, w: perch.width }, 'normal');
+  assert.ok(gen2 > 0, 'the engine lands him on the perch');
+  const w = releaseWindow(st, v, { x: 1300, plat: perch }, 'normal', true);
+  assert.equal(w.find((o) => o.plat === perch)?.w, gen2, "the perch's window is gen2's lianaRelease");
+  const one = releaseWindow(st, v, { x: 1300, plat: perch }, 'normal', false).find((o) => o.plat === perch)?.w ?? 0;
   const r = releaseBits(st, v, { x: 1300, plat: perch }, 'normal');
-  assert.ok(Math.abs(r.bits - windowBits(2.85, lines * SIM_DTS[0])) < 1e-9 || r.note.includes('with the double'), r.note);
+  assert.ok(Math.abs(r.bits - Math.min(one > 0 ? windowBits(2.85, one) : Infinity, windowBits(2.85, gen2) + OTHER_BITS.second)) < 1e-9, r.note);
+  // (a liana with a grip dial counts only the presses that SEE the perch (SWING_SEEN), as gen2 lays it: the same as lianaRelease's, and
+  //  never wider than the same liana without the dial's view rule)
+  const hv = LIANA(2, 1000, { grip: 'high' });
+  const hw = releaseWindow(STAGE1([hv], [P(1, 600, 820, 300), perch]), hv, { x: 1300, plat: perch }, 'normal', true).find((o) => o.plat === perch)?.w ?? 0;
+  assert.equal(hw, lianaRelease(hv, { amp: 0.45, period: 2.85, grip: 'high' }, { x: perch.x, y: perch.y, w: perch.width }, 'normal'));
+  const far2 = P(9, 1400, 820, 240);
+  const seenW = releaseWindow(STAGE1([hv], [far2]), hv, { x: 1400, plat: far2 }, 'normal', true, true).find((o) => o.plat === far2)?.w ?? 0;
+  const blindW = releaseWindow(STAGE1([v], [far2]), v, { x: 1400, plat: far2 }, 'normal', true, false).find((o) => o.plat === far2)?.w ?? 0;
+  assert.ok(seenW <= blindW, `seen ${seenW} <= any press ${blindW}`);
   // (a narrower perch further out leaves a narrower window: more bits)
   const far = P(6, 1420, 820, 60);
   const rn = releaseBits(STAGE1([v], [P(1, 600, 820, 300), far]), v, { x: 1420, plat: far }, 'normal');
