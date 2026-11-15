@@ -85,6 +85,16 @@ export function comboGuaranteedAt(combo: ComboId, mission: number): boolean {
   return from !== null && mission >= missionOf(from);
 }
 
+/**
+ * The stage whose teach node teaches the plain bounce (the mushroom; the first appearance of a mechanic is taught). A stage AFTER it reuses
+ * the taught bounce: gen2 verdicts.ts classify judges a bounce lip there that the bounce alone reaches as 'bounce-reuse' (FIX-GATES 11-15).
+ */
+export const BOUNCE_TAUGHT_AT = '1-1';
+/** a stage (missionOf) after the one that teaches the bounce: its bounces outside a teach node are the taught bounce reused */
+export function bounceReusedAt(mission: number): boolean {
+  return mission > missionOf(BOUNCE_TAUGHT_AT);
+}
+
 /** everyone who gets to this stage has learned the skill (stages unlock in order), though the stage may not yet rely on it */
 export function skillHeldAt(skill: SkillId, mission: number): boolean {
   return mission > missionOf(SKILL_BY_ID[skill].unlockedBy);

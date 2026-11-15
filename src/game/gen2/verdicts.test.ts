@@ -182,7 +182,7 @@ test('every name that can fail in a flown scope has a planted roll above (the un
   for (const n of ALL_VERDICTS.filter((x) => x !== 'reach.unflown')) assert.ok(src.includes(`planted('${n}'`) || (n === 'first-run.drift' && src.includes('firstRunVerdicts(layout')), n);
 });
 test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged', () => {
-  const v = judgeRoll({ stageId: '1-8', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
+  const v = judgeRoll({ stageId: '1-9', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
   assert.equal(v.accepted, true, 'a 400 px gap is not judged where nothing was flown');
   for (const n of ['reach.unflown', ...ARC_VERDICTS]) assert.ok(v.notJudged.includes(n as VerdictName), n);
   for (const s of ['normal', 'easy'] as const) assert.ok(!roll(s, { asks: [ask('single-gap', 400)] }).notJudged.includes('reach.unflown'), `1-1 ${s}: flown`);
@@ -316,7 +316,7 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     fixPickups({ platforms: st.platforms, vines: [], ropes: [], glide: false, onRoute: new Set(ids) } as never, items);
     assert.deepEqual([items[0].x, items[0].y], [1200, G - 40], `${d}: the flower stays`);
   }
-  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-8' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
+  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-9' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
 });
 
 // ───────────────────────── attempt 3: floorless false positives and the petal pass's reach (each planted red first) ─────────────────────────
@@ -368,7 +368,7 @@ test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 25
       spawnX: 100, spawnY: G, exitTotemX: 450, exitTotemY: G, gen2: { budget: { difficulty: d } },
     } as unknown as GeneratedStage;
     assert.deepEqual([...unreachablePickups(st)], [], `${d}: the flower past the gap is reachable`);
-    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-8' } } as GeneratedStage)], [7], `${d}: 1-8 (never flown; 1-6 is flown since BUILD-16, 1-7 since INT-9), closed form, as before`);
+    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-9' } } as GeneratedStage)], [7], `${d}: 1-9 (never flown; 1-6 is flown since BUILD-16, 1-7 since INT-9, 1-8 since BUILD-18c, judged FIX-GATES), closed form, as before`);
   }
 });
 

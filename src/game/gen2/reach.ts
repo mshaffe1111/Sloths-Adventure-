@@ -55,6 +55,9 @@ export const BANDS: BandTable = {
   'double-test-gap': { easy: 'none', normal: b(252, 262) },
   // (POLISH-7, the lead's ruling 2 11-14, bands.md §4 "the other way": a plain bounce is the whole lesson, 144-150 px over the cap)
   'bounce-teach': { easy: b(174, 180), normal: b(174, 180) },
+  // (FIX-GATES 11-15: a taught bounce reused on a later stage: up to the flown bounce-alone climb, 223 px on every judged scope
+  //  (flownArcs.ts 'bounce' climb.block), less SPARE; from one jump's flown climb, 123 px, plus SPARE, so the bounce is still needed)
+  'bounce-reuse': { easy: b(128, 218), normal: b(128, 218) },
   'bounce-air-test': { easy: b(236, 250), normal: b(236, 250) },
   // (its LEVEL row; a stepped hop reads CHAIN_BANDS by its step: chainBand)
   'chain-hop': { easy: b(205, 220), normal: b(205, 220) },
@@ -77,6 +80,7 @@ export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'double-teach-first': 'bands.md §2 "Double teach, the teach\'s first rise" (the lead\'s ruling 11-14, POLISH-8)',
   'double-test-gap': 'bands.md §2 "Double gap (Normal only; Easy has none)"',
   'bounce-teach': 'bands.md §4 "the other way" (a bounce alone is the whole lesson; POLISH-7)',
+  'bounce-reuse': 'flownArcs.ts "bounce" climb 223 less SPARE; "single-hold" climb 123 plus SPARE (a taught bounce reused, FIX-GATES)',
   'bounce-air-test': 'bands.md §2 "Bounce + air jump test (U, V)"',
   'chain-hop': 'chain.md §3 "Cap to cap"',
 };

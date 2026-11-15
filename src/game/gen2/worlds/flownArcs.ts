@@ -37,7 +37,7 @@ const n17 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-7', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
-/** a Normal row of 1-8's own scope (BUILD-18c 11-15: flown on 1-8, reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; NOT judged: BOUNCE-REUSE, INT-11) */
+/** a Normal row of 1-8's own scope (BUILD-18c 11-15: flown on 1-8, reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; judged since FIX-GATES' bounce-reuse kind, 11-15) */
 const n18 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: 'normal-1-8', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
