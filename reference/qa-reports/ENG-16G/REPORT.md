@@ -136,7 +136,8 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
   knowncheck PASS; generalitycheck PASS; buildcheck PASS (easy p95 69 ms); `seedlist.ts 1-1 --check` PASS (257); the engine tools' tests
   33/33; tierBots 7/7; kbdcheck (`CI=1 FORCE_COLOR=1`) PASS; roadmapcheck PASS (after `git fetch --unshallow` and every branch fetched:
   on the shallow clone it cannot check proofs and names 8 cited commits on unfetched branches; this branch does not touch ROADMAP.md).
-  drawcheck and clipcheck: (DRAWCLIP)
+  drawcheck PASS (598 s); clipcheck PASS (83 known, 287 s). Every gate in CLAUDE.md's Checks ran on 498f8d61; the one red is the suite's
+  requiredMove.test.ts below.
 - **RED: src/game/requiredMove.test.ts:8** ("the limited bot: without the double or the bounce, it stops short on 1-6"): "without the
   bounce: shrine on 0 rescues, 0 mushroom bounces". Its premise ("1-6 on main needs both the second jump and the bounce") is the OLD
   hand-built 1-6's, deleted by ENG-16F; the new 1-6 lays no mushroom, and on the relisted seed 1 the no-bounce bot reaches the shrine on
@@ -183,6 +184,9 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
 - Proposed level.md rule: **prove a stage's goal on 40 seeds before ruling on spots.** Seeds 1-6 showed 4 expert doors and 0 kid rescues;
   1-40 showed 22 and 6. A spot fix from six seeds treats a symptom.
 - Proposed level.md rule (with EXACT NEXT STEP 1's check): **a petal is laid in its piece's walked span**, measured, never a fixed share.
+
+## Context (the lead's ask)
+- get_session at 6:30 PM ET: context_usage 338,552 of 1,000,000 tokens (34%); the final figure is in the report message.
 
 ## Method used / Lessons applied
 - Method: reference/methods/level.md (rules 12, 13, 14, 20, 21, 22), stage-fix.md; the role card's day one (lock saved first on the
