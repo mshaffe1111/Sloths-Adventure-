@@ -62,7 +62,9 @@ export function layTip(st: TipStage, look: TipLook): string[] {
     if (p.x + p.width <= g0 || p.x >= g2) { cut.push(p); continue; }
     if (p.x + p.width > g2) cut.push({ ...p, x: g2, width: p.x + p.width - g2 });
   }
-  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: look.land, height: 400, type: 'solid' } as Platform);
+  // (it marks the fall beside it, pit 'drop': the tip's gap is a marked fall, never an unmarked one (ENG-LOOK2), and on a bough stage its
+  // end there is the far tree's living branch, never torn, protoArt.ts boughEnds)
+  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: look.land, height: 400, type: 'solid', pit: 'drop' } as Platform);
   const L = look.liana;
   const v: Vine = { id: (st.vines ?? []).reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g0 + L.out, topY: lip.y - L.up, bottomY: lip.y + L.foot, swaySpeed: L.swaySpeed, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(L.runner ? { runner: true } : {}) };
   // (every line counts: the fixture once filtered out "px of run to its lip", which hid runnerLip's stair-step bug, ENG-CL (8))

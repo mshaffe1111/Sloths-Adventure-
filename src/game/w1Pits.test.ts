@@ -78,8 +78,9 @@ test('World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; 
   // pit and no fall anywhere (reference/design/1-3.md "the route stays LEVEL"), so it is held to none at all)
   assert.ok(soft['1-9'] >= 3, JSON.stringify(soft));
   assert.equal(soft['1-3'], 0, `1-3 is level by design: ${JSON.stringify(soft)}`);
-  assert.ok(falls['1-8'] >= 10, JSON.stringify(falls));
-  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
+  // (1-8 too, ENG-LOOK2: the tip's gap is a marked fall (layTip marks its far branch); the deleted hand-built 1-8's >= 10 unmarked chase
+  // holes went with it, and the rule is now every other World 1 stage's)
+  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-8', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
 });
 
 test('1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall, by realFalls and by findW1Pits', () => {
@@ -168,7 +169,15 @@ test("World 1, 16 layouts: every painted drop has a bank of earth at both sides 
   // (engine-core: only the mixer's stages mark drops, so drawW1Pits, which paints marked drops only, leaves every other World 1 stage
   // to main's painting; the rebuild's 1-3 box, R-164.6, is not on main)
   // (0.9.5: 1-5 is main's again, so no shipped World 1 stage lays the mixer's marked drops)
-  for (const id of ['1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9']) for (const s of [1, 2]) assert.ok(!new RealPlay(id, s).platforms.some((q) => q.pit === 'drop'), `${id} layout ${s} marks a drop`);
+  for (const id of ['1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-9']) for (const s of [1, 2]) assert.ok(!new RealPlay(id, s).platforms.some((q) => q.pit === 'drop'), `${id} layout ${s} marks a drop`);
+  // (1-8 marks exactly one: the tip's far branch (chaseTip.ts layTip, ENG-LOOK2); on its bough look no pit is painted at all, protoArt.ts)
+  for (const s of [1, 2]) {
+    const sim = new RealPlay('1-8', s);
+    const marked = sim.platforms.filter((q) => q.pit === 'drop');
+    const tip = sim.stage.chase!.stretches.at(-1)!;
+    assert.equal(marked.length, 1, `1-8 layout ${s}: ${marked.length} marked drops`);
+    assert.ok(tip.tip && marked[0].x > tip.end && marked[0].x - tip.end < 600, `1-8 layout ${s}: the marked drop is the far branch past the tip (${marked[0].x}, tip ends ${tip.end})`);
+  }
 });
 
 test("a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)", () => {
