@@ -59,7 +59,7 @@ export const LINES_18 = {
   mark: "Her mark! And those coils ahead... the boa's branches.",
 } as const;
 /** Pokey at the halfway wayside (dotLinesData.ts way.1-8, the keeper's line 6) */
-export const WAY_18 = 'Dot keeps flying to the end and back. Show-off.';
+export const WAY_18 = 'Dot keeps flying rings round me. Show-off.';
 /** the stage's MISSION line (the keeper's line 7): stagePlan's, held equal by w1Arc18.test.ts */
 export const MISSION_18 = 'Race the long branch before it gives way, and gather her petals.';
 
@@ -380,6 +380,15 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     const c = (st.checkpoints ?? []).filter((q) => q.x > a && q.x < b).sort((p, q) => q.x - p.x)[0];
     if (!c) throw new Error(`1-8 finish: no flag on fork ${f} for its heart`);
     st.collectibles.push({ id: ++id, type: 'heart', x: c.x + HEARTS_18.past, y: c.y - HEARTS_18.up, collected: false, bobPhase: 0 });
+  }
+  // (7) each of Dot's lines is said only before the next crack after it (StageHint.beforeX): a run that starts from a later flag says
+  //  the last line he passed (engine.ts), and past the tip that was the still fork's, on the far tree's branch (ENG-LOOK's still, 11-14)
+  const hints = ((st as { proto?: { hints?: Array<{ x: number; text: string; beforeX?: number }> } }).proto?.hints ?? []);
+  const mine = new Set<string>(Object.values(LINES_18));
+  for (const h of hints) {
+    if (!mine.has(h.text)) continue;
+    const next = lay.stretches.find((s) => s.start > h.x);
+    if (next) h.beforeX = next.start;
   }
   return stage;
 }
