@@ -34,7 +34,10 @@ export type Archetype = Exclude<ObjectiveType, 'boss_lair'>;
 export type Phase = 'start' | 'ki' | 'sho' | 'ten' | 'ketsu' | 'rest' | 'goal';
 
 /** what Pokey can do. walk and jump always; the rest unlock through the game (skills.ts, the worlds' lessons) */
-export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push';
+/** a move the stage may ask. 'bounce-air': the bounce + air jump combo (a lip only the air jump off a mushroom's bounce reaches): in a stage's
+ *  moves only once a stage has taught it (skills.ts comboGuaranteedAt; the lead's ruling 11-15 3:02 PM ET), so a section that `needs` it
+ *  leaves the pool until then */
+export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push' | 'bounce-air';
 
 // ───────────────────────────── the world ─────────────────────────────
 

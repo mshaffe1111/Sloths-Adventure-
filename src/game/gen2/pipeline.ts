@@ -450,7 +450,9 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
     pit: easy && manifest.pit !== 'water' ? 'soft' : manifest.pit,
     quiet: QUIET[difficulty],
     walkSpeed: walkSpeed(MODEL_TYPICAL),
-    moves: ['walk', 'jump', ...manifest.moves.filter((m) => m !== 'walk' && m !== 'jump')] as Move[],
+    // (the bounce + air jump only once a stage has taught it: a section that needs it leaves the pool until then; skills.ts
+    //  comboGuaranteedAt, the lead's ruling 11-15 3:02 PM ET)
+    moves: ['walk', 'jump', ...manifest.moves.filter((m) => m !== 'walk' && m !== 'jump' && m !== 'bounce-air'), ...(comboGuaranteedAt('bounce-air', missionOf(config.id)) ? ['bounce-air'] : [])] as Move[],
   };
 }
 
@@ -1327,8 +1329,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const bounceCap = (q: SectionPiece): number | undefined => {
       // (a bounce TEACH's lip names its mushroom with no block (World 1's TEACH_LIP, POLISH-7): reached the same way, judged as a teach)
       const m = q.from && q.block !== 'double' ? by.get(q.from) : undefined;
-      // (the air jump counts only once a stage has taught the bounce + air jump: skills.ts comboGuaranteedAt, FIX-21)
-      return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty, budget.id) : 0.95 * (comboGuaranteedAt('bounce-air', missionOf(budget.id)) ? BOUNCE_REACH : BOUNCE_ALONE)) : undefined;
+      // (the air jump counts only where the stage's moves hold the bounce + air jump: planBudget adds 'bounce-air' once a stage has taught
+      //  it, skills.ts comboGuaranteedAt; FIX-21 and the lead's ruling 11-15 3:02 PM ET)
+      const combo = budget.moves.includes('bounce-air');
+      return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty, combo) : 0.95 * (combo ? BOUNCE_REACH : BOUNCE_ALONE)) : undefined;
     };
     if (pl.kind === 'start') {
       x = 0;

@@ -10,3 +10,9 @@ not ok 1 - F: 1-6 layouts 1-3 (Normal) hold petals off the walked path; the door
 # fail 1
 not ok 1 - E: a LOW stage with a 2.8-screen bare stretch gets exactly the petals that close it (none outside it, none left over 2 screens); a 1.5-screen one gets none; without the brief the fill lays more
   error: '1-7: a 2808 px bare stretch under a low brief got no petal'
+PLANT 1 (w1-hop-bounce's declaration out):
+not ok 1 - every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+ok 2 - no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan
+PLANT 2 (the budget offers the combo untaught):
+ok 1 - every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+not ok 2 - no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan

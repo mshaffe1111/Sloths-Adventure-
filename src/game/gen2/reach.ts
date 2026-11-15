@@ -9,7 +9,6 @@
 import type { Difficulty } from '../difficulty.ts';
 import type { Band, BandTable, FlownArc, ReachMove, ReachScope, SectionKind } from './verdicts.types.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
-import { comboGuaranteedAt, missionOf } from '../skills.ts';
 import { FLOWN_ROWS } from './worlds/flownArcs.ts';
 
 // ───────────────────────── the flown arcs, per scope: world data (worlds/flownArcs.ts) ─────────────────────────
@@ -160,7 +159,8 @@ export function riseEnvelope(dbl: boolean, setting: Difficulty, thin = false): n
   return bandHi(!dbl ? 'single-rise' : thin ? 'double-teach-rise-thin' : 'double-teach-rise', setting)!;
 }
 /** the highest a bounce lip may stand over its mushroom's cap on a judged stage: the bounce + air jump test band's top over the floor, less
- *  the cap, once a stage has taught the combo (skills.ts comboGuaranteedAt); before, the bounce teach's band (a plain bounce lands it) */
-export function bounceLipOverCap(setting: Difficulty, stageId: string): number {
-  return bandHi(comboGuaranteedAt('bounce-air', missionOf(stageId)) ? 'bounce-air-test' : 'bounce-teach', setting)! - CAP_UP.px;
+ *  the cap, where the stage's moves hold the combo (`combo`: budget.moves has 'bounce-air', skills.ts comboGuaranteedAt); before, the
+ *  bounce teach's band (a plain bounce lands it) */
+export function bounceLipOverCap(setting: Difficulty, combo: boolean): number {
+  return bandHi(combo ? 'bounce-air-test' : 'bounce-teach', setting)! - CAP_UP.px;
 }
