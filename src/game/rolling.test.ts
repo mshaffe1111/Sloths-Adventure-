@@ -11,7 +11,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, type Pad } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
-import { arcTime, phasedPace, rollAhead, rollGroundProblems, rollProblems, rollTeaches, rollTell, ROLL, type RollSpec } from './rolling.ts';
+import { arcTime, phasedPace, rollAhead, rollGroundProblems, rollMeetX, rollProblems, rollTeaches, rollTell, ROLL, type RollSpec } from './rolling.ts';
 import { ROLLING_PIECE, type Rolling, type RollingPiece } from './pieces/rollingPiece.ts';
 import { PHYS } from './physics.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -76,6 +76,33 @@ test('rolling: a nut is set off by his x, drops in for its tell (0.5 s+), lands 
     assert.ok(o.touchT - o.setOffT >= ROLL.seen - DT, `${easy ? 'Easy' : 'Normal'}: reached him ${(o.touchT - o.setOffT).toFixed(2)} s after it dropped in`);
     assert.ok(Math.abs(piece.list[0].vx) < PHYS.maxRun, 'it rolls slower than his run');
     assert.equal(o.hearts, 1, 'no hop, no teach, no chase: a touch is a heart');
+  }
+  setDifficulty('normal');
+});
+
+// (ENG-CL (7): the quiet line's beat for a hazard stands where it meets him, tools/inspect/beats.ts findBeats; the place is the
+// hazard's own geometry, rollMeetX, held here to the real engine at 30 fps: a nut's touch, a fruit's pass over his middle)
+test('rolling: rollMeetX is where the real engine meets him at a full run (a nut touches him there; a fruit passes over him there or nearer its drop), both settings', () => {
+  for (const easy of [false, true]) {
+    for (const spec of [NUT, FRUIT]) {
+      const { r, piece } = world([spec], { easy });
+      let meet = NaN, best = Infinity;
+      for (let i = 0; i < Math.round(8 / DT); i++) {
+        const h = piece.list[0];
+        const spent = h.spent;
+        r.frame(hold());
+        const mid = r.e.player.x;
+        if (spec.kind === 'low') { if (!spent && h.spent && Number.isNaN(meet)) meet = mid; }
+        else if (h.phase === 'down' && Math.abs(h.x - mid) < best) { best = Math.abs(h.x - mid); meet = mid; }
+      }
+      const at = `${easy ? 'Easy' : 'Normal'} ${spec.kind}`;
+      assert.ok(!Number.isNaN(meet), `${at}: it never met him`);
+      // (within two frames of his full run, 19 px: a nut at rollMeetX; a fruit phases its arcs to meet him mid-arc, so it may hold back and
+      // pass over him later, but never before rollMeetX and never past its own drop)
+      const m = rollMeetX(spec, easy), tol = 2 * PHYS.maxRun * DT;
+      const ok = spec.kind === 'low' ? Math.abs(meet - m) <= tol : meet >= m - tol && meet <= spec.dropX + tol;
+      assert.ok(ok, `${at}: met at ${meet.toFixed(0)}, rollMeetX ${m.toFixed(0)}, its drop ${spec.dropX}`);
+    }
   }
   setDifficulty('normal');
 });

@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { w1Finish } from '../../src/game/gen2/worlds/w1.ts';
-import { listedStage } from '../../src/game/gen2/listed.ts';
+import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { judgedOnArcs } from '../../src/game/gen2/reach.ts';
 import { searchYield } from './yield.ts';
 import { helpRoomBreaches, quietJudge, quietOf as quietAt } from './listRules.ts';
@@ -36,8 +36,10 @@ const finish = (st: ReturnType<typeof buildGen2Stage>) => (row.squirrels ? w1Fin
 
 // (the quiet line is the search's own rule here, R-165.120: a roll over it is repaired or rolled again, never only thrown away; the
 // list's check asks the same search, so a seed's replay is still its search)
-const also = quietJudge(cfg);
-const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st);
+// (judged on the roll as Play finishes it, the row's own finish, listed.ts playFinish: a chase's hazards a finish lays are beats, ENG-CL (7))
+const played = (st: ReturnType<typeof buildGen2Stage>, d: 'normal' | 'easy') => playFinish(row, st, d);
+const also = quietJudge(cfg, played);
+const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st, played);
 if (process.argv.includes('--check')) {
   // (the list is its own file, loaded as the game loads it, seedList.ts loadSeedList: a file the index names that does not load, or is not
   // the one the index names, fails here by name. A listed stage with no list yet, no line in the index, goes on to the breaches below and

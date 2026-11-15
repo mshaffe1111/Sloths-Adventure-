@@ -84,7 +84,7 @@ export function printTable(title: string, t: YieldTable, soleBy: Map<string, num
 async function main(): Promise<void> {
   await import('../../src/game/headlessDom.ts');
   const { buildGen2Stage } = await import('../../src/game/gen2/pipeline.ts');
-  const { listedStage } = await import('../../src/game/gen2/listed.ts');
+  const { listedStage, playFinish } = await import('../../src/game/gen2/listed.ts');
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
   const id = process.argv[2];
   const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -99,7 +99,8 @@ async function main(): Promise<void> {
   const sections = { all: new Map<string, number>(), refused: new Map<string, number>() };
   const t0 = Date.now();
   const list = process.argv.includes('--list');
-  const also = list ? (await import('./listRules.ts')).quietJudge(config) : undefined;
+  // (the list's own judge, on the roll as Play finishes it: listed.ts playFinish, ENG-CL (7))
+  const also = list ? (await import('./listRules.ts')).quietJudge(config, (st, d) => playFinish(row!, st, d)) : undefined;
   const finish = list && row?.squirrels ? (await import('../../src/game/gen2/worlds/w1.ts')).w1Finish : undefined;
   const raw = arg('--raw', ''), par = Math.max(1, Number(arg('--par', '1')));
   type Raw = Array<{ seed: number; normal: string[]; easy: string[]; plan: string[] }>;
