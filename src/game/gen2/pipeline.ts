@@ -3400,10 +3400,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const lo = Math.max(wp.lo, piece.x + 20), hi = Math.min(wp.hi, piece.x + piece.width - 20);
         const room = Math.max(0, hi - lo);
         const span = Math.min(s.span ?? 0, piece.width - 40, room);
-        // (at the take-off end of the span: the take-off is the measured side, never more than the testers' far aim before the edge
-        // (walkedSpan.ts TAKEOFF_FAR); the set-down is not, a hold, a double, a let-go at speed carry him past it: 1-6's expert stood
-        // past the span's near end on 22 of the 24 petals he left, ENG-PETAL traces)
-        const cx = room > 0 ? hi - span / 2 : (wp.lo + wp.hi) / 2;
+        // (where the socket stands, inside the span; at the span's take-off end instead the expert left as many and the child more,
+        // ENG-PETAL castBots b2083de4: reverted)
+        const cx = room > 0 ? Math.max(lo + span / 2, Math.min(hi - span / 2, k.x)) : (wp.lo + wp.hi) / 2;
         const rowLook = lookAt(cx, piece.y);
         // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
         const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';

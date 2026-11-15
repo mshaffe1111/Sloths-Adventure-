@@ -1,0 +1,26 @@
+castBots 1-6, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+expert normal PASS 33/40; under the floor 0; time median 243.4 s (min 225.2); hits 0 lives 5 (pit 5); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: sealed door goal 31/32  (seeds 7)
+        fail 1: sealed door goal 26/27  (seeds 29)
+        fail 1: sealed door goal 22/25  (seeds 37)
+        fail 1: sealed door goal 21/24  (seeds 20)
+        fail 1: sealed door goal 30/31  (seeds 26)
+        fail 1: sealed door goal 27/30  (seeds 28)
+        fail 1: sealed door goal 27/29  (seeds 34)
+middle normal PASS 35/40; under the floor 0; time median 278 s (min 259.7); hits 0 lives 4 (pit 4); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: sealed door goal 24/25  (seeds 37)
+        fail 1: sealed door goal 32/33  (seeds 12)
+        fail 1: sealed door goal 30/31  (seeds 26)
+        fail 1: shrine rescued x1  (seeds 34)
+        fail 1: sealed door goal 31/32  (seeds 36)
+middle easy   PASS 40/40; under the floor 0; time median 241 s (min 227.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 38/40; under the floor 0; time median 472.5 s (min 430.5); hits 0 lives 8 (pit 8); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: sealed door goal 24/25  (seeds 37)
+        fail 1: shrine rescued x1  (seeds 34)
+child  easy   PASS 39/40; under the floor 0; time median 353.2 s (min 317.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 2)
+
+real	4m54.870s
+user	9m42.393s
+sys	0m5.843s
+EXIT 0
