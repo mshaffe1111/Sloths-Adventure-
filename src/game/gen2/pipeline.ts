@@ -42,6 +42,8 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
+import { layPads, padFaults, padRowWidth } from './rideLay.ts';
+import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
@@ -1097,6 +1099,8 @@ interface LocalPiece {
   /** a far bank past a river (place `river`): the world's river row the water between is laid from, and the near bank's key (layStage
    *  lays the water and its logs between the two) */
   river?: { row: string; from: string };
+  /** a far bank past a pond of sinking pads (place `pads`): the world's pad row and the near bank's key (layStage lays the water and pads) */
+  pads?: { row: string; from: string };
 }
 interface LocalGap {
   x0: number;
@@ -1159,6 +1163,8 @@ export interface LayLocalOptions {
   pitDepth?: number;
   /** the world's river table (manifest.rivers): place `river` reads its row here */
   rivers?: WorldManifest['rivers'];
+  /** the world's pad table (manifest.pads): place `pads` reads its row here */
+  pads?: WorldManifest['pads'];
 }
 
 /**
@@ -1322,6 +1328,18 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
       const a = ref(pl.after);
       x = a.x + a.w + riverWidth(row);
+      y = a.y;
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
+      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
+    } else if (pl.kind === 'pads') {
+      // a POND OF SINKING PADS (ENG-22; rideLay.ts layPads): the far bank the row's width past `after`, level with it; the still water and its
+      // pads are laid in layStage from the same row. Nothing under the water (the zone takes a fall). Asked as a ride: padFaults judges the
+      // hops (each a hop, a pad that holds a landing and a decision, a beat row's breath long enough to cross), never the jump verdicts
+      const row = lo.pads?.[pl.row];
+      if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays pad row "${pl.row}" and world ${budget.world} has no pad row of that name (WorldManifest.pads)`);
+      if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a pad row in a mirrored section, which is not mirrored yet`);
+      const a = ref(pl.after);
+      x = a.x + a.w + padRowWidth(row);
       y = a.y;
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
       asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
@@ -1489,7 +1507,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1588,6 +1606,8 @@ export interface Laid {
   rivers: RiverZone[];
   /** the petals that ride those logs (RiverRow.petals): each one's log and where on it; the fill lays them as riding pickups */
   riverPetals?: Array<{ log: Platform; dx: number; dy: number }>;
+  /** the clocks the pads of its ponds read (place `pads`): the stage lists them with every other clock */
+  padClocks?: ClockDef[];
   width: number;
   bottom: number;
   nextId: number;
@@ -1816,6 +1836,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ropes: Rope[] = [];
   const rivers: RiverZone[] = [];
   const riverPetals: NonNullable<Laid['riverPetals']> = [];
+  const padClocks: ClockDef[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
   // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
@@ -2016,7 +2037,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let e = exitMemo.get(t.id);
     if (e === undefined) {
       try {
-        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers }).exit.y).sort((a, b) => a - b);
+        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers, pads: M.pads }).exit.y).sort((a, b) => a - b);
         e = ys[1];
       } catch {
         e = t.exitDy;
@@ -2403,7 +2424,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const mirrored = tower ? false : fixed ? fixed.mirrored : flip < 0.5 && hangsNeed(tpl).length === 0 && tpl.content !== 'climb' && !hasBlock(tpl) && Math.abs(exitDyOf(tpl)) <= 25;
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
-      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, ...(tempo ? { tempo } : {}) });
+      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, pads: M.pads, ...(tempo ? { tempo } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -2537,6 +2558,22 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.seam.push(...r.logs);
         rivers.push(r.zone);
         riverPetals.push(...r.petals);
+      }
+      // (each pond of sinking pads (place `pads`): its still water and its pads and stones, laid by the one pad lay (rideLay layPads); the
+      // clocks its pads read join the stage's)
+      for (const lp of L.pieces) {
+        if (!lp.pads) continue;
+        const row = M.pads?.[lp.pads.row];
+        if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays pad row "${lp.pads.row}" and world ${budget.world} has no pad row of that name`);
+        const near = pieceOf(lp.pads.from), far = pieceOf(lp.key);
+        if (far.x < near.x) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s pad row runs right to left, which is not laid yet`);
+        const r = layPads(row, lp.pads.row, near.x + near.width, near.y, () => pid++);
+        if (Math.abs(r.zone.x1 - far.x) > 1) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s pad row ends at ${r.zone.x1}, its far bank starts at ${far.x}`);
+        platforms.push(...r.pads);
+        placed.seam.push(...r.pads);
+        rivers.push(r.zone);
+        riverPetals.push(...r.petals);
+        for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
       }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
@@ -2866,6 +2903,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ropes,
     rivers,
     ...(riverPetals.length ? { riverPetals } : {}),
+    ...(padClocks.length ? { padClocks } : {}),
     zones,
     heartFalls,
     ...(rise.length ? { rise } : {}),
@@ -3699,6 +3737,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     proto,
     extras: {},
     zones: [...laid.zones],
+    ...(laid.padClocks?.length ? { clocks: [...laid.padClocks] } : {}),
     nextPlatformId: () => pid++,
     nextCollectibleId: () => cid++,
     nextEnemyId: () => eid++,
@@ -3846,7 +3885,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = riverFaults(st).map((e) => `river: ${e}`);
+  const wet = [...riverFaults(st).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)

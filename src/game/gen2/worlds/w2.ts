@@ -32,6 +32,7 @@ import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
+import type { PadRow } from '../rideLay.ts';
 import { W1_KIT } from './w1.ts';
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
@@ -81,6 +82,24 @@ export const W2_RIVERS = {
   twin: { dir: 1, speed: 80, logW: 150, logs: 3 },
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
+
+/**
+ * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).
+ * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: a tap hop's 83 px edge to edge in the
+ * teach, up to a held jump's reach (PAD_FAIR.reach) after.
+ */
+export const W2_PADS = {
+  /** beat 1: one big pad over shallow water at the bank: he stands, it shivers and sinks, he splashes back and watches it come up */
+  first: { by: 'weight', pads: ['big'], gap: 60, safe: true },
+  /** beat 2: three small pads one tap apart, a petal riding each: keep moving */
+  hop: { by: 'weight', pads: ['small', 'small', 'small'], gap: 70, safe: true, petals: [0, 1, 2] },
+  /** beat 4: small pads out to a far stone and its petal (the far piece), and back over the same pads once they are up again */
+  back: { by: 'weight', pads: ['small', 'small'], gap: 80, safe: true },
+  /** beat 6, the twist: the pond breathes; three big pads on one breath (2-2.md: up 1.8 s, shiver 0.6 s, under 0.6 s), crossed on the up */
+  breath: { by: 'beat', pads: ['big', 'big', 'big'], gap: 80, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
+  /** beats 9 and 12: deep water, held jumps between the sizes */
+  deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
+} as const satisfies Record<string, PadRow>;
 
 // ───────────────────────────── the pieces ─────────────────────────────
 /** a bank he walks on, `w` exact, level with the one before (or the section's first) */

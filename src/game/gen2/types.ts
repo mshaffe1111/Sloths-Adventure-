@@ -216,6 +216,8 @@ export interface WorldManifest {
   slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
   /** this world's river table (place `river` names a row): World 2's W2_RIVERS. A world with none lays no river */
   rivers?: Readonly<Record<string, RiverRow>>;
+  /** this world's pad table (place `pads` names a row): World 2's W2_PADS. A world with none lays no pads */
+  pads?: Readonly<Record<string, import('./rideLay.ts').PadRow>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -309,7 +311,12 @@ export type PlaceRule =
    *  banks are level (a stepped far bank is a later row field, never a hack in a brick) and the width is the row's, so the logs sit evenly
    *  round the window. A row the world lacks fails the section by name, never a stand-in; a river in a leg laid left throws by name (not
    *  mirrored yet: ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7) */
-  | { kind: 'river'; after: string; row: string };
+  | { kind: 'river'; after: string; row: string }
+  /** a POND OF SINKING PADS (ENG-22; rideLay.ts layPads): the far bank lies the row's width (rideLay padRowWidth) past `after`, LEVEL with
+   *  it; still water between, crossed on the row's pads (a weight row: each sinks under him; a beat row: all on one breath) and stones,
+   *  laid from the world's pad table row `row` (WorldManifest.pads). A fall costs a life, or splashes him back onto `after` when the row is
+   *  `safe`. A row the world lacks fails the section by name; mirrored or laid left throws by name, as a river does */
+  | { kind: 'pads'; after: string; row: string };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

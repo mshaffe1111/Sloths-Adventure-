@@ -67,6 +67,13 @@ import { liftStop } from '../../src/game/lift.ts';
  */
 export const CLOCK_SKILL = { read: true };
 
+/**
+ * The bot's pad skills (ENG-22; 2-2.md NEW 5; level.md rule 21, toys first: tools/inspect/padRide.test.ts plants each off -> RED). Read off
+ * what a person sees of a pad (pieces/padPiece.ts padShows: down, or its shiver) and of a beat row's breath (the stage clock). Always on
+ * outside a test.
+ */
+export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true };
+
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
   const w = (globalThis as Record<string, any>).window;

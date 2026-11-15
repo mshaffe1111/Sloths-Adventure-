@@ -14,7 +14,10 @@
  */
 import { beatDef, beatFaults, type BeatRule, type BeatSeen } from '../beat.ts';
 import { beatOf } from '../clock.ts';
-import { rideAt, type Point, type Ride } from '../ride.ts';
+import { RIDE, rideAt, type Point, type Ride } from '../ride.ts';
+import { brickFair } from '../beatBrick.ts';
+import { surfaceBelowBank, type RiverZone } from '../river.ts';
+import { PETAL_SIT } from './riverLay.ts';
 import type { ClockDef, ClockId } from '../stageKit.types.ts';
 import type { Platform } from '../types.ts';
 import type { PropDef, PropEmitter, Socket, StageSink } from './types.ts';
@@ -186,6 +189,184 @@ export function rideFaults(st: { platforms: readonly Platform[]; clocks?: readon
         break;
       }
     }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
+// SINKING PADS (ENG-22; 2-2.md NEW 1 and 2): a row of lily pads across still water between two banks, from one row of data. A 'weight'
+// row's pads sink while he stands on them and come back up when he leaves (ride.ts stepPad, by each pad's size); a 'beat' row keeps one
+// clock of its own, every pad in step, so the whole row sinks and rises together (the pond's breath). pieces/padPiece.ts runs them.
+
+/** a pad's size (2-2.md "the pads, measured from code first, and the hop FLOWN"): its width (px), how long it holds him on Normal (s),
+ *  and when its shiver starts (s). Widths: the hand-built ponds' 124-144 px floor (w2Stages.ts, QA 2026-10-29: on narrower pads a hop
+ *  past a pad's middle ran on off its far end) for a small one, twice that for a big one, so the two read at a glance */
+export interface PadSize { w: number; hold: number; shiver: number }
+export const PAD_SIZES = {
+  small: { w: 130, hold: 1.0, shiver: 0.5 },
+  big: { w: 260, hold: 2.0, shiver: 1.2 },
+} as const satisfies Record<string, PadSize>;
+export type PadSizeId = keyof typeof PAD_SIZES;
+
+/** a pad row as data: a world's row (WorldManifest.pads, place `pads` names it) */
+export interface PadRow {
+  /** 'weight': each pad sinks under him by its size; 'beat': the row keeps its own breath (`beat`), weight or not */
+  by: 'weight' | 'beat';
+  /** the row, near bank first: a pad's size, or 'stone' (a stepping stone that never sinks: a rest, the far end of a there-and-back) */
+  pads: readonly (PadSizeId | 'stone')[];
+  /** edge-to-edge water before each piece and before the far bank (px): one for every gap, or one each (pads.length + 1) */
+  gap: number | readonly number[];
+  /** a 'beat' row's breath on Normal (s): up (holds), shiver (holds, warning), under (gone) */
+  beat?: { up: number; shiver: number; under: number };
+  /** a fall splashes him back onto the near bank, nothing lost (the teaching pond); else the water costs a life */
+  safe?: boolean;
+  /** the pieces that carry a petal, by index: on a pad it rides (Collectible.rides: sinks and rises with it, taken on landing) */
+  petals?: readonly number[];
+  /** Easy stretches every count and breath this much (2-2.md: x1.5); never below 1 */
+  easyStretch?: number;
+}
+
+export const PAD_LAY = {
+  /** a pad's top under its banks' (px): it floats on the river's surface (river.ts surfaceBelowBank), its drawn surface 8 px under its top */
+  drop: surfaceBelowBank - 8,
+  /** a pad's thickness (px) */
+  h: 12,
+  /** how long a weight pad stays 'on' in its size's clock (s): longer than RIDE.padRise, so the count's cap falls inside it */
+  under: 1.0,
+  /** a stepping stone: its width (World 2's stone, w2.ts) and how deep it stands into the water (px) */
+  stoneW: 136,
+  stoneH: 60,
+  easyStretch: 1.5,
+} as const;
+
+/** the numbers a laid pad row is held to (padFaults) */
+export const PAD_FAIR = {
+  /** a weight pad holds a landing and one more decision (s, Normal): 2-2.md, a child's land-decide-tap 0.2-0.4 s plus the tap hop's 0.30 s */
+  hold: 1.0,
+  /** a shiver he can read before it goes (s, Normal) */
+  shiver: 0.4,
+  /** a sunk pad is whole again (holds a landing and a decision) within a wait he can count (s; riverLay RIVER_LAY.beat) */
+  back: 4,
+  /** one hop across a beat row (s): the tap hop's 0.30 s in the air and 0.2 s to land and go again (2-2.md, flown) */
+  hop: 0.5,
+  /** the widest water between two pieces (px): a held jump flies 184 px (hopAir.ts), less a margin so the child makes it */
+  reach: 160,
+  /** the least water between two pieces (px): closer, two read as one */
+  apart: 20,
+  /** the narrowest pad or stone he lands on (px): the hand-built ponds' QA floor */
+  minW: 124,
+} as const;
+
+const gapAt = (row: PadRow, i: number): number => (typeof row.gap === 'number' ? row.gap : row.gap[i]);
+const pieceW = (k: PadSizeId | 'stone'): number => (k === 'stone' ? PAD_LAY.stoneW : PAD_SIZES[k].w);
+/** the water's width, bank to bank */
+export const padRowWidth = (row: PadRow): number => row.pads.reduce((s, k, i) => s + gapAt(row, i) + pieceW(k), 0) + gapAt(row, row.pads.length);
+/** the clock a weight pad of this size reads by its count */
+export const padSizeClock = (size: PadSizeId, easyStretch: number = PAD_LAY.easyStretch): ClockDef => {
+  const z = PAD_SIZES[size];
+  return beatDef(`pad-${size}`, z.hold + PAD_LAY.under, z.hold - z.shiver, PAD_LAY.under, easyStretch);
+};
+/** the clock a beat row keeps (`id`: the row's own, one per row) */
+export const padBeatClock = (id: ClockId, b: NonNullable<PadRow["beat"]>, easyStretch: number = PAD_LAY.easyStretch): ClockDef =>
+  beatDef(id, b.up + b.shiver + b.under, b.shiver, b.under, easyStretch);
+
+/**
+ * Lay one pad row: still water from `x0` (the near bank's end) across padRowWidth(row) to the far bank's start, under banks whose top is
+ * `bankY`, and its pads (lily 'moving' platforms carrying a `pad`) and stones; `id` names a beat row's clock. Returns the water, the pieces,
+ * the petals that ride them and the clocks the stage must list.
+ */
+export function layPads(row: PadRow, id: string, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; pads: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }>; clocks: ClockDef[] } {
+  if (typeof row.gap !== 'number' && row.gap.length !== row.pads.length + 1) throw new Error(`pad row ${id}: ${row.gap.length} gaps for ${row.pads.length} pieces (one before each and one before the far bank)`);
+  if (row.by === 'beat' && !row.beat) throw new Error(`pad row ${id}: a beat row with no beat`);
+  const stretch = Math.max(1, row.easyStretch ?? PAD_LAY.easyStretch);
+  const clocks: ClockDef[] = [];
+  const beatId = `pads-${id}`;
+  if (row.by === 'beat') clocks.push(padBeatClock(beatId, row.beat!, stretch));
+  const y = bankY + PAD_LAY.drop;
+  const pads: Platform[] = [];
+  let x = x0;
+  row.pads.forEach((k, i) => {
+    x += gapAt(row, i);
+    if (k === 'stone') {
+      pads.push({ id: nextId(), x, y, width: PAD_LAY.stoneW, height: PAD_LAY.stoneH, type: 'solid', style: 'moss_stone' });
+    } else {
+      const clock = row.by === 'beat' ? beatId : `pad-${k}`;
+      if (row.by === 'weight' && !clocks.some((c) => c.id === clock)) clocks.push(padSizeClock(k, stretch));
+      pads.push({ id: nextId(), x, y, width: PAD_SIZES[k].w, height: PAD_LAY.h, type: 'moving', lily: true, pad: { by: row.by, clock, look: row.by === 'beat' ? 'beat' : k } });
+    }
+    x += pieceW(k);
+  });
+  const x1 = x + gapAt(row, row.pads.length);
+  const zone: RiverZone = { x0, x1, surfaceY: bankY + surfaceBelowBank, dir: 1, speed: 0, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}) };
+  const petals = (row.petals ?? []).map((i) => {
+    const q = pads[i];
+    if (!q) throw new Error(`pad row ${id}: a petal on piece ${i}, past its ${pads.length}`);
+    return { log: q, dx: Math.round(q.width / 2), dy: -PETAL_SIT };
+  });
+  return { zone, pads, petals, clocks };
+}
+
+/**
+ * What is unfair about a stage's sinking pads, in words (none: they may be laid). On Normal (Easy only stretches):
+ *   - a weight pad holds a landing and one decision (PAD_FAIR.hold) and shivers long enough to read (PAD_FAIR.shiver), and once sunk it is
+ *     whole again within a wait he can count (PAD_FAIR.back): a there-and-back finds its pads back when he has waited on the stone;
+ *   - a beat row's breath holds long enough to cross each run of its pads between two floors that stay (PAD_FAIR.hop a hop), with a
+ *     shiver he can read (beatBrick.ts brickFair);
+ *   - nothing strands him: across each still water, every floor from bank to bank (pads, stones) is a hop from the next (PAD_FAIR.reach),
+ *     no closer than PAD_FAIR.apart, and wide enough to land on (PAD_FAIR.minW);
+ *   - every pad's clock is listed in the stage's clocks.
+ */
+export function padFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; clocks?: readonly ClockDef[] }): string[] {
+  const out: string[] = [];
+  const pads = st.platforms.filter((p) => p.pad);
+  if (!pads.length) return out;
+  const defs = new Map((st.clocks ?? []).map((d) => [d.id, d]));
+  const seen = new Set<string>();
+  for (const q of pads) {
+    const def = defs.get(q.pad!.clock);
+    const at = `pad at x=${Math.round(q.x)}`;
+    if (!def) { out.push(`${at}: its clock ${q.pad!.clock} is not in the stage's clocks`); continue; }
+    if (q.width < PAD_FAIR.minW) out.push(`${at}: ${q.width} px wide, under ${PAD_FAIR.minW}`);
+    if (seen.has(def.id)) continue;
+    seen.add(def.id);
+    const b = beatOf(def, false);
+    const up = b.ons[0] ?? b.period;
+    const warn = b.seconds[b.names.indexOf('warn')] ?? 0;
+    if (warn < PAD_FAIR.shiver - 1e-6) out.push(`${at}: its shiver lasts ${warn} s, under ${PAD_FAIR.shiver}`);
+    if (q.pad!.by === 'weight') {
+      if (up < PAD_FAIR.hold - 1e-6) out.push(`${at}: it holds him ${up} s, under ${PAD_FAIR.hold}`);
+      // (sunk, its count sits at its cap, ride.ts stepPad; it holds a landing and a decision again once the count is back down by that)
+      const cap = Math.min(up + RIDE.padRise, b.period - 1e-6);
+      const back = cap - Math.max(0, up - PAD_FAIR.hold);
+      if (back > PAD_FAIR.back + 1e-6) out.push(`${at}: sunk, it is whole again only ${Math.round(back * 100) / 100} s after he leaves, over ${PAD_FAIR.back}`);
+    }
+  }
+  for (const r of st.rivers ?? []) {
+    if (r.speed !== 0) continue;
+    const inside = (p: Platform) => p.x + p.width / 2 > r.x0 && p.x + p.width / 2 < r.x1;
+    const row = st.platforms.filter((p) => inside(p) && !p.broken && (p.pad || p.type === 'solid') && p.y > r.surfaceY - 80 && p.y < r.surfaceY + 10).sort((a, b) => a.x - b.x);
+    if (!row.some((p) => p.pad)) continue;
+    const at = `pad pond at x=${Math.round(r.x0)}`;
+    const edges = [r.x0, ...row.flatMap((p) => [p.x, p.x + p.width]), r.x1];
+    for (let i = 0; i + 1 < edges.length; i += 2) {
+      const gap = edges[i + 1] - edges[i];
+      if (gap > PAD_FAIR.reach) out.push(`${at}: ${Math.round(gap)} px of water at x=${Math.round(edges[i])}, past a hop (${PAD_FAIR.reach})`);
+      if (gap < PAD_FAIR.apart) out.push(`${at}: ${Math.round(gap)} px of water at x=${Math.round(edges[i])}, under ${PAD_FAIR.apart}`);
+    }
+    for (const p of row) if (!p.pad && p.width < PAD_FAIR.minW) out.push(`${at}: a stone ${p.width} px wide, under ${PAD_FAIR.minW}`);
+    // (a beat row: each run of its pads between two floors that stay, crossed inside one breath)
+    let run = 0, clock: string | null = null;
+    const close = () => {
+      if (!run || !clock) return;
+      const def = defs.get(clock);
+      if (def) for (const e of brickFair(def, { warn: PAD_FAIR.shiver, safe: (run + 1) * PAD_FAIR.hop })) out.push(`${at}: ${run} beat pads in a run: ${e}`);
+      run = 0;
+      clock = null;
+    };
+    for (const p of row) {
+      if (p.pad?.by === 'beat') { run++; clock = p.pad.clock; } else close();
+    }
+    close();
   }
   return out;
 }

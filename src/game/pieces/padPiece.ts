@@ -40,7 +40,7 @@ class PadPiece implements StagePiece {
     for (const r of this.runs) {
       const pad = r.plat.pad!;
       if (r.count && r.beat) {
-        stepPad(r.count, r.beat, p.grounded && host.standingOnId === r.plat.id, dt);
+        stepPad(r.count, r.beat, !!p?.grounded && host.standingOnId === r.plat.id, dt);
         r.now = padNow(r.count, r.beat);
       } else r.now = brickNow('gone', host.clock.read(pad.clock, pad.shift));
       r.plat.broken = !r.now.solid;
@@ -80,8 +80,12 @@ export const PAD_PIECE: PieceKind = {
       COUNT.set(plat, { count, beat });
       return { plat, beat, count, now: padNow(count, beat) };
     });
-    const piece = new PadPiece(runs);
-    piece.step(0, host);
-    return piece;
+    // (each pad as its clock has it now: a beat row may start down; the player may not be made yet, so no count is stepped here)
+    for (const r of runs) {
+      if (!r.count) r.now = brickNow('gone', host.clock.read(r.plat.pad!.clock, r.plat.pad!.shift));
+      r.plat.broken = !r.now.solid;
+      NOW.set(r.plat, r.now);
+    }
+    return new PadPiece(runs);
   },
 };
