@@ -11,6 +11,7 @@ Branch: continue t-build-16 from ba374aee (git ls-remote first). No new engine w
  (4) Stills of every 1-6 beat upright + sideways, Easy + Normal; CLIPS: first liana, the chain, the snake on your vine (show the tell
      before it moves you), the false liana (does it read as false BEFORE the grab? if it gives no visual warning, say so plainly), the
      gorge, the exit, each with the frame named (D69).
-The meter: 1-6 reads Normal 3.3 vs DIFFICULTY.md:61's 6.5 on TOOLS-1's fixed meter. Report the number, don't tune 1-6 to it: the meter's
-calibration is R-165.261's job. Send GREEN to the lead with the evidence paths.
+The meter: w1Arc16.test's difficulty check is RED (1-6 Normal 3.3 vs its 5.5-7.5 band on TOOLS-1's fixed meter; 1-6 reads easier than
+1-1 while the bots say otherwise). Do NOT tune 1-6 to it and do NOT touch the band or the test (LAWS 22): the ruler is suspect, and a
+meter member (R-165.261) fixes the ruler tonight. Report it as the one known red, by name, and everything else green. Send GREEN to the lead with the evidence paths.
 BOX: report by 10:20 PM ET, or at 40% real context. Progress at 9:20 PM. No shell wait loops. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
