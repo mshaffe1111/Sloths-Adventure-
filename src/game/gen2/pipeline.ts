@@ -15,6 +15,7 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { withSetting } from '../settingDials.ts';
+import { walkedSpan, WALKED_MIN } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -3314,15 +3315,24 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (!(want || pl)) continue;
         const n = pl ? Math.min(s.count ?? 1, pl.left) : s.count ?? 1;
         if (pl) { pl.left -= n; if (!n) continue; }
-        const span = Math.min(s.span ?? 0, k.piece.width - 40);
-        const rowLook = lookAt(k.x, k.y);
+        // (inside its piece's WALKED span: after the farthest the leap onto it sets him down, before the earliest the jump off it leaves;
+        // on a piece the leap clears, on the next piece he walks (walkedSpan.ts; ENG-16H, R-165.246, every stage). Read off the built
+        // pieces: a socket's share of its piece put petals where a fluid run never stands, 1-6's expert sealed doors)
+        let piece = k.piece;
+        let ws = walkedSpan(piece, laid);
+        if (ws.hi - ws.lo < WALKED_MIN && ws.next) { piece = ws.next; ws = walkedSpan(piece, laid); }
+        const lo = Math.max(ws.lo, piece.x + 20), hi = Math.min(ws.hi, piece.x + piece.width - 20);
+        const room = Math.max(0, hi - lo);
+        const span = Math.min(s.span ?? 0, piece.width - 40, room);
+        const cx = room > 0 ? Math.max(lo + span / 2, Math.min(hi - span / 2, piece === k.piece ? k.x : (lo + hi) / 2)) : Math.max(piece.x + 20, Math.min(piece.x + piece.width - 20, (ws.lo + ws.hi) / 2));
+        const rowLook = lookAt(cx, piece.y);
         // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
         const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';
         for (let i = 0; i < n; i++) {
-          const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
+          const x = n === 1 ? cx : cx - span / 2 + (span * i) / (n - 1);
+          flower(Math.max(piece.x + 20, Math.min(piece.x + piece.width - 20, x)), piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
-        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y, ...(pl ? { count: n } : {}) });
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: R(cx), y: piece === k.piece ? k.y : R(piece.y - (s.dn ?? 0)), ...(pl ? { count: n } : {}) });
       } else if (s.role === 'objective' && s.allow?.includes('mark')) {
         // (her MARK, a designed goal item (creak.ts marks): every one a section holds is laid where the designer put it, never shared
         // out by a quota; the goal is a share of those laid, goals.ts)
@@ -3859,6 +3869,8 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
 }
 /** each built stage's route asks (laid in world px), read by applyVerdicts; kept off gen2 so the built stage carries the verdicts only */
 const ASKS = new WeakMap<Gen2Stage, NonNullable<Laid['asks']>>();
+/** the asks the lay laid on a built stage (world px), for the checks that read the route (walkedSpan.test.ts) */
+export const laidAsks = (st: Gen2Stage): NonNullable<Laid['asks']> => ASKS.get(st) ?? [];
 
 /**
  * levelCheck on the stage as this difficulty will play it: an Easy purge or gauntlet is held to easyMode's goal (budget.quota.check,
