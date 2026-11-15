@@ -59,15 +59,31 @@ test('every World 2 stage except the boss lair has its rivers, and no other worl
   }
 });
 
+// (every LOG river: still water (speed 0: a creek under a liana, 2-1.md beat 5; a splash-back pond) is a different piece, no log river, as
+// riverLay.ts riverFaults rules; the lead's ruling B, 11:27 AM ET 11-15. A stage of still water alone is held by the test below)
 test('logs are evenly spaced, hang below the bank lip', () => {
   for (const l of levels.filter((x) => x.worldIndex === 2)) {
     const s = generateStage(l);
-    for (const r of s.rivers ?? []) {
+    for (const r of (s.rivers ?? []).filter((q) => q.speed > 0)) {
       const logs = s.platforms.filter((p) => p.type === 'drift' && p.drift!.x0 === r.x0);
       assert.ok(logs.length >= 3, `${l.id}: ${logs.length} logs`);
       // the bank lip is higher than the log tops: a small, even hop on and off
       for (const p of logs) assert.ok(p.y > 0 && p.drift!.baseY === p.y);
     }
+  }
+});
+
+// (the stage whose lesson is the river (World 2's kit: W2_ARCS' lesson, W2_LESSON.river) lays at least one LOG river: its logs are the
+// lesson. RED until the designed 2-1 (w2Arc21.ts) lays its rivers through place 'river'; the placeholder's water is still creeks. The
+// lead's ruling B, 11:27 AM ET 11-15: the red sits on this honest line, never on a loosened one)
+test('the river lesson\'s stage lays at least one log river', async () => {
+  const { W2_ARCS, W2_LESSON } = await import('./gen2/worlds/w2.ts');
+  const ids = Object.entries(W2_ARCS).filter(([, a]) => a.lesson === W2_LESSON.river).map(([id]) => id);
+  assert.ok(ids.length >= 1, 'a World 2 stage teaches the river');
+  for (const id of ids) {
+    const s = generateStage(levels.find((l) => l.id === id)!);
+    const logRivers = (s.rivers ?? []).filter((r) => r.speed > 0 && s.platforms.some((p) => p.type === 'drift' && p.drift!.x0 === r.x0));
+    assert.ok(logRivers.length >= 1, `${id}: ${logRivers.length} log rivers (its water is ${(s.rivers ?? []).length} still creeks)`);
   }
 });
 

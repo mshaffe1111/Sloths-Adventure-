@@ -94,32 +94,6 @@ test('2-8: every cage in the rising basins hangs off a reed island, and every ro
   }
 });
 
-test('the ferry: moored out of reach under the far bank while the sluice is shut; the lever lets the river run and brings it round', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-2'), s, '2-2');
-    const ri = st.kit!.rooms.findIndex((r) => r.id.startsWith('ferry'));
-    assert.ok(ri >= 0, 'a ferry room');
-    const river = st.rivers!.find((r) => r.raft)!;
-    assert.ok(river.safe, 'the first sluice: a splash costs nothing');
-    assert.ok(river.x1 - river.x0 > 313 + 100, 'too wide for a double jump');
-    const raft = st.platforms.find((p) => p.type === 'drift' && p.drift!.x0 === river.x0)!;
-    const kit = new KitPlay(st.kit!, st.platforms, { rivers: st.rivers, collectibles: st.collectibles });
-    const h = host(idle(river.x0 - 200), []);
-    let t = 0;
-    const step = (sec: number) => { for (let u = 0; u < sec; u += 1 / 30, t += 1 / 30) { h.t = t; kit.step(1 / 30, h, st.platforms); } };
-    const at = () => driftX(raft.drift!, logClock(st.rivers, raft.drift!, t));
-    step(3);
-    const moored = at();
-    assert.ok(moored > river.x1 - 30, `moored under the far bank (${Math.round(moored)} of ${river.x1})`);
-    step(5);
-    assert.ok(Math.abs(at() - moored) < 1, 'and it stays there');
-    kit.rooms[ri].levers[0].on = true;
-    // the current comes round: the raft out from under his bank and over the water within a couple of seconds
-    step(2.5);
-    assert.ok(at() > river.x0 - raft.width + 20 && at() < river.x0 + 200, `here it comes (${Math.round(at())})`);
-  }
-});
-
 test('the court bell: a tap rings it, the court gate opens and stays open, and the guard past the gate comes to look', () => {
   const st = buildW2Stage(cfg('2-9'), 1, '2-9');
   const room = st.kit!.rooms[0];

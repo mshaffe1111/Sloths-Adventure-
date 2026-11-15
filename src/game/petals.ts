@@ -38,10 +38,10 @@ const SCATTER = new Set<Collectible['type']>(['flower', 'leaf', 'fruit']);
 /** World 8's harvest: its flowers are the night blooms the goal counts, a goal item of their own */
 export const nightBlooms = (stage: Pick<GeneratedStage, 'config'>) => stage.config.worldIndex === 8 && stage.config.objectiveType === 'harvest';
 
-/** the stage's petal brief says LOW (GraphBrief.petals, by data: 1-2, 1-6, 1-7, 1-8; R-165.263): pickups come from its sections' sockets,
+/** the stage's petal brief says LOW or FEW (GraphBrief.petals, by data: 1-2, 1-6, 1-7, 1-8 low; 2-1 few, which holds all low does; R-165.263): pickups come from its sections' sockets,
  *  no arc over a gap (jumpTrails.ts), and a fill only over a stretch longer than Matt's 2 screens (fillGaps with SPREAD_MAX: 'low' means
  *  few, never a bare stretch; the lead's ruling INT-10d 11-15) */
-export const petalsLow = (stage: object) => (stage as { gen2?: { brief?: { petals?: string } } }).gen2?.brief?.petals === 'low';
+export const petalsLow = (stage: object) => ['low', 'few'].includes((stage as { gen2?: { brief?: { petals?: string } } }).gen2?.brief?.petals ?? '');
 
 /** the stage's petal brief asks for its REQUIRED hops' arcs (GraphBrief.petalArcs, by data: 1-6; INT-10, the lead's ruling 11-15 11:10 AM) */
 export const petalArcsOn = (stage: object) => (stage as { gen2?: { brief?: { petalArcs?: boolean } } }).gen2?.brief?.petalArcs === true;

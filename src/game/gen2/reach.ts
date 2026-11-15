@@ -9,6 +9,7 @@
 import type { Difficulty } from '../difficulty.ts';
 import type { Band, BandTable, FlownArc, ReachMove, ReachScope, SectionKind } from './verdicts.types.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
+import { comboGuaranteedAt, missionOf } from '../skills.ts';
 import { FLOWN_ROWS } from './worlds/flownArcs.ts';
 
 // ───────────────────────── the flown arcs, per scope: world data (worlds/flownArcs.ts) ─────────────────────────

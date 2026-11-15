@@ -23,7 +23,7 @@ import { STAGE_ART_FRAMES } from '../stageArtData.ts';
 import { chainLines, doubleAllowed, gripsOf, heldLandings, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
-import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
+import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
 import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
@@ -42,6 +42,8 @@ import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
+import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
+import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
@@ -1129,6 +1131,9 @@ interface LocalPiece {
   ropeFree?: true;
   /** that rope's look (place `rope` with `look`) */
   ropeLook?: 'vine';
+  /** a far bank past a river (place `river`): the world's river row the water between is laid from, and the near bank's key (layStage
+   *  lays the water and its logs between the two) */
+  river?: { row: string; from: string };
 }
 interface LocalGap {
   x0: number;
@@ -1155,11 +1160,15 @@ interface LocalGap {
    *  through and can come back the same way (a deep pit with steps out the far side is one-way, and before a purge's shrine that
    *  strands whoever still owes an animal behind him) */
   shallow?: boolean;
+  /** a river's water (place `river`): its row's name. Nothing is laid under it (no pit, no bough, no stair): the river zone takes a fall,
+   *  a life on a deep row, a splash back onto the near bank on a `safe` one */
+  river?: string;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
  *  bounce: the floor its mushroom stands on), `yLand` the top he lands on */
-export interface LocalAsk { x0: number; x1: number; yTake: number; yLand: number; move: 'single' | 'double' | 'bounce'; block?: 'double' | 'bounce'; thin: boolean; key: string }
+/** `move` 'ride' (place `river`): the crossing is a ride on the river's logs, bank to bank, never a jump (riverFaults judges it) */
+export interface LocalAsk { x0: number; x1: number; yTake: number; yLand: number; move: 'single' | 'double' | 'bounce' | 'ride'; block?: 'double' | 'bounce'; thin: boolean; key: string }
 export interface LocalLayout {
   pieces: LocalPiece[];
   gaps: LocalGap[];
@@ -1185,6 +1194,8 @@ export interface LayLocalOptions {
   once?: WorldOnce<string>;
   /** the world's soft pit depth (manifest.pitDepth): a perch past a liana keeps clear of the steps out of the pit under it */
   pitDepth?: number;
+  /** the world's river table (manifest.rivers): place `river` reads its row here */
+  rivers?: WorldManifest['rivers'];
 }
 
 /**
@@ -1381,6 +1392,18 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y;
       // (`free`: the rope is a try-it, never the way: a soft pit with the plain steps out the far side, to walk down and through)
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, ...(pl.free ? { soft: true, shallow: true } : { back: { lips: [a.y, y] as [number, number] }, ...(pl.soft ? { soft: true } : {}) }) });
+    } else if (pl.kind === 'river') {
+      // a RIVER (ENG-W2b; riverLay.ts): the far bank the row's river width past `after`, level with it (the logs sit evenly round the window
+      // only at that width); the water between is laid in layStage, where the ropes are hung, from the same row. Nothing under the water:
+      // the river zone takes a fall (a life on a deep row, set back on `after` on a safe one). The crossing is asked as a ride, never a jump
+      const row = lo.rivers?.[pl.row];
+      if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays river row "${pl.row}" and world ${budget.world} has no river row of that name (WorldManifest.rivers)`);
+      if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
+      const a = ref(pl.after);
+      x = a.x + a.w + riverWidth(row);
+      y = a.y;
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
+      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'swing' && ref(pl.after).hang?.kind === 'liana') {
       // a CHAIN (ENG-S5, 1-6 beat 4 "The chain"): a liana caught off the liana `after`, no perch or pit between (the gap under the whole
       // chain is its last perch's, `land`). Its anchor `top` over the ledge the chain left, its swing rolled as any liana's; its anchor where
@@ -1545,7 +1568,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1627,7 +1650,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string }>;
   /** the reach each jump on the route asks, world px, by section (verdicts.ts judges them on 1-1) */
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
@@ -1641,6 +1664,10 @@ export interface Laid {
   vines: Vine[];
   /** the shimmy ropes (place `rope`) */
   ropes: Rope[];
+  /** the log rivers (place `river`): each one's water; its logs are among `platforms` (type 'drift') */
+  rivers: RiverZone[];
+  /** the petals that ride those logs (RiverRow.petals): each one's log and where on it; the fill lays them as riding pickups */
+  riverPetals?: Array<{ log: Platform; dx: number; dy: number }>;
   width: number;
   bottom: number;
   nextId: number;
@@ -1981,6 +2008,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const asks: NonNullable<Laid['asks']> = [];
   const vines: Vine[] = [];
   const ropes: Rope[] = [];
+  const rivers: RiverZone[] = [];
+  const riverPetals: NonNullable<Laid['riverPetals']> = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
   // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
@@ -2186,7 +2215,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let e = exitMemo.get(t.id);
     if (e === undefined) {
       try {
-        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth }).exit.y).sort((a, b) => a - b);
+        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers }).exit.y).sort((a, b) => a - b);
         e = ys[1];
       } catch {
         e = t.exitDy;
@@ -2418,7 +2447,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ASIDE = 1 << 20;
   let legK = 0, leftSum: number | undefined, firstLeft = false;
   /** where the leg he is on began in each of the lay's lists */
-  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0 };
+  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0, rv: 0 };
   const doors: Array<{ side: -1 | 1; y: number }> = [];
   const laidLegs: Array<LaidLeg & { t0: number; t1: number }> = [];
   const wallIds = new Set<number>();
@@ -2452,7 +2481,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const beginLeg = (k: number) => {
     const t = legs[k].travel;
-    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length };
+    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length, rv: rivers.length };
     flow = upOrDown(t) ? t : 'right';
     tower = vertical(flow);
     doors.length = 0;
@@ -2527,6 +2556,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     const mine = sections.slice(mark.s), own = platforms.slice(mark.p);
     if (leftSum !== undefined) {
+      // (a river in a leg laid left: its current and its fairness are read for a player running right; ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7)
+      if (rivers.length > mark.rv) throw new Error(`gen2 legs: a river in a leg laid left is not mirrored yet (at x ${R(rivers[mark.rv].x0)})`);
       reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), sections: mine }, leftSum);
       cur = { ...cur, x: leftSum - cur.x };
       dir = -1;
@@ -2571,7 +2602,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const mirrored = tower ? false : fixed ? fixed.mirrored : flip < 0.5 && hangsNeed(tpl).length === 0 && tpl.content !== 'climb' && !hasBlock(tpl) && Math.abs(exitDyOf(tpl)) <= 25;
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
-      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, ...(tempo ? { tempo } : {}) });
+      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, ...(tempo ? { tempo } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -2693,6 +2724,22 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: !lp.ropeFree, ...(lp.ropeLook ? { look: lp.ropeLook } : {}) });
         placed.beats.push({ x: l.x + l.width, letter: 'V' });
       }
+      // (each river (place `river`): its water from the near bank's end to the far bank's start, under the near bank's top, and its logs
+      // drifting across, laid by the one lay every river uses (riverLay layRiver: the row's current, logs and spacing). Laid here, before
+      // the check, so levelCheck and riverFaults judge the logs the game plays)
+      for (const lp of L.pieces) {
+        if (!lp.river) continue;
+        const row = M.rivers?.[lp.river.row];
+        if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays river row "${lp.river.row}" and world ${budget.world} has no river row of that name`);
+        const near = pieceOf(lp.river.from), far = pieceOf(lp.key);
+        if (far.x < near.x) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river runs right to left, which is not laid yet`);
+        const r = layRiver(row, near.x + near.width, near.y, () => pid++);
+        if (Math.abs(r.zone.x1 - far.x) > 1) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river ends at ${r.zone.x1}, its far bank starts at ${far.x}`);
+        platforms.push(...r.logs);
+        placed.seam.push(...r.logs);
+        rivers.push(r.zone);
+        riverPetals.push(...r.petals);
+      }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
@@ -2700,11 +2747,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
       if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
         const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
-        if (g.hurt || byBrief) {
+        if (g.river) {
+          // (a river's water (place `river`): nothing under it, no pit, bough or stair; its zone takes a fall, laid with its logs above)
+        } else if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
           // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
@@ -2908,6 +2957,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const q of platforms) q.x += right;
       for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) v.x += right;
       for (const r of ropes) { r.x0 += right; r.x1 += right; }
+      // (a river's water, and each log's window: its platform moved with the rest)
+      for (const r of rivers) { r.x0 += right; r.x1 += right; if (r.safe) r.safe.backX += right; }
+      for (const q of platforms) if (q.drift) { q.drift.x0 += right; q.drift.x1 += right; }
       for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
       for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
       for (const q of sections) {
@@ -2958,6 +3010,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a rope's two ends, the tops of the ledges it is hung between, move with it: left behind, they read 34 px over the ledges on a
       //  roll the shift moved, and whatever asks where a rope's ledge is (the level check, the engine's own jump from it) was wrong)
       for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
+      // (a river's surface and where a splash sets him back, and each log's float line: its platform moved with the rest)
+      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; }
+      for (const q of platforms) if (q.drift) q.drift.baseY += down;
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
@@ -3019,6 +3074,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
     ropes,
+    rivers,
+    ...(riverPetals.length ? { riverPetals } : {}),
     zones,
     heartFalls,
     ...(rise.length ? { rise } : {}),
@@ -3565,13 +3622,20 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    // (GraphBrief.petals 'low': no arc over any gap)
-    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low') continue;
+    // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap; and none over a river, which is ridden, never jumped: its
+    // petals ride its logs, RiverRow.petals (ENG-W2b: an arc hung three petals in the air over the water, out of every rider's reach)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river) continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
       flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt), arcLook);
     }
+  }
+  // (the petals that ride the logs, RiverRow.petals: each laid where its log is now and set to ride it, Collectible.rides)
+  for (const q of laid.riverPetals ?? []) {
+    const n = C.length;
+    flower(q.log.x + q.dx, q.log.y + q.dy);
+    if (C.length > n) C[n].rides = { id: q.log.id, dx: q.dx, dy: q.dy };
   }
   if (budget.archetype === 'harvest') {
     const flowers = () => C.filter((c) => c.type === 'flower').length;
@@ -3920,6 +3984,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     platforms,
     vines: laid.vines,
     ropes: laid.ropes,
+    // (the log rivers, place `river`; a stage with none carries no field, as before)
+    ...(laid.rivers.length ? { rivers: laid.rivers } : {}),
     enemies: filled.enemies,
     boss: null,
     collectibles: sink.collectibles,
@@ -4029,7 +4095,11 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
   // (1-1 links level jumps by the flown arcs too, R-165.61; every other stage exactly as before)
-  const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
+  const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
+  // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
+  // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
+  const wet = riverFaults(st).map((e) => `river: ${e}`);
+  const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
   // (and a creaky limb laid before its lesson is over: creak.ts. One after it may be the way, Matt's rule)
@@ -4324,9 +4394,15 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
   const world = st.gen2.budget.world;
   // (the world's pit painter paints its pit floors, its marked drops and its hurt floors: the manifest's pit rule, never a world number)
   const painted = pits.pitPainter === 'w1Pits';
+  const rivers = st.rivers ?? [];
   return (st.gen2.falls ?? []).map((f): Drop => {
     const mid = (f.x0 + f.x1) / 2;
-    const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
+    // (a fall inside a river ends in its water, whatever floats on it (a log is no floor: it drifts away), ENG-W2b: a deep river a life,
+    // drawn as the river's deep water; a splash-back river (`safe`) sets him back on the bank he left, drawn as the shallow backwater
+    // (riverArt.ts RIVER_LOOK.safe, BUILD-21: the engine paints every safe river so), and the record says so)
+    const river = rivers.find((r) => mid >= r.x0 - 1 && mid <= r.x1 + 1);
+    if (river?.safe) return { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}), ends: { kind: 'putback', to: 'take-off' }, look: 'safe-water-art' } as Drop;
+    const ground = river ? undefined : st.platforms.find((p) => p.type !== 'bouncy' && p.type !== 'drift' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
@@ -4336,11 +4412,11 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
       return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : painted ? 'pit-floor-art' : 'ground' } as unknown as Drop;
     }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
-    if (f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
+    if (river || f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
       const h = hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1);
       const sign = signs.some((q) => Math.abs(q.x - (f.x0 - 40)) <= 2);
       const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(f.x0 - h.x), sign: true as const } } : {};
-      return { ...at, ends: { kind: 'life', cause: f.kind === 'water' ? 'water' : 'void' }, look: f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
+      return { ...at, ends: { kind: 'life', cause: river || f.kind === 'water' ? 'water' : 'void' }, look: river || f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
     }
     if (zone) return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' };
     // (a soft fall with nothing drawn under it: World 1's painter, w1Pits, draws it as water unless the gap is marked as a drop)
@@ -4355,7 +4431,8 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
   const nodes = st.gen2.nodes ?? [];
   // (POLISH-8, R-165.228: a teach node's FIRST double rise block is the teach's own rise, judged on its own band, 'double-teach-first';
   //  the rises after it in the node (a second D) keep the block band)
-  const read = (ASKS.get(st) ?? []).map((a) => {
+  // (a river crossing is a ride on its logs, judged by riverFaults in the check, never a 600-800 px jump: no flown arc reads it)
+  const read = (ASKS.get(st) ?? []).filter((a): a is typeof a & RouteAsk => a.move !== 'ride').map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
     const teach = !!node && JOB_OF[node.token[0]] === 'teach';
     return { a, node, teach, ...classify(a, teach, setting, comboGuaranteedAt('bounce-air', missionOf(st.config.id))) };

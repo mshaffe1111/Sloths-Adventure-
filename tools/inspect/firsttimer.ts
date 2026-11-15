@@ -47,6 +47,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
+import { RIDE } from '../../src/game/ride.ts';
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -583,6 +585,23 @@ export interface DotReport {
  * The rules the bot checks, by their names in reference/STAGE-RULES.md (section 2's rows and section 6's lessons), with the thresholds
  * used. A finding names the rule it breaks.
  */
+/**
+ * The bot's skills a toy test switches off to prove the bot needs them (level.md rule 21: the plant goes RED with the skill off). `ride`:
+ * he boards a drifting log (or a lily pad) only when a hop from where he stands, flown as the engine flies it, comes down on it where it
+ * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
+ * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
+ */
+export const SKILLS = { ride: true, upstream: true, handed: true };
+/**
+ * (BUILD-21, 2-1.md NEW 4) `upstream`, against the flow: on a log carrying him back the way he came (a river flowing back at him), every
+ * log runs at the river's one speed, so the gap to the next never closes while he waits: waiting at the front end only carries him back.
+ * He hops from the log's front end as soon as the next log (or the far bank) is in reach of a hop, flown as the engine flies it, and never
+ * walks off a log's end to press late (a ground edge's late press: off a log the water is 14 px under him, river.ts LOG_DROP - LOG_HEIGHT/2,
+ * so there is no fall to press in; riverRide.test.ts, measured 11-15: the child on Easy walked off and drowned 4 times). `handed`, handed to
+ * the bank: on a log carrying him on toward the bank ahead, he stands and rides it in (engine.ts drift loop: carried under a bank he steps
+ * up onto it), never a hop at the water off its front end. Always on outside a test.
+ */
+
 export const RULES = {
   opening: { name: 'Opening seconds', ref: 'STAGE-RULES §2', rule: 'Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches.', secs: 5 },
   plainWalk: { name: 'Plain walk', ref: 'STAGE-RULES §2', rule: 'No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip.', stuckSecs: 8, loops: 2 },
@@ -626,6 +645,8 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
+  handed?: number;
   perMin: { hits: number; lives: number };
   gameOvers: number;
   firstHarm: FirstHarm[];
@@ -767,6 +788,31 @@ export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: 
   }
   return false;
 }
+/**
+ * Does a hop from (x, y) at game time t0, held `hold` s, come down on the float `q` where it will be (`at(t)`: a drifting log on its
+ * river's clock), `margin` px in from either end, inside its river's window (a log hidden under a bank is no floor: engine.ts onFloor)?
+ * Flown frame by frame as the engine flies it (airStep), as hopCatches flies a hop to a liana (ENG-W2b: the old "a log is near" read a log
+ * within 90 px of the edge as boardable ~90% of its cycle, and the middle bot drowned 5 times in one deep river on Normal).
+ */
+export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0: number, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  for (let i = 1; i < 60; i++) {
+    const held = i * DT < hold;
+    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+    const prev = b.y;
+    airStep(b, DT, dir, held);
+    if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
+      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
+      const lx = at(t0 + i * DT);
+      return b.x >= lx + margin && b.x <= lx + q.width - margin;
+    }
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/** where a float's left edge is at game time t: a drifting log on its river's clock (river.ts logClock), anything else where it stands */
+const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: number): number => (q.drift ? driftX(q.drift, logClock(rivers, q.drift, t)) : q.x);
+
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
@@ -870,6 +916,9 @@ export class FirstTimerRun {
   readonly harms: Harm[] = [];
   /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
   readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
+  /** handed to a bank by a log (FTRun.handed): counted where the frame after a log is a bank and he never left the ground */
+  handed = 0;
+  private wasOnLog = false;
   readonly stuck: StuckSpot[] = [];
   readonly puzzles: Array<{ id: string; x: number; t: number }> = [];
   private view = emptyGuideView();
@@ -2043,6 +2092,15 @@ export class FirstTimerRun {
       this.lateArmed = null;
       this.edge = null;
     }
+    // (a late walk-off that came down on a drifting log: the ground went on after all, and off a log there is no fall to press in, so he
+    // never walks on off its end with the old press armed: SKILLS.upstream; riverRide.test.ts, the child on Easy, 11-15)
+    if (SKILLS.upstream && this.lateArmed && p.grounded) {
+      const on = this.floorAt(p.x, p.y, 6);
+      if (on?.type === 'drift' && on !== this.lateArmed.here) {
+        this.lateArmed = null;
+        this.edge = null;
+      }
+    }
     if (this.lateArmed) return side(this.lateArmed.dir);
     // (a press on its way: he keeps going until it comes)
     if (this.pending) return side(this.pending.dir);
@@ -2133,7 +2191,13 @@ export class FirstTimerRun {
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
       const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
-      const ahead = this.floorAt(p.x + dir * look, p.y, 40);
+      // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
+      // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
+      // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
+      const under = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+      const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
+      const past = under && dir * (p.x + dir * look - lip) > 0;
+      const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
@@ -2144,10 +2208,18 @@ export class FirstTimerRun {
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
-        if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
+        // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
+        // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
+        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+        // (a hop off a log keeps the log's sideways speed, the one carry rule (engine.ts groundJump, RIDE.keep): flown with it)
+        const carry = here?.drift ? ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x : 0;
+        const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + carry) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, p.vx + (Math.abs(carry) < 400 ? carry : 0)));
+        if (SKILLS.ride && !drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
-          const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320));
-          const near = floats.some((q) => (dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
+          // (a lift or a lily pad, 'moving', keeps the read it always had: near the edge now)
+          const ahead = (q: Platform) => (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320);
+          const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (q.type === 'drift' ? Math.abs(q.x + q.width / 2 - edgeX) < 400 : ahead(q)));
+          const near = floats.some((q) => (q.type === 'drift' ? lands(q) : dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
           if (floats.length && !near) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
@@ -2155,10 +2227,21 @@ export class FirstTimerRun {
         }
         // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
         // of the log the moment he reached it, whatever was ahead, which a person watching the river does not)
-        if (!drops && here && here.type === 'drift') {
+        if (SKILLS.ride && !drops && here && here.type === 'drift') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
-          const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 90 && q.x - edgeX > -q.width + 40 : edgeX - (q.x + q.width) < 90 && edgeX - (q.x + q.width) > -q.width + 40));
+          const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && lands(q));
+          // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
+          if (SKILLS.handed && here.drift && here.drift.dir === dir) {
+            this.edgeWait = -1;
+            return {};
+          }
+          // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
+          // the log, never a late walk-off into the water; out of reach, he stands, and the log hands him back to the bank he came from)
+          if (SKILLS.upstream && here.drift && here.drift.dir !== dir) {
+            this.edgeWait = -1;
+            return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
+          }
           if (!bank && !next) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
@@ -2792,6 +2875,7 @@ export class FirstTimerRun {
     while (this.t < cap) {
       const pad = this.pad();
       this.sim.frame(pad);
+      { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
@@ -2923,6 +3007,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     harms,
     perMin: { hits: +(harms.filter((h) => h.kind === 'hit').length / mins).toFixed(2), lives: +(harms.filter((h) => h.kind === 'life').length / mins).toFixed(2) },
     softFalls: run.softFalls.length,
+    handed: run.handed,
     gameOvers: run.gameOvers,
     firstHarm: fh,
     stuck: run.stuck,

@@ -53,7 +53,9 @@ export type HeartEnd = { kind: 'heart'; to: 'take-off' };
 
 /** how the bottom of a drop is DRAWN. A soft look and a lethal look never overlap: that is the testers' finding (the deadly drop is
  *  painted like the safe floor), made unrepresentable in the type and checked on the built stage by `drop.look-lies` */
-export type SoftLook = 'ground' | 'pit-floor-art';
+/** `safe-water-art`: a splash-back river, painted as the shallow backwater (riverArt.ts RIVER_LOOK.safe, the lead's ruling 1, 11-15): water
+ *  that reads as costing nothing, never deep water's look */
+export type SoftLook = 'ground' | 'pit-floor-art' | 'safe-water-art';
 export type LethalLook = 'water-art' | 'void-dark';
 /** a hurt floor's own look: the painted family the world's manifest names (`hurtFloor.art`). Never a soft look, never a lethal one */
 export type HurtLook = 'hurt-art';

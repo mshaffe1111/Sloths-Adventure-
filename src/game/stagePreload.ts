@@ -53,6 +53,7 @@ import { WATER_SIGN_URL } from './waterSignData.ts';
 import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
+import { W6_WHEEL_URLS, w6WheelsReady } from './w6WheelArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -144,6 +145,9 @@ export function start(keys: readonly string[]): string[] {
       w7PuzzleReady();
       w7TempleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
+    } else if (k === 'w6-wheels') {
+      w6WheelsReady();
+      urls.push(...W6_WHEEL_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);

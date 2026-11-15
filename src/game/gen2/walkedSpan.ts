@@ -34,7 +34,8 @@ const SEAM = 10;
 /** how far a plain jump's take-off may lie behind a piece, or its landing ahead of it, and still be its way on or off (px) */
 const HOP_NEAR = 460;
 
-type Ask = { x0: number; x1: number; yTake: number; yLand: number; move: 'single' | 'double' | 'bounce' };
+/** (a 'ride' ask, World 2's river: a log hands him onto the bank at its lip, no jump's touchdown; read as a bounce is: skipped) */
+type Ask = { x0: number; x1: number; yTake: number; yLand: number; move: 'single' | 'double' | 'bounce' | 'ride' };
 /**
  * The built stage as the walked path reads it. `away`: the pieces OFF the path (ENG-PETAL 11-14, R-165.246; petals.ts offPath, the
  * stage's own record of its falls): a soft pit's floor or stair below its lower lip, a hurt floor, a catch. He stands on one only after a
@@ -163,7 +164,7 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
     if (t !== undefined) lo = Math.max(lo, t);
   }
   for (const a of st.asks ?? []) {
-    if (!on(p, a.x1, a.yLand) || a.x0 >= a.x1 || a.move === 'bounce') continue;
+    if (!on(p, a.x1, a.yLand) || a.x0 >= a.x1 || a.move === 'bounce' || a.move === 'ride') continue;
     lo = Math.max(lo, Math.min(end, jumpTouchdown(a.x0, a.yTake, a.yLand, a.move === 'double')));
   }
   // (set down by a plain jump: a full run's jump held off the end of a piece behind it; walked on across a seam, none)
@@ -198,7 +199,7 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
     hi = Math.min(hi, b);
   }
   for (const a of st.asks ?? []) {
-    if (!on(p, a.x0, a.yTake) || a.x1 <= a.x0 || a.move === 'bounce') continue;
+    if (!on(p, a.x0, a.yTake) || a.x1 <= a.x0 || a.move === 'bounce' || a.move === 'ride') continue;
     const dbl = a.move === 'double';
     // (the earliest take-off a full jump still lands on its far piece from: the far piece's near end less the jump's reach)
     const to = st.platforms.find((q) => q !== p && on(q, a.x1, a.yLand));
