@@ -81,6 +81,23 @@ src/game/eagleGlance.test.ts (8 tests):
 - The kit's runtime changes (F1, F2, one act one heart) are not in a built-stage lock by design; every stage with a kit sweeper plays them: World 1's eagle (1-7, 1-8), World 2/6's caiman (pass direction only: it has no glance dial).
 - **Not run:** the whole-game lock. lockall on every stage took ~36 s a stage under tonight's load. My change can move built data only through the watch rows, which are the 21 stages locked here.
 
+## 5. Clips and polish check (clips/: real page, every frame through the real touch pad, 1-7 seed 1 Normal; captions name f, its phase, eye vs him, hearts)
+| clip | frames named | what it shows |
+|---|---|---|
+| 17-normal-glance-up.mp4 (+ -side) | f210 head away, f226 head-cock, f250 look, f297 away | the perched eagle's glance; he is frozen in the moss and not seen |
+| 17-normal-caught-up.mp4 + 17-normal-caught-side.mp4 | f225 head-cock begins and he walks on, f248 look, f249 its dive's tell (0.77 s), f282 ONE heart, f374 out | a caught walk, told first, one act one heart |
+| 17-normal-fakeout-up.mp4 (+ -side) | f765 a turn begins, f780 it turns away without looking (the fake-out), f847 a real head-cock, f870 its look | the flying eagle (#5) fakes, then looks; he is frozen in cover |
+| 17-normal-sneak-up.mp4 | f164 he leaves cover as its pass ends, f204 under its post, f225 head-cock with him 196 px past it, f248 look with him 409 px past (out of its reach: unseen) | the reach rule: a head behind him, off his screen, cannot see him |
+Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/f282.
+
+**Polish check (judged on the frames, upright and sideways):**
+- Perched glance: PASS. Away = profile looking away from him; head-cock = full face; look = down at him. Sideways too: the bird is on screen below the sign.
+- Reach: was a FAIL at 280 px (the bird half off the right edge, upright). Fixed: 240 px.
+- Flying glance: passable, not polished. Its head-cock swings it in over him, larger and darker, and the look hangs it over his spot under the HUD. Its ground shadow during the look (alpha 0.35) cannot be seen on these frames. My first upright clip had the caption over the sky and hid the bird; the clips here have the caption at the bottom.
+- Sideways, the perched eagle's TELL (wings up as it lifts off) passes under the progress sign. That is the existing tell pose (sweepPose perchedPose 'tell', BUILD-17), not new, but named.
+- Every upright frame of 1-7 on this path carries the story note "A whole hour in that bush..." until it is tapped; the clip tool taps it away as a player does.
+- The far-circling pose at rest is faint by design (SKY.far alpha 0.55). A player sees the flying eagle's head-cock as it "coming in", not as a head turning: an art question for the lead (a painted head-turn frame for the flying harpy, Hugging Face), not done tonight.
+
 ## 6. EXACT NEXT STEP for TUNE-17 (the 1-7 tuner, data only, no engine)
 1. Read this REPORT §2's dial table. The dials live in `W1_STILL['w1-eagle']` (src/game/gen2/worlds/w1Cast.ts), the stage's still row.
    - Add `glance: { away: [a, b], look: [c, d], fake: f, reach: r }` to 1-7's row to override the kind's default (predators/world1.ts EAGLE.glance).
