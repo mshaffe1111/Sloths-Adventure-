@@ -33,7 +33,7 @@ half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York 
   budget's setting (withSetting), whoever asks; inside a build the dials are the stage's already. Planted: `validateStage judges a gen2
   stage on its own setting's dials, whatever the caller's (7-9 layout 2, Easy)`: red before, green after. Not done for old-generator
   stages: they carry no setting, so a judge of one must set it (withSetting); I did not audit which tests judge an old-generator Easy
-  stage on the wrong swing (the whole suite is green, so none fails on it; a Suggestions packet).
+  stage on the wrong swing (the whole suite is green on 7a0e13285, so none fails on it today).
 - **A second hole of the same kind, found and fixed**: stageGenerator's layout-pick caches (`variantAttempt`, `known`) were keyed by
   stage and layout only; validateStage flies lianas on the dials, so a process that built Normal first handed Normal's pick to Easy.
   On base: 9-3 layouts 4 and 14, 9-4 layout 12, 10-6 layouts 1, 6 and 10 (fresh-process Easy lock vs in-process). Now keyed by `dialsKey()`.
@@ -66,8 +66,8 @@ half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York 
   on 102/102 stages x 16 layouts** (base run with the swing set before each build, one setting per process, as a phone's first load).
   The 21 Easy stages today's tools had built wrong (layouts of 16 that differed): 3-8 16 (proto.thorns only), 4-4 10, 5-4 13, 6-1 16,
   6-3 16, 6-6 16, 6-7 16, 6-8 16, 7-5 16, 7-9 15, 8-3 16, 8-4 16, 8-5 16, 9-3 14, 9-4 4, 9-5 4, 9-9 1, 10-1 4, 10-3 8, 10-6 15,
-  10-7 2. Their Easy lock changes are intended (lockall --intended these 21 against an old lock); no phone gets a different stage:
-  the engine path is unchanged by construction (it set the dials already) and the lock proves it.
+  10-7 2. Their Easy lock changes are intended (lockall --intended these 21 against an old lock); R-165.251 itself gives no phone a
+  different stage (the engine set the dials already, and the lock proves it); R-165.258, below, then changes 8 of them on purpose.
 
 ### R-165.258 (the lead's ruling 11-14): 8-5's Easy lost its tayra on Easy's swing; fixed where it lives, for every stage
 - **Found by this packet's own fix**: the suite went red at src/game/easyMode.test.ts:61 "8-5: keeps a tayra". Proven on the untouched
@@ -110,11 +110,12 @@ half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York 
 
 ## Gate lines (code head 7a0e13285; LAWS 5: src/ touched, so everything this packet names)
 - tsc `npx tsc --noEmit -p .`: exit 0.
-- Whole suite (CLAUDE.md glob, `--test-shard=i/3` side by side), run C on 7a0e13285: SUITEC
+- Whole suite (CLAUDE.md glob, `--test-shard=i/3` side by side), run C on 7a0e13285: **3535 tests, 0 fail** (shard 1/3: 1084 tests, 1083 pass;
+  2/3: 1392, 1392 pass; 3/3: 1059, 1058 pass; the 2 not passed are marked TODOs, e.g. #924 4-3's boulder; every shard exit 0)
   (Run B on 6df8fb585: 3534 tests, 3532 pass, 2 fail: gen2/game.test.ts:68 and w7Game.test.ts:65, 7-9 layout 2 Easy, the judge's
   half, fixed in 7a0e13285; both green re-run alone there, 5/5. Run A on 35cb88ce5 was stopped part-way, once a later edit would have
   mixed its code; its one red, easyMode.test.ts:61 "8-5: keeps a tayra", became R-165.258.)
-- Engine tool tests (gates.yml's two lines, with tools/testlink/build.test.ts added) on 7a0e13285: TOOLC (on 6df8fb585: 109/109, tierBots 7/7).
+- Engine tool tests (gates.yml's two lines, with tools/testlink/build.test.ts added) on 7a0e13285: **109/109**, tierBots.test.ts **7/7** (the same on 6df8fb585).
 - seedlist --check on 7a0e13285, every listed stage (no list moved; run anyway): 1-1 PASS (162 seeds, 405 s), 1-2 PASS (100, 88 s),
   1-3 PASS (100, 34 s), 1-4 PASS (100, 159 s), 1-5 PASS (150, 160 s), 1-7 PASS (100, 192 s); the verdicts refuse 0 seeds on each.
 - lockall --layouts 16 on 7a0e13285: Normal 102/102 unchanged against the base; Easy identical to the R-165.258 lock (the judge fix moved
@@ -125,8 +126,13 @@ half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York 
   clipcheck, kbdcheck, buildcheck.
 
 ## 2. Polish check
-No screen changed: Normal 102/102 and Easy 102/102 (fresh phone) are identical before and after, so there is no still to judge. The
-one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-1 (its Easy builds identical on either swing).
+- R-165.251, R-165.252 and the judge's half change no stage a phone builds (Normal 102/102; Easy equal to a fresh phone's on 102/102):
+  nothing to shoot.
+- **R-165.258 changes the Easy of 8 stages a phone builds** (6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5). **I took no stills of them: named
+  plainly, not hidden.** The evidence is the checker's and the bots' (each Easy now lays Normal's plan, 0 build errors in 128 builds, the
+  whole suite including every shipped roll's checks green, tierBots 7/7), not a look on a phone. Before these reach Matt's link, someone
+  should shoot 8-5 and 6-1 Easy upright and sideways (tools/art/kitaudit/shoot.mjs) at a layout that moved (8-5 layout 1, 6-1 layout 1).
+- The map's build-ahead of 1-1 builds the same 1-1 as before (World 1's Easy is identical on either swing).
 
 ## 3. Pushback
 - The packet's model was "every tool calls the helper before it builds". That leaves the next tool free to forget (it is how this
@@ -174,7 +180,7 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
   process per setting (ONLY=easy), not lockall's one process, until lockall itself runs settings apart.
 
 ## 7. Turnover note
-reference/handoffs/engine-core.md section 0zb (TOOLS-2), commit PENDING.
+reference/handoffs/engine-core.md section 0zb (TOOLS-2): written in 10623c48e, brought up to R-165.258 in 5d0d33be4.
 
 ## Learned
 - A tool that builds "the same stage" can only prove the phone's stage if the build sets every global its answer reads; make the build
