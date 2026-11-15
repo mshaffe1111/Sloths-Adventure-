@@ -311,10 +311,8 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     span({ x0: r.x0, x1: r.x1, y0: -1e9, y1: 1e9 }, 1e9, 'Z', 'river crossing: read the logs', 1.0, 'rivers');
   }
   for (const s of w5?.sheets ?? []) span({ x0: s.x0, x1: s.x1, y0: s.top - 20, y1: s.bottom + 20 }, 1e9, 'Z', 'silk sheet: do not stop', 0, 'silk sheets');
-  const chase = stage.proto?.chase;
-  if (chase) span({ x0: chase.start, x1: chase.end, y0: -1e9, y1: 1e9 }, 1.5, 'Z', 'the branch collapses behind him: keep running', 0, 'chase');
-  // (a LAID chase, any world: chase.ts ChaseLay on the stage, run by pieces/chasePiece.ts. Each stretch is pressure as the hand-built one
-  // is; its living forks are not. And its rolling nuts and fruit, rolling.ts RollSpec: each a beat where it meets him, from rollMeetX to
+  // (a LAID chase, any world: chase.ts ChaseLay on the stage, run by pieces/chasePiece.ts. Each stretch is pressure; its living forks
+  // are not. And its rolling nuts and fruit, rolling.ts RollSpec: each a beat where it meets him, from rollMeetX to
   // its drop, a nut a hop, a fruit a pass under (do nothing, keep running: timed). The quiet line read 1-8's K3 as 18.2 s of nothing
   // without them, ENG-CL (7))
   for (const s of stage.chase?.stretches ?? []) span({ x0: s.start, x1: s.end, y0: -1e9, y1: 1e9 }, 1.5, 'Z', 'the branch collapses behind him: keep running', 0, 'chase');
