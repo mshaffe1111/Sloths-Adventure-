@@ -9,9 +9,12 @@ Branch: t-eng-w2 from origin/t-int-9@1c7f6b95.
      piece at its scale against Pokey's 89.1 px, R-165.107), its look by world data, water as deadly gaps (gen2 waterWarnings, already wired),
      STAGE_TABLE rows '2-1' and '2-2' on the kit with placeholder arcs that roll; the hand-built 2-1/2-2 path in w2Stages.ts/stageGenerator.ts
      :2895-2900 deleted for those two only once the gen2 rows roll (new replaces old). Planted: a w2 kit test; generalitycheck clean.
- (2) ONLY AFTER the lead names the picked 2-1/2-2 pitch (about 8:45 PM; CRITIC-LR #2): the river as a gen2 section: drift logs between banks from data (river.ts's logs; riverLay.ts new), recipes for a log you ride,
+ (2) THEN (the pitches are picked: 2-1.md and 2-2.md on origin/t-pitch-b): the river as a gen2 section: drift logs between banks from data (river.ts's logs; riverLay.ts new), recipes for a log you ride,
      a log on a clock, a river flowing back; a bot skill that rides a log and steps off (planted toy, the middle and child bots). Proven on
      World 2's kit and one other world's (rule 21).
+ENGINE-WORTHY from DESIGN-FINAL (7:49): a river log moves him by position (engine.ts:1848), so a jump off it keeps none of its speed,
+while a ride does (ride.ts:19): one carry rule for everything that carries him, planted. And flowerReach.ts:139 never puts a petal on pads
+or logs. Final designs: reference/design/2-1.md and 2-2.md on origin/t-pitch-b (b85dba7f) replace PITCH-A as your source.
 Proof in reference/qa-reports/ENG-W2/REPORT.md: stills of a rolled 2-1 upright + sideways (Normal), the bot ride clip with the frame named,
 the WHOLE suite on your head, lockall --check (only 2-1/2-2 move; list them), drawcheck on 2-1 if it is in limits.json (add it: D51).
 Report "Learned", ENGINE-WORTHY, and EXACT NEXT STEP for the 2-1 builder (what is data-only from here).

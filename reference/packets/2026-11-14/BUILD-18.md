@@ -2,7 +2,8 @@
 Read FIRST reference/methods/level.md (Building rules, whole), then ONLY: reference/design/1-8.md on origin/t-1718-design (whole);
 reference/qa-reports/B5/REPORT.md "What a 1-8 builder can lay NOW" + B6/REPORT.md EXACT NEXT STEP on origin/t-eng-b6; reference/story/
 lines-1-8.md on origin/t-story@2e40e6a3 (APPROVED by the story keeper 7:37 PM: use the lines exactly); reference/methods/hf-art.md (for step 3 only).
-Branch: t-build-18 from origin/t-eng-b6 (its final head: git ls-remote; the chase, rolling, still fork, runner liana, tip are all there).
+Branch: t-build-18 from origin/t-eng-b6@75fd1fae (code final; ENG-B6's gate run on it ends ~8:15 and its REPORT ~8:45: merge its later
+commits when they land; the chase, rolling, still fork, runner liana, tip are all there).
 Why: every engine piece 1-8 names is built and proven (ENG-B4/B5/B6). This is the first level built from data only, and the clock is measured.
 STEP 0 (by 8:35 PM ET), THE PLAN, sent to the lead before you lay anything: the final node string, one line per beat (what is laid, which
 piece, which data field), and these lead changes applied to the design: (a) tributes: add **Wonder Boy** (1986: the draining timer that
