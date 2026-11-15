@@ -344,3 +344,64 @@ test('a tier bot at a plain step\'s face jumps it though his thumb lifts now and
     assert.ok(run.sim.p.x > 1300, `variant ${v}: still at the stump's face (x ${Math.round(run.sim.p.x)}) after 14 s`);
   }
 });
+
+/**
+ * ENG-16I (R-165.246): in the pit past a crumbled creaky limb, a liana AHEAD of the one he came off, caught from the pit's stair top, beats
+ * the walk back. Since soft-pit floors join under a perch (ENG-16H pitFloorJoin), the pit past the limb is open to the pit before, so
+ * pitWayUp found the bank before the first liana ("a ledge the route walks on") and he walked all the way back, took the first liana,
+ * landed on the regrown or crumbling limb and fell again: three falls, a rescue (castBots 1-6 Normal kid 33 of 40 seeds, the creaky
+ * landing and the gorge). A person in that pit climbs the stair and jumps for the next liana over its top step: from that step a jump
+ * anywhere in its last 40 px catches it (reference/qa-reports/ENG-16I/bots/pitout-7-creaky.txt). A toy: 1-6 Normal seed 7's creaky
+ * landing moved 26835 px left. RED with the walk back first (pitWayUp's walked ledge before any catch ledge).
+ */
+const CREAKY = () => {
+  const blk = (id: number, x: number, y: number, w: number): Platform => ({ id, x, y, width: w, height: 1211 - y, type: 'solid' }) as Platform;
+  const plats = [
+    blk(1, 0, 866, 320), // the bank he takes the first liana from
+    blk(2, 320, 1091, 556), blk(3, 876, 1091, 150), blk(4, 1026, 1091, 536), // the one floor under both pits and the limb (pitFloorJoin)
+    blk(5, 320, 1034, 300), blk(6, 320, 978, 200), blk(7, 320, 922, 100), // the stair back up to the bank
+    blk(8, 1026, 1034, 300), blk(9, 1026, 978, 200), blk(10, 1026, 922, 100), // the stair up toward the limb, its top under the next liana
+    { id: 11, x: 876, y: 866, width: 150, height: 24, type: 'fragile', broken: true, regrowAt: 1e9 } as unknown as Platform, // the limb, crumbled
+    blk(12, 1562, 866, 700), // the far bank, 225 px over the floor
+  ];
+  const liana = (id: number, x: number, top: number, bottom: number) =>
+    ({ id, x, topY: top, bottomY: bottom, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0.82 }) as unknown as Vine;
+  return { plats, vines: [liana(1, 506, 452, 872), liana(2, 1192, 447, 867)], route: Array.from({ length: 90 }, (_, i) => ({ x: 40 + i * 24, y: 866 })) };
+};
+
+test('in the pit past a crumbled creaky limb, the stair top under the NEXT liana beats the walk back to the first: he climbs to it', () => {
+  const { plats, vines, route } = CREAKY();
+  for (const who of [FT_KID, FT_ADULT, FT_CHILD, FT_MIDDLE]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 2, rescueAfter: 100 });
+    run.sim.bare(plats, vines);
+    run.sim.stand(1400, 1091);
+    const bot = run as unknown as { pitWayUp(from: Platform): Platform[] | null; swungOn: number | null };
+    bot.swungOn = 1;
+    const path = bot.pitWayUp(run.sim.platforms.find((q) => q.id === 4)!);
+    assert.ok(path, `${who.name}: no way up`);
+    const end = path[path.length - 1];
+    assert.equal(end.id, 10, `${who.name}: climbs to ${end.id} (x ${end.x} y ${end.y}), not the stair top under the next liana (10)`);
+  }
+  // (off the FIRST liana into the pit under it, the walk back is kept: the liana he came off is no way ahead; pitClimb's moss pit as before)
+  const run = new FirstTimerRun('1-1', 1, { ...FT_KID, setting: 'normal' }, { route, cap: 2, rescueAfter: 100 });
+  run.sim.bare(plats.filter((q) => q.id !== 12).concat([{ ...plats[11], x: 1562 } as Platform]), [vines[0]]);
+  run.sim.stand(600, 1091);
+  const bot = run as unknown as { pitWayUp(from: Platform): Platform[] | null; swungOn: number | null };
+  bot.swungOn = 1;
+  const path = bot.pitWayUp(run.sim.platforms.find((q) => q.id === 2)!);
+  assert.equal(path?.[path.length - 1].id, 1, 'off the first liana with no liana ahead: he climbs back to the bank he took it from');
+});
+
+test('in the pit past a crumbled creaky limb he climbs the stair, takes the next liana and lands on the far bank: no rescue', () => {
+  const { plats, vines, route } = CREAKY();
+  for (const who of [FT_KID, FT_ADULT]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 30, rescueAfter: 100 });
+    run.sim.bare(plats, vines);
+    run.sim.stand(1400, 1091);
+    run.prog.relocate(run.sim.p);
+    (run as unknown as { swungOn: number | null }).swungOn = 1;
+    const r = run.play();
+    assert.equal(r.rescues, 0, `${who.name}: rescued ${r.rescues}x (${JSON.stringify(r.stuck?.slice(0, 2))})`);
+    assert.ok(run.sim.p.x > 1562 && run.sim.p.y < 870, `${who.name}: ends at x ${Math.round(run.sim.p.x)} y ${Math.round(run.sim.p.y)}, not on the far bank`);
+  }
+});

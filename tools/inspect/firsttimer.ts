@@ -954,6 +954,8 @@ export class FirstTimerRun {
   private pitFalls = new Map<Platform, number>();
   /** when he last let go of a liana (s of play): a pit he falls into soon after was a let-go that fell short, and he learns to hang low */
   private letGoAt = -Infinity;
+  /** the liana he last swung on (its id): out of a pit, a liana further along the route than it is a way on, not the way back (pitWayUp) */
+  private swungOn: number | null = null;
   /** seconds he has stood at an edge waiting for a liana to swing to him (lianaWait) */
   private lianaWaitT = 0;
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
@@ -1477,7 +1479,7 @@ export class FirstTimerRun {
     // (how many of 24 moments of a liana's swing his hop off the lip catches: he climbs to the ledge it is caught from most often, as a
     // person climbs to the top of a stair under a liana, not the first step that catches it at some moment. 1-6 Normal adult seed 1, the
     // gorge: the second step caught gl2 at 14 of 48 moments, the top one at 29; he hopped from the second three times and was rescued, ENG-16F)
-    const catches = (q: Platform) => q.y < from.y - 60 ? Math.max(0, ...lianas.map((v) => {
+    const catches = (q: Platform, of = lianas) => q.y < from.y - 60 ? Math.max(0, ...of.map((v) => {
       const d: -1 | 1 = v.x >= q.x + q.width / 2 ? 1 : -1;
       const lip = d > 0 ? q.x + q.width - 12 : q.x + 12;
       const per = vinePeriod(v);
@@ -1506,6 +1508,21 @@ export class FirstTimerRun {
       line = next;
     }
     let goal = reached.find(walked);
+    // (a liana further along the route than the one he last swung on, caught from a ledge of this pit at a quarter of its swing or more,
+    // beats a walk back to a ledge the route reaches before it: the creaky limb crumbled under him, and since soft-pit floors join under a
+    // perch (ENG-16H pitFloorJoin) the pit past it is open to the pit before, so the walk back led him to the first liana again and off the
+    // limb again, three times, to a rescue (castBots 1-6 Normal kid 33 of 40, the creaky landing and the gorge; ENG-16I). A person in
+    // that pit climbs the stair and jumps for the next liana over its top step (pitClimb.test.ts "crumbled creaky limb")
+    const along = (x: number, y0: number, y1: number) => pts.findIndex((r) => Math.abs(r.x - x) < 60 && r.y >= y0 && r.y <= y1 + 60);
+    const last = this.sim.vines.find((v) => v.id === this.swungOn);
+    const lastAt = last ? along(last.x, last.topY, last.bottomY) : -1;
+    if (goal && lastAt >= 0) {
+      const goalAt = Math.max(-1, ...pts.map((r, i) => (r.x >= goal!.x && r.x <= goal!.x + goal!.width && Math.abs(r.y - goal!.y) < 12 ? i : -1)));
+      const on = lianas.filter((v) => v !== last && along(v.x, v.topY, v.bottomY) > Math.max(lastAt, goalAt));
+      let most = 5, ahead: Platform | undefined;
+      if (on.length) for (const q of reached) { const n = catches(q, on); if (n > most) { most = n; ahead = q; } }
+      if (ahead) goal = ahead;
+    }
     if (!goal) {
       let most = 0;
       for (const q of reached) {
@@ -1592,6 +1609,7 @@ export class FirstTimerRun {
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
+    if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
     // which way: along the route; with no route, right
     let dir: -1 | 0 | 1 = 1;

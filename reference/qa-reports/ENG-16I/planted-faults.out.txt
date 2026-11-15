@@ -1,0 +1,1 @@
+stair-top-liana: planted -> CAUGHT (RED, # fail 2); restored -> GREEN
