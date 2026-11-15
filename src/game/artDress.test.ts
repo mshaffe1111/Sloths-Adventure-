@@ -6,7 +6,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
+import './headlessDom.ts';
 import { buildProtoStage, HAND_STAGES, type StagePlan } from './protoStage.ts';
+import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { DRESS_SETS, dressStage, RIDDLE_FERNS } from './artDress.ts';
 import { DRESS_FRAMES as FIRST_FRAMES } from './dressAtlasData.ts';
 import { DRESS_NEW_FRAMES } from './dressNewData.ts';
@@ -107,20 +109,26 @@ test('the dressing sheets: every piece is in a set, every set piece is on the sh
 });
 
 test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
-  // (World 1's pair is 1-8 and 1-9, two hand-built stages in a row (ENG-16I: 1-7 rolls on gen2 since BUILD-17, its plan gone in the
-  //  t-tools-2 merge; before that 1-7 and 1-8): 1-2 and 1-3 roll on gen2, so HAND_STAGES had no plan for them and
-  //  this built the old hand-built 1-6's default proto plan twice under their configs until it went, R-165.238)
+  // (World 1's pair is 1-8 and 1-9, two stages in a row, each built the way the game builds it: 1-9 hand-built (HAND_STAGES), 1-8 rolled
+  //  on gen2 since BUILD-18 (t-eng-dr), its first layout. INT-10b: the t-eng-petal side paired 1-8 and 1-9 as two hand-built stages while
+  //  t-eng-dr took 1-8 out of HAND_STAGES, so after the merge this built the default proto plan under 1-8's config, undressed. Before:
+  //  1-7 and 1-8 until 1-7 rolled (BUILD-17); 1-2 and 1-3 built the old hand-built 1-6's default plan until it went, R-165.238)
+  const built = (id: string) => {
+    if (HAND_STAGES[id]) return buildProtoStage(cfg(id), 1, HAND_STAGES[id]) as unknown as { platforms: unknown; proto?: { dress?: Array<{ n: string }> }; dress?: Array<{ n: string }> };
+    setLayoutVariant(1);
+    try { return generateStage({ ...cfg(id), unlocked: true }, 'normal') as unknown as { platforms: unknown; proto?: { dress?: Array<{ n: string }> }; dress?: Array<{ n: string }> }; } finally { setLayoutVariant(null); }
+  };
   for (const ids of [['1-8', '1-9'], ['5-1', '5-2']]) {
     const looks = ids.map((id) => {
-      const st = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
-      const ds = st.proto.dress ?? [];
+      const st = built(id);
+      const ds = st.proto?.dress ?? st.dress ?? [];
       assert.ok(ds.length > 0, `${id}: dressed`);
       // (the stage without it is the same: dressSets reads the stage, never its random stream)
-      const plain = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
+      const plain = built(id);
       assert.deepEqual(plain.platforms, st.platforms, `${id}: platforms unchanged`);
-      for (const d of ds) assert.ok(DRESS_FRAMES[d.n], `${id}: ${d.n}`);
+      for (const d of ds) assert.ok(DRESS_FRAMES[d.n as DressName], `${id}: ${d.n}`);
       // (the stage's first bank set: within a stage the looks now take turns, hf-props 2026-10-31, so two stages differ by where they start)
-      const bank = new Set(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
+      const bank = new Set<string>(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
       return ds.filter((d) => bank.has(d.n)).slice(0, 3).map((d) => d.n).sort().join();
     });
     assert.notEqual(looks[0], looks[1], `${ids.join(' and ')} wear different bank sets`);
