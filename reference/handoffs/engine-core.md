@@ -9,9 +9,30 @@ Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fix
 Rewritten for B6 (11-14, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5): section 0B6 (the still fork, the runner liana, the tip, Easy's chase gap; the orphan-root merge) and 0v's not-built line. Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0CL. The chase stage's blockers (ENG-CL, t-eng-cl from t-eng-b6@a4e1ff8f, 11-14): what the next engineer must know
+- The quiet line (tools/engine/listRules.ts) judges a roll AS PLAYED: quietJudge(cfg, finish?, max?) / quietOf(cfg, st, finish?), the
+  finish being src/game/gen2/listed.ts playFinish(row, st, d) (World 1's w1Finish, then the row's kit FINISH), the ONE definition Play
+  (stageGenerator.ts) also calls. findBeats (tools/inspect/beats.ts) counts stage.chase stretches and each stage.rolling hazard where
+  it meets him (rolling.ts rollMeetX). helpRoomBreaches does NOT yet use playFinish (seedlist.ts passes w1Finish for squirrel rows
+  only): REPORT §4 HELP-FINISH.
+- The search's judge (BuildRequest.also) is handed pipeline.ts asLaid(st): a copy with its chase and hazards laid (stage + its
+  sections' pieces structuredClone'd together; layChase cuts by platform identity). Never hand a judge the pre-chase roll.
+- A chase stage's hazards: the 'roll' socket role {roll, on, t} (gen2/types.ts), laid after the chase and before the verdicts by
+  pipeline.ts layChaseStage -> gen2/rollLay.ts rollsOf, pace/arc from WorldManifest.rolls (World 1 W1_ROLL). No roll socket on the
+  stage + a look = by the chase's own ground (layRolling: per STAGE, not per K). Faults are roll errors 'rolling: ...'.
+- The tip and the still fork's ground: gen2/chaseTip.ts layTip(st, look) (W1_TIP; liana.runner picks runnerProblems or the new
+  runnerLiana.ts lianaProblems) and readyStillFork(st, fork, look) for any fork; layStillFork moves a fork flag off its 14 px post
+  window itself (inside the flag span) or refuses by name.
+- runnerLip = the HIGHEST ground end in reach, then the nearest (a pit's stair step is never the lip). A ledge floating over the run
+  in reach would read as the lip: no lay puts one there.
+- Easy: rollTeaches(spec, chase, easy) is always a bump (any stage).
+- Traps: the dev fixture's stepped 1-1 ground gives no runner's run (243-562 px to the lip, 1,188 needed): its tip liana is plain on
+  purpose. The look (bough over mist, the knot, the 3-5 piece fall) is NOT built: REPORT §5 has the exact next step and the lead's
+  three conditions; the long-branch sheet has no underside piece.
 
 ## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
 - Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
