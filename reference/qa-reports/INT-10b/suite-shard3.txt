@@ -760,3 +760,692 @@ fixture: no still fork: still fork 0: its ground breaks at 22173 (the cover and 
 ✔ the timeline gets a line every 10 s, so a slowdown that grows shows as a rising average (1.009863ms)
 ✔ the lists stay short and the report is readable text (0.401734ms)
 ✔ percentile of an empty list is 0 and of a sorted list picks the right rank (1.102808ms)
+✔ every stage the game builds keeps the petal rules (Worlds 1-10, Normal and Easy, rolls 1-2) (189916.203911ms)
+✔ the rules themselves: a crowded screen, a row and a petal below a jump are caught (0.44297ms)
+✖ spread out (Matt, 2026-10-30): the long petal-free stretches are few; every world but its special stages runs at most 2 screens without a petal (28852.654757ms)
+✔ gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks (398.750703ms)
+✔ no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before (11345.146431ms)
+✔ every plant in every world pool is in the atlas, and a pool has no repeats (0.930324ms)
+✔ a stage carries four different plants and neighbouring stages differ (0.942878ms)
+✔ a pickup id picks one of its stage plants, and neighbours differ (0.172667ms)
+✔ recorder: three double jumps and two bounces in one stage log one move + two use (double), one move + one use (bounce) (483.211864ms)
+✔ recorder: off (the store build, no tester) logs no move and no use (0.496046ms)
+✔ the beat: quiet, a tell, then the thing; every beat checked fair (a warning before every on); Easy stretched, never faster (1.676525ms)
+✔ beatFaults: warnings seen together never start within the rule; a short warning and a missing beat are named (0.592233ms)
+✔ a pod tells for its whole tell before it lets go, then falls down its column and bursts on the wood (0.301896ms)
+✔ a pod finds him on a vine down its own column only: one hand beside it is safe, two hands across it are not (0.311536ms)
+✔ podFaults: a fair field passes; each rule, broken, is named (0.827203ms)
+✔ a torn cluster comes down on the sound wood under its column, out of his line, never through a shut bough (2.305295ms)
+✔ a gate: shut while any cluster is on it, a notch lifted for each freed, open on the last; no footing while shut (0.50775ms)
+✔ jaguar telegraphs, leaps in an arc, lands back on the ground and returns to patrol (17.089795ms)
+✔ ocelot pounce is a real arc and its speed goes back to normal (it used to float and sprint forever) (12.722966ms)
+✔ ocelot warns before it pounces: a "!" and a crouch of at least a third of a second (0.271814ms)
+✔ a ground predator that is far from the player just patrols and never leaves its patch (27.239749ms)
+✔ boa stays coiled where it lies and only its strike reaches out (1.161043ms)
+✔ caiman lunges forward a short way and snaps; the jaws only hurt during the lunge and bite (1.072587ms)
+✔ tayra stands up, dashes fast, skids to a stop and stays on its ground (17.071709ms)
+✔ a knocked-back predator walks back onto its ground instead of popping there (8.260776ms)
+✔ a player on a different level (far above or below) does not trigger an attack (0.680141ms)
+✔ patrol: it walks its beat end to end and turns at both; Easy walks no faster (24.654068ms)
+✔ patrol, shy (the tree snake): it gives ground while he comes, and strikes only when crowded or out of branch (0.890264ms)
+✔ ambush: it never leaves its post, strikes to either side with a long reach, and is open for a long time after (0.938414ms)
+✔ ambush: its strike is at where its reach is, so standing past the reach is safe through the whole act (0.51884ms)
+✔ stalk: it closes while his back is turned, crawls while he faces it, and freezes if its `watched` is 0 (1.039246ms)
+✔ stalk: it stops short of where it last saw him and never tells at a sloth it cannot see (0.492835ms)
+✔ charge: it tells from far off, then runs its line to the end of its ground whatever he does, and is winded there (4.886922ms)
+✔ charge: you choose where its line ends: a geyser there chases it off (the stage calls beat when it arrives) (0.56709ms)
+✔ sweep: no pass while he is outside its stretch; inside, the eye shows at the edge for the warn (longer on Easy) before it moves (4.747604ms)
+✔ sweep: its eye takes what it sees: a moving sloth under it is dived at; the dive follows him, and lands (1.106296ms)
+✔ sweep: in cover and still, he is not seen: the pass goes over; two empty passes and it gives up (stillness beats it) (7.265482ms)
+✔ sweep: seen, he can still call the dive off by getting into cover and still before the tell ends; running does not (1.435658ms)
+✔ sweep: a thrown noise during the pass pulls its eye to the noise, where it sees nobody; his own landing does not (2.627709ms)
+✔ drop: it comes straight down where he was when it growled, so walking on is the dodge; it lands at his level (0.466288ms)
+✔ drop: on the ground it is open, then it has to climb all the way back before it can growl again (5.204482ms)
+✔ guard: it stands in the way, never leaves its spot, strikes only what comes within reach, and cannot be stomped or punched (0.896148ms)
+✔ seek: asleep until a noise; the first noise only wakes it, the next one it goes to look at (1.558222ms)
+✔ on the clock (the frog): its tell starts only on the warn and its act only on the on; Easy takes the clock's stretch (1.989799ms)
+✔ a fresh game opens only the first stage (2.760602ms)
+✔ after a reload, the stage right after the last cleared one is open (and no further) (0.481947ms)
+✔ clearing a world boss opens the next world (0.685738ms)
+✔ P-03: 7-3: jumping at the room's shut gate never brings the "jump twice" line (973.093491ms)
+✔ P-03: 3-2: jumping at the room's shut gate never brings the "jump twice" line (653.108878ms)
+✔ P-03: 2-9: jumping at the room's shut gate never brings the "jump twice" line (144.555572ms)
+✔ P-03: 6-7: jumping at the room's shut gate never brings the "jump twice" line (2709.528347ms)
+✔ P-05: stuck in a room again on a later run of the stage, Dot gives her nudge again (207.234226ms)
+✔ P-06: one thrown thing lost is one failed try, not two: no stuck help yet (46.499889ms)
+✔ P-06 (planted the other way): two thrown things lost are two failed tries: the stuck help comes (46.434678ms)
+✔ R-165.207: filling 1-1's eight reach tables flies a bounded number of air frames (the height-at-a-time memo flew millions) (117.432882ms)
+✔ R-165.207: every reach table entry equals the old height-at-a-time simulation (1-1's tables densely, every 2 px stages use) (380.091041ms)
+✔ R-165.207: every other table the game asks equals the old simulation (every 6 px over the heights stages use) (350.706675ms)
+✔ R-165.207: the whole table range and past it (the per-height path) equal the old simulation, sampled (132.197536ms)
+✔ R-165.207: maxDropReach, read from the tables, equals the old one that simulated every drop (every key to past the table range) (164.512372ms)
+✔ the engine at 30 fps carries a jump, a double jump and a glide at least as far as the reach model says (2571.660053ms)
+✔ the highest he gets: a jump lifts his feet 97 px and a double jump about 170 at 30 fps (less than the formulas JUMP_RISE and DOUBLE_RISE) (338.058951ms)
+✔ a soft pit is never deeper than he can climb out of: the engine climbs a 190 px wall with the second jump, 122 with one (758.355721ms)
+✔ a liana is caught as close as the timed swing says: 60 px on Normal, 76 on Easy (it was a fixed 48 in the engine) (150.86652ms)
+✔ the leaf is his from 4-2 on, even when no stage was cleared on this device (the tester's switch opens stages without clearing them) (232.769214ms)
+✔ the engine stops him at the shrine, so nothing in a hand-built stage lies past it (one flower did, in every one) (144534.935824ms)
+✔ no pit between stepping stones strands him (4-2's stones left gaps between two tall stones deeper than any jump climbs out of) (84451.99307ms)
+✔ recorder 'move': the first double jump and the first bounce of a stage are 'move' with x, the next ones 'use'; a new stage starts over (548.702822ms)
+✔ recorder 'pickup': a petal and a heart he takes, by kind and x; a heart left (full hearts) is not one (199.059118ms)
+✔ recorder 'dot': the line Dot really says, by its review id (old words or new), never the raw words when the review has it (214.371919ms)
+✔ recorder 'softFall': Easy's put-back is noted with x (no life lost) (217.056517ms)
+✔ recorder 'section': a gen2 stretch in the survey's plain words, then its id; the old course's names as they are (0.531968ms)
+✔ recorder 'dot': the first-run coach's line (its old words, which the review keeps as coach.run) gets its id too (0.138457ms)
+✔ recorder versions: the 'env' and every 'gen2' moment carry the build's commit, the seed list's version and the test round (2.519368ms)
+✔ the limited bot: without the double (no second jump made) or the bounce, it stops short on 1-2, where the full bot finishes (5491.010624ms)
+✔ 1-9: the ring's animals he beats are in the stage's count of predators beaten (235.323882ms)
+✔ a guardian's summoned animals are still not predators beaten (the rule the ring was caught by) (53.512741ms)
+✔ the dump child builds the picked roll and reports its seed; without the pick (planted) it reports no roll and another seed, a FAIL for stage.ts (5163.873999ms)
+✔ an unknown roll is refused, never a silent fallback to the mixer (0.666451ms)
+✔ an early flick at a rope over a gap is caught on the way down (failed before: his hands fell back through the rope) (1799.414629ms)
+✔ every ordinary flick at the edge still catches it (1408.728311ms)
+✔ caught past the rope's end, he slides onto it over a few frames, never a jump in one (failed before: 30-40 px at once) (1258.961967ms)
+✔ hanging, he picks up a bloom just under the rope (failed before: from his feet it was out of reach) (1239.877556ms)
+✔ in a climb, a fall from a shelf above lands on the shelf below, not on a rope in between (the catch is for a jump from its own ledge) (1127.695541ms)
+✔ Worlds 8-10: nothing that hurts in the first 1,300 px of a running stage, on every layout and both difficulties (49098.184818ms)
+✔ a Load that fails part-way leaves the game on the phone as it was (9.888456ms)
+✔ a Load that runs out of room puts the phone back exactly as it was (0.941495ms)
+✔ a save made after Meeca's stage (all five warnings cut) loads again (2.279655ms)
+✔ a save with every find collected loads again (8.572553ms)
+✔ a game that has cleared Meeca's stage (5-M) can load its own save file (4.062852ms)
+✔ a game with every note, book and keepsake found can load its own save file, at every count (34 included) (9.109952ms)
+✔ the biggest finished game round-trips, as a file and as a save code, with room to grow (50.149952ms)
+✔ every kind of save entry has a filler in saveFill.ts (a new save key without one fails here) (5.935814ms)
+✔ a save written by 0.9.5 loads: save-0.9.5-mid.json (0.9.5 itself loaded it) (2.279399ms)
+✔ a save written by 0.9.5 loads: save-0.9.5-after-5M.json (0.9.5 itself refused it) (11.47144ms)
+✔ a Look from an old scene seed is freed once the seed changes, whatever has cached against it (130.310108ms)
+✔ no trauma, no shake; the setting off, no shake (9.284631ms)
+✔ the shake stays inside its size and grows with trauma squared (0.371454ms)
+✔ smooth at 30 fps: from one frame to the next it moves a little, never a jump across its whole size (AN-10: no jitter) (1.22788ms)
+✔ gentle is about a third of full (5.695774ms)
+✔ R-165.251: the helper sets the swing for each setting and puts the caller's dials back (1.082377ms)
+✔ R-165.251: generateStage builds 1-7 easy on easy's dials while the caller's stand at normal (a tool's) (920.622508ms)
+✔ R-165.251: generateStage builds 1-7 normal on normal's dials while the caller's stand at easy (a tool's) (1693.181815ms)
+✔ R-165.251: generateStage builds 7-2 easy on easy's dials while the caller's stand at normal (a tool's) (362.074823ms)
+✔ R-165.251: generateStage builds 7-2 normal on normal's dials while the caller's stand at easy (a tool's) (191.154789ms)
+✔ R-165.251: generateStage builds 2-1 easy on easy's dials while the caller's stand at normal (a tool's) (90.617458ms)
+✔ R-165.251: generateStage builds 2-1 normal on normal's dials while the caller's stand at easy (a tool's) (52.476018ms)
+✔ R-165.251: easyStage makes a stage gentler on Easy's dials while the caller's stand at Normal (198.643295ms)
+✔ R-165.251: buildGen2Stage (the seed list's own build) judges 1-7 easy on easy's dials while the caller's stand at normal (1583.91036ms)
+✔ R-165.251: buildGen2Stage (the seed list's own build) judges 1-7 normal on normal's dials while the caller's stand at easy (196.9016ms)
+✔ R-165.251: the stage a tool builds for Easy (lockall, its dials at Normal) is the one the engine builds (its dials at Easy) (761.981582ms)
+✔ R-165.251: ONE helper sets the dials: no setTimedSwing call outside settingDials.ts (and the tests), in src/ or tools/ (180.821244ms)
+✔ R-165.251: Easy built after Normal in one process is the Easy a fresh phone builds (10-6 layout 1) (3458.067776ms)
+✔ R-165.258: 8-5 lays its tayra on Easy as on Normal, built as a phone builds each (the engine's dials set first) (4498.597268ms)
+✔ R-165.258: 8-5 Easy lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2) (10530.012037ms)
+✔ R-165.258: 6-1 Easy lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2) (7684.026987ms)
+✔ R-165.258: 7-5 Easy lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2) (3525.312225ms)
+✔ R-165.258: 8-3 Easy lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2) (7796.676178ms)
+✔ R-165.251: validateStage judges a gen2 stage on its own setting's dials, whatever the caller's (7-9 layout 2, Easy) (1514.369098ms)
+✔ slow tip: names the app and the browser to open instead (1.0253ms)
+✔ slow tip: due once, only after 15 s under 10 fps at the lightest picture; a fast spell or a sharper picture starts the count again (0.303321ms)
+✔ 2-5: a snapper beaten from behind, stomped, or kicked away in its shell counts toward the goal; head-on punches only make it hide (804.694055ms)
+✔ A-03 control: after a LOST LIFE the crumbled platform is whole again (respawnAtCheckpoint) (723.561643ms)
+✔ A-03 after a SOFT FALL the crumbled platform is whole again too (the same rule: "whole again when he respawns") (192.402793ms)
+✔ each creature's painted-pose sheets are real files, and the golden snake's three heads and the eagle's sheet are among them (9.628842ms)
+✔ the stage start asks for the creatures' painted poses as well as their clips (QA 2026-10-29: 'blank wait goldsnake-head, eagle-atlas' mid-stage) (0.559096ms)
+✔ backdrops: every world alternates three or four painted sets, its early light first and its late light last, and no two neighbouring stages share a set (hf-backdrops2) (1.268956ms)
+✔ backdrops: each new far strip is there at the far layers' height (1302, native resolution: X-16; seamless: VI-4), well under the size limit; and the sinkhole is Matt's redo (37.706605ms)
+✔ 1-3 plays its own sunrise again, on the far strip REPAINTED without the edge orchids that met where it wraps (F13's stills, 11-12: one big white shape behind 1-3's route) (0.44876ms)
+✔ a built stage asks for every creature it holds, its boss, Meeca, its rivers, bounce mushrooms and crumbling tiles, and what every stage shows (57658.566205ms)
+✔ a boss lair asks for its guardian and Meeca; World 6 on, water asks for the dirty water (1.140755ms)
+✔ the plain pictures: no bundler under the test runner, so none; never a sheet atlasLoader tracks (0.167856ms)
+✔ whoever asked for a sheet, a stage about to start sees it waiting, then ready and not yet drawn, then drawn (5.741121ms)
+✔ a laid chase gets its long-branch sheet in behind the card; a stage without one never loads it (B2: flat bars on its first frames) (643.413148ms)
+✔ every ordinary stage takes the typical player at least 125 s and the quick player at least 95 s (all 100 stages, several layouts) (114496.808543ms)
+✔ stages grow from about two and a quarter minutes in World 1 to about four in World 10, and none runs past five (28195.671121ms)
+✔ the growth check reads like with like: a gen2 World 2 shorter than World 1 by 7 s fails, an old-builder World 2 is read against World 1's old stages (planted) (0.474469ms)
+✔ the generator lands near the seconds the level list asks for (not far under it, not far over it) (1995.347121ms)
+✔ ascents take at least two minutes and ten seconds from World 1 on, and every ascent in every layout has a route up (22806.194679ms)
+✔ every ordinary stage has one to three forks, apart from each other, and not in the opening or the final approach (8013.858007ms)
+✔ both lanes of every fork can be crossed on their own, and the lanes differ by at least six seconds (53021.234758ms)
+✔ some forks run the other way round: a quick hollow below, the scenic high lane the long way (11986.843542ms)
+✔ the lane check catches a lane that cannot be crossed (43.376708ms)
+✔ a fork shows its choice at a glance: the high lane is up in the branches, the low lane on or under the ground, a lure of flowers on each (7921.281345ms)
+✔ skills are respected on the lanes: no swing before the swing is taught, no double jump needed before mission 6 (564.252485ms)
+✔ every stage shows nine kinds of piece at least, never the same kind twice in a row, and no kind over a quarter of the length (9100.097611ms)
+✔ fight stages are not flat yards: plain ground is under 45% of them, with relief, ledges and tiers (1832.707768ms)
+✔ no long empty corridors: the longest stretch with nothing in the way stays under 2400 px (3200 at the very most) (7867.395792ms)
+✔ animals stand clear of take-offs and landings; narrow landings are rare and late (23623.691432ms)
+✔ checkpoints stand 900 to 1900 px apart (the first at least 700 px from the start) (2574.477929ms)
+✔ platforms come in at least four styles per stage and no style is over 40% of the thin platforms (1632.651914ms)
+✔ a harvest stage holds about 1.6 times its quota in flowers: the quota is on the shared ground, the surplus on the lanes (156.280235ms)
+✔ a row or an arc of flowers is one species (6247.305315ms)
+✔ every kind of animal the game defines turns up in the stages (the frog too: the Naturalist badge needs it) (19598.937577ms)
+✔ the same stage and layout number always give the same stage, byte for byte (forks, styles and flowers included) (10506.876166ms)
+✔ generating a stage is quick: p90 under 500 ms, none over 1500 ms (12009.952809ms)
+✔ a varied stage of different rolls passes every line (47.556872ms)
+✔ one section laid 4 times in a row fails the repeat line (and its node token 4 times running fails the code run) (14.926697ms)
+✔ a roll that is one piece over and over fails the inner line; 16 copies of one roll fail the distinct line (26.791953ms)
+✔ a stepping-stone rhythm inside one stretch is one occurrence, not a repeat; the same stretch again elsewhere counts (0.212815ms)
+✔ every storage key in the game is a game entry, this adventure on this phone, or named here as the device's own (103.468807ms)
+✔ the device's own keys are neither carried nor cleared (0.230715ms)
+✔ a New Game clears what this adventure did on this phone, and keeps the device's own (0.276778ms)
+✔ a save file carries the golden seeds, and loading one keeps this phone's sound settings even when the file has its own (13.151329ms)
+✔ V19b: an end higher than the route where the bough window begins passes; level or lower FAILS (planted) (5.967451ms)
+✔ the seed promise: Roll B keeps it; a seed 150 px over its ground, or with no mushroom under it, FAILS (planted) (1736.678625ms)
+✔ the seed perch's low version keeps the seed's promise (the seed over the perch's top bank, past a double, its mushroom below) (0.715167ms)
+✔ what the player sees: a stage line that is a raw text id FAILS (planted); words pass (12.553845ms)
+✔ what the player sees: gen2 1-1 Rolls A/B/C put words on screen, never a raw text id (1655.537139ms)
+✔ TT4: every teach node says its line before the first piece that needs the move on Rolls A/B/C; a line moved after its block FAILS (planted) (1735.606615ms)
+✔ C-01: the gate scene and the guardian card do not share a storage key (0.68258ms)
+✔ C-04: every story flag App.tsx writes belongs to the save (a New Game clears it, a save file carries it) (0.765942ms)
+✔ C-04: a New Game plays the final guardian's whole intro again (0.24598ms)
+✔ every sloth_story_ key is built in storyFlags.ts (a builder kept anywhere else can drift off the save list) (157.519808ms)
+✔ C-01: an old save file that saw the gate scene does not see it again, and still gets the General's card (13.58209ms)
+✔ C-01: a save file written now keeps the card it showed (only version-1 files are moved) (0.263185ms)
+✔ C-01: a phone's own old game is moved once at launch, and the card it shows afterwards stays shown (0.384908ms)
+✔ the style check sees the whole script (3.184382ms)
+✔ no semicolons, spaced hyphens, or the single ellipsis character (3.338242ms)
+✔ no line opens on an ellipsis, and none hides one at the start of a sentence (0.387186ms)
+✔ an em dash only cuts speech off: never a space before it (0.124421ms)
+✔ notes are signed "Love, M.", never with a dash and an initial (0.188958ms)
+✔ a comma comes between "said" and the words said (0.284115ms)
+✔ no doubled marks (4.451966ms)
+✔ stage missions end on a period (0.233589ms)
+✔ stuck-helper: three single jumps at a tall wall, landing where they began, and Dot speaks once (once her line is shown) (1.522636ms)
+✔ stuck-helper: a line Dot never showed (her setting dropped it) is not told: three more failed jumps ask again (audit C-03) (0.201272ms)
+✔ stuck-helper: jumps with no wall ahead, or that use the second jump, or that get up, never count (0.178691ms)
+✔ swing clearance: the false liana 78 px in front of a 420 px liana swinging 0.45 is RED (its rope crosses his body as he swings) (0.67943ms)
+✔ swing clearance: the same false liana laid clear (137 px in front) is GREEN, height by height; foot to foot read it 96 px RED (0.297135ms)
+✔ swing clearance: a swinging pair of one top and one length reads exactly as before; no pair reads stricter than before (0.537951ms)
+✔ swing clearance: two vines that share no depth (one hung wholly under the other's reach) never meet (0.087269ms)
+✔ swing clearance lay (normal): every roll of 1-6's false liana and gorge lays its vines clear of every swing (pipeline.ts clearSwings) (4768.059598ms)
+✔ swing clearance lay (easy): every roll of 1-6's false liana and gorge lays its vines clear of every swing (pipeline.ts clearSwings) (2100.17509ms)
+✔ ten quick taps in a row make a run; a pause restarts it (19.409221ms)
+✔ without the switch (no storage at all) only stage 1-1 is open (9.615613ms)
+✔ with the switch on, every stage is open but none is marked cleared (0.472429ms)
+✔ every frame name the Thornbark pick and story card use is in the atlas (5.315736ms)
+✔ each frame has a size and a body anchor (0.184025ms)
+✔ every move of the Thornbark brain is drawn with a pose (tell and act) (0.12633ms)
+✔ the painted Thornbark is big enough to match his hitbox (0.056871ms)
+✔ steering on the left half runs and never attacks (31.046898ms)
+✔ steering with the RIGHT thumb is steering, not kicks (the old bug) (7.917333ms)
+✔ a quick, confident drag to start running on the right half does not kick if it keeps going (0.22007ms)
+✔ a real flick sideways on the right half is a kick (0.245316ms)
+✔ a thumb flick that is quick out and quick off is a kick even at phone-realistic speed (0.392516ms)
+✔ a short slow nudge is neither a kick nor a punch (0.218929ms)
+✔ a flick up is a jump and releases on lift; a flick down ducks while held (0.318157ms)
+✔ a clean tap punches once (2.437937ms)
+✔ a long press is a mega, once, and lifting afterwards does not also punch (0.356312ms)
+✔ re-planting the steering thumb right after lifting it does not punch (0.471562ms)
+✔ two thumbs: steer with one, punch, kick and jump with the other (0.231665ms)
+✔ a second finger planted on top of the steering thumb is ignored (0.094048ms)
+✔ steering hard sideways with a slightly drifting thumb does not duck (0.124386ms)
+✔ an undecided right-side finger that holds still then drags becomes steering (0.084883ms)
+✔ steering stays steady: no flapping at the dead-zone edge (0.196621ms)
+✔ cancelling releases everything (0.194386ms)
+✔ a running thumb that rolls down the glass keeps running instead of ducking to a halt (0.14352ms)
+✔ a thumb that slides straight down from standstill ducks, and easing back up lets go (0.120461ms)
+✔ mashing taps on the left half punches every time (a tap is never a "re-plant" of the tap before it) (13.745093ms)
+✔ the thumb bouncing straight back onto the glass after really steering is not a punch (0.191106ms)
+✔ a thumb that rests on the right half (mega) can still steer afterwards (0.302144ms)
+✔ a resting thumb throws one mega, not one every tick (0.100851ms)
+✔ a quick flick on the LEFT half is a kick, not a stutter (0.19052ms)
+✔ a nudge on the left half (a short, brisk slide, not a flick) still just steers (0.091789ms)
+✔ slow steering on the left half never kicks (0.077541ms)
+✔ while mega is cooling down a held thumb waits, then goes off the moment it is ready (0.109826ms)
+✔ run up, let go, and tap a moment later: that tap punches (the re-plant rule used to eat it) (0.078125ms)
+✔ a quick tap that slides a little sideways still punches (0.090469ms)
+✔ a steering thumb's swipe down and across as it turns does not duck; a slide straight down still does (Cheddarbob, one finger) (0.165521ms)
+✔ out of a duck, a thumb wobbling about the line does not flicker him up and down (4.605582ms)
+✔ a different published stamp means a newer build; a missing one means "cannot tell" (0.698682ms)
+✔ outside a stamped build, checking says "unknown" and nothing is flagged (0.25238ms)
+✔ a 40 px snap from rest settles in a quarter second with no frame over 12 px (a run is 9.5), no overshoot, and is gone (1.036576ms)
+✔ a catch carries his speed: the frame after it moves on at least at the speed he had (no dead stop), never lurches, never turns back (0.181674ms)
+✔ a respawn, a flag or a placement is never blurred: a body jump past SETTLE_MAX clears the settle, and nothing outside the climb is carried once he has let go (0.573447ms)
+✔ a push from outside the climb (a bough he climbed into) is drawn from where the climb left him, the same frame (5.66833ms)
+✔ 1-4: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before (10893.869829ms)
+✔ 1-5: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before (3223.46195ms)
+✔ 6-1: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before (4490.518947ms)
+✔ 1-6: pumping, a steer held either way, hands off or climbing down a liana beside the raised ledge never sets him down on it (29878.601293ms)
+✔ QA's v192 repro: grab on 1-6, steer down 400 ms, then steer right, then left (pumping): he stays on the liana (12166.233036ms)
+✔ 1-6: holding down and toward the ledge as the swing carries him past it puts him on it, and he stays there (17130.925152ms)
+✔ 1-6's swing lesson: pumping the lianas it is taught on at full length never sets him down on a ledge beside them (10006.016799ms)
+✔ a floor under the vine is still landed on as he climbs down onto it, pumping or not (536.521279ms)
+✔ swingLanding: a ledge beside the vine only on down-and-toward; a steer alone or hands off never (0.321334ms)
+✔ one thumb: after a pump to the right a flick up and left leaps LEFT, after a pump to the left a flick up and right leaps RIGHT, upright and sideways (49.267405ms)
+✔ a straight-up flick after a pump still climbs the vine and carries no lean (2.955464ms)
+✔ the other thumb: a flick up that leans 20 degrees or more leaps that way, a nearly straight one climbs (Matt, CT-5) (1.832393ms)
+✔ letting go of a liana leaps the way the flick leaned, even against the held steer and the way he faces (775.379907ms)
+✔ leaping off a trunk follows the flick too (234.399194ms)
+✔ QA's v192 repro: after a pump to the right, lift, then a one-thumb flick up and left (35 degrees): he goes LEFT, at any moment of the swing, upright and sideways (22446.538768ms)
+✔ on the liana, a plain flick straight up still climbs it (no let-go), upright and sideways (872.337368ms)
+✔ timedLaunch: out of the sweet spot a leaning flick hops that way; without a lean he goes the way the vine carries him, as before (10.79064ms)
+✔ pickLesson: a liana is near by the part he can catch, not its middle, and comes before the gap it hangs over (0.787391ms)
+✔ the new look: the swing lesson said while he is already on the vine starts at letting go, not at grabbing it (0.900761ms)
+✔ 1-6, a fresh player: the swing lesson (Dot's lines) comes before his first let-go, upright and sideways (3039.773091ms)
+✔ the look across a gap shows the liana over it, not the floor of the drop under it (0.275639ms)
+✔ QA's v192 new-look repro: a gap tip from before the vine waits while he swings, and the swing's tips come through (2.01134ms)
+✔ its route: down-off passes all the way off the foot; down-back turns at its reach and goes back into the bough; up rises to its reach and goes back off the foot; every trip ends with all of it off the vine (1.049546ms)
+✔ its tell: shown at its start end, touching nothing, even with his hands right there; a beat with a tell under 0.5 s (or none) is a fault (0.706886ms)
+✔ 6-3, the real engine: a snake coming down his liana makes him let go when it reaches his hands (a hop, no heart), never in its tell, and he cannot catch that liana again in the air (1984.704914ms)
+✔ 6-3, the real engine: a snake that turns a body above his hands never touches him; one rising from the foot takes a low hold and leaves a high one (2153.478509ms)
+✔ 2-4, the real engine: a snake coming down his liana makes him let go when it reaches his hands (a hop, no heart), never in its tell, and he cannot catch that liana again in the air (1808.408143ms)
+✔ 2-4, the real engine: a snake that turns a body above his hands never touches him; one rising from the foot takes a low hold and leaves a high one (619.166436ms)
+✔ the host's letGo: nothing when he swings on nothing; off the liana with a hop, his jumps his own again, and that liana not caught until he is down (737.818738ms)
+✔ the vine snake is a registered piece, and a stage with no snake starts none (727.132074ms)
+✔ 6-3, the real engine: caught with a travelling snake already at his hands, he holds TELL_MIN before its startle, then it takes him off (1173.775405ms)
+✔ 2-4, the real engine: caught with a travelling snake already at his hands, he holds TELL_MIN before its startle, then it takes him off (302.717306ms)
+✔ 6-3, the real engine: a FALSE liana (the snake hanging still) startles when he takes it: he hops off, it is not there to catch again, it drops onto the floor below, slithers off away from him and is gone; whole again when he respawns (753.896949ms)
+✔ 2-4, the real engine: a FALSE liana (the snake hanging still) startles when he takes it: he hops off, it is not there to catch again, it drops onto the floor below, slithers off away from him and is gone; whole again when he respawns (143.691848ms)
+✔ 6-3, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs (1255.602785ms)
+✔ 2-4, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs (315.84521ms)
+✔ slitherClear: a slither that would lie over him starts FALSE_LIANA.clear past his far side; one already clear is left where it lands (0.20694ms)
+✔ the bootprint lies flush on the end log on every 1-1 build: its top on the log's top line, all of it on the log (5602.100268ms)
+✔ drawW1Clue draws the picture once it has loaded (CLUE_W x CLUE_H at its place), and nothing before (16.107341ms)
+✔ the sheet's cells are the cutter's own (src/assets/w1to4art/w1-new.json), and the squirrels and hollow logs are among them (1.641143ms)
+✔ 1-1's dressing names pieces the sheet has (bar the clue with no art), and 1-1 preloads the sheet (423.867857ms)
+✔ a hollow log is painted by the kit (its own picture), never as a bank of earth or the drawn ground (0.134033ms)
+✔ a lily pad over a stage's drawn water sits on its surface, wherever its own top is (1620.66227ms)
+✔ 1-1 keeps one sky all stage: its sunrise set, and no climb turns the backdrop (R-164.2, Matt 11-04: 'I'd rather just have one sky') (547.557157ms)
+✔ a hollow log is two roads: its top over the floor by 120 or more and its inside clear for Pokey (48 tall), from 310 wide (the designer's split rule) (563.757057ms)
+✔ every lily pad a built stage lays is on water: a zone the stage draws, or a river (Matt, 11-05: 'lily pads only on water') (27496.589941ms)
+✔ falling into a drawn water zone splashes once, then the fall goes on (993.101061ms)
+✔ a drawn water zone is a body of water: its fill goes from its surface to below the stage's lowest ground, never a strip over a void (908.302609ms)
+✔ nothing sits sunk under a stage's drawn water (Matt, 11-05: 'Why are logs underwater?'): every built stage, and the checker itself (7476.978291ms)
+✔ bank dressing never stands where a hollow log lies (it drew in the log's mouths) (0.190768ms)
+✔ a drawn water zone's kind picks its art (the designer, 11-05): deadly and teaching are the world's murky pit water, calm the swim water; deadly by default (4.644046ms)
+✔ a hanging cage starts down in the water, rides its rope up as stones go in its basket, and opens all the way up (1074.693841ms)
+✔ the check: a cage room is solved only with its cage lifted; a basket the room cannot fill fails it (599.39425ms)
+✔ the across room: the stones lie on a reed island over a channel, and only a throw gets them to the basket (610.11602ms)
+✔ 2-8: every cage in the rising basins hangs off a reed island, and every room is solvable (799.707142ms)
+✔ the ferry: moored out of reach under the far bank while the sluice is shut; the lever lets the river run and brings it round (182.396343ms)
+✔ the court bell: a tap rings it, the court gate opens and stays open, and the guard past the gate comes to look (75.309876ms)
+✔ the court bell in play: tapped, the gate opens for good, and the first guard hears it (199.719704ms)
+✔ a hanging cage in play: no punch breaks it; a stone set in its basket lifts it out and frees the little one (225.861849ms)
+✔ 2-8 in play: the water rises while he is in a basin, and drains away once he is back on a bank (a cage left behind can be gone back for) (156.579984ms)
+✔ every cage in 2-3 and 2-8 opens in play: each stone carried to its basket and flicked up (or tapped) in from under it (9339.975349ms)
+✔ World 3 trio: every roll passes the reachability check, has one exit, and is at least two minutes for a quick player (24673.522939ms)
+✔ World 3 trio: the beats are always there, in order (3012.701368ms)
+✔ World 3 dark: the glowworms are asleep, one hangs over the way in, and one stop always lights the next gap (7665.606165ms)
+✔ 3-2: the eyes watch the ferns, and every fern in the dark stands where he stops before a gap (577.682614ms)
+✔ 3-3: about one and a half times the prowlers it asks for, and jaguars among them (1780.099389ms)
+✔ thorn vines: asleep, then a warning, then a look; a look sees him only moving within its reach (0.561599ms)
+✔ 3-5: rows of vines with room to freeze between them, and the medal in a Hush Fern (522.391431ms)
+✔ 3-6: Grandma's things hidden in ferns, more than it asks for, each one in a fern of its own (666.864468ms)
+✔ 3-2 holds World 3's note in plain sight (283.009085ms)
+✔ 3-7: more of Grandma's things than it asks for, some under thorn vines, some where the eyes watch, and a vine never over a flag (833.617289ms)
+✔ 3-8: a thorn vine in every gap of a liana chain, and a leap through it while it looks is seen (1496.210334ms)
+✔ 3-8 on Easy: the slower swing still carries every liana to the next (2985.219881ms)
+✔ 3-9: enough prowlers for the goal, a jaguar among them, and a ring whose waves leap in from the dark (785.038462ms)
+✔ 4-7: every roll can be finished on the leaf, and cannot be without it (1738.366555ms)
+✔ 4-7: it goes down; rocks drop through the gaps (never onto a ledge), with time to spare; updrafts and close flags (22.956698ms)
+✔ 4-7: the path runs back and forth across the cliff, every flag lower than the last and close to it, the shrine furthest right (16.865018ms)
+✔ 4-7: no short cut: a drop that skips ledges is deeper than a fall into the mist (26.928193ms)
+✔ 4-7: the warm air: a bonus first, then the only way up to a higher ledge, over a gap too wide for the leaf, and with a rock through it (576.00279ms)
+✔ 4-7 the warm air really carries him: by the engine's rules, a ride up and a drift across lands on the ledge, at both tick rates (57.510425ms)
+✔ 4-7: the caves and the turns are taught where they first come, below the ledges above (53.898677ms)
+✔ 4-7 runtime: falling well below the last ledge is a fall into the mist; an updraft lifts the leaf (14.886464ms)
+✔ 4-7: every flag stands well back from the edge on a wide ledge; a turn's flag where he lands, on his way back (20.97608ms)
+✔ 4-7: the view follows the path: the ledges in order, a wider view, depth for progress (and flags in that order) (14.95215ms)
+✔ 4-7: the leaf as Dot teaches it (one jump, thumb held) crosses every leaf gap, where even a double jump falls short (17.682372ms)
+✔ 4-7 teaches the drop before the first edge, the slip off an edge, and every turn (17.701003ms)
+✔ 4-7 runtime: a lower flag counts as further on, whatever its x; a flag only counts once touched (0.786425ms)
+✔ 4-7: every drop's landing fits the view under him, sideways and upright, with his head kept under the HUD (turns go by a step) (16.107197ms)
+✔ 4-7 upright: a crossing too wide for the view shows its warm air from the edge, and the ledge past it from the warm air (9.062033ms)
+✔ 4-7 in the real engine: the falling rocks leave a fair line, and a rock that hits him mid-glide costs a heart, never the ledge (5203.032507ms)
+✔ World 4's rooms: the validator solves each on every roll, each fails without its stone, mango or lever, and none can be passed by (61950.27984ms)
+✔ World 4's rooms: narrow and tall enough for an upright phone, nothing in them that hurts, and each says what it is (25932.772855ms)
+✔ 4-1 in the real engine: a stone from the heap, set in Dot's basket from the lift, winds him up to the ledge above (770.831613ms)
+✔ 4-6 in the real engine: shut, the pinwheel stands still; the lever opens the shutter and the gusts wind the lift up with him on it (2143.849003ms)
+✔ 4-8 in the real engine: a mango for the capuchin, its stone back, the stone in the basket, up to the nest, and the chick freed (1036.202003ms)
+✔ 4-3 is hand-built (979.351155ms)
+✔ 4-3: every roll can be finished, has one exit, takes a quick player its own length (3.5 minutes), and needs no pickup moved (1274.653477ms)
+✔ 4-3: each fall is a different idea, in order: plugs, the pool and its log, the surges, then the surges with the others (32.419665ms)
+✔ 4-3: pouring water is too strong to climb a wet step, and a dry one is an easy double jump (0.207658ms)
+✔ 4-3: while a fall pours, its steps are the only way on, and the way to stop it is open (8603.910977ms)
+✔ 4-3: the order puzzle: the log is the only way to the boulder, and nothing done in any order strands him (10179.236092ms)
+✔ 4-3: the surge: a cave halfway up behind the water, and the keepsake in a fern at its back (25.258211ms)
+✔ 4-3: the thief sits by a petal and runs off up the terraces, post to post, every post on ground he can reach (656.806334ms)
+✔ 4-3: every new thing is taught where it first appears, and the rocks are fair (20.594927ms)
+✔ 4-3: the tide pool: the surge lifts the log to the only way up, and the fall pours over the gap at the top (2116.155505ms)
+✔ 4-3: the boulder up the surge: its shelf is reached only up the surge stair, and a slip off the shelf only costs a climb (1371.144955ms)
+✔ 4-3: every surge goes quiet for long enough to climb from the foot of its water to the next dry spot (its water washes him down) (24.820708ms)
+✔ 4-3: the boulder is taught as it is moved (walk into it from beside it on its shelf), and every plug fall knows the ground past it (20.120538ms)
+✔ 4-3: from the log at its highest the ledge is a double jump straight up (it reaches out over the log), with a petal on it there and Dot saying so (25.226667ms)
+✔ 4-3: every rock warns for ROCK_WARN seconds, and Dot's rock line is the one w4Play says if it was missed (36.933448ms)
+✔ 4-3: at the foot of the first fall, held upright, the view turns to show the tree as well as him (QA 2026-10-29) (24.441451ms)
+✔ 4-3: the first fall's steps are each a double jump up, and the line as its boulder goes in says so, before he is down at them (33.056604ms)
+✔ 4-6 is hand-built, and is judged without the leaf (4-7 is the first stage that needs it) (0.839501ms)
+✔ 4-6: every roll can be finished, has one exit, and takes a quick climber its four minutes (12225.154054ms)
+✔ 4-6: each mist spot has a ledge to stand still on and hides only real ledges, all inside its band of mist (4861.278039ms)
+✔ 4-6: the mist starts small and grows, the hidden ledges are the way up, and every miss lands on the wide ledge below (7026.593529ms)
+✔ 4-6: the nests are fair: taught alone first, time to cross while they sleep, room to be blown back, clear of the trunks (4849.997093ms)
+✔ the mist: thick until he stands still on the spot, clear once it settles, and back again a couple of seconds after he moves (1132.345857ms)
+✔ the nests: moving while they look blows him back a few steps; standing still while they look, nothing happens (0.83844ms)
+✔ 4-6: no hop in the mist needs more than a plain jump across (4391.721391ms)
+✔ 4-6: the nests and the mist together: the eaglets watch the spot and the first step, stand clear of the mist, and the climb leaves their sight (4958.437795ms)
+✔ 4-6: across the tree: ropes between nest ledges, each rope landing and leaving out of the eaglets' sight (4785.768102ms)
+✔ 4-6: the high mist: two tall columns, each with a ledge halfway that the lower mist shows and that settles the upper mist (5205.547522ms)
+✔ the high mist in play: standing at the foot shows the ledge halfway but not above it; standing on that ledge shows the rest (1335.122501ms)
+✔ 4-6: no high branch ends in a long fall: each end over a drop of more than a few hops has a knot of wood (a little wall) at it (4055.650627ms)
+✔ 4-6: back on the forest floor, a trail of petals leads to the one trunk up from it, and Dot points the way (4626.14584ms)
+✔ 4-6: the ledge halfway up the high mist settles the mist from anywhere on it (4600.313175ms)
+✔ 4-1 is hand-built (0.696588ms)
+✔ 4-1: every roll can be finished, has one exit, and takes a quick climber most of two minutes (3841.619911ms)
+✔ 4-1: the rocks are fair: a warning first, time to spare, never where he must climb, and one rock to a ledge (1713.869883ms)
+✔ 4-1: the shrine is across a gap no jump crosses, bridged by the fern frond, and the frond is taught (2644.441662ms)
+✔ 4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and runs its full length (STAGE_SECONDS) (3246.370764ms)
+✔ 4-2: every gust lane has its chimes, gusts blow both ways, and the leaf and the chimes are taught (1508.951588ms)
+✔ 4-2: the second twist rides the leaf on a high wind and turns the wind halfway over the stones, each taught as it first comes (1458.433002ms)
+✔ 4-2 in the real engine: a short flick off the lesson perches drops him in a soft pit, two hops out either way, back up the trunk in seconds (1484.794459ms)
+✔ World 5's light goes gold, dusk, twilight as the orchids close (Matt, 2026-10-26) (1.023196ms)
+✔ the two takes of each mood alternate stage to stage: no two stages in a row look the same (4.613114ms)
+✔ every World 5 strip set is on disk, far, mid and near, and the arena's two paintings (7.740334ms)
+✔ the lip's hoist puts a foot on the ledge: caught at its corner with only a pixel over the edge, he stands, never hangs there (6027.580545ms)
+✔ at a soft pit's far side, a flick that leans either way climbs: one up each step, two from the floor up onto the bank (19035.065548ms)
+✔ a jump into a face carries him over its top with the thumb lifted after it, and steering away still drops him back (2165.299855ms)
+✔ 5-3 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way (8061.144753ms)
+✔ 5-4 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way (12224.620667ms)
+✔ 5-5 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way (6535.685333ms)
+✔ 5-5: every cocoon opens to three taps from the ground (or the branch) it hangs over, standing anywhere a fist reaches it (9530.7473ms)
+✔ 5-5: the wrapped chairs read as furniture (wood and cloth showing) and stand well away from the cocoons; none lies there shut (82.063644ms)
+✔ World 5's jumping spiders: a clean stomp beats one, and a jump over one, crouched or rushing, costs nothing (5350.805085ms)
+✔ 5-1: a crouching spider's "!" is drawn over the light and the pop-up words, as large on a sideways screen as upright (33.75133ms)
+✔ the pouch scene's lines are said once: a line that gives way or is cut after it has been mostly read is not said again (14.584224ms)
+✔ 5-5: no picture sequence of the pouch follows 5-5 (it plays in the stage); the other worlds keep theirs, World 4 after 4-D (0.444157ms)
+✔ 5-5: while the pouch scene plays, Dot's bubble keeps off Pokey and off every cocoon still shut (39.866812ms)
+✔ 5-4: the silk is taught in silk words, and the let-go follows the grab at once, while he swings (1343.257748ms)
+✔ 5-4: with the Seamstress's lace on him at her sheet, one slide back and forth frees him as surely as separate short slides (312.722154ms)
+✔ the new HUD's goal counter never fades past reading (over a log it stays at least 60% there) (0.54937ms)
+✔ 5-2: back at a flag after a lost life, standing untouched costs no heart (as at the stage start) (995.723735ms)
+✔ 5-5 is hand-built: a rescue, about three minutes, in the dusk (the other take from 5-4), free 12 creatures (285.175691ms)
+✔ 5-5: every roll can be finished, runs its full length, holds the goal half again over, and keeps nothing past the shrine (1409.05765ms)
+✔ 5-5: the first cocoons hang low over the ground, before any that needs a branch, the web or a spider (529.846531ms)
+✔ 5-5: the high web only a silk line reaches (above any jump), over ground or a soft pit, with its cocoons on top of the goal (662.614521ms)
+✔ 5-5: the rest branch where the orchids hang in rows, a hop up, with nothing that bites near it, and the keepsake's fern (563.661809ms)
+✔ the pouch scene keeps the script's lines (12 words or fewer each), with its speakers, and a breath between them (31.503976ms)
+✔ 5-5 in the real engine: the pouch scene plays at the rest branch in order, and standing there through it the silk never creeps (1039.144967ms)
+✔ 5-5 in the real engine: off the rest branch, while the scene plays, standing still still brings the silk (72.300707ms)
+✔ 5-5 in the real engine: three taps free a creature, Dot says what to do first, and the goal counts it (165.005666ms)
+✔ 5-5 in the real engine: every cocoon off the web is freed by three taps from where it hangs (382.654275ms)
+✔ Meeca's stage is the first of World 5 (before 5-1), as Dot's flight 4-D sits after 4-5: the built stages keep their numbers (4.526867ms)
+✔ 5-5: the first cocoon is tied across the path: he cannot walk or hop past it until three taps punch it open (1302.030929ms)
+✔ 5-5: the cocoons read: at his head, wriggling, eyes looking out, and Dot's ring on the first, upright and sideways (463.842951ms)
+✔ 5-5 in the real engine: the pouch scene plays on the calm stretch only: walked on past it, it waits, and the spiders after it are spiders (779.821453ms)
+✔ 5-1: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new (475.452099ms)
+✔ 5-2: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new (166.868546ms)
+✔ a high ledge is a bank 90 px or more over the bank beside it (1.375754ms)
+✔ every world has lines, in the right places and the right lengths (1.151971ms)
+✖ the story decides who can speak: Dot is not where he is not, and the petal tells it in the third person (1.015902ms)
+✔ no line is used twice, and none leans on the habits that read as machine-made (0.996531ms)
+✔ the first stage, the guardians and the hidden Hollow stay quiet; the rest speak (0.506548ms)
+✔ the lines know which stage they are in: flowers, cages, sneaking (0.300545ms)
+✔ plants and payoffs are where the story needs them (0.177068ms)
+✔ a scripted line waits for its moment (9.972393ms)
+✔ a line can wait on a moment of play, by data: 1-3's "excuse me" waits on the first punch that sends a snake off (P13, 11-12) (0.36199ms)
+✔ a fall is answered a beat later, once, and before the scripted line (0.292953ms)
+✔ the same stage always says the same thing (1.185326ms)
+✔ lines stay up long enough to read, but not forever (0.217436ms)
+✔ what has been heard is remembered per stage, and the switch is a device setting (0.360737ms)
+✔ a saved game carries what was heard, but the switch stays on the device (0.472462ms)
+✔ only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8; Dot's pocket in 6 of Worlds 4-9; the Notch in 1-4) get the hint, and it never says where (4.842928ms)
+✔ the fern hint comes first at the start, once, and only while the fern is still waiting (0.191327ms)
+✔ where Dot is away, the thought is Pokey's own (0.064137ms)
+✔ a guiding line stays up long enough to read (the journal note waits that long too), and never past the cap (0.068651ms)
+✔ a zone cycles idle, warn, active, then starts over (1.304191ms)
+✔ the effect ramps in and out so it never snaps on (0.316629ms)
+✔ the offset staggers neighbours (0.136161ms)
+✔ wind pushes by direction and force, less on the ground, and only inside the lane (0.213604ms)
+✔ stages teach in order: first a harmless zone on open ground, then gaps, then more of them (10.088216ms)
+✔ every ordinary World 3 to 10 stage has its zones, and Worlds 1 and 2 have none (34133.323316ms)
+✔ every zone stage passes the validator (waitable, jumpable, nothing hostile inside) (14819.033098ms)
+✔ the validator rejects a zone that cannot be waited out (36.727212ms)
+✔ a firing column burns what stands in it, and only while it is firing (0.466269ms)
+✔ a bolt is quick but always has a long warning, and every column has a pocket beside it (1792.640384ms)
+✔ webs slow you and the mud slows you more once the tide is up (0.249222ms)
+✔ the tide stays low long enough to cross, and every mudflat has dry banks (0.271362ms)
+✔ crumbling ruins: short runs with a slab to rest on, and a hold longer than a step takes (1938.517128ms)
+✔ every dark stretch has a firefly swarm on each of its gaps, and the dark never costs a hit (5198.328698ms)
+✔ Worlds 5 to 8 teach gently: the first stage is the mildest (0.251582ms)
+✔ every spore cloud of every World 3 stage leaves a clear, awake spell long enough to cross (0.148108ms)
+✔ the spell ends with the cloud: no lingering sleep, and a thin edge of a puff does nothing (0.078613ms)
+✔ drowsiness grows with the cloud and never more than the full spell (0.07184ms)
+✔ a jump made in the thick of a cloud still reaches every platform the generator calls safe (0.053816ms)
+ℹ tests 1173
+ℹ suites 0
+ℹ pass 1164
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1290500.325654
+
+✖ failing tests:
+
+test at src/game/firstTimerBot.test.ts:177:1
+✖ 5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59) (32313.188075ms)
+  AssertionError [ERR_ASSERTION]: the kid bot or 5-9 changed: re-measure, and set the goal from the new runs (goals.ts kidMedian)
+  + actual - expected
+  
+    [
+      3,
+      5,
+      6,
+      7,
+  +   7,
+  -   6,
+      5
+    ]
+  
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/firstTimerBot.test.ts:185:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 3, 5, 6, 7, 7, 5 ],
+    expected: [ 3, 5, 6, 7, 6, 5 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at src/game/forgive.test.ts:139:1
+✖ G8 the validator: an Easy step that needs a full-hold jump fails; one a 70% hold climbs passes (1.91166ms)
+  AssertionError [ERR_ASSERTION]: the full jump climbs it: no platform under the spawn point
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/forgive.test.ts:158:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/landingRepair.test.ts:63:1
+✖ fresh 1-1 rolls: no roll the search returns clean has a dead-zone petal or an idle mushroom, and the repair is what cleared them (103268.340202ms)
+  AssertionError [ERR_ASSERTION]: no roll of 100 was repaired: the repair never ran
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/landingRepair.test.ts:76:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/seeds.test.ts:40:1
+✖ every shipped gen2 seed still builds and passes levelCheck, on the layout that was curated (39478.560798ms)
+  AssertionError [ERR_ASSERTION]: GEN2_SEEDS 8-2 seed 878575: it built from another roll than the one checked
+  + actual - expected
+  
+  + 886513851
+  - 878575
+  
+      at guard (/home/user/Sloths-Adventure-/src/game/gen2/seeds.test.ts:32:18)
+      at async TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/seeds.test.ts:41:3)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 886513851,
+    expected: 878575,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/walkedPath.test.ts:76:1
+✖ D: gen2 stages of four worlds (1-6 layouts 1-3), both settings, as the game plays them: every standing petal (the lay's and the fill's) is inside the walked span of its piece, never on a miss piece (5477.042133ms)
+  AssertionError [ERR_ASSERTION]: 1-6 normal layout 1
+  + actual - expected
+  
+  + [
+  +   'petal 79 x 9489 outside 9602-9682 (piece 9478+293)'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/walkedPath.test.ts:92:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'petal 79 x 9489 outside 9602-9682 (piece 9478+293)' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/worlds/w6.test.ts:239:1
+✖ the inspector on 20 rolls: no quiet stretch over 4 s, under a fifth quiet, 2:00+ for its quick player, and the rolls differ (0.35+) (1044.21413ms)
+  AssertionError [ERR_ASSERTION]: 6-4 easy 2: 4.4 s quiet
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/worlds/w6.test.ts:251:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/worlds/w8Fair.test.ts:18:1
+✖ 8-2: no fungus step floats over the void: each stands on a trunk to the ground (11242.266908ms)
+  AssertionError [ERR_ASSERTION]: 0 steps checked
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/worlds/w8Fair.test.ts:31:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/petals.test.ts:55:1
+✖ spread out (Matt, 2026-10-30): the long petal-free stretches are few; every world but its special stages runs at most 2 screens without a petal (28852.654757ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   '1-1: 2345 px from 24114',
+  +   '1-3: 4474 px from 7004',
+  +   '1-4: 3269 px from -6256',
+  +   '1-5: 2694 px from 25766',
+  +   '1-6: 2790 px from 43719',
+  +   '1-8: 3028 px from 33525',
+  +   '2-8: 3056 px from 13870',
+  +   '3-6: 3645 px from 18827',
+  +   '3-7: 2168 px from 19893',
+  +   '5-9: 4536 px from 7862',
+  +   '6-1: 4282 px from 20368',
+  +   '6-2: 17284 px from 140',
+  +   '6-3: 3168 px from 10299',
+  +   '6-4: 16465 px from 140',
+  +   '6-5: 6876 px from 140',
+  +   '6-6: 4167 px from 5128',
+  +   '6-7: 3084 px from 17971',
+  +   '6-9: 6895 px from 5951',
+  +   '7-1: 4110 px from 12329',
+  +   '7-3: 4305 px from 19829',
+  +   '7-5: 4673 px from 6464',
+  +   '7-6: 3989 px from 9440',
+  +   '7-7: 3529 px from 5744',
+  +   '7-9: 6439 px from 9102',
+  +   '8-1: 3442 px from 20430',
+  +   '8-3: 5652 px from 17531',
+  +   '8-5: 2557 px from 3958',
+  +   '8-8: 2673 px from 13021',
+  +   '8-9: 5559 px from 5784',
+  +   '9-8: 2189 px from 3858',
+  +   '10-9: 2240 px from 15482'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/petals.test.ts:71:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      '1-1: 2345 px from 24114',  '1-3: 4474 px from 7004',
+      '1-4: 3269 px from -6256',  '1-5: 2694 px from 25766',
+      '1-6: 2790 px from 43719',  '1-8: 3028 px from 33525',
+      '2-8: 3056 px from 13870',  '3-6: 3645 px from 18827',
+      '3-7: 2168 px from 19893',  '5-9: 4536 px from 7862',
+      '6-1: 4282 px from 20368',  '6-2: 17284 px from 140',
+      '6-3: 3168 px from 10299',  '6-4: 16465 px from 140',
+      '6-5: 6876 px from 140',    '6-6: 4167 px from 5128',
+      '6-7: 3084 px from 17971',  '6-9: 6895 px from 5951',
+      '7-1: 4110 px from 12329',  '7-3: 4305 px from 19829',
+      '7-5: 4673 px from 6464',   '7-6: 3989 px from 9440',
+      '7-7: 3529 px from 5744',   '7-9: 6439 px from 9102',
+      '8-1: 3442 px from 20430',  '8-3: 5652 px from 17531',
+      '8-5: 2557 px from 3958',   '8-8: 2673 px from 13021',
+      '8-9: 5559 px from 5784',   '9-8: 2189 px from 3858',
+      '10-9: 2240 px from 15482'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at src/game/wayside.test.ts:49:1
+✖ the story decides who can speak: Dot is not where he is not, and the petal tells it in the third person (1.015902ms)
+  AssertionError [ERR_ASSERTION]: 1-8: Pokey's own thought is in the first person: Dot keeps flying to the end and back. Show-off.
+      at TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/wayside.test.ts:55:37)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
