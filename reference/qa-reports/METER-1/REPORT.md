@@ -157,10 +157,29 @@ its far end (off the stretch is out of the eye).
   bring the 2-bit-a-beat chase back; test 13 would go red on 1-8, but only there).
 - **METER: catches the running jump cannot make** (the old 1-6's 12): add the standing jump and the walk-in catch to catchWindow.
 
-## 5. Unresolved (named plainly)
-- **w1Arc16.test.ts is still RED on t-build-16**: 1-6 Normal 5.452 against 5.5 (Easy passes). It blocks link #4 until the lead rules
-  on the band (Pushback 1) or the stage is re-laid. A design finding with its number; nothing was tuned.
-- **1-7 reads 2.2 against its 5.5**: by the bits model it is World 1's gentlest hiding; the first-timer bots disagree (restraint).
+## 5. Design findings (the lead's ruling 9:27 PM: report them, with the gap and the lightest beat; nothing tuned here)
+- **1-6 (BUILD-16 on t-build-16@ba374aee): Normal 5.452 against w1Arc16.test's 5.5 floor, a gap of 0.048 meter points** (0.17 raw
+  points a minute: about 1.8 more points a layout outside its busiest 30 s, or 0.2 inside it). Layouts 5.96 / 5.63 / 5.27 / 4.68: the
+  median sits between the middle two. Beat by beat (beats-1-6.txt, `tools/difficulty/beatpts.ts`, Normal, mean of 4): gorge 10.8
+  points (39 a minute), chain 8.4, hang low 6.0, creaky landing 5.5, risers 5.5, snakes met 5.4, snake on your vine 4.3, **false liana
+  2.6 (the lightest beat after the first liana's teach, 2.2): its own ask, choosing the real liana over the one with a face, is a
+  0.5-bit choice under the free bit and scores 0; only its swing scores, 2.1**. The 7 rests are 9 s each and carry 0.2-0.4 points
+  apiece: 63 s of the stage's 5.2 minutes at about 2 points a minute, which is what holds the mean down. **NOT FINAL**: ENG-PETAL changes
+  1-6 (petals; a missed creaky limb costs the way back); it was not on origin at 10:3x (checked: no t-eng-petal); re-score with
+  `npx tsx tools/difficulty/band.ts 1-6` on its head when it lands.
+- **1-7: Normal 2.2 against its 5.5.** Reason: its asks are hiding in time and keeping still. The meter prices the first (the run from the
+  worst spot to cover plus the calm-in, inside a 2 s warn: 0.9-1.9 bits a pass), and has no bits for the second: restraint, DIFFICULTY.md
+  §6 "next version". The lightest beats are exactly the hiding ones (beats-1-7.txt): the bush 0.2 points, red light green light 0.3,
+  the eagle lands 0.3, moss 0.7; only the mossy lianas (5.1) and the light gap (4.1) carry swings. The first-timer bots find it the
+  second-hardest stage of World 1 (the kid: 31 hits in 4 Normal runs, 0 on Easy); the tier bots do not (0.15 misses a minute).
+  **Is a priced "held still under watch" term possible? Yes:** a hold is a sustained no-press for its pass, priceable as bits from the
+  hold's length against a slip rate a minute, but that rate must be measured (bots or testers, §6's own method) before it is a term,
+  and only the bots have a rate today (no tester window on 1-7), so not tonight (the lead's ruling).
+
+## 5b. Unresolved (named plainly)
+- **w1Arc16.test.ts is still RED on t-build-16** (1-6 Normal 5.452 < 5.5; Easy passes): blocks link #4 until ENG-PETAL's re-score, the
+  band ruling (Pushback 1), or a re-lay.
+- **1-7 reads 2.2 against its 5.5** (above): restraint is unpriced.
 - **1-4 reads 4.3 but the tier bots still find it harder than 1-8 (1.97 vs 1.59 misses a minute) and 1-6**; what hits them there is
   logged as "other" (castBots hitBy); not traced further.
 - **1-2 reads 0.9 against its 2.5** (before and after; DIFFICULTY.md §3 had it at 2.0 on 11-12): not this packet's change; not traced.
@@ -195,6 +214,8 @@ its far end (off the stretch is out of the eye).
 - A test that both the old and new code pass at a cap proves nothing: plant each fault and watch it go red.
 
 ## 8. EXACT NEXT STEP
+0. When ENG-PETAL lands: merge t-meter-1 into its head (tools/difficulty only), `npx tsx tools/difficulty/band.ts 1-6` and
+   `npx tsx tools/difficulty/beatpts.ts 1-6 normal`, then w1Arc16.test.ts; report the number to the lead (a design finding if under).
 1. The lead rules the World 1 band (G2 +-1.5 / 0.6, or the test's +-1 / 0.7). If G2: w1Arc16.test.ts's bounds become G2's and 1-6
    passes Normal (5.452) and fails Easy (3.584 > 0.6 x 5.452 = 3.27): BUILD-16's Easy needs re-laying. If the test's: 1-6 Normal needs
    +0.05 by the design's own levers (DIFFICULTY.md §6 UP; layout 4 reads 4.68), re-laid by the stage's builder, never tuned here.

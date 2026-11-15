@@ -92,7 +92,7 @@ import { STILLNESS } from '../../src/game/stillness.ts';
 /** a 420 px liana at x 1000, its anchor 420 px over the bank's top (1-6's measured liana) */
 const LIANA = (id: number, x: number, extra: Record<string, unknown> = {}) => ({ id, x, topY: 400, bottomY: 820, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana' as const,
   isSwingingVine: true, swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0, ...extra });
-const STAGE1 = (vines: any[], platforms: any[], more: Record<string, unknown> = {}) => ({ config: { worldIndex: 1, miniIndex: 6, levelHeight: 1400 }, vines, platforms, checkpoints: [{ x: 0 }], spawnX: 0, heartFalls: [], ...more });
+const STAGE1 = (vines: any[], platforms: any[], more: Record<string, unknown> = {}) => ({ config: { worldIndex: 1, miniIndex: 6, levelHeight: 1400 }, gen2: {}, vines, platforms, checkpoints: [{ x: 0 }], spawnX: 0, heartFalls: [], ...more });
 
 test('a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, heldLandings window)', () => {
   const v = LIANA(1, 1000);
@@ -115,6 +115,10 @@ test('a release is a timed press in the window the engine flies for that perch: 
   const seenW = releaseWindow(STAGE1([hv], [far2]), hv, { x: 1400, plat: far2 }, 'normal', true, true).find((o) => o.plat === far2)?.w ?? 0;
   const blindW = releaseWindow(STAGE1([v], [far2]), v, { x: 1400, plat: far2 }, 'normal', true, false).find((o) => o.plat === far2)?.w ?? 0;
   assert.ok(seenW <= blindW, `seen ${seenW} <= any press ${blindW}`);
+  // (a stage gen2 did not lay is read by its own level check, which has no view rule: the dial liana's window there is every press's)
+  const { gen2: _g, ...old } = STAGE1([hv], [far2]) as any;
+  const oldW = releaseWindow(old, hv, { x: 1400, plat: far2 }, 'normal', true, true).find((o) => o.plat === far2)?.w ?? 0;
+  assert.ok(oldW >= seenW, `no view rule off gen2: ${oldW} >= ${seenW}`);
   // (a narrower perch further out leaves a narrower window: more bits)
   const far = P(6, 1420, 820, 60);
   const rn = releaseBits(STAGE1([v], [P(1, 600, 820, 300), far]), v, { x: 1420, plat: far }, 'normal');

@@ -168,8 +168,10 @@ export function releaseWindow(st: any, v: any, to: { x: number; plat?: any; vine
     if (to.vine) {
       // (the chain's catch as gen2 sizes it (pipeline chainRelease): a press counts only when B's whole swing is in the view as he presses,
       //  SWING_SEEN; B at its own phase on the stage. The other way, the level check's lines (World 1's chains all run right))
+      // (a stage gen2 did not lay (the older generator's Worlds 2-4 chains) is held to the level check's own lines, which have no view
+      //  rule: the meter reads each stage by the rule it was laid and checked by)
       const far = to.vine.x + swingReach(to.vine);
-      const ms = dir === 1 ? chainWindow(v, to.vine, flights, grips, (px) => far <= px + SWING_SEEN) : chainLines(v, to.vine, dbl) * SIM_DTS[0] * 1000;
+      const ms = dir === 1 && st.gen2 ? chainWindow(v, to.vine, flights, grips, (px) => far <= px + SWING_SEEN) : chainLines(v, to.vine, dbl) * SIM_DTS[0] * 1000;
       if (ms > 0) out.push({ w: ms / 1000, vine: to.vine });
     }
     // (the perches the swing really throws him onto, on the route's way: the route's own landing, or any perch between the liana and it
@@ -187,7 +189,7 @@ export function releaseWindow(st: any, v: any, to: { x: number; plat?: any; vine
       //  the other way is mirrored about the liana, as levelCheck's heldLandings does)
       const far = { x: dir === 1 ? q.x : 2 * v.x - (q.x + q.width), y: q.y, w: q.width };
       const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
-      const seen = v.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
+      const seen = st.gen2 && (v.grip || held) ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
       const ms = pressWindow(v, hits, flights, grips, seen);
       if (ms > 0) out.push({ w: ms / 1000, plat: q });
     }
