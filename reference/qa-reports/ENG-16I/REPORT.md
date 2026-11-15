@@ -39,7 +39,8 @@ the bot skill, suite + lock, no stills). Code head 9380bc5d; report head below. 
   exactly ENG-16H's 29 walked-span stages; goals and size also moved on 1-2 and 8-2 (lock-check-a75ce97d.txt).
 - Gates: tsc, knowncheck, generality, roadmapcheck PASS (cecbb948); tool tests 116/116, tierBots 7/7 (87ce9b50: no tools or game
   code change since); build + chunkcheck + artcheck + kbdcheck PASS, seedlist 1-1 --check PASS 161 (f1e5e25c; game code = cecbb948's).
-  PENDING: the whole suite on cecbb948 (from 9:36 PM), buildcheck alone, drawcheck, clipcheck.
+  drawcheck PASS (617 s, 1-6 both ways), clipcheck PASS (83 known, unchanged) on f1e5e25c (only tests and reference/ differ from
+  cecbb948; gates/). PENDING at this commit: the whole suite on cecbb948 (from 9:36 PM), buildcheck alone after it.
 
 ## Polish check
 None shot: the lead's 9:02 PM order (ENG-PETAL moves 1-6's petals again). The false liana's warning before the grab is NOT judged.
