@@ -19,8 +19,9 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import { w1Finish } from './w1.ts';
-import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, TIP_18, WAY_18, type InvDress } from './w1Arc18.ts';
-import type { RollSpec } from '../../rolling.ts';
+import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { W1_TIP } from './w1Cast.ts';
+import { rollTeaches, type RollSpec } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
 import type { Collectible, Enemy, Platform, Vine } from '../../types.ts';
 
@@ -87,7 +88,7 @@ test("the chase: five stretches (four K and the last), each within Matt's flag s
       assert.ok(!st.checkpoints.some((c) => c.x > q.start && c.x < q.end), `${d} seed ${s}: a flag inside ${Math.round(q.start)}`);
     }
     assert.ok(L.at(-1)!.last && L.at(-1)!.tip, `${d} seed ${s}: the last stretch is the tip`);
-    const tip = st.vines.filter((v) => v.runner && Math.abs(v.x - (L.at(-1)!.end + TIP_18.out)) < 2);
+    const tip = st.vines.filter((v) => v.runner && Math.abs(v.x - (L.at(-1)!.end + W1_TIP.liana.out)) < 2);
     assert.equal(tip.length, 1, `${d} seed ${s}: the runner liana off the tip`);
   }
 });
@@ -95,7 +96,7 @@ test("the chase: five stretches (four K and the last), each within Matt's flag s
 test('every teach line is 800 px or more before what it teaches, with nothing that hurts between (level.md rule 6; the lead\'s Q1 ruling A)', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d);
-    const teach = st.rolling.filter((h) => h.teach && h.dropX < st.chase.stretches[0].start);
+    const teach = st.rolling.filter((h) => rollTeaches(h, st.chase) && h.dropX < st.chase.stretches[0].start);
     const nut = teach.find((h) => h.kind === 'low')!, fruit = teach.find((h) => h.kind === 'high')!;
     assert.ok(nut && fruit, `${d} seed ${s}: a teach nut and a teach fruit before the crack`);
     assert.ok(nut.dropX - hintX(st, LINES_18.nut)! >= 800, `${d} seed ${s}: nut line ${nut.dropX - hintX(st, LINES_18.nut)!} px`);
@@ -112,10 +113,10 @@ test('every teach line is 800 px or more before what it teaches, with nothing th
 test('one threat at a time: drops 1.5 s apart at his run on Normal, 2.5 s on Easy; Easy\'s are every one a bump, Normal\'s only before the crack', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d);
-    const apart = d === 'easy' ? ROLL_18.apartEasy : ROLL_18.apart;
+    const apart = ROLL_18.apart![d];
     for (let i = 1; i < st.rolling.length; i++) assert.ok(st.rolling[i].dropX - st.rolling[i - 1].dropX >= apart, `${d} seed ${s}: drop ${i}`);
     const crack = st.chase.stretches[0].start;
-    for (const h of st.rolling) assert.equal(!!h.teach, d === 'easy' || h.dropX < crack, `${d} seed ${s}: the ${h.kind} at ${h.dropX}`);
+    for (const h of st.rolling) assert.equal(rollTeaches(h, st.chase), d === 'easy' || h.dropX < crack, `${d} seed ${s}: the ${h.kind} at ${h.dropX}`);
     // (the fruit's arc clears his drawn head; the nut's rattle a hop clears)
     for (const h of st.rolling) assert.ok(h.kind === 'high' ? h.bounce >= 104 : h.bounce <= 24, `${d} seed ${s}: ${h.kind} bounce`);
   }

@@ -2,20 +2,20 @@
 """BUILD-18 planted faults (level.md rule 12): each fault is planted in a copy of the tree, w1Arc18.test.ts runs, and the named test must
 go RED (CAUGHT); the tree is restored after each. Run from a worktree root (never the shared checkout):
     python3 reference/qa-reports/BUILD-18/planted-faults.py
-`BASE` faults are applied first and kept (none on a head where every test is green; while runnerLip is owed, the stills-only K2 filter)."""
+`BASE`: none (every test is green on the head it runs on)."""
 import os, re, subprocess, sys
 
 ARC = 'src/game/gen2/worlds/w1Arc18.ts'
 PLAN = 'src/game/stagePlan.ts'
 TEST = 'src/game/gen2/worlds/w1Arc18.test.ts'
-BASE = [(ARC, "      const no = runnerProblems(v, st.platforms);", "      const no = runnerProblems(v, st.platforms).filter((m) => !/px of run to its lip/.test(m));")] if os.environ.get('B18_BASE') == 'runner' else []
+BASE = []
 ONLY = os.environ.get('B18_ONLY')
 FAULTS = [
     ('a keeper line changed', [(ARC, "nut: 'Little nuts roll at you. Hop them!'", "nut: 'Little nuts roll at you. Jump them!'")], "lines are the story keeper's"),
     ("stagePlan's mission is the old one", [(PLAN, "'Race the long branch before it gives way, and gather her petals.'", "'Race the long branch to the shrine.'")], "lines are the story keeper's"),
     ('the first two stretches swap places (their windows swapped)', [(ARC, "brick({ id: 'w1-18-at-pace', window: [0.26, 0.39],", "brick({ id: 'w1-18-at-pace', window: [0.1, 0.25],"), (ARC, "brick({ id: 'w1-18-first-run', window: [0.1, 0.25],", "brick({ id: 'w1-18-first-run', window: [0.26, 0.39],")], 'the arc beat for beat'),
     ('the fork line said too late (inside the last 800 px)', [(ARC, "tip('t-fork', 'c', 0.08, 'fork')", "tip('t-fork', 'z', 0.6, 'fork')")], 'every teach line is 800 px'),
-    ("Easy's nuts and fruit cost a heart", [(ARC, "...(teach || easy ? { teach: true } : {})", "...(teach ? { teach: true } : {})")], 'one threat at a time'),
+    ("Easy's nuts and fruit cost a heart", [(ARC, "  if (easy) st.rolling = st.rolling.map((h) => ({ ...h, teach: true }));", "")], 'one threat at a time'),
     ('a heart inside a stretch', [(ARC, "past: -200, up: 34", "past: 120, up: 34")], 'the hearts stand on the fork'),
     ('no still fork laid', [(ARC, "  const why = layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1);", "  const why: string[] = [];")], 'the still fork'),
     ('the palm crown not laid', [(ARC, "const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;", "const d = DRESS_18.trunk;")], "the keeper's look is laid"),
