@@ -127,7 +127,7 @@ export function unpriced(piece: string, where: string, was: number): { bits: num
 /** the channel that prices each route move (route.ts MoveKind): the function or number in this file that gives it its bits. A walk and a
  *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
 export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
-  walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', swing: 'swingChallenges',
+  walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', rope: 'OTHER_BITS.climb', swing: 'swingChallenges',
   timedHop: 'rideChallenges', lift: 'rideChallenges',
 };
 /** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
@@ -788,8 +788,10 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
       // (a swing is priced at its release, swingChallenges; a lift by the ride channel, rideChallenges)
       if (b.fam === 'move:swing' || b.fam === 'move:lift') continue;
-      // (a climb up a trunk or vine: OTHER_BITS.climb. A rope, a lift, warm air were scored as that climb: now refused, unless known)
-      const u = b.fam === 'move:climb' ? { bits: OTHER_BITS.climb, note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, OTHER_BITS.climb);
+      // (a climb up a trunk or vine: OTHER_BITS.climb. A rope shimmy is the same self-paced hold (METER-COVERAGE #7, SP): the route's rope
+      // runs ledge to ledge (route.ts 'rope' edges), so its let-go at the end is onto the far ledge it overhangs, no jump to price (a rope
+      // whose end let-go is a jump is row 7's later half, 3-2). A lift or warm air scored as that climb: now refused, unless known)
+      const u = b.fam === 'move:climb' || b.fam === 'move:rope' ? { bits: OTHER_BITS.climb, note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, OTHER_BITS.climb);
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: u.bits, cost: 'retry', stakes: 1, threat: false, note: b.what + u.note });
     } else if (b.letter === 'P') {
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });

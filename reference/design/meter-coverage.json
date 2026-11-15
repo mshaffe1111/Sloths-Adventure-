@@ -387,11 +387,12 @@
    ]
   },
   "move:rope": {
-   "bot": null,
-   "channel": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.climb",
    "rows": [
     "7"
-   ]
+   ],
+   "note": "a shimmy ledge to ledge, self-paced (SP), priced as a climb; its let-go is onto the far ledge it overhangs (route.ts rope edges). A rope whose end let-go is a jump: row 7's later half (3-2). Channel added by FIX-22 (2-2's spur)"
   },
   "move:swing": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.lianaWait",

@@ -132,3 +132,12 @@ test('a pad whose clock the stage does not list is refused, never priced as noth
   const bare = { ...st, clocks: [] };
   assert.throws(() => rideChallenges(bare, padRoute(pad), sampleRoute(padRoute(pad)), 'normal', false, 'fixture'), (e: unknown) => e instanceof UnpricedPiece && e.piece === 'platform:moving');
 });
+
+test("2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE #7), the stage scored, never refused", () => {
+  for (const setting of ['normal', 'easy'] as const) {
+    const r = scoreStage('2-2', setting, 1, new Map());
+    assert.ok(r.route.segs.some((s) => s.kind === 'rope'), `${setting}: the route crosses on the rope`);
+    assert.ok(r.challenges.some((c) => c.kind === 'climb' && /rope/.test(c.note)), `${setting}: the shimmy is priced`);
+    assert.ok(r.pieces.includes('pad:beat'), `${setting}: the spur's beat pads are a piece the stage uses`);
+  }
+});
