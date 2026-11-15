@@ -123,3 +123,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | CRITIC-LR (Opus high) | cold review of the new lead's review: 2 PASS, 4 REJECT with fixes (engine queue order, driftcheck, LSW line, tribute rule pass/fail), all adopted | $0.98 | ~14 min |
 | PITCH-B run 1 (Opus xhigh) | archived 10 min in to restart on the Gaming environment (research sites open); nothing pushed | $3.22 | ~10 min |
 | ENG-16G (Opus xhigh) | 1-6: height-aware swingClearance + lay rule (planted), seesaw-b parked, relist 100 seeds; found the stage-wide petal fault (expert sealed 22/40), traced 6 kid rescues (pit way back, creature hop on catch); suite 3438/1 (old-1-6 premise); ran to 42.7% | $22.20 | ~95 min |
+| PITCH-B / DESIGN-FINAL (Opus xhigh, Gaming env) | pitch round B (real sources), then the FINAL 1-9, 2-1, 2-2 designs (1-9 freeze flown: rear 1.0 s; 2-2 hop times flown); all three ~1 h 25 m early; reported 31% context, real 48% (D64) | $16.93 | ~1 h 50 m |
