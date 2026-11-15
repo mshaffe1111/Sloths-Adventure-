@@ -8,6 +8,8 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { pitJoinWall, PIT_JOIN } from './pipeline.ts';
 import { buildStage } from '../../../tools/engine/libstage.ts';
+import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
+import { generateAllLevels } from '../worldsData.ts';
 import { DOUBLE_RISE, FORGIVE, JUMP_RISE } from '../physics.ts';
 import type { Platform } from '../types.ts';
 
@@ -46,11 +48,16 @@ test('1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall,
   assert.ok(joins > 0, 'the rolls hold joined floors (the creaky landing)');
 });
 
-test('1-6 rolls 1-4, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back; ENG-16I\'s rescue pits among them)', () => {
+// (the castBots layouts of ENG-16I's ten rescues, the lead's 9:42 PM ET list: kid N 1, 2, 14, 20, 32; child and middle N 34; kid E 18, 21)
+const RESCUES = [1, 2, 14, 18, 20, 21, 32, 34];
+test('1-6 as the game plays it, the rescue layouts, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back)', () => {
   let pits = 0;
   for (const d of ['normal', 'easy'] as const) {
-    for (let seed = 1; seed <= 4; seed++) {
-      const st = buildStage('1-6', seed, d) as { platforms: Platform[]; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>; gen2: { falls?: Array<{ x0: number; x1: number; y: number; kind: string }> } };
+    for (const seed of RESCUES) {
+      setLayoutVariant(seed);
+      let built: unknown;
+      try { built = generateStage({ ...generateAllLevels().find((l) => l.id === '1-6')!, unlocked: true }, d); } finally { setLayoutVariant(null); }
+      const st = built as { platforms: Platform[]; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>; gen2: { falls?: Array<{ x0: number; x1: number; y: number; kind: string }> } };
       const out: string[] = [];
       // (a set-back gap, Laid.heartFalls soft: a fall there puts him back on the ledge he left, no climb)
       const back = (f: { x0: number; x1: number }) => (st.heartFalls ?? []).some((z) => z.soft && z.x0 <= f.x0 + 4 && z.x1 >= f.x1 - 4);
@@ -68,8 +75,8 @@ test('1-6 rolls 1-4, both settings: every soft pit climbs back to its take-off, 
         const rises = chain.slice(1).map((y, i) => chain[i] - y);
         if (rises.some((r) => r > JUMP_RISE)) out.push(`${d} seed ${seed}: the pit under ${Math.round(f.x0)}..${Math.round(f.x1)} climbs back by rises ${rises.join(', ')} (a plain jump: ${Math.round(JUMP_RISE)})`);
       }
-      assert.deepEqual(out, [], `1-6 ${d} seed ${seed}`);
+      assert.deepEqual(out, [], `1-6 ${d} layout ${seed}`);
     }
   }
-  assert.ok(pits > 0, 'the rolls hold soft pits');
+  assert.ok(pits > 0, 'the layouts hold soft pits');
 });
