@@ -87,7 +87,12 @@ identical by lockall: 102/102 stages unchanged, lockall --layouts 2 both setting
   88/93 ms vs base 87/92 ms, same load (bt.mts). buildcheck NOT re-run alone on e10a86e2: the first gate for the morning.
 - Planted faults: 7/7 RED, restored GREEN (planted.out.txt, on 9983514f's code = ddbcd55c's).
 - **seedlist --check**: 1-6 FAILS ("seed 80 normal/easy: its replay differs from its search (platforms, vines, collectibles, spawnY):
-  rebuild the list": the wall changes 1-6's platforms). Relist __RELIST__. Others: __SEEDS__
+  rebuild the list": the wall changes 1-6's platforms). Relist __RELIST__. Others (seedcheck-ddbcd55c.txt, seedcheck-e10a86e2.txt; the two heads' stages are identical by lockall):
+  1-7 PASS (100), 1-5 PASS (150), 1-2 PASS (100), 1-3 PASS (100). **1-4 FAILED** (seed 66 "its replay differs from its search
+  (platforms, vines, collectibles, spawnY)"), **relisted** on e10a86e2 (addlevel --relist --no-bots: 24/24 rolls both settings, 100/100
+  proven, --check PASS; relist-1-4-e10a86e2.txt; commit 83b62146; its bots NOT run). **1-1 FAILS** (seed 33616 "its replay differs from
+  its search (platforms, collectibles, spawnY, exitTotemX)"): NOT relisted (with its tier calibration, BOTS.md, it does not fit the
+  cutoff): the first step in the morning. CI's `seedlist.ts 1-1 --check` is RED on this branch until then.
 - **The whole suite** (on ddbcd55c): __SUITE__
 - drawcheck, clipcheck: NOT run (about 10 min of the whole machine; the suite, lists and relist held it until the cutoff).
 

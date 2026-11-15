@@ -9,3 +9,6 @@ DONE 22:51
   1-4 seed 66 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
   1-4 seed 66 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
 == 1-1 22:52
+  1-1 seed 33616 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 33616 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+DONE 23:01
