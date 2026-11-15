@@ -108,14 +108,21 @@ half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York 
   published (D72)`, `--published refuses when there is no build to mark`. With the old rules planted back in a copy (no cap; map against
   the last local build): 2 of 4 RED (the 523 and D72 tests); now 4/4 GREEN. Added to gates.yml's tools-test line (ciTests passes).
 
-## Gate lines (head 35cb88ce5 code; LAWS 5, src/ touched, so everything this packet names)
+## Gate lines (code head 7a0e13285; LAWS 5: src/ touched, so everything this packet names)
 - tsc `npx tsc --noEmit -p .`: exit 0.
-- Whole suite (CLAUDE.md glob, 3 shards side by side): PENDING
-- Engine tool tests (gates.yml's two lines): PENDING
-- seedlist --check: PENDING
+- Whole suite (CLAUDE.md glob, `--test-shard=i/3` side by side), run C on 7a0e13285: SUITEC
+  (Run B on 6df8fb585: 3534 tests, 3532 pass, 2 fail: gen2/game.test.ts:68 and w7Game.test.ts:65, 7-9 layout 2 Easy, the judge's
+  half, fixed in 7a0e13285; both green re-run alone there, 5/5. Run A on 35cb88ce5 was stopped part-way, once a later edit would have
+  mixed its code; its one red, easyMode.test.ts:61 "8-5: keeps a tayra", became R-165.258.)
+- Engine tool tests (gates.yml's two lines, with tools/testlink/build.test.ts added) on 7a0e13285: TOOLC (on 6df8fb585: 109/109, tierBots 7/7).
+- seedlist --check on 7a0e13285, every listed stage (no list moved; run anyway): 1-1 PASS (162 seeds, 405 s), 1-2 PASS (100, 88 s),
+  1-3 PASS (100, 34 s), 1-4 PASS (100, 159 s), 1-5 PASS (150, 160 s), 1-7 PASS (100, 192 s); the verdicts refuse 0 seeds on each.
+- lockall --layouts 16 on 7a0e13285: Normal 102/102 unchanged against the base; Easy identical to the R-165.258 lock (the judge fix moved
+  no build); against a fresh phone's Easy, the 8 stages named in R-165.258.
 - roadmapcheck: PASS (after `git fetch --unshallow`: the container's clone was shallow and the gate says so). knowncheck: PASS.
-  generalitycheck: PASS (26 literals, 26 known). src/game/ciTests.test.ts: 3/3.
-- Not run (not named by the packet; integration runs them before any link): the vite build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck.
+  generalitycheck: PASS. src/game/ciTests.test.ts: 3/3 (in the suite).
+- Not run (not named by the packet; integration runs them before any link): the vite build, chunkcheck, artcheck, drawcheck,
+  clipcheck, kbdcheck, buildcheck.
 
 ## 2. Polish check
 No screen changed: Normal 102/102 and Easy 102/102 (fresh phone) are identical before and after, so there is no still to judge. The
