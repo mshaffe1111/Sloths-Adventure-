@@ -105,6 +105,8 @@ import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
+import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -831,6 +833,11 @@ export class GameEngine {
   /** finds picked up while stopping was not safe: the reader opens once he is (the same rule as the lesson cards) */
   private findsWaiting: string[] = [];
   private coyoteTimer: number = 0;
+  /** px/s: the sideways speed of what carried him this step (a drifting log, a swaying or riding platform; 0 on still ground), which a jump
+   *  off it keeps by RIDE.keep (the one carry rule for every carrier and any rider, the lead's ruling 11:36 AM ET 11-15) */
+  private carryVx = 0;
+  /** the stage's pickups that ride a carrier (Collectible.rides), found once per pickup and platform list (ridePickups.ts) */
+  private riders?: Riders;
   /** the jump forgiveness for the difficulty (physics.ts FORGIVE): coyote time, jump buffer, ledge landing */
   private forgive: (typeof FORGIVE)['normal' | 'easy'] = FORGIVE.normal;
   private jumpBufferTimer: number = 0;
@@ -1813,6 +1820,9 @@ export class GameEngine {
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
+    // (whatever he stands on as the carriers move, and where it was: its move this step is the speed a jump off it keeps, carryVx)
+    const under = p.grounded ? this.platforms.find((q) => q.id === this.standingOnId) : undefined;
+    const underX = under?.x;
     this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
     // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
@@ -1856,6 +1866,11 @@ export class GameEngine {
         }
       }
     }
+    // (the carrier's sideways speed this step: a log that wrapped from one end of its river to the other carried nothing, as above)
+    this.carryVx = under && underX !== undefined && dt > 0 && Math.abs(under.x - underX) <= under.width * 2 ? (under.x - underX) / dt : 0;
+    // (a pickup riding a carrier goes where it went this step: a petal on a log, ridePickups.ts)
+    this.riders = ridersOf(this.collectibles, this.platforms, this.riders);
+    if (this.riders.list.length) stepRiders(this.riders);
     // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
     // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
     for (const r of this.currentStage.rivers ?? []) {
@@ -3235,6 +3250,8 @@ export class GameEngine {
       if (c.collected) continue;
       // a petal in a shut orchid (World 5) waits for it to open
       if (this.w5?.shut(c)) continue;
+      // (a petal riding a log under a bank is hidden with it: never picked up through the bank)
+      if (c.rides && this.riderHidden(c)) continue;
 
       if (c.type === 'cage') {
         // Cage is freed when punched (handled in executePunchHitbox)
@@ -6986,6 +7003,11 @@ export class GameEngine {
     return 0;
   }
 
+  /** a pickup riding a carrier, out of sight with it (its log under a bank) or its carrier gone */
+  private riderHidden(c: Collectible): boolean {
+    return rideHidden(c, this.riders?.list.find((r) => r.c === c)?.plat ?? this.platforms.find((q) => q.id === c.rides?.id));
+  }
+
   /** The one ground take-off: a press on the ground or in coyote time, and a press buffered before landing (audit A-04: the buffered
    *  path had its own copy that left at the full jump, ignoring a web's drag and a spore cloud's drowsiness). */
   private groundJump() {
@@ -6994,6 +7016,9 @@ export class GameEngine {
     // before that code sees him grounded, so without this it kept the awake flag of the flight that brought him down)
     if (p.grounded) this.flightClear = this.drowsy <= 0;
     p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
+    // (the one carry rule, ride.ts RIDE.keep: a jump off anything that carries him keeps its sideways speed, so a hop off a drifting log
+    // flies on with the log, never dropped dead behind it; still ground carries nothing. Taken once, at the take-off)
+    if (p.grounded && this.carryVx) p.vx += this.carryVx * RIDE.keep.x;
     p.grounded = false;
     p.jumpsLeft = 1;
     p.isDoubleJumping = false;
@@ -7327,6 +7352,8 @@ export class GameEngine {
     // Render Collectibles
     this.collectibles.forEach((item) => {
       if (!this.onScreen(item.x, item.y, 260)) return;
+      // (a petal riding a log under a bank is hidden with it, never drawn over the bank's art)
+      if (item.rides && this.riderHidden(item)) return;
       if (this.w5?.shut(item)) return;
       // World 5's painted pink bell (Pell's note) and the painted exit totem
       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;

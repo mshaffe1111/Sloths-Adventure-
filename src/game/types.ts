@@ -527,6 +527,10 @@ export interface Collectible {
    */
   critter?: 'capy' | 'duck' | 'otter' | 'eaglet';
   freedAt?: number;
+  /** a pickup ON a carrier (a drifting log, a lily pad; ENG-W2b, the lead's sign-off 11:38 AM ET 11-15): the platform it sits on and where
+   *  from that platform's left end and top; the engine sets it there every step (ridePickups.ts), so it goes where the platform goes, and
+   *  while its log is under a bank it is hidden with it, never drawn or picked up */
+  rides?: { id: number; dx: number; dy: number };
 }
 
 export interface Particle {

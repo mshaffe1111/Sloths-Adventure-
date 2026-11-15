@@ -28,7 +28,13 @@ export interface RiverRow {
   gap?: number;
   /** a fall splashes him back onto the near bank, nothing lost (the teaching river) */
   safe?: boolean;
+  /** how many of its logs carry one petal each, from the first log (data; unset: none). Each rides its log (Collectible.rides,
+   *  ridePickups.ts): at its middle, PETAL_SIT over its top, hidden with it under a bank */
+  petals?: number;
 }
+
+/** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
+export const PETAL_SIT = 34;
 
 /** the numbers a laid river is held to (riverFaults) */
 export const RIVER_LAY = {
@@ -57,7 +63,7 @@ export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / r
  * Lay one river: the water from `x0` (the near bank's end) across `riverWidth(row)` to the far bank's start, under banks whose top is
  * `bankY`, and its logs (platforms 'drift', ids from `nextId`). The zone's `safe` sets him back 70 px short of the edge on the near bank.
  */
-export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; logs: Platform[] } {
+export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; logs: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
   const gap = rowGap(row);
   const width = riverWidth(row);
   const x1 = x0 + width;
@@ -71,7 +77,8 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
     logs.push(p);
   }
   const zone: RiverZone = { x0, x1, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}) };
-  return { zone, logs };
+  const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
+  return { zone, logs, petals };
 }
 
 /**

@@ -1586,6 +1586,8 @@ export interface Laid {
   ropes: Rope[];
   /** the log rivers (place `river`): each one's water; its logs are among `platforms` (type 'drift') */
   rivers: RiverZone[];
+  /** the petals that ride those logs (RiverRow.petals): each one's log and where on it; the fill lays them as riding pickups */
+  riverPetals?: Array<{ log: Platform; dx: number; dy: number }>;
   width: number;
   bottom: number;
   nextId: number;
@@ -1813,6 +1815,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const vines: Vine[] = [];
   const ropes: Rope[] = [];
   const rivers: RiverZone[] = [];
+  const riverPetals: NonNullable<Laid['riverPetals']> = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
   // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
@@ -2533,6 +2536,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         platforms.push(...r.logs);
         placed.seam.push(...r.logs);
         rivers.push(r.zone);
+        riverPetals.push(...r.petals);
       }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
@@ -2861,6 +2865,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     vines,
     ropes,
     rivers,
+    ...(riverPetals.length ? { riverPetals } : {}),
     zones,
     heartFalls,
     ...(rise.length ? { rise } : {}),
@@ -3408,6 +3413,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       const tt = (i + 0.5) / 3;
       flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt), arcLook);
     }
+  }
+  // (the petals that ride the logs, RiverRow.petals: each laid where its log is now and set to ride it, Collectible.rides)
+  for (const q of laid.riverPetals ?? []) {
+    const n = C.length;
+    flower(q.log.x + q.dx, q.log.y + q.dy);
+    if (C.length > n) C[n].rides = { id: q.log.id, dx: q.dx, dy: q.dy };
   }
   if (budget.archetype === 'harvest') {
     const flowers = () => C.filter((c) => c.type === 'flower').length;

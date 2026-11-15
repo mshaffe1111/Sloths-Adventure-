@@ -5,7 +5,8 @@
  * ONE river section: a bank, a deep river (W2_RIVERS.deep, with him, a fall costs a life), the far bank. The middle and child bots, on
  * both settings, cross it on the logs and reach the shrine, at most RIDE_LIVES lives lost each. Planted: with the bot's ride skill
  * switched off (firsttimer.ts SKILLS.ride: he no longer boards a log only when a flown hop comes down on it, nor rides it to the next),
- * they drown in it over the bar (measured 11-15 on seed 1: on, lives 2/0/0/0 for middle Normal/Easy, child Normal/Easy; off, 5/0/0/3).
+ * they drown in it over the bar (measured 11-15 on seed 1, with the one carry rule (RIDE.keep): lives AT THE RIVER on, 2/0/0/0 for middle
+ * Normal/Easy, child Normal/Easy; off, 7/0/0/3).
  * Not yet: a river flowing BACK at him (W2_RIVERS.back) wants the design's 'against the flow' skill (run forward along the log, hop from
  * its front end): today the child on Easy loses 4 there (ENG-W2b REPORT, rough spots).
  */

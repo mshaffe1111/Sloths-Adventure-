@@ -18,6 +18,7 @@ import { W2_GROUND, W2_RIVERS } from './worlds/w2.ts';
 import { W6_GROUND } from './worlds/w6.ts';
 import type { Gen2Stage, SectionPiece, SectionTemplate, WorldKit, WorldManifest } from './types.ts';
 import type { Difficulty } from '../difficulty.ts';
+import type { Platform } from '../types.ts';
 
 // ───────────────────────── a toy river section on any world's ground ─────────────────────────
 const near: SectionPiece = { key: 'near', shape: 'bank', w: [320, 320], place: { kind: 'start' }, main: true };
@@ -172,4 +173,27 @@ test('floor.unmarked: a gap laid AS water, or inside a river, is marked by its w
   assert.deepEqual(floorlessGaps({ platforms, heartFalls: [], gen2: { falls: [{ x0: 1000, x1: 1300, y: 580, kind: 'water' }] } } as never), [], 'a water fall');
   assert.deepEqual(floorlessGaps({ platforms, heartFalls: [], rivers: [{ x0: 1000, x1: 1300 }] } as never), [], 'a river');
   assert.equal(floorlessGaps({ platforms, heartFalls: [], gen2: { falls: [{ x0: 1000, x1: 1300, y: 580, kind: 'soft' }] } } as never).length, 1, 'a soft fall is no water');
+});
+
+// ───────────────────────── petals ON logs, by data (item 3): a row's `petals` ─────────────────────────
+test("a river row's petals ride its logs on the built stage, and the check holds them reached (World 2's rows, both settings)", () => {
+  for (const s of ['normal', 'easy'] as const) {
+    const rivers = { ...W2_RIVERS, deep: { ...W2_RIVERS.deep, petals: 2 } };
+    const k = kitOn(W2_GROUND, [riverSection(['deep'])], rivers);
+    let st: Gen2Stage | undefined;
+    for (let seed = 1; seed <= 40 && !st; seed++) {
+      const b = buildGen2Stage({ config: toyCfg('5-3', 'sprint'), kit: k, seed, difficulty: s });
+      if (b.rivers?.length) st = b;
+    }
+    assert.ok(st, `${s}: a roll lays the river`);
+    const riders = st.collectibles.filter((c) => c.rides);
+    assert.equal(riders.length, 2, `${s}: two petals ride the deep river's logs`);
+    for (const c of riders) {
+      const log: Platform = st.platforms.find((p) => p.id === c.rides!.id)!;
+      assert.equal(log.type, 'drift');
+      assert.equal(c.x, log.x + c.rides!.dx);
+      assert.equal(c.y, log.y + c.rides!.dy);
+    }
+    assert.deepEqual(st.gen2.errors, [], `${s}: the roll is clean (no petal out of reach)`);
+  }
 });
