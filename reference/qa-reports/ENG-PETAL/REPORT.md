@@ -24,7 +24,8 @@ castBots 1-6 seeds 1-40 (PASS = shrine reached with the goal met; files castBots
 | middle Easy | 40/40 | 40/40 | 40/40 | **40/40** |
 | child Normal | 21/40 | 38/40 | 38/40 | **32/40** (7 sealed, 1 rescue s2) |
 | child Easy | 39/40 | 39/40 | 39/40 | **39/40** (1 rescue s2) |
-castBots 1-7 expert Normal 1-40: __C17__
+castBots 1-7 expert Normal 1-40: 40/40 before and 40/40 after (castBots-1-7-expert-*.txt; 1-7's door is not a petal count, so the
+petals do not gate it; median 223.4 s both).
 The child's Normal drop with the wall (38 -> 32): his misses (trace-child-normal-ddbcd55c.txt, seeds 4, 8) are on hang-low:b1,
 false-liana:sb1, rest-stumps:s1/s2, none by a wall. With about 22 petals and a door of 19-21, one moved petal decides a run: the stage
 has no margin, which is the count ruling in Pushback, not a fault of the wall (not proven either way: two seeds traced).
