@@ -93,12 +93,12 @@ for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as
     });
   }
 }
-test("a spur fails by name: no rope, a rope on a row that is no spur, a ledge that does not end where the near bank does, a far bank inside a double's reach", () => {
+test("a spur fails by name: no rope, a rope on a row that is no spur, a ledge reaching over the pond, a far bank inside a double's reach", () => {
   const k = kitOn(W2_GROUND, [], SPUR_ROWS);
   const lay = (t: SectionTemplate) => layLocal(t, budgetOf(k), rngFor(1), false, { pads: k.manifest.pads });
   assert.throws(() => lay(spurPond(190, { rope: null })), /a spur with no rope/);
   assert.throws(() => lay(spurPond(190, { row: 'hop' })), /the row is no spur/);
-  assert.throws(() => lay(spurPond(190, { ledgeAt: 0.3 })), /the rope crosses the pond, no more/);
+  assert.throws(() => lay(spurPond(190, { ledgeAt: 0.8 })), /it would stand over the pond/);
   assert.throws(() => lay(spurPond(140)), /inside a double's reach/);
 });
 test('a spur stage: the stone against the far bank\'s foot is the pond\'s end, named on its zone; padFaults judges no water past it; the rope is out of reach from every pad and the stone', () => {

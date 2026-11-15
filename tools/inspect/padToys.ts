@@ -80,7 +80,7 @@ export function padRun(row: ToyPad, tier: Tier, setting: Setting, seed: number, 
 /** the most lives a tier may lose at the pond (a first try that reads the pad wrong once, as a person does) */
 const POND_LIVES = 1;
 const atPond = (r: TierRun, row: ToyPad) => r.pieces.find((q) => q.id === `toy-pads-${row}`);
-export const crossed = (r: TierRun, row: ToyPad) => r.end === 'shrine' && !!atPond(r, row) && atPond(r, row)!.lives <= POND_LIVES && !r.stuck.some((k) => k.piece === `toy-pads-${row}`) && (row !== 'spur' || r.spurs >= 1);
-export const told = (r: TierRun, row: ToyPad) => `ended ${r.end}, at the pond ${JSON.stringify(atPond(r, row))} (at most ${POND_LIVES} lives)${row === 'spur' ? `, spur stones ${r.spurs}` : ''}, stuck ${JSON.stringify(r.stuck)}`;
+export const crossed = (r: TierRun, row: ToyPad) => r.end === 'shrine' && !!atPond(r, row) && atPond(r, row)!.lives <= POND_LIVES && !r.stuck.some((k) => k.piece === `toy-pads-${row}`) && (row !== 'spur' || (r.spurs ?? 0) >= 1);
+export const told = (r: TierRun, row: ToyPad) => `ended ${r.end}, at the pond ${JSON.stringify(atPond(r, row))} (at most ${POND_LIVES} lives)${row === 'spur' ? `, spur stones ${r.spurs ?? 0}` : ''}, stuck ${JSON.stringify(r.stuck)}`;
 /** the fixture's stage as built (Normal) */
 export const padStage = (row: ToyPad, seed: number): Gen2Stage => buildGen2Stage({ config: cfg, kit: kitFor(row), seed, difficulty: 'normal' });

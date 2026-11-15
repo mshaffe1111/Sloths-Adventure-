@@ -326,10 +326,10 @@ export type PlaceRule =
    *  laid from the world's pad table row `row` (WorldManifest.pads). A fall costs a life, or splashes him back onto `after` when the row is
    *  `safe`. A row the world lacks fails the section by name; mirrored or laid left throws by name, as a river does.
    *  A SPUR row (PadRow.spur, FIX-22, the lead's ruling 4:17 PM ET 11-15; 2-2's beat X "there and back"): the row's far end is a dead-end
-   *  stone and this piece the far bank standing over it, LEVEL with `rope` (a ledge over `after` ending where `after` ends: World 2's way
-   *  up from the near bank, by a vine), out of a double's reach from the stone; the way on is the rope hung from `rope` to it over the
-   *  pond, so he goes out for the stone's flower, waits there for the pads he sank, comes back and climbs. A spur row with no `rope`, or a
-   *  `rope` on a row that is no spur, fails the section by name */
+   *  stone and this piece the far bank standing over it, LEVEL with `rope` (a ledge ending no further on than `after` does: over it, or
+   *  a high bank before it that he climbs back up to, by a vine), out of a double's reach from the stone; the way on is the rope hung from
+   *  `rope` to it over the pond, so he goes out for the stone's flower, waits there for the pads, comes back and climbs. A spur row with
+   *  no `rope`, a `rope` on a row that is no spur, or a ledge reaching over the pond fails the section by name */
   | { kind: 'pads'; after: string; row: string; rope?: string };
 
 export interface SectionPiece {

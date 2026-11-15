@@ -8,7 +8,7 @@
  * shivers and goes under: rideLay.ts PAD_SIZES), until the crown lily, the first place in the pond he may stand still.
  *
  * THE ARC (2-2.md "THE NODE STRING", one brick a beat):
- *   A  the pond garden (the keeper's `pads` 800+ px before beat 1)     W  the pond breathes: a beat row (`breathe` 800+ px before; flag)
+ *   A  the pond garden (the keeper's `pads` 800+ px before beat 1)     W  the whole pond breathes in step (flag; `breathe` came before X)
  *   T  the first pad, safe: one big pad over shallow water            Pf the ferry's old jetty planks over the reed bed
  *   Pw keep moving: three small pads, a flower riding each            M  both kinds: weight pads (flowers on the small ones: the greed),
  *   Pg the garden path: stones and banks between pools                   the drifting log lane, a beat pair (flag before; heart after)
@@ -48,7 +48,7 @@ export const LINES_22 = {
   pads: 'Pads sink if you stand. Then they come back!',
   /** Dot, once, at beat 4's stone (there and back) */
   stone: 'Sit tight! The pads come back up.',
-  /** Dot, teach, 800+ px before beat 6 (the twist) */
+  /** Dot, teach, 800+ px before the first beat row (beat 4's spur, since the lead's 5:29 PM ET ruling) */
   breathe: 'These breathe on their own. Cross on the up!',
   /** Pokey, as the crown lily holds him (beat 11) */
   lily: 'Finally. Somewhere I can stand still.',
@@ -142,7 +142,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
   const ren = (ps: SectionPiece[]) => {
     const a = ps[0].key, z = ps[ps.length - 1].key;
     const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s);
-    return ps.map((p) => ({ ...p, key: f(p.key), ...(p.from ? { from: f(p.from) } : {}), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] }));
+    return ps.map((p) => ({ ...p, key: f(p.key), ...(p.from ? { from: f(p.from) } : {}), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on' || q === 'rope') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] }));
   };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
@@ -176,31 +176,31 @@ const keepMoving: Lay = {
 /** [Pg] beat 3, the garden path: banks and boulders between pools, up and down, the giant lily nearer */
 const gardenPath: Lay = {
   pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), rock('rb', 'b', 0.5), shore('c', 'b', 340, DOWN), rock('rc', 'c', 0.55), bank('d', 'c', 300), shore('e', 'd', 280, UP), shore('z', 'e', 340, DOWN)],
-  sockets: [flowers('pa', 'a', 0.5, 2), flowers('pd', 'd', 0.5, 2), flowers('pz', 'z', 0.6, 2)],
+  // (Dot's `breathe` here, 800+ px before the first beat row, X's spur: since the lead's 5:29 PM ruling the beat row comes first at X, and
+  // the first appearance of a mechanic is taught, level.md rule 6; W's twist is then the whole row breathing together)
+  sockets: [flowers('pa', 'a', 0.5, 2), flowers('pd', 'd', 0.5, 2), tip('t-breathe', 'e', 0.5, 'breathe'), flowers('pz', 'z', 0.6, 2)],
 };
-/** the spur's way up (px): the vine from the near bank to the rope's ledge; the far bank stands this + PAD_LAY.drop over the stone, past a
- *  double's 189 px (place 'pads' checks it), so the stone reads as a dead end and the vine as the way on */
+/** the spur's dip (px): the high bank over the low one at the pond, the vine's height back up; the far bank, level with the high one, stands
+ *  this + PAD_LAY.drop over the stone, past a double's 189 px (place 'pads' checks it), so the stone reads as a dead end */
 const SPUR_UP = 190;
-/** [X] beat 4, there and back (the spur pond, FIX-22; the lead's rulings 4:17 and 5:10 PM ET 11-15): out over two small pads to the dead-end
- *  stone and its flower, Dot's `stone` line on the stone; back over the pads to the bank; up the vine (taught 1-4) to the ledge and over the
- *  pond on the rope (taught 1-3) to the high bank, and down to the water's edge again. The heart after */
+/** [X] beat 4, there and back (the spur pond, FIX-22; the lead's rulings 4:17, 5:10 and 5:29 PM ET 11-15): a dip. Off the high bank down
+ *  to the low one at the pond, out over two small beat pads to the dead-end stone and its flower (Dot's `stone` line on the stone), wait
+ *  there for the row to come up, back to the low bank, up the vine (taught 1-4) on the high bank's face and over the pond on the rope (taught
+ *  1-3) from the high bank to the far one, level with it. Every piece a World 2 painted bank (a ledge over the low bank was drawn in World
+ *  1's thin-piece art: w2.test.ts 'the look'). The heart after */
 const thereAndBack: Lay = {
   pieces: [
-    bank('a', null, 440),
-    { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'a', at: [290 / 440, 290 / 440], h: [SPUR_UP, SPUR_UP] } },
-    { key: 'h', shape: 'branch', w: [200, 200], place: { kind: 'over', on: 'a', at: [240 / 440, 240 / 440], dy: [-SPUR_UP, -SPUR_UP] }, style: 'branch', main: true },
-    { key: 'w', shape: 'bank', w: [240, 240], place: { kind: 'pads', after: 'a', row: 'spur22', rope: 'h' }, style: 'log', main: true, landing: true },
-    shore('z', 'w', 300, [SPUR_UP - 4, SPUR_UP]),
-    rock('rz', 'z', 0.55),
+    bank('t', null, 300),
+    shore('a', 't', 420, [SPUR_UP, SPUR_UP]),
+    { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'a', at: [16 / 420, 16 / 420], h: [SPUR_UP, SPUR_UP] } },
+    { key: 'w', shape: 'bank', w: [300, 300], place: { kind: 'pads', after: 'a', row: 'spur22', rope: 't' }, style: 'log', main: true, landing: true },
   ],
-  // (the high bank kept short and a boulder to hop at the water's edge below it: 320 px banks and nothing to do read 4.3-5.1 s of
-  // nothing past the rope on 13 of 24 rolls, over the quiet line's 4 s)
-  sockets: [flowers('pa', 'a', 0.25, 2), tip('t-stone', 'w', 0, 'stone'), flowers('pz', 'z', 0.25, 2)],
+  sockets: [flowers('pa', 'a', 0.5, 2), tip('t-stone', 'w', 0, 'stone'), flowers('pw', 'w', 0.3, 2)],
 };
-/** [W] beat 6, the twist: the pond breathes; `breathe` 800+ px before, the flag before it */
+/** [W] beat 6, the twist: the whole pond breathes in step (Dot's `breathe` came before X, the first beat row), the flag before it */
 const breathes = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), pond('c', 'b', easy ? 'breath22Easy' : 'breath22', 300), pond('d', 'c', easy ? 'breath22Easy' : 'breath22', 360), bank('z', 'd', 300)],
-  sockets: [tip('t-breathe', 'a', 0.1, 'breathe'), flag('b', 0.2), flowers('pc', 'c', 0.5, 2), flowers('pd', 'd', 0.5, 1)],
+  sockets: [flag('b', 0.2), flowers('pc', 'c', 0.5, 2), flowers('pd', 'd', 0.5, 1)],
 });
 /** [Pg] beat 8, the plank walk: the old ferry path out over the reed bed, two gaps in it (a hop each over the reeds); its planks' look is
  *  World 2's bank until a painted plank piece exists (see gapBank) */

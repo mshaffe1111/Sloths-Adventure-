@@ -1425,7 +1425,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (!!row.spur !== !!pl.rope) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays pad row "${pl.row}" ${row.spur ? 'a spur with no rope (its way on from the near bank)' : `with a rope, and the row is no spur`}`);
       if (pl.rope) {
         const r = ref(pl.rope);
-        if (Math.abs(r.x + r.w - (a.x + a.w)) > 1) throw new Error(`gen2 section ${tpl.id}: ${pc.key}'s rope ledge ${pl.rope} ends at ${r.x + r.w}, the near bank ${pl.after} at ${a.x + a.w}: the rope crosses the pond, no more`);
+        if (r.x + r.w > a.x + a.w + 1) throw new Error(`gen2 section ${tpl.id}: ${pc.key}'s rope ledge ${pl.rope} ends at ${r.x + r.w}, past the near bank ${pl.after}'s end at ${a.x + a.w}: it would stand over the pond`);
         y = r.y;
         const over = a.y + PAD_LAY.drop - y;
         if (over < APEX['double-hold'].px + SPARE.px) throw new Error(`gen2 section ${tpl.id}: ${pc.key} stands ${over} px over its spur's stone, inside a double's reach (${APEX['double-hold'].px} + ${SPARE.px}): the stone is no dead end`);
