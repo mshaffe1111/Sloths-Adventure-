@@ -137,7 +137,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   // (1-4's halfway, Pokey's: the story keeper's words, STORY-KEEPER.md:149, approved with 1-4's lines 11-13; the same in both looks)
   ["way.1-4", "1-4", "wayside", "story", "Meeca climbs this every Sunday. I waved from below.", "Meeca climbs this every Sunday. I waved from below.", null, null, null],
   ["way.1-5", "1-5", "wayside", "story", "These petals are fresher. She came this way not long ago.", "She squashed this one extra flat.", null, null, null],
-  ["way.1-6", "1-6", "wayside", "story", "Meeca used to cross these twice before I'd finished one. She'd wait at the end with a snack.", "Meeca crossed these twice before I'd finished one. She always waited.", null, null, null],
+  ["way.1-6", "1-6", "wayside", "story", "Meeca beat me across every time. Then she waited.", "Meeca beat me across every time. Then she waited.", null, null, null],
   ["way.1-7", "1-7", "wayside", "story", "A whole hour in that bush. Meeca says she saw me. Fibs!", "A whole hour in that bush. Meeca says she saw me. Fibs!", null, null, null],
   ["hint.1-8.long", "1-8", "stage hint", "story", "This branch goes on and on", "This branch goes on and on", null, null, null],
   ["way.1-8", "1-8", "wayside", "story", "Dot has flown to the end of this branch and back four times. I'm still on my first.", "Dot's flown this branch four times. I'm on my first.", null, null, null],

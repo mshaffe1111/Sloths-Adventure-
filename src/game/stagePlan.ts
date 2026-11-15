@@ -205,7 +205,7 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
  *  count is on the HUD beside it); every other goal keeps goalLine's own words */
 export const SEALED_LINES: Readonly<Record<string, string>> = {
   '1:relic_hunt': "We missed some of her marks. They're back there!",
-  '1:vine_runner': 'Some of her petals are still on the lianas. Back we go!',
+  '1:vine_runner': 'Petals still on the lianas! Back we go!',
   // (1-7, World 1's only stealth stage: the keeper's 9b, held equal to w1Arc17.ts SEALED_17. It speaks once 1-7's exit can seal: with
   //  1-6's StageSpec.gathers (merged with t-build-16 by ENG-16H) 1-7 may take `gathers: 'petals'`, the lead's call; until then its exit is never locked)
   '1:stealth': 'We left some of her petals behind. Sneak back for them!',

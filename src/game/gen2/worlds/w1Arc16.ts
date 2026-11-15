@@ -52,20 +52,20 @@ export const BRIEF_16: GraphBrief = {
  *  11-14). The only player words this file holds. Each a TEACH line said 800 px or more before what it teaches (level.md rule 6) */
 export const LINES_16 = {
   /** before beat 1, the first liana */
-  liana: 'Lianas! Grab one from the edge, and let go when you glow.',
+  liana: 'Grab at the edge. Let go when you glow!',
   /** before beat 2, hang low (1-6.md teaches it by a petal at the foot; a socket stands on no vine, so the keeper's line says it) */
   low: 'Hang low, fly far!',
   /** before beat 6, the snakes met safely (it covers beat 7's snake on your vine too) */
-  snakes: 'Vine snakes only pass by. If one heads down your liana, climb down ahead of it.',
+  snakes: 'Snake coming down? Climb down ahead of it!',
   /** before beat 11, the risers (not on Easy: none rise there) */
-  rise: 'Snakes coming UP the lianas now! Climb high, ahead of them.',
+  rise: 'Snakes coming UP now! Climb high, ahead of them.',
   /** before beat 13, the false liana */
-  still: "Watch for a vine that doesn't swing. It has a face!",
+  still: "A vine that doesn't swing? It has a face!",
   /** Dot at her mark, the far bank */
-  mark: 'Her mark, right where she used to wait for you!',
+  mark: 'Her mark, where she used to wait for you!',
 } as const;
 /** Dot at a LOCKED exit (stagePlan.ts SEALED_LINES '1:vine_runner'): the keeper's 6b, verbatim */
-export const SEALED_16 = 'Some of her petals are still on the lianas. Back we go!';
+export const SEALED_16 = 'Petals still on the lianas! Back we go!';
 /** the stage's MISSION line (the keeper's 7): stagePlan's, held equal by w1Arc16.test.ts */
 export const MISSION_16 = 'They took her over the gorge. Swing after her, and gather her petals.';
 

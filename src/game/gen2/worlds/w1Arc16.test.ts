@@ -90,17 +90,17 @@ test('1-6: the stage is long enough: 2 minutes on the fast clock\'s model, both 
 
 test("the keeper's lines verbatim (t-keeper-16@387aeb2b8, approved), the mission held equal to the stage plan, the sealed line World 1's vine runner's", () => {
   assert.deepEqual({ ...LINES_16 }, {
-    liana: 'Lianas! Grab one from the edge, and let go when you glow.',
+    liana: 'Grab at the edge. Let go when you glow!',
     low: 'Hang low, fly far!',
-    snakes: 'Vine snakes only pass by. If one heads down your liana, climb down ahead of it.',
-    rise: 'Snakes coming UP the lianas now! Climb high, ahead of them.',
-    still: "Watch for a vine that doesn't swing. It has a face!",
-    mark: 'Her mark, right where she used to wait for you!',
+    snakes: 'Snake coming down? Climb down ahead of it!',
+    rise: 'Snakes coming UP now! Climb high, ahead of them.',
+    still: "A vine that doesn't swing? It has a face!",
+    mark: 'Her mark, where she used to wait for you!',
   });
   assert.equal(MISSION_16, 'They took her over the gorge. Swing after her, and gather her petals.');
   assert.equal(STAGE_PLAN[1][5].desc, MISSION_16);
   assert.equal(STAGE_PLAN[1][5].type, 'vine_runner');
-  assert.equal(SEALED_16, 'Some of her petals are still on the lianas. Back we go!');
+  assert.equal(SEALED_16, 'Petals still on the lianas! Back we go!');
   assert.equal(SEALED_LINES['1:vine_runner'], SEALED_16);
 });
 
