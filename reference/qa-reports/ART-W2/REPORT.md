@@ -41,7 +41,10 @@ and **9 pieces shipped: about $0.06 a piece**. Logged in reference/art/HF-SPEND.
 - The sheet is a paste-up at game scale, not an engine render. The real stills belong to BUILD-21/ENG-22 once wired.
 
 ## Gates (scoped, law 5: assets + inventory JSON under src/)
-tsc PASS; src/game/art tests PASS; artcheck PASS; knowncheck PASS; generality PASS; full unit suite (3 shards): SEE BELOW.
+tsc PASS; src/game/art tests PASS; artcheck PASS; knowncheck PASS; generality PASS; full unit suite (3 shards, 1:11 PM ET): 3563 pass,
+3 fail, and all 3 fail the same way on the BASE 19537789 (each re-run there alone): river.test "2-1: 0 log rivers" (BUILD-21's
+honest red, its packet step 3); stageQuality "stages grow ... none past five" and "a row or an arc of flowers is one species" (148,
+same count on base; the test reads no inventory). None comes from this branch (assets + catalog rows only).
 roadmapcheck: blocked by this container's shallow clone ("proofs cannot be checked (fetch-depth 0)"), not by this change; CI runs it.
 
 ## Method used / Lessons applied / Method update
