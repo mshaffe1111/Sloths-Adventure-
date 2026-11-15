@@ -43,6 +43,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import type { Platform, PlayerState } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
@@ -554,6 +555,14 @@ export interface DotReport {
  * The rules the bot checks, by their names in reference/STAGE-RULES.md (section 2's rows and section 6's lessons), with the thresholds
  * used. A finding names the rule it breaks.
  */
+/**
+ * The bot's skills a toy test switches off to prove the bot needs them (level.md rule 21: the plant goes RED with the skill off). `ride`:
+ * he boards a drifting log (or a lily pad) only when a hop from where he stands, flown as the engine flies it, comes down on it where it
+ * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
+ * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
+ */
+export const SKILLS = { ride: true };
+
 export const RULES = {
   opening: { name: 'Opening seconds', ref: 'STAGE-RULES §2', rule: 'Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches.', secs: 5 },
   plainWalk: { name: 'Plain walk', ref: 'STAGE-RULES §2', rule: 'No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip.', stuckSecs: 8, loops: 2 },
@@ -736,6 +745,31 @@ export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: 
   }
   return false;
 }
+/**
+ * Does a hop from (x, y) at game time t0, held `hold` s, come down on the float `q` where it will be (`at(t)`: a drifting log on its
+ * river's clock), `margin` px in from either end, inside its river's window (a log hidden under a bank is no floor: engine.ts onFloor)?
+ * Flown frame by frame as the engine flies it (airStep), as hopCatches flies a hop to a liana (ENG-W2b: the old "a log is near" read a log
+ * within 90 px of the edge as boardable ~90% of its cycle, and the middle bot drowned 5 times in one deep river on Normal).
+ */
+export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0: number, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  for (let i = 1; i < 60; i++) {
+    const held = i * DT < hold;
+    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+    const prev = b.y;
+    airStep(b, DT, dir, held);
+    if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
+      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
+      const lx = at(t0 + i * DT);
+      return b.x >= lx + margin && b.x <= lx + q.width - margin;
+    }
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/** where a float's left edge is at game time t: a drifting log on its river's clock (river.ts logClock), anything else where it stands */
+const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: number): number => (q.drift ? driftX(q.drift, logClock(rivers, q.drift, t)) : q.x);
+
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
@@ -2020,10 +2054,16 @@ export class FirstTimerRun {
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
-        if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
+        // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
+        // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
+        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+        const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + p.vx * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, p.vx));
+        if (SKILLS.ride && !drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
-          const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320));
-          const near = floats.some((q) => (dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
+          // (a lift or a lily pad, 'moving', keeps the read it always had: near the edge now)
+          const ahead = (q: Platform) => (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320);
+          const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (q.type === 'drift' ? Math.abs(q.x + q.width / 2 - edgeX) < 400 : ahead(q)));
+          const near = floats.some((q) => (q.type === 'drift' ? lands(q) : dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
           if (floats.length && !near) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
@@ -2031,10 +2071,10 @@ export class FirstTimerRun {
         }
         // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
         // of the log the moment he reached it, whatever was ahead, which a person watching the river does not)
-        if (!drops && here && here.type === 'drift') {
+        if (SKILLS.ride && !drops && here && here.type === 'drift') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
-          const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 90 && q.x - edgeX > -q.width + 40 : edgeX - (q.x + q.width) < 90 && edgeX - (q.x + q.width) > -q.width + 40));
+          const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && lands(q));
           if (!bank && !next) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
