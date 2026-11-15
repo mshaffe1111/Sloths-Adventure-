@@ -1,5 +1,6 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten for ENG-WATCH2 (11-15, t-eng-watch2): section 0ze (the watcher's glance, passAt, the re-check, the dials and the rulers).
 Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@0fc0835a, passed,
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
@@ -12,6 +13,47 @@ proven plan; Play is never blocked).
 Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0ze. ENG-WATCH + ENG-WATCH2 (t-eng-watch, t-eng-watch2, 11-14/15, R-165.267 / .266): the watcher's red light, green light
+Rewritten for ENG-WATCH2 (11-15). ENG-WATCH's REPORT (reference/qa-reports/ENG-WATCH/) and ENG-WATCH2's are the long form; this is what to keep.
+- **Where it lives.** Every kit sweeper: src/game/predators/core.ts (`stepPredator` rest/hunt, `stepGlance`, `recheckAway`, `endPass`,
+  `landed`); the dials are DATA:
+  - `PredatorDef.glance` and `.passAt` (predators/types.ts; EAGLE in predators/world1.ts);
+  - a stage's own `Post.glance` via `WatchRow.glance` and `w1Still(stage, lesson, own)` (gen2/worlds/w1Cast.ts);
+  - 1-7's own dials: `WATCH_17` (w1Arc17.ts).
+  - The art reads `s.gl` (sweepPose.ts); the flag stand-down is castPlay.ts `calm` (`re: false`).
+- **The rules (each planted: reference/qa-reports/ENG-WATCH/plants.txt and ENG-WATCH2/plants.txt):**
+  - **passAt 'far':** a pass starts from the end of its stretch farther from him, so the eye crosses TOWARD a walker. It is gated by data,
+    never by kind (the lead 11-15). The caiman has no passAt, so its passes go there and back on its river's clock.
+  - **The glance.** Away a rolled while, then a head-cock (its tell, tellOf), then a look. Moving in its view while it looks starts its
+    dive's tell; a still sloth is not seen by a glance, even in the open.
+    - Fake-outs: a share of turns after a FULL away (Glance.fake); never on Easy.
+    - A perched one sees only within `reach` of its post.
+  - **The re-check (Glance.recheck, REQUIRED).** After a look that saw nobody, and after every pass, the head comes round quickly. The
+    re-check is always a real look, never a fake-out; the look after a re-check is followed by a full away. This is what catches
+    "walk out the moment its head turns" (Matt 11-14).
+  - **One act, one heart** (`landed`). Easy: away and re-check x easy.cool, the tell x easy.tell, no fake-outs, every first pass free on 1-7.
+- **Tests:** eagleGlance.test.ts (unit + real engine: the walker, the instant sneaker over seeds 1-8, the bots' freeze toy);
+  eagleKit.test.ts; predatorHabits/World1/Casts. A real-engine scenario is asserted over seeds with a rate, never one seed: a seeded
+  rhythm's roll moves with any dial.
+- **Tools:**
+  - `tools/inspect/eagleProbe.ts --stage <id> --seed N --setting normal|easy --modes walk,back,stand,sneak,approach [--frames]`
+    (`--frames` prints the head's phase, re-check, t/dur);
+  - `tools/inspect/eagleClip.mjs` for clips;
+  - `castBots.ts --stage 1-7 --seeds 1-40 --setting both --par 3` (~2-3 min);
+  - METER-1's `tools/difficulty/botcross.ts` (on t-meter-1) for misses a minute.
+- **Rulers.** METER-1's watch term reads only cover distance, warn and the kind's cool: neither the stage calm nor the glance (METER-2a).
+  The calibrated tier bots freeze inside every tell and never lapse, so a glance costs them time, not hearts (METER-2b: an
+  attention-lapse term fitted to people). Judge a watcher by the probes (walker, instant sneaker) and the first-timers.
+- **Traps:**
+  - A stage's rebuild of an enemy must carry every kit field (finish17 dropped kitGlance on the perched snag).
+  - A glance holds a pass until its head turns away, so a test about the pass or the cool alone sets `glance: false`.
+  - The calm has a 5 s floor (STILL_RULE).
+  - 1-7's cover spacing is pinned by 1-7.md's phone rule (360 px Normal).
+- **Open:**
+  - The pit way-back under 1-7's lianas and its late pits (castBots rescues): ENG-PETAL.
+  - A painted head-turn frame for the flying harpy (ENG-WATCH §5).
+  - Integration onto t-int-10: 4 additive conflicts with 1-8's `passes` (ENG-WATCH2 REPORT, EXACT NEXT STEP).
 
 ## 0zd. ENG-16I (t-build-16, 11-14, R-165.246): the walked span's lists re-proved; what the next engineer must know
 - **Lists.** seedlist --check on the walked span: 1-2, 1-3, 1-4, 1-5, 1-7 PASS as listed; 1-1 FAILED (seeds 28985, 31449, 25331 searched

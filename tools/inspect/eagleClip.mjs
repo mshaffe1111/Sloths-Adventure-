@@ -67,7 +67,7 @@ const placed = await p.evaluate(([E, WHICH, MODE]) => {
 }, [E, WHICH, MODE]);
 if (!placed) { console.log('no such eagle'); await b.close(); process.exit(2); }
 console.log('PLACED', JSON.stringify({ stage: STAGE, eagle: +WHICH, mode: MODE, diff, ori, layout: +LAYOUT, ...placed }));
-const look = () => p.evaluate((E) => { const e = eval(E); const k = window.__k; const P = e.player; return { ph: k.phase, t: k.t, eye: Math.round(k.eyeX), x: Math.round(P.x), g: !!P.grounded, hp: P.hp, passes: k.passes, gl: k.gl ? k.gl.phase : null }; }, E);
+const look = () => p.evaluate((E) => { const e = eval(E); const k = window.__k; const P = e.player; return { ph: k.phase, t: k.t, eye: Math.round(k.eyeX), x: Math.round(P.x), g: !!P.grounded, hp: P.hp, passes: k.passes, gl: k.gl ? k.gl.phase : null, re: !!k.gl?.re }; }, E);
 let shot = 0, was = null, hp = placed.hp, go = -1, hopLeft = 0, glWas = null;
 const xs = [];
 const named = [];
@@ -86,12 +86,12 @@ for (let f = 0; f < N; f++) {
   if (MODE === 'caught' && go < 0 && L.ph === 'rest' && L.gl === 'cock' && glWas === 'away' && Math.abs(L.x - placed.home) <= 230) { go = f + 1; named.push(`f${f}: its head-cock begins (its tell): he walks on anyway at x ${L.x}`); }
   if (MODE === 'sneak' && go < 0 && L.ph === 'rest' && was && was !== 'rest') { go = f + 1; named.push(`f${f}: its look is over (head away): he walks out of cover at x ${L.x}`); }
   if (MODE === 'sneak' && go >= 0 && placed.perched && Math.abs(L.x - placed.home) < 4) named.push(`f${f}: under its post (x ${placed.home}), phase ${L.ph}`);
-  if (L.ph === 'rest' && L.gl !== glWas && glWas !== null) named.push(`f${f}: glance ${glWas} -> ${L.gl} (him ${L.x})`);
+  if (L.ph === 'rest' && L.gl !== glWas && glWas !== null) named.push(`f${f}: glance ${glWas} -> ${L.gl}${L.re ? ' (re-check)' : ''} (him ${L.x})`);
   glWas = L.ph === 'rest' ? L.gl : null;
   if (L.ph !== was && was !== null) named.push(`f${f}: ${was} -> ${L.ph} (eye ${L.eye}, him ${L.x})`);
   if (L.hp < hp) named.push(`f${f}: HEART LOST at x ${L.x} (hp ${L.hp})`);
-  const glWord = { away: 'head AWAY (green light)', cock: 'HEAD-COCK: its tell (freeze!)', fake: 'FAKE-OUT: a half-turn', look: 'LOOKING: moving = seen' };
-  const phaseWord = { rest: L.gl ? glWord[L.gl] : 'head AWAY (rest: it looks at nothing)', hunt: L.t < 2.05 && Math.abs(L.eye - (L.passes % 2 ? placed.x1 : placed.x0)) < 2 ? 'SCREECH: its warn (eye waits)' : 'its eye sweeps', tell: 'TELL: it dives', act: 'ACT: the dive (hurts)', recover: 'pulls up', flee: 'gives up, flies off', gone: 'gone', stunned: 'stunned' }[L.ph] ?? L.ph;
+  const glWord = { away: L.re ? 'head AWAY: a RE-CHECK comes quickly' : 'head AWAY (green light)', cock: 'HEAD-COCK: its tell (freeze!)', fake: 'FAKE-OUT: a half-turn', look: 'LOOKING: moving = seen' };
+  const phaseWord = { rest: L.gl ? glWord[L.gl] : 'head AWAY (rest: it looks at nothing)', hunt: L.t < 2.05 && (Math.abs(L.eye - placed.x0) < 2 || Math.abs(L.eye - placed.x1) < 2) ? 'SCREECH: its warn (eye waits)' : 'its eye sweeps', tell: 'TELL: it dives', act: 'ACT: the dive (hurts)', recover: 'pulls up', flee: 'gives up, flies off', gone: 'gone', stunned: 'stunned' }[L.ph] ?? L.ph;
   const lost = L.hp < hp ? ' <b style="color:#f87171">HEART LOST</b>' : '';
   if ((f % 2 === 0 || lost) && f >= +(process.env.SKIP ?? 0)) {
     await p.evaluate((h) => { document.getElementById('mockcap').innerHTML = h; }, `${STAGE} ${diff} eagle #${WHICH}${placed.perched ? ' (perched)' : ''} · ${MODE}<br>f${f} · ${phaseWord}<br>eye ${L.eye} · him ${L.x} (${L.eye - L.x >= 0 ? '+' : ''}${L.eye - L.x}) · hearts ${L.hp}${lost}`);
