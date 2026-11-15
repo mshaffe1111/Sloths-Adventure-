@@ -4,7 +4,7 @@ origin/t-eng-b6 (its EXACT NEXT STEP: the seam and the collapse look) and the st
 normal-fork-sideways-passOver.jpg (the seam at x~340) and normal-tip-sideways-slow.jpg (f145: the fall reads as a dozen rectangular tiles).
 Why: 1-8 is the Long Branch. Today the lay cuts each chase stretch's ground into log sections and leaves forks as kit ground, so every
 stretch/fork join shows a hard seam, and the collapse tumbles as tiles. Matt's bar: painted, no seams, the signature fall reads as WHOA.
-Branch: t-eng-cl from origin/t-eng-b6 (final head; git ls-remote). The 1-8 builder (BUILD-18, t-build-18) lays data beside you: tell the
+Branch: t-eng-cl from origin/t-eng-b6 (code final at 75fd1fae; merge its later report commits when they land; git ls-remote). The 1-8 builder (BUILD-18, t-build-18) lays data beside you: tell the
 lead the data names it should use, never edit its stage file.
  (1) Forks drawn as the branch: a chase stage's living forks are the same Long Branch (thicker, mossed), not kit ground. By data, any stage.
  (2) One painted join piece (a knot or collar) where a fork meets a stretch, from Hugging Face (reference/methods/hf-art.md, cap $3, log in
