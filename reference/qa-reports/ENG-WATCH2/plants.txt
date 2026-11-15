@@ -17,3 +17,4 @@ not ok 27 - sweep: in cover and still, he is not seen: the pass goes over; two e
 ## With the change: predatorHabits, predatorWorld1, predatorCasts, eagleGlance, eagleKit
 # pass 56
 # fail 0
+## C. finish17 drops the perched eagle's glance (z without kitGlance): w1Arc17.test 'own eagle dials' -> # fail 1
