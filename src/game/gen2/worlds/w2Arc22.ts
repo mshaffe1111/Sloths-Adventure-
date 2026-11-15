@@ -180,19 +180,23 @@ const gardenPath: Lay = {
   // the first appearance of a mechanic is taught, level.md rule 6; W's twist is then the whole row breathing together)
   sockets: [flowers('pa', 'a', 0.5, 2), flowers('pd', 'd', 0.5, 2), tip('t-breathe', 'e', 0.5, 'breathe'), flowers('pz', 'z', 0.6, 2)],
 };
-/** the spur's dip (px): the high bank over the low one at the pond, the vine's height back up; the far bank, level with the high one, stands
- *  this + PAD_LAY.drop over the stone, past a double's 189 px (place 'pads' checks it), so the stone reads as a dead end */
-const SPUR_UP = 190;
-/** [X] beat 4, there and back (the spur pond, FIX-22; the lead's rulings 4:17, 5:10 and 5:29 PM ET 11-15): a dip. Off the high bank down
- *  to the low one at the pond, out over two small beat pads to the dead-end stone and its flower (Dot's `stone` line on the stone), wait
- *  there for the row to come up, back to the low bank, up the vine (taught 1-4) on the high bank's face and over the pond on the rope (taught
- *  1-3) from the high bank to the far one, level with it. Every piece a World 2 painted bank (a ledge over the low bank was drawn in World
- *  1's thin-piece art: w2.test.ts 'the look'). The heart after */
+/** the spur's dip (px): the high bank over the low one at the pond, down and back up in three steps (a plain hop each, under a single's
+ *  98 px); the far bank, level with the high one, stands this + PAD_LAY.drop over the stone, past a double's 189 px (place 'pads' checks
+ *  it), so the stone reads as a dead end */
+const SPUR_UP = 189;
+const SPUR_STEP: R2 = [SPUR_UP / 3, SPUR_UP / 3];
+/** [X] beat 4, there and back (the spur pond, FIX-22; the lead's rulings 4:17, 5:10 and 5:29 PM ET 11-15): a dip. Down the steps from the
+ *  high bank to the low one at the pond, out over two small beat pads to the dead-end stone and its flower (Dot's `stone` line on the
+ *  stone), wait there for the row to come up, back to the low bank, up the steps and over the pond on the rope (taught 1-3) from the high
+ *  bank to the far one, level with it. Every piece a World 2 painted bank: a ledge over the low bank was drawn in World 1's thin-piece art
+ *  (w2.test.ts 'the look'), and a vine beside the high bank's face left him at its top beside the bank, not on it (castBots: every tier
+ *  stepped off toward the rope and fell back). The heart after */
 const thereAndBack: Lay = {
   pieces: [
     bank('t', null, 300),
-    shore('a', 't', 420, [SPUR_UP, SPUR_UP]),
-    { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'a', at: [16 / 420, 16 / 420], h: [SPUR_UP, SPUR_UP] } },
+    shore('s2', 't', 130, SPUR_STEP),
+    shore('s1', 's2', 130, SPUR_STEP),
+    shore('a', 's1', 380, SPUR_STEP),
     { key: 'w', shape: 'bank', w: [300, 300], place: { kind: 'pads', after: 'a', row: 'spur22', rope: 't' }, style: 'log', main: true, landing: true },
   ],
   sockets: [flowers('pa', 'a', 0.5, 2), tip('t-stone', 'w', 0, 'stone'), flowers('pw', 'w', 0.3, 2)],

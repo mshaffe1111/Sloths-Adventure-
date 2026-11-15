@@ -351,7 +351,9 @@ export class SpotMemory {
 
 // ───────────────────────────── how far along the way he is ─────────────────────────────
 
-export interface Pt { x: number; y: number }
+export interface Pt { x: number; y: number; /** a point along a shimmy rope (route.ts 'rope'): it lies at the ledges' height, in the air over
+ *  whatever lies under the rope, so he is followed onto it only while he hangs from it (FIX-22: a kid on a step under 2-2's rope was
+ *  followed onto the rope's line and walked off the step toward it) */ rope?: boolean }
 
 /**
  * Progress along the route: the route's points every ~24 px, and which one he is nearest (looked for near the last one, so a route
@@ -384,11 +386,12 @@ export class Progress {
     return Math.abs(q.x - p.x) + Math.abs(q.y - p.y) * 0.7;
   }
   /** follow him: true when he got further than he has been since he came back */
-  step(p: Pt): boolean {
+  step(p: Pt & { hanging?: boolean }): boolean {
     if (!this.pts.length) return false;
     let bi = this.cur, bd = this.d(this.cur, p);
     const lo = Math.max(this.floor, this.pinFloor, this.cur - 25), hi = this.cap(Math.min(this.pts.length - 1, this.cur + 40));
     for (let i = lo; i <= hi; i++) {
+      if (this.pts[i].rope && !p.hanging && i !== this.cur) continue;
       const d = this.d(i, p);
       if (d < bd - 1e-6 || (Math.abs(d - bd) < 1e-6 && i > bi)) {
         bd = d;
@@ -411,7 +414,7 @@ export class Progress {
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
     // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && (!level || this.pts[i].y >= p.y - 80);
+    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope && (!level || this.pts[i].y >= p.y - 80);
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
@@ -426,12 +429,20 @@ export class Progress {
     this.floor = 0;
   }
   /** the point he heads for: the first one ahead that is more than `far` px from him */
-  target(p: Pt, far = 90): Pt | null {
+  target(p: Pt & { hanging?: boolean }, far = 90): Pt | null {
     if (!this.pts.length) return null;
     for (let i = this.cur; i < this.pts.length; i++) {
       const q = this.pts[i];
       // (never past a pin he has not stood at: he goes to it first)
       if (this.pin < this.pins.length && i >= this.pins[this.pin]) return this.pts[this.pins[this.pin]];
+      // (a rope's line is in the air: off it, he heads for where it starts, its ledge's end, until he stands there; from a step under it
+      // the line's far points pulled him off the step away from the ledge: FIX-22, 2-2's dip)
+      if (q.rope && !p.hanging) {
+        let k = i;
+        while (k > 0 && this.pts[k - 1].rope) k--;
+        const at = this.pts[k];
+        if (Math.abs(at.y - p.y) > 20 || Math.abs(at.x - p.x) > 60) return at;
+      }
       if (Math.hypot(q.x - p.x, q.y - p.y) > far) return q;
     }
     return this.pts[this.pts.length - 1];
@@ -1229,7 +1240,7 @@ export class FirstTimerRun {
       const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
-      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
+      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
         this.noRoute = true;
