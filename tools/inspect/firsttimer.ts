@@ -2067,7 +2067,13 @@ export class FirstTimerRun {
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
       const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
-      const ahead = this.floorAt(p.x + dir * look, p.y, 40);
+      // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
+      // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
+      // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
+      const under = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+      const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
+      const past = under && dir * (p.x + dir * look - lip) > 0;
+      const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
