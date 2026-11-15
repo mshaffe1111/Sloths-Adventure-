@@ -21,6 +21,7 @@ import type { Zone } from '../zones.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
+import type { RiverRow } from './riverLay.ts';
 
 export type { Difficulty, Rng };
 
@@ -213,6 +214,8 @@ export interface WorldManifest {
   /** this world's row for each engine slot a brick's piece may name (SectionPiece.slot, A13): the style its platform takes here and the
    *  inventory pieces that may draw it (built from the world's inventory file: gen2/brickSlots.ts worldSlots) */
   slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
+  /** this world's river table (place `river` names a row): World 2's W2_RIVERS. A world with none lays no river */
+  rivers?: Readonly<Record<string, RiverRow>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -299,7 +302,14 @@ export type PlaceRule =
        *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
       free?: boolean;
       /** how the rope is drawn (Rope.look): 'vine', a painted vine between two living trees; unset, World 2's rope between posts */
-      look?: 'vine' };
+      look?: 'vine' }
+  /** a RIVER (ENG-W2b, the lead's sign-off 11:14 AM ET 11-15; riverLay.ts): the far bank lies the row's river width (riverLay riverWidth)
+   *  past `after`, LEVEL with it; the water between is laid from the world's river table row `row` (WorldManifest.rivers): its logs drift
+   *  across (riverLay layRiver), a fall costs a life, or splashes him back onto `after` when the row is `safe`. No dy and no share: the
+   *  banks are level (a stepped far bank is a later row field, never a hack in a brick) and the width is the row's, so the logs sit evenly
+   *  round the window. A row the world lacks fails the section by name, never a stand-in; a river in a leg laid left throws by name (not
+   *  mirrored yet: ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7) */
+  | { kind: 'river'; after: string; row: string };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

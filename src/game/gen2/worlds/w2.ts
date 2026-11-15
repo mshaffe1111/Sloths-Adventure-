@@ -265,31 +265,47 @@ const REED_BANK = 200;
  */
 export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty): T {
   const falls = st.gen2?.falls;
-  if (!falls || st.rivers?.length) return st;
+  if (!falls) return st;
   const solids = st.platforms.filter((p) => p.type === 'solid');
-  const rivers: RiverZone[] = [];
+  // (a fall that already has its river (the log rivers gen2 laid, place `river`; or one this finish made before) is left as it is: so a
+  //  stage of log rivers keeps them, and calling it twice changes nothing)
+  const had = st.rivers ?? [];
+  const rivers: RiverZone[] = [...had];
   const decor = ((st.proto ??= {}).decor ??= []);
   const drop = new Set<number>();
+  const kinds = ['reedTall', 'reedShort', 'reedLean'] as const;
+  const reeds = (near: Platform, far: Platform, x0: number, x1: number) => {
+    for (const [x, b, bank] of [[x0 - REED_OFF, near.y + 6, near], [x1 + REED_OFF, far.y + 6, far]] as const) {
+      // (behind him, never in front: a reed in front hid him on the bank's edge, ENG-W2's sideways still; and only on a real bank, never a
+      //  stepping stone, whose two edges a reed each crowded; never twice at one edge)
+      if (bank.width < REED_BANK || decor.some((d) => d.x === x && (kinds as readonly (string | undefined)[]).includes(d.n))) continue;
+      const n = kinds[Math.floor(hash01(x, 41) * kinds.length)];
+      decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
+    }
+  };
+  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips)
+  const banks = (x0: number, x1: number, y: number) => ({
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
+  });
+  // (a log river's reeds, as a fall's)
+  for (const r of had) {
+    if (r.speed === 0) continue;
+    const { near, far } = banks(r.x0, r.x1, r.surfaceY - surfaceBelowBank);
+    if (near && far) reeds(near, far, r.x0, r.x1);
+  }
   for (const f of [...falls].sort((a, b) => a.x0 - b.x0)) {
     if (f.kind !== 'water' && f.kind !== 'soft') continue;
-    // (the banks at each end: a solid ending at x0 and one starting at x1, at the fall's lips)
-    const near = solids.filter((p) => Math.abs(p.x + p.width - f.x0) <= 2 && p.y <= f.y + 60).sort((a, b) => a.y - b.y)[0];
-    const far = solids.filter((p) => Math.abs(p.x - f.x1) <= 2 && p.y <= f.y + 60).sort((a, b) => a.y - b.y)[0];
+    if (had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1)) continue;
+    const { near, far } = banks(f.x0, f.x1, f.y);
     if (!near || !far) throw new Error(`World 2 finish: the fall at x=${f.x0}-${f.x1} has no bank at one end`);
     const top = Math.max(near.y, far.y);
     const safe = f.kind === 'soft';
     if (safe) for (const p of solids) if (p !== near && p !== far && p.x >= f.x0 - 1 && p.x + p.width <= f.x1 + 1 && p.y > top) drop.add(p.id);
     rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: { backX: f.x0 - 70, backY: near.y } } : {}) });
-    const kinds = ['reedTall', 'reedShort', 'reedLean'] as const;
-    for (const [x, b, bank] of [[f.x0 - REED_OFF, near.y + 6, near], [f.x1 + REED_OFF, far.y + 6, far]] as const) {
-      // (behind him, never in front: a reed in front hid him on the bank's edge, ENG-W2's sideways still; and only on a real bank, never a
-      //  stepping stone, whose two edges a reed each crowded)
-      if (bank.width < REED_BANK) continue;
-      const n = kinds[Math.floor(hash01(x, 41) * kinds.length)];
-      decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
-    }
+    reeds(near, far, f.x0, f.x1);
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));
-  st.rivers = rivers;
+  st.rivers = rivers.sort((a, b) => a.x0 - b.x0);
   return st;
 }
