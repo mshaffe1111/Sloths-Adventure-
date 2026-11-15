@@ -81,7 +81,8 @@ test('every sheet a built stage draws is in its preload list, for every stage an
         // (a listed stage, rolled from its world's kit (stageGenerator.ts listedRoll), is built on both settings as a gen2 stage is)
         for (const d of isGen2Stage(l) || listedRoll(l) ? (['normal', 'easy'] as const) : (['normal'] as const)) {
           const st = generateStage(l, d);
-          if (l.worldIndex === 1 && !l.secret && st.kit?.rooms.length) w1Rooms.add(l.id);
+          // (rooms, or kit decor: drawKitDecor draws from the kit's pieces sheet (puzzleArt.ts), 1-4's nest door, INT-10c: the check read rooms alone)
+          if (l.worldIndex === 1 && !l.secret && (st.kit?.rooms.length || (st as { proto?: { kitDecor?: unknown[] } }).proto?.kitDecor?.length)) w1Rooms.add(l.id);
           const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])];
           for (const k of keys) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k}`);
           // the painted hazards (zoneArt.ts, w4Play.ts): spore mushrooms on World 3's sheet, web bridges on World 5's and web patches on Dot's, 4-3's pool log on the kit, World 4's falls on its sheet
@@ -114,7 +115,7 @@ test('every sheet a built stage draws is in its preload list, for every stage an
     if (!had) delete g.location;
   }
   assert.deepEqual(misses, []);
-  assert.deepEqual([...W1_ROOMS].sort(), [...w1Rooms].sort(), "W1_ROOMS: World 1's stages that build puzzle rooms");
+  assert.deepEqual([...W1_ROOMS].sort(), [...w1Rooms].sort(), "W1_ROOMS: World 1's stages that build puzzle rooms or draw kit decor");
   // (and the waterfall set is asked for by no stage without falls)
   assert.deepEqual([...W4_FALL_STAGES].sort(), [...withFalls].sort(), 'W4_FALL_STAGES: the stages with falls');
   for (const [id, set] of drawn) assert.deepEqual([...(STAGE_DRAWS[id] ?? [])].sort(), [...set].sort(), `${id}: STAGE_DRAWS lists more than it draws`);
