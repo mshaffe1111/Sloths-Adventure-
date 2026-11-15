@@ -1,0 +1,4 @@
+{"sx":10949,"gy":819,"x0":11069,"x1":11909,"perched":false,"home":11069,"hp":5,"easy":false}
+f14: rest -> hunt (eye 11069, him 11077)
+f152: hunt -> rest (eye 11909, him 12268)
+f167: out of its stretch by 420 px
