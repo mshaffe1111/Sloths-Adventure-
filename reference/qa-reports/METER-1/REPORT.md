@@ -115,7 +115,7 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
 6. **Gates (on t-meter-1)**: `npx tsc --noEmit -p .` exit 0; **but tsconfig.json excludes tools/**, so it never reads score.ts: I
    type-checked tools/difficulty/*.ts with a temporary tsconfig that includes them (removed after): 0 errors other than TS2591 (no
    @types/node installed), which every tools file has. `npx tsx tools/difficulty/score.ts --check`: 14 planted cases pass.
-   `npx tsx --test tools/difficulty/score.test.ts`: 14/14. The CI tool-test line (gates.yml:94, CI=1 FORCE_COLOR=1): 119/119.
+   `npx tsx --test tools/difficulty/score.test.ts`: 14/14. The CI tool-test line (gates.yml:94, CI=1 FORCE_COLOR=1): 119/119, on the final head 2e02c4c7.
    `node tools/roadmapcheck.mjs`: PASS (after `git fetch --unshallow`: the session clone was shallow and the check refused it).
    `node tools/perf/knowncheck.mjs`: PASS. `npx tsx tools/engine/generalitycheck.ts`: PASS. **The whole suite (CLAUDE.md's line):
    see SUITE below.** Not run (no game code changed, LAWS 5 scoped): the build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck,
