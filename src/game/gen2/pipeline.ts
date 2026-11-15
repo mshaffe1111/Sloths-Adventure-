@@ -4728,9 +4728,12 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
           b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
         } catch (e) {
           // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
-          // that throws with no such swap behind it throws as it always did)
-          if (!swapped) throw e;
-          repairs.push({ kind: 'reroll', note: `no section left for a swapped slot: ${(e as Error).message}` });
+          // that throws with no such swap behind it throws as it always did. And a slot the SEARCH's own stage-wide bans left with no
+          // section (a section refused twice, bans[-1]: on a designed arc, the one brick of its beat): the roll is refused, never thrown;
+          // seedlist --check and every relist crashed on 2-1 when its quiet line refused beat X twice, INT-11 11-15, refuseNotThrow.test)
+          const banned = (bans.get(-1)?.size ?? 0) > 0;
+          if (!swapped && !banned) throw e;
+          repairs.push({ kind: 'reroll', note: `${swapped ? 'no section left for a swapped slot' : `no section left once ${[...bans.get(-1)!].join(', ')} was banned from the stage`}: ${(e as Error).message}` });
           break;
         }
         let v = checkAndRepair(b, budget, repairs, tried, landings);
