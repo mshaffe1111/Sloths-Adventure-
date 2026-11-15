@@ -68,8 +68,6 @@ export const MISSION_18 = 'Race the long branch before it gives way, and gather 
 const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
 /** a bank past a gap of exactly `gap` px (a soft pit: a fall off the branch is the chase's, a heart and the flag) */
 const hop = (key: string, after: string, w: number, gap: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy, gapPx: gap, soft: true }, style: 'moss_stone', main: true, landing: true });
-/** a bank past a double's gap */
-const dbl = (key: string, after: string, w: number, gap: R2): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'double', after, dy: [0, 0], gapPx: gap, soft: true }, style: 'moss_stone', main: true, landing: true, block: 'double' });
 /** a limb over a gap: creaky (gives way 1.1 s after he lands; whole on a set-back) or, Easy, a sound bough */
 const limb = (key: string, after: string, creak: boolean, gap: R2): SectionPiece => ({ key, shape: 'branch', w: [150, 160], place: { kind: 'jump', after, dy: [0, 0], gapPx: gap, soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) });
 /** a mushroom on `on`, its cap 30 px up, its edge 30-45 px before `on`'s end (chain.md, 1-2's) */
@@ -136,22 +134,24 @@ function firstRun(easy: boolean): Lay {
     rolls: easy ? [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'f', t: 0.85 }] : [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'c', t: 0.85 }, { kind: 'low', on: 'f', t: 0.85 }],
   };
 }
-/** [K] beat 5, at pace: a double over a section's break, then 1,200+ px of plain run (two fruits: no input) to a liana phased to his run
+/** [K] beat 5, at pace: a hop over a section's break, then 1,200+ px of plain run (two fruits: no input) to a liana phased to his run
  *  (finish18 marks it runner) over a fallen gap. Its creaky limb is the last stretch's (a K is at most what Matt's flag span lets one run).
- *  Easy: the double a two-step rise, a sound bough, the liana hung over a 40 px seam (optional), the gaps 40-48 px */
+ *  The design's double is gone: at pace the tester-like bots (kid, adult) slowed at its gap, the front caught them at the lip and the
+ *  lip fell (3/40 and 6/40 passed, BUILD-18): a double is not asked in a chase. Easy: a two-step rise, a sound bough, the liana hung over a
+ *  40 px seam (optional), the gaps 40-48 px */
 function atPace(easy: boolean): Lay {
   const s: R2 = [40, 46];
   if (easy) {
     return {
       pieces: [bank('a', null, 260), bank('b', 'a', 420), bank('c1', 'b', 220, [-56, -50]), bank('c', 'c1', 300, [-56, -50]), limb('k', 'c', false, s), hop('d', 'k', 300, s, [50, 56]), bank('d2', 'd', 260, [50, 56]), bank('e', 'd2', 460), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), hop('p', 'f', 300, s), bank('z', 'p', 240)],
       sockets: [petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.5, 1), petals('pe', 'e', 0.4, 2, 120), petals('pp', 'p', 0.5, 1), petals('pz', 'z', 0.5, 1)],
-      rolls: [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'high', on: 'f', t: 0.55 }],
+      rolls: [{ kind: 'low', on: 'b', t: 0.2 }, { kind: 'high', on: 'f', t: 0.55 }],
     };
   }
   return {
-    pieces: [bank('a', null, 200), bank('b', 'a', 360), dbl('c', 'b', 300, [200, 225]), bank('d', 'c', 300), bank('e', 'd', 440), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), w1Perch('p', 'l', 'long', [250, 270]), bank('z', 'p', 200)],
+    pieces: [bank('a', null, 200), bank('b', 'a', 600), hop('c', 'b', 300, [100, 118]), bank('d', 'c', 300), bank('e', 'd', 440), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), w1Perch('p', 'l', 'long', [250, 270]), bank('z', 'p', 200)],
     sockets: [petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.5, 1), petals('pe', 'e', 0.4, 2, 120), petals('pp', 'p', 0.5, 1), petals('pz', 'z', 0.5, 1)],
-    rolls: [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'high', on: 'e', t: 0.75 }, { kind: 'high', on: 'f', t: 0.85 }],
+    rolls: [{ kind: 'low', on: 'b', t: 0.45 }, { kind: 'high', on: 'e', t: 0.75 }, { kind: 'high', on: 'f', t: 0.85 }],
   };
 }
 /** [K] the fourth stretch (1-8.md "a fourth stretch goes in": more pieces, never padding): a mushroom throws him up onto a high bough over
@@ -215,7 +215,7 @@ function theTip(): Lay {
 export const BEATS_18: SectionTemplate[] = [
   brick({ id: 'w1-18-teach', name: 'the little nut and the big fruit: hop the little ones, walk under the big ones', jobs: ['teach'], content: 'hazard', teaches: 'roll', difficulty: 1, versions: [{ id: 'nut-fruit', lay: teachPair() }] }),
   brick({ id: 'w1-18-first-run', window: [0.1, 0.25], name: 'the crack: GO!', jobs: ['pressure'], content: 'ground', difficulty: 4, versions: [{ id: 'gaps-nuts', lay: firstRun(false), easy: firstRun(true) }] }),
-  brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'double', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
+  brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
   brick({ id: 'w1-18-high-bough', window: [0.4, 0.53], name: 'the high bough: bounce up, hop down', jobs: ['pressure'], content: 'bounce', difficulty: 5, uses: ['roll', 'bounce'], versions: [{ id: 'mushroom-nuts', lay: highBough(false), easy: highBough(true) }] }),
   brick({ id: 'w1-18-rhythm', window: [0.54, 0.68], name: 'both heights in rhythm: under, HOP', jobs: ['pressure'], content: 'hazard', difficulty: 6, versions: [{ id: 'pairs', lay: rhythm(false), easy: rhythm(true) }] }),
   brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
