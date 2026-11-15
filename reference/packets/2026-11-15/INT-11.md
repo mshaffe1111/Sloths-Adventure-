@@ -2,7 +2,7 @@
 MATT 2:49 PM: "push hard". LEAN: read code before running; each heavy check ONCE. BOX 2.5 h or 55% real context.
 Read FIRST level.md Building rules, gates.md; then the REPORTs: INT-10d (origin/t-int-10b: reference/qa-reports/INT-10d/REPORT.md, link #4's
 head), BUILD-18c (origin/t-build-18c 7594a1c2), FIX-21 (origin/t-fix-21 66fd76a1: its EXACT NEXT STEP is the 2-1 merge order).
-Branch t-int-11 from link #4's final head (origin/t-int-10b; INT-10d names the hash).
+Branch t-int-11 from origin/t-int-10b NOW (code head a67a91fb; INT-10d is running link #4's gates/stills on it in parallel). When INT-10d reports its final head, merge it in (any gate fixes it made).
 1. Merge 1-8: origin/t-build-18c (t-art-18's palms/bough/stair + 1-8's data + the addlevel regex fix). Conflicts read both sides.
 2. 2-1 in FIX-21's order: 5ce1059f + 4c7aee10's drawing half (safe over-pass, under-bed earth, w2mist), 9137470f (tier bot creek fix) then
    ONE 1-1 tier recalibration + recommit (TierRun.handed), ec96fe0c's ENGINE half only (engine.ts + logHandover.test.ts), 2-1's data
