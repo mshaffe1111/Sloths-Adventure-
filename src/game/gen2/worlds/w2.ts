@@ -33,6 +33,7 @@ import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, So
 import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
 import { W1_KIT } from './w1.ts';
+import { W1_LIANA_GAP } from './w1Swing.ts';
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
 export const W2_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
@@ -81,6 +82,27 @@ export const W2_RIVERS = {
   twin: { dir: 1, speed: 80, logW: 150, logs: 3 },
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
+
+// ───────────────────────────── World 2's lianas (BUILD-21; as w1Swing.ts is World 1's) ─────────────────────────────
+/**
+ * World 2's liana row (reference/design/2-1.md beats 1 and 5: down out of the canopy on three lianas, then one over a side creek): the
+ * self-swinging liana World 1 taught (1-6), laid by World 2's data. A liana hangs from a riverside tree, its anchor 400-420 px over the bank
+ * it leaves (1-6.md's measured liana); each gap is World 1's (W1_LIANA_GAP: the grip dial and the share of the pipeline's perch band, never a
+ * px number of the engine's), SHORT and LONG only (FAR's narrow perch is World 1's snake beat). The perch is a World 2 BANK (the earth bank,
+ * its own look; never World 1's bough), level, or a step lower for a descent (`dy`: each let-go lands by a plain fall onto a wide bank, D46).
+ * The gap under a liana is the world's soft fall, so w2Finish makes it a splash-back creek: a miss costs nothing. A kit that lays these adds
+ * the swing move (w1Swing.ts withSwing), as World 1's 1-6 does.
+ */
+export const W2_LIANA = { top: [400, 420] as R2, gaps: { short: W1_LIANA_GAP.short, long: W1_LIANA_GAP.long } } as const;
+export type W2LianaGap = keyof typeof W2_LIANA.gaps;
+/** a liana past `after`'s end, hung from a riverside tree 400-420 px over it, its reach checked at the gap's grip */
+export const w2Liana = (key: string, after: string, gap: W2LianaGap): SectionPiece => {
+  const grip = (W2_LIANA.gaps[gap] as { grip?: 'low' | 'high' }).grip;
+  return { key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: W2_LIANA.top, ...(grip ? { grip } : {}) } };
+};
+/** the bank a liana throws him onto, `w` wide, at the gap's share of its band, `dy` under the bank he left (a descent) or level */
+export const w2Perch = (key: string, liana: string, gap: W2LianaGap, w: number, dy: R2 = [0, 0]): SectionPiece =>
+  ({ key, shape: 'bank', w: [w, w], place: { kind: 'land', after: liana, dy, share: W2_LIANA.gaps[gap].share }, style: 'log', main: true, landing: true });
 
 // ───────────────────────────── the pieces ─────────────────────────────
 /** a bank he walks on, `w` exact, level with the one before (or the section's first) */

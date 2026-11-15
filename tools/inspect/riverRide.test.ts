@@ -7,8 +7,11 @@
  * switched off (firsttimer.ts SKILLS.ride: he no longer boards a log only when a flown hop comes down on it, nor rides it to the next),
  * they drown in it over the bar (measured 11-15 on seed 1, with the one carry rule (RIDE.keep): lives AT THE RIVER on, 2/0/0/0 for middle
  * Normal/Easy, child Normal/Easy; off, 7/0/0/3).
- * Not yet: a river flowing BACK at him (W2_RIVERS.back) wants the design's 'against the flow' skill (run forward along the log, hop from
- * its front end): today the child on Easy loses 4 there (ENG-W2b REPORT, rough spots).
+ * BUILD-21 (2-1.md NEW 4, two more skills, each planted the same way): AGAINST THE FLOW (SKILLS.upstream) on a river flowing back at him
+ * (W2_RIVERS.back): he hops off a log's front end at once, never a late walk-off (the water is 14 px under a log); measured 11-15 on seed 1,
+ * child on Easy 4 lives at the river without it, 0 with it. HANDED TO THE BANK (SKILLS.handed) on the long log (W2_RIVERS.long, laid deep
+ * here): he rides a log running his way in until it hands him onto the bank; measured lives at the river with it 1/1/0/0, without 3/2/2/0,
+ * handed 4 of 4 runs with it, 1 of 4 without.
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -25,38 +28,42 @@ import { SKILLS } from './firsttimer.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
 const ID = '2-91';
-const river: SectionTemplate = {
+/** the fixture's one river section, laying World 2's row `row` (the long log is laid DEEP here: a fall costs a life, so a hop at the water
+ *  off its front end shows in the count) */
+const riverOf = (row: string): SectionTemplate => ({
   id: 'toy-one-river', name: 'one river', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
   pieces: [
     { key: 'near', shape: 'bank', w: [340, 340], place: { kind: 'start' }, main: true },
-    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'river', after: 'near', row: 'deep' }, main: true, landing: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'river', after: 'near', row }, main: true, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
-};
-const kit: WorldKit = {
+});
+const river = riverOf('deep');
+const kitOf = (row: string): WorldKit => ({
   ...toyKit,
   manifest: {
     ...toyKit.manifest, world: 2, rivers: W2_RIVERS, creatures: [], props: [], pairs: [], tips: {},
-    sections: [{ ...meadow, phases: ['start', 'rest', 'ki', 'sho', 'ten', 'ketsu', 'goal'], mirrorable: false, sockets: meadow.sockets.filter((k) => k.role !== 'prop') }, river],
+    sections: [{ ...meadow, phases: ['start', 'rest', 'ki', 'sho', 'ten', 'ketsu', 'goal'], mirrorable: false, sockets: meadow.sockets.filter((k) => k.role !== 'prop') }, riverOf(row)],
   },
-};
+});
+const kit = kitOf('deep');
 const cfg: LevelConfig = { ...toyCfg(ID, 'sprint'), unlocked: true };
 
 /** the first seed whose roll lays exactly one log river and builds clean */
-function fixtureSeed(): number {
+function fixtureSeed(k: WorldKit = kit): number {
   for (let seed = 1; seed <= 60; seed++) {
-    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    const st = buildGen2Stage({ config: cfg, kit: k, seed, difficulty: 'normal' });
     if (!st.gen2.errors?.length && st.rivers?.filter((r) => r.speed > 0).length === 1) return seed;
   }
   throw new Error('no roll of 1-60 lays the one river clean');
 }
 
 /** a tier's run over the fixture, rolled the game's way (the listed row, the planted list, World 2's finish) */
-function ride(tier: Tier, setting: Setting, seed: number) {
-  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+function ride(tier: Tier, setting: Setting, seed: number, k: WorldKit = kit) {
+  const st = buildGen2Stage({ config: cfg, kit: k, seed, difficulty: 'normal' });
   const dict: string[] = [];
   const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
-  return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+  return withTestStage({ [ID]: { kit: () => k, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
     const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
     try {
       return withFixtureConfig(cfg, () => runTier(tier, setting, 1, ID));
@@ -104,5 +111,43 @@ test('planted: with the ride skill off, the middle and child bots drown in the r
     assert.ok(failed >= 1, `with no ride skill every tier still crossed within ${RIDE_LIVES} lives: ${off.join('; ')}`);
   } finally {
     SKILLS.ride = true;
+  }
+});
+
+// ───────────────────────── BUILD-21: against the flow, handed to the bank ─────────────────────────
+const BACK = kitOf('back'), LONG = kitOf('long');
+const SEED_BACK = fixtureSeed(BACK), SEED_LONG = fixtureSeed(LONG);
+/** at most this many lives at the river, the bar each skill is held to (measured with it: back 0/1/0/0, long 1/1/0/0) */
+const SKILL_LIVES = 1;
+const livesAt = (r: TierRun) => atRiver(r)?.lives ?? Infinity;
+
+for (const [tier, setting] of RUNS) {
+  test(`${tier}, ${setting}: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine`, () => {
+    const r = ride(tier, setting, SEED_BACK, BACK);
+    assert.ok(r.end === 'shrine' && livesAt(r) <= SKILL_LIVES, `${tier} ${setting}: ${told(r)}`);
+  });
+  test(`${tier}, ${setting}: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank`, () => {
+    const r = ride(tier, setting, SEED_LONG, LONG);
+    assert.ok(r.end === 'shrine' && livesAt(r) <= SKILL_LIVES && r.handed >= 1, `${tier} ${setting}: handed ${r.handed}, ${told(r)}`);
+  });
+}
+
+test('planted: with the against-the-flow skill off, the child on Easy walks off a log carrying him back and drowns', () => {
+  SKILLS.upstream = false;
+  try {
+    const r = ride('child', 'easy', SEED_BACK, BACK);
+    assert.ok(livesAt(r) > SKILL_LIVES, `upstream off, the child on Easy still crossed: ${told(r)}`);
+  } finally {
+    SKILLS.upstream = true;
+  }
+});
+
+test('planted: with the handed-to-the-bank skill off, he hops at the water off the long log and is not handed onto the bank', () => {
+  SKILLS.handed = false;
+  try {
+    const runs = (['middle', 'child'] as const).map((t) => ride(t, 'normal', SEED_LONG, LONG));
+    assert.ok(runs.every((r) => r.handed === 0) && runs.some((r) => livesAt(r) > SKILL_LIVES), `handed off: ${runs.map((r) => `handed ${r.handed}, ${told(r)}`).join('; ')}`);
+  } finally {
+    SKILLS.handed = true;
   }
 });
