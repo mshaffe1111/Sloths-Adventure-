@@ -23,3 +23,11 @@ For the model: (1) the double jump's second-press timing is a top-felt difficult
 calibrated to tester failures, not only the bits formula (DIFFICULTY.md prices it +1.32); (2) input posture changes timing spread: thumb vs index
 finger (and two-handed vs one-handed) are different player tiers' spreads; (3) running with a finger ON Pokey runs out of screen: the control's
 reach is part of difficulty for that style (a UX question as much as a difficulty one).
+
+## Stress changes timing; vines feel wonky (Matt, 12:00 AM ET)
+"double jumping people find difficult because it's all finger timing and how they're pointing based upon if they're excited, if they're running
+and jumping from vines can get frustrating to people just because the vines are a little wonky, but it's more of a stressful activity, especially
+if you fall down below and you can die from it."
+For the model: stakes don't only add setback time, they WIDEN the timing spread (an excited or stressed player presses worse): the pressure
+channel must scale the spread by what a miss costs (a death pit below > a soft fall), and a chase or a watcher adds to it. Vines: players find
+the lianas "a little wonky" (feel, not difficulty): R-165.271.
