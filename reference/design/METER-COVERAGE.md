@@ -79,9 +79,9 @@ the row whole (bot + channel), so that stage is built measured, not blind.
 | 10 | liana swing: catch off a bank | 1-6 | tier: jumps the edge (:1676-1690) | catch share (METER-1, DIFFICULTY.md §1) | RW (the liana comes back) | R | none | data; "wonky" feel (R-165.271) is not difficulty | first window on 1-6 | 0 | done |
 | 11 | liana swing: release / chains | 1-6 | tier :1483-1492 (lets go when a > 0.4 forward) | swingChallenges :304 (engine-flown window) | single: RW (he can swing again); a chain with no ground (8-5): FB | R / F | none | the bot always waits for a good swing (no early panic release); chains: pressured form not used | bot: tier spread on the release angle (a lateQ draw); FB pricing for chains | 1-2 | 1-6 data; 8-3 |
 | 12 | vine snake / false liana | 1-6 | tier: rides it (no snake-specific code) | snakeChallenges :373 | RW | R | none | bot does not react to the warn | bot leaves on the warn after its heed | 1 | 1-6 |
-| 13 | hide in a bush (the eagle) | 1-7 | tier :1384-1399 (once taught, heed late) | watchChallenges :473 | WR | R | none | **lambda (moving while told to wait) unmeasured**; ENG-WATCH's glance and fake-outs not seen (R-165.268) | slip lambda swept 0.02-0.2/s as MODEL §5 METER-2b; a hold-still moment logged at the next window | 3-4 (MODEL §5) | 1-7 re-score (now) |
+| 13 | hide in a bush (the eagle) | 1-7 | tier :1384-1399 (once taught, heed late) | watchChallenges :473 | WR | R | none | **PARTIAL channel**: watchChallenges reads only cover distance, the hero's calm-in, warn and cool (score.ts:476, :497-500); it ignores the stage's calm bands and the glance rhythm (uneven re-checks, fake-outs; ENG-WATCH2 measured, lead 11:12 AM). **lambda** (moving while told to wait) unmeasured (R-165.268) | price the stop-signal race on the glance's away / look / fake dials and the calm bands; slip lambda swept 0.02-0.2/s (MODEL §5 METER-2b); a hold-still moment logged at the next window | 3-4 (MODEL §5) | 1-7 re-score (now) |
 | 14 | quiet feet / noise (1-7, 3-5 wakes thorn vines, sleepers 3-2) | 1-7 / 3-5 | tier: **none** (noise only in the header comment :67) | **none** | SP (choose a soft landing) + WR (a woken sleeper) | R | none | no bot, no channel | bot: a tier share of loud landings (drop height > NOISE threshold, noise.ts:16); channel: p(loud) x what waking costs | 2-3 | 1-7 if it uses noise, else 3-2 |
-| 15 | eagle's shadow / gaze sweep (1-7, 4-5, 9-4 that remembers) | 1-7 | tier: hides on phase warn/pass :1389 | watched stretch :473 | WR + RW (move when it passes) | R | none | a sweep you must MOVE under (4-5) is a go-signal, not only a stop | RW on the sweep's pass window from watcher.ts shadowX | 1-2 | 4-5 |
+| 15 | eagle's shadow / gaze sweep (1-7, 4-5, 9-4 that remembers) | 1-7 | tier: hides on phase warn/pass :1389 | watched stretch :473 (PARTIAL, as #13) | WR + RW (move when it passes) | R | none | a sweep you must MOVE under (4-5) is a go-signal, not only a stop | RW on the sweep's pass window from watcher.ts shadowX | 1-2 | 4-5 |
 | 16 | collapse chase (1-8, 7-6 left) | 1-8 | tier: runs the route; no chase code (only the danger flag :464) | chaseChallenges :419 | PC | F | none | bot never panics (no stress widening) | stakes-widened spread under a chase (Matt 12:00 AM) | 1 | 7-6 |
 | 17 | rolling nuts / fruit | 1-8 | tier: hop a foe :1734 | rollingChallenges :446 | RW | R | none | none for the meter | - | 0 | done |
 | 18 | **frog crossing, wait-and-go** (lanes of crossers on a branch; animals crossing; 2-9 log lanes from a bank) | 1-8 (Q1) / 2-9 | tier: waits at an edge only for floats near the edge (:1679-1688), not for gaps in a lane | **none** (no lane beat in beats.ts) | RW | R | none | **no bot that picks a gap, no channel** | bot: stand, watch the lane, go when the gap >= its need (tier RT + a "go on a bad gap" share); channel: p(go on a gap shorter than run time + RT spread), Hick on lanes | 4-6 | 2-9 (1-8 is the chase) |
@@ -227,7 +227,10 @@ stage uses.
 6. **[2-2]** The misread TIER's first entry: a newcomer stops on a pad to pick a petal (2-2's mission is petals on pads). 1-1.5 h; the
    tier's 1-2 entry (steering mid-air on the bounce) comes with it, which is World 1's open item R-165.269, not a World 2 blocker.
 7. **[later]** Re-score 1-1..1-8 with the new channels and prove nothing moved but the pieces that changed (1-4's boughs). 1 h.
-Total about 7.5-11 h (no direct history; the nearest measured jobs are named in §2's header). Built on: castBots / firsttimer / score.ts
+8. **[later, World 1 now]** The watcher channel made whole (#13, #15): the stop-signal race priced on the glance's away / look / fake
+   dials and the stage's calm bands, not only warn and cool (score.ts:497-500); lambda swept. Needed for 1-7's re-score (R-165.268) and
+   4-5, not for 2-1/2-2. 3-4 h (MODEL §5's METER-2b figure).
+Total for steps 1-7 about 7.5-11 h (no direct history; the nearest measured jobs are named in §2's header). Built on: castBots / firsttimer / score.ts
 as on t-meter-1 (D40: if a planned job this sprint replaces the tier bots' calibration, steps 4-6 wait for it).
 **Not blocking the 2-1/2-2 BUILD, blocking their TESTER window:** the recorder lines for rides and pads (a game-code packet, below).
 
@@ -261,7 +264,7 @@ make the default a failure, or the table rots the day it is written.
 **Unresolved:** #51 (the slide's runner) not opened; 8-4's lantern runner (#31) not opened; METER-1's beats on later worlds were not
 run here (no game code, no runs in this step).
 **The lead's 11:06 AM adds:** the silent default at the top (under the title and first in §0); §2a sizes every no-bot row as
-SKILL / TIER / PARAM / ENGINE FIRST; §4's steps are tagged [2-1] / [2-2] / [both] / [later]. Pushback accepted by the lead.
+SKILL / TIER / PARAM / ENGINE FIRST; §4's steps are tagged [2-1] / [2-2] / [both] / [later]. Pushback accepted by the lead. 11:12 AM: the watcher channel marked PARTIAL (#13, #15) with its fix as §4 step 8.
 **Gates (law 5, docs-only branch, run 11:07 AM ET):** tsc PASS (after `npm install --legacy-peer-deps` as gates.yml:28 does; `npm ci` fails
 ERESOLVE here), roadmapcheck PASS (needed `git fetch --unshallow`), knowncheck PASS, generalitycheck PASS.
 **Turnover note:** reference/handoffs/analyst.md has the METER-2 step 0 section (same commit).
