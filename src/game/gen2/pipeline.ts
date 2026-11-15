@@ -3750,6 +3750,19 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
 }
 /** a graph with chase nodes: each section's own pieces and which are the route's (PlacedPiece.main), read by layChase in buildGen2Stage */
 const PIECES_OF = new WeakMap<Gen2Stage, Map<string, Array<{ platform: Platform; main: boolean }>>>();
+
+/**
+ * a built roll as buildGen2Stage lays it, for a caller's judge (BuildRequest.also) in the search: a graph with chase nodes gets its chase
+ * laid on a COPY (the stage and its sections' pieces cloned together, so the pieces are the copy's own platforms: layChase cuts by
+ * them), and the search keeps its own build, whose chase is laid once, after (ENG-CL (7b)). Any other roll is handed as it is.
+ */
+function asLaid(st: Gen2Stage): Gen2Stage {
+  const pm = PIECES_OF.get(st);
+  if (!pm) return st;
+  const [c, m] = structuredClone([st, pm] as const);
+  layChase(c, (uid) => m.get(uid) ?? []);
+  return c;
+}
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
 
@@ -4522,7 +4535,9 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
           // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
           const pipes = unmet.length > 0;
-          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          // (handed the roll as laid, its chase in it, on a copy: a judge measuring the roll as played was handed a chase stage with no
+          // chase, and 1-8's finish refused every roll by name: ENG-CL (7b), BUILD-18 11-14)
+          if (!pipes && req.also) unmet = [...req.also(asLaid(st), 'normal').map((u) => ({ ...u, of: b })), ...req.also(asLaid(eb.stage), 'easy').map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;

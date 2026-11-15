@@ -135,3 +135,20 @@ test('a respawn puts the liana back as laid; the lay refuses a runner liana with
   const sh = runnerProblems(w.vines[0], short);
   assert.ok(sh.some((m) => /px of run to its lip/.test(m)), sh.join('; '));
 });
+
+// ENG-CL (8), the lead 8:20 PM 11-14: runnerLip took the ground end NEAREST the liana at any height, so under a soft gap it took the pit's
+// stair step (lower, its end nearer) and every Normal 1-8 K2 runner liana failed "200 px of run to its lip" (the fixture's tip filtered the
+// line out). The lip is the ground he takes off from: of the ground ends in reach, the HIGHEST (anything lower lies in the gap under him),
+// the nearest of those.
+test('PLANTED: a pit step under the gap, its end nearer the liana, is not the lip; the run-up is, and the lay finds no fault', () => {
+  const w = world(0);
+  const step = { id: 9001, x: LIP, y: Y + 80, width: 150, height: 40, type: 'solid' } as Platform;
+  const floor = { id: 9002, x: LIP, y: Y + 160, width: D0 + 230, height: 300, type: 'solid' } as Platform;
+  const plats = [...w.plats, step, floor];
+  const lip = runnerLip(w.vines[0], plats);
+  assert.ok(lip && lip.x + lip.width === LIP && lip.y === Y, `its lip is the run-up's end at ${LIP}, not ${lip ? `${lip.x + lip.width} at y ${lip.y}` : 'none'}`);
+  assert.deepEqual(runnerProblems(w.vines[0], plats), []);
+  // (and a log lying on the run's end, which he hops onto and takes off from, is the lip: the higher of two ends at the same x)
+  const log = { id: 9003, x: LIP - 300, y: Y - 40, width: 300, height: 40, type: 'solid' } as Platform;
+  assert.equal(runnerLip(w.vines[0], [...plats, log])?.id, 9003, 'the log on the lip is the take-off');
+});
