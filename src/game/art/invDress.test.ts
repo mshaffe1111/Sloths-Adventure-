@@ -13,7 +13,7 @@ import { invDressUrl } from './invDressArt.ts';
 
 const COLS = ['id', 'file', 'frame', 'world_best', 'worlds', 'kind', 'layer', 'engine_slot', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'float_class', 'made_thing', 'status', 'pokey_scale', 'scale_ok'];
 const row = (id: string, o: Partial<Record<string, unknown>> = {}): unknown[] => {
-  const base: Record<string, unknown> = { id, file: 'src/assets/w1-18/hf18-palm-crown.webp', frame: null, world_best: 1, worlds: [1], kind: 'prop', layer: 'decor mid', engine_slot: 'inventory dressing', w: 1000, h: 800, walk_y: null, walk_x0: null, walk_x1: null, float_class: 'hung', made_thing: false, status: 'ready', pokey_scale: 2, scale_ok: null, ...o };
+  const base: Record<string, unknown> = { id, file: 'src/assets/w1-18/hf18-palm-a.webp', frame: null, world_best: 1, worlds: [1], kind: 'prop', layer: 'decor mid', engine_slot: 'inventory dressing', w: 1000, h: 800, walk_y: null, walk_x0: null, walk_x1: null, float_class: 'hung', made_thing: false, status: 'ready', pokey_scale: 2, scale_ok: null, ...o };
   return COLS.map((c) => base[c]);
 };
 /** a planted World 1 file: one good piece, and one of each kind the gate refuses */
@@ -52,8 +52,8 @@ test('the size is the inventory\'s own: pokey_scale x Pokey\'s drawn height (her
   assert.equal(invDressSize({ pokey_scale: null, w: 10, h: 10 }, 89.1), null);
   assert.deepEqual(frameRect({ frame: 'w1-boulder-grey-moss (956,362 237x155)', w: 237, h: 155 }), { x: 956, y: 362, w: 237, h: 155 });
   assert.equal(frameRect({ frame: null, w: 1, h: 1 }), null);
-  // (1-8's two pieces, as the catalog has them: drawn at their scale, their pictures in the build)
-  for (const id of ['hf18/hf18-palm-crown', 'hf18/hf18-cannon-trunk']) {
+  // (1-8's pieces (five painted palms, ART-18, and the trunk), as the catalog has them: drawn at their scale, their pictures in the build)
+  for (const id of ['hf18/hf18-palm-a', 'hf18/hf18-palm-b', 'hf18/hf18-palm-c', 'hf18/hf18-palm-back-a', 'hf18/hf18-palm-back-b', 'hf18/hf18-cannon-trunk']) {
     const r = w1.byId(id)!;
     assert.ok(r, id);
     const s = invDressSize(r, w1.pokeyUnits)!;
@@ -93,7 +93,7 @@ test('every listed stage, as Play builds it on both settings: each dressing row 
       for (const r of rows) seen.add(`${id} ${r.inv}`);
     }
   }
-  assert.ok(seen.has('1-8 hf18/hf18-palm-crown') && seen.has('1-8 hf18/hf18-cannon-trunk'), `1-8's crown and trunk are laid (${[...seen].join(', ')})`);
+  assert.ok(['a', 'b', 'c', 'back-a', 'back-b'].every((v) => seen.has(`1-8 hf18/hf18-palm-${v}`)) && seen.has('1-8 hf18/hf18-cannon-trunk'), `1-8's five palms and its trunk are laid (${[...seen].join(', ')})`);
   console.log(`  ${laid} dressing rows on ${Object.keys(LISTED).length} listed stages x 2 layouts x 2 settings, each through the gate`);
   if (threw.length) console.log(`  NOT JUDGED here, the build threw (${threw.length}):\n    ${threw.join('\n    ')}`);
 });
@@ -107,7 +107,7 @@ test('no code lays dressing rows on a stage this gate does not build: every writ
 
 test('readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved', async () => {
   resetInvDress();
-  const rows = [at('hf18/hf18-palm-crown'), at('hf18/hf18-palm-crown', { x: 3000 }), at('hf18/hf18-cannon-trunk', { hang: false }), at('fx/missing')];
+  const rows = [at('hf18/hf18-palm-a'), at('hf18/hf18-palm-a', { x: 3000 }), at('hf18/hf18-cannon-trunk', { hang: false }), at('fx/missing')];
   await readyInvDress(rows, 1);
   assert.equal(invDressResolves(), 2, 'two pieces, four rows');
   await readyInvDress(rows, 1);

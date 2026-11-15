@@ -19,7 +19,9 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import { w1Finish } from './w1.ts';
-import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { loadInventory } from '../../art/inventory.ts';
+import { invDressSize } from '../../art/invDress.ts';
 import { W1_TIP } from './w1Cast.ts';
 import { rollTeaches, type RollSpec } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
@@ -146,15 +148,47 @@ test('the still fork: the moss where the collapse stops after the fourth stretch
   }
 });
 
-test('the hearts stand on the fork after the second stretch and the fork before the last; the keeper\'s look is laid by inventory id', () => {
+test('the hearts stand on the fork after the second stretch and the fork before the last; every fruit has its trunk by inventory id', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d), L = st.chase.stretches;
     const hearts = st.collectibles.filter((c) => c.type === 'heart');
     for (const f of HEARTS_18.forks) assert.ok(hearts.some((h) => h.x > L[f - 1].end && h.x < L[f].start), `${d} seed ${s}: a heart on fork ${f}`);
     const dress = st.proto.invDress ?? [];
-    for (const h of st.rolling) {
-      const want = h.kind === 'low' ? DRESS_18.palm.inv : DRESS_18.trunk.inv;
-      assert.ok(dress.some((q) => q.inv === want && Math.abs(q.x - h.dropX) <= 100), `${d} seed ${s}: ${want} at the ${h.kind} at ${h.dropX}`);
+    for (const h of st.rolling.filter((q) => q.kind !== 'low')) {
+      assert.ok(dress.some((q) => q.inv === DRESS_18.trunk.inv && Math.abs(q.x - h.dropX) <= 100), `${d} seed ${s}: the trunk at the ${h.kind} at ${h.dropX}`);
     }
   }
+});
+
+test('the palms (ART-18, Matt 11-15): a painted palm at every nut\'s drop with its nut cluster over the drop (the inventory\'s size), never the same palm within PALM_APART_18, back palms drawn first', async () => {
+  const inv = await loadInventory(1);
+  const ids = new Set<string>(PALMS_18.map((p) => p.inv));
+  for (const p of PALMS_18) {
+    const r = inv.byId(p.inv);
+    assert.ok(r, `${p.inv} is a World 1 inventory row`);
+    const sz = invDressSize(r!, inv.pokeyUnits)!;
+    // (the row's place, from the cluster's fractions and the drawn size: x middle = drop + dx, foot = ground + y)
+    const cx = p.dx - sz.w / 2 + p.nut[0] * sz.w, cy = p.y - sz.h + p.nut[1] * sz.h;
+    assert.ok(Math.abs(cx) <= 12 && Math.abs(cy + p.up) <= 12, `${p.inv}: its nut cluster at (${cx.toFixed(0)}, ${cy.toFixed(0)}) from the drop, wanted (0, ${-p.up})`);
+    assert.ok(p.y > 0 && p.y - sz.h * 0.16 > 40, `${p.inv}: its foot (and its fade) under the branch's top, never a stub over it (foot ${p.y} px under)`);
+  }
+  let seen = 0;
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    const dress = st.proto.invDress ?? [];
+    const palms = dress.filter((q) => ids.has(q.inv));
+    for (const h of st.rolling.filter((q) => q.kind === 'low')) {
+      const at = palms.filter((q) => { const p = PALMS_18.find((v) => v.inv === q.inv)!; return Math.abs(q.x - p.dx - h.dropX) <= 1; });
+      assert.equal(at.length, 1, `${d} seed ${s}: one palm at the nut at ${h.dropX}`);
+    }
+    for (const a of palms) for (const b of palms) {
+      if (a !== b && a.inv === b.inv) assert.ok(Math.abs(a.x - b.x) >= PALM_APART_18 - 100, `${d} seed ${s}: ${a.inv} twice ${Math.round(Math.abs(a.x - b.x))} px apart`);
+    }
+    if (palms.length >= 3) assert.ok(new Set(palms.map((q) => q.inv)).size >= 3, `${d} seed ${s}: at least three different palms`);
+    const back = PALMS_18.filter((p) => p.back).map((p) => p.inv as string);
+    const lastBack = dress.map((q) => back.includes(q.inv)).lastIndexOf(true), firstNear = dress.findIndex((q) => !back.includes(q.inv));
+    if (lastBack >= 0 && firstNear >= 0) assert.ok(lastBack < firstNear, `${d} seed ${s}: the back palms are drawn before every other dressing row`);
+    seen += palms.length;
+  }
+  assert.ok(seen > 0, 'palms laid');
 });
