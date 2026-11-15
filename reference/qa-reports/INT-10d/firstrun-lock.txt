@@ -1,0 +1,3 @@
+normal: builds f405e1cea982681d, recorded f405e1cea982681d SAME; collectibles 151
+easy: builds 91fcb58a12c2c26a, recorded 91fcb58a12c2c26a SAME; collectibles 120
+TIPS f94ccdcb recorded: normal f405e1cea982681d, easy 91fcb58a12c2c26a
