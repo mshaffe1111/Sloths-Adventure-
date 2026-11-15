@@ -5,6 +5,10 @@ ferns, berries, orchids, nests, seed pods), puzzleAtlasData.ts KIT_ART, rollingP
 picture today, M-10-d), and BUILD-18's dressing rows in src/game/gen2/worlds/w1Arc18.ts on origin/t-build-18.
 Why: Matt's inventory-first rule says the engine reads every picture through the inventory, but no stage can place an inventory picture
 as dressing; 1-8's palm crowns and cannonball trunks (BUILD-18 8:16 PM) are the first case, every later level the next.
+FIRST (S, a correctness hole on SHIPPED stages): the seed list never runs a row's own finish (tools/engine/seedlist.ts:35 runs
+w1Finish only, for a squirrels row), so a seed whose finish (1-7's finish17, 1-8's finish18) throws can be listed and then throw on a
+phone. Build each seed with listed.ts FINISH and refuse a throw by name; planted; re-run --check on every listed stage (1-7 included)
+and report any seed that now fails. Then:
 Build: one dressing row type by inventory id (hung by top / standing on ground / behind the play layer), scaled from the inventory's own
 scale field against Pokey's 89.1 px (R-165.107: the scale gate flags out-of-range), packed into an atlas or baked so a frame pays at most a
 few drawImage calls (PERFORMANCE §1 pass/fail), any stage, any world. Planted test: a row with an id the inventory lacks fails by name; an

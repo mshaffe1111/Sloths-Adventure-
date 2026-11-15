@@ -18,6 +18,10 @@ lead the data names it should use, never edit its stage file.
     RollSpec or chase, so 1-8's K3 reads "18.2 s with nothing to do". Fix for every stage: quietJudge takes the row's finish (as
     helpRoomBreaches :51 does via listed.ts FINISH), and findBeats counts each RollSpec drop (low = a hop, high = a pass-under) as a beat;
     planted test. Tell BUILD-18 the moment it lands.
+ (8) WITH (6): runnerLip (runnerLiana.ts, used by runnerProblems :115) takes the nearest ground end short of the liana at ANY height;
+    under a soft gap that is the pit's stair step, so every Normal 1-8 K2 runner liana reads "200 px of run to its lip" (the fixture hid it:
+    chaseFixtureStage.ts:187 filtered the message). It takes the ground at the take-off's height; planted. And layStillFork's post window is
+    14 px wide (cover 346 + postPast 60 to postMax 420): widen it or let layStillFork move the flag itself, planted (BUILD-18 8:17 PM).
  (6) THEN, before (1)-(5) (BUILD-18 is blocked on it for the link): lift the two chase lays that exist only in the dev fixture
     (src/game/chaseFixtureStage.ts: layFixtureRolling :76-119, layFixturePieces :160-200) into gen2 as pieces for any chase stage: a 'roll'
     socket role laid by the pipeline (the `h` letter, nodeLetters.ts:67) and layTip(st, look) beside layStillFork (any fork index, not 0),
