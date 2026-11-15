@@ -1,0 +1,268 @@
+start 4:09 PM head dbbad40ef
+1-7 seed 1 normal eagle#0 stretch 3000-3358 (358 px) walk: hearts lost 0, walk 248 px/s
+    f16 t0.57 rest->hunt (eye 3358, him 3026, passes 0, free)
+    f45 t1.53 eye over him (eye 3358, him 3294)
+    f105 t3.53 out of the stretch by 400 px: run ends (him 3761)
+1-7 seed 1 normal eagle#1 stretch 4824-5164 (340 px) walk: hearts lost 0, walk 248 px/s
+    f15 t0.53 rest->hunt (eye 5164, him 4841, passes 0, free)
+    f43 t1.47 eye over him (eye 5164, him 5099)
+    f103 t3.47 out of the stretch by 400 px: run ends (him 5568)
+1-7 seed 1 normal eagle#2 stretch 6187-7222 (1035 px) walk: hearts lost 1, walk 265 px/s
+    f48 t1.63 rest->hunt (eye 7222, him 6508, passes 0)
+    f116 t3.9 hunt->tell (eye 7126, him 7060, passes 0)
+    f139 t4.67 tell->act (eye 7126, him 7271, passes 0)
+    f148 t4.97 act->recover (eye 7126, him 7367, passes 0)
+    f148 t4.97 HEART LOST (hp 4) at x 7367
+    f166 t5.57 recover->rest (eye 7126, him 7533, passes 0)
+    f176 t5.9 out of the stretch by 400 px: run ends (him 7625)
+1-7 seed 1 normal eagle#3 stretch 11069-11909 (840 px) walk: hearts lost 1, walk 259 px/s
+    f39 t1.33 rest->hunt (eye 11909, him 11307, passes 0)
+    f97 t3.27 eye over him (eye 11909, him 11842)
+    f99 t3.33 hunt->tell (eye 11898, him 11860, passes 0)
+    f122 t4.1 tell->act (eye 11898, him 11997, passes 0)
+    f126 t4.23 act->recover (eye 11898, him 12029, passes 0)
+    f126 t4.23 HEART LOST (hp 4) at x 12029
+    f144 t4.83 recover->rest (eye 11898, him 12194, passes 0)
+    f157 t5.27 out of the stretch by 400 px: run ends (him 12311)
+1-7 seed 1 normal eagle#4 stretch 15792-16972 (1180 px) walk: hearts lost 1, walk 249 px/s
+    f68 t2.3 rest->tell (eye 16297, him 16297, passes 0)
+    f91 t3.07 tell->act (eye 16297, him 16433, passes 0)
+    f99 t3.33 act->recover (eye 16297, him 16507, passes 0)
+    f99 t3.33 HEART LOST (hp 4) at x 16507
+    f117 t3.93 recover->rest (eye 16297, him 16663, passes 1)
+    f204 t6.83 out of the stretch by 400 px: run ends (him 17376)
+1-7 seed 1 normal eagle#5 stretch 18132-19131 (999 px) walk: hearts lost 1, walk 262 px/s
+    f46 t1.57 rest->hunt (eye 19131, him 18435, passes 0)
+    f114 t3.83 hunt->tell (eye 19035, him 18977, passes 0)
+    f137 t4.6 tell->act (eye 19035, him 19189, passes 0)
+    f145 t4.87 act->recover (eye 19035, him 19263, passes 0)
+    f145 t4.87 HEART LOST (hp 4) at x 19263
+    f163 t5.47 recover->rest (eye 19035, him 19437, passes 0)
+    f174 t5.83 out of the stretch by 400 px: run ends (him 19538)
+1-7 seed 1 normal eagle#6 stretch 22793-25193 (2400 px) walk: hearts lost 2, walk 25 px/s
+    f101 t3.4 rest->tell (eye 23424, him 23424, passes 0)
+    f124 t4.17 tell->act (eye 23424, him 23424, passes 0)
+    f127 t4.27 act->recover (eye 23424, him 23424, passes 0)
+    f127 t4.27 HEART LOST (hp 4) at x 23424
+    f145 t4.87 recover->rest (eye 23424, him 23424, passes 1)
+    f313 t10.47 rest->hunt (eye 25193, him 23424, passes 1)
+    f532 t17.77 hunt->tell (eye 23486, him 23424, passes 1)
+    f555 t18.53 tell->act (eye 23486, him 23424, passes 1)
+    f561 t18.73 act->recover (eye 23486, him 23424, passes 1)
+    f561 t18.73 HEART LOST (hp 3) at x 23424
+    f579 t19.33 recover->rest (eye 23486, him 23424, passes 2)
+    f746 t24.9 rest->hunt (eye 25193, him 23424, passes 2)
+1-7 seed 1 normal eagle#7 PERCHED stretch 28478-29598 (1120 px) walk: hearts lost 1, walk 250 px/s
+    f52 t1.77 rest->hunt (eye 29598, him 28836, passes 0)
+    f123 t4.13 hunt->tell (eye 29470, him 29419, passes 0)
+    f146 t4.9 tell->act (eye 29470, him 29631, passes 0)
+    f188 t6.3 act->recover (eye 29470, him 29932, passes 0)
+    f188 t6.3 HEART LOST (hp 4) at x 29932
+    f196 t6.57 out of the stretch by 400 px: run ends (him 30006)
+1-7 seed 1 normal eagle#8 stretch 33144-34081 (937 px) walk: hearts lost 1, walk 255 px/s
+    f43 t1.47 rest->hunt (eye 34081, him 33419, passes 0)
+    f109 t3.67 hunt->tell (eye 34006, him 33941, passes 0)
+    f132 t4.43 tell->act (eye 34006, him 34152, passes 0)
+    f141 t4.73 act->recover (eye 34006, him 34235, passes 0)
+    f141 t4.73 HEART LOST (hp 4) at x 34235
+    f159 t5.33 recover->rest (eye 34006, him 34384, passes 0)
+1-7 seed 2 normal eagle#0 stretch 3142-3500 (358 px) walk: hearts lost 0, walk 247 px/s
+    f16 t0.57 rest->hunt (eye 3500, him 3168, passes 0, free)
+    f45 t1.53 eye over him (eye 3500, him 3436)
+    f105 t3.53 out of the stretch by 400 px: run ends (him 3901)
+1-7 seed 2 normal eagle#1 stretch 4964-5304 (340 px) walk: hearts lost 0, walk 247 px/s
+    f15 t0.53 rest->hunt (eye 5304, him 4981, passes 0, free)
+    f43 t1.47 eye over him (eye 5304, him 5239)
+    f103 t3.47 out of the stretch by 400 px: run ends (him 5705)
+1-7 seed 2 normal eagle#2 stretch 6324-7359 (1035 px) walk: hearts lost 1, walk 239 px/s
+    f48 t1.63 rest->hunt (eye 7359, him 6645, passes 0)
+    f116 t3.9 hunt->tell (eye 7263, him 7196, passes 0)
+    f139 t4.67 tell->act (eye 7263, him 7407, passes 0)
+    f146 t4.9 act->recover (eye 7263, him 7447, passes 0)
+    f146 t4.9 HEART LOST (hp 4) at x 7447
+    f164 t5.5 recover->rest (eye 7263, him 7494, passes 0)
+    f193 t6.47 out of the stretch by 400 px: run ends (him 7761)
+1-7 seed 2 normal eagle#3 stretch 11204-12044 (840 px) walk: hearts lost 1, walk 259 px/s
+    f39 t1.33 rest->hunt (eye 12044, him 11442, passes 0)
+    f97 t3.27 eye over him (eye 12044, him 11977)
+    f99 t3.33 hunt->tell (eye 12033, him 11995, passes 0)
+    f122 t4.1 tell->act (eye 12033, him 12132, passes 0)
+    f126 t4.23 act->recover (eye 12033, him 12164, passes 0)
+    f126 t4.23 HEART LOST (hp 4) at x 12164
+    f144 t4.83 recover->rest (eye 12033, him 12329, passes 0)
+    f157 t5.27 out of the stretch by 400 px: run ends (him 12446)
+1-7 seed 2 normal eagle#4 stretch 15927-17107 (1180 px) walk: hearts lost 1, walk 266 px/s
+    f55 t1.87 rest->hunt (eye 17107, him 16313, passes 0)
+    f127 t4.27 hunt->tell (eye 16968, him 16903, passes 0)
+    f150 t5.03 tell->act (eye 16968, him 17115, passes 0)
+    f159 t5.33 act->recover (eye 16968, him 17210, passes 0)
+    f159 t5.33 HEART LOST (hp 4) at x 17210
+    f177 t5.93 recover->rest (eye 16968, him 17376, passes 0)
+    f192 t6.43 out of the stretch by 400 px: run ends (him 17514)
+1-7 seed 2 normal eagle#5 stretch 18409-19411 (1002 px) walk: hearts lost 1, walk 262 px/s
+    f46 t1.57 rest->hunt (eye 19411, him 18712, passes 0)
+    f114 t3.83 hunt->tell (eye 19315, him 19257, passes 0)
+    f137 t4.6 tell->act (eye 19315, him 19469, passes 0)
+    f145 t4.87 act->recover (eye 19315, him 19543, passes 0)
+    f145 t4.87 HEART LOST (hp 4) at x 19543
+    f163 t5.47 recover->rest (eye 19315, him 19716, passes 0)
+    f174 t5.83 out of the stretch by 400 px: run ends (him 19817)
+1-7 seed 2 normal eagle#6 stretch 22930-25191 (2261 px) walk: hearts lost 2, walk 22 px/s
+    f105 t3.53 rest->hunt (eye 25191, him 23488, passes 0)
+    f318 t10.63 hunt->tell (eye 23548, him 23488, passes 0)
+    f341 t11.4 tell->act (eye 23548, him 23488, passes 0)
+    f347 t11.6 act->recover (eye 23548, him 23488, passes 0)
+    f347 t11.6 HEART LOST (hp 4) at x 23488
+    f365 t12.2 recover->rest (eye 23548, him 23488, passes 1)
+    f526 t17.57 rest->tell (eye 23488, him 23488, passes 1)
+    f549 t18.33 tell->act (eye 23488, him 23488, passes 1)
+    f555 t18.53 act->recover (eye 23488, him 23488, passes 1)
+    f555 t18.53 HEART LOST (hp 3) at x 23488
+    f573 t19.13 recover->rest (eye 23488, him 23488, passes 2)
+    f736 t24.57 rest->hunt (eye 25191, him 23488, passes 2)
+1-7 seed 2 normal eagle#7 PERCHED stretch 28481-29601 (1120 px) walk: hearts lost 1, walk 250 px/s
+    f52 t1.77 rest->hunt (eye 29601, him 28839, passes 0)
+    f123 t4.13 hunt->tell (eye 29473, him 29420, passes 0)
+    f146 t4.9 tell->act (eye 29473, him 29632, passes 0)
+    f187 t6.27 act->recover (eye 29473, him 29922, passes 0)
+    f187 t6.27 HEART LOST (hp 4) at x 29922
+    f196 t6.57 out of the stretch by 400 px: run ends (him 30005)
+1-7 seed 2 normal eagle#8 stretch 33285-34227 (942 px) walk: hearts lost 1, walk 236 px/s
+    f44 t1.5 rest->hunt (eye 34227, him 33569, passes 0)
+    f110 t3.7 hunt->tell (eye 34152, him 34096, passes 0)
+    f133 t4.47 tell->act (eye 34152, him 34308, passes 0)
+    f144 t4.83 act->recover (eye 34152, him 34409, passes 0)
+    f144 t4.83 HEART LOST (hp 4) at x 34409
+    f162 t5.43 recover->rest (eye 34152, him 34457, passes 0)
+1-7 seed 3 normal eagle#0 stretch 3000-3358 (358 px) walk: hearts lost 0, walk 250 px/s
+    f16 t0.57 rest->hunt (eye 3358, him 3026, passes 0, free)
+    f45 t1.53 eye over him (eye 3358, him 3294)
+    f105 t3.53 out of the stretch by 400 px: run ends (him 3766)
+1-7 seed 3 normal eagle#1 stretch 4820-5160 (340 px) walk: hearts lost 0, walk 248 px/s
+    f15 t0.53 rest->hunt (eye 5160, him 4837, passes 0, free)
+    f43 t1.47 eye over him (eye 5160, him 5095)
+    f103 t3.47 out of the stretch by 400 px: run ends (him 5564)
+1-7 seed 3 normal eagle#2 stretch 6183-7218 (1035 px) walk: hearts lost 1, walk 242 px/s
+    f48 t1.63 rest->hunt (eye 7218, him 6504, passes 0)
+    f116 t3.9 hunt->tell (eye 7122, him 7058, passes 0)
+    f139 t4.67 tell->act (eye 7122, him 7269, passes 0)
+    f146 t4.9 act->recover (eye 7122, him 7307, passes 0)
+    f146 t4.9 HEART LOST (hp 4) at x 7307
+    f164 t5.5 recover->rest (eye 7122, him 7372, passes 0)
+    f191 t6.4 out of the stretch by 400 px: run ends (him 7621)
+1-7 seed 3 normal eagle#3 stretch 11068-11908 (840 px) walk: hearts lost 1, walk 259 px/s
+    f39 t1.33 rest->hunt (eye 11908, him 11306, passes 0)
+    f97 t3.27 eye over him (eye 11908, him 11841)
+    f99 t3.33 hunt->tell (eye 11897, him 11859, passes 0)
+    f122 t4.1 tell->act (eye 11897, him 11995, passes 0)
+    f126 t4.23 act->recover (eye 11897, him 12027, passes 0)
+    f126 t4.23 HEART LOST (hp 4) at x 12027
+    f144 t4.83 recover->rest (eye 11897, him 12192, passes 0)
+    f157 t5.27 out of the stretch by 400 px: run ends (him 12311)
+1-7 seed 3 normal eagle#4 stretch 15648-16828 (1180 px) walk: hearts lost 1, walk 262 px/s
+    f55 t1.87 rest->hunt (eye 16828, him 16034, passes 0)
+    f127 t4.27 hunt->tell (eye 16689, him 16626, passes 0)
+    f150 t5.03 tell->act (eye 16689, him 16839, passes 0)
+    f158 t5.3 act->recover (eye 16689, him 16910, passes 0)
+    f158 t5.3 HEART LOST (hp 4) at x 16910
+    f176 t5.9 recover->rest (eye 16689, him 17064, passes 0)
+    f194 t6.5 out of the stretch by 400 px: run ends (him 17230)
+1-7 seed 3 normal eagle#5 stretch 17989-18989 (1000 px) walk: hearts lost 1, walk 278 px/s
+    f46 t1.57 rest->hunt (eye 18989, him 18292, passes 0)
+    f109 t3.67 hunt->tell (eye 18946, him 18884, passes 0)
+    f132 t4.43 tell->act (eye 18946, him 19096, passes 0)
+    f140 t4.7 act->recover (eye 18946, him 19170, passes 0)
+    f140 t4.7 HEART LOST (hp 4) at x 19170
+    f158 t5.3 recover->rest (eye 18946, him 19334, passes 0)
+    f164 t5.5 out of the stretch by 400 px: run ends (him 19390)
+1-7 seed 3 normal eagle#6 stretch 22506-24794 (2288 px) walk: hearts lost 1, walk 22 px/s
+    f110 t3.7 rest->hunt (eye 24794, him 23063, passes 0)
+    f325 t10.87 hunt->tell (eye 23130, him 23063, passes 0)
+    f348 t11.63 tell->act (eye 23130, him 23063, passes 0)
+    f352 t11.77 act->recover (eye 23130, him 23063, passes 0)
+    f352 t11.77 HEART LOST (hp 4) at x 23063
+    f370 t12.37 recover->rest (eye 23130, him 23063, passes 1)
+    f533 t17.8 rest->hunt (eye 24794, him 23063, passes 1)
+    f748 t24.97 hunt->tell (eye 23130, him 23063, passes 1)
+1-7 seed 3 normal eagle#7 PERCHED stretch 28079-29199 (1120 px) walk: hearts lost 1, walk 250 px/s
+    f52 t1.77 rest->hunt (eye 29199, him 28437, passes 0)
+    f123 t4.13 hunt->tell (eye 29071, him 29020, passes 0)
+    f146 t4.9 tell->act (eye 29071, him 29232, passes 0)
+    f188 t6.3 act->recover (eye 29071, him 29531, passes 0)
+    f188 t6.3 HEART LOST (hp 4) at x 29531
+    f196 t6.57 out of the stretch by 400 px: run ends (him 29605)
+1-7 seed 3 normal eagle#8 stretch 32601-33539 (938 px) walk: hearts lost 1, walk 256 px/s
+    f43 t1.47 rest->hunt (eye 33539, him 32876, passes 0)
+    f109 t3.67 hunt->tell (eye 33464, him 33399, passes 0)
+    f132 t4.43 tell->act (eye 33464, him 33610, passes 0)
+    f141 t4.73 act->recover (eye 33464, him 33693, passes 0)
+    f141 t4.73 HEART LOST (hp 4) at x 33693
+    f159 t5.33 recover->rest (eye 33464, him 33845, passes 0)
+1-7 seed 4 normal eagle#0 stretch 3000-3358 (358 px) walk: hearts lost 0, walk 247 px/s
+    f16 t0.57 rest->hunt (eye 3358, him 3026, passes 0, free)
+    f45 t1.53 eye over him (eye 3358, him 3294)
+    f105 t3.53 out of the stretch by 400 px: run ends (him 3758)
+1-7 seed 4 normal eagle#1 stretch 4821-5161 (340 px) walk: hearts lost 0, walk 247 px/s
+    f15 t0.53 rest->hunt (eye 5161, him 4838, passes 0, free)
+    f43 t1.47 eye over him (eye 5161, him 5096)
+    f103 t3.47 out of the stretch by 400 px: run ends (him 5562)
+1-7 seed 4 normal eagle#2 stretch 6181-7216 (1035 px) walk: hearts lost 1, walk 242 px/s
+    f48 t1.63 rest->hunt (eye 7216, him 6502, passes 0)
+    f116 t3.9 hunt->tell (eye 7120, him 7057, passes 0)
+    f139 t4.67 tell->act (eye 7120, him 7269, passes 0)
+    f146 t4.9 act->recover (eye 7120, him 7302, passes 0)
+    f146 t4.9 HEART LOST (hp 4) at x 7302
+    f164 t5.5 recover->rest (eye 7120, him 7367, passes 0)
+    f191 t6.4 out of the stretch by 400 px: run ends (him 7616)
+1-7 seed 4 normal eagle#3 stretch 10921-11761 (840 px) walk: hearts lost 1, walk 258 px/s
+    f39 t1.33 rest->hunt (eye 11761, him 11159, passes 0)
+    f97 t3.27 eye over him (eye 11761, him 11694)
+    f99 t3.33 hunt->tell (eye 11750, him 11712, passes 0)
+    f122 t4.1 tell->act (eye 11750, him 11848, passes 0)
+    f126 t4.23 act->recover (eye 11750, him 11874, passes 0)
+    f126 t4.23 HEART LOST (hp 4) at x 11874
+    f144 t4.83 recover->rest (eye 11750, him 12039, passes 0)
+    f158 t5.3 out of the stretch by 400 px: run ends (him 12168)
+1-7 seed 4 normal eagle#4 stretch 15647-16827 (1180 px) walk: hearts lost 1, walk 264 px/s
+    f55 t1.87 rest->hunt (eye 16827, him 16033, passes 0)
+    f127 t4.27 hunt->tell (eye 16688, him 16618, passes 0)
+    f150 t5.03 tell->act (eye 16688, him 16830, passes 0)
+    f158 t5.3 act->recover (eye 16688, him 16904, passes 0)
+    f158 t5.3 HEART LOST (hp 4) at x 16904
+    f176 t5.9 recover->rest (eye 16688, him 17074, passes 0)
+    f193 t6.47 out of the stretch by 400 px: run ends (him 17231)
+1-7 seed 4 normal eagle#5 stretch 18135-19129 (994 px) walk: hearts lost 1, walk 263 px/s
+    f46 t1.57 rest->hunt (eye 19129, him 18438, passes 0)
+    f113 t3.8 hunt->tell (eye 19044, him 18975, passes 0)
+    f136 t4.57 tell->act (eye 19044, him 19187, passes 0)
+    f144 t4.83 act->recover (eye 19044, him 19261, passes 0)
+    f144 t4.83 HEART LOST (hp 4) at x 19261
+    f162 t5.43 recover->rest (eye 19044, him 19435, passes 0)
+    f173 t5.8 out of the stretch by 400 px: run ends (him 19536)
+1-7 seed 4 normal eagle#6 stretch 22933-25219 (2286 px) walk: hearts lost 2, walk 29 px/s
+    f125 t4.2 rest->tell (eye 23478, him 23478, passes 0)
+    f148 t4.97 tell->act (eye 23478, him 23478, passes 0)
+    f154 t5.17 act->recover (eye 23478, him 23478, passes 0)
+    f154 t5.17 HEART LOST (hp 4) at x 23478
+    f172 t5.77 recover->rest (eye 23478, him 23478, passes 1)
+    f344 t11.5 rest->tell (eye 23478, him 23478, passes 1)
+    f367 t12.27 tell->act (eye 23478, him 23478, passes 1)
+    f371 t12.4 act->recover (eye 23478, him 23478, passes 1)
+    f371 t12.4 HEART LOST (hp 3) at x 23478
+    f389 t13 recover->rest (eye 23478, him 23478, passes 2)
+    f554 t18.5 rest->hunt (eye 25219, him 23478, passes 2)
+1-7 seed 4 normal eagle#7 PERCHED stretch 28646-29766 (1120 px) walk: hearts lost 1, walk 251 px/s
+    f52 t1.77 rest->hunt (eye 29766, him 29004, passes 0)
+    f123 t4.13 hunt->tell (eye 29638, him 29586, passes 0)
+    f146 t4.9 tell->act (eye 29638, him 29798, passes 0)
+    f188 t6.3 act->recover (eye 29638, him 30106, passes 0)
+    f188 t6.3 HEART LOST (hp 4) at x 30106
+    f195 t6.53 out of the stretch by 400 px: run ends (him 30167)
+1-7 seed 4 normal eagle#8 stretch 33166-34104 (938 px) walk: hearts lost 1, walk 244 px/s
+    f43 t1.47 rest->hunt (eye 34104, him 33441, passes 0)
+    f109 t3.67 hunt->tell (eye 34029, him 33964, passes 0)
+    f132 t4.43 tell->act (eye 34029, him 34175, passes 0)
+    f142 t4.77 act->recover (eye 34029, him 34267, passes 0)
+    f142 t4.77 HEART LOST (hp 4) at x 34267
+    f160 t5.37 recover->rest (eye 34029, him 34364, passes 0)
+end 4:09 PM

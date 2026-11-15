@@ -1,0 +1,2 @@
+start 4:09 PM head dbbad40ef: node tools/perf/clipcheck.mjs
+clip check: every menu screen at 412x915 and 915x412, on a fresh, an old and a finished save

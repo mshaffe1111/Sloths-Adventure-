@@ -1,0 +1,8 @@
+{"sx":6067,"gy":843,"x0":6187,"x1":7222,"perched":false,"home":6187,"hp":5,"easy":false}
+f14: rest -> hunt (eye 7222, him 6195)
+f98: hunt -> tell (eye 6955, him 6894)
+f121: tell -> act (eye 6955, him 7105)
+f129: act -> recover (eye 6955, him 7179)
+f129: HEART LOST at x 7179 (hp 4)
+f147: recover -> rest (eye 6955, him 7308)
+f188: out of its stretch by 420 px
