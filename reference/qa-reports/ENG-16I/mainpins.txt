@@ -1,0 +1,12 @@
+ENG-16I 9:34 PM ET: verdicts.test.ts MAIN pins (mainpins.ts), [platforms+falls+errors+plan, gen2 less verdicts/drops]
+recorded: 5-7 normal [8e6918d86d5b8c49, 1dde0c0b03ee194f], easy [c21d7034579fa414, 62b97ff493ad4d78]; 7-1 normal [f8a654ca25181450, 47c0b9f0e96ceb9e], easy [ddbb0b767ba92e8b, 0b61ef8ebb835d41]
+t-build-16 9380bc5d:
+5-7 normal: [8e6918d86d5b8c49, 1e239d6fb7b70ea9]
+5-7 easy: [c21d7034579fa414, d1580da0a8721731]
+7-1 normal: [f8a654ca25181450, 2defb0797b4a32df]
+7-1 easy: [ddbb0b767ba92e8b, d4c6c92d9a813bcb]
+9380bc5d with ONLY 59a4c0dc's pipeline.ts hunk reverted (fields: which gen2 fields differ from the head):
+5-7 normal: [8e6918d86d5b8c49, 1dde0c0b03ee194f]; gen2 fields moved vs pins-head.json: fills
+5-7 easy: [c21d7034579fa414, 62b97ff493ad4d78]; gen2 fields moved vs pins-head.json: fills
+7-1 normal: [f8a654ca25181450, 47c0b9f0e96ceb9e]; gen2 fields moved vs pins-head.json: fills
+7-1 easy: [ddbb0b767ba92e8b, 0b61ef8ebb835d41]; gen2 fields moved vs pins-head.json: fills

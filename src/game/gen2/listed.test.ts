@@ -10,7 +10,7 @@ import { LISTED, listedStage, withTestStage } from './listed.ts';
 import { provenSeedFor, provenSeeds } from './seedList.ts';
 import { w1World } from './worlds/w1.ts';
 
-const FIX = '1-7'; // (the packet's fixture, moved off 1-3 when 1-3 was listed for real, off 1-4 when 1-4 was (B14, 11-13), and off 1-6 when 1-6 was (BUILD-16, ENG-16F 11-14): stage 1-7's id given World 1's kit and a 3-seed stub list, inside the test only)
+const FIX = '1-8'; // (the packet's fixture (ENG-16I: off 1-7 once t-tools-2's INT-9 listed it, the merge 8b8dc02a), moved off 1-3 when 1-3 was listed for real, off 1-4 when 1-4 was (B14, 11-13), and off 1-6 when 1-6 was (BUILD-16, ENG-16F 11-14): stage 1-7's id given World 1's kit and a 3-seed stub list, inside the test only)
 
 test('the table: a row per listed stage, its kit and what is that stage\'s alone as fields', () => {
   const a = listedStage('1-1'), b = listedStage('1-2');
