@@ -1406,3 +1406,4 @@ lines); Matt sees them in the release.
 - 11-15 3:36 PM ET (lead) CHECK-IN: one member running (INT-10d, link #4); 1-8 (t-build-18c) and 2-1 (t-fix-21) ready for link #5. Next 4:01.
 - 11-15 3:44 PM ET (lead): INT-10d a67a91fb: ruling (a) built (8 W1 combo sections declare bounce-air), all W1 lists PASS (no relist needed), castBots 1-6/1-7/1-8 as before, no sealed door, tierBots recalibrated, 9-3/9-4/10-3/10-6 traced to TOOLS-2 (R-165.251). Full gates + stills running. INT-11 packet ready for link #5.
 - 11-15 3:44 PM ET (lead): INT-11 (high, session_01FhBbYKwrVJ34PExysg9qQE, t-int-11 from t-int-10b a67a91fb) started NOW in parallel for link #5 (1-8 + 2-1); INT-10d finishes link #4 only. Two members.
+- 11-15 4:00 PM ET (lead): MATT 3:59: 83% of week's tokens, chose to restart 2-2 tonight. BUILD-22 (high) started: ENG-22's remaining engine steps, STEP 0 plan -> GO, build 2-2, stop by 11:15 PM. Three members (INT-10d link #4, INT-11 link #5, BUILD-22).
