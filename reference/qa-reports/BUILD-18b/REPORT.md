@@ -1,7 +1,10 @@
 # BUILD-18b: 1-8's data-side reds (t-build-18b). Report __TIME__ ET, context about __CTX__
-**EXACT NEXT STEP:** the lead rules on two ENGINE-WORTHY messages (sent 10:08 and 10:13 PM). Three of the four "data" reds are not
-1-8 data; each comes from engine order. Fixing them in 1-8's data would mean refusing rolls or moving pieces until a hash changes,
-which hides the defect (law 22), so I did not.
+**EXACT NEXT STEP:** the engine work the lead RULED (10:13 and 10:24 PM): (i) the settle sees the ground the chase lay leaves standing,
+any chase stage; (ii) ruling (a): a section template asks for its join (`entry.join: 'walk'`), and 1-8's still fork and tip ask for a
+walk in; (iii) ENG-LOOK's layTip puts the far-bough flag ON the bough (its e014d41d). When they land, 1-8's data adds `entry.join` to
+the still-fork and tip bricks, and the four reds below go green; then relist and re-run castBots. No seed-list refusals (the lead).
+Three of the four "data" reds are not 1-8 data; each comes from engine order. Fixing them in 1-8's data would mean refusing rolls or
+moving pieces until a hash changes, which hides the defect (law 22), so I did not.
 (1) **w1Overhang 1-8 (23 stones):** the World 1 settle (pipeline.ts:2799) runs BEFORE the chase lay cuts a bank into crumble pieces.
 Normal layout 1: the K2 liana pit's climb-out stone (id 51, 200x120 at x 14000, 'w1-rock-roots', art box from x 13716) is settled
 against the whole bank f (13540-14000, overhang 0). The chase then splits f into 124/45/125, so the finished wall starts at 13770 and
@@ -27,6 +30,21 @@ layTip level their ground and move the fork's flags onto it.
     the page word for word (planted: the old how-line turns it red, CAUGHT).
   - movesJournal.test and wayside/story (Pokey's first person) are green.
 - (3b) stageSheets 8/8 on my head.
+- ENG-LOOK's two items (the lead, 10:45 PM):
+  - **(a) The book:** gen2 1-8 DOES lay w1_book, on both settings. ENG-LOOK grepped w1Arc18.ts for "book" and missed the rest brick's
+    `findSpot` socket. stageGenerator addFinds puts it there: Normal layout 1 at x 10215 on bank `e` of the first rest, past the root
+    hop `d`, before the second stretch (11597); Easy at 10193. A new test in w1Arc18.test holds it (seeds 1, 3, 4, both settings): on
+    the first fork, before the second stretch, on a bank's top, one hidden w1_book at the spot. Planted: with the socket removed the
+    test is red, CAUGHT. NAMED for the keeper: the clue says "check by the first knot. Early!" The first root knot met is the
+    arrival's (about x 1,000); the book is by the first FORK's knot, about 27% in, after the first chase. I did not move it: BUILD-18
+    put it on a fork on purpose, never beside a nut or a fruit. The clue's words or the spot is the keeper's and lead's call.
+  - **(b) The fork line on the far branch:** not a misplaced trigger; on my head the fork line sits at x 25687, in the rhythm. The
+    engine (engine.ts ~3208) says only the LAST line passed in one frame, as when a run starts from a later flag or a still is shot
+    from one. Past the tip, that last line is the fork's. Fix, in 1-8's finish (data): each of Dot's 1-8 lines gets `beforeX` = the
+    start of the next stretch after it, so it is said only before the next crack (the mark, past the last crack, is untouched). Test:
+    every line's beforeX, seeds 1, 3, 4, both settings; planted (assignment removed) red, CAUGHT. ENGINE-WORTHY, general: every rolled
+    stage's tips can fire far from their section on a later-flag start; a general "a tip expires past its section" belongs in the
+    engine.
 
 **Not changed, named:** protoStage.ts:6290 still holds `hint(300, 'This branch goes on and on')` in the hand-built 1-8 builder.
 Nothing routes to it now. ENG-LOOK's 7 hand-built tests still build it, and re-pointing them deletes it; I left engine code alone.
