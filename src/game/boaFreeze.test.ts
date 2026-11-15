@@ -11,7 +11,7 @@ import assert from 'node:assert/strict';
 import { RealPlay, DT } from './realPlay.ts';
 import { CastPlay } from './castPlay.ts';
 import type { CastData } from './castPlay.types.ts';
-import { touches } from './predators/core.ts';
+import { engageOf, touches } from './predators/core.ts';
 import { BOA } from './predators/world1.ts';
 import type { Enemy, Platform } from './types.ts';
 
@@ -61,6 +61,17 @@ test('Normal: lifted 14 frames late, inside its reach, he is struck (the freeze 
   assert.equal(fly(14, false), 'HIT');
 });
 
-test('Easy: the window is wider than Normal\'s (its own row, x1.3): 26 frames (0.87 s) late is still a branch', () => {
-  for (const k of [0, 14, 20, 26]) assert.equal(fly(k, true), 'STILL', `Easy: lifted ${k} frames after the rear began`);
+// (the coil hurts on touch (the lead's ruling 11:20 AM ET 11-15), so from a run he meets it on the same frame whatever the rear's length:
+// Easy's x1.3 rear alone left Easy at Normal's 13. The lead's ruling 11:31 AM: on Easy the boa notices him 1.3 times as far off (its EASY
+// row's engage), which flies to 18 frames (0.60 s), hit at 19. The phone caps it: the boa and its coil must sit inside the 270 px an
+// upright phone shows ahead of him (1-9.md), so 195 + 58 px; the ~26 the design hoped for needs ~255 px, its coil off the screen)
+test('Easy: the window is wider than Normal\'s (its row: the rear x1.3, noticed x1.3 as far off): 18 frames (0.60 s) late is still a branch, 19 is hit', () => {
+  for (const k of [0, 13, 14, 18]) assert.equal(fly(k, true), 'STILL', `Easy: lifted ${k} frames after the rear began`);
+  assert.equal(fly(19, true), 'HIT');
+});
+
+test('Easy notices him from further off, and the whole boa still shares one upright screen with him (270 px ahead, 1-9.md)', () => {
+  assert.equal(engageOf(BOA, false), BOA.engage);
+  assert.ok(Math.abs(engageOf(BOA, true) - BOA.engage * 1.3) < 1e-9);
+  assert.ok(engageOf(BOA, true) + BOA.coil!.w <= 270, `its coil ends ${engageOf(BOA, true) + BOA.coil!.w} px ahead`);
 });

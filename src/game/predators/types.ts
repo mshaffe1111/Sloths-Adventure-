@@ -93,8 +93,14 @@ export interface PredatorDef {
   giveUp: number;
   /** it stands in the way: he cannot walk through it while it is up */
   blocks?: boolean;
-  /** Easy, as multiples of Normal: the tell and the cool never shorter (>= 1), the speeds never faster (<= 1) */
-  easy: { tell: number; cool: number; speed: number };
+  /** its body hurts on touch while it watches or rears (rest, hunt, tell): a box `w` wide from its post, `tall` over its ground, like
+   *  every foe's (the lead's ruling 11-15 on the kit boa: the rear is the only door, on any bough). Never while it strikes (its strike's
+   *  box), with its head out after (recover: the punch's window), dazed, fleeing or gone. Absent: only its strike hurts */
+  coil?: { w: number; tall: number };
+  /** Easy, as multiples of Normal: the tell and the cool never shorter (>= 1), the speeds never faster (<= 1); `engage` (>= 1, absent 1)
+   *  how much further off it starts its tell (the lead's ruling 11:31 AM ET 11-15: a posted boa's coil hurts, so from a run he reaches it
+   *  on the same frame whatever the tell's length; on Easy it notices him earlier instead) */
+  easy: { tell: number; cool: number; speed: number; engage?: number };
   /** every way that works, and how each ends */
   beatenBy: Partial<Record<Way, Outcome>>;
   /** the way its world teaches first */

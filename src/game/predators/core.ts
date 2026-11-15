@@ -35,6 +35,8 @@ const enter = (s: PredatorState, phase: Phase): void => {
 
 /** the tell on a setting (s). Easy is never shorter, whatever the data says */
 export const tellOf = (def: PredatorDef, easy: boolean): number => def.tell * (easy ? Math.max(1, def.easy.tell) : 1);
+/** how near he must move for it to start its tell, on a setting (px): Easy's never nearer than Normal's */
+export const engageOf = (def: PredatorDef, easy: boolean): number => def.engage * (easy ? Math.max(1, def.easy.engage ?? 1) : 1);
 /** the beat between attacks on a setting (s) */
 export const coolOf = (def: PredatorDef, easy: boolean, own?: number): number => (own ?? def.cool) * (easy ? Math.max(1, def.easy.cool) : 1);
 
@@ -125,9 +127,11 @@ export function reachBox(def: PredatorDef, s: PredatorState): Box {
   return { x: s.x - a.reach / 2, y: s.y - a.tall, w: a.reach, h: a.tall };
 }
 
-/** the box that hurts this frame: only while it acts */
+/** the box that hurts this frame: its strike's while it acts; its coil's (PredatorDef.coil) while it watches or rears */
 export function hurt(def: PredatorDef, s: PredatorState): Box | null {
-  return s.phase === 'act' ? reachBox(def, s) : null;
+  if (s.phase === 'act') return reachBox(def, s);
+  const c = def.coil;
+  return c && !s.leaving && (s.phase === 'rest' || s.phase === 'hunt' || s.phase === 'tell') ? { x: s.x, y: s.y - c.tall, w: c.w, h: c.tall } : null;
 }
 
 /** a hurt box against his body (feet at hero.y) */
@@ -360,7 +364,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         break;
       }
       if (!saw) break;
-      if (dist <= def.engage && ready && on('warn')) startTell(def, s, hero, ev);
+      if (dist <= engageOf(def, sc.easy) && ready && on('warn')) startTell(def, s, hero, ev);
       else if (!posted(def) && (def.speed.hunt > 0 || def.shy !== undefined)) {
         enter(s, 'hunt');
         s.lost = 0;
@@ -416,8 +420,8 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       } else s.lost += dt;
       const dir: 1 | -1 = s.goalX >= s.x ? 1 : -1;
       // a shy kind strikes when he crowds it, or when it has backed to the end of its ground and he is still coming
-      const cornered = def.shy !== undefined && (dir > 0 ? s.x <= s.minX + 1 : s.x >= s.maxX - 1) && dist <= def.engage * 1.5;
-      if (saw && ready && on('warn') && (dist <= def.engage || cornered)) {
+      const cornered = def.shy !== undefined && (dir > 0 ? s.x <= s.minX + 1 : s.x >= s.maxX - 1) && dist <= engageOf(def, sc.easy) * 1.5;
+      if (saw && ready && on('warn') && (dist <= engageOf(def, sc.easy) || cornered)) {
         startTell(def, s, hero, ev);
         break;
       }
