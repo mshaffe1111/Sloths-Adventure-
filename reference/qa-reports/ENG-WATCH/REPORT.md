@@ -75,6 +75,13 @@ src/game/eagleGlance.test.ts (8 tests):
 | child Normal 13 | 35298, t645.9 | fell into this pit 8 times (far wall 190 px up) | late pit | ENG-PETAL |
 - I fixed the bots' stuck clock to HOLD (not restart) while he waits still for a watcher. That removed every false "stuck: nothing in the way" line at the freezes; the 7 rescues stand.
 
+### castBots 1-8, seeds 1-40, both settings (castbots-1-8.txt): this branch cherry-picked onto origin/t-build-18 ccdf2bf3 in a local worktree
+- Conflicts were additive: t-build-18's Post.passes / kitPasses beside my Post.glance / kitGlance, kept both. The integration itself is not pushed: it is INT's job.
+- **All 9 rows PASS 40/40**, none under the floor.
+- The still fork's eagle now costs a Normal walker one heart a run (kid 40, adult 40 eagle hits). Before this, the proof shows it never looked again after its one pass, and on Easy it never hurt.
+- Easy: 0 eagle hits, with its first pass spared (the lead's ruling); child 1.
+- 1-8 Normal's 160-314 'other' hits per bot are the chase's hazards (rolling nut, fruit), not the eagle. The bots' attribution names only kit animals' boxes; ENG-PETAL or the 1-8 builder can name those.
+
 ### Lock (lock-watchers.txt): the 21 stages that lay a watcher (1-7, 6-1..6-10, 8-1..8-10), 16 layouts x both settings, base origin/t-build-16 vs this branch
 - 20/21 unchanged.
 - **1-7: enemies**, intended: its lesson eagles carry kitGlance false.
@@ -114,6 +121,11 @@ Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/
    - a glance's expected tells a minute: 60 / (mean away + tell + mean look), x (1 - fake) for real looks;
    - and the pass's crossing toward him.
    That is METER-1's packet, before TUNE-17 trusts the meter on 1-7.
+
+## 7a. My own miss tonight (law zero)
+- My 10:28 PM status message to the lead carried a TYPED time; the clock read 10:22-10:23 PM ET. That is lesson D30 repeated.
+- Root cause: I wrote the time from my sense of elapsed work instead of from `date` in the same step.
+- Countermeasure: every time I write now comes from `TZ=America/New_York date` in the same command, as LESSONS D30 says. Proposed method line: a member's message header is built by a command (`echo "ENG-X $(TZ=America/New_York date +'%-I:%M %p') ET"`), never typed.
 
 ## 7. Learned (what I would tell the next engine member)
 - **Prove a threat with what the player DOES, not with the case the test was written for.** eagleFair.test proved "standing in the open is hit" and stayed green while every forward walker went through 1-7 untouched. The probe that found it walks forward, never hides, on the real engine, with real damage and the game's own shield (tools/inspect/eagleProbe.ts).
