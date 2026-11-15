@@ -2279,7 +2279,6 @@ export class FirstTimerRun {
     const who = this.who;
     const e = this.e as any;
     const here = this.floorAt(p.x, p.y, 6);
-    if (process.env.PADDBG && p.x > 1500 && p.x < 2700) console.log('PAD', t.toFixed(2), dir, Math.round(p.x), Math.round(p.y), Math.round(p.vx), here?.id, here?.pad ? JSON.stringify(padShows(here)) : '-');
     if (!here) { this.padSeen = -1; return null; }
     const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
     const edgeX = dir > 0 ? here.x + here.width : here.x;
@@ -2309,17 +2308,19 @@ export class FirstTimerRun {
       if (!s.solid || s.tell > 0) ready = false;
     }
     // (CROSS-ON-THE-BREATH: from a floor that stays, the run of beat pads to the next floor that stays, and the breath left to cross it)
-    if (ready && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
+    // (read at the rise; once he has seen it ready he is going, through his reaction: padSeen)
+    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
       const row = this.sim.platforms.filter((q) => Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
       let to = NaN;
       for (const q of row) if (q.pad?.by !== 'beat') { to = dir > 0 ? q.x : q.x + q.width; break; }
-      const across = Math.abs(to - edgeX) + Math.max(0, toEdge);
+      // (the run as the stage's own fairness measures it, padFaults: edge to the floor after, at its pace after its reaction)
+      const across = Math.abs(to - edgeX);
       const r = e.clock.read(next.pad.clock, next.pad.shift);
       const def = (((this.sim.stage as any).clocks ?? []) as any[]).find((c) => c.id === next!.pad!.clock);
       const stretch = who.setting === 'easy' ? Math.max(1, def?.easyStretch ?? 1) : 1;
       const warn = (def?.phases.find((ph: any) => ph.name === 'warn')?.seconds ?? 0) * stretch;
       const left = r.phase === 'off' ? r.left + warn : r.phase === 'warn' ? r.left : 0;
-      if (!Number.isFinite(across) || r.phase !== 'off' || left < across / PAD_FAIR.pace + who.stopReact) ready = false;
+      if (!Number.isFinite(across) || r.phase !== 'off' || left < across / PAD_FAIR.pace + PAD_FAIR.react - DT) ready = false;
     }
     if (!ready) { this.padSeen = -1; return approach(); }
     // (from a floor that stays, he goes after his own reaction to it being ready; on a pad he is already going)
