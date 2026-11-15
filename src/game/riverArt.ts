@@ -9,6 +9,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
+import { drawSoil } from './groundPaint.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -84,6 +85,8 @@ export const RIVER_LOOK = {
 } as const;
 /** the earth under a shallow river's bed, top to bottom (the World 2 banks' wall in shadow) */
 const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
+/** over the painted earth under a shallow bed: the bank wall's shadow, light at the bed and deeper below (the banks' DEPTH_DARK tone) */
+const SAFE_SHADE = ['rgba(31, 22, 15, 0.25)', 'rgba(31, 22, 15, 0.55)'] as const;
 let shallow: HTMLImageElement | null = null;
 let shallowReady = false;
 function loadShallow() {
@@ -136,15 +139,27 @@ export function drawRiverWater(
   dir: 1 | -1,
   speed: number,
   safe = false,
+  soilWorld?: number,
 ): boolean {
   if (safe && safeRiverArtReady()) {
     const L = RIVER_LOOK.safe;
     const top = surfaceY - L.h * L.crest;
     const bed = top + L.h - 2;
     if (bottom > bed) {
+      // (under the bed: the banks' own painted earth (groundPaint.ts drawSoil, the world's sheet, no shading passes), darkened toward the
+      // bank wall in shadow; a flat olive fill showed under every safe river, the lead 11-15 2:56 PM ET, ART-W2's rule. The flat fill is
+      // only the fallback until the world's ground sheet loads)
+      // (clipped to the bed and below: drawSoil lays whole tiles and leaves the clip to its caller; the river's own clip starts 30 px over
+      // the surface, and the soil showed there as a pale strip behind the logs)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, bed, x1 - x0, bottom - bed);
+      ctx.clip();
+      const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
+      ctx.restore();
       const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
-      g.addColorStop(0, SAFE_EARTH[0]);
-      g.addColorStop(1, SAFE_EARTH[1]);
+      g.addColorStop(0, soil ? SAFE_SHADE[0] : SAFE_EARTH[0]);
+      g.addColorStop(1, soil ? SAFE_SHADE[1] : SAFE_EARTH[1]);
       ctx.fillStyle = g;
       ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
     }
