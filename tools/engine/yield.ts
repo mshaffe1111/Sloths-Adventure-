@@ -3,8 +3,8 @@
 // Easy is Normal's stage under Easy's rules (pipeline.buildRolled), so an Easy roll carries every Normal error; the Easy column counts a
 // rule when the Easy build names it, and "Easy only" when the Normal build of the same seed does not name that rule.
 //   npx tsx tools/engine/yield.ts 1-1 [--from 50001] [--count 200] [--json out.json] [--min 50] [--par 4]
-//   --list: LISTABLE, not only clean: the search also holds the list's quiet line (tools/engine/listRules.ts, as seedlist.ts does), and
-//           a stage whose row dresses squirrels counts a roll where too few find a spot as refused
+//   --list: LISTABLE, not only clean: the search also holds the list's judge (tools/engine/listRules.ts listJudge, as seedlist.ts does):
+//           the row's whole finish must not throw on either setting (a squirrels row's too few spots among them), and the quiet line
 //   --par N: the range split over N processes (the same table: each seed's roll does not depend on the others)
 //   --min P: exit 1 when either setting's clean rate is under P percent (a gate's floor; the default 0 only reports)
 // Counted: `clean` = gen2.errors empty; `stopped by` = rolls where the rule appears at least once (a roll with three V19b lines counts
@@ -99,9 +99,9 @@ async function main(): Promise<void> {
   const sections = { all: new Map<string, number>(), refused: new Map<string, number>() };
   const t0 = Date.now();
   const list = process.argv.includes('--list');
-  // (the list's own judge, on the roll as Play finishes it: listed.ts playFinish, ENG-CL (7))
-  const also = list ? (await import('./listRules.ts')).quietJudge(config, (st, d) => playFinish(row!, st, d)) : undefined;
-  const finish = list && row?.squirrels ? (await import('../../src/game/gen2/worlds/w1.ts')).w1Finish : undefined;
+  // (the list's own judge, on the roll as Play finishes it: listed.ts playFinish, ENG-CL (7); its finish on each setting must not throw,
+  // a squirrels row's too few spots among them, ENG-DR (1): listRules.ts listJudge, the one seedlist.ts holds the search to)
+  const also = list ? (await import('./listRules.ts')).listJudge(config, (st, d) => playFinish(row!, st, d)) : undefined;
   const raw = arg('--raw', ''), par = Math.max(1, Number(arg('--par', '1')));
   type Raw = Array<{ seed: number; normal: string[]; easy: string[]; plan: string[] }>;
   let rolls: Raw = [];
@@ -122,10 +122,6 @@ async function main(): Promise<void> {
       try { const st = buildGen2Stage({ config, kit: kit(), seed, difficulty, ...(also ? { also } : {}) }); return { errors: st.gen2.errors ?? [], st }; } catch (e) { return { errors: [`THREW: ${(e as Error).message}`] }; }
     };
     const n = one('normal'), e = one('easy');
-    // (the squirrels, as the list builder asks them: both settings' builds take their finish, or the roll is not listable)
-    if (finish && n.st && e.st && !n.errors.length && !e.errors.length) {
-      try { finish(n.st as never); finish(e.st as never); } catch { n.errors = ['too few squirrels find a spot']; e.errors = ['too few squirrels find a spot']; }
-    }
     rolls.push({ seed, normal: n.errors, easy: e.errors, plan: (e.st?.gen2.plan ?? []).map((p) => p.template) });
   }
   if (raw) { fs.writeFileSync(raw, JSON.stringify(rolls)); return; }
@@ -139,7 +135,7 @@ async function main(): Promise<void> {
     }
   }
   const N = tally(errs.normal), E = tally(errs.easy), EO = tally(errs.easyOnly);
-  console.log(`yield ${id}: seeds ${from}..${from + count - 1}, ${((Date.now() - t0) / 1000).toFixed(0)} s${list ? ' (LISTABLE: the quiet line and the squirrels held too)' : ''}`);
+  console.log(`yield ${id}: seeds ${from}..${from + count - 1}, ${((Date.now() - t0) / 1000).toFixed(0)} s${list ? ' (LISTABLE: the finish and the quiet line held too)' : ''}`);
   console.log(printTable('NORMAL', N, alone(errs.normal)));
   console.log(printTable('EASY (carries Normal\'s errors)', E, alone(errs.easy)));
   console.log(`EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): ${EO.rolls - EO.clean} rolls\n${EO.rows.map((r) => `  ${String(r.stopped).padStart(7)} | ${r.rule}`).join('\n')}`);
