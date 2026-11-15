@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -49,6 +49,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  lianas, one eye a beat, the perched eagle); the old hand-built 1-7 (protoStage.ts) is deleted. BUILD-17 11-14)
   // (1-7 A Very Good Bush: judged on its own flown rows, flownArcs.ts normal-1-7, INT-9 11-14)
   '1-7': { kit: 'w1-17', judged: 'normal-1-7' },
+  // (1-8 The Long Branch: the designed arc, w1Arc18.ts, on World 1's kit with its own rows (kitLib18) and its finish (finish18: the nuts
+  //  and fruit by data, the still fork, the tip, the hearts); the hand-built 1-8's routing is gone (protoStage HAND_STAGES). BUILD-18 11-14)
+  '1-8': { kit: 'w1-18' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

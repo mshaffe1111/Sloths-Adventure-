@@ -102,6 +102,7 @@ export function newPredator(def: PredatorDef, post: Post): PredatorState {
     aimX: post.x, aimY: post.y, goalX: post.x, drawn: false, look: 0, knows: false, leaving: false,
     lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null, ownCool: post.cool, passes: 0, free: !!post.free,
     ...(post.perched ? { perched: true } : {}),
+    ...(post.passes !== undefined ? { passesLeft: post.passes } : {}),
   };
 }
 
@@ -281,6 +282,9 @@ function endPass(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorEven
   }
   enter(s, 'rest');
   s.cool = coolOf(def, sc.easy, s.ownCool);
+  // (a sweeper with a pass budget (Post.passes) that has spent it rests on its post for good: cool never runs out, so no pass is called
+  // again, after a respawn too (CastPlay.calm keeps the longer cool); it is not beaten and does not leave, so nothing counts it cleared)
+  if (s.passesLeft !== undefined && (s.passesLeft = Math.max(0, s.passesLeft - 1)) === 0) s.cool = Infinity;
 }
 
 /**

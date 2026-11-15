@@ -5,12 +5,13 @@
  */
 import { hasSeedList, plantSeedList } from './seedList.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
-import { w1World } from './worlds/w1.ts';
+import { w1Finish, w1World } from './worlds/w1.ts';
 import { kitLib12 } from './worlds/w1Arc12.ts';
 import { kitLib15 } from './worlds/w1Arc15.ts';
 import { finish16, kitLib16 } from './worlds/w1Arc16.ts';
 import { finish14, kitLib14 } from './worlds/w1Arc14.ts';
 import { finish17, kitLib17 } from './worlds/w1Arc17.ts';
+import { finish18, kitLib18 } from './worlds/w1Arc18.ts';
 import type { Difficulty } from '../difficulty.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
@@ -30,9 +31,9 @@ export interface ListedStage {
 }
 
 /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17 };
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17, 'w1-18': kitLib18 };
 /** the kits' own finishes, run after World 1's (by kit name) */
-const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'] };
+const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'] };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {
@@ -42,6 +43,17 @@ export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.ent
   ...(r.firstRun ? { firstRun: true as const } : {}),
   ...(r.pick ? { pick: true as const } : {}),
 }]));
+
+/**
+ * a roll as Play finishes it (stageGenerator.ts generateStage: World 1's finish, its squirrels when the row says, then the kit's own), on
+ * a stage it may write onto: the ONE definition Play and the list's judges share (tools/engine/listRules.ts quietJudge), so whatever a
+ * finish lays (a stage's hazards, its beats) is judged where the player meets it (ENG-CL (7): the quiet line judged 1-8's chase on the
+ * roll before its finish; D19)
+ */
+export function playFinish<T>(row: ListedStage, st: T, difficulty: Difficulty): T {
+  const done = w1Finish(st as never, !!row.squirrels) as T;
+  return row.finish ? row.finish(done, difficulty) : done;
+}
 
 /** a stage's row; undefined when it is not a listed stage */
 export const listedStage = (stageId: string): ListedStage | undefined => (Object.hasOwn(LISTED, stageId) ? LISTED[stageId] : undefined);

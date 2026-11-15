@@ -12,13 +12,13 @@ import fs from 'node:fs';
 import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
-import { w1Finish } from '../../src/game/gen2/worlds/w1.ts';
-import { listedStage } from '../../src/game/gen2/listed.ts';
+import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { judgedOnArcs } from '../../src/game/gen2/reach.ts';
 import { searchYield } from './yield.ts';
-import { helpRoomBreaches, quietJudge, quietOf as quietAt } from './listRules.ts';
+import { asPlayedBreaches, helpRoomBreaches, listJudge, quietOf as quietAt } from './listRules.ts';
 import { hasSeedList, listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
+import { loadInventory } from '../../src/game/art/inventory.ts';
 import { listFile, writeSeedList } from './seedlistFile.ts';
 import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
 import type { FirstRunLayout } from '../../src/game/gen2/verdicts.types.ts';
@@ -31,13 +31,16 @@ const row = listedStage(id);
 if (!row) { console.error(`seedlist: no listed stage "${id}" (src/game/gen2/listed.ts)`); process.exit(2); }
 const kit = row.kit;
 const cfg = generateAllLevels().find((l) => l.id === id)!;
-/** the world's finish Play gives a roll (a `squirrels` row: World 1's w1Finish), so the help-room rule judges the stage as played */
-const finish = (st: ReturnType<typeof buildGen2Stage>) => (row.squirrels ? w1Finish(st as never) : st) as ReturnType<typeof buildGen2Stage>;
 
 // (the quiet line is the search's own rule here, R-165.120: a roll over it is repaired or rolled again, never only thrown away; the
 // list's check asks the same search, so a seed's replay is still its search)
-const also = quietJudge(cfg);
-const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st);
+// (judged on the roll as Play finishes it, the row's own finish, listed.ts playFinish: a chase's hazards a finish lays are beats, ENG-CL (7))
+// (and the ONE finish every rule here judges: the row's whole one, World 1's (its squirrels when the row says) then the kit's own. ENG-DR
+// (1): the help-room rule and the squirrels ran World 1's alone, so a seed whose own finish (finish14, finish17, finish18) throws on a
+// setting, a stage that does not load on a phone, could be listed. The search holds a roll to it on each setting: listRules.ts listJudge)
+const played = (st: ReturnType<typeof buildGen2Stage>, d: 'normal' | 'easy') => playFinish(row, st, d);
+const also = listJudge(cfg, played);
+const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st, played);
 if (process.argv.includes('--check')) {
   // (the list is its own file, loaded as the game loads it, seedList.ts loadSeedList: a file the index names that does not load, or is not
   // the one the index names, fails here by name. A listed stage with no list yet, no line in the index, goes on to the breaches below and
@@ -45,11 +48,10 @@ if (process.argv.includes('--check')) {
   if (hasSeedList(id) && !(await loadSeedList(id))) { console.log(`seedlist ${id}: FAIL\n  the list did not load: ${seedListError(id)}`); process.exit(1); }
   const L = provenList(id);
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined, also);
-  // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)
-  for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal', also })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
-  // (room for help, as played on each setting, on a no-lethal stage: listRules.ts helpRoomBreaches; POLISH-9b)
-  for (const seed of provenSeeds(id)) for (const difficulty of ['normal', 'easy'] as const) for (const l of helpRoomBreaches(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also }), difficulty, finish)) b.push(`${id} seed ${seed}: ${l}`);
-  if (row.squirrels) for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
+  // (each listed seed AS PLAY BUILDS IT, on each setting (D19): a finish that throws refused by name, ENG-DR (1); the quiet line on
+  // Normal, room for help on each setting and the dressing rows its finish lays (by inventory id, at scale) judged on the rest:
+  // listRules.ts asPlayedBreaches)
+  b.push(...asPlayedBreaches(cfg, kit, provenSeeds(id), played, QUIET_MAX, await loadInventory(cfg.worldIndex)));
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   // (the index, all the main script holds of the list, names this very list: its count and its version)
   const ix = PROVEN_INDEX[id];
@@ -89,10 +91,6 @@ async function firstRunBreaches(): Promise<string[]> {
   return firstRunVerdicts(L, built).map((v) => `${id} ${v.name}: ${v.line}`);
 }
 
-/** both settings' builds take their squirrels (w1Finish throws when fewer than SQUIRREL_MIN find a clear spot; it only dresses and marks the cut art, so the build is used as it is after) */
-function dresses(...sts: Array<ReturnType<typeof buildGen2Stage>>): boolean {
-  try { for (const st of sts) w1Finish(st as never); return true; } catch { return false; }
-}
 
 
 // (--combine a.json,b.json,... ORDER.json: the list from --merge parts, in ORDER's order (a JSON seed array), no seed laid again: each part
@@ -150,12 +148,11 @@ for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls
   // so a refused roll already carries them in gen2.errors above; read here by name, never by a substring)
   const vf = [n, e].flatMap((s, i) => { const d = i ? 'easy' : 'normal', v = s.gen2.verdicts?.[d]; return v && !v.accepted ? [`verdict ${v.failed[0].name} (${d})`] : []; });
   if (vf.length) { refuse(n, vf); continue; }
-  // (a stage whose row says `squirrels`, the lead 11-06: Play finishes the roll with w1Finish, which throws when too few find a spot; such a roll is never listed)
-  // (room for help on a no-lethal stage, as played on each setting: the relay test's (b), now the list's own rule; POLISH-9b. Before
-  // dresses, which finishes n and e in place: the judge finishes its own copy once)
-  const hr = [...helpRoomBreaches(n, 'normal', finish), ...helpRoomBreaches(e, 'easy', finish)];
+  // (a roll whose row's finish throws on a setting (a squirrels row's too few spots among them, the lead 11-06) is never listed: the
+  // search's own judge refused it above, in gen2.errors, by name (listJudge, ENG-DR (1)). Room for help on a no-lethal stage, as played
+  // on each setting, the row's whole finish on its own copy: the relay test's (b), now the list's own rule; POLISH-9b)
+  const hr = [...helpRoomBreaches(n, 'normal', played), ...helpRoomBreaches(e, 'easy', played)];
   if (hr.length) { refuse(n, hr); continue; }
-  if (row.squirrels && !dresses(n, e)) { refuse(n, ['too few squirrels find a spot']); continue; }
   const q = quietOf(n);
   if (q.quiet > quietMax) { quietOut++; refuse(n, ['the quiet line']); continue; }
   refuse(n, []);

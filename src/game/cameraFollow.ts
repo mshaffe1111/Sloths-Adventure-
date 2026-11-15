@@ -12,6 +12,8 @@
  * Pure: the engine feeds it each frame (engine.ts updateCamera); the tests check the rules.
  */
 import { PHYS } from './physics.ts';
+import { rollAheadMax, rollRadius, type RollSpec } from './rolling.ts';
+import type { ChaseLay } from './chase.ts';
 
 export const CAM = {
   /** in the air, how far above / below the anchor he may go (fractions of the view's height) before the camera follows */
@@ -623,3 +625,59 @@ export function keepHeroX(camX: number, px: number, vw: number): number {
  * he cannot see whole. 414 px.
  */
 export const SWING_SEEN = Math.floor(AHEAD.pad.r * SWING_CAM.out * SWING_CAM.refVw - Math.max(HERO_KEEP, SWING_CAM.body.back + AHEAD.heroPad.l * SWING_CAM.out * SWING_CAM.refVw));
+
+// ───── the chase camera (1-8.md NEW 5; ENG-B5) ─────
+//
+// On a laid chase the threat comes from ahead as well as behind: a rolling nut or a bouncing fruit is set off when he comes within
+// rolling.ts rollAhead of where it lands, and from its drop to reaching him at a full run is a second or more (1-8.md: "on an upright
+// screen 1 s+ before it reaches him"). The plain framing shows about 305 px ahead of his middle (FRAME.keepAhead); a nut set off
+// 370-440 px ahead would drop in off the screen's edge. So over a stage's chase span (its first crack, or the first hazard's set-off,
+// to its last fork or hazard) the view leads: his middle sits `chaseBack` from the edge behind him, so the farthest set-off plus the
+// hazard's own size shows ahead, never nearer that edge than CHASE_VIEW.backMin of the view, never farther than backMax. The span is
+// the stage's data, so the framing holds across every fork and never pans back and forth. The chase's front need never be on
+// screen (1-8.md): the ember at the trailing edge says how close it is.
+
+export const CHASE_VIEW = {
+  /** his middle from the edge behind him (share of the view's width): never nearer than this, never farther than that */
+  backMin: 0.1,
+  backMax: 0.3,
+  /** the span starts this far before the first crack (px), so the view has eased over before the front sets off */
+  leadIn: 400,
+  /** past the farthest set-off, this much more shows (px): the hazard's own size and a sliver of ground beyond it */
+  margin: 8,
+} as const;
+
+/**
+ * The tip (1-8 NEW 8, ChaseStretch.tip; ENG-B6): the whole branch end falls behind him as he swings off it, in slow motion, the level's
+ * signature. The chase lead keeps him 10-30% across, looking ahead (on the run in he must see the liana he jumps for), so upright the
+ * fall was off the screen's left edge. Once he has left the tip, until he is `after` px past its end, the view leans BACK instead: his
+ * middle `back` of the view's width across (the landing's own framing waits), so the tip and the branch before it are in view as it
+ * breaks a moment later (pieces/chasePiece.ts TIP.delay); past that the landing's framing eases in for his let-go.
+ */
+export const TIP_VIEW = { after: 330, back: 0.86 } as const;
+
+/** a stage's chase span and how far ahead the view must show over it (px of world, from his middle); null with no chase and no hazards.
+ *  `tip`: where the tip ends, when the last stretch ends at one */
+export function chaseSpan(st: { chase?: ChaseLay; rolling?: readonly RollSpec[] }): { x0: number; x1: number; ahead: number; tip?: number } | null {
+  const ch = st.chase?.stretches ?? [];
+  const rl = st.rolling ?? [];
+  if (!ch.length && !rl.length) return null;
+  const big = rl.reduce((m, s) => Math.max(m, rollRadius(s.kind)), 0);
+  const ahead = Math.max(FRAME.keepAhead, rollAheadMax(rl) + big + CHASE_VIEW.margin);
+  let x0 = Infinity, x1 = -Infinity;
+  for (const s of ch) {
+    x0 = Math.min(x0, s.start - CHASE_VIEW.leadIn);
+    x1 = Math.max(x1, s.end);
+  }
+  for (const s of rl) {
+    x0 = Math.min(x0, s.dropX - ahead - CHASE_VIEW.leadIn);
+    x1 = Math.max(x1, s.dropX);
+  }
+  const last = ch[ch.length - 1];
+  return last?.tip ? { x0, x1, ahead, tip: last.end } : { x0, x1, ahead };
+}
+
+/** where his middle sits across the view on the chase span (px of world from the view's left edge), for a view `vw` px of world wide */
+export function chaseBack(vw: number, ahead: number): number {
+  return Math.max(vw * CHASE_VIEW.backMin, Math.min(vw * CHASE_VIEW.backMax, vw - ahead));
+}

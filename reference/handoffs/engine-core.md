@@ -7,9 +7,10 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 Rewritten for ENG-PETAL (11-14, t-eng-petal): section 0ze (the one walked-path model, the LOW brief, the wall at joined pit floors). Rewritten for ENG-16I (11-14, t-build-16): section 0zd (the moved lists re-proved, 1-1 relisted, the bot out of a pit past a crumbled limb, the petal table). Rewritten for ENG-16H (11-14, t-build-16): section 0zc (t-tools-2 merged in; soft-pit floors under floating perches; the walked-span petal lay; the snake's tell after a catch; the bot's way on a liana). Rewritten for ENG-16G (11-14, t-build-16): section 0zb (the height-aware swing clearance and its lay rule, a parked frame, petals on the walked path). Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, the testers' let-go in the lay, the petal fill's path). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B6 (11-14, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5): section 0B6 (the still fork, the runner liana, the tip, Easy's chase gap; the orphan-root merge) and 0v's not-built line. Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
@@ -116,6 +117,59 @@ proven plan; Play is never blocked).
   challenge; a miss costs what the ground under the swing costs (costAt with the jump inspector's pit rule). Gate: tools/difficulty/score.test.ts.
 - **clipcheck "Dot's first tip"** walks by game frames on the development build (pressFrame), taps a card that waits, judges once the
   Skip is armed. CLIPCHECK_STEPS / CLIPCHECK_CPU / CLIPCHECK_SHOTS run and stress one step on its own.
+## 0CL. The chase stage's blockers (ENG-CL, t-eng-cl from t-eng-b6@a4e1ff8f, 11-14): what the next engineer must know
+- The quiet line (tools/engine/listRules.ts) judges a roll AS PLAYED: quietJudge(cfg, finish?, max?) / quietOf(cfg, st, finish?), the
+  finish being src/game/gen2/listed.ts playFinish(row, st, d) (World 1's w1Finish, then the row's kit FINISH), the ONE definition Play
+  (stageGenerator.ts) also calls. findBeats (tools/inspect/beats.ts) counts stage.chase stretches and each stage.rolling hazard where
+  it meets him (rolling.ts rollMeetX). helpRoomBreaches does NOT yet use playFinish (seedlist.ts passes w1Finish for squirrel rows
+  only): REPORT §4 HELP-FINISH.
+- The search's judge (BuildRequest.also) is handed pipeline.ts asLaid(st): a copy with its chase and hazards laid (stage + its
+  sections' pieces structuredClone'd together; layChase cuts by platform identity). Never hand a judge the pre-chase roll.
+- A chase stage's hazards: the 'roll' socket role {roll, on, t} (gen2/types.ts), laid after the chase and before the verdicts by
+  pipeline.ts layChaseStage -> gen2/rollLay.ts rollsOf, pace/arc from WorldManifest.rolls (World 1 W1_ROLL). No roll socket on the
+  stage + a look = by the chase's own ground (layRolling: per STAGE, not per K). Faults are roll errors 'rolling: ...'.
+- The tip and the still fork's ground: gen2/chaseTip.ts layTip(st, look) (W1_TIP; liana.runner picks runnerProblems or the new
+  runnerLiana.ts lianaProblems) and readyStillFork(st, fork, look) for any fork; layStillFork moves a fork flag off its 14 px post
+  window itself (inside the flag span) or refuses by name.
+- runnerLip = the HIGHEST ground end in reach, then the nearest (a pit's stair step is never the lip). A ledge floating over the run
+  in reach would read as the lip: no lay puts one there.
+- Easy: rollTeaches(spec, chase, easy) is always a bump (any stage).
+- Traps: the dev fixture's stepped 1-1 ground gives no runner's run (243-562 px to the lip, 1,188 needed): its tip liana is plain on
+  purpose. The look (bough over mist, the knot, the 3-5 piece fall) is NOT built: REPORT §5 has the exact next step and the lead's
+  three conditions; the long-branch sheet has no underside piece.
+
+## 0DR. The list runs each row's own finish; any inventory piece placed as dressing (ENG-DR, t-eng-dr from t-build-18@e9dc28bf, 11-14)
+- THE LIST'S FINISH (tools/engine/listRules.ts). Every list rule judges the roll as Play finishes it: the row's WHOLE finish (listed.ts
+  `playFinish`: World 1's, its squirrels when the row says, then the kit's own: finish14, finish17, finish18), on each setting, on a
+  copy. `listJudge` is the search's one judge (seedlist.ts and yield.ts --list): a finish that throws is a line with no slot (the search
+  rolls again), then the quiet line on Normal. `asPlayedBreaches` is `seedlist --check`'s: each listed seed built AS PLAY BUILDS IT
+  (seedList.ts `buildPlayStage`, then `playFinish`, the two calls stageGenerator.ts:2921 makes) and finished once; a throw refused by
+  name ("the finish throws (easy): ..."), then the quiet line, room for help and the dressing rows on that one finished copy.
+  `helpRoomBreaches(st, d, finish)` passes the setting to the finish now. Never judge a list rule with `w1Finish` alone again
+  (seedlist.test.ts test 7 greps both tools for it).
+- Trap: Play runs the finish with NO catch. A listed seed is safe because `--check` runs it; an OFF-list play (no list yet, or a list
+  that failed to load and no stand-in: only 1-1 has one) walks provenGen2Stage, whose "clean" does not include the finish. Before
+  BUILD-18 listed 1-8 (e9dc28bf), Play's 1-8 threw on Normal at every layout 1-8 (finish18's K2 runner liana) and on layout 2 Easy
+  (still fork 3). Ready packet S1 in reference/qa-reports/ENG-DR/REPORT.md.
+- DRESSING BY INVENTORY ID (src/game/art/invDress.ts). A stage's data writes `proto.invDress: InvDress[]` = { inv (the catalog id
+  EXACTLY, e.g. 'hf18/hf18-palm-crown'), x (its middle), y (its top when hung, its foot when standing), hang, layer: 'behind' }. No
+  size in data: drawn `pokey_scale` x the inventory's pokey_units (89.1 = heroSprite HERO_UNITS x HERO_SPRITE_SCALE, D41) tall, its width
+  by its picture's shape; a catalog frame 'name (x,y wxh)' draws its rect. `invDressBreaches(rows, inv, world)` is the gate: an id the
+  world's file lacks, a made thing in World 1, a piece waiting on a fix, scale_ok false (R-165.107), no fixed size (pokey_scale null), a
+  frame with no rect, a picture the build does not ship, a layer not offered. Run by src/game/art/invDress.test.ts (planted rows; every
+  listed stage as Play builds it, layouts 1-2, both settings; the one file that writes rows) and by `seedlist --check` per listed seed.
+- Pictures: src/game/art/invDressArt.ts lists the build FOLDERS a piece may come from, each a `new URL(\`../../assets/<dir>/${n}\`,
+  import.meta.url)` pattern (the bundler ships that folder; Node resolves a file URL, so tests and tools run the same code). A new art
+  folder is one line there; the build's 4 MiB and artcheck's 4096 px gates then judge everything in that folder. Not import.meta.glob:
+  tsx does not run it.
+- Drawing: stageReady.ts readyBuiltStage awaits `readyInvDress(rows, world)` before the first frame (it loads the world's inventory
+  JSON, resolves each id once, asks for each picture through atlasLoader trackAtlas, so the wait under the title card holds them).
+  engine.ts calls `drawInvDress(..., 'behind')` once, just before renderWorldObjects (behind the platforms, vines, pickups and Pokey): one
+  drawSheet per piece in view, one Map get a row, no allocation. A stage made without stageReady asks on its first draw and draws a
+  moment later. The world's inventory JSON (w1.json 202 KB) is fetched once a world, only by a stage that has rows.
+- 1-8 (BUILD-18's data, w1Arc18.ts DRESS_18, its file, never edited here): a palm STANDING behind the branch at every nut's drop
+  (its crown picture has a trunk stub, so hung by its top it dangled: D16) and a cannonball trunk at every fruit's, by catalog id, no
+  size. Its local InvDress matches art/invDress.ts field for field.
 
 ## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
 - Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
@@ -367,6 +421,151 @@ proven plan; Play is never blocked).
   the pure aim: the pure test passed while the engine lost the perch.
 - A dialled perch's width now matters to its window (its far end must be seen): Easy's landing pad is flown with it (padW) and the
   recorded window is the laid px. Shoot a swing on the real page: reference/qa-reports/ENG-S1/shoot.mjs (stills, CLIP=1 for a clip).
+
+## 0B6. 1-8's last engine pieces: the still fork, the runner liana, the tip, Easy's chase gap (ENG-B6, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5@c0599609, 11-14)
+- **Section letters in this note collide** since B6's merge: t-int-9's line (ENG-S1..S5, ENG-E1/E2, BUILD-17) and B's line (B1..B5) each
+  wrote their own 0u..0y. Both are kept, each with its branch in its heading; cite a section by heading, never by letter alone.
+- **The merge trap (worth the next integrator's time):** t-int-9's history roots in an ORPHAN commit (f1b72ec7, ENG-S5 = HOOKS 994ea4e7 +
+  ENG-S1..S5 squashed, no parent), so git finds two merge bases (f9671e3b, d8d6a973) for any B-line branch and raises false conflicts
+  (52 for B5, 46 of them files B5 never touched). Merge each file against the TRUE base, HOOKS 994ea4e7 (`git merge-file ours base theirs`),
+  and check every auto-merged file the same way: a virtual base can also auto-merge a file WRONG with no conflict shown.
+- **(a) The still fork is a LAY, not a new piece** (gen2/stillFork.ts layStillFork(stage, fork, look, world); World 1's look w1Cast.ts
+  W1_STILL_FORK): the living fork already holds the collapse and a new crack already sets off as he passes the next stretch's start
+  (chase.ts); the lay adds the cover (World 1: the moss carpet, STILL_FORK.runIn 60 px past where the collapse stops) and ONE perched kit
+  eagle past it, within STILL_FORK.postMax 420 px of the cover's start (him and it on one upright screen in the chase lead) and clear of
+  the fork's flag; its zone runs from the fork's near edge `stillReach` px on (its warn at Easy's longest x his top run + sight + 60:
+  ~871 px), facing -1 so the eye crosses TOWARD him (running on is running into it), and `kitPasses: 1` (kit Post.passes: after its one
+  pass cool = Infinity: it rests on its post for good, after a respawn too; it is NOT beaten or gone, so cast `cleared` never counts it,
+  which would have bumped enemiesDefeated and the eagle's kill stat). The pass is called the moment he is in the zone (the kit starts cool);
+  warn 2.0 s Normal (EAGLE.warn), 2.6 s Easy; Easy's first pass is spared (core.ts sparedPass). Refused by name: short fork, broken
+  ground, a rock in the cover, the last stretch, a stretch already watched, the flag where the post must stand. stillForks(stage) reads
+  it back from the data. Proof: gen2/stillFork.test.ts 7; bots in chaseBots.test (RunOptions.knows ['hide']: 1-7 taught it).
+- **(b) The runner liana** (runnerLiana.ts pure; pieces/runnerLianaPiece.ts on the hook; data `Vine.runner`): solved once at the stage's
+  start with the engine's own air (airStep, jump hold and cut) and catch (canGrabSwing): `runnerMoment` = the middle of the widest run of
+  swing moments a full-run jump off its lip catches over 3 take-offs x 3 holds; each step while he RUNS at it (vx >= RUNNER.atRun 0.85 of
+  his top run, grounded, within RUNNER.from 1,188 px of the lip) its swingPhase is eased toward that moment at his top-run arrival, by at
+  most RUNNER.rate 0.12 of a swing a second (no frame moves it more than its own swing x 1.34). Never while he holds it, past its lip, or
+  while he walks or stops: a phase eased for a run that is not coming made the middle bot WORSE than the plain swing until this rule.
+  PieceHost.vineClock was added for it. runnerProblems refuses no lip, no catching moment, or under RUNNER.from of run to the lip.
+- **(c) The tip** (`ChaseStretch.tip`, last stretch only, chaseLayProblems): the chase piece marks that stretch's last section chaseTip
+  (the long-branch sheet's tip frame); when he is off the ground past its far end + TIP.past, every section of the stretch still standing
+  breaks at once (halves within a view's width of him tumble, the tip tumbles WHOLE), one big crack, PieceHost.slowMo(TIP.slow 0.55 s)
+  (the engine's own slow motion; a piece's slow motion does NOT push the zoom in: engine.ts slowMoZoom 1, the giant's hit and old 1-8
+  keep 1.3). It breaks TIP.delay 0.5 s after he leaves the tip (timer reset only by the ground), and the camera leans back from that
+  moment (cameraFollow.ts TIP_VIEW: back 0.86 as a target, which the eased camera lags to ~60-70%; the landing framing waits until he is
+  330 px past), so the whole tip and 200+ px of branch are on screen as it falls upright and sideways (chaseTip.test, real camera).
+  Respawn: whole again from a flag before it. OPEN: the chase-section-to-fork-ground seam (REPORT polish 6, a ready packet). Slow motion lives in the engine's frame loop, NOT update(): a harness stepping update() directly must
+  apply it itself (B6/shoot.mjs does).
+- **Easy's chase gap** (the lead's ruling 6:10 PM: on Easy every chase gap is one the child bot clears 3/3): gen2/chaseLay.ts
+  CHASE_LAY.easyGap = 50 px (measured: the Easy CHILD clears 40 and 50 px on 3/3 seeds; 60, 80, 100, 120, 140 each drop seed 1);
+  easyGapProblems runs in layChase when st.gen2.budget.difficulty is 'easy' (gaps measured from the furthest reach of the sections
+  before, a log across at their height closes one); held to the bot by chaseBots.test (toy at the width + a plant 10 px past). Flat gaps
+  only: a gap with a rise is not measured. Easy chase stretches are now nearly gapless (a Designer call, raised in the REPORT).
+- **Two bot fixes for every stage (firsttimer.ts, the lead's push-back):** (1) `runnerAhead`: on the ground within RUNNER.from of a
+  runner liana's lip, no steering-rhythm lift (gapQ: the MIDDLE tier's lift stopped him dead 195 px before the lip); planted
+  noRunnerHold. (2) a liana hop (Jump.liana) is held at least who.hold[0], the hold lianaWait judged the catch with (a tier bot's drawn
+  press, holdQ 22-231 ms, fell short of the hop it judged). castBots + pitClimb 19/19 after it.
+- **Dev fixture** (?fixture=chase, chaseFixtureStage.ts layFixturePieces): lays the still fork on fork 0 (clearing bare rocks in its
+  cover, moving the fork's flag past the post) and makes the last stretch the tip with a 444 px gap, a runner liana 214 px out and a 600 px
+  landing of its own (1-1's stepped finish has nothing level with the tip). Still fork on 4 of 6 rolls (seeds 1-3 x both settings: the
+  others refused by name: a step in the fork, no post room), tip + liana on 6 of 6. The page plays seed 1: both.
+- **Traps:** the tier bots stand at about half of all edges by calibration (standShare) and lift their thumb by a rhythm on open ground
+  (gapQ, off only on a laid chase or under a fruit or near a runner liana), so a toy that asks "never stands" must use a strider
+  (standShare 0, lateShare 0) or it measures the testers. A bot's RNG is salted by its name: a renamed profile is a different run.
+  Never edit src/ while a Vite shoot runs.
+
+## 0w. The rolling nut and fruit, the chase camera lead, the dev chase fixture (B5, ENGINE-678, t-eng-b5 from t-eng-b4@956e33e0, 11-14)
+- **The hazard is data:** `GeneratedStage.rolling?: RollSpec[]` (rolling.ts) `{kind: 'low'|'high', dropX, speed, bounce, teach?}`, run by
+  pieces/rollingPiece.ts (PIECE_KINDS after CHASE). Set off by HIS x (`rollAhead`: drop + roll take ROLL.seen 1.0 s at a full run, Easy
+  1.1); the drop is the tell (ROLL.tell 0.8 s, from up to 480 px, never over the HUD band), a thunk (playLand), then at least ROLL.after
+  0.15 s of roll. Nut: rolls at him, a rattle, spins; its hit round is 0.75 of its drawn round (ROLL.lowHit) so a one-frame tap timed
+  clears it. Fruit: tall arcs PHASED to him (`phasedPace`, re-asked every step in the air, eased by phaseAcc): it meets him mid-arc,
+  closing at least `fruitClose` px/s so it never lands beside him low; touched against his DRAWN height (89.1). Teach = a bump (the
+  piece moves him, no heart, no safe time); after the stage's first crack a heart via damagePlayer (`rollTeaches`). Spent after a touch.
+  Respawn: ahead of his flag waits again, behind is gone. Checks by name: `rollProblems` (pace under his run, a nut's rattle a hop,
+  a fruit's arc over his head) refuses at start; `rollGroundProblems`/`runIn` (no gap, no hop rock in the run-in) is the LAY's check.
+- **Art (no new picture):** nut = the round shell of dressnew-w1 w1NutPod, fruit = M-10-d's lowest-left cannonball fruit, each cut round
+  ONCE into a canvas (CUT, BAKE_K 3; re-baked on canvasLost, D6), one drawImage a frame each + one baked shadow ellipse. Painted palm nut
+  and cannonball fruit pieces (1-8.md NEW 3) are the lead's Hugging Face call.
+- **The chase camera** (cameraFollow.ts `chaseSpan`/`chaseBack`, engine.ts updateCamera via `chaseSpanOf`): over a stage's chase span
+  (first crack - 400, or the first hazard's set-off - 400, to the last fork or hazard) his middle sits `vw - ahead` from the edge behind,
+  clamped to 10-30% of the view: upright 390-412 px phones show the nut 1.00-1.07 s before it reaches him, sideways 1.03-1.13 s; 360x800
+  1.00 s; 320x782 0.90 s (named). The span is cached per stage AND its chase/rolling arrays (a harness swapping st.chase kept a stale
+  span). The old hand-built 1-8 keeps its own `p.x - vw * 0.3` (this.chase?.active wins).
+- **Bots** (firsttimer.ts `rollPlan`): a nut closing within HOP_AT 60 px gets a hop held 2+ frames; a fruit dropping or bouncing within
+  480 px ahead holds the thumb down (no rhythm gap, no stop); both yield when a gap is within 240 px (one threat at a time).
+  `noRollRead` removes the skill (the planted test). chaseBots.test.ts's hazard runs use their own branch (`branch(true)`, longer runs).
+- **`?fixture=chase` / `__play('1-98')`, dev builds only** (chaseFixtureStage.ts; stageGenerator, App, stageSheets): chaseLay.test's
+  fixture (now ONE definition both use) built by buildGen2Stage + w1Finish, its config the BUILT one (1-1's laid over it put the pit line
+  above his ground: a planted check), hazards laid by `layFixtureRolling` on unbroken runs; 1-1's ground has a hop rock every 300-500 px,
+  so the FIXTURE clears bare rocks inside a run-in (never one with dressing or a creature on it; petals stay). run.mjs already accepts
+  '1-98' as a scenario: `node tools/perf/run.mjs port . <port> <dir> 1-98 port` then `DRAWCHECK_RESULTS=<dir> node tools/perf/drawcheck.mjs`.
+- **Traps:** a bare `input.state.jumpPressed` is cleared before use: clip tools press with `input.triggerTouchUp(0, ms)` and
+  `releaseTouchUp()` (D69). His x is his MIDDLE and his y his FEET (engine.ts landing). A test needs `r.e.player.invincibleTimer = 0`
+  after `r.safe = false` (RealPlay's frames set it to 1e9 while safe).
+
+## 0v. The chase LAID by gen2 (B3 laid it, B4 finished it for 1-8's builder; ENGINE-678 W2, t-eng-b4 from t-eng-b3@71da15cd, 11-14)
+- **Job K is a chase node** (nodeLetters.ts; V13 refuses it in a world's first stage). A K node is filled from the sections a practise or
+  flow node takes (pipeline.ts `servesJob`, ONE rule read by every fit site; no pool lists 'pressure'). **L (finale) after the last K is
+  the LAST stretch** (`last: true`: its front runs the row's final burst, chase.ts planOf; none without an L).
+- **The lay** (gen2/chaseLay.ts `layChase`, buildGen2Stage after buildRolled, BEFORE applyVerdicts). Stretches and flags are walked
+  TOGETHER, left to right (B4): a stretch runs on while the flag before its crack, standing where it really stands (the realised
+  run-up), reaches a flag on the ground after it within ROLLED_FLAGS.max, and the cap `chaseCap()` (max - pad, 3,840) holds; past that
+  it is split at a plain route piece forkMin+ wide that flag reaches (a living fork, never cut, a flag on it). Every stretch is at least
+  `chaseFloor()` = ceil(behind x maxRun / base) = 645 px (Normal row: shorter, nothing falls under him); a split never leaves a
+  shorter rest (it joins the fork); a K node under it is refused by name. The first crack may set off at the end of one of the node's
+  own route pieces when no spot within `flagBefore` (600, now honoured exactly) of its first section is reachable (a rolled flag ~1,000
+  px before it). The fork after the last stretch: its flag is the first spot whose flags break no rule of rolledFlagBreaches (D19: the
+  verdict's own code), or a rolled flag already in reach; after it the rolled pass's own span fill runs again to the exit.
+- **Cut and checks:** the stretch's own route pieces (plain solid, `breakable`) cut into ~222 px sections marked `chase` (the first IS
+  the piece). A section's seam (a pit's floor and steps) is never cut: it stays as the pit's ground under the fall (the ruling's option
+  2). `chaseStanders`: a dressing piece (proto.dress, decor, w3decor, kitDecor) whose foot is on a chase section's top, or a creature
+  whose patch runs over one with its feet on it, refuses the lay by name (D16; 0 seen on World 1).
+- **Two roots fixed in pipeline.ts (B4):** applyVerdicts clears windowMiss/flagMiss/towerMiss before judging (the search's rollUnmet
+  judged the stage before the lay; its stale miss refused 2 of 30 chase rolls whose own flags passed); Easy's Normal build lays its
+  chase before it is judged (Easy carried Normal's PRE-lay flag misses). Lock 102/102 unchanged.
+- **Yield** (`npx tsx tools/engine/chaseYield.ts [code] [n] [ends]`, World 1's kit, 1-1's brief, stage 8): `A T P F R K R K R S E`
+  **30/30 Normal, 30/30 Easy** (B3: 15/23, 16/19 at my first measure), stretches 822-3,780 px, 2.3 a stage. With an L (`... R L S E`,
+  ends finale): 30/30 both, but World 1's pool has NO finale section (pool short): 1-8's arc must bring them (Content).
+- **The edge (C4, B4):** pieces/chasePiece.ts `edgeCanvas(w, h)`: an ember disc (radius GLOW.radius 0.46 of the screen's SHORT side: by
+  the long side it filled a sideways screen) centred ON the break (the fallen side darkens into it: drawn from the break rightward it cut
+  a hard seam), a squat dark core on the branch line (a tall one read as a smoky pillar); baked ONCE per screen size, stamped with ONE
+  drawImage at globalAlpha EDGE.max (0.8) x k (k by the front's gap: 0 at 650 px, 1 at 150), at the break when on screen, else centred
+  on the trailing edge, at his feet. Re-baked on a size change or canvasLost (D6). No gradient a frame. NOT measured with contrast.mjs.
+- **A catch is a heart:** chaseCaught -> respawnAtCheckpoint('pit', true, lifeNote false): no "N lives left" note (it read as a life).
+- **Bots** (tools/inspect/chaseBots.test.ts, CI): engine.ts guideView.chase is on while he is on a laid stretch; the tier bots then keep
+  the thumb down and stand at an edge only if the stand fits the front's stop budget (firsttimer.ts chaseRoom, CHASE_MARGIN 0.8 s).
+  Planted: a 2.8 s stopper is caught without the skill (noChaseStride), never with it. No tier bot is ever caught. **OPEN (todo):** the
+  child tier reaches the fork on 1 of 3 seeds: every miss a FALL at a 120 px gap (a heart and the flag), never a catch.
+- **Built by B6 (0B6):** the liana phased to a runner (NEW 4, Vine.runner); the still fork (NEW 7, gen2/stillFork.ts); the tip (NEW 8, ChaseStretch.tip). **Not built:** a gen2 lay of the `h` letter (the builder lays `rolling` by data); the `s` letter as a content block (a runner liana is laid by data on a Vine).
+- **Traps:** never edit src/ while a Vite shoot or the unit suite runs in the same tree; a lay test that asserts refusals exist asserts a
+  defect (B3's "some rolls are refused" went when the yield reached 30/30); judge flags with rolledFlagBreaches, never a copy of it.
+
+## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
+- **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's
+  `start` is a LIVING FORK (no section there falls, he is never caught there). Sections that fall = platforms marked `chase`. A lay is
+  checked by `chaseLayProblems(lay)` (B5's lay must call it and refuse by name; CHASE_PIECE.start only logs and starts nothing).
+- **Rows:** `CHASE_ROWS.normal` = CHASE (old 1-8 numbers, unchanged; the old engine path reads the same via default args). Easy: base 170,
+  max 200, cap min(200, PHYS.maxRun), final 0, behind 600, hold 2.2 (stop budget 3.4 s vs Normal 2.2 s). Easy numbers are B1's; DESIGNER may tune.
+- **The piece** (pieces/chasePiece.ts, registered after RIDE): one front per stretch (`ChaseRun`); a section's owner = the stretch whose
+  ground holds its middle (`sectionStretch`; the first also owns the base behind its crack); broken = its front passed it. Respawn sets
+  every section from its front (`restartRunAt`: a stretch behind the flag stays fallen to its fork, the one ahead waits, a flag inside
+  one holds its front). Draws sections + debris on 'world', the trailing-edge tint on 'screen'.
+- **Hook extension (lead OK 11:25 PM):** `PieceHurt.toFlag` = a heart and back to the flag (engine.ts calls `chaseCaught()`, whose body is
+  general; it ignores his safe time, as the old catch did). Off the branch = 300 px under the nearest section, capped 90 px above the
+  stage's pit line (levelHeight + 120), so the chase's heart always comes before the pit's life.
+- **Draw rule (lead OK (d) 11:33 PM):** a `chase` section is drawn only by its chase drawer: engine.ts drawPlats leaves chase sections
+  out whenever a stage has one; protoArt.ts paintedPlatforms never claims one. The engine line is pinned by text (no stage lays a chase
+  at its start until B5); B5's lay test must add the in-play check (drawPlats has none of its sections).
+- **Not in B1 (named for B5/B6):** Dot's "It is breaking behind us!" line, the camera shake and the music's danger (engine-side for the old
+  1-8 only: engine.ts updateChase / :3712), the chase camera, liana phase and tip slow motion, per-world collapse look (World 1's art for all).
+- **Traps:** the front sets off from `start - behind`, not from where he stands (stepChase keeps the further-back front): a test's
+  budget counts from there. The stills scene (reference/qa-reports/B1/stills.mjs) swaps a test branch into a real stage: tap Dot's held line.
+- **B2 (t-b2-chase, 11-14):** the trailing edge is `edgeTint(gap)` (chasePiece.ts EDGE: dark core + ember rim, 0 at 650 px, 0.75 alpha at
+  150 px and closer, wider as it closes; chasePiece.test.ts pins it). A stage with `chase` asks for the long-branch sheet behind the card
+  (stageManifest.ts builtStageKeys 'props3' -> stagePreload.ts start -> protoArt.ts warmProto3): it used to load on the first section drawn.
+  Clips: reference/qa-reports/B2/shoot.mjs (a RealPlay.bare-equivalent world in the real page, world.mjs; frame-by-frame capture, never
+  Playwright's recorder; never edit src/ while it runs: Vite reloads the page; an old save that has seen the stage's story aside).
 
 ## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
 - **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and

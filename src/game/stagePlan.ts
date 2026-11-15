@@ -57,7 +57,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the story keeper's line, t-keeper-17@a8dd2409 reference/story/lines-1-7.md: gen2/worlds/w1Arc17.ts MISSION_17, held equal by
     //  w1Arc17.test.ts; new replaces old, the crouch line "Duck under the leaves" is gone)
     S('stealth', 'A Very Good Bush', 'An eagle is watching. Hide in the green like Dot did, and collect her petals.'),
-    S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
+    // (the story keeper's line 7, reference/story/lines-1-8.md (t-story@2e40e6a3): gen2/worlds/w1Arc18.ts MISSION_18, held equal by
+    //  w1Arc18.test.ts; sprint, so its exit never locks (no gathers): the petals are score and medals only, the keeper's ruling)
+    S('sprint', 'The Long Branch', 'Race the long branch before it gives way, and gather her petals.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
   ],
   2: [

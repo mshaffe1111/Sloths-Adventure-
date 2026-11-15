@@ -17,7 +17,10 @@ import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
 import type { LimbPlatform } from '../creak.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
-import { castWatches, clipWatches, stillEmitters, stillProps, type StillRow, type WatchRow } from '../stillLay.ts';
+import { castWatches, clipWatches, stillEmitters, stillProps, type HideRow, type StillRow, type WatchRow } from '../stillLay.ts';
+import type { StillForkLook } from '../stillFork.ts';
+import type { RollLook } from '../rollLay.ts';
+import type { TipLook } from '../chaseTip.ts';
 import type { WatchZone } from '../../watcher.ts';
 
 /** how high over its ground a load hangs (px): over his head as he walks under it (he is 89 px), over a rearing snake, and low enough
@@ -179,6 +182,39 @@ export const W1_STILL: Readonly<Record<string, StillRow>> = {
   'w1-hide-moss-curtain': { role: 'hide', bush: 'mossHang', w: 78, minApart: 160, hanging: true },
   'w1-eagle': { role: 'watch', cast: 'eagle', free: 'lesson', calm: { teach: [6, 6.5], early: [5.5, 6], late: [5, 5.5] }, max: 1400 },
 };
+
+/**
+ * World 1's still fork (1-8 NEW 7, gen2/stillFork.ts): the moss carpet on the fork (W1_STILL's carpet, 346 px: beat 9 "a great living fork
+ * carpeted in moss") and the harpy eagle perched on its snag past it, its one pass called as he arrives (2.0 s warn: EAGLE.warn; 1-7's
+ * late calm as its laid cool). The eagle is 1-8's one post (1-8.md "Cast").
+ */
+export const W1_STILL_FORK: StillForkLook = {
+  cover: { kind: 'moss', w: (W1_STILL['w1-hide-moss'] as HideRow).w },
+  kind: 'eagle',
+  calm: (W1_STILL['w1-eagle'] as WatchRow).calm.late,
+  watcher: (z, groundY, id, postX) => eagleOver(z, groundY, id, { x: postX }),
+};
+
+/**
+ * World 1's rolling nut and bouncing fruit on a laid chase (gen2/rollLay.ts layRolling; 1-8.md NEW 2): the nut's pace under his walk,
+ * the fruit's top well over his drawn head (rolling.ts ROLL.head + headClear); a hazard wants 440 px of unbroken ground before where it
+ * lands (rolling.ts rollAhead sets it off 350-370 px ahead at a full run) and 80 px past it; two on one run of ground 560 px apart
+ * (1.5 s+ at a run: one threat at a time). The dev fixture's numbers (ENG-B5), lifted unchanged (ENG-CL (6))
+ */
+export const W1_ROLL: RollLook = {
+  low: { speed: 140, bounce: 8 },
+  high: { speed: 140, bounce: 165 },
+  runNeed: 440,
+  after: 80,
+  step: 560,
+};
+
+/**
+ * World 1's branch tip (gen2/chaseTip.ts layTip; 1-8 NEW 8): a gap of two branch sections off the tip (2 x chaseLay.ts CHASE_LAY.tile),
+ * the far tree's branch 600 px long past it, and the runner liana as the old 1-8's last liana: 214 px out from the lip, 380 px up, its
+ * foot 30 px under the branch. The dev fixture's numbers (ENG-B6), lifted unchanged (ENG-CL (6))
+ */
+export const W1_TIP: TipLook = { gap: 444, land: 600, liana: { out: 214, up: 380, foot: 30, swaySpeed: 1.1, runner: true } };
 
 /**
  * World 1's still kit at a stage: the prop rows, the emitters, and the finish (after the hides are laid) that turns stretches into eagles.

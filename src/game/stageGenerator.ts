@@ -7,13 +7,14 @@ import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
+import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
-import { listedStage, type ListedStage } from './gen2/listed.ts';
+import { listedStage, playFinish, type ListedStage } from './gen2/listed.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -109,6 +110,11 @@ export interface GeneratedStage {
   /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
    *  the fall (a heart; on a `soft` zone, Easy's, the set-back with the hurt sound and blink and no heart) */
   heartFalls?: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
+  /** a laid chase (any world; chase.ts ChaseLay, run by pieces/chasePiece.ts): its stretches, each ending at a living fork. The sections
+   *  that fall are the platforms marked `chase`. (The hand-built 1-8's collapse is proto.chase, stepped by engine.ts until 1-8's build.) */
+  chase?: import('./chase.ts').ChaseLay;
+  /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */
+  rolling?: import('./rolling.ts').RollSpec[];
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -2885,6 +2891,8 @@ function generateStageOn(config: LevelConfig, difficulty: Difficulty): Generated
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
   if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
+  // a real laid chase with its nuts and fruit, before 1-8 exists (a dev build only: chaseFixtureStage.ts, ENG-B5)
+  if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
@@ -2921,7 +2929,7 @@ function generateStageOn(config: LevelConfig, difficulty: Difficulty): Generated
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
     // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
     const stage = listed
-      ? ((st) => (listed.finish ? listed.finish(st, difficulty) : st))(w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels))
+      ? playFinish(listed, buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), difficulty)
       : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
