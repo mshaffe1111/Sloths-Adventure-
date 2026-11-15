@@ -181,3 +181,4 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
   bounce one)?
 - Is it the one tip for that move, at a rest or before the move, never repeated?
 - Cite the file and line. Matt's words, verbatim, when it's his call.
+- Before approving an exit or mission line, read the stage's goal type (goals.ts) and its words (stagePlan.ts GOAL_WORDS / SEALED_LINES): a goal with no words leaves a locked exit silent (KEEPER-16, 11-14: 1-6's vine_runner had no petal count).

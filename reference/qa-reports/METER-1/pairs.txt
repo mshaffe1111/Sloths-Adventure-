@@ -1,0 +1,5 @@
+Normal: pairs the bots find clearly harder (>= 0.3 misses/min more) that the meter reads easier (>= 0.3 less)
+  tier bots    before:  3  1-4>1-1 1-4>1-6 1-4>1-8
+  tier bots    after :  4  1-1>1-6 1-4>1-6 1-4>1-8 1-5>1-6
+  first-timers before:  5  1-6>1-1 1-6>1-5 1-7>1-1 1-7>1-4 1-7>1-5
+  first-timers after :  3  1-7>1-1 1-7>1-4 1-7>1-5

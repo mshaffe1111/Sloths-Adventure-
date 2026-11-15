@@ -36,6 +36,10 @@ export interface Beat {
   what: string;
   /** a move's kind for the look-alike measure (lookalike.ts moveKind: the jump's size, height and what is under it; the swing's kind) */
   k?: string;
+  /** the PIECE the beat is of (METER-2a, R-165.272): 'move:<route kind>', 'platform:<type>', 'creature:<type>', 'zone:<kind>', or
+   *  'beat:<the off() label its emitter already uses>'. The meter prices a beat by this key and refuses one it has no channel for
+   *  (score.ts unpriced); the coverage gate reads every key from this file (tools/difficulty/coveragecheck.ts) */
+  fam?: string;
 }
 
 export interface Sample { x: number; y: number; base: number; seg: Seg }
@@ -93,10 +97,12 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   const raw: Array<Omit<Beat, 't'>> = [];
   const offRoute: Record<string, number> = {};
   const off = (k: string) => (offRoute[k] = (offRoute[k] ?? 0) + 1);
-  const add = (i: number, letter: Letter, what: string, dur = 0, count = 1) => {
+  const add = (i: number, letter: Letter, what: string, dur = 0, count = 1, fam?: string) => {
     const s = samples[i];
-    raw.push({ base: s.base, dur, act: 0, x: s.x, y: s.y, letter, count, what });
+    raw.push({ base: s.base, dur, act: 0, x: s.x, y: s.y, letter, count, what, ...(fam ? { fam } : {}) });
   };
+  /** a beat of a family whose off() label names it (the piece key 'beat:<label>') */
+  const addAs = (label: string, i: number, letter: Letter, what: string, dur = 0) => add(i, letter, what, dur, 1, `beat:${label}`);
   const cfg = stage.config;
   const mission = (cfg.worldIndex - 1) * 10 + cfg.miniIndex;
   const glideHeld = skillHeldAt('glide', mission);
@@ -108,7 +114,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     const s = route.segs[si];
     // a move keeps him busy while it lasts; a climb only for its first 2.5 s (a long plain climb past that is quiet)
     const busy = s.kind === 'climb' ? Math.min(2.5, s.dt + (route.segs[si + 1]?.kind === 'climb' ? route.segs[si + 1].dt : 0)) : s.kind === 'lift' ? 0.5 : s.dt;
-    const at = { base: t, dur: 0, act: busy, x: s.x0, y: s.y0, count: 1, k: moveKind(stage, s, glideHeld) ?? undefined };
+    const at = { base: t, dur: 0, act: busy, x: s.x0, y: s.y0, count: 1, k: moveKind(stage, s, glideHeld) ?? undefined, fam: `move:${s.kind}` };
     switch (s.kind) {
       case 'hop': raw.push({ ...at, letter: 'h', what: s.y1 < s.y0 - 16 ? 'hop up a step' : 'small hop' }); break;
       case 'jump': raw.push({ ...at, letter: 'J', what: s.y1 < s.y0 - 100 ? 'big jump up' : 'jump over a gap' }); break;
@@ -125,7 +131,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     }
     t += s.dt;
     const fragile = !!s.plat && s.plat.type === 'fragile' && s.kind !== 'walk';
-    if (fragile && !prevFragile) raw.push({ base: t, dur: 0, act: 0, x: s.x1, y: s.y1, count: 1, letter: 'Z', what: 'crumbling branch' });
+    if (fragile && !prevFragile) raw.push({ base: t, dur: 0, act: 0, x: s.x1, y: s.y1, count: 1, letter: 'Z', what: 'crumbling branch', fam: 'beat:crumbling branches' });
     if (s.kind !== 'walk') prevFragile = fragile;
   }
   const moveTotal = t;
@@ -140,20 +146,20 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     }
     const i = firstIn(samples, b);
     if (i < 0) { off('animals'); continue; }
-    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround);
+    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround, 1, `creature:${e.type}`);
   }
   const ring = stage.proto?.ring;
   if (ring) {
     const i = firstIn(samples, { x0: ring.x0, x1: ring.x1, y0: -1e9, y1: 1e9 });
-    if (i >= 0) ring.waves.forEach((w, k) => w.forEach((m) => add(i, 'C', `ring wave ${k + 1}: ${m.kind}`, MODEL_FAST.fightGround)));
+    if (i >= 0) ring.waves.forEach((w, k) => w.forEach((m) => addAs('ring waves', i, 'C', `ring wave ${k + 1}: ${m.kind}`, MODEL_FAST.fightGround)));
   }
   for (const m of stage.proto?.w4?.monkeys ?? []) {
     if (m.job === 'guard') {
       const i = firstIn(samples, { x0: (m.x0 ?? m.x) - 60, x1: (m.x1 ?? m.x) + 60, y0: m.y - 160, y1: m.y + 60 });
-      if (i < 0) off('capuchin guards'); else add(i, 'C', 'capuchin guard', MODEL_FAST.fightGround);
+      if (i < 0) off('capuchin guards'); else addAs('capuchin guards', i, 'C', 'capuchin guard', MODEL_FAST.fightGround);
     } else if (m.job === 'lookout') {
       const i = firstIn(samples, { x0: m.x0 ?? m.x - 300, x1: m.x1 ?? m.x + 300, y0: -1e9, y1: 1e9 });
-      if (i < 0) off('capuchin lookouts'); else add(i, 'Z', 'capuchin lookout watching', 1.0);
+      if (i < 0) off('capuchin lookouts'); else addAs('capuchin lookouts', i, 'Z', 'capuchin lookout watching', 1.0);
     } else {
       const pts = [{ x: m.x, y: m.y }, ...(m.path ?? [])];
       let best = -1;
@@ -161,56 +167,56 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
         const i = firstIn(samples, { x0: p.x - 150, x1: p.x + 150, y0: p.y - 200, y1: p.y + 80 });
         if (i >= 0 && (best < 0 || i < best)) best = i;
       }
-      if (best < 0) off('capuchin thieves'); else add(best, 'P', 'capuchin thief', 1.5);
+      if (best < 0) off('capuchin thieves'); else addAs('capuchin thieves', best, 'P', 'capuchin thief', 1.5);
     }
   }
   for (const s of stage.proto?.w5?.seamstresses ?? []) {
     const i = firstIn(samples, { x0: s.x - 250, x1: s.x + 250, y0: s.y - 200, y1: s.y + 80 });
-    if (i < 0) off('seamstress'); else add(i, 'C', 'the Seamstress (slip past)', 1.0);
+    if (i < 0) off('seamstress'); else addAs('seamstress', i, 'C', 'the Seamstress (slip past)', 1.0);
   }
 
   // ---- goal pieces and puzzles ----
   for (const c of stage.collectibles) {
     if (c.type === 'cage') {
       const i = firstIn(samples, { x0: c.x - 120, x1: c.x + 120, y0: c.y - 120, y1: c.y + 350 });
-      if (i < 0) off('cages'); else add(i, 'P', c.critter === 'eaglet' ? 'free a chick from its nest' : 'free a caged animal', TIME.cageSec + Math.abs(samples[i].y - c.y - 40) / 300);
+      if (i < 0) off('cages'); else addAs('cages', i, 'P', c.critter === 'eaglet' ? 'free a chick from its nest' : 'free a caged animal', TIME.cageSec + Math.abs(samples[i].y - c.y - 40) / 300);
     } else if (c.type === 'relic') {
       const i = firstIn(samples, { x0: c.x - 120, x1: c.x + 120, y0: c.y - 120, y1: c.y + 350 });
-      if (i < 0) off('relics'); else add(i, 'P', 'search a fern for a keepsake', TIME.relicSec + Math.abs(samples[i].y - c.y - 40) / 300);
+      if (i < 0) off('relics'); else addAs('relics', i, 'P', 'search a fern for a keepsake', TIME.relicSec + Math.abs(samples[i].y - c.y - 40) / 300);
     }
   }
   for (const c of stage.proto?.w5?.cocoons ?? []) {
     const i = firstIn(samples, { x0: c.x - 120, x1: c.x + 120, y0: c.y - 120, y1: c.y + 350 });
-    if (i < 0) off('cocoons'); else add(i, 'P', 'punch a cocoon open', COCOON.hits * 0.6 + 0.6);
+    if (i < 0) off('cocoons'); else addAs('cocoons', i, 'P', 'punch a cocoon open', COCOON.hits * 0.6 + 0.6);
   }
   for (const p of stage.platforms) {
     if (!p.push) continue;
     const i = firstIn(samples, { x0: p.push.min - 60, x1: p.push.max + 60, y0: p.y - 260, y1: p.y + p.height + 40 });
-    if (i < 0) off('push logs and boulders'); else add(i, 'P', p.art === 'boulder' ? 'push the boulder' : 'push the hollow log', 2.0);
+    if (i < 0) off('push logs and boulders'); else addAs('push logs and boulders', i, 'P', p.art === 'boulder' ? 'push the boulder' : 'push the hollow log', 2.0);
   }
   const w4 = stage.proto?.w4;
   for (const s of w4?.patience ?? []) {
     const i = firstIn(samples, { x0: s.x0 - 30, x1: s.x1 + 30, y0: s.y - 80, y1: s.y + 80 });
-    if (i < 0) off('patience spots'); else add(i, 'P', s.kind === 'frond' ? 'stand still: the fern unrolls' : 'stand still: the mist settles', s.fill);
+    if (i < 0) off('patience spots'); else addAs('patience spots', i, 'P', s.kind === 'frond' ? 'stand still: the fern unrolls' : 'stand still: the mist settles', s.fill);
   }
   for (const k of w4?.knots ?? []) {
     const i = firstIn(samples, { x0: k.x0 - 40, x1: k.x1 + 40, y0: k.ground - 80, y1: k.ground + 80 });
-    if (i < 0) off("Dot's knots"); else add(i, 'P', "wait under Dot's knot", DOT_HELP.ask + DOT_HELP.fly + DOT_HELP.pick);
+    if (i < 0) off("Dot's knots"); else addAs("Dot's knots", i, 'P', "wait under Dot's knot", DOT_HELP.ask + DOT_HELP.fly + DOT_HELP.pick);
   }
   for (const f of w4?.fruit ?? []) {
     const i = firstIn(samples, { x0: f.x - 90, x1: f.x + 90, y0: f.ground - 120, y1: f.ground + 60 });
-    if (i < 0) off('fruit trees'); else add(i, 'P', 'knock down fruit (optional)', 0.6);
+    if (i < 0) off('fruit trees'); else addAs('fruit trees', i, 'P', 'knock down fruit (optional)', 0.6);
   }
   for (const p of w4?.pools ?? []) {
     const plat = stage.platforms.find((q) => q.id === p.platformId);
     if (!plat) continue;
     const i = firstIn(samples, { x0: plat.x - 80, x1: plat.x + plat.width + 80, y0: Math.min(p.fullY, p.emptyY) - 150, y1: Math.max(p.fullY, p.emptyY) + 60 });
-    if (i < 0) off('pools'); else add(i, 'P', 'ride the pool log', FALLS.drain);
+    if (i < 0) off('pools'); else addAs('pools', i, 'P', 'ride the pool log', FALLS.drain);
   }
   for (const w of w4?.falls ?? []) {
     if (w.veil || w.plug || !w.surge) continue;
     const i = firstIn(samples, { x0: w.x - 40, x1: w.x + w.width + 40, y0: w.top - 40, y1: w.bottom + 60 });
-    if (i < 0) off('surging falls'); else add(i, 'Z', 'surging waterfall: wait for it to ease', w.surge.pour / 2);
+    if (i < 0) off('surging falls'); else addAs('surging falls', i, 'Z', 'surging waterfall: wait for it to ease', w.surge.pour / 2);
   }
   // (a plug fall: the level check rolls its boulder in once he can get behind it and then walks the stage dry, so the route goes
   // straight up its stair; the detour up to the shelf and the push is a beat where the route first comes under the shelf's near end,
@@ -223,83 +229,83 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     const up = Math.max(0, w.bottom - (b.y + b.height));
     if (i < 0) off('plugged falls');
     else {
-      add(i, 'P', 'plugged fall: up to the boulder and roll it in', up / CLIMB + Math.abs(w.plug.atX - b.x) / 120 + 1.5);
+      addAs('plugged falls', i, 'P', 'plugged fall: up to the boulder and roll it in', up / CLIMB + Math.abs(w.plug.atX - b.x) / 120 + 1.5);
       // (the walk on under the shelf to the water is the way back down from it: part of the detour, not quiet)
       raw[raw.length - 1].act = Math.max(0, (w.x - samples[i].x) / RUN);
     }
   }
   for (const r of w4?.rocks ?? []) {
     const i = firstIn(samples, { x0: r.x - 70, x1: r.x + 70, y0: r.land - 160, y1: r.land + 40 });
-    if (i < 0) off('falling rocks'); else add(i, 'Z', 'falling rock: read the shadow', 0.8);
+    if (i < 0) off('falling rocks'); else addAs('falling rocks', i, 'Z', 'falling rock: read the shadow', 0.8);
   }
   for (const n of w4?.nests ?? []) {
     const i = firstIn(samples, { x0: n.x0 - 20, x1: n.x1 + 20, y0: n.y - 100, y1: n.y + 40 });
-    if (i < 0) off('eaglet nests'); else add(i, 'Z', 'sneak past the eaglets', 1.0);
+    if (i < 0) off('eaglet nests'); else addAs('eaglet nests', i, 'Z', 'sneak past the eaglets', 1.0);
   }
   for (const v of stage.proto?.thorns ?? []) {
     const i = firstIn(samples, { x0: v.x - v.reach, x1: v.x + v.reach, y0: v.top, y1: v.bud + (v.below ?? VINE.below) });
-    if (i < 0) off('thorn vines'); else add(i, 'Z', 'sleeping thorn vine', 1.0);
+    if (i < 0) off('thorn vines'); else addAs('thorn vines', i, 'Z', 'sleeping thorn vine', 1.0);
   }
   const w5 = stage.proto?.w5;
   for (const c of w5?.chairs ?? []) {
     // (a wrapped chair is the scenery of a guest who sat: it never pulls, w5Play.ts, so it is not something to do)
     if (c.wrapped) continue;
     const i = firstIn(samples, { x0: c.x - CHAIR.reach, x1: c.x + CHAIR.reach, y0: c.y - 90, y1: c.y + 40 });
-    if (i < 0) off('chairs'); else add(i, 'P', 'soft chair pulls (keep moving)');
+    if (i < 0) off('chairs'); else addAs('chairs', i, 'P', 'soft chair pulls (keep moving)');
   }
   for (const c of w5?.cakes ?? []) {
     const i = firstIn(samples, { x0: c.x - 50, x1: c.x + 50, y0: c.y - 100, y1: c.y + 50 });
-    if (i < 0) off('cakes'); else add(i, 'P', 'jump the cake');
+    if (i < 0) off('cakes'); else addAs('cakes', i, 'P', 'jump the cake');
   }
   for (const b of w5?.butlers ?? []) {
     const i = firstIn(samples, { x0: b.x - 220, x1: b.x + 220, y0: b.y - 160, y1: b.y + 60 });
-    if (i < 0) off('butlers'); else add(i, 'P', 'butler with a tray', 0.8);
+    if (i < 0) off('butlers'); else addAs('butlers', i, 'P', 'butler with a tray', 0.8);
   }
   for (const p of w5?.pots ?? []) {
     const i = firstIn(samples, { x0: p.x - 130, x1: p.x + 130, y0: p.y - 160, y1: p.y + 60 });
-    if (i < 0) off('teapots'); else add(i, 'Z', 'teapot steam: go between puffs', 1.0);
+    if (i < 0) off('teapots'); else addAs('teapots', i, 'Z', 'teapot steam: go between puffs', 1.0);
   }
   // (a swaying orchid: the hop onto it is timed to its swing, as a puff is: the route reads the ledge as a moving platform)
   for (const b of w5?.sways ?? []) {
     const i = firstIn(samples, { x0: b.x - 130, x1: b.x + 130, y0: b.rootY - 400, y1: b.rootY + 40 });
-    if (i < 0) off('swaying orchids'); else add(i, 'Z', 'swaying orchid: hop on as it swings near', 1.0);
+    if (i < 0) off('swaying orchids'); else addAs('swaying orchids', i, 'Z', 'swaying orchid: hop on as it swings near', 1.0);
   }
   for (const th of w5?.threads ?? []) {
     const i = firstIn(samples, { x0: th.x0 - 20, x1: th.x1 + 20, y0: th.y - 110, y1: th.y + 60 });
-    if (i < 0) off('humming threads'); else add(i, 'Z', 'humming thread: jump it');
+    if (i < 0) off('humming threads'); else addAs('humming threads', i, 'Z', 'humming thread: jump it');
   }
   for (const o of w5?.orchids ?? []) {
     const i = firstIn(samples, { x0: o.x - o.w / 2 - 40, x1: o.x + o.w / 2 + 40, y0: o.y - 160, y1: o.y + 60 });
-    if (i < 0) off('orchids'); else add(i, 'P', 'closing orchid: time the jump', 0.6);
+    if (i < 0) off('orchids'); else addAs('orchids', i, 'P', 'closing orchid: time the jump', 0.6);
   }
 
   // ---- puzzle rooms (puzzleKit.ts): one beat where the route first comes into a room, as long as a quick player takes to work it ----
   for (const room of stage.kit?.rooms ?? []) {
     const bx = roomBox(room, stage.platforms);
     const i = firstIn(samples, bx);
-    if (i < 0) off('puzzle rooms'); else add(i, 'P', `puzzle room (${room.id})`, roomSeconds(room));
+    if (i < 0) off('puzzle rooms'); else addAs('puzzle rooms', i, 'P', `puzzle room (${room.id})`, roomSeconds(room));
   }
 
   // ---- stretches under timed pressure: a beat on entry and one each cycle while inside ----
-  const span = (b: Box, every: number, letter: Letter, what: string, dur: number, label: string) => {
+  const span = (b: Box, every: number, letter: Letter, what: string, dur: number, label: string, fam = `beat:${label}`) => {
     const spans = spansIn(samples, b);
     if (!spans.length) { off(label); return; }
     for (const [a, z] of spans) {
-      add(a, letter, what, dur);
+      add(a, letter, what, dur, 1, fam);
       const t0 = samples[a].base;
       let next = t0 + every;
-      for (let i = a + 1; i <= z; i++) if (samples[i].base >= next) { add(i, letter, `${what} (again)`, dur); next += every; }
+      for (let i = a + 1; i <= z; i++) if (samples[i].base >= next) { add(i, letter, `${what} (again)`, dur, 1, fam); next += every; }
     }
   };
   for (const z of stage.zones ?? []) {
     const b = { x0: z.x0, x1: z.x1, y0: z.top - 30, y1: z.bottom + 30 };
-    if (z.kind === 'dark') span(b, 1e9, 'Z', 'darkness: wake the glowworms, find the way', 0.8, 'dark zones');
-    else if (z.kind === 'web') span(b, 1e9, 'Z', 'sticky web slows him', (z.x1 - z.x0) * (1 / (RUN * TIME.webSpeed) - 1 / RUN), 'webs');
-    else if (z.kind === 'crumble') span(b, 1e9, 'Z', 'crumbling floor', 0, 'crumbling floors');
+    if (z.kind === 'dark') span(b, 1e9, 'Z', 'darkness: wake the glowworms, find the way', 0.8, 'dark zones', 'zone:dark');
+    else if (z.kind === 'web') span(b, 1e9, 'Z', 'sticky web slows him', (z.x1 - z.x0) * (1 / (RUN * TIME.webSpeed) - 1 / RUN), 'webs', 'zone:web');
+    else if (z.kind === 'crumble') span(b, 1e9, 'Z', 'crumbling floor', 0, 'crumbling floors', 'zone:crumble');
     else {
       const every = Math.max(2, z.period);
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
-      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.kind} zone`, wait, `${z.kind} zones`);
+      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.kind} zone`, wait, `${z.kind} zones`, `zone:${z.kind}`);
     }
   }
   for (const w of stage.proto?.watch ?? []) {
@@ -323,7 +329,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     if (n < 2) continue;
     if (routeJumps.some((b) => Math.abs(b.x - j.takeoffX) < 160 && Math.abs(b.y - j.from.y) < 200)) continue;
     const i = firstIn(samples, { x0: j.takeoffX - 40, x1: j.landX + 40, y0: lo - 120, y1: hi + 320 });
-    if (i >= 0) add(i, 'h', 'pickup arc over a gap (optional jump)', 0, 0.5);
+    if (i >= 0) add(i, 'h', 'pickup arc over a gap (optional jump)', 0, 0.5, 'beat:pickup arcs');
   }
 
   // ---- the clock: every wait and fight pushes what comes after it later ----

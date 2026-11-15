@@ -1,4 +1,11 @@
-# Turnover note: the data analyst (rewritten at the end of every task; last: W11-ANALYST attempt 5, the bot inputs (profiles/))
+# Turnover note: the data analyst (rewritten at the end of every task; last: METER-2 step 0, the meter's coverage table, 11-15)
+
+## METER-2 step 0 (11-15, t-meter-2): what the meter can and can't measure
+- reference/design/METER-COVERAGE.md: one row per mechanic on GAME-MAP (all ten worlds), the bots and the meter channel that cover it,
+  with file:line. Read its §0 first. The two facts that matter most: the tier bots read no stage clock (only the eagle watch and
+  drifting floats), and METER-1's score.ts:638-639 prices every timed hazard at a flat 2 bits (a silent default).
+- Next: METER-2a (the coverage gate, the ride and dwell channels, the bots' clock read), on the lead's approval of §4.
+- Tester data is still gen2 1-1 only (P24-P33). The first World 2 window needs ride/pad recorder lines (a game-code packet) to fit them.
 
 ## Open
 - The 11-10 window is CLOSED and fully read: attempt 1 (rows 2-4552) plus the attempt-3 delta (rows 4553-4592, pulled 11-11 2:09 AM

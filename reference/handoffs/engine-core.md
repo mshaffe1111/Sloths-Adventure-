@@ -8,6 +8,7 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+Merged for ENG-22 (11-15): METER-1's section is 0zd-m (it and ENG-W2b both took 0zd).
 Rewritten for ENG-W2b (11-15, t-eng-w2b): section 0zd (the river as a gen2 section, the one carry rule, petals on logs). Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
@@ -62,6 +63,24 @@ proven plan; Play is never blocked).
   a kit lever's `looks`, 6-7's water room, preloaded as 'w6-wheels'). (3) verdicts.test holds every flown row's `source` to a quote from
   reach.md §2 or chain.md §1: enter a stage's flown figures there first. (4) The
   game's finishStage lays petal arcs over every route gap, whatever the brief's `petals: 'low'` (1-7: 61 built, 105 played).
+
+## 0zd-m. METER-1 (t-meter-1, 11-14): the meter reads each ask from the game's own numbers (R-165.261)
+- **tools/difficulty/score.ts now has a term for each ask 1-4, 1-6, 1-7 and 1-8 make** (DIFFICULTY.md §1's new rows): a liana release is
+  `windowBits(the liana's period, its window)`, the window gen2's OWN (`releaseWindow`: physics pressWindow from the grip dial's holds, and
+  on a liana with a dial or the last of a chain only the presses that SEE the perch, SWING_SEEN, as pipeline lianaRelease; chainWindow for a
+  chain); the double's flights +1.32; a creaky perch +1 at the perch. `chainOf` flies a chain liana by liana where route.ts's added link
+  leaps one, stepping only to a liana the chain catch reaches (levelCheck chainLines > 0): Worlds 2, 4 and 6 hang lianas in rows the
+  route passes under, and without that check 4-4 read 47 swings for 30. `catchWindow`: the catch off a bank. `snakeChallenges`: vine snakes by their warn, false lianas a choice. `chaseChallenges`:
+  one per stretch, the front a `span` threat (combine's overlap counts a span over its whole stretch). `rollingChallenges` (rolling.ts
+  read by a guarded dynamic import: a tree without BUILD-18's rolling.ts builds no `st.rolling`). `watchChallenges`: a watcher's stretch.
+  `podCrossing`: a pod's quiet less the route's time in its column.
+- **Never price an unmeasured ask as the hardest**: a catch no running jump makes is listed `NOT MEASURED` with 0 bits; a release the
+  engine flies no press for keeps OTHER_BITS.swing, named `NOT FLOWN`. On BUILD-16's 1-6: none of either; on the old hand-built 1-6: 12 catches.
+- **The Z-beat skip is by words**: the meter skips beats.ts's chase pacing beats and fruit beats by their text ('the branch collapses behind
+  him', 'a bouncing fruit') where the stage has a chase or rolling; if beats.ts rewords them, the meter's planted test on 1-8 goes red.
+- **SCALE is unchanged (0.28194)**: 1-1 has none of these asks. Re-score any change with the stages before it in game order (novelty).
+- **Traps:** the member lookup was 200 px from where a creature perches (1-7's eagles sit 202 px from their beat): `memberAt` reads the
+  kit's ground first. A crossing longer than its quiet is split (the cheapest number of crossings), never one 6-bit press.
 
 ## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
 - **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a
