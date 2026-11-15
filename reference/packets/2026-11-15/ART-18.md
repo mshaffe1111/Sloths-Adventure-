@@ -6,6 +6,7 @@ flat clip-art (heavy black outline, flat greens, symmetrical, a stub trunk), not
 Role card ENGINE.md + reference/methods/hf-art.md (the Hugging Face method; the token never leaves the environment, law 8; log every job in
 reference/art/HF-SPEND.md; cap $4 this packet). Read level.md Building rules, STAGE-RULES §4-5b (painted vs code-drawn, the polish bar),
 then ENG-LOOK2's REPORT (origin/t-eng-look2: reference/qa-reports/ENG-LOOK2/REPORT.md) and its stills (stills/third/).
+MATT 11:46 AM ET sent the frames sheet (1-8 first stretch, 10 frames): the SAME palm, huge and identical, in almost every frame (one per nut drop, DRESS_18). So also: not one palm per nut drop; palms vary (variants, sizes, mid and back layers, some partly hidden by leaves), never the same crown twice on one screen, and the nut drop is still readable (the nut falls from a crown in view, but not every crown is in front).
 Branch t-art-18 from origin/t-eng-look2's head.
 1. FIRST, the palm: a NEW painted palm that matches World 1's painted props and the w1rain backdrop (soft painterly shading, the outline
    weight of the inventory's best W1 pieces: compare against 2-3 of them side by side BEFORE generating; name them). A tall trunk rising
