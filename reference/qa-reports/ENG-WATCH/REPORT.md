@@ -105,6 +105,31 @@ Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/
 - Every upright frame of 1-7 on this path carries the story note "A whole hour in that bush..." until it is tapped; the clip tool taps it away as a player does.
 - The far-circling pose at rest is faint by design (SKY.far alpha 0.55). A player sees the flying eagle's head-cock as it "coming in", not as a head turning: an art question for the lead (a painted head-turn frame for the flying harpy, Hugging Face), not done tonight.
 
+## 9. Gates (on the code of 7fb37e19 = ba6ba46d's src and tools; later commits are reference/ only)
+| gate | result |
+|---|---|
+| tsc | PASS |
+| full suite (the CLAUDE.md glob) | SUITE_RESULT |
+| eagleGlance.test.ts (new) + eagleKit.test.ts | 14/14 PASS |
+| build (BASE_PATH=/Sloths-Adventure-/) | PASS |
+| chunkcheck | PASS |
+| artcheck | PASS |
+| drawcheck (1-7 among its stages) | PASS (650 s) |
+| clipcheck | PASS (83 known) |
+| knowncheck | PASS |
+| generalitycheck | PASS (26 known, none new) |
+| roadmapcheck | PASS (after unshallowing the clone; on the shallow clone it refuses: "proofs cannot be checked") |
+| kbdcheck | PASS |
+| buildcheck | BUILDCHECK_RESULT |
+| seedlist 1-1 --check | PASS (161 seeds) |
+| tool tests (library, seedlist, yield, travelBots) | 34/34 PASS |
+| tierBots.test (the bots still match the testers on 1-1) | 7/7 PASS |
+| firsttimer.test + castBots.test (I changed the bot) | 20/20 PASS |
+| lock, the 21 watcher stages | 20/21 unchanged, 1-7 enemies intended |
+**Red on the BASE too** (origin/t-build-16 9de5e4aa, run there alone tonight: not this branch's; owner ENG-16I / the lead):
+- gen2Pits.test "a bank beside a pit reaches past its floor": 1-6 seed 1 Normal, "bank at x 28090 ends 0 px over the floor at x 27933";
+- softFalls11.test "8-3 Normal ... byte for byte as origin/main": layout 2's hash d8dfbb7e1484be3a, expected 7ffc517f0fbb583c.
+
 ## 6. EXACT NEXT STEP for TUNE-17 (the 1-7 tuner, data only, no engine)
 1. Read this REPORT §2's dial table. The dials live in `W1_STILL['w1-eagle']` (src/game/gen2/worlds/w1Cast.ts), the stage's still row.
    - Add `glance: { away: [a, b], look: [c, d], fake: f, reach: r }` to 1-7's row to override the kind's default (predators/world1.ts EAGLE.glance).
