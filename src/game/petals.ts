@@ -49,7 +49,9 @@ export const ARC_NEAR = 40;
  * Petals on the arcs of the stage's REQUIRED hops (gen2/walkedSpan.ts hopArcs: every run flies through them, so they are walked space;
  * INT-10, the lead's ruling 11-15 11:10 AM ET), one at each of its points that is open (not in a piece, not in the water or a mist, not
  * below a fall's lower lip) and ARC_NEAR from every other pickup. The species is the nearest petal's (a row never mixes them). Run on the
- * built stage after walkPetals (they stand in the air, not on a piece); petalTrail then holds them to every petal rule. Returns how many.
+ * built stage after walkPetals (they stand in the air, not on a piece); petalTrail then holds them to every petal rule. Each is marked
+ * `arc`: the door never counts it (goals.ts goalCounts): the child tier flies under the apex row, and with them counted it met the sealed
+ * door on 40 of 40 Normal 1-6 runs (INT-10 castBots-1-6-arcs.txt; 32/40 before the arcs). Returns how many.
  */
 export function arcPetals(stage: GeneratedStage): number {
   const spans = fallSpans(stage);
@@ -62,7 +64,7 @@ export function arcPetals(stage: GeneratedStage): number {
       if (!open(stage, p, ARC_NEAR) || inFall(spans, p)) continue;
       let near: Collectible | undefined;
       for (const q of petals) if (!near || Math.hypot(q.x - p.x, q.y - p.y) < Math.hypot(near.x - p.x, near.y - p.y)) near = q;
-      const c: Collectible = { id: id++, type: 'flower', x: p.x, y: p.y, collected: false, bobPhase: (p.x * 0.031) % 6.28, ...(near?.botanicalVariant ? { botanicalVariant: near.botanicalVariant } : {}) };
+      const c: Collectible = { id: id++, type: 'flower', x: p.x, y: p.y, collected: false, bobPhase: (p.x * 0.031) % 6.28, arc: true, ...(near?.botanicalVariant ? { botanicalVariant: near.botanicalVariant } : {}) };
       stage.collectibles.push(c);
       petals.push(c);
       n++;

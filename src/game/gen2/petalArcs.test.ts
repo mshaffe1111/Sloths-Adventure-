@@ -85,3 +85,16 @@ test("1-6 reads inside World 1's built band (1-3 0.86 and 1-5 1.04 petals an upr
   assert.ok(b.per >= 0.86 && b.per <= 1.2, `1-6: ${b.per.toFixed(2)} petals an upright screen (band 0.86-1.04, at most 1-1's 1.25)`);
   assert.ok(b.bare <= 0.51, `1-6: ${(100 * b.bare).toFixed(0)}% of upright screens bare (1-3: 51%)`);
 });
+
+test("1-6's arc petals are a bonus: picked like any petal, never counted by the door's share (goals.ts goalCounts; INT-10)", async () => {
+  const { generateStage, setLayoutVariant } = await import('../stageGenerator.ts');
+  const { generateAllLevels } = await import('../worldsData.ts');
+  const { goalCounts } = await import('../goals.ts');
+  setLayoutVariant(1);
+  const st = generateStage({ ...generateAllLevels().find((l) => l.id === '1-6')!, unlocked: true }, 'normal');
+  setLayoutVariant(null);
+  const arcs = st.collectibles.filter((c) => c.arc);
+  assert.ok(arcs.length > 0 && arcs.every((c) => c.type === 'flower'), `1-6 layout 1 holds arc petals (${arcs.length})`);
+  const all = st.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf').length;
+  assert.ok(goalCounts(st as never).petals <= all - arcs.length, 'the door counts none of them');
+});

@@ -14,6 +14,8 @@ PLANTS = [
    "?.brief?.petalArcs === true;", "?.brief?.petalArcs === 'never';"),
   ('1-6 brief without the arcs (bank rows alone read 0.46)', 'src/game/gen2/worlds/w1Arc16.ts',
    "  petalArcs: true,\n", ''),
+  ('the door counts the arc petals', 'src/game/goals.ts', " && !x.arc && ", " && ",
+   ['--test-name-pattern=a bonus', 'src/game/gen2/petalArcs.test.ts']),
   ('the meter builds its anchor from the list (no fixed layouts)', 'tools/difficulty/score.ts',
    "  const undo = id === ANCHOR.id ? plantSeedList(ANCHOR.id, ANCHOR_LIST) : null;", "  const undo = null as null | (() => void);",
    ['--test-name-pattern=fixed layouts', 'tools/difficulty/score.test.ts']),
