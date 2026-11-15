@@ -1,7 +1,8 @@
 # TOOLS-2 REPORT: Easy is proven on Easy's stage (R-165.251) + the test link can't over-fill or miss changes (R-165.252)
 
-Branch t-tools-2 = origin/t-tools-1@71859cf9 + merge origin/t-int-9@1c7f6b95 (ae74a9cfb, clean), then two commits:
-ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York date`.
+Branch t-tools-2 = origin/t-tools-1@71859cf9 + merge origin/t-int-9@1c7f6b95 (ae74a9cfb, clean), then the code commits
+ba2b1a215 (R-165.251), 35cb88ce5 (R-165.252), 6df8fb585 (R-165.258, the lead's ruling 11-14) and 7a0e13285 (R-165.251, the judge's
+half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York date`.
 
 ## 1. Done-items
 
@@ -25,6 +26,14 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   - **castBots**: already right, it runs the real engine (castBots -> firsttimer `setDifficulty` -> engine.ts, which now calls
     `applySetting`); **levelCheck**'s flight caches were keyed by the swing already (TOOLS-1's `swingSettingKey`);
   - the engine: engine.ts `applySetting(this.easy ? 'easy' : 'normal')` where it had `setTimedSwing(this.easy)`.
+- **The judge's half (7a0e13285), found by the whole suite**: with Easy built on Easy's swing, gen2/game.test.ts:68 and
+  w7Game.test.ts:65 went red on 7-9 layout 2 Easy ("exit platform 157 is not reachable" and 61 more): the tests judged it with
+  validateStage on the caller's Normal swing (Normal's grab misses Easy's lianas). On the base a phone's 7-9/2 Easy (built and judged on
+  Easy's swing) has 0 errors, so the stage is sound and the judge was wrong. `levelCheck.validateStage` now judges a gen2 stage on its own
+  budget's setting (withSetting), whoever asks; inside a build the dials are the stage's already. Planted: `validateStage judges a gen2
+  stage on its own setting's dials, whatever the caller's (7-9 layout 2, Easy)`: red before, green after. Not done for old-generator
+  stages: they carry no setting, so a judge of one must set it (withSetting); I did not audit which tests judge an old-generator Easy
+  stage on the wrong swing (the whole suite is green, so none fails on it; a Suggestions packet).
 - **A second hole of the same kind, found and fixed**: stageGenerator's layout-pick caches (`variantAttempt`, `known`) were keyed by
   stage and layout only; validateStage flies lianas on the dials, so a process that built Normal first handed Normal's pick to Easy.
   On base: 9-3 layouts 4 and 14, 9-4 layout 12, 10-6 layouts 1, 6 and 10 (fresh-process Easy lock vs in-process). Now keyed by `dialsKey()`.
