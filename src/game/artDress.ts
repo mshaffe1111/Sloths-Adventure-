@@ -67,7 +67,8 @@ export function dressStage(d: DressInput): KitDecor[] {
 }
 
 /**
- * World 1's rooms (1-7's acorn meadow), from Matt's World 1 sheet:
+ * World 1's rooms (none is built today: 1-4's squirrels' lift, 1-6's seesaws and 1-7's acorn meadow went with their hand-built
+ *  stages; stageSheets.test holds W1_ROOMS to the stages that build rooms), from Matt's World 1 sheet:
  *   all  a petal bundle, the room's reward: it rises out of the spot past the way on as he gets there (a picture: it is not a pickup and
  *        counts for nothing, so no goal or count changes)
  * (1-4's squirrel-lift nest door went with the hand-built 1-4: the door is 1-4's crown dressing now, nestDoorAt below. 1-6's seesaw

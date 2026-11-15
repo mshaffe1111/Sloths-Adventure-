@@ -78,6 +78,9 @@ export const BOA: PredatorDef = {
 export const EAGLE: PredatorDef = {
   kind: 'eagle',
   habit: 'sweep',
+  // it flies over its eye (its body is where its shadow is): its dive starts from over him, so the box that hurts arrives with the drawn
+  // dive (sweepPose.ts), never 700 px/s from the far end of its stretch (1-7 NEW 2, ENG-E1)
+  rides: true,
   sight: { ahead: 70, behind: 70, tall: 2000, seesStill: true },
   // the eye crosses a phone's width in about the 2.6 s today's pass takes (watcher.ts WATCH.pass)
   speed: { rest: 320, hunt: 0 },

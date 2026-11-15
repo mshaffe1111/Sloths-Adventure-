@@ -1,0 +1,2 @@
+seedlist 1-1: the verdicts refuse 0 of 257 listed seeds
+seedlist 1-1: PASS (257 seeds, each clean on both settings)

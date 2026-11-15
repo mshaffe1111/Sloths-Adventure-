@@ -47,8 +47,9 @@ test('section: jitter and swinging across a line between two stretches enter eac
 });
 
 test('section: a straight run through a hand-built stage, walking or running, enters every stretch once and in order', () => {
-  // (1-7's beats, built as the game builds it; until 11-14 the old hand-built 1-6's (the swing stage), gone with its proto plan, R-165.238)
-  const st = buildProtoStage(levelConfig('1-7'), 7, '1-7');
+  // (1-9's beats, built as the game builds it; until 11-14 the old hand-built 1-6's (the swing stage), gone with its proto plan, R-165.238,
+  //  then the hand-built 1-7's, gone with BUILD-17)
+  const st = buildProtoStage(levelConfig('1-9'), 7, '1-9');
   const beats = st.proto!.beats;
   const end = beats[beats.length - 1][1];
   for (const speed of [200, 420]) {

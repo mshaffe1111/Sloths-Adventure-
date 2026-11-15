@@ -1,0 +1,36 @@
+('child', 'easy') finished 40 -> 40 rescues 0 -> 0 pass False -> False
+    finishSeconds p50 305.9 -> 306.7 (tier 2231 ) False -> False 
+    livesPerRun mean 0 -> 0 (tier 0 ) True -> True 
+    putbacksPerRun mean 0.23 -> 0.33 (tier 187 ) False -> False 
+    secondPressDelayMs p50 433 -> 433 (tier 543 ) True -> True 
+    top three pieces  ->  (tier  ) True -> True 
+    rescues 0 -> 0 (tier 0 ) True -> True 
+('child', 'normal') finished 40 -> 40 rescues 10 -> 12 pass False -> False
+    finishSeconds p50 458.6 -> 458.4 (tier 444 ) True -> True 
+    livesPerRun mean 0 -> 0 (tier 1.2 ) False -> False 
+    putbacksPerRun mean 2.23 -> 2.28 (tier 3.4 ) False -> False 
+    secondPressDelayMs p50 367 -> 367 (tier 406 ) True -> True 
+    top three pieces w1-seed-perch 0 -> w1-seed-perch 0 (tier w1-seed-perch 0 ) True -> True 
+    rescues 10 -> 12 (tier 0 ) True -> True 
+('middle', 'easy') finished 40 -> 40 rescues 0 -> 0 pass False -> False
+    finishSeconds p50 193.9 -> 193.9 (tier 187 ) True -> True 
+    livesPerRun mean 0 -> 0 (tier 0 ) True -> True 
+    putbacksPerRun mean 0.03 -> 0.03 (tier 1.2 ) False -> False 
+    secondPressDelayMs p50 400 -> 400 (tier 383 ) True -> True 
+    top three pieces w1-dip-double-teach 0, w1-double-teach 0, w1-learn 0 -> w1-dip-double-teach 0, w1-double-teach 0, w1-learn 0 (tier w1-double-teach 0.8, w1-dip-double-teach 0.6, w1-learn 0 ) True -> True 
+    rescues 0 -> 0 (tier 0 ) True -> True 
+('middle', 'normal') finished 40 -> 40 rescues 0 -> 0 pass False -> False
+    finishSeconds p50 205.2 -> 205.2 (tier 213 ) True -> True 
+    livesPerRun mean 0 -> 0 (tier 0.63 ) False -> False 
+    putbacksPerRun mean 0.53 -> 0.53 (tier 0.7 ) True -> True 
+    secondPressDelayMs p50 433 -> 433 (tier 416 ) True -> True 
+    top three pieces w1-double-teach 0.38, w1-dip-double-teach 0.21, w1-canopy-rungs-level 0 -> w1-double-teach 0.38, w1-dip-double-teach 0.21, w1-canopy-rungs-level 0 (tier w1-canopy-rungs-level 0.83, w1-double-teach 0.55, w1-dip-double-teach 0.2 ) True -> True 
+    rescues 0 -> 0 (tier 0 ) True -> True 
+('expert', 'normal') finished 40 -> 40 rescues 0 -> 0 pass False -> False
+    finishSeconds p50 175.5 -> 175.5 (tier 167 ) True -> True 
+    livesPerRun mean 0 -> 0 (tier 0.28 ) True -> True 
+    putbacksPerRun mean 0.73 -> 0.65 (tier 0.2 ) False -> False 
+    secondPressDelayMs p50 467 -> 467 (tier 441 ) True -> True 
+    top three pieces w1-dip-double-teach 0.74, w1-double-teach 0.54, w1-log-chain 0.12 -> w1-double-teach 0.54, w1-dip-double-teach 0.53, w1-log-chain 0.12 (tier w1-canopy-rungs-level 0.3, w1-log-chain 0.21, w1-dip-double-teach 0.08 ) True -> True 
+    rescues 0 -> 0 (tier 0 ) True -> True 
+runs 200 200 lines moved 24 not shrine 0 flips 0

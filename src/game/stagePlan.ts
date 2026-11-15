@@ -54,7 +54,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the story keeper's line, t-keeper-16@387aeb2b8 reference/story/lines-1-6.md: gen2/worlds/w1Arc16.ts MISSION_16, held equal by
     //  w1Arc16.test.ts)
     { ...S('vine_runner', 'First Lianas', 'They took her over the gorge. Swing after her, and gather her petals.'), gathers: 'petals' },
-    S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
+    // (the story keeper's line, t-keeper-17@a8dd2409 reference/story/lines-1-7.md: gen2/worlds/w1Arc17.ts MISSION_17, held equal by
+    //  w1Arc17.test.ts; new replaces old, the crouch line "Duck under the leaves" is gone)
+    S('stealth', 'A Very Good Bush', 'An eagle is watching. Hide in the green like Dot did, and collect her petals.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
   ],
@@ -201,7 +203,13 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
 /** Dot's words at a locked exit, by world and goal, where the story keeper wrote them (1-5's marks: STORY-LINES.md 11-12, approved by Matt
  *  10:20 PM ET; held equal to w1Arc15.ts LINES_15.sealed by limbTrap.test.ts). The engine says it in place of goalLine's 'sealed' (the
  *  count is on the HUD beside it); every other goal keeps goalLine's own words */
-export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!", '1:vine_runner': 'Some of her petals are still on the lianas. Back we go!' };
+export const SEALED_LINES: Readonly<Record<string, string>> = {
+  '1:relic_hunt': "We missed some of her marks. They're back there!",
+  '1:vine_runner': 'Some of her petals are still on the lianas. Back we go!',
+  // (1-7, World 1's only stealth stage: the keeper's 9b, held equal to w1Arc17.ts SEALED_17. It speaks once 1-7's exit can seal: with
+  //  1-6's StageSpec.gathers (merged with t-build-16 by ENG-16H) 1-7 may take `gathers: 'petals'`, the lead's call; until then its exit is never locked)
+  '1:stealth': 'We left some of her petals behind. Sneak back for them!',
+};
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {

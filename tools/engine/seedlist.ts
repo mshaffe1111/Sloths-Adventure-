@@ -16,7 +16,7 @@ import { w1Finish } from '../../src/game/gen2/worlds/w1.ts';
 import { listedStage } from '../../src/game/gen2/listed.ts';
 import { judgedOnArcs } from '../../src/game/gen2/reach.ts';
 import { searchYield } from './yield.ts';
-import { quietJudge, quietOf as quietAt } from './listRules.ts';
+import { helpRoomBreaches, quietJudge, quietOf as quietAt } from './listRules.ts';
 import { hasSeedList, listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 import { listFile, writeSeedList } from './seedlistFile.ts';
@@ -31,6 +31,8 @@ const row = listedStage(id);
 if (!row) { console.error(`seedlist: no listed stage "${id}" (src/game/gen2/listed.ts)`); process.exit(2); }
 const kit = row.kit;
 const cfg = generateAllLevels().find((l) => l.id === id)!;
+/** the world's finish Play gives a roll (a `squirrels` row: World 1's w1Finish), so the help-room rule judges the stage as played */
+const finish = (st: ReturnType<typeof buildGen2Stage>) => (row.squirrels ? w1Finish(st as never) : st) as ReturnType<typeof buildGen2Stage>;
 
 // (the quiet line is the search's own rule here, R-165.120: a roll over it is repaired or rolled again, never only thrown away; the
 // list's check asks the same search, so a seed's replay is still its search)
@@ -45,6 +47,8 @@ if (process.argv.includes('--check')) {
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined, also);
   // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)
   for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal', also })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
+  // (room for help, as played on each setting, on a no-lethal stage: listRules.ts helpRoomBreaches; POLISH-9b)
+  for (const seed of provenSeeds(id)) for (const difficulty of ['normal', 'easy'] as const) for (const l of helpRoomBreaches(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also }), difficulty, finish)) b.push(`${id} seed ${seed}: ${l}`);
   if (row.squirrels) for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   // (the index, all the main script holds of the list, names this very list: its count and its version)
@@ -147,6 +151,10 @@ for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls
   const vf = [n, e].flatMap((s, i) => { const d = i ? 'easy' : 'normal', v = s.gen2.verdicts?.[d]; return v && !v.accepted ? [`verdict ${v.failed[0].name} (${d})`] : []; });
   if (vf.length) { refuse(n, vf); continue; }
   // (a stage whose row says `squirrels`, the lead 11-06: Play finishes the roll with w1Finish, which throws when too few find a spot; such a roll is never listed)
+  // (room for help on a no-lethal stage, as played on each setting: the relay test's (b), now the list's own rule; POLISH-9b. Before
+  // dresses, which finishes n and e in place: the judge finishes its own copy once)
+  const hr = [...helpRoomBreaches(n, 'normal', finish), ...helpRoomBreaches(e, 'easy', finish)];
+  if (hr.length) { refuse(n, hr); continue; }
   if (row.squirrels && !dresses(n, e)) { refuse(n, ['too few squirrels find a spot']); continue; }
   const q = quietOf(n);
   if (q.quiet > quietMax) { quietOut++; refuse(n, ['the quiet line']); continue; }

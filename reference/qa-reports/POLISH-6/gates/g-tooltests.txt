@@ -1,0 +1,47 @@
+ 'test'
+  ...
+# Subtest: alone: a rule is counted only on rolls nothing else stops
+ok 28 - alone: a rule is counted only on rolls nothing else stops
+  ---
+  duration_ms: 0.203586
+  type: 'test'
+  ...
+# Subtest: easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+ok 29 - easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+  ---
+  duration_ms: 0.151674
+  type: 'test'
+  ...
+# Subtest: along and reached: the travel axis and its direction
+ok 30 - along and reached: the travel axis and its direction
+  ---
+  duration_ms: 1.888297
+  type: 'test'
+  ...
+# Subtest: the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+ok 31 - the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+  ---
+  duration_ms: 2311.228265
+  type: 'test'
+  ...
+# Subtest: the first-timer on a run (1-1): furthest on is still the furthest right
+ok 32 - the first-timer on a run (1-1): furthest on is still the furthest right
+  ---
+  duration_ms: 659.124823
+  type: 'test'
+  ...
+# Subtest: the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+ok 33 - the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+  ---
+  duration_ms: 0.570857
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42377.277122

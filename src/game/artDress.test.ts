@@ -82,15 +82,19 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
 
 // (1-4's squirrel lifts went with the hand-built 1-4, B14 11-13: 1-4 is the vine field; their nest door is 1-4's crown dressing now,
 //  w1Arc14.ts finish14, held in w1Arc14.test.ts)
-// (1-6's seesaw rooms and their branch gates went with the hand-built 1-6's proto plan, R-165.238: HAND_STAGES['1-6'] had no plan since
-//  1-6 rolls on gen2, so `by('1-6')` built the old default plan; the gen2 1-6 has no room)
+// (1-6's seesaw rooms and their branch gates went with the hand-built 1-6's proto plan, R-165.238, and 1-7's acorn meadow with the
+//  hand-built 1-7, BUILD-17: no World 1 stage builds a room today (stageSheets.test, W1_ROOMS), so World 1's room dressing is held on a
+//  room laid on a plain bough: the reward rises past the way on, and it is a picture, never a pickup)
 test("World 1's rooms: a petal bundle for every room", () => {
   for (const seed of [1, 2, 3]) {
-    const s17 = buildProtoStage(cfg('1-7'), seed, HAND_STAGES['1-7']);
-    assert.ok((s17.kit?.rooms ?? []).length >= 1, `seed ${seed}: 1-7 has rooms`);
-    for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
-    // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
-    assert.ok(!s17.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+    const platforms = [{ id: 7, x: 1000, y: 600, width: 400, height: 24 }] as unknown as Parameters<typeof dressStage>[0]['platforms'];
+    const room = { id: 'room-a', left: { on: 7, at: 0 }, right: { on: 7, at: 1 }, above: 200, below: 0, pieces: [], exit: 'gate', beyond: { on: 7, at: 0.75 } };
+    const decor = dressStage({ world: 1, stage: 6, seed, platforms, rooms: [room] as unknown as Parameters<typeof dressStage>[0]['rooms'], collectibles: [] });
+    const bundle = decor.find((d) => d.n === 'petalBundle' && d.room === 'room-a');
+    assert.ok(bundle, `seed ${seed}: the room's petal bundle`);
+    assert.equal((bundle as { x: number }).x, 1300, 'at the spot past the way on');
+    // (a picture, not a pickup: dressing adds no collectible)
+    assert.ok(!decor.some((d) => (d as { findId?: string }).findId === 'petalBundle'));
   }
 });
 

@@ -42,6 +42,7 @@ A roll with any error never reaches the proven list or a player. `provenGen2Stag
 | missing required | a required section with no node | `layStage` `missing` | required.test |
 | node code V1-V20 | the realised node code breaks a V-rule | `realisedCode` -> `codeErrors` | proven.test (fold) |
 | unsaid tip | a tip id the kit has no Dot words for | `fillSockets` `unsaid` | tips.test |
+| tip reach (R-165.236) | on a tower (up, down, legs): no tip said more than `TIP_NEAR` (PHYS.maxRun 285 px/s x `TIP_SAY_S` 3.6 s = 1,026 px) of route before its socket (`tipReach`: the route's line in 4 px steps, past the tip's x with his feet in its band); a teach tip in the first section to show what it teaches. Every rolled tip carries `band` (`tipBand`: its section's surfaces, BOUNCE_REACH over, DOUBLE_RISE under; no seams) and the engine fires it only inside | `applyVerdicts` tower block -> `towerMiss` (`tipMisses`) | tipBand.test, tools/engine/tipwalk.ts (gate) + tipwalk.test |
 | V19 late rise | on an up stage, the node after a late descent (or the signature, `endHigh`) ends 20 px above the window start and the descent | `layStage` `riseTo` / `needsRise`, `gen2.rise` | v19.test |
 | V19b window | the end log is above the route where the bough window begins: the gate's own `storyChecks.endAboveWindow`, one definition | `applyVerdicts` -> `gen2.windowMiss` | v19.test |
 | rolled flags | `ROLLED_FLAGS`: a flag within 2400 px before each hard node (teach, test, twist, combine, signature, finale) and at least `clear` 1500 px ahead of it; 900-4000 px apart (2300 where a life can be lost); first at least 700 px on; last within 2000 px of the exit | `fillSockets` (placement), `rolledFlagBreaches`, `applyVerdicts` -> `gen2.flagMiss` | rolledFlags.test |
@@ -91,6 +92,18 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
 - **Flags off pieces, the rest** (R-165.156, FX 11-12, reference/qa-reports/FX/REPORT.md): the rolled pass uses flagRuns/standsOnFlag
   (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
   not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
+
+- **A shut fig gate's neighbourhood** (FIX-15 -> FIX-15b, R-165.212, 11-14; reference/qa-reports/FIX-15b/PUSHBACK.md). The engine
+  makes a shut gate wood from every approach, so wood within a jump of its top from BESIDE it lets him STAND on the shut gate (ONTO: 93
+  of 192 gates, 1-4 layouts 0-15 both settings), and wood under its sagged span with less room than his drawn height puts his head in
+  the thatch (LOW: 48). Measure: `npx tsx tools/engine/gatereach.ts 1-4 --layouts 16 --margin 0` (self-contained: runs on any base).
+  **Keeping ONTO wood out of the LAY is impossible as the lay stands** (FIX-15b, 0/40 fresh seeds both settings vs 40/40): the storey
+  laid just above a gate hangs open ends 28-32 px past the gate's ends, and every catch the 450 px fall limit allows under them is inside
+  a double jump (LEAP.up 221 + GATE.sag 56) of the shut top. The LOW half alone rolls 20/40 Normal, 18/40 Easy. The full rule (tower.ts
+  `sealedNear`/`sealedRoom`, the lay's byGate, the verdict, planted tests) is lay-rule-NOT-APPLIED.patch, waiting on the lead's ruling
+  (options A-C: A holds catches beside a gate with it, ClusterGate.with; mock stills qa-reports/FIX-15b/mockA-*.jpg). TRAP: a `with` bough
+  is `broken` (no footing) but the ground painter still draws it; A must hide it while shut. Any change here moves 1-4's rolls: relist 1-4.
+  Rewritten for FIX-15b (11-14, t-fix-15b): this bullet only; the rest of the note is the 11-07 planner's.
 
 ## 4. Traps (each one cost time on 11-06)
 

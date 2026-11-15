@@ -181,3 +181,65 @@ test("a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank
   assert.equal(lipUnder(floor, [floor, P(500, 530, 489)], true), 30, 'never past a narrow bank');
   assert.equal(lipUnder(P(0, 500, 580, { soil: true }), [P(0, 500, 580, { soil: true }), hi], true), 0, "a pit's low step keeps its own ends");
 });
+
+// R-165.243 (the lead's 1-1 x11560 / 1-7 stills, 11-14): a thin dark line straight across World 1's backdrop, one device row, at the
+// top of every ground lip. Lips 0 and 1 are packed right under the soil fills (the sheet row above each is opaque soil in every world:
+// tools in POLISH-10's REPORT), and drawn to their frame's top edge the filter pulled that row in: a ground square's row went from clear
+// to the soil's colour at alpha 95 for its whole width, 30-40 units above the bank. The lip is sampled LIP_INSET rows in from its top and
+// bottom (clear rows in every world), drawn where those rows sat, so the art is where it was.
+test('every ground lip, in every world, is sampled clear of the soil row packed above it, and drawn where its frame puts it (R-165.243)', async () => {
+  const { LIP_INSET, LIP_W, lipSrc, drawLip, warmGround } = await import('./groundPaint.ts');
+  assert.ok(LIP_INSET >= 4, `LIP_INSET ${LIP_INSET}: the soil row is pulled in over 2 rows at half size (a 1x phone), 4 at a quarter`);
+  let n = 0;
+  for (const [w, g] of Object.entries(GROUND_FRAMES)) {
+    for (const l of g.lips ?? [g.lip]) {
+      const [sx, sy, sw, sh] = lipSrc(l);
+      const where = `world ${w} lip at ${l.x},${l.y}`;
+      assert.ok(sy >= l.y + LIP_INSET && sy + sh <= l.y + l.h - LIP_INSET, `${where}: sampled from its top or bottom edge rows`);
+      // (its full width: the lips share their ends, so the one beside it in the sheet is its own continuation, and a cut would show at
+      // every repeat)
+      assert.ok(sx === l.x && sw === l.w, `${where}: cut at its sides`);
+      // (and only the clear rows: the walking line, surf of the way down, is inside what is drawn)
+      assert.ok(sh >= l.h - 2 * LIP_INSET && l.surf * l.h > LIP_INSET, `${where}: cut more than its clear rows`);
+      n++;
+    }
+  }
+  assert.ok(n >= 30, `${n} lips checked`);
+  // drawLip draws through it, at the same place: the art does not move
+  const G = globalThis as unknown as { Image?: unknown };
+  const wasImage = G.Image;
+  class Img {
+    onload: null | (() => void) = null;
+    onerror: null | (() => void) = null;
+    naturalWidth = 2048;
+    naturalHeight = 2944;
+    width = 2048;
+    height = 2944;
+    set src(_v: string) {
+      queueMicrotask(() => this.onload?.());
+    }
+  }
+  G.Image = Img;
+  try {
+    warmGround(1);
+    for (let i = 0; i < 20 && !warmGround(1); i++) await new Promise((r) => setTimeout(r, 5));
+    assert.ok(warmGround(1), 'the stubbed sheet loaded');
+    const calls: number[][] = [];
+    const ctx = { drawImage: (...a: unknown[]) => calls.push(a.slice(1) as number[]) } as unknown as CanvasRenderingContext2D;
+    const y = 1322;
+    drawLip(ctx, 1, 0, 3 * LIP_W, y);
+    assert.equal(calls.length, 3, 'one draw a repeat');
+    const f = GROUND_FRAMES[1].lip;
+    const h = (LIP_W * f.h) / f.w;
+    const top = y - f.surf * h;
+    for (const [sx, sy, sw, sh, , dy, , dh] of calls) {
+      const l = (GROUND_FRAMES[1].lips ?? [f]).find((q) => q.x === sx && sy >= q.y && sy < q.y + q.h)!;
+      assert.ok(l, `drawn from a lip's frame (${sx},${sy})`);
+      assert.ok(sy >= l.y + LIP_INSET && sy + sh <= l.y + l.h - LIP_INSET && sw === l.w, `drawn from ${sx},${sy} ${sw}x${sh}: its edge rows sampled`);
+      // (each sheet row lands where it did when the whole frame was drawn from `top`)
+      assert.ok(Math.abs(dy - (top + ((sy - l.y) * h) / l.h)) < 1e-9 && Math.abs(dh - (sh * h) / l.h) < 1e-9, `row ${sy} drawn at ${dy}, ${dh} tall: the art moved`);
+    }
+  } finally {
+    G.Image = wasImage;
+  }
+});

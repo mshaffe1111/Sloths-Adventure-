@@ -115,6 +115,95 @@ export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' 
   const best = kind === 'log' ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + 0.2);
   return best[Math.abs(p.id * 2654435761) % best.length].n;
 }
+/** a stone's piece as World 1 draws it: the one the lay settled on its ground (Platform.cut, settleCut), else pickCut's */
+export function cutOf(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'cut'>): string | undefined {
+  return p.cut && W1_CUT[p.cut] ? p.cut : pickCut(p);
+}
+
+/** the most a stone's or stump's drawn piece may reach past the edge of the ground it stands on (R-165.226: Matt's frame, a boulder drawn
+ *  ~100 px out over a dip) */
+export const OVERHANG_MAX = 6;
+type Solid = Pick<Platform, 'x' | 'y' | 'width' | 'height' | 'type'> & { broken?: boolean };
+/** the ground a stone stands on: the run of solid tops level with its foot (within 3 px), joined end to end, that its middle is over, and
+ *  on over a bank that rises where it ends;
+ *  undefined when nothing is under its middle (a plank's, or a stone that floats) */
+export function groundRun(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, solids: readonly Solid[]): [number, number] | undefined {
+  const foot = p.y + p.height;
+  const level = solids.filter((q) => q !== p && q.type === 'solid' && !q.broken && Math.abs(q.y - foot) <= 3);
+  const mid = p.x + p.width / 2;
+  if (!level.some((q) => q.x <= mid && q.x + q.width >= mid)) return undefined;
+  let x0 = mid, x1 = mid;
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const q of level) if (q.x < x0 && q.x + q.width >= x0 - 1) { x0 = q.x; grew = true; }
+    for (const q of level) if (q.x + q.width > x1 && q.x <= x1 + 1) { x1 = q.x + q.width; grew = true; }
+  }
+  // (an end where the ground RISES is no lip: a bank higher than his foot that meets the run there. A stone's piece drawn past it is drawn
+  //  in front of that bank's earth, a rock against a bank, never over air (1-2 seed 81's step between two banks); the run goes on over it)
+  const wall = (x: number) => solids.find((q) => q !== p && q.type === 'solid' && !q.broken && q.y < foot - 3 && q.y + q.height > foot + 3 && q.x <= x + 1 && q.x + q.width >= x - 1);
+  const wl = wall(x0), wr = wall(x1);
+  return [wl ? Math.min(x0, wl.x) : x0, wr ? Math.max(x1, wr.x + wr.width) : x1];
+}
+/** how far a piece's drawn box reaches past its ground run, the worse side (px; 0 when it is on its ground) */
+export function overhang(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, cut: string, run: readonly [number, number]): number {
+  const b = cutBox(p, W1_CUT[cut]);
+  return Math.max(0, run[0] - b.x, b.x + b.w - run[1]);
+}
+/**
+ * A stone or stump on the ground, drawn on its ground (R-165.226, the lead's rule 11-14: "the generator keeps a stone back from a lip by its
+ * piece's art margin"): its piece, and how far its collider moves (dx) so that piece is drawn no more than OVERHANG_MAX past its ground run.
+ * Of the pieces that fit it about as well as the best (pickCut's own band, then any of its kind), the one that needs the least move, the
+ * picked one first; the move never puts it into another piece. Undefined when nothing needs doing (no piece, no ground, already on it);
+ * `dx` NaN when no piece and no move keeps it on its ground (the roll is refused by name, the World 1 kit's settle).
+ * (w1-rock-roots is never a stand-in: its art rises ~52 px over where he stands, POLISH-5's tried swap drew a wall behind him)
+ */
+export function settleCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style'>, solids: readonly Solid[]): { cut: string; dx: number } | undefined {
+  const picked = pickCut(p);
+  if (!picked || W1_CUT[picked].kind === 'log') return undefined;
+  const run = groundRun(p, solids);
+  if (!run) return undefined;
+  if (overhang(p, picked, run) <= OVERHANG_MAX) return { cut: picked, dx: 0 };
+  const foot = p.y + p.height;
+  // (the move a piece needs: its box inside the run, OVERHANG_MAX each side; NaN if the box is wider than the run allows, or the move hits
+  //  another piece standing on the same ground or hanging over it)
+  const move = (cut: string): number => {
+    const b = cutBox(p, W1_CUT[cut]);
+    const lo = run[0] - OVERHANG_MAX, hi = run[1] + OVERHANG_MAX;
+    if (b.w > hi - lo) return NaN;
+    // (whole px, rounded inward: the stage's own x stay as they were laid, and the piece ends inside the limit)
+    const dx = b.x < lo ? Math.ceil(lo - b.x) : b.x + b.w > hi ? Math.floor(hi - (b.x + b.w)) : 0;
+    const nx = p.x + dx;
+    if (dx && solids.some((q) => (q as unknown) !== p && q.type === 'solid' && !q.broken && q.x < nx + p.width && q.x + q.width > nx && q.y < foot - 3 && q.y + q.height > p.y)) return NaN;
+    return dx;
+  };
+  const kinds = (c: Cut) => c.kind === W1_CUT[picked].kind || (c.kind === 'stump' && W1_CUT[picked].kind === 'stone' && p.height > 70);
+  const all = Object.entries(W1_CUT).filter(([n, c]) => n in LAID && n !== 'w1-rock-roots' && kinds(c)).map(([n, c]) => ({ n, miss: stoneMiss(p, c) })).sort((a, b) => a.miss - b.miss || (a.n < b.n ? -1 : 1));
+  const band = all.filter((f) => f.miss <= Math.min(stoneMiss(p, W1_CUT[picked]), all[0]?.miss ?? Infinity) + 0.2);
+  // (the least move in pool order; the first that needs none ends the look: no later piece beats it)
+  for (const pool of [[{ n: picked }, ...band], all]) {
+    let best: { n: string; dx: number } | undefined;
+    for (const f of pool) {
+      const dx = move(f.n);
+      if (Number.isNaN(dx) || (best && Math.abs(dx) >= Math.abs(best.dx))) continue;
+      best = { n: f.n, dx };
+      if (!dx) break;
+    }
+    if (best) return { cut: best.n, dx: best.dx };
+  }
+  return { cut: picked, dx: NaN };
+}
+
+/** the gate's reading (R-165.226; w1Overhang.test.ts on every World 1 stage, every listed layout, both settings): each stone or stump drawn
+ *  more than OVERHANG_MAX past the ground it stands on, read off the finished stage by the same cutBox the screen draws with */
+export function overhangs(platforms: readonly (Solid & Pick<Platform, 'id' | 'cut'>)[]): Array<{ id: number; cut: string; x: number; over: number }> {
+  return platforms.flatMap((p) => {
+    const c = p.cut ? W1_CUT[p.cut] : undefined;
+    if (!c || c.kind === 'log' || p.type !== 'solid' || p.broken) return [];
+    const run = groundRun(p, platforms);
+    const over = run ? overhang(p, p.cut!, run) : Infinity;
+    return over > OVERHANG_MAX ? [{ id: p.id, cut: p.cut!, x: Math.round(p.x), over: Math.round(over) }] : [];
+  });
+}
 
 /** draws a platform's cut piece; false until the sheet is ready (nothing drawn in its place) */
 export function drawCutArt(ctx: CanvasRenderingContext2D, p: Platform): boolean {

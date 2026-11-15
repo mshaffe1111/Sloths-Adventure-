@@ -1,0 +1,31 @@
+# castBots 1-5 seeds 1-40, BEFORE (main 73e7bed0 tools)
+castBots 1-5, seeds 1-40
+kid    normal PASS 34/40; time median 132.4 s (min 126.9); hits 1 lives 6 (pit 6, foe:snake 1); cleared stomp 26; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 155
+        fail 5: shrine rescued x1  (seeds 6,36,37,16,39)
+        fail 1: shrine rescued x2  (seeds 26)
+kid    easy   PASS 40/40; time median 127.8 s (min 124.2); hits 0 lives 0 (none); cleared stomp 22; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 119
+adult  normal PASS 35/40; time median 132.1 s (min 127.7); hits 1 lives 2 (foe:snake 1, pit 2); cleared stomp 19, punch 49; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 113
+        fail 3: shrine rescued x1  (seeds 22,3,33)
+        fail 2: shrine rescued x2  (seeds 15,27)
+adult  easy   PASS 40/40; time median 129.5 s (min 125.9); hits 0 lives 0 (none); cleared stomp 21, punch 27; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 93
+child  normal PASS 40/40; time median 394 s (min 368.5); hits 20 lives 56 (pit 51, foe:snake 21, other 4); cleared stomp 21, punch 49; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 111
+child  easy   PASS 40/40; time median 271.8 s (min 243); hits 7 lives 0 (foe:snake 7); cleared punch 38, stomp 3, kick 1; told of traps 0/40; first trap sprung 0/40; traps sprung 1/80; turned back 0; left 99
+middle normal PASS 40/40; time median 198.1 s (min 181.6); hits 8 lives 10 (foe:snake 8, pit 9, other 1); cleared punch 52, stomp 25; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 104
+middle easy   PASS 40/40; time median 179.1 s (min 169.2); hits 0 lives 0 (none); cleared stomp 18, punch 37; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 86
+expert normal PASS 40/40; time median 168.1 s (min 156.9); hits 1 lives 7 (pit 7, foe:snake 1); cleared punch 54, stomp 16; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 111
+
+# AFTER (t-fix-14 towerRoute fix)
+castBots 1-5, seeds 1-40
+kid    normal PASS 34/40; time median 132.4 s (min 126.9); hits 1 lives 6 (pit 6, foe:snake 1); cleared stomp 26; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 155
+        fail 5: shrine rescued x1  (seeds 6,36,37,39,16)
+        fail 1: shrine rescued x2  (seeds 26)
+kid    easy   PASS 40/40; time median 127.8 s (min 124.2); hits 0 lives 0 (none); cleared stomp 22; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 119
+adult  normal PASS 35/40; time median 132.1 s (min 127.7); hits 1 lives 2 (foe:snake 1, pit 2); cleared stomp 19, punch 49; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 113
+        fail 3: shrine rescued x1  (seeds 3,33,22)
+        fail 2: shrine rescued x2  (seeds 15,27)
+adult  easy   PASS 40/40; time median 129.5 s (min 125.9); hits 0 lives 0 (none); cleared stomp 21, punch 27; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 93
+child  normal PASS 40/40; time median 394 s (min 368.5); hits 20 lives 56 (pit 51, foe:snake 21, other 4); cleared stomp 21, punch 49; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 111
+child  easy   PASS 40/40; time median 271.8 s (min 243); hits 7 lives 0 (foe:snake 7); cleared punch 38, stomp 3, kick 1; told of traps 0/40; first trap sprung 0/40; traps sprung 1/80; turned back 0; left 99
+middle normal PASS 40/40; time median 198.1 s (min 181.6); hits 8 lives 10 (foe:snake 8, pit 9, other 1); cleared punch 52, stomp 25; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 104
+middle easy   PASS 40/40; time median 179.1 s (min 169.2); hits 0 lives 0 (none); cleared stomp 18, punch 37; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 86
+expert normal PASS 40/40; time median 168.1 s (min 156.9); hits 1 lives 7 (pit 7, foe:snake 1); cleared punch 54, stomp 16; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 111

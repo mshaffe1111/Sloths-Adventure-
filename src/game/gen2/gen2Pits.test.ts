@@ -52,3 +52,31 @@ test('8-6\'s dark glides (five shipped Normal rolls had a floor running under a 
     assert.deepEqual(pitFaults(st), [], `8-6 seed ${s.seed}`);
   }
 });
+
+// INT-9 (11-14): a bank beside a pit reaches down past its floor in every world, any slot. The 48 px exception left a 0-48 px slot under
+// a bank's foot; a stair stone laid flush against that bank read as drawn past its ground's lip (w1CutArt.ts groundRun's wall wants the
+// bank 3+ px past the floor) and the settle (R-165.226) swapped the section away until the pool was spent: 1-7 threw on 5 of 8 seeds.
+// Every World 1 stage the game lists, its first two raw seeds on both settings (the way the seed-list search builds them): each builds,
+// and no bank stands with its foot 0-48 px over a floor it touches (planted: red with the exception back, 1-7 seed 1 throws).
+test('a bank beside a pit reaches past its floor, any slot: every listed World 1 stage builds with no slot under a bank', async () => {
+  const { buildStage } = await import('../../../tools/engine/libstage.ts');
+  const { PROVEN_INDEX } = await import('./provenIndex.ts');
+  const slots = (st: Stage): string[] => {
+    const solid = st.platforms.filter((p) => p.type === 'solid' && !p.lift);
+    const out: string[] = [];
+    for (const p of solid) for (const q of solid) {
+      if (q === p || q.height < 40) continue;
+      const touch = Math.abs(q.x + q.width - p.x) < 3 || Math.abs(q.x - (p.x + p.width)) < 3;
+      const foot = q.y + q.height;
+      if (touch && q.y < p.y - 40 && foot <= p.y + 3 && foot >= p.y - 48) out.push(`bank at x ${Math.round(q.x)} ends ${Math.round(p.y - foot)} px over the floor at x ${Math.round(p.x)}`);
+    }
+    return out;
+  };
+  for (const id of Object.keys(PROVEN_INDEX).filter((k) => k.startsWith('1-'))) {
+    for (const seed of [1, 2]) for (const d of ['normal', 'easy'] as const) {
+      let st: Stage;
+      try { st = buildStage(id, seed, d); } catch (e) { assert.fail(`${id} seed ${seed} (${d}) does not build: ${(e as Error).message.slice(0, 160)}`); }
+      assert.deepEqual(slots(st), [], `${id} seed ${seed} (${d})`);
+    }
+  }
+});

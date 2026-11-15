@@ -15,7 +15,8 @@ import { KIT } from './puzzleKit.ts';
 
 // (1-6's seesaw rooms went with the hand-built 1-6's proto plan: the gen2 1-6 replaced it, R-165.238 11-14; it has no puzzle room)
 // (1-4's squirrel-lift rooms went with the hand-built 1-4: the gen2 1-4 replaced it, B14 11-13; its fig gates are field pieces, no room)
-const STAGES = ['1-7', '2-2', '2-3', '2-8', '2-9', 'kit'];
+// (1-6's seesaws and 1-7's acorn meadow left with their hand-built stages, R-165.238 and BUILD-17: the rolled 1-6 and 1-7 have no room)
+const STAGES = ['2-2', '2-3', '2-8', '2-9', 'kit'];
 const PHONES: Array<[number, number]> = [[390, 844], [360, 740], [844, 390]];
 
 type Room = {

@@ -76,3 +76,46 @@ test('a limb that gave way is whole again on a set-back (Matt 11-02: a required 
   assert.equal(limb.broken, false, 'still gone after the set-back');
   assert.equal(limb.fragileTimer, undefined);
 });
+
+test('a creaky limb laid ACROSS a pit (a jump on, a jump off) has the pit under it too: one pit lip to lip; a sound bough keeps two', async () => {
+  // (BUILD-17b: laid apart, each jump's gap had its own soft pit and the limb's own span had none; when it gave way he fell into nothing,
+  // 1-7's beats 8 and 14. gen2/creak.ts: a limb "drops him to what is under it")
+  const { layLocal, planBudget, rngFor } = await import('./pipeline.ts');
+  const c = generateAllLevels().find((l) => l.id === '1-7')!;
+  const M = w1World().manifest;
+  const budget = planBudget(c, M, 'normal');
+  const tpl = (creak: boolean) => ({
+    id: 'creak-across-probe', name: 'a limb across a soft gap', archetypes: 'any', phases: ['sho'], difficulty: 3,
+    pieces: [
+      { key: 'a', shape: 'bank', w: [300, 300], place: { kind: 'start' } },
+      { key: 'k', shape: 'branch', w: [150, 150], place: { kind: 'jump', after: 'a', dy: [0, 0], share: [0.3, 0.3], soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) },
+      { key: 'b', shape: 'bank', w: [300, 300], place: { kind: 'jump', after: 'k', dy: [0, 0], share: [0.3, 0.3], soft: true } },
+    ],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: true,
+  }) as unknown as Parameters<typeof layLocal>[0];
+  for (const mirrored of [false, true]) {
+    const L = layLocal(tpl(true), budget, rngFor(31, 0), mirrored, { pitDepth: M.pitDepth });
+    const k = L.pieces.find((p) => p.key === 'k')!;
+    const pits = L.gaps.filter((g) => g.pit);
+    assert.equal(pits.length, 1, `mirrored ${mirrored}: one pit, not one a jump: ${JSON.stringify(L.gaps)}`);
+    assert.ok(pits[0].x0 < k.x && pits[0].x1 > k.x + k.w && pits[0].soft && pits[0].shallow, `mirrored ${mirrored}: a shallow soft pit runs under the limb ${k.x}-${k.x + k.w}: ${JSON.stringify(pits[0])}`);
+  }
+  // planted: the same section with a SOUND bough (it never gives way): two jumps, two pits, nothing under the bough, as before
+  const S = layLocal(tpl(false), budget, rngFor(31, 0), false, { pitDepth: M.pitDepth });
+  assert.equal(S.gaps.filter((g) => g.pit).length, 2);
+});
+
+test('on the built 1-7, every creaky limb has ground under the whole of it (Normal, seeds 1-3; on Easy they are sound boughs)', async () => {
+  const { RealPlay } = await import('../realPlay.ts');
+  for (const seed of [1, 2, 3]) {
+    const sim = new RealPlay('1-7', seed);
+    const ps = sim.platforms as Platform[];
+    const limbs = ps.filter((p) => isCreak(p));
+    assert.ok(limbs.length >= 1, `seed ${seed}: 1-7 lays creaky limbs on Normal`);
+    for (const l of limbs) {
+      // (what he lands on when it gives way: a piece under it within a fall that is no fall, wide enough to cover it)
+      const under = ps.filter((q) => q !== l && q.type !== 'fragile' && q.y > l.y && q.y <= l.y + 160 && q.x <= l.x + 1 && q.x + q.width >= l.x + l.width - 1);
+      assert.ok(under.length, `seed ${seed}: the limb at x ${l.x} (${l.width} px) has nothing under the whole of it`);
+    }
+  }
+});

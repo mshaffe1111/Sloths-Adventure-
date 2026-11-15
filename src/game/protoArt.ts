@@ -144,7 +144,7 @@ export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: numbe
  * A hiding bush (1-7): Matt's painted bushes, drawn in front of Pokey. `inside`: he is in it, so it is drawn a little see-through
  * (the player can still find him) and rustles when he moves. Returns false until the sheet has loaded.
  */
-export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number): boolean {
+export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number, moss = 0): boolean {
   load2();
   if (!ready2 || !img2) return false;
   const n = b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump';
@@ -162,8 +162,9 @@ export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: nu
       ctx.stroke();
     }
   }
-  // see-through enough with him inside that the player can still find him
-  if (inside) ctx.globalAlpha = 0.62;
+  // see-through enough with him inside that the player can still find him; more as the moss comes over him (1-7: green Pokey behind
+  // green leaves at 0.62 was a ghost nobody could find, ENG-E1's stills), so the moss tint and the sloth both read
+  if (inside) ctx.globalAlpha = 0.62 - 0.2 * Math.max(0, Math.min(1, moss));
   // anchored at the bottom middle (a hanging bush at its top middle), leaning a touch when he rustles it
   const ax = b.x + b.w / 2, ay = b.hanging ? b.y : b.y + 6;
   ctx.translate(ax, ay);

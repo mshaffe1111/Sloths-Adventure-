@@ -761,7 +761,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
-  // the testers' stage (#ctest): playRecorder.ts CTEST_LEVEL_ID (1-4 tonight, 1-3 if 1-4 is not ready: R-165.157; 1-1 from 11-06), as Play builds it,
+  // the testers' stage (#ctest): playRecorder.ts CTEST_LEVEL_ID (1-5 from 0.9.8, 1-3 before: R-165.157; 1-1 from 11-06), as Play builds it,
   // its own goal, a fresh roll of its proven list each run on the tester's own setting (stageGenerator.ts: provenSeedFor by the layout)
   const ctestLevel = (): LevelConfig | null => allLevels.find((l) => l.id === CTEST_LEVEL_ID) ?? null;
   const ctestDraw = () => {
@@ -874,7 +874,7 @@ export default function App() {
           // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
           onGuide: (text, seconds, passed, o) =>
             setGuideLine((g) => {
-              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}), ...(o?.teach ? { teach: true as const } : {}) };
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}), ...(o?.teach ? { teach: true as const } : {}), ...(o?.lock ? { lock: true as const } : {}) };
               return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
             }),
           onStageStats: (s) => {

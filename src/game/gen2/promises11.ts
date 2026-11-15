@@ -29,7 +29,8 @@ export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Nor
 /**
  * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps; the lead's ruling, 11-11, on the Critic's flight). A piece over
  * the slot closes the part it covers unless he can get under it: from EITHER lip, its underside at least his body's 48 px (reach.ts
- * BODY_H) over that lip's top, or from a floor inside the slot more than 10 px under it (seed 172: off block 146, top 906, he walks under the 838 deck). A
+ * BODY_H) over that lip's top, or from a floor inside the slot more than 10 px under it and under it in x (seed 172: catch bough 149, top 928, lies under the 838 deck;
+ * a floor beside the piece is no way under it: POLISH-5, seed 323). A
  * piece at lip level (top within 10 px) or plugging it closes it. Then the widest part left open: under BODY_W, his body cannot drop
  * through, no fall (seed 323: branch 128 leaves 23 px); BODY_W or wider, a fall.
  */
@@ -39,9 +40,11 @@ export function realFalls(platforms: readonly Platform[]): ReturnType<typeof fin
     const solid = platforms.filter((p) => p.type === 'solid' && !p.broken && p.x < q.x1 && p.x + p.width > q.x0);
     const edge = platforms.filter((p) => p.type === 'solid' && (Math.abs(p.x + p.width - q.x0) <= 2 || Math.abs(p.x - q.x1) <= 2)).map((p) => p.y);
     // (he passes under a piece from a lip whose top stands BODY_H.px or more below its underside; or from a floor inside the slot more
-    // than 10 px under its top. The Critic, fc1efb3b: from EITHER lip, never only the higher one)
+    // than 10 px under its top AND under it (their spans overlap): a floor BESIDE the piece is no way under it (POLISH-5, seed 323: log
+    // 127 lies right of branch 128 across a 23 px slot, so it never opened 128). The Critic, fc1efb3b: from EITHER lip, never only the higher one)
     const lips = [q.top, ...edge];
-    const passUnder = (p: Platform) => lips.some((L) => p.y + p.height <= L - BODY_H.px) || solid.some((f) => f !== p && f.y > p.y + 10);
+    const under = (f: Platform, p: Platform) => f.x < p.x + p.width && f.x + f.width > p.x;
+    const passUnder = (p: Platform) => lips.some((L) => p.y + p.height <= L - BODY_H.px) || solid.some((f) => f !== p && f.y > p.y + 10 && under(f, p));
     const cov = solid.filter((p) => !passUnder(p)).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
     let at = q.x0, open = 0;
     for (const [a, b] of cov) { open = Math.max(open, a - at); at = Math.max(at, b); }

@@ -1,0 +1,61 @@
+TAP version 13
+# \# normal: 167 teach rises, 137-140 px
+# \# easy: 167 teach rises, 132-132 px
+# Subtest: the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+not ok 1 - the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+  ---
+  duration_ms: 18313.335397
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/w1DoubleTeach.test.ts:33:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    167 of 334 teach rises out of 128-132
+    + actual - expected
+    
+    + [
+    +   'normal layout 0 w1-dip-double-teach: the teach rise at x 6798 is 138 px (128-132)',
+    +   'normal layout 1 w1-double-teach: the teach rise at x 5797 is 138 px (128-132)',
+    +   'normal layout 2 w1-dip-double-teach: the teach rise at x 4889 is 138 px (128-132)',
+    +   'normal layout 3 w1-double-teach: the teach rise at x 6859 is 140 px (128-132)',
+    +   'normal layout 4 w1-bank-double-teach: the teach rise at x 5831 is 138 px (128-132)',
+    +   'normal layout 5 w1-double-teach: the teach rise at x 4944 is 138 px (128-132)',
+    +   'normal layout 6 w1-bank-double-teach: the teach rise at x 7106 is 137 px (128-132)',
+    +   'normal layout 7 w1-dip-double-teach: the teach rise at x 5305 is 138 px (128-132)',
+    +   'normal layout 8 w1-double-teach: the teach rise at x 5388 is 137 px (128-132)',
+    +   'normal layout 9 w1-dip-double-teach: the teach rise at x 5750 is 139 px (128-132)',
+    +   'normal layout 10 w1-dip-double-teach: the teach rise at x 6943 is 138 px (128-132)',
+    +   'normal layout 11 w1-bank-double-teach: the teach rise at x 7043 is 140 px (128-132)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'normal layout 0 w1-dip-double-teach: the teach rise at x 6798 is 138 px (128-132)'
+    1: 'normal layout 1 w1-double-teach: the teach rise at x 5797 is 138 px (128-132)'
+    2: 'normal layout 2 w1-dip-double-teach: the teach rise at x 4889 is 138 px (128-132)'
+    3: 'normal layout 3 w1-double-teach: the teach rise at x 6859 is 140 px (128-132)'
+    4: 'normal layout 4 w1-bank-double-teach: the teach rise at x 5831 is 138 px (128-132)'
+    5: 'normal layout 5 w1-double-teach: the teach rise at x 4944 is 138 px (128-132)'
+    6: 'normal layout 6 w1-bank-double-teach: the teach rise at x 7106 is 137 px (128-132)'
+    7: 'normal layout 7 w1-dip-double-teach: the teach rise at x 5305 is 138 px (128-132)'
+    8: 'normal layout 8 w1-double-teach: the teach rise at x 5388 is 137 px (128-132)'
+    9: 'normal layout 9 w1-dip-double-teach: the teach rise at x 5750 is 139 px (128-132)'
+    10: 'normal layout 10 w1-dip-double-teach: the teach rise at x 6943 is 138 px (128-132)'
+    11: 'normal layout 11 w1-bank-double-teach: the teach rise at x 7043 is 140 px (128-132)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/w1DoubleTeach.test.ts:54:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19018.608561

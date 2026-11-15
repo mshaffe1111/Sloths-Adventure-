@@ -49,8 +49,11 @@ export const BANDS: BandTable = {
   'single-rise': { easy: b(0, 63), normal: b(0, 80) },
   'double-teach-rise': { easy: b(128, 132), normal: b(136, 140) },
   'double-teach-rise-thin': { easy: b(122, 128), normal: b(128, 134) },
+  // (POLISH-8, the lead's ruling 11-14, R-165.228: the teach's own first rise, Easy's band on both settings: comfortably doable)
+  'double-teach-first': { easy: b(128, 132), normal: b(128, 132) },
   'double-test-gap': { easy: 'none', normal: b(252, 262) },
-  'bounce-teach': { easy: b(232, 246), normal: b(232, 246) },
+  // (POLISH-7, the lead's ruling 2 11-14, bands.md §4 "the other way": a plain bounce is the whole lesson, 144-150 px over the cap)
+  'bounce-teach': { easy: b(174, 180), normal: b(174, 180) },
   'bounce-air-test': { easy: b(236, 250), normal: b(236, 250) },
   // (its LEVEL row; a stepped hop reads CHAIN_BANDS by its step: chainBand)
   'chain-hop': { easy: b(205, 220), normal: b(205, 220) },
@@ -70,8 +73,9 @@ export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'single-rise': 'bands.md §2 "Single jump, rise"',
   'double-teach-rise': 'bands.md §2 "Double teach, rise form (block face)"',
   'double-teach-rise-thin': 'bands.md §2 "Double teach, rise form, thin lip"',
+  'double-teach-first': 'bands.md §2 "Double teach, the teach\'s first rise" (the lead\'s ruling 11-14, POLISH-8)',
   'double-test-gap': 'bands.md §2 "Double gap (Normal only; Easy has none)"',
-  'bounce-teach': 'bands.md §2 "Bounce teach, floor mushroom"',
+  'bounce-teach': 'bands.md §4 "the other way" (a bounce alone is the whole lesson; POLISH-7)',
   'bounce-air-test': 'bands.md §2 "Bounce + air jump test (U, V)"',
   'chain-hop': 'chain.md §3 "Cap to cap"',
 };

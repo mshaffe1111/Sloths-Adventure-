@@ -69,7 +69,7 @@ export const CONTENT_LETTERS = {
   p: { name: "beat", key: "later", unlaid: "beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged" },
   t: { name: "gate", key: "later", unlaid: "the gate a find opens (the fig gate): B14's emitter on t-b14, not merged" },
   x: { name: "trap", key: "later", unlaid: "the trap (a limb load over an animal): B15's emitter on t-b15, not merged" },
-  m: { name: "cover", key: "later", unlaid: "cover (a bush, a moss carpet, a patch, hanging moss): its lay is ENGINE-678 B3 COVER, not built", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
+  m: { name: "cover", key: "now", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
   n: { name: "snake", key: "later", unlaid: "the vine snake and the false liana ride a section's laid liana by its piece key: gen2/snakeLay.ts laySnakes, run by a stage's finish (1-4's pattern, listed.ts FINISH); no emitter is keyed by the letter", dials: { route: "down-off|down-back|up|still (still: a false liana)", reach: "the share of the liana it comes", beat: "s off|tell|trip on the stage clock" }, dialsBy: "ENG-S4 SNAKE-LAY" },
 } as const satisfies Readonly<Record<string, ContentLetter>>;
 

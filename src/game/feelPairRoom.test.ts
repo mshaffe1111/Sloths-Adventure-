@@ -266,7 +266,7 @@ test('stepping off a bough to the floor costs nothing (the engine’s own loseLi
   assert.equal(r.r.e.statHeartsLost, 0, 'no heart lost (the counter engine.ts statHeartsLost adds every hurt to)');
 });
 
-type FieldEngine = { field: { pods: Array<{ id: number; x: number }> } | null; clusters: Array<{ id: number; y: number; falling?: boolean; gone?: boolean }>; clustersFreed: number; platforms: Array<{ id: number; broken?: boolean; y: number }> };
+type FieldEngine = { field: { pods: Array<{ id: number; x: number }>; shutBoughAt(x: number, y: number): { top: number; under: number } | null } | null; clusters: Array<{ id: number; y: number; falling?: boolean; gone?: boolean }>; clustersFreed: number; platforms: Array<{ id: number; broken?: boolean; y: number }> };
 const fieldOf = (r: TouchRig) => r.r.e as unknown as FieldEngine;
 const podX = (i: number) => FEEL.pods[i][0];
 
@@ -320,9 +320,11 @@ test('a gate: shut, its bough is no footing and the climb stops at the top; the 
     const e = fieldOf(r);
     const bough = e.platforms.find((p) => p.id === 4)!;
     assert.ok(bough.broken, `@${w}: shut`);
-    // up the second vine of lane 3a (no cluster on it): at the top he stays hanging, no vault onto a shut bough
+    // up the second vine of lane 3a (no cluster on it): at the top he stays hanging, no vault onto a shut bough, his DRAWN head at the
+    // bough's drawn underside (Matt 11-14, R-165.212: a head stop, not the feet at the bough's top)
     upFor(r, FEEL.push[1][0], 2600);
-    assert.ok(r.p.climbing && r.p.y < FEEL.floor - FEEL.rise + 20, `@${w}: hanging at the top (y ${r.p.y.toFixed(0)}, climbing ${r.p.climbing})`);
+    const shut = e.field!.shutBoughAt(r.p.x, r.p.y);
+    assert.ok(r.p.climbing && shut && Math.abs(r.p.y - GATE.head - shut.under) < 2, `@${w}: hanging at the stop, head at the shut bough (y ${r.p.y.toFixed(0)}, climbing ${r.p.climbing}, underside ${shut?.under.toFixed(0)})`);
     // over to the cluster's vine, down under it and push it up and free
     r.r.stand(FEEL.push[0][0], FEEL.floor);
     r.clear();

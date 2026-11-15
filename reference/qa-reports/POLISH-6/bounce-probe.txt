@@ -1,0 +1,11 @@
+L1 mushroom x10318..10388 top 1319; floor top 1349; wall x10426 top 1109 (rise 240, over mushroom top 210)
+   walk/80: no (peak y 1151); walk/160: no (peak y 1151); walk/240: no (peak y 1151); walk+press-at-apex/80: UP in 37 f; walk+press-at-apex/160: UP in 46 f; walk+press-at-apex/240: UP in 54 f; walk+hold-jump/80: no (peak y 1151); walk+hold-jump/160: no (peak y 1151); walk+hold-jump/240: no (peak y 1151)
+L2 mushroom x10040..10110 top 934; floor top 964; wall x10142 top 725 (rise 239, over mushroom top 209)
+   walk/80: no (peak y 766); walk/160: no (peak y 766); walk/240: no (peak y 766); walk+press-at-apex/80: UP in 37 f; walk+press-at-apex/160: UP in 46 f; walk+press-at-apex/240: UP in 54 f; walk+hold-jump/80: no (peak y 766); walk+hold-jump/160: no (peak y 766); walk+hold-jump/240: no (peak y 766)
+L3 mushroom x12039..12109 top 1176; floor top 1206; wall x12151 top 963 (rise 243, over mushroom top 213)
+   walk/80: no (peak y 1008); walk/160: no (peak y 1008); walk/240: no (peak y 1008); walk+press-at-apex/80: UP in 37 f; walk+press-at-apex/160: UP in 46 f; walk+press-at-apex/240: UP in 54 f; walk+hold-jump/80: no (peak y 1008); walk+hold-jump/160: no (peak y 1008); walk+hold-jump/240: no (peak y 1008)
+L4: no bounce bank teach
+L5 mushroom x12039..12109 top 1030; floor top 1060; wall x12150 top 816 (rise 244, over mushroom top 214)
+   walk/80: no (peak y 862); walk/160: no (peak y 862); walk/240: no (peak y 862); walk+press-at-apex/80: UP in 37 f; walk+press-at-apex/160: UP in 46 f; walk+press-at-apex/240: UP in 54 f; walk+hold-jump/80: no (peak y 862); walk+hold-jump/160: no (peak y 862); walk+hold-jump/240: no (peak y 862)
+L6 mushroom x9764..9834 top 1339; floor top 1369; wall x9869 top 1126 (rise 243, over mushroom top 213)
+   walk/80: no (peak y 1171); walk/160: no (peak y 1171); walk/240: no (peak y 1171); walk+press-at-apex/80: UP in 37 f; walk+press-at-apex/160: UP in 46 f; walk+press-at-apex/240: UP in 54 f; walk+hold-jump/80: no (peak y 1171); walk+hold-jump/160: no (peak y 1171); walk+hold-jump/240: no (peak y 1171)

@@ -1,0 +1,45 @@
+upright-412x915-normal {"stage":"1-7","seed":2,"diff":"(unset: Normal)","easy":false,"eagles":9}
+upright-412x915-normal b1-bush {"phase":"hunt","eye":3096,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b2-shake {"phase":"hunt","eye":4877,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b3-road {"phase":"hunt","eye":6230,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b5-bark {"phase":"hunt","eye":11389,"perched":false,"x":11475,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b7-moss {"phase":"hunt","eye":15899,"perched":false,"x":15983,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b8-creak {"phase":"tell","eye":18527,"perched":false,"x":18588,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":true,"grounded":true}
+upright-412x915-normal b10-liana {"phase":"hunt","eye":23028,"perched":false,"x":23117,"hidden":1,"hearts":5,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+upright-412x915-normal b12-perch {"phase":"hunt","eye":28563,"perched":true,"x":28648,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b14-finale {"phase":"hunt","eye":33187,"perched":false,"x":33276,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b15-exit {"x":37169,"totem":37429,"hearts":5}
+sideways-915x412-normal {"stage":"1-7","seed":2,"diff":"(unset: Normal)","easy":false,"eagles":9}
+sideways-915x412-normal b1-bush {"phase":"hunt","eye":3117,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b2-shake {"phase":"hunt","eye":4877,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b3-road {"phase":"hunt","eye":6240,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b5-bark {"phase":"tell","eye":11410,"perched":false,"x":11475,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b7-moss {"phase":"hunt","eye":15899,"perched":false,"x":15983,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b8-creak {"phase":"tell","eye":18527,"perched":false,"x":18588,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":true,"grounded":true}
+sideways-915x412-normal b10-liana {"phase":"hunt","eye":23316,"perched":false,"x":23402,"hidden":1,"hearts":4,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+sideways-915x412-normal b12-perch {"phase":"hunt","eye":28563,"perched":true,"x":28648,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b14-finale {"phase":"hunt","eye":33187,"perched":false,"x":33276,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-normal b15-exit {"x":37169,"totem":37429,"hearts":4}
+upright-412x915-easy {"stage":"1-7","seed":2,"diff":"easy","easy":true,"eagles":9}
+upright-412x915-easy b1-bush {"phase":"hunt","eye":3127,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b2-shake {"phase":"hunt","eye":4922,"perched":false,"x":5008,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b3-road {"phase":"hunt","eye":6312,"perched":false,"x":6401,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b5-bark {"phase":"hunt","eye":11282,"perched":false,"x":11363,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b7-moss {"phase":"hunt","eye":15727,"perched":false,"x":15809,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b8-creak {"phase":"tell","eye":18363,"perched":false,"x":18426,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b10-liana {"phase":"hunt","eye":23204,"perched":false,"x":23289,"hidden":1,"hearts":5,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+upright-412x915-easy b12-perch {"phase":"hunt","eye":27681,"perched":true,"x":27769,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b14-finale {"phase":"hunt","eye":32265,"perched":false,"x":32352,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-easy b15-exit {"x":35578,"totem":35838,"hearts":5}
+sideways-915x412-easy {"stage":"1-7","seed":2,"diff":"easy","easy":true,"eagles":9}
+sideways-915x412-easy b1-bush {"phase":"hunt","eye":3109,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b2-shake {"phase":"hunt","eye":4922,"perched":false,"x":5008,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b3-road {"phase":"hunt","eye":6312,"perched":false,"x":6401,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b5-bark {"phase":"hunt","eye":11282,"perched":false,"x":11363,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b7-moss {"phase":"hunt","eye":15727,"perched":false,"x":15809,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b8-creak {"phase":"tell","eye":18363,"perched":false,"x":18426,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b10-liana {"phase":"hunt","eye":23222,"perched":false,"x":23306,"hidden":1,"hearts":5,"swinging":true,"hanging":false,"onCreak":false,"grounded":false}
+sideways-915x412-easy b12-perch {"phase":"hunt","eye":27681,"perched":true,"x":27769,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b14-finale {"phase":"hunt","eye":32265,"perched":false,"x":32352,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+sideways-915x412-easy b15-exit {"x":35578,"totem":35838,"hearts":5}
+stills exit 0 3:52 PM

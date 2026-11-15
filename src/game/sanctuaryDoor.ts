@@ -13,12 +13,27 @@ import { drawGateArt, GATE_H } from './stageArt.ts';
 const BASE_Y = 24;
 
 /**
- * how many are still missing, on a small wooden plate hung on the shut gate (QA: "the door is sealed but nothing says why"; the HUD's
- * "Sanctuary sealed" is up in the corner, and a player at the door is looking at the door)
+ * how many are still missing, on a small wooden plate over the shut gate (QA: "the door is sealed but nothing says why"; the HUD's
+ * "Sanctuary sealed" is up in the corner, and a player at the door is looking at the door). Words in play: the engine draws it with the
+ * other in-world words, over everything in the world and under the HUD (engine.ts drawPopups; LESSONS D10). It hangs where the open
+ * gate's "Touch the door!" floats, PLATE_LIFT higher: clear over Pokey's head as the sealed door holds him at it (35 px short, his drawn
+ * height 89.1, heroSprite.ts). It hung at a third of the gate's height, behind him at his shoulders, and read "more" (BUILD-16b 11-14,
+ * R-165.241)
  */
 let plateN = -1;
 let plateText = '';
 let plateW = 0;
+/** px the plate's bottom stands over the "Touch the door!" line's middle */
+const PLATE_LIFT = 4;
+/** the plate's top edge over the door call's origin (`drawDoorPlate`'s y), px: the gate's ground is BASE_Y below the origin */
+export const PLATE_TOP = BASE_Y - GATE_H * 0.62 - PLATE_LIFT - 23;
+/** the plate over a shut door whose call's origin is (x, y) (the exit item's x, y), `n` still missing */
+export function drawDoorPlate(ctx: CanvasRenderingContext2D, x: number, y: number, n: number) {
+  ctx.save();
+  ctx.translate(x, y);
+  missingPlate(ctx, n);
+  ctx.restore();
+}
 function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
   ctx.save();
   ctx.font = `700 16px ${FONT_UI}`;
@@ -29,7 +44,7 @@ function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
     plateW = Math.max(46, ctx.measureText(plateText).width + 18);
   }
   const text = plateText, w = plateW;
-  const y = BASE_Y - GATE_H * 0.3;
+  const y = PLATE_TOP;
   const x = -w / 2;
   ctx.fillStyle = '#7a4e26';
   ctx.strokeStyle = '#3a2414';
@@ -53,10 +68,10 @@ function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
  * Draw the gate with its ground-centre BASE_Y below the call's origin. `locked` = shut (the stage's goal is not done yet). `world` picks
  * the world's gate.
  */
-export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, locked: boolean, missing?: number, world = 1) {
+export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, locked: boolean, _missing?: number, world = 1) {
   if (!drawGateArt(ctx, world, BASE_Y, locked, time)) return;
   if (locked) {
-    if (missing && missing > 0) missingPlate(ctx, missing);
+    // (its plate, how many are still missing, is drawn over Pokey with the other words in play: drawDoorPlate, engine.ts drawPopups)
     // A shut gate says nothing more here: the HUD already shows "Sanctuary sealed", and the text used to collide with it near the top
     // of the screen.
     return;

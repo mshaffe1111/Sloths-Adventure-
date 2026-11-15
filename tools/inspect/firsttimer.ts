@@ -420,7 +420,7 @@ class DotShadow {
     if (this.sayer) this.sayer.say(l, this.clock);
     else this.queue.push(l, this.clock);
   }
-  engine(text: string, seconds: number, passed: boolean | undefined, o?: { teach?: true }) {
+  engine(text: string, seconds: number, passed: boolean | undefined, o?: { teach?: true; lock?: true }) {
     if (passed) {
       const l = engineGuideLine(text, this.stageId, { dot: true });
       if (l) this.queue.clear((q) => q.key === l.key, this.clock);
@@ -430,7 +430,8 @@ class DotShadow {
       this.queue.clear((l) => l.source === 'engine' && l.kind === 'danger', this.clock);
       return;
     }
-    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000, teach: !!o?.teach }));
+    // (the locked exit's line as the phone takes it: a must, whatever its words, DotGuide.tsx engineLine; R-165.241)
+    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000, teach: !!o?.teach, lock: !!o?.lock }));
   }
   lesson(id: LessonId, holding: boolean) {
     this.say(lessonDotLine(id, 'screen', holding));
@@ -820,6 +821,15 @@ export function freshPhone(setting: FirstTimer['setting']) {
   setDifficulty(setting);
 }
 
+/** the nearest ground cover at his level within 600 px (a bush, a moss carpet or patch: not hanging, not the dressing in front of a
+ *  hollow), the one a player heads for when the eagle screams (1-7) */
+export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: number; hanging?: boolean; secret?: boolean }>, x: number, y: number): { x: number; w: number; y: number } | null {
+  let best: { x: number; w: number; y: number } | null = null;
+  const d = (b: { x: number; w: number }) => (x >= b.x + 16 && x <= b.x + b.w - 16 ? 0 : Math.min(Math.abs(b.x + 16 - x), Math.abs(b.x + b.w - 16 - x)));
+  for (const b of bushes) if (!b.secret && !b.hanging && Math.abs(b.y - y) < 14 && (!best || d(b) < d(best))) best = b;
+  return best && d(best) < 600 ? best : null;
+}
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -896,6 +906,8 @@ export class FirstTimerRun {
   private stillT = 0;
   private hideFrom = -1;
   private warnSeenAt = -1;
+  /** when the kit eagle's look over his stretch began (its screech), or -1 */
+  private castWarnAt = -1;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1008,7 +1020,7 @@ export class FirstTimerRun {
     c.getBoundingClientRect = () => ({ width: vw, height: vh, left: 0, top: 0 });
     e.resizeCanvas();
     this.dot = new DotShadow(id, !!opts.dotSetting);
-    e.callbacks.onGuide = (text: string, s: number, passed?: boolean, o?: { teach?: true }) => this.dot.engine(text, s, passed, o);
+    e.callbacks.onGuide = (text: string, s: number, passed?: boolean, o?: { teach?: true; lock?: true }) => this.dot.engine(text, s, passed, o);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
       this.goal = { got: cur, need: target };
@@ -1343,14 +1355,19 @@ export class FirstTimerRun {
     // jumps in 9 s to a rescue, the pit's stair beside him back to the bank he catches it from (ENG-16F, FT_TRACE 10.8-19.6))
     const onLiana = this.sim.vines.some((v) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off && vineAmp(v) > 0.05
       && Math.abs(tgt.x - v.x) <= (v.bottomY - v.topY) * Math.sin(vineAmp(v)) + 40 && tgt.y >= v.topY - 40 && tgt.y <= v.bottomY + 60);
-    if ((!onLiana && tgt.y > p.y - (DOUBLE_RISE + 10)) || this.prog.off(p) < 120) return 0;
+    if (this.prog.off(p) < 120) return 0;
+    // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
+    const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
+    const ahead = run >= 0 ? 1 : -1;
+    // (out of reach forward: the way on over a double's rise, OR the face in front of him over one. 1-7's SHORT liana pit is 179 px under
+    //  the bank, so the route over it is inside a double, but its far wall is the perch 80 px over the bank: 259 px, and he stood facing
+    //  it until the rescue (BUILD-17, 1-7 Easy seed 11; pitClimb.test.ts "shallow pit"))
+    const face = this.faceAhead(ahead, 60);
+    if (!onLiana && tgt.y > p.y - (DOUBLE_RISE + 10) && !(face !== null && face > DOUBLE_RISE + 10)) return 0;
     const from = this.floorAt(p.x, p.y, 6);
     const path = from ? this.pitWayUp(from) : null;
     if (!path) return 0;
     const dir = toward(path[1]);
-    // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
-    const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
-    const ahead = run >= 0 ? 1 : -1;
     if (dir === 0 || dir === ahead) return 0;
     // (the same pit `tries3` times, no further on: a loop, as the same fall three times is (fallBacks); he is put past it)
     const n = (this.pitFalls.get(from!) ?? 0) + 1;
@@ -1554,7 +1571,8 @@ export class FirstTimerRun {
       if (upFor < this.who.heed) continue;
       const t = s.text.toLowerCase();
       if (s.move) this.learned.add(s.move);
-      if (/\b(hide|bush|fern)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind)\b/.test(t)) this.learned.add('hide');
+      // (1-7's words for the kit's eagle are moss and green, held still: 'get into the green and hold still')
+      if (/\b(hide|bush|fern|moss|green)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind|still)\b/.test(t)) this.learned.add('hide');
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
       // (a drop trap, castPlay.ts: told to shake its vine or cut its tendril, or to punch or hit one)
@@ -1680,6 +1698,30 @@ export class FirstTimerRun {
           if (p.x > best.x + 16 && p.x < best.x + best.w - 16 && p.grounded) return { down: true };
           return side(cx > p.x ? 1 : -1);
         }
+      }
+    }
+
+    // the kit's eagle (1-7, castPlay's sweepers: no proto.watch): once told how to hide, a second after its screech (a look starting over
+    // the stretch he is in) he heads for the nearest cover at his level (a bush, a moss carpet or patch) and, inside it, takes his thumb
+    // off: the kit hides a STILL sloth in cover, no crouch (stillness.ts). He holds still until its look, or its dive, is over
+    const looking = ((e.cast?.sweepers ?? []) as any[]).some((m) => p.x >= m.s.minX - 40 && p.x <= m.s.maxX + 40 && (m.s.phase === 'hunt' || m.s.phase === 'tell' || m.s.phase === 'act'));
+    if (!looking) this.castWarnAt = -1;
+    else if (this.castWarnAt < 0) this.castWarnAt = t;
+    // (on a liana he never lets go toward ground cover: that drops him into the gap (BUILD-17: every rescue on 1-7 was a bot letting go
+    // of a mossy liana mid-swing when the eagle looked). A MOSSY liana is cover while it swings him (1-7 beat 10, stillness.ts inCover's
+    // rope rule): told how to hide, he holds on, no input, until the look is over; on any other liana his swing goes on as before)
+    if (p.isVineSwinging) {
+      const held = (e.vines ?? []).find((v: any) => v.id === p.swingVineId);
+      if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && held?.mossy) {
+        this.hiding = true;
+        return {};
+      }
+    } else if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && !this.jump) {
+      const cover = stillCoverNear(e.proto?.bushes ?? [], p.x, p.y);
+      if (cover) {
+        this.hiding = true;
+        if (p.x > cover.x + 16 && p.x < cover.x + cover.w - 16 && p.grounded) return {};
+        return side(cover.x + cover.w / 2 > p.x ? 1 : -1);
       }
     }
 
@@ -1969,7 +2011,12 @@ export class FirstTimerRun {
     // that names a cast, which left 1-6 (its snakes are pieces, no cast): the child stood 20 s at a 53 px stump's face to a rescue,
     // 1-6 Normal seed 2 (ENG-16F, frames 370.4-372.6). On every stage now (level.md rule 22); 1-1's calibration re-run with it)
     const lifted = t < this.gapUntil, holdCount = lifted && moved < 0.8;
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    // (and never while the game itself holds his steer: after a put-back or a respawn the engine ignores a thumb still held from before
+    // the fall for 0.35 s (engine.ts inputGrace). A person sees he was set back, not a wall. POLISH-9, R-165.228: ADULT's stopReact 0.3
+    // read that hold as being stopped dead on every put-back, so at 1-1's 255 px double test he jumped where he was set down, 116 px short
+    // of the lip with no run-up, and missed until rescued (6 of 10 layouts); the tier bots already waited, backAt below)
+    const graceHeld = (e.inputGrace ?? 0) > 0;
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);

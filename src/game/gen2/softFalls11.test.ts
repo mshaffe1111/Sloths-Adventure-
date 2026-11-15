@@ -6,10 +6,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import '../headlessDom.ts';
-import { buildGen2Stage, softFallStage } from './pipeline.ts';
+import { buildGen2Stage, earthHoles, keptFoes, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
-import { provenSeeds } from './seedList.ts';
+import { provenPlan, provenSeeds } from './seedList.ts';
 import { w1Finish, w1World } from './worlds/w1.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -21,6 +21,13 @@ const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!,
  * seeds (reference/qa-reports/window-2026-11-10), which are no longer listed and no longer build on the re-lay
  */
 const WINDOW = provenSeeds('1-1').slice(0, 16);
+
+/** a listed seed's roll built without the word: the word's own build's plan replayed, so it is the same roll (never searched: without the
+ *  word the per-gap ruler refuses 1-1's earth holes, so a search finds no clean seed; R-165.221) */
+function listedWithout(seed: number, setting: 'normal' | 'easy'): Gen2Stage {
+  const a = buildPlayStage(cfg('1-1'), w1World(), seed, setting);
+  return buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting, replay: { seed: a.gen2.seed, rerolls: a.gen2.rerolls, plan: a.gen2.plan, foes: [...keptFoes(a)] } });
+}
 
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
@@ -40,7 +47,9 @@ for (const setting of ['normal', 'easy'] as const) {
   test(`1-1 ${setting}: on the first 16 listed seeds a fall into any gap that is not water is a soft set-back, and water stays water`, () => {
     for (const seed of WINDOW) {
       const st = w1Finish(buildPlayStage(cfg('1-1'), w1World(), seed, setting));
-      assert.equal(st.gen2.seed, seed, `seed ${seed} is laid as listed`);
+      // (as listed: the list's own replay, whose seed is the reroll's when the list rerolled it; POLISH-9b: 769, first since POLISH-7's
+      // relist, is listed with 2 rerolls, so its build's seed was never 769. Not the walk's fallback, which would build another seed)
+      assert.equal(st.gen2.seed, provenPlan('1-1', seed)!.seed, `seed ${seed} is laid as listed`);
       assert.ok((st.gen2.falls ?? []).length >= 10, `seed ${seed} lays gaps`);
       assert.deepEqual(hardFalls(st), [], `seed ${seed}: gaps that still cost a life`);
       // (the word turns no water gap soft: the engine's water checks come before the fall check, and no zone is added for it)
@@ -53,24 +62,38 @@ for (const setting of ['normal', 'easy'] as const) {
 test('planted: without the brief\'s word (origin/main\'s 1-1) the same check finds gaps that cost a life, on Normal and on Easy', () => {
   for (const setting of ['normal', 'easy'] as const) {
     for (const seed of WINDOW.slice(0, 4)) {
-      const st = w1Finish(buildPlayStage(cfg('1-1'), kitWithout(), seed, setting));
+      const st = w1Finish(listedWithout(seed, setting));
       assert.equal(softFallStage(st), false);
       assert.ok(hardFalls(st).length >= 3, `${setting} seed ${seed}: ${hardFalls(st).length} gaps outside a soft zone`);
     }
   }
 });
 
-test('the word lays nothing: 1-1\'s ground, zones and floorless-gap verdicts are the same with and without it (listed seeds and raw rolls)', () => {
+// (changed by POLISH-3, R-165.221: the word now marks its earth's holes, pipeline.ts softHoles; it still lays no ground, and the zones,
+// falls and verdicts it adds are exactly one soft zone and one soft fall per hole, lip to lip)
+test('the word lays no ground: 1-1\'s ground is the same with and without it, and its zones, gaps and floorless-gap verdicts differ only by its holes\' soft marks (listed seeds and raw rolls)', () => {
   const same = (a: Gen2Stage, b: Gen2Stage, what: string) => {
     assert.deepEqual(a.platforms, b.platforms, `${what}: the ground`);
-    assert.deepEqual(a.heartFalls, b.heartFalls, `${what}: the soft zones`);
-    assert.deepEqual(a.gen2.falls, b.gen2.falls, `${what}: the gaps`);
-    assert.deepEqual(floorlessGaps(a), floorlessGaps(b), `${what}: floorlessGaps`);
+    const holes = earthHoles(a.platforms), was = b.heartFalls ?? [];
+    const fresh = holes.filter((h) => !was.some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4));
+    assert.deepEqual(a.heartFalls ?? [], [...was, ...fresh.map((h) => ({ x0: h.x0, x1: h.x1, soft: true }))], `${what}: the soft zones, plus one per hole`);
+    assert.deepEqual(a.gen2.falls, [...(b.gen2.falls ?? []), ...holes.map((h) => ({ x0: h.x0, x1: h.x1, y: a.gen2.falls!.find((f) => f.x0 === h.x0 && f.x1 === h.x1 && f.site === 'hole-under-route')?.y, kind: 'soft', site: 'hole-under-route' }))], `${what}: the gaps, plus one soft fall per hole, typed a hole under the route`);
+    const inHole = ([x0, x1]: [number, number]) => holes.some((h) => x0 >= h.x0 - 4 && x1 <= h.x1 + 4);
+    assert.deepEqual(floorlessGaps(a), floorlessGaps(b).filter((g) => !inHole(g)), `${what}: floorlessGaps, less the holes'`);
   };
   for (const setting of ['normal', 'easy'] as const) {
-    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), buildPlayStage(cfg('1-1'), kitWithout(), seed, setting), `listed ${seed} ${setting}`);
+    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), listedWithout(seed, setting), `listed ${seed} ${setting}`);
     // (raw rolls, as tools/engine/seedlist.ts tries them before its filter: listed or not)
-    for (const seed of [1, 2, 3, 4, 5, 6]) same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting }), buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting }), `roll ${seed} ${setting}`);
+    // (the same roll: the word's marks change which roll a search accepts, R-165.221, so the one without it is replayed with it)
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      const b = buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting });
+      const replay = { seed: b.gen2.seed, rerolls: b.gen2.rerolls, plan: b.gen2.plan, foes: [...keptFoes(b)] };
+      // (and both sides replayed: a roll the search refused comes back built as its first phase built it, the landing repair off
+      // (pipeline.ts, Y2's two phases), while every replay runs the repair on. POLISH-9b: raw roll 5 Normal is refused since POLISH-7's
+      // bounce cap and keeps an idle mushroom (x 21928) the replay takes up, so comparing the search's build to a replay read the repair as
+      // the word. Replaying the same plan without the word compares the word alone)
+      same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting, replay }), buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting, replay }), `roll ${seed} ${setting}`);
+    }
   }
 });
 
@@ -81,9 +104,14 @@ test('floorlessGaps does not read the word: an unmarked floorless gap is still a
   assert.equal(floorlessGaps(st).length, 1);
 });
 
-// origin/main at 181d2846 (sha256 of the stage's platforms, heartFalls and gen2.falls, first 16 hex)
+// origin/main at 181d2846 (sha256 of the stage's platforms, heartFalls and gen2.falls, first 16 hex). Layouts 2 and 3 re-pinned on
+// t-int-9 b288b3fa (INT-9b, the lead's 5:33 and 5:38 PM ET 11-14 rulings: a lay change from a global rule is wanted): the any-slot bank
+// rule (3ad51f04, 0c1d3cab: a bank beside a pit reaches past its floor) takes two log banks' bottoms deeper on each, nothing else:
+// L2 x 8848 and x 9513 (221 -> 234.53, 301 -> 314.53, bottom 750 -> 763.53), L3 x 9455 and x 10144 (225 -> 234.53, 305 -> 314.53,
+// bottom 750 -> 759.53); x, top, width, every other platform, heartFalls and falls byte-identical (qa-reports/INT-9b/softfalls83/
+// diff-7df7b8e3-vs-b288b3fa.txt (L2), diff-L3-*.txt; L1 diff empty; stills on the game, upright + sideways: sheet-*.png).
 const MAIN: Record<string, string[]> = {
-  '8-3': ['d7097751a77b9452', 'daacff5017ec0ef8', 'fcfa0af041aee16c'],
+  '8-3': ['d7097751a77b9452', '7ffc517f0fbb583c', '3b968285f17a5ddf'],
 };
 // (1-2's pin was the hand-built 1-2's, deleted 11-12 (P12S: the game rolls 1-2 on gen2, its change named by the lock); what the pin
 // guarded still holds: 1-2 is not a soft-fall stage)

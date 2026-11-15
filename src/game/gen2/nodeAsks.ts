@@ -41,6 +41,10 @@ export const TYPE_OF_LETTER: Readonly<Partial<Record<string, ContentType>>> = {
   g: 'ground', f: 'floating', c: 'climb', b: 'bounce', r: 'rope', k: 'crumble', w: 'water', h: 'hazard',
 };
 
+/** a content letter laid by what a node's sections FILL, not by the deal's section type: the prop tag a node asking for it must have
+ *  laid at least one of (m: cover, World 1's hides through stillLay.ts, 1-7's 'Tm<': a bush, a moss carpet, a patch, hanging moss) */
+export const FILL_LETTER: Readonly<Record<string, string>> = { m: 'hide' };
+
 /** the building blocks with no emitter in this tree yet, and where each is built (packet NODES-2: named, never dropped; the one
  *  letter table's `unlaid` rows, nodeLetters.ts) */
 export const LATER_CONTENT: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(CONTENT_LETTERS).flatMap(([k, v]) => ('unlaid' in v ? [[k, v.unlaid]] : [])));
@@ -99,6 +103,8 @@ export interface LaidNode {
   finds: readonly string[];
   /** the pickups laid in it */
   pickups: number;
+  /** the props laid in it, by their tags (a hide: 'hide', 'cover'), for a letter laid by fills (FILL_LETTER) */
+  props?: ReadonlyArray<readonly string[]>;
 }
 
 /** each ask the laid node does not hold, by name: "node n5 Pg2&:&snake*2 threat snake*2: laid 1" (empty: every ask laid) */
@@ -106,7 +112,10 @@ export function askMisses(a: NodeAsks | undefined, n: LaidNode, cast: ReadonlyAr
   if (!a) return [];
   const out: string[] = [];
   const miss = (what: string, why: string) => out.push(`node ${n.id} "${n.token}": ${what}: ${why}`);
-  if (a.content) {
+  if (a.content && FILL_LETTER[a.content]) {
+    const tag = FILL_LETTER[a.content];
+    if (!(n.props ?? []).some((t) => t.includes(tag))) miss(`content '${a.content}' (${CONTENT_OF[a.content] ?? '?'})`, `no ${tag} laid`);
+  } else if (a.content) {
     const type = TYPE_OF_LETTER[a.content];
     if (!type) miss(`content '${a.content}' (${CONTENT_OF[a.content] ?? '?'})`, `Later: ${LATER_CONTENT[a.content] ?? 'no such letter'}`);
     else {

@@ -1,0 +1,4 @@
+# Subtest: the bounce teach is the bounce: 1-1, every listed layout, both settings, walked onto the mushroom with no press, he stands on the bank
+not ok 1 - the bounce teach is the bounce: 1-1, every listed layout, both settings, walked onto the mushroom with no press, he stands on the bank
+# pass 0
+# fail 1

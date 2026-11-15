@@ -66,10 +66,24 @@ test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 
 test('arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)', (t) => {
   planted('arc.single-rise-over', 'normal', { asks: [ask('single-rise', 120)] }, t);
 });
-test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)', (t) => {
+test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)', (t) => {
   planted('block.lesser-passes', 'normal', { asks: [ask('double-test-gap', 200)] }, t);
   planted('block.lesser-passes', 'easy', { asks: [ask('double-teach-rise', 120)] }, t);
-  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-teach', 212)] }, t);
+  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-air-test', 212)] }, t);
+  planted('block.lesser-passes', 'easy', { asks: [ask('bounce-teach', 120)] }, t);
+});
+test('the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [174, 177, 180]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-rise', s === 'easy' ? 130 : 138), ask('bounce-teach', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('bounce-teach', 168)] }, t);
+  planted('band.out', 'easy', { asks: [ask('bounce-teach', 186)] }, t);
+});
+test('the double teach\'s first rise is comfortably doable (POLISH-8, R-165.228, the lead\'s ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal\'s old 136 is over the band, 127 under it, 126 spare-thin', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [128, 130, 132]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-first', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 136)] }, t);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 127)] }, t);
+  planted('block.spare-thin', 'normal', { asks: [ask('double-teach-first', 126)] }, t);
+  // (a later D face in the same teach keeps the block band: 136-140 on Normal)
+  assert.deepEqual(names(roll('normal', { asks: [ask('single-gap', 100), ask('double-teach-first', 130), ask('double-teach-rise', 138)] })), []);
 });
 test('block.spare-thin: a 126 px double rise, 3 px over one jump\'s 123, under the 5 px spare', (t) => {
   planted('block.spare-thin', 'easy', { asks: [ask('double-teach-rise', 126)] }, t);
@@ -318,9 +332,16 @@ test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid pi
   assert.ok(overlaps(floorlessGaps({ platforms: s172 }), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
   // (seed 323 x27200..27273: branch 128 (top 1005) leaves a 23 px opening to log 127; an opening under his body width is no drop: the
   // lead's second line on the ruling, 11-11)
-  const s323 = [bank(1071), S(119, 26656, 899, 430, 24, 'branch'), S(121, 26869, 1042, 185, 24, 'log'), S(123, 27086, 983, 114, 120), S(124, 27200, 915, 306, 24, 'branch'), S(127, 27273, 1051, 214, 24, 'log'), S(128, 27056, 1005, 194, 24, 'branch', { catch: true })];
+  // (POLISH-5: under the per-gap ruler (w1Pits findOpenPits) only earth (90 px deep or more) is a lip, so the copy needs earth to the
+  // right of the slot or no hole is read at all: a bank at log 127's end (27487), as POLISH-3 planted it. E0a's real next bank, block 131
+  // at 28042, leaves 27487..28042 open under bough 124, a fall with or without 128, so the 23 px case is planted at 127's end)
+  const right = { ...P(901, 27487, 1071, 3000), height: 500 };
+  const s323 = [bank(1071), S(119, 26656, 899, 430, 24, 'branch'), S(121, 26869, 1042, 185, 24, 'log'), S(123, 27086, 983, 114, 120), S(124, 27200, 915, 306, 24, 'branch'), S(127, 27273, 1051, 214, 24, 'log'), S(128, 27056, 1005, 194, 24, 'branch', { catch: true }), right];
   assert.deepEqual(overlaps(floorlessGaps({ platforms: s323 }), 27200, 27273), [], 'seed 323: a 23 px opening, not a fall');
   assert.ok(overlaps(floorlessGaps({ platforms: s323.filter((q) => q.id !== 128) }), 27200, 27273).length > 0, 'planted: without branch 128 the slot is a fall');
+  // (POLISH-5, the floor clause: a floor BESIDE branch 128 (log 127, right of it across the slot) is no way under it; a floor UNDER it is.
+  // Planted: a catch bough under 128, 40 px lower, opens it again, so the slot is a fall; red if the clause counts any floor in the slot)
+  assert.ok(overlaps(floorlessGaps({ platforms: [...s323, S(129, 27120, 1045, 100, 24, 'branch')] }), 27200, 27273).length > 0, 'planted: a floor under 128 lets him in under it: a fall');
   // (planted: a piece at lip level closes the slot to 23 px; the same piece with a lower floor beside it under the slot does not)
   const atLip = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 4, 150), height: 24 }];
   assert.deepEqual(floorlessGaps({ platforms: atLip }), [], 'closed at lip level to 23 px');

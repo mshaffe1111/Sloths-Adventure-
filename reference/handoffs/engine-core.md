@@ -5,8 +5,62 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
 Rewritten for ENG-16G (11-14, t-build-16): section 0zb (the height-aware swing clearance and its lay rule, a parked frame, petals on the walked path). Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, the testers' let-go in the lay, the petal fill's path). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
+proven plan; Play is never blocked).
+
+## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
+- **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a
+  stage's start, kept for the run), `withSetting(d, fn)` (dials put back after), `dialsKey()` (for caches). Today the one build-time dial
+  is the swing (physics TIMED via setTimedSwing). Swept: difficulty()/runDifficulty() are the player's choice (Engine/InputEngine
+  constructors, build-ahead, menus); forgive, tide, soft pits, input.easy, the help ladder are the engine's own fields. A new dial goes
+  in settingDials.ts only: settingDials.test.ts fails on any setTimedSwing call outside it (tests excepted).
+- **Every build entry builds on its own setting's dials, whoever calls it**: generateStage, buildGen2Stage, easyStage (withSetting);
+  the pipeline's lianaRelease/chainRelease, levelCheck validateAsJudged (a gen2 stage on its own setting) and listRules helpRoomBreaches
+  too. So lockall, seedlist and every tool's Easy is the phone's, and the map's build-ahead no longer builds on whatever the last run left.
+  On the engine path it is a no-op (the engine set them already): lock on t-tools-2, Normal 102/102 unchanged; Easy equals a FRESH
+  phone's Easy on 102/102 (16 layouts); the 21 Easy stages today's tools had wrong: 3-8, 4-4, 5-4, 6-1, 6-3, 6-6, 6-7, 6-8, 7-5, 7-9,
+  8-3, 8-4, 8-5, 9-3, 9-4, 9-5, 9-9, 10-1, 10-3, 10-6, 10-7. World 1's lists (1-1..1-5, 1-7): 1424 builds identical either way.
+- **stageGenerator's layout-pick caches are keyed by dialsKey** (`variantAttempt`, `known`): validateStage flies lianas on the dials, so
+  a process that built Normal first handed Normal's pick to Easy (base: 9-3 layouts 4/14, 9-4 12, 10-6 1/6/10). TRAP (R-165.244 again):
+  any cache of an answer the dials change puts dialsKey in its key.
+- **Every gen2 lay and check on its own setting's dials** (R-165.258): buildRolled and applyVerdicts run on their request's setting;
+  inside an Easy build, Normal's plan, verdicts and rule on Normal's; inside Normal's search, the Easy lay check and Easy's rule on Easy's.
+  It had all run on the caller's dials, so a phone's Easy re-planned Normal on Easy's swing: 8-5's Easy lost its only tayra. Lock:
+  Normal 102/102 unchanged; Easy moves on 6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5 (each now lays Normal's plan); World 1 lists unchanged.
+  Gate: settingDials.test.ts R-165.258 (8-5 red before). Left: 6-3/4 and 6-7/3, 8, 9 drop their only frog on Easy (not the swing).
+- **The test link** (R-165.252, tools/testlink/build.py): exits 1 with no map above 480 files (prints the count); maps against
+  tools/testlink/dist-published, which only `build.py --published` refreshes, run after a successful publish. Gate: tools/testlink/build.test.ts.
+
+## 0za. TOOLS-1 (t-tools-1, 11-14): three tool faults; one was the engine's
+- **Every cache of a flight off a liana is keyed by the setting's swing** (levelCheck.ts `swingSettingKey`: TIMED's period, grab
+  reach and sweet spot, which physics `setTimedSwing` changes per setting). `FLIGHTS` (swingLandingsIn) was keyed by geometry alone,
+  so in one process a Normal build's liana landings were handed to the Easy build of the same seed (and back): castBots' "state leak"
+  (R-165.244) was this, not the bots. Gate: src/game/flightSetting.test.ts (Easy after Normal equals Easy alone in a fresh process).
+  TRAP: any new cache of an answer that reads TIMED (or anything setDifficulty changes) puts that in its key; chainLines and
+  heldCached already did. Lock on t-int-9: 102/102 unchanged (lockall never sets TIMED, so it cannot see this class; see the next line).
+- **The tools build Easy with Normal's swing**: seedlist.ts, lockall.ts and every direct generateStage/buildGen2Stage caller never call
+  setTimedSwing; only the engine does (engine.ts, before generateStage). Their Easy liana checks read Normal's TIMED. Not fixed here
+  (a packet for the lead: REPORT, Suggestions).
+- **The meter** (tools/difficulty/score.ts `swingChallenges`): one swing a liana, at its release; the grab off a bank is not a second
+  challenge; a miss costs what the ground under the swing costs (costAt with the jump inspector's pit rule). Gate: tools/difficulty/score.test.ts.
+- **clipcheck "Dot's first tip"** walks by game frames on the development build (pressFrame), taps a card that waits, judges once the
+  Skip is armed. CLIPCHECK_STEPS / CLIPCHECK_CPU / CLIPCHECK_SHOTS run and stress one step on its own.
+
+## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
+- Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
+  merged together by INT-9; both sets are true. Read each by its title, not its letter.
+- pipeline.ts pitUnder `deepen`: every bank beside a pit is filled down to the floor + bankH (World 9's rule, every world). The old 48 px
+  exception left a 0-48 px slot under a bank's foot, and a stair stone laid flush against that bank was judged drawn past its ground's
+  lip (w1CutArt.ts groundRun: a bank is the run's wall only 3+ px past the floor), so the settle (R-165.226) swapped the section away:
+  1-7 threw "the pool is spent" on 5 of 8 seeds. Gate: gen2Pits.test.ts 'any slot'. Lock: 1-3 and 17 older-world stages moved
+  platforms only (bank heights). Never fix such a red by easing groundRun's wall test: that reading is POLISH-6's rule.
+- Trap: a merge can make a stage unrollable with every file clean. Roll each listed stage (libstage --seeds 8) right after a merge,
+  before the long gates; bisect by merging two branches alone in a scratch worktree.
 
 ## 0zb. The height-aware swing clearance, its lay rule, a parked frame, petals on the walked path (ENG-16G, t-build-16, 11-14, R-165.246): what the next engineer must know
 - **physics.ts swingClearance is height by height now** (the lead's ruling (b), 4:42 PM ET): for each vine as the one he hangs on, the
@@ -155,6 +209,85 @@ proven plan; Play is never blocked).
   can't fit, a gen2 verdict refuses a lay giving the snake < 1 s in view. No stopgap (D40).
 - Shoot it: reference/qa-reports/ENG-S2/shoot.mjs (the snake; CLIP=1 for clips) and shootfalse.mjs (the false liana), both on 6-3.
 
+## 0y. 1-7's shared faults, fixed where they live (BUILD-17b, t-build-17, 11-14): what the next engineer must know
+- **A kit sweeper is judged by its STRETCH** (levelCheck.ts safe spots; gen2/stillLay.ts `isKitSweeper`, `SWEEPER_KINDS`): its laid x is
+  only the stretch's start; its eye crosses [patrolMinX, patrolMaxX]. Against the spawn and the shrine it keeps SAFE_APPROACH as a walker's
+  patch does; a FLAG inside or beside a stretch is fair because every respawn stands the cast down (castPlay.ts `calm`: rest, a whole
+  calm, then the 2 s warn) and stillFaults puts a hide within one calm's walk of every spot. eagleKit.test "back at a flag inside its
+  stretch" holds the stand-down (planted: calm() not resetting the cool). If you ever change calm() or respawnAtCheckpoint, that test and
+  this exemption stand or fall together. pickups.test mirrors the rule (it re-implements the check on purpose).
+- **A listed stage is a built stage in the sheet preload** (stageSheets.ts `listed`, the same test as stageGenerator.ts listedRoll): it
+  takes its STAGE_DRAWS row, never the old generator's whole set. stageSheets.test now holds every listed row to what rolls 1-3 draw on
+  both settings, and W1_ROOMS to the World 1 stages that build rooms (only 1-6 today). A new listed stage needs its row the day it is listed.
+- **A creaky limb laid ACROSS a pit has the pit under it** (pipeline.ts layLocal, after the piece loop): a creak piece with a plain pit
+  gap ending at its near end and/or starting at its far end joins them into ONE pit lip to lip (same water/soft only; back/putBack/hurt
+  gaps are never joined). Before, each jump had its own pit and the limb's span had none: when it gave way he fell into nothing. Only
+  1-7 lays a limb by 'jump' (1-4 and 1-5 lay theirs 'over' a bank); its seed list still `--check`s 100/100. creak.test plants both.
+- **requiredMove.test is RED on purpose until 1-6 is replaced**: its fixture is the OLD hand-built 1-6, whose full first-timer was at
+  346.7 s of 360 before BUILD-16c's hopCatches (700a279e) and times out after it (bisected). The lead ruled (a), D40: no work on old 1-6;
+  link #3 carries the new 1-6, and the test re-points with it.
+- **The journal's 'hide' page teaches the OLD slide-down hide** (movesJournal.ts): it now opens only when 1-7 is cleared (its 1-7 tip
+  was a deleted line). Its words and demo need the keeper and the designer: 1-7 teaches keeping still in the green. The movesJournal
+  test reads every listed stage's built tips, so a page can never wait on a line the game no longer says.
+
+## 0x. 1-7 built on the kit (BUILD-17, t-build-17, 11-14): what the next engineer must know
+- **1-7 is World 1 data**: gen2/worlds/w1Arc17.ts (kitLib17, finish17), stage-table row 'w1-17', listed.ts KITS/FINISH. The hand-built 1-7
+  is deleted (protoStage's 1-7 plan, secretBush/ropeBushes/acornMeadow, w1Sections' rows, stage17.test.ts and the old 1-7 tests).
+- **World 1 has no decorate pass**, so World 1's still finish (clipWatches + castWatches) runs as finish17's first step: libstage and the
+  pipeline's own checks see the stage BEFORE it (no eagles, "cast (no cast)"); the game and w1Arc17.test.ts see it after.
+- **A stretch ends at a gap** (stillLay watchedRun): a beat whose question is across a gap (the creaky limb, the lianas) gets one eye over
+  the whole beat in finish17 (W17_JOIN: to 120 px past the beat's last hide).
+- **Hanging is holding** (engine.ts:4625-4626, stepCast): the cast's hero had climbing/swinging as holding, never hanging, so hanging moss
+  never hid him in the game; and a creep along the rope is moving (stillness.ts moving, CastHero.hanging). hangCover.test.ts, planted.
+- **The perch is 56 px** (sweepPose.ts SNAG_PERCH, w17Art.ts snagB.perch 712): at 90 it cleared the progress sign by 4 px sideways (zoom
+  0.763); BUILD-17's shoot-perch.mjs prints eagle top vs `.vh-cplate` bottom in every caption.
+- **Kit tip ids that equal a move lesson ('creak', 'swing') are never said**: a stage's own lines need their own ids (lineId: `w17.<key>`).
+- **The bots on 1-7** carry BUILD-16c's climb-back (c8f67aa7, 5b0b1121) plus two of BUILD-17's: a MOSSY liana is held through the
+  eagle's look (it let go toward ground cover mid-swing), and the climb-back fires when the FACE ahead is over a double even if the route
+  is not (1-7's SHORT liana pit: route 179 px, wall 259; pitClimb.test "shallow pit").
+
+## 0w. 1-7's moss cover, the perched eagle, bots that hold still (ENG-E2, t-eng-e2, 11-14): what the next engineer must know
+- **Moss is cover like a bush** (watcher.ts Bush kinds `moss` carpet, `mossPatch` mound, `mossHang` hanging): laid by W1_STILL's rows
+  (w1Cast.ts: w1-hide-moss 346 px, -patch 169, -hang 173 and -curtain 78 with `hanging: true`; stillLay.ts HideRow.hanging ties a hanging hide's
+  top at its socket's spot: a rope's line or a bough's underside). Drawn by w17Art.ts from ART-678b's own files (src/assets/w1-678/, a file is
+  3x its game size: the catalog's units) in front of him; `mossAlpha`: a mound or hanging moss thins as the moss comes (the bush ghost rule), a
+  CARPET NEVER THINS (it covers only his feet: thinned, it vanished exactly when he hid). Preloaded by stageManifest key `w17`.
+- **A mossy liana looks mossy**: engine.ts draws drawLianaMoss on every `Vine.mossy` swing liana right after renderWorldObjects (three
+  clumps of the curtain without its twig, hanging straight under gravity from where the swing puts the rope).
+- **Letter m (cover) is laid**: nodeAsks.ts FILL_LETTER `{ m: 'hide' }`: a node asking m must have laid a prop tagged hide (pipeline
+  dialMisses passes each node's prop tags); NODE-KEY.html regenerated (nodekey.ts). The deal does not filter sections by m.
+- **The perch** (Post.perched, PredatorState.perched; laid by `eagleOver(z, groundY, id, { x })` -> Enemy.kitPerch): its body stays at its
+  post SNAG_PERCH (120 px, sweepPose.ts; the snag's low branch, w17Art.ts SNAG_PERCH_DRAWN, held equal by a test) over the ground under it
+  while its gaze (eyeX) sweeps; core.ts `rides = def.rides && !s.perched` everywhere riding was read; it acts (the dive) from the snag at the
+  act's 700 px/s and flies home through rest. sweepPose perchedPose: rest 'ahead' (an idle blink every 4.3 s), the warn 'turn' (+ the gaze
+  shadow at the start end), the pass 'down' with the shadow, 'blink' when its gaze is on him and he is hidden (SweepScene.hidden =
+  calmNow >= 1); tell/act/recover/flee fly. drawCastSky draws the snag (behind him: it runs before the player) and the perched frames.
+  The perch was 208 px first: sideways (412 tall) its head was off the screen top; 120 shows all of it under the HUD.
+- **Bots**: firsttimer.ts hides from the KIT eagle too (the old block read only proto.watch): a second (`heed`) after a sweeper's look starts
+  over his stretch he heads for `stillCoverNear` (ground cover at his level within 600 px) and takes his thumb off inside (no crouch: the
+  kit hides a STILL sloth). 'hide' is learned from moss/green + still words too. A test harness that steps a FirstTimerRun by hand must call
+  `after()` each frame (a jump ends there; without it his first hop never ended and he never hid).
+- Proof: src/game/eaglePerch.test.ts (7), src/game/gen2/mossLay.test.ts (7), tools/inspect/castBots.test.ts (+3); planted faults 10/10
+  (reference/qa-reports/ENG-E2/planted.out.txt). Real game: reference/qa-reports/ENG-E2/shoot.mjs (stills, CLIP=1 clips), shoot-hang.mjs.
+
+## 0v. 1-7's eagle and cover on the creature kit (ENG-E1, t-eng-e1, 11-14): what the next engineer must know
+- 1-7 is designed on the KIT's hide rule only (stillness.ts: still 0.5 s in cover; no crouch). watcher.ts still runs the OLD 1-7 (protoStage)
+  and Worlds 3/4/6/8; it goes from World 1 when w1Arc07 replaces protoStage's 1-7 (1-7.md NEW 12).
+- Laying it: World 1's still table (w1Cast.ts W1_STILL, w1Still(stage, lessonSockets)) lays hides as proto.bushes and a watched stretch;
+  its finish (clipWatches, then stillLay.ts castWatches) turns each stretch into ONE kit eagle over it (eagleOver: patrol = the stretch,
+  kitCool = the stretch's calm, kitFree where taught). A built stage carries no proto.watch zone for it. stillFaults reads it via sweptZones.
+- The kit: Post.cool / Enemy.kitCool is an animal's own cool (coolOf's third arg); Post.free / kitFree and Easy make a sweeper's FIRST pass
+  over him free (core.ts sparedPass: the dive comes, no box hurts, CastStep.spared; passes counts ended passes with him in its stretch).
+  EAGLE now `rides` its eye and a rider starts on its eye (newPredator).
+- Drawn: engine.ts drawCastSky from sweepPose.ts (pure, tested) with the painted eagle and the old watcher's shadow sprite; the screech on
+  the pass's call (CastStep.noticed); Dot's free-pass line is stage data (CastData.said.spared, the keeper's). Sweepers are skipped by the
+  enemy loop. The moss: CastPlay.calmNow (in cover only) -> hurtFlash.ts withWash on Pokey (MOSS_TINT) + the wind chime once when it is
+  all the way in; a bush he is in thins as it comes (drawBushArt `moss`).
+- A mossy liana (Vine.mossy) is cover while held (stillness.ts Cover.rope; startCast adds one per mossy vine); on a swing, his vy for
+  stillness is the rope length's change (climbing), never the swing.
+- NOT built (the REPORT's next steps): moss carpet/patch/hanging-moss rows and their art (t-art-678b w17-moss-*), the perch (rides off per
+  animal + perched art + head-turn), bots that hold still in cover, 1-7's own lay.
+
 ## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
 - Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts
   swingWideStep divides the zoom AFTER applyZoom's level-height floor, overTop lets it show sky). Sideways never. A cut snaps it back.
@@ -186,6 +319,71 @@ proven plan; Play is never blocked).
   nodeLetters.test.ts fails when they differ. Add a letter THERE, then run nodekey.ts. Liana is `s` (r is rope + climbing vine);
   `m` cover and `h`'s rolling dials are named LATER (B3, B2); a letter with no piece rule has no PIECE_WORDS row (no empty Never).
 - **Never edit the tree while the gate script runs** (it reads files as each step starts): run gates in a separate worktree, or wait.
+
+Rewritten for FIX-15 (2026-11-14, branch `t-fix-15`): section 0k's gate bullets (a shut gate is wood from every approach; the lay gap).
+Rewritten for FIX-15b (2026-11-14, branch `t-fix-15b`): section 0k's FIX-15 bullet (the gate's own flag waits; the lay gap is blocked, PUSHBACK).
+Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+Rewritten for TIPS (2026-11-14, branch `t-tips`): tip bands, the tip verdict and gate, the locked exit's line and plate (section 0t).
+
+## 0t. Tips fire where their mechanic is; the locked exit says why at once (TIPS, R-165.236 / .241, t-tips from t-int-8, 11-14)
+- **A rolled tip carries `band`** (StageHint.band [top, bottom], his FEET, in the air or not): `tipBand(sec)` in pipeline.ts = the
+  section's pieces, entry, exit and vines (top and bottom), widened `TIP_BAND.over` BOUNCE_REACH 258 above and `.under` DOUBLE_RISE 185
+  below. Seams are left OUT (in a tower they are the storey under: the turn's ledge and the catches; with them 1-4's creak tip could be
+  said 1,134 px of climb early, without 860 at worst). engine.ts's hint filter refuses a banded hint while his feet are outside.
+  Before: x alone, so 1-4's four teach lines went up in the first 3 s on the start floor.
+- **Flat stages did not move**: src/game/tipBand.test.ts plays the first-timer's whole run on 1-1, 1-2, 1-5 (Normal + Easy) twice,
+  with bands and with them stripped, and requires every tip on the same frame. Planted: TIP_BAND {0, 0} moves 1-1 and 1-5
+  (reference/qa-reports/TIPS/planted-band-zero.txt). The lock: only `proto.hints` moved, on the 22 rolled stages with tips.
+- **The verdict** (`tipReach` / `tipMisses`, towers only -> `towerMiss`, fails the roll by name): no tip said more than `TIP_NEAR`
+  1,026 px of route before its socket (PHYS.maxRun x `TIP_SAY_S` 3.6 s, the time engine.ts says a stage tip; said further back the
+  line is gone before he gets there), and a teach tip sits in the first section on the route whose template teaches or uses its
+  mechanic. On a run the first can't happen (its route is x); the test still runs the second on every rolled stage.
+- **The gate**: `npx tsx tools/engine/tipwalk.ts --layouts 4` (gates.yml; own test tools/engine/tipwalk.test.ts): every vertical
+  rolled stage (found from the builds: today only 1-4), the verdict plus a real-engine 20 s walk from the spawn where every tip said
+  must have his feet in its band. `--strip` is the x-alone run (64 misses on 1-4). Set the setting with `setDifficulty`, never
+  localStorage (a RealPlay built Normal when asked Easy; the tool prints BUILT and fails a mismatch, D62).
+- **The locked exit (R-165.241)**: engine.ts says the sealed door's line with `GuideOpts.lock` (onGuide -> App.tsx -> DotGuide
+  engineLine -> engineGuideLine `lock`): kind 'must' whatever its words, so it cuts in over any card. The keeper's own door lines
+  (stagePlan SEALED_LINES: 1-5's marks; 1-6's petals on t-build-16) classify as info by their words and waited behind her mark card.
+  It is said at once over a line still up (`stageHint?.text !== said`; was `!stageHint`). The first-timer passes `lock` too (D19).
+  The door's "N more" plate is drawn in drawPopups (words in play: over Pokey, under the HUD) at `PLATE_TOP` (sanctuaryDoor.ts), its
+  bottom 70 px over his drawn head as the door holds him; drawSanctuaryDoor no longer draws it. Tests: src/game/sealedLine.test.ts.
+- **Open**: R-165.238 (delete proto 1-6) waits on t-build-16 landing in an integration branch (it had not at 1:20 PM ET 11-14).
+  1-6's tower (t-build-16) joins tipwalk by itself once merged (verticalStages reads the builds). The bands overlap between storeys
+  (258 over + 185 under): a tip skipped by a teleport fires at the next storey's foot (seen in the clip harness, not in play order).
+Rewritten for POLISH-10 (11-14, t-polish-10): section 0t (sheet pieces, strip joins). Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+
+## 0t. Packed sheet pieces and strip joins (POLISH-10, R-165.243 / R-165.237, t-polish-10 from t-int-8, 11-14): what the next engineer must know
+- **A piece drawn from a packed sheet to its frame's edge pulls in its neighbour's edge row** (Chrome's drawImage filter reads past the
+  source rect). The ground sheets pack lips 0/1 right under the soil fills, whose bottom row is opaque in all ten worlds: every lip laid a
+  one-row soil line at alpha ~95 straight across the backdrop, 30-40 units above the bank (the lead's "dark line across World 1"). Now
+  lipSrc() samples LIP_INSET (4) rows in from a lip's top and bottom, drawn where those rows sat (groundSeams.test.ts, R-165.243 test).
+  Same family as FILL_INSET (0g). Ends (endFrame) have a faint neighbour on their LEFT (alpha 11-38): not yet shown to make a line.
+- **Finding which draw makes a line:** wrap CanvasRenderingContext2D draws, read one pixel before and after each (getImageData) on the
+  main canvas, then on the 397x397 ground squares: names the drawer in one run (POLISH-10 REPORT "Method update").
+- **Strip wraps:** scripts/strip-seamless.py's join can be undone by a later re-grade. 1-4's canopy middle (w1c-mid) was re-joined
+  (4.7 -> 0.3). Still rough at the wrap (join / column step): w2mist-mid 22.8, w1kapok-mid 19.5, w1sunrise-mid 15.2, w8sunset-mid 15.0,
+  w6dawn-mid 12.9, w1rain-mid 10.5, w3sinkhole-mid 10.1, w6moon-mid 7.9, w1dusk-mid 7.5, w1-mid 6.4 (INT-9: w1kapok-mid FIXED by tools/art/stripjoin.py feather, its canopy faded before the border). A forced re-join of w1-mid left
+  floating branch bits (its two ends differ too much): those need a look per strip, not a batch run.
+
+## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
+- **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
+  or bough is a platform over a gap, never its lip or floor (the lead, 8:50 PM). `earthLine` is the earth's top along x: a HOLE (no earth
+  at any depth) between two banks is a gap at any width from 24 px (no 1,600 cap); a DIP (earth dropping more than SOFT_BELOW and coming
+  back) is a gap when all of it lies deeper than SOFT_BELOW under the gap's line. `gapLine`: the higher lip when the lower is within
+  SOFT_BELOW of it, else the lower (a stump or pillar's top is not the ground). Floor window, SOFT_FLOOR, `lower` (a road running on)
+  read from that line. A drop inside a judged dip is its floor (`dipEnd`). The second "marked drop at any height" pass is gone (holes cover it).
+- **Planted:** w1Pits.test.ts "per-gap ruler" x4 (far ground, a raised hole, a log chain one gap, a 2,000 px hole), red on 1829470f.
+  The x22604 slot test now reads the block (earth 68 px down) as a sunk step, as realFalls always did.
+- **HELD (the lead's C, 9:35 PM): 1-1's openings are R-165.221 (the 1-1/1-4 polish lane).** 1-1 cannot build on t-ruler: its final
+  climb lies over earth holes (946-2,870 px) the old ruler never saw, and from its catch branches and lower logs he walks under the
+  route log and steps off into nothing (seed 769: off 115 at 869, 25947..26218 under 116). realFalls (promises11.ts:44) is NOT the
+  cause: with both its clauses corrected the runs stay (ruler/PUSHBACK.md). 1-1 must lay a soft zone spanning each hole, or catches
+  he cannot walk off into nothing; then seedlist 1-1, lockall, mixlist, full Checks on t-ruler. verdicts.test.ts:322's seed 323 copy
+  needs its real right bank (its slot ends at a log: no gap under earth-only lips). The full EXACT NEXT STEP: ruler/REPORT.md.
+- **Scan tool:** ruler/scan.ts reads the SAME builds (d8d6a97's tree) with both rulers: painted changes 0 (World 1 only is painted,
+  protoArt.ts:1310; only 1-1/1-2/1-3 are judged, stageTable.ts:34-38). ruler/shootAt.mjs: sideways stills pinned at a chosen x, any tree.
+
 
 ## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
 - **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
@@ -376,9 +574,20 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   `clock.read(clock, shift)`; `beat.ts beatFaults` is every builder's fairness check (a warn before every on, tells apart). Pods first.
 - **fieldPlay.ts runs a field each frame** (pods' tells/hits, torn bunches falling to the wood under them, gates); engine.ts hosts it
   through `fieldHost` (knock = `podKnock`: off the vine, no climb taken while `knocked`, a heart only on cost 'heart').
-- **A shut gate is `broken`** (no footing; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay draws its bough
-  always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs at its height)
-  are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **A shut gate is `broken`** (no footing for the platform list; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay
+  draws its bough always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs
+  at its height) are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **FIX-15 (11-14): a shut gate is wood from every approach, read against its DRAWN sagged wood** (fieldPlay.ts): `lid(p, dt, x0)` is
+  called by engine.ts after every move with his x before it: BESIDE, a move across into the wood stops at its end (span + GATE.lidSide);
+  FROM BELOW, the head stop (feet must start more than GATE.stand 4 px under the drawn top: a jump off its own sloped top is not "from
+  under"); FROM ABOVE, `footings(x)` hands the engine's floors the gate's own bough at its drawn top (the `with` boughs are not drawn, so
+  never footing). `overShut(v, x, y)`: a field vine under a shut bough is not taken from on or over it. Tests: fieldGate.test.ts "wood
+  from every approach" (INT-8's TRY lines at both ends of every gate, today's lid planted red). A flag standing on a shut gate's bough
+  (or a bough held with it) WAITS for the gate (`FieldPlay.flagWaits`, asked by the engine's claim loop; FIX-15b, the lead 11-14): never
+  claimed from on or over the shut wood, claimed on the open bough (fieldGate.test.ts "a flag on a shut gate's own bough", planted red on
+  the old claim). TRAP still open: the LAY lets him stand on the shut top from wood beside it (ONTO, 93 of 192 gates); keeping it out
+  of the lay leaves 1-4 unrollable (planner.md, qa-reports/FIX-15b/PUSHBACK.md). The clip tool's `gateover` holds the ties after the
+  first snap and prints THROUGH / ON ITS TOP / OVER; both must read `never` before 1-4 ships.
 - **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
   pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
 - **B14b (11-13):** the two-hand climb is painted (heroClips.ts `climb2Pick`, hero-climb2.json; drawn with its own scale `clip.k`, so

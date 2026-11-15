@@ -6,6 +6,8 @@ import { trackAtlas, releaseSheets, releaseWorldArt } from './atlasLoader.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { stageSheets } from './stageSheets.ts';
 import { generateAllLevels } from './worldsData.ts';
+import { generateStage, listedRoll, setLayoutVariant } from './stageGenerator.ts';
+import { isKitSweeper } from './gen2/stillLay.ts';
 
 // (QA's control-test logs, 2026-10-26/27: 'blank wait goldsnake / eagle / hero-vine / props2' as each first came on screen, on every
 // phone, and freezes over 100 ms after a sheet arrived mid-stage)
@@ -20,15 +22,27 @@ test("a snake asks for the golden snake's clips, a royal turtle the guard's, the
   for (const t of ['snake', 'turtle', 'boa', 'eagle', 'ocelot', 'jaguar']) assert.ok(sheetFile(animOf(t)), `${t}: ${animOf(t)}-anim.webp`);
 });
 
-test('every creature of every hand-built World 1 stage is asked for as it starts, the eagle and the ring drops too', () => {
-  // (rolls 1-6 of each: the old control course's 40 mixes were the eagles and rings here until it was deleted, R-165.151)
+test('every creature of every built World 1 stage is asked for as it starts, the eagle and the ring drops too', () => {
+  // (rolls 1-6 of each hand-built one: the old control course's 40 mixes were the eagles and rings here until it was deleted, R-165.151;
+  // and rolls 1-3 of each LISTED one on both settings, as the game builds it (stageGenerator.ts listedRoll): 1-7's eagles are the kit's
+  // sweepers over its watched stretches, gen2/stillLay castWatches, since the hand-built 1-7 was deleted, BUILD-17)
   const stages = levels.filter((l) => l.worldIndex === 1 && HAND_STAGES[l.id]).flatMap((l) => [1, 2, 3, 4, 5, 6].map((v) => buildProtoStage(l, v, HAND_STAGES[l.id])));
+  try {
+    for (const l of levels.filter((x) => x.worldIndex === 1 && listedRoll(x))) {
+      for (const v of [1, 2, 3]) {
+        setLayoutVariant(v);
+        for (const d of ['normal', 'easy'] as const) stages.push(generateStage(l, d) as unknown as (typeof stages)[number]);
+      }
+    }
+  } finally {
+    setLayoutVariant(null);
+  }
   let eagles = 0;
   let rings = 0;
   for (const st of stages) {
     const asked = new Set(stageAnims(st));
-    for (const e of st.enemies) assert.ok(asked.has(animOf(e.type, e.royal)), `${st.proto?.mix ?? ''}: ${e.type}`);
-    if (st.proto?.watch?.length) {
+    for (const e of st.enemies) assert.ok(asked.has(animOf(e.type, e.royal)), `${st.config?.id ?? ''} ${st.proto?.mix ?? ''}: ${e.type}`);
+    if (st.proto?.watch?.length || st.enemies.some((e) => isKitSweeper(e))) {
       eagles++;
       assert.ok(asked.has('eagle'), `${st.proto?.mix ?? ''}: the eagle over the watched stretch`);
     }

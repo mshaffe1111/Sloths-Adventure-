@@ -1,0 +1,157 @@
+diff --git a/src/game/gen2/tower.test.ts b/src/game/gen2/tower.test.ts
+index 9d1bc299..3f8d1c7c 100644
+--- a/src/game/gen2/tower.test.ts
++++ b/src/game/gen2/tower.test.ts
+@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
+ import { packPlan, stageParts, unpackPlan } from './seedList.ts';
+ import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
+ import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
+-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
++import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, sealedNear, sealedRoom, towerSkips, towerVaults, vertical } from './tower.ts';
+ import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
+ import type { Gen2Stage } from './types.ts';
+ 
+@@ -545,7 +545,9 @@ test('towerGates (planted, B14\'s case): a bough the lay ran on beside a shut ga
+   // (a shelf a little under its level, or a bough a jump over it, is a way round as well; one far under it is not)
+   assert.equal(towerGates([gate], [gate, foot, next, solid(960, 4809 + 20, 180, 6)], field).length, 1);
+   assert.equal(towerGates([gate], [gate, foot, next, solid(1000, 4809 - 150, 180, 7)], field).length, 1);
+-  assert.deepEqual(towerGates([gate], [gate, foot, next, solid(960, 4809 + 200, 180, 8)], field), []);
++  // (FIX-15b: 200 px under, 6 px past its end, a jump stands him on its sagged top: that is now refused by sealedNear, the test below;
++  // a full storey under it is still no way round)
++  assert.deepEqual(towerGates([gate], [gate, foot, next, solid(960, 4809 + 300, 180, 8)], field), []);
+   // (the vine that stands ON the gate is held down with it: its top is no way round)
+   assert.deepEqual(towerGates([gate], [gate, foot, next], [way]), []);
+   assert.deepEqual(towerGates([], [gate, foot, next, left, right], field), [], 'no sealed piece: nothing is judged');
+@@ -567,6 +569,48 @@ test('towerCatches leaves a gate alone: a sealed piece is never run on, and no c
+   assert.ok(towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level).some(byGate), 'unsealed, the same lay does put wood there (the planted case)');
+ });
+ 
++test('towerGates (planted, FIX-15b from 1-4, R-165.212 "it let me go above the platform"): no wood under a shut gate\'s level from which a jump stands him on its top, or with his drawn head in its wood', () => {
++  // (1-4 layout 1 Normal, gate 5: a catch 39 px under the gate's line, 292 px off its end: a double jump lands on its sagged top)
++  const g1 = solid(670, 3342, 360, 1), c1 = solid(198, 3381, 180, 2);
++  assert.equal(sealedNear(g1, 198, 378, 3381), 'onto');
++  assert.deepEqual(towerGates([g1], [g1, c1], []), ['tower: the shut gate at x 670-1030, y 3342 is stood on without opening it: a jump from the piece at x 198-378, y 3381 reaches its top']);
++  // (1-4 layout 0 Normal, gate 6: a catch 99 px under the gate's line, partly under its sagging end: his drawn head in the thatch)
++  const g0 = solid(414, 1923, 520, 1), c0 = solid(876, 2022, 180, 2);
++  assert.equal(sealedNear(g0, 876, 1056, 2022), 'low');
++  assert.match(towerGates([g0], [g0, c0], []).join(';'), /^tower: the piece at x 876-1056, y 2022 stands 99 px under the shut gate at x 414-934, y 1923: his drawn head would be in its drawn wood \(it needs 223 px\)$/);
++  // (sealedRoom: the sag, the drawn underside of its span, his drawn height and a margin, every part of it)
++  assert.ok(Math.abs(sealedRoom(g0) - (56 + (73 / 576) * 520 + 89 + 12)) < 1e-9);
++  // (what still holds: wood wholly under its lid with room for his drawn height (every rise from there stops at its underside); wood
++  // more than a double jump under its sagged top; wood beyond a jump across; wood at its level or over it is the "passed" rule's)
++  assert.equal(sealedNear(g0, 440, 900, 1923 + 240), undefined);
++  assert.equal(sealedNear(g0, 1000, 1180, 1923 + 56 + LEAP.up + 1), undefined);
++  assert.equal(sealedNear(g0, 1000, 1180, 1923 + 56 + LEAP.up - 1), 'onto');
++  assert.equal(sealedNear(solid(100, 3342, 360), 900, 1080, 3381), undefined);
++  assert.equal(sealedNear(g0, 1000, 1180, 1923 + 30), undefined);
++  // (an end vine's top or the field's own foot, a storey under the gate and run out past both ends, is no way onto it)
++  assert.equal(sealedNear(g0, 414 - 80, 934 + 80, 1923 + 360), undefined);
++  assert.deepEqual(towerGates([], [g1, c1, g0, c0], []), [], 'no sealed piece: nothing is judged');
++});
++
++test('towerCatches (planted, FIX-15b): no catch it lays leaves a shut gate stood on from beside it, or his drawn head in its wood', () => {
++  // (a gate, and another piece of its storey up beside it whose open ends are owed catches: before FIX-15b the lay hung them at the first
++  // 20 px step past the gate's level band, 40 px under its line and in a double jump of its top, as on 1-4's layouts 1, 2, 5, 7, 8, 9, 11, 12)
++  const floor = solid(0, 3000, 1280, 1), gate = solid(500, 2000, 300, 2), high = solid(900, 1900, 150, 3);
++  const level = (p: Platform) => (p.id === 1 ? 0 : 1), sealed = (p: Platform) => p.id === 2;
++  const cs = towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level, sealed);
++  assert.ok(cs.length > 0, 'its open ends are caught');
++  for (const c of cs) assert.equal(sealedNear(gate, c.x, c.x + c.w, c.y), undefined, `the catch at x ${c.x}-${c.x + c.w}, y ${c.y} leaves the shut gate had`);
++  // (and the stage it makes passes the verdict, its falls caught)
++  const P = [floor, gate, high, ...cs.map((c, k) => solid(c.x, c.y, c.w, 50 + k))];
++  assert.deepEqual(towerGates([gate], P, []), []);
++  assert.deepEqual(towerFalls('up', P, 3000, 1280).filter((m) => !m.includes('x 500-800')), [], "every fall but the gate's own (its section owes those) is caught");
++  // (the case is live: the catches in a jump across of the gate went under a double jump of its sagged top, not at the first step past
++  // its level band (with that guard out of the lay one is hung at x 786-966, y 2100, 100 px under its line by its end: this test is red,
++  // the REPORT's planted run))
++  const across = cs.filter((c) => Math.max(0, c.x - (gate.x + gate.width), gate.x - (c.x + c.w)) < 400);
++  assert.ok(across.length > 0 && across.every((c) => c.y > gate.y + 56 + LEAP.up), JSON.stringify(across));
++});
++
+ test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it', () => {
+   let gatesSeen = 0;
+   for (const d of SETTINGS) for (const seed of SEEDS) {
+diff --git a/src/game/gen2/tower.ts b/src/game/gen2/tower.ts
+index 9dd00e46..81c6f789 100644
+--- a/src/game/gen2/tower.ts
++++ b/src/game/gen2/tower.ts
+@@ -12,6 +12,7 @@ import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
+ import type { Platform, Vine } from '../types.ts';
+ import type { LocalLayout } from './pipeline.ts';
+ import { ledgeOut, vaultSide } from '../vineTop.ts';
++import { GATE } from '../vineField.ts';
+ 
+ /** which way a graph is laid (MissionGraph.flow) */
+ export type Flow = 'right' | 'up' | 'down' | 'legs';
+@@ -73,6 +74,33 @@ export function leaps(a: Box, b: Box): boolean {
+   return gap <= Math.max(0, reachJump(Math.max(-400, Math.min(rise, 150)), true)) + LEAP.slack;
+ }
+ 
++/** how far under a gate's top a piece still counts as level with it (px) */
++const GATE_LEVEL = 30;
++/** the margin his drawn head keeps under a sealed piece's drawn wood (px; HEAD's own margin) */
++const SEALED_CLEAR = 12;
++/**
++ * The room a sealed piece (a shut fig gate's bough) needs under its line for him to stand there with his DRAWN head clear of its DRAWN
++ * wood (FIX-15, R-165.212: a ledge 99 px under a gate's sagged end put his head 72 px into the thatch; HEAD reads his 48 px collider and
++ * a flat bough): the far end's full sag (GATE.sag: read along the whole span, as the lay does not know which end sags), its drawn
++ * underside (GATE.depth of its span), his drawn height (GATE.head, D41) and a margin.
++ */
++export const sealedRoom = (g: { width: number }): number => GATE.sag + GATE.depth * g.width + GATE.head + SEALED_CLEAR;
++/**
++ * Wood at (x0-x1, y) under a sealed piece's level that would give him the shut gate without opening it (FIX-15b, R-165.212, Matt: "it
++ * let me go above the platform"; a shut bough is footing from above, fieldPlay.ts): 'onto', wood not wholly under its lid (fieldPlay.ts
++ * lid: every rise from there stops at its underside, GATE.lidSide past either end) from which a jump (leaps, generous) reaches its drawn
++ * top at its sagged far end, the lowest it is drawn: he would stand ON the shut gate; 'low', wood under its span (or within GATE.lidSide
++ * of an end) with less room than sealedRoom: his drawn head would be in its drawn wood. Undefined: neither (or wood at its level or over
++ * it: towerGates' "passed" rule). The lay never lays such wood (towerCatches) and the verdict refuses a roll with it (towerGates).
++ */
++export function sealedNear(g: Box, x0: number, x1: number, y: number): 'onto' | 'low' | undefined {
++  if (y <= g.y + GATE_LEVEL) return undefined;
++  const under = x0 < g.x + g.width + GATE.lidSide && x1 > g.x - GATE.lidSide;
++  if (under && y - g.y < sealedRoom(g)) return 'low';
++  const inLid = x0 >= g.x - GATE.lidSide && x1 <= g.x + g.width + GATE.lidSide;
++  return !inLid && leaps({ x: x0, y, width: x1 - x0 }, { x: g.x, y: g.y + GATE.sag, width: g.width }) ? 'onto' : undefined;
++}
++
+ /** a tower's soft pit: where a section's gap gets a catch bough (lip to lip, `hop` under its lower lip), its top's local y; undefined:
+  *  none (a water gap, a slot too narrow to fall in, or a step taller than a hop, whose lower ledge is the catch already) */
+ export const gapCatchY = (g: { x0: number; x1: number; y: number; lo: number; water?: boolean }): number | undefined =>
+@@ -330,7 +358,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
+   // a bough from just under its level up to a jump over it, within a hop across of its span, would be a way round)
+   const gates = platforms.filter(sealed);
+   const hop = Math.max(0, reachJump(0, true)) + LEAP.slack;
+-  const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop);
++  // (and under its level: nothing from which a jump reaches its shut top, nor under it with his drawn head in its wood, sealedNear)
++  const byGate = (x0: number, x1: number, y: number) => gates.some((g) => (y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop)
++    || sealedNear(g, x0, x1, y) !== undefined);
+   /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey or lies by a gate */
+   const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
+   for (let pass = 0; pass < 10; pass++) {
+@@ -393,9 +423,6 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
+   return out;
+ }
+ 
+-/** how far under a gate's top a piece still counts as level with it (px) */
+-const GATE_LEVEL = 30;
+-
+ /**
+  * A tower's shut gates passed, each by name (empty: none). `sealed`: the gate boughs (SectionPiece.sealed). With a gate shut he
+  * cannot come up onto it from the vines under it, and the vine that stands on it is held down: so nothing at its level or over it
+@@ -422,6 +449,16 @@ export function towerGates(sealed: readonly Platform[], platforms: readonly Plat
+       break;
+     }
+     if (hit) out.push(`tower: the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} is passed without opening it: ${hit}`);
++    // (nor is it had from under its level (FIX-15b, sealedNear): no wood from which a jump stands him ON its shut top, none under it with
++    // his drawn head in its drawn wood)
++    for (const p of under) {
++      const why = sealedNear(g, p.x, p.x + p.width, p.y);
++      if (!why) continue;
++      const at = `the piece at x ${R(p.x)}-${R(p.x + p.width)}, y ${R(p.y)}`, gate = `the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)}`;
++      out.push(why === 'onto' ? `tower: ${gate} is stood on without opening it: a jump from ${at} reaches its top`
++        : `tower: ${at} stands ${R(p.y - g.y)} px under ${gate}: his drawn head would be in its drawn wood (it needs ${R(sealedRoom(g))} px)`);
++      break;
++    }
+   }
+   return out;
+ }

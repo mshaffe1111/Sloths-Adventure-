@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { withSetting } from '../settingDials.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -29,7 +30,7 @@ import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -240,13 +241,11 @@ export const VINE = {
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
  * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf), and with a dial only the presses that see the
  * whole perch (SWING_SEEN). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
- * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
- * back as it was after).
+ * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (settingDials.ts
+ * withSetting, put back as it was after).
  */
 export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty, held = false): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
     const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
     // (a liana laid by its grip dial (World 1's rows) is laid by what he SEES: a press counts only if the perch's far end is in the view
@@ -257,9 +256,7 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // its band runs past the view: ENG-S5's upright still showed its LONG perch off screen as he pressed)
     const seen = swing.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 
 /**
@@ -267,20 +264,16 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
  * liana (no perch between), puts his hands on B as it swings, B at the phase the stage gives it (physics chainPhase, as swingSetup sets
  * it), the worse of the holds A's grip dial names; a press counts only if B's WHOLE swing (its anchor's x plus its foot's reach, the far
  * side) is within SWING_SEEN of him as he presses (the swing camera leads with it: cameraFollow.ts landingAhead). The engine's own press
- * (physics chainWindow, pressWindow) on this difficulty's swing (setTimedSwing, put back as it was after).
+ * (physics chainWindow, pressWindow) on this difficulty's swing (settingDials.ts withSetting, put back after).
  */
 export function chainRelease(a: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sa: LianaSwing, b: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sb: LianaSwing, difficulty: Difficulty): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A: SwingVine = { x: a.x, topY: a.topY, bottomY: a.bottomY, swingAmp: sa.amp, swingPeriod: sa.period, swingPhase: 0 };
     const B0: SwingVine = { x: b.x, topY: b.topY, bottomY: b.bottomY, swingAmp: sb.amp, swingPeriod: sb.period };
     const B = { ...B0, swingPhase: chainPhase(A, B0) };
     const far = B.x + swingReach(B);
     return chainWindow(A, B, LETGO_FLIGHTS, gripsOf(sa.grip, a.bottomY - a.topY), (px) => far <= px + SWING_SEEN) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 /** the swing two neighbouring lianas `dx` apart may keep, each (radians, at most `amp`): half the clear space between them, as
  *  physics.ts swingSetup sizes a liana beside another, so their swings never meet (swingClearance) */
@@ -333,16 +326,13 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
       const key = ['fwd', R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
       let r = RELEASE_CACHE.get(key);
       if (r === undefined) {
-        const was = { ...TIMED };
-        setTimedSwing(difficulty === 'easy');
-        try {
+        // (on this setting's swing, every dial put back after: settingDials.ts withSetting, R-165.251)
+        r = withSetting(difficulty, () => {
           const y = from.y + dy;
           const A: SwingVine = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
           const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= y + 14 && c.y >= y && c.x >= x + LAND_IN.px && c.x <= x + w - LAND_IN.px;
-          r = forwardEndLands(A, lands, gripsOf(swing.grip, v.bottomY - v.topY)) ? 1 : 0;
-        } finally {
-          Object.assign(TIMED, was);
-        }
+          return forwardEndLands(A, lands, gripsOf(swing.grip, v.bottomY - v.topY)) ? 1 : 0;
+        });
         RELEASE_CACHE.set(key, r);
       }
       return r === 1;
@@ -561,7 +551,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const list = G.list.filter((g) => g.archetype === budget.archetype);
   if (!list.length) return null;
   const r = rngFor(seed, 67);
-  const g = list[Math.floor(r() * list.length)];
+  let g = list[Math.floor(r() * list.length)];
+  // (a graph the brief refuses, GraphBrief.refuseGraphs: drawn again among the rest on a stream of its own, so every seed that drew an
+  // allowed graph keeps that graph and every number after it; POLISH-9b, 1-1 without sprint-B and -C)
+  const allowed = brief.refuseGraphs?.length ? list.filter((q) => !brief.refuseGraphs!.includes(q.id)) : list;
+  if (!allowed.length) throw new Error(`gen2 ${budget.id}: the brief refuses every ${budget.archetype} graph of the world`);
+  if (!allowed.includes(g)) g = allowed[Math.floor(rngFor(seed, 68)() * allowed.length)];
   // (the graph's code, read and checked: a graph that breaks a rule is the world's data at fault, named with its rule and token)
   // (its leg marks, legs.ts: taken out before the nodes are read; each node's travel then rides with its job through the brief's
   // rules below, and a node they add takes the leg of the node before it. A code with no mark: `tv` stays empty and nothing moves)
@@ -1316,7 +1311,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const ref = (k: string) => by.get(k)!;
     // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
     const bounceCap = (q: SectionPiece): number | undefined => {
-      const m = q.block === 'bounce' && q.from ? by.get(q.from) : undefined;
+      // (a bounce TEACH's lip names its mushroom with no block (World 1's TEACH_LIP, POLISH-7): reached the same way, judged as a teach)
+      const m = q.from && q.block !== 'double' ? by.get(q.from) : undefined;
       return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty) : 0.95 * BOUNCE_REACH) : undefined;
     };
     if (pl.kind === 'start') {
@@ -1536,6 +1532,30 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     out.push(p);
     if (hang) clearSwings(tpl, all, sockets, out, p);
   }
+  // (a creaky limb laid ACROSS a pit, a jump onto it and on off it: it gives way under him, gen2/creak.ts "drops him to what is under it",
+  // so the pit runs on under the limb, one pit from the lip he jumped from to the lip he jumps to. Laid apart, each jump's gap had its own
+  // pit and the limb's own span had none: when it gave way he fell into nothing (1-7's beats 8 and 14, BUILD-17b). Only plain pits join,
+  // alike in water and softness; a limb laid over ground ('over' a bank, 1-4's and 1-5's) has no pit at either end and is left)
+  const plainPit = (g: (typeof gaps)[number]) => g.pit && !g.back && !g.putBack && !g.hurt;
+  for (const p of out) {
+    if (!p.creak) continue;
+    const gl = gaps.find((g) => plainPit(g) && Math.abs(g.x1 - p.x) <= 1);
+    const gr = gaps.find((g) => plainPit(g) && Math.abs(g.x0 - (p.x + p.w)) <= 1);
+    if (!gl && !gr) continue;
+    if (gl && gr && (!!gl.water !== !!gr.water || !!gl.soft !== !!gr.soft)) continue;
+    const g = (gl ?? gr)!;
+    // (a shallow catch, wade-deep, no steps: a step out laid under the limb stood under its own ceiling, 1-7 seed 2's 75 px step at
+    // x 18791 that a flick leaning away could not climb, plainWalk.test)
+    g.shallow = true;
+    g.x0 = Math.min(g.x0, p.x);
+    g.x1 = Math.max(g.x1, p.x + p.w);
+    if (gl && gr) {
+      g.x1 = gr.x1;
+      g.y = Math.min(gl.y, gr.y);
+      g.lo = Math.max(gl.lo, gr.lo);
+      gaps.splice(gaps.indexOf(gr), 1);
+    }
+  }
   let entry = { ...tpl.entry };
   let exitP = { ...tpl.exit };
   const right = Math.max(...out.map((p) => p.x + p.w));
@@ -1577,6 +1597,8 @@ export interface Laid {
   missing?: string[];
   /** a rolled graph's sections whose laid exit left the corridor (a version that ends far from its declared exitDy): swapped */
   strays?: Array<{ uid: string; y: number }>;
+  /** pieces the world's settle could not keep on their ground (WorldKit.settle): the section each lies in, and where: swapped */
+  unsettled?: Array<{ uid: string; x: number }>;
   /** V19's late rise as laid: each mustRise node, the height it had to end above (minus 20 px) and where it ended */
   rise?: Array<{ node: string; to: number; exitY: number }>;
   /** a rolled graph's blocks (NODES.md §8.7): each teach or test section's block pieces, as laid */
@@ -1679,6 +1701,39 @@ export function flagRuns(platforms: readonly Platform[], ground: Platform, x0: n
     runs = runs.flatMap(([a, b]): Array<[number, number]> => (b <= b0 || a >= b1 ? [[a, b]] : [...(a <= b0 ? [[a, b0] as [number, number]] : []), ...(b >= b1 ? [[b1, b] as [number, number]] : [])]));
   }
   return runs;
+}
+
+/** a piece of earth, for `earthHoles`: EARTH.px deep or more (a bank, a stump, a pillar); a log or a bough is a platform over a hole, never
+ *  its lip (the per-gap ruler's definition, t-ruler w1Pits.ts EARTH_DEEP, R-165.197/.200) */
+export const EARTH = { px: 90, source: 'the per-gap ruler (t-ruler w1Pits.ts EARTH_DEEP), R-165.221' } as const;
+
+/**
+ * The holes in a stage's earth (R-165.221): each x span between two banks with no earth under it at any depth, lip to lip. Pieces standing
+ * over a hole (logs, catch boughs) do not fill it: he can walk off their ends into it.
+ */
+export function earthHoles(platforms: readonly Platform[]): Array<{ x0: number; x1: number }> {
+  const earth = platforms.filter((q) => q.type === 'solid' && !q.broken && !q.lift && q.height >= EARTH.px).map((q) => [q.x, q.x + q.width] as const).sort((a, b) => a[0] - b[0]);
+  const out: Array<{ x0: number; x1: number }> = [];
+  let end = earth.length ? earth[0][1] : 0;
+  for (const [a, b] of earth.slice(1)) {
+    if (a > end + 2) out.push({ x0: R(end), x1: R(a) });
+    end = Math.max(end, b);
+  }
+  return out;
+}
+
+/**
+ * A stage whose brief says no fall costs a life (`softFalls`, 1-1): every hole in its earth (a goal ledge's too, where no laid gap is) is
+ * ONE soft zone lip to lip, and ONE soft fall record spans it (R-165.221; t-ruler's REPORT, seed 769: under 1-1's last climb, off a catch bough's
+ * end or a lower log's, he dropped into a hole no zone or Drop named, though the engine already set him back there, engine.ts softOn).
+ * Play is unchanged: on such a stage every fall already sets him back (softFallStage), and a soft zone does the same (engine heartFall).
+ * The record's y is the lowest top over the hole, so nothing under it reads as a floor (dropsOf): it ends in the set-back, not a log.
+ */
+function softHoles(platforms: readonly Platform[]): Array<{ x0: number; x1: number; y: number }> {
+  return earthHoles(platforms).map((h) => {
+    const over = platforms.filter((q) => q.type === 'solid' && q.x < h.x1 && q.x + q.width > h.x0);
+    return { ...h, y: R(Math.max(...over.map((q) => q.y), ...platforms.filter((q) => q.type === 'solid' && (Math.abs(q.x + q.width - h.x0) < 3 || Math.abs(q.x - h.x1) < 3)).map((q) => q.y))) };
+  });
 }
 
 type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number; y?: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>; platforms?: readonly Platform[] };
@@ -1848,10 +1903,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot; World 9's fix,
     // w9-pieces 621554b8, the lead 2026-10-31: every world, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage)
     const deepen = (floor: number) => {
-      // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
-      // fits through (48 px, his height) is filled, so the shipped stages build as curated (five 8-6 Normal rolls change: their dark
-      // glide floors ran 51-85 px under a bank's foot); a thin perch or branch beside the pit is never stretched into a column)
-      for (const q of platforms) if (!wallIds.has(q.id) && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+      // (every world fills a bank beside the pit down past its floor, as World 9 always did (its lava is drawn under it). Until INT-9 only
+      // a bank whose foot left a hole he fits through (48 px, his height) was filled, so the shipped stages built as curated (five 8-6
+      // Normal rolls: dark glide floors 51-85 px under a bank's foot); a smaller slot (0-48 px) was left, and a stair stone laid flush
+      // against that bank read as drawn past its ground's lip (w1CutArt.ts groundRun's wall wants the bank 3+ px past the floor), so the
+      // settle (R-165.226) swapped the section away: 1-7's liana pits, the pool spent on 5 of 8 rolls. A thin perch or branch beside the
+      // pit is never stretched into a column)
+      // (a hollow log is a painted piece at its art's own height, never a bank: floorRoll.test, INT-9's first full run)
+      for (const q of platforms) if (!wallIds.has(q.id) && !q.hollow && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, depthNow, hop);
@@ -2776,9 +2835,30 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       shiftedDown = down;
     }
   }
+  // (R-165.226: each piece drawn on its own ground, the world's settle (World 1: a stone kept back from its lip by its painted margin).
+  // A moved piece takes what stands on it and the jumps that start or end at its edges with it; the checks below and the verdicts read
+  // the moved stage. One it cannot settle names its section, which the check swaps)
+  const unsettled: NonNullable<Laid['unsettled']> = [];
+  for (const { p, dx } of kit.settle?.(platforms) ?? []) {
+    const mid = p.x + p.width / 2;
+    if (Number.isNaN(dx)) {
+      const sec = sections.find((q) => mid >= q.x0 && mid <= q.x1) ?? sections.find((q) => q.x0 > mid);
+      if (sec) unsettled.push({ uid: sec.uid, x: R(mid) });
+      continue;
+    }
+    if (!dx) continue;
+    const e0 = p.x, e1 = p.x + p.width;
+    for (const k of asks) {
+      if (Math.abs(k.yTake - p.y) <= 1 && (Math.abs(k.x0 - e0) <= 1 || Math.abs(k.x0 - e1) <= 1)) k.x0 += dx;
+      if (Math.abs(k.yLand - p.y) <= 1 && (Math.abs(k.x1 - e0) <= 1 || Math.abs(k.x1 - e1) <= 1)) k.x1 += dx;
+    }
+    for (const q of sections) for (const k of q.sockets) if (k.piece === p) k.x += dx;
+    p.x += dx;
+  }
   return {
     sections,
     ...(missing.length ? { missing } : {}),
+    ...(unsettled.length ? { unsettled } : {}),
     ...(blocks.length ? { blocks } : {}),
     ...(strays.length ? { strays } : {}),
     ...(plan.some((p) => p.loose) ? { loosened: plan.flatMap((p, k) => (p.loose ? [`slot ${k + 1} (${p.loose})`] : [])) } : {}),
@@ -3150,7 +3230,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
+          // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'receptor') {
@@ -3629,6 +3710,10 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
+  // (a no-lethal stage's holes: one soft zone and one soft fall over each, lip to lip, R-165.221: softHoles)
+  // (a copy: the search lays and judges `laid` again after a repair, so nothing is added to it here)
+  const holes = req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? softHoles(platforms) : [];
+  const heartFalls = [...laid.heartFalls, ...holes.filter((h) => !laid.heartFalls.some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4)).map((h) => ({ x0: h.x0, x1: h.x1, soft: true }))];
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
   // (a floor at or under the death line (the water's 40 px under bobFoot, or the fall line 240 px under it) pulls the line down under it,
   // only for a floor it would kill on, so the shipped stages' water and views stay as curated: World 9's fix, gen2Pits.test.ts)
@@ -3666,7 +3751,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
+    falls: [...laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })), ...holes.map((h) => ({ ...h, kind: 'soft' as PitKind, site: 'hole-under-route' as const }))],
   };
   const stage: Gen2Stage = {
     config,
@@ -3686,7 +3771,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(sink.clocks?.length ? { clocks: sink.clocks } : {}),
-    ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
+    ...(heartFalls.length ? { heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
@@ -3719,7 +3804,9 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   const sleeper = new Set(M.creatures.filter((c) => c.tags?.includes('sleeper')).map((c) => c.id));
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tplOf = new Map(st.gen2.sections.map((q) => [q.uid, byId.get(q.template)]));
-  const falls = (st.gen2.drops ?? []).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
+  const propTags = new Map(M.props.map((p) => [p.id, p.tags]));
+  // (a node's hazard ask is a fall the node lays on its route: a hole under the route is the earth's, never the node's hazard, DropSite)
+  const falls = (st.gen2.drops ?? []).filter((d) => !d.site).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
   const out: string[] = [];
   nodes.forEach((n, k) => {
     if (!n.asked) return;
@@ -3732,6 +3819,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
       enemies: fills.filter((f) => f.role === 'enemy' && f.what && at.has(R(f.x))).map((f) => ({ kind: f.what!, asleep: sleeper.has(f.what!) })),
       finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
       pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (f.count ?? tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
+      props: fills.filter((f) => f.role === 'prop' && f.what).map((f) => propTags.get(f.what!) ?? []),
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));
@@ -3817,6 +3905,9 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
   const stray = b.laid.strays?.[0];
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
+  // (R-165.226: a stone no piece and no move keeps on its ground: its section is swapped)
+  const loose = b.laid.unsettled?.[0];
+  if (loose) return { ok: false, swap: Number(loose.uid.slice(1)) - 1, why: `a stone at x ${loose.x} is drawn past its ground's lip` };
   const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
   // (Y2, R-165.120: a judged stage's idle mushrooms are taken up and its dead-zone petals moved to a piece a clean flight reaches, inside
@@ -3898,6 +3989,81 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  * Build one stage: passes 1-6, the repair loop and the length loop. Easy first lays Normal's plan (the section sequence), so the
  * two difficulties are the same stage under different rules. Deterministic: the same request gives the same stage.
  */
+/**
+ * A rolled stage's tip fires only while his feet are inside its section's height band (R-165.236; StageHint.band, engine.ts): from
+ * `TIP_BAND.over` above the section's highest surface to `TIP_BAND.under` below its lowest. The surfaces are everything the section
+ * laid that he can stand or hang on: its pieces, the stitcher's seams before it (a pit's floor), its entry and exit, its vines' tops and
+ * bottoms. The reach numbers (planner.md §2): `over` BOUNCE_REACH 258 px, the highest his own moves lift his feet over a surface (a bounce
+ * and the double); `under` DOUBLE_RISE 185 px, the lowest he can be and still reach the section's lowest piece with a jump and the
+ * double. On a flat stage that holds every place he can be while over the section, so its tips fire at the frame x alone fired; on a
+ * climbing stage the storeys stand apart, and a tip waits for his height (src/game/tipBand.test.ts).
+ */
+export const TIP_BAND = { over: BOUNCE_REACH, under: DOUBLE_RISE } as const;
+export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | 'seam' | 'vines'>): [number, number] {
+  const ys = [sec.entry.y, sec.exit.y, ...sec.pieces.map((p) => p.platform.y), ...sec.vines.flatMap((v) => [v.vine.topY, v.vine.bottomY])];
+  return [R(Math.min(...ys) - TIP_BAND.over), R(Math.max(...ys) + TIP_BAND.under)];
+}
+
+/**
+ * Where on its route a rolled stage's tips can first be said (R-165.236). The route's line (tower.ts routeOf: the spawn, each section's
+ * entry and exit in order, the totem) is walked in 4 px steps, his feet on it; a tip is said at the first step past its x with his feet in
+ * its band (StageHint.band, the engine's rule), or failing that at its socket. `early`: route px from there to the tip's own socket (the
+ * place the designer put the line, by what it teaches). A run's route is x itself, so there `early` is 0 by construction; a climbing or
+ * descending stage's storeys share their x, and x alone said 1-4's teach lines 1,200-3,500 px of climb early.
+ */
+export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: readonly StageHint[] }; gen2: Pick<Gen2Stage['gen2'], 'fills' | 'tower'> }): Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> {
+  const route = st.gen2.tower?.route;
+  const line = route ? [route.spawn, ...route.legs.flatMap((g) => [g.entry, g.exit]), route.exit] : [];
+  const hints = st.proto?.hints ?? [];
+  const out: Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> = [];
+  for (const f of st.gen2.fills) {
+    if (f.role !== 'tip' || !f.what || f.unsaid || f.socket === 'water') continue;
+    const h = hints.find((q) => q.x === f.x && q.band);
+    if (!h?.band) continue;
+    // (a run's route is x: nothing past x is before the socket)
+    const socket = route ? routeAt(route, f.x, f.y) : f.x - st.spawnX;
+    let at = socket;
+    walk: for (let i = 1, s = 0; i < line.length; i++) {
+      const a = line[i - 1], b = line[i], len = Math.abs(b.x - a.x) + Math.abs(b.y - a.y), n = Math.max(1, Math.ceil(len / 4));
+      for (let j = 0; j <= n; j++) {
+        const x = a.x + ((b.x - a.x) * j) / n, y = a.y + ((b.y - a.y) * j) / n;
+        if (x >= h.x && y >= h.band[0] && y <= h.band[1]) { at = Math.min(at, s + (len * j) / n); break walk; }
+      }
+      s += len;
+    }
+    out.push({ what: f.what, x: f.x, y: f.y, at: R(at), socket: R(socket), early: R(socket - at) });
+  }
+  return out;
+}
+
+/**
+ * The tip verdict's reach (R-165.236): a tip may be said at most this many px of route before its socket. The route he runs at full
+ * speed (PHYS.maxRun 285 px/s, planner.md §2's reach table) while the line is up (TIP_SAY_S 3.6 s): 1,026 px. Said further back, the
+ * line is gone before he reaches what it teaches. 1-4 by x alone: 3,354-7,410 px; with the bands at most 860 (16 builds, 11-14)
+ */
+/** seconds a stage tip is up (engine.ts says a stage's tips for this long; TIP_NEAR is what he runs in it) */
+export const TIP_SAY_S = 3.6;
+export const TIP_NEAR = Math.round(PHYS.maxRun * TIP_SAY_S);
+/**
+ * A rolled stage's tips judged (R-165.236), each miss by name: a tip said more than TIP_NEAR px of route before its socket (tipReach),
+ * and a teach tip whose section is not the first on the route to show what it teaches (its template's `teaches`: an earlier section
+ * teaches or uses it, so the line comes after the thing). Every stage; on a run the first can not happen (its route is x).
+ */
+export function tipMisses(st: Parameters<typeof tipReach>[0] & { gen2: Pick<Gen2Stage['gen2'], 'sections'> }, M: Pick<WorldManifest, 'sections'>): string[] {
+  const out = tipReach(st).filter((q) => q.early > TIP_NEAR).map((q) => `tip "${q.what}" (x ${q.x}, y ${q.y}) is said ${q.early} px of route before its socket, past TIP_NEAR ${TIP_NEAR}`);
+  const tpl = new Map(M.sections.map((t) => [t.id, t]));
+  const order = st.gen2.sections.map((q) => q.uid);
+  for (const f of st.gen2.fills) {
+    if (f.role !== 'tip' || !f.what || f.unsaid || f.socket === 'water') continue;
+    const k = order.indexOf(f.section);
+    const m = tpl.get(st.gen2.sections[k]?.template ?? '')?.teaches;
+    if (!m) continue;
+    const first = st.gen2.sections.findIndex((q) => { const t = tpl.get(q.template); return t?.teaches === m || (t?.uses ?? []).includes(m); });
+    if (first >= 0 && first < k) out.push(`tip "${f.what}" teaches ${m} in ${f.section}, but ${st.gen2.sections[first].uid} shows it first`);
+  }
+  return out;
+}
+
 /** a Dot line's id to the words a tip says: the kit's own (manifest.tips, World 1's W1_TIPS built from dotLinesData), one source;
  *  undefined when the kit has none, and the roll fails by name (the lead, 11-06: a kit that forgets a tip fails loudly) */
 export function tipWords(tips: Readonly<Record<string, string>> | undefined, id: string): string | undefined {
@@ -3971,7 +4137,7 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     const mid = (f.x0 + f.x1) / 2;
     const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
-    const at = { x0: f.x0, x1: f.x1, lipY: f.y };
+    const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
     // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
     if (ground?.pit === 'hurt') {
@@ -3996,9 +4162,17 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
  *  (a bounce lip in a teach node is the bounce teach) with its clear height, and the gaps the built stage shows (World 1's pits) */
 function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2Stage } {
   const nodes = st.gen2.nodes ?? [];
-  const asks: JudgedStage['asks'][number][] = (ASKS.get(st) ?? []).map((a) => {
+  // (POLISH-8, R-165.228: a teach node's FIRST double rise block is the teach's own rise, judged on its own band, 'double-teach-first';
+  //  the rises after it in the node (a second D) keep the block band)
+  const read = (ASKS.get(st) ?? []).map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
-    const { kind, figure } = classify(a, !!node && JOB_OF[node.token[0]] === 'teach', setting);
+    const teach = !!node && JOB_OF[node.token[0]] === 'teach';
+    return { a, node, teach, ...classify(a, teach, setting) };
+  });
+  const first = new Map<unknown, number>();
+  for (const r of read) if (r.teach && r.kind === 'double-teach-rise' && r.a.x0 < (first.get(r.node) ?? Infinity)) first.set(r.node, r.a.x0);
+  const asks: JudgedStage['asks'][number][] = read.map(({ a, node, teach, kind: k, figure }) => {
+    const kind: typeof k = teach && k === 'double-teach-rise' && first.get(node) === a.x0 ? 'double-teach-first' : k;
     return { section: a.section, kind, x0: a.x0, x1: a.x1, figure, move: TAUGHT[kind], headroom: headroomOf(a, st.platforms) };
   });
   return {
@@ -4009,7 +4183,11 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
+/** applyVerdicts on the request's own setting's dials (R-165.258: an Easy build judged Normal's verdicts on Easy's swing) */
 export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+  withSetting(req.difficulty, () => applyVerdictsOn(st, req));
+}
+function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
   st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
@@ -4044,6 +4222,9 @@ export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
     const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
+    // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
+    falls.push(...tipMisses(st, req.kit.manifest));
     if (falls.length) st.gen2.towerMiss = falls;
   }
   // (the designer's asks, nodeAsks.ts: each laid, or the roll fails by name)
@@ -4110,7 +4291,11 @@ export function rollUnmet(st: Gen2Stage, req: BuildRequest): Unmet[] {
   });
 }
 
+/** buildGen2Stage on the request's own setting's dials (settingDials.ts, R-165.251), the caller's put back after: a tool's build is the phone's */
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildGen2StageOn(req));
+}
+function buildGen2StageOn(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
   const pool = stagePool(M0, req.config.id);
@@ -4151,7 +4336,15 @@ export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): 
   throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
 }
 
+/**
+ * buildRolled on its own setting's dials (settingDials.ts, R-165.258): an Easy build's Normal plan is built on Normal's swing, so it is
+ * Normal's plan (on a phone the engine had set Easy's before the build, so 8-5's Normal plan was re-planned on Easy's swing and Easy lost
+ * its only tayra); the caller's dials are put back after
+ */
 function buildRolled(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildRolledOn(req));
+}
+function buildRolledOn(req: BuildRequest): Gen2Stage {
   const M = req.kit.manifest;
   if (M.handBuilt.includes(req.config.id)) throw new Error(`gen2: ${req.config.id} is hand-built`);
   const budget = planBudget(req.config, M, req.difficulty);
@@ -4173,7 +4366,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
     if (n) {
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
@@ -4262,8 +4455,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
         // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
         let eb: Built | undefined;
         if (v.ok) {
-          eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
-          const ev = checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          // (on Easy's dials, R-165.258: Normal's build had checked Easy's lay on Normal's swing)
+          const ev = withSetting('easy', () => {
+            eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+            return checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          });
           if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
         }
         st.gen2.rerolls = roll;
@@ -4309,10 +4505,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
             repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
             break;
           }
+          // (so is one with a stone no piece keeps on its ground, R-165.226: the version laid the stone at the lip, not the section)
           // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
           // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
           // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
-          if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
+          if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor|drawn past its ground's lip/.test(v.why ?? '')) {
             const slot = b.laid.plan[v.swap];
             const t = byId.get(slot.template);
             const key = `${v.swap}:${slot.template}`;
@@ -4371,7 +4568,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
           // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
           const pipes = unmet.length > 0;
-          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...withSetting('easy', () => req.also!(eb!.stage, 'easy')).map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;

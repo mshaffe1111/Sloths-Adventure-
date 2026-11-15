@@ -1,0 +1,25 @@
+# POLISH-9b: helpSweep plainThrough over the first 12 listed 1-1 seeds, each piece sweepSeed says may grow; plain jumps fail as laid -> grown count, after
+normal 769 w1-double-teach before stopped at x 5778 y 1291 | after 5 PASS
+normal 2328 w1-dip-double-teach before stopped at x 4870 y 1501 | after 6 PASS
+normal 5033 w1-double-teach before stopped at x 6840 y 1279 | after 4 PASS
+normal 5088 w1-bank-double-teach before stopped at x 5812 y 1096 | after 7 PASS
+normal 5433 w1-double-teach before stopped at x 4925 y 1279 | after 5 PASS
+normal 5542 w1-bank-double-teach before stopped at x 7087 y 1462 | after 5 PASS
+normal 6393 w1-dip-double-teach before stopped at x 5286 y 1104 | after 4 PASS
+normal 8580 w1-double-teach before stopped at x 5369 y 1361 | after 4 PASS
+normal 9013 w1-dip-double-teach before stopped at x 5731 y 1343 | after 8 PASS
+normal 9652 w1-dip-double-teach before stopped at x 6924 y 1488 | after 7 PASS
+normal 9800 w1-bank-double-teach before stopped at x 7024 y 1236 | after 8 PASS
+normal 10217 w1-bank-double-teach before stopped at x 5768 y 1395 | after 6 PASS
+easy 769 w1-double-teach before stopped at x 6152 y 1209 | after 2 PASS
+easy 2328 w1-dip-double-teach before stopped at x 5284 y 1411 | after 2 PASS
+easy 5033 w1-double-teach before stopped at x 7335 y 1252 | after 2 PASS
+easy 5088 w1-bank-double-teach before stopped at x 6207 y 1059 | after 4 PASS
+easy 5433 w1-double-teach before stopped at x 5256 y 1263 | after 2 PASS
+easy 5542 w1-bank-double-teach before stopped at x 7563 y 1506 | after 4 PASS
+easy 6393 w1-dip-double-teach before stopped at x 5705 y 1128 | after 2 PASS
+easy 8580 w1-double-teach before stopped at x 5787 y 1381 | after 2 PASS
+easy 9013 w1-dip-double-teach before stopped at x 6110 y 1298 | after 2 PASS
+easy 9652 w1-dip-double-teach before stopped at x 7382 y 1395 | after 2 PASS
+easy 9800 w1-bank-double-teach before stopped at x 7477 y 1193 | after 4 PASS
+easy 10217 w1-bank-double-teach before stopped at x 6137 y 1362 | after 4 PASS

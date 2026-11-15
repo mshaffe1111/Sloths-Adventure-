@@ -1,0 +1,58 @@
+{
+ "built": {
+  "stage": "1-4",
+  "seed": 1,
+  "built": "normal",
+  "ori": "side",
+  "tips": [
+   "180 (x alone)",
+   "520 (x alone)",
+   "797 (x alone)",
+   "526 (x alone)"
+  ]
+ },
+ "sockets": {
+  "creak": {
+   "x": 180,
+   "y": 10139
+  },
+  "figs": {
+   "x": 526,
+   "y": 8215
+  }
+ },
+ "fired": [
+  {
+   "beat": "1-4 start: walking the floor",
+   "s": 0.2,
+   "text": "Creaky limbs drop you, but just one branch down!",
+   "band": "none: x alone",
+   "feet": 11369,
+   "x": 185
+  },
+  {
+   "beat": "1-4 start: walking the floor",
+   "s": 1.5,
+   "text": "Reach for the next vine! Two hands zoom up!",
+   "band": "none: x alone",
+   "feet": 11369,
+   "x": 544
+  },
+  {
+   "beat": "1-4 start: walking the floor",
+   "s": 1.5,
+   "text": "Climb under the figs and push them free!",
+   "band": "none: x alone",
+   "feet": 11369,
+   "x": 544
+  },
+  {
+   "beat": "1-4 start: walking the floor",
+   "s": 2.5,
+   "text": "Hear it creak? Scoot a vine over!",
+   "band": "none: x alone",
+   "feet": 11369,
+   "x": 821
+  }
+ ]
+}
