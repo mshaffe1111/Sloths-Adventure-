@@ -32,6 +32,8 @@ import { withSwing } from './w1Swing.ts';
 import { W2_RIVERS, w2Liana, w2Perch, w2World, type W2LianaGap } from './w2.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { W2Decor } from '../../riverArt.ts';
+import type { Platform } from '../../types.ts';
 
 export const STAGE_21 = '2-1';
 type R2 = [number, number];
@@ -254,6 +256,41 @@ export const EXIT_21: SectionTemplate = {
 
 /** every section that is 2-1's own */
 export const SECTIONS_21: SectionTemplate[] = [...BEATS_21, EXIT_21];
+
+// ───────────────────────────── the finish: the village at the gate ─────────────────────────────
+/**
+ * The village at 2-1's gate (2-1.md beat 10-11: "WOW, a village!"; the keeper's canon: houses DUG INTO the bank, every front door with
+ * the sign PLEASE BE PATIENT, never stilt houses), World 2's painted pieces (riverArt.ts W2Decor, w2-props.webp) as the hand-built
+ * villageEnd laid them (w2Stages.ts): the sign, the mailbox with the mailman on his round, a round door and its window, the washing, a
+ * door and its chimney, each `dx` px into the gate's bank from its start, standing on it. Decor only: nothing he stands on moves.
+ */
+export const VILLAGE_21: ReadonlyArray<{ n?: W2Decor['n']; dx: number; db: number; w: number; flip?: boolean; text?: string[]; mail?: true }> = [
+  { n: 'sign', dx: 70, db: 4, w: 132, text: ['PLEASE BE', 'PATIENT'] },
+  { n: 'mailbox', dx: 150, db: 2, w: 54 },
+  { dx: 210, db: 2, w: 0, mail: true },
+  { n: 'door', dx: 300, db: 6, w: 210 },
+  { n: 'window', dx: 450, db: -30, w: 82 },
+  { n: 'laundry', dx: 560, db: 4, w: 200 },
+  { n: 'door', dx: 690, db: 6, w: 190, flip: true },
+  { n: 'chimney', dx: 790, db: -72, w: 60 },
+];
+type Finish21 = { platforms: Platform[]; proto?: { decor?: W2Decor[] }; gen2?: { sections: Array<{ template: string; x0: number; x1: number }> } };
+/** 2-1's own finish (listed.ts FINISH 'w2-21', after World 2's): the village laid along the gate's banks, from the gate section's start */
+export function finish21<T extends Finish21>(st: T): T {
+  const gate = st.gen2?.sections.find((q) => q.template === EXIT_21.id);
+  if (!gate) return st;
+  const decor = ((st.proto ??= {}).decor ??= []);
+  if (decor.some((d) => d.text?.[1] === 'PATIENT' && d.x >= gate.x0 && d.x <= gate.x1)) return st;
+  for (const v of VILLAGE_21) {
+    const x = gate.x0 + v.dx;
+    const under = st.platforms.filter((p) => p.type === 'solid' && p.x <= x && p.x + p.width >= x).sort((a, b) => a.y - b.y)[0];
+    if (!under) throw new Error(`2-1 finish: no bank under the village at x=${x}`);
+    const b = under.y + v.db;
+    if (v.mail) decor.push({ cel: 'po.carry_stand', celWalk: 'po.walk_parcel', x, b, k: 0.42, walk: [x, x + 240, 9] });
+    else decor.push({ n: v.n, x, b, w: v.w, ...(v.flip ? { flip: true } : {}), ...(v.text ? { text: v.text } : {}) });
+  }
+  return st;
+}
 
 /**
  * World 2's kit with 2-1's rows over it (stageTable.ts kit 'w2-21', listed.ts KITS): its pool is its own sections alone; it swings

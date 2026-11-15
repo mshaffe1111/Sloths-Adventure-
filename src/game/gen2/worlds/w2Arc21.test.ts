@@ -91,6 +91,20 @@ test('the rivers: every 2-1 row lays fault-free; Normal deep where the design is
   }
 });
 
+test("the village at the gate (2-1.md beat 11; the keeper's canon: doors dug into the bank, PLEASE BE PATIENT): laid on the gate's bank, before the exit", () => {
+  for (const d of BOTH) {
+    const row = listedStage(STAGE_21)!;
+    const st = row.finish!(built(1, d), d) as Built & { proto: { decor?: Array<{ n?: string; x: number; text?: string[]; cel?: string }> }; exitTotemX?: number };
+    const gate = st.gen2.sections.find((q) => q.template === 'w2-21-gate')!;
+    const here = (st.proto.decor ?? []).filter((q) => q.x >= gate.x0 && q.x <= gate.x1);
+    assert.ok(here.some((q) => q.text?.join(' ') === 'PLEASE BE PATIENT'), `${d}: the sign`);
+    assert.equal(here.filter((q) => q.n === 'door').length, 2, `${d}: two round doors in the bank`);
+    assert.ok(here.some((q) => q.cel === 'po.carry_stand'), `${d}: the mailman on his round`);
+    assert.equal(row.finish!(st, d), st);
+    assert.equal((st.proto.decor ?? []).filter((q) => q.x >= gate.x0 && q.x <= gate.x1).length, here.length, `${d}: a second finish lays nothing more`);
+  }
+});
+
 test('the drops tell the truth: every splash-back river is drawn as the shallow backwater, every deep one as deep water', () => {
   for (const d of BOTH) {
     const st = built(1, d);
