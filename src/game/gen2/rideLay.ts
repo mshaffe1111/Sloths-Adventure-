@@ -212,8 +212,9 @@ export type PadSizeId = keyof typeof PAD_SIZES;
 export interface PadRow {
   /** 'weight': each pad sinks under him by its size; 'beat': the row keeps its own breath (`beat`), weight or not */
   by: 'weight' | 'beat';
-  /** the row, near bank first: a pad's size, or 'stone' (a stepping stone that never sinks: a rest, the far end of a there-and-back) */
-  pads: readonly (PadSizeId | 'stone')[];
+  /** the row, near bank first: a pad's size, 'stone' (a stepping stone that never sinks: a rest, the far end of a there-and-back) or
+   *  'crown' (the crown lily, 2-2.md beat 11: a giant lily that never sinks, its flower opening once he stands on it; pieces/padPiece.ts) */
+  pads: readonly (PadSizeId | 'stone' | 'crown')[];
   /** edge-to-edge water before each piece and before the far bank (px): one for every gap, or one each (pads.length + 1) */
   gap: number | readonly number[];
   /** a 'beat' row's breath on Normal (s): up (holds), shiver (holds, warning), under (gone) */
@@ -236,6 +237,8 @@ export const PAD_LAY = {
   /** a stepping stone: its width (World 2's stone, w2.ts) and how deep it stands into the water (px) */
   stoneW: 136,
   stoneH: 60,
+  /** the crown lily's floor (px): Matt's giant Victoria pad M-02-a at about 300 u (ART-W2's slot map), over three Pokeys (89.1) wide */
+  crownW: 300,
   easyStretch: 1.5,
 } as const;
 
@@ -261,7 +264,7 @@ export const PAD_FAIR = {
 } as const;
 
 const gapAt = (row: PadRow, i: number): number => (typeof row.gap === 'number' ? row.gap : row.gap[i]);
-const pieceW = (k: PadSizeId | 'stone'): number => (k === 'stone' ? PAD_LAY.stoneW : PAD_SIZES[k].w);
+const pieceW = (k: PadSizeId | 'stone' | 'crown'): number => (k === 'stone' ? PAD_LAY.stoneW : k === 'crown' ? PAD_LAY.crownW : PAD_SIZES[k].w);
 /** the water's width, bank to bank */
 export const padRowWidth = (row: PadRow): number => row.pads.reduce((s, k, i) => s + gapAt(row, i) + pieceW(k), 0) + gapAt(row, row.pads.length);
 /** the clock a weight pad of this size reads by its count */
@@ -292,6 +295,9 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
     x += gapAt(row, i);
     if (k === 'stone') {
       pads.push({ id: nextId(), x, y, width: PAD_LAY.stoneW, height: PAD_LAY.stoneH, type: 'solid', style: 'moss_stone' });
+    } else if (k === 'crown') {
+      // (a floor that never sinks, painted by the pad piece: never a `pad`, so nothing reads it as one that sinks)
+      pads.push({ id: nextId(), x, y, width: PAD_LAY.crownW, height: PAD_LAY.h, type: 'solid', art: 'crownLily' });
     } else {
       const clock = row.by === 'beat' ? beatId : `pad-${k}`;
       if (row.by === 'weight' && !clocks.some((c) => c.id === clock)) clocks.push(padSizeClock(k, stretch));

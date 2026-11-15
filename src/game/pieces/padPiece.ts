@@ -8,12 +8,15 @@
  * (ridePickups.ts rideHidden). The clock's warning is its shiver, drawn by the look slot (riverArt.ts drawPad), so it never sinks
  * unwarned. A respawn puts every pad back up (a required one is whole again, STAGE-RULES).
  *
+ * THE CROWN LILY (2-2.md beat 11; rideLay 'crown', a platform drawn as `art: 'crownLily'`): a floor that never sinks, drawn here with its
+ * flower closed until he first stands on it, then open for the rest of the stage, a respawn included (riverArt.ts drawCrownLily).
+ *
  * Nothing here names a stage: what a pad is, its clock and its look come from the stage's data (generalitycheck).
  */
 import { beatOf, type Beat } from '../clock.ts';
 import { brickNow, type BrickNow } from '../beatBrick.ts';
 import { newPad, padNow, stepPad, type PadState } from '../ride.ts';
-import { drawPad } from '../riverArt.ts';
+import { drawCrownLily, drawPad } from '../riverArt.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { PieceHost, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
 import type { Platform } from '../types.ts';
@@ -30,13 +33,23 @@ export const padCount = (plat: Platform): { stood: number; holds: number } | nul
   return c ? { stood: c.count.stood, holds: c.beat.ons[0] ?? c.beat.period } : null;
 };
 
+/** a crown lily, and whether its flower has opened (he has stood on it) */
+interface Crown { plat: Platform; open: boolean }
+/** whether a crown lily's flower is open (for the bots' and tests' read); undefined for a platform that is none */
+const OPEN = new WeakMap<Platform, boolean>();
+export const crownOpen = (plat: Platform): boolean | undefined => OPEN.get(plat);
+
 class PadPiece implements StagePiece {
   readonly kind = 'pad';
   readonly layers: readonly PieceLayer[] = ['world'];
-  constructor(private readonly runs: Run[]) {}
+  constructor(private readonly runs: Run[], private readonly crowns: Crown[] = []) {}
 
   step(dt: number, host: PieceHost) {
     const p = host.player;
+    for (const c of this.crowns) {
+      if (!c.open && !!p?.grounded && host.standingOnId === c.plat.id) c.open = true;
+      OPEN.set(c.plat, c.open);
+    }
     for (const r of this.runs) {
       const pad = r.plat.pad!;
       if (r.count && r.beat) {
@@ -56,6 +69,11 @@ class PadPiece implements StagePiece {
   draw(ctx: CanvasRenderingContext2D, _layer: PieceLayer, host: PieceHost) {
     const v = host.view;
     const x0 = v.x - 200, x1 = v.x + v.w / v.zoom + 200;
+    for (const c of this.crowns) {
+      const pl = c.plat;
+      if (pl.x + pl.width < x0 || pl.x > x1) continue;
+      drawCrownLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, host.t, c.open);
+    }
     for (const r of this.runs) {
       const pl = r.plat;
       if (pl.x + pl.width < x0 || pl.x > x1) continue;
@@ -68,7 +86,8 @@ export const PAD_PIECE: PieceKind = {
   id: 'pad',
   start(stage: GeneratedStage, host) {
     const pads = host.platforms.filter((pl) => !!pl.pad);
-    if (!pads.length) return null;
+    const crowns = host.platforms.filter((pl) => pl.art === 'crownLily').map((plat): Crown => ({ plat, open: false }));
+    if (!pads.length && !crowns.length) return null;
     const defs = new Map((stage.clocks ?? []).map((d) => [d.id, d]));
     const runs = pads.map((plat): Run => {
       const pad = plat.pad!;
@@ -86,6 +105,7 @@ export const PAD_PIECE: PieceKind = {
       r.plat.broken = !r.now.solid;
       NOW.set(r.plat, r.now);
     }
-    return new PadPiece(runs);
+    for (const c of crowns) OPEN.set(c.plat, false);
+    return new PadPiece(runs, crowns);
   },
 };

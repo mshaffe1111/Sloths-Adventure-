@@ -19,7 +19,7 @@ import { keptFoes } from './pipeline.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
 import { w2Finish } from './worlds/w2.ts';
 import { RealPlay, withFixtureConfig } from '../realPlay.ts';
-import { padShows } from '../pieces/padPiece.ts';
+import { crownOpen, padShows } from '../pieces/padPiece.ts';
 import { beatOf } from '../clock.ts';
 import type { Gen2Stage, SectionPiece, SectionTemplate, WorldKit, WorldManifest } from './types.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -208,5 +208,47 @@ test('in play: a beat row breathes in step, weight or not (the breath row, nobod
       wasUp = now[0];
     }
     assert.ok(ups >= 2 && downs >= 2, `it breathes: ${downs} times under, ${ups} times up in 7 s`);
+  });
+});
+
+// ───────────────────────── the crown lily (2-2.md beat 11; BUILD-22, approved by the lead as Architect 4:17 PM ET 11-15) ─────────────────────────
+const CROWN_PADS = { ...W2_PADS, crown: { by: 'weight', pads: ['small', 'crown', 'small'], gap: 70, safe: true } } as const satisfies Record<string, PadRow>;
+
+test("a pad row's 'crown' lays the crown lily: a 300 px floor that is no pad, painted by the pad piece, fair by padFaults", () => {
+  const st = pondStage(W2_GROUND, 'crown', 'normal', CROWN_PADS);
+  const crown = st.platforms.filter((p) => p.art === 'crownLily');
+  assert.equal(crown.length, 1);
+  assert.equal(crown[0].width, PAD_LAY.crownW);
+  assert.equal(crown[0].type, 'solid');
+  assert.ok(!crown[0].pad && !crown[0].lily, 'never a sinking pad, never the sheet lily the engine draws');
+  assert.deepEqual(padFaults(st), []);
+  assert.deepEqual(st.gen2.errors, []);
+});
+
+test('in play: the crown lily holds him as long as he stands, and its flower opens once he has stood on it', () => {
+  const kit = kitOn(W2_GROUND, [pond('crown')], CROWN_PADS);
+  let seed = 1;
+  let st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  while (!st.platforms.some((p) => p.art === 'crownLily') && seed < 40) st = buildGen2Stage({ config: cfg, kit, seed: ++seed, difficulty: 'normal' });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try {
+      withFixtureConfig(cfg, () => {
+        const sim = new RealPlay(ID, seed, cfg);
+        const lily = (sim as unknown as { platforms: Platform[] }).platforms.find((p) => p.art === 'crownLily')!;
+        assert.equal(crownOpen(lily), false, 'closed before he comes');
+        sim.p.x = lily.x + lily.width / 2;
+        sim.p.y = lily.y - 120;
+        sim.p.vx = 0;
+        sim.p.vy = 0;
+        for (let f = 0; f < 30 * 6; f++) sim.frame();
+        assert.ok(sim.p.grounded && !lily.broken, 'six seconds on it and he still stands');
+        assert.equal(crownOpen(lily), true, 'its flower is open');
+      });
+    } finally {
+      undo();
+    }
   });
 });
