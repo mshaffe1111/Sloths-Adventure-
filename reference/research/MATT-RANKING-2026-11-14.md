@@ -52,3 +52,10 @@ merge. "1-1, 1-2 and 1-3, they're all kind of easy... I just went off of 1-2 bec
 moving in the air. So you've got to factor in that some people are just going to mess it up... 1-1 just felt a little bit harder than 1-3. But
 they're basically the same in my eyes almost." So 1-1/1-2/1-3 are a near-tie for Matt too (the model's 3-8 cluster agrees); the one real gap is
 1-2's newcomer misread (steering in the air on the mushrooms), which the first-timer misread tier must capture.
+
+## Matt's read of the comparison (12:15 AM ET 11-15) and the lead's take
+Matt: "what it rated was very close... when you have really easy levels, it's really hard to tell the fractions... But we were both able to
+tell that 1-4 and 1-5 felt a little bit harder." Agreed on ORDER at the top. Two things for METER-2a: (1) Matt says "a little harder"; the
+model says 1-5 61 vs 1-1 7, eight times. The order is right and the size is not: fit the scale (T50) so the gaps match how hard it feels.
+(2) Below a set margin the meter reports a tie ("too close to call"), not a ranking, so easy levels are never ranked on noise; the margin
+comes from the spread between seeds. Then R-165.272 (12:17 AM): check coverage of every planned mechanic before World 2.

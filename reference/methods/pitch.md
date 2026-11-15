@@ -8,7 +8,7 @@ explain it (6:23-6:28 PM ET). Every lead uses this; improve it after every round
   the pair at high and xhigh.)
 - 6:23 PM: "I want to bring out what's special about the game, not just Pitfall had the vine. A lot of games have the vine. What made Pitfall
   great? What did people love about it?... Like Donkey Kong Jr., where you're walking up the 2 vines."
-- 6:24 PM: the game outline (reference/plans/GAME-MAP.md on origin/t-design-game-map) has stage ideas and game callouts; "not set in stone...
+- 6:24 PM: the game outline (reference/plans/GAME-MAP.md, only on origin/t-design-game-map, not on this branch: read it with git show) has stage ideas and game callouts; "not set in stone...
   you have full permission to implement and switch things around as needed."
 - 6:27 PM: "the only games ever being referenced is Donkey Kong Country, Mario, Ori, the really well-defined ones. I want to have some classics
   and some unknown ones in there too... a lot of the classic laid the way for and is best fitted for what we do today."
