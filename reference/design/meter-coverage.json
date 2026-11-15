@@ -155,8 +155,8 @@
    ]
   },
   "beat:rivers": {
-   "bot": null,
-   "channel": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideChallenges",
    "rows": [
     "20"
    ]
@@ -368,7 +368,7 @@
   },
   "move:lift": {
    "bot": null,
-   "channel": null,
+   "channel": "tools/difficulty/score.ts#rideChallenges",
    "rows": [
     "25"
    ]
@@ -396,12 +396,13 @@
    ]
   },
   "move:timedHop": {
-   "bot": null,
-   "channel": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideChallenges",
    "rows": [
     "20",
     "23"
-   ]
+   ],
+   "note": "bot: the float-wait at a bank and the ride on a drifting log (intend); the board/step-off on a stage clock is METER-2a step 4"
   },
   "move:walk": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
@@ -418,8 +419,8 @@
    ]
   },
   "platform:drift": {
-   "bot": null,
-   "channel": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideTiming",
    "rows": [
     "20"
    ]
@@ -433,11 +434,12 @@
   },
   "platform:moving": {
    "bot": null,
-   "channel": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
    "rows": [
     "20",
     "25"
-   ]
+   ],
+   "note": "a ride.ts ride or a lift.ts lift; a moving floor on no clock the meter reads is refused (rideChallenges)"
   },
   "platform:solid": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
@@ -448,14 +450,14 @@
   },
   "ride:across": {
    "bot": null,
-   "channel": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
    "rows": [
     "20"
    ]
   },
   "ride:up": {
    "bot": null,
-   "channel": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
    "rows": [
     "25"
    ]

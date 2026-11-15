@@ -31,6 +31,9 @@ import fs from 'node:fs';
 import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
 import { fallSeconds, POD } from '../../src/game/podfall.ts';
 import { beatOf } from '../../src/game/clock.ts';
+import { driftCycle, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
+import type { Ride } from '../../src/game/ride.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
  *  with `rolling`, so nothing here asks for it */
 const ROLLING: any = await import(new URL('../../src/game/rolling.ts', import.meta.url).href).catch(() => null);
@@ -123,6 +126,7 @@ export function unpriced(piece: string, where: string, was: number): { bits: num
  *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
 export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
   walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', swing: 'swingChallenges',
+  timedHop: 'rideChallenges', lift: 'rideChallenges',
 };
 /** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
  *  beat) is a choice skipping costs nothing, so it is no challenge (the meter prices the route to the shrine) */
@@ -542,6 +546,88 @@ export function watchChallenges(members: ReadonlyArray<{ e: any; def: any }>, co
   return out;
 }
 
+/** a press he must make before a deadline he cannot wait out, inside `open` s (a forced beat: the same form as a creature's tell, a
+ *  window counted from the moment it opens, REF_S the reference press) */
+export const deadlineBits = (open: number): number => Math.log2(1 + REF_S / Math.max(0.05, open));
+
+/** how a moving floor moves, for the ride channel: its board window (the share of its cycle a hop onto it can land: he may wait for it,
+ *  RW) and its step-off window (how long, once he rides it, a hop off to the next floor stays open before it carries him away or under:
+ *  he cannot wait that out, FB). Null: a floor that moves by no clock the meter reads (refused: unpriced) */
+export interface RideTiming { how: 'drift' | 'ride' | 'lift'; cycle: number; board: number; stepOff: number; speed: number; safe?: boolean }
+/** the time between logs passing one spot on a river: its cycle over the logs on it (river.ts: every log on one river shares its window,
+ *  direction and speed, spaced by `offset`) */
+const logsOn = (st: any, d: DriftInfo) => (st.platforms as any[]).filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === d.x0 && q.drift.x1 === d.x1 && q.drift.dir === d.dir && q.drift.speed === d.speed).length;
+
+/**
+ * The ride channel (METER-2a, METER-COVERAGE #20 / #25; R-165.272): a moving floor's timing, from the engine's own rule for it.
+ * - a drifting log (river.ts DriftInfo, the river ENG-W2b lays): it never stops. BOARD: a hop lands on it while his feet fit on it, its
+ *   width less his body over its speed, once a log spacing (its cycle over the logs on its river). STEP OFF: he must hop off before it
+ *   slides under the bank downstream; the next floor is in a single jump's reach for that reach over the log's speed (the bank coming to
+ *   him, or the next log, which moves with his and stays as far, so his ride's own length over two, its mean, bounds it).
+ * - a ride on a stage beat (ride.ts Ride, laid by gen2/rideLay.ts; Easy stretches its clock, clock.ts beatOf): it stands at the near
+ *   end through its rest, off and warn, which come round once in two periods (rideAt flips its way each cycle). BOARD: that stand of
+ *   twice its period. STEP OFF: the same stand at the far end.
+ * - a basket lift (lift.ts LiftInfo): it waits `wait` s at each stop of liftCycle. BOARD: one wait of the cycle; STEP OFF: one wait.
+ */
+export function rideTiming(st: any, q: any, setting: Setting): RideTiming | null {
+  const easy = setting === 'easy';
+  if (q?.type === 'drift' && q.drift) {
+    const d: DriftInfo = q.drift;
+    const cycle = driftCycle(d) / Math.max(1, logsOn(st, d));
+    const river = ((st.rivers ?? []) as RiverZone[]).find((r) => d.x0 >= r.x0 - 1 && d.x1 <= r.x1 + 1);
+    return { how: 'drift', cycle, board: Math.max(0.05, (d.width - BODY) / d.speed), stepOff: Math.min(REACH.single.gap[setting] / d.speed, (d.x1 - d.x0) / d.speed / 2), speed: d.speed, safe: !!river?.safe };
+  }
+  if (q?.ride) {
+    const r: Ride = q.ride;
+    const def = ((st.clocks ?? []) as any[]).find((c) => c.id === r.clock);
+    if (!def) return null;
+    const b = beatOf(def, easy);
+    const stand = b.names.reduce((s: number, n: string, i: number) => s + (n === 'on' ? 0 : b.seconds[i]), 0);
+    let len = 0;
+    for (let i = 1; i < r.path.length; i++) len += Math.hypot(r.path[i].x - r.path[i - 1].x, r.path[i].y - r.path[i - 1].y);
+    const on = b.names.reduce((s: number, n: string, i: number) => s + (n === 'on' ? b.seconds[i] : 0), 0);
+    return { how: 'ride', cycle: 2 * b.period, board: stand, stepOff: stand, speed: len / Math.max(0.05, on) };
+  }
+  if (q?.lift) {
+    const l: LiftInfo = q.lift;
+    return { how: 'lift', cycle: liftCycle(l), board: l.wait, stepOff: l.wait, speed: l.speed };
+  }
+  return null;
+}
+
+/**
+ * The ride channel's challenges: every route move onto or off a moving floor ('timedHop' and 'lift', route.ts). Onto it: a moving jump,
+ * the still jump's bits (its gap and rise against a single's reach, as moveOf) plus the board window (RW: windowBits of its cycle and
+ * board). Off it: the step-off deadline (FB: deadlineBits). Its cost: what the ground under the move costs (costAt), a river that
+ * splashes him back (RiverZone.safe) a set-back. A move whose moving floor moves by no clock the meter reads is refused (unpriced).
+ */
+export function rideChallenges(st: any, route: Route, samples: Sample[], setting: Setting, softPits: boolean, id: string): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  for (const sg of route.segs) {
+    if (sg.kind !== 'timedHop' && sg.kind !== 'lift') continue;
+    const A: any = sg.from, B: any = sg.plat;
+    const t = clockAt(samples, sg.x0, sg.y0);
+    const lo = Math.min(sg.x0, sg.x1), hi = Math.max(sg.x0, sg.x1);
+    const moving = (q: any) => !!q && (q.type === 'drift' || q.type === 'moving');
+    for (const [q, part] of [[B, 'board'], [A, 'off']] as const) {
+      if (!moving(q)) continue;
+      const rt = rideTiming(st, q, setting);
+      if (!rt) { unpriced(`platform:${q.type}`, `${id} x ${Math.round(sg.x0)}: a ${q.type} floor on no clock the meter reads`, 0); continue; }
+      const fall = rt.safe ? 'soft' : costAt(st, softPits, lo, hi, 'fall');
+      const cost = rt.how === 'drift' ? fall : 'retry';
+      if (part === 'board') {
+        const still = rt.how === 'drift' ? 0 : fittsBits(Math.max(Math.abs(sg.x1 - sg.x0) / REACH.single.gap[setting], Math.max(0, sg.y0 - sg.y1) / REACH.single.climb));
+        out.push({ t, x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'ride-board', bits: still + windowBits(rt.cycle, rt.board), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+          note: `board a ${rt.how}: open ${rt.board.toFixed(2)}s of ${rt.cycle.toFixed(2)}s${still ? `, still jump ${still.toFixed(2)} bits` : ''}` });
+      } else {
+        out.push({ t, x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'ride-off', bits: deadlineBits(rt.stepOff), cost, stakes: stakesOf(st, cost, sg.x0), threat: true,
+          note: `step off a ${rt.how} inside ${rt.stepOff.toFixed(2)}s (forced)` });
+      }
+    }
+  }
+  return out;
+}
+
 /**
  * A timed crossing of a falling hazard's column (METER-1): its period, its quiet (the part of the period nothing falls), and how long the
  * route keeps him in its way. One crossing: the window is the quiet less that time (the entry times that keep all of it quiet). One as
@@ -673,13 +759,16 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       // (a chase's stretch and a bouncing fruit are scored from the stage's own lay, chaseChallenges and rollingChallenges: beats.ts reads
       //  a stretch as a pacing beat every 1.5 s, which this loop scored as ~16 two-bit hazards a stretch, the old 1-8's 28)
       if (/the branch collapses behind him|a bouncing fruit/.test(b.what) && (st.chase || st.rolling || st.proto?.chase)) continue;
+      // (a river's crossing is priced move by move where the route takes it, onto and off each log: rideChallenges)
+      if (b.fam === 'beat:rivers') continue;
       // (a beat that names its own window is a timed press in it; any other hazard has no channel here: refused, unless known)
       const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(b.what);
       const u = m ? { bits: windowBits(Number(m[2]), Number(m[1])), note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, 2);
       add({ t: b.t, x: b.x, kind: 'hazard', bits: u.bits, cost: 'heart', stakes: STAKES.heart, threat: true, note: b.what + u.note });
     } else if (b.letter === 'V') {
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
-      if (b.fam === 'move:swing') continue;
+      // (a swing is priced at its release, swingChallenges; a lift by the ride channel, rideChallenges)
+      if (b.fam === 'move:swing' || b.fam === 'move:lift') continue;
       // (a climb up a trunk or vine: OTHER_BITS.climb. A rope, a lift, warm air were scored as that climb: now refused, unless known)
       const u = b.fam === 'move:climb' ? { bits: OTHER_BITS.climb, note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, OTHER_BITS.climb);
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: u.bits, cost: 'retry', stakes: 1, threat: false, note: b.what + u.note });
@@ -692,6 +781,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of snakeChallenges(st, swings, setting)) add(c);
   for (const c of chaseChallenges(st, samples, setting)) add(c);
   for (const c of rollingChallenges(st, samples, setting)) add(c);
+  for (const c of rideChallenges(st, route, samples, setting, softPits, id)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
