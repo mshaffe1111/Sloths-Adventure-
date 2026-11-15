@@ -1,0 +1,16 @@
+PLANT release at the old guessed 0.4 s of 1.6 s -> not ok 5 a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, h;
+PLANT no crumble at the perch -> not ok 5 a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, h;
+PLANT chain not walked (route link as is) -> not ok 4 on the real World 1 stages: one swing a liana the route hangs on, and none charged a life on a soft-p;not ok 6 a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a fal;
+PLANT no catch (grab seg skipped) -> not ok 7 the catch off a bank: a liana every running jump catches is the whole swing (free); one out of reach ;
+PLANT snake tell at the old default 0.5 -> not ok 8 a vine snake is a creature in reach by its own warn (its tell), a threat at its liana's release, cost;
+PLANT no span overlap -> not ok 9 a chase is one challenge a stretch, the front's share of his run, and the front overlaps every move i;
+PLANT chase beats scored as hazards again -> not ok 13 on the real World 1 stages: a hand-built chase is scored by its stretches, never as a two-bit hazard;
+PLANT chase burst ignored -> not ok 9 a chase is one challenge a stretch, the front's share of his run, and the front overlaps every move i;
+PLANT nut hop not timed (tell only) -> not ok 10 a rolling nut is a hop timed to its roll; a fruit is read in its tell; a teach only bumps; each heig;
+PLANT the old 200 px member lookup -> NO RED
+PLANT mossy lianas not cover -> not ok 11 a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn;
+PLANT watch: calm-in left out -> not ok 11 a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn;
+PLANT the view rule left out (every press counts) -> not ok 5 a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, h;
+PLANT the exact old 200 px member lookup -> not ok 12 a creature beat finds its member on the member's own ground, not only within 200 px of where it perc;
+PLANT a pod crossed in no time (the old window, the whole quiet) -> not ok 14 - a falling pod's window is its quiet less the time the route keeps him in its column; a crossing as long as t
+PLANT the stretch's ends not a way out -> not ok 11 - a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn; its ey
