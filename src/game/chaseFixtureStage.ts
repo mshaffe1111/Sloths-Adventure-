@@ -11,16 +11,13 @@
  */
 import type { LevelConfig } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import type { RollSpec } from './rolling.ts';
-import { ROLL, rollAhead, rollGroundProblems, runIn } from './rolling.ts';
 import { buildGen2Stage } from './gen2/pipeline.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { WorldKit } from './gen2/types.ts';
-import { layStillFork, STILL_FORK } from './gen2/stillFork.ts';
-import { W1_STILL_FORK } from './gen2/worlds/w1Cast.ts';
-import { runnerProblems } from './runnerLiana.ts';
-import type { Platform, Vine } from './types.ts';
+import { layStillFork } from './gen2/stillFork.ts';
+import { layTip, readyStillFork } from './gen2/chaseTip.ts';
+import { W1_ROLL, W1_STILL_FORK, W1_TIP } from './gen2/worlds/w1Cast.ts';
 
 /** the fixture's id: late in World 1 (V13: a chase is never in a world's first stage), in no world's list */
 export const CHASE_FIXTURE_ID = '1-98';
@@ -59,83 +56,14 @@ function devBuild(): boolean {
   }
 }
 
-/** the fixture's hazards' pace and arcs (px/s, px): a nut's under his walk, a fruit's top well over his drawn head */
-const NUT = { speed: 140, bounce: 8 } as const;
-const FRUIT = { speed: 140, bounce: 165 } as const;
-/** a hazard needs this much unbroken ground before where it lands (px): from where it is set off (rolling.ts rollAhead, 350-370 at a
- *  full run) to its landing, and a little more; and AFTER px past it */
-const RUN_NEED = 440;
-const AFTER = 80;
-/** two hazards on one run of ground are this far apart (px): one threat at a time, 1.5 s+ at a run (1-8.md) */
-const STEP = 560;
-
-/**
- * nuts and fruit on a laid chase, by its own ground: the teach pair on the ground before the first crack, then one hazard to each run
- * of unbroken ground on a stretch at least RUN_NEED + AFTER px long, landing RUN_NEED into it, nut and fruit in turn
- */
-export function layFixtureRolling(st: Pick<GeneratedStage, 'chase' | 'platforms'> & { proto?: unknown; enemies?: unknown }): RollSpec[] {
-  const lay = st.chase;
-  if (!lay?.stretches.length) return [];
-  const out: RollSpec[] = [];
-  const solid = st.platforms.filter((p) => p.type === 'solid' && p.width >= 40).sort((a, b) => a.x - b.x);
-  // (runs of ground: platforms that meet edge to edge at one height; a rock or a step standing on a run does not break it)
-  const runs: Array<{ x0: number; x1: number; y: number }> = [];
-  for (const p of solid) {
-    const on = runs.find((r) => Math.abs(p.y - r.y) < 2 && p.x <= r.x1 + 1 && p.x + p.width >= r.x0 - 1);
-    if (on) on.x1 = Math.max(on.x1, p.x + p.width);
-    else runs.push({ x0: p.x, x1: p.x + p.width, y: p.y });
-  }
-  runs.sort((a, b) => a.x0 - b.x0);
-  const first = lay.stretches[0].start;
-  // (spots along a stretch of ground [x0, x1): RUN_NEED in, then every STEP while AFTER is left past it)
-  const spots = (x0: number, x1: number): number[] => {
-    const at: number[] = [];
-    for (let x = x0 + RUN_NEED; x <= x1 - AFTER; x += STEP) at.push(x);
-    return at;
-  };
-  // (the teach pair: the last two spots before the crack, a nut then a fruit, each its own beat)
-  const before = runs.flatMap((r) => spots(r.x0, Math.min(r.x1, first))).sort((a, b) => a - b).slice(-2);
-  const teach: RollKind[] = before.length === 2 ? ['low', 'high'] : ['low'];
-  before.forEach((x, i) => out.push(spec(teach[i], x, true)));
-  let k = 0;
-  for (const s of lay.stretches) {
-    for (const r of runs) {
-      const x0 = Math.max(r.x0, s.start), x1 = Math.min(r.x1, s.end);
-      for (const x of spots(x0, x1)) out.push(spec(k++ % 2 ? 'high' : 'low', x, false));
-    }
-  }
-  out.sort((a, b) => a.dropX - b.dropX);
-  // (a spot whose run-in has a gap is not laid; 1-1's ground carries a hop rock every 300-500 px, so the fixture CLEARS the rocks in a
-  // run-in when nothing stands on them (no dressing, no creature: D16), or lays nothing there. The lay's own check, rolling.ts)
-  const plain = out.filter((h) => {
-    const r = runIn(h, st.platforms);
-    if (r.land === null || r.gapAt !== null || r.walls.some((w) => carries(st, w))) return false;
-    st.platforms = st.platforms.filter((p) => !r.walls.includes(p));
-    return !rollGroundProblems([h], st.platforms).length;
-  });
-  out.length = 0;
-  out.push(...plain);
-  return out.filter((h, i) => i === 0 || h.dropX - out[i - 1].dropX >= rollAhead(h, true) + ROLL.lowR);
-}
-
-type RollKind = RollSpec['kind'];
-
-/** something stands on this rock: dressing whose foot is on its top, or a creature on it (D16). The petal over a hop rock (1-1's
- *  reward for the hop) stays where it is: a pickup in the air is an ordinary pickup */
-function carries(st: Pick<GeneratedStage, 'platforms'> & { proto?: unknown; enemies?: unknown }, w: { x: number; y: number; width: number }): boolean {
-  const on = (x: number, y: number, tol = 12) => x >= w.x - 4 && x <= w.x + w.width + 4 && Math.abs(y - w.y) <= tol;
-  const pr = st.proto as Record<string, Array<{ x: number; b: number }> | undefined> | undefined;
-  for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if ((pr?.[k] ?? []).some((q) => on(q.x, q.b))) return true;
-  return ((st.enemies as Array<{ x: number; y: number; height: number; width: number }>) ?? []).some((e) => on(e.x + e.width / 2, e.y + e.height));
-}
-const spec = (kind: RollKind, dropX: number, teach: boolean): RollSpec => ({ kind, dropX: Math.round(dropX), ...(kind === 'low' ? NUT : FRUIT), teach });
-
 /** the fixture built: the game's own gen2 build of 1-98 at this seed and setting, its hazards laid; the built config, under the id asked for */
 export function buildChaseFixtureStage(config: LevelConfig, seed: number, difficulty: 'normal' | 'easy'): GeneratedStage {
   // (World 1's own finish, as the game's gen2 build gives every World 1 stage: gen2/game.ts buildGen2ForGame)
   // (built under 1-1's own id and reach row, eighth in the world: nothing in the game touches the stage listing, listed.test.ts)
-  const st = w1Finish(buildGen2Stage({ config: { ...chaseFixtureLevel(), id: '1-1' }, kit: chaseFixtureKit(CHASE_FIXTURE_CODE, '1-1'), seed, difficulty })) as unknown as GeneratedStage;
-  st.rolling = layFixtureRolling(st);
+  // (its nuts and fruit laid by the pipeline once its chase is (gen2/rollLay.ts rollsOf): no 'roll' socket on 1-1's pool, so World 1's look
+  // lays them by the chase's own ground, the teach pair before the first crack and one to each run of ground on a stretch. ENG-CL (6))
+  const kit = chaseFixtureKit(CHASE_FIXTURE_CODE, '1-1');
+  const st = w1Finish(buildGen2Stage({ config: { ...chaseFixtureLevel(), id: '1-1' }, kit: { ...kit, manifest: { ...kit.manifest, rolls: W1_ROLL } }, seed, difficulty })) as unknown as GeneratedStage;
   // (ENG-B6: the chase's last engine pieces laid by data, so the page plays them: the still fork, the tip and a runner liana off it)
   layFixturePieces(st);
   // (the built stage's own config, its size and pit line its own: 1-1's config laid over it put the pit line above his ground)
@@ -144,57 +72,22 @@ export function buildChaseFixtureStage(config: LevelConfig, seed: number, diffic
 }
 
 
-/** the gap off the tip (px, two of the lay's branch sections) and where the runner liana hangs in it, as the old 1-8's last liana:
- *  out from the lip, 380 px up, its foot 30 px under the branch */
-const TIP_GAP = 444;
-/** the far tree's branch the fixture lays past the gap (px) */
-const TIP_LAND = 600;
-const TIP_LIANA = { out: 214, up: 380, foot: 30 } as const;
-
 /**
- * ENG-B6 (1-8 NEW 4, 7, 8) on the fixture, by its own data: the still fork on the first fork (bare rocks and steps standing in its cover
- * and post cleared first, never one carrying dressing or a creature: D16), and the last stretch made the branch's tip (ChaseStretch.tip)
- * with a gap off it and a liana phased to a runner (Vine.runner) to the ground beyond (flags, pickups, hazards and dressing in the gap
- * moved or left out). Anything that cannot be laid is said in the console and left out, never laid broken.
+ * ENG-B6 (1-8 NEW 4, 7, 8) on the fixture, by its own data, with the gen2 lays every chase stage uses (ENG-CL (6)): the still fork on the
+ * first fork (gen2/chaseTip.ts readyStillFork, then gen2/stillFork.ts layStillFork), and the last stretch made the branch's tip with a
+ * gap off it and a runner liana to the far branch (chaseTip.ts layTip). Anything that cannot be laid is said in the console and left out,
+ * never laid broken.
  */
 export function layFixturePieces(st: GeneratedStage): void {
   const lay = st.chase;
   if (!lay?.stretches.length) return;
-  const fork = lay.stretches[0];
   if (lay.stretches.length > 1) {
-    const gy = st.platforms.filter((p) => p.type === 'solid' && fork.end + 1 >= p.x && fork.end + 1 <= p.x + p.width).sort((a, b) => b.y - a.y)[0]?.y;
-    const x0 = fork.end, x1 = fork.end + STILL_FORK.runIn + W1_STILL_FORK.cover.w + STILL_FORK.postPast + 60;
-    if (gy !== undefined) st.platforms = st.platforms.filter((p) => !(p.type === 'solid' && p.y < gy - 2 && p.y + p.height >= gy - 2 && p.x + p.width > x0 && p.x < x1 && !carries(st, p)));
-    // (the fork's flag, where the post must stand to share an upright screen with him in the moss, stands past it: nearer the next crack,
-    // as chaseLay's own rule wants it, never further from it than the span allows)
-    for (const c of st.checkpoints ?? []) if (c.x > x0 && c.x < x1 + STILL_FORK.flagClear) c.x = Math.min(x1 + STILL_FORK.flagClear, lay.stretches[1].start - 40);
-    const bad = layStillFork(st as unknown as Parameters<typeof layStillFork>[0], 0, W1_STILL_FORK, 1);
+    const bad = [...readyStillFork(st, 0, W1_STILL_FORK), ...layStillFork(st as unknown as Parameters<typeof layStillFork>[0], 0, W1_STILL_FORK, 1)];
     if (bad.length) console.warn(`fixture: no still fork: ${bad.join('; ')}`);
   }
-  const last = lay.stretches[lay.stretches.length - 1];
-  const lip = st.platforms.filter((p) => p.chase && Math.abs(p.x + p.width - last.end) < 2).sort((a, b) => a.y - b.y)[0];
-  if (!lip) return void console.warn('fixture: no tip: the last stretch ends on no section');
-  const g0 = last.end, g1 = last.end + TIP_GAP, g2 = g1 + TIP_LAND;
-  // (the far side: 1-1's stepped finish has no ground level with the tip, so the fixture lays the far tree's branch, TIP_LAND long, at
-  // the tip's height; the ground from the gap to its far end is cut, the ground past it is the stage's own)
-  const cut: Platform[] = [];
-  for (const p of st.platforms) {
-    if (p.x + p.width <= g0 || p.x >= g2) { cut.push(p); continue; }
-    if (p.x + p.width > g2) cut.push({ ...p, x: g2, width: p.x + p.width - g2 });
-  }
-  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: TIP_LAND, height: 400, type: 'solid' } as Platform);
-  const v: Vine = { id: (st.vines ?? []).reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g0 + TIP_LIANA.out, topY: lip.y - TIP_LIANA.up, bottomY: lip.y + TIP_LIANA.foot, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, runner: true };
-  const why = runnerProblems(v, cut).filter((m) => !/px of run to its lip/.test(m));
-  if (why.length) return void console.warn(`fixture: no tip: ${why.join('; ')}`);
-  st.platforms = cut;
-  st.vines = [...(st.vines ?? []), v];
-  last.tip = true;
-  const inGap = (x: number) => x > g0 - 20 && x < g2;
-  // (a flag in the gap stands on the far ground; pickups and dressing over it and hazards on the run to the lip are left out)
-  for (const c of st.checkpoints ?? []) if (inGap(c.x)) c.x = g1 + 120;
-  st.collectibles = (st.collectibles ?? []).filter((c) => !inGap(c.x));
-  st.rolling = (st.rolling ?? []).filter((h) => h.dropX < g0 - 900 || h.dropX > g1 + 300);
-  const pr = (st as unknown as { proto?: Record<string, Array<{ x: number }> | undefined> }).proto;
-  for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if (pr?.[k]) pr[k] = pr[k]!.filter((q) => !inGap(q.x));
-  st.enemies = (st.enemies ?? []).filter((e) => !inGap(e.x));
+  // (a PLAIN liana off the tip: 1-1's ground, which the fixture's stretches are cut from, steps 47-51 px every ~200 px and carries hop
+  // rocks, so no seed gives the runner's 1,188 px of level run to the lip (243-562 px: runnerLiana.ts runTo). ENG-B6 laid a runner here
+  // and filtered that line out; a runner tip is 1-8's, on its own long level branch, ENG-CL (8))
+  const tip = layTip(st, { ...W1_TIP, liana: { ...W1_TIP.liana, runner: false } });
+  if (tip.length) console.warn(`fixture: no tip: ${tip.join('; ')}`);
 }

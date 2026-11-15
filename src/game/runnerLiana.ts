@@ -116,14 +116,25 @@ export function easePhase(cur: number, want: number, dt: number, rate: number = 
   return (((cur + d) % 1) + 1) % 1;
 }
 
-/** what is wrong with a runner liana, in words (empty when it can run): the lay refuses one by name */
-export function runnerProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): string[] {
+/**
+ * what is wrong with a liana he swings to off a lip, in words (empty when it can be caught): a lip he runs off toward it, and a moment of
+ * its swing a full-run jump off it catches (a plain liana: he may wait at the lip for that moment). A runner liana also needs the run
+ * (runnerProblems). ENG-CL (8): split so a lay of a plain liana asks only this, never filters a runner's line out
+ */
+export function lianaProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1, name = `liana at ${Math.round(v.x)}`): string[] {
   const lip = runnerLip(v, platforms, dir);
-  const name = `runner liana at ${Math.round(v.x)}`;
   if (!lip) return [`${name}: no ground he runs off toward it (360 px short of it, its foot within his reach)`];
   const end = dir > 0 ? lip.x + lip.width : lip.x;
-  const m = runnerMoment(v, end, lip.y, dir);
-  if (!m) return [`${name}: no moment of its swing is caught by a full-run jump off its lip at ${Math.round(end)}`];
+  if (!runnerMoment(v, end, lip.y, dir)) return [`${name}: no moment of its swing is caught by a full-run jump off its lip at ${Math.round(end)}`];
+  return [];
+}
+
+/** what is wrong with a runner liana, in words (empty when it can run): the lay refuses one by name */
+export function runnerProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): string[] {
+  const name = `runner liana at ${Math.round(v.x)}`;
+  const plain = lianaProblems(v, platforms, dir, name);
+  if (plain.length) return plain;
+  const lip = runnerLip(v, platforms, dir)!;
   const problems: string[] = [];
   // (the run of unbroken ground that ends at the lip: long enough to ease half a swing at his top run, or it cannot promise the run)
   const run = runTo(platforms, lip, dir);
