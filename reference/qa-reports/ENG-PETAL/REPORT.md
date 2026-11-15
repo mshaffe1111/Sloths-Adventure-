@@ -87,7 +87,8 @@ identical by lockall: 102/102 stages unchanged, lockall --layouts 2 both setting
   88/93 ms vs base 87/92 ms, same load (bt.mts). buildcheck NOT re-run alone on e10a86e2: the first gate for the morning.
 - Planted faults: 7/7 RED, restored GREEN (planted.out.txt, on 9983514f's code = ddbcd55c's).
 - **seedlist --check**: 1-6 FAILS ("seed 80 normal/easy: its replay differs from its search (platforms, vines, collectibles, spawnY):
-  rebuild the list": the wall changes 1-6's platforms). Relist __RELIST__. Others (seedcheck-ddbcd55c.txt, seedcheck-e10a86e2.txt; the two heads' stages are identical by lockall):
+  rebuild the list": the wall changes 1-6's platforms). **Relisted** on e10a86e2 (addlevel 1-6 --relist --no-bots, 1418 s: 24/24 rolls both settings, 100/100 proven, --check PASS;
+  relist-1-6-e10a86e2.txt; commit 356b665b). Others (seedcheck-ddbcd55c.txt, seedcheck-e10a86e2.txt; the two heads' stages are identical by lockall):
   1-7 PASS (100), 1-5 PASS (150), 1-2 PASS (100), 1-3 PASS (100). **1-4 FAILED** (seed 66 "its replay differs from its search
   (platforms, vines, collectibles, spawnY)"), **relisted** on e10a86e2 (addlevel --relist --no-bots: 24/24 rolls both settings, 100/100
   proven, --check PASS; relist-1-4-e10a86e2.txt; commit 83b62146; its bots NOT run). **1-1 FAILS** (seed 33616 "its replay differs from
@@ -155,7 +156,7 @@ In order (engine tier unless named):
    back is proved).
 3. **Lists** (on this branch's head): **1-1 relist first** (`seedlist.ts 1-1 --check` fails on seed 33616; CI runs it): relist, then the
    tier calibration and its recommit (tools/inspect/tierBots.test.ts, reference/qa-reports/R-165.59/calibration-main.jsonl, BOTS.md).
-   1-6: see Gates (the relist written tonight, its --check __RELIST6__). castBots 1-4 seeds 1-40 both settings on its new list
+   1-6: relisted tonight, --check PASS (356b665b). castBots 1-4 seeds 1-40 both settings on its new list
    (relisted tonight, bots not run). Then castBots 1-6 again on 1-6's new list (tonight's bot numbers were on the old list's replays).
 4. **The whole suite, run ALONE** (tonight's was stopped at the 30-minute background limit: Gates), then buildcheck alone on the
    head (e10a86e2's fix is unmeasured in Chromium), drawcheck, clipcheck. The suite reds: gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
