@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { applyVerdicts, buildGen2Stage } from './pipeline.ts';
+import { applyVerdicts, buildGen2Stage, settleLaid } from './pipeline.ts';
 import { CHASE_LAY, chaseCap, chaseFloor, chaseStanders, cutSections, layChase } from './chaseLay.ts';
 import { checkCode, parseCode } from './nodeCode.ts';
 import { mixKit } from './toyLegs.ts';
@@ -16,6 +16,8 @@ import { keptFoes } from './pipeline.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
 import { RealPlay, withFixtureConfig } from '../realPlay.ts';
 import { difficulty as getDifficulty, setDifficulty } from '../difficulty.ts';
+import { w1World } from './worlds/w1.ts';
+import { cutOf, overhangs } from '../w1CutArt.ts';
 import type { Gen2Stage, WorldKit } from './types.ts';
 import type { LevelConfig, Platform } from '../types.ts';
 
@@ -195,6 +197,45 @@ test('ENG-B4: nothing is left standing on air when a section falls: dressing or 
   assert.deepEqual(w.problems.filter((p) => /walks a patch/.test(p)).length, 1, `the walker only, never the flier: ${w.problems}`);
   // (and on World 1's real kit none is laid: the yield above holds every one of its rolls clean of it)
   for (const { s, st } of laid) assert.deepEqual(chaseStanders(st), [], `${s}`);
+});
+
+test('ENG-LOOK2 (1c): the world\'s settle runs again after the lay: a stone at the foot of a bank the lay cuts is kept on ground that stays, or the roll is refused by name (any stage)', () => {
+  // (1-8's 23 stones: the settle ran BEFORE the lay cut the bank into falling sections, so it read the whole bank as a wall to lean on)
+  const nodes: Array<[string, number, number]> = [['arrive', 0, 1600], ['pressure', 1600, 3800], ['rest', 3800, 4800], ['exit', 4800, 6000]];
+  const make = (stoneX: number) => {
+    const h = handStage(nodes, [[0, 1600], [1600, 2400], [2950, 3800], [3800, 4800], [4800, 6000]]);
+    for (const p of h.st.platforms) p.height = 400;
+    // (a dip between two banks of the stretch: its floor is the seam's, never the route's; a stone stands on it at the near bank's foot)
+    const floor: Platform = { id: 90, x: 2400, y: 840, width: 550, height: 160, type: 'solid', style: 'moss_stone' };
+    const stone: Platform = { id: 91, x: stoneX, y: 720, width: 200, height: 120, type: 'solid', style: 'moss_stone' };
+    h.st.platforms.push(floor, stone);
+    const main = (uid: string) => h.main(uid).filter((q) => q.platform !== floor && q.platform !== stone);
+    return { st: h.st, main, stone };
+  };
+  const kit = w1World();
+  const t = make(2400);
+  // (the lay's own settle saw the uncut bank: the stone's piece drawn back into it, nothing past its ground)
+  for (const { p, dx } of kit.settle!(t.st.platforms)) if (dx) p.x += dx;
+  assert.deepEqual(overhangs(t.st.platforms), [], 'before the cut, the stone is on its ground');
+  const r = layChase(t.st, t.main);
+  assert.deepEqual(r.problems, []);
+  assert.ok(t.st.platforms.some((p) => p.chase && p.x + p.width === 2400), 'the bank at its foot is a falling section');
+  const before = overhangs(t.st.platforms);
+  assert.ok(before.length, `planted: after the cut the stone's piece reaches into the falling bank: ${JSON.stringify(before)}`);
+  const x0 = t.stone.x;
+  const changed = settleLaid(t.st, kit.settle);
+  assert.deepEqual(overhangs(t.st.platforms), [], `${changed}`);
+  // (here no piece of its kind fits where it stands and a move is never made after the lay: it is drawn as its ground, never moved)
+  assert.deepEqual(changed, [`x ${x0}`]);
+  assert.equal(t.stone.x, x0, 'never moved: what stands on it is placed');
+  assert.equal(t.stone.cut, '', 'no piece: drawn as its ground');
+  assert.equal(cutOf(t.stone), undefined, 'and World 1\'s finish gives it none back (w1Finish reads cutOf)');
+  // (a stage with no chase is untouched: the same call moves nothing on a roll whose settle already ran)
+  const plain = make(2700);
+  for (const { p, dx } of kit.settle!(plain.st.platforms)) if (dx) p.x += dx;
+  const was = JSON.stringify(plain.st.platforms);
+  assert.deepEqual(settleLaid(plain.st, kit.settle), []);
+  assert.equal(JSON.stringify(plain.st.platforms), was);
 });
 
 test('ENG-B4: the verdicts are judged afresh: a flag miss left by an earlier judgement never refuses a roll whose own flags pass', () => {

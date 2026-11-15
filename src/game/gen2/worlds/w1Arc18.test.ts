@@ -18,8 +18,12 @@ import { chaseCap, easyGapProblems, CHASE_LAY } from '../chaseLay.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
+import { PAGES } from '../../movesJournal.ts';
+import { addFinds } from '../../stageGenerator.ts';
 import { w1Finish } from './w1.ts';
-import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { loadInventory } from '../../art/inventory.ts';
+import { invDressSize } from '../../art/invDress.ts';
 import { W1_TIP } from './w1Cast.ts';
 import { rollTeaches, type RollSpec } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
@@ -30,7 +34,7 @@ const cfg = generateAllLevels().find((c) => c.id === STAGE_18 && !c.secret)!;
 type Built = {
   platforms: Platform[]; vines: Vine[]; enemies: Enemy[]; collectibles: Collectible[]; checkpoints: Array<{ x: number }>; chase: ChaseLay; rolling: RollSpec[];
   proto: { bushes?: Array<{ x: number; w: number; kind: string }>; hints?: Array<{ x: number; text: string }>; invDress?: InvDress[] };
-  gen2: { errors: string[]; sections: Array<{ uid: string; template: string; x0: number; x1: number }> };
+  gen2: { errors: string[]; sections: Array<{ uid: string; template: string; x0: number; x1: number }>; plan: Array<{ template: string; join: string }> };
 };
 const memo = new Map<string, Built>();
 /** the stage as the game builds it: its listed kit, World 1's finish, then its own (stageGenerator.ts, the listed path) */
@@ -51,7 +55,8 @@ const ARC = ['arrival', 'teach', 'first-run', 'rest', 'at-pace', 'rest', 'high-b
 test("1-8's lines are the story keeper's, word for word (reference/story/lines-1-8.md, KEEPER-18 approved 11-14), and the stage says them", () => {
   const md = fs.readFileSync(path.join(root, 'reference/story/lines-1-8.md'), 'utf8');
   const rows = new Map<string, string>();
-  for (const m of md.matchAll(/^\| \d+ \| `?([A-Za-z_0-9.\-]+)`? \|[^|]*\| (.+) \| \d+ \|$/gm)) rows.set(m[1], m[2].trim());
+  // (a row the keeper rewrote carries her dated note after the line, "(9:50 PM ET 11-14: was ...)": the line is what stands before it)
+  for (const m of md.matchAll(/^\| \d+ \| `?([A-Za-z_0-9.\-]+)`? \|[^|]*\| (.+) \| \d+ \|$/gm)) rows.set(m[1], m[2].replace(/\s*\(\d{1,2}:\d{2} [AP]M ET [^)]*:.*\)$/, '').trim());
   for (const [k, v] of Object.entries(LINES_18)) assert.equal(v, rows.get(k), `line ${k}`);
   assert.equal(WAY_18, rows.get('way.1-8'));
   assert.equal(MISSION_18, rows.get('MISSION_18'));
@@ -61,6 +66,51 @@ test("1-8's lines are the story keeper's, word for word (reference/story/lines-1
   for (const d of BOTH) {
     const said = new Set(built(1, d).proto.hints!.map((h) => h.text));
     for (const v of Object.values(LINES_18)) assert.ok(said.has(v), `${d}: Dot says "${v}"`);
+  }
+});
+
+test("the moves journal's collapsing-branch page is the keeper's (lines-1-8.md 11-14 9:50 PM ET), and opens on 1-8's crack line", () => {
+  const md = fs.readFileSync(path.join(root, 'reference/story/lines-1-8.md'), 'utf8');
+  const cell = (field: string) => md.match(new RegExp(`^\\| ${field.replace(/[()/]/g, '\\$&')} \\|[^|]*\\| (.+) \\|$`, 'm'))?.[1].trim();
+  const page = PAGES.find((p) => p.id === 'collapse')!;
+  assert.equal(page.intro, cell('intro'));
+  const [how, what] = cell('lines (how / what)')!.split(' / ');
+  assert.deepEqual(page.lines.screen.map((l) => [l.how, l.what]), [[how, what]]);
+  assert.equal(cell('riddle'), 'KEEP');
+  assert.equal(page.riddle, 'Do not look back. Just run!');
+  assert.deepEqual(page.open.tip, [['1-8', `tip:${LINES_18.crack}`]], 'it opens on the crack line');
+  assert.ok(!JSON.stringify(page).includes('goes on and on'), 'the old line is gone');
+});
+
+test("each of Dot's 1-8 lines is said only before the next crack after it, so no run from a later flag hears the fork line past the tip (ENG-LOOK 11-14)", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d), lay = (st as unknown as { chase: ChaseLay }).chase;
+    const hints = st.proto.hints as Array<{ x: number; text: string; beforeX?: number }>;
+    for (const [k, v] of Object.entries(LINES_18)) {
+      const h = hints.find((q) => q.text === v)!;
+      const next = lay.stretches.find((s) => s.start > h.x);
+      if (!next) { assert.ok(k === 'mark', `${d} seed ${seed}: only the mark is past the last crack (${k})`); continue; }
+      assert.equal(h.beforeX, next.start, `${d} seed ${seed}: "${k}" expires at the next crack`);
+    }
+    const tip = lay.stretches[lay.stretches.length - 1];
+    const fork = hints.find((q) => q.text === LINES_18.fork)!;
+    assert.ok(fork.beforeX! <= tip.start, `${d} seed ${seed}: the fork line is gone by the last stretch`);
+  }
+});
+
+test("World 1's book (finds.ts w1_book) stands on 1-8's first living fork, on a root bank past a knot, before the second stretch, both settings", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d) as unknown as Parameters<typeof addFinds>[0] & { proto: { findSpot?: { x: number; b: number } }; chase: ChaseLay; gen2: { sections: Array<{ uid: string; template: string; x0: number; x1: number }> }; platforms: Platform[] };
+    const spot = st.proto.findSpot;
+    assert.ok(spot, `${d} seed ${seed}: the rest brick marks the find's spot`);
+    const first = st.gen2.sections.find((q) => q.template === 'w1-18-rest')!;
+    assert.ok(spot.x > first.x0 && spot.x < first.x1, `${d} seed ${seed}: on the first fork`);
+    assert.ok(spot.x < st.chase.stretches[1].start, `${d} seed ${seed}: before the second stretch`);
+    assert.ok(st.platforms.some((p) => p.type === 'solid' && Math.abs(p.y - spot.b) <= 1 && p.x <= spot.x && p.x + p.width >= spot.x), `${d} seed ${seed}: on a bank's top`);
+    const was = st.collectibles.length;
+    addFinds(st);
+    const book = st.collectibles.slice(was).filter((c) => c.type === 'find');
+    assert.deepEqual(book.map((c) => [c.findId, c.x, c.hidden]), [['w1_book', spot.x, true]], `${d} seed ${seed}: the book, hidden, at the spot`);
   }
 });
 
@@ -146,15 +196,62 @@ test('the still fork: the moss where the collapse stops after the fourth stretch
   }
 });
 
-test('the hearts stand on the fork after the second stretch and the fork before the last; the keeper\'s look is laid by inventory id', () => {
+test('the hearts stand on the fork after the second stretch and the fork before the last; every fruit has its trunk by inventory id, never the same trunk picture within PALM_APART_18', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d), L = st.chase.stretches;
     const hearts = st.collectibles.filter((c) => c.type === 'heart');
     for (const f of HEARTS_18.forks) assert.ok(hearts.some((h) => h.x > L[f - 1].end && h.x < L[f].start), `${d} seed ${s}: a heart on fork ${f}`);
     const dress = st.proto.invDress ?? [];
-    for (const h of st.rolling) {
-      const want = h.kind === 'low' ? DRESS_18.palm.inv : DRESS_18.trunk.inv;
-      assert.ok(dress.some((q) => q.inv === want && Math.abs(q.x - h.dropX) <= 100), `${d} seed ${s}: ${want} at the ${h.kind} at ${h.dropX}`);
+    const trunks = dress.filter((q) => TRUNKS_18.some((t) => t.inv === q.inv));
+    for (const h of st.rolling.filter((q) => q.kind !== 'low')) {
+      assert.equal(trunks.filter((q) => Math.abs(q.x - h.dropX) <= 100).length, 1, `${d} seed ${s}: one trunk at the ${h.kind} at ${h.dropX}`);
+    }
+    for (const a of trunks) for (const b of trunks) {
+      if (a !== b && a.inv === b.inv) assert.ok(Math.abs(a.x - b.x) >= PALM_APART_18 - 200, `${d} seed ${s}: ${a.inv} twice ${Math.round(Math.abs(a.x - b.x))} px apart`);
     }
   }
 });
+
+test('the palms (ART-18, Matt 11-15): a painted palm at every nut\'s drop with its nut cluster over the drop (the inventory\'s size), never the same palm within PALM_APART_18, back palms drawn first', async () => {
+  const inv = await loadInventory(1);
+  const ids = new Set<string>(PALMS_18.map((p) => p.inv));
+  for (const p of PALMS_18) {
+    const r = inv.byId(p.inv);
+    assert.ok(r, `${p.inv} is a World 1 inventory row`);
+    const sz = invDressSize(r!, inv.pokeyUnits)!;
+    // (the row's place, from the cluster's fractions and the drawn size: x middle = drop + dx, foot = ground + y)
+    const cx = p.dx - sz.w / 2 + p.nut[0] * sz.w, cy = p.y - sz.h + p.nut[1] * sz.h;
+    assert.ok(Math.abs(cx) <= 12 && Math.abs(cy + p.up) <= 12, `${p.inv}: its nut cluster at (${cx.toFixed(0)}, ${cy.toFixed(0)}) from the drop, wanted (0, ${-p.up})`);
+    assert.ok(p.y > 0 && p.y - sz.h * 0.16 > 40, `${p.inv}: its foot (and its fade) under the branch's top, never a stub over it (foot ${p.y} px under)`);
+  }
+  let seen = 0;
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    const dress = st.proto.invDress ?? [];
+    const palms = dress.filter((q) => ids.has(q.inv));
+    for (const h of st.rolling.filter((q) => q.kind === 'low')) {
+      const at = palms.filter((q) => { const p = PALMS_18.find((v) => v.inv === q.inv)!; return Math.abs(q.x - p.dx - h.dropX) <= 1; });
+      assert.equal(at.length, 1, `${d} seed ${s}: one palm at the nut at ${h.dropX}`);
+    }
+    for (const a of palms) for (const b of palms) {
+      if (a !== b && a.inv === b.inv) assert.ok(Math.abs(a.x - b.x) >= PALM_APART_18 - 100, `${d} seed ${s}: ${a.inv} twice ${Math.round(Math.abs(a.x - b.x))} px apart`);
+    }
+    if (palms.length >= 3) assert.ok(new Set(palms.map((q) => q.inv)).size >= 3, `${d} seed ${s}: at least three different palms`);
+    const back = [...PALMS_18, ...TRUNKS_18].filter((p) => p.back).map((p) => p.inv as string);
+    const lastBack = dress.map((q) => back.includes(q.inv)).lastIndexOf(true), firstNear = dress.findIndex((q) => !back.includes(q.inv));
+    if (lastBack >= 0 && firstNear >= 0) assert.ok(lastBack < firstNear, `${d} seed ${s}: the back palms are drawn before every other dressing row`);
+    seen += palms.length;
+  }
+  assert.ok(seen > 0, 'palms laid');
+});
+
+test("the still fork and the tip are walked onto on every roll, both settings (their bricks ask: entry.join 'walk'; BUILD-18b's seed 2 rolled a pit into the fork, layout 3 a step into the tip)", () => {
+  for (const d of BOTH) for (const s of [1, 2, 3, 4]) {
+    const st = built(s, d);
+    for (const t of ['w1-18-still-fork', 'w1-18-tip']) {
+      const j = st.gen2.plan.filter((q) => q.template === t).map((q) => q.join);
+      assert.deepEqual(j, ['walk'], `${d} seed ${s}: the join into ${t}`);
+    }
+  }
+});
+

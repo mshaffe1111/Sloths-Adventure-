@@ -62,7 +62,9 @@ export function layTip(st: TipStage, look: TipLook): string[] {
     if (p.x + p.width <= g0 || p.x >= g2) { cut.push(p); continue; }
     if (p.x + p.width > g2) cut.push({ ...p, x: g2, width: p.x + p.width - g2 });
   }
-  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: look.land, height: 400, type: 'solid' } as Platform);
+  // (it marks the fall beside it, pit 'drop': the tip's gap is a marked fall, never an unmarked one (ENG-LOOK2), and on a bough stage its
+  // end there is the far tree's living branch, never torn, protoArt.ts boughEnds)
+  cut.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: look.land, height: 400, type: 'solid', pit: 'drop' } as Platform);
   const L = look.liana;
   const v: Vine = { id: (st.vines ?? []).reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g0 + L.out, topY: lip.y - L.up, bottomY: lip.y + L.foot, swaySpeed: L.swaySpeed, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(L.runner ? { runner: true } : {}) };
   // (every line counts: the fixture once filtered out "px of run to its lip", which hid runnerLip's stair-step bug, ENG-CL (8))
@@ -73,9 +75,8 @@ export function layTip(st: TipStage, look: TipLook): string[] {
   last.tip = true;
   const inGap = (x: number) => x > g0 - 20 && x < g2;
   // (a flag in the gap stands on the far ground; pickups and dressing over it and hazards on the run to the lip are left out)
-  // (its height too: the far branch is at the tip's height, which the stage's own ground there need not be: 1-8 seeds 24 and 75 stood a
-  // flag 22 px inside the branch, INT-10c)
-  for (const c of st.checkpoints ?? []) if (inGap(c.x)) { c.x = g1 + 120; if (c.y !== undefined) c.y = lip.y; }
+  // (and at the far branch's top: a flag that kept its old height stood off it, unreachable, ENG-LOOK 1b)
+  for (const c of st.checkpoints ?? []) if (inGap(c.x)) Object.assign(c, { x: g1 + 120, y: lip.y });
   st.collectibles = (st.collectibles ?? []).filter((c) => !inGap(c.x));
   if (st.rolling) st.rolling = st.rolling.filter((h) => h.dropX < g0 - TIP_CLEAR.before || h.dropX > g1 + TIP_CLEAR.after);
   const pr = st.proto as Record<string, Array<{ x: number }> | undefined> | undefined;

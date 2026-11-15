@@ -17,7 +17,7 @@ FAULTS = [
     ('the fork line said too late (inside the last 800 px)', [(ARC, "tip('t-fork', 'c', 0.08, 'fork')", "tip('t-fork', 'z', 0.6, 'fork')")], 'every teach line is 800 px'),
     ("Easy's chase gaps over 50 px", [(ARC, "  const g: R2 = easy ? [40, 46] : [100, 120];", "  const g: R2 = easy ? [70, 80] : [100, 120];")], 'Easy is never harder than Normal'),
     ('a heart inside a stretch', [(ARC, "past: -200, up: 34", "past: 120, up: 34")], 'the hearts stand on the fork'),
-    ('no still fork laid', [(ARC, "  const why = layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1);", "  const why: string[] = [];")], 'the still fork'),
+    ('no still fork laid', [(ARC, ", ...layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1)];", "];")], 'the still fork'),
     ('the palm crown not laid', [(ARC, "const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;", "const d = DRESS_18.trunk;")], "the keeper's look is laid"),
     ("Easy's creaky limb kept", [(ARC, "limb('k', 'b', !easy, easy ? [40, 46] : [100, 118])", "limb('k', 'b', true, easy ? [40, 46] : [100, 118])")], 'Easy is never harder than Normal'),
 ]

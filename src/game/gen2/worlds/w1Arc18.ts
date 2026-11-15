@@ -98,7 +98,7 @@ type V = { id: string; lay: Lay; easy?: Lay };
 /** a lay's hazards as the pipeline's roll sockets (types.ts Socket.roll; gen2/rollLay.ts lays them once the chase is laid) */
 const rollSockets = (rs: readonly Roll18[] = []): Socket[] => rs.map((r, i) => ({ id: `roll${i}`, role: 'roll', roll: r.kind, on: r.on, t: r.t }) as Socket);
 /** a brick (1-6/1-7's form): its first piece `in`, its last `out`, a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope' | 'bounce'; teaches?: string; versions: V[]; uses?: string[]; window?: [number, number] }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope' | 'bounce'; teaches?: string; versions: V[]; uses?: string[]; window?: [number, number]; join?: 'walk' }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return { f, ps: ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on' || q === 'from') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'], ...(p.from ? { from: f(p.from) } : {}) })) }; };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces).ps[0];
@@ -108,8 +108,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
       ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).ps.slice(1), sockets: sk(v.easy.pieces, [...v.easy.sockets, ...rollSockets(v.easy.rolls)]), easyOnly: true }] : []),
     ];
   });
-  const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_18], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['roll']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  const { versions: _v, uses, join, ...rest } = o;
+  return { ...rest, feel: [STAGE_18], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['roll']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', ...(join ? { join } : {}) }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -218,9 +218,9 @@ export const BEATS_18: SectionTemplate[] = [
   brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
   brick({ id: 'w1-18-high-bough', window: [0.4, 0.53], name: 'the high bough: bounce up, hop down', jobs: ['pressure'], content: 'bounce', difficulty: 5, uses: ['roll', 'bounce'], versions: [{ id: 'mushroom-nuts', lay: highBough(false), easy: highBough(true) }] }),
   brick({ id: 'w1-18-rhythm', window: [0.54, 0.68], name: 'both heights in rhythm: under, HOP', jobs: ['pressure'], content: 'hazard', difficulty: 6, versions: [{ id: 'pairs', lay: rhythm(false), easy: rhythm(true) }] }),
-  brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
+  brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', join: 'walk', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
   brick({ id: 'w1-18-last', name: 'the last stretch: almost...', jobs: ['finale'], content: 'hazard', difficulty: 8, uses: ['roll', 'creak'], versions: [{ id: 'hop-under-hop', lay: lastStretch(false), easy: lastStretch(true) }] }),
-  brick({ id: 'w1-18-tip', name: 'the tip: WHOA', jobs: ['signature'], content: 'rope', difficulty: 6, uses: ['swing'], versions: [{ id: 'tip', lay: theTip() }] }),
+  brick({ id: 'w1-18-tip', name: 'the tip: WHOA', join: 'walk', jobs: ['signature'], content: 'rope', difficulty: 6, uses: ['swing'], versions: [{ id: 'tip', lay: theTip() }] }),
 ];
 
 // ───────────────────────────── 1-8's own quiet: the broad base, the rests and the exit ─────────────────────────────
@@ -268,14 +268,34 @@ export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
  * Until then they are written to proto.invDress and nothing draws them (a named rough spot). x: the piece's middle, `dx` from the hazard's
  * drop; y: its foot when standing, from the ground under the drop (px, + down)
  */
-export const DRESS_18 = {
-  /** a palm standing behind the branch at every nut's drop, its foot below the branch's top and its crown (460 px tall, pokey_scale 5.16)
-   *  overhead, its cluster of nuts where the nut drops in from */
-  palm: { inv: 'hf18/hf18-palm-crown', hang: false, dx: 0, y: 40, layer: 'behind' },
-  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at every fruit's drop, its foot down in the mist, its fruit
-   *  stalks at and over the drop's height */
-  trunk: { inv: 'hf18/hf18-cannon-trunk', hang: false, dx: 70, y: 260, layer: 'behind' },
-} as const;
+export const TRUNKS_18 = [
+  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at a fruit's drop, its foot down in the mist, its fruit stalks
+   *  at and over the drop's height */
+  { inv: 'hf18/hf18-cannon-trunk', dx: 70, y: 260, back: false },
+  /** the same tree further back (ART-18: mirrored and hazed, 760 px), so two fruit drops on one screen never show one picture twice */
+  { inv: 'hf18/hf18-cannon-trunk-back', dx: -59, y: 220, back: true },
+] as const;
+/**
+ * 1-8's palms (ART-18; Matt 11:45-11:46 AM ET 11-15: "Drawn looks awful... Get art", and on the frames sheet: the same palm, huge and
+ * identical, in almost every frame). Painted (tools/art/hfpalm), each a tall trunk rising out of the mist under the bough (its foot faded,
+ * never a stub) to a crown with its nut cluster. One stands at every nut's drop with that cluster over the drop, so the nut still falls
+ * from a crown in view; they take turns in this order, and a palm already standing within PALM_APART_18 of a drop is skipped, so no crown
+ * shows twice on a screen. Two near palms and two further back (a fifth, a young near palm, was cut by the lead 12:27 PM: orange nuts,
+ * a short trunk that read as growing out of the bough) (hazed into the mist in the picture, drawn behind the near ones), so not
+ * every crown is in front; sizes differ. `nut`: the cluster's middle as fractions of the picture (tools/art/hfpalm/nutpt.py; its check sheet
+ * confirms each by eye); `up`: how far over the ground under the drop the cluster hangs (px; sideways the
+ * nut starts about this high, rollingPiece.ts dropY0 under the HUD band, so the cluster hangs just under the HUD's art sideways, about 300 px of world over the ground in view there, and the
+ * nut falls through the crown both ways; the nuts in each picture draw about the size of the falling nut, 30-40 px); `dx`, `y`: the row's
+ * place from those and the piece's drawn size (inventory: pokey_scale x 89.1 tall), checked against the inventory by w1Arc18.test.ts.
+ */
+export const PALMS_18 = [
+  { inv: 'hf18/hf18-palm-back-a', nut: [0.483, 0.31], up: 170, dx: 7, y: 313, back: true },
+  { inv: 'hf18/hf18-palm-b', nut: [0.492, 0.26], up: 185, dx: 4, y: 451, back: false },
+  { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.267], up: 190, dx: -21, y: 499, back: false },
+  { inv: 'hf18/hf18-palm-back-b', nut: [0.491, 0.284], up: 165, dx: 3, y: 322, back: true },
+] as const;
+/** no palm stands within this of another of the same picture (px of world): a sideways phone's view (~1,410 px at 1-8's zoom) and a margin */
+export const PALM_APART_18 = 1800;
 /** ENG-DR's row shape (src/game/art/invDress.ts InvDress on t-eng-dr; this goes when that lands: import it) */
 export interface InvDress { inv: string; x: number; y: number; hang: boolean; layer: 'behind' }
 
@@ -326,13 +346,31 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   // (4) the tip: World 1's (the gap off the last stretch's lip, the far tree's bough, the runner liana; hazards on the run to it left out)
   const tipWhy = layTip(st as never, W1_TIP);
   if (tipWhy.length) throw new Error(`1-8 finish: ${tipWhy.join('; ')}`);
-  // (6) the keeper's look: a palm crown over every nut's drop, a cannonball trunk behind every fruit's (DRESS_18, by inventory id)
+  // (6) the keeper's look: a painted palm over every nut's drop (PALMS_18), a cannonball trunk behind every fruit's (TRUNKS_18), each list
+  // taken in turn and none of its pictures twice within PALM_APART_18 (Matt 11-15: never the same picture twice on a screen), by
+  // inventory id; the back ones drawn first, behind everything else dressed here
   const proto = ((st as { proto?: unknown }).proto ??= {}) as { invDress?: InvDress[] };
+  const rows: Array<InvDress & { back: boolean }> = [];
+  const turns = new Map<object, number>();
+  const pick = <T extends { inv: string }>(list: readonly T[], x: number): T => {
+    const turn = turns.get(list) ?? 0;
+    // (the nearest same picture already standing, for each in turn: the first free one, else the one whose twin stands furthest; a look
+    // rule never refuses a roll, and w1Arc18.test.ts holds the listed rolls to none within PALM_APART_18)
+    const near = (inv: string) => Math.min(Infinity, ...rows.filter((r) => r.inv === inv).map((r) => Math.abs(r.x - x)));
+    let k = 0;
+    while (k < list.length && near(list[(turn + k) % list.length].inv) < PALM_APART_18) k++;
+    if (k === list.length) k = [...list.keys()].sort((i, j) => near(list[(turn + j) % list.length].inv) - near(list[(turn + i) % list.length].inv))[0];
+    turns.set(list, (turn + k + 1) % list.length);
+    return list[(turn + k) % list.length];
+  };
   for (const h of st.rolling) {
-    const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;
     const g = st.platforms.filter((p) => p.type === 'solid' && p.x <= h.dropX && h.dropX <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
     if (!g) continue;
-    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: d.hang, layer: d.layer });
+    const d = h.kind === 'low' ? pick(PALMS_18, h.dropX) : pick(TRUNKS_18, h.dropX);
+    rows.push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: false, layer: 'behind', back: d.back });
+  }
+  for (const r of [...rows.filter((q) => q.back), ...rows.filter((q) => !q.back)]) {
+    (proto.invDress ??= []).push({ inv: r.inv, x: r.x, y: r.y, hang: r.hang, layer: r.layer });
   }
   // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);
@@ -342,6 +380,15 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     const c = (st.checkpoints ?? []).filter((q) => q.x > a && q.x < b).sort((p, q) => q.x - p.x)[0];
     if (!c) throw new Error(`1-8 finish: no flag on fork ${f} for its heart`);
     st.collectibles.push({ id: ++id, type: 'heart', x: c.x + HEARTS_18.past, y: c.y - HEARTS_18.up, collected: false, bobPhase: 0 });
+  }
+  // (7) each of Dot's lines is said only before the next crack after it (StageHint.beforeX): a run that starts from a later flag says
+  //  the last line he passed (engine.ts), and past the tip that was the still fork's, on the far tree's branch (ENG-LOOK's still, 11-14)
+  const hints = ((st as { proto?: { hints?: Array<{ x: number; text: string; beforeX?: number }> } }).proto?.hints ?? []);
+  const mine = new Set<string>(Object.values(LINES_18));
+  for (const h of hints) {
+    if (!mine.has(h.text)) continue;
+    const next = lay.stretches.find((s) => s.start > h.x);
+    if (next) h.beforeX = next.start;
   }
   return stage;
 }
@@ -357,6 +404,8 @@ export function kitLib18(): WorldKit {
     manifest: { ...M,
       sections: SECTIONS_18,
       rolls: ROLL_18,
+      // (The Long Branch: every bank and section drawn as the bough over the mist, ENG-LOOK2)
+      ground: { ...M.ground, look: 'bough' },
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_18) as Array<keyof typeof LINES_18>).map((q) => [lineId(q), LINES_18[q]])) },

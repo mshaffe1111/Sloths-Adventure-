@@ -2585,12 +2585,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         // (a rolled node's tempo dial: hurry leans its joins off the plain walk, patience toward it)
         const walkW = n.dials ? (n.dials.tempo === 'hurry' ? 0.6 : 1.5) : 1;
         const r0 = jrng() * (walkW + stepW + pitW2);
-        join = fixed ? fixed.join : r0 < walkW ? 'walk' : r0 < walkW + stepW ? 'step' : 'pit';
+        // (a section that asks for its join gets it, never a roll: SectionTemplate.entry.join, ENG-LOOK2; the draw above is still made,
+        // so every later number on the stage comes from the same stream)
+        const asked = tpl.entry.join;
+        join = fixed ? fixed.join : asked ?? (r0 < walkW ? 'walk' : r0 < walkW + stepW ? 'step' : 'pit');
         // (pacing the climb: a step leans to the corridor's middle, so under the middle it climbs and over it it comes down. Before
         // the late rise a step that would climb is laid flat (the climbs ahead need that height) and a walk over the middle is a step
         // down (it gives height back); after the late rise a step that would come down is laid flat, so the end stays above the bough
         // window. Only the KIND of join changes, which the plan keeps: a plan laid again is the same stage)
-        if (!fixed && paced && join !== 'pit') {
+        if (!fixed && !asked && paced && join !== 'pit') {
           const down = cur.y + L.exit.y <= (ctop + cbot) / 2;
           // (a step so taken away is a pit where the node may hold one: the seam keeps its beat, and the quiet line its measure)
           const flat = join === 'step' && !quiet ? 'pit' : 'walk';
@@ -3958,18 +3961,20 @@ const PIECES_OF = new WeakMap<Gen2Stage, Map<string, Array<{ platform: Platform;
  * laid on a COPY (the stage and its sections' pieces cloned together, so the pieces are the copy's own platforms: layChase cuts by
  * them), and the search keeps its own build, whose chase is laid once, after (ENG-CL (7b)). Any other roll is handed as it is.
  */
-function asLaid(st: Gen2Stage, M: WorldManifest, easy: boolean): Gen2Stage {
+function asLaid(st: Gen2Stage, kit: WorldKit, easy: boolean): Gen2Stage {
   const pm = PIECES_OF.get(st);
   if (!pm) return st;
   const [c, m] = structuredClone([st, pm] as const);
-  layChaseStage(c, (uid) => m.get(uid) ?? [], M, easy);
+  layChaseStage(c, (uid) => m.get(uid) ?? [], kit, easy);
   return c;
 }
 
 /** a roll's chase laid on its built stage (chaseLay.ts), then its rolling hazards (rollLay.ts rollsOf): what is wrong with either, by name */
-function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{ platform: Platform; main: boolean }>, M: WorldManifest, easy: boolean): string[] {
+function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{ platform: Platform; main: boolean }>, kit: WorldKit, easy: boolean): string[] {
   const chase = layChase(st, piecesOf);
-  const r = rollsOf(st as never, M.rolls, easy);
+  // (the world's settle again on the cut stage: ENG-LOOK2 (1c); it refuses nothing)
+  settleLaid(st, kit.settle);
+  const r = rollsOf(st as never, kit.manifest.rolls, easy);
   if (r.specs.length) st.rolling = r.specs;
   return [...chase.problems, ...r.problems];
 }
@@ -4493,10 +4498,12 @@ function buildGen2StageOn(req: BuildRequest): Gen2Stage {
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (the ground's look, from the kit's world data: ENG-LOOK2)
+  if (req.kit.manifest.ground.look) st.groundLook = req.kit.manifest.ground.look;
   // (a graph with chase nodes, job K: its stretches laid on the built ground and its flags moved onto the forks BEFORE the verdicts, so
   // the flags are judged by the same rule as every rolled stage's; a lay that cannot run is refused by name, chaseLay.ts)
   // (and its rolling nuts and fruit once the chase is laid, before the verdicts, so the ground a by-ground lay clears is the ground judged)
-  const chased = layChaseStage(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? [], req.kit.manifest, req.difficulty === 'easy');
+  const chased = layChaseStage(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? [], req.kit, req.difficulty === 'easy');
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
   st.gen2.errors.push(...chased);
@@ -4564,7 +4571,7 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
     if (n) {
       // (judged as Normal plays it: its chase laid first, as buildGen2Stage lays it, so its flags are the ones it plays (ENG-B4: Easy
       // refused 2 of 30 chase rolls on Normal's flags from before its lay))
-      const nChase = withSetting('normal', () => layChaseStage(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? [], req.kit.manifest, false));
+      const nChase = withSetting('normal', () => layChaseStage(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? [], req.kit, false));
       applyVerdicts(n, { ...req, difficulty: 'normal' });
       n.gen2.errors = [...rollErrors(n.gen2), ...nChase, ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
@@ -4770,7 +4777,7 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
           const pipes = unmet.length > 0;
           // (handed the roll as laid, its chase in it, on a copy: a judge measuring the roll as played was handed a chase stage with no
           // chase, and 1-8's finish refused every roll by name: ENG-CL (7b), BUILD-18 11-14)
-          if (!pipes && req.also) unmet = [...req.also(asLaid(st, M, false), 'normal').map((u) => ({ ...u, of: b })), ...withSetting('easy', () => req.also!(asLaid(eb!.stage, M, true), 'easy')).map((u) => ({ ...u, of: eb! }))];
+          if (!pipes && req.also) unmet = [...req.also(asLaid(st, req.kit, false), 'normal').map((u) => ({ ...u, of: b })), ...withSetting('easy', () => req.also!(asLaid(eb!.stage, req.kit, true), 'easy')).map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;
@@ -4856,4 +4863,23 @@ export function trimPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId: R
     return [...plan.slice(0, i), ...plan.slice(i + 1)];
   }
   return null;
+}
+
+/**
+ * ENG-LOOK2 (1c), any stage: the world's settle (WorldKit.settle) run again on a stage whose chase is laid. The lay's own settle ran before
+ * the chase cut its banks into falling sections, so a stone at a bank's foot was kept leaning on earth that falls (1-8: 23 stones drawn
+ * 54-284 px over the hole once its bank goes). A stage with no chase is not touched; a piece still on its ground keeps its piece (the
+ * settle starts from the laid one). One whose piece no longer fits is given one that fits where it stands, or, when only a move or
+ * nothing would keep one on its ground, NO piece (Platform.cut ''): it is drawn as its ground, like the plain steps beside it. It is never
+ * moved: what stands on it is already placed, and the roll is never refused for a look. What it changed, by name, for the report.
+ */
+export function settleLaid(st: Gen2Stage, settle: WorldKit['settle']): string[] {
+  if (!settle || !st.platforms.some((p) => p.chase)) return [];
+  const out: string[] = [];
+  for (const { p, dx } of settle(st.platforms)) {
+    if (dx === 0) continue;
+    p.cut = '';
+    out.push(`x ${Math.round(p.x)}`);
+  }
+  return out;
 }

@@ -11,7 +11,7 @@
  *   - a floorless gap a builder marks with `pit: 'drop'` on either bank (1-9's hard vault): the drop all the way down, over the water;
  *   - an unmarked floorless gap anywhere else in World 1 is water (1-6's, with Dot's "Careful, water!" and its sign): it keeps its water.
  * For the builders (W1-REBUILD-PLAN): a soft pit needs nothing but a floor SOFT_FLOOR to FALL_BELOW px down and a piece standing in it as
- * its way out; a drop needs `pit: 'drop'` on a bank beside it; 1-8's gaps need nothing.
+ * its way out; a drop needs `pit: 'drop'` on a bank beside it, 1-8's tip gap too (chaseTip.ts layTip marks its far branch).
  * Everything is found once per stage from its platforms (the gaps never move: a breaking branch over a gap is not a floor) and drawn each
  * frame for the gaps in view, behind the platforms (protoArt.ts drawProtoScene, after the ground). Nothing here touches the HUD.
  */
@@ -265,7 +265,9 @@ function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): 
     if (x1 - x0 < 24 || x1 - x0 > 2400) continue;
     const top = Math.max(merged[i][3], merged[i + 1][2]);
     if (platforms.some((q) => floorish(q) && q.x < x1 - 4 && q.x + q.width > x0 + 4 && q.y > top + 20 && q.y < top + 400)) continue;
-    out.push({ x0, x1, top, kind: 'fall', lipL: false, lipR: false });
+    // (a builder's marked drop, `pit: 'drop'` on a bank beside it, as on every other stage: the tip's far branch, ENG-LOOK2)
+    const marked = path.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
+    out.push({ x0, x1, top, kind: 'fall', lipL: false, lipR: false, ...(marked ? { drop: true } : {}) });
   }
   return out;
 }

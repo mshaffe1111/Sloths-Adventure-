@@ -281,8 +281,8 @@ export const PAGES: JournalPage[] = [
     id: 'collapse', chapter: 'dangers', title: 'The collapsing branch', demo: 'collapse', pose: 'run',
     open: { tip: [tip('1-8', "It's cracking! Run, and don't look back!")], cleared: ['1-8'] },
     where: 'Found in World 1', riddle: 'Do not look back. Just run!',
-    intro: 'Some branches break apart behind you. Keep moving and it can never catch you. If it does, you lose a heart and go back to the last flag.',
-    lines: same([{ how: 'Keep going, do not stop', what: 'Stay ahead of it' }]),
+    intro: 'Some branches break apart behind you. Run, and stop only on a mossy fork that holds. If it catches you, you lose a heart and go back to the last flag.',
+    lines: same([{ how: 'Keep running; stop only on a mossy fork', what: 'Stay ahead of it' }]),
   },
   {
     id: 'drops', chapter: 'dangers', title: 'Snakes from above', demo: 'drops', pose: 'punch',

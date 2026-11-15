@@ -87,8 +87,14 @@ Gates on the head: see section 8 (filled from the run's own output).
 ## 7. Turnover
 reference/handoffs/engine-core.md section 0CL (this branch's last commit).
 
-## 8. Gates on the head (filled from the run)
-PENDING at the time of writing; see the commit that fills this section.
+## 8. Gates on the head c32cdb2d (a clean worktree; the commits after it are docs only), read 9:32 PM ET, STOPPED by the lead 9:35
+PASS (exit 0, from each gate's own log): tsc; the full unit suite 3/3 shards (1395 + 1172 + 1035 pass, 0 fail); the CI tool tests
+(122 pass, 0 fail); vite build (BASE_PATH); chunkcheck; artcheck; knowncheck; generalitycheck; roadmapcheck (after unshallowing the
+clone); registrycheck; tipwalk --layouts 4; seedlist --check 1-1, 1-2, 1-3, 1-4, 1-5, 1-7; tierBots (7 pass); drawcheck.
+UNRUN (D59, the lead's STOP at 9:35): clipcheck (still running at the stop, no verdict), kbdcheck, buildcheck. ENG-LOOK runs every
+gate on the combined 1-8 head, which carries all of this work.
+Lock (lockall --layouts 16, base a4e1ff8f recorded, head c32cdb2d checked): 102/102 stages unchanged, 3,264 builds. It also printed
+"gen2 gained verdicts and drops (not hashed)" for 29 stages; not checked whether base against itself prints the same line.
 
 ## Learned (for the next engine member)
 - When a builder says "every roll throws", read the pipeline's call order before the finish: the search's judge ran pre-chase.

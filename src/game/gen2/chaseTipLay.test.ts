@@ -11,6 +11,7 @@ import type { Platform, Vine } from '../types.ts';
 import { layTip, readyStillFork, type TipStage } from './chaseTip.ts';
 import { layStillFork, stillForks, STILL_FORK } from './stillFork.ts';
 import { W1_STILL_FORK, W1_TIP } from './worlds/w1Cast.ts';
+import { findW1Pits } from '../w1Pits.ts';
 
 const Y = 500;
 /** flat ground in the lay's ~222 px sections, three stretches with a fork after each of the first two, the far ground past the last */
@@ -108,4 +109,29 @@ test('readyStillFork on ANY fork (here fork 1): bare rocks in its cover and post
   assert.deepEqual(stillForks(st as never).map((f) => f.fork), [1]);
   // (the last stretch has no fork after it)
   assert.ok(readyStillFork(toy(), 2, W1_STILL_FORK).some((m) => /no stretch after it/.test(m)));
+});
+
+test('layTip (ENG-LOOK 1b): a flag it moves out of the gap stands ON the far branch (its top, not its old height), any stage', () => {
+  // (the stage's own ground past the tip lies 80 px lower than the tip, so a flag that kept its old height floats off the far branch:
+  // levelCheck's "checkpoint ... is not on a reachable platform", 1-8's far-bough flag. Red before: the flag kept y ${Y + 80})
+  const st = toy({ at: 10364, dy: 80 });
+  (st.checkpoints[2] as { x: number; y?: number }).y = Y + 80;
+  assert.deepEqual(layTip(st, W1_TIP), []);
+  const g1 = 10364 + W1_TIP.gap;
+  const flag = st.checkpoints[2] as { x: number; y: number };
+  const under = st.platforms.find((p) => flag.x >= p.x && flag.x <= p.x + p.width && Math.abs(p.y - flag.y) < 6);
+  assert.ok(under && under.x === g1, `the moved flag (${flag.x}, ${flag.y}) stands on the far branch (its top ${Y})`);
+});
+
+test('layTip (ENG-LOOK2 3): the tip\'s gap is a MARKED fall (the far branch pit \'drop\'), read so by the pit ruler, any stage', () => {
+  // (red before: findW1Pits read it {"kind":"fall","lipL":false,"lipR":false}, no drop: w1Pits.test counted it as 1-8's one unmarked fall)
+  const st = toy({ at: 10364, dy: 80 });
+  assert.deepEqual(layTip(st, W1_TIP), []);
+  const g0 = 10364, g1 = g0 + W1_TIP.gap;
+  const far = st.platforms.find((p) => p.x === g1)!;
+  assert.equal(far.pit, 'drop', 'the far branch marks the fall beside it');
+  const gaps = findW1Pits(st.platforms).filter((g) => g.x0 < g1 && g.x1 > g0);
+  assert.equal(gaps.length, 1, JSON.stringify(gaps));
+  assert.equal(gaps[0].kind, 'fall');
+  assert.equal(gaps[0].drop, true, JSON.stringify(gaps[0]));
 });

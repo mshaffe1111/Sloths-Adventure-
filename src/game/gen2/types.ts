@@ -117,8 +117,10 @@ export interface WorldManifest {
   owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
-  /** the world's ground: its top (world y), the bank's depth, the look */
-  ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
+  /** the world's ground: its top (world y), the bank's depth, the look. `look` 'bough' (ENG-LOOK2, any stage whose kit says so: 1-8 The
+   *  Long Branch): every bank and chase section is drawn as the painted bough along its top, over the mist, no soil (protoArt.ts
+   *  drawBoughGround); copied onto the stage as GeneratedStage.groundLook */
+  ground: { y: number; bankH: number; style: NonNullable<Platform['style']>; look?: 'bough' };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
@@ -498,7 +500,10 @@ export interface SectionTemplate {
   /** at most this many in one stage (a puzzle room: 1) */
   maxPerStage?: number;
   pieces: SectionPiece[];
-  entry: { piece: string; kind: PortKind };
+  /** `join` (ENG-LOOK2, the lead's ruling (a) 11-14 10:24 PM): the join INTO it, asked by the section, never rolled. 'walk': he walks on,
+   *  level, no step and no pit before it (a still fork's or a tip's ground must be whole from where he arrives: 1-8 seed 2 rolled a pit
+   *  into its still fork, a step into its tip). Honoured where both ends are ground; from a ledge the join is a jump, as always */
+  entry: { piece: string; kind: PortKind; join?: 'walk' };
   exit: { piece: string; kind: PortKind };
   /** about how far the exit sits above (negative) or below the entry: what the corridor clamp steers by */
   exitDy: number;

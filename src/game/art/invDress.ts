@@ -22,7 +22,7 @@ import { invDressFolders, invDressUrl } from './invDressArt.ts';
 
 /** one inventory piece set in a stage as dressing (world data: proto.invDress, written by a stage's finish) */
 export interface InvDress {
-  /** the piece's catalog id, exactly as its world's inventory has it (src/game/art/inventory/w<N>.json `id`, e.g. 'hf18/hf18-palm-crown') */
+  /** the piece's catalog id, exactly as its world's inventory has it (src/game/art/inventory/w<N>.json `id`, e.g. 'hf18/hf18-palm-b') */
   inv: string;
   /** its middle's x (world px) */
   x: number;

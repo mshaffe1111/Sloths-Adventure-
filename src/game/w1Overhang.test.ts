@@ -64,6 +64,16 @@ test('settleCut: a stone at a lip moves back, a stone against a rising bank stay
   assert.ok(Number.isNaN(settleCut(s3, [...g3, s3])!.dx));
 });
 
+test('groundRun: a bank the chase breaks is no bank to lean on (its section falls; a stone drawn in front of it hangs over air), any stage', () => {
+  // (ENG-LOOK2 (1c), 1-8's 23 stones: a stone at the foot of a bank whose wall is a chase section was read as standing against it, so its
+  //  piece was kept drawn up to 284 px into that bank's earth; the bank falls in the chase and the piece hangs over the hole)
+  const floor = { id: 1, x: 2400, y: 840, width: 550, height: 160, type: 'solid' as const };
+  const stone = { id: 7, x: 2400, y: 720, width: 200, height: 120, type: 'solid' as const };
+  const bank = { id: 2, x: 2200, y: 600, width: 200, height: 400, type: 'solid' as const };
+  assert.deepEqual(groundRun(stone, [floor, bank, stone]), [2200, 2950], 'a standing bank: the run goes on over it (1-2 seed 81)');
+  assert.deepEqual(groundRun(stone, [floor, { ...bank, chase: true }, stone] as never), [2400, 2950], 'a bank that falls: the run ends at the floor');
+});
+
 const W1 = Object.keys(PROVEN_INDEX).filter((id) => id.startsWith('1-'));
 for (const id of W1) {
   test(`${id}: every listed layout, both settings: no stone or stump drawn more than ${OVERHANG_MAX} px past its ground`, async () => {

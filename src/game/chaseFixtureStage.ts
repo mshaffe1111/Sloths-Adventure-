@@ -40,7 +40,8 @@ export function chaseFixtureKit(code = CHASE_FIXTURE_CODE, as = CHASE_FIXTURE_ID
   const brief = { ...G.briefs['1-1'], branching: 'none' as const, deal: undefined };
   const sections = as === '1-1' ? W1.manifest.sections : W1.manifest.sections.map((t) => (t.feel?.includes('1-1') ? { ...t, feel: [...t.feel, as] } : t));
   const owns = as !== '1-1' && W1.manifest.owns?.['1-1'] ? { owns: { ...W1.manifest.owns, [as]: W1.manifest.owns['1-1'] } } : {};
-  return { ...W1, manifest: { ...W1.manifest, sections, ...owns, graphs: { ...G, list: [{ id: 'k', archetype: 'sprint', code }], briefs: { ...G.briefs, [as]: brief } } } };
+  // (the chase's look: the bough, as 1-8's own kit says, ENG-LOOK2)
+  return { ...W1, manifest: { ...W1.manifest, ground: { ...W1.manifest.ground, look: 'bough' }, sections, ...owns, graphs: { ...G, list: [{ id: 'k', archetype: 'sprint', code }], briefs: { ...G.briefs, [as]: brief } } } };
 }
 
 /** the dev build's fixture config, or null (a shipped build never has it) */
