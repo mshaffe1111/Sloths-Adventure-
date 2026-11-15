@@ -23,7 +23,8 @@ Started 3:44 PM ET. Times from `TZ=America/New_York date`. FIX-GATES (a) 18e323e
    LV-9 floor 30->28 (2-1/2-2 left the hand-built set); 5-7/7-1 pins back to main's own; riverSection (safe-water-art, ruling 1);
    flower species sample widened (201 pairs, 0 mixed); growth check mix-vs-mix like with like (ruling (A) 5:19, planted).
    After FIX-GATES: registrycheck (+test), riverRide 18/18, CI tools line 168/0, tipwalk, bounceReuse/judged/verdicts tests GREEN.
-   Test link: 511 files > build.py's 480 cap -> inline 64 KB (test link only): 472 files, index.js 14.2 MB (80 KB: 18.7 MB > 16 MB).
+   FINAL full suite on 46a2e5dd's src: 3755 pass, 0 fail (gates/suite-final.txt); tsc, build, chunkcheck, artcheck, knowncheck,
+   generality, roadmapcheck re-run on it: PASS. Test link: 511 files > build.py's 480 cap -> inline 64 KB (test link only): 472 files, index.js 14.2 MB (80 KB: 18.7 MB > 16 MB).
 
 ## Polish check
 - 1-8 (shots/s18-*): fork x26600 (eagle, moss cover, wayside line), tip x34200, palm x6064, dip: x13930 top step + x14350 floor,

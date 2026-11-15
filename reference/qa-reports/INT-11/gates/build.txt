@@ -204,7 +204,7 @@ dist/assets/w1m-pod-hang-BgX8E2Qv.webp                                     12.72
 dist/assets/rattle-DZ0WA_jY.webp                                           12.72 kB
 dist/assets/glock_108_0-B730W31K.mp3                                       12.73 kB
 dist/assets/general-CZJUKjla.mp3                                           12.83 kB
-dist/index.html                                                            12.89 kB │ gzip:   4.68 kB
+dist/index.html                                                            12.89 kB │ gzip:   4.67 kB
 dist/assets/harp_38_0-Doc3dmst.mp3                                         12.99 kB
 dist/assets/bassoon_45_509_79402-CfyLanXu.mp3                              13.04 kB
 dist/assets/grandfather-C-pYkh1K.mp3                                       13.19 kB
@@ -1081,12 +1081,12 @@ dist/assets/sampleLoader-B0vNVzd3.js                                        2.51
 dist/assets/voice-DizqUFzo.js                                               2.65 kB │ gzip:   1.07 kB
 dist/assets/sfxRecLoader-BvYaJEsV.js                                        2.93 kB │ gzip:   1.39 kB
 dist/assets/world-8-parts-0o__yxAQ.js                                       3.66 kB │ gzip:   1.56 kB
-dist/assets/HelpOffer-DhY78ecb.js                                           4.32 kB │ gzip:   2.00 kB
-dist/assets/world-8-CZge65P6.js                                             7.65 kB │ gzip:   3.38 kB
+dist/assets/HelpOffer-CLRvktOB.js                                           4.32 kB │ gzip:   2.00 kB
+dist/assets/world-8-DBWorHnf.js                                             7.65 kB │ gzip:   3.38 kB
 dist/assets/dist-DjKWiKsS.js                                                7.78 kB │ gzip:   3.10 kB
 dist/assets/web-BSTDX6Hf.js                                                 8.49 kB │ gzip:   2.84 kB
 dist/assets/seeds-2-2-D8yzFE6Q.js                                          11.33 kB │ gzip:   1.62 kB
-dist/assets/seeds-1-8-BTvohkIn.js                                          13.13 kB │ gzip:   1.83 kB
+dist/assets/seeds-1-8-6qbcp-eu.js                                          13.13 kB │ gzip:   1.83 kB
 dist/assets/seeds-1-2-BdFh7BW6.js                                          13.73 kB │ gzip:   2.49 kB
 dist/assets/seeds-1-7-CvDGxvKq.js                                          13.81 kB │ gzip:   2.02 kB
 dist/assets/seeds-2-1-IfMsUCw7.js                                          15.52 kB │ gzip:   2.07 kB
@@ -1097,19 +1097,19 @@ dist/assets/musicFiles-BikeycR5.js                                         30.58
 dist/assets/seeds-1-5-CXCs7byy.js                                          31.92 kB │ gzip:   4.19 kB
 dist/assets/orchLoader-CsL5QVW7.js                                         43.36 kB │ gzip:  16.72 kB
 dist/assets/seeds-1-3-BboAHwza.js                                          51.75 kB │ gzip:   3.55 kB
-dist/assets/world-5-parts-DMt2IR2h.js                                      53.29 kB │ gzip:  17.19 kB
-dist/assets/world-6-parts-oijntVEV.js                                      55.81 kB │ gzip:  15.78 kB
-dist/assets/world-2-4-parts-DyGbt2wb.js                                    59.11 kB │ gzip:  22.52 kB
-dist/assets/puzzle-Be_fwP6Z.js                                             68.02 kB │ gzip:  24.79 kB
-dist/assets/world-7-parts-CWUg49uo.js                                      69.11 kB │ gzip:  24.92 kB
+dist/assets/world-5-parts-pt9IdGZF.js                                      53.29 kB │ gzip:  17.19 kB
+dist/assets/world-6-parts-CwfOGtfH.js                                      55.81 kB │ gzip:  15.78 kB
+dist/assets/world-2-4-parts-D8AcIRcg.js                                    59.11 kB │ gzip:  22.52 kB
+dist/assets/puzzle-B_3mM_nf.js                                             68.02 kB │ gzip:  24.76 kB
+dist/assets/world-7-parts-V1qk47EL.js                                      69.11 kB │ gzip:  24.92 kB
 dist/assets/lines-D6U2iBeO.js                                              87.89 kB │ gzip:  24.28 kB
 dist/assets/audio-DUGjsmBg.js                                              98.03 kB │ gzip:  32.91 kB
-dist/assets/runs-RpZWV2jZ.js                                              115.88 kB │ gzip:  42.60 kB
+dist/assets/runs-LbYb5mLp.js                                              115.87 kB │ gzip:  42.60 kB
 dist/assets/w9-DtdE8JSO.js                                                128.69 kB │ gzip:  16.66 kB
 dist/assets/w4-U2TRPTi-.js                                                133.53 kB │ gzip:  20.11 kB
 dist/assets/art-urls-BL_7keLF.js                                          146.91 kB │ gzip:  93.99 kB
 dist/assets/w7-BugoE81I.js                                                168.01 kB │ gzip:  23.88 kB
-dist/assets/bosses-DFDk8LsD.js                                            194.77 kB │ gzip:  54.35 kB
+dist/assets/bosses-rfwi4tN_.js                                            194.77 kB │ gzip:  54.35 kB
 dist/assets/w5-C9o27uEs.js                                                195.56 kB │ gzip:  28.96 kB
 dist/assets/w1-CTHUkC_1.js                                                200.63 kB │ gzip:  30.20 kB
 dist/assets/w2-BwUNAVPW.js                                                201.15 kB │ gzip:  30.95 kB
@@ -1119,12 +1119,12 @@ dist/assets/vendor-FrbPb9NH.js                                            218.74
 dist/assets/rolls-C3P_nRMy.js                                             219.51 kB │ gzip:  29.17 kB
 dist/assets/w8-D-epYawB.js                                                241.76 kB │ gzip:  35.39 kB
 dist/assets/w6-D3Ete69x.js                                                250.71 kB │ gzip:  37.88 kB
-dist/assets/world-1-parts-DKlyjjkk.js                                     277.60 kB │ gzip:  87.10 kB
+dist/assets/world-1-parts-BAShUlYd.js                                     277.60 kB │ gzip:  87.11 kB
 dist/assets/sheets-CZ43Op3S.js                                            288.66 kB │ gzip:  88.68 kB
-dist/assets/story-BAkrXNhJ.js                                             289.89 kB │ gzip: 100.48 kB
-dist/assets/index-DFm91xB4.js                                             725.85 kB │ gzip: 243.43 kB
-dist/assets/oldgen-CYgc2R9k.js                                            763.53 kB │ gzip: 254.64 kB
-dist/assets/stagekit-UItzBAKt.js                                          835.19 kB │ gzip: 284.11 kB
+dist/assets/story-BjLXNKj7.js                                             289.89 kB │ gzip: 100.47 kB
+dist/assets/index-fBZ0vCSn.js                                             725.85 kB │ gzip: 243.43 kB
+dist/assets/oldgen-DVa9XjzX.js                                            763.83 kB │ gzip: 254.71 kB
+dist/assets/stagekit-BWplSLNL.js                                          835.45 kB │ gzip: 284.25 kB
 dist/assets/cast-D4U9JcNo.js                                            1,784.66 kB │ gzip: 102.17 kB
 
 [plugin builtin:vite-reporter] 
@@ -1132,11 +1132,11 @@ dist/assets/cast-D4U9JcNo.js                                            1,784.66
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 2.81s
+✓ built in 2.50s
 
 PWA v2.0.0
 mode      generateSW
-precache  1129 entries (180302.83 KiB)
+precache  1129 entries (180303.37 KiB)
 files generated
   dist/sw.js
   dist/workbox-9c191d2f.js
