@@ -49,7 +49,7 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
 | 1-4 (100) | unchanged | unchanged | unchanged |
 | 1-5 (150) | unchanged | unchanged | unchanged |
 | 1-7 (100) | unchanged | unchanged | unchanged |
-| 1-6 (t-build-16, NOT relisted: ENG-16G owns it) | PENDING | (not on this base's list) | |
+| 1-6 (t-build-16@498f8d61 + TOOLS-1's f3312155c + this fix, in a worktree; NOT relisted: ENG-16G owns it) | **CHANGED: Easy 100/100 seeds** (stage parts; verdicts and errors identical), Normal 0/100 | (not on this base) | 0/100 seeds |
 | the other 95 stages | (no list) | 21 CHANGED to the phone's Easy (below); 74 unchanged | unchanged |
 
   So no listed stage's list moved, none was rebuilt, and the "seedlist --check for every stage whose list moved" set is empty; the
@@ -81,7 +81,11 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   **Normal: 102/102 unchanged** (Normal's search checking Easy's lay on Easy's swing changed no Normal plan in 16 layouts). **Easy, against
   a fresh phone's Easy today, 8 stages change** (layouts of 16): 6-1 12, 6-3 5, 6-6 6, 6-7 5, 7-5 7 (its gen2 record only), 7-9 9, 8-3 5,
   8-5 14; the other 94 unchanged. Against today's tools: the same 21 as R-165.251. World 1 lists: 1424 of 1424 builds still identical.
-  These 8 are the intended change: each Easy now lays Normal's real plan (QUALITY8).
+  These 8 are the intended change: each Easy now lays Normal's real plan : over the 8 stages x 16 layouts (128
+  Easy builds, the dials set as a phone sets them), a phone's Easy today lays another plan than Normal on 14 and drops a kind of animal
+  Normal has on 7 (6-3/4 frog, 6-7/3, 6-7/8, 6-7/9 frog, 6-7/11 ocelot, 8-3/7 ocelot, 8-5/1 tayra); with the fix, 0 plans differ and
+  4 kinds are dropped, the same four frogs as before (6-3/4, 6-7/3, 6-7/8, 6-7/9): not the swing's doing (identical before and after),
+  named in Unresolved. Easy's build errors: 0 of 128 both ways.
 
 ### R-165.252: the test link refuses an over-full build before publish and maps against the last PUBLISHED build
 - tools/testlink/build.py: prints `test link: N files (limit 480)` and exits 1 with `FAIL: N files, over the 480 limit` above
@@ -116,19 +120,26 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
   t-build-16's 1-6 (TOOLS-1's 3/3).
 
 ## 4. Suggestions (ready packets)
-- **ENGINE (pipeline, Easy's Normal sub-build)**: inside an Easy gen2 build that is not a replay, `buildRolled({ ...req, difficulty:
-  'normal' })` and `applyVerdicts(n, 'normal')` run on Easy's dials (the phone sets Easy before building; the tools now match it). The
-  pipeline says "Easy is Normal's stage under Easy's rules"; Normal's plan built on Easy's swing may not be Normal's plan. Objective:
-  decide (Designer) whether the sub-build is on Normal's dials; if so, withSetting('normal') around those two calls, then the lock names
-  every non-listed gen2 stage whose Easy moves. Files: src/game/gen2/pipeline.ts (~4295). Done: a test that an Easy build's Normal plan
-  equals the Normal build's plan for 3 liana stages.
+- (Done, not suggested: Easy's Normal sub-build on Normal's dials became R-165.258 on the lead's ruling, above.)
+- **ENGINE (lockall runs each setting in its own process)**: objective: the lock IS a fresh phone's on both settings, so an order leak
+  between settings shows as a lock change. Files: tools/engine/lockall.ts (spawn one child per setting, as castBots does). Done: a planted
+  order leak (a cache keyed without the dials) changes the lock; today's lock unchanged.
+- **ENGINE (physics chainCache)**: its key leaves out each liana's own swingPeriod (TOOLS-1's note); keyed by the dials now, it is still
+  wrong the day a liana's period differs from its setting's. Done: key it as levelCheck chainLines does; a planted pair differing only in period.
 - **LEAD (t-build-16 merge)**: t-build-16's pipeline.ts:329 hand-sets the swing a third time (ENG-16E's forward-end check); the
   one-helper test will name it at merge: the conversion is the 10-line withSetting form (done in my t-build-16 worktree for the 1-6 diff).
 - **LEAD (HANDOFF §6, PM.md "EnK5 rebuild", release.md)**: add step "after the publish succeeds: `python3 tools/testlink/build.py
   --published`". Without it every map is a fresh-machine map.
 
 ## 5. Unresolved
-- PENDING (filled at the end).
+- **1-6's Easy list** proves stages no phone builds (all 100 seeds' Easy parts change once this branch and f3312155c are under it).
+  Not relisted, by the packet (ENG-16G owns it). Without f3312155c on t-build-16, the now-correct Easy flights leak into Normal through
+  levelCheck's unkeyed FLIGHTS cache (2/100 Normal seeds, 56 and 62, moved in one process; each built alone is unchanged).
+- **Four rolled layouts drop Normal's only frog on Easy** (6-3 layout 4; 6-7 layouts 3, 8, 9), the same before and after this fix:
+  Easy's own thinning, not the swing. easyMode.test.ts checks "keeps every kind" on designed layouts only. Needs a number and the
+  Designer's word on whether the rule holds for rolled layouts.
+- The base runs (lock, lists) were scratch scripts (scratchpad), not committed tools: the method update below proposes making lockall
+  run each setting in its own process so its lock IS a fresh phone's.
 
 ## 6. Method used / Lessons applied / Method update
 - Method used: reference/roles/ENGINE.md "Day one" (lock before, lock after, the stages named), reference/methods/seed-list.md (the
@@ -150,7 +161,26 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
 reference/handoffs/engine-core.md section 0zb (TOOLS-2), commit PENDING.
 
 ## Learned
-PENDING
+- A tool that builds "the same stage" can only prove the phone's stage if the build sets every global its answer reads; make the build
+  set them itself (the callee), never trust each caller to (that is how 38 tools, every test and the map's build-ahead drifted).
+- Fixing a D19 hole uncovers the defects it hid: the suite went red on a real 8-5 Easy defect players already had. Expect it and run the
+  suite before calling the fix done.
+- A cache of a dial-dependent answer needs the dial in its key: three such caches turned up today (layout picks here, FLIGHTS on
+  t-build-16 without f3312155c, physics chainCache without each liana's own period, TOOLS-1's note). A "built after the other setting in
+  one process == built alone" test catches the whole class.
+- lockall strips verdicts and builds Normal before Easy in one process, so it can neither see a list's verdicts nor an order leak:
+  compare per seed (parts + verdicts + errors) and against a fresh process per setting.
 
 ## EXACT NEXT STEP
-PENDING
+1. Lead: integrate t-tools-2 (code head 6df8fb585). Its intended lock changes, Easy only: against an old lock (built with today's
+   tools) the 21 stages in R-165.251's table; against a fresh phone's Easy, the 8 in R-165.258's (6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5).
+   Normal: none. Lists: none moved.
+2. **t-build-16 merge notes (the 1-6 engine member merges this branch at its start)**: (a) t-build-16 does NOT have TOOLS-1's
+   f3312155c (levelCheck FLIGHTS keyed by swingSettingKey): take it with this branch, or the now-correct Easy flights leak into Normal
+   (1-6 Normal seeds 56 and 62 move in one process); (b) t-build-16's src/game/gen2/pipeline.ts:329 hand-sets the swing (ENG-16E's
+   forward-end check): settingDials.test.ts's one-helper test will name it; convert to `r = withSetting(difficulty, () => { ...; return
+   forwardEndLands(...) ? 1 : 0; });` (done and run in my t-build-16 worktree). It is not on t-tools-2's base, so not converted here.
+   Then relist 1-6 (its Easy changes on 100/100 seeds) and run `seedlist.ts 1-6 --check`.
+3. Lead: publish steps (HANDOFF §6, PM.md "EnK5 rebuild", release.md) gain "after the publish succeeds: `python3
+   tools/testlink/build.py --published`"; the first map on a machine with no dist-published still needs the live-file cleanup.
+4. Numbers for: the four frog layouts (Unresolved), and the Suggestions' packets.

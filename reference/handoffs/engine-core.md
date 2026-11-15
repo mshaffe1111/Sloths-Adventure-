@@ -27,8 +27,11 @@ proven plan; Play is never blocked).
 - **stageGenerator's layout-pick caches are keyed by dialsKey** (`variantAttempt`, `known`): validateStage flies lianas on the dials, so
   a process that built Normal first handed Normal's pick to Easy (base: 9-3 layouts 4/14, 9-4 12, 10-6 1/6/10). TRAP (R-165.244 again):
   any cache of an answer the dials change puts dialsKey in its key.
-- **Known, not changed here**: inside an Easy gen2 build that is not a replay, Normal's sub-build (pipeline buildRolled 'normal') runs
-  on Easy's dials, on the phone as in the tools now (the engine sets Easy first). Listed stages replay with foes, so they skip it.
+- **Every gen2 lay and check on its own setting's dials** (R-165.258): buildRolled and applyVerdicts run on their request's setting;
+  inside an Easy build, Normal's plan, verdicts and rule on Normal's; inside Normal's search, the Easy lay check and Easy's rule on Easy's.
+  It had all run on the caller's dials, so a phone's Easy re-planned Normal on Easy's swing: 8-5's Easy lost its only tayra. Lock:
+  Normal 102/102 unchanged; Easy moves on 6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5 (each now lays Normal's plan); World 1 lists unchanged.
+  Gate: settingDials.test.ts R-165.258 (8-5 red before). Left: 6-3/4 and 6-7/3, 8, 9 drop their only frog on Easy (not the swing).
 - **The test link** (R-165.252, tools/testlink/build.py): exits 1 with no map above 480 files (prints the count); maps against
   tools/testlink/dist-published, which only `build.py --published` refreshes, run after a successful publish. Gate: tools/testlink/build.test.ts.
 
