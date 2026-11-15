@@ -51,7 +51,35 @@ src/game/eagleGlance.test.ts (8 tests):
 - The bot freeze plant is in the toy itself (freeze: false loses more hearts).
 
 ## 4. Numbers
-(filled in below as each run finishes)
+### castBots 1-7, seeds 1-40, both settings, on ba6ba46d's code (castbots-1-7.txt)
+| bot | Normal: pass, eagle hits | Easy: pass, eagle hits |
+|---|---|---|
+| kid | 38/40, 305 (lives 5) | 37/40, 37 |
+| adult | 39/40, 71 | 40/40, 31 |
+| child | 39/40, 98 (lives 1) | 40/40, 29 |
+| middle | 40/40, 69 | 40/40, 24 |
+| expert | 40/40, 59 | (Normal only) |
+- No run fell under the 120 s floor.
+- Before this branch (INT-9's 12-seed run on an earlier head, castbots-1-7.txt there) Easy took 0 hearts for kid, adult and middle. Normal's hits were filed 'other', and per run they were lower: kid 7.7, adult 1.9, middle 0.7, expert 0.4.
+- The lead's note (10:31 PM ET): kid Normal at ~7.6 eagle hits a run is the walker paying. TUNE-17 checks the tier bots against the testers (BOTS.md) with the dials, so it is hard but fair.
+
+**The 7 rescues, traced** (two runs per cause; every one PASSES on the base, origin/t-build-16; NOT GREEN):
+| bot, seed | rescued at (x, t) | what | cause | owner |
+|---|---|---|---|---|
+| kid Easy 3 | 23104, t121.6 | a dip 54 px deep, the way on 161 px up, 5 fall-backs in 8.6 s | the screech catches him in the dip; the nearest cover is BEHIND him over the climb. F1 alone on the base reproduces seed 18 | TUNE-17 (1-7 layout: cover past the dip) |
+| kid Easy 18 | 23330, t121.4 | the same dip | same | TUNE-17 |
+| kid Easy 40 | 23215 | the same dip | same | TUNE-17 |
+| adult Normal 24 | 23057, t150.2 | fell into this pit 3 times (far wall 202 px up), same stretch | stops for the glance and the pass at the lip, then a jump from standstill | TUNE-17 + ENG-PETAL (pit way-back) |
+| kid Normal 16 | 35408 (stuck 20 s at 35891) | nothing in the way the bot sees, after the last eagle | not traced to its frame (time) | ENG-PETAL |
+| kid Normal 40 | 34908 | fell into this pit 3 times (far wall 193 px up) | late pit, after the last eagle | ENG-PETAL |
+| child Normal 13 | 35298, t645.9 | fell into this pit 8 times (far wall 190 px up) | late pit | ENG-PETAL |
+- I fixed the bots' stuck clock to HOLD (not restart) while he waits still for a watcher. That removed every false "stuck: nothing in the way" line at the freezes; the 7 rescues stand.
+
+### Lock (lock-watchers.txt): the 21 stages that lay a watcher (1-7, 6-1..6-10, 8-1..8-10), 16 layouts x both settings, base origin/t-build-16 vs this branch
+- 20/21 unchanged.
+- **1-7: enemies**, intended: its lesson eagles carry kitGlance false.
+- The kit's runtime changes (F1, F2, one act one heart) are not in a built-stage lock by design; every stage with a kit sweeper plays them: World 1's eagle (1-7, 1-8), World 2/6's caiman (pass direction only: it has no glance dial).
+- **Not run:** the whole-game lock. lockall on every stage took ~36 s a stage under tonight's load. My change can move built data only through the watch rows, which are the 21 stages locked here.
 
 ## 6. EXACT NEXT STEP for TUNE-17 (the 1-7 tuner, data only, no engine)
 1. Read this REPORT §2's dial table. The dials live in `W1_STILL['w1-eagle']` (src/game/gen2/worlds/w1Cast.ts), the stage's still row.
