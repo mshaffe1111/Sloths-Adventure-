@@ -39,7 +39,7 @@ Sources: Google Project Oxygen (O'Reilly, Leading Effective Engineering ch. 4; P
 ## The lead's day
 **Start (every session):** laws, lessons, PARTNER, STATUS, this file; the supervisor's last digest; the Day 1 burn-down; set the day's
 three priorities from the plan, not from whatever arrived last.
-**Every check-in (D76):** read get_session context_usage.used_tokens for every running member (works mid-turn); at 400k send a priority-now STOP.
+**Every check-in (D76):** read every running member's real context: get_session context_usage.used_tokens when idle (it reads 0 mid-turn, D55), else the last result's final iteration (input + cache_creation + cache_read); at 400k send a priority-now STOP.
 **Every check-in (CRITIC-LR 11-14):** three levels in flight: for each of the next three levels, the design, engine and build owner by name and branch, or the gap is logged as a defect.
 **Each supervisor digest:** act only on yellow and red; audit one green in three myself (gemba: open the real thing).
 **Once a day:** walk the newest build myself on a phone-size screen, upright and sideways, fresh/old/finished saves.
