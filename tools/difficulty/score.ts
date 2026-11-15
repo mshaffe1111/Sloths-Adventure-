@@ -224,13 +224,18 @@ export function releaseBits(st: any, v: any, to: { x: number; plat?: any; vine?:
 /** the lianas of a chain from `a` to the route's next stop at `toX` (a liana there, or the perch it lands on), in order: each the nearest
  *  swinging liana past the one before (never a false one), so a route link that leaps a liana (route.ts's added chain links join A to C
  *  over B) is flown liana by liana, as he swings it */
-export function chainOf(st: any, a: any, toX: number): any[] {
+export function chainOf(st: any, a: any, toX: number, setting: Setting = 'normal'): any[] {
   const dir = toX >= a.x ? 1 : -1;
   const lianas = (st.vines ?? []).filter((v: any) => v.isSwingingVine && v.snake?.route !== 'still');
+  const dbl = doubleAllowed(st.config ?? { worldIndex: 1, miniIndex: 1 });
   const out = [a];
   let at = a;
   while (out.length < 40) {
-    const nx = lianas.filter((v: any) => (v.x - at.x) * dir > 2 && (toX - v.x) * dir >= -2).sort((p: any, q: any) => Math.abs(p.x - at.x) - Math.abs(q.x - at.x))[0];
+    // (the next liana he swings to is one the chain's catch reaches (levelCheck chainLines, on the setting's swing): a liana the route
+    //  passes under or over, that no press off this one catches, is not part of his chain (Worlds 2, 4 and 6 hang them in rows))
+    const nx = lianas.filter((v: any) => (v.x - at.x) * dir > 2 && (toX - v.x) * dir >= -2)
+      .sort((p: any, q: any) => Math.abs(p.x - at.x) - Math.abs(q.x - at.x))
+      .find((v: any) => withSetting(setting, () => chainLines(at, v, dbl)) > 0);
     if (!nx) break;
     out.push(nx);
     at = nx;
@@ -326,7 +331,11 @@ export function swingChallenges(st: any, route: Route, beats: readonly Beat[], s
       const v = lianaOf(st, s);
       // (every liana he swings and lets go on this move, one release each: a chain's lianas the route's link leaps included, the last one
       //  onto the route's perch; a planted route with no liana in the stage takes OTHER_BITS.swing)
-      const all = v ? chainOf(st, v, s.plat ? s.plat.x + (s.x1 >= s.x0 ? 0 : s.plat.width) : s.x1) : [undefined];
+      const all = v ? chainOf(st, v, s.plat ? s.plat.x + (s.x1 >= s.x0 ? 0 : s.plat.width) : s.x1, setting) : [undefined];
+      // (a leap to the liana at the route's x1 ends there even when no catch the check flies reaches it (a perch between, 1-6's creaky
+      //  limb): that liana is the move's own end)
+      const z = !s.plat && v ? (st.vines ?? []).find((q: any) => q !== v && q.isSwingingVine && q.snake?.route !== 'still' && Math.abs(q.x - s.x1) < 2) : undefined;
+      if (z && all[all.length - 1] !== z) all.push(z);
       // (a leap to a liana ends on it: its own release is the route's next move, scored there)
       const chain = v && !s.plat ? all.slice(0, -1) : all;
       chain.forEach((q: any, i: number) => {

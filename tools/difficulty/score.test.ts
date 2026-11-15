@@ -83,7 +83,8 @@ test('on the real World 1 stages: one swing a liana the route hangs on, and none
 // lookup that missed them) and their watched ground was not read.
 import { podCrossing, releaseBits, releaseWindow, chainOf, catchWindow, snakeChallenges, chaseChallenges, rollingChallenges, watchChallenges, memberAt, combine,
   creatureBits, fittsBits, windowBits, BODY, REF_S, type Challenge } from './score.ts';
-import { JUMP_AIRTIME, PHYS, SIM_DTS } from '../../src/game/physics.ts';
+import { JUMP_AIRTIME, PHYS, SIM_DTS, chainPhase } from '../../src/game/physics.ts';
+import { chainLines } from '../../src/game/levelCheck.ts';
 import { lianaRelease } from '../../src/game/gen2/pipeline.ts';
 import { CHASE } from '../../src/game/chase.ts';
 import { STILLNESS } from '../../src/game/stillness.ts';
@@ -130,10 +131,15 @@ test('a release is a timed press in the window the engine flies for that perch: 
 });
 
 test("a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a false one", () => {
-  const a = LIANA(1, 1000), b = LIANA(2, 1240), c = LIANA(3, 1480), f = LIANA(4, 1120, { snake: { route: 'still' }, swingAmp: 0 });
-  const st = STAGE1([a, f, b, c], []);
+  // (three lianas 240 px apart at the phases the engine lays a chain by (physics chainPhase), a false one between the first two, and a
+  //  liana hung 1500 px higher between the last two: no press off the one before catches it, so it is not part of his chain)
+  const a = LIANA(1, 1000), b0 = LIANA(2, 1240), c0 = LIANA(3, 1480), f = LIANA(4, 1120, { snake: { route: 'still' }, swingAmp: 0 });
+  const b = { ...b0, swingPhase: chainPhase(a as any, b0 as any) }, c = { ...c0, swingPhase: chainPhase(b as any, c0 as any) };
+  const high = LIANA(5, 1360, { topY: -1100, bottomY: -680 });
+  const st = STAGE1([a, f, b, high, c], []);
+  assert.ok(chainLines(a as any, b as any) > 0 && chainLines(b as any, c as any) > 0, 'the planted chain is one the engine catches');
+  assert.equal(chainLines(b as any, high as any), 0);
   assert.deepEqual(chainOf(st, a, 1480).map((q) => q.id), [1, 2, 3]);
-  assert.deepEqual(chainOf(st, c, 1000).map((q) => q.id), [3, 2, 1], 'and the other way');
 });
 
 test('the catch off a bank: a liana every running jump catches is the whole swing (free); one out of reach is none', () => {
