@@ -78,7 +78,6 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:goldsnake'],
   '1-9': ['foe:boa', 'foe:goldsnake'],
-  '2-2': ['foe:goldsnake'],
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
   '2-7': ['foe:goldsnake'],

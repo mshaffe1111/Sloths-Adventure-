@@ -1,5 +1,5 @@
 # ENG-W2 REPORT: World 2's gen2 kit, and the river's one lay (R-165.254). Opus 5.5 xhigh (engine). 8:11 PM to ~10:10 PM ET 11-14
-Branch t-eng-w2 from t-tools-2@19b45a06. The gates ran on the frozen code head 00c1b0f4b; the GATES section gives the head for each number.
+Branch t-eng-w2 from t-tools-2@19b45a06. The final full suite ran on f39e818b7 (3544 tests, 4 red, 2 fixed after it); the GATES section gives the head for each number.
 Lessons applied: D36 (the gates ran on frozen worktrees), D40 (the foundation went first: the kit before any level), D51 (2-1 and 2-2 joined
 drawcheck the day they were built), D53 (I ran the fast gates before every push), D55 (my context % is in every message), D57 (I read my
 queue at each push), D67 (no shell wait loops), D19 (the look test calls footingsFor, the engine's own call), level.md rules 12, 16, 17, 21 and 22.
@@ -9,6 +9,9 @@ queue at each push), D67 (no shell wait loops), D19 (the look test calls footing
    root wheel (step 0a below). **One ruling is still open: 2-1 and 2-2 cannot be judged yet** (ENGINE-WORTHY 1). Their flown rows are
    in flownArcs.ts (`n21`, `n22`), so adding `judged: 'normal-2-1'` / `'normal-2-2'` in stageTable.ts is all that is left once two
    World 1 verdicts read World 2's water. Until then registrycheck FAILs on "2-1 flown" and "2-2 flown", and on nothing else.
+   **Two unit reds stay until World 2's real levels land** (GATES (c) and (d)): river.test.ts:62 "2-1: 0 logs" (fixed by step 1) and
+   stageQuality.test.ts:79 "World 2 is shorter than World 1" (fixed by the designed 2-1/2-2, or by longer placeholder bricks plus
+   `addlevel 2-1 --relist` / `2-2 --relist`). This branch must not merge to main before both are green.
    0a. (done) src/game/w6WheelArt.ts; the lever's `looks` field (puzzleKit.ts lever spec); the draw (puzzlePlay.ts, the levers loop);
    the room data (w6Rooms.ts:104-106); the preload ('w6-wheels', stageSheets.ts and stagePreload.ts, 6-7 alone); w6WheelArt.test.ts.
    Stills: `stills/w67-before-*` (the kit's wooden lever) and `stills/w67-after-*` (the root wheel at the well's lip, about 1.5x
@@ -94,7 +97,10 @@ the game changed, so the browser and perf gates were not run again on f39e818b7 
 **On f39e818b7:**
 | Gate | Result |
 |---|---|
-| unit suite | SUITE4 |
+| unit suite | **3544 tests: 3538 pass, 4 fail** (plus 4-3's TODO, which is older than this branch). All 4 come from the hand-built 2-1/2-2 going: |
+| | (a) puzzleCamera.test:101 "2-2 has puzzle rooms" and (b) stageSheets.test:63 "2-2: STAGE_DRAWS lists more than it draws (foe:goldsnake)". Both are stale data describing the deleted 2-2: its ferry room and its snakes. **Fixed in the follow-up commit** (puzzleCamera.test STAGES, stageSheets.ts STAGE_DRAWS), and both files re-run there: 12/12 |
+| | (c) **river.test.ts:62 "2-1: 0 logs" is RED and stays RED**: the placeholder 2-1 lays no logs. It turns green when the river section lays 2-1's logs (EXACT NEXT STEP 1). I did not weaken it (law 5) |
+| | (d) **stageQuality.test.ts:79 "World 2 is shorter than World 1" is RED**: the placeholder 2-1 and 2-2 (about 183 s typical) are shorter than the hand-built stages they replaced, so World 2's median fell more than 6 s under World 1's. It turns green with the designed 2-1/2-2 (2-1.md about 180 s designed, plus the rivers' waits) or longer placeholder bricks plus a relist. Not done tonight: it needs a relist and a new gate run |
 | tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmap | all 0 / PASS |
 | seedlist --check 1-4, 1-5, 1-7, 2-1, 2-2 | PASS each (100, 150, 100, 100, 100) |
 | registrycheck | FAIL, as expected: only "2-1 flown" and "2-2 flown" (not judged: step 0) |
