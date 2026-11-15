@@ -57,6 +57,13 @@ import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
 import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
+import { liftStop } from '../../src/game/lift.ts';
+
+/**
+ * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
+ * it off to prove the bot needs it (level.md rule 21: clockRide.test.ts goes RED with it off). Always on outside a test.
+ */
+export const CLOCK_SKILL = { read: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -874,6 +881,13 @@ export class FirstTimerRun {
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
+  /** riding a moving floor: when the next floor first came in reach (s), or -1, and how long his reaction to it takes (clockRide) */
+  private offSeen = -1;
+  private offDelay = 0;
+  /** waiting at an edge for a ride on a stage clock to stand at his end, since (s), or -1 */
+  private clockWait = -1;
+  /** the last frame's clockRide held him by choice (a wait, not a block: blockedT does not count it) */
+  private clockHeld = false;
   /** stopped on a small pad a beat after landing on it */
   private padPause: { until: number; id: number } | null = null;
   /** turns of the steering thumb, and the s of no steer they cost */
@@ -1839,6 +1853,13 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (a ride on a stage clock, a lift, a drifting log: he reads its clock as a person watching it does, before any other ground move:
+    // clockRide. Its edge is the plain look ahead, 22 px and his edgeAim, the float-wait's own)
+    if (CLOCK_SKILL.read && dir !== 0 && !this.jump && !this.pending && !this.standing) {
+      const held = this.clockRide(p, dir, t, this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
+      this.clockHeld = !!held && !held.left && !held.right && !held.jump;
+      if (held) return held;
+    }
     // (a liana to catch off this edge: he stands at the edge until it swings to him, as a person watches a swing come, lianaWait)
     if (dir !== 0 && !this.jump && !this.pending && !this.standing) {
       const lw = this.lianaWait(dir);
@@ -1974,7 +1995,9 @@ export class FirstTimerRun {
     // read that hold as being stopped dead on every put-back, so at 1-1's 255 px double test he jumped where he was set down, 116 px short
     // of the lip with no run-up, and missed until rescued (6 of 10 layouts); the tier bots already waited, backAt below)
     const graceHeld = (e.inputGrace ?? 0) > 0;
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    // (nor while he waits on a clock by choice: for a ride to stand at his end, or riding one, clockRide; he is not stopped dead)
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !this.clockHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    this.clockHeld = false;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
@@ -2175,6 +2198,84 @@ export class FirstTimerRun {
 
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
    *  and lets it throw him up the way on, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there) */
+/**
+   * READ A STAGE CLOCK (METER-2a): the float-wait at an edge made a skill for any floor that moves by a clock. A ride on a stage beat
+   * (ride.ts; gen2/rideLay.ts lays it) and a basket lift (lift.ts) move by the stage's clock and stand at each end; he reads it the way
+   * a person watching does, from whether it stands and where:
+   *   BOARD     at an edge with one across the gap (at his height, within the float-wait's 320 px), he waits until it stands at his end
+   *             (its near side within 90 px of the edge, as the float-wait's "near"), then goes; never onto one that is moving. He waits
+   *             at most two of its cycles.
+   *   RIDE      on it, he holds still while it moves: he never walks off its end into the gap.
+   *   STEP OFF  when it stands with a floor in reach ahead, he goes after his own reaction to it stopping: his tier's stopReact, plus a
+   *             late press as often and as late as his tier's lateShare / lateQ. Too late and it leaves again and carries him back,
+   *             the miss a person makes (the meter's FB step-off, score.ts rideChallenges).
+   * A drifting log never stands (river.ts): on one, once the bank or the next log is near (the float-wait's own "near"), he goes after
+   * the same reaction; too late and it carries him toward the bank it slides under.
+   * Returns a pad to hold (wait), or null to let the edge's own walk or jump go.
+   */
+  private clockRide(p: PlayerState, dir: -1 | 1, t: number, ahead: Platform | null): Pad | null {
+    const who = this.who;
+    const e = this.e as any;
+    const here = this.floorAt(p.x, p.y, 6);
+    const clocked = (q: Platform | null | undefined): boolean => !!q && q.type === 'moving' && (!!q.ride || !!q.lift);
+    // (at an edge: nothing under his look ahead, or only the ride itself, which he must not walk onto while it moves)
+    const atEdge = !ahead || (clocked(ahead) && ahead !== here);
+    // (does it stand now: a ride outside its 'on' (ride.ts rideAt: off, warn and rest stand at an end), a lift at a stop (lift.ts liftStop))
+    const stands = (q: Platform) => (q.ride ? e.clock.read(q.ride.clock, q.ride.shift).phase !== 'on' : liftStop(q.lift!, e.gameTime) !== 0);
+    const edgeOf = (q: Platform) => (dir > 0 ? q.x + q.width : q.x);
+    // (a floor in reach across from an edge: the float-wait's "near", 90 px across and 40 px of footing; a lift's ledge a step above)
+    const inReach = (q: Platform, edgeX: number) => Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40);
+    const reaction = () => {
+      if (this.offSeen >= 0) return t - this.offSeen >= this.offDelay;
+      this.offSeen = t;
+      this.offDelay = who.stopReact + (who.lateQ && this.r() < (who.lateShare ?? 0) ? drawQ(this.r, who.lateQ) : 0);
+      return this.offDelay <= 0;
+    };
+    if (here && (clocked(here) || here.type === 'drift')) {
+      this.clockWait = -1;
+      const edgeX = edgeOf(here);
+      const next = this.sim.platforms.some((q) => q !== here && !q.broken && inReach(q, edgeX) && (here.type === 'drift' || q.type !== 'moving'));
+      if (here.type === 'drift') {
+        // (a drifting log: the float-wait decides when the way on is near; his reaction to it is the skill's part)
+        if (!atEdge || !next) { this.offSeen = -1; return null; }
+        return reaction() ? null : {};
+      }
+      // (a ride or a lift: hold still while it moves, and while it stands with nothing in reach ahead, it is about to carry him)
+      if (!stands(here) || !next) { this.offSeen = -1; return {}; }
+      return reaction() ? null : {};
+    }
+    this.offSeen = -1;
+    if (!here) { this.clockWait = -1; return null; }
+    const edgeX = edgeOf(here);
+    const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
+    // (a ride that docks at this edge: one end of its path (a lift: where it stands) across from it within the float-wait's 90 px, at
+    // his height. Within his longest look of it (320 px), the approach is the skill's: the crack a docked ride leaves (RIDE_LAY.gap) is
+    // no pit, and a ride away from the dock is no floor to jump for)
+    const off = (x: number, w: number) => (dir > 0 ? x - edgeX : edgeX - (x + w));
+    const docks = (q: Platform) => (q.ride ? q.ride.path.some((pt) => Math.abs(pt.y - here.y) < 70 && off(pt.x, q.width) > -40 && off(pt.x, q.width) < 90) : off(q.x, q.width) > -40 && off(q.x, q.width) < 90);
+    const rides = toEdge >= -4 && toEdge < 320 ? this.sim.platforms.filter((q) => clocked(q) && !q.broken && docks(q)) : [];
+    if (!rides.length) { this.clockWait = -1; return null; }
+    const boardable = rides.find((q) => stands(q) && inReach(q, edgeX));
+    if (boardable) {
+      this.clockWait = -1;
+      // (standing flush at his edge, a step across and level, he walks onto it: the crack is no gap to jump, and a jump over it
+      // overshoots a ride 140 px long. Standing a hop off, the edge's own jump goes)
+      const crack = off(boardable.x, boardable.width);
+      return crack <= 12 && Math.abs(boardable.y - p.y) <= 16 ? (dir > 0 ? { right: true } : { left: true }) : atEdge ? null : dir > 0 ? { right: true } : { left: true };
+    }
+    // (away, or moving: he walks up to the edge and waits there for it, at most two of its cycles. He lets go where a tier bot comes to a
+    // stand before a lip, his press distance's p25 and 31 px (the edge stand above), so his thumb's lag and the slide never take him off)
+    if (toEdge > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return dir > 0 ? { right: true } : { left: true };
+    if (this.clockWait < 0) this.clockWait = t;
+    // (a ride stands at his end once in two of its periods, rideAt; a lift once a round trip, lift.ts liftCycle)
+    const period = (id: string) => {
+      const def = (((this.sim.stage as any).clocks ?? []) as any[]).find((c) => c.id === id);
+      return def ? def.phases.reduce((s: number, ph: any) => s + ph.seconds, 0) * (this.who.setting === 'easy' ? Math.max(1, def.easyStretch ?? 1) : 1) : 6;
+    };
+    const cycle = Math.max(...rides.map((q) => (q.ride ? 2 * period(q.ride.clock) : 2 * ((q.lift!.bottom - q.lift!.top) / q.lift!.speed + q.lift!.wait))));
+    return t - this.clockWait < Math.max(6, 2 * cycle) ? {} : null;
+  }
+
   private bounceBack(fdir: -1 | 1, face: number): Pad | null {
     const p = this.sim.p;
     if (!this.who.holdQ || face <= 170) return null;
