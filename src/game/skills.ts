@@ -71,20 +71,6 @@ export function skillGuaranteedAt(skill: SkillId, mission: number): boolean {
   return mission >= missionOf(SKILL_BY_ID[skill].requiredFromStage);
 }
 
-/**
- * A combination of moves no stage may REQUIRE before a stage teaches it (the first appearance of a mechanic is taught, CLAUDE.md stage
- * rules; the lead's ruling 11-15 1:53 PM ET, FIX-21). 'bounce-air': a bounce and the air jump pressed near its top (engine.ts bounceOff
- * leaves him jumpsLeft 1). No stage teaches it yet (null), so a bounce a stage requires is sized to the bounce alone (gen2 pipeline.ts
- * bounceCap, reach.ts bounceLipOverCap, verdicts.ts classify). The day a stage's teach node teaches it, its id goes here.
- */
-export type ComboId = 'bounce-air';
-export const COMBO_REQUIRED_FROM: Record<ComboId, string | null> = { 'bounce-air': null };
-/** the stage (by its place in the game, missionOf) may require this combo: a stage at or after the one that teaches it */
-export function comboGuaranteedAt(combo: ComboId, mission: number): boolean {
-  const from = COMBO_REQUIRED_FROM[combo];
-  return from !== null && mission >= missionOf(from);
-}
-
 /** everyone who gets to this stage has learned the skill (stages unlock in order), though the stage may not yet rely on it */
 export function skillHeldAt(skill: SkillId, mission: number): boolean {
   return mission > missionOf(SKILL_BY_ID[skill].unlockedBy);

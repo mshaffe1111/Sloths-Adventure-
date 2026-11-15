@@ -31,7 +31,7 @@ import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
 import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
-import { comboGuaranteedAt, missionOf, skillGuaranteedAt } from '../skills.ts';
+import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
@@ -131,8 +131,6 @@ const CRUMBLE_H = 40;
  *  its platform, so 360 keeps every pickup at 274 or lower */
 export const CAMERA_TOP = 360;
 export const BOUNCE_REACH = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp) + (PHYS.doubleV * PHYS.doubleV) / (2 * PHYS.gravUp);
-/** how high the bounce alone carries him over its cap (px, ~181): what a bounce lip may ask before a stage teaches the air jump with it */
-export const BOUNCE_ALONE = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
 export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
   const phys = reachJump(dyUp, dbl);
   if (phys < 0) return -1;
@@ -1266,8 +1264,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const bounceCap = (q: SectionPiece): number | undefined => {
       // (a bounce TEACH's lip names its mushroom with no block (World 1's TEACH_LIP, POLISH-7): reached the same way, judged as a teach)
       const m = q.from && q.block !== 'double' ? by.get(q.from) : undefined;
-      // (the air jump counts only once a stage has taught the bounce + air jump: skills.ts comboGuaranteedAt, FIX-21)
-      return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty, budget.id) : 0.95 * (comboGuaranteedAt('bounce-air', missionOf(budget.id)) ? BOUNCE_REACH : BOUNCE_ALONE)) : undefined;
+      return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty) : 0.95 * BOUNCE_REACH) : undefined;
     };
     if (pl.kind === 'start') {
       x = 0;
@@ -4186,7 +4183,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
   const read = (ASKS.get(st) ?? []).filter((a): a is typeof a & RouteAsk => a.move !== 'ride').map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
     const teach = !!node && JOB_OF[node.token[0]] === 'teach';
-    return { a, node, teach, ...classify(a, teach, setting, comboGuaranteedAt('bounce-air', missionOf(st.config.id))) };
+    return { a, node, teach, ...classify(a, teach, setting) };
   });
   const first = new Map<unknown, number>();
   for (const r of read) if (r.teach && r.kind === 'double-teach-rise' && r.a.x0 < (first.get(r.node) ?? Infinity)) first.set(r.node, r.a.x0);
