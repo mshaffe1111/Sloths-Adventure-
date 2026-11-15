@@ -1,6 +1,8 @@
 // tools/inspect/eagleClip.mjs (ENG-WATCH, R-165.267, 11-14): clips of a cast sweeper (World 1's eagle) against a player who does NOT hide,
 // from the real game on a dev server, every frame stepped through the real touch pad (clipPress.mjs pressFrame, the ONE frame step).
-//   node tools/inspect/eagleClip.mjs <port> <out dir> <stage> <eagle#> walk|back|stand|sneak [normal|easy] [up|side] [layout]
+//   node tools/inspect/eagleClip.mjs <port> <out dir> <stage> <eagle#> walk|back|stand|sneak|glance [normal|easy] [up|side] [layout]
+// caught: still in that cover until its head-cock begins with him in its reach, then he walks on through its tell and its look
+// glance: he holds still in the cover nearest before its post through its passes and its glances (every head-cock, fake-out and look named)
 // eagle# is its order along the stage (tools/inspect/eagleProbe.ts prints the same numbers). Every shot's caption names the frame
 // (f = 1/30 s since the run began), the eagle's phase, where its eye is against him, his hearts; the frame a heart is lost, and the
 // frame its look ends, are named in the caption and printed. 15 fps (every other frame), at 2x.
@@ -40,11 +42,12 @@ const placed = await p.evaluate(([E, WHICH, MODE]) => {
   let sx;
   if (MODE === 'walk') sx = x0 - 120;
   else if (MODE === 'back') sx = x1 + 120;
-  else if (MODE === 'sneak') {
+  else if (MODE === 'sneak' || MODE === 'glance' || MODE === 'caught') {
     const aim = k.perched ? k.homeX : (x0 + x1) / 2;
     const before = bushes.filter((c) => c.x + c.w / 2 < aim);
     const c = before.length ? before[before.length - 1] : bushes[0];
-    sx = c.x + c.w / 2;
+    // (caught: the end of that cover nearest its post, inside its glance's reach, so its look is ON him when he walks)
+    sx = MODE === 'caught' && k.perched ? Math.min(c.x + c.w - 24, Math.max(c.x + 24, k.homeX - 200)) : c.x + c.w / 2;
   } else {
     const cuts = [x0, ...bushes.flatMap((c) => [c.x, c.x + c.w]), x1];
     let best = -1; sx = x0;
@@ -64,25 +67,29 @@ const placed = await p.evaluate(([E, WHICH, MODE]) => {
 }, [E, WHICH, MODE]);
 if (!placed) { console.log('no such eagle'); await b.close(); process.exit(2); }
 console.log('PLACED', JSON.stringify({ stage: STAGE, eagle: +WHICH, mode: MODE, diff, ori, layout: +LAYOUT, ...placed }));
-const look = () => p.evaluate((E) => { const e = eval(E); const k = window.__k; const P = e.player; return { ph: k.phase, t: k.t, eye: Math.round(k.eyeX), x: Math.round(P.x), g: !!P.grounded, hp: P.hp, passes: k.passes }; }, E);
-let shot = 0, was = null, hp = placed.hp, go = -1, hopLeft = 0;
+const look = () => p.evaluate((E) => { const e = eval(E); const k = window.__k; const P = e.player; return { ph: k.phase, t: k.t, eye: Math.round(k.eyeX), x: Math.round(P.x), g: !!P.grounded, hp: P.hp, passes: k.passes, gl: k.gl ? k.gl.phase : null }; }, E);
+let shot = 0, was = null, hp = placed.hp, go = -1, hopLeft = 0, glWas = null;
 const xs = [];
 const named = [];
 const N = +(process.env.FRAMES ?? 330);
 for (let f = 0; f < N; f++) {
   const L0 = await look();
-  const dir = MODE === 'walk' || (MODE === 'sneak' && go >= 0) ? 1 : MODE === 'back' ? -1 : 0;
+  const dir = MODE === 'walk' || ((MODE === 'sneak' || MODE === 'caught') && go >= 0) ? 1 : MODE === 'back' ? -1 : 0;
   xs.push(L0.x);
   let jump = false;
   if (dir && hopLeft <= 0 && L0.g && xs.length > 4 && Math.abs(L0.x - xs[xs.length - 5]) < 3) { hopLeft = 8; jump = true; }
   if (hopLeft > 0) hopLeft--;
   await p.evaluate(([src, E, inp]) => (new Function(`return (${src})`)())(eval(E), inp, {}, false), [pressFrame.toString(), E, { right: dir > 0, left: dir < 0, jump, holdMs: 260 }]);
   const L = await look();
+  if (MODE === 'caught' && go < 0 && L.ph === 'rest' && L.gl === 'cock' && glWas === 'away' && Math.abs(L.x - placed.home) <= 230) { go = f + 1; named.push(`f${f}: its head-cock begins (its tell): he walks on anyway at x ${L.x}`); }
   if (MODE === 'sneak' && go < 0 && L.ph === 'rest' && was && was !== 'rest') { go = f + 1; named.push(`f${f}: its look is over (head away): he walks out of cover at x ${L.x}`); }
   if (MODE === 'sneak' && go >= 0 && placed.perched && Math.abs(L.x - placed.home) < 4) named.push(`f${f}: under its post (x ${placed.home}), phase ${L.ph}`);
+  if (L.ph === 'rest' && L.gl !== glWas && glWas !== null) named.push(`f${f}: glance ${glWas} -> ${L.gl} (him ${L.x})`);
+  glWas = L.ph === 'rest' ? L.gl : null;
   if (L.ph !== was && was !== null) named.push(`f${f}: ${was} -> ${L.ph} (eye ${L.eye}, him ${L.x})`);
   if (L.hp < hp) named.push(`f${f}: HEART LOST at x ${L.x} (hp ${L.hp})`);
-  const phaseWord = { rest: 'head AWAY (rest: it looks at nothing)', hunt: L.t < 2.05 && Math.abs(L.eye - (L.passes % 2 ? placed.x1 : placed.x0)) < 2 ? 'SCREECH: its warn (eye waits)' : 'its eye sweeps', tell: 'TELL: it dives', act: 'ACT: the dive (hurts)', recover: 'pulls up', flee: 'gives up, flies off', gone: 'gone', stunned: 'stunned' }[L.ph] ?? L.ph;
+  const glWord = { away: 'head AWAY (green light)', cock: 'HEAD-COCK: its tell (freeze!)', fake: 'FAKE-OUT: a half-turn', look: 'LOOKING: moving = seen' };
+  const phaseWord = { rest: L.gl ? glWord[L.gl] : 'head AWAY (rest: it looks at nothing)', hunt: L.t < 2.05 && Math.abs(L.eye - (L.passes % 2 ? placed.x1 : placed.x0)) < 2 ? 'SCREECH: its warn (eye waits)' : 'its eye sweeps', tell: 'TELL: it dives', act: 'ACT: the dive (hurts)', recover: 'pulls up', flee: 'gives up, flies off', gone: 'gone', stunned: 'stunned' }[L.ph] ?? L.ph;
   const lost = L.hp < hp ? ' <b style="color:#f87171">HEART LOST</b>' : '';
   if (f % 2 === 0 || lost) {
     await p.evaluate((h) => { document.getElementById('mockcap').innerHTML = h; }, `${STAGE} ${diff} eagle #${WHICH}${placed.perched ? ' (perched)' : ''} · ${MODE}<br>f${f} · ${phaseWord}<br>eye ${L.eye} · him ${L.x} (${L.eye - L.x >= 0 ? '+' : ''}${L.eye - L.x}) · hearts ${L.hp}${lost}`);

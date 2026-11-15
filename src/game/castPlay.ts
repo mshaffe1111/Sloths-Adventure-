@@ -255,6 +255,9 @@ export class CastPlay {
       s.drawn = false;
       s.lost = 0;
       s.cool = Math.max(s.cool, coolOf(m.def, easy, s.ownCool));
+      // (its glance stands down too: its head stays away past the calm, so the first thing after a flag is its warned pass, never a
+      //  glance inside the calm; ENG-WATCH, eagleKit.test.ts "back at a flag")
+      if (s.gl) Object.assign(s.gl, { phase: 'away', t: 0, dur: s.cool + (m.def.warn ?? 0) + 1 });
     }
   }
 

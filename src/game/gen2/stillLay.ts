@@ -185,7 +185,8 @@ export function stillEmitters(rows: Readonly<Record<string, StillRow>>, stage: n
         ...(scare ? { setback: R(run[0] + STILL.setback) } : {}),
         ...(row.cast ? { cast: row.cast } : {}),
         ...(row.free === 'lesson' && lesson ? { freeFirst: true } : {}),
-        ...(lesson && !row.glanceLesson ? { glance: false as const } : row.glance !== undefined ? { glance: row.glance } : {}),
+        // (a kit watcher's glance dial: none where it is taught, else the row's own; a watcher.ts zone has no glance)
+        ...(row.cast && lesson && !row.glanceLesson ? { glance: false as const } : row.cast && row.glance !== undefined ? { glance: row.glance } : {}),
       };
       const zones = (out.proto.watch ??= []);
       // (two watchers on one stretch make one zone)
