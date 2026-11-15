@@ -21,12 +21,10 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 import { PAGES } from '../../movesJournal.ts';
 import { addFinds } from '../../stageGenerator.ts';
 import { w1Finish } from './w1.ts';
-import { HEARTS_18, LINES_18, MISSION_18, MOSS_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
 import { loadInventory } from '../../art/inventory.ts';
 import { invDressSize } from '../../art/invDress.ts';
 import { W1_TIP } from './w1Cast.ts';
-import { stillForks } from '../stillFork.ts';
-import { BOUGH_THICK } from '../../protoArt.ts';
 import { rollTeaches, type RollSpec } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
 import type { Collectible, Enemy, Platform, Vine } from '../../types.ts';
@@ -257,23 +255,3 @@ test("the still fork and the tip are walked onto on every roll, both settings (t
   }
 });
 
-test('the hanging moss (MOSS_18): painted drapes hang under the still fork\'s bough, under its moss cover, their tops inside the bark, never one picture twice', async () => {
-  const inv = await loadInventory(1);
-  const ids = new Set<string>(MOSS_18.map((m) => m.inv));
-  assert.equal(ids.size, MOSS_18.length, 'two different pictures');
-  for (const d of BOTH) for (const s of SEEDS) {
-    const st = built(s, d);
-    const [f] = stillForks(st as never);
-    assert.ok(f, `${d} seed ${s}: a still fork`);
-    const moss = (st.proto.invDress ?? []).filter((q) => ids.has(q.inv));
-    assert.equal(moss.length, MOSS_18.length, `${d} seed ${s}: the moss rows`);
-    for (const m of moss) {
-      const sz = invDressSize(inv.byId(m.inv)!, inv.pokeyUnits)!;
-      assert.ok(m.hang && m.layer === 'behind', `${d} seed ${s}: ${m.inv} hangs behind`);
-      assert.ok(m.x - sz.w / 2 >= f.x0 && m.x + sz.w / 2 <= f.x1, `${d} seed ${s}: ${m.inv} (${Math.round(m.x - sz.w / 2)}-${Math.round(m.x + sz.w / 2)}) inside the fork ${Math.round(f.x0)}-${Math.round(f.x1)}`);
-      assert.ok(m.x >= f.cover.x && m.x <= f.cover.x + f.cover.w, `${d} seed ${s}: ${m.inv} at ${m.x} under the moss cover ${Math.round(f.cover.x)}-${Math.round(f.cover.x + f.cover.w)}`);
-      const top = m.y - f.groundY;
-      assert.ok(top > 0 && top < BOUGH_THICK && sz.h - (BOUGH_THICK - top) >= 60, `${d} seed ${s}: ${m.inv} hangs from inside the bark (top ${top}) with ${Math.round(sz.h - (BOUGH_THICK - top))} px of strands under it`);
-    }
-  }
-});

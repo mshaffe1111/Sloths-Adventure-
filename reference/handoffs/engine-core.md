@@ -9,7 +9,7 @@ Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fix
 Rewritten for B6 (11-14, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5): section 0B6 (the still fork, the runner liana, the tip, Easy's chase gap; the orphan-root merge) and 0v's not-built line. Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for BUILD-18c (11-15, t-build-18c): 0LOOK2's join, crack, moss-fog and shooter lines. Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
@@ -30,11 +30,20 @@ proven plan; Play is never blocked).
   mirrored, hazed back copy) each take turns, no picture twice within PALM_APART_18 (1800); a look rule never throws (falls back to the
   farthest); back rows drawn first. `nut`/`up`/`dx`/`y` per palm are checked against the inventory by w1Arc18.test.ts. New palm art:
   tools/art/hfpalm (spec, cut.py keys magenta by hue+saturation+brightness, nutpt.py, hazed.py); raw takes are NOT kept (sandbox gone).
-- **settleLaid** (pipeline.ts): the kit's settle again after the chase cut its banks. **entry.join 'walk'**: laid not rolled; 1-8's data
-  has NOT asked yet.
+- **settleLaid** (pipeline.ts): the kit's settle again after the chase cut its banks. **entry.join 'walk'**: laid not rolled; 1-8's
+  still fork and tip ASK (BUILD-18c: w1Arc18 brick({ join: 'walk' }); w1Arc18.test 'walked onto on every roll' seeds 1-4 both settings).
 - **Traps / open:** a step end reads square in a clip's first frame (likely the live fallback before its square bakes: verify); re-bake a
-  bank's end when its neighbour falls; crack art on a cracking bough; W1's hanging front leaves are code-drawn (painted cuts ready in
-  reference/art/hfpalm/leaves/, not wired); near palms all have ringed grey trunks.
+  bank's end when its neighbour falls; crack art on a cracking bough (a cracking section only quivers: drawChaseSection's chaseCrack frame
+  is the OLD log look, never drawn on a bough stage; no crack picture exists for the bough); W1's hanging front leaves are code-drawn
+  (painted cuts ready in reference/art/hfpalm/leaves/, not wired); near palms all have ringed grey trunks.
+- **Hanging dressing under a bough is fogged out (BUILD-18c, 11-15):** engine.ts:7217 draws invDress 'behind' BEFORE the ground, and the
+  ground pass draws drawBoughMist (protoArt.ts:503, near solid) over it: w17-moss-drape hung under 1-8's still fork read as one faint grey
+  wisp. The fix is draw order (a hung row under a bough stage's line drawn after the mist, before the banks), for every bough stage; 1-8's
+  MOSS rows wait for it (not laid; BUILD-18c REPORT has the ready packet).
+- **stills-at.mjs traps (BUILD-18c):** (1) several spots in one page: after the tip spot, later spots render the wrong scene (a palm still
+  showed flat bough with no palm): shoot ONE spot per page; (2) invDress pictures load lazily: render once and wait ~2.5 s real time before
+  the stepped frames, or a first-seen palm is missing. **addlevel** read castBots' PASS lines with a regex that broke when LEN-14 added
+  'under the floor N' (every stage said 'castBots did not run'): fixed in BUILD-18c.
 
 ## 0CL. The chase stage's blockers (ENG-CL, t-eng-cl from t-eng-b6@a4e1ff8f, 11-14): what the next engineer must know
 - The quiet line (tools/engine/listRules.ts) judges a roll AS PLAYED: quietJudge(cfg, finish?, max?) / quietOf(cfg, st, finish?), the

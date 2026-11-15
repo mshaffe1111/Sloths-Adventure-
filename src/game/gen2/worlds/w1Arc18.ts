@@ -23,7 +23,7 @@ import type { RollLook } from '../rollLay.ts';
 import { w1World } from './w1.ts';
 import { w1Liana, w1Perch, withSwing } from './w1Swing.ts';
 import { W1_ROLL, W1_STILL_FORK, W1_TIP } from './w1Cast.ts';
-import { layStillFork, stillForks, type StillForkStage } from '../stillFork.ts';
+import { layStillFork, type StillForkStage } from '../stillFork.ts';
 import { layTip, readyStillFork } from '../chaseTip.ts';
 import { runnerProblems } from '../../runnerLiana.ts';
 
@@ -294,17 +294,6 @@ export const PALMS_18 = [
   { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.267], up: 190, dx: -21, y: 499, back: false },
   { inv: 'hf18/hf18-palm-back-b', nut: [0.491, 0.284], up: 165, dx: 3, y: 322, back: true },
 ] as const;
-/**
- * 1-8's hanging moss (ENG-LOOK2 rough 4): the still fork is "the mossy fork" (LINES_18.fork), the one living ground he may stop on, so
- * painted moss (ART-678b's drapes, catalogued as hanging dressing under a bough) hangs from under its bough and marks it from a run's
- * distance. Each hangs behind the play layer by its top `top` px under the fork's ground (inside the bough, BOUGH_THICK 107, so the drape's
- * own twig stays behind the bark and only its strands show under it), its middle at `at` of the moss cover's width (the carpet he stops
- * in, STILL_FORK's runIn past where the collapse stops): the wide drape under its near half, the narrow curtain under its far end. Read back by w1Arc18.test.ts on every listed roll.
- */
-export const MOSS_18 = [
-  { inv: 'hf678/w17-moss-drape', at: 0.3, top: 60 },
-  { inv: 'hf678/w17-moss-drape-b', at: 0.95, top: 55 },
-] as const;
 /** no palm stands within this of another of the same picture (px of world): a sideways phone's view (~1,410 px at 1-8's zoom) and a margin */
 export const PALM_APART_18 = 1800;
 /** ENG-DR's row shape (src/game/art/invDress.ts InvDress on t-eng-dr; this goes when that lands: import it) */
@@ -382,10 +371,6 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   }
   for (const r of [...rows.filter((q) => q.back), ...rows.filter((q) => !q.back)]) {
     (proto.invDress ??= []).push({ inv: r.inv, x: r.x, y: r.y, hang: r.hang, layer: r.layer });
-  }
-  // (4b) the hanging moss under the still fork's bough (MOSS_18), behind everything, drawn after the palms
-  for (const f of stillForks(st as unknown as StillForkStage)) {
-    for (const m of MOSS_18) (proto.invDress ??= []).push({ inv: m.inv, x: Math.round(f.cover.x + m.at * f.cover.w), y: f.groundY + m.top, hang: true, layer: 'behind' });
   }
   // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);
