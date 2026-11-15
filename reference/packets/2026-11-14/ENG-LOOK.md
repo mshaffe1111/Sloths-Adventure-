@@ -19,7 +19,8 @@ Branch: t-eng-look from origin/t-build-18's head (git ls-remote), merging origin
  (3) The still fork's eagle is ENG-WATCH's (R-165.267); merge its head when it lands and shoot the fork on it.
 PERFORMANCE (pass/fail, §1): drawcheck 1-8 SIDEWAYS at x 24036 FAILS on BUILD-18's head (gradients 6.88-8.25 > 2, drawImageScreens
 10.04 > 7.5; top call sites groundPaint depthBand/shadeSoil + scenery drawFitted; ENG-DR's dressing adds +0.54). The bough look replaces
-that ground: it must bring 1-8 under every limit both ways, baked into the ground chunks. Merge origin/t-eng-dr (the dressing piece) first.
+that ground: it must bring 1-8 under every limit both ways WITH ENG-DR's dressing included (+0.54 screens there; fill, not reducible by
+baking: ENG-DR's measured pushback, accepted), baked into the ground chunks. Merge origin/t-eng-dr (the dressing piece) first.
 Proof: stills of every 1-8 beat upright + sideways, Normal + Easy, at phone size (412x915 / 915x412), clips of the fork pass and the tip with
 the frame named; drawcheck on 1-8 and the 1-98 fixture; castBots 1-40 both settings (BUILD-18: Normal 40/40 except child 37 at the tip,
 accepted); the WHOLE suite; lock (list what moved). REPORT reference/qa-reports/ENG-LOOK/REPORT.md, "Learned", EXACT NEXT STEP.
