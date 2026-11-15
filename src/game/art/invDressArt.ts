@@ -9,6 +9,8 @@
 /** each folder (the inventory's `file` prefix, src/...): a picture's address in the build by its file name */
 const FOLDERS: ReadonlyArray<readonly [string, (name: string) => string]> = [
   ['src/assets/w1-18/', (n) => new URL(`../../assets/w1-18/${n}`, import.meta.url).href],
+  // (World 1's hanging moss drapes, ART-678b: a file-name prefix, not the folder, so only the two drapes w17Art.ts already ships come in)
+  ['src/assets/w1-678/w17-moss-drape', (n) => new URL(`../../assets/w1-678/w17-moss-drape${n}`, import.meta.url).href],
 ];
 
 /** the address in the build of an inventory row's picture (its `file`), or undefined when no folder here ships it */

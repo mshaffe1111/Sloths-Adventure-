@@ -9,7 +9,7 @@ import '../headlessDom.ts';
 import { HERO_SPRITE_SCALE, HERO_UNITS } from '../heroSprite.ts';
 import { Inventory, loadInventory, usable, type InventoryFile } from './inventory.ts';
 import { frameRect, invDressBreaches, invDressResolves, invDressSize, readyInvDress, resetInvDress, type InvDress } from './invDress.ts';
-import { invDressUrl } from './invDressArt.ts';
+import { invDressFolders, invDressUrl } from './invDressArt.ts';
 
 const COLS = ['id', 'file', 'frame', 'world_best', 'worlds', 'kind', 'layer', 'engine_slot', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'float_class', 'made_thing', 'status', 'pokey_scale', 'scale_ok'];
 const row = (id: string, o: Partial<Record<string, unknown>> = {}): unknown[] => {
@@ -37,7 +37,8 @@ test('planted: a row with an id the inventory lacks fails by name; an out-of-sca
   assert.match(one('fx/no-size')[0] ?? '', /'fx\/no-size' has no fixed size against Pokey/);
   assert.match(one('fx/made')[0] ?? '', /'fx\/made' is a made thing: never World 1 art/);
   assert.match(one('fx/needs-fix')[0] ?? '', /'fx\/needs-fix' is waiting on a fix \(needs fix: torn edge\)/);
-  assert.match(one('fx/not-built')[0] ?? '', /'fx\/not-built': its picture origin\/art-raw:cut\/fx.png is not in the build \(src\/game\/art\/invDressArt.ts ships src\/assets\/w1-18\/\)/);
+  assert.equal(one('fx/not-built')[0] ?? '', `dressing at x 1000: 'fx/not-built': its picture origin/art-raw:cut/fx.png is not in the build (src/game/art/invDressArt.ts ships ${invDressFolders().join(', ')})`);
+  assert.ok(invDressFolders().includes('src/assets/w1-18/'), 'the w1-18 folder ships');
   assert.match(one('fx/frame-no-rect')[0] ?? '', /a frame with no rect on its sheet/);
   assert.match(one('fx/good', { layer: 'front' as never })[0] ?? '', /asks for layer 'front' \(offered: behind\)/);
   assert.match(one('fx/good', { y: Number.NaN })[0] ?? '', /has no place/);

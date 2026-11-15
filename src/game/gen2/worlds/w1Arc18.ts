@@ -23,7 +23,7 @@ import type { RollLook } from '../rollLay.ts';
 import { w1World } from './w1.ts';
 import { w1Liana, w1Perch, withSwing } from './w1Swing.ts';
 import { W1_ROLL, W1_STILL_FORK, W1_TIP } from './w1Cast.ts';
-import { layStillFork, type StillForkStage } from '../stillFork.ts';
+import { layStillFork, stillForks, type StillForkStage } from '../stillFork.ts';
 import { layTip, readyStillFork } from '../chaseTip.ts';
 import { runnerProblems } from '../../runnerLiana.ts';
 
@@ -98,7 +98,7 @@ type V = { id: string; lay: Lay; easy?: Lay };
 /** a lay's hazards as the pipeline's roll sockets (types.ts Socket.roll; gen2/rollLay.ts lays them once the chase is laid) */
 const rollSockets = (rs: readonly Roll18[] = []): Socket[] => rs.map((r, i) => ({ id: `roll${i}`, role: 'roll', roll: r.kind, on: r.on, t: r.t }) as Socket);
 /** a brick (1-6/1-7's form): its first piece `in`, its last `out`, a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope' | 'bounce'; teaches?: string; versions: V[]; uses?: string[]; window?: [number, number] }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope' | 'bounce'; teaches?: string; versions: V[]; uses?: string[]; window?: [number, number]; join?: 'walk' }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return { f, ps: ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on' || q === 'from') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'], ...(p.from ? { from: f(p.from) } : {}) })) }; };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces).ps[0];
@@ -108,8 +108,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
       ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).ps.slice(1), sockets: sk(v.easy.pieces, [...v.easy.sockets, ...rollSockets(v.easy.rolls)]), easyOnly: true }] : []),
     ];
   });
-  const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_18], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['roll']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  const { versions: _v, uses, join, ...rest } = o;
+  return { ...rest, feel: [STAGE_18], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['roll']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', ...(join ? { join } : {}) }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -218,9 +218,9 @@ export const BEATS_18: SectionTemplate[] = [
   brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
   brick({ id: 'w1-18-high-bough', window: [0.4, 0.53], name: 'the high bough: bounce up, hop down', jobs: ['pressure'], content: 'bounce', difficulty: 5, uses: ['roll', 'bounce'], versions: [{ id: 'mushroom-nuts', lay: highBough(false), easy: highBough(true) }] }),
   brick({ id: 'w1-18-rhythm', window: [0.54, 0.68], name: 'both heights in rhythm: under, HOP', jobs: ['pressure'], content: 'hazard', difficulty: 6, versions: [{ id: 'pairs', lay: rhythm(false), easy: rhythm(true) }] }),
-  brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
+  brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', join: 'walk', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
   brick({ id: 'w1-18-last', name: 'the last stretch: almost...', jobs: ['finale'], content: 'hazard', difficulty: 8, uses: ['roll', 'creak'], versions: [{ id: 'hop-under-hop', lay: lastStretch(false), easy: lastStretch(true) }] }),
-  brick({ id: 'w1-18-tip', name: 'the tip: WHOA', jobs: ['signature'], content: 'rope', difficulty: 6, uses: ['swing'], versions: [{ id: 'tip', lay: theTip() }] }),
+  brick({ id: 'w1-18-tip', name: 'the tip: WHOA', join: 'walk', jobs: ['signature'], content: 'rope', difficulty: 6, uses: ['swing'], versions: [{ id: 'tip', lay: theTip() }] }),
 ];
 
 // ───────────────────────────── 1-8's own quiet: the broad base, the rests and the exit ─────────────────────────────
@@ -293,6 +293,17 @@ export const PALMS_18 = [
   { inv: 'hf18/hf18-palm-b', nut: [0.492, 0.26], up: 185, dx: 4, y: 451, back: false },
   { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.267], up: 190, dx: -21, y: 499, back: false },
   { inv: 'hf18/hf18-palm-back-b', nut: [0.491, 0.284], up: 165, dx: 3, y: 322, back: true },
+] as const;
+/**
+ * 1-8's hanging moss (ENG-LOOK2 rough 4): the still fork is "the mossy fork" (LINES_18.fork), the one living ground he may stop on, so
+ * painted moss (ART-678b's drapes, catalogued as hanging dressing under a bough) hangs from under its bough and marks it from a run's
+ * distance. Each hangs behind the play layer by its top `top` px under the fork's ground (inside the bough, BOUGH_THICK 107, so the drape's
+ * own twig stays behind the bark and only its strands show under it), its middle at `at` of the moss cover's width (the carpet he stops
+ * in, STILL_FORK's runIn past where the collapse stops): the wide drape under its near half, the narrow curtain under its far end. Read back by w1Arc18.test.ts on every listed roll.
+ */
+export const MOSS_18 = [
+  { inv: 'hf678/w17-moss-drape', at: 0.3, top: 60 },
+  { inv: 'hf678/w17-moss-drape-b', at: 0.95, top: 55 },
 ] as const;
 /** no palm stands within this of another of the same picture (px of world): a sideways phone's view (~1,410 px at 1-8's zoom) and a margin */
 export const PALM_APART_18 = 1800;
@@ -371,6 +382,10 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   }
   for (const r of [...rows.filter((q) => q.back), ...rows.filter((q) => !q.back)]) {
     (proto.invDress ??= []).push({ inv: r.inv, x: r.x, y: r.y, hang: r.hang, layer: r.layer });
+  }
+  // (4b) the hanging moss under the still fork's bough (MOSS_18), behind everything, drawn after the palms
+  for (const f of stillForks(st as unknown as StillForkStage)) {
+    for (const m of MOSS_18) (proto.invDress ??= []).push({ inv: m.inv, x: Math.round(f.cover.x + m.at * f.cover.w), y: f.groundY + m.top, hang: true, layer: 'behind' });
   }
   // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);

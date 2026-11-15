@@ -21,10 +21,12 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 import { PAGES } from '../../movesJournal.ts';
 import { addFinds } from '../../stageGenerator.ts';
 import { w1Finish } from './w1.ts';
-import { HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { HEARTS_18, LINES_18, MISSION_18, MOSS_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
 import { loadInventory } from '../../art/inventory.ts';
 import { invDressSize } from '../../art/invDress.ts';
 import { W1_TIP } from './w1Cast.ts';
+import { stillForks } from '../stillFork.ts';
+import { BOUGH_THICK } from '../../protoArt.ts';
 import { rollTeaches, type RollSpec } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
 import type { Collectible, Enemy, Platform, Vine } from '../../types.ts';
@@ -34,7 +36,7 @@ const cfg = generateAllLevels().find((c) => c.id === STAGE_18 && !c.secret)!;
 type Built = {
   platforms: Platform[]; vines: Vine[]; enemies: Enemy[]; collectibles: Collectible[]; checkpoints: Array<{ x: number }>; chase: ChaseLay; rolling: RollSpec[];
   proto: { bushes?: Array<{ x: number; w: number; kind: string }>; hints?: Array<{ x: number; text: string }>; invDress?: InvDress[] };
-  gen2: { errors: string[]; sections: Array<{ uid: string; template: string; x0: number; x1: number }> };
+  gen2: { errors: string[]; sections: Array<{ uid: string; template: string; x0: number; x1: number }>; plan: Array<{ template: string; join: string }> };
 };
 const memo = new Map<string, Built>();
 /** the stage as the game builds it: its listed kit, World 1's finish, then its own (stageGenerator.ts, the listed path) */
@@ -243,4 +245,35 @@ test('the palms (ART-18, Matt 11-15): a painted palm at every nut\'s drop with i
     seen += palms.length;
   }
   assert.ok(seen > 0, 'palms laid');
+});
+
+test("the still fork and the tip are walked onto on every roll, both settings (their bricks ask: entry.join 'walk'; BUILD-18b's seed 2 rolled a pit into the fork, layout 3 a step into the tip)", () => {
+  for (const d of BOTH) for (const s of [1, 2, 3, 4]) {
+    const st = built(s, d);
+    for (const t of ['w1-18-still-fork', 'w1-18-tip']) {
+      const j = st.gen2.plan.filter((q) => q.template === t).map((q) => q.join);
+      assert.deepEqual(j, ['walk'], `${d} seed ${s}: the join into ${t}`);
+    }
+  }
+});
+
+test('the hanging moss (MOSS_18): painted drapes hang under the still fork\'s bough, under its moss cover, their tops inside the bark, never one picture twice', async () => {
+  const inv = await loadInventory(1);
+  const ids = new Set<string>(MOSS_18.map((m) => m.inv));
+  assert.equal(ids.size, MOSS_18.length, 'two different pictures');
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    const [f] = stillForks(st as never);
+    assert.ok(f, `${d} seed ${s}: a still fork`);
+    const moss = (st.proto.invDress ?? []).filter((q) => ids.has(q.inv));
+    assert.equal(moss.length, MOSS_18.length, `${d} seed ${s}: the moss rows`);
+    for (const m of moss) {
+      const sz = invDressSize(inv.byId(m.inv)!, inv.pokeyUnits)!;
+      assert.ok(m.hang && m.layer === 'behind', `${d} seed ${s}: ${m.inv} hangs behind`);
+      assert.ok(m.x - sz.w / 2 >= f.x0 && m.x + sz.w / 2 <= f.x1, `${d} seed ${s}: ${m.inv} (${Math.round(m.x - sz.w / 2)}-${Math.round(m.x + sz.w / 2)}) inside the fork ${Math.round(f.x0)}-${Math.round(f.x1)}`);
+      assert.ok(m.x >= f.cover.x && m.x <= f.cover.x + f.cover.w, `${d} seed ${s}: ${m.inv} at ${m.x} under the moss cover ${Math.round(f.cover.x)}-${Math.round(f.cover.x + f.cover.w)}`);
+      const top = m.y - f.groundY;
+      assert.ok(top > 0 && top < BOUGH_THICK && sz.h - (BOUGH_THICK - top) >= 60, `${d} seed ${s}: ${m.inv} hangs from inside the bark (top ${top}) with ${Math.round(sz.h - (BOUGH_THICK - top))} px of strands under it`);
+    }
+  }
 });
