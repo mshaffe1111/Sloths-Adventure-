@@ -1,0 +1,7 @@
+CAUGHT (RED): liana gap counted as a hop
+CAUGHT (RED): a walked step or drop counted as a required hop
+CAUGHT (RED): take-off always at the middle aim (falls short of a wide gap)
+CAUGHT (RED): the brief field ignored (no arcs on 1-6)
+CAUGHT (RED): 1-6 brief without the arcs (bank rows alone read 0.46)
+restored: GREEN
+exit 0

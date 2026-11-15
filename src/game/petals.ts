@@ -19,7 +19,7 @@
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { jumpEdges } from './stageMetrics.ts';
-import { LAID_ASKS, walkedPiece, walkedSpan, WALKED_MIN, type SpanStage } from './gen2/walkedSpan.ts';
+import { hopArcs, LAID_ASKS, walkedPiece, walkedSpan, WALKED_MIN, type SpanStage } from './gen2/walkedSpan.ts';
 
 /** the most petals on one screen, and the screen (world px: wider than an upright phone's view, about a sideways one's) */
 export const PER_SCREEN = 6;
@@ -40,6 +40,36 @@ export const nightBlooms = (stage: Pick<GeneratedStage, 'config'>) => stage.conf
 /** the stage's petal brief says LOW (GraphBrief.petals, by data: 1-2, 1-6, 1-7; R-165.263): pickups come only from its sections' sockets,
  *  so nothing after the lay adds petals (no arc over a gap, jumpTrails.ts; no fill, fillGaps) */
 export const petalsLow = (stage: object) => (stage as { gen2?: { brief?: { petals?: string } } }).gen2?.brief?.petals === 'low';
+
+/** the stage's petal brief asks for its REQUIRED hops' arcs (GraphBrief.petalArcs, by data: 1-6; INT-10, the lead's ruling 11-15 11:10 AM) */
+export const petalArcsOn = (stage: object) => (stage as { gen2?: { brief?: { petalArcs?: boolean } } }).gen2?.brief?.petalArcs === true;
+/** how close an arc's petal may stand to another pickup (px: a flower is never laid within 40 px of another, pipeline fillSockets) */
+export const ARC_NEAR = 40;
+/**
+ * Petals on the arcs of the stage's REQUIRED hops (gen2/walkedSpan.ts hopArcs: every run flies through them, so they are walked space;
+ * INT-10, the lead's ruling 11-15 11:10 AM ET), one at each of its points that is open (not in a piece, not in the water or a mist, not
+ * below a fall's lower lip) and ARC_NEAR from every other pickup. The species is the nearest petal's (a row never mixes them). Run on the
+ * built stage after walkPetals (they stand in the air, not on a piece); petalTrail then holds them to every petal rule. Returns how many.
+ */
+export function arcPetals(stage: GeneratedStage): number {
+  const spans = fallSpans(stage);
+  const ws = walkedStage(stage, spans);
+  let id = stage.collectibles.reduce((m, c) => Math.max(m, c.id), 0) + 1;
+  const petals = stage.collectibles.filter((c) => isPetal(c, stage));
+  let n = 0;
+  for (const a of hopArcs(ws)) {
+    for (const p of a.points) {
+      if (!open(stage, p, ARC_NEAR) || inFall(spans, p)) continue;
+      let near: Collectible | undefined;
+      for (const q of petals) if (!near || Math.hypot(q.x - p.x, q.y - p.y) < Math.hypot(near.x - p.x, near.y - p.y)) near = q;
+      const c: Collectible = { id: id++, type: 'flower', x: p.x, y: p.y, collected: false, bobPhase: (p.x * 0.031) % 6.28, ...(near?.botanicalVariant ? { botanicalVariant: near.botanicalVariant } : {}) };
+      stage.collectibles.push(c);
+      petals.push(c);
+      n++;
+    }
+  }
+  return n;
+}
 
 /** the walked path on a finished stage (gen2/walkedSpan.ts, the model the socket lay reads too): its pieces, lianas, the asks it was laid
  *  with, and `away`, from its own record of its falls (missPiece) */
@@ -192,6 +222,8 @@ export interface PetalOut {
   filled?: number;
   /** the standing petals the walked path moved onto a walked piece, and the ones it took out (walkPetals) */
   walked?: { moved: number; gone: number };
+  /** the petals laid on the required hops' arcs (arcPetals), before the trail's rules judged them */
+  arcs?: number;
 }
 
 /**
@@ -277,13 +309,13 @@ function rng(seed: number) {
 
 /** a spot is open: not inside a platform, not on another pickup, above the water, not in 4-6's mist (a pickup there would give its
  *  hidden ledges away), not by the top of a silk line (a ledge only the line reaches is its own reward) */
-function open(stage: GeneratedStage, p: Pt): boolean {
+function open(stage: GeneratedStage, p: Pt, near = 70): boolean {
   if (stage.waterY != null && p.y > stage.waterY - 30) return false;
   const mist = (stage as { proto?: { w4?: { patience?: Array<{ area?: { top: number; bottom: number } }> } } }).proto?.w4?.patience ?? [];
   if (mist.some((m) => m.area && p.y > m.area.top - 50 && p.y < m.area.bottom + 50)) return false;
   if (stage.vines.some((v) => v.silk && Math.abs(p.x - v.x) < 420 && p.y < v.topY + 260)) return false;
   if (stage.platforms.some((q) => !q.broken && p.x > q.x - 18 && p.x < q.x + q.width + 18 && p.y > q.y - 22 && p.y < q.y + q.height + 18)) return false;
-  return !stage.collectibles.some((c) => !c.collected && Math.hypot(c.x - p.x, c.y - p.y) < 70);
+  return !stage.collectibles.some((c) => !c.collected && Math.hypot(c.x - p.x, c.y - p.y) < near);
 }
 
 const isClimb = (v: GeneratedStage['vines'][number]) => !v.off && !v.isSwingingVine && v.vineType !== 'swing_liana' && !v.silk && v.bottomY - v.topY >= 260;

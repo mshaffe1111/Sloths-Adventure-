@@ -668,6 +668,9 @@ export interface GraphBrief {
   /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
    *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
   petals?: 'low';
+  /** petals on the arcs of the stage's REQUIRED hops (petals.ts arcPetals, gen2/walkedSpan.ts hopArcs: a hop every run must take is
+   *  walked space; INT-10, the lead's ruling 11-15 11:10 AM ET). Opt-in by data: a stage that sets it gets them, no other stage moves */
+  petalArcs?: true;
   /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
    *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
    *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */

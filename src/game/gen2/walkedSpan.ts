@@ -234,3 +234,52 @@ export function walkedPiece(p: Platform, st: SpanStage, mine?: (q: Platform) => 
   }
   return undefined;
 }
+
+/** the middle tier's take-off before a piece's edge on a plain jump (px; the median of tools/inspect/firsttimer.ts FT_MIDDLE aimQ, the
+ *  testers' own runs, R-165.59) */
+export const TAKEOFF_MID = 58;
+/** the pickup point over his feet (px): engine.ts collects a petal within 34 px of (x, y - 20) */
+const PICK_UP = 20;
+/** the shares of a hop's flight a petal goes at: the apex row only (INT-10 measured 1-6 against World 1's built band, 1-3 0.86 and
+ *  1-5 1.04 petals an upright screen: the apex with the bank rows 0.95, 35% of screens bare; take-off, apex and touchdown 1.41, over it) */
+export const ARC_AT = [0.5] as const;
+export type HopArc = { from: Platform; to: Platform; takeoffX: number; landX: number; points: Array<{ x: number; y: number }> };
+/**
+ * The REQUIRED hops of the built stage and the arc each is flown on (INT-10, 11-15; the lead's ruling 11:10 AM ET: a hop between pieces
+ * that every run must take is walked space, so its arc may hold petals, any stage, turned on by its brief: GraphBrief.petalArcs).
+ * A hop is required where the way on from a piece to the next piece ahead cannot be walked (a gap wider than a seam, or a rise more than
+ * a seam), a full run's jump from the piece reaches that piece, and no liana hangs between them (a swing is not a hop: over a liana gap a
+ * jump's curve is not the swing's, BUILD-16b). Its arc is the middle tier's: a full run's jump held, taken off TAKEOFF_MID before the edge
+ * (nearer it where that falls short: 20 px into the next piece), down onto the next piece; a flight that does not come down on it is no arc. Its points are where his pickup point is at each ARC_AT
+ * share of the flight. Pieces off the path (`away`: a pit's floor, a hurt floor, a catch) are never a hop's ends.
+ */
+export function hopArcs(st: SpanStage): HopArc[] {
+  const dk = dialsKey();
+  const foot = st.platforms.filter((q) => footing(q, st)).sort((a, b) => a.x - b.x);
+  const out: HopArc[] = [];
+  for (const p of foot) {
+    const end = p.x + p.width;
+    const lands = foot.filter((q) => q !== p && q.x >= end - SEAM && q.x <= end + HOP_NEAR && !seam(p, q)).map((q) => ({ q, r: reach(p.y, q.y, dk) })).filter((h) => h.r !== undefined && end + h.r! >= h.q.x + 10).sort((a, b) => a.q.x - b.q.x);
+    const q = lands[0]?.q;
+    if (!q) continue;
+    // (walked on: a seam, a step no higher than a seam, or a drop he walks off (no gap): not a required hop)
+    if (q.x - end <= SEAM && p.y - q.y <= SEAM) continue;
+    if (st.vines.some((v) => swinging(v) && v.x > p.x + p.width / 2 && v.x < q.x + q.width / 2)) continue;
+    // (the middle tier's aim, or nearer the edge where that aim's jump falls short: a run takes off where the hop is made)
+    const r = lands[0].r!;
+    const takeoffX = Math.min(end, Math.max(p.x, end - TAKEOFF_MID, q.x + 20 - r));
+    const b = { x: takeoffX, y: p.y, vx: PHYS.maxRun, vy: -PHYS.jumpV };
+    const path: Array<{ x: number; y: number }> = [{ x: b.x, y: b.y }];
+    let landX: number | undefined;
+    for (let i = 1; i < 150; i++) {
+      const prevY = b.y;
+      airStep(b, DT, 1, true);
+      path.push({ x: b.x, y: b.y });
+      if (b.vy >= 0 && prevY <= q.y && b.y >= q.y) { landX = b.x; break; }
+    }
+    if (landX === undefined || landX < q.x || landX > q.x + q.width) continue;
+    const n = path.length - 1;
+    out.push({ from: p, to: q, takeoffX, landX, points: ARC_AT.map((s) => { const k = path[Math.round(s * n)]; return { x: Math.round(k.x), y: Math.round(k.y - PICK_UP) }; }) });
+  }
+  return out;
+}

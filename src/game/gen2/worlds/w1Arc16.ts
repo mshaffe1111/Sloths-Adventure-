@@ -46,6 +46,9 @@ export const BRIEF_16: GraphBrief = {
   //  that is played right passes them; the bots missed 21-35 petals a run there and met the sealed door on every seed (BUILD-16b, 11-14).
   //  Every petal is the stage's own socket, on a bank or perch he lands on: a reward on the path, never a lure off it)
   petals: 'low',
+  // (but the arcs of its REQUIRED hops (root banks hopped up, a gap jumped) do hold petals: every run flies through them (petals.ts
+  //  arcPetals; INT-10, the lead's ruling 11-15 11:10 AM ET: 1-6 read empty, 0.22 petals an upright screen). Never over a liana gap)
+  petalArcs: true,
 };
 
 /** the story keeper's lines for 1-6, verbatim (reference/story/lines-1-6.md on t-keeper-16@387aeb2b8, approved; forwarded by the lead
@@ -99,12 +102,32 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): So
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
+/**
+ * A row of petals on every moss bank a lay walks that holds no petal socket of its own (INT-10, 11-15: 1-6 read EMPTY, 0.22 petals an
+ * upright screen and 85% of its screens bare, against World 1's built 1-3 at 0.86 and 1-5 at 1.04; the lead's ruling: more sockets ON
+ * the pieces every run walks). Up to four on a bank ROW_WIDE or wider, three on a narrower one; on a bank that holds a flag or one of
+ * Dot's tip spots the row keeps to the other half, two of them. The engine lays each petal only inside the bank's walked span (pipeline.ts
+ * fillSockets, walkedSpan.ts; a flower never within 40 px of another), so the span, not the count, sets how many stand: a bank the leap
+ * clears gets none, a reward on the path, never a lure off it. With the hops' arcs (petalArcs, below) 1-6 reads 0.95 a screen (INT-10).
+ */
+const ROW_WIDE = 300;
+const rows = (l: Lay): Lay => {
+  const has = new Set(l.sockets.filter((s) => s.role === 'pickup').map((s) => s.on));
+  const busy = new Map(l.sockets.filter((s) => s.role === 'flag' || s.role === 'tip').map((s) => [s.on, typeof s.t === 'number' ? s.t : 0.5]));
+  const add = l.pieces.filter((p) => p.shape === 'bank' && !has.has(p.key)).map((p) => {
+    const b = busy.get(p.key);
+    if (b !== undefined) return petals(`row-${p.key}`, p.key, b < 0.5 ? 0.75 : 0.25, 2, 80);
+    return (typeof p.w === 'number' ? p.w : p.w[0]) >= ROW_WIDE ? petals(`row-${p.key}`, p.key, 0.5, 4, 240) : petals(`row-${p.key}`, p.key, 0.5, 3, 160);
+  });
+  return { ...l, sockets: [...l.sockets, ...add] };
+};
 /** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it */
 function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; maxPerStage?: number; versions: V[]; uses?: string[]; /** a lesson the stage only RE-shows (1-2's thorns, as 1-5's brick): it still uses the swing */ reshows?: string }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
-  const versions = o.versions.flatMap((v) => [
+  // (every lay's banks get their petal rows first: rows, above)
+  const versions = o.versions.map((v) => ({ ...v, lay: rows(v.lay), ...(v.easy ? { easy: rows(v.easy) } : {}) })).flatMap((v) => [
     { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);

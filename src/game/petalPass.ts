@@ -8,7 +8,7 @@ import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Difficulty } from './difficulty.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
-import { busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalsLow, petalTrail, rowExtras, walkPetals, type PetalOut } from './petals.ts';
+import { arcPetals, busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalArcsOn, petalsLow, petalTrail, rowExtras, walkPetals, type PetalOut } from './petals.ts';
 
 const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
@@ -81,6 +81,8 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
   for (const c of stage.collectibles) if (cups.has(c.id)) KEEP.add(c);
   // (a gen2 stage's standing petals inside the walked path of the BUILT stage first: petals.ts walkPetals, ENG-PETAL R-165.246)
   if ((stage as { gen2?: unknown }).gen2) o.walked = walkPetals(stage);
+  // (and the arcs of its required hops, where its brief asks for them: petals.ts arcPetals, INT-10; the trail's rules judge them next)
+  if (petalArcsOn(stage)) o.arcs = arcPetals(stage);
   const far = judgeReach(stage);
   petalTrail(stage, far ?? new Set(), o);
   // the long stretches with no trail get one (petals.ts fillGaps), held to the same rules; only where the check can judge the reach
