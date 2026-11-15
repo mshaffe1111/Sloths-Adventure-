@@ -121,7 +121,10 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
    see SUITE below.** Not run (no game code changed, LAWS 5 scoped): the build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck,
    buildcheck, seedlist --check, tierBots (nothing in tools/inspect imports score.ts; the bots read no meter number).
 
-SUITE_LINE
+**SUITE (CLAUDE.md's whole line, on t-meter-1; this branch changes nothing under src/, so the code it tests is the final head's): 3535
+tests, 3533 pass, 0 fail, 2 todo (the existing TODO tests, e.g. 4-3's boulder fixer; TOOLS-2 recorded the same 3535 / 0 fail).** Finished
+10:02 PM ET. Nothing left running: every bot, meter, plant and suite job ended (pgrep). The scratch worktrees of t-build-16 and of
+t-build-18 + t-tools-2 live in the session scratchpad only; their local merge commits were never pushed.
 
 ## 2. Polish check
 The meter changes no screen and draws nothing (it never runs on a phone, PERFORMANCE-RULES §1), so there are no stills. What I judged
