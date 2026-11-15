@@ -1,5 +1,5 @@
 # INT-11: THE link = 1-6 + 1-7 + 1-8 + 2-1 (the lead 4:19 PM ET: link #4 and #5 merged). Branch t-int-11. Opus 5.5 high.
-Started 3:44 PM ET. Times from `TZ=America/New_York date`. STATUS: holding for FIX-GATES (registry 1-8 judged, riverRide toys) per the lead.
+Started 3:44 PM ET. Times from `TZ=America/New_York date`. FIX-GATES (a) 18e323e0 + (b) b58ec0e6 merged (46a2e5dd).
 
 ## Done-items
 1. **1-8 merged** (0681bf90): t-build-18c, 9 conflicts read both sides. **2-1** (a63b5131): link #4 held none of the 2-1 line, so t-fix-21
@@ -12,17 +12,18 @@ Started 3:44 PM ET. Times from `TZ=America/New_York date`. STATUS: holding for F
    form 5fba6119: 220 px steps kept + a boulder on the first descent's middle step (160 px steps made the kid turn back, traced; petals
    don't count). Relisted 100/100, quiet <= 4 s, --check PASS.
 4. **Lists** --check PASS: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-6, 1-7, 1-8, 2-1, 2-2 (seedlist-*-check.txt).
-5. **Bots**: 1-1 calibration recommitted twice (b1deef44; 88e988d6 on the water-only look): every check unchanged; tierBots 7/7.
-   castBots 1-8: 40/40 all. castBots 2-1 (castBots-2-1-wateronly.txt): kid N 32 (7 twin river = the ruled misread, 1 first deep
-   river), adult E 39 (seed 8 perch turn-back: PERCH-TURNBACK, accepted 4:39), child E 38 < child N 40: seeds 20/23 at
-   against-the-flow rivers (traced) -> FIX-GATES' upstream cases; re-run after its merge.
+5. **Bots** (final, 46a2e5dd): 1-1 calibration recommitted on the water-only look (88e988d6), tierBots 7/7 after FIX-GATES.
+   castBots 2-1: child E 40 = child N 40; kid N 32 (twin river, ruled), adult E 39 (seed 8 perch turn-back: PERCH-TURNBACK, ruled).
+   castBots 1-8 (FIX-GATES' relisted list): all 40/40 but child N 36 (accepted 6:03 for 1-8's polish pass): s9 rescued x11389 (stuck
+   x10677 'a drop of 53 px ahead'), s17 x30772 ('fell back down 8 times' at x33951), s25 x31012, s35 x30869.
 6. **Lock vs main** (lockall-2-vs-main.txt): link #4's moved set exactly + 2-1, 2-2 (World 2's gen2 kit; intended).
 7. **Gates on this head**: PASS tsc, build, chunkcheck, artcheck, kbdcheck, buildcheck, drawcheck (every stage both ways; 1-8 x24036
    forced: screens 4.57/5.39, gradients 0), clipcheck (83 known), knowncheck, generality, roadmapcheck, tierBots, chaseBots.
    Reds fixed at source, none loosened: chaseBots MIDDLE (9137470f's look -> water only, proven by revert); river.test (manifest.lessons);
    LV-9 floor 30->28 (2-1/2-2 left the hand-built set); 5-7/7-1 pins back to main's own; riverSection (safe-water-art, ruling 1);
    flower species sample widened (201 pairs, 0 mixed); growth check mix-vs-mix like with like (ruling (A) 5:19, planted).
-   OPEN, FIX-GATES (b): riverRide planted x2 (red on t-fix-21 too). registrycheck.test GREEN after FIX-GATES (a).
+   After FIX-GATES: registrycheck (+test), riverRide 18/18, CI tools line 168/0, tipwalk, bounceReuse/judged/verdicts tests GREEN.
+   Test link: 511 files > build.py's 480 cap -> inline 64 KB (test link only): 472 files, index.js 14.2 MB (80 KB: 18.7 MB > 16 MB).
 
 ## Polish check
 - 1-8 (shots/s18-*): fork x26600 (eagle, moss cover, wayside line), tip x34200, palm x6064, dip: x13930 top step + x14350 floor,
@@ -34,10 +35,12 @@ Started 3:44 PM ET. Times from `TZ=America/New_York date`. STATUS: holding for F
 ## Pushback
 - Step 2 assumed link #4 carried the 2-1 line; it carried only the bounce rule.
 - 2-1 models 224 s vs World 1's gen2 median 240 s (growth-w1-w2.txt): a design question, sent to the lead.
+- The packet's 'build.py --published' before the publish contradicts build.py (D72: only after a publish succeeds): left to the lead.
 
 ## Suggestions
 - STILLS-PICK: stills tools pick only a piece whose top is exposed at x (approved 4:35). PERCH-TURNBACK: tier bots turn back on a
-  perch whose way on is a step down (traces in this folder). BOUNCE-REUSE / riverRide toys: FIX-GATES.
+  perch whose way on is a step down (traces in this folder). TESTLINK-PACK: pack small images into lazy chunks (the test link
+  is at 472/480 files, index.js 14.2/16 MB); build.py should also gate the 16 MB a file.
 
 ## Unresolved (named): 2-1 x2300 bank band; 1-8 hanging moss (BOUGH-HANG); the bamboo re-cut.
 ## Method used / Lessons applied / Method update
