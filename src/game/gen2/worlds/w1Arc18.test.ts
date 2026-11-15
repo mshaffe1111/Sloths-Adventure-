@@ -96,7 +96,7 @@ test("the chase: five stretches (four K and the last), each within Matt's flag s
 test('every teach line is 800 px or more before what it teaches, with nothing that hurts between (level.md rule 6; the lead\'s Q1 ruling A)', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d);
-    const teach = st.rolling.filter((h) => rollTeaches(h, st.chase) && h.dropX < st.chase.stretches[0].start);
+    const teach = st.rolling.filter((h) => rollTeaches(h, st.chase, d === 'easy') && h.dropX < st.chase.stretches[0].start);
     const nut = teach.find((h) => h.kind === 'low')!, fruit = teach.find((h) => h.kind === 'high')!;
     assert.ok(nut && fruit, `${d} seed ${s}: a teach nut and a teach fruit before the crack`);
     assert.ok(nut.dropX - hintX(st, LINES_18.nut)! >= 800, `${d} seed ${s}: nut line ${nut.dropX - hintX(st, LINES_18.nut)!} px`);
@@ -116,7 +116,7 @@ test('one threat at a time: drops 1.5 s apart at his run on Normal, 2.5 s on Eas
     const apart = ROLL_18.apart![d];
     for (let i = 1; i < st.rolling.length; i++) assert.ok(st.rolling[i].dropX - st.rolling[i - 1].dropX >= apart, `${d} seed ${s}: drop ${i}`);
     const crack = st.chase.stretches[0].start;
-    for (const h of st.rolling) assert.equal(rollTeaches(h, st.chase), d === 'easy' || h.dropX < crack, `${d} seed ${s}: the ${h.kind} at ${h.dropX}`);
+    for (const h of st.rolling) assert.equal(rollTeaches(h, st.chase, d === 'easy'), d === 'easy' || h.dropX < crack, `${d} seed ${s}: the ${h.kind} at ${h.dropX}`);
     // (the fruit's arc clears his drawn head; the nut's rattle a hop clears)
     for (const h of st.rolling) assert.ok(h.kind === 'high' ? h.bounce >= 104 : h.bounce <= 24, `${d} seed ${s}: ${h.kind} bounce`);
   }

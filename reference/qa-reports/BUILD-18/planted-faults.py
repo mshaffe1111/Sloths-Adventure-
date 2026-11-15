@@ -15,7 +15,7 @@ FAULTS = [
     ("stagePlan's mission is the old one", [(PLAN, "'Race the long branch before it gives way, and gather her petals.'", "'Race the long branch to the shrine.'")], "lines are the story keeper's"),
     ('the first two stretches swap places (their windows swapped)', [(ARC, "brick({ id: 'w1-18-at-pace', window: [0.26, 0.39],", "brick({ id: 'w1-18-at-pace', window: [0.1, 0.25],"), (ARC, "brick({ id: 'w1-18-first-run', window: [0.1, 0.25],", "brick({ id: 'w1-18-first-run', window: [0.26, 0.39],")], 'the arc beat for beat'),
     ('the fork line said too late (inside the last 800 px)', [(ARC, "tip('t-fork', 'c', 0.08, 'fork')", "tip('t-fork', 'z', 0.6, 'fork')")], 'every teach line is 800 px'),
-    ("Easy's nuts and fruit cost a heart", [(ARC, "  if (easy) st.rolling = st.rolling.map((h) => ({ ...h, teach: true }));", "")], 'one threat at a time'),
+    ("Easy's chase gaps over 50 px", [(ARC, "  const g: R2 = easy ? [40, 46] : [100, 120];", "  const g: R2 = easy ? [70, 80] : [100, 120];")], 'Easy is never harder than Normal'),
     ('a heart inside a stretch', [(ARC, "past: -200, up: 34", "past: 120, up: 34")], 'the hearts stand on the fork'),
     ('no still fork laid', [(ARC, "  const why = layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1);", "  const why: string[] = [];")], 'the still fork'),
     ('the palm crown not laid', [(ARC, "const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;", "const d = DRESS_18.trunk;")], "the keeper's look is laid"),

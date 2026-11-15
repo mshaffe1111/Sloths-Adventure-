@@ -263,19 +263,21 @@ export const SECTIONS_18: SectionTemplate[] = [...BEATS_18, ...QUIET_18, EXIT_18
 export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
 /**
  * The look the keeper's nature check asks for (lines-1-8.md: palm nuts drop from palms in view; cannonball fruit grows on stalks from the
- * TRUNK and drops from there or above), by INVENTORY id, so each draws the moment the engine's inventory-dressing piece lands (the lead's
- * ruling 8:19 PM: "a stage's data places any inventory piece as dressing, hung by its top or standing, at its inventory scale"). Until then
- * they are written to proto.invDress and nothing draws them (a named rough spot). `dx` from the hazard's drop (px), `y` the piece's top
- * (hung) or foot (standing) from the ground under the drop (px, + down), its drawn height `h` (px of world, to scale with Pokey's 89.1)
+ * TRUNK and drops from there or above), by INVENTORY id (the catalog's, exactly), so each draws the moment the engine's inventory-dressing
+ * piece lands (ENG-DR, t-eng-dr: src/game/art/invDress.ts; drawn behind the play layer at its inventory size, pokey_scale x 89.1, R-165.107).
+ * Until then they are written to proto.invDress and nothing draws them (a named rough spot). x: the piece's middle, `dx` from the hazard's
+ * drop; y: its foot when standing, from the ground under the drop (px, + down)
  */
 export const DRESS_18 = {
-  /** a palm crown hung over every nut's drop: its fronds' underside where the nut appears (rolling.ts ROLL.dropH 480 at most over the
-   *  ground; sideways the drop starts below the HUD band, so the crown is the tell's source, not a promise of where it starts) */
-  palm: { inv: 'hf18-palm-crown', hang: true, dx: 0, y: -620, h: 300, layer: 'behind' },
-  /** a cannonball trunk standing behind the branch at every fruit's drop, its foot down in the mist, its fruit stalks at the drop's height */
-  trunk: { inv: 'hf18-cannon-trunk', hang: false, dx: 70, y: 260, h: 900, layer: 'behind' },
+  /** a palm standing behind the branch at every nut's drop, its foot below the branch's top and its crown (460 px tall, pokey_scale 5.16)
+   *  overhead, its cluster of nuts where the nut drops in from */
+  palm: { inv: 'hf18/hf18-palm-crown', hang: false, dx: 0, y: 40, layer: 'behind' },
+  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at every fruit's drop, its foot down in the mist, its fruit
+   *  stalks at and over the drop's height */
+  trunk: { inv: 'hf18/hf18-cannon-trunk', hang: false, dx: 70, y: 260, layer: 'behind' },
 } as const;
-export interface InvDress { inv: string; x: number; y: number; h: number; hang: boolean; layer: 'behind' | 'front' }
+/** ENG-DR's row shape (src/game/art/invDress.ts InvDress on t-eng-dr; this goes when that lands: import it) */
+export interface InvDress { inv: string; x: number; y: number; hang: boolean; layer: 'behind' }
 
 /** the beats whose liana is a runner's (phased to him at a full run: runnerLiana.ts) */
 export const W18_RUNNER = ['w1-18-at-pace'] as const;
@@ -301,9 +303,7 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   if (!lay?.stretches.length) throw new Error('1-8 finish: the stage lays no chase');
   if (!st.rolling?.length) throw new Error('1-8 finish: the pipeline laid no nut or fruit (its roll sockets)');
   const secs = st.gen2?.sections ?? [];
-  // (1) Easy: every nut and fruit a bump only, only the collapse costs (the lead's ruling c). STOPGAP until ENG-CL (5) makes it the rule
-  // for every stage's Easy (rolling.ts rollTeaches); then this line goes
-  if (easy) st.rolling = st.rolling.map((h) => ({ ...h, teach: true }));
+  // (Easy's nuts and fruit only bump him: rolling.ts rollTeaches, the rule for every stage's Easy, ENG-CL (5); the lead's ruling c)
   // (2) the still fork: the living ground after the stretch the still-fork brick follows
   const w = secs.find((s) => s.template === W18_STILL);
   const wx = w ? spanOf(st.platforms.filter((p) => p.tag?.startsWith(`${w.uid}:`)))?.[0] : undefined;
@@ -332,7 +332,7 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;
     const g = st.platforms.filter((p) => p.type === 'solid' && p.x <= h.dropX && h.dropX <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
     if (!g) continue;
-    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, h: d.h, hang: d.hang, layer: d.layer });
+    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: d.hang, layer: d.layer });
   }
   // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);
