@@ -122,3 +122,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | PITCH-A (Opus high) | pitches 1-9 ('you are the bait'), 2-1 ('the river does the running'), 2-2 ('the pond breathes'), ranked World 2 engine list, W1 tribute pass; one redo (research as [Q] lines, proposed W2 numbers) | $7.05 | ~25 min |
 | CRITIC-LR (Opus high) | cold review of the new lead's review: 2 PASS, 4 REJECT with fixes (engine queue order, driftcheck, LSW line, tribute rule pass/fail), all adopted | $0.98 | ~14 min |
 | PITCH-B run 1 (Opus xhigh) | archived 10 min in to restart on the Gaming environment (research sites open); nothing pushed | $3.22 | ~10 min |
+| ENG-16G (Opus xhigh) | 1-6: height-aware swingClearance + lay rule (planted), seesaw-b parked, relist 100 seeds; found the stage-wide petal fault (expert sealed 22/40), traced 6 kid rescues (pit way back, creature hop on catch); suite 3438/1 (old-1-6 premise); ran to 42.7% | $22.20 | ~95 min |
