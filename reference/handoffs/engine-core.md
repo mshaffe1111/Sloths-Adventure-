@@ -9,7 +9,7 @@ Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fix
 Rewritten for B6 (11-14, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5): section 0B6 (the still fork, the runner liana, the tip, Easy's chase gap; the orphan-root merge) and 0v's not-built line. Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
@@ -33,6 +33,39 @@ proven plan; Play is never blocked).
 - Traps: the dev fixture's stepped 1-1 ground gives no runner's run (243-562 px to the lip, 1,188 needed): its tip liana is plain on
   purpose. The look (bough over mist, the knot, the 3-5 piece fall) is NOT built: REPORT §5 has the exact next step and the lead's
   three conditions; the long-branch sheet has no underside piece.
+
+## 0DR. The list runs each row's own finish; any inventory piece placed as dressing (ENG-DR, t-eng-dr from t-build-18@e9dc28bf, 11-14)
+- THE LIST'S FINISH (tools/engine/listRules.ts). Every list rule judges the roll as Play finishes it: the row's WHOLE finish (listed.ts
+  `playFinish`: World 1's, its squirrels when the row says, then the kit's own: finish14, finish17, finish18), on each setting, on a
+  copy. `listJudge` is the search's one judge (seedlist.ts and yield.ts --list): a finish that throws is a line with no slot (the search
+  rolls again), then the quiet line on Normal. `asPlayedBreaches` is `seedlist --check`'s: each listed seed built AS PLAY BUILDS IT
+  (seedList.ts `buildPlayStage`, then `playFinish`, the two calls stageGenerator.ts:2921 makes) and finished once; a throw refused by
+  name ("the finish throws (easy): ..."), then the quiet line, room for help and the dressing rows on that one finished copy.
+  `helpRoomBreaches(st, d, finish)` passes the setting to the finish now. Never judge a list rule with `w1Finish` alone again
+  (seedlist.test.ts test 7 greps both tools for it).
+- Trap: Play runs the finish with NO catch. A listed seed is safe because `--check` runs it; an OFF-list play (no list yet, or a list
+  that failed to load and no stand-in: only 1-1 has one) walks provenGen2Stage, whose "clean" does not include the finish. Before
+  BUILD-18 listed 1-8 (e9dc28bf), Play's 1-8 threw on Normal at every layout 1-8 (finish18's K2 runner liana) and on layout 2 Easy
+  (still fork 3). Ready packet S1 in reference/qa-reports/ENG-DR/REPORT.md.
+- DRESSING BY INVENTORY ID (src/game/art/invDress.ts). A stage's data writes `proto.invDress: InvDress[]` = { inv (the catalog id
+  EXACTLY, e.g. 'hf18/hf18-palm-crown'), x (its middle), y (its top when hung, its foot when standing), hang, layer: 'behind' }. No
+  size in data: drawn `pokey_scale` x the inventory's pokey_units (89.1 = heroSprite HERO_UNITS x HERO_SPRITE_SCALE, D41) tall, its width
+  by its picture's shape; a catalog frame 'name (x,y wxh)' draws its rect. `invDressBreaches(rows, inv, world)` is the gate: an id the
+  world's file lacks, a made thing in World 1, a piece waiting on a fix, scale_ok false (R-165.107), no fixed size (pokey_scale null), a
+  frame with no rect, a picture the build does not ship, a layer not offered. Run by src/game/art/invDress.test.ts (planted rows; every
+  listed stage as Play builds it, layouts 1-2, both settings; the one file that writes rows) and by `seedlist --check` per listed seed.
+- Pictures: src/game/art/invDressArt.ts lists the build FOLDERS a piece may come from, each a `new URL(\`../../assets/<dir>/${n}\`,
+  import.meta.url)` pattern (the bundler ships that folder; Node resolves a file URL, so tests and tools run the same code). A new art
+  folder is one line there; the build's 4 MiB and artcheck's 4096 px gates then judge everything in that folder. Not import.meta.glob:
+  tsx does not run it.
+- Drawing: stageReady.ts readyBuiltStage awaits `readyInvDress(rows, world)` before the first frame (it loads the world's inventory
+  JSON, resolves each id once, asks for each picture through atlasLoader trackAtlas, so the wait under the title card holds them).
+  engine.ts calls `drawInvDress(..., 'behind')` once, just before renderWorldObjects (behind the platforms, vines, pickups and Pokey): one
+  drawSheet per piece in view, one Map get a row, no allocation. A stage made without stageReady asks on its first draw and draws a
+  moment later. The world's inventory JSON (w1.json 202 KB) is fetched once a world, only by a stage that has rows.
+- 1-8 (BUILD-18's data, w1Arc18.ts DRESS_18, its file, never edited here): a palm STANDING behind the branch at every nut's drop
+  (its crown picture has a trunk stub, so hung by its top it dangled: D16) and a cannonball trunk at every fruit's, by catalog id, no
+  size. Its local InvDress matches art/invDress.ts field for field.
 
 ## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
 - Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
