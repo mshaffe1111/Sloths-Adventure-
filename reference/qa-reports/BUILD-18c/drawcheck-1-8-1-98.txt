@@ -1,0 +1,57 @@
+draw check: 1-8, 1-98 at q0, upright and sideways, 4 spots each
+[port 20:00:25] 1-8 port 51s 5 spots, 40 counted frames, 81 sites 
+[land 20:00:30] 1-8 land 56s 5 spots, 40 counted frames, 88 sites 
+[port 20:01:19] 1-98 port 54s 5 spots, 40 counted frames, 100 sites 
+[land 20:01:25] 1-98 land 55s 5 spots, 42 counted frames, 123 sites 
+
+✓ 1-8 port
+    gradients worst 0.00 at x undefined (limit 2) | forced x 24036: 0.00
+    shadowOrFilter worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    readbacks worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    drawImageScreens worst 4.94 at x 37037 (limit 7.5) | forced x 24036: 4.54
+    drawImageCalls worst 117.50 at x 37037 (limit 400) | forced x 24036: 42.00
+    fillStrokeCalls worst 7.00 at x 37037 (limit 1800) | forced x 24036: 0.00
+    clips worst 0.00 at x undefined (limit 19) | forced x 24036: 0.00
+    shrunkOver2_5x worst 0.00 at x undefined (limit 32) | forced x 24036: 0.00
+✓ 1-98 port
+    gradients worst 0.00 at x undefined (limit 2) | forced x 24036: 0.00
+    shadowOrFilter worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    readbacks worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    drawImageScreens worst 4.99 at x 34341 (limit 7.5) | forced x 24036: 4.90
+    drawImageCalls worst 100.25 at x 34341 (limit 400) | forced x 24036: 51.00
+    fillStrokeCalls worst 12.00 at x 24036 (limit 1800) | forced x 24036: 12.00
+    clips worst 1.00 at x 24036 (limit 19) | forced x 24036: 1.00
+    shrunkOver2_5x worst 2.00 at x 12266 (limit 32) | forced x 24036: 0.00
+  note shrunkOver2_5x 2.00 at spot 1 (x 12266) (reported; fails over 32)
+      src/game/w1NewArt.ts:81 (blit) 0.40/frame  | ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/protoArt.ts:855 (drawBranchArt) 0.40/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+✓ 1-8 land
+    gradients worst 0.00 at x undefined (limit 2) | forced x 24036: 0.00
+    shadowOrFilter worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    readbacks worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    drawImageScreens worst 5.58 at x 37037 (limit 7.5) | forced x 24036: 5.41
+    drawImageCalls worst 166.50 at x 37037 (limit 400) | forced x 24036: 67.00
+    fillStrokeCalls worst 7.00 at x 37037 (limit 1800) | forced x 24036: 0.00
+    clips worst 0.00 at x undefined (limit 19) | forced x 24036: 0.00
+    shrunkOver2_5x worst 2.88 at x 320 (limit 32) | forced x 24036: 2.25
+  note shrunkOver2_5x 2.88 at spot 0 (x 320) (reported; fails over 32)
+      src/game/sheetBake.ts:124 (drawSheet) 2.05/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/pieces/rollingPiece.ts:315 (draw) 0.13/frame  | ctx.drawImage(sh, h.x - w / 2, h.ground - w * 0.125, w, w * 0.25);
+      src/game/stageArt.ts:96 (blitAt) 0.05/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * k, y - f.ay * k, f.w * k, f.h * k);
+✓ 1-98 land
+    gradients worst 0.00 at x undefined (limit 2) | forced x 24036: 0.00
+    shadowOrFilter worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    readbacks worst 0.00 at x undefined (limit 0) | forced x 24036: 0.00
+    drawImageScreens worst 6.05 at x 320 (limit 7.5) | forced x 24036: 5.53
+    drawImageCalls worst 111.25 at x 34341 (limit 400) | forced x 24036: 69.00
+    fillStrokeCalls worst 28.00 at x 22517 (limit 1800) | forced x 24036: 22.00
+    clips worst 1.00 at x 22517 (limit 19) | forced x 24036: 1.00
+    shrunkOver2_5x worst 4.00 at x 12266 (limit 32) | forced x 24036: 2.00
+  note shrunkOver2_5x 4.00 at spot 1 (x 12266) (reported; fails over 32)
+      src/game/sheetBake.ts:124 (drawSheet) 1.31/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/protoArt.ts:855 (drawBranchArt) 0.57/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/w1NewArt.ts:81 (blit) 0.40/frame  | ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.21/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/w1NewArt.ts:66 (drawW1Clue) 0.19/frame  | ctx.drawImage(clueImg!, r.x, r.y, r.w, r.h);
+
+PASS (131 s; raw results in /tmp/drawcheck-fnSKol)
