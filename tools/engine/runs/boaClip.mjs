@@ -5,7 +5,10 @@
 //   node tools/engine/runs/boaClip.mjs <port> <out dir> freeze|late|roost [up|side] [normal|easy]
 //     freeze  he runs in, lifts his thumb 5 frames into the 1.0 s rear: beaten by stillness inside its reach, 0.6 s of slow motion
 //     late    he lifts 16 frames into the rear (past Normal's 13): it strikes him
-//     roost   a lure post (the eagle's roost, reach 150) 100 px past the boa: it rears at him and flees in its first rear frame
+//     roost   a lure post (the eagle's roost, reach 150) 100 px past the boa, its art laid (proto.gen2.roosts, w19Art.ts): it rears at
+//             him and flees in its first rear frame
+//     bot     (ENG-19b) the thumb is a tier bot's, replayed frame by frame from BOT_PADS (a JSON list of 0/1 'right', recorded by
+//             tools/engine/runs/boaBotPads.ts on the same toy: the boa 640 px from where he stands); the freeze is the bot's own
 // Every 2nd frame is shot (15 fps at 2x); frames.txt names each shot's frame, the boa's phase, the slow motion left, his x: a claim in
 // the report names the frame it shows (D69).
 import fs from 'node:fs';
@@ -42,6 +45,7 @@ const toy = await p.evaluate(([E, MODE]) => {
   e.vines.length = 0;
   e.collectibles.length = 0;
   e.proto.cast = { kinds: ['boa'], traps: [], ...(MODE === 'roost' ? { lures: [{ x: bx + 100, y: Y, fear: 'eagle', reach: 150 }] } : {}) };
+  if (MODE === 'roost') e.proto.gen2 = { ...(e.proto.gen2 ?? {}), roosts: [{ x: bx + 100, y: Y, fear: 'eagle', look: 'w1-roost' }] };
   e.startCast();
   Object.assign(e.player, { x: X0 + 200, y: Y, vx: 0, vy: 0, facing: 1, hp: e.player.maxHp });
   e.checkpoint = { x: X0 + 200, y: Y };
@@ -77,11 +81,12 @@ const step = async (right) => {
   return r;
 };
 const LIFT = MODE === 'late' ? 16 : 5;
+const PADS = MODE === 'bot' ? JSON.parse(fs.readFileSync(process.env.BOT_PADS, 'utf8')) : null;
 // (the stage's card runs on game frames: 100 frames standing still, unshot, so it has gone before the run; he is 640 px from the boa)
 for (let i = 0; i < 100; i++) await p.evaluate((E) => { const e = eval(E); e.input.triggerTouchMove('none'); e.update(1 / 30); }, E);
 let told = -1;
-for (let i = 0; i < 150; i++) {
-  const r = await step(told < 0 || i - told < LIFT);
+for (let i = 0; i < (PADS ? PADS.length : 150); i++) {
+  const r = await step(PADS ? !!PADS[i] : told < 0 || i - told < LIFT);
   if (told < 0 && r.phase === 'tell') { told = i; console.log('REAR at step', i, 'x', r.x); }
   if (told >= 0 && i - told === LIFT) console.log('LIFT at step', i, 'x', r.x);
   if (r.by && !log.some((q) => q.includes('BEATEN'))) { log.push(`BEATEN by ${r.by} at step ${i}`); console.log('BEATEN', r.by, 'step', i); }
