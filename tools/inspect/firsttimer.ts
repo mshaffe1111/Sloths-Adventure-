@@ -956,6 +956,8 @@ export class FirstTimerRun {
   private letGoAt = -Infinity;
   /** the liana he last swung on (its id): out of a pit, a liana further along the route than it is a way on, not the way back (pitWayUp) */
   private swungOn: number | null = null;
+  /** the ledge pitWayUp last chose for a liana ahead of that one (a climb toward it is followed even when it heads the way on) */
+  private catchAhead: Platform | null = null;
   /** seconds he has stood at an edge waiting for a liana to swing to him (lianaWait) */
   private lianaWaitT = 0;
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
@@ -1370,7 +1372,9 @@ export class FirstTimerRun {
     const path = from ? this.pitWayUp(from) : null;
     if (!path) return 0;
     const dir = toward(path[1]);
-    if (dir === 0 || dir === ahead) return 0;
+    // (a climb that heads the way on is left to the steer, unless it climbs to a liana ahead: from the pit under the first liana the way
+    // up to the next one runs forward under the crumbled limb, and the steer walked him into the far wall for 20 s; ENG-16I)
+    if (dir === 0 || (dir === ahead && path[path.length - 1] !== this.catchAhead)) return 0;
     // (the same pit `tries3` times, no further on: a loop, as the same fall three times is (fallBacks); he is put past it)
     const n = (this.pitFalls.get(from!) ?? 0) + 1;
     this.pitFalls.set(from!, n);
@@ -1523,6 +1527,7 @@ export class FirstTimerRun {
       if (on.length) for (const q of reached) { const n = catches(q, on); if (n > most) { most = n; ahead = q; } }
       if (ahead) goal = ahead;
     }
+    this.catchAhead = goal && goal !== reached.find(walked) ? goal : null;
     if (!goal) {
       let most = 0;
       for (const q of reached) {

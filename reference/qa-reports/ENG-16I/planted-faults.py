@@ -6,6 +6,8 @@ import subprocess, sys, pathlib
 PLANTS = [
     ('stair-top-liana', 'tools/inspect/firsttimer.ts', '      if (ahead) goal = ahead;', '      if (ahead && false) goal = ahead;',
      'tools/inspect/pitClimb.test.ts'),
+    ('forward-climb', 'tools/inspect/firsttimer.ts', '(dir === ahead && path[path.length - 1] !== this.catchAhead)', 'dir === ahead',
+     'tools/inspect/pitClimb.test.ts'),
 ]
 
 def run(test):

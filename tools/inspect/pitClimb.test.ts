@@ -392,16 +392,19 @@ test('in the pit past a crumbled creaky limb, the stair top under the NEXT liana
   assert.equal(path?.[path.length - 1].id, 1, 'off the first liana with no liana ahead: he climbs back to the bank he took it from');
 });
 
+// (from the pit past the limb, and from the pit under the first liana: there the way up to the next liana runs forward under the limb,
+// and a climb that heads forward was left to the steer, which walked him into the far wall for 20 s: castBots 1-6 Normal kid seeds 1, 2,
+// 6, 24 "the way on is 228 px up" once the stair top ahead was his way out; ENG-16I)
 test('in the pit past a crumbled creaky limb he climbs the stair, takes the next liana and lands on the far bank: no rescue', () => {
   const { plats, vines, route } = CREAKY();
-  for (const who of [FT_KID, FT_ADULT]) {
+  for (const [who, x] of [[FT_KID, 1400], [FT_ADULT, 1400], [FT_KID, 600], [FT_ADULT, 600]] as const) {
     const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 30, rescueAfter: 100 });
     run.sim.bare(plats, vines);
-    run.sim.stand(1400, 1091);
+    run.sim.stand(x, 1091);
     run.prog.relocate(run.sim.p);
     (run as unknown as { swungOn: number | null }).swungOn = 1;
     const r = run.play();
-    assert.equal(r.rescues, 0, `${who.name}: rescued ${r.rescues}x (${JSON.stringify(r.stuck?.slice(0, 2))})`);
-    assert.ok(run.sim.p.x > 1562 && run.sim.p.y < 870, `${who.name}: ends at x ${Math.round(run.sim.p.x)} y ${Math.round(run.sim.p.y)}, not on the far bank`);
+    assert.equal(r.rescues, 0, `${who.name} from x ${x}: rescued ${r.rescues}x (${JSON.stringify(r.stuck?.slice(0, 2))})`);
+    assert.ok(run.sim.p.x > 1562 && run.sim.p.y < 870, `${who.name} from x ${x}: ends at x ${Math.round(run.sim.p.x)} y ${Math.round(run.sim.p.y)}, not on the far bank`);
   }
 });

@@ -1,1 +1,2 @@
 stair-top-liana: planted -> CAUGHT (RED, # fail 2); restored -> GREEN
+forward-climb: planted -> CAUGHT (RED, # fail 1); restored -> GREEN
