@@ -110,8 +110,13 @@ test('floorlessGaps does not read the word: an unmarked floorless gap is still a
 // L2 x 8848 and x 9513 (221 -> 234.53, 301 -> 314.53, bottom 750 -> 763.53), L3 x 9455 and x 10144 (225 -> 234.53, 305 -> 314.53,
 // bottom 750 -> 759.53); x, top, width, every other platform, heartFalls and falls byte-identical (qa-reports/INT-9b/softfalls83/
 // diff-7df7b8e3-vs-b288b3fa.txt (L2), diff-L3-*.txt; L1 diff empty; stills on the game, upright + sideways: sheet-*.png).
+// Layouts 2 and 3 re-pinned again on t-int-10b (INT-10b, the lead's 12:16 PM ET 11-15 ruling: restate with the revert proof): R-165.246's
+// soft-pit floors reach the next earth (pitHoleFill, ENG-16H) as ONE piece (joinPitFloors, INT-10b): main's rows of short floors (60-80 px,
+// 160 tall) with 72-86 px holes between them lie as one floor each, L2 247 -> 218 pieces and L3 247 -> 220, every other piece as main; with
+// joinPitFloors off both are main's pins above byte for byte (7ffc517f0fbb583c, 3b968285f17a5ddf; L1 unchanged): qa-reports/INT-10b/
+// diff-83-join.txt and p83.mts (NOJOIN); on the game at x 4650 and 7050, upright + sideways: qa-reports/INT-10b/sheet-83-L2.png.
 const MAIN: Record<string, string[]> = {
-  '8-3': ['d7097751a77b9452', '7ffc517f0fbb583c', '3b968285f17a5ddf'],
+  '8-3': ['d7097751a77b9452', 'fd2ec62404285599', '2a6b15df9d457aeb'],
 };
 // (1-2's pin was the hand-built 1-2's, deleted 11-12 (P12S: the game rolls 1-2 on gen2, its change named by the lock); what the pin
 // guarded still holds: 1-2 is not a soft-fall stage)

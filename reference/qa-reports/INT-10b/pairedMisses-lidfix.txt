@@ -1,0 +1,12 @@
+normal seed 1: 8 paired, 2 faults: 352,2700 pair 336/416 top 2300 (no second hand) his box top 2729 ; 527,2700 pair 496/576 top 2300 (no second hand) his box top 2729
+normal seed 2: 6 paired, 0 faults
+normal seed 3: 6 paired, 0 faults
+normal seed 4: 8 paired, 1 faults: 505,5530 pair 490/570 top 5190 (no second hand) his box top 5559
+normal seed 5: 8 paired, 0 faults
+normal seed 6: 8 paired, 0 faults
+easy seed 1: 8 paired, 0 faults
+easy seed 2: 7 paired, 1 faults: 351.5,3606 pair 324/379 top 3286 MISSED his box top 3441
+easy seed 3: 6 paired, 0 faults
+easy seed 4: 7 paired, 1 faults: 445.5,3662 pair 418/473 top 3342 MISSED his box top 3497
+easy seed 5: 8 paired, 0 faults
+easy seed 6: 6 paired, 0 faults
