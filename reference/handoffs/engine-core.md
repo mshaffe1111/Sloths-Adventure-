@@ -235,14 +235,23 @@ proven plan; Play is never blocked).
   (the engine's own slow motion; note it also pushes the zoom in 1.3x, engine.ts applyZoom, as for a giant's last hit). Respawn: whole
   again from a flag before it. Slow motion lives in the engine's frame loop, NOT update(): a harness stepping update() directly must
   apply it itself (B6/shoot.mjs does).
-- **Easy's chase gap** (the lead's ruling 6:10 PM): see the REPORT; CHASE_LAY.easyGap and its toy in chaseBots.test.
+- **Easy's chase gap** (the lead's ruling 6:10 PM: on Easy every chase gap is one the child bot clears 3/3): gen2/chaseLay.ts
+  CHASE_LAY.easyGap = 50 px (measured: the Easy CHILD clears 40 and 50 px on 3/3 seeds; 60, 80, 100, 120, 140 each drop seed 1);
+  easyGapProblems runs in layChase when st.gen2.budget.difficulty is 'easy' (gaps measured from the furthest reach of the sections
+  before, a log across at their height closes one); held to the bot by chaseBots.test (toy at the width + a plant 10 px past). Flat gaps
+  only: a gap with a rise is not measured. Easy chase stretches are now nearly gapless (a Designer call, raised in the REPORT).
+- **Two bot fixes for every stage (firsttimer.ts, the lead's push-back):** (1) `runnerAhead`: on the ground within RUNNER.from of a
+  runner liana's lip, no steering-rhythm lift (gapQ: the MIDDLE tier's lift stopped him dead 195 px before the lip); planted
+  noRunnerHold. (2) a liana hop (Jump.liana) is held at least who.hold[0], the hold lianaWait judged the catch with (a tier bot's drawn
+  press, holdQ 22-231 ms, fell short of the hop it judged). castBots + pitClimb 19/19 after it.
 - **Dev fixture** (?fixture=chase, chaseFixtureStage.ts layFixturePieces): lays the still fork on fork 0 (clearing bare rocks in its
   cover, moving the fork's flag past the post) and makes the last stretch the tip with a 444 px gap, a runner liana 214 px out and a 600 px
   landing of its own (1-1's stepped finish has nothing level with the tip). Still fork on 4 of 6 rolls (seeds 1-3 x both settings: the
   others refused by name: a step in the fork, no post room), tip + liana on 6 of 6. The page plays seed 1: both.
-- **Traps:** the tier bots stand at about half of all edges by calibration (standShare), so a toy that asks "never stands" must use a
-  strider (standShare 0) or it measures the testers; the MIDDLE tier also stops ~200 px before a lip on its own (an OPEN todo, numbers in
-  chaseBots.test). Never edit src/ while a Vite shoot runs.
+- **Traps:** the tier bots stand at about half of all edges by calibration (standShare) and lift their thumb by a rhythm on open ground
+  (gapQ, off only on a laid chase or under a fruit or near a runner liana), so a toy that asks "never stands" must use a strider
+  (standShare 0, lateShare 0) or it measures the testers. A bot's RNG is salted by its name: a renamed profile is a different run.
+  Never edit src/ while a Vite shoot runs.
 
 ## 0w. The rolling nut and fruit, the chase camera lead, the dev chase fixture (B5, ENGINE-678, t-eng-b5 from t-eng-b4@956e33e0, 11-14)
 - **The hazard is data:** `GeneratedStage.rolling?: RollSpec[]` (rolling.ts) `{kind: 'low'|'high', dropX, speed, bounce, teach?}`, run by
