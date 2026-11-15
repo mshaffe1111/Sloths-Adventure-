@@ -113,7 +113,7 @@ ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-
 **Members running** (refreshed 6:15 PM ET by the new lead; report to the session on this file's top line):
 | Member | Session | Branch | Job | Report by (ET) |
 |---|---|---|---|---|
-| PITCH-B | session_01FhBbYPDDo4tzYZnZ9WhcjC | t-pitch-b from t-1718-design (xhigh, Gaming env: research sites open) | pitch 1-9, 2-1, 2-2 blind to A (packets/2026-11-14/PITCH-19-22.md); lead picks ~8:50 | 8:40 PM |
+| DESIGN-FINAL (was PITCH-B) | session_01FhBbYPDDo4tzYZnZ9WhcjC | t-pitch-b (xhigh designer, Gaming env) | final designs from reference/design/PICKS-19-22.md: 1-9.md first (node string + engine list), then 2-1.md, 2-2.md | 1-9 8:30 PM; 2-1/2-2 9:15 PM |
 | ENG-16H | session_01FhBbYLD337jhvjKfnbgZYk | t-build-16@2973477d + t-tools-2 (xhigh) | walked-span petals (built width), liana pit way back, vine creature tell, requiredMove retarget, all global; then 1-6 relist both settings for real, bots 0 rescues/0 sealed, suite, stills + clips (packets/2026-11-14/ENG-16H.md) | progress 8:30 PM; final 9:30 PM |
 | TOOLS-2 | session_01FhBbYNF5NqMztUscqbZ5Ln | t-tools-2 from t-tools-1@71859cf9 + t-int-9 (xhigh) | R-165.251 one per-setting helper in every tool + Easy relists/locks re-checked; R-165.252 build.py file gate + published diff (packets/2026-11-14/TOOLS-2.md) | 8:15 PM (moved 6:56: + R-165.258 8-5 Easy tayra root) |
 | ENG-B6 | session_01FhBbYLDmwbYR1ovA8KMgZf | t-eng-b6 from t-int-9@1c7f6b95 (xhigh) | merge the chase line t-eng-b5@de1e22fb (6 files conflict) by 7:00 PM, then 1-8's still fork, phased liana, tip (packets/2026-11-14/ENG-B6.md) | step 1 7:00 PM; final 8:45 PM |
