@@ -33,8 +33,13 @@ hue, sat = hs[..., 0], hs[..., 1]
 hw = np.clip(1 - (np.maximum(0, 200 - hue) + np.maximum(0, hue - 250)) / 8, 0, 1)
 bgness = hw * np.clip((sat - SAT0) / 16, 0, 1) * np.clip((mg - 1) / 7, 0, 1) * np.clip((hs[..., 2] - 150) / 40, 0, 1)  # (the pink is bright; dark purplish nuts are not)
 a = 1 - bgness
-# (the spill: any pixel left with min(R, B) over G is pulled back to G there, fully at the soft rim, half inside the tree)
-sp = np.clip(mg, 0, None) * np.where(a < 0.98, 1.0, 0.5)
+# (the spill: any pixel left with min(R, B) over G is pulled back to G there, fully at the soft rim and in a 4 px band inside the edge
+# (the painted edge itself was blended with the pink: a pink rim on the fronds in game, ART-18's first stills), half deeper inside)
+clear = a < 0.5
+band = clear.copy()
+for d in range(1, 5):
+    band[d:] |= clear[:-d]; band[:-d] |= clear[d:]; band[:, d:] |= clear[:, :-d]; band[:, :-d] |= clear[:, d:]
+sp = np.clip(mg, 0, None) * np.where((a < 0.98) | band, 1.0, 0.5)
 im[..., 0] -= sp
 im[..., 2] -= sp
 # (keep only what joins the tree: components on a quarter-size mask, the biggest one and anything touching it)
