@@ -1,4 +1,4 @@
-# BUILD-22 REPORT: 2-2 "Petals for the Crown" laid by data on t-int-11's head, every bot GREEN but the kid on Normal; X is a STOPGAP
+# BUILD-22 REPORT (final 5:37 PM ET): 2-2 "Petals for the Crown" laid by data on t-int-11's head, every bot GREEN but the kid on Normal; X is a STOPGAP
 Branch t-build-22 (from origin/t-eng-22, + t-fix-21, t-art-w2, then origin/t-int-11 at the lead's 4:47 PM ET message). Worked 4:00 PM ET on.
 Head of the numbers below: **42faa831** (castBots, relist); the lock and full-suite lines name their own heads.
 
@@ -77,7 +77,13 @@ never softened for the kid). Traces (two runs per cause, FT_FRAMES / FT_MISSED /
   (fetch-depth 0)"). **coveragecheck FAIL** (EXACT NEXT STEP 2). `seedlist 2-2 --check` PASS.
 - Unit tests run here: padSection.test.ts 15/15 and padRide.test.ts 18/18 together on 42faa831, w2Arc22.test.ts 6/6, w2.test.ts 6/6,
   river.test.ts pass, ciTests pass.
-- **Full suite and lockall: see the two lines below** (each heavy check once, on frozen worktrees).
+- **lockall** (base origin/t-int-11 @ 07af44ac, 4:59-5:16 PM ET): `101/102 stages unchanged`; 2-2 (intended) moved; check exit 0. Also
+  printed: "gen2 gained verdicts and drops (not hashed)" on 33 stages (1-1..1-8, 2-1, 2-2, 5-7, 5-9, 6-x, 7-x, 8-x): not hashed, read only.
+- **Full unit suite** (frozen 42faa831, 4:59-5:32 PM ET): 3776 tests, 3766 pass, 8 fail. **2 were mine**: my gates.yml merge took
+  t-int-11's tool-test line and dropped coveragecheck.test.ts, rideChannel.test.ts and clockRide.test.ts (ciTests 'run by no workflow');
+  restored in the next commit, ciTests 4/4. **6 are red on the base too** (run there alone, same tests): flagSpan LV-9 ('28 stages' on
+  both), riverSection dropsOf, verdicts 5-7 and 7-1 outside THE BOUNDARY, stageQuality "World 2 is shorter than World 1", stageQuality
+  "a row of flowers is one species" (148 rows on the base, 143 here).
 - drawcheck / clipcheck / build / chunkcheck / artcheck: **UNRUN here** (riverArt.ts gained 8 small images and the pad piece draws them);
   the integration head runs them.
 
