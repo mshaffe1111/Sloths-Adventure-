@@ -86,12 +86,15 @@ export interface WorldQuery {
 export class Inventory {
   readonly rows: readonly ArtRow[];
   readonly file: string;
+  /** Pokey's drawn standing height in world units (the file's pokey_units, 89.1): a row's pokey_scale is a share of it */
+  readonly pokeyUnits: number;
   private readonly playSlots: readonly string[];
   private readonly ids = new Map<string, ArtRow>();
   private readonly slots = new Map<string, ArtRow[]>();
 
   constructor(data: InventoryFile) {
     this.file = data.file;
+    this.pokeyUnits = data.pokey_units;
     this.playSlots = data.play_slots ?? [];
     const c = data.cols;
     this.rows = data.rows.map((a) => {

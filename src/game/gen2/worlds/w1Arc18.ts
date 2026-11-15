@@ -25,6 +25,9 @@ import { w1Liana, w1Perch, withSwing } from './w1Swing.ts';
 import { W1_STILL_FORK } from './w1Cast.ts';
 import { layStillFork, type StillForkStage } from '../stillFork.ts';
 import { runnerProblems } from '../../runnerLiana.ts';
+import type { InvDress } from '../../art/invDress.ts';
+// (the row type is the engine's, art/invDress.ts: re-said here for the stage's own tests)
+export type { InvDress } from '../../art/invDress.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
 export const STAGE_18 = '1-8';
@@ -271,19 +274,18 @@ export const TIP_18 = { gap: 444, land: 600, out: 214, up: 380, foot: 30 } as co
 export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
 /**
  * The look the keeper's nature check asks for (lines-1-8.md: palm nuts drop from palms in view; cannonball fruit grows on stalks from the
- * TRUNK and drops from there or above), by INVENTORY id, so each draws the moment the engine's inventory-dressing piece lands (the lead's
- * ruling 8:19 PM: "a stage's data places any inventory piece as dressing, hung by its top or standing, at its inventory scale"). Until then
- * they are written to proto.invDress and nothing draws them (a named rough spot). `dx` from the hazard's drop (px), `y` the piece's top
- * (hung) or foot (standing) from the ground under the drop (px, + down), its drawn height `h` (px of world, to scale with Pokey's 89.1)
+ * TRUNK and drops from there or above), by INVENTORY id: written to proto.invDress and drawn by the engine's inventory-dressing piece
+ * (art/invDress.ts, ENG-DR; the lead's ruling 8:19 PM: "a stage's data places any inventory piece as dressing, hung by its top or
+ * standing, at its inventory scale"). `inv` the catalog id exactly; `dx` from the hazard's drop (px), `y` the piece's top (hung) or foot
+ * (standing) from the ground under the drop (px, + down). Its size is the inventory's (pokey_scale x Pokey's 89.1), never the data's
  */
 export const DRESS_18 = {
   /** a palm crown hung over every nut's drop: its fronds' underside where the nut appears (rolling.ts ROLL.dropH 480 at most over the
    *  ground; sideways the drop starts below the HUD band, so the crown is the tell's source, not a promise of where it starts) */
-  palm: { inv: 'hf18-palm-crown', hang: true, dx: 0, y: -620, h: 300, layer: 'behind' },
+  palm: { inv: 'hf18/hf18-palm-crown', hang: true, dx: 0, y: -620, layer: 'behind' },
   /** a cannonball trunk standing behind the branch at every fruit's drop, its foot down in the mist, its fruit stalks at the drop's height */
-  trunk: { inv: 'hf18-cannon-trunk', hang: false, dx: 70, y: 260, h: 900, layer: 'behind' },
+  trunk: { inv: 'hf18/hf18-cannon-trunk', hang: false, dx: 70, y: 260, layer: 'behind' },
 } as const;
-export interface InvDress { inv: string; x: number; y: number; h: number; hang: boolean; layer: 'behind' | 'front' }
 
 /** the beats whose liana is a runner's (phased to him at a full run: runnerLiana.ts) */
 export const W18_RUNNER = ['w1-18-at-pace'] as const;
@@ -388,7 +390,7 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;
     const g = st.platforms.filter((p) => p.type === 'solid' && p.x <= h.dropX && h.dropX <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
     if (!g) continue;
-    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, h: d.h, hang: d.hang, layer: d.layer });
+    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: d.hang, layer: d.layer });
   }
   // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);

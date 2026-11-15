@@ -18,6 +18,7 @@ import { searchYield } from './yield.ts';
 import { asPlayedBreaches, helpRoomBreaches, listJudge, quietOf as quietAt } from './listRules.ts';
 import { hasSeedList, listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
+import { loadInventory } from '../../src/game/art/inventory.ts';
 import { listFile, writeSeedList } from './seedlistFile.ts';
 import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
 import type { FirstRunLayout } from '../../src/game/gen2/verdicts.types.ts';
@@ -48,8 +49,9 @@ if (process.argv.includes('--check')) {
   const L = provenList(id);
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined, also);
   // (each listed seed AS PLAY BUILDS IT, on each setting (D19): a finish that throws refused by name, ENG-DR (1); the quiet line on
-  // Normal and room for help on each setting judged on the rest: listRules.ts asPlayedBreaches)
-  b.push(...asPlayedBreaches(cfg, kit, provenSeeds(id), played));
+  // Normal, room for help on each setting and the dressing rows its finish lays (by inventory id, at scale) judged on the rest:
+  // listRules.ts asPlayedBreaches)
+  b.push(...asPlayedBreaches(cfg, kit, provenSeeds(id), played, QUIET_MAX, await loadInventory(cfg.worldIndex)));
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   // (the index, all the main script holds of the list, names this very list: its count and its version)
   const ix = PROVEN_INDEX[id];

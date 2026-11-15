@@ -9,6 +9,8 @@ import { softFallStage } from '../../src/game/gen2/pipeline.ts';
 import { roomBreaches } from '../../src/game/gen2/helpRoom.ts';
 import { easyStage } from '../../src/game/easyMode.ts';
 import type { BuildRequest, Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
+import { invDressBreaches, type InvDress } from '../../src/game/art/invDress.ts';
+import type { Inventory } from '../../src/game/art/inventory.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 
 /** a roll's finish as Play gives it (listed.ts playFinish, by the stage's row), on a stage it may write onto */
@@ -60,8 +62,10 @@ function quietLine(st: Gen2Stage, q: { quiet: number; x: number }, max: number):
  * row), so a seed whose own finish (1-4's finish14, 1-7's finish17, 1-8's finish18) throws on a setting could be listed.
  */
 export function finishThrow(st: Gen2Stage, difficulty: 'normal' | 'easy', finish: RollFinish): string | undefined {
-  try { finish(structuredClone(st), difficulty); return undefined; } catch (err) { return `the finish throws (${difficulty}): ${(err as Error).message}`; }
+  try { finish(structuredClone(st), difficulty); return undefined; } catch (err) { return thrown(difficulty, err); }
 }
+/** the refusal's words for a finish that threw */
+const thrown = (difficulty: 'normal' | 'easy', err: unknown) => `the finish throws (${difficulty}): ${(err as Error).message}`;
 
 /**
  * the list's rules as ONE judge the search holds a roll to (BuildRequest.also; seedlist.ts and yield.ts --list): on each setting the
@@ -71,7 +75,7 @@ export function finishThrow(st: Gen2Stage, difficulty: 'normal' | 'easy', finish
 export function listJudge(cfg: LevelConfig, finish: RollFinish, max: number = QUIET_MAX): NonNullable<BuildRequest['also']> {
   return (st, difficulty) => {
     let played: Gen2Stage;
-    try { played = finish(structuredClone(st), difficulty); } catch (err) { return [{ line: `the finish throws (${difficulty}): ${(err as Error).message}` }]; }
+    try { played = finish(structuredClone(st), difficulty); } catch (err) { return [{ line: thrown(difficulty, err) }]; }
     // (quietJudge's own rule, on the stage just finished: quietOf with no finish measures the stage it is handed)
     return difficulty !== 'normal' ? [] : quietLine(st, quietOf(cfg, played), max);
   };
@@ -97,18 +101,21 @@ export function helpRoomBreaches(st: Gen2Stage, difficulty: 'normal' | 'easy', f
  * Each listed seed AS PLAY BUILDS IT, on each setting (D19: the two calls stageGenerator.ts generateStage makes): its proven plan replayed
  * (seedList.ts buildPlayStage), then the row's whole finish (`finish`: listed.ts playFinish). A finish that throws (a squirrels row's too
  * few spots among them) is a stage that does not load on a phone, refused by name (ENG-DR (1)); on the rest, the quiet line on Normal
- * (at most `max` s, the outro excluded) and room for help on each setting (helpRoomBreaches). seedlist.ts --check's own lines.
+ * (at most `max` s, the outro excluded), room for help on each setting (helpRoomBreaches) and, given its world's inventory `inv`, each
+ * dressing row the finish lays (art/invDress.ts invDressBreaches: an id the inventory lacks, a piece out of scale with Pokey). seedlist.ts
+ * --check's own lines.
  */
-export function asPlayedBreaches(cfg: LevelConfig, kit: () => WorldKit, seeds: readonly number[], finish: RollFinish, max: number = QUIET_MAX): string[] {
+export function asPlayedBreaches(cfg: LevelConfig, kit: () => WorldKit, seeds: readonly number[], finish: RollFinish, max: number = QUIET_MAX, inv?: Inventory): string[] {
   const out: string[] = [];
   for (const seed of seeds) for (const difficulty of ['normal', 'easy'] as const) {
-    const st = buildPlayStage(cfg, kit(), seed, difficulty);
-    const t = finishThrow(st, difficulty, finish);
-    if (t) { out.push(`${cfg.id} seed ${seed}: ${t}`); continue; }
+    // (finished once, on a copy; every rule below judges that stage as it is, so none finishes it again)
+    let played: Gen2Stage;
+    try { played = finish(structuredClone(buildPlayStage(cfg, kit(), seed, difficulty)), difficulty); } catch (err) { out.push(`${cfg.id} seed ${seed}: ${thrown(difficulty, err)}`); continue; }
+    if (inv) for (const l of invDressBreaches((played as { proto?: { invDress?: InvDress[] } }).proto?.invDress ?? [], inv, cfg.worldIndex)) out.push(`${cfg.id} seed ${seed} ${difficulty}: ${l}`);
     // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded)
-    const q = difficulty === 'normal' ? quietOf(cfg, st, finish).quiet : 0;
+    const q = difficulty === 'normal' ? quietOf(cfg, played).quiet : 0;
     if (q > max) out.push(`${cfg.id} seed ${seed}: ${q} s quiet, over the line ${max} s (the outro excluded)`);
-    for (const l of helpRoomBreaches(st, difficulty, finish)) out.push(`${cfg.id} seed ${seed}: ${l}`);
+    for (const l of helpRoomBreaches(played, difficulty)) out.push(`${cfg.id} seed ${seed}: ${l}`);
   }
   return out;
 }
