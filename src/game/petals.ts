@@ -16,6 +16,7 @@
  * pickupCheck (levelCheck.ts) holds every shipped stage to the same rules; the goals are shares of what a stage holds (goals.ts), so they
  * follow.
  */
+import { shutLidFeet } from './vineField.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { jumpEdges } from './stageMetrics.ts';
@@ -402,16 +403,25 @@ function walkedSpanMemo(p: Platform, st: SpanStage): { lo: number; hi: number } 
   return r;
 }
 
+/** his collider's height (px, engine.ts the player), and how far under its top a trail's top petal lies at a fig gate's shut lid (px: in
+ *  him, so a climb to the lid takes it; 1-4 seed 1 measured, his box top 4388 at the lid and the petal at 4418 taken, 4303 not) */
+const LID_BODY = 48;
+const LID_IN = 40;
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
 function candidates(stage: GeneratedStage, a: number, b: number, r: () => number, ws: SpanStage = walkedStage(stage), edges?: ReturnType<typeof jumpEdges>): Pt[][][] {
   const ax = routeAxis(stage);
   const inGap = (p: Pt) => ax.at(p) > a + 120 && ax.at(p) < b - 120;
   const climbs: Pt[][] = [];
   for (const v of stage.vines.filter(isClimb)) {
-    const span = v.bottomY - v.topY - 160;
+    // (under a fig gate the climb tops out where the shut lid stops his head as the stage starts (vineField.ts shutLidFeet), not at the
+    //  vine's top: the trail's top petal lies inside his body there, LID_IN under his collider's top (INT-10b: since ENG-PETAL's walked
+    //  path laid trails on 1-4's paired columns, seed 1's 614,4303 hung 85 px over his head at the lid, his only way to it the freed figs)
+    const lid = stage.gates?.length ? shutLidFeet(stage.gates, stage.platforms, v.x, v.bottomY) - LID_BODY + LID_IN : -Infinity;
+    const cut = Math.max(0, lid - (v.topY + 80));
+    const span = v.bottomY - v.topY - 160 - cut;
     const step = 115;
     if (span < step * (TRAIL_LEN - 1)) continue;
-    const y0 = v.topY + 80 + r() * (span - step * (TRAIL_LEN - 1));
+    const y0 = v.topY + 80 + cut + r() * (span - step * (TRAIL_LEN - 1));
     const t = Array.from({ length: TRAIL_LEN }, (_, i) => ({ x: v.x, y: y0 + i * step }));
     RESTS.set(t, { on: [], foot: { x: v.x, y: v.bottomY } });
     if (t.some(inGap)) climbs.push(t);

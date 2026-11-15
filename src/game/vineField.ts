@@ -14,7 +14,7 @@
  *
  * Pure: the engine (engine.ts, the climb) calls these with its own state; tests call them straight (vineField.test.ts).
  */
-import type { Vine } from './types.ts';
+import type { Platform, Vine } from './types.ts';
 import { climbSpeedOf } from './vinePair.ts';
 
 /** a field vine's numbers: reach (px between two vines' lines for both hands) and its speeds (times its climb speed) */
@@ -261,6 +261,36 @@ export const GATE = {
   pull: 0.7,
 } as const;
 
+/**
+ * The shut bough over (x, y) (fieldPlay.ts FieldPlay.shutBoughAt's reading, shared): of each gate `sagOf` names shut (its sag, px, at its
+ * far end; null: open), its own bough and the boughs held with it, GATE.lidSide past either end, the lowest drawn top above y, and its
+ * drawn underside (GATE.depth of its walk span under it). The near end stays put, the far end sags (drawGate's tilt); a held bough is
+ * level. Null when none is over him there.
+ */
+export function shutBoughOver(gates: readonly ClusterGate[], platforms: readonly Pick<Platform, 'id' | 'x' | 'y' | 'width'>[], sagOf: (g: ClusterGate) => number | null, x: number, y: number): { top: number; under: number } | null {
+  let best: { top: number; under: number } | null = null;
+  for (const g of gates) {
+    const sag = sagOf(g);
+    if (sag === null) continue;
+    for (const id of [g.platform, ...(g.with ?? [])]) {
+      const b = platforms.find((q) => q.id === id);
+      if (!b || x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) continue;
+      const f = id !== g.platform ? 0 : Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+      const top = b.y + sag * f;
+      if (top < y && (!best || top > best.top)) best = { top, under: top + GATE.depth * b.width };
+    }
+  }
+  return best;
+}
+
+/** the highest his FEET rise on a climb at x from y under a fig gate as a stage STARTS (every fig snagged, the bough at its full sag,
+ *  GATE.sag): his drawn head at its drawn underside (fieldPlay.ts capY at the start); -Infinity when no gate is over him there. What a
+ *  pickup laid on a climb under a gate is held to (petals.ts: INT-10b, 1-4's column-top petals over the lid) */
+export function shutLidFeet(gates: readonly ClusterGate[], platforms: readonly Pick<Platform, 'id' | 'x' | 'y' | 'width'>[], x: number, y: number): number {
+  const s = shutBoughOver(gates, platforms, (g) => (g.clusters.length ? GATE.sag : null), x, y);
+  return s ? s.under + GATE.head : -Infinity;
+}
+
 /** how many of a gate's clusters are still snagged */
 export const gateLeft = (g: ClusterGate, clusters: readonly VineCluster[]): number =>
   g.clusters.filter((id) => clusters.some((c) => c.id === id && !c.falling && !c.gone)).length;
@@ -330,6 +360,8 @@ export function gateFaults(gates: readonly ClusterGate[], clusters: readonly Vin
   return out;
 }
 
+/** his pickup reach off his middle (px): a petal this near a vine's line is taken by one hand on it (pairPetals) */
+export const PICKUP_REACH = 38;
 /**
  * Petals on a paired stretch hang BETWEEN the pair (R-165.229, Matt 11-14: "you can't collect petals doing two arms"; "maybe we put two
  * fruits... side by side, so it shows there's a benefit"): a petal on a field vine's line moves to the middle of that vine and its
@@ -342,8 +374,10 @@ export function pairPetals(items: Array<{ type: string; x: number; y: number }>,
   if (!field.length) return 0;
   for (const c of items) {
     if (c.type !== 'flower') continue;
-    // (on its line: within 12 px of it, as a trail laid along a climb leaves it; his pickup reach is 38 px, his hands 40 px off a line)
-    const on = field.find((v) => Math.abs(v.x - c.x) <= 12 && c.y >= v.topY && c.y <= v.bottomY);
+    // (on its line: within his pickup reach of it (38 px), where one hand takes it; his hands hang 40 px off a line between two. Until
+    //  INT-10b only a petal within 12 px of a line moved (a trail laid along a climb), and a petal 13-38 px off one (1-4 seed 1 Normal:
+    //  352 by the vine at 336) was taken one-handed on a paired stretch)
+    const on = field.filter((v) => Math.abs(v.x - c.x) <= PICKUP_REACH && c.y >= v.topY && c.y <= v.bottomY).sort((a, b) => Math.abs(a.x - c.x) - Math.abs(b.x - c.x))[0];
     if (!on) continue;
     const mates = field.filter((v) => v !== on && Math.abs(v.x - on.x) <= FIELD_FEEL.reach && c.y >= v.topY + 10 && c.y <= v.bottomY - 10);
     if (!mates.length) continue;

@@ -26,7 +26,7 @@ for (const setting of ['normal', 'easy'] as const) {
     e.field!.pods = [];
     const out: string[] = [];
     for (const { c, a, b } of paired(r)) {
-      e.hands = null; c.collected = false;
+      e.hands = { a, b: null }; c.collected = false;
       r.climb(a, Math.min(a.bottomY - 4, c.y + 150));
       let two = false;
       for (let i = 0; i < 40 && !c.collected; i++) { r.frame({ up: true, right: i >= 3 && b.x > a.x, left: i >= 3 && b.x < a.x }); if (e.hands?.b) two = true; }
