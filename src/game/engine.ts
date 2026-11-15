@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
@@ -6142,6 +6142,9 @@ export class GameEngine {
             }
           }
         }
+      } else if (r.safe) {
+        // (a safe river: a short band of its own shallow water at the log line, never the deep sheet below; nothing until its strip loads)
+        if (painted && drawSafeRiverOver(ctx, a, b, r.surfaceY, t, r.dir, r.speed)) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       } else {
         const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
         // (the painted river's own colours when it is painted, so the logs sink into the same water)

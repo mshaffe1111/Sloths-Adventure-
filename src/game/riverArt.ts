@@ -97,6 +97,28 @@ export function safeRiverArtReady(): boolean {
   loadShallow();
   return shallowReady && !!shallow;
 }
+/**
+ * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): only a short band at the log
+ * line, the shallow strip's own top rows at part strength, so a log sinks into the same light water it floats on; never the deep river's
+ * dark sheet down to the screen's foot, which made every safe river read as deep (the lead's still review 11-15 1:36 PM ET, FIX-21).
+ * The band slides with the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
+ */
+export const SAFE_OVER = { above: 4, below: 16, alpha: 0.6 } as const;
+export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, x0: number, x1: number, surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
+  if (!safeRiverArtReady()) return false;
+  const L = RIVER_LOOK.safe;
+  const top = surfaceY - L.h * L.crest;
+  const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+  const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x0, surfaceY - SAFE_OVER.above, x1 - x0, SAFE_OVER.above + SAFE_OVER.below);
+  ctx.clip();
+  ctx.globalAlpha *= SAFE_OVER.alpha;
+  for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+  ctx.restore();
+  return true;
+}
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
 
