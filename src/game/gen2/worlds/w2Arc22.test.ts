@@ -75,11 +75,14 @@ test('the ponds by the beat: deep where 2-2.md is deep on Normal; on Easy splash
   for (const seed of SEEDS) {
     const n = built(seed, 'normal'), e = built(seed, 'easy');
     const pn = ponds(n), pe = ponds(e);
-    // (first, hop, far stone, breath, mix weight, mix beat, crown, deep, deep beat: nine ponds)
-    assert.equal(pn.length, 9, `${seed} Normal: ${pn.length} ponds`);
-    assert.equal(pe.length, 9, `${seed} Easy: ${pe.length} ponds`);
-    assert.deepEqual(pn.map((r) => !!r.safe), [true, true, true, false, false, false, true, false, false], `${seed} Normal: safe by the beat`);
-    assert.deepEqual(pe.map((r) => !!r.safe), [true, true, true, true, true, true, true, false, false], `${seed} Easy: safe but the finale`);
+    // (first, hop, far stone, the breath's two runs, mix weight, mix beat, crown, deep, deep beat: ten ponds)
+    assert.equal(pn.length, 10, `${seed} Normal: ${pn.length} ponds`);
+    assert.equal(pe.length, 10, `${seed} Easy: ${pe.length} ponds`);
+    assert.deepEqual(pn.map((r) => !!r.safe), [true, true, true, false, false, false, false, true, false, false], `${seed} Normal: safe by the beat`);
+    assert.deepEqual(pe.map((r) => !!r.safe), [true, true, true, true, true, true, true, true, false, false], `${seed} Easy: safe but the finale`);
+    // (the breath's two runs keep one clock: they breathe in step)
+    assert.equal(new Set(n.platforms.filter((p) => p.pad?.clock === 'pads-breath22').map((p) => p.pad!.clock)).size, 1, `${seed}: the breath is one clock`);
+    assert.equal(n.platforms.filter((p) => p.pad?.clock === 'pads-breath22').length, 4, `${seed}: four breathing pads`);
     // (every clock a pad reads is at least as long on Easy as on Normal, the shiver too)
     for (const def of e.clocks ?? []) {
       if (!e.platforms.some((p) => p.pad?.clock === def.id)) continue;

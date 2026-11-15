@@ -79,9 +79,12 @@ export const PADS_22 = {
   /** beat 4 (X), STOPGAP (BUILD-22, approved by the lead 4:25 PM ET; level.md rule 26): weight pads out to a far stone and its flower, then on
    *  over pads to the bank. NOT the design's there-and-back (that needs the spur pond); deleted when the spur lands, before 2-2 goes on */
   stopgapX22: { by: 'weight', pads: ['small', 'small', 'stone', 'small', 'small'], gap: 70, safe: true, petals: [] },
-  /** beat 6, the twist: the pond breathes, two pads at a time with a stone between (up 1.8 s, shiver 0.6 s, under 0.6 s) */
-  breath22: { ...W2_PADS.breath },
-  breath22Easy: { ...W2_PADS.breath, safe: true },
+  /** beat 6, the twist: the pond breathes, two pads at a time (up 1.8 s, shiver 0.6 s, under 0.6 s; the breath toy's own run, padRide.test.ts),
+   *  laid twice with a bank between: one row, so one clock, so both runs breathe in step. The bank is the design's rest between the runs, wide
+   *  enough to stop on and read the next breath (a 136 px stone was run across by the old first-timer bots, onto a pad late in its breath:
+   *  castBots 2-2, kid and adult, BUILD-22) */
+  breath22: { by: 'beat', pads: ['small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
+  breath22Easy: { by: 'beat', pads: ['small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 }, safe: true },
   /** beat 9: weight pads, a held jump between the sizes, the flowers on the SMALL ones (the greed: the quickest pads) */
   mixWeight22: { by: 'weight', pads: ['small', 'big', 'small'], gap: [80, 110, 110, 80], petals: [0, 2] },
   mixWeight22Easy: { by: 'weight', pads: ['small', 'big', 'small'], gap: [80, 110, 110, 80], petals: [0, 2], safe: true },
@@ -179,8 +182,8 @@ const farStone: Lay = {
 };
 /** [W] beat 6, the twist: the pond breathes; `breathe` 800+ px before, the flag before it */
 const breathes = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), pond('c', 'b', easy ? 'breath22Easy' : 'breath22', 360), bank('z', 'c', 300)],
-  sockets: [tip('t-breathe', 'a', 0.1, 'breathe'), flag('b', 0.2), flowers('pc', 'c', 0.5, 2)],
+  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), pond('c', 'b', easy ? 'breath22Easy' : 'breath22', 300), pond('d', 'c', easy ? 'breath22Easy' : 'breath22', 360), bank('z', 'd', 300)],
+  sockets: [tip('t-breathe', 'a', 0.1, 'breathe'), flag('b', 0.2), flowers('pc', 'c', 0.5, 2), flowers('pd', 'd', 0.5, 1)],
 });
 /** [Pg] beat 8, the plank walk: the old ferry path out over the reed bed, two gaps in it (a hop each over the reeds); its planks' look is
  *  World 2's bank until a painted plank piece exists (see gapBank) */
