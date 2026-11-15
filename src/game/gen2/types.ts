@@ -495,7 +495,10 @@ export interface SectionTemplate {
   /** at most this many in one stage (a puzzle room: 1) */
   maxPerStage?: number;
   pieces: SectionPiece[];
-  entry: { piece: string; kind: PortKind };
+  /** `join` (ENG-LOOK2, the lead's ruling (a) 11-14 10:24 PM): the join INTO it, asked by the section, never rolled. 'walk': he walks on,
+   *  level, no step and no pit before it (a still fork's or a tip's ground must be whole from where he arrives: 1-8 seed 2 rolled a pit
+   *  into its still fork, a step into its tip). Honoured where both ends are ground; from a ledge the join is a jump, as always */
+  entry: { piece: string; kind: PortKind; join?: 'walk' };
   exit: { piece: string; kind: PortKind };
   /** about how far the exit sits above (negative) or below the entry: what the corridor clamp steers by */
   exitDy: number;
