@@ -1,0 +1,3 @@
+registrycheck: FAIL
+  1-8 flown: its row is not judged (no `judged` scope): it lays to the unflown reach (reach.unflown). Fly it: FLIGHT_STAGE=1-8 npx tsx reference/specs/sims/flight.ts normal all
+exit 1
