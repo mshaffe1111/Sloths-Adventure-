@@ -11,6 +11,7 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { beatClock, beatDef } from './beat.ts';
 import { LET_GO } from './physics.ts';
+import { TELL_MIN } from './predators/core.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
 import { handsAlong, slitherSize, VINE_SNAKE_PIECE } from './pieces/vineSnakePiece.ts';
 import { VINE_SNAKE_ART } from './vineSnakeArt.ts';
@@ -168,6 +169,34 @@ test('the vine snake is a registered piece, and a stage with no snake starts non
   const r = new RealPlay('6-3', 1);
   assert.equal((r.e as unknown as Eng).pieces.filter((p) => p.kind === 'vine-snake').length, 0);
 });
+
+for (const id of ['6-3', '2-4']) {
+  // (ENG-16H 11-14, R-165.246, the lead's packet item 3: castBots 1-6 Normal kid seeds 21, 23, 25 and 36 caught a liana whose riser was
+  //  already at his hands, and the startle hop came the frame after the catch (f3436 -> f3437): no player reacts in 33 ms. Planted: RED
+  //  with the startle on the first frame of a catch (vineSnakePiece.ts without `held`), planted-faults.py)
+  test(`${id}, the real engine: caught with a travelling snake already at his hands, he holds TELL_MIN before its startle, then it takes him off`, () => {
+    for (const [route, hold] of [['up', 'low'], ['down-off', 'high']] as const) {
+      const { r, v, piece } = snaked(id, { route, reach: 0.5 });
+      const len = v.bottomY - v.topY;
+      const swingLen = hold === 'low' ? len - 12 : 120;
+      const hands = handsAlong(swingLen, len);
+      // (off the liana until its snake travels over the hold he will take)
+      let i = 0;
+      for (; i < 30 * 16; i++) {
+        r.frame();
+        const n = (piece() as unknown as { now: ReturnType<typeof snakeNow>[] }).now[0];
+        if (n.live && snakeTouches(n, len, hands) && snakeTouches(snakeNow(v.snake!, len, (r.e as unknown as Eng).clock.read('snake', TELL_MIN + 2 / 30)), len, hands)) break;
+      }
+      assert.ok(i < 30 * 16, `${id} ${route}: the snake reached the hold`);
+      r.swing(v, { angle: 0.1, omega: 0.3, len: swingLen });
+      let frames = 0;
+      while (r.p.isVineSwinging && frames < 60) { r.frame(); frames++; }
+      assert.ok(frames >= Math.round(TELL_MIN * 30), `${id} ${route}: he let go ${frames} frame(s) after the catch, inside TELL_MIN (${TELL_MIN} s)`);
+      assert.ok(!r.p.isVineSwinging && frames <= Math.round(TELL_MIN * 30) + 2, `${id} ${route}: the startle still came once its tell had shown (${frames} frames)`);
+      assert.equal(piece()!.letGos, 1);
+    }
+  });
+}
 
 for (const id of ['6-3', '2-4']) {
   test(`${id}, the real engine: a FALSE liana (the snake hanging still) startles when he takes it: he hops off, it is not there to catch again, it drops onto the floor below, slithers off away from him and is gone; whole again when he respawns`, () => {
