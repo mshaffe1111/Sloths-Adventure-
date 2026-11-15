@@ -144,7 +144,7 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
 - **1-6's Easy list** proves stages no phone builds (all 100 seeds' Easy parts change once this branch and f3312155c are under it).
   Not relisted, by the packet (ENG-16G owns it). Without f3312155c on t-build-16, the now-correct Easy flights leak into Normal through
   levelCheck's unkeyed FLIGHTS cache (2/100 Normal seeds, 56 and 62, moved in one process; each built alone is unchanged).
-- **Four rolled layouts drop Normal's only frog on Easy** (6-3 layout 4; 6-7 layouts 3, 8, 9), the same before and after this fix:
+- **R-165.259 (the lead logged it 7:28 PM, for later): four rolled layouts drop Normal's only frog on Easy** (6-3 layout 4; 6-7 layouts 3, 8, 9), the same before and after this fix:
   Easy's own thinning, not the swing. easyMode.test.ts checks "keeps every kind" on designed layouts only. Needs a number and the
   Designer's word on whether the rule holds for rolled layouts.
 - The base runs (lock, lists) were scratch scripts (scratchpad), not committed tools: the method update below proposes making lockall
@@ -192,4 +192,4 @@ reference/handoffs/engine-core.md section 0zb (TOOLS-2), commit PENDING.
    Then relist 1-6 (its Easy changes on 100/100 seeds) and run `seedlist.ts 1-6 --check`.
 3. Lead: publish steps (HANDOFF §6, PM.md "EnK5 rebuild", release.md) gain "after the publish succeeds: `python3
    tools/testlink/build.py --published`"; the first map on a machine with no dist-published still needs the live-file cleanup.
-4. Numbers for: the four frog layouts (Unresolved), and the Suggestions' packets.
+4. Numbers for the Suggestions' packets (the frog layouts are R-165.259).
