@@ -1,7 +1,8 @@
 # TOOLS-2 REPORT: Easy is proven on Easy's stage (R-165.251) + the test link can't over-fill or miss changes (R-165.252)
 
-Branch t-tools-2 = origin/t-tools-1@71859cf9 + merge origin/t-int-9@1c7f6b95 (ae74a9cfb, clean), then two commits:
-ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York date`.
+Branch t-tools-2 = origin/t-tools-1@71859cf9 + merge origin/t-int-9@1c7f6b95 (ae74a9cfb, clean), then the code commits
+ba2b1a215 (R-165.251), 35cb88ce5 (R-165.252), 6df8fb585 (R-165.258, the lead's ruling 11-14) and 7a0e13285 (R-165.251, the judge's
+half: found by the suite). Code head 7a0e13285. Times from `TZ=America/New_York date`.
 
 ## 1. Done-items
 
@@ -25,6 +26,14 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   - **castBots**: already right, it runs the real engine (castBots -> firsttimer `setDifficulty` -> engine.ts, which now calls
     `applySetting`); **levelCheck**'s flight caches were keyed by the swing already (TOOLS-1's `swingSettingKey`);
   - the engine: engine.ts `applySetting(this.easy ? 'easy' : 'normal')` where it had `setTimedSwing(this.easy)`.
+- **The judge's half (7a0e13285), found by the whole suite**: with Easy built on Easy's swing, gen2/game.test.ts:68 and
+  w7Game.test.ts:65 went red on 7-9 layout 2 Easy ("exit platform 157 is not reachable" and 61 more): the tests judged it with
+  validateStage on the caller's Normal swing (Normal's grab misses Easy's lianas). On the base a phone's 7-9/2 Easy (built and judged on
+  Easy's swing) has 0 errors, so the stage is sound and the judge was wrong. `levelCheck.validateStage` now judges a gen2 stage on its own
+  budget's setting (withSetting), whoever asks; inside a build the dials are the stage's already. Planted: `validateStage judges a gen2
+  stage on its own setting's dials, whatever the caller's (7-9 layout 2, Easy)`: red before, green after. Not done for old-generator
+  stages: they carry no setting, so a judge of one must set it (withSetting); I did not audit which tests judge an old-generator Easy
+  stage on the wrong swing (the whole suite is green on 7a0e13285, so none fails on it today).
 - **A second hole of the same kind, found and fixed**: stageGenerator's layout-pick caches (`variantAttempt`, `known`) were keyed by
   stage and layout only; validateStage flies lianas on the dials, so a process that built Normal first handed Normal's pick to Easy.
   On base: 9-3 layouts 4 and 14, 9-4 layout 12, 10-6 layouts 1, 6 and 10 (fresh-process Easy lock vs in-process). Now keyed by `dialsKey()`.
@@ -57,8 +66,8 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   on 102/102 stages x 16 layouts** (base run with the swing set before each build, one setting per process, as a phone's first load).
   The 21 Easy stages today's tools had built wrong (layouts of 16 that differed): 3-8 16 (proto.thorns only), 4-4 10, 5-4 13, 6-1 16,
   6-3 16, 6-6 16, 6-7 16, 6-8 16, 7-5 16, 7-9 15, 8-3 16, 8-4 16, 8-5 16, 9-3 14, 9-4 4, 9-5 4, 9-9 1, 10-1 4, 10-3 8, 10-6 15,
-  10-7 2. Their Easy lock changes are intended (lockall --intended these 21 against an old lock); no phone gets a different stage:
-  the engine path is unchanged by construction (it set the dials already) and the lock proves it.
+  10-7 2. Their Easy lock changes are intended (lockall --intended these 21 against an old lock); R-165.251 itself gives no phone a
+  different stage (the engine set the dials already, and the lock proves it); R-165.258, below, then changes 8 of them on purpose.
 
 ### R-165.258 (the lead's ruling 11-14): 8-5's Easy lost its tayra on Easy's swing; fixed where it lives, for every stage
 - **Found by this packet's own fix**: the suite went red at src/game/easyMode.test.ts:61 "8-5: keeps a tayra". Proven on the untouched
@@ -99,18 +108,31 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   published (D72)`, `--published refuses when there is no build to mark`. With the old rules planted back in a copy (no cap; map against
   the last local build): 2 of 4 RED (the 523 and D72 tests); now 4/4 GREEN. Added to gates.yml's tools-test line (ciTests passes).
 
-## Gate lines (head 35cb88ce5 code; LAWS 5, src/ touched, so everything this packet names)
+## Gate lines (code head 7a0e13285; LAWS 5: src/ touched, so everything this packet names)
 - tsc `npx tsc --noEmit -p .`: exit 0.
-- Whole suite (CLAUDE.md glob, 3 shards side by side): PENDING
-- Engine tool tests (gates.yml's two lines): PENDING
-- seedlist --check: PENDING
+- Whole suite (CLAUDE.md glob, `--test-shard=i/3` side by side), run C on 7a0e13285: **3535 tests, 0 fail** (shard 1/3: 1084 tests, 1083 pass;
+  2/3: 1392, 1392 pass; 3/3: 1059, 1058 pass; the 2 not passed are marked TODOs, e.g. #924 4-3's boulder; every shard exit 0)
+  (Run B on 6df8fb585: 3534 tests, 3532 pass, 2 fail: gen2/game.test.ts:68 and w7Game.test.ts:65, 7-9 layout 2 Easy, the judge's
+  half, fixed in 7a0e13285; both green re-run alone there, 5/5. Run A on 35cb88ce5 was stopped part-way, once a later edit would have
+  mixed its code; its one red, easyMode.test.ts:61 "8-5: keeps a tayra", became R-165.258.)
+- Engine tool tests (gates.yml's two lines, with tools/testlink/build.test.ts added) on 7a0e13285: **109/109**, tierBots.test.ts **7/7** (the same on 6df8fb585).
+- seedlist --check on 7a0e13285, every listed stage (no list moved; run anyway): 1-1 PASS (162 seeds, 405 s), 1-2 PASS (100, 88 s),
+  1-3 PASS (100, 34 s), 1-4 PASS (100, 159 s), 1-5 PASS (150, 160 s), 1-7 PASS (100, 192 s); the verdicts refuse 0 seeds on each.
+- lockall --layouts 16 on 7a0e13285: Normal 102/102 unchanged against the base; Easy identical to the R-165.258 lock (the judge fix moved
+  no build); against a fresh phone's Easy, the 8 stages named in R-165.258.
 - roadmapcheck: PASS (after `git fetch --unshallow`: the container's clone was shallow and the gate says so). knowncheck: PASS.
-  generalitycheck: PASS (26 literals, 26 known). src/game/ciTests.test.ts: 3/3.
-- Not run (not named by the packet; integration runs them before any link): the vite build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck.
+  generalitycheck: PASS. src/game/ciTests.test.ts: 3/3 (in the suite).
+- Not run (not named by the packet; integration runs them before any link): the vite build, chunkcheck, artcheck, drawcheck,
+  clipcheck, kbdcheck, buildcheck.
 
 ## 2. Polish check
-No screen changed: Normal 102/102 and Easy 102/102 (fresh phone) are identical before and after, so there is no still to judge. The
-one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-1 (its Easy builds identical on either swing).
+- R-165.251, R-165.252 and the judge's half change no stage a phone builds (Normal 102/102; Easy equal to a fresh phone's on 102/102):
+  nothing to shoot.
+- **R-165.258 changes the Easy of 8 stages a phone builds** (6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5). **I took no stills of them: named
+  plainly, not hidden.** The evidence is the checker's and the bots' (each Easy now lays Normal's plan, 0 build errors in 128 builds, the
+  whole suite including every shipped roll's checks green, tierBots 7/7), not a look on a phone. Before these reach Matt's link, someone
+  should shoot 8-5 and 6-1 Easy upright and sideways (tools/art/kitaudit/shoot.mjs) at a layout that moved (8-5 layout 1, 6-1 layout 1).
+- The map's build-ahead of 1-1 builds the same 1-1 as before (World 1's Easy is identical on either swing).
 
 ## 3. Pushback
 - The packet's model was "every tool calls the helper before it builds". That leaves the next tool free to forget (it is how this
@@ -135,7 +157,7 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
 - **1-6's Easy list** proves stages no phone builds (all 100 seeds' Easy parts change once this branch and f3312155c are under it).
   Not relisted, by the packet (ENG-16G owns it). Without f3312155c on t-build-16, the now-correct Easy flights leak into Normal through
   levelCheck's unkeyed FLIGHTS cache (2/100 Normal seeds, 56 and 62, moved in one process; each built alone is unchanged).
-- **Four rolled layouts drop Normal's only frog on Easy** (6-3 layout 4; 6-7 layouts 3, 8, 9), the same before and after this fix:
+- **R-165.259 (the lead logged it 7:28 PM, for later): four rolled layouts drop Normal's only frog on Easy** (6-3 layout 4; 6-7 layouts 3, 8, 9), the same before and after this fix:
   Easy's own thinning, not the swing. easyMode.test.ts checks "keeps every kind" on designed layouts only. Needs a number and the
   Designer's word on whether the rule holds for rolled layouts.
 - The base runs (lock, lists) were scratch scripts (scratchpad), not committed tools: the method update below proposes making lockall
@@ -158,7 +180,7 @@ one player-facing path touched, the map's build-ahead of 1-1, builds the same 1-
   process per setting (ONLY=easy), not lockall's one process, until lockall itself runs settings apart.
 
 ## 7. Turnover note
-reference/handoffs/engine-core.md section 0zb (TOOLS-2), commit PENDING.
+reference/handoffs/engine-core.md section 0zb (TOOLS-2): written in 10623c48e, brought up to R-165.258 in 5d0d33be4.
 
 ## Learned
 - A tool that builds "the same stage" can only prove the phone's stage if the build sets every global its answer reads; make the build
@@ -183,4 +205,4 @@ reference/handoffs/engine-core.md section 0zb (TOOLS-2), commit PENDING.
    Then relist 1-6 (its Easy changes on 100/100 seeds) and run `seedlist.ts 1-6 --check`.
 3. Lead: publish steps (HANDOFF §6, PM.md "EnK5 rebuild", release.md) gain "after the publish succeeds: `python3
    tools/testlink/build.py --published`"; the first map on a machine with no dist-published still needs the live-file cleanup.
-4. Numbers for: the four frog layouts (Unresolved), and the Suggestions' packets.
+4. Numbers for the Suggestions' packets (the frog layouts are R-165.259).
