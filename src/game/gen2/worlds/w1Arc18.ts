@@ -59,7 +59,7 @@ export const LINES_18 = {
   mark: "Her mark! And those coils ahead... the boa's branches.",
 } as const;
 /** Pokey at the halfway wayside (dotLinesData.ts way.1-8, the keeper's line 6) */
-export const WAY_18 = 'Dot keeps flying to the end and back. Show-off.';
+export const WAY_18 = 'Dot keeps flying rings round me. Show-off.';
 /** the stage's MISSION line (the keeper's line 7): stagePlan's, held equal by w1Arc18.test.ts */
 export const MISSION_18 = 'Race the long branch before it gives way, and gather her petals.';
 

@@ -16,7 +16,7 @@ the banned words (playerText.test.ts:35; whatsNew.test.ts:28 is What's New only)
 | 3 | `crack` | Dot, once, as the base cracks (beat 3; replaces `eng.chase`) | It's cracking! Run, and don't look back! | 7 |
 | 4 | `fork` | Dot, teach, 800+ px before beat 9 (the still fork, the twist) | The mossy fork won't break. Stop and keep still! | 9 |
 | 5 | `mark` | Dot, at her mark on the cannonball tree (beat 13, exit) | Her mark! And those coils ahead... the boa's branches. | 9 |
-| 6 | `way.1-8` | Pokey, the halfway wayside (rewritten; at a living fork, never mid-stretch) | Dot keeps flying to the end and back. Show-off. | 9 |
+| 6 | `way.1-8` | Pokey, the halfway wayside (rewritten; at a living fork, never mid-stretch; 9:50 PM ET 11-14: was "Dot keeps flying to the end and back. Show-off.", which broke wayside.test.ts:55, Pokey's lines in the first person) | Dot keeps flying rings round me. Show-off. | 7 |
 | 7 | MISSION_18 | the stage card (stagePlan.ts:52 on main, replaces "Race the long branch to the shrine.") | Race the long branch before it gives way, and gather her petals. | 12 |
 | 8 | journal `1-8` | pokeyJournal.ts:56: KEEP as is | The branch came apart behind me, so I ran. Meeca always said I could. I'd never checked. | 17 |
 
@@ -89,3 +89,15 @@ safe; it never puts off the rescue (the 11-11 guard).
   ahead", "Show-off", "gives way": no player line uses them ("hop them" appears only in code comments). "Keep still" is 1-7's move
   word on purpose (the same move, named the same).
 - Dot is she; Meeca leads (her petals, her mark); World 1 has no made things in any line.
+
+## 11-14 9:50 PM ET: the moves journal's "collapsing branch" page (movesJournal.ts, id `collapse`), for BUILD-18
+Its trigger was the deleted hint "This branch goes on and on" (`tip('1-8', ...)`). That line is gone and is not to come back (it was the
+old 1-8's). The page now opens on 1-8's crack line, `crack` above ("It's cracking! Run, and don't look back!"), the moment the collapse
+starts, or on clearing 1-8 (`cleared: ['1-8']` already does); how it is keyed is the builder's call. Its words were untrue of the new 1-8
+("Keep moving and it can never catch you": the last stretch out-runs him; "Keep going, do not stop": the mossy fork is the place to stop).
+APPROVED words:
+| Field | Old | New |
+|---|---|---|
+| riddle | Do not look back. Just run! | KEEP |
+| intro | Some branches break apart behind you. Keep moving and it can never catch you. If it does, you lose a heart and go back to the last flag. | Some branches break apart behind you. Run, and stop only on a mossy fork that holds. If it catches you, you lose a heart and go back to the last flag. |
+| lines (how / what) | Keep going, do not stop / Stay ahead of it | Keep running; stop only on a mossy fork / Stay ahead of it |
