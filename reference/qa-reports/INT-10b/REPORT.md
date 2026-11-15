@@ -8,10 +8,10 @@ Branch t-int-10b (t-int-10 1750cdbc + 9d8c9fda, ENG-LOOK d2bc1d89/c738e52f, t-en
    deadZones() returns, e.g. over a log under a log as the toy at :20 does), run `repairLandings(st.platforms, st.collectibles, 'normal',
    within)` (landings.ts; the pipeline calls it at pipeline.ts:4123) and assert deadZones is empty after and the petal moved. Keep the
    100-roll clean check. No widened seed range (the lead, agreed).
-2. **Three more reds, all red at 1750cdbc** (before this branch; classify at t-eng-petal 3802db95 / t-eng-dr c3c7e658 / 7e9fe4d8^ the
+2. **Four more reds, all red at 1750cdbc** (before this branch; classify at t-eng-petal 3802db95 / t-eng-dr c3c7e658 / 7e9fe4d8^ the
    way this report did, fix at the root, restate only with a revert proof): seeds.test "every shipped gen2 seed still builds and passes
    levelCheck"; walkedPath.test "D: gen2 stages of four worlds ... every standing petal ... is inside"; w8Fair.test "8-2: no fungus step
-   floats over the void". (w5.test "the inspector on 20 rolls" failed in the loaded shard only: GREEN alone on this head.)
+   floats over the void"; petals.test "spread out ... at most 2 screens without a petal" (red at 1750cdbc too). (w5.test "the inspector on 20 rolls" failed in the loaded shard only: GREEN alone on this head.)
 3. Then the suite again (3 shards), and every gate gates-rest.txt did not reach; `npx tsx tools/engine/lockall.ts --layouts 16 --check
    <base lock>` (record the base at 1750cdbc with --out in a worktree; expect 1-1, 1-4, 1-6, 1-7, 1-8, 8-3 and every stage with soft-pit
    holes to move, and say why).
@@ -38,7 +38,7 @@ Branch t-int-10b (t-int-10 1750cdbc + 9d8c9fda, ENG-LOOK d2bc1d89/c738e52f, t-en
 7. planted.py 12/12 RED, restored GREEN.
 
 ## Gates (code of 642cfda6; later commits are tests/reference + 1fb89f19's three test/constant fixes, each run GREEN alone)
-tsc 0 | suite: shards 1-2 0 fail, shard 3 7 fail (5-9 kid runs + G8 FIXED after; landingRepair, seeds, walkedPath, w8Fair: step 1-2;
+tsc 0 | suite: shards 1-2 0 fail, shard 3 8+ fail (5-9 kid runs + G8 FIXED after; landingRepair, seeds, walkedPath, w8Fair, petals spread: step 1-2;
 w5 inspector GREEN alone) | build + chunkcheck PASS | artcheck, knowncheck, generality, roadmapcheck PASS | drawcheck, clipcheck,
 kbdcheck, buildcheck, seedlist 1-1, tool tests, tierBots: gates-rest.txt | lockall: NOT RUN on the final head (step 3).
 
