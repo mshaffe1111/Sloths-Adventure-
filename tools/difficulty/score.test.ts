@@ -228,8 +228,11 @@ test("a watched stretch: each pass the run to the worst spot's nearest cover plu
   assert.ok(withMoss[0].bits < out[0].bits, `${withMoss[0].note}`);
   // (off the stretch is out of its eye: one bush at its start, 1000 px of open ground after it to the stretch's end at 2000 and its
   //  70 px of sight: the worst spot is half way from the bush to 2070, not 2000 itself)
-  const lone = watchChallenges([{ e: m.e, def: { ...def, sight: { ahead: 70, behind: 70 } } }], [covers[0]], SAMPLES as any, 'normal');
-  assert.ok(Math.abs(lone[0].bits - fittsBits(((2070 - 1090) / 2 / PHYS.maxRun + STILLNESS.normal.calmIn) / 2)) < 1e-9, lone[0].note);
+  //  (a 4 s warn, so neither reading meets the share's cap)
+  const lone = watchChallenges([{ e: m.e, def: { ...def, warn: 4, sight: { ahead: 70, behind: 70 } } }], [covers[0]], SAMPLES as any, 'normal');
+  const share = ((2070 - 1090) / 2 / PHYS.maxRun + STILLNESS.normal.calmIn) / 4;
+  assert.ok(share < 0.9);
+  assert.ok(Math.abs(lone[0].bits - fittsBits(share)) < 1e-9, lone[0].note);
   // (not a watcher: nothing)
   assert.equal(watchChallenges([{ e: m.e, def: { kind: 'snake', tell: 0.5 } }], covers, SAMPLES as any, 'normal').length, 0);
 });
