@@ -15,6 +15,8 @@ Branch: t-eng-w2 from origin/t-int-9@1c7f6b95.
 ENGINE-WORTHY from DESIGN-FINAL (7:49): a river log moves him by position (engine.ts:1848), so a jump off it keeps none of its speed,
 while a ride does (ride.ts:19): one carry rule for everything that carries him, planted. And flowerReach.ts:139 never puts a petal on pads
 or logs. Final designs: reference/design/2-1.md and 2-2.md on origin/t-pitch-b (b85dba7f) replace PITCH-A as your source.
+STORY (keeper, canon): reference/design/PICKS-19-22.md "Story keeper rulings": the village dug into the bank (not stilts), the
+arrival scene at 2-1's gate, no mushroom bounce in World 2 (a bent Guadua bamboo or palm frond), the counter-flow as an eddy by an islet.
 Proof in reference/qa-reports/ENG-W2/REPORT.md: stills of a rolled 2-1 upright + sideways (Normal), the bot ride clip with the frame named,
 the WHOLE suite on your head, lockall --check (only 2-1/2-2 move; list them), drawcheck on 2-1 if it is in limits.json (add it: D51).
 Report "Learned", ENGINE-WORTHY, and EXACT NEXT STEP for the 2-1 builder (what is data-only from here).

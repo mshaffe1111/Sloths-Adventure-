@@ -38,3 +38,13 @@ Both pitchers reached the same idea on their own: the boa strikes at movement, s
 ## Next
 One designer writes reference/design/1-9.md, 2-1.md and 2-2.md from these picks (1-9 first: its engine starts as soon as its node list is
 final). The story keeper writes the lines. 1-9's engine packet starts in the next free engine slot; 2-1/2-2 sections follow ENG-W2's kit.
+
+## Story keeper rulings on 2-1 / 2-2 (7:53 PM ET; lines APPROVED on t-story@50da9e58, lines-2-1.md and lines-2-2.md)
+World 2's voice: the river is in no hurry; Dot talks faster the slower things get. Builders apply these (canon, not taste):
+1. The village is DUG INTO the bank with PLEASE BE PATIENT doors, never stilt houses (2-1's end; World 2 kit art).
+2. Meeca spent her petals on the king's crown: 2-1's petals are FEW, and 2-2's crown flowers are the pond's own (lavender water hyacinth,
+   the lily's white), never pink.
+3. 2-2 is World 2's note stage: Meeca's note is laid (at w2_note, past the 2nd flag).
+4. The World 2 arrival scene plays at 2-1's village gate (it is set in the village), not on arriving in the world.
+Look (nature check PASS): the counter-flow is an eddy channel by an islet; the bounce is a bent Guadua bamboo or palm frond (no mushroom in
+World 2); the heron is a cocoi heron. Pads never say "don't stop / be still" (that's World 5's lesson).
