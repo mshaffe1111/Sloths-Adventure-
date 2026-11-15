@@ -13,6 +13,7 @@ import { FALLS } from '../../src/game/waterfalls.ts';
 import { VINE } from '../../src/game/thornVine.ts';
 import { skillHeldAt } from '../../src/game/skills.ts';
 import { roomBox, type RoomSpec } from '../../src/game/puzzleKit.ts';
+import { rollMeetX } from '../../src/game/rolling.ts';
 import { CLIMB, RUN, type Route, type Seg } from './route.ts';
 import { moveKind } from './lookalike.ts';
 import type { Stage } from './stages.ts';
@@ -312,6 +313,16 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   for (const s of w5?.sheets ?? []) span({ x0: s.x0, x1: s.x1, y0: s.top - 20, y1: s.bottom + 20 }, 1e9, 'Z', 'silk sheet: do not stop', 0, 'silk sheets');
   const chase = stage.proto?.chase;
   if (chase) span({ x0: chase.start, x1: chase.end, y0: -1e9, y1: 1e9 }, 1.5, 'Z', 'the branch collapses behind him: keep running', 0, 'chase');
+  // (a LAID chase, any world: chase.ts ChaseLay on the stage, run by pieces/chasePiece.ts. Each stretch is pressure as the hand-built one
+  // is; its living forks are not. And its rolling nuts and fruit, rolling.ts RollSpec: each a beat where it meets him, from rollMeetX to
+  // its drop, a nut a hop, a fruit a pass under (do nothing, keep running: timed). The quiet line read 1-8's K3 as 18.2 s of nothing
+  // without them, ENG-CL (7))
+  for (const s of stage.chase?.stretches ?? []) span({ x0: s.start, x1: s.end, y0: -1e9, y1: 1e9 }, 1.5, 'Z', 'the branch collapses behind him: keep running', 0, 'chase');
+  for (const h of stage.rolling ?? []) {
+    const i = firstIn(samples, { x0: rollMeetX(h) - 24, x1: h.dropX, y0: -1e9, y1: 1e9 });
+    if (i < 0) off('rolling hazards');
+    else add(i, h.kind === 'low' ? 'h' : 'Z', h.kind === 'low' ? 'a rolling nut: hop it' : 'a bouncing fruit: run on under it');
+  }
 
   // ---- half beats: a pickup arc over a gap that the route does not jump ----
   const pickups = stage.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf');

@@ -13,7 +13,7 @@
 import '../../src/game/headlessDom.ts';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
-import { listedStage } from '../../src/game/gen2/listed.ts';
+import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { quietJudge } from './listRules.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
@@ -36,7 +36,8 @@ export function stageSource(stageId: string): { kit: () => WorldKit; cfg: LevelC
 /** one seed on one setting, built as the seed-list search builds it (seedlist.ts: the quiet line as `also`) */
 export function buildStage(stageId: string, seed: number, difficulty: Setting): Any {
   const { kit, cfg } = stageSource(stageId);
-  return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also: quietJudge(cfg) });
+  const row = listedStage(stageId)!;
+  return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also: quietJudge(cfg, (st, d) => playFinish(row, st, d)) });
 }
 
 export interface StageRoll {

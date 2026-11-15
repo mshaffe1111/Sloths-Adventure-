@@ -13,7 +13,7 @@ import { flagsInOrder } from './gen2/tower.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
-import { listedStage, type ListedStage } from './gen2/listed.ts';
+import { listedStage, playFinish, type ListedStage } from './gen2/listed.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -2918,7 +2918,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
     // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
     const stage = listed
-      ? ((st) => (listed.finish ? listed.finish(st, difficulty) : st))(w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels))
+      ? playFinish(listed, buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), difficulty)
       : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;

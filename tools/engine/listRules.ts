@@ -11,12 +11,20 @@ import { easyStage } from '../../src/game/easyMode.ts';
 import type { BuildRequest, Gen2Stage } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 
-/** the longest quiet stretch on Normal before the goal section's entry (the outro excluded), where its middle lies, and the outro's px */
-export function quietOf(cfg: LevelConfig, st: Gen2Stage): { quiet: number; outro: number; x: number } {
+/** a roll's finish as Play gives it (listed.ts playFinish, by the stage's row), on a stage it may write onto */
+export type RollFinish = (st: Gen2Stage, difficulty: 'normal' | 'easy') => Gen2Stage;
+
+/**
+ * the longest quiet stretch on Normal before the goal section's entry (the outro excluded), where its middle lies, and the outro's px.
+ * Measured on the roll AS PLAYED when `finish` is given (the row's, listed.ts playFinish): a hazard its finish lays is a beat (ENG-CL (7))
+ */
+export function quietOf(cfg: LevelConfig, st: Gen2Stage, finish?: RollFinish): { quiet: number; outro: number; x: number } {
   const goal = st.gen2.sections.filter((q) => q.phase === 'goal').pop();
   // (on a copy: withGoals writes the goal numbers onto the stage it is given, and a stage the list's search measured then differed from
-  // its own replay on a purge stage, easyGoal/normalGoal/easyToday: seedlist 1-3 --check, P13 11-12)
-  const R = pickRoute(cfg.objectiveType, withGoals({ ...st } as never) as never);
+  // its own replay on a purge stage, easyGoal/normalGoal/easyToday: seedlist 1-3 --check, P13 11-12. A finish writes onto it too, so it
+  // gets a deep copy and the search keeps its own build)
+  const played = finish ? finish(structuredClone(st), 'normal') : st;
+  const R = pickRoute(cfg.objectiveType, withGoals({ ...played } as never) as never);
   const dn = deadTime(R.used.br.beats, R.used.br.total, NORMAL_GAP, R.used.samples);
   const gx = goal ? goal.x0 : Infinity;
   let worst = 0, x = 0;
@@ -29,11 +37,15 @@ export function quietOf(cfg: LevelConfig, st: Gen2Stage): { quiet: number; outro
   return { quiet: Math.round(worst * 10) / 10, outro: goal ? Math.round(goal.x1 - goal.x0) : 0, x };
 }
 
-/** the quiet line as a rule the search holds a roll to: on Normal, a stretch over `max` s refuses the roll and names the slot it lies in */
-export function quietJudge(cfg: LevelConfig, max: number = QUIET_MAX): NonNullable<BuildRequest['also']> {
+/**
+ * the quiet line as a rule the search holds a roll to: on Normal, a stretch over `max` s refuses the roll and names the slot it lies in.
+ * Judged on the roll as played: the caller passes its row's finish (listed.ts playFinish), so a chase's nuts and fruit a finish lays
+ * count (ENG-CL (7), BUILD-18: 1-8's K3 read as 18.2 s of nothing on the bare roll)
+ */
+export function quietJudge(cfg: LevelConfig, finish?: RollFinish, max: number = QUIET_MAX): NonNullable<BuildRequest['also']> {
   return (st, difficulty) => {
     if (difficulty !== 'normal') return [];
-    const q = quietOf(cfg, st);
+    const q = quietOf(cfg, st, finish);
     if (q.quiet <= max) return [];
     const slot = st.gen2.sections.findIndex((s) => q.x >= s.x0 && q.x <= s.x1);
     return [{ line: `the quiet line: ${q.quiet} s with nothing to do at x ${Math.round(q.x)}, over ${max} s (the goal run-out excluded)`, ...(slot >= 0 ? { slot } : {}) }];

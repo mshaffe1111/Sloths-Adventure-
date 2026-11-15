@@ -5,7 +5,7 @@
  */
 import { hasSeedList, plantSeedList } from './seedList.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
-import { w1World } from './worlds/w1.ts';
+import { w1Finish, w1World } from './worlds/w1.ts';
 import { kitLib12 } from './worlds/w1Arc12.ts';
 import { kitLib15 } from './worlds/w1Arc15.ts';
 import { finish14, kitLib14 } from './worlds/w1Arc14.ts';
@@ -41,6 +41,17 @@ export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.ent
   ...(r.firstRun ? { firstRun: true as const } : {}),
   ...(r.pick ? { pick: true as const } : {}),
 }]));
+
+/**
+ * a roll as Play finishes it (stageGenerator.ts generateStage: World 1's finish, its squirrels when the row says, then the kit's own), on
+ * a stage it may write onto: the ONE definition Play and the list's judges share (tools/engine/listRules.ts quietJudge), so whatever a
+ * finish lays (a stage's hazards, its beats) is judged where the player meets it (ENG-CL (7): the quiet line judged 1-8's chase on the
+ * roll before its finish; D19)
+ */
+export function playFinish<T>(row: ListedStage, st: T, difficulty: Difficulty): T {
+  const done = w1Finish(st as never, !!row.squirrels) as T;
+  return row.finish ? row.finish(done, difficulty) : done;
+}
 
 /** a stage's row; undefined when it is not a listed stage */
 export const listedStage = (stageId: string): ListedStage | undefined => (Object.hasOwn(LISTED, stageId) ? LISTED[stageId] : undefined);

@@ -102,9 +102,22 @@ export function rollRow(spec: RollSpec, easy: boolean): { speed: number; bounce:
 export function rollAhead(spec: RollSpec, easy = false): number {
   const tell = rollTell(easy);
   const { speed } = rollRow(spec, easy);
-  // (and never so near that it lands at his feet: after the thunk it still rolls ROLL.after s before it reaches him)
-  const seen = Math.max(easy ? ROLL_EASY.seen : ROLL.seen, tell + ROLL.after);
+  const seen = rollSeen(easy);
   return Math.ceil(PHYS.maxRun * tell + (PHYS.maxRun + speed) * (seen - tell) + rollRadius(spec.kind) + 22);
+}
+
+/** drop to reaching him at his full run (s) on this setting: `seen`, and never so near that it lands at his feet (after the thunk it
+ *  still rolls ROLL.after s before it reaches him) */
+export const rollSeen = (easy: boolean): number => Math.max(easy ? ROLL_EASY.seen : ROLL.seen, rollTell(easy) + ROLL.after);
+
+/**
+ * where it first meets him (his middle's world x) as he runs at it at his full run and does nothing: it is set off `rollAhead` px ahead
+ * of him and reaches him `rollSeen` s later, so his middle has come PHYS.maxRun x that far. A nut touches him there; a fruit, phased to
+ * meet him mid-arc, passes over him there or nearer its drop (it may hold back), never past it. The quiet line's beat for a hazard stands
+ * from here to its drop (tools/inspect/beats.ts findBeats, ENG-CL (7)); rolling.test.ts holds it to the real engine at 30 fps
+ */
+export function rollMeetX(spec: RollSpec, easy = false): number {
+  return spec.dropX - rollAhead(spec, easy) + PHYS.maxRun * rollSeen(easy);
 }
 
 /** the farthest any of these is set off ahead of him (the chase camera's lead must show this much), Normal and Easy */
