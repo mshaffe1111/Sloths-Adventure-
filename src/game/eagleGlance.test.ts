@@ -8,6 +8,8 @@
  *     tellOf, never under TELL_MIN), a look; a share of turns are fake-out half-turns; moving in its view while it looks starts its dive's
  *     tell, a still sloth is not seen; Easy: a longer tell, a slower rhythm, no fake-outs;
  *   - one act, one heart (core.ts landed);
+ *   - the re-check (ENG-WATCH2): after a look that saw nobody, and after a pass, its head comes round again quickly (Glance.recheck),
+ *     always a real look; the look after a re-check is followed by a full away;
  * and on the real engine: walking forward through 1-7 costs hearts; walking out from cover the moment its look ends is caught by a glance;
  * the tier bots freeze on the tell (the toy: the same bot without the freeze loses more to the eagle).
  * Planted: each rule's red run on the base (origin/t-build-16 9de5e4aa) is in reference/qa-reports/ENG-WATCH/REPORT.md.
@@ -56,17 +58,18 @@ test('its pass starts from the end of its stretch farther from him: its eye cros
 test('the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs', () => {
   const trace = () => {
     const { s, sc } = rig({ heroX: 400, cool: 1e9 });
-    const turns: Array<{ kind: string; at: number; tell: number; away: number }> = [];
-    let lastAway = 0, startAt = 0, kind = '';
+    const turns: Array<{ kind: string; at: number; tell: number; away: number; re: boolean }> = [];
+    let lastAway = 0, startAt = 0, kind = '', re = false;
     for (let f = 0; f < 30 * 400; f++) {
       sc.t += DT;
       const was = s.gl!.phase;
+      re = was === 'away' ? !!s.gl!.re : re;
       stepPredator(EAGLE, s, sc);
       const now = s.gl!.phase;
       if (was === 'away' && now !== 'away') {
         startAt = sc.t;
         kind = now;
-        turns.push({ kind, at: sc.t, tell: 0, away: sc.t - lastAway });
+        turns.push({ kind, at: sc.t, tell: 0, away: sc.t - lastAway, re });
       }
       if ((was === 'cock' && now === 'look') || (was === 'fake' && now === 'away')) turns[turns.length - 1].tell = sc.t - startAt;
       if (now === 'away' && was !== 'away') lastAway = sc.t;
@@ -78,8 +81,10 @@ test('the glance: seeded (every run of a post the same), uneven, every turn told
   assert.ok(a.length >= 60, `${a.length} turns in 400 s`);
   const real = a.filter((t) => t.kind === 'cock'), fakes = a.filter((t) => t.kind === 'fake');
   for (const t of real) assert.ok(t.tell >= Math.max(TELL_MIN, tellOf(EAGLE, false)) - DT - 1e-9, `a turn told ${t.tell.toFixed(2)} s before its look`);
-  const share = fakes.length / a.length;
-  assert.ok(Math.abs(share - G.fake) < 0.1, `fake-outs ${fakes.length}/${a.length} (dial ${G.fake})`);
+  // (the fake share is of the turns after a full away: a re-check is always a real look, the re-check test below)
+  const full = a.filter((t) => !t.re);
+  const share = fakes.length / full.length;
+  assert.ok(Math.abs(share - G.fake) < 0.1 && fakes.every((t) => !t.re), `fake-outs ${fakes.length}/${full.length} turns after a full away (dial ${G.fake})`);
   for (const t of fakes) assert.ok(t.tell < tellOf(EAGLE, false), 'a fake-out stops short of the look');
   const waits = a.slice(1).map((t) => t.away);
   assert.ok(Math.min(...waits) < G.away[0] + 1.5 && Math.max(...waits) > G.away[1] - 0.6, `uneven: away ${Math.min(...waits).toFixed(2)}-${Math.max(...waits).toFixed(2)} s`);
@@ -165,14 +170,64 @@ test('1-7 on the real engine: walking forward through every stretch past the les
   assert.ok(walked >= 5, `${walked} stretches walked`);
 });
 
-test('1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first', () => {
-  for (const setting of ['normal', 'easy'] as const) {
-    const r = probe('1-7', 1, setting, 'sneak', 7)!;
-    assert.ok(r.perched, 'the perched one');
-    const tell = r.events.find((e) => e.what.startsWith('rest->tell'));
+test('1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first (seeds 1-8)', () => {
+  // (one seed pinned one roll of the rhythm (ENG-WATCH2: 1-7's own dials moved seed 1's roll and the test went red while the catch rate
+  //  rose); over seeds 1-8 the re-check makes it a rule: on Normal the instant sneaker under the perched eagle is caught on at least 7
+  //  (the base caught 3, the dials without the re-check 5: the lead's ruling B 11-15 asked >=5); Easy is gentler and never harder, and
+  //  every catch on either setting is told first, for its whole tell)
+  const caught = { normal: 0, easy: 0 };
+  for (const setting of ['normal', 'easy'] as const) for (let seed = 1; seed <= 8; seed++) {
+    const r = probe('1-7', seed, setting, 'sneak', 7)!;
+    assert.ok(r.perched, `${setting} ${seed}: the perched one`);
     const hit = r.events.find((e) => e.what.startsWith('HEART'));
-    assert.ok(tell && hit && hit.f - tell.f >= Math.round(tellOf(EAGLE, setting === 'easy') * 30), `${setting}: ${JSON.stringify(r.events)}`);
+    if (!hit) continue;
+    caught[setting]++;
+    const tell = r.events.filter((e) => e.what.startsWith('rest->tell') && e.f <= hit.f).pop();
+    assert.ok(tell && hit.f - tell.f >= Math.round(tellOf(EAGLE, setting === 'easy') * 30), `${setting} ${seed}: told first: ${JSON.stringify(r.events)}`);
   }
+  assert.ok(caught.normal >= 7, `Normal: the instant sneaker caught on ${caught.normal}/8 seeds (the re-check)`);
+  assert.ok(caught.easy >= 1 && caught.easy <= caught.normal, `Easy: caught on ${caught.easy}/8 (a real threat, never more than Normal's ${caught.normal})`);
+});
+
+test('the re-check: after a look that saw nobody, and after a pass, its head comes round quickly, always a real look; then a full away', () => {
+  // (Glance.recheck, the lead's ruling B 11-15; Matt 11-14: "once it moved its head, you could literally just walk right up to it")
+  const aways = (easy: boolean) => {
+    const { s, sc } = rig({ heroX: 400, cool: 1e9, easy });
+    const out: Array<{ re: boolean; dur: number; next: string }> = [];
+    for (let f = 0; f < 30 * 300; f++) {
+      sc.t += DT;
+      const was = s.gl!.phase;
+      stepPredator(EAGLE, s, sc);
+      const now = s.gl!.phase;
+      if (now === 'away' && was !== 'away') out.push({ re: !!s.gl!.re, dur: s.gl!.dur, next: '' });
+      if (was === 'away' && now !== 'away' && out.length) out[out.length - 1].next = now;
+    }
+    return out;
+  };
+  const n = aways(false), e = aways(true);
+  const re = n.filter((a) => a.re && a.next);
+  assert.ok(re.length >= 10, `${re.length} re-checks in 300 s`);
+  for (const a of re) {
+    assert.ok(a.dur >= G.recheck[0] - 1e-9 && a.dur <= G.recheck[1] + 1e-9, `a re-check away of ${a.dur.toFixed(2)} s (dial ${G.recheck})`);
+    assert.equal(a.next, 'cock', 'a re-check is a real look, never a fake-out');
+  }
+  // (each look that saw nobody is followed by a re-check, unless it was the re-check's own look: then a full away, so it stays uneven)
+  for (let i = 1; i < n.length; i++) if (n[i - 1].next === 'cock') assert.equal(n[i].re, !n[i - 1].re, `away ${i}: re-check after a look, full after a re-check's`);
+  // Easy: the same re-checks, longer (x easy.cool), never harder
+  const ere = e.filter((a) => a.re);
+  assert.ok(ere.length && ere.every((a) => a.dur >= G.recheck[0] * EAGLE.easy.cool - 1e-9), 'Easy re-checks are slower');
+  // after a pass: its head is already on a quick re-check
+  const p = rig({ heroX: 600, cool: 0 });
+  p.s.cool = 0;
+  p.hero.still = true;
+  p.hero.covered = true;
+  run(p.s, p.sc, 30 * 10, (_e, s) => s.phase === 'hunt');
+  const ended = run(p.s, p.sc, 30 * 10, (_e, s) => s.phase === 'rest');
+  assert.ok(ended.f >= 0, 'the pass went over');
+  assert.ok(p.s.gl!.phase === 'away' && p.s.gl!.re && p.s.gl!.dur <= G.recheck[1] + 1e-9, `after the pass: ${JSON.stringify(p.s.gl)}`);
+  // the dials: a re-check is quick (no longer than its shortest away), its range above 0 and in order
+  assert.ok(checkGlance({ ...G, recheck: [0, 1] }).length && checkGlance({ ...G, recheck: [1, 0.5] }).length && checkGlance({ ...G, recheck: [0.6, G.away[0] + 0.5] }).length);
+  assert.deepEqual(checkGlance(G), []);
 });
 
 test('the tier bots freeze on the glance\'s tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle\'s', () => {

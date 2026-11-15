@@ -90,6 +90,8 @@ export function checkGlance(g: Glance): string[] {
   };
   range(g.away, 'away');
   range(g.look, 'look');
+  range(g.recheck, 'recheck');
+  if (g.recheck[1] > g.away[0]) bad.push(`its glance's re-check runs to ${g.recheck[1]} s: a re-check is quick, no longer than its shortest away (${g.away[0]} s)`);
   if (!(g.fake >= 0 && g.fake < 1)) bad.push(`its glance's fake-out share is ${g.fake}: at least 0, under 1`);
   if (!(g.reach > 0)) bad.push(`its glance's reach is ${g.reach} px: above 0`);
   return bad;
@@ -134,8 +136,15 @@ export function glanceRoll(seed: number, n: number): number {
 
 const inRange = (r: readonly [number, number], u: number): number => r[0] + (r[1] - r[0]) * u;
 /** the while its head stays away, its n-th time: rolled in its range, slower on Easy (x easy.cool, never faster) */
-const awayFor = (def: PredatorDef, g: Glance, seed: number, n: number, easy: boolean): number =>
-  inRange(g.away, glanceRoll(seed, n * 4)) * (easy ? Math.max(1, def.easy.cool) : 1);
+const awayFor = (def: PredatorDef, g: Glance, seed: number, n: number, easy: boolean, re = false): number =>
+  inRange(re ? g.recheck : g.away, glanceRoll(seed, n * 4)) * (easy ? Math.max(1, def.easy.cool) : 1);
+
+/** its head turns away for a quick re-check (after a look that saw nobody, and after a pass): Glance.recheck */
+export function recheckAway(def: PredatorDef, s: PredatorState, easy: boolean): void {
+  const g = s.glance, gl = s.gl;
+  if (!g || !gl) return;
+  Object.assign(gl, { phase: 'away', t: 0, dur: awayFor(def, g, gl.seed, gl.n, easy, true), re: true });
+}
 
 /** a sweeper's glance from its kind and its post (Post.glance over PredatorDef.glance; false: none) */
 function glanceOf(def: PredatorDef, post: Post): Pick<PredatorState, 'glance' | 'gl'> {
@@ -165,6 +174,7 @@ function stepGlance(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorE
     gl.phase = 'away';
     gl.t = 0;
     gl.dur = awayFor(def, g, gl.seed, gl.n, easy);
+    gl.re = false;
   };
   if (s.drawn || hero.x < s.minX || hero.x > s.maxX) {
     if (gl.phase !== 'away') away();
@@ -175,7 +185,8 @@ function stepGlance(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorE
   switch (gl.phase) {
     case 'away': {
       if (gl.t < gl.dur) return true;
-      const fake = !easy && glanceRoll(gl.seed, gl.n * 4 + 1) < g.fake;
+      // (a re-check is always a real look, never a fake-out: the quick second look is what meets him walking out on the first green)
+      const fake = !easy && !gl.re && glanceRoll(gl.seed, gl.n * 4 + 1) < g.fake;
       gl.phase = fake ? 'fake' : 'cock';
       gl.t = 0;
       // (a fake-out is a half-turn: it starts as a real turn does and stops short of the look, so it is never mistaken for safety)
@@ -208,7 +219,9 @@ function stepGlance(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorE
         return false;
       }
       if (gl.t < gl.dur) return false;
-      away();
+      // (it saw nobody: a quick re-check follows, unless this look WAS the re-check: then a full away)
+      if (gl.re) away();
+      else recheckAway(def, s, easy);
       return true;
     }
   }
@@ -399,6 +412,8 @@ function endPass(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorEven
   }
   enter(s, 'rest');
   s.cool = coolOf(def, sc.easy, s.ownCool);
+  // (after a pass its head comes round again quickly: walking out from cover the moment the shadow has gone is met by a told re-check)
+  recheckAway(def, s, sc.easy);
 }
 
 /**

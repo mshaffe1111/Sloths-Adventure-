@@ -18,3 +18,14 @@ not ok 27 - sweep: in cover and still, he is not seen: the pass goes over; two e
 # pass 56
 # fail 0
 ## C. finish17 drops the perched eagle's glance (z without kitGlance): w1Arc17.test 'own eagle dials' -> # fail 1
+## D. the re-check off (recheckAway rolls a full away): eagleGlance.test
+not ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first (seeds 1-8)
+not ok 8 - the re-check: after a look that saw nobody, and after a pass, its head comes round quickly, always a real look; then a full away
+# pass 7
+# fail 2
+## E. a re-check may fake out (the !gl.re guard removed): eagleGlance.test
+not ok 2 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+not ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first (seeds 1-8)
+not ok 8 - the re-check: after a look that saw nobody, and after a pass, its head comes round quickly, always a real look; then a full away
+# pass 6
+# fail 3

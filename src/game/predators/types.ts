@@ -123,9 +123,16 @@ export interface PredatorDef {
 export interface Glance {
   /** seconds its head stays away before it turns again, rolled each time in this range (Easy: x easy.cool) */
   away: [number, number];
+  /**
+   * the RE-CHECK: seconds its head stays away after a look that saw nobody and after a pass, rolled short in this range (Easy: x easy.cool),
+   * so walking out the moment its head turns away is met by a quick, told second look. The look after a re-check is followed by a full
+   * `away` again, so the rhythm stays uneven (ENG-WATCH2, the lead's ruling B 11-15; Matt 11-14: "once it moved its head, you could
+   * literally just walk right up to it"). Never longer than its shortest away
+   */
+  recheck: [number, number];
   /** seconds a look lasts, rolled each time in this range */
   look: [number, number];
-  /** share of turns (0..1) that are a fake-out half-turn; none on Easy */
+  /** share of turns after a full away (0..1) that are a fake-out half-turn; never a re-check's, none on Easy */
   fake: number;
   /** a perched one sees him move within this far of its post (px): no further than its post shows on his upright screen */
   reach: number;
@@ -141,6 +148,8 @@ export interface GlanceState {
   seed: number;
   /** where it looks (world x): his spot when the look began, held through the look */
   at: number;
+  /** this away is a re-check (Glance.recheck): the look after it is followed by a full away */
+  re?: boolean;
 }
 
 /** where a stage puts one (the stage's data, never the kit's) */

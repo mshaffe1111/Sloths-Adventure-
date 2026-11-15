@@ -114,7 +114,7 @@ export function probe(stage: string, seed: number, setting: 'normal' | 'easy', m
       hits++;
       say(f, `HEART LOST (hp ${sim.p.hp}) at x ${Math.round(sim.p.x)}`);
     }
-    if (frames && f % 15 === 0) say(f, `. ${ph} t${k.t.toFixed(2)} eye ${Math.round(k.eyeX)} him ${Math.round(sim.p.x)} cool ${k.cool.toFixed(2)}`);
+    if (frames && f % 15 === 0) say(f, `. ${ph} t${k.t.toFixed(2)} eye ${Math.round(k.eyeX)} him ${Math.round(sim.p.x)} cool ${k.cool.toFixed(2)}${k.gl ? ` head ${k.gl.phase}${k.gl.re ? ' (re-check)' : ''} ${k.gl.t.toFixed(2)}/${k.gl.dur.toFixed(2)}` : ''}`);
     hp = sim.p.hp;
     was = ph;
     if (mode === 'sneak' && go >= 0 && k.perched && Math.abs(sim.p.x - k.homeX) < 4) say(f, `under its post (x ${Math.round(k.homeX)}), ${((f - go) / 30).toFixed(2)} s after he left cover, phase ${k.phase}`);

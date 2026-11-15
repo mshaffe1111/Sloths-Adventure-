@@ -105,7 +105,8 @@ export const EAGLE: PredatorDef = {
   // fake-out half-turn; a perched one sees him move within 240 px of its post: an upright phone shows about 270 px past where he stands
   // (level.md) and the bird is ~90 px across, so it is ALL on screen while it can see him (at 280 it sat half off the edge, ENG-WATCH's
   // glance stills). A stage's still row sets its own (W1_STILL's watch row)
-  glance: { away: [1.2, 4.5], look: [0.9, 2.2], fake: 0.25, reach: 240 },
+  // its re-check (after a look that saw nobody, and after a pass): 0.6-1.2 s away, then its told head-cock (ENG-WATCH2, ruling B)
+  glance: { away: [1.2, 4.5], recheck: [0.6, 1.2], look: [0.9, 2.2], fake: 0.25, reach: 240 },
 };
 
 export const WORLD1: readonly PredatorDef[] = [SNAKE, BOA, EAGLE];

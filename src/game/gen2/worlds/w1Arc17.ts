@@ -114,7 +114,7 @@ export const LESSONS_17 = ['teach-bush', 'teach-shake'] as const;
  * harder: away x1.5, the head-cock x1.3, no fake-outs (core.ts stepGlance), the calm x1.5 (EAGLE.easy.cool)
  */
 export const WATCH_17 = {
-  glance: { away: [1.0, 3.5], look: [1.0, 2.4], fake: 0.3, reach: 240 },
+  glance: { away: [1.0, 3.5], recheck: [0.5, 1.0], look: [1.0, 2.4], fake: 0.3, reach: 240 },
 } as const satisfies Partial<Pick<WatchRow, 'calm' | 'glance'>>;
 
 // ───────────────────────────── a brick ─────────────────────────────
