@@ -34,7 +34,10 @@ export const W1_LIANA_GAP: Record<LianaGap, { grip?: LianaGrip; share: Range; wi
   // (R-165.225, Matt 11-14 "shorter swings", the lead's ruling (A): a dialled perch's far end must be in view as he presses
   // (cameraFollow.ts SWING_SEEN), so FAR's perch is narrow (120-140 px, the row below: its width costs no window, ENG-S1 cap.out.txt)
   // and it keeps the foot 300 ms on Normal (460-500 px past the anchor) and 550 ms on Easy (500 or under: cap-seen.out.txt))
-  far: { grip: 'low', share: [0.85, 1], window: { normal: 0.3, easy: 0.55 } },
+  // (BUILD-16d, the lead's ruling (a) 11-14: nearer the band's middle, 0.85-1 -> 0.65-0.8: kid + adult Normal seeds 1-6 (where.ts) needed
+  //  12 rescues at 0.85-1, 8 at 0.65-0.8, 19 at 0.55-0.7 (a narrow band: the X perch 436 -> 432 px past its liana, the gorge's first
+  //  perch 431 -> 400 px, seed 1); only 1-6 lays FAR)
+  far: { grip: 'low', share: [0.65, 0.8], window: { normal: 0.3, easy: 0.55 } },
 };
 
 /** a bough (World 1's look): a landing unless told, `main` so the lay may stand a flag on a wide one */

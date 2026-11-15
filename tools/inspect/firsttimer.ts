@@ -28,7 +28,11 @@
  * loseLife and damagePlayer (the harness stubs them), and sizes the view to a phone held sideways (844 x 390).
  */
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
+import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import { GameEngine } from '../../src/game/engine.ts';
+import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
+import { rollRadius } from '../../src/game/rolling.ts';
+import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
 import { MODES, along, reached } from '../../src/game/stageModes.ts';
 import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
@@ -47,8 +51,11 @@ import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
-import type { Platform, PlayerState } from '../../src/game/types.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
+import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
+import type { Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
@@ -110,6 +117,9 @@ export interface FirstTimer {
   heed: number;
   /** s from being stopped dead to deciding to jump */
   stopReact: number;
+  /** he freezes when a watcher's head turns toward him (its glance's tell, core.ts stepGlance), his stopReact after it began; false: never
+   *  (the plant: eagleGlance.test.ts's toy goes red without it) */
+  freeze?: boolean;
   /** thumb latency on every press: N(mean, sd) s */
   thumb: [number, number];
   /** how long the thumb stays down on a flick: N(his idea of a jump, sd) s, never under 2 frames */
@@ -168,6 +178,18 @@ export interface FirstTimer {
   retryHold?: number;
   /** he knows the double jump from the start (doubleUsedShare 1.0: every tester run used it): a gap one jump does not cross gets one */
   knowsDouble?: boolean;
+  /** the chase skill REMOVED (level.md rule 21's planted toy test only, tools/inspect/chaseBots.test.ts): on a running chase he stands at
+   *  an edge and lets go of the thumb as anywhere else. Every bot has the skill: with the branch breaking behind him (the crack, the
+   *  creak, the ember at the edge) he keeps his thumb down and takes each edge in stride (1-8.md: every chase beat passable IN STRIDE) */
+  noChaseStride?: boolean;
+  /** the rolling nut and bouncing fruit's reading REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): he runs on as
+   *  if neither were there. Every bot has it: a small nut rolling at him, a hop as it closes; a big fruit bouncing at him, he stays down
+   *  and runs on under it (1-8.md: "small and rolling = hop; big and bouncing = stay down") */
+  noRollRead?: boolean;
+  /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
+   *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
+   *  a runner liana's lip (1-8 NEW 4: it swings to meet a full run), his thumb stays down, as on a chase and under a fruit */
+  noRunnerHold?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -229,6 +251,13 @@ export const FT_CHILD_EASY: FirstTimer = {
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
 };
+
+/** a rolling nut this near in front of him (px, its near side to his), closing: he hops (a full run closes about 405 px/s: 0.15 s) */
+const HOP_AT = 60;
+/** a bouncing fruit within twice this ahead (px), dropping in or bouncing: he keeps his thumb down and runs on under it, no stop */
+const UNDER_AT = 240;
+/** a chased player's stand at an edge leaves this much of the front's stop budget (s): his jump and the step after it still to come */
+const CHASE_MARGIN = 0.8;
 
 /** seeded random numbers (mulberry32): the same seed plays the same run */
 export function rng(seed: number): () => number {
@@ -756,6 +785,8 @@ const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
 /** the share of a liana's swing out in front at which he decides to let go (his thumb's lag on top): the forward end (intend, on a liana) */
 export const LET_GO_AT = 0.75;
+/** the highest a hold on a liana goes (physics.ts SWING.minLen: px under the anchor) */
+const SWING_TOP = SWING.minLen;
 const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
 /**
  * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s (then the engine's cut, PHYS.cutV), taking off at the vines' clock
@@ -867,6 +898,9 @@ export interface RunOptions {
   /** Dot says only what the phone's default setting lets through (Tips on Normal, Help on Easy: DotSay.allows), as the game does.
    *  Off by default: the tier bots are calibrated to the testers without it (tierBots.test) */
   dotSetting?: boolean;
+  /** moves an earlier stage of the world taught him, known from the start (a player plays a world in order: 1-8's still fork asks the
+   *  hide 1-7 taught, and Dot need not say it again). The learned words' own ids ('hide', 'still', 'double', ...) */
+  knows?: readonly string[];
 }
 
 /** a fresh phone: no lessons, tips or settings from the last run (a first-timer's own lessons carry over within one pass) */
@@ -980,6 +1014,8 @@ export class FirstTimerRun {
   private warnSeenAt = -1;
   /** when the kit eagle's look over his stretch began (its screech), or -1 */
   private castWarnAt = -1;
+  /** when a watcher's head began to turn toward him (its glance), or -1 */
+  private glanceAt = -1;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1026,6 +1062,10 @@ export class FirstTimerRun {
   private pitFalls = new Map<Platform, number>();
   /** when he last let go of a liana (s of play): a pit he falls into soon after was a let-go that fell short, and he learns to hang low */
   private letGoAt = -Infinity;
+  /** the liana he last swung on (its id): out of a pit, a liana further along the route than it is a way on, not the way back (pitWayUp) */
+  private swungOn: number | null = null;
+  /** the ledge pitWayUp last chose for a liana ahead of that one (a climb toward it is followed even when it heads the way on) */
+  private catchAhead: Platform | null = null;
   /** seconds he has stood at an edge waiting for a liana to swing to him (lianaWait) */
   private lianaWaitT = 0;
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
@@ -1083,6 +1123,7 @@ export class FirstTimerRun {
     this.start = { x: this.sim.p.x };
     this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
+    for (const k of opts.knows ?? []) this.learned.add(k);
     const e = (this.e = this.sim.e as Eng);
     // the engine's own lessons, stuck help and camera (the harness turns them off)
     for (const m of ['lessonTick', 'watchForStuck', 'updateCamera']) delete e[m];
@@ -1208,6 +1249,9 @@ export class FirstTimerRun {
       const from = e.watchFrom as Pt | undefined;
       return { cause: 'watcher', onScreen: from ? on(from.x, from.y) : null };
     }
+    // (a cast animal in its act whose box is on him: the kit's eagle dives from its eye or its post, often more than 160 px from where the
+    //  nearest-foe rule below looks, so its hits were counted 'other': ENG-WATCH, eagleGlance.test.ts holds the count)
+    for (const m of (e.cast?.members ?? []) as any[]) if (m.s.phase === 'act' && touches(hurt(m.def, m.s), p, 20, 52)) return { cause: `foe:${m.e.type}`, onScreen: on(m.e.x, m.e.y) };
     let best: { e: any; d: number } | null = null;
     for (const m of e.enemies as any[]) {
       if (m.defeated) continue;
@@ -1378,6 +1422,22 @@ export class FirstTimerRun {
    * he can walk and hop (pitWayUp) starts back the other way: a dip he can hop out of forward is left forward, by the steer as before.
    * Returns the way to head (0: not climbing back).
    */
+  /** the vine snake on liana `id` (`len` px) as the screen shows it now, if it is coming at his hands (`swingLength` px down): 'up' when
+   *  it comes up from the foot under them (he climbs high), 'down' when it comes down from the anchor over them (he slides low); null
+   *  when none shows or it is past him. Read from the snake piece's own place this step (vineSnakePiece.ts now[i]): what he can see */
+  private snakeAhead(id: number, len: number, swingLength: number): 'up' | 'down' | null {
+    const piece = ((this.e as unknown as { pieces?: Array<{ kind: string; vines?: Array<{ id: number }>; now?: SnakeNow[] }> }).pieces ?? []).find((q) => q.kind === 'vine-snake');
+    const i = piece?.vines?.findIndex((v) => v.id === id) ?? -1;
+    const n = i >= 0 ? piece!.now?.[i] : undefined;
+    if (!n || !n.shown) return null;
+    const hands = handsAlong(swingLength, len);
+    // (its tell: reared at the end it starts from, head onto the vine; its trip: the part of it on the vine, the way its head leads)
+    const on = onVine(n, len) ?? { from: n.head, to: n.head };
+    if (n.dir < 0 && on.to > hands) return 'up';
+    if (n.dir > 0 && on.from < hands) return 'down';
+    return null;
+  }
+
   private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
     const p = this.sim.p;
     const toward = (q: Platform): -1 | 0 | 1 => {
@@ -1386,6 +1446,13 @@ export class FirstTimerRun {
     };
     const cb = this.climbBack;
     if (cb) {
+      // (a liana took him on the way back (its foot swinging back over the stair): the climb back is over and the route steers him on.
+      // Kept, he held back on it and leapt back over the gone limb into the pit before, round and round: 1-6's gorge, castBots adult
+      // Normal seed 4 and kid seed 3, six rescues each; ENG-16E, R-165.246)
+      if (p.isVineSwinging) {
+        this.climbBack = null;
+        return 0;
+      }
       if (p.grounded) {
         const on = this.floorAt(p.x, p.y, 6);
         const k = on ? cb.path.indexOf(on) : -1;
@@ -1399,6 +1466,11 @@ export class FirstTimerRun {
       return cb.dir;
     }
     if (!tgt || !p.grounded || p.climbing || p.hanging || p.isVineSwinging || this.e.nearTreeVine) return 0;
+    // (a way on within a double's rise is jumped for, unless it is a swinging liana's foot: that is no ledge, it is there for a moment of
+    // its swing, and from a pit floor he jumped at it untimed. 1-6 Normal kid seed 5 under the first liana, its foot 179 px up: seven
+    // jumps in 9 s to a rescue, the pit's stair beside him back to the bank he catches it from (ENG-16F, FT_TRACE 10.8-19.6))
+    const onLiana = this.sim.vines.some((v) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off && vineAmp(v) > 0.05
+      && Math.abs(tgt.x - v.x) <= (v.bottomY - v.topY) * Math.sin(vineAmp(v)) + 40 && tgt.y >= v.topY - 40 && tgt.y <= v.bottomY + 60);
     if (this.prog.off(p) < 120) return 0;
     // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
     const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
@@ -1407,12 +1479,14 @@ export class FirstTimerRun {
     //  the bank, so the route over it is inside a double, but its far wall is the perch 80 px over the bank: 259 px, and he stood facing
     //  it until the rescue (BUILD-17, 1-7 Easy seed 11; pitClimb.test.ts "shallow pit"))
     const face = this.faceAhead(ahead, 60);
-    if (tgt.y > p.y - (DOUBLE_RISE + 10) && !(face !== null && face > DOUBLE_RISE + 10)) return 0;
+    if (!onLiana && tgt.y > p.y - (DOUBLE_RISE + 10) && !(face !== null && face > DOUBLE_RISE + 10)) return 0;
     const from = this.floorAt(p.x, p.y, 6);
     const path = from ? this.pitWayUp(from) : null;
     if (!path) return 0;
     const dir = toward(path[1]);
-    if (dir === 0 || dir === ahead) return 0;
+    // (a climb that heads the way on is left to the steer, unless it climbs to a liana ahead: from the pit under the first liana the way
+    // up to the next one runs forward under the crumbled limb, and the steer walked him into the far wall for 20 s; ENG-16I)
+    if (dir === 0 || (dir === ahead && path[path.length - 1] !== this.catchAhead)) return 0;
     // (the same pit `tries3` times, no further on: a loop, as the same fall three times is (fallBacks); he is put past it)
     const n = (this.pitFalls.get(from!) ?? 0) + 1;
     this.pitFalls.set(from!, n);
@@ -1521,7 +1595,7 @@ export class FirstTimerRun {
     // (how many of 24 moments of a liana's swing his hop off the lip catches: he climbs to the ledge it is caught from most often, as a
     // person climbs to the top of a stair under a liana, not the first step that catches it at some moment. 1-6 Normal adult seed 1, the
     // gorge: the second step caught gl2 at 14 of 48 moments, the top one at 29; he hopped from the second three times and was rescued, ENG-16F)
-    const catches = (q: Platform) => q.y < from.y - 60 ? Math.max(0, ...lianas.map((v) => {
+    const catches = (q: Platform, of = lianas) => q.y < from.y - 60 ? Math.max(0, ...of.map((v) => {
       const d: -1 | 1 = v.x >= q.x + q.width / 2 ? 1 : -1;
       const lip = d > 0 ? q.x + q.width - 12 : q.x + 12;
       const per = vinePeriod(v);
@@ -1550,6 +1624,22 @@ export class FirstTimerRun {
       line = next;
     }
     let goal = reached.find(walked);
+    // (a liana further along the route than the one he last swung on, caught from a ledge of this pit at a quarter of its swing or more,
+    // beats a walk back to a ledge the route reaches before it: the creaky limb crumbled under him, and since soft-pit floors join under a
+    // perch (ENG-16H pitFloorJoin) the pit past it is open to the pit before, so the walk back led him to the first liana again and off the
+    // limb again, three times, to a rescue (castBots 1-6 Normal kid 33 of 40, the creaky landing and the gorge; ENG-16I). A person in
+    // that pit climbs the stair and jumps for the next liana over its top step (pitClimb.test.ts "crumbled creaky limb")
+    const along = (x: number, y0: number, y1: number) => pts.findIndex((r) => Math.abs(r.x - x) < 60 && r.y >= y0 && r.y <= y1 + 60);
+    const last = this.sim.vines.find((v) => v.id === this.swungOn);
+    const lastAt = last ? along(last.x, last.topY, last.bottomY) : -1;
+    if (goal && lastAt >= 0) {
+      const goalAt = Math.max(-1, ...pts.map((r, i) => (r.x >= goal!.x && r.x <= goal!.x + goal!.width && Math.abs(r.y - goal!.y) < 12 ? i : -1)));
+      const on = lianas.filter((v) => v !== last && along(v.x, v.topY, v.bottomY) > Math.max(lastAt, goalAt));
+      let most = 5, ahead: Platform | undefined;
+      if (on.length) for (const q of reached) { const n = catches(q, on); if (n > most) { most = n; ahead = q; } }
+      if (ahead) goal = ahead;
+    }
+    this.catchAhead = goal && goal !== reached.find(walked) ? goal : null;
     if (!goal) {
       let most = 0;
       for (const q of reached) {
@@ -1636,6 +1726,7 @@ export class FirstTimerRun {
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
+    if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
     // which way: along the route; with no route, right
     let dir: -1 | 0 | 1 = 1;
@@ -1644,6 +1735,11 @@ export class FirstTimerRun {
       const dx = tgt.x - p.x, dy = tgt.y - p.y;
       dir = dx > 16 ? 1 : dx < -16 ? -1 : 0;
       up = dy < -40;
+      // (on a liana the way on is the side its point past the swing lies (pastLiana), never the way he was going: ENG-16H, R-165.246.
+      // Back up a pit's stair the way was BACK; caught again, with the perch below him and close across, the rule below kept that way,
+      // so he let go at the back end of the swing, into the same pit: 1-6 Normal kid seeds 14, 20 and 21, "fell into this pit 3 times",
+      // each let-go on the backswing (f3603 vx -294). pitClimb.test.ts 'a stale way back')
+      if (p.isVineSwinging) dir = dx >= 0 ? 1 : -1;
       if (dir === 0) {
         const far = this.prog.target(p, 200);
         if (far) dir = far.x > p.x + 16 ? 1 : far.x < p.x - 16 ? -1 : 0;
@@ -1651,7 +1747,7 @@ export class FirstTimerRun {
       // (the way on is below, close across: he keeps going the way he was until he finds the edge, never turns back for it)
       // (a tier bot heads the way the route goes on from there, not back the way a bounce threw him, which on w1-twin-mushroom-fork put
       // him on the mushroom again and again)
-      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) {
+      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0 && !p.isVineSwinging) {
         const far = who.holdQ ? this.prog.target(p, 240) : null;
         dir = far && Math.abs(far.x - p.x) > 40 ? (far.x > p.x ? 1 : -1) : this.way;
         // (and not over a bounce mushroom on his own ledge: off the other end. v16 middle Easy: up on a ledge over the route, he
@@ -1727,6 +1823,10 @@ export class FirstTimerRun {
       if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) return this.startJump(q.dir, q.kind, q.off);
     }
 
+    // the rolling nut and the bouncing fruit, read at a glance as they come at him
+    const rolled = this.rollPlan(dir, side);
+    if (rolled) return rolled;
+
     // the watching eagle: once told how to hide, he heads for the nearest bush a second after its cry, and stays down until it has gone
     const w = e.proto?.watch ? e.watch : null;
     if (w) {
@@ -1742,6 +1842,20 @@ export class FirstTimerRun {
           if (p.x > best.x + 16 && p.x < best.x + best.w - 16 && p.grounded) return { down: true };
           return side(cx > p.x ? 1 : -1);
         }
+      }
+    }
+
+    // the kit watcher's glance (core.ts stepGlance: red light, green light): its head turns toward him (the head-cock, its tell); his
+    // stop reaction after it began, he takes his thumb off and holds still until its head is away again (a fake-out too: he cannot tell
+    // one from a real turn until it turns away). In the air or on a liana he cannot stop: he lands, or swings on
+    const turned = who.freeze !== false && ((e.cast?.sweepers ?? []) as any[]).some((m) => m.s.phase === 'rest' && glancing(m.s) && glanceView(m.s, p));
+    if (!turned) this.glanceAt = -1;
+    else {
+      if (this.glanceAt < 0) this.glanceAt = t;
+      // (a jump he has begun, its run-up and its press, he finishes, as he does when the eagle screams: a thumb mid-jump does not freeze)
+      if (t >= this.glanceAt + who.stopReact && p.grounded && !this.jump && !p.isVineSwinging && !p.climbing && !p.hanging) {
+        this.hiding = true;
+        return {};
       }
     }
 
@@ -1867,7 +1981,16 @@ export class FirstTimerRun {
       // the let-go as below. BUILD-16c: 1-6's LONG gaps fly only from a low grip, by design, and the bot never climbed down)
       // (and only once clear of the ledge he caught it from: half a second on it, no ledge just under his feet. Down at a lip, his feet at
       // its top, the engine set him down or dropped him (engine.ts swing exits): 1-6 Normal seed 2 x 14029, a catch lost at once)
-      if (own && this.learned.has('low') && !this.pending && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
+      // (a vine snake on HIS liana, as the screen shows it (the snake piece's own place this step: its tell or its trip): he climbs ahead
+      // of it, away from the end it comes from, as Dot's lines say (1-6: "If one heads down your liana, climb down ahead of it"; "Snakes
+      // coming UP the lianas now! Climb high, ahead of them"). BUILD-16d: knowing nothing of snakes, the kid slid to the foot he had
+      // learned to hang from, met a riser there, was let go into the pit and looped on its stair to a rescue (1-6 Normal seed 3, x 32439).
+      // Up: never down to the foot while it shows; down: to the foot, the same clear-of-the-ledge rule as hanging low)
+      const len = own ? own.bottomY - own.topY : 0;
+      const ahead = own && !this.pending ? this.snakeAhead(own.id, len, p.swingLength ?? 0) : null;
+      if (ahead === 'up' && (p.swingLength ?? 0) > SWING_TOP + 4) return { up: true };
+      if (ahead === 'down' && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < len - 4) return { down: true };
+      if (own && ahead !== 'up' && this.learned.has('low') && !this.pending && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
       // (how far forward, as a share of the vine's own swing: physics.ts swingSetup sizes each one)
       const a = (p.swingAngle ?? 0) / Math.max(0.05, own ? vineAmp(own) : TIMED.amp), om = p.swingAngularVelocity ?? 0;
       // (the let-go at the swing's forward end, as the testers let go (physics.ts RELEASE: "the natural moment, just past the sweet
@@ -2066,10 +2189,11 @@ export class FirstTimerRun {
     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
     // ledge's end instead of edgeAim's 22-44. The frame's own movement, moveX, is what it means)
     const moved = Math.abs(this.moveX);
-    // (on a stage that names a cast, a tier bot's thumb lifting for a moment (rhythm, gapQ) holds the count, never starts it over: against
-    // a log's face his short pushes between lifts each fell under stopReact, so he stood at it until rescued, P13 11-12, 1-3's logs. Not
-    // elsewhere: 1-1's tier runs are calibrated to the testers as they are, tierBots.test)
-    const lifted = t < this.gapUntil, holdCount = lifted && !!e.cast && moved < 0.8;
+    // (a tier bot's thumb lifting for a moment (rhythm, gapQ) holds the count, never starts it over: against a log's face his short
+    // pushes between lifts each fell under stopReact, so he stood at it until rescued (P13 11-12, 1-3's logs). P13 held it only on a stage
+    // that names a cast, which left 1-6 (its snakes are pieces, no cast): the child stood 20 s at a 53 px stump's face to a rescue,
+    // 1-6 Normal seed 2 (ENG-16F, frames 370.4-372.6). On every stage now (level.md rule 22); 1-1's calibration re-run with it)
+    const lifted = t < this.gapUntil, holdCount = lifted && moved < 0.8;
     // (and never while the game itself holds his steer: after a put-back or a respawn the engine ignores a thumb still held from before
     // the fall for 0.35 s (engine.ts inputGrace). A person sees he was set back, not a wall. POLISH-9, R-165.228: ADULT's stopReact 0.3
     // read that hold as being stopped dead on every put-back, so at 1-1's 255 px double test he jumped where he was set down, 116 px short
@@ -2485,6 +2609,71 @@ export class FirstTimerRun {
     return out;
   }
 
+  /**
+   * the rolling nut and the bouncing fruit (pieces/rollingPiece.ts; 1-8.md NEW 9): what is in view coming at him on the ground. A NUT
+   * (small, rolling): a hop when its near side is HOP_AT px or less in front of his and it is closing; a FRUIT (big, bouncing): within
+   * UNDER_AT px he stays down, thumb on, no jump started, while the ground goes on ahead (one threat at a time: never at a gap, 1-8.md)
+   */
+  /** the ground goes on under his way for the next UNDER_AT px (no gap whose edge his own edge plan must take first) */
+  private groundOn(p: { x: number; y: number }, way: -1 | 1): boolean {
+    for (let d = 40; d <= UNDER_AT; d += 40) if (!this.floorAt(p.x + way * d, p.y, 40)) return false;
+    return true;
+  }
+
+  /** this frame his thumb is held for a fruit (rollPlan): no thumb gap (rhythm), as on a chase */
+  private rollHeld = false;
+  private rollPlan(dir: -1 | 0 | 1, side: (d: -1 | 0 | 1) => Pad): Pad | null {
+    if (this.who.noRollRead) return null;
+    const e = this.sim.e as unknown as { pieces?: Array<{ kind: string; list?: Rolling[] }> };
+    const list = e.pieces?.find((q) => q.kind === 'rolling')?.list;
+    if (!list?.length) return null;
+    const p = this.sim.p;
+    if (!p.grounded || p.climbing) return null;
+    // (his way on: the route's, or the way he faces; a step back the route asks for is not his way on)
+    const way: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
+    for (const h of list) {
+      if (h.phase === 'wait' || h.phase === 'gone' || h.spent) continue;
+      const ahead = (h.x - p.x) * way;
+      if (h.spec.kind === 'high') {
+        // (a fruit dropping in or bouncing on his way: he keeps his thumb down toward it and runs on under it, no stop to look and no
+        // thumb lifted, as on a chase: its shadow says where it lands; one stops and starts again under it as it comes down)
+        if (ahead > -40 && ahead < UNDER_AT * 2 && this.groundOn(p, way)) {
+          this.rollHeld = true;
+          return side(way);
+        }
+        continue;
+      }
+      if (h.phase === 'drop') continue;
+      if (h.spec.kind === 'low') {
+        const closing = (p.vx - h.vx) * way;
+        const near = ahead - rollRadius('low') - p.width / 2;
+        if (near > -6 && near <= HOP_AT && closing > 0 && this.groundOn(p, way)) {
+          // (a hop he means: held two frames at least, 47 px up, never the shortest tap's 30)
+          const out = this.startJump(way, 'single', false);
+          if (this.jump) this.jump.hold = Math.max(this.jump.hold, 2 * DT + 0.001);
+          return out;
+        }
+      }
+    }
+    return null;
+  }
+
+  /** a chase runs behind him (the engine's guide view: the hand-built 1-8, or a laid stretch) and he has the skill to keep moving */
+  private chased(): boolean {
+    return this.view.chase && !this.who.noChaseStride;
+  }
+
+  /** the seconds he could stand before a laid chase's front reaches him (what the screen tells him: the crack, the creak, the ember
+   *  at the edge growing as it closes), at its own row's speed; Infinity with no laid chase running behind him */
+  private chaseRoom(): number {
+    const e = this.sim.e as unknown as { pieces?: Array<{ kind: string; run?: ChaseRun }> };
+    const run = e.pieces?.find((q) => q.kind === 'chase')?.run;
+    const x = this.sim.p.x;
+    const f = run ? frontBehind(run, x) : null;
+    if (!run || f === null) return Infinity;
+    return (x - f - run.row.catchAt) / run.row.base;
+  }
+
   /** a tier bot's next edge: drawn once, kept until he jumps or is put back */
   private edgePlan(): NonNullable<FirstTimerRun['edge']> {
     if (!this.edge) {
@@ -2493,13 +2682,39 @@ export class FirstTimerRun {
       const how = u < (w.lateShare ?? 0) ? 'late' : r() < (w.standShare ?? 0) ? 'stand' : 'run';
       this.edge = { aim: drawQ(r, w.aimQ!, 0), how, stand: w.standQ ? drawQ(r, w.standQ, DT) : 0.2, late: w.lateQ ? drawQ(r, w.lateQ, 0) : 0.05 };
     }
+    // (on a running chase he stands at an edge only as long as the front leaves him: the stand he drew must fit the stop budget it
+    // leaves now, with a margin; else he takes the edge in stride)
+    if (this.chased() && this.edge.how === 'stand' && !this.standing && this.edge.stand > this.chaseRoom() - CHASE_MARGIN) this.edge.how = 'run';
     return this.edge;
+  }
+
+  /** each runner liana's lip (its far end), by the vine's id, found once (runnerLiana.ts runnerLip, the piece's own) */
+  private readonly runnerLips = new Map<number, number | null>();
+  /**
+   * He is on the ground running at a runner liana's lip, within the run it is eased over (runnerLiana.ts RUNNER.from): a liana phased to
+   * meet a full run (1-8 NEW 4), seen swinging toward him, so his thumb stays down: no rhythm lift on the way (ENG-B6: the MIDDLE tier's
+   * gapQ lift 200 px before the lip stopped him dead, and the liana, eased for a run that stopped coming, made him wait at the lip)
+   */
+  private runnerAhead(): boolean {
+    if (this.who.noRunnerHold) return false;
+    const p = this.sim.p;
+    if (!p.grounded) return false;
+    for (const v of this.sim.vines as Vine[]) {
+      if (!v.runner || v.vineType === 'tree_climb') continue;
+      let lip = this.runnerLips.get(v.id);
+      if (lip === undefined) {
+        const l = runnerLip(v, this.sim.platforms);
+        this.runnerLips.set(v.id, (lip = l ? l.x + l.width : null));
+      }
+      if (lip !== null && p.x <= lip && p.x >= lip - RUNNER.from) return true;
+    }
+    return false;
   }
 
   /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
   private rhythm(want: Pad): Pad {
     const w = this.who, p = this.sim.p, t = this.t;
-    if (!w.steerQ || !w.gapQ) return want;
+    if (!w.steerQ || !w.gapQ || this.chased()) return want;
     if (!p.grounded || this.jump || this.pending || this.standing || this.lateArmed || want.press || !(want.left || want.right)) return want;
     // (KEEP-HOPPING: on a sinking pad his thumb never lets go between steers: padRead)
     if (PAD_SKILL.keepHopping && this.floorAt(p.x, p.y, 6)?.pad) return want;
@@ -2582,7 +2797,9 @@ export class FirstTimerRun {
 
   private pad(): Pad {
     this.figTap = false;
-    const want = this.rhythm(this.intend());
+    this.rollHeld = false;
+    const intended = this.intend();
+    const want = this.rollHeld || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
@@ -2618,6 +2835,10 @@ export class FirstTimerRun {
     if (this.lianaHop) {
       this.jump.liana = true;
       this.lianaHop = false;
+      // (held at least as long as the hop lianaWait judged would catch it (hopCatches with who.hold[0]): a tier bot's drawn press (holdQ,
+      // 22-231 ms) was often shorter than the hop it decided on, so a hop judged to catch fell short onto the lip's end and he walked off
+      // it into the gap (ENG-B6, the MIDDLE strider at a runner liana, trace in chaseBots.test). The decision and the act now agree)
+      this.jump.hold = Math.max(this.jump.hold, this.who.hold[0]);
     }
     const out: Pad = upOnly > 0 ? {} : dir > 0 ? { right: true } : dir < 0 ? { left: true } : {};
     out.press = true;
@@ -2772,6 +2993,9 @@ export class FirstTimerRun {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
+    } else if (this.hiding) {
+      // (holding still for a watcher, its glance or its pass: he is waiting, not stuck. The clock HOLDS, it does not start over, so a spot
+      //  he cannot get past is still a spot he cannot get past: ENG-WATCH, the glance's freezes inside 1-7's dip had read as 'stuck')
     } else {
       this.noProg += DT;
       if (this.noProg >= 8 && !this.stuckOpen) {

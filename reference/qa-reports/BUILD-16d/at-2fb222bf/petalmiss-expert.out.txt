@@ -1,0 +1,51 @@
+expert 1 sealed door {"got":83,"need":85} missed 14 12616:chain:cb@0.84 14749:chain:db@0.85 21077:snakes-met:b2@0.93 32729:risers:b1@0.93 44470:gorge:b2@0.92 35830:rest-dip:in@0.10 35950:rest-dip:in@0.50 3416:first-liana:b1@0.76 18688:snakes-met:qe@0.84 6024:pit:pit@0.62 6199:pit:pit@0.94 3929:first-liana:hu1@0.86 28272:pit:pit@0.58 28447:pit:pit@0.89
+expert 2 sealed door {"got":93,"need":96} missed 17 12564:chain:cb@0.85 24761:snake-on-vine:out@0.25 24881:snake-on-vine:out@0.75 38517:false-liana:in@0.70 43585:gorge:b1@0.84 32418:risers:in@0.91 5438:hang-low:qe@0.87 27843:pit:pit@0.59 28018:pit:pit@0.91 23118:snake-on-vine:qe@0.81 26835:rest-dip:out@0.19 27010:rest-dip:out@0.82 3442:first-liana:d1@0.13 45980:pit:pit@0.60 46155:pit:pit@0.92 7653:pit:pit@0.62 7828:pit:pit@0.94
+expert 3 sealed door {"got":90,"need":97} missed 21 12560:chain:cb@0.84 16713:rest-roots:d@0.50 20999:snakes-met:b2@0.93 30252:rest-hump:m@0.27 32718:risers:b1@0.93 34525:risers:b2@0.93 37217:rest-dip:c@0.50 41598:rest-log:d@0.50 20408:snakes-met:s1-2@0.79 45269:pit:pit@0.60 45444:pit:pit@0.92 9311:rest-steps:in@0.14 26741:rest-stumps:out@0.26 26916:rest-stumps:out@0.89 5544:hang-low:qe@0.88 33942:risers:s1-2@0.86 22070:snakes-met:out@0.13 27589:pit:pit@0.58 27764:pit:pit@0.90 7754:pit:pit@0.60 7929:pit:pit@0.92
+expert 4 sealed door {"got":91,"need":95} missed 17 9672:rest-roots:b@0.88 12501:chain:cb@0.85 14559:chain:db@0.84 19248:snakes-met:b1@0.93 29688:creaky-landing:out@0.75 34935:risers:hu1@0.75 36904:rest-log:d@0.50 38018:false-liana:in@0.70 40458:rest-hump:m@0.34 44090:gorge:b2@0.92 30999:rest-stumps:z@0.13 31174:rest-stumps:z@0.86 5435:hang-low:qe@0.87 28221:pit:pit@0.59 28396:pit:pit@0.91 31486:rest-stumps:out@0.14 7286:hang-low:s1-2@0.85
+expert 5 sealed door {"got":87,"need":100} missed 27 2420:first-liana:in@0.60 10249:rest-log:d@0.50 12420:chain:cb@0.84 14552:chain:db@0.84 13360:chain:m@0.50 19267:snakes-met:b1@0.93 26262:rest-roots:d@0.50 29368:creaky-landing:hu1@0.88 33360:risers:b1@0.93 35171:risers:b2@0.93 35612:risers:hu1@0.75 38595:false-liana:in@0.70 39732:false-liana:hu1@0.88 43652:gorge:b1@0.84 44671:gorge:b2@0.92 20492:snakes-met:s1-2@0.87 45275:pit:pit@0.63 45450:pit:pit@0.95 3391:first-liana:d1@0.13 5383:hang-low:qe@0.86 32535:risers:in@0.09 7073:hang-low:s1-2@0.17 22306:snakes-met:out@0.85 16842:rest-hump:y@0.86 34568:risers:s1-2@0.80 27952:pit:pit@0.62 28127:pit:pit@0.93
+expert 6 sealed door {"got":87,"need":90} missed 16 2420:first-liana:in@0.60 14495:chain:db@0.85 19262:snakes-met:b1@0.93 26986:creaky-landing:in@0.40 30163:rest-hump:m@0.32 32670:risers:b1@0.93 34526:risers:b2@0.93 44044:gorge:b2@0.92 5546:hang-low:qe@0.80 33884:risers:s1-2@0.82 6715:hang-low:s1-1@0.15 6890:hang-low:s1-1@0.83 44633:pit:pit@0.61 44808:pit:pit@0.94 18423:snakes-met:qu1@0.87 16025:rest-dip:b@0.86
+
+BY PIECE
+pit:pit 24
+chain:cb 5
+hang-low:qe 5
+chain:db 4
+risers:b1 4
+gorge:b2 4
+false-liana:in 3
+rest-hump:m 3
+risers:b2 3
+rest-log:d 3
+rest-stumps:out 3
+risers:s1-2 3
+snakes-met:b1 3
+snakes-met:b2 2
+rest-dip:in 2
+snake-on-vine:out 2
+gorge:b1 2
+risers:in 2
+rest-dip:out 2
+first-liana:d1 2
+rest-roots:d 2
+snakes-met:s1-2 2
+snakes-met:out 2
+risers:hu1 2
+rest-stumps:z 2
+hang-low:s1-2 2
+first-liana:in 2
+hang-low:s1-1 2
+first-liana:b1 1
+snakes-met:qe 1
+first-liana:hu1 1
+snake-on-vine:qe 1
+rest-dip:c 1
+rest-steps:in 1
+rest-roots:b 1
+creaky-landing:out 1
+chain:m 1
+creaky-landing:hu1 1
+false-liana:hu1 1
+rest-hump:y 1
+creaky-landing:in 1
+snakes-met:qu1 1
+rest-dip:b 1

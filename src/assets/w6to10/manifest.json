@@ -302,8 +302,8 @@
   "props-made/w5a-b.webp": 154870,
   "props-made/w5var.json": 1040,
   "props-made/w5var.webp": 91596,
-  "props-made/w6balt.json": 1061,
-  "props-made/w6balt.webp": 67110,
+  "props-made/w6balt.json": 931,
+  "props-made/w6balt.webp": 53402,
   "props-made/w6c-b.json": 1063,
   "props-made/w6c-b.webp": 128888,
   "props-made/w6var.json": 1031,
@@ -1170,10 +1170,6 @@
      "gauge-post-b": [
       78,
       412
-     ],
-     "seesaw-b": [
-      442,
-      217
      ],
      "stone-b": [
       432,

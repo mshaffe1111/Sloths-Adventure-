@@ -56,6 +56,7 @@ import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
+import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
 import { gen2Creatures, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
@@ -74,9 +75,8 @@ import type { LevelConfig } from './types.ts';
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-3': ['foe:goldsnake'],
   '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
-  '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
-  '1-8': ['foe:goldsnake'],
+  '1-8': ['foe:eagle', 'props2'], // (the still fork's eagle and its moss cover's bushes; no gold snake since the hand-built 1-8 went, INT-10c)
   '1-9': ['foe:boa', 'foe:goldsnake'],
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
@@ -135,9 +135,9 @@ const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W
 /** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
 export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
 
-/** World 1's stages with puzzle rooms (protoStage.ts: 1-6's seesaw; 1-4's lift and 1-7's acorn meadow left with their hand-built
- *  stages: stageSheets.test holds this to the stages that build rooms) */
-export const W1_ROOMS: ReadonlySet<string> = new Set(['1-6']);
+/** World 1's stages with puzzle rooms or kit decor: 1-4's nest door (gen2 w1Arc14.ts); 1-6's seesaws and 1-7's acorn meadow left with
+ *  their hand-built stages (R-165.238, BUILD-17): stageSheets.test holds this to the stages that build rooms */
+export const W1_ROOMS: ReadonlySet<string> = new Set(['1-4']);
 
 export interface SheetSwitches {
   /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone) */
@@ -151,6 +151,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
   // the vine field's feel test (feelPairStage.ts): World 1's painted ground, the kit's signpost for its speed sign
   if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
+  // the laid chase's dev fixture (chaseFixtureStage.ts): a gen2 World 1 stage, 1-1's sheets
+  if (cfg.id === CHASE_FIXTURE_ID) return stageSheets({ ...cfg, id: '1-1' }, sw);
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
@@ -199,7 +201,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (a web patch is strung with Dot's silk, from her prop sheet alone)
   if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`, ...(w === 5 ? ['dot-props'] : []));
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
-  // (World 1's rooms: 1-6's seesaw; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
+  // (World 1's rooms: 1-4's nest door; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)

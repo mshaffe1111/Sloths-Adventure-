@@ -1,0 +1,9 @@
+start 22:49
+not ok 125 - a bank beside a pit reaches past its floor, any slot: every listed World 1 stage builds with no slot under a bank
+not ok 221 - fresh 1-1 rolls: no roll the search returns clean has a dead-zone petal or an idle mushroom, and the repair is what cleared them
+not ok 362 - a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean
+not ok 373 - every shipped gen2 seed still builds and passes levelCheck, on the layout that was curated
+not ok 385 - 8-3 Normal lays the same ground, gaps and heartFalls as origin/main, byte for byte (layouts 1-3), and is not a soft-fall stage
+not ok 490 - 5-7 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+not ok 491 - 7-1 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+stopped unfinished 23:10 (the cutoff)

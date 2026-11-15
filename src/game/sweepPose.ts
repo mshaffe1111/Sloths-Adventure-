@@ -17,6 +17,8 @@ export const SKY = {
   fly: 125,
   /** far off between passes: small, faint, circling (scale, alpha, how high) */
   far: { scale: 0.38, alpha: 0.55, y: 120 },
+  /** its glance's look (core.ts stepGlance): how big it hangs over his spot, at its flying height (the warn grows to 1) */
+  glance: 0.7,
   /** in from the edge for the warn (px; at most this share of the view) */
   inX: 130,
   inShare: 0.2,
@@ -106,7 +108,14 @@ function perchedPose(def: PredatorDef, s: PredatorState, sc: SweepScene): SweepP
       if (!home) return pose({ x: s.x, y: s.y - PERCH.body, phase: 'swoop', facing: s.homeX >= s.x ? 1 : -1 });
       if (s.phase === 'rest') {
         const blink = sc.time % PERCH.blinkEvery < PERCH.blink;
-        return pose({ x: s.homeX, y: s.homeY, perch: blink ? 'blink' : 'ahead', facing: toEye });
+        const gl = s.gl;
+        if (!gl) return pose({ x: s.homeX, y: s.homeY, perch: blink ? 'blink' : 'ahead', facing: toEye });
+        // its glance (core.ts stepGlance): head away is its profile looking AWAY from him; the turn (its tell, and a fake-out's half-turn)
+        // is the head-cock, full face; the look is down at the ground toward him, its gaze's shadow on his spot
+        const toHim: 1 | -1 = hero.x >= s.homeX ? 1 : -1;
+        if (gl.phase === 'away') return pose({ x: s.homeX, y: s.homeY, perch: blink ? 'blink' : 'ahead', facing: toHim > 0 ? -1 : 1 });
+        if (gl.phase === 'look') return pose({ x: s.homeX, y: s.homeY, perch: 'down', facing: toHim, shadow: { x: gl.at, a: 0.35 } });
+        return pose({ x: s.homeX, y: s.homeY, perch: 'turn', facing: toHim });
       }
       const from = s.facing > 0 ? s.minX : s.maxX;
       const warn = (def.warn ?? 0) * Math.max(1, sc.easy ? def.easy.tell : 1);
@@ -163,10 +172,20 @@ export function sweepPose(def: PredatorDef, s: PredatorState, sc: SweepScene): S
       if (!there) return null;
       // far off, small, circling high over the trees (it comes from nothing: a faded pose)
       const a = sc.time * 0.7;
-      return pose({
-        x: view.x + view.w * (0.5 + 0.32 * Math.cos(a)), y: view.y + SKY.far.y + 10 * Math.sin(a * 2),
-        facing: Math.sin(a) > 0 ? -1 : 1, scale: SKY.far.scale, alpha: SKY.far.alpha * fade, snap: true,
-      });
+      const cx = view.x + view.w * (0.5 + 0.32 * Math.cos(a)), cy = view.y + SKY.far.y + 10 * Math.sin(a * 2);
+      const gl = s.gl;
+      if (gl && gl.phase !== 'away') {
+        // its glance (core.ts stepGlance): it breaks its circle and turns in over him, nearer and darker through its tell (a fake-out
+        // stops part way and drifts back to its circle); its look hangs over his spot, its shadow on the ground there
+        const u = gl.phase === 'look' ? 1 : clamp(gl.t / Math.max(0.01, tellOf(def, sc.easy)), 0, 1);
+        const tx = gl.phase === 'look' ? gl.at : hero.x;
+        return pose({
+          x: cx + (tx - cx) * u, y: cy + (view.y + SKY.fly - cy) * u, facing: tx >= cx ? 1 : -1,
+          scale: SKY.far.scale + (SKY.glance - SKY.far.scale) * u, alpha: SKY.far.alpha + (1 - SKY.far.alpha) * u,
+          shadow: gl.phase === 'look' ? { x: gl.at, a: 0.35 } : null,
+        });
+      }
+      return pose({ x: cx, y: cy, facing: Math.sin(a) > 0 ? -1 : 1, scale: SKY.far.scale, alpha: SKY.far.alpha * fade, snap: true });
     }
     case 'hunt': {
       const from = s.facing > 0 ? s.minX : s.maxX;

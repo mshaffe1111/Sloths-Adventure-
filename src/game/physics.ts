@@ -590,9 +590,31 @@ export const SWING_CLEAR = { body: 30, margin: 20 };
 export const swingReach = (v: SwingVine): number => (v.bottomY - v.topY) * Math.sin(vineAmp(v));
 /** do two vines hang side by side (their heights overlap), so that their swings could meet? */
 const sideBySide = (a: SwingVine, b: SwingVine) => a.topY < b.bottomY + 40 && b.topY < a.bottomY + 40;
-/** the clear space (px) between the two vines' swings, with Pokey hanging at the front of either: 0 or more is apart */
+/** how far (px) a vine's rope swings out either side `h` px below its top (its foot's: swingReach; nothing above the top or past the foot) */
+const sweepAt = (v: SwingVine, h: number): number => Math.max(0, Math.min(h, v.bottomY - v.topY)) * Math.sin(vineAmp(v));
+/**
+ * The clear space (px) between two vines' swings, with Pokey hanging at the front of either, height by height (the lead's ruling (b),
+ * 11-14 4:42 PM ET, R-165.246): at every depth he can hang on one (SWING.minLen to its foot), his hold swings out that depth's sweep; the
+ * other vine's rope, where his body is (SWING_CLEAR.body above and below his hold), swings out ITS sweep there (none where it does not
+ * hang); the two, plus his body and the margin, against how far apart they hang. The least over both vines and every shared depth; 0 or
+ * more is apart. Infinity: no depth he can hang on either meets the other's rope.
+ * Two vines of one top and one length read as the old foot-to-foot measure exactly (both feet); it is never stricter than that, so a
+ * swinging pair the old one passed still passes. What it adds: a short vine hung high beside a long liana meets only the liana's upper
+ * rope, which sweeps little, so it may hang close; one hung at the long liana's feet may not (1-6's false liana, 78-85 px in front of a
+ * 420 px liana swinging 0.45: its rope crossed his body there).
+ */
 export function swingClearance(a: SwingVine, b: SwingVine): number {
-  return Math.abs(b.x - a.x) - swingReach(a) - swingReach(b) - SWING_CLEAR.body - SWING_CLEAR.margin;
+  const dx = Math.abs(b.x - a.x);
+  let worst = Infinity;
+  for (const [H, O] of [[a, b], [b, a]] as const) {
+    const L = Math.max(0, H.bottomY - H.topY);
+    // (both sweeps only grow with depth, so the deepest hold whose body still meets the other's rope is the worst)
+    const deepest = Math.min(L, O.bottomY + SWING_CLEAR.body - H.topY);
+    if (deepest < Math.min(SWING.minLen, L) || H.topY + deepest + SWING_CLEAR.body < O.topY) continue;
+    const there = Math.min(H.topY + deepest + SWING_CLEAR.body, O.bottomY) - O.topY;
+    worst = Math.min(worst, dx - sweepAt(H, deepest) - sweepAt(O, there) - SWING_CLEAR.body - SWING_CLEAR.margin);
+  }
+  return worst;
 }
 
 /**
@@ -844,6 +866,62 @@ export function pressWindow(
     worst = Math.min(worst, ok * DT * 1000);
   }
   return worst;
+}
+
+/**
+ * The testers' let-go (RELEASE above: "Testers let go at the FORWARD END of the swing, the natural moment"): the press made as the swing
+ * out in front passes this share of its reach, moving forward (the first-timer bot decides at the same share: tools/inspect/firsttimer.ts
+ * LET_GO_AT, held equal by a test). ENG-16E, R-165.246: the release window counts every press of a swing, so a perch at the far end of its
+ * band can lie past where THIS press lands him (1-6's chain at half the swing, BUILD-16d E1; its FAR perches, BUILD-16c): gen2 lays a perch
+ * he reaches by what he sees only where this press lands him (pipeline lianaBand).
+ */
+export const FORWARD_END = 0.75;
+/**
+ * Does the testers' let-go (FORWARD_END) from every hold in `grips` (shares of the vine's length, pressWindow's) get him there (`hits`,
+ * asked every frame of the flight with the vines' clock, as pressWindow's), the jump held, as the engine plays the press (releaseCall: the
+ * sweet spot's leap, or the leap it just gave when the press comes a beat late)?
+ */
+export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prevY: number) => boolean, grips: readonly number[] = [0.7, 0.95]): boolean {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  for (const g of grips) {
+    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
+    let lastSweet = -1e9;
+    let snap: SwingState | null = null;
+    let pressed = false;
+    // (a swing to settle, then the first forward sweep past FORWARD_END)
+    for (let k = 0; k < 3 * n && !pressed; k++) {
+      const r = swingStep(s0, A, DT, 1, 0);
+      const s = { ...s0 };
+      if (inSweetSpot(s, 1)) { lastSweet = k; snap = s; }
+      const amp = s.amp ?? TIMED.amp;
+      if (k < n || amp < 0.05 || s.omega <= 0 || s.angle / amp < FORWARD_END) continue;
+      pressed = true;
+      const call = releaseCall(s, 1, (k - lastSweet) * DT);
+      // (a press a beat early waits for the sweet spot: at FORWARD_END the sweet spot is on or just past, so it never waits long)
+      let from = s, at = r, t0 = s.t ?? 0;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { const r2 = swingStep(s0, A, DT, 1, 0); at = r2; }
+        from = { ...s0 };
+        t0 = s0.t ?? 0;
+      }
+      const l = timedLaunch(from, 1);
+      const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
+      let t = 0, made = false;
+      for (let i = 1; i <= 90 && !made; i++) {
+        const prevY = c.y;
+        airStep(c, DT, 1, true);
+        t += DT;
+        if (hits(c, t0 + t, prevY)) made = true;
+        if (c.y > A.bottomY + 500) break;
+      }
+      if (!made) return false;
+    }
+    if (!pressed) return false;
+  }
+  return true;
 }
 
 /**

@@ -86,6 +86,9 @@ export const EAGLE: PredatorDef = {
   speed: { rest: 320, hunt: 0 },
   hears: NOISE.dur,
   warn: 2,
+  // each pass starts from the end of its stretch farther from him and crosses TOWARD him: from the near end, behind a walker, its eye
+  // never caught him before its stretch ended (ENG-WATCH F1, eagleProbe.ts: 0 hearts at 8 of 1-7's 9 eagles)
+  passAt: 'far',
   engage: 70,
   tell: 0.75,
   callsOff: true,
@@ -97,6 +100,13 @@ export const EAGLE: PredatorDef = {
   // its second way is the noise lure (`hears`): it has no body to hit
   beatenBy: { still: { ends: 'flees', seconds: 8 } },
   first: 'still',
+  // its glance between passes (red light, green light; ENG-WATCH R-165.267, Matt 11-14 "I expected the head to be more back and forth"):
+  // away 1.2-4.5 s (a quick re-check to a long wait, uneven), its head-cock its 0.75 s tell, a look of 0.9-2.2 s, one turn in four a
+  // fake-out half-turn; a perched one sees him move within 240 px of its post: an upright phone shows about 270 px past where he stands
+  // (level.md) and the bird is ~90 px across, so it is ALL on screen while it can see him (at 280 it sat half off the edge, ENG-WATCH's
+  // glance stills). A stage's still row sets its own (W1_STILL's watch row)
+  // its re-check (after a look that saw nobody, and after a pass): 0.6-1.2 s away, then its told head-cock (ENG-WATCH2, ruling B)
+  glance: { away: [1.2, 4.5], recheck: [0.6, 1.2], look: [0.9, 2.2], fake: 0.25, reach: 240 },
 };
 
 export const WORLD1: readonly PredatorDef[] = [SNAKE, BOA, EAGLE];

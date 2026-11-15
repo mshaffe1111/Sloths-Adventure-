@@ -1,0 +1,3 @@
+castBots 1-7, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+expert normal PASS 40/40; under the floor 0; time median 223.4 s (min 211.2); hits 21 lives 0 (other 21); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+DONE 22:30

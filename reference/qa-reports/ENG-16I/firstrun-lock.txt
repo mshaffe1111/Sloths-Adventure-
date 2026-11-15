@@ -1,0 +1,14 @@
+ENG-16I 8:38 PM ET 11-14: 1-1's first run (seed 9652) as seedlist --check builds it (firstrun-lock.ts)
+base origin/t-tools-2@19b45a06:
+normal: builds f405e1cea982681d, recorded f405e1cea982681d SAME; collectibles 151
+easy: builds 91fcb58a12c2c26a, recorded 91fcb58a12c2c26a SAME; collectibles 120
+t-build-16 at 6aa25e88 with ONLY 59a4c0dc's pipeline.ts hunk reverted (git show 59a4c0dc -- src/game/gen2/pipeline.ts | git apply -R):
+normal: builds f405e1cea982681d, recorded f405e1cea982681d SAME; collectibles 151
+easy: builds 91fcb58a12c2c26a, recorded 91fcb58a12c2c26a SAME; collectibles 120
+t-build-16 at 6aa25e88 (the walked span on), against the OLD lock:
+normal: builds 9ad68ab13fc57244, recorded f405e1cea982681d DRIFT; collectibles 150
+easy: builds 01a9ca9c2efb5c46, recorded 91fcb58a12c2c26a DRIFT; collectibles 119
+parts moved base -> head, normal: collectibles (of 19 parts)
+parts moved base -> head, easy: collectibles (of 19 parts)
+collectibles base -> head: Normal 151 -> 150 (40 moved, 1 flower dropped by pipeline.ts flower()'s 40 px overlap guard), Easy 120 -> 119 (38 moved, 1 dropped); goal unchanged (lock: 1-1 easyGoal/normalGoal not moved)
+new lock (firstRun11.ts, ENG-16I): normal 9ad68ab13fc57244, easy 01a9ca9c2efb5c46

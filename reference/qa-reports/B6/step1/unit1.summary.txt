@@ -1,0 +1,8 @@
+# tests 1117
+# pass 1116
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 1550498.886554
+ok 1032 - walking along the floor under a boulder never moves it, and it is no wall down there # TODO the engine's wall check has no bottom: every block 50+ tall is a wall all the way down, so walking under a boulder on a ledge above pushes it (4-3, 4-8) — for the boulder fixer

@@ -26,6 +26,7 @@ import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
 import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
+import { readyInvDress } from './art/invDress.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -96,6 +97,10 @@ export async function readyBuiltStage(
     Promise.race([Promise.all([whenSheetsReady([...new Set([...extra, ...pendingSheets()])], Math.max(0, left())), plainDone, back]), sleep(left())]);
   // (a boss's painted sheet: a still of it drawn into a scratch pixel starts it, wherever on the stage it first shows)
   for (const k of keys) if (k.startsWith('boss:')) askBoss(Number(k.slice(5)));
+  // (the inventory pieces its data places as dressing: resolved against its world's inventory, each picture asked for, so the wait
+  // below holds them too: art/invDress.ts)
+  const inv = (stage.proto as { invDress?: Parameters<typeof readyInvDress>[0] } | null | undefined)?.invDress;
+  if (inv?.length) await Promise.race([readyInvDress(inv, cfg.worldIndex), sleep(left())]);
   frame();
   await waitAll(urls);
   // each creature's clips baked (a clip sheet bakes as it arrives: this is a last check, for one still on its way), then shrunk to the

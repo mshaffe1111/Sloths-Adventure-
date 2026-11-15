@@ -28,6 +28,10 @@ export interface StageSpec {
   /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
    *  petals; unset, the world's usual. Data, read by the draw through stageLooks: no draw line names a stage */
   looks?: { find?: string; petal?: string };
+  /** a stage whose goal is ALSO a share of what it holds, though its mission is another (1-6's vine run: "Swing after her, and gather her
+   *  petals"): 'petals' counts Meeca's petals as a harvest does (goals.ts goalCountsPetals: the share, the sealed exit, the counter).
+   *  Unset, the mission's own goal. Data: no engine line names a stage */
+  gathers?: 'petals';
 }
 
 const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
@@ -47,11 +51,15 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (her petals FOLDED, "She's making them last", and the golden find a guarana bunch: ART's pieces for 1-5, the inventory's
     //  hf1113/petal-folded and hf1113/guarana-golden)
     { ...S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8), looks: { find: 'guarana-golden', petal: 'petal-folded' } },
-    S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
+    // (the story keeper's line, t-keeper-16@387aeb2b8 reference/story/lines-1-6.md: gen2/worlds/w1Arc16.ts MISSION_16, held equal by
+    //  w1Arc16.test.ts)
+    { ...S('vine_runner', 'First Lianas', 'They took her over the gorge. Swing after her, and gather her petals.'), gathers: 'petals' },
     // (the story keeper's line, t-keeper-17@a8dd2409 reference/story/lines-1-7.md: gen2/worlds/w1Arc17.ts MISSION_17, held equal by
     //  w1Arc17.test.ts; new replaces old, the crouch line "Duck under the leaves" is gone)
     S('stealth', 'A Very Good Bush', 'An eagle is watching. Hide in the green like Dot did, and collect her petals.'),
-    S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
+    // (the story keeper's line 7, reference/story/lines-1-8.md (t-story@2e40e6a3): gen2/worlds/w1Arc18.ts MISSION_18, held equal by
+    //  w1Arc18.test.ts; sprint, so its exit never locks (no gathers): the petals are score and medals only, the keeper's ruling)
+    S('sprint', 'The Long Branch', 'Race the long branch before it gives way, and gather her petals.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
   ],
   2: [
@@ -199,8 +207,9 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
  *  count is on the HUD beside it); every other goal keeps goalLine's own words */
 export const SEALED_LINES: Readonly<Record<string, string>> = {
   '1:relic_hunt': "We missed some of her marks. They're back there!",
+  '1:vine_runner': 'Petals still on the lianas! Back we go!',
   // (1-7, World 1's only stealth stage: the keeper's 9b, held equal to w1Arc17.ts SEALED_17. It speaks once 1-7's exit can seal: with
-  //  1-6's StageSpec.gathers (t-build-16, not merged on this base) 1-7 takes `gathers: 'petals'`; until then its exit is never locked)
+  //  1-6's StageSpec.gathers (merged with t-build-16 by ENG-16H) 1-7 may take `gathers: 'petals'`, the lead's call; until then its exit is never locked)
   '1:stealth': 'We left some of her petals behind. Sneak back for them!',
 };
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;

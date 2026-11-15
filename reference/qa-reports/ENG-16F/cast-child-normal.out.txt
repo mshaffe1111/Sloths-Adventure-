@@ -1,3 +1,4 @@
 castBots 1-6, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
-child  normal PASS 5/6; under the floor 0; time median 469.2 s (min 452.2); hits 0 lives 1 (pit 1); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
-        fail 1: shrine rescued x1  (seeds 2)
+child  normal PASS 4/6; under the floor 0; time median 482.1 s (min 466.2); hits 0 lives 7 (pit 7); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 1: sealed door goal 93/95  (seeds 1)
+        fail 1: sealed door goal 90/94  (seeds 2)

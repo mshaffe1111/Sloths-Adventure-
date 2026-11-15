@@ -20,8 +20,8 @@
  */
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
-/** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-6' | '1-8' | '1-9';
+/** World 1's stages with section versions (1-2 to 1-8 roll on gen2; 1-10, the boss lair, has one designed layout) */
+export type W1Stage = '1-1' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -93,14 +93,6 @@ export interface W1Kit {
   fernTree: () => void;
   glideLookout: () => void;
   creakRun: () => void;
-  // ----- swings and the canopy (1-6 on)
-  chain: (n: number, soft: boolean, rocks?: boolean) => void;
-  kapok: () => void;
-  canopy: (glideSeed: boolean) => void;
-  highRun: () => void;
-  logPuzzle: (busyTop?: boolean) => void;
-  seesawRoom: (demo: boolean) => void;
-  seesawTwist: () => void;
   // ----- watched bushes (World 3's grottoes; 1-7 is gen2 since BUILD-17)
   bushRow: (n: number, gap: [number, number], kinds: Bush[], calm: [number, number], rocks?: boolean) => void;
   // ----- the boa's guards (1-9)
@@ -114,7 +106,6 @@ export interface W1Kit {
 type Build = (k: W1Kit) => void;
 interface Version {
   id: string;
-  /** (1-8's chase versions are patterns, built by protoStage.ts buildLongBranch: their build is never called) */
   build: Build;
   /** a pool body: no stage uses it twice (CooldownQueue) */
   pool?: string;
@@ -329,63 +320,9 @@ const SECTIONS: Record<W1Stage, Table> = {
     ],
   },
   // (1-4 Up the Kapok rolls on gen2 from 11-13, the vine field: w1Arc14.ts. Its hand-built rhythm rows went with the hand-built 1-4)
-  // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. Four flavours carried through
-  // the stage, each leaning on a different heavy beat between the lessons: the gorge's vines, climbs up the kapoks and walls, snakes on
-  // the ground and on ledges, or bounces up to high branches. The swing lessons, the puzzle rooms and the canopy road with its glide
-  // seed are in every roll.
-  '1-6': {
-    rhythms: ['swing', 'climb', 'fight', 'bounce'],
-    develop: [
-      { id: 'gorge', beat: 'swing', build: (k) => { k.chain(k.R.i(2, 3), false); k.busy(1); k.flag(); k.kapok(); k.chain(3, false); } },
-      { id: 'kapoks', beat: 'climb', build: (k) => { k.kapok(); k.climbWall(); k.flag(); k.climbWall(); k.kapok(); } },
-      { id: 'snakes', beat: 'fight', build: (k) => { k.kapok(); k.snakeWalk(2); k.flag(); k.snakeLedge(); k.snakeWalk(1); } },
-      { id: 'bounces', beat: 'bounce', build: (k) => { k.kapok(); k.highLeaps(4, false, true); k.flag(); k.bounceWall(true, false); k.highLeaps(3, true); } },
-    ],
-    twist: [
-      { id: 'roadVines', beat: 'swing', build: (k) => { k.canopy(true); k.flag(); k.highRun(); } },
-      { id: 'roadKapok', beat: 'climb', build: (k) => { k.canopy(true); k.flag(); k.kapok(); k.climbWall(); } },
-      { id: 'roadSnakes', beat: 'fight', build: (k) => { k.canopy(true); k.flag(); k.snakeWalk(2); k.snakeLedge(); } },
-      { id: 'roadHigh', beat: 'bounce', build: (k) => { k.canopy(true); k.flag(); k.highLeaps(5, true, true); } },
-    ],
-    finish: [
-      {
-        id: 'vines', beat: 'swing', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
-          (k) => { k.highRun(); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
-          (k) => { k.chain(3, false); k.highRun(); },
-        ], 2, 16),
-      },
-      {
-        id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.kapok(); k.climbWall(); },
-          (k) => k.climbWall(),
-          (k) => { k.climbWall(); k.kapok(); },
-        ], 2, 16),
-      },
-      {
-        id: 'snakes', beat: 'fight', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.snakeWalk(2); k.busy(1, ['dip'], k.R.r(150, 190)); },
-          (k) => { k.snakeLedge(); k.snakeWalk(1); },
-          (k) => { k.snakeBranches(3, k.G - 130); k.snakeLedge(); },
-        ], 2, 16),
-      },
-      {
-        id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => k.highLeaps(5, false, true),
-          (k) => { k.bounceWall(true, false); k.highLeaps(4, true, true); },
-          (k) => k.highLeaps(4, true, true),
-        ], 2, 16),
-      },
-    ],
-  },
-  // 1-8 The Long Branch: the chase. Its middle is a run of chase pieces (buildLongBranch); the roll picks their rhythm.
-  '1-8': {
-    finish: [
-      { id: 'leaps', build: () => {} },
-      { id: 'swings', build: () => {} },
-      { id: 'climbs', build: () => {} },
-    ],
-  },
+  // (1-6 Swinging Vines rolls on gen2 from 11-14, w1Arc16.ts, and 1-7 A Very Good Bush from 11-14, w1Arc17.ts (BUILD-17): their
+  //  hand-built rows went with their hand-built plans, R-165.238)
+  // (1-8 The Long Branch rolls on gen2 from 11-14 (BUILD-18, w1Arc18.ts): its hand-built rows went with the hand-built 1-8, ENG-LOOK)
   // 1-9 The Boa's Branches: fighting on the move. The roll's rhythm: guards on the branches over the moss, guards up the trunks on the
   // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard
   // keeps its seed in every roll.
@@ -443,18 +380,4 @@ const SECTIONS: Record<W1Stage, Table> = {
   },
 };
 
-/** 1-8's chase pieces (protoStage.ts buildLongBranch): a gap, a gap for the second jump, a swing, a snake, a climb up or a drop down */
-export type ChasePiece = 'gap' | 'leap' | 'swing' | 'snake' | 'updown';
-const CHASE: Record<string, ChasePiece[]> = {
-  // the old order: every kind in turn
-  leaps: ['gap', 'leap', 'snake', 'leap', 'gap', 'swing', 'leap', 'updown'],
-  // swing after swing over the breaks, a snake between
-  swings: ['swing', 'gap', 'swing', 'snake', 'swing', 'leap', 'swing', 'updown'],
-  // up a trunk and down again, gaps and snakes between
-  climbs: ['updown', 'snake', 'gap', 'updown', 'leap', 'snake', 'updown', 'swing'],
-};
-/** this roll's run of chase pieces for 1-8 */
-export function w1Chase(seed: number): ChasePiece[] {
-  return CHASE[w1Pick('1-8', seed).finish ?? 'leaps'];
-}
 

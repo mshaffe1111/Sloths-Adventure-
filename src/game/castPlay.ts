@@ -11,12 +11,12 @@
 import type { CastData, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
-import { STILLNESS, calm, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
+import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, type Cover } from './stillness.ts';
 import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
 
@@ -104,7 +104,7 @@ export class CastPlay {
       const ground = groundUnder(platforms, e);
       // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
       const perched = !!e.kitPerch && def.habit === 'sweep';
-      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}) });
+      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}), ...(e.kitPasses !== undefined ? { passes: e.kitPasses } : {}), ...(e.kitGlance !== undefined ? { glance: e.kitGlance } : {}) });
       e.kit = s;
       const m: CastMember = { e, def, s, foot: ground - e.y, cleared: false };
       this.members.push(m);
@@ -148,6 +148,8 @@ export class CastPlay {
     prey.y = hero.y;
     prey.facing = hero.facing;
     prey.still = isStill(this.still, set);
+    // (what a glance sees: him moving on this frame, a step, a hop, a climb; stillness.ts moving, the line the hold is broken by)
+    prey.moving = moving(hero, set);
     prey.covered = inCover(this.covers, hero);
 
     // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
@@ -193,6 +195,12 @@ export class CastPlay {
       this.sync(m, t, dt, easy);
     }
     return o;
+  }
+
+  /** this animal's act just took a heart (the engine's hurt): one act, one heart, it pulls up (core.ts landed) */
+  struck(e: Enemy): void {
+    const m = this.members.find((q) => q.e === e);
+    if (m) landed(m.s);
   }
 
   /** try a way on an animal of the cast (a punch, a kick, a stomp), from where he stands. True when it worked */
@@ -247,6 +255,9 @@ export class CastPlay {
       s.drawn = false;
       s.lost = 0;
       s.cool = Math.max(s.cool, coolOf(m.def, easy, s.ownCool));
+      // (its glance stands down too: its head stays away past the calm, so the first thing after a flag is its warned pass, never a
+      //  glance inside the calm; ENG-WATCH, eagleKit.test.ts "back at a flag")
+      if (s.gl) Object.assign(s.gl, { phase: 'away', t: 0, dur: s.cool + (m.def.warn ?? 0) + 1, re: false });
     }
   }
 

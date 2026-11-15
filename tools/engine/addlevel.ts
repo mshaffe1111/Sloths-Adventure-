@@ -84,7 +84,8 @@ step(4, `the bots (tools/inspect/castBots.ts --seeds ${botSeeds}, both settings)
 if (has('--no-bots')) { console.log('  skipped (--no-bots)'); left.push(`bots: not run (--no-bots): npx tsx tools/inspect/castBots.ts --stage ${id} --seeds ${botSeeds} --par ${par}`); }
 else {
   const b = run(['tools/inspect/castBots.ts', '--stage', id, '--seeds', botSeeds, '--par', String(par)]);
-  const lines = [...b.out.matchAll(/^(\w+)\s+(normal|easy)\s+PASS (\d+)\/(\d+); time median ([\d.-]+) s \(min ([\d.-]+)\)/gm)];
+  // (castBots prints fields between the PASS and the time, e.g. LEN-14's 'under the floor N': read past them)
+  const lines = [...b.out.matchAll(/^(\w+)\s+(normal|easy)\s+PASS (\d+)\/(\d+);.*?time median ([\d.-]+) s \(min ([\d.-]+)\)/gm)];
   if (b.code || !lines.length) left.push('bots: castBots did not run to its summary (output above)');
   for (const m of lines) {
     const [, bot, setting, pass, of, , min] = m;

@@ -421,13 +421,13 @@ const twistHighLeaps = section({
 });
 /** w1Sections '1-1' finish: 'hopBounce', 'bounceRun', 'stoneRoad' (on main 304-331), one round of each fill */
 const finishHopBounce = section({
-  id: 'w1-hop-bounce', floor: 'hop', name: 'bounce walls', phases: ['sho', 'ketsu'], difficulty: 4, needs: ['jump'], teaches: 'bounce',
+  id: 'w1-hop-bounce', floor: 'hop', name: 'bounce walls', phases: ['sho', 'ketsu'], difficulty: 4, needs: ['jump', 'bounce-air'], teaches: 'bounce',
   versions: [{ id: 'walls', groups: [gRest([150, 210]), gBounceWall(), gBounceWall(), gLogHop()] }, { id: 'wall-leap', groups: [gRest([150, 210]), gBounceWall(), gLogHop(), gBounceWall(), gDip()] }],
   feel: ['1-3'], not: NOT_11, rating: 4, // (C1: out of 1-1: fewer bounce pieces; its cliff 225-240 a lip the bounce alone nearly clears)
   source: "w1Sections '1-1' finish 'hopBounce' (on main 306-311): bounceWall, then bounceWall + run 60-90 + logHop, or bounceWall + leap",
 });
 const finishBounceRun = section({
-  id: 'w1-bounce-run', name: 'up and along', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'],
+  id: 'w1-bounce-run', name: 'up and along', phases: ['ketsu'], difficulty: 6, needs: ['double', 'bounce-air'], uses: ['bounce', 'double'],
   versions: [{ id: 'five', groups: [gRest([150, 210]), gHighLeaps(5, true), gBusy(['dip', 'log'])] }, { id: 'three-wall', groups: [gRest([150, 210]), gHighLeaps(3, false), gBounceWall()] }],
   feel: [], parked: 'C1: out of 1-1, as high-leaps (its boughs a lip with no face, level doubles under 252)', not: NOT_11, rating: 6, window: [0.67, 1],
   source: "w1Sections '1-1' finish 'bounceRun' (on main 313-319): highLeaps(5, dbl), or highLeaps(3) + bounceWall",
@@ -457,7 +457,7 @@ const lowBoughs = section({
   source: "w1Sections '1-3' develop 'branches'/'ground' (on main 392-393): snakeBranches(3, G-130), busy(1), lowStumps, snakeBranches(4, G-150), its snakes left out; feel '1-1' proposed by the porter (1-1 rises into the boughs), for the designer",
 });
 const ledges = section({
-  id: 'w1-ledges', floor: 'hop', name: 'ledges and walls', phases: ['sho', 'ten'], difficulty: 4, needs: ['jump'],
+  id: 'w1-ledges', floor: 'hop', name: 'ledges and walls', phases: ['sho', 'ten'], difficulty: 4, needs: ['jump', 'bounce-air'],
   versions: [{ id: 'ledges', groups: [gRest([150, 210]), gLedge(), gBusy(['log']), gLedge()] }, { id: 'walls', groups: [gRest([150, 210]), gLowBoughs(3, 150), gBounceWall(), gBusy(['dip'])] }], // (Round 4 FR2: boughs 150 up)
   feel: ['1-3'], not: NOT_13, rating: 4, // (Round 2 (b): not 1-1 for now; its 'ledges' version may return with version-level feel)
   source: "w1Sections '1-3' 'ledge'/'ledges'/'walls' (on main 389, 394, 396): snakeLedge, busy(1), snakeLedge; snakeBranches, bounceWall, snakeWalk, bounceWall; snakes left out; feel '1-1' proposed",
@@ -1350,16 +1350,16 @@ const mushroomChainBack = section({
 const w61level = rhythmic({ id: 'w1-bounce-stair-level', floor: 'hop', name: 'bounce, double, up the stair and down', phases: ['ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -38, ports: ['ground', 'ledge'], ...R5, rating: 6,
   versions: { a: ['w H H m Z e e o o o o F h', 'b d c c, then down'] }, source: 'Round 6 #61 (fc34a6f44): #61 a, then back down near its start height (n x 5: 59 px over it, never under: V19 on an up stage)' });
 /** #66, #67: bounce tests (B3/B7: the mushroom on the floor, the lip 200-220 px, the bank face sheer to the floor) */
-const w66 = rhythmic({ id: 'w1-two-lifts', floor: 'hop', name: 'two lifts', phases: ['ten', 'ketsu'], difficulty: 5, needs: ['double'], uses: ['bounce'], exitDy: -478, ports: ['ground', 'ledge'], ...R5, rating: 5,
+const w66 = rhythmic({ id: 'w1-two-lifts', floor: 'hop', name: 'two lifts', phases: ['ten', 'ketsu'], difficulty: 5, needs: ['double', 'bounce-air'], uses: ['bounce'], exitDy: -478, ports: ['ground', 'ledge'], ...R5, rating: 5,
   versions: { a: ['w H B w B', 'B w B'], b: ['w H H B B', 'B B'] }, source: 'Round 6 #66 (fc34a6f44): two bounce blocks, each lip 200-220 px (B3, B7)' });
-const w67 = rhythmic({ id: 'w1-bounce-wall', floor: 'hop', name: 'the bounce wall', phases: ['ten', 'ketsu'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -380, ports: ['ground', 'ledge'], ...R5, rating: 6,
+const w67 = rhythmic({ id: 'w1-bounce-wall', floor: 'hop', name: 'the bounce wall', phases: ['ten', 'ketsu'], difficulty: 6, needs: ['double', 'bounce-air'], uses: ['bounce', 'double'], exitDy: -380, ports: ['ground', 'ledge'], ...R5, rating: 6,
   versions: { a: ['w H H H B D w', 'B D'], b: ['w H H B w D', 'B w D'] }, source: 'Round 6 #67 (fc34a6f44): a bounce block, then a double block (B3, B2a, B7)' });
 /** #63-#65 (the designer's strings, 11-05 10:17 PM): every mushroom on the floor, every block face sheer (B7), every hop a 50 px wall (FR9: H) */
-const w63 = rhythmic({ id: 'w1-bounce-over-dip', floor: 'hop', name: 'bounce over the dip', phases: ['sho', 'ten'], difficulty: 5, needs: ['double'], uses: ['bounce', 'double'], exitDy: -250, ports: ['ground', 'ledge'], ...R5, rating: 5,
+const w63 = rhythmic({ id: 'w1-bounce-over-dip', floor: 'hop', name: 'bounce over the dip', phases: ['sho', 'ten'], difficulty: 5, needs: ['double', 'bounce-air'], uses: ['bounce', 'double'], exitDy: -250, ports: ['ground', 'ledge'], ...R5, rating: 5,
   versions: { a: ['w H H U w H', 'b D'], b: ['w H H H U w', 'b D'] }, source: 'Round 6 #63 (designer 10:17 PM): a floor mushroom at a soft dip\'s near lip, the far bank 240-260 up (bounce + air jump)' });
-const w64 = rhythmic({ id: 'w1-mushroom-log', floor: 'hop', name: 'mushroom by the fallen log', phases: ['sho', 'ten'], difficulty: 5, needs: ['double'], uses: ['bounce', 'double'], exitDy: -180, ports: ['ground', 'ledge'], ...R5, rating: 5,
+const w64 = rhythmic({ id: 'w1-mushroom-log', floor: 'hop', name: 'mushroom by the fallen log', phases: ['sho', 'ten'], difficulty: 5, needs: ['double', 'bounce-air'], uses: ['bounce', 'double'], exitDy: -180, ports: ['ground', 'ledge'], ...R5, rating: 5,
   versions: { a: ['w H H H V n w', 'b D n'], b: ['w V n w H H H', 'b D n'] }, source: 'Round 6 #64 (designer 10:17 PM): a floor mushroom 60-90 px before a fallen log 240-260 tall, down a step after' });
-const w65 = rhythmic({ id: 'w1-mushroom-stair', floor: 'hop', name: 'mushroom stair', phases: ['sho', 'ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -99, ports: ['ground', 'ledge'], ...R5, rating: 6,
+const w65 = rhythmic({ id: 'w1-mushroom-stair', floor: 'hop', name: 'mushroom stair', phases: ['sho', 'ten'], difficulty: 6, needs: ['double', 'bounce-air'], uses: ['bounce', 'double'], exitDy: -99, ports: ['ground', 'ledge'], ...R5, rating: 6,
   versions: { a: ['w H B X n n w', 'B D n n'], b: ['w B H X n n w', 'B h D n n'] }, source: 'Round 6 #65 (designer 10:17 PM): a bounce block, a double across a level gap 195+ to a bank, a 2-step stair down' });
 // (C1: out of 1-1, fewer bounce pieces: #59's Q a double rise under the band and no face for the help; #63's dip puts the mushroom 120 px
 //  or more from its face; #65's lip and level double; #21's perched mushroom far from its log)

@@ -1,0 +1,5 @@
+8-3 Normal layouts 1-3 hashes (softFalls11.test MAIN pins d7097751a77b9452 7ffc517f0fbb583c 3b968285f17a5ddf)
+9983514f:                         d7097751a77b9452 d8dfbb7e1484be3a bf36ea35e101cca4
+9983514f, pitHoleFill off (NOHOLE): d7097751a77b9452 7ffc517f0fbb583c 3b968285f17a5ddf  (= main, byte for byte)
+the move: L2 +56 pieces, L3 +53 (diff-L*.txt), every one a 72-86 px moss-stone fill 160 tall from pitHoleFill (ENG-16H); not re-pinned
+22:24

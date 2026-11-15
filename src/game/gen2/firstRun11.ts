@@ -21,6 +21,17 @@
  * Re-recorded by TIPS (R-165.236, 11-14, the lead's message queued 2:01 PM ET, 'the first-run lock re-record with your proof'): only proto.hints moved (each
  * rolled tip now carries its section's height band); with the bands taken off the build gives the old hashes exactly, both settings
  * (reference/qa-reports/TIPS/firstrun-lock.ts, firstrun-lock.txt).
+ * Re-recorded by ENG-16I (R-165.246, 11-14, the packet's "any that fails is relisted and re-proved"): only its collectibles moved (ENG-16H's
+ * walked-span petal lay, every stage: 40 of 151 Normal, 38 of 120 Easy moved; the 40 px overlap guard drops one flower each setting); every
+ * other part's hash identical, the plan unchanged; with that one hunk of 59a4c0dc reverted the build gives the old hashes exactly, both
+ * settings (reference/qa-reports/ENG-16I/firstrun-lock.ts, firstrun-lock.txt).
+ * Re-recorded by INT-10 (R-165.246, 11-15, the packet's "re-pin ONLY with a revert proof"): only its collectibles moved (Normal 150 -> 103,
+ * Easy 119 -> 82: ENG-PETAL's one walked-path model, 7e9fe4d8, and its own-piece rule, f4896466); every other part's hash identical, the
+ * plan unchanged; built at 7e9fe4d8^ it gives the old hashes exactly, both settings (reference/qa-reports/INT-10/firstrun-bisect.txt,
+ * ENG-16I's firstrun-lock.ts at each ENG-PETAL engine commit; the part diff in firstrun-parts.txt).
+ * Re-recorded by INT-10d (11-15, the lead's ruling 1:54 PM ET: placement back to main's lay, the walked path decides only the door's count):
+ * both hashes are TIPS's record again exactly (f94ccdcb: normal f405e1cea982681d, easy 91fcb58a12c2c26a, 151 and 120 collectibles), the
+ * state before ENG-16H's walked lay (reference/qa-reports/INT-10d/firstrun-lock.txt).
  * `seedlist 1-1 --check` rebuilds it on both settings and fails `first-run.drift` by name if either hash moves.
  */
 import type { FirstRunLayout } from './verdicts.types.ts';

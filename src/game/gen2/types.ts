@@ -35,7 +35,10 @@ export type Archetype = Exclude<ObjectiveType, 'boss_lair'>;
 export type Phase = 'start' | 'ki' | 'sho' | 'ten' | 'ketsu' | 'rest' | 'goal';
 
 /** what Pokey can do. walk and jump always; the rest unlock through the game (skills.ts, the worlds' lessons) */
-export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push';
+/** a move the stage may ask. 'bounce-air': the bounce + air jump combo (a lip only the air jump off a mushroom's bounce reaches): in a stage's
+ *  moves only once a stage has taught it (skills.ts comboGuaranteedAt; the lead's ruling 11-15 3:02 PM ET), so a section that `needs` it
+ *  leaves the pool until then */
+export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push' | 'bounce-air';
 
 // ───────────────────────────── the world ─────────────────────────────
 
@@ -107,12 +110,18 @@ export type PitKind = 'soft' | 'water' | 'void';
 export interface WorldManifest {
   world: number;
   name: string;
+  /** the world's rolling nut and bouncing fruit on a laid chase (gen2/rollLay.ts: their pace, arc, run-in and spacing; World 1's
+   *  worlds/w1Cast.ts W1_ROLL). A chase stage's 'roll' sockets need it; with it and no 'roll' socket, the hazards are laid by the
+   *  chase's own ground (rollLay.ts layRolling). None: a chase lays no hazard (ENG-CL (6)) */
+  rolls?: import('./rollLay.ts').RollLook;
   /** what each stage owns, by stage id (its own beats: a section whose `not` names one is never laid there) */
   owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
-  /** the world's ground: its top (world y), the bank's depth, the look */
-  ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
+  /** the world's ground: its top (world y), the bank's depth, the look. `look` 'bough' (ENG-LOOK2, any stage whose kit says so: 1-8 The
+   *  Long Branch): every bank and chase section is drawn as the painted bough along its top, over the mist, no soil (protoArt.ts
+   *  drawBoughGround); copied onto the stage as GeneratedStage.groundLook */
+  ground: { y: number; bankH: number; style: NonNullable<Platform['style']>; look?: 'bough' };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
@@ -385,6 +394,7 @@ export type SocketRole =
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
   | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
   | 'findSpot'   // where the stage's find stands (finds.ts: Meeca's note, a keepsake; stageGenerator addFinds), once a stage, by the first one met
+  | 'roll'       // a rolling nut or bouncing fruit where the designer put it (Socket.roll: its kind), laid once the chase is: gen2/rollLay.ts rollsOf
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -398,6 +408,9 @@ export interface Socket {
   dn?: number;
   /** what may fill it: props', creatures' or pickups' tags (empty: anything of its role) */
   allow?: string[];
+  /** a 'roll' socket: the hazard it lays, a nut he hops ('low') or a fruit he runs under ('high'); its pace and arc are the world's
+   *  (WorldManifest.rolls). Easy lays its version's own twin (ENG-CL (6)) */
+  roll?: 'low' | 'high';
   /** a receptor: its source's socket id (the same section). A source with no receptor is never filled */
   link?: string;
   /** enemy sockets: the most threat it may take */
@@ -504,7 +517,10 @@ export interface SectionTemplate {
   /** at most this many in one stage (a puzzle room: 1) */
   maxPerStage?: number;
   pieces: SectionPiece[];
-  entry: { piece: string; kind: PortKind };
+  /** `join` (ENG-LOOK2, the lead's ruling (a) 11-14 10:24 PM): the join INTO it, asked by the section, never rolled. 'walk': he walks on,
+   *  level, no step and no pit before it (a still fork's or a tip's ground must be whole from where he arrives: 1-8 seed 2 rolled a pit
+   *  into its still fork, a step into its tip). Honoured where both ends are ground; from a ledge the join is a jump, as always */
+  entry: { piece: string; kind: PortKind; join?: 'walk' };
   exit: { piece: string; kind: PortKind };
   /** about how far the exit sits above (negative) or below the entry: what the corridor clamp steers by */
   exitDy: number;
@@ -675,11 +691,14 @@ export interface GraphBrief {
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
   /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
-   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already).
+   *  any gap; pickups come from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already), and the fill only
+   *  where a stretch runs past Matt's 2 screens (petals.ts SPREAD_MAX; the lead's ruling INT-10d 11-15: 'low' means few, never bare).
    *  'few' (R-165.263, the story keeper's number for 2-1: Meeca spent hers on the king's crown): FEWER than a low stage, never more:
-   *  everything 'low' holds, and the game's fill honours it once it is built on ENG-PETAL's petalPass (the lead's ruling Q1 A, 11:36 AM
-   *  ET 11-15: data now, one model). 'normal' (or unset): the stage's petals as the lay and the fill make them */
+   *  everything 'low' holds (petals.ts petalsLow). 'normal' (or unset): the stage's petals as the lay and the fill make them */
   petals?: 'low' | 'few' | 'normal';
+  /** petals on the arcs of the stage's REQUIRED hops (petals.ts arcPetals, gen2/walkedSpan.ts hopArcs: a hop every run must take is
+   *  walked space; INT-10, the lead's ruling 11-15 11:10 AM ET). Opt-in by data: a stage that sets it gets them, no other stage moves */
+  petalArcs?: true;
   /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
    *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
    *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */

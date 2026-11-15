@@ -10,6 +10,7 @@ import { provenSeedFor, provenSeeds, seedListBreaches, SEED_LIST_MIN } from './s
 import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { quietJudge } from '../../../tools/engine/listRules.ts';
+import { listedStage, playFinish } from './listed.ts';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
 /** 1-1's kit as it rolled before the A/D-only ruling (sprint-B and -C allowed): its rolls are exactly the old ones, so the first seeds
@@ -51,7 +52,7 @@ test("a listed seed's replay is its full search's stage; a tampered plan is name
   const picks = [0, Math.floor(L.seeds.length / 2), L.seeds.length - 1];
   // (the search the list was built with, the quiet line its own rule (tools/engine/seedlist.ts `also`, listRules.ts quietJudge; libstage.ts
   // builds the same): POLISH-7's pool steers more rolls by it, and a search without it is not the search that listed the seed (D19))
-  const also = quietJudge(c);
+  const also = quietJudge(c, (st, d) => playFinish(listedStage('1-1')!, st, d));
   assert.deepEqual(seedListBreaches(c, w1World, picks.map((i) => L.seeds[i]), 0, { dict: L.dict, plans: picks.map((i) => L.plans[i]) }, also), []);
   const r = provenPlan('1-1', L.seeds[0])!;
   const dict = [...L.dict];

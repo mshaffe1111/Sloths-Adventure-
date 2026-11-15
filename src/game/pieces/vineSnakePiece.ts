@@ -3,7 +3,7 @@
  * `snake` gets one, keeping its beat on the stage's one clock and riding the liana's grip line wherever the liana's swing has it now.
  *
  *   step    reads its beat (its tell, its trip) and, if he swings on that liana and any of it reaches his hands while it travels, makes
- *           him let go (host.letGo: a startle hop off, never a bite). It never hurts him: no `hurts`.
+ *           him let go (host.letGo: a startle hop off, never a bite), never inside TELL_MIN of his catch. It never hurts him: no `hurts`.
  *   draw    'world' (over the liana, behind him): the tell is the hiss pose, reared at the end it starts from (on the bough at the
  *           anchor, or at the liana's foot), turned to face him; the trip is the hanging pose laid along the liana at its swing angle,
  *           head first, fading in and out only where it is off the vine (into the bough or the ferns).
@@ -24,6 +24,7 @@ import type { Platform } from '../types.ts';
 import { FOCUS_CAM, focusHero } from '../cameraFollow.ts';
 import { FALSE_LIANA, isFalseLiana, onVine, slitherClear, SNAKE, snakeComing, snakeFocusBox, snakeNow, snakeTouches, type SnakeNow } from '../vineSnake.ts';
 import { VINE_SNAKE_ART, vineSnakeImg } from '../vineSnakeArt.ts';
+import { TELL_MIN } from '../predators/core.ts';
 
 /** how far down the liana (px from its anchor) his hands are while he swings on it: grip to toes is VINE_HANG (heroVine.ts) */
 export function handsAlong(swingLength: number, len: number): number {
@@ -74,9 +75,12 @@ class VineSnakePiece implements StagePiece {
   letGos = 0;
   /** each false liana's startle (null while it hangs; done once gone) */
   readonly startled: Array<Startle | null>;
+  /** how long he has held each liana since he caught it (s; 0 while he is off it): a snake's startle waits TELL_MIN of it */
+  readonly held: number[];
   constructor(readonly vines: readonly Snaked[]) {
     this.now = vines.map(() => ({ shown: false, tell: false, live: false, head: 0, tail: 0, dir: 1 }));
     this.startled = vines.map(() => null);
+    this.held = vines.map(() => 0);
   }
 
   step(dt: number, host: PieceHost) {
@@ -90,9 +94,16 @@ class VineSnakePiece implements StagePiece {
       }
       const n = v.snake.clock ? snakeNow(v.snake, len, host.clock.read(v.snake.clock, v.snake.shift ?? 0)) : this.now[i];
       this.now[i] = n;
-      if (!(p.isVineSwinging && p.swingVineId === v.id)) continue;
+      if (!(p.isVineSwinging && p.swingVineId === v.id)) {
+        this.held[i] = 0;
+        continue;
+      }
+      this.held[i] += dt;
       const hands = handsAlong(p.swingLength ?? 0, len);
-      if (snakeTouches(n, len, hands) && host.letGo()) {
+      // (never inside TELL_MIN of his catch (predators/core.ts: no tell is under it): a snake already at his hands as he catches shows
+      // there first, and only then startles him off. ENG-16H, R-165.246: the riser's hop the frame after he caught, 1-6 Normal kid seeds
+      // 21, 23, 25 and 36 (f3436 -> f3437 and the like); no player reacts in 33 ms, so that miss was the rule's, not his)
+      if (this.held[i] >= TELL_MIN && snakeTouches(n, len, hands) && host.letGo()) {
         this.letGos++;
         continue;
       }
@@ -146,6 +157,7 @@ class VineSnakePiece implements StagePiece {
 
   respawn() {
     for (let i = 0; i < this.vines.length; i++) {
+      this.held[i] = 0;
       if (!isFalseLiana(this.vines[i])) continue;
       this.startled[i] = null;
       this.vines[i].off = false;

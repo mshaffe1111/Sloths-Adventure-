@@ -4,7 +4,7 @@
 // set-back (costAt with softPits). The planted stage: two banks, one liana between, then a chain of two; with and without soft moss.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { swingChallenges, scoreStage, OTHER_BITS, STAKES } from './score.ts';
+import { swingChallenges, scoreStage, OTHER_BITS, STAKES, ANCHOR } from './score.ts';
 import type { Route, Seg } from '../inspect/route.ts';
 
 const P = (id: number, x: number, y: number, width: number) => ({ id, x, y, width, height: 90, type: 'solid' as const });
@@ -280,4 +280,18 @@ test("a falling pod's window is its quiet less the time the route keeps him in i
   // (and its bits are the narrower window's: harder than crossing it in no time, the whole quiet)
   const harder = pods.filter((c) => { const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(c.note)!; return c.bits > windowBits(Number(m[2]), Number(m[1])) + 0.05; });
   assert.ok(harder.length > 0, 'a pod he climbs through asks more than its quiet');
+});
+
+// ───────────── INT-10 (11-15, the lead's ruling 11:35 AM ET): the anchor is its FIXED layouts, never the list's moving positions ─────────────
+test('the anchor is 1-1 on its fixed layouts (anchor11.ts): a relist of 1-1 that moves every position never moves the scale', async () => {
+  const { plantSeedList } = await import('../../src/game/gen2/seedList.ts');
+  const { ANCHOR_LIST } = await import('./anchor11.ts');
+  const raws = () => [1, 2, 3, 4].map((s) => scoreStage(ANCHOR.id, ANCHOR.setting, s, new Map()).raw);
+  const before = raws();
+  // (a "relist": the same rows in another order, so every variant 1-4 names another seed and plan)
+  const rev = <T,>(xs: readonly T[]) => [...xs].reverse();
+  const undo = plantSeedList(ANCHOR.id, { ...ANCHOR_LIST, seeds: rev(ANCHOR_LIST.seeds), plans: rev(ANCHOR_LIST.plans), quiet: rev(ANCHOR_LIST.quiet), outro: rev(ANCHOR_LIST.outro) });
+  try {
+    assert.deepEqual(raws(), before, 'the anchor read the list the game plays, not its own layouts');
+  } finally { undo(); }
 });

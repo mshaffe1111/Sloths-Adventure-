@@ -1,0 +1,14 @@
+expert normal 1 sealed door {"got":93,"need":95} rescues 0 LIFE@risers:b1(pit)
+expert normal 2 shrine {"got":95,"need":94} rescues 0 
+expert normal 3 sealed door {"got":96,"need":102} rescues 0 LIFE@risers:b1(pit) LIFE@gorge:b2(pit) PIT@gorge:gb1 PIT@gorge:d2 PIT@gorge:d2 PIT@gorge:d2 PIT@gorge:d2
+expert normal 4 shrine {"got":101,"need":97} rescues 0 LIFE@risers:d1(pit)
+expert normal 5 sealed door {"got":86,"need":90} rescues 0 PIT@gorge:b2
+expert normal 6 shrine {"got":96,"need":95} rescues 0 PIT@gorge:d2
+
+TOTALS
+expert normal LIFE@gorge:b2 1
+expert normal LIFE@risers:b1 2
+expert normal LIFE@risers:d1 1
+expert normal PIT@gorge:b2 1
+expert normal PIT@gorge:d2 5
+expert normal PIT@gorge:gb1 1

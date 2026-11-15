@@ -25,7 +25,6 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   // World 1
   'hint.1-1.double': 'double',
   'hint.1-5.shiny': 'golden',
-  'hint.1-6.log': 'pushLog',
   'eng.watch.hide.bush': 'watcher',
   'hint.1-7.hide': 'watcher',
   'eng.watch.seen.bush': 'watcherSeen',

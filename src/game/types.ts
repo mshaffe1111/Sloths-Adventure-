@@ -222,6 +222,11 @@ export interface Enemy {
   kitFree?: boolean;
   /** a cast sweeper perched on a snag at its x (predators Post.perched; w1Cast.ts eagleOver): its body stays, its gaze sweeps */
   kitPerch?: boolean;
+  /** a cast sweeper that calls only this many passes, then rests on its post for good (predators Post.passes; gen2/stillFork.ts lays 1:
+   *  the still fork's one pass, 1-8 NEW 7) */
+  kitPasses?: number;
+  /** a cast sweeper's glance dials for its stretch (predators Post.glance; the still row's, w1Cast.ts eagleOver), or false: it never glances */
+  kitGlance?: import('./predators/types.ts').Glance | false;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
@@ -423,6 +428,9 @@ export interface TreeStructure {
 }
 
 export interface Vine {
+  /** phased to a runner's arrival (1-8 NEW 4; the `s` letter's dial phase: runner): its swing is eased to meet him at a full run off its
+   *  lip, so he catches it in stride (runnerLiana.ts, pieces/runnerLianaPiece.ts). Unset: its plain self-swing */
+  runner?: boolean;
   /** thick with Spanish moss (1-7 NEW 6): holding it is cover from a cast watcher wherever it swings (castPlay.ts, stillness.ts Cover.rope) */
   mossy?: boolean;
   /** the laid section's uid and the piece's key it came from (`s4:f2`; gen2 pipeline): what a stage's own finish finds it by */
@@ -492,6 +500,13 @@ export interface Rope {
 
 export interface Collectible {
   id: number;
+  /** a petal laid on a required hop's arc (petals.ts arcPetals, by the stage's brief): shown and picked like any petal, never counted
+   *  by a share goal (goals.ts goalCounts), as a crumbling limb's petal is not: a bonus over the hop, never what the door asks for */
+  arc?: true;
+  /** the walked path's verdict on a gen2 stage's petal (petals.ts markWalked, ENG-PETAL's model with rule A; the lead's ruling INT-10d
+   *  11-15): true where every run passes it, false where a run need not (cleared in the air, stood on only after a miss, past a span's
+   *  end). Placement never reads it; the door does: a share goal counts only the petals not marked false (goals.ts goalCounts) */
+  walked?: boolean;
   type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find' | 'seed';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;

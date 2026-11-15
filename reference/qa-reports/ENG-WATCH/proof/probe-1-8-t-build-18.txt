@@ -1,0 +1,48 @@
+1-8 seed 1 normal eagle#0 PERCHED stretch 26513-27384 (871 px) walk: hearts lost 1, walk 248 px/s
+    f14 t0.5 rest->hunt (eye 27384, him 26521, passes 0)
+    f86 t2.9 hunt->tell (eye 27245, him 27184, passes 0)
+    f109 t3.67 tell->act (eye 27245, him 27324, passes 0)
+    f131 t4.4 HEART LOST (hp 4) at x 27527
+    f151 t5.07 act->recover (eye 27245, him 27694, passes 0)
+    f167 t5.6 out of the stretch by 400 px: run ends (him 27787)
+1-8 seed 1 normal eagle#0 PERCHED stretch 26513-27384 (871 px) back: hearts lost 0, walk 260 px/s
+    f22 t0.77 rest->hunt (eye 27384, him 27379, passes 0)
+    f22 t0.77 eye over him (eye 27384, him 27379)
+    f163 t5.47 hunt->rest (eye 26513, him 26163, passes 0)
+    f169 t5.67 out of the stretch by 400 px: run ends (him 26107)
+1-8 seed 1 normal eagle#0 PERCHED stretch 26513-27384 (871 px) stand: hearts lost 1
+    f0 t0.03 rest->hunt (eye 27384, him 27152, passes 0)
+    f75 t2.53 hunt->tell (eye 27213, him 27152, passes 0)
+    f98 t3.3 tell->act (eye 27213, him 27152, passes 0)
+    f104 t3.5 HEART LOST (hp 4) at x 27152
+    f111 t3.73 act->recover (eye 27213, him 27165, passes 0)
+    f129 t4.33 recover->rest (eye 27213, him 27165, passes 1)
+1-8 seed 1 normal eagle#0 PERCHED stretch 26513-27384 (871 px) sneak: hearts lost 0
+    f0 t0.03 rest->hunt (eye 27384, him 26746, passes 0)
+    f113 t3.8 eye over him (eye 26808, him 26746)
+    f141 t4.73 its look is over (head away): he walks out of cover at x 26746
+    f141 t4.73 hunt->rest (eye 26513, him 26746, passes 1)
+    f168 t5.63 under its post (x 26979), 0.87 s after he left cover, phase rest
+    f271 t9.07 out of the stretch by 400 px: run ends (him 27787)
+1-8 seed 1 easy eagle#0 PERCHED stretch 26633-27504 (871 px) walk: hearts lost 0, walk 248 px/s
+    f14 t0.5 rest->hunt (eye 27504, him 26641, passes 0)
+    f100 t3.37 hunt->tell (eye 27422, him 27361, passes 0)
+    f130 t4.37 tell->act (eye 27422, him 27637, passes 0)
+    f167 t5.6 out of the stretch by 400 px: run ends (him 27907)
+1-8 seed 1 easy eagle#0 PERCHED stretch 26633-27504 (871 px) back: hearts lost 0, walk 262 px/s
+    f22 t0.77 rest->hunt (eye 27504, him 27499, passes 0)
+    f22 t0.77 eye over him (eye 27504, him 27499)
+    f168 t5.63 out of the stretch by 400 px: run ends (him 26227)
+1-8 seed 1 easy eagle#0 PERCHED stretch 26633-27504 (871 px) stand: hearts lost 0
+    f0 t0.03 rest->hunt (eye 27504, him 27272, passes 0)
+    f95 t3.2 hunt->tell (eye 27341, him 27272, passes 0)
+    f125 t4.2 tell->act (eye 27341, him 27272, passes 0)
+    f136 t4.57 act->recover (eye 27341, him 27272, passes 0)
+    f154 t5.17 recover->rest (eye 27341, him 27272, passes 1)
+1-8 seed 1 easy eagle#0 PERCHED stretch 26633-27504 (871 px) sneak: hearts lost 0
+    f0 t0.03 rest->hunt (eye 27504, him 26866, passes 0)
+    f140 t4.7 eye over him (eye 26933, him 26866)
+    f174 t5.83 its look is over (head away): he walks out of cover at x 26866
+    f174 t5.83 hunt->rest (eye 26633, him 26866, passes 1)
+    f201 t6.73 under its post (x 27099), 0.87 s after he left cover, phase rest
+    f304 t10.17 out of the stretch by 400 px: run ends (him 27907)

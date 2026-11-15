@@ -15,7 +15,7 @@ import { buildGen2Stage } from '../pipeline.ts';
 import { listedStage } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
-import { LINES_17, MISSION_17, SEALED_17, STAGE_17, W17_MOSSY } from './w1Arc17.ts';
+import { LINES_17, MISSION_17, SEALED_17, STAGE_17, W17_MOSSY, WATCH_17 } from './w1Arc17.ts';
 import type { Enemy, Platform, Vine } from '../../types.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -139,6 +139,18 @@ test('green close enough (1-7.md "The phone both ways"): open bark between two c
         }
       }
     }
+  }
+});
+
+test("1-7's own eagle dials (WATCH_17, TUNE-17): every eagle past the lesson glances by them, the perched one too; none glances where taught", () => {
+  for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
+    const es = eagles(built(s, d));
+    // (Normal frees only the lesson's first passes; Easy frees every first pass, so its lesson eagles are the ones that never glance)
+    const taught = es.filter((e) => e.kitGlance === false);
+    assert.equal(taught.length, 2, `${d} ${s}: the two lesson eagles show the pass alone`);
+    if (d === 'normal') assert.ok(taught.every((e) => e.kitFree), 'they are the free ones');
+    for (const e of es.filter((q) => q.kitGlance !== false)) assert.deepEqual(e.kitGlance, WATCH_17.glance, `${d} ${s}: eagle ${e.id}${e.kitPerch ? ' (perched)' : ''}`);
+    assert.ok(es.some((e) => e.kitPerch && e.kitGlance !== false), 'the perched one is past the lesson');
   }
 });
 

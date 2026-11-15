@@ -1,0 +1,8 @@
+B1 the fill's off-path guard off (a trail on a pit floor, a thorn bed, off a creaky limb is picked) # fail 2 RED
+B2 a creaky limb is on the path (offPath forgets fragile) # fail 1 RED
+B3 a hurt floor is on the path (offPath forgets pit 'hurt') # fail 1 RED
+B4 a heart-fall zone is no fall (fallSpans reads gen2 falls only) # fail 1 RED
+A1 the perch band ignores the testers' let-go (lianaBand's forward guard off) # fail 2 RED
+A2 the forward-end let-go drifts from the bot's (FORWARD_END 0.75 -> 0.6) # fail 1 RED
+A3 the late press leaps off the engine's full swing (the sweet snapshot without the vine's amp, as before ENG-16E) # fail 1 RED
+restored

@@ -57,6 +57,13 @@ export interface WatchRow {
   cast?: string;
   /** whose first pass is free (it dives and pulls up short): the stretches where it is taught, or none (default) */
   free?: 'lesson';
+  /**
+   * a kit watcher's glance between its passes (predators Glance: red light, green light), this stage's own over its kind's; false: none.
+   * Where it is taught (`lesson`) it never glances unless `glanceLesson`: the lesson stretch shows the pass first (the first appearance
+   * is taught), the glance comes after (ENG-WATCH, R-165.267)
+   */
+  glance?: import('../predators/types.ts').Glance | false;
+  glanceLesson?: boolean;
   /** the longest a watched stretch runs (px) and how far it runs past the last hide along it */
   max?: number;
   w?: number;
@@ -178,6 +185,8 @@ export function stillEmitters(rows: Readonly<Record<string, StillRow>>, stage: n
         ...(scare ? { setback: R(run[0] + STILL.setback) } : {}),
         ...(row.cast ? { cast: row.cast } : {}),
         ...(row.free === 'lesson' && lesson ? { freeFirst: true } : {}),
+        // (a kit watcher's glance dial: none where it is taught, else the row's own; a watcher.ts zone has no glance)
+        ...(row.cast && lesson && !row.glanceLesson ? { glance: false as const } : row.cast && row.glance !== undefined ? { glance: row.glance } : {}),
       };
       const zones = (out.proto.watch ??= []);
       // (two watchers on one stretch make one zone)

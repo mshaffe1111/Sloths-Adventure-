@@ -33,7 +33,7 @@ test("Dot's queue on the phone: the sealed line cuts in over the mark card at on
     const q = new GuideQueue(true, TIPS_GAP_MS);
     q.fadeK = FADE_K;
     q.readDone = true;
-    const mark: GuideLine = { key: 'engine:mark', text: 'Her mark, right where she used to wait for you!', kind: 'info', who: 'Dot', source: 'engine', waitMs: 60000 };
+    const mark: GuideLine = { key: 'engine:mark', text: 'Her mark, where she used to wait for you!', kind: 'info', who: 'Dot', source: 'engine', waitMs: 60000 };
     q.push(mark, 1000);
     let t = 1000;
     while (q.tick(t, env)?.line.key !== 'engine:mark' && t < 40000) t += 50;
@@ -60,7 +60,7 @@ test("the engine says the door's line at once, marked, over a line still up (1-2
     const pl = r.platforms.filter((q) => q.x <= x && q.x + q.width >= x).sort((a, b) => Math.abs(a.y - dy) - Math.abs(b.y - dy))[0];
     r.stand(x, pl.y);
     // (a line still up as he walks in, as her mark's was: before, nothing was sent for the door until its time ran out)
-    e.guide('Her mark, right where she used to wait for you!', 3.6);
+    e.guide('Her mark, where she used to wait for you!', 3.6);
     let at = -1;
     for (let i = 0; i < 90 && at < 0; i++) {
       r.frame({ right: true });

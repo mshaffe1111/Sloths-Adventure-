@@ -72,12 +72,13 @@ test('Tips says only what is new: a stage line about a thing already taught, a r
 });
 
 test('no puzzle gives the answer on entry: a room names the problem; the nudge and the move come only on struggle (the move on Help only)', () => {
-  // 1-6's seesaw rooms (protoStage.ts), built as the game builds them
-  const lvl = generateAllLevels().find((l) => l.id === '1-6')!;
-  const st = buildProtoStage(lvl, 1);
+  // 3-2's puzzle rooms (protoStage.ts: the glowing mushroom, the plate, the high glow), built as the game builds them (until 11-14 the
+  // old hand-built 1-6's seesaw rooms, gone with its proto plan, R-165.238: the gen2 1-6 has no puzzle room)
+  const lvl = generateAllLevels().find((l) => l.id === '3-2')!;
+  const st = buildProtoStage(lvl, 1, '3-2');
   const rooms = st.kit!.rooms;
   assert.ok(rooms.length >= 3);
-  new KitPlay(st.kit!, st.platforms, { world: 1, stage: 6 });
+  new KitPlay(st.kit!, st.platforms, { world: 3, stage: 2 });
   for (const r of rooms) {
     const t = r.tips!;
     assert.ok(t.enter && t.nudge && t.move, `${r.id}: a name, a nudge and a move`);
@@ -89,11 +90,11 @@ test('no puzzle gives the answer on entry: a room names the problem; the nudge a
     assert.equal(roomLineOf(String(t.enter))?.step, 'name');
     assert.equal(roomLineOf(String(t.nudge))?.step, 'nudge');
     assert.equal(roomLineOf(String(t.move))?.step, 'move');
-    const name = engineGuideLine(String(t.enter), '1-6', { dot: true })!;
-    const mv = engineGuideLine(String(t.move), '1-6', { dot: true })!;
+    const name = engineGuideLine(String(t.enter), '3-2', { dot: true })!;
+    const mv = engineGuideLine(String(t.move), '3-2', { dot: true })!;
     assert.equal(helpAllows(mv, 'reminders', new Set()), false, 'the move is never said on Tips');
     assert.equal(helpAllows(mv, 'teach', new Set()), true, 'it is on Help, after struggle');
-    // on Tips the name is said only for the room that teaches the seesaw for the first time
+    // on Tips the name is said only for a room that teaches its thing for the first time (its mech)
     assert.equal(helpAllows(name, 'reminders', new Set()), !!r.mech, `${r.id} on Tips`);
   }
   // 4-3's pool: its move is never said as he walks up

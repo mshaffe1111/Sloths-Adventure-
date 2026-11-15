@@ -35,6 +35,14 @@ export interface PieceHost {
   readonly platforms: readonly Platform[];
   /** the stage's one clock: every piece on a beat reads it (beat.ts, clock.ts) */
   readonly clock: Pick<StageClock, 'read'>;
+  /** the vines' swing clock (s; physics.ts vineAngle reads each liana's swing from it and its phase): a piece that eases a liana's phase
+   *  reads it (pieces/runnerLianaPiece.ts) */
+  readonly vineClock: number;
+  /**
+   * play the next `seconds` of real time in slow motion (the engine's own, a giant's last hit): a moment the player should see
+   * (the branch's tip breaking off as he swings away, 1-8 NEW 8). Asked again, the longer of the two holds
+   */
+  slowMo(seconds: number): void;
   /**
    * he lets go of the liana he swings on, now (a vine snake reached his hands, 1-6.md): a startle hop up and off, never a bite and never a
    * heart; that liana is not caught again until he is down (or on another hold). Returns false, doing nothing, when he swings on none.
@@ -59,10 +67,15 @@ export interface FocusBox {
   y1: number;
 }
 
-/** a hurt a piece deals him this step: through the engine's one damagePlayer (its safe time, its knock away from `fromX`) */
+/**
+ * a hurt a piece deals him this step: through the engine's one damagePlayer (its safe time, its knock away from `fromX`); or, with
+ * `toFlag`, a heart and back to his last flag (no safe time asked: a chase's catch or a fall off its branch, chase.ts, Matt 2026-10-24),
+ * every piece then put back by its respawn
+ */
 export interface PieceHurt {
   amount: number;
   fromX: number;
+  toFlag?: boolean;
 }
 
 /** one piece running on this stage */

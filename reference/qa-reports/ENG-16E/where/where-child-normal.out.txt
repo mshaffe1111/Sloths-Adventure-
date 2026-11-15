@@ -1,0 +1,11 @@
+child normal 1 time {"got":77,"need":95} rescues 0 PIT@risers:b2 PIT@risers:b2
+child normal 2 time {"got":71,"need":94} rescues 0 
+child normal 3 time {"got":83,"need":102} rescues 0 
+child normal 4 time {"got":76,"need":97} rescues 0 
+child normal 5 time {"got":72,"need":90} rescues 0 
+child normal 6 time {"got":70,"need":95} rescues 1 RESCUE@creaky-landing:in PIT@creaky-landing:b2
+
+TOTALS
+child normal PIT@creaky-landing:b2 1
+child normal PIT@risers:b2 2
+child normal RESCUE@creaky-landing:in 1

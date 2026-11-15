@@ -12,7 +12,7 @@ import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
-import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
+import { stretchAt } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
@@ -37,7 +37,7 @@ import { pickCut } from './w1CutArt.ts';
 import { easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
-import { withGoals } from './goals.ts';
+import { countedGoal, withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -124,6 +124,7 @@ import { drawTraps, warmTrapArt } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
 import { drawDress } from './dressArt.ts';
+import { drawInvDress } from './art/invDress.ts';
 import { drawWaterSign, signRattle } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
@@ -143,7 +144,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
+import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, chaseBack, chaseSpan, TIP_VIEW, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -191,10 +192,10 @@ import { baseScale, bossViewWidth, bossViewX, keepInView } from './bossCamera.ts
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
-import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
+import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -529,6 +530,9 @@ export class GameEngine {
   private bossGuideIn = '';
   /** real seconds of slow motion still to play (the last hit on a giant) */
   private slowMoLeft = 0;
+  /** the slow motion's push-in (a giant's last hit and the old 1-8's last liana: 1.3); a piece's moment (PieceHost.slowMo: the tip
+   *  falling behind him) keeps the view as it is, or the push-in would crop what it is slowed down to show */
+  private slowMoZoom = 1.3;
   private bossSig = '';
   private clangCd = 0;
   /** seconds the player is stuck in web or goo (he runs slower) */
@@ -683,6 +687,11 @@ export class GameEngine {
     get standingOnId() { return e.standingOnId; },
     get platforms() { return e.platforms; },
     get clock() { return e.clock; },
+    get vineClock() { return e.vineClock; },
+    slowMo: (seconds) => {
+      e.slowMoLeft = Math.max(e.slowMoLeft, seconds);
+      e.slowMoZoom = 1;
+    },
     letGo: () => e.letGoOfLiana(),
     focus: (b) => {
       e.camFocus = { x0: b.x0, x1: b.x1, y0: b.y0, y1: b.y1 };
@@ -801,11 +810,6 @@ export class GameEngine {
   private ringDrops: Array<{ e: Enemy; t: number; delay: number; from?: { x: number; y: number } }> = [];
   /** a snake that has just dropped into the ring is shaken for a moment and cannot bite yet (game time it can from, by id) */
   private harmlessUntil = new Map<number, number>();
-  /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
-  private chase: ChaseState | null = null;
-  private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
-  private chaseSlowDone = false;
-  private chaseNext = 0;
   /** 6-8's rising tide (risingTide.ts): its state, its setting, and the flag Dot warned under (Infinity: not yet; once a stage) */
   private tide: TideState | null = null;
   /** 8-4's jar of fireflies (w8LanternRun.ts): its light, the glowing flowers, the moths, the firefly tree */
@@ -1043,10 +1047,6 @@ export class GameEngine {
     recorder.stageStart();
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
-    this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
-    this.chaseFalling = [];
-    this.chaseSlowDone = false;
-    this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
     this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, this.easy) : null;
     // (8-4: Pokey carries the jar in his paws; every other stage, his plain frames)
@@ -1103,11 +1103,15 @@ export class GameEngine {
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
-    this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
+    // (a chase section is drawn only by its chase drawer: a laid chase's piece, pieces/chasePiece.ts)
+    this.drawPlats = this.pushLogs.length || this.platforms.some((pl) => pl.chase || pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
+    // (the ground's look from the stage's world data: The Long Branch's bough, ENG-LOOK2; what its banks join: every solid, its chase's too)
+    setGroundLook(this.currentStage.groundLook);
+    setBoughJoins(this.currentStage.groundLook ? this.platforms.filter((pl) => pl.type === 'solid') : []);
     // (the mixer's stages: the kapok trunks its boughs grow from, scenery only)
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves, this.platforms, this.proto?.water);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
@@ -2406,7 +2410,11 @@ export class GameEngine {
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
           const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
-          if (sweet) this.sweetSnap = { angle: sw.angle, omega: sw.omega, len: sw.len, dir: p.facing, at: this.gameTime };
+          // (with the vine's own swing, `amp`: a press a beat late leaps from this, and timedLaunch reads the swing it was on. Without it
+          // the leap off a liana narrowed by its neighbour (a chain's, swingSetup's) was thrown as off the engine's full swing, a third
+          // short: 1-6's chain, the kid's late press off its last liana fell short into the hollow, vx 426 where the release checks fly 520,
+          // ENG-16E R-165.246)
+          if (sweet) this.sweetSnap = { angle: sw.angle, omega: sw.omega, len: sw.len, amp: sw.amp, dir: p.facing, at: this.gameTime };
           // a press a beat early waits for the sweet spot, then lets go (physics.ts RELEASE)
           if (this.swingLeapWait > 0) {
             this.swingLeapWait -= dt;
@@ -2988,7 +2996,8 @@ export class GameEngine {
     // (a runtime piece that hurts him: through the one damagePlayer, its safe time and its knock away from the piece)
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
-      if (hurt) this.damagePlayer(hurt.amount, hurt.fromX);
+      // (`toFlag`: a heart and back to the flag, heartToFlag)
+      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX);
     }
     for (const e of this.enemies) {
       if (e.defeated) {
@@ -3252,7 +3261,6 @@ export class GameEngine {
 
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
     if (this.proto?.watch) this.updateWatch(dt);
-    if (this.chase) this.updateChase(dt);
     if (this.tide) this.updateTide(dt);
     if (this.proto?.reveal) this.updateReveal(dt);
     if (this.ringDrops.length) this.stepDrops(dt);
@@ -3450,8 +3458,10 @@ export class GameEngine {
     // --- Check Objective Completion ---
     let currentProgress = 0;
     const objType = this.currentStage.config.objectiveType;
+    // (what the goal counts: a harvest's petals also on a stage whose plan gathers them, goals.ts countedGoal; the sealed line keeps objType)
+    const goalType = countedGoal(this.currentStage.config);
 
-    switch (objType) {
+    switch (goalType) {
       case 'harvest':
         currentProgress = p.fruitsCollected;
         break;
@@ -3474,11 +3484,11 @@ export class GameEngine {
     if (this.mc) currentProgress = this.mc.count;
 
     const isQuotaType =
-      objType === 'harvest' ||
-      objType === 'purge' ||
-      objType === 'relic_hunt' ||
-      objType === 'rescue' ||
-      objType === 'gauntlet';
+      goalType === 'harvest' ||
+      goalType === 'purge' ||
+      goalType === 'relic_hunt' ||
+      goalType === 'rescue' ||
+      goalType === 'gauntlet';
 
     const quotaMet = currentProgress >= this.currentStage.config.targetCount;
     const isExitUnlocked = !isQuotaType || quotaMet;
@@ -3507,7 +3517,7 @@ export class GameEngine {
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
-        const line = goalLine('late', this.currentStage.config.worldIndex, objType, need);
+        const line = goalLine('late', this.currentStage.config.worldIndex, goalType, need);
         if (line) this.guide(line, 4);
       }
     }
@@ -3545,7 +3555,7 @@ export class GameEngine {
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
           // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
-          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
+          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, goalType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
           // (said at once, over any line still up, and marked the locked exit's, whatever its words: the keeper's own door lines read as
           // plain lines and waited behind her mark card, BUILD-16b 11-14: 34 s at 1-6's door with no word why. R-165.241, STAGE-RULES:
@@ -3802,7 +3812,6 @@ export class GameEngine {
     const p = this.player;
     const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
     let danger = clamp01((300 - near) / 120);
-    if (this.chase?.active) danger = 1;
     if (this.tide?.on && this.tide.y - p.y < 260) danger = 1;
     const boss = this.boss && !this.boss.defeated ? Math.max(1, Math.min(3, this.boss.phase)) : 0;
     const exitItem = boss ? undefined : this.collectibles.find((c) => c.type === 'exit_totem' && !c.isLocked);
@@ -4285,7 +4294,7 @@ export class GameEngine {
       minW: def?.frameRefuges ? def.frameRefuges[1] - def.frameRefuges[0] + 30 : undefined,
     });
     // the killing blow pushes the camera in
-    const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
+    const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? this.slowMoZoom : 1));
     const prev = this.bossZoom;
     // (a sky boss climbs fast: the view keeps up with her)
     this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * (this.bossDef?.frameAir ? 3.6 : 2.2));
@@ -4740,7 +4749,10 @@ export class GameEngine {
       // it ran onto a blow already thrown at it: the blow wins, never a trade
       if (this.ranOntoBlow(k.e)) continue;
       if (checkAABBCollision(...this.pBox(), k.box.x, k.box.y, k.box.w, k.box.h)) {
+        const hp = p.hp;
         this.damagePlayer(1, k.e.x);
+        // (one act, one heart: the act that took it pulls up, castPlay.ts struck)
+        if (p.hp < hp) c.struck(k.e);
         break;
       }
     }
@@ -5042,7 +5054,11 @@ export class GameEngine {
     this.hazards.length = 0;
     for (const e of this.enemies) if (!e.defeated && e.minion) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
-    if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
+    // a giant's last hit plays in slow motion, the camera pushing in
+    if (this.bossDef?.lair) {
+      this.slowMoLeft = 1.2;
+      this.slowMoZoom = 1.3;
+    }
     this.camera.trauma = 1;
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
@@ -5086,7 +5102,7 @@ export class GameEngine {
       heartsLost: this.statHeartsLost,
       floraTotal,
       floraCollected,
-      ...(this.currentStage.config.objectiveType === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
+      ...(countedGoal(this.currentStage.config) === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
       timeSec: this.gameTime,
       timeLimit: this.currentStage.config.timeLimit,
       maxStompChain: this.statMaxStompChain,
@@ -6014,7 +6030,7 @@ export class GameEngine {
     this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
-  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true) {
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true, lifeNote = true) {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
@@ -6041,8 +6057,6 @@ export class GameEngine {
     this.dragSpeed = 1;
     this.dragJump = 1;
     this.lanternRun?.restart();
-    // the collapsing branch's chase waits behind his flag (chase.ts)
-    if (this.chase) this.restartChase();
     // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
     if (this.tide) {
       restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
@@ -6100,7 +6114,8 @@ export class GameEngine {
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
     // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
-    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
+    // (only when a life went: a chase's catch puts him back a HEART down, and "3 lives left" over him read as a life lost, ENG-B4's clip)
+    if (lifeNote) this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -6397,6 +6412,19 @@ export class GameEngine {
     this.applyZoom();
   }
 
+  /** the stage's chase span (cameraFollow.ts chaseSpan), worked out once for its chase and hazards (again if either is laid anew on the
+   *  same stage: a harness swapping a stage's chase kept the stale span, B5's contrast run) */
+  private chaseSpanFor: [GeneratedStage | null, unknown, unknown] = [null, undefined, undefined];
+  private chaseSpanV: ReturnType<typeof chaseSpan> = null;
+  private chaseSpanOf(st: GeneratedStage): ReturnType<typeof chaseSpan> {
+    const k = this.chaseSpanFor;
+    if (k[0] !== st || k[1] !== st.chase || k[2] !== st.rolling) {
+      this.chaseSpanFor = [st, st.chase, st.rolling];
+      this.chaseSpanV = chaseSpan(st);
+    }
+    return this.chaseSpanV;
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
     // the swing camera first (it sets the view's size for this frame)
@@ -6426,7 +6454,16 @@ export class GameEngine {
     const roomUp = vh * feetAt - HERO_HEAD - (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
     const eased = repick(this.camRepick, p.x, this.camAnchorY, prevAnchor, camSub, vw, vh, dt, this.camera.x, this.camera.y, roomUp);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : eased.x - vw * FRAME.across + this.camLookX + runX;
+    // (a laid chase, or a stage's rolling nuts: over its span the view leads so a hazard's drop and roll are seen a second and more
+    // before they reach him at a full run, cameraFollow.ts chaseSpan; the span is the stage's own data, so it holds over every fork)
+    const span = this.chaseSpanOf(this.currentStage);
+    const mid = p.x + p.width / 2;
+    // (and over a stage's tip the view leans back: the whole branch end falls behind him as he swings off it, cameraFollow.ts TIP_VIEW)
+    // (from the moment he is off the ground at it, on its liana or in the air, its swing back over the tip included, until he is
+    // TIP_VIEW.after past it; on the run in, the chase lead shows the liana he jumps for)
+    const atTip = span?.tip !== undefined && mid <= span.tip + TIP_VIEW.after && (mid > span.tip || (!p.grounded && mid > span.tip - TIP_VIEW.after));
+    this.camera.targetX = atTip ? mid - vw * TIP_VIEW.back
+      : span && mid >= span.x0 && mid <= span.x1 ? mid - chaseBack(vw, span.ahead) : eased.x - vw * FRAME.across + this.camLookX + runX;
     this.camera.targetY = eased.y - vh * feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
@@ -6468,7 +6505,7 @@ export class GameEngine {
     let landShown: Box | null = null;
     let landX = 0;
     let landY = 0;
-    if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
+    if (!look && !kf && !this.currentStage.arena && !atTip) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
@@ -6814,7 +6851,8 @@ export class GameEngine {
     out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
-    out.chase = !!this.chase;
+    // (a chase: he is on a laid chase's stretch (chase.ts ChaseLay: its front runs behind him there))
+    out.chase = !!this.currentStage.chase && stretchAt(this.currentStage.chase, p.x) >= 0;
     out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;
@@ -7173,7 +7211,7 @@ export class GameEngine {
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
-    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
+    setCanopy(this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
     // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
@@ -7227,6 +7265,8 @@ export class GameEngine {
     if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, true);
     // World 4's pieces that stand back behind the ground (4-3's pool basins)
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    // any inventory piece the stage's data places as dressing, behind the play layer (art/invDress.ts: sized by the inventory, by Pokey)
+    if (this.proto?.invDress) drawInvDress(ctx, this.proto.invDress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.config.worldIndex, 'behind');
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -7352,7 +7392,6 @@ export class GameEngine {
         drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id ?? 0);
       }
     }
-    if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
       if (this.onScreen(h.x, h.y, 260)) drawHollowArt(ctx, h.x, h.y, Math.hypot(this.player.x - h.x, this.player.y - 30 - h.y) < 230);
@@ -7650,7 +7689,6 @@ export class GameEngine {
     ctx.restore(); // end world transform
     // (the stage's runtime pieces in screen px, with the chase and watch edges: layer 'screen')
     if (this.pieces.length) drawPieces(this.pieces, ctx, 'screen', this.pieceHost);
-    if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
@@ -8304,63 +8342,6 @@ export class GameEngine {
     }
   }
 
-  /** step 1-8's collapse: sections behind it fall, caught or off the branch costs a heart and the flag (chase.ts) */
-  private updateChase(dt: number) {
-    const plan = this.proto!.chase!;
-    const ch = this.chase!;
-    const p = this.player;
-    const wasActive = ch.active;
-    stepChase(ch, plan, dt, p.x);
-    if (ch.active && !wasActive) {
-      // it starts: a crack, a jolt, and Dot's warning (said once on this device)
-      sound.playHitImpact(true);
-      this.camera.trauma = Math.min(1, this.camera.trauma + 0.45);
-      const id = this.currentStage.config.id;
-      if (!tipHeard(id, 'chase:go')) {
-        markTipHeard(id, 'chase:go');
-        this.guide('It is breaking behind us! Keep moving!', 3);
-      }
-    }
-    // sections behind the front fall away (and a creak now and then just ahead of it)
-    for (const pl of this.platforms) {
-      if (!pl.chase || pl.broken) continue;
-      if (sectionState(ch, pl.x, pl.x + pl.width) !== 'fallen') continue;
-      pl.broken = true;
-      const half = pl.width / 2;
-      const h = (pl.width * 100) / 370;
-      for (const right of [false, true]) {
-        this.chaseFalling.push({ x: pl.x + (right ? half : 0), y: pl.y - 8, w: half, h, vx: (right ? 40 : -30) + Math.random() * 30, vy: -40 - Math.random() * 60, rot: 0, vr: (right ? 1 : -1) * (0.8 + Math.random()), t: 0, right });
-      }
-      this.spawnSparkBurst(pl.x + pl.width, pl.y, '#8b5a2b');
-      if (this.onScreen(pl.x + pl.width, pl.y, 200)) {
-        sound.playHitImpact(false);
-        this.camera.trauma = Math.min(0.5, this.camera.trauma + 0.12);
-      }
-    }
-    if (ch.active && this.gameTime > this.chaseNext) {
-      this.chaseNext = this.gameTime + 0.9 + Math.random() * 0.6;
-      if (p.x - ch.front < 700) sound.playTreeClimb();
-    }
-    for (const f of this.chaseFalling) {
-      f.t += dt;
-      f.vy += 1500 * dt;
-      f.x += f.vx * dt;
-      f.y += f.vy * dt;
-      f.rot += f.vr * dt;
-    }
-    this.chaseFalling = this.chaseFalling.filter((f) => f.t < 1.8);
-    // the last liana: a moment of slow motion as he catches it, with everything coming down behind him
-    if (!this.chaseSlowDone && p.isVineSwinging && this.vines.find((v) => v.id === p.swingVineId)?.x === plan.end) {
-      this.chaseSlowDone = true;
-      this.slowMoLeft = 0.55;
-    }
-    // caught by the front, or off the branch (below the lowest section near him by more than a fall can come back from)
-    let low = -Infinity;
-    for (const pl of this.platforms) if (pl.chase && Math.abs(pl.x + pl.width / 2 - p.x) < 800) low = Math.max(low, pl.y);
-    const off = low > -Infinity && p.y > low + 300 && !p.isVineSwinging && !p.climbing;
-    if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
-  }
-
   /** step 8-4's jar (w8LanternRun.ts): its light, the moths, Dot's lines, the dark's setback, the firefly tree */
   private stepLanternRun(dt: number) {
     const lr = this.lanternRun!;
@@ -8548,8 +8529,9 @@ export class GameEngine {
     ctx.fillRect(x0, t.y - 16, x1 - x0, 28);
   }
 
-  /** caught on the long branch: one heart, back at the flag (respawnAtCheckpoint puts the branch and the collapse back) */
-  private chaseCaught() {
+  /** a piece's `toFlag` hurt (a laid chase's catch, or off its branch): one heart, back at the flag (respawnAtCheckpoint puts every
+   *  piece back: the branch whole from there, the front waiting behind him) */
+  private heartToFlag() {
     // (never under the Game Over card: the engine keeps stepping there, and the collapse caught the body again and again, audit C)
     if (this.isGameOver) return;
     const p = this.player;
@@ -8559,69 +8541,10 @@ export class GameEngine {
     sound.playPlayerHurt();
     if (hp <= 0) this.loseLife('pit');
     else {
-      this.respawnAtCheckpoint('pit');
+      // (a heart, not a life: no "lives left" note)
+      this.respawnAtCheckpoint('pit', true, false);
       p.hp = hp;
     }
-  }
-
-  /**
-   * The chase (chase.ts) waits behind the flag he is back at, the branch whole from there. Part of every way back to a flag
-   * (respawnAtCheckpoint): a life lost to anything else on the branch (an animal) used to leave the collapse past his flag, so the next
-   * frame it "caught" him, took a heart and respawned him a second time (audit A-07).
-   */
-  private restartChase() {
-    const flagX = this.checkpoint.x;
-    for (const pl of this.platforms) if (pl.chase && pl.x + pl.width > flagX - 700) pl.broken = false;
-    this.chaseFalling = [];
-    restartAt(this.chase!, this.proto!.chase!, flagX);
-  }
-
-  /** 1-8's long branch: its sections from Matt's sheet (cracking just ahead of the collapse), the pieces falling away */
-  private drawChase(ctx: CanvasRenderingContext2D) {
-    const ch = this.chase!;
-    for (const pl of this.platforms) {
-      if (!pl.crown || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 300)) continue;
-      if (!drawCrownArt(ctx, pl)) {
-        ctx.fillStyle = '#4a6b2e';
-        ctx.fillRect(pl.x, pl.y, pl.width, 60);
-      }
-    }
-    for (const pl of this.platforms) {
-      if (!pl.chase || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 200)) continue;
-      const state = sectionState(ch, pl.x, pl.x + pl.width);
-      // a quiver in the cracking sections
-      const dy = state === 'cracked' ? Math.sin(this.gameTime * 40 + pl.x) * 1.2 : 0;
-      if (!drawChaseSection(ctx, pl, state === 'cracked', Math.round(pl.x / BRANCH_TILE) % 2 === 1, dy)) {
-        ctx.fillStyle = state === 'cracked' ? '#7a5532' : '#8a6238';
-        ctx.fillRect(pl.x, pl.y + dy, pl.width, 34);
-      }
-    }
-    for (const f of this.chaseFalling) {
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, 1 - f.t / 1.8);
-      ctx.translate(f.x + f.w / 2, f.y + f.h / 2);
-      ctx.rotate(f.rot);
-      if (!drawChaseBroken(ctx, f.right, -f.w / 2, -f.h / 2, f.w, f.h)) {
-        ctx.fillStyle = '#7a5532';
-        ctx.fillRect(-f.w / 2, -f.h / 4, f.w, f.h / 2);
-      }
-      ctx.restore();
-    }
-  }
-
-  /** the danger at the trailing edge of the view: darker the closer the collapse (screen space) */
-  private drawChaseEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
-    const ch = this.chase!;
-    if (!ch.active) return;
-    const gap = this.player.x - ch.front;
-    const k = Math.max(0, Math.min(1, (650 - gap) / 500));
-    if (k <= 0.02) return;
-    const w = vw * 0.32;
-    const g = ctx.createLinearGradient(0, 0, w, 0);
-    g.addColorStop(0, `rgba(70, 18, 8, ${0.55 * k})`);
-    g.addColorStop(1, 'rgba(70, 18, 8, 0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, vh);
   }
 
   /** the eagle's warning on the screen: the edge it will come from pulses amber until the sweep starts (screen space) */

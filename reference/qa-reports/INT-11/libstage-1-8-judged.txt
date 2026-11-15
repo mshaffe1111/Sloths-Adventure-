@@ -1,0 +1,14 @@
+1-8: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 0 of 24 (0%), thrown 0; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     24  verdict band.out: bounce-teach at x # (s#): # px, under the band's #
+     24  verdict band.out (normal): bounce-teach at x # (s#): # px, under the band's #
+== easy: CLEAN 0 of 24 (0%), thrown 0; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     24  verdict band.out: bounce-teach at x # (s#): # px, under the band's #
+     24  verdict band.out (normal): bounce-teach at x # (s#): # px, under the band's #
+     24  verdict band.out (easy): bounce-teach at x # (s#): # px, under the band's #
+      5  rolling: low at x #: a wall at x # in its run-in
+clean on BOTH settings: 0 of 24 seeds
+pool sections never laid: none
+exit 1

@@ -1,0 +1,12 @@
+head 642cfda62
+== vite build
+exit 0
+  … and 1 more
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+== chunkcheck
+  ok       288,178 B    3,706,126 spare  assets/sheets-Dy6_L1RD.js
+  ok       278,319 B    3,715,985 spare  assets/world-1-parts-DV4avXGe.js
+  ok       248,428 B    3,745,876 spare  assets/w6-CQ0aKfHz.js
+chunkcheck: PASS
+exit 0

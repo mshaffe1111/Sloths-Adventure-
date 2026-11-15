@@ -1,0 +1,26 @@
+castBots 1-6, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+expert normal PASS 33/40; under the floor 0; time median 242.9 s (min 233.5); hits 0 lives 8 (pit 8); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 3: sealed door goal 20/21  (seeds 11,28,36)
+        fail 1: sealed door goal 18/21  (seeds 29)
+        fail 1: sealed door goal 17/18  (seeds 20)
+        fail 1: sealed door goal 19/21  (seeds 22)
+        fail 1: sealed door goal 21/22  (seeds 32)
+middle normal PASS 36/40; under the floor 0; time median 278.7 s (min 261.1); hits 0 lives 5 (pit 5); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 3: sealed door goal 20/21  (seeds 23,26,36)
+        fail 1: shrine rescued x1  (seeds 34)
+middle easy   PASS 40/40; under the floor 0; time median 241 s (min 227.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 32/40; under the floor 0; time median 468.1 s (min 437.4); hits 0 lives 10 (pit 10); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: sealed door goal 20/21  (seeds 11,4)
+        fail 1: sealed door goal 19/20  (seeds 35)
+        fail 1: shrine rescued x1  (seeds 2)
+        fail 1: sealed door goal 18/19  (seeds 8)
+        fail 1: sealed door goal 16/18  (seeds 20)
+        fail 1: sealed door goal 19/21  (seeds 22)
+        fail 1: sealed door goal 17/20  (seeds 38)
+child  easy   PASS 39/40; under the floor 0; time median 353.2 s (min 317.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 2)
+
+real	4m52.354s
+user	9m21.288s
+sys	0m4.980s
+EXIT 0

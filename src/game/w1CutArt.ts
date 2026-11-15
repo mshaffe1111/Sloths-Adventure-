@@ -115,15 +115,17 @@ export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' 
   const best = kind === 'log' ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + 0.2);
   return best[Math.abs(p.id * 2654435761) % best.length].n;
 }
-/** a stone's piece as World 1 draws it: the one the lay settled on its ground (Platform.cut, settleCut), else pickCut's */
+/** a stone's piece as World 1 draws it: the one the lay settled on its ground (Platform.cut, settleCut), else pickCut's; none when the lay
+ *  said none (cut '': no piece keeps it on its ground once a chase is laid, so it is drawn as its ground, pipeline.ts settleLaid) */
 export function cutOf(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'cut'>): string | undefined {
+  if (p.cut === '') return undefined;
   return p.cut && W1_CUT[p.cut] ? p.cut : pickCut(p);
 }
 
 /** the most a stone's or stump's drawn piece may reach past the edge of the ground it stands on (R-165.226: Matt's frame, a boulder drawn
  *  ~100 px out over a dip) */
 export const OVERHANG_MAX = 6;
-type Solid = Pick<Platform, 'x' | 'y' | 'width' | 'height' | 'type'> & { broken?: boolean };
+type Solid = Pick<Platform, 'x' | 'y' | 'width' | 'height' | 'type'> & { broken?: boolean; chase?: boolean };
 /** the ground a stone stands on: the run of solid tops level with its foot (within 3 px), joined end to end, that its middle is over, and
  *  on over a bank that rises where it ends;
  *  undefined when nothing is under its middle (a plank's, or a stone that floats) */
@@ -139,8 +141,9 @@ export function groundRun(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, sol
     for (const q of level) if (q.x + q.width > x1 && q.x <= x1 + 1) { x1 = q.x + q.width; grew = true; }
   }
   // (an end where the ground RISES is no lip: a bank higher than his foot that meets the run there. A stone's piece drawn past it is drawn
-  //  in front of that bank's earth, a rock against a bank, never over air (1-2 seed 81's step between two banks); the run goes on over it)
-  const wall = (x: number) => solids.find((q) => q !== p && q.type === 'solid' && !q.broken && q.y < foot - 3 && q.y + q.height > foot + 3 && q.x <= x + 1 && q.x + q.width >= x - 1);
+  //  in front of that bank's earth, a rock against a bank, never over air (1-2 seed 81's step between two banks); the run goes on over it.
+  //  A bank the chase breaks is no bank: its section falls and the piece hangs over the hole, ENG-LOOK2 (1c), 1-8's 23 stones)
+  const wall = (x: number) => solids.find((q) => q !== p && q.type === 'solid' && !q.broken && !q.chase && q.y < foot - 3 && q.y + q.height > foot + 3 && q.x <= x + 1 && q.x + q.width >= x - 1);
   const wl = wall(x0), wr = wall(x1);
   return [wl ? Math.min(x0, wl.x) : x0, wr ? Math.max(x1, wr.x + wr.width) : x1];
 }
@@ -157,8 +160,9 @@ export function overhang(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, cut:
  * `dx` NaN when no piece and no move keeps it on its ground (the roll is refused by name, the World 1 kit's settle).
  * (w1-rock-roots is never a stand-in: its art rises ~52 px over where he stands, POLISH-5's tried swap drew a wall behind him)
  */
-export function settleCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style'>, solids: readonly Solid[]): { cut: string; dx: number } | undefined {
-  const picked = pickCut(p);
+export function settleCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'cut'>, solids: readonly Solid[]): { cut: string; dx: number } | undefined {
+  // (the piece it was laid with first, when it has one: a second settle (pipeline.ts settleLaid) keeps every piece still on its ground)
+  const picked = p.cut === '' ? undefined : cutOf(p);
   if (!picked || W1_CUT[picked].kind === 'log') return undefined;
   const run = groundRun(p, solids);
   if (!run) return undefined;

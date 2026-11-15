@@ -1,0 +1,30 @@
+start 3:53 PM head 473f6d454: node tools/perf/drawcheck.mjs
+draw check: ctest-mix14, 1-4, 2-6, 3-3, 4-1, 7-3, 8-4, 1-2, 1-3, 1-1, 1-5, 1-6, 1-7, 1-8 at q0, upright and sideways, 4 spots each
+[port 20:54:45] ctest-mix14 port 62s 4 spots, 32 counted frames, 104 sites 
+[land 20:54:45] ctest-mix14 land 64s 4 spots, 32 counted frames, 110 sites 
+[land 20:55:48] 1-1 land 63s 4 spots, 33 counted frames, 114 sites 
+[port 20:55:52] 1-1 port 67s 4 spots, 34 counted frames, 121 sites 
+[land 20:56:49] 1-3 land 60s 4 spots, 34 counted frames, 119 sites 
+[port 20:56:56] 1-3 port 64s 4 spots, 32 counted frames, 106 sites 
+[land 20:57:48] 4-1 land 59s 4 spots, 32 counted frames, 140 sites 
+[port 20:58:00] 4-1 port 63s 4 spots, 32 counted frames, 135 sites 
+[land 20:58:55] 1-4 land 67s 4 spots, 32 counted frames, 118 sites 
+[port 20:59:03] 1-4 port 63s 4 spots, 32 counted frames, 116 sites 
+[land 21:00:03] 2-6 land 69s 4 spots, 32 counted frames, 117 sites 
+[port 21:00:10] 2-6 port 68s 4 spots, 32 counted frames, 113 sites 
+[land 21:01:13] 3-3 land 70s 4 spots, 32 counted frames, 127 sites 
+[port 21:01:15] 3-3 port 64s 4 spots, 32 counted frames, 116 sites 
+[land 21:02:16] 7-3 land 63s 4 spots, 32 counted frames, 96 sites 
+[port 21:02:24] 7-3 port 69s 4 spots, 33 counted frames, 87 sites 
+[land 21:03:31] 8-4 land 75s 4 spots, 32 counted frames, 134 sites 
+[port 21:03:33] 8-4 port 69s 4 spots, 32 counted frames, 114 sites 
+[land 21:04:31] 1-2 land 60s 4 spots, 31 counted frames, 110 sites 
+[port 21:04:37] 1-2 port 64s 4 spots, 33 counted frames, 104 sites 
+[land 21:05:30] 1-5 land 59s 4 spots, 32 counted frames, 133 sites 
+[port 21:05:43] 1-5 port 66s 4 spots, 33 counted frames, 115 sites 
+[land 21:06:26] 1-6 land 57s 4 spots, 32 counted frames, 94 sites 
+[port 21:06:44] 1-6 port 61s 4 spots, 31 counted frames, 86 sites 
+[land 21:07:27] 1-7 land 60s 4 spots, 34 counted frames, 107 sites 
+[port 21:07:43] 1-7 port 59s 4 spots, 32 counted frames, 99 sites 
+[land 21:08:04] 1-8 land retrying after page.evaluate: TypeError: window.__play is not a function
+[port 21:08:04] 1-8 port retrying after page.evaluate: TypeError: window.__play is not a function

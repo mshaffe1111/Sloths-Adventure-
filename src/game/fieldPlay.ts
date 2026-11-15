@@ -15,7 +15,7 @@
 import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
-import { GATE, HANDS_UP, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
+import { GATE, HANDS_UP, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, shutBoughOver, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
 import { drawGate, drawGateLock, drawPod, type LockState, type TieState } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
@@ -85,20 +85,7 @@ export class FieldPlay {
    *  at x), or null when no shut gate is over him there (its bough and the boughs held with it, and GATE.lidSide past either end: his
    *  body's half width, so a leap from an end vine cannot round it) */
   shutBoughAt(x: number, y: number): { top: number; under: number } | null {
-    let best: { top: number; under: number } | null = null;
-    for (const g of this.gates) {
-      if (!gateShut(g, this.clusters)) continue;
-      const sag = gateSag(g, this.clusters);
-      for (const id of [g.platform, ...(g.with ?? [])]) {
-        const b = this.platforms.find((q) => q.id === id);
-        if (!b || x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) continue;
-        // (the near end stays put, the far end sags: drawGate's tilt; a bough held with it is level)
-        const f = id !== g.platform ? 0 : Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
-        const top = b.y + sag * f;
-        if (top < y && (!best || top > best.top)) best = { top, under: top + GATE.depth * b.width };
-      }
-    }
-    return best;
+    return shutBoughOver(this.gates, this.platforms, (g) => (gateShut(g, this.clusters) ? gateSag(g, this.clusters) : null), x, y);
   }
 
   /** the highest his FEET may rise at x from y (least y): under a shut gate, his drawn head at its drawn underside (GATE.head); else

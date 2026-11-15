@@ -1,0 +1,18 @@
+middle 1 sealed door {"got":90,"need":95} missed 19 3419:first-liana:b1@0.77 12721:chain:cb@0.60 17125:rest-log:d@0.50 21239:snakes-met:b2@0.77 24044:snake-on-vine:b1@0.85 38434:false-liana:in@0.70 42809:gorge:in@0.70 43549:gorge:b1@0.84 44394:gorge:b2@0.13 44569:gorge:b2@0.85 34439:risers:b2@0.11 34614:risers:b2@0.74 4912:hang-low:in@0.10 32046:risers:in@0.09 32306:risers:in@0.91 5644:hang-low:qe@0.85 36438:rest-dip:b@0.86 19246:snakes-met:b1@0.10 19366:snakes-met:b1@0.50
+
+BY PIECE
+gorge:b2 2
+risers:b2 2
+risers:in 2
+snakes-met:b1 2
+first-liana:b1 1
+chain:cb 1
+rest-log:d 1
+snakes-met:b2 1
+snake-on-vine:b1 1
+false-liana:in 1
+gorge:in 1
+gorge:b1 1
+hang-low:in 1
+hang-low:qe 1
+rest-dip:b 1

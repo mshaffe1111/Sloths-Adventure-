@@ -1,0 +1,18 @@
+start 22:30
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+build exit 0
+  ok       218,749 B    3,775,555 spare  assets/vendor-FrbPb9NH.js
+chunkcheck: PASS
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+PASS
+# pass 34
+# fail 0
+# pass 7
+# fail 0
+  normal: p50 93 ms, p95 194 ms, max 194 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 76 ms, p95 121 ms, max 142 ms (30 builds, CPU x4)
+
+PASS (172 s; stills in reference/qa/tester-page-1106/keyboard/)
+end 22:34

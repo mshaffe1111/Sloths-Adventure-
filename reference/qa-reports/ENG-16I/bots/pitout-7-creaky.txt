@@ -1,0 +1,6 @@
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump none (walk off): no catch; at f120 x 28378 y 1091 grounded true
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump 0 px before the lip: caught a vine at f20 x 28101 y 808
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump 10 px before the lip: caught a vine at f20 x 28101 y 808
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump 20 px before the lip: caught a vine at f20 x 28101 y 808
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump 30 px before the lip: caught a vine at f20 x 28101 y 811
+seed 7 w1-16-creaky-landing: step top x 27861..27961 y 922; liana l2 x 28027 447..867; jump 40 px before the lip: caught a vine at f20 x 28102 y 815

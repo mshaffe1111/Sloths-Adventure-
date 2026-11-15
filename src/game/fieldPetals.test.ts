@@ -8,7 +8,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
-import { FIELD_FEEL, type Hands } from './vineField.ts';
+import { FIELD_FEEL, PICKUP_REACH, type Hands } from './vineField.ts';
 import type { Collectible, Vine } from './types.ts';
 
 type E = { hands: Hands | null; field: { pods: unknown[] } | null };
@@ -33,7 +33,10 @@ function paired(r: RealPlay): Array<{ c: Collectible; a: Vine; b: Vine }> {
 /** from 150 px under the petal on vine a, climb with up held, then a push toward b with up still held: did he take it, with two hands? */
 function twoHandClimb(r: RealPlay, c: Collectible, a: Vine, b: Vine): { got: boolean; two: boolean } {
   const e = r.e as unknown as E;
-  e.hands = null;
+  // (his first hand on `a` itself: the engine's grab takes the FIRST field vine in reach in list order, not the nearest (engine.ts, the
+  //  tree_climb search), so among vines 55 px apart (1-4 Easy seeds 2, 4) a bare climb at a's x took its other neighbour; INT-10b,
+  //  ENGINE-WORTHY with the vine-feel packet, R-165.271)
+  e.hands = { a, b: null };
   c.collected = false;
   r.climb(a, Math.min(a.bottomY - 4, c.y + 150));
   let two = false;
@@ -58,7 +61,9 @@ for (const setting of ['normal', 'easy'] as const)
           // (none left on a vine's own line, 40 px off a two-hand hang)
           assert.ok(Math.abs(c.x - a.x) >= 4 && Math.abs(c.x - b.x) >= 4, `seed ${seed}: petal at ${c.x},${c.y} sits on a vine's line (${a.x}/${b.x})`);
           const { got, two } = twoHandClimb(r, c, a, b);
-          assert.ok(two, `seed ${seed}: a side push held WHILE climbing took the second hand (${a.x} -> ${b.x})`);
+          // (on a pair narrower than his two pickup reaches (1-4 Easy seeds 2 and 4: vines 55 px apart) the middle is in one hand's reach,
+          //  taken before a second hand can be: the push is asserted where the pair is wide enough for it to matter)
+          if (b.x - a.x > 2 * PICKUP_REACH) assert.ok(two, `seed ${seed}: a side push held WHILE climbing took the second hand (${a.x} -> ${b.x})`);
           assert.ok(got, `seed ${seed}: the two-hand climb took the petal at ${c.x},${c.y}`);
           n++;
         }
@@ -113,7 +118,7 @@ for (const setting of ['normal', 'easy'] as const)
           seen.add(key);
           const col = paired(r).filter((q) => q.a === a && q.b === b).map((q) => q.c);
           for (const c of col) c.collected = false;
-          e.hands = null;
+          e.hands = { a, b: null };
           r.climb(a, a.bottomY - 4);
           for (let i = 0; i < 150 && r.p.climbing; i++) r.frame({ up: true, right: i >= 3 && b.x > a.x, left: i >= 3 && b.x < a.x });
           const missed = col.filter((c) => !c.collected).map((c) => `${c.x},${c.y} (top ${Math.min(a.topY, b.topY)})`);

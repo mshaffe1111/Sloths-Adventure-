@@ -1,0 +1,26 @@
+1-1 3 normal THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 3 easy THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 10 normal THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 10 easy THROWS gen2 1-1: no section fits node n9 (ketsu)
+== 1-1: 0/20 with a slot, 4 throw, 9 s
+== 1-2: 0/20 with a slot, 0 throw, 3 s
+== 1-3: 0/20 with a slot, 0 throw, 1 s
+== 1-4: 0/20 with a slot, 0 throw, 7 s
+== 1-5: 0/20 with a slot, 0 throw, 3 s
+1-6 1 normal: q 28090+300 y1073 h60 | p 27933+157 y1133 ; q 28090+200 y1013 h120 | p 27933+157 y1133 ; q 28090+100 y953 h180 | p 27933+157 y1133 ; q 45561+300 y1021 h60 | p 45393+168 y1081 ; q 45561+200 y961 h120 | p 45393+168 y1081 ; q 45561+100 y901 h180 | p 45393+168 y1081
+1-6 2 normal: q 28377+300 y948 h56 | p 28215+162 y1005 ; q 28377+200 y892 h112 | p 28215+162 y1005 ; q 28377+100 y836 h168 | p 28215+162 y1005 ; q 45733+300 y1006 h56 | p 45566+167 y1063 ; q 45733+200 y950 h112 | p 45566+167 y1063 ; q 45733+100 y894 h168 | p 45566+167 y1063
+1-6 3 normal: q 28125+300 y991 h60 | p 27960+165 y1051 ; q 28125+200 y931 h120 | p 27960+165 y1051 ; q 28125+100 y871 h180 | p 27960+165 y1051 ; q 45738+300 y1042 h60 | p 45575+163 y1102 ; q 45738+200 y982 h120 | p 45575+163 y1102 ; q 45738+100 y922 h180 | p 45575+163 y1102
+1-6 4 normal: q 28078+300 y1013 h60 | p 27919+159 y1073 ; q 28078+200 y953 h120 | p 27919+159 y1073 ; q 28078+100 y893 h180 | p 27919+159 y1073 ; q 45199+300 y957 h60 | p 45044+155 y1017 ; q 45199+200 y897 h120 | p 45044+155 y1017 ; q 45199+100 y837 h180 | p 45044+155 y1017
+1-6 5 normal: q 28395+300 y1033 h60 | p 28230+165 y1093 ; q 28395+200 y973 h120 | p 28230+165 y1093 ; q 28395+100 y913 h180 | p 28230+165 y1093 ; q 45664+300 y996 h60 | p 45495+169 y1056 ; q 45664+200 y936 h120 | p 45495+169 y1056 ; q 45664+100 y876 h180 | p 45495+169 y1056
+1-6 6 normal: q 28024+300 y1004 h56 | p 27873+151 y1061 ; q 28024+200 y948 h112 | p 27873+151 y1061 ; q 28024+100 y892 h168 | p 27873+151 y1061 ; q 45112+300 y996 h56 | p 44949+163 y1053 ; q 45112+200 y940 h112 | p 44949+163 y1053 ; q 45112+100 y884 h168 | p 44949+163 y1053
+1-6 7 normal: q 27943+300 y1018 h60 | p 27787+156 y1078 ; q 27943+200 y958 h120 | p 27787+156 y1078 ; q 27943+100 y898 h180 | p 27787+156 y1078 ; q 45265+300 y1049 h60 | p 45109+156 y1109 ; q 45265+200 y989 h120 | p 45109+156 y1109 ; q 45265+100 y929 h180 | p 45109+156 y1109
+1-6 8 normal: q 27861+300 y1034 h56 | p 27711+150 y1091 ; q 27861+200 y978 h112 | p 27711+150 y1091 ; q 27861+100 y922 h168 | p 27711+150 y1091 ; q 45292+300 y964 h56 | p 45136+156 y1021 ; q 45292+200 y908 h112 | p 45136+156 y1021 ; q 45292+100 y852 h168 | p 45136+156 y1021
+1-6 9 normal: q 28063+300 y1038 h60 | p 27909+154 y1098 ; q 28063+200 y978 h120 | p 27909+154 y1098 ; q 28063+100 y918 h180 | p 27909+154 y1098 ; q 45310+300 y1041 h56 | p 45160+150 y1098 ; q 45310+200 y985 h112 | p 45160+150 y1098 ; q 45310+100 y929 h168 | p 45160+150 y1098
+1-6 10 normal: q 28167+300 y991 h56 | p 28007+160 y1048 ; q 28167+200 y935 h112 | p 28007+160 y1048 ; q 28167+100 y879 h168 | p 28007+160 y1048 ; q 45572+300 y1040 h56 | p 45408+164 y1097 ; q 45572+200 y984 h112 | p 45408+164 y1097 ; q 45572+100 y928 h168 | p 45408+164 y1097
+== 1-6: 10/20 with a slot, 0 throw, 28 s
+== 1-7: 0/20 with a slot, 0 throw, 7 s
+1-8 2 normal THROWS 1-8 finish: still fork 3: its ground breaks at 26539 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 2 easy THROWS 1-8 finish: still fork 3: its ground breaks at 26539 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 9 normal THROWS 1-8 finish: still fork 3: its ground breaks at 26370 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 9 easy THROWS 1-8 finish: still fork 3: its ground breaks at 26370 (the cover and the post stand on unbroken ground); still fork 3: no
+== 1-8: 0/20 with a slot, 4 throw, 2 s

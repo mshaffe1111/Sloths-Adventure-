@@ -1,0 +1,12 @@
+merge head 3261dd4b int9 1c7f6b95 start 6:21 PM
+tsc 0 6:21 PM
+chaseBots 0 6:21 PM
+tierBots 0 6:22 PM
+lock-int9-out 0 6:40 PM
+unit3 0 6:46 PM
+unit2 0 6:46 PM
+unit1 0 6:46 PM
+lock-check 143 6:48 PM
+done 6:48 PM
+(the step-1 script's own lock-check above was STOPPED by hand at 6:48 PM: a duplicate of lock-check-early, which runs the same command on the same head)
+lock-check-early 0 6:48 PM
