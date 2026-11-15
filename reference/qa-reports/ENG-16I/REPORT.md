@@ -5,10 +5,17 @@ the bot skill, suite + lock, no stills). Code head 9380bc5d; report head below. 
 ## EXACT NEXT STEP
 1. ENG-PETAL (the lead's): one walked-path petal model read by gen2 fillSockets AND petalPass fillGaps, never a pit floor or stair
    (bots/expert-petals-table.md is the spec: expert Normal 7/40, child 21, middle 13 are sealed doors). Then relist 1-6, re-prove the 29.
-2. The 10 rescued runs left (bots/castBots-1-6-9380bc5d.txt), each a bot skill (level.md rule 21, a planted toy first):
-   a. snake-on-vine s1/s20: at the foot under a snake that comes DOWN he is knocked off three times (let-go vx -294 vy 0, no leap);
-   b. false liana s14: he grabs the still false liana again after it threw him (both traced: bots/kid-normal-20-14-trace.txt);
-   c. risers s32, gorge s2 ("the way on is 104 px up"), Easy kid s18/s21, child Easy s2, child/middle Normal s34: not traced.
+2. The 10 rescued runs left on 9380bc5d (bots/rescues-9380bc5d.txt; vy -157 is the snake's startle hop, engine.ts:5411), each a
+   bot skill to plant first (level.md rule 21). Seed, rescue x, frame, what took him:
+   kid N s1  x 23710 f4127  snake-on-vine l1, the snake coming down startles him off (vx 181 vy -157): 3 pit falls
+   kid N s20 x 24025 f3808  snake-on-vine l1, off at the foot with no leap (vx -252 vy -11), 3 times: 3 pit falls
+   kid E s21 x 23443 f3330  snake-on-vine l1, startled off (vx -39 vy -157): 3 pit falls
+   kid N s32 x 32914 f5129  risers l1 (snake up), startled off backward (vx -57 vy -157): 3 pit falls
+   kid N s14 x 39223 f5747  false liana: he grabs the still false one again each time (vx -277 vy -3): 3 pit falls
+   child N s34 x 43897 f17774, middle N s34 x 43897 f11891  gorge l2/l1: the same gorge pit, 8 falls (its far wall 199 px up)
+   kid N s2  x 45304 f7724  gorge, after l2's let-go: 20 s on the last pit's floor, "the way on is 104 px up"
+   kid E s18 x 18610 f2715  past the chain: "a 241 px wall ahead, in a dip 54 px deep, the way on is 153 px up", 20 s
+   child E s2: castBots rescued once; the tracer's run of it was clean (0 rescues): not reproduced, not explained.
 3. The meter: w1Arc16.test.ts:124 "1-6 on the difficulty meter" is the known red (R-165.261's ruler), untouched.
 
 ## Done (each with its head)
@@ -25,11 +32,14 @@ the bot skill, suite + lock, no stills). Code head 9380bc5d; report head below. 
   proven (bots/pitout-7-creaky.txt, pitout-3-gorge.txt). pitClimb.test.ts 15/15; plants 2/2 CAUGHT (planted-faults.out.txt).
 - Cause 2 (sealed doors), traced, not fixed (the lead's ruling): bots/expert-petals-table.md, every left petal classed (29/29, 22/22).
 - Merge repair: artDress, forgive, levelWalls tests borrowed 1-7's hand plan, which the t-tools-2 merge deleted (GREEN on both merge
-  parents, RED on 8b8dc02a): pair 1-8/1-9, shell 1-8 (ec524b42). Assertions unchanged.
+  parents, RED on 8b8dc02a): pair 1-8/1-9, shell 1-8 (ec524b42). The same root, 12 reds in shard 1: t-tools-2 listed and flew 1-7
+  (INT-9), t-build-16's judgedTable/listed/verdicts tests used it as the fixture and the never-flown stage: moved to 1-8 (cecbb948).
+  Assertions unchanged. verdicts.test's 5-7/7-1 main pins re-pinned: only gen2.fills moved, the revert proof in mainpins.txt.
 - Lock (lockall --check vs t-tools-2@19b45a06, on a75ce97d; no non-test src change since): 72/102 unchanged; moved 1-6 (intended) +
   exactly ENG-16H's 29 walked-span stages; goals and size also moved on 1-2 and 8-2 (lock-check-a75ce97d.txt).
-- Gates: tsc PASS, knowncheck, generality, roadmapcheck PASS (f1e5e25c); tool tests 116/116, tierBots 7/7 (87ce9b50 = code 9380bc5d);
-  build + chunkcheck + artcheck PASS, kbdcheck PASS (f1e5e25c). PENDING: suite, buildcheck alone, drawcheck, clipcheck.
+- Gates: tsc, knowncheck, generality, roadmapcheck PASS (cecbb948); tool tests 116/116, tierBots 7/7 (87ce9b50: no tools or game
+  code change since); build + chunkcheck + artcheck + kbdcheck PASS, seedlist 1-1 --check PASS 161 (f1e5e25c; game code = cecbb948's).
+  PENDING: the whole suite on cecbb948 (from 9:36 PM), buildcheck alone, drawcheck, clipcheck.
 
 ## Polish check
 None shot: the lead's 9:02 PM order (ENG-PETAL moves 1-6's petals again). The false liana's warning before the grab is NOT judged.
