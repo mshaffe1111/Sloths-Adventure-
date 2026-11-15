@@ -6,7 +6,7 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 1. **One idea, said in one sentence a player could repeat.** Write it first. Check: top of `reference/design/<stage>.md`; LEVEL-BAR A1.
 2. **The idea is taught safely, used, turned, then asked for in full, in that order on EVERY roll.** One graph, one piece a beat, each with a job no other piece in the pool has. Check: the stage's plan test (`tools/engine/library13.test.ts` "the arc beat for beat").
 3. **Matt's verdict-enforced rules beat your design table** (flags, hearts, reach, fairness). If your table disagrees, the table is wrong; say so in the doc. Never loosen a rule to fit a level.
-4. **Nobody is hurt in the story, and Easy is never harder than Normal in any number.** Check: the kit's fairness tests; count both settings.
+4. **Nobody is hurt in the story, and Easy is never harder than Normal in any number. Normal is never softened for the kid bot** (Matt 11-14 10:26 PM: "If a kid struggles, that's what easy's for"): Normal is judged by the meter band and the adult/middle/expert tiers. Check: the kit's fairness tests; count both settings.
 5. **Nothing strands him.** Nothing one-way before an exit that can seal; every goal item can be reached from where he meets it. Check: the bots end `shrine`, never `stranded` (`castBots.ts`).
 6. **Dot teaches BEFORE the thing, with time to read:** a teach line 800 px or more before what it teaches (3 s at a walk), nothing that hurts in between, listed in the kit's `teachTips`. Check: a distance test on the built stage.
 7. **The first of everything is safe** (first enemy asleep or with the tool beside it; first use of a mechanic cannot fail).

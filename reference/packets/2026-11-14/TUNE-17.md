@@ -7,8 +7,10 @@ STEP 0 (by 30 min after you start): send the lead the plan, wait for GO. Raise i
 taught, never a new mechanic and never 1-8's nuts (not taught yet): wider runs between cover so the timing matters, the eagle's passes
 closer together late in the stage, bare bark that looks like cover but won't hide (the keeper's line exists), a creaky limb you must not
 stand still on (w1Arc17.ts:4 rule exists). Each change with its meter number on METER-1's ruler (origin/t-meter-1) and its castBots effect.
-Target: Normal 5.5 (±1, DIFFICULTY.md G2), Easy at most 0.6x Normal and never harder in any number; kid bot on Normal: located honest misses
-only. Dot's lines unchanged (story keeper's).
+Target: Normal 5.5 (DIFFICULTY.md G2's band, read from the doc), Easy at most 0.6x Normal and never harder in any number. MATT 10:26 PM: "we don't
+compromise our normal because of a kid's play. If a kid struggles, that's what easy's for." Normal is judged by the meter (after METER-2 prices
+the glance) and the adult/middle/expert tiers; the kid bot on Normal is information only unless it shows a real fault (an untold hit, a strand).
+Easy is where children must clear. Dot's lines unchanged (story keeper's).
 STARTS ONLY AFTER ENG-WATCH (D40: don't tune around the eagle that's being replaced). Matt 9:29-9:31 PM: the head turns on a slow timer, so he
 can walk right up; ENG-WATCH builds the uneven glance rhythm + fair tells + the perched eagle rule with DIALS: tune 1-7 with those dials
 first, from origin/t-eng-watch.
