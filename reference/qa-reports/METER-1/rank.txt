@@ -1,0 +1,20 @@
+-- normal: stage | meter before | meter after | tier bots misses/min | first-timers misses/min | pass (all bots)
+1-1 | 4 | 4 | 0.46 | 0.36 | 19/20
+1-2 | 0.9 | 0.9 | 0.14 | 0.00 | 20/20
+1-3 | 1.1 | 1.1 | 0.08 | 0.13 | 20/20
+1-4 | 2.9 | 4.3 | 1.97 | 0.60 | 14/20
+1-5 | 4 | 4 | 1.84 | 1.27 | 20/20
+1-6 | 3.3 | 5.4 | 0.05 | 1.89 | 6/20
+1-7 | 2.3 | 2.2 | 0.15 | 1.75 | 19/20
+1-8 | 17.4 | 6.8 | 1.59 | 2.41 | 20/20
+   Spearman over 1-1,1-2,1-3,1-4,1-5,1-6,1-7,1-8: tier vs before 0.48, after 0.34; first-timers vs before 0.67, after 0.81
+-- easy: stage | meter before | meter after | tier bots misses/min | first-timers misses/min | pass (all bots)
+1-1 | 2.6 | 2.6 | 0.04 | 0.00 | 16/16
+1-2 | 0.3 | 0.3 | 0.20 | 0.00 | 16/16
+1-3 | 0.6 | 0.5 | 0.04 | 0.05 | 16/16
+1-4 | 2.5 | 3.2 | 1.85 | 0.41 | 11/16
+1-5 | 1 | 1 | 1.25 | 0.06 | 16/16
+1-6 | 1.8 | 3.6 | 0.16 | 0.00 | 15/16
+1-7 | 1.5 | 1.2 | 0.00 | 0.00 | 16/16
+1-8 | 14.7 | 3.3 | 0.00 | 0.00 | 16/16
+   Spearman over 1-1,1-2,1-3,1-4,1-5,1-6,1-7,1-8: tier vs before -0.24, after -0.11; first-timers vs before -0.16, after -0.16

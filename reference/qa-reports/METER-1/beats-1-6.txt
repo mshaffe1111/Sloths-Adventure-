@@ -1,0 +1,17 @@
+w1-16-arrival              points   0.2  route s    7  per min   1.9   single 0.2
+w1-16-first-liana          points   2.2  route s   10  per min  12.7   swing 1.3, catch 0.5, single 0.4
+w1-16-hang-low             points   6.0  route s   20  per min  18.5   swing 5.0, catch 0.8, single 0.2
+w1-16-rest-log             points   0.2  route s    9  per min   1.4   single 0.2
+w1-16-chain                points   8.4  route s   20  per min  25.2   swing 7.5, catch 0.7, single 0.2
+w1-16-rest-steps           points   0.3  route s    9  per min   1.8   single 0.3
+w1-16-snakes-met           points   5.4  route s   20  per min  16.4   swing 2.7, vine-snake 1.2, catch 1.0, single 0.5
+w1-16-snake-on-vine        points   4.3  route s   11  per min  23.9   swing 3.1, catch 0.5, vine-snake 0.5, single 0.1
+w1-16-rest-dip             points   0.3  route s    9  per min   1.7   single 0.3
+w1-16-creaky-landing       points   5.5  route s   12  per min  26.8   swing 4.8, catch 0.4, single 0.3
+w1-16-rest-hump            points   0.2  route s    9  per min   1.2   single 0.2
+w1-16-risers               points   5.5  route s   17  per min  19.2   swing 3.3, vine-snake 1.0, catch 1.0, single 0.1
+w1-16-rest-stumps          points   0.4  route s    9  per min   2.3   single 0.4
+w1-16-false-liana          points   2.6  route s    9  per min  16.7   swing 2.1, catch 0.3, single 0.2, vine-snake-choice 0.0
+w1-16-rest-roots           points   0.4  route s    9  per min   2.7   single 0.4
+w1-16-gorge                points  10.8  route s   17  per min  39.0   swing 8.8, catch 1.0, vine-snake 1.0, vine-snake-choice 0.0, single 0.0
+w1-16-far-bank             points   0.1  route s    3  per min   2.7   single 0.1
