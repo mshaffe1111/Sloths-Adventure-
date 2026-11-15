@@ -45,3 +45,10 @@ Spearman about 0.5. AGREES: 1-4 and 1-5 are the hard pair, far above the rest; 1
 the model runs the tester-calibrated MIDDLE bot, which runs straight across 1-2's bounce chain; a newcomer steers in the air and fails (Matt 11:56 PM).
 The model must score the likely WRONG input (a first-timer/misread tier), exactly Matt's point. The bottom four all score 3-8: the model can't
 separate easy levels yet (the research's "bots can't rank easy levels" warning).
+
+## Matt's clarification (12:10 AM ET)
+Both his play and the model's rating are of the OLD eagle (ENG-WATCH's fix is unmerged), so 1-7 compares like with like; re-rate 1-7 after the
+merge. "1-1, 1-2 and 1-3, they're all kind of easy... I just went off of 1-2 because [a family player] struggled with the mushrooms because she was
+moving in the air. So you've got to factor in that some people are just going to mess it up... 1-1 just felt a little bit harder than 1-3. But
+they're basically the same in my eyes almost." So 1-1/1-2/1-3 are a near-tie for Matt too (the model's 3-8 cluster agrees); the one real gap is
+1-2's newcomer misread (steering in the air on the mushrooms), which the first-timer misread tier must capture.
