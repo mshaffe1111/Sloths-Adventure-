@@ -8,7 +8,7 @@ import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Difficulty } from './difficulty.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
-import { arcPetals, busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalArcsOn, petalsLow, petalTrail, rowExtras, type PetalOut } from './petals.ts';
+import { arcPetals, busiestScreen, clumpExtras, FILL_GAP, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalArcsOn, petalsLow, petalTrail, rowExtras, SPREAD_MAX, type PetalOut } from './petals.ts';
 
 const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
@@ -88,12 +88,14 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
   // (not on World 8's harvests: a flower there is a night bloom, the goal's own)
   // (nor on 5-3's closing orchids: its quota is meant to need the cups, so the path gets no more)
   const orchids = (stage as { w5info?: { orchids?: unknown[] } }).w5info?.orchids?.length;
-  // (nor where the stage's petal brief says LOW, by data: its pickups are its sockets' alone, GraphBrief.petals; R-165.263)
-  if (stage.config.objectiveType !== 'boss_lair' && !nightBlooms(stage) && !orchids && !petalsLow(stage)) {
+  // (where the stage's petal brief says LOW, by data (GraphBrief.petals; R-165.263), its pickups are its sockets' but for a stretch over
+  //  Matt's 2 screens: there the fill lays the petals that close it, no more; petals.ts SPREAD_MAX, the lead's ruling INT-10d 2:08 PM ET)
+  const min = petalsLow(stage) ? SPREAD_MAX : FILL_GAP;
+  if (stage.config.objectiveType !== 'boss_lair' && !nightBlooms(stage) && !orchids) {
     const tried = new Set<string>();
     let kept = 0;
     for (let round = 0; round < 3; round++) {
-      const added = fillGaps(stage, tried, !far);
+      const added = fillGaps(stage, tried, !far, min);
       if (!added.length) break;
       const out2 = new Set<number>();
       const judged = judgeReach(stage, out2) !== null;

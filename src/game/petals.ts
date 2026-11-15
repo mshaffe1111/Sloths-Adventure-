@@ -38,8 +38,9 @@ const SCATTER = new Set<Collectible['type']>(['flower', 'leaf', 'fruit']);
 /** World 8's harvest: its flowers are the night blooms the goal counts, a goal item of their own */
 export const nightBlooms = (stage: Pick<GeneratedStage, 'config'>) => stage.config.worldIndex === 8 && stage.config.objectiveType === 'harvest';
 
-/** the stage's petal brief says LOW (GraphBrief.petals, by data: 1-2, 1-6, 1-7; R-165.263): pickups come only from its sections' sockets,
- *  so nothing after the lay adds petals (no arc over a gap, jumpTrails.ts; no fill, fillGaps) */
+/** the stage's petal brief says LOW (GraphBrief.petals, by data: 1-2, 1-6, 1-7, 1-8; R-165.263): pickups come from its sections' sockets,
+ *  no arc over a gap (jumpTrails.ts), and a fill only over a stretch longer than Matt's 2 screens (fillGaps with SPREAD_MAX: 'low' means
+ *  few, never a bare stretch; the lead's ruling INT-10d 11-15) */
 export const petalsLow = (stage: object) => (stage as { gen2?: { brief?: { petals?: string } } }).gen2?.brief?.petals === 'low';
 
 /** the stage's petal brief asks for its REQUIRED hops' arcs (GraphBrief.petalArcs, by data: 1-6; INT-10, the lead's ruling 11-15 11:10 AM) */
@@ -279,6 +280,10 @@ export function petalTrail<T extends GeneratedStage>(stage: T, unreachable: Read
  * (petalPass.ts) then holds the new petals to the same rules: out of reach, off the arc, rows and the screen cap take them out again.
  */
 export const FILL_GAP = 1050;
+/** the longest stretch of the route any stage may run without a petal (Matt, 2026-10-30: at most 2 screens; petals.test 'spread out'):
+ *  a stage whose brief says petals LOW gets a fill only where a stretch is longer than this, and only the petals that close it (the lead's
+ *  ruling INT-10d 11-15 2:08 PM ET: 'low' means few, never a bare stretch; one rule for every LOW stage) */
+export const SPREAD_MAX = 2 * 840 + 400;
 export const TRAIL_LEN = 3;
 /** a petal over a ledge: its middle this far over the ledge's top */
 export const FLOAT = 40;
@@ -294,12 +299,12 @@ export function routeAxis(stage: GeneratedStage) {
   return { up, at: (p: Pt) => (up ? -p.y : p.x), start: up ? -stage.spawnY : stage.spawnX, end: up ? -ey : ex };
 }
 
-/** the stretches of the route longer than FILL_GAP with no petal, longest first ([from, to] along the route) */
-export function petalGaps(stage: GeneratedStage, petals: readonly Pt[]): Array<[number, number]> {
+/** the stretches of the route longer than `min` (FILL_GAP) with no petal, longest first ([from, to] along the route) */
+export function petalGaps(stage: GeneratedStage, petals: readonly Pt[], min = FILL_GAP): Array<[number, number]> {
   const ax = routeAxis(stage);
   const ts = [ax.start, ...petals.map(ax.at), ax.end].sort((a, b) => a - b);
   const out: Array<[number, number]> = [];
-  for (let i = 1; i < ts.length; i++) if (ts[i] - ts[i - 1] > FILL_GAP) out.push([ts[i - 1], ts[i]]);
+  for (let i = 1; i < ts.length; i++) if (ts[i] - ts[i - 1] > min) out.push([ts[i - 1], ts[i]]);
   return out.sort((a, b) => b[1] - b[0] - (a[1] - a[0]));
 }
 
@@ -336,13 +341,12 @@ const GOALISH = new Set<Collectible['type']>(['relic', 'cage', 'find', 'seed', '
 
 /**
  * OFF THE PATH (ENG-16E, R-165.246; BUILD-16c/16d 1-6: the fill laid its pairs on soft pits' floors where a creaky limb or a run of lianas
- * left a stretch over FILL_GAP, and the tier bots met the sealed door for them): a fill petal goes only on the walked and landed path, never
- * where he must take a fall or a hit to get it. The stage's own record of its falls says where that is, in any world:
+ * left a stretch over FILL_GAP, and the tier bots met the sealed door for them). Since the lead's ruling INT-10d (11-15) the fill lays as
+ * main does and the DOOR keeps off these spots (markWalked: a petal there is never counted). The stage's own record of its falls says where
+ * they are, in any world:
  *   - inside a fall on the route (gen2's `falls`: the route's gaps, each with its take-off lip) or a heart-fall zone (`heartFalls`), a
  *     spot below the gap's LOWER lip is in the pit: its floor, its stair, its hurt floor (a perch level with the lips is above it);
- *   - a hurt floor (`pit: 'hurt'`, the thorn bed: touching it is a heart and a set-back), a catch under a gap (`catch`: a fall's floor), a
- *     creaky limb (`fragile`: it gives way under him) never holds one, nor does a jump that starts or ends on one of them, nor a climb that
- *     stands in a pit.
+ *   - a hurt floor (`pit: 'hurt'`, the thorn bed: touching it is a heart and a set-back) and a catch under a gap (`catch`: a fall's floor).
  * A stage with no record of its falls (the hand-built stages: no `gen2`) is judged by the pieces' own marks alone.
  */
 export interface FallSpan { x0: number; x1: number; lip: number }
@@ -492,9 +496,10 @@ export const ON_FLOOR = new WeakSet<Collectible>();
 /**
  * Fill the stage's long petal-free stretches (see FILL_GAP). `tried` holds spots already taken out again (an earlier round found them out
  * of reach or off the arc): none goes back. `floorOnly`: the walking floor's trails only (where the level check cannot follow the stage).
- * Returns the petals it added (already in stage.collectibles).
+ * `min`: the stretches it fills are the ones longer than this (FILL_GAP; SPREAD_MAX on a LOW brief). Returns the petals it added (already
+ * in stage.collectibles).
  */
-export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new Set(), floorOnly = false): Collectible[] {
+export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new Set(), floorOnly = false, min = FILL_GAP): Collectible[] {
   const added: Collectible[] = [];
   const r = rng(layoutHash(stage) ^ (tried.size * 2654435761));
   let id = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
@@ -503,7 +508,7 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
   const edges = jumpEdges(stage);
   for (let guard = 0; guard < 40; guard++) {
     const petals = stage.collectibles.filter((c) => isPetal(c, stage));
-    const gap = petalGaps(stage, petals).find(([a, b]) => !skip.has(`${a}:${b}`));
+    const gap = petalGaps(stage, petals, min).find(([a, b]) => !skip.has(`${a}:${b}`));
     if (!gap) break;
     const [a, b] = gap;
     let placed = false;

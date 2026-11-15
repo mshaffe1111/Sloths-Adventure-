@@ -7,7 +7,7 @@
  *   B. set down past the span by a plain jump's flight, or taken off before it at the testers' far take-off;
  *   C. a piece he stands on only after a miss (a soft pit's floor) is never a cleared piece's next, and no petal on it is counted;
  *   D. on the played stage, every standing petal is counted exactly when it is inside its piece's walked span on a piece off no miss;
- *   E. a stage whose brief says petals LOW gets no fill and no arc at all (a brief by data, kept).
+ *   E. a stage whose brief says petals LOW gets no arc, and a fill only over a stretch past Matt's 2 screens (the lead's ruling INT-10d).
  * F (planted): a stage with petals off the walked path: the door's count leaves them out; with the exclusion switched off the share asks
  * for more than every run passes (sealed). G: placement is main's again (6-2 holds main's 73).
  */
@@ -18,7 +18,7 @@ import { walkedSpan, jumpTouchdown, TAKEOFF_FAR, WALKED_MIN } from './walkedSpan
 import { generateStage, setLayoutVariant, type GeneratedStage } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { petalPass } from '../petalPass.ts';
-import { isPetal, markWalked, walkedStage, type PetalOut } from '../petals.ts';
+import { isPetal, markWalked, petalGaps, SPREAD_MAX, walkedStage, type PetalOut } from '../petals.ts';
 import { goalCounts, normalGoal, onCrumbling } from '../goals.ts';
 import { withSetting } from '../settingDials.ts';
 import type { Platform, Vine } from '../types.ts';
@@ -143,21 +143,35 @@ test('G: placement is main\'s lay: 6-2 layout 1 Normal holds main\'s 73 petals',
   assert.equal(st.collectibles.filter((c) => isPetal(c as never, st as never)).length, 73);
 });
 
-test('E: a stage whose petal brief says LOW gets no fill after the lay, its arcs over jumps among them (R-165.263); without the brief the same stage does', () => {
+// (E, restated to the lead's ruling INT-10d 11-15 2:08 PM ET: Matt's 2-screen rule outranks 'low'. 'low' means few, never a bare stretch:
+//  a LOW stage's fill closes a stretch over SPREAD_MAX with the petals that close it and no more; a stretch under it gets none)
+test('E: a LOW stage with a 2.8-screen bare stretch gets exactly the petals that close it (none outside it, none left over 2 screens); a 1.5-screen one gets none; without the brief the fill lays more', () => {
   for (const id of ['1-6', '1-7']) {
     const st = played(id, 'normal', 1);
     assert.equal(st.gen2.brief?.petals, 'low', `${id}'s brief says low (data)`);
-    // (every petal but the first taken off: the whole route is one long stretch with no trail)
-    const bare = (brief: unknown) => {
-      const first = st.collectibles.find((c) => c.type === 'flower')!;
-      return { ...st, gen2: { ...st.gen2, brief }, collectibles: st.collectibles.filter((c) => c.type !== 'flower' || c === first).map((c) => ({ ...c })) } as unknown as GeneratedStage;
+    const ax = (c: { x: number }) => c.x;
+    const flowers = st.collectibles.filter((c) => c.type === 'flower').sort((p, q) => ax(p) - ax(q));
+    // (a bare stretch cut out of the played stage: every flower inside [x0, x0 + len] taken off)
+    const bare = (len: number, brief: unknown) => {
+      const x0 = flowers[Math.floor(flowers.length / 3)].x;
+      return { x0, x1: x0 + len, st: { ...st, gen2: { ...st.gen2, brief }, collectibles: st.collectibles.filter((c) => !isPetal(c as never, st as never) || c.x <= x0 || c.x >= x0 + len).map((c) => ({ ...c })) } as unknown as GeneratedStage };
     };
-    const low = bare(st.gen2.brief), any = bare(undefined);
+    const wide = bare(SPREAD_MAX * 1.35, st.gen2.brief);
+    const before = new Set(wide.st.collectibles.map((c) => c.id));
     const out: PetalOut = {} as PetalOut;
-    withSetting('normal', () => petalPass(low, out));
-    assert.equal(out.filled ?? 0, 0, `${id}: no fill under a low brief`);
+    withSetting('normal', () => petalPass(wide.st, out));
+    // (the petals the pass laid again: the fill's, and on a brief with petalArcs (1-6) its arcs, which may close the stretch first)
+    const added = wide.st.collectibles.filter((c) => !before.has(c.id) && isPetal(c, wide.st));
+    assert.ok(added.length > 0, `${id}: a ${Math.round(SPREAD_MAX * 1.35)} px bare stretch under a low brief got no petal`);
+    assert.deepEqual(added.filter((c) => c.x <= wide.x0 || c.x >= wide.x1).map((c) => Math.round(c.x)), [], `${id}: a low fill laid outside the bare stretch`);
+    assert.deepEqual(petalGaps(wide.st, wide.st.collectibles.filter((c) => isPetal(c, wide.st)), SPREAD_MAX), [], `${id}: a stretch still over 2 screens`);
+    const narrow = bare(SPREAD_MAX * 0.7, st.gen2.brief);
+    const out1: PetalOut = {} as PetalOut;
+    withSetting('normal', () => petalPass(narrow.st, out1));
+    assert.equal(out1.filled ?? 0, 0, `${id}: a stretch under 2 screens got a low fill`);
+    const any = bare(SPREAD_MAX * 1.35, undefined);
     const out2: PetalOut = {} as PetalOut;
-    withSetting('normal', () => petalPass(any, out2));
-    assert.ok((out2.filled ?? 0) > 0, `${id} without the brief: the fill lays petals (the gate is the brief's)`);
+    withSetting('normal', () => petalPass(any.st, out2));
+    assert.ok((out2.filled ?? 0) > (out.filled ?? 0), `${id} without the brief: the fill lays more (${out2.filled ?? 0} vs ${out.filled ?? 0})`);
   }
 });

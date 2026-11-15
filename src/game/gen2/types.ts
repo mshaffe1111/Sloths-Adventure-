@@ -666,7 +666,8 @@ export interface GraphBrief {
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
   /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
-   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
+   *  any gap; pickups come from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already), and the fill only
+   *  where a stretch runs past Matt's 2 screens (petals.ts SPREAD_MAX; the lead's ruling INT-10d 11-15: 'low' means few, never bare) */
   petals?: 'low';
   /** petals on the arcs of the stage's REQUIRED hops (petals.ts arcPetals, gen2/walkedSpan.ts hopArcs: a hop every run must take is
    *  walked space; INT-10, the lead's ruling 11-15 11:10 AM ET). Opt-in by data: a stage that sets it gets them, no other stage moves */
