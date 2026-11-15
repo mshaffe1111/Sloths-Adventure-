@@ -3,31 +3,25 @@
 to the integration head.** Code head c9c8dbc9. Packet: reference/packets/2026-11-15/ENG-WATCH2.md; the lead's rulings A (11:12) and B (11:49).
 
 ## EXACT NEXT STEP (integration onto INT-10's head, origin/t-int-10 9d8c9fda; xhigh)
-1. Merge t-eng-watch2. The dry run (`git merge-tree`) conflicts in 4 files, all ADDITIVE: keep both sides. 1-8's still fork sits beside the glance:
-   - predators/types.ts Post `passes` / `glance`; types.ts Enemy `kitPasses` / `kitGlance`; castPlay.ts newPredator: pass both;
-   - core.ts newPredator `passesLeft` / `...glanceOf`; core.ts endPass: keep both lines (spend the pass budget, then `recheckAway`).
+1. Merge t-eng-watch2. The dry run (`git merge-tree`) conflicts in 4 files, all ADDITIVE (1-8's still fork beside the glance); keep both sides:
+   predators/types.ts Post `passes`/`glance`; types.ts Enemy `kitPasses`/`kitGlance`; castPlay.ts newPredator passes both; core.ts
+   newPredator `passesLeft`/`...glanceOf`; core.ts endPass keeps both lines (spend the pass budget, then `recheckAway`).
 2. On the merged head: tsc; eagleGlance, eagleKit, predator*, w1Arc17 and 1-8's tests; castBots 1-40 both settings on 1-7 AND 1-8 (the
    still-fork eagle now re-checks), every miss traced; seedlist 1-7 and 1-8 --check; lock 1-7, 1-8, W6, W8; drawcheck; the suite ALONE.
-   1-7's petals may move with ENG-PETAL: relist only from the full-suite head (rule 20).
-3. The clips once, on that head (rule 29; shoot list in §4).
+   1-7's petals may move with ENG-PETAL: relist only from the full-suite head (rule 20). 3. The clips once, on that head (§4 list).
 
 ## 1. Done (evidence in this folder)
-- **F1 gated by data** (b2a0ef55): `PredatorDef.passAt: 'far'` (EAGLE). The caiman keeps there-and-back. In this build only 1-7 hands a
-  sweeper to the kit (no stage kit-plays the caiman). 3 eagle kit tests restated to F1, the old asserts kept for a sweeper without passAt;
-  the caiman test untouched. Plants A/B: F1 off -> 6 red; the gate off -> 3 red (plants.txt).
+- **F1 gated by data** (b2a0ef55): `PredatorDef.passAt: 'far'` (EAGLE); the caiman keeps there-and-back (in this build only 1-7 hands a
+  sweeper to the kit). 3 eagle kit tests restated to F1, old asserts kept for a sweeper without passAt; caiman test untouched. Plants A/B.
 - **finish17 dropped the perched eagle's glance** when it rebuilt it on its snag: fixed, planted (C).
-- **The re-check** (ruling B, c9c8dbc9): `Glance.recheck`, a REQUIRED field. After a look that saw nobody, and after every pass, the head
-  comes round in 0.6-1.2 s, always a real look (never a fake-out), then a full away. Easy x1.5. Plants D (off -> 2 red), E (may fake -> 3 red).
-- **Tests restated:**
-  - eagleGlance:168 over seeds 1-8: Normal caught >= 7/8 (base 3/8, v1 5/8); Easy >= 1 and <= Normal; every catch told first.
-  - The fake share is counted over turns after a full away.
-  - eagleKit 'own cool' measures the cool alone (glance off): a running glance holds the pass. Flagged to the lead.
-- **Gates:**
-  - suite ALONE on b2a0ef55: 3556 pass, 5 fail, every one red on the base too (suite.txt). On c9c8dbc9: UNRUN, stopped at 12:10 PM (1090
-    ok, 0 not ok) by the lead's ruling.
-  - lock 20/21 watcher stages unchanged, 1-7 enemies intended; seedlist 1-7 PASS (100).
-  - castBots/firsttimer/tierBots tests 27/27; generality, knowncheck, roadmapcheck PASS.
-  - Not run: drawcheck (no draw code changed), build/clip/kbd/buildcheck (untouched): the integration head runs every one.
+- **The re-check** (ruling B, c9c8dbc9): `Glance.recheck`, REQUIRED. After a look that saw nobody and after every pass the head comes round
+  in 0.6-1.2 s, always a real look (never a fake-out), then a full away; Easy x1.5. Plants D (off: 2 red), E (may fake: 3 red).
+- **Restated:** eagleGlance:168 over seeds 1-8 (Normal caught >= 7/8; base 3/8, v1 5/8; Easy >= 1 and <= Normal; every catch told first);
+  the fake share over turns after a full away; eagleKit 'own cool' measures the cool alone (glance off). Flagged to the lead.
+- **Gates:** suite ALONE on b2a0ef55: 3556 pass, 5 fail, all red on the base too (suite.txt); on c9c8dbc9 UNRUN, stopped 12:10 PM (1090 ok,
+  0 not ok) by the lead's ruling. Lock 20/21 watcher stages unchanged + 1-7 enemies intended; seedlist 1-7 PASS (100); castBots,
+  firsttimer, tierBots tests 27/27; generality, knowncheck, roadmapcheck PASS. Not run (integration runs them): drawcheck (no draw code
+  changed), build, clip, kbd, buildcheck.
 
 ## 2. The dials 1-7 ships (Easy: away and re-check x1.5, the tell x1.3, no fake-outs; calm unchanged, 5.1-5.6 s at 1-7, floor 5 s)
 | dial | EAGLE default (world1.ts) | 1-7 WATCH_17 (w1Arc17.ts) |
@@ -40,55 +34,38 @@ to the integration head.** Code head c9c8dbc9. Packet: reference/packets/2026-11
 |---|---|---|---|---|---|---|---|---|
 | base | 38/40, 305 | 37/40, 37 | 39/40, 71 | 40/40, 31 | 39/40, 98 | 40/40, 29 | 40/40: 69 / 24 | 40/40, 59 |
 | final | 37/40, 407 | **40/40**, 69 | 40/40, 180 | 40/40, 68 | 39/40, 125 | 40/40, 52 | 40/40: 113 / 40 | 40/40, 123 |
-- Every Normal rescue in the final run is a pit way-back, traced: kid 1 x23424, kid 28 x23048, kid 5 x34977, child 37 x34795 (8 falls,
-  3 hits). ENGINE-WORTHY, owner ENG-PETAL. Easy takes fewer hits than Normal for every bot.
-- Walker probe, seeds 1-4 Normal: at least 1 heart at all 7 eagles past the lesson.
-- botcross, METER-1's formula, seeds 1-4 Normal:
-  - tier bots 0.29 -> 0.61 misses a minute (1-5: 1.83);
-  - first-timers 1.60 -> 2.55 (1-5: 1.26).
-- **METER-1: 2.250 / 1.385, unchanged.** Caveat: its watch term reads neither the calm nor the glance (METER-2a). The tier bots never lapse
-  attention (METER-2b).
+- Every Normal rescue is a pit way-back, traced: kid 1 x23424, kid 28 x23048, kid 5 x34977, child 37 x34795 (8 falls, 3 hits): ENGINE-WORTHY,
+  owner ENG-PETAL. Easy takes fewer hits than Normal for every bot. Walker probe, seeds 1-4 Normal: >= 1 heart at all 7 eagles past the lesson.
+- botcross (METER-1's formula, seeds 1-4, Normal): tier bots 0.29 -> 0.61 misses a minute (1-5: 1.83); first-timers 1.60 -> 2.55 (1-5: 1.26).
+- **METER-1: 2.250 / 1.385, unchanged.** Caveat: its watch term reads neither the calm nor the glance (METER-2a); the tier bots never lapse (METER-2b).
 
 ## 4. Polish check
-- None shot here (the lead's lean ruling; rule 29: once, on the head going to Matt).
-- Shoot list, with `eagleClip.mjs` (the caption now names the screech at either end and a re-check):
-  - #7 glance, Normal and Easy (a freeze; Easy's tell);
-  - #5 glance (a fake-out); #2 walk (a walk caught in the open); #7 sneak (the re-check catches him);
-  - each upright and sideways.
-- Named from ENG-WATCH's frames:
-  - the flying eagle's head-cock reads as "coming in": it needs a painted head-turn frame;
-  - sideways, the perched eagle's lift-off passes under the sign.
+- None shot here (the lead's lean ruling; rule 29: once, on the head going to Matt). Shoot list with `eagleClip.mjs` (its caption now names
+  the screech at either end and a re-check), upright and sideways: #7 glance Normal and Easy (a freeze; Easy's tell), #5 glance (a fake-out),
+  #2 walk (caught in the open), #7 sneak (the re-check). Named from ENG-WATCH's frames: the flying eagle's head-cock reads as "coming in"
+  (a painted head-turn frame is needed); sideways, the perched eagle's lift-off passes under the sign.
 
 ## 5. Pushback, suggestions, unresolved
-- **Pushback:** the tier-bot ruler can't see the glance (ruling A).
-- **Pushback:** a one-seed scenario test pins one roll of a seeded rhythm; state such rules over seeds with a rate.
-- **Packets:**
-  - ENG-PETAL: the pit way-back (above, and kid Easy 29 on v1 with 0 hits).
-  - The lead: writtenKeys is red on the base (1-7's seed key has no find id).
-  - METER-2a/2b.
-  - Art: the flying harpy's head-turn frame.
-  - Tools: eagleProbe should mark a stuck run. At #6 a never-freezing Easy sneaker stuck at the liana gap lost 2 hearts to Normal's 1
-    (seed 4). The bots' Easy is lower everywhere.
-- **Unresolved:** the suite and the clips on c9c8dbc9; drawcheck; every item above.
+- Pushback: the tier-bot ruler can't see the glance (ruling A); a one-seed scenario test pins one roll of a seeded rhythm: state such rules
+  over seeds with a rate.
+- Packets: ENG-PETAL the pit way-back (above; kid Easy 29 on v1, 0 hits); the lead: writtenKeys red on the base (1-7's seed key has no find
+  id); METER-2a/2b; art: the flying harpy's head-turn frame; tools: eagleProbe marks a stuck run (at #6 a never-freezing Easy sneaker stuck
+  at the liana gap lost 2 hearts to Normal's 1, seed 4; the bots' Easy is lower everywhere).
+- Unresolved: the suite and the clips on c9c8dbc9; drawcheck; every item above.
 
 ## 6. Learned, and proposed level.md changes
-- A dial a stage can override is REQUIRED in its type. finish17's dropped glance was this class: a stage's dials vanishing silently.
-- A quick second look must be a real look: a fake-out inside the re-check made it a 3 s green light (found on --frames, fixed).
-- Judge a watcher with the probes (a walker who never hides, an instant sneaker). A calibrated freezer pays in time, not hearts.
-- **Proposed rule 30:** a watched stage passes the probes on Normal:
-  - a walker loses at least 1 heart at every watcher past the lesson;
-  - the perched one catches the instant sneaker on 7 of seeds 1-8;
-  - Easy never more.
-  - Check: eagleGlance.test.
-- World 1 note: 1-7's dials are WATCH_17; tune there.
+- A dial a stage can override is REQUIRED in its type (finish17's dropped glance was this class: a stage's dials vanishing silently).
+- A quick second look must be a real look: a fake-out inside the re-check made it a 3 s green light (found with --frames, fixed).
+- Judge a watcher with the probes (a walker who never hides, an instant sneaker); a calibrated freezer pays in time, not hearts.
+- Proposed rule 30: "A watched stage passes the probes on Normal: a walker loses >= 1 heart at every watcher past the lesson; the perched one
+  catches the instant sneaker on 7 of seeds 1-8; Easy never more. Check: eagleGlance.test." World 1 note: 1-7's dials are WATCH_17.
 
 ## 7. Method, lessons, my misses, turnover
-- **Method used:** stage-fix.md, gates.md, the card's day one (lock base 76a81ad2).
-- **Lessons applied:** D15 (the ruler reproduced 1-5's 1.83 first); D19 (the real engine); D43 and law 22 (by data; no rule loosened); D59.
-- **Miss 1 (D30 repeated):** I typed "11:58" when the clock read ~11:49; the lead caught it.
-  - Cause: a header typed from my sense of time.
-  - Countermeasure, from 11:51: every header pasted from `date` in the same step.
-- **Miss 2 (D57 repeated):** no ReadNotifications at the 12:05 push, so the suite ran 12:06-12:10 after the lead's "skip it" was waiting.
-  - Countermeasure: read the queue in the same step as every push.
-- **Method update** (gates.md): a watcher change runs eagleProbe walk and sneak, seeds 1-4, both settings; the perched sneak over seeds 1-8.
-- **Turnover:** reference/handoffs/engine-core.md §0ze rewritten (commit 97166f5c).
+- Method used: stage-fix.md, gates.md, the card's day one (lock base 76a81ad2). Lessons applied: D15 (the ruler reproduced 1-5's 1.83
+  first), D19 (the real engine), D43 and law 22 (by data; no rule loosened), D59.
+- Miss 1 (D30 repeated): I typed "11:58" when the clock read ~11:49 (the lead caught it). Cause: a header typed from my sense of time.
+  Countermeasure, from 11:51: every header pasted from `date` in the same step.
+- Miss 2 (D57 repeated): no ReadNotifications at the 12:05 push, so the suite ran 12:06-12:10 after the lead's "skip it" was waiting.
+  Countermeasure: read the queue in the same step as every push.
+- Method update (gates.md): a watcher change runs eagleProbe walk and sneak, seeds 1-4, both settings; the perched sneak over seeds 1-8.
+- Turnover: reference/handoffs/engine-core.md §0ze rewritten (commit 97166f5c).
