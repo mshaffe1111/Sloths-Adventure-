@@ -31,3 +31,17 @@ if you fall down below and you can die from it."
 For the model: stakes don't only add setback time, they WIDEN the timing spread (an excited or stressed player presses worse): the pressure
 channel must scale the spread by what a miss costs (a death pit below > a soft fall), and a chase or a watcher adds to it. Vines: players find
 the lianas "a little wonky" (feel, not difficulty): R-165.271.
+
+## Blind comparison with DIFF-SYNTH's model (t-diff-synth@0e6d1ba3 §10), lead 12:07 AM ET
+| Level | Matt (hardest=1) | Model Normal score (0-100) | Model rank |
+|---|---|---|---|
+| 1-4 | 1 | 58 (42-70) | 1-2 (tie) |
+| 1-5 | 2 | 61 (44-70) | 1-2 (tie) |
+| 1-2 | 3 | 4 | 5 |
+| 1-3 | 4 | 3 | 6 |
+| 1-1 | 5 | 7 | 3-4 (tie) |
+| 1-7 | 6 (old eagle) | 8 (old eagle) | 3-4 (tie) |
+Spearman about 0.5. AGREES: 1-4 and 1-5 are the hard pair, far above the rest; 1-7 and 1-1 are easy. MISSES: 1-2 (Matt 3rd, model 5th) and 1-3:
+the model runs the tester-calibrated MIDDLE bot, which runs straight across 1-2's bounce chain; a newcomer steers in the air and fails (Matt 11:56 PM).
+The model must score the likely WRONG input (a first-timer/misread tier), exactly Matt's point. The bottom four all score 3-8: the model can't
+separate easy levels yet (the research's "bots can't rank easy levels" warning).
