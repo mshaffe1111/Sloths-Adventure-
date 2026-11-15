@@ -5,33 +5,48 @@ drawcheck the day they were built), D53 (I ran the fast gates before every push)
 queue at each push), D67 (no shell wait loops), D19 (the look test calls footingsFor, the engine's own call), level.md rules 12, 16, 17, 21 and 22.
 
 ## EXACT NEXT STEP
-0. **Two rulings that block the merge (the lead):**
-   a. **artUse.test is RED, and the cause is older than this branch.** W6's sluice-wheel art (w6PropsData#sluice-wheel plus 2 json frames)
-      is drawn nowhere. artuse.mjs counted it as "used" only because the deleted 2-2 ferry had a template id `sluice${ri}`, and the tool
-      counts a template literal as a dynamic name. The real fix: draw W6's painted wheel for 6-7's water-room lever (w6Rooms.ts:104,
-      "a lever today"). That is Content wiring and a look change for 6-7. I did not allow-list it (law 22) and I did not fake a reference.
-   b. **2-1 and 2-2 cannot be judged yet.** With `judged: 'normal-2-x'`, all 24 seeds fail two World 1 verdicts (ENGINE-WORTHY 1).
-      Their flown rows are in flownArcs.ts, so `judged` is the only line left to add once those verdicts read World 2's water. Until then
-      registrycheck FAILs on "2-1 flown" and "2-2 flown", and nothing else.
-1. **The river as a gen2 section (engine, xhigh, about 3-4 h).**
-   - Add a place rule `{ kind: 'river', after, row }`. This changes types.ts PlaceRule, so it is the Architect's call.
-   - The pipeline lays the gap at `riverWidth(row)`, recorded as a water fall, or soft where `row.safe`, as it records a rope's gap
-     (pipeline.ts:1296).
-   - layStage calls `layRiver` for the logs and the zone BEFORE checkStage. levelCheck already treats a log as spanning its river
-     (levelCheck.ts:100) and already checks river spacing (levelCheck.ts:1040).
-   - `riverFaults` joins the lay's fairness checks.
-   - w2Finish skips a fall that already has its river.
-2. **The bot toy (level.md rule 21), before any level lays a river.** The bot already has the skill: firsttimer.ts:2021-2040 waits at
-   the edge for a log, rides it, and waits on it until the next log or the bank is near. Build a fixture stage with one river section
-   (`withTestStage` and a toy kit), and have the middle and child bots cross it on both settings. Plant: with that block switched off,
-   they drown.
-3. **The 2-1 builder, then, is data only:**
-   - w2Arc21.ts holds the node string from 2-1.md, bricks made from w2.ts's pieces (`bank`, `creek`, `deep`, `stone`, `rock` and the
-     socket helpers), and river sockets on W2_RIVERS rows (ride, deep, back, twin, long).
-   - The keeper's lines go in verbatim (lines-2-1.md on t-story@50da9e58). W2_TIPS.water already holds `deep`.
-   - Replace `W2_ARCS['2-1']` and `w2Bricks('2-1')` in the kit, then run `addlevel 2-1 --relist`.
-   - Still needs art or engine: World 2's liana row (the w1Swing pattern), the bounce as a bent Guadua bamboo or palm frond (the
-     keeper's ruling: no mushroom), and the village dug into the bank at the gate.
+0. **Done on the lead's ruling (8:50 PM): artUse is green with no allow-list.** 6-7's water-room lever is drawn as Matt's painted
+   root wheel (step 0a below). **One ruling is still open: 2-1 and 2-2 cannot be judged yet** (ENGINE-WORTHY 1). Their flown rows are
+   in flownArcs.ts (`n21`, `n22`), so adding `judged: 'normal-2-1'` / `'normal-2-2'` in stageTable.ts is all that is left once two
+   World 1 verdicts read World 2's water. Until then registrycheck FAILs on "2-1 flown" and "2-2 flown", and on nothing else.
+   0a. (done) src/game/w6WheelArt.ts; the lever's `looks` field (puzzleKit.ts lever spec); the draw (puzzlePlay.ts, the levers loop);
+   the room data (w6Rooms.ts:104-106); the preload ('w6-wheels', stageSheets.ts and stagePreload.ts, 6-7 alone); w6WheelArt.test.ts.
+   Stills: `stills/w67-before-*` (the kit's wooden lever) and `stills/w67-after-*` (the root wheel at the well's lip, about 1.5x
+   Pokey). The wheel picked by place for layout 1 is `sluice-wheel-b`. While the water is up, the wheel is drawn mirrored.
+1. **The river as a gen2 section (the next World 2 engine job, xhigh, about 3-4 h; a fresh member can start here).**
+   - **a. The place rule** (types.ts:279-303, the PlaceRule union; the Architect signs off). Add
+     `| { kind: 'river'; after: string; row: string }`. `row` names a row of the world's river table (WorldManifest gets
+     `rivers?: Readonly<Record<string, RiverRow>>`; World 2's is w2.ts W2_RIVERS).
+   - **b. The gap** (pipeline.ts:1296, beside `rope`):
+     `const a = ref(pl.after), r = M.rivers![pl.row]; x = a.x + a.w + riverWidth(r); y = a.y;`
+     Push the gap `{ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, ...(r.safe ? { soft: true } : { water: true }) }`.
+     Carry `riverRow: pl.row` on the local piece, as `ropeFrom` is carried (pipeline.ts:1469).
+   - **c. The logs**, in layStage where the ropes are hung (pipeline.ts:2486-2492): for each piece with `riverRow`, call
+     `layRiver(row, near.x + near.width, near.y, () => sink.nextPlatformId())`. Push its logs onto the platforms, and its zone onto a new
+     `Laid.rivers` (Laid at pipeline.ts:1533, beside `ropes` :1563). The stage takes `rivers: laid.rivers` where it takes
+     `ropes: laid.ropes` (pipeline.ts:3700). All of this happens BEFORE checkAndRepair (:3841), so levelCheck judges the logs: it already
+     spans a log over its river (levelCheck.ts:100) and checks the spacing (:1040).
+   - **d. The fairness**: `riverFaults(stage)` (riverLay.ts:87) joins checkStage's errors (pipeline.ts:3776). Plant one river breaking
+     each rule (riverLay.test.ts "planted" has them).
+   - **e. The drops**: dropsOf (pipeline.ts:4064) reads a fall inside a RiverZone as `life` (deep) or `putback` (safe).
+     w2Finish (w2.ts:266) skips a fall that already has its river.
+   - **f. The reach**: the asks (`asks.push`) record a river crossing as the bot's ride, not a jump. Otherwise verdicts.ts judges a
+     600-800 px "jump".
+   - **g. The bot toy (level.md rule 21)**, before any level lays a river. The skill exists: firsttimer.ts:2021-2040 waits at the edge
+     for a log, rides it, and steps off when the next log or the bank is near. Build a fixture stage with one river section
+     (listed.ts `withTestStage` and a toy kit). The middle and child bots must cross it on both settings. Plant: switch that block off
+     and they drown.
+   - **h.** Prove it on World 2's kit AND one other world's (rule 21). The lay is world-neutral: riverLay.test.ts already lays
+     W2_RIVERS under World 6's ground.
+2. **The 2-1 builder, after 1, is data only:**
+   - w2Arc21.ts holds the node string from 2-1.md and bricks made from w2.ts's pieces (`bank`, `creek`, `deep`, `stone`, `rock` and
+     the socket helpers, which are module-local today: export them, or give the arc file its own copies as w1Arc17.ts does).
+   - Rivers go in as `{ kind: 'river', after, row: 'ride' | 'deep' | 'back' | 'twin' | 'long' }`.
+   - The keeper's lines go in verbatim (reference/story/lines-2-1.md on t-story@50da9e58), held by a test. W2_TIPS.water already holds `deep`.
+   - Replace `W2_ARCS['2-1']` and `w2Bricks('2-1')` in w2Manifest, then run `addlevel 2-1 --relist`, then add `judged` once
+     ENGINE-WORTHY 1 is fixed.
+   - Still needs art or engine: World 2's liana row (the w1Swing.ts pattern), the bounce as a bent Guadua bamboo or palm frond (the
+     keeper's ruling: no mushroom), the village dug into the bank at the gate, and the arrival scene moved there (the keeper's ruling 4).
 
 ## What was built
 - **src/game/gen2/worlds/w2.ts**, World 2's kit:
@@ -60,6 +75,12 @@ queue at each push), D67 (no shell wait loops), D19 (the look test calls footing
 - **drawcheck:** tools/perf/limits.json scenarios now include "2-1" and "2-2".
 - **Flown rows:** flownArcs.ts n21/n22, flown on 2-1/2-2 (fly-2-1.txt, fly-2-2.txt).
 - **Turnover note:** reference/handoffs/engine-core.md §0zc.
+- **The lead's ruling (b): src/game/w6WheelArt.ts.**
+  - It draws W6's two painted root wheels: the water-room sheet's `sluice-wheel` and w6balt's `sluice-wheel-b`.
+  - The wheel is picked by the lever's place, drawn 140 px tall (the catalog's 1.57 x Pokey), and mirrored while on.
+  - Wiring: puzzleKit.ts:70 (the lever's `looks`), puzzlePlay.ts:1894 (the levers loop) and w6Rooms.ts:105 (6-7's sluice lever).
+  - Preload: stageSheets 'w6-wheels' (6-7 alone) and stagePreload.
+  - w6WheelArt.test.ts has 4 tests. artUse.test is green again, with no allow-list.
 - **Tests:**
   - src/game/gen2/worlds/w2.test.ts has 7 tests: the inventory, the rows, the arc, the look, the rivers, the first deep river, the
     finish. planted-faults.py has 8 plants, all CAUGHT.
@@ -116,6 +137,8 @@ These are of a rolled 2-1, Normal, layout 1 (proven seed 2), 412x915 and 915x412
 | `x14250` (the first deep river) | the flag and the water sign at the edge, Dot's warning set up ahead. Same slot look |
 | `x24950` (the signature's stepping stones) | sideways shows the whole run of stones and rivers. Fixed this session: in my first shot a reed was drawn IN FRONT of him on the bank's edge, hiding him. The fix: reeds stand behind him, and none on stones (w2.test "the look" holds it, planted) |
 | `x33700` (the exit bank) | flag, heart, World 2's frog and pot dressing. Rough: no village and no gate (the placeholder has no arrival scene) |
+
+| `w67-before-6-7-L1-x6600-upright/-sideways` (6-7's water room, the kit's wooden lever) and `w67-after-*` (the same spot: Matt's root wheel at the well's lip) | after: the wheel reads as World 6's sluice, in scale beside him (about 1.5x his height). It stands on the floor at the lever's foot and clears the raft's rope. PASS |
 
 ## ENGINE-WORTHY (level.md rule 22; for the lead and the engine, not worked around in level data)
 1. **The judged verdicts read World 1's pits, not World 2's water** (step 0b):

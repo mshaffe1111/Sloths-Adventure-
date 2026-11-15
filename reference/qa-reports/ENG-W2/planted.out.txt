@@ -1,0 +1,9 @@
+CAUGHT  the finish lays no rivers (the rivers)
+CAUGHT  a splash-back river keeps its pit bed (the rivers)
+CAUGHT  World 2's rows run World 1's finish (the look)
+CAUGHT  the kit names a piece waiting on a fix (the kit)
+CAUGHT  Dot's warning is not the keeper's line (the first deep river)
+CAUGHT  a reed is drawn in front of him (the look)
+CAUGHT  2-1 has no stage-table row (the rows)
+CAUGHT  the hand-built 2-1 is still a plan (the rows)
+EXIT 0
