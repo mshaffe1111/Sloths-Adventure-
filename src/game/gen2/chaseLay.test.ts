@@ -276,3 +276,24 @@ test('in play (the engine\'s own stage start): the chase piece runs it, the plai
     });
   }
 });
+
+// ENG-CL (7b), BUILD-18 8:34 PM 11-14: the search asked the caller's judge (BuildRequest.also) of each candidate roll BEFORE its chase was
+// laid (pipeline.ts, the length loop), so a judge that measures the roll as played (listRules.ts quietJudge with the row's finish) was
+// handed a chase stage with no chase, and 1-8's finish refused every roll by name. A judge is handed the roll as laid, its chase in it,
+// on a copy (the search keeps its own build). PLANTED: a judge that records what it is handed.
+test('the caller\'s judge is handed every chase roll as laid: its chase in it, on a copy', () => {
+  for (const difficulty of ['normal', 'easy'] as const) {
+    for (const seed of [1, 2, 3]) {
+      const seen: Array<{ chase: boolean; same: boolean }> = [];
+      let built: Gen2Stage | null = null;
+      const st = inFixture(() => buildGen2Stage({ config: CFG, kit: kitK(CODE), seed, difficulty, also: (s) => { seen.push({ chase: !!s.chase?.stretches.length, same: s === built }); return []; } }));
+      built = st;
+      assert.ok(seen.length >= 1, `${difficulty} seed ${seed}: the judge was asked`);
+      assert.ok(seen.every((q) => q.chase), `${difficulty} seed ${seed}: handed ${seen.filter((q) => !q.chase).length} of ${seen.length} rolls with no chase laid`);
+      assert.ok(st.chase?.stretches.length, `${difficulty} seed ${seed}: the stage keeps its own chase`);
+      // (laid once: the copy's lay never reaches the stage the search returns, whose ground is cut once)
+      const cuts = st.platforms.filter((p) => p.chase).length;
+      assert.equal(cuts, build(seed, difficulty).platforms.filter((p) => p.chase).length, `${difficulty} seed ${seed}: the same cut with and without a judge`);
+    }
+  }
+});

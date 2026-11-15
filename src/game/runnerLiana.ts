@@ -34,16 +34,22 @@ export const RUNNER = {
 
 const DT = 1 / 30;
 
-/** the lip a runner takes off from for this liana: the solid ground he runs on whose far end is the nearest one short of it */
+/**
+ * the lip a runner takes off from for this liana: of the solid ground whose far end lies in reach of it, the HIGHEST (the take-off's
+ * height: anything lower lies in the gap under him, a pit's floor or its stair step), and of those the one whose far end is nearest it.
+ * ENG-CL (8): the nearest end at any height took a soft gap's stair step under 1-8's K2 lip, "200 px of run to its lip" on every Normal
+ * roll (runnerLiana.test.ts plants it). A ledge floating over the run in reach of the liana would read as the lip: no lay puts one there.
+ */
 export function runnerLip(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): Platform | null {
   let best: Platform | null = null;
+  const endOf = (p: Platform) => (dir > 0 ? p.x + p.width : p.x);
   for (const p of platforms) {
     if (p.type !== 'solid' || p.width < 60) continue;
-    const end = dir > 0 ? p.x + p.width : p.x;
+    const end = endOf(p);
     const d = dir * (v.x - end);
     // (as the bots read a liana off an edge, lianaWait: ahead within 360 px, its foot within reach of his height, its top over him)
     if (d < -40 || d > 360 || v.bottomY < p.y - 140 || v.topY > p.y - 100) continue;
-    if (!best || dir * (end - (dir > 0 ? best.x + best.width : best.x)) > 0) best = p;
+    if (!best || p.y < best.y - 2 || (Math.abs(p.y - best.y) <= 2 && dir * (end - endOf(best)) > 0)) best = p;
   }
   return best;
 }
