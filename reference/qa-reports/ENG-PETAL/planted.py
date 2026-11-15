@@ -18,11 +18,13 @@ PLANTS = [
     # (E-class) the fill's ledge trails only inside walked spans
     ('fill-span', 'src/game/petals.ts', [('      if (w.hi - w.lo < WALKED_MIN || ws.away!(p)) continue;\n      lo = Math.max(lo, w.lo);\n      hi = Math.min(hi, w.hi - step * (len - 1));\n', '')], '^D:'),
     # (R-165.263) the brief: no fill (its jump tier is the arcs over gaps the finished stage gained: jumpTrails' routeGaps finds none on a gen2 stage)
+    # (R-165.265) the wall at a join of two soft pits' floors
+    ('wall', 'src/game/gen2/pipeline.ts', [("          if (wall) sections.find(", "          if (wall && false) sections.find(")], '^1-6 rolls', 'src/game/gen2/pitJoinWall.test.ts'),
     ('brief-fill', 'src/game/petalPass.ts', [(' && !petalsLow(stage)) {', ') {')], '^E:'),
 ]
 
-def run(pattern):
-    r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={pattern}', T], capture_output=True, text=True, timeout=1800)
+def run(pattern, t=T):
+    r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={pattern}', t], capture_output=True, text=True, timeout=1800)
     out = r.stdout + r.stderr
     fails = [l for l in out.splitlines() if l.startswith('# fail')]
     first = next((l.strip() for l in out.splitlines() if re.search(r"^\s+(\+|0:)\s+'|AssertionError \[|message: '", l)), '')
@@ -30,7 +32,8 @@ def run(pattern):
 
 only = sys.argv[1:] or [p[0] for p in PLANTS]
 ok = True
-for name, f, pairs, pattern in PLANTS:
+for name, f, pairs, pattern, *tf in PLANTS:
+    t = tf[0] if tf else T
     if name not in only:
         continue
     p = pathlib.Path(f); src = p.read_text()
@@ -40,10 +43,10 @@ for name, f, pairs, pattern in PLANTS:
         planted = planted.replace(o, n)
     p.write_text(planted)
     try:
-        green, fails, first = run(pattern)
+        green, fails, first = run(pattern, t)
     finally:
         p.write_text(src)
-    green_after, _, _ = run(pattern)
+    green_after, _, _ = run(pattern, t)
     caught = not green
     ok = ok and caught and green_after
     print(f"{name}: planted {'RED (CAUGHT)' if caught else 'GREEN (MISSED)'} {fails} | {first} | restored {'GREEN' if green_after else 'RED'}", flush=True)

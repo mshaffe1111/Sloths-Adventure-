@@ -1730,6 +1730,25 @@ export function pitFloorJoin(a: Pick<Platform, 'x' | 'y' | 'width'>, b: Pick<Pla
   return { x: x0, y: Math.max(l.y, r.y), w: x1 - x0 };
 }
 
+/** the wall at a join of two soft pits' floors: its width (px, a post under the perch) */
+export const PIT_WALL = { w: 24, source: "ENG-PETAL 11-14, R-165.265: a post under the creaky limb's near end, narrow so a limb that gives way drops him past it" } as const;
+/**
+ * The wall where two soft pits' floors are joined (R-165.265; ENG-PETAL 11-14, every stage): a miss must cost the way back, never open a
+ * way forward. Joined (pitFloorJoin), a fall into the EARLIER pit walked along the floor under the perch to the later pit's stair and up
+ * to its liana (1-6's creaky landing: a miss under the creaky limb took the next liana). The wall stands at the earlier floor's end, the
+ * earlier pit's far lip, its face PIT.face more than a double jump over the floor (the pits' own face rule, backPit), its top never over
+ * the lip: the earlier pit's only way up is its own stair, back to the take-off of the beat he missed; a fall off the perch over the join
+ * lands in the later pit, whose stair leads back to that perch. `lip`: the earlier pit's fall record (its gap, ending at the join).
+ * Null where the floor is too shallow under the lip for a face he cannot climb (its own face is climbable then too).
+ */
+export function pitJoinWall(join: { x: number; y: number; w: number }, lip: number | undefined): { x: number; y: number; w: number; h: number } | null {
+  if (lip === undefined || join.w < PIT_WALL.w) return null;
+  const top = Math.max(lip, join.y - (DOUBLE_RISE + PIT.face));
+  // (the engine's hoist over a lip is 26 px: a face of no more than a double jump and that is climbed)
+  if (join.y - top < DOUBLE_RISE + 26 + 4) return null;
+  return { x: join.x, y: top, w: PIT_WALL.w, h: join.y - top };
+}
+
 /**
  * The fill under the hole beside a soft pit's floor on `side` (+1 its right, -1 its left), or null (R-165.246, ENG-16H, the same root as
  * pitFloorJoin): a floor ended at its own gap's lip, and past that lip a perch floated over a column with no earth up to the next bank
@@ -2900,6 +2919,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         floors.add(fill);
         if (j.deepen) j.deepen.height = Math.max(j.deepen.height, j.y + M.ground.bankH - j.deepen.y);
         sections.find((q) => j.x + j.w / 2 >= q.x0 && j.x + j.w / 2 <= q.x1)?.seam.push(fill);
+        // (two pits' floors joined: a wall at the earlier floor's end, so a miss in it never walks on to the later pit's way up, R-165.265)
+        if (!j.deepen) {
+          const wall = pitJoinWall(j, gaps.find((g) => Math.abs(g.x1 - j.x) <= 4)?.y);
+          if (wall) sections.find((q) => j.x + j.w / 2 >= q.x0 && j.x + j.w / 2 <= q.x1)?.seam.push(mk(wall.x, wall.y, wall.w, 'block', wall.h + M.ground.bankH, 'moss_stone'));
+        }
       }
     }
   }
