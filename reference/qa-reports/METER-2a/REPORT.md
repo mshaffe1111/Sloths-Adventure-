@@ -31,9 +31,14 @@ seedlist 1-1 --check; castBots 1-2..1-8 after (before ran 1-1..1-6, then stopped
 - Bot gaps on built stages (known): crumbling branches (1-4), push logs (1-6), ring waves + boa (1-9). The river ENG-W2b lays is
   river.ts drift logs, not ride.ts clock rides; asked ENG-W2b (11:33 AM) whether anything but the window end sinks a log: no reply yet.
 
-## Pushback
-- None on the packet. Step 1 is bigger than "2-3 h" if every vocabulary source is wanted: skills + stage-kit modes read in, brick
-  pieces not yet collected (no stage holds one); named below.
+## Known reds / misses (read 11:56 AM: three messages queued 11:25-11:37 that I did not read at my pushes: D57 repeated, my miss)
+- **Lead 11:25 scope cut** (do not build step 3's board half; merge origin/t-eng-w2b, build the step-off on its hopLandsOn): I built
+  the board half for ride.ts rides and lift.ts lifts (ENG-W2b's covers drift logs only) WITHOUT merging t-eng-w2b. No shared lines
+  edited (one inserted call before lianaWait, one blockedT term), but the lead decides: keep the clock-ride board or drop it.
+- **Drift step-off priced wrong** (ENG-W2b 11:39): a log carried past its window end HANDS him onto the bank (engine.ts drift loop),
+  never drops him. So score.ts rideChallenges' 'ride-off' on a drift log must cost 'retry' (a set-back), not the water's cost; fix +
+  rideChannel.test's "deep river is a life" case for ride-off. And a jump off a log keeps its sideways speed (ENG-W2b, coming): price it.
+- **INT-10 f569ae61** changes score.ts (1-1 anchor on fixed layouts, anchor11.ts): expect a score.ts merge at integration.
 
 ## Learned (for level.md / gates.md)
 - A gate that refuses must be proven against the RIGHT old behaviour: the gate alone stays green if score.ts's throw is reverted;
@@ -51,6 +56,7 @@ seedlist 1-1 --check; castBots 1-2..1-8 after (before ran 1-1..1-6, then stopped
 3. Packet steps 3, 5, 6 ([2-2] dwell channel + the clock SKILL's dwell half + the misread tier incl. 1-2's mid-air steering,
    R-165.269); step 7 re-score W1; the hold term lambda; T50 fitted to Matt's ranking (gaps "a little", not 8x); the tie band from the
    seed spread; 1-1's per-piece r=0.94 (R-165.268). Each known-list entry closes with its channel/bot (shrink the list).
+3b. The drift ride-off fix above (cost 'retry', keep-speed hop off), with its test changed first (RED), then the code.
 4. Vocabulary still to read into coveragecheck: stage-kit modes/set pieces (stageKit.types.ts), brick pieces on a stage (once laid).
 5. Turnover note reference/handoffs/engine-core.md NOT rewritten (wrap-up order); this REPORT stands in for it.
 
