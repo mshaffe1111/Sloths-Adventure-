@@ -5,7 +5,8 @@ Started 3:44 PM ET. Times from `TZ=America/New_York date`. STATUS: holding for F
 1. **1-8 merged** (0681bf90): t-build-18c, 9 conflicts read both sides. **2-1** (a63b5131): link #4 held none of the 2-1 line, so t-fix-21
    merged whole (its net = FIX-21's order); 20 conflicts. listed.ts playFinish runs the row's WORLD finish (w2Finish for 2-1, in Play and
    every list judge); petalsLow holds 'few'; walkedSpan Ask 'ride'. INT-10d's final head merged (dbbad40e).
-2. **1-8 judged: NO** (967249d2): rows entered (chain.md §1, n18); judged 0/24 (bounce-teach band.out): BOUNCE-REUSE -> FIX-GATES (a).
+2. **1-8 judged**: on this head 0/24 (967249d2: plain bounces under the teach band) -> FIX-GATES (a) 18e323e0 'bounce-reuse' kind, 1-8
+   judged + relisted, merged 5a42d652; after it: registrycheck PASS (10 stages), seedlist 1-1/1-6/2-1 --check PASS here (rest by FIX-GATES).
 3. **2-1's crash, the lead's ruling 4:05**: the judge now sees the played 2-1 (D19): a 4.1 s quiet stretch at beat X on every seed.
    (b) pipeline: a throw after the search's own stage-wide bans is a refused roll; refuseNotThrow.test RED->GREEN (1092172f). (a) final
    form 5fba6119: 220 px steps kept + a boulder on the first descent's middle step (160 px steps made the kid turn back, traced; petals
@@ -21,7 +22,7 @@ Started 3:44 PM ET. Times from `TZ=America/New_York date`. STATUS: holding for F
    Reds fixed at source, none loosened: chaseBots MIDDLE (9137470f's look -> water only, proven by revert); river.test (manifest.lessons);
    LV-9 floor 30->28 (2-1/2-2 left the hand-built set); 5-7/7-1 pins back to main's own; riverSection (safe-water-art, ruling 1);
    flower species sample widened (201 pairs, 0 mixed); growth check mix-vs-mix like with like (ruling (A) 5:19, planted).
-   OPEN, FIX-GATES: registrycheck.test (1-8 unjudged; red on link #4 too), riverRide planted x2 (red on t-fix-21 too).
+   OPEN, FIX-GATES (b): riverRide planted x2 (red on t-fix-21 too). registrycheck.test GREEN after FIX-GATES (a).
 
 ## Polish check
 - 1-8 (shots/s18-*): fork x26600 (eagle, moss cover, wayside line), tip x34200, palm x6064, dip: x13930 top step + x14350 floor,
