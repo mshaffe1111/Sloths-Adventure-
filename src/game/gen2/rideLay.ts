@@ -247,8 +247,11 @@ export const PAD_FAIR = {
   shiver: 0.4,
   /** a sunk pad is whole again (holds a landing and a decision) within a wait he can count (s; riverLay RIVER_LAY.beat) */
   back: 4,
-  /** one hop across a beat row (s): the tap hop's 0.30 s in the air and 0.2 s to land and go again (2-2.md, flown) */
-  hop: 0.5,
+  /** how fast he crosses a pond, hopping and running pad to pad (px/s): a tap hop flies 83 px in 0.30 s (277 px/s, hopAir.ts) and his run
+   *  tops out at 285 px/s (physics.ts maxRun), less his landings; a beat row's run must be crossed inside one breath at this pace */
+  pace: 230,
+  /** a person's reaction to a beat row rising before he goes (s) */
+  react: 0.3,
   /** the widest water between two pieces (px): a held jump flies 184 px (hopAir.ts), less a margin so the child makes it */
   reach: 160,
   /** the least water between two pieces (px): closer, two read as one */
@@ -310,8 +313,8 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
  * What is unfair about a stage's sinking pads, in words (none: they may be laid). On Normal (Easy only stretches):
  *   - a weight pad holds a landing and one decision (PAD_FAIR.hold) and shivers long enough to read (PAD_FAIR.shiver), and once sunk it is
  *     whole again within a wait he can count (PAD_FAIR.back): a there-and-back finds its pads back when he has waited on the stone;
- *   - a beat row's breath holds long enough to cross each run of its pads between two floors that stay (PAD_FAIR.hop a hop), with a
- *     shiver he can read (beatBrick.ts brickFair);
+ *   - a beat row's breath holds long enough to cross each run of its pads between two floors that stay (at PAD_FAIR.pace, after his
+ *     PAD_FAIR.react to the rise), with a shiver he can read (beatBrick.ts brickFair);
  *   - nothing strands him: across each still water, every floor from bank to bank (pads, stones) is a hop from the next (PAD_FAIR.reach),
  *     no closer than PAD_FAIR.apart, and wide enough to land on (PAD_FAIR.minW);
  *   - every pad's clock is listed in the stage's clocks.
@@ -354,19 +357,22 @@ export function padFaults(st: { platforms: readonly Platform[]; rivers?: readonl
       if (gap < PAD_FAIR.apart) out.push(`${at}: ${Math.round(gap)} px of water at x=${Math.round(edges[i])}, under ${PAD_FAIR.apart}`);
     }
     for (const p of row) if (!p.pad && p.width < PAD_FAIR.minW) out.push(`${at}: a stone ${p.width} px wide, under ${PAD_FAIR.minW}`);
-    // (a beat row: each run of its pads between two floors that stay, crossed inside one breath)
-    let run = 0, clock: string | null = null;
-    const close = () => {
-      if (!run || !clock) return;
-      const def = defs.get(clock);
-      if (def) for (const e of brickFair(def, { warn: PAD_FAIR.shiver, safe: (run + 1) * PAD_FAIR.hop })) out.push(`${at}: ${run} beat pads in a run: ${e}`);
+    // (a beat row: each run of its pads between two floors that stay, from the edge before it to the floor after it, crossed inside one
+    // breath at his pace after his reaction to the rise)
+    let run = 0, clock: string | null = null, from = r.x0;
+    const close = (to: number) => {
+      if (run && clock) {
+        const def = defs.get(clock);
+        const need = Math.round(((to - from) / PAD_FAIR.pace + PAD_FAIR.react) * 100) / 100;
+        if (def) for (const e of brickFair(def, { warn: PAD_FAIR.shiver, safe: need })) out.push(`${at}: ${run} beat pads in a run (${Math.round(to - from)} px): ${e}`);
+      }
       run = 0;
       clock = null;
     };
     for (const p of row) {
-      if (p.pad?.by === 'beat') { run++; clock = p.pad.clock; } else close();
+      if (p.pad?.by === 'beat') { run++; clock = p.pad.clock; } else { close(p.x); from = p.x + p.width; }
     }
-    close();
+    close(r.x1);
   }
   return out;
 }

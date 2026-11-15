@@ -45,6 +45,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
+import { padShows } from '../../src/game/pieces/padPiece.ts';
+import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import type { Platform, PlayerState } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
@@ -925,6 +927,10 @@ export class FirstTimerRun {
   private edgeWait = -1;
   /** riding a moving floor: when the next floor first came in reach (s), or -1, and how long his reaction to it takes (clockRide) */
   private offSeen = -1;
+  /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
+  private padSeen = -1;
+  /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
+  private padStop: { id: number; until: number } | null = null;
   private offDelay = 0;
   /** waiting at an edge for a ride on a stage clock to stand at his end, since (s), or -1 */
   private clockWait = -1;
@@ -1897,6 +1903,14 @@ export class FirstTimerRun {
     if (t < who.look) return side(dir || 1);
     // (a ride on a stage clock, a lift, a drifting log: he reads its clock as a person watching it does, before any other ground move:
     // clockRide. Its edge is the plain look ahead, 22 px and his edgeAim, the float-wait's own)
+    // (a pond of sinking pads: he reads each pad's state and a beat row's breath as a person watching does, padRead)
+    if (dir !== 0 && !this.jump && !this.pending) {
+      const held = this.padRead(p, dir, t);
+      if (held) {
+        this.clockHeld = !held.left && !held.right && !held.jump;
+        return held;
+      }
+    }
     if (CLOCK_SKILL.read && dir !== 0 && !this.jump && !this.pending && !this.standing) {
       const held = this.clockRide(p, dir, t, this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
       this.clockHeld = !!held && !held.left && !held.right && !held.jump;
@@ -1990,7 +2004,8 @@ export class FirstTimerRun {
     if (t - this.lastLand < 0.1) {
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
-      if (here && here.width < 220 && !this.padPause) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
+      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead)
+      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad)) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
       if (!this.padPause) return side(dir);
     }
     if (this.padPause) {
@@ -2132,6 +2147,8 @@ export class FirstTimerRun {
             }
           }
           if (tierEdge.how === 'run') return this.startJump(dir, kind, false);
+          // (KEEP-HOPPING: on a sinking pad he never stops at its edge to stand his time: he goes)
+          if (tierEdge.how === 'stand' && PAD_SKILL.keepHopping && here?.pad) return this.startJump(dir, kind, false);
           if (tierEdge.how === 'stand') {
             this.standing = { dir, until: -1 };
             return {};
@@ -2249,6 +2266,78 @@ export class FirstTimerRun {
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
    *  and lets it throw him up the way on, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there) */
 /**
+   * THE PAD SKILLS (ENG-22; 2-2.md NEW 5): a pond of sinking pads (pieces/padPiece.ts), read off what a person sees.
+   *   KEEP-HOPPING   on a pad that sinks under him (or rides a breath), he never stands: no pause on landing, no standing his time at
+   *                  its edge (those two are where the hooks above check PAD_SKILL.keepHopping), and once it shivers he goes now.
+   *   WAIT-FOR-THE-RISE  at an edge with the next pad down or still shivering (a beat row under, a pad he just sank on a there-and-back),
+   *                  he holds on the floor he is on until it is up and still, then goes after his own reaction.
+   *   CROSS-ON-THE-BREATH  at an edge before a beat row, he goes only on a breath that has time left to cross the whole run to the next
+   *                  floor that stays (padFaults' pace): he waits for the next rise rather than start late in one.
+   * Returns a pad to hold (or a jump), or null to let the edge's own walk or jump go.
+   */
+  private padRead(p: PlayerState, dir: -1 | 1, t: number): Pad | null {
+    const who = this.who;
+    const e = this.e as any;
+    const here = this.floorAt(p.x, p.y, 6);
+    if (process.env.PADDBG && p.x > 1500 && p.x < 2700) console.log('PAD', t.toFixed(2), dir, Math.round(p.x), Math.round(p.y), Math.round(p.vx), here?.id, here?.pad ? JSON.stringify(padShows(here)) : '-');
+    if (!here) { this.padSeen = -1; return null; }
+    const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
+    // (the next floor across the water ahead, within a held jump's reach, at his height: a pad (up or down), a stone, the far bank)
+    let next: Platform | null = null;
+    for (const q of this.sim.platforms) {
+      if (q === here || (q.broken && !q.pad) || Math.abs(q.y - p.y) > 70) continue;
+      const off = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
+      if (off < 2 || off > PAD_FAIR.reach) continue;
+      if (!next || (dir > 0 ? q.x < next.x : q.x > next.x)) next = q;
+    }
+    // (a pond crossing is a hop from a pad or onto one; any other edge is the edge's own)
+    if (!next || (!here.pad && !next.pad)) { this.padSeen = -1; return null; }
+    const go: Pad = dir > 0 ? { right: true } : { left: true };
+    const approach = (): Pad => (toEdge > 30 ? go : {});
+    // (a person who does not know pads sink treats one as any small floor: he stops on it a beat when he lands, and stands his time at its
+    // edge when his tier stands; KEEP-HOPPING is knowing not to)
+    if (here.pad && !PAD_SKILL.keepHopping) {
+      if (this.padStop?.id !== here.id) this.padStop = { id: here.id, until: t + between(this.r, [0.25, 0.5]) + (this.edgePlan().how === 'stand' ? this.edgePlan().stand : 0) };
+      if (t < this.padStop.until) return approach();
+    }
+    let ready = true;
+    // (WAIT-FOR-THE-RISE: a pad down, or still shivering, is no pad to hop for)
+    if (next.pad && PAD_SKILL.waitRise) {
+      const s = shows(next);
+      if (!s.solid || s.tell > 0) ready = false;
+    }
+    // (CROSS-ON-THE-BREATH: from a floor that stays, the run of beat pads to the next floor that stays, and the breath left to cross it)
+    if (ready && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
+      const row = this.sim.platforms.filter((q) => Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
+      let to = NaN;
+      for (const q of row) if (q.pad?.by !== 'beat') { to = dir > 0 ? q.x : q.x + q.width; break; }
+      const across = Math.abs(to - edgeX) + Math.max(0, toEdge);
+      const r = e.clock.read(next.pad.clock, next.pad.shift);
+      const def = (((this.sim.stage as any).clocks ?? []) as any[]).find((c) => c.id === next!.pad!.clock);
+      const stretch = who.setting === 'easy' ? Math.max(1, def?.easyStretch ?? 1) : 1;
+      const warn = (def?.phases.find((ph: any) => ph.name === 'warn')?.seconds ?? 0) * stretch;
+      const left = r.phase === 'off' ? r.left + warn : r.phase === 'warn' ? r.left : 0;
+      if (!Number.isFinite(across) || r.phase !== 'off' || left < across / PAD_FAIR.pace + who.stopReact) ready = false;
+    }
+    if (!ready) { this.padSeen = -1; return approach(); }
+    // (from a floor that stays, he goes after his own reaction to it being ready; on a pad he is already going)
+    if (!here.pad) {
+      if (this.padSeen < 0) this.padSeen = t;
+      if (t - this.padSeen < who.stopReact) return approach();
+    }
+    // (the hop: he presses where a flown hop comes down on it whatever he holds, a tap or a full hold, after his thumb's lag; where no
+    // press point lands both, within 40 px of the edge where his own usual hold does; at the very edge he presses whatever)
+    const flies = (hold: number, lag: number) => hopLandsOn(next!, () => next!.x, p.x + p.vx * lag, p.y, dir, hold, t + lag, p.vx, 6);
+    const lands = [0.03, 0.1].every((lag) => flies(0, lag) && flies(0.7, lag)) || (toEdge < 40 && [0.03, 0.1].every((lag) => flies(who.hold[0], lag)));
+    // (KEEP-HOPPING: his pad shivers; he does not walk on to his usual press point, he goes now)
+    const shiver = here.pad && PAD_SKILL.keepHopping && shows(here).tell > 0;
+    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, this.jumpFor(p, dir, here), false, go);
+    return go;
+  }
+
+  /**
    * READ A STAGE CLOCK (METER-2a): the float-wait at an edge made a skill for any floor that moves by a clock. A ride on a stage beat
    * (ride.ts; gen2/rideLay.ts lays it) and a basket lift (lift.ts) move by the stage's clock and stand at each end; he reads it the way
    * a person watching does, from whether it stands and where:
@@ -2360,6 +2449,8 @@ export class FirstTimerRun {
     const w = this.who, p = this.sim.p, t = this.t;
     if (!w.steerQ || !w.gapQ) return want;
     if (!p.grounded || this.jump || this.pending || this.standing || this.lateArmed || want.press || !(want.left || want.right)) return want;
+    // (KEEP-HOPPING: on a sinking pad his thumb never lets go between steers: padRead)
+    if (PAD_SKILL.keepHopping && this.floorAt(p.x, p.y, 6)?.pad) return want;
     if (t < this.gapUntil) {
       const out = { ...want };
       delete out.left;

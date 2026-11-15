@@ -6,7 +6,7 @@
  *   keep    four small weight pads (1.0 s each on Normal): KEEP-HOPPING, he never stands on a weight pad past its count
  *   rise    a beat row with a stone between (big, stone, big): WAIT-FOR-THE-RISE, at an edge he never hops for a pad that is down or
  *           shivering; he waits until it is up and still
- *   breath  three big beat pads in a row, no stone (2-2.md's breath: up 1.8 s, shiver 0.6 s, under 0.6 s): CROSS-ON-THE-BREATH, he starts
+ *   breath  two small beat pads in a row, no stone (470 px: 2.0 s of its 2.4 s up at padFaults pace) (2-2.md's breath: up 1.8 s, shiver 0.6 s, under 0.6 s): CROSS-ON-THE-BREATH, he starts
  *           only when the breath left covers the whole run
  * Each skill is planted: switched off (firsttimer.ts PAD_SKILL), its toy goes red (the on and off numbers are pasted in ENG-22's REPORT).
  */

@@ -95,8 +95,9 @@ export const W2_PADS = {
   hop: { by: 'weight', pads: ['small', 'small', 'small'], gap: 70, safe: true, petals: [0, 1, 2] },
   /** beat 4: small pads out to a far stone and its petal (the far piece), and back over the same pads once they are up again */
   back: { by: 'weight', pads: ['small', 'small'], gap: 80, safe: true },
-  /** beat 6, the twist: the pond breathes; three big pads on one breath (2-2.md: up 1.8 s, shiver 0.6 s, under 0.6 s), crossed on the up */
-  breath: { by: 'beat', pads: ['big', 'big', 'big'], gap: 80, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
+  /** beat 6, the twist: the pond breathes; every pad on one breath (2-2.md: up 1.8 s, shiver 0.6 s, under 0.6 s), crossed on the up, two
+   *  pads at a time with a stone between (a run of pads must be crossed inside one breath: padFaults) */
+  breath: { by: 'beat', pads: ['small', 'small', 'stone', 'small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
   /** beats 9 and 12: deep water, held jumps between the sizes */
   deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
 } as const satisfies Record<string, PadRow>;

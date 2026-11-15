@@ -18,7 +18,7 @@ import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 export const TOY_PADS = {
   keep: { by: 'weight', pads: ['small', 'small', 'small', 'small'], gap: 70 },
   rise: { by: 'beat', pads: ['big', 'stone', 'big'], gap: 80, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
-  breath: { by: 'beat', pads: ['big', 'big', 'big'], gap: 80, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
+  breath: { by: 'beat', pads: ['small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
 } as const satisfies Record<string, PadRow>;
 export type ToyPad = keyof typeof TOY_PADS;
 
