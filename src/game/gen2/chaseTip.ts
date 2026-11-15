@@ -36,7 +36,7 @@ export interface TipStage {
   chase?: ChaseLay;
   platforms: Platform[];
   vines?: Vine[];
-  checkpoints?: Array<{ x: number }>;
+  checkpoints?: Array<{ x: number; y?: number }>;
   collectibles?: Array<{ x: number }>;
   rolling?: RollSpec[];
   proto?: unknown;
@@ -73,7 +73,9 @@ export function layTip(st: TipStage, look: TipLook): string[] {
   last.tip = true;
   const inGap = (x: number) => x > g0 - 20 && x < g2;
   // (a flag in the gap stands on the far ground; pickups and dressing over it and hazards on the run to the lip are left out)
-  for (const c of st.checkpoints ?? []) if (inGap(c.x)) c.x = g1 + 120;
+  // (its height too: the far branch is at the tip's height, which the stage's own ground there need not be: 1-8 seeds 24 and 75 stood a
+  // flag 22 px inside the branch, INT-10c)
+  for (const c of st.checkpoints ?? []) if (inGap(c.x)) { c.x = g1 + 120; if (c.y !== undefined) c.y = lip.y; }
   st.collectibles = (st.collectibles ?? []).filter((c) => !inGap(c.x));
   if (st.rolling) st.rolling = st.rolling.filter((h) => h.dropX < g0 - TIP_CLEAR.before || h.dropX > g1 + TIP_CLEAR.after);
   const pr = st.proto as Record<string, Array<{ x: number }> | undefined> | undefined;
@@ -93,6 +95,14 @@ export function readyStillFork(st: TipStage, fork: number, look: Pick<StillForkL
   st.platforms = st.platforms.filter((p) => !(p.type === 'solid' && p.y < gy - 2 && p.y + p.height >= gy - 2 && p.x + p.width > x0 && p.x < x1 && !carries(st, p)));
   // (the fork's flag, where the post must stand to share an upright screen with him in the cover, stands past it: nearer the next crack,
   // as chaseLay's own rule wants it, never further from it than the span allows)
-  for (const c of st.checkpoints ?? []) if (c.x > x0 && c.x < x1 + STILL_FORK.flagClear) c.x = Math.min(x1 + STILL_FORK.flagClear, next.start - 40);
+  // (and it stands on what is there: the solid top under its new x nearest its old height, INT-10c, the pair of layTip's flag)
+  for (const c of st.checkpoints ?? []) {
+    if (!(c.x > x0 && c.x < x1 + STILL_FORK.flagClear)) continue;
+    c.x = Math.min(x1 + STILL_FORK.flagClear, next.start - 40);
+    const y0 = c.y;
+    if (y0 === undefined) continue;
+    const under = st.platforms.filter((p) => p.type === 'solid' && p.x <= c.x && c.x <= p.x + p.width).sort((a, b) => Math.abs(a.y - y0) - Math.abs(b.y - y0))[0];
+    if (under) c.y = under.y;
+  }
   return [];
 }

@@ -61,6 +61,17 @@ test('layTip: the last stretch made the tip, a runner liana in the gap off it, t
   assert.deepEqual(st.rolling.map((h) => h.dropX), [8800]);
 });
 
+test('layTip: a flag in the gap stands ON the far branch, its height too, where the stage\'s own ground there was lower (1-8 seeds 24 and 75: a flag 22 px inside the branch; INT-10c, planted)', () => {
+  const st = toy({ at: 10364, dy: 22 });
+  const flag = { x: 10500, y: Y + 22 };
+  st.checkpoints[2] = flag;
+  assert.deepEqual(layTip(st, W1_TIP), []);
+  const g1 = 10364 + W1_TIP.gap;
+  const far = st.platforms.find((p) => p.x === g1 && p.width === W1_TIP.land)!;
+  assert.equal(far.y, Y, 'the far branch at the tip\'s height');
+  assert.deepEqual(flag, { x: g1 + 120, y: far.y }, 'the flag stands on the far branch');
+});
+
 test('layTip: a runner tip with too little level run to its lip is refused by name and nothing is laid; a plain liana there is laid', () => {
   const st = toy({ at: 9900, dy: 40 });
   const before = JSON.stringify(st);
@@ -69,6 +80,16 @@ test('layTip: a runner tip with too little level run to its lip is refused by na
   assert.equal(JSON.stringify(st), before, 'nothing laid');
   assert.deepEqual(layTip(st, { ...W1_TIP, liana: { ...W1_TIP.liana, runner: false } }), []);
   assert.ok(st.chase.stretches[2].tip && !st.vines.at(-1)!.runner, 'the tip, its liana a plain one');
+});
+
+test('readyStillFork: the fork\'s flag, moved past the post, stands on the ground under its new x at that ground\'s height (INT-10c, the pair of layTip\'s flag; planted)', () => {
+  const st = toy();
+  for (const p of st.platforms) if (p.x >= 3000 && p.x < 4300) p.y = Y + 30;
+  const flag = { x: 2950, y: Y };
+  st.checkpoints[0] = flag;
+  assert.deepEqual(readyStillFork(st, 0, W1_STILL_FORK), []);
+  assert.ok(flag.x > 3000, `moved past the post onto the lower ground (${flag.x})`);
+  assert.equal(flag.y, Y + 30, 'it stands on that ground');
 });
 
 test('readyStillFork on ANY fork (here fork 1): bare rocks in its cover and post cleared, one carrying dressing kept, its flag past the post; then the fork lays', () => {
