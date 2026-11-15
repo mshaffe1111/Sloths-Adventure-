@@ -1,4 +1,4 @@
-# BUILD-18b: 1-8's data-side reds (t-build-18b). Report __TIME__ ET, context about __CTX__
+# BUILD-18b: 1-8's data-side reds (t-build-18b). Report 11:20 PM ET, context about 45% (estimated)
 **EXACT NEXT STEP:** the engine work the lead RULED (10:13 and 10:24 PM): (i) the settle sees the ground the chase lay leaves standing,
 any chase stage; (ii) ruling (a): a section template asks for its join (`entry.join: 'walk'`), and 1-8's still fork and tip ask for a
 walk in; (iii) ENG-LOOK's layTip puts the far-bough flag ON the bough (its e014d41d). When they land, 1-8's data adds `entry.join` to
@@ -64,7 +64,14 @@ child 330 s, middle 197 s, expert 167 s (Easy 146/144/238/177).
   and :156; it read 10.06 on BUILD-18's head, so the merged t-eng-dr adds about 0.5). Shared ground paint, engine. 1-8 upright and
   every other stage passed.
 - clipcheck (a6104e2da) PASS (83 known).
-- **Whole suite:** __SUITE__
+- **Whole suite (a6104e2da, one run, all files):** __SUITE__. Every red named and owned:
+  - ENG-LOOK, the 7 hand-built-1-8 tests (chasePiece 'keeps its own collapse'; chaseRespawn A-07, A-07b; chaseRespawnReal x4):
+    re-pointed and green on t-eng-look, not merged here.
+  - Engine, ruled (the lead 10:13/10:24): gen2Pits:61 (seed 2, the pit join); rollGuard:42 1-8 and skills:35 (the step join and
+    the far-bough flag); w1Overhang 1-8 (the settle before the chase).
+  - Not mine (packet): w1Pits:58 (1-6's water gaps, ENG-PETAL; 1-8's from layTip, ENG-LOOK).
+  - todo: 4-3's engine wall check (an old TODO).
+  - GREEN now: story 1101 and wayside (first person), movesJournal, stageSheets, w1Arc18 12/12.
 
 **Polish check:** no stills (packet: rule 29, the look will change them). The way.1-8 line is 7 words, under the 10-word speech box,
 and is checked by count. I did not look at it on screen this round; that is named, not skipped by mistake.
@@ -79,5 +86,5 @@ built stage).
 finished stage AND at the settle. (3) A rewritten keeper line carries her dated note in the same cell: parse it off, never edit her file.
 **Proposed level.md rule (the lead decides):** "Every finish step that assumes the ground (a still fork, a tip, a cover) is built on
 raw seeds 1-4 on both settings in the plan test." The check: gen2Pits already does 1-2; widen it to 1-4 for stages with a finish.
-**Hours and cost (LEVEL-LOG):** start 10:01 PM ET; lines done 10:11; ENGINE-WORTHY 10:08 and 10:13; bots 10:20; gates 10:23-__END__.
-About __HOURS__. No HF spend. Model cost: get_session at retire.
+**Hours and cost (LEVEL-LOG):** start 10:01 PM ET; lines done 10:11; ENGINE-WORTHY 10:08 and 10:13; bots 10:20; gates 10:23-11:20; ENG-LOOK's items 10:45-10:52.
+About 1 h 20 m. No HF spend. Model cost: get_session at retire.
