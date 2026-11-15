@@ -70,6 +70,13 @@ fork (flat, unbroken >= 466 px, no rock in the moss, its flag >= 90 px off the p
 `runner: true` (runnerProblems = []: >= 1,188 px of run to the lip); set the last stretch `tip: true` with a gap, a runner liana and a
 landing after it (layFixturePieces is the worked example: 444 px gap, liana 214 px out, 380 up); on Easy keep stretch gaps <= 50 px; bots:
 RunOptions.knows ['hide']; Dot's lines from the keeper. Not ready: painted nut/fruit (B5 s1), the C4 edge under the lead (B5 s2), E1.
+**NEXT PACKET (the lead's ruling 7:40 PM, a fresh engine member, before 1-8 is judged): THE CHASE STAGE READS AS ONE CONTINUOUS BRANCH, any
+chase stage.** (a) a chase stage's forks are drawn as the same branch (chaseSeg art on fork ground: the fork IS the Long Branch); (b) a
+painted join knot (Hugging Face, sized to 89.1 px) drawn by pieces/chasePiece.ts where a fork meets a stretch (today: a straight vertical
+seam, log texture against World 1's grass lip, fork sideways passOver f226 x~340); (c) the collapse breaks into 3-5 LARGE pieces, not a
+dozen rectangular 222 px tiles tumbling (tip slow sideways f145 shows the tiles): debris grouped by run of sections, drawn from the sheet's
+chaseDebris / brokenL/R frames at the group's size; the tip's whole fall the same way. Proof: stills at the joins and f145-style frames
+upright and sideways; drawcheck with a fall on screen (E3).
 **Gates on 1a1303ff (LAWS 5, src changed):** PENDING (runner reference/qa-reports/B6/final/).
 **Lessons applied:** D19 (decision = act), D23/D36 (frozen worktrees), D30 (times from date), D40, D43 (no stage id), D55 (context %),
 D57 (queue at every push), D63/D69, D66, D67, "prove a change is needed; revert what isn't", law 22 (no test loosened).
