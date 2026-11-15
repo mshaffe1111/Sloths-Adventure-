@@ -159,17 +159,18 @@ const down = (easy: boolean): Lay => {
   const pieces: SectionPiece[] = [bank('a', null, 320)];
   let from = 'a';
   // (three hops down after the first perch, two after the second, one after the last: the canopy's edge stands two steps up, so he
-  //  comes down to the river's level. The steps between are 160 px, the last before a liana keeps its 300 px run: with 220 px steps the
-  //  walk down from the first perch was 1,040 px of nothing to do, 4.1 s on Normal over the quiet line on the stage as played, w2Finish
-  //  having made the creeks' pits water; INT-11 11-15)
+  //  comes down to the river's level. The first liana's long walk down has a boulder to hop on its middle step: without it the walk
+  //  from the first perch was 1,040 px of nothing to do, 4.1 s on Normal over the quiet line on the stage as played (w2Finish makes the
+  //  creeks' pits water). Shorter steps answered the line but the kid turned back at the perch's end, the way on two steps down, and was
+  //  rescued (seeds 11, 13); a petal on each step did not count (a pickup is no beat): INT-11 11-15, the lead's ruling 4:05 PM ET)
   for (const [k, steps] of [[1, 3], [2, 2], [3, 1]] as const) {
     pieces.push(w2Liana(`l${k}`, from, g(k)), w2Perch(`p${k}`, `l${k}`, g(k), 300));
     from = `p${k}`;
     for (let j = 0; j < steps; j++) {
-      pieces.push(shore(`s${k}${j}`, from, j === steps - 1 ? 300 : 160, DOWN));
+      pieces.push(shore(`s${k}${j}`, from, j === steps - 1 ? 300 : 220, DOWN));
       from = `s${k}${j}`;
-      // (the last liana's one step down is a wide bank: a boulder on it to hop, the quiet line)
-      if (k === 3) pieces.push(rock(`r${k}${j}`, from, 0.5));
+      // (the last liana's one step down is a wide bank: a boulder on it to hop, the quiet line; and the first's middle step, INT-11)
+      if (k === 3 || (k === 1 && j === 1)) pieces.push(rock(`r${k}${j}`, from, 0.5));
     }
   }
   pieces.push(bank('z', from, 300), rock('rz', 'z', 0.5));
