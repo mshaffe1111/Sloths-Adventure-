@@ -64,3 +64,9 @@ ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3
 |---|---|---|---|---|
 | 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
 ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
+
+## 2026-11-14 (BUILD-18, t-build-18; the lead's packet cap $3)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:17-8:26 PM | sandbox 6af9086223985fb9cd82c12e (rtx-pro-6000), about 9 min creation to terminate: 12 Qwen-Image + style LoRA takes (4 pieces x 3 seeds, ~21 s each after a ~2 min load), keyed and cut in the sandbox (/w/key18.py, /w/ship18.py), back by hf_sandbox_fs | lead (BUILD-18 packet; ruling A 8:19 PM: all four) | ~$0.41 | 4 shipped pieces (src/assets/w1-18/): palm nut, cannonball fruit (in game, rollingPiece.ts), palm crown, cannonball trunk with fruit stalks (laid as data, drawn when the inventory-dressing piece lands): **~$0.10 a piece**; the keyed takes' sheet in reference/art/hf18/ |
+BUILD-18 total: ~9 GPU-min, **~$0.41** of its $3 cap (minutes x $2.75/60). Balance ~$56.0 (from ~$56.4).

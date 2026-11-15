@@ -266,8 +266,9 @@ export const SECTIONS_18: SectionTemplate[] = [...BEATS_18, ...QUIET_18, EXIT_18
  *  gap off the tip (px), the far tree's bough past it, the runner liana out from the lip, up, and its foot under the branch */
 export const TIP_18 = { gap: 444, land: 600, out: 214, up: 380, foot: 30 } as const;
 /** the hearts (1-8.md "Hearts and flags"): one on the fork after the second stretch, one on the fork before the last (the fork after the
- *  fourth: the still fork's), this far past that fork's last flag, at a petal's height over the ground */
-export const HEARTS_18 = { forks: [2, 4], past: 120, up: 34 } as const;
+ *  fourth: the still fork's), this far from that fork's last flag (before it: the flag stands just before the next crack, so a heart past
+ *  it would be in the stretch), at a petal's height over the ground */
+export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
 /**
  * The look the keeper's nature check asks for (lines-1-8.md: palm nuts drop from palms in view; cannonball fruit grows on stalks from the
  * TRUNK and drops from there or above), by INVENTORY id, so each draws the moment the engine's inventory-dressing piece lands (the lead's
@@ -389,7 +390,7 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     if (!g) continue;
     (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, h: d.h, hang: d.hang, layer: d.layer });
   }
-  // (5) the hearts: on the forks HEARTS_18 names, just past each fork's flag
+  // (5) the hearts: on the forks HEARTS_18 names, just before each fork's last flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);
   for (const f of HEARTS_18.forks) {
     const a = lay.stretches[f - 1]?.end, b = lay.stretches[f]?.start;

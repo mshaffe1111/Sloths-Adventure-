@@ -10,16 +10,15 @@
  * heart through the engine's damagePlayer (PieceHurt). Either way that hazard is spent. On a respawn every hazard ahead of his flag
  * waits again, and every one behind it is gone.
  *
- * The art is the inventory's (no new picture): the nut is the shell of World 1's nut pod (dressnew-w1 w1NutPod), the fruit one of the
- * cannonball tree's own fruits (M-10-d, the tree 1-8 stands at), each cut round once into a small canvas (baked, D6: re-baked when the
- * phone takes its canvases back) and stamped with one drawImage a frame. The shadow is one baked soft ellipse. Painted pieces for both
- * (1-8.md NEW 3) are the lead's Hugging Face call.
+ * The art is the inventory's: the painted palm nut and cannonball fruit (1-8.md NEW 3, BUILD-18's Hugging Face job: inventory
+ * hf18/hf18-palm-nut and hf18/hf18-cannon-fruit, src/assets/w1-18/), each its own square picture cut round once into a small canvas
+ * (baked, D6: re-baked when the phone takes its canvases back) and stamped with one drawImage a frame. The shadow is one baked soft
+ * ellipse. (New replaces old: B5's stand-ins, the nut pod's shell and the M-10-d tree's fruit, are gone.)
  */
 import { sound } from '../audio.ts';
 import { trackAtlas } from '../atlasLoader.ts';
 import { canvasLost } from '../canvasLost.ts';
 import { HUD_BAND } from '../cameraFollow.ts';
-import { DRESS_NEW_FRAMES, DRESS_NEW_URLS } from '../dressNewData.ts';
 import { phasedPace, rollAhead, rollProblems, rollRadius, rollRow, rollTeaches, rollTell, ROLL, type RollSpec } from '../rolling.ts';
 import type { PieceHost, PieceHurt, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
 import type { Platform } from '../types.ts';
@@ -60,9 +59,10 @@ export interface Rolling {
 
 // ───── the art: cut once, stamped each frame ─────
 type Pic = { url: string; img: HTMLImageElement | null; ready: boolean };
-const pics: Record<'nut' | 'tree', Pic> = {
-  nut: { url: DRESS_NEW_URLS[1] ?? '', img: null, ready: false },
-  tree: { url: typeof URL === 'undefined' ? '' : new URL('../../assets/w1-1109/M-10-d.png', import.meta.url).href, img: null, ready: false },
+const art = (f: string) => (typeof URL === 'undefined' ? '' : new URL(`../../assets/w1-18/${f}`, import.meta.url).href);
+const pics: Record<'nut' | 'fruit', Pic> = {
+  nut: { url: art('hf18-palm-nut.webp'), img: null, ready: false },
+  fruit: { url: art('hf18-cannon-fruit.webp'), img: null, ready: false },
 };
 function pic(p: Pic): HTMLImageElement | null {
   if (!p.img && p.url && typeof Image !== 'undefined') {
@@ -72,11 +72,11 @@ function pic(p: Pic): HTMLImageElement | null {
   }
   return p.ready ? p.img : null;
 }
-/** where each is cut from its picture: a circle (px of the picture). The nut: the round shell of the nut pod (its kernel showing
- *  through the crack), clear of the moss at its foot; the fruit: the lowest-left fruit on the cannonball tree, clear of the trunk */
+/** where each is cut from its picture: a circle (px of the picture): each painted piece centred on its own square (96 and 128 px),
+ *  the circle its whole width */
 export const CUT = {
-  nut: { x: DRESS_NEW_FRAMES.w1NutPod.x + 96, y: DRESS_NEW_FRAMES.w1NutPod.y + 86, r: 78 },
-  high: { x: 192, y: 599, r: 29 },
+  nut: { x: 48, y: 48, r: 48 },
+  high: { x: 64, y: 64, r: 64 },
 } as const;
 /** baked at this many px across per px of world across (a phone at 3x density at a zoom over 1 still reads it sharp) */
 const BAKE_K = 3;
@@ -88,7 +88,7 @@ export const rollBakes = (): number => bakeCount;
 function bake(kind: 'nut' | 'high'): HTMLCanvasElement | null {
   const was = baked[kind];
   if (was && !canvasLost(was, `rolling ${kind}`)) return was;
-  const im = pic(kind === 'nut' ? pics.nut : pics.tree);
+  const im = pic(kind === 'nut' ? pics.nut : pics.fruit);
   if (!im || typeof document === 'undefined') return null;
   const r = kind === 'nut' ? ROLL.lowR : ROLL.highR;
   const size = Math.ceil(r * 2 * BAKE_K);
@@ -158,7 +158,7 @@ export class RollingPiece implements StagePiece {
     this.list = [...specs].sort((a, b) => a.dropX - b.dropX).map((spec) => this.fresh(spec, rollTeaches(spec, chase)));
     // (start the art's load now: the first drop is seconds away)
     pic(pics.nut);
-    pic(pics.tree);
+    pic(pics.fruit);
   }
 
   private fresh(spec: RollSpec, teach: boolean): Rolling {
