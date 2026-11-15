@@ -1,0 +1,18 @@
+/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:2347
+      throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})${spent ? `: the pool is spent (${spent} that fit are laid already, slot ${i + 1})` : ''}`);
+            ^
+
+Error: gen2 2-1: no section fits node n16 (ketsu): the pool is spent (9 that fit are laid already, slot 16)
+    at choose (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:2347:13)
+    at layStage (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:2592:55)
+    at assemble (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:3904:16)
+    at buildRolledOn (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4728:15)
+    at <anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4626:44)
+    at withSetting (/home/user/Sloths-Adventure-/src/game/settingDials.ts:45:12)
+    at buildRolled (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4626:10)
+    at buildGen2StageOn (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4577:14)
+    at <anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4570:44)
+    at withSetting (/home/user/Sloths-Adventure-/src/game/settingDials.ts:45:12)
+
+Node.js v22.23.4
+exit 1
