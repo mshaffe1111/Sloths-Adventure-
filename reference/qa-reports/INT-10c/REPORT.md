@@ -37,7 +37,8 @@ test A restated, A2 added; 1-6's bank rows out, arcs kept, in band; 7-1 hash re-
 4. 1-8 (33525: the last stretch + the tip, where layTip clears pickups) and 1-4 (from x -9489, the climb's axis): special stages? the lead.
 Then step 2-3 of the packet: the full gate run on the final head, lockall vs the base, stills/clips, build.py --published.
 
-## Not yet run (step 2-3 wait on GREEN): the full gate run, lockall, stills/clips, build.py.
+## Gates on 87be4a24's code: tsc, generality, knowncheck, roadmapcheck PASS (fast only). Not run (they wait on GREEN): the suite, the
+build, the perf gates, lockall, stills/clips, build.py.
 
 ## Pushback
 - The packet's "fix each red" hid a design conflict (ENG-PETAL's "petal only where every run walks" vs Matt's 2-screen rule); a fix
