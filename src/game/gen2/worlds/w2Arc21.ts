@@ -25,7 +25,8 @@
  * glide is a guaranteed move, so the pipeline lays a liana's perch past a glide's reach, over the take-off (pipeline jumpLinkGap,
  * place 'land'): "each perch lower" cannot be laid. ENGINE-WORTHY R-165.274: a liana a known glide also crosses is optional, so its
  * perch may sit level or lower (every world with the glide). (2) An R after X (V5: a rest after every test, twist and signature). (3)
- * beat 7 (1:05 PM ET): the bounce is the bent bamboo, its tuft the landing 62 px over the bank (a plain single jump on both settings).
+ * beat 7 (1:05, 1:21 PM ET): the bounce's cap 62 px over the bank (a plain single jump on both settings), drawn as World 2's painted
+ * lily on its stalk today: ART-W2's bamboo at that height read as a sprout (reference/qa-reports/BUILD-21/bounce-E-vs-C.jpg).
  */
 import { withSwing } from './w1Swing.ts';
 import { W2_RIVERS, w2Liana, w2Perch, w2World, type W2LianaGap } from './w2.ts';
@@ -105,7 +106,9 @@ const shore = (key: string, after: string, w: number, dy: R2): SectionPiece => (
 const river = (key: string, after: string, row: Row21, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'river', after, row }, style: 'log', main: true, landing: true });
 /** World 2's boulder to hop on the bank (w2.ts rock: a moss stone exactly 50 px tall is the kit's painted rock) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
-/** World 2's bounce, standing on `on`: the bent bamboo (bounceArt.ts W2_BAMBOO), its tuft the landing 62 px over the bank (Easy's plain-hop band is 63, the verdicts' chain.mount; the lead's ruling
+/** World 2's bounce, standing on `on`: its painted lily cap on a stalk (bounceArt.ts, World 2's own; the lead's ruling C 1:21 PM ET 11-15:
+ *  the bamboo at single-jump height read as a sprout, its re-cut is a Suggestion), the cap 62 px over the bank (Easy's plain-hop band is
+ *  63, the verdicts' chain.mount; the lead's ruling
  *  E, 1:05 PM ET 11-15: a comfortable single jump up to it, never a double; the culm drawn at the scale that puts its tuft there) */
 const spring = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [at, at], h: [62, 62] } });
 /** the old jetty's planks, level with `after` (World 2's dock look: canopy_bridge) */
