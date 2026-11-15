@@ -2,7 +2,7 @@
 
     python3 -I tools/art/hfpalm/cut.py <take.png|webp> <out.webp> [--haze K] [--fade F] [--height H]
 
-Keys the flat magenta off (the hfbough way: distance from the border's median, magenta spill pulled back), keeps only what joins the
+Keys the magenta off by how magenta each pixel is (the takes' pink is not flat), pulls the spill back, keeps only what joins the
 tree (a loose leaf or speck the model left floating is dropped, hf-art.md 2026-10-31), fades the trunk's foot out over the lowest F of
 the tree (default 0.16: the trunk rises out of the mist under the bough, never a cut end), crops to the tree, and writes it H px tall
 (default 1100). --haze K (0..1) mixes the colours K of the way toward 1-8's mist (sampled from the w1rain backdrop at middle depth, ART-18)
@@ -17,24 +17,20 @@ from PIL import Image
 args = sys.argv[1:]
 src, out = args[0], args[1]
 opt = {args[i]: float(args[i + 1]) for i in range(2, len(args) - 1, 2)}
-HAZE, FADE, HEIGHT = opt.get('--haze', 0.0), opt.get('--fade', 0.16), int(opt.get('--height', 1100))
+HAZE, FADE, HEIGHT, GRADE = opt.get('--haze', 0.0), opt.get('--fade', 0.16), int(opt.get('--height', 1100)), opt.get('--grade', 0.62)
 MIST = np.array([172, 190, 180], np.float32)
 
 im = np.asarray(Image.open(src).convert('RGB')).astype(np.float32)
 H, W, _ = im.shape
-ring = np.concatenate([im[:6].reshape(-1, 3), im[:, :6].reshape(-1, 3), im[:, -6:].reshape(-1, 3)])
-bg = np.median(ring, 0)
-a = np.clip((np.sqrt(((im - bg) ** 2).sum(-1)) - 40) / 50, 0, 1)
-mag = np.minimum(im[..., 0], im[..., 2]) - im[..., 1]
-spill = np.clip(mag / 255, 0, 1) * (1 - a)
-im[..., 0] -= spill * 60
-im[..., 2] -= spill * 80
-# (an edge pixel still pink after the spill pull: its colour taken from the nearest solid pixel above it, the rim never pink)
-pink = (a > 0.05) & (a < 0.9) & (im[..., 0] > im[..., 1] + 25) & (im[..., 2] > im[..., 1] + 25)
-for _ in range(3):
-    up = np.roll(im, 1, 0)
-    im[pink] = up[pink]
-
+# (the takes' magenta is not flat (soft pink gradients, rain streaks), so it is keyed by how magenta a pixel is, not by its distance from
+# one colour: m = min(R, B) - G is high on the pink and near 0 on the grey trunk, the greens, the browns and the orange nuts)
+mg = np.minimum(im[..., 0], im[..., 2]) - im[..., 1]
+ring = np.concatenate([mg[:6].ravel(), mg[:, :6].ravel(), mg[:, -6:].ravel()])
+mb = float(np.median(ring))
+a = np.clip((0.7 * mb - mg) / (0.45 * mb), 0, 1)
+spill = np.clip(mg / max(mb, 1), 0, 1) * (1 - a)
+im[..., 0] -= spill * mg
+im[..., 2] -= spill * mg
 # (keep only what joins the tree: components on a quarter-size mask, the biggest one and anything touching it)
 S = 4
 m = a[::S, ::S] > 0.5
@@ -72,6 +68,14 @@ h, w = a.shape
 nf = max(1, int(h * FADE))
 t = np.linspace(1, 0, nf) ** 1.6
 a[h - nf:] *= t[:, None]
+
+# (the grade: the takes' lime and teal fronds pulled to the w1rain backdrop's sage (saturation down, value a touch down), hues kept;
+# browns, the trunk's grey and the nuts untouched, ENG-LOOK2's HSV way)
+hsv0 = np.asarray(Image.fromarray(np.clip(im, 0, 255).astype(np.uint8), 'RGB').convert('HSV')).astype(np.float32)
+gr = (hsv0[..., 0] >= 28) & (hsv0[..., 0] < 150) & (hsv0[..., 1] > 40)
+hsv0[..., 1][gr] *= GRADE
+hsv0[..., 2][gr] *= 0.9
+im = np.asarray(Image.fromarray(np.clip(hsv0, 0, 255).astype(np.uint8), 'HSV').convert('RGB')).astype(np.float32)
 
 if HAZE > 0:
     lum = im.mean(-1, keepdims=True)
