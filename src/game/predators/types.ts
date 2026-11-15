@@ -101,6 +101,40 @@ export interface PredatorDef {
   first: Way;
   /** kinds it runs from (the food chain): one of them awake and near chases it off by its 'lure' outcome */
   fears?: readonly string[];
+  /** a sweeper's glance between its passes (red light, green light): its head turns toward him on an uneven rhythm (Glance) */
+  glance?: Glance;
+}
+
+/**
+ * A sweeper's glance between its passes (ENG-WATCH, R-165.267; Matt 11-14: "I expected the head to be more back and forth. Every time I
+ * walked, I had to be ready to be quiet"): red light, green light. Its head stays AWAY a rolled while, then turns toward him: the turn is
+ * the TELL (a head-cock, tellOf: at least TELL_MIN, longer on Easy), then it LOOKS a rolled while; he MOVING inside its view while it
+ * looks is seen and its dive's tell begins (hiding before that tell ends calls it off, as a pass's dive). A still sloth is not seen by a
+ * glance, in the open too: freezing is the answer to a glance, cover is the answer to a pass. A share of turns are FAKE-OUTS: a half-turn
+ * that stops short and turns away again without looking (never on Easy). Every roll is seeded by its post, so every run of a seed glances
+ * the same. The numbers are data: the kind's own (PredatorDef.glance), and a stage's over it (Post.glance)
+ */
+export interface Glance {
+  /** seconds its head stays away before it turns again, rolled each time in this range (Easy: x easy.cool) */
+  away: [number, number];
+  /** seconds a look lasts, rolled each time in this range */
+  look: [number, number];
+  /** share of turns (0..1) that are a fake-out half-turn; none on Easy */
+  fake: number;
+  /** a perched one sees him move within this far of its post (px): no further than its post shows on his upright screen */
+  reach: number;
+}
+
+/** where its head is in its glance */
+export interface GlanceState {
+  phase: 'away' | 'cock' | 'fake' | 'look';
+  t: number;
+  dur: number;
+  /** turns so far (each roll is the post's seed and this count) */
+  n: number;
+  seed: number;
+  /** where it looks (world x): his spot when the look began, held through the look */
+  at: number;
 }
 
 /** where a stage puts one (the stage's data, never the kit's) */
@@ -122,6 +156,8 @@ export interface Post {
   /** a sweeper perched at (x, y) (1-7 beat 12, the eagle lands on a snag): its body stays there, never riding its eye, while its gaze
    *  sweeps the stretch; it acts (the dive) from its perch and flies back to it */
   perched?: boolean;
+  /** this one's glance over its kind's (Glance), or false: it never glances (a stage's own dial, the still row's) */
+  glance?: Glance | false;
 }
 
 export type Phase = 'rest' | 'hunt' | 'tell' | 'act' | 'recover' | 'stunned' | 'flee' | 'gone';
@@ -168,6 +204,9 @@ export interface PredatorState extends Listener {
   saw: boolean;
   /** the last way that beat it, for the art and the sounds */
   beatenBy: Way | null;
+  /** a sweeper's glance dials (Post.glance over PredatorDef.glance), and where its head is in it */
+  glance?: Glance;
+  gl?: GlanceState;
 }
 
 /** what a predator reads of Pokey on a frame */
@@ -179,6 +218,8 @@ export interface Prey {
   still: boolean;
   /** stillness.ts `inCover` */
   covered: boolean;
+  /** stillness.ts `moving` on this frame (what a glance sees: a step, a hop, a climb). Unset: read as not still */
+  moving?: boolean;
 }
 
 /** one fixed step of the stage, as a predator sees it */
@@ -206,4 +247,6 @@ export interface PredatorEvents {
   lostHim?: boolean;
   /** it was just beaten this way (stillness is the one way the machine finds by itself) */
   beaten?: Way;
+  /** a sweeper's head just began to turn toward him (its glance's tell: a real turn or a fake-out look the same) */
+  glance?: boolean;
 }

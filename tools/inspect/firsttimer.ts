@@ -28,6 +28,7 @@
  * loseLife and damagePlayer (the harness stubs them), and sizes the view to a phone held sideways (844 x 390).
  */
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
+import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { MODES, along, reached } from '../../src/game/stageModes.ts';
 import type { StageMode } from '../../src/game/stageKit.types.ts';
@@ -94,6 +95,9 @@ export interface FirstTimer {
   heed: number;
   /** s from being stopped dead to deciding to jump */
   stopReact: number;
+  /** he freezes when a watcher's head turns toward him (its glance's tell, core.ts stepGlance), his stopReact after it began; false: never
+   *  (the plant: eagleGlance.test.ts's toy goes red without it) */
+  freeze?: boolean;
   /** thumb latency on every press: N(mean, sd) s */
   thumb: [number, number];
   /** how long the thumb stays down on a flick: N(his idea of a jump, sd) s, never under 2 frames */
@@ -908,6 +912,8 @@ export class FirstTimerRun {
   private warnSeenAt = -1;
   /** when the kit eagle's look over his stretch began (its screech), or -1 */
   private castWarnAt = -1;
+  /** when a watcher's head began to turn toward him (its glance), or -1 */
+  private glanceAt = -1;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1140,6 +1146,9 @@ export class FirstTimerRun {
       const from = e.watchFrom as Pt | undefined;
       return { cause: 'watcher', onScreen: from ? on(from.x, from.y) : null };
     }
+    // (a cast animal in its act whose box is on him: the kit's eagle dives from its eye or its post, often more than 160 px from where the
+    //  nearest-foe rule below looks, so its hits were counted 'other': ENG-WATCH, eagleGlance.test.ts holds the count)
+    for (const m of (e.cast?.members ?? []) as any[]) if (m.s.phase === 'act' && touches(hurt(m.def, m.s), p, 20, 52)) return { cause: `foe:${m.e.type}`, onScreen: on(m.e.x, m.e.y) };
     let best: { e: any; d: number } | null = null;
     for (const m of e.enemies as any[]) {
       if (m.defeated) continue;
@@ -1726,6 +1735,19 @@ export class FirstTimerRun {
           if (p.x > best.x + 16 && p.x < best.x + best.w - 16 && p.grounded) return { down: true };
           return side(cx > p.x ? 1 : -1);
         }
+      }
+    }
+
+    // the kit watcher's glance (core.ts stepGlance: red light, green light): its head turns toward him (the head-cock, its tell); his
+    // stop reaction after it began, he takes his thumb off and holds still until its head is away again (a fake-out too: he cannot tell
+    // one from a real turn until it turns away). In the air or on a liana he cannot stop: he lands, or swings on
+    const turned = who.freeze !== false && ((e.cast?.sweepers ?? []) as any[]).some((m) => m.s.phase === 'rest' && glancing(m.s) && glanceView(m.s, p));
+    if (!turned) this.glanceAt = -1;
+    else {
+      if (this.glanceAt < 0) this.glanceAt = t;
+      if (t >= this.glanceAt + who.stopReact && p.grounded && !p.isVineSwinging && !p.climbing && !p.hanging) {
+        this.hiding = true;
+        return {};
       }
     }
 

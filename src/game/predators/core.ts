@@ -13,7 +13,7 @@ import { checkClock } from '../clock.ts';
 import { hears as reaches, sound, stunned as isStunned, type Sound } from '../heroNoise.ts';
 import { watcherSees } from '../stillness.ts';
 import type { ClockDef } from '../stageKit.types.ts';
-import type { Box, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
+import type { Box, Glance, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
 
 /** the shortest tell any kind may have (s): R-159.1's "0.5 s warning" */
 export const TELL_MIN = 0.5;
@@ -76,6 +76,21 @@ export function checkPredator(def: PredatorDef): string[] {
   if (def.gait && !(real(def.gait.go) && real(def.gait.pause))) say('its gait needs go and pause above 0');
   if (def.rides && def.habit !== 'sweep') say('only a sweeper rides its eye');
   if (def.fears?.length && !def.beatenBy.lure) say('it fears something, so it needs a lure outcome');
+  if (def.glance) for (const m of checkGlance(def.glance)) say(m);
+  if (def.glance && def.habit !== 'sweep') say('only a sweeper glances between its passes');
+  return bad;
+}
+
+/** what is wrong with a glance's dials (none = they may be used): every range above 0 and in order, a fake share under 1, a reach */
+export function checkGlance(g: Glance): string[] {
+  const bad: string[] = [];
+  const range = (r: readonly [number, number], name: string) => {
+    if (!(r[0] > 0) || !(r[1] >= r[0]) || !Number.isFinite(r[1])) bad.push(`its glance's ${name} is [${r[0]}, ${r[1]}] s: above 0, low to high`);
+  };
+  range(g.away, 'away');
+  range(g.look, 'look');
+  if (!(g.fake >= 0 && g.fake < 1)) bad.push(`its glance's fake-out share is ${g.fake}: at least 0, under 1`);
+  if (!(g.reach > 0)) bad.push(`its glance's reach is ${g.reach} px: above 0`);
   return bad;
 }
 
@@ -102,7 +117,101 @@ export function newPredator(def: PredatorDef, post: Post): PredatorState {
     aimX: post.x, aimY: post.y, goalX: post.x, drawn: false, look: 0, knows: false, leaving: false,
     lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null, ownCool: post.cool, passes: 0, free: !!post.free,
     ...(post.perched ? { perched: true } : {}),
+    ...glanceOf(def, post),
   };
+}
+
+// ───────────────────────────── the glance (red light, green light) ─────────────────────────────
+
+/** a number in [0, 1) for a post's seed and a count: the same every run of a seed (no Math.random in the kit) */
+export function glanceRoll(seed: number, n: number): number {
+  let h = (seed ^ Math.imul(n + 1, 0x9e3779b1)) >>> 0;
+  h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+
+const inRange = (r: readonly [number, number], u: number): number => r[0] + (r[1] - r[0]) * u;
+/** the while its head stays away, its n-th time: rolled in its range, slower on Easy (x easy.cool, never faster) */
+const awayFor = (def: PredatorDef, g: Glance, seed: number, n: number, easy: boolean): number =>
+  inRange(g.away, glanceRoll(seed, n * 4)) * (easy ? Math.max(1, def.easy.cool) : 1);
+
+/** a sweeper's glance from its kind and its post (Post.glance over PredatorDef.glance; false: none) */
+function glanceOf(def: PredatorDef, post: Post): Pick<PredatorState, 'glance' | 'gl'> {
+  const g = post.glance === false ? undefined : post.glance ?? def.glance;
+  if (!g || def.habit !== 'sweep') return {};
+  const seed = (Math.imul(Math.round(post.x), 73856093) ^ Math.imul(Math.round(post.minX), 19349663) ^ Math.imul(Math.round(post.maxX), 83492791)) >>> 0;
+  return { glance: g, gl: { phase: 'away', t: 0, dur: awayFor(def, g, seed, 0, false), n: 0, seed, at: post.x } };
+}
+
+/** does its glance see him from where it is? A perched one: within its reach of its post; one that flies: anywhere in its stretch */
+export const glanceView = (s: PredatorState, hero: { x: number }): boolean =>
+  !!s.glance && hero.x >= s.minX && hero.x <= s.maxX && (!s.perched || Math.abs(hero.x - s.homeX) <= s.glance.reach);
+
+/** is its head turned toward him now (its tell, a fake-out, or its look)? For the art, the bots and the tests */
+export const glancing = (s: PredatorState): boolean => !!s.gl && s.gl.phase !== 'away';
+
+/**
+ * One step of its glance, between its passes (rest). Returns true when its head is away (a pass may be called). Away a rolled while,
+ * then its head turns (the tell, tellOf; a fake-out stops short and turns away again), then it looks a rolled while: he MOVING in its
+ * view then is seen, and its dive's tell begins (startTell: hiding before it ends calls it off). Out of its stretch, its head stays away.
+ */
+function stepGlance(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorEvents, home: boolean): boolean {
+  const g = s.glance, gl = s.gl;
+  if (!g || !gl) return true;
+  const { hero, easy, dt } = sc;
+  const away = () => {
+    gl.phase = 'away';
+    gl.t = 0;
+    gl.dur = awayFor(def, g, gl.seed, gl.n, easy);
+  };
+  if (s.drawn || hero.x < s.minX || hero.x > s.maxX) {
+    if (gl.phase !== 'away') away();
+    gl.t = 0;
+    return true;
+  }
+  gl.t += dt;
+  switch (gl.phase) {
+    case 'away': {
+      if (gl.t < gl.dur) return true;
+      const fake = !easy && glanceRoll(gl.seed, gl.n * 4 + 1) < g.fake;
+      gl.phase = fake ? 'fake' : 'cock';
+      gl.t = 0;
+      // (a fake-out is a half-turn: it starts as a real turn does and stops short of the look, so it is never mistaken for safety)
+      gl.dur = tellOf(def, easy) * (fake ? 0.4 + 0.3 * glanceRoll(gl.seed, gl.n * 4 + 2) : 1);
+      gl.n++;
+      ev.glance = true;
+      return false;
+    }
+    case 'fake':
+      if (gl.t < gl.dur) return false;
+      away();
+      return true;
+    case 'cock':
+      if (gl.t >= gl.dur) {
+        gl.phase = 'look';
+        gl.t = 0;
+        gl.dur = inRange(g.look, glanceRoll(gl.seed, gl.n * 4 + 3));
+        gl.at = hero.x;
+      }
+      return false;
+    case 'look': {
+      if (home && glanceView(s, hero) && (hero.moving ?? !hero.still)) {
+        // seen moving: its dive's tell, from where it is looking (a perched one's gaze; one that flies hangs over that spot)
+        s.saw = true;
+        s.knows = true;
+        s.eyeX = clamp(hero.x, s.minX, s.maxX);
+        if (def.rides && !s.perched) s.x = s.eyeX;
+        away();
+        startTell(def, s, hero, ev);
+        return false;
+      }
+      if (gl.t < gl.dur) return false;
+      away();
+      return true;
+    }
+  }
+  return true;
 }
 
 /** where it looks from: a sweeper's eye is its shadow, its gaze, its ripple */
@@ -116,6 +225,14 @@ const inSight = (def: PredatorDef, s: PredatorState, hero: Prey): boolean => {
 /** does it see him this frame? Its own box, then stillness.ts's rule */
 export const sees = (def: PredatorDef, s: PredatorState, hero: Prey): boolean =>
   watcherSees({ seesStill: def.sight.seesStill || (def.sight.remembers && s.knows) }, inSight(def, s, hero), hero.still, hero.covered);
+
+/**
+ * Its act just took a heart: one act, one heart. It pulls up (recover) there, never chasing on to take a second when his shield runs out
+ * (ENG-WATCH, eagleProbe.ts: a dive that aims 'him' for 3 s took 2 hearts 1.2 s apart, the second with no tell of its own)
+ */
+export function landed(s: PredatorState): void {
+  if (s.phase === 'act') enter(s, 'recover');
+}
 
 /** the box that hurts this frame: only while it acts */
 export function hurt(def: PredatorDef, s: PredatorState): Box | null {
@@ -336,11 +453,17 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         s.x = clamp(s.x, s.minX, s.maxX);
       }
       if (sweep) {
-        // the eye waits at the end its next pass starts from; the pass is called when he is in its stretch
-        const end = s.facing > 0 ? s.minX : s.maxX;
+        // the eye waits at the end its next pass starts from: the end of its stretch FARTHER from him, so its eye crosses TOWARD him and
+        // a player who walks on meets it (ENG-WATCH, R-165.267: from the near end, behind him, it crossed at 320 px/s after a 2 s warn
+        // and never reached a walker before its stretch ended: 0 hearts at 8 of 1-7's 9 eagles, eagleProbe.ts). The pass is called
+        // when he is in its stretch and its head is away (a glance runs to its end first)
+        const end = Math.abs(hero.x - s.minX) >= Math.abs(hero.x - s.maxX) ? s.minX : s.maxX;
+        s.facing = end === s.minX ? 1 : -1;
         s.eyeX = toward(s.eyeX, end, def.speed.rest * 2 * dt);
         if (rides && home) s.x = s.eyeX;
-        if (s.eyeX === end && home && s.cool <= 0 && hero.x >= s.minX && hero.x <= s.maxX && on('warn')) {
+        const headAway = stepGlance(def, s, sc, ev, home);
+        if (ev.tell) break;
+        if (headAway && s.eyeX === end && home && s.cool <= 0 && hero.x >= s.minX && hero.x <= s.maxX && on('warn')) {
           enter(s, 'hunt');
           s.saw = false;
           ev.notice = true;

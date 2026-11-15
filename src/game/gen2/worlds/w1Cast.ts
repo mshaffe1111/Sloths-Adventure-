@@ -159,6 +159,8 @@ export function eagleOver(z: WatchZone, groundY: number, id: number, perch?: { x
     patrolMinX: z.x0, patrolMaxX: z.x1, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
     defeated: false, koTimer: 0, behaviorTimer: 0,
     kitCool: Math.round(((z.calm[0] + z.calm[1]) / 2) * 10) / 10, ...(z.freeFirst ? { kitFree: true } : {}),
+    // (its glance dials for this stretch: the still row's, or none where it is taught; unset: its kind's, predators/world1.ts EAGLE)
+    ...(z.glance !== undefined ? { kitGlance: z.glance } : {}),
   } as Enemy;
 }
 

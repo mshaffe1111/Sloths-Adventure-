@@ -32,6 +32,8 @@ export interface WatchZone {
    * 80 s on ?layout=1 upright; the easiest world's eagle shows each new stretch's rhythm once before it can strike)
    */
   freeFirst?: boolean;
+  /** a kit sweeper's glance over this stretch (predators Glance), when the stage's still row sets its own; false: none here */
+  glance?: import('./predators/types.ts').Glance | false;
   /**
    * a stretch the creature kit watches, not this file (World 1's eagle: gen2/stillLay.ts castWatches turns it into that animal over
    * the stretch before the stage is built, so a built stage never carries one)
