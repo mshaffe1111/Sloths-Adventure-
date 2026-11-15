@@ -53,10 +53,15 @@ export function realFalls(platforms: readonly Platform[]): ReturnType<typeof fin
   });
 }
 
-/** the unmarked floorless gaps outside a soft zone (x0..x1 each) */
+/** the unmarked floorless gaps outside a soft zone (x0..x1 each). Water is marked by its painted water (ENGINE-WORTHY 1, the lead's ruling
+ *  11-14): a gap the stage laid AS water (a fall of kind 'water': a section's `water` gap, World 2's deep river, World 6's creek) or inside a
+ *  river (RiverZone, a log river's water) is no unmarked gap. World 1's floorless gap the painter reads as water is still one */
 export function floorlessGaps(st: Pick<Built, 'platforms' | 'heartFalls'>): Array<[number, number]> {
   const soft = (st.heartFalls ?? []).filter((z) => z.soft);
-  return realFalls(st.platforms).filter((q) => !q.drop && !soft.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4)).map((q) => [q.x0, q.x1]);
+  const w = st as { rivers?: ReadonlyArray<{ x0: number; x1: number }>; gen2?: { falls?: ReadonlyArray<{ x0: number; x1: number; kind: string }> } };
+  const wet = [...(w.rivers ?? []), ...(w.gen2?.falls ?? []).filter((f) => f.kind === 'water')];
+  const inside = (q: { x0: number; x1: number }, z: { x0: number; x1: number }) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4;
+  return realFalls(st.platforms).filter((q) => !q.drop && !soft.some((z) => inside(q, z)) && !wet.some((z) => inside(q, z))).map((q) => [q.x0, q.x1]);
 }
 
 /** from `tip` on, the first gap within 1,500 px one jump at its best can't cross and a double flick can (reach.ts, flown, `setting`);

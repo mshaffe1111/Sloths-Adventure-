@@ -47,11 +47,11 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (1-7 A Very Good Bush: judged on its own flown rows, flownArcs.ts normal-1-7, INT-9 11-14)
   '1-7': { kit: 'w1-17', judged: 'normal-1-7' },
   // (2-1 Down to the River and 2-2 Petals for the Crown: World 2's kit (w2.ts, ENG-W2 11-14) on their placeholder arcs, until each
-  //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Their flown rows
-  //  are in (flownArcs.ts normal-2-1 / normal-2-2), but NOT judged yet: judged, every roll fails floor.unmarked and drop.unwarned, two
-  //  World 1 verdicts that do not read World 2's water (ENG-W2 REPORT, ENGINE-WORTHY 1-2); `judged` comes with their fix)
-  '2-1': { kit: 'w2' },
-  '2-2': { kit: 'w2' },
+  //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
+  //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the
+  //  lead's ruling 11-14: painted water is its own mark; Dot warns at the first water))
+  '2-1': { kit: 'w2', judged: 'normal-2-1' },
+  '2-2': { kit: 'w2', judged: 'normal-2-2' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

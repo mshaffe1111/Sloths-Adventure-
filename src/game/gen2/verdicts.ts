@@ -129,11 +129,16 @@ const LOOKS: Record<string, readonly string[]> = { lethal: LETHAL_LOOKS, soft: S
 /** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look */
 export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>): Verdict[] {
   const out: Verdict[] = [];
+  // (ENGINE-WORTHY 1, the lead's ruling 11-14: PAINTED water is its own danger mark, so a lethal drop drawn as water wants Dot's line at the
+  // stage's FIRST such drop only (the teaching rule, WATER_WARN) and no sign; any other lethal drop (World 8's dark) wants both, every time)
+  const firstWater = (st.drops as readonly Drop[]).filter((d) => isLethal(d) && d.look === 'water-art').sort((a, b) => a.x0 - b.x0)[0];
   for (const d of st.drops as readonly Drop[]) {
     const at = { x0: R(d.x0), x1: R(d.x1) };
     if (isLethal(d) && st.policy === 'no-lethal') out.push({ name: 'drop.lethal-in-no-lethal', setting: st.setting, at, line: `a fall into ${(d.ends as { cause: string }).cause} costs a life at x ${at.x0}..${at.x1} on a no-lethal stage` });
     const w = (d as { warn?: { dotLine?: string; sign?: boolean } }).warn;
-    if (isLethal(d) && (!w || !w.dotLine || w.sign !== true)) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the lethal drop at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
+    const painted = isLethal(d) && d.look === 'water-art';
+    const unwarned = painted ? d === firstWater && (!w || !w.dotLine) : isLethal(d) && (!w || !w.dotLine || w.sign !== true);
+    if (unwarned) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the ${painted ? 'first water' : 'lethal drop'} at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
     const end = isLethal(d) ? 'lethal' : d.ends.kind === 'heart' ? 'heart' : 'soft';
     if (!LOOKS[end].includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${end} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
   }

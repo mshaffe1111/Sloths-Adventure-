@@ -148,3 +148,28 @@ test("World 6's own kit (6-2, its sections, its finish-free roll) lays a river s
     assert.deepEqual(st.gen2.errors.filter((e) => /river/.test(e)), [], `${s}: no river fault in the roll's errors`);
   }
 });
+
+// ───────────────────────── ENGINE-WORTHY 1: two World 1 verdicts read World 2's water (item 2; the lead's ruling 11-14) ─────────────────────────
+test("drop.unwarned: painted water wants Dot's line at the FIRST water only, no sign; a dark void still wants both, every time (planted)", async () => {
+  const { dropVerdicts } = await import('./verdicts.ts');
+  const water = (x0: number, warn?: { dotLine: string; leadPx: number; sign: true }) => ({ x0, x1: x0 + 700, lipY: 580, ends: { kind: 'life', cause: 'water' }, look: 'water-art', ...(warn ? { warn } : {}) });
+  const dot = { dotLine: "This river's deep. Stay on the logs!", leadPx: 800, sign: true as const };
+  const judge = (drops: unknown[]) => dropVerdicts({ setting: 'normal', policy: 'per-gap', drops: drops as never }).filter((v) => v.name === 'drop.unwarned');
+  assert.deepEqual(judge([water(2000, dot), water(4000), water(6000)]), [], 'the first warned, the rest painted: kept');
+  const noDot = judge([water(2000), water(4000, dot)]);
+  assert.equal(noDot.length, 1, 'the first water with no Dot line is named');
+  assert.match(noDot[0].line, /first water at x 2000/);
+  // (a dark drop is no painted water: Dot's line and the sign, every time)
+  const dark = { x0: 3000, x1: 3300, lipY: 580, ends: { kind: 'life', cause: 'void' }, look: 'void-dark' };
+  assert.equal(judge([water(2000, dot), dark]).length, 1, 'an unwarned dark drop is still named');
+});
+
+test('floor.unmarked: a gap laid AS water, or inside a river, is marked by its water; the same gap with no water is unmarked (planted)', async () => {
+  const { floorlessGaps } = await import('./promises11.ts');
+  const bank = (id: number, x: number, w: number) => ({ id, x, y: 580, width: w, height: 400, type: 'solid' as const });
+  const platforms = [bank(1, 0, 1000), bank(2, 1300, 1000)];
+  assert.equal(floorlessGaps({ platforms, heartFalls: [] } as never).length, 1, 'planted: the bare gap is unmarked');
+  assert.deepEqual(floorlessGaps({ platforms, heartFalls: [], gen2: { falls: [{ x0: 1000, x1: 1300, y: 580, kind: 'water' }] } } as never), [], 'a water fall');
+  assert.deepEqual(floorlessGaps({ platforms, heartFalls: [], rivers: [{ x0: 1000, x1: 1300 }] } as never), [], 'a river');
+  assert.equal(floorlessGaps({ platforms, heartFalls: [], gen2: { falls: [{ x0: 1000, x1: 1300, y: 580, kind: 'soft' }] } } as never).length, 1, 'a soft fall is no water');
+});
