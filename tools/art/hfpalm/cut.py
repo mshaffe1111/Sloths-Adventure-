@@ -31,7 +31,7 @@ hue, sat = hs[..., 0], hs[..., 1]
 # (magenta-pink hues, PIL 0-255: 300-345 deg = 212-245, soft over 8 either side; the pale pink haze has low saturation but that hue, and
 # min(R, B) over G; nothing in a palm (greens, teal, browns, orange, the grey trunk) has both)
 hw = np.clip(1 - (np.maximum(0, 200 - hue) + np.maximum(0, hue - 250)) / 8, 0, 1)
-bgness = hw * np.clip((sat - SAT0) / 16, 0, 1) * np.clip((mg - 1) / 7, 0, 1)
+bgness = hw * np.clip((sat - SAT0) / 16, 0, 1) * np.clip((mg - 1) / 7, 0, 1) * np.clip((hs[..., 2] - 150) / 40, 0, 1)  # (the pink is bright; dark purplish nuts are not)
 a = 1 - bgness
 # (the spill: any pixel left with min(R, B) over G is pulled back to G there, fully at the soft rim, half inside the tree)
 sp = np.clip(mg, 0, None) * np.where(a < 0.98, 1.0, 0.5)
