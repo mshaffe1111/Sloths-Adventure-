@@ -6,7 +6,7 @@ Packet: reference/packets/2026-11-14/ENG-PETAL.md (origin/ccr-ea739a2f-dfcee4). 
 **1-6 is NOT GREEN; nothing here is ready for Matt's link.** The three rules are built for every stage, each planted (7/7 plants
 RED, restored GREEN): the one walked-path model (read by the socket lay, the fill and a pass on the built stage), the LOW brief (no
 fill), and the wall at every joined pair of soft-pit floors (plus a proof that every 1-6 soft pit climbs back to its take-off on the
-rescue layouts). 1-6's expert Normal went from 7/40 to 33/40 through the door; 7 seals remain, each 1-2 petals short, and the stage
+rescue layouts). 1-6's expert Normal went from 7/40 to 33/40 through the door (on its relisted list, 356b665b); 7 seals remain, each 1-2 petals short, and the stage
 now holds about 23 petals a layout (was 112): that count needs the lead's ruling before any more tuning.
 
 ## Before / after (castBots 1-6 seeds 1-40, both settings; the petal counts built as the game builds them, generateStage + withGoals)
@@ -22,13 +22,13 @@ reference/qa-reports/ENG-PETAL/screens.mts): **1-6 reads EMPTY**: 0.22 a screen,
 ruling), never a petal moved past a trap.
 
 castBots 1-6 seeds 1-40 (PASS = shrine reached with the goal met; files castBots-1-6-*.txt):
-| bot / setting | before cecbb948 | 7e9fe4d8 (moves to next piece) | f4896466 (own piece; drop) | ddbcd55c (+ the wall; FINAL) |
-|---|---|---|---|---|
-| expert Normal | 7/40 (33 sealed, got 80-107 of 91-109 needed) | 33/40 | 33/40 | **33/40** (7 sealed, got 17-21 of 18-22) |
-| middle Normal | 13/40 | 35/40 | 34/40 | **35/40** (4 sealed, 1 rescue s34) |
-| middle Easy | 40/40 | 40/40 | 40/40 | **40/40** |
-| child Normal | 21/40 | 38/40 | 38/40 | **32/40** (7 sealed, 1 rescue s2) |
-| child Easy | 39/40 | 39/40 | 39/40 | **39/40** (1 rescue s2) |
+| bot / setting | before cecbb948 | 7e9fe4d8 (moves to next piece) | f4896466 (own piece; drop) | ddbcd55c (+ the wall) | 356b665b (1-6 relisted; FINAL) |
+|---|---|---|---|---|---|
+| expert Normal | 7/40 (33 sealed, got 80-107 of 91-109 needed) | 33/40 | 33/40 | **33/40** (7 sealed, got 17-21 of 18-22) | **33/40** (7 sealed: s11, 20, 22, 28, 29, 32, 36) |
+| middle Normal | 13/40 | 35/40 | 34/40 | **35/40** (4 sealed, 1 rescue s34) | **36/40** (3 sealed, 1 rescue s34) |
+| middle Easy | 40/40 | 40/40 | 40/40 | **40/40** | **40/40** |
+| child Normal | 21/40 | 38/40 | 38/40 | **32/40** (7 sealed, 1 rescue s2) | **32/40** (7 sealed, 1 rescue s2) |
+| child Easy | 39/40 | 39/40 | 39/40 | **39/40** (1 rescue s2) | **39/40** (1 rescue s2) |
 castBots 1-7 expert Normal 1-40: 40/40 before and 40/40 after (castBots-1-7-expert-*.txt; 1-7's door is not a petal count, so the
 petals do not gate it; median 223.4 s both).
 The child's Normal drop with the wall (38 -> 32): his misses (trace-child-normal-ddbcd55c.txt, seeds 4, 8) are on hang-low:b1,
@@ -94,7 +94,13 @@ identical by lockall: 102/102 stages unchanged, lockall --layouts 2 both setting
   proven, --check PASS; relist-1-4-e10a86e2.txt; commit 83b62146; its bots NOT run). **1-1 FAILS** (seed 33616 "its replay differs from
   its search (platforms, collectibles, spawnY, exitTotemX)"): NOT relisted (with its tier calibration, BOTS.md, it does not fit the
   cutoff): the first step in the morning. CI's `seedlist.ts 1-1 --check` is RED on this branch until then.
-- **The whole suite** (on ddbcd55c): __SUITE__
+- **The whole suite** (on ddbcd55c): NOT run to completion. On ddbcd55c it was stopped at the 30-minute background limit
+  (10:48 PM; its output was buffered, nothing kept). The gen2 shard (src/game/gen2 + worlds) on e10a86e2 was stopped at the cutoff,
+  11:10 PM, partial (suite-gen2-partial.txt; the 1-6 relist rewrote that worktree's list part-way through it). Reds it reached:
+  `a bank beside a pit` (pre-existing), `8-3 ... byte for byte` (pre-existing, revert proof above), `5-7` and `7-1 builds as on main`
+  (verdicts.test pins: the walked path moves their petals and gen2.fills, as lockall says: re-pin with a revert proof),
+  `a listed seed's replay is its full search's stage` and `every shipped gen2 seed still builds` (the lists: 1-1 not yet relisted),
+  `fresh 1-1 rolls: no dead-zone petal or idle mushroom` (not read: the first to trace in the morning).
 - drawcheck, clipcheck: NOT run (about 10 min of the whole machine; the suite, lists and relist held it until the cutoff).
 
 ## Polish check
@@ -159,7 +165,9 @@ In order (engine tier unless named):
    1-6: relisted tonight, --check PASS (356b665b). castBots 1-4 seeds 1-40 both settings on its new list
    (relisted tonight, bots not run). Then castBots 1-6 again on 1-6's new list (tonight's bot numbers were on the old list's replays).
 4. **The whole suite, run ALONE** (tonight's was stopped at the 30-minute background limit: Gates), then buildcheck alone on the
-   head (e10a86e2's fix is unmeasured in Chromium), drawcheck, clipcheck. The suite reds: gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
+   head (e10a86e2's fix is unmeasured in Chromium), drawcheck, clipcheck. Reds already seen in the gen2 shard: verdicts.test's 5-7
+   and 7-1 main pins (petals and gen2.fills moved by the walked path: re-pin with a revert proof), the fresh 1-1 rolls' dead-zone
+   petal test (trace it), the list tests (after 1-1's relist). The suite reds: gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
    softFalls11.test:128 (8-3: revert proof done, look at the 56 fills on a phone before re-pinning), and any pin the moved petals
    broke (lockall: 71 stages' collectibles moved).
 5. 2-1's petal brief: a data field and the keeper's number (R-165.263's 'few'), then its fill honours it.
