@@ -39,6 +39,13 @@ journal pages are cards and pages, not speech boxes, so they stay. APPROVED; the
 - way.1-6 drops a count ("twice") and the snack (no food after she is taken), and keeps "she waited", which the `mark` line pays off.
 - No banned words (no slow, late, hurry or "too"); no numbers.
 
-## Still over the limit elsewhere (not in this job; for the lead)
-The shipped World 1 waysides on main run past 9 words: way.1-2 (17), way.1-3 (14), way.1-5 (11), way.1-9 (13). The 1-4 halfway
-is 9. 1-8's is 9 (lines-1-8.md). I will cut the rest when the lead asks.
+## World 1 waysides on main (the lead, 7:43 PM ET: cut the same way)
+One line per row, for BOTH slots (wayside.ts and dotLinesData.ts's long and short columns), so the phone never shows a different line.
+| Key | Old (words) | New (words) |
+|---|---|---|
+| `way.1-2` (Dot, start) | She said don't stop to smell the flowers. She never said anything about picking up her petals. (17); short: She said don't stop to smell the flowers. Picking's different. | She said don't stop for flowers. Picking's different. (8) |
+| `way.1-3` (Dot, the first punch that sends a snake gliding) | You said "excuse me" just before that punch. I heard it. So did he. (14) | You said "excuse me." I heard. So did he. (8) |
+| `way.1-5` (petal, start) | These petals are fresher. She came this way not long ago. (11); short: She squashed this one extra flat. | Fresher petals. She came this way not long ago. (9) |
+| `way.1-9` (Dot, start) | I'm too small to be worth the chase. Best thing about me, honestly. (13) | I'm not worth chasing. Best thing about being tiny! (9) |
+- way.1-3 plays on the punch itself, so "before that punch" is carried by the moment. way.1-9 drops "too" (the General's word).
+- way.1-5's old short form said a different thing; one line now. Done: every World 1 wayside is under 10 words (1-4 is 9, 1-8 is 9).
