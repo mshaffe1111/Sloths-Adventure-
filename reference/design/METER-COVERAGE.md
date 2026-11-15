@@ -1,5 +1,10 @@
 # METER-COVERAGE: can the meter measure every mechanic the game map plans? (METER-2 step 0, R-165.272; written 11:03 AM ET 11-15)
 
+**The most important finding: the meter never refuses a piece it doesn't know; it guesses.** METER-1's score.ts:638-639 (t-meter-1
+cfa9019a) prices every hazard beat it has no rule for at a flat 2 bits, because the timing note it looks for is written by no beat, so
+every timed piece in Worlds 2-10 (and 1-4's boughs today) already gets a number and nothing complains. §3's gate turns that default
+into a failure.
+
 Matt, 11-15 12:17 AM ET: "we're not at a point where we're like, oh, we don't know how to measure this because we don't have a bot."
 12:18 AM: "we don't know what we don't know... but we know the pieces, so we should be able to factor that in."
 No game code. Base: t-meter-2 from 798be7be. Sources read: GAME-MAP (origin/t-design-game-map 6909c3c9) §3, §4, §10 B/C;
@@ -11,6 +16,13 @@ file for the piece's words and found no handling (the words tried are named wher
 
 ## 0. The answer in plain words
 
+- **FIRST: the meter has a silent default, so a new piece is never refused, only guessed.** It prices World 1's pieces and gives everything else a flat guess. METER-1's score.ts prices jumps (moveOf :531-544),
+  creatures (:620-633), lianas (swingChallenges :304), the vine snake (:373), the chase (:419), rolling nuts (:446) and the watched
+  stretch (:473). Every other hazard beat ('Z' in beats.ts) reaches score.ts:638-639, which looks for a "safe Xs of Ys" note that **no
+  beat in beats.ts:128-314 writes**, so it scores a flat **2 bits** whatever the piece is: a gust, a spore puff, a rock, the dark, a
+  river, a web, a crumbling branch. Every 'V' beat that isn't a liana (rope, basket lift, warm air) scores as a **0.25-bit climb**
+  (:640-643). A hop onto a moving log is priced as a jump onto still ground (moveOf has no timing term; beats.ts:116 calls it
+  'timedHop'). Nothing fails when a new piece arrives: it is silently priced as "2".
 - **The bots play World 1's pieces and almost nothing after it.** The tier bots (child / middle / expert, tierBots.ts:19-23) are the
   first-timer class with tester numbers (firsttimer.ts:184-207). Its behaviour code knows: run and jump, the double (only after a single
   failed, :1100), punch (:1738), drop traps (:1764), climb (:1459, :1634), rope (:1496-1503), the liana release (:1483-1492), hiding from
@@ -19,13 +31,6 @@ file for the piece's words and found no handling (the words tried are named wher
   tide, swim, noise, dark, chase, lane finds only its own Dot-queue clock (:397-465) and a rock's blame after a hit (:1080). So every
   piece on a beat (sinking pads, snap-jaws, spores, gusts, rocks, crust, lightning, falling tiles) is walked through blind: the bot
   neither waits for the safe beat nor fails the way a person does.
-- **The meter prices World 1's pieces and gives everything else a flat guess.** METER-1's score.ts prices jumps (moveOf :531-544),
-  creatures (:620-633), lianas (swingChallenges :304), the vine snake (:373), the chase (:419), rolling nuts (:446) and the watched
-  stretch (:473). Every other hazard beat ('Z' in beats.ts) reaches score.ts:638-639, which looks for a "safe Xs of Ys" note that **no
-  beat in beats.ts:128-314 writes**, so it scores a flat **2 bits** whatever the piece is: a gust, a spore puff, a rock, the dark, a
-  river, a web, a crumbling branch. Every 'V' beat that isn't a liana (rope, basket lift, warm air) scores as a **0.25-bit climb**
-  (:640-643). A hop onto a moving log is priced as a jump onto still ground (moveOf has no timing term; beats.ts:116 calls it
-  'timedHop'). Nothing fails when a new piece arrives: it is silently priced as "2".
 - **Tester data covers one stage.** The tier profiles are the gen2 1-1 runs of 10 players (P24-P33; profiles/README.md:16-20): jump
   holds, press-to-lip, late presses, the double's second press, standing, steering, punches and misreads. Climbing has an all-stages
   touch figure (steeringAllStages.climbMs). Matt's play adds World 1 rankings (1-1 to 1-5, 1-7). Everything else: no data.
@@ -33,7 +38,7 @@ file for the piece's words and found no handling (the words tried are named wher
   clock. Today the meter would call both "a few 2-bit hazards plus jumps" and the bots would ride/stand without reading the beat. The
   fix is small and general because the engine already has the base: beatBrick.ts (a brick names a ClockDef with warn/on; :1-39) and
   ride.ts (rideAt on a ClockRead; :45). Price the clock from the ClockDef, teach the bot to read the clock, and make the meter refuse
-  an unpriced piece (§3). That is METER-2a's World 2 slice (§4), about 6-9 h.
+  an unpriced piece (§3). That is METER-2a's World 2 slice (§4), about 7.5-11 h.
 
 ## 1. The channels (how a piece is priced) and the codes used in the table
 
@@ -132,6 +137,37 @@ Not rows: optional risk (golden finds, reward ledges, the zipline hidden stage) 
 51, 52, 54-57). No real channel (none, the flat 2, the 0.25 climb, a jump with no timing, or not opened): 38 (#9, 14, 18-22, 24, 25,
 27-31, 33-49, 51, 52, 54-58). Tester data beyond 1-1 and Matt's World 1 ranking: none.
 
+### 2a. Sizing the bot fixes: a new SKILL, a new TIER, or a number (the lead's ask, 11:06 AM)
+
+- **SKILL** = new behaviour code in firsttimer.ts that every tier then uses with its own numbers (e.g. read a stage clock).
+- **TIER** = a new kind of player: different inputs, not only different spreads (e.g. the misread first-timer).
+- **PARAM** = a new number on the existing tiers, measured or swept, no new code path (e.g. the slip rate lambda).
+- **ENGINE FIRST** = the piece isn't built; its bot skill comes in the same engine packet (level.md / D75: proven on a real stage row).
+
+**One SKILL covers 14 of the 31 no-bot rows and the 2 partial ones (#20, #25): "read a stage clock"** (wait at the edge for the safe beat, leave before the unsafe one,
+with the tier's own RT, lateQ and standQ). It generalises the float-wait at firsttimer.ts:1679-1688 to any ClockRead / beatBrick /
+zone clock. Rows: #9, 20, 21, 24, 25, 30, 33, 35, 36, 44, 45, 48, 49, 52, 55, 56.
+
+| Row(s) | Fix kind | What exactly |
+|---|---|---|
+| #9, 48 (crumble, falling floors), #21, 24, 52 (pads, snap-jaws, lit-only) | SKILL (clock read: dwell) | leave before 'gone' / 'bites'; PARAM: none new (standQ, lateQ exist) |
+| #20, 25 (rides, lifts) | SKILL (clock read: board + step-off) | the float-wait made vertical and given a step-off deadline |
+| #30, 35, 36, 44, 45, 49, 55, 56 (spores, gusts, rocks, tide, ripples, doors, geysers, bolts) | SKILL (clock read: wait-and-go) | one RW skill on the zone clock (zones.ts zoneEffect) |
+| #33 (swing on the thorn's quiet beat) | SKILL (clock read inside the swing) | release only on an open beat |
+| #18, 19 (frog crossings) | SKILL (lane watch) + PARAM | pick a gap in a lane; PARAM "goes on a gap too short" share and RT per tier (no data: swept) |
+| #14 (quiet feet / noise) | SKILL + PARAM | choose a short drop over a tall one when taught; PARAM loud-landing share per tier |
+| #43 (humming silk) | SKILL | aim the jump over the thread with clearance |
+| #47 (swim) | SKILL (largest: 2-4 h) | steer the route in water (swim.ts speeds) |
+| #31, 54 (light jar, heat) | SKILL | detour to refill / shade when the meter runs low |
+| #22, 29, 42, 46 (followers, hang under, leash, food chain) | ENGINE FIRST + SKILL | comes with B6 / B12 / B7 / B19 |
+| #57 (hold on) | ENGINE FIRST + SKILL + PARAM | stop on the flash; PARAM stop-signal time by tier (SSRT, literature until measured) |
+| #27, 39, 40, 41 (rising water, don't stop, the clock, webs) | none (the route at the tier's own pace already plays them) | the channel is the gap, not the bot; PARAM for #27: stalls under a front |
+| #51 (the slide) | UNCHECKED | open w7SlideRun.ts first |
+| #3, 21 (bounce chain steered mid-air; stopping on a pad for a petal) | **TIER: the misread first-timer** (R-165.269) | one tier with a per-piece list of the likely wrong input; scored as its own route, beside the middle tier |
+| #60 (thumb / index / finger on Pokey) | TIER (posture variants) or PARAM | if the touch lines split by posture, spreads per posture (PARAM); a finger-on-Pokey runner that loses reach at the screen edge is a TIER (R-165.270) |
+| #58 (bosses) | TIER (bossBot gets the tier spreads) | bossBot.ts is one scripted player; give it child/middle/expert holdQ, lateQ, RT |
+| #13 (holding still under watch), #61 (stress), #2 (double) | PARAM | lambda swept 0.02-0.2/s (MODEL §5); kappa_stakes; the double's 2nd-press window fitted to 1-1 put-backs |
+
 ### 2b. Combinations: which pairs the map puts together, and how a pair is priced (not the sum)
 
 The map ramps World 1-3 one thing, 4-6 pairs, 7-9 triples, 10 everything (GAME-MAP §3 "How it ramps"). The pairs it names:
@@ -177,15 +213,23 @@ stage uses.
 
 ## 4. Order: what METER-2a must have before World 2 builds, and what can wait
 
-**Before 2-1 and 2-2 are built (METER-2a, World 2 slice; tools only, no game code):**
-1. The gate (§3) with its known list, so 2-1's first ride can't be priced silently. 2-3 h.
-2. The ride channel (#20: board window and step-off deadline from ride.ts rideAt) and the dwell channel (#9, #21: from beatBrick's
-   ClockDef and the bough's own time), replacing the flat defaults. This also re-prices 1-4's boughs, which Matt ranks hardest. 2-3 h.
-3. The tier bots read a stage clock: wait at the edge for the safe beat (the float-wait at :1679-1688, generalised to any ClockRead),
-   step off before 'gone' with their own lateQ / standQ, and a newcomer that stops on a pad to pick a petal (MR, #21). 2-3 h.
-4. Re-score 1-1..1-8 with the new channels and prove nothing moved but the pieces that changed (1-4's boughs, 1-8's nuts unchanged).
-Total about 6-9 h (no direct history; the nearest measured jobs are named in §2's header). Built on: castBots / firsttimer / score.ts
-as on t-meter-1 (D40: if a planned job this sprint replaces the tier bots' calibration, step 3 waits for it).
+**Before 2-1 and 2-2 are built (METER-2a, World 2 slice; tools only, no game code).** Tags: **[2-1]** blocks the river rides,
+**[2-2]** blocks the sinking pads, **[both]**, **[later]** blocks neither.
+1. **[both]** The gate (§3) with its known list, so 2-1's first ride can't be priced silently. 2-3 h. First, because every step below
+   is checked by it.
+2. **[2-1]** The ride channel (#20): the log hop priced as a MOVING jump (the board window from ride.ts rideAt, not moveOf's still-ground
+   jump, beats.ts:116 'timedHop') and the step-off deadline before the reeds (FB). Also covers #25 lifts for 2-6. 1-1.5 h.
+3. **[2-2]** The dwell channel (#21, #9): the stand deadline from beatBrick's ClockDef ('gone') and the bough's own time. Re-prices 1-4's
+   boughs (Matt's hardest) on the way. 1-1.5 h.
+4. **[2-1]** Bot SKILL "read a stage clock", board + step-off half: wait at the bank for the log (exists, :1679-1688), step off before it
+   goes under with the tier's lateQ. 1-1.5 h.
+5. **[2-2]** The same SKILL, dwell half: leave a pad before 'gone' with the tier's standQ / lateQ. 0.5-1 h on step 4.
+6. **[2-2]** The misread TIER's first entry: a newcomer stops on a pad to pick a petal (2-2's mission is petals on pads). 1-1.5 h; the
+   tier's 1-2 entry (steering mid-air on the bounce) comes with it, which is World 1's open item R-165.269, not a World 2 blocker.
+7. **[later]** Re-score 1-1..1-8 with the new channels and prove nothing moved but the pieces that changed (1-4's boughs). 1 h.
+Total about 7.5-11 h (no direct history; the nearest measured jobs are named in §2's header). Built on: castBots / firsttimer / score.ts
+as on t-meter-1 (D40: if a planned job this sprint replaces the tier bots' calibration, steps 4-6 wait for it).
+**Not blocking the 2-1/2-2 BUILD, blocking their TESTER window:** the recorder lines for rides and pads (a game-code packet, below).
 
 **Before the rest of World 2 (in stage order):** followers (#22) with B6 for 2-3; the joint window (§2b) for 2-4; drop traps on a moving
 foe (#6) and bites (#24) for 2-5; lifts (#25) for 2-6; rising water (#27) for 2-8; both frog rows (#18, #19) for 2-9; the boss tiers
@@ -216,6 +260,8 @@ no beat writes, so every timed hazard in Worlds 3-10 already "has a price" (2 bi
 make the default a failure, or the table rots the day it is written.
 **Unresolved:** #51 (the slide's runner) not opened; 8-4's lantern runner (#31) not opened; METER-1's beats on later worlds were not
 run here (no game code, no runs in this step).
+**The lead's 11:06 AM adds:** the silent default at the top (under the title and first in §0); §2a sizes every no-bot row as
+SKILL / TIER / PARAM / ENGINE FIRST; §4's steps are tagged [2-1] / [2-2] / [both] / [later]. Pushback accepted by the lead.
 **Gates (law 5, docs-only branch, run 11:07 AM ET):** tsc PASS (after `npm install --legacy-peer-deps` as gates.yml:28 does; `npm ci` fails
 ERESOLVE here), roadmapcheck PASS (needed `git fetch --unshallow`), knowncheck PASS, generalitycheck PASS.
 **Turnover note:** reference/handoffs/analyst.md has the METER-2 step 0 section (same commit).
