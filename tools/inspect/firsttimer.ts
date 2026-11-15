@@ -1745,7 +1745,8 @@ export class FirstTimerRun {
     if (!turned) this.glanceAt = -1;
     else {
       if (this.glanceAt < 0) this.glanceAt = t;
-      if (t >= this.glanceAt + who.stopReact && p.grounded && !p.isVineSwinging && !p.climbing && !p.hanging) {
+      // (a jump he has begun, its run-up and its press, he finishes, as he does when the eagle screams: a thumb mid-jump does not freeze)
+      if (t >= this.glanceAt + who.stopReact && p.grounded && !this.jump && !p.isVineSwinging && !p.climbing && !p.hanging) {
         this.hiding = true;
         return {};
       }
@@ -2570,6 +2571,9 @@ export class FirstTimerRun {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
+    } else if (this.hiding) {
+      // (holding still for a watcher, its glance or its pass: he is waiting, not stuck. The clock HOLDS, it does not start over, so a spot
+      //  he cannot get past is still a spot he cannot get past: ENG-WATCH, the glance's freezes inside 1-7's dip had read as 'stuck')
     } else {
       this.noProg += DT;
       if (this.noProg >= 8 && !this.stuckOpen) {

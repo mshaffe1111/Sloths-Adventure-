@@ -32,7 +32,7 @@ const placed = await p.evaluate(([E, WHICH, MODE]) => {
   // (no teach box over the action: every stage line is marked shown, as clip.mjs does by default)
   for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
   const d = document.createElement('div'); d.id = 'mockcap';
-  Object.assign(d.style, { position: 'fixed', left: '10px', right: '10px', top: window.innerWidth > window.innerHeight ? '6px' : '64px', zIndex: 99999, font: '700 15px system-ui, sans-serif', color: '#fff', background: 'rgba(0,0,0,.62)', padding: '6px 9px', borderRadius: '8px', lineHeight: '1.25' });
+  Object.assign(d.style, { position: 'fixed', left: '10px', right: '10px', bottom: window.innerWidth > window.innerHeight ? '6px' : '120px', zIndex: 99999, font: '700 15px system-ui, sans-serif', color: '#fff', background: 'rgba(0,0,0,.62)', padding: '6px 9px', borderRadius: '8px', lineHeight: '1.25' });
   document.body.appendChild(d);
   const ms = e.cast.sweepers.slice().sort((a, z) => a.s.minX - z.s.minX);
   const m = ms[+WHICH];
