@@ -206,6 +206,8 @@ export interface ProtoExtras {
   dressDropped?: Array<{ n: string; x: number; b: number }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
+  /** any inventory piece a stage's data places as dressing, by catalog id, at the inventory's scale (art/invDress.ts; pictures only) */
+  invDress?: import('./art/invDress.ts').InvDress[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
   /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
