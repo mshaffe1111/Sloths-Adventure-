@@ -1,5 +1,21 @@
 # ENG-WATCH REPORT: the watcher is a real red light, green light (R-165.267, R-165.266)
 
+**STATUS: NOT GREEN. Do not integrate yet.**
+- F1-F4 are built, planted, accepted by the lead and pushed.
+- The full suite did not finish by the cutoff. 4 kit tests it reached are red because of F1 (§9).
+- castBots 1-7 has 7 rescues, traced to 1-7's layout and the late pits (§4).
+- castBots 1-8: 40/40 on every row.
+
+## EXACT NEXT STEP (the next engine member, xhigh, from t-eng-watch's head)
+1. Settle the 4 red kit tests (§9), one at a time, reading each first.
+   - Where a test pins the old START END or the old "next pass comes back the other way", re-state it as F1's rule: the pass starts at the end of its stretch farther from him. Keep every other assertion: the warn shows at the edge before the eye moves, Easy longer, two empty passes and it gives up. That is the lead-accepted rule replacing the old one, never a loosening.
+   - Where it pins a glance-free rest (predatorWorld1 "the screech"), pass `glance: false` on that Post only if the test is about the pass alone. Otherwise assert the pass waits for the head to turn away.
+   - The caiman food-chain test: decide with the lead whether F1 applies to the caiman (it rides a river on a clock). If not, gate F1 by data (PredatorDef `passAt: 'far'`, the eagle's default) rather than special-casing a kind.
+   - Planted: each re-stated test must be red with F1 reverted.
+2. Run the FULL suite to the end on the head (about 45 min on 4 shared cores; alone it is faster). Then: build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, seedlist --check, the tool tests, tierBots.
+3. Then the lead integrates t-eng-watch with t-build-18. The cherry-pick conflicts are additive (Post.passes and Post.glance side by side; §4 castBots 1-8).
+4. TUNE-17 and ENG-PETAL take §4's 7 rescues; TUNE-17 takes §6.
+
 Branch t-eng-watch from origin/t-build-16 9de5e4aa. Packet: reference/packets/2026-11-14/ENG-WATCH.md (origin/ccr-ea739a2f-dfcee4).
 Role card ENGINE.md. Times are pasted from `TZ=America/New_York date`.
 
@@ -109,7 +125,7 @@ Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/
 | gate | result |
 |---|---|
 | tsc | PASS |
-| full suite (the CLAUDE.md glob) | SUITE_RESULT |
+| full suite (the CLAUDE.md glob) | **NOT FINISHED**: 3091 ok, 8 not ok when I stopped it at 11:09 PM ET for the 11:25 cutoff (it had run ~44 min on 4 shared cores). Of the 8: **4 are MINE** (below), 4 are red on the base too |
 | eagleGlance.test.ts (new) + eagleKit.test.ts | 14/14 PASS |
 | build (BASE_PATH=/Sloths-Adventure-/) | PASS |
 | chunkcheck | PASS |
@@ -120,13 +136,21 @@ Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/
 | generalitycheck | PASS (26 known, none new) |
 | roadmapcheck | PASS (after unshallowing the clone; on the shallow clone it refuses: "proofs cannot be checked") |
 | kbdcheck | PASS |
-| buildcheck | BUILDCHECK_RESULT |
+| buildcheck | FAIL, red on the base too: run alone, 1-1 Normal p95 152 ms against its 150 ms budget; the base alone 156 ms. 1-1 has no watcher; not this branch's |
 | seedlist 1-1 --check | PASS (161 seeds) |
 | tool tests (library, seedlist, yield, travelBots) | 34/34 PASS |
 | tierBots.test (the bots still match the testers on 1-1) | 7/7 PASS |
 | firsttimer.test + castBots.test (I changed the bot) | 20/20 PASS |
 | lock, the 21 watcher stages | 20/21 unchanged, 1-7 enemies intended |
-**Red on the BASE too** (origin/t-build-16 9de5e4aa, run there alone tonight: not this branch's; owner ENG-16I / the lead):
+**RED AND MINE: 4 kit tests that pass on the base and fail here** (the old pass rule is pinned in them; F1 is the rule the lead accepted at 9:57 PM; they were NOT updated tonight):
+- predatorHabits.test.ts:173 "sweep: no pass while he is outside its stretch; inside, the eye shows at the edge for the warn": expects its eye at the stretch's near end (200), gets the far end (1000), F1's rule;
+- predatorHabits.test.ts:206 "sweep: in cover and still ... two empty passes and it gives up": its line "the next comes back the other way" pins the old alternation (F1 picks the end farther from him);
+- predatorWorld1.test.ts:111 "eagle, the tell and the attack: a screech, two seconds of shadow at the edge": fails at "the screech" (the eye's start end, or the glance holding a pass while its head is turned);
+- predatorCasts.test.ts:136 "the food chain past World 1: a tayra whose line ends at the caiman is chased off": the caiman's eye now starts from the other end, so it is not over the tayra when the test looks.
+**This branch is not ready to integrate until these four are settled.**
+**Red on the BASE too** (origin/t-build-16 9de5e4aa, run there alone tonight; not this branch's; owner ENG-16I or the lead):
+- w1Arc16.test.ts:124 "1-6 on the difficulty meter ... Normal in DIFFICULTY.md:61's band";
+- stageSheets.test.ts:63 "every sheet a built stage draws is in its preload list" (W1_ROOMS);
 - gen2Pits.test "a bank beside a pit reaches past its floor": 1-6 seed 1 Normal, "bank at x 28090 ends 0 px over the floor at x 27933";
 - softFalls11.test "8-3 Normal ... byte for byte as origin/main": layout 2's hash d8dfbb7e1484be3a, expected 7ffc517f0fbb583c.
 
@@ -174,3 +198,13 @@ Named stills: 17-normal-glance-up_f210/f226/f250, 17-normal-caught-up_f226/f250/
 - **Method update** (proposed for stage-fix.md and gates.md):
   - (a) Every watcher or hazard change runs `eagleProbe.ts --modes walk,back,stand,sneak` on each stage it touches. "A walker who never hides loses hearts past the lesson" is a check, held by eagleGlance.test.
   - (b) Clips are shot on a dev server with `server.watch.ignored: ['**/*']` and `hmr: false` (a local config that imports vite.config.ts and is never committed). Two of mine died mid-run from a reload.
+
+## 10. Not done tonight (named, never hidden)
+- The 4 red kit tests (above): not settled.
+- The suite did not run to its end (stopped at 3091 ok / 8 not ok).
+- reference/handoffs/engine-core.md is not rewritten for the glance. This REPORT is the turnover until it is.
+- METER-1 does not read the glance (section 6, item 5).
+- No flying-harpy head-turn art (section 5).
+- The whole-game lock was not run (section 4).
+- A teach line for the freeze from the story keeper (section 6, item 4).
+- Context at stop: ~33%, estimated.
