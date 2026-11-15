@@ -11,6 +11,7 @@ import { walkedSpan, lianaTouchdown, WALKED_MIN } from './walkedSpan.ts';
 import { buildStage } from '../../../tools/engine/libstage.ts';
 import { laidAsks } from './pipeline.ts';
 import { withSetting } from '../settingDials.ts';
+import { walkedStage } from '../petals.ts';
 import type { Platform, Vine } from '../types.ts';
 
 const P = (id: number, x: number, y: number, width: number, height = 120): Platform => ({ id, x, y, width, height, type: 'solid' } as Platform);
@@ -34,17 +35,20 @@ test('a toy: a perch between two lianas is walked from where the let-go sets him
   });
 });
 
-test('1-6 rolls 1-3, both settings: every socket petal is inside the walked span of the piece under it (or that piece is cleared and it is on the next)', () => {
+test('1-6 rolls 1-3, both settings: every socket petal is inside the walked span of the piece under it (a cleared piece holds none)', () => {
   for (const d of ['normal', 'easy'] as const) {
     for (let seed = 1; seed <= 3; seed++) {
       const st = buildStage('1-6', seed, d) as { platforms: Platform[]; vines: Vine[]; collectibles: Array<{ type: string; x: number; y: number }>; gen2: { fills: Array<{ role: string; x: number; socket: string; section: string }>; asks?: unknown } };
-      const laid = { platforms: st.platforms, vines: st.vines, asks: laidAsks(st as unknown as Parameters<typeof laidAsks>[0]) };
+      // (the same walked stage the lay reads: its asks and its miss pieces, ENG-PETAL's one model)
+      const laid = walkedStage(st as never);
+      assert.ok((laid.asks ?? []).length === laidAsks(st as unknown as Parameters<typeof laidAsks>[0]).length);
       const out: string[] = [];
       withSetting(d, () => {
         for (const f of st.gen2.fills.filter((q) => q.role === 'pickup')) {
           const fl = st.collectibles.filter((c) => c.type === 'flower' && Math.abs(c.x - f.x) <= 40);
           for (const c of fl) {
-            const under = st.platforms.find((p) => c.x >= p.x && c.x <= p.x + p.width && c.y < p.y && c.y > p.y - 60);
+            // (the piece it stands on: the top one of any stacked under it, 1-6 s6:f over s6:b)
+            const under = st.platforms.filter((p) => c.x >= p.x && c.x <= p.x + p.width && c.y < p.y && c.y > p.y - 60).sort((p, q) => p.y - q.y)[0];
             if (!under) continue;
             const ws = walkedSpan(under, laid);
             if (ws.hi - ws.lo < WALKED_MIN) continue;

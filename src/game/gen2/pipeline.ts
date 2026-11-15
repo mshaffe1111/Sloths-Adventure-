@@ -16,7 +16,7 @@
  */
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS, walkedPiece, type SpanStage } from './walkedSpan.ts';
-import { fallSpans, missPiece } from '../petals.ts';
+import { fallSpans, missPiece, walkPetals } from '../petals.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -3365,11 +3365,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         // (inside its piece's WALKED span: after the farthest the leap onto it sets him down, before the earliest the jump off it leaves;
         // on a piece the leap clears, on the next piece he walks (walkedSpan.ts; ENG-16H, R-165.246, every stage). Read off the built
         // pieces: a socket's share of its piece put petals where a fluid run never stands, 1-6's expert sealed doors)
-        // (ENG-PETAL 11-14: the ONE walked-path model, which the petal fill reads too: the plain jumps as well as the lianas and asks; on a
-        // piece he clears, the next piece he walks, and on, never one he stands on only after a miss (a pit's floor or stair); none
-        // within reach of a walked piece, no petal: never one he flies past)
-        const wp = walkedPiece(k.piece, walkedStage());
-        if (!wp) continue;
+        // (ENG-PETAL 11-14: the ONE walked-path model, which the petal fill reads too: the plain jumps as well as the lianas and asks.
+        // On its own piece only: a petal moved onto another piece stood where that piece's section keeps clear (1-5: in front of its
+        // trap, trap.hidden, every seed). On a piece every run does not walk (he clears it in the air, or stands on it only after a miss:
+        // a pit's floor or stair), no petal: never one he flies past)
+        const wp = walkedPiece(k.piece, walkedStage(), (q) => q === k.piece);
+        // (a node that fixes its pickups gets the count back: a later socket of it lays them)
+        if (!wp) { if (pl) pl.left += n; continue; }
         const piece = wp.piece;
         const lo = Math.max(wp.lo, piece.x + 20), hi = Math.min(wp.hi, piece.x + piece.width - 20);
         const room = Math.max(0, hi - lo);
@@ -3869,6 +3871,9 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     gen2: meta,
   };
   ASKS.set(stage, laid.asks ?? []);
+  // (the standing petals inside the walked path of the stage as BUILT, before any check reads it: a pass after the lay can still move a
+  // piece, 1-6 normal 2's socket petal 5 px past its span; petals.ts walkPetals, ENG-PETAL R-165.246; level.md rule 27)
+  walkPetals(stage as unknown as GeneratedStage);
   // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
   if (graph.nodes.some((n) => n.asked)) {
     const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));

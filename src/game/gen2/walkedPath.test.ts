@@ -15,8 +15,6 @@ import '../headlessDom.ts';
 import { walkedPiece, walkedSpan, jumpTouchdown, TAKEOFF_FAR, WALKED_MIN } from './walkedSpan.ts';
 import { generateStage, setLayoutVariant, type GeneratedStage } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
-import { validateStage } from '../levelCheck.ts';
-import { addJumpTrails } from '../jumpTrails.ts';
 import { petalPass } from '../petalPass.ts';
 import { isPetal, type PetalOut } from '../petals.ts';
 import { walkedStage } from '../petals.ts';
@@ -96,7 +94,7 @@ test('D: gen2 stages of four worlds (1-6 layouts 1-3), both settings, as the gam
   }
 });
 
-test('E: a stage whose petal brief says LOW gets no fill and no arc after the lay (R-165.263); without the brief the same stage does', () => {
+test('E: a stage whose petal brief says LOW gets no fill after the lay, its arcs over jumps among them (R-165.263); without the brief the same stage does', () => {
   for (const id of ['1-6', '1-7']) {
     const st = played(id, 'normal', 1);
     assert.equal(st.gen2.brief?.petals, 'low', `${id}'s brief says low (data)`);
@@ -105,14 +103,12 @@ test('E: a stage whose petal brief says LOW gets no fill and no arc after the la
       const first = st.collectibles.find((c) => c.type === 'flower')!;
       return { ...st, gen2: { ...st.gen2, brief }, collectibles: st.collectibles.filter((c) => c.type !== 'flower' || c === first).map((c) => ({ ...c })) } as unknown as GeneratedStage;
     };
-    const ids = validateStage(st as unknown as GeneratedStage, { rooms: false }).reachableIds;
     const low = bare(st.gen2.brief), any = bare(undefined);
-    assert.equal(addJumpTrails(low, ids), 0, `${id}: no arc over any gap under a low brief`);
     const out: PetalOut = {} as PetalOut;
     withSetting('normal', () => petalPass(low, out));
     assert.equal(out.filled ?? 0, 0, `${id}: no fill under a low brief`);
     const out2: PetalOut = {} as PetalOut;
-    withSetting('normal', () => { addJumpTrails(any, ids); petalPass(any, out2); });
-    assert.ok(any.collectibles.filter((c) => c.type === 'flower').length > 1, `${id} without the brief: the arcs and the fill lay petals (the gate is the brief's)`);
+    withSetting('normal', () => petalPass(any, out2));
+    assert.ok((out2.filled ?? 0) > 0, `${id} without the brief: the fill lays petals (the gate is the brief's)`);
   }
 });

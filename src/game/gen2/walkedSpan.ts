@@ -204,13 +204,15 @@ const HOPS = 6;
 /**
  * The piece a petal laid on `p` goes on, and its walked span: `p` when he walks it; on a piece he clears in the air (no span), the next
  * piece the way off it sets him down on, and on, until one is walked. Undefined: none within HOPS (no petal: never one he flies past).
+ * `mine`: the pieces it may move to (its own section's: a section keeps its own items clear, a trap's handle and load among them, and a
+ * petal moved onto the next section's first piece stood in front of its trap, 1-5's trap.hidden; ENG-PETAL 11-14).
  */
-export function walkedPiece(p: Platform, st: SpanStage): { piece: Platform; lo: number; hi: number } | undefined {
+export function walkedPiece(p: Platform, st: SpanStage, mine?: (q: Platform) => boolean): { piece: Platform; lo: number; hi: number } | undefined {
   const seen = new Set<Platform>();
   let q: Platform | undefined = p;
   for (let k = 0; q && k <= HOPS && !seen.has(q); k++) {
     seen.add(q);
-    if (st.away?.(q)) return undefined;
+    if (st.away?.(q) || (q !== p && mine && !mine(q))) return undefined;
     const ws = walkedSpan(q, st);
     if (ws.hi - ws.lo >= WALKED_MIN) return { piece: q, lo: ws.lo, hi: ws.hi };
     q = ws.next;

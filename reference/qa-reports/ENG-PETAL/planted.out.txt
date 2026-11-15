@@ -1,0 +1,8 @@
+plain-jumps: planted RED (CAUGHT) # fail 2 |  | restored GREEN
+away: planted RED (CAUGHT) # fail 1 |  | restored GREEN
+walk-pass: planted RED (CAUGHT) # fail 1 | +   'petal 8 x 9687 outside 9602-9682 (piece 9478+293)' | restored GREEN
+fill-span: planted RED (CAUGHT) # fail 1 | +   'petal 109 x 32375 outside 32408-32625 (piece 32322+434)', | restored GREEN
+brief-fill: planted RED (CAUGHT) # fail 1 |  | restored GREEN
+brief-arc: planted GREEN (MISSED) # fail 0 |  | restored GREEN
+NOT ALL CAUGHT
+EXIT 1

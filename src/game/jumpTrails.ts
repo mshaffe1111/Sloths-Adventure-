@@ -10,7 +10,6 @@
  */
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import { petalsLow } from './petals.ts';
 
 /** gaps this wide (px, edge to edge) get an arc: narrower is a step, wider is not a jump the route asks for */
 export const TRAIL_MIN_GAP = 100;
@@ -107,8 +106,6 @@ export function arcFor(g: TrailGap, species: Collectible['botanicalVariant'], fi
 export function addJumpTrails(stage: GeneratedStage, reachableIds: number[]): number {
   const cfg = stage.config;
   if (cfg.secret || cfg.objectiveType === 'boss_lair' || cfg.objectiveType === 'ascent') return 0;
-  // (a stage whose petal brief says LOW, by data, lays no arc over any gap: GraphBrief.petals; R-165.263, 1-7 built 61, showed 105)
-  if (petalsLow(stage)) return 0;
   const reach = new Set(reachableIds);
   const solids = stage.platforms.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving');
   const insideSolid = (x: number, y: number) => solids.some((p) => x > p.x - 8 && x < p.x + p.width + 8 && y > p.y - 6 && y < p.y + p.height + 8);

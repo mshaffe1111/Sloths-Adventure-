@@ -317,8 +317,8 @@ const RESTS = new WeakMap<Pt[], { on: Platform[]; foot?: Pt }>();
 /**
  * The walked path on the BUILT stage (ENG-PETAL 11-14, R-165.246; level.md rule 27: judge the built stage, not its data): every petal
  * standing on a piece (its body up to 60 px over the top) is inside that piece's walked span (gen2/walkedSpan.ts, the model the socket lay
- * and the fill read); one outside it goes inside the span of the piece he walks (walkedPiece: the same piece, or on a piece he clears,
- * the next he walks), at the same height over it; one on a piece he stands on only after a miss, or with no walked piece near, goes.
+ * and the fill read); one outside it moves inside its piece's span, at the same height; one on a piece every run does not walk (he
+ * clears it in the air, or stands on it only after a miss) goes.
  * The lay reads the same model, but a pass after it can still move a piece (1-6 normal 2: a socket's petal 5 px past the span on the
  * built stage). Gen2 stages (the ones the socket lay builds); changed in place, returns how many moved and went.
  */
@@ -332,7 +332,8 @@ export function walkPetals(stage: GeneratedStage): { moved: number; gone: number
     if (!p || (p.type !== 'solid' && p.type !== 'fragile')) continue;
     const w = walkedSpanMemo(p, ws);
     if (!ws.away!(p) && w.hi - w.lo >= WALKED_MIN && c.x >= w.lo - 2 && c.x <= w.hi + 2) continue;
-    const wp = ws.away!(p) ? undefined : walkedPiece(p, ws);
+    // (on its own piece only, as the lay: a petal moved onto another piece stands where that piece's section keeps clear)
+    const wp = ws.away!(p) ? undefined : walkedPiece(p, ws, (q) => q === p);
     if (!wp) { gone.add(c); continue; }
     const up = p.y - c.y;
     c.x = Math.round(Math.max(wp.lo, Math.min(wp.hi, wp.piece === p ? c.x : (wp.lo + wp.hi) / 2)));
