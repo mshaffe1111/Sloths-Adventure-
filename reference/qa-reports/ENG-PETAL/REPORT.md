@@ -7,7 +7,8 @@ Packet: reference/packets/2026-11-14/ENG-PETAL.md (origin/ccr-ea739a2f-dfcee4). 
 RED, restored GREEN): the one walked-path model (read by the socket lay, the fill and a pass on the built stage), the LOW brief (no
 fill), and the wall at every joined pair of soft-pit floors (plus a proof that every 1-6 soft pit climbs back to its take-off on the
 rescue layouts). 1-6's expert Normal went from 7/40 to 33/40 through the door (on its relisted list, 356b665b); 7 seals remain, each 1-2 petals short, and the stage
-now holds about 23 petals a layout (was 112): that count needs the lead's ruling before any more tuning.
+now holds about 23 petals a layout (was 112), which the lead accepted for tonight (10:21 PM); it reads empty on an upright screen,
+and the fix is more sockets on walked pieces. Lists: 1-6 and 1-4 relisted (PASS), 1-1 FAILS (not relisted). The whole suite NOT run.
 
 ## Before / after (castBots 1-6 seeds 1-40, both settings; the petal counts built as the game builds them, generateStage + withGoals)
 Petals held / the door, Normal, castBots layouts 1-10 (petals-held-*.txt; the door is goals.ts' 0.875, untouched):
