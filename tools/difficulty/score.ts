@@ -495,6 +495,20 @@ export function watchChallenges(members: ReadonlyArray<{ e: any; def: any }>, co
 }
 
 /**
+ * A timed crossing of a falling hazard's column (METER-1): its period, its quiet (the part of the period nothing falls), and how long the
+ * route keeps him in its way. One crossing: the window is the quiet less that time (the entry times that keep all of it quiet). One as
+ * long as the quiet: he stops out of reach and goes on in the next, so it is n crossings of inWay / n, each its own press, and he takes
+ * the n that costs least (from the fewest that fit to two more), as moveOf takes a jump's easiest move.
+ */
+export function podCrossing(period: number, quiet: number, inWay: number): { parts: number; open: number } {
+  const fewest = Math.floor(inWay / Math.max(0.05, quiet)) + 1;
+  const open = (n: number) => Math.max(0.05, quiet - inWay / n);
+  const cost = (n: number) => n * Math.max(0, windowBits(period, open(n)) - FREE_BITS);
+  const parts = [fewest, fewest + 1, fewest + 2].sort((p, q) => cost(p) - cost(q) || p - q)[0];
+  return { parts, open: open(parts) };
+}
+
+/**
  * The way a player takes a route jump: the EASIEST move he has (a thumb picks the move that leaves it the most room), and its bits.
  * Share = what the jump asks of that move's flown reach: the inspector's own share where it flew that move (jumps.ts `reach`: it knows
  * the arc and the lip; it is the double's share where it doubled), else the larger of gap / widest gap and rise / highest climb.
@@ -648,8 +662,29 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     if (!seg && push === undefined) continue;
     const y = Math.max(pd.top, Math.min(pd.land, seg ? (seg.y0 + seg.y1) / 2 : push!));
     const heart = pd.cost === 'heart';
-    add({ t: clockAt(samples, pd.x, y), x: pd.x, kind: 'hazard', bits: windowBits(b.period, Math.max(0.05, b.period - on)), cost: heart ? 'heart' : 'retry', stakes: heart ? STAKES.heart : 1, threat: true,
-      note: `pod ${pd.id}: safe ${(b.period - on).toFixed(2)}s of ${b.period.toFixed(2)}s (falls ${fallSeconds(pd).toFixed(2)}s)` });
+    // (METER-1: he is IN its way for as long as his route stays in its column (within its reach of his hands, between its top and where
+    //  it lands): a climb up through a pod's vine takes seconds, and he is safe only if all of that falls in the quiet. So the window is
+    //  the quiet LESS that time (the set of entry times that keep the whole crossing quiet), from the route's own clock (each seg's dt
+    //  times the share of it inside the column), over the run of moves from the first one in its way; a push at a gate's fruit with no
+    //  move in the column is a moment)
+    const inside = (q: Route['segs'][number]) => {
+      let n = 0;
+      for (let k = 0; k <= 20; k++) {
+        const px = q.x0 + ((q.x1 - q.x0) * k) / 20, py = q.y0 + ((q.y1 - q.y0) * k) / 20;
+        if (Math.abs(px - pd.x) <= reachOf(q) && py >= pd.top && py <= pd.land) n++;
+      }
+      return n / 21;
+    };
+    let inWay = 0;
+    if (seg) for (let k = route.segs.indexOf(seg); k < route.segs.length; k++) { const f = inside(route.segs[k]); if (f <= 0) break; inWay += route.segs[k].dt * f; }
+    const quiet = b.period - on;
+    // (a crossing as long as one quiet cannot be one press: he stops out of its reach and goes on in the next quiet (the field's own
+    //  fairness check, vineField, refuses a column with no way through). So he takes it in n crossings, each in its way inWay / n and
+    //  each its own timed press, and the n that costs him least (the easiest way he has, as moveOf picks a jump's move): from the fewest
+    //  that fit, floor(inWay / quiet) + 1, to two more)
+    const { parts, open } = podCrossing(b.period, quiet, inWay);
+    for (let k = 0; k < parts; k++) add({ t: clockAt(samples, pd.x, y) + k * b.period, x: pd.x, kind: 'hazard', bits: windowBits(b.period, open), cost: heart ? 'heart' : 'retry', stakes: heart ? STAKES.heart : 1, threat: true,
+      note: `pod ${pd.id}: safe ${quiet.toFixed(2)}s of ${b.period.toFixed(2)}s, ${inWay.toFixed(2)}s in its way${parts > 1 ? ` in ${parts} crossings` : ''}: open ${open.toFixed(2)}s (falls ${fallSeconds(pd).toFixed(2)}s)` });
   }
   // and its fig gates: the way up held shut until he pushes its fruit free, a puzzle each (OTHER_BITS.puzzle), where its bough is
   for (const g of (st.gates ?? []) as any[]) {

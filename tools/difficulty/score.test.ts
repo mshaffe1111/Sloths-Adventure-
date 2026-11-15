@@ -81,7 +81,7 @@ test('on the real World 1 stages: one swing a liana the route hangs on, and none
 // the vine snakes, the catch off a bank or a creaky perch under a release, and leapt chain lianas the route's added links skipped; 1-8's
 // chase read as a 2-bit hazard every 1.5 s (~16 a stretch) while its nuts scored nothing; 1-7's eagles took the default 0.5 s tell (a 200 px
 // lookup that missed them) and their watched ground was not read.
-import { releaseBits, releaseWindow, chainOf, catchWindow, snakeChallenges, chaseChallenges, rollingChallenges, watchChallenges, memberAt, combine,
+import { podCrossing, releaseBits, releaseWindow, chainOf, catchWindow, snakeChallenges, chaseChallenges, rollingChallenges, watchChallenges, memberAt, combine,
   creatureBits, fittsBits, windowBits, BODY, REF_S, type Challenge } from './score.ts';
 import { JUMP_AIRTIME, PHYS, SIM_DTS } from '../../src/game/physics.ts';
 import { lianaRelease } from '../../src/game/gen2/pipeline.ts';
@@ -244,4 +244,19 @@ test('on the real World 1 stages: a hand-built chase is scored by its stretches,
   const chaseBeats = r.challenges.filter((c) => c.kind === 'hazard' && /the branch collapses behind him/.test(c.note));
   assert.deepEqual(chaseBeats.map((c) => Math.round(c.x)), [], 'no chase pacing beat scored as a hazard');
   assert.ok(r.challenges.filter((c) => c.kind === 'chase').length >= 1, 'its chase is scored');
+});
+
+test("a falling pod's window is its quiet less the time the route keeps him in its column; a crossing as long as the quiet is split", () => {
+  assert.deepEqual(podCrossing(4.6, 3.1, 0), { parts: 1, open: 3.1 }, 'a hop past it: the whole quiet');
+  assert.ok(Math.abs(podCrossing(4.6, 3.1, 1.16).open - 1.94) < 1e-9, 'a climb of 1.16 s through it leaves 1.94 s');
+  const long = podCrossing(4.2, 2.5, 2.56);
+  assert.equal(long.parts, 2, 'longer than the quiet: two crossings');
+  assert.ok(Math.abs(long.open - (2.5 - 1.28)) < 1e-9);
+  // (he takes the cheaper way: 2.2 s in one 2.5 s quiet would leave 0.3 s; two crossings of 1.1 s leave 1.4 s each and cost less)
+  const near = podCrossing(4.2, 2.5, 2.2);
+  assert.equal(near.parts, 2);
+  // (on 1-4 the route climbs through its pods: some pod is scored with time in its way, never more than its quiet open)
+  const r = scoreStage('1-4', 'normal', 1, new Map());
+  const pods = r.challenges.filter((c) => /^pod /.test(c.note));
+  assert.ok(pods.some((c) => /, [1-9][\d.]*s in its way/.test(c.note)), pods.map((c) => c.note).join(' | '));
 });
