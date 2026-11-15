@@ -13,22 +13,28 @@ Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, t
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
-## 0LOOK2. The bough look, the settle after the chase, an asked join, the tip's marked fall (ENG-LOOK2, t-eng-look2, 11-15)
+## 0LOOK2. The bough look, the settle after the chase, an asked join, the tip's marked fall (ENG-LOOK2 11-15; ART-18 11-15 after it)
 - **The bough** (protoArt.ts, from `WorldManifest.ground.look: 'bough'` -> `GeneratedStage.groundLook`; the engine calls setGroundLook +
   setBoughJoins at stage start): every `boughPiece` (plain ground >= 40 px deep, no own look) is baked into the ground squares as the HF bough
   (src/assets/w1-18/hf18-bough.webp: 3 variants as rows, any follows any, per tile by world x: never mirror, a mirrored seam is a chevron);
-  chase sections are NOT in the bake (they fall every few frames: a bake keyed on them never completes and the live fallback ships with no
-  ends); the chase piece draws them via drawChaseSection -> drawBoughSection (a small baked canvas when a section has an end; the tip tapers).
-  Ends (boughEnds): joined / under (a step: the lower runs 30 px on, rounded where it shows) / living (rounded; the far branch is living
-  because layTip marks it pit 'drop') / torn (splintered). Ends are ERASED (destination-out) only in baked canvases, never live.
-  The mist under it: drawBoughMist (one drawImage of a 4x256 strip; no gradient a frame). No pit paint, no soil on a bough stage.
-  Re-cut the art: `python3 -I tools/art/hfbough/cut.py reference/art/hfbough/bough-a-53.webp <out>` (prints BOUGH's numbers).
-- **settleLaid** (pipeline.ts, in layChaseStage): the kit's settle again after the chase cut its banks; groundRun counts no chase section as
-  a wall. A stone it would move or cannot keep gets `cut ''` (drawn as its ground); cutOf honours ''. Nothing is moved after fill.
-- **entry.join 'walk'** (SectionTemplate.entry): the join INTO a section, laid not rolled (the draw still made). 1-8's data has NOT asked yet.
-- **Traps:** a bough stage's chunk key carries groundLook; BOUGH_END_MIN (160) keeps narrow steps from being eaten; w1rain-mid.webp's
-  left 260 px are feathered (its canopy cut showed at every wrap: 1-2, 1-5, 1-8). Open: re-bake a bank's end when its neighbour falls; crack
-  art on a cracking bough; the dip's stair stubs (REPORT rough spots).
+  chase sections are NOT in the bake (they fall every few frames); the chase piece draws them via drawChaseSection -> drawBoughSection (a
+  small baked canvas when a section has an end). Ends (boughEnds, now at any x): joined / under (a step: the lower runs 30 px on) / living
+  (a round cap: ART-18 (k) ry 0.54 T centred at 0.5 T; the far branch is living because layTip marks it pit 'drop') / torn (splintered).
+  Ends are ERASED (destination-out) only in baked canvases, never live, and each erase is clipped to its own piece's drawn x range (ART-18:
+  a higher stair step's erase cut a straight notch out of the lower one). The mist: drawBoughMist (one drawImage of a 4x256 strip).
+- **Stairs (ART-18 (m), boughSpans, tested in src/game/boughSpans.test.ts on 1-8's real stair):** a bank draws only the top no higher
+  piece stands on; a shown stretch under BOUGH_STUB_MAX (2 T) is a stub: bark BOUGH_STUB_BODY (0.6) thick, both ends rounded, never run
+  under another. drawBough takes `body` (bark scale) and `smooth` (a bake: taper slices one device px; 3 px sawed the tip's underside and
+  grain). The tip's tapered bark is baked once per section+scale (tipTaper), so a re-bake when its neighbour falls is one drawImage.
+- **Dressing (ART-18, w1Arc18 finish18):** PALMS_18 (4 painted palms, 2 near + 2 hazed back) and TRUNKS_18 (the cannonball trunk + its
+  mirrored, hazed back copy) each take turns, no picture twice within PALM_APART_18 (1800); a look rule never throws (falls back to the
+  farthest); back rows drawn first. `nut`/`up`/`dx`/`y` per palm are checked against the inventory by w1Arc18.test.ts. New palm art:
+  tools/art/hfpalm (spec, cut.py keys magenta by hue+saturation+brightness, nutpt.py, hazed.py); raw takes are NOT kept (sandbox gone).
+- **settleLaid** (pipeline.ts): the kit's settle again after the chase cut its banks. **entry.join 'walk'**: laid not rolled; 1-8's data
+  has NOT asked yet.
+- **Traps / open:** a step end reads square in a clip's first frame (likely the live fallback before its square bakes: verify); re-bake a
+  bank's end when its neighbour falls; crack art on a cracking bough; W1's hanging front leaves are code-drawn (painted cuts ready in
+  reference/art/hfpalm/leaves/, not wired); near palms all have ringed grey trunks.
 
 ## 0CL. The chase stage's blockers (ENG-CL, t-eng-cl from t-eng-b6@a4e1ff8f, 11-14): what the next engineer must know
 - The quiet line (tools/engine/listRules.ts) judges a roll AS PLAYED: quietJudge(cfg, finish?, max?) / quietOf(cfg, st, finish?), the
