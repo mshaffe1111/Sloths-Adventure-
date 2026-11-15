@@ -1,7 +1,7 @@
 # BUILD-18: build 1-8 "The Long Branch" from data, one builder, target under 2 hours (Matt R-165.254). Opus 5.5 high (level builder). Written 7:33 PM ET 11-14.
 Read FIRST reference/methods/level.md (Building rules, whole), then ONLY: reference/design/1-8.md on origin/t-1718-design (whole);
 reference/qa-reports/B5/REPORT.md "What a 1-8 builder can lay NOW" + B6/REPORT.md EXACT NEXT STEP on origin/t-eng-b6; reference/story/
-lines-1-8.md (the story keeper's, on t-story or t-keep-18: the lead sends the sha ~8:30); reference/methods/hf-art.md (for step 3 only).
+lines-1-8.md on origin/t-story@2e40e6a3 (APPROVED by the story keeper 7:37 PM: use the lines exactly); reference/methods/hf-art.md (for step 3 only).
 Branch: t-build-18 from origin/t-eng-b6 (its final head: git ls-remote; the chase, rolling, still fork, runner liana, tip are all there).
 Why: every engine piece 1-8 names is built and proven (ENG-B4/B5/B6). This is the first level built from data only, and the clock is measured.
 STEP 0 (by 8:35 PM ET), THE PLAN, sent to the lead before you lay anything: the final node string, one line per beat (what is laid, which
@@ -9,8 +9,11 @@ piece, which data field), and these lead changes applied to the design: (a) trib
 keeps you moving = the front behind him) and **Bit.Trip Runner** (2010: every hop on the beat = beat 7's "under-HOP" rhythm), with what
 players loved and how it taught (Wikipedia, gamesradar.com, gamedeveloper.com and pcgamer.com open from here; quote with URLs); the tribute
 rule is pass/fail: series AND eras, post-2000, our own idea; (b) Easy chase gaps are capped at 50 px by the engine (B6): Easy stretches
-are near gapless, so Easy's challenge is pace and reading, say where; (c) an after-crack nut or fruit costs a heart, the teach bump before
-the crack costs nothing; (d) the Normal number: score 1-8 on the FIXED meter (TOOLS-1's tools/difficulty/score.ts on origin/t-tools-2) and
+are near gapless, so Easy's challenge is pace and reading, say where; (c) an after-crack nut or fruit costs a heart on NORMAL as a bonk (never a crush; the fruit stays whole); on EASY nuts and fruit only bump
+(no heart), only the collapse costs; the teach bump before the crack costs nothing everywhere; (e) 1-8 NEVER locks its exit (keeper
+7:37: the branch behind him is gone, so a missed petal can't be fetched; the count is score/medals only); (f) look (keeper's nature
+check): cannonball fruit grows on stalks from the TRUNK and drops from there or above, never bursts; palm crowns in view overhead
+wherever palm nuts fall; (d) the Normal number: score 1-8 on the FIXED meter (TOOLS-1's tools/difficulty/score.ts on origin/t-tools-2) and
 compare it with 7.5 (DIFFICULTY.md:61). Wait for the lead's GO.
 STEP 1: lay 1-8 as data only (no engine or shared file: rule 22; anything that needs one is an ENGINE-WORTHY finding sent at once), its
 stageTable row, ADD-LEVEL's one step (tools/engine/addlevel.ts: rolls, seed list, castBots 1-40 both settings, 0 rescues, 0 sealed),
