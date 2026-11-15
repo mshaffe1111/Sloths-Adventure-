@@ -102,8 +102,10 @@ type Pond22 = keyof typeof PADS_22;
 /** 2-2's river (beat 9's drifting log lane, 2-1's river), Normal's and Easy's */
 export const RIVERS_22 = {
   ...W2_RIVERS,
-  lane22: { ...W2_RIVERS.deep },
-  lane22Easy: { ...W2_RIVERS.deep, logW: 190, safe: true },
+  /** a pond garden's lane: 2-1's deep river with its logs 200 px long (a slow drift through still water; at 160 the kid first-timer lost
+   *  five lives a run on it, castBots 2-2 seed 3, BUILD-22); Easy's longer still, and the splash-back kind */
+  lane22: { ...W2_RIVERS.deep, logW: 200 },
+  lane22Easy: { ...W2_RIVERS.deep, logW: 220, safe: true },
 } as const satisfies Record<string, RiverRow>;
 type Row22 = keyof typeof RIVERS_22;
 
