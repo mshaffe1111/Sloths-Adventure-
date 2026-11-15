@@ -2196,7 +2196,10 @@ export class FirstTimerRun {
       // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
       const under = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
       const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
-      const past = under && dir * (p.x + dir * look - lip) > 0;
+      // (only over WATER: the creek he walked into. A pit gap the same width is left to the edge's own press, as before: with this look
+      //  on every gap the middle bot jumped 1-8's 120 px chase gaps from his full press distance and fell in, chaseBots, INT-11 11-15)
+      const wet = (x0: number, x1: number) => ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
+      const past = under && dir * (p.x + dir * look - lip) > 0 && wet(lip, p.x + dir * look);
       const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       if (!ahead) {
         const on = this.prog.target(p, 160);
