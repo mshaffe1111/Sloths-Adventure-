@@ -1,0 +1,1 @@
+castBots 1-6, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)

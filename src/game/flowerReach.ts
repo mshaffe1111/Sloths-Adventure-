@@ -157,6 +157,8 @@ export function fixPickups(w: ReachWorld, items: Collectible[]): number {
   let moved = 0;
   for (const c of items) {
     if (c.type !== 'flower' && c.type !== 'fruit' && c.type !== 'leaf') continue;
+    // (a pickup riding a carrier, a petal on a log (Collectible.rides), is its carrier's: never re-seated off it)
+    if (c.rides) continue;
     const over = tuckedUnder(w, c.x, c.y);
     if (over) {
       const s = onTop(items, c, over, c.x);

@@ -1,0 +1,41 @@
+# firstRun11 seed 9652: stageParts before (91f8b157, POLISH-7's 1-1, gives the recorded lock) vs after (this head: POLISH-8's teach rise), per part; probe /tmp/claude-0/-home-user-Sloths-Adventure-/25af201c-8688-5730-8669-251b1ad2b808/scratchpad/lockparts.mts (buildGen2Stage replay, listedStage kit, as seedlist.ts)
+before: {"seed":9652,"lock":{"normal":"b5b63ed05a7a4ffc","easy":"be691a05e81a5b46"},"out":{"normal.ALL":"b5b63ed05a7a4ffc","normal.trees":"b3283bf184","normal.platforms":"bc19748e67","normal.vines":"b3283bf184","normal.ropes":"b3283bf184","normal.enemies":"b3283bf184","normal.boss":"f072cbec3b","normal.collectibles":"740d96a43f","normal.spawnX":"40ed3b1cf3","normal.spawnY":"67794a6500","normal.exitTotemX":"bdff73f174","normal.exitTotemY":"c60d6e8067","normal.checkpoints":"c4b152417b","normal.heartFalls":"0f27623f9b","normal.proto.hints":"d993153359","normal.proto.covers":"b3283bf184","normal.proto.beats":"85fd6c7f72","normal.proto.mixDress":"b1eff0784d","normal.gen2.plan":"5870e87e40","normal.gen2.code":"0b5f6722ab","easy.ALL":"be691a05e81a5b46","easy.trees":"b3283bf184","easy.platforms":"a5ca3afce3","easy.vines":"b3283bf184","easy.ropes":"b3283bf184","easy.enemies":"b3283bf184","easy.boss":"f072cbec3b","easy.collectibles":"fd30d79a1a","easy.spawnX":"40ed3b1cf3","easy.spawnY":"eadee466d6","easy.exitTotemX":"f5319482a8","easy.exitTotemY":"0e080aaa7b","easy.checkpoints":"a94153cadb","easy.heartFalls":"3c22a6c911","easy.proto.hints":"7d117f51b9","easy.proto.covers":"b3283bf184","easy.proto.beats":"c0f1cc5055","easy.proto.mixDress":"a3b2a2e2a9","easy.gen2.plan":"cb27d9c632","easy.gen2.code":"0b5f6722ab"}}
+after:  {"seed":9652,"lock":{"normal":"b5b63ed05a7a4ffc","easy":"be691a05e81a5b46"},"out":{"normal.ALL":"598f2cf9d031bb9f","normal.trees":"b3283bf184","normal.platforms":"b612167e00","normal.vines":"b3283bf184","normal.ropes":"b3283bf184","normal.enemies":"b3283bf184","normal.boss":"f072cbec3b","normal.collectibles":"00d599cc93","normal.spawnX":"40ed3b1cf3","normal.spawnY":"022289a2a0","normal.exitTotemX":"bdff73f174","normal.exitTotemY":"c60d6e8067","normal.checkpoints":"966b64dfc8","normal.heartFalls":"0f27623f9b","normal.proto.hints":"d993153359","normal.proto.covers":"b3283bf184","normal.proto.beats":"85fd6c7f72","normal.proto.mixDress":"b1eff0784d","normal.gen2.plan":"5870e87e40","normal.gen2.code":"0b5f6722ab","easy.ALL":"faba40c194f515f7","easy.trees":"b3283bf184","easy.platforms":"97d6010117","easy.vines":"b3283bf184","easy.ropes":"b3283bf184","easy.enemies":"b3283bf184","easy.boss":"f072cbec3b","easy.collectibles":"0c8c8fa794","easy.spawnX":"40ed3b1cf3","easy.spawnY":"8330efde7e","easy.exitTotemX":"f5319482a8","easy.exitTotemY":"0e080aaa7b","easy.checkpoints":"6f2aa73155","easy.heartFalls":"3c22a6c911","easy.proto.hints":"7d117f51b9","easy.proto.covers":"b3283bf184","easy.proto.beats":"c0f1cc5055","easy.proto.mixDress":"a3b2a2e2a9","easy.gen2.plan":"cb27d9c632","easy.gen2.code":"0b5f6722ab"}}
+== normal: spawnY 1496 -> 1488
+  platforms: 161 -> 161; changed 77; y-only shifts {-8: 32}; other 45
+     (['height'], {'height': (338, 330)})
+     (['height'], {'height': (338, 330)})
+     (['height'], {'height': (338, 330)})
+     (['height'], {'height': (338, 330)})
+     (['height'], {'height': (338, 330)})
+     (['height'], {'height': (338, 330)})
+  collectibles: 151 -> 151; changed 36; y-only shifts {-8: 25}; other 11
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1462, 1454)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1462, 1454)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1384, 1376)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1407, 1399)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1462, 1454)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1408, 1400)})
+  checkpoints: 11 -> 11; changed 2; y-only shifts {-8: 2}; other 0
+== easy: spawnY 1433 -> 1431
+  platforms: 161 -> 161; changed 77; y-only shifts {-2: 32}; other 45
+     (['height'], {'height': (332, 330)})
+     (['height'], {'height': (333, 331)})
+     (['height'], {'height': (332, 330)})
+     (['height'], {'height': (332, 330)})
+     (['height'], {'height': (332, 330)})
+     (['height'], {'height': (332, 330)})
+  collectibles: 120 -> 120; changed 25; y-only shifts {-2: 11}; other 14
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1321, 1319)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1344, 1342)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1349, 1347)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1399, 1397)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('hibiscus', 'orchid'), 'y': (1399, 1397)})
+     (['botanicalVariant', 'y'], {'botanicalVariant': ('orchid', 'hibiscus'), 'y': (1344, 1342)})
+  checkpoints: 12 -> 12; changed 2; y-only shifts {-2: 2}; other 0
+summary normal platforms: kinds {('y',): 32, ('height',): 45}; not a -8 px shift: 0 []
+summary normal collectibles: kinds {('botanicalVariant', 'y'): 11, ('y',): 25}; not a -8 px shift: 0 []
+summary normal checkpoints: kinds {('y',): 2}; not a -8 px shift: 0 []
+summary easy platforms: kinds {('y',): 32, ('height',): 45}; not a -2 px shift: 0 []
+summary easy collectibles: kinds {('y',): 11, ('botanicalVariant', 'y'): 14}; not a -2 px shift: 0 []
+summary easy checkpoints: kinds {('y',): 2}; not a -2 px shift: 0 []

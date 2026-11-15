@@ -52,7 +52,7 @@ export const STAGE_LINES: Record<string, string> = {
   '1-4': 'Climbed the kapok between falling pods. From the top you can see where they took her.',
   '1-5': "More petals, but further apart now. She's running out of them. I'm not catching up fast enough.",
   '1-6': "First lianas. You have to let go of one before you've got the next. Nobody mentioned that part.",
-  '1-7': "Tossed an acorn so the eagle would look the other way. Dot called it cunning. I'd call it throwing.",
+  '1-7': "An eagle looked straight at me and saw moss. Dot called it brave. Keeping still is just what sloths do.",
   '1-8': "The branch came apart behind me, so I ran. Meeca always said I could. I'd never checked.",
   '1-9': "Fought the boa's guards all the way along his branches. They were only doing their job. So was I.",
   '1-10': "He pictured a soldier, or a hawk. He got me. He's still working out how that happened.",

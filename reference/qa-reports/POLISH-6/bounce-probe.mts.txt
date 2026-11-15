@@ -1,0 +1,34 @@
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+import { RealPlay } from '/home/user/Sloths-Adventure-/src/game/realPlay.ts';
+import { setDifficulty } from '/home/user/Sloths-Adventure-/src/game/difficulty.ts';
+import { loadSeedList } from '/home/user/Sloths-Adventure-/src/game/gen2/seedList.ts';
+await loadSeedList('1-1'); setDifficulty('easy');
+const R = Math.round;
+for (const v of [1, 2, 3, 4, 5, 6]) {
+  const probe: any = new RealPlay('1-1', v);
+  const sec = probe.stage.gen2.sections.find((q: any) => q.template === 'w1-mushroom-bank-teach');
+  if (!sec) { console.log(`L${v}: no bounce bank teach`); continue; }
+  const S = probe.stage.platforms;
+  const mush = S.find((p: any) => p.type === 'bouncy' && p.x >= sec.x0 && p.x <= sec.x1);
+  const under = S.filter((p: any) => p.type === 'solid' && Math.abs(p.y - (mush.y + mush.height)) < 8 && p.x <= mush.x && p.x + p.width >= mush.x + mush.width)[0] ?? S.filter((p: any) => p.type === 'solid' && p.x <= mush.x && p.x + p.width >= mush.x).sort((a: any, b: any) => a.y - b.y)[0];
+  const wall = S.filter((p: any) => p.type === 'solid' && p.x > mush.x && p.x < mush.x + 400 && p.y < mush.y).sort((a: any, b: any) => a.x - b.x)[0];
+  const desc = `L${v} mushroom x${R(mush.x)}..${R(mush.x + mush.width)} top ${R(mush.y)}; floor top ${R(under?.y)}; wall x${R(wall?.x)} top ${R(wall?.y)} (rise ${R(under?.y - wall?.y)}, over mushroom top ${R(mush.y - wall?.y)})`;
+  const outcomes: string[] = [];
+  for (const how of ['walk', 'walk+press-at-apex', 'walk+hold-jump']) for (const back of [80, 160, 240]) {
+    const r: any = new RealPlay('1-1', v);
+    r.stand(mush.x - back, under.y);
+    let t = 0, apexed = false, prevVy = 0, best = 99999;
+    for (; t < 150; t++) {
+      const vy = r.p.vy;
+      const pad: any = { right: true };
+      if (how === 'walk+hold-jump') pad.jump = true;
+      if (how === 'walk+press-at-apex' && !apexed && prevVy < 0 && vy >= 0 && !r.p.grounded) { pad.press = true; apexed = true; }
+      prevVy = vy;
+      r.frame(pad);
+      if (r.p.grounded && r.p.x > wall.x + 10 && Math.abs(r.p.y - wall.y) < 8) break;
+      best = Math.min(best, r.p.y);
+    }
+    outcomes.push(`${how}/${back}: ${t < 150 ? `UP in ${t} f` : `no (peak y ${R(best)})`}`);
+  }
+  console.log(desc + '\n   ' + outcomes.join('; '));
+}

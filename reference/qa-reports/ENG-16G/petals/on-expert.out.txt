@@ -1,0 +1,6 @@
+expert 1 sealed door {"got":92,"need":95} {"first-liana:d1":{"on":[0.8],"off":[0.92]}}
+expert 2 sealed door {"got":91,"need":94} {"first-liana:b1":{"on":[0.99],"off":[0.99]},"first-liana:d1":{"on":[0.38],"off":[0.88]},"gorge:b1":{"on":[0.31],"off":[0.44]}}
+expert 3 sealed door {"got":95,"need":102} {"first-liana:b1":{"on":[0.96],"off":[1]},"first-liana:d1":{"on":[0.42],"off":[0.84]},"gorge:b1":{"on":[0.32],"off":[0.52]}}
+expert 4 shrine {"got":99,"need":97} {"first-liana:b1":{"on":[0.53],"off":[0.99]},"first-liana:d1":{"on":[0.42],"off":[0.92]},"gorge:b1":{"on":[0.36],"off":[0.86]}}
+expert 5 sealed door {"got":86,"need":90} {"first-liana:d1":{"on":[0.32],"off":[0.92]}}
+expert 6 shrine {"got":96,"need":95} {"first-liana:b1":{"on":[0.49],"off":[0.98]},"first-liana:d1":{"on":[0.44],"off":[0.92]}}

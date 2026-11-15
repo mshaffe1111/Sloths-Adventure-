@@ -52,7 +52,11 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
         return dq < dm - 1 || (Math.abs(dq - dm) <= 1 && Math.abs(q.x - at.x) < Math.abs(m.x - at.x)) ? q : m;
       });
       const end = up ? Math.max(v.topY, b.y) : Math.min(v.bottomY, b.y);
-      out.push({ x: v.x, y: leads.length ? at.y : foot(v) }, { x: v.x, y: end });
+      // (a vine that leads on from his height but stands on a floor below it (a fork: down, then up): down the way to its foot, then up;
+      // a route that stays at his height floats in the air over that floor, and from the floor the way on never reads as up: FIX-14.
+      // Straight from where he is to the foot (the stair down), never across at his height first: that still hung in the air)
+      const sunk = up && leads.length && v.bottomY > at.y + HOP;
+      out.push(sunk ? { x: v.x, y: v.bottomY } : { x: v.x, y: leads.length ? at.y : foot(v) }, { x: v.x, y: end });
       at = { x: v.x, y: end };
     }
     out.push({ x: b.x, y: b.y });

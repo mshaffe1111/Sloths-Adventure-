@@ -1,0 +1,4 @@
+seedlist 1-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-4: FAIL
+  1-4: provenIndex.ts says 100 seeds, version 2c9591d0; the list file holds 100, version 6b772e6e: rebuild the list
+exit 1

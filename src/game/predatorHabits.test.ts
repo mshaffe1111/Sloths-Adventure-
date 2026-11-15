@@ -166,7 +166,7 @@ test('charge: you choose where its line ends: a geyser there chases it off (the 
 const eagleLike = (over: Partial<PredatorDef> = {}): PredatorDef => fair(base({
   kind: 'eagle', habit: 'sweep', warn: 2, speed: { rest: 300, hunt: 0 }, sight: { ahead: 70, behind: 70, tall: 600, seesStill: true },
   engage: 70, tell: 0.75, callsOff: true, act: { aim: 'him', seconds: 3, speed: 600, reach: 60, tall: 60 }, recover: 0.6, cool: 3, giveUp: 2,
-  hears: 4.5, beatenBy: { still: { ends: 'flees', seconds: 8 }, wind: { ends: 'flees', seconds: 4 } }, first: 'still', ...over,
+  hears: 4.5, beatenBy: { still: { ends: 'flees', seconds: 8 }, wind: { ends: 'flees', seconds: 4 } }, first: 'still', passAt: 'far', ...over,
 }));
 const sky = () => post({ x: 600, y: 40, minX: 200, maxX: 1000 });
 
@@ -174,7 +174,12 @@ test('sweep: no pass while he is outside its stretch; inside, the eye shows at t
   const def = eagleLike();
   const s = newPredator(def, sky());
   assert.equal(run(def, s, 6, () => prey({ x: 100 })).length, 0, 'he is not in its stretch');
-  assert.equal(s.eyeX, 200);
+  assert.equal(s.eyeX, 1000, 'its eye waits at the end of its stretch farther from him, so its pass will cross toward him (passAt far)');
+  // a sweeper without passAt (the caiman's river) waits at the end its passes take in turn: a fresh one, where it was laid facing
+  const turns = eagleLike({ passAt: undefined });
+  const u = newPredator(turns, sky());
+  assert.equal(run(turns, u, 6, () => prey({ x: 100 })).length, 0);
+  assert.equal(u.eyeX, 200, 'without passAt: the end its next pass takes in turn');
   for (const easy of [false, true]) {
     const e = newPredator(def, sky());
     let moved = NaN;
@@ -206,10 +211,16 @@ test('sweep: its eye takes what it sees: a moving sloth under it is dived at; th
 test('sweep: in cover and still, he is not seen: the pass goes over; two empty passes and it gives up (stillness beats it)', () => {
   const def = eagleLike();
   const s = newPredator(def, sky());
-  const hidden = () => prey({ x: 600, still: true, covered: true });
+  // (at 700, nearer its 1000 end: the end farther from him is 200, never a tie)
+  const hidden = () => prey({ x: 700, still: true, covered: true });
   const ev = run(def, s, 5.5, hidden);
   assert.equal(ev.filter((e) => e.tell || e.act).length, 0);
-  assert.deepEqual([s.phase, s.lost, s.facing], ['rest', 1, -1], 'one empty pass; the next comes back the other way');
+  assert.deepEqual([s.phase, s.lost, s.facing], ['rest', 1, 1], 'one empty pass; the next starts again from the end farther from him');
+  // without passAt (the caiman's river) its passes go there and back: the next comes back the other way
+  const turns = eagleLike({ passAt: undefined });
+  const u = newPredator(turns, sky());
+  assert.equal(run(turns, u, 5.5, hidden).filter((e) => e.tell || e.act).length, 0);
+  assert.deepEqual([u.phase, u.lost, u.facing], ['rest', 1, -1], 'without passAt: the next comes back the other way');
   const ev2 = run(def, s, 12, hidden, { t0: 5.5 });
   assert.equal(ev2.filter((e) => e.beaten === 'still').length, 1);
   assert.equal(s.phase, 'flee');

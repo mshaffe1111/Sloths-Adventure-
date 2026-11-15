@@ -1,0 +1,21 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-4","seed":1,"orientation":"side","view":[915,412]}
+GATE {"gate":6,"figs":3,"bough":{"x":414,"r":934,"y":1923},"vines":[474,634,874],"ledge":{"x":876,"r":1056,"y":2022}}
+PRESS {"at":[474,2082],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[634,2086],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[874,2094],"vyAfter":0,"dy":72,"spent":0,"offVine":false,"grabbed":true,"lifted":false}
+PRESS {"at":[983,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[983,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[1027,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[1027,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[933,1908],"vyAfter":-533,"dy":-18,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+TRY {"name":"climb up under it","head":0,"top":2082,"over":false,"end":{"head":0,"over":false,"shut":true,"x":474,"y":2082,"g":false,"c":true}}
+TRY {"name":"leap off the vine top","head":0,"top":2082,"over":false,"end":{"head":-1,"over":false,"shut":true,"x":554,"y":2089,"g":false,"c":true}}
+TRY {"name":"leap + second flick","head":0,"top":2086,"over":false,"end":{"head":-4,"over":false,"shut":true,"x":714,"y":2092,"g":false,"c":true},"second":"not pressed: he had caught a vine or landed before the top"}
+TRY {"name":"ledge x 924: under its sagging end","head":0,"top":2094,"over":false,"end":{"head":0,"over":false,"shut":true,"x":874,"y":2094,"g":false,"c":true}}
+TRY {"name":"ledge x 986: just past its end, flick up-left","head":0,"top":1958,"over":false,"end":{"head":0,"over":false,"shut":true,"x":874,"y":2094,"g":false,"c":true}}
+TRY {"name":"ledge x 986: just past its end, flick straight up, left held","head":0,"top":1958,"over":false,"end":{"head":0,"over":false,"shut":true,"x":874,"y":2094,"g":false,"c":true}}
+TRY {"name":"ledge x 1030: further along, flick straight up, left held","head":150,"top":1924,"over":true,"end":{"head":72,"over":false,"shut":true,"x":869,"y":2022,"g":true,"c":false}}
+TRY {"name":"ledge x 1030: further along, straight up + second flick","head":138,"top":1841,"over":true,"end":{"head":-277,"over":false,"shut":true,"x":648,"y":2363,"g":true,"c":false},"second":"pressed in the air"}
+OVER while shut: YES (he got over a shut bough)
+HEAD most over the shut underside (px, <= 0 is under): 150
+FRAMES 189

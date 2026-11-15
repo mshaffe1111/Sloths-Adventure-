@@ -1,0 +1,12 @@
+normal seed 1: 14 paired, 2 faults: 614,4303 pair 574/654 top 4208 MISSED his box top 4388 ; 616,2407 pair 576/656 top 2300 MISSED his box top 2488
+normal seed 2: 12 paired, 2 faults: 650,7240 pair 610/690 top 7158 MISSED his box top 7351 ; 616,4358 pair 576/656 top 4248 MISSED his box top 4428
+normal seed 3: 15 paired, 3 faults: 650,3976 pair 610/690 top 3887 MISSED his box top 4074 ; 834,6881 pair 794/874 top 6797 MISSED his box top 6970 ; 490,2022 pair 450/530 top 1923 MISSED his box top 2102
+normal seed 4: 17 paired, 4 faults: 984,2418 pair 944/1024 top 2300 MISSED his box top 2504 ; 374,7203 pair 334/414 top 7118 MISSED his box top 7291 ; 986,4310 pair 946/1026 top 4208 MISSED his box top 4388 ; 508,5530 pair 490/570 top 5190 (no second hand) his box top 5559
+normal seed 5: 15 paired, 3 faults: 754,7255 pair 714/794 top 7174 MISSED his box top 7337 ; 614,4301 pair 574/654 top 4208 MISSED his box top 4388 ; 536,2398 pair 496/576 top 2300 MISSED his box top 2496
+normal seed 6: 17 paired, 3 faults: 490,7355 pair 450/530 top 7270 MISSED his box top 7439 ; 626,2354 pair 586/666 top 2260 MISSED his box top 2456 ; 586,4327 pair 546/626 top 4224 MISSED his box top 4420
+easy seed 1: 15 paired, 2 faults: 906,7300 pair 866/946 top 7214 MISSED his box top 7397 ; 456,2412 pair 416/496 top 2300 MISSED his box top 2487
+easy seed 2: 18 paired, 4 faults: 906,7244 pair 866/946 top 7158 MISSED his box top 7341 ; 904,4337 pair 864/944 top 4248 MISSED his box top 4444 ; 351.5,3606 pair 324/379 top 3286 MISSED his box top 3441 ; 980,2415 pair 940/1020 top 2300 MISSED his box top 2504
+easy seed 3: 15 paired, 3 faults: 710,4290 pair 670/750 top 4208 MISSED his box top 4404 ; 534,7199 pair 494/574 top 7118 MISSED his box top 7311 ; 938,2416 pair 898/978 top 2300 MISSED his box top 2504
+easy seed 4: 16 paired, 4 faults: 374,7206 pair 334/414 top 7118 MISSED his box top 7291 ; 744,2395 pair 704/784 top 2300 MISSED his box top 2479 ; 986,4304 pair 946/1026 top 4208 MISSED his box top 4412 ; 445.5,3662 pair 418/473 top 3342 MISSED his box top 3497
+easy seed 5: 17 paired, 3 faults: 744,2412 pair 704/784 top 2300 MISSED his box top 2479 ; 485,7254 pair 445/525 top 7174 MISSED his box top 7357 ; 826,4289 pair 786/866 top 4208 MISSED his box top 4395
+easy seed 6: 15 paired, 2 faults: 672,2377 pair 632/712 top 2260 MISSED his box top 2447 ; 781,7350 pair 741/821 top 7270 MISSED his box top 7433

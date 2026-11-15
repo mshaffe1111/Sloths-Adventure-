@@ -1,0 +1,7 @@
+== 1-7 head 71d7bedcc
+seedlist 1-7: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-7: PASS (100 seeds, each clean on both settings)
+exit 0
+== 1-8 head bbefea2c2
+seedlist 1-8: PASS (100 seeds, each clean on both settings)
+exit 0

@@ -1,0 +1,28 @@
+expert normal seed 29: end sealed door, goal {"got":19,"need":21}, rescues 0; flowers laid 24, picked 19, left 5; laidAsks 6
+  petal 1 x 6220 y 763 | piece hang-low:b1 solid 6081..6381 y 797 | walked span 6131..6250 | stood 6280..6362 (40 frames) | closest pass 51 px (him x 6271 y 785 airborne)
+  petal 2 x 8019 y 769 | piece hang-low:b2 solid 7930..8210 y 803 | walked span 7965..8079 | stood 8115..8169 (16 frames) | closest pass 88 px (him x 8106 y 782 airborne)
+  petal 6 x 16400 y 757 | piece rest-hump:m solid 16244..16684 y 791 | walked span 16400..16553 | stood 16511..16682 (48 frames) | closest pass 56 px (him x 16354 y 750 airborne)
+  petal 9 x 25115 y 777 | piece snake-on-vine:out solid 24912..25152 y 811 | walked span 25115..25152 | never stood on it | closest pass 107 px (him x 25213 y 758 airborne)
+  petal 18 x 40626 y 683 | piece rest-log:f solid 40505..40795 y 717 | walked span 40626..40706 | stood 40728..40792 (8 frames) | closest pass 65 px (him x 40571 y 673 airborne)
+expert normal seed 34: end sealed door, goal {"got":19,"need":21}, rescues 0; flowers laid 24, picked 19, left 5; laidAsks 5
+  petal 2 x 7875 y 796 | piece hang-low:b2 solid 7786..8066 y 830 | walked span 7827..7935 | stood 8000..8036 (5 frames) | closest pass 109 px (him x 7981 y 794 airborne)
+  petal 3 x 7935 y 796 | piece hang-low:b2 solid 7786..8066 y 830 | walked span 7827..7935 | stood 8000..8036 (5 frames) | closest pass 53 px (him x 7981 y 794 airborne)
+  petal 10 x 28590 y 842 | piece creaky-landing:b2 solid 28501..28781 y 876 | walked span 28539..28650 | stood 28716..28741 (6 frames) | closest pass 82 px (him x 28531 y 809 airborne)
+  petal 11 x 28650 y 842 | piece creaky-landing:b2 solid 28501..28781 y 876 | walked span 28539..28650 | stood 28716..28741 (6 frames) | closest pass 54 px (him x 28697 y 839 airborne)
+  petal 18 x 40425 y 777 | piece rest-hump:m solid 40269..40709 y 811 | walked span 40425..40578 | stood 40518..40712 (22 frames) | closest pass 74 px (him x 40490 y 766 airborne)
+expert normal seed 7: end sealed door, goal {"got":19,"need":20}, rescues 0; flowers laid 23, picked 19, left 4; laidAsks 5
+  petal 1 x 6276 y 795 | piece hang-low:b1 solid 6137..6437 y 829 | walked span 6177..6306 | stood 6370..6416 (6 frames) | closest pass 81 px (him x 6352 y 791 airborne)
+  petal 8 x 25251 y 708 | piece rest-hump:m solid 25095..25535 y 742 | walked span 25251..25404 | stood 25335..25535 (36 frames) | closest pass 72 px (him x 25316 y 701 airborne)
+  petal 10 x 28486 y 832 | piece creaky-landing:b2 solid 28397..28677 y 866 | walked span 28432..28546 | stood 28568..28642 (9 frames) | closest pass 71 px (him x 28550 y 826 airborne)
+  petal 14 x 39063 y 824 | piece false-liana:sb1 solid 38954..39254 y 858 | walked span 38985..39123 | stood 39166..39208 (9 frames) | closest pass 88 px (him x 39148 y 823 airborne)
+expert normal seed 37: end sealed door, goal {"got":16,"need":18}, rescues 0; flowers laid 21, picked 16, left 5; laidAsks 5
+  petal 2 x 7914 y 810 | piece hang-low:b2 solid 7825..8105 y 844 | walked span 7865..7974 | stood 8035..8081 (6 frames) | closest pass 110 px (him x 8016 y 794 airborne)
+  petal 3 x 7974 y 810 | piece hang-low:b2 solid 7825..8105 y 844 | walked span 7865..7974 | stood 8035..8081 (6 frames) | closest pass 52 px (him x 8025 y 825 airborne)
+  petal 11 x 30265 y 697 | piece rest-log:f solid 30146..30427 y 731 | walked span 30265..30345 | stood 30357..30428 (18 frames) | closest pass 72 px (him x 30201 y 688 airborne)
+  petal 13 x 36413 y 753 | piece rest-hump:m solid 36257..36697 y 787 | walked span 36413..36566 | stood 36502..36692 (31 frames) | closest pass 56 px (him x 36364 y 749 airborne)
+  petal 15 x 38956 y 749 | piece false-liana:sb1 solid 38847..39147 y 783 | walked span 38882..39016 | stood 38999..39124 (32 frames) | closest pass 37 px (him x 38990 y 757 airborne)
+expert normal seed 20: end sealed door, goal {"got":17,"need":18}, rescues 0; flowers laid 20, picked 17, left 3; laidAsks 4
+  petal 2 x 7973 y 832 | piece hang-low:b2 solid 7884..8164 y 866 | walked span 7907..8033 | stood 8061..8144 (10 frames) | closest pass 80 px (him x 8052 y 841 airborne)
+  petal 5 x 16465 y 731 | piece rest-stumps:s1 solid 16378..16512 y 765 | walked span 16437..16498 | never stood on it | closest pass 37 px (him x 16433 y 736 airborne)
+  petal 8 x 25772 y 714 | piece rest-hump:m solid 25616..26056 y 748 | walked span 25772..25925 | stood 25865..26056 (30 frames) | closest pass 68 px (him x 25717 y 697 airborne)
+EXIT 0

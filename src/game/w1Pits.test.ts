@@ -78,16 +78,22 @@ test('World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; 
   // pit and no fall anywhere (reference/design/1-3.md "the route stays LEVEL"), so it is held to none at all)
   assert.ok(soft['1-9'] >= 3, JSON.stringify(soft));
   assert.equal(soft['1-3'], 0, `1-3 is level by design: ${JSON.stringify(soft)}`);
-  assert.ok(falls['1-8'] >= 10, JSON.stringify(falls));
-  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
+  // (1-8 too, ENG-LOOK2: the tip's gap is a marked fall (layTip marks its far branch); the deleted hand-built 1-8's >= 10 unmarked chase
+  // holes went with it, and the rule is now every other World 1 stage's)
+  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-8', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
 });
 
-test('1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall by realFalls, though findW1Pits alone reads one', () => {
-  // (the pieces as laid, and a wide bank on the stage's ground line (its banks' commonest top, 1112), which findW1Pits reads as the band)
+test('1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall, by realFalls and by findW1Pits', () => {
+  // (the pieces as laid, and a wide bank on the stage's old ground line (its banks' commonest top, 1112). The old ruler read only that
+  // line, so the block (120 deep, 68 under both banks) was no ground to it and the slot a fall; the per-gap ruler (RULER, 11-13) reads
+  // the slot by its own banks: the block is earth 68 px down, a sunk step, no gap. Without the block it is a fall to both)
   const slot = [P(1, 10000, 1112, 6000, 500), P(99, 22357, 708, 247, 979), P(100, 22604, 776, 119, 120), P(101, 22723, 708, 217, 979)];
-  assert.deepEqual(findW1Pits(slot).filter((q) => q.kind === 'fall').map((q) => [q.x0, q.x1]), [[22604, 22723]], 'findW1Pits alone: a fall');
-  assert.deepEqual(floorlessGaps({ platforms: slot }), [], 'realFalls: the block fills it');
-  assert.deepEqual(floorlessGaps({ platforms: slot.filter((q) => q.id !== 100) }), [[22604, 22723]], 'planted: without the block it is a fall');
+  assert.deepEqual(findW1Pits(slot).filter((q) => q.x0 < 22723 && q.x1 > 22604).map((q) => [q.x0, q.x1, q.kind]), [], 'findW1Pits: a sunk step, no gap');
+  assert.deepEqual(findW1Pits(slot.filter((q) => q.id !== 100)).filter((q) => q.x0 < 22723 && q.x1 > 22604).map((q) => [q.x0, q.x1, q.kind]), [[22604, 22723, 'fall']], 'planted: without the block, findW1Pits reads a fall');
+  // (the slot's own reading: the 6,357 px between the old line's bank and the slot's left bank is a hole of its own, judged apart)
+  const inSlot = (gs: Array<[number, number]>) => gs.filter(([x0, x1]) => x0 < 22723 && x1 > 22604);
+  assert.deepEqual(inSlot(floorlessGaps({ platforms: slot })), [], 'realFalls: the block fills it');
+  assert.deepEqual(inSlot(floorlessGaps({ platforms: slot.filter((q) => q.id !== 100) })), [[22604, 22723]], 'planted: without the block it is a fall');
 });
 
 test("a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop", () => {
@@ -163,7 +169,15 @@ test("World 1, 16 layouts: every painted drop has a bank of earth at both sides 
   // (engine-core: only the mixer's stages mark drops, so drawW1Pits, which paints marked drops only, leaves every other World 1 stage
   // to main's painting; the rebuild's 1-3 box, R-164.6, is not on main)
   // (0.9.5: 1-5 is main's again, so no shipped World 1 stage lays the mixer's marked drops)
-  for (const id of ['1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9']) for (const s of [1, 2]) assert.ok(!new RealPlay(id, s).platforms.some((q) => q.pit === 'drop'), `${id} layout ${s} marks a drop`);
+  for (const id of ['1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-9']) for (const s of [1, 2]) assert.ok(!new RealPlay(id, s).platforms.some((q) => q.pit === 'drop'), `${id} layout ${s} marks a drop`);
+  // (1-8 marks exactly one: the tip's far branch (chaseTip.ts layTip, ENG-LOOK2); on its bough look no pit is painted at all, protoArt.ts)
+  for (const s of [1, 2]) {
+    const sim = new RealPlay('1-8', s);
+    const marked = sim.platforms.filter((q) => q.pit === 'drop');
+    const tip = sim.stage.chase!.stretches.at(-1)!;
+    assert.equal(marked.length, 1, `1-8 layout ${s}: ${marked.length} marked drops`);
+    assert.ok(tip.tip && marked[0].x > tip.end && marked[0].x - tip.end < 600, `1-8 layout ${s}: the marked drop is the far branch past the tip (${marked[0].x}, tip ends ${tip.end})`);
+  }
 });
 
 test("a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)", () => {
@@ -270,4 +284,69 @@ test("a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)", async () =
       if (R) assert.ok(W.sideOverHollow(R, banks, 'l'), `seed ${seed}: the bank right of ${Math.round(g.x0)} keeps an open face over the hollow`);
     }
   }
+});
+
+// ---- The per-gap ruler (RULER, the lead's rulings 11-13 3:21, 3:27 and 8:50 PM ET; R-165.197/.200). Each gap is judged by its OWN
+// lips, never by one ground line read off the whole stage: ground is earth only (a piece 90 px deep or more: a bank, a stump, a pillar);
+// a log or a bough is a platform over a gap, never its lip; a hole between two banks is judged at any width from 24 px.
+test('per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix World 1 string 57: its log chain)', async () => {
+  const { buildGen2Stage } = await import('./gen2/pipeline.ts');
+  const { w1World } = await import('./gen2/worlds/w1.ts');
+  const { generateAllLevels } = await import('./worldsData.ts');
+  const W1 = w1World();
+  const cfg = generateAllLevels().find((l) => l.id === '1-1')!;
+  const code = 'A P1< M> R X1_> R W>:8 R S E';
+  const kit = { ...W1, manifest: { ...W1.manifest, graphs: { ...W1.manifest.graphs!, list: [{ id: 'mix', archetype: 'sprint' as const, code }] } } };
+  // (the first seed of the string that lays its log chain with a fall in it, cleanly. Re-pinned by POLISH-9b (R-165.228): seed 58 laid
+  // it until POLISH-7 changed 1-1's pool (CUT_11_DOUBLES), and then held no log chain (a crash, not a failure); found, never copied, so
+  // the next pool change moves the case with it)
+  let st: ReturnType<typeof buildGen2Stage> | undefined, chain: { x0: number; x1: number } | undefined;
+  for (let seed = 1; seed <= 60 && !chain; seed++) {
+    const b = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    const c = b.gen2.sections.find((q) => q.template === 'w1-log-chain');
+    if (!b.gen2.errors?.length && c && findW1Pits(b.platforms).some((g) => g.kind === 'fall' && g.x1 > c.x0 && g.x0 < c.x1)) [st, chain] = [b, c];
+  }
+  assert.ok(st && chain, 'no seed of the string in 60 lays its log chain with a fall cleanly');
+  const inside = (x0: number, x1: number) => x1 > chain.x0 && x0 < chain.x1;
+  // (a bank of earth wider than all of the stage's banks together, at another height, 5,000 px past the shrine)
+  const banks = st.platforms.filter((p) => p.type === 'solid' && p.height >= 90);
+  const end = Math.max(...st.platforms.map((p) => p.x + p.width));
+  const far = { ...[...banks].sort((a, b) => b.width - a.width)[0], id: -1, x: end + 5000, y: 1269, width: 12000, height: 600 };
+  const pits = (ps: Platform[]) => findW1Pits(ps).filter((g) => inside(g.x0, g.x1)).map((g) => `${g.kind} ${Math.round(g.x0)}..${Math.round(g.x1)}${g.drop ? ' drop' : ''}`);
+  const verdict = (ps: Platform[]) => floorlessGaps({ platforms: ps, heartFalls: st.heartFalls }).filter(([x0, x1]) => inside(x0, x1)).map(([x0, x1]) => `${Math.round(x0)}..${Math.round(x1)}`);
+  const laid = pits(st.platforms);
+  assert.ok(laid.some((g) => g.startsWith('fall')), `the chain's hole is a fall as laid: ${JSON.stringify(laid)}`);
+  assert.deepEqual(pits([...st.platforms, far]), laid, 'the painter pits in the chain');
+  assert.deepEqual(verdict([...st.platforms, far]), verdict(st.platforms), 'floor.unmarked in the chain');
+});
+
+test('per-gap ruler: a hole between two banks off the stage\'s commonest top is judged by its own lips', () => {
+  // (wide ground at G either side; a raised stretch 300 px up with a 200 px hole in it: one fall there, its lips the raised banks)
+  const ps = [P(1, 0, G, 3000, 90), P(2, 3000, G - 300, 600, 90), P(3, 3800, G - 300, 600, 90), P(4, 4400, G, 3000, 90)];
+  assert.deepEqual(findW1Pits(ps).map((q) => [q.x0, q.x1, q.kind, q.top]), [[3600, 3800, 'fall', G - 300]]);
+});
+
+test('per-gap ruler: a log chain over a hole is one gap between the banks, judged against the earth below; the logs are never lips', () => {
+  const logs = [P(2, 1100, G, 200, 24, { style: 'log' }), P(3, 1400, G, 200, 24, { style: 'log' }), P(4, 1700, G, 200, 24, { style: 'log' })];
+  const open = [P(1, 0, G, 1000, 90), ...logs, P(5, 2000, G, 1000, 90)];
+  assert.deepEqual(findW1Pits(open).map((q) => [q.x0, q.x1, q.kind, q.lipL, q.lipR]), [[1000, 2000, 'fall', true, true]]);
+  assert.deepEqual(floorlessGaps({ platforms: open }), [[1000, 2000]], 'the open water between the logs is unmarked');
+  // (earth 130 under the chain: a soft pit, the logs over it)
+  const soft = findW1Pits([...open, P(6, 1000, G + 130, 1000, 90)]);
+  assert.deepEqual(soft.map((q) => [q.x0, q.x1, q.kind, q.floor]), [[1000, 2000, 'soft', G + 130]]);
+});
+
+test('per-gap ruler: a hole wider than 1,600 px between two banks is judged (no cap)', () => {
+  assert.deepEqual(findW1Pits([P(1, 0, G, 1000, 90), P(2, 3000, G, 1000, 90)]).map((q) => [q.x0, q.x1, q.kind]), [[1000, 3000, 'fall']]);
+});
+
+test('per-gap ruler: a piece lying on the ground is no pit wall (1-2 layout 3, seed 3, x14136..14684: a 124 px log on a falling stair)', () => {
+  // (the pieces as laid: earth stepping down 517 -> 569 -> 602, and a fat log (124 deep) lying on the 602 bank. The log is not a wall:
+  // the bank it lies on runs on under all of it, so the stair is no dip and no fall)
+  const stair = [P(80, 13904, 517, 232, 510), P(81, 14136, 569, 232, 458), P(87, 14368, 602, 1065, 425), P(88, 14448, 547, 160, 55), P(89, 14684, 478, 300, 124, { style: 'log' })];
+  assert.deepEqual(findW1Pits(stair).map((q) => [q.x0, q.x1, q.kind]), []);
+  assert.deepEqual(floorlessGaps({ platforms: stair }), []);
+  // (planted: the same walls with the bank under the log cut at the log, a real step down on the far side: a pit between real walls)
+  const pit = [P(80, 13904, 517, 232, 510), P(81, 14136, 669, 548, 458), P(89, 14684, 478, 300, 524)];
+  assert.deepEqual(findW1Pits(pit).map((q) => [q.x0, q.x1, q.kind]), [[14136, 14684, 'soft']]);
 });

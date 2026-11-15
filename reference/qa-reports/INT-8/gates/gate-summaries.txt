@@ -1,0 +1,57 @@
+== seedlists
+== 1-1
+seedlist 1-1: PASS (162 seeds, each clean on both settings)
+== 1-2
+seedlist 1-2: PASS (100 seeds, each clean on both settings)
+== 1-3
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+== 1-4
+seedlist 1-4: PASS (100 seeds, each clean on both settings)
+== 1-5
+seedlist 1-5: PASS (150 seeds, each clean on both settings)
+== registry
+registrycheck: PASS (5 stages: 1-1, 1-2, 1-3, 1-4, 1-5, each registered everywhere; 5 lists checked in CI; 10 s)
+== tooltests
+# tests 85
+# pass 85
+# fail 0
+# todo 0
+== tierBots
+# tests 7
+# pass 7
+# fail 0
+== unit1
+# tests 1311
+# pass 1311
+# fail 0
+# todo 0
+== unit2
+# tests 1161
+# pass 1160
+# fail 0
+# todo 1
+== unit3
+# tests 928
+# pass 927
+# fail 0
+# todo 1
+== drawcheck
+      src/game/protoArt.ts:553 (drawBranchArt) 0.75/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+
+PASS (528 s; raw results in /tmp/drawcheck-INcBQi)
+== clipcheck
+      world map: World 5 of 10 @ side/done
+
+PASS (83 known) (336 s; contact sheet and breaches.json in /tmp/clipcheck-CdqW8M)
+== kbdcheck
+✓ side 60pc ctest-note after typing (box 12-136)
+✓ planted: with the keep-in-view off, the check goes red as it must
+
+PASS (138 s; stills in reference/qa/tester-page-1106/keyboard/)
+== buildcheck
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 67 ms, p95 146 ms, max 171 ms (30 builds, CPU x4)
+  easy: p50 57 ms, p95 99 ms, max 140 ms (30 builds, CPU x4)
+== chunkcheck
+  ok       218,749 B    3,775,555 spare  assets/vendor-FrbPb9NH.js
+chunkcheck: PASS

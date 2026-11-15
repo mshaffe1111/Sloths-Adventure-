@@ -1,0 +1,4 @@
+start 3:44 PM head 97697c1d1: npx tsx tools/engine/seedlist.ts 1-1 --check
+seedlist 1-1: the verdicts refuse 0 of 161 listed seeds
+seedlist 1-1: PASS (161 seeds, each clean on both settings)
+exit 0 end 3:49 PM

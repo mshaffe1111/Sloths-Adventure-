@@ -1,0 +1,211 @@
+{
+ "tag": "w2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.85
+  ]
+ },
+ "neg": "thick black outline, heavy bold outline, clip art, vector art, flat colours, sticker, icon, sky, clouds, scenery behind, background, ground, text, letters, watermark, frame, border, panel, photo, 3d render, blurry, animals, frog, sloth, person, mushroom, toadstool",
+ "items": [
+  {
+   "name": "pad-small-11",
+   "prompt": "one single small round lily pad floating flat, a notch cut into its edge, olive green with pale yellow-green light on its top and soft radiating veins, its near edge slightly curled, a thin glint of water along its bottom edge. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-small-23",
+   "prompt": "one single small round lily pad floating flat, a notch cut into its edge, olive green with pale yellow-green light on its top and soft radiating veins, its near edge slightly curled, a thin glint of water along its bottom edge. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-small-37",
+   "prompt": "one single small round lily pad floating flat, a notch cut into its edge, olive green with pale yellow-green light on its top and soft radiating veins, its near edge slightly curled, a thin glint of water along its bottom edge. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-small-sunk-11",
+   "prompt": "one single small round lily pad half sunk in pond water, tipped down at the front so its near half is under a thin film of clear water, the wet surface darker and glossy, little drops and a ring of ripple around it, its far edge still dry and olive green. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-small-sunk-23",
+   "prompt": "one single small round lily pad half sunk in pond water, tipped down at the front so its near half is under a thin film of clear water, the wet surface darker and glossy, little drops and a ring of ripple around it, its far edge still dry and olive green. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-small-sunk-37",
+   "prompt": "one single small round lily pad half sunk in pond water, tipped down at the front so its near half is under a thin film of clear water, the wet surface darker and glossy, little drops and a ring of ripple around it, its far edge still dry and olive green. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-big-sunk-11",
+   "prompt": "one giant Amazon water lily pad, a wide round green platter with an upturned crimson-red rim, sinking: tipped down at the front, pond water spilling in over the rim and flooding its middle, the flooded part darker and glossy, splash ripples around it. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1536,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-big-sunk-23",
+   "prompt": "one giant Amazon water lily pad, a wide round green platter with an upturned crimson-red rim, sinking: tipped down at the front, pond water spilling in over the rim and flooding its middle, the flooded part darker and glossy, splash ripples around it. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1536,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "pad-big-sunk-37",
+   "prompt": "one giant Amazon water lily pad, a wide round green platter with an upturned crimson-red rim, sinking: tipped down at the front, pond water spilling in over the rim and flooding its middle, the flooded part darker and glossy, splash ripples around it. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1536,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "ripple-under-11",
+   "prompt": "a set of soft pale concentric ripple rings on a pond surface seen low from the side, flattened wide ellipses, with the faint dark green shape of a sunken lily pad just below them, a few bubbles. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "ripple-under-23",
+   "prompt": "a set of soft pale concentric ripple rings on a pond surface seen low from the side, flattened wide ellipses, with the faint dark green shape of a sunken lily pad just below them, a few bubbles. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "ripple-under-37",
+   "prompt": "a set of soft pale concentric ripple rings on a pond surface seen low from the side, flattened wide ellipses, with the faint dark green shape of a sunken lily pad just below them, a few bubbles. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1344,
+   "h": 768,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-bud-11",
+   "prompt": "one tall closed water lily flower bud standing up on a short thick green stem, plump pointed bud with pink-tinted cream-white petals wrapped tight, two green sepals cupping its base. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-bud-23",
+   "prompt": "one tall closed water lily flower bud standing up on a short thick green stem, plump pointed bud with pink-tinted cream-white petals wrapped tight, two green sepals cupping its base. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-bud-37",
+   "prompt": "one tall closed water lily flower bud standing up on a short thick green stem, plump pointed bud with pink-tinted cream-white petals wrapped tight, two green sepals cupping its base. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-open-11",
+   "prompt": "one big fully open white water lily flower seen from the side, many layered pointed cream-white petals with a soft pink blush at their tips, a glowing golden-yellow centre, two green sepals under it, on a short thick green stem. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-open-23",
+   "prompt": "one big fully open white water lily flower seen from the side, many layered pointed cream-white petals with a soft pink blush at their tips, a glowing golden-yellow centre, two green sepals under it, on a short thick green stem. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "crown-open-37",
+   "prompt": "one big fully open white water lily flower seen from the side, many layered pointed cream-white petals with a soft pink blush at their tips, a glowing golden-yellow centre, two green sepals under it, on a short thick green stem. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "bamboo-bounce-11",
+   "prompt": "one springy green Guadua bamboo culm growing up from a small clump of roots and bending over in a deep arch, its segmented joints darker, its bowed tip carrying a broad flat springy tuft of palm fronds like a landing pad, a few narrow bamboo leaves, the whole shape like a bent spring, flat side view. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "bamboo-bounce-23",
+   "prompt": "one springy green Guadua bamboo culm growing up from a small clump of roots and bending over in a deep arch, its segmented joints darker, its bowed tip carrying a broad flat springy tuft of palm fronds like a landing pad, a few narrow bamboo leaves, the whole shape like a bent spring, flat side view. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "bamboo-bounce-37",
+   "prompt": "one springy green Guadua bamboo culm growing up from a small clump of roots and bending over in a deep arch, its segmented joints darker, its bowed tip carrying a broad flat springy tuft of palm fronds like a landing pad, a few narrow bamboo leaves, the whole shape like a bent spring, flat side view. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "bamboo-bounce-53",
+   "prompt": "one springy green Guadua bamboo culm growing up from a small clump of roots and bending over in a deep arch, its segmented joints darker, its bowed tip carrying a broad flat springy tuft of palm fronds like a landing pad, a few narrow bamboo leaves, the whole shape like a bent spring, flat side view. hand-painted 2D storybook platformer game prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a warm sunlit riverbank palette of olive and sage greens, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  }
+ ]
+}

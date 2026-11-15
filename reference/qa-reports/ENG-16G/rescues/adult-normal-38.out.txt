@@ -1,0 +1,2 @@
+adult normal seed 38: shrine, rescues 1, lives lost ?, hitBy {}, time 236.5
+  rescue at t 209.9 s (frame ~6296), x,y 43262,1009: over a pit (no tagged piece under him); last 3 s: swinging 1/90 frames, grounded 38/90, x 42905..43262, y 732..1009; last stuck note: t 209.9 fell into this pit 3 times (its far wall 253 px up)

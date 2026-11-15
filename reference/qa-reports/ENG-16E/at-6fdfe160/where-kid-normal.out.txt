@@ -1,0 +1,28 @@
+kid normal 1 shrine {"got":96,"need":95} rescues 2 RESCUE@risers:b1 RESCUE@gorge:b2 PIT@hang-low:b1 PIT@creaky-landing:b1 PIT@creaky-landing:b2 PIT@risers:b1 PIT@risers:b1 PIT@risers:b2 PIT@gorge:b1 PIT@gorge:b1 PIT@gorge:b2 PIT@gorge:b2
+kid normal 2 shrine {"got":102,"need":94} rescues 2 RESCUE@chain:show RESCUE@gorge:b1 PIT@snake-on-vine:b1 PIT@creaky-landing:b1 PIT@gorge:b1 PIT@gorge:b1
+kid normal 3 shrine {"got":110,"need":102} rescues 0 PIT@hang-low:b1 PIT@snake-on-vine:b1 PIT@creaky-landing:b2 PIT@risers:b1 PIT@risers:b2 PIT@risers:b2 PIT@false-liana:sb1 PIT@gorge:b1 PIT@gorge:b2 PIT@gorge:b2
+kid normal 4 shrine {"got":107,"need":97} rescues 0 LIFE@risers:b1(pit) PIT@hang-low:b1 PIT@snake-on-vine:b1 PIT@creaky-landing:b1 PIT@creaky-landing:b1 PIT@creaky-landing:b2 PIT@gorge:b1 PIT@gorge:b1 PIT@gorge:b2
+kid normal 5 shrine {"got":98,"need":90} rescues 2 LIFE@chain:m(pit) RESCUE@first-liana:b1 RESCUE@chain:show PIT@hang-low:b1 PIT@snake-on-vine:b1 PIT@snakes-met:b2 PIT@snake-on-vine:b1 PIT@risers:b1 PIT@false-liana:sb1 PIT@gorge:b2 PIT@gorge:gb2
+kid normal 6 shrine {"got":105,"need":95} rescues 1 RESCUE@gorge:d2 PIT@hang-low:b1 PIT@snake-on-vine:b1 PIT@creaky-landing:b2 PIT@creaky-landing:b2 PIT@false-liana:sb1 PIT@gorge:d2 PIT@gorge:d2 PIT@gorge:d2 PIT@gorge:d2
+
+TOTALS
+kid normal LIFE@chain:m 1
+kid normal LIFE@risers:b1 1
+kid normal PIT@creaky-landing:b1 4
+kid normal PIT@creaky-landing:b2 5
+kid normal PIT@false-liana:sb1 3
+kid normal PIT@gorge:b1 7
+kid normal PIT@gorge:b2 6
+kid normal PIT@gorge:d2 4
+kid normal PIT@gorge:gb2 1
+kid normal PIT@hang-low:b1 5
+kid normal PIT@risers:b1 4
+kid normal PIT@risers:b2 3
+kid normal PIT@snake-on-vine:b1 6
+kid normal PIT@snakes-met:b2 1
+kid normal RESCUE@chain:show 2
+kid normal RESCUE@first-liana:b1 1
+kid normal RESCUE@gorge:b1 1
+kid normal RESCUE@gorge:b2 1
+kid normal RESCUE@gorge:d2 1
+kid normal RESCUE@risers:b1 1

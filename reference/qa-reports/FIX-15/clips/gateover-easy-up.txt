@@ -1,0 +1,18 @@
+BUILT {"difficulty":"easy","builtDifficulty":"easy","stage":"1-4","seed":1,"orientation":"up","view":[412,915]}
+GATE {"gate":6,"figs":2,"bough":{"x":408,"r":928,"y":1923},"vines":[868,468],"ledge":null}
+TIES held from here: the cheat tries all run on a SHUT gate
+PRESS {"at":[868,2103],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[468,2081],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+TRY {"name":"climb up under it","head":0,"top":2103,"over":false,"stops":[],"end":{"head":0,"over":false,"shut":true,"x":868,"y":2103,"vy":0,"g":false,"c":true,"side":"under","onTop":false}}
+TRY {"name":"leap off the vine top","head":0,"top":2103,"over":false,"stops":["step 84: HEAD STOP (head 0 px vs underside)"],"end":{"head":null,"over":false,"shut":true,"x":1260,"y":3004,"vy":0,"g":true,"c":false,"side":null,"onTop":false}}
+TRY {"name":"leap + second flick","head":0,"top":2081,"over":false,"stops":["step 121: HEAD STOP (head 0 px vs underside)"],"end":{"head":-2,"over":false,"shut":true,"x":548,"y":2088,"vy":0,"g":false,"c":true,"side":"under","onTop":false},"second":"not pressed: he had caught a vine or landed before the top"}
+TRY {"name":"dropped onto it from over its middle","head":-1000000000,"top":1820,"over":true,"stops":["step 142: LANDED ON the shut bough's top (x 668)"],"end":{"head":null,"over":false,"shut":true,"x":668,"y":1937,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"onTop":"step 142"}
+STOP leap off the vine top | step 84: HEAD STOP (head 0 px vs underside)
+STOP leap + second flick | step 121: HEAD STOP (head 0 px vs underside)
+STOP dropped onto it from over its middle | step 142: LANDED ON the shut bough's top (x 668)
+THROUGH while shut: never
+ON ITS TOP while shut: dropped onto it from over its middle
+OVER while shut: YES (he got over a shut bough)
+HEAD most over the shut underside (px, <= 0 is under): 0
+FRAMES 119
+EXIT 0

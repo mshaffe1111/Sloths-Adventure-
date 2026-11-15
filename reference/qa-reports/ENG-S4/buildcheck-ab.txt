@@ -1,0 +1,24 @@
+== gates run 1 (99b7fb56)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+     normal: p50 62 ms, p95 171 ms, max 180 ms (30 builds, CPU x4)  OVER 150 ms
+     easy: p50 49 ms, p95 64 ms, max 78 ms (30 builds, CPU x4)
+== base run 1 (dd252669)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+     normal: p50 67 ms, p95 195 ms, max 230 ms (30 builds, CPU x4)  OVER 150 ms
+     easy: p50 58 ms, p95 84 ms, max 88 ms (30 builds, CPU x4)
+== gates run 2 (99b7fb56)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+     normal: p50 71 ms, p95 171 ms, max 216 ms (30 builds, CPU x4)  OVER 150 ms
+     easy: p50 55 ms, p95 90 ms, max 125 ms (30 builds, CPU x4)
+== base run 2 (dd252669)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+     normal: p50 83 ms, p95 132 ms, max 143 ms (30 builds, CPU x4)
+     easy: p50 54 ms, p95 78 ms, max 83 ms (30 builds, CPU x4)
+== gates run 3 (99b7fb56)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+     normal: p50 57 ms, p95 118 ms, max 151 ms (30 builds, CPU x4)
+     easy: p50 54 ms, p95 78 ms, max 86 ms (30 builds, CPU x4)
+== base run 3 (dd252669)
+   buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+     normal: p50 62 ms, p95 127 ms, max 139 ms (30 builds, CPU x4)
+     easy: p50 56 ms, p95 92 ms, max 95 ms (30 builds, CPU x4)

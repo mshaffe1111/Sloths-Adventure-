@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+not ok 1 - the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+  ---
+  duration_ms: 54829.116363
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/w1DoubleTeach.test.ts:33:1'
+  failureType: 'testCodeFailure'
+  error: "gen2 1-1 (normal): no seed of 24 from 88861 builds cleanly (the first: verdict band.out (normal): double-teach-first at x 6798 (s3): 138 px, over the band's 132)"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    provenGen2Stage (/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts:4046:9)
+    buildPlayStage (/home/user/Sloths-Adventure-/src/game/gen2/seedList.ts:241:10)
+    generateStage (/home/user/Sloths-Adventure-/src/game/stageGenerator.ts:2913:27)
+    new GameEngine (/home/user/Sloths-Adventure-/src/game/engine.ts:938:101)
+    new RealPlay (/home/user/Sloths-Adventure-/src/game/realPlay.ts:146:15)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/w1DoubleTeach.test.ts:43:52)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55692.636238

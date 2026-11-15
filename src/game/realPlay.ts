@@ -63,6 +63,15 @@ class FakeInput {
   jumpBuffer = 0;
   punchBuffer = 0;
   kickBuffer = 0;
+  /**
+   * as InputEngine.moves: every fresh input counted (inputEngine.ts fresh(): a jump flick, a punch or kick, a new direction (the gesture
+   * layer sends a move only when the direction changes, touchGestures.ts setDir), a duck or climb starting or ending, a hold or a still
+   * finger put down). The engine ends the steer pause after a put-back or a respawn at the first one (engine.ts inputGrace, graceMoves);
+   * with no count here the pause always ran its whole 0.35 s, so a hop pressed inside it went straight up (ENG-16F, graceFresh.test.ts)
+   */
+  moves = 0;
+  /** the pad of the frame before (what a fresh input is told from) */
+  last = { dir: 0, down: false, up: false, hold: false, touchHold: false };
   /** as InputEngine.dropPresses: the engine drops a press latched while it held the world (a respawn, a resume, an entrance's end) */
   dropPresses() {
     this.state.jumpPressed = false;
@@ -156,7 +165,7 @@ export class RealPlay {
     // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
     for (const m of COSMETIC) if (!(m === 'updateCamera' && (e.w5 || e.mc))) e[m] = noop;
     const guide = e.guide.bind(e);
-    e.guide = (text: string, seconds: number, o?: { teach?: true }) => {
+    e.guide = (text: string, seconds: number, o?: { teach?: true; lock?: true }) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
       // (and what the line is, as the stage says: its own teach line, StageHint.teach)
       guide(text, seconds, o);
@@ -289,6 +298,11 @@ export class RealPlay {
   /** one frame with these controls */
   frame(pad: Pad = {}) {
     const s = this.input.state;
+    const inp = this.input;
+    const dir = pad.left && !pad.right ? -1 : pad.right && !pad.left ? 1 : 0;
+    if (pad.press || pad.punch || pad.kick !== undefined || dir !== inp.last.dir || !!pad.down !== inp.last.down || !!pad.up !== inp.last.up
+      || (!!pad.hold && !inp.last.hold) || (!!pad.touchHold && !inp.last.touchHold)) inp.moves++;
+    inp.last = { dir, down: !!pad.down, up: !!pad.up, hold: !!pad.hold, touchHold: !!pad.touchHold };
     s.left = !!pad.left && !pad.right;
     s.right = !!pad.right && !pad.left;
     s.down = !!pad.down;
@@ -335,6 +349,8 @@ export class RealPlay {
     // must have them made again from its own size, by the same mode, or a sim's pieces past them are out of reach: INT-3, the flight
     // sim on 1-4 read every jump as 39 px)
     e.walls = e.mode.bounds({ levelWidth: 100000, exit: { x: 0, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
+    // (and the stage's runtime pieces are started again from the bare world's platforms, as the stage's start does: pieces/index.ts)
+    e.startPieces();
   }
 
   /** stand still for this many seconds */

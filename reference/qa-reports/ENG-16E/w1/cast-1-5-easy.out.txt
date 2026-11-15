@@ -1,0 +1,5 @@
+castBots 1-5, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+kid    easy   PASS 6/6; under the floor 0; time median 129.2 s (min 125.3); hits 0 lives 0 (none); cleared stomp 3; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 17
+adult  easy   PASS 6/6; under the floor 0; time median 129.5 s (min 126.4); hits 0 lives 0 (none); cleared punch 4, stomp 2; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 14
+child  easy   PASS 6/6; under the floor 0; time median 274.7 s (min 266.4); hits 1 lives 0 (foe:snake 1); cleared punch 6; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 14
+middle easy   PASS 6/6; under the floor 0; time median 179.8 s (min 171.6); hits 0 lives 0 (none); cleared stomp 3, punch 5; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 12

@@ -112,7 +112,7 @@ export const PAGES: JournalPage[] = [
   },
   {
     id: 'duck', chapter: 'moving', title: 'Duck', demo: 'duck', pose: 'duck', open: { always: true }, where: '', riddle: '',
-    intro: 'Get low. A low duck slips under a diving bird, and it is how you hide in a bush.',
+    intro: 'Get low. A low duck slips under a diving bird.',
     lines: {
       screen: [{ glyph: 'down', how: 'Slide down', what: 'Duck', sub: 'keep your thumb there to stay low' }],
       pad: [{ how: 'Pad ↓', what: 'Duck' }],
@@ -233,17 +233,20 @@ export const PAGES: JournalPage[] = [
 
   // ───────────── Sneaking ─────────────
   {
-    id: 'hide', chapter: 'sneaking', title: 'Hide in a bush', demo: 'hide', pose: 'duck',
-    open: { tip: [tip('1-7', 'An eagle is watching. Slide down inside a bush to hide'), ['1-7', 'watch:hide']], cleared: ['1-7'] },
+    id: 'hide', chapter: 'sneaking', title: 'Hide in the green', demo: 'hide', pose: 'stand',
+    // (KEEPER-17b, R-165.249, approved by the lead 11-14 4:06 PM ET; verbatim from reference/story/lines-1-7.md "Journal (KEEPER-17b)" on
+    // t-keeper-17@fdf06055. The tip is 1-7's bush line word for word: tip() keys the unlock on Dot's exact words. The pose and the demo
+    // show a still Pokey in the green, never a crouch: journalScenes.ts 'hide')
+    open: { tip: [tip('1-7', "When the eagle screams, get in the green and keep still. Then it can't see you!")], cleared: ['1-7'] },
     where: 'Learned in World 1', riddle: 'Dot knows a good trick for hiding from soldiers.',
-    intro: 'When the eagle screeches, its shadow is coming. Get inside a bush and keep low until it has gone by.',
+    intro: 'When the eagle screams, get into a bush, onto moss or onto a mossy liana, and keep still till its shadow has gone by. On bare bark it can see you, still or not.',
     lines: {
       screen: [
-        { glyph: 'down', how: 'Slide down inside a bush', what: 'Hide' },
-        { glyph: 'up', how: 'Hang inside a bush on a rope', what: 'Hide up high too' },
+        { how: 'Lift your thumb in the green', what: 'Hide', sub: 'a bush, moss or a mossy liana' },
+        { glyph: 'up', how: 'Grab a mossy liana and hang on', what: 'Hide while you swing' },
       ],
-      pad: [{ how: 'Pad ↓ inside a bush', what: 'Hide' }, { how: 'Hang inside a bush on a rope', what: 'Hide up high too' }],
-      keys: [{ how: 'S or ↓ inside a bush', what: 'Hide' }, { how: 'Hang inside a bush on a rope', what: 'Hide up high too' }],
+      pad: [{ how: 'Let go of the pad in the green', what: 'Hide' }, { how: 'Hang on to a mossy liana', what: 'Hide while you swing' }],
+      keys: [{ how: 'Let go of the keys in the green', what: 'Hide' }, { how: 'Hang on to a mossy liana', what: 'Hide while you swing' }],
     },
   },
   {
@@ -276,10 +279,10 @@ export const PAGES: JournalPage[] = [
   },
   {
     id: 'collapse', chapter: 'dangers', title: 'The collapsing branch', demo: 'collapse', pose: 'run',
-    open: { tip: [tip('1-8', 'This branch goes on and on')], cleared: ['1-8'] },
+    open: { tip: [tip('1-8', "It's cracking! Run, and don't look back!")], cleared: ['1-8'] },
     where: 'Found in World 1', riddle: 'Do not look back. Just run!',
-    intro: 'Some branches break apart behind you. Keep moving and it can never catch you. If it does, you lose a heart and go back to the last flag.',
-    lines: same([{ how: 'Keep going, do not stop', what: 'Stay ahead of it' }]),
+    intro: 'Some branches break apart behind you. Run, and stop only on a mossy fork that holds. If it catches you, you lose a heart and go back to the last flag.',
+    lines: same([{ how: 'Keep running; stop only on a mossy fork', what: 'Stay ahead of it' }]),
   },
   {
     id: 'drops', chapter: 'dangers', title: 'Snakes from above', demo: 'drops', pose: 'punch',

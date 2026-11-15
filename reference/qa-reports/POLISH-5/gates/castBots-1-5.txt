@@ -1,0 +1,12 @@
+castBots 1-5, seeds 1-10; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 9/10; under the floor 0; time median 132.8 s (min 130); hits 1 lives 1 (pit 1, foe:snake 1); cleared stomp 4; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 41
+        fail 1: shrine rescued x1  (seeds 6)
+kid    easy   PASS 10/10; under the floor 0; time median 129.2 s (min 125.3); hits 0 lives 0 (none); cleared stomp 5; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 30
+adult  normal PASS 9/10; under the floor 0; time median 132.5 s (min 127.7); hits 0 lives 0 (none); cleared stomp 6, punch 10; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 29
+        fail 1: shrine rescued x1  (seeds 3)
+adult  easy   PASS 10/10; under the floor 0; time median 129.9 s (min 126.4); hits 0 lives 0 (none); cleared punch 8, stomp 2; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 25
+child  normal PASS 10/10; under the floor 0; time median 394 s (min 374.7); hits 3 lives 13 (pit 12, foe:snake 3, other 1); cleared punch 13, stomp 4; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 28
+child  easy   PASS 10/10; under the floor 0; time median 274.7 s (min 244.8); hits 3 lives 0 (foe:snake 3); cleared punch 9, stomp 1, kick 1; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 24
+middle normal PASS 10/10; under the floor 0; time median 194.2 s (min 181.6); hits 1 lives 3 (pit 3, foe:snake 1); cleared stomp 7, punch 13; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 25
+middle easy   PASS 10/10; under the floor 0; time median 179.8 s (min 171.6); hits 0 lives 0 (none); cleared stomp 5, punch 9; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 21
+expert normal PASS 10/10; under the floor 0; time median 168.1 s (min 157.5); hits 0 lives 1 (pit 1); cleared stomp 6, punch 13; told of traps 0/10; first trap sprung 0/10; traps sprung 0/20; turned back 0; left 26

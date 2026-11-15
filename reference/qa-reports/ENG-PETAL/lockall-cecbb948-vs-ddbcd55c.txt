@@ -1,0 +1,75 @@
+1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-3 2-4 2-5 2-6 2-7 2-8 2-9 2-10 3-1 3-2 3-3 3-4 3-5 3-6 3-7 3-8 3-9 3-10 4-1 4-2 4-3 4-4 4-5 4-D 4-6 4-7 4-8 4-9 4-10 5-M 5-1 5-2 5-3 5-4 5-5 5-6 5-7 5-8 5-9 5-10 6-1 6-2 6-3 6-4 6-5 6-6 6-7 6-8 6-9 6-10 7-1 7-2 7-3 7-4 7-5 7-6 7-7 7-8 7-9 7-10 8-1 8-2 8-3 8-4 8-5 8-6 8-7 8-8 8-9 8-10 9-1 9-2 9-3 9-4 9-5 9-6 9-7 9-8 9-9 9-10 10-1 10-2 10-3 10-4 10-5 10-6 10-7 10-8 10-9 10-10 
+lock: 31/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9
+  1-1: collectibles, gen2, proto.mixDress, proto.dress
+  1-2: size, collectibles, gen2, easyGoal, normalGoal, proto.dress
+  1-3: collectibles, gen2, proto.dress
+  1-4: collectibles, gen2
+  1-5: collectibles, gen2, proto.dress
+  1-6: size, platforms, collectibles, gen2, easyGoal, normalGoal, proto.dress
+  1-7: collectibles, gen2, proto.dress
+  1-8: collectibles
+  1-9: collectibles, proto.dress
+  2-1: collectibles, proto.dress
+  2-2: size, collectibles, easyGoal, normalGoal, easyToday, proto.dress
+  2-3: collectibles, proto.dress
+  2-5: collectibles, proto.dress
+  2-7: collectibles, proto.dress
+  2-8: collectibles, proto.dress
+  2-9: collectibles, proto.dress
+  3-1: collectibles
+  3-2: collectibles, proto.dress
+  3-3: collectibles, proto.dress
+  3-5: collectibles, proto.kitDecor, proto.dress
+  3-6: collectibles, proto.dress
+  3-7: collectibles, proto.dress
+  3-8: collectibles, proto.dress
+  3-9: collectibles, proto.dress
+  4-2: collectibles, proto.dress
+  4-5: collectibles, proto.dress
+  4-8: collectibles, proto.dress
+  5-1: collectibles
+  5-5: collectibles, proto.dress
+  5-6: collectibles, dress
+  5-7: collectibles, gen2, proto.dress
+  5-8: collectibles
+  5-9: collectibles, gen2, proto.w5, proto.dress
+  6-1: collectibles, gen2, proto.dress
+  6-2: collectibles, gen2, proto.dress
+  6-3: collectibles, gen2, proto.dress
+  6-4: collectibles, gen2, proto.dress
+  6-5: collectibles, gen2, proto.dress
+  6-6: collectibles, gen2, proto.dress
+  6-7: collectibles, gen2, proto.dress
+  6-9: collectibles, gen2, proto.dress
+  7-1: collectibles, gen2, proto.dress
+  7-2: collectibles
+  7-3: collectibles, gen2, proto.dress
+  7-4: collectibles, proto.dress
+  7-5: collectibles, gen2, proto.dress
+  7-6: collectibles, gen2, proto.dress
+  7-7: collectibles, gen2, proto.dress
+  7-9: collectibles, gen2, proto.dress
+  8-1: collectibles, gen2, proto.dress
+  8-2: size, collectibles, gen2, easyGoal, normalGoal, platforms, enemies, exitTotemX, exitTotemY, checkpoints, zones, kit, proto.hints, proto.beats, proto.watch, proto.bushes, proto.gen2, proto.dress
+  8-3: collectibles, gen2, proto.dress
+  8-4: collectibles
+  8-5: collectibles, gen2, proto.dress
+  8-6: collectibles, gen2, proto.dress
+  8-8: collectibles, gen2, proto.dress
+  8-9: collectibles, gen2, proto.dress
+  9-1: collectibles, dress
+  9-2: collectibles
+  9-3: collectibles, dress
+  9-4: collectibles, dress
+  9-5: collectibles
+  9-6: collectibles, dress
+  9-7: collectibles
+  9-8: collectibles, dress
+  9-9: collectibles, dress
+  10-1: collectibles, dress
+  10-3: collectibles, dress
+  10-6: collectibles, dress
+  10-7: collectibles, dress
+  10-9: collectibles, dress
+EXIT 1 22:26

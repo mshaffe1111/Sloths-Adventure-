@@ -1,0 +1,3 @@
+BUILT {"difficulty":"easy","builtDifficulty":"easy","stage":"1-4","seed":1,"orientation":"up","view":[412,915]}
+FORK {"boughs":[{"x":588,"y":1141,"w":148},{"x":708,"y":1201,"w":148},{"x":828,"y":1261,"w":148}]}
+FRAMES 134

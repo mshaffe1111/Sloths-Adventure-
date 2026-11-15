@@ -1,0 +1,12 @@
+child normal seed 4: end sealed door, goal {"got":20,"need":21}, rescues 0; flowers laid 24, picked 20, left 4; laidAsks 9
+  petal 1 x 6128 y 822 | piece hang-low:b1 solid 5989..6289 y 856 | walked span 6014..6158 | stood 6011..6237 (32 frames) | closest pass 38 px (him x 6100 y 820 airborne)
+  petal 12 x 27420 y 819 | piece creaky-landing:in solid 27361..27681 y 853 | walked span 27508..27436 (next piece) | stood 27527..27555 (4 frames) | closest pass 39 px (him x 27390 y 818 airborne)
+  petal 16 x 39397 y 735 | piece false-liana:sb1 solid 39288..39588 y 769 | walked span 39325..39457 | stood 39450..39561 (57 frames) | closest pass 45 px (him x 39441 y 747 airborne)
+  petal 18 x 41194 y 684 | piece rest-stumps:s1 solid 41107..41241 y 718 | walked span 41166..41225 | never stood on it | closest pass 60 px (him x 41247 y 679 airborne)
+child normal seed 8: end sealed door, goal {"got":18,"need":19}, rescues 0; flowers laid 22, picked 18, left 4; laidAsks 6
+  petal 13 x 39152 y 853 | piece false-liana:sb1 solid 39043..39343 y 887 | walked span 39076..39212 | stood 39263..39289 (21 frames) | closest pass 103 px (him x 39253 y 860 airborne)
+  petal 14 x 39212 y 853 | piece false-liana:sb1 solid 39043..39343 y 887 | walked span 39076..39212 | stood 39263..39289 (21 frames) | closest pass 45 px (him x 39253 y 860 airborne)
+  petal 15 x 40805 y 785 | piece rest-stumps:s1 solid 40718..40850 y 819 | walked span 40779..40840 | never stood on it | closest pass 61 px (him x 40755 y 774 airborne)
+  petal 16 x 41082 y 785 | piece rest-stumps:s2 solid 41014..41150 y 819 | walked span 41034..41150 | never stood on it | closest pass 46 px (him x 41042 y 786 airborne)
+(BOT=child SET=normal SEEDS=4,8 npx tsx reference/qa-reports/ENG-16I/petals.ts on ddbcd55c, 10:29 PM ET. NB the tool reads walkedSpan without `away`,
+ so its span can differ from the lay's: seed 4's petal 12 shows an empty span here.)

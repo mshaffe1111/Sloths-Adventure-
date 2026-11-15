@@ -15,8 +15,8 @@ export interface Bush {
   x: number;
   w: number;
   y: number;
-  /** 'grotto': World 3's fern (w3Art.ts) */
-  kind: 'tall' | 'wide' | 'fern' | 'grotto';
+  /** 'grotto': World 3's fern (w3Art.ts); 'moss' a moss carpet, 'mossPatch' a moss mound, 'mossHang' hanging moss (World 1's 1-7, w17Art.ts) */
+  kind: 'tall' | 'wide' | 'fern' | 'grotto' | 'moss' | 'mossPatch' | 'mossHang';
   hanging?: boolean;
   /** the bush in front of the hidden hollow: not a hiding place (there is no ground under it) */
   secret?: boolean;
@@ -32,6 +32,13 @@ export interface WatchZone {
    * 80 s on ?layout=1 upright; the easiest world's eagle shows each new stretch's rhythm once before it can strike)
    */
   freeFirst?: boolean;
+  /** a kit sweeper's glance over this stretch (predators Glance), when the stage's still row sets its own; false: none here */
+  glance?: import('./predators/types.ts').Glance | false;
+  /**
+   * a stretch the creature kit watches, not this file (World 1's eagle: gen2/stillLay.ts castWatches turns it into that animal over
+   * the stretch before the stage is built, so a built stage never carries one)
+   */
+  cast?: string;
   /** this stretch's warning and sweep (s), when not WATCH's (World 4 on Normal, w4Normal.ts) */
   warn?: number;
   pass?: number;

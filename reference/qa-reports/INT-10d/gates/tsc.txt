@@ -1,0 +1,2 @@
+start 3:43 PM head 97697c1d1: npx tsc --noEmit -p .
+exit 0 end 3:43 PM

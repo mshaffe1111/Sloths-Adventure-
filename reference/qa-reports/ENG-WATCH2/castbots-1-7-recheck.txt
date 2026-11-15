@@ -1,0 +1,14 @@
+start 11:57 AM
+castBots 1-7, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 37/40; under the floor 0; time median 206 s (min 183.4); hits 382 lives 25 (foe:eagle 407); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 3: shrine rescued x1  (seeds 5,1,28)
+kid    easy   PASS 40/40; under the floor 0; time median 193 s (min 183.4); hits 69 lives 0 (foe:eagle 69); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+adult  normal PASS 40/40; under the floor 0; time median 200.5 s (min 191.7); hits 180 lives 0 (foe:eagle 180); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+adult  easy   PASS 40/40; under the floor 0; time median 196.1 s (min 189.6); hits 68 lives 0 (foe:eagle 68); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+child  normal PASS 39/40; under the floor 0; time median 501.6 s (min 476.4); hits 125 lives 0 (foe:eagle 125); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 1: shrine rescued x1  (seeds 37)
+child  easy   PASS 40/40; under the floor 0; time median 363.4 s (min 299.5); hits 52 lives 0 (foe:eagle 52); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+middle normal PASS 40/40; under the floor 0; time median 284 s (min 265.2); hits 112 lives 1 (foe:eagle 113); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+middle easy   PASS 40/40; under the floor 0; time median 250 s (min 224.7); hits 40 lives 0 (foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+expert normal PASS 40/40; under the floor 0; time median 244.6 s (min 220); hits 123 lives 0 (foe:eagle 123); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+rc=0 end 12:00 PM

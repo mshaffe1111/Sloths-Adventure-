@@ -78,7 +78,15 @@ export const ruleFor = (fx: string): Rule => ({ ...BASE, ...(RULES[fx] ?? (fx.st
 export interface RecCall {
   fx: string;
   takes?: number[];
+  /** a level on top of the take's own and the mix's (dB): one recording played softer or louder by what it means (the log's knock) */
+  db?: number;
 }
+
+/**
+ * A drifting log's knock as it slides out from under its bank (river.ts logKnocks; 2-1.md NEW 2): the recorded log thump, soft on
+ * Normal (a beat under the music, never a cue that shouts) and louder on Easy (2-1.md: "the knock louder"), so a child hears when to hop.
+ */
+export const KNOCK_DB = { normal: -9, easy: -3 } as const;
 
 const PUZZLE: Readonly<Record<string, string>> = { gate: 'gate', chime: 'windChime' };
 
@@ -116,6 +124,8 @@ export function recFor(name: string, arg: number | undefined, surface: Surface =
     case 'rockWarn':
     case 'windChime':
     case 'bounce':
+    case 'knock':
+      return { fx: 'log', db: a >= 1 ? KNOCK_DB.easy : KNOCK_DB.normal };
     case 'log':
     case 'crumble':
     case 'thorns':
@@ -234,7 +244,7 @@ export function playRec(core: AudioCore, call: RecCall, opts: { pan?: number; db
   src.buffer = list[k];
   src.playbackRate.value = 1 + (Math.random() * 2 - 1) * r.pitch;
   const g = c.createGain();
-  const db = (TAKE_DB[call.fx]?.[k] ?? 0) + (MIX_DB[call.fx] ?? 0) + (opts.db ?? 0) + (Math.random() * 2 - 1) * r.gain;
+  const db = (TAKE_DB[call.fx]?.[k] ?? 0) + (MIX_DB[call.fx] ?? 0) + (call.db ?? 0) + (opts.db ?? 0) + (Math.random() * 2 - 1) * r.gain;
   g.gain.value = Math.pow(10, db / 20);
   src.connect(g);
   let node: AudioNode = g;

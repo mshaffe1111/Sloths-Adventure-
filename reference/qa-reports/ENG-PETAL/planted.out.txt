@@ -1,0 +1,10 @@
+start 22:22
+plain-jumps: planted RED (CAUGHT) # fail 2 |  | restored GREEN
+away: planted RED (CAUGHT) # fail 1 |  | restored GREEN
+walk-pass: planted RED (CAUGHT) # fail 1 | +   'petal 48 x 17839 outside 17623-17782 (piece 17623+232)' | restored GREEN
+fill-span: planted RED (CAUGHT) # fail 1 | +   'petal 109 x 32375 outside 32408-32625 (piece 32322+434)', | restored GREEN
+wall: planted RED (CAUGHT) # fail 1 | +   'normal seed 1: the floor joined under 27933..28090 (y 1133) has no wall', | restored GREEN
+brief-fill: planted RED (CAUGHT) # fail 1 |  | restored GREEN
+ALL CAUGHT
+end 22:25
+EXIT 0

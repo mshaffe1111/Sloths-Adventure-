@@ -1,0 +1,9 @@
+start 12:38 PM head bbefea2c2
+exit 0
+end 12:42 PM
+castBots 1-7: 200 runs
+  child  easy   PASS 40/40; lives 0; rescues 0
+  child  normal PASS 40/40; lives 1; rescues 0
+  expert normal PASS 40/40; lives 0; rescues 0
+  middle easy   PASS 40/40; lives 0; rescues 0
+  middle normal PASS 40/40; lives 0; rescues 0

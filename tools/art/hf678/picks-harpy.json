@@ -1,0 +1,58 @@
+{
+ "harpy-ahead-s2": {
+  "pieces": [
+   {
+    "name": "w17-harpy-perch-ahead",
+    "units": 130,
+    "at": [
+     0.5,
+     0.5
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "harpy-blink-s2": {
+  "pieces": [
+   {
+    "name": "w17-harpy-perch-blink",
+    "units": 130,
+    "at": [
+     0.5,
+     0.5
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "harpy-down-s2": {
+  "pieces": [
+   {
+    "name": "w17-harpy-perch-down",
+    "units": 130,
+    "at": [
+     0.5,
+     0.5
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "harpy-turn-s2": {
+  "pieces": [
+   {
+    "name": "w17-harpy-perch-turn",
+    "units": 130,
+    "at": [
+     0.5,
+     0.5
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ }
+}

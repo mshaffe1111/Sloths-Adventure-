@@ -35,8 +35,8 @@ export interface RouteAsk { x0: number; x1: number; yTake: number; yLand: number
 
 /** the move each kind is BUILT for (the flick, bands.md §1) and the lesser move it must keep out (a block's) */
 export const TAUGHT: Record<SectionKind, ReachMove> = {
-  'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick',
-  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce-air', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
+  'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick', 'double-teach-first': 'double-flick',
+  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce', 'bounce-reuse': 'bounce', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
 };
 
 /**
@@ -46,9 +46,17 @@ export const TAUGHT: Record<SectionKind, ReachMove> = {
  * A 'double' PLACE that is not a declared double block (pieces' `block`) and whose figure fits the single band on this setting is a
  * single section (w1-leap-stones' 50-60 px stones: the place is the builder's envelope, not a lesson; the Critic, E0a attempt 1).
  */
-export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty): { kind: SectionKind; figure: number } {
+export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty, airTaught = true, bounceReused = false): { kind: SectionKind; figure: number } {
   const rise = a.yTake - a.yLand, gap = a.x1 - a.x0;
-  if (a.move === 'bounce' || a.block === 'bounce') return { kind: inTeach ? 'bounce-teach' : 'bounce-air-test', figure: rise };
+  if (a.move === 'bounce' || a.block === 'bounce') {
+    if (inTeach) return { kind: 'bounce-teach', figure: rise };
+    // (FIX-GATES: on a stage after the bounce is taught (skills.ts bounceReusedAt), a lip the bounce alone reaches is the taught bounce
+    //  reused, on its own band; a lip past it still asks for the bounce + air jump)
+    const reuse = BANDS['bounce-reuse'][setting];
+    if (bounceReused && reuse !== 'none' && rise <= reuse.hi) return { kind: 'bounce-reuse', figure: rise };
+    // (and before any stage teaches the bounce + air jump, every other bounce lip is judged as the bounce alone: skills.ts comboGuaranteedAt, FIX-21)
+    return { kind: airTaught ? 'bounce-air-test' : 'bounce-teach', figure: rise };
+  }
   const single = (): { kind: SectionKind; figure: number } => (rise > 20 ? { kind: 'single-rise', figure: rise } : { kind: 'single-gap', figure: gap });
   if (a.move === 'double' && a.block !== 'double') {
     const s = single(), band = BANDS[s.kind][setting];
@@ -95,9 +103,11 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
   if (q.kind === 'single-rise' && q.figure > link.single.climb.thin) v('arc.single-rise-over', `${where}: ${R(q.figure)} px, over a flick's climb ${link.single.climb.thin}`, meas(q.figure, link.single.climb.thin, true, arc('single-flick', scope).source + ' climb, thin'));
   // (a block: the lesser move at its best must fail with SPARE to spare; the taught move must clear it)
   const lesserOf = (): { px: number; what: string; source: string } | undefined => {
-    if (q.kind === 'double-teach-rise' || q.kind === 'double-teach-rise-thin') return { px: thin ? lesser.single.climb.thin : lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
+    if (q.kind === 'double-teach-rise' || q.kind === 'double-teach-rise-thin' || q.kind === 'double-teach-first') return { px: thin ? lesser.single.climb.thin : lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
     if (q.kind === 'double-test-gap') return { px: lesser.single.gap, what: 'one jump crosses', source: arc('single-hold', scope).source + ' any timing' };
-    if (q.kind === 'bounce-teach' || q.kind === 'bounce-air-test') {
+    // (the bounce teach teaches, it does not block (bands.md §4 "the other way", POLISH-7): one jump must not climb it; a double may)
+    if (q.kind === 'bounce-teach' || q.kind === 'bounce-reuse') return { px: lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
+    if (q.kind === 'bounce-air-test') {
       const b = arc('bounce', scope).climb.block, d = lesser.double.climb.block;
       return b >= d ? { px: b, what: 'a bounce alone climbs', source: arc('bounce', scope).source + ' climb' } : { px: d, what: 'a plain double climbs', source: arc('double-hold', scope).source + ' climb' };
     }
@@ -118,7 +128,7 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
 
 // ───────────────────────── the drops ─────────────────────────
 
-const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art'] satisfies readonly SoftLook[];
+const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art', 'safe-water-art'] satisfies readonly SoftLook[];
 const LETHAL_LOOKS: readonly string[] = ['water-art', 'void-dark'] satisfies readonly LethalLook[];
 const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
 /** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */
@@ -127,11 +137,16 @@ const LOOKS: Record<string, readonly string[]> = { lethal: LETHAL_LOOKS, soft: S
 /** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look */
 export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>): Verdict[] {
   const out: Verdict[] = [];
+  // (ENGINE-WORTHY 1, the lead's ruling 11-14: PAINTED water is its own danger mark, so a lethal drop drawn as water wants Dot's line at the
+  // stage's FIRST such drop only (the teaching rule, WATER_WARN) and no sign; any other lethal drop (World 8's dark) wants both, every time)
+  const firstWater = (st.drops as readonly Drop[]).filter((d) => isLethal(d) && d.look === 'water-art').sort((a, b) => a.x0 - b.x0)[0];
   for (const d of st.drops as readonly Drop[]) {
     const at = { x0: R(d.x0), x1: R(d.x1) };
     if (isLethal(d) && st.policy === 'no-lethal') out.push({ name: 'drop.lethal-in-no-lethal', setting: st.setting, at, line: `a fall into ${(d.ends as { cause: string }).cause} costs a life at x ${at.x0}..${at.x1} on a no-lethal stage` });
     const w = (d as { warn?: { dotLine?: string; sign?: boolean } }).warn;
-    if (isLethal(d) && (!w || !w.dotLine || w.sign !== true)) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the lethal drop at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
+    const painted = isLethal(d) && d.look === 'water-art';
+    const unwarned = painted ? d === firstWater && (!w || !w.dotLine) : isLethal(d) && (!w || !w.dotLine || w.sign !== true);
+    if (unwarned) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the ${painted ? 'first water' : 'lethal drop'} at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
     const end = isLethal(d) ? 'lethal' : d.ends.kind === 'heart' ? 'heart' : 'soft';
     if (!LOOKS[end].includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${end} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
   }

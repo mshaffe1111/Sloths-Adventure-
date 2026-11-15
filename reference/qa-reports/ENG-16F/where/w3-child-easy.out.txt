@@ -1,0 +1,9 @@
+child easy 1 time {"got":97,"need":82} rescues 0 
+child easy 2 time {"got":86,"need":82} rescues 0 
+child easy 3 time {"got":93,"need":84} rescues 0 
+child easy 4 time {"got":81,"need":80} rescues 0 
+child easy 5 time {"got":82,"need":80} rescues 1 RESCUE@snakes-met:d1
+child easy 6 time {"got":77,"need":74} rescues 0 
+
+TOTALS
+child easy RESCUE@snakes-met:d1 1

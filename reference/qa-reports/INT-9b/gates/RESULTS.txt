@@ -1,0 +1,29 @@
+head b288b3faf start 4:43 PM
+tsc 0 4:43 PM
+build 0 4:43 PM
+chunkcheck 0 4:43 PM
+artcheck 0 4:43 PM
+knowncheck 0 4:43 PM
+generality 0 4:43 PM
+roadmap 0 4:44 PM
+unit3 1 5:05 PM
+unit2 0 5:07 PM
+unit1 0 5:08 PM
+seedlists 0 5:16 PM
+registry 0 5:16 PM
+tooltests 0 5:17 PM
+tipwalk 0 5:17 PM
+modelgate 0 5:17 PM
+tierBots 0 5:18 PM
+drawcheck 0 5:25 PM
+clipcheck 0 5:31 PM
+kbdcheck 0 5:34 PM
+buildcheck 0 5:34 PM
+done 5:34 PM
+buildcheck-alone 0 5:35 PM
+post-repin (test-only change on b288b3fa's gated head) 5:40 PM:
+softFalls11.test.ts whole file 7/7 (all 3 layouts of the 8-3 pin reached)
+post-repin tsc 0
+post-repin knowncheck 0
+post-repin roadmap 0
+post-repin generality 0

@@ -1,0 +1,6 @@
+# tests 3407
+# pass 3405
+# fail 0
+# todo 2
+seedlist 1-4: PASS (100 seeds, each clean on both settings)
+EXIT 0

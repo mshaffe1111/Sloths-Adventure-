@@ -1,0 +1,14 @@
+== 1-2 22:49
+seedlist 1-2: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-2: PASS (100 seeds, each clean on both settings)
+== 1-3 22:51
+seedlist 1-3: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+DONE 22:51
+== 1-4 22:49
+  1-4 seed 66 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 66 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+== 1-1 22:52
+  1-1 seed 33616 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 33616 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+DONE 23:01

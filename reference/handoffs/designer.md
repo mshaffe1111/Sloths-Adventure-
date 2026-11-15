@@ -243,3 +243,10 @@ Every ruling below cites the file and section where it's written in full.
 - **A tip in a brick is not a line on the screen** (1-2, 11-12): placed 1,000 px before the lesson, it was still never shown (coach lines and Dot's 30 s spacing). Walk the real page from the start and read the card, every lesson line, before calling it taught.
 - **A brick's flag socket does nothing on a rolled stage:** the rolled-flag pass lays every flag by Matt's rule. Design flags as that rule, not as sockets.
 - **The time model counts 1.5 s a mushroom** (stageTime.ts TIME.bounceExtra): a chain-heavy level reads about 40 s longer than it plays.
+- **A finish that assumes level ground meets a rolled join (BUILD-18b, 1-8, 11-14):** the pipeline rolls the join before every section
+  (pipeline.ts ~2402: walk, step or pit; World 1's floorRoll adds pit weight even on quiet nodes) and no brick can ask for a walk in. 1-8
+  seed 2 rolls a pit at the still fork's start (layStillFork: "ground breaks"); layouts with a step into the tip leave the flag inside
+  layTip's far bough. Both are ENGINE-WORTHY with the lead; never "fix" them by refusing the rolls in the seed list.
+- **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
+  crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
+  Look at the platforms AT the settle (log the settle's input) before blaming the level's data.

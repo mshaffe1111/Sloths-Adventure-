@@ -1,0 +1,5 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-4","seed":1,"orientation":"up","view":[412,915]}
+PAIR {"a":594,"b":674,"petals":3,"x":634}
+ONE 1.33 s petals 0
+TWO 0.87 s petals 2
+FRAMES 48

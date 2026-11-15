@@ -1,0 +1,154 @@
+TAP version 13
+# MIDDLE strider, stood at the lip (s): without the hold 1.60, 1.10, 0.40, 0.27, 0.13, 0.00; with it 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+# stood at the lip (s), by the swing's starting moment: plain swing 0.27, 0.00, 2.17, 1.67, 1.20, 0.73; phased 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+# Subtest: chase bots: the CHILD bot on normal on a laid stretch, three seeds: the front never catches him
+ok 1 - chase bots: the CHILD bot on normal on a laid stretch, three seeds: the front never catches him
+  ---
+  duration_ms: 1167.265111
+  type: 'test'
+  ...
+# Subtest: chase bots: the MIDDLE bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 2 - chase bots: the MIDDLE bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 692.694486
+  type: 'test'
+  ...
+# Subtest: chase bots: the EXPERT bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 3 - chase bots: the EXPERT bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 319.562395
+  type: 'test'
+  ...
+# Subtest: chase bots: the MIDDLE bot on easy on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 4 - chase bots: the MIDDLE bot on easy on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 335.26303
+  type: 'test'
+  ...
+# Subtest: chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds
+not ok 5 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+  ---
+  duration_ms: 391.159361
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/chaseBots.test.ts:110:1'
+  failureType: 'testCodeFailure'
+  error: 'reached the fork on 1 of 3'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/chaseBots.test.ts:112:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: chase bots, PLANTED (rule 21): a player who stops at every edge past the stop budget is caught without the skill and safe with it
+ok 6 - chase bots, PLANTED (rule 21): a player who stops at every edge past the stop budget is caught without the skill and safe with it
+  ---
+  duration_ms: 213.71803
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the MIDDLE bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 7 - chase bots read the nut and the fruit: the MIDDLE bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 455.221982
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the EXPERT bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 8 - chase bots read the nut and the fruit: the EXPERT bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 313.170661
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the MIDDLE bot on easy, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 9 - chase bots read the nut and the fruit: the MIDDLE bot on easy, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 272.07338
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not
+ok 10 - chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not
+  ---
+  duration_ms: 712.76334
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the MIDDLE bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 11 - chase bots at the still fork: the MIDDLE bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 457.73202
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the EXPERT bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 12 - chase bots at the still fork: the EXPERT bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 314.754538
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the MIDDLE bot on easy, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 13 - chase bots at the still fork: the MIDDLE bot on easy, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 319.071327
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): at the still fork a player without the hide runs on into the eagle's pass and is dived on; with it he is not
+ok 14 - chase bots, PLANTED (rule 21): at the still fork a player without the hide runs on into the eagle's pass and is dived on; with it he is not
+  ---
+  duration_ms: 757.743947
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the MIDDLE STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 15 - chase bots and the runner liana: the MIDDLE STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 665.88267
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the EXPERT STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 16 - chase bots and the runner liana: the EXPERT STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 616.946883
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the MIDDLE STRIDER bot on easy, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 17 - chase bots and the runner liana: the MIDDLE STRIDER bot on easy, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 443.542796
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): the runner liana's held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none
+ok 18 - chase bots, PLANTED (rule 21): the runner liana's held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none
+  ---
+  duration_ms: 917.126718
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none
+ok 19 - chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none
+  ---
+  duration_ms: 856.433063
+  type: 'test'
+  ...
+# Subtest: chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap 50 px) on 3 of 3 seeds: no fall, no catch, through
+ok 20 - chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap 50 px) on 3 of 3 seeds: no fall, no catch, through
+  ---
+  duration_ms: 477.381307
+  type: 'test'
+  ...
+# Subtest: chase bots on EASY, PLANTED (rule 21): 10 px past Easy's chase gap the same CHILD drops a seed (the number is the edge of what he clears)
+ok 21 - chase bots on EASY, PLANTED (rule 21): 10 px past Easy's chase gap the same CHILD drops a seed (the number is the edge of what he clears)
+  ---
+  duration_ms: 382.786892
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 12557.616414

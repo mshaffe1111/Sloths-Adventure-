@@ -623,6 +623,8 @@ SCALE_RANGE = {
     'soft landing': (None, 1.0),
     'decor near': (0.2, 2.0),
     'backdrop': None, 'climb': None, 'danger look': None, 'decor mid': None,
+    # a pole or post that holds a bough or plank up (he never stands on it) is sized to what it holds: no cap (the lead 11-14, ART-678b)
+    'support': None,
 }
 # tiled or stretched: drawn as many tiles or stretched to a length the stage sets (a trunk or liana tiled up, a moss strip along a
 # platform top, a rope post sized to its rope, a band along the bottom), so one tile's height is no verdict on its scale (Critic 11-11)
@@ -780,7 +782,7 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
         for lay in sorted({r.get('layer', '') for r in rs}):
             q = [r for r in rs if r.get('layer') == lay]
             L.append(f"| {lay} | {sum(1 for r in q if ingame(r))} | {sum(1 for r in q if not ingame(r))} | {sum(1 for r in q if (r.get('status') or '').startswith('ready'))} | {sum(1 for r in q if (r.get('status') or '').startswith('needs fix'))} |")
-        LEVEL = STANDABLE | {'danger look', 'climb', 'decor near', 'decor mid', 'backdrop'}
+        LEVEL = STANDABLE | {'danger look', 'climb', 'decor near', 'decor mid', 'backdrop', 'support'}
         cast = Counter(r.get('layer') for r in rs if r.get('layer') not in LEVEL)
         L += ['', 'Cast and UI shown here (not level art): ' + ', '.join(f'{k} {v}' for k, v in sorted(cast.items())) + '.']
         lv = [r for r in rs if r.get('layer') in LEVEL]
@@ -840,7 +842,7 @@ def num(v):
     return int(f) if f == int(f) else round(f, 1)
 
 
-LEVEL_LAYERS = ('platform', 'step', 'soft landing', 'climb', 'danger look', 'decor near', 'decor mid')
+LEVEL_LAYERS = ('platform', 'step', 'soft landing', 'climb', 'danger look', 'decor near', 'decor mid', 'support')
 PLAY_PREFIX = ('landing', 'climbable', 'other/', 'new slot', 'stageArtData', 'pickCut', 'w1CutArt')
 
 

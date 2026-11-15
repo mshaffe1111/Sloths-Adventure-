@@ -1,0 +1,4 @@
+6-1 up grab: worst move 14.7 css px (f13), worst jerk 6.9 (f13)
+6-1 up vault: worst move 11.4 css px (f23), worst jerk 5.1 (f22)
+6-1 side grab: worst move 16.3 css px (f13), worst jerk 13.8 (f13)
+6-1 side vault: worst move 15.1 css px (f23), worst jerk 8.9 (f22)

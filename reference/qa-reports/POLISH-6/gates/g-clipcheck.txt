@@ -1,0 +1,15 @@
+World 7 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 5-10: Tarantula Queen's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 5 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 1-10: Venom Fang's Lair, Boss, 2 stars"  (inside the right inset)
+      world map: World 1 of 10 @ side/old; world map: World 1 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 4-10: Sky Sovereign's Lair, Boss, locked"  (inside the right inset)
+      world map: World 4 of 10 @ side/old; world map: Worlds pop-up @ side/old; world map: Worlds pop-up (scrolled to the end) @ side/old
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 1-10: Venom Fang's Lair, Boss, locked"  (inside the right inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh; world map: World 4 of 10 @ side/old; +2 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "Stage 5-M: On the March North, Stealth"  (inside the left inset)
+      world map: World 5 of 10 @ side/done
+
+PASS (83 known) (453 s; contact sheet and breaches.json in /tmp/clipcheck-gw23Zu)

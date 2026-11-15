@@ -1,0 +1,30 @@
+start 3:44 PM head 97697c1d1 (second try: playwright linked)
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-fresh-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-fresh-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-old-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-old-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-fresh-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-fresh-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-old-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-old-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/walk-1-6-L1-normal-up-x25000-31000.mp4 347 frames 23.1 s
+wrote reference/qa-reports/INT-10d/shots/walk-1-6-L1-normal-side-x25000-31000.mp4 347 frames 23.1 s
+wrote reference/qa-reports/INT-10d/shots/walk-1-6-L1-easy-up-x25000-31000.mp4 347 frames 23.1 s
+wrote reference/qa-reports/INT-10d/shots/walk-1-6-L1-easy-side-x25000-31000.mp4 347 frames 23.1 s
+  f91: hunt -> rest (eye 4824, him 4964)
+  f281: rest -> hunt (eye 5164, him 4964)
+  f302: glance away -> fake (him 18237)
+  f317: rest -> hunt (eye 19131, him 18237)
+  f105: hunt -> rest (eye 4824, him 5587)
+  f105: out of its stretch by 420 px
+PLACED {"stage":"1-7","eagle":1,"mode":"glance","diff":"easy","ori":"up","layout":1,"sx":5008,"gy":838,"x0":4868,"x1":5208,"perched":false,"home":4868,"hp":5,"easy":true}
+  f115: hunt -> rest (eye 4868, him 5008)
+  f91: hunt -> rest (eye 4824, him 4964)
+  f281: rest -> hunt (eye 5164, him 4964)
+  f302: glance away -> fake (him 18237)
+  f317: rest -> hunt (eye 19131, him 18237)
+  f105: hunt -> rest (eye 4824, him 5587)
+  f105: out of its stretch by 420 px
+PLACED {"stage":"1-7","eagle":1,"mode":"glance","diff":"easy","ori":"side","layout":1,"sx":5008,"gy":838,"x0":4868,"x1":5208,"perched":false,"home":4868,"hp":5,"easy":true}
+  f115: hunt -> rest (eye 4868, him 5008)
+exit 0 end 4:05 PM

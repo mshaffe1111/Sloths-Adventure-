@@ -1,0 +1,13 @@
+kid easy 1 shrine {"got":123,"need":82} rescues 0 
+kid easy 2 shrine {"got":126,"need":82} rescues 0 PIT@hang-low:b1 PIT@snake-on-vine:b1 PIT@snake-on-vine:b1 PIT@false-liana:sb1
+kid easy 3 shrine {"got":123,"need":84} rescues 0 
+kid easy 4 shrine {"got":116,"need":80} rescues 0 PIT@hang-low:b1 PIT@chain:cb PIT@snake-on-vine:b1
+kid easy 5 shrine {"got":120,"need":80} rescues 0 PIT@hang-low:b1 PIT@false-liana:sb1 PIT@gorge:gb1
+kid easy 6 shrine {"got":113,"need":74} rescues 0 PIT@snake-on-vine:b1
+
+TOTALS
+kid easy PIT@chain:cb 1
+kid easy PIT@false-liana:sb1 2
+kid easy PIT@gorge:gb1 1
+kid easy PIT@hang-low:b1 3
+kid easy PIT@snake-on-vine:b1 4

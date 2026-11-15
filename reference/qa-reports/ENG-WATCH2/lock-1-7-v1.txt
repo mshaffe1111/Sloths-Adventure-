@@ -1,0 +1,5 @@
+1-7 
+lock: 0/1 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-7
+  1-7 (intended): enemies
+rc=0

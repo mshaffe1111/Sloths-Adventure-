@@ -1,0 +1,10 @@
+PLANT a perched eagle rides its eye: # pass 4 # fail 3 
+PLANT never drawn perched: # pass 5 # fail 2 
+PLANT no blink on him hidden: # pass 5 # fail 2 
+PLANT perched on the ground: # pass 6 # fail 1 
+PLANT carpet thins (first run: no test, draw-only; mossAlpha + its test added): # pass 6 # fail 1 
+PLANT hanging moss laid as ground cover: # pass 4 # fail 2 
+PLANT m not checked by hides: # pass 5 # fail 1 
+PLANT moss not preloaded: # pass 5 # fail 1 
+PLANT bot never stops in cover: # pass 1 # fail 1 
+PLANT bot never hides from the kit eagle: # pass 1 # fail 1 

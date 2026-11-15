@@ -2,7 +2,7 @@
  "sheet": "w6balt.webp",
  "size": {
   "w": 2048,
-  "h": 608
+  "h": 417
  },
  "anchor": "middle of the foot",
  "pairs": [],
@@ -10,7 +10,6 @@
   "raft-b": "w6balt-s50-5",
   "sluice-wheel-b": "w6balt-s50-5",
   "gauge-post-b": "w6balt-s50-5",
-  "seesaw-b": "w6balt-s50-5",
   "stone-b": "w6balt-s50-5",
   "lily-pads-b": "w6balt-s50-5"
  },
@@ -40,16 +39,8 @@
    "ax": 39.5,
    "ay": 412
   },
-  "seesaw-b": {
-   "x": 851,
-   "y": 0,
-   "w": 442,
-   "h": 217,
-   "ax": 258.0,
-   "ay": 217
-  },
   "stone-b": {
-   "x": 1297,
+   "x": 851,
    "y": 0,
    "w": 432,
    "h": 229,
@@ -57,8 +48,8 @@
    "ay": 229
   },
   "lily-pads-b": {
-   "x": 0,
-   "y": 421,
+   "x": 1287,
+   "y": 0,
    "w": 441,
    "h": 187,
    "ax": 230.5,

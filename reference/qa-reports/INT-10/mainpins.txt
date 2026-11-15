@@ -1,0 +1,5 @@
+5-7 / 7-1 layout 1 (verdicts.test.ts MAIN): at 7e9fe4d8^ (before ENG-PETAL) vs this head; each gen2 field's hash
+5-7 normal: pins ['8e6918d86d5b8c49', '1e239d6fb7b70ea9'] -> ['8e6918d86d5b8c49', 'fa5037e4f56d3183']; gen2 fields moved: ['fills'] (flagMiss, towerMiss, windowMiss now present as undefined: JSON drops them, the pin's hash does not see them); fills 120 -> 120
+5-7 easy: pins ['c21d7034579fa414', 'd1580da0a8721731'] -> ['c21d7034579fa414', 'b45f910763e8df3a']; gen2 fields moved: ['fills'] (flagMiss, towerMiss, windowMiss now present as undefined: JSON drops them, the pin's hash does not see them); fills 117 -> 117
+7-1 normal: pins ['f8a654ca25181450', '2defb0797b4a32df'] -> ['f8a654ca25181450', '1f95676ce76d11a5']; gen2 fields moved: ['fills'] (flagMiss, towerMiss, windowMiss now present as undefined: JSON drops them, the pin's hash does not see them); fills 80 -> 37
+7-1 easy: pins ['ddbb0b767ba92e8b', 'd4c6c92d9a813bcb'] -> ['ddbb0b767ba92e8b', 'a8d9b183d717a8f3']; gen2 fields moved: ['fills'] (flagMiss, towerMiss, windowMiss now present as undefined: JSON drops them, the pin's hash does not see them); fills 77 -> 34

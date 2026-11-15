@@ -1,0 +1,67 @@
+{
+ "tag": "leaf",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.85
+  ]
+ },
+ "neg": "thick black outline, heavy bold outline, clip art, vector art, flat colours, sticker, icon, sky, clouds, scenery behind, background, ground, flowers, fruit, text, letters, watermark, frame, border, panel, photo, 3d render, blurry, animals, sloth",
+ "items": [
+  {
+   "name": "leaf-h-11",
+   "prompt": "a cluster of four big broad drooping rainforest leaves hanging straight down from one short dark stem at the very top edge of the picture, long pointed philodendron leaves with a pale midrib and soft veins, overlapping, gently curling at the tips. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "leaf-h-23",
+   "prompt": "a cluster of four big broad drooping rainforest leaves hanging straight down from one short dark stem at the very top edge of the picture, long pointed philodendron leaves with a pale midrib and soft veins, overlapping, gently curling at the tips. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "leaf-h-37",
+   "prompt": "a cluster of four big broad drooping rainforest leaves hanging straight down from one short dark stem at the very top edge of the picture, long pointed philodendron leaves with a pale midrib and soft veins, overlapping, gently curling at the tips. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "leaf-k-11",
+   "prompt": "a cluster of five long narrow drooping rainforest leaves hanging down from a thin vine at the top edge of the picture, slender pointed leaves of different lengths fanning slightly apart, one leaf turned showing its paler underside. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "leaf-k-23",
+   "prompt": "a cluster of five long narrow drooping rainforest leaves hanging down from a thin vine at the top edge of the picture, slender pointed leaves of different lengths fanning slightly apart, one leaf turned showing its paler underside. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "leaf-k-37",
+   "prompt": "a cluster of five long narrow drooping rainforest leaves hanging down from a thin vine at the top edge of the picture, slender pointed leaves of different lengths fanning slightly apart, one leaf turned showing its paler underside. hand-painted 2D storybook platformer game foreground prop, seen from the side, soft painterly gouache shading with gentle gradients, fine thin dark-brown linework, a muted misty rainforest palette of deep sage green and olive with pale yellow-green light on the upper leaf surfaces, soft diffuse light from the upper left, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "steps": 30,
+   "lora": "style"
+  }
+ ]
+}

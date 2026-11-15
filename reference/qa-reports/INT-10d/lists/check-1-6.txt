@@ -1,0 +1,17 @@
+seedlist 1-6: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-6: FAIL
+  1-6 seed 7 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 7 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 38 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 38 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 40 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 40 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 56 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 56 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 83 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 83 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 7: 4.1 s quiet, over the line 4 s (the outro excluded)
+  1-6 seed 38: 4.1 s quiet, over the line 4 s (the outro excluded)
+  1-6 seed 40: 4.1 s quiet, over the line 4 s (the outro excluded)
+  1-6 seed 56: 4.1 s quiet, over the line 4 s (the outro excluded)
+exit 1

@@ -54,6 +54,30 @@ double-tap-tap 149 / 142, gap 190 / 275 / 299; 1-5: bounce 223 / 216, gap 178; 1
 (single hold 123 / 117, gap 141 / 227 / 244; double hold climbs 214 / 208: easy-any's, the hold's any the flown 244). Against 1-3 the
 doubles climb 2 px less and their from-70 and last-ground gaps lose 1-7 px; no single gap moved a pixel.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 1-6** (BUILD-16, 11-14: flown on stage 1-6, `FLIGHT_STAGE=1-6 npx tsx reference/specs/sims/flight.ts normal all`, tables in reference/qa-reports/BUILD-16/fly/normal-all.txt and easy-all.txt; climb block / thin, then from-70 / last ground / any, each the block column; the single hold's any is the flown 244; entered here by ENG-16F 11-14 from flownArcs.ts, unchanged, so the rows cite this section as every stage's do): 1-6: single-hold 123 / 116, gap 136 / 222 / 244; 1-6: single-flick 123 / 115, gap 127 / 212 / 238; 1-6: single-tap 87 / 80, gap 77 / 162 / 183; 1-6: double-hold 210 / 203, gap 291 / 376 / 409; 1-6: double-flick 209 / 202, gap 278 / 363 / 391; 1-6: double-tap-tap 149 / 142, gap 190 / 275 / 299; 1-6: bounce 223 / 216, gap 178; 1-6: bounce-air 312 / 303, gap 335. Easy on 1-6 is easy-any.
+
+**Rows for src/game/gen2/reach.ts, scope Normal 1-7** (INT-9, 11-14, BUILD-17's step 2: flown on stage 1-7 on t-int-9@3ad51f04,
+`FLIGHT_STAGE=1-7`, both settings, tables in reference/qa-reports/INT-9/fly/; climb block / thin, then from-70 / last ground / any, each
+the block column; the single hold's any is the flown 244): 1-7: single-hold 123 / 116, gap 136 / 221 / 244; 1-7: single-flick 123 / 115,
+gap 127 / 211 / 238; 1-7: single-tap 87 / 80, gap 77 / 162 / 183; 1-7: double-hold 209 / 202, gap 291 / 376 / 404; 1-7: double-flick
+208 / 201, gap 272 / 358 / 391; 1-7: double-tap-tap 149 / 141, gap 190 / 275 / 299; 1-7: bounce 223 / 216, gap 177; 1-7: bounce-air
+312 / 302, gap 334. Easy on 1-7 is easy-any (single hold 123 / 117, gap 141 / 227 / 244; double hold climbs 214 / 208).
+
+**Rows for src/game/gen2/reach.ts, scope Normal 1-8** (BUILD-18c, 11-15: flown on stage 1-8 on t-build-18c, `FLIGHT_STAGE=1-8 ...
+normal all`, table in reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; entered by INT-11, NOT judged yet: its plain bounces (rise ~150) sit under the bounce-teach band, BOUNCE-REUSE; the same columns as 1-7's):
+1-8: single-hold 123 / 116, gap 136 / 221 / 244; 1-8: single-flick 123 / 115, gap 127 / 211 / 238; 1-8: single-tap 87 / 79, gap 77 / 162 /
+183; 1-8: double-hold 208 / 201, gap 290 / 376 / 403; 1-8: double-flick 207 / 200, gap 272 / 358 / 391; 1-8: double-tap-tap 148 / 141, gap
+189 / 274 / 299; 1-8: bounce 223 / 215, gap 177; 1-8: bounce-air 311 / 301, gap 334. Easy on 1-8 is easy-any.
+
+**Rows for src/game/gen2/reach.ts, scopes Normal 2-1 and Normal 2-2** (ENG-W2, 11-14: flown on stages 2-1 and 2-2 on World 2's gen2 kit,
+t-eng-w2@aca656aa2, `FLIGHT_STAGE=2-1` / `2-2 ... normal all`, tables in reference/qa-reports/ENG-W2/fly-2-1.txt, fly-2-2.txt; the same
+columns as 1-7's; NOT judged yet: ENG-W2 REPORT, ENGINE-WORTHY 1): 2-1: single-hold 123 / 115, gap 135 / 220 / 244; 2-1: single-flick
+123 / 114, gap 126 / 210 / 238; 2-1: single-tap 87 / 79, gap 77 / 161 / 182; 2-1: double-hold 206 / 198, gap 290 / 375 / 403; 2-1:
+double-flick 205 / 197, gap 271 / 357 / 384; 2-1: double-tap-tap 148 / 139, gap 189 / 274 / 299; 2-1: bounce 223 / 215, gap 177; 2-1:
+bounce-air 308 / 298, gap 334. 2-2: single-hold 123 / 115, gap 135 / 219 / 244; 2-2: single-flick 123 / 114, gap 126 / 210 / 237;
+2-2: single-tap 87 / 78, gap 77 / 161 / 182; 2-2: double-hold 205 / 197, gap 290 / 375 / 403; 2-2: double-flick 204 / 196, gap 271 /
+357 / 384; 2-2: double-tap-tap 148 / 139, gap 189 / 274 / 299; 2-2: bounce 223 / 214, gap 177; 2-2: bounce-air 307 / 296, gap 333.
+
 Cause: the second jump's help is 0.958 of 1-1's on stage 2 (`easeAssist(2)`). No lesser move gained a pixel, so every block keeps its
 5 px, and the taught moves lost 1-2 px against margins of 70 px or more. So **bands.md §2 holds on 1-2 as written**, both settings
 (Easy's help is full on every stage). It must be flown again from about 1-5 on. One figure does move with it: a double flick lands

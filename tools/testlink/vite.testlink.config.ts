@@ -29,12 +29,13 @@ export default defineConfig({
   // (a QA build: the control test, #ctest, opens here and not in the shipped game: src/game/playRecorder.ts qaBuild, UI-15)
   define: { __GIT_COMMIT__: JSON.stringify(gitCommit()), __BUILD_TIME__: JSON.stringify(t), 'import.meta.env.VITE_QA_BUILD': JSON.stringify('1') },
   plugins: [react(), tailwindcss()],
-  // (small pictures, under 24 KB, packed into the bundle: an artifact version holds at most 511 files, and the recorded music
+  // (small pictures, under 64 KB since 11-15 link #5 (511 files > build.py's 480 cap with 1-8's and World 2's art: 472; 80 KB gave 431 files but an 18.7 MB index.js, over the artifact's 16 MB a file, and 72 KB lands ~16.4 MB, so 64 KB, index 14.2 MB, is the ceiling of inlining; 48 KB since 11-14 link #3,
+  // 523 files; was 32 KB), packed into the bundle: an artifact version holds at most 511 files, and the recorded music
   // took the build to 527, 2026-10-30. The test link only; the GitHub Pages build keeps them as files.)
   build: {
     outDir: 'tools/testlink/dist',
     emptyOutDir: true,
     // (fonts stay files: index.html preloads them by path, and an inlined one left its preload pointing at nothing)
-    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 32 * 1024,
+    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 64 * 1024,
   },
 });

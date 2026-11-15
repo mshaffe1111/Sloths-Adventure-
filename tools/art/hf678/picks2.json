@@ -1,0 +1,46 @@
+{
+ "under-11": {
+  "pieces": [
+   {
+    "name": "w1-underlayer-a",
+    "units": 600,
+    "at": [
+     0.5,
+     0.6
+    ],
+    "side": "w",
+    "dest": "w1-678",
+    "opaque": true
+   }
+  ]
+ },
+ "under-53": {
+  "pieces": [
+   {
+    "name": "w1-underlayer-b",
+    "units": 600,
+    "at": [
+     0.5,
+     0.6
+    ],
+    "side": "w",
+    "dest": "w1-678",
+    "opaque": true
+   }
+  ]
+ },
+ "moss-11": {
+  "pieces": [
+   {
+    "name": "w17-moss-drape",
+    "units": 140,
+    "at": [
+     0.52,
+     0.6
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ }
+}
