@@ -77,6 +77,9 @@ for (const id of laidChaseStages()) {
     assert.equal(Math.round(e.player.x), Math.round(flag.x), 'back at his flag');
     assert.equal(e.statHeartsLost - hearts, 0, 'no heart taken by the collapse he was put back behind');
     assert.equal(e.player.hp, e.player.maxHp, 'every heart back, as after any life lost');
+    // (the collapse waits behind the flag: the branch whole from it, the stretch's front not past it)
+    assert.ok(r.platforms.filter((q) => q.chase && q.x >= flag.x).every((q) => !q.broken), 'the branch is whole from his flag');
+    assert.ok(!run.fronts[i].active || run.fronts[i].front < flag.x, `the front waits behind his flag (at ${Math.round(run.fronts[i].front)}, the flag at ${flag.x})`);
   });
 
   /**
@@ -115,5 +118,8 @@ for (const id of laidChaseStages()) {
     assert.equal(e.statHeartsLost - hearts0, 0, `no heart lost on top of the life (lost ${e.statHeartsLost - hearts0})`);
     assert.equal(respawns, 1, 'one respawn');
     assert.equal(r.p.hp, r.p.maxHp, 'back with every heart');
+    // (the collapse waits behind the flag: the branch whole from it, the stretch's front not past it)
+    assert.ok(r.platforms.filter((q) => q.chase && q.x >= flag.x).every((q) => !q.broken), 'the branch is whole from his flag');
+    assert.ok(!run.fronts[i].active || run.fronts[i].front < flag.x, `the front waits behind his flag (at ${Math.round(run.fronts[i].front)}, the flag at ${flag.x})`);
   });
 }
