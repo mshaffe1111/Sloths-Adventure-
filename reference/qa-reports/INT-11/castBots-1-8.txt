@@ -1,0 +1,12 @@
+head 6c5571c3a (code as b1deef44), run 3:59-4:05 PM ET
+castBots 1-8, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 40/40; under the floor 0; time median 140.6 s (min 137.2); hits 199 lives 0 (other 159, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+kid    easy   PASS 40/40; under the floor 0; time median 145.9 s (min 138); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  normal PASS 40/40; under the floor 0; time median 140.5 s (min 138.1); hits 201 lives 0 (other 161, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 143.9 s (min 138.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  normal PASS 40/40; under the floor 0; time median 326 s (min 283); hits 305 lives 42 (other 329, pit 15, foe:eagle 3); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  easy   PASS 40/40; under the floor 0; time median 234.7 s (min 219.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle normal PASS 40/40; under the floor 0; time median 191.7 s (min 177.2); hits 211 lives 10 (other 217, pit 2, foe:eagle 2); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 176.8 s (min 168.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 171.8 s (min 156.6); hits 200 lives 9 (other 200, foe:eagle 7, pit 2); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+exit 0
