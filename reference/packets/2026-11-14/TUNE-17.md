@@ -9,6 +9,8 @@ closer together late in the stage, bare bark that looks like cover but won't hid
 stand still on (w1Arc17.ts:4 rule exists). Each change with its meter number on METER-1's ruler (origin/t-meter-1) and its castBots effect.
 Target: Normal 5.5 (±1, DIFFICULTY.md G2), Easy at most 0.6x Normal and never harder in any number; kid bot on Normal: located honest misses
 only. Dot's lines unchanged (story keeper's).
+KNOWN (Matt 9:29 PM, R-165.267): the perched eagle takes a while to leave and he might walk past it first; ENG-LOOK fixes the eagle for
+every stage. Don't patch it in 1-7's data; record what you see happen in 1-7 (clip, frame) for ENG-LOOK.
 Then: relist 1-7 in order, castBots 1-40 both settings, the WHOLE suite, lock (only 1-7 moves), stills of every changed beat upright +
 sideways, Normal + Easy, at phone size; clips of the hardest watched stretch with the frame named.
 Branch: t-tune-17 from origin/t-build-16's head (it carries ENG-16I's bot skills and the global petal/pit work; ENG-PETAL will merge in

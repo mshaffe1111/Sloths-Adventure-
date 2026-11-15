@@ -14,8 +14,11 @@ Branch: t-eng-look from origin/t-build-18's head (git ls-remote), merging origin
      id (ENG-DR's piece). The underside art doesn't exist: ONE Hugging Face job (reference/methods/hf-art.md, cap $3, log in
      reference/art/HF-SPEND.md): a long seamless bough section, rounded bark underside, mossed walkable top, tiling left-right, World 1's
      painted style, labelled in the inventory at scale. Show the lead the FIRST real engine still upright + sideways before finishing.
- (3) The still fork: does the eagle leave its post and pass over him while he's in the moss, and is its post on screen upright? If not,
-     fix it where it lives (camera or layStillFork) for any stage, planted.
+ (3) THE PERCHED EAGLE, any stage (R-165.267; Matt played 1-7: "it took a bit for the bird to leave. I could have went past it before it
+     flew away"; 1-8's fork eagle sat on its post and never passed): first PROVE on a toy, on 1-7 and on 1-8 what happens when he walks
+     past a perched eagle before it leaves (clip, frames named). Then one rule: a perched eagle watches its view and launches its pass when
+     he moves in it (its tell first, TELL_MIN), or leaves before he can reach it; never a free pass, never a hit without a tell, never a
+     long idle wait; its post on screen upright (camera or layStillFork). Planted. TUNE-17 (1-7's tuning) uses the rule.
 Proof: stills of every 1-8 beat upright + sideways, Normal + Easy, at phone size (412x915 / 915x412), clips of the fork pass and the tip with
 the frame named; drawcheck on 1-8 and the 1-98 fixture; castBots 1-40 both settings (BUILD-18: Normal 40/40 except child 37 at the tip,
 accepted); the WHOLE suite; lock (list what moved). REPORT reference/qa-reports/ENG-LOOK/REPORT.md, "Learned", EXACT NEXT STEP.
