@@ -3590,13 +3590,19 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   if (budget.archetype === 'harvest') {
     const flowers = () => C.filter((c) => c.type === 'flower').length;
+    // (and never under a room's kit piece: those stand on the stage only once the fill is done (addKitPlatforms, buildGen2's sink), so
+    // the clear test reads them here too: 8-2's Easy top-up laid a petal row in the hammock room's well under its leaf hammock, levelCheck
+    // refused the petal, the harvest could not give it up and the curated roll was lost, INT-10c)
+    const roomSpecs = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
+    const solids: Platform[] = laid.platforms.slice();
+    if (roomSpecs.length) addKitPlatforms(solids, { rooms: roomSpecs });
     for (const s of laid.sections) {
       for (const p of s.pieces) {
         if (flowers() >= budget.quota.lay) break;
         if (!p.main || p.platform.width < 200) continue;
         // (never inside a piece standing on this one, a stump or a block: levelCheck refuses the petal and a harvest at its laid count
         // cannot give it up, so the roll failed; with GraphBrief.petals and .offRoad the top-up lays most of a stage's petals)
-        const y = p.platform.y - FLOWER_UP, clear = (x: number) => !laid.platforms.some((q) => x >= q.x && x <= q.x + q.width && y > q.y + 2 && y < q.y + q.height - 2);
+        const y = p.platform.y - FLOWER_UP, clear = (x: number) => !solids.some((q) => x >= q.x && x <= q.x + q.width && y > q.y + 2 && y < q.y + q.height - 2);
         for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) if (clear(x)) flower(x, y);
       }
     }

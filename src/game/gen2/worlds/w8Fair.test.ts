@@ -43,3 +43,20 @@ test("8-2: past a fungus stair's foot comes a knot (a step up), not the deep gap
     }
   }
 });
+
+test("8-2's curated seed 878575 builds its own roll on Easy too: the harvest top-up lays no petal under the hammock room's kit pieces (INT-10c, planted: red before the fill read them)", async () => {
+  const { buildGen2Stage } = await import('../pipeline.ts');
+  const { GEN2_SEEDS } = await import('../seeds.ts');
+  const { resolveStage } = await import('../../../../tools/gen2/curate.ts');
+  const key = Object.keys(GEN2_SEEDS).find((k) => GEN2_SEEDS[k].stage === '8-2')!;
+  const e = GEN2_SEEDS[key];
+  const stage = await resolveStage(key, e.kit);
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: stage.config, kit: stage.kit, seed: 878575, difficulty, recent: e.recent, maxRerolls: 0 });
+    assert.deepEqual(st.gen2.errors ?? [], [], difficulty);
+    assert.equal(st.gen2.seed, 878575, `${difficulty}: its own roll`);
+    const kit = st.platforms.filter((p) => p.art === 'kit');
+    assert.ok(kit.length > 0, 'the room\'s kit pieces are laid');
+    for (const c of st.collectibles.filter((q) => q.type === 'flower')) assert.ok(!kit.some((q) => c.x >= q.x && c.x <= q.x + q.width && c.y > q.y + 2 && c.y < q.y + q.height - 2), `${difficulty}: petal at ${c.x} under a kit piece`);
+  }
+});
