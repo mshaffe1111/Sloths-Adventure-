@@ -70,3 +70,9 @@ ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balan
 |---|---|---|---|---|
 | 8:19-8:29 PM | sandbox 6af9089523985fb9cd82c13a (rtx-pro-6000, 40 min hard timeout), ~10 min creation to terminate: batch 1 spec-roost.json 6 t2i takes (267 s); batch 2 spec-roost2.json started, 2 of 6 done when the session stopped at its 40% context line | ENG-19a (packet) | ~$0.46 | batch 1 judged (reference/qa-reports/ENG-19/clips/roost-batch1-sheet.png): every take runs its limbs off the top edge (a cut end reads as sawn wood), 31 has eggs; 71 the nearest. Nothing kept: batch 2 is the next step |
 ENG-19a total: ~10 GPU-min, **~$0.46** of its $2 cap (minutes x $2.75/60). Balance ~$55.9 (from ~$56.4).
+
+## 2026-11-15 (ENG-19b, t-eng-19b; the same $2 cap as ENG-19a: ~$1.54 left of it)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:08-11:16 AM | sandbox 6af9d8d329dd05ff0368e5a2 (rtx-pro-6000, 40 min hard timeout), ~8 min creation to terminate: spec-roost2.json, 6 t2i takes (~52 s each), CPU cut (hf1113/cutprops.py), 2 parts copied back | ENG-19b (packet step 1) | ~$0.37 | the roost: roostb-101 picked at 190 px tiles (whole piece in frame, nest and feather read; 113/97 run off the edge, 71 a little tree on a mound, 83 a cut stump, 127's nest too small at 145 units); shipped src/assets/w1-19/w1-roost.webp (593x435, 75 KB, 1.63 of Pokey); raws not kept |
+ENG-19 total (a+b): ~18 GPU-min, **~$0.83** of its $2 cap (minutes x $2.75/60). Balance ~$55.5 (from ~$55.9).

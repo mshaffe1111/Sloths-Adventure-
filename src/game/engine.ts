@@ -208,6 +208,7 @@ import { FONT_UI } from './fonts.ts';
 import { withHurtFlash, withWash } from './hurtFlash.ts';
 import { MOSS_TINT, SNAG_PERCH, sweepPose, type SweepPose } from './sweepPose.ts';
 import { drawLianaMoss, drawMossCover, drawPerchedEagle, drawSnag, mossHeight } from './w17Art.ts';
+import { drawEagleRoost } from './w19Art.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -7430,6 +7431,9 @@ export class GameEngine {
       }
     }
 
+    // World 1's eagle roosts (1-9: the lure posts a boa fears, laid by World 1's kit into proto.gen2.roosts), behind him and the animals
+    const roosts = (this.proto?.gen2 as { roosts?: Array<{ x: number; y: number }> } | undefined)?.roosts;
+    if (roosts) for (const r of roosts) if (this.onScreen(r.x, r.y - 70, 220)) drawEagleRoost(ctx, r.x, r.y);
     profMark(ctx, 'decor');
     // polish prototype: this stage's lighting rig (null when the switch is off)
     const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;

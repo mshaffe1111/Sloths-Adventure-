@@ -43,11 +43,11 @@ def main(take: str):
     runpy.run_path(str(GAME / 'tools/art/catalog_master.py'))['add_scale'](rows)
     out = GAME / 'reference/art/catalog-rows-hf19.csv'
     with open(out, 'w', newline='') as fh:
-        wr = csv.DictWriter(fh, COLS); wr.writeheader(); wr.writerows(rows)
+        wr = csv.DictWriter(fh, COLS, lineterminator="\n"); wr.writeheader(); wr.writerows(rows)
     master = GAME / 'reference/art/CATALOG-MASTER.csv'
     old = [x for x in csv.DictReader(open(master)) if not x['id'].startswith('hf19/')]
     with open(master, 'w', newline='') as fh:
-        wr = csv.DictWriter(fh, COLS); wr.writeheader(); wr.writerows(old + rows)
+        wr = csv.DictWriter(fh, COLS, lineterminator="\n"); wr.writeheader(); wr.writerows(old + rows)
     print(len(rows), 'rows ->', out.name, '+ CATALOG-MASTER.csv;', [(r['id'], r['pokey_scale'], r['scale_ok']) for r in rows])
 
 
