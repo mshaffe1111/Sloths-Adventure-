@@ -276,6 +276,9 @@ type FinishStage = {
 
 /** reeds this far from a river's edge, either bank (px; the hand-built world's 10-30), on a bank this wide or more (a stone has none) */
 const REED_OFF = 20;
+/** how far under a fall's height (its higher lip) the other lip may stand and still be its bank (px): a liana perch's highest rise over
+ *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
+const LIP_RISE = 170;
 const REED_BANK = 200;
 
 /**
@@ -306,10 +309,12 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
       decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
     }
   };
-  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips)
+  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each. A lip may
+  //  stand up to LIP_RISE under the fall's height: a liana's perch is laid up to 160 px over the bank it leaves (pipeline place 'land'),
+  //  so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1)
   const banks = (x0: number, x1: number, y: number) => ({
-    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
-    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
   });
   // (a log river's reeds, as a fall's)
   for (const r of had) {

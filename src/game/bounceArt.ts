@@ -12,6 +12,40 @@ import type { Platform } from './types.ts';
 import { viewRect, type ViewRect } from './artKit.ts';
 import { drawW8BounceLeaf, w8LeafBox } from './w8DecorArt.ts';
 
+/**
+ * World 2's bounce (the keeper's nature check: a springy thing of the riverbank, never World 1's mushroom; the lead's ruling E, 1:05 PM ET
+ * 11-15): ART-W2's bent Guadua culm (w2-1115/w2-bamboo-bounce, catalog row w2-1115/w2-bamboo-bounce). Its frond tuft IS the landing: the
+ * picture is scaled so the tuft's top (`tuft`, in the picture's px) sits on the pad's top and the culm's foot (`foot`) on the bank under
+ * the pad, so a 70 px pad draws a young bowed culm about 0.85x Pokey.
+ */
+export const W2_BAMBOO = { url: new URL('../assets/w2-1115/w2-bamboo-bounce.webp', import.meta.url).href, w: 480, h: 470, tuft: { x: 250, y: 30 }, foot: 455 } as const;
+let bamboo: HTMLImageElement | null = null;
+let bambooReady = false;
+function warmBamboo(): boolean {
+  if (!bamboo && typeof Image !== 'undefined') {
+    const im = new Image();
+    bamboo = im;
+    trackAtlas(im, W2_BAMBOO.url, () => { bambooReady = true; }, () => { bamboo = null; }, () => { bamboo = null; bambooReady = false; });
+  }
+  return bambooReady && !!bamboo;
+}
+/** World 2's bamboo on bouncy platform `p` (its top the tuft, its foot on the bank `p.height` under it), squashing about the tuft */
+function drawW2Bamboo(ctx: CanvasRenderingContext2D, p: Platform, time: number): boolean {
+  if (!warmBamboo()) return false;
+  const B = W2_BAMBOO;
+  const k = Math.max(20, p.height) / (B.foot - B.tuft.y);
+  const cx = p.x + p.width / 2;
+  const x0 = cx - B.tuft.x * k, y0 = p.y - B.tuft.y * k;
+  const squash = 1 + Math.sin(time * 3 + p.id) * 0.03;
+  ctx.save();
+  ctx.translate(cx, p.y);
+  ctx.scale(1, squash);
+  ctx.translate(-cx, -p.y);
+  ctx.drawImage(bamboo!, x0, y0, B.w * k, B.h * k);
+  ctx.restore();
+  return true;
+}
+
 /** the view, kept for the stalk's cull */
 const stalkView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
 
@@ -98,7 +132,7 @@ export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, world: nu
   const cf = BOUNCE_FRAMES[`cap-${sp}`];
   const sf = BOUNCE_FRAMES[`stalk-${sp}`];
   // (World 8: every other moon flower is the bouncy leaf of Matt's w8b sheet, w8DecorArt.ts)
-  const leaf = world === 8 && p.id % 2 === 1 && drawW8BounceLeaf(ctx, p, time, part, bottomY);
+  const leaf = (world === 8 && p.id % 2 === 1 && drawW8BounceLeaf(ctx, p, time, part, bottomY)) || (world === 2 && drawW2Bamboo(ctx, p, time));
   if (!leaf && cf && sf && warmBounce()) {
     const k = (p.width * (cf.span ?? 1.1)) / (cf.w * (cf.cw ?? 1));
     const cw = cf.w * k, ch = cf.h * k;
