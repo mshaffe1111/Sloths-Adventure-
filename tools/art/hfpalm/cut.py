@@ -18,6 +18,7 @@ args = sys.argv[1:]
 src, out = args[0], args[1]
 opt = {args[i]: float(args[i + 1]) for i in range(2, len(args) - 1, 2)}
 HAZE, FADE, HEIGHT, GRADE = opt.get('--haze', 0.0), opt.get('--fade', 0.16), int(opt.get('--height', 1100)), opt.get('--grade', 0.62)
+SAT0 = opt.get("--sat0", 14.0)
 MIST = np.array([172, 190, 180], np.float32)
 
 im = np.asarray(Image.open(src).convert('RGB')).astype(np.float32)
@@ -30,7 +31,7 @@ hue, sat = hs[..., 0], hs[..., 1]
 # (magenta-pink hues, PIL 0-255: 300-345 deg = 212-245, soft over 8 either side; the pale pink haze has low saturation but that hue, and
 # min(R, B) over G; nothing in a palm (greens, teal, browns, orange, the grey trunk) has both)
 hw = np.clip(1 - (np.maximum(0, 200 - hue) + np.maximum(0, hue - 250)) / 8, 0, 1)
-bgness = hw * np.clip((sat - 14) / 22, 0, 1) * np.clip((mg - 4) / 14, 0, 1)
+bgness = hw * np.clip((sat - SAT0) / 16, 0, 1) * np.clip((mg - 1) / 7, 0, 1)
 a = 1 - bgness
 # (the spill: any pixel left with min(R, B) over G is pulled back to G there, fully at the soft rim, half inside the tree)
 sp = np.clip(mg, 0, None) * np.where(a < 0.98, 1.0, 0.5)
