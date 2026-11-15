@@ -453,7 +453,8 @@ export function rollingChallenges(st: any, samples: Sample[], setting: Setting, 
  * Being watched (METER-1; 1-7 "when the eagle screams, get into the green and keep still"; w1Cast's eagle, stillLay.ts): over each
  * watcher's stretch (its kit's ground, minX..maxX), each pass is a deadline: from its scream he has its warn to reach cover and be still
  * there (STILLNESS calmIn) before it sweeps. The jump's own form: the need is the run from the stretch's worst spot to the nearest cover
- * (cast.covers, inside by watcher.ts's 10 px) plus the calm-in, the reach is the warn: fittsBits(need / warn). Its passes over the stretch:
+ * (cast.covers, inside by watcher.ts's 10 px, a mossy liana's sweep, or off the stretch past its sight) plus the calm-in, the reach is
+ * the warn: fittsBits(need / warn). Its passes over the stretch:
  * one, and one more for every (cool + warn) it takes to cross at a run (Easy's longer cool). Seen, it dives: a heart (the kit's `kitFree`
  * first pass only warns: another go). And its eye is on him over the whole stretch (`span`): every move there is done watched (OVERLAP).
  * Keeping still is restraint and has no bits yet (DIFFICULTY.md §6): named, not faked.
@@ -473,7 +474,10 @@ export function watchChallenges(members: ReadonlyArray<{ e: any; def: any }>, co
   for (const m of members) {
     if (!isWatcher(m.def)) continue;
     const x0 = m.e.kit?.minX ?? m.e.patrolMinX ?? m.e.x, x1 = m.e.kit?.maxX ?? m.e.patrolMaxX ?? m.e.x;
-    const spans = covers.map((c) => [c.x + 10, c.x + c.w - 10] as const).filter(([a, b]) => b > a);
+    // (and out of its eye: its sight reaches only so far past the stretch it watches (def.sight, ahead or behind), so off either end
+    //  of the stretch is as safe as cover: the still fork's eye runs 475 px past its one bush, and its worst spot is half that, not all)
+    const sight = Math.max(Number(m.def.sight?.ahead ?? 0), Number(m.def.sight?.behind ?? 0));
+    const spans = [...covers.map((c) => [c.x + 10, c.x + c.w - 10] as const), [-Infinity, x0 - sight] as const, [x1 + sight, Infinity] as const].filter(([a, b]) => b > a);
     // (the worst spot, exactly: the stretch's two ends and the middle of every open gap between two covers inside it)
     const dist = (x: number) => Math.min(Infinity, ...spans.map(([a, b]) => (x < a ? a - x : x > b ? x - b : 0)));
     const sorted = [...spans].sort((p, q) => p[0] - q[0]);

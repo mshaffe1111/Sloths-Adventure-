@@ -216,7 +216,8 @@ test("a watched stretch: each pass the run to the worst spot's nearest cover plu
   const m = { e: { x: 1000, kit: { minX: 1000, maxX: 2000 }, kitFree: true }, def };
   const covers = [{ x: 990, w: 110 }, { x: 1790, w: 110 }];
   const out = watchChallenges([m], covers, SAMPLES as any, 'normal');
-  // (cover spans 1000..1090 and 1800..1890, inside by 10 px: the worst spot is mid-way, 355 px from both; and 110 px past the last one)
+  // (cover spans 1000..1090 and 1800..1890, inside by 10 px: the worst spot is mid-way, 355 px from both; past the last one the
+  //  stretch's end (and its sight, none here) is a way out)
   const need = (1800 - 1090) / 2;
   assert.equal(out.length, Math.max(1, Math.ceil((1000 / PHYS.maxRun) / 7)));
   assert.ok(Math.abs(out[0].bits - fittsBits((need / PHYS.maxRun + STILLNESS.normal.calmIn) / 2)) < 0.05, out[0].note);
@@ -225,6 +226,10 @@ test("a watched stretch: each pass the run to the worst spot's nearest cover plu
   // (a mossy liana between the two bushes is cover: the worst spot comes nearer)
   const withMoss = watchChallenges([m], covers, SAMPLES as any, 'normal', [LIANA(9, 1445, { mossy: true })]);
   assert.ok(withMoss[0].bits < out[0].bits, `${withMoss[0].note}`);
+  // (off the stretch is out of its eye: one bush at its start, 1000 px of open ground after it to the stretch's end at 2000 and its
+  //  70 px of sight: the worst spot is half way from the bush to 2070, not 2000 itself)
+  const lone = watchChallenges([{ e: m.e, def: { ...def, sight: { ahead: 70, behind: 70 } } }], [covers[0]], SAMPLES as any, 'normal');
+  assert.ok(Math.abs(lone[0].bits - fittsBits(((2070 - 1090) / 2 / PHYS.maxRun + STILLNESS.normal.calmIn) / 2)) < 1e-9, lone[0].note);
   // (not a watcher: nothing)
   assert.equal(watchChallenges([{ e: m.e, def: { kind: 'snake', tell: 0.5 } }], covers, SAMPLES as any, 'normal').length, 0);
 });
