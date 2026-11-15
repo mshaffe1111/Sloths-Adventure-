@@ -4,15 +4,15 @@ the trace, not the table), D19 (tests call the game's build: RealPlay, buildGen2
 swept), D36, D40 (no patch of the old builder's 1-6/1-9), D57 (MISSED once: the 1:53 ruling sat unread until my push), D59, D62
 (stills print the BUILT seed/setting), D69 (plants RED), D79 (the whole screen judged).
 
-## EXACT NEXT STEP = integration onto link #5
-1. The lead rules on w1.test's NEW red from 82743678 (W1 bounce-wall sections lay off their exitDy; options (a) sections that ask the
-   combo leave the pool until it is taught, (b) re-author their lips; message 2:58 PM ET), then fixes it in the same packet as the rule.
-2. The lead rules on 9137470f (the tier bots' look-ahead sees a narrow gap): if in, re-run 1-1's tier calibration (BOTS.md) and recommit
-   calibration-main.jsonl, then castBots 2-1 child + middle Easy 1-40 again.
-3. Integration onto link #5: 82743678 + its fix, then t-fix-21 (relist, 2-1 data, the safe over pass and under-bed earth, w2mist-mid,
-   the log handover: engine.ts + logHandover.test.ts of ec96fe0c only; its bot half is reverted in cbc82ff3). 1-6/1-9 relist, bots,
-   lock on that head. Every gate there (drawcheck, clipcheck etc. were NOT run here).
-
+## EXACT NEXT STEP = integration onto link #5 (the lead's rulings 2:56 and 3:02 PM ET)
+Merge order onto link #5, on top of link #4's head (which already carries the rule 82743678 and INT-10d's fix for w1.test, option (a)):
+1. 5ce1059f + 4c7aee10's drawing half: riverArt.ts/engine.ts (safe over pass, under-bed earth) and w2mist-mid.webp.
+2. 9137470f (the tier bots see a narrow gap; APPROVED). Then re-run 1-1's tier calibration ONCE and recommit calibration-main.jsonl
+   (BOTS.md); tierBots.test 'replay exactly' also needs TierRun.handed in the committed replays (red since t-build-21).
+3. ec96fe0c's ENGINE half only: src/game/engine.ts drift-loop handover + src/game/logHandover.test.ts (its firsttimer.ts/bounceThrow
+   half was reverted in cbc82ff3).
+4. 2-1's data: w2Arc21.ts high bank 174-180 (cbc82ff3) and the relist seeds-2-1.ts/provenIndex.ts (4c7aee10), checked again with
+   seedlist 2-1 --check on that head. Then castBots 2-1 1-40 every tier both settings, 1-6/1-9 relist + bots, and every gate.
 ## Done-items
 - (1) Root cause, traced (kid N seed 4, FT_FRAMES 107.4-110): the bank was 206-210 px over the lily's cap, the bounce alone rises 181;
   the first-timers never press after a run-on bounce. Lead's ruling 1:53: no stage requires the bounce + air jump before one teaches
@@ -54,7 +54,8 @@ swept), D36, D40 (no patch of the old builder's 1-6/1-9), D57 (MISSED once: the 
 3. DESIGN: the bounce + air jump's teach (no stage teaches it; skills.ts COMBO_REQUIRED_FROM['bounce-air'] gets its id when built).
 
 ## Unresolved
-- w1.test exitDy red (new, 82743678): awaiting the lead's ruling. Child Easy 31/40 until 9137470f is ruled + 1-1 recalibrated.
+- w1.test exitDy red (new, 82743678): ruled (a), INT-10d fixes it on link #4. Child Easy 31/40 table predates 9137470f (approved;
+  2-1 child/middle Easy 1-40 to re-run on link #5).
 - drawcheck, clipcheck, buildcheck, the build, chunkcheck NOT run here (context box). Stills not re-shot after 5ce1059f.
 - x2300 band (Suggestions 1). w2rapids-near 2.8% cut rows (under any bar; named).
 
