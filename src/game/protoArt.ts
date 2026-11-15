@@ -286,26 +286,36 @@ const boughRow = (n: number) => (Math.abs(Math.imul(n, 2654435761) >> 7) % BOUGH
 /**
  * The bough along a top at `y` from x0 to x1 (world px), drawn by world x: each tile one of the sheet's variants (no mirroring: a mirrored
  * seam printed a chevron in the grain, the lead's (f)). `taper` (a branch's TIP): from 0 at x0 to 1 at x1 the bark under the moss line
- * thins to a third, the moss line kept, drawn in 3 px slices (baked once: 12 px read as stairs). False until its picture is in.
+ * thins to a third, the moss line kept, drawn in 3 px slices live (12 px read as stairs) and one device px in a bake (`smooth`, ART-18
+ * (l): 3 px stepped the underside and the grain). `body` (a stair's stub, ART-18 (m)): the bark under the moss line drawn this much of
+ * its thickness, the moss line kept. False until its picture is in.
  */
-export function drawBough(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, dy = 0, taper = false): boolean {
+export function drawBough(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, dy = 0, taper = false, body = 1, smooth = false): boolean {
   loadBough();
   if (!boughReady || !boughImg || x1 <= x0) return false;
   const k = BOUGH_THICK / BOUGH.body;
   const tw = BOUGH.w * k, h = BOUGH.h * k, up = BOUGH.top * k;
   const top = y - up + dy;
-  const step = taper ? 3 : Infinity;
+  // (a taper's slices: 3 px live; `smooth` (a bake, ART-18 (l)) one device px, so neither the underside nor the bark's grain steps from
+  // slice to slice (3 px slices printed a saw on both); the moss line, which never tapers, one drawImage a tile; each slice drawn one
+  // slice wider so the next covers the seam)
+  const m = smooth && typeof ctx.getTransform === 'function' ? ctx.getTransform().a : 0;
+  const step = taper ? (m > 0 ? 1 / m : 3) : Infinity, ov = taper ? step : 0;
+  const fAt = (x: number) => body * (taper ? 1 - 0.68 * Math.pow(x - x0 < 0 ? 0 : (x - x0) / (x1 - x0), 1.4) : 1);
   for (let n = Math.floor(x0 / tw); n * tw < x1; n++) {
     const t0 = n * tw, sy = boughRow(n) * BOUGH.h;
-    for (let a = Math.max(x0, t0); a < Math.min(x1, t0 + tw) - 0.25; ) {
-      const b = Math.min(x1, t0 + tw, a + step);
+    const sa = Math.max(x0, t0), sb = Math.min(x1, t0 + tw);
+    if (sb - sa < 0.25) continue;
+    if (!taper && body === 1) {
+      ctx.drawImage(boughImg, (sa - t0) / k, sy, (sb - sa) / k, BOUGH.h, sa, top, sb - sa, h);
+      continue;
+    }
+    ctx.drawImage(boughImg, (sa - t0) / k, sy, (sb - sa) / k, BOUGH.top, sa, top, sb - sa, up);
+    for (let a = sa; a < sb - 0.01; ) {
+      const b = Math.min(sb, a + step);
       const u0 = (a - t0) / k, u1 = (b - t0) / k;
-      if (!taper) ctx.drawImage(boughImg, u0, sy, u1 - u0, BOUGH.h, a, top, b - a, h);
-      else {
-        const f = 1 - 0.68 * Math.pow((a + b) / 2 - x0 < 0 ? 0 : ((a + b) / 2 - x0) / (x1 - x0), 1.4);
-        ctx.drawImage(boughImg, u0, sy, u1 - u0, BOUGH.top, a, top, b - a, up);
-        ctx.drawImage(boughImg, u0, sy + BOUGH.top, u1 - u0, BOUGH.h - BOUGH.top, a, top + up, b - a, (h - up) * f);
-      }
+      const o = Math.min(ov, t0 + tw - b), uo = o / k;
+      ctx.drawImage(boughImg, u0, sy + BOUGH.top, u1 - u0 + uo, BOUGH.h - BOUGH.top, a, top + up, b - a + o, (h - up) * fAt((a + b) / 2));
       a = b;
     }
   }
@@ -318,10 +328,18 @@ const TEAR: ReadonlyArray<readonly [number, number]> = [[-0.3, -10], [-0.08, 6],
  * `torn`, splintered (a pit's side, the lead's (b): never a square notch), its splinters up to 30 px past the end, shuffled by x so no two
  * ends match; else `living`, a rounded end cap (the far tree's branch past the tip, the higher bough at a step: never torn).
  */
-function eraseBoughEnd(ctx: CanvasRenderingContext2D, x: number, y: number, right: boolean, torn: boolean, width = Infinity) {
+function eraseBoughEnd(ctx: CanvasRenderingContext2D, x: number, y: number, right: boolean, torn: boolean, width = Infinity, T = BOUGH_THICK, xr?: readonly [number, number]) {
   const prev = ctx.globalCompositeOperation;
+  // (`xr`: the piece's own drawn x range; the erase never reaches past it into a piece drawn before it, ART-18: a higher stair step's
+  // end cut a straight notch out of the lower step beside it)
+  ctx.save();
+  if (xr) {
+    ctx.beginPath();
+    ctx.rect(xr[0], y - 400, xr[1] - xr[0], T + 800);
+    ctx.clip();
+  }
   ctx.globalCompositeOperation = 'destination-out';
-  const s = right ? 1 : -1, T = BOUGH_THICK;
+  const s = right ? 1 : -1;
   ctx.beginPath();
   if (torn) {
     const h = Math.abs(Math.round(x) * 2654435761) % 7;
@@ -333,27 +351,30 @@ function eraseBoughEnd(ctx: CanvasRenderingContext2D, x: number, y: number, righ
   } else {
     // (the part of the end box outside the cap's ellipse, clipped to the box: unclipped, evenodd also cut the ellipse's inner half)
     // (a narrow step's cap no wider than a third of it: the rounding never eats the step)
-    const r = Math.min(T * 0.42, width / 3), cx = x - s * r * 0.6, cy = y + T * 0.45;
+    // (ART-18 (k): a real round end, its middle half the drawn thickness down and its height the thickness, so the moss line and the
+    // underside both round off; ENG-LOOK2's ry 0.62 T at 0.45 T left a near-vertical cut with only its corners rounded)
+    const r = Math.min(T * 0.5, width / 3), cx = x - s * r, cy = y + T * 0.5;
     ctx.save();
     ctx.beginPath();
     ctx.rect(right ? cx : cx - r * 2, y - 80, r * 2, T + 160);
     ctx.clip();
     ctx.beginPath();
     ctx.rect(right ? cx : cx - r * 2, y - 80, r * 2, T + 160);
-    ctx.ellipse(cx, cy, r, T * 0.62, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx, cy, r, T * 0.54, 0, 0, Math.PI * 2);
     ctx.fill('evenodd');
     ctx.restore();
   }
   ctx.globalCompositeOperation = prev;
+  ctx.restore();
 }
 type BoughEnd = { right: boolean; x: number; kind: 'joined' | 'under' | 'living' | 'torn' };
 /** what meets each end of a bank or section on a bough stage (`joins`: the banks and the chase's sections, the fallen left out): the same
  *  height, joined; another bough touching it, a STEP (the lower runs on 30 px under the higher, whose end is living); nothing, a free end:
  *  torn at a fall, living on the far tree's branch (pit 'drop', layTip) */
-function boughEnds(p: Platform, joins: readonly Platform[]): [BoughEnd, BoughEnd] {
+function boughEnds(p: Platform, joins: readonly Platform[], x0 = p.x, x1 = p.x + p.width): [BoughEnd, BoughEnd] {
   const touching = (x: number) => joins.filter((q) => q !== p && !q.broken && q.x <= x + 2 && q.x + q.width >= x - 2 && Math.abs(q.y - p.y) <= BOUGH_THICK + 60);
   const end = (right: boolean): BoughEnd => {
-    const x = right ? p.x + p.width : p.x;
+    const x = right ? x1 : x0;
     const t = touching(x);
     if (t.some((q) => Math.abs(q.y - p.y) <= 3)) return { right, x, kind: 'joined' };
     if (t.some((q) => q.y < p.y - 3)) return { right, x, kind: 'under' };
@@ -363,6 +384,36 @@ function boughEnds(p: Platform, joins: readonly Platform[]): [BoughEnd, BoughEnd
   return [end(false), end(true)];
 }
 const endReach = (e: BoughEnd) => (e.kind === 'under' ? 30 : e.kind === 'torn' ? 32 : 0);
+/** a stair step's stub: narrower than this (world px, two thicknesses) it is its own short branch, never a slab (ART-18 (m)) */
+export const BOUGH_STUB_MAX = BOUGH_THICK * 2;
+/** a stub's bark under its moss line, of the bough's full thickness: the mist shows between the steps of a stair */
+export const BOUGH_STUB_BODY = 0.6;
+/** one stretch of a bank the bough draws: from x0 to x1 (the part no higher piece stands on), a stub or the full bough, and its ends */
+export interface BoughSpan { x0: number; x1: number; stub: boolean; l: BoughEnd['kind']; r: BoughEnd['kind'] }
+/**
+ * Where bank `p` shows (ART-18 (m), the lead's stair ruling): only the part of its top no higher piece of `joins` stands on (a piece over
+ * it whose body reaches down to it), so a stair's stacked steps never draw as one merged slab. A shown stretch narrower than BOUGH_STUB_MAX
+ * is a stub: its own short branch, both ends rounded (joined only where a piece at its height meets it), never run on under another, its
+ * bark BOUGH_STUB_BODY thick; a wider one is the bough with boughEnds' ends at the stretch's own edges.
+ */
+export function boughSpans(p: Platform, joins: readonly Platform[]): BoughSpan[] {
+  const cover = joins
+    .filter((q) => q !== p && !q.broken && q.y < p.y - 3 && q.y + q.height >= p.y - 3 && q.x < p.x + p.width && q.x + q.width > p.x)
+    .map((q) => [Math.max(p.x, q.x), Math.min(p.x + p.width, q.x + q.width)] as const)
+    .sort((a, b) => a[0] - b[0]);
+  const out: BoughSpan[] = [];
+  let at = p.x;
+  for (const [a, b] of [...cover, [p.x + p.width, p.x + p.width] as const]) {
+    if (a - at >= 1) {
+      const [l, r] = boughEnds(p, joins, at, a);
+      const stub = a - at < BOUGH_STUB_MAX;
+      const round = (k: BoughEnd['kind']) => (stub && k !== 'joined' ? 'living' : k);
+      out.push({ x0: at, x1: a, stub, l: round(l.kind), r: round(r.kind) });
+    }
+    at = Math.max(at, b);
+  }
+  return out;
+}
 /**
  * Every bank of a bough stage: the bough along its top (the lowest first, so a higher bough lies over a lower one) and its ends
  * (boughEnds). The ends are erased only in a baked square (`erase`): the live fallback draws them plain until the squares are in.
@@ -370,15 +421,19 @@ const endReach = (e: BoughEnd) => (e.kind === 'under' ? 30 : e.kind === 'torn' ?
 function drawBoughGround(ctx: CanvasRenderingContext2D, banks: Platform[], joins: readonly Platform[], view: { x0: number; x1: number }, erase = false) {
   for (const p of [...banks].sort((a, b) => b.y - a.y)) {
     if (p.x + p.width < view.x0 - 160 || p.x > view.x1 + 160) continue;
-    const [l, r] = boughEnds(p, joins);
-    drawBough(ctx, p.x - endReach(l), p.x + p.width + endReach(r), p.y);
-    // (every end on screen is shaped, never a vertical cut (the lead's (g)): an end that runs on under a higher bough is rounded where it
-    // shows below it; a step narrower than a tear's reach is rounded, its cap a third of it at most, never eaten to a sliver)
-    if (erase) {
-      for (const e of [l, r]) {
-        if (e.kind === 'joined') continue;
-        const torn = e.kind === 'torn' && p.width >= BOUGH_END_MIN;
-        eraseBoughEnd(ctx, e.kind === 'under' ? e.x + (e.right ? 30 : -30) : e.x, p.y, e.right, torn, p.width);
+    // (only where no higher piece stands on it; a narrow stretch is a stair's stub, ART-18 (m): boughSpans)
+    for (const sp of boughSpans(p, joins)) {
+      const l: BoughEnd = { right: false, x: sp.x0, kind: sp.l }, r: BoughEnd = { right: true, x: sp.x1, kind: sp.r };
+      const body = sp.stub ? BOUGH_STUB_BODY : 1;
+      drawBough(ctx, sp.x0 - endReach(l), sp.x1 + endReach(r), p.y, 0, false, body);
+      // (every end on screen is shaped, never a vertical cut (the lead's (g)): an end that runs on under a higher bough is rounded where it
+      // shows below it; a stub's ends are rounded, its cap a third of it at most, never eaten to a sliver)
+      if (erase) {
+        for (const e of [l, r]) {
+          if (e.kind === 'joined') continue;
+          const torn = e.kind === 'torn' && sp.x1 - sp.x0 >= BOUGH_END_MIN;
+          eraseBoughEnd(ctx, e.kind === 'under' ? e.x + (e.right ? 30 : -30) : e.x, p.y, e.right, torn, sp.x1 - sp.x0, BOUGH_THICK * body, [sp.x0 - endReach(l), sp.x1 + endReach(r)]);
+        }
       }
     }
   }
@@ -411,7 +466,9 @@ function drawBoughSection(ctx: CanvasRenderingContext2D, p: Platform, dy: number
     g.setTransform(scale, 0, 0, scale, -bx * scale, -by * scale);
     if (tip) {
       drawBough(g, x0, p.x + 30, p.y);
-      drawBough(g, p.x + 30, x1, p.y, 0, true);
+      const tc = tipTaper(p, p.x + 30, x1, scale);
+      if (tc) g.drawImage(tc.cv, tc.x, tc.y, tc.cv.width / scale, tc.cv.height / scale);
+      else drawBough(g, p.x + 30, x1, p.y, 0, true);
     } else drawBough(g, x0, x1, p.y);
     for (const e of [l, r]) if (e.kind !== 'joined') eraseBoughEnd(g, e.kind === 'under' ? e.x + (e.right ? 30 : -30) : e.x, p.y, e.right, e.kind === 'torn' && p.width >= BOUGH_END_MIN, p.width);
     b = { key, cv, x: bx, y: by };
@@ -419,6 +476,24 @@ function drawBoughSection(ctx: CanvasRenderingContext2D, p: Platform, dy: number
   }
   ctx.drawImage(b.cv, b.x, b.y + dy, b.cv.width / scale, b.cv.height / scale);
   return true;
+}
+/** a tip's tapered bark, baked once per section and scale (one device px slices, ART-18 (l)), so a section re-bake when what meets its
+ *  ends changes (a neighbour falls, mid-chase) costs one drawImage, never the slices again */
+const tipBakes = new WeakMap<Platform, { scale: number; epoch: number; cv: HTMLCanvasElement; x: number; y: number }>();
+function tipTaper(p: Platform, xa: number, xb: number, scale: number): { cv: HTMLCanvasElement; x: number; y: number } | null {
+  const t = tipBakes.get(p);
+  if (t && t.scale === scale && t.epoch === sheetEpoch.n && !canvasLost(t.cv, 'bough tip')) return t;
+  const bx = xa - 4, by = p.y - 60;
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil((xb - xa + 8) * scale);
+  cv.height = Math.ceil((BOUGH_THICK + 160) * scale);
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  g.setTransform(scale, 0, 0, scale, -bx * scale, -by * scale);
+  if (!drawBough(g, xa, xb, p.y, 0, true, 1, true)) return null;
+  const out = { scale, epoch: sheetEpoch.n, cv, x: bx, y: by };
+  tipBakes.set(p, out);
+  return out;
 }
 /** the mist under a bough stage's branches (ENG-CL's note 3: under the bough the backdrop's own ground strip showed): a pale band from the
  *  stage's bough line down, thickening to near solid, drawn behind the ground from one baked strip (one drawImage a frame, no gradient) */
