@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CAST_13, LINES_13, MISSION_13, TWISTS, REFUSE_13, UNDER, config13, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
 import { NEW_STOOD_IN } from './library.ts';
-import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
+import { buildGen2Stage, castRows, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { EXIT_13, QUIET_OWN_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
@@ -57,7 +57,10 @@ test("in World 1's SHIPPED kit 1-3's pool is its own, every piece: its eight bea
 });
 
 test("the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart", () => {
-  for (const c of W1_CAST_CREATURES) { const { tags: _t, ...a } = CAST_13.find((q) => q.id === c.id)!, { tags: _u, ...b } = c; assert.deepEqual(a, b, c.id); }
+  for (const c of W1_CAST_CREATURES.filter((q) => q.enemy === 'snake')) { const { tags: _t, ...a } = CAST_13.find((q) => q.id === c.id)!, { tags: _u, ...b } = c; assert.deepEqual(a, b, c.id); }
+  // (and they are what the real pipeline lays on 1-3: the world's rows of the kinds its brief casts, never the boa's, ENG-19a)
+  assert.deepEqual(castRows(w1World().manifest, STAGE_13).map((c) => c.id), CAST_13.map((c) => c.id));
+  assert.deepEqual(CAST_13.map((c) => c.id), ['snake', 'snake-trapped', 'snake-asleep', 'snake-trapped-asleep']);
   assert.deepEqual(CAST_13.filter((c) => c.tags?.includes('topup')).map((c) => c.id), ['snake'], 'only the awake snake tops a purge up');
   assert.ok(CAST_13.every((c) => c.enemy === 'snake'));
   for (const p of W1_TRAP_PAIRS) assert.deepEqual([p.minApart, p.maxApart], [85, 130], p.id);

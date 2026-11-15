@@ -23,6 +23,7 @@ import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
 import { BRIEF_13, LESSON_CARD_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
 import { W1_CAST_CREATURES, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from './w1Cast.ts';
+import { lureEmitters, lureProps, type LureRow } from '../lureLay.ts';
 
 /**
  * World 1's manifest rows for its floor (the planner's correction, 11-05 4:19 PM: gen2's own ground IS the floor). `ground` is the
@@ -1660,7 +1661,7 @@ export function w1World(): WorldKit {
     // (World 1's creaky limb, laid only where a section marks a piece `creak`: 1-5's and 1-4's boughs)
     creak: W1_CREAK,
     // (World 1's cast rows and drop-trap pairs, w1Cast.ts: laid only where a section holds a socket for one, so by 1-3's bricks alone)
-    creatures: W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
+    creatures: W1_CAST_CREATURES, props: [...W1_TRAP_PROPS, ...lureProps(W1_LURE)], pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
     // (1-3's pool is its own, LEVEL-BAR A3: its beats, its arrival, its rests and its exit, each tagged for it alone; no World 1
     // library section is in it. A tag only says which stages' pools hold a section, stagePool: no other stage's pool changes)
     sections: [...W1_SECTIONS.map((t) => (t.feel.includes(STAGE_13) ? { ...t, feel: t.feel.filter((f) => f !== STAGE_13) } : t)), ...SECTIONS_13],
@@ -1698,6 +1699,20 @@ export function w1World(): WorldKit {
     return [{ p, dx: s.dx }];
     });
   };
-  return { manifest, ...armedTraps(), settle };
+  // (the drop traps armed by the snake or the boa that stays under them, w1Cast.ts armedTraps; and World 1's lure targets, the eagle's
+  //  roost, laid by a section's lure socket into the stage's cast, each kept in proto.gen2.roosts for its art: W1_LURE)
+  const traps = armedTraps(['snake', 'boa']);
+  return { manifest, emit: { ...traps.emit, ...lureEmitters(W1_LURE, (out, at) => void ((out.extras.roosts ??= []) as unknown[]).push(at)) }, spawn: traps.spawn, settle };
 }
+
+/**
+ * World 1's lure targets (ENG-19a NEW 3, 1-9.md beat 7; gen2/lureLay.ts): the harpy eagle's roost, a nest on a platform of sticks in a
+ * LIVING giant's fork, most often a kapok's (the story keeper, 11-14: never a dead snag), feared by the boa (predators/world1.ts BOA.fears).
+ * A section lays one with `lureSocket(id, piece, t, 'eagle')` on the boa's own bough. Its reach is the boa's own engage (150 px, BOA.engage):
+ * the boa it covers is one that rears at him beside the nest, and flees for good in that first rear frame (lure.ts; lureLay.test.ts),
+ * the roost and the boa on one upright screen (425 px). Its art: the inventory's roost row (reference/art/CATALOG-MASTER.csv 'w1-roost').
+ */
+export const W1_LURE: Readonly<Record<string, LureRow>> = {
+  'w1-roost': { fear: 'eagle', reach: 150, looks: ['roost'] },
+};
 
