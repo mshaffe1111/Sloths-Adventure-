@@ -562,7 +562,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, handed: true };
+export const SKILLS = { ride: true, upstream: true, handed: true, throws: true };
 /**
  * (BUILD-21, 2-1.md NEW 4) `upstream`, against the flow: on a log carrying him back the way he came (a river flowing back at him), every
  * log runs at the river's one speed, so the gap to the next never closes while he waits: waiting at the front end only carries him back.
@@ -570,7 +570,9 @@ export const SKILLS = { ride: true, upstream: true, handed: true };
  * walks off a log's end to press late (a ground edge's late press: off a log the water is 14 px under him, river.ts LOG_DROP - LOG_HEIGHT/2,
  * so there is no fall to press in; riverRide.test.ts, measured 11-15: the child on Easy walked off and drowned 4 times). `handed`, handed to
  * the bank: on a log carrying him on toward the bank ahead, he stands and rides it in (engine.ts drift loop: carried under a bank he steps
- * up onto it), never a hop at the water off its front end. Always on outside a test.
+ * up onto it), never a hop at the water off its front end. (FIX-21) `throws`: a first-timer's run-on bounce is his jump (judged, and
+ * planned a double where one failed) and the mushroom that threw him short is gone back to (throwBack); bounceThrow.test.ts. Always on
+ * outside a test.
  */
 
 export const RULES = {
@@ -784,6 +786,8 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
 
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
+/** px: a bounce's own rise over the cap, no air jump (PHYS.bounceV under PHYS.gravUp, ~181) */
+const BOUNCE_RISE = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
 
 interface Jump {
@@ -805,6 +809,8 @@ interface Jump {
   backX?: number;
   /** thrown up by the mushroom: the second press that follows is not a double's delay */
   bounced?: boolean;
+  /** a run-on bounce's throw, counted as his jump (FIX-21): it got him on only if it got him up */
+  thrown?: boolean;
   /** a hop off a lip for a liana (lianaWait): held toward it all the way, never steered back onto a small landing below */
   liana?: boolean;
   /** a jump he read (a gap or a face): the second press is held as the first */
@@ -1012,6 +1018,8 @@ export class FirstTimerRun {
   private goal: { got: number; need: number } | null = null;
   private sealedT = 0;
   private learned = new Set<string>();
+  /** where and when a bounce last threw him (a first-timer's throwBack) */
+  private thrown: { x: number; y: number; t: number } | null = null;
   /** what he has been told (takeIn), for the report */
   knows(what: string): boolean {
     return this.learned.has(what);
@@ -1752,6 +1760,24 @@ export class FirstTimerRun {
       return {};
     }
 
+    // (a first-timer thrown up by a bounce he ran onto (engine.ts, the run-into spring: no jump of his in progress), the way on standing
+    // over the bounce's own rise: the throw is his jump, judged as his jumps are (landed on, or fell back), and planned as they are
+    // (mem.plan: a double where one has failed here), so the next throw from this mushroom gets the second flick near its top that he
+    // gives every double (his dblAt). Before, a run-on bounce was no jump at all: it never failed, never became a double, and at 2-1's
+    // high bank (206-210 px over the lily's cap: past the bounce's 181, inside the bounce + air jump's 258, pipeline.ts BOUNCE_REACH)
+    // kid and adult were rescued on every seed (FIX-21)
+    if (SKILLS.throws && !this.jump && !who.holdQ && !p.grounded && p.bounce?.kind === 'spring' && p.vy < -700) {
+      const far = this.prog.target(p, 200);
+      if (far && p.y - far.y > 0.9 * BOUNCE_RISE) {
+        // (judged from the floor the mushroom stands on, not its cap: thrown short, he comes down at the face's foot under the cap, and
+        // measured from the cap with the route on two points that read as a landing)
+        const m = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && p.x > q.x - 14 && p.x < q.x + q.width + 14 && Math.abs(q.y - p.y) < 14);
+        const y0 = m ? m.y + m.height : p.y;
+        const kind = this.mem.plan(p.x, y0);
+        this.thrown = { x: p.x, y: y0, t };
+        this.jump = { t0: t, x: p.x, y: y0, cur: this.prog.cur, kind, hold: 0, upOnly: 0, dir: Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : p.vx >= 0 ? 1 : -1, pressed2: false, dblAt: between(this.r, who.dblAt), d2: -1, bounced: true, thrown: true, left: false, harms: this.harms.length, running: true };
+      }
+    }
     // a jump in progress: the thumb down for its hold, the steer back after a straight-up flick, a second flick near the top
     const j = this.jump;
     if (j) {
@@ -1761,11 +1787,13 @@ export class FirstTimerRun {
         const far = this.prog.target(p, 200);
         j.dir = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : j.back;
         j.back = 0;
+        this.thrown = { x: p.x, y: p.y, t };
         // (and a second press near the bounce's top, his second-press delay drawn up to readDbl's quantile; not counted as a double's delay)
         j.kind = 'double';
         j.pressed2 = false;
         j.bounced = true;
-        j.d2 = age + drawQ(this.r, who.dbl2Q!, 2 * DT, 0, who.readDbl ?? 1);
+        // (a first-timer has no measured second-press delay: his own near the top, dblAt, as on every double)
+        j.d2 = who.dbl2Q ? age + drawQ(this.r, who.dbl2Q, 2 * DT, 0, who.readDbl ?? 1) : -1;
       }
       const aimX = j.back && j.backX !== undefined ? j.backX : j.toX;
       if (aimX !== undefined) {
@@ -2254,10 +2282,24 @@ export class FirstTimerRun {
    *  and lets it throw him up the way on, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there) */
   private bounceBack(fdir: -1 | 1, face: number): Pad | null {
     const p = this.sim.p;
+    // (a first-timer too, once he knows the double: thrown short up the face, the lily he just left is behind him, FIX-21)
     if (!this.who.holdQ || face <= 170) return null;
     const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && Math.abs(q.y - p.y) < 60 && (fdir > 0 ? q.x + q.width <= p.x + 10 && p.x - (q.x + q.width) < 160 : q.x >= p.x - 10 && q.x - p.x < 160));
     if (!b) return null;
     return this.hopOnto(b, fdir > 0 ? -1 : 1, fdir);
+  }
+  /**
+   * A first-timer at the foot of a face over his double's rise (DOUBLE_RISE), a jump from here already failed, with the mushroom that
+   * threw him in the last 15 s just behind him (within 160 px, at his level): he hops back onto it and lets it throw him again, the
+   * second flick near the top (the tier bots' bounceBack, for the first-timer: he has seen it throw him, FIX-21). Null: not here.
+   */
+  private throwBack(dir: -1 | 0 | 1): Pad | null {
+    const p = this.sim.p, th = this.thrown;
+    if (!SKILLS.throws || this.who.holdQ || dir === 0 || !p.grounded || !th || this.t - th.t > 15 || this.mem.fails(p.x, p.y) === 0) return null;
+    const face = this.faceAhead(dir, 60);
+    if (face === null || face <= DOUBLE_RISE) return null;
+    const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && Math.abs(q.y - p.y) < 60 && th.x > q.x - 40 && th.x < q.x + q.width + 40 && (dir > 0 ? q.x + q.width <= p.x + 10 && p.x - (q.x + q.width) < 160 : q.x >= p.x - 10 && q.x - p.x < 160));
+    return b ? this.hopOnto(b, dir > 0 ? -1 : 1, dir) : null;
   }
   /** a short hop onto a bounce mushroom `b`, going `dir`; once it throws him up he steers the way on (the route; else `then`) */
   private hopOnto(b: Platform, dir: -1 | 1, then: -1 | 1): Pad {
@@ -2307,6 +2349,8 @@ export class FirstTimerRun {
 
   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
   private decide(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean, meanwhile: Pad): Pad {
+    const back = this.throwBack(dir);
+    if (back) return back;
     const lag = gauss(this.r, this.who.thumb);
     if (lag <= DT / 2) return this.startJump(dir, kind, off);
     this.pending = { at: this.t + lag, dir, kind, off };
@@ -2449,6 +2493,7 @@ export class FirstTimerRun {
       if (!f || f.type === 'fragile') continue;
       this.rescues++;
       this.rescueXs.push(Math.round(p.x));
+      if (TRACE) process.stderr.write(`  ${this.t.toFixed(2)} RESCUE at ${Math.round(p.x)},${Math.round(p.y)}\n`);
       this.lastRescue = i;
       if (this.stuckOpen) this.stuckOpen.rescued = true;
       this.closeStuck(true);
@@ -2501,7 +2546,8 @@ export class FirstTimerRun {
         if (j) {
           // (a jump that took him on along the way but dropped him far under where he set off is a miss: he fell past the ledge,
           // round 5 2026-10-29; counted a success, the bot never tried the jump another way)
-          const ok = held || p.y < j.y - 6 || (this.prog.cur > j.cur + 2 && p.y < j.y + 60);
+          // (a run-on bounce's throw got him on only if it got him up: the route's points run up the face it was thrown at)
+          const ok = held || p.y < j.y - 6 || (!j.thrown && this.prog.cur > j.cur + 2 && p.y < j.y + 60);
           this.mem.result(j.x, j.y, j.kind, ok);
           const hurt = this.harms.length > j.harms;
           this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: t, kind: j.kind, ok: ok && !hurt, hurt, running: j.running, land: ok && p.grounded ? { id: this.e.standingOnId, x: p.x, y: p.y } : undefined, hold: j.hold });

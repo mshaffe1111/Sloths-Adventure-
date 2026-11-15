@@ -1867,9 +1867,13 @@ export class GameEngine {
       plat.x = nx;
       if (p.grounded && this.standingOnId === plat.id) {
         p.x += dx;
-        // carried under a bank: step up onto it instead of riding into the wall
-        if (p.x > d.x1 || p.x < d.x0) {
-          p.x = p.x > d.x1 ? d.x1 + 6 : d.x0 - 6;
+        // carried under a bank: step up onto it instead of riding into the wall. Walked there too: his own step this frame (p.vx, taken
+        // after this loop) going past the river's end hands him over the same way; before, it took him onto the log's hidden part, which
+        // is no floor (onFloor), and he dropped into the water at the bank's foot (FIX-21: 2-1 Normal kid seed 4, logHandover.test.ts)
+        const step = p.x + p.vx * dt;
+        const right = p.x > d.x1 || (step > d.x1 && p.vx > 0);
+        if (right || p.x < d.x0 || (step < d.x0 && p.vx < 0)) {
+          p.x = right ? d.x1 + 6 : d.x0 - 6;
           p.y = d.baseY - LOG_DROP;
           p.vy = 0;
         }
