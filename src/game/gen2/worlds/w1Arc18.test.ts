@@ -19,7 +19,7 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import { w1Finish } from './w1.ts';
-import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
+import { HEARTS_18, LINES_18, MISSION_18, PALMS_18, PALM_APART_18, ROLL_18, TRUNKS_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
 import { loadInventory } from '../../art/inventory.ts';
 import { invDressSize } from '../../art/invDress.ts';
 import { W1_TIP } from './w1Cast.ts';
@@ -148,14 +148,18 @@ test('the still fork: the moss where the collapse stops after the fourth stretch
   }
 });
 
-test('the hearts stand on the fork after the second stretch and the fork before the last; every fruit has its trunk by inventory id', () => {
+test('the hearts stand on the fork after the second stretch and the fork before the last; every fruit has its trunk by inventory id, never the same trunk picture within PALM_APART_18', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d), L = st.chase.stretches;
     const hearts = st.collectibles.filter((c) => c.type === 'heart');
     for (const f of HEARTS_18.forks) assert.ok(hearts.some((h) => h.x > L[f - 1].end && h.x < L[f].start), `${d} seed ${s}: a heart on fork ${f}`);
     const dress = st.proto.invDress ?? [];
+    const trunks = dress.filter((q) => TRUNKS_18.some((t) => t.inv === q.inv));
     for (const h of st.rolling.filter((q) => q.kind !== 'low')) {
-      assert.ok(dress.some((q) => q.inv === DRESS_18.trunk.inv && Math.abs(q.x - h.dropX) <= 100), `${d} seed ${s}: the trunk at the ${h.kind} at ${h.dropX}`);
+      assert.equal(trunks.filter((q) => Math.abs(q.x - h.dropX) <= 100).length, 1, `${d} seed ${s}: one trunk at the ${h.kind} at ${h.dropX}`);
+    }
+    for (const a of trunks) for (const b of trunks) {
+      if (a !== b && a.inv === b.inv) assert.ok(Math.abs(a.x - b.x) >= PALM_APART_18 - 200, `${d} seed ${s}: ${a.inv} twice ${Math.round(Math.abs(a.x - b.x))} px apart`);
     }
   }
 });
@@ -185,7 +189,7 @@ test('the palms (ART-18, Matt 11-15): a painted palm at every nut\'s drop with i
       if (a !== b && a.inv === b.inv) assert.ok(Math.abs(a.x - b.x) >= PALM_APART_18 - 100, `${d} seed ${s}: ${a.inv} twice ${Math.round(Math.abs(a.x - b.x))} px apart`);
     }
     if (palms.length >= 3) assert.ok(new Set(palms.map((q) => q.inv)).size >= 3, `${d} seed ${s}: at least three different palms`);
-    const back = PALMS_18.filter((p) => p.back).map((p) => p.inv as string);
+    const back = [...PALMS_18, ...TRUNKS_18].filter((p) => p.back).map((p) => p.inv as string);
     const lastBack = dress.map((q) => back.includes(q.inv)).lastIndexOf(true), firstNear = dress.findIndex((q) => !back.includes(q.inv));
     if (lastBack >= 0 && firstNear >= 0) assert.ok(lastBack < firstNear, `${d} seed ${s}: the back palms are drawn before every other dressing row`);
     seen += palms.length;

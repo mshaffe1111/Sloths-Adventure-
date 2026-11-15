@@ -268,11 +268,13 @@ export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
  * Until then they are written to proto.invDress and nothing draws them (a named rough spot). x: the piece's middle, `dx` from the hazard's
  * drop; y: its foot when standing, from the ground under the drop (px, + down)
  */
-export const DRESS_18 = {
-  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at every fruit's drop, its foot down in the mist, its fruit
-   *  stalks at and over the drop's height */
-  trunk: { inv: 'hf18/hf18-cannon-trunk', hang: false, dx: 70, y: 260, layer: 'behind' },
-} as const;
+export const TRUNKS_18 = [
+  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at a fruit's drop, its foot down in the mist, its fruit stalks
+   *  at and over the drop's height */
+  { inv: 'hf18/hf18-cannon-trunk', dx: 70, y: 260, back: false },
+  /** the same tree further back (ART-18: mirrored and hazed, 760 px), so two fruit drops on one screen never show one picture twice */
+  { inv: 'hf18/hf18-cannon-trunk-back', dx: -59, y: 220, back: true },
+] as const;
 /**
  * 1-8's palms (ART-18; Matt 11:45-11:46 AM ET 11-15: "Drawn looks awful... Get art", and on the frames sheet: the same palm, huge and
  * identical, in almost every frame). Painted (tools/art/hfpalm), each a tall trunk rising out of the mist under the bough (its foot faded,
@@ -344,26 +346,28 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   // (4) the tip: World 1's (the gap off the last stretch's lip, the far tree's bough, the runner liana; hazards on the run to it left out)
   const tipWhy = layTip(st as never, W1_TIP);
   if (tipWhy.length) throw new Error(`1-8 finish: ${tipWhy.join('; ')}`);
-  // (6) the keeper's look: a painted palm over every nut's drop (PALMS_18 in turn, none twice within PALM_APART_18), a cannonball trunk
-  // behind every fruit's (DRESS_18, by inventory id); the back palms drawn first, behind everything else dressed here
+  // (6) the keeper's look: a painted palm over every nut's drop (PALMS_18), a cannonball trunk behind every fruit's (TRUNKS_18), each list
+  // taken in turn and none of its pictures twice within PALM_APART_18 (Matt 11-15: never the same picture twice on a screen), by
+  // inventory id; the back ones drawn first, behind everything else dressed here
   const proto = ((st as { proto?: unknown }).proto ??= {}) as { invDress?: InvDress[] };
   const rows: Array<InvDress & { back: boolean }> = [];
-  let turn = 0;
+  const turns = new Map<object, number>();
+  const pick = <T extends { inv: string }>(list: readonly T[], x: number): T => {
+    const turn = turns.get(list) ?? 0;
+    // (the nearest same picture already standing, for each in turn: the first free one, else the one whose twin stands furthest; a look
+    // rule never refuses a roll, and w1Arc18.test.ts holds the listed rolls to none within PALM_APART_18)
+    const near = (inv: string) => Math.min(Infinity, ...rows.filter((r) => r.inv === inv).map((r) => Math.abs(r.x - x)));
+    let k = 0;
+    while (k < list.length && near(list[(turn + k) % list.length].inv) < PALM_APART_18) k++;
+    if (k === list.length) k = [...list.keys()].sort((i, j) => near(list[(turn + j) % list.length].inv) - near(list[(turn + i) % list.length].inv))[0];
+    turns.set(list, (turn + k + 1) % list.length);
+    return list[(turn + k) % list.length];
+  };
   for (const h of st.rolling) {
     const g = st.platforms.filter((p) => p.type === 'solid' && p.x <= h.dropX && h.dropX <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
     if (!g) continue;
-    if (h.kind !== 'low') {
-      const d = DRESS_18.trunk;
-      rows.push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: d.hang, layer: d.layer, back: false });
-      continue;
-    }
-    const near = (inv: string) => rows.some((r) => r.inv === inv && Math.abs(r.x - h.dropX) < PALM_APART_18);
-    let k = 0;
-    while (k < PALMS_18.length && near(PALMS_18[(turn + k) % PALMS_18.length].inv)) k++;
-    if (k === PALMS_18.length) throw new Error(`1-8 finish: no palm free at the nut's drop at ${h.dropX} (${PALMS_18.length} within ${PALM_APART_18} px)`);
-    const p = PALMS_18[(turn + k) % PALMS_18.length];
-    turn = (turn + k + 1) % PALMS_18.length;
-    rows.push({ inv: p.inv, x: h.dropX + p.dx, y: g.y + p.y, hang: false, layer: 'behind', back: p.back });
+    const d = h.kind === 'low' ? pick(PALMS_18, h.dropX) : pick(TRUNKS_18, h.dropX);
+    rows.push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, hang: false, layer: 'behind', back: d.back });
   }
   for (const r of [...rows.filter((q) => q.back), ...rows.filter((q) => !q.back)]) {
     (proto.invDress ??= []).push({ inv: r.inv, x: r.x, y: r.y, hang: r.hang, layer: r.layer });
