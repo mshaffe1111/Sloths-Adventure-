@@ -13,6 +13,12 @@ Branch t-int-10b (t-int-10 1750cdbc + 9d8c9fda, ENG-LOOK d2bc1d89/c738e52f, t-en
    levelCheck"; walkedPath.test "D: gen2 stages of four worlds ... every standing petal ... is inside"; w8Fair.test "8-2: no fungus step
    floats over the void"; petals.test "spread out ... at most 2 screens without a petal"; wayside.test "the story decides who can speak" (1-8: "Dot keeps flying to the
    end and back. Show-off." is a first-person line where the story wants the petal's third person: a story-keeper line, not code). (w5.test "the inspector on 20 rolls" failed in the loaded shard only: GREEN alone on this head.)
+2b. **Shard 1 reds, NOT classified (INT-10b stopped at the context limit)**: "any stage: one table line and the fixture stage is judged",
+   "the promises read the table and the stage's brief", "a chain hop is a section kind", "the table: a row per listed stage",
+   "withTestStage: the fixture is a row and a list", "every tip a page waits for", "1-8: every sampled roll is long enough", "every
+   sheet a built stage draws is in its preload list" (suite-shard1.txt). First re-run each file ALONE on this head (fixture tests may
+   collide between shards), then classify at 1750cdbc / c3c7e658 / 3802db95; suspects: ENG-LOOK's hand-built 1-8 deletion (7e40e198)
+   against ENG-16I's 1-8 fixture, and BUILD-18's named 1-8 reds.
 3. Then the suite again (3 shards), and every gate gates-rest.txt did not reach; `npx tsx tools/engine/lockall.ts --layouts 16 --check
    <base lock>` (record the base at 1750cdbc with --out in a worktree; expect 1-1, 1-4, 1-6, 1-7, 1-8, 8-3 and every stage with soft-pit
    holes to move, and say why).
@@ -40,8 +46,8 @@ Branch t-int-10b (t-int-10 1750cdbc + 9d8c9fda, ENG-LOOK d2bc1d89/c738e52f, t-en
 
 ## Gates (code of 642cfda6; later commits are tests/reference + 1fb89f19's three test/constant fixes, each run GREEN alone)
 tsc 0 | suite: shards 1-2 0 fail, shard 3 8+ fail (5-9 kid runs + G8 FIXED after; landingRepair, seeds, walkedPath, w8Fair, petals spread, wayside 1-8 line: step 1-2;
-w5 inspector GREEN alone) | build + chunkcheck PASS | artcheck, knowncheck, generality, roadmapcheck PASS | drawcheck, clipcheck,
-kbdcheck, buildcheck, seedlist 1-1, tool tests, tierBots: gates-rest.txt | lockall: NOT RUN on the final head (step 3).
+w5 inspector GREEN alone) | build + chunkcheck PASS | artcheck, knowncheck, generality, roadmapcheck PASS | suite shard 1: 8+ reds (step 2b); drawcheck, clipcheck,
+kbdcheck, buildcheck, seedlist 1-1, tool tests, tierBots: gates-rest.txt if its background job finished, else UNRUN | lockall: NOT RUN on the final head (step 3).
 
 ## Polish check
 8-3 L2 x 4650/7050 (sheet-83-L2.png): one rock floor, no seam or float, upright + sideways: PASS. 1-6/1-7 stills and clips: NOT SHOT (step 4).
