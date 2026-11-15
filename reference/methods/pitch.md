@@ -17,7 +17,7 @@ explain it (6:23-6:28 PM ET). Every lead uses this; improve it after every round
 
 ## The steps
 1. **Pitch ahead.** Pitch the next THREE levels at once (N+1, N+2, N+3) so the engine pieces they need can be built before their builders start.
-2. **Research members start on Matt's "Gaming" environment** (create_session environment_id from list_environments; it allows wikipedia, archive.org, tcrf, mobygames, hardcoregaming101, gamedeveloper, pcgamer, gamesradar; Default allows none, found 11-14). **Two pitchers, blind to each other:** Opus high + Opus xhigh, same packet (template: reference/packets/2026-11-14/PITCH-19-22.md), each
+2. **Research sites:** Matt allowed 8 hosts on Default (11-14 7:00 PM ET). Tested from the lead's session: en.wikipedia.org, www.hardcoregaming101.net, www.gamedeveloper.com, www.pcgamer.com, www.gamesradar.com open (200); tcrf.net and www.mobygames.com answer 403 (the sites refuse bots); web.archive.org resets the connection. Quote opened pages with URLs; mark the rest [S]. **Two pitchers, blind to each other:** Opus high + Opus xhigh, same packet (template: reference/packets/2026-11-14/PITCH-19-22.md), each
    on its own branch t-pitch-<a|b>, told not to read the other. Tag them "designer" (models.json). Boxes about 90 min.
 3. **What every pitch carries, per level:** the ONE idea; what players LOVED about each source game (cited: a review, interview or
    retrospective, never a feature list), how the original taught it, how we make it feel that good on a phone, what we don't copy; 6-10 beats
