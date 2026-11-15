@@ -247,6 +247,35 @@ hard-vs-cheap as checks, not weights; no live adjustment.
    (G-inference starting values).
 8. **Keep Mario Maker clear rates out of the bands** (§8.5); OURS cites the 25% median only as context. Keep it so.
 
+## 10. Test: World 1 rated with this model (added 11-15, 12:00-12:20 AM ET, at the lead's request)
+**Method.** Score = 100·T/(T + T_50), T = expected wasted seconds per run on the required path (§2 step 5; T_50 = 25 s
+Normal, 12 s Easy, G-inference). Reference player: middle tier on Normal, child tier on Easy (tester-calibrated tier
+bots, BOTS.md). **MEASURED:** miss counts by kind, from 4 runs × 4 layouts per cell (METER-1 bots.jsonl on
+origin/t-meter-1, 2026-11-14; 1-7 is the old eagle, before ENG-WATCH). **ESTIMATED:** seconds per miss: put-back
+4 s (2-6), hit 3 s (2-4), life back to the flag 20 s (10-30), rescue = 8 tries at one spot 32 s (16-48), sealed door
+(goal not full) 30 s (15-60); ranges in brackets. Time-based excess was tried and dropped: layout-to-layout spread
+(±15 s with no misses) swamps it at 4 runs. Factor mix = METER-1's layout meter channels (meter-after.json, a
+layout reading). **Disclosure:** for §9 I had read OURS, which names Matt's 1-1/1-2/1-3 anchors; nothing else known.
+| Stage | Normal (middle) T s → score | Easy (child) T s → score | Carried by (measured misses; meter mix) | Hardest beat | Verdict |
+|---|---|---|---|---|---|
+| 1-5 | 38.8 (19.5-58) → **61** (44-70) | 22.0 (11-33) → **65** (48-73) | 28 put-backs + 2 lives + 1 hit / 4 runs (Easy: 22 put-backs); single, puzzle, double | double/puzzle beats (ESTIMATED from put-backs) | **Hard but fair** on Normal: most fails are instant soft retries; the 2 lives are the cost to check. Easy is too hard for its slot: the child bot fails 5.5×/run |
+| 1-4 | 34.8 (18-59) → **58** (42-70) | 62.5 (31-105) → **84** (72-90) | 5 hits, 2 rescues, 2 of 4 sealed doors; climb, hazard (falling pods) | climb under the pods (ESTIMATED) | **Suspect / possibly cheap:** rescues + sealed doors = a chokepoint and a goal missed, and the expert bot fails more than middle (5.5 vs 1.8/run) = bot defect named in OURS §2.7. Re-run before judging |
+| 1-7 | 2.2 (1.5-3) → **8** (6-11) | 0 → **0** | 3 hits / 4 runs; meter: single, watch, catch, swing | mossy-lianas (meter 5.1 pts: watch 2.3, swing 1.7) | **Easy, fair** for adults. My watcher channel (ranked change 1): eagle tell 0.5 s (METER-1 REPORT), adult stop 210 + 65 ms lag → p_stop ≈ 0.2% per look; a 6-8-year-old ≈ 9%. So the eagle costs adults almost nothing: consistent with "really easy" |
+| 1-1 | 2.0 (1-3) → **7** (4-11) | 0 → **0** | 2 put-backs / 4 runs; single, double | canopy-rungs-level (testers 0.83 fails/run, MEASURED, OURS §3) | **Fair**, gentle |
+| 1-2 | 1.0 (0.5-1.5) → **4** (2-6) | 2.0 (1-3) → **14** (8-20) | 1 put-back (Easy: 2); single, bounce | bounce beats (ESTIMATED) | **Fair**, very easy; Easy above Normal is a small-sample artefact (2 put-backs) |
+| 1-3 | 0.8 (0.5-1) → **3** (2-4) | 0 → **0** | 1 hit; single, creature-choice | creature-choice (ESTIMATED) | **Fair**, the easiest |
+**Ranking, hardest to easiest (Normal):** 1-5 (61) ≈ 1-4 (58) ≫ 1-7 (8) ≈ 1-1 (7) > 1-2 (4) > 1-3 (3). The 1-5/1-4 order
+and the 1-7/1-1 order are inside the cost ranges, so they are ties. **Easy:** 1-4 (84, suspect) > 1-5 (65) ≫ 1-2 (14)
+> 1-1, 1-3, 1-7 (0).
+**Against what is known.** 1-1 > 1-2 > 1-3 matches the anchors above (my scores 7 > 4 > 3). 1-7 lands with 1-1, far
+under 1-4/1-5: matches Matt's "really easy" on the old eagle. Testers exist only on 1-1, where the middle bot tracks
+them per beat (OURS §3, in-sample). **What the test shows about the model [Inference]:** (1) the gap between World 1's
+easy and hard stages is a factor of ~20 in wasted time; a 0-100 scale with T_50 = 25 s puts World 1's hardest stages
+near 60, far above G's World 1 band (5-21), so T_50 or the bands must move: an argument for fitting T_50 on these
+anchors, not taking G's value. (2) The per-miss costs decide 1-4 vs 1-5: measuring walk-back seconds per miss kind
+(ranked change 7) is the next data to collect. (3) Easy 1-4 and 1-5 score above their Normal: either the child bot
+is too weak there, or Easy keeps too much of Normal's challenge; the fact to check first is 1-4's rescues.
+
 ## Sources
 Uploaded by Matt, 2026-11-14, read in full (PDF page numbers):
 - **G**: Gemini Deep Research, "Pre-Play Difficulty Scoring and Level Design for a 30 FPS Mobile Platformer"
