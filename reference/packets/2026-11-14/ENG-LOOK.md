@@ -24,4 +24,4 @@ baking: ENG-DR's measured pushback, accepted), baked into the ground chunks. Mer
 Proof: stills of every 1-8 beat upright + sideways, Normal + Easy, at phone size (412x915 / 915x412), clips of the fork pass and the tip with
 the frame named; drawcheck on 1-8 and the 1-98 fixture; castBots 1-40 both settings (BUILD-18: Normal 40/40 except child 37 at the tip,
 accepted); the WHOLE suite; lock (list what moved). REPORT reference/qa-reports/ENG-LOOK/REPORT.md, "Learned", EXACT NEXT STEP.
-BOX: report by 12:15 AM ET, or 40% real context. Progress at 11:15 PM with (1) done and the first still. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
+BOX (Matt's 11:30 PM cutoff): TONIGHT do (1) and (1b) only, whole suite on your head, REPORT by 11:25 PM ET with (2)-(3) as EXACT NEXT STEP for the morning; or 40% real context. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.

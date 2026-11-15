@@ -10,4 +10,4 @@ story keeper's new way.1-8 line and the `collapse` journal page from reference/s
 is deleted; story 1101 and movesJournal.test must go green with them). Then relist 1-8 if the list moves, castBots 1-40 both settings
 (Normal 40/40 except child 37 at the tip, accepted; Easy 40/40), the WHOLE suite on your head (only ENG-LOOK's reds may remain, named).
 Branch: t-build-18b from origin/t-build-18@ccdf2bf3. No stills (the look will change them: rule 29). REPORT with hours, cost, "Learned".
-BOX: 75 minutes, or 40% real context. No shell wait loops. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
+BOX: report by 11:25 PM ET (Matt's 11:30 cutoff), or 40% real context. No shell wait loops. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
