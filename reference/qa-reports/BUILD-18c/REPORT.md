@@ -33,10 +33,17 @@ probing the render (both palms drawn) and re-shot one spot per page. Moss wisp s
   PERF_AT_X / stage option (owed checks like 'x 24036' could not be run by the shipped tool).
 - **tsc in a worktree** pulls the main checkout through reference/qa-reports/POLISH-5/*.mts absolute imports (/home/user/Sloths-Adventure-/...):
   errors only outside the tree; make those imports relative.
+- **BOUNCE-REUSE** (engine, verdicts; blocks judging 1-8, lead 3:05 PM asked for it): flown (fly/flight-1-8-normal.txt; rows ready:
+  single-hold 123/116 gap 136/221/244, single-flick 123/115 127/211/238, single-tap 87/79 77/162/183, double-hold 208/201 290/376/403,
+  double-flick 207/200 272/358/391, double-tap-tap 148/141 189/274/299, bounce 223/215 gap 177, bounce-air 311/301 gap 334). With
+  judged: 'normal-1-8', 0 of 24 rolls clean both settings (fly/addlevel-1-8-judged.txt): verdicts.ts:51 makes EVERY bounce outside a
+  teach 'bounce-air-test' (band 236-250), so 1-8's plain taught bounces (rise 149-152, s3 + s7) fail band.out + block.lesser-passes. Needs
+  a 'bounce' practice kind (a taught bounce reused, banded by bounce alone) for every judged stage; then enter the rows (n18 like n17),
+  judged, relist, bots. Reverted here (nothing half-done ships); seed list unchanged, --check PASS.
 ## Unresolved
 Crack art on a cracking bough: a cracking section only quivers; chaseCrack (protoArt drawChaseSection) is the old log look, never drawn on
 a bough stage; needs a painted crack overlay for the bough (the lead's HF call). Full suite NOT run (packet: the integration head runs it
-once). roadmapcheck could not judge (shallow clone). Hanging moss NOT shipped (BOUGH-HANG). Not flown: 1-8's judged row.
+once). roadmapcheck could not judge (shallow clone). Hanging moss NOT shipped (BOUGH-HANG). 1-8 flown but NOT judged (BOUNCE-REUSE).
 ## Method used / Lessons applied / Method update
 level.md (rules 22, 26, 27, 28, 29), stage-fix.md, gates.md. Lessons: D79 (whole screen: that is how the shooter fault and the moss wisp
 showed), D19 (a still must come from what the game draws: probed the render), D62 (the built difficulty), D57 (queue read at every push),
