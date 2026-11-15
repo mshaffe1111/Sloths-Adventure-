@@ -44,7 +44,19 @@ export const petalsLow = (stage: object) => (stage as { gen2?: { brief?: { petal
 /** the walked path on a finished stage (gen2/walkedSpan.ts, the model the socket lay reads too): its pieces, lianas, the asks it was laid
  *  with, and `away`, from its own record of its falls (missPiece) */
 export function walkedStage(stage: GeneratedStage, spans: readonly FallSpan[] = fallSpans(stage)): SpanStage {
-  return { platforms: stage.platforms, vines: stage.vines, asks: LAID_ASKS.get(stage) ?? [], away: (p) => missPiece(spans, p) };
+  return { platforms: stage.platforms, vines: stage.vines, asks: LAID_ASKS.get(stage) ?? [], away: awayOf(spans) };
+}
+/** missPiece over these falls, each piece's answer kept while its place is the same (asked for every piece by every span: a build's cost) */
+export function awayOf(spans: readonly FallSpan[]): (p: Platform) => boolean {
+  const seen = new WeakMap<Platform, { k: string; v: boolean }>();
+  return (p) => {
+    const k = `${p.x},${p.y},${p.width},${p.pit ?? ''},${p.catch ? 1 : 0}`;
+    const h = seen.get(p);
+    if (h && h.k === k) return h.v;
+    const v = missPiece(spans, p);
+    seen.set(p, { k, v });
+    return v;
+  };
 }
 
 /** a petal (a scattered pickup that is not a goal item of its own) */
@@ -357,7 +369,7 @@ function walkedSpanMemo(p: Platform, st: SpanStage): { lo: number; hi: number } 
 }
 
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
-function candidates(stage: GeneratedStage, a: number, b: number, r: () => number): Pt[][][] {
+function candidates(stage: GeneratedStage, a: number, b: number, r: () => number, ws: SpanStage = walkedStage(stage), edges?: ReturnType<typeof jumpEdges>): Pt[][][] {
   const ax = routeAxis(stage);
   const inGap = (p: Pt) => ax.at(p) > a + 120 && ax.at(p) < b - 120;
   const climbs: Pt[][] = [];
@@ -371,7 +383,7 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     if (t.some(inGap)) climbs.push(t);
   }
   const jumps: Pt[][] = [];
-  for (const j of jumpEdges(stage)) {
+  for (const j of edges ?? jumpEdges(stage)) {
     if (j.dir !== 1) continue;
     // (never a clump: petals on the arc at least 70 px apart, so three over a long jump, two over a shorter one, none over a hop)
     const span = j.landX - j.takeoffX;
@@ -388,7 +400,6 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
   const plain: Pt[][] = [];
   const floor: Pt[][] = [];
   const ground = Math.max(...stage.platforms.map((p) => p.y));
-  const ws = walkedStage(stage);
   for (const p of stage.platforms.filter(firm)) {
     // (three along a wide ledge, two on a narrow one: never a row, ROW_GAP needs four)
     const len = p.width >= 300 ? TRAIL_LEN : 2;
@@ -451,6 +462,10 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
   // (off the path: never a pit's floor or stair, a hurt floor, a catch or a creaky limb, nor a jump from or onto one; judged as a trail is
   // picked, so a stage whose fill never picked one is laid exactly as before)
   const spans = fallSpans(stage);
+  // (the walked path, read once for the whole fill: the pieces do not move while it lays)
+  const wstage = walkedStage(stage, spans);
+  // (and its jumps: the fill adds petals only, the pieces stay put)
+  const edges = jumpEdges(stage);
   const away = (t: Pt[]) => {
     const rest = RESTS.get(t);
     return !!rest && (rest.on.some((q) => offPath(spans, q)) || (!!rest.foot && inFall(spans, rest.foot)));
@@ -461,7 +476,7 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
     if (!gap) break;
     const [a, b] = gap;
     let placed = false;
-    const all = candidates(stage, a, b, r);
+    const all = candidates(stage, a, b, r, wstage, edges);
     const tiers = floorOnly ? [all[3]] : all;
     for (const tier of tiers) {
       // (any candidate of the tier, the one the layout's number picks first)

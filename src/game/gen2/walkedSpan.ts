@@ -49,8 +49,9 @@ const on = (p: Pick<Platform, 'x' | 'y' | 'width'>, x: number, y: number) => Mat
 
 /** answers by geometry and the setting's dials (a build re-fills its sockets after each repair; the flights are the same) */
 const MEMO = new Map<string, number | boolean | undefined>();
-const memo = <T extends number | boolean | undefined>(key: string, f: () => T): T => {
-  const k = `${key}|${dialsKey()}`;
+// (`dk`: the dials' key, read once by the caller: JSON of the dials on every lookup was a quarter of a build, ENG-PETAL)
+const memo = <T extends number | boolean | undefined>(key: string, f: () => T, dk: string = dialsKey()): T => {
+  const k = `${key}|${dk}`;
   if (MEMO.has(k)) return MEMO.get(k) as T;
   if (MEMO.size > 50_000) MEMO.clear();
   const r = f();
@@ -60,8 +61,8 @@ const memo = <T extends number | boolean | undefined>(key: string, f: () => T): 
 const vk = (v: Vine) => [v.x, v.topY, v.bottomY, v.swingAmp ?? vineAmp(v), v.swingPeriod ?? '', v.swingPhase ?? 0].map((n) => (typeof n === 'number' ? n.toFixed(2) : n)).join(',');
 
 /** where the testers' let-go off liana `v` sets him down on `p`, the farthest of its holds (undefined: no hold's let-go lands on it) */
-export function lianaTouchdown(v: Vine, p: Pick<Platform, 'x' | 'y' | 'width'>): number | undefined {
-  return memo(`td:${vk(v)}:${p.x},${p.y},${p.width}`, () => lianaTouchdownOn(v, p));
+export function lianaTouchdown(v: Vine, p: Pick<Platform, 'x' | 'y' | 'width'>, dk?: string): number | undefined {
+  return memo(`td:${vk(v)}:${p.x},${p.y},${p.width}`, () => lianaTouchdownOn(v, p), dk);
 }
 function lianaTouchdownOn(v: Vine, p: Pick<Platform, 'x' | 'y' | 'width'>): number | undefined {
   const A = sv(v), len = v.bottomY - v.topY;
@@ -92,8 +93,8 @@ export function jumpTouchdown(x: number, y: number, yLand: number, dbl: boolean)
 }
 
 /** does a held running hop off (x, y) catch liana `v` at some moment of its swing (24 moments of a period)? */
-function hopCatches(v: Vine, x: number, y: number): boolean {
-  return memo(`hop:${vk(v)}:${x},${y}`, () => hopCatchesAt(v, x, y));
+function hopCatches(v: Vine, x: number, y: number, dk?: string): boolean {
+  return memo(`hop:${vk(v)}:${x},${y}`, () => hopCatchesAt(v, x, y), dk);
 }
 function hopCatchesAt(v: Vine, x: number, y: number): boolean {
   const A = sv(v), per = vinePeriod(A);
@@ -110,11 +111,11 @@ function hopCatchesAt(v: Vine, x: number, y: number): boolean {
 }
 
 /** the plain jumps' reach: where a full run's jump held off (0, y) comes down through `yLand` (none: it never gets that high) */
-function reach(y: number, yLand: number): number | undefined {
+function reach(y: number, yLand: number, dk?: string): number | undefined {
   return memo(`reach:${Math.round(yLand - y)}`, () => {
     const d = jumpTouchdown(0, 0, Math.round(yLand - y), false);
     return d > 0 ? d : undefined;
-  });
+  }, dk);
 }
 /** a piece a plain jump stands him on: firm, not swinging or moving, not off the path */
 const footing = (q: Platform, st: SpanStage) => !q.broken && (q.type === 'solid' || q.type === 'fragile') && !st.away?.(q);
@@ -136,14 +137,28 @@ const seam = (a: Pick<Platform, 'x' | 'y' | 'width'>, b: Pick<Platform, 'x' | 'y
  *     TAKEOFF_FAR before the edge (where the testers leave);
  *   - a seam walked across is no jump; a piece off the path (`away`) is no way on or off, and never `next` (class C: a pit's floor).
  */
+/** each piece's walked span, by the built pieces' list (the lay, the fill and the built-stage pass ask for the same pieces again: a
+ *  quarter of a build, ENG-PETAL), checked against the lists' sizes, the piece's place and the dials, so a changed stage is read again */
+const SPAN_CACHE = new WeakMap<readonly Platform[], Map<Platform, { k: string; r: { lo: number; hi: number; next?: Platform } }>>();
 export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number; next?: Platform } {
+  const dk = dialsKey();
+  let m = SPAN_CACHE.get(st.platforms);
+  if (!m) SPAN_CACHE.set(st.platforms, (m = new Map()));
+  const k = `${st.platforms.length}|${st.vines.length}|${st.asks?.length ?? -1}|${st.away ? 1 : 0}|${p.x},${p.y},${p.width},${p.type}|${dk}`;
+  const hit = m.get(p);
+  if (hit && hit.k === k) return hit.r;
+  const r = walkedSpanOf(p, st, dk);
+  m.set(p, { k, r });
+  return r;
+}
+function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi: number; next?: Platform } {
   const end = p.x + p.width;
   let lo = p.x, hi = end;
   let next: Platform | undefined;
   // (set down: a liana behind or over it whose let-go lands on it; a jump the route asks onto it)
   for (const v of st.vines) {
     if (!swinging(v) || v.x < p.x - NEAR || v.x > p.x + p.width / 2) continue;
-    const t = lianaTouchdown(v, p);
+    const t = lianaTouchdown(v, p, dk);
     if (t !== undefined) lo = Math.max(lo, t);
   }
   for (const a of st.asks ?? []) {
@@ -161,7 +176,7 @@ export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number
   }
   for (const o of behind) {
     if (seam(o, p)) continue;
-    const r = reach(o.y, p.y);
+    const r = reach(o.y, p.y, dk);
     if (r === undefined) continue;
     const t = o.x + o.width + r;
     // (a flight that falls short of it is no way on: another piece or a double is)
@@ -170,11 +185,11 @@ export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number
   }
   // (left: a liana ahead whose catch is the way on; a jump the route asks off it)
   const ahead = st.vines.filter((v) => swinging(v) && v.x > p.x + p.width / 2 && v.x < end + NEAR && v.bottomY >= p.y - 160 && v.topY < p.y - 60).sort((a, b) => a.x - b.x)[0];
-  if (ahead && hopCatches(ahead, end, p.y)) {
+  if (ahead && hopCatches(ahead, end, p.y, dk)) {
     // (the earliest: the nearer he is the more of its swing he catches, so halved down to 8 px between a miss and a catch)
     let a = p.x, b = end;
-    if (hopCatches(ahead, a, p.y)) b = a;
-    while (b - a > 8) { const m = Math.round((a + b) / 2); if (hopCatches(ahead, m, p.y)) b = m; else a = m; }
+    if (hopCatches(ahead, a, p.y, dk)) b = a;
+    while (b - a > 8) { const m = Math.round((a + b) / 2); if (hopCatches(ahead, m, p.y, dk)) b = m; else a = m; }
     hi = Math.min(hi, b);
   }
   for (const a of st.asks ?? []) {
@@ -188,11 +203,11 @@ export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number
   }
   // (left by a plain jump: to a piece ahead a full jump off its end reaches, the earliest take-off that still lands on it, never before
   //  the testers' far take-off; walked off across a seam, none)
-  const lands = ahead2.filter((q) => !seam(p, q)).map((q) => ({ q, r: reach(p.y, q.y) })).filter((h) => h.r !== undefined && end + h.r! >= h.q.x + 10).sort((a, b) => a.q.x - b.q.x);
+  const lands = ahead2.filter((q) => !seam(p, q)).map((q) => ({ q, r: reach(p.y, q.y, dk) })).filter((h) => h.r !== undefined && end + h.r! >= h.q.x + 10).sort((a, b) => a.q.x - b.q.x);
   for (const { q, r } of lands) hi = Math.min(hi, Math.max(end - TAKEOFF_FAR, q.x + 10 - r!));
   // (no span: the piece the way off it sets him down on, the liana's first, then the ask's, then the plain jump's: never one off the path)
   if (hi - lo < WALKED_MIN && ahead) {
-    const q = st.platforms.filter((r) => r !== p && r.x >= end - 2 && r.x < ahead.x + NEAR && r.type !== 'bouncy' && !st.away?.(r)).sort((r1, r2) => r1.x - r2.x).find((r) => lianaTouchdown(ahead, r) !== undefined);
+    const q = st.platforms.filter((r) => r !== p && r.x >= end - 2 && r.x < ahead.x + NEAR && r.type !== 'bouncy' && !st.away?.(r)).sort((r1, r2) => r1.x - r2.x).find((r) => lianaTouchdown(ahead, r, dk) !== undefined);
     if (q) next = q;
   }
   if (hi - lo < WALKED_MIN && !next && lands.length) next = lands[0].q;

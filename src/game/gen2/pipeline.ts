@@ -16,7 +16,7 @@
  */
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS, walkedPiece, type SpanStage } from './walkedSpan.ts';
-import { fallSpans, missPiece, walkPetals } from '../petals.ts';
+import { awayOf, fallSpans, walkPetals } from '../petals.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -3097,7 +3097,7 @@ export interface Filled {
  *  (the route's gaps and heart-fall zones, petals.ts fallSpans: a pit's floor or stair below the lower lip, a hurt floor, a catch) */
 export function walkedOf(laid: Pick<Laid, 'platforms' | 'vines' | 'asks' | 'gaps' | 'heartFalls'>): SpanStage {
   const spans = fallSpans({ platforms: laid.platforms, heartFalls: laid.heartFalls, gen2: { falls: laid.gaps } } as never);
-  return { platforms: laid.platforms, vines: laid.vines, asks: laid.asks, away: (p) => missPiece(spans, p) };
+  return { platforms: laid.platforms, vines: laid.vines, asks: laid.asks, away: awayOf(spans) };
 }
 
 /**
