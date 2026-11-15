@@ -178,3 +178,19 @@ for (const id of ['8-5', '6-1', '7-5', '8-3']) {
     }
   });
 }
+
+// (the judge too, R-165.251's last hole: game.test.ts and w7Game.test.ts judged 7-9 layout 2's Easy, now built on Easy's swing as a
+// phone builds it, with validateStage on the caller's Normal swing: Normal's grab misses Easy's lianas, "exit platform 157 is not
+// reachable" and 61 more. A gen2 stage is judged on its own setting's dials, whoever asks. Red before, green after)
+test("R-165.251: validateStage judges a gen2 stage on its own setting's dials, whatever the caller's (7-9 layout 2, Easy)", async () => {
+  const { validateStage } = await import('./levelCheck.ts');
+  setLayoutVariant(2);
+  let st;
+  try { st = easyStage(withGoals(generateStage(cfgOf('7-9'), 'easy'))); } finally { setLayoutVariant(null); }
+  applySetting('normal');
+  assert.deepEqual(validateStage(st).errors, [], 'judged with the caller at Normal');
+  applySetting('easy');
+  assert.deepEqual(validateStage(st).errors, [], 'judged with the caller at Easy');
+  applySetting('normal');
+  assert.equal(dialsSetting(), 'normal', "the caller's dials are put back");
+});

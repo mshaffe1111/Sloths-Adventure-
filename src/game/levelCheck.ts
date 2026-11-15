@@ -501,7 +501,16 @@ export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {})
   return withSetting(d, () => validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) }));
 }
 
+/**
+ * validateStage on the stage's own setting's dials when it carries one (a gen2 stage's budget: settingDials.ts, R-165.251): its lianas
+ * are flown on the swing it is played on, whoever asks (a test or tool judging an Easy stage on Normal's swing judged a stage no one
+ * plays: 7-9 layout 2's Easy read as unfinishable). Inside a build the dials are already the stage's (R-165.258), so it changes nothing there.
+ */
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
+  const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty;
+  return d ? withSetting(d, () => validateStageOn(stage, opts)) : validateStageOn(stage, opts);
+}
+function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult {
   // a stage with puzzle rooms (puzzleKit.ts): the stage is walked as it is once every room is solved (its gates open, its lifts up), and
   // each room is checked on its own, symbolically, that it can be solved (puzzleCheck.ts), on this graph with its gates shut as walls
   if (stage.kit?.rooms.length && !opts.walls) {
