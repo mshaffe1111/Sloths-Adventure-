@@ -19,6 +19,7 @@ STORY (keeper, canon): reference/design/PICKS-19-22.md "Story keeper rulings": t
 arrival scene at 2-1's gate, no mushroom bounce in World 2 (a bent Guadua bamboo or palm frond), the counter-flow as an eddy by an islet.
 Proof in reference/qa-reports/ENG-W2/REPORT.md: stills of a rolled 2-1 upright + sideways (Normal), the bot ride clip with the frame named,
 the WHOLE suite on your head, lockall --check (only 2-1/2-2 move; list them), drawcheck on 2-1 if it is in limits.json (add it: D51).
+READY-TO-BUILD (D75): 2-1's row must roll AND list through addlevel (quiet line, help room, seed list), not only roll.
 Report "Learned", ENGINE-WORTHY, and EXACT NEXT STEP for the 2-1 builder (what is data-only from here).
 BOX: report by 9:50 PM ET, or at 40% real context (400k). Progress message at 8:50 PM with (1)'s state. No shell wait loops (D67);
 read your queue at every push. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.

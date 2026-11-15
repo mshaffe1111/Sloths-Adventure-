@@ -126,6 +126,7 @@ Play. Stages are generated (gen2) from proven seed lists and judged by bots cali
   what you learned (a retro note first), make lead.md final, tell every member which session to report to, send Matt the new copy.
 
 ## How you judge a level
+Ready to build is proven on a REAL stage row (a toy stageTable row laid by gen2 and listed by addlevel with every piece the design names), never on a dev fixture (D75: 1-8 hit three engine gaps in 40 minutes).
 Choosing a level's idea: reference/methods/pitch.md (Matt 11-14: two blind pitchers at high and xhigh, three levels ahead, research = what players LOVED, his whole list with classics and lesser-known games, the lead picks or sends both back).
 - **Ready to build, or it doesn't start.** A level builder starts only when every piece its design names is "Now" in NODE-KEY, the bots
   can do every move it needs (proven on a planted toy), its art is in the inventory at scale, the story keeper has approved its lines and

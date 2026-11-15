@@ -15,5 +15,5 @@ ENG-19b (next slot, box 2 h): NEW 5 the six bot skills in tools/inspect/castBots
 drop-the-load, walk-past-the-roost, call-the-eagle; each on a planted toy that goes red with the skill removed; all five tiers.
 Branch: t-eng-19 from origin/t-eng-b6 (its final head, git ls-remote), then merge origin/t-tools-2@19b45a06 (both sit on t-int-9; the per-setting helper src/game/settingDials.ts must be in before you touch any per-setting dial). 19b continues 19a's branch.
 Proof (each): planted tests named, the WHOLE suite on your head, lockall --check with every moved stage listed and re-proved, clips of each
-piece on a toy upright + sideways with the frame named (D69). NODE-KEY rows set "Now". REPORT reference/qa-reports/ENG-19/REPORT.md with
+piece on a toy upright + sideways with the frame named (D69). NODE-KEY rows set "Now". READY-TO-BUILD (D75): prove the pieces on a REAL toy stage row (stageTable + gen2 lay + addlevel lists it), never a dev fixture. REPORT reference/qa-reports/ENG-19/REPORT.md with
 "Learned", ENGINE-WORTHY and EXACT NEXT STEP for the 1-9 builder. Stop at 40% real context. No shell wait loops. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
