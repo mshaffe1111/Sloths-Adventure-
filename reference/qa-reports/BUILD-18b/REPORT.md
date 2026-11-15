@@ -64,7 +64,7 @@ child 330 s, middle 197 s, expert 167 s (Easy 146/144/238/177).
   and :156; it read 10.06 on BUILD-18's head, so the merged t-eng-dr adds about 0.5). Shared ground paint, engine. 1-8 upright and
   every other stage passed.
 - clipcheck (a6104e2da) PASS (83 known).
-- **Whole suite (a6104e2da, one run, all files):** __SUITE__. Every red named and owned:
+- **Whole suite (a6104e2da, one run, all files):** 3,623 tests: 3,609 pass, 12 fail, 2 todo. Every red named and owned:
   - ENG-LOOK, the 7 hand-built-1-8 tests (chasePiece 'keeps its own collapse'; chaseRespawn A-07, A-07b; chaseRespawnReal x4):
     re-pointed and green on t-eng-look, not merged here.
   - Engine, ruled (the lead 10:13/10:24): gen2Pits:61 (seed 2, the pit join); rollGuard:42 1-8 and skills:35 (the step join and
