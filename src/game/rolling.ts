@@ -13,7 +13,7 @@
  * ROLL.headClear or more (1-8.md: "through his hair reads as a hit"). Jumping into it, or stopping dead under a landing, meets it.
  *
  * What a touch costs: before a stage's first crack (a teach, 1-8.md beats 1-2, Pitfall's log) only a bump, no heart; after it, a
- * heart through the engine's one damagePlayer (its safe time, its knock away). `teach` on the spec says so outright; unset, it is
+ * heart through the engine's one damagePlayer (its safe time, its knock away). On Easy, on any stage, always only a bump (rollTeaches). `teach` on the spec says so outright; unset, it is
  * worked out from the stage's chase (`rollTeaches`). Either way a hazard that has touched him once is spent: it rolls on harmless.
  *
  * Pure (no canvas, no engine, no stage ids): the piece, the bots and the tests agree on every hazard.
@@ -127,8 +127,12 @@ export function rollAheadMax(specs: readonly RollSpec[]): number {
   return m;
 }
 
-/** a teach (a bump, no heart): said outright, or before the stage's first crack (its first stretch's start) */
-export function rollTeaches(spec: RollSpec, chase: ChaseLay | undefined): boolean {
+/**
+ * a teach (a bump, no heart): on Easy ALWAYS, on any stage (ENG-CL (5), the story keeper's ruling: on Easy a nut or fruit never costs a
+ * heart, whatever its spec says); on Normal, said outright, or before the stage's first crack (its first stretch's start)
+ */
+export function rollTeaches(spec: RollSpec, chase: ChaseLay | undefined, easy = false): boolean {
+  if (easy) return true;
   if (spec.teach !== undefined) return spec.teach;
   const first = chase?.stretches[0];
   return !!first && spec.dropX < first.start;

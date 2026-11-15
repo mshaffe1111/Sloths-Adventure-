@@ -75,7 +75,8 @@ test('rolling: a nut is set off by his x, drops in for its tell (0.5 s+), lands 
     assert.ok(Math.abs(o.landT - o.setOffT - tell) < DT * 1.5, `${easy ? 'Easy' : 'Normal'}: landed ${(o.landT - o.setOffT).toFixed(2)} s after its drop began`);
     assert.ok(o.touchT - o.setOffT >= ROLL.seen - DT, `${easy ? 'Easy' : 'Normal'}: reached him ${(o.touchT - o.setOffT).toFixed(2)} s after it dropped in`);
     assert.ok(Math.abs(piece.list[0].vx) < PHYS.maxRun, 'it rolls slower than his run');
-    assert.equal(o.hearts, 1, 'no hop, no teach, no chase: a touch is a heart');
+    // (no hop, no teach, no chase: on Normal a heart; on Easy a bump, never a heart: ENG-CL (5))
+    assert.equal(o.hearts, easy ? 0 : 1, `${easy ? 'Easy' : 'Normal'}: a touch costs ${easy ? 'no heart' : 'a heart'}`);
   }
   setDifficulty('normal');
 });
@@ -234,4 +235,24 @@ test('rolling: a hazard whose run-in holds a rock he must hop, or a gap, is refu
   assert.ok(/a wall at x 1300/.test(rollGroundProblems([NUT], [floor, rock]).join()), 'a rock in the run-in');
   const gap = [{ ...floor, width: 1200 }, { ...floor, x: 1320, width: 2000 }];
   assert.ok(/a gap at x 12/.test(rollGroundProblems([NUT], gap).join()), 'a gap in the run-in');
+});
+
+// ENG-CL (5), the story keeper's ruling (the lead's ruling c, 11-14): on ANY stage's Easy a rolling nut or fruit never costs a heart: a
+// touch is a bump (the teach's), wherever it lies and whatever its spec says. Normal keeps the crack rule. PLANTED: before, Easy's touch
+// after the crack (or with teach: false) cost a heart.
+test('rolling: on Easy a touch never costs a heart, before or after the crack, a spec saying teach: false included; Normal is unchanged', () => {
+  const chase = { stretches: [{ start: 600, end: 4000 }] };
+  assert.equal(rollTeaches(NUT, chase, true), true, 'Easy, after the crack: a bump');
+  assert.equal(rollTeaches({ ...NUT, teach: false }, undefined, true), true, 'Easy, said outright no teach: still a bump');
+  assert.equal(rollTeaches(NUT, chase, false), false, 'Normal, after the crack: a heart');
+  for (const spec of [NUT, { ...NUT, teach: false }]) {
+    const { r, piece } = world([spec], { easy: true, chase });
+    const o = run(r, piece, 8, hold);
+    assert.ok(!Number.isNaN(o.touchT), 'it touched him');
+    assert.equal(o.hearts, 0, `Easy (teach ${spec.teach}): no heart`);
+    assert.ok(o.bumpedVx < 0, `bumped back (vx ${o.bumpedVx})`);
+  }
+  const { r, piece } = world([NUT], { easy: false, chase });
+  assert.equal(run(r, piece, 8, hold).hearts, 1, 'Normal after the crack: a heart');
+  setDifficulty('normal');
 });

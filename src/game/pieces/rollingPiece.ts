@@ -155,7 +155,8 @@ export class RollingPiece implements StagePiece {
   private pace = 0;
 
   constructor(specs: readonly RollSpec[], chase: import('../chase.ts').ChaseLay | undefined, private readonly plats: readonly Platform[], private readonly pitY: number, private readonly easy: boolean) {
-    this.list = [...specs].sort((a, b) => a.dropX - b.dropX).map((spec) => this.fresh(spec, rollTeaches(spec, chase)));
+    // (on Easy every touch is a bump, never a heart: rollTeaches, ENG-CL (5))
+    this.list = [...specs].sort((a, b) => a.dropX - b.dropX).map((spec) => this.fresh(spec, rollTeaches(spec, chase, easy)));
     // (start the art's load now: the first drop is seconds away)
     pic(pics.nut);
     pic(pics.tree);
