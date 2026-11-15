@@ -1,0 +1,25 @@
+start 11:07 AM
+seedlist 1-1: the verdicts refuse 0 of 161 listed seeds
+seedlist 1-1: FAIL
+  1-1 seed 769 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 769 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 5033 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 5033 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 5088 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 5088 easy: its replay differs from its search (platforms, collectibles, exitTotemX, exitTotemY): rebuild the list
+  1-1 seed 9013 normal: its replay differs from its search (platforms, collectibles, exitTotemX, checkpoints): rebuild the list
+  1-1 seed 9013 easy: its replay differs from its search (platforms, collectibles, exitTotemX, checkpoints): rebuild the list
+  1-1 seed 12201 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 12201 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 13761 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 13761 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 27496 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 27496 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 28634 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 28634 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 31449 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 31449 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 33616 normal: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+  1-1 seed 33616 easy: its replay differs from its search (platforms, collectibles, spawnY, exitTotemX): rebuild the list
+exit 1
+end 11:11 AM

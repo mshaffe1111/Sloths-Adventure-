@@ -1,0 +1,22 @@
+== 7e9fe4d8^ ENG-16I: the test fixture and the never-flown stage move to 1-8 (t-tools-2's INT
+normal: builds 9ad68ab13fc57244, recorded 9ad68ab13fc57244 SAME; collectibles 150
+easy: builds 01a9ca9c2efb5c46, recorded 01a9ca9c2efb5c46 SAME; collectibles 119
+== 7e9fe4d8 ENG-PETAL: one walked-path model (plain jumps, cleared pieces, miss pieces away)
+normal: builds 370d9a51a09db1a8, recorded 9ad68ab13fc57244 DRIFT; collectibles 108
+easy: builds 779235d9c67c1c7b, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 92
+== f4896466 ENG-PETAL: a petal stays on its own piece inside its walked span, none on a piec
+normal: builds ac6b24aa36d48561, recorded 9ad68ab13fc57244 DRIFT; collectibles 103
+easy: builds a3a9ddedbc13e1b3, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 82
+== ad441627 ENG-PETAL: R-165.265 a wall where two soft pits' floors are joined, at the earli
+normal: builds ac6b24aa36d48561, recorded 9ad68ab13fc57244 DRIFT; collectibles 103
+easy: builds a3a9ddedbc13e1b3, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 82
+== ddbcd55c ENG-PETAL: the take-off-end placement reverted (castBots b2083de4: expert 33/40 
+normal: builds ac6b24aa36d48561, recorded 9ad68ab13fc57244 DRIFT; collectibles 103
+easy: builds a3a9ddedbc13e1b3, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 82
+== e10a86e2 ENG-PETAL: the walked path's cost off the build (each piece's span cached per bu
+normal: builds ac6b24aa36d48561, recorded 9ad68ab13fc57244 DRIFT; collectibles 103
+easy: builds a3a9ddedbc13e1b3, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 82
+== 3802db95 ENG-PETAL: REPORT verdict carries the lead's count ruling and the list/suite sta
+normal: builds ac6b24aa36d48561, recorded 9ad68ab13fc57244 DRIFT; collectibles 103
+easy: builds a3a9ddedbc13e1b3, recorded 01a9ca9c2efb5c46 DRIFT; collectibles 82
+exit 0
