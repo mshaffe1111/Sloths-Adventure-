@@ -25,12 +25,17 @@ H, W, _ = im.shape
 # (the takes' magenta is not flat (soft pink gradients, rain streaks), so it is keyed by how magenta a pixel is, not by its distance from
 # one colour: m = min(R, B) - G is high on the pink and near 0 on the grey trunk, the greens, the browns and the orange nuts)
 mg = np.minimum(im[..., 0], im[..., 2]) - im[..., 1]
-ring = np.concatenate([mg[:6].ravel(), mg[:, :6].ravel(), mg[:, -6:].ravel()])
-mb = float(np.median(ring))
-a = np.clip((0.7 * mb - mg) / (0.45 * mb), 0, 1)
-spill = np.clip(mg / max(mb, 1), 0, 1) * (1 - a)
-im[..., 0] -= spill * mg
-im[..., 2] -= spill * mg
+hs = np.asarray(Image.fromarray(np.clip(im, 0, 255).astype(np.uint8), 'RGB').convert('HSV')).astype(np.float32)
+hue, sat = hs[..., 0], hs[..., 1]
+# (magenta-pink hues, PIL 0-255: 300-345 deg = 212-245, soft over 8 either side; the pale pink haze has low saturation but that hue, and
+# min(R, B) over G; nothing in a palm (greens, teal, browns, orange, the grey trunk) has both)
+hw = np.clip(1 - (np.maximum(0, 200 - hue) + np.maximum(0, hue - 250)) / 8, 0, 1)
+bgness = hw * np.clip((sat - 14) / 22, 0, 1) * np.clip((mg - 4) / 14, 0, 1)
+a = 1 - bgness
+# (the spill: any pixel left with min(R, B) over G is pulled back to G there, fully at the soft rim, half inside the tree)
+sp = np.clip(mg, 0, None) * np.where(a < 0.98, 1.0, 0.5)
+im[..., 0] -= sp
+im[..., 2] -= sp
 # (keep only what joins the tree: components on a quarter-size mask, the biggest one and anything touching it)
 S = 4
 m = a[::S, ::S] > 0.5
