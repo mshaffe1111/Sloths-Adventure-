@@ -95,7 +95,7 @@ interface Piece {
 /** by catalog id: a piece, 'no' (the gate refuses it: never drawn) or 'asking' (its world's inventory is on its way) */
 const pieces = new Map<string, Piece | 'no' | 'asking'>();
 let resolvedCount = 0;
-/** how many rows have been resolved against an inventory (a test reads it: once a piece, never a frame) */
+/** how many pieces have been resolved against an inventory (invDress.test.ts reads it: once a piece, never a frame or a row) */
 export const invDressResolves = (): number => resolvedCount;
 
 function load(p: Piece): void {
@@ -122,7 +122,10 @@ function resolve(id: string, inv: Inventory, world: number): void {
  */
 export async function readyInvDress(rows: readonly InvDress[] | undefined, world: number): Promise<void> {
   if (!rows?.length) return;
-  const want = [...new Set(rows.map((d) => d.inv))].filter((id) => { const p = pieces.get(id); return p === undefined || p === 'asking'; });
+  const ids = [...new Set(rows.map((d) => d.inv))];
+  // (a piece resolved on an earlier visit whose picture was let go with its world: asked for again now, not on a frame of play)
+  for (const id of ids) { const p = pieces.get(id); if (p && p !== 'no' && p !== 'asking') load(p); }
+  const want = ids.filter((id) => { const p = pieces.get(id); return p === undefined || p === 'asking'; });
   if (!want.length) return;
   for (const id of want) pieces.set(id, 'asking');
   try {

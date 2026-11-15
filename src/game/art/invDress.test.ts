@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import '../headlessDom.ts';
 import { HERO_SPRITE_SCALE, HERO_UNITS } from '../heroSprite.ts';
 import { Inventory, loadInventory, usable, type InventoryFile } from './inventory.ts';
-import { frameRect, invDressBreaches, invDressSize, type InvDress } from './invDress.ts';
+import { frameRect, invDressBreaches, invDressResolves, invDressSize, readyInvDress, resetInvDress, type InvDress } from './invDress.ts';
 import { invDressUrl } from './invDressArt.ts';
 
 const COLS = ['id', 'file', 'frame', 'world_best', 'worlds', 'kind', 'layer', 'engine_slot', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'float_class', 'made_thing', 'status', 'pokey_scale', 'scale_ok'];
@@ -103,4 +103,19 @@ test('no code lays dressing rows on a stage this gate does not build: every writ
   const files = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? files(`${dir}/${e.name}`) : e.name.endsWith('.ts') && !e.name.endsWith('.test.ts') ? [`${dir}/${e.name}`] : []));
   const writers = files('src').filter((f) => /invDress\s*(\?\?=|=[^=]|:\s*\[)/.test(fs.readFileSync(f, 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n')));
   assert.deepEqual(writers.sort(), ['src/game/gen2/worlds/w1Arc18.ts'], 'the files that lay rows');
+});
+
+test('readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved', async () => {
+  resetInvDress();
+  const rows = [at('hf18/hf18-palm-crown'), at('hf18/hf18-palm-crown', { x: 3000 }), at('hf18/hf18-cannon-trunk', { hang: false }), at('fx/missing')];
+  await readyInvDress(rows, 1);
+  assert.equal(invDressResolves(), 2, 'two pieces, four rows');
+  await readyInvDress(rows, 1);
+  await readyInvDress([at('hf18/hf18-cannon-trunk')], 1);
+  assert.equal(invDressResolves(), 2, 'asked again: nothing resolved twice');
+  await readyInvDress(undefined, 1);
+  await readyInvDress([at('fx/in-no-world')], 99);
+  assert.equal(invDressResolves(), 2, 'no rows, or a world with no file: nothing, and no throw');
+  resetInvDress();
+  assert.equal(invDressResolves(), 0);
 });
