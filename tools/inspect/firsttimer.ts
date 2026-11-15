@@ -50,6 +50,8 @@ import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJu
 import type { Platform, PlayerState, Vine } from '../../src/game/types.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
+import { engageOf } from '../../src/game/predators/core.ts';
+import type { PredatorDef } from '../../src/game/predators/types.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
@@ -162,6 +164,12 @@ export interface FirstTimer {
    *  if neither were there. Every bot has it: a small nut rolling at him, a hop as it closes; a big fruit bouncing at him, he stays down
    *  and runs on under it (1-8.md: "small and rolling = hop; big and bouncing = stay down") */
   noRollRead?: boolean;
+  /** the freeze REMOVED (level.md rule 21's planted toy test only, tools/inspect/boaBots.test.ts): an animal of the cast rears at him
+   *  and he walks on into its strike. Every bot has it once told (1-9.md "be the bait"): a rear starts within its engage, and after his
+   *  reaction (stopReact, then the thumb's lag: BOTS.md keeps both from KID / ADULT, no profile measures reaction) the thumb comes off
+   *  and stays off until it is beaten (it flees) or its strike is over */
+  noFreeze?: boolean;
+
   /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
    *  a runner liana's lip (1-8 NEW 4: it swings to meet a full run), his thumb stays down, as on a chase and under a fruit */
@@ -930,6 +938,8 @@ export class FirstTimerRun {
   private warnSeenAt = -1;
   /** when the kit eagle's look over his stretch began (its screech), or -1 */
   private castWarnAt = -1;
+  /** a rear he has seen start (freezePlan): which animal, and when his thumb comes off (his reaction) */
+  private rearSeen: { m: unknown; at: number } | null = null;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1578,6 +1588,9 @@ export class FirstTimerRun {
       // (1-6's "Hang low, fly far!": a lower grip on a liana throws him further, so he climbs down it before he lets go, swingLow)
       if (/\b(hang|hold on|grip|climb down)\b/.test(t) && /\blow(er)?\b/.test(t)) this.learned.add('low');
       if (/\b(stand still|stay still|keep still|wait (here|for|under|on)|stand (on|under|here))\b/.test(t)) this.learned.add('still');
+      // (the freeze in a hunter's rear, 1-9's beat 2: told to freeze or not to move. Never 'hold / keep / stand still': 1-7's hide line
+      // and the still spots say those, and a still spot's 'still' is used up at the spot (stillSpot), so the freeze has its own words)
+      if (/\b(freeze|frozen|don'?t (move|budge|twitch))\b/.test(t)) this.learned.add('freeze');
     }
   }
 
@@ -1973,7 +1986,10 @@ export class FirstTimerRun {
         }
       }
     }
-    // a stage's cast (castPlay.ts, any stage by its data): a drop trap whose load hangs over an animal ahead, once he has been told of it
+    // a stage's cast: a hunter rearing at him, once told to freeze (freezePlan); a drop trap whose load hangs over an animal ahead, once
+    // he has been told of it (castPlan). Any stage by its data
+    const fz = this.freezePlan();
+    if (fz) return fz;
     if (this.punchAt === null) {
       const c = this.castPlan(fdir);
       if (c) return c;
@@ -2102,6 +2118,10 @@ export class FirstTimerRun {
       // an animal walking at him: hop it (or punch it, once told how), or walk on into it
       for (const m of e.enemies as any[]) {
         if (m.defeated) continue;
+        // (an animal of the cast whose coil hurts on touch (PredatorDef.coil: the boa on its bough) never walks at him: the freeze is his
+        // answer once told (freezePlan), else he walks on into it. Hopping a rearing coil is the expert's move, not a tier bot's yet:
+        // ENG-19b, the lead 11:20 AM. 1-3's snakes have no coil: hopped or punched as before)
+        if (m.kit && (e.cast?.members as Array<{ e: unknown; def: PredatorDef }> | undefined)?.some((q) => q.e === m && !!q.def.coil)) continue;
         const dx = (m.x - p.x) * dir;
         if (dx < 20 || dx > 130 || Math.abs(m.y + 12 - p.y) > 60) continue;
         if (!this.foeSeen.has(m.id)) this.foeSeen.set(m.id, this.r() < who.hopFoe);
@@ -2117,6 +2137,33 @@ export class FirstTimerRun {
       }
     }
     return side(dir);
+  }
+
+  /**
+   * The freeze (1-9.md "be the bait"; any stage by its cast's data): an animal of the cast that is not a sweeper starts its rear (the kit's
+   * 'tell') with him within its engage on its ground; once told to freeze, after his reaction (stopReact, then a thumb's lag) he takes
+   * the thumb off, and keeps it off while it rears and strikes, until it is beaten (it leaves) or its strike is over. By a lure post it
+   * fears (1-9's roost) it leaves in its first rear frame (lure.ts), before any reaction, so he walks on: no reading of the post is
+   * needed (boaBots.test's roost toy, planted with the post removed).
+   */
+  private freezePlan(): Pad | null {
+    const c = this.e.cast as { members: Array<{ def: PredatorDef; s: { phase: string; x: number; y: number; leaving?: boolean } }> } | null;
+    if (!c || this.who.noFreeze || !this.learned.has('freeze')) {
+      this.rearSeen = null;
+      return null;
+    }
+    const p = this.sim.p, t = this.t;
+    // (the kit reads him as castPlay's CastHero does: x his middle, y his feet)
+    const mid = p.x, feet = p.y;
+    const rearing = (m: (typeof c.members)[number]) => m.def.habit !== 'sweep' && !m.s.leaving && (m.s.phase === 'tell' || m.s.phase === 'act') &&
+      Math.abs(m.s.x - mid) <= engageOf(m.def, this.who.setting === 'easy') + 20 && Math.abs(m.s.y - feet) <= 60;
+    if (this.rearSeen && !c.members.some((m) => m === this.rearSeen!.m && rearing(m))) this.rearSeen = null;
+    if (!this.rearSeen) {
+      const m = c.members.find((q) => q.s.phase === 'tell' && rearing(q));
+      if (!m) return null;
+      this.rearSeen = { m, at: t + this.who.stopReact + Math.max(0, gauss(this.r, this.who.thumb)) };
+    }
+    return t >= this.rearSeen.at ? {} : null;
   }
 
   /**
