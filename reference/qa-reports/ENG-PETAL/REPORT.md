@@ -75,7 +75,21 @@ Putting each socket's petals at the span's take-off end instead (b2083de4) did n
 child's (38 -> 32/40 sealed+rescued): reverted (ddbcd55c). The fix that remains is the arrival model (lianas, doubles).
 
 ## Gates on the head
-__GATES__
+Code heads: ddbcd55c (the petal/wall code every bot number above was measured on), e10a86e2 (+ the build-cost fixes, output proved
+identical by lockall: __LOCKPERF__). Logs: gates-ddbcd55c.txt, seedcheck, suite below.
+- tsc PASS (e10a86e2). knowncheck PASS. generalitycheck PASS (26 literals, 26 known). roadmapcheck: could not run ("shallow clone,
+  proofs cannot be checked"; as ENG-16H).
+- `BASE_PATH=/Sloths-Adventure-/ npx vite build` PASS; chunkcheck PASS; artcheck PASS (ddbcd55c).
+- engine tools' tests 34/34 PASS; tierBots.test 7/7 PASS (1-1's petals moved, its tier calibration still matches); kbdcheck PASS.
+- **buildcheck: OVER on ddbcd55c** (Normal p95 194 ms against 150, measured while the suite and a list check loaded all 4 cores; Easy
+  p95 121). A same-load A/B in node showed the head's 1-1 build 25-40 ms slower at the median: the walked path's cost, real. Fixed in
+  e10a86e2 (profile: fallSpans rebuilt per candidate call, `away` scanning every fall for every piece, spans recomputed): 1-1 p50
+  88/93 ms vs base 87/92 ms, same load (bt.mts). buildcheck NOT re-run alone on e10a86e2: the first gate for the morning.
+- Planted faults: 7/7 RED, restored GREEN (planted.out.txt, on 9983514f's code = ddbcd55c's).
+- **seedlist --check**: 1-6 FAILS ("seed 80 normal/easy: its replay differs from its search (platforms, vines, collectibles, spawnY):
+  rebuild the list": the wall changes 1-6's platforms). Relist __RELIST__. Others: __SEEDS__
+- **The whole suite** (on ddbcd55c): __SUITE__
+- drawcheck, clipcheck: NOT run (about 10 min of the whole machine; the suite, lists and relist held it until the cutoff).
 
 ## Polish check
 None shot: the bots are not green (level.md rule 29: no stills of a stage whose bots are red). Named, not hidden: the R-165.265 post is a
