@@ -42,7 +42,12 @@ BOUGH-FALL below); (3) crack art on a cracking bough (the 1-8 data step's engine
   have an end), ends by what meets them (joined / step: lower runs under, higher living / torn: splintered erase in the bark / living:
   rounded), the tip the bark tapering, mist band under the bough line (one drawImage), no pit paint and no soil on a bough stage, thin plain
   steps bough too. SHOWN FIRST 11:22 (first set); the lead's A + (f)-(j) done; third set 11:44.
-- 5 drawcheck: see below. 6: NOT done (step 2 above).
+- **5 drawcheck on cacf67d4 (frozen worktree, all 13 scenarios both ways): PASS (588 s).** 1-8 sideways (land): gradients 0.00 (BUILD-18's
+  head 6.88-8.25 > 2), drawImageScreens 5.60 / 7.5 (was 10.04), calls 229.56 / 400; upright 5.36 / 7.5, gradients 0. Its spots were
+  x 12449 / 24988, not x 24036, and the 1-98 fixture was not played: both still owed (step 5). Targeted tests on cacf67d4 (chaseLay,
+  chaseTipLay, w1Pits, w1Overhang, entryJoin, chasePiece, invDress, stageBackdrops, w1Arc18, w1CutArt): 90/90. Art/inventory tests 16/16.
+  Fast gates on the branch: tsc, knowncheck, generalitycheck (26 known, 0 new), artcheck PASS; roadmapcheck could NOT judge (shallow clone).
+  The whole suite was NOT run. 6: NOT done.
 ## Polish check (frames: stills/{first,second,third}/, clips/) / Pushback / Suggestions
 third/x5400: step, higher end rounded over the lower, no chevron, knots, swell. x13900: mist under; stair = (m). x34200: tip tapers in the
 same bark; far branch living (but see (k)). Clips: the bough continuous through the run. Pushback: the lead's (1c) "or" was both (a cut bank
