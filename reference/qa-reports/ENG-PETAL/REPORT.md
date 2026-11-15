@@ -157,6 +157,8 @@ In order (engine tier unless named):
 6. Stills and clips only on the GREEN head (rule 29).
 
 ## Learned
+- A background run gets its timeout set to the job's length: I left the default 30 minutes on the whole suite and the list checks,
+  started them on a 4-core machine already full (castBots, lockall), and both were stopped unfinished at 10:48 PM. Run the suite alone.
 - A model that is "every run walks it" must be tried against the count it leaves before it is called a fix: 1-6 went 112 -> 23.
 - Moving a pickup off its piece crosses into another piece's clearances (traps, Dot spots): keep a section's pickups on its own pieces.
 - A test must judge the stage the game plays (D19): libstage buildStage is the raw roll, without finishStage's petalPass; my first D
