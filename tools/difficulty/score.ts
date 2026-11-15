@@ -95,6 +95,39 @@ export const CRUMBLE_DY = 40;
 export const OTHER_BITS = { choice: 0.5, second: windowBits(0.5, 0.333), climb: 0.25, swing: windowBits(1.6, 0.4), puzzle: 0.5 } as const;
 export const creatureBits = (tellS: number): number => Math.log2(1 + REF_S / Math.max(0.05, tellS));
 
+/**
+ * The meter REFUSES a piece it has no channel for (METER-2a, R-165.272; reference/design/METER-COVERAGE.md §3). Until METER-2a a hazard
+ * beat it had no rule for scored a flat 2 bits, a rope, lift or warm air a 0.25-bit climb, and any move routeJumps does not take (it
+ * takes jumps and hops only: jumps.ts) scored nothing at all (a hop onto a moving log, a mushroom launch, a long jump), so a new piece
+ * was always priced and nothing complained. Now every route move needs a channel in MOVE_CHANNEL and every beat family a branch in
+ * scoreStage, or scoreStage throws `unpriced piece <family>`. The one exception is a piece a built stage already used when the gate
+ * started: coverage.known.json lists it (shrink-only: knowncheck; coveragecheck fails an entry that is covered), and it keeps its old
+ * price, marked in the challenge's note, until its channel lands. tools/difficulty/coveragecheck.ts is the gate.
+ */
+export interface CoverageKnown { id: string; missing: Array<'bot' | 'channel'>; R: string; owner: string; stages: string[]; why: string }
+export const COVERAGE_KNOWN: readonly CoverageKnown[] = JSON.parse(fs.readFileSync(new URL('./coverage.known.json', import.meta.url), 'utf8')).known;
+const KNOWN_UNPRICED = new Map(COVERAGE_KNOWN.filter((k) => k.missing.includes('channel')).map((k) => [k.id, k]));
+export class UnpricedPiece extends Error {
+  constructor(readonly piece: string, where: string) {
+    super(`unpriced piece ${piece} (${where}): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)`);
+    this.name = 'UnpricedPiece';
+  }
+}
+/** a piece with no channel: the price it had before the gate (`was`) if it is on the known list, else a refusal */
+export function unpriced(piece: string, where: string, was: number): { bits: number; note: string } {
+  const k = KNOWN_UNPRICED.get(piece);
+  if (!k) throw new UnpricedPiece(piece, where);
+  return { bits: was, note: ` [unpriced: ${piece}, known ${k.R}]` };
+}
+/** the channel that prices each route move (route.ts MoveKind): the function or number in this file that gives it its bits. A walk and a
+ *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
+export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
+  walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', swing: 'swingChallenges',
+};
+/** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
+ *  beat) is a choice skipping costs nothing, so it is no challenge (the meter prices the route to the shrine) */
+export const OFF_ROUTE: Readonly<Record<string, string>> = { 'beat:pickup arcs': 'optional, off the route: skipping it costs nothing' };
+
 /** 1 is a free retry, 2 a soft set-back, 3 a heart and set-back, 4 a life */
 type Cost = 'retry' | 'soft' | 'heart' | 'life';
 export interface Challenge {
@@ -576,6 +609,9 @@ export interface StageScore {
   soft: boolean; route: Route;
   count: Record<string, number>; bits: number; points: number; mean: number; peak: number; raw: number;
   challenges: Challenge[];
+  /** every piece the stage uses, as coveragecheck's ids: its route's moves, its beats' families, its platforms' types (a ride by its
+   *  way), its creatures and its zones (METER-2a: the coverage gate holds each to a bot and a channel) */
+  pieces: string[];
 }
 
 /** one stage, one setting, one layout: its challenges and raw load (seen: earlier exposures by move kind, carried in game order) */
@@ -592,6 +628,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     : [];
   // (the meter's route steps onto humps, down stairs and into shallow dips: route.ts `steps`, S1)
   const route = findRoute(st, targets, { steps: true });
+  // (every move on the route has a channel, or the stage is refused: MOVE_CHANNEL. A known one keeps its old price, nothing)
+  for (const sg of route.segs) if (!MOVE_CHANNEL[sg.kind]) unpriced(`move:${sg.kind}`, `${id} x ${Math.round(sg.x0)}`, 0);
   const samples = sampleRoute(route);
   const br = findBeats(st, route, samples);
   // (the same reference thumb on both settings, so a setting's own softening is what moves its score: ADULT, jumps.ts)
@@ -635,12 +673,16 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       // (a chase's stretch and a bouncing fruit are scored from the stage's own lay, chaseChallenges and rollingChallenges: beats.ts reads
       //  a stretch as a pacing beat every 1.5 s, which this loop scored as ~16 two-bit hazards a stretch, the old 1-8's 28)
       if (/the branch collapses behind him|a bouncing fruit/.test(b.what) && (st.chase || st.rolling || st.proto?.chase)) continue;
+      // (a beat that names its own window is a timed press in it; any other hazard has no channel here: refused, unless known)
       const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(b.what);
-      add({ t: b.t, x: b.x, kind: 'hazard', bits: m ? windowBits(Number(m[2]), Number(m[1])) : 2, cost: 'heart', stakes: STAKES.heart, threat: true, note: b.what });
+      const u = m ? { bits: windowBits(Number(m[2]), Number(m[1])), note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, 2);
+      add({ t: b.t, x: b.x, kind: 'hazard', bits: u.bits, cost: 'heart', stakes: STAKES.heart, threat: true, note: b.what + u.note });
     } else if (b.letter === 'V') {
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
-      if (/swing|liana/.test(b.what)) continue;
-      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: OTHER_BITS.climb, cost: 'retry', stakes: 1, threat: false, note: b.what });
+      if (b.fam === 'move:swing') continue;
+      // (a climb up a trunk or vine: OTHER_BITS.climb. A rope, a lift, warm air were scored as that climb: now refused, unless known)
+      const u = b.fam === 'move:climb' ? { bits: OTHER_BITS.climb, note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, OTHER_BITS.climb);
+      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: u.bits, cost: 'retry', stakes: 1, threat: false, note: b.what + u.note });
     } else if (b.letter === 'P') {
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });
     }
@@ -725,7 +767,23 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     id, setting, seed, minutes: Math.round(minutes * 100) / 100, traced: route.traced, soft: softPits, route, count,
     bits: Math.round(out.reduce((s, c) => s + c.bits, 0) * 10) / 10, points: Math.round(points * 10) / 10,
     mean: Math.round(mean * 10) / 10, peak: Math.round(peak * 10) / 10, raw: rawOf(mean, peak), challenges: out,
+    pieces: piecesUsed(st, route, br.beats),
   };
+}
+
+/** the pieces a built stage uses (METER-2a, coveragecheck.ts): read from the built stage, never from its data */
+export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): string[] {
+  const out = new Set<string>();
+  for (const sg of route.segs) out.add(`move:${sg.kind}`);
+  for (const b of beats) if (b.fam) out.add(b.fam);
+  for (const p of st.platforms ?? []) {
+    out.add(`platform:${p.type}`);
+    // (a ride across moves sideways, a ride up moves up and down: ride.ts paths, gen2/rideLay.ts RideWay)
+    if (p.ride) out.add(`ride:${p.ride.path.some((q: any, i: number) => i > 0 && Math.abs(q.y - p.ride.path[0].y) > Math.abs(q.x - p.ride.path[0].x)) ? 'up' : 'across'}`);
+  }
+  for (const e of st.enemies ?? []) out.add(`creature:${e.type}`);
+  for (const z of st.zones ?? []) out.add(`zone:${z.kind}`);
+  return [...out].sort();
 }
 
 /** raw load to the 0-100 meter: SCALE is set once, from 1-1 on Normal reading 4 (Matt, 11-12 8:31 PM ET); --scale overrides it */

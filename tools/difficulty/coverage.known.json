@@ -1,0 +1,108 @@
+{
+ "about": "The meter's known coverage gaps (METER-2a, R-165.272): pieces BUILT stages already used when tools/difficulty/coveragecheck.ts started, with no bot or no channel. Shrink-only (knowncheck.mjs LISTS; coveragecheck fails an entry that is covered or no longer used). A piece here keeps its pre-gate price in score.ts (marked in the challenge note); any other unpriced piece is refused.",
+ "known": [
+  {
+   "id": "move:bounce",
+   "missing": [
+    "channel"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the meter: a mushroom launch priced as a bouncy move, moveOf's bounce rows)",
+   "stages": [
+    "1-1",
+    "1-6",
+    "1-9"
+   ],
+   "why": "route.ts makes a launch off a cap a 'bounce' move and jumps.ts routeJumps takes jumps and hops only, so it scored 0 bits"
+  },
+  {
+   "id": "move:glide",
+   "missing": [
+    "channel"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the meter: a long jump / leaf glide priced as a move with its reach)",
+   "stages": [
+    "1-1",
+    "1-2",
+    "1-5"
+   ],
+   "why": "route.ts calls a linked gap no jump covers a 'glide'; routeJumps skips it, so it scored 0 bits"
+  },
+  {
+   "id": "move:presumed",
+   "missing": [
+    "channel"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the meter: a hop the level check cannot confirm priced as the jump it flies, or the route made to confirm it)",
+   "stages": [
+    "1-6"
+   ],
+   "why": "a route link the level check cannot confirm; routeJumps skips it, so it scored 0 bits"
+  },
+  {
+   "id": "beat:crumbling branches",
+   "missing": [
+    "bot",
+    "channel"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b step 3 (dwell channel, [2-2]) and step 5 (the clock SKILL's dwell half)",
+   "stages": [
+    "1-4"
+   ],
+   "why": "a 'Z' beat with no channel: score.ts priced it a flat 2 bits; the bot has no crumble behaviour (it never leaves before 'gone')"
+  },
+  {
+   "id": "platform:fragile",
+   "missing": [
+    "bot"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b step 5 (the clock SKILL's dwell half)",
+   "stages": [
+    "1-4",
+    "1-5",
+    "1-7"
+   ],
+   "why": "the bot treats crumbling wood as ground: it never leaves before it goes"
+  },
+  {
+   "id": "beat:push logs and boulders",
+   "missing": [
+    "bot"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the tier bots: a SKILL for it, or the stage replaced by its gen2 build first)",
+   "stages": [
+    "1-6"
+   ],
+   "why": "no bot code pushes a log or boulder (grep 'push' in firsttimer.ts: none for p.push)"
+  },
+  {
+   "id": "beat:ring waves",
+   "missing": [
+    "bot"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the tier bots: a SKILL for it, or the stage replaced by its gen2 build first)",
+   "stages": [
+    "1-9"
+   ],
+   "why": "no bot code for a ring's waves (grep 'ring' in firsttimer.ts: none)"
+  },
+  {
+   "id": "creature:boa",
+   "missing": [
+    "bot"
+   ],
+   "R": "R-165.272",
+   "owner": "METER-2b (the tier bots: a SKILL for it, or the stage replaced by its gen2 build first)",
+   "stages": [
+    "1-9"
+   ],
+   "why": "no bot code names a boa's strike; unproven (castBots never ran 1-9)"
+  }
+ ]
+}

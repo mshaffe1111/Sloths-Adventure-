@@ -44,6 +44,11 @@ test("CI's commands run the four tools tests the t-int-engine merge added", () =
     assert.ok(res.some((r) => r.test(f)), `${f} is run by no workflow`);
 });
 
+test("CI runs the meter's coverage gate and its tests (METER-2a, R-165.272)", () => {
+  assert.ok(ciTestArgs().map(globRe).some((r) => r.test('tools/difficulty/coveragecheck.test.ts')), 'coveragecheck.test.ts is run by no workflow');
+  assert.match(readFileSync(path.join(ROOT, '.github/workflows/gates.yml'), 'utf8'), /^\s+- run: npx tsx tools\/difficulty\/coveragecheck\.ts\s*$/m);
+});
+
 test('every test file is run by CI, or is on NOT_IN_CI with its reason (which only shrinks)', () => {
   const res = ciTestArgs().map(globRe);
   const files = tracked();
