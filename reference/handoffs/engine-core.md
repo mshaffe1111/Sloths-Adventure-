@@ -28,8 +28,12 @@ proven plan; Play is never blocked).
 - **Tests**: gen2/walkedPath.test.ts A-E (D judges the PLAYED stage: generateStage, not libstage buildStage, which is the raw roll with
   no petalPass), gen2/pitJoinWall.test.ts, gen2/walkedSpan.test.ts (now reads walkedStage, the top piece under a petal). Plants:
   reference/qa-reports/ENG-PETAL/planted.py.
-- **Open**: 1-6 holds about 23 petals a layout (was 112): a Designer/lead call. The liana let-go is under-modelled (the expert lands up
-  to 150 px past it): the next engine step. REPORT: reference/qa-reports/ENG-PETAL/REPORT.md (EXACT NEXT STEP).
+- **Lists**: 1-6 and 1-4 relisted on e10a86e2 (--check PASS); 1-2, 1-3, 1-5, 1-7 PASS; **1-1 FAILS** (seed 33616, replay differs):
+  relist it with its tier calibration first thing (CI runs `seedlist.ts 1-1 --check`).
+- **Not run tonight**: the whole suite (stopped at the 30-minute background limit), buildcheck alone after the cost fix, drawcheck,
+  clipcheck.
+- **Open**: 1-6 reads empty (0.22 petals an upright screen): more sockets on walked pieces (the lead's ruling). The liana let-go is
+  under-modelled (the expert lands up to 150 px past it): the next engine step. REPORT: reference/qa-reports/ENG-PETAL/REPORT.md.
 
 ## 0zd. ENG-16I (t-build-16, 11-14, R-165.246): the walked span's lists re-proved; what the next engineer must know
 - **Lists.** seedlist --check on the walked span: 1-2, 1-3, 1-4, 1-5, 1-7 PASS as listed; 1-1 FAILED (seeds 28985, 31449, 25331 searched
