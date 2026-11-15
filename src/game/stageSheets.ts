@@ -26,6 +26,7 @@
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
+ *   w6-wheels      World 6's painted sluice wheels (w6WheelArt.ts), for a gen2 stage whose required room has a lever with its own `looks`
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
  *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
  *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts), temple walls and lianas (w7TempleArt.ts) and puzzle pieces
@@ -55,7 +56,7 @@ import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
-import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
+import { gen2Creatures, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
@@ -212,6 +213,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
   // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its ledges and shelves are World 6's pieces (w6StiltArt.ts)
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
+  // (a required room's lever drawn in its world's pictures, World 6's sluice wheel: its sheets with the stage, never a pop-in)
+  if (isGen2Stage(cfg) && wheelRoom(cfg.id)) out.push('w6-wheels');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // (hf-props, 2026-10-31: Worlds 1-7 on every stage but a lair or a secret: the world's new dressing sheet, and on an old-generator
@@ -234,3 +237,9 @@ export function everyStage(w: number): string[] {
 }
 /** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
 export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];
+
+/** a gen2 stage whose required room (its manifest's `required`) has a lever drawn in its world's own pictures (a lever spec's `looks`) */
+function wheelRoom(id: string): boolean {
+  const M = GEN2_STAGES[id]?.kit('normal').manifest;
+  return (M?.required?.[id] ?? []).some((r) => !!M!.sections.find((s) => s.id === r.section)?.room?.pieces.some((pc) => pc.kind === 'lever' && !!pc.looks?.length));
+}
