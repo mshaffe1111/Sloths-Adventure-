@@ -7,11 +7,12 @@
  * switched off (firsttimer.ts SKILLS.ride: he no longer boards a log only when a flown hop comes down on it, nor rides it to the next),
  * they drown in it over the bar (measured 11-15 on seed 1, with the one carry rule (RIDE.keep): lives AT THE RIVER on, 2/0/0/0 for middle
  * Normal/Easy, child Normal/Easy; off, 7/0/0/3).
- * BUILD-21 (2-1.md NEW 4, two more skills, each planted the same way): AGAINST THE FLOW (SKILLS.upstream) on a river flowing back at him
- * (W2_RIVERS.back): he hops off a log's front end at once, never a late walk-off (the water is 14 px under a log); measured 11-15 on seed 1,
- * child on Easy 4 lives at the river without it, 0 with it. HANDED TO THE BANK (SKILLS.handed) on the long log (W2_RIVERS.long, laid deep
- * here): he rides a log running his way in until it hands him onto the bank; measured lives at the river with it 1/1/0/0, without 3/2/2/0,
- * handed 4 of 4 runs with it, 1 of 4 without.
+ * BUILD-21 (2-1.md NEW 4): AGAINST THE FLOW (SKILLS.upstream) on a river flowing back at him (W2_RIVERS.back): every tier crosses the
+ * toy. Its plant moved to 2-1 itself (FIX-GATES 11-15, the lead's ruling 5:32 PM ET): since FIX-21 9137470f (the look past the floor's
+ * end) no toy river drowned a bot without it, but 2-1's deep Normal back river does (adult seed 12, child seed 23, 5 lives, rescued).
+ * UP THE FAR BANK (SKILLS.bankUp, FIX-GATES): off a log running back at him he hops up the far bank's 28 px face; without it the child on
+ * Easy walked into the face, was carried off and splashed back until rescued (2-1 seeds 20, 23). HANDED TO THE BANK (SKILLS.handed) on the long log (W2_RIVERS.long, laid deep here): he rides a log running his
+ * way in until it hands him onto the bank; planted on the middle bot on Normal (lives at the river 1 with it, 3 without, t-int-11 7b012852e).
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -25,6 +26,7 @@ import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import { SKILLS } from './firsttimer.ts';
+import { castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
 const ID = '2-91';
@@ -132,22 +134,53 @@ for (const [tier, setting] of RUNS) {
   });
 }
 
-test('planted: with the against-the-flow skill off, the child on Easy walks off a log carrying him back and drowns', () => {
+// (FIX-GATES 11-15, the lead's ruling 5:43 PM ET: the skill's job since FIX-21 ec96fe0c2, whose engine handover hands a rider who WALKS
+//  into the bank as well as one the log carries: without the skill the child walks in and is handed, rightly, so the old claim 'off, never
+//  handed' is gone; what the skill still stops is the middle bot on Normal hopping at the water off the long log's front end: measured on
+//  t-int-11 7b012852e, lives at the river 1 with it, 3 without)
+test('planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar', () => {
+  SKILLS.handed = false;
+  try {
+    const r = ride('middle', 'normal', SEED_LONG, LONG);
+    assert.ok(livesAt(r) > SKILL_LIVES, `handed off, the middle on Normal still crossed within ${SKILL_LIVES}: handed ${r.handed}, ${told(r)}`);
+  } finally {
+    SKILLS.handed = true;
+  }
+});
+
+// ───────────────────────── FIX-GATES: against the flow and up the far bank, on 2-1's own rivers ─────────────────────────
+// (the lead's ruling 11-15 5:32 PM ET: planted on the live cases, the stage as the game builds it (castBots castRun: the cast bot, its
+//  seed, both rolls the game plays). Measured on t-int-11 7b012852e and this head: every case below passes with its skill on)
+const crossedClean = (r: ReturnType<typeof castRun>) => r.end === 'shrine' && r.rescues === 0;
+const said = (r: ReturnType<typeof castRun>) => `${r.bot} ${r.setting} seed ${r.seed}: ${r.end}, rescues ${r.rescues}, lives ${r.lives}, stuck ${JSON.stringify(r.stuck)}`;
+const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['adult', 'normal', 12], ['child', 'normal', 23]];
+const BANKUP_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'easy', 20], ['child', 'easy', 23]];
+
+test('2-1, against the flow and up the far bank on: the adult and child on Normal (12, 23) and the child on Easy (20, 23) cross clean', () => {
+  for (const [bot, setting, seed] of [...UPSTREAM_CASES, ...BANKUP_CASES]) {
+    const r = castRun(bot, setting, '2-1', seed);
+    assert.ok(crossedClean(r), said(r));
+  }
+});
+test('planted: with the against-the-flow skill off, the adult and child on Normal drown at 2-1\'s back river and are rescued', () => {
   SKILLS.upstream = false;
   try {
-    const r = ride('child', 'easy', SEED_BACK, BACK);
-    assert.ok(livesAt(r) > SKILL_LIVES, `upstream off, the child on Easy still crossed: ${told(r)}`);
+    for (const [bot, setting, seed] of UPSTREAM_CASES) {
+      const r = castRun(bot, setting, '2-1', seed);
+      assert.ok(!crossedClean(r), `upstream off, still clean: ${said(r)}`);
+    }
   } finally {
     SKILLS.upstream = true;
   }
 });
-
-test('planted: with the handed-to-the-bank skill off, he hops at the water off the long log and is not handed onto the bank', () => {
-  SKILLS.handed = false;
+test('planted: with the up-the-far-bank skill off, the child on Easy walks into 2-1\'s far bank face, splashes back and is rescued', () => {
+  SKILLS.bankUp = false;
   try {
-    const runs = (['middle', 'child'] as const).map((t) => ride(t, 'normal', SEED_LONG, LONG));
-    assert.ok(runs.every((r) => r.handed === 0) && runs.some((r) => livesAt(r) > SKILL_LIVES), `handed off: ${runs.map((r) => `handed ${r.handed}, ${told(r)}`).join('; ')}`);
+    for (const [bot, setting, seed] of BANKUP_CASES) {
+      const r = castRun(bot, setting, '2-1', seed);
+      assert.ok(!crossedClean(r), `bankUp off, still clean: ${said(r)}`);
+    }
   } finally {
-    SKILLS.handed = true;
+    SKILLS.bankUp = true;
   }
 });
