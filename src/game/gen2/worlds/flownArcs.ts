@@ -37,6 +37,11 @@ const n17 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-7', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-8's own scope (BUILD-18c 11-15: flown on 1-8, reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; NOT judged: BOUNCE-REUSE, INT-11) */
+const n18 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-8', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** a Normal row of 1-4's own scope (INT-3, 11-13: flown on the tower once RealPlay.bare opened its walls) */
 const n14 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
@@ -132,6 +137,16 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n17('double-tap-tap', [149, 141], [190, 275, 299], 'chain.md §1 "1-7: double-tap-tap 149 / 141, gap 190 / 275 / 299"'),
   ...n17('bounce', [223, 216], [177, 177, 177], 'chain.md §1 "1-7: bounce 223 / 216, gap 177"'),
   ...n17('bounce-air', [312, 302], [334, 334, 334], 'chain.md §1 "1-7: bounce-air 312 / 302, gap 334"'),
+  // 1-8 on Normal (BUILD-18c, 11-15): flown on stage 1-8 (`FLIGHT_STAGE=1-8 npx tsx reference/specs/sims/flight.ts normal all`), log
+  // reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; its help eases a little past 1-7's (the tap and the doubles 1 px less)
+  ...n18('single-hold', [123, 116], [136, 221, 244], 'chain.md §1 "1-8: single-hold 123 / 116, gap 136 / 221 / 244"'),
+  ...n18('single-flick', [123, 115], [127, 211, 238], 'chain.md §1 "1-8: single-flick 123 / 115, gap 127 / 211 / 238"'),
+  ...n18('single-tap', [87, 79], [77, 162, 183], 'chain.md §1 "1-8: single-tap 87 / 79, gap 77 / 162 / 183"'),
+  ...n18('double-hold', [208, 201], [290, 376, 403], 'chain.md §1 "1-8: double-hold 208 / 201, gap 290 / 376 / 403"'),
+  ...n18('double-flick', [207, 200], [272, 358, 391], 'chain.md §1 "1-8: double-flick 207 / 200, gap 272 / 358 / 391"'),
+  ...n18('double-tap-tap', [148, 141], [189, 274, 299], 'chain.md §1 "1-8: double-tap-tap 148 / 141, gap 189 / 274 / 299"'),
+  ...n18('bounce', [223, 215], [177, 177, 177], 'chain.md §1 "1-8: bounce 223 / 215, gap 177 / 177 / 177"'),
+  ...n18('bounce-air', [311, 301], [334, 334, 334], 'chain.md §1 "1-8: bounce-air 311 / 301, gap 334 / 334 / 334"'),
   // 2-1 and 2-2 on Normal (ENG-W2, 11-14): flown on their own stages on World 2's kit (nW2 above). Their help eases a little past 1-7's
   // (the doubles climb 1-2 px less), so each has its own block
   ...n21('single-hold', [123, 115], [135, 220, 244], 'chain.md §1 "2-1: single-hold 123 / 115, gap 135 / 220 / 244"'),

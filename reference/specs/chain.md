@@ -63,6 +63,12 @@ gap 127 / 211 / 238; 1-7: single-tap 87 / 80, gap 77 / 162 / 183; 1-7: double-ho
 208 / 201, gap 272 / 358 / 391; 1-7: double-tap-tap 149 / 141, gap 190 / 275 / 299; 1-7: bounce 223 / 216, gap 177; 1-7: bounce-air
 312 / 302, gap 334. Easy on 1-7 is easy-any (single hold 123 / 117, gap 141 / 227 / 244; double hold climbs 214 / 208).
 
+**Rows for src/game/gen2/reach.ts, scope Normal 1-8** (BUILD-18c, 11-15: flown on stage 1-8 on t-build-18c, `FLIGHT_STAGE=1-8 ...
+normal all`, table in reference/qa-reports/BUILD-18c/fly/flight-1-8-normal.txt; entered by INT-11, NOT judged yet: its plain bounces (rise ~150) sit under the bounce-teach band, BOUNCE-REUSE; the same columns as 1-7's):
+1-8: single-hold 123 / 116, gap 136 / 221 / 244; 1-8: single-flick 123 / 115, gap 127 / 211 / 238; 1-8: single-tap 87 / 79, gap 77 / 162 /
+183; 1-8: double-hold 208 / 201, gap 290 / 376 / 403; 1-8: double-flick 207 / 200, gap 272 / 358 / 391; 1-8: double-tap-tap 148 / 141, gap
+189 / 274 / 299; 1-8: bounce 223 / 215, gap 177; 1-8: bounce-air 311 / 301, gap 334. Easy on 1-8 is easy-any.
+
 **Rows for src/game/gen2/reach.ts, scopes Normal 2-1 and Normal 2-2** (ENG-W2, 11-14: flown on stages 2-1 and 2-2 on World 2's gen2 kit,
 t-eng-w2@aca656aa2, `FLIGHT_STAGE=2-1` / `2-2 ... normal all`, tables in reference/qa-reports/ENG-W2/fly-2-1.txt, fly-2-2.txt; the same
 columns as 1-7's; NOT judged yet: ENG-W2 REPORT, ENGINE-WORTHY 1): 2-1: single-hold 123 / 115, gap 135 / 220 / 244; 2-1: single-flick
