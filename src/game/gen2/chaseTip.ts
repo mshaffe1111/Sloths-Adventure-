@@ -73,7 +73,8 @@ export function layTip(st: TipStage, look: TipLook): string[] {
   last.tip = true;
   const inGap = (x: number) => x > g0 - 20 && x < g2;
   // (a flag in the gap stands on the far ground; pickups and dressing over it and hazards on the run to the lip are left out)
-  for (const c of st.checkpoints ?? []) if (inGap(c.x)) c.x = g1 + 120;
+  // (and at the far branch's top: a flag that kept its old height stood off it, unreachable, ENG-LOOK 1b)
+  for (const c of st.checkpoints ?? []) if (inGap(c.x)) Object.assign(c, { x: g1 + 120, y: lip.y });
   st.collectibles = (st.collectibles ?? []).filter((c) => !inGap(c.x));
   if (st.rolling) st.rolling = st.rolling.filter((h) => h.dropX < g0 - TIP_CLEAR.before || h.dropX > g1 + TIP_CLEAR.after);
   const pr = st.proto as Record<string, Array<{ x: number }> | undefined> | undefined;

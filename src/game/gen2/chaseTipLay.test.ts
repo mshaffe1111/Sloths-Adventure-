@@ -88,3 +88,15 @@ test('readyStillFork on ANY fork (here fork 1): bare rocks in its cover and post
   // (the last stretch has no fork after it)
   assert.ok(readyStillFork(toy(), 2, W1_STILL_FORK).some((m) => /no stretch after it/.test(m)));
 });
+
+test('layTip (ENG-LOOK 1b): a flag it moves out of the gap stands ON the far branch (its top, not its old height), any stage', () => {
+  // (the stage's own ground past the tip lies 80 px lower than the tip, so a flag that kept its old height floats off the far branch:
+  // levelCheck's "checkpoint ... is not on a reachable platform", 1-8's far-bough flag. Red before: the flag kept y ${Y + 80})
+  const st = toy({ at: 10364, dy: 80 });
+  (st.checkpoints[2] as { x: number; y?: number }).y = Y + 80;
+  assert.deepEqual(layTip(st, W1_TIP), []);
+  const g1 = 10364 + W1_TIP.gap;
+  const flag = st.checkpoints[2] as { x: number; y: number };
+  const under = st.platforms.find((p) => flag.x >= p.x && flag.x <= p.x + p.width && Math.abs(p.y - flag.y) < 6);
+  assert.ok(under && under.x === g1, `the moved flag (${flag.x}, ${flag.y}) stands on the far branch (its top ${Y})`);
+});
