@@ -8,7 +8,8 @@
  *           shivering; he waits until it is up and still
  *   breath  two small beat pads in a row, no stone (470 px: 2.0 s of its 2.4 s up at padFaults pace) (2-2.md's breath: up 1.8 s, shiver 0.6 s, under 0.6 s): CROSS-ON-THE-BREATH, he starts
  *           only when the breath left covers the whole run
- * Each skill is planted: switched off (firsttimer.ts PAD_SKILL), its toy goes red (the on and off numbers are pasted in ENG-22's REPORT).
+ * Each skill is planted: switched off (firsttimer.ts PAD_SKILL), its toy goes red where the same run crossed with it on (the on and off numbers
+ * over four variants are pasted in BUILD-22's REPORT).
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -19,6 +20,8 @@ import { crossed, fixtureSeed, padRun, padStage, told, TOY_PADS, type ToyPad } f
 import type { Setting, Tier } from './tierBots.ts';
 
 const RUNS: Array<[Tier, Setting]> = [['middle', 'normal'], ['middle', 'easy'], ['child', 'normal'], ['child', 'easy']];
+/** bot runs a tier for each plant (variants 1..N: his own presses and timing, the fixture's one roll) */
+const PLANT_VARIANTS = 4;
 const SKILL_OF: Record<ToyPad, keyof typeof PAD_SKILL> = { keep: 'keepHopping', rise: 'waitRise', breath: 'breath' };
 
 for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
@@ -35,17 +38,23 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
       assert.ok(crossed(r, row), `${tier} ${setting}: ${told(r, row)}`);
     });
   }
-  test(`planted: with ${SKILL_OF[row]} off, the ${row} pond takes the middle or child bot`, () => {
+  test(`planted: with ${SKILL_OF[row]} off, the ${row} pond takes a bot the skill carries across`, () => {
+    // (BUILD-22: over PLANT_VARIANTS runs a tier, the skill-off run fails where the SAME run with the skill on crossed; one run a tier
+    // was luck: once the floor-read fault was fixed (padRead), the breath plant went green on variant 1 by arrival timing alone)
+    const on = new Map<string, boolean>();
+    for (const [tier, setting] of RUNS) for (let v = 1; v <= PLANT_VARIANTS; v++) on.set(`${tier} ${setting} v${v}`, crossed(padRun(row, tier, setting, seed, v), row));
     PAD_SKILL[SKILL_OF[row]] = false;
     const off: string[] = [];
     let failed = 0;
     try {
       for (const [tier, setting] of RUNS) {
-        const r = padRun(row, tier, setting, seed);
-        off.push(`${tier} ${setting}: ${told(r, row)}`);
-        if (!crossed(r, row)) failed++;
+        for (let v = 1; v <= PLANT_VARIANTS; v++) {
+          const r = padRun(row, tier, setting, seed, v);
+          off.push(`${tier} ${setting} v${v}: ${told(r, row)}`);
+          if (!crossed(r, row) && on.get(`${tier} ${setting} v${v}`)) failed++;
+        }
       }
-      assert.ok(failed >= 1, `with ${SKILL_OF[row]} off every tier still crossed: ${off.join('; ')}`);
+      assert.ok(failed >= 1, `with ${SKILL_OF[row]} off no run failed that crossed with it on: ${off.join('; ')}`);
     } finally {
       PAD_SKILL[SKILL_OF[row]] = true;
     }

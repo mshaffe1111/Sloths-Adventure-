@@ -50,7 +50,7 @@ export function fixtureSeed(row: ToyPad): number {
 }
 
 /** a tier's run over a pond fixture, rolled the game's way (the listed row, the planted list, World 2's finish) */
-export function padRun(row: ToyPad, tier: Tier, setting: Setting, seed: number): TierRun {
+export function padRun(row: ToyPad, tier: Tier, setting: Setting, seed: number, variant = 1): TierRun {
   const kit = kitFor(row);
   const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
   const dict: string[] = [];
@@ -58,7 +58,7 @@ export function padRun(row: ToyPad, tier: Tier, setting: Setting, seed: number):
   return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
     const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
     try {
-      return withFixtureConfig(cfg, () => runTier(tier, setting, 1, ID));
+      return withFixtureConfig(cfg, () => runTier(tier, setting, variant, ID));
     } finally {
       undo();
     }

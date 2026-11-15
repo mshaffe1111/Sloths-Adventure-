@@ -2318,7 +2318,9 @@ export class FirstTimerRun {
   private padRead(p: PlayerState, dir: -1 | 1, t: number): Pad | null {
     const who = this.who;
     const e = this.e as any;
-    const here = this.floorAt(p.x, p.y, 6);
+    // (the floor his feet are on: a point read at his middle loses it once he has slid a pixel past its end while still standing on it, and
+    // the plain edge's jump then went blind onto a beat pad; BUILD-22, the rise toy's child-Normal trace)
+    const here = (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined) ?? this.floorAt(p.x, p.y, 6);
     if (!here) { this.padSeen = -1; return null; }
     const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
     const edgeX = dir > 0 ? here.x + here.width : here.x;
@@ -2349,6 +2351,9 @@ export class FirstTimerRun {
     }
     // (CROSS-ON-THE-BREATH: from a floor that stays, the run of beat pads to the next floor that stays, and the breath left to cross it)
     // (read at the rise; once he has seen it ready he is going, through his reaction: padSeen)
+    // (he reads the breath standing at the edge, never on his walk up to it: read from afar, the breath he saw was spent on the walk and
+    // a stretched one (Easy) was under by the time he hopped; BUILD-22, the rise toy's child-Easy trace)
+    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat' && toEdge > 30) ready = false;
     if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
       const row = this.sim.platforms.filter((q) => Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
       let to = NaN;
