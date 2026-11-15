@@ -110,17 +110,23 @@ test('snake, however he beats it, it ends the same kind way (Matt, 11-12): it fl
 
 test('eagle, the tell and the attack: a screech, two seconds of shadow at the edge, the sweep; seen, it dives 0.75 s later and it lands', () => {
   for (const easy of [false, true]) {
-    const s = newPredator(EAGLE, sky());
+    // the pass alone: its glance between passes is eagleGlance.test's (a turned head holds the pass until it turns away)
+    const s = newPredator(EAGLE, { ...sky(), glance: false });
     let hit = NaN;
+    let from = NaN;
     const ev = run(EAGLE, s, 12, (t) => {
       const p = prey({ x: 600 + 30 * t });
       if (Number.isNaN(hit) && touches(hurt(EAGLE, s), p)) hit = t;
+      if (Number.isNaN(from) && s.phase === 'hunt') from = s.eyeX;
       return p;
     }, { easy });
     const k = easy ? EAGLE.easy.tell : 1;
-    assert.equal(firstT(ev, 'notice'), 0, 'the screech');
+    // its eye is laid at 200, behind him; it goes to the end of its stretch farther from him (1200) and screeches there (passAt far)
+    const screech = firstT(ev, 'notice');
+    assert.ok(Math.abs(screech - (1200 - 200) / (2 * EAGLE.speed.rest)) <= 2 * DT, `the screech, once its eye is at the far end (${screech} s)`);
+    assert.equal(from, 1200, 'the pass starts from the end of its stretch farther from him');
     const tell = firstT(ev, 'tell');
-    assert.ok(tell >= 2 * k, `nothing but shadow for the warn (${tell} s)`);
+    assert.ok(tell >= screech + 2 * k, `nothing but shadow for the warn (${tell} s)`);
     assert.ok(hit - tell >= 0.75 * k - DT - 1e-9, `the dive landed ${hit - tell} s after it saw him`);
   }
 });

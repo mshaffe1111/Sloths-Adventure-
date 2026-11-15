@@ -1,0 +1,10 @@
+castBots 1-8, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 40/40; under the floor 0; time median 141.3 s (min 138.5); hits 202 lives 0 (other 162, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+kid    easy   PASS 40/40; under the floor 0; time median 146.3 s (min 139.3); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  normal PASS 40/40; under the floor 0; time median 140.6 s (min 137.3); hits 200 lives 0 (other 160, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 144 s (min 138); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  normal PASS 40/40; under the floor 0; time median 328.2 s (min 295.5); hits 294 lives 35 (other 314, pit 12, foe:eagle 3); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  easy   PASS 40/40; under the floor 0; time median 238.1 s (min 212.4); hits 1 lives 0 (foe:eagle 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle normal PASS 40/40; under the floor 0; time median 197.8 s (min 177.6); hits 234 lives 17 (other 245, pit 5, foe:eagle 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 176.8 s (min 166.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 169.8 s (min 160.5); hits 196 lives 7 (other 196, foe:eagle 5, pit 2); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40

@@ -89,9 +89,11 @@ test("an eagle's own cool per stretch beats the kind's, and Easy still waits lon
   assert.equal(coolOf(EAGLE, false), EAGLE.cool);
   const s = newPredator(EAGLE, { x: 0, y: 0, minX: 0, maxX: 800, cool: 6.5 });
   assert.equal(s.ownCool, 6.5);
-  // in a run: the gap between the two acts is the stretch's own cool, not the kind's 5 s
+  // in a run: the gap between the two acts is the stretch's own cool, not the kind's 5 s (the cool alone: its glance off, as a glance
+  // still running when the cool ends holds the pass until its head turns away, a jitter of up to a tell and a look that is the glance's
+  // own rule, eagleGlance.test.ts)
   const gap = (cool?: number): number => {
-    const c = new CastPlay({ kinds: ['eagle'], traps: [] }, [eagle({ kitCool: cool })], ground, 1, []);
+    const c = new CastPlay({ kinds: ['eagle'], traps: [] }, [eagle({ kitCool: cool, kitGlance: false })], ground, 1, []);
     const h = hero();
     const at: number[] = [];
     for (let i = 0; i < 40 * 30 && at.length < 2; i++) if (c.step(h, 1 / 30, i / 30, false).struck.length) at.push(i / 30);

@@ -162,6 +162,8 @@ export function eagleOver(z: WatchZone, groundY: number, id: number, perch?: { x
     patrolMinX: z.x0, patrolMaxX: z.x1, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
     defeated: false, koTimer: 0, behaviorTimer: 0,
     kitCool: Math.round(((z.calm[0] + z.calm[1]) / 2) * 10) / 10, ...(z.freeFirst ? { kitFree: true } : {}),
+    // (its glance dials for this stretch: the still row's, or none where it is taught; unset: its kind's, predators/world1.ts EAGLE)
+    ...(z.glance !== undefined ? { kitGlance: z.glance } : {}),
   } as Enemy;
 }
 
@@ -218,10 +220,11 @@ export const W1_TIP: TipLook = { gap: 444, land: 600, liana: { out: 214, up: 380
 
 /**
  * World 1's still kit at a stage: the prop rows, the emitters, and the finish (after the hides are laid) that turns stretches into eagles.
- * `lesson`: the stage's watch sockets where the eagle is taught (the long calm, the free first pass): the stage's own, by socket id
+ * `lesson`: the stage's watch sockets where the eagle is taught (the long calm, the free first pass): the stage's own, by socket id.
+ * `own`: the stage's own watch dials over World 1's row (its calm band, its glance: a stage tunes its eagle by data, ENG-WATCH's dials)
  */
-export function w1Still(stage: number, lesson: readonly string[] = []): { props: PropDef[]; emit: Record<string, PropEmitter>; finish: (out: StageSink) => void } {
-  const rows: Record<string, StillRow> = { ...W1_STILL, 'w1-eagle': { ...(W1_STILL['w1-eagle'] as WatchRow), lesson } };
+export function w1Still(stage: number, lesson: readonly string[] = [], own: Partial<Pick<WatchRow, 'calm' | 'glance' | 'glanceLesson'>> = {}): { props: PropDef[]; emit: Record<string, PropEmitter>; finish: (out: StageSink) => void } {
+  const rows: Record<string, StillRow> = { ...W1_STILL, 'w1-eagle': { ...(W1_STILL['w1-eagle'] as WatchRow), ...own, lesson } };
   return {
     props: stillProps(rows),
     emit: stillEmitters(rows, stage),

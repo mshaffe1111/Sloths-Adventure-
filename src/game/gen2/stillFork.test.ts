@@ -9,7 +9,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { newPredator, stepPredator } from '../predators/core.ts';
+import { glancing, newPredator, stepPredator } from '../predators/core.ts';
 import { EAGLE } from '../predators/world1.ts';
 import type { Prey } from '../predators/types.ts';
 import { RealPlay } from '../realPlay.ts';
@@ -37,6 +37,27 @@ test('the kit: a sweeper with one pass (Post.passes 1) calls it, then never anot
   let more = 0;
   for (let i = 0; i < 40 * 30; i++) if (stepPredator(EAGLE, free, { dt, t: i * dt, hero, easy: false }).notice) more++;
   assert.ok(more >= 3, `with no budget it called ${more}`);
+});
+
+// INT-10b (11-15): the glance (ENG-WATCH2, the eagle kind's) merged beside the pass budget (ENG-B6). A sweeper that has spent its
+// budget rests for good: no re-check after its last pass and no glance (core.ts endPass, stepGlance), or the still fork's eagle would turn
+// its head on him again off the fork ("no second look follows him", 1-8 NEW 7). Planted: the stepGlance guard removed, it looks again
+test('the kit: a sweeper whose one pass is spent never turns its head again (no re-check, no glance); one with no budget keeps glancing', () => {
+  const run = (passes?: number) => {
+    const s = newPredator(EAGLE, { x: 600, y: Y - 120, minX: 0, maxX: 1200, perched: true, facing: -1, ...(passes ? { passes } : {}) });
+    assert.ok(s.glance, 'the eagle kind glances');
+    const hero: Prey = { x: 300, y: Y, still: true, covered: true, facing: 1 } as Prey;
+    let calls = 0, after = 0;
+    for (let i = 0; i < 40 * 30; i++) {
+      if (stepPredator(EAGLE, s, { dt, t: i * dt, hero, easy: false }).notice) calls++;
+      if (calls && s.phase === 'rest' && glancing(s)) after++;
+    }
+    return { calls, after };
+  };
+  const spent = run(1);
+  assert.equal(spent.calls, 1);
+  assert.equal(spent.after, 0, `its head came round ${spent.after} frames after its one pass`);
+  assert.ok(run().after > 0, 'with no budget its glance runs between passes');
 });
 
 /** a planted chase: a run-up, stretch 0, a living fork, stretch 1, the far ground (the lay's ~222 px sections) */
@@ -164,10 +185,18 @@ test('real engine, Normal: running on through the still fork, the eagle dives on
   assert.ok(stop.far > 4300 + 2000, 'he ran on to the far ground');
 });
 
-test('real engine, PLANTED: with its eye crossing his way (facing 1) a runner who never stops gets through untouched; toward him he does not', () => {
-  const his = playFork('normal', 'run', 1);
+// (INT-10b: since ENG-WATCH2 the eagle kind's pass starts from the end of its stretch farther from him (EAGLE.passAt 'far', core.ts), so
+// its eye crosses toward him whatever way the lay faces it, and planting facing 1 alone no longer plants anything (this test went red on
+// the merge: the plant did not take). The plant is now that rule taken away, with the post facing his way)
+test('real engine, PLANTED: with its eye crossing his way (the kind\'s passAt far taken away, facing 1) a runner who never stops gets through untouched; toward him he does not', () => {
+  const kind = EAGLE as { passAt?: 'far' };
+  const was = kind.passAt;
+  kind.passAt = undefined;
+  let his: ReturnType<typeof playFork>;
+  try { his = playFork('normal', 'run', 1); } finally { kind.passAt = was; }
   assert.equal(his.hurt, 0, `its eye going his way: ${his.hurt} hearts (it never reaches him)`);
-  const toward = playFork('normal', 'run');
+  // (as the engine plays it, even a post faced his way turns its pass toward him)
+  const toward = playFork('normal', 'run', 1);
   assert.ok(toward.hurt >= 1);
 });
 

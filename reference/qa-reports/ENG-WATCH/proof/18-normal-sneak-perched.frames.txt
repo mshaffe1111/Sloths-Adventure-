@@ -1,0 +1,5 @@
+{"sx":26746,"gy":773,"x0":26513,"x1":27384,"perched":true,"home":26979,"hp":5,"easy":false}
+f141: its look is over (head away): he walks out of cover at x 26746
+f141: hunt -> rest (eye 26513, him 26746)
+f168: under its post (x 26979), phase rest
+f273: out of its stretch by 420 px

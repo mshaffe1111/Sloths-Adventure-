@@ -4716,7 +4716,10 @@ export class GameEngine {
       // it ran onto a blow already thrown at it: the blow wins, never a trade
       if (this.ranOntoBlow(k.e)) continue;
       if (checkAABBCollision(...this.pBox(), k.box.x, k.box.y, k.box.w, k.box.h)) {
+        const hp = p.hp;
         this.damagePlayer(1, k.e.x);
+        // (one act, one heart: the act that took it pulls up, castPlay.ts struck)
+        if (p.hp < hp) c.struck(k.e);
         break;
       }
     }

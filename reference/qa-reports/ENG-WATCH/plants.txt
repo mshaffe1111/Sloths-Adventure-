@@ -1,0 +1,36 @@
+== PLANT: F1 off: the pass starts from the end its facing says (the old rule)
+not ok 1 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+ok 2 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+ok 3 - Easy glances slower, tells longer, never fakes (Easy is never harder)
+ok 4 - in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+ok 5 - the fairness check holds a glance to its dials; one act, one heart
+not ok 6 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+not ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first
+ok 8 - the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's
+== PLANT: glance off: EAGLE has no glance
+ok 1 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+not ok 2 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+not ok 3 - Easy glances slower, tells longer, never fakes (Easy is never harder)
+not ok 4 - in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+not ok 5 - the fairness check holds a glance to its dials; one act, one heart
+ok 6 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+not ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first
+not ok 8 - the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's
+== PLANT: landed off: an act chases on after it took a heart
+ok 1 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+ok 2 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+ok 3 - Easy glances slower, tells longer, never fakes (Easy is never harder)
+ok 4 - in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+not ok 5 - the fairness check holds a glance to its dials; one act, one heart
+ok 6 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first
+ok 8 - the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's
+== PLANT: Easy fakes on
+ok 1 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+ok 2 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+not ok 3 - Easy glances slower, tells longer, never fakes (Easy is never harder)
+ok 4 - in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+ok 5 - the fairness check holds a glance to its dials; one act, one heart
+ok 6 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first
+ok 8 - the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's

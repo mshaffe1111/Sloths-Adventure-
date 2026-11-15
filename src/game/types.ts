@@ -225,6 +225,8 @@ export interface Enemy {
   /** a cast sweeper that calls only this many passes, then rests on its post for good (predators Post.passes; gen2/stillFork.ts lays 1:
    *  the still fork's one pass, 1-8 NEW 7) */
   kitPasses?: number;
+  /** a cast sweeper's glance dials for its stretch (predators Post.glance; the still row's, w1Cast.ts eagleOver), or false: it never glances */
+  kitGlance?: import('./predators/types.ts').Glance | false;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
