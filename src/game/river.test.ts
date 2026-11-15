@@ -73,12 +73,13 @@ test('logs are evenly spaced, hang below the bank lip', () => {
   }
 });
 
-// (the stage whose lesson is the river (World 2's kit: W2_ARCS' lesson, W2_LESSON.river) lays at least one LOG river: its logs are the
+// (the stage whose lesson is the river (World 2's kit: its manifest's lessons, W2_LESSON.river) lays at least one LOG river: its logs are the
 // lesson. RED until the designed 2-1 (w2Arc21.ts) lays its rivers through place 'river'; the placeholder's water is still creeks. The
 // lead's ruling B, 11:27 AM ET 11-15: the red sits on this honest line, never on a loosened one)
 test('the river lesson\'s stage lays at least one log river', async () => {
-  const { W2_ARCS, W2_LESSON } = await import('./gen2/worlds/w2.ts');
-  const ids = Object.entries(W2_ARCS).filter(([, a]) => a.lesson === W2_LESSON.river).map(([id]) => id);
+  const { w2World, W2_LESSON } = await import('./gen2/worlds/w2.ts');
+  // (World 2's manifest names the stage that teaches each lesson; the placeholder arcs are gone, BUILD-22)
+  const ids = [w2World().manifest.lessons![W2_LESSON.river]].filter(Boolean) as string[];
   assert.ok(ids.length >= 1, 'a World 2 stage teaches the river');
   for (const id of ids) {
     const s = generateStage(levels.find((l) => l.id === id)!);
