@@ -259,4 +259,7 @@ test("a falling pod's window is its quiet less the time the route keeps him in i
   const r = scoreStage('1-4', 'normal', 1, new Map());
   const pods = r.challenges.filter((c) => /^pod /.test(c.note));
   assert.ok(pods.some((c) => /, [1-9][\d.]*s in its way/.test(c.note)), pods.map((c) => c.note).join(' | '));
+  // (and its bits are the narrower window's: harder than crossing it in no time, the whole quiet)
+  const harder = pods.filter((c) => { const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(c.note)!; return c.bits > windowBits(Number(m[2]), Number(m[1])) + 0.05; });
+  assert.ok(harder.length > 0, 'a pod he climbs through asks more than its quiet');
 });
