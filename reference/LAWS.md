@@ -37,8 +37,12 @@ have.
    I just wanted to waste the tokens, I'd just hit reset"):** a branch that changes NO game code (nothing under src/, no seed list, no
    asset, no build or CI config: only reference/ docs or a read-only tool) runs the fast gates (tsc, roadmapcheck, knowncheck,
    generality, and the tool's own tests or --check). The full tests, the build and the perf gates still run, every one, on the
-   integration head before ANY test link, PR or release: nothing ships on fast gates alone. A branch that touches game code runs
-   everything, as before.
+   integration head before ANY test link, PR or release: nothing ships on fast gates alone.
+   **Member branches run what their change can affect (Matt, 2026-11-14 1:53 PM ET: approved the lead's proposal to stop members running the
+   full set on every branch):** a member branch that touches game code runs tsc, the full unit tests, and the checks for what it touched
+   (seed lists, bots and locks of the stages it changed; drawcheck/clipcheck/kbdcheck only if it changed drawing, screens or the survey
+   page; buildcheck only if it changed the build path or a stage's build). EVERY gate still runs, once, on the integration head before ANY
+   test link, PR or release, and CI runs them all before main: nothing reaches Matt or ships on a member's scoped run.
 6. **No filler, no repeats.** Player-facing words are written per item, in the character's voice. No line that could sit anywhere, no line
    that apologises for missing data, no repeats on a page.
 7. **Nothing untested or half-finished reaches main.** New replaces old outright once it passes; no switches, no half-fixes.
