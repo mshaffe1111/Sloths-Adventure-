@@ -8,6 +8,8 @@ R-165.263: fillGaps lays arcs over every gap whatever the stage's petal brief sa
 Build, for every stage in every world: (1) ONE walked-path model that fillSockets AND fillGaps both read: where the run's own flights and
 lands actually stand him (not the piece's span), petals on the arc over a piece he clears in the air, NEVER on a soft-pit floor or a stair
 reached only by falling. (2) fillGaps honours the stage's petal brief (count and spacing by data). Planted: classes A-E each red first.
+(3) R-165.265: joined soft-pit floors must not open a shortcut forward (a miss under 1-6's creaky limb walks under it to the next stair
+and liana): a joined floor's only way up leads BACK to the take-off of the beat he missed, never forward; planted; every stage.
 Then: castBots 1-40 both settings on 1-6 (expert/middle/child: 0 sealed; the kid's stair-top skill is ENG-16I's), seedlist --check on
 every listed stage (relist in order where it fails), lockall (list every stage whose petals move), the WHOLE suite on your head.
 Branch: t-eng-petal from origin/t-build-16's head at start (git ls-remote). ENG-16I is adding a bot skill there (firsttimer.ts only); merge
