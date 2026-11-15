@@ -30,7 +30,9 @@ proven plan; Play is never blocked).
   two banks inside the pipeline (REPORT.md EXACT NEXT STEP).
 - **Traps:** (1) `also: quietJudge` bans a slot's section and re-rolls: a stage whose arrival is quiet throws "no section fits node n1
   (start)" on most seeds (a pool of one arrival); put a hop within ~450 px of each brick's ends. (2) artuse.mjs counts a template literal
-  as a dynamic name: the deleted ferry's `sluice${ri}` was the only "use" of W6's sluice-wheel art (artUse red once it went). (3) The
+  as a dynamic name: the deleted ferry's `sluice${ri}` was the only "use" of W6's sluice-wheel art; it is now truly drawn (w6WheelArt.ts:
+  a kit lever's `looks`, 6-7's water room, preloaded as 'w6-wheels'). (3) verdicts.test holds every flown row's `source` to a quote from
+  reach.md §2 or chain.md §1: enter a stage's flown figures there first. (4) The
   game's finishStage lays petal arcs over every route gap, whatever the brief's `petals: 'low'` (1-7: 61 built, 105 played).
 
 ## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy

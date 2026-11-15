@@ -87,23 +87,38 @@ queue at each push), D67 (no shell wait loops), D19 (the look test calls footing
   - src/game/gen2/riverLay.test.ts has 4 tests. One of them plants a broken river for each fairness rule, and each is named.
 
 ## GATES
-On 00c1b0f4b unless named:
+**Two heads.** The final head is f39e818b7. From 9091b375a to f39e818b7 the only change is the `source` strings of the 2-1/2-2 flown
+rows (flownArcs.ts) and their figures entered in chain.md §1, made because the suite's verdicts.test caught them. Nothing that runs in
+the game changed, so the browser and perf gates were not run again on f39e818b7 (said plainly).
+
+**On f39e818b7:**
 | Gate | Result |
 |---|---|
-| tsc | 0 |
-| build (BASE_PATH) | 0 |
-| chunkcheck | PASS |
-| artcheck | PASS |
-| knowncheck | PASS |
-| generality | PASS (26 literals, 26 known) |
-| roadmapcheck | PASS (after unshallowing the clone) |
-| unit suite | see SUITE below |
-| lockall --check (the base lock from 19b45a06) | aca656aa2: **100/102 unchanged; only 2-1 and 2-2 moved (intended)**, so the hand-built 2-3..2-9 laid through riverLay are byte for byte the same. 00c1b0f4b: see LOCK2 below |
-| seedlist 2-1 --check, seedlist 2-2 --check | PASS, PASS (100 each) |
-| registrycheck | FAIL, as expected: only "2-1 flown" and "2-2 flown" (step 0b) |
-| drawcheck, clipcheck, kbdcheck, buildcheck | see PERF below |
-| w2.test | 7/7; planted 8/8 CAUGHT |
+| unit suite | SUITE4 |
+| tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmap | all 0 / PASS |
+| seedlist --check 1-4, 1-5, 1-7, 2-1, 2-2 | PASS each (100, 150, 100, 100, 100) |
+| registrycheck | FAIL, as expected: only "2-1 flown" and "2-2 flown" (not judged: step 0) |
+| tool tests (CI's list) | 108/109. The 1 red is registrycheck.test "the shipped table passes the gate": the same two not-judged misses (step 0) |
+| tierBots | 7/7 |
+| verdicts.test + judgedTable + flown12 + doubleTaught | 48/48 |
+| w2.test | 7/7; planted 8/8 CAUGHT (planted.out.txt) |
 | riverLay.test | 4/4 |
+| w6WheelArt.test | 4/4 |
+
+**On 9091b375a** (the wheel's head):
+| Gate | Result |
+|---|---|
+| drawcheck | **PASS** (701 s), 2-1 and 2-2 among its 14 scenarios |
+| drawcheck on 6-7 alone (a scratch scenario list) | **PASS** (80 s) |
+| clipcheck | **PASS** (83 known) |
+| kbdcheck | **PASS** |
+| buildcheck | first run **FAIL under load** (1-1 Normal p95 168 ms against the 150 ms budget, run beside the full suite, the lock, the seed lists and two drawchecks). **Re-run on f39e818b7 with only the suite beside it: PASS**, Normal p95 130 ms, Easy 61 ms |
+| lockall --check against the base lock from 19b45a06 | **99/102 unchanged**; 2-1 and 2-2 moved (intended); **6-7 moved in `kit` only** (the lever's `looks`, as ruled) |
+| seedlist 1-1, 1-2, 1-3 --check | PASS (162, 100, 100) |
+| artUse.test | **green** (the wheel draws the 3 sluice-wheel pieces) |
+
+**Earlier head** aca656aa2 (before the wheel): lock 100/102 unchanged, only 2-1 and 2-2 moved. So the hand-built 2-3..2-9, now laid
+through riverLay, are byte for byte the same.
 
 **addlevel 2-1** (final bricks): the bots ran on 40 seeds per setting. A run counts as a pass only when the bot reaches the shrine with
 no rescue.
@@ -191,6 +206,14 @@ These are of a rolled 2-1, Normal, layout 1 (proven seed 2), 412x915 and 915x412
   - World 2 notes: "a moss stone is 50 px exactly"; "every gap in World 2 is a river (w2Finish): soft = splash-back, water = deep".
 
 ## My mistakes (and the standard each changed)
+- **The flown rows' sources.** I entered the 2-1/2-2 rows in flownArcs.ts with `fly-2-x.txt` sources, without reading the test that
+  holds every flown row's source to reach.md or chain.md (verdicts.test.ts:196). The full suite caught it. I fixed it by entering the
+  figures in chain.md §1 and citing them, which moved the head from 9091b375a to f39e818b7. Standard: before adding rows to a data
+  table, `grep -rn <TABLE_NAME> src --include=*.test.ts` and read what each test holds the rows to.
+- **The 9:15 message.** It said "the only red is the old artUse result". At that count no red had shown at all; the verdicts.test red
+  came later. Corrected in the final message.
+- **Background runs and their limit.** Two long gate runs were killed at the background job's default 30-minute limit, because I had
+  set only the shell's `timeout`. Standard: long gate runs are started with the tool's own timeout set (up to 2 h).
 - I widened the deep gaps to look more like rivers before running the bots, and the child bots drowned. I narrowed them back.
   Standard: castBots in the same step as any gap change.
 - The first base lock ran before npm install had finished. That cost one minute, and nothing was lost.
