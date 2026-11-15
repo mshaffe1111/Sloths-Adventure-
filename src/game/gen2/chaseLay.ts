@@ -26,8 +26,8 @@ import { JOB_OF } from './nodeCode.ts';
 export const CHASE_LAY = {
   /** a fork must give him at least this much ground to stop on (px): about a body and a half each side of a stop */
   forkMin: 300,
-  /** the branch sections a stretch's ground is cut into (px): the long-branch sheet's section, as the old 1-8 lays it (protoStage.ts
-   *  BRANCH_TILE; a value here, so gen2 never loads the hand builder: chaseLay.test.ts pins them equal) */
+  /** the branch sections a stretch's ground is cut into (px): the long-branch sheet's section (one painted tile, Matt's repeating log,
+   *  370 x 100 drawn 60 high; the one definition since the hand-built 1-8 was deleted, ENG-LOOK) */
   tile: 222,
   /** the first stretch's flag stands this far before its crack at most (px): the respawn within about 2 s of it (§0b.8); a later one
    *  stands on the fork before its crack, as close as Matt's span allows (ROLLED_FLAGS.max from the flag before) */

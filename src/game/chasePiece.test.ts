@@ -14,6 +14,7 @@ import { setDifficulty } from './difficulty.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
 import { CHASE_PIECE, EDGE, edgeBakes } from './pieces/chasePiece.ts';
 import { CHASE_ROWS, type ChaseLay, type ChaseRun } from './chase.ts';
+import { laidChaseStages } from './chaseTestKit.ts';
 import type { PieceHost, PieceKind, PieceLayer, StagePiece } from './stagePiece.types.ts';
 import type { Platform } from './types.ts';
 
@@ -134,13 +135,23 @@ for (const id of ['1-2', '2-1']) {
   }
 }
 
-test('chase piece: a stage that lays no chase starts none; the hand-built 1-8 keeps its own collapse (proto.chase) and starts none', () => {
+test('chase piece: a stage that lays no chase starts none; every stage that lays one starts exactly one, and nothing else collapses beside it', () => {
   const plain = new RealPlay('1-2', 1);
   assert.ok(!(plain.e as unknown as Eng).pieces.some((pc) => pc.kind === CHASE_PIECE.id));
-  const old = new RealPlay('1-8', 1);
-  const e = old.e as unknown as Eng;
-  assert.ok(e.chase, "1-8's old collapse runs (engine.ts)");
-  assert.ok(!e.pieces.some((pc) => pc.kind === CHASE_PIECE.id), 'and no chase piece beside it');
+  // (ENG-LOOK (1): the hand-built 1-8 and the engine's own collapse beside the piece are deleted; a chase is the stage's data only)
+  for (const id of laidChaseStages()) {
+    for (const easy of [false, true]) {
+      setDifficulty(easy ? 'easy' : 'normal');
+      try {
+        const r = new RealPlay(id, 1);
+        const e = r.e as unknown as Eng & { proto?: { chase?: unknown } | null };
+        assert.equal(e.pieces.filter((pc) => pc.kind === CHASE_PIECE.id).length, 1, `${id} ${easy ? 'Easy' : 'Normal'}: one chase piece`);
+        assert.ok(e.chase === undefined && !e.proto?.chase, `${id}: no collapse of the engine's own beside it`);
+      } finally {
+        setDifficulty('normal');
+      }
+    }
+  }
 });
 
 test('chase piece: a lay that cannot run is refused by name, never run', () => {

@@ -50,7 +50,7 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
-import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
 import { w1DressWidth } from './w1NewArt.ts';
@@ -66,7 +66,7 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | '1-1' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export type StagePlan = 'proto' | '1-1' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
 export const HAND_STAGES: Record<string, StagePlan> = { '1-1': '1-1', '1-6': 'proto', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
@@ -168,8 +168,6 @@ export interface ProtoExtras {
    * every one of them is down. Each drop names the surface it lands on. In 3-9's ring the prowlers leap in out of the dark instead.
    */
   ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' | 'ocelot' | 'jaguar' }>> };
-  /** the collapse that chases him along the long branch (1-8: chase.ts) */
-  chase?: import('./chase.ts').ChasePlan;
   /** the dirty tide that comes in under him as he climbs (6-8: risingTide.ts) */
   tide?: import('./risingTide.ts').TidePlan;
   /**
@@ -503,7 +501,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '5-4') return buildW5Stage54(config, seed);
   if (plan === '5-5') return buildW5Stage(config, seed, plan);
   if (plan === '6-8') return buildStiltClimb(config, seed);
-  if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -6148,263 +6145,6 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
   });
   return out;
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// 1-8 The Long Branch: the chase (World 1's special stage)
-
-/** one section of the long branch: one painted tile (Matt's repeating log, 370 x 100, drawn 60 high) */
-export const BRANCH_TILE = 222;
-
-/**
- * 1-8 The Long Branch: a huge branch high in the canopy, and a chase (chase.ts). Learn: run the branch, calm, a couple of easy gaps.
- * Test: it cracks and starts to fall away behind him; gaps, snakes, a swing over a break, a trunk up to a higher branch, a drop to a
- * lower one, and a fast line above for players who never stop. Twist: the collapse speeds up, the branch thins to its tip, and the
- * last liana swings him off it to the shrine on the next tree. Caught or off the branch: a heart, back to the flag (chase.ts).
- */
-function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras } {
-  const R = stream(seed);
-  const P: Platform[] = [];
-  const V: Vine[] = [];
-  const T: TreeStructure[] = [];
-  const E: Enemy[] = [];
-  const C: Collectible[] = [];
-  const checkpoints: Array<{ x: number; y: number; reached: boolean }> = [];
-  const hints: StageHint[] = [];
-  const beats: Array<[number, number, string]> = [];
-  let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
-  let expert = 0;
-  const RUN = 285, SWING = 430, CLIMB = 220;
-  const TILE = BRANCH_TILE;
-  let x = 0;
-  let level = G;
-
-  const flower = (fx: number, fy: number, v: Collectible['botanicalVariant'] = 'orchid') =>
-    C.push({ id: cid++, type: 'flower', botanicalVariant: v, x: Math.round(fx), y: Math.round(fy), collected: false, bobPhase: (fx * 0.031) % 6.28 });
-  const row = (x0: number, x1: number, fy: number, n: number, v: Collectible['botanicalVariant'] = 'orchid') => {
-    for (let i = 0; i < n; i++) flower(x0 + ((x1 - x0) * i) / Math.max(1, n - 1), fy, v);
-  };
-  const hint = (hx: number, text: string) => hints.push({ x: hx, text, pad: text, keys: text });
-  const flag = () => checkpoints.push({ x: Math.round(x - TILE / 2), y: level, reached: false });
-  /** n sections of branch at the current height */
-  const sec = (n: number, w = TILE) => {
-    for (let k = 0; k < n; k++) {
-      P.push({ id: pid++, x: Math.round(x), y: level, width: w, height: 40, type: 'solid', chase: true });
-      x += w;
-    }
-    expert += (n * w) / RUN;
-  };
-  const gap = (w: number) => {
-    x += Math.round(w);
-    expert += w / RUN + 0.15;
-  };
-  const snake = (sx: number, range: number) => {
-    E.push({
-      id: eid++, type: 'snake', x: sx, y: level - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: -1,
-      patrolMinX: sx - range / 2, patrolMaxX: sx + range / 2, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
-      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
-    } as Enemy);
-    expert += 1;
-  };
-  const one = reachJump(0, false), two = reachJump(0, true);
-
-  /** a break in the branch with one liana over it (checked against the swing physics), landing on the branch beyond */
-  const swingGap = () => {
-    const edge = x;
-    for (let tries = 0; tries < 14; tries++) {
-      const easy = tries > 8;
-      const d0 = R.r(170, 200);
-      const d1 = easy ? R.r(190, 220) : R.r(200, 245);
-      const top = Math.round(level - R.r(360, 400));
-      const v: Vine = { id: -1, x: edge + d0, topY: top, bottomY: Math.min(level + 30, top + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
-      const far: Platform = { id: -99, x: edge + d0 + d1, y: level, width: TILE * 3, height: 40, type: 'solid' };
-      if (!(jumpGrab(edge, level, v) >= 4 && landWindow(null, v, far) >= 8) && tries < 13) continue;
-      V.push({ ...v, id: vid++, swayPhase: (v.x * 0.013) % 6.28 });
-      row(edge + 30, edge + d0 + d1 - 30, Math.min(level - 150, top + 200), 3, 'hibiscus');
-      x = Math.round(edge + d0 + d1);
-      expert += (d0 + d1) / SWING + 0.6;
-      return;
-    }
-  };
-  /** the branch meets a trunk: climb it to a higher branch that carries on */
-  const climbUp = (h: number) => {
-    const tX = Math.round(x - 60);
-    const tree: TreeStructure = { id: tid++, x: tX, groundY: level, topY: level - h - 150, trunkWidth: 76, hasClimbVine: true, canopyRadius: 150 };
-    T.push(tree);
-    V.push({ id: vid++, x: tX, topY: level - h - 2, bottomY: level - 6, swaySpeed: 0.9, swayPhase: (tX * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
-    for (let i = 0; i < 3; i++) flower(tX, level - 70 - i * 60, 'hibiscus');
-    level -= h;
-    x = tX - 40;
-    expert += h / CLIMB + 0.8;
-  };
-  /** a short drop to a lower branch */
-  const dropDown = (h: number) => {
-    gap(Math.round(one * R.r(0.3, 0.45)));
-    level += h;
-  };
-  /** the fast line: a few short branches above the main one (petals, and at its end a golden seed), for players who never stop */
-  const fastLine = () => {
-    const y0 = level;
-    let fx = x + TILE * 0.6;
-    const hy = y0 - Math.round(R.r(140, 155));
-    for (let k = 0; k < 3; k++) {
-      const w = 170;
-      P.push({ id: pid++, x: Math.round(fx), y: hy, width: w, height: 40, type: 'solid', chase: true });
-      row(fx + 40, fx + w - 40, hy - 34, 2, 'hibiscus');
-      if (k === 2) {
-        seedN++;
-        C.push({ id: cid++, type: 'seed', x: Math.round(fx + w - 30), y: hy - 40, collected: false, bobPhase: seedN, findId: `seed-${seedN}` });
-      }
-      fx += w + Math.round(one * R.r(0.45, 0.55));
-    }
-  };
-  const beat = (name: string, f: () => void) => {
-    const b0 = x;
-    f();
-    beats.push([b0, x, name]);
-  };
-
-  // ---- Learn: the long branch, calm
-  /**
-   * a mossy knot on the branch, one easy hop high, in place of a stretch of it (its foot reaches the branch's underside: on top of a
-   * section the stage inspector's quick route walked through it). Only in the calm, before the branch starts to fall.
-   */
-  const knot = () => {
-    const w = Math.round(R.r(100, 120));
-    P.push({ id: pid++, x: Math.round(x), y: level - 36, width: w, height: 76, type: 'solid', style: 'moss_stone' });
-    flower(x + w / 2, level - 70, 'orchid');
-    x += w;
-    expert += w / RUN + 0.15;
-  };
-  beat('Learn: the long branch', () => {
-    // (seven sections before the first gap: over four seconds of running, so the gap's tip is up before he can fall. With four, a plain
-    // run fell in at 3.3 s: stageStart.test.ts. Since 2026-10-28 two mossy knots to hop among them, where the calm read as five quiet
-    // seconds on every roll)
-    sec(2);
-    knot();
-    sec(2);
-    knot();
-    sec(2);
-    hint(300, 'This branch goes on and on');
-    row(x - TILE * 3, x - 60, level - 34, 3, 'hibiscus');
-    gap(one * 0.4);
-    sec(1);
-    knot();
-    sec(1);
-    // World 1's book hides in a Hush Fern here, in the calm before the chase (stage 8 holds the book: finds.ts); nobody can crouch
-    // and search once the branch is falling
-    const book = findForStage(config.worldIndex, config.miniIndex);
-    if (book && book.kind === 'book') C.push({ id: cid++, type: 'find', findId: book.id, hidden: true, x: Math.round(x - TILE * 1.5), y: level - 26, collected: false, bobPhase: 0 });
-    gap(one * 0.5);
-    sec(3);
-    flag();
-    sec(1);
-    knot();
-    sec(1);
-  });
-  const start = x;
-
-  // ---- Test: it breaks behind him; keep moving
-  beat('Test: keep moving', () => {
-    sec(4);
-    row(x - TILE * 3, x - 80, level - 34, 3, 'orchid');
-    gap(one * R.r(0.45, 0.55));
-    sec(3);
-    snake(x - TILE * 1.5, TILE * 1.6);
-    sec(2);
-    gap(two * R.r(0.62, 0.7));
-    sec(3);
-    flag();
-    swingGap();
-    sec(3);
-    climbUp(Math.round(R.r(190, 220)));
-    sec(4);
-    fastLine();
-    sec(4);
-    flag();
-    dropDown(Math.round(R.r(120, 160)));
-    sec(3);
-    snake(x - TILE * 1.5, TILE * 1.6);
-    sec(2);
-    // more of the same, in this roll's rhythm (w1Sections.ts w1Chase: leaps, swings, or climbs and drops), until even a quick player
-    // needs most of two minutes
-    const pattern = w1Chase(seed);
-    let n = 0;
-    while (expert < EXPERT_SECONDS - 22 && n < 40) {
-      const k = pattern[n % pattern.length];
-      if (k === 'gap') { gap(one * R.r(0.45, 0.6)); sec(3); }
-      else if (k === 'leap') { gap(two * R.r(0.6, 0.72)); sec(3); row(x - TILE * 2, x - 60, level - 34, 2, 'orchid'); }
-      else if (k === 'swing') { swingGap(); sec(3); }
-      else if (k === 'snake') { sec(2); snake(x - TILE, TILE * 1.4); sec(2); }
-      else { if (level < G - 100) dropDown(Math.round(R.r(120, 160))); else climbUp(Math.round(R.r(180, 210))); sec(3); }
-      n++;
-      if (n % 3 === 0) flag();
-    }
-    sec(2);
-    flag();
-  });
-
-  // ---- Twist: it breaks for good: faster, the branch thins to its tip, and the last liana swings him off to the shrine
-  let finalFrom = 0;
-  let end = 0;
-  beat('Twist: the last liana', () => {
-    finalFrom = x;
-    hint(x + 60, 'It is all coming down. The vine at the end!');
-    sec(3);
-    gap(one * 0.5);
-    sec(3);
-    // the tip: the last section (drawn from the sheet's branch end)
-    P.push({ id: pid++, x: Math.round(x), y: level, width: TILE, height: 40, type: 'solid', chase: true, chaseTip: true });
-    x += TILE;
-    expert += TILE / RUN;
-    // the last liana, out over the gap between the trees, and the shrine on the next tree's crown
-    const edge = x;
-    let vx = edge + 185, top = level - 380;
-    for (let tries = 0; tries < 14; tries++) {
-      const d0 = R.r(170, 195);
-      const t = Math.round(level - R.r(360, 395));
-      const v: Vine = { id: -1, x: edge + d0, topY: t, bottomY: Math.min(level + 30, t + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
-      const far: Platform = { id: -99, x: edge + d0 + 230, y: level, width: 900, height: BANK_H, type: 'solid' };
-      vx = v.x;
-      top = t;
-      if (jumpGrab(edge, level, v) >= 4 && landWindow(null, v, far) >= 8) break;
-    }
-    V.push({ id: vid++, x: Math.round(vx), topY: top, bottomY: Math.min(level + 30, top + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
-    end = Math.round(vx);
-    x = Math.round(vx + 230);
-    expert += 415 / SWING + 0.6;
-  });
-  // the next tree's crown: solid, and the shrine on it
-  const crown: Platform = { id: pid++, x: Math.round(x), y: level, width: 900, height: 40, type: 'solid', crown: true };
-  P.push(crown);
-  row(crown.x + 80, crown.x + 340, level - 34, 3, 'hibiscus');
-  const exitX = crown.x + 620;
-  C.push({ id: cid++, type: 'exit_totem', x: exitX, y: level - 30, collected: false, bobPhase: 0 });
-  x = crown.x + crown.width;
-  expert += 620 / RUN;
-
-  // nothing should sit under the branch; the stage is as tall as the deepest branch needs, plus the fall
-  const lowest = Math.max(...P.map((p) => p.y));
-  const movedPickups = fixPickups({ platforms: P, vines: V }, C);
-  const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, lowest + 320) };
-  return {
-    config: cfg,
-    trees: T,
-    platforms: P,
-    vines: V,
-    ropes: [],
-    enemies: E,
-    boss: null,
-    collectibles: C,
-    spawnX: 140,
-    spawnY: G,
-    exitTotemX: exitX,
-    exitTotemY: level,
-    checkpoints: checkpoints.sort((a, b) => a.x - b.x),
-    meta: { attempt: seed, chunks: [], width, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, chase: { start, end, finalFrom } },
-  };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------

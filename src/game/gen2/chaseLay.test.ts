@@ -11,7 +11,6 @@ import { towerCfg } from './toyTower.ts';
 import { CHASE_FIXTURE_CODE, CHASE_FIXTURE_ID, chaseFixtureKit, chaseFixtureLevel } from '../chaseFixtureStage.ts';
 import { withTestStage } from './listed.ts';
 import { JUDGED } from './reach.ts';
-import { BRANCH_TILE } from '../protoStage.ts';
 import { chaseLayProblems, sectionStretch } from '../chase.ts';
 import { keptFoes } from './pipeline.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
@@ -40,7 +39,6 @@ test('K is a chase node now (out of LATER), still never in a world\'s first stag
 });
 
 test('the cut keeps his ground: contiguous branch sections, the same top and depth, the first is the piece itself', () => {
-  assert.equal(CHASE_LAY.tile, BRANCH_TILE, "the lay's section is the long-branch sheet's (protoStage.ts BRANCH_TILE)");
   let id = 50;
   const p: Platform = { id: 7, x: 100, y: 600, width: 1000, height: 260, type: 'solid' };
   const cut = cutSections(p, () => ++id);
