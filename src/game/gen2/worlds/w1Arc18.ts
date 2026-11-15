@@ -237,7 +237,9 @@ const root = (key: string, after: string, w: number, dy: R2): SectionPiece => ba
 const rest = (id: string): SectionTemplate => link({ id, name: 'a living fork: breathe', job: 'rest', versions: [{
   id: 'roots',
   lay: { pieces: [bank('a', null, 360), root('b', 'a', 240, UP), root('c', 'b', 380, DOWN), root('d', 'c', 220, UP), root('e', 'd', 360, DOWN), root('f', 'e', 240, UP), root('g', 'f', 340, DOWN), root('h', 'g', 220, UP), root('z', 'h', 360, DOWN)],
-    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.5, 1)] },
+    // (the stage's find stands on the first fork met, never beside a nut or a fruit: its HOLD DOWN sign over a fern by a hazard read as
+    //  the answer to the hazard, BUILD-18's teach still)
+    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.3, 2, 120), { id: 'find', role: 'findSpot', on: 'e', t: 0.75 }, petals('pf', 'f', 0.5, 1)] },
 }] });
 export const QUIET_18: SectionTemplate[] = [
   // [A] the broad base at the trunk, the branch running off up to the far tree; nothing hurts in 1,300 px. The nut line is said on its far
@@ -263,9 +265,25 @@ export const SECTIONS_18: SectionTemplate[] = [...BEATS_18, ...QUIET_18, EXIT_18
 /** the tip (1-8 NEW 8, ChaseStretch.tip), as the old 1-8's last liana and the fixture's measured one (chaseFixtureStage.ts TIP_*): the
  *  gap off the tip (px), the far tree's bough past it, the runner liana out from the lip, up, and its foot under the branch */
 export const TIP_18 = { gap: 444, land: 600, out: 214, up: 380, foot: 30 } as const;
-/** the hearts (1-8.md "Hearts and flags"): one on the fork after the second stretch, one on the fork before the last, this far past that
- *  fork's flag, at a petal's height over the ground */
-export const HEARTS_18 = { forks: [1, 2], past: 120, up: 34 } as const;
+/** the hearts (1-8.md "Hearts and flags"): one on the fork after the second stretch, one on the fork before the last (the fork after the
+ *  fourth: the still fork's), this far past that fork's last flag, at a petal's height over the ground */
+export const HEARTS_18 = { forks: [2, 4], past: 120, up: 34 } as const;
+/**
+ * The look the keeper's nature check asks for (lines-1-8.md: palm nuts drop from palms in view; cannonball fruit grows on stalks from the
+ * TRUNK and drops from there or above), by INVENTORY id, so each draws the moment the engine's inventory-dressing piece lands (the lead's
+ * ruling 8:19 PM: "a stage's data places any inventory piece as dressing, hung by its top or standing, at its inventory scale"). Until then
+ * they are written to proto.invDress and nothing draws them (a named rough spot). `dx` from the hazard's drop (px), `y` the piece's top
+ * (hung) or foot (standing) from the ground under the drop (px, + down), its drawn height `h` (px of world, to scale with Pokey's 89.1)
+ */
+export const DRESS_18 = {
+  /** a palm crown hung over every nut's drop: its fronds' underside where the nut appears (rolling.ts ROLL.dropH 480 at most over the
+   *  ground; sideways the drop starts below the HUD band, so the crown is the tell's source, not a promise of where it starts) */
+  palm: { inv: 'hf18-palm-crown', hang: true, dx: 0, y: -620, h: 300, layer: 'behind' },
+  /** a cannonball trunk standing behind the branch at every fruit's drop, its foot down in the mist, its fruit stalks at the drop's height */
+  trunk: { inv: 'hf18-cannon-trunk', hang: false, dx: 70, y: 260, h: 900, layer: 'behind' },
+} as const;
+export interface InvDress { inv: string; x: number; y: number; h: number; hang: boolean; layer: 'behind' | 'front' }
+
 /** the beats whose liana is a runner's (phased to him at a full run: runnerLiana.ts) */
 export const W18_RUNNER = ['w1-18-at-pace'] as const;
 export const W18_STILL = 'w1-18-still-fork';
@@ -290,10 +308,12 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   const lay = st.chase;
   if (!lay?.stretches.length) throw new Error('1-8 finish: the stage lays no chase');
   const secs = st.gen2?.sections ?? [];
-  // (1) the nuts and fruit, at each brick's named pieces, in x order
+  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (1) the nuts and fruit, at each brick's named pieces, in x order
   const out: RollSpec[] = [];
   for (const s of secs) {
-    const rows = ROLLS_18[`${s.template}/${s.version ?? ''}`] ?? Object.entries(ROLLS_18).find(([k]) => k.startsWith(`${s.template}/`) && (easy ? k.endsWith('-easy') : !k.endsWith('-easy')))?.[1];
+    // (its version's own hazards when the stage names its version; else the template's, Easy's twin on Easy where it has one)
+    const mine = Object.entries(ROLLS_18).filter(([k]) => k.startsWith(`${s.template}/`));
+    const rows = ROLLS_18[`${s.template}/${s.version ?? ''}`] ?? (easy ? mine.find(([k]) => k.endsWith('-easy')) : undefined)?.[1] ?? mine.find(([k]) => !k.endsWith('-easy'))?.[1];
     for (const r of rows ?? []) {
       const sp = spanOf(piecesOf(st, s.uid, r.on));
       if (!sp) throw new Error(`1-8 finish: ${s.template} (${s.uid}) laid no piece '${r.on}' for its ${r.kind} hazard`);
@@ -315,7 +335,8 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   }
   if (bad.length) throw new Error(`1-8 finish: the hazards: ${bad.join('; ')}`);
   st.rolling = out;
-  // (2) the still fork: the living ground after the stretch that ends where the W brick starts
+  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (2) the still fork: the living ground after the stretch the still-fork brick
+  // follows
   const w = secs.find((s) => s.template === W18_STILL);
   const wx = w ? spanOf(st.platforms.filter((p) => p.tag?.startsWith(`${w.uid}:`)))?.[0] : undefined;
   if (wx === undefined) throw new Error('1-8 finish: no still fork brick laid');
@@ -330,11 +351,13 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     for (const v of vs) {
       if (easy) continue; // (Easy's hangs over a 40 px seam: optional, any swing)
       v.runner = true;
+      // (Normal fails here by name until runnerLip takes the take-off's height (ENGINE-WORTHY 1, ENG-CL): it reads a soft pit's step)
       const no = runnerProblems(v, st.platforms);
       if (no.length) throw new Error(`1-8 finish: the K2 liana: ${no.join('; ')}`);
     }
   }
-  // (4) the tip: the last stretch's end made the branch's tip, the gap off it, the far tree's bough, the runner liana
+  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (4) the tip: the last stretch's end made the branch's tip, the gap off it,
+  // the far tree's bough, the runner liana (chaseFixtureStage.ts layFixturePieces' checks, mirrored)
   const last = lay.stretches[lay.stretches.length - 1];
   const lip = st.platforms.filter((p) => p.chase && Math.abs(p.x + p.width - last.end) < 2).sort((a, b) => a.y - b.y)[0];
   if (!lip) throw new Error('1-8 finish: the last stretch ends on no section');
@@ -358,6 +381,14 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
   if (st.rolling.some((h) => h.dropX > g0 - 900 && h.dropX < g1 + 300)) throw new Error('1-8 finish: a hazard on the run to the tip');
   const pr = st.proto as Record<string, Array<{ x: number }> | undefined> | undefined;
   for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if (pr?.[k]) pr[k] = pr[k]!.filter((q) => !inGap(q.x));
+  // (6) the keeper's look: a palm crown over every nut's drop, a cannonball trunk behind every fruit's (DRESS_18, by inventory id)
+  const proto = ((st as { proto?: unknown }).proto ??= {}) as { invDress?: InvDress[] };
+  for (const h of st.rolling) {
+    const d = h.kind === 'low' ? DRESS_18.palm : DRESS_18.trunk;
+    const g = st.platforms.filter((p) => p.type === 'solid' && p.x <= h.dropX && h.dropX <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
+    if (!g) continue;
+    (proto.invDress ??= []).push({ inv: d.inv, x: h.dropX + d.dx, y: g.y + d.y, h: d.h, hang: d.hang, layer: d.layer });
+  }
   // (5) the hearts: on the forks HEARTS_18 names, just past each fork's flag
   let id = st.collectibles.reduce((m, c) => Math.max(m, c.id), 0);
   for (const f of HEARTS_18.forks) {
@@ -372,8 +403,8 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
 
 /**
  * World 1's kit with 1-8's rows over it (stageTable.ts kit 'w1-18', listed.ts KITS): its pool is its own sections alone; it swings (the K2
- * liana and the tip); its graph and brief; its lines, every one but the crack's and the mark's a TEACH line (Dot says it on Normal's
- * default Tips as on Help, D50).
+ * liana and the tip); its graph and brief; its lines, every one but the mark's said on Normal's default Tips as on Help (D50): the
+ * three teaches and the crack, the one warning the chase has.
  */
 export function kitLib18(): WorldKit {
   const k = withSwing(w1World()), M = k.manifest, G = M.graphs!;
@@ -383,7 +414,7 @@ export function kitLib18(): WorldKit {
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_18) as Array<keyof typeof LINES_18>).map((q) => [lineId(q), LINES_18[q]])) },
-      teachTips: [...(M.teachTips ?? []), ...(['nut', 'fruit', 'fork'] as const).map(lineId)],
+      teachTips: [...(M.teachTips ?? []), ...(['nut', 'fruit', 'crack', 'fork'] as const).map(lineId)],
       graphs: { ...G, chunkSeconds: 120, list: [...G.list.filter((g) => g.archetype !== 'sprint'), ...Object.entries(ARC_18).map(([id, code]) => ({ id, archetype: 'sprint' as const, code }))], briefs: { ...G.briefs, [STAGE_18]: BRIEF_18 } },
     } } as WorldKit;
 }

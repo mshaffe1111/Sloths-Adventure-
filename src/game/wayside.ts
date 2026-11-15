@@ -78,7 +78,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
       6: pokey('half', 'Meeca used to cross these twice before I\'d finished one. She\'d wait at the end with a snack.'),
       // (the bush the stage is named for: Meeca's 1-2 note says she saw her in it; the tea pays it off, "Was it a nice bush?")
       7: dot('start', 'A whole hour in that bush. Meeca says she saw me. Fibs!'),
-      8: pokey('half', 'Dot has flown to the end of this branch and back four times. I\'m still on my first.'),
+      // (the story keeper's line 6 for the new 1-8, lines-1-8.md: w1Arc18.ts WAY_18 holds it equal)
+      8: pokey('half', 'Dot keeps flying to the end and back. Show-off.'),
       9: dot('start', 'I\'m too small to be worth the chase. Best thing about me, honestly.'),
     },
     hurt: [

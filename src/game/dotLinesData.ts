@@ -129,8 +129,6 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-6.canopy", "1-6", "stage hint", "info", "The canopy road", null, null, null, null],
   ["hint.1-6.shiny", "1-6", "stage hint", "info", "Something shiny, far away...", "Something shiny, far away... too far, for now.", null, null, "golden seed"],
   ["hint.1-6.tooHigh", "1-6", "stage hint", "info", "That vine is too high. Climb the tree!", "That vine's too high from down here.", null, null, "trunk"],
-  ["eng.chase", "1-8", "guide", "info", "It is breaking behind us! Keep moving!", "It's breaking behind us! Keep moving!", null, null, "the way ahead"],
-  ["hint.1-8.vine", "1-8", "stage hint", "info", "It is all coming down. The vine at the end!", "It's all coming down!", null, null, "the last vine"],
   ["boss.venom.2", "1-10", "boss", "info", "Little snakes! Punch them, and keep an eye on Venom Fang.", "Little snakes! Punch them!", null, null, "little snakes"],
   ["boss.venom.3", "1-10", "boss", "info", "The stump is cracking now. Don't stay on it too long!", "The stump's cracking! Don't stay!", null, null, "stump"],
   ["float.boss.venomAim", "1-10", "float", "info", "HIT HIS HEAD WHEN IT IS DOWN!", "HIT HIS HEAD WHILE IT'S DOWN!", null, null, "Venom Fang's head"],
@@ -149,8 +147,9 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.1-5", "1-5", "wayside", "story", "These petals are fresher. She came this way not long ago.", "She squashed this one extra flat.", null, null, null],
   ["way.1-6", "1-6", "wayside", "story", "Meeca used to cross these twice before I'd finished one. She'd wait at the end with a snack.", "Meeca crossed these twice before I'd finished one. She always waited.", null, null, null],
   ["way.1-7", "1-7", "wayside", "story", "A whole hour in that bush. Meeca says she saw me. Fibs!", "A whole hour in that bush. Meeca says she saw me. Fibs!", null, null, null],
-  ["hint.1-8.long", "1-8", "stage hint", "story", "This branch goes on and on", "This branch goes on and on", null, null, null],
-  ["way.1-8", "1-8", "wayside", "story", "Dot has flown to the end of this branch and back four times. I'm still on my first.", "Dot's flown this branch four times. I'm on my first.", null, null, null],
+  // (the story keeper's line 6, reference/story/lines-1-8.md (t-story@2e40e6a3): the old one counted, and put "slow" in his mouth mid-chase;
+  //  w1Arc18.ts WAY_18 holds it equal. The old 1-8 rows eng.chase, hint.1-8.vine and hint.1-8.long went with the hand-built 1-8, BUILD-18)
+  ["way.1-8", "1-8", "wayside", "story", "Dot keeps flying to the end and back. Show-off.", "Dot keeps flying to the end and back. Show-off.", null, null, null],
   ["way.1-9", "1-9", "wayside", "story", "I'm too small to be worth the chase. Best thing about me, honestly.", "Too small to be worth chasing. Best thing about me, honestly.", null, null, null],
   ["hint.2-1.logs", "2-1", "stage hint", "move", "The logs drift with the river. Hop on and ride!", null, null, "flick-up", null],
   ["hint.2-1.upstream", "2-1", "stage hint", "move", "This river flows back at you. Wait for a log, then hop on.", "Upstream now. The logs drift toward you.", null, "flick-up", "nearest log"],
