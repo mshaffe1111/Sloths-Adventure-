@@ -4290,6 +4290,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (the ground's look, from the kit's world data: ENG-LOOK2)
+  if (req.kit.manifest.ground.look) st.groundLook = req.kit.manifest.ground.look;
   // (a graph with chase nodes, job K: its stretches laid on the built ground and its flags moved onto the forks BEFORE the verdicts, so
   // the flags are judged by the same rule as every rolled stage's; a lay that cannot run is refused by name, chaseLay.ts)
   // (and its rolling nuts and fruit once the chase is laid, before the verdicts, so the ground a by-ground lay clears is the ground judged)

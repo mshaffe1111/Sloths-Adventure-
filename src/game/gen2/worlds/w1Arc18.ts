@@ -357,6 +357,8 @@ export function kitLib18(): WorldKit {
     manifest: { ...M,
       sections: SECTIONS_18,
       rolls: ROLL_18,
+      // (The Long Branch: every bank and section drawn as the bough over the mist, ENG-LOOK2)
+      ground: { ...M.ground, look: 'bough' },
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_18) as Array<keyof typeof LINES_18>).map((q) => [lineId(q), LINES_18[q]])) },

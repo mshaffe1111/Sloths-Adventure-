@@ -114,8 +114,10 @@ export interface WorldManifest {
   owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
-  /** the world's ground: its top (world y), the bank's depth, the look */
-  ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
+  /** the world's ground: its top (world y), the bank's depth, the look. `look` 'bough' (ENG-LOOK2, any stage whose kit says so: 1-8 The
+   *  Long Branch): every bank and chase section is drawn as the painted bough along its top, over the mist, no soil (protoArt.ts
+   *  drawBoughGround); copied onto the stage as GeneratedStage.groundLook */
+  ground: { y: number; bankH: number; style: NonNullable<Platform['style']>; look?: 'bough' };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
