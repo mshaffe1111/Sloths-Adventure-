@@ -1,0 +1,7 @@
+start 3:44 PM head 97697c1d1 (second try: playwright linked)
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-fresh-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-fresh-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-old-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-normal-old-x45650-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-fresh-x28296-sideways.jpg
+wrote reference/qa-reports/INT-10d/shots/s16-1-6-L1-easy-fresh-x45650-sideways.jpg

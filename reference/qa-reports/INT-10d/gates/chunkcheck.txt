@@ -1,0 +1,12 @@
+start 3:43 PM head 97697c1d1: node tools/perf/chunkcheck.mjs
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 58 JS files, 22 loaded at the start
+  ok     1,784,322 B    2,209,982 spare  assets/cast-d2DHj_vd.js
+  ok       825,782 B    3,168,522 spare  assets/stagekit-CCcXZrif.js
+  ok       746,962 B    3,247,342 spare  assets/oldgen-CvzYK-Er.js
+  ok       723,606 B    3,270,698 spare  assets/index-CLuA1hfy.js
+  ok       289,866 B    3,704,438 spare  assets/story-4q6EVPrG.js
+  ok       288,178 B    3,706,126 spare  assets/sheets-Dy6_L1RD.js
+  ok       277,535 B    3,716,769 spare  assets/world-1-parts-IFCg2YfZ.js
+  ok       248,428 B    3,745,876 spare  assets/w6-CQ0aKfHz.js
+chunkcheck: PASS
+exit 0 end 3:43 PM
