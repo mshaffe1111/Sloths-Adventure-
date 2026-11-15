@@ -1,0 +1,9 @@
+start 12:42 PM head bbefea2c2
+exit 0
+end 12:44 PM
+castBots 1-8: 200 runs
+  child  easy   PASS 40/40; lives 0; rescues 0
+  child  normal PASS 37/40; lives 47; rescues 3; fails {'shrine rescued x1': 3} seeds [7, 9, 13]
+  expert normal PASS 40/40; lives 7; rescues 0
+  middle easy   PASS 40/40; lives 0; rescues 0
+  middle normal PASS 40/40; lives 15; rescues 0

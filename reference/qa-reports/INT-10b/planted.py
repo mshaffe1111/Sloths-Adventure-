@@ -40,6 +40,13 @@ PLANTS = [
   ('a floor reaching a bank: the floor not lengthened (left short of the bank)', P,
    "        if (side > 0) fp.width = R(j.x + j.w - fp.x);\n", "        if (side > 0) fp.width = fp.width;\n", TOY),
   ('the wall not laid at a join', P, "      if (wall) walls.push({ ...wall, mid: j.x + j.w / 2 });\n", '', TOY),
+  # (1-4's column petals, INT-10b (8))
+  ('a climb trail under a fig gate laid to the vine top (the shut lid ignored)', 'src/game/petals.ts',
+   "    const cut = Math.max(0, lid - (v.topY + 80));\n", "    const cut = 0;\n", ['src/game/fieldPetals.test.ts']),
+  ('pairPetals moves only petals within 12 px of a line (one hand takes 13-38 px)', 'src/game/vineField.ts',
+   "Math.abs(v.x - c.x) <= PICKUP_REACH && c.y >= v.topY", "Math.abs(v.x - c.x) <= 12 && c.y >= v.topY", ['src/game/fieldPetals.test.ts']),
+  ('a spent sweeper still glances (the still fork\'s second look)', 'src/game/predators/core.ts',
+   "  if (!g || !gl || s.passesLeft === 0) return true;", "  if (!g || !gl) return true;", ['--test-name-pattern=never turns its head', 'src/game/gen2/stillFork.test.ts']),
 ]
 bad = 0
 for name, f, a, b, t in PLANTS:

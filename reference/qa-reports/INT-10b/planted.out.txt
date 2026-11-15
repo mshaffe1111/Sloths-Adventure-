@@ -7,4 +7,7 @@ CAUGHT (RED): a step: the deeper LATER floor not reaching the shallower one's en
 CAUGHT (RED): a floor reaching a bank: the bank not deepened past it
 CAUGHT (RED): a floor reaching a bank: the floor not lengthened (left short of the bank)
 CAUGHT (RED): the wall not laid at a join
+CAUGHT (RED): a climb trail under a fig gate laid to the vine top (the shut lid ignored)
+CAUGHT (RED): pairPetals moves only petals within 12 px of a line (one hand takes 13-38 px)
+CAUGHT (RED): a spent sweeper still glances (the still fork's second look)
 restored: GREEN
