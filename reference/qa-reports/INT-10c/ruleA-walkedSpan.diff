@@ -1,0 +1,34 @@
+diff --git a/src/game/gen2/walkedSpan.ts b/src/game/gen2/walkedSpan.ts
+index a8e99c680..d6f55e8a3 100644
+--- a/src/game/gen2/walkedSpan.ts
++++ b/src/game/gen2/walkedSpan.ts
+@@ -174,6 +174,8 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
+     if (o.x < p.x && oEnd <= p.x + SEAM && oEnd >= p.x - HOP_NEAR) behind.push(o);
+     else if (o.x >= end - SEAM && o.x <= end + HOP_NEAR) ahead2.push(o);
+   }
++  // (whether every plain run must land on it: a full run's jump off each piece behind it sets him down ON it, none past it; see `touched`)
++  let landsOn = false, clears = false;
+   for (const o of behind) {
+     if (seam(o, p)) continue;
+     const r = reach(o.y, p.y, dk);
+@@ -181,6 +183,8 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
+     const t = o.x + o.width + r;
+     // (a flight that falls short of it is no way on: another piece or a double is)
+     if (t < p.x) continue;
++    if (t < end) landsOn = true;
++    else clears = true;
+     lo = Math.max(lo, Math.min(end, t));
+   }
+   // (left: a liana ahead whose catch is the way on; a jump the route asks off it)
+@@ -205,6 +209,11 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
+   //  the testers' far take-off; walked off across a seam, none)
+   const lands = ahead2.filter((q) => !seam(p, q)).map((q) => ({ q, r: reach(p.y, q.y, dk) })).filter((h) => h.r !== undefined && end + h.r! >= h.q.x + 10).sort((a, b) => a.q.x - b.q.x);
+   for (const { q, r } of lands) hi = Math.min(hi, Math.max(end - TAKEOFF_FAR, q.x + 10 - r!));
++  // (a piece every run must TOUCH is part of the path (the lead's ruling A, 11-15 1:41 PM ET, INT-10c): no plain jump from behind clears it
++  //  and a plain jump is the way off, so every run sets down on it and leaves at once (its span inverted). Its whole top is walked: its
++  //  socket petals stay where the lay put them, sitting on it. Without this 6-2's pool stones (150-170 px) lost 198 of 201 sockets'
++  //  petals, 73 -> 5, and twelve stages ran over Matt's 2-screen rule (petals.test spread))
++  if (hi - lo < WALKED_MIN && landsOn && !clears && !ahead && lands.length && !st.away?.(p)) return { lo: p.x, hi: end };
+   // (no span: the piece the way off it sets him down on, the liana's first, then the ask's, then the plain jump's: never one off the path)
+   if (hi - lo < WALKED_MIN && ahead) {
+     const q = st.platforms.filter((r) => r !== p && r.x >= end - 2 && r.x < ahead.x + NEAR && r.type !== 'bouncy' && !st.away?.(r)).sort((r1, r2) => r1.x - r2.x).find((r) => lianaTouchdown(ahead, r, dk) !== undefined);
