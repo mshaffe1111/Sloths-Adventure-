@@ -1707,6 +1707,27 @@ export function flagRuns(platforms: readonly Platform[], ground: Platform, x0: n
  *  its lip (the per-gap ruler's definition, t-ruler w1Pits.ts EARTH_DEEP, R-165.197/.200) */
 export const EARTH = { px: 90, source: 'the per-gap ruler (t-ruler w1Pits.ts EARTH_DEEP), R-165.221' } as const;
 
+/** soft pits laid end to end with only a perch between them (a creaky limb or a bough a liana throws him onto, no earth under it) share
+ *  ONE floor, up to this far apart (ENG-16H, R-165.246: wider than any perch the lay sets between two lianas, 1-6's 150-210 px) */
+export const PIT_JOIN = { px: 400, source: "ENG-16H 11-14: 1-6's creaky landing, two liana pits either side of a 150-170 px creaky limb" } as const;
+/**
+ * The floor that joins two soft pits' floors under the perch between them, or null when they are not to be joined (R-165.246, ENG-16H, the
+ * lead's packet 11-14 rule 22: a shared fault fixed in the lay for every stage). Under a perch laid between two liana pits (1-6's creaky
+ * landing and the gorge: a creaky limb with a pit either side) each pit's floor ended at its own gap's lip, so a column the perch's width,
+ * with no earth at any depth, lay between two soft floors: a drop off the limb as it crumbled fell through it to the bottom (a death no fall
+ * record named: the stage's falls list each gap, never the column between), and the back pit's stair stood against that air, so its stone
+ * was drawn over nothing (INT-9's settle, R-165.226, refused it, and every 1-6 roll threw "the pool is spent"). Joined when the space
+ * between is under PIT_JOIN wide, nothing of earth (EARTH.px or deeper) stands in it, and the two floors lie within a hop of each other
+ * (`hop`); the join lies at the deeper floor's top, so the shallower one's end is a step he hops.
+ */
+export function pitFloorJoin(a: Pick<Platform, 'x' | 'y' | 'width'>, b: Pick<Platform, 'x' | 'y' | 'width'>, platforms: readonly Platform[], hop: number): { x: number; y: number; w: number } | null {
+  const [l, r] = a.x <= b.x ? [a, b] : [b, a];
+  const x0 = l.x + l.width, x1 = r.x;
+  if (x1 - x0 < 2 || x1 - x0 > PIT_JOIN.px || Math.abs(l.y - r.y) > hop) return null;
+  if (platforms.some((q) => q !== l && q !== r && q.type === 'solid' && !q.broken && q.height >= EARTH.px && q.x < x1 - 1 && q.x + q.width > x0 + 1)) return null;
+  return { x: x0, y: Math.max(l.y, r.y), w: x1 - x0 };
+}
+
 /**
  * The holes in a stage's earth (R-165.221): each x span between two banks with no earth under it at any depth, lip to lip. Pieces standing
  * over a hole (logs, catch boughs) do not fill it: he can walk off their ends into it.
@@ -1896,6 +1917,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       (c as Platform & { catch?: boolean }).catch = true;
     }
   };
+  // (the soft pits' floors laid so far, for the join under a perch between two of them: pitFloorJoin)
+  const pitFloors: Platform[] = [];
+  const floorPit = (fp: Platform, hop: number) => {
+    // (with the nearest pit floor behind it only: a floor between two others is earth between them)
+    const prev = pitFloors.filter((q) => q.x + q.width <= fp.x + 1).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const j = prev ? pitFloorJoin(prev, fp, platforms, hop) : null;
+    if (j) mk(j.x, j.y, j.w, 'block', M.ground.bankH, 'moss_stone');
+    pitFloors.push(fp);
+  };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false, shallow = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseCap(false, 1, budget) * PIT.hop;
@@ -1915,13 +1945,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     if (back) {
       const out = backPit(x0, x1, lipY, farY, depthNow, hop);
       deepen(out.floor);
-      mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+      floorPit(mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone'), hop);
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
     const out = pitSteps(x0, x1, lipY, farY, shallow ? Math.min(hop, PIT.wade) : depthNow, hop);
     deepen(out.floor);
-    mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+    floorPit(mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone'), hop);
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
 
