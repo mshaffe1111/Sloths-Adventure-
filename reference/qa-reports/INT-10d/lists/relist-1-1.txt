@@ -1,8 +1,5 @@
-  the list file src/game/gen2/proven/seeds-1-1.ts: 24259 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
-seedlist 1-1: 161 proven of 196 tried (82%), 321 s; the quiet line bound at 4 s: 0 clean seeds over it left out
-  quiet line (REPORTED, outro excluded; binds at FR9): longest 4 s, median 3.9 s, under 4 s on 161 of 161
-  outro (goal section): 925-1242 px
-  yield, graph (none: the build threw): 0 kept of 16 fresh seeds tried (0%); refused by: threw: gen# #-#: no section fits node n# (ketsu) 12, threw: gen# #-#: no section fits node n# (ketsu): the pool is spent (# that f 4
-  yield, graph sprint-A: 81 kept of 89 fresh seeds tried (91%); refused by: room for help (easy): rise at x #, # px (thin): room # px of # (a gap  8, room for help (normal): rise at x #, # px (thin): room # px of # (a ga 1
-  yield, graph sprint-D: 80 kept of 91 fresh seeds tried (88%); refused by: the quiet line: # s with nothing to do at x #, over # s (the goal run- 10, V19b: the end is not above the bough window 6, verdict landing.dead-zone 3, pool short: signature, no section for the job left 1, pool short: signature, the late rise ends short (V19) 1
+  the list file src/game/gen2/proven/seeds-1-1.ts: 24463 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
+seedlist 1-1: 161 proven of 161 tried (100%), 116 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  quiet line (REPORTED, outro excluded; binds at FR9): longest 4 s, median 3.8 s, under 4 s on 161 of 161
+  outro (goal section): 925-1255 px
 exit 0
