@@ -25,8 +25,8 @@
  * glide is a guaranteed move, so the pipeline lays a liana's perch past a glide's reach, over the take-off (pipeline jumpLinkGap,
  * place 'land'): "each perch lower" cannot be laid. ENGINE-WORTHY R-165.274: a liana a known glide also crosses is optional, so its
  * perch may sit level or lower (every world with the glide). (2) An R after X (V5: a rest after every test, twist and signature). (3)
- * beat 7 (1:05, 1:21 PM ET): the bounce's cap 62 px over the bank (a plain single jump on both settings), drawn as World 2's painted
- * lily on its stalk today: ART-W2's bamboo at that height read as a sprout (reference/qa-reports/BUILD-21/bounce-E-vs-C.jpg).
+ * beat 7 (1:21 PM ET): the bounce is World 2's painted lily at the standard 30 px: ART-W2's bamboo, on the 62 px pad its tuft needed,
+ * read as a sprout (reference/qa-reports/BUILD-21/bounce-E-vs-C.jpg) and the first-timer bots could not mount that pad.
  */
 import { withSwing } from './w1Swing.ts';
 import { W2_RIVERS, w2Liana, w2Perch, w2World, type W2LianaGap } from './w2.ts';
@@ -108,11 +108,11 @@ const shore = (key: string, after: string, w: number, dy: R2): SectionPiece => (
 const river = (key: string, after: string, row: Row21, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'river', after, row }, style: 'log', main: true, landing: true });
 /** World 2's boulder to hop on the bank (w2.ts rock: a moss stone exactly 50 px tall is the kit's painted rock) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
-/** World 2's bounce, standing on `on`: its painted lily cap on a stalk (bounceArt.ts, World 2's own; the lead's ruling C 1:21 PM ET 11-15:
- *  the bamboo at single-jump height read as a sprout, its re-cut is a Suggestion), the cap 62 px over the bank (Easy's plain-hop band is
- *  63, the verdicts' chain.mount; the lead's ruling
- *  E, 1:05 PM ET 11-15: a comfortable single jump up to it, never a double; the culm drawn at the scale that puts its tuft there) */
-const spring = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [at, at], h: [62, 62] } });
+/** World 2's bounce, standing on `on`: its painted lily cap on a stalk (bounceArt.ts, World 2's own), 30 px over the bank, the bounce
+ *  height every world's bots and players know (World 1's mushroom's). The lead's ruling C (1:21 PM ET 11-15): ART-W2's bamboo at a
+ *  single-jump pad read as a sprout, so the 62 px pad its tuft needed went with it (the first-timer bots could not get onto it: rescued
+ *  at the pad on every seed, BUILD-21's 40-seed table on 37945a39); the bamboo's re-cut is a Suggestion */
+const spring = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [at, at], h: [30, 30] } });
 /** the old jetty's planks, level with `after` (World 2's dock look: canopy_bridge) */
 const jetty = (key: string, after: string, w: number): SectionPiece => ({ ...bank(key, after, w), style: 'canopy_bridge' });
 
@@ -205,7 +205,7 @@ const highBank = (): Lay => {
   return {
     // (the high bank 236-240 px up: past a double jump, inside the bounce's climb (the verdicts' bounce band; World 1's bounceWall,
     //  w1.ts gBounceWall, 225-240), then three plain hops back down the shore, a boulder to hop on the top and one on the way down: the quiet line, listRules quietJudge)
-    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-276, -272]), landing: true, block: 'bounce', from: m }, rock('rw', 'w', 0.5), shore('b', 'w', 280, [76, 80]), shore('c', 'b', 300, [76, 80]), rock('rc', 'c', 0.5), shore('z', 'c', 320, [76, 82])],
+    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-240, -236]), landing: true, block: 'bounce', from: m }, rock('rw', 'w', 0.5), shore('b', 'w', 280, [76, 80]), shore('c', 'b', 300, [76, 80]), rock('rc', 'c', 0.5), shore('z', 'c', 320, [76, 82])],
     sockets: [petal('pw', 'w', 0.5)],
   };
 };
