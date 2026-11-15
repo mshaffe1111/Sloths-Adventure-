@@ -1,8 +1,17 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-14 12:47 AM ET (ART-678b: the ART-678 pieces re-cut, catalogued; nothing placed)
+# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
 
-Last task: ART-678b (§0e). Before it: R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
+## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
+- Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).
+- Re-cut from the kept takes: `python3 -I tools/art/hfw2/ship.py reference/art/hfw2/takes <tmp>` (cut.py: border-flood key, --clip,
+  --decal, --match colour grade; wrap.py: the shallow strip's stone-free wrap + clear top + BED grade). Sheet: tools/art/hfw2/mock.py.
+- Open: the shallow strip's flat BED fill (113,109,78) must never show (the lead 12:49 PM: cap a shallow river's drawn depth at the
+  strip, or bank earth under the bed); w2-bamboo-bounce is scale_ok n (1.68 Pokey; the culm is the tuft's support): the lead's ruling.
+- Traps: Qwen paints the "magenta" background as soft PINK with gradients and sun rays: a hue key eats pink petals and the crimson
+  Victoria rim; flood from the border instead (cut.py). hf_sandbox_fs cat of a .pN part over the token limit is SAVED TO A FILE
+  (not read into context): fetch carriers whole, rebuild with tools/art/hfw2/fetch.py (one sandbox, ~11 min, $0.50 for 30 takes).
 ## 0e. 11-14 POLISH-6 (t-polish-6): stones stay on their ground (R-165.226)
 - The lay settles every World 1 stone/stump (WorldKit.settle -> w1CutArt.settleCut): piece with the least move, then a whole-px move back
   from the lip; a rising bank is no lip; none fits -> the section is re-laid. Platform.cut is now set IN THE LAY; w1Finish keeps it (cutOf).
