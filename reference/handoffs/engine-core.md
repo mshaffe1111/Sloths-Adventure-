@@ -27,8 +27,10 @@ proven plan; Play is never blocked).
   stage-wide bans (bans[-1]: a section refused twice), is a refused roll; only a first build with neither throws as before.
   refuseNotThrow.test.ts (2-1, 1-8). Designed arcs (one brick a beat) are where a stage-wide ban empties a node.
 - GraphBrief.petals is 'low' | 'few' | 'normal'; petals.ts petalsLow holds 'few' too. walkedSpan's Ask has 'ride' (skipped like a bounce).
-- 1-8 has flown rows (flownArcs n18, chain.md §1) but is NOT judged: its plain bounces (~150 px) sit under the bounce-teach band 174-180
-  (BOUNCE-REUSE). Setting `judged: 'normal-1-8'` refuses 24/24.
+- 1-8 is judged on its own flown rows (flownArcs n18; FIX-GATES 11-15, list relisted 100 of 121). A bounce outside a teach node on a
+  stage after 1-1 (skills.ts BOUNCE_TAUGHT_AT, bounceReusedAt) whose lip is within the bounce alone is 'bounce-reuse' (reach.ts BANDS
+  128-218: one jump's climb + SPARE to the bounce alone's 223 - SPARE); past it, the combo (refused while untaught). 1-1 and teach nodes
+  keep 'bounce-teach'. Planted: bounceReuse.test.ts. The never-flown example in judgedTable/verdicts tests is now 1-9.
 - Traps: the bots turn back on a perch whose way on is two steps down (kid, 160 px steps) or after liana 2 (adult Easy 2-1 seed 8):
   PERCH-TURNBACK, the bot owner's. Stills: 'low' picks the lowest piece spanning x even when buried under a stair (1-8 x13900): pick an
   exposed top.
@@ -64,9 +66,8 @@ proven plan; Play is never blocked).
   showed flat bough with no palm): shoot ONE spot per page; (2) invDress pictures load lazily: render once and wait ~2.5 s real time before
   the stepped frames, or a first-seen palm is missing. **addlevel** read castBots' PASS lines with a regex that broke when LEN-14 added
   'under the floor N' (every stage said 'castBots did not run'): fixed in BUILD-18c.
-- **1-8 cannot be judged yet (BUILD-18c):** verdicts.ts:51 classify() makes every bounce outside a teach section 'bounce-air-test'
-  (band 236-250); a stage that reuses a taught plain bounce (1-8's 150 px bounced banks) fails band.out on every roll once judged (0/24).
-  Needs a reused-bounce kind banded by bounce alone. 1-8's Normal flight is done: reference/qa-reports/BUILD-18c/fly/ (rows in the REPORT).
+- **1-8 judged (FIX-GATES 11-15):** see 'bounce-reuse' above. Pre-existing reds on t-int-11 7b012852e, not FIX-GATES': verdicts.test
+  5-7 / 7-1 'builds as on main' hashes.
 
 Rewritten for METER-1 (11-14, t-meter-1): section 0zf (the meter reads what a stage asks from the game's own numbers). Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
@@ -298,9 +299,12 @@ proven plan; Play is never blocked).
   at the strip with SAFE_EARTH under it (the flat bed fill must never show). dropsOf records a safe river as `safe-water-art` (a
   SoftLook): before this, a safe LOG river failed drop.look-lies (the truth then: it was drawn as deep water).
 - **w2Finish** finds a fall's banks up to LIP_RISE (170) under its higher lip: a raised liana perch had 'no bank at one end'.
-- **Bots** (tools/inspect/firsttimer.ts SKILLS): `upstream` (off a back-running log's front end at once; a late walk-off armed on the
-  bank is dropped once he is on a log: the water is 14 px under a log, no fall to press in) and `handed` (a log running his way is
-  ridden into the bank). FTRun/TierRun carry `handed`. Toys + plants in tools/inspect/riverRide.test.ts (back, long rows).
+- **Bots** (tools/inspect/firsttimer.ts SKILLS): `upstream` (off a back-running log's front end at once), `bankUp` (FIX-GATES: off a
+  back-running log, the far bank's 28 px face in reach, he hops up; it reads as floor ahead, so no gap rule ran) and `handed` (a log
+  running his way is ridden into the bank). Plants in tools/inspect/riverRide.test.ts: handed on the long-log toy (middle Normal 3 lives
+  off vs 1 on); upstream and bankUp on 2-1 itself (castRun: adult N 12 / child N 23; child E 20 / 23), since FIX-21 9137470f no toy river
+  drowns a bot without upstream. Trap: a plant that stops biting after a general fix: bisect it, then measure the skill off on the real
+  stage before touching the toy (FIX-GATES spent 30 min on toys first).
 - **Traps**: w2.ts `W2_PADS` and riverArt `drawPad` were added on t-eng-22 (ENG-22, stopped) to the same files: merge both. A W2 liana
   gap is a splash-back creek (soft), never deep. The old 2-1 seed list's packed plans name deleted bricks: the page cannot start 2-1 on
   any head that has the new kit and the old list (relist in the same commit).

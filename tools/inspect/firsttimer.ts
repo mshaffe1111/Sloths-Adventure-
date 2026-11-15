@@ -591,7 +591,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, handed: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true };
 /**
  * (BUILD-21, 2-1.md NEW 4) `upstream`, against the flow: on a log carrying him back the way he came (a river flowing back at him), every
  * log runs at the river's one speed, so the gap to the next never closes while he waits: waiting at the front end only carries him back.
@@ -599,7 +599,9 @@ export const SKILLS = { ride: true, upstream: true, handed: true };
  * walks off a log's end to press late (a ground edge's late press: off a log the water is 14 px under him, river.ts LOG_DROP - LOG_HEIGHT/2,
  * so there is no fall to press in; riverRide.test.ts, measured 11-15: the child on Easy walked off and drowned 4 times). `handed`, handed to
  * the bank: on a log carrying him on toward the bank ahead, he stands and rides it in (engine.ts drift loop: carried under a bank he steps
- * up onto it), never a hop at the water off its front end. Always on outside a test.
+ * up onto it), never a hop at the water off its front end. (FIX-GATES 11-15) `bankUp`, up the far bank: on a log running back at him, the far
+ * bank's face (a step of LOG_DROP up) in a hop's reach, he hops up onto it now; it reads as floor ahead, so no gap rule ran there (2-1
+ * child Easy seeds 20, 23). Always on outside a test.
  */
 
 export const RULES = {
@@ -2201,6 +2203,15 @@ export class FirstTimerRun {
       const wet = (x0: number, x1: number) => ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
       const past = under && dir * (p.x + dir * look - lip) > 0 && wet(lip, p.x + dir * look);
       const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
+      //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
+      //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:
+      //  2-1 child Easy seeds 20 and 23, x 19,576 and 26,074, FIX-GATES 11-15. The bank face in a hop's reach, he hops up onto it now)
+      if (SKILLS.bankUp && under?.type === 'drift' && under.drift && under.drift.dir !== dir) {
+        const front = dir > 0 ? under.x + under.width : under.x;
+        const up = this.sim.platforms.find((q) => q.type !== 'drift' && !q.broken && q.y < p.y - 6 && q.y > p.y - 70 && (dir > 0 ? q.x >= front - 2 && q.x - p.x < 90 : q.x + q.width <= front + 2 && p.x - (q.x + q.width) < 90));
+        if (up) return this.startJump(dir, this.jumpFor(p, dir, under), false);
+      }
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
