@@ -116,10 +116,10 @@ const pond = (key: string, after: string, row: Pond22, w: number): SectionPiece 
 const river = (key: string, after: string, row: Row22, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'river', after, row }, style: 'log', main: true, landing: true });
 /** World 2's boulder to hop on the bank (w2.ts rock: a moss stone exactly 50 px tall is the kit's painted rock) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
-/** the old jetty's planks, level with `after` (World 2's dock look: canopy_bridge) */
-const jetty = (key: string, after: string, w: number): SectionPiece => ({ ...bank(key, after, w), style: 'canopy_bridge' });
-/** the next run of planks past a missing one: a plain hop over the reed bed, a splash back if he falls (World 2's creek, w2.ts) */
-const gapPlanks = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.45, 0.5], soft: true }, style: 'canopy_bridge', main: true, landing: true });
+/** the old ferry path's next bank past a gap in it: a plain hop over the reed bed, a splash back if he falls (World 2's creek, w2.ts). The
+ *  design's jetty planks (canopy_bridge) draw as the code-drawn bridge in World 2 (terrain.ts drawBridge: no painted World 2 plank piece),
+ *  which World 2's look check refuses (w2.test.ts 'the look'), so the path is World 2's painted bank until a plank piece is painted */
+const gapBank = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.45, 0.5], soft: true }, style: 'log', main: true, landing: true });
 
 /** the crown's flowers on a bank: `n` in a row along it */
 const flowers = (id: string, on: string, t: number | R2, n = 1, span = 120): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
@@ -182,9 +182,10 @@ const breathes = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), pond('c', 'b', easy ? 'breath22Easy' : 'breath22', 360), bank('z', 'c', 300)],
   sockets: [tip('t-breathe', 'a', 0.1, 'breathe'), flag('b', 0.2), flowers('pc', 'c', 0.5, 2)],
 });
-/** [Pg] beat 8, the plank walk: the ferry's old jetty planks out over the reed bed, two planks missing (a hop each over the reeds) */
+/** [Pg] beat 8, the plank walk: the old ferry path out over the reed bed, two gaps in it (a hop each over the reeds); its planks' look is
+ *  World 2's bank until a painted plank piece exists (see gapBank) */
 const plankWalk: Lay = {
-  pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), jetty('c', 'b', 300), gapPlanks('d', 'c', 260), gapPlanks('e', 'd', 280), shore('z', 'e', 320, DOWN)],
+  pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), bank('c', 'b', 300), gapBank('d', 'c', 260), gapBank('e', 'd', 280), shore('z', 'e', 320, DOWN)],
   sockets: [flowers('pc', 'c', 0.5, 2), flowers('pe', 'e', 0.5, 2)],
 };
 /** [M] beat 9, both kinds: weight pads (the flowers on the small ones), the drifting log lane, a beat pair; the flag before */

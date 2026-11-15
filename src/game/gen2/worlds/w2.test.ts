@@ -67,7 +67,9 @@ test('the rows: 2-1 and 2-2 roll from their own kits over World 2\'s, with World
 });
 
 test('the look: every piece is drawn by World 2 art as the engine draws it (no World 1 cut piece, no squirrels)', () => {
-  const allowed = new Set(['ground', 'pillar', 'painted rock', 'river art', 'painted-bank', 'step']);
+  // (the crown lily is drawn by the pad piece from World 2's painted pieces: Matt's Victoria pad M-02-a and ART-W2's crown flower, riverArt.ts
+  // drawCrownLily, BUILD-22)
+  const allowed = new Set(['ground', 'pillar', 'painted rock', 'river art', 'painted-bank', 'step', 'own art (crownLily)']);
   for (const id of W2_GEN2_STAGES) for (const d of BOTH) {
     const st = built(id, d);
     const f = footingsFor(st as never, 2);
@@ -100,7 +102,10 @@ test('the rivers: every fall is a river with a bank at each end; soft falls spla
       assert.ok(near && far, `${id} ${d}: the river at ${r.x0} has a bank at each end`);
       // (nothing stands under a splash-back river's water: the splash sets him back before he could reach it, and it would be drawn over the water)
       if (r.safe) {
-        assert.ok(!st.platforms.some((p) => p.type === 'solid' && p.x < r.x1 - 1 && p.x + p.width > r.x0 + 1 && p.y > r.surfaceY - surfaceBelowBank), `${id} ${d}: a piece under the splash-back river at ${r.x0}`);
+        // (a pond's own floors stand ON its water, never under it: its pads, the crown lily and its stones, at the pad line 8 px over the
+        // surface (rideLay PAD_LAY.drop); anything else, or lower, is under the water, BUILD-22)
+        const pondFloor = (p: Platform) => r.speed === 0 && (!!p.pad || p.art === 'crownLily' || (p.style === 'moss_stone' && Math.abs(p.y - (r.surfaceY - 8)) <= 1));
+        assert.ok(!st.platforms.some((p) => p.type === 'solid' && !pondFloor(p) && p.x < r.x1 - 1 && p.x + p.width > r.x0 + 1 && p.y > r.surfaceY - surfaceBelowBank), `${id} ${d}: a piece under the splash-back river at ${r.x0}`);
         assert.ok(st.platforms.some((p) => p.type === 'solid' && p.x <= r.safe!.backX && p.x + p.width >= r.safe!.backX && p.y === r.safe!.backY), `${id} ${d}: set back on the bank he left`);
       }
     }
