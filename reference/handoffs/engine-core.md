@@ -44,6 +44,9 @@ proven plan; Play is never blocked).
   showed flat bough with no palm): shoot ONE spot per page; (2) invDress pictures load lazily: render once and wait ~2.5 s real time before
   the stepped frames, or a first-seen palm is missing. **addlevel** read castBots' PASS lines with a regex that broke when LEN-14 added
   'under the floor N' (every stage said 'castBots did not run'): fixed in BUILD-18c.
+- **1-8 cannot be judged yet (BUILD-18c):** verdicts.ts:51 classify() makes every bounce outside a teach section 'bounce-air-test'
+  (band 236-250); a stage that reuses a taught plain bounce (1-8's 150 px bounced banks) fails band.out on every roll once judged (0/24).
+  Needs a reused-bounce kind banded by bounce alone. 1-8's Normal flight is done: reference/qa-reports/BUILD-18c/fly/ (rows in the REPORT).
 
 ## 0CL. The chase stage's blockers (ENG-CL, t-eng-cl from t-eng-b6@a4e1ff8f, 11-14): what the next engineer must know
 - The quiet line (tools/engine/listRules.ts) judges a roll AS PLAYED: quietJudge(cfg, finish?, max?) / quietOf(cfg, st, finish?), the
