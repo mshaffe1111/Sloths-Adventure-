@@ -9,6 +9,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
+import { drawSoil } from './groundPaint.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -72,6 +73,55 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+
+/**
+ * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the
+ * splash-back river (RiverZone.safe: the teaching river, and every river on Easy, BUILD-21): ART-W2's shallow backwater strip (w2-1115/
+ * w2-shallow, catalog row w2-1115/w2-shallow: lighter, the riverbed's stones showing), a 476 u repeat 134 u high, its depth capped at the
+ * strip with the bank's earth under the bed (ART-W2's slot rule: the flat bed colour never shows). Deep water keeps the river sheet's tile.
+ */
+export const RIVER_LOOK = {
+  safe: { url: new URL('../assets/w2-1115/w2-shallow.webp', import.meta.url).href, w: 476, h: 134, crest: 0.045 },
+} as const;
+/** the earth under a shallow river's bed, top to bottom (the World 2 banks' wall in shadow) */
+const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
+/** over the painted earth under a shallow bed: the bank wall's shadow, light at the bed and deeper below (the banks' DEPTH_DARK tone) */
+const SAFE_SHADE = ['rgba(31, 22, 15, 0.25)', 'rgba(31, 22, 15, 0.55)'] as const;
+let shallow: HTMLImageElement | null = null;
+let shallowReady = false;
+function loadShallow() {
+  if (shallow || typeof Image === 'undefined') return;
+  const im = new Image();
+  shallow = im;
+  trackAtlas(im, RIVER_LOOK.safe.url, () => { shallowReady = true; }, () => { shallow = null; }, () => { shallow = null; shallowReady = false; });
+}
+/** the safe river's painted strip has loaded */
+export function safeRiverArtReady(): boolean {
+  loadShallow();
+  return shallowReady && !!shallow;
+}
+/**
+ * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): only a short band at the log
+ * line, the shallow strip's own top rows at part strength, so a log sinks into the same light water it floats on; never the deep river's
+ * dark sheet down to the screen's foot, which made every safe river read as deep (the lead's still review 11-15 1:36 PM ET, FIX-21).
+ * The band slides with the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
+ */
+export const SAFE_OVER = { above: 4, below: 16, alpha: 0.6 } as const;
+export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, x0: number, x1: number, surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
+  if (!safeRiverArtReady()) return false;
+  const L = RIVER_LOOK.safe;
+  const top = surfaceY - L.h * L.crest;
+  const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+  const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x0, surfaceY - SAFE_OVER.above, x1 - x0, SAFE_OVER.above + SAFE_OVER.below);
+  ctx.clip();
+  ctx.globalAlpha *= SAFE_OVER.alpha;
+  for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+  ctx.restore();
+  return true;
+}
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
 
@@ -88,7 +138,36 @@ export function drawRiverWater(
   t: number,
   dir: 1 | -1,
   speed: number,
+  safe = false,
+  soilWorld?: number,
 ): boolean {
+  if (safe && safeRiverArtReady()) {
+    const L = RIVER_LOOK.safe;
+    const top = surfaceY - L.h * L.crest;
+    const bed = top + L.h - 2;
+    if (bottom > bed) {
+      // (under the bed: the banks' own painted earth (groundPaint.ts drawSoil, the world's sheet, no shading passes), darkened toward the
+      // bank wall in shadow; a flat olive fill showed under every safe river, the lead 11-15 2:56 PM ET, ART-W2's rule. The flat fill is
+      // only the fallback until the world's ground sheet loads)
+      // (clipped to the bed and below: drawSoil lays whole tiles and leaves the clip to its caller; the river's own clip starts 30 px over
+      // the surface, and the soil showed there as a pale strip behind the logs)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, bed, x1 - x0, bottom - bed);
+      ctx.clip();
+      const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
+      ctx.restore();
+      const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
+      g.addColorStop(0, soil ? SAFE_SHADE[0] : SAFE_EARTH[0]);
+      g.addColorStop(1, soil ? SAFE_SHADE[1] : SAFE_EARTH[1]);
+      ctx.fillStyle = g;
+      ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
+    }
+    const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+    const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+    for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+    return true;
+  }
   if (!riverArtReady()) return false;
   const f = W2_FRAMES.water;
   const th = (WATER_TILE * f.h) / f.w;

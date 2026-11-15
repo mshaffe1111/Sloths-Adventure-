@@ -50,8 +50,10 @@ test('the kit: every World 2 art row it names is in the World 2 inventory, usabl
   }
 });
 
-test('the rows: 2-1 and 2-2 roll from World 2 kit with World 2 finish; the hand-built 2-1 and 2-2 are gone (new replaces old)', () => {
-  assert.deepEqual([...W2_GEN2_STAGES].sort(), ['2-1', '2-2']);
+test('the rows: 2-2 rolls from World 2 kit with World 2 finish (2-1 from its own, w2Arc21.test.ts); the hand-built 2-1 and 2-2 are gone (new replaces old)', () => {
+  assert.deepEqual([...W2_GEN2_STAGES].sort(), ['2-2']);
+  assert.equal(STAGE_TABLE['2-1']?.kit, 'w2-21', "2-1's row names its own kit, World 2's with 2-1's rows (w2Arc21.ts)");
+  assert.equal(W2_STAGES['2-1'], undefined, '2-1: the hand-built plan is deleted');
   for (const id of W2_GEN2_STAGES) {
     assert.equal(STAGE_TABLE[id]?.kit, 'w2', `${id}: its stage-table row names World 2's kit`);
     const row = listedStage(id)!;

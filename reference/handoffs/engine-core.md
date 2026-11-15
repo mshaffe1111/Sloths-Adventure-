@@ -8,10 +8,56 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+Rewritten for FIX-21 (11-15, t-fix-21): section 0zf (the bounce alone until the combo is taught; the walking rider's handover; the safe river's over pass). Rewritten for BUILD-21 (11-15, t-build-21): section 0ze (2-1 built as designed; the knock; bots upstream + handed; the safe river's look). Rewritten for ENG-W2b (11-15, t-eng-w2b): section 0zd (the river as a gen2 section, the one carry rule, petals on logs). Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 Merged for ENG-22 (11-15): METER-1's section is 0zd-m (it and ENG-W2b both took 0zd).
 Rewritten for ENG-W2b (11-15, t-eng-w2b): section 0zd (the river as a gen2 section, the one carry rule, petals on logs). Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zf. FIX-21 (t-fix-21, 11-15): the bounce alone until the combo is taught; a log hands a walking rider over; the safe river's over pass
+- **The rule** (the lead's ruling 1:53 PM ET; commit 82743678, self-contained): `skills.ts COMBO_REQUIRED_FROM` ('bounce-air': null) +
+  `comboGuaranteedAt` (the skillGuaranteedAt pattern). Until a stage teaches the bounce + air jump, `pipeline.ts bounceCap` holds a bounce
+  lip to the bounce alone (judged: `reach.ts bounceLipOverCap(setting, stageId)` = the bounce-teach band's 180 less the cap; else 0.95 of
+  `BOUNCE_ALONE`, ~181 over the cap) and `verdicts.ts classify(..., airTaught)` judges every bounce lip as 'bounce-teach'. The day a
+  stage teaches the combo, its id goes in the table (and its teach is a design item: not built). Test: `src/game/gen2/bounceAlone.test.ts`.
+  World 1's 1-6 and 1-9 lay such walls (237, ~226 px) on the integration line: they move with it (INT-10d cherry-picks it).
+- **The log handover** (ec96fe0c, engine.ts drift loop): his own step past the river's end (p.vx this frame) hands him onto the bank as
+  the log's carry does; before, he walked onto the log's hidden part (no floor, onFloor) and dropped into the water at the bank's foot.
+  Test: `src/game/logHandover.test.ts`. (ec96fe0c also held a bot change, reverted: take only engine.ts + that test from it.)
+- **The first-timer bots** never press after a bounce they ran onto (no jump of theirs in progress; bounceBack/hopOnto are the tiers').
+  The lead ruled NOT to teach them (a combo no stage teaches): the stage is held to the bounce alone instead. Keep it that way until the
+  combo's teach exists.
+- **A safe river's over pass** (engine.ts drawRivers, over=true): `riverArt.ts drawSafeRiverOver`, a band of the shallow strip's own top
+  rows (SAFE_OVER: 4 px above to 16 below the surface, 0.6), never the deep gradient to the screen's foot.
+- **Backdrop joins**: `tools/art/stripjoin.py measure` finds a strip whose painting a border cuts (a hard panel edge in play); `feather`
+  fixes it. w2mist-mid was 21.9% -> 0.1%. No gate runs it yet (a suggestion in FIX-21's REPORT).
+- **Open, named**: a darker vertical band on 2-1's far bank body at x2300 (seed 2, world ~2708-2775): not the end piece, not the depth
+  line (both A/B'd off), not the soil tile join; source not found (FIX-21 REPORT, Suggestions).
+- **Trap**: a page probe of what draws a pixel must also force the ground squares to repaint (`e.platforms = e.platforms.slice()`) and
+  hit-test the square canvases in WORLD coordinates (their transform is the world's); clips are not seen by such a probe.
+
+## 0ze. 2-1 built as designed, and what it added to World 2's engine (BUILD-21, t-build-21, 11-15)
+- **2-1** is `src/game/gen2/worlds/w2Arc21.ts` (kit 'w2-21' = w2World + withSwing + RIVERS_21 + its bricks; stageTable 2-1 -> 'w2-21';
+  listed.ts KITS/WORLD/FINISH). Graph `A X R T Pg R Pw R Pr W R Pb L Pf R S E` (the five P beats told apart by content, 1-6's form; the
+  R after X is V5's). 2-1's placeholder arc is gone from w2.ts W2_ARCS (2-2 keeps its own). finish21 lays the village at the gate (decor).
+- **Design changes the lead approved** (written in the file's header): lianas lay each perch where the engine puts it (raised: from
+  World 2 on the glide is guaranteed, jumpLinkGap, so a perch must lie past a glide) and the bank steps down after (R-165.274 is the
+  engine fix: a liana a known glide also crosses may be optional). Beat 7's bounce is World 2's lily at 30 px (ruling C; the bamboo
+  needs a re-cut). A 62 px pad stranded the first-timer bots: keep World 2's bounce pads at 30.
+- **Easy** = every river its row's `...Easy` twin: `safe: true`, logs 20-30 px longer, same speed (slower breaks RIVER_LAY.beat 4 s).
+- **The knock**: river.ts `logKnocks(d, t0, t1)` (the log's own cycle passing its start); engine.ts drift loop keeps `logClocks` by
+  platform id and plays `sound.playLogKnock(easy)` when the lip it slides out from is within KNOCK_HEARD (160 px) of the view;
+  sfxRec.ts `knock` -> the recorded 'log' thump at KNOCK_DB (-9 Normal, -3 Easy); RecCall gained `db`. Test: src/game/logKnock.test.ts.
+- **The safe river's look**: riverArt.ts RIVER_LOOK.safe (ART-W2's w2-1115/w2-shallow), drawn for every `safe` river, its depth capped
+  at the strip with SAFE_EARTH under it (the flat bed fill must never show). dropsOf records a safe river as `safe-water-art` (a
+  SoftLook): before this, a safe LOG river failed drop.look-lies (the truth then: it was drawn as deep water).
+- **w2Finish** finds a fall's banks up to LIP_RISE (170) under its higher lip: a raised liana perch had 'no bank at one end'.
+- **Bots** (tools/inspect/firsttimer.ts SKILLS): `upstream` (off a back-running log's front end at once; a late walk-off armed on the
+  bank is dropped once he is on a log: the water is 14 px under a log, no fall to press in) and `handed` (a log running his way is
+  ridden into the bank). FTRun/TierRun carry `handed`. Toys + plants in tools/inspect/riverRide.test.ts (back, long rows).
+- **Traps**: w2.ts `W2_PADS` and riverArt `drawPad` were added on t-eng-22 (ENG-22, stopped) to the same files: merge both. A W2 liana
+  gap is a splash-back creek (soft), never deep. The old 2-1 seed list's packed plans name deleted bricks: the page cannot start 2-1 on
+  any head that has the new kit and the old list (relist in the same commit).
 
 ## 0zd. The river as a gen2 section, the one carry rule, petals on logs (ENG-W2b, t-eng-w2b, 11-15)
 - **Place `river`** (types.ts PlaceRule, the lead's sign-off 11:14 AM ET): `{ kind: 'river'; after; row }`. The far bank is `riverWidth(row)`

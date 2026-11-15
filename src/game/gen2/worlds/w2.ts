@@ -20,7 +20,7 @@
  *     over, no beat);
  *   - a stepping stone in the river: a bank 120-150 px wide standing in the water (the hand-built creek's stones, 124-144 px).
  *
- * THE STAGES' ARCS. 2-1 and 2-2 are rolled here on PLACEHOLDER arcs (ENG-W2 (1): the foundation, not the levels): one bank road with
+ * THE STAGES' ARCS. 2-1 is built as designed (w2Arc21.ts, BUILD-21, its own kit 'w2-21' over this one); 2-2 is rolled here on a PLACEHOLDER arc (ENG-W2 (1): the foundation, not the levels): one bank road with
  * splash-back and deep rivers, its beats in the designed order, so the rows roll and list and the next builder changes data only. The
  * designed levels (reference/design/2-1.md, 2-2.md) replace W2_ARCS' bricks when they are built (w2Arc21.ts, w2Arc22.ts), and the river
  * with its drifting logs is a section of its own (gen2/riverLay.ts).
@@ -34,6 +34,7 @@ import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
 import { W1_KIT } from './w1.ts';
+import { W1_LIANA_GAP } from './w1Swing.ts';
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
 export const W2_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
@@ -102,6 +103,27 @@ export const W2_PADS = {
   deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
 } as const satisfies Record<string, PadRow>;
 
+// ───────────────────────────── World 2's lianas (BUILD-21; as w1Swing.ts is World 1's) ─────────────────────────────
+/**
+ * World 2's liana row (reference/design/2-1.md beats 1 and 5: down out of the canopy on three lianas, then one over a side creek): the
+ * self-swinging liana World 1 taught (1-6), laid by World 2's data. A liana hangs from a riverside tree, its anchor 400-420 px over the bank
+ * it leaves (1-6.md's measured liana); each gap is World 1's (W1_LIANA_GAP: the grip dial and the share of the pipeline's perch band, never a
+ * px number of the engine's), SHORT and LONG only (FAR's narrow perch is World 1's snake beat). The perch is a World 2 BANK (the earth bank,
+ * its own look; never World 1's bough), level, or a step lower for a descent (`dy`: each let-go lands by a plain fall onto a wide bank, D46).
+ * The gap under a liana is the world's soft fall, so w2Finish makes it a splash-back creek: a miss costs nothing. A kit that lays these adds
+ * the swing move (w1Swing.ts withSwing), as World 1's 1-6 does.
+ */
+export const W2_LIANA = { top: [400, 420] as R2, gaps: { short: W1_LIANA_GAP.short, long: W1_LIANA_GAP.long } } as const;
+export type W2LianaGap = keyof typeof W2_LIANA.gaps;
+/** a liana past `after`'s end, hung from a riverside tree 400-420 px over it, its reach checked at the gap's grip */
+export const w2Liana = (key: string, after: string, gap: W2LianaGap): SectionPiece => {
+  const grip = (W2_LIANA.gaps[gap] as { grip?: 'low' | 'high' }).grip;
+  return { key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: W2_LIANA.top, ...(grip ? { grip } : {}) } };
+};
+/** the bank a liana throws him onto, `w` wide, at the gap's share of its band, `dy` under the bank he left (a descent) or level */
+export const w2Perch = (key: string, liana: string, gap: W2LianaGap, w: number, dy: R2 = [0, 0]): SectionPiece =>
+  ({ key, shape: 'bank', w: [w, w], place: { kind: 'land', after: liana, dy, share: W2_LIANA.gaps[gap].share }, style: 'log', main: true, landing: true });
+
 // ───────────────────────────── the pieces ─────────────────────────────
 /** a bank he walks on, `w` exact, level with the one before (or the section's first) */
 const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'log', main: true });
@@ -150,7 +172,7 @@ function brick(stage: string, o: { id: string; name: string; jobs: NodeJob[]; di
  * water T and X, ground P and M, never two alike side by side (S and L are never content).
  */
 export const W2_ARCS: Record<string, { graph: string; archetype: 'sprint' | 'harvest'; lesson: string }> = {
-  '2-1': { graph: 'A T R P R X R M R S R L E', archetype: 'sprint', lesson: W2_LESSON.river },
+  // (2-1 is built as designed: w2Arc21.ts, its own kit 'w2-21' (BUILD-21, 11-15); its placeholder arc is gone, new replaces old)
   '2-2': { graph: 'A T R P R X R M R S R L E', archetype: 'harvest', lesson: W2_LESSON.stones },
 };
 
@@ -274,6 +296,9 @@ type FinishStage = {
 
 /** reeds this far from a river's edge, either bank (px; the hand-built world's 10-30), on a bank this wide or more (a stone has none) */
 const REED_OFF = 20;
+/** how far under a fall's height (its higher lip) the other lip may stand and still be its bank (px): a liana perch's highest rise over
+ *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
+const LIP_RISE = 170;
 const REED_BANK = 200;
 
 /**
@@ -304,10 +329,12 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
       decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
     }
   };
-  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips)
+  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each. A lip may
+  //  stand up to LIP_RISE under the fall's height: a liana's perch is laid up to 160 px over the bank it leaves (pipeline place 'land'),
+  //  so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1)
   const banks = (x0: number, x1: number, y: number) => ({
-    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
-    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + 60).sort((a, b) => a.y - b.y)[0],
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
   });
   // (a log river's reeds, as a fall's)
   for (const r of had) {

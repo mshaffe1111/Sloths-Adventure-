@@ -46,9 +46,10 @@ export const TAUGHT: Record<SectionKind, ReachMove> = {
  * A 'double' PLACE that is not a declared double block (pieces' `block`) and whose figure fits the single band on this setting is a
  * single section (w1-leap-stones' 50-60 px stones: the place is the builder's envelope, not a lesson; the Critic, E0a attempt 1).
  */
-export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty): { kind: SectionKind; figure: number } {
+export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty, airTaught = true): { kind: SectionKind; figure: number } {
   const rise = a.yTake - a.yLand, gap = a.x1 - a.x0;
-  if (a.move === 'bounce' || a.block === 'bounce') return { kind: inTeach ? 'bounce-teach' : 'bounce-air-test', figure: rise };
+  // (and before any stage teaches the bounce + air jump, every bounce lip is judged as the bounce alone: skills.ts comboGuaranteedAt, FIX-21)
+  if (a.move === 'bounce' || a.block === 'bounce') return { kind: inTeach || !airTaught ? 'bounce-teach' : 'bounce-air-test', figure: rise };
   const single = (): { kind: SectionKind; figure: number } => (rise > 20 ? { kind: 'single-rise', figure: rise } : { kind: 'single-gap', figure: gap });
   if (a.move === 'double' && a.block !== 'double') {
     const s = single(), band = BANDS[s.kind][setting];
@@ -120,7 +121,7 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
 
 // ───────────────────────── the drops ─────────────────────────
 
-const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art'] satisfies readonly SoftLook[];
+const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art', 'safe-water-art'] satisfies readonly SoftLook[];
 const LETHAL_LOOKS: readonly string[] = ['water-art', 'void-dark'] satisfies readonly LethalLook[];
 const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
 /** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */

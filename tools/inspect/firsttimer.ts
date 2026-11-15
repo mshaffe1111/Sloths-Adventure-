@@ -578,7 +578,16 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true };
+export const SKILLS = { ride: true, upstream: true, handed: true };
+/**
+ * (BUILD-21, 2-1.md NEW 4) `upstream`, against the flow: on a log carrying him back the way he came (a river flowing back at him), every
+ * log runs at the river's one speed, so the gap to the next never closes while he waits: waiting at the front end only carries him back.
+ * He hops from the log's front end as soon as the next log (or the far bank) is in reach of a hop, flown as the engine flies it, and never
+ * walks off a log's end to press late (a ground edge's late press: off a log the water is 14 px under him, river.ts LOG_DROP - LOG_HEIGHT/2,
+ * so there is no fall to press in; riverRide.test.ts, measured 11-15: the child on Easy walked off and drowned 4 times). `handed`, handed to
+ * the bank: on a log carrying him on toward the bank ahead, he stands and rides it in (engine.ts drift loop: carried under a bank he steps
+ * up onto it), never a hop at the water off its front end. Always on outside a test.
+ */
 
 export const RULES = {
   opening: { name: 'Opening seconds', ref: 'STAGE-RULES §2', rule: 'Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches.', secs: 5 },
@@ -623,6 +632,8 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
+  handed?: number;
   perMin: { hits: number; lives: number };
   gameOvers: number;
   firstHarm: FirstHarm[];
@@ -887,6 +898,9 @@ export class FirstTimerRun {
   readonly harms: Harm[] = [];
   /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
   readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
+  /** handed to a bank by a log (FTRun.handed): counted where the frame after a log is a bank and he never left the ground */
+  handed = 0;
+  private wasOnLog = false;
   readonly stuck: StuckSpot[] = [];
   readonly puzzles: Array<{ id: string; x: number; t: number }> = [];
   private view = emptyGuideView();
@@ -1997,6 +2011,15 @@ export class FirstTimerRun {
       this.lateArmed = null;
       this.edge = null;
     }
+    // (a late walk-off that came down on a drifting log: the ground went on after all, and off a log there is no fall to press in, so he
+    // never walks on off its end with the old press armed: SKILLS.upstream; riverRide.test.ts, the child on Easy, 11-15)
+    if (SKILLS.upstream && this.lateArmed && p.grounded) {
+      const on = this.floorAt(p.x, p.y, 6);
+      if (on?.type === 'drift' && on !== this.lateArmed.here) {
+        this.lateArmed = null;
+        this.edge = null;
+      }
+    }
     if (this.lateArmed) return side(this.lateArmed.dir);
     // (a press on its way: he keeps going until it comes)
     if (this.pending) return side(this.pending.dir);
@@ -2089,7 +2112,13 @@ export class FirstTimerRun {
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
       const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
-      const ahead = this.floorAt(p.x + dir * look, p.y, 40);
+      // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
+      // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
+      // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
+      const under = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+      const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
+      const past = under && dir * (p.x + dir * look - lip) > 0;
+      const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
@@ -2123,6 +2152,17 @@ export class FirstTimerRun {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
           const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && lands(q));
+          // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
+          if (SKILLS.handed && here.drift && here.drift.dir === dir) {
+            this.edgeWait = -1;
+            return {};
+          }
+          // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
+          // the log, never a late walk-off into the water; out of reach, he stands, and the log hands him back to the bank he came from)
+          if (SKILLS.upstream && here.drift && here.drift.dir !== dir) {
+            this.edgeWait = -1;
+            return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
+          }
           if (!bank && !next) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
@@ -2811,6 +2851,7 @@ export class FirstTimerRun {
     while (this.t < cap) {
       const pad = this.pad();
       this.sim.frame(pad);
+      { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
@@ -2942,6 +2983,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     harms,
     perMin: { hits: +(harms.filter((h) => h.kind === 'hit').length / mins).toFixed(2), lives: +(harms.filter((h) => h.kind === 'life').length / mins).toFixed(2) },
     softFalls: run.softFalls.length,
+    handed: run.handed,
     gameOvers: run.gameOvers,
     firstHarm: fh,
     stuck: run.stuck,

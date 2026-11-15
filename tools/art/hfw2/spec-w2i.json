@@ -1,0 +1,85 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, seen from above, text, letters, watermark, frame, border, photo, 3d render, blurry, cast shadow, fish, animals",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/reference/art/hfw2/starts/",
+ "items": [
+  {
+   "name": "shallow-s50-11",
+   "start": "shallow.png",
+   "prompt": "a shallow clear backwater of a sunlit jungle river, cut-away side view, a light green-teal see-through water body under a gently wavy surface line with white wave crests, the sandy riverbed and its rounded mossy stones clearly visible under the water, hand-painted 2D storybook platformer game tile, soft painterly gouache shading, fine thin dark-brown linework, no fish, no plants",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 1792,
+   "h": 400
+  },
+  {
+   "name": "shallow-s50-23",
+   "start": "shallow.png",
+   "prompt": "a shallow clear backwater of a sunlit jungle river, cut-away side view, a light green-teal see-through water body under a gently wavy surface line with white wave crests, the sandy riverbed and its rounded mossy stones clearly visible under the water, hand-painted 2D storybook platformer game tile, soft painterly gouache shading, fine thin dark-brown linework, no fish, no plants",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1792,
+   "h": 400
+  },
+  {
+   "name": "shallow-s62-11",
+   "start": "shallow.png",
+   "prompt": "a shallow clear backwater of a sunlit jungle river, cut-away side view, a light green-teal see-through water body under a gently wavy surface line with white wave crests, the sandy riverbed and its rounded mossy stones clearly visible under the water, hand-painted 2D storybook platformer game tile, soft painterly gouache shading, fine thin dark-brown linework, no fish, no plants",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 1792,
+   "h": 400
+  },
+  {
+   "name": "shallow-s62-23",
+   "start": "shallow.png",
+   "prompt": "a shallow clear backwater of a sunlit jungle river, cut-away side view, a light green-teal see-through water body under a gently wavy surface line with white wave crests, the sandy riverbed and its rounded mossy stones clearly visible under the water, hand-painted 2D storybook platformer game tile, soft painterly gouache shading, fine thin dark-brown linework, no fish, no plants",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1792,
+   "h": 400
+  },
+  {
+   "name": "loglong-s40-11",
+   "start": "loglong.png",
+   "prompt": "one very long straight fallen tree log lying on its side, brown bark with long grooves, patches of green moss on top, a cut end with rings at the left, a short broken branch stub near the right end, hand-painted 2D storybook platformer game prop, flat side view, soft painterly gouache shading, fine thin dark-brown linework, isolated on a flat solid magenta background",
+   "strength": 0.4,
+   "seed": 11,
+   "w": 1792,
+   "h": 288
+  },
+  {
+   "name": "loglong-s40-23",
+   "start": "loglong.png",
+   "prompt": "one very long straight fallen tree log lying on its side, brown bark with long grooves, patches of green moss on top, a cut end with rings at the left, a short broken branch stub near the right end, hand-painted 2D storybook platformer game prop, flat side view, soft painterly gouache shading, fine thin dark-brown linework, isolated on a flat solid magenta background",
+   "strength": 0.4,
+   "seed": 23,
+   "w": 1792,
+   "h": 288
+  },
+  {
+   "name": "loglong-s52-11",
+   "start": "loglong.png",
+   "prompt": "one very long straight fallen tree log lying on its side, brown bark with long grooves, patches of green moss on top, a cut end with rings at the left, a short broken branch stub near the right end, hand-painted 2D storybook platformer game prop, flat side view, soft painterly gouache shading, fine thin dark-brown linework, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 1792,
+   "h": 288
+  },
+  {
+   "name": "loglong-s52-23",
+   "start": "loglong.png",
+   "prompt": "one very long straight fallen tree log lying on its side, brown bark with long grooves, patches of green moss on top, a cut end with rings at the left, a short broken branch stub near the right end, hand-painted 2D storybook platformer game prop, flat side view, soft painterly gouache shading, fine thin dark-brown linework, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 1792,
+   "h": 288
+  }
+ ]
+}

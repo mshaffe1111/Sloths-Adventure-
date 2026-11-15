@@ -12,6 +12,7 @@ import type { Platform } from './types.ts';
 import { viewRect, type ViewRect } from './artKit.ts';
 import { drawW8BounceLeaf, w8LeafBox } from './w8DecorArt.ts';
 
+
 /** the view, kept for the stalk's cull */
 const stalkView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
 
