@@ -1,5 +1,5 @@
 # ART-18: 1-8's look: painted palms, the trunk repeat, the bough's (m)(k)(l). Report 12:43 PM ET 11-15, t-art-18 from t-eng-look2 (head 9d9ae395+report)
-**EXACT NEXT STEP (1-8's data step; a fresh member from this head):** (1) `node tools/perf/drawcheck.mjs` (my run: see Unresolved), then
+**EXACT NEXT STEP (1-8's data step; a fresh member from this head):** (1) drawcheck PASSED on ff75be0d (Unresolved); still run
 1-8 SIDEWAYS at x 24036 and the 1-98 fixture (ENG-LOOK2 REPORT step 5); (2) `git merge origin/t-build-18b` (9f7d54bd); in w1Arc18.ts give
 `w1-18-still-fork` and `w1-18-tip` `entry: { piece: 'in', kind: 'ground', join: 'walk' }` (brick() at w1Arc18.ts:112: add an option); crack
 art on a cracking bough and the hanging-moss rows go with it; (3) `npx tsx tools/engine/seedlist.ts 1-8` (relist; the dressing rules never
@@ -37,7 +37,7 @@ trunks; a step end reads square in the clip's frame 0 (likely the live fallback 
 None on the packet. Suggest (for an R-number): W1 front leaves painted: life.ts getLeafSprites draws reference/art/hfpalm/leaves/*.webp
 (rims to clean) for World 1; stills on 1-1..1-8 both ways. BOUGH-FALL (ENG-LOOK2's) still open.
 ## Unresolved
-drawcheck: started 12:41 PM on ff75be0d; result in the next line if it finished before I stopped, else UNRUN by me. Full suite: not run (lead:
+drawcheck on ff75be0d: PASS (exit 0, 624 s, all 13 scenarios both ways; 1-8 sideways 1-98 fixture and x 24036 not separately run). Full suite: not run (lead:
 touched tests only). Lock/seedlist for 1-8: not run (dressing rows only; no layout change), the data step runs them.
 ## Method used / Lessons applied / Method update
 hf-art.md, render-fix.md, level.md (rule 22: no engine in data). Lessons: D41 (sizes vs drawn 89.1), D65 (rulings on the real still),
