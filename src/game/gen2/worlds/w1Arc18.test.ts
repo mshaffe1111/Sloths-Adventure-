@@ -19,6 +19,7 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import { PAGES } from '../../movesJournal.ts';
+import { addFinds } from '../../stageGenerator.ts';
 import { w1Finish } from './w1.ts';
 import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
 import { W1_TIP } from './w1Cast.ts';
@@ -77,6 +78,38 @@ test("the moves journal's collapsing-branch page is the keeper's (lines-1-8.md 1
   assert.equal(page.riddle, 'Do not look back. Just run!');
   assert.deepEqual(page.open.tip, [['1-8', `tip:${LINES_18.crack}`]], 'it opens on the crack line');
   assert.ok(!JSON.stringify(page).includes('goes on and on'), 'the old line is gone');
+});
+
+test("each of Dot's 1-8 lines is said only before the next crack after it, so no run from a later flag hears the fork line past the tip (ENG-LOOK 11-14)", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d), lay = (st as unknown as { chase: ChaseLay }).chase;
+    const hints = st.proto.hints as Array<{ x: number; text: string; beforeX?: number }>;
+    for (const [k, v] of Object.entries(LINES_18)) {
+      const h = hints.find((q) => q.text === v)!;
+      const next = lay.stretches.find((s) => s.start > h.x);
+      if (!next) { assert.ok(k === 'mark', `${d} seed ${seed}: only the mark is past the last crack (${k})`); continue; }
+      assert.equal(h.beforeX, next.start, `${d} seed ${seed}: "${k}" expires at the next crack`);
+    }
+    const tip = lay.stretches[lay.stretches.length - 1];
+    const fork = hints.find((q) => q.text === LINES_18.fork)!;
+    assert.ok(fork.beforeX! <= tip.start, `${d} seed ${seed}: the fork line is gone by the last stretch`);
+  }
+});
+
+test("World 1's book (finds.ts w1_book) stands on 1-8's first living fork, on a root bank past a knot, before the second stretch, both settings", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d) as unknown as Parameters<typeof addFinds>[0] & { proto: { findSpot?: { x: number; b: number } }; chase: ChaseLay; gen2: { sections: Array<{ uid: string; template: string; x0: number; x1: number }> }; platforms: Platform[] };
+    const spot = st.proto.findSpot;
+    assert.ok(spot, `${d} seed ${seed}: the rest brick marks the find's spot`);
+    const first = st.gen2.sections.find((q) => q.template === 'w1-18-rest')!;
+    assert.ok(spot.x > first.x0 && spot.x < first.x1, `${d} seed ${seed}: on the first fork`);
+    assert.ok(spot.x < st.chase.stretches[1].start, `${d} seed ${seed}: before the second stretch`);
+    assert.ok(st.platforms.some((p) => p.type === 'solid' && Math.abs(p.y - spot.b) <= 1 && p.x <= spot.x && p.x + p.width >= spot.x), `${d} seed ${seed}: on a bank's top`);
+    const was = st.collectibles.length;
+    addFinds(st);
+    const book = st.collectibles.slice(was).filter((c) => c.type === 'find');
+    assert.deepEqual(book.map((c) => [c.findId, c.x, c.hidden]), [['w1_book', spot.x, true]], `${d} seed ${seed}: the book, hidden, at the spot`);
+  }
 });
 
 test('1-8 never locks its exit (the keeper: the branch behind him is gone): a sprint, no gathers, no sealed line', () => {

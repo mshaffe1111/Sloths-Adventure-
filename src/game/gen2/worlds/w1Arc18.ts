@@ -343,6 +343,15 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     if (!c) throw new Error(`1-8 finish: no flag on fork ${f} for its heart`);
     st.collectibles.push({ id: ++id, type: 'heart', x: c.x + HEARTS_18.past, y: c.y - HEARTS_18.up, collected: false, bobPhase: 0 });
   }
+  // (7) each of Dot's lines is said only before the next crack after it (StageHint.beforeX): a run that starts from a later flag says
+  //  the last line he passed (engine.ts), and past the tip that was the still fork's, on the far tree's branch (ENG-LOOK's still, 11-14)
+  const hints = ((st as { proto?: { hints?: Array<{ x: number; text: string; beforeX?: number }> } }).proto?.hints ?? []);
+  const mine = new Set<string>(Object.values(LINES_18));
+  for (const h of hints) {
+    if (!mine.has(h.text)) continue;
+    const next = lay.stretches.find((s) => s.start > h.x);
+    if (next) h.beforeX = next.start;
+  }
   return stage;
 }
 
