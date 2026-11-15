@@ -11,6 +11,7 @@ import assert from 'node:assert/strict';
 import { CastPlay, type CastHero } from './castPlay.ts';
 import type { CastData } from './castPlay.types.ts';
 import { DT, makeEngine, standOn, step } from './engineCoreHarness.ts';
+import { castOf } from './gen2/pipeline.ts';
 import { eagleOver } from './gen2/worlds/w1Cast.ts';
 import type { Enemy, Platform } from './types.ts';
 
@@ -22,9 +23,9 @@ const boaAt = (x: number, y = G - 16): Enemy => ({
 } as Enemy);
 
 /** he runs in on a boa at 1000 at his run's 285 px/s (boaFreeze.test's flight) and stops `gap` px short of it (never stops: -Infinity), 3 s */
-function walkIn(gap: number) {
+function walkIn(gap: number, data: Partial<CastData> = {}) {
   const b = boaAt(1000);
-  const c = new CastPlay({ kinds: ['boa'], traps: [] } as CastData, [b], [bough], 1);
+  const c = new CastPlay({ kinds: ['boa'], traps: [], ...data } as CastData, [b], [bough], 1);
   let x = 800, froze = 0, struck = 0, frozeAt = -1, toldAt = -1;
   for (let i = 0, t = 0; i < 90; i++, t += DT) {
     const go = x < 1000 - gap;
@@ -50,6 +51,38 @@ test('the cast reports a freeze: beaten by his stillness in its rear, him inside
   const ran = walkIn(-Infinity);
   assert.equal(ran.froze, 0);
   assert.ok(ran.struck > 0 || ran.way !== 'still');
+});
+
+test('a stage that teaches the freeze (CastData.teachStill, from its brief): its FIRST freeze is the moment wherever he stands; later ones only inside the reach (1-9 beat 2)', () => {
+  // (148 px short: inside the 150 px engage, outside the strike's box. Untaught it is beaten but no moment: the test above)
+  const taught = walkIn(148, { teachStill: true });
+  assert.equal(taught.way, 'still');
+  assert.equal(taught.froze, 1, "the stage's first freeze is the moment, outside the reach");
+  // (two boas on one bough, 700 px apart: he freezes 148 px short of each; only the first is the moment)
+  const b1 = boaAt(1000), b2 = { ...boaAt(1700), id: 701 } as Enemy;
+  const c = new CastPlay({ kinds: ['boa'], traps: [], teachStill: true } as CastData, [b1, b2], [bough], 1);
+  let x = 800, t = 0;
+  const froze: Enemy[] = [];
+  for (const stop of [1000 - 148, 1700 - 148]) {
+    for (let i = 0; i < 150; i++, t += DT) {
+      const go = x < stop;
+      if (go) x = Math.min(stop, x + 285 * DT);
+      const r = c.step({ x, y: G, vx: go ? 285 : 0, vy: 0, facing: 1, grounded: true, holding: false }, DT, t, false);
+      froze.push(...r.froze);
+    }
+    // (the first boa flees 4 s and comes back to its post: he walks on past it while it is away)
+  }
+  assert.equal(b1.kit!.beatenBy, 'still');
+  assert.equal(b2.kit!.beatenBy, 'still', 'the control: the second was beaten by his stillness too');
+  assert.deepEqual(froze, [b1], 'only the first freeze, outside the reach');
+});
+
+test("the brief says it: a cast stage whose brief teaches 'still' carries teachStill; any other brief, none (so no stage moves)", () => {
+  const proto = { hints: [], covers: [], beats: [] } as never;
+  assert.equal(castOf({ cast: ['boa'], teaches: ['traps', 'still'] }, proto).cast?.teachStill, true);
+  assert.equal(castOf({ cast: ['boa'], teaches: ['traps'] }, proto).cast?.teachStill, undefined);
+  assert.equal('teachStill' in (castOf({ cast: ['eagle'], teaches: ['hide'] }, proto).cast ?? {}), false, '1-7 as it is: nothing written');
+  assert.deepEqual(castOf({ teaches: ['still'] }, proto), {}, 'no cast, no record');
 });
 
 test("the cast says when a sweeper's eye is out: its pass, its dive and its climb back; never perched between passes", () => {

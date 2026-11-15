@@ -64,7 +64,8 @@ export interface CastStep {
   /** traps that came down this step */
   fell: TrapPost[];
   /** animals beaten by his stillness this step with him inside their strike's reach (a boa's rear he froze in): the freeze moment
-   *  (engine.ts plays its slow motion; ENG-19a NEW 4, 1-9.md). Never a sweeper: its pass is beaten by stillness at its end, far off */
+   *  (engine.ts plays its slow motion; ENG-19a NEW 4, 1-9.md). On a stage that teaches the freeze (CastData.teachStill) its first one
+   *  wherever he stands. Never a sweeper: its pass is beaten by stillness at its end, far off */
   froze: Enemy[];
   /** a hard landing's noise (null: he did not land, or landed softly), and how many sleepers it woke */
   landed: Sound | null;
@@ -90,6 +91,8 @@ export class CastPlay {
   private readonly loud: boolean;
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
+  /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
+  private teachStill: boolean;
   private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
@@ -103,6 +106,7 @@ export class CastPlay {
     this.ground = platforms;
     this.loud = data.landing ?? TAUGHT.landing <= world;
     this.lures = data.lures ?? [];
+    this.teachStill = !!data.teachStill;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
@@ -192,7 +196,10 @@ export class CastPlay {
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);
-        if (ev.beaten === 'still' && m.def.habit !== 'sweep' && touches(reachBox(m.def, m.s), hero)) o.froze.push(m.e);
+        if (ev.beaten === 'still' && m.def.habit !== 'sweep' && (this.teachStill || touches(reachBox(m.def, m.s), hero))) {
+          o.froze.push(m.e);
+          this.teachStill = false;
+        }
         // (a sweeper's free pass: the dive comes, and pulls up short of him; no box hurts. watcher.ts freeFirst, in the kit)
         const spare = sparedPass(m.def, m.s, easy);
         if (ev.act) (spare ? o.spared : o.struck).push(m.e);

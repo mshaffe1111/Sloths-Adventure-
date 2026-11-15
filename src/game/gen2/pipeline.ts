@@ -3564,9 +3564,12 @@ export function castRows(M: WorldManifest, id: string): readonly CreatureDef[] {
   return cast?.length ? M.creatures.filter((c) => cast.includes(c.enemy)) : M.creatures;
 }
 
-/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
-function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
-  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage). A brief that teaches
+ *  the kit's 'still' marks the stage as teaching the freeze (CastData.teachStill: its first freeze is the moment wherever he stands) */
+export function castOf(brief: Pick<GraphBrief, 'cast' | 'teaches'> | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
+  const kinds = brief?.cast;
+  if (!kinds?.length) return {};
+  return { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [], ...(brief!.teaches?.includes('still') ? { teachStill: true } : {}) } };
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
@@ -3736,7 +3739,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(heartFalls.length ? { heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
-    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id], proto)),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
     gen2: meta,
   };
