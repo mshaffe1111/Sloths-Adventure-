@@ -1,5 +1,6 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten for INT-11 (11-15, t-int-11, link #5 = 1-6 + 1-7 + 1-8 + 2-1): section 0zj (the world finish in every judge, a refused roll never throws, the merges).
 Rewritten for INT-10b (11-15, t-int-10b): section 0zh (joined pit floors as one piece, the merges, 1-4's column petals, 8-3's pins, the swing into a bank).
 Rewritten for ENG-WATCH2 (11-15, t-eng-watch2): section 0ze (the watcher's glance, passAt, the re-check, the dials and the rulers).
 Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@0fc0835a, passed,
@@ -15,6 +16,22 @@ proven plan; Play is never blocked).
 Rewritten for BUILD-18c (11-15, t-build-18c): 0LOOK2's join, crack, moss-fog and shooter lines. Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+
+## 0zj. INT-11 (t-int-11, 11-15): what the next engineer must know
+- **One finish for Play and every judge**: listed.ts `playFinish(row, st, d)` runs the row's WORLD finish (`worldFinish(row)`: World 1's
+  w1Finish with its squirrels, World 2's w2Finish with its rivers) then the kit's own. seedlist, libstage, yield and the list rules all go
+  through it. Before INT-11 the 2-1 line's seedlist judged without w2Finish, so the played 2-1 had a 4.1 s quiet stretch no list saw (D19).
+  A new world's kit adds its finish to listed.ts WORLD; nothing else names it.
+- **A refused roll never throws** (pipeline.ts buildRolledOn, the assemble catch): a throw after a swap, OR after the search's own
+  stage-wide bans (bans[-1]: a section refused twice), is a refused roll; only a first build with neither throws as before.
+  refuseNotThrow.test.ts (2-1, 1-8). Designed arcs (one brick a beat) are where a stage-wide ban empties a node.
+- GraphBrief.petals is 'low' | 'few' | 'normal'; petals.ts petalsLow holds 'few' too. walkedSpan's Ask has 'ride' (skipped like a bounce).
+- 1-8 has flown rows (flownArcs n18, chain.md §1) but is NOT judged: its plain bounces (~150 px) sit under the bounce-teach band 174-180
+  (BOUNCE-REUSE). Setting `judged: 'normal-1-8'` refuses 24/24.
+- Traps: the bots turn back on a perch whose way on is two steps down (kid, 160 px steps) or after liana 2 (adult Easy 2-1 seed 8):
+  PERCH-TURNBACK, the bot owner's. Stills: 'low' picks the lowest piece spanning x even when buried under a stair (1-8 x13900): pick an
+  exposed top.
 
 ## 0LOOK2. The bough look, the settle after the chase, an asked join, the tip's marked fall (ENG-LOOK2 11-15; ART-18 11-15 after it)
 - **The bough** (protoArt.ts, from `WorldManifest.ground.look: 'bough'` -> `GeneratedStage.groundLook`; the engine calls setGroundLook +
