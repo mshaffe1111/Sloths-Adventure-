@@ -34,6 +34,11 @@ toy's no-skill run measured RED before any skill), D75 (proven on a gen2 row, no
 - Not built: a pad row in a leg laid LEFT (throws by name, as rivers do): 2-2 beat 4's there-and-back needs it; no reeds at pad ponds
   (w2Finish skips still water it did not make).
 
+- **Ownership miss (D57 repeated, mine):** the lead's 12:36 PM file-ownership message sat unread in my queue until 12:48. I edited two of
+  BUILD-21's files without messaging it: w2.ts (`W2_PADS` + one import, appended after W2_RIVERS) and riverArt.ts (`drawPad`, a new function
+  after drawLily; nothing existing changed). firsttimer.ts: padRead is its own method; the hooks are in the bot's general padPause, stand and
+  rhythm lines, not its river block. Told BUILD-21 and the lead at 12:49 PM.
+
 ## EXACT NEXT STEP (engine member, at the reset)
 1. `npx tsc --noEmit -p .`; `npx tsx --test src/game/ride.test.ts`; probe: `npx tsx --test tools/inspect/padRide.test.ts` (~40 s); fix the
    rise toy on Easy in firsttimer.ts padRead (re-read the breath left at the step onto the pad; stop at the stone: a stone is `next` too).
