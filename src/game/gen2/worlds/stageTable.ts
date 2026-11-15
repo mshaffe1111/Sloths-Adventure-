@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-17' | 'w2' | 'w2-21';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-17' | 'w2' | 'w2-21' | 'w2-22';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -51,7 +51,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the
   //  lead's ruling 11-14: painted water is its own mark; Dot warns at the first water))
   '2-1': { kit: 'w2-21', judged: 'normal-2-1' },
-  '2-2': { kit: 'w2', judged: 'normal-2-2' },
+  // (2-2 Petals for the Crown: the designed arc, w2Arc22.ts, its own kit 'w2-22' (kitLib22), BUILD-22 11-15; its placeholder arc is gone)
+  '2-2': { kit: 'w2-22', judged: 'normal-2-2' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
