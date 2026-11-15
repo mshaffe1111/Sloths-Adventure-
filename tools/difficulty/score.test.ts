@@ -118,7 +118,7 @@ test('a release is a timed press in the window the engine flies for that perch: 
   // (a stage gen2 did not lay is read by its own level check, which has no view rule: the dial liana's window there is every press's)
   const { gen2: _g, ...old } = STAGE1([hv], [far2]) as any;
   const oldW = releaseWindow(old, hv, { x: 1400, plat: far2 }, 'normal', true, true).find((o) => o.plat === far2)?.w ?? 0;
-  assert.ok(oldW >= seenW, `no view rule off gen2: ${oldW} >= ${seenW}`);
+  assert.ok(oldW > seenW, `no view rule off gen2: ${oldW} > ${seenW} (this perch is out of view at every press that reaches it)`);
   // (a narrower perch further out leaves a narrower window: more bits)
   const far = P(6, 1420, 820, 60);
   const rn = releaseBits(STAGE1([v], [P(1, 600, 820, 300), far]), v, { x: 1420, plat: far }, 'normal');

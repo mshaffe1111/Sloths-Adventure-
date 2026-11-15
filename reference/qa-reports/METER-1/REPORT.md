@@ -80,12 +80,13 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
      crossings (`podCrossing`, test 14, on the real 1-4 too).
    - **Unmeasured asks are named and never priced as the hardest**: a catch no running jump makes is `NOT MEASURED`, 0 bits (12 on the
      old hand-built 1-6, 0 on BUILD-16's); a release no press flies keeps the earlier constant, named `NOT FLOWN` (0 on either 1-6).
-   - **Planted faults, every one RED** (planted-faults.txt; each old behaviour put back in score.ts, the tests run, the file restored
+   - **Planted faults, 18 of 18 RED** (planted-faults.txt; each old behaviour put back in score.ts, the tests run, the file restored
      from a saved copy): the old release constant, no crumble at the perch, the chain not walked, no catch, the snake's default tell, no
      span overlap, chase beats as hazards, the burst ignored, an untimed nut, the exact old 200 px lookup, mossy lianas not cover, the
      calm-in left out, the view rule left out, a pod crossed in no time, the stretch's ends not a way out, an unmeasured catch priced as
      one frame, a chain walked through a liana no catch reaches, the view rule on an older generator's stage. (One approximate plant, "200 px but keep the 600 px fallback", stayed green because the fallback still finds the eagle;
-     the exact old lookup is red. One planted case first stayed green because both readings met the 5-bit cap; fixed to sit below it.)
+     the exact old lookup is red. Two planted cases first stayed green, one because both readings met the 5-bit cap, one because it
+     asked ">=" where the two readings were 0.8 s and 0; both fixed to fail.)
 3. **(3) Recalibrated only by DIFFICULTY.md's method**: SCALE from 1-1 Normal, 4 layouts = 0.28194, unchanged (1-1's challenge list
    is the same before and after: the same 24.5 points). No other constant moved (FREE 1, MIX 0.5/0.5, OVERLAP 0.5, NOVELTY). The tier
    calibration (BOTS.md) has tester data for 1-1 only.
