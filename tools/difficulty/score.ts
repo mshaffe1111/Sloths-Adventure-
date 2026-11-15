@@ -16,6 +16,8 @@
  */
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { RealPlay } from '../../src/game/realPlay.ts';
+import { plantSeedList } from '../../src/game/gen2/seedList.ts';
+import { ANCHOR_LIST } from './anchor11.ts';
 import { modelStage, MODEL_TYPICAL } from '../../src/game/stageTime.ts';
 import { PHYS, SIM_DTS, TIMED, vinePeriod, airStep, canGrabSwing, JUMP_AIRTIME, LETGO_FLIGHTS, pressWindow, chainWindow, swingReach, type AirBody } from '../../src/game/physics.ts';
 import { SWING_CAM, SWING_SEEN } from '../../src/game/cameraFollow.ts';
@@ -581,7 +583,11 @@ export interface StageScore {
 /** one stage, one setting, one layout: its challenges and raw load (seen: earlier exposures by move kind, carried in game order) */
 export function scoreStage(id: string, setting: Setting, seed: number, seen: Map<string, number>): StageScore {
   setDifficulty(setting);
-  const rp = new RealPlay(id, seed);
+  // (the anchor, 1-1, is built from its FIXED layouts (anchor11.ts, by content), never from the list's moving positions: a relist of 1-1
+  //  moved every stage's reading x0.87 (INT-10, 11-15; the lead's ruling: fix the anchor, never tune a level to it)
+  const undo = id === ANCHOR.id ? plantSeedList(ANCHOR.id, ANCHOR_LIST) : null;
+  let rp: RealPlay;
+  try { rp = new RealPlay(id, seed); } finally { undo?.(); }
   // (a vine-field stage is walked with its fig gates open, as a puzzle room's stage is walked solved: each gate is a puzzle below, and
   //  the engine shuts them at the start: fieldPlay.ts. Every other stage is the same object, unchanged)
   const st = gatesOpened(rp.stage as any) as any;

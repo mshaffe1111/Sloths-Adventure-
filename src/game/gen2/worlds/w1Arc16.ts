@@ -246,17 +246,19 @@ function snakesMet(easy: boolean): Lay {
   return { pieces: [bank('a', null, 420), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.3, 1), petals('p1', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60)] };
 }
 /** [X] beat 7, a snake on your vine (required): ONE FAR gap onto a narrow perch; a snake comes down his liana from the anchor (the top never
- *  makes FAR, so it pushes him down to where he must be anyway); its hands let go onto moss with the stair back. Easy: a LONG */
+ *  makes FAR, so it pushes him down to where he must be anyway); its hands let go onto moss with the stair back. Easy: a SHORT (INT-10,
+ *  11-15: Easy read 0.63 x Normal on the meter, DIFFICULTY.md G2 asks at most 0.6; this swing was Easy's peak, 4.4 points; with the creaky
+ *  landing's below, Easy reads 3.18 against Normal's 5.66, 0.56; Normal unchanged) */
 function snakeOnYourVine(easy: boolean): Lay {
   const w = walkIn('q', easy ? 3 : 1);
-  const r = lianaRun('', w.last, [{ gap: easy ? 'long' : 'far', w: 260 }]);
+  const r = lianaRun('', w.last, [{ gap: easy ? 'short' : 'far', w: 260 }]);
   const h = hops('h', r.last, easy ? 4 : 2);
   return { pieces: [bank('a', null, 320), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('pf', r.perches[0], LANDED, 1), petals('ph', 'hu1', LANDED, 1, 60), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9, the creaky landing (1-5's limb with the swing): a liana onto a creaky limb, the only foothold, the next liana's catch
- *  inside its hold. Easy: one liana onto a sound bough, walked off */
+ *  inside its hold. Easy: one SHORT liana onto a sound bough, walked off (INT-10, 11-15: the meter's Easy band, with the snake on your vine) */
 function creakyLanding(easy: boolean): Lay {
-  const r = lianaRun('', 'a', easy ? [{ gap: 'long', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
+  const r = lianaRun('', 'a', easy ? [{ gap: 'short', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
   const h = hops('h', r.last, easy ? 4 : 2);
   return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
   //  'drop' is not read for tips, pipeline fillSockets)

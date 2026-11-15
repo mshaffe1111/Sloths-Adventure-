@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""INT-10 planted faults: each plant must turn src/game/gen2/petalArcs.test.ts RED; the file is restored after each.
+"""INT-10 planted faults: each plant must turn its test file RED (petalArcs.test.ts unless named); the file is restored after each.
 Run from the repo root: python3 reference/qa-reports/INT-10/planted.py"""
 import subprocess, sys
 T = 'src/game/gen2/petalArcs.test.ts'
@@ -14,15 +14,24 @@ PLANTS = [
    "?.brief?.petalArcs === true;", "?.brief?.petalArcs === 'never';"),
   ('1-6 brief without the arcs (bank rows alone read 0.46)', 'src/game/gen2/worlds/w1Arc16.ts',
    "  petalArcs: true,\n", ''),
+  ('the meter builds its anchor from the list (no fixed layouts)', 'tools/difficulty/score.ts',
+   "  const undo = id === ANCHOR.id ? plantSeedList(ANCHOR.id, ANCHOR_LIST) : null;", "  const undo = null as null | (() => void);",
+   ['--test-name-pattern=fixed layouts', 'tools/difficulty/score.test.ts']),
+  ('1-6 Easy as it was (LONG gaps on the snake on your vine and the creaky landing): Easy 0.63 x Normal', 'src/game/gen2/worlds/w1Arc16.ts',
+   [("gap: easy ? 'short' : 'far', w: 260", "gap: easy ? 'long' : 'far', w: 260"), ("easy ? [{ gap: 'short', perch: 'sound' }]", "easy ? [{ gap: 'long', perch: 'sound' }]")], None,
+   ['--test-name-pattern=difficulty meter', 'src/game/gen2/worlds/w1Arc16.test.ts']),
 ]
 bad = 0
-for name, f, a, b in PLANTS:
+for name, f, a, b, *t in PLANTS:
     src = open(f).read()
-    if src.count(a) != 1:
-        print(f'NOT PLANTED ({src.count(a)} matches): {name}'); bad += 1; continue
-    open(f, 'w').write(src.replace(a, b))
+    pairs = a if isinstance(a, list) else [(a, b)]
+    if any(src.count(x) != 1 for x, _ in pairs):
+        print(f'NOT PLANTED ({[src.count(x) for x, _ in pairs]} matches): {name}'); bad += 1; continue
+    new = src
+    for x, y in pairs: new = new.replace(x, y)
+    open(f, 'w').write(new)
     try:
-        r = subprocess.run(['npx', 'tsx', '--test', T], capture_output=True, text=True, timeout=900)
+        r = subprocess.run(['npx', 'tsx', '--test', *(t[0] if t else [T])], capture_output=True, text=True, timeout=900)
         red = r.returncode != 0
     finally:
         open(f, 'w').write(src)

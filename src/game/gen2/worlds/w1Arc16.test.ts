@@ -6,6 +6,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { generateAllLevels } from '../../worldsData.ts';
@@ -121,7 +122,7 @@ test("Dot teaches BEFORE each thing (level.md rule 6): every line a TEACH line, 
   }
 });
 
-test("1-6 on the difficulty meter (score.ts, 1-1 = 4 as its SCALE, seeds 1-4): Normal in DIFFICULTY.md:61's band (6.5), Easy well under Normal", async () => {
+test("1-6 on the difficulty meter (score.ts, 1-1 = 4 on its fixed anchor layouts, seeds 1-4): Normal in DIFFICULTY.md's World 1 slot and G2 band, Easy at most its share of Normal", async () => {
   // (the lead's ruling 11-14 10:36 AM ET: 14 lianas Normal, one a beat on Easy, length from walked ground; measured 6.3 / 4.3. Easy's ~3
   //  waits on the meter's own fixes, R-165.239: a liana scored twice (tools/inspect/route.ts:402 and :413) and a swing over soft moss
   //  costed as a life (tools/difficulty/score.ts:247); then 1-6 is re-scored and this test's Easy bound tightens to it)
@@ -138,6 +139,12 @@ test("1-6 on the difficulty meter (score.ts, 1-1 = 4 as its SCALE, seeds 1-4): N
   setDifficulty('normal');
   const scale = ANCHOR.score / med(raw.anchor);
   const n = med(raw.normal) * scale, e = med(raw.easy) * scale;
-  assert.ok(n >= 5.5 && n <= 7.5, `Normal reads ${n.toFixed(1)} (DIFFICULTY.md:61: 6.5)`);
-  assert.ok(e <= 4.5 && e <= n * 0.7, `Easy reads ${e.toFixed(1)} against Normal's ${n.toFixed(1)}`);
+  // (its numbers read FROM reference/design/DIFFICULTY.md, never typed here (the lead's ruling 11-14 10:03 PM, METER-1's pushback; INT-10
+  //  11-15): §4's World 1 slot for 1-6, G2's World 1 band around it, and §4's "Easy at most 0.6 x Normal")
+  const doc = fs.readFileSync(new URL('../../../../reference/design/DIFFICULTY.md', import.meta.url), 'utf8');
+  const target = Number(doc.match(/World 1, from Matt's ratings:[\s\S]*?1-6 (\d+(?:\.\d+)?)/)![1]);
+  const band = Number(doc.match(/G2 Normal median within its slot \+-(\d+(?:\.\d+)?) \(World 1\)/)![1]);
+  const easyMax = Number(doc.match(/Easy at most (\d+(?:\.\d+)?) x Normal/)![1]);
+  assert.ok(n >= target - band && n <= target + band, `Normal reads ${n.toFixed(2)} (DIFFICULTY.md: 1-6 ${target} +-${band})`);
+  assert.ok(e <= n * easyMax, `Easy reads ${e.toFixed(2)} against Normal's ${n.toFixed(2)} (DIFFICULTY.md: Easy at most ${easyMax} x Normal)`);
 });
