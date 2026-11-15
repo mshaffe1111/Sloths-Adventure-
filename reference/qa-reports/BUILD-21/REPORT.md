@@ -5,7 +5,14 @@ D40/D70 (no level-data workaround for an engine gap: the liana and drop-look gap
 D50 (teach lines are teachTips), D59 (no job left running), D62 (stills print the BUILT seed/setting), D67, D69 (plants proven RED), D79.
 
 ## EXACT NEXT STEP (integration)
-1. BOTS_PENDING
+1. BOTS on cbe6979c (relist 100/100, --check PASS; castBots 1-40 both settings; every run of every tier ends at the shrine, none
+   stranded, no run under the 120 s floor): expert N 40/40 (median 186 s); middle N 40/40 (206 s), E 38/40; child N 32/40 (398 s),
+   E 32/40 (290 s); kid N 0/40, E 0/40; adult N 0/40, E 0/40 (castBots' summary did not print for expert Easy). KID AND ADULT DO NOT
+   CLEAR BEAT 7: traced seeds 4 and 12, both settings, the first-timer bots are rescued at the high bank's bounce (x 22,241-23,033:
+   'a 237-239 px wall ahead, in a dip 30 px deep, an open drop ahead'), at 30 px as at 62 px; the tier bots climb it. World 1's
+   bounceWall (w1.ts gBounceWall: mushroom on the floor at 0.7-0.75, wall 225-240) is the same shape, so the next step is a trace of
+   the first-timer's bounce read at this wall vs 1-1's (firsttimer.ts), an engine-member job; the other rescues (child 8, middle 2)
+   are untraced. Rule 28 not met for those: named, not GREEN.
 2. The whole unit suite and the lock on the final head: my suite run on 1b20c78e was STOPPED when the bounce pad changed (UNRUN on the
    final head); `lockall --layouts 16 --check` vs 58182e9a's lock (expect 2-1 moved by this branch, 2-2 by ENG-W2b only).
 3. Stills of the final head at the bounce (x~22,300 on seed 2) and a 20-30 s clip of the first deep river (x~14,300): NOT SHOT (context).
