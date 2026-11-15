@@ -12,6 +12,7 @@ import { finish14, kitLib14 } from './worlds/w1Arc14.ts';
 import { finish17, kitLib17 } from './worlds/w1Arc17.ts';
 import { w1Finish } from './worlds/w1.ts';
 import { w2Finish, w2World } from './worlds/w2.ts';
+import { kitLib21 } from './worlds/w2Arc21.ts';
 import type { Difficulty } from '../difficulty.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
@@ -34,13 +35,13 @@ export interface ListedStage {
 }
 
 /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-17': kitLib17, w2: w2World };
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-17': kitLib17, w2: w2World, 'w2-21': kitLib21 };
 /** each kit's world finish (by kit name; every World 1 kit runs World 1's). A row's world finish, World 1's when it names none (a test's fixture) */
 type WorldFinish = NonNullable<ListedStage['world']>;
 const W1: WorldFinish = (st, squirrels) => w1Finish(st as never, squirrels) as typeof st;
 const W2: WorldFinish = (st, _squirrels, difficulty) => w2Finish(st as never, difficulty) as typeof st;
 export const worldFinish = (row: Pick<ListedStage, 'world'>): WorldFinish => row.world ?? W1;
-const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-17': W1, w2: W2 };
+const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-17': W1, w2: W2, 'w2-21': W2 };
 /** the kits' own finishes, run after World 1's (by kit name) */
 const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'] };
 

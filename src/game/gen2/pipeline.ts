@@ -4146,9 +4146,10 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
   return (st.gen2.falls ?? []).map((f): Drop => {
     const mid = (f.x0 + f.x1) / 2;
     // (a fall inside a river ends in its water, whatever floats on it (a log is no floor: it drifts away), ENG-W2b: a deep river a life,
-    // a splash-back river (`safe`) set back on the bank he left; both are drawn as the river's water (riverArt.ts), and the record says so)
+    // drawn as the river's deep water; a splash-back river (`safe`) sets him back on the bank he left, drawn as the shallow backwater
+    // (riverArt.ts RIVER_LOOK.safe, BUILD-21: the engine paints every safe river so), and the record says so)
     const river = rivers.find((r) => mid >= r.x0 - 1 && mid <= r.x1 + 1);
-    if (river?.safe) return { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}), ends: { kind: 'putback', to: 'take-off' }, look: 'water-art' } as unknown as Drop;
+    if (river?.safe) return { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}), ends: { kind: 'putback', to: 'take-off' }, look: 'safe-water-art' } as Drop;
     const ground = river ? undefined : st.platforms.find((p) => p.type !== 'bouncy' && p.type !== 'drift' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };

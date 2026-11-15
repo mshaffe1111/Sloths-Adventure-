@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-17' | 'w2';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-17' | 'w2' | 'w2-21';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -50,7 +50,7 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
   //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the
   //  lead's ruling 11-14: painted water is its own mark; Dot warns at the first water))
-  '2-1': { kit: 'w2', judged: 'normal-2-1' },
+  '2-1': { kit: 'w2-21', judged: 'normal-2-1' },
   '2-2': { kit: 'w2', judged: 'normal-2-2' },
 };
 

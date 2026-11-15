@@ -120,7 +120,7 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
 
 // ───────────────────────── the drops ─────────────────────────
 
-const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art'] satisfies readonly SoftLook[];
+const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art', 'safe-water-art'] satisfies readonly SoftLook[];
 const LETHAL_LOOKS: readonly string[] = ['water-art', 'void-dark'] satisfies readonly LethalLook[];
 const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
 /** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */

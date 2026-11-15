@@ -6125,7 +6125,7 @@ export class GameEngine {
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
-        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed, !!r.safe)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
         // the current: the river's own painted foam sliding along the surface the way the logs go (still water, a lily pond, has
         // none; the old pale code streaks are gone, Matt 2026-10-29: repeating effects are painted)
         if (r.speed > 0 && painted) {

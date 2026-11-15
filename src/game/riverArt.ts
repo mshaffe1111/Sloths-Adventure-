@@ -72,6 +72,31 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+
+/**
+ * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the
+ * splash-back river (RiverZone.safe: the teaching river, and every river on Easy, BUILD-21): ART-W2's shallow backwater strip (w2-1115/
+ * w2-shallow, catalog row w2-1115/w2-shallow: lighter, the riverbed's stones showing), a 476 u repeat 134 u high, its depth capped at the
+ * strip with the bank's earth under the bed (ART-W2's slot rule: the flat bed colour never shows). Deep water keeps the river sheet's tile.
+ */
+export const RIVER_LOOK = {
+  safe: { url: new URL('../assets/w2-1115/w2-shallow.webp', import.meta.url).href, w: 476, h: 134, crest: 0.045 },
+} as const;
+/** the earth under a shallow river's bed, top to bottom (the World 2 banks' wall in shadow) */
+const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
+let shallow: HTMLImageElement | null = null;
+let shallowReady = false;
+function loadShallow() {
+  if (shallow || typeof Image === 'undefined') return;
+  const im = new Image();
+  shallow = im;
+  trackAtlas(im, RIVER_LOOK.safe.url, () => { shallowReady = true; }, () => { shallow = null; }, () => { shallow = null; shallowReady = false; });
+}
+/** the safe river's painted strip has loaded */
+export function safeRiverArtReady(): boolean {
+  loadShallow();
+  return shallowReady && !!shallow;
+}
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
 
@@ -88,7 +113,24 @@ export function drawRiverWater(
   t: number,
   dir: 1 | -1,
   speed: number,
+  safe = false,
 ): boolean {
+  if (safe && safeRiverArtReady()) {
+    const L = RIVER_LOOK.safe;
+    const top = surfaceY - L.h * L.crest;
+    const bed = top + L.h - 2;
+    if (bottom > bed) {
+      const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
+      g.addColorStop(0, SAFE_EARTH[0]);
+      g.addColorStop(1, SAFE_EARTH[1]);
+      ctx.fillStyle = g;
+      ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
+    }
+    const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+    const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+    for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+    return true;
+  }
   if (!riverArtReady()) return false;
   const f = W2_FRAMES.water;
   const th = (WATER_TILE * f.h) / f.w;
