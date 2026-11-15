@@ -55,7 +55,7 @@ const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[xs.length >> 1];
  * The growth check, like with like (the lead's ruling, 11-13 5:03 PM ET; D40). A stage's length comes from its own builder's target:
  * gen2 lays to STAGE-RULES.md:77's quick floor, the old generator to its linear World 1 -> World 10 target (stageTime.ts:96), so a step
  * across builders measures the move to gen2, not pacing, and lengthening an old stage to pass it would patch what gen2 replaces (D40).
- * Two worlds of the same kind (all gen2, all old, or both a mix) compare their medians, as before; two of different kinds compare each
+ * Two worlds of one builder (all gen2 or all old) compare their medians, as before; two of different kinds, or two mixes (INT-11), compare each
  * builder's own stages where both worlds hold 3 or more of them (one or two stages are a stage, not a world). At each step a world may
  * be shorter than the one before by at most 6 s. `worlds[0]` is World 1. Returns the breaks.
  */
@@ -64,7 +64,10 @@ function growthBreaks(worlds: Timed[][]): string[] {
   const out: string[] = [];
   for (let i = 1; i < worlds.length; i++) {
     const [a, b] = [worlds[i - 1], worlds[i]];
-    const reads: Array<[string, Timed[], Timed[]]> = kind(a) === kind(b)
+    // (two mixes read like with like too, by builder: a mix's median across builders measures how many of its stages moved to gen2, not
+    //  pacing. The lead's ruling 11-15 5:19 PM ET (INT-11), the 11-13 like-with-like ruling applied to mixed worlds; World 1 and World 2
+    //  both became mixes when 2-1 and 2-2 moved to gen2)
+    const reads: Array<[string, Timed[], Timed[]]> = kind(a) === kind(b) && kind(a) !== 'mix'
       ? [['', a, b]]
       : ([[' (gen2 stages)', true], [' (old-builder stages)', false]] as const)
           .map(([what, g]): [string, Timed[], Timed[]] => [what, a.filter((q) => q.gen2 === g), b.filter((q) => q.gen2 === g)])
@@ -90,6 +93,16 @@ test('stages grow from about two and a quarter minutes in World 1 to about four 
   assert.ok(m1 <= m10, `World 1 median ${m1.toFixed(0)} s is past World 10's ${m10.toFixed(0)} s`);
   assert.deepEqual(growthBreaks(worlds), []);
   for (const l of levels.filter((x) => x.worldIndex === 10)) assert.ok(modelStage(stage(l, null), MODEL_TYPICAL).total <= 300, `${l.id} runs past five minutes`);
+});
+
+test('two mixed worlds read like with like: a mix of short old stages after a mix of long gen2 ones passes; its gen2 stages 7 s shorter fail (planted)', () => {
+  const T = (gen2: boolean, ts: number[]): Timed[] => ts.map((t) => ({ gen2, t }));
+  // (World 1 tonight: eight gen2 stages and two old; World 2: two gen2 and eight old, the old ones on their own shorter target)
+  const w1 = [...T(true, [180, 213, 240, 213, 261, 250, 260, 255]), ...T(false, [150, 160])];
+  const w2 = [...T(true, [240, 245]), ...T(false, [150, 152, 155, 158, 160, 162, 165, 170])];
+  assert.deepEqual(growthBreaks([w1, w2]), [], 'a raw median across builders is not read');
+  const g1 = median(w1.filter((q) => q.gen2).map((q) => q.t));
+  assert.deepEqual(growthBreaks([w1, [...T(true, Array(3).fill(g1 - 7)), ...T(false, [150, 155, 160])]]), ['World 2 is shorter than World 1 (gen2 stages)']);
 });
 
 test('the growth check reads like with like: a gen2 World 2 shorter than World 1 by 7 s fails, an old-builder World 2 is read against World 1\'s old stages (planted)', () => {
