@@ -280,7 +280,8 @@ export const TRUNKS_18 = [
  * identical, in almost every frame). Painted (tools/art/hfpalm), each a tall trunk rising out of the mist under the bough (its foot faded,
  * never a stub) to a crown with its nut cluster. One stands at every nut's drop with that cluster over the drop, so the nut still falls
  * from a crown in view; they take turns in this order, and a palm already standing within PALM_APART_18 of a drop is skipped, so no crown
- * shows twice on a screen. Three near palms and two further back (hazed into the mist in the picture, drawn behind the near ones), so not
+ * shows twice on a screen. Two near palms and two further back (a fifth, a young near palm, was cut by the lead 12:27 PM: orange nuts,
+ * a short trunk that read as growing out of the bough) (hazed into the mist in the picture, drawn behind the near ones), so not
  * every crown is in front; sizes differ. `nut`: the cluster's middle as fractions of the picture (tools/art/hfpalm/nutpt.py; its check sheet
  * confirms each by eye); `up`: how far over the ground under the drop the cluster hangs (px; sideways the
  * nut starts about this high, rollingPiece.ts dropY0 under the HUD band, so the cluster hangs just under the HUD's art sideways, about 300 px of world over the ground in view there, and the
@@ -288,7 +289,6 @@ export const TRUNKS_18 = [
  * place from those and the piece's drawn size (inventory: pokey_scale x 89.1 tall), checked against the inventory by w1Arc18.test.ts.
  */
 export const PALMS_18 = [
-  { inv: 'hf18/hf18-palm-a', nut: [0.509, 0.289], up: 180, dx: -3, y: 261, back: false },
   { inv: 'hf18/hf18-palm-back-a', nut: [0.483, 0.31], up: 170, dx: 7, y: 313, back: true },
   { inv: 'hf18/hf18-palm-b', nut: [0.492, 0.26], up: 185, dx: 4, y: 451, back: false },
   { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.267], up: 190, dx: -21, y: 499, back: false },
