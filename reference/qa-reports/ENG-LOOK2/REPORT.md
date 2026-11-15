@@ -1,13 +1,31 @@
-# ENG-LOOK2: 1-8 toward link #5 (t-eng-look2 from t-eng-look@0449e838). Report 11:55 AM ET 11-15, context ~40% (estimate)
-**EXACT NEXT STEP (in order; the look is the lead's to take to Matt first):**
-1. drawcheck on cacf67d4 ran here (results below); then 1-8 SIDEWAYS at x 24036 and the 1-98 fixture (`node tools/perf/drawcheck.mjs 1-98`
-   plays any extra stage id), WITH ENG-DR's dressing (merged). A breach prints its call sites: the bough adds one drawImage per tile.
-2. 1-8's data: `git merge origin/t-build-18b` (9f7d54bd: the keeper's lines, Dot's beforeX, the book test); give w1Arc18.ts's
-   `w1-18-still-fork` and `w1-18-tip` bricks `entry: { piece: 'in', kind: 'ground', join: 'walk' }` (brick() builds entry at w1Arc18.ts:112:
-   add an option); then `npx tsx tools/engine/seedlist.ts 1-8` (relist), castBots 1-40 both settings (kid/child/middle/expert), lockall
-   (`--intended 1-8`: expect 1-8 only), the WHOLE suite alone (3 shards, timeout = its length). Then the proof: stills + clip both ways,
-   Normal + Easy, a caught run and a clean run (tools/engine/runs/chase-clip.mjs; add a `caught` mode: stop holding right mid-stretch).
-3. Look items named below (rough spots 1-4) go to the lead as packets; (4) is 1-8 data (Content).
+# ENG-LOOK2: 1-8 toward link #5 (t-eng-look2 from t-eng-look@0449e838). Report 11:48 AM ET 11-15; real context ~50% (the lead's read)
+**EXACT NEXT STEP (the lead 11:44 + 11:48 AM; a fresh member from e403928f or later; my real context ~50%, past the box):**
+1. **(m) the dip's stair (x 13900, layout 1, both ways): the worst thing on screen.** On a bough stage each stair step is its OWN short
+   branch stub, rounded at BOTH ends, mist visible between steps; where a step meets a bough it grows out as a fork, never a square notch.
+   Where: protoArt.ts drawBoughGround / boughEnds / eraseBoughEnd (BOUGH_END_MIN). Today a step whose end touches a higher or lower piece
+   is 'under'/'living' and narrow steps (< 160 px) are capped at a third of their width, so stacked steps (1-8 L1: ids 52/51/50 at x 14000
+   over the floor 49) read as merged blocks. Try: a boughPiece narrower than ~2 thicknesses draws as a stub (bough slice, both ends rounded,
+   its body trimmed to ~0.6 of BOUGH_THICK so the mist shows between steps), never extended under another. If the geometry can't take it,
+   ask the lead (they will rule on whether bough stages lay pit-stairs at all).
+2. **(k) no exposed end is ever a straight vertical cut:** x5400 sideways right edge ~1800 px (and the piece under it ~1755-1830); x34200
+   sideways the far branch's LEFT end ~1353 px (it IS 'living', but the cap's ellipse (ry 0.62 T) barely rounds a full-thickness end: give
+   the living cap a real taper/round, e.g. ry 0.5 T centred at 0.5 T, and round the underside corner); x13900 upright several pieces.
+3. **(l) the tip's underside (x34200, ~560-675 px, y 470-590) is stair-stepped:** drawBough(taper) slices at 3 px still step because each
+   slice's height is a whole drawImage; draw the taper at the section bake's full screen resolution with a per-pixel column (or bake the
+   straight bough into the section canvas, then reshape it with a destination-in path along the taper curve: one smooth edge).
+4. Then x13900 + x34200 both ways again (`PW=/opt/node-tools/node_modules/playwright/index.mjs node tools/engine/runs/stills-at.mjs 5199
+   <out> b8 1-8 1 13900 34200` with `npx vite --port 5199` up; never save a src file while it shoots) to the lead.
+5. drawcheck (results of my run on cacf67d4 below), then 1-8 SIDEWAYS at x 24036 and the 1-98 fixture (`node tools/perf/drawcheck.mjs 1-98`).
+6. 1-8's data: `git merge origin/t-build-18b` (9f7d54bd); in w1Arc18.ts give `w1-18-still-fork` and `w1-18-tip` `entry: { piece: 'in',
+   kind: 'ground', join: 'walk' }` (brick() builds entry at w1Arc18.ts:112: add an option); the crack art on a cracking bough (rough 3) and
+   the hanging-moss dressing rows (rough 4) go with this data step; then `npx tsx tools/engine/seedlist.ts 1-8` (relist),
+   `npx tsx tools/inspect/castBots.ts --stage 1-8 --seeds 1-40` both settings, `npx tsx tools/engine/lockall.ts --layouts 16 --intended 1-8
+   --check <lock of the base>` (expect 1-8 only), the WHOLE suite alone (3 shards, timeout = its length). Proof: stills + clip both ways,
+   Normal + Easy, a caught run and a clean run (tools/engine/runs/chase-clip.mjs; add a caught mode). Do NOT touch hf18-palm-crown (Matt
+   flagged it; a new art job replaces it).
+Rough spots and owners: (1) = (m) engine; (2) a baked bank keeps a joined end after its neighbouring section falls (engine, packet
+BOUGH-FALL below); (3) crack art on a cracking bough (the 1-8 data step's engine member); (4) hanging-moss rows (1-8 data, Content);
+(5) the backdrop's waterfall reads as thin verticals (Content, art).
 ## Done-items
 - **1 (1c) ffa353e3:** groundRun counts no chase section as a wall; pipeline.ts settleLaid re-runs the kit's settle after the chase lay (all
   three paths); a stone no piece keeps on standing ground is drawn as its ground (cut ''), never moved, the roll never refused. Planted red
@@ -25,19 +43,11 @@
   rounded), the tip the bark tapering, mist band under the bough line (one drawImage), no pit paint and no soil on a bough stage, thin plain
   steps bough too. SHOWN FIRST 11:22 (first set); the lead's A + (f)-(j) done; third set 11:44.
 - 5 drawcheck: see below. 6: NOT done (step 2 above).
-## Polish check (frames: reference/qa-reports/ENG-LOOK2/stills/{first,second,third}/, clips/)
-third/b7-...-x5400 both ways: a step between boughs, higher end rounded over the lower, no chevron, knots, swelling underside. x13900: the
-dip, mist under, stair as bough stubs (ROUGH 1). x34200: tip tapers in the same bark to a rounded end at the lip; far branch starts living.
-clips/1-8-L1-stretch1-normal-{sideways,upright}.mp4 (frames sheet beside): the bough continuous through the run, no seams seen.
-ROUGH, named: (1) the dip's climb-out stair reads as a stack of stubs (pit-with-stair geometry on a branch level); (2) a baked bank beside a
-stretch keeps a joined end after the stretch falls (no re-bake per fall, for frame cost); (3) cracked sections only quiver (no crack art);
-(4) hanging moss under the bough (condition c) needs dressing rows in 1-8's data; (5) the backdrop's waterfall lines read as thin verticals.
-## Pushback
-- The lead's (1c) "or" was both: a cut bank still counted as a wall leaves the rock's art over the hole once it falls; the settle after the
-  lay alone keeps it drawn into falling earth. No piece fits the stair rock's standing ground, so it draws as its ground (named above).
-## Suggestions (ready packets)
-- BOUGH-FALL: re-bake only the square holding a bank end when a neighbouring section falls (end kinds in the chunk key per square).
-- BOUGH-CRACK: the crack line on a cracking bough section (the sheet's chaseCrack lines erased/painted in the bough's bark).
+## Polish check (frames: stills/{first,second,third}/, clips/) / Pushback / Suggestions
+third/x5400: step, higher end rounded over the lower, no chevron, knots, swell. x13900: mist under; stair = (m). x34200: tip tapers in the
+same bark; far branch living (but see (k)). Clips: the bough continuous through the run. Pushback: the lead's (1c) "or" was both (a cut bank
+still counted as a wall keeps the rock's art over the hole once it falls). Suggestions: BOUGH-FALL (re-bake only the square with a bank end
+when its neighbour falls, end kinds in that square's key); BOUGH-CRACK (crack lines in the bough's bark on a cracking section).
 ## Unresolved
 Step 6 entirely (data, relist, bots, lock, suite); the full suite was NOT run on this head; drawcheck 1-98 and x 24036 not run.
 ## Method used / Lessons applied / Method update
