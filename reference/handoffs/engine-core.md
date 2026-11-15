@@ -8,9 +8,37 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-W2b (11-15, t-eng-w2b): section 0zd (the river as a gen2 section, the one carry rule, petals on logs). Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zd. The river as a gen2 section, the one carry rule, petals on logs (ENG-W2b, t-eng-w2b, 11-15)
+- **Place `river`** (types.ts PlaceRule, the lead's sign-off 11:14 AM ET): `{ kind: 'river'; after; row }`. The far bank is `riverWidth(row)`
+  past `after`, LEVEL (a stepped far bank is a later row field, never a hack in a brick). Rows come from `WorldManifest.rivers` through
+  `LayLocalOptions.rivers` (layLocal never sees the manifest: pass `rivers: M.rivers` at every layLocal call). A row the world lacks, a
+  mirrored section, a river in a leg laid LEFT, and a far bank right of nothing all throw by name (left legs: ENGINE-WORTHY, ready by 2-7).
+- **The lay** (layStage, where the ropes hang, BEFORE checkAndRepair): `layRiver(row, near end, near top, () => pid++)`; logs go into
+  `platforms` (type 'drift'), the zone into `Laid.rivers`, the stage takes `rivers` only when there are any (the lock of every other stage
+  stays byte-identical: 102/102 unchanged at e45f857d). NOTHING is laid under a river gap (`LocalGap.river`: no pit, bough or stair; the
+  zone takes the fall). Both stage shifts move the zone (x0/x1, surfaceY, safe.backX/backY) AND each log's DriftInfo (x0/x1, baseY): a
+  platform shift alone leaves the logs drifting in the old window.
+- **Judged:** checkStage adds `riverFaults(st)` as `river: ...` errors. dropsOf reads a fall inside a RiverZone first (deep: life, water-art;
+  safe: putback to take-off, water-art) and never a 'drift' platform as a floor. The crossing's ask is `move: 'ride'`; judged11 skips it.
+- **w2Finish** keeps gen2's log rivers (skips a fall a river covers; reeds at a log river's banks too; idempotent).
+- **Verdicts (ENGINE-WORTHY 1, the lead's ruling 11-14):** floorlessGaps skips a gap laid AS water (fall kind 'water') or inside a river;
+  drop.unwarned wants Dot's line at the FIRST water-art lethal drop only and no sign; a dark drop keeps both. 2-1/2-2 are now `judged`.
+- **The one carry rule** (the lead's ruling 11:36 AM ET): engine.ts notes the platform under him before the carriers move; `carryVx` is its
+  move this step; groundJump adds `carryVx * RIDE.keep.x`. Any carrier (drift, sway, ride piece; a lift has no sideways), any rider. A coyote
+  jump (already off the log) keeps nothing. ride.ts jumpOff is still uncalled by the engine (the engine's rule is the groundJump line).
+- **Petals on logs:** `RiverRow.petals` (n first logs, one each), `Collectible.rides {id, dx, dy}`; ridePickups.ts: the engine sets each
+  rider after every carrier moves (`stepRiders`), refuses the pickup and skips the draw while its log is out of its window (`rideHidden`).
+  fixPickups never re-seats a rider. The fill lays them after the petal arcs (`Laid.riverPetals`).
+- **The petal brief:** `GraphBrief.petals: 'low' | 'few' | 'normal'`; 'few' holds everything 'low' does (no arcs) until the fill honours
+  its count on ENG-PETAL's petalPass (the lead's ruling Q1 A). 2-1's brief says 'few'.
+- **The bot:** firsttimer.ts `SKILLS.ride` (a toy switch), `hopLandsOn` (flown hop onto a float where it will be), `floatAt`; lifts
+  ('moving') keep the old near rule. A river flowing BACK at him is still weak (child Easy 4 lives): the design's 'against the flow' skill.
+- Traps: `RIDE.keep` is `as const` but mutable at runtime (carryRule.test sets and restores it). river.test's honest red ("2-1: 0 log
+  rivers") turns green only when w2Arc21 lays its rivers by place `river`.
 
 ## 0zc. World 2 on gen2 (ENG-W2, t-eng-w2, 11-14): the kit, the rivers by world data, the river's one lay
 - **World 2's kit is src/game/gen2/worlds/w2.ts** (`w2World`, stage-table kit 'w2'): art from the World 2 inventory (W2_ART, held in the
