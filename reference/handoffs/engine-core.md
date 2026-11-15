@@ -33,8 +33,12 @@ proven plan; Play is never blocked).
 - **Traps**: `seedlist --check` prints 20 lines at most: a first-run drift hid behind 20 replay lines. A planted-fault script that edits
   source must run in its own worktree while bots or lists run. The walked-span model leaves almost no span on 220-300 px hopped banks:
   density on a hop-heavy stage comes from arcs, not more sockets.
-- **Open**: the liana let-go + the double in the arrival (walkedSpan.ts lianaTouchdown; ENG-PETAL REPORT item 2) is NOT modelled; the
-  bots decide whether 1-6's arcs are collected (REPORT: reference/qa-reports/INT-10/REPORT.md).
+- **Arc petals are a bonus** (Collectible.arc; goals.ts goalCounts leaves them out, the lead's ruling 11:49 AM): counted, the child tier
+  sealed 40/40 Normal doors (it flies under the apex). castBots 1-6 on it: 0 sealed, child N 38/40 (s23 risers rescue from the t-eng-dr
+  merge, s34 gorge stair skill).
+- **Open (INT-10b, REPORT's EXACT NEXT STEP)**: gen2Pits.test:61 red on every 1-6 layout (joined soft-pit floors: the later stair flush on
+  the earlier floor's end; root: lay joined floors as one piece); the whole suite UNRUN on this head (stopped by the lead); castBots 1-4
+  UNRUN; 8-3's fills not re-pinned; the liana let-go + double arrival (walkedSpan.ts lianaTouchdown) NOT modelled.
 
 ## 0zf. METER-1 (t-meter-1, 11-14): the meter reads each ask from the game's own numbers (R-165.261)
 - **tools/difficulty/score.ts now has a term for each ask 1-4, 1-6, 1-7 and 1-8 make** (DIFFICULTY.md §1's new rows): a liana release is
