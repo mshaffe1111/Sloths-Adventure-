@@ -17,7 +17,7 @@ the banned words (playerText.test.ts:35; whatsNew.test.ts:28 is What's New only)
 | 4 | `fork` | Dot, teach, 800+ px before beat 9 (the still fork, the twist) | The mossy fork won't break. Stop and keep still! | 9 |
 | 5 | `mark` | Dot, at her mark on the cannonball tree (beat 13, exit) | Her mark! And those coils ahead... the boa's branches. | 9 |
 | 6 | `way.1-8` | Pokey, the halfway wayside (rewritten; at a living fork, never mid-stretch) | Dot keeps flying to the end and back. Show-off. | 9 |
-| 7 | MISSION_18 | the stage card (stagePlan.ts:51 on main, replaces "Race the long branch to the shrine.") | Race the long branch before it gives way, and gather her petals. | 12 |
+| 7 | MISSION_18 | the stage card (stagePlan.ts:52 on main, replaces "Race the long branch to the shrine.") | Race the long branch before it gives way, and gather her petals. | 12 |
 | 8 | journal `1-8` | pokeyJournal.ts:56: KEEP as is | The branch came apart behind me, so I ran. Meeca always said I could. I'd never checked. | 17 |
 
 No `sealed` line: see "The locked exit" below.
