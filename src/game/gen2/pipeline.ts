@@ -22,7 +22,7 @@ import { FLAG_H } from '../stageArt.ts';
 import { STAGE_ART_FRAMES } from '../stageArtData.ts';
 import { chainLines, doubleAllowed, gripsOf, heldLandings, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
-import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
+import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
 import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
@@ -43,7 +43,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
-import { layPads, padFaults, padRowWidth } from './rideLay.ts';
+import { layPads, padFaults, padRowWidth, PAD_LAY } from './rideLay.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
@@ -1420,8 +1420,18 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(pl.after);
       x = a.x + a.w + padRowWidth(row);
       y = a.y;
+      // (a SPUR (FIX-22): this far bank stands level with the rope's ledge over the near bank, out of a double's reach from the dead-end
+      // stone, so the stone is a dead end at a glance and the way on is the rope from the near bank's ledge; its gap is the pond's)
+      if (!!row.spur !== !!pl.rope) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays pad row "${pl.row}" ${row.spur ? 'a spur with no rope (its way on from the near bank)' : `with a rope, and the row is no spur`}`);
+      if (pl.rope) {
+        const r = ref(pl.rope);
+        if (Math.abs(r.x + r.w - (a.x + a.w)) > 1) throw new Error(`gen2 section ${tpl.id}: ${pc.key}'s rope ledge ${pl.rope} ends at ${r.x + r.w}, the near bank ${pl.after} at ${a.x + a.w}: the rope crosses the pond, no more`);
+        y = r.y;
+        const over = a.y + PAD_LAY.drop - y;
+        if (over < APEX['double-hold'].px + SPARE.px) throw new Error(`gen2 section ${tpl.id}: ${pc.key} stands ${over} px over its spur's stone, inside a double's reach (${APEX['double-hold'].px} + ${SPARE.px}): the stone is no dead end`);
+      }
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
-      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
+      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: pl.rope ? a.y : y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'swing' && ref(pl.after).hang?.kind === 'liana') {
       // a CHAIN (ENG-S5, 1-6 beat 4 "The chain"): a liana caught off the liana `after`, no perch or pit between (the gap under the whole
       // chain is its last perch's, `land`). Its anchor `top` over the ledge the chain left, its swing rolled as any liana's; its anchor where
@@ -1586,7 +1596,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);

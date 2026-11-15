@@ -225,6 +225,11 @@ export interface PadRow {
   petals?: readonly number[];
   /** Easy stretches every count and breath this much (2-2.md: x1.5); never below 1 */
   easyStretch?: number;
+  /** a SPUR (FIX-22; 2-2's there-and-back): the row ends in a dead-end stone (its last piece must be 'stone'), the far bank stands over it out
+   *  of reach, and the way on is from the near bank (place `pads` with its `rope`): he comes back over the pads he sank. Its zone names the
+   *  stone (RiverZone.spur), which the route visits out and back (route.ts). Its stone stands against the far bank's foot (no water past
+   *  it; its last gap is not used) */
+  spur?: true;
 }
 
 export const PAD_LAY = {
@@ -263,7 +268,9 @@ export const PAD_FAIR = {
   minW: 124,
 } as const;
 
-const gapAt = (row: PadRow, i: number): number => (typeof row.gap === 'number' ? row.gap : row.gap[i]);
+/** the water before piece i (i = pads.length: before the far bank). A spur's stone stands against the far bank's foot: no water past it,
+ *  so its dead end reads at a glance and no step off its far edge is a swim (FIX-22) */
+const gapAt = (row: PadRow, i: number): number => (row.spur && i === row.pads.length ? 0 : typeof row.gap === 'number' ? row.gap : row.gap[i]);
 const pieceW = (k: PadSizeId | 'stone' | 'crown'): number => (k === 'stone' ? PAD_LAY.stoneW : k === 'crown' ? PAD_LAY.crownW : PAD_SIZES[k].w);
 /** the water's width, bank to bank */
 export const padRowWidth = (row: PadRow): number => row.pads.reduce((s, k, i) => s + gapAt(row, i) + pieceW(k), 0) + gapAt(row, row.pads.length);
@@ -306,7 +313,9 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
     x += pieceW(k);
   });
   const x1 = x + gapAt(row, row.pads.length);
-  const zone: RiverZone = { x0, x1, surfaceY: bankY + surfaceBelowBank, dir: 1, speed: 0, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}) };
+  if (row.spur && row.pads[row.pads.length - 1] !== 'stone') throw new Error(`pad row ${id}: a spur row ends in its dead-end stone, not a ${row.pads[row.pads.length - 1]}`);
+  const end = pads[pads.length - 1];
+  const zone: RiverZone = { x0, x1, surfaceY: bankY + surfaceBelowBank, dir: 1, speed: 0, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(row.spur ? { spur: { x: Math.round(end.x + end.width / 2), y: end.y } } : {}) };
   const petals = (row.petals ?? []).map((i) => {
     const q = pads[i];
     if (!q) throw new Error(`pad row ${id}: a petal on piece ${i}, past its ${pads.length}`);
@@ -356,7 +365,8 @@ export function padFaults(st: { platforms: readonly Platform[]; rivers?: readonl
     const row = st.platforms.filter((p) => inside(p) && !p.broken && (p.pad || p.type === 'solid') && p.y > r.surfaceY - 80 && p.y < r.surfaceY + 10).sort((a, b) => a.x - b.x);
     if (!row.some((p) => p.pad)) continue;
     const at = `pad pond at x=${Math.round(r.x0)}`;
-    const edges = [r.x0, ...row.flatMap((p) => [p.x, p.x + p.width]), r.x1];
+    // (a spur's stone stands against the far bank: its far edge is the pond's end, no water to judge past it)
+    const edges = [r.x0, ...row.flatMap((p) => [p.x, p.x + p.width]), ...(r.spur ? [] : [r.x1])];
     for (let i = 0; i + 1 < edges.length; i += 2) {
       const gap = edges[i + 1] - edges[i];
       if (gap > PAD_FAIR.reach) out.push(`${at}: ${Math.round(gap)} px of water at x=${Math.round(edges[i])}, past a hop (${PAD_FAIR.reach})`);

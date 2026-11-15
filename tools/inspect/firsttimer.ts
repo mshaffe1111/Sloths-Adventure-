@@ -79,9 +79,11 @@ export const CLOCK_SKILL = { read: true };
 /**
  * The bot's pad skills (ENG-22; 2-2.md NEW 5; level.md rule 21, toys first: tools/inspect/padRide.test.ts plants each off -> RED). Read off
  * what a person sees of a pad (pieces/padPiece.ts padShows: down, or its shiver) and of a beat row's breath (the stage clock). Always on
- * outside a test.
+ * outside a test. OUT-AND-BACK (FIX-22): a spur pond's dead-end stone (gen2/rideLay.ts PadRow.spur) is on his way, out for its flower and
+ * back to the near bank before the way on (route.ts findRoute `spurs`); on the stone WAIT-FOR-THE-RISE holds him till the pads he sank
+ * are up (padRide.test.ts 'the spur').
  */
-export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true };
+export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true, outBack: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -355,13 +357,24 @@ export interface Pt { x: number; y: number }
  * Progress along the route: the route's points every ~24 px, and which one he is nearest (looked for near the last one, so a route
  * that doubles back under itself does not jump ahead). `hi` is the furthest since he last came back to life.
  */
+/** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
+const PIN_AT = 50;
 export class Progress {
   cur = 0;
   hi = 0;
   best = 0;
   /** the way back he can be followed no further than (set when he is put past a puzzle room; a respawn or rescue clears it) */
   floor = 0;
+  /** points he must stand at before the way on past them counts (a spur's dead-end stone, OUT-AND-BACK, FIX-22): the route goes out
+   *  and back over the same ground, so without them the nearest point ahead jumped to the way back before he went out. Indices into
+   *  pts, in order; `pin` is the next one not reached */
+  pins: number[] = [];
+  private pin = 0;
   constructor(readonly pts: Pt[]) {}
+  /** the furthest point he may be followed to: up to the next pin he has not stood at */
+  private cap(i: number): number {
+    return this.pin < this.pins.length ? Math.min(i, this.pins[this.pin]) : i;
+  }
   private d(i: number, p: Pt) {
     const q = this.pts[i];
     return Math.abs(q.x - p.x) + Math.abs(q.y - p.y) * 0.7;
@@ -370,7 +383,7 @@ export class Progress {
   step(p: Pt): boolean {
     if (!this.pts.length) return false;
     let bi = this.cur, bd = this.d(this.cur, p);
-    const lo = Math.max(this.floor, this.cur - 25), hi = Math.min(this.pts.length - 1, this.cur + 40);
+    const lo = Math.max(this.floor, this.cur - 25), hi = this.cap(Math.min(this.pts.length - 1, this.cur + 40));
     for (let i = lo; i <= hi; i++) {
       const d = this.d(i, p);
       if (d < bd - 1e-6 || (Math.abs(d - bd) < 1e-6 && i > bi)) {
@@ -379,6 +392,8 @@ export class Progress {
       }
     }
     if (bd < 160) this.cur = bi;
+    // (a pin is reached when he stands at it: on its stone, within PIN_AT of its middle, whichever route point is nearest)
+    if (this.pin < this.pins.length && this.d(this.pins[this.pin], p) < PIN_AT) { this.cur = this.pins[this.pin]; this.pin++; }
     const more = this.cur > this.hi;
     if (more) this.hi = this.cur;
     if (this.cur > this.best) this.best = this.cur;
@@ -392,7 +407,7 @@ export class Progress {
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
     // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => !level || this.pts[i].y >= p.y - 80;
+    const ok = (i: number) => this.cap(i) === i && (!level || this.pts[i].y >= p.y - 80);
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
@@ -411,6 +426,8 @@ export class Progress {
     if (!this.pts.length) return null;
     for (let i = this.cur; i < this.pts.length; i++) {
       const q = this.pts[i];
+      // (never past a pin he has not stood at: he goes to it first)
+      if (this.pin < this.pins.length && i >= this.pins[this.pin]) return this.pts[this.pins[this.pin]];
       if (Math.hypot(q.x - p.x, q.y - p.y) > far) return q;
     }
     return this.pts[this.pts.length - 1];
@@ -661,6 +678,8 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
+  spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
   handed?: number;
   perMin: { hits: number; lives: number };
@@ -932,6 +951,8 @@ export class FirstTimerRun {
   readonly harms: Harm[] = [];
   /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
   readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
+  /** the spur ponds (by their near end, RiverZone.x0) whose dead-end stone he has stood on */
+  readonly spursMet = new Set<number>();
   /** handed to a bank by a log (FTRun.handed): counted where the frame after a log is a bank and he never left the ground */
   handed = 0;
   private wasOnLog = false;
@@ -1195,7 +1216,7 @@ export class FirstTimerRun {
     const st = this.sim.stage as Stage;
     this.direct = Math.hypot((st.exitTotemX || this.sim.p.x) - this.sim.p.x, (st.exitTotemY ?? this.sim.p.y) - this.sim.p.y);
     if (!pts) {
-      let route = findRoute(st, []);
+      let route = findRoute(st, [], { spurs: PAD_SKILL.outBack });
       // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
       // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
@@ -1203,7 +1224,7 @@ export class FirstTimerRun {
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
       const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
-      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
+      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
@@ -1215,6 +1236,15 @@ export class FirstTimerRun {
       if (route.traced !== 'failed' && this.direct > 0) this.routeRatio = +(route.segs.reduce((a, g) => a + Math.hypot(g.x1 - g.x0, g.y1 - g.y0), 0) / this.direct).toFixed(2);
     }
     this.prog = new Progress(pts);
+    // (each spur's dead-end stone on his way is a pin: he stands at it before the way back counts, OUT-AND-BACK)
+    if (PAD_SKILL.outBack) {
+      for (const r of st.rivers ?? []) {
+        if (!r.spur) continue;
+        const i = pts.findIndex((q) => Math.abs(q.x - r.spur!.x) < 30 && Math.abs(q.y - r.spur!.y) < 14);
+        if (i >= 0) this.prog.pins.push(i);
+      }
+      this.prog.pins.sort((a, b) => a - b);
+    }
     this.prog.relocate(this.sim.p);
     this.lastX = this.sim.p.x;
     this.lastY = this.sim.p.y;
@@ -1725,6 +1755,8 @@ export class FirstTimerRun {
   /** what he means to do this frame (before the thumb's own fumbles) */
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
+    // (a spur's dead-end stone stood on: counted, FTRun.spurs)
+    if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
     if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
@@ -3224,6 +3256,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     harms,
     perMin: { hits: +(harms.filter((h) => h.kind === 'hit').length / mins).toFixed(2), lives: +(harms.filter((h) => h.kind === 'life').length / mins).toFixed(2) },
     softFalls: run.softFalls.length,
+    spurs: run.spursMet.size,
     handed: run.handed,
     gameOvers: run.gameOvers,
     firstHarm: fh,

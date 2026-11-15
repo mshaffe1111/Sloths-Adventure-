@@ -8,6 +8,8 @@
  *           shivering; he waits until it is up and still
  *   breath  two small beat pads in a row, no stone (470 px: 2.0 s of its 2.4 s up at padFaults pace) (2-2.md's breath: up 1.8 s, shiver 0.6 s, under 0.6 s): CROSS-ON-THE-BREATH, he starts
  *           only when the breath left covers the whole run
+ *   spur    two small weight pads out to a dead-end stone, the way on the vine up from the near bank and the rope over (FIX-22): OUT-AND-
+ *           BACK, he goes out to the stone (its flower), waits there for the pads he sank and comes back before he climbs
  * Each skill is planted: switched off (firsttimer.ts PAD_SKILL), its toy goes red where the same run crossed with it on (the on and off numbers
  * over four variants are pasted in BUILD-22's REPORT).
  */
@@ -22,7 +24,7 @@ import type { Setting, Tier } from './tierBots.ts';
 const RUNS: Array<[Tier, Setting]> = [['middle', 'normal'], ['middle', 'easy'], ['child', 'normal'], ['child', 'easy']];
 /** bot runs a tier for each plant (variants 1..N: his own presses and timing, the fixture's one roll) */
 const PLANT_VARIANTS = 4;
-const SKILL_OF: Record<ToyPad, keyof typeof PAD_SKILL> = { keep: 'keepHopping', rise: 'waitRise', breath: 'breath' };
+const SKILL_OF: Record<ToyPad, keyof typeof PAD_SKILL> = { keep: 'keepHopping', rise: 'waitRise', breath: 'breath', spur: 'outBack' };
 
 for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
   const seed = fixtureSeed(row);

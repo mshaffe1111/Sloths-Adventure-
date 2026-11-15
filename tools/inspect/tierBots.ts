@@ -39,6 +39,8 @@ export interface TierRun {
   secondPressMs: number[];
   /** the pieces he entered, in order, and in each the lives and put-backs (soft falls) it cost him */
   pieces: Array<{ id: string; lives: number; putbacks: number; seconds: number }>;
+  /** the spur stones he stood on (FTRun.spurs: OUT-AND-BACK) */
+  spurs: number;
   stuck: Array<{ x: number; t: number; piece: string | null; what: string; rescued: boolean }>;
 }
 
@@ -88,7 +90,7 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   return {
     tier, setting, stage, variant, end: r.end, finishSeconds: r.end === 'shrine' ? r.time : null,
     lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, handed: r.handed ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
-    pieces: tally, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
+    pieces: tally, spurs: r.spurs ?? 0, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
   };
 }
 

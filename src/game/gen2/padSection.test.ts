@@ -66,6 +66,62 @@ test("place 'pads' fails by name: a row the world lacks, a world with no pad tab
   assert.throws(() => layLocal(pond('hop'), budgetOf(k), rngFor(1), true, { pads: k.manifest.pads }), /mirrored section/);
 });
 
+// ───────────────────────── a SPUR (FIX-22): the far end a dead-end stone, the way on from the near bank ─────────────────────────
+const SPUR_ROWS: WorldManifest['pads'] = { ...W2_PADS, spur: { by: 'weight', pads: ['small', 'small', 'stone'], gap: 70, spur: true, safe: true } };
+const spurPond = (up: number, o: { rope?: string | null; ledgeAt?: number; row?: string } = {}): SectionTemplate => ({
+  id: 'toy-spur', name: 'a spur', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [420, 420], place: { kind: 'start' }, main: true },
+    { key: 'vine', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'near', at: [270 / 420, 270 / 420], h: [up, up] } },
+    { key: 'ledge', shape: 'branch', w: [200, 200], place: { kind: 'over', on: 'near', at: [o.ledgeAt ?? 220 / 420, o.ledgeAt ?? 220 / 420], dy: [-up, -up] }, main: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'pads', after: 'near', row: o.row ?? 'spur', ...(o.rope === null ? {} : { rope: o.rope ?? 'ledge' }) }, main: true, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: -up, sockets: [], mirrorable: false,
+});
+for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as const) {
+  for (const s of ['normal', 'easy'] as const) {
+    test(`${name} ground, ${s}: a spur pond lays its far bank level with the rope's ledge, past a double over the dead-end stone, the stone against its foot; the rope crosses the pond`, () => {
+      const k = kitOn(ground, [], SPUR_ROWS);
+      const L = layLocal(spurPond(190), budgetOf(k, s), rngFor(3, 1), false, { pads: k.manifest.pads });
+      const a = L.pieces.find((p) => p.key === 'near')!, h = L.pieces.find((p) => p.key === 'ledge')!, b = L.pieces.find((p) => p.key === 'far')!;
+      assert.equal(b.x - (a.x + a.w), padRowWidth(SPUR_ROWS.spur), 'the water is the row\'s width, no water past the stone');
+      assert.equal(padRowWidth(SPUR_ROWS.spur), 70 + 130 + 70 + 130 + 70 + PAD_LAY.stoneW, 'a spur has no gap past its stone');
+      assert.equal(b.y, h.y, 'the far bank is level with the rope\'s ledge');
+      assert.ok(a.y + PAD_LAY.drop - b.y > 189, 'out of a double\'s reach from the stone');
+      assert.equal(b.ropeFrom, 'ledge', 'the rope hangs from the ledge to the far bank');
+      assert.equal(L.asks!.find((q) => q.key === 'far')!.yLand, a.y, 'the pond is asked as a ride at its own level');
+    });
+  }
+}
+test("a spur fails by name: no rope, a rope on a row that is no spur, a ledge that does not end where the near bank does, a far bank inside a double's reach", () => {
+  const k = kitOn(W2_GROUND, [], SPUR_ROWS);
+  const lay = (t: SectionTemplate) => layLocal(t, budgetOf(k), rngFor(1), false, { pads: k.manifest.pads });
+  assert.throws(() => lay(spurPond(190, { rope: null })), /a spur with no rope/);
+  assert.throws(() => lay(spurPond(190, { row: 'hop' })), /the row is no spur/);
+  assert.throws(() => lay(spurPond(190, { ledgeAt: 0.3 })), /the rope crosses the pond, no more/);
+  assert.throws(() => lay(spurPond(140)), /inside a double's reach/);
+});
+test('a spur stage: the stone against the far bank\'s foot is the pond\'s end, named on its zone; padFaults judges no water past it; the rope is out of reach from every pad and the stone', () => {
+  const k0 = kitOn(W2_GROUND, [spurPond(190)], SPUR_ROWS);
+  const k: WorldKit = { ...k0, manifest: { ...k0.manifest, moves: [...k0.manifest.moves, 'climb'] } };
+  let st: Gen2Stage | null = null;
+  for (let seed = 1; seed <= 40 && !st; seed++) {
+    const t = buildGen2Stage({ config: toyCfg('5-3', 'sprint'), kit: k, seed, difficulty: 'normal' });
+    if (t.rivers?.some((r) => r.spur)) st = t;
+  }
+  assert.ok(st, 'a roll in 1-40 lays the spur');
+  const z = st!.rivers!.find((r) => r.spur)!;
+  const stone = st!.platforms.find((p) => !p.pad && p.style === 'moss_stone' && p.x + p.width === z.x1)!;
+  assert.ok(stone, 'the last piece is a stone ending where the pond ends');
+  assert.deepEqual(z.spur, { x: Math.round(stone.x + stone.width / 2), y: stone.y });
+  const wall = st!.platforms.find((p) => p.type === 'solid' && Math.abs(p.x - z.x1) <= 1 && p.y < stone.y)!;
+  assert.ok(wall && stone.y - wall.y > 189, 'the far bank stands against the stone, past a double');
+  assert.deepEqual(padFaults(st!), []);
+  const rope = (st!.ropes ?? []).find((r) => r.x0 < z.x0 && r.x1 > z.x1)!;
+  assert.ok(rope, 'a rope spans the pond');
+  for (const p of st!.platforms.filter((q) => q.x >= z.x0 && q.x < z.x1)) assert.ok(p.y - rope.y > 189 + 48, `the rope is out of reach from the floor at x ${p.x}`);
+});
+
 // ───────────────────────── the stage: pads, stones and clocks laid, judged ─────────────────────────
 /** a toy-world stage with one pond of `row`: the first seed in 1-40 whose roll lays it */
 function pondStage(ground: { y: number; bankH: number }, row: string, s: Difficulty = 'normal', pads: WorldManifest['pads'] = W2_PADS): Gen2Stage {

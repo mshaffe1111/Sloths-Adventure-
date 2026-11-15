@@ -41,6 +41,9 @@ export interface RiverZone {
    * `back` is where he is set down.
    */
   safe?: { backX: number; backY: number };
+  /** a pond of sinking pads that is a SPUR (gen2/rideLay.ts PadRow.spur): its far end is a dead-end stone, standing here (its top's
+   *  middle); the way on is from the near bank, so the route goes out to it and back (route.ts) */
+  spur?: { x: number; y: number };
   /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
   open?: boolean;
   /**
