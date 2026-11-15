@@ -279,17 +279,18 @@ export const DRESS_18 = {
  * never a stub) to a crown with its nut cluster. One stands at every nut's drop with that cluster over the drop, so the nut still falls
  * from a crown in view; they take turns in this order, and a palm already standing within PALM_APART_18 of a drop is skipped, so no crown
  * shows twice on a screen. Three near palms and two further back (hazed into the mist in the picture, drawn behind the near ones), so not
- * every crown is in front; sizes differ. `nut`: the cluster's middle as fractions of the picture (tools/art/hfpalm/nutpt.py, palm-a read
- * off its check sheet: the dry frond pulled the finder); `up`: how far over the ground under the drop the cluster hangs (px; sideways the
- * nut starts about this high, rollingPiece.ts dropY0 under the HUD band, so the cluster stays in view both ways); `dx`, `y`: the row's
+ * every crown is in front; sizes differ. `nut`: the cluster's middle as fractions of the picture (tools/art/hfpalm/nutpt.py; its check sheet
+ * confirms each by eye); `up`: how far over the ground under the drop the cluster hangs (px; sideways the
+ * nut starts about this high, rollingPiece.ts dropY0 under the HUD band, so the cluster hangs just under the HUD's art sideways, about 300 px of world over the ground in view there, and the
+ * nut falls through the crown both ways; the nuts in each picture draw about the size of the falling nut, 30-40 px); `dx`, `y`: the row's
  * place from those and the piece's drawn size (inventory: pokey_scale x 89.1 tall), checked against the inventory by w1Arc18.test.ts.
  */
 export const PALMS_18 = [
-  { inv: 'hf18/hf18-palm-a', nut: [0.49, 0.31], up: 300, dx: 6, y: 418, back: false },
-  { inv: 'hf18/hf18-palm-back-a', nut: [0.584, 0.295], up: 250, dx: -37, y: 328, back: true },
-  { inv: 'hf18/hf18-palm-b', nut: [0.492, 0.26], up: 270, dx: 4, y: 440, back: false },
-  { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.268], up: 290, dx: -22, y: 442, back: false },
-  { inv: 'hf18/hf18-palm-back-b', nut: [0.491, 0.284], up: 240, dx: 4, y: 304, back: true },
+  { inv: 'hf18/hf18-palm-a', nut: [0.509, 0.289], up: 180, dx: -3, y: 261, back: false },
+  { inv: 'hf18/hf18-palm-back-a', nut: [0.483, 0.31], up: 170, dx: 7, y: 313, back: true },
+  { inv: 'hf18/hf18-palm-b', nut: [0.492, 0.26], up: 185, dx: 4, y: 451, back: false },
+  { inv: 'hf18/hf18-palm-c', nut: [0.541, 0.267], up: 190, dx: -21, y: 499, back: false },
+  { inv: 'hf18/hf18-palm-back-b', nut: [0.491, 0.284], up: 165, dx: 3, y: 322, back: true },
 ] as const;
 /** no palm stands within this of another of the same picture (px of world): a sideways phone's view (~1,410 px at 1-8's zoom) and a margin */
 export const PALM_APART_18 = 1800;
