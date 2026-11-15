@@ -1768,7 +1768,7 @@ export function pitJoinWall(join: { x: number; y: number; w: number }, lip: numb
  * away: another soft pit's floor within a hop of it (pitFloorJoin), or a bank, which is then deepened past the floor (`deepen`, as a bank
  * beside a pit always is).
  */
-export function pitHoleFill(floor: Platform, side: 1 | -1, platforms: readonly Platform[], floors: ReadonlySet<Platform>, hop: number): { x: number; y: number; w: number; deepen?: Platform } | null {
+export function pitHoleFill(floor: Platform, side: 1 | -1, platforms: readonly Platform[], floors: ReadonlySet<Platform>, hop: number): { x: number; y: number; w: number; deepen?: Platform; floor?: Platform } | null {
   const edge = side > 0 ? floor.x + floor.width : floor.x;
   // (earth, less a pit's own stair: a step stands on its floor, its foot on the floor's top, and is no bank)
   const onFloor = (q: Platform) => [...floors].some((f) => Math.abs(q.y + q.height - f.y) <= 2 && q.x >= f.x - 2 && q.x + q.width <= f.x + f.width + 2);
@@ -1778,10 +1778,66 @@ export function pitHoleFill(floor: Platform, side: 1 | -1, platforms: readonly P
   const next = earth.filter((q) => (side > 0 ? q.x >= edge - 2 : q.x + q.width <= edge + 2))
     .sort((a, b) => (side > 0 ? a.x - b.x : b.x + b.width - (a.x + a.width)))[0];
   if (!next) return null;
-  if (floors.has(next)) return pitFloorJoin(floor, next, platforms, hop);
+  if (floors.has(next)) { const j = pitFloorJoin(floor, next, platforms, hop); return j && { ...j, floor: next }; }
   const x0 = side > 0 ? edge : next.x + next.width, x1 = side > 0 ? next.x : edge;
   if (x1 - x0 < 2 || x1 - x0 > PIT_JOIN.px) return null;
   return { x: x0, y: floor.y, w: x1 - x0, deepen: next };
+}
+
+/**
+ * The soft pits' floors once the stage is laid, each reaching the next earth beside it (R-165.246, ENG-16H: no floor ends at a hole under a
+ * perch, pitHoleFill), as ONE piece (INT-10b 11-15, every stage): a fill laid as its own piece left a floor END inside a continuous floor,
+ * and a pit's stair stood on its own floor flush against that end (1-6's creaky landing and gorge, every Normal roll: the later pit's way
+ * back to the limb, a stone face 0 px over the join's floor, gen2Pits.test's slot under a bank). So no floor end is left inside a run,
+ * and a stair always starts inside its floor:
+ * - a floor reaching a BANK is that floor, lengthened to the bank (which is deepened past it, as a bank beside a pit always is);
+ * - two floors at one height a perch apart (pitFloorJoin) are one floor: the earlier one takes in the join and the later one, which leaves
+ *   the stage (`gone`: the caller takes it out of its section's seam);
+ * - two floors a step apart: the deeper one reaches under the perch to the shallower one's end, and the shallower one, a bank beside it
+ *   now, reaches down to the deeper one's foot (INT-9's rule for every bank beside a floor).
+ * Each join's wall (pitJoinWall, R-165.265) stands where it always stood, at the earlier floor's old end; `walls` carries each with the x
+ * its section is found by (`mid`, the join's middle). `lipAt(x)`: the fall record's lip of the gap ending at x.
+ */
+export function joinPitFloors(platforms: Platform[], pitFloors: readonly Platform[], lipAt: (x: number) => number | undefined, hop: number, bankH: number): { gone: Platform[]; walls: Array<{ x: number; y: number; w: number; h: number; mid: number }> } {
+  const floors = new Set(pitFloors);
+  const gone: Platform[] = [];
+  const walls: Array<{ x: number; y: number; w: number; h: number; mid: number }> = [];
+  for (const first of [...pitFloors].sort((a, b) => a.x - b.x)) {
+    if (!floors.has(first)) continue;
+    let fp = first;
+    for (const side of [1, -1] as const) {
+      // (a floor that takes in the one past it has a new far end: look again from there)
+      for (let again = true; again;) {
+        again = false;
+        const j = pitHoleFill(fp, side, platforms, floors, hop);
+        if (!j) break;
+        if (j.deepen) {
+          if (side > 0) fp.width = R(j.x + j.w - fp.x);
+          else { fp.width = R(fp.x + fp.width - j.x); fp.x = R(j.x); }
+          j.deepen.height = Math.max(j.deepen.height, j.y + bankH - j.deepen.y);
+          break;
+        }
+        const other = j.floor!;
+        const [l, r] = side > 0 ? [fp, other] : [other, fp];
+        const wall = pitJoinWall(j, lipAt(j.x));
+        if (wall) walls.push({ ...wall, mid: j.x + j.w / 2 });
+        if (Math.abs(l.y - r.y) < 1) {
+          l.width = R(r.x + r.width - l.x);
+          floors.delete(r);
+          platforms.splice(platforms.indexOf(r), 1);
+          gone.push(r);
+          fp = l;
+          again = side > 0;
+          continue;
+        }
+        const [deep, shallow] = l.y > r.y ? [l, r] : [r, l];
+        if (deep === l) l.width = R(r.x - l.x);
+        else { r.width = R(r.x + r.width - (l.x + l.width)); r.x = R(l.x + l.width); }
+        shallow.height = Math.max(shallow.height, deep.y + bankH - shallow.y);
+      }
+    }
+  }
+  return { gone, walls };
 }
 
 /**
@@ -2917,26 +2973,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       shiftedDown = down;
     }
   }
-  // (R-165.246, ENG-16H: no soft pit's floor ends at a hole: under a perch beside it, it reaches the next earth, pitHoleFill. Once the
-  // stage is laid, for the earth on either side may come with the next section; before the settle, which reads each stone's ground)
+  // (R-165.246, ENG-16H: no soft pit's floor ends at a hole: under a perch beside it, it reaches the next earth, pitHoleFill, as ONE piece
+  // (INT-10b, joinPitFloors). Once the stage is laid, for the earth on either side may come with the next section; before the settle,
+  // which reads each stone's ground. A floor taken into another leaves its section's seam; each join's wall goes in the join's section)
   {
-    const floors = new Set(pitFloors);
-    const hopAll = riseCap(false, 1, budget) * PIT.hop;
-    for (const fp of [...pitFloors].sort((a, b) => a.x - b.x)) {
-      for (const side of [1, -1] as const) {
-        const j = pitHoleFill(fp, side, platforms, floors, hopAll);
-        if (!j) continue;
-        const fill = mk(j.x, j.y, j.w, 'block', M.ground.bankH, 'moss_stone');
-        floors.add(fill);
-        if (j.deepen) j.deepen.height = Math.max(j.deepen.height, j.y + M.ground.bankH - j.deepen.y);
-        sections.find((q) => j.x + j.w / 2 >= q.x0 && j.x + j.w / 2 <= q.x1)?.seam.push(fill);
-        // (two pits' floors joined: a wall at the earlier floor's end, so a miss in it never walks on to the later pit's way up, R-165.265)
-        if (!j.deepen) {
-          const wall = pitJoinWall(j, gaps.find((g) => Math.abs(g.x1 - j.x) <= 4)?.y);
-          if (wall) sections.find((q) => j.x + j.w / 2 >= q.x0 && j.x + j.w / 2 <= q.x1)?.seam.push(mk(wall.x, wall.y, wall.w, 'block', wall.h + M.ground.bankH, 'moss_stone'));
-        }
-      }
-    }
+    const { gone, walls } = joinPitFloors(platforms, pitFloors, (x) => gaps.find((g) => Math.abs(g.x1 - x) <= 4)?.y, riseCap(false, 1, budget) * PIT.hop, M.ground.bankH);
+    for (const p of gone) for (const q of sections) { const k = q.seam.indexOf(p); if (k >= 0) q.seam.splice(k, 1); }
+    for (const w of walls) sections.find((q) => w.mid >= q.x0 && w.mid <= q.x1)?.seam.push(mk(w.x, w.y, w.w, 'block', w.h + M.ground.bankH, 'moss_stone'));
   }
   // (R-165.226: each piece drawn on its own ground, the world's settle (World 1: a stone kept back from its lip by its painted margin).
   // A moved piece takes what stands on it and the jumps that start or end at its edges with it; the checks below and the verdicts read

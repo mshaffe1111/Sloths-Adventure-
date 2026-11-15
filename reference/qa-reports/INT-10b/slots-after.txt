@@ -1,0 +1,16 @@
+1-1 3 normal THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 3 easy THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 10 normal THROWS gen2 1-1: no section fits node n9 (ketsu)
+1-1 10 easy THROWS gen2 1-1: no section fits node n9 (ketsu)
+== 1-1: 0/20 with a slot, 4 throw, 11 s
+== 1-2: 0/20 with a slot, 0 throw, 3 s
+== 1-3: 0/20 with a slot, 0 throw, 2 s
+== 1-4: 0/20 with a slot, 0 throw, 7 s
+== 1-5: 0/20 with a slot, 0 throw, 4 s
+== 1-6: 0/20 with a slot, 0 throw, 30 s
+== 1-7: 0/20 with a slot, 0 throw, 7 s
+1-8 2 normal THROWS 1-8 finish: still fork 3: its ground breaks at 26539 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 2 easy THROWS 1-8 finish: still fork 3: its ground breaks at 26539 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 9 normal THROWS 1-8 finish: still fork 3: its ground breaks at 26370 (the cover and the post stand on unbroken ground); still fork 3: no
+1-8 9 easy THROWS 1-8 finish: still fork 3: its ground breaks at 26370 (the cover and the post stand on unbroken ground); still fork 3: no
+== 1-8: 0/20 with a slot, 4 throw, 2 s

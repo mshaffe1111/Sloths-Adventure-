@@ -35,8 +35,9 @@ test('1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall,
       for (let i = 1; i < soft.length; i++) {
         const a = soft[i - 1], b = soft[i];
         if (b.x0 - a.x1 > PIT_JOIN.px || b.x0 < a.x1) continue;
-        // (the joined floor: one solid under the lip reaching from the earlier gap's end to the later's start)
-        const join = st.platforms.find((p) => p.type === 'solid' && p.y > a.y + 60 && Math.abs(p.x - a.x1) <= 4 && Math.abs(p.x + p.width - b.x0) <= 4);
+        // (the joined floor: one solid under the lip reaching from the earlier gap's end to the later's start; since INT-10b it is one
+        // piece with a pit's floor (joinPitFloors), so it reaches past both ends)
+        const join = st.platforms.find((p) => p.type === 'solid' && p.y > a.y + 60 && p.x <= a.x1 + 4 && p.x + p.width >= b.x0 - 4);
         if (!join) continue;
         joins++;
         const wall = st.platforms.find((p) => p.type === 'solid' && Math.abs(p.x - a.x1) <= 4 && p.y >= a.y && join.y - p.y > CLIMB && p.y + p.height >= join.y);
