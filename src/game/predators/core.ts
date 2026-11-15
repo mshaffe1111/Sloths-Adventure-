@@ -118,12 +118,16 @@ const inSight = (def: PredatorDef, s: PredatorState, hero: Prey): boolean => {
 export const sees = (def: PredatorDef, s: PredatorState, hero: Prey): boolean =>
   watcherSees({ seesStill: def.sight.seesStill || (def.sight.remembers && s.knows) }, inSight(def, s, hero), hero.still, hero.covered);
 
-/** the box that hurts this frame: only while it acts */
-export function hurt(def: PredatorDef, s: PredatorState): Box | null {
-  if (s.phase !== 'act') return null;
+/** the box its act hurts from where it stands now, whatever its phase (its strike's reach: what a freeze inside it beat, castPlay.ts) */
+export function reachBox(def: PredatorDef, s: PredatorState): Box {
   const a = def.act;
   if (a.aim === 'ahead') return { x: s.facing > 0 ? s.x : s.x - a.reach, y: s.y - a.tall, w: a.reach, h: a.tall };
   return { x: s.x - a.reach / 2, y: s.y - a.tall, w: a.reach, h: a.tall };
+}
+
+/** the box that hurts this frame: only while it acts */
+export function hurt(def: PredatorDef, s: PredatorState): Box | null {
+  return s.phase === 'act' ? reachBox(def, s) : null;
 }
 
 /** a hurt box against his body (feet at hero.y) */
