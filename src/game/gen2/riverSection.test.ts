@@ -96,6 +96,8 @@ for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as
         const under = st.platforms.filter((p) => p.type !== 'drift' && p.x >= r.x0 + 1 && p.x + p.width <= r.x1 - 1);
         assert.deepEqual(under.map((p) => `${p.type}@${p.x},${p.y}`), [], 'nothing is laid in the water');
       }
+      // (no petal hangs in the air over the water: a river is ridden, never jumped, so no jump's petal arc; only a rider sits there)
+      for (const r of st.rivers!) assert.deepEqual(st.collectibles.filter((c) => !c.rides && c.x > r.x0 + 2 && c.x < r.x1 - 2).map((c) => `${c.type}@${c.x},${c.y}`), [], `river at ${r.x0}: a pickup in the air over it`);
       assert.ok(st.rivers!.some((r) => r.safe), 'the safe row splashes him back');
       assert.ok(st.rivers!.some((r) => r.dir === -1), 'the back row flows at him');
       assert.deepEqual(riverFaults(st), []);

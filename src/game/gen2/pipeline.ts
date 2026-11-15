@@ -1570,7 +1570,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string }>;
   /** the reach each jump on the route asks, world px, by section (verdicts.ts judges them on 1-1) */
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
@@ -2545,7 +2545,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
       if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
         const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
@@ -3406,8 +3406,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap)
-    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few') continue;
+    // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap; and none over a river, which is ridden, never jumped: its
+    // petals ride its logs, RiverRow.petals (ENG-W2b: an arc hung three petals in the air over the water, out of every rider's reach)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river) continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
