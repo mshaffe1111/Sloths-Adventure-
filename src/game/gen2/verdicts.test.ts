@@ -219,10 +219,13 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
 
 // (main's 0.9.5 build of these, layout 1, hashed on origin/main@181d2846 before E0's first change: platforms, falls, errors and plan;
 // and the whole gen2 less the two new fields. The second re-pinned by ENG-16I (R-165.246): only gen2.fills moved, the walked-span petal
-// lay of 59a4c0dc; with that one hunk reverted both hashes are main's exactly (reference/qa-reports/ENG-16I/mainpins.txt))
+// lay of 59a4c0dc; with that one hunk reverted both hashes are main's exactly (reference/qa-reports/ENG-16I/mainpins.txt). The second
+// re-pinned again by INT-10 (R-165.246, 11-15): only gen2.fills moved (ENG-PETAL's one walked-path model, 7e9fe4d8 and on: 7-1's fills
+// 80 -> 37 Normal, 77 -> 34 Easy; 5-7's 120 and 117 moved in place); the first hash is main's; built at 7e9fe4d8^ both hashes are the
+// old ones exactly (reference/qa-reports/INT-10/mainpins.txt, mainpins.ts))
 const MAIN: Record<string, [string, string]> = {
-  '5-7 normal': ['8e6918d86d5b8c49', '1e239d6fb7b70ea9'], '5-7 easy': ['c21d7034579fa414', 'd1580da0a8721731'],
-  '7-1 normal': ['f8a654ca25181450', '2defb0797b4a32df'], '7-1 easy': ['ddbb0b767ba92e8b', 'd4c6c92d9a813bcb'],
+  '5-7 normal': ['8e6918d86d5b8c49', 'fa5037e4f56d3183'], '5-7 easy': ['c21d7034579fa414', 'b45f910763e8df3a'],
+  '7-1 normal': ['f8a654ca25181450', '1f95676ce76d11a5'], '7-1 easy': ['ddbb0b767ba92e8b', 'a8d9b183d717a8f3'],
 };
 const h = (x: unknown) => createHash('sha256').update(JSON.stringify(x)).digest('hex').slice(0, 16);
 for (const id of ['5-7', '7-1']) {
