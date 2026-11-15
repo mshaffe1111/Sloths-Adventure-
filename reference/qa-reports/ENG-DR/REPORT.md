@@ -6,7 +6,14 @@ My diff against BUILD-18's head: 11 engine and tool files, no world data. Packet
 `reference/packets/2026-11-14/ENG-DR.md` (origin/ccr-ea739a2f-dfcee4). Opus 5.5 xhigh.
 
 ## EXACT NEXT STEP
-IN PROGRESS (9:14 PM ET): the gates are running on the merged head 80064d3e1; this section is written when they end.
+1. **Lead:** t-eng-dr is BUILD-18's d6f7df7fd plus this work (11 engine and tool files, no world data). Integrate it as BUILD-18's
+   stage piece, or merge it into t-build-18. Your merge check covers the one engine.ts render line: drawcheck before and after are below.
+2. **Before any link: two reds that are on BUILD-18's head already, not from this branch:**
+   - (a) 15 unit reds, all 1-8 or 1-6 facts, listed under Unresolved: the 7 tests of the deleted hand-built 1-8 chase (ENG-LOOK's, per
+     the lead) and 8 more (a raw 1-8 seed's still fork throws, 1-8's preload list lacks foe:eagle and props2, 1-8's stumps past their
+     ground, 1-8's wayside line in the first person, and others), BUILD-18's to route;
+   - (b) drawcheck 1-8 sideways at x 24036, which is ground and scenery paint (groundPaint.ts:197 depthBand, a gradient a frame; :175 shadeSoil; scenery.ts:2082 drawFitted). That's the lead's shared drawing files (PERF §8.3), a packet of their own. This branch adds +0.54 screens at that spot: count it in the fix's target.
+3. Packets S1-S3 below (S1 first: Play's off-list road still trusts a roll whose finish throws).
 
 ## 1. Done-items, with evidence
 
@@ -33,11 +40,12 @@ buildPlayStage(...))`), so the stage would not load on a phone.
 - RED on the base, GREEN on the fix, on the real tool, 1-7 with a throw planted in finish17's Easy on listed seed 4 (scratch worktrees):
   base `seedlist 1-7 --check` -> `PASS (100 seeds...)` (292 s): the hole. Fix -> `FAIL ... 1-7 seed 4: the finish throws (easy):
   PLANTED (ENG-DR): the Easy finish throws on this roll` (and the search re-rolled that seed: "its replay differs from its search") (219 s).
-- Every listed stage re-checked (no seed fails): on c2de36a5 (before the merge): 1-1 162 PASS (244 s), 1-2 100 PASS (84 s), 1-3 100 PASS (38 s), 1-4 100 PASS (221 s), 1-5 150 PASS (142 s), 1-7 100 PASS (211 s). On the merged head (1-8 now listed): 1-8 100 PASS (41 s); the rest running at 9:14 PM ET.
+- Every listed stage re-checked, no seed newly failing. On c2de36a5 (before the merge): 1-1 162, 1-2 100, 1-3 100, 1-4 100, 1-5 150,
+  1-7 100. On the merged head 80064d3e1, 1-8 now listed: all seven PASS (table in section 1b).
 - Probe before the fix (every listed seed through buildPlayStage + playFinish, both settings): 0 throw of 1-1 162, 1-2 100, 1-3 100,
   1-4 100, 1-5 150, 1-7 100.
 
-### (2) Any inventory piece placed as dressing by a stage's data (74f1acb7, 7f94a73d)
+### (2) Any inventory piece placed as dressing by a stage's data (74f1acb7, 7f94a73d, 8b4c0a5ef)
 Packet: "one dressing row type by inventory id (hung by top / standing on ground / behind the play layer), scaled from the inventory's
 own scale field against Pokey's 89.1 px ... any stage, any world".
 - `src/game/art/invDress.ts`:
@@ -55,16 +63,51 @@ own scale field against Pokey's 89.1 px ... any stage, any world".
   `src/game/engine.ts`: ONE call, `drawInvDress(..., 'behind')`, just before renderWorldObjects. **engine.ts's render path is a shared drawing file the
   lead owns (PERFORMANCE-RULES §8.3): this line is for the lead's merge check, with the drawcheck numbers below.**
 - `src/game/protoStage.ts`: `ProtoExtras.invDress`.
-- 1-8's data (BUILD-18's w1Arc18.ts, the two DRESS_18 lines and the push only): ids `hf18/hf18-palm-crown` and
-  `hf18/hf18-cannon-trunk` (the rows said `hf18-palm-crown`, which the gate refuses by name), no `h`, the engine's type re-exported.
-  BUILD-18 was told the data names at 8:5x PM and again when the piece landed.
+- 1-8's data is BUILD-18's (w1Arc18.ts DRESS_18; I take its file WHOLE since the 9:05 PM merge, as it asked). A palm STANDING
+  behind the branch at every nut's drop and a cannonball trunk at every fruit's, by catalog id (`hf18/hf18-palm-crown`,
+  `hf18/hf18-cannon-trunk`), no size. Its first rows (e9dc28bf) said `hf18-palm-crown` (refused by the gate by name) and a 300 px
+  crown the catalog has at 460 px. Its local InvDress matches this type field for field. Told the names at 8:5x and 8:59 PM.
 - Planted (src/game/art/invDress.test.ts):
   - (1) a row with an id the inventory lacks fails by name, and an out-of-scale row fails the scale gate, word for word. So does each other refusal; a made thing passes in World 2.
   - (2) the size is the catalog's for 1-8's two pieces, and their pictures ship.
   - (3) the real World 1 file's out-of-scale piece is refused.
-  - (4) every listed stage as Play builds it (generateStage, layouts 1-2, both settings) passes the gate, and 1-8 lays both pieces: 12 rows judged. The 3 1-8 builds that throw are printed by name, not judged (see Unresolved).
+  - (4) every listed stage as Play builds it (generateStage, layouts 1-2, both settings) passes the gate, and 1-8 lays both pieces: 60
+    rows judged on the merged head, no build throwing. (On e9dc28bf it judged 12 and printed 3 1-8 builds that threw, by name.)
   - (5) the only file that writes rows is 1-8's world file: a new writer must join the sweep.
-- `seedlist <stage> --check` judges every listed seed's rows too (asPlayedBreaches, given its world's inventory).
+  - (6) readyInvDress resolves each piece once: the counter counts pieces, not rows or calls; an unknown id, or a world with no file, resolves nothing and never throws.
+- `seedlist <stage> --check` judges every listed seed's rows too (asPlayedBreaches, given its world's inventory). Planted
+  (tools/engine/seedlist.test.ts test 8): a listed 1-8 seed whose finish lays a row named 'hf18-palm-crown' is refused by name on
+  each setting; red without the dressing branch (no lines).
+
+### 1b. Gates, lock and drawcheck
+**Gates on the merged head 80064d3e1** (frozen worktree; times from the logs). Since then: 8b4c0a5ef adds one tools test (seedlist.test.ts, 8/8 pass on it), and the rest is docs (roadmapcheck and knowncheck PASS on aede40c6c).
+
+| Gate | Result |
+|---|---|
+| tsc | PASS |
+| unit suite (CLAUDE.md glob) | **3,620 tests: 3,603 pass, 15 fail, 2 todo** (2,925 s). ALL 15 FAIL ON BUILD-18'S HEAD d6f7df7fd TOO: I ran each failing file there, with the same test names, and the compared errors are byte-identical. None comes from this branch. List under Unresolved. |
+| `BASE_PATH=/Sloths-Adventure-/ vite build` | PASS (14 s) |
+| chunkcheck | PASS: main index 726,929 B, 3,267,375 spare; the w1 inventory JSON is its own lazy chunk |
+| artcheck | PASS |
+| buildcheck | PASS |
+| kbdcheck | PASS |
+| engine tools' tests (library, seedlist, yield, travelBots) | PASS |
+| tierBots | PASS |
+| drawcheck | **FAIL, pre-existing:** 1-8 land at x 24036, gradients 8.25 (6.88 in the paired run) > 2 and drawImageScreens 11.58 (10.58) > 7.5, ground and scenery paint. The same spot fails on BUILD-18's head. The other 25 scenarios PASS. |
+| clipcheck | PASS (83 known, none new) |
+| knowncheck, generality, roadmapcheck | PASS |
+| seedlist --check, every listed stage | PASS: 1-1 162, 1-2 100, 1-3 100, 1-4 100, 1-5 150, 1-7 100, 1-8 100 |
+| lock (16 layouts x both settings, against BUILD-18's head d6f7df7fd) | **102/102 stages unchanged** |
+
+**drawcheck before/after, same harness:** BUILD-18's head, where the rows exist but nothing draws them, against this head.
+
+| Scenario | drawImageScreens (limit 7.5) | drawImage calls | gradients |
+|---|---|---|---|
+| 1-8 upright | 6.16 → 6.96 | 59.5 → 61.4 | 1.50 → 1.50 |
+| 1-8 sideways | 10.04 → 10.58 (pre-existing breach) | 117.5 → 117.5 | 6.88 → 6.88 (pre-existing breach) |
+| 1-98 | 5.13 → 5.23 upright, 5.54 → 5.54 sideways | 67 → 67, 122 → 122 | no rows, so the ±0.1 is noise |
+
+**Engine piece cost:** one drawImage per piece in view (1-8: about 2 a frame), about 0.5-0.8 of a screen of area while a palm or trunk is in view.
 
 ## 2. Polish check
 Real game, dev build, `tools/engine/runs/stills-at-setting.mjs` (2x, upright 412x915 and sideways 915x412). 1-8 layout 1 is the listed seed 3. Stills are in `reference/qa-reports/ENG-DR/stills/`.
@@ -90,6 +133,16 @@ What the engine piece itself guarantees on every stage:
   frame pays one drawSheet per piece in view (sheetBake.ts already bakes a copy when a picture is drawn shrunk past 1.5x, only under
   the title card). An atlas would mean a packer job for every new piece; the gain is a texture bind when two pieces are in view at once.
   If drawcheck ever shows it matters, the folder table is where an atlas would plug in.
+- **The lead's 9:39 PM condition, "bake the dressing into the ground chunks or one atlas so it adds as close to 0 drawImage-screens as
+  you can": pushed back at 9:42 PM with numbers, and the lead STOPPED it at 9:45 PM.** drawImageScreens is the visible rectangle each
+  drawImage covers (tools/perf/instrument.js:55-66, clipped to the canvas): that is fill, and baking doesn't remove fill.
+  - One atlas covers the same pixels, so the same area.
+  - The ground chunks (protoArt.ts:1241) are 256-px squares painted only where ground reaches. The palm and trunk stand in the air, so
+    baking them in would paint new whole squares there: more area, and at the ground's depth.
+  - The only real cut is to skip the transparent parts of each rectangle. Measured: solid paint is 58% of the crown's and 47% of the
+    trunk's; 64-px row spans keep 79% / 74% for about 15-20 more calls a piece. Expected +0.54 -> about +0.40 at x 24036.
+  - The lead's ruling: not worth it tonight. ENG-LOOK owns bringing 1-8 under every limit with this +0.54 included; the breach is the
+    ground paint the bough look replaces.
 - "drawcheck on 1-8": drawcheck plays layout 1 on the default setting. At my start base (e9dc28bf) 1-8's Normal threw at every layout,
   so drawcheck's own 1-8 scenario was "could not be played" BEFORE my change. On BUILD-18's relisted head it plays (numbers below).
 
@@ -117,12 +170,23 @@ Objective: a stage is still measured when its Normal can't build. drawcheck play
 - Done-items: 1-8 scenarios on both settings; a scenario that can't play still fails the gate.
 
 ## 5. Unresolved (named plainly)
-- **Pre-existing on BUILD-18's head (d6f7df7fd), not from this branch, each run on that head to prove it:**
-  - 7 unit reds in src/game/chasePiece.test.ts (1) and chaseRespawn.test.ts + chaseRespawnReal.test.ts (6). They test the hand-built
-    1-8 chase (proto.chase), which BUILD-18 deleted ("Cannot read properties of undefined (reading 'start')"). BUILD-18's to replace with
-    the laid chase's tests. Told BUILD-18 and the lead.
-  - drawcheck 1-8 sideways: gradients 6.88 (limit 2) and drawImageScreens 10.04 (limit 7.5) at x 24036, ground and scenery paint
-    (groundPaint.ts depthBand and shadeSoil, scenery.ts drawFitted). Not dressing.
+- **15 unit reds, ALL pre-existing on BUILD-18's head d6f7df7fd** (each file run there: the same test names fail; the stageSheets and
+  w1Pits errors compared byte for byte). None comes from this branch. By file:
+  - the 7 tests of the deleted hand-built 1-8 chase (proto.chase): chasePiece.test.ts:137, chaseRespawn.test.ts (A-07, A-07b) and
+    chaseRespawnReal.test.ts (x4). The lead (9:39 PM): ENG-LOOK's.
+  - gen2Pits.test.ts:61: "1-8 seed 2 (normal) does not build: 1-8 finish: still fork 3: its ground breaks at 26539". A RAW (unlisted)
+    seed's finish throws; the list is safe (`seedlist 1-8 --check` 100/100). This is S1's hole on the test side.
+  - movesJournal.test.ts:32: "collapse: 1-8 as built says 'This branch goes on and on'".
+  - rollGuard.test.ts:42: "1-8: every sampled roll is long enough and passes the level check".
+  - skills.test.ts:35: "no stage needs a rope before the skill is guaranteed, and every stage stays beatable".
+  - stageSheets.test.ts:63: 1-8 rolls 1-3 draw foe:eagle and props2 without them in its preload list (a blank wait on a phone).
+  - w1Overhang.test.ts:69: "1-8: every listed layout, both settings: no stone or stump drawn more than 6 px past its ground".
+  - w1Pits.test.ts:58: 1-6 has 5 and 1-8 has 1 unmarked floorless gap on layout 1.
+  - wayside.test.ts:49: "1-8: Pokey's own thought is in the first person: Dot keeps flying to the end and back. Show-off." (the story rule).
+  BUILD-18's session went inactive at 9:49 PM before I could send it the last 8; they are for the lead to route.
+- **drawcheck 1-8 sideways at x 24036, pre-existing on BUILD-18's head:** gradients 6.88-8.25 > 2 and drawImageScreens 10.04 > 7.5,
+  from ground and scenery paint (groundPaint.ts depthBand and shadeSoil, scenery.ts drawFitted). This branch adds +0.54 screens there.
+  ENG-LOOK owns bringing 1-8 under every limit with it included (the lead, 9:45 PM).
 - The rolling nut drawn inside solid earth (Easy L1 x3915 still): rolling piece / 1-8 data; sent to BUILD-18.
 - The listed stage sweep in invDress.test.ts builds layouts 1-2 of each listed stage; `seedlist --check` covers every listed seed. A hand-built (unlisted)
   stage that lays rows must join the sweep: test 5 fails the moment another file writes proto.invDress.
@@ -150,6 +214,8 @@ Objective: a stage is still measured when its Normal can't build. drawcheck play
 - D55: context % in every message.
 - D57: read the queue at every push. I missed it at my first two pushes and caught BUILD-18's 9:03 PM message 2 minutes late, before any conflicting work.
 - D40: merged BUILD-18's head the moment it said its data had moved, instead of patching my copy of its file.
+- A slip of mine: the packet says "no shell wait loops" and I ran one, a 150 s poll for drawcheck's verdict. Every wait after it was a
+  background job's own notification.
 
 **Method update (proposed; the lead decides):**
 1. seed-list.md, "Traps": every list rule judges the roll as Play finishes it, through listRules.ts. That means `listJudge` for the search and
