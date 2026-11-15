@@ -20,7 +20,7 @@
  *     over, no beat);
  *   - a stepping stone in the river: a bank 120-150 px wide standing in the water (the hand-built creek's stones, 124-144 px).
  *
- * THE STAGES' ARCS. 2-1 and 2-2 are rolled here on PLACEHOLDER arcs (ENG-W2 (1): the foundation, not the levels): one bank road with
+ * THE STAGES' ARCS. 2-1 is built as designed (w2Arc21.ts, BUILD-21, its own kit 'w2-21' over this one); 2-2 is rolled here on a PLACEHOLDER arc (ENG-W2 (1): the foundation, not the levels): one bank road with
  * splash-back and deep rivers, its beats in the designed order, so the rows roll and list and the next builder changes data only. The
  * designed levels (reference/design/2-1.md, 2-2.md) replace W2_ARCS' bricks when they are built (w2Arc21.ts, w2Arc22.ts), and the river
  * with its drifting logs is a section of its own (gen2/riverLay.ts).
@@ -152,7 +152,7 @@ function brick(stage: string, o: { id: string; name: string; jobs: NodeJob[]; di
  * water T and X, ground P and M, never two alike side by side (S and L are never content).
  */
 export const W2_ARCS: Record<string, { graph: string; archetype: 'sprint' | 'harvest'; lesson: string }> = {
-  '2-1': { graph: 'A T R P R X R M R S R L E', archetype: 'sprint', lesson: W2_LESSON.river },
+  // (2-1 is built as designed: w2Arc21.ts, its own kit 'w2-21' (BUILD-21, 11-15); its placeholder arc is gone, new replaces old)
   '2-2': { graph: 'A T R P R X R M R S R L E', archetype: 'harvest', lesson: W2_LESSON.stones },
 };
 

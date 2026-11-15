@@ -153,15 +153,17 @@ const down = (easy: boolean): Lay => {
     for (let j = 0; j < steps; j++) {
       pieces.push(shore(`s${k}${j}`, from, j === steps - 1 ? 300 : 220, DOWN));
       from = `s${k}${j}`;
+      // (the last liana's one step down is a wide bank: a boulder on it to hop, the quiet line)
+      if (k === 3) pieces.push(rock(`r${k}${j}`, from, 0.5));
     }
   }
-  pieces.push(bank('z', from, 300));
+  pieces.push(bank('z', from, 300), rock('rz', 'z', 0.5));
   return { pieces, sockets: [petal('pd', 'p3', 0.5)] };
 };
 /** [T] beat 2, the first log, safe: a long bank to hear the knock on (the keeper's `logs` 800+ px before the water), the slow river with
  *  him, the far bank */
 const firstLog = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 480), bank('b', 'a', 400), river('c', 'b', easy ? 'ride21Easy' : 'ride21', 360), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), river('c', 'b', easy ? 'ride21Easy' : 'ride21', 360), bank('z', 'c', 300)],
   sockets: [tip('t-logs', 'a', 0.1, 'logs'), petal('pz', 'z', 0.5)],
 });
 /** [Pg] beat 3, the bank: stones and stumps along the shore, up and down, the next river knocking ahead */
@@ -171,7 +173,7 @@ const theBank = (): Lay => ({
 });
 /** [Pw] beat 4, log to log for real: the first DEEP river (Normal: a fall costs a life; Easy: still a splash), the flag before it */
 const deepRiver = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 360), bank('b', 'a', 420), river('c', 'b', easy ? 'deep21Easy' : 'deep21', 360), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 360), rock('ra', 'a', 0.55), bank('b', 'a', 420), river('c', 'b', easy ? 'deep21Easy' : 'deep21', 360), bank('z', 'c', 300)],
   sockets: [flag('a'), petal('pz', 'z', 0.5)],
 });
 /** [Pr] beat 5, a liana over a side creek (World 1's move in World 2's look) */
@@ -181,7 +183,7 @@ const creekLiana = (): Lay => ({
 });
 /** [W] beat 6, the twist: the river runs back at him (an eddy along the bank); `back` 800+ px before, the flag before it */
 const backRiver = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 480), bank('b', 'a', 420), river('c', 'b', easy ? 'back21Easy' : 'back21', 360), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), river('c', 'b', easy ? 'back21Easy' : 'back21', 360), bank('z', 'c', 300)],
   sockets: [tip('t-back', 'a', 0.1, 'back'), flag('b', 0.2), petal('pz', 'z', 0.5)],
 });
 /** [Pb] beat 7, up the high bank: World 2's bounce at the foot of a high bank, then down the shore */
@@ -189,24 +191,24 @@ const highBank = (): Lay => {
   const m = 'm';
   return {
     // (the high bank 236-240 px up: past a double jump, inside the bounce's climb (the verdicts' bounce band; World 1's bounceWall,
-    //  w1.ts gBounceWall, 225-240), then three plain hops back down the shore)
-    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-240, -236]), landing: true, block: 'bounce', from: m }, shore('b', 'w', 280, [76, 80]), shore('c', 'b', 280, [76, 80]), shore('z', 'c', 320, [76, 82])],
+    //  w1.ts gBounceWall, 225-240), then three plain hops back down the shore, a boulder to hop on the top and one on the way down: the quiet line, listRules quietJudge)
+    pieces: [bank('a', null, 340), spring(m, 'a', 0.72), { ...shore('w', 'a', 360, [-240, -236]), landing: true, block: 'bounce', from: m }, rock('rw', 'w', 0.5), shore('b', 'w', 280, [76, 80]), shore('c', 'b', 300, [76, 80]), rock('rc', 'c', 0.5), shore('z', 'c', 320, [76, 82])],
     sockets: [petal('pw', 'w', 0.5)],
   };
 };
 /** [L] beat 8, both ways at once: a river with him to a reed islet, then the eddy back at him; the flag before */
 const bothWays = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 360), bank('b', 'a', 300), river('i', 'b', easy ? 'twinWith21Easy' : 'twinWith21', 240), river('c', 'i', easy ? 'twinBack21Easy' : 'twinBack21', 360), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 360), rock('ra', 'a', 0.5), bank('b', 'a', 300), river('i', 'b', easy ? 'twinWith21Easy' : 'twinWith21', 240), river('c', 'i', easy ? 'twinBack21Easy' : 'twinBack21', 360), bank('z', 'c', 300)],
   sockets: [flag('a'), petal('pz', 'z', 0.5)],
 });
 /** [Pf] beat 9, the jetty: the reed islet's bank, then the old jetty planks out to the last river */
 const theJetty = (): Lay => ({
-  pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), shore('c', 'b', 300, DOWN), jetty('z', 'c', 340)],
+  pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), shore('c', 'b', 300, DOWN), rock('rc', 'c', 0.5), jetty('z', 'c', 340)],
   sockets: [petal('pb', 'b', 0.5)],
 });
 /** [S] beat 10, the signature: the long log on the widest, calmest river, riding him all the way to the landing; the flag before */
 const longLog = (): Lay => ({
-  pieces: [bank('a', null, 360), bank('b', 'a', 300), river('c', 'b', 'long21', 400), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 360), rock('ra', 'a', 0.45), bank('b', 'a', 300), river('c', 'b', 'long21', 400), bank('z', 'c', 300)],
   sockets: [flag('a'), petal('pc', 'c', 0.5)],
 });
 /** [R] a rest on the bank between beats: a hop up and down the shore */
