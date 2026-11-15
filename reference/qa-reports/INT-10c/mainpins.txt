@@ -1,0 +1,10 @@
+WITH ruling A (walkedSpan.ts touched-piece branch):
+5-7 normal 8e6918d86d5b8c49 fa5037e4f56d3183 fills 120 rest 5a3c1b132fd4e7db
+5-7 easy c21d7034579fa414 b45f910763e8df3a fills 117 rest 599ed728ee200378
+7-1 normal f8a654ca25181450 f62f0cee9704839a fills 63 rest 000e1fae762ae301
+7-1 easy ddbb0b767ba92e8b 07f7968927172e9a fills 60 rest 83302f0802be0820
+WITHOUT it (reverted):
+5-7 normal 8e6918d86d5b8c49 fa5037e4f56d3183 fills 120 rest 5a3c1b132fd4e7db
+5-7 easy c21d7034579fa414 b45f910763e8df3a fills 117 rest 599ed728ee200378
+7-1 normal f8a654ca25181450 1f95676ce76d11a5 fills 37 rest 000e1fae762ae301
+7-1 easy ddbb0b767ba92e8b a8d9b183d717a8f3 fills 34 rest 83302f0802be0820

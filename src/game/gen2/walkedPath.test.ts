@@ -25,13 +25,25 @@ const P = (id: number, x: number, y: number, width: number, extra: Partial<Platf
 const L = (id: number, x: number, topY: number, bottomY: number): Vine =>
   ({ id, x, topY, bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true } as Vine);
 
-test('A: a rest between two plain jumps that a full run flies over is no walked span; its petals go on the next piece he walks', () => {
+// (restated to the lead's ruling A, 11-15 1:41 PM ET (INT-10c): a piece every run TOUCHES is path. ENG-PETAL's first test read this rest as
+// cleared (no span, its petals moved on); but no plain jump clears it, so every run sets down on it and leaves at once: its whole top is
+// walked and its petals stay. The model's purpose holds: a piece a full run's jump clears outright has no span (A2), no petal in the air)
+test('A: a rest between two plain jumps that every run touches and leaves at once is path: its whole top is walked, its petals stay (ruling A)', () => {
   withSetting('normal', () => {
     const a = P(1, 0, 600, 300), r = P(2, 360, 600, 220), c = P(3, 640, 600, 600);
     const st = { platforms: [a, r, c], vines: [], asks: [] };
     const ws = walkedSpan(r, st);
-    assert.ok(ws.hi - ws.lo < WALKED_MIN, `the rest is cleared: a full jump off the bank sets him down at ${Math.round(ws.lo)}, he leaves by ${Math.round(ws.hi)}`);
-    assert.equal(ws.next, c, 'the way off it sets him down on the bank ahead');
+    assert.deepEqual([ws.lo, ws.hi], [r.x, r.x + r.width], 'the whole rest is walked');
+    assert.equal(walkedPiece(r, st)?.piece, r, 'a petal laid on the rest stays on it');
+  });
+});
+
+test("A2: a rest a full run's plain jump clears outright is no walked span; its petals go on the next piece he walks", () => {
+  withSetting('normal', () => {
+    const a = P(1, 0, 600, 300), r = P(2, 330, 600, 40), c = P(3, 400, 600, 600);
+    const st = { platforms: [a, r, c], vines: [], asks: [] };
+    const ws = walkedSpan(r, st);
+    assert.ok(ws.hi - ws.lo < WALKED_MIN, `the rest is cleared (${Math.round(ws.lo)}-${Math.round(ws.hi)})`);
     assert.equal(walkedPiece(r, st)?.piece, c, 'a petal laid on the rest goes on the bank he walks');
   });
 });
