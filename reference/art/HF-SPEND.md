@@ -64,3 +64,9 @@ ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3
 |---|---|---|---|---|
 | 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
 ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
+
+## 2026-11-15 (ART-W2, t-art-w2; the lead's packet cap $5, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
+ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.
