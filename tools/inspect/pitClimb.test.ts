@@ -246,6 +246,40 @@ test('on a liana the steer is the way on past it: a route point on its swing beh
 });
 
 /**
+ * ENG-16H (R-165.246, the lead's packet item 2): every soft pit under a liana has its stair back (pipeline backPit lays it; ENG-16G's
+ * traces wrote "fell into this pit 3 times" only once pitWayUp had found that way up, on all six), and the kid took it each time; what put
+ * him back in was the let-go. Back up the stair his way was BACK, and caught again with the perch below him and close across, the steer's
+ * "keep the way he was going" rule kept it, so he let go at the back end of the swing into the same pit: 1-6 Normal kid seeds 14, 20 and
+ * 21 (f3603 vx -294 and the like). A toy: the liana over the pit, the far bank 80 px under the near one, his way left at -1. RED with the
+ * stale way (he let go backwards into the pit, KID and ADULT from 0.3 rad); planted-faults.py 'stale-way'.
+ */
+test('on a liana after a climb back, a stale way back never turns him round: from every place in the swing he lands on the far bank', () => {
+  const X = 1300, TOP = BANK - 420, LOW = BANK + 80;
+  const route = [...Array.from({ length: 38 }, (_, i) => ({ x: 100 + i * 24, y: BANK })), ...Array.from({ length: 60 }, (_, i) => ({ x: 1500 + i * 24, y: LOW }))];
+  for (const who of [FT_KID, FT_ADULT]) {
+    for (const angle of [-0.35, 0, 0.3]) {
+      const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 6, rescueAfter: 100 });
+      const vine = { id: 1, x: X, topY: TOP, bottomY: BANK + 10, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0 } as unknown as Vine;
+      run.sim.bare([block(1, 0, BANK, 1000), block(2, 1000, PIT, 500), block(7, 1500, LOW, 2400)], [vine]);
+      run.sim.swing(vine, { angle, omega: 0.5, len: 420 });
+      run.prog.relocate(run.sim.p);
+      const bot = run as unknown as { swingT: number; way: -1 | 0 | 1; prog: { cur: number }; after: () => void };
+      bot.swingT = 1.2;
+      bot.prog.cur = 38;
+      bot.way = -1;
+      let fell = false;
+      const after = bot.after.bind(run);
+      bot.after = () => {
+        after();
+        if (run.sim.p.y > PIT - 10) fell = true;
+      };
+      run.play();
+      assert.ok(!fell && run.sim.p.x > 1500 && Math.abs(run.sim.p.y - LOW) < 4, `${who.name} from ${angle}: ${fell ? 'let go back into the pit' : `not on the far bank (${Math.round(run.sim.p.x)}, ${Math.round(run.sim.p.y)})`}`);
+    }
+  }
+});
+
+/**
  * ENG-16F (R-165.246): out of a pit under a liana, he climbs to the stair step the liana is caught from most often, not the first step
  * that catches it at some moment. 1-6 Normal adult seed 1, the gorge (its numbers here, moved 44561 px left): the creaky limb gone, the
  * pit's stair 1021 / 961 / 901 under gl2; the 961 step caught it at 14 of 48 moments, the top step at 29; he hopped from 961 three times

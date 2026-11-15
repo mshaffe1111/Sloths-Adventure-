@@ -1600,6 +1600,11 @@ export class FirstTimerRun {
       const dx = tgt.x - p.x, dy = tgt.y - p.y;
       dir = dx > 16 ? 1 : dx < -16 ? -1 : 0;
       up = dy < -40;
+      // (on a liana the way on is the side its point past the swing lies (pastLiana), never the way he was going: ENG-16H, R-165.246.
+      // Back up a pit's stair the way was BACK; caught again, with the perch below him and close across, the rule below kept that way,
+      // so he let go at the back end of the swing, into the same pit: 1-6 Normal kid seeds 14, 20 and 21, "fell into this pit 3 times",
+      // each let-go on the backswing (f3603 vx -294). pitClimb.test.ts 'a stale way back')
+      if (p.isVineSwinging) dir = dx >= 0 ? 1 : -1;
       if (dir === 0) {
         const far = this.prog.target(p, 200);
         if (far) dir = far.x > p.x + 16 ? 1 : far.x < p.x - 16 ? -1 : 0;
@@ -1607,7 +1612,7 @@ export class FirstTimerRun {
       // (the way on is below, close across: he keeps going the way he was until he finds the edge, never turns back for it)
       // (a tier bot heads the way the route goes on from there, not back the way a bounce threw him, which on w1-twin-mushroom-fork put
       // him on the mushroom again and again)
-      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) {
+      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0 && !p.isVineSwinging) {
         const far = who.holdQ ? this.prog.target(p, 240) : null;
         dir = far && Math.abs(far.x - p.x) > 40 ? (far.x > p.x ? 1 : -1) : this.way;
         // (and not over a bounce mushroom on his own ledge: off the other end. v16 middle Easy: up on a ledge over the route, he
