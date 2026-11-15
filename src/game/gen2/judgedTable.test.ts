@@ -17,7 +17,7 @@ import { provenSeeds } from './seedList.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { Platform } from '../types.ts';
 
-const FIX = '1-8'; // (stage 1-8's id as a test-only listed stage (ENG-16I: off 1-7 once t-tools-2's INT-9 listed it, the merge 8b8dc02a): off 1-4 once 1-4 was listed for real, B14 11-13, and off 1-6 once 1-6 was, BUILD-16 / ENG-16F 11-14, as listed.test.ts)
+const FIX = '1-99'; // (a test-only listed stage. A world holds ten stages, so 1-99 is never listed for real and no new listing moves the fixture again (INT-10c 11-15: it had moved off 1-3, 1-4, 1-6, 1-7 and 1-8 as each was listed))
 /** a planted roll of `stageId` with one single-jump gap of `gap` px */
 const planted = (stageId: string, gap: number): Judged11 =>
   ({ stageId, setting: 'normal', policy: 'per-gap', drops: [], asks: [{ section: 's1', kind: 'single-gap', x0: 400, x1: 400 + gap, figure: gap, move: 'single-flick', headroom: 9999 }], routeGaps: [] }) as Judged11;
