@@ -10,6 +10,9 @@ lead the data names it should use, never edit its stage file.
  (2) One painted join piece (a knot or collar) where a fork meets a stretch, from Hugging Face (reference/methods/hf-art.md, cap $3, log in
      reference/art/HF-SPEND.md), sized to the branch, in the inventory at scale.
  (3) The collapse breaks the branch into 3-5 large pieces (the art's own breaks), never a dozen tiles; still one baked draw where it can be.
+(4) Delete the dead hand-built 1-8 path (protoStage buildLongBranch and the engine's ChasePlan path) once BUILD-18's row sends 1-8 to
+    gen2 (new replaces old). (5) Easy: a rolling nut or fruit never costs a heart on any stage's Easy (rolling.ts rollTeaches; the story
+    keeper's ruling), planted; tell BUILD-18 when it lands so it drops its per-spec teach flags.
 Proof: before/after stills at the seam and at f145 (or its new frame) upright + sideways, both settings; drawcheck on the 1-98 fixture
 (PERFORMANCE §1: pass/fail); the WHOLE suite on your head; lock (only chase stages' look moves; list them).
 REPORT reference/qa-reports/ENG-CL/REPORT.md with "Learned" and EXACT NEXT STEP. BOX: report by 10:45 PM ET, or at 40% real context.
