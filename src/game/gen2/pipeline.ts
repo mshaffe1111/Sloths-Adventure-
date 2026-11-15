@@ -43,6 +43,7 @@ import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
+import { rollsOf } from './rollLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
 import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
@@ -3190,6 +3191,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
+      } else if (s.role === 'roll') {
+        // (a nut or a fruit where the designer put it: its world point now, its hazard once the chase is laid (rollLay.ts rollsOf, in
+        // buildGen2Stage). No threat budget and no Easy cut: Easy's version lays its own twin. ENG-CL (6))
+        fills.push({ section: sec.uid, socket: s.id, role: 'roll', what: want ? (s.roll ?? null) : null, x: k.x, y: k.y });
       } else if (s.role === 'receptor') {
         const src = sec.sockets.find((q) => q.socket.id === s.link);
         const pair = src && M.pairs.find((p) => (!s.allow?.length || s.allow.includes(p.receptor)) && Math.abs(src.x - k.x) >= p.minApart && Math.abs(src.x - k.x) <= p.maxApart);
@@ -3750,6 +3755,27 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
 }
 /** a graph with chase nodes: each section's own pieces and which are the route's (PlacedPiece.main), read by layChase in buildGen2Stage */
 const PIECES_OF = new WeakMap<Gen2Stage, Map<string, Array<{ platform: Platform; main: boolean }>>>();
+
+/**
+ * a built roll as buildGen2Stage lays it, for a caller's judge (BuildRequest.also) in the search: a graph with chase nodes gets its chase
+ * laid on a COPY (the stage and its sections' pieces cloned together, so the pieces are the copy's own platforms: layChase cuts by
+ * them), and the search keeps its own build, whose chase is laid once, after (ENG-CL (7b)). Any other roll is handed as it is.
+ */
+function asLaid(st: Gen2Stage, M: WorldManifest, easy: boolean): Gen2Stage {
+  const pm = PIECES_OF.get(st);
+  if (!pm) return st;
+  const [c, m] = structuredClone([st, pm] as const);
+  layChaseStage(c, (uid) => m.get(uid) ?? [], M, easy);
+  return c;
+}
+
+/** a roll's chase laid on its built stage (chaseLay.ts), then its rolling hazards (rollLay.ts rollsOf): what is wrong with either, by name */
+function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{ platform: Platform; main: boolean }>, M: WorldManifest, easy: boolean): string[] {
+  const chase = layChase(st, piecesOf);
+  const r = rollsOf(st as never, M.rolls, easy);
+  if (r.specs.length) st.rolling = r.specs;
+  return [...chase.problems, ...r.problems];
+}
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
 
@@ -4261,10 +4287,11 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   // (a graph with chase nodes, job K: its stretches laid on the built ground and its flags moved onto the forks BEFORE the verdicts, so
   // the flags are judged by the same rule as every rolled stage's; a lay that cannot run is refused by name, chaseLay.ts)
-  const chase = layChase(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? []);
+  // (and its rolling nuts and fruit once the chase is laid, before the verdicts, so the ground a by-ground lay clears is the ground judged)
+  const chased = layChaseStage(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? [], req.kit.manifest, req.difficulty === 'easy');
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
-  st.gen2.errors.push(...chase.problems);
+  st.gen2.errors.push(...chased);
   // (a stage that names a cast: every drop trap is in plain view and worth using, or the roll is refused by name, dropTrap.ts)
   const traps = st.proto.cast?.traps;
   if (traps?.length) st.gen2.errors.push(...trapFaults(traps, st.collectibles.filter((c) => c.type === 'flower' || c.type === 'fruit'), st.enemies));
@@ -4321,9 +4348,9 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     if (n) {
       // (judged as Normal plays it: its chase laid first, as buildGen2Stage lays it, so its flags are the ones it plays (ENG-B4: Easy
       // refused 2 of 30 chase rolls on Normal's flags from before its lay))
-      const nChase = layChase(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? []);
+      const nChase = layChaseStage(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? [], req.kit.manifest, false);
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...nChase.problems, ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...nChase, ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
@@ -4522,7 +4549,9 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
           // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
           const pipes = unmet.length > 0;
-          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          // (handed the roll as laid, its chase in it, on a copy: a judge measuring the roll as played was handed a chase stage with no
+          // chase, and 1-8's finish refused every roll by name: ENG-CL (7b), BUILD-18 11-14)
+          if (!pipes && req.also) unmet = [...req.also(asLaid(st, M, false), 'normal').map((u) => ({ ...u, of: b })), ...req.also(asLaid(eb.stage, M, true), 'easy').map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;

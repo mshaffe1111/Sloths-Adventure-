@@ -106,6 +106,10 @@ export type PitKind = 'soft' | 'water' | 'void';
 export interface WorldManifest {
   world: number;
   name: string;
+  /** the world's rolling nut and bouncing fruit on a laid chase (gen2/rollLay.ts: their pace, arc, run-in and spacing; World 1's
+   *  worlds/w1Cast.ts W1_ROLL). A chase stage's 'roll' sockets need it; with it and no 'roll' socket, the hazards are laid by the
+   *  chase's own ground (rollLay.ts layRolling). None: a chase lays no hazard (ENG-CL (6)) */
+  rolls?: import('./rollLay.ts').RollLook;
   /** what each stage owns, by stage id (its own beats: a section whose `not` names one is never laid there) */
   owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
@@ -368,6 +372,7 @@ export type SocketRole =
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
   | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
   | 'findSpot'   // where the stage's find stands (finds.ts: Meeca's note, a keepsake; stageGenerator addFinds), once a stage, by the first one met
+  | 'roll'       // a rolling nut or bouncing fruit where the designer put it (Socket.roll: its kind), laid once the chase is: gen2/rollLay.ts rollsOf
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -381,6 +386,9 @@ export interface Socket {
   dn?: number;
   /** what may fill it: props', creatures' or pickups' tags (empty: anything of its role) */
   allow?: string[];
+  /** a 'roll' socket: the hazard it lays, a nut he hops ('low') or a fruit he runs under ('high'); its pace and arc are the world's
+   *  (WorldManifest.rolls). Easy lays its version's own twin (ENG-CL (6)) */
+  roll?: 'low' | 'high';
   /** a receptor: its source's socket id (the same section). A source with no receptor is never filled */
   link?: string;
   /** enemy sockets: the most threat it may take */

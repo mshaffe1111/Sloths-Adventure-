@@ -34,16 +34,22 @@ export const RUNNER = {
 
 const DT = 1 / 30;
 
-/** the lip a runner takes off from for this liana: the solid ground he runs on whose far end is the nearest one short of it */
+/**
+ * the lip a runner takes off from for this liana: of the solid ground whose far end lies in reach of it, the HIGHEST (the take-off's
+ * height: anything lower lies in the gap under him, a pit's floor or its stair step), and of those the one whose far end is nearest it.
+ * ENG-CL (8): the nearest end at any height took a soft gap's stair step under 1-8's K2 lip, "200 px of run to its lip" on every Normal
+ * roll (runnerLiana.test.ts plants it). A ledge floating over the run in reach of the liana would read as the lip: no lay puts one there.
+ */
 export function runnerLip(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): Platform | null {
   let best: Platform | null = null;
+  const endOf = (p: Platform) => (dir > 0 ? p.x + p.width : p.x);
   for (const p of platforms) {
     if (p.type !== 'solid' || p.width < 60) continue;
-    const end = dir > 0 ? p.x + p.width : p.x;
+    const end = endOf(p);
     const d = dir * (v.x - end);
     // (as the bots read a liana off an edge, lianaWait: ahead within 360 px, its foot within reach of his height, its top over him)
     if (d < -40 || d > 360 || v.bottomY < p.y - 140 || v.topY > p.y - 100) continue;
-    if (!best || dir * (end - (dir > 0 ? best.x + best.width : best.x)) > 0) best = p;
+    if (!best || p.y < best.y - 2 || (Math.abs(p.y - best.y) <= 2 && dir * (end - endOf(best)) > 0)) best = p;
   }
   return best;
 }
@@ -110,14 +116,25 @@ export function easePhase(cur: number, want: number, dt: number, rate: number = 
   return (((cur + d) % 1) + 1) % 1;
 }
 
-/** what is wrong with a runner liana, in words (empty when it can run): the lay refuses one by name */
-export function runnerProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): string[] {
+/**
+ * what is wrong with a liana he swings to off a lip, in words (empty when it can be caught): a lip he runs off toward it, and a moment of
+ * its swing a full-run jump off it catches (a plain liana: he may wait at the lip for that moment). A runner liana also needs the run
+ * (runnerProblems). ENG-CL (8): split so a lay of a plain liana asks only this, never filters a runner's line out
+ */
+export function lianaProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1, name = `liana at ${Math.round(v.x)}`): string[] {
   const lip = runnerLip(v, platforms, dir);
-  const name = `runner liana at ${Math.round(v.x)}`;
   if (!lip) return [`${name}: no ground he runs off toward it (360 px short of it, its foot within his reach)`];
   const end = dir > 0 ? lip.x + lip.width : lip.x;
-  const m = runnerMoment(v, end, lip.y, dir);
-  if (!m) return [`${name}: no moment of its swing is caught by a full-run jump off its lip at ${Math.round(end)}`];
+  if (!runnerMoment(v, end, lip.y, dir)) return [`${name}: no moment of its swing is caught by a full-run jump off its lip at ${Math.round(end)}`];
+  return [];
+}
+
+/** what is wrong with a runner liana, in words (empty when it can run): the lay refuses one by name */
+export function runnerProblems(v: SwingVine & { topY: number; bottomY: number }, platforms: readonly Platform[], dir: 1 | -1 = 1): string[] {
+  const name = `runner liana at ${Math.round(v.x)}`;
+  const plain = lianaProblems(v, platforms, dir, name);
+  if (plain.length) return plain;
+  const lip = runnerLip(v, platforms, dir)!;
   const problems: string[] = [];
   // (the run of unbroken ground that ends at the lip: long enough to ease half a swing at his top run, or it cannot promise the run)
   const run = runTo(platforms, lip, dir);

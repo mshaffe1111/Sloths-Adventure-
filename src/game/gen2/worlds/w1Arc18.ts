@@ -18,16 +18,14 @@
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { Collectible, Platform, Vine } from '../../types.ts';
 import type { RollSpec } from '../../rolling.ts';
-import { rollAhead, rollGroundProblems, runIn, ROLL } from '../../rolling.ts';
 import type { ChaseLay } from '../../chase.ts';
+import type { RollLook } from '../rollLay.ts';
 import { w1World } from './w1.ts';
 import { w1Liana, w1Perch, withSwing } from './w1Swing.ts';
-import { W1_STILL_FORK } from './w1Cast.ts';
+import { W1_ROLL, W1_STILL_FORK, W1_TIP } from './w1Cast.ts';
 import { layStillFork, type StillForkStage } from '../stillFork.ts';
+import { layTip, readyStillFork } from '../chaseTip.ts';
 import { runnerProblems } from '../../runnerLiana.ts';
-import type { InvDress } from '../../art/invDress.ts';
-// (the row type is the engine's, art/invDress.ts: re-said here for the stage's own tests)
-export type { InvDress } from '../../art/invDress.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
 export const STAGE_18 = '1-8';
@@ -70,8 +68,6 @@ export const MISSION_18 = 'Race the long branch before it gives way, and gather 
 const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
 /** a bank past a gap of exactly `gap` px (a soft pit: a fall off the branch is the chase's, a heart and the flag) */
 const hop = (key: string, after: string, w: number, gap: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy, gapPx: gap, soft: true }, style: 'moss_stone', main: true, landing: true });
-/** a bank past a double's gap */
-const dbl = (key: string, after: string, w: number, gap: R2): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'double', after, dy: [0, 0], gapPx: gap, soft: true }, style: 'moss_stone', main: true, landing: true, block: 'double' });
 /** a limb over a gap: creaky (gives way 1.1 s after he lands; whole on a set-back) or, Easy, a sound bough */
 const limb = (key: string, after: string, creak: boolean, gap: R2): SectionPiece => ({ key, shape: 'branch', w: [150, 160], place: { kind: 'jump', after, dy: [0, 0], gapPx: gap, soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) });
 /** a mushroom on `on`, its cap 30 px up, its edge 30-45 px before `on`'s end (chain.md, 1-2's) */
@@ -79,6 +75,9 @@ const mushroom = (key: string, on: string, w: number): SectionPiece => ({ key, s
 /** a bank only a mushroom's bounce reaches: `rise` px up, a wall straight off `after`'s end (the lay clamps the rise to the bounce's reach) */
 const bounced = (key: string, after: string, from: string, w: number, rise: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'walk', after, dy: [-rise - 4, -rise + 4] }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from });
 
+/** a root hop up or down (1-6's: the quiet line wants a hop within 450 px of each end of a rest and none 950 px apart, listRules quietJudge) */
+const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
+const root = (key: string, after: string, w: number, dy: R2): SectionPiece => bank(key, after, w, dy);
 const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 const flag = (on: string, t = 0.3): Socket => ({ id: 'flag', role: 'flag', on, t });
 /** a line's id in the kit: its own, `w18.<key>` */
@@ -88,35 +87,25 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_18): So
 // ───────────────────────────── the nuts and fruit, by data ─────────────────────────────
 /** one hazard a brick lays: its kind, the piece it lands on and where along it (0-1) */
 export interface Roll18 { kind: RollSpec['kind']; on: string; t: number }
-/** the hazards' pace and arcs (px/s, px): a TEACH nut under his walk, a chase nut under his run, a fruit's arc well over his drawn head
- *  (rolling.ts: the bottom of its arc ROLL.head + ROLL.headClear over his feet, 104 px; the fixture's 165 px top clears it by phasing) */
-export const ROLL_18 = {
-  teachNut: { speed: 110, bounce: 8 },
-  nut: { speed: 140, bounce: 8 },
-  fruit: { speed: 140, bounce: 165 },
-  /** two drops on one route at least this far apart (px): one threat at a time, 1.5 s at his run (1-8.md, the lead 4:36 PM) */
-  apart: 430,
-  /** and on Easy 2.5 s at his run */
-  apartEasy: 712,
-} as const;
+/** 1-8's rolling look (gen2/rollLay.ts RollLook, the kit's manifest.rolls): World 1's pace and arcs (w1Cast.ts W1_ROLL: a nut under his
+ *  run, a fruit's arc well over his drawn head), and the designed spacing: two drops on one route at least 430 px apart (1.5 s at his run:
+ *  one threat at a time, 1-8.md, the lead 4:36 PM), on Easy 712 (2.5 s) */
+export const ROLL_18: RollLook = { ...W1_ROLL, apart: { normal: 430, easy: 712 } };
 
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[]; rolls?: Roll18[] };
 type V = { id: string; lay: Lay; easy?: Lay };
-/** each version's hazards, by its version id (`<id>` and `<id>-easy`): finish18 reads them off the built stage's sections */
-export const ROLLS_18: Record<string, Roll18[]> = {};
+/** a lay's hazards as the pipeline's roll sockets (types.ts Socket.roll; gen2/rollLay.ts lays them once the chase is laid) */
+const rollSockets = (rs: readonly Roll18[] = []): Socket[] => rs.map((r, i) => ({ id: `roll${i}`, role: 'roll', roll: r.kind, on: r.on, t: r.t }) as Socket);
 /** a brick (1-6/1-7's form): its first piece `in`, its last `out`, a version's Easy twin beside it */
 function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope' | 'bounce'; teaches?: string; versions: V[]; uses?: string[]; window?: [number, number] }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return { f, ps: ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on' || q === 'from') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'], ...(p.from ? { from: f(p.from) } : {}) })) }; };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
-  const keep = (vid: string, ps: SectionPiece[], rs?: Roll18[]) => { if (rs?.length) { const { f } = ren(ps); ROLLS_18[`${o.id}/${vid}`] = rs.map((r) => ({ ...r, on: f(r.on) })); } };
   const first = ren(o.versions[0].lay.pieces).ps[0];
   const versions = o.versions.flatMap((v) => {
-    keep(v.id, v.lay.pieces, v.lay.rolls);
-    if (v.easy) keep(`${v.id}-easy`, v.easy.pieces, v.easy.rolls);
     return [
-      { id: v.id, pieces: ren(v.lay.pieces).ps.slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
-      ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).ps.slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
+      { id: v.id, pieces: ren(v.lay.pieces).ps.slice(1), sockets: sk(v.lay.pieces, [...v.lay.sockets, ...rollSockets(v.lay.rolls)]), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
+      ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).ps.slice(1), sockets: sk(v.easy.pieces, [...v.easy.sockets, ...rollSockets(v.easy.rolls)]), easyOnly: true }] : []),
     ];
   });
   const { versions: _v, uses, ...rest } = o;
@@ -128,7 +117,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
  *  800+ px of walk with the fruit line said on the way, then the bouncing fruit, safe. Before the crack a touch only bumps him (teach) */
 function teachPair(): Lay {
   return {
-    pieces: [bank('a', null, 300), bank('b', 'a', 360), bank('n', 'b', 560), bank('m', 'n', 320), bank('f1', 'm', 400), bank('f2', 'f1', 420), bank('z', 'f2', 360)],
+    // (root hops between the lessons: the quiet line (4 s, listRules.ts) wants a beat on the walk; each nut's and fruit's run-in stays flat)
+    pieces: [bank('a', null, 240), root('b', 'a', 240, UP), root('c', 'b', 300, DOWN), bank('n', 'c', 560), root('m', 'n', 300, UP), root('f1', 'm', 400, DOWN), bank('f2', 'f1', 420), bank('z', 'f2', 360)],
     sockets: [petals('pb', 'b', 0.5, 1), petals('pn', 'n', 0.25, 1), tip('t-fruit', 'm', 0.3, 'fruit'), petals('pm', 'm', 0.7, 2, 120), petals('pf', 'f1', 0.5, 1), petals('pz', 'z', 0.5, 2, 120)],
     rolls: [{ kind: 'low', on: 'n', t: 0.72 }, { kind: 'high', on: 'f2', t: 0.62 }],
   };
@@ -138,27 +128,30 @@ function teachPair(): Lay {
 function firstRun(easy: boolean): Lay {
   const g: R2 = easy ? [40, 46] : [100, 120];
   return {
-    pieces: [bank('a', null, 300), bank('b', 'a', 360), hop('c', 'b', 480, g), bank('d', 'c', 380), mushroom('dm', 'd', 380), bounced('e', 'd', 'dm', 440, 150), bank('e2', 'e', 240, [50, 56]), bank('e3', 'e2', 240, [50, 56]), hop('f', 'e3', 460, g, [40, 46]), bank('z', 'f', 280)],
+    // (at most chaseCap less the longest run-up from its flag (CHASE_LAY.flagBefore 600) and half a pad: about 3,300 px, or the lay splits it)
+    pieces: [bank('a', null, 300), bank('b', 'a', 360), hop('c', 'b', 440, g), bank('d', 'c', 380), mushroom('dm', 'd', 380), bounced('e', 'd', 'dm', 380, 150), bank('e2', 'e', 200, [50, 56]), bank('e3', 'e2', 200, [50, 56]), hop('f', 'e3', 460, g, [40, 46]), bank('z', 'f', 220)],
     sockets: [tip('t-crack', 'a', 0.15, 'crack'), petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.3, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.3, 1), petals('pz', 'z', 0.5, 1)],
     rolls: easy ? [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'f', t: 0.85 }] : [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'low', on: 'c', t: 0.85 }, { kind: 'low', on: 'f', t: 0.85 }],
   };
 }
-/** [K] beat 5, at pace: a double over a section's break, then 1,200+ px of plain run (two fruits: no input) to a liana phased to his run
+/** [K] beat 5, at pace: a hop over a section's break, then 1,200+ px of plain run (two fruits: no input) to a liana phased to his run
  *  (finish18 marks it runner) over a fallen gap. Its creaky limb is the last stretch's (a K is at most what Matt's flag span lets one run).
- *  Easy: the double a two-step rise, a sound bough, the liana hung over a 40 px seam (optional), the gaps 40-48 px */
+ *  The design's double is gone: at pace the tester-like bots (kid, adult) slowed at its gap, the front caught them at the lip and the
+ *  lip fell (3/40 and 6/40 passed, BUILD-18): a double is not asked in a chase. Easy: a two-step rise, a sound bough, the liana hung over a
+ *  40 px seam (optional), the gaps 40-48 px */
 function atPace(easy: boolean): Lay {
   const s: R2 = [40, 46];
   if (easy) {
     return {
       pieces: [bank('a', null, 260), bank('b', 'a', 420), bank('c1', 'b', 220, [-56, -50]), bank('c', 'c1', 300, [-56, -50]), limb('k', 'c', false, s), hop('d', 'k', 300, s, [50, 56]), bank('d2', 'd', 260, [50, 56]), bank('e', 'd2', 460), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), hop('p', 'f', 300, s), bank('z', 'p', 240)],
       sockets: [petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.5, 1), petals('pe', 'e', 0.4, 2, 120), petals('pp', 'p', 0.5, 1), petals('pz', 'z', 0.5, 1)],
-      rolls: [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'high', on: 'f', t: 0.55 }],
+      rolls: [{ kind: 'low', on: 'b', t: 0.2 }, { kind: 'high', on: 'f', t: 0.55 }],
     };
   }
   return {
-    pieces: [bank('a', null, 200), bank('b', 'a', 360), dbl('c', 'b', 300, [200, 225]), bank('d', 'c', 300), bank('e', 'd', 440), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), w1Perch('p', 'l', 'long', [250, 270]), bank('z', 'p', 200)],
+    pieces: [bank('a', null, 200), bank('b', 'a', 600), hop('c', 'b', 300, [100, 118]), bank('d', 'c', 300), bank('e', 'd', 440), bank('f', 'e', 460), w1Liana('l', 'f', 'long'), w1Perch('p', 'l', 'long', [250, 270]), bank('z', 'p', 200)],
     sockets: [petals('pb', 'b', 0.4, 1), petals('pc', 'c', 0.5, 1), petals('pe', 'e', 0.4, 2, 120), petals('pp', 'p', 0.5, 1), petals('pz', 'z', 0.5, 1)],
-    rolls: [{ kind: 'low', on: 'b', t: 0.9 }, { kind: 'high', on: 'e', t: 0.75 }, { kind: 'high', on: 'f', t: 0.85 }],
+    rolls: [{ kind: 'low', on: 'b', t: 0.45 }, { kind: 'high', on: 'e', t: 0.75 }, { kind: 'high', on: 'f', t: 0.85 }],
   };
 }
 /** [K] the fourth stretch (1-8.md "a fourth stretch goes in": more pieces, never padding): a mushroom throws him up onto a high bough over
@@ -190,7 +183,9 @@ function rhythm(easy: boolean): Lay {
  *  past it, one pass: stillFork.ts), nothing standing on it; then a calm walk on */
 function stillFork(): Lay {
   return {
-    pieces: [bank('a', null, 820), bank('b', 'a', 400), bank('z', 'b', 340)],
+    // (its first bank wide enough that Matt's span puts the fork's flag past the post (ENGINE-WORTHY 3); then a root up and down: the walk on
+    //  after the pass is not quiet (the quiet line, 4 s))
+    pieces: [bank('a', null, 700), root('b', 'a', 240, UP), root('c', 'b', 260, DOWN), root('d', 'c', 240, UP), root('z', 'd', 300, DOWN)],
     // (nothing stands on its first two banks: the fork's flag goes on them, clear of the post, where Matt's span puts it)
     sockets: [petals('pz', 'z', 0.6, 2, 120)],
   };
@@ -206,10 +201,10 @@ function lastStretch(easy: boolean): Lay {
   };
 }
 /** [S] beat 12, the tip: the ground finish18 cuts into the gap off the tip (TIP_18.gap) and the far tree's bough past it, with the runner
- *  liana over the gap; level with the last stretch */
+ *  liana over the gap; level with the last stretch; then a root up and down on the far tree's bough (the quiet line) */
 function theTip(): Lay {
   return {
-    pieces: [bank('a', null, 400), bank('b', 'a', 400), bank('c', 'b', 360), bank('z', 'c', 300)],
+    pieces: [bank('a', null, 400), bank('b', 'a', 400), bank('c', 'b', 320), root('d', 'c', 240, UP), root('z', 'd', 300, DOWN)],
     sockets: [petals('pz', 'z', 0.5, 2, 120)],
   };
 }
@@ -220,7 +215,7 @@ function theTip(): Lay {
 export const BEATS_18: SectionTemplate[] = [
   brick({ id: 'w1-18-teach', name: 'the little nut and the big fruit: hop the little ones, walk under the big ones', jobs: ['teach'], content: 'hazard', teaches: 'roll', difficulty: 1, versions: [{ id: 'nut-fruit', lay: teachPair() }] }),
   brick({ id: 'w1-18-first-run', window: [0.1, 0.25], name: 'the crack: GO!', jobs: ['pressure'], content: 'ground', difficulty: 4, versions: [{ id: 'gaps-nuts', lay: firstRun(false), easy: firstRun(true) }] }),
-  brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'double', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
+  brick({ id: 'w1-18-at-pace', window: [0.26, 0.39], name: "at pace: don't stop... don't stop", jobs: ['pressure'], content: 'rope', difficulty: 5, uses: ['roll', 'swing'], versions: [{ id: 'double-creak-liana', lay: atPace(false), easy: atPace(true) }] }),
   brick({ id: 'w1-18-high-bough', window: [0.4, 0.53], name: 'the high bough: bounce up, hop down', jobs: ['pressure'], content: 'bounce', difficulty: 5, uses: ['roll', 'bounce'], versions: [{ id: 'mushroom-nuts', lay: highBough(false), easy: highBough(true) }] }),
   brick({ id: 'w1-18-rhythm', window: [0.54, 0.68], name: 'both heights in rhythm: under, HOP', jobs: ['pressure'], content: 'hazard', difficulty: 6, versions: [{ id: 'pairs', lay: rhythm(false), easy: rhythm(true) }] }),
   brick({ id: 'w1-18-still-fork', name: 'the still fork: the ONE place to stop', jobs: ['practise'], content: 'ground', difficulty: 5, uses: ['roll', 'hide'], window: [0.64, 0.75], versions: [{ id: 'moss', lay: stillFork() }] }),
@@ -233,9 +228,6 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
   phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: o.job === 'arrive' ? 1 : 6,
 } as SectionTemplate);
-/** a root hop up or down (1-6's: the quiet line wants a hop within 450 px of each end of a rest and none 950 px apart, listRules quietJudge) */
-const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
-const root = (key: string, after: string, w: number, dy: R2): SectionPiece => bank(key, after, w, dy);
 /** a rest on a living fork: a flag on a bank between root hops (chaseLay moves flags to the fork as Matt's span wants) */
 const rest = (id: string): SectionTemplate => link({ id, name: 'a living fork: breathe', job: 'rest', versions: [{
   id: 'roots',
@@ -248,7 +240,7 @@ export const QUIET_18: SectionTemplate[] = [
   // [A] the broad base at the trunk, the branch running off up to the far tree; nothing hurts in 1,300 px. The nut line is said on its far
   // bank, 800+ px before the first nut
   link({ id: 'w1-18-arrival', name: 'the broad base', job: 'arrive', versions: [
-    { id: 'base', lay: { pieces: [bank('a', null, 360), root('r0', 'a', 240, UP), root('b', 'r0', 380, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 360, DOWN), bank('z', 'c', 360)],
+    { id: 'base', lay: { pieces: [bank('a', null, 360), root('r0', 'a', 240, UP), root('b', 'r0', 380, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 300, DOWN), root('r2', 'c', 220, UP), root('z', 'r2', 240, DOWN)],
       sockets: [petals('pb', 'b', 0.6, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-nut', 'z', 0.2, 'nut')] } },
   ] }),
   rest('w1-18-rest'),
@@ -265,27 +257,27 @@ export const EXIT_18: SectionTemplate = {
 export const SECTIONS_18: SectionTemplate[] = [...BEATS_18, ...QUIET_18, EXIT_18];
 
 // ───────────────────────────── the finish: what only the built stage carries ─────────────────────────────
-/** the tip (1-8 NEW 8, ChaseStretch.tip), as the old 1-8's last liana and the fixture's measured one (chaseFixtureStage.ts TIP_*): the
- *  gap off the tip (px), the far tree's bough past it, the runner liana out from the lip, up, and its foot under the branch */
-export const TIP_18 = { gap: 444, land: 600, out: 214, up: 380, foot: 30 } as const;
 /** the hearts (1-8.md "Hearts and flags"): one on the fork after the second stretch, one on the fork before the last (the fork after the
  *  fourth: the still fork's), this far from that fork's last flag (before it: the flag stands just before the next crack, so a heart past
  *  it would be in the stretch), at a petal's height over the ground */
 export const HEARTS_18 = { forks: [2, 4], past: -200, up: 34 } as const;
 /**
  * The look the keeper's nature check asks for (lines-1-8.md: palm nuts drop from palms in view; cannonball fruit grows on stalks from the
- * TRUNK and drops from there or above), by INVENTORY id: written to proto.invDress and drawn by the engine's inventory-dressing piece
- * (art/invDress.ts, ENG-DR; the lead's ruling 8:19 PM: "a stage's data places any inventory piece as dressing, hung by its top or
- * standing, at its inventory scale"). `inv` the catalog id exactly; `dx` from the hazard's drop (px), `y` the piece's top (hung) or foot
- * (standing) from the ground under the drop (px, + down). Its size is the inventory's (pokey_scale x Pokey's 89.1), never the data's
+ * TRUNK and drops from there or above), by INVENTORY id (the catalog's, exactly), so each draws the moment the engine's inventory-dressing
+ * piece lands (ENG-DR, t-eng-dr: src/game/art/invDress.ts; drawn behind the play layer at its inventory size, pokey_scale x 89.1, R-165.107).
+ * Until then they are written to proto.invDress and nothing draws them (a named rough spot). x: the piece's middle, `dx` from the hazard's
+ * drop; y: its foot when standing, from the ground under the drop (px, + down)
  */
 export const DRESS_18 = {
-  /** a palm crown hung over every nut's drop: its fronds' underside where the nut appears (rolling.ts ROLL.dropH 480 at most over the
-   *  ground; sideways the drop starts below the HUD band, so the crown is the tell's source, not a promise of where it starts) */
-  palm: { inv: 'hf18/hf18-palm-crown', hang: true, dx: 0, y: -620, layer: 'behind' },
-  /** a cannonball trunk standing behind the branch at every fruit's drop, its foot down in the mist, its fruit stalks at the drop's height */
+  /** a palm standing behind the branch at every nut's drop, its foot below the branch's top and its crown (460 px tall, pokey_scale 5.16)
+   *  overhead, its cluster of nuts where the nut drops in from */
+  palm: { inv: 'hf18/hf18-palm-crown', hang: false, dx: 0, y: 40, layer: 'behind' },
+  /** a cannonball trunk (900 px, pokey_scale 10.1) standing behind the branch at every fruit's drop, its foot down in the mist, its fruit
+   *  stalks at and over the drop's height */
   trunk: { inv: 'hf18/hf18-cannon-trunk', hang: false, dx: 70, y: 260, layer: 'behind' },
 } as const;
+/** ENG-DR's row shape (src/game/art/invDress.ts InvDress on t-eng-dr; this goes when that lands: import it) */
+export interface InvDress { inv: string; x: number; y: number; hang: boolean; layer: 'behind' }
 
 /** the beats whose liana is a runner's (phased to him at a full run: runnerLiana.ts) */
 export const W18_RUNNER = ['w1-18-at-pace'] as const;
@@ -296,56 +288,29 @@ type FinishStage = {
   chase?: ChaseLay; rolling?: RollSpec[]; proto?: unknown; gen2?: { sections: Array<{ uid: string; template: string; version?: string }> };
 };
 /** a section's laid pieces with key `key` (Platform.tag `<uid>:<key>`, BRIEF_18.tags; a cut piece's sections share the tag) */
-const piecesOf = (st: FinishStage, uid: string, key: string) => st.platforms.filter((p) => p.tag === `${uid}:${key}`);
 const spanOf = (ps: readonly Platform[]): [number, number] | null => (ps.length ? [Math.min(...ps.map((p) => p.x)), Math.max(...ps.map((p) => p.x + p.width))] : null);
 
 /**
- * 1-8's finish (listed.ts FINISH 'w1-18'): the nuts and fruit where each brick names them (RollSpec by data; on Easy every one a bump
- * only), the still fork on the living ground after the stretch the W brick follows, the last stretch made the branch's tip with its gap,
- * the far bough and a runner liana, the K2 liana a runner's, the hearts. Throws (the roll is never listed) when anything it lays cannot be
- * laid whole: never a half-laid beat.
+ * 1-8's finish (listed.ts FINISH 'w1-18'), after the pipeline laid the chase and its roll sockets (gen2/rollLay.ts): the still fork on the
+ * living ground after the stretch the still-fork brick follows (gen2/chaseTip.ts readyStillFork, stillFork.ts layStillFork), the last
+ * stretch made the branch's tip (chaseTip.ts layTip, World 1's W1_TIP), the K2 liana a runner's, Easy's nuts and fruit a bump, the keeper's
+ * look by inventory id, the hearts. Throws (the roll is never listed) when anything it lays cannot be laid whole: never a half-laid beat.
  */
 export function finish18<T>(stage: T, difficulty: Difficulty): T {
   const st = stage as unknown as FinishStage;
   const easy = difficulty === 'easy';
   const lay = st.chase;
   if (!lay?.stretches.length) throw new Error('1-8 finish: the stage lays no chase');
+  if (!st.rolling?.length) throw new Error('1-8 finish: the pipeline laid no nut or fruit (its roll sockets)');
   const secs = st.gen2?.sections ?? [];
-  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (1) the nuts and fruit, at each brick's named pieces, in x order
-  const out: RollSpec[] = [];
-  for (const s of secs) {
-    // (its version's own hazards when the stage names its version; else the template's, Easy's twin on Easy where it has one)
-    const mine = Object.entries(ROLLS_18).filter(([k]) => k.startsWith(`${s.template}/`));
-    const rows = ROLLS_18[`${s.template}/${s.version ?? ''}`] ?? (easy ? mine.find(([k]) => k.endsWith('-easy')) : undefined)?.[1] ?? mine.find(([k]) => !k.endsWith('-easy'))?.[1];
-    for (const r of rows ?? []) {
-      const sp = spanOf(piecesOf(st, s.uid, r.on));
-      if (!sp) throw new Error(`1-8 finish: ${s.template} (${s.uid}) laid no piece '${r.on}' for its ${r.kind} hazard`);
-      const teach = s.template === 'w1-18-teach';
-      const row = r.kind === 'high' ? ROLL_18.fruit : teach ? ROLL_18.teachNut : ROLL_18.nut;
-      out.push({ kind: r.kind, dropX: Math.round(sp[0] + (sp[1] - sp[0]) * r.t), speed: row.speed, bounce: row.bounce, ...(teach || easy ? { teach: true } : {}) });
-    }
-  }
-  out.sort((a, b) => a.dropX - b.dropX);
-  const bad = rollGroundProblems(out, st.platforms);
-  for (const h of out) {
-    const r = runIn(h, st.platforms);
-    if (r.land === null || r.gapAt !== null) bad.push(`the ${h.kind} at ${h.dropX}: its run-in ${r.land === null ? 'has no ground' : `breaks at ${r.gapAt}`}`);
-  }
-  const apart = easy ? ROLL_18.apartEasy : ROLL_18.apart;
-  for (let i = 1; i < out.length; i++) {
-    const d = out[i].dropX - out[i - 1].dropX;
-    if (d < Math.max(apart, rollAhead(out[i], true) + ROLL.lowR)) bad.push(`the ${out[i].kind} at ${out[i].dropX} is ${d} px after the one before (one threat at a time: ${apart}+)`);
-  }
-  if (bad.length) throw new Error(`1-8 finish: the hazards: ${bad.join('; ')}`);
-  st.rolling = out;
-  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (2) the still fork: the living ground after the stretch the still-fork brick
-  // follows
+  // (Easy's nuts and fruit only bump him: rolling.ts rollTeaches, the rule for every stage's Easy, ENG-CL (5); the lead's ruling c)
+  // (2) the still fork: the living ground after the stretch the still-fork brick follows
   const w = secs.find((s) => s.template === W18_STILL);
   const wx = w ? spanOf(st.platforms.filter((p) => p.tag?.startsWith(`${w.uid}:`)))?.[0] : undefined;
   if (wx === undefined) throw new Error('1-8 finish: no still fork brick laid');
   const fork = lay.stretches.findIndex((s, i) => s.end <= wx + 1 && (lay.stretches[i + 1]?.start ?? Infinity) > wx);
   if (fork < 0) throw new Error(`1-8 finish: no stretch ends before the still fork at ${Math.round(wx)}`);
-  const why = layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1);
+  const why = [...readyStillFork(st as never, fork, W1_STILL_FORK), ...layStillFork(st as unknown as StillForkStage, fork, W1_STILL_FORK, 1)];
   if (why.length) throw new Error(`1-8 finish: ${why.join('; ')}`);
   // (3) the K2 liana(s): a runner's
   for (const s of secs.filter((q) => (W18_RUNNER as readonly string[]).includes(q.template))) {
@@ -354,36 +319,13 @@ export function finish18<T>(stage: T, difficulty: Difficulty): T {
     for (const v of vs) {
       if (easy) continue; // (Easy's hangs over a 40 px seam: optional, any swing)
       v.runner = true;
-      // (Normal fails here by name until runnerLip takes the take-off's height (ENGINE-WORTHY 1, ENG-CL): it reads a soft pit's step)
       const no = runnerProblems(v, st.platforms);
       if (no.length) throw new Error(`1-8 finish: the K2 liana: ${no.join('; ')}`);
     }
   }
-  // STOPGAP: replaced by gen2 layTip / roll socket (ENG-CL). (4) the tip: the last stretch's end made the branch's tip, the gap off it,
-  // the far tree's bough, the runner liana (chaseFixtureStage.ts layFixturePieces' checks, mirrored)
-  const last = lay.stretches[lay.stretches.length - 1];
-  const lip = st.platforms.filter((p) => p.chase && Math.abs(p.x + p.width - last.end) < 2).sort((a, b) => a.y - b.y)[0];
-  if (!lip) throw new Error('1-8 finish: the last stretch ends on no section');
-  const g0 = last.end, g1 = last.end + TIP_18.gap, g2 = g1 + TIP_18.land;
-  const kept: Platform[] = [];
-  for (const p of st.platforms) {
-    if (p.x + p.width <= g0 || p.x >= g2) { kept.push(p); continue; }
-    if (p.y !== lip.y && p.x >= g0) continue; // (nothing of the S brick's below or above the branch stays in the gap)
-    if (p.x + p.width > g2) kept.push({ ...p, x: g2, width: p.x + p.width - g2 });
-  }
-  kept.push({ id: st.platforms.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g1, y: lip.y, width: TIP_18.land, height: 400, type: 'solid', style: 'moss_stone' } as Platform);
-  const v: Vine = { id: st.vines.reduce((m, q) => Math.max(m, q.id), 0) + 1, x: g0 + TIP_18.out, topY: lip.y - TIP_18.up, bottomY: lip.y + TIP_18.foot, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, runner: true };
-  const tipWhy = runnerProblems(v, kept);
-  if (tipWhy.length) throw new Error(`1-8 finish: the tip liana: ${tipWhy.join('; ')}`);
-  st.platforms = kept;
-  st.vines = [...st.vines, v];
-  last.tip = true;
-  const inGap = (x: number) => x > g0 - 20 && x < g1;
-  for (const c of st.checkpoints ?? []) if (inGap(c.x)) c.x = g1 + 120;
-  st.collectibles = st.collectibles.filter((c) => !inGap(c.x));
-  if (st.rolling.some((h) => h.dropX > g0 - 900 && h.dropX < g1 + 300)) throw new Error('1-8 finish: a hazard on the run to the tip');
-  const pr = st.proto as Record<string, Array<{ x: number }> | undefined> | undefined;
-  for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if (pr?.[k]) pr[k] = pr[k]!.filter((q) => !inGap(q.x));
+  // (4) the tip: World 1's (the gap off the last stretch's lip, the far tree's bough, the runner liana; hazards on the run to it left out)
+  const tipWhy = layTip(st as never, W1_TIP);
+  if (tipWhy.length) throw new Error(`1-8 finish: ${tipWhy.join('; ')}`);
   // (6) the keeper's look: a palm crown over every nut's drop, a cannonball trunk behind every fruit's (DRESS_18, by inventory id)
   const proto = ((st as { proto?: unknown }).proto ??= {}) as { invDress?: InvDress[] };
   for (const h of st.rolling) {
@@ -414,6 +356,7 @@ export function kitLib18(): WorldKit {
   return { ...k,
     manifest: { ...M,
       sections: SECTIONS_18,
+      rolls: ROLL_18,
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_18) as Array<keyof typeof LINES_18>).map((q) => [lineId(q), LINES_18[q]])) },
