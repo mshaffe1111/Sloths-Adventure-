@@ -14,3 +14,12 @@ up. That's what [a family player] did, and she started getting frustrated." So 1
 player who knows to keep running, and hard for one who tries to steer each jump in the air. The difficulty factor is reading/understanding (did
 the level teach what to do?), not precision, and its cost was frustration, not just failure. A model that scores only the intended input
 (run straight across) will call 1-2 easy and be wrong for first-time players; it must account for the likely WRONG input a newcomer tries.
+
+## Double jumps and how people hold the phone (Matt, 12:00 AM ET)
+"the other thing that makes some things hard is like double jumping. It's all timing. So if somebody uses their index finger, it may be different
+than their thumb. So double jumps are usually a little bit harder. And other people may try to run with the finger on Pokey, which would make it
+harder because their fingers run out of space... usually people tell me double jumping's harder, like one of the harder things to do."
+For the model: (1) the double jump's second-press timing is a top-felt difficulty for players (testers' reports, via Matt); its channel must be
+calibrated to tester failures, not only the bits formula (DIFFICULTY.md prices it +1.32); (2) input posture changes timing spread: thumb vs index
+finger (and two-handed vs one-handed) are different player tiers' spreads; (3) running with a finger ON Pokey runs out of screen: the control's
+reach is part of difficulty for that style (a UX question as much as a difficulty one).
