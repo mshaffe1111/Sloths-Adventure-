@@ -54,6 +54,16 @@ export const ARC_NEAR = 40;
  * `arc`: the door never counts it (goals.ts goalCounts): the child tier flies under the apex row, and with them counted it met the sealed
  * door on 40 of 40 Normal 1-6 runs (INT-10 castBots-1-6-arcs.txt; 32/40 before the arcs). Returns how many.
  */
+/** an arc's point this low over a piece reads as a petal STANDING on it (walkPetals' own reading: its body up to 60 px over the top), so it
+ *  stands only inside that piece's walked span: 1-6 layout 1's arc petal 37 px over the rest log's near end, where every run is still in the
+ *  air, looked like a ground petal no run stands by (INT-10c; walkedPath.test D) */
+function readsStanding(stage: GeneratedStage, ws: SpanStage, c: { x: number; y: number }): boolean {
+  const p = stage.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && c.x >= q.x && c.x <= q.x + q.width && q.y - c.y > 0 && q.y - c.y <= 60).sort((a, b) => a.y - b.y)[0];
+  if (!p || (p.type !== 'solid' && p.type !== 'fragile')) return false;
+  if (ws.away!(p)) return true;
+  const w = walkedSpanMemo(p, ws);
+  return w.hi - w.lo < WALKED_MIN || c.x < w.lo - 2 || c.x > w.hi + 2;
+}
 export function arcPetals(stage: GeneratedStage): number {
   const spans = fallSpans(stage);
   const ws = walkedStage(stage, spans);
@@ -62,7 +72,7 @@ export function arcPetals(stage: GeneratedStage): number {
   let n = 0;
   for (const a of hopArcs(ws)) {
     for (const p of a.points) {
-      if (!open(stage, p, ARC_NEAR) || inFall(spans, p)) continue;
+      if (!open(stage, p, ARC_NEAR) || inFall(spans, p) || readsStanding(stage, ws, p)) continue;
       let near: Collectible | undefined;
       for (const q of petals) if (!near || Math.hypot(q.x - p.x, q.y - p.y) < Math.hypot(near.x - p.x, near.y - p.y)) near = q;
       const c: Collectible = { id: id++, type: 'flower', x: p.x, y: p.y, collected: false, bobPhase: (p.x * 0.031) % 6.28, arc: true, ...(near?.botanicalVariant ? { botanicalVariant: near.botanicalVariant } : {}) };
