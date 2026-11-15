@@ -77,7 +77,11 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2)`: RED on the pipeline before (the
   R-165.251 commit's), GREEN now; the same test on 6-1, 7-5 and 8-3: green before and after (guards: their Easy moved, their plan did
   not). easyMode.test.ts:61 untouched: GREEN on the head (suite line).
-- **Lock list** (every stage whose build now changes, against the base): LOCK258
+- **Lock list** (every stage whose build now changes, against the base): lockall --layouts 16 on code head 6df8fb585 against the base's two locks.
+  **Normal: 102/102 unchanged** (Normal's search checking Easy's lay on Easy's swing changed no Normal plan in 16 layouts). **Easy, against
+  a fresh phone's Easy today, 8 stages change** (layouts of 16): 6-1 12, 6-3 5, 6-6 6, 6-7 5, 7-5 7 (its gen2 record only), 7-9 9, 8-3 5,
+  8-5 14; the other 94 unchanged. Against today's tools: the same 21 as R-165.251. World 1 lists: 1424 of 1424 builds still identical.
+  These 8 are the intended change: each Easy now lays Normal's real plan (QUALITY8).
 
 ### R-165.252: the test link refuses an over-full build before publish and maps against the last PUBLISHED build
 - tools/testlink/build.py: prints `test link: N files (limit 480)` and exits 1 with `FAIL: N files, over the 480 limit` above
