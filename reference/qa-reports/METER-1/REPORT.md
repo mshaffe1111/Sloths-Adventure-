@@ -188,7 +188,7 @@ its far end (off the stretch is out of the eye).
 - **Easy over 0.6 x Normal**: 1-1 0.65, 1-4 0.74, 1-6 0.67 (DIFFICULTY.md G2's 0.6).
 - **1-8 Normal on t-build-18@e9dc28bf built on no layout**; on 3cc12409 it builds on 4 (the numbers above).
 - **The old hand-built 1-6 reads 6.9 / 5.7** (it is replaced by BUILD-16's); 12 of its catches are NOT MEASURED.
-- **Spread** (World 1-10, one layout each, Normal, on t-build-16: sweep-before.txt / sweep-after.txt / sweep-diff.txt): SWEEP_TABLE
+- **Spread** (World 1-10, one layout each, Normal, on t-build-16: sweep-before.txt / sweep-after.txt / sweep-diff.txt): world medians before -> after: W1 median 3.3->4.0 (1-4 2.9->4.3; 1-6 3.3->6; 1-8 29.8->12.2); W2 median 4.3->4.3 (2-4 9.7->11.3); W3 median 4.4->4.4 (3-8 7.6->8.7); W4 median 4.2->4.2 (4-4 9.4->11.9); W5 median 6.4->6.4; W6 median 3.6->4.5; W7 median 4.4->4.4; W8 median 3.5->3.9 (8-3 4->5.1; 8-5 2.6->3.9); W9 median 6.8->6.8; W10 median 9.9->9.9. Every move past World 1 is a liana stage (the true release windows on 2-4, 4-4, 3-8, 8-3, 8-5 and World 6 are narrower than the guessed 0.4 s of 1.6 s) and none is past its world's band top (DIFFICULTY.md §4); before the gen2-only view rule and the chain-catch check it read 4-4 9.4 -> 20, 2-4 9.7 -> 18.4 (fixed, planted). One layout each: a spread check, not a reading (the method asks 4).
 
 ## 6. Method used, lessons applied, method update
 - **Method used**: reference/methods/difficulty.md (steps 1-5), the ENGINE card's day one (a planted failure for each rule, the lock:
