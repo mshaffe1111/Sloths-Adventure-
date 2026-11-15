@@ -41,9 +41,11 @@ Gates on the head: see section 8 (filled from the run's own output).
 - HELP-FINISH: tools/engine/seedlist.ts `finish` (for helpRoomBreaches) := (st) => playFinish(row, st, d) per setting, as the quiet
   judge now uses; run every list's --check; any refused seed is a real room-for-help fault on the stage as played. Files: seedlist.ts,
   yield.ts. Done: all lists --check, a planted test on a 1-4 seed whose finish14 fields change its rises.
-- BOUGH-UNDERSIDE (Hugging Face, the lead's call): one seamless, left-right tiling bough section, about 1.2x Pokey's drawn height
-  thick, mossed walkable top, rounded shaded bark underside that fades to transparent, Matt's long-branch style (props3-atlas.webp
-  as the style reference); plus a matching knot/collar for (2).
+- BOUGH-UNDERSIDE (Hugging Face; the lead 8:57 PM: a fresh look member runs the job and the build): one long seamless bough section,
+  tiling left-right, about 1.2x Pokey's drawn height thick (about 107 px of world at his 89.1), a mossed walkable top (the moss line a
+  straight row the walkable top sits on, as chaseSeg's `top`), a rounded, shaded bark underside that fades to transparent at its
+  bottom, in World 1's painted style (Matt's long-branch sheet props3-atlas.webp as the style reference); plus a matching knot/collar
+  for (2), sized to the bough. Logged in reference/art/HF-SPEND.md, entered in the inventory at scale.
 
 ## 5. Unresolved, named plainly
 - (1)-(3) the look: NOT built. EXACT NEXT STEP:
