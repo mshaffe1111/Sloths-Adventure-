@@ -3,10 +3,31 @@ Branch t-eng-petal from t-build-16@cecbb948 (git ls-remote at start), t-build-16
 Packet: reference/packets/2026-11-14/ENG-PETAL.md (origin/ccr-ea739a2f-dfcee4). Times below are pasted from `TZ=America/New_York date`.
 
 ## Verdict
-__VERDICT__
+**1-6 is NOT GREEN; nothing here is ready for Matt's link.** The three rules are built for every stage, each planted (7/7 plants
+RED, restored GREEN): the one walked-path model (read by the socket lay, the fill and a pass on the built stage), the LOW brief (no
+fill), and the wall at every joined pair of soft-pit floors (plus a proof that every 1-6 soft pit climbs back to its take-off on the
+rescue layouts). 1-6's expert Normal went from 7/40 to 33/40 through the door; 7 seals remain, each 1-2 petals short, and the stage
+now holds about 23 petals a layout (was 112): that count needs the lead's ruling before any more tuning.
 
 ## Before / after (castBots 1-6 seeds 1-40, both settings; the petal counts built as the game builds them, generateStage + withGoals)
-__TABLE__
+Petals held / the door, Normal, castBots layouts 1-10 (petals-held-*.txt; the door is goals.ts' 0.875, untouched):
+| stage | before cecbb948: held (mean) | door (layout 1) | after ddbcd55c: held (mean) | door (layout 1) |
+|---|---|---|---|---|
+| 1-6 | 104-122 (112.3) | 105 of 120 | 21-24 (23.1) | 20 of 23 |
+| 1-7 | 95-108 (102.8) | 1 (its goal is not petals) | 37 every layout | 1 |
+
+castBots 1-6 seeds 1-40 (PASS = shrine reached with the goal met; files castBots-1-6-*.txt):
+| bot / setting | before cecbb948 | 7e9fe4d8 (moves to next piece) | f4896466 (own piece; drop) | ddbcd55c (+ the wall; FINAL) |
+|---|---|---|---|---|
+| expert Normal | 7/40 (33 sealed, got 80-107 of 91-109 needed) | 33/40 | 33/40 | **33/40** (7 sealed, got 17-21 of 18-22) |
+| middle Normal | 13/40 | 35/40 | 34/40 | **35/40** (4 sealed, 1 rescue s34) |
+| middle Easy | 40/40 | 40/40 | 40/40 | **40/40** |
+| child Normal | 21/40 | 38/40 | 38/40 | **32/40** (7 sealed, 1 rescue s2) |
+| child Easy | 39/40 | 39/40 | 39/40 | **39/40** (1 rescue s2) |
+castBots 1-7 expert Normal 1-40: __C17__
+The child's Normal drop with the wall (38 -> 32): his misses (trace-child-normal-ddbcd55c.txt, seeds 4, 8) are on hang-low:b1,
+false-liana:sb1, rest-stumps:s1/s2, none by a wall. With about 22 petals and a door of 19-21, one moved petal decides a run: the stage
+has no margin, which is the count ruling in Pushback, not a fault of the wall (not proven either way: two seeds traced).
 
 ## Done-items (each planted: `python3 reference/qa-reports/ENG-PETAL/planted.py`; planted.out.txt: every plant RED, restored GREEN)
 1. **ONE walked-path model** (src/game/gen2/walkedSpan.ts; every stage of every world). Besides ENG-16H's lianas and asks, the PLAIN
@@ -36,7 +57,16 @@ __TABLE__
 4. Merged t-build-16@7d9f81b3 (c302f27d).
 
 ## The petals 1-6's expert still leaves (traces: reference/qa-reports/ENG-PETAL/trace-*.txt, ENG-16I's petals.ts)
-__TRACE__
+Raw: trace-expert-normal-f4896466.txt (ENG-16I's petals.ts, seeds 29, 34, 7, 37, 20; the code then = this head's petal lay, before
+the wall). 22 petals left over 5 seeds, every door sealed 1-2 short (got/need 19/21, 19/21, 19/20, 16/18, 17/18). By why:
+| why (counted line by line) | count | the raw lines (piece: walked span / where he stood) |
+|---|---|---|
+| set down past the span's END on hang-low:b1/b2, creaky-landing:b2, false-liana:sb1 (the arrival the model under-reaches: up to 150 px) | 13 | hang-low:b2 7965..8079 / 8115..8169 (s29); creaky-landing:b2 28539..28650 / 28716..28741 (s34, x2); false-liana:sb1 38985..39123 / 39166..39208 (s7) |
+| rest-hump:m: the socket's petal clamped to the span's near end, he set down 90-110 px past it | 5 | 16400..16553 / 16511..16682 (s29); every one of the 5 seeds |
+| rest-log:f: set down past the span's end | 2 | 40626..40706 / 40728..40792 (s29); 30265..30345 / 30357..30428 (s37) |
+| never stood on it (snake-on-vine:out, rest-stumps:s1) | 2 | 25115..25152 (s29); 16437..16498 (s20) |
+Putting each socket's petals at the span's take-off end instead (b2083de4) did not lower the expert's seals (33/40) and raised the
+child's (38 -> 32/40 sealed+rescued): reverted (ddbcd55c). The fix that remains is the arrival model (lianas, doubles).
 
 ## Gates on the head
 __GATES__
@@ -68,10 +98,36 @@ or 15 px under the limb's top, so on 1-6 the limb's near 24 px no longer gives w
   fluid run walks.
 
 ## Unresolved
-__UNRESOLVED__
+- **1-6 is NOT green**: expert Normal still meets a sealed door on 7/40 (castBots table); middle and child have seals and
+  the s34/s2 rescues (bot-side: the pit's way back exists, proved by pitJoinWall.test "climbs back" on the rescue layouts).
+- **1-6's petal count** (about 23 a layout) is a ruling, not a fix; the lead's and the Designer's.
+- **Every stage's petals moved** where the fill ran (lockall 2 layouts both settings, lockall-cecbb948-vs-ddbcd55c.txt: 71 of 102 stages
+  changed, nearly all in `collectibles`; 1-6 also `platforms` (the wall); 1-2, 2-2, 8-2 goals or size). 8-2 moved wholesale on at
+  least one of its 4 builds (layout 1 Normal is the same roll, attempt 753230): not traced.
+- **8-3 (softFalls11.test:128)**: the revert proof is done (softfalls83/revert-proof.txt: with pitHoleFill off all three layouts equal
+  main's pins byte for byte). The move is ENG-16H's pit-floor pass alone: +56 pieces on L2, +53 on L3, 72-86 px moss-stone fills 160 px
+  tall. Too large to call intended without looking at it: NOT re-pinned (a lead call after stills).
+- **gen2Pits.test:61** (1-6 seed 1: "bank at x 28090 ends 0 px over the floor at x 27933"): pre-existing on cecbb948 (ENG-16I's list).
+  The later pit's first stair step stands flush against the joined floor's end, its foot on the floor's top. Not fixed.
+- 2-1 (R-165.263): a hand-built World 2 stage with no petal brief in data; its fill now keeps to walked spans (lockall: collectibles
+  moved) but "few" needs a brief field and a number from the story keeper / Designer. Not done.
 
 ## EXACT NEXT STEP
-__NEXT__
+In order (engine tier unless named):
+1. **Lead ruling: 1-6's petal count** (about 23 a layout now; the lay's sockets give about 58, the walked path drops the ones no fluid
+   run walks). Either the Designer re-socket 1-6's pickups on pieces every run walks (banks, the wide rests), or accept the count.
+2. **Model the liana let-go and the double in the arrival** (walkedSpan.ts lianaTouchdown and the plain-jump arrival): 13 of the 22
+   petals the expert left are set-downs past the modelled span after hang-low, creaky-landing:b2 and false-liana
+   (trace-expert-normal-f4896466.txt); plant it on those pieces; then `npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-40
+   --bots expert,middle,child --setting both --par 2` until 0 sealed (the s34/s2 rescues are the bot's stair skill: the pit's way
+   back is proved).
+3. **Lists**: `npx tsx tools/engine/seedlist.ts <id> --check` for 1-1..1-7 on the head (results in Gates; relist any that fails, in
+   order, with `npx tsx tools/engine/addlevel.ts <id> --relist --no-bots` as ENG-16H did, and commit only that run's lists).
+4. **The suite reds** (Gates): gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
+   softFalls11.test:128 (8-3: revert proof done, look at the 56 fills on a phone before re-pinning), and any pin the moved petals
+   broke (lockall: 71 stages' collectibles moved).
+5. 2-1's petal brief: a data field and the keeper's number (R-165.263's 'few'), then its fill honours it.
+6. Stills and clips only on the GREEN head (rule 29).
 
 ## Learned
 - A model that is "every run walks it" must be tried against the count it leaves before it is called a fix: 1-6 went 112 -> 23.
@@ -88,4 +144,4 @@ message), D57 (queue read before the progress message). Method update (proposed 
 (gen2/walkedSpan.ts): a socket's petals on its own piece, at the take-off end of its walked span; check walkedPath.test D".
 
 ## Turnover note
-reference/handoffs/engine-core.md section 0ze, __TURNOVER__.
+reference/handoffs/engine-core.md section 0ze, written in commit 9983514f (t-eng-petal).
