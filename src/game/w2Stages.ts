@@ -18,7 +18,8 @@ import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
 import { buildKapok, EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
-import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
+import { LOG_DROP, surfaceBelowBank, type RiverZone } from './river.ts';
+import { layRiver } from './gen2/riverLay.ts';
 import type { W2Decor } from './riverArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -321,41 +322,13 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     run(opts.lead ?? R.r(120, 135));
     close();
     const rx0 = x;
-    // (a river that flows back at him may keep its logs closer than it must: they come toward him, so the hop only gets shorter)
-    const gap = opts.gap ?? Math.round(gapFor(dir, speed));
-    const width = (logs + 1) * (logW + gap) - logW;
-    const rx1 = rx0 + width;
-    const { count, period } = logLayout({ dir, speed, logW, gap, width });
-    for (let i = 0; i < count; i++) {
-      const p: Platform = {
-        id: pid++,
-        x: rx0,
-        y: LOG_Y,
-        width: logW,
-        height: LOG_HEIGHT,
-        type: 'drift',
-        style: 'log',
-        drift: {
-          x0: rx0,
-          x1: rx1,
-          dir,
-          speed,
-          width: logW,
-          offset: (i * period) / count,
-          baseY: LOG_Y,
-        },
-      };
-      p.x = driftX(p.drift!, 0);
-      P.push(p);
-    }
-    rivers.push({
-      x0: rx0,
-      x1: rx1,
-      surfaceY: SURFACE,
-      dir,
-      speed,
-      ...(opts.safe ? { safe: { backX: rx0 - 70, backY: G } } : {}),
-    });
+    // (the river's one lay, gen2/riverLay.ts: its logs on the river's clock, the zone, the splash-back; a river that flows back at him may
+    // keep its logs closer than it must, `gap`: they come toward him, so the hop only gets shorter)
+    const laid = layRiver({ dir, speed, logW, logs, ...(opts.gap !== undefined ? { gap: opts.gap } : {}), ...(opts.safe ? { safe: true } : {}) }, rx0, G, () => pid++);
+    P.push(...laid.logs);
+    rivers.push(laid.zone);
+    const rx1 = laid.zone.x1;
+    const width = rx1 - rx0;
     const n = opts.flowers ?? Math.max(3, logs + 1);
     if (n > 0) arc(rx0 + 50, rx1 - 50, G - 70, n, 'hibiscus', 50);
     // reeds where the banks meet the water: one on each side, low enough not to hide the logs
