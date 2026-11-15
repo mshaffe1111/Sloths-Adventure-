@@ -58,7 +58,22 @@ the gap stands ON the far branch' (a toy whose ground past the tip is 80 px lowe
 red on the frozen pre-fix head (suite shard), green on e014d41d.
 
 ## Whole suite (3 shards, frozen worktree at c738e52f = (1) without the flag fix)
-SUITE_RESULT
+**3,613 tests: 7 fail, 2 todo** (shard 1: 1,147, 1 fail; shard 2: 1,331, 4 fail; shard 3: 1,135, 2 fail). **None is mine; the 7
+hand-built-1-8 tests are all green.** Every red is on BUILD-18's named list:
+- skills.test 'no stage needs a rope ... every stage stays beatable': "1-8 v3: checkpoint at x=35024 is not on a reachable platform".
+  **FIXED on e014d41d** ((1b) above; re-run on the head: ok).
+- w1Pits.test 1-8 (`{"1-6":5,"1-8":1}`): step 1, waits for (2) (pushback).
+- w1Overhang.test '1-8: every listed layout, both settings: no stone or stump drawn more than 6 px past its ground': step 2, (1c).
+- gen2Pits.test 'a bank beside a pit ...': "1-8 seed 2 (normal) does not build: 1-8 finish: still fork 3: its ground breaks at 26539":
+  1-8's data/finish (BUILD-18b).
+- movesJournal.test 'every tip a page waits for is one the game really says': 'collapse: 1-8 as built says "This branch goes on and on"'
+  (a deleted line: data).
+- rollGuard.test '1-8: every sampled roll is long enough and passes the level check' (BUILD-18's; not traced tonight).
+- story 1101 'Pokey's own thought ... first person / petal third person' (the keeper's way.1-8).
+So on my head: **6 reds, all 1-8's, none in engine code I touched**; the suite is NOT green, so (2) does not start until the lead says
+which of these must be green first (1c and step 1 are mine).
+Fast gates on the head: tsc PASS, knowncheck PASS, generalitycheck PASS (26 known, 0 new). roadmapcheck could NOT judge (this
+container's clone is shallow: "proofs cannot be checked"), named, not a pass.
 
 ## Polish check
 Stills (sideways 915x412, dsf 1, real dev page, layout 1): tip-lip-today-side.jpg (on the tip: the branch ends in an earth bank, the
