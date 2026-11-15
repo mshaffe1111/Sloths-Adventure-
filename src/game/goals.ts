@@ -59,8 +59,10 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
   const ring = (st.proto?.ring?.waves ?? []).reduce((s, w) => s + w.length, 0);
   const guards = (st.proto?.w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff).length;
   return {
-    // (a petal on a crumbling limb, or on a hop's arc (Collectible.arc, INT-10), is a bonus: never what the door asks for)
-    petals: st.collectibles.filter((x) => (x.type === 'flower' || x.type === 'leaf') && !x.arc && !onCrumbling(x, st.platforms)).length,
+    // (a petal on a crumbling limb, on a hop's arc (Collectible.arc, INT-10), or one the walked path says a run need not pass
+    //  (Collectible.walked false, petals.ts markWalked; the lead's ruling INT-10d 11-15) is a bonus: shown and counted when picked, never
+    //  what the door asks for)
+    petals: st.collectibles.filter((x) => (x.type === 'flower' || x.type === 'leaf') && !x.arc && x.walked !== false && !onCrumbling(x, st.platforms)).length,
     animals: st.enemies.length + ring + guards,
     rescuable: c((t) => t === 'cage') + (st.proto?.w5?.cocoons?.length ?? 0),
     relics: c((t) => t === 'relic'),

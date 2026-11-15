@@ -3,8 +3,9 @@
  * world): the part of a piece every run walks, between the FARTHEST point the leap or hop onto it can set him down and the EARLIEST point
  * the jump off it leaves. A petal laid at a fixed share of its piece (a socket's `t`) could sit where a fluid run never stands: behind
  * where the leap sets him down, or past where he jumps off (1-6, expert Normal seeds 1-40: twelve socket petals each missed in 10-26 of 40
- * runs, 22 sealed doors; ENG-16G's ranked miss list). gen2 lays a pickup socket's petals inside its piece's walked span, and on a piece the
- * leap clears (no span), on the next piece he walks (pipeline.ts fillSockets).
+ * runs, 22 sealed doors; ENG-16G's ranked miss list). The door counts only the petals inside their piece's walked span (petals.ts
+ * markWalked, Collectible.walked; goals.ts goalCounts). It never decides where a petal goes: the lead's ruling INT-10d 11-15, placing by it
+ * stripped 13 stages (6-2 73 -> 5); the socket lay and the fill lay as main does.
  *
  * Read off the BUILT pieces (the platforms, lianas and asks as laid, never a section's data), by the engine's own flights on the stage's
  * setting (the build runs inside settingDials withSetting):
@@ -221,27 +222,6 @@ function walkedSpanOf(p: Platform, st: SpanStage, dk: string): { lo: number; hi:
   }
   if (hi - lo < WALKED_MIN && !next && lands.length) next = lands[0].q;
   return { lo, hi, ...(next ? { next } : {}) };
-}
-
-/** how many pieces forward a cleared piece's petals may move (a chain of pieces he clears, one after another) */
-const HOPS = 6;
-/**
- * The piece a petal laid on `p` goes on, and its walked span: `p` when he walks it; on a piece he clears in the air (no span), the next
- * piece the way off it sets him down on, and on, until one is walked. Undefined: none within HOPS (no petal: never one he flies past).
- * `mine`: the pieces it may move to (its own section's: a section keeps its own items clear, a trap's handle and load among them, and a
- * petal moved onto the next section's first piece stood in front of its trap, 1-5's trap.hidden; ENG-PETAL 11-14).
- */
-export function walkedPiece(p: Platform, st: SpanStage, mine?: (q: Platform) => boolean): { piece: Platform; lo: number; hi: number } | undefined {
-  const seen = new Set<Platform>();
-  let q: Platform | undefined = p;
-  for (let k = 0; q && k <= HOPS && !seen.has(q); k++) {
-    seen.add(q);
-    if (st.away?.(q) || (q !== p && mine && !mine(q))) return undefined;
-    const ws = walkedSpan(q, st);
-    if (ws.hi - ws.lo >= WALKED_MIN) return { piece: q, lo: ws.lo, hi: ws.hi };
-    q = ws.next;
-  }
-  return undefined;
 }
 
 /** the middle tier's take-off before a piece's edge on a plain jump (px; the median of tools/inspect/firsttimer.ts FT_MIDDLE aimQ, the

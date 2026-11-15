@@ -20,7 +20,7 @@ import { shutLidFeet } from './vineField.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { jumpEdges } from './stageMetrics.ts';
-import { hopArcs, LAID_ASKS, walkedPiece, walkedSpan, WALKED_MIN, type SpanStage } from './gen2/walkedSpan.ts';
+import { hopArcs, LAID_ASKS, walkedSpan, WALKED_MIN, type SpanStage } from './gen2/walkedSpan.ts';
 
 /** the most petals on one screen, and the screen (world px: wider than an upright phone's view, about a sideways one's) */
 export const PER_SCREEN = 6;
@@ -50,11 +50,11 @@ export const ARC_NEAR = 40;
  * Petals on the arcs of the stage's REQUIRED hops (gen2/walkedSpan.ts hopArcs: every run flies through them, so they are walked space;
  * INT-10, the lead's ruling 11-15 11:10 AM ET), one at each of its points that is open (not in a piece, not in the water or a mist, not
  * below a fall's lower lip) and ARC_NEAR from every other pickup. The species is the nearest petal's (a row never mixes them). Run on the
- * built stage after walkPetals (they stand in the air, not on a piece); petalTrail then holds them to every petal rule. Each is marked
+ * built stage (they stand in the air, not on a piece); petalTrail then holds them to every petal rule. Each is marked
  * `arc`: the door never counts it (goals.ts goalCounts): the child tier flies under the apex row, and with them counted it met the sealed
  * door on 40 of 40 Normal 1-6 runs (INT-10 castBots-1-6-arcs.txt; 32/40 before the arcs). Returns how many.
  */
-/** an arc's point this low over a piece reads as a petal STANDING on it (walkPetals' own reading: its body up to 60 px over the top), so it
+/** an arc's point this low over a piece reads as a petal STANDING on it (markWalked's own reading: its body up to 60 px over the top), so it
  *  stands only inside that piece's walked span: 1-6 layout 1's arc petal 37 px over the rest log's near end, where every run is still in the
  *  air, looked like a ground petal no run stands by (INT-10c; walkedPath.test D) */
 function readsStanding(stage: GeneratedStage, ws: SpanStage, c: { x: number; y: number }): boolean {
@@ -84,7 +84,7 @@ export function arcPetals(stage: GeneratedStage): number {
   return n;
 }
 
-/** the walked path on a finished stage (gen2/walkedSpan.ts, the model the socket lay reads too): its pieces, lianas, the asks it was laid
+/** the walked path on a finished stage (gen2/walkedSpan.ts, the model the door count reads, markWalked): its pieces, lianas, the asks it was laid
  *  with, and `away`, from its own record of its falls (missPiece) */
 export function walkedStage(stage: GeneratedStage, spans: readonly FallSpan[] = fallSpans(stage)): SpanStage {
   return { platforms: stage.platforms, vines: stage.vines, asks: LAID_ASKS.get(stage) ?? [], away: awayOf(spans) };
@@ -233,8 +233,6 @@ export interface PetalOut {
   crowded: number;
   /** the petals the spread put in (petalPass.ts) */
   filled?: number;
-  /** the standing petals the walked path moved onto a walked piece, and the ones it took out (walkPetals) */
-  walked?: { moved: number; gone: number };
   /** the petals laid on the required hops' arcs (arcPetals), before the trail's rules judged them */
   arcs?: number;
 }
@@ -366,42 +364,42 @@ export const inFall = (spans: readonly FallSpan[], p: Pt): boolean => spans.some
  *  floor or step inside a fall below its lower lip (a soft pit's floor and its stair) */
 export const missPiece = (spans: readonly FallSpan[], p: Platform): boolean =>
   p.pit === 'hurt' || !!p.catch || spans.some((f) => p.x + p.width > f.x0 + 4 && p.x < f.x1 - 4 && p.y > f.lip);
-/** a piece that never holds a fill petal: a piece he stands on only after a miss (missPiece), or a creaky limb */
+/** a piece off the path: one he stands on only after a miss (missPiece), or a creaky limb */
 export const offPath = (spans: readonly FallSpan[], p: Platform): boolean => p.type === 'fragile' || missPiece(spans, p);
-/** the pieces each trail of the last candidates() rests on (a ledge's ledge, a jump's two ends; a climb's vine foot as a point) */
-const RESTS = new WeakMap<Pt[], { on: Platform[]; foot?: Pt }>();
 
 /**
- * The walked path on the BUILT stage (ENG-PETAL 11-14, R-165.246; level.md rule 27: judge the built stage, not its data): every petal
- * standing on a piece (its body up to 60 px over the top) is inside that piece's walked span (gen2/walkedSpan.ts, the model the socket lay
- * and the fill read); one outside it moves inside its piece's span, at the same height; one on a piece every run does not walk (he
- * clears it in the air, or stands on it only after a miss) goes.
- * The lay reads the same model, but a pass after it can still move a piece (1-6 normal 2: a socket's petal 5 px past the span on the
- * built stage). Gen2 stages (the ones the socket lay builds); changed in place, returns how many moved and went.
+ * Which petals the door counts (the lead's ruling INT-10d 11-15: the walked path decides WHICH petals a share goal counts, never WHERE they
+ * go; ENG-PETAL's model with rule A, gen2/walkedSpan.ts). Each flower or leaf of a finished gen2 stage gets `walked`:
+ *   - standing on a solid piece or a creaky limb (its body up to 60 px over the top): true only inside that piece's walked span (at least
+ *     WALKED_MIN wide, 2 px of give) on a piece the run does not reach only after a miss (`away`: a pit's floor or stair, a hurt floor, a
+ *     catch). A petal behind where the leap sets him down, past where he jumps off, or on a piece he clears in the air is false;
+ *   - standing on any other piece (a log or a pad he rides, a lift): true (the model does not judge a ride);
+ *   - in the air (a climb's trail, a jump's arc): true unless it hangs inside a fall below its lower lip (getting it means dropping in).
+ * A petal marked false still shows and still adds to the counter when he picks it; it never seals a door (goals.ts goalCounts). Changed
+ * in place; returns how many are marked false. Run last, on the stage as the game plays it (stageGenerator finishStage, after pairPetals).
  */
-export function walkPetals(stage: GeneratedStage): { moved: number; gone: number } {
-  const ws = walkedStage(stage);
-  let moved = 0;
-  const gone = new Set<Collectible>();
+export function markWalked(stage: GeneratedStage): number {
+  const spans = fallSpans(stage);
+  const ws = walkedStage(stage, spans);
+  let off = 0;
   for (const c of stage.collectibles) {
-    if (!isPetal(c, stage) || KEEP.has(c)) continue;
-    const p = stage.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && c.x >= q.x && c.x <= q.x + q.width && q.y - c.y > 0 && q.y - c.y <= 60).sort((a, b) => a.y - b.y)[0];
-    if (!p || (p.type !== 'solid' && p.type !== 'fragile')) continue;
-    const w = walkedSpanMemo(p, ws);
-    if (!ws.away!(p) && w.hi - w.lo >= WALKED_MIN && c.x >= w.lo - 2 && c.x <= w.hi + 2) continue;
-    // (on its own piece only, as the lay: a petal moved onto another piece stands where that piece's section keeps clear)
-    const wp = ws.away!(p) ? undefined : walkedPiece(p, ws, (q) => q === p);
-    if (!wp) { gone.add(c); continue; }
-    const up = p.y - c.y;
-    c.x = Math.round(Math.max(wp.lo, Math.min(wp.hi, wp.piece === p ? c.x : (wp.lo + wp.hi) / 2)));
-    c.y = Math.round(wp.piece.y - up);
-    moved++;
+    if (c.type !== 'flower' && c.type !== 'leaf') continue;
+    c.walked = walkedPetal(stage, ws, spans, c);
+    if (!c.walked) off++;
   }
-  if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));
-  return { moved, gone: gone.size };
+  return off;
+}
+function walkedPetal(stage: GeneratedStage, ws: SpanStage, spans: readonly FallSpan[], c: Collectible): boolean {
+  if (KEEP.has(c)) return true;
+  const p = stage.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && c.x >= q.x && c.x <= q.x + q.width && q.y - c.y > 0 && q.y - c.y <= 60).sort((a, b) => a.y - b.y)[0];
+  if (!p) return !inFall(spans, c);
+  if (p.type !== 'solid' && p.type !== 'fragile') return true;
+  if (ws.away!(p)) return false;
+  const w = walkedSpanMemo(p, ws);
+  return w.hi - w.lo >= WALKED_MIN && c.x >= w.lo - 2 && c.x <= w.hi + 2;
 }
 
-/** each piece's walked span, read once per built layout (the fill asks for it each round; the pieces do not move between rounds) */
+/** each piece's walked span, read once per built layout (asked for each petal; the pieces do not move once built) */
 const SPANS = new WeakMap<Platform, { key: string; lo: number; hi: number }>();
 function walkedSpanMemo(p: Platform, st: SpanStage): { lo: number; hi: number } {
   const key = `${st.platforms.length}:${p.x},${p.y},${p.width}`;
@@ -418,7 +416,7 @@ function walkedSpanMemo(p: Platform, st: SpanStage): { lo: number; hi: number } 
 const LID_BODY = 48;
 const LID_IN = 40;
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
-function candidates(stage: GeneratedStage, a: number, b: number, r: () => number, ws: SpanStage = walkedStage(stage), edges?: ReturnType<typeof jumpEdges>): Pt[][][] {
+function candidates(stage: GeneratedStage, a: number, b: number, r: () => number, edges?: ReturnType<typeof jumpEdges>): Pt[][][] {
   const ax = routeAxis(stage);
   const inGap = (p: Pt) => ax.at(p) > a + 120 && ax.at(p) < b - 120;
   const climbs: Pt[][] = [];
@@ -433,7 +431,6 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     if (span < step * (TRAIL_LEN - 1)) continue;
     const y0 = v.topY + 80 + cut + r() * (span - step * (TRAIL_LEN - 1));
     const t = Array.from({ length: TRAIL_LEN }, (_, i) => ({ x: v.x, y: y0 + i * step }));
-    RESTS.set(t, { on: [], foot: { x: v.x, y: v.bottomY } });
     if (t.some(inGap)) climbs.push(t);
   }
   const jumps: Pt[][] = [];
@@ -447,7 +444,6 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
       const x = j.takeoffX + (j.landX - j.takeoffX) * u;
       return { x, y: arcFeet(j, x) - 34 };
     });
-    RESTS.set(t, { on: [j.from, j.to] });
     if (t.some(inGap)) jumps.push(t);
   }
   const ledges: Pt[][] = [];
@@ -467,15 +463,6 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
       lo = Math.max(lo, a + 120);
       hi = Math.min(hi, b - 120 - step * (len - 1));
     }
-    // (ENG-PETAL 11-14, R-165.246: only along where every run walks it, the walked path the socket lay reads (gen2/walkedSpan.ts): a
-    // piece he clears in the air, or one he stands on only after a miss, holds no ledge trail; 1-6's fill laid trails across the very
-    // pieces the walked span had emptied, ENG-16I class E)
-    if (p.type === 'solid') {
-      const w = walkedSpanMemo(p, ws);
-      if (w.hi - w.lo < WALKED_MIN || ws.away!(p)) continue;
-      lo = Math.max(lo, w.lo);
-      hi = Math.min(hi, w.hi - step * (len - 1));
-    }
     if (hi < lo) continue;
     const raised = p.y < ground - 120;
     // (the walking floor: solid ground at the start's height or a checkpoint's)
@@ -488,7 +475,6 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     for (let k = 0; k < tries; k++) {
       const x0 = lo + ((k0 + k / tries) % 1) * (hi - lo);
       const t = Array.from({ length: len }, (_, i) => ({ x: x0 + i * step, y: p.y - FLOAT }));
-      RESTS.set(t, { on: [p] });
       if (!t.some(inGap)) continue;
       (onFloor ? floor : raised || byGoal ? ledges : plain).push(t);
     }
@@ -513,31 +499,21 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
   const r = rng(layoutHash(stage) ^ (tried.size * 2654435761));
   let id = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const skip = new Set<string>();
-  // (off the path: never a pit's floor or stair, a hurt floor, a catch or a creaky limb, nor a jump from or onto one; judged as a trail is
-  // picked, so a stage whose fill never picked one is laid exactly as before)
-  const spans = fallSpans(stage);
-  // (the walked path, read once for the whole fill: the pieces do not move while it lays)
-  const wstage = walkedStage(stage, spans);
-  // (and its jumps: the fill adds petals only, the pieces stay put)
+  // (its jumps, read once: the fill adds petals only, the pieces stay put)
   const edges = jumpEdges(stage);
-  const away = (t: Pt[]) => {
-    const rest = RESTS.get(t);
-    return !!rest && (rest.on.some((q) => offPath(spans, q)) || (!!rest.foot && inFall(spans, rest.foot)));
-  };
   for (let guard = 0; guard < 40; guard++) {
     const petals = stage.collectibles.filter((c) => isPetal(c, stage));
     const gap = petalGaps(stage, petals).find(([a, b]) => !skip.has(`${a}:${b}`));
     if (!gap) break;
     const [a, b] = gap;
     let placed = false;
-    const all = candidates(stage, a, b, r, wstage, edges);
+    const all = candidates(stage, a, b, r, edges);
     const tiers = floorOnly ? [all[3]] : all;
     for (const tier of tiers) {
       // (any candidate of the tier, the one the layout's number picks first)
       const order = tier.map((t) => ({ t, k: r() })).sort((p, q) => p.k - q.k).map((o) => o.t);
       for (const t of order) {
-        if (away(t)) continue;
-        const spots = t.filter((p) => open(stage, p) && !inFall(spans, p) && !tried.has(`${Math.round(p.x)},${Math.round(p.y)}`));
+        const spots = t.filter((p) => open(stage, p) && !tried.has(`${Math.round(p.x)},${Math.round(p.y)}`));
         if (spots.length < 2) continue;
         for (const p of spots) {
           // (the nearest petal's look: a row never mixes species)

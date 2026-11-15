@@ -500,6 +500,10 @@ export interface Collectible {
   /** a petal laid on a required hop's arc (petals.ts arcPetals, by the stage's brief): shown and picked like any petal, never counted
    *  by a share goal (goals.ts goalCounts), as a crumbling limb's petal is not: a bonus over the hop, never what the door asks for */
   arc?: true;
+  /** the walked path's verdict on a gen2 stage's petal (petals.ts markWalked, ENG-PETAL's model with rule A; the lead's ruling INT-10d
+   *  11-15): true where every run passes it, false where a run need not (cleared in the air, stood on only after a miss, past a span's
+   *  end). Placement never reads it; the door does: a share goal counts only the petals not marked false (goals.ts goalCounts) */
+  walked?: boolean;
   type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find' | 'seed';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;

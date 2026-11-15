@@ -2,6 +2,7 @@ import { dialsKey, withSetting } from './settingDials.ts';
 import { pairPetals } from './vineField.ts';
 import { specFor } from './mixer/stages.ts';
 import { petalPass } from './petalPass.ts';
+import { markWalked } from './petals.ts';
 import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
@@ -3009,6 +3010,9 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
   const out = petalPass(stage);
   // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands: vineField.ts pairPetals)
   pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))));
+  // (last, on the stage as the game plays it: which petals the door counts, by the walked path; a gen2 stage, whose record of its falls
+  //  and asks the model reads (petals.ts markWalked; the lead's ruling INT-10d 11-15). Placement is done: nothing here moves a petal)
+  if ((out as { gen2?: unknown }).gen2) markWalked(out);
   return out;
 }
 
