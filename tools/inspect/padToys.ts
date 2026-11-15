@@ -19,8 +19,10 @@ export const TOY_PADS = {
   keep: { by: 'weight', pads: ['small', 'small', 'small', 'small'], gap: 70 },
   rise: { by: 'beat', pads: ['big', 'stone', 'big'], gap: 80, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
   breath: { by: 'beat', pads: ['small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
-  /** a SPUR (FIX-22): two small weight pads out to a dead-end stone; the way on is the vine up from the near bank and the rope over */
-  spur: { by: 'weight', pads: ['small', 'small', 'stone'], gap: 70, spur: true },
+  /** a SPUR (FIX-22): two small beat pads (the breath's numbers) out to a dead-end stone; the way on is the vine up from the near bank and
+   *  the rope over: he goes out on a breath, waits on the stone for the next and comes back on it. Splash-back, as 2-2's X is (a child's
+   *  late start on deep water cost 2-4 lives in 2 of 4 runs: tier fumbles, FIX-22 REPORT) */
+  spur: { by: 'beat', pads: ['small', 'small', 'stone'], gap: 50, beat: { up: 1.8, shiver: 0.6, under: 0.6 }, spur: true, safe: true },
 } as const satisfies Record<string, PadRow>;
 /** a spur toy's way up (px): the vine from the near bank to the rope's ledge, so the far bank stands SPUR_UP + PAD_LAY.drop over the stone */
 export const SPUR_UP = 190;

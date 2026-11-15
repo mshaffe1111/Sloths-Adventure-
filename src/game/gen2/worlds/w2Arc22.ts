@@ -15,8 +15,7 @@
  *   S  the crown lily: a giant lily that never sinks, its flower      L  across the deep: deep water both kinds to the far bank (flag)
  *      opening as he stands (`lily`, `crown`)                          E  the village bank (`king` once the goal is met; Meeca's `note`)
  *   R  a rest on the bank between beats
- *   X  (beat 4, there and back) is NOT laid yet: it needs a spur pond (a dead-end far stone, the way on from the near bank) and the bots'
- *      out-and-back; the lead's ruling A (4:17 PM ET 11-15): every other beat first, then the spur, built by data for any world.
+ *   X  (beat 4, there and back): a spur pond (FIX-22): pads out to a dead-end stone and its flower, back, up the vine and over on the rope
  *
  * DESIGN CHANGES against 2-2.md (the lead's rulings, 4:17 PM ET 11-15): (C) beat 2's tiny greed pad is dropped (padFaults' 124 px floor,
  * the hand-built ponds' QA); the greed is the flowers on beat 9's small pads. (D) Easy: every pond is the splash-back kind but the finale
@@ -76,9 +75,12 @@ export const PADS_22 = {
   first22: { ...W2_PADS.first },
   /** beat 2: three small pads one tap apart, a flower riding each: keep moving (`Pw1>:#soft`, both settings) */
   hop22: { ...W2_PADS.hop },
-  /** beat 4 (X), STOPGAP (BUILD-22, approved by the lead 4:25 PM ET; level.md rule 26): weight pads out to a far stone and its flower, then on
-   *  over pads to the bank. NOT the design's there-and-back (that needs the spur pond); deleted when the spur lands, before 2-2 goes on */
-  stopgapX22: { by: 'weight', pads: ['small', 'small', 'stone', 'small', 'small'], gap: 70, safe: true, petals: [] },
+  /** beat 4 (X), there and back: a SPUR (FIX-22; rideLay PadRow.spur): two small pads out to a dead-end stone against the far bank's foot,
+   *  its flower on the stone; the way on is from the near bank (the vine up, the rope over). 50 px apart (at 70, 470 px of run, a child stood
+   *  8 s and more at the bank for a breath long enough: the spur toy, FIX-22). A BEAT row on the breath's numbers (the lead's
+   *  ruling 5:29 PM ET 11-15, a design change: on weight pads a hopper never sinks them, so the stone asked no wait): he waits on the stone
+   *  for the row to come up, seen safely from a floor that stays, before W asks him to cross on the breath. Splash-back (2-2.md `#soft`) */
+  spur22: { by: 'beat', pads: ['small', 'small', 'stone'], gap: 50, beat: { up: 1.8, shiver: 0.6, under: 0.6 }, safe: true, petals: [2], spur: true },
   /** beat 6, the twist: the pond breathes, two pads at a time (up 1.8 s, shiver 0.6 s, under 0.6 s; the breath toy's own run, padRide.test.ts),
    *  laid twice with a bank between: one row, so one clock, so both runs breathe in step. The bank is the design's rest between the runs, wide
    *  enough to stop on and read the next breath (a 136 px stone was run across by the old first-timer bots, onto a pad late in its breath:
@@ -176,11 +178,24 @@ const gardenPath: Lay = {
   pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), rock('rb', 'b', 0.5), shore('c', 'b', 340, DOWN), rock('rc', 'c', 0.55), bank('d', 'c', 300), shore('e', 'd', 280, UP), shore('z', 'e', 340, DOWN)],
   sockets: [flowers('pa', 'a', 0.5, 2), flowers('pd', 'd', 0.5, 2), flowers('pz', 'z', 0.6, 2)],
 };
-/** [X] beat 4, STOPGAP (see PADS_22.stopgapX22): pads out to the far stone, Dot's `stone` line as he reaches it; the heart after */
-// STOPGAP: replaced by the spur pond (the lead's ruling A, 4:17 PM ET 11-15) before 2-2 goes to Matt
-const farStone: Lay = {
-  pieces: [bank('a', null, 360), pond('b', 'a', 'stopgapX22', 360), bank('z', 'b', 300)],
-  sockets: [tip('t-stone', 'a', 0.95, 'stone'), flowers('pb', 'b', 0.5, 2)],
+/** the spur's way up (px): the vine from the near bank to the rope's ledge; the far bank stands this + PAD_LAY.drop over the stone, past a
+ *  double's 189 px (place 'pads' checks it), so the stone reads as a dead end and the vine as the way on */
+const SPUR_UP = 190;
+/** [X] beat 4, there and back (the spur pond, FIX-22; the lead's rulings 4:17 and 5:10 PM ET 11-15): out over two small pads to the dead-end
+ *  stone and its flower, Dot's `stone` line on the stone; back over the pads to the bank; up the vine (taught 1-4) to the ledge and over the
+ *  pond on the rope (taught 1-3) to the high bank, and down to the water's edge again. The heart after */
+const thereAndBack: Lay = {
+  pieces: [
+    bank('a', null, 440),
+    { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'a', at: [290 / 440, 290 / 440], h: [SPUR_UP, SPUR_UP] } },
+    { key: 'h', shape: 'branch', w: [200, 200], place: { kind: 'over', on: 'a', at: [240 / 440, 240 / 440], dy: [-SPUR_UP, -SPUR_UP] }, style: 'branch', main: true },
+    { key: 'w', shape: 'bank', w: [240, 240], place: { kind: 'pads', after: 'a', row: 'spur22', rope: 'h' }, style: 'log', main: true, landing: true },
+    shore('z', 'w', 300, [SPUR_UP - 4, SPUR_UP]),
+    rock('rz', 'z', 0.55),
+  ],
+  // (the high bank kept short and a boulder to hop at the water's edge below it: 320 px banks and nothing to do read 4.3-5.1 s of
+  // nothing past the rope on 13 of 24 rolls, over the quiet line's 4 s)
+  sockets: [flowers('pa', 'a', 0.25, 2), tip('t-stone', 'w', 0, 'stone'), flowers('pz', 'z', 0.25, 2)],
 };
 /** [W] beat 6, the twist: the pond breathes; `breathe` 800+ px before, the flag before it */
 const breathes = (easy: boolean): Lay => ({
@@ -220,7 +235,7 @@ export const BEATS_22: SectionTemplate[] = [
   brick({ id: 'first-pad', name: 'the first pad, safe', jobs: ['teach'], difficulty: 1, content: 'water', teaches: PADS_LESSON, versions: [{ id: 'first', lay: firstPad }] }),
   brick({ id: 'keep-moving', name: 'keep moving', jobs: ['practise'], difficulty: 2, content: 'water', uses: [PADS_LESSON], versions: [{ id: 'hop', lay: keepMoving }] }),
   brick({ id: 'garden-path', name: 'the garden path', jobs: ['practise'], difficulty: 1, content: 'ground', versions: [{ id: 'path', lay: gardenPath }] }),
-  brick({ id: 'far-stone', name: 'out to the far stone (STOPGAP)', jobs: ['test'], difficulty: 4, content: 'water', uses: [PADS_LESSON], versions: [{ id: 'stone', lay: farStone }] }),
+  brick({ id: 'there-and-back', name: 'there and back', jobs: ['test'], difficulty: 4, content: 'water', uses: [PADS_LESSON], versions: [{ id: 'spur', lay: thereAndBack }] }),
   brick({ id: 'breathes', name: 'the pond breathes', jobs: ['twist'], difficulty: 5, content: 'floating', uses: [PADS_LESSON], versions: [{ id: 'breath', lay: breathes(false), easy: breathes(true) }] }),
   brick({ id: 'planks', name: 'the plank walk', jobs: ['practise'], difficulty: 1, content: 'ground', versions: [{ id: 'jetty', lay: plankWalk }] }),
   brick({ id: 'both-kinds', name: 'both kinds', jobs: ['flow'], difficulty: 6, content: 'floating', uses: [PADS_LESSON], versions: [{ id: 'mix', lay: bothKinds(false), easy: bothKinds(true) }] }),

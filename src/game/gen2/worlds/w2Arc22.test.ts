@@ -66,7 +66,7 @@ test('the row: 2-2 rolls from its own kit (World 2 with 2-2 rows), CLEAN on both
     const st = built(seed, d);
     assert.deepEqual(st.gen2.errors ?? [], [], `${seed} ${d}`);
     const beats = st.gen2.sections.map((s) => s.template.replace('w2-22-', ''));
-    assert.deepEqual(beats, ['garden', 'first-pad', 'keep-moving', 'rest', 'garden-path', 'far-stone', 'rest', 'breathes', 'rest', 'planks', 'both-kinds', 'rest', 'crown-lily', 'rest', 'deep', 'bank'], `${seed} ${d}`);
+    assert.deepEqual(beats, ['garden', 'first-pad', 'keep-moving', 'rest', 'garden-path', 'there-and-back', 'rest', 'breathes', 'rest', 'planks', 'both-kinds', 'rest', 'crown-lily', 'rest', 'deep', 'bank'], `${seed} ${d}`);
     assert.deepEqual(padFaults(st), [], `${seed} ${d}: every pond fair`);
   }
 });
@@ -75,7 +75,7 @@ test('the ponds by the beat: deep where 2-2.md is deep on Normal; on Easy splash
   for (const seed of SEEDS) {
     const n = built(seed, 'normal'), e = built(seed, 'easy');
     const pn = ponds(n), pe = ponds(e);
-    // (first, hop, far stone, the breath's two runs, mix weight, mix beat, crown, deep, deep beat: ten ponds)
+    // (first, hop, the spur (X), the breath's two runs, mix weight, mix beat, crown, deep, deep beat: ten ponds)
     assert.equal(pn.length, 10, `${seed} Normal: ${pn.length} ponds`);
     assert.equal(pe.length, 10, `${seed} Easy: ${pe.length} ponds`);
     assert.deepEqual(pn.map((r) => !!r.safe), [true, true, true, false, false, false, false, true, false, false], `${seed} Normal: safe by the beat`);

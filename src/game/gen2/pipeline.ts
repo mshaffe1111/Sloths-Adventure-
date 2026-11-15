@@ -2773,6 +2773,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       }
       // (each pond of sinking pads (place `pads`): its still water and its pads and stones, laid by the one pad lay (rideLay layPads); the
       // clocks its pads read join the stage's)
+      const spurAt = new Map<string, { x: number; y: number }>();
       for (const lp of L.pieces) {
         if (!lp.pads) continue;
         const row = M.pads?.[lp.pads.row];
@@ -2785,6 +2786,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.seam.push(...r.pads);
         rivers.push(r.zone);
         riverPetals.push(...r.petals);
+        if (r.zone.spur) spurAt.set(lp.key, r.zone.spur);
         for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
       }
       const entryP = pieceOf(L.entry.piece);
@@ -2844,7 +2846,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const p = pieceOf(s.on);
         const t0 = Math.max(0, Math.min(1, roll(srng, s.t)));
         const t = mirrored !== leftward ? 1 - t0 : t0;
-        placed.sockets.push({ socket: s, x: R(p.x + t * p.width), y: R(p.y - (s.dn ?? 0)), piece: p });
+        // (a socket at the foot of a SPUR's far bank (t 0) is on its dead-end stone, which stands against that foot out of his reach:
+        // Dot's line there is said as he stands on the stone, FIX-22)
+        const spur = t0 === 0 ? spurAt.get(s.on) : undefined;
+        placed.sockets.push({ socket: s, x: spur ? R(spur.x) : R(p.x + t * p.width), y: spur ? R(spur.y - (s.dn ?? 0)) : R(p.y - (s.dn ?? 0)), piece: p });
       }
       if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id, (k) => {
         // (a vine a room's piece names is the kit's: a ladder rolled up, a sapling, a silk line; levelCheck leaves it to the room's check)

@@ -28,11 +28,12 @@ const SKILL_OF: Record<ToyPad, keyof typeof PAD_SKILL> = { keep: 'keepHopping', 
 
 for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
   const seed = fixtureSeed(row);
-  test(`the ${row} fixture: one pond of sinking pads over deep water, rolled clean and fair (padFaults)`, () => {
+  test(`the ${row} fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)`, () => {
     const st = padStage(row, seed);
     assert.equal(st.platforms.filter((p) => p.pad).length, TOY_PADS[row].pads.filter((k) => k !== 'stone').length);
     assert.deepEqual(padFaults(st), []);
-    assert.ok(st.rivers?.some((r) => r.speed === 0 && !r.safe), 'still deep water under the pads');
+    const safe = !!(TOY_PADS[row] as { safe?: boolean }).safe;
+    assert.ok(st.rivers?.some((r) => r.speed === 0 && !r.safe === !safe), safe ? 'still splash-back water under the pads (the spur, as 2-2\'s X)' : 'still deep water under the pads');
   });
   for (const [tier, setting] of RUNS) {
     test(`${row}: ${tier}, ${setting} crosses the pads and reaches the shrine`, () => {
