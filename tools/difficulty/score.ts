@@ -19,7 +19,7 @@ import { RealPlay } from '../../src/game/realPlay.ts';
 import { modelStage, MODEL_TYPICAL } from '../../src/game/stageTime.ts';
 import { PHYS } from '../../src/game/physics.ts';
 import { findRoute, type Route } from '../inspect/route.ts';
-import { findBeats, sampleRoute, type Sample } from '../inspect/beats.ts';
+import { findBeats, sampleRoute, type Beat, type Sample } from '../inspect/beats.ts';
 import { inspectJumps, routeJumps, ADULT, type JumpReport } from '../inspect/jumps.ts';
 import fs from 'node:fs';
 import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
@@ -138,6 +138,32 @@ const stakesOf = (st: any, c: Cost, x: number): number =>
   c === 'life' ? Math.min(STAKES.lifeMax, STAKES.life + replayAt(st, x) * STAKES.replayPerSec) : STAKES[c];
 
 /**
+ * The route's swings as challenges, ONE a liana (R-165.239, BUILD-16b 11-14): a liana is scored at its release, the press the swing asks
+ * for (OTHER_BITS.swing): the let-go onto a perch, the leap to the next liana of a chain, or a ledge-to-ledge swing the level check linked
+ * whole. The grab off a bank (route.ts plat -> liana) is the same liana's start, not a second challenge; the meter scored it again, so
+ * every liana counted twice. What a missed release costs is read as a jump's is (costAt): the ground under the swing's span, by the jump
+ * inspector's own pit rule (jumps.ts inspectJumps `pit`: nothing to stand on within 220 px under it, the span over 30 px), so a swing over
+ * a World 1 soft pit is a set-back, over a hurt floor a heart, over a pit with no floor a life, over ground only another go. Each keeps
+ * its beat's clock and words (beats.ts: a swing move's beat starts where its move does); `beats` may be empty (the planted cases).
+ */
+export function swingChallenges(st: any, route: Route, beats: readonly Beat[], softPits: boolean): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const live = (st.platforms ?? []).filter((p: any) => !p.broken);
+  let base = 0;
+  for (const s of route.segs) {
+    if (s.kind === 'swing' && !(s.from && !s.plat)) {
+      const b = beats.find((q) => q.letter === 'V' && Math.abs(q.base - base) < 1e-6 && q.x === s.x0 && q.y === s.y0);
+      const lo = Math.min(s.x0, s.x1), hi = Math.max(s.x0, s.x1), low = Math.max(s.y0, s.y1);
+      const pit = hi - lo > 30 && !live.some((q: any) => q !== s.from && q !== s.plat && q.x < hi && q.x + q.width > lo && q.y > low && q.y < low + 220);
+      const cost = costAt(st, softPits, lo, hi, pit ? 'fall' : 'retry');
+      out.push({ t: b?.t ?? base, x: s.x0, ys: [s.y0, s.y0], kind: 'swing', bits: OTHER_BITS.swing, cost, stakes: stakesOf(st, cost, s.x0), threat: false, note: b?.what ?? 'swing on a liana' });
+    }
+    base += s.dt;
+  }
+  return out;
+}
+
+/**
  * The way a player takes a route jump: the EASIEST move he has (a thumb picks the move that leaves it the most room), and its bits.
  * Share = what the jump asks of that move's flown reach: the inspector's own share where it flew that move (jumps.ts `reach`: it knows
  * the arc and the lip; it is the double's share where it doubled), else the larger of gap / widest gap and rise / highest climb.
@@ -186,6 +212,8 @@ export const rawOf = (mean: number, peak: number): number => MIX.mean * mean + M
 
 export interface StageScore {
   id: string; setting: Setting; seed: number; minutes: number; traced: Route['traced'];
+  /** a fall on this stage is a set-back, not a life (its pits are soft: costAt's softOn), and the route it was scored on */
+  soft: boolean; route: Route;
   count: Record<string, number>; bits: number; points: number; mean: number; peak: number; raw: number;
   challenges: Challenge[];
 }
@@ -243,12 +271,14 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(b.what);
       add({ t: b.t, x: b.x, kind: 'hazard', bits: m ? windowBits(Number(m[2]), Number(m[1])) : 2, cost: 'heart', stakes: STAKES.heart, threat: true, note: b.what });
     } else if (b.letter === 'V') {
-      const swing = /swing|liana/.test(b.what);
-      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: swing ? 'swing' : 'climb', bits: swing ? OTHER_BITS.swing : OTHER_BITS.climb, cost: swing ? 'life' : 'retry', stakes: swing ? stakesOf(st, 'life', b.x) : 1, threat: false, note: b.what });
+      // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
+      if (/swing|liana/.test(b.what)) continue;
+      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: OTHER_BITS.climb, cost: 'retry', stakes: 1, threat: false, note: b.what });
     } else if (b.letter === 'P') {
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });
     }
   }
+  for (const c of swingChallenges(st, route, br.beats, softPits)) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
   // period; a heart where the pod costs one, a retry where it only knocks him off (Easy). Once a column, where the route first passes it
@@ -298,7 +328,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   const count: Record<string, number> = {};
   for (const c of out) count[c.kind] = (count[c.kind] ?? 0) + 1;
   return {
-    id, setting, seed, minutes: Math.round(minutes * 100) / 100, traced: route.traced, count,
+    id, setting, seed, minutes: Math.round(minutes * 100) / 100, traced: route.traced, soft: softPits, route, count,
     bits: Math.round(out.reduce((s, c) => s + c.bits, 0) * 10) / 10, points: Math.round(points * 10) / 10,
     mean: Math.round(mean * 10) / 10, peak: Math.round(peak * 10) / 10, raw: rawOf(mean, peak), challenges: out,
   };
@@ -387,5 +417,5 @@ if (process.argv[1] && process.argv[1].endsWith('score.ts')) {
     }
   }
   const json = arg('--json');
-  if (json) fs.writeFileSync(json, JSON.stringify({ scale, rows: out, runs: rows.map(({ challenges, ...r }) => r) }, null, 1));
+  if (json) fs.writeFileSync(json, JSON.stringify({ scale, rows: out, runs: rows.map(({ challenges, route: _route, ...r }) => r) }, null, 1));
 }

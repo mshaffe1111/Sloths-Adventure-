@@ -15,6 +15,7 @@
  * animals for Easy's lower bar (budget.quota.check, which caps the goal here). So for them this leaves out the stones, the animal cut
  * and the longer tell (nothing is softened twice), and keeps what gen2 does not do: Easy's goal (`easyGoal`), the 70%-hold check, the flags and a heart at every flag.
  */
+import { withSetting } from './settingDials.ts';
 import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -413,8 +414,11 @@ export function flagHeartsOwed(stage: Stage): boolean {
   return costsHere(stage) || !unshipped;
 }
 
-/** Easy's version of a built stage (the stage passed in is changed and returned) */
+/** Easy's version of a built stage (the stage passed in is changed and returned), judged on Easy's dials (settingDials.ts, R-165.251) */
 export function easyStage(stage: Stage): Stage {
+  return withSetting('easy', () => easyStageOn(stage));
+}
+function easyStageOn(stage: Stage): Stage {
   const kind = stage.config.objectiveType;
   if (kind === 'boss_lair' || stage.boss) return stage;
   const climb = kind === 'ascent';

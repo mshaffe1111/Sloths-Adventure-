@@ -7,6 +7,7 @@
  * Then it walks the graph from the spawn point and checks the exit, the checkpoints,
  * and the quota items are all reachable.
  */
+import { withSetting } from './settingDials.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
@@ -236,9 +237,15 @@ function heldLandingsIn(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number,
   }
   return out;
 }
+/**
+ * The setting's swing numbers (physics setTimedSwing: Easy's slower swing, wider sweet spot and longer grab), which every flight off a
+ * liana reads: each cache of a flight's answer is keyed by them, so a Normal build's answers are never handed to an Easy build in the
+ * same process, or back (R-165.244: the flights cache below was not, and a seed's stage changed with which setting was built before it)
+ */
+export const swingSettingKey = (): string => `${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
 /** heldLandingsIn, kept by everything a flight reads (the vine, the way, the water, the pack, the setting's swing), as swingLandingsIn */
 function heldCached(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean): Map<number, number> {
-  const key = `held|${JSON.stringify(v)}|${dir}|${waterY}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}|${pack.n}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.id.join(',')}`;
+  const key = `held|${JSON.stringify(v)}|${dir}|${waterY}|${dbl ? 1 : 0}|${swingSettingKey()}|${pack.n}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.id.join(',')}`;
   const hit = FLIGHTS.get(key);
   if (hit) return new Map(hit);
   const out = heldLandingsIn(v, dir, pack, waterY, dbl);
@@ -258,7 +265,7 @@ export function heldLandings(v: Vine, dir: 1 | -1, platforms: Platform[], waterY
 export function chainLines(A: Vine, B: Vine, dbl = false): number {
   // (pure: by everything the flight reads, the vines' swings and the setting's swing numbers, as physics chainPhase caches)
   const sw = (v: Vine) => `${v.x},${v.topY},${v.bottomY},${v.swingAmp},${v.swingPeriod},${v.swingPhase},${v.grip ?? ''}`;
-  const key = `${sw(A)}|${sw(B)}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
+  const key = `${sw(A)}|${sw(B)}|${dbl ? 1 : 0}|${swingSettingKey()}`;
   const hit = CHAINS.get(key);
   if (hit !== undefined) return hit;
   const lines = Math.round(chainWindow(A, B, gripFlights(dbl), gripsOf(A.grip, A.bottomY - A.topY)) / (SIM_DTS[0] * 1000));
@@ -318,14 +325,15 @@ const NO_LANDING = -2147483647;
 const hitBuf = new Int32Array(100);
 
 /**
- * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack): the
- * physics keeps no state, so the same flight always lands the same, and lianaBand and the petal pass ask the same flights again and
- * again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded; each answer handed out as a copy
+ * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack, and the
+ * setting's swing: swingSettingKey): the physics keeps no other state, so the same flight always lands the same, and lianaBand and the
+ * petal pass ask the same flights again and again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded;
+ * each answer handed out as a copy
  */
 const FLIGHTS = new Map<string, Map<number, number>>();
 const FLIGHTS_MAX = 4000;
 function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl = false): Map<number, number> {
-  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${v.grip && dbl ? 'dbl|' : ''}${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
+  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${v.grip && dbl ? 'dbl|' : ''}${swingSettingKey()}|${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
   const hit = FLIGHTS.get(key);
   if (hit) return new Map(hit);
   const out = flightLandings(a, v, dir, pack, waterY, dbl);
@@ -489,10 +497,20 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
   if (!builtOnArcs(stage)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
-  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
+  // (on its own setting's dials too, the swing its lianas are flown on: settingDials.ts, R-165.251)
+  return withSetting(d, () => validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) }));
 }
 
+/**
+ * validateStage on the stage's own setting's dials when it carries one (a gen2 stage's budget: settingDials.ts, R-165.251): its lianas
+ * are flown on the swing it is played on, whoever asks (a test or tool judging an Easy stage on Normal's swing judged a stage no one
+ * plays: 7-9 layout 2's Easy read as unfinishable). Inside a build the dials are already the stage's (R-165.258), so it changes nothing there.
+ */
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
+  const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty;
+  return d ? withSetting(d, () => validateStageOn(stage, opts)) : validateStageOn(stage, opts);
+}
+function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult {
   // a stage with puzzle rooms (puzzleKit.ts): the stage is walked as it is once every room is solved (its gates open, its lifts up), and
   // each room is checked on its own, symbolically, that it can be solved (puzzleCheck.ts), on this graph with its gates shut as walls
   if (stage.kit?.rooms.length && !opts.walls) {

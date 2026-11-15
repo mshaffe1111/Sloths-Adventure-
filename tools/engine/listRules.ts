@@ -1,6 +1,7 @@
 // The seed list's own rules, judged on a bot's route (tools/inspect), so never shipped in the game: the quiet line (seedList.ts QUIET_MAX:
 // a listed seed's longest quiet stretch on Normal, the goal run-out excluded). ONE definition for the list builder, its --check and the
 // yield probe; `quietJudge` hands it to the search as BuildRequest.also (R-165.120), so a roll is repaired for it, not thrown away.
+import { withSetting } from '../../src/game/settingDials.ts';
 import { withGoals } from '../../src/game/goals.ts';
 import { QUIET_MAX } from '../../src/game/gen2/seedList.ts';
 import { pickRoute } from '../inspect/eraRoll.ts';
@@ -49,8 +50,11 @@ export function quietJudge(cfg: LevelConfig, max: number = QUIET_MAX): NonNullab
  */
 export function helpRoomBreaches(st: Gen2Stage, difficulty: 'normal' | 'easy', finish: (s: Gen2Stage) => Gen2Stage = (s) => s): string[] {
   if (!softFallStage(st)) return [];
-  // (on a copy: the finish and the goals write onto the stage they are given, and the list keeps the search's own build)
-  let played = withGoals(finish(structuredClone(st)) as never) as unknown as Gen2Stage;
-  if (difficulty === 'easy') played = easyStage(played as never) as unknown as Gen2Stage;
-  return roomBreaches(played).map((l) => `room for help (${difficulty}): ${l}`);
+  // (judged on this setting's dials, settingDials.ts: R-165.251, the list had judged Easy's room on Normal's swing)
+  return withSetting(difficulty, () => {
+    // (on a copy: the finish and the goals write onto the stage they are given, and the list keeps the search's own build)
+    let played = withGoals(finish(structuredClone(st)) as never) as unknown as Gen2Stage;
+    if (difficulty === 'easy') played = easyStage(played as never) as unknown as Gen2Stage;
+    return roomBreaches(played).map((l) => `room for help (${difficulty}): ${l}`);
+  });
 }

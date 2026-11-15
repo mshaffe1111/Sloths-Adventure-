@@ -9,9 +9,47 @@ Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fix
 Rewritten for B6 (11-14, t-eng-b6 from t-int-9@1c7f6b95 + t-eng-b5): section 0B6 (the still fork, the runner liana, the tip, Easy's chase gap; the orphan-root merge) and 0v's not-built line. Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
+- **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a
+  stage's start, kept for the run), `withSetting(d, fn)` (dials put back after), `dialsKey()` (for caches). Today the one build-time dial
+  is the swing (physics TIMED via setTimedSwing). Swept: difficulty()/runDifficulty() are the player's choice (Engine/InputEngine
+  constructors, build-ahead, menus); forgive, tide, soft pits, input.easy, the help ladder are the engine's own fields. A new dial goes
+  in settingDials.ts only: settingDials.test.ts fails on any setTimedSwing call outside it (tests excepted).
+- **Every build entry builds on its own setting's dials, whoever calls it**: generateStage, buildGen2Stage, easyStage (withSetting);
+  the pipeline's lianaRelease/chainRelease, levelCheck validateAsJudged (a gen2 stage on its own setting) and listRules helpRoomBreaches
+  too. So lockall, seedlist and every tool's Easy is the phone's, and the map's build-ahead no longer builds on whatever the last run left.
+  On the engine path it is a no-op (the engine set them already): lock on t-tools-2, Normal 102/102 unchanged; Easy equals a FRESH
+  phone's Easy on 102/102 (16 layouts); the 21 Easy stages today's tools had wrong: 3-8, 4-4, 5-4, 6-1, 6-3, 6-6, 6-7, 6-8, 7-5, 7-9,
+  8-3, 8-4, 8-5, 9-3, 9-4, 9-5, 9-9, 10-1, 10-3, 10-6, 10-7. World 1's lists (1-1..1-5, 1-7): 1424 builds identical either way.
+- **stageGenerator's layout-pick caches are keyed by dialsKey** (`variantAttempt`, `known`): validateStage flies lianas on the dials, so
+  a process that built Normal first handed Normal's pick to Easy (base: 9-3 layouts 4/14, 9-4 12, 10-6 1/6/10). TRAP (R-165.244 again):
+  any cache of an answer the dials change puts dialsKey in its key.
+- **Every gen2 lay and check on its own setting's dials** (R-165.258): buildRolled and applyVerdicts run on their request's setting;
+  inside an Easy build, Normal's plan, verdicts and rule on Normal's; inside Normal's search, the Easy lay check and Easy's rule on Easy's.
+  It had all run on the caller's dials, so a phone's Easy re-planned Normal on Easy's swing: 8-5's Easy lost its only tayra. Lock:
+  Normal 102/102 unchanged; Easy moves on 6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5 (each now lays Normal's plan); World 1 lists unchanged.
+  Gate: settingDials.test.ts R-165.258 (8-5 red before). Left: 6-3/4 and 6-7/3, 8, 9 drop their only frog on Easy (not the swing).
+- **The test link** (R-165.252, tools/testlink/build.py): exits 1 with no map above 480 files (prints the count); maps against
+  tools/testlink/dist-published, which only `build.py --published` refreshes, run after a successful publish. Gate: tools/testlink/build.test.ts.
+
+## 0za. TOOLS-1 (t-tools-1, 11-14): three tool faults; one was the engine's
+- **Every cache of a flight off a liana is keyed by the setting's swing** (levelCheck.ts `swingSettingKey`: TIMED's period, grab
+  reach and sweet spot, which physics `setTimedSwing` changes per setting). `FLIGHTS` (swingLandingsIn) was keyed by geometry alone,
+  so in one process a Normal build's liana landings were handed to the Easy build of the same seed (and back): castBots' "state leak"
+  (R-165.244) was this, not the bots. Gate: src/game/flightSetting.test.ts (Easy after Normal equals Easy alone in a fresh process).
+  TRAP: any new cache of an answer that reads TIMED (or anything setDifficulty changes) puts that in its key; chainLines and
+  heldCached already did. Lock on t-int-9: 102/102 unchanged (lockall never sets TIMED, so it cannot see this class; see the next line).
+- **The tools build Easy with Normal's swing**: seedlist.ts, lockall.ts and every direct generateStage/buildGen2Stage caller never call
+  setTimedSwing; only the engine does (engine.ts, before generateStage). Their Easy liana checks read Normal's TIMED. Not fixed here
+  (a packet for the lead: REPORT, Suggestions).
+- **The meter** (tools/difficulty/score.ts `swingChallenges`): one swing a liana, at its release; the grab off a bank is not a second
+  challenge; a miss costs what the ground under the swing costs (costAt with the jump inspector's pit rule). Gate: tools/difficulty/score.test.ts.
+- **clipcheck "Dot's first tip"** walks by game frames on the development build (pressFrame), taps a card that waits, judges once the
+  Skip is armed. CLIPCHECK_STEPS / CLIPCHECK_CPU / CLIPCHECK_SHOTS run and stress one step on its own.
 
 ## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
 - Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and

@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { withSetting } from '../settingDials.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -29,7 +30,7 @@ import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -241,13 +242,11 @@ export const VINE = {
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
  * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf), and with a dial only the presses that see the
  * whole perch (SWING_SEEN). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
- * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
- * back as it was after).
+ * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (settingDials.ts
+ * withSetting, put back as it was after).
  */
 export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty, held = false): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
     const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
     // (a liana laid by its grip dial (World 1's rows) is laid by what he SEES: a press counts only if the perch's far end is in the view
@@ -258,9 +257,7 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // its band runs past the view: ENG-S5's upright still showed its LONG perch off screen as he pressed)
     const seen = swing.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 
 /**
@@ -268,20 +265,16 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
  * liana (no perch between), puts his hands on B as it swings, B at the phase the stage gives it (physics chainPhase, as swingSetup sets
  * it), the worse of the holds A's grip dial names; a press counts only if B's WHOLE swing (its anchor's x plus its foot's reach, the far
  * side) is within SWING_SEEN of him as he presses (the swing camera leads with it: cameraFollow.ts landingAhead). The engine's own press
- * (physics chainWindow, pressWindow) on this difficulty's swing (setTimedSwing, put back as it was after).
+ * (physics chainWindow, pressWindow) on this difficulty's swing (settingDials.ts withSetting, put back after).
  */
 export function chainRelease(a: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sa: LianaSwing, b: Pick<Vine, 'x' | 'topY' | 'bottomY'>, sb: LianaSwing, difficulty: Difficulty): number {
-  const was = { ...TIMED };
-  setTimedSwing(difficulty === 'easy');
-  try {
+  return withSetting(difficulty, () => {
     const A: SwingVine = { x: a.x, topY: a.topY, bottomY: a.bottomY, swingAmp: sa.amp, swingPeriod: sa.period, swingPhase: 0 };
     const B0: SwingVine = { x: b.x, topY: b.topY, bottomY: b.bottomY, swingAmp: sb.amp, swingPeriod: sb.period };
     const B = { ...B0, swingPhase: chainPhase(A, B0) };
     const far = B.x + swingReach(B);
     return chainWindow(A, B, LETGO_FLIGHTS, gripsOf(sa.grip, a.bottomY - a.topY), (px) => far <= px + SWING_SEEN) / 1000;
-  } finally {
-    Object.assign(TIMED, was);
-  }
+  });
 }
 /** the swing two neighbouring lianas `dx` apart may keep, each (radians, at most `amp`): half the clear space between them, as
  *  physics.ts swingSetup sizes a liana beside another, so their swings never meet (swingClearance) */
@@ -4143,7 +4136,11 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
+/** applyVerdicts on the request's own setting's dials (R-165.258: an Easy build judged Normal's verdicts on Easy's swing) */
 export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+  withSetting(req.difficulty, () => applyVerdictsOn(st, req));
+}
+function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
   // (judged afresh every call: a miss from an earlier judgement of this stage never stands. The search judges a stage (rollUnmet) before
   // buildGen2Stage's last changes, a chase lay moving its flags: ENG-B4 found 2 of 30 chase rolls refused by a flag miss their own
   // flags no longer had)
@@ -4253,7 +4250,11 @@ export function rollUnmet(st: Gen2Stage, req: BuildRequest): Unmet[] {
   });
 }
 
+/** buildGen2Stage on the request's own setting's dials (settingDials.ts, R-165.251), the caller's put back after: a tool's build is the phone's */
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildGen2StageOn(req));
+}
+function buildGen2StageOn(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
   const pool = stagePool(M0, req.config.id);
@@ -4298,7 +4299,15 @@ export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): 
   throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
 }
 
+/**
+ * buildRolled on its own setting's dials (settingDials.ts, R-165.258): an Easy build's Normal plan is built on Normal's swing, so it is
+ * Normal's plan (on a phone the engine had set Easy's before the build, so 8-5's Normal plan was re-planned on Easy's swing and Easy lost
+ * its only tayra); the caller's dials are put back after
+ */
 function buildRolled(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildRolledOn(req));
+}
+function buildRolledOn(req: BuildRequest): Gen2Stage {
   const M = req.kit.manifest;
   if (M.handBuilt.includes(req.config.id)) throw new Error(`gen2: ${req.config.id} is hand-built`);
   const budget = planBudget(req.config, M, req.difficulty);
@@ -4321,9 +4330,9 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     if (n) {
       // (judged as Normal plays it: its chase laid first, as buildGen2Stage lays it, so its flags are the ones it plays (ENG-B4: Easy
       // refused 2 of 30 chase rolls on Normal's flags from before its lay))
-      const nChase = layChase(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? []);
+      const nChase = withSetting('normal', () => layChase(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? []));
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...nChase.problems, ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...nChase.problems, ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
@@ -4412,8 +4421,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
         // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
         let eb: Built | undefined;
         if (v.ok) {
-          eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
-          const ev = checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          // (on Easy's dials, R-165.258: Normal's build had checked Easy's lay on Normal's swing)
+          const ev = withSetting('easy', () => {
+            eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+            return checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          });
           if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
         }
         st.gen2.rerolls = roll;
@@ -4522,7 +4534,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
           // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
           const pipes = unmet.length > 0;
-          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...withSetting('easy', () => req.also!(eb!.stage, 'easy')).map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;
