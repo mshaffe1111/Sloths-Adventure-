@@ -188,3 +188,31 @@ test('the list judges each seed with its row\'s whole finish, as Play builds it:
     assert.match(code, /listJudge\(/, `${f}: the list's one judge`);
   }
 });
+
+// ENG-DR (2): `seedlist --check` judges each listed seed's dressing rows by inventory id (art/invDress.ts), as Play finishes it. Planted
+// on a listed 1-8 seed: a finish that lays a row the inventory lacks is refused by name; 1-8's own finish adds nothing.
+test('the list judges each listed seed\'s dressing rows against its world\'s inventory: a row the inventory lacks is refused by name', async () => {
+  await import('../../src/game/headlessDom.ts');
+  const { listedStage, playFinish } = await import('../../src/game/gen2/listed.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList.ts');
+  const { loadInventory } = await import('../../src/game/art/inventory.ts');
+  const { asPlayedBreaches } = await import('./listRules.ts');
+  type St = Parameters<typeof asPlayedBreaches>[3] extends (s: infer S, d: never) => unknown ? S : never;
+  const row = listedStage('1-8')!;
+  const cfg = generateAllLevels().find((l) => l.id === '1-8')!;
+  assert.ok(await loadSeedList('1-8'), 'the list loads');
+  const seed = provenSeeds('1-8')[0];
+  const inv = await loadInventory(cfg.worldIndex);
+  const real = (st: St, d: 'normal' | 'easy') => playFinish(row, st, d);
+  const renamed = (st: St, d: 'normal' | 'easy') => {
+    const s = real(st, d) as St & { proto?: { invDress?: Array<{ inv: string; x: number }> } };
+    const r = s.proto!.invDress![0];
+    r.inv = 'hf18-palm-crown';
+    return s;
+  };
+  assert.deepEqual(asPlayedBreaches(cfg, row.kit, [seed], real, undefined, inv), [], 'the listed seed and its rows, as Play finishes it');
+  const lines = asPlayedBreaches(cfg, row.kit, [seed], renamed, undefined, inv);
+  assert.equal(lines.length, 2, lines.join('\n'));
+  for (const d of ['normal', 'easy']) assert.ok(lines.some((l) => l.startsWith(`1-8 seed ${seed} ${d}: dressing at x `) && l.endsWith("'hf18-palm-crown' is in no row of World 1's inventory (src/game/art/inventory/w1.json): name it by its catalog id, in a world it fits")), d);
+});
