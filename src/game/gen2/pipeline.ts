@@ -15,7 +15,8 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { withSetting } from '../settingDials.ts';
-import { walkedSpan, WALKED_MIN } from './walkedSpan.ts';
+import { LAID_ASKS, walkedPiece, type SpanStage } from './walkedSpan.ts';
+import { fallSpans, missPiece } from '../petals.ts';
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
@@ -3068,6 +3069,13 @@ export interface Filled {
   extras: Record<string, unknown>;
 }
 
+/** the walked path's stage for a laid stage (walkedSpan.ts): its pieces, lianas and asks, and `away` from its own record of its falls
+ *  (the route's gaps and heart-fall zones, petals.ts fallSpans: a pit's floor or stair below the lower lip, a hurt floor, a catch) */
+export function walkedOf(laid: Pick<Laid, 'platforms' | 'vines' | 'asks' | 'gaps' | 'heartFalls'>): SpanStage {
+  const spans = fallSpans({ platforms: laid.platforms, heartFalls: laid.heartFalls, gen2: { falls: laid.gaps } } as never);
+  return { platforms: laid.platforms, vines: laid.vines, asks: laid.asks, away: (p) => missPiece(spans, p) };
+}
+
 /**
  * Pass 4. In order: flags (rests, and wherever 35 s passed without one), Dot's tips (the first time a mechanic is met), linked
  * source/receptor pairs (both or neither, A7), the other props (a bag per tag, a short cooldown so the same prop is not next to
@@ -3079,6 +3087,9 @@ export interface Filled {
  * kept there, so Easy's animals are a subset of Normal's (Easy's own rules, spacing and 60% cut then drop from that list).
  */
 export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, nodeAsks?: ReadonlyMap<string, NodeAsks>): Filled {
+  // (the walked path as the sockets read it, made once the first petal asks: the built pieces and the stage's own record of its falls)
+  let wst: SpanStage | undefined;
+  const walkedStage = (): SpanStage => (wst ??= walkedOf(laid));
   const M = kit.manifest;
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
@@ -3354,13 +3365,16 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         // (inside its piece's WALKED span: after the farthest the leap onto it sets him down, before the earliest the jump off it leaves;
         // on a piece the leap clears, on the next piece he walks (walkedSpan.ts; ENG-16H, R-165.246, every stage). Read off the built
         // pieces: a socket's share of its piece put petals where a fluid run never stands, 1-6's expert sealed doors)
-        let piece = k.piece;
-        let ws = walkedSpan(piece, laid);
-        if (ws.hi - ws.lo < WALKED_MIN && ws.next) { piece = ws.next; ws = walkedSpan(piece, laid); }
-        const lo = Math.max(ws.lo, piece.x + 20), hi = Math.min(ws.hi, piece.x + piece.width - 20);
+        // (ENG-PETAL 11-14: the ONE walked-path model, which the petal fill reads too: the plain jumps as well as the lianas and asks; on a
+        // piece he clears, the next piece he walks, and on, never one he stands on only after a miss (a pit's floor or stair); none
+        // within reach of a walked piece, no petal: never one he flies past)
+        const wp = walkedPiece(k.piece, walkedStage());
+        if (!wp) continue;
+        const piece = wp.piece;
+        const lo = Math.max(wp.lo, piece.x + 20), hi = Math.min(wp.hi, piece.x + piece.width - 20);
         const room = Math.max(0, hi - lo);
         const span = Math.min(s.span ?? 0, piece.width - 40, room);
-        const cx = room > 0 ? Math.max(lo + span / 2, Math.min(hi - span / 2, piece === k.piece ? k.x : (lo + hi) / 2)) : Math.max(piece.x + 20, Math.min(piece.x + piece.width - 20, (ws.lo + ws.hi) / 2));
+        const cx = room > 0 ? Math.max(lo + span / 2, Math.min(hi - span / 2, piece === k.piece ? k.x : (lo + hi) / 2)) : (wp.lo + wp.hi) / 2;
         const rowLook = lookAt(cx, piece.y);
         // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
         const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';
@@ -3904,7 +3918,8 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   return out;
 }
 /** each built stage's route asks (laid in world px), read by applyVerdicts; kept off gen2 so the built stage carries the verdicts only */
-const ASKS = new WeakMap<Gen2Stage, NonNullable<Laid['asks']>>();
+// (kept by the walked path's module, so the petal fill on the finished stage reads the same asks: walkedSpan.ts LAID_ASKS)
+const ASKS = LAID_ASKS as WeakMap<Gen2Stage, NonNullable<Laid['asks']>>;
 /** the asks the lay laid on a built stage (world px), for the checks that read the route (walkedSpan.test.ts) */
 export const laidAsks = (st: Gen2Stage): NonNullable<Laid['asks']> => ASKS.get(st) ?? [];
 

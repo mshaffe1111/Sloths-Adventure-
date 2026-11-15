@@ -19,6 +19,7 @@
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { jumpEdges } from './stageMetrics.ts';
+import { LAID_ASKS, walkedPiece, walkedSpan, WALKED_MIN, type SpanStage } from './gen2/walkedSpan.ts';
 
 /** the most petals on one screen, and the screen (world px: wider than an upright phone's view, about a sideways one's) */
 export const PER_SCREEN = 6;
@@ -35,6 +36,16 @@ const SCATTER = new Set<Collectible['type']>(['flower', 'leaf', 'fruit']);
 
 /** World 8's harvest: its flowers are the night blooms the goal counts, a goal item of their own */
 export const nightBlooms = (stage: Pick<GeneratedStage, 'config'>) => stage.config.worldIndex === 8 && stage.config.objectiveType === 'harvest';
+
+/** the stage's petal brief says LOW (GraphBrief.petals, by data: 1-2, 1-6, 1-7; R-165.263): pickups come only from its sections' sockets,
+ *  so nothing after the lay adds petals (no arc over a gap, jumpTrails.ts; no fill, fillGaps) */
+export const petalsLow = (stage: object) => (stage as { gen2?: { brief?: { petals?: string } } }).gen2?.brief?.petals === 'low';
+
+/** the walked path on a finished stage (gen2/walkedSpan.ts, the model the socket lay reads too): its pieces, lianas, the asks it was laid
+ *  with, and `away`, from its own record of its falls (missPiece) */
+export function walkedStage(stage: GeneratedStage, spans: readonly FallSpan[] = fallSpans(stage)): SpanStage {
+  return { platforms: stage.platforms, vines: stage.vines, asks: LAID_ASKS.get(stage) ?? [], away: (p) => missPiece(spans, p) };
+}
 
 /** a petal (a scattered pickup that is not a goal item of its own) */
 export const isPetal = (c: Collectible, stage: Pick<GeneratedStage, 'config'>) => SCATTER.has(c.type) && !c.hidden && !c.findId && !(nightBlooms(stage) && c.type === 'flower');
@@ -167,6 +178,8 @@ export interface PetalOut {
   crowded: number;
   /** the petals the spread put in (petalPass.ts) */
   filled?: number;
+  /** the standing petals the walked path moved onto a walked piece, and the ones it took out (walkPetals) */
+  walked?: { moved: number; gone: number };
 }
 
 /**
@@ -292,11 +305,55 @@ export function fallSpans(stage: GeneratedStage): FallSpan[] {
 }
 /** a spot inside a fall, lower than its lower lip: getting it means dropping into the gap */
 export const inFall = (spans: readonly FallSpan[], p: Pt): boolean => spans.some((f) => p.x > f.x0 && p.x < f.x1 && p.y > f.lip);
-/** a piece that never holds a fill petal: a hurt floor, a catch, a creaky limb, or a floor or step inside a fall below its lower lip */
-export const offPath = (spans: readonly FallSpan[], p: Platform): boolean =>
-  p.pit === 'hurt' || !!p.catch || p.type === 'fragile' || spans.some((f) => p.x + p.width > f.x0 + 4 && p.x < f.x1 - 4 && p.y > f.lip);
+/** a piece he stands on only after a miss (ENG-PETAL 11-14: the walked path's `away`, gen2/walkedSpan.ts): a hurt floor, a catch, or a
+ *  floor or step inside a fall below its lower lip (a soft pit's floor and its stair) */
+export const missPiece = (spans: readonly FallSpan[], p: Platform): boolean =>
+  p.pit === 'hurt' || !!p.catch || spans.some((f) => p.x + p.width > f.x0 + 4 && p.x < f.x1 - 4 && p.y > f.lip);
+/** a piece that never holds a fill petal: a piece he stands on only after a miss (missPiece), or a creaky limb */
+export const offPath = (spans: readonly FallSpan[], p: Platform): boolean => p.type === 'fragile' || missPiece(spans, p);
 /** the pieces each trail of the last candidates() rests on (a ledge's ledge, a jump's two ends; a climb's vine foot as a point) */
 const RESTS = new WeakMap<Pt[], { on: Platform[]; foot?: Pt }>();
+
+/**
+ * The walked path on the BUILT stage (ENG-PETAL 11-14, R-165.246; level.md rule 27: judge the built stage, not its data): every petal
+ * standing on a piece (its body up to 60 px over the top) is inside that piece's walked span (gen2/walkedSpan.ts, the model the socket lay
+ * and the fill read); one outside it goes inside the span of the piece he walks (walkedPiece: the same piece, or on a piece he clears,
+ * the next he walks), at the same height over it; one on a piece he stands on only after a miss, or with no walked piece near, goes.
+ * The lay reads the same model, but a pass after it can still move a piece (1-6 normal 2: a socket's petal 5 px past the span on the
+ * built stage). Gen2 stages (the ones the socket lay builds); changed in place, returns how many moved and went.
+ */
+export function walkPetals(stage: GeneratedStage): { moved: number; gone: number } {
+  const ws = walkedStage(stage);
+  let moved = 0;
+  const gone = new Set<Collectible>();
+  for (const c of stage.collectibles) {
+    if (!isPetal(c, stage) || KEEP.has(c)) continue;
+    const p = stage.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && c.x >= q.x && c.x <= q.x + q.width && q.y - c.y > 0 && q.y - c.y <= 60).sort((a, b) => a.y - b.y)[0];
+    if (!p || (p.type !== 'solid' && p.type !== 'fragile')) continue;
+    const w = walkedSpanMemo(p, ws);
+    if (!ws.away!(p) && w.hi - w.lo >= WALKED_MIN && c.x >= w.lo - 2 && c.x <= w.hi + 2) continue;
+    const wp = ws.away!(p) ? undefined : walkedPiece(p, ws);
+    if (!wp) { gone.add(c); continue; }
+    const up = p.y - c.y;
+    c.x = Math.round(Math.max(wp.lo, Math.min(wp.hi, wp.piece === p ? c.x : (wp.lo + wp.hi) / 2)));
+    c.y = Math.round(wp.piece.y - up);
+    moved++;
+  }
+  if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));
+  return { moved, gone: gone.size };
+}
+
+/** each piece's walked span, read once per built layout (the fill asks for it each round; the pieces do not move between rounds) */
+const SPANS = new WeakMap<Platform, { key: string; lo: number; hi: number }>();
+function walkedSpanMemo(p: Platform, st: SpanStage): { lo: number; hi: number } {
+  const key = `${st.platforms.length}:${p.x},${p.y},${p.width}`;
+  const m = SPANS.get(p);
+  if (m && m.key === key) return m;
+  const w = walkedSpan(p, st);
+  const r = { key, lo: w.lo, hi: w.hi };
+  SPANS.set(p, r);
+  return r;
+}
 
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
 function candidates(stage: GeneratedStage, a: number, b: number, r: () => number): Pt[][][] {
@@ -330,6 +387,7 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
   const plain: Pt[][] = [];
   const floor: Pt[][] = [];
   const ground = Math.max(...stage.platforms.map((p) => p.y));
+  const ws = walkedStage(stage);
   for (const p of stage.platforms.filter(firm)) {
     // (three along a wide ledge, two on a narrow one: never a row, ROW_GAP needs four)
     const len = p.width >= 300 ? TRAIL_LEN : 2;
@@ -342,6 +400,15 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
     if (!ax.up) {
       lo = Math.max(lo, a + 120);
       hi = Math.min(hi, b - 120 - step * (len - 1));
+    }
+    // (ENG-PETAL 11-14, R-165.246: only along where every run walks it, the walked path the socket lay reads (gen2/walkedSpan.ts): a
+    // piece he clears in the air, or one he stands on only after a miss, holds no ledge trail; 1-6's fill laid trails across the very
+    // pieces the walked span had emptied, ENG-16I class E)
+    if (p.type === 'solid') {
+      const w = walkedSpanMemo(p, ws);
+      if (w.hi - w.lo < WALKED_MIN || ws.away!(p)) continue;
+      lo = Math.max(lo, w.lo);
+      hi = Math.min(hi, w.hi - step * (len - 1));
     }
     if (hi < lo) continue;
     const raised = p.y < ground - 120;

@@ -8,7 +8,7 @@ import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Difficulty } from './difficulty.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
-import { busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
+import { busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalsLow, petalTrail, rowExtras, walkPetals, type PetalOut } from './petals.ts';
 
 const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
@@ -79,6 +79,8 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
   // (5-3's orchid cups hold their flowers close on purpose: no clump rule takes them)
   const cups = new Set((stage as { w5info?: { cupFlowers?: number[] } }).w5info?.cupFlowers ?? []);
   for (const c of stage.collectibles) if (cups.has(c.id)) KEEP.add(c);
+  // (a gen2 stage's standing petals inside the walked path of the BUILT stage first: petals.ts walkPetals, ENG-PETAL R-165.246)
+  if ((stage as { gen2?: unknown }).gen2) o.walked = walkPetals(stage);
   const far = judgeReach(stage);
   petalTrail(stage, far ?? new Set(), o);
   // the long stretches with no trail get one (petals.ts fillGaps), held to the same rules; only where the check can judge the reach
@@ -86,7 +88,8 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
   // (not on World 8's harvests: a flower there is a night bloom, the goal's own)
   // (nor on 5-3's closing orchids: its quota is meant to need the cups, so the path gets no more)
   const orchids = (stage as { w5info?: { orchids?: unknown[] } }).w5info?.orchids?.length;
-  if (stage.config.objectiveType !== 'boss_lair' && !nightBlooms(stage) && !orchids) {
+  // (nor where the stage's petal brief says LOW, by data: its pickups are its sockets' alone, GraphBrief.petals; R-165.263)
+  if (stage.config.objectiveType !== 'boss_lair' && !nightBlooms(stage) && !orchids && !petalsLow(stage)) {
     const tried = new Set<string>();
     let kept = 0;
     for (let round = 0; round < 3; round++) {

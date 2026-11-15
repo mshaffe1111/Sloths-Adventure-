@@ -24,8 +24,24 @@ export const WALKED_MIN = 24;
 const NEAR = 700;
 const DT = 1 / 30;
 
+/** the testers' FAR take-off: how far before a piece's edge a fluid run may leave it on a plain jump (px; the expert's 95th aim, the
+ *  tier calibration from the testers' own runs, tools/inspect/firsttimer.ts FT_EXPERT aimQ, R-165.59). A run takes off between this far
+ *  before the edge and the edge (ENG-PETAL 11-14: 1-6's creaky-landing:out, the expert left 131 px before its end, past the petal) */
+export const TAKEOFF_FAR = 131;
+/** a seam this narrow, the tops this close, is walked across, not jumped (px) */
+const SEAM = 10;
+/** how far a plain jump's take-off may lie behind a piece, or its landing ahead of it, and still be its way on or off (px) */
+const HOP_NEAR = 460;
+
 type Ask = { x0: number; x1: number; yTake: number; yLand: number; move: 'single' | 'double' | 'bounce' };
-export type SpanStage = { platforms: readonly Platform[]; vines: readonly Vine[]; asks?: readonly Ask[] };
+/**
+ * The built stage as the walked path reads it. `away`: the pieces OFF the path (ENG-PETAL 11-14, R-165.246; petals.ts offPath, the
+ * stage's own record of its falls): a soft pit's floor or stair below its lower lip, a hurt floor, a catch. He stands on one only after a
+ * miss, so none is ever a way on, a way off or the piece a cleared piece's petals move to.
+ */
+export type SpanStage = { platforms: readonly Platform[]; vines: readonly Vine[]; asks?: readonly Ask[]; away?: (p: Platform) => boolean };
+/** the jumps the route asks, by built stage (pipeline.ts laidAsks reads it): the petal fill on the finished stage reads the same ones */
+export const LAID_ASKS = new WeakMap<object, readonly Ask[]>();
 
 const swinging = (v: Vine) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off;
 const sv = (v: Vine): SwingVine => ({ x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: v.swingAmp ?? vineAmp(v), swingPeriod: v.swingPeriod, swingPhase: v.swingPhase ?? 0 });
@@ -93,10 +109,32 @@ function hopCatchesAt(v: Vine, x: number, y: number): boolean {
   return false;
 }
 
+/** the plain jumps' reach: where a full run's jump held off (0, y) comes down through `yLand` (none: it never gets that high) */
+function reach(y: number, yLand: number): number | undefined {
+  return memo(`reach:${Math.round(yLand - y)}`, () => {
+    const d = jumpTouchdown(0, 0, Math.round(yLand - y), false);
+    return d > 0 ? d : undefined;
+  });
+}
+/** a piece a plain jump stands him on: firm, not swinging or moving, not off the path */
+const footing = (q: Platform, st: SpanStage) => !q.broken && (q.type === 'solid' || q.type === 'fragile') && !st.away?.(q);
+/** a walk across a seam: the next piece's top meets this one's end */
+const seam = (a: Pick<Platform, 'x' | 'y' | 'width'>, b: Pick<Platform, 'x' | 'y'>) => Math.abs(b.x - (a.x + a.width)) <= SEAM && Math.abs(b.y - a.y) <= SEAM;
+
 /**
  * The walked span of piece `p` on the built stage: [lo, hi] along its top, and the piece the way off it lands on (`next`: the leap off
  * it, for a piece the leap clears). lo is where the farthest arrival sets him down (its left end when he walks on), hi where the
  * earliest leave takes off (its right end when he walks off).
+ *
+ * The ONE walked-path model (ENG-PETAL 11-14, R-165.246; the lead's packet item 1, level.md rule 22: every stage of every world). The
+ * gen2 socket lay (pipeline.ts fillSockets) and the petal fill (petals.ts fillGaps) both read it. Besides the lianas and the jumps the
+ * route asks, the PLAIN jumps a fluid run takes from piece to piece (1-6, the expert's sealed doors: hop-ups, rests and chain links he
+ * clears in the air, a landing set down past the span, a take-off before it; ENG-16I's classes A, B, D):
+ *   - set down by a plain jump: from any piece behind it on the path, a full run's jump held from that piece's end (the farthest a
+ *     run's flight carries him); a flight that comes down past the piece clears it;
+ *   - left by a plain jump: to any piece ahead of it on the path, the earliest take-off that still lands on it, and never earlier than
+ *     TAKEOFF_FAR before the edge (where the testers leave);
+ *   - a seam walked across is no jump; a piece off the path (`away`) is no way on or off, and never `next` (class C: a pit's floor).
  */
 export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number; next?: Platform } {
   const end = p.x + p.width;
@@ -111,6 +149,24 @@ export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number
   for (const a of st.asks ?? []) {
     if (!on(p, a.x1, a.yLand) || a.x0 >= a.x1 || a.move === 'bounce') continue;
     lo = Math.max(lo, Math.min(end, jumpTouchdown(a.x0, a.yTake, a.yLand, a.move === 'double')));
+  }
+  // (set down by a plain jump: a full run's jump held off the end of a piece behind it; walked on across a seam, none)
+  const behind: Platform[] = [];
+  const ahead2: Platform[] = [];
+  for (const o of st.platforms) {
+    if (o === p || !footing(o, st)) continue;
+    const oEnd = o.x + o.width;
+    if (o.x < p.x && oEnd <= p.x + SEAM && oEnd >= p.x - HOP_NEAR) behind.push(o);
+    else if (o.x >= end - SEAM && o.x <= end + HOP_NEAR) ahead2.push(o);
+  }
+  for (const o of behind) {
+    if (seam(o, p)) continue;
+    const r = reach(o.y, p.y);
+    if (r === undefined) continue;
+    const t = o.x + o.width + r;
+    // (a flight that falls short of it is no way on: another piece or a double is)
+    if (t < p.x) continue;
+    lo = Math.max(lo, Math.min(end, t));
   }
   // (left: a liana ahead whose catch is the way on; a jump the route asks off it)
   const ahead = st.vines.filter((v) => swinging(v) && v.x > p.x + p.width / 2 && v.x < end + NEAR && v.bottomY >= p.y - 160 && v.topY < p.y - 60).sort((a, b) => a.x - b.x)[0];
@@ -128,13 +184,36 @@ export function walkedSpan(p: Platform, st: SpanStage): { lo: number; hi: number
     const to = st.platforms.find((q) => q !== p && on(q, a.x1, a.yLand));
     const reach = jumpTouchdown(0, a.yTake, a.yLand, dbl);
     hi = Math.min(hi, Math.max(p.x, (to ? to.x : a.x1) + 10 - reach));
-    next ??= to;
+    next ??= to && !st.away?.(to) ? to : undefined;
   }
-  // (no span: the piece the way off it sets him down on, the liana's first, then the ask's: the nearest one past this piece a let-go of
-  //  that liana lands on)
+  // (left by a plain jump: to a piece ahead a full jump off its end reaches, the earliest take-off that still lands on it, never before
+  //  the testers' far take-off; walked off across a seam, none)
+  const lands = ahead2.filter((q) => !seam(p, q)).map((q) => ({ q, r: reach(p.y, q.y) })).filter((h) => h.r !== undefined && end + h.r! >= h.q.x + 10).sort((a, b) => a.q.x - b.q.x);
+  for (const { q, r } of lands) hi = Math.min(hi, Math.max(end - TAKEOFF_FAR, q.x + 10 - r!));
+  // (no span: the piece the way off it sets him down on, the liana's first, then the ask's, then the plain jump's: never one off the path)
   if (hi - lo < WALKED_MIN && ahead) {
-    const q = st.platforms.filter((r) => r !== p && r.x >= end - 2 && r.x < ahead.x + NEAR && r.type !== 'bouncy').sort((r1, r2) => r1.x - r2.x).find((r) => lianaTouchdown(ahead, r) !== undefined);
+    const q = st.platforms.filter((r) => r !== p && r.x >= end - 2 && r.x < ahead.x + NEAR && r.type !== 'bouncy' && !st.away?.(r)).sort((r1, r2) => r1.x - r2.x).find((r) => lianaTouchdown(ahead, r) !== undefined);
     if (q) next = q;
   }
+  if (hi - lo < WALKED_MIN && !next && lands.length) next = lands[0].q;
   return { lo, hi, ...(next ? { next } : {}) };
+}
+
+/** how many pieces forward a cleared piece's petals may move (a chain of pieces he clears, one after another) */
+const HOPS = 6;
+/**
+ * The piece a petal laid on `p` goes on, and its walked span: `p` when he walks it; on a piece he clears in the air (no span), the next
+ * piece the way off it sets him down on, and on, until one is walked. Undefined: none within HOPS (no petal: never one he flies past).
+ */
+export function walkedPiece(p: Platform, st: SpanStage): { piece: Platform; lo: number; hi: number } | undefined {
+  const seen = new Set<Platform>();
+  let q: Platform | undefined = p;
+  for (let k = 0; q && k <= HOPS && !seen.has(q); k++) {
+    seen.add(q);
+    if (st.away?.(q)) return undefined;
+    const ws = walkedSpan(q, st);
+    if (ws.hi - ws.lo >= WALKED_MIN) return { piece: q, lo: ws.lo, hi: ws.hi };
+    q = ws.next;
+  }
+  return undefined;
 }
