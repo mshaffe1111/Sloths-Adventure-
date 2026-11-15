@@ -251,15 +251,16 @@ type FinishStage = {
   proto?: { decor?: W2Decor[] };
 };
 
-/** reeds this far from a river's edge, either bank (px; the hand-built world's 10-30) */
+/** reeds this far from a river's edge, either bank (px; the hand-built world's 10-30), on a bank this wide or more (a stone has none) */
 const REED_OFF = 20;
+const REED_BANK = 200;
 
 /**
  * World 2's finish (listed.ts BASE 'w2', run where World 1's runs w1Finish): every fall of the built stage becomes its river between the
  * two banks (RiverZone, x0 the near bank's end, x1 the far bank's start, the surface `surfaceBelowBank` under the banks' lower top): a
  * deep (water) fall a river that costs a life; a soft fall a SPLASH-BACK river (`safe`: set back on the near bank, 70 px from the edge,
  * as the hand-built 2-1's), its soft pit's bed and steps taken out (the splash sets him back before he reaches them; a bank standing in
- * the water would be drawn over it). Reeds stand at each river's edges (riverArt.ts reeds). A fall with no bank at each end throws: such
+ * the water would be drawn over it). Reeds stand behind him at each river's edge on a bank (riverArt.ts reeds; none on a stepping stone). A fall with no bank at each end throws: such
  * a roll is never listed. Calling it twice changes nothing.
  */
 export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty): T {
@@ -280,9 +281,12 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     if (safe) for (const p of solids) if (p !== near && p !== far && p.x >= f.x0 - 1 && p.x + p.width <= f.x1 + 1 && p.y > top) drop.add(p.id);
     rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: { backX: f.x0 - 70, backY: near.y } } : {}) });
     const kinds = ['reedTall', 'reedShort', 'reedLean'] as const;
-    for (const [x, b, front] of [[f.x0 - REED_OFF, near.y + 6, false], [f.x1 + REED_OFF, far.y + 6, true]] as const) {
+    for (const [x, b, bank] of [[f.x0 - REED_OFF, near.y + 6, near], [f.x1 + REED_OFF, far.y + 6, far]] as const) {
+      // (behind him, never in front: a reed in front hid him on the bank's edge, ENG-W2's sideways still; and only on a real bank, never a
+      //  stepping stone, whose two edges a reed each crowded)
+      if (bank.width < REED_BANK) continue;
       const n = kinds[Math.floor(hash01(x, 41) * kinds.length)];
-      decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}), front });
+      decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
     }
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));

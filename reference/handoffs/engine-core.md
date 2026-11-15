@@ -8,9 +8,30 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-W2 (11-14, t-eng-w2): section 0zc (World 2 on gen2: the kit, w2Finish's rivers, riverLay). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zc. World 2 on gen2 (ENG-W2, t-eng-w2, 11-14): the kit, the rivers by world data, the river's one lay
+- **World 2's kit is src/game/gen2/worlds/w2.ts** (`w2World`, stage-table kit 'w2'): art from the World 2 inventory (W2_ART, held in the
+  inventory, usable and in scale by w2.test.ts), ground y 580 / banks 90 deep / style 'log' (World 2's painted earth bank: terrain.ts
+  draws it as 'ground', as the hand-built 2-3 is drawn), a rock is a moss stone EXACTLY 50 px (the kit's painted boulder; 51-56 draws as
+  a stone pillar). Its pit is 'soft': a section's `water: true` gap is a deep river, any other gap a splash-back river.
+- **World 2's finish is w2Finish** (listed.ts `worldFinish`: every kit names its world's finish; World 1's kits keep w1Finish, so World 2
+  never gets World 1's cut art or squirrels). It turns each built fall into a RiverZone (painted river, engine splash): soft -> `safe`
+  (set back 70 px short of the edge, its pit bed taken out), water -> deep; reeds behind him on banks 200 px+. A fall with no bank at an
+  end throws (never listed).
+- **2-1 and 2-2 roll on PLACEHOLDER arcs** (`A T R P R X R M R S R L E`, w2Bricks per stage): the designed levels replace the bricks
+  (w2Arc21.ts / w2Arc22.ts). Both are listed (100 proven seeds each), flown (flownArcs.ts normal-2-1 / normal-2-2) and in drawcheck.
+  The hand-built 2-1 / 2-2 are deleted (W2_STAGES rows, their w2Sections builders, the ferry room, FLOWER_GOAL_22, their tests).
+- **The river's one lay is src/game/gen2/riverLay.ts**: `layRiver(row, x0, bankY, nextId)` (RiverZone + drift logs on river.ts's clock)
+  and `riverFaults(stage)` (spacing, hop, speed, the beat at the bank, boarding room, the next log in view). The hand-built 2-3..2-9 lay
+  through it (lock: unchanged). World 2's rows are data, w2.ts W2_RIVERS. NOT yet: the gen2 place rule that lays a log river between
+  two banks inside the pipeline (REPORT.md EXACT NEXT STEP).
+- **Traps:** (1) `also: quietJudge` bans a slot's section and re-rolls: a stage whose arrival is quiet throws "no section fits node n1
+  (start)" on most seeds (a pool of one arrival); put a hop within ~450 px of each brick's ends. (2) artuse.mjs counts a template literal
+  as a dynamic name: the deleted ferry's `sluice${ri}` was the only "use" of W6's sluice-wheel art (artUse red once it went). (3) The
+  game's finishStage lays petal arcs over every route gap, whatever the brief's `petals: 'low'` (1-7: 61 built, 105 played).
 
 ## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
 - **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a

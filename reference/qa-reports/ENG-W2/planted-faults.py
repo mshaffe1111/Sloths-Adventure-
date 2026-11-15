@@ -18,6 +18,8 @@ FAULTS = [
      "  rock: ['w2#boulder', 'w2#stump'],", "  rock: ['w2#boulder', 'w2#stump', 'w1-ledge-earth-b'],", 'the kit'),
     ("Dot's warning is not the keeper's line", 'src/game/gen2/worlds/w2.ts',
      "  water: 'This river\\'s deep. Stay on the logs!',", "", 'the first deep river'),
+    ('a reed is drawn in front of him', 'src/game/gen2/worlds/w2.ts',
+     "...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });", "...(hash01(x, 43) < 0.5 ? { flip: true } : {}), front: true });", 'the look'),
     ('2-1 has no stage-table row', 'src/game/gen2/worlds/stageTable.ts',
      "  '2-1': { kit: 'w2' },", "", 'the rows'),
     ('the hand-built 2-1 is still a plan', 'src/game/w2Stages.ts',

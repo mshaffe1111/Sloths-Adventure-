@@ -37,6 +37,14 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of a World 2 stage's own scope (ENG-W2, 11-14: 2-1 and 2-2 flown on World 2's kit, FLIGHT_STAGE=<id>
+ *  reference/specs/sims/flight.ts normal all on t-eng-w2 @ aca656aa2: the [rise] block / thin best columns, the [dist]/[ddist] block column's
+ *  ">=70 before lip", "last ground frame" and "ANY", the [bdist] d=0 row; logs in reference/qa-reports/ENG-W2/fly-2-1.txt, fly-2-2.txt) */
+const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+const n21 = nW2('2-1'), n22 = nW2('2-2');
+
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
   // (N any 246, not the table's 244: the same row's "the Critic's finer flight found 246 on Normal too: design to 246")
@@ -108,5 +116,23 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n17('double-tap-tap', [149, 141], [190, 275, 299], 'chain.md §1 "1-7: double-tap-tap 149 / 141, gap 190 / 275 / 299"'),
   ...n17('bounce', [223, 216], [177, 177, 177], 'chain.md §1 "1-7: bounce 223 / 216, gap 177"'),
   ...n17('bounce-air', [312, 302], [334, 334, 334], 'chain.md §1 "1-7: bounce-air 312 / 302, gap 334"'),
+  // 2-1 and 2-2 on Normal (ENG-W2, 11-14): flown on their own stages on World 2's kit (nW2 above). Their help eases a little past 1-7's
+  // (the doubles climb 1-2 px less), so each has its own block
+  ...n21('single-hold', [123, 115], [135, 220, 244], 'fly-2-1.txt: single-hold 123 / 115, gap 135 / 220 / 244'),
+  ...n21('single-flick', [123, 114], [126, 210, 238], 'fly-2-1.txt: single-flick 123 / 114, gap 126 / 210 / 238'),
+  ...n21('single-tap', [87, 79], [77, 161, 182], 'fly-2-1.txt: single-tap 87 / 79, gap 77 / 161 / 182'),
+  ...n21('double-hold', [206, 198], [290, 375, 403], 'fly-2-1.txt: double-hold 206 / 198, gap 290 / 375 / 403'),
+  ...n21('double-flick', [205, 197], [271, 357, 384], 'fly-2-1.txt: double-flick 205 / 197, gap 271 / 357 / 384'),
+  ...n21('double-tap-tap', [148, 139], [189, 274, 299], 'fly-2-1.txt: double-tap-tap 148 / 139, gap 189 / 274 / 299'),
+  ...n21('bounce', [223, 215], [177, 177, 177], 'fly-2-1.txt: bounce 223 / 215, gap 177'),
+  ...n21('bounce-air', [308, 298], [334, 334, 334], 'fly-2-1.txt: bounce-air 308 / 298, gap 334'),
+  ...n22('single-hold', [123, 115], [135, 219, 244], 'fly-2-2.txt: single-hold 123 / 115, gap 135 / 219 / 244'),
+  ...n22('single-flick', [123, 114], [126, 210, 237], 'fly-2-2.txt: single-flick 123 / 114, gap 126 / 210 / 237'),
+  ...n22('single-tap', [87, 78], [77, 161, 182], 'fly-2-2.txt: single-tap 87 / 78, gap 77 / 161 / 182'),
+  ...n22('double-hold', [205, 197], [290, 375, 403], 'fly-2-2.txt: double-hold 205 / 197, gap 290 / 375 / 403'),
+  ...n22('double-flick', [204, 196], [271, 357, 384], 'fly-2-2.txt: double-flick 204 / 196, gap 271 / 357 / 384'),
+  ...n22('double-tap-tap', [148, 139], [189, 274, 299], 'fly-2-2.txt: double-tap-tap 148 / 139, gap 189 / 274 / 299'),
+  ...n22('bounce', [223, 214], [177, 177, 177], 'fly-2-2.txt: bounce 223 / 214, gap 177'),
+  ...n22('bounce-air', [307, 296], [333, 333, 333], 'fly-2-2.txt: bounce-air 307 / 296, gap 333'),
 ];
 

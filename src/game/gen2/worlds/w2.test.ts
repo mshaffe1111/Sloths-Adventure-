@@ -26,7 +26,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..',
 const cfg = (id: string) => generateAllLevels().find((c) => c.id === id && !c.secret)!;
 type Built = {
   platforms: Platform[]; collectibles: Collectible[]; rivers?: RiverZone[]; checkpoints?: Array<{ x: number; y: number }>; config: { levelWidth: number };
-  proto?: { hints?: Array<{ x: number; text: string }>; mixDress?: unknown[]; gen2?: { waterWarnings?: Array<{ x: number; y: number }> } };
+  proto?: { hints?: Array<{ x: number; text: string }>; mixDress?: unknown[]; decor?: Array<{ n?: string; x: number; front?: boolean }>; gen2?: { waterWarnings?: Array<{ x: number; y: number }> } };
   gen2: { errors?: string[]; sections: Array<{ template: string; x0: number; x1: number }>; falls?: Array<{ x0: number; x1: number; y: number; kind: string }> };
 };
 const memo = new Map<string, Built>();
@@ -84,6 +84,10 @@ test('the look: every piece is drawn by World 2 art as the engine draws it (no W
       assert.equal((p as { cut?: string }).cut, undefined, `${id} ${d}: piece ${p.id} carries World 1's cut art`);
     }
     assert.equal(st.proto?.mixDress, undefined, `${id} ${d}: World 1's dressing (the squirrels) is not World 2's`);
+    // (World 2's reeds stand at the rivers' edges, behind him: none drawn in front, where it hid him on a bank's edge)
+    const reeds = (st.proto?.decor ?? []).filter((q) => q.n?.startsWith('reed'));
+    assert.ok(reeds.length >= (st.rivers ?? []).length / 2, `${id} ${d}: ${reeds.length} reeds`);
+    assert.ok(!reeds.some((q) => q.front), `${id} ${d}: a reed drawn in front of him`);
   }
 });
 
