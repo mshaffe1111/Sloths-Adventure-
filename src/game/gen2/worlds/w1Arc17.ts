@@ -23,7 +23,7 @@ import type { WatchZone } from '../../watcher.ts';
 import { w1World } from './w1.ts';
 import { W1_LIANA_GAP, w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
 import { eagleOver, w1Still } from './w1Cast.ts';
-import { castWatches, clipWatches, STILL } from '../stillLay.ts';
+import { castWatches, clipWatches, STILL, type WatchRow } from '../stillLay.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
 export const STAGE_17 = '1-7';
@@ -108,6 +108,14 @@ export const lineId = (line: keyof typeof LINES_17): string => `w17.${line}`;
 const tip = (id: string, on: string, t: number, line: keyof typeof LINES_17): Socket => ({ id, role: 'tip', on, t, allow: [lineId(line)] });
 /** the watch sockets where the eagle is TAUGHT (its first pass free, the long calm): beats 1 and 2 */
 export const LESSONS_17 = ['teach-bush', 'teach-shake'] as const;
+/**
+ * 1-7's own eagle dials (TUNE-17, R-165.266: Matt 11-14 "it does play a bit easy"; its Normal target 5.5, DIFFICULTY.md §4), over World 1's
+ * row and the kind's (predators/world1.ts EAGLE.glance: away 1.2-4.5 s, look 0.9-2.2 s, fake 0.25). Easy derives from these and is never
+ * harder: away x1.5, the head-cock x1.3, no fake-outs (core.ts stepGlance), the calm x1.5 (EAGLE.easy.cool)
+ */
+export const WATCH_17 = {
+  glance: { away: [1.0, 3.5], look: [1.0, 2.4], fake: 0.3, reach: 240 },
+} as const satisfies Partial<Pick<WatchRow, 'calm' | 'glance'>>;
 
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
@@ -295,7 +303,8 @@ export function finish17<T extends FinishStage>(st: T, difficulty: Difficulty): 
     if (s.template === W17_PERCH.section) {
       if (inside.length !== 1) throw new Error(`1-7 finish: the perch beat (${s.uid}) has ${inside.length} eagles, not 1`);
       const e = inside[0];
-      const z: WatchZone = { x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool ?? 5, e.kitCool ?? 5], ...(e.kitFree ? { freeFirst: true } : {}) };
+      // (its stretch's glance dials go with it onto the snag: the stage's own (WATCH_17), never dropped back to the kind's)
+      const z: WatchZone = { x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool ?? 5, e.kitCool ?? 5], ...(e.kitFree ? { freeFirst: true } : {}), ...(e.kitGlance !== undefined ? { glance: e.kitGlance } : {}) };
       const ground = plats.filter((p) => p.type !== 'fragile').sort((a, b) => a.y - b.y)[0].y;
       // (its snag stands on open bark, never on a hide: in the middle of the widest stretch between the beat's covers (BUILD-17's sideways
       //  still: at a fixed share of the stretch it stood behind a moss patch and the eagle sat on his cover))
@@ -318,7 +327,7 @@ export function finish17<T extends FinishStage>(st: T, difficulty: Difficulty): 
  */
 export function kitLib17(): WorldKit {
   const k = withSwing(w1World()), M = k.manifest, G = M.graphs!;
-  const still = w1Still(7, LESSONS_17);
+  const still = w1Still(7, LESSONS_17, WATCH_17);
   const props: PropDef[] = still.props.map((p) => ({ ...p, tags: [...p.tags, p.id] }));
   return { ...k,
     emit: { ...k.emit, ...still.emit },

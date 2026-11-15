@@ -184,10 +184,11 @@ export const W1_STILL: Readonly<Record<string, StillRow>> = {
 
 /**
  * World 1's still kit at a stage: the prop rows, the emitters, and the finish (after the hides are laid) that turns stretches into eagles.
- * `lesson`: the stage's watch sockets where the eagle is taught (the long calm, the free first pass): the stage's own, by socket id
+ * `lesson`: the stage's watch sockets where the eagle is taught (the long calm, the free first pass): the stage's own, by socket id.
+ * `own`: the stage's own watch dials over World 1's row (its calm band, its glance: a stage tunes its eagle by data, ENG-WATCH's dials)
  */
-export function w1Still(stage: number, lesson: readonly string[] = []): { props: PropDef[]; emit: Record<string, PropEmitter>; finish: (out: StageSink) => void } {
-  const rows: Record<string, StillRow> = { ...W1_STILL, 'w1-eagle': { ...(W1_STILL['w1-eagle'] as WatchRow), lesson } };
+export function w1Still(stage: number, lesson: readonly string[] = [], own: Partial<Pick<WatchRow, 'calm' | 'glance' | 'glanceLesson'>> = {}): { props: PropDef[]; emit: Record<string, PropEmitter>; finish: (out: StageSink) => void } {
+  const rows: Record<string, StillRow> = { ...W1_STILL, 'w1-eagle': { ...(W1_STILL['w1-eagle'] as WatchRow), ...own, lesson } };
   return {
     props: stillProps(rows),
     emit: stillEmitters(rows, stage),
