@@ -7,7 +7,7 @@
  *
  * The VOCABULARY is read from the code, never a hand list: the route's moves (route.ts MoveKind), the platform types (types.ts Platform),
  * the creatures (types.ts EnemyType), the zones (zones.ts ZoneKind), the beat bricks (beatBrick.ts BrickOn), the ride ways (gen2/rideLay.ts
- * RideWay), the skills (skills.ts SkillId) and the beat families beats.ts emits (its off() labels: the `fam` key every beat carries).
+ * RideWay), the pad kinds (gen2/rideLay.ts PadRow.by), the skills (skills.ts SkillId) and the beat families beats.ts emits (its off() labels: the `fam` key every beat carries).
  * The TABLE is reference/design/meter-coverage.json: one entry per piece id, { bot: "file#symbol" | null, channel: "file#symbol" | null,
  * rows: [METER-COVERAGE.md # ids] }; a symbol resolves when its file declares it (a function, const, class, type or method; a dotted
  * tail is a key of it). The BUILT stages are every stage-table row (gen2/worlds/stageTable.ts) and every stage of the worlds the table
@@ -78,6 +78,7 @@ export function vocabulary(): string[] {
   add('zone', unionOf(read('src/game/zones.ts'), 'ZoneKind'));
   add('brick', unionOf(read('src/game/beatBrick.ts'), 'BrickOn'));
   add('ride', unionOf(read('src/game/gen2/rideLay.ts'), 'RideWay'));
+  add('pad', fieldUnionOf(read('src/game/gen2/rideLay.ts'), 'PadRow', 'by'));
   add('skill', unionOf(read('src/game/skills.ts'), 'SkillId'));
   ids.push(...beatFamiliesOf(read('tools/inspect/beats.ts')));
   return [...new Set(ids)].sort();

@@ -555,7 +555,7 @@ export const deadlineBits = (open: number): number => Math.log2(1 + REF_S / Math
 /** how a moving floor moves, for the ride channel: its board window (the share of its cycle a hop onto it can land: he may wait for it,
  *  RW) and its step-off window (how long, once he rides it, a hop off to the next floor stays open before it carries him away or under:
  *  he cannot wait that out, FB). Null: a floor that moves by no clock the meter reads (refused: unpriced) */
-export interface RideTiming { how: 'drift' | 'ride' | 'lift'; cycle: number; board: number; stepOff: number; speed: number; safe?: boolean }
+export interface RideTiming { how: 'drift' | 'ride' | 'lift' | 'pad'; cycle: number; board: number; stepOff: number; speed: number; safe?: boolean }
 /** the time between logs passing one spot on a river: its cycle over the logs on it (river.ts: every log on one river shares its window,
  *  direction and speed, spaced by `offset`) */
 const logsOn = (st: any, d: DriftInfo) => (st.platforms as any[]).filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === d.x0 && q.drift.x1 === d.x1 && q.drift.dir === d.dir && q.drift.speed === d.speed).length;
@@ -570,6 +570,10 @@ const logsOn = (st: any, d: DriftInfo) => (st.platforms as any[]).filter((q) => 
  *   end through its rest, off and warn, which come round once in two periods (rideAt flips its way each cycle). BOARD: that stand of
  *   twice its period. STEP OFF: the same stand at the far end.
  * - a basket lift (lift.ts LiftInfo): it waits `wait` s at each stop of liftCycle. BOARD: one wait of the cycle; STEP OFF: one wait.
+ * - a sinking pad (gen2/rideLay.ts layPads: a lily carrying a `pad`; METER-COVERAGE #21, FIX-22) is a DWELL: STEP OFF is its stand, the
+ *   up and shiver of its clock before it goes under (a weight pad's count from landing, padSizeClock: its hold; a beat row's breath,
+ *   padBeatClock; Easy stretches it, clock.ts beatOf). BOARD: a weight pad is up whenever he comes to it (it sinks only under him and is
+ *   whole again by RIDE.padRise), so its whole cycle; a beat pad only while its row is up or shivering, once a breath.
  */
 export function rideTiming(st: any, q: any, setting: Setting): RideTiming | null {
   const easy = setting === 'easy';
@@ -589,6 +593,14 @@ export function rideTiming(st: any, q: any, setting: Setting): RideTiming | null
     for (let i = 1; i < r.path.length; i++) len += Math.hypot(r.path[i].x - r.path[i - 1].x, r.path[i].y - r.path[i - 1].y);
     const on = b.names.reduce((s: number, n: string, i: number) => s + (n === 'on' ? b.seconds[i] : 0), 0);
     return { how: 'ride', cycle: 2 * b.period, board: stand, stepOff: stand, speed: len / Math.max(0.05, on) };
+  }
+  if (q?.pad) {
+    const def = ((st.clocks ?? []) as any[]).find((c) => c.id === q.pad.clock);
+    if (!def) return null;
+    const b = beatOf(def, easy);
+    const stand = b.names.reduce((s: number, n: string, i: number) => s + (n === 'on' ? 0 : b.seconds[i]), 0);
+    const pond = ((st.rivers ?? []) as RiverZone[]).find((r) => q.x >= r.x0 - 1 && q.x + q.width <= r.x1 + 1);
+    return { how: 'pad', cycle: b.period, board: q.pad.by === 'beat' ? stand : b.period, stepOff: stand, speed: 0, safe: !!pond?.safe };
   }
   if (q?.lift) {
     const l: LiftInfo = q.lift;
@@ -616,10 +628,11 @@ export function rideChallenges(st: any, route: Route, samples: Sample[], setting
       const rt = rideTiming(st, q, setting);
       if (!rt) { unpriced(`platform:${q.type}`, `${id} x ${Math.round(sg.x0)}: a ${q.type} floor on no clock the meter reads`, 0); continue; }
       const fall = rt.safe ? 'soft' : costAt(st, softPits, lo, hi, 'fall');
-      const cost = rt.how === 'drift' ? fall : 'retry';
+      const cost = rt.how === 'drift' || rt.how === 'pad' ? fall : 'retry';
       if (part === 'board') {
+        // (a weight pad is up whenever he comes to it: no window to wait for, the hop alone)
         const still = rt.how === 'drift' ? 0 : fittsBits(Math.max(Math.abs(sg.x1 - sg.x0) / REACH.single.gap[setting], Math.max(0, sg.y0 - sg.y1) / REACH.single.climb));
-        out.push({ t, x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'ride-board', bits: still + windowBits(rt.cycle, rt.board), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+        out.push({ t, x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'ride-board', bits: still + (rt.how === 'pad' && rt.board >= rt.cycle ? 0 : windowBits(rt.cycle, rt.board)), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
           note: `board a ${rt.how}: open ${rt.board.toFixed(2)}s of ${rt.cycle.toFixed(2)}s${still ? `, still jump ${still.toFixed(2)} bits` : ''}` });
       } else {
         out.push({ t, x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'ride-off', bits: deadlineBits(rt.stepOff), cost, stakes: stakesOf(st, cost, sg.x0), threat: true,
@@ -873,7 +886,9 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): strin
   for (const sg of route.segs) out.add(`move:${sg.kind}`);
   for (const b of beats) if (b.fam) out.add(b.fam);
   for (const p of st.platforms ?? []) {
-    out.add(`platform:${p.type}`);
+    // (a sinking pad is its own piece, by its row's kind (a weight pad's count, a beat row's breath: gen2/rideLay.ts PadRow.by), not a
+    // moving floor's: its bot is the pad skills and its price the dwell, METER-COVERAGE #21)
+    out.add(p.pad ? `pad:${p.pad.by}` : `platform:${p.type}`);
     // (a ride across moves sideways, a ride up moves up and down: ride.ts paths, gen2/rideLay.ts RideWay)
     if (p.ride) out.add(`ride:${p.ride.path.some((q: any, i: number) => i > 0 && Math.abs(q.y - p.ride.path[0].y) > Math.abs(q.x - p.ride.path[0].x)) ? 'up' : 'across'}`);
   }

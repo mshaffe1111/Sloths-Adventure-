@@ -30,18 +30,6 @@
    "why": "route.ts calls a linked gap no jump covers a 'glide'; routeJumps skips it, so it scored 0 bits"
   },
   {
-   "id": "move:presumed",
-   "missing": [
-    "channel"
-   ],
-   "R": "R-165.272",
-   "owner": "METER-2b (the meter: a hop the level check cannot confirm priced as the jump it flies, or the route made to confirm it)",
-   "stages": [
-    "1-6"
-   ],
-   "why": "a route link the level check cannot confirm; routeJumps skips it, so it scored 0 bits"
-  },
-  {
    "id": "beat:crumbling branches",
    "missing": [
     "bot",
@@ -67,18 +55,6 @@
     "1-7"
    ],
    "why": "the bot treats crumbling wood as ground: it never leaves before it goes"
-  },
-  {
-   "id": "beat:push logs and boulders",
-   "missing": [
-    "bot"
-   ],
-   "R": "R-165.272",
-   "owner": "METER-2b (the tier bots: a SKILL for it, or the stage replaced by its gen2 build first)",
-   "stages": [
-    "1-6"
-   ],
-   "why": "no bot code pushes a log or boulder (grep 'push' in firsttimer.ts: none for p.push)"
   },
   {
    "id": "beat:ring waves",

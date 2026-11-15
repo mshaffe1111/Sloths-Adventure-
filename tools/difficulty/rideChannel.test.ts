@@ -80,3 +80,55 @@ test("on a real river stage (the hand-built 2-1): every hop onto or off a log is
   assert.ok(rides.length >= hops, `${rides.length} ride challenges for ${hops} log hops`);
   assert.ok(!r.challenges.some((c) => c.kind === 'hazard' && /river crossing/.test(c.note)), 'the river is priced hop by hop, not as one 2-bit beat');
 });
+
+// FIX-22 step 2 (METER-COVERAGE #21; R-165.272): the pad price. A sinking pad (gen2/rideLay.ts layPads: a 'moving' lily carrying a `pad`)
+// is a dwell: once on it he must be off before it goes under (FB, the stand deadline from its clock); a beat row's pad also has a board
+// window (RW: up and shivering, once a breath). Planted: before this the meter refused every pad (`platform:moving` on no clock it reads).
+import { padSizeClock, padBeatClock, PAD_SIZES, PAD_LAY } from '../../src/game/gen2/rideLay.ts';
+const POND = { x0: 300, x1: 1000, surfaceY: 642, dir: 1 as const, speed: 0 };
+const padSt = (by: 'weight' | 'beat', safe: boolean) => {
+  const clock = by === 'weight' ? padSizeClock('small') : padBeatClock('pads-row', { up: 1.8, shiver: 0.6, under: 0.6 });
+  const pad = { ...P(40, 400, 634, PAD_SIZES.small.w), height: PAD_LAY.h, type: 'moving' as const, lily: true, pad: { by, clock: clock.id, look: by === 'beat' ? 'beat' : 'small' } };
+  return { pad, st: { platforms: [BANK_A, BANK_B, pad], clocks: [clock], rivers: [{ ...POND, ...(safe ? { safe: { backX: 230, backY: 600 } } : {}) }], heartFalls: [], checkpoints: [{ x: 0 }], spawnX: 0 }, clock };
+};
+const padRoute = (pad: any): Route => ({ ...RIVER, segs: [RIVER.segs[0], seg({ kind: 'timedHop', x0: 300, y0: 600, x1: 420, y1: 634, from: BANK_A, plat: pad }), seg({ kind: 'timedHop', x0: 530, y0: 634, x1: 1010, y1: 600, from: pad, plat: BANK_B })] });
+
+test('a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused', () => {
+  for (const setting of ['normal', 'easy'] as const) {
+    const { pad, st, clock } = padSt('weight', false);
+    const b = beatOf(clock as any, setting === 'easy');
+    const rt = rideTiming(st, pad, setting)!;
+    assert.ok(rt, 'a pad is on a clock the meter reads');
+    assert.equal(rt.how, 'pad');
+    const hold = PAD_SIZES.small.hold * (setting === 'easy' ? PAD_LAY.easyStretch : 1);
+    assert.ok(Math.abs(rt.stepOff - hold) < 1e-9, `${setting}: the stand deadline is the pad's hold (${rt.stepOff} vs ${hold})`);
+    assert.ok(Math.abs(rt.board - b.period) < 1e-9 && Math.abs(rt.cycle - b.period) < 1e-9, 'a weight pad is up whenever he comes to it');
+    const c = rideChallenges(st, padRoute(pad), sampleRoute(padRoute(pad)), setting, false, 'fixture');
+    const off = c.find((x) => x.kind === 'ride-off')!, on = c.find((x) => x.kind === 'ride-board')!;
+    assert.ok(Math.abs(off.bits - deadlineBits(hold)) < 1e-9, off.note);
+    assert.ok(Math.abs(on.bits - fittsBits(120 / REACH.single.gap[setting])) < 1e-9, `boarding is the still hop alone: ${on.note}`);
+    assert.ok(c.every((x) => x.cost === 'life'), 'a deep pond is a life');
+  }
+  const easy = rideTiming(padSt('weight', false).st, padSt('weight', false).pad, 'easy')!, normal = rideTiming(padSt('weight', false).st, padSt('weight', false).pad, 'normal')!;
+  assert.ok(deadlineBits(easy.stepOff) <= deadlineBits(normal.stepOff), 'Easy never harder');
+});
+
+test('a beat pad is priced from its row\'s breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)', () => {
+  const { pad, st, clock } = padSt('beat', true);
+  for (const setting of ['normal', 'easy'] as const) {
+    const b = beatOf(clock as any, setting === 'easy');
+    const rt = rideTiming(st, pad, setting)!;
+    const stand = b.period - b.seconds[b.names.indexOf('on')];
+    assert.ok(Math.abs(rt.board - stand) < 1e-9 && Math.abs(rt.cycle - b.period) < 1e-9 && Math.abs(rt.stepOff - stand) < 1e-9, `${setting}: up + shiver of the breath`);
+    const c = rideChallenges(st, padRoute(pad), sampleRoute(padRoute(pad)), setting, false, 'fixture');
+    const on = c.find((x) => x.kind === 'ride-board')!;
+    assert.ok(Math.abs(on.bits - (fittsBits(120 / REACH.single.gap[setting]) + windowBits(rt.cycle, rt.board))) < 1e-9, on.note);
+    assert.ok(c.every((x) => x.cost === 'soft'), 'a splash-back pond is a set-back');
+  }
+});
+
+test('a pad whose clock the stage does not list is refused, never priced as nothing', () => {
+  const { pad, st } = padSt('weight', false);
+  const bare = { ...st, clocks: [] };
+  assert.throws(() => rideChallenges(bare, padRoute(pad), sampleRoute(padRoute(pad)), 'normal', false, 'fixture'), (e: unknown) => e instanceof UnpricedPiece && e.piece === 'platform:moving');
+});

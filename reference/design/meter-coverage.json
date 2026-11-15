@@ -161,6 +161,12 @@
     "20"
    ]
   },
+  "beat:rolling hazards": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rollingChallenges",
+   "rows": [],
+   "note": "beats.ts off(): a rolling nut or fruit the route never meets; one it meets is priced where it meets him (rollingChallenges). In the code since ENG-CL (7); its entry added by FIX-22"
+  },
   "beat:seamstress": {
    "bot": null,
    "channel": null,
@@ -411,6 +417,22 @@
     "1"
    ]
   },
+  "pad:beat": {
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.breath",
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "21"
+   ],
+   "note": "a beat row's pad: board on the breath (up or shivering, once a period), off before it goes under (padBeatClock; FIX-22)"
+  },
+  "pad:weight": {
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.keepHopping",
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "21"
+   ],
+   "note": "a sinking pad's dwell: off before it goes under (its count from landing, padSizeClock), always up when he boards (FIX-22)"
+  },
   "platform:bouncy": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.bounceBack",
    "channel": "tools/difficulty/score.ts#moveOf",
@@ -439,7 +461,7 @@
     "20",
     "25"
    ],
-   "note": "a ride.ts ride or a lift.ts lift; a moving floor on no clock the meter reads is refused (rideChallenges)"
+   "note": "a ride.ts ride, a lift.ts lift or a sinking pad (gen2/rideLay.ts layPads); a moving floor on no clock the meter reads is refused (rideChallenges)"
   },
   "platform:solid": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
