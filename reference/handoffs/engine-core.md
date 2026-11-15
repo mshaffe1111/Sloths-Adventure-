@@ -13,6 +13,17 @@ Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the settin
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0zc. 1-9's engine pieces (ENG-19a, t-eng-19, 11-14; stopped at 40% context): what the next engineer must know
+- BOA.tell is 1.0 s (world1.ts:57; boaFreeze.test.ts flies it). Only KIT boas read it: no shipped stage has one (18 boa stages are the OLD
+  brain, predatorAI.ts:300, rear 0.6 s, no freeze; tools/engine/runs/boaReach.ts proves it). The lead rules whether the old brain moves.
+- pipeline.ts castRows: a stage whose brief casts lays only those kinds (fillSockets, topUpFoes). Any new row in a shared manifest re-deals
+  every stage drawing from it otherwise (the bag's shuffle). W1_BOAS (w1Cast.ts) rides on it; lockall 102/102 unchanged.
+- lureLay.ts lureFaults: an animal the kit never moves (speeds all 0) is drawn only where it lies; its rear is the read. W1_LURE (w1.ts) lays
+  'w1-roost' into proto.cast.lures and proto.gen2.roosts; NOTHING DRAWS IT YET. Letter `l` = lure (nodeLetters.ts, FILL_LETTER 'lure').
+- CastStep.froze + CastPlay.eyeOut + engine FREEZE_SLOW (0.6 s, zoom 1, slowMoBy 'freeze' cut when a sweeper's eye comes out).
+- Toy clips: tools/engine/runs/boaClip.mjs (freeze|late|roost, up|side). Trap: GoalCard holds on real time; poke it (a key) before the run.
+- Open: the roost art (REPORT step 1, tools/art/hf19), its draw, the red glow under a beaten boa, the kit boa's missing body block.
+
 ## 0zb. TOOLS-2 (t-tools-2, 11-14): the setting's dials in one helper; the test link's file cap and published copy
 - **Every per-setting engine dial is set by ONE helper, src/game/settingDials.ts** (R-165.251): `applySetting(d)` (the engine, at a
   stage's start, kept for the run), `withSetting(d, fn)` (dials put back after), `dialsKey()` (for caches). Today the one build-time dial

@@ -64,3 +64,9 @@ ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3
 |---|---|---|---|---|
 | 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
 ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
+
+## 2026-11-14 (ENG-19a, t-eng-19; the lead's packet: ONE job, cap $2)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:19-8:29 PM | sandbox 6af9089523985fb9cd82c13a (rtx-pro-6000, 40 min hard timeout), ~10 min creation to terminate: batch 1 spec-roost.json 6 t2i takes (267 s); batch 2 spec-roost2.json started, 2 of 6 done when the session stopped at its 40% context line | ENG-19a (packet) | ~$0.46 | batch 1 judged (reference/qa-reports/ENG-19/clips/roost-batch1-sheet.png): every take runs its limbs off the top edge (a cut end reads as sawn wood), 31 has eggs; 71 the nearest. Nothing kept: batch 2 is the next step |
+ENG-19a total: ~10 GPU-min, **~$0.46** of its $2 cap (minutes x $2.75/60). Balance ~$55.9 (from ~$56.4).
