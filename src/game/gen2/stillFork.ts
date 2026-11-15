@@ -21,6 +21,7 @@ import { castDef } from '../predators/registry.ts';
 import type { CastData } from '../castPlay.types.ts';
 import type { Enemy, Platform } from '../types.ts';
 import type { Bush, WatchZone } from '../watcher.ts';
+import { ROLLED_FLAGS } from './pipeline.ts';
 
 export const STILL_FORK = {
   /** the cover starts this far past where the collapse stops (px): he is on living ground before he must stop */
@@ -53,6 +54,8 @@ export interface StillForkStage {
   chase?: ChaseLay;
   enemies: Enemy[];
   checkpoints?: Array<{ x: number }>;
+  /** where he starts (a flag the lay moves keeps inside the span from it, when it is the first) */
+  spawnX?: number;
   proto?: { bushes?: Bush[]; cast?: CastData } | null;
 }
 
@@ -133,17 +136,31 @@ export function layStillFork(st: StillForkStage, fork: number, look: StillForkLo
     if (e.kitPerch === undefined && e.kitCool === undefined) continue;
     if (e.patrolMaxX > z.x0 && e.patrolMinX < z.x1) out.push(`${name}: a watcher already looks over ${R(e.patrolMinX)}-${R(e.patrolMaxX)}`);
   }
-  // (its post: on the fork's ground past the cover, clear of a flag on the fork)
-  const flags = (st.checkpoints ?? []).map((c) => c.x);
+  // (its post: on the fork's ground past the cover, within postMax of the cover's start. That window is narrow (World 1's moss: 14 px), so
+  // a flag of the fork's standing where the post must is MOVED past it, nearer the next crack (where chaseLay's flags want to be), on the
+  // fork's ground, inside the flag span: ENG-CL (8b), the lead 8:20 PM 11-14. Nothing moves unless the whole fork can be laid)
   let postX = NaN;
-  for (let x = cover.x + cover.w + STILL_FORK.postPast; x <= Math.min(x1 - 40, cover.x + STILL_FORK.postMax); x += 20) {
-    if (groundAt(st.platforms, x, gy) && flags.every((f) => Math.abs(f - x) >= STILL_FORK.flagClear)) {
+  for (let x = cover.x + cover.w + STILL_FORK.postPast; x <= Math.min(x1 - 40, cover.x + STILL_FORK.postMax); x += 2) {
+    if (groundAt(st.platforms, x, gy)) {
       postX = x;
       break;
     }
   }
-  if (!Number.isFinite(postX)) out.push(`${name}: no ground for its post within ${STILL_FORK.postMax} px of the cover's start (on one upright screen with him), clear of the fork's flag`);
+  if (!Number.isFinite(postX)) out.push(`${name}: no ground for its post within ${STILL_FORK.postMax} px of the cover's start (on one upright screen with him)`);
+  const flags = st.checkpoints ?? [];
+  const moves: Array<{ c: { x: number }; to: number }> = [];
+  if (Number.isFinite(postX)) for (const c of flags) {
+    if (Math.abs(c.x - postX) >= STILL_FORK.flagClear) continue;
+    const to = R(postX + STILL_FORK.flagClear);
+    const others = flags.filter((q) => q !== c).map((q) => q.x);
+    const prev = Math.max(st.spawnX ?? -Infinity, ...others.filter((x) => x < c.x)), after = Math.min(...others.filter((x) => x > c.x));
+    if (to > x1 - 40 || !groundAt(st.platforms, to, gy)) out.push(`${name}: its flag at ${R(c.x)} stands where its post must, and the fork has no ground for it past the post (${to}) before the next crack (${R(x1)})`);
+    else if (Number.isFinite(prev) && to - prev > ROLLED_FLAGS.max) out.push(`${name}: its flag at ${R(c.x)} stands where its post must, and past the post (${to}) it is ${R(to - prev)} px from the flag before, over ${ROLLED_FLAGS.max}`);
+    else if (after - to < ROLLED_FLAGS.min) out.push(`${name}: its flag at ${R(c.x)} stands where its post must, and past the post (${to}) it is ${R(after - to)} px from the next flag, under ${ROLLED_FLAGS.min}`);
+    else moves.push({ c, to });
+  }
   if (out.length) return out;
+  for (const m of moves) m.c.x = m.to;
   const id = st.enemies.reduce((m, e) => Math.max(m, e.id), 0) + 1;
   const w = look.watcher(z, gy, id, postX);
   // (its pass comes at him from the far end: running on is running into it; and it makes that one pass only)

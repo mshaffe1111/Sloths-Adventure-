@@ -81,15 +81,12 @@ test('the lay: on fork 0 the moss carpet lies on the fork just past where the co
   assert.deepEqual(st.proto?.cast?.kinds, ['eagle']);
 });
 
-test('the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched, the fork\'s flag where its post must stand', () => {
+test('the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched (a flag where its post must stand is MOVED: the next test)', () => {
   const cases: Array<[string, StillForkStage, number, RegExp]> = [
     ['short', stage(branch(380)), 0, /px of fork, the cover and the post need/],
     ['gap', stage(branch(1400, 3200)), 0, /its ground breaks at/],
     ['last', stage(), 1, /no crack would set off/],
   ];
-  const flagged = stage();
-  flagged.checkpoints = [{ x: 2900 + STILL_FORK.runIn + 346 + STILL_FORK.postPast + 40 }];
-  cases.push(['flag', flagged, 0, /no ground for its post within 420 px of the cover's start/]);
   const rock = stage();
   rock.platforms.push({ id: 1, x: 3100, y: Y - 40, width: 60, height: 40, type: 'solid' } as Platform);
   cases.push(['rock', rock, 0, /a rock at 3100 stands in the cover/]);
@@ -178,4 +175,31 @@ test('real engine, Easy: the still fork\'s one pass is harmless even to a runner
   const r = playFork('easy', 'run');
   assert.ok(Number.isFinite(r.notice));
   assert.equal(r.hurt, 0, `Easy: ${r.hurt} hearts`);
+});
+
+// ENG-CL (8b), the lead 8:20 PM 11-14: the post's window, from the cover's end + postPast to postMax, is 14 px (346 + 60 to 420), so a
+// fork flag standing there refused the still fork on every roll. The lay now moves that flag past the post itself, nearer the next crack
+// (where chaseLay's flags want to be), on the fork's ground and inside the flag span; with no room for it there, it refuses by name and
+// moves nothing. PLANTED: before, the first case was refused ("no ground for its post ... clear of the fork's flag").
+test('a flag where the post must stand: the lay moves it past the post, on the fork before the next crack; with no room it refuses by name', () => {
+  const postAt = 2900 + STILL_FORK.runIn + W1_STILL_FORK.cover.w + STILL_FORK.postPast;
+  const st = stage();
+  st.checkpoints = [{ x: postAt + 40 }];
+  assert.deepEqual(layStillFork(st, 0, W1_STILL_FORK, 1), []);
+  const f = stillForks(st)[0];
+  assert.ok(f, 'laid');
+  const flag = st.checkpoints![0].x;
+  assert.ok(Math.abs(flag - f.watcher.x) >= STILL_FORK.flagClear, `the flag at ${flag} clear of the post at ${f.watcher.x}`);
+  assert.ok(flag > postAt && flag <= 2900 + 1400 - 40, `the flag at ${flag} past the post, on the fork before the next crack (${2900 + 1400})`);
+  const short = stage(branch(520));
+  short.checkpoints = [{ x: postAt + 40 }];
+  const bad = layStillFork(short, 0, W1_STILL_FORK, 1);
+  assert.ok(bad.some((m) => /stands where its post must/.test(m)), bad.join('; '));
+  assert.equal(short.checkpoints![0].x, postAt + 40, 'nothing moved');
+  assert.equal(short.enemies.length, 0, 'nothing laid');
+  // (and never over the span from the flag before, here his start: moved to postAt + flagClear it would be 4,056 px from it)
+  const far = { ...stage(), spawnX: postAt + STILL_FORK.flagClear - 4056, checkpoints: [{ x: postAt + 40 }] };
+  const over = layStillFork(far, 0, W1_STILL_FORK, 1);
+  assert.ok(over.some((m) => /px from the flag before, over 4000/.test(m)), over.join('; '));
+  assert.equal(far.checkpoints[0].x, postAt + 40, 'nothing moved');
 });
