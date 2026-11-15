@@ -44,6 +44,8 @@ const PLACE = `((E, clip) => {
   e.player.invincibleTimer = 0;
   const cover = (e.proto && e.proto.bushes || []).find((b) => eagle && b.x >= eagle.s.minX && b.x < eagle.s.minX + 400);
   const v = (e.vines || []).find((q) => q.runner);
+  // (the fixture plays under 1-1's row, so 1-1's own Pokey line (wayside) stays up the whole clip; it is not 1-8's: hidden here, named)
+  for (const el of document.querySelectorAll('body *')) if (el.children.length === 0 && /Dot's flown this branch/.test(el.textContent || '')) { let c = el; for (let k = 0; k < 4 && c.parentElement; k++) c = c.parentElement; c.style.visibility = 'hidden'; }
   window.__b6 = { t: 0, f: 0, target, cover: cover ? { x: cover.x, w: cover.w } : null, vine: v ? v.id : null, press: -1, letGo: -1, noticed: -1, over: -1, phase0: v ? v.swingPhase : null };
   return { x, y: under.y, target, stretches: lay.stretches, cover: window.__b6.cover, vine: v ? { x: v.x, phase: v.swingPhase } : null };
 })`;

@@ -232,8 +232,11 @@ proven plan; Play is never blocked).
 - **(c) The tip** (`ChaseStretch.tip`, last stretch only, chaseLayProblems): the chase piece marks that stretch's last section chaseTip
   (the long-branch sheet's tip frame); when he is off the ground past its far end + TIP.past, every section of the stretch still standing
   breaks at once (halves within a view's width of him tumble, the tip tumbles WHOLE), one big crack, PieceHost.slowMo(TIP.slow 0.55 s)
-  (the engine's own slow motion; note it also pushes the zoom in 1.3x, engine.ts applyZoom, as for a giant's last hit). Respawn: whole
-  again from a flag before it. Slow motion lives in the engine's frame loop, NOT update(): a harness stepping update() directly must
+  (the engine's own slow motion; a piece's slow motion does NOT push the zoom in: engine.ts slowMoZoom 1, the giant's hit and old 1-8
+  keep 1.3). It breaks TIP.delay 0.5 s after he leaves the tip (timer reset only by the ground), and the camera leans back from that
+  moment (cameraFollow.ts TIP_VIEW: back 0.86 as a target, which the eased camera lags to ~60-70%; the landing framing waits until he is
+  330 px past), so the whole tip and 200+ px of branch are on screen as it falls upright and sideways (chaseTip.test, real camera).
+  Respawn: whole again from a flag before it. OPEN: the chase-section-to-fork-ground seam (REPORT polish 6, a ready packet). Slow motion lives in the engine's frame loop, NOT update(): a harness stepping update() directly must
   apply it itself (B6/shoot.mjs does).
 - **Easy's chase gap** (the lead's ruling 6:10 PM: on Easy every chase gap is one the child bot clears 3/3): gen2/chaseLay.ts
   CHASE_LAY.easyGap = 50 px (measured: the Easy CHILD clears 40 and 50 px on 3/3 seeds; 60, 80, 100, 120, 140 each drop seed 1);

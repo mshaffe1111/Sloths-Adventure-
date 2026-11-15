@@ -647,8 +647,18 @@ export const CHASE_VIEW = {
   margin: 8,
 } as const;
 
-/** a stage's chase span and how far ahead the view must show over it (px of world, from his middle); null with no chase and no hazards */
-export function chaseSpan(st: { chase?: ChaseLay; rolling?: readonly RollSpec[] }): { x0: number; x1: number; ahead: number } | null {
+/**
+ * The tip (1-8 NEW 8, ChaseStretch.tip; ENG-B6): the whole branch end falls behind him as he swings off it, in slow motion, the level's
+ * signature. The chase lead keeps him 10-30% across, looking ahead (on the run in he must see the liana he jumps for), so upright the
+ * fall was off the screen's left edge. Once he has left the tip, until he is `after` px past its end, the view leans BACK instead: his
+ * middle `back` of the view's width across (the landing's own framing waits), so the tip and the branch before it are in view as it
+ * breaks a moment later (pieces/chasePiece.ts TIP.delay); past that the landing's framing eases in for his let-go.
+ */
+export const TIP_VIEW = { after: 330, back: 0.86 } as const;
+
+/** a stage's chase span and how far ahead the view must show over it (px of world, from his middle); null with no chase and no hazards.
+ *  `tip`: where the tip ends, when the last stretch ends at one */
+export function chaseSpan(st: { chase?: ChaseLay; rolling?: readonly RollSpec[] }): { x0: number; x1: number; ahead: number; tip?: number } | null {
   const ch = st.chase?.stretches ?? [];
   const rl = st.rolling ?? [];
   if (!ch.length && !rl.length) return null;
@@ -663,7 +673,8 @@ export function chaseSpan(st: { chase?: ChaseLay; rolling?: readonly RollSpec[] 
     x0 = Math.min(x0, s.dropX - ahead - CHASE_VIEW.leadIn);
     x1 = Math.max(x1, s.dropX);
   }
-  return { x0, x1, ahead };
+  const last = ch[ch.length - 1];
+  return last?.tip ? { x0, x1, ahead, tip: last.end } : { x0, x1, ahead };
 }
 
 /** where his middle sits across the view on the chase span (px of world from the view's left edge), for a view `vw` px of world wide */

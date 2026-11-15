@@ -28,9 +28,10 @@ const NEAR = 800;
 const DEBRIS_LIFE = 1.8;
 /**
  * The tip (1-8 NEW 8, ChaseStretch.tip): as he leaves it, this much real time plays in slow motion (the old 1-8's last liana, engine.ts
- * chaseSlowDone: 0.55 s), and he has left it once his middle is this far past its far end (px) off the ground
+ * chaseSlowDone: 0.55 s); he has left it once his middle is this far past its far end (px) off the ground, and it breaks `delay` s after
+ * (as he swings off: the view has leaned back to it by then, cameraFollow.ts TIP_VIEW)
  */
-export const TIP = { slow: 0.55, past: 4 } as const;
+export const TIP = { slow: 0.55, past: 4, delay: 0.5 } as const;
 /** a creak now and then while a front runs within this of him (px), every `CREAK_EVERY` s */
 const CREAK_NEAR = 700;
 const CREAK_EVERY = 1.2;
@@ -134,6 +135,8 @@ class ChasePiece implements StagePiece {
   /** each stretch's tip section (its last, ChaseStretch.tip), or null; and whether that branch end has fallen (he left the tip) */
   private readonly tips: Array<Section | null>;
   private tipFell: boolean[];
+  /** when he left each tip (game s), NaN while he has not (or is back on its stretch) */
+  private tipLeft: number[];
 
   constructor(
     private readonly lay: NonNullable<import('../stageGenerator.ts').GeneratedStage['chase']>,
@@ -155,6 +158,7 @@ class ChasePiece implements StagePiece {
       return t;
     });
     this.tipFell = lay.stretches.map(() => false);
+    this.tipLeft = lay.stretches.map(() => NaN);
   }
 
   step(dt: number, host: PieceHost) {
@@ -180,7 +184,17 @@ class ChasePiece implements StagePiece {
     // (the tip: he has left it off its end, in the air or on a liana: the whole of its stretch still standing breaks off at once, the tip
     // tumbling whole, in a moment of slow motion)
     this.tips.forEach((tip, i) => {
-      if (!tip || this.tipFell[i] || p.grounded || p.x <= tip.pl.x + tip.pl.width + TIP.past) return;
+      if (!tip || this.tipFell[i]) return;
+      // (off the tip's end, in the air or on a liana: the moment counts from there; back on the ground, it starts over)
+      if (p.grounded) {
+        this.tipLeft[i] = NaN;
+        return;
+      }
+      if (Number.isNaN(this.tipLeft[i])) {
+        if (p.x <= tip.pl.x + tip.pl.width + TIP.past) return;
+        this.tipLeft[i] = host.t;
+      }
+      if (host.t < this.tipLeft[i] + TIP.delay) return;
       this.tipFell[i] = true;
       for (const q of this.sections) {
         if (q.owner !== i || q.pl.broken) continue;
@@ -226,6 +240,7 @@ class ChasePiece implements StagePiece {
     for (const s of this.sections) s.pl.broken = sectionInRun(this.run, s.owner, s.pl.x, s.pl.x + s.pl.width) === 'fallen';
     // (a tip whose stretch is ahead of his flag is whole again; one he respawns past stays fallen, as its front does)
     this.tipFell = this.lay.stretches.map((st) => !!st.tip && host.player.x >= st.end);
+    this.tipLeft = this.lay.stretches.map(() => NaN);
     this.debris = [];
   }
 

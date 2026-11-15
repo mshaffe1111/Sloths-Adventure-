@@ -140,7 +140,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, chaseBack, chaseSpan, type Box } from './cameraFollow.ts';
+import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, chaseBack, chaseSpan, TIP_VIEW, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -524,6 +524,9 @@ export class GameEngine {
   private bossGuideIn = '';
   /** real seconds of slow motion still to play (the last hit on a giant) */
   private slowMoLeft = 0;
+  /** the slow motion's push-in (a giant's last hit and the old 1-8's last liana: 1.3); a piece's moment (PieceHost.slowMo: the tip
+   *  falling behind him) keeps the view as it is, or the push-in would crop what it is slowed down to show */
+  private slowMoZoom = 1.3;
   private bossSig = '';
   private clangCd = 0;
   /** seconds the player is stuck in web or goo (he runs slower) */
@@ -681,6 +684,7 @@ export class GameEngine {
     get vineClock() { return e.vineClock; },
     slowMo: (seconds) => {
       e.slowMoLeft = Math.max(e.slowMoLeft, seconds);
+      e.slowMoZoom = 1;
     },
     letGo: () => e.letGoOfLiana(),
     focus: (b) => {
@@ -4259,7 +4263,7 @@ export class GameEngine {
       minW: def?.frameRefuges ? def.frameRefuges[1] - def.frameRefuges[0] + 30 : undefined,
     });
     // the killing blow pushes the camera in
-    const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
+    const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? this.slowMoZoom : 1));
     const prev = this.bossZoom;
     // (a sky boss climbs fast: the view keeps up with her)
     this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * (this.bossDef?.frameAir ? 3.6 : 2.2));
@@ -5016,7 +5020,11 @@ export class GameEngine {
     this.hazards.length = 0;
     for (const e of this.enemies) if (!e.defeated && e.minion) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
-    if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
+    // a giant's last hit plays in slow motion, the camera pushing in
+    if (this.bossDef?.lair) {
+      this.slowMoLeft = 1.2;
+      this.slowMoZoom = 1.3;
+    }
     this.camera.trauma = 1;
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
@@ -6415,8 +6423,13 @@ export class GameEngine {
     // before they reach him at a full run, cameraFollow.ts chaseSpan; the span is the stage's own data, so it holds over every fork)
     const span = this.chaseSpanOf(this.currentStage);
     const mid = p.x + p.width / 2;
+    // (and over a stage's tip the view leans back: the whole branch end falls behind him as he swings off it, cameraFollow.ts TIP_VIEW)
+    // (from the moment he is off the ground at it, on its liana or in the air, its swing back over the tip included, until he is
+    // TIP_VIEW.after past it; on the run in, the chase lead shows the liana he jumps for)
+    const atTip = span?.tip !== undefined && mid <= span.tip + TIP_VIEW.after && (mid > span.tip || (!p.grounded && mid > span.tip - TIP_VIEW.after));
     this.camera.targetX = this.chase?.active
       ? p.x - vw * 0.3
+      : atTip ? mid - vw * TIP_VIEW.back
       : span && mid >= span.x0 && mid <= span.x1 ? mid - chaseBack(vw, span.ahead) : eased.x - vw * FRAME.across + this.camLookX + runX;
     this.camera.targetY = eased.y - vh * feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
@@ -6459,7 +6472,7 @@ export class GameEngine {
     let landShown: Box | null = null;
     let landX = 0;
     let landY = 0;
-    if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
+    if (!look && !kf && !this.chase?.active && !this.currentStage.arena && !atTip) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
@@ -8334,6 +8347,7 @@ export class GameEngine {
     if (!this.chaseSlowDone && p.isVineSwinging && this.vines.find((v) => v.id === p.swingVineId)?.x === plan.end) {
       this.chaseSlowDone = true;
       this.slowMoLeft = 0.55;
+      this.slowMoZoom = 1.3;
     }
     // caught by the front, or off the branch (below the lowest section near him by more than a fall can come back from)
     let low = -Infinity;

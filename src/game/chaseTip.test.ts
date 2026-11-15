@@ -12,11 +12,13 @@ import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 import { chaseLayProblems, type ChaseLay } from './chase.ts';
 import { TIP } from './pieces/chasePiece.ts';
+import { GameEngine } from './engine.ts';
+import { TIP_VIEW } from './cameraFollow.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 
 const Y = 500;
-const START = 1200, TIP_END = 3000, D0 = 250;
+const START = 1200, TIP_END = START + 222 * 8, D0 = 250;
 
 function world(tip: boolean): { plats: Platform[]; vines: Vine[]; lay: ChaseLay } {
   const plats: Platform[] = [];
@@ -51,7 +53,7 @@ function setUp(tip: boolean) {
 function swingOff(tip: boolean) {
   const { sim, e, w, own } = setUp(tip);
   const p = sim.p;
-  let pressAt = -1, caughtAt = -1, slowAt = -1, fellAt = -1, wholeWhenLeft = NaN, i = 0;
+  let pressAt = -1, caughtAt = -1, slowAt = -1, fellAt = -1, wholeWhenLeft = NaN, standingThen = -1, i = 0;
   for (; i < 30 * 14; i++) {
     const press = p.grounded && p.x >= TIP_END - 30 && pressAt < 0;
     if (press) pressAt = i;
@@ -60,9 +62,10 @@ function swingOff(tip: boolean) {
     if (slowAt < 0 && e.slowMoLeft > 0) slowAt = i;
     if (fellAt < 0 && own.every((q) => q.broken)) fellAt = i;
     if (caughtAt < 0 && p.isVineSwinging && p.swingVineId === w.vines[0].id) caughtAt = i;
-    if (caughtAt >= 0 && i > caughtAt + 10) break;
+    if (caughtAt >= 0 && i === caughtAt + Math.round(TIP.delay * 30) + 6) standingThen = own.filter((q) => !q.broken).length;
+    if (caughtAt >= 0 && i > caughtAt + 40) break;
   }
-  return { sim, e, own, caughtAt, slowAt, fellAt, pressAt, tipSec: own[own.length - 1] };
+  return { sim, e, own, caughtAt, slowAt, fellAt, pressAt, standingThen, tipSec: own[own.length - 1] };
 }
 
 test('the tip: the stretch\'s last section is drawn as the tip; as he leaves it on the liana the whole stretch falls at once, in slow motion', () => {
@@ -80,7 +83,7 @@ test('the tip: the stretch\'s last section is drawn as the tip; as he leaves it 
 test('the tip, PLANTED: with no tip on the stretch, the same run leaves the branch ahead of the front standing, and no slow motion', () => {
   const r = swingOff(false);
   assert.ok(r.caughtAt >= 0);
-  assert.ok(r.own.some((q) => !q.broken), 'with no tip some sections still stand');
+  assert.ok(r.standingThen > 0, `with no tip, when the tip would have fallen, ${r.standingThen} sections still stand`);
   assert.equal(r.slowAt, -1);
 });
 
@@ -102,4 +105,54 @@ test('the lay refuses a tip on a stretch that is not the last', () => {
   const bad = chaseLayProblems({ stretches: [{ start: 0, end: 900, tip: true }, { start: 1200, end: 2000 }] });
   assert.ok(bad.some((m) => /a tip on a stretch that is not the last/.test(m)), bad.join('; '));
   assert.deepEqual(chaseLayProblems(world(true).lay), []);
+});
+
+// (the camera at the tip, ENG-B6 after the lead's 7:24 PM review: upright the chase lead kept him 10-30% across and the falling branch
+// was off the screen's left edge. cameraFollow.ts TIP_VIEW leans the view back over the tip; a piece's slow motion no longer pushes in)
+
+/** the real engine and its real camera (chaseCamera.test.ts's way) on a phone w x h: at the step the branch end falls, how much of the
+ *  tip section and of the branch before it is inside the view (px of world), and how wide the view is */
+function tipInView(w: number, h: number, lean = true) {
+  const { sim, e, own } = setUp(true);
+  const E = e as unknown as { updateCamera: () => void; viewCssW: number; viewCssH: number; introT: number; applyZoom(): void; camera: { x: number; viewportWidth: number }; chaseSpanOf?: unknown; zoom: number };
+  E.updateCamera = (GameEngine.prototype as unknown as Record<string, () => void>).updateCamera.bind(e);
+  if (!lean) {
+    const real = (GameEngine.prototype as unknown as Record<string, (st: unknown) => { tip?: number } | null>).chaseSpanOf.bind(e);
+    E.chaseSpanOf = (st: unknown) => {
+      const s = real(st);
+      return s ? { ...s, tip: undefined } : s;
+    };
+  }
+  E.viewCssW = w;
+  E.viewCssH = h;
+  E.introT = 99;
+  E.applyZoom();
+  const p = sim.p;
+  let pressAt = -1;
+  for (let i = 0; i < 30 * 14; i++) {
+    const press = p.grounded && p.x >= TIP_END - 30 && pressAt < 0;
+    if (press) pressAt = i;
+    sim.frame({ right: true, ...(pressAt >= 0 && i - pressAt < 6 ? { jump: true, press } : {}) });
+    if (own.every((q) => q.broken)) {
+      const c = E.camera, vw = c.viewportWidth;
+      const tip = own[own.length - 1];
+      const seen = (q: Platform) => Math.max(0, Math.min(q.x + q.width, c.x + vw) - Math.max(q.x, c.x));
+      return { tipSeen: seen(tip), tipW: tip.width, branchSeen: own.reduce((n, q) => n + seen(q), 0), vw, zoom: E.zoom };
+    }
+  }
+  throw new Error('the branch end never fell');
+}
+
+for (const [w, h, name] of [[412, 915, 'upright'], [915, 412, 'sideways'], [360, 800, 'narrow upright']] as const) {
+  test(`the tip on the real camera, ${name} ${w}x${h}: as the branch end falls the whole tip and 200+ px of branch are on the screen`, () => {
+    const r = tipInView(w, h);
+    assert.ok(r.tipSeen >= r.tipW - 1, `the tip: ${Math.round(r.tipSeen)} of ${r.tipW} px in view (view ${Math.round(r.vw)} px)`);
+    assert.ok(r.branchSeen >= 200, `the branch falling: ${Math.round(r.branchSeen)} px in view`);
+  });
+}
+
+test('the tip on the real camera, PLANTED: without the lean (TIP_VIEW off) the upright view loses the tip as it falls', () => {
+  const off = tipInView(412, 915, false);
+  assert.ok(off.tipSeen < off.tipW / 2, `without the lean, ${Math.round(off.tipSeen)} of ${off.tipW} px of the tip in view`);
+  assert.ok(TIP_VIEW.back > 0.5);
 });

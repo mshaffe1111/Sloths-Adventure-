@@ -1,4 +1,4 @@
-# B6 REPORT (ENG-B6, t-eng-b6 = t-int-9@1c7f6b95 + t-eng-b5@c0599609, then 1-8's last engine pieces). Code head 1a1303ff. Written 7:20 PM ET 11-14.
+# B6 REPORT (ENG-B6, t-eng-b6 = t-int-9@1c7f6b95 + t-eng-b5@c0599609, then 1-8's last engine pieces). Code head: see Gates. Written 7:20 PM ET 11-14.
 **Step 1, merge, DONE 6:49 PM (lead ACCEPTED 6:53):** merge 3261dd4b. t-int-9's history roots in an ORPHAN commit (f1b72ec7 = HOOKS 994ea4e7 +
 ENG-S1..S5 squashed, no parent): git saw 2 merge bases, 52 conflicts. All 179 B5-changed files re-merged against the TRUE base 994ea4e7
 (`git merge-file`): 173 equal that clean 3-way exactly (46 false conflicts = files B5 never touched); the 6 real ones = the packet's six,
@@ -26,25 +26,39 @@ Fixed for EVERY stage (firsttimer.ts): runnerAhead keeps the thumb down near a r
 19/19 after. A bot "run read" I tried first proved unneeded: reverted.
 **c. NEW 8 THE TIP, done:** `ChaseStretch.tip` (last stretch only). The piece marks its last section chaseTip (props3-atlas#chaseTip, in the
 inventory); off the ground past its end, every section still standing breaks at once, the tip tumbles WHOLE, one crack,
-PieceHost.slowMo(0.55 s) (the engine's own; the old 1-8's number). chaseTip.test.ts 4/4; RED on the base chase piece (2/4). No new player
-move (he swings off as from any liana): proven by the runner-liana toys and the clips.
+PieceHost.slowMo(0.55 s) (the engine's own; the old 1-8's number). **Lead's 7:24 FAIL fixed at the camera, any stage with a tip:** upright
+the chase lead (him 10-30% across) and the landing framing kept the fall off-screen left, and the slow motion pushed the zoom in 1.3x.
+Now: the run in keeps the chase lead (he sees the liana); once he is off the ground at the tip the view leans BACK (cameraFollow.ts
+TIP_VIEW: him 86% across as its target, the landing framing waiting, until 330 px past the tip; the target leads the eased camera's lag);
+the branch end breaks TIP.delay 0.5 s after he swings off, so the view has turned first; a piece's slow motion no longer zooms in (the
+giant's hit and old 1-8 keep it). chaseTip.test.ts 8/8: as it falls the WHOLE tip + 200 px+ of branch are in view at 412x915, 915x412,
+360x800 (real engine, real camera); PLANTED lean off: upright loses the tip; RED on the base chase piece (2/4 of the first four). Two traps
+the camera tests caught: the tip timer restarted when his swing carried him back over the tip, and a 24 px "tip" sliver passed trivially.
 **Easy's chase gap (ruling 6:10 PM), done:** CHASE_LAY.easyGap = 50 px, MEASURED: the Easy CHILD clears 40/50 px on 3/3; 60-140 px each drop
 seed 1. layChase refuses a wider stretch gap on Easy by name (chaseEasyGap.test 2/2, Normal the plant); chaseBots toy at 50 + plant at 60.
 **Clips (D63/D69), ?fixture=chase, real page** (B6/shots/: 8 mp4 + named key-frame stills + per-frame *.json; B6/shoot.mjs; the fixture lays
 all three by data, layFixturePieces). FORK Normal (up+side): screech f84 as he steps on, hidden f112, eye starts f144 (2.0 s), eye over him
 f211 (the eagle blinks: gaze on him hidden), pass over f226, next crack f355, 0 hearts. Easy: f80/f104/f158 (2.6 s)/f237/f255/f389. TIP
-Normal: press f124 (real touch flick), branch end falls f128 (19/19), caught f129, slow 17 frames, let go f177, landed f198; Easy
-f120/f123/f122/17/f177/f197; 0 hearts in all 8.
+(reshot after the camera fix) Normal: press f124 (real touch flick), caught f129, the branch end falls f144 = **the frame where the fall
+shows: normal-tip-upright-slow.jpg / -sideways-slow.jpg f145** (the broken halves and the tumbling tip lower left, him on the liana right),
+slow 17 frames, let go f177, landed f198; Easy: press f120, caught f122, falls f139, slow f140, let go f177, landed f197; 0 hearts in all 8.
 **Polish check:** looked at screech, hidden, eyeOverHim, passOver, slow, landed, both ways. Fixed: upright the eagle was OFF screen while its
 eye crossed him (post 512 px past the moss): postMax 420 rule, reshot. Rough, named: (1) upright he sits at the screen's left edge on the
 fork (chase lead 10%), the 1-1 squirrel overlapping; (2) upright the falling branch end is off the left edge (the lead looks ahead) and the
 slow motion also zooms in 1.3x; sideways it reads well; (3) the moss carpet shows a seam between its two strips; (4) 1-1's Pokey line stays
-up through every fixture clip (the fixture plays under 1-1's row); (5) the fixture's far landing is a plain earth bank, not a tree.
+up through every fixture clip (the fixture plays under 1-1's row; the shooter's hide did not take); (5) the fixture's far landing is a
+plain earth bank, not a tree. (6) **NAMED, not fixed (lead's item 2): the seam where a chase section meets fork ground** (fork sideways
+passOver f226, x~340): a straight vertical cut, the log's texture against World 1's grass lip and dirt. NOT the fixture's own join: chaseLay
+cuts every K node's ground into the long-branch log sections and leaves forks as kit ground, so 1-8 will show it at EVERY stretch/fork
+join. Not patched in code: the only painted pieces at hand are moss mounds and carpets, which since 1-7 mean "hide here" (misleading); the
+fix is art or design. READY PACKET (Content + Engine): either draw a chase stage's forks as the same branch (chaseSeg on fork ground: the
+fork IS part of the Long Branch, 1-8.md "a great living fork"), or paint a join piece (a knot / branch collar, ~89.1 px scale, HF) laid by
+the chase piece at each chase-to-ground join; the engine side is a draw call at each join (pieces/chasePiece.ts).
 **Pushback:** (1) Easy ruling: at 50 px Easy chase stretches are nearly gapless; Designer to confirm (built as ruled). (2) "NODE-KEY rows
 Now": these are DATA on the K lay (a fork lay, a stretch mark, a vine mark), not letters: K's row now names all three + Easy's gap, `s`'s
 phase dial reads runner BUILT; `s` and `L` stay Later (their letter emitters do not exist). (3) Interface adds for the Architect:
 PieceHost.vineClock + slowMo, Post.passes/Enemy.kitPasses, Vine.runner, ChaseStretch.tip, RunOptions.knows, noRunnerHold.
-**ENGINE-WORTHY:** (E1) a horizontal camera focus (PieceHost.focus is vertical only): frame the still fork and the falling tip upright.
+**ENGINE-WORTHY:** (E1) a horizontal camera focus (PieceHost.focus is vertical only): the tip now has its own rule (TIP_VIEW); the still fork upright still has him at the screen's edge.
 (E2) slow motion lives in the frame loop, not update(): no RealPlay test can see it. (E3) drawcheck pins him standing: the tip's burst
 (<= ~13 debris drawImage for 1.8 s) is unmeasured: add '1-98' with a tip moment (B5 s3). (E4) bot RNG is salted by profile NAME.
 **Learned:** a squashed orphan root makes every later merge lie: merge per file against the true base and verify auto-merges too. A bot
