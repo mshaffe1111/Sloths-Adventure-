@@ -113,7 +113,8 @@ test('dropsOf: a fall in a deep river is a life in its water, in a safe one a sp
   for (const r of st.rivers!) {
     const d = drops.find((q) => q.x0 < r.x1 && q.x1 > r.x0)!;
     assert.ok(d, `river at ${r.x0} has its Drop`);
-    if (r.safe) assert.deepEqual([d.ends, d.look], [{ kind: 'putback', to: 'take-off' }, 'water-art']);
+    // (a safe river's look is its own, the shallow backwater: verdicts.types.ts SoftLook 'safe-water-art', the lead's ruling 1 11-15)
+    if (r.safe) assert.deepEqual([d.ends, d.look], [{ kind: 'putback', to: 'take-off' }, 'safe-water-art']);
     else assert.deepEqual([d.ends, d.look], [{ kind: 'life', cause: 'water' }, 'water-art']);
   }
 });

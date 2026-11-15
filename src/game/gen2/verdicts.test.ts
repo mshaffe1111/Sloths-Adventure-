@@ -224,10 +224,11 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
 // 80 -> 37 Normal, 77 -> 34 Easy; 5-7's 120 and 117 moved in place); the first hash is main's; built at 7e9fe4d8^ both hashes are the
 // old ones exactly (reference/qa-reports/INT-10/mainpins.txt, mainpins.ts). 7-1's second re-pinned by INT-10c (the lead's ruling A, 11-15:
 // a piece every run touches is path): only gen2.fills moved, 37 -> 63 Normal and 34 -> 60 Easy (main 80, 77); the first hash and gen2 less
-// its fills are the same with and without the walkedSpan.ts branch (reference/qa-reports/INT-10c/mainpins.txt, pin71.mts))
+// its fills are the same with and without the walkedSpan.ts branch (reference/qa-reports/INT-10c/mainpins.txt, pin71.mts). Back to main's
+// pins exactly on link #5 (INT-11 11-15): with placement main's lay again (INT-10d) both stages build as main builds them, all four hashes)
 const MAIN: Record<string, [string, string]> = {
-  '5-7 normal': ['8e6918d86d5b8c49', 'fa5037e4f56d3183'], '5-7 easy': ['c21d7034579fa414', 'b45f910763e8df3a'],
-  '7-1 normal': ['f8a654ca25181450', 'f62f0cee9704839a'], '7-1 easy': ['ddbb0b767ba92e8b', '07f7968927172e9a'],
+  '5-7 normal': ['8e6918d86d5b8c49', '1dde0c0b03ee194f'], '5-7 easy': ['c21d7034579fa414', '62b97ff493ad4d78'],
+  '7-1 normal': ['f8a654ca25181450', '47c0b9f0e96ceb9e'], '7-1 easy': ['ddbb0b767ba92e8b', '0b61ef8ebb835d41'],
 };
 const h = (x: unknown) => createHash('sha256').update(JSON.stringify(x)).digest('hex').slice(0, 16);
 for (const id of ['5-7', '7-1']) {

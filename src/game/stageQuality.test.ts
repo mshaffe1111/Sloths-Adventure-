@@ -185,6 +185,8 @@ test('the lane check catches a lane that cannot be crossed', () => {
 });
 
 test('a fork shows its choice at a glance: the high lane is up in the branches, the low lane on or under the ground, a lure of flowers on each', () => {
+  // (each world's first four stages: with three, 2-1's few petals (the keeper's number) left 148 neighbours, under the guard; with four,
+  //  201, the share judged on more rows, never a lower guard: INT-11 11-15)
   for (const l of horizontal.filter((x) => x.miniIndex <= 4)) {
     const s = stage(l, null);
     for (const f of s.lanes ?? []) {
@@ -297,7 +299,9 @@ test('a row or an arc of flowers is one species', () => {
   // flowers laid in one go share a y-line within a row; here: neighbours closer than 80 px on nearly the same height are one species
   let pairs = 0;
   let mixed = 0;
-  for (const l of horizontal.filter((x) => x.miniIndex <= 3)) {
+  // (each world's first four stages: with three, 2-1's few petals (the keeper's number) left 148 neighbours, under the guard; with four,
+  //  201, the share judged on more rows, never a lower guard: INT-11 11-15)
+  for (const l of horizontal.filter((x) => x.miniIndex <= 4)) {
     const s = stage(l, null);
     const fl = s.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf').sort((a, b) => a.x - b.x);
     for (let i = 1; i < fl.length; i++) {
