@@ -22,4 +22,4 @@ flown arcs, the stage's own lay), and what's missing; (3) validation: per-beat r
 Matt's verdicts (1-7 "really easy"; 1-6/1-8 when he plays them); (4) how the bands in DIFFICULTY.md §4 map onto it; (5) the build plan for
 METER-2 (files, tests, plants), sized. Under 200 lines plus a sources list.
 Branch: t-diff-research from origin/ccr-ea739a2f-dfcee4. Gates: roadmapcheck + knowncheck. A cold Critic reviews it before METER-2 starts.
-BOX: 75 minutes (D78), or 40% real context. Lead: the session on reference/handoffs/lead.md line 1.
+BOX: started 10:38 PM ET 11-14 on Matt's word; report by 11:30 PM ET (Matt's cutoff) or at 40% real context. If the model isn't finished, push what you have with its sources and an EXACT NEXT STEP. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
