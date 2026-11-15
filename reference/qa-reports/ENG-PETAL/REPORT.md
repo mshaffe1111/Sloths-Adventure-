@@ -153,9 +153,12 @@ In order (engine tier unless named):
    (trace-expert-normal-f4896466.txt); plant it on those pieces; then `npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-40
    --bots expert,middle,child --setting both --par 2` until 0 sealed (the s34/s2 rescues are the bot's stair skill: the pit's way
    back is proved).
-3. **Lists**: `npx tsx tools/engine/seedlist.ts <id> --check` for 1-1..1-7 on the head (results in Gates; relist any that fails, in
-   order, with `npx tsx tools/engine/addlevel.ts <id> --relist --no-bots` as ENG-16H did, and commit only that run's lists).
-4. **The suite reds** (Gates): gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
+3. **Lists** (on this branch's head): **1-1 relist first** (`seedlist.ts 1-1 --check` fails on seed 33616; CI runs it): relist, then the
+   tier calibration and its recommit (tools/inspect/tierBots.test.ts, reference/qa-reports/R-165.59/calibration-main.jsonl, BOTS.md).
+   1-6: see Gates (the relist written tonight, its --check __RELIST6__). castBots 1-4 seeds 1-40 both settings on its new list
+   (relisted tonight, bots not run). Then castBots 1-6 again on 1-6's new list (tonight's bot numbers were on the old list's replays).
+4. **The whole suite, run ALONE** (tonight's was stopped at the 30-minute background limit: Gates), then buildcheck alone on the
+   head (e10a86e2's fix is unmeasured in Chromium), drawcheck, clipcheck. The suite reds: gen2Pits.test:61 (the later pit's first stair step flush against the joined floor's end; pre-existing),
    softFalls11.test:128 (8-3: revert proof done, look at the 56 fills on a phone before re-pinning), and any pin the moved petals
    broke (lockall: 71 stages' collectibles moved).
 5. 2-1's petal brief: a data field and the keeper's number (R-165.263's 'few'), then its fill honours it.
