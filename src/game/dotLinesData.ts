@@ -149,7 +149,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.1-7", "1-7", "wayside", "story", "A whole hour in that bush. Meeca says she saw me. Fibs!", "A whole hour in that bush. Meeca says she saw me. Fibs!", null, null, null],
   // (the story keeper's line 6, reference/story/lines-1-8.md (t-story@2e40e6a3): the old one counted, and put "slow" in his mouth mid-chase;
   //  w1Arc18.ts WAY_18 holds it equal. The old 1-8 rows eng.chase, hint.1-8.vine and hint.1-8.long went with the hand-built 1-8, BUILD-18)
-  ["way.1-8", "1-8", "wayside", "story", "Dot keeps flying to the end and back. Show-off.", "Dot keeps flying to the end and back. Show-off.", null, null, null],
+  ["way.1-8", "1-8", "wayside", "story", "Dot keeps flying rings round me. Show-off.", "Dot keeps flying rings round me. Show-off.", null, null, null],
   ["way.1-9", "1-9", "wayside", "story", "I'm too small to be worth the chase. Best thing about me, honestly.", "Too small to be worth chasing. Best thing about me, honestly.", null, null, null],
   ["hint.2-1.logs", "2-1", "stage hint", "move", "The logs drift with the river. Hop on and ride!", null, null, "flick-up", null],
   ["hint.2-1.upstream", "2-1", "stage hint", "move", "This river flows back at you. Wait for a log, then hop on.", "Upstream now. The logs drift toward you.", null, "flick-up", "nearest log"],

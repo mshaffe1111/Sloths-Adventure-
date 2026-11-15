@@ -18,6 +18,7 @@ import { chaseCap, easyGapProblems, CHASE_LAY } from '../chaseLay.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
+import { PAGES } from '../../movesJournal.ts';
 import { w1Finish } from './w1.ts';
 import { DRESS_18, HEARTS_18, LINES_18, MISSION_18, ROLL_18, STAGE_18, WAY_18, type InvDress } from './w1Arc18.ts';
 import { W1_TIP } from './w1Cast.ts';
@@ -51,7 +52,8 @@ const ARC = ['arrival', 'teach', 'first-run', 'rest', 'at-pace', 'rest', 'high-b
 test("1-8's lines are the story keeper's, word for word (reference/story/lines-1-8.md, KEEPER-18 approved 11-14), and the stage says them", () => {
   const md = fs.readFileSync(path.join(root, 'reference/story/lines-1-8.md'), 'utf8');
   const rows = new Map<string, string>();
-  for (const m of md.matchAll(/^\| \d+ \| `?([A-Za-z_0-9.\-]+)`? \|[^|]*\| (.+) \| \d+ \|$/gm)) rows.set(m[1], m[2].trim());
+  // (a row the keeper rewrote carries her dated note after the line, "(9:50 PM ET 11-14: was ...)": the line is what stands before it)
+  for (const m of md.matchAll(/^\| \d+ \| `?([A-Za-z_0-9.\-]+)`? \|[^|]*\| (.+) \| \d+ \|$/gm)) rows.set(m[1], m[2].replace(/\s*\(\d{1,2}:\d{2} [AP]M ET [^)]*:.*\)$/, '').trim());
   for (const [k, v] of Object.entries(LINES_18)) assert.equal(v, rows.get(k), `line ${k}`);
   assert.equal(WAY_18, rows.get('way.1-8'));
   assert.equal(MISSION_18, rows.get('MISSION_18'));
@@ -62,6 +64,19 @@ test("1-8's lines are the story keeper's, word for word (reference/story/lines-1
     const said = new Set(built(1, d).proto.hints!.map((h) => h.text));
     for (const v of Object.values(LINES_18)) assert.ok(said.has(v), `${d}: Dot says "${v}"`);
   }
+});
+
+test("the moves journal's collapsing-branch page is the keeper's (lines-1-8.md 11-14 9:50 PM ET), and opens on 1-8's crack line", () => {
+  const md = fs.readFileSync(path.join(root, 'reference/story/lines-1-8.md'), 'utf8');
+  const cell = (field: string) => md.match(new RegExp(`^\\| ${field.replace(/[()/]/g, '\\$&')} \\|[^|]*\\| (.+) \\|$`, 'm'))?.[1].trim();
+  const page = PAGES.find((p) => p.id === 'collapse')!;
+  assert.equal(page.intro, cell('intro'));
+  const [how, what] = cell('lines (how / what)')!.split(' / ');
+  assert.deepEqual(page.lines.screen.map((l) => [l.how, l.what]), [[how, what]]);
+  assert.equal(cell('riddle'), 'KEEP');
+  assert.equal(page.riddle, 'Do not look back. Just run!');
+  assert.deepEqual(page.open.tip, [['1-8', `tip:${LINES_18.crack}`]], 'it opens on the crack line');
+  assert.ok(!JSON.stringify(page).includes('goes on and on'), 'the old line is gone');
 });
 
 test('1-8 never locks its exit (the keeper: the branch behind him is gone): a sprint, no gathers, no sealed line', () => {
