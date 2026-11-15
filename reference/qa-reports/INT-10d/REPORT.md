@@ -1,5 +1,5 @@
-# INT-10d report: the petal rule decoupled, then link #4 (1-6 + the 1-7 eagle). Branch t-int-10b. Opus 5.5 high. IN PROGRESS
-Started 1:55 PM ET (packet 1:54 PM). Every time below pasted from `TZ=America/New_York date`.
+# INT-10d report: the petal rule decoupled, then link #4 (1-6 + the 1-7 eagle). Branch t-int-10b. Opus 5.5 high. STOPPED at the lead's word (4:19 PM ET: links #4 and #5 become one link from INT-11's head).
+Started 1:55 PM ET (packet 1:54 PM); stopped 4:16 PM ET. Every time below pasted from `TZ=America/New_York date`.
 
 ## Done-items
 1. **Placement is main's lay again** (2cc8be2a): pipeline.ts fillSockets lays a pickup socket at `k.x` on its own piece as main does
@@ -47,6 +47,69 @@ Started 1:55 PM ET (packet 1:54 PM). Every time below pasted from `TZ=America/Ne
    **9-3, 9-4, 10-3, 10-6** move at TOOLS-2 ba2b1a21 (R-165.251, merged by ENG-16H 8b8dc02a): every stage builds on its own setting's
    dials and the hand-built retry's chosen attempt is cached per setting (stageGenerator `known` key gains dialsKey), so their validated
    attempt follows the setting. Intended by R-165.251; not petals.
+
+11. **castBots 1-40 x child/middle/expert x both settings** (castBots-1-6/7/8.txt, head dd6c5067 = code a67a91fb): 1-6 child Normal
+   38/40 (seeds 23, 34: 'shrine rescued x1'), every other tier/setting 40/40; 1-7 all 40/40 (eagle hits only, no life lost but 1 pit);
+   1-8 child Normal 37/40 (seeds 7, 9, 13), all else 40/40. The same failing seeds as INT-10b's runs on its head; no sealed door anywhere.
+12. **1-1 tier calibration** recommitted (reference/qa-reports/R-165.59/calibration-main.jsonl): every check's pass/fail unchanged on all
+   5 tier/settings; child Normal rescues 4 -> 5 (variant 1: a run that was rescue-free now has one; NOT traced: the run JSON carries no
+   rescue x). tierBots.test 7/7.
+13. **KID_RUNS_59** (dbbad40e, the one code fix from the gate run): the suite re-measured 5-9's kid runs as 3, 5, 6, 7, 6, 5 = main
+   73e7bed0's record exactly (the revert proof); Easy goal unchanged (median 5). INT-11 merges it.
+14. **1-7's eagle on this head** (probe.txt): ENG-WATCH2's walker probe, seeds 1-4 Normal: eagles 0-1 (the lesson) lose 0, every eagle
+   2-8 loses >= 1 heart on all four seeds, identical to ENG-WATCH2's probe-recheck. The caught walk re-shot on eagle #2
+   (shots/17-walk2-n-up/side.mp4; the dive at f128, HEART LOST f129 at x 7179: shots/17-walk2-n-*-f128-dive.jpg).
+
+## Gates (once, on 473f6d45 = code a67a91fb; the suite and clipcheck on the head as they started; logs in gates/)
+| Gate | Result |
+|---|---|
+| tsc | PASS |
+| build (BASE_PATH) + chunkcheck | PASS |
+| artcheck, knowncheck, generality | PASS |
+| roadmapcheck | PASS (first try stopped at the shallow-clone guard; `git fetch --unshallow`, then PASS) |
+| tool tests (library, seedlist, yield, travelBots) | PASS 37/37 |
+| seedlist 1-1 --check (and 1-2..1-8 on a67a91fb: lists/check2-*) | PASS |
+| kbdcheck | PASS (its regenerated keyboard pngs reverted: tool output, not a change) |
+| tierBots.test | PASS 7/7 (after the recalibration) |
+| suite | UNFINISHED at the stop: 1456 ok, 1 red (firstTimerBot KID_RUNS_59, fixed in dbbad40e) when stopped |
+| drawcheck | RED: 1-8 sideways x 24036, gradients 7.33 > 2, drawImageScreens 10.86 > 7.5 (re-run alone: same). Already red on 45a14a55 (6.11 / 9.96), not from INT-10d: the chase stretch's flush 215 px pieces each paint their soil and depth band. RESOLVED on t-int-11 (the lead, 4:19 PM): the bough look (ENG-LOOK2/ART-18 on t-build-18c) turns off soil/pit shading on bough stages; 1-8 x 24036 passes there (4.54 up / 5.41 side). |
+| buildcheck | RED, NOT VALID: 1-1 Normal p95 178 ms > 150 measured with the suite, drawcheck and clipcheck on all 4 cores; the re-run alone never happened (the stop). INT-11's one gate run measures it. |
+| clipcheck | UNFINISHED at the stop (started 4:09 PM) |
+
+## Polish check (shots/; the setting each was built on printed by the game)
+- 1-6 L1 at x 8730 (FIX-21's bank), 28296 (creaky landing's joined floor), 45650 (gorge), Normal + Easy, fresh + old save, upright +
+  sideways (24 stills); the walk x 25000-31000 both settings both ways (4 clips). Whole screen (D79): HUD, backdrop, props read painted;
+  Pokey's line box sits under him, never over where he acts. Nothing rough found that this branch made. 1-6 L1 Normal asks 28: of 113
+  petals 58 are arc bonuses and 23 off the walked path (32 counted); the lead: fine (the door can't seal).
+- 1-7: glance with him still (#1), fake-out (#5), caught walk (#2: the dive and the lost heart named above), Easy's longer tell (#1):
+  up + side. The first walk clip (#1) showed no catch: #1 is a lesson eagle (0 hearts by design); the clip choice was wrong, not the eagle.
+- Frames (438 MB) kept out of the repo; mp4s and stills only (8 MB).
+
+## Unresolved
+- suite and clipcheck unfinished; buildcheck alone not run (all go to INT-11's one gate run on the joined head).
+- 1-1 child Normal variant 1's new rescue: untraced.
+- petalArcs.test's title still names the stripped-lay band (1-3 0.86, 1-5 1.04); under main's lay World 1 reads 1.42-1.72.
+- build.py --published: not run (the link moved to INT-11).
+
+## Lessons applied / misses
+D19 (markWalked judges the stage the game plays, after pairPetals), D21 (fill + socket both reverted; air and standing petals both
+judged), D29 (relists, then every list --check, the first-run lock, tierBots), D30 (every time from `date`), D36 (`git ls-remote` = HEAD
+after each push), D40 (ruling (a) before the relists: I had relisted before reading it), D46, D59 (gates named UNFINISHED, not "will
+finish"), D62 (stills print the built setting), D69 (the walk clip judged by its frames: no catch, then re-shot with the frame named),
+D79 (whole screen). MISSES: D57 twice (the lead's 2:50 and 3:02 PM messages sat 12-22 min unread across two pushes; the 1-1/1-4/1-6
+relists and a bot run were made before ruling (a) and redone); a plain relist rebuilt 1-1 from fresh seeds before I relisted it in
+order (caught by comparing the seed arrays); three background commands lost their `$O`/`$S` to a `&` subshell and wrote logs to `/`
+(moved back; scripts now use absolute paths).
+
+## Method update (proposed)
+- level.md / gates.md: "Relist a listed stage IN ORDER (`--merge <its own seeds> --in-order`) unless the packet says rebuild; two
+  relists never run at once (they both write provenIndex.ts: the later one put back 1-4's old version)."
+- gates.md: "buildcheck runs ALONE (a loaded machine reads p95 178 vs 150 on the same code)"; "roadmapcheck needs a full clone: `git
+  fetch --unshallow` first in a cloud container".
+- A clip of a watcher's catch names an eagle past the lesson (eagleProbe's numbering), never #1.
+
+## Turnover note
+No engine-core.md section this time (the lead stopped the task before the hand-off; this REPORT is the turnover for INT-11).
 
 ## Pushback
 - None on the ruling. One note: the band numbers in petalArcs.test's title (1-3 0.86, 1-5 1.04) were measured on the stripped lay; under
