@@ -70,3 +70,9 @@ ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balan
 |---|---|---|---|---|
 | 8:17-8:26 PM | sandbox 6af9086223985fb9cd82c12e (rtx-pro-6000), about 9 min creation to terminate: 12 Qwen-Image + style LoRA takes (4 pieces x 3 seeds, ~21 s each after a ~2 min load), keyed and cut in the sandbox (/w/key18.py, /w/ship18.py), back by hf_sandbox_fs | lead (BUILD-18 packet; ruling A 8:19 PM: all four) | ~$0.41 | 4 shipped pieces (src/assets/w1-18/): palm nut, cannonball fruit (in game, rollingPiece.ts), palm crown, cannonball trunk with fruit stalks (laid as data, drawn when the inventory-dressing piece lands): **~$0.10 a piece**; the keyed takes' sheet in reference/art/hf18/ |
 BUILD-18 total: ~9 GPU-min, **~$0.41** of its $3 cap (minutes x $2.75/60). Balance ~$56.0 (from ~$56.4).
+
+## 2026-11-15 (ENG-LOOK2, t-eng-look2; the lead's packet cap $3, ONE job)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:12-11:17 AM | sandbox 6af9d9c129dd05ff0368e675 (rtx-pro-6000), about 6 min creation to terminate: 8 Qwen-Image + style LoRA 0.9 takes (2 prompts x 4 seeds, 1792x768, ~27 s each after a 36 s load), spec tools/art/hfbough/spec-bough.json; 3 takes back by hf_sandbox_fs (reference/art/hfbough/, takes-sheet.jpg) | lead (ENG-LOOK2 packet, step 4) | ~$0.28 | 1 shipped piece (src/assets/w1-18/hf18-bough.webp: 3 joinable bough variants from take a-53, cut.py), catalogued hf18/hf18-bough at scale: **~$0.28 a piece** |
+ENG-LOOK2 total: ~6 GPU-min, **~$0.28** of its $3 cap (minutes x $2.75/60). Balance ~$55.7 (from ~$56.0).
