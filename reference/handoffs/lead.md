@@ -11,6 +11,7 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **NEVER ANOTHER 1-6 (Matt, 11-14 8:49 PM ET):** "we could never do 1 to 6 again. That type of stuff is just a killer... kills tokens... show me that it's possible to do things the right way and still be efficient and set up future levels." 1-6 cost ~29 h elapsed, 18 sessions, ~$267. THE SCOREBOARD from here (lead, 8:49 PM ET): each level's BUILD (one builder, from data) under 2 h and under $25; its engine pieces done BEFORE the builder starts (proven on a real stage row, D75), counted separately in LEVEL-LOG; any level that breaks either number gets a cause in the retro the same night.
 - **PITCH ROUNDS CHOOSE EVERY LEVEL (Matt, 11-14 6:23-6:28 PM ET):** two blind pitchers (high + xhigh) pitch the next three levels; research what players LOVED, drawn from his whole list (classics and lesser-known, at most one famous game per level); the lead picks or sends both back. Method: reference/methods/pitch.md.
 - **THE ENGINE DRIVES DEVELOPMENT (Matt, 11-14 1:55 PM ET):** "Game engine drives development... the pieces in the engine that are going to
   be repeated. One-offs can be done by the developers... we are always trying to shave time for each level... Not cut quality, but improve
