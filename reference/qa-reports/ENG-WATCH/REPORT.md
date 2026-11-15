@@ -52,3 +52,43 @@ src/game/eagleGlance.test.ts (8 tests):
 
 ## 4. Numbers
 (filled in below as each run finishes)
+
+## 6. EXACT NEXT STEP for TUNE-17 (the 1-7 tuner, data only, no engine)
+1. Read this REPORT §2's dial table. The dials live in `W1_STILL['w1-eagle']` (src/game/gen2/worlds/w1Cast.ts), the stage's still row.
+   - Add `glance: { away: [a, b], look: [c, d], fake: f, reach: r }` to 1-7's row to override the kind's default (predators/world1.ts EAGLE.glance).
+   - Set `glanceLesson: true` only once the story keeper's teach line for the freeze exists (see 4).
+2. Raise 1-7 toward its 5.5 band (R-165.266) with these, and with the tools it already has: the calm bands (W1_STILL calm teach/early/late) and cover spacing (minApart).
+   - Shorter `away` gives quicker re-checks. A higher `fake` makes him freeze for nothing more often. Never raise `fake` on Easy: the kit forbids it.
+   - Score each change on METER-1's ruler, with the caveat in 5.
+   - Prove each change with `npx tsx tools/inspect/castBots.ts --stage 1-7 --seeds 1-40 --setting both --par 4`. The kid tier on Easy must clear 40/40 with honest misses only (the lead's ruling).
+3. Check a walker on every stretch with `npx tsx tools/inspect/eagleProbe.ts --stage 1-7 --setting normal --modes walk,sneak`:
+   - every stretch past the lesson must cost a walker at least 1 heart;
+   - eagleGlance.test.ts "walking forward ... costs hearts" holds it.
+4. ASK THE LEAD for the story keeper's line that teaches the freeze, a Dot line at the first glance (LAWS: the first appearance is taught; "no player words but the story keeper's"). Until it exists the glance is OFF on the lesson stretches (`glanceLesson` unset), so 1-7's first three eagles teach only the pass.
+5. METER-1 (not mine): `tools/difficulty/score.ts` counts 1-7's eagles as 9 static creature beats. It reads neither the pass direction nor the glance: points 21.4 Normal, 14.15 Easy, the same before and after this branch. Its score is NaN on one stage, because SCALE needs the full set. For the watch term to read the rhythm it needs:
+   - a glance's expected tells a minute: 60 / (mean away + tell + mean look), x (1 - fake) for real looks;
+   - and the pass's crossing toward him.
+   That is METER-1's packet, before TUNE-17 trusts the meter on 1-7.
+
+## 7. Learned (what I would tell the next engine member)
+- **Prove a threat with what the player DOES, not with the case the test was written for.** eagleFair.test proved "standing in the open is hit" and stayed green while every forward walker went through 1-7 untouched. The probe that found it walks forward, never hides, on the real engine, with real damage and the game's own shield (tools/inspect/eagleProbe.ts).
+- **A watcher's direction is part of its fairness.** An eye that starts behind a walker and is barely faster than him is no threat at all. Measure the closing speed (eye - walk) against the stretch, not the eye speed alone.
+- **A one-off pass rule becomes a statue** (1-8's Post.passes 1): after its last look, something must still watch, or it must leave.
+- **The bots' hit log looked within 160 px of where a foe is drawn**, so a kit dive arriving from its eye was 'other'. A counter that does not count what its name says hid the eagle's real hits (D15 again: test the measuring tool).
+- **A dev server reloads the page on any file change**, and a clip running on it dies or lies. Shoot clips on a server with watch and hot reload off (the clip server config is in Method update).
+
+## 8. Method used, lessons applied, method update
+- **Method used:** reference/methods/stage-fix.md and gates.md; the role card's day one. One exception: the base lock was taken on the base head for the 21 stages that lay a watcher (1-7, W6, W8), not on main for every stage (see §5).
+- **Lessons applied:**
+  - D7/D24: every cause is cited in code (PROOF.md).
+  - D15: the bot's attribution was tested and fixed before its numbers were used.
+  - D19: probe and clips call the same code the game runs (RealPlay; the real page through pressFrame).
+  - D43: kit-wide, by data; generality PASS.
+  - Law 22: eagleKit's respawn rule went red, and the CODE was fixed, never the test.
+  - D55: context % in every message.
+  - D57: the queue was read at every push.
+  - level.md 21: a planted bot toy before anyone lists a stage on it.
+  - level.md 28: castBots 1-40.
+- **Method update** (proposed for stage-fix.md and gates.md):
+  - (a) Every watcher or hazard change runs `eagleProbe.ts --modes walk,back,stand,sneak` on each stage it touches. "A walker who never hides loses hearts past the lesson" is a check, held by eagleGlance.test.
+  - (b) Clips are shot on a dev server with `server.watch.ignored: ['**/*']` and `hmr: false` (a local config that imports vite.config.ts and is never committed). Two of mine died mid-run from a reload.

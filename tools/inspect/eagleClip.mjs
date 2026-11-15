@@ -73,6 +73,8 @@ const xs = [];
 const named = [];
 const N = +(process.env.FRAMES ?? 330);
 for (let f = 0; f < N; f++) {
+  // (a story note opened on the way, "Tap here when you've read it": tapped away as a player does, so it never covers the sky)
+  if (f % 10 === 0) await p.evaluate(() => { for (const el of document.querySelectorAll('div,p,span,button')) if (el.childElementCount === 0 && /Tap here when you've read it/.test(el.textContent ?? '')) el.click(); });
   const L0 = await look();
   const dir = MODE === 'walk' || ((MODE === 'sneak' || MODE === 'caught') && go >= 0) ? 1 : MODE === 'back' ? -1 : 0;
   xs.push(L0.x);
@@ -91,7 +93,7 @@ for (let f = 0; f < N; f++) {
   const glWord = { away: 'head AWAY (green light)', cock: 'HEAD-COCK: its tell (freeze!)', fake: 'FAKE-OUT: a half-turn', look: 'LOOKING: moving = seen' };
   const phaseWord = { rest: L.gl ? glWord[L.gl] : 'head AWAY (rest: it looks at nothing)', hunt: L.t < 2.05 && Math.abs(L.eye - (L.passes % 2 ? placed.x1 : placed.x0)) < 2 ? 'SCREECH: its warn (eye waits)' : 'its eye sweeps', tell: 'TELL: it dives', act: 'ACT: the dive (hurts)', recover: 'pulls up', flee: 'gives up, flies off', gone: 'gone', stunned: 'stunned' }[L.ph] ?? L.ph;
   const lost = L.hp < hp ? ' <b style="color:#f87171">HEART LOST</b>' : '';
-  if (f % 2 === 0 || lost) {
+  if ((f % 2 === 0 || lost) && f >= +(process.env.SKIP ?? 0)) {
     await p.evaluate((h) => { document.getElementById('mockcap').innerHTML = h; }, `${STAGE} ${diff} eagle #${WHICH}${placed.perched ? ' (perched)' : ''} · ${MODE}<br>f${f} · ${phaseWord}<br>eye ${L.eye} · him ${L.x} (${L.eye - L.x >= 0 ? '+' : ''}${L.eye - L.x}) · hearts ${L.hp}${lost}`);
     await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     await p.screenshot({ path: `${out}/f${String(shot++).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 80 });

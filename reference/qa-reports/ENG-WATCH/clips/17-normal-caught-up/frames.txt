@@ -1,0 +1,11 @@
+{"sx":28728,"gy":810,"x0":28478,"x1":29598,"perched":true,"home":28928,"hp":5,"easy":false}
+f164: hunt -> rest (eye 28478, him 28728)
+f225: its head-cock begins (its tell): he walks on anyway at x 28728
+f225: glance away -> cock (him 28728)
+f248: glance cock -> look (him 28875)
+f249: rest -> tell (eye 28877, him 28877)
+f272: tell -> act (eye 28877, him 29079)
+f282: act -> recover (eye 28877, him 29171)
+f282: HEART LOST at x 29171 (hp 4)
+f300: recover -> rest (eye 28877, him 29330)
+f374: out of its stretch by 420 px
