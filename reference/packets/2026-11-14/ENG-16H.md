@@ -10,6 +10,8 @@ Branch: continue t-build-16 from ENG-16G's last push (git ls-remote first; name 
      stair missing = a lay rule (planted, every stage), stair present = a bot fix in firsttimer.ts (planted toy).
  (3) VINE CREATURE TELL: a snake or riser on a vine never starts a hop that moves him inside TELL_MIN (rolling.ts's constant; reuse it) of
      his catch; its tell shows first. Planted: catch-then-hop-next-frame RED, GREEN after.
+(4) src/game/requiredMove.test.ts:8 ('without the bounce it stops short on 1-6') is red: its premise was the OLD hand-built 1-6 (deleted, R-165.238; the new 1-6 lays no mushroom). Retarget it to a listed stage whose proven route NEEDS the bounce (prove the need: the no-bounce run falls on every listed seed), never loosen what it asserts (LAWS 22).
+File:line from ENG-16G: backPit pipeline.ts:2857 (applied :1857), firsttimer pitWayUp/pitWayBack; vineSnakePiece.ts:95, :111, vineSnake.ts:48 (tell).
 Then: lockall --check (list every stage that moved, and re-prove each moved stage's list), relist 1-6, castBots 1-40 both settings: 0
 rescues, 0 sealed on every tier (a located honest kid miss on Normal may be proposed to the lead with frame + reason, never assumed), the
 WHOLE suite on your head (name it), then stills of every beat upright + sideways, Easy + Normal, and CLIPS (first liana, the chain, snake on
