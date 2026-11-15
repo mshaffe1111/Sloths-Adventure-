@@ -4,12 +4,14 @@
  * floor ended at its own lip, so a column the limb's width with no earth at any depth lay between two soft floors: a drop off the limb fell
  * through it (no fall record named it), and the second pit's stair stood against that air, its stone drawn over nothing. INT-9's settle
  * (R-165.226) refused that stone, so on the merged engine every 1-6 roll threw "the pool is spent" (libstage 0/24 both settings).
- * Planted: python3 reference/qa-reports/ENG-16H/planted-faults.py (the join's block not laid: the 1-6 case goes RED).
+ * And past a pit's lip a perch can float over a hole up to the next BANK (1-6's FAR boughs in the snake on your vine and the gorge): INT-9's
+ * per-gap ruler (w1Pits.ts) refused every roll on drop.untyped / floor.unmarked; the floor reaches that bank, which is deepened past it
+ * (pitHoleFill). Planted: python3 reference/qa-reports/ENG-16H/planted-faults.py (the fill not laid: the 1-6 case goes RED).
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { earthHoles, pitFloorJoin, PIT_JOIN } from './pipeline.ts';
+import { earthHoles, pitFloorJoin, pitHoleFill, PIT_JOIN } from './pipeline.ts';
 import { buildStage } from '../../../tools/engine/libstage.ts';
 import type { Platform } from '../types.ts';
 
@@ -31,7 +33,20 @@ test('the join: two soft floors either side of a perch with no earth under it ar
   assert.equal(pitFloorJoin(a, P(9, 549, 1133, 300, 120), [a], 60), null, 'already touching');
 });
 
-test('1-6, every roll 1-6 on both settings: it builds, and no hole in the earth lies between two soft falls a perch apart', () => {
+test('the fill to a bank: a floor whose lip has a perch over a hole up to the next bank reaches that bank; a pit\'s own stair is no bank', () => {
+  const floor = P(1, 23383, 1131, 547, 120);
+  const stair = [P(2, 23383, 1071, 300, 60), P(3, 23383, 1011, 200, 120), P(4, 23383, 951, 100, 180)];
+  const perch = P(5, 23930, 891, 134, 24), bank = P(6, 24064, 836, 240, 473), before = P(7, 23123, 891, 260, 418);
+  const plats = [before, floor, ...stair, perch, bank];
+  const floors = new Set([floor]);
+  const j = pitHoleFill(floor, 1, plats, floors, 60);
+  assert.ok(j && j.x === 23930 && j.w === 134 && j.y === 1131 && j.deepen === bank, JSON.stringify(j));
+  // (its left: the take-off bank reaches down past the floor at the edge, and the stair standing on it is no bank: no hole there)
+  assert.equal(pitHoleFill(floor, -1, plats, floors, 60), null);
+  assert.equal(pitHoleFill(floor, 1, [floor, P(8, 23930 + PIT_JOIN.px + 1, 836, 240, 473)], floors, 60), null, 'too far: not a perch\'s hole');
+});
+
+test('1-6, every roll 1-6 on both settings: it builds, and no hole in the earth lies between two soft falls a perch apart, or beside one', () => {
   for (const d of ['normal', 'easy'] as const) {
     for (let seed = 1; seed <= 6; seed++) {
       const st = buildStage('1-6', seed, d) as { platforms: Platform[]; gen2: { falls: Array<{ x0: number; x1: number; kind: string }> } };
@@ -42,6 +57,11 @@ test('1-6, every roll 1-6 on both settings: it builds, and no hole in the earth 
         if (x1 - x0 < 2 || x1 - x0 > PIT_JOIN.px) continue;
         const h = holes.find((q) => q.x0 >= x0 - 2 && q.x1 <= x1 + 2);
         assert.equal(h, undefined, `1-6 ${d} seed ${seed}: a hole in the earth at ${h?.x0}-${h?.x1}, between the soft pits ${soft[i - 1].x0}-${x0} and ${x1}-${soft[i].x1}`);
+      }
+      // (and none beside a soft pit's lip, under a perch, within PIT_JOIN: the fill to the next bank)
+      for (const f of soft) {
+        const h = holes.find((q) => q.x1 - q.x0 <= PIT_JOIN.px && (Math.abs(q.x0 - f.x1) <= 2 || Math.abs(q.x1 - f.x0) <= 2));
+        assert.equal(h, undefined, `1-6 ${d} seed ${seed}: a hole in the earth at ${h?.x0}-${h?.x1} beside the soft pit ${f.x0}-${f.x1}`);
       }
     }
   }

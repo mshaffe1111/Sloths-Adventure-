@@ -4,7 +4,7 @@ restores the file and checks the test GREEN. Run from the repo root: python3 ref
 import subprocess, sys, pathlib
 
 PLANTS = [
-    ('pit-join', 'src/game/gen2/pipeline.ts', '    if (j) mk(j.x, j.y, j.w, ', '    if (false && j) mk(j.x, j.y, j.w, ',
+    ('pit-join', 'src/game/gen2/pipeline.ts', '        if (!j) continue;\n        const fill = mk(', '        if (!j || true) continue;\n        const fill = mk(',
      'src/game/gen2/pitJoin.test.ts'),
     ('walked-span', 'src/game/gen2/pipeline.ts', '        let ws = walkedSpan(piece, laid);',
      '        let ws: ReturnType<typeof walkedSpan> = { lo: piece.x, hi: piece.x + piece.width };', 'src/game/gen2/walkedSpan.test.ts'),

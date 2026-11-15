@@ -1730,6 +1730,30 @@ export function pitFloorJoin(a: Pick<Platform, 'x' | 'y' | 'width'>, b: Pick<Pla
 }
 
 /**
+ * The fill under the hole beside a soft pit's floor on `side` (+1 its right, -1 its left), or null (R-165.246, ENG-16H, the same root as
+ * pitFloorJoin): a floor ended at its own gap's lip, and past that lip a perch floated over a column with no earth up to the next bank
+ * (1-6's FAR boughs in the snake on your vine and the gorge, 126-134 px: INT-9's per-gap ruler, w1Pits.ts, refused every roll on
+ * drop.untyped and floor.unmarked, "an unmarked floorless gap"). The floor reaches to the next earth that side when it is under PIT_JOIN
+ * away: another soft pit's floor within a hop of it (pitFloorJoin), or a bank, which is then deepened past the floor (`deepen`, as a bank
+ * beside a pit always is).
+ */
+export function pitHoleFill(floor: Platform, side: 1 | -1, platforms: readonly Platform[], floors: ReadonlySet<Platform>, hop: number): { x: number; y: number; w: number; deepen?: Platform } | null {
+  const edge = side > 0 ? floor.x + floor.width : floor.x;
+  // (earth, less a pit's own stair: a step stands on its floor, its foot on the floor's top, and is no bank)
+  const onFloor = (q: Platform) => [...floors].some((f) => Math.abs(q.y + q.height - f.y) <= 2 && q.x >= f.x - 2 && q.x + q.width <= f.x + f.width + 2);
+  const earth = platforms.filter((q) => q !== floor && q.type === 'solid' && !q.broken && !q.lift && q.height >= EARTH.px && !onFloor(q));
+  // (earth over the edge itself, reaching down past the floor's top: no hole)
+  if (earth.some((q) => q.x < edge + 2 && q.x + q.width > edge - 2 && q.y + q.height > floor.y + 2)) return null;
+  const next = earth.filter((q) => (side > 0 ? q.x >= edge - 2 : q.x + q.width <= edge + 2))
+    .sort((a, b) => (side > 0 ? a.x - b.x : b.x + b.width - (a.x + a.width)))[0];
+  if (!next) return null;
+  if (floors.has(next)) return pitFloorJoin(floor, next, platforms, hop);
+  const x0 = side > 0 ? edge : next.x + next.width, x1 = side > 0 ? next.x : edge;
+  if (x1 - x0 < 2 || x1 - x0 > PIT_JOIN.px) return null;
+  return { x: x0, y: floor.y, w: x1 - x0, deepen: next };
+}
+
+/**
  * The holes in a stage's earth (R-165.221): each x span between two banks with no earth under it at any depth, lip to lip. Pieces standing
  * over a hole (logs, catch boughs) do not fill it: he can walk off their ends into it.
  */
@@ -1918,13 +1942,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       (c as Platform & { catch?: boolean }).catch = true;
     }
   };
-  // (the soft pits' floors laid so far, for the join under a perch between two of them: pitFloorJoin)
+  // (the soft pits' floors, for the fill under a perch beside them once the stage is laid: pitHoleFill)
   const pitFloors: Platform[] = [];
-  const floorPit = (fp: Platform, hop: number) => {
-    // (with the nearest pit floor behind it only: a floor between two others is earth between them)
-    const prev = pitFloors.filter((q) => q.x + q.width <= fp.x + 1).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
-    const j = prev ? pitFloorJoin(prev, fp, platforms, hop) : null;
-    if (j) mk(j.x, j.y, j.w, 'block', M.ground.bankH, 'moss_stone');
+  const floorPit = (fp: Platform, _hop: number) => {
     pitFloors.push(fp);
   };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false, shallow = false) => {
@@ -2864,6 +2884,22 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const t of turns) { t.from += down; t.to += down; }
       for (const g of laidLegs) { g.y0 += down; g.y1 += down; if (g.floorY !== undefined) g.floorY += down; if (g.ground !== undefined) g.ground += down; }
       shiftedDown = down;
+    }
+  }
+  // (R-165.246, ENG-16H: no soft pit's floor ends at a hole: under a perch beside it, it reaches the next earth, pitHoleFill. Once the
+  // stage is laid, for the earth on either side may come with the next section; before the settle, which reads each stone's ground)
+  {
+    const floors = new Set(pitFloors);
+    const hopAll = riseCap(false, 1, budget) * PIT.hop;
+    for (const fp of [...pitFloors].sort((a, b) => a.x - b.x)) {
+      for (const side of [1, -1] as const) {
+        const j = pitHoleFill(fp, side, platforms, floors, hopAll);
+        if (!j) continue;
+        const fill = mk(j.x, j.y, j.w, 'block', M.ground.bankH, 'moss_stone');
+        floors.add(fill);
+        if (j.deepen) j.deepen.height = Math.max(j.deepen.height, j.y + M.ground.bankH - j.deepen.y);
+        sections.find((q) => j.x + j.w / 2 >= q.x0 && j.x + j.w / 2 <= q.x1)?.seam.push(fill);
+      }
     }
   }
   // (R-165.226: each piece drawn on its own ground, the world's settle (World 1: a stone kept back from its lip by its painted margin).
