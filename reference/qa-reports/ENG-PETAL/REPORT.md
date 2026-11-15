@@ -76,7 +76,7 @@ child's (38 -> 32/40 sealed+rescued): reverted (ddbcd55c). The fix that remains 
 
 ## Gates on the head
 Code heads: ddbcd55c (the petal/wall code every bot number above was measured on), e10a86e2 (+ the build-cost fixes, output proved
-identical by lockall: __LOCKPERF__). Logs: gates-ddbcd55c.txt, seedcheck, suite below.
+identical by lockall: 102/102 stages unchanged, lockall --layouts 2 both settings, lockall-ddbcd55c-vs-e10a86e2.txt). Logs: gates-ddbcd55c.txt, seedcheck, suite below.
 - tsc PASS (e10a86e2). knowncheck PASS. generalitycheck PASS (26 literals, 26 known). roadmapcheck: could not run ("shallow clone,
   proofs cannot be checked"; as ENG-16H).
 - `BASE_PATH=/Sloths-Adventure-/ npx vite build` PASS; chunkcheck PASS; artcheck PASS (ddbcd55c).
