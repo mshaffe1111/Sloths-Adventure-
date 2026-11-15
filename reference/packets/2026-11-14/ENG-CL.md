@@ -13,11 +13,17 @@ lead the data names it should use, never edit its stage file.
 (4) Delete the dead hand-built 1-8 path (protoStage buildLongBranch and the engine's ChasePlan path) once BUILD-18's row sends 1-8 to
     gen2 (new replaces old). (5) Easy: a rolling nut or fruit never costs a heart on any stage's Easy (rolling.ts rollTeaches; the story
     keeper's ruling), planted; tell BUILD-18 when it lands so it drops its per-spec teach flags.
-(6) FIRST, before (1)-(5) (BUILD-18 is blocked on it for the link): lift the two chase lays that exist only in the dev fixture
+(7) FIRST OF ALL (blocks 1-8's list on every Normal roll; BUILD-18 8:34 PM): the quiet line can't see chase hazards. quietJudge
+    (tools/engine/listRules.ts:33) runs quietOf (:15) on the ROLLED stage before any finish, and tools/inspect/beats.ts findBeats has no
+    RollSpec or chase, so 1-8's K3 reads "18.2 s with nothing to do". Fix for every stage: quietJudge takes the row's finish (as
+    helpRoomBreaches :51 does via listed.ts FINISH), and findBeats counts each RollSpec drop (low = a hop, high = a pass-under) as a beat;
+    planted test. Tell BUILD-18 the moment it lands.
+ (6) THEN, before (1)-(5) (BUILD-18 is blocked on it for the link): lift the two chase lays that exist only in the dev fixture
     (src/game/chaseFixtureStage.ts: layFixtureRolling :76-119, layFixturePieces :160-200) into gen2 as pieces for any chase stage: a 'roll'
     socket role laid by the pipeline (the `h` letter, nodeLetters.ts:67) and layTip(st, look) beside layStillFork (any fork index, not 0),
     planted; the fixture uses them too. Send BUILD-18 (session_01FhBbYNSdQvRywrkVhpeQXv) the data names; it deletes its STOPGAP copies.
 Proof: before/after stills at the seam and at f145 (or its new frame) upright + sideways, both settings; drawcheck on the 1-98 fixture
 (PERFORMANCE §1: pass/fail); the WHOLE suite on your head; lock (only chase stages' look moves; list them).
-REPORT reference/qa-reports/ENG-CL/REPORT.md with "Learned" and EXACT NEXT STEP. BOX: report by 10:45 PM ET, or at 40% real context.
+REPORT reference/qa-reports/ENG-CL/REPORT.md with "Learned" and EXACT NEXT STEP. ORDER: (7), (6), then (5), (4), then the look (1)-(3); if the box ends before the look, hand (1)-(3) over with EXACT NEXT STEP.
+BOX: report by 10:45 PM ET, or at 40% real context.
 No shell wait loops (D67). Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
