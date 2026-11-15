@@ -16,6 +16,20 @@ Rewritten for METER-1 (11-14, t-meter-1): section 0zf (the meter reads what a st
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0zi. INT-10c (t-int-10b, 11-15, link #4's reds): what the next engineer must know
+- **The walked model has the lead's ruling A** (11-15 1:41 PM ET; walkedSpan.ts walkedSpanOf): a piece no plain jump from behind clears and
+  a plain jump leaves is path, its whole top walked (6-2's pool stones had lost 198/201 socket petals). ENG-PETAL's walkedPath test A is
+  restated to it (+A2: a piece a full jump clears outright still has no span). 1-6's bank rows are gone (they made up for the stripping);
+  its arcs stay; band 0.86-1.2 holds.
+- **Open: petals.test "spread out"** (13 stages over 2 screens bare; main GREEN). Traced causes: (1) liana perches (1-6, 6-1, 6-3, 8-3):
+  A's liana half (let-go sets him down + a catch leaves) fixes them but breaks walkedSpan.test's two-liana toy, whose point is ENG-PETAL's
+  1-6 sealed-door evidence (petals behind every landing): the lead's call. (2) contiguous stair steps over SEAM's 10 px (2-8 x9092-11448,
+  20 px rises, no gaps): a full run's jump "clears" each (lo capped at its end). (3) 5-9 and 9-8: positive spans in the gap, petals still
+  missing: untraced (the fill? walkPetals?). (4) 1-8's last stretch + tip, 1-4 (from x -9489, a climb): may be special stages: ask.
+- **Flags moved by a lay stand on the ground there, height too** (chaseTip.ts layTip, readyStillFork); the harvest top-up reads room kit
+  pieces (fillSockets clear()); an arc petal never reads as standing outside its piece's span (petals.ts readsStanding).
+- **Test fixtures**: the listed-stage fixture is 1-99 (judgedTable/listed tests), never a real stage.
+
 ## 0zh. INT-10b (t-int-10b, 11-15, link #4: 1-6 and 1-7's glancing eagle): what the next engineer must know
 - **Head**: t-int-10 9d8c9fda + the join fix + ENG-LOOK d2bc1d89/c738e52f cherry-picked (the hand-built 1-8 deleted, the 7 chase tests on a
   laid chase) + t-eng-watch2 8fbaaacf merged (4 additive conflicts, both sides). Gates, bots, stills: reference/qa-reports/INT-10b/REPORT.md.

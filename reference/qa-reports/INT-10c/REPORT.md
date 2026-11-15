@@ -1,5 +1,5 @@
 # INT-10c report: link #4's reds at the root (1-6 + the 1-7 eagle). Branch t-int-10b. Opus 5.5 high. IN PROGRESS
-Started 1:14 PM ET (packet). Every time below pasted from `TZ=America/New_York date`.
+Started 1:14 PM ET (packet). STOPPED at the lead's context guard (X ruling, 1:49 PM). Every time below pasted from `TZ=America/New_York date`.
 
 ## Done-items (step 1: each red re-run ALONE, classified on main 73e7bed0 (all GREEN there), fixed at the root, pushed)
 1. judgedTable x3 + listed x2 (shard 1): the test-only fixture id was 1-8, now listed for real. Fixture is 1-99, never a real stage, so
@@ -23,12 +23,19 @@ Started 1:14 PM ET (packet). Every time below pasted from `TZ=America/New_York d
    arcPetals skips points that read as standing outside their piece's walked span (1768bf0c). GREEN 5/5; petalArcs GREEN.
 9. petals "spread out": OPEN, the lead's call (below).
 
-## Open: petals spread (STRIPPING, not spreading)
-Same seed/plan, layout 1 Normal, main vs head: 6-2 73->5, 5-9 87->47, 2-8 53->23, 1-1 104->83. ENG-PETAL's socket lay drops every
-petal on a piece with an inverted walked span (a full run's jump lands on it and leaves at once): 6-2 198 of 201 sockets. Lead's
-ruling A (1:41 PM) built: reference/qa-reports/INT-10c/ruleA-walkedSpan.diff (13 -> 9 stages red) but HELD: it contradicts ENG-PETAL's
-planted walkedPath test A word for word, lifts 1-6 to 1.69 petals/screen (band 0.86-1.04: INT-10's arcs/rows made up for the stripping)
-and moves verdicts' 7-1 hash. Still red with A: 1-4, 1-8, 2-8, 5-9, 6-6, 7-9, 8-9, 9-8, 10-9 (untraced).
+## Open: petals spread (STRIPPING, not spreading). EXACT NEXT STEP for a fresh member
+Main GREEN; head red on 13 stages. Done: the lead's ruling A in walkedSpan.ts (87be4a24: a piece every plain run touches is path; ENG-PETAL
+test A restated, A2 added; 1-6's bank rows out, arcs kept, in band; 7-1 hash re-pinned, revert proof mainpins.txt). 6-2 back to 83 petals
+(main 73), 1-1 104 (main 104). Still red: 1-4, 1-6, 1-8, 2-8, 5-9, 6-1, 6-3, 6-6, 7-9, 8-3, 8-9, 9-8, 10-9. Causes traced:
+1. Liana perches (1-6, 6-1, 6-3, 8-3): A's liana half (`swungOn`: a let-go sets him down on it, and a catch of the liana ahead leaves it)
+   made these four green, but walkedSpan.test.ts:21's toy asserts the perch's span starts at the let-go (ENG-PETAL's 1-6 sealed-door
+   evidence: petals behind every landing). Lead: is a perch between two lianas "touched" (A) or does its petal stay at/after the let-go?
+2. Contiguous stair steps (2-8 x 9092-11448, rises of 20 px, no gaps): over SEAM (10 px) each is a plain jump, a full run "clears" it
+   (lo capped at its end: `clears`). Measure whether the engine walks a 20 px step; if a run must hop each, the step is touched (A).
+3. 5-9 (x 10014-12398) and 9-8 (3858-6047): the pieces there HAVE spans (5-9 36: 10315-10634, 44: 11186-11451) yet hold no petal: trace
+   the fill and walkPetals (tools: reference/qa-reports/INT-10c/gap.mts and g28.mts; they import absolute paths of this checkout: edit the root).
+4. 1-8 (33525: the last stretch + the tip, where layTip clears pickups) and 1-4 (from x -9489, the climb's axis): special stages? the lead.
+Then step 2-3 of the packet: the full gate run on the final head, lockall vs the base, stills/clips, build.py --published.
 
 ## Not yet run (step 2-3 wait on GREEN): the full gate run, lockall, stills/clips, build.py.
 
