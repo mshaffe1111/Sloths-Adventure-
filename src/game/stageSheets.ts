@@ -76,7 +76,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
   '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
-  '1-8': ['foe:goldsnake'],
+  '1-8': ['foe:eagle', 'props2'], // (1-8 The Long Branch, gen2: the still fork's eagle and moss, w1Arc18.ts; the hand-built 1-8's snake is gone)
   '1-9': ['foe:boa', 'foe:goldsnake'],
   '2-2': ['foe:goldsnake'],
   '2-5': ['foe:turtle'],
