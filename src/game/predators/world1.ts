@@ -86,6 +86,9 @@ export const EAGLE: PredatorDef = {
   speed: { rest: 320, hunt: 0 },
   hears: NOISE.dur,
   warn: 2,
+  // each pass starts from the end of its stretch farther from him and crosses TOWARD him: from the near end, behind a walker, its eye
+  // never caught him before its stretch ended (ENG-WATCH F1, eagleProbe.ts: 0 hearts at 8 of 1-7's 9 eagles)
+  passAt: 'far',
   engage: 70,
   tell: 0.75,
   callsOff: true,

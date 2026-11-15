@@ -75,6 +75,7 @@ export function checkPredator(def: PredatorDef): string[] {
   if (def.habit === 'seek' && !real(def.hears ?? 0)) say('a seek kind needs hears: the seconds it looks at a noise');
   if (def.gait && !(real(def.gait.go) && real(def.gait.pause))) say('its gait needs go and pause above 0');
   if (def.rides && def.habit !== 'sweep') say('only a sweeper rides its eye');
+  if (def.passAt && def.habit !== 'sweep') say('only a sweeper has a pass to start (passAt)');
   if (def.fears?.length && !def.beatenBy.lure) say('it fears something, so it needs a lure outcome');
   if (def.glance) for (const m of checkGlance(def.glance)) say(m);
   if (def.glance && def.habit !== 'sweep') say('only a sweeper glances between its passes');
@@ -456,9 +457,11 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         // the eye waits at the end its next pass starts from: the end of its stretch FARTHER from him, so its eye crosses TOWARD him and
         // a player who walks on meets it (ENG-WATCH, R-165.267: from the near end, behind him, it crossed at 320 px/s after a 2 s warn
         // and never reached a walker before its stretch ended: 0 hearts at 8 of 1-7's 9 eagles, eagleProbe.ts). The pass is called
-        // when he is in its stretch and its head is away (a glance runs to its end first)
-        const end = Math.abs(hero.x - s.minX) >= Math.abs(hero.x - s.maxX) ? s.minX : s.maxX;
-        s.facing = end === s.minX ? 1 : -1;
+        // when he is in its stretch and its head is away (a glance runs to its end first). By data (passAt 'far', the eagle's); a kind
+        // without it starts each pass from the end its last one finished at, there and back (the caiman on its river's clock)
+        const far = def.passAt === 'far';
+        const end = far ? (Math.abs(hero.x - s.minX) >= Math.abs(hero.x - s.maxX) ? s.minX : s.maxX) : s.facing > 0 ? s.minX : s.maxX;
+        if (far) s.facing = end === s.minX ? 1 : -1;
         s.eyeX = toward(s.eyeX, end, def.speed.rest * 2 * dt);
         if (rides && home) s.x = s.eyeX;
         const headAway = stepGlance(def, s, sc, ev, home);

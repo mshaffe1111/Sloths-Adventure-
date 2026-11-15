@@ -1,0 +1,19 @@
+# ENG-WATCH2 plants (each: the rule removed in src/game/predators/core.ts, then the kit tests run; stamped 10:59 AM ET 11-15)
+## A. F1 reverted (const far = false: every sweeper takes its ends in turn)
+not ok 1 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+not ok 6 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+not ok 7 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first
+not ok 25 - sweep: no pass while he is outside its stretch; inside, the eye shows at the edge for the warn (longer on Easy) before it moves
+not ok 27 - sweep: in cover and still, he is not seen: the pass goes over; two empty passes and it gives up (stillness beats it)
+not ok 41 - eagle, the tell and the attack: a screech, two seconds of shadow at the edge, the sweep; seen, it dives 0.75 s later and it lands
+# pass 44
+# fail 6
+## B. the data gate removed (const far = true: F1 for every sweeper, the caiman too)
+not ok 16 - the food chain past World 1: a tayra whose line ends at the caiman is chased off; a night harpy under the owl likewise
+not ok 25 - sweep: no pass while he is outside its stretch; inside, the eye shows at the edge for the warn (longer on Easy) before it moves
+not ok 27 - sweep: in cover and still, he is not seen: the pass goes over; two empty passes and it gives up (stillness beats it)
+# pass 47
+# fail 3
+## With the change: predatorHabits, predatorWorld1, predatorCasts, eagleGlance, eagleKit
+# pass 56
+# fail 0

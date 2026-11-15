@@ -59,6 +59,12 @@ export interface PredatorDef {
   wakeAt?: number;
   /** a sweeper: seconds its eye shows at the end of its stretch before it starts across (the screech, the shadow at the edge) */
   warn?: number;
+  /**
+   * a sweeper: where each pass starts. 'far': the end of its stretch FARTHER from him, so its eye crosses toward him and a player who
+   * walks on meets it (the eagle; ENG-WATCH F1, R-165.267). Absent: its two ends in turn, there and back (the caiman rides its river on
+   * a clock; the lead's ruling 11-15: F1 is gated by data, never by kind)
+   */
+  passAt?: 'far';
   /** px/s at rest (its beat, or its eye for a sweeper) and on the hunt. Hunt 0: it never comes after him */
   speed: { rest: number; hunt: number };
   /** it gives ground at this speed while he is in sight and out of reach (the shy snake), until it has nowhere left to go */
