@@ -552,16 +552,16 @@ tools/testlink/dist/assets/soldier-anim-zbPfBJG8.webp                           
 tools/testlink/dist/assets/prowler-anim-CVcK7K1q.webp                                   2,112.73 kB
 tools/testlink/dist/assets/queen-anim-D6TNLlNe.webp                                     2,814.61 kB
 tools/testlink/dist/assets/index-BgxLrQT9.css                                             404.95 kB │ gzip:   166.36 kB
-tools/testlink/dist/assets/esm-6E3zr0QS.js                                                  0.34 kB │ gzip:     0.25 kB
-tools/testlink/dist/assets/esm-BvLzXNZN.js                                                  0.35 kB │ gzip:     0.25 kB
+tools/testlink/dist/assets/esm-u0mtu6NU.js                                                  0.34 kB │ gzip:     0.25 kB
+tools/testlink/dist/assets/esm-ce-QVYcI.js                                                  0.35 kB │ gzip:     0.25 kB
 tools/testlink/dist/assets/web-CLOsWYKj.js                                                  0.37 kB │ gzip:     0.25 kB
 tools/testlink/dist/assets/assetFetch-DUkm_4XZ.js                                           0.54 kB │ gzip:     0.37 kB
 tools/testlink/dist/assets/web-QbBb4YSI.js                                                  0.85 kB │ gzip:     0.40 kB
-tools/testlink/dist/assets/esm-BqVqM30l.js                                                  1.37 kB │ gzip:     0.72 kB
-tools/testlink/dist/assets/sfxRecLoader-Co3IHKYc.js                                         2.97 kB │ gzip:     1.40 kB
-tools/testlink/dist/assets/HelpOffer-CFiX-M56.js                                            4.21 kB │ gzip:     1.94 kB
+tools/testlink/dist/assets/esm-CkgBSOmG.js                                                  1.37 kB │ gzip:     0.72 kB
+tools/testlink/dist/assets/sfxRecLoader-4-To3Lif.js                                         2.97 kB │ gzip:     1.40 kB
+tools/testlink/dist/assets/HelpOffer-DwqW8r5a.js                                            4.21 kB │ gzip:     1.94 kB
 tools/testlink/dist/assets/dist-DjKWiKsS.js                                                 7.78 kB │ gzip:     3.10 kB
-tools/testlink/dist/assets/web-D4wWe8Pn.js                                                  8.49 kB │ gzip:     2.84 kB
+tools/testlink/dist/assets/web-DwgnyxWp.js                                                  8.49 kB │ gzip:     2.84 kB
 tools/testlink/dist/assets/seeds-2-2-D8yzFE6Q.js                                           11.33 kB │ gzip:     1.62 kB
 tools/testlink/dist/assets/seeds-1-8-6qbcp-eu.js                                           13.13 kB │ gzip:     1.83 kB
 tools/testlink/dist/assets/seeds-1-2-BdFh7BW6.js                                           13.73 kB │ gzip:     2.49 kB
@@ -583,11 +583,11 @@ tools/testlink/dist/assets/w10-h2YVck7k.js                                      
 tools/testlink/dist/assets/w3-DYrai5tJ.js                                                 210.75 kB │ gzip:    31.12 kB
 tools/testlink/dist/assets/w8-D-epYawB.js                                                 241.76 kB │ gzip:    35.39 kB
 tools/testlink/dist/assets/w6-D3Ete69x.js                                                 250.71 kB │ gzip:    37.88 kB
-tools/testlink/dist/assets/voice-DUgj0HOW.js                                              301.95 kB │ gzip:   184.72 kB
+tools/testlink/dist/assets/voice-DCMbnyVX.js                                              301.95 kB │ gzip:   184.72 kB
 tools/testlink/dist/assets/sampleLoader-C5j9pZyz.js                                       329.44 kB │ gzip:   153.23 kB
 tools/testlink/dist/assets/cast-D4U9JcNo.js                                             1,784.66 kB │ gzip:   102.17 kB
-tools/testlink/dist/assets/orchLoader-3a9VGymv.js                                       4,342.22 kB │ gzip: 2,859.18 kB
-tools/testlink/dist/assets/index-Ce0CR4pk.js                                           14,188.52 kB │ gzip: 8,774.79 kB
+tools/testlink/dist/assets/orchLoader-CvBklYGC.js                                       4,342.22 kB │ gzip: 2,859.18 kB
+tools/testlink/dist/assets/index-Cf9t2fI4.js                                           14,188.52 kB │ gzip: 8,774.76 kB
 
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
@@ -596,15 +596,7 @@ tools/testlink/dist/assets/index-Ce0CR4pk.js                                    
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/game/playRecorder.ts is dynamically imported by src/game/testlink1_1.ts but also statically imported by src/App.tsx, src/components/ControlTestGate.tsx, src/components/ErrorBoundary.tsx, src/components/TouchController.tsx, src/components/blinkWatch.ts, ..., dynamic import will not move module into another chunk.
 
-✓ built in 5.55s
-[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 3.7s of this 5.5s build (67%).
-4 callbacks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
-  - plugin vite:asset load (866 calls)
-  - plugin vite:asset-import-meta-url transform (134 calls)
-  - plugin vite:css transform (10 calls)
-  … and 1 more
-See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
-
+✓ built in 4.88s
 test link: 472 files (limit 480)
 test link: no dist-published (a fresh machine): the map lists every file and removes none; add every live path not in dist as null first (Artifact list, scope "files"), and run build.py --published once it is published
 471 new/changed, 0 removed against the last publish -> tools/testlink/filesmap.json
