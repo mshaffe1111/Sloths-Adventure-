@@ -155,7 +155,7 @@ const stakesOf = (st: any, c: Cost, x: number): number =>
  * only its foot flies is as narrow as it really is); onto the next liana of a chain: levelCheck chainLines (physics chainWindow, B at its
  * own phase). The same numbers gen2 lays every liana by (pipeline lianaRelease, chainRelease) and the level check passes it on (6 lines,
  * 200 ms, is its floor), on the setting's own swing (settingDials withSetting: Easy's slower swing and wider sweet spot). 0: the check
- * flies no press there (the route linked it by an added link): the caller says so and takes the setting's floor (gen2 LIANA.window).
+ * flies no press there (the route linked it by an added link): the caller says so and keeps the meter's earlier constant.
  */
 export function releaseWindow(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting, dbl: boolean): Array<{ w: number; plat?: any; vine?: any }> {
   const dir: 1 | -1 = to.x >= v.x ? 1 : -1;
@@ -185,7 +185,7 @@ export const STEP_BELOW = 60;
 /**
  * One release as a timed press (windowBits: one swing's period against its window), the easiest way he has: the let-go alone, or with
  * the double (its window with the double's flights, plus the second press, OTHER_BITS.second, as moveOf charges a double), where the
- * stage allows the double (levelCheck doubleAllowed). A window the check cannot fly takes the setting's floor (gen2 LIANA.window), named.
+ * stage allows the double (levelCheck doubleAllowed). A window the check cannot fly keeps OTHER_BITS.swing, named NOT FLOWN.
  */
 export function releaseBits(st: any, v: any, to: { x: number; plat?: any; vine?: any }, setting: Setting): { bits: number; note: string; plat?: any } {
   const period = withSetting(setting, () => vinePeriod(v));
@@ -201,7 +201,9 @@ export function releaseBits(st: any, v: any, to: { x: number; plat?: any; vine?:
   take(false);
   if (doubleAllowed(st.config ?? { worldIndex: 1, miniIndex: 1 })) take(true);
   ways.sort((p, q) => p.bits - q.bits);
-  const best = ways[0] ?? { bits: windowBits(period, LIANA.window[setting]), w: LIANA.window[setting], how: ', NOT FLOWN: the floor' };
+  // (no press the engine flies lands him on the route's way (a hand-built link the check does not model): not measured, so it keeps the
+  //  meter's earlier constant, named; never the hardest the game allows (the floor) and never nothing)
+  const best = ways[0] ?? { bits: OTHER_BITS.swing as number, w: 0.4, how: ', NOT FLOWN: the old constant (0.4 s of 1.6 s)' };
   return { bits: best.bits, plat: best.plat, note: `release ${(best.w * 1000).toFixed(0)} ms of ${period.toFixed(2)} s${best.how}${v.grip ? ` hold ${v.grip}` : ''}` };
 }
 /** the lianas of a chain from `a` to the route's next stop at `toX` (a liana there, or the perch it lands on), in order: each the nearest
@@ -295,8 +297,10 @@ export function swingChallenges(st: any, route: Route, beats: readonly Beat[], s
         const lo = Math.min(edge, v.x), hi = Math.max(edge, v.x), low = s.from.y;
         const pit = hi - lo > 30 && !live.some((q: any) => q !== s.from && q.x < hi && q.x + q.width > lo && q.y > low && q.y < low + 220);
         const cost = costAt(st, softPits, lo, hi, pit ? 'fall' : 'retry');
-        out.push({ t: b?.t ?? base, x: s.x0, ys: [s.y0, s.y0], kind: 'catch', bits: w > 0 ? windowBits(period, w) : windowBits(period, SIM_DTS[0]), cost, stakes: stakesOf(st, cost, s.x0), threat: false,
-          note: `catch liana ${v.id} off the bank: ${w > 0 ? `${(w * 1000).toFixed(0)} ms of ${period.toFixed(2)} s` : 'NO running jump catches it'}` });
+        // (a catch no running jump off this bank makes (the route's added link, a hand-built piece the check does not model) is NOT
+        //  MEASURED: listed with no bits, never priced as the hardest)
+        out.push({ t: b?.t ?? base, x: s.x0, ys: [s.y0, s.y0], kind: 'catch', bits: w > 0 ? windowBits(period, w) : 0, cost, stakes: stakesOf(st, cost, s.x0), threat: false,
+          note: `catch liana ${v.id} off the bank: ${w > 0 ? `${(w * 1000).toFixed(0)} ms of ${period.toFixed(2)} s` : 'NOT MEASURED (no running jump off this bank catches it)'}` });
       }
     }
     if (s.kind === 'swing' && !(s.from && !s.plat)) {

@@ -111,11 +111,11 @@ test('a release is a timed press in the window the engine flies for that perch: 
   const creak = { ...perch, id: 7, type: 'fragile' };
   const rc = releaseBits(STAGE1([v], [P(1, 600, 820, 300), creak]), v, { x: 1300, plat: creak }, 'normal');
   assert.ok(Math.abs(rc.bits - r.bits - 1) < 1e-9, `crumble +1: ${rc.bits} vs ${r.bits}`);
-  // (a perch no press reaches: the setting's floor, said so)
+  // (a perch no press reaches: not measured, said so, and it keeps the earlier constant: never the hardest the game allows, never nothing)
   const gone = P(8, 2600, 820, 200);
   const rf = releaseBits(STAGE1([v], [gone]), v, { x: 2600, plat: gone }, 'normal');
   assert.match(rf.note, /NOT FLOWN/);
-  assert.equal(rf.bits, windowBits(2.85, 0.167));
+  assert.equal(rf.bits, OTHER_BITS.swing);
 });
 
 test("a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a false one", () => {
@@ -131,6 +131,12 @@ test('the catch off a bank: a liana every running jump catches is the whole swin
   const w = catchWindow(bank, near, 1, 'normal');
   assert.ok(w > 0 && w <= 2.85 + 1e-9, `window ${w}`);
   assert.equal(catchWindow(bank, LIANA(2, 2400), 1, 'normal'), 0, 'out of any jump');
+  // (and on a route, a catch no jump makes is listed NOT MEASURED with no bits, never priced as the hardest)
+  const far = LIANA(2, 2400);
+  const grab: Route = { ...ONE, segs: [ONE.segs[0], seg({ kind: 'swing', x0: 300, y0: 820, x1: 2400, y1: 800, from: bank as any })] };
+  const c = swingChallenges(STAGE1([far], [bank]), grab, [], false).find((q) => q.kind === 'catch')!;
+  assert.equal(c.bits, 0);
+  assert.match(c.note, /NOT MEASURED/);
   // (Easy's longer grab, TIMED.grabX 76 over 60: of the same swing, Easy's catch is never the narrower share)
   const ez = LIANA(3, 1040);
   assert.ok(catchWindow(bank, ez, 1, 'easy') / 2.85 >= catchWindow(bank, ez, 1, 'normal') / 2.85 - 1e-9);
