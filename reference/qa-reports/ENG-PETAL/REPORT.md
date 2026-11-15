@@ -16,6 +16,11 @@ Petals held / the door, Normal, castBots layouts 1-10 (petals-held-*.txt; the do
 | 1-6 | 104-122 (112.3) | 105 of 120 | 21-24 (23.1) | 20 of 23 |
 | 1-7 | 95-108 (102.8) | 1 (its goal is not petals) | 37 every layout | 1 |
 
+**Petals per upright screen** (the lead's 10:21 PM ruling; a 440 px wide view, cameraFollow.test VIEWS.upright; Normal layouts 1-5;
+reference/qa-reports/ENG-PETAL/screens.mts): **1-6 reads EMPTY**: 0.22 a screen, 85% of upright screens with no petal (before: 1.03,
+33%). 1-5: 1.04, 48% (before 1.42, 21%). 1-7: 0.44, 66% (before 1.23, 25%). The fix is more sockets ON the walked pieces (the lead's
+ruling), never a petal moved past a trap.
+
 castBots 1-6 seeds 1-40 (PASS = shrine reached with the goal met; files castBots-1-6-*.txt):
 | bot / setting | before cecbb948 | 7e9fe4d8 (moves to next piece) | f4896466 (own piece; drop) | ddbcd55c (+ the wall; FINAL) |
 |---|---|---|---|---|
@@ -78,7 +83,7 @@ None shot: the bots are not green (level.md rule 29: no stills of a stage whose 
 or 15 px under the limb's top, so on 1-6 the limb's near 24 px no longer gives way. It has not been looked at on a phone.
 
 ## Pushback
-- **The petal count.** Honouring "every run walks it" on 1-6, a stage of short pieces, drops most of its sockets' petals: about 112
+- **The petal count** (ACCEPTED for tonight by the lead, 10:21 PM; the morning line is the per-screen measure above). Honouring "every run walks it" on 1-6, a stage of short pieces, drops most of its sockets' petals: about 112
   held a layout before, about 23 now (the lay's 58-60, less the pieces a fluid run flies over or lands past). A door of 87.5% of 23 lets
   him miss 2-3. Moving those petals to the next walked piece kept more (about 36) but broke 1-5's lists on every seed (trap.hidden: a
   moved petal stood in front of a section's trap) and still sealed 7/40. The count and where 1-6's petals should stand is a Designer /
@@ -91,6 +96,12 @@ or 15 px under the limb's top, so on 1-6 the limb's near 24 px no longer gives w
 - R-165.265's wall at 1-6's pits: the pits are exactly a double jump + 40 deep, so a face he cannot climb reaches the lip; a post 10 px
   under the lip would leave 4.5 px of margin over the hoist. Deepening joined pits by 15 px would let the post hide under the limb:
   a Designer call.
+
+## ENGINE-WORTHY (for the bot member)
+- tools/inspect/firsttimer.ts: the middle and child bots' way out of 1-6's gorge pit (layout 34: floor 43613..43916 y 1072, its stair
+  at the take-off side, rises of 68 px, to s1-1): they stand at the far wall and jump at it 8 times, never walking back to the stair
+  (ENG-16I rescues-9380bc5d.txt; my castBots ddbcd55c s34 middle N and s2 child). The pit's way back is proved (pitJoinWall.test
+  "climbs back", the rescue layouts both settings): the bot's stair skill, not the stage.
 
 ## Suggestions
 - ENGINE packet: model the liana let-go as the bots and testers fly it (the release at the swing's forward speed; ENG-16I's
@@ -115,8 +126,9 @@ or 15 px under the limb's top, so on 1-6 the limb's near 24 px no longer gives w
 
 ## EXACT NEXT STEP
 In order (engine tier unless named):
-1. **Lead ruling: 1-6's petal count** (about 23 a layout now; the lay's sockets give about 58, the walked path drops the ones no fluid
-   run walks). Either the Designer re-socket 1-6's pickups on pieces every run walks (banks, the wide rests), or accept the count.
+1. **1-6 reads empty** (0.22 petals an upright screen, 85% of screens empty; the count was accepted for tonight, the lead 10:21 PM):
+   more pickup sockets ON the pieces every run walks (banks, the wide rests), a section-data packet for the 1-6 builder / Designer,
+   then castBots again (more petals also give the door its margin back).
 2. **Model the liana let-go and the double in the arrival** (walkedSpan.ts lianaTouchdown and the plain-jump arrival): 13 of the 22
    petals the expert left are set-downs past the modelled span after hang-low, creaky-landing:b2 and false-liana
    (trace-expert-normal-f4896466.txt); plant it on those pieces; then `npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-40
