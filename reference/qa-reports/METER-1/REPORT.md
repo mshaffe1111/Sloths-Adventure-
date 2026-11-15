@@ -16,7 +16,7 @@ asset. Started 8:28 PM ET 11-14; times below from `TZ=America/New_York date`. Sc
 | 1-6 (BUILD-16) | 6.5 | 3.3 (3-3.4) | **5.4 (4.7-6)** | 1.8 (1.8-1.8) | **3.6 (3.5-3.6)** | 0.67 |
 | 1-7 | 5.5 | 2.3 (2-2.6) | **2.2 (1.9-2.7)** | 1.5 (1.4-1.6) | **1.2 (1.1-1.2)** | 0.55 |
 | 1-8 (BUILD-18) | 7.5 | 17.4 (17.3-17.8) | **6.8 (6.3-7.2)** | 14.7 (14.4-15) | **3.3 (3.2-3.3)** | 0.49 |
-| old hand-built 1-6 (t-build-18; BUILD-16 replaces it) | - | 6.4 (5.8-9.7) | 10.4 (9.4-11.5) | 5.5 (4.7-6.5) | 7 (6.8-7.8) | 0.67 |
+| old hand-built 1-6 (t-build-18; BUILD-16 replaces it) | - | 6.4 (5.8-9.7) | 6.9 (6.5-9.7) | 5.5 (4.7-6.5) | 5.7 (4.7-6.5) | 0.83 |
 | old hand-built 1-8 (t-build-16; BUILD-18 replaces it) | - | 28.2 (27.5-29.7) | 12.2 (11.7-12.2) | 25.5 (25.3-25.5) | 8 (7.9-8.1) | 0.66 |
 SCALE 0.28194 before and after (1 meter point = 3.5 raw points a minute): 1-1 has none of the new asks, so DIFFICULTY.md's own method
 (1-1 anchors SCALE) moves nothing; the testers' tier calibration exists for 1-1 only (BOTS.md), so there is no other anchor to take.
@@ -187,7 +187,7 @@ its far end (off the stretch is out of the eye).
 - **1-2 reads 0.9 against its 2.5** (before and after; DIFFICULTY.md §3 had it at 2.0 on 11-12): not this packet's change; not traced.
 - **Easy over 0.6 x Normal**: 1-1 0.65, 1-4 0.74, 1-6 0.67 (DIFFICULTY.md G2's 0.6).
 - **1-8 Normal on t-build-18@e9dc28bf built on no layout**; on 3cc12409 it builds on 4 (the numbers above).
-- **The old hand-built 1-6 reads 10.4** with the true windows (it is replaced by BUILD-16's); 12 of its catches are NOT MEASURED.
+- **The old hand-built 1-6 reads 6.9 / 5.7** (it is replaced by BUILD-16's); 12 of its catches are NOT MEASURED.
 - **Spread** (World 1-10, one layout each, Normal, on t-build-16: sweep-before.txt / sweep-after.txt / sweep-diff.txt): SWEEP_TABLE
 
 ## 6. Method used, lessons applied, method update
