@@ -2,3 +2,5 @@ start 12:46 PM head 0f450f06e
 exit 0
 end 12:51 PM
 == seedlist 1-4
+seedlist 1-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-4: PASS (100 seeds, each clean on both settings)
