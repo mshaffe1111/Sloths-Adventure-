@@ -1802,39 +1802,33 @@ export function joinPitFloors(platforms: Platform[], pitFloors: readonly Platfor
   const floors = new Set(pitFloors);
   const gone: Platform[] = [];
   const walls: Array<{ x: number; y: number; w: number; h: number; mid: number }> = [];
-  for (const first of [...pitFloors].sort((a, b) => a.x - b.x)) {
-    if (!floors.has(first)) continue;
-    let fp = first;
+  // (left to right, each floor's far side, then its near side. A floor taken into the one before it lies inside that floor, so its own
+  // edges are covered: it finds no hole and lays nothing; a chain of joins closes from each later floor's near side)
+  for (const fp of [...pitFloors].sort((a, b) => a.x - b.x)) {
     for (const side of [1, -1] as const) {
-      // (a floor that takes in the one past it has a new far end: look again from there)
-      for (let again = true; again;) {
-        again = false;
-        const j = pitHoleFill(fp, side, platforms, floors, hop);
-        if (!j) break;
-        if (j.deepen) {
-          if (side > 0) fp.width = R(j.x + j.w - fp.x);
-          else { fp.width = R(fp.x + fp.width - j.x); fp.x = R(j.x); }
-          j.deepen.height = Math.max(j.deepen.height, j.y + bankH - j.deepen.y);
-          break;
-        }
-        const other = j.floor!;
-        const [l, r] = side > 0 ? [fp, other] : [other, fp];
-        const wall = pitJoinWall(j, lipAt(j.x));
-        if (wall) walls.push({ ...wall, mid: j.x + j.w / 2 });
-        if (Math.abs(l.y - r.y) < 1) {
-          l.width = R(r.x + r.width - l.x);
-          floors.delete(r);
-          platforms.splice(platforms.indexOf(r), 1);
-          gone.push(r);
-          fp = l;
-          again = side > 0;
-          continue;
-        }
-        const [deep, shallow] = l.y > r.y ? [l, r] : [r, l];
-        if (deep === l) l.width = R(r.x - l.x);
-        else { r.width = R(r.x + r.width - (l.x + l.width)); r.x = R(l.x + l.width); }
-        shallow.height = Math.max(shallow.height, deep.y + bankH - shallow.y);
+      const j = pitHoleFill(fp, side, platforms, floors, hop);
+      if (!j) continue;
+      if (j.deepen) {
+        if (side > 0) fp.width = R(j.x + j.w - fp.x);
+        else { fp.width = R(fp.x + fp.width - j.x); fp.x = R(j.x); }
+        j.deepen.height = Math.max(j.deepen.height, j.y + bankH - j.deepen.y);
+        continue;
       }
+      const other = j.floor!;
+      const [l, r] = side > 0 ? [fp, other] : [other, fp];
+      const wall = pitJoinWall(j, lipAt(j.x));
+      if (wall) walls.push({ ...wall, mid: j.x + j.w / 2 });
+      if (Math.abs(l.y - r.y) < 1) {
+        l.width = R(r.x + r.width - l.x);
+        floors.delete(r);
+        platforms.splice(platforms.indexOf(r), 1);
+        gone.push(r);
+        continue;
+      }
+      const [deep, shallow] = l.y > r.y ? [l, r] : [r, l];
+      if (deep === l) l.width = R(r.x - l.x);
+      else { r.width = R(r.x + r.width - (l.x + l.width)); r.x = R(l.x + l.width); }
+      shallow.height = Math.max(shallow.height, deep.y + bankH - shallow.y);
     }
   }
   return { gone, walls };
