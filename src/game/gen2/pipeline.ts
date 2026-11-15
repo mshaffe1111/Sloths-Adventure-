@@ -3406,8 +3406,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    // (GraphBrief.petals 'low': no arc over any gap)
-    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low') continue;
+    // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few') continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;

@@ -139,7 +139,8 @@ export function w2Brief(stage: string): GraphBrief {
   const a = W2_ARCS[stage];
   return {
     ends: 'finale', trend: 'level', branching: 'none', teaches: [a.lesson], deal: { water: 50, ground: 50 }, dealExact: true, tags: true,
-    ...(a.archetype === 'sprint' ? { petals: 'low' as const } : {}),
+    // (a sprint's petals are FEW, the keeper's number for 2-1 (R-165.263): 'few' holds all 'low' does until the fill honours its count)
+    ...(a.archetype === 'sprint' ? { petals: 'few' as const } : {}),
   };
 }
 

@@ -668,8 +668,11 @@ export interface GraphBrief {
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
   /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
-   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
-  petals?: 'low';
+   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already).
+   *  'few' (R-165.263, the story keeper's number for 2-1: Meeca spent hers on the king's crown): FEWER than a low stage, never more:
+   *  everything 'low' holds, and the game's fill honours it once it is built on ENG-PETAL's petalPass (the lead's ruling Q1 A, 11:36 AM
+   *  ET 11-15: data now, one model). 'normal' (or unset): the stage's petals as the lay and the fill make them */
+  petals?: 'low' | 'few' | 'normal';
   /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
    *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
    *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */
