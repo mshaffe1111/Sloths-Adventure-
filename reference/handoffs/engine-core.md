@@ -1,5 +1,6 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten for INT-10b (11-15, t-int-10b): section 0zh (joined pit floors as one piece, the merges, 1-4's column petals, 8-3's pins, the swing into a bank).
 Rewritten for ENG-WATCH2 (11-15, t-eng-watch2): section 0ze (the watcher's glance, passAt, the re-check, the dials and the rulers).
 Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@0fc0835a, passed,
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
@@ -14,6 +15,27 @@ proven plan; Play is never blocked).
 Rewritten for METER-1 (11-14, t-meter-1): section 0zf (the meter reads what a stage asks from the game's own numbers). Rewritten for ENG-CL (11-14, t-eng-cl): section 0CL (the quiet line as played, the judge's laid copy, roll sockets, the tip and still-fork lays, runnerLip, Easy's bump). Rewritten for ENG-DR (11-14, t-eng-dr): section 0DR (the list runs each row's own finish; any inventory piece as dressing). Rewritten for TOOLS-2 (11-14, t-tools-2): section 0zb (one helper for the setting's dials; the test link's cap and published copy). Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zh. INT-10b (t-int-10b, 11-15, link #4: 1-6 and 1-7's glancing eagle): what the next engineer must know
+- **Head**: t-int-10 9d8c9fda + the join fix + ENG-LOOK d2bc1d89/c738e52f cherry-picked (the hand-built 1-8 deleted, the 7 chase tests on a
+  laid chase) + t-eng-watch2 8fbaaacf merged (4 additive conflicts, both sides). Gates, bots, stills: reference/qa-reports/INT-10b/REPORT.md.
+- **Joined soft-pit floors are ONE piece** (pipeline.ts `joinPitFloors`, called where pitHoleFill's fills were laid): a floor reaching a
+  bank is lengthened to it (the bank deepened); two floors at one height a perch apart become one (the later one leaves `platforms` and its
+  section's seam); a step joins at the deeper floor, the shallower one deepened to its foot (INT-9's bank rule). No floor end is left in a
+  run, so no stair stands flush on one (gen2Pits.test's slot rule, now on each stage's first two LISTED seeds: the lead's ruling A).
+  Moves 1-1, 1-6, 1-7, 1-8 geometry (every W1 list still --check PASS) and 8-3 (re-pinned with the NOJOIN revert proof, p83.mts).
+- **Pass budget + glance**: a sweeper whose `passesLeft` is 0 never re-checks or glances (core.ts endPass/stepGlance): the still fork's
+  "no second look". The still fork's eagle DOES glance before its pass (the lead 12:38: one rule for every eagle). Since watch2 the eagle's
+  eye always crosses toward him (EAGLE.passAt 'far'); the still fork's `facing = -1` is now redundant.
+- **1-4 column petals**: a climb trail under a fig gate starts inside his body at the shut lid's head stop (vineField.ts `shutLidFeet`,
+  fieldPlay's own `shutBoughOver` shared); `pairPetals` moves a petal within PICKUP_REACH (38 px) of a field line. 
+- **ENGINE-WORTHY, not done (the vine-feel packet, R-165.271)**: (1) a liana's far swing carries the hanging hero into a bank's face and a
+  let-go there falls THROUGH the bank (1-6 child N s23, x 32697 y 765 vs the bank top 726; swingSetup clips only against neighbours;
+  swingInto.mts finds it on 40/40 1-6 layouts); (2) the tree_climb grab takes the FIRST vine in reach in list order, not the nearest
+  (engine.ts ~2086): in a 55 px vine field he snaps to a neighbour. fieldPetals' harness sets the first hand explicitly until it is fixed.
+- **Known reds not ours**: 1-8 child N s7/9/13 rescues ("fell back down 8 times", chase hits), identical on t-eng-dr (BUILD-18's).
+- **Traps**: a lockall/castBots run spawns workers that compile whatever is on disk: never edit or merge in a tree they run in (do merges in
+  a side worktree, then fast-forward). Faking a fig gate open by `cluster.gone = true` leaves the field half-open (other columns break).
 
 ## 0zg. INT-10 (t-int-10, 11-15, link #4 for 1-6): what the next engineer must know
 - **Head**: t-eng-petal 3802db95 + t-eng-dr c3c7e658 (ENG-DR + BUILD-18's 1-8; 12 conflicts, each in 70048a22's message) + t-meter-1
@@ -37,7 +59,7 @@ proven plan; Play is never blocked).
 - **Arc petals are a bonus** (Collectible.arc; goals.ts goalCounts leaves them out, the lead's ruling 11:49 AM): counted, the child tier
   sealed 40/40 Normal doors (it flies under the apex). castBots 1-6 on it: 0 sealed, child N 38/40 (s23 risers rescue from the t-eng-dr
   merge, s34 gorge stair skill).
-- **Open (INT-10b, REPORT's EXACT NEXT STEP)**: gen2Pits.test:61 red on every 1-6 layout (joined soft-pit floors: the later stair flush on
+- **Closed by INT-10b (0zh) except the liana let-go + double arrival model.** Was open: gen2Pits.test:61 red on every 1-6 layout (joined soft-pit floors: the later stair flush on
   the earlier floor's end; root: lay joined floors as one piece); the whole suite UNRUN on this head (stopped by the lead); castBots 1-4
   UNRUN; 8-3's fills not re-pinned; the liana let-go + double arrival (walkedSpan.ts lianaTouchdown) NOT modelled.
 
