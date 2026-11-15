@@ -76,7 +76,7 @@ export const PADS_22 = {
   first22: { ...W2_PADS.first },
   /** beat 2: three small pads one tap apart, a flower riding each: keep moving (`Pw1>:#soft`, both settings) */
   hop22: { ...W2_PADS.hop },
-  /** beat 4 (X), STOPGAP (BUILD-22, the lead told 4:46 PM ET; level.md rule 26): weight pads out to a far stone and its flower, then on
+  /** beat 4 (X), STOPGAP (BUILD-22, approved by the lead 4:25 PM ET; level.md rule 26): weight pads out to a far stone and its flower, then on
    *  over pads to the bank. NOT the design's there-and-back (that needs the spur pond); deleted when the spur lands, before 2-2 goes on */
   stopgapX22: { by: 'weight', pads: ['small', 'small', 'stone', 'small', 'small'], gap: 70, safe: true, petals: [] },
   /** beat 6, the twist: the pond breathes, two pads at a time with a stone between (up 1.8 s, shiver 0.6 s, under 0.6 s) */
