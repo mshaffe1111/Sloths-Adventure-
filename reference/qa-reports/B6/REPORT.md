@@ -1,4 +1,4 @@
-# B6 REPORT (ENG-B6, t-eng-b6 = t-int-9@1c7f6b95 + t-eng-b5@c0599609, then 1-8's last engine pieces). Code head: see Gates. Written 7:20 PM ET 11-14.
+# B6 REPORT (ENG-B6, t-eng-b6 = t-int-9@1c7f6b95 + t-eng-b5@c0599609, then 1-8's last engine pieces). Code head 75fd1fae. Final 8:26 PM ET 11-14.
 **Step 1, merge, DONE 6:49 PM (lead ACCEPTED 6:53):** merge 3261dd4b. t-int-9's history roots in an ORPHAN commit (f1b72ec7 = HOOKS 994ea4e7 +
 ENG-S1..S5 squashed, no parent): git saw 2 merge bases, 52 conflicts. All 179 B5-changed files re-merged against the TRUE base 994ea4e7
 (`git merge-file`): 173 equal that clean 3-way exactly (46 false conflicts = files B5 never touched); the 6 real ones = the packet's six,
@@ -77,7 +77,11 @@ seam, log texture against World 1's grass lip, fork sideways passOver f226 x~340
 dozen rectangular 222 px tiles tumbling (tip slow sideways f145 shows the tiles): debris grouped by run of sections, drawn from the sheet's
 chaseDebris / brokenL/R frames at the group's size; the tip's whole fall the same way. Proof: stills at the joins and f145-style frames
 upright and sideways; drawcheck with a fall on screen (E3).
-**Gates on 1a1303ff (LAWS 5, src changed):** PENDING (runner reference/qa-reports/B6/final/).
+**Gates on the code head 75fd1fae (LAWS 5, src changed; every CLAUDE.md check and CI step once, frozen worktree, B6/final/RESULTS.txt,
+7:31-8:26 PM ET):** ALL 0. tsc, build (BASE_PATH), chunkcheck, artcheck, knowncheck, generality, roadmapcheck; WHOLE suite 3,593 tests /
+3,591 pass / 0 fail / 2 todo (the old boulder-wall pair); seedlists (every list --check), registrycheck, engine tool tests 122 (121 pass,
+1 todo = B4's child), tipwalk, modelgate, tierBots 7/7; lock 102/102 UNCHANGED vs t-int-9@1c7f6b95; drawcheck PASS; clipcheck PASS (83
+known); kbdcheck PASS; buildcheck PASS. Later commits (1283439d, a4e1ff8f and this one) are docs only.
 **Lessons applied:** D19 (decision = act), D23/D36 (frozen worktrees), D30 (times from date), D40, D43 (no stage id), D55 (context %),
 D57 (queue at every push), D63/D69, D66, D67, "prove a change is needed; revert what isn't", law 22 (no test loosened).
 **Turnover:** reference/handoffs/engine-core.md section 0B6 + 0v's built line (this commit).

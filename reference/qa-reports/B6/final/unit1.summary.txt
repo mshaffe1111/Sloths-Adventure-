@@ -1,0 +1,5 @@
+not ok 938 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below it, and walking there pushes it: the pool's log is never reached (the boulder fixer)
+# tests 1073
+# pass 1072
+# fail 0
+# todo 1
