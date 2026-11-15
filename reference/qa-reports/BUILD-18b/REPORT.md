@@ -56,11 +56,14 @@ refused (it needs a force push), so it stands.
 rescued", at the tip: the accepted miss). Easy: every tier 40/40, 0 hits. No run under 120 s. Medians: kid 141 s, adult 141 s,
 child 330 s, middle 197 s, expert 167 s (Easy 146/144/238/177).
 
-**Gates on f321a1f04 (frozen worktree):**
-- PASS: tsc; build (BASE_PATH); chunkcheck; artcheck; kbdcheck; buildcheck (1-1 p95 148 ms); seedlist 1-1 --check (162) and 1-8 --check
+**Gates (frozen worktree; heads named: f321a1f04 holds the lines, a6104e2da adds the hint expiry and the book test):**
+- PASS on a6104e2da: tsc, knowncheck, generality, roadmap, seedlist 1-8 --check (100). PASS on f321a1f04: build (BASE_PATH); chunkcheck; artcheck; kbdcheck; buildcheck (1-1 p95 148 ms); seedlist 1-1 --check (162) and 1-8 --check
   (100); engine tool tests 37/37; tierBots 7/7; knowncheck; generality; roadmap (after unshallowing the clone).
-- drawcheck __DRAW__
-- clipcheck __CLIP__
+- drawcheck (a6104e2da) **FAIL, 2 breaches, both the one BUILD-18 and ENG-DR reported, not mine:** 1-8 sideways at x 24036: gradients
+  6.88 > 2 (groundPaint.ts:197 depthBand, protoArt.ts pitShade) and drawImageScreens 10.55 > 7.5 (scenery.ts:2082, groundPaint.ts:175
+  and :156; it read 10.06 on BUILD-18's head, so the merged t-eng-dr adds about 0.5). Shared ground paint, engine. 1-8 upright and
+  every other stage passed.
+- clipcheck (a6104e2da) PASS (83 known).
 - **Whole suite:** __SUITE__
 
 **Polish check:** no stills (packet: rule 29, the look will change them). The way.1-8 line is 7 words, under the 10-word speech box,
