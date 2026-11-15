@@ -12,7 +12,7 @@ Authority and reading as lines-2-1.md, plus reference/design/2-2.md (origin/t-pi
 | 4a | `lily` | Pokey, as the crown lily holds him (beat 11) | Finally. Somewhere I can stand still. | 6 |
 | 4b | `crown` | Dot, right after 4a, at the lily's flowers | Crown petals! The king only wants the best. | 8 |
 | 5 | `king` | Dot, at the exit, once the goal is met | Enough for a crown! The king will be thrilled. | 9 |
-| 7 | `note` | Dot, at Meeca's note in plain sight by the exit (World 2's note, finds.ts `w2_note`) | Her writing! A note, just for you. | 7 |
+| 7 | `note` | Dot, at Meeca's note in plain sight, where finds.ts lays `w2_note` (its hint: "past the second flag, by the water", finds.ts:414) | Her writing! A note, just for you. | 7 |
 | 6 | lore `lily` (journal, a page) | the journal | The giant water lily grows leaves wider than a door, strong enough to hold a sloth. Its flower opens white at dusk and blushes pink the next night. | 28 |
 
 Mission (stagePlan's 2-2 row, "The river king wants admiring. Gather flowers for his crown."): true, KEEP.
@@ -26,8 +26,8 @@ Mission (stagePlan's 2-2 row, "The river king wants admiring. Gather flowers for
    signature move come home. Dot then gives the reason (the king wants only the best).
 5. **king.** Crocus Rex "wants admiring" (stagePlan); his crown is the one Meeca made him (her note). The boss is still to come, so the line
    is about his vanity, not a threat.
-7. **note.** Stage 2 of every world carries Meeca's note in plain sight (GAP-MAP; finds.ts `w{N}_note`), so 2-2's exit beat is the NOTE,
-   not a mark. Its words are canon (STORY-REWRITE:206-216: "we crossed the river today... the crocodile carried us over... He has a crown
+7. **note.** Stage 2 of every world carries Meeca's note in plain sight (GAP-MAP; finds.ts `w{N}_note`), so 2-2's her-trail beat is the NOTE
+   (past the second flag, by the water), not a mark at the exit. Its words are canon (STORY-REWRITE:206-216: "we crossed the river today... the crocodile carried us over... He has a crown
    now... Don't swim... P.S. He's nicer than he looks."). It pays off 2-1 (why he rides, not swims) and this stage's crown.
 
 ## Story faults in the design (for the lead)

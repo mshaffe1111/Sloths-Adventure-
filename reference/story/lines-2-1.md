@@ -15,7 +15,7 @@ everything around her gets.
 | 4 | `back` | Dot, teach, 800+ px before beat 6 (the twist) | It flows the other way! Run, and hop ahead! | 9 |
 | 5 | `village` | Dot, at the village gate (beat 11) | A whole village of sloths! They're all still waving. | 9 |
 | 7 | `mark` | Dot, her mark on the gate (exit) | Her mark, right on the village gate! | 7 |
-| 6 | road page `river` (journal, a page) | the journal | Lowland rivers run wide and lazy and carry fallen logs for days. Most sloths swim well. Pokey has never tried, and this is not the river to start on. | 28 |
+| 6 | road page `river` (journal, a page) | the journal | Lowland rivers run wide and lazy and carry fallen logs for days. Most sloths swim well. Pokey has never tried, and this is not the river to start on. | 29 |
 
 Mission (stagePlan's 2-1 row, "Hop the drifting logs down to the riverbank village."): true, KEEP.
 
@@ -38,8 +38,8 @@ Mission (stagePlan's 2-1 row, "Hop the drifting logs down to the riverbank villa
    fit. Paint bank houses with round doors and the signs.
 2. **Few of her petals in World 2.** Meeca's note: "I made it out of the petals I had left, so there won't be many for a while." 2-1's
    "petals on the way" must be few, or another find; never a full trail.
-3. **The World 2 arrival scene is set IN the village.** If it plays before 2-1, the player meets the village before walking to it. Play
-   it at 2-1's gate (after the exit), or check where storyWorlds.ts plays it.
+3. **The World 2 arrival scene is set IN the village.** If it plays before 2-1, the player meets the village before walking to it. storyWorlds.ts:2 plays
+   it "when Pokey first arrives in each world": move it to 2-1's gate (after the exit), or open it at the canopy's edge and cut to the village at the gate.
 
 ## Nature check: PASS
 | Thing | Verdict |
