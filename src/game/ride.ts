@@ -106,9 +106,29 @@ export const newPad = (): PadState => ({ stood: 0 });
  * stops a little into 'on' (RIDE.padRise, stretched on Easy), so the pad stays down that long after he leaves and then rises.
  */
 export function stepPad(pad: PadState, b: Beat, standing: boolean, dt: number): PadState {
-  const cap = Math.min((b.ons[0] ?? b.period) + RIDE.padRise * b.stretch, b.period - 1e-6);
+  const on = b.ons[0] ?? b.period;
+  const cap = Math.min(on + RIDE.padRise * b.stretch, b.period - 1e-6);
   pad.stood = standing ? Math.min(cap, pad.stood + dt) : Math.max(0, pad.stood - dt);
+  // (the step it sinks it is no floor, so he is off it from the next step: it latches at its cap, so it stays down RIDE.padRise after
+  // he leaves however he leaves, never popping up under his falling feet; ENG-22)
+  if (standing && (pad.stood >= on || beatAt(b, pad.stood - b.offset).phase === 'on')) pad.stood = cap;
   return pad;
+}
+
+/**
+ * A sinking pad as data (ENG-22; 2-2.md NEW 1 and 2; a platform's `pad`, pieces/padPiece.ts runs it, gen2/rideLay.ts layPads lays it):
+ *   'weight'  its clock is read by a count that runs only while he stands on it (newPad / stepPad): it holds, shivers, sinks
+ *   'beat'    it keeps the stage's clock itself, weight or not: a row in step sinks and rises together (the pond's breath)
+ * Either way the clock's warning is its shiver, so it never sinks unwarned, and Easy stretches it with every brick on that clock.
+ */
+export interface Pad {
+  by: 'weight' | 'beat';
+  /** the stage clock it reads (a weight pad: its size's clock, read by its count; a beat pad: the row's beat) */
+  clock: ClockId;
+  /** a beat pad's stagger on its clock (s on Normal); a row in step has none */
+  shift?: number;
+  /** the look slot the painter fills (gen2 PadRow / PAD_SIZES: 'small', 'big', 'beat'); the drawer falls back to the plain lily */
+  look?: string;
 }
 
 /** the pad now: whether it holds him, and its tell */

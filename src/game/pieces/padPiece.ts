@@ -1,0 +1,87 @@
+/**
+ * pieces/padPiece — SINKING PADS (ENG-22; 2-2.md NEW 1 and 2) on the piece hook: every platform with a `pad` (ride.ts Pad; gen2/rideLay.ts
+ * layPads lays them) is stepped here each fixed step, at the point the engine steps its carriers (just before its moving-platform and
+ * drifting-log loops):
+ *   'weight'  its count (ride.ts newPad / stepPad) runs while he stands on it and runs back when he leaves; read through its size's clock
+ *   'beat'    it reads the stage's clock itself (beatBrick.ts brickNow 'gone'), so a row in step sinks and rises together
+ * While the clock reads 'on' the pad is down: `broken`, so no floor (the engine's collision), and a petal riding it is hidden with it
+ * (ridePickups.ts rideHidden). The clock's warning is its shiver, drawn by the look slot (riverArt.ts drawPad), so it never sinks
+ * unwarned. A respawn puts every pad back up (a required one is whole again, STAGE-RULES).
+ *
+ * Nothing here names a stage: what a pad is, its clock and its look come from the stage's data (generalitycheck).
+ */
+import { beatOf, type Beat } from '../clock.ts';
+import { brickNow, type BrickNow } from '../beatBrick.ts';
+import { newPad, padNow, stepPad, type PadState } from '../ride.ts';
+import { drawPad } from '../riverArt.ts';
+import type { GeneratedStage } from '../stageGenerator.ts';
+import type { PieceHost, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
+import type { Platform } from '../types.ts';
+
+interface Run { plat: Platform; beat: Beat | null; count: PadState | null; now: BrickNow }
+
+/** what a pad shows now (its tell and whether it holds him), for the drawer and the bots; undefined for a platform that is no pad */
+const NOW = new WeakMap<Platform, BrickNow>();
+export const padShows = (plat: Platform): BrickNow | undefined => NOW.get(plat);
+/** a weight pad's count now (s he has stood on it, ride.ts PadState), for the bots' read of how long it has left; null for a beat pad */
+const COUNT = new WeakMap<Platform, { count: PadState; beat: Beat }>();
+export const padCount = (plat: Platform): { stood: number; holds: number } | null => {
+  const c = COUNT.get(plat);
+  return c ? { stood: c.count.stood, holds: c.beat.ons[0] ?? c.beat.period } : null;
+};
+
+class PadPiece implements StagePiece {
+  readonly kind = 'pad';
+  readonly layers: readonly PieceLayer[] = ['world'];
+  constructor(private readonly runs: Run[]) {}
+
+  step(dt: number, host: PieceHost) {
+    const p = host.player;
+    for (const r of this.runs) {
+      const pad = r.plat.pad!;
+      if (r.count && r.beat) {
+        stepPad(r.count, r.beat, p.grounded && host.standingOnId === r.plat.id, dt);
+        r.now = padNow(r.count, r.beat);
+      } else r.now = brickNow('gone', host.clock.read(pad.clock, pad.shift));
+      r.plat.broken = !r.now.solid;
+      NOW.set(r.plat, r.now);
+    }
+  }
+
+  respawn(host: PieceHost) {
+    for (const r of this.runs) if (r.count) r.count.stood = 0;
+    this.step(0, host);
+  }
+
+  draw(ctx: CanvasRenderingContext2D, _layer: PieceLayer, host: PieceHost) {
+    const v = host.view;
+    const x0 = v.x - 200, x1 = v.x + v.w / v.zoom + 200;
+    for (const r of this.runs) {
+      const pl = r.plat;
+      if (pl.x + pl.width < x0 || pl.x > x1) continue;
+      drawPad(ctx, pl.pad!.look, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, host.t, r.now, pl.id % 2 === 1);
+    }
+  }
+}
+
+export const PAD_PIECE: PieceKind = {
+  id: 'pad',
+  start(stage: GeneratedStage, host) {
+    const pads = host.platforms.filter((pl) => !!pl.pad);
+    if (!pads.length) return null;
+    const defs = new Map((stage.clocks ?? []).map((d) => [d.id, d]));
+    const runs = pads.map((plat): Run => {
+      const pad = plat.pad!;
+      const def = defs.get(pad.clock);
+      if (!def) throw new Error(`pad ${plat.id}: no clock named ${pad.clock} in this stage`);
+      if (pad.by === 'beat') return { plat, beat: null, count: null, now: { solid: true, hurts: false, tell: 0 } };
+      const beat = beatOf(def, host.easy);
+      const count = newPad();
+      COUNT.set(plat, { count, beat });
+      return { plat, beat, count, now: padNow(count, beat) };
+    });
+    const piece = new PadPiece(runs);
+    piece.step(0, host);
+    return piece;
+  },
+};

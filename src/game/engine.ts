@@ -1832,7 +1832,7 @@ export class GameEngine {
       if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
     }
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken || plat.ride) continue;
+      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -7286,7 +7286,8 @@ export class GameEngine {
     // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
     if (this.paintedRivers(this.currentStage.config.worldIndex) && riverArtReady()) {
       for (const pl of this.platforms) {
-        if (!pl.lily || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
+        // (a sinking pad draws itself where its clock has it: pieces/padPiece.ts)
+        if (!pl.lily || pl.pad || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
         const sy = this.lilySurface(pl);
         // (on calm drawn water, a slow ripple ring round it; murky pit water carries its own painted rings)
         if (sy !== pl.y + 8 && this.calmAt(pl.x + pl.width / 2)) drawCalmRing(ctx, pl.x + pl.width / 2, sy, pl.width * 1.2, this.gameTime);

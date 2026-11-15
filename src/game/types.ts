@@ -342,6 +342,9 @@ export interface Platform {
   hollow?: 'moss' | 'plain';
   /** a ride on a stage beat (a 'moving' platform: ride.ts; ridePlay.ts moves it by the stage's clock; gen2/rideLay.ts lays it) */
   ride?: import('./ride.ts').Ride;
+  /** a sinking pad (ride.ts Pad; pieces/padPiece.ts runs it, gen2/rideLay.ts layPads lays it): a 'moving' platform that never moves, which
+   *  sinks by its clock (a weight pad while he stands on it, a beat pad on the stage's beat) and is no floor while it is down */
+  pad?: import('./ride.ts').Pad;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */

@@ -125,6 +125,24 @@ export function drawLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: nu
   return true;
 }
 
+/**
+ * A sinking pad (pieces/padPiece.ts) where its clock has it: `look` is its slot from the stage's data (ride.ts Pad.look: 'small', 'big',
+ * 'beat'), which the painter fills (ART-W2: the sinking states); until a slot has its own art, the painted lily, moved by its tell: a
+ * shiver that grows through the warning (its tell, so it never sinks unwarned), a dip as it goes, and under the water (faint, low) while
+ * it is down. A code touch on painted art (STAGE-RULES §4), no new picture.
+ */
+export function drawPad(ctx: CanvasRenderingContext2D, _look: string | undefined, cx: number, surfaceY: number, w: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
+  if (!riverArtReady()) return false;
+  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, w, t, flip);
+  const shake = now.solid ? Math.sin(t * 38 + cx) * 2.2 * now.tell : 0;
+  const dip = now.solid ? 5 * now.tell : 12;
+  ctx.save();
+  if (!now.solid) ctx.globalAlpha = 0.28;
+  const ok = drawLily(ctx, cx + shake, surfaceY + dip, w, t, flip);
+  ctx.restore();
+  return ok;
+}
+
 /** a clump of reeds at the water's edge or on a bank, swaying in the breeze about its roots */
 export function drawReeds(
   ctx: CanvasRenderingContext2D,
