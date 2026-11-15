@@ -6,7 +6,7 @@ Base: origin/t-eng-b6@a4e1ff8f + origin/t-tools-2@19b45a06 (merge 9d78eef1). Cod
    (whole piece in frame; ~52 s a take); judge a 190 px sheet (cat the base64; the result is saved whole in /tmp/output-trim, decode it);
    cut the pick with hf1113/cutprops.py (picks {"w1-roost": {"take": ..., "dest": "w1-19", "units": 145}}: 1.6 of Pokey's 89.1), pull it
    (hf678/pull.py), then `python3 -I tools/art/hf19/rows.py <take>` and `python3 tools/art/catalog_master.py --emit` (rows.py is UNRUN).
-   Budget left in the $2 cap: ~$1.54. Then the draw: proto.gen2.roosts {x, y, look} (w1.ts W1_LURE's note) is laid; nothing draws it yet.
+   Budget left in the $2 cap: ~$1.54. (Batch 2 was NOT live at the lead's 8:33 PM message: the sandbox was terminated at 8:29 PM, nothing kept.) Then the draw: proto.gen2.roosts {x, y, look} (w1.ts W1_LURE's note) is laid; nothing draws it yet.
 2. **The whole suite** on the head: at the stop it was running on b47b077d (same code as 44c47686), 1,139 tests, 0 failures, unfinished.
 3. **The lead's ruling on the old brain** (Pushback 1) before any 1-9 lay.
 
@@ -41,7 +41,8 @@ Base: origin/t-eng-b6@a4e1ff8f + origin/t-tools-2@19b45a06 (merge 9d78eef1). Cod
 
 ## ENGINE-WORTHY
 - topUpFoes still takes every 'topup' row of a no-cast stage's manifest (pipeline.ts castRows covers cast stages only).
-- The old brain's boa (18 stages) has no freeze; the kit's has. Moving each world's boas onto the kit is the real "every boa" fix.
+- RULED (the lead, 8:33 PM ET 11-14: option (a), D40): the 18 old-brain boa stages stay as they are (predatorAI.ts:300, 0.6 s rear, no freeze)
+  until each world moves its boas onto the kit: 1-9, 5-6, 7-3, 7-6, 7-9, 8-6, 8-9, 9-1, 9-3, 9-4, 9-5, 9-6, 9-8, 9-9, 10-3, 10-6, 10-7, 10-9 (boa-reach.txt).
 
 ## Learned (for the next builder)
 - A shared world manifest is shared RNG: a new row re-deals every stage that draws from it. Scope rows by the brief (castRows), prove by lockall.
