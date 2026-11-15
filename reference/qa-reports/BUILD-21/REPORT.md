@@ -10,6 +10,12 @@ D50 (teach lines are teachTips), D59 (no job left running), D62 (stills print th
    final head); `lockall --layouts 16 --check` vs 58182e9a's lock (expect 2-1 moved by this branch, 2-2 by ENG-W2b only).
 3. Stills of the final head at the bounce (x~22,300 on seed 2) and a 20-30 s clip of the first deep river (x~14,300): NOT SHOT (context).
 4. Merge with t-eng-22: both added to w2.ts and riverArt.ts (its W2_PADS, drawPad): keep both.
+5. NOT SHOWABLE until fixed (the lead's judgement 1:36 PM of the stills): (a) THE SAFE LOOK IS TINTED DARK (Easy x14200, Normal x8330,
+   x30100 read as deep): engine.ts drawRivers' `over` pass fills every river, surface to screen bottom, with the deep gradient
+   rgba(96,160,152,0.3) -> rgba(38,66,71,0.75) after the platforms. Fix: a `safe` river gets no deep sheet (a short band at the log
+   line in the shallow's light colours at most); re-shoot a safe river beside a deep one, upright and sideways. (b) World 2's backdrop
+   mist panels show hard rectangle edges (x14180 ~570 px, x30100 ~1050 px top ~965, Easy x14200 ~1465 px): feather the layer's edges
+   at the art strip, as ART-18 did for w1rain. (c) x2300: a darker vertical band on the far bank's face (~600-640 px): a bank-face seam.
 
 ## Done (heads named)
 - Step 0 (on 19537789 vs 58182e9a): lock 100/102 unchanged (2-1, 2-2 moved: ENG-W2b's verdict/petal commits); seedlist --check 1-1..1-5,
