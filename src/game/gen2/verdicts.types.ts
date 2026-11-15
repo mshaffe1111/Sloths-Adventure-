@@ -32,9 +32,12 @@ export interface FlownArc {
 
 /** the band a section kind may ask for (bands.md §2), per setting; `none` where the setting has no such section (Easy's double gap) */
 export type Band = { lo: number; hi: number } | 'none';
-/** `chain-hop` (chain.md §3): one mushroom cap to the next, its figure S, cap centre to cap centre; its band goes by the step between the
+/** `bounce-reuse` (FIX-GATES 11-15): a bounce lip outside a teach node on a stage after the one that teaches the bounce (skills.ts
+ *  bounceReusedAt), whose rise is within the bounce alone (reach.ts BANDS['bounce-reuse']): the taught bounce reused, banded by the flown
+ *  bounce-alone climb, not the teach's narrow lesson band nor the bounce + air jump test's.
+ *  `chain-hop` (chain.md §3): one mushroom cap to the next, its figure S, cap centre to cap centre; its band goes by the step between the
  *  two caps (reach.ts CHAIN_BANDS), the same on both settings */
-export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-teach-first' | 'double-test-gap' | 'bounce-teach' | 'bounce-air-test' | 'chain-hop';
+export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-teach-first' | 'double-test-gap' | 'bounce-teach' | 'bounce-reuse' | 'bounce-air-test' | 'chain-hop';
 export type BandTable = Readonly<Record<SectionKind, Readonly<Record<Difficulty, Band>>>>;
 
 // ───────────────────────── drops: what every fall ends in, and how it looks ─────────────────────────

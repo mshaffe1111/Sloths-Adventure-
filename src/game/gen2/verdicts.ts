@@ -36,7 +36,7 @@ export interface RouteAsk { x0: number; x1: number; yTake: number; yLand: number
 /** the move each kind is BUILT for (the flick, bands.md §1) and the lesser move it must keep out (a block's) */
 export const TAUGHT: Record<SectionKind, ReachMove> = {
   'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick', 'double-teach-first': 'double-flick',
-  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
+  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce', 'bounce-reuse': 'bounce', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
 };
 
 /**
@@ -46,10 +46,17 @@ export const TAUGHT: Record<SectionKind, ReachMove> = {
  * A 'double' PLACE that is not a declared double block (pieces' `block`) and whose figure fits the single band on this setting is a
  * single section (w1-leap-stones' 50-60 px stones: the place is the builder's envelope, not a lesson; the Critic, E0a attempt 1).
  */
-export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty, airTaught = true): { kind: SectionKind; figure: number } {
+export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty, airTaught = true, bounceReused = false): { kind: SectionKind; figure: number } {
   const rise = a.yTake - a.yLand, gap = a.x1 - a.x0;
-  // (and before any stage teaches the bounce + air jump, every bounce lip is judged as the bounce alone: skills.ts comboGuaranteedAt, FIX-21)
-  if (a.move === 'bounce' || a.block === 'bounce') return { kind: inTeach || !airTaught ? 'bounce-teach' : 'bounce-air-test', figure: rise };
+  if (a.move === 'bounce' || a.block === 'bounce') {
+    if (inTeach) return { kind: 'bounce-teach', figure: rise };
+    // (FIX-GATES: on a stage after the bounce is taught (skills.ts bounceReusedAt), a lip the bounce alone reaches is the taught bounce
+    //  reused, on its own band; a lip past it still asks for the bounce + air jump)
+    const reuse = BANDS['bounce-reuse'][setting];
+    if (bounceReused && reuse !== 'none' && rise <= reuse.hi) return { kind: 'bounce-reuse', figure: rise };
+    // (and before any stage teaches the bounce + air jump, every other bounce lip is judged as the bounce alone: skills.ts comboGuaranteedAt, FIX-21)
+    return { kind: airTaught ? 'bounce-air-test' : 'bounce-teach', figure: rise };
+  }
   const single = (): { kind: SectionKind; figure: number } => (rise > 20 ? { kind: 'single-rise', figure: rise } : { kind: 'single-gap', figure: gap });
   if (a.move === 'double' && a.block !== 'double') {
     const s = single(), band = BANDS[s.kind][setting];
@@ -99,7 +106,7 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
     if (q.kind === 'double-teach-rise' || q.kind === 'double-teach-rise-thin' || q.kind === 'double-teach-first') return { px: thin ? lesser.single.climb.thin : lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
     if (q.kind === 'double-test-gap') return { px: lesser.single.gap, what: 'one jump crosses', source: arc('single-hold', scope).source + ' any timing' };
     // (the bounce teach teaches, it does not block (bands.md §4 "the other way", POLISH-7): one jump must not climb it; a double may)
-    if (q.kind === 'bounce-teach') return { px: lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
+    if (q.kind === 'bounce-teach' || q.kind === 'bounce-reuse') return { px: lesser.single.climb.block, what: 'one jump climbs', source: arc('single-hold', scope).source + ' climb' };
     if (q.kind === 'bounce-air-test') {
       const b = arc('bounce', scope).climb.block, d = lesser.double.climb.block;
       return b >= d ? { px: b, what: 'a bounce alone climbs', source: arc('bounce', scope).source + ' climb' } : { px: d, what: 'a plain double climbs', source: arc('double-hold', scope).source + ' climb' };

@@ -32,7 +32,7 @@ import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
 import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
-import { comboGuaranteedAt, missionOf, skillGuaranteedAt } from '../skills.ts';
+import { bounceReusedAt, comboGuaranteedAt, missionOf, skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
@@ -4490,7 +4490,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
   const read = (ASKS.get(st) ?? []).filter((a): a is typeof a & RouteAsk => a.move !== 'ride').map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
     const teach = !!node && JOB_OF[node.token[0]] === 'teach';
-    return { a, node, teach, ...classify(a, teach, setting, comboGuaranteedAt('bounce-air', missionOf(st.config.id))) };
+    return { a, node, teach, ...classify(a, teach, setting, comboGuaranteedAt('bounce-air', missionOf(st.config.id)), bounceReusedAt(missionOf(st.config.id))) };
   });
   const first = new Map<unknown, number>();
   for (const r of read) if (r.teach && r.kind === 'double-teach-rise' && r.a.x0 < (first.get(r.node) ?? Infinity)) first.set(r.node, r.a.x0);

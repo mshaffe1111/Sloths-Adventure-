@@ -50,8 +50,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (1-7 A Very Good Bush: judged on its own flown rows, flownArcs.ts normal-1-7, INT-9 11-14)
   '1-7': { kit: 'w1-17', judged: 'normal-1-7' },
   // (1-8 The Long Branch: the designed arc, w1Arc18.ts, on World 1's kit with its own rows (kitLib18) and its finish (finish18: the nuts
-  //  and fruit by data, the still fork, the tip, the hearts); the hand-built 1-8's routing is gone (protoStage HAND_STAGES). BUILD-18 11-14)
-  '1-8': { kit: 'w1-18' },
+  //  and fruit by data, the still fork, the tip, the hearts); the hand-built 1-8's routing is gone (protoStage HAND_STAGES). BUILD-18 11-14.
+  //  Judged on its own flown rows, flownArcs.ts normal-1-8 (BUILD-18c), since FIX-GATES' bounce-reuse kind judges its plain bounces)
+  '1-8': { kit: 'w1-18', judged: 'normal-1-8' },
   // (2-1 Down to the River and 2-2 Petals for the Crown: World 2's kit (w2.ts, ENG-W2 11-14) on their placeholder arcs, until each
   //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
   //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the
