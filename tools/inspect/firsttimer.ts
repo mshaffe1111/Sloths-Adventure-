@@ -370,6 +370,10 @@ export class Progress {
    *  pts, in order; `pin` is the next one not reached */
   pins: number[] = [];
   private pin = 0;
+  /** the last pin he stood at: the way back over the same ground lies past it, so he is never followed back before it (the out-and-back
+   *  ground's outbound points lie beside its return points, and the nearer one pulled him back out to the stone: a middle bot hopped
+   *  stone to pad and back for 20 s, 2-2 Easy seed 12, FIX-22). Kept through a respawn */
+  private pinFloor = 0;
   constructor(readonly pts: Pt[]) {}
   /** the furthest point he may be followed to: up to the next pin he has not stood at */
   private cap(i: number): number {
@@ -383,7 +387,7 @@ export class Progress {
   step(p: Pt): boolean {
     if (!this.pts.length) return false;
     let bi = this.cur, bd = this.d(this.cur, p);
-    const lo = Math.max(this.floor, this.cur - 25), hi = this.cap(Math.min(this.pts.length - 1, this.cur + 40));
+    const lo = Math.max(this.floor, this.pinFloor, this.cur - 25), hi = this.cap(Math.min(this.pts.length - 1, this.cur + 40));
     for (let i = lo; i <= hi; i++) {
       const d = this.d(i, p);
       if (d < bd - 1e-6 || (Math.abs(d - bd) < 1e-6 && i > bi)) {
@@ -393,7 +397,7 @@ export class Progress {
     }
     if (bd < 160) this.cur = bi;
     // (a pin is reached when he stands at it: on its stone, within PIN_AT of its middle, whichever route point is nearest)
-    if (this.pin < this.pins.length && this.d(this.pins[this.pin], p) < PIN_AT) { this.cur = this.pins[this.pin]; this.pin++; }
+    if (this.pin < this.pins.length && this.d(this.pins[this.pin], p) < PIN_AT) { this.cur = this.pinFloor = this.pins[this.pin]; this.pin++; }
     const more = this.cur > this.hi;
     if (more) this.hi = this.cur;
     if (this.cur > this.best) this.best = this.cur;
@@ -407,7 +411,7 @@ export class Progress {
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
     // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => this.cap(i) === i && (!level || this.pts[i].y >= p.y - 80);
+    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && (!level || this.pts[i].y >= p.y - 80);
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;

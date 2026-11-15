@@ -63,3 +63,23 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
     }
   });
 }
+
+test("OUT-AND-BACK's pin: he is followed out to the stone first, and once he has stood there never back out to it from the way back (FIX-22: 2-2 Easy seed 12, a middle bot hopped stone to pad and back for 20 s)", async () => {
+  const { Progress } = await import('./firsttimer.ts');
+  // (out along y 730 from x 0 to 300, every 24 px, and back from 300 to 0 every 24 px from an offset: the two lines lie side by side)
+  const out = Array.from({ length: 13 }, (_, i) => ({ x: i * 25, y: 730 }));
+  const back = Array.from({ length: 13 }, (_, i) => ({ x: 312 - i * 25, y: 730 }));
+  const pr = new Progress([...out, ...back]);
+  pr.pins.push(12);
+  pr.relocate({ x: 0, y: 730 });
+  // (on the way out, at x 237, the way back's point at x 237 is never taken: he heads for the pin, 63 px on, past PIN_AT)
+  for (const x of [50, 100, 150, 200, 237]) pr.step({ x, y: 730 });
+  assert.ok(pr.cur <= 12, `followed to ${pr.cur}, past the pin before standing at it`);
+  assert.deepEqual(pr.target({ x: 237, y: 730 }), out[12], 'he heads for the stone');
+  pr.step({ x: 300, y: 730 });
+  // (back on the pad at x 160: the way out's point at x 150 lies nearer than the way back's at 162 - 25k; he stays on the way back)
+  for (const x of [280, 250, 220, 190, 160]) pr.step({ x, y: 730 });
+  assert.ok(pr.cur > 12, `pulled back out to ${pr.cur} (the pin is 12)`);
+  pr.relocate({ x: 100, y: 730 });
+  assert.ok(pr.cur > 12, `a respawn put him back on the way out (${pr.cur})`);
+});
