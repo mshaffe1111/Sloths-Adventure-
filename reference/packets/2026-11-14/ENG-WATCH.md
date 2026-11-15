@@ -6,7 +6,11 @@ moved its head, you could literally just walk right up to it. I expected the hea
 be ready to be quiet, but it looked like it was more on a timing that it did a whole turnaround head thing." The same perched eagle sat on
 its post in 1-8's still fork and never visibly passed (lead, 9:10 PM). 1-7 plays easy (R-165.266) mostly because of this.
 Build, for every stage in every world, by data:
- (1) PROVE first (clips, frames named): on a toy, 1-7 and 1-8, walk past a perched eagle before it leaves; walk up while its head is away.
+ MATT 9:32 PM: "it was really easy. That whole level was pretty easy. Even with the eagles coming, I didn't even really hide in the bushes and
+ it still didn't get me." He took 1-7 as a teaching level and hoped it would get harder later in the game.
+ (1) PROVE first (clips, frames named), on 1-7 Normal + Easy and 1-8: (a) an eagle PASS over Pokey standing or walking in the OPEN, NOT in
+     cover: does it take a heart? If not, the threat is fake: find exactly why (eagleFair, inCover, the pass's reach, Normal's forgiveness)
+     and fix it for every stage, planted. (b) walk past a perched eagle before it leaves; (c) walk up while its head is away.
  (2) The glance rhythm: the head checks back and forth on an UNEVEN rhythm (short glances, quick re-checks, an occasional fake-out half-turn),
      seeded so every run of a seed is the same (bots, lists, proofs), so a walking player must always be ready to freeze. EVERY turn toward
      him is told first (a visible head-cock or ruffle, at least TELL_MIN, predators/core.ts), so it's never unfair. Easy: longer tells,
