@@ -149,6 +149,7 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
   Opus for now, R-165.76). Set permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
   create_session has no effort setting: the packet's `effort:` line tells the member how much room to take, and the lead says so
   to Matt plainly. Check the model with get_session after creating. The Agent tool is only for the lead's own quick lookups.
+- **Boxes (D78, 11-14):** an xhigh engine packet is boxed at 75 minutes and a high builder at 90, because members can't measure their own context and the lead can't read it mid-turn; tonight's 2-hour boxes reached 41-70% real context.
 - **A STOP or a scope change goes with send_message priority "now"** (11-14: a default-priority stop waited 25 min behind BUILD-16d's long turn while it kept doing work it was told to drop).
 - **Retiring a member (archive_session), in this order (D68):** (1) send it nothing more once you decide to retire it; (2) list_events
   kinds ["assistant","result"]: the newest event is a `result` AND no message from the lead is newer than that result (a message wakes
