@@ -44,7 +44,9 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
      swing). The engine's own window for the same perches (gen2 pipeline.ts lianaRelease: physics pressWindow from the grip dial's holds
      and, on a liana with a dial or the last of a chain, only the presses that see the perch, SWING_SEEN, R-165.225) is 0.6-2.9 s on
      BUILD-16's 1-6: 1.0-2.7 bits; a release onto a creaky limb 3.6. Measured against lianaRelease liana by liana on seeds 1-2 (the
-     first version, heldLandings without the view rule, read up to 3x wider on "hold high" lianas: 2867 ms against 933).
+     first version, heldLandings without the view rule, read up to 3x wider on "hold high" lianas: 2867 ms against 933). The view rule
+     is gen2's, so it applies only to stages gen2 laid; a stage of the older generator (Worlds 2-4's liana rows, 4-4's 51 lianas) is read
+     by its own level check's lines (chainLines, heldLandings), which have none.
    - **The vine snakes were not seen at all**: 8 a layout on 22 lianas (down-off 3, down-back 1, up 3, still 2), 0 counted (they are
      `Vine.snake` with a clock, not cast members or beats).
    - **Route links leap a chain's middle liana** (route.ts's added links: liana 6 -> 8 over 7, 12 -> 13 over the perch 111): one release
@@ -82,7 +84,7 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
      from a saved copy): the old release constant, no crumble at the perch, the chain not walked, no catch, the snake's default tell, no
      span overlap, chase beats as hazards, the burst ignored, an untimed nut, the exact old 200 px lookup, mossy lianas not cover, the
      calm-in left out, the view rule left out, a pod crossed in no time, the stretch's ends not a way out, an unmeasured catch priced as
-     one frame, a chain walked through a liana no catch reaches. (One approximate plant, "200 px but keep the 600 px fallback", stayed green because the fallback still finds the eagle;
+     one frame, a chain walked through a liana no catch reaches, the view rule on an older generator's stage. (One approximate plant, "200 px but keep the 600 px fallback", stayed green because the fallback still finds the eagle;
      the exact old lookup is red. One planted case first stayed green because both readings met the 5-bit cap; fixed to sit below it.)
 3. **(3) Recalibrated only by DIFFICULTY.md's method**: SCALE from 1-1 Normal, 4 layouts = 0.28194, unchanged (1-1's challenge list
    is the same before and after: the same 24.5 points). No other constant moved (FREE 1, MIX 0.5/0.5, OVERLAP 0.5, NOVELTY). The tier
@@ -118,7 +120,7 @@ passes (<= 4.5 and <= 0.7 x Normal).** By the corrected ruler that is a design f
    see SUITE below.** Not run (no game code changed, LAWS 5 scoped): the build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck,
    buildcheck, seedlist --check, tierBots (nothing in tools/inspect imports score.ts; the bots read no meter number).
 
-SUITE: (filled in below when it finishes)
+SUITE_LINE
 
 ## 2. Polish check
 The meter changes no screen and draws nothing (it never runs on a phone, PERFORMANCE-RULES §1), so there are no stills. What I judged
@@ -186,7 +188,7 @@ its far end (off the stretch is out of the eye).
 - **Easy over 0.6 x Normal**: 1-1 0.65, 1-4 0.74, 1-6 0.67 (DIFFICULTY.md G2's 0.6).
 - **1-8 Normal on t-build-18@e9dc28bf built on no layout**; on 3cc12409 it builds on 4 (the numbers above).
 - **The old hand-built 1-6 reads 10.4** with the true windows (it is replaced by BUILD-16's); 12 of its catches are NOT MEASURED.
-- **Spread**: the release and pod terms read every world's lianas and pods; World 2-10 before/after is in sweep-*.txt (§5 below).
+- **Spread** (World 1-10, one layout each, Normal, on t-build-16: sweep-before.txt / sweep-after.txt / sweep-diff.txt): SWEEP_TABLE
 
 ## 6. Method used, lessons applied, method update
 - **Method used**: reference/methods/difficulty.md (steps 1-5), the ENGINE card's day one (a planted failure for each rule, the lock:
@@ -211,7 +213,10 @@ its far end (off the stretch is out of the eye).
   rows, the nut's tell and the pod's quiet were all already in the game; every guess the meter had made was wrong by 1.5x or more.
 - An ask the tool cannot measure must not take the hardest value it could have: three of my first readings came from such fallbacks.
 - The bots do not agree with each other off 1-1: say which family you rank against and why.
-- A test that both the old and new code pass at a cap proves nothing: plant each fault and watch it go red.
+- A test that both the old and new code pass at a cap proves nothing: plant each fault and watch it go red (three of mine did not, at
+  first: a capped share, a ">=" where both readings were equal, a fallback that hid the old lookup).
+- Read each stage by the rule it was laid and checked by: gen2's view rule on gen2's stages, the older generator's level check on its own.
+  The World 2-10 sweep is what showed it (4-4 read 9.4 -> 20 until then).
 
 ## 8. EXACT NEXT STEP
 0. When ENG-PETAL lands: merge t-meter-1 into its head (tools/difficulty only), `npx tsx tools/difficulty/band.ts 1-6` and
