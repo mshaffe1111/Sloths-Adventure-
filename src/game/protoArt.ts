@@ -1027,7 +1027,7 @@ export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number;
  * (X shaded) darkened by g toward D * 0.64 + shade * 0.36, the same pixels.
  */
 const WALL_SET_BACK: [number, number, number, number] = [28, 18, 8, 0.36];
-let wallChunks: { key: string; tiles: Map<string, HTMLCanvasElement | null>; order: string[] } | null = null;
+let wallChunks: { key: string; tiles: Map<string, HTMLCanvasElement | null>; order: string[]; epoch: Map<string, number> } | null = null;
 function drawWallChunks(
   ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number },
   a: number, b: number, top: number, bottom: number,
@@ -1038,27 +1038,34 @@ function drawWallChunks(
   const scale = m.a;
   const deep = GROUND_FRAMES[kitWorld]?.deep;
   if (!deep) return false;
-  const key = `${kitWorld}|${scale.toFixed(4)}|${sheetEpoch.n}|${wall.x0},${wall.x1},${wall.top},${wall.bottom}`;
+  // (a sheet that arrived since is not in the key: the squares are painted again a few a frame, sheetsSince)
+  const key = `${kitWorld}|${scale.toFixed(4)}|${wall.x0},${wall.x1},${wall.top},${wall.bottom}`;
   if (!wallChunks || wallChunks.key !== key) {
     releaseWallChunks();
-    wallChunks = { key, tiles: new Map(), order: [] };
+    wallChunks = { key, tiles: new Map(), order: [], epoch: new Map() };
   }
   const c = wallChunks;
   const cx0 = Math.floor(a / CHUNK), cx1 = Math.floor((b - 1e-6) / CHUNK);
   const cy0 = Math.floor(top / CHUNK), cy1 = Math.floor((bottom - 1e-6) / CHUNK);
   let budget = CHUNK_BUDGET;
   let missing = false;
+  const stale: string[] = [];
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) {
+        if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
+        continue;
+      }
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
       if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintWallTile(wall, cx, cy, scale));
+      c.epoch.set(k, sheetEpoch.n);
     }
+  budget = sheetsSince(c, stale, budget, (cx, cy) => paintWallTile(wall, cx, cy, scale));
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / 2 / (side * side * 4)));
   for (let i = 0; i < c.order.length && c.order.length > keep; ) {
@@ -1070,6 +1077,7 @@ function drawWallChunks(
     }
     freeTile(c.tiles.get(k));
     c.tiles.delete(k);
+    c.epoch.delete(k);
     c.order.splice(i, 1);
   }
   // (a square not painted yet this frame: the whole wall is drawn live, as before)
@@ -1499,7 +1507,8 @@ export function stepFootLips(banks: readonly Platform[]): Array<{ x0: number; x1
  * bank cut its curved outline, laid its soil tiles, darkening and shading, its lip and its ends 30 times a second: the new painted ground
  * took the Pixel, the Samsung and an old OnePlus from ~29.7 fps to ~27 (10-19 on the OnePlus) the night it shipped (QA, 2026-10-30).
  * A square is painted the first time it comes into view (a few a frame, the rest live until then), at the screen's own pixel size, and
- * painted again only when the ground, the world, the view's scale or height, or a sheet that arrived since, changes.
+ * painted again only when the ground, the world, or the view's scale or height changes (all at once), or a sheet arrives (a few a frame,
+ * the old squares drawn meanwhile: sheetsSince).
  */
 const CHUNK = 256;
 /** painted a little past each side, so the soil, lip and end pieces that cross a square's edge are whole in it */
@@ -1516,8 +1525,31 @@ interface GroundChunks {
   plats: Platform[];
   tiles: Map<string, HTMLCanvasElement | null>;
   order: string[];
+  /** the sheets' count (sheetEpoch) each square was painted at */
+  epoch: Map<string, number>;
 }
 let chunks: GroundChunks | null = null;
+
+/**
+ * Squares painted before a sheet arrived (stale, in view) are painted again within this frame's budget, and the old ones drawn until
+ * then. Any sheet arriving (a pad's ripple, a creature's) used to be in the squares' key: every square was thrown away at once and the
+ * whole ground drawn live for the frames it took to paint them again (2-2 sideways, ~5 screens more a frame for 4+ frames: FIX-22b).
+ * Returns the budget left.
+ */
+function sheetsSince(
+  c: { tiles: Map<string, HTMLCanvasElement | null>; epoch: Map<string, number> }, stale: string[], budget: number, paint: (cx: number, cy: number) => HTMLCanvasElement | null,
+): number {
+  for (const k of stale) {
+    if (budget <= 0) break;
+    budget--;
+    const [cx, cy] = k.split(',').map(Number);
+    const old = c.tiles.get(k);
+    c.tiles.set(k, paint(cx, cy));
+    c.epoch.set(k, sheetEpoch.n);
+    freeTile(old);
+  }
+  return budget;
+}
 
 const freeTile = (cv: HTMLCanvasElement | null | undefined) => {
   if (cv) cv.width = cv.height = 0;
@@ -1541,28 +1573,36 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   // (only a plain scale and shift: squares can't be stamped under a turn or a skew)
   if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
   const scale = m.a;
-  const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${Math.round(depthView)}|${sheetEpoch.n}|${bankSig(banks)}`;
+  // (a sheet that arrived since is not in the key: those squares are painted again a few a frame, the old ones drawn meanwhile, sheetsSince)
+  const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${Math.round(depthView)}|${bankSig(banks)}`;
   if (!chunks || chunks.key !== key || chunks.plats !== platforms) {
     releaseGroundChunks();
-    chunks = { key, plats: platforms, tiles: new Map(), order: [] };
+    chunks = { key, plats: platforms, tiles: new Map(), order: [], epoch: new Map() };
   }
   const c = chunks;
   const cx0 = Math.floor(view.x0 / CHUNK), cx1 = Math.floor(view.x1 / CHUNK);
   const cy0 = Math.floor(view.y0 / CHUNK), cy1 = Math.floor(view.y1 / CHUNK);
   let budget = CHUNK_BUDGET;
   let missing = false;
+  const stale: string[] = [];
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
       // (a square the phone took back is painted again)
-      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) {
+        // (an empty square, where no ground reaches, takes no sheet)
+        if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
+        continue;
+      }
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
       if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
+      c.epoch.set(k, sheetEpoch.n);
     }
+  sheetsSince(c, stale, budget, (cx, cy) => paintTile(platforms, banks, cx, cy, scale));
   // (the oldest squares out of view go once too many are kept)
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / (side * side * 4)));
@@ -1580,6 +1620,7 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
     if (cv) painted--;
     freeTile(cv);
     c.tiles.delete(k);
+    c.epoch.delete(k);
     c.order.splice(i, 1);
   }
   if (missing) return false;
