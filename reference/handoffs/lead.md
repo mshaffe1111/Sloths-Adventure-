@@ -87,7 +87,21 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 5:30 PM ET for the turnover; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-15, 11:16 PM ET nightly wrap; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+
+**Live:** 0.9.9 merged by Matt 10:58 PM ET (PR #72, main 261a1aef): rebuilt 1-6/1-7/1-8, World 2 begins (2-1 river, 2-2 designed lily pads +
+spur + crown lily), engine bake-cache fix (FIX-22b). APK: https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.9.9-41. Live site:
+https://mshaffe1111.github.io/Sloths-Adventure-/ (publish run 43801214876; github.io is blocked from this container: confirm via runs).
+**Matt's test link (EnK5):** v261 (1794801532-4c60) = main 261a1aef's tree (474 files; dist-published in scratchpad/link4 updated).
+**Members:** none running. Nothing overnight. All of tonight's sessions archived (FIX-22, FIX-22b, REL-099).
+**TOKENS:** Matt at 93% weekly at 10:13 PM ET 11-15; reset Wed 11-18 2:00 AM ET. Mon/Tue: lean, lead bookkeeping only unless Matt says otherwise.
+**Next after the reset (ask Matt, one question):** R-165.276 variety pass 1-6/1-7/1-8 (Matt: "fix variety next"); 2-2 non-pink pickup
+painting (Hugging Face: lavender hyacinth / white lily petal, then stagePlan looks.petal one line); 2-2 spur bank-foot pale strip;
+R-165.277 1-4 sideways draw margin (7.02 of 7.5); R-165.271 vine fixes; R-165.274; R-165.275; KID/ADULT held-steer quirk (kid N 38/40 on 2-2);
+1-8 child N 36/40; 2-1 x2300 bank band; BOUGH-HANG; bamboo re-cut; PERCH-TURNBACK; TESTLINK-PACK.
+**Tonight's lesson:** D81 (packets that add drawn art list drawcheck for that stage, both ways): the 2-2 red surfaced only on the release run.
+
+## RIGHT NOW (11-14, refreshed 5:30 PM ET for the turnover; SUPERSEDED by the 11-15 block above)
 
 **Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
 **Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v259 = link #3 from t-int-9@0df7f3f9 (+ 1c7f6b95: the 48 KB test-link inline limit, committed 5:51) (published 5:52 PM
