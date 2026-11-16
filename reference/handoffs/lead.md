@@ -92,10 +92,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 **Live:** 0.9.9 merged by Matt 10:58 PM ET (PR #72, main 261a1aef): rebuilt 1-6/1-7/1-8, World 2 begins (2-1 river, 2-2 designed lily pads +
 spur + crown lily), engine bake-cache fix (FIX-22b). APK: https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.9.9-41. Live site:
 https://mshaffe1111.github.io/Sloths-Adventure-/ (publish run 43801214876; github.io is blocked from this container: confirm via runs).
-**LIVE SITE NOT YET 0.9.9 (1:08 AM ET 11-16):** publish #1 cancelled on the rolled job's 25-min limit (PR #73 raised it to 60, merged);
-publish #2 every gate green but tsc failed on reference/ probe scripts with container paths -> PR #74 (tsconfig excludes reference; tsc
-first in gates) is OPEN for Matt: https://github.com/mshaffe1111/Sloths-Adventure-/pull/74. After he merges: check the publish run (~30 min)
-and gh-pages 'Publish <sha>'; tell Matt. APK v0.9.9-41 is already out (a new APK builds on each main push).
+**LIVE: 0.9.9 published 1:36 AM ET 11-16** (publish run 43814775377 success after PRs #73 rolled 60 min and #74 tsc skips reference/; gh-pages 'Publish 6e7b85f', pages build success). APKs v0.9.9-41 (and later builds of the same game from each main push).
 **Matt's test link (EnK5):** v261 (1794801532-4c60) = main 261a1aef's tree (474 files; dist-published in scratchpad/link4 updated).
 **Members:** none running. Nothing overnight. All of tonight's sessions archived (FIX-22, FIX-22b, REL-099).
 **TOKENS:** Matt at 93% weekly at 10:13 PM ET 11-15; reset Wed 11-18 2:00 AM ET. Mon/Tue: lean, lead bookkeeping only unless Matt says otherwise.
