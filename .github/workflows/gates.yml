@@ -84,7 +84,8 @@ jobs:
 
   rolled:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 10 stage lists take ~21 min in the seed-list loop alone (0.9.9 publish run 43801214876 cancelled at 25); R-165.278 splits it
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
