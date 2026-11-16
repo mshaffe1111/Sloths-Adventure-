@@ -1,7 +1,7 @@
 # FIX-22 REPORT: 2-2 finished: X is the spur (a dip of World 2 banks, a beat row out to a dead-end stone), the meter prices pads and the rope, bots GREEN
 
 Engine, Opus 5.5 high. Branch t-fix-22 (from t-build-22 @7100589d; merged t-build-22 @8c7e9bfa and t-int-11's final head @90297717).
-Head of the numbers below: 6d198be4 (FIX-22 (1g)) unless named. Times are from `TZ=America/New_York date`.
+Head of the numbers below: the 1i commit (clockRide's drift branch removed; its hash is in the last commit message and the message to REL-099) unless named. Times are from `TZ=America/New_York date`.
 
 ## EXACT NEXT STEP
 **Integration of 2-2 onto t-int-11's final head (lists, gates, link).** t-fix-22 already holds t-int-11 @90297717 (merged at b3078786),
@@ -46,33 +46,48 @@ its numbers (the meter reads 6.4 Normal / 4.7 Easy, under World 2's band: below)
 3. **Relisted** (addlevel 2-2 --relist on the final data): rolls 24/24 both settings, 100 proven of 100, `seedlist 2-2 --check` PASS
    (also PASS after the t-int-11 merge).
 
-## castBots 2-2 1-40 (rule 28), head 6d198be4
+## castBots 2-2 1-40 (rule 28), head 1i
 | bot | Normal | Easy |
 |---|---|---|
-| child | 40/40, 377 s median, 190 lives | 40/40, 269 s, 22 lives |
-| middle | 40/40, 215 s, 105 lives | 40/40, 194 s, 18 lives |
-| expert | 40/40, 187 s, 72 lives | (no Easy expert) |
-| adult | 40/40, 146 s, 64 lives | 40/40, 148 s, 5 lives |
-| kid | **32/40** (8 rescued x1: seeds 2, 4, 6, 7, 24, 25, 32, 33) | 40/40, 148 s, 23 lives |
+| child | 40/40, 382 s median, 230 lives | 40/40, 267 s, 24 lives |
+| middle | 40/40, 212 s, 115 lives | 40/40, 191 s, 19 lives |
+| expert | 40/40, 187 s, 79 lives | (no Easy expert) |
+| adult | 40/40, 146 s, 57 lives | 40/40, 148 s, 4 lives |
+| kid | **38/40** (rescued x1: seeds 6, 32) | 40/40, 148 s, 22 lives |
 No run under 2:00 (min 137.2 s). Every tier fewer lives on Easy.
-**Kid N, traced (the lead's ruling B, 5:50 PM):** every rescue is at a deep pond on Normal (seed 2: x 28.7k, the finale; seed 6: 29.2k;
-seed 24: 20.6k, both kinds), never at X. **ENGINE-WORTHY: KID/ADULT first-timers can't let go of a held steer at a lip (firsttimer.ts
-thumbify ~2810).** Frame trace (adult N seed 23 on b1384feb, at W's bank x 12731): padRead returns stop from 39 px out while the
-breath is down (ph 'on'), the pad input stays `right` (thumbify re-arms the late release every frame for KID and ADULT, the documented
-R-165.59 quirk) and he runs off the lip into the deep water at 270 px/s; each respawn does it again until 5 lives and a rescue. On
-t-build-22 the kid was 34/40 by the same cause. A calibration question for R-165.59's owner (the lead), not tonight's.
-**1-3 (ropes) proves the rope changes move nothing:** castBots 1-3 1-40 on this head is identical, row for row, to t-int-11's head
-(90297717); against t-build-22 the small moves (kid N hits 9 -> 14) came with t-int-11.
+**Kid N, traced (the lead's ruling B, 5:50 PM):** the rescues are at deep ponds on Normal (on 1g: x 28.7k the finale, 29.2k, 20.6k
+both kinds), never at X. **ENGINE-WORTHY: KID/ADULT first-timers can't let go of a held steer at a lip (firsttimer.ts thumbify ~2810).**
+Frame trace (adult N seed 23 on b1384feb, at W's bank x 12731): padRead returns stop from 39 px out while the breath is down (ph 'on'),
+the pad input stays `right` (thumbify re-arms the late release every frame for KID and ADULT, the documented R-165.59 quirk) and he runs
+off the lip into the deep water at 270 px/s; each respawn does it again until 5 lives and a rescue. On t-build-22 the kid was 34/40 by
+the same cause. A calibration question for R-165.59's owner, not tonight's.
+**2-1 on head 1i:** identical, row for row, to INT-11's committed run (reference/qa-reports/INT-11/castBots-2-1.txt). **1-3 (ropes):**
+identical to t-int-11's head (90297717), row for row (on 1g: the rope-line and rope-drop changes move nothing there).
+**riverRide (2-1's river bots), traced and fixed (1i, the lead's yes 8:14 PM):** t-int-11 has no clockRide; t-build-22's (METER-2a /
+ENG-22) clockRide made a bot on a drifting log at its edge wait a reaction before each step-off, never planted, and FIX-GATES' river plants
+(b58ec0e6) were made without it, so on the merge the child on Easy stood 8 s+ at 2-1's river edge and 4 plants stopped biting
+(METER-2a's own EXACT NEXT STEP 2 named this join). Drifting logs are left to the river bot's own skills: riverRide + clockRide 20/0.
 
 ## The lock
 `lockall --layouts 16 --intended 2-2 --check` against t-build-22 (recorded on a worktree at 7100589d), run at fa273f14: 101/102 stages
 unchanged, only 2-2 (intended). Later commits change only spur zones, 2-2's data and bot code; the lock on the integration head is step 4.
 
-## Suite (the member set, once, on the final head)
-SEE "Suite result" at the end (filled in when it finished). The first run (at f6518021) had 12 reds that t-build-22 has too (each run on a
-base worktree: flagSpan LV-9, riverSection dropsOf, verdicts 5-7 / 7-1, stageQuality x2, registrycheck, chaseBots, riverRide x4; the lead:
-fixed on t-int-11's final head) and 3 of mine, all fixed: w2.test 'the look', w2Arc22 'teach line 800+ px before', tierBots 'replay exactly'
-(a new TierRun field: now present only on a stage with a spur).
+## Suite (the member set, once, on the final head; CI's tool line in full)
+tsc PASS. Units (CLAUDE.md list) 3785 pass / 0 fail (1 TODO) on bf2f3012 (1i changes only firsttimer's drift branch). **CI's tool line
+(gates.yml:97, every file) on 1i: 212 pass / 0 fail (1 TODO, the chase child bot).** tierBots.test 7/0. seedlist 1-1 PASS, 2-2 PASS.
+coveragecheck PASS. knowncheck PASS, generalitycheck PASS, roadmapcheck PASS (after unshallowing: in a shallow clone it cannot check
+proofs). NOT run here (they run on the integration head and in CI): the build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck,
+buildcheck. Earlier reds and what became of them: 12 inherited from t-build-22 (each proven on a base worktree), fixed by the t-int-11
+merge except riverRide (fixed in 1i); 3 of mine, fixed: w2.test 'the look', w2Arc22 'teach line 800+ px before', tierBots 'replay
+exactly' (a new TierRun field: now only on a stage with a spur).
+
+## The story keeper's checks (the lead, 8:11 PM)
+1. w2_note (Dot's "Her writing!") is LAID on every listed seed: 100 of 100 Normal, 100 of 100 Easy (a collectible with findId w2_note).
+2. The crown lily's open flower reads white (stills/2-2-easy-L1-crown-x25564-sideways.jpg). **NOT MET: the stage's flower pickups draw
+   as Meeca's PINK petal** (every still and the HUD counter): the kit asks for passion/lotus, but every petal-stage flower is drawn as her
+   painted petal (vectorArt.ts drawCollectible), and no painted lavender or white pickup exists (src/assets/pickups). Lines-2-2.md fault 1
+   ('look nothing like her pink trail petals'). Named as a story fault for the next release (the lead, 8:17 PM: no code-drawn stand-in):
+   a lavender hyacinth / white lily petal pickup painting, then stagePlan 2-2 `looks.petal` (one line).
 
 ## Stills (reference/qa-reports/FIX-22/stills/, head 6d198be4, layout 1 = seed 2, both settings as BUILT, upright 412x915 and sideways
 915x412, 2x; shot by a scratch copy of stills-at-setting.mjs that finds each moment on the built stage)
@@ -85,7 +100,11 @@ fixed on t-int-11's final head) and 3 of mine, all fixed: w2.test 'the look', w2
 - `spur`: Dot's `stone` line is not on screen in the still (the quip card held the slot); w2Arc22.test 'every line is said' proves it is
   said. Sideways, the rope runs along the top of the screen behind the hearts while he stands on the stone (the camera follows him low);
   it is in view from the high bank, where he takes it.
-- `spur`: the stone is drawn as World 2's painted stone column (as BUILD-22's stones), with a lighter band where it meets the water.
+- `spur`: the stone was a code-drawn block with grid lines (60 px tall: terrain drew it); FIXED at the root (1h): every pond stone is 50 px
+  moss stone, World 2's painted kit rock, planted (w2Arc22.test 'every stepping stone'); re-shot both settings, both ways.
+- `spur` (named for 2-2's integration, the lead 7:47 PM): a pale flat strip below the waterline between the boulder and the far bank's
+  face (sideways x ~780-870): the tall bank's painted face undercuts below the water, and the pond's floor fill ends at the bank's
+  collider. Root fix in the river art / bank drawing (the bank's earth or the shallow look to the water's edge); not a 20-minute fix.
 - `sink`: shows the pad gone under and the splash, not the moment of the dip; a clip would show the shiver.
 - Not shot: a clip of X (out, wait for the breath on the stone, back, up the steps, the rope): rule "an interaction is judged on a clip"
   says it should be; it is the first thing to shoot on the integration head.
