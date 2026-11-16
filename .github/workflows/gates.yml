@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
+      # the type check runs here too, so a red shows in minutes, not after the publish job (0.9.9 run 43810079186)
+      - run: npx tsc --noEmit
       - run: node tools/perf/artcheck.mjs
       # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; tools/perf/chunkplan.mjs splits the game into
       # layered files). Built AS THE DEPLOY BUILDS (deploy.yml publish: the same BASE_PATH), so the gate measures the files that ship:
