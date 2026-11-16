@@ -1,5 +1,23 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
+
+## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
+- **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY
+  sheet that finishes loading) in their key. Any sheet arriving in play (2-2's pad ripple the first time a pad sank; a creature's sheet)
+  threw every baked square away, and with CHUNK_BUDGET 3 a frame the ground was drawn LIVE (drawGround: soil tile by tile, shadeSoil's
+  blobs) for the frames it took to repaint: 2-2 sideways at x 9388 went 5.70 -> 10.66 screens a frame for 4 frames (drawcheck 8.18 >
+  7.5). Now each square keeps the count it was painted at (`epoch` map); a stale square in view is drawn while `sheetsSince` repaints a
+  few a frame. Geometry, world, scale and view height still drop everything at once (a stale square there would be the wrong ground).
+  Planted: groundSeams.test.ts 'a sheet arriving in play never throws the painted ground away' (red without: 7 soil tiles live).
+- **How to find a drawcheck spike at one spot (it took minutes, not hours):** the harness's site numbers are summed over all spots, so
+  copy tools/perf/run.mjs to tools/perf/_x.tmp.mjs (it imports ./instrument.js; never commit it), make it visit spots 0..N but count
+  only spot N, screenshot each spot, and print `frames[].drawImageArea / (canvas w*h)` per frame: a spot measured alone was 5.71, after
+  spot 0 it was 8.18, and the per-frame numbers (5.70 x4, then 10.66 x4) showed a cache dropped mid-count. A console.log in the cache's
+  reset, read with page.on('console'), named the sheet. Draw-only fixes: prove the layout with a hash of platforms/vines/ropes/rivers/
+  collectibles/spawn/exit on both heads (FIX-22b REPORT).
+- Not done: protoArt.ts's bough tip cache (~line 457/485) still keys on sheetEpoch; one small canvas, never seen in a breach.
+
 Rewritten for INT-11 (11-15, t-int-11, link #5 = 1-6 + 1-7 + 1-8 + 2-1): section 0zj (the world finish in every judge, a refused roll never throws, the merges).
 Rewritten for INT-10b (11-15, t-int-10b): section 0zh (joined pit floors as one piece, the merges, 1-4's column petals, 8-3's pins, the swing into a bank).
 Rewritten for ENG-WATCH2 (11-15, t-eng-watch2): section 0ze (the watcher's glance, passAt, the re-check, the dials and the rulers).
