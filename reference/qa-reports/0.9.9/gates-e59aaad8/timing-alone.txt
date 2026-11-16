@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: generating a stage is quick: p90 under 500 ms, none over 1500 ms
+ok 1 - generating a stage is quick: p90 under 500 ms, none over 1500 ms
+  ---
+  duration_ms: 5273.129272
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5796.83677

@@ -1,0 +1,3560 @@
+TAP version 13
+# Subtest: the worlds fall into the story's three acts
+ok 1 - the worlds fall into the story's three acts
+  ---
+  duration_ms: 10.568531
+  type: 'test'
+  ...
+# Subtest: the bosses follow the acts
+ok 2 - the bosses follow the acts
+  ---
+  duration_ms: 0.391767
+  type: 'test'
+  ...
+# Subtest: every world keeps to its own style's tempo band (styles.ts): the canopy bounces, the grotto and the ruins are slow
+ok 3 - every world keeps to its own style's tempo band (styles.ts): the canopy bounces, the grotto and the ruins are slow
+  ---
+  duration_ms: 1027.214238
+  type: 'test'
+  ...
+# Subtest: the story's own tunes are quoted exactly, each in its own act and mode
+ok 4 - the story's own tunes are quoted exactly, each in its own act and mode
+  ---
+  duration_ms: 724.288813
+  type: 'test'
+  ...
+# Subtest: the lament is the lullaby's own notes in the relative minor, and the march is the lullaby with its third and sixth lowered
+ok 5 - the lament is the lullaby's own notes in the relative minor, and the march is the lullaby with its third and sixth lowered
+  ---
+  duration_ms: 0.889436
+  type: 'test'
+  ...
+# Subtest: the tune sits in the lead's range: the lead and anyone who takes over from it can play every note
+ok 6 - the tune sits in the lead's range: the lead and anyone who takes over from it can play every note
+  ---
+  duration_ms: 937.726852
+  type: 'test'
+  ...
+# Subtest: the placing rules: a tune takes the nearest octave that fits, and a tune that fits nowhere is refused
+ok 7 - the placing rules: a tune takes the nearest octave that fits, and a tune that fits nowhere is refused
+  ---
+  duration_ms: 0.255084
+  type: 'test'
+  ...
+# Subtest: Act I is sunny, Act II somber, Act III heavy
+ok 8 - Act I is sunny, Act II somber, Act III heavy
+  ---
+  duration_ms: 805.598381
+  type: 'test'
+  ...
+# Subtest: Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck
+ok 9 - Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck
+  ---
+  duration_ms: 206.598567
+  type: 'test'
+  ...
+# Subtest: the dressing leaves the tune to the fuller orchestra: no second set of doubles
+ok 10 - the dressing leaves the tune to the fuller orchestra: no second set of doubles
+  ---
+  duration_ms: 1.700834
+  type: 'test'
+  ...
+# Subtest: only Act I falls back to a written world theme; the later acts always get their own composed sound
+ok 11 - only Act I falls back to a written world theme; the later acts always get their own composed sound
+  ---
+  duration_ms: 17.890925
+  type: 'test'
+  ...
+# Subtest: each act's mix thins or thickens the orchestra the way its sound needs
+ok 12 - each act's mix thins or thickens the orchestra the way its sound needs
+  ---
+  duration_ms: 0.157868
+  type: 'test'
+  ...
+# Subtest: calm: the piece plays whole and no layer does
+ok 13 - calm: the piece plays whole and no layer does
+  ---
+  duration_ms: 1.699535
+  type: 'test'
+  ...
+# Subtest: each state moves the stems as it moved the parts
+ok 14 - each state moves the stems as it moved the parts
+  ---
+  duration_ms: 2.205417
+  type: 'test'
+  ...
+# Subtest: every role is in exactly one of the stems a stage records, and the mix holds every non-layer role
+ok 15 - every role is in exactly one of the stems a stage records, and the mix holds every non-layer role
+  ---
+  duration_ms: 1.60178
+  type: 'test'
+  ...
+# Subtest: a stage piece is known by its world and pace
+ok 16 - a stage piece is known by its world and pace
+  ---
+  duration_ms: 0.806485
+  type: 'test'
+  ...
+# Subtest: a piece plays its own recording; a stage's composition its world's, whatever its pace
+ok 17 - a piece plays its own recording; a stage's composition its world's, whatever its pace
+  ---
+  duration_ms: 0.28406
+  type: 'test'
+  ...
+# Subtest: every piece the game can ask for has a recording (the screens, every stage at any roll, every boss, the story)
+ok 18 - every piece the game can ask for has a recording (the screens, every stage at any roll, every boss, the story)
+  ---
+  duration_ms: 15.383655
+  type: 'test'
+  ...
+# Subtest: every world has its stage piece, and each piece fits the phones' memory (35 MB decoded)
+ok 19 - every world has its stage piece, and each piece fits the phones' memory (35 MB decoded)
+  ---
+  duration_ms: 0.324814
+  type: 'test'
+  ...
+# Subtest: the manifest is whole: every stem file it names exists, and every loop is longer than a few bars
+ok 20 - the manifest is whole: every stem file it names exists, and every loop is longer than a few bars
+  ---
+  duration_ms: 14.515031
+  type: 'test'
+  ...
+# Subtest: the eight pieces are written in the keys and at the speeds of what they are
+ok 21 - the eight pieces are written in the keys and at the speeds of what they are
+  ---
+  duration_ms: 38.306141
+  type: 'test'
+  ...
+# Subtest: each piece sounds within the first dozen seconds, and none is longer than two minutes
+ok 22 - each piece sounds within the first dozen seconds, and none is longer than two minutes
+  ---
+  duration_ms: 27.198224
+  type: 'test'
+  ...
+# Subtest: nothing in these pieces is a bell, a pluck or a mallet, and no melody goes above A5
+ok 23 - nothing in these pieces is a bell, a pluck or a mallet, and no melody goes above A5
+  ---
+  duration_ms: 5.088226
+  type: 'test'
+  ...
+# Subtest: every piece keeps its tune in voices that every phone plays: a melody that is neither gated away nor optional
+ok 24 - every piece keeps its tune in voices that every phone plays: a melody that is neither gated away nor optional
+  ---
+  duration_ms: 0.32377
+  type: 'test'
+  ...
+# Subtest: hush is almost nothing: no drums, no loud voice, the lullaby sung once at the start and once at the end, the middle gone
+ok 25 - hush is almost nothing: no drums, no loud voice, the lullaby sung once at the start and once at the end, the middle gone
+  ---
+  duration_ms: 0.595445
+  type: 'test'
+  ...
+# Subtest: dread: the cello creeps the Iron-Claw figure, the March is only hinted, and the piece never plays it through
+ok 26 - dread: the cello creeps the Iron-Claw figure, the March is only hinted, and the piece never plays it through
+  ---
+  duration_ms: 3.481606
+  type: 'test'
+  ...
+# Subtest: war: the March, whole, twice, low in the trombone, with the timpani on one and three
+ok 27 - war: the March, whole, twice, low in the trombone, with the timpani on one and three
+  ---
+  duration_ms: 0.53714
+  type: 'test'
+  ...
+# Subtest: chase: Pokey's tune cut short and breathless, passed from voice to voice, caught by the iron figure, and every round is harmonized as the tune leans
+ok 28 - chase: Pokey's tune cut short and breathless, passed from voice to voice, caught by the iron figure, and every round is harmonized as the tune leans
+  ---
+  duration_ms: 0.901
+  type: 'test'
+  ...
+# Subtest: reveal: the lullaby is sung up to its climb, its last two bars are withheld, and the fall stops on the second note, hanging
+ok 29 - reveal: the lullaby is sung up to its climb, its last two bars are withheld, and the fall stops on the second note, hanging
+  ---
+  duration_ms: 0.61743
+  type: 'test'
+  ...
+# Subtest: resolve: Pokey's tune alone in the cello, Grandma's four rising notes climbing from higher steps, then the tune brave with the four notes as a flick
+ok 30 - resolve: Pokey's tune alone in the cello, Grandma's four rising notes climbing from higher steps, then the tune brave with the four notes as a flick
+  ---
+  duration_ms: 1.270257
+  type: 'test'
+  ...
+# Subtest: mercy: the March unlocks into the lullaby: the sixth rises first, then the third, then the lilt, and the tune ends on the D the two songs share
+ok 31 - mercy: the March unlocks into the lullaby: the sixth rises first, then the third, then the lilt, and the tune ends on the D the two songs share
+  ---
+  duration_ms: 13.405078
+  type: 'test'
+  ...
+# Subtest: finale: the song three times, the bud first, the tune climbing D E F-sharp over the bloom, and Grandma's phrase at last arriving on the tonic
+ok 32 - finale: the song three times, the bud first, the tune climbing D E F-sharp over the bloom, and Grandma's phrase at last arriving on the tonic
+  ---
+  duration_ms: 4.301845
+  type: 'test'
+  ...
+# Subtest: the pieces share one tonal world: the March is the lullaby's notes with the third and sixth lowered, and nothing else
+ok 33 - the pieces share one tonal world: the March is the lullaby's notes with the third and sixth lowered, and nothing else
+  ---
+  duration_ms: 0.569909
+  type: 'test'
+  ...
+# Subtest: there is music for every world, boss and scene
+ok 34 - there is music for every world, boss and scene
+  ---
+  duration_ms: 7.120967
+  type: 'test'
+  ...
+# Subtest: world1: notation is valid and in tune
+ok 35 - world1: notation is valid and in tune
+  ---
+  duration_ms: 1.552482
+  type: 'test'
+  ...
+# Subtest: world1: hand-written melody stays mostly in its key and in a singable range
+ok 36 - world1: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 2.762801
+  type: 'test'
+  ...
+# Subtest: world2: notation is valid and in tune
+ok 37 - world2: notation is valid and in tune
+  ---
+  duration_ms: 0.273589
+  type: 'test'
+  ...
+# Subtest: world2: hand-written melody stays mostly in its key and in a singable range
+ok 38 - world2: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.140182
+  type: 'test'
+  ...
+# Subtest: world3: notation is valid and in tune
+ok 39 - world3: notation is valid and in tune
+  ---
+  duration_ms: 0.169443
+  type: 'test'
+  ...
+# Subtest: world3: hand-written melody stays mostly in its key and in a singable range
+ok 40 - world3: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.184391
+  type: 'test'
+  ...
+# Subtest: world4: notation is valid and in tune
+ok 41 - world4: notation is valid and in tune
+  ---
+  duration_ms: 0.137595
+  type: 'test'
+  ...
+# Subtest: world4: hand-written melody stays mostly in its key and in a singable range
+ok 42 - world4: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 5.742676
+  type: 'test'
+  ...
+# Subtest: world5: notation is valid and in tune
+ok 43 - world5: notation is valid and in tune
+  ---
+  duration_ms: 0.451857
+  type: 'test'
+  ...
+# Subtest: world5: hand-written melody stays mostly in its key and in a singable range
+ok 44 - world5: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.168139
+  type: 'test'
+  ...
+# Subtest: world6: notation is valid and in tune
+ok 45 - world6: notation is valid and in tune
+  ---
+  duration_ms: 0.133357
+  type: 'test'
+  ...
+# Subtest: world6: hand-written melody stays mostly in its key and in a singable range
+ok 46 - world6: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.067654
+  type: 'test'
+  ...
+# Subtest: world7: notation is valid and in tune
+ok 47 - world7: notation is valid and in tune
+  ---
+  duration_ms: 0.108639
+  type: 'test'
+  ...
+# Subtest: world7: hand-written melody stays mostly in its key and in a singable range
+ok 48 - world7: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.090521
+  type: 'test'
+  ...
+# Subtest: world8: notation is valid and in tune
+ok 49 - world8: notation is valid and in tune
+  ---
+  duration_ms: 0.123101
+  type: 'test'
+  ...
+# Subtest: world8: hand-written melody stays mostly in its key and in a singable range
+ok 50 - world8: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.100464
+  type: 'test'
+  ...
+# Subtest: world9: notation is valid and in tune
+ok 51 - world9: notation is valid and in tune
+  ---
+  duration_ms: 0.264104
+  type: 'test'
+  ...
+# Subtest: world9: hand-written melody stays mostly in its key and in a singable range
+ok 52 - world9: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.133286
+  type: 'test'
+  ...
+# Subtest: world10: notation is valid and in tune
+ok 53 - world10: notation is valid and in tune
+  ---
+  duration_ms: 0.182467
+  type: 'test'
+  ...
+# Subtest: world10: hand-written melody stays mostly in its key and in a singable range
+ok 54 - world10: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.112244
+  type: 'test'
+  ...
+# Subtest: bossA: notation is valid and in tune
+ok 55 - bossA: notation is valid and in tune
+  ---
+  duration_ms: 0.185975
+  type: 'test'
+  ...
+# Subtest: bossA: hand-written melody stays mostly in its key and in a singable range
+ok 56 - bossA: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.084213
+  type: 'test'
+  ...
+# Subtest: bossB: notation is valid and in tune
+ok 57 - bossB: notation is valid and in tune
+  ---
+  duration_ms: 5.464426
+  type: 'test'
+  ...
+# Subtest: bossB: hand-written melody stays mostly in its key and in a singable range
+ok 58 - bossB: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.158809
+  type: 'test'
+  ...
+# Subtest: bossC: notation is valid and in tune
+ok 59 - bossC: notation is valid and in tune
+  ---
+  duration_ms: 0.223951
+  type: 'test'
+  ...
+# Subtest: bossC: hand-written melody stays mostly in its key and in a singable range
+ok 60 - bossC: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.210137
+  type: 'test'
+  ...
+# Subtest: bossFinal: notation is valid and in tune
+ok 61 - bossFinal: notation is valid and in tune
+  ---
+  duration_ms: 0.236562
+  type: 'test'
+  ...
+# Subtest: bossFinal: hand-written melody stays mostly in its key and in a singable range
+ok 62 - bossFinal: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.128007
+  type: 'test'
+  ...
+# Subtest: results: notation is valid and in tune
+ok 63 - results: notation is valid and in tune
+  ---
+  duration_ms: 0.149377
+  type: 'test'
+  ...
+# Subtest: results: hand-written melody stays mostly in its key and in a singable range
+ok 64 - results: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.109304
+  type: 'test'
+  ...
+# Subtest: gameover: notation is valid and in tune
+ok 65 - gameover: notation is valid and in tune
+  ---
+  duration_ms: 0.145621
+  type: 'test'
+  ...
+# Subtest: gameover: hand-written melody stays mostly in its key and in a singable range
+ok 66 - gameover: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.098979
+  type: 'test'
+  ...
+# Subtest: jennifur: notation is valid and in tune
+ok 67 - jennifur: notation is valid and in tune
+  ---
+  duration_ms: 0.442623
+  type: 'test'
+  ...
+# Subtest: jennifur: hand-written melody stays mostly in its key and in a singable range
+ok 68 - jennifur: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.272265
+  type: 'test'
+  ...
+# Subtest: storyDusk: notation is valid and in tune
+ok 69 - storyDusk: notation is valid and in tune
+  ---
+  duration_ms: 9.536086
+  type: 'test'
+  ...
+# Subtest: storyDusk: hand-written melody stays mostly in its key and in a singable range
+ok 70 - storyDusk: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.321993
+  type: 'test'
+  ...
+# Subtest: storyStorm: notation is valid and in tune
+ok 71 - storyStorm: notation is valid and in tune
+  ---
+  duration_ms: 0.378295
+  type: 'test'
+  ...
+# Subtest: storyStorm: hand-written melody stays mostly in its key and in a singable range
+ok 72 - storyStorm: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.270922
+  type: 'test'
+  ...
+# Subtest: ending: notation is valid and in tune
+ok 73 - ending: notation is valid and in tune
+  ---
+  duration_ms: 0.375736
+  type: 'test'
+  ...
+# Subtest: ending: hand-written melody stays mostly in its key and in a singable range
+ok 74 - ending: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.423529
+  type: 'test'
+  ...
+# Subtest: generated melodies stay in key, in range and never leap wildly
+ok 75 - generated melodies stay in key, in range and never leap wildly
+  ---
+  duration_ms: 28.467714
+  type: 'test'
+  ...
+# Subtest: the generator is repeatable: same seed, same tune
+ok 76 - the generator is repeatable: same seed, same tune
+  ---
+  duration_ms: 8.009971
+  type: 'test'
+  ...
+# Subtest: pad voicings move smoothly between chords
+ok 77 - pad voicings move smoothly between chords
+  ---
+  duration_ms: 4.911201
+  type: 'test'
+  ...
+# Subtest: a New Game and a Load both re-read the game through one list
+ok 78 - a New Game and a Load both re-read the game through one list
+  ---
+  duration_ms: 7.430126
+  type: 'test'
+  ...
+# Subtest: every state App.tsx loads from storage is re-read after a New Game or a Load (the journal and the flashbacks included)
+ok 79 - every state App.tsx loads from storage is re-read after a New Game or a Load (the journal and the flashbacks included)
+  ---
+  duration_ms: 1.884847
+  type: 'test'
+  ...
+# Subtest: the last game's run is forgotten too (its result card, medals and Game Over count)
+ok 80 - the last game's run is forgotten too (its result card, medals and Game Over count)
+  ---
+  duration_ms: 0.132166
+  type: 'test'
+  ...
+# Subtest: the count starts at nothing, eases out and lands exactly on the final number
+ok 81 - the count starts at nothing, eases out and lands exactly on the final number
+  ---
+  duration_ms: 1.026281
+  type: 'test'
+  ...
+# Subtest: ticks every 50 ms, sixteen at most, and none for a count of nothing
+ok 82 - ticks every 50 ms, sixteen at most, and none for a count of nothing
+  ---
+  duration_ms: 0.734962
+  type: 'test'
+  ...
+# Subtest: the stars land after the counts, one by one, and the medals after the last star
+ok 83 - the stars land after the counts, one by one, and the medals after the last star
+  ---
+  duration_ms: 0.180747
+  type: 'test'
+  ...
+# Subtest: no player-facing component renders the old vector <Icon> beyond the allow-list, and the list only shrinks
+ok 84 - no player-facing component renders the old vector <Icon> beyond the allow-list, and the list only shrinks
+  ---
+  duration_ms: 32.296686
+  type: 'test'
+  ...
+# Subtest: every painted icon has its file, each under 60 KB and 4096 px
+ok 85 - every painted icon has its file, each under 60 KB and 4096 px
+  ---
+  duration_ms: 20.595324
+  type: 'test'
+  ...
+# Subtest: one object per meaning on every screen: Satchel is always the satchel, How to Play always the lantern (lead, 2026-11-01)
+ok 86 - one object per meaning on every screen: Satchel is always the satchel, How to Play always the lantern (lead, 2026-11-01)
+  ---
+  duration_ms: 7.932289
+  type: 'test'
+  ...
+# Subtest: no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list
+ok 87 - no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list
+  ---
+  duration_ms: 4.698958
+  type: 'test'
+  ...
+# Subtest: the file line: stages, stories and finds travel in the save file; sound does not, and the words say exactly that
+ok 88 - the file line: stages, stories and finds travel in the save file; sound does not, and the words say exactly that
+  ---
+  duration_ms: 28.471608
+  type: 'test'
+  ...
+# Subtest: the dialog promises no sound setting, volume or mute (the file carries none)
+ok 89 - the dialog promises no sound setting, volume or mute (the file carries none)
+  ---
+  duration_ms: 2.207784
+  type: 'test'
+  ...
+# Subtest: the save-error and load-note lines are the story keeper's
+ok 90 - the save-error and load-note lines are the story keeper's
+  ---
+  duration_ms: 0.145482
+  type: 'test'
+  ...
+# Subtest: the typed count belongs to its own picture and page: a new picture starts at 0 on its first render
+ok 91 - the typed count belongs to its own picture and page: a new picture starts at 0 on its first render
+  ---
+  duration_ms: 4.114618
+  type: 'test'
+  ...
+# Subtest: StoryPlayer derives the count (no effect resets it, so the voice never sees the last line's count)
+ok 92 - StoryPlayer derives the count (no effect resets it, so the voice never sees the last line's count)
+  ---
+  duration_ms: 1.398062
+  type: 'test'
+  ...
+#   60 dressing rows on 10 listed stages x 2 layouts x 2 settings, each through the gate
+# Subtest: planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+ok 93 - planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+  ---
+  duration_ms: 2.131206
+  type: 'test'
+  ...
+# Subtest: the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+ok 94 - the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+  ---
+  duration_ms: 208.01687
+  type: 'test'
+  ...
+# Subtest: the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+ok 95 - the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+  ---
+  duration_ms: 0.235924
+  type: 'test'
+  ...
+# Subtest: every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces
+ok 96 - every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces
+  ---
+  duration_ms: 70929.794183
+  type: 'test'
+  ...
+# Subtest: no code lays dressing rows on a stage this gate does not build: every writer of proto.invDress is a listed stage's world file
+ok 97 - no code lays dressing rows on a stage this gate does not build: every writer of proto.invDress is a listed stage's world file
+  ---
+  duration_ms: 312.454072
+  type: 'test'
+  ...
+# Subtest: readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved
+ok 98 - readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved
+  ---
+  duration_ms: 4.919782
+  type: 'test'
+  ...
+# Subtest: every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+ok 99 - every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+  ---
+  duration_ms: 19060.74088
+  type: 'test'
+  ...
+# Subtest: the ascent a player is given (a random layout, checked) can be climbed
+ok 100 - the ascent a player is given (a random layout, checked) can be climbed
+  ---
+  duration_ms: 40647.43741
+  type: 'test'
+  ...
+# Subtest: the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+ok 101 - the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+  ---
+  duration_ms: 1137.151471
+  type: 'test'
+  ...
+# Subtest: the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+ok 102 - the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+  ---
+  duration_ms: 155.287935
+  type: 'test'
+  ...
+# Subtest: the storm pictures of the story have the storm around them (the thunderstorm ambience)
+ok 103 - the storm pictures of the story have the storm around them (the thunderstorm ambience)
+  ---
+  duration_ms: 3.318026
+  type: 'test'
+  ...
+# Subtest: there is a boss definition for every world, each with moves that make sense
+ok 104 - there is a boss definition for every world, each with moves that make sense
+  ---
+  duration_ms: 5.587819
+  type: 'test'
+  ...
+# Subtest: boss hit points grow with the world and phases fall at 70% and 35%
+ok 105 - boss hit points grow with the world and phases fall at 70% and 35%
+  ---
+  duration_ms: 0.193774
+  type: 'test'
+  ...
+# Subtest: a boss roars, walks, winds up, attacks, then gives you an opening
+ok 106 - a boss roars, walks, winds up, attacks, then gives you an opening
+  ---
+  duration_ms: 16.331669
+  type: 'test'
+  ...
+# Subtest: light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+ok 107 - light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+  ---
+  duration_ms: 0.322718
+  type: 'test'
+  ...
+# Subtest: the golem cannot be interrupted out of its fist slam
+ok 108 - the golem cannot be interrupted out of its fist slam
+  ---
+  duration_ms: 0.138975
+  type: 'test'
+  ...
+# Subtest: dropping hp across a threshold makes the boss roar and enter the next phase
+ok 109 - dropping hp across a threshold makes the boss roar and enter the next phase
+  ---
+  duration_ms: 2.318518
+  type: 'test'
+  ...
+# Subtest: the croc crashes into the wall at the end of its death roll and is left stunned
+ok 110 - the croc crashes into the wall at the end of its death roll and is left stunned
+  ---
+  duration_ms: 0.490079
+  type: 'test'
+  ...
+# Subtest: warnings come first: a column or a drop cannot hurt until its warning is over
+ok 111 - warnings come first: a column or a drop cannot hurt until its warning is over
+  ---
+  duration_ms: 3.406169
+  type: 'test'
+  ...
+# Subtest: spit lands as a puddle that slows but does not hurt
+ok 112 - spit lands as a puddle that slows but does not hurt
+  ---
+  duration_ms: 0.745976
+  type: 'test'
+  ...
+# Subtest: an hour of fighting every boss never breaks anything
+ok 113 - an hour of fighting every boss never breaks anything
+  ---
+  duration_ms: 673.958297
+  type: 'test'
+  ...
+# Subtest: hazards that leave the arena or run out are removed
+ok 114 - hazards that leave the arena or run out are removed
+  ---
+  duration_ms: 0.220404
+  type: 'test'
+  ...
+# Subtest: Thornbark has his own tougher move set, and the secret level picks him
+ok 115 - Thornbark has his own tougher move set, and the secret level picks him
+  ---
+  duration_ms: 10.413292
+  type: 'test'
+  ...
+# Subtest: the secret level builds an arena fight with Thornbark and no Daisy
+ok 116 - the secret level builds an arena fight with Thornbark and no Daisy
+  ---
+  duration_ms: 191.083945
+  type: 'test'
+  ...
+# Subtest: stage 7-7 hides a reachable Thorn Gate, and no other stage does
+ok 117 - stage 7-7 hides a reachable Thorn Gate, and no other stage does
+  ---
+  duration_ms: 2540.267518
+  type: 'test'
+  ...
+# Subtest: hearts: five to start, six with the Thorn Heart
+ok 118 - hearts: five to start, six with the Thorn Heart
+  ---
+  duration_ms: 0.222054
+  type: 'test'
+  ...
+# Subtest: 1-10 sideways: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+ok 119 - 1-10 sideways: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+  ---
+  duration_ms: 888.176805
+  type: 'test'
+  ...
+# Subtest: 3-10 sideways: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+ok 120 - 3-10 sideways: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+  ---
+  duration_ms: 312.682246
+  type: 'test'
+  ...
+# Subtest: 1-10 upright: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+ok 121 - 1-10 upright: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+  ---
+  duration_ms: 583.3707
+  type: 'test'
+  ...
+# Subtest: 3-10 upright: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+ok 122 - 3-10 upright: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+  ---
+  duration_ms: 152.891205
+  type: 'test'
+  ...
+# Subtest: 1-10: the lunge stops just past the hero, and goes the full length only for a hero by the far fence
+ok 123 - 1-10: the lunge stops just past the hero, and goes the full length only for a hero by the far fence
+  ---
+  duration_ms: 9.835032
+  type: 'test'
+  ...
+# Subtest: 3-10: the pounce lands on the ring marked as he crouches: standing still is hit, running out after a 0.8 s reaction is not
+ok 124 - 3-10: the pounce lands on the ring marked as he crouches: standing still is hit, running out after a 0.8 s reaction is not
+  ---
+  duration_ms: 30.10965
+  type: 'test'
+  ...
+# Subtest: 1-10: no hiding place the head cannot reach, a short way down the tree, and a cradle at its top
+ok 125 - 1-10: no hiding place the head cannot reach, a short way down the tree, and a cradle at its top
+  ---
+  duration_ms: 7.712528
+  type: 'test'
+  ...
+# Subtest: every window covers the slowest first hit measured by touch, plus 0.6 s to hit
+ok 126 - every window covers the slowest first hit measured by touch, plus 0.6 s to hit
+  ---
+  duration_ms: 6.884461
+  type: 'test'
+  ...
+# Subtest: 1-10: his coils are a wall (no getting behind them, nor up the fence tree there), and holding up at the treetop is a safe perch
+ok 127 - 1-10: his coils are a wall (no getting behind them, nor up the fence tree there), and holding up at the treetop is a safe perch
+  ---
+  duration_ms: 46.397709
+  type: 'test'
+  ...
+# Subtest: 3-10: a ring never comes down where a hero at the fence cannot get out of it, and he lands with his back to a hero who dodged either way
+ok 128 - 3-10: a ring never comes down where a hero at the fence cannot get out of it, and he lands with his back to a hero who dodged either way
+  ---
+  duration_ms: 21.561065
+  type: 'test'
+  ...
+# Subtest: 3-10: the dash is taught, its path glows, and a double jump as he comes clears it (standing still does not)
+ok 129 - 3-10: the dash is taught, its path glows, and a double jump as he comes clears it (standing still does not)
+  ---
+  duration_ms: 79.943389
+  type: 'test'
+  ...
+# Subtest: every species has all five wing frames in the atlas
+ok 130 - every species has all five wing frames in the atlas
+  ---
+  duration_ms: 0.765881
+  type: 'test'
+  ...
+# Subtest: each world picks species that exist, and neighbours differ
+ok 131 - each world picks species that exist, and neighbours differ
+  ---
+  duration_ms: 0.283877
+  type: 'test'
+  ...
+# Subtest: a stage inside the camera reach has no breach
+ok 132 - a stage inside the camera reach has no breach
+  ---
+  duration_ms: 1.335447
+  type: 'test'
+  ...
+# Subtest: a planted platform over the camera reach is caught, upright and sideways (Roll B: an end log at y -237)
+ok 133 - a planted platform over the camera reach is caught, upright and sideways (Roll B: an end log at y -237)
+  ---
+  duration_ms: 0.361757
+  type: 'test'
+  ...
+# Subtest: a platform he would stand on with his head under the HUD: 244 upright passes, 230 fails upright only
+ok 134 - a platform he would stand on with his head under the HUD: 244 upright passes, 230 fails upright only
+  ---
+  duration_ms: 0.209883
+  type: 'test'
+  ...
+# Subtest: the totem, a pickup and a dressing piece over the reach are caught, and a piece under the level foot
+ok 135 - the totem, a pickup and a dressing piece over the reach are caught, and a piece under the level foot
+  ---
+  duration_ms: 0.171559
+  type: 'test'
+  ...
+# Subtest: CT-20: a stage after Meeca's reads no carving spot on its first frame
+ok 136 - CT-20: a stage after Meeca's reads no carving spot on its first frame
+  ---
+  duration_ms: 718.610003
+  type: 'test'
+  ...
+# Subtest: CT-20: Dot's flight clears the swing, bush and carving flags
+ok 137 - CT-20: Dot's flight clears the swing, bush and carving flags
+  ---
+  duration_ms: 31.241563
+  type: 'test'
+  ...
+# Subtest: the collapse waits until he passes its start, then sets off behind him
+ok 138 - the collapse waits until he passes its start, then sets off behind him
+  ---
+  duration_ms: 7.759247
+  type: 'test'
+  ...
+# Subtest: a player who keeps running pulls away; one who stops is caught within a few seconds
+ok 139 - a player who keeps running pulls away; one who stops is caught within a few seconds
+  ---
+  duration_ms: 13.810767
+  type: 'test'
+  ...
+# Subtest: it goes faster the farther ahead he is, and faster again on the last stretch
+ok 140 - it goes faster the farther ahead he is, and faster again on the last stretch
+  ---
+  duration_ms: 0.141777
+  type: 'test'
+  ...
+# Subtest: a restart puts the collapse well behind the flag and holds it a moment
+ok 141 - a restart puts the collapse well behind the flag and holds it a moment
+  ---
+  duration_ms: 0.173656
+  type: 'test'
+  ...
+# Subtest: the rows: Normal is the old 1-8 (unchanged); Easy is at most 200 px/s and never faster than his run, last stretch included
+ok 142 - the rows: Normal is the old 1-8 (unchanged); Easy is at most 200 px/s and never faster than his run, last stretch included
+  ---
+  duration_ms: 0.556979
+  type: 'test'
+  ...
+# Subtest: a lay that cannot run is named: overlapping stretches, an end before its start, a "last" that is not last, none at all
+ok 143 - a lay that cannot run is named: overlapping stretches, an end before its start, a "last" that is not last, none at all
+  ---
+  duration_ms: 0.676501
+  type: 'test'
+  ...
+# Subtest: Normal: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+ok 144 - Normal: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+  ---
+  duration_ms: 5.174894
+  type: 'test'
+  ...
+# Subtest: Normal: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+ok 145 - Normal: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+  ---
+  duration_ms: 36.191111
+  type: 'test'
+  ...
+# Subtest: Normal: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+ok 146 - Normal: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+  ---
+  duration_ms: 0.57955
+  type: 'test'
+  ...
+# Subtest: Easy: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+ok 147 - Easy: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+  ---
+  duration_ms: 4.053709
+  type: 'test'
+  ...
+# Subtest: Easy: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+ok 148 - Easy: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+  ---
+  duration_ms: 0.958843
+  type: 'test'
+  ...
+# Subtest: Easy: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+ok 149 - Easy: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+  ---
+  duration_ms: 0.58035
+  type: 'test'
+  ...
+# Subtest: sections: each on its own stretch's ground; one on a fork or past the last fork belongs to none and never falls
+ok 150 - sections: each on its own stretch's ground; one on a fork or past the last fork belongs to none and never falls
+  ---
+  duration_ms: 13.420901
+  type: 'test'
+  ...
+# Subtest: the tip: the stretch's last section is drawn as the tip; as he leaves it on the liana the whole stretch falls at once, in slow motion
+ok 151 - the tip: the stretch's last section is drawn as the tip; as he leaves it on the liana the whole stretch falls at once, in slow motion
+  ---
+  duration_ms: 1333.551714
+  type: 'test'
+  ...
+# Subtest: the tip, PLANTED: with no tip on the stretch, the same run leaves the branch ahead of the front standing, and no slow motion
+ok 152 - the tip, PLANTED: with no tip on the stretch, the same run leaves the branch ahead of the front standing, and no slow motion
+  ---
+  duration_ms: 334.196235
+  type: 'test'
+  ...
+# Subtest: the tip holds while he stands on it; a respawn before it makes the whole branch end again
+ok 153 - the tip holds while he stands on it; a respawn before it makes the whole branch end again
+  ---
+  duration_ms: 578.615063
+  type: 'test'
+  ...
+# Subtest: the lay refuses a tip on a stretch that is not the last
+ok 154 - the lay refuses a tip on a stretch that is not the last
+  ---
+  duration_ms: 0.711635
+  type: 'test'
+  ...
+# Subtest: the tip on the real camera, upright 412x915: as the branch end falls the whole tip and 200+ px of branch are on the screen
+ok 155 - the tip on the real camera, upright 412x915: as the branch end falls the whole tip and 200+ px of branch are on the screen
+  ---
+  duration_ms: 314.714536
+  type: 'test'
+  ...
+# Subtest: the tip on the real camera, sideways 915x412: as the branch end falls the whole tip and 200+ px of branch are on the screen
+ok 156 - the tip on the real camera, sideways 915x412: as the branch end falls the whole tip and 200+ px of branch are on the screen
+  ---
+  duration_ms: 365.699157
+  type: 'test'
+  ...
+# Subtest: the tip on the real camera, narrow upright 360x800: as the branch end falls the whole tip and 200+ px of branch are on the screen
+ok 157 - the tip on the real camera, narrow upright 360x800: as the branch end falls the whole tip and 200+ px of branch are on the screen
+  ---
+  duration_ms: 233.504481
+  type: 'test'
+  ...
+# Subtest: the tip on the real camera, PLANTED: without the lean (TIP_VIEW off) the upright view loses the tip as it falls
+ok 158 - the tip on the real camera, PLANTED: without the lean (TIP_VIEW off) the upright view loses the tip as it falls
+  ---
+  duration_ms: 330.975097
+  type: 'test'
+  ...
+# Subtest: rocks on the clock: every drop does exactly what it did, to the last bit
+ok 159 - rocks on the clock: every drop does exactly what it did, to the last bit
+  ---
+  duration_ms: 1405.486194
+  type: 'test'
+  ...
+# Subtest: zones on the clock (spores, wind, the tide, geysers, bolts): every zone does exactly what it did
+ok 160 - zones on the clock (spores, wind, the tide, geysers, bolts): every zone does exactly what it did
+  ---
+  duration_ms: 3298.649248
+  type: 'test'
+  ...
+# Subtest: thorn vines on the clock: every vine does exactly what it did, the one that never sleeps too
+ok 161 - thorn vines on the clock: every vine does exactly what it did, the one that never sleeps too
+  ---
+  duration_ms: 2267.297119
+  type: 'test'
+  ...
+# Subtest: eagle nests, teapots and orchids on the clock: each does exactly what it did
+ok 162 - eagle nests, teapots and orchids on the clock: each does exactly what it did
+  ---
+  duration_ms: 2681.327098
+  type: 'test'
+  ...
+# Subtest: surging falls, Dot's gusts, river logs and lifts on the clock: each does exactly what it did
+ok 163 - surging falls, Dot's gusts, river logs and lifts on the clock: each does exactly what it did
+  ---
+  duration_ms: 3475.697024
+  type: 'test'
+  ...
+# Subtest: CT-21: hopping off a shimmy rope goes the way the flick leaned, even against the steer held a moment before
+ok 164 - CT-21: hopping off a shimmy rope goes the way the flick leaned, even against the steer held a moment before
+  ---
+  duration_ms: 1515.57792
+  type: 'test'
+  ...
+# Subtest: CT-21: on a rope the steering thumb's flick up and back lets go of the steer (no intent lock there), and leans that way
+ok 165 - CT-21: on a rope the steering thumb's flick up and back lets go of the steer (no intent lock there), and leans that way
+  ---
+  duration_ms: 2.03379
+  type: 'test'
+  ...
+# Subtest: CT-23: one 20 degree lean: the flick that carries a lean and the least lean that can let go of a vine are the same number
+ok 166 - CT-23: one 20 degree lean: the flick that carries a lean and the least lean that can let go of a vine are the same number
+  ---
+  duration_ms: 0.121264
+  type: 'test'
+  ...
+# Subtest: CT-24: a thumb drifting slowly down and up after a jump is no second jump; a real wiggle or flick still is
+ok 167 - CT-24: a thumb drifting slowly down and up after a jump is no second jump; a real wiggle or flick still is
+  ---
+  duration_ms: 11.9166
+  type: 'test'
+  ...
+# Subtest: CT-22: a still press too long for a tap and too short for a mega punches, on either half
+ok 168 - CT-22: a still press too long for a tap and too short for a mega punches, on either half
+  ---
+  duration_ms: 1.981385
+  type: 'test'
+  ...
+# Subtest: CT-26: pressing Jump while the pad is held up is a fresh jump press (the second jump), off a vine too
+ok 169 - CT-26: pressing Jump while the pad is held up is a fresh jump press (the second jump), off a vine too
+  ---
+  duration_ms: 0.36101
+  type: 'test'
+  ...
+# Subtest: CT-15: a second thumb tapping 45-70 px from the steering thumb punches (the palm rule ate it); resting there it throws no mega
+ok 170 - CT-15: a second thumb tapping 45-70 px from the steering thumb punches (the palm rule ate it); resting there it throws no mega
+  ---
+  duration_ms: 0.674953
+  type: 'test'
+  ...
+# Subtest: CT-16: a touch at the very side edge does nothing until it moves; one that slides in steers
+ok 171 - CT-16: a touch at the very side edge does nothing until it moves; one that slides in steers
+  ---
+  duration_ms: 0.404335
+  type: 'test'
+  ...
+# Subtest: CT-16: a finger the browser no longer reports is dropped on the next touch, so it never holds the steering
+ok 172 - CT-16: a finger the browser no longer reports is dropped on the next touch, so it never holds the steering
+  ---
+  duration_ms: 0.540775
+  type: 'test'
+  ...
+# Subtest: CT-17: the Pad punches as Punch is pressed, and holding it on 320 ms upgrades to the mega
+ok 173 - CT-17: the Pad punches as Punch is pressed, and holding it on 320 ms upgrades to the mega
+  ---
+  duration_ms: 1378.056554
+  type: 'test'
+  ...
+# Subtest: CT-17: a second thumb's tap starts the jab as it lands, not when it lifts, and lifting does not punch again
+ok 174 - CT-17: a second thumb's tap starts the jab as it lands, not when it lifts, and lifting does not punch again
+  ---
+  duration_ms: 704.393981
+  type: 'test'
+  ...
+# Subtest: CT-17: a second thumb that lands and flicks up (its first move reported 50 ms late) jumps, and its jab is taken back before it strikes
+ok 175 - CT-17: a second thumb that lands and flicks up (its first move reported 50 ms late) jumps, and its jab is taken back before it strikes
+  ---
+  duration_ms: 710.125471
+  type: 'test'
+  ...
+# Subtest: CT-18: a touch that misses a Pad button by a few px still presses it, and anywhere in the buttons' half presses the nearest
+ok 176 - CT-18: a touch that misses a Pad button by a few px still presses it, and anywhere in the buttons' half presses the nearest
+  ---
+  duration_ms: 20.927706
+  type: 'test'
+  ...
+# Subtest: CT-14: every move a touch makes is reported where the finger is, and the steering thumb's anchor and run direction are there to draw
+ok 177 - CT-14: every move a touch makes is reported where the finger is, and the steering thumb's anchor and run direction are there to draw
+  ---
+  duration_ms: 0.41506
+  type: 'test'
+  ...
+# Subtest: CT-14: a mark flashes, its label fades by 450 ms, and a jab taken back leaves no mark; Auto shows them in World 1 only
+ok 178 - CT-14: a mark flashes, its label fades by 450 ms, and a jab taken back leaves no mark; Auto shows them in World 1 only
+  ---
+  duration_ms: 0.255424
+  type: 'test'
+  ...
+# Subtest: CT-28: sensitivity scales how far a quick flick must rise: 18 px at 100%, about 14 at 135%, 24 at 75%; the palm stays the palm
+ok 179 - CT-28: sensitivity scales how far a quick flick must rise: 18 px at 100%, about 14 at 135%, 24 at 75%; the palm stays the palm
+  ---
+  duration_ms: 1.247204
+  type: 'test'
+  ...
+# Subtest: CT-28: Steer with Right mirrors the screen: a lone first finger on the right steers at once, one on the left taps to punch
+ok 180 - CT-28: Steer with Right mirrors the screen: a lone first finger on the right steers at once, one on the left taps to punch
+  ---
+  duration_ms: 0.336044
+  type: 'test'
+  ...
+# Subtest: LV-3 in the real engine, on 1-1 (the living double teach): one jump drops safe, the second lands on the far bank, long and short holds
+ok 181 - LV-3 in the real engine, on 1-1 (the living double teach): one jump drops safe, the second lands on the far bank, long and short holds
+  ---
+  duration_ms: 5003.03299
+  type: 'test'
+  ...
+# Subtest: C-07: starting 1-1 does not mark the coach and the gap lesson as taught before anything was said
+ok 182 - C-07: starting 1-1 does not mark the coach and the gap lesson as taught before anything was said
+  ---
+  duration_ms: 922.779349
+  type: 'test'
+  ...
+# Subtest: C-07: the coach is taught, and the gap lesson with it, once its jump line has been up its minimum time (not before, not by the run line)
+ok 183 - C-07: the coach is taught, and the gap lesson with it, once its jump line has been up its minimum time (not before, not by the run line)
+  ---
+  duration_ms: 11.276271
+  type: 'test'
+  ...
+# Subtest: her state codes: waiting, flap, hover, sink, drinking, tired, through the gap
+ok 184 - her state codes: waiting, flap, hover, sink, drinking, tired, through the gap
+  ---
+  duration_ms: 18.297521
+  type: 'test'
+  ...
+# Subtest: the 'p' line is Dot (her x, y and speed, the thumb's direction), and the section is her beat
+ok 185 - the 'p' line is Dot (her x, y and speed, the thumb's direction), and the section is her beat
+  ---
+  duration_ms: 296.495558
+  type: 'test'
+  ...
+# Subtest: flap and hover intents, nectar every 5 s, and empty when it runs out
+ok 186 - flap and hover intents, nectar every 5 s, and empty when it runs out
+  ---
+  duration_ms: 5.531248
+  type: 'test'
+  ...
+# Subtest: flowers are checkpoints (drink, pass, respawn), a thorn is a scratch, and through the gap is the finish
+ok 187 - flowers are checkpoints (drink, pass, respawn), a thorn is a scratch, and through the gap is the finish
+  ---
+  duration_ms: 2.344795
+  type: 'test'
+  ...
+# Subtest: waiting: the stage teach line goes before stock lessons queued ahead of it
+ok 188 - waiting: the stage teach line goes before stock lessons queued ahead of it
+  ---
+  duration_ms: 28.45243
+  type: 'test'
+  ...
+# Subtest: up: a stock lesson's move tip, once read, steps aside for the stage teach line, and comes back once after it
+ok 189 - up: a stock lesson's move tip, once read, steps aside for the stage teach line, and comes back once after it
+  ---
+  duration_ms: 5.596727
+  type: 'test'
+  ...
+# Subtest: a stage teach line never makes a lesson give way before it has been read its reading time
+ok 190 - a stage teach line never makes a lesson give way before it has been read its reading time
+  ---
+  duration_ms: 1.104184
+  type: 'test'
+  ...
+# Subtest: a free eagle: its first pass over him dives and pulls up short (no box hurts); the next one is real
+ok 191 - a free eagle: its first pass over him dives and pulls up short (no box hurts); the next one is real
+  ---
+  duration_ms: 28.893826
+  type: 'test'
+  ...
+# Subtest: an eagle laid plain: its first pass is real on Normal, free on Easy (every stretch, 1-7.md Easy)
+ok 192 - an eagle laid plain: its first pass is real on Normal, free on Easy (every stretch, 1-7.md Easy)
+  ---
+  duration_ms: 18.13298
+  type: 'test'
+  ...
+# Subtest: back at a flag inside its stretch: the eagle stands down for its whole calm, and its eye warns before it starts across
+ok 193 - back at a flag inside its stretch: the eagle stands down for its whole calm, and its eye warns before it starts across
+  ---
+  duration_ms: 33.467977
+  type: 'test'
+  ...
+# Subtest: an eagle's own cool per stretch beats the kind's, and Easy still waits longer
+ok 194 - an eagle's own cool per stretch beats the kind's, and Easy still waits longer
+  ---
+  duration_ms: 19.190886
+  type: 'test'
+  ...
+# Subtest: the moss comes over him only in cover: none still in the open, all the way in after the calm-in, gone the step he moves
+ok 195 - the moss comes over him only in cover: none still in the open, all the way in after the calm-in, gone the step he moves
+  ---
+  duration_ms: 0.424168
+  type: 'test'
+  ...
+# Subtest: a mossy liana is cover while he holds it, wherever it swings; another vine is not; climbing it is moving
+ok 196 - a mossy liana is cover while he holds it, wherever it swings; another vine is not; climbing it is moving
+  ---
+  duration_ms: 0.2057
+  type: 'test'
+  ...
+# Subtest: the engine's game time is its stage clock's, bit for bit, and is still the plain sum of its steps
+ok 197 - the engine's game time is its stage clock's, bit for bit, and is still the plain sum of its steps
+  ---
+  duration_ms: 1415.089782
+  type: 'test'
+  ...
+# Subtest: a harness that places game time places the clock, and the next step counts on from there (realPlay.ts `t`)
+ok 198 - a harness that places game time places the clock, and the next step counts on from there (realPlay.ts `t`)
+  ---
+  duration_ms: 441.351189
+  type: 'test'
+  ...
+# Subtest: find hints: every find has its own hint, no two alike
+ok 199 - find hints: every find has its own hint, no two alike
+  ---
+  duration_ms: 0.909752
+  type: 'test'
+  ...
+# Subtest: find hints: short (under 12 words, so two or three lines on a card), and no filler
+ok 200 - find hints: short (under 12 words, so two or three lines on a card), and no filler
+  ---
+  duration_ms: 0.348528
+  type: 'test'
+  ...
+# Subtest: a run cut off at a flag comes back at that flag, with its run, for that stage only
+ok 201 - a run cut off at a flag comes back at that flag, with its run, for that stage only
+  ---
+  duration_ms: 1.592759
+  type: 'test'
+  ...
+# Subtest: a flag without the run it held (an older save) does not resume: the stage starts at the beginning
+ok 202 - a flag without the run it held (an older save) does not resume: the stage starts at the beginning
+  ---
+  duration_ms: 0.302903
+  type: 'test'
+  ...
+# Subtest: a stage that ended the normal way forgets its flag
+ok 203 - a stage that ended the normal way forgets its flag
+  ---
+  duration_ms: 0.145541
+  type: 'test'
+  ...
+# Subtest: a day later the stage starts at the beginning again
+ok 204 - a day later the stage starts at the beginning again
+  ---
+  duration_ms: 0.103454
+  type: 'test'
+  ...
+# Subtest: broken or missing storage never stops a stage starting
+ok 205 - broken or missing storage never stops a stage starting
+  ---
+  duration_ms: 0.11683
+  type: 'test'
+  ...
+# Subtest: a flower tucked under a low branch moves up onto the branch
+ok 206 - a flower tucked under a low branch moves up onto the branch
+  ---
+  duration_ms: 7.0559
+  type: 'test'
+  ...
+# Subtest: a flower under a branch over the water, with nothing to land on, is out of reach
+ok 207 - a flower under a branch over the water, with nothing to land on, is out of reach
+  ---
+  duration_ms: 0.259129
+  type: 'test'
+  ...
+# Subtest: a jump arc over a gap and a let-go arc off a swing count as reachable
+ok 208 - a jump arc over a gap and a let-go arc off a swing count as reachable
+  ---
+  duration_ms: 0.276721
+  type: 'test'
+  ...
+# Subtest: every flower, fruit and leaf in every stage is somewhere he can get it
+ok 209 - every flower, fruit and leaf in every stage is somewhere he can get it
+  ---
+  duration_ms: 155506.910804
+  type: 'test'
+  ...
+# Subtest: a steady 30 fps never steps down
+ok 210 - a steady 30 fps never steps down
+  ---
+  duration_ms: 1.487825
+  type: 'test'
+  ...
+# Subtest: a screen stuck at ~20 fps steps down, and keeps stepping while it stays slow
+ok 211 - a screen stuck at ~20 fps steps down, and keeps stepping while it stays slow
+  ---
+  duration_ms: 0.24169
+  type: 'test'
+  ...
+# Subtest: the first second of a stage is not judged
+ok 212 - the first second of a stage is not judged
+  ---
+  duration_ms: 0.099958
+  type: 'test'
+  ...
+# Subtest: after a step it settles before judging again
+ok 213 - after a step it settles before judging again
+  ---
+  duration_ms: 0.178512
+  type: 'test'
+  ...
+# Subtest: one huge gap (the app was in the background) cannot trigger a step by itself
+ok 214 - one huge gap (the app was in the background) cannot trigger a step by itself
+  ---
+  duration_ms: 0.20217
+  type: 'test'
+  ...
+# Subtest: a hiccup in a healthy run does not step down
+ok 215 - a hiccup in a healthy run does not step down
+  ---
+  duration_ms: 0.182324
+  type: 'test'
+  ...
+# Subtest: the first four seconds of a stage are not judged (a slow start is start-up work)
+ok 216 - the first four seconds of a stage are not judged (a slow start is start-up work)
+  ---
+  duration_ms: 0.197358
+  type: 'test'
+  ...
+# Subtest: steady frames after a step down bring the sharper picture back, once; slow again after that and it stays down
+ok 217 - steady frames after a step down bring the sharper picture back, once; slow again after that and it stays down
+  ---
+  duration_ms: 0.62093
+  type: 'test'
+  ...
+# Subtest: a step up offered at full quality does not undo the next step down
+ok 218 - a step up offered at full quality does not undo the next step down
+  ---
+  duration_ms: 0.459431
+  type: 'test'
+  ...
+# 1-1's pool fills 4 slots: "landing/platforms bouncy moss_stone" (W1 0, W2 0 pieces); "landing/platforms solid branch" (W1 0, W2 0 pieces); "landing/platforms solid log" (W1 7, W2 15 pieces); "landing/platforms solid moss_stone" (W1 26, W2 21 pieces)
+# no row: World 1 ["landing/platforms bouncy moss_stone","landing/platforms solid branch"], World 2 ["landing/platforms bouncy moss_stone","landing/platforms solid branch"]; 36 of 61 1-1 sections are bricks both worlds can dress
+# "landing/platforms solid moss_stone": World 1 laid HF1-P-02-a, HF1-stump-short, HF1-stump-tall, N-02-a (+22); World 2 laid HF1-P-02-c, HF1-P-02-d, N-03-b, N-03-c (+17)
+# "landing/platforms solid log": World 1 laid N-06-b, W1-17-a, W1-26-b, W1-27-a (+3); World 2 laid M-14-a, M-14-b, W1-17-b, W1-19-a (+11)
+# 61 bricks laid over 8 proven 1-1 plans, twice each
+# Subtest: the inventory has what the proof needs: slots both worlds dress, with different art, and bricks to lay
+ok 219 - the inventory has what the proof needs: slots both worlds dress, with different art, and bricks to lay
+  ---
+  duration_ms: 12.412699
+  type: 'test'
+  ...
+# Subtest: one brick, two worlds' art: 1-1's own sections on proven plans, the same pieces where they stood, each in its own world's inventory row
+ok 220 - one brick, two worlds' art: 1-1's own sections on proven plans, the same pieces where they stood, each in its own world's inventory row
+  ---
+  duration_ms: 622.933239
+  type: 'test'
+  ...
+# Subtest: a world that gives the slot its own style lays the brick in that style (the row decides, not the section)
+ok 221 - a world that gives the slot its own style lays the brick in that style (the row decides, not the section)
+  ---
+  duration_ms: 63.421376
+  type: 'test'
+  ...
+# Subtest: a brick that asks a slot the world has no row for fails by name (never a silent stand-in)
+ok 222 - a brick that asks a slot the world has no row for fails by name (never a silent stand-in)
+  ---
+  duration_ms: 43.678976
+  type: 'test'
+  ...
+# Subtest: a section with no slot lays as it does today, whatever rows the world carries (nothing shipped moves)
+ok 223 - a section with no slot lays as it does today, whatever rows the world carries (nothing shipped moves)
+  ---
+  duration_ms: 173.160562
+  type: 'test'
+  ...
+# Subtest: a floor mushroom stood on its bank (cap 30 px up) is a walk-on mount; caps after it in the chain are not mounts
+ok 224 - a floor mushroom stood on its bank (cap 30 px up) is a walk-on mount; caps after it in the chain are not mounts
+  ---
+  duration_ms: 1.545022
+  type: 'test'
+  ...
+# Subtest: planted: the first cap on a tall stem (180 px over its bank) is refused by name; at the band top it passes
+ok 225 - planted: the first cap on a tall stem (180 px over its bank) is refused by name; at the band top it passes
+  ---
+  duration_ms: 0.996564
+  type: 'test'
+  ...
+# Subtest: planted: a first cap with no ground within reach (a pole sticking out of a pit) is refused
+ok 226 - planted: a first cap with no ground within reach (a pole sticking out of a pit) is refused
+  ---
+  duration_ms: 0.263152
+  type: 'test'
+  ...
+# Subtest: chain.mount is a registered promise on every judged stage, both settings, and a listed name
+ok 227 - chain.mount is a registered promise on every judged stage, both settings, and a listed name
+  ---
+  duration_ms: 0.158628
+  type: 'test'
+  ...
+# Subtest: 1-2's library chains are walk-on mounts on 12 rolls, both settings (none refused chain.mount)
+ok 228 - 1-2's library chains are walk-on mounts on 12 rolls, both settings (none refused chain.mount)
+  ---
+  duration_ms: 15656.186268
+  type: 'test'
+  ...
+# Subtest: a creak piece becomes the world's creaky limb: fragile, its look and its hold by setting from the world row
+ok 229 - a creak piece becomes the world's creaky limb: fragile, its look and its hold by setting from the world row
+  ---
+  duration_ms: 1.416065
+  type: 'test'
+  ...
+# Subtest: a world with no creaky limb row fails the roll by name, never a stand-in
+ok 230 - a world with no creaky limb row fails the roll by name, never a stand-in
+  ---
+  duration_ms: 0.412493
+  type: 'test'
+  ...
+# Subtest: World 7's ruin tiles stay never needed; a sound platform is never a limb
+ok 231 - World 7's ruin tiles stay never needed; a sound platform is never a limb
+  ---
+  duration_ms: 0.104563
+  type: 'test'
+  ...
+# Subtest: on the built 1-5, every limb laid up to the end of the lesson's section is free (never needed), and every one after it is not
+ok 232 - on the built 1-5, every limb laid up to the end of the lesson's section is free (never needed), and every one after it is not
+  ---
+  duration_ms: 3745.754854
+  type: 'test'
+  ...
+# Subtest: the engine holds a limb its own `creak` seconds once he stands on it (not the 1.1 every fragile platform had), then drops it
+ok 233 - the engine holds a limb its own `creak` seconds once he stands on it (not the 1.1 every fragile platform had), then drops it
+  ---
+  duration_ms: 778.957023
+  type: 'test'
+  ...
+# Subtest: a limb that gave way is whole again on a set-back (Matt 11-02: a required one is whole again when he respawns)
+ok 234 - a limb that gave way is whole again on a set-back (Matt 11-02: a required one is whole again when he respawns)
+  ---
+  duration_ms: 497.92238
+  type: 'test'
+  ...
+# Subtest: a creaky limb laid ACROSS a pit (a jump on, a jump off) has the pit under it too: one pit lip to lip; a sound bough keeps two
+ok 235 - a creaky limb laid ACROSS a pit (a jump on, a jump off) has the pit under it too: one pit lip to lip; a sound bough keeps two
+  ---
+  duration_ms: 6.041729
+  type: 'test'
+  ...
+# Subtest: on the built 1-7, every creaky limb has ground under the whole of it (Normal, seeds 1-3; on Easy they are sound boughs)
+ok 236 - on the built 1-7, every creaky limb has ground under the whole of it (Normal, seeds 1-3; on Easy they are sound boughs)
+  ---
+  duration_ms: 8550.928688
+  type: 'test'
+  ...
+# Subtest: a section tagged for another stage, or one whose `not` names this stage's own, is never laid
+ok 237 - a section tagged for another stage, or one whose `not` names this stage's own, is never laid
+  ---
+  duration_ms: 1518.338075
+  type: 'test'
+  ...
+# Subtest: World 1's pool for 1-2 holds only sections that name 1-2; 1-1's holds only those that name 1-1
+ok 238 - World 1's pool for 1-2 holds only sections that name 1-2; 1-1's holds only those that name 1-1
+  ---
+  duration_ms: 0.903627
+  type: 'test'
+  ...
+# Subtest: gen2 1-1: one to three forks, apart, not in the opening or the final approach (24 listed seeds, both settings)
+ok 239 - gen2 1-1: one to three forks, apart, not in the opening or the final approach (24 listed seeds, both settings)
+  ---
+  duration_ms: 6456.299471
+  type: 'test'
+  ...
+# Subtest: the graphs vary roll to roll, and every roll keeps the order rules and the brief
+ok 240 - the graphs vary roll to roll, and every roll keeps the order rules and the brief
+  ---
+  duration_ms: 107481.485229
+  type: 'test'
+  ...
+# Subtest: a teach node holds the section that teaches its move, a fork node a two-road section; nothing uses a move before its teach
+ok 241 - a teach node holds the section that teaches its move, a fork node a two-road section; nothing uses a move before its teach
+  ---
+  duration_ms: 12828.312181
+  type: 'test'
+  ...
+# Subtest: Easy lays Normal's graph
+ok 242 - Easy lays Normal's graph
+  ---
+  duration_ms: 45172.282759
+  type: 'test'
+  ...
+# Subtest: a stage with no brief, or a world with no graphs, takes the SPINE
+ok 243 - a stage with no brief, or a world with no graphs, takes the SPINE
+  ---
+  duration_ms: 793.30611
+  type: 'test'
+  ...
+# Subtest: length from the chunk count: quiet nodes and forks hold one section, every node at least one, no section twice (the hard no-repeat)
+ok 244 - length from the chunk count: quiet nodes and forks hold one section, every node at least one, no section twice (the hard no-repeat)
+  ---
+  duration_ms: 295342.987888
+  type: 'test'
+  ...
+# Subtest: a windowed section stands only in its stretch of the stage
+ok 245 - a windowed section stands only in its stretch of the stage
+  ---
+  duration_ms: 303153.456841
+  type: 'test'
+  ...
+# Subtest: the cadence: a hard node climbs, then its last section cools
+ok 246 - the cadence: a hard node climbs, then its last section cools
+  ---
+  duration_ms: 282311.340472
+  type: 'test'
+  ...
+# Subtest: the content deal: every content node typed, the counts the deal's give or take 1, no type over 40% or on two neighbours, floating only late
+ok 247 - the content deal: every content node typed, the counts the deal's give or take 1, no type over 40% or on two neighbours, floating only late
+  ---
+  duration_ms: 86500.529514
+  type: 'test'
+  ...
+# Subtest: a required section stands in its own reward node (the key's H), right before the signature, in the last third
+ok 248 - a required section stands in its own reward node (the key's H), right before the signature, in the last third
+  ---
+  duration_ms: 200269.627643
+  type: 'test'
+  ...
+# Subtest: a section whose laid exit leaves the corridor is swapped, never kept, whatever exitDy it declares
+ok 249 - a section whose laid exit leaves the corridor is swapped, never kept, whatever exitDy it declares
+  ---
+  duration_ms: 1941.576878
+  type: 'test'
+  ...
+# Subtest: a roll its rules cannot fill FAILS, the missing piece named (Law 22): a required section whose move is never taught, never an exception
+ok 250 - a roll its rules cannot fill FAILS, the missing piece named (Law 22): a required section whose move is never taught, never an exception
+  ---
+  duration_ms: 41838.267167
+  type: 'test'
+  ...
+# Subtest: V19: in a trend-up stage the node after a descent in the last third takes a rising section, by rule (graph C, 8 seeds)
+ok 251 - V19: in a trend-up stage the node after a descent in the last third takes a rising section, by rule (graph C, 8 seeds)
+  ---
+  duration_ms: 25589.205809
+  type: 'test'
+  ...
+# Subtest: the clue (R-165.31): a bootprint decor socket on the end log is filled every roll, once, reported as dressing at the log's top
+ok 252 - the clue (R-165.31): a bootprint decor socket on the end log is filled every roll, once, reported as dressing at the log's top
+  ---
+  duration_ms: 3014.225648
+  type: 'test'
+  ...
+# Subtest: a rolled stage that climbs past the camera's reach is moved down whole: its highest platform, pickup and totem sit inside it
+ok 253 - a rolled stage that climbs past the camera's reach is moved down whole: its highest platform, pickup and totem sit inside it
+  ---
+  duration_ms: 2725.445533
+  type: 'test'
+  ...
+# Subtest: Matt's seed 15458 normal (0.9.5): the petal log under the log is refused as a dead zone, and nothing else around it
+ok 254 - Matt's seed 15458 normal (0.9.5): the petal log under the log is refused as a dead zone, and nothing else around it
+  ---
+  duration_ms: 42.927044
+  type: 'test'
+  ...
+# red: x 28782..28989, top 1019
+# Subtest: Matt's seed 15406 easy (0.9.5): the petal log under the log is refused as a dead zone, and nothing else around it
+ok 255 - Matt's seed 15406 easy (0.9.5): the petal log under the log is refused as a dead zone, and nothing else around it
+  ---
+  duration_ms: 47.830917
+  type: 'test'
+  ...
+# red: x 34793..35026, top 971
+# Subtest: Matt's seed 21537 normal (0.9.5): the find's high log over the mushroom is refused as a dead zone, and nothing else around it
+ok 256 - Matt's seed 21537 normal (0.9.5): the find's high log over the mushroom is refused as a dead zone, and nothing else around it
+  ---
+  duration_ms: 3.842073
+  type: 'test'
+  ...
+# red: x 32210..32412, top 430
+# Subtest: Matt's seed 21537 easy (0.9.5): the find's high log over the mushroom is refused as a dead zone, and nothing else around it
+ok 257 - Matt's seed 21537 easy (0.9.5): the find's high log over the mushroom is refused as a dead zone, and nothing else around it
+  ---
+  duration_ms: 0.445583
+  type: 'test'
+  ...
+# red: x 34586..34836, top 430
+# Subtest: toy, normal: a petal log 72 px under a ledge with a log over the gap: the walk-off falls short, the jump lands on the log above
+ok 258 - toy, normal: a petal log 72 px under a ledge with a log over the gap: the walk-off falls short, the jump lands on the log above
+  ---
+  duration_ms: 1.056863
+  type: 'test'
+  ...
+# Subtest: toy, normal: Matt's three mushrooms in a row on flat ground have no purpose; under a high ledge (and a chain into it) they have
+ok 259 - toy, normal: Matt's three mushrooms in a row on flat ground have no purpose; under a high ledge (and a chain into it) they have
+  ---
+  duration_ms: 8.409176
+  type: 'test'
+  ...
+# Subtest: toy, easy: a petal log 72 px under a ledge with a log over the gap: the walk-off falls short, the jump lands on the log above
+ok 260 - toy, easy: a petal log 72 px under a ledge with a log over the gap: the walk-off falls short, the jump lands on the log above
+  ---
+  duration_ms: 0.818365
+  type: 'test'
+  ...
+# Subtest: toy, easy: Matt's three mushrooms in a row on flat ground have no purpose; under a high ledge (and a chain into it) they have
+ok 261 - toy, easy: Matt's three mushrooms in a row on flat ground have no purpose; under a high ledge (and a chain into it) they have
+  ---
+  duration_ms: 1.54797
+  type: 'test'
+  ...
+# Subtest: the real engine: no plain walk-off or full jump reaches Matt's petal logs with margin (15458 normal, 15406 easy)
+ok 262 - the real engine: no plain walk-off or full jump reaches Matt's petal logs with margin (15458 normal, 15406 easy)
+  ---
+  duration_ms: 33456.203921
+  type: 'test'
+  ...
+# Subtest: the real engine: the clean ways the judge names land (the toy twins, and every petal log of 15458 the judge passes)
+ok 263 - the real engine: the clean ways the judge names land (the toy twins, and every petal log of 15458 the judge passes)
+  ---
+  duration_ms: 54962.569156
+  type: 'test'
+  ...
+# Subtest: the table: a row per listed stage, its kit and what is that stage's alone as fields
+ok 264 - the table: a row per listed stage, its kit and what is that stage's alone as fields
+  ---
+  duration_ms: 2.198327
+  type: 'test'
+  ...
+# Subtest: withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+ok 265 - withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+  ---
+  duration_ms: 35.624856
+  type: 'test'
+  ...
+# Subtest: nothing in the game calls withTestStage: tests only
+ok 266 - nothing in the game calls withTestStage: tests only
+  ---
+  duration_ms: 166.9847
+  type: 'test'
+  ...
+# Subtest: node dials: every dial is read off the token and written back as it was
+ok 267 - node dials: every dial is read off the token and written back as it was
+  ---
+  duration_ms: 3.006686
+  type: 'test'
+  ...
+# Subtest: node dials: the three example strings of the plan parse, leg marks and all
+ok 268 - node dials: the three example strings of the plan parse, leg marks and all
+  ---
+  duration_ms: 1.199814
+  type: 'test'
+  ...
+# Subtest: node dials (planted): a sign that is no dial, a number that means nothing and a name with no mark are each refused by name
+ok 269 - node dials (planted): a sign that is no dial, a number that means nothing and a name with no mark are each refused by name
+  ---
+  duration_ms: 2.36739
+  type: 'test'
+  ...
+# Subtest: node dials: a graph that writes a dial is laid with it (or the roll fails by name, nodeAsks.ts); a pick fails by name
+ok 270 - node dials: a graph that writes a dial is laid with it (or the roll fails by name, nodeAsks.ts); a pick fails by name
+  ---
+  duration_ms: 4711.702419
+  type: 'test'
+  ...
+# Subtest: the wall: at the earlier floor's end, a face he cannot climb, never over the lip; none in a floor too shallow for one
+ok 271 - the wall: at the earlier floor's end, a face he cannot climb, never over the lip; none in a floor too shallow for one
+  ---
+  duration_ms: 0.898908
+  type: 'test'
+  ...
+# Subtest: 1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall, so the earlier pit's only way up is its own stair
+ok 272 - 1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall, so the earlier pit's only way up is its own stair
+  ---
+  duration_ms: 58802.267182
+  type: 'test'
+  ...
+# Subtest: 1-6 as the game plays it, the rescue layouts, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back)
+ok 273 - 1-6 as the game plays it, the rescue layouts, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back)
+  ---
+  duration_ms: 65617.970675
+  type: 'test'
+  ...
+# Subtest: the lay: river.ts's own rules (its window a whole number of spacings, logLayout's count and offsets, the logs at LOG_DROP)
+ok 274 - the lay: river.ts's own rules (its window a whole number of spacings, logLayout's count and offsets, the logs at LOG_DROP)
+  ---
+  duration_ms: 16.628868
+  type: 'test'
+  ...
+# Subtest: the hand-built World 2 stages lay every log river through the lay, and every one is fair (seeds 1-3)
+ok 275 - the hand-built World 2 stages lay every log river through the lay, and every one is fair (seeds 1-3)
+  ---
+  duration_ms: 5286.633271
+  type: 'test'
+  ...
+# Subtest: World 2's river rows lay fair under World 2's banks and under World 6's (the lay is world-neutral)
+ok 276 - World 2's river rows lay fair under World 2's banks and under World 6's (the lay is world-neutral)
+  ---
+  duration_ms: 7.760921
+  type: 'test'
+  ...
+# Subtest: planted: each fairness rule names the river built to break it
+ok 277 - planted: each fairness rule names the river built to break it
+  ---
+  duration_ms: 0.629369
+  type: 'test'
+  ...
+# Subtest: the game's main script reaches no list file by a static import; the index loads each list lazily (planted)
+ok 278 - the game's main script reaches no list file by a static import; the index loads each list lazily (planted)
+  ---
+  duration_ms: 508.682293
+  type: 'test'
+  ...
+# Subtest: every stage in the index has its list file, and the index's own size does not depend on a list's length
+ok 279 - every stage in the index has its list file, and the index's own size does not depend on a list's length
+  ---
+  duration_ms: 0.198059
+  type: 'test'
+  ...
+# Subtest: the kit: a sweeper with one pass (Post.passes 1) calls it, then never another, however long he stays in its stretch
+ok 280 - the kit: a sweeper with one pass (Post.passes 1) calls it, then never another, however long he stays in its stretch
+  ---
+  duration_ms: 13.944932
+  type: 'test'
+  ...
+# Subtest: the kit: a sweeper whose one pass is spent never turns its head again (no re-check, no glance); one with no budget keeps glancing
+ok 281 - the kit: a sweeper whose one pass is spent never turns its head again (no re-check, no glance); one with no budget keeps glancing
+  ---
+  duration_ms: 24.572764
+  type: 'test'
+  ...
+# Subtest: the lay: on fork 0 the moss carpet lies on the fork just past where the collapse stops, one perched eagle past it, its one pass toward him
+ok 282 - the lay: on fork 0 the moss carpet lies on the fork just past where the collapse stops, one perched eagle past it, its one pass toward him
+  ---
+  duration_ms: 2.553163
+  type: 'test'
+  ...
+# Subtest: the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched (a flag where its post must stand is MOVED: the next test)
+ok 283 - the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched (a flag where its post must stand is MOVED: the next test)
+  ---
+  duration_ms: 4.842144
+  type: 'test'
+  ...
+# Subtest: real engine, Normal: he arrives at a full run and the screech comes at once; the warn shows 2 s before the eye starts across
+ok 284 - real engine, Normal: he arrives at a full run and the screech comes at once; the warn shows 2 s before the eye starts across
+  ---
+  duration_ms: 1332.8995
+  type: 'test'
+  ...
+# Subtest: real engine, Normal: running on through the still fork, the eagle dives on him (a heart); stopping in the moss and holding still, never
+ok 285 - real engine, Normal: running on through the still fork, the eagle dives on him (a heart); stopping in the moss and holding still, never
+  ---
+  duration_ms: 758.506133
+  type: 'test'
+  ...
+# Subtest: real engine, PLANTED: with its eye crossing his way (the kind's passAt far taken away, facing 1) a runner who never stops gets through untouched; toward him he does not
+ok 286 - real engine, PLANTED: with its eye crossing his way (the kind's passAt far taken away, facing 1) a runner who never stops gets through untouched; toward him he does not
+  ---
+  duration_ms: 814.333488
+  type: 'test'
+  ...
+# Subtest: real engine, Easy: the still fork's one pass is harmless even to a runner (Easy's first pass is free, core.ts sparedPass)
+ok 287 - real engine, Easy: the still fork's one pass is harmless even to a runner (Easy's first pass is free, core.ts sparedPass)
+  ---
+  duration_ms: 441.087963
+  type: 'test'
+  ...
+# Subtest: a flag where the post must stand: the lay moves it past the post, on the fork before the next crack; with no room it refuses by name
+ok 288 - a flag where the post must stand: the lay moves it past the post, on the fork before the next crack; with no room it refuses by name
+  ---
+  duration_ms: 0.88181
+  type: 'test'
+  ...
+# Subtest: an ascent has a graph and it is laid up; a run names no flow and is laid right, with nothing of a tower on it
+ok 289 - an ascent has a graph and it is laid up; a run names no flow and is laid right, with nothing of a tower on it
+  ---
+  duration_ms: 815.710856
+  type: 'test'
+  ...
+# Subtest: the fixture tower rolls clean going up on 12 seeds, both settings: its own verdicts and levelCheck
+ok 290 - the fixture tower rolls clean going up on 12 seeds, both settings: its own verdicts and levelCheck
+  ---
+  duration_ms: 31889.201279
+  type: 'test'
+  ...
+# Subtest: a tower is a tower: it climbs many storeys inside its width, under the camera top, and its shrine stands at the top
+ok 291 - a tower is a tower: it climbs many storeys inside its width, under the camera top, and its shrine stands at the top
+  ---
+  duration_ms: 4.134677
+  type: 'test'
+  ...
+# Subtest: a storey is a climb: every turn rises more than any jump, on a vine that joins the two storeys
+ok 292 - a storey is a climb: every turn rises more than any jump, on a vine that joins the two storeys
+  ---
+  duration_ms: 4.660255
+  type: 'test'
+  ...
+# Subtest: the same seed is the same tower; another seed is another; and its packed plan lays it again (the seed list replay)
+ok 293 - the same seed is the same tower; another seed is another; and its packed plan lays it again (the seed list replay)
+  ---
+  duration_ms: 2789.068854
+  type: 'test'
+  ...
+# Subtest: Easy is Normal's tower: the same sections in the same order, no more animals, its flags kept
+ok 294 - Easy is Normal's tower: the same sections in the same order, no more animals, its flags kept
+  ---
+  duration_ms: 0.323106
+  type: 'test'
+  ...
+# Subtest: reflectLocal: a storey that runs left is the section mirrored about its entry, every height kept
+ok 295 - reflectLocal: a storey that runs left is the section mirrored about its entry, every height kept
+  ---
+  duration_ms: 0.674433
+  type: 'test'
+  ...
+# Subtest: storeyLimit: a storey keeps a double jump, his body and a margin clear of what it is laid over (or under)
+ok 296 - storeyLimit: a storey keeps a double jump, his body and a margin clear of what it is laid over (or under)
+  ---
+  duration_ms: 0.22781
+  type: 'test'
+  ...
+# Subtest: in a built tower no storey is skipped: with any one turn's vine gone, the summit is out of reach
+ok 297 - in a built tower no storey is skipped: with any one turn's vine gone, the summit is out of reach
+  ---
+  duration_ms: 2049.052893
+  type: 'test'
+  ...
+# Subtest: towerFalls: going up, a step off any end is caught by sound wood within a trunk section; a planted hole is named
+ok 298 - towerFalls: going up, a step off any end is caught by sound wood within a trunk section; a planted hole is named
+  ---
+  duration_ms: 23.59964
+  type: 'test'
+  ...
+# Subtest: towerCatches: every open end of a planted tower is given a catch, and no catch lets a jump climb a storey
+ok 299 - towerCatches: every open end of a planted tower is given a catch, and no catch lets a jump climb a storey
+  ---
+  duration_ms: 0.709844
+  type: 'test'
+  ...
+# Subtest: leaps: the tower's jump model says yes to everything the engine flies, and no to a turn
+ok 300 - leaps: the tower's jump model says yes to everything the engine flies, and no to a turn
+  ---
+  duration_ms: 0.149964
+  type: 'test'
+  ...
+# Subtest: towerSkips: a planted ladder (a catch bough in reach of a hop's catch) is named; without it the vine is the only way
+ok 301 - towerSkips: a planted ladder (a catch bough in reach of a hop's catch) is named; without it the vine is the only way
+  ---
+  duration_ms: 0.205
+  type: 'test'
+  ...
+# Subtest: a section's gap catches are its own wood: its extent reaches down to them, so a storey clears what it is laid over by them too
+ok 302 - a section's gap catches are its own wood: its extent reaches down to them, so a storey clears what it is laid over by them too
+  ---
+  duration_ms: 102.435004
+  type: 'test'
+  ...
+# Subtest: a built tower with a catch gone, or a ladder added, is refused by name: the verdicts are judged and fail the roll
+ok 303 - a built tower with a catch gone, or a ladder added, is refused by name: the verdicts are judged and fail the roll
+  ---
+  duration_ms: 71.603944
+  type: 'test'
+  ...
+# Subtest: every piece of a storey, its hops' catch boughs included, lies a turn or more over the ledge its vine stands on
+ok 304 - every piece of a storey, its hops' catch boughs included, lies a turn or more over the ledge its vine stands on
+  ---
+  duration_ms: 1163.65047
+  type: 'test'
+  ...
+# Subtest: levelCheck: a tower's flags are in order when each is further ALONG THE ROUTE, though x runs both ways and a storey may hold two
+ok 305 - levelCheck: a tower's flags are in order when each is further ALONG THE ROUTE, though x runs both ways and a storey may hold two
+  ---
+  duration_ms: 1894.703555
+  type: 'test'
+  ...
+# Subtest: flagFurther: two flags on one storey both count, in the order he meets them (height calls neither further)
+ok 306 - flagFurther: two flags on one storey both count, in the order he meets them (height calls neither further)
+  ---
+  duration_ms: 0.289119
+  type: 'test'
+  ...
+# Subtest: towerFlags: Matt's flag rule measured along the climb: a flag before each hard node, none close, no span over the cap, the last near the exit
+ok 307 - towerFlags: Matt's flag rule measured along the climb: a flag before each hard node, none close, no span over the cap, the last near the exit
+  ---
+  duration_ms: 9.451521
+  type: 'test'
+  ...
+# Subtest: towerFlagBreaches, both ways (planted): none, too early, too far apart, a hard node with none before it, too far from the exit
+ok 308 - towerFlagBreaches, both ways (planted): none, too early, too far apart, a hard node with none before it, too far from the exit
+  ---
+  duration_ms: 0.499797
+  type: 'test'
+  ...
+# Subtest: the time model walks a tower's route, not its width, and every roll is two minutes or more for a quick player
+ok 309 - the time model walks a tower's route, not its width, and every roll is two minutes or more for a quick player
+  ---
+  duration_ms: 6.155452
+  type: 'test'
+  ...
+# Subtest: the route measure: a run is its x; a tower adds what he walks and climbs, storey by storey, never back
+ok 310 - the route measure: a run is its x; a tower adds what he walks and climbs, storey by storey, never back
+  ---
+  duration_ms: 0.225372
+  type: 'test'
+  ...
+# Subtest: a tower with a rolled graph (a designed arc) rolls clean: the same beats in the graph's order on every roll, a flag before every hard node along the climb
+ok 311 - a tower with a rolled graph (a designed arc) rolls clean: the same beats in the graph's order on every roll, a flag before every hard node along the climb
+  ---
+  duration_ms: 53727.345175
+  type: 'test'
+  ...
+# Subtest: along the climb: no animal in the opening seconds of the way, and the quiet stretches are px of way
+ok 312 - along the climb: no animal in the opening seconds of the way, and the quiet stretches are px of way
+  ---
+  duration_ms: 0.867227
+  type: 'test'
+  ...
+# Subtest: a stage whose brief asks (GraphBrief.tags) has every laid piece tagged with its section and key; any other stage carries no tag
+ok 313 - a stage whose brief asks (GraphBrief.tags) has every laid piece tagged with its section and key; any other stage carries no tag
+  ---
+  duration_ms: 13116.073561
+  type: 'test'
+  ...
+# Subtest: towerGates (planted, B14's case): a bough the lay ran on beside a shut gate is one hop from a field vine's top; without it the gate holds
+ok 314 - towerGates (planted, B14's case): a bough the lay ran on beside a shut gate is one hop from a field vine's top; without it the gate holds
+  ---
+  duration_ms: 0.490705
+  type: 'test'
+  ...
+# Subtest: towerCatches leaves a gate alone: a sealed piece is never run on, and no catch of another piece is laid level with it or a hop from it
+ok 315 - towerCatches leaves a gate alone: a sealed piece is never run on, and no catch of another piece is laid level with it or a hop from it
+  ---
+  duration_ms: 0.359724
+  type: 'test'
+  ...
+# Subtest: a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it
+ok 316 - a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it
+  ---
+  duration_ms: 24878.246879
+  type: 'test'
+  ...
+# Subtest: the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)
+ok 317 - the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)
+  ---
+  duration_ms: 0.176278
+  type: 'test'
+  ...
+# Subtest: towerVaults: straight up at a vine's top must land on wood whichever way he faces; 1-4's turn-back as laid passes, and a planted bough out of the vault's reach, or none at all, is named (B14c, 11-13)
+ok 318 - towerVaults: straight up at a vine's top must land on wood whichever way he faces; 1-4's turn-back as laid passes, and a planted bough out of the vault's reach, or none at all, is named (B14c, 11-13)
+  ---
+  duration_ms: 0.376054
+  type: 'test'
+  ...
+# Subtest: a built tower whose turn vine stands out of the vault's reach of the storey above is refused by name and fails the roll
+ok 319 - a built tower whose turn vine stands out of the vault's reach of the storey above is refused by name and fails the roll
+  ---
+  duration_ms: 18.053416
+  type: 'test'
+  ...
+# Subtest: 5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick player, the arena's sections in it, enough spiders, both rooms in some rolls
+ok 320 - 5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick player, the arena's sections in it, enough spiders, both rooms in some rolls
+  ---
+  duration_ms: 7466.60765
+  type: 'test'
+  ...
+# Subtest: 5-9: no quiet stretch over 4 s in the arena's own sections on any roll, rests aside (the inspector's dead time)
+ok 321 - 5-9: no quiet stretch over 4 s in the arena's own sections on any roll, rests aside (the inspector's dead time)
+  ---
+  duration_ms: 6797.738555
+  type: 'test'
+  ...
+# Subtest: 5-9: Dot explains the shut shrine once, before the first spider when the garden gate starts the stage (nearly always); the arches stand in the scene; Easy and Normal are the same stage
+ok 322 - 5-9: Dot explains the shut shrine once, before the first spider when the garden gate starts the stage (nearly always); the arches stand in the scene; Easy and Normal are the same stage
+  ---
+  duration_ms: 7399.720131
+  type: 'test'
+  ...
+# Subtest: 5-9's rolls differ (the era tool's measure, as curation reads it): diversity 0.35+ over 20 rolls, every garden gate's theme comes up
+ok 323 - 5-9's rolls differ (the era tool's measure, as curation reads it): diversity 0.35+ over 20 rolls, every garden gate's theme comes up
+  ---
+  duration_ms: 2993.2411
+  type: 'test'
+  ...
+# Subtest: the arena's sections: every beat is ground the route crosses, each ends level with where it began, Dot's lines are short
+ok 324 - the arena's sections: every beat is ground the route crosses, each ends level with where it began, Dot's lines are short
+  ---
+  duration_ms: 2.056139
+  type: 'test'
+  ...
+# Subtest: the rooms: the checker solves each, Normal and Easy; each fails without its key piece
+ok 325 - the rooms: the checker solves each, Normal and Easy; each fails without its key piece
+  ---
+  duration_ms: 111.410582
+  type: 'test'
+  ...
+# Subtest: the rooms: none can be walked past (the gate and the arch stand on the floor, taller than a double jump), each fits an upright phone
+ok 326 - the rooms: none can be walked past (the gate and the arch stand on the floor, taller than a double jump), each fits an upright phone
+  ---
+  duration_ms: 0.535078
+  type: 'test'
+  ...
+# Subtest: the cake room in the real engine (normal, sideways): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+ok 327 - the cake room in the real engine (normal, sideways): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+  ---
+  duration_ms: 289.07858
+  type: 'test'
+  ...
+# Subtest: the tea room in the real engine (normal, sideways): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+ok 328 - the tea room in the real engine (normal, sideways): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+  ---
+  duration_ms: 129.355197
+  type: 'test'
+  ...
+# Subtest: the cake room in the real engine (normal, upright): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+ok 329 - the cake room in the real engine (normal, upright): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+  ---
+  duration_ms: 169.066472
+  type: 'test'
+  ...
+# Subtest: the tea room in the real engine (normal, upright): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+ok 330 - the tea room in the real engine (normal, upright): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+  ---
+  duration_ms: 124.647541
+  type: 'test'
+  ...
+# Subtest: the cake room in the real engine (easy, sideways): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+ok 331 - the cake room in the real engine (easy, sideways): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+  ---
+  duration_ms: 237.577166
+  type: 'test'
+  ...
+# Subtest: the tea room in the real engine (easy, sideways): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+ok 332 - the tea room in the real engine (easy, sideways): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+  ---
+  duration_ms: 99.605602
+  type: 'test'
+  ...
+# Subtest: the cake room in the real engine (easy, upright): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+ok 333 - the cake room in the real engine (easy, upright): the dozer shows what a cake does; a cake on the plate, the beetle asleep on it, through the gate
+  ---
+  duration_ms: 155.854525
+  type: 'test'
+  ...
+# Subtest: the tea room in the real engine (easy, upright): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+ok 334 - the tea room in the real engine (easy, upright): manners get nothing; tipped from the floor the lift goes up alone; tipped from the lift, up and over the arch
+  ---
+  duration_ms: 142.996817
+  type: 'test'
+  ...
+# Subtest: World 7 ships 16 rolls of each gen2 stage, curated on the kit the game builds with
+ok 335 - World 7 ships 16 rolls of each gen2 stage, curated on the kit the game builds with
+  ---
+  duration_ms: 1.50359
+  type: 'test'
+  ...
+# Subtest: every shipped roll: its required sections once, the check clean with and without the tiles, 2:00 or more, no animal by a jump
+ok 336 - every shipped roll: its required sections once, the check clean with and without the tiles, 2:00 or more, no animal by a jump
+  ---
+  duration_ms: 104146.062033
+  type: 'test'
+  ...
+# Subtest: every shipped roll: nothing hurts in the first 5 s, the tiles taught first, every line Pokey's, vines climb, flags close enough
+ok 337 - every shipped roll: nothing hurts in the first 5 s, the tiles taught first, every line Pokey's, vines climb, flags close enough
+  ---
+  duration_ms: 16304.54497
+  type: 'test'
+  ...
+# Subtest: the rooms: the checker solves each, Normal and Easy; each fails without its key pieces (the hammock without its lever, the pads room without the lantern, or with one pinecone on Normal)
+ok 338 - the rooms: the checker solves each, Normal and Easy; each fails without its key pieces (the hammock without its lever, the pads room without the lantern, or with one pinecone on Normal)
+  ---
+  duration_ms: 821.945448
+  type: 'test'
+  ...
+# Subtest: the rooms: none can be walked past, each fits an upright phone, each has a post, none can hurt; the moonflower out of any light on the floor; Dot's lines are short
+ok 339 - the rooms: none can be walked past, each fits an upright phone, each has a post, none can hurt; the moonflower out of any light on the floor; Dot's lines are short
+  ---
+  duration_ms: 1.154409
+  type: 'test'
+  ...
+# Subtest: each stage's kit holds its own room and no other (8-2 the hammock, 8-3 the pads, 8-5 the moonflower), Easy's on Easy; each required on every roll
+ok 340 - each stage's kit holds its own room and no other (8-2 the hammock, 8-3 the pads, 8-5 the moonflower), Easy's on Easy; each required on every roll
+  ---
+  duration_ms: 0.529748
+  type: 'test'
+  ...
+# Subtest: the hammock room in the real engine (normal, sideways): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+ok 341 - the hammock room in the real engine (normal, sideways): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+  ---
+  duration_ms: 511.787253
+  type: 'test'
+  ...
+# Subtest: the pads room in the real engine (normal, sideways): up the lantern steps, pinecones down to the glow pads, through the bark door
+ok 342 - the pads room in the real engine (normal, sideways): up the lantern steps, pinecones down to the glow pads, through the bark door
+  ---
+  duration_ms: 101.744307
+  type: 'test'
+  ...
+# Subtest: the moon room in the real engine (normal, sideways): a glowcap to the stump, the moonflower opens, through the bark door
+ok 343 - the moon room in the real engine (normal, sideways): a glowcap to the stump, the moonflower opens, through the bark door
+  ---
+  duration_ms: 371.84871
+  type: 'test'
+  ...
+# Subtest: the hammock room in the real engine (normal, upright): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+ok 344 - the hammock room in the real engine (normal, upright): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+  ---
+  duration_ms: 262.130101
+  type: 'test'
+  ...
+# Subtest: the pads room in the real engine (normal, upright): up the lantern steps, pinecones down to the glow pads, through the bark door
+ok 345 - the pads room in the real engine (normal, upright): up the lantern steps, pinecones down to the glow pads, through the bark door
+  ---
+  duration_ms: 72.237587
+  type: 'test'
+  ...
+# Subtest: the moon room in the real engine (normal, upright): a glowcap to the stump, the moonflower opens, through the bark door
+ok 346 - the moon room in the real engine (normal, upright): a glowcap to the stump, the moonflower opens, through the bark door
+  ---
+  duration_ms: 193.452643
+  type: 'test'
+  ...
+# Subtest: the hammock room in the real engine (easy, sideways): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+ok 347 - the hammock room in the real engine (easy, sideways): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+  ---
+  duration_ms: 258.298988
+  type: 'test'
+  ...
+# Subtest: the pads room in the real engine (easy, sideways): up the lantern steps, pinecones down to the glow pads, through the bark door
+ok 348 - the pads room in the real engine (easy, sideways): up the lantern steps, pinecones down to the glow pads, through the bark door
+  ---
+  duration_ms: 109.040148
+  type: 'test'
+  ...
+# Subtest: the moon room in the real engine (easy, sideways): a glowcap to the stump, the moonflower opens, through the bark door
+ok 349 - the moon room in the real engine (easy, sideways): a glowcap to the stump, the moonflower opens, through the bark door
+  ---
+  duration_ms: 147.815693
+  type: 'test'
+  ...
+# Subtest: the hammock room in the real engine (easy, upright): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+ok 350 - the hammock room in the real engine (easy, upright): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door
+  ---
+  duration_ms: 286.628388
+  type: 'test'
+  ...
+# Subtest: the pads room in the real engine (easy, upright): up the lantern steps, pinecones down to the glow pads, through the bark door
+ok 351 - the pads room in the real engine (easy, upright): up the lantern steps, pinecones down to the glow pads, through the bark door
+  ---
+  duration_ms: 46.330397
+  type: 'test'
+  ...
+# Subtest: the moon room in the real engine (easy, upright): a glowcap to the stump, the moonflower opens, through the bark door
+ok 352 - the moon room in the real engine (easy, upright): a glowcap to the stump, the moonflower opens, through the bark door
+  ---
+  duration_ms: 156.060414
+  type: 'test'
+  ...
+# Subtest: the roost loft in the real engine (normal, sideways): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+ok 353 - the roost loft in the real engine (normal, sideways): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+  ---
+  duration_ms: 45.978527
+  type: 'test'
+  ...
+# Subtest: the roost loft in the real engine (normal, upright): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+ok 354 - the roost loft in the real engine (normal, upright): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+  ---
+  duration_ms: 55.276714
+  type: 'test'
+  ...
+# Subtest: the roost loft in the real engine (easy, sideways): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+ok 355 - the roost loft in the real engine (easy, sideways): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+  ---
+  duration_ms: 44.611535
+  type: 'test'
+  ...
+# Subtest: the roost loft in the real engine (easy, upright): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+ok 356 - the roost loft in the real engine (easy, upright): a pebble at the knot, the ladder down, up it, the lever, through the bark door
+  ---
+  duration_ms: 42.12077
+  type: 'test'
+  ...
+# Subtest: 1-2 (normal): a thumb-held run is carried through every chain on a steady beat (layouts 1, 2, 3)
+ok 357 - 1-2 (normal): a thumb-held run is carried through every chain on a steady beat (layouts 1, 2, 3)
+  ---
+  duration_ms: 3106.612074
+  type: 'test'
+  ...
+# Subtest: 1-2 (normal): one stray jump press is carried on the teaching chains as often as the finale's worst, and never drops him in the lesson
+ok 358 - 1-2 (normal): one stray jump press is carried on the teaching chains as often as the finale's worst, and never drops him in the lesson
+  ---
+  duration_ms: 5516.20972
+  type: 'test'
+  ...
+# Subtest: 1-2 (easy): a thumb-held run is carried through every chain on a steady beat (layouts 1, 2, 3)
+ok 359 - 1-2 (easy): a thumb-held run is carried through every chain on a steady beat (layouts 1, 2, 3)
+  ---
+  duration_ms: 2019.508977
+  type: 'test'
+  ...
+# Subtest: 1-2 (easy): one stray jump press is carried on the teaching chains as often as the finale's worst, and never drops him in the lesson
+ok 360 - 1-2 (easy): one stray jump press is carried on the teaching chains as often as the finale's worst, and never drops him in the lesson
+  ---
+  duration_ms: 22231.648319
+  type: 'test'
+  ...
+# Subtest: the chain window counts a press only with the next liana's WHOLE swing in view (SWING_SEEN, gen2 chainRelease), both settings, Easy wider
+ok 361 - the chain window counts a press only with the next liana's WHOLE swing in view (SWING_SEEN, gen2 chainRelease), both settings, Easy wider
+  ---
+  duration_ms: 428.475785
+  type: 'test'
+  ...
+# Subtest: the chain catch is the engine's own press onto the next liana as it swings (physics chainWindow), at the phase the stage gives it
+ok 362 - the chain catch is the engine's own press onto the next liana as it swings (physics chainWindow), at the phase the stage gives it
+  ---
+  duration_ms: 212.863858
+  type: 'test'
+  ...
+# Subtest: built: a three-liana chain with no perch between is laid, and the stage's own level check walks it liana to liana (toy world, both settings)
+ok 363 - built: a three-liana chain with no perch between is laid, and the stage's own level check walks it liana to liana (toy world, both settings)
+  ---
+  duration_ms: 285405.77977
+  type: 'test'
+  ...
+# Subtest: World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World 1's and World 6's kits, both settings: every link's window, both swinging, never meeting, the next swing whole in view
+ok 364 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World 1's and World 6's kits, both settings: every link's window, both swinging, never meeting, the next swing whole in view
+  ---
+  duration_ms: 6263.126467
+  type: 'test'
+  ...
+# Subtest: upright on a swing, the view leads with the next liana's WHOLE swing (to its foot's far side): the lay's SWING_SEEN is what he sees
+ok 365 - upright on a swing, the view leads with the next liana's WHOLE swing (to its foot's far side): the lay's SWING_SEEN is what he sees
+  ---
+  duration_ms: 0.691773
+  type: 'test'
+  ...
+# Subtest: built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach down to its floor, w1Pits finds it lip to lip), Easy's soft moss pit
+ok 366 - built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach down to its floor, w1Pits finds it lip to lip), Easy's soft moss pit
+  ---
+  duration_ms: 76992.460366
+  type: 'test'
+  ...
+# Subtest: a swing over a hollow that hurts asks the view to keep its thorn bed in (hurtFocus, the engine's focus): sideways the swing view's foot sat at the lip
+ok 367 - a swing over a hollow that hurts asks the view to keep its thorn bed in (hurtFocus, the engine's focus): sideways the swing view's foot sat at the lip
+  ---
+  duration_ms: 0.305693
+  type: 'test'
+  ...
+# Subtest: the manifest: its ids are unique, every socket asks for something the world has, every section is laid in its own space
+ok 368 - the manifest: its ids are unique, every socket asks for something the world has, every section is laid in its own space
+  ---
+  duration_ms: 10.171858
+  type: 'test'
+  ...
+# Subtest: 5-7 on 20 rolls, Normal and Easy: every roll passes levelCheck and is long enough
+ok 369 - 5-7 on 20 rolls, Normal and Easy: every roll passes levelCheck and is long enough
+  ---
+  duration_ms: 2698.935724
+  type: 'test'
+  ...
+# Subtest: Easy is the same stage as Normal under kinder rules: the same sections, fewer animals, no second cakes
+ok 370 - Easy is the same stage as Normal under kinder rules: the same sections, fewer animals, no second cakes
+  ---
+  duration_ms: 1.252069
+  type: 'test'
+  ...
+# Subtest: teaching and the opening: no animal in the first seconds, and the first teapot is the tea table's, on its own
+ok 371 - teaching and the opening: no animal in the first seconds, and the first teapot is the tea table's, on its own
+  ---
+  duration_ms: 25.903731
+  type: 'test'
+  ...
+# Subtest: the props reach the engine as World 5 extras: pairs both or neither, every spider gated, the twilight
+ok 372 - the props reach the engine as World 5 extras: pairs both or neither, every spider gated, the twilight
+  ---
+  duration_ms: 39.828235
+  type: 'test'
+  ...
+# Subtest: the inspector on 20 rolls: no quiet stretch over 4 s, 2:00+ for its quick player, and the rolls differ (0.35+)
+ok 373 - the inspector on 20 rolls: no quiet stretch over 4 s, 2:00+ for its quick player, and the rolls differ (0.35+)
+  ---
+  duration_ms: 663.794415
+  type: 'test'
+  ...
+# Subtest: control: with no press during the beat, he comes back at the flag with both jumps and throws nothing
+ok 374 - control: with no press during the beat, he comes back at the flag with both jumps and throws nothing
+  ---
+  duration_ms: 983.562138
+  type: 'test'
+  ...
+# Subtest: a flick up made while he is going down (the 0.75 s life-lost beat) must not jump him at the flag
+ok 375 - a flick up made while he is going down (the 0.75 s life-lost beat) must not jump him at the flag
+  ---
+  duration_ms: 504.455622
+  type: 'test'
+  ...
+# Subtest: a tap (punch) made during the beat must not swing at the flag
+ok 376 - a tap (punch) made during the beat must not swing at the flag
+  ---
+  duration_ms: 424.738905
+  type: 'test'
+  ...
+# Subtest: LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid bot's median
+ok 377 - LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid bot's median
+  ---
+  duration_ms: 5.525215
+  type: 'test'
+  ...
+# Subtest: LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot's median)
+ok 378 - LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot's median)
+  ---
+  duration_ms: 19659.870411
+  type: 'test'
+  ...
+# Subtest: goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+ok 379 - goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+  ---
+  duration_ms: 18.54757
+  type: 'test'
+  ...
+# Subtest: goals: free every animal there is to free; beat about three quarters of the predators
+ok 380 - goals: free every animal there is to free; beat about three quarters of the predators
+  ---
+  duration_ms: 0.259373
+  type: 'test'
+  ...
+# Subtest: goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+ok 381 - goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+  ---
+  duration_ms: 212.8085
+  type: 'test'
+  ...
+# Subtest: goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+ok 382 - goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+  ---
+  duration_ms: 15636.450781
+  type: 'test'
+  ...
+# Subtest: regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+ok 383 - regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+  ---
+  duration_ms: 0.591332
+  type: 'test'
+  ...
+# Subtest: the dive goes to the player, wherever the player stands (not to a fixed spot)
+ok 384 - the dive goes to the player, wherever the player stands (not to a fixed spot)
+  ---
+  duration_ms: 7.847531
+  type: 'test'
+  ...
+# Subtest: it follows a player who is running, with a short lead
+ok 385 - it follows a player who is running, with a short lead
+  ---
+  duration_ms: 0.419167
+  type: 'test'
+  ...
+# Subtest: it locks its line before contact, so a last-moment jump or duck still dodges
+ok 386 - it locks its line before contact, so a last-moment jump or duck still dodges
+  ---
+  duration_ms: 0.473135
+  type: 'test'
+  ...
+# Subtest: a player who runs away makes it give up instead of chasing forever
+ok 387 - a player who runs away makes it give up instead of chasing forever
+  ---
+  duration_ms: 1.11337
+  type: 'test'
+  ...
+# Subtest: it never dives below the player's feet
+ok 388 - it never dives below the player's feet
+  ---
+  duration_ms: 0.61977
+  type: 'test'
+  ...
+# Subtest: after the pass it glides to the player's height and closes to punching range
+ok 389 - after the pass it glides to the player's height and closes to punching range
+  ---
+  duration_ms: 0.294301
+  type: 'test'
+  ...
+# Subtest: seed 769 easy, w1-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+ok 390 - seed 769 easy, w1-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+  ---
+  duration_ms: 2019.688099
+  type: 'test'
+  ...
+# w1-double-teach easy: before stopped at x 6152 y 1209; 2 grown, after passed
+# Subtest: seed 9652 normal, w1-dip-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+ok 391 - seed 9652 normal, w1-dip-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+  ---
+  duration_ms: 1931.087528
+  type: 'test'
+  ...
+# w1-dip-double-teach normal: before stopped at x 6924 y 1488; 7 grown, after passed
+# Subtest: seed 5088 normal, w1-bank-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+ok 392 - seed 5088 normal, w1-bank-double-teach: plain jumps fail it as laid; after the steps grow, they pass the whole piece
+  ---
+  duration_ms: 1287.161429
+  type: 'test'
+  ...
+# w1-bank-double-teach normal: before stopped at x 5812 y 1096; 7 grown, after passed
+# Subtest: the standard hero draws whenever it can, whether or not the older atlas has loaded
+ok 393 - the standard hero draws whenever it can, whether or not the older atlas has loaded
+  ---
+  duration_ms: 0.665083
+  type: 'test'
+  ...
+# Subtest: the older atlas is only the stand-in for a pose or a moment the standard hero cannot draw
+ok 394 - the older atlas is only the stand-in for a pose or a moment the standard hero cannot draw
+  ---
+  duration_ms: 0.149888
+  type: 'test'
+  ...
+# Subtest: drawHeroSprite paints the standard hero while the old atlas has never loaded
+ok 395 - drawHeroSprite paints the standard hero while the old atlas has never loaded
+  ---
+  duration_ms: 16.956084
+  type: 'test'
+  ...
+# Subtest: on a vine his body trails behind the swing, never far, and hangs straight at the ends of the swing
+ok 396 - on a vine his body trails behind the swing, never far, and hangs straight at the ends of the swing
+  ---
+  duration_ms: 0.835787
+  type: 'test'
+  ...
+# Subtest: through a swing he goes from hanging straight, through the in-between, to the full kick or trail, and back
+ok 397 - through a swing he goes from hanging straight, through the in-between, to the full kick or trail, and back
+  ---
+  duration_ms: 1.509628
+  type: 'test'
+  ...
+# Subtest: every saved predator id has one card, in journey order, and the count is all of them
+ok 398 - every saved predator id has one card, in journey order, and the count is all of them
+  ---
+  duration_ms: 18.102118
+  type: 'test'
+  ...
+# Subtest: every card has its painted picture, inside the sheet
+ok 399 - every card has its painted picture, inside the sheet
+  ---
+  duration_ms: 0.61022
+  type: 'test'
+  ...
+# Subtest: tips are 12 words or fewer and use touch words, not keys
+ok 400 - tips are 12 words or fewer and use touch words, not keys
+  ---
+  duration_ms: 12.119463
+  type: 'test'
+  ...
+# Subtest: a predator is met when seen, or when a stage that holds it another way is cleared
+ok 401 - a predator is met when seen, or when a stage that holds it another way is cleared
+  ---
+  duration_ms: 0.284429
+  type: 'test'
+  ...
+# Subtest: a road card opens once a stage that holds it is cleared
+ok 402 - a road card opens once a stage that holds it is cleared
+  ---
+  duration_ms: 0.374611
+  type: 'test'
+  ...
+# Subtest: a stage left from the pause menu files what the run did, once
+ok 403 - a stage left from the pause menu files what the run did, once
+  ---
+  duration_ms: 844.774647
+  type: 'test'
+  ...
+# Subtest: a run that already ended is not filed again when the stage is left
+ok 404 - a run that already ended is not filed again when the stage is left
+  ---
+  duration_ms: 199.896429
+  type: 'test'
+  ...
+# Subtest: a Game Over then Continue, then the map: the left part is filed on top of the Game Over, once
+ok 405 - a Game Over then Continue, then the map: the left part is filed on top of the Game Over, once
+  ---
+  duration_ms: 125.165554
+  type: 'test'
+  ...
+# Subtest: 7-7's Thorn Gate: the run that steps into it is filed once, as a stage left (things-3b)
+ok 406 - 7-7's Thorn Gate: the run that steps into it is filed once, as a stage left (things-3b)
+  ---
+  duration_ms: 800.183118
+  type: 'test'
+  ...
+# Subtest: the lift waits at the bottom, rides up, waits at the top, rides down, and comes round again
+ok 407 - the lift waits at the bottom, rides up, waits at the top, rides down, and comes round again
+  ---
+  duration_ms: 18.037407
+  type: 'test'
+  ...
+# Subtest: 5-2: a tray punched away counts as a cake avoided, and on a clear so does every cake left uneaten
+ok 408 - 5-2: a tray punched away counts as a cake avoided, and on a clear so does every cake left uneaten
+  ---
+  duration_ms: 411.148537
+  type: 'test'
+  ...
+# Subtest: 5-2: silk that had crept a quarter of the way up him and is shaken off counts once
+ok 409 - 5-2: silk that had crept a quarter of the way up him and is shaken off counts once
+  ---
+  duration_ms: 292.437334
+  type: 'test'
+  ...
+# Subtest: 5-M's rooms: sit, eat, silk, tea, look; the validator solves each on every roll, and the whole stage walks to the last tree
+ok 410 - 5-M's rooms: sit, eat, silk, tea, look; the validator solves each on every roll, and the whole stage walks to the last tree
+  ---
+  duration_ms: 2170.77354
+  type: 'test'
+  ...
+# Subtest: 5-M's rooms: each fails without its key piece (the sapling, the cake, the pinecone, the teapot, Flicker's light) and none can be passed by
+ok 411 - 5-M's rooms: each fails without its key piece (the sapling, the cake, the pinecone, the teapot, Flicker's light) and none can be passed by
+  ---
+  duration_ms: 4415.140997
+  type: 'test'
+  ...
+# Subtest: 5-M's rooms: narrow and tall enough for an upright phone, a reset post in each, no animal, nothing that hurts, and none of them deadly
+ok 412 - 5-M's rooms: narrow and tall enough for an upright phone, a reset post in each, no animal, nothing that hurts, and none of them deadly
+  ---
+  duration_ms: 9.161506
+  type: 'test'
+  ...
+# Subtest: 5-M's trails: something to do every few seconds (STAGE-RULES §2), rolled from real alternatives, and different roll to roll
+ok 413 - 5-M's trails: something to do every few seconds (STAGE-RULES §2), rolled from real alternatives, and different roll to roll
+  ---
+  duration_ms: 7.40893
+  type: 'test'
+  ...
+# Subtest: 5-M's trails: the high way is the only way on: no section's floor gets her through, and no section with a trunk can be done without it
+ok 414 - 5-M's trails: the high way is the only way on: no section's floor gets her through, and no section with a trunk can be done without it
+  ---
+  duration_ms: 31888.395549
+  type: 'test'
+  ...
+# Subtest: 5-M on Easy: no jump needs a full hold (Gemini G8, rolls 1-3), and Easy breaks nothing
+ok 415 - 5-M on Easy: no jump needs a full hold (Gemini G8, rolls 1-3), and Easy breaks nothing
+  ---
+  duration_ms: 1706.340326
+  type: 'test'
+  ...
+# Subtest: 5-M's length: 3:20 to 4:20 for a quick player on every roll (stageTime.ts MODEL_FAST), longer for a typical one
+ok 416 - 5-M's length: 3:20 to 4:20 for a quick player on every roll (stageTime.ts MODEL_FAST), longer for a typical one
+  ---
+  duration_ms: 10.239226
+  type: 'test'
+  ...
+# Subtest: 5-M's words: the five warnings, Flicker's first line, the carving, the last tree and every Pell line word for word; the ending in order
+ok 417 - 5-M's words: the five warnings, Flicker's first line, the carving, the last tree and every Pell line word for word; the ending in order
+  ---
+  duration_ms: 0.579917
+  type: 'test'
+  ...
+# Subtest: 5-M: what she carves is kept with the game (a save file carries it, a new game clears it) for 5-6 to show, in her order
+ok 418 - 5-M: what she carves is kept with the game (a save file carries it, a new game clears it) for 5-6 to show, in her order
+  ---
+  duration_ms: 1.161403
+  type: 'test'
+  ...
+# Subtest: 5-M: first in World 5 (after 4-10, before 5-1), built by the generator, at night, and the HUD counts 'M. n/5'
+ok 419 - 5-M: first in World 5 (after 4-10, before 5-1), built by the generator, at night, and the HUD counts 'M. n/5'
+  ---
+  duration_ms: 1.455501
+  type: 'test'
+  ...
+# Subtest: a thumb at rest does nothing, and a small wobble is ignored
+ok 420 - a thumb at rest does nothing, and a small wobble is ignored
+  ---
+  duration_ms: 1.405243
+  type: 'test'
+  ...
+# Subtest: sideways runs, either way
+ok 421 - sideways runs, either way
+  ---
+  duration_ms: 0.150764
+  type: 'test'
+  ...
+# Subtest: down ducks and up jumps
+ok 422 - down ducks and up jumps
+  ---
+  duration_ms: 0.095916
+  type: 'test'
+  ...
+# Subtest: running with a little downward drift never ducks or jumps
+ok 423 - running with a little downward drift never ducks or jumps
+  ---
+  duration_ms: 0.180887
+  type: 'test'
+  ...
+# Subtest: the anchor follows a thumb that runs past the radius, so reversing is instant
+ok 424 - the anchor follows a thumb that runs past the radius, so reversing is instant
+  ---
+  duration_ms: 9.367517
+  type: 'test'
+  ...
+# Subtest: the knob stays inside the ring
+ok 425 - the knob stays inside the ring
+  ---
+  duration_ms: 0.341291
+  type: 'test'
+  ...
+# Subtest: smooth frames log no freezes and report about 30 fps
+ok 426 - smooth frames log no freezes and report about 30 fps
+  ---
+  duration_ms: 1.040175
+  type: 'test'
+  ...
+# Subtest: a frame longer than the limit is logged with what the game was doing
+ok 427 - a frame longer than the limit is logged with what the game was doing
+  ---
+  duration_ms: 0.174265
+  type: 'test'
+  ...
+# Subtest: the timeline gets a line every 10 s, so a slowdown that grows shows as a rising average
+ok 428 - the timeline gets a line every 10 s, so a slowdown that grows shows as a rising average
+  ---
+  duration_ms: 21.409949
+  type: 'test'
+  ...
+# Subtest: the lists stay short and the report is readable text
+ok 429 - the lists stay short and the report is readable text
+  ---
+  duration_ms: 0.458393
+  type: 'test'
+  ...
+# Subtest: percentile of an empty list is 0 and of a sorted list picks the right rank
+ok 430 - percentile of an empty list is 0 and of a sorted list picks the right rank
+  ---
+  duration_ms: 0.18784
+  type: 'test'
+  ...
+# Subtest: gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+ok 431 - gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+  ---
+  duration_ms: 943.705683
+  type: 'test'
+  ...
+# Subtest: no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+ok 432 - no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+  ---
+  duration_ms: 19573.458784
+  type: 'test'
+  ...
+# Subtest: recorder: three double jumps and two bounces in one stage log one move + two use (double), one move + one use (bounce)
+ok 433 - recorder: three double jumps and two bounces in one stage log one move + two use (double), one move + one use (bounce)
+  ---
+  duration_ms: 1159.161273
+  type: 'test'
+  ...
+# Subtest: recorder: off (the store build, no tester) logs no move and no use
+ok 434 - recorder: off (the store build, no tester) logs no move and no use
+  ---
+  duration_ms: 0.698357
+  type: 'test'
+  ...
+# Subtest: jaguar telegraphs, leaps in an arc, lands back on the ground and returns to patrol
+ok 435 - jaguar telegraphs, leaps in an arc, lands back on the ground and returns to patrol
+  ---
+  duration_ms: 15.271765
+  type: 'test'
+  ...
+# Subtest: ocelot pounce is a real arc and its speed goes back to normal (it used to float and sprint forever)
+ok 436 - ocelot pounce is a real arc and its speed goes back to normal (it used to float and sprint forever)
+  ---
+  duration_ms: 1.508238
+  type: 'test'
+  ...
+# Subtest: ocelot warns before it pounces: a "!" and a crouch of at least a third of a second
+ok 437 - ocelot warns before it pounces: a "!" and a crouch of at least a third of a second
+  ---
+  duration_ms: 0.200786
+  type: 'test'
+  ...
+# Subtest: a ground predator that is far from the player just patrols and never leaves its patch
+ok 438 - a ground predator that is far from the player just patrols and never leaves its patch
+  ---
+  duration_ms: 29.020985
+  type: 'test'
+  ...
+# Subtest: boa stays coiled where it lies and only its strike reaches out
+ok 439 - boa stays coiled where it lies and only its strike reaches out
+  ---
+  duration_ms: 17.072231
+  type: 'test'
+  ...
+# Subtest: caiman lunges forward a short way and snaps; the jaws only hurt during the lunge and bite
+ok 440 - caiman lunges forward a short way and snaps; the jaws only hurt during the lunge and bite
+  ---
+  duration_ms: 0.800961
+  type: 'test'
+  ...
+# Subtest: tayra stands up, dashes fast, skids to a stop and stays on its ground
+ok 441 - tayra stands up, dashes fast, skids to a stop and stays on its ground
+  ---
+  duration_ms: 0.634647
+  type: 'test'
+  ...
+# Subtest: a knocked-back predator walks back onto its ground instead of popping there
+ok 442 - a knocked-back predator walks back onto its ground instead of popping there
+  ---
+  duration_ms: 0.407462
+  type: 'test'
+  ...
+# Subtest: a player on a different level (far above or below) does not trigger an attack
+ok 443 - a player on a different level (far above or below) does not trigger an attack
+  ---
+  duration_ms: 0.428984
+  type: 'test'
+  ...
+# Subtest: a fresh game opens only the first stage
+ok 444 - a fresh game opens only the first stage
+  ---
+  duration_ms: 22.455489
+  type: 'test'
+  ...
+# Subtest: after a reload, the stage right after the last cleared one is open (and no further)
+ok 445 - after a reload, the stage right after the last cleared one is open (and no further)
+  ---
+  duration_ms: 0.705165
+  type: 'test'
+  ...
+# Subtest: clearing a world boss opens the next world
+ok 446 - clearing a world boss opens the next world
+  ---
+  duration_ms: 0.649348
+  type: 'test'
+  ...
+# Subtest: P-05: stuck in a room again on a later run of the stage, Dot gives her nudge again
+ok 447 - P-05: stuck in a room again on a later run of the stage, Dot gives her nudge again
+  ---
+  duration_ms: 363.523747
+  type: 'test'
+  ...
+# Subtest: P-06: one thrown thing lost is one failed try, not two: no stuck help yet
+ok 448 - P-06: one thrown thing lost is one failed try, not two: no stuck help yet
+  ---
+  duration_ms: 87.200139
+  type: 'test'
+  ...
+# Subtest: P-06 (planted the other way): two thrown things lost are two failed tries: the stuck help comes
+ok 449 - P-06 (planted the other way): two thrown things lost are two failed tries: the stuck help comes
+  ---
+  duration_ms: 62.007187
+  type: 'test'
+  ...
+# Subtest: the engine at 30 fps carries a jump, a double jump and a glide at least as far as the reach model says
+ok 450 - the engine at 30 fps carries a jump, a double jump and a glide at least as far as the reach model says
+  ---
+  duration_ms: 4840.303596
+  type: 'test'
+  ...
+# Subtest: the highest he gets: a jump lifts his feet 97 px and a double jump about 170 at 30 fps (less than the formulas JUMP_RISE and DOUBLE_RISE)
+ok 451 - the highest he gets: a jump lifts his feet 97 px and a double jump about 170 at 30 fps (less than the formulas JUMP_RISE and DOUBLE_RISE)
+  ---
+  duration_ms: 616.435133
+  type: 'test'
+  ...
+# Subtest: a soft pit is never deeper than he can climb out of: the engine climbs a 190 px wall with the second jump, 122 with one
+ok 452 - a soft pit is never deeper than he can climb out of: the engine climbs a 190 px wall with the second jump, 122 with one
+  ---
+  duration_ms: 1556.577391
+  type: 'test'
+  ...
+# Subtest: a liana is caught as close as the timed swing says: 60 px on Normal, 76 on Easy (it was a fixed 48 in the engine)
+ok 453 - a liana is caught as close as the timed swing says: 60 px on Normal, 76 on Easy (it was a fixed 48 in the engine)
+  ---
+  duration_ms: 512.191654
+  type: 'test'
+  ...
+# Subtest: the leaf is his from 4-2 on, even when no stage was cleared on this device (the tester's switch opens stages without clearing them)
+ok 454 - the leaf is his from 4-2 on, even when no stage was cleared on this device (the tester's switch opens stages without clearing them)
+  ---
+  duration_ms: 498.479427
+  type: 'test'
+  ...
+# Subtest: the engine stops him at the shrine, so nothing in a hand-built stage lies past it (one flower did, in every one)
+ok 455 - the engine stops him at the shrine, so nothing in a hand-built stage lies past it (one flower did, in every one)
+  ---
+  duration_ms: 216440.70096
+  type: 'test'
+  ...
+# Subtest: no pit between stepping stones strands him (4-2's stones left gaps between two tall stones deeper than any jump climbs out of)
+ok 456 - no pit between stepping stones strands him (4-2's stones left gaps between two tall stones deeper than any jump climbs out of)
+  ---
+  duration_ms: 121772.831377
+  type: 'test'
+  ...
+# Subtest: the limited bot: without the double (no second jump made) or the bounce, it stops short on 1-2, where the full bot finishes
+ok 457 - the limited bot: without the double (no second jump made) or the bounce, it stops short on 1-2, where the full bot finishes
+  ---
+  duration_ms: 9428.569806
+  type: 'test'
+  ...
+# Subtest: a drop point warns, then the rock falls to its landing, then shatters, every cycle
+ok 458 - a drop point warns, then the rock falls to its landing, then shatters, every cycle
+  ---
+  duration_ms: 1.390252
+  type: 'test'
+  ...
+# Subtest: the warning always comes before the rock, long enough to stop from a walk
+ok 459 - the warning always comes before the rock, long enough to stop from a walk
+  ---
+  duration_ms: 0.252469
+  type: 'test'
+  ...
+# Subtest: a falling rock hits him only when it reaches him, and only right under it
+ok 460 - a falling rock hits him only when it reaches him, and only right under it
+  ---
+  duration_ms: 0.237796
+  type: 'test'
+  ...
+# plain swing, a run's jump: caught from 5 of 12 moments (missed 0.00 0.08 0.17 0.25 0.33 0.42 0.92)
+# Subtest: the moment: a full-run jump off the lip catches the planted liana at some moments of its swing, and the lay finds its lip
+ok 461 - the moment: a full-run jump off the lip catches the planted liana at some moments of its swing, and the lay finds its lip
+  ---
+  duration_ms: 49.885079
+  type: 'test'
+  ...
+# Subtest: easing: never more than RUNNER.rate of a swing a second, the short way round
+ok 462 - easing: never more than RUNNER.rate of a swing a second, the short way round
+  ---
+  duration_ms: 0.241058
+  type: 'test'
+  ...
+# Subtest: real engine, normal: a runner catches the runner liana in stride from every moment its swing can start at; no frame jumps
+ok 463 - real engine, normal: a runner catches the runner liana in stride from every moment its swing can start at; no frame jumps
+  ---
+  duration_ms: 5145.806607
+  type: 'test'
+  ...
+# Subtest: real engine, easy: a runner catches the runner liana in stride from every moment its swing can start at; no frame jumps
+ok 464 - real engine, easy: a runner catches the runner liana in stride from every moment its swing can start at; no frame jumps
+  ---
+  duration_ms: 3311.302502
+  type: 'test'
+  ...
+# Subtest: real engine, PLANTED: with the piece off the hook the same run misses the liana from a third or more of those moments
+ok 465 - real engine, PLANTED: with the piece off the hook the same run misses the liana from a third or more of those moments
+  ---
+  duration_ms: 3480.347947
+  type: 'test'
+  ...
+# Subtest: a respawn puts the liana back as laid; the lay refuses a runner liana with no lip, or too short a run to ease it
+ok 466 - a respawn puts the liana back as laid; the lay refuses a runner liana with no lip, or too short a run to ease it
+  ---
+  duration_ms: 17.547958
+  type: 'test'
+  ...
+# Subtest: PLANTED: a pit step under the gap, its end nearer the liana, is not the lip; the run-up is, and the lay finds no fault
+ok 467 - PLANTED: a pit step under the gap, its end nearer the liana, is not the lip; the run-up is, and the lay finds no fault
+  ---
+  duration_ms: 1.679025
+  type: 'test'
+  ...
+# Subtest: the guardian's intro-seen flag (App.tsx bossIntroKey, sloth_story_b<w>) is part of the adventure
+ok 468 - the guardian's intro-seen flag (App.tsx bossIntroKey, sloth_story_b<w>) is part of the adventure
+  ---
+  duration_ms: 0.96693
+  type: 'test'
+  ...
+# Subtest: a New Game forgets that the old adventure met the General (so his first scene plays whole again)
+ok 469 - a New Game forgets that the old adventure met the General (so his first scene plays whole again)
+  ---
+  duration_ms: 8.609181
+  type: 'test'
+  ...
+# Subtest: a New Game forgets the golden seeds found (protoStage.ts sloth_seed_<stage>_<n>), so they are secrets again
+ok 470 - a New Game forgets the golden seeds found (protoStage.ts sloth_seed_<stage>_<n>), so they are secrets again
+  ---
+  duration_ms: 0.275246
+  type: 'test'
+  ...
+# Subtest: the backdrop layers are placed on whole device pixels (AN-4)
+ok 471 - the backdrop layers are placed on whole device pixels (AN-4)
+  ---
+  duration_ms: 9.003534
+  type: 'test'
+  ...
+# Subtest: the far layer moves every frame at a run, instead of standing still then jumping (AN-4)
+ok 472 - the far layer moves every frame at a run, instead of standing still then jumping (AN-4)
+  ---
+  duration_ms: 0.165506
+  type: 'test'
+  ...
+# Subtest: upright, the painted strips are drawn at the size sideways uses, on the same ground line, with room above for their sky (Matt 2026-10-29)
+ok 473 - upright, the painted strips are drawn at the size sideways uses, on the same ground line, with room above for their sky (Matt 2026-10-29)
+  ---
+  duration_ms: 1.242038
+  type: 'test'
+  ...
+# Subtest: upright, a far strip without a painted sky is drawn just large enough to reach the top of the view; with one, at the strips' size
+ok 474 - upright, a far strip without a painted sky is drawn just large enough to reach the top of the view; with one, at the strips' size
+  ---
+  duration_ms: 0.25833
+  type: 'test'
+  ...
+# Subtest: missionOf puts stages in game order
+ok 475 - missionOf puts stages in game order
+  ---
+  duration_ms: 0.924627
+  type: 'test'
+  ...
+# Subtest: skills come from cleared stages only
+ok 476 - skills come from cleared stages only
+  ---
+  duration_ms: 0.213213
+  type: 'test'
+  ...
+# Subtest: a skill is guaranteed only from its required stage on, which is after the stage that teaches it
+ok 477 - a skill is guaranteed only from its required stage on, which is after the stage that teaches it
+  ---
+  duration_ms: 0.129395
+  type: 'test'
+  ...
+# Subtest: newlyLearned fires once, on the teaching stage
+ok 478 - newlyLearned fires once, on the teaching stage
+  ---
+  duration_ms: 0.163716
+  type: 'test'
+  ...
+# Subtest: no stage needs a rope before the skill is guaranteed, and every stage stays beatable
+ok 479 - no stage needs a rope before the skill is guaranteed, and every stage stays beatable
+  ---
+  duration_ms: 251703.37617
+  type: 'test'
+  ...
+# Subtest: the validator refuses a required rope in a stage entered before the skill is taught
+ok 480 - the validator refuses a required rope in a stage entered before the skill is taught
+  ---
+  duration_ms: 566.843469
+  type: 'test'
+  ...
+# Subtest: Leaf Glide is taught by 4-1 (when the ledge gives way) and needed from 4-7 (The Long Drop)
+ok 481 - Leaf Glide is taught by 4-1 (when the ledge gives way) and needed from 4-7 (The Long Drop)
+  ---
+  duration_ms: 0.260561
+  type: 'test'
+  ...
+# Subtest: 1-1 normal seed 9652: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 482 - 1-1 normal seed 9652: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 5133.925772
+  type: 'test'
+  ...
+# Subtest: 1-1 normal seed 769: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 483 - 1-1 normal seed 769: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 4141.797721
+  type: 'test'
+  ...
+# Subtest: 1-1 normal seed 2328: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 484 - 1-1 normal seed 2328: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 3799.025115
+  type: 'test'
+  ...
+# Subtest: 1-1 easy seed 9652: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 485 - 1-1 easy seed 9652: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 4111.199385
+  type: 'test'
+  ...
+# Subtest: 1-1 easy seed 769: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 486 - 1-1 easy seed 769: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 3299.822589
+  type: 'test'
+  ...
+# Subtest: 1-1 easy seed 2328: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+ok 487 - 1-1 easy seed 2328: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+  ---
+  duration_ms: 2681.878395
+  type: 'test'
+  ...
+# Subtest: planted: without the brief's word (origin/main's 1-1) the same sweep on Normal loses lives in the pits, through the real loseLife
+ok 488 - planted: without the brief's word (origin/main's 1-1) the same sweep on Normal loses lives in the pits, through the real loseLife
+  ---
+  duration_ms: 3961.010138
+  type: 'test'
+  ...
+# Subtest: 1-1 Normal, the first run, w1-last-step-up: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost
+ok 489 - 1-1 Normal, the first run, w1-last-step-up: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost
+  ---
+  duration_ms: 252.492712
+  type: 'test'
+  ...
+# Subtest: 1-9: every roll keeps the plan, asks for 16 with about one and a half times that to fight, and takes two minutes
+ok 490 - 1-9: every roll keeps the plan, asks for 16 with about one and a half times that to fight, and takes two minutes
+  ---
+  duration_ms: 1338.903278
+  type: 'test'
+  ...
+# Subtest: 1-9: the first guards are boas coiled on wide branches over soft moss, before any other animal
+ok 491 - 1-9: the first guards are boas coiled on wide branches over soft moss, before any other animal
+  ---
+  duration_ms: 915.087464
+  type: 'test'
+  ...
+# Subtest: 1-9: the ring is walled at its far end (too high to jump), its drops land on real surfaces, and a sleeping guard keeps a seed
+ok 492 - 1-9: the ring is walled at its far end (too high to jump), its drops land on real surfaces, and a sleeping guard keeps a seed
+  ---
+  duration_ms: 488.344627
+  type: 'test'
+  ...
+# Subtest: UI-22: a stage's map line names a count only where it is the engine's goal on every layout roll
+ok 493 - UI-22: a stage's map line names a count only where it is the engine's goal on every layout roll
+  ---
+  duration_ms: 9071.77812
+  type: 'test'
+  ...
+# Subtest: every review stills tool clears the invincibility flash right before it renders
+ok 494 - every review stills tool clears the invincibility flash right before it renders
+  ---
+  duration_ms: 1.29905
+  type: 'test'
+  ...
+# Subtest: a story close-up never draws a figure above 1.5x its cel, and never zooms out past the framing (ST-1)
+ok 495 - a story close-up never draws a figure above 1.5x its cel, and never zooms out past the framing (ST-1)
+  ---
+  duration_ms: 0.869874
+  type: 'test'
+  ...
+# Subtest: the picture is raised until the ground is clear of the words box (ST-1)
+ok 496 - the picture is raised until the ground is clear of the words box (ST-1)
+  ---
+  duration_ms: 0.181924
+  type: 'test'
+  ...
+# Subtest: a beaten guardian whose bottom would sit under the words box is raised just clear of it; nothing else moves
+ok 497 - a beaten guardian whose bottom would sit under the words box is raised just clear of it; nothing else moves
+  ---
+  duration_ms: 0.197661
+  type: 'test'
+  ...
+# Subtest: stripInk: the first row holding any paint, however faint and wherever across, read a band at a time
+ok 498 - stripInk: the first row holding any paint, however faint and wherever across, read a band at a time
+  ---
+  duration_ms: 0.857975
+  type: 'test'
+  ...
+# Subtest: stripInk: a fit leaves out only rows above its paint, less a margin for the resampling filter
+ok 499 - stripInk: a fit leaves out only rows above its paint, less a margin for the resampling filter
+  ---
+  duration_ms: 0.360618
+  type: 'test'
+  ...
+# Subtest: Matt's logged swing fingers: pumping a liana sideways (or drifting down) steers it and never lets go, upright and sideways
+ok 500 - Matt's logged swing fingers: pumping a liana sideways (or drifting down) steers it and never lets go, upright and sideways
+  ---
+  duration_ms: 178.717616
+  type: 'test'
+  ...
+# Subtest: pumping a liana left and right for a long while steers it the whole time and never lets go
+ok 501 - pumping a liana left and right for a long while steers it the whole time and never lets go
+  ---
+  duration_ms: 8.596223
+  type: 'test'
+  ...
+# Subtest: a clear flick up and forward (Steph's flicks: 110 to 300 px, 0.5 to 1.8 px/ms, 20 to 48 degrees over) lets go at once
+ok 502 - a clear flick up and forward (Steph's flicks: 110 to 300 px, 0.5 to 1.8 px/ms, 20 to 48 degrees over) lets go at once
+  ---
+  duration_ms: 87.336201
+  type: 'test'
+  ...
+# Subtest: Matt-style slides: a deliberate slide up and forward lets go; a slow creep up the liana and straight up still climb
+ok 503 - Matt-style slides: a deliberate slide up and forward lets go; a slow creep up the liana and straight up still climb
+  ---
+  duration_ms: 0.809887
+  type: 'test'
+  ...
+# Subtest: on a climbable vine or trunk: straight up and down climb, a diagonal flick up leaps off, a sideways or downward slide never does
+ok 504 - on a climbable vine or trunk: straight up and down climb, a diagonal flick up leaps off, a sideways or downward slide never does
+  ---
+  duration_ms: 38.534915
+  type: 'test'
+  ...
+# Subtest: hanging from a rope: a sideways slide creeps along and never hops off or drops; a flick up hops off, a slide down lets go
+ok 505 - hanging from a rope: a sideways slide creeps along and never hops off or drops; a flick up hops off, a slide down lets go
+  ---
+  duration_ms: 73.223587
+  type: 'test'
+  ...
+# Subtest: the jump help's down-and-up wiggle: the second jump in the air, never a let-go once he holds a liana, a trunk or a rope
+ok 506 - the jump help's down-and-up wiggle: the second jump in the air, never a let-go once he holds a liana, a trunk or a rope
+  ---
+  duration_ms: 33.256283
+  type: 'test'
+  ...
+# Subtest: Matt's logged flicks up and forward off a liana (55 to 80 degrees over, lifted at once) let go, and leap the way they went
+ok 507 - Matt's logged flicks up and forward off a liana (55 to 80 degrees over, lifted at once) let go, and leap the way they went
+  ---
+  duration_ms: 13.960292
+  type: 'test'
+  ...
+# Subtest: on the same lianas Matt's slides down still only climb down, and straight up still only climbs, however quick
+ok 508 - on the same lianas Matt's slides down still only climb down, and straight up still only climbs, however quick
+  ---
+  duration_ms: 0.965065
+  type: 'test'
+  ...
+# Subtest: it waits a moment, then asks for a run
+ok 509 - it waits a moment, then asks for a run
+  ---
+  duration_ms: 1.437983
+  type: 'test'
+  ...
+# Subtest: running far enough clears the hint, and the jump hint comes just before the first thing to jump
+ok 510 - running far enough clears the hint, and the jump hint comes just before the first thing to jump
+  ---
+  duration_ms: 0.169477
+  type: 'test'
+  ...
+# Subtest: the jump ends it with a well done, then it is gone for good
+ok 511 - the jump ends it with a well done, then it is gone for good
+  ---
+  duration_ms: 0.220725
+  type: 'test'
+  ...
+# Subtest: someone who jumps before being asked does not get the lesson
+ok 512 - someone who jumps before being asked does not get the lesson
+  ---
+  duration_ms: 0.133652
+  type: 'test'
+  ...
+# Subtest: with nothing to jump for, the jump hint still comes after a long run
+ok 513 - with nothing to jump for, the jump hint still comes after a long run
+  ---
+  duration_ms: 4.192074
+  type: 'test'
+  ...
+# Subtest: the first thing to jump for is a hole or a ledge, not something floating high above the ground
+ok 514 - the first thing to jump for is a hole or a ledge, not something floating high above the ground
+  ---
+  duration_ms: 0.413504
+  type: 'test'
+  ...
+# Subtest: a directed victory still says every line of the boss's own defeat dialogue, in order
+ok 515 - a directed victory still says every line of the boss's own defeat dialogue, in order
+  ---
+  duration_ms: 10.759634
+  type: 'test'
+  ...
+# Subtest: every directed victory panel has a camera, in-bounds actors, and ordered pose timelines
+ok 516 - every directed victory panel has a camera, in-bounds actors, and ordered pose timelines
+  ---
+  duration_ms: 0.476379
+  type: 'test'
+  ...
+# Subtest: worlds without a directed victory keep the plain card
+ok 517 - worlds without a directed victory keep the plain card
+  ---
+  duration_ms: 0.143542
+  type: 'test'
+  ...
+# Subtest: self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)
+ok 518 - self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)
+  ---
+  duration_ms: 23754.056457
+  type: 'test'
+  ...
+# Subtest: self-swing: at a steady 30 fps, left and right change nothing (pumping, flicking and hands off give the same swing, frame for frame)
+ok 519 - self-swing: at a steady 30 fps, left and right change nothing (pumping, flicking and hands off give the same swing, frame for frame)
+  ---
+  duration_ms: 1688.354018
+  type: 'test'
+  ...
+# Subtest: self-swing: up and down climb along the vine and the swing goes on as it was
+ok 520 - self-swing: up and down climb along the vine and the swing goes on as it was
+  ---
+  duration_ms: 7055.93423
+  type: 'test'
+  ...
+# Subtest: self-swing: an empty liana swings on its own, a climbing vine hangs still, and a catch never jolts the vine
+ok 521 - self-swing: an empty liana swings on its own, a climbing vine hangs still, and a catch never jolts the vine
+  ---
+  duration_ms: 9346.834594
+  type: 'test'
+  ...
+# Subtest: self-swing: neighbouring vines never swing into each other, nor into Pokey hanging on either, at any moment
+ok 522 - self-swing: neighbouring vines never swing into each other, nor into Pokey hanging on either, at any moment
+  ---
+  duration_ms: 169939.162981
+  type: 'test'
+  ...
+# Subtest: self-swing (Normal): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 167 ms, at the phases the stage gives the vines
+ok 523 - self-swing (Normal): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 167 ms, at the phases the stage gives the vines
+  ---
+  duration_ms: 109484.675488
+  type: 'test'
+  ...
+# Subtest: self-swing (Easy): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 300 ms, at the phases the stage gives the vines
+ok 524 - self-swing (Easy): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 300 ms, at the phases the stage gives the vines
+  ---
+  duration_ms: 108787.352961
+  type: 'test'
+  ...
+# \# normal: 161 teach rises, 129-131 px
+# \# easy: 161 teach rises, 129-131 px
+# Subtest: the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+ok 525 - the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+  ---
+  duration_ms: 65910.444698
+  type: 'test'
+  ...
+# Subtest: World 3: the stages with puzzle rooms are the ones listed (their pieces load with the stage), and each room is fit to learn in
+ok 526 - World 3: the stages with puzzle rooms are the ones listed (their pieces load with the stage), and each room is fit to learn in
+  ---
+  duration_ms: 6255.735404
+  type: 'test'
+  ...
+# Subtest: 3-2: the mushroom rooms: a ledge there only in the glow, the way up out of the patch's light, and the high one out of any light on the floor
+ok 527 - 3-2: the mushroom rooms: a ledge there only in the glow, the way up out of the patch's light, and the high one out of any light on the floor
+  ---
+  duration_ms: 4304.7868
+  type: 'test'
+  ...
+# Subtest: 3-5: an awake vine never sleeps, and sees whatever moves in its reach unless it is listening to a noise
+ok 528 - 3-5: an awake vine never sleeps, and sees whatever moves in its reach unless it is listening to a noise
+  ---
+  duration_ms: 609.070107
+  type: 'test'
+  ...
+# Subtest: 3-7: which fern? one stone by the ferns is the twin of the one by the door, and that fern holds the thing; only the light shows them
+ok 529 - 3-7: which fern? one stone by the ferns is the twin of the one by the door, and that fern holds the thing; only the light shows them
+  ---
+  duration_ms: 1101.798145
+  type: 'test'
+  ...
+# Subtest: 3-2 in play: the little ledge by the patch is there in its glow; the mushroom carried to the bank and set down there lights the way up
+ok 530 - 3-2 in play: the little ledge by the patch is there in its glow; the mushroom carried to the bank and set down there lights the way up
+  ---
+  duration_ms: 329.186001
+  type: 'test'
+  ...
+# Subtest: 3-2 in play: the high room's last ledge stays dark from the floor, and lights once the mushroom is thrown up onto the stone
+ok 531 - 3-2 in play: the high room's last ledge stays dark from the floor, and lights once the mushroom is thrown up onto the stone
+  ---
+  duration_ms: 813.657253
+  type: 'test'
+  ...
+# Subtest: 3-5 in play: the awake vine swats him back out of its reach and costs no heart; a rung bell or a thrown pebble lets him by
+ok 532 - 3-5 in play: the awake vine swats him back out of its reach and costs no heart; a rung bell or a thrown pebble lets him by
+  ---
+  duration_ms: 260.20472
+  type: 'test'
+  ...
+# Subtest: 3-5 in play: one pebble between the two awake vines is heard by both, and he walks past the pair
+ok 533 - 3-5 in play: one pebble between the two awake vines is heard by both, and he walks past the pair
+  ---
+  duration_ms: 178.954871
+  type: 'test'
+  ...
+# Subtest: 3-7 in play: beside the right fern nothing says so; the stones show in the carried light; crouching at the marked fern finds the thing
+ok 534 - 3-7 in play: beside the right fern nothing says so; the stones show in the carried light; crouching at the marked fern finds the thing
+  ---
+  duration_ms: 292.000727
+  type: 'test'
+  ...
+# Subtest: World 3 stone plates: a root gate a plate holds open, a pebble heap by the door; fails without the pebbles, and on some rolls of 3-2, 3-5 and 3-7
+ok 535 - World 3 stone plates: a root gate a plate holds open, a pebble heap by the door; fails without the pebbles, and on some rolls of 3-2, 3-5 and 3-7
+  ---
+  duration_ms: 20972.141524
+  type: 'test'
+  ...
+# Subtest: World 3 stone plate in play: a pebble set on the plate holds the roots open, and he walks through; stepping off without one shuts them
+ok 536 - World 3 stone plate in play: a pebble set on the plate holds the roots open, and he walks through; stepping off without one shuts them
+  ---
+  duration_ms: 297.202456
+  type: 'test'
+  ...
+# Subtest: the frond bridge is not there until he waits beside it, then it stays
+ok 537 - the frond bridge is not there until he waits beside it, then it stays
+  ---
+  duration_ms: 10.342764
+  type: 'test'
+  ...
+# Subtest: a falling rock hurts him once if he stands under it, never if he waits to the side
+ok 538 - a falling rock hurts him once if he stands under it, never if he waits to the side
+  ---
+  duration_ms: 6.724294
+  type: 'test'
+  ...
+# Subtest: the first rock he meets cannot hit him before its warning has shown to him, and Dot names it then (4-3)
+ok 539 - the first rock he meets cannot hit him before its warning has shown to him, and Dot names it then (4-3)
+  ---
+  duration_ms: 0.93859
+  type: 'test'
+  ...
+# Subtest: past the top of a plug fall's stair (a run started from a later flag) its boulder is in its slot, and the water is not a wall behind him
+ok 540 - past the top of a plug fall's stair (a run started from a later flag) its boulder is in its slot, and the water is not a wall behind him
+  ---
+  duration_ms: 0.723131
+  type: 'test'
+  ...
+# Subtest: rolling the boulder into the channel dries the fall, and its pool drains and the log sinks
+ok 541 - rolling the boulder into the channel dries the fall, and its pool drains and the log sinks
+  ---
+  duration_ms: 0.909505
+  type: 'test'
+  ...
+# Subtest: standing still under a knot sends Dot up, and the vine drops down
+ok 542 - standing still under a knot sends Dot up, and the vine drops down
+  ---
+  duration_ms: 4.838989
+  type: 'test'
+  ...
+# Subtest: a thief takes the petal; a punch while it teases gives it back where it fell
+ok 543 - a thief takes the petal; a punch while it teases gives it back where it fell
+  ---
+  duration_ms: 0.940936
+  type: 'test'
+  ...
+# Subtest: a lookout gives him away unless he hides, or a knocked-down fruit keeps it busy
+ok 544 - a lookout gives him away unless he hides, or a knocked-down fruit keeps it busy
+  ---
+  duration_ms: 1.315615
+  type: 'test'
+  ...
+# Subtest: 4-5 is hand-built
+ok 545 - 4-5 is hand-built
+  ---
+  duration_ms: 8.355592
+  type: 'test'
+  ...
+# Subtest: 4-5: every roll can be finished, has one exit, and takes a quick player two minutes
+ok 546 - 4-5: every roll can be finished, has one exit, and takes a quick player two minutes
+  ---
+  duration_ms: 1921.452507
+  type: 'test'
+  ...
+# Subtest: 4-5: every watched stretch has places to hide (a bush or a curtain of water) no farther apart than a run in one calm
+ok 547 - 4-5: every watched stretch has places to hide (a bush or a curtain of water) no farther apart than a run in one calm
+  ---
+  duration_ms: 572.283809
+  type: 'test'
+  ...
+# Subtest: 4-5: every lookout watches a stretch under her watch and has its own fruit tree in reach, low enough to punch
+ok 548 - 4-5: every lookout watches a stretch under her watch and has its own fruit tree in reach, low enough to punch
+  ---
+  duration_ms: 508.002389
+  type: 'test'
+  ...
+# Subtest: 4-5: each idea is taught where it first appears
+ok 549 - 4-5: each idea is taught where it first appears
+  ---
+  duration_ms: 503.65205
+  type: 'test'
+  ...
+# Subtest: 4-5: behind a curtain he is hidden; the water never pushes or slows him
+ok 550 - 4-5: behind a curtain he is hidden; the water never pushes or slows him
+  ---
+  duration_ms: 37.50571
+  type: 'test'
+  ...
+# Subtest: 4-5: a lookout that sees him screeches; the fruit punched down from its tree keeps it eating while he runs its stretch
+ok 551 - 4-5: a lookout that sees him screeches; the fruit punched down from its tree keeps it eating while he runs its stretch
+  ---
+  duration_ms: 99.296087
+  type: 'test'
+  ...
+# Subtest: 4-5 (LV-13): under her eye, every hop run between two places to hide has cover beside its rock: no spot of the path more than ~210 px from cover (was 330-386)
+ok 552 - 4-5 (LV-13): under her eye, every hop run between two places to hide has cover beside its rock: no spot of the path more than ~210 px from cover (was 330-386)
+  ---
+  duration_ms: 506.268619
+  type: 'test'
+  ...
+# Subtest: the jumping spider sheet: walk, idle, crouch and hurt clips, all inside the sheet
+ok 553 - the jumping spider sheet: walk, idle, crouch and hurt clips, all inside the sheet
+  ---
+  duration_ms: 13.012992
+  type: 'test'
+  ...
+# Subtest: the spider sheet loads through the shared creature loader (no stage uses it yet)
+ok 554 - the spider sheet loads through the shared creature loader (no stage uses it yet)
+  ---
+  duration_ms: 0.450436
+  type: 'test'
+  ...
+# Subtest: the Tarantula Queen sheet: every move a fair boss fight needs, each attack with a readable tell of at least 0.6 s
+ok 555 - the Tarantula Queen sheet: every move a fair boss fight needs, each attack with a readable tell of at least 0.6 s
+  ---
+  duration_ms: 2.272024
+  type: 'test'
+  ...
+# Subtest: Meeca carving on the trunk: a loop at her standard sheet's size
+ok 556 - Meeca carving on the trunk: a loop at her standard sheet's size
+  ---
+  duration_ms: 8.46916
+  type: 'test'
+  ...
+# Subtest: the new creature models' pose sheets: idle, move, tell, attack, hurt and defeated for each
+ok 557 - the new creature models' pose sheets: idle, move, tell, attack, hurt and defeated for each
+  ---
+  duration_ms: 1.163761
+  type: 'test'
+  ...
+# Subtest: Lieutenant Pell's sheet (Meeca's stage): march, idle, the turn-and-look-back tell, a gentle catch and the blanket
+ok 558 - Lieutenant Pell's sheet (Meeca's stage): march, idle, the turn-and-look-back tell, a gentle catch and the blanket
+  ---
+  duration_ms: 1.485118
+  type: 'test'
+  ...
+# Subtest: the blanket stills: the folded blanket and Meeca wrapped in it, at her standard scale
+ok 559 - the blanket stills: the folded blanket and Meeca wrapped in it, at her standard scale
+  ---
+  duration_ms: 0.243521
+  type: 'test'
+  ...
+# Subtest: the General's soldiers (Meeca's stage): two variants, each with a march, an idle and a look back, bigger than Pell
+ok 560 - the General's soldiers (Meeca's stage): two variants, each with a march, an idle and a look back, bigger than Pell
+  ---
+  duration_ms: 5.917043
+  type: 'test'
+  ...
+# Subtest: 5-2: standing still, the silk creeps up him and wraps him for a heart; wiggling keeps it off
+ok 561 - 5-2: standing still, the silk creeps up him and wraps him for a heart; wiggling keeps it off
+  ---
+  duration_ms: 729.933075
+  type: 'test'
+  ...
+# Subtest: 5-1 teaches it gently: the wrap costs no heart, and Dot wakes him
+ok 562 - 5-1 teaches it gently: the wrap costs no heart, and Dot wakes him
+  ---
+  duration_ms: 192.346485
+  type: 'test'
+  ...
+# Subtest: 5-1: the table's soft chairs tug him toward them while he stands beside one
+ok 563 - 5-1: the table's soft chairs tug him toward them while he stands beside one
+  ---
+  duration_ms: 68.645188
+  type: 'test'
+  ...
+# Subtest: 5-2: walking into a cake makes him sleepy and slow for a few seconds
+ok 564 - 5-2: walking into a cake makes him sleepy and slow for a few seconds
+  ---
+  duration_ms: 102.162908
+  type: 'test'
+  ...
+# Subtest: 5-2: a thread's hum wakes the sleeping spiders; each in view crouches for its warning before it comes, one off the screen once it is in view
+ok 565 - 5-2: a thread's hum wakes the sleeping spiders; each in view crouches for its warning before it comes, one off the screen once it is in view
+  ---
+  duration_ms: 73.569842
+  type: 'test'
+  ...
+# Subtest: 5-2: a punch knocks the Butler's tray away, and then there is no cake to eat
+ok 566 - 5-2: a punch knocks the Butler's tray away, and then there is no cake to eat
+  ---
+  duration_ms: 111.171354
+  type: 'test'
+  ...
+# Subtest: 5-2: walking into the Butler's held-out tray is eating its cake (sleepy), and jumping over him is not
+ok 567 - 5-2: walking into the Butler's held-out tray is eating its cake (sleepy), and jumping over him is not
+  ---
+  duration_ms: 125.569597
+  type: 'test'
+  ...
+# Subtest: 5-3: an open orchid holds him and gives up the flowers in its cup; it shivers, then shuts and drops him to the grass; a shut cup gives nothing
+ok 568 - 5-3: an open orchid holds him and gives up the flowers in its cup; it shivers, then shuts and drops him to the grass; a shut cup gives nothing
+  ---
+  duration_ms: 181.652475
+  type: 'test'
+  ...
+# Subtest: 5-4 is hand-built, about two and three quarter minutes for a quick player, in the dusk (the first dusk stage)
+ok 569 - 5-4 is hand-built, about two and three quarter minutes for a quick player, in the dusk (the first dusk stage)
+  ---
+  duration_ms: 2807.846592
+  type: 'test'
+  ...
+# Subtest: 5-4: every roll can be finished, has one exit, runs its full length, needs no pickup moved, and keeps nothing past the shrine
+ok 570 - 5-4: every roll can be finished, has one exit, runs its full length, needs no pickup moved, and keeps nothing past the shrine
+  ---
+  duration_ms: 9344.80431
+  type: 'test'
+  ...
+# Subtest: 5-4: flags all along (one at least every 45 s for a quick player) and hearts on the way
+ok 571 - 5-4: flags all along (one at least every 45 s for a quick player) and hearts on the way
+  ---
+  duration_ms: 784.300451
+  type: 'test'
+  ...
+# Subtest: 5-4 pace: a safe first silk line over solid ground, then one line over a gap, then chains of two and more
+ok 572 - 5-4 pace: a safe first silk line over solid ground, then one line over a gap, then chains of two and more
+  ---
+  duration_ms: 812.751387
+  type: 'test'
+  ...
+# Subtest: 5-4: every drop is a soft pit with a step out, and a catch ledge under every gap of a chain, a plain hop up from the floor
+ok 573 - 5-4: every drop is a soft pit with a step out, and a catch ledge under every gap of a chain, a plain hop up from the floor
+  ---
+  duration_ms: 773.563905
+  type: 'test'
+  ...
+# Subtest: 5-4: the silk sheets hang on open ground, well away from every take-off, and the Seamstress knits one, at its far end
+ok 574 - 5-4: the silk sheets hang on open ground, well away from every take-off, and the Seamstress knits one, at its far end
+  ---
+  duration_ms: 953.329378
+  type: 'test'
+  ...
+# Subtest: 5-4's lines: in Dot's voice and the line bar (under 10 words; a first sight names the thing, never the answer), naming the silk
+ok 575 - 5-4's lines: in Dot's voice and the line bar (under 10 words; a first sight names the thing, never the answer), naming the silk
+  ---
+  duration_ms: 69.93385
+  type: 'test'
+  ...
+# Subtest: 5-4 holds no World 5 find (finds.ts), so there is none to place
+ok 576 - 5-4 holds no World 5 find (finds.ts), so there is none to place
+  ---
+  duration_ms: 148.248027
+  type: 'test'
+  ...
+# Subtest: the Seamstress's rule: she looks up only at a player lingering by her sheet in full view, tells for at least 0.6 s, and is called off by moving on
+ok 577 - the Seamstress's rule: she looks up only at a player lingering by her sheet in full view, tells for at least 0.6 s, and is called off by moving on
+  ---
+  duration_ms: 0.753712
+  type: 'test'
+  ...
+# Subtest: 5-4 in the real engine: lingering by a silk sheet brings the creep on faster than standing anywhere else; running past brings none
+ok 578 - 5-4 in the real engine: lingering by a silk sheet brings the creep on faster than standing anywhere else; running past brings none
+  ---
+  duration_ms: 913.076833
+  type: 'test'
+  ...
+# Subtest: 5-4 in the real engine: lingering at the Seamstress's sheet, she looks up (on screen, warned for 0.8 s), then her lace lands; walking on calls it off
+ok 579 - 5-4 in the real engine: lingering at the Seamstress's sheet, she looks up (on screen, warned for 0.8 s), then her lace lands; walking on calls it off
+  ---
+  duration_ms: 816.431883
+  type: 'test'
+  ...
+# Subtest: 5-4 in the real engine: every chain is crossed with a real thumb, a flick up and forward from the bottom of the swing to its front, upright and sideways
+ok 580 - 5-4 in the real engine: every chain is crossed with a real thumb, a flick up and forward from the bottom of the swing to its front, upright and sideways
+  ---
+  duration_ms: 137891.615839
+  type: 'test'
+  ...
+# Subtest: 5-4: a miss in a chain lands on a catch ledge or the soft floor, and from the ledge a jump catches the next line
+ok 581 - 5-4: a miss in a chain lands on a catch ledge or the soft floor, and from the ledge a jump catches the next line
+  ---
+  duration_ms: 41145.909709
+  type: 'test'
+  ...
+# Subtest: the wheels' frames are their sheets' own (w6PropsData's water room; props-made/w6balt.json)
+ok 582 - the wheels' frames are their sheets' own (w6PropsData's water room; props-made/w6balt.json)
+  ---
+  duration_ms: 1.44816
+  type: 'test'
+  ...
+# Subtest: a wheel is drawn in scale with Pokey: the catalog's 1.57 x his 89.1 px
+ok 583 - a wheel is drawn in scale with Pokey: the catalog's 1.57 x his 89.1 px
+  ---
+  duration_ms: 8.028535
+  type: 'test'
+  ...
+# Subtest: 6-7's water room: its sluice lever is drawn as one of the two wheels, the same lever always the same wheel
+ok 584 - 6-7's water room: its sluice lever is drawn as one of the two wheels, the same lever always the same wheel
+  ---
+  duration_ms: 0.302364
+  type: 'test'
+  ...
+# Subtest: the wheels' sheets load with 6-7, and with no other stage
+ok 585 - the wheels' sheets load with 6-7, and with no other stage
+  ---
+  duration_ms: 30.737365
+  type: 'test'
+  ...
+# Subtest: What's New: the top entry is this version (add one entry at the top for every release)
+ok 586 - What's New: the top entry is this version (add one entry at the top for every release)
+  ---
+  duration_ms: 9.198672
+  type: 'test'
+  ...
+# Subtest: What's New: newest first, each version listed once, every entry has 3-8 lines
+ok 587 - What's New: newest first, each version listed once, every entry has 3-8 lines
+  ---
+  duration_ms: 0.80481
+  type: 'test'
+  ...
+# Subtest: What's New: player words only, short lines
+ok 588 - What's New: player words only, short lines
+  ---
+  duration_ms: 0.85021
+  type: 'test'
+  ...
+# Subtest: What's New: dates read in words
+ok 589 - What's New: dates read in words
+  ---
+  duration_ms: 0.242372
+  type: 'test'
+  ...
+1..589
+# tests 589
+# suites 0
+# pass 589
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1509150.014127
