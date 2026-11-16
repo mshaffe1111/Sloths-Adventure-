@@ -488,3 +488,4 @@ Brief the new lead from this file when it messages.
 **NEW LEAD (11-14 6:03 PM ET): session_01FhBbYN2CVHnFXg7XzqKXpM** (lead.md line 1 not yet updated at 6:06 PM; flagged to it). Sent it the open list.
 
 **11-15 8:08 PM ET: 0.9.9 What's New (REL-099, session_01FhBbYMxSGdfHZDBjedQhFx): PASS with one edit.** Line 4 "Racing to the shrine: the old limb gives way behind me now, past painted palms." becomes "Run! The old limb gives way behind me now, all the way to the far tree." (no shrine in the new 1-8; "painted" is a workshop word).
+**8:18 PM ET: final 0.9.9 What's New (8 lines, 2-2 added): PASS.** Lines 2 ("A Very Good Bush: I hide in the green, and only move while the eagle looks away.") and 8 ("New stage, Petals for the Crown: lily pads sink if I stand, then come back up.") approved.
