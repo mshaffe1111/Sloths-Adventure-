@@ -2617,9 +2617,11 @@ export class FirstTimerRun {
       const edgeX = edgeOf(here);
       const next = this.sim.platforms.some((q) => q !== here && !q.broken && inReach(q, edgeX) && (here.type === 'drift' || q.type !== 'moving'));
       if (here.type === 'drift') {
-        // (a drifting log: the float-wait decides when the way on is near; his reaction to it is the skill's part)
-        if (!atEdge || !next) { this.offSeen = -1; return null; }
-        return reaction() ? null : {};
+        // (a drifting log is the river bot's: its float-wait, against-the-flow and handed-to-the-bank skills (ENG-W2b, FIX-GATES b58ec0e6,
+        // riverRide.test). A reaction here before each step-off, never planted, stood the child on Easy 8 s+ at 2-1's river edge and stopped
+        // four of riverRide's plants biting once both lines met (FIX-22; METER-2a's EXACT NEXT STEP 2 named the join))
+        this.offSeen = -1;
+        return null;
       }
       // (a ride or a lift: hold still while it moves, and while it stands with nothing in reach ahead, it is about to carry him)
       if (!stands(here) || !next) { this.offSeen = -1; return {}; }
