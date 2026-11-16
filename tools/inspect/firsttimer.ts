@@ -2062,6 +2062,11 @@ export class FirstTimerRun {
     this.swingT = 0;
     // on a rope: along it the way on, off at its end
     if (p.hanging) {
+      // (caught a rope his way does not take yet (a hop down the steps under 2-2's rope, before the spur's stone): he drops off it (down,
+      // the engine's let-go), as a person drops off a rope he grabbed by mistake; hanging on, he shimmied to and fro under the way out
+      // until rescued, and a jump off it caught it again: FIX-22)
+      const along = this.prog.pts.slice(this.prog.cur, this.prog.cur + 6).some((q) => q.rope);
+      if (!along) return { down: true };
       this.ropeStill = Math.abs(this.moveX) < 0.5 ? this.ropeStill + DT : 0;
       if (this.ropeStill > 0.5 && !this.pending) {
         this.ropeStill = 0;
