@@ -124,6 +124,24 @@ test('a sinking pad (on beatBrick): it holds, warns, sinks while he stands past 
 });
 
 // ── the examples (test-side) ──
+test('a pad that sinks under him stays down RIDE.padRise once he is off it, the way he really leaves it (he falls the step it goes)', () => {
+  // (ENG-22: the engine's pad is no floor the step it sinks, so 'standing' is false from the next step: the count must not run back
+  // under 'on' and pop the pad up under his falling feet; it latches at its cap, then runs back through the warning)
+  const padClock: ClockDef = { id: 'pad', phases: [{ name: 'off', seconds: 0.5 }, { name: 'warn', seconds: 0.5 }, { name: 'on', seconds: 1 }], offset: 0, easyStretch: 1.5 };
+  for (const easy of [false, true]) {
+    const b = beatOf(padClock, easy);
+    const k = easy ? 1.5 : 1;
+    const pad = newPad();
+    let n = 0;
+    while (padNow(pad, b).solid) { stepPad(pad, b, true, DT); n++; }
+    assert.ok(Math.abs(n * DT - 1 * k) < 2 * DT, `it held ${n * DT} s (its 1 s count)`);
+    let down = 0;
+    while (!padNow(pad, b).solid && down < 300) { stepPad(pad, b, false, DT); down++; }
+    assert.ok(Math.abs(down * DT - RIDE.padRise * k) < 2 * DT, `it stayed down ${(down * DT).toFixed(2)} s after he fell off (padRise ${RIDE.padRise * k} s)`);
+    assert.ok(padNow(pad, b).tell > 0.9, 'it comes up through its warning (still shivering)');
+  }
+});
+
 test('a drifting log carries him across the water: he steps on at one bank and steps off at the other', () => {
   const clock = stageClock([beat], false);
   const s = newRide(log, clock.read('ride'));

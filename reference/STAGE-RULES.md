@@ -38,6 +38,13 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    little research on what we're doing... there was a reason why these games were great"):** a design that borrows from a classic game
    says, with sources, what made the original great (its loop, feel, pacing, goal), what we take and what we never copy (levels,
    characters, look). Principles only; the result is our own rainforest version.
+   **Mix the whole shelf, never one game per level (Matt, 2026-11-14 2:08 PM ET: "the designers need to understand too... it is in a tunnel
+   vision too, that it doesn't have the vast variety that it could have... We can pull and mix and match and do whatever we need to, with
+   also putting our own ideas into it... if a designer can take something from, let's say, the Mario Brothers on the Atari 7800 and mix it
+   in with what we're inspiring, why not? I think sometimes we keep our scope so small, which is why it starts feeling repetitive"):** a
+   level's design draws from SEVERAL games across reference/plans/INSPIRED-BY.md and PLATFORMER-100.md (Matt's 100 + the pick list) (Matt's own favourites first, then the 84 ideas' games,
+   different series and eras), mixed with our own ideas; a level built from one game's toolbox is a defect of the design. Each borrowed
+   piece is still researched (above) and taught on its first appearance; the player still meets one clear idea per level.
    **Easy vs Normal (Matt, 2026-11-02):** "Normal should be different than easy. Easy should be just a casual play where you can just
    kind of cruise through... easy would be kind of the difficulty that we have most of the game right now." The arc above is NORMAL.
    Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).

@@ -14,14 +14,16 @@ Matt's goal today (10:13 AM ET): **1-4 and 1-5 on his test link tonight, polishe
 - **Lean (Matt 11-12):** messages to the lead 5 lines max; REPORT.md 30 lines max (done-items with evidence, polish check, gates, what is
   left, pushback, "Learned"); one-line commit subjects; no narration. Safe-keeping push every 45 min; times from `TZ=America/New_York date`.
 - **Report to the lead:** send_message to session_01FhBbYNzGRJBDMzn6XbtQK2. Blocked? PUSHBACK.md on your branch + one message, then wait.
-- **Stop line:** 9:30 PM ET or 40% context, whichever first; push WIP and report.
+- **Stop line:** 9:30 PM ET or 40% context, whichever first; push WIP and report. **Never stop with a gate or script running in the
+  background** (D59, 11-13): a stopped member's container kills it. Wait for it, or name it plainly as UNRUN in the report.
 
 ## Shared-file tokens (the lead, 10:19 AM ET; PM.md:21: no two builders edit the same file at the same time)
 One holder per file; the lead passes a token only after the holder has pushed. To take a token: merge the last holder's pushed head first.
 | File | Holder now | Next |
 |---|---|---|
 | src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts, tower.ts, nodeCode.ts | NODES-TRAVEL (from FA, 12:23 PM) | (ask) |
-| src/game/engine.ts, src/game/types.ts | B14 (pods + gate wiring, own blocks) | B15 (bough/limb wiring, if any) |
+| src/game/engine.ts, src/game/types.ts | (evening) FEEL-VINE: engine.ts "1. TREE CLIMBING LOGIC" block only (~2038-2227); POLISH-1: the fig gate's own block only, asks first | B14/B15 retired |
+| src/game/physics.ts | PERF-BUILD (reach memo only) | FEEL-VINE (merge t-perf-build first) |
 | gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
 | .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | ADD-LEVEL |
 | tools/perf/limits.json (scenarios only) | ADD-LEVEL (1-1) | B15 (1-5), then B14 (1-4) |

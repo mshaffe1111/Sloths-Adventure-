@@ -1,4 +1,5 @@
-LEAD SESSION (blockers route here): session_01FhBbYNzGRJBDMzn6XbtQK2 (took over 2026-11-13 9:54 AM ET)
+LEAD SESSION (blockers route here): session_01FhBbYN2CVHnFXg7XzqKXpM (took over 2026-11-14 6:03 PM ET)
+Backup lead: session_01FhBbYNzGRJBDMzn6XbtQK2 (lead 11-13 9:54 AM to 11-14 6:03 PM ET; questions of fact only)
 # Turnover note: the lead (PM). Last handover: 2026-11-12 late evening by session_01FhBbYP63h7cCX8DyW69stq (rotation; Matt)
 
 Read this, then reference/STATE.md (newest at the bottom: every decision tonight is dated there), reference/plans/ENGINE-PLAN.md
@@ -10,16 +11,44 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **NIGHTLY CUTOFF, NOTHING OVERNIGHT (Matt, 11-14 9:39 PM ET):** "have things come down for tonight around 11:30ish, and then I would tell you when to start back up in the morning. I don't like having things run overnight. I like to keep my eye on the tokens." Every member reports and stops by the cutoff with an EXACT NEXT STEP; no job starts that can't finish before it; nothing restarts until Matt says so.
+- **THE LINK RHYTHM (Matt, 11-14 9:38 PM ET):** each level on his link the hour it's green; he plays, sends tweaks; one polish member works behind; production in small batches on his "push" once he approves 2-3 levels; broken things fixed before they ship, polish can follow.
+- **NEVER ANOTHER 1-6 (Matt, 11-14 8:49 PM ET):** "we could never do 1 to 6 again. That type of stuff is just a killer... kills tokens... show me that it's possible to do things the right way and still be efficient and set up future levels." 1-6 cost ~29 h elapsed, 18 sessions, ~$267. THE SCOREBOARD from here (lead, 8:49 PM ET): each level's BUILD (one builder, from data) under 2 h and under $25; its engine pieces done BEFORE the builder starts (proven on a real stage row, D75), counted separately in LEVEL-LOG; any level that breaks either number gets a cause in the retro the same night.
+- **PITCH ROUNDS CHOOSE EVERY LEVEL (Matt, 11-14 6:23-6:28 PM ET):** two blind pitchers (high + xhigh) pitch the next three levels; research what players LOVED, drawn from his whole list (classics and lesser-known, at most one famous game per level); the lead picks or sends both back. Method: reference/methods/pitch.md.
+- **THE ENGINE DRIVES DEVELOPMENT (Matt, 11-14 1:55 PM ET):** "Game engine drives development... the pieces in the engine that are going to
+  be repeated. One-offs can be done by the developers... we are always trying to shave time for each level... Not cut quality, but improve
+  every level. It needs to be strategic, it needs to be lean, it needs to be aggressive." Plan engine pieces + bot skills three levels
+  ahead; every level faster than the last (LEVEL-LOG.md), same bar. Full text: the persona's section "The engine drives development" (reference/roles/LEAD-PERSONA.md, rewritten 11-14).
+- **NEVER PATCH FOR ONE LEVEL: FIX GLOBALLY, KEEP THE ENGINE FLEXIBLE** (Matt, 11-14 1:42, 1:46, 1:48 PM ET; R-165.246): "we're not
+  adding pieces to the engine like we should"; "even if it changes previous levels, if it's a fix that is affecting everything, we put it in";
+  "if we find something that's reoccurring when we're in world 8 and it affects world 1, we still fix it, and we let it all fix everything.
+  We should be building our engine to be flexible so that it keeps getting better." Any fault another level could hit is fixed once in the
+  engine/shared code at engine tier (xhigh), planted, applied to every stage in every world, earlier stages re-checked and shipped with it.
+  Builders at high change their level's data and tag ENGINE-WORTHY findings (level.md rule 22); a builder may do engine work only at
+  engine tier. The 11-14 lead let high-tier builders write engine lines (goals.ts seal, hanging cover, bot skills, perch constant): that
+  stops; those lines get an xhigh line-by-line review at merge (D70).
+- **EVERY TRIBUTE IS RESEARCHED AND EXPLAINED** (Matt, 11-13 3:32 PM ET; R-165.203): every idea round and level design that borrows from
+  a classic game says, with cited research, what made it great, how the original taught it, and how we introduce it so it FEELS that good
+  on a phone (packet template: IDEAS-1-6.md "THE TRIBUTE RULE"). Matt should never have to explain the feel (R-165.177, 1-4's vines vs
+  Donkey Kong Jr.). Idea rounds: Opus members at high and xhigh (models.json 'ideas'; medium is gone since 11-14 1:51 PM), then one designer.
+- **STILL REVIEW IS PASS/FAIL (D61, 11-13; Matt 5:43 PM: "I expect more from you when reviewing"):** any code-drawn primitive or rough
+  spot in play view holds the test link until fixed, unless Matt is asked one question and says ship it. Naming it is not passing it.
+- **THE RHYTHM: 3 LEVELS AHEAD + 1 POLISH MEMBER** (Matt, 11-13 3:28 PM ET; R-165.202): "I'll play it, give you feedback... we're going to
+  do 3 levels at a time. We have another helper going back, fixing any of the polishing that I find on the levels that we just implemented."
+  Get each level into his hands as soon as it passes (early is fine); design runs 3 levels ahead, builds stagger inside the 4-member cap,
+  one polish member works his feedback; every level's lessons go into level.md so the next is right the first time.
 - **TIME BOXES + HANDOFFS** (Matt, 11-13 12:48 PM ET): every member gets a box (60-90 min); at its end it hands off (REPORT with EXACT NEXT
   STEP) and stops; the lead decides whether a fresh session continues. Plus the 40% context stop. Watch usage and retire early when it climbs.
 - **AT MOST 4 MEMBERS RUNNING AT ONCE** (Matt, 11-13 12:44 PM ET: "we need to limit how many we're running at one time... Not everything needs a
   different helper"): prioritise; double up related jobs on one member (a finishing member hands its leftovers to a running one, not a new one).
+- **AS MUCH DONE AS POSSIBLE, LITTLE WASTE (Matt, 11-13 5:28 PM ET; R-165.210):** "I don't expect to have it last the whole time." Output per
+  token wins over stretching the week: keep lanes full with work that ships; waste (re-runs, exploring, idle sessions, over-long boxes) is the enemy.
 - **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
   self-report it, D55); no testing of what can't affect the game (LAWS 5: docs/tools = fast gates); no re-running a gate already green
-  on the same code; fewer members at once; medium effort for low-risk work. Where tokens really go: long sessions re-reading their
+  on the same code; fewer members at once. (Medium effort: SUPERSEDED 11-14 1:51 PM: high is the floor.) Where tokens really go: long sessions re-reading their
   context each turn, many sessions at once, and Fable, more than the gates themselves.
-- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high, or medium for low-risk
-  work (docs, mechanical steps, small known fixes). tools/team/models.json logs it.**
+- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high. SUPERSEDED in part 11-14 1:51 PM ET:
+  xhigh is the ceiling and high the floor (no max, no medium, never low). tools/team/models.json logs it.**
 - **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
   level." A level job starts only when every node/piece its design names already exists in the engine (NODE-KEY status "Now"); the
   designer writes the node string (+ the story keeper's nature check and lines), ONE builder lays and proves it with ADD-LEVEL's one step.
@@ -57,6 +86,54 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   11-13 count (90 stages): dir 30 (up 20), clock 20, dark 17, swing 11, ride 11, still 10, water 10, lure 8, crumble 6, fling 6.
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
+
+## RIGHT NOW (11-14, refreshed 5:30 PM ET for the turnover; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+
+**Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
+**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v259 = link #3 from t-int-9@0df7f3f9 (+ 1c7f6b95: the 48 KB test-link inline limit, committed 5:51) (published 5:52 PM
+ET; inline limit 48 KB, 488 files, R-165.252): the new 1-7, TIPS, FIX-15/15b fig gate, chains, clip tool, POLISH-10, journal, haze fix, pit-bank fix (global), 1-1
+recalibrated. 1-6 is NOT on it yet (ENG-16G). Never send testers to EnK5. Build: `python3 tools/testlink/build.py "<note>"` in a worktree
+of the head, then the Artifact tool with the EnK5 url, root tools/testlink, files from filesmap.json (HANDOFF §6).
+**Other links:** world map https://claude.ai/artifact/KRT1HT17cy8c7wd1pN87za; Matt's handoff doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa
+(Docs connector); inspiration shelf reference/plans/INSPIRED-BY.md + PLATFORMER-100.md + PLATFORMER-100-MATT.md.
+**How a release goes:** only on Matt's "push": PM.md §5 + reference/methods/release.md step by step; full gates on the exact head; PR
+with the GitHub MCP create_pull_request, NOT a draft; Matt merges; then check the deploy runs and the APK on the Releases page.
+**Matt decided (5:20 PM ET):** fig gate option A, the branch beside a shut gate is held away and GROWS/SWINGS in when the gate opens (R-165.212;
+mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; FIX-15b REPORT's EXACT NEXT STEP): an engine job at xhigh.
+**Waiting on Matt:** (1) his look at 1-7 and the fig gate on link #3; (2) the 1-8 chase edge glow on the real 1-8 (reads a little like
+smoke); (3) "push" for a release (0.9.9 = links #3 + #4 once 1-6 is in).
+**Next 3 (who, tier, packet):** 1. ENG-16G (running, xhigh) finishes 1-6: height-aware swingClearance, seesaw-b out of the shipped set,
+sealed-door petals, relist, bots, stills, clips (packets/2026-11-14/ENG-16G.md). 2. INT-9b phase B (xhigh): merge ENG-16G's GREEN 1-6
+onto t-int-9, every gate once, the lead judges stills/clips -> EnK5 link #4 (INT-9b.md). 3. 1-8 (the chase) is NOT ready to build (ENG-B5 final 5:54 PM,
+t-eng-b5@c0599609, REPORT reference/qa-reports/B5/REPORT.md): rolling nut/fruit by data, chase camera lead (1.00-1.13 s; 0.90 s on a 320 px
+phone) and ?fixture=chase are done; NOT ready: phased liana, still-fork eagle, tip, painted nut/fruit (Hugging Face), the chase edge under the
+new lead (fails B2's contrast bar on all 4 backdrops). Ready-to-build gate (persona): those go to an engine member (xhigh) and an art job
+FIRST, with the designer answering B4's (d) (child bot reaches the fork on 1 of 3 seeds) and "is an after-crack nut a heart?"; then BUILD-18
+with a fresh builder. ENG-B5's last suite re-run on de1e22fb was still running at 5:54; retire it after that result (48%, D68).
+**Queue after that (as slots free):** fig gate option A grow-in (engine, xhigh); R-165.246 lift pass (one-level patches into the engine;
+ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-11 strip joins + flag ring (packet written); WIRE-ART
+(underlayer + pole), ART-PRED (Matt's predator sheets, branch art-raw-2026-11-14); R-165.235 (1-1 sprint-B/C back); R-165.243/.237 polish.
+**Members running: NONE working (Matt's cutoff, 11:20 PM ET 11-14; nothing restarts until Matt says go). DIFF-SYNTH (session_01FhBbYMfDvWP1YZ6RHPntDd, research, high) WAITS for Matt's uploads (papers + Gemini's report) and starts only on his word; it writes reference/research/DIFFICULTY-SYNTHESIS.md on t-diff-synth, its own view first, then compares with DIFFICULTY-MODEL.md (Matt 11:20 PM: the lead gets the brief, not the raw reports, to stay objective).** Story keeper standing (session_01FhBbYMCa3JXWmyQicbmxuu).
+**MORNING QUEUE (in order; xhigh boxes 75 min, builders 90, D78; cap 4 unless Matt says otherwise):**
+1. CRITIC on reference/design/DIFFICULTY-MODEL.md (origin/t-diff-research@b8705922) + Matt's Gemini deep research when he pastes it (prompt: reference/research/GEMINI-DIFFICULTY-PROMPT.md). Then METER-2 step 0 (R-165.272, Matt 12:17 AM): the coverage table, every mechanic on GAME-MAP (origin/t-design-game-map) against the bot that plays it and the channel that prices it, reactive vs forced timing, every gap with a fix and a ready-by world, lead approves before the rebuild. Then METER-2a: fit the scale (T50) so gaps match how hard it feels (Matt: 1-4/1-5 "a little" harder, not 8x), and a tie band from the seed spread so easy levels are never ranked on noise. Then beatfail.ts must reproduce 1-1's per-piece r=0.94 before scoring any other stage (R-165.268).
+2. INT-10 -> link #4 = 1-6: merge t-eng-petal@3802db95 (has t-build-16) + t-tools-2 + t-eng-dr; finish ENG-PETAL's EXACT NEXT STEP (1-1 relist seed 33616, whole suite, 5-7/7-1 pins revert proof, 8-2 wholesale move traced, 71/102 collectibles moved), 1-6 petals per screen (more sockets on walked pieces), 1-6 Easy gentler (band from DIFFICULTY.md), stills/clips, then Matt's link. Merge base: HOOKS 994ea4e7 (orphan root).
+3. ENG-LOOK part 2 (t-eng-look@0449e838): (1c) settle after the chase lay; entry.join 'walk' for still fork + tip (BUILD-18b's ruling); tip-gap marking with the bough look; (2) the bough look (merge t-eng-dr, ONE HF bough job, show Matt first); drawcheck 1-8 sideways under limits. Then 1-8's data adds entry.join (t-build-18b@9f7d54bd), relist, bots -> link #5 = 1-8.
+4. ENG-WATCH part 2 (t-eng-watch@76a81ad2): restate 4 kit tests as F1's rule (planted); F1 gated by kind (eagle yes, caiman no); merge into 1-7/1-8 lines. Then TUNE-17 (1-7 to 5.5 by METER-2's number; Normal never softened for the kid bot).
+5. ENG-W2b: the river place rule (t-eng-w2@58182e9a EXACT NEXT STEP) + verdicts read painted water (Dot warns the first deep river) + one carry rule + petals on logs/pads -> 2-1 builds.
+6. ENG-19b (1-9 bot skills, t-eng-19@141529cc; roost art) -> 1-9 builds.
+Morning items also named: Play's off-list road trusts a throwing finish (ENG-DR S1); castBots taught skills (R-165.264); wayside 'on' moment (R-165.262); tip expiry past its section (BUILD-18b); 1-8's book clue wording (keeper).
+Story keeper (standing): session_01FhBbYMCa3JXWmyQicbmxuu. Retired today, costs in LEVEL-LOG.md: BUILD-16..16d, BUILD-17/17b, INT-8, INT-9,
+ENG-S5, ENG-E2, ENG-16E, ENG-16F ($41.43, ran to 54%: over the box), FIX-15/15b, TIPS, POLISH-9b/10, ENG-B4, KEEPER-17/17b, CRITIC-PERSONA.
+**Turnover (Matt, 5:25 PM ET):** with link #3 (~6 PM) the outgoing lead sends Matt the persona (reference/roles/LEAD-PERSONA.md; paste
+copy LEAD-PERSONA-PASTE-2026-11-14.md) and tells every member; Matt starts the new lead. The new lead's first jobs: take line 1 here,
+judge ENG-16G and INT-9b as they report, then 1-8.
+**Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
+telegraphed (R-165.227); fig gate a lock you can see + head stop (R-165.212) then option A grow-in; two-vine reward (R-165.229); shorter
+swings (R-165.225); deep-earth underlayer (R-165.224) and living pole (R-165.209) GO; Hugging Face is the lead's call (~$56 left, ~$10
+reserve); xhigh ceiling / high floor; engine drives development, never patch for one level (level.md 21-22); members run gates scoped to
+their change, every gate once on the integration head; designers mix the whole shelf.
+**Lessons paid for today:** D63-D70 (LESSONS.md); PM.md §7 "Retiring a member" (D68); clips judged by the named frame (D69); builders
+below engine tier don't write engine code (D70); real context = last result's input + cache_creation + cache_read tokens (D64).
 
 ## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)
 | Member | Session | Model/effort | Branch | Job |

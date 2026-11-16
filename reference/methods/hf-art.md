@@ -125,3 +125,20 @@ Contact sheets of every take next to its start, before picking. Then the game sh
   GitHub fetch 404s.
 - **Repaint in place (s52/s60) keeps the start's angle.** A 3/4 piece stays 3/4; a side view needs a new side-on start at s62/s68.
 
+
+**10. Batch by three levels, sheets of related pieces** (the lead, 2026-11-13 4:45 PM ET; Matt 4:44 PM: "maximize the pieces
+and reduce costs... maybe doing multiple pieces at a time"; R-165.208). PROPOSED: proven or changed on its first batch (1-6..1-8).
+Where the money goes (measured 11-13): the GPU is cheap (~$0.04 a take, $4.59 for ART's whole day), but a sandbox bills from creation
+to terminate (ART 11-13: ~100 billed minutes for far fewer minutes of takes), and the member's own tokens cost 5-6x the GPU (ART2
+$25.20 of Claude for ~$4.22 of Hugging Face). So:
+- **One art job per three levels**, from the designers' combined NEW-blocks table (1-6..1-8 has 28 blocks; the art ones only), every piece
+  with its size against Pokey's DRAWN 89.1 px (D41), layer, footing and the inventory row it fills. The lead approves the list BEFORE the
+  sandbox starts (nothing bills while anyone waits).
+- **Sheets, not single pieces:** related pieces share one canvas (a creature's poses: hanging, sliding, coiled; a hazard family: nut,
+  pod, husk; a cover set: moss tufts, mossy bough, mossy liana), 4-6 per sheet, same light and palette by construction; cut with the
+  existing cutters into catalog rows. One take = several pieces.
+- **One sandbox, one model load, one queued script:** every sheet's takes run back to back from a prepared prompt file; terminate the
+  moment the last file lands. Cheap picking pass first (4 takes a sheet), the native pass only on the picked takes.
+- **A short member:** Opus high, a 60-minute box, the hfbatch scripts as they are (no exploring); one contact sheet per batch to the lead,
+  then to Matt as pictures.
+- **Log it per piece:** HF-SPEND gets the batch total AND pieces bought ($ per piece), so the next batch's method is chosen on numbers.

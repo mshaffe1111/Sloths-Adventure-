@@ -20,10 +20,9 @@
  *     over, no beat);
  *   - a stepping stone in the river: a bank 120-150 px wide standing in the water (the hand-built creek's stones, 124-144 px).
  *
- * THE STAGES' ARCS. 2-1 is built as designed (w2Arc21.ts, BUILD-21, its own kit 'w2-21' over this one); 2-2 is rolled here on a PLACEHOLDER arc (ENG-W2 (1): the foundation, not the levels): one bank road with
- * splash-back and deep rivers, its beats in the designed order, so the rows roll and list and the next builder changes data only. The
- * designed levels (reference/design/2-1.md, 2-2.md) replace W2_ARCS' bricks when they are built (w2Arc21.ts, w2Arc22.ts), and the river
- * with its drifting logs is a section of its own (gen2/riverLay.ts).
+ * THE STAGES' ARCS. 2-1 and 2-2 are built as designed (w2Arc21.ts BUILD-21, w2Arc22.ts BUILD-22), each with its own kit over this one
+ * ('w2-21', 'w2-22'); this kit holds World 2's ground, art, rivers, pads, lianas, tips and finish. The river with its drifting logs is a
+ * section of its own (gen2/riverLay.ts), and so is a pond of sinking pads (gen2/rideLay.ts layPads).
  */
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
@@ -32,6 +31,7 @@ import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
+import type { PadRow } from '../rideLay.ts';
 import { W1_KIT } from './w1.ts';
 import { W1_LIANA_GAP } from './w1Swing.ts';
 
@@ -83,6 +83,25 @@ export const W2_RIVERS = {
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
 
+/**
+ * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).
+ * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: a tap hop's 83 px edge to edge in the
+ * teach, up to a held jump's reach (PAD_FAIR.reach) after.
+ */
+export const W2_PADS = {
+  /** beat 1: one big pad over shallow water at the bank: he stands, it shivers and sinks, he splashes back and watches it come up */
+  first: { by: 'weight', pads: ['big'], gap: 60, safe: true },
+  /** beat 2: three small pads one tap apart, a petal riding each: keep moving */
+  hop: { by: 'weight', pads: ['small', 'small', 'small'], gap: 70, safe: true, petals: [0, 1, 2] },
+  /** beat 4: small pads out to a far stone and its petal (the far piece), and back over the same pads once they are up again */
+  back: { by: 'weight', pads: ['small', 'small'], gap: 80, safe: true },
+  /** beat 6, the twist: the pond breathes; every pad on one breath (2-2.md: up 1.8 s, shiver 0.6 s, under 0.6 s), crossed on the up, two
+   *  pads at a time with a stone between (a run of pads must be crossed inside one breath: padFaults) */
+  breath: { by: 'beat', pads: ['small', 'small', 'stone', 'small', 'small'], gap: 70, beat: { up: 1.8, shiver: 0.6, under: 0.6 } },
+  /** beats 9 and 12: deep water, held jumps between the sizes */
+  deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
+} as const satisfies Record<string, PadRow>;
+
 // ───────────────────────────── World 2's lianas (BUILD-21; as w1Swing.ts is World 1's) ─────────────────────────────
 /**
  * World 2's liana row (reference/design/2-1.md beats 1 and 5: down out of the canopy on three lianas, then one over a side creek): the
@@ -104,131 +123,10 @@ export const w2Liana = (key: string, after: string, gap: W2LianaGap): SectionPie
 export const w2Perch = (key: string, liana: string, gap: W2LianaGap, w: number, dy: R2 = [0, 0]): SectionPiece =>
   ({ key, shape: 'bank', w: [w, w], place: { kind: 'land', after: liana, dy, share: W2_LIANA.gaps[gap].share }, style: 'log', main: true, landing: true });
 
-// ───────────────────────────── the pieces ─────────────────────────────
-/** a bank he walks on, `w` exact, level with the one before (or the section's first) */
-const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'log', main: true });
-/** a bank a step up or down the shore (the quiet line wants a hop at each end of a rest: listRules quietJudge) */
-const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
-const shore = (key: string, after: string, w: number, dy: R2): SectionPiece => ({ ...bank(key, after, w), place: { kind: 'walk', after, dy } });
-/** a bank past a splash-back river (a soft gap: w2Finish makes it a safe river) */
-const creek = (key: string, after: string, w: number, share: R2 = [0.5, 0.55]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share, soft: true }, style: 'log', main: true, landing: true });
-/** a bank past a deep river (`water: true`: a fall costs a life, Dot warns before the first) */
-const deep = (key: string, after: string, w: number, share: R2 = [0.38, 0.42]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share, water: true }, style: 'log', main: true, landing: true });
-/** a stepping stone in a river: a narrow bank standing in the water, past a gap of the river's kind */
-const stone = (key: string, after: string, isDeep: boolean, w = 136): SectionPiece => ({ ...(isDeep ? deep(key, after, w, [0.34, 0.38]) : creek(key, after, w, [0.45, 0.5])), style: 'moss_stone' });
-/** a rock to hop on `on` at `at`: World 2's boulder, the kit's painted rock, which is a moss stone exactly 50 px tall (terrain.ts footingOf;
- *  51-56 px draws as a stone pillar, a 34-40 px rock is walked over with no hop) */
-const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
-
-const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
-const flag = (on: string, t = 0.3): Socket => ({ id: 'flag', role: 'flag', on, t });
-
-// ───────────────────────────── a brick ─────────────────────────────
-type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
-type V = { id: string; lay: Lay; easy?: Lay };
-type Content = 'ground' | 'water';
-/** a brick (1-7's form, w1Arc17.ts): its first piece `in`, its last `out` (both banks on the floor line), a version's Easy twin beside it,
- *  served to `stage` alone (its feel), once a stage */
-function brick(stage: string, o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: Content | 'structural'; teaches?: string; uses?: string[]; versions: V[]; phases?: SectionTemplate['phases']; maxPerStage?: number }): SectionTemplate {
-  const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
-  const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
-  const first = ren(o.versions[0].lay.pieces)[0];
-  const versions = o.versions.flatMap((v) => [
-    { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
-    ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
-  ]);
-  return {
-    id: o.id, name: o.name, feel: [stage], own: true, archetypes: 'any', phases: o.phases ?? ['ki', 'sho', 'ten', 'ketsu'], difficulty: o.difficulty, needs: ['jump'],
-    ...(o.teaches ? { teaches: o.teaches } : {}), uses: o.uses ?? [], jobs: o.jobs, content: o.content, terrain: 'river-bank', maxPerStage: o.maxPerStage ?? 1,
-    pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
-  } as SectionTemplate;
-}
-
-// ───────────────────────────── the placeholder arcs ─────────────────────────────
-/**
- * Each stage's ONE placeholder graph, `A T R P R X R M R S R L E` (the beats in the designed order, one brick a job): A the arrival, T
- * the lesson safe (splash-back rivers), P the bank road, X the first deep river (a flag before it), M along the shore, S the stage's
- * signature, L the finale, E the exit, R a rest between. The content mix (V11, on the realised code: 4 content nodes T P X M, cap 2):
- * water T and X, ground P and M, never two alike side by side (S and L are never content).
- */
-export const W2_ARCS: Record<string, { graph: string; archetype: 'sprint' | 'harvest'; lesson: string }> = {
-  // (2-1 is built as designed: w2Arc21.ts, its own kit 'w2-21' (BUILD-21, 11-15); its placeholder arc is gone, new replaces old)
-  '2-2': { graph: 'A T R P R X R M R S R L E', archetype: 'harvest', lesson: W2_LESSON.stones },
-};
-
-/** a stage's brief, all of it data (2-1's petals are few: the keeper's ruling 2, Meeca spent hers on the king's crown) */
-export function w2Brief(stage: string): GraphBrief {
-  const a = W2_ARCS[stage];
-  return {
-    ends: 'finale', trend: 'level', branching: 'none', teaches: [a.lesson], deal: { water: 50, ground: 50 }, dealExact: true, tags: true,
-    // (a sprint's petals are FEW, the keeper's number for 2-1 (R-165.263): 'few' holds all 'low' does until the fill honours its count)
-    ...(a.archetype === 'sprint' ? { petals: 'few' as const } : {}),
-  };
-}
-
-/** the bricks of one stage's placeholder arc, its own (rule 9: their ids and feel are the stage's) */
-export function w2Bricks(stage: string): SectionTemplate[] {
-  const a = W2_ARCS[stage];
-  const harvest = a.archetype === 'harvest';
-  const id = (beat: string) => `w2-${stage}-${beat}`;
-  const B = (o: Parameters<typeof brick>[1]) => brick(stage, { ...o, id: id(o.id) });
-  // (a harvest's petals ride its banks; a sprint's are FEW (the keeper's ruling 2: Meeca spent hers on the king's crown): one at each
-  //  beat's far bank, none on the way)
-  const p = (sid: string, on: string, t: number, n: number): Socket[] => (harvest ? [petals(sid, on, t, n + 1, 120)] : sid === 'pz' ? [petals(sid, on, t, 1)] : []);
-  const teach: Lay = {
-    pieces: [bank('a', null, 360), rock('ra', 'a', 0.5), bank('b', 'a', 300), creek('c0', 'b', 340), rock('r0', 'c0', 0.5), bank('b2', 'c0', 300), stone('s1', 'b2', false), stone('s2', 's1', false), creek('c', 's2', 360), rock('rc', 'c', 0.5), bank('d', 'c', 300), creek('e', 'd', 340), creek('z', 'e', 360)],
-    sockets: [...p('pa', 'a', 0.5, 1), ...p('ps', 's2', 0.5, 1), ...p('pd', 'd', 0.5, 1), ...p('pz', 'z', 0.5, 2)],
-  };
-  const road = (easy: boolean): Lay => ({
-    pieces: [bank('a', null, 320), bank('b', 'a', 300), rock('rb', 'b', 0.5), shore('c', 'b', 300, UP), shore('d', 'c', 340, DOWN), rock('rd', 'd', 0.55), creek('e', 'd', easy ? 320 : 280), shore('f', 'e', 300, UP), shore('g', 'f', 320, DOWN), rock('rg', 'g', 0.5), creek('h', 'g', 300), creek('z', 'h', 340)],
-    sockets: [...p('pa', 'a', 0.6, 1), ...p('pc', 'c', 0.5, 1), ...p('pe', 'e', 0.5, 1), ...p('pz', 'z', 0.4, 2)],
-  });
-  const firstDeep = (easy: boolean): Lay => ({
-    pieces: [bank('a', null, 340), bank('b', 'a', 320), rock('rb', 'b', 0.45), stone('s1', 'b', true), ...(easy ? [] : [stone('s2', 's1', true)]), deep('c', easy ? 's1' : 's2', 340), rock('rc', 'c', 0.5), bank('d', 'c', 300), deep('e', 'd', 300), stone('s3', 'e', true), deep('f', 's3', 320), creek('z', 'f', 340)],
-    sockets: [flag('a'), ...p('pb', 'b', 0.5, 1), ...p('ps', 's1', 0.5, 1), ...p('pd', 'd', 0.5, 1), ...p('pz', 'z', 0.5, 2)],
-  });
-  const signature = (easy: boolean): Lay => ({
-    pieces: [bank('a', null, 340), bank('a2', 'a', 300), rock('ra', 'a2', 0.45), deep('b', 'a2', 300), stone('s1', 'b', true), stone('s2', 's1', true), ...(easy ? [] : [stone('s3', 's2', true)]), deep('c', easy ? 's2' : 's3', 340), rock('rc', 'c', 0.5), bank('d', 'c', 300), deep('e', 'd', 300), stone('s4', 'e', true), deep('f', 's4', 320), creek('z', 'f', 340)],
-    sockets: [flag('a'), ...p('pb', 'b', 0.5, 1), ...p('ps', 's2', 0.5, 1), ...p('pc', 'c', 0.5, 1), ...p('pz', 'z', 0.5, 2)],
-  });
-  const finale = (easy: boolean): Lay => ({
-    pieces: [bank('a', null, 320), shore('b', 'a', 300, UP), rock('rb', 'b', 0.5), shore('c', 'b', 320, DOWN), creek('d', 'c', 300), stone('s1', 'd', false), creek('e', 's1', easy ? 340 : 300), shore('f', 'e', 300, UP), shore('g', 'f', 340, DOWN), rock('rg', 'g', 0.5), deep('h', 'g', 320), shore('z', 'h', 360, UP)],
-    sockets: [flag('a'), ...p('pb', 'b', 0.5, 1), ...p('pd', 'd', 0.5, 1), ...p('pf', 'f', 0.5, 1), ...p('pz', 'z', 0.5, 2)],
-  });
-  const along = (easy: boolean): Lay => ({
-    pieces: [bank('a', null, 320), shore('b', 'a', 320, UP), rock('rb', 'b', 0.5), shore('c', 'b', 300, DOWN), creek('d', 'c', 300), rock('rd', 'd', 0.5), shore('e', 'd', 300, UP), creek('f', 'e', easy ? 320 : 300), shore('g', 'f', 340, DOWN), rock('rg', 'g', 0.55), bank('h', 'g', 300), creek('z', 'h', 340)],
-    sockets: [...p('pa', 'a', 0.5, 1), ...p('pc', 'c', 0.5, 1), ...p('pe', 'e', 0.5, 1), ...p('pg', 'g', 0.3, 1), ...p('pz', 'z', 0.5, 2)],
-  });
-  const arrival: Lay = {
-    pieces: [bank('a', null, 420), bank('b', 'a', 360), rock('rb', 'b', 0.5), shore('c', 'b', 300, UP), shore('d', 'c', 340, DOWN), rock('rd', 'd', 0.5), bank('e', 'd', 320), shore('f', 'e', 300, UP), shore('z', 'f', 380, DOWN), rock('rz', 'z', 0.55)],
-    sockets: [...p('pc', 'c', 0.5, 1), ...p('pz', 'z', 0.5, 1)],
-  };
-  const rest: Lay = {
-    pieces: [bank('a', null, 320), shore('b', 'a', 240, UP), shore('c', 'b', 360, DOWN), rock('rc', 'c', 0.5), shore('d', 'c', 240, UP), shore('e', 'd', 340, DOWN), shore('f', 'e', 240, UP), shore('z', 'f', 320, DOWN)],
-    sockets: [...p('pc', 'c', 0.3, 1), ...p('pz', 'z', 0.5, 1)],
-  };
-  const uses = [a.lesson];
-  return [
-    B({ id: 'arrival', name: 'down to the riverbank', jobs: ['arrive'], difficulty: 1, content: 'structural', phases: ['start'], versions: [{ id: 'bank', lay: arrival }] }),
-    B({ id: 'teach', name: 'the river, safe: a splash puts him back', jobs: ['teach'], difficulty: 1, content: 'water', teaches: a.lesson, versions: [{ id: 'creek', lay: teach }] }),
-    B({ id: 'road', name: 'the bank road', jobs: ['practise'], difficulty: 2, content: 'ground', uses, versions: [{ id: 'shore', lay: road(false), easy: road(true) }] }),
-    B({ id: 'deep', name: 'the first deep river', jobs: ['test'], difficulty: 3, content: 'water', uses, versions: [{ id: 'stones', lay: firstDeep(false), easy: firstDeep(true) }] }),
-    B({ id: 'along', name: 'along the shore', jobs: ['flow'], difficulty: 3, content: 'ground', uses, versions: [{ id: 'shore', lay: along(false), easy: along(true) }] }),
-    B({ id: 'signature', name: 'the wide river on its stones', jobs: ['signature'], difficulty: 4, content: 'water', uses, versions: [{ id: 'stones', lay: signature(false), easy: signature(true) }] }),
-    B({ id: 'finale', name: 'up the shore to the end', jobs: ['finale'], difficulty: 4, content: 'ground', uses, versions: [{ id: 'shore', lay: finale(false), easy: finale(true) }] }),
-    B({ id: 'rest', name: 'a rest on the bank', jobs: ['rest'], difficulty: 1, content: 'structural', phases: ['rest'], maxPerStage: 6, versions: [{ id: 'shore', lay: rest }] }),
-    {
-      id: id('exit'), name: 'the far bank', feel: [stage], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'river-bank',
-      pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'log', main: true, landing: true }],
-      subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank', w: [560, 600], place: { kind: 'walk', after: 'in', dy: [0, 0] }, style: 'log', main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 1), { id: 'exit-totem', role: 'objective', on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
-      entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
-    } as SectionTemplate,
-  ];
-}
+// (the placeholder arcs and their bricks are gone: 2-1 and 2-2 are built as designed, w2Arc21.ts and w2Arc22.ts, each with its own kit
+//  over this one (BUILD-21, BUILD-22 11-15); new replaces old)
 
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
-/** the stages World 2's kit rolls (each with its arc and its bricks) */
-export const W2_GEN2_STAGES = Object.keys(W2_ARCS);
 
 /**
  * World 2's manifest. The planner's tempo (rollRanges) is World 1's measured one until a World 2 level is flown on its own (the builder's
@@ -244,15 +142,15 @@ export function w2Manifest(): WorldManifest {
     corridor: { top: G - 400, bottom: G + 80, soft: 60 },
     themeShare: [1, 1],
     graphs: {
-      list: W2_GEN2_STAGES.map((s) => ({ id: `w2-${s}-arc`, archetype: W2_ARCS[s].archetype, code: W2_ARCS[s].graph })),
-      briefs: Object.fromEntries(W2_GEN2_STAGES.map((s) => [s, w2Brief(s)])),
+      list: [],
+      briefs: {},
       terrains: ['river-bank'],
       chunkSeconds: 60,
       maxPerStage: 1,
     },
     creatures: [], props: [], pairs: [], decor: [],
     flowers: ['lotus', 'hibiscus'],
-    sections: W2_GEN2_STAGES.flatMap(w2Bricks),
+    sections: [],
     handBuilt: [],
     // (2-2 rolls after 2-1: the river is 2-1's lesson; World 1's moves were all taught in World 1)
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6', [W2_LESSON.river]: '2-1' },

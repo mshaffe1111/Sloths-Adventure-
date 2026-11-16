@@ -130,7 +130,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 
 ### The supervisor's notes, applied (designer, 11-05 4:58 PM ET)
 - **Slot roles** (X-6 change of pace, X-8 pressure, X-9 boss preview) are the research's defaults. A world's story briefs override
-  them per world: W1's chase is 1-5's, not 1-8's slot by default.
+  them per world: W1's chase is 1-8's (MAP-REVISIONS Q1, the branch-collapse chase stays in 1-8).
 - **World 5 gets its own graph list** (its sewing-box world and its story trail) before any W5 change uses §4's lists.
 
 ## 7. Content types and world mixes (designer, 11-05 5:09 PM ET; NODE-MIX-RESEARCH.md on ccr-23292c36-550qmt; Matt: every node's content typed, with per-world percentages rolled per seed)

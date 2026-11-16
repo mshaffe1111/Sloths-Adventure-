@@ -19,7 +19,10 @@ import { surfaceBelowBank, type RiverZone } from '../../river.ts';
 import { W2_STAGES } from '../../w2Stages.ts';
 import { listedStage, worldFinish } from '../listed.ts';
 import { STAGE_TABLE } from './stageTable.ts';
-import { W2_ARCS, W2_ART, W2_GEN2_STAGES, W2_TIPS, w2Finish } from './w2.ts';
+import { W2_ART, W2_TIPS, w2Finish } from './w2.ts';
+
+/** World 2's stages whose look, rivers and ponds this file holds to World 2's rules (2-1 holds its own in w2Arc21.test.ts) */
+const W2_GEN2_STAGES = ['2-2'];
 import type { Collectible, Platform } from '../../types.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -50,33 +53,23 @@ test('the kit: every World 2 art row it names is in the World 2 inventory, usabl
   }
 });
 
-test('the rows: 2-2 rolls from World 2 kit with World 2 finish (2-1 from its own, w2Arc21.test.ts); the hand-built 2-1 and 2-2 are gone (new replaces old)', () => {
-  assert.deepEqual([...W2_GEN2_STAGES].sort(), ['2-2']);
+test('the rows: 2-1 and 2-2 roll from their own kits over World 2\'s, with World 2\'s finish; the hand-built 2-1 and 2-2 and the placeholder arcs are gone (new replaces old)', () => {
   assert.equal(STAGE_TABLE['2-1']?.kit, 'w2-21', "2-1's row names its own kit, World 2's with 2-1's rows (w2Arc21.ts)");
-  assert.equal(W2_STAGES['2-1'], undefined, '2-1: the hand-built plan is deleted');
-  for (const id of W2_GEN2_STAGES) {
-    assert.equal(STAGE_TABLE[id]?.kit, 'w2', `${id}: its stage-table row names World 2's kit`);
+  assert.equal(STAGE_TABLE['2-2']?.kit, 'w2-22', "2-2's row names its own kit, World 2's with 2-2's rows (w2Arc22.ts)");
+  for (const id of ['2-1', '2-2']) {
     const row = listedStage(id)!;
     assert.equal(row.kit().manifest.world, 2);
     assert.equal(worldFinish(row), row.world, `${id}: its world finish is its kit's own`);
     assert.equal(W2_STAGES[id], undefined, `${id}: the hand-built plan is deleted`);
     assert.ok(builtOnGen2(cfg(id)), `${id}: the game builds it on gen2`);
-  }
-});
-
-test('the arc: each stage rolls clean on both settings, its beats in the placeholder arc order, every brick its own', () => {
-  for (const id of W2_GEN2_STAGES) for (const d of BOTH) {
-    const st = built(id, d);
-    assert.deepEqual(st.gen2.errors ?? [], [], `${id} ${d}`);
-    const beats = st.gen2.sections.map((s) => s.template.replace(`w2-${id}-`, ''));
-    assert.deepEqual(beats, ['arrival', 'teach', 'rest', 'road', 'rest', 'deep', 'rest', 'along', 'rest', 'signature', 'rest', 'finale', 'exit'], `${id} ${d}`);
-    assert.ok(st.gen2.sections.every((s) => s.template.startsWith(`w2-${id}-`)), `${id} ${d}: only its own bricks`);
-    assert.equal(W2_ARCS[id].graph.split(' ').length, beats.length);
+    assert.ok(!row.kit().manifest.sections.some((t) => t.id.startsWith(`w2-${id}-`)), `${id}: no placeholder brick is left in its pool`);
   }
 });
 
 test('the look: every piece is drawn by World 2 art as the engine draws it (no World 1 cut piece, no squirrels)', () => {
-  const allowed = new Set(['ground', 'pillar', 'painted rock', 'river art', 'painted-bank', 'step']);
+  // (the crown lily is drawn by the pad piece from World 2's painted pieces: Matt's Victoria pad M-02-a and ART-W2's crown flower, riverArt.ts
+  // drawCrownLily, BUILD-22)
+  const allowed = new Set(['ground', 'pillar', 'painted rock', 'river art', 'painted-bank', 'step', 'own art (crownLily)']);
   for (const id of W2_GEN2_STAGES) for (const d of BOTH) {
     const st = built(id, d);
     const f = footingsFor(st as never, 2);
@@ -109,7 +102,10 @@ test('the rivers: every fall is a river with a bank at each end; soft falls spla
       assert.ok(near && far, `${id} ${d}: the river at ${r.x0} has a bank at each end`);
       // (nothing stands under a splash-back river's water: the splash sets him back before he could reach it, and it would be drawn over the water)
       if (r.safe) {
-        assert.ok(!st.platforms.some((p) => p.type === 'solid' && p.x < r.x1 - 1 && p.x + p.width > r.x0 + 1 && p.y > r.surfaceY - surfaceBelowBank), `${id} ${d}: a piece under the splash-back river at ${r.x0}`);
+        // (a pond's own floors stand ON its water, never under it: its pads, the crown lily and its stones, at the pad line 8 px over the
+        // surface (rideLay PAD_LAY.drop); anything else, or lower, is under the water, BUILD-22)
+        const pondFloor = (p: Platform) => r.speed === 0 && (!!p.pad || p.art === 'crownLily' || (p.style === 'moss_stone' && Math.abs(p.y - (r.surfaceY - 8)) <= 1));
+        assert.ok(!st.platforms.some((p) => p.type === 'solid' && !pondFloor(p) && p.x < r.x1 - 1 && p.x + p.width > r.x0 + 1 && p.y > r.surfaceY - surfaceBelowBank), `${id} ${d}: a piece under the splash-back river at ${r.x0}`);
         assert.ok(st.platforms.some((p) => p.type === 'solid' && p.x <= r.safe!.backX && p.x + p.width >= r.safe!.backX && p.y === r.safe!.backY), `${id} ${d}: set back on the bank he left`);
       }
     }

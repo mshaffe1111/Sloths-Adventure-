@@ -49,6 +49,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
+import { padShows } from '../../src/game/pieces/padPiece.ts';
+import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -66,6 +68,22 @@ import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
 import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
+import { liftStop } from '../../src/game/lift.ts';
+
+/**
+ * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
+ * it off to prove the bot needs it (level.md rule 21: clockRide.test.ts goes RED with it off). Always on outside a test.
+ */
+export const CLOCK_SKILL = { read: true };
+
+/**
+ * The bot's pad skills (ENG-22; 2-2.md NEW 5; level.md rule 21, toys first: tools/inspect/padRide.test.ts plants each off -> RED). Read off
+ * what a person sees of a pad (pieces/padPiece.ts padShows: down, or its shiver) and of a beat row's breath (the stage clock). Always on
+ * outside a test. OUT-AND-BACK (FIX-22): a spur pond's dead-end stone (gen2/rideLay.ts PadRow.spur) is on his way, out for its flower and
+ * back to the near bank before the way on (route.ts findRoute `spurs`); on the stone WAIT-FOR-THE-RISE holds him till the pads he sank
+ * are up (padRide.test.ts 'the spur').
+ */
+export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true, outBack: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -333,29 +351,47 @@ export class SpotMemory {
 
 // ───────────────────────────── how far along the way he is ─────────────────────────────
 
-export interface Pt { x: number; y: number }
+export interface Pt { x: number; y: number; /** a point along a shimmy rope (route.ts 'rope'): it lies at the ledges' height, in the air over
+ *  whatever lies under the rope, so he is followed onto it only while he hangs from it (FIX-22: a kid on a step under 2-2's rope was
+ *  followed onto the rope's line and walked off the step toward it) */ rope?: boolean }
 
 /**
  * Progress along the route: the route's points every ~24 px, and which one he is nearest (looked for near the last one, so a route
  * that doubles back under itself does not jump ahead). `hi` is the furthest since he last came back to life.
  */
+/** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
+const PIN_AT = 50;
 export class Progress {
   cur = 0;
   hi = 0;
   best = 0;
   /** the way back he can be followed no further than (set when he is put past a puzzle room; a respawn or rescue clears it) */
   floor = 0;
+  /** points he must stand at before the way on past them counts (a spur's dead-end stone, OUT-AND-BACK, FIX-22): the route goes out
+   *  and back over the same ground, so without them the nearest point ahead jumped to the way back before he went out. Indices into
+   *  pts, in order; `pin` is the next one not reached */
+  pins: number[] = [];
+  private pin = 0;
+  /** the last pin he stood at: the way back over the same ground lies past it, so he is never followed back before it (the out-and-back
+   *  ground's outbound points lie beside its return points, and the nearer one pulled him back out to the stone: a middle bot hopped
+   *  stone to pad and back for 20 s, 2-2 Easy seed 12, FIX-22). Kept through a respawn */
+  private pinFloor = 0;
   constructor(readonly pts: Pt[]) {}
+  /** the furthest point he may be followed to: up to the next pin he has not stood at */
+  private cap(i: number): number {
+    return this.pin < this.pins.length ? Math.min(i, this.pins[this.pin]) : i;
+  }
   private d(i: number, p: Pt) {
     const q = this.pts[i];
     return Math.abs(q.x - p.x) + Math.abs(q.y - p.y) * 0.7;
   }
   /** follow him: true when he got further than he has been since he came back */
-  step(p: Pt): boolean {
+  step(p: Pt & { hanging?: boolean }): boolean {
     if (!this.pts.length) return false;
     let bi = this.cur, bd = this.d(this.cur, p);
-    const lo = Math.max(this.floor, this.cur - 25), hi = Math.min(this.pts.length - 1, this.cur + 40);
+    const lo = Math.max(this.floor, this.pinFloor, this.cur - 25), hi = this.cap(Math.min(this.pts.length - 1, this.cur + 40));
     for (let i = lo; i <= hi; i++) {
+      if (this.pts[i].rope && !p.hanging && i !== this.cur) continue;
       const d = this.d(i, p);
       if (d < bd - 1e-6 || (Math.abs(d - bd) < 1e-6 && i > bi)) {
         bd = d;
@@ -363,6 +399,8 @@ export class Progress {
       }
     }
     if (bd < 160) this.cur = bi;
+    // (a pin is reached when he stands at it: on its stone, within PIN_AT of its middle, whichever route point is nearest)
+    if (this.pin < this.pins.length && this.d(this.pins[this.pin], p) < PIN_AT) { this.cur = this.pinFloor = this.pins[this.pin]; this.pin++; }
     const more = this.cur > this.hi;
     if (more) this.hi = this.cur;
     if (this.cur > this.best) this.best = this.cur;
@@ -376,7 +414,7 @@ export class Progress {
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
     // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => !level || this.pts[i].y >= p.y - 80;
+    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope && (!level || this.pts[i].y >= p.y - 80);
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
@@ -391,10 +429,20 @@ export class Progress {
     this.floor = 0;
   }
   /** the point he heads for: the first one ahead that is more than `far` px from him */
-  target(p: Pt, far = 90): Pt | null {
+  target(p: Pt & { hanging?: boolean }, far = 90): Pt | null {
     if (!this.pts.length) return null;
     for (let i = this.cur; i < this.pts.length; i++) {
       const q = this.pts[i];
+      // (never past a pin he has not stood at: he goes to it first)
+      if (this.pin < this.pins.length && i >= this.pins[this.pin]) return this.pts[this.pins[this.pin]];
+      // (a rope's line is in the air: off it, he heads for where it starts, its ledge's end, until he stands there; from a step under it
+      // the line's far points pulled him off the step away from the ledge: FIX-22, 2-2's dip)
+      if (q.rope && !p.hanging) {
+        let k = i;
+        while (k > 0 && this.pts[k - 1].rope) k--;
+        const at = this.pts[k];
+        if (Math.abs(at.y - p.y) > 20 || Math.abs(at.x - p.x) > 60) return at;
+      }
       if (Math.hypot(q.x - p.x, q.y - p.y) > far) return q;
     }
     return this.pts[this.pts.length - 1];
@@ -647,6 +695,8 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
+  spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
   handed?: number;
   perMin: { hits: number; lives: number };
@@ -918,6 +968,8 @@ export class FirstTimerRun {
   readonly harms: Harm[] = [];
   /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
   readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
+  /** the spur ponds (by their near end, RiverZone.x0) whose dead-end stone he has stood on */
+  readonly spursMet = new Set<number>();
   /** handed to a bank by a log (FTRun.handed): counted where the frame after a log is a bank and he never left the ground */
   handed = 0;
   private wasOnLog = false;
@@ -959,6 +1011,17 @@ export class FirstTimerRun {
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
+  /** riding a moving floor: when the next floor first came in reach (s), or -1, and how long his reaction to it takes (clockRide) */
+  private offSeen = -1;
+  /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
+  private padSeen = -1;
+  /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
+  private padStop: { id: number; until: number } | null = null;
+  private offDelay = 0;
+  /** waiting at an edge for a ride on a stage clock to stand at his end, since (s), or -1 */
+  private clockWait = -1;
+  /** the last frame's clockRide held him by choice (a wait, not a block: blockedT does not count it) */
+  private clockHeld = false;
   /** stopped on a small pad a beat after landing on it */
   private padPause: { until: number; id: number } | null = null;
   /** turns of the steering thumb, and the s of no steer they cost */
@@ -1170,7 +1233,7 @@ export class FirstTimerRun {
     const st = this.sim.stage as Stage;
     this.direct = Math.hypot((st.exitTotemX || this.sim.p.x) - this.sim.p.x, (st.exitTotemY ?? this.sim.p.y) - this.sim.p.y);
     if (!pts) {
-      let route = findRoute(st, []);
+      let route = findRoute(st, [], { spurs: PAD_SKILL.outBack });
       // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
       // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
@@ -1178,8 +1241,8 @@ export class FirstTimerRun {
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
       const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
-      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
-      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
+      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
+      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
         this.noRoute = true;
@@ -1190,6 +1253,15 @@ export class FirstTimerRun {
       if (route.traced !== 'failed' && this.direct > 0) this.routeRatio = +(route.segs.reduce((a, g) => a + Math.hypot(g.x1 - g.x0, g.y1 - g.y0), 0) / this.direct).toFixed(2);
     }
     this.prog = new Progress(pts);
+    // (each spur's dead-end stone on his way is a pin: he stands at it before the way back counts, OUT-AND-BACK)
+    if (PAD_SKILL.outBack) {
+      for (const r of st.rivers ?? []) {
+        if (!r.spur) continue;
+        const i = pts.findIndex((q) => Math.abs(q.x - r.spur!.x) < 30 && Math.abs(q.y - r.spur!.y) < 14);
+        if (i >= 0) this.prog.pins.push(i);
+      }
+      this.prog.pins.sort((a, b) => a - b);
+    }
     this.prog.relocate(this.sim.p);
     this.lastX = this.sim.p.x;
     this.lastY = this.sim.p.y;
@@ -1700,6 +1772,8 @@ export class FirstTimerRun {
   /** what he means to do this frame (before the thumb's own fumbles) */
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
+    // (a spur's dead-end stone stood on: counted, FTRun.spurs)
+    if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
     if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
@@ -1988,6 +2062,11 @@ export class FirstTimerRun {
     this.swingT = 0;
     // on a rope: along it the way on, off at its end
     if (p.hanging) {
+      // (caught a rope his way does not take yet (a hop down the steps under 2-2's rope, before the spur's stone): he drops off it (down,
+      // the engine's let-go), as a person drops off a rope he grabbed by mistake; hanging on, he shimmied to and fro under the way out
+      // until rescued, and a jump off it caught it again: FIX-22)
+      const along = this.prog.pts.slice(this.prog.cur, this.prog.cur + 6).some((q) => q.rope);
+      if (!along) return { down: true };
       this.ropeStill = Math.abs(this.moveX) < 0.5 ? this.ropeStill + DT : 0;
       if (this.ropeStill > 0.5 && !this.pending) {
         this.ropeStill = 0;
@@ -2013,6 +2092,21 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (a ride on a stage clock, a lift, a drifting log: he reads its clock as a person watching it does, before any other ground move:
+    // clockRide. Its edge is the plain look ahead, 22 px and his edgeAim, the float-wait's own)
+    // (a pond of sinking pads: he reads each pad's state and a beat row's breath as a person watching does, padRead)
+    if (dir !== 0 && !this.jump && !this.pending) {
+      const held = this.padRead(p, dir, t);
+      if (held) {
+        this.clockHeld = !held.left && !held.right && !held.jump;
+        return held;
+      }
+    }
+    if (CLOCK_SKILL.read && dir !== 0 && !this.jump && !this.pending && !this.standing) {
+      const held = this.clockRide(p, dir, t, this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
+      this.clockHeld = !!held && !held.left && !held.right && !held.jump;
+      if (held) return held;
+    }
     // (a liana to catch off this edge: he stands at the edge until it swings to him, as a person watches a swing come, lianaWait)
     if (dir !== 0 && !this.jump && !this.pending && !this.standing) {
       const lw = this.lianaWait(dir);
@@ -2110,7 +2204,8 @@ export class FirstTimerRun {
     if (t - this.lastLand < 0.1) {
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
-      if (here && here.width < 220 && !this.padPause) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
+      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead)
+      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad)) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
       if (!this.padPause) return side(dir);
     }
     if (this.padPause) {
@@ -2158,7 +2253,9 @@ export class FirstTimerRun {
     // read that hold as being stopped dead on every put-back, so at 1-1's 255 px double test he jumped where he was set down, 116 px short
     // of the lip with no run-up, and missed until rescued (6 of 10 layouts); the tier bots already waited, backAt below)
     const graceHeld = (e.inputGrace ?? 0) > 0;
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    // (nor while he waits on a clock by choice: for a ride to stand at his end, or riding one, clockRide; he is not stopped dead)
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !graceHeld && !this.clockHeld && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
+    this.clockHeld = false;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
@@ -2280,6 +2377,8 @@ export class FirstTimerRun {
             }
           }
           if (tierEdge.how === 'run') return this.startJump(dir, kind, false);
+          // (KEEP-HOPPING: on a sinking pad he never stops at its edge to stand his time: he goes)
+          if (tierEdge.how === 'stand' && PAD_SKILL.keepHopping && here?.pad) return this.startJump(dir, kind, false);
           if (tierEdge.how === 'stand') {
             this.standing = { dir, until: -1 };
             return {};
@@ -2396,6 +2495,170 @@ export class FirstTimerRun {
 
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
    *  and lets it throw him up the way on, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there) */
+/**
+   * THE PAD SKILLS (ENG-22; 2-2.md NEW 5): a pond of sinking pads (pieces/padPiece.ts), read off what a person sees.
+   *   KEEP-HOPPING   on a pad that sinks under him (or rides a breath), he never stands: no pause on landing, no standing his time at
+   *                  its edge (those two are where the hooks above check PAD_SKILL.keepHopping), and once it shivers he goes now.
+   *   WAIT-FOR-THE-RISE  at an edge with the next pad down or still shivering (a beat row under, a pad he just sank on a there-and-back),
+   *                  he holds on the floor he is on until it is up and still, then goes after his own reaction.
+   *   CROSS-ON-THE-BREATH  at an edge before a beat row, he goes only on a breath that has time left to cross the whole run to the next
+   *                  floor that stays (padFaults' pace): he waits for the next rise rather than start late in one.
+   * Returns a pad to hold (or a jump), or null to let the edge's own walk or jump go.
+   */
+  private padRead(p: PlayerState, dir: -1 | 1, t: number): Pad | null {
+    const who = this.who;
+    const e = this.e as any;
+    // (the floor his feet are on: a point read at his middle loses it once he has slid a pixel past its end while still standing on it, and
+    // the plain edge's jump then went blind onto a beat pad; BUILD-22, the rise toy's child-Normal trace)
+    const here = (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined) ?? this.floorAt(p.x, p.y, 6);
+    if (!here) { this.padSeen = -1; return null; }
+    const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
+    // (the next floor across the water ahead, within a held jump's reach, at his height: a pad (up or down), a stone, the far bank)
+    let next: Platform | null = null;
+    for (const q of this.sim.platforms) {
+      if (q === here || (q.broken && !q.pad) || Math.abs(q.y - p.y) > 70) continue;
+      const off = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
+      if (off < 2 || off > PAD_FAIR.reach) continue;
+      if (!next || (dir > 0 ? q.x < next.x : q.x > next.x)) next = q;
+    }
+    // (a pond crossing is a hop from a pad or onto one; any other edge is the edge's own)
+    if (!next || (!here.pad && !next.pad)) { this.padSeen = -1; return null; }
+    const go: Pad = dir > 0 ? { right: true } : { left: true };
+    // (he lets go where he comes to a stand before a lip, the clock-ride wait's own distance (clockRide): at 30 px the kid's late lift-off
+    // and his slide ran him off a stone into the breath row while it was under, 2-2 Easy seed 3 (BUILD-22))
+    const stand = who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim;
+    const approach = (): Pad => (toEdge > stand ? go : {});
+    // (a person who does not know pads sink treats one as any small floor: he stops on it a beat when he lands, and stands his time at its
+    // edge when his tier stands; KEEP-HOPPING is knowing not to)
+    if (here.pad && !PAD_SKILL.keepHopping) {
+      if (this.padStop?.id !== here.id) this.padStop = { id: here.id, until: t + between(this.r, [0.25, 0.5]) + (this.edgePlan().how === 'stand' ? this.edgePlan().stand : 0) };
+      if (t < this.padStop.until) return approach();
+    }
+    let ready = true;
+    // (WAIT-FOR-THE-RISE: a pad down, or still shivering, is no pad to hop for)
+    if (next.pad && PAD_SKILL.waitRise) {
+      const s = shows(next);
+      if (!s.solid || s.tell > 0) ready = false;
+    }
+    // (CROSS-ON-THE-BREATH: from a floor that stays, the run of beat pads to the next floor that stays, and the breath left to cross it)
+    // (read at the rise; once he has seen it ready he is going, through his reaction: padSeen)
+    // (he reads the breath standing at the edge, never on his walk up to it: read from afar, the breath he saw was spent on the walk and
+    // a stretched one (Easy) was under by the time he hopped; BUILD-22, the rise toy's child-Easy trace)
+    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat' && toEdge > stand) ready = false;
+    if (ready && this.padSeen < 0 && PAD_SKILL.breath && next.pad?.by === 'beat' && here.pad?.by !== 'beat') {
+      const row = this.sim.platforms.filter((q) => Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
+      let to = NaN;
+      for (const q of row) if (q.pad?.by !== 'beat') { to = dir > 0 ? q.x : q.x + q.width; break; }
+      // (the run as the stage's own fairness measures it, padFaults: edge to the floor after, at its pace after its reaction)
+      const across = Math.abs(to - edgeX);
+      const r = e.clock.read(next.pad.clock, next.pad.shift);
+      const def = (((this.sim.stage as any).clocks ?? []) as any[]).find((c) => c.id === next!.pad!.clock);
+      const stretch = who.setting === 'easy' ? Math.max(1, def?.easyStretch ?? 1) : 1;
+      const warn = (def?.phases.find((ph: any) => ph.name === 'warn')?.seconds ?? 0) * stretch;
+      const left = r.phase === 'off' ? r.left + warn : r.phase === 'warn' ? r.left : 0;
+      if (!Number.isFinite(across) || r.phase !== 'off' || left < across / PAD_FAIR.pace + PAD_FAIR.react - DT) ready = false;
+    }
+    if (!ready) { this.padSeen = -1; return approach(); }
+    // (from a floor that stays, he goes after his own reaction to it being ready; on a pad he is already going)
+    if (!here.pad) {
+      if (this.padSeen < 0) this.padSeen = t;
+      if (t - this.padSeen < who.stopReact) return approach();
+    }
+    // (the hop: he presses where a flown hop comes down on it whatever he holds, a tap or a full hold, after his thumb's lag; where no
+    // press point lands both, within 40 px of the edge where his own usual hold does; at the very edge he presses whatever)
+    const flies = (hold: number, lag: number) => hopLandsOn(next!, () => next!.x, p.x + p.vx * lag, p.y, dir, hold, t + lag, p.vx, 6);
+    const lands = [0.03, 0.1].every((lag) => flies(0, lag) && flies(0.7, lag)) || (toEdge < 40 && [0.03, 0.1].every((lag) => flies(who.hold[0], lag)));
+    // (KEEP-HOPPING: his pad shivers; he does not walk on to his usual press point, he goes now)
+    const shiver = here.pad && PAD_SKILL.keepHopping && shows(here).tell > 0;
+    // (a pond hop is a single, its hold his own: every water in a pond is under a held single's reach (padFaults PAD_FAIR.reach). The
+    // plain edge's plan read the next floor at his height, a bank 900 px on, and the spot memory then kept the double a failed double
+    // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
+    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, 'single', false, go);
+    return go;
+  }
+
+  /**
+   * READ A STAGE CLOCK (METER-2a): the float-wait at an edge made a skill for any floor that moves by a clock. A ride on a stage beat
+   * (ride.ts; gen2/rideLay.ts lays it) and a basket lift (lift.ts) move by the stage's clock and stand at each end; he reads it the way
+   * a person watching does, from whether it stands and where:
+   *   BOARD     at an edge with one across the gap (at his height, within the float-wait's 320 px), he waits until it stands at his end
+   *             (its near side within 90 px of the edge, as the float-wait's "near"), then goes; never onto one that is moving. He waits
+   *             at most two of its cycles.
+   *   RIDE      on it, he holds still while it moves: he never walks off its end into the gap.
+   *   STEP OFF  when it stands with a floor in reach ahead, he goes after his own reaction to it stopping: his tier's stopReact, plus a
+   *             late press as often and as late as his tier's lateShare / lateQ. Too late and it leaves again and carries him back,
+   *             the miss a person makes (the meter's FB step-off, score.ts rideChallenges).
+   * A drifting log never stands (river.ts): on one, once the bank or the next log is near (the float-wait's own "near"), he goes after
+   * the same reaction; too late and it carries him toward the bank it slides under.
+   * Returns a pad to hold (wait), or null to let the edge's own walk or jump go.
+   */
+  private clockRide(p: PlayerState, dir: -1 | 1, t: number, ahead: Platform | null): Pad | null {
+    const who = this.who;
+    const e = this.e as any;
+    const here = this.floorAt(p.x, p.y, 6);
+    const clocked = (q: Platform | null | undefined): boolean => !!q && q.type === 'moving' && (!!q.ride || !!q.lift);
+    // (at an edge: nothing under his look ahead, or only the ride itself, which he must not walk onto while it moves)
+    const atEdge = !ahead || (clocked(ahead) && ahead !== here);
+    // (does it stand now: a ride outside its 'on' (ride.ts rideAt: off, warn and rest stand at an end), a lift at a stop (lift.ts liftStop))
+    const stands = (q: Platform) => (q.ride ? e.clock.read(q.ride.clock, q.ride.shift).phase !== 'on' : liftStop(q.lift!, e.gameTime) !== 0);
+    const edgeOf = (q: Platform) => (dir > 0 ? q.x + q.width : q.x);
+    // (a floor in reach across from an edge: the float-wait's "near", 90 px across and 40 px of footing; a lift's ledge a step above)
+    const inReach = (q: Platform, edgeX: number) => Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40);
+    const reaction = () => {
+      if (this.offSeen >= 0) return t - this.offSeen >= this.offDelay;
+      this.offSeen = t;
+      this.offDelay = who.stopReact + (who.lateQ && this.r() < (who.lateShare ?? 0) ? drawQ(this.r, who.lateQ) : 0);
+      return this.offDelay <= 0;
+    };
+    if (here && (clocked(here) || here.type === 'drift')) {
+      this.clockWait = -1;
+      const edgeX = edgeOf(here);
+      const next = this.sim.platforms.some((q) => q !== here && !q.broken && inReach(q, edgeX) && (here.type === 'drift' || q.type !== 'moving'));
+      if (here.type === 'drift') {
+        // (a drifting log is the river bot's: its float-wait, against-the-flow and handed-to-the-bank skills (ENG-W2b, FIX-GATES b58ec0e6,
+        // riverRide.test). A reaction here before each step-off, never planted, stood the child on Easy 8 s+ at 2-1's river edge and stopped
+        // four of riverRide's plants biting once both lines met (FIX-22; METER-2a's EXACT NEXT STEP 2 named the join))
+        this.offSeen = -1;
+        return null;
+      }
+      // (a ride or a lift: hold still while it moves, and while it stands with nothing in reach ahead, it is about to carry him)
+      if (!stands(here) || !next) { this.offSeen = -1; return {}; }
+      return reaction() ? null : {};
+    }
+    this.offSeen = -1;
+    if (!here) { this.clockWait = -1; return null; }
+    const edgeX = edgeOf(here);
+    const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
+    // (a ride that docks at this edge: one end of its path (a lift: where it stands) across from it within the float-wait's 90 px, at
+    // his height. Within his longest look of it (320 px), the approach is the skill's: the crack a docked ride leaves (RIDE_LAY.gap) is
+    // no pit, and a ride away from the dock is no floor to jump for)
+    const off = (x: number, w: number) => (dir > 0 ? x - edgeX : edgeX - (x + w));
+    const docks = (q: Platform) => (q.ride ? q.ride.path.some((pt) => Math.abs(pt.y - here.y) < 70 && off(pt.x, q.width) > -40 && off(pt.x, q.width) < 90) : off(q.x, q.width) > -40 && off(q.x, q.width) < 90);
+    const rides = toEdge >= -4 && toEdge < 320 ? this.sim.platforms.filter((q) => clocked(q) && !q.broken && docks(q)) : [];
+    if (!rides.length) { this.clockWait = -1; return null; }
+    const boardable = rides.find((q) => stands(q) && inReach(q, edgeX));
+    if (boardable) {
+      this.clockWait = -1;
+      // (standing flush at his edge, a step across and level, he walks onto it: the crack is no gap to jump, and a jump over it
+      // overshoots a ride 140 px long. Standing a hop off, the edge's own jump goes)
+      const crack = off(boardable.x, boardable.width);
+      return crack <= 12 && Math.abs(boardable.y - p.y) <= 16 ? (dir > 0 ? { right: true } : { left: true }) : atEdge ? null : dir > 0 ? { right: true } : { left: true };
+    }
+    // (away, or moving: he walks up to the edge and waits there for it, at most two of its cycles. He lets go where a tier bot comes to a
+    // stand before a lip, his press distance's p25 and 31 px (the edge stand above), so his thumb's lag and the slide never take him off)
+    if (toEdge > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return dir > 0 ? { right: true } : { left: true };
+    if (this.clockWait < 0) this.clockWait = t;
+    // (a ride stands at his end once in two of its periods, rideAt; a lift once a round trip, lift.ts liftCycle)
+    const period = (id: string) => {
+      const def = (((this.sim.stage as any).clocks ?? []) as any[]).find((c) => c.id === id);
+      return def ? def.phases.reduce((s: number, ph: any) => s + ph.seconds, 0) * (this.who.setting === 'easy' ? Math.max(1, def.easyStretch ?? 1) : 1) : 6;
+    };
+    const cycle = Math.max(...rides.map((q) => (q.ride ? 2 * period(q.ride.clock) : 2 * ((q.lift!.bottom - q.lift!.top) / q.lift!.speed + q.lift!.wait))));
+    return t - this.clockWait < Math.max(6, 2 * cycle) ? {} : null;
+  }
+
   private bounceBack(fdir: -1 | 1, face: number): Pad | null {
     const p = this.sim.p;
     if (!this.who.holdQ || face <= 170) return null;
@@ -2521,6 +2784,8 @@ export class FirstTimerRun {
     const w = this.who, p = this.sim.p, t = this.t;
     if (!w.steerQ || !w.gapQ || this.chased()) return want;
     if (!p.grounded || this.jump || this.pending || this.standing || this.lateArmed || want.press || !(want.left || want.right)) return want;
+    // (KEEP-HOPPING: on a sinking pad his thumb never lets go between steers: padRead)
+    if (PAD_SKILL.keepHopping && this.floorAt(p.x, p.y, 6)?.pad) return want;
     if (t < this.gapUntil) {
       const out = { ...want };
       delete out.left;
@@ -3001,6 +3266,12 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     Math.random = mr;
   }
   const end = run.t;
+  // (FT_MISSED=1: the goal's pickups he never took, by x and what carried them, to trace a sealed door: BUILD-22)
+  if (typeof process !== 'undefined' && process.env.FT_MISSED) {
+    const cs = (run.sim.e as unknown as { collectibles: Array<{ type: string; x: number; y: number; collected: boolean; rides?: { id: number } }> }).collectibles;
+    const left = cs.filter((c) => (c.type === 'flower' || c.type === 'leaf') && !c.collected);
+    process.stderr.write(`  missed ${left.length}: ${left.map((c) => `${Math.round(c.x)},${Math.round(c.y)}${c.rides ? `@${c.rides.id}` : ''}`).join(' ')}\n`);
+  }
   const harms = run.harms.map((h) => ({ ...h, t: +h.t.toFixed(1), x: Math.round(h.x), y: Math.round(h.y) }));
   const mins = Math.max(0.25, end / 60);
   const shown = run.dot.shown;
@@ -3021,6 +3292,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     harms,
     perMin: { hits: +(harms.filter((h) => h.kind === 'hit').length / mins).toFixed(2), lives: +(harms.filter((h) => h.kind === 'life').length / mins).toFixed(2) },
     softFalls: run.softFalls.length,
+    spurs: run.spursMet.size,
     handed: run.handed,
     gameOvers: run.gameOvers,
     firstHarm: fh,
