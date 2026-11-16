@@ -21,6 +21,7 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_TABLE } from './stageTable.ts';
 import { ARC_22, LINES_22, PADS_22, STAGE_22, TEACH_22 } from './w2Arc22.ts';
 import type { RiverZone } from '../../river.ts';
+import { footingsFor } from '../../terrain.ts';
 import type { Collectible, Platform } from '../../types.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -143,5 +144,15 @@ test("beat 4's spur: its zone names the stone it ends in, on the stage as built 
     const stone = st.platforms.find((p) => !p.pad && p.type === 'solid' && Math.abs(p.x + p.width - z[0].x1) <= 1 && p.x >= z[0].x0);
     assert.ok(stone, `${seed} ${d}: the spur ends in its stone`);
     assert.deepEqual(z[0].spur, { x: Math.round(stone!.x + stone!.width / 2), y: stone!.y }, `${seed} ${d}: the spur's stand point is on its stone`);
+  }
+});
+
+test("every stepping stone in 2-2's ponds (the spur's dead end too) is World 2's painted rock, never a code-drawn block (the lead's still review 7:32 PM ET 11-15: 'a flat beige block with grid lines')", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = built(seed, d);
+    const f = footingsFor(st as never, 2);
+    const stones = st.platforms.filter((p) => !p.pad && p.style === 'moss_stone' && (st.rivers ?? []).some((r) => r.speed === 0 && p.x >= r.x0 && p.x + p.width <= r.x1 + 1));
+    assert.ok(stones.length >= 1, `${seed} ${d}: the ponds have stones`);
+    for (const p of stones) assert.equal(f.get(p.id)!.drawn, 'painted rock', `${seed} ${d}: the stone at x ${p.x}`);
   }
 });

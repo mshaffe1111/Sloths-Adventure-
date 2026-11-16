@@ -239,9 +239,11 @@ export const PAD_LAY = {
   h: 12,
   /** how long a weight pad stays 'on' in its size's clock (s): longer than RIDE.padRise, so the count's cap falls inside it */
   under: 1.0,
-  /** a stepping stone: its width (World 2's stone, w2.ts) and how deep it stands into the water (px) */
+  /** a stepping stone: its width (World 2's stone, w2.ts) and how deep it stands into the water (px). 50 px tall in moss_stone is the
+   *  painted kit's rock (protoArt paintedPlatforms, drawn as World 2's boulder): at 60 it was drawn by terrain as a flat block with grid
+   *  lines (the lead's still review, FIX-22) */
   stoneW: 136,
-  stoneH: 60,
+  stoneH: 50,
   /** the crown lily's floor (px): Matt's giant Victoria pad M-02-a at about 300 u (ART-W2's slot map), over three Pokeys (89.1) wide */
   crownW: 300,
   easyStretch: 1.5,
