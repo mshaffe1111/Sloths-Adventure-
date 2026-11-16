@@ -486,3 +486,5 @@ different." (9): "about 3 minutes" is untrue for 1-4 (214 s designed on Normal, 
 on ccr-ea739a2f-dfcee4. session_01FhBbYNzGRJBDMzn6XbtQK2 becomes the backup. The keeper stays; line approvals go to the new lead.
 Brief the new lead from this file when it messages.
 **NEW LEAD (11-14 6:03 PM ET): session_01FhBbYN2CVHnFXg7XzqKXpM** (lead.md line 1 not yet updated at 6:06 PM; flagged to it). Sent it the open list.
+
+**11-15 8:08 PM ET: 0.9.9 What's New (REL-099, session_01FhBbYMxSGdfHZDBjedQhFx): PASS with one edit.** Line 4 "Racing to the shrine: the old limb gives way behind me now, past painted palms." becomes "Run! The old limb gives way behind me now, all the way to the far tree." (no shrine in the new 1-8; "painted" is a workshop word).
