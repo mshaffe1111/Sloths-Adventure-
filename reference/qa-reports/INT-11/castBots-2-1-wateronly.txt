@@ -1,0 +1,17 @@
+head 7b012852 (water-only look)
+castBots 2-1, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 32/40; under the floor 0; time median 147.1 s (min 134.9); hits 0 lives 238 (water 238); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 4: shrine rescued x1  (seeds 9,23,26,32)
+        fail 3: shrine rescued x2  (seeds 5,38,40)
+        fail 1: shrine rescued x3  (seeds 8)
+kid    easy   PASS 40/40; under the floor 0; time median 139.3 s (min 130.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 40/40; under the floor 0; time median 144.6 s (min 131.8); hits 0 lives 51 (water 51); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 39/40; under the floor 0; time median 144.9 s (min 134); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 8)
+child  normal PASS 40/40; under the floor 0; time median 367.4 s (min 331.5); hits 0 lives 114 (water 114); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 38/40; under the floor 0; time median 273.7 s (min 256); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 23,20)
+middle normal PASS 40/40; under the floor 0; time median 205.7 s (min 192.2); hits 0 lives 47 (water 47); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 200.4 s (min 188.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 181.4 s (min 163); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+exit 0

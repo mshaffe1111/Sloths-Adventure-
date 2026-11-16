@@ -220,9 +220,27 @@ export function drawLip(ctx: C, w: number, x0: number, x1: number, y: number, vi
   const top = y - f.surf * h;
   for (let x = Math.floor(a / LIP_W) * LIP_W; x < b; x += LIP_W) {
     const l = ls[((Math.round(x / LIP_W) % ls.length) + ls.length) % ls.length];
-    ctx.drawImage(img, l.x, l.y, l.w, l.h, x, top, LIP_W + 0.6, h);
+    // (clear of the soil row packed above it, each row drawn where the whole frame put it: lipSrc)
+    const [sx, sy, sw, sh] = lipSrc(l);
+    const k = h / l.h;
+    ctx.drawImage(img, sx, sy, sw, sh, x, top + (sy - l.y) * k, LIP_W + 0.6, sh * k);
   }
   return true;
+}
+
+/**
+ * How far inside its frame a lip is sampled at its top and bottom, in sheet pixels. Lips 0 and 1 are packed right under the soil fills,
+ * and the sheet row above them is opaque soil in every world: drawn to the frame's top edge, the filter pulled that row in, and every
+ * bank's lip laid a one-row line of soil at alpha ~95 straight across the backdrop, 30-40 units above the ground (R-165.243: the lead's
+ * 1-1 and 1-7 stills, every World 1 stage). A lip's top rows are clear in Worlds 1-5, 9 and 10 (its ink starts 4-30 rows down) and hold
+ * only the cut tips of a few blades in 6-8; its bottom rows are clear in all ten. Four rows is the pull at a quarter size, where the
+ * filter reads two half-size texels past the edge. The sides are not cut: the lips share their ends, so the piece beside one in the
+ * sheet is its own continuation, and a cut would show at every repeat.
+ */
+export const LIP_INSET = 4;
+/** the part of a lip a repeat is drawn from (its frame, LIP_INSET in from its top and bottom, its full width) */
+export function lipSrc(l: { x: number; y: number; w: number; h: number }): [number, number, number, number] {
+  return [l.x, l.y + LIP_INSET, l.w, l.h - 2 * LIP_INSET];
 }
 
 /**

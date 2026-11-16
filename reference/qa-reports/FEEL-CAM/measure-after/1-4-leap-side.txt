@@ -1,0 +1,46 @@
+f1 cam 14,6148 move -0.0,-0.0 jerk 0.0 aim 14,6148 anchor 6580 pokey 450,6580 head 237 feet 312 climb 
+f2 cam 14,6148 move -0.0,-0.0 jerk 0.0 aim 14,6148 anchor 6580 pokey 450,6580 head 237 feet 312 climb 
+f3 cam 14,6148 move -0.0,-0.0 jerk 0.0 aim 14,6148 anchor 6580 pokey 450,6580 head 237 feet 312 climb 
+f4 cam 14,6148 move -0.0,-0.0 jerk 0.0 aim 14,6148 anchor 6580 pokey 450,6580 head 237 feet 312 climb 
+f5 cam 14,6148 move -0.0,-0.0 jerk 0.0 aim 14,6148 anchor 6580 pokey 450,6573 head 232 feet 307 LET GO
+f6 cam 16,6148 move 1.6,-0.0 jerk 1.6 aim 25,6148 anchor 6580 pokey 460,6555 head 219 feet 294 
+f7 cam 20,6148 move 2.8,-0.0 jerk 1.2 aim 34,6148 anchor 6580 pokey 470,6539 head 207 feet 282 
+f8 cam 25,6148 move 3.7,-0.0 jerk 0.8 aim 44,6148 anchor 6580 pokey 480,6525 head 197 feet 273 
+f9 cam 32,6146 move 4.8,-1.8 jerk 2.1 aim 56,6137 anchor 6518 pokey 530,6518 head 194 feet 269 climb anchor -62 aimY -11 GRAB
+f10 cam 38,6141 move 4.4,-3.4 jerk 1.7 aim 60,6124 anchor 6511 pokey 530,6511 head 192 feet 267 climb anchor -7 aimY -13
+f11 cam 44,6134 move 4.1,-4.7 jerk 1.3 aim 64,6111 anchor 6503 pokey 530,6503 head 191 feet 266 climb anchor -7 aimY -13
+f12 cam 49,6127 move 3.9,-5.7 jerk 1.0 aim 68,6098 anchor 6496 pokey 530,6496 head 192 feet 267 climb anchor -7 aimY -13
+f13 cam 54,6118 move 3.6,-6.4 jerk 0.7 aim 72,6086 anchor 6489 pokey 530,6489 head 193 feet 268 climb anchor -7 aimY -12
+f14 cam 59,6108 move 3.4,-6.8 jerk 0.5 aim 76,6074 anchor 6481 pokey 530,6481 head 194 feet 269 climb anchor -7 aimY -12
+f15 cam 63,6098 move 3.1,-7.1 jerk 0.4 aim 78,6063 anchor 6474 pokey 530,6474 head 196 feet 271 climb anchor -7 aimY -11
+f16 cam 67,6088 move 2.8,-7.2 jerk 0.3 aim 81,6052 anchor 6467 pokey 530,6467 head 198 feet 273 climb anchor -7 aimY -11
+f17 cam 70,6078 move 2.5,-7.2 jerk 0.3 aim 83,6042 anchor 6459 pokey 530,6459 head 200 feet 275 climb anchor -7 aimY -10
+f18 cam 76,6059 move 2.1,-7.1 jerk 0.4 aim 86,6023 anchor 6445 pokey 530,6445 head 204 feet 279 climb anchor -15 aimY -19 (2 steps)
+f19 cam 79,6049 move 1.8,-7.0 jerk 0.4 aim 87,6014 anchor 6437 pokey 530,6437 head 205 feet 280 climb anchor -7
+f20 cam 81,6040 move 1.5,-6.8 jerk 0.3 aim 89,6005 anchor 6430 pokey 530,6430 head 207 feet 282 climb anchor -7
+f21 cam 83,6032 move 1.4,-5.5 jerk 1.3 aim 89,6004 anchor 6430 pokey 530,6430 head 212 feet 288 climb 
+f22 (no engine step this frame: the harness's clock)
+f23 cam 84,6026 move 1.2,-4.5 jerk 1.1 aim 90,6003 anchor 6430 pokey 530,6430 head 217 feet 292 climb 
+f24 cam 86,6021 move 1.0,-3.6 jerk 0.9 aim 91,6002 anchor 6430 pokey 530,6430 head 221 feet 296 climb 
+f25 cam 87,6017 move 0.9,-3.0 jerk 0.7 aim 91,6002 anchor 6430 pokey 530,6430 head 223 feet 299 climb 
+f26 cam 89,6010 move 0.7,-2.2 jerk 0.8 aim 92,6001 anchor 6430 pokey 530,6430 head 228 feet 303 climb (2 steps)
+f27 cam 90,6008 move 0.6,-1.6 jerk 0.6 aim 92,6000 anchor 6430 pokey 530,6430 head 229 feet 305 climb 
+f28 cam 90,6006 move 0.5,-1.3 jerk 0.3 aim 93,6000 anchor 6430 pokey 530,6430 head 231 feet 306 climb 
+f29 cam 91,6005 move 0.4,-1.1 jerk 0.2 aim 93,6000 anchor 6430 pokey 530,6430 head 232 feet 307 climb 
+f30 cam 91,6004 move 0.4,-0.9 jerk 0.2 aim 93,5999 anchor 6430 pokey 530,6430 head 233 feet 308 climb 
+f31 cam 92,6003 move 0.3,-0.7 jerk 0.2 aim 93,5999 anchor 6430 pokey 530,6430 head 233 feet 309 climb 
+f32 cam 92,6002 move 0.3,-0.6 jerk 0.1 aim 93,5999 anchor 6430 pokey 530,6430 head 234 feet 309 climb 
+f33 cam 92,6001 move 0.2,-0.5 jerk 0.1 aim 94,5999 anchor 6430 pokey 530,6430 head 235 feet 310 climb 
+f34 cam 93,6001 move 0.2,-0.4 jerk 0.1 aim 94,5999 anchor 6430 pokey 530,6430 head 235 feet 310 climb 
+f35 cam 93,6000 move 0.2,-0.3 jerk 0.1 aim 94,5999 anchor 6430 pokey 530,6430 head 235 feet 310 climb 
+f36 cam 93,6000 move 0.1,-0.3 jerk 0.1 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f37 cam 93,6000 move 0.1,-0.2 jerk 0.1 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f38 cam 93,5999 move 0.1,-0.2 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f39 cam 94,5999 move 0.1,-0.2 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f40 cam 94,5999 move 0.1,-0.1 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f41 cam 94,5999 move 0.1,-0.1 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 311 climb 
+f42 cam 94,5999 move 0.0,-0.1 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 236 feet 312 climb 
+f43 cam 94,5998 move 0.0,-0.1 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 237 feet 312 climb 
+f44 cam 94,5998 move 0.0,-0.1 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 237 feet 312 climb 
+f45 cam 94,5998 move 0.0,-0.0 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 237 feet 312 climb 
+f46 cam 94,5998 move 0.0,-0.0 jerk 0.0 aim 94,5998 anchor 6430 pokey 530,6430 head 237 feet 312 climb 

@@ -16,7 +16,8 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, vertical } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
 const ID = '5-93';
@@ -590,4 +591,34 @@ test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies be
 
 test("the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)", () => {
   assert.deepEqual({ ...ROLLED_FLAGS }, { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 2400, clear: 1500 });
+});
+
+test('towerVaults: straight up at a vine\'s top must land on wood whichever way he faces; 1-4\'s turn-back as laid passes, and a planted bough out of the vault\'s reach, or none at all, is named (B14c, 11-13)', () => {
+  // (1-4 Easy, library14 seed 1, t-b14@cbe090f0: the storey 640-1197, the turn's vine at 1179, the storey above back left from 1153)
+  const vine = (x: number): Vine => ({ id: 1, x, topY: 7320, bottomY: 7601, swaySpeed: 1.1, swayPhase: 0, vineType: 'tree_climb' }) as Vine;
+  const foot = solid(640, 7601, 557, 2);
+  assert.deepEqual(towerVaults([vine(1179)], [foot, solid(853, 7320, 300, 3)]), [], 'as laid: cleared CLIMB_CLEAR off its bough, the vault lands');
+  assert.equal(1179 - 1153, CLIMB_CLEAR);
+  // (planted: the bough above ends further back than the vault carries him; and a vine whose top has no wood at all)
+  const far = towerVaults([vine(1179)], [foot, solid(853, 7320, 1179 - VAULT_GAP - 11 - 853, 3)]);
+  assert.equal(far.length, 1, `named: ${far}`);
+  assert.match(far[0], /^tower: straight up at the top of the vine at x 1179 \(y 7320\), facing (right|left), vaults him (right|left) onto no wood$/);
+  assert.equal(towerVaults([vine(1179)], [foot]).length, 1);
+});
+
+test('a built tower whose turn vine stands out of the vault\'s reach of the storey above is refused by name and fails the roll', () => {
+  const req = { config: upCfg(), kit: upKit, seed: 4, difficulty: 'normal' as const };
+  const st = up(4);
+  assert.equal(st.gen2.towerMiss, undefined, 'the clean roll has no miss');
+  const T = st.gen2.tower!;
+  const t = T.turns[0];
+  // (the turn's vine moved VAULT_GAP further away from the bough it leads up to: straight up at its top no longer lands on it)
+  const v = st.vines.find((q) => q.vineType === 'tree_climb' && q.x === t.x && q.topY === Math.min(t.from, t.to))!;
+  assert.ok(v, 'the turn\'s vine is where the meta says it stands');
+  const bough = st.platforms.find((q) => Math.abs(q.y - v.topY) <= 2 && (Math.abs(q.x - v.x) <= CLIMB_CLEAR + 2 || Math.abs(q.x + q.width - v.x) <= CLIMB_CLEAR + 2))!;
+  const away = bough.x > v.x ? -1 : 1;
+  const moved: Gen2Stage = { ...st, vines: st.vines.map((q) => (q === v ? { ...q, x: q.x + away * VAULT_GAP } : q)), gen2: { ...st.gen2, towerMiss: undefined, flagMiss: undefined, errors: [] } };
+  applyVerdicts(moved, req);
+  assert.ok(moved.gen2.towerMiss?.some((l) => l.startsWith(`tower: straight up at the top of the vine at x ${v.x + away * VAULT_GAP} `)), `named: ${moved.gen2.towerMiss}`);
+  assert.ok(rollErrors(moved.gen2).some((l) => /onto no wood$/.test(l)), 'and it fails the roll');
 });

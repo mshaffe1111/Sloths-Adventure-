@@ -216,6 +216,17 @@ export interface Enemy {
   koLanded?: boolean;
   /** an animal of a stage's cast: its creature-kit state (castPlay.ts). The kit steps it, never predatorAI.ts */
   kit?: import('./predators/types.ts').PredatorState;
+  /** a cast animal's own cool (s) for the kit (predators Post.cool): a sweeper's calm over ITS stretch (w1Cast.ts eagle rows) */
+  kitCool?: number;
+  /** a cast sweeper laid with its first pass free (predators Post.free; w1Cast.ts eagle rows) */
+  kitFree?: boolean;
+  /** a cast sweeper perched on a snag at its x (predators Post.perched; w1Cast.ts eagleOver): its body stays, its gaze sweeps */
+  kitPerch?: boolean;
+  /** a cast sweeper that calls only this many passes, then rests on its post for good (predators Post.passes; gen2/stillFork.ts lays 1:
+   *  the still fork's one pass, 1-8 NEW 7) */
+  kitPasses?: number;
+  /** a cast sweeper's glance dials for its stretch (predators Post.glance; the still row's, w1Cast.ts eagleOver), or false: it never glances */
+  kitGlance?: import('./predators/types.ts').Glance | false;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
@@ -334,10 +345,15 @@ export interface Platform {
   /** a hollow log (World 1, Matt's painted hollowlog-moss / -plain, w1NewArt.ts): the platform is its shell's top (HOLLOW_SHELL tall), the
    *  painted log hanging from it to the floor, its inside clear to walk through: w1NewArt.ts hollowLogSize gives its height and clearance */
   hollow?: 'moss' | 'plain';
+  /** a ride on a stage beat (a 'moving' platform: ride.ts; ridePlay.ts moves it by the stage's clock; gen2/rideLay.ts lays it) */
+  ride?: import('./ride.ts').Ride;
+  /** a sinking pad (ride.ts Pad; pieces/padPiece.ts runs it, gen2/rideLay.ts layPads lays it): a 'moving' platform that never moves, which
+   *  sinks by its clock (a weight pad while he stands on it, a beat pad on the stage's beat) and is no floor while it is down */
+  pad?: import('./ride.ts').Pad;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden';
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden' | 'crownLily';
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
@@ -412,6 +428,11 @@ export interface TreeStructure {
 }
 
 export interface Vine {
+  /** phased to a runner's arrival (1-8 NEW 4; the `s` letter's dial phase: runner): its swing is eased to meet him at a full run off its
+   *  lip, so he catches it in stride (runnerLiana.ts, pieces/runnerLianaPiece.ts). Unset: its plain self-swing */
+  runner?: boolean;
+  /** thick with Spanish moss (1-7 NEW 6): holding it is cover from a cast watcher wherever it swings (castPlay.ts, stillness.ts Cover.rope) */
+  mossy?: boolean;
   /** the laid section's uid and the piece's key it came from (`s4:f2`; gen2 pipeline): what a stage's own finish finds it by */
   tag?: string;
   id: number;
@@ -429,6 +450,11 @@ export interface Vine {
   swingAmp?: number;
   swingPeriod?: number;
   swingPhase?: number;
+  /** a liana's grip dial (gen2 LianaSwing.grip, levelCheck gripsOf): the level check flies him climbing to that hold before he lets go,
+   *  with the double jump where the stage allows it; absent, only where a running jump catches it (every liana laid before the dial) */
+  grip?: 'low' | 'high';
+  /** a vine snake that rides this liana's grip line on the stage's clock (vineSnake.ts; pieces/vineSnakePiece.ts runs it): 1-6.md NEW 2 */
+  snake?: import('./vineSnake.ts').VineSnake;
   /** a climbing vine hanging down a cliff (4-8's knotted vines), not a tree's trunk: its stage draws it (w4Play.ts), not the kapok art */
   rope?: boolean;
   /** a silk line in World 5 (w5Kit.ts silkLine): it swings like a liana and is drawn as shining silk (terrain.ts) */
@@ -474,6 +500,13 @@ export interface Rope {
 
 export interface Collectible {
   id: number;
+  /** a petal laid on a required hop's arc (petals.ts arcPetals, by the stage's brief): shown and picked like any petal, never counted
+   *  by a share goal (goals.ts goalCounts), as a crumbling limb's petal is not: a bonus over the hop, never what the door asks for */
+  arc?: true;
+  /** the walked path's verdict on a gen2 stage's petal (petals.ts markWalked, ENG-PETAL's model with rule A; the lead's ruling INT-10d
+   *  11-15): true where every run passes it, false where a run need not (cleared in the air, stood on only after a miss, past a span's
+   *  end). Placement never reads it; the door does: a share goal counts only the petals not marked false (goals.ts goalCounts) */
+  walked?: boolean;
   type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find' | 'seed';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
@@ -512,6 +545,10 @@ export interface Collectible {
    */
   critter?: 'capy' | 'duck' | 'otter' | 'eaglet';
   freedAt?: number;
+  /** a pickup ON a carrier (a drifting log, a lily pad; ENG-W2b, the lead's sign-off 11:38 AM ET 11-15): the platform it sits on and where
+   *  from that platform's left end and top; the engine sets it there every step (ridePickups.ts), so it goes where the platform goes, and
+   *  while its log is under a bank it is hidden with it, never drawn or picked up */
+  rides?: { id: number; dx: number; dy: number };
 }
 
 export interface Particle {

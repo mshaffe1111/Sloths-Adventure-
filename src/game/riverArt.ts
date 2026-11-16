@@ -9,6 +9,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
+import { drawSoil } from './groundPaint.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -72,6 +73,55 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+
+/**
+ * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the
+ * splash-back river (RiverZone.safe: the teaching river, and every river on Easy, BUILD-21): ART-W2's shallow backwater strip (w2-1115/
+ * w2-shallow, catalog row w2-1115/w2-shallow: lighter, the riverbed's stones showing), a 476 u repeat 134 u high, its depth capped at the
+ * strip with the bank's earth under the bed (ART-W2's slot rule: the flat bed colour never shows). Deep water keeps the river sheet's tile.
+ */
+export const RIVER_LOOK = {
+  safe: { url: new URL('../assets/w2-1115/w2-shallow.webp', import.meta.url).href, w: 476, h: 134, crest: 0.045 },
+} as const;
+/** the earth under a shallow river's bed, top to bottom (the World 2 banks' wall in shadow) */
+const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
+/** over the painted earth under a shallow bed: the bank wall's shadow, light at the bed and deeper below (the banks' DEPTH_DARK tone) */
+const SAFE_SHADE = ['rgba(31, 22, 15, 0.25)', 'rgba(31, 22, 15, 0.55)'] as const;
+let shallow: HTMLImageElement | null = null;
+let shallowReady = false;
+function loadShallow() {
+  if (shallow || typeof Image === 'undefined') return;
+  const im = new Image();
+  shallow = im;
+  trackAtlas(im, RIVER_LOOK.safe.url, () => { shallowReady = true; }, () => { shallow = null; }, () => { shallow = null; shallowReady = false; });
+}
+/** the safe river's painted strip has loaded */
+export function safeRiverArtReady(): boolean {
+  loadShallow();
+  return shallowReady && !!shallow;
+}
+/**
+ * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): only a short band at the log
+ * line, the shallow strip's own top rows at part strength, so a log sinks into the same light water it floats on; never the deep river's
+ * dark sheet down to the screen's foot, which made every safe river read as deep (the lead's still review 11-15 1:36 PM ET, FIX-21).
+ * The band slides with the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
+ */
+export const SAFE_OVER = { above: 4, below: 16, alpha: 0.6 } as const;
+export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, x0: number, x1: number, surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
+  if (!safeRiverArtReady()) return false;
+  const L = RIVER_LOOK.safe;
+  const top = surfaceY - L.h * L.crest;
+  const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+  const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x0, surfaceY - SAFE_OVER.above, x1 - x0, SAFE_OVER.above + SAFE_OVER.below);
+  ctx.clip();
+  ctx.globalAlpha *= SAFE_OVER.alpha;
+  for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+  ctx.restore();
+  return true;
+}
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
 
@@ -88,7 +138,36 @@ export function drawRiverWater(
   t: number,
   dir: 1 | -1,
   speed: number,
+  safe = false,
+  soilWorld?: number,
 ): boolean {
+  if (safe && safeRiverArtReady()) {
+    const L = RIVER_LOOK.safe;
+    const top = surfaceY - L.h * L.crest;
+    const bed = top + L.h - 2;
+    if (bottom > bed) {
+      // (under the bed: the banks' own painted earth (groundPaint.ts drawSoil, the world's sheet, no shading passes), darkened toward the
+      // bank wall in shadow; a flat olive fill showed under every safe river, the lead 11-15 2:56 PM ET, ART-W2's rule. The flat fill is
+      // only the fallback until the world's ground sheet loads)
+      // (clipped to the bed and below: drawSoil lays whole tiles and leaves the clip to its caller; the river's own clip starts 30 px over
+      // the surface, and the soil showed there as a pale strip behind the logs)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, bed, x1 - x0, bottom - bed);
+      ctx.clip();
+      const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
+      ctx.restore();
+      const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
+      g.addColorStop(0, soil ? SAFE_SHADE[0] : SAFE_EARTH[0]);
+      g.addColorStop(1, soil ? SAFE_SHADE[1] : SAFE_EARTH[1]);
+      ctx.fillStyle = g;
+      ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
+    }
+    const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
+    const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
+    for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+    return true;
+  }
   if (!riverArtReady()) return false;
   const f = W2_FRAMES.water;
   const th = (WATER_TILE * f.h) / f.w;
@@ -122,6 +201,91 @@ export function drawLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: nu
   const h = w2Height('lily', w);
   const bob = Math.sin(t * 1.8 + cx * 0.01) * 1.2;
   blit(ctx, 'lily', cx - w / 2, surfaceY - h * 0.55 + bob, w, h, flip);
+  return true;
+}
+
+// ───────────── the pond's own pieces (ART-W2, src/assets/w2-1115 + Matt's Victoria pads; BUILD-22 wires them) ─────────────
+/** each painted pond piece: its file and size (px); catalog rows w2-1115/w2-pad-*, w2-crown-*, M-02-a, M-03-a */
+const POND_ART = {
+  small: { url: new URL('../assets/w2-1115/w2-pad-small.webp', import.meta.url).href, w: 300, h: 146 },
+  smallSunk: { url: new URL('../assets/w2-1115/w2-pad-small-sunk.webp', import.meta.url).href, w: 300, h: 142 },
+  big: { url: new URL('../assets/w1-1109/M-03-a.png', import.meta.url).href, w: 816, h: 397 },
+  bigSunk: { url: new URL('../assets/w2-1115/w2-pad-big-sunk.webp', import.meta.url).href, w: 540, h: 272 },
+  ripple: { url: new URL('../assets/w2-1115/w2-pad-ripple.webp', import.meta.url).href, w: 400, h: 114 },
+  giant: { url: new URL('../assets/w1-1109/M-02-a.png', import.meta.url).href, w: 815, h: 543 },
+  bud: { url: new URL('../assets/w2-1115/w2-crown-bud.webp', import.meta.url).href, w: 160, h: 310 },
+  open: { url: new URL('../assets/w2-1115/w2-crown-open.webp', import.meta.url).href, w: 360, h: 353 },
+} as const;
+type PondPiece = keyof typeof POND_ART;
+const pondImg: Partial<Record<PondPiece, HTMLImageElement | null>> = {};
+const pondReady: Partial<Record<PondPiece, boolean>> = {};
+function pondArt(n: PondPiece): HTMLImageElement | null {
+  if (pondImg[n] === undefined && typeof Image !== 'undefined') {
+    const im = new Image();
+    pondImg[n] = im;
+    trackAtlas(im, POND_ART[n].url, () => { pondReady[n] = true; }, () => { pondImg[n] = null; }, () => { pondImg[n] = undefined; pondReady[n] = false; });
+  }
+  return pondReady[n] ? pondImg[n] ?? null : null;
+}
+/** a pond piece `w` wide, centred on cx, set on the water as drawLily sets the sheet's lily (its top at surfaceY - 0.55 of its height) */
+function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfaceY: number, w: number, flip: boolean): boolean {
+  const im = pondArt(n);
+  if (!im) return false;
+  const h = (w * POND_ART[n].h) / POND_ART[n].w;
+  if (!flip) ctx.drawImage(im, cx - w / 2, surfaceY - h * 0.55, w, h);
+  else {
+    ctx.save();
+    ctx.translate(cx + w / 2, surfaceY - h * 0.55);
+    ctx.scale(-1, 1);
+    ctx.drawImage(im, 0, 0, w, h);
+    ctx.restore();
+  }
+  return true;
+}
+
+/**
+ * A sinking pad (pieces/padPiece.ts) where its clock has it, in ART-W2's states (its REPORT's slot map): UP, the pad (a small one's own
+ * painting, a big one Matt's Victoria pad M-03-a); SHIVER, the same pad jiggled by its tell, half-sunk (its -sunk painting) through the
+ * second half of the warning, dipping as it goes; UNDER, the ripple decal where it went (a big one's at about 200 u). The size is read
+ * from its width (a big pad is twice a small one's, rideLay PAD_SIZES), so a beat row's pads ('beat' look) are painted by their size too.
+ * Until a piece has loaded, the sheet's lily moved by its tell, as before.
+ */
+export function drawPad(ctx: CanvasRenderingContext2D, _look: string | undefined, cx: number, surfaceY: number, w: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
+  if (!riverArtReady()) return false;
+  const big = w > 220;
+  const shake = now.solid ? Math.sin(t * 38 + cx) * 2.2 * now.tell : 0;
+  const dip = now.solid ? 5 * now.tell : 12;
+  if (!now.solid) {
+    if (blitPond(ctx, 'ripple', cx, surfaceY + 2, big ? 200 : w * 0.9, flip)) return true;
+  } else {
+    const bob = Math.sin(t * 1.8 + cx * 0.01) * 1.2 * (1 - now.tell);
+    const piece: PondPiece = now.tell >= 0.5 ? (big ? 'bigSunk' : 'smallSunk') : big ? 'big' : 'small';
+    // (Matt's Victoria pads are painted larger than their floor: the rim is drawn at the floor's width, as the sheet's lily is)
+    if (blitPond(ctx, piece, cx + shake, surfaceY + dip + bob, w, flip)) return true;
+  }
+  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, w, t, flip);
+  ctx.save();
+  if (!now.solid) ctx.globalAlpha = 0.28;
+  const ok = drawLily(ctx, cx + shake, surfaceY + dip, w, t, flip);
+  ctx.restore();
+  return ok;
+}
+
+/**
+ * The crown lily (2-2.md beat 11; ART-W2's slot map): Matt's giant Victoria pad M-02-a, `w` wide, and its flower standing on its centre,
+ * closed (w2-crown-bud) until he has stood on it, then open (w2-crown-open), its foot on the pad's centre. Returns false until loaded.
+ */
+export function drawCrownLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: number, w: number, t: number, open: boolean): boolean {
+  const bob = Math.sin(t * 1.1 + cx * 0.01) * 0.8;
+  if (!blitPond(ctx, 'giant', cx, surfaceY + bob, w, false)) return false;
+  // (the flower's foot on the pad's middle: the pad's painted centre sits about 0.05 of its height over the surface line)
+  const hPad = (w * POND_ART.giant.h) / POND_ART.giant.w;
+  const foot = surfaceY + bob - hPad * 0.05;
+  const k = w / 300;
+  const f: PondPiece = open ? 'open' : 'bud';
+  const fw = (open ? 110 : 46) * k, fh = (fw * POND_ART[f].h) / POND_ART[f].w;
+  const im = pondArt(f);
+  if (im) ctx.drawImage(im, cx - fw / 2, foot - fh, fw, fh);
   return true;
 }
 

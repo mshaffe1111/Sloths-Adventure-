@@ -1,0 +1,8 @@
+castBots 1-5, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 5/6; under the floor 0; time median 136 s (min 130); hits 1 lives 1 (foe:snake 1, pit 1); cleared stomp 3; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 23
+        fail 1: shrine rescued x1  (seeds 6)
+adult  normal PASS 5/6; under the floor 0; time median 136.1 s (min 127.7); hits 0 lives 0 (none); cleared stomp 3, punch 7; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 16
+        fail 1: shrine rescued x1  (seeds 3)
+child  normal PASS 6/6; under the floor 0; time median 409.7 s (min 376.5); hits 2 lives 8 (pit 8, foe:snake 2); cleared punch 6, stomp 3; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 17
+middle normal PASS 6/6; under the floor 0; time median 190.1 s (min 181.6); hits 0 lives 2 (pit 2); cleared stomp 5, punch 6; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 15
+expert normal PASS 6/6; under the floor 0; time median 164.5 s (min 157.5); hits 0 lives 1 (pit 1); cleared stomp 5, punch 6; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 15

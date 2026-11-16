@@ -1,0 +1,10 @@
+adult easy 1 shrine {"got":120,"need":82} rescues 0 PIT@snake-on-vine:b1
+adult easy 2 shrine {"got":122,"need":82} rescues 0 
+adult easy 3 shrine {"got":125,"need":84} rescues 0 
+adult easy 4 shrine {"got":116,"need":80} rescues 0 PIT@snake-on-vine:b1
+adult easy 5 shrine {"got":118,"need":80} rescues 0 PIT@hang-low:b1
+adult easy 6 shrine {"got":113,"need":74} rescues 0 PIT@snake-on-vine:b1
+
+TOTALS
+adult easy PIT@hang-low:b1 1
+adult easy PIT@snake-on-vine:b1 3

@@ -1,0 +1,28 @@
+head 3395a0a3 start 9:00 PM
+tsc 0 9:00 PM
+build 0 9:01 PM
+chunkcheck 0 9:01 PM
+artcheck 0 9:01 PM
+knowncheck 0 9:01 PM
+generality 0 9:01 PM
+roadmap 1 9:01 PM
+roadmap (re-run after fetching all 304 branches; first run 1 = 8 commits not fetched) 0 9:03 PM
+kbdcheck 0 9:04 PM
+unit3 0 9:24 PM
+seedlists 0 9:26 PM
+registry 0 9:26 PM
+unit2 0 9:26 PM
+unit1 0 9:26 PM
+tooltests 0 9:27 PM
+tierBots 0 9:28 PM
+lockall 1 9:33 PM
+castBots14 0 9:35 PM
+drawcheck 0 9:42 PM
+clipcheck 0 9:47 PM
+buildcheck 0 9:47 PM
+done 9:47 PM
+--- fast gates on the report head (this folder only since 3395a0a3) 9:48 PM
+tsc 0 9:48 PM
+roadmap 0 9:48 PM
+knowncheck 0 9:48 PM
+generality 0 9:48 PM

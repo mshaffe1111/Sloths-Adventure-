@@ -1,0 +1,2 @@
+kid easy seed 18: shrine, rescues 1, lives lost ?, hitBy {}, time 209.1
+  rescue at t 90.5 s (frame ~2715), x,y 18610,977: over a pit (no tagged piece under him); last 3 s: swinging 0/90 frames, grounded 25/90, x 18610..18610, y 870..1003; last stuck note: t 81.3 a 241 px wall ahead, in a dip 54 px deep, an open drop ahead, the way on is 153 px up

@@ -11,14 +11,17 @@
  *
  * Coordinates: x grows right, y grows DOWN (the engine's). "dy" in a template is screen dy: negative is up.
  */
-import type { Drop, RollVerdict } from './verdicts.types.ts';
+import type { Drop, DropSite, RollVerdict } from './verdicts.types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
+import type { NodeAsks } from './nodeAsks.ts';
 import type { Zone } from '../zones.ts';
+import type { ClockDef } from '../stageKit.types.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
+import type { RiverRow } from './riverLay.ts';
 
 export type { Difficulty, Rng };
 
@@ -32,7 +35,10 @@ export type Archetype = Exclude<ObjectiveType, 'boss_lair'>;
 export type Phase = 'start' | 'ki' | 'sho' | 'ten' | 'ketsu' | 'rest' | 'goal';
 
 /** what Pokey can do. walk and jump always; the rest unlock through the game (skills.ts, the worlds' lessons) */
-export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push';
+/** a move the stage may ask. 'bounce-air': the bounce + air jump combo (a lip only the air jump off a mushroom's bounce reaches): in a stage's
+ *  moves only once a stage has taught it (skills.ts comboGuaranteedAt; the lead's ruling 11-15 3:02 PM ET), so a section that `needs` it
+ *  leaves the pool until then */
+export type Move = 'walk' | 'jump' | 'double' | 'climb' | 'swing' | 'rope' | 'glide' | 'punch' | 'carry' | 'throw' | 'hide' | 'push' | 'bounce-air';
 
 // ───────────────────────────── the world ─────────────────────────────
 
@@ -104,12 +110,18 @@ export type PitKind = 'soft' | 'water' | 'void';
 export interface WorldManifest {
   world: number;
   name: string;
+  /** the world's rolling nut and bouncing fruit on a laid chase (gen2/rollLay.ts: their pace, arc, run-in and spacing; World 1's
+   *  worlds/w1Cast.ts W1_ROLL). A chase stage's 'roll' sockets need it; with it and no 'roll' socket, the hazards are laid by the
+   *  chase's own ground (rollLay.ts layRolling). None: a chase lays no hazard (ENG-CL (6)) */
+  rolls?: import('./rollLay.ts').RollLook;
   /** what each stage owns, by stage id (its own beats: a section whose `not` names one is never laid there) */
   owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
-  /** the world's ground: its top (world y), the bank's depth, the look */
-  ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
+  /** the world's ground: its top (world y), the bank's depth, the look. `look` 'bough' (ENG-LOOK2, any stage whose kit says so: 1-8 The
+   *  Long Branch): every bank and chase section is drawn as the painted bough along its top, over the mist, no soil (protoArt.ts
+   *  drawBoughGround); copied onto the stage as GeneratedStage.groundLook */
+  ground: { y: number; bankH: number; style: NonNullable<Platform['style']>; look?: 'bough' };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
@@ -167,7 +179,7 @@ export interface WorldManifest {
   corridor: { top: number; bottom: number; soft: number };
   /** a stage laid up or down (MissionGraph.flow, tower.ts): the tower's world width, px (unset: TOWER.width). A storey runs wall to
    *  wall of it before it turns, so it is how many sections a storey holds */
-  tower?: { width: number };
+  tower?: { width: number; /** the look of a mid-stage column's walls and floor (legs.ts columnWalls; unset: the ground's style) */ wall?: Platform['style'] };
   /** the world's difficulty band (§1b), in D units; default: bandFor(world) */
   band?: readonly [number, number];
   creatures: CreatureDef[];
@@ -211,6 +223,10 @@ export interface WorldManifest {
   /** this world's row for each engine slot a brick's piece may name (SectionPiece.slot, A13): the style its platform takes here and the
    *  inventory pieces that may draw it (built from the world's inventory file: gen2/brickSlots.ts worldSlots) */
   slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
+  /** this world's river table (place `river` names a row): World 2's W2_RIVERS. A world with none lays no river */
+  rivers?: Readonly<Record<string, RiverRow>>;
+  /** this world's pad table (place `pads` names a row): World 2's W2_PADS. A world with none lays no pads */
+  pads?: Readonly<Record<string, import('./rideLay.ts').PadRow>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -235,7 +251,12 @@ export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'lia
 export interface LianaSwing {
   amp: number;
   period: number;
+  /** where he is expected to hold it (the `s` dial `grip`, pipeline GRIP): absent, the reach check takes the worse of two low holds;
+   *  'low' only his foot hold (a FAR gap only the foot flies); 'high' only the top (a "hold high" gap: a riser has the foot) */
+  grip?: LianaGrip;
 }
+/** a liana's grip dial (pipeline GRIP: the holds its reach check flies) */
+export type LianaGrip = 'low' | 'high';
 
 /**
  * Where a piece goes, relative to another piece of the same section (never a fixed x, y), so the rolls can stretch a piece and the
@@ -252,12 +273,13 @@ export interface LianaSwing {
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
  *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
  *                        from the end (what a running jump grabs), swinging by itself (`amp` at most 0.45 rad, `period`: LianaSwing;
- *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s; `grip`: LianaSwing). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
  *                        piece that lands from it
  *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
  *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
- *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
- *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
+ *                        ledge the swing started from (a chain's last liana: from the ledge the chain left). A `swing` whose `after`
+ *                        is a liana is a CHAIN (ENG-S5): caught off it in the air, no perch between (levelCheck links ledge -> liana ->
+ *                        liana -> ledge; pipeline chainRelease), `share` along its band of anchors, `top` over the chain's first ledge
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
  *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
@@ -278,15 +300,37 @@ export type PlaceRule =
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
-  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+  /** `share` (a liana `after` a liana: a chain, ENG-S5): where along the band of anchors whose chain window is LIANA.window or more */
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range; grip?: LianaGrip; len?: Range; share?: Range }
+  /** `window` (a perch past a liana): the release window its band must leave on each setting (s), over LIANA.window's floor: World 1's
+   *  FAR row keeps its perch inside the press windows the lead set (R-165.225: Normal 460-500 px, Easy where the foot keeps ~550 ms) */
+  /** `hurt` (ENG-S5, 1-6 beat 4): on Normal the gap under the swing (or the whole chain) is a hollow with the world's hurt floor (thorns
+   *  in World 1); Easy keeps the soft pit, its stair back up to the take-off (1-6.md: "Easy: moss under every chain") */
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; hurt?: boolean; window?: { normal?: number; easy?: number } }
   | { kind: 'climb'; on: string; at: Range; h: Range }
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
       /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
        *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
       free?: boolean;
       /** how the rope is drawn (Rope.look): 'vine', a painted vine between two living trees; unset, World 2's rope between posts */
-      look?: 'vine' };
+      look?: 'vine' }
+  /** a RIVER (ENG-W2b, the lead's sign-off 11:14 AM ET 11-15; riverLay.ts): the far bank lies the row's river width (riverLay riverWidth)
+   *  past `after`, LEVEL with it; the water between is laid from the world's river table row `row` (WorldManifest.rivers): its logs drift
+   *  across (riverLay layRiver), a fall costs a life, or splashes him back onto `after` when the row is `safe`. No dy and no share: the
+   *  banks are level (a stepped far bank is a later row field, never a hack in a brick) and the width is the row's, so the logs sit evenly
+   *  round the window. A row the world lacks fails the section by name, never a stand-in; a river in a leg laid left throws by name (not
+   *  mirrored yet: ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7) */
+  | { kind: 'river'; after: string; row: string }
+  /** a POND OF SINKING PADS (ENG-22; rideLay.ts layPads): the far bank lies the row's width (rideLay padRowWidth) past `after`, LEVEL with
+   *  it; still water between, crossed on the row's pads (a weight row: each sinks under him; a beat row: all on one breath) and stones,
+   *  laid from the world's pad table row `row` (WorldManifest.pads). A fall costs a life, or splashes him back onto `after` when the row is
+   *  `safe`. A row the world lacks fails the section by name; mirrored or laid left throws by name, as a river does.
+   *  A SPUR row (PadRow.spur, FIX-22, the lead's ruling 4:17 PM ET 11-15; 2-2's beat X "there and back"): the row's far end is a dead-end
+   *  stone and this piece the far bank standing over it, LEVEL with `rope` (a ledge ending no further on than `after` does: over it, or
+   *  a high bank before it that he climbs back up to, by a vine), out of a double's reach from the stone; the way on is the rope hung from
+   *  `rope` to it over the pond, so he goes out for the stone's flower, waits there for the pads, comes back and climbs. A spur row with
+   *  no `rope`, a `rope` on a row that is no spur, or a ledge reaching over the pond fails the section by name */
+  | { kind: 'pads'; after: string; row: string; rope?: string };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -355,6 +399,7 @@ export type SocketRole =
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
   | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
   | 'findSpot'   // where the stage's find stands (finds.ts: Meeca's note, a keepsake; stageGenerator addFinds), once a stage, by the first one met
+  | 'roll'       // a rolling nut or bouncing fruit where the designer put it (Socket.roll: its kind), laid once the chase is: gen2/rollLay.ts rollsOf
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -368,6 +413,9 @@ export interface Socket {
   dn?: number;
   /** what may fill it: props', creatures' or pickups' tags (empty: anything of its role) */
   allow?: string[];
+  /** a 'roll' socket: the hazard it lays, a nut he hops ('low') or a fruit he runs under ('high'); its pace and arc are the world's
+   *  (WorldManifest.rolls). Easy lays its version's own twin (ENG-CL (6)) */
+  roll?: 'low' | 'high';
   /** a receptor: its source's socket id (the same section). A source with no receptor is never filled */
   link?: string;
   /** enemy sockets: the most threat it may take */
@@ -474,7 +522,10 @@ export interface SectionTemplate {
   /** at most this many in one stage (a puzzle room: 1) */
   maxPerStage?: number;
   pieces: SectionPiece[];
-  entry: { piece: string; kind: PortKind };
+  /** `join` (ENG-LOOK2, the lead's ruling (a) 11-14 10:24 PM): the join INTO it, asked by the section, never rolled. 'walk': he walks on,
+   *  level, no step and no pit before it (a still fork's or a tip's ground must be whole from where he arrives: 1-8 seed 2 rolled a pit
+   *  into its still fork, a step into its tip). Honoured where both ends are ground; from a ledge the join is a jump, as always */
+  entry: { piece: string; kind: PortKind; join?: 'walk' };
   exit: { piece: string; kind: PortKind };
   /** about how far the exit sits above (negative) or below the entry: what the corridor clamp steers by */
   exitDy: number;
@@ -593,18 +644,38 @@ export interface MissionNode {
   content?: ContentType;
   /** V19 (NODES.md §8.3): the node after a descent in a trend-up stage's last third must end higher, so it takes rising sections only */
   mustRise?: boolean;
+  /** which way this node is laid (R-165.196; the code's leg marks /R /L /U /D, legs.ts): a run of nodes with one travel is a LEG.
+   *  Unset: the graph's own flow, as every graph written before legs */
+  travel?: 'right' | 'left' | 'up' | 'down';
+  /** what the designer's code fixed on this node (its marks and long-form dials, nodeAsks.ts): each laid, or the roll fails by name
+   *  (Gen2Meta.dialMiss). Unset: nothing asked, the node rolls as ever */
+  asked?: NodeAsks;
 }
 
 /** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
  *  tags a section may carry for a node's part (cooldown-in-node, choice-reward, reward), all named as the W1 kit names them */
 export type NodeJob =
   | 'arrive' | 'teach' | 'practise' | 'fork' | 'rest' | 'flow' | 'combine' | 'climb' | 'descent' | 'twist' | 'test' | 'signature' | 'finale' | 'exit'
-  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward';
+  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward'
+  /** the pick (the code's `?[a|b]`, NODES.md §8.9): a walked choice lays one of two stretches (the card road) */
+  | 'pick';
 /** a node's shape (NODES.md §2) */
 export type NodeShape = 'flat' | 'rising' | 'falling' | 'two-road';
 /** a node's rolled dials (NODES.md §3): tempo (hurry or patience, even odds), density (climbing through the stage), height (up, level
  *  or down inside the node, from its shape), terrain (a family from the world's list), rating (1-10, the cadence: ramps and cools) */
-export interface NodeDials { tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number }
+export interface NodeDials {
+  tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number;
+  /** what the DESIGNER fixed on this node (the code's long form, NODES.md §8.9, R-165.198; nodeCode.ts CodeDials). Each is honoured by
+   *  the lay or the roll fails by name (never dropped); a node that names none rolls it, as ever:
+   *  `beat` the tempo's beat in seconds; `threat` the cast on the node (a creature id of the world, how many, awake or asleep);
+   *  `hazard` what lies under or along it (soft, water, hurt, void or a world's hazard id; `clock`: a named clock it keeps);
+   *  `reward` the find's id and the pickups it lays; `points` its difficulty target in meter points */
+  beat?: number;
+  threat?: Array<{ kind: string; count: number; state?: 'awake' | 'asleep' }>;
+  hazard?: { kind: string; clock?: string };
+  reward?: { find?: string; pickups?: number };
+  points?: number;
+}
 /** a stage graph (NODES.md §4), one of an archetype's several, stored as its node code (§8.4: jobs and shapes, `A T P F R X R S E`) */
 export interface StageGraphDef { id: string; archetype: Archetype; code: string }
 /** the parts of a stage's brief (WORLD-RULEBOOK §5) the graph reads */
@@ -625,8 +696,14 @@ export interface GraphBrief {
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
   /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
-   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
-  petals?: 'low';
+   *  any gap; pickups come from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already), and the fill only
+   *  where a stretch runs past Matt's 2 screens (petals.ts SPREAD_MAX; the lead's ruling INT-10d 11-15: 'low' means few, never bare).
+   *  'few' (R-165.263, the story keeper's number for 2-1: Meeca spent hers on the king's crown): FEWER than a low stage, never more:
+   *  everything 'low' holds (petals.ts petalsLow). 'normal' (or unset): the stage's petals as the lay and the fill make them */
+  petals?: 'low' | 'few' | 'normal';
+  /** petals on the arcs of the stage's REQUIRED hops (petals.ts arcPetals, gen2/walkedSpan.ts hopArcs: a hop every run must take is
+   *  walked space; INT-10, the lead's ruling 11-15 11:10 AM ET). Opt-in by data: a stage that sets it gets them, no other stage moves */
+  petalArcs?: true;
   /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
    *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
    *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */
@@ -645,6 +722,11 @@ export interface GraphBrief {
    *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
    *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
   pick?: { refuse?: readonly string[] };
+  /** graphs of the world's list this stage never rolls (their ids): a seed that draws one draws again among the rest, on a stream of
+   *  its own, so a seed that drew an allowed graph keeps it and its whole roll. POLISH-9b (R-165.228, the lead's ruling 9:31 AM
+   *  11-14): 1-1 refuses sprint-B and sprint-C, whose combine node 1-1's pool has no section for since CUT_11_DOUBLES; bringing
+   *  them back with non-double pieces is R-165.235 */
+  refuseGraphs?: readonly string[];
   /** a DESIGNED graph (one section a job, in a set order: a level's arc): the deal is the brief's shares to the node, with no node
    *  moved from one type to another by the roll (the jitter a rolled stage gets on half its seeds, for variety between rolls), and
    *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
@@ -722,6 +804,8 @@ export interface FilledSocket {
   y: number;
   /** a tip whose id named no Dot line: nothing was said (the roll fails by name, pipeline buildGen2Stage) */
   unsaid?: boolean;
+  /** a pickup socket of a node whose code fixed its pickups (`:$n`, nodeAsks.ts): how many it laid (else the socket's own count) */
+  count?: number;
 }
 
 /**
@@ -741,6 +825,9 @@ export interface StageSink {
   /** the stage's zones (zones.ts): the sections' own, and any an emitter lays (a prop's darkness over its span); no animal or flag
    *  is left standing inside one */
   zones: Zone[];
+  /** the stage's beats (beat.ts ClockDef): an emitter that lays a piece on a beat lists the beat here, once by id; the built
+   *  stage carries them as `clocks`, and the engine runs them */
+  clocks?: ClockDef[];
   nextPlatformId: () => number;
   nextCollectibleId: () => number;
   nextEnemyId: () => number;
@@ -755,6 +842,10 @@ export interface WorldKit {
   /** called for every creature the stage lays (a socket's or a purge's top-up): where the world registers its own (World 5: a
    *  sleeping spider into proto.w5.spiders with `doze`, from a creature tagged 'sleeper') */
   spawn?: (e: Enemy, c: CreatureDef, out: StageSink) => void;
+  /** where the world moves its laid pieces so each is drawn on its own ground (World 1: a stone or stump kept back from its ground's lip by
+   *  its painted piece's margin, w1CutArt.ts settleCut, R-165.226), run on the laid stage before any check reads it: each piece it moves
+   *  and by how much (`dx`); `dx` NaN for a piece no move settles (its section is swapped, pipeline checkAndRepair) */
+  settle?: (platforms: Platform[]) => Array<{ p: Platform; dx: number }>;
 }
 
 /** a local repair the validation pass made (D3) */
@@ -810,6 +901,8 @@ export interface Gen2Meta {
   /** a tower's own misses (tower.ts towerFalls, towerSkips): a fall no sound wood catches within a trunk section going up, a storey a
    *  jump climbs without its vine; a blind drop going down */
   towerMiss?: string[];
+  /** each designer's ask (nodeAsks.ts) the built roll did not lay, by name: the roll fails (rollErrors) */
+  dialMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
   /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
@@ -817,7 +910,7 @@ export interface Gen2Meta {
   /** a stage laid as a tower (MissionGraph.flow up or down, R-165.170): its width and floor, the plain boughs the lay ran on to a
    *  wall (a design wants none), and its ROUTE (tower.ts Route: each section's leg, the px of way before and through it, the px he
    *  walks): what "how far along" means where x runs both ways, read by the flags, the opening, the clock and the time model */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
+  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of LEGS (flow 'legs', R-165.196): each leg as laid, in order */ legs?: import('./legs.ts').LaidLeg[]; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
   /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
    *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
   hurt?: { lesson: string; clearStart: number; shown?: number };
@@ -840,8 +933,9 @@ export interface Gen2Meta {
   errors: string[];
   /** stretches longer than the dead-time cap with nothing interactive (poissonPlace's `unfilled`), [x0, x1] */
   barren: Array<[number, number]>;
-  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water) */
-  falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
+  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water);
+   *  `site` marks a hole under the route (verdicts.types.ts DropSite), never a gap he is asked to cross */
+  falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind; site?: DropSite }>;
   /** the roll's verdicts by setting (R-165.61, ADR-001; pipeline applyVerdicts): the build's own setting, and on an Easy build Normal's
    *  too (Easy lays Normal's plan). 1-1 is judged; every other stage carries every name as `notJudged` (THE BOUNDARY, packet E0a).
    *  `errors` stays, and carries each failed verdict's line (rollErrors) */

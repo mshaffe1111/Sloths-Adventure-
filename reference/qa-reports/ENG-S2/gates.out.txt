@@ -1,0 +1,36 @@
+head 1901d33f1fadd5ba5131dad590e98da89bcb1869 start 4:24 AM
+unit files 517: shards 173 172 172
+tsc exit 0 20s
+knowncheck exit 0 0s
+generality exit 0 3s
+build exit 0 32s
+chunkcheck exit 0 0s
+artcheck exit 0 1s
+roadmap exit 0 11s
+registry exit 0 36s
+kbdcheck exit 0 186s
+enginetools exit 0 464s
+tierbots exit 0 125s
+drawcheck exit 0 620s
+clipcheck exit 0 585s
+unit2 exit 0 1921s
+unit0 exit 0 2183s
+seedlists exit 0 1633s
+unit1 exit 0 2412s
+lockall exit 0 409s
+buildcheck exit 0 7s
+end 5:09 AM
+gates.log.unit0.txt:# tests 1127
+gates.log.unit0.txt:# pass 1127
+gates.log.unit0.txt:# fail 0
+gates.log.unit0.txt:# todo 0
+gates.log.unit1.txt:# tests 1221
+gates.log.unit1.txt:# pass 1220
+gates.log.unit1.txt:# fail 0
+gates.log.unit1.txt:# todo 1
+gates.log.unit2.txt:# tests 1053
+gates.log.unit2.txt:# pass 1052
+gates.log.unit2.txt:# fail 0
+gates.log.unit2.txt:# todo 1
+lock: 102/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9

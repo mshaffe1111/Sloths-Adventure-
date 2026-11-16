@@ -17,7 +17,7 @@ import type { Platform } from './types.ts';
 /**
  * What a thin platform is drawn as. `plank`, `slices` and `lashed` are the three faces of a fragile platform (boards, rotten
  * log slices, lashed sticks): all read as "this will give way" (cracks, frayed lashings), but they are different shapes.
- * `toadstool`, `parasol` and `bloom` are the three bounce plants: different silhouettes, one cue (the up-arrow above).
+ * `toadstool`, `parasol` and `bloom` are the three bounce plants: different silhouettes, one cue (the glow round the cap).
  * `raft`, `barge` and `pad` are the moving platforms (one cue: the direction chevrons); `drift`, `canoe` and `reeds` are the
  * river carriers of World 2 (one cue: they bob and slide between the banks).
  */

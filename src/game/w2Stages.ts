@@ -1,6 +1,6 @@
 /**
- * World 2, the Sunlit Riverbank, built by hand (2026-10-24, three stages at a time): 2-1 Down to the River, 2-2 Petals for the Crown and
- * 2-3 Stuck in the Reeds. Each is one idea played in beats (learn, develop, twist, finish) the way World 1's stages are (protoStage.ts),
+ * World 2, the Sunlit Riverbank, built by hand (2026-10-24, three stages at a time): 2-3 Stuck in the Reeds onward (2-1 Down to the River
+ * and 2-2 Petals for the Crown are rolled by gen2 from World 2's kit since ENG-W2, 11-14: gen2/worlds/w2.ts; their hand builds are deleted). Each is one idea played in beats (learn, develop, twist, finish) the way World 1's stages are (protoStage.ts),
  * planned and rolled: the beats are always there in order, and a seed rolls the lengths, the spacing and the dressing.
  *
  * The world's rule is the river: logs drift across between two banks and never stop (river.ts). 2-1 teaches it over a river that costs
@@ -18,7 +18,8 @@ import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
 import { buildKapok, EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
-import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
+import { LOG_DROP, surfaceBelowBank, type RiverZone } from './river.ts';
+import { layRiver } from './gen2/riverLay.ts';
 import type { W2Decor } from './riverArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -29,8 +30,6 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
-  '2-1': '2-1',
-  '2-2': '2-2',
   '2-3': '2-3',
   '2-4': '2-4',
   '2-5': '2-5',
@@ -40,8 +39,6 @@ export const W2_STAGES: Record<string, W2Plan> = {
   '2-9': '2-9',
 };
 
-/** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
-export const FLOWER_GOAL_22 = 80;
 /** 2-5 asks for 14 snappers chased off (the stage holds about 21) */
 export const SNAPPER_GOAL_25 = 14;
 /** 2-3: five little ones to free (capybaras, ducklings and otters), each in a reed cage on a pulley */
@@ -57,8 +54,8 @@ export const ISLAND_TOP = 600;
  * so Dot's first tip (she waits 2.5 s at a stage's start: dotGuide.ts CALM) is up before anything can hurt him (stageStart.test.ts)
  */
 export const START_WALK = 1150;
-/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-3, 2-8), the ferry's sluice (2-2), the court's bell (2-9) */
-export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-2', '2-3', '2-8', '2-9']);
+/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-3, 2-8), the court's bell (2-9) */
+export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-3', '2-8', '2-9']);
 /** a stone weighs this much in a counter-basket (puzzleKit.ts ITEM.stone) */
 const STONE = 2;
 /** a hanging cage's pool: a hop across, the cage over its middle; how far over the bank the cage comes up, its floor dropping open */
@@ -96,8 +93,6 @@ function clearFlags<S extends GeneratedStage>(st: S): S {
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8)
   const st = petalPass(teachWater(buildW2Plan(config, seed, plan)));
-  // (2-2's crown asks for FLOWER_GOAL_22, or two in three of what the petal pass left where it left fewer: about one and a half times)
-  if (plan === '2-2') st.config = { ...st.config, targetCount: Math.min(FLOWER_GOAL_22, Math.round(st.collectibles.filter((c) => c.type === 'flower').length / 1.5)) };
   return st;
 }
 
@@ -327,41 +322,13 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     run(opts.lead ?? R.r(120, 135));
     close();
     const rx0 = x;
-    // (a river that flows back at him may keep its logs closer than it must: they come toward him, so the hop only gets shorter)
-    const gap = opts.gap ?? Math.round(gapFor(dir, speed));
-    const width = (logs + 1) * (logW + gap) - logW;
-    const rx1 = rx0 + width;
-    const { count, period } = logLayout({ dir, speed, logW, gap, width });
-    for (let i = 0; i < count; i++) {
-      const p: Platform = {
-        id: pid++,
-        x: rx0,
-        y: LOG_Y,
-        width: logW,
-        height: LOG_HEIGHT,
-        type: 'drift',
-        style: 'log',
-        drift: {
-          x0: rx0,
-          x1: rx1,
-          dir,
-          speed,
-          width: logW,
-          offset: (i * period) / count,
-          baseY: LOG_Y,
-        },
-      };
-      p.x = driftX(p.drift!, 0);
-      P.push(p);
-    }
-    rivers.push({
-      x0: rx0,
-      x1: rx1,
-      surfaceY: SURFACE,
-      dir,
-      speed,
-      ...(opts.safe ? { safe: { backX: rx0 - 70, backY: G } } : {}),
-    });
+    // (the river's one lay, gen2/riverLay.ts: its logs on the river's clock, the zone, the splash-back; a river that flows back at him may
+    // keep its logs closer than it must, `gap`: they come toward him, so the hop only gets shorter)
+    const laid = layRiver({ dir, speed, logW, logs, ...(opts.gap !== undefined ? { gap: opts.gap } : {}), ...(opts.safe ? { safe: true } : {}) }, rx0, G, () => pid++);
+    P.push(...laid.logs);
+    rivers.push(laid.zone);
+    const rx1 = laid.zone.x1;
+    const width = rx1 - rx0;
     const n = opts.flowers ?? Math.max(3, logs + 1);
     if (n > 0) arc(rx0 + 50, rx1 - 50, G - 70, n, 'hibiscus', 50);
     // reeds where the banks meet the water: one on each side, low enough not to hide the logs
@@ -1006,49 +973,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     return { cageId, A };
   }
 
-  /**
-   * The ferry (2-2): a river too wide to jump, with one raft on it, moored under the far bank while the sluice holds the river still.
-   * Pull the lever and the current runs: the raft comes round from under this bank and carries him across (pull it again and the river
-   * stands still, the raft wherever it is). `safe`: a splash puts him back on the bank.
-   */
-  function ferryRoom(o: { safe?: boolean; tips?: RoomTips; flowers?: number } = {}) {
-    const ri = rooms.length;
-    const x0 = x;
-    run(R.r(70, 90));
-    const postX = x;
-    run(R.r(110, 130));
-    const leverX = x;
-    // (the lever a few steps back from the water: he sees the raft come round from there)
-    run(R.r(240, 260));
-    const A = close()!;
-    const rx0 = x;
-    const W = Math.round(R.r(500, 540));
-    const w = 220;
-    const speed = 80;
-    const rx1 = rx0 + W;
-    // (moored: it has just slid in under the far bank as the sluice stops the river, a moment after the stage starts)
-    const offset = (W + w - 10) / speed - 0.25;
-    const raft: Platform = { id: pid++, x: rx0, y: LOG_Y, width: w, height: LOG_HEIGHT, type: 'drift', style: 'log', drift: { x0: rx0, x1: rx1, dir: 1, speed, width: w, offset, baseY: LOG_Y } };
-    raft.x = driftX(raft.drift!, 0);
-    P.push(raft);
-    const riverIdx = rivers.length;
-    rivers.push({ x0: rx0, x1: rx1, surfaceY: SURFACE, dir: 1, speed, raft: true, ...(o.safe ? { safe: { backX: rx0 - 70, backY: G } } : {}) });
-    if (o.flowers !== 0) arc(rx0 + 60, rx1 - 60, G - 66, o.flowers ?? 5, 'hibiscus', 40);
-    reeds(rx1 + 24, G + 6, R.chance(0.5));
-    open(rx1);
-    run(R.r(150, 190));
-    rooms.push({
-      id: `ferry${ri}`, left: at(A, x0 + 2), right: { on: A.id, at: 1, dx: W + 60 }, above: 420, below: 160,
-      pieces: [
-        { kind: 'reset', id: `post${ri}`, at: at(A, postX) },
-        { kind: 'lever', id: `lever${ri}`, at: at(A, leverX) },
-        { kind: 'sluice', id: `sluice${ri}`, at: { on: A.id, at: 1, dx: -40 }, river: riverIdx, open: `lever${ri}`, opened: 'with', shut: 'still' },
-      ],
-      exit: `sluice${ri}`, beyond: at(A, leverX + 40), ground: [A.id], tips: o.tips,
-    });
-    expert += (x - x0) / RUN + (W + w) / speed / 2 + 2;
-    pieces.push({ k: 'ferry', x0, x1: x });
-  }
 
   /**
    * The court gate (2-9): a latched gate in the court's wall, the court bell beside it. Ring the bell (a tap by it) and the gate opens
@@ -1124,7 +1048,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     get expert() { return expert; },
     addExpert: (s) => { expert += s; },
     run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun, lift, guardedHigh,
-    mailman, patientDoor, villageEnd, floodBasin, cageRoom, ferryRoom, bellGate, bellGallery, sandbar, island, postUp, dropDown, channels, startWalk, heart, goldenSeed,
+    mailman, patientDoor, villageEnd, floodBasin, cageRoom, bellGate, bellGallery, sandbar, island, postUp, dropDown, channels, startWalk, heart, goldenSeed,
     piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
     row, arc, flower, turtle, guard, snake,
     mark: (k, x0) => pieces.push({ k, x0, x1: x }),
@@ -1158,7 +1082,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
+  const targetCount = plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

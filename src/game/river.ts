@@ -41,6 +41,9 @@ export interface RiverZone {
    * `back` is where he is set down.
    */
   safe?: { backX: number; backY: number };
+  /** a pond of sinking pads that is a SPUR (gen2/rideLay.ts PadRow.spur): its far end is a dead-end stone, standing here (its top's
+   *  middle); the way on is from the near bank, so the route goes out to it and back (route.ts) */
+  spur?: { x: number; y: number };
   /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
   open?: boolean;
   /**
@@ -87,6 +90,18 @@ export function driftX(d: DriftInfo, t: number): number {
   const u = cyclePos(t, d.offset, T);
   const travelled = u * d.speed;
   return d.dir === 1 ? d.x0 - d.width + travelled : d.x1 - travelled;
+}
+
+/**
+ * The log's knock (reference/design/2-1.md NEW 2, Bit.Trip Runner's beat): how many times this log slid out from under its bank between
+ * clock readings t0 and t1 (0 or 1 a step at 30 fps). A log's cycle starts with its front edge at the bank's lip (driftX: x0 - width for
+ * a river with him, x1 against), so the count is the cycle passing its start: the beat is the river's own spacing, never a timer of its
+ * own. A clock that stands or runs back (a sluice's, logClock) knocks nothing.
+ */
+export function logKnocks(d: DriftInfo, t0: number, t1: number): number {
+  if (!(t1 > t0)) return 0;
+  const T = driftCycle(d);
+  return Math.floor((t1 + d.offset) / T) - Math.floor((t0 + d.offset) / T);
 }
 
 /** how far the log has crossed, 0 (just out from under its bank) to 1 (about to slide under the far one) */

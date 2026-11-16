@@ -1,0 +1,8 @@
+unshallow exit 0
+  R-160 Hanging under branches: Pokey's own move (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 15 helper hours
+  R-161 Bosses: three ways to win (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 34 helper hours
+  R-162 Later (PLAN-TO-80's "Later" list: good ideas, not for launch): S130 M67 L18 = 598.35 helper hours
+  by tier (helper hours, measured, R-12): Day 1 896.75, Important 322.5, Parking lot 147.5, Matt's call 4.1
+  all: 1370.85 helper hours (Matt's own items and the decisions left out: 23)
+PASS
+roadmap exit 0

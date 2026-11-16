@@ -1,0 +1,6 @@
+kid 1 shrine {"got":100,"need":95} {"first-liana:d1":{"on":[0.45],"off":[0.92]},"gorge:b1":{"on":[0.48],"off":[0.85]}}
+kid 2 shrine {"got":101,"need":94} {"first-liana:b1":{"on":[0.93],"off":[0.99]},"first-liana:d1":{"on":[0.41],"off":[0.87]},"gorge:b1":{"on":[0.19],"off":[0.85]}}
+kid 3 shrine {"got":110,"need":102} {"first-liana:d1":{"on":[0.42],"off":[0.92]},"gorge:b1":{"on":[0.49],"off":[0.85]}}
+kid 4 shrine {"got":108,"need":97} {"first-liana:b1":{"on":[0.87],"off":[0.97]},"first-liana:d1":{"on":[0.43],"off":[0.92]},"gorge:b1":{"on":[0.35],"off":[0.86]}}
+kid 5 shrine {"got":98,"need":90} {"first-liana:d1":{"on":[0.35],"off":[0.92]},"gorge:b1":{"on":[0.34],"off":[0.85]}}
+kid 6 shrine {"got":106,"need":95} {"first-liana:b1":{"on":[0.9],"off":[0.97]},"first-liana:d1":{"on":[0.43],"off":[0.92]},"gorge:b1":{"on":[0.57],"off":[0.85]}}

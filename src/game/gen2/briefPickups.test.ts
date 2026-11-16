@@ -126,3 +126,15 @@ test('a harvest under both fields (the toy world, test-side): the top-up still r
   assert.ok(blooms > 0, 'no bloom on the toy world\'s high road over 12 builds');
   console.log(`harvest: 12 toy builds, every one at its laid count in petals, ${blooms} blooms beside them`);
 });
+
+// (R-165.263, ENG-W2b, the lead's ruling Q1 A: 'few' is data today and never MORE than 'low': it lays exactly what 'low' lays until the
+// game's fill honours its count on ENG-PETAL's petalPass; planted against the plain brief, which lays arcs over the gaps)
+test("petals 'few' by brief lays no more than 'low' (no arc over a gap), and the plain brief lays more (planted)", () => {
+  let fewer = 0;
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS.slice(0, 6)) {
+    const plain = build(seed, kit(), d), low = build(seed, kit({ petals: 'low' }), d), few = build(seed, kit({ petals: 'few' }), d);
+    assert.deepEqual(few.collectibles, low.collectibles, `seed ${seed} ${d}: 'few' laid other petals than 'low'`);
+    if (petalish(plain).length > petalish(few).length) fewer++;
+  }
+  assert.ok(fewer > 0, "the plain brief lays more petals than 'few' on some seed (the arcs)");
+});

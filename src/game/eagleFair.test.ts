@@ -1,5 +1,5 @@
 /**
- * 1-7 A Very Good Bush's eagle, made fair for World 1 (QA 2026-10-28, build 39fc3db: "It saw you! Slide down in a bush!" came after
+ * 1-7 A Very Good Bush's eagle, made fair for World 1 (the watcher's rules below; 1-7 itself is held on the kit's eagle since BUILD-17) (QA 2026-10-28, build 39fc3db: "It saw you! Slide down in a bush!" came after
  * the first hit; steering down mid-slide did not hide; the "HIDE!" sign was in the world only; it came about every 3 s, often from off
  * screen; an expert took 16 hits and lost 3 lives).
  *   - the first calm is a whole calm of the zone (not the 3 s a new watch started with), and the first pass is a warning that cannot
@@ -13,6 +13,10 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { TouchGestures, type GestureSink } from './touchGestures.ts';
 import { harmlessPass, newWatch, stepWatch, type WatchZone } from './watcher.ts';
+import { isKitSweeper } from './gen2/stillLay.ts';
+import { LINES_17 } from './gen2/worlds/w1Arc17.ts';
+import { EAGLE } from './predators/world1.ts';
+import type { Enemy } from './types.ts';
 
 test('the watcher: the first calm is a whole calm of the zone, and the first pass is harmless', () => {
   const s = newWatch();
@@ -25,7 +29,8 @@ test('the watcher: the first calm is a whole calm of the zone, and the first pas
   assert.ok(!harmlessPass(s), 'the second is not');
 });
 
-/** 1-7 in the real engine, real damage: he walks into the watched stretch and stands in the open through the passes */
+/** 1-7 in the real engine, real damage: he stands in the open in its FIRST watched stretch (the kit's eagle over it, gen2/stillLay
+ *  castWatches: the hand-built 1-7 and its watcher.ts eagle were deleted, BUILD-17) through the passes */
 function standInOpen(seed: number) {
   try {
     localStorage.removeItem('sloth_tips_1-7');
@@ -36,41 +41,47 @@ function standInOpen(seed: number) {
   const e = sim.e;
   sim.safe = false;
   sim.p.invincibleTimer = 0;
-  const zones = e.proto.watch as WatchZone[];
-  const z = zones[0];
-  const bushes = e.proto.bushes as Array<{ x: number; w: number }>;
-  // in the open: between the first two bushes
-  const sx = (bushes[0].x + bushes[0].w + bushes[1].x) / 2;
+  const eagle = (e.enemies as Enemy[]).filter((q) => isKitSweeper(q)).sort((a, b) => a.patrolMinX - b.patrolMinX)[0];
+  const bushes = (e.proto.bushes as Array<{ x: number; w: number }>).filter((b) => b.x + b.w > eagle.patrolMinX && b.x < eagle.patrolMaxX).sort((a, b) => a.x - b.x);
+  // in the open: the middle of the widest bare run inside its stretch
+  const cuts = [eagle.patrolMinX, ...bushes.flatMap((b) => [b.x, b.x + b.w]), eagle.patrolMaxX];
+  let sx = eagle.patrolMinX, best = -1;
+  for (let i = 0; i + 1 < cuts.length; i += 2) if (cuts[i + 1] - cuts[i] > best) (best = cuts[i + 1] - cuts[i]), (sx = (cuts[i] + cuts[i + 1]) / 2);
   sim.stand(sx, sim.p.y);
   sim.p.invincibleTimer = 0;
   const log: Array<{ t: number; what: string }> = [];
   let hp = sim.p.hp;
-  let wasPhase = e.watch.phase;
+  let wasPhase = eagle.kit!.phase;
   for (let i = 0; i < 30 * 40; i++) {
     sim.frame();
     sim.p.invincibleTimer = Math.min(sim.p.invincibleTimer, 0.5);
-    if (e.watch.phase !== wasPhase) log.push({ t: sim.t, what: `${e.watch.phase} ${e.watch.passes}` });
-    wasPhase = e.watch.phase;
-    if (sim.p.hp < hp) log.push({ t: sim.t, what: `hit at pass ${e.watch.passes}` });
+    const s = eagle.kit!;
+    // (a pass is called when its eye leaves 'rest' for 'hunt': the screech, engine.ts playEagleScreech)
+    if (s.phase === 'hunt' && wasPhase === 'rest') log.push({ t: sim.t, what: `warn ${s.passes}` });
+    wasPhase = s.phase;
+    if (sim.p.hp < hp) log.push({ t: sim.t, what: `hit at pass ${s.passes}` });
     hp = sim.p.hp;
   }
-  return { log, said: sim.said, z, sx };
+  return { log, said: sim.said, eagle, sx };
 }
 
-test('1-7: the hide is said before the first pass, the first pass cannot hurt, the next one can, and its warning is Dot\'s line too', () => {
+test("1-7: the hide is said before the first pass, the first pass cannot hurt, the next one can, and the calms are the taught stretch's", () => {
   for (const seed of [1, 2, 3]) {
-    const { log, said } = standInOpen(seed);
+    const { log, said, eagle } = standInOpen(seed);
     const firstWarn = log.find((l) => l.what.startsWith('warn'));
     assert.ok(firstWarn, `seed ${seed}: the eagle came`);
-    const hide = said.find((s) => /bush to hide/i.test(s.text));
+    // (Dot's teach line for the bush, the keeper's own words: w1Arc17.ts LINES_17.bush)
+    const hide = said.find((s) => s.text === LINES_17.bush);
     assert.ok(hide && hide.t < firstWarn!.t + 0.1, `seed ${seed}: the hide was said (${hide?.t.toFixed(1)}) before or at the first screech (${firstWarn!.t.toFixed(1)})`);
     const hits = log.filter((l) => l.what.startsWith('hit'));
     assert.ok(hits.length > 0, `seed ${seed}: out in the open he is hit in the end`);
+    // (the taught stretch's first pass is free: it dives and pulls up short, core.ts sparedPass)
+    assert.ok(eagle.kitFree, `seed ${seed}: the first stretch is laid with its first pass free`);
     assert.ok(hits.every((h) => !h.what.endsWith('pass 0')), `seed ${seed}: the first pass hit him: ${JSON.stringify(log)}`);
+    // (and the calms are its own, the taught band's: no two screeches closer than its calm, the warn and the eye's crossing apart)
     const warns = log.filter((l) => l.what.startsWith('warn'));
-    assert.ok(warns.length >= 2 && said.some((s) => s.text === 'Hide! Into a bush!' && s.t >= warns[1].t - 0.1), `seed ${seed}: the second warning was Dot's line too`);
-    // (and the calms are long for World 1: no two screeches closer than 9 s apart while it teaches)
-    for (let i = 1; i < warns.length; i++) assert.ok(warns[i].t - warns[i - 1].t >= 9 + 2 + 2.6 - 0.5, `seed ${seed}: screeches ${warns[i - 1].t.toFixed(1)} and ${warns[i].t.toFixed(1)}`);
+    assert.ok(warns.length >= 2, `seed ${seed}: two passes in 40 s: ${JSON.stringify(log)}`);
+    for (let i = 1; i < warns.length; i++) assert.ok(warns[i].t - warns[i - 1].t >= eagle.kitCool! + EAGLE.warn! - 0.5, `seed ${seed}: screeches ${warns[i - 1].t.toFixed(1)} and ${warns[i].t.toFixed(1)}`);
   }
 });
 

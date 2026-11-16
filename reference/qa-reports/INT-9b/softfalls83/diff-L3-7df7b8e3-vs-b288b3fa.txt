@@ -1,0 +1,6 @@
+37,38c37,38
+< {"id":37,"x":9455,"y":525,"width":228,"height":225,"type":"solid","style":"log"}
+< {"id":38,"x":10144,"y":445,"width":246,"height":305,"type":"solid","style":"log"}
+---
+> {"id":37,"x":9455,"y":525,"width":228,"height":234.52631578947376,"type":"solid","style":"log"}
+> {"id":38,"x":10144,"y":445,"width":246,"height":314.52631578947376,"type":"solid","style":"log"}

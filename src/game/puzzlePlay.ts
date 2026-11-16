@@ -6,6 +6,7 @@
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
 import { drawW7Piece } from './w7PuzzleArt.ts';
+import { drawW6Wheel, wheelFor } from './w6WheelArt.ts';
 import {
   anchorAt, BEETLE, CHAIR, evalWire, knotBox, GLOW, SAPLING, SILK, TEA, tipText, type TipLine, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
   aimUp, seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
@@ -1891,6 +1892,9 @@ export class KitPlay {
         }
       }
       for (const l of room.levers) {
+        // (a lever with its world's own pictures: World 6's sluice wheel, turned while on, w6WheelArt.ts)
+        const wheel = l.spec.looks ? wheelFor(l.spec.looks, l.x) : undefined;
+        if (wheel && drawW6Wheel(ctx, wheel, l.x, l.y + 4, l.show > 0.5)) continue;
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
         // (World 7: Matt's stone lever, w7PuzzleArt.ts)
         if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;

@@ -1,0 +1,11 @@
+castBots 1-2, seeds 1-10; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 10/10; under the floor 2; time median 122 s (min 118.8); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 10/10; under the floor 0; time median 122.6 s (min 120.7); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 10/10; under the floor 3; time median 121.4 s (min 118.3); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 10/10; under the floor 0; time median 122.2 s (min 120.9); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 7/10; under the floor 0; time median 361.9 s (min 332.6); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x1  (seeds 2,8,1)
+child  easy   PASS 10/10; under the floor 0; time median 238.7 s (min 220.2); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 10/10; under the floor 0; time median 165 s (min 152.8); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 10/10; under the floor 0; time median 161.7 s (min 155.9); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 10/10; under the floor 0; time median 142.9 s (min 137.4); hits 0 lives 1 (pit 1); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0

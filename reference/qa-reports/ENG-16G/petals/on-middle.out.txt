@@ -1,0 +1,6 @@
+middle 1 sealed door {"got":90,"need":95} {"first-liana:d1":{"on":[0.36],"off":[0.92]},"gorge:b1":{"on":[0.48],"off":[0.54]}}
+middle 2 shrine {"got":96,"need":94} {"first-liana:b1":{"on":[0.88],"off":[0.98]},"first-liana:d1":{"on":[0.44],"off":[0.92]}}
+middle 3 shrine {"got":110,"need":102} {"first-liana:b1":{"on":[0.95],"off":[0.98]},"first-liana:d1":{"on":[0.42],"off":[0.83]},"gorge:b1":{"on":[0.5],"off":[0.58]}}
+middle 4 shrine {"got":101,"need":97} {"first-liana:b1":{"on":[0.89],"off":[0.99]},"first-liana:d1":{"on":[0.41],"off":[0.87]},"gorge:b1":{"on":[0.31],"off":[0.55]}}
+middle 5 shrine {"got":91,"need":90} {"first-liana:d1":{"on":[0.32],"off":[0.82]},"gorge:b1":{"on":[0.37],"off":[0.44]}}
+middle 6 shrine {"got":100,"need":95} {"first-liana:d1":{"on":[0.37],"off":[0.81]},"gorge:b1":{"on":[0.41],"off":[0.46]}}

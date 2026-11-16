@@ -1,0 +1,35 @@
+== built
+ P 6 solid 1760 2080 841 s1:out 
+ P 7 solid 2080 2400 778 s2:in 
+ P 20 solid 2400 2729 923  
+ P 21 solid 2400 2600 874  
+ P 22 solid 2400 2500 826  
+ P 8 solid 2729 3029 698 s2:p1 
+ P 9 solid 3029 3249 753 s2:s10 
+ P 10 solid 3249 3469 804 s2:s11 
+ P 11 solid 3469 3769 857 s2:s12 
+ P 23 solid 3769 4001 967  
+ P 24 solid 3769 3869 912  
+ P 12 solid 4001 4301 737 s2:p2 
+ P 13 solid 4301 4521 787 s2:s20 
+ V 2579 360 770 swing_liana
+ V 3937 455 865 swing_liana
+ F soft 2400 2729 698
+ F soft 3769 4001 737
+ secs w2-21-edge@640-2080 w2-21-down@2080-6257
+== finished
+ P 6 solid 1760 2080 841 s1:out 
+ P 7 solid 2080 2400 778 s2:in 
+ P 8 solid 2729 3029 698 s2:p1 
+ P 9 solid 3029 3249 753 s2:s10 
+ P 10 solid 3249 3469 804 s2:s11 
+ P 11 solid 3469 3769 857 s2:s12 
+ P 12 solid 4001 4301 737 s2:p2 
+ P 13 solid 4301 4521 787 s2:s20 
+ V 2579 360 770 swing_liana
+ V 3937 455 865 swing_liana
+ R 2400 2729 0 safe
+ R 3769 4001 0 safe
+ F soft 2400 2729 698
+ F soft 3769 4001 737
+ secs w2-21-edge@640-2080 w2-21-down@2080-6257

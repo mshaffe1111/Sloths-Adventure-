@@ -321,8 +321,8 @@ function main() {
       density: density(br.beats, br.total),
       sections: secs,
       pacing: {
-        normal: pacing(br.beats, br.total, 'normal', { chase: !!st.proto?.chase, missAt: missAt(jN), sections: secs }),
-        easy: pacing(ebr.beats, ebr.total, 'easy', { chase: !!easy.proto?.chase, missAt: missAt(jE), sections: sections(easy, eSamples, ebr.beats, ebr.total) }),
+        normal: pacing(br.beats, br.total, 'normal', { chase: !!st.chase?.stretches.length, missAt: missAt(jN), sections: secs }),
+        easy: pacing(ebr.beats, ebr.total, 'easy', { chase: !!easy.chase?.stretches.length, missAt: missAt(jE), sections: sections(easy, eSamples, ebr.beats, ebr.total) }),
       },
     });
     process.stderr.write(`${e.id} ${route.traced} ${br.total.toFixed(0)}s beats ${beatCount} dead ${dn.total.toFixed(0)}s (${Date.now() - t0} ms)\n`);

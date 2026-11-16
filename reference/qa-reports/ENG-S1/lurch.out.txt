@@ -1,0 +1,4 @@
+  released, landed at frame 22 on x 1809 (perch 1720-1840), flight+landing+ease-in max step x 31.3 y 27.0, zoom back 1.017
+412x915: swing max step x 21.3 y 9.4 px/frame; after landing x 31.3
+  released, landed at frame 22 on x 1809 (perch 1720-1840), flight+landing+ease-in max step x 32.2 y 27.0, zoom back 0.938
+390x844: swing max step x 21.7 y 9.4 px/frame; after landing x 32.2

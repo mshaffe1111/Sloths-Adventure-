@@ -79,7 +79,7 @@ export const isLiana = (v: Vine) => v.vineType === 'swing_liana' || !!v.isSwingi
  * (tools/difficulty/score.ts); the seed lists' quiet line, the worlds' quiet and diversity tests and the bots keep the route without it
  * until they move onto it together with Worlds 5-7's findings (the lead's 11:30 AM ET ruling, S1; REPORT.md lists the four findings).
  */
-export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = [], opts: { steps?: boolean } = {}): Route {
+export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = [], opts: { steps?: boolean; spurs?: boolean } = {}): Route {
   let graph: CheckGraph | null = null;
   // (the check as the game judges the stage: 1-1..1-3 on their flown arcs, levelCheck.ts validateAsJudged. validateStage alone read 1-1's
   // 253-256 px double test gaps as past reach, so its Normal route needed a presumed hop on every layout: S1, 11-13)
@@ -163,7 +163,18 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
 
   // the stops on the way: the place under each thing the goal counts (in order along the stage), then the shrine
   const stops: Array<{ key: string; x: number }> = [];
-  for (const t of targets) {
+  // (and each SPUR's dead-end stone (a pond of sinking pads whose way on is from its near bank, gen2/rideLay.ts PadRow.spur: its flower is
+  // the reason to go): out to it and back, in its place along the stage. `spurs: false` leaves them out: the bots' OUT-AND-BACK off,
+  // firsttimer.ts PAD_SKILL.outBack)
+  const visit = [...targets];
+  if (opts.spurs !== false) {
+    for (const r of stage.rivers ?? []) {
+      if (!r.spur) continue;
+      const i = visit.findIndex((t) => t.x > r.spur!.x);
+      visit.splice(i < 0 ? visit.length : i, 0, { x: r.spur.x, y: r.spur.y - 1 });
+    }
+  }
+  for (const t of visit) {
     const p = platUnder(plats, t.x, t.y);
     if (!p) continue;
     const k = keyOf(p);

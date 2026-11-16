@@ -1,0 +1,12 @@
+{"sx":18237,"gy":831,"x0":18132,"x1":19131,"perched":false,"home":18132,"hp":5,"easy":false}
+f153: hunt -> rest (eye 18132, him 18237)
+f233: glance away -> cock (him 18237)
+f256: glance cock -> look (him 18237)
+f294: glance look -> away (him 18237)
+f316: rest -> hunt (eye 19131, him 18237)
+f469: hunt -> flee (eye 18132, him 18237)
+f709: flee -> rest (eye 18132, him 18237)
+f765: glance away -> fake (him 18237)
+f780: glance fake -> away (him 18237)
+f847: glance away -> cock (him 18237)
+f870: glance cock -> look (him 18237)

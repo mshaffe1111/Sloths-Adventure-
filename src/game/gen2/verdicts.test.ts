@@ -66,10 +66,24 @@ test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 
 test('arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)', (t) => {
   planted('arc.single-rise-over', 'normal', { asks: [ask('single-rise', 120)] }, t);
 });
-test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)', (t) => {
+test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)', (t) => {
   planted('block.lesser-passes', 'normal', { asks: [ask('double-test-gap', 200)] }, t);
   planted('block.lesser-passes', 'easy', { asks: [ask('double-teach-rise', 120)] }, t);
-  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-teach', 212)] }, t);
+  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-air-test', 212)] }, t);
+  planted('block.lesser-passes', 'easy', { asks: [ask('bounce-teach', 120)] }, t);
+});
+test('the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [174, 177, 180]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-rise', s === 'easy' ? 130 : 138), ask('bounce-teach', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('bounce-teach', 168)] }, t);
+  planted('band.out', 'easy', { asks: [ask('bounce-teach', 186)] }, t);
+});
+test('the double teach\'s first rise is comfortably doable (POLISH-8, R-165.228, the lead\'s ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal\'s old 136 is over the band, 127 under it, 126 spare-thin', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [128, 130, 132]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-first', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 136)] }, t);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 127)] }, t);
+  planted('block.spare-thin', 'normal', { asks: [ask('double-teach-first', 126)] }, t);
+  // (a later D face in the same teach keeps the block band: 136-140 on Normal)
+  assert.deepEqual(names(roll('normal', { asks: [ask('single-gap', 100), ask('double-teach-first', 130), ask('double-teach-rise', 138)] })), []);
 });
 test('block.spare-thin: a 126 px double rise, 3 px over one jump\'s 123, under the 5 px spare', (t) => {
   planted('block.spare-thin', 'easy', { asks: [ask('double-teach-rise', 126)] }, t);
@@ -168,7 +182,7 @@ test('every name that can fail in a flown scope has a planted roll above (the un
   for (const n of ALL_VERDICTS.filter((x) => x !== 'reach.unflown')) assert.ok(src.includes(`planted('${n}'`) || (n === 'first-run.drift' && src.includes('firstRunVerdicts(layout')), n);
 });
 test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged', () => {
-  const v = judgeRoll({ stageId: '1-6', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
+  const v = judgeRoll({ stageId: '1-9', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
   assert.equal(v.accepted, true, 'a 400 px gap is not judged where nothing was flown');
   for (const n of ['reach.unflown', ...ARC_VERDICTS]) assert.ok(v.notJudged.includes(n as VerdictName), n);
   for (const s of ['normal', 'easy'] as const) assert.ok(!roll(s, { asks: [ask('single-gap', 400)] }).notJudged.includes('reach.unflown'), `1-1 ${s}: flown`);
@@ -204,7 +218,14 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
 });
 
 // (main's 0.9.5 build of these, layout 1, hashed on origin/main@181d2846 before E0's first change: platforms, falls, errors and plan;
-// and the whole gen2 less the two new fields)
+// and the whole gen2 less the two new fields. The second re-pinned by ENG-16I (R-165.246): only gen2.fills moved, the walked-span petal
+// lay of 59a4c0dc; with that one hunk reverted both hashes are main's exactly (reference/qa-reports/ENG-16I/mainpins.txt). The second
+// re-pinned again by INT-10 (R-165.246, 11-15): only gen2.fills moved (ENG-PETAL's one walked-path model, 7e9fe4d8 and on: 7-1's fills
+// 80 -> 37 Normal, 77 -> 34 Easy; 5-7's 120 and 117 moved in place); the first hash is main's; built at 7e9fe4d8^ both hashes are the
+// old ones exactly (reference/qa-reports/INT-10/mainpins.txt, mainpins.ts). 7-1's second re-pinned by INT-10c (the lead's ruling A, 11-15:
+// a piece every run touches is path): only gen2.fills moved, 37 -> 63 Normal and 34 -> 60 Easy (main 80, 77); the first hash and gen2 less
+// its fills are the same with and without the walkedSpan.ts branch (reference/qa-reports/INT-10c/mainpins.txt, pin71.mts). Back to main's
+// pins exactly on link #5 (INT-11 11-15): with placement main's lay again (INT-10d) both stages build as main builds them, all four hashes)
 const MAIN: Record<string, [string, string]> = {
   '5-7 normal': ['8e6918d86d5b8c49', '1dde0c0b03ee194f'], '5-7 easy': ['c21d7034579fa414', '62b97ff493ad4d78'],
   '7-1 normal': ['f8a654ca25181450', '47c0b9f0e96ceb9e'], '7-1 easy': ['ddbb0b767ba92e8b', '0b61ef8ebb835d41'],
@@ -296,7 +317,7 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     fixPickups({ platforms: st.platforms, vines: [], ropes: [], glide: false, onRoute: new Set(ids) } as never, items);
     assert.deepEqual([items[0].x, items[0].y], [1200, G - 40], `${d}: the flower stays`);
   }
-  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-6' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
+  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-9' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
 });
 
 // ───────────────────────── attempt 3: floorless false positives and the petal pass's reach (each planted red first) ─────────────────────────
@@ -318,9 +339,16 @@ test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid pi
   assert.ok(overlaps(floorlessGaps({ platforms: s172 }), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
   // (seed 323 x27200..27273: branch 128 (top 1005) leaves a 23 px opening to log 127; an opening under his body width is no drop: the
   // lead's second line on the ruling, 11-11)
-  const s323 = [bank(1071), S(119, 26656, 899, 430, 24, 'branch'), S(121, 26869, 1042, 185, 24, 'log'), S(123, 27086, 983, 114, 120), S(124, 27200, 915, 306, 24, 'branch'), S(127, 27273, 1051, 214, 24, 'log'), S(128, 27056, 1005, 194, 24, 'branch', { catch: true })];
+  // (POLISH-5: under the per-gap ruler (w1Pits findOpenPits) only earth (90 px deep or more) is a lip, so the copy needs earth to the
+  // right of the slot or no hole is read at all: a bank at log 127's end (27487), as POLISH-3 planted it. E0a's real next bank, block 131
+  // at 28042, leaves 27487..28042 open under bough 124, a fall with or without 128, so the 23 px case is planted at 127's end)
+  const right = { ...P(901, 27487, 1071, 3000), height: 500 };
+  const s323 = [bank(1071), S(119, 26656, 899, 430, 24, 'branch'), S(121, 26869, 1042, 185, 24, 'log'), S(123, 27086, 983, 114, 120), S(124, 27200, 915, 306, 24, 'branch'), S(127, 27273, 1051, 214, 24, 'log'), S(128, 27056, 1005, 194, 24, 'branch', { catch: true }), right];
   assert.deepEqual(overlaps(floorlessGaps({ platforms: s323 }), 27200, 27273), [], 'seed 323: a 23 px opening, not a fall');
   assert.ok(overlaps(floorlessGaps({ platforms: s323.filter((q) => q.id !== 128) }), 27200, 27273).length > 0, 'planted: without branch 128 the slot is a fall');
+  // (POLISH-5, the floor clause: a floor BESIDE branch 128 (log 127, right of it across the slot) is no way under it; a floor UNDER it is.
+  // Planted: a catch bough under 128, 40 px lower, opens it again, so the slot is a fall; red if the clause counts any floor in the slot)
+  assert.ok(overlaps(floorlessGaps({ platforms: [...s323, S(129, 27120, 1045, 100, 24, 'branch')] }), 27200, 27273).length > 0, 'planted: a floor under 128 lets him in under it: a fall');
   // (planted: a piece at lip level closes the slot to 23 px; the same piece with a lower floor beside it under the slot does not)
   const atLip = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 4, 150), height: 24 }];
   assert.deepEqual(floorlessGaps({ platforms: atLip }), [], 'closed at lip level to 23 px');
@@ -341,7 +369,7 @@ test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 25
       spawnX: 100, spawnY: G, exitTotemX: 450, exitTotemY: G, gen2: { budget: { difficulty: d } },
     } as unknown as GeneratedStage;
     assert.deepEqual([...unreachablePickups(st)], [], `${d}: the flower past the gap is reachable`);
-    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-6' } } as GeneratedStage)], [7], `${d}: 1-6 (never flown), closed form, as before`);
+    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-9' } } as GeneratedStage)], [7], `${d}: 1-9 (never flown; 1-6 is flown since BUILD-16, 1-7 since INT-9, 1-8 since BUILD-18c, judged FIX-GATES), closed form, as before`);
   }
 });
 

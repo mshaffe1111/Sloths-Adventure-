@@ -7,6 +7,9 @@
  *   CLIPCHECK_ONLY=journal node tools/perf/clipcheck.mjs                 (only judge screens whose name contains "journal")
  *   CLIPCHECK_WALKS=fresh:up,done:side node tools/perf/clipcheck.mjs     (only these walks)
  *   CLIPCHECK_OUT=<dir> node tools/perf/clipcheck.mjs                    (results there instead of a temp folder)
+ *   CLIPCHECK_STEPS="Dot's first tip" node tools/perf/clipcheck.mjs    (only the steps whose name holds these words, comma-separated)
+ *   CLIPCHECK_CPU=6 node tools/perf/clipcheck.mjs                        (each page's CPU slowed 6x, Chrome's own throttle: a busy phone)
+ *   CLIPCHECK_SHOTS=1 node tools/perf/clipcheck.mjs                      (also shoot every judged screen, breach or not, into shots/)
  *
  * It builds the game into a temp folder and serves it with vite preview on a free port, then walks the menus at 412x915 (upright) and 915x412 (sideways) on three
  * seeded saves, six walks side by side:
@@ -40,6 +43,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { pressFrame } from '../inspect/clipPress.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..', '..');
@@ -51,6 +55,10 @@ const KNOWN = JSON.parse(fs.readFileSync(path.join(here, 'clipknown.json'), 'utf
 const out = process.env.CLIPCHECK_OUT ? path.resolve(process.env.CLIPCHECK_OUT) : fs.mkdtempSync(path.join(os.tmpdir(), 'clipcheck-'));
 fs.mkdirSync(path.join(out, 'shots'), { recursive: true });
 const ONLY = process.env.CLIPCHECK_ONLY || '';
+// (a step's own proof runs, R-165.245: only the named steps; and every page slowed by Chrome's CPU throttle, a busy machine on purpose)
+const STEPS = (process.env.CLIPCHECK_STEPS || '').split(',').filter(Boolean);
+const CPU = Number(process.env.CLIPCHECK_CPU || 0);
+const SHOTS = !!process.env.CLIPCHECK_SHOTS;
 const MIN_TAP = 44;
 const SIZES = [
   { id: 'up', viewport: { width: 412, height: 915 }, insets: { top: 48, bottom: 24, left: 0, right: 0 } },
@@ -289,6 +297,7 @@ async function walk(browser, base, save, size, devBase) {
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
   await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: size.insets });
+  if (CPU > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate: CPU });
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   const found = [];
@@ -310,6 +319,8 @@ async function walk(browser, base, save, size, devBase) {
         new Promise((r) => setTimeout(r, 2500)),
       ]));
       const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: extra?.insets ?? size.insets, scope, fit });
+      // (CLIPCHECK_SHOTS=1: every judged screen shot as judged, breach or not, so a step's own run can be looked at, not only passed)
+      if (SHOTS) await page.screenshot({ path: path.join(out, 'shots', `seen-${save}-${extra?.id ?? size.id}-${name.replace(/\W+/g, '_')}.png`) });
       if (!b.length) return;
       // the contact sheet: outline each breach, number it, shoot the screen
       const file = path.join(out, 'shots', `${save}-${extra?.id ?? size.id}-${String(++shotN).padStart(2, '0')}.png`);
@@ -336,6 +347,7 @@ async function walk(browser, base, save, size, devBase) {
     }
   };
   const tryStep = async (what, fn) => {
+    if (STEPS.length && !STEPS.some((w) => what.includes(w))) return;
     try { await fn(); } catch (e) {
       const m = String(e.message).split('\n');
       const loc = m.find((l) => /waiting for locator/.test(l)) || '';
@@ -529,19 +541,58 @@ async function walk(browser, base, save, size, devBase) {
   // lessons on. Judged inside her layer only. Sideways its Skip sat inside the right 48 px inset until 11-06 (VineHud's guide safe area
   // now keeps the phone's insets). Fails closed: no Skip up is a screen not opened.
   // (1-3 is a designed level since 11-12: it opens on a quiet walk, so her first tip comes as he walks in, never while he stands at the
-  //  spawn, which the old 1-3's petals beside it made true. He is walked right with the keys, hopping, until her tip is up: F13)
-  if (save === 'fresh') await tryStep("Dot's first tip", async () => {
-    await page.goto(`${base}/?autostart=1&level=1-3`);
-    const skip = page.locator('.dg-skip').first();
-    await page.waitForTimeout(2500);
-    await page.keyboard.down('ArrowRight');
-    for (let t = 0; t < 120 && !(await skip.count()); t++) {
-      await page.keyboard.press('Space');
-      await page.waitForTimeout(300);
-    }
-    await page.keyboard.up('ArrowRight');
-    await skip.waitFor({ state: 'attached', timeout: 5000 });
-    await settle(1200);
+  //  spawn. R-165.245 (TOOLS-1, 11-14): he is walked by GAME FRAMES, not wall-clock key hops. The hops raced Dot: her clock is the
+  //  game's (DotGuide.tsx, at most 100 ms a screen frame), so how far he got before each line depended on how busy the machine was, and
+  //  2 runs in 3 on t-fix-15 met the snake/hive teach card first, a card that waits to be read (no Skip) and that no key ever tapped.
+  //  Now: the development build (its engine handle), the engine's own loop stopped the moment it exists, the stage-start card left to
+  //  finish (its own timer: no line starts under it), then ONE game frame a screen frame through the touch pad's own calls
+  //  (clipPress.mjs pressFrame, as tools/inspect/clip.mjs): right, a hop when he has stood blocked for 6 frames, never hurt (`safe`),
+  //  and a card up 3 s of game time without a Skip is tapped, as a player taps a card that waits. 90 s of game time at most.)
+  if (save === 'fresh' && devBase) await tryStep("Dot's first tip", async () => {
+    await page.goto(`${devBase}/?lessons=off`);
+    await seed(page, 'fresh');
+    await page.evaluate(() => localStorage.setItem('sloth_difficulty', 'normal'));
+    // (stop the engine's own loop at its first frame: a page script that pauses it as soon as the engine is there; only on this step's
+    //  own address, clipHold=1, since a page keeps its init scripts for every later step)
+    await page.addInitScript(() => {
+      if (!location.search.includes('clipHold=1')) return;
+      const hold = () => {
+        const e = typeof window.__engine === 'function' ? window.__engine() : null;
+        if (e && e.currentStage && e.player) { e.isPaused = true; window.__clipHeld = true; } else requestAnimationFrame(hold);
+      };
+      requestAnimationFrame(hold);
+    });
+    await page.goto(`${devBase}/?autostart=1&level=1-3&clipHold=1`);
+    await page.waitForFunction(() => window.__clipHeld === true && window.__engine()?.currentStage?.config?.id === '1-3', null, { timeout: 60000 });
+    await page.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 });
+    const walked = await page.evaluate((src) => new Promise((done) => {
+      const e = window.__engine();
+      e.isPaused = true;
+      const press = new Function(`return (${src})`)();
+      let n = 0, card = '', upAt = 0, still = 0, lastX = e.player.x, hop = 0, taps = 0;
+      const tick = () => {
+        if (document.querySelector('.dg-skip')) return done({ n, taps, x: Math.round(e.player.x), tip: document.querySelector('.dg-bub:not(.dg-toast) .dg-bub-body')?.textContent?.replace('Skip tips', '').trim().slice(0, 60) });
+        if (n >= 30 * 90) return done({ n, taps, x: Math.round(e.player.x), none: true });
+        const bub = document.querySelector('.dg-bub:not(.dg-toast)');
+        const now = bub ? bub.textContent : '';
+        if (now !== card) { card = now; upAt = n; }
+        if (bub && n - upAt >= 90) { bub.click(); taps++; upAt = n; }
+        still = e.player.grounded && Math.abs(e.player.x - lastX) < 0.5 ? still + 1 : 0;
+        lastX = e.player.x;
+        const jump = hop === 0 && still >= 6;
+        if (jump) hop = 12;
+        press(e, { right: true, jump, release: hop === 6 }, { safe: true }, false);
+        if (hop > 0) hop--;
+        n++;
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }), pressFrame.toString());
+    if (walked.none) throw new Error(`no Skip tips button in 90 s of game time (x ${walked.x}, ${walked.taps} cards tapped)`);
+    console.log(`  Dot's first tip (${tag}): game frame ${walked.n}, x ${walked.x}, ${walked.taps} card${walked.taps === 1 ? '' : 's'} tapped: "${walked.tip}"`);
+    // (the Skip is faded and lets touches through for its first 1.2 s, a real-time timer: judged once it is armed)
+    await page.locator('.dg-skip:not(.unarmed)').first().waitFor({ state: 'attached', timeout: 10000 });
+    await settle(300);
     scope = '.dg-root';
     await judge("play: Dot's first tip");
     scope = '';

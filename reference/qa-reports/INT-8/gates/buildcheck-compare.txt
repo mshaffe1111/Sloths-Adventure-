@@ -1,0 +1,34 @@
+buildcheck alone, interleaved, this container (INT-8, 12:16 PM)
+== 007f4421 load 1.18 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 71 ms, p95 185 ms, max 192 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 56 ms, p95 104 ms, max 117 ms (30 builds, CPU x4)
+== 2840b63c load 1.15 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 77 ms, p95 140 ms, max 218 ms (30 builds, CPU x4)
+  easy: p50 52 ms, p95 67 ms, max 87 ms (30 builds, CPU x4)
+== 595ada5d load 1.13 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 69 ms, p95 135 ms, max 138 ms (30 builds, CPU x4)
+  easy: p50 52 ms, p95 72 ms, max 77 ms (30 builds, CPU x4)
+== 007f4421 load 1.84 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 69 ms, p95 175 ms, max 260 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 48 ms, p95 62 ms, max 87 ms (30 builds, CPU x4)
+== 595ada5d load 1.71 12:16 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 66 ms, p95 168 ms, max 172 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 52 ms, p95 90 ms, max 103 ms (30 builds, CPU x4)
+-- round 3 (the lead 12:17 PM: each head at least twice, alternating)
+== 2840b63c load 1.55 12:17:09 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 65 ms, p95 122 ms, max 125 ms (30 builds, CPU x4)
+  easy: p50 55 ms, p95 87 ms, max 89 ms (30 builds, CPU x4)
+== 595ada5d load 1.58 12:17:17 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 74 ms, p95 181 ms, max 185 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 50 ms, p95 88 ms, max 105 ms (30 builds, CPU x4)
+== 007f4421 load 2.38 12:17:25 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 63 ms, p95 132 ms, max 157 ms (30 builds, CPU x4)
+  easy: p50 50 ms, p95 61 ms, max 68 ms (30 builds, CPU x4)

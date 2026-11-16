@@ -1,0 +1,6 @@
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump none (walk off): no catch; at f120 x 45710 y 1017 grounded true
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump 0 px before the lip: caught a vine at f13 x 45277 y 758
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump 10 px before the lip: caught a vine at f12 x 45266 y 755
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump 20 px before the lip: caught a vine at f11 x 45255 y 752
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump 30 px before the lip: caught a vine at f10 x 45245 y 749
+seed 3 w1-16-gorge: step top x 45199..45299 y 837; liana gl2 x 45364 362..782; jump 40 px before the lip: caught a vine at f10 x 45245 y 749

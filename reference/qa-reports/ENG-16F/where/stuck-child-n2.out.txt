@@ -1,0 +1,2 @@
+end shrine goal {"got":94,"need":94} rescues 1 t 495.3 at 48060 838 stageW 48395
+{"x":36656,"y":808,"t":370.4,"dur":20,"what":"a 53 px waist-high step ahead","step":53,"dip":null,"puzzle":false,"rescued":true}

@@ -1,0 +1,7 @@
+castBots 1-2, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 6/6; under the floor 1; time median 122 s (min 118.8); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 6/6; under the floor 2; time median 122.6 s (min 118.3); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 4/6; under the floor 0; time median 366.4 s (min 347.1); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 1,2)
+middle normal PASS 6/6; under the floor 0; time median 165 s (min 152.8); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 6/6; under the floor 0; time median 145.7 s (min 137.4); hits 0 lives 1 (pit 1); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0

@@ -208,10 +208,13 @@ test('Play pressed before the list is in memory: the draw is owed to the build, 
     const st = generateStage(cfg, 'normal') as unknown as { gen2: { seed: number } };
     const o = JSON.parse(localStorage.getItem(ORDER_KEY)!);
     assert.equal(o.i, 1, 'one entry of the order is played');
-    assert.equal(st.gen2.seed, provenSeeds('1-1')[o.order[0]], "the order's first entry");
-    assert.equal(play11Seed(9), st.gen2.seed, 'kept for the play');
+    // (the entry's listed replay: a seed the list rerolled builds under its reroll's seed; POLISH-9b, the drawn entry 28634 is listed with
+    // its reroll 28955058 since POLISH-7's relist)
+    const entry = provenSeeds('1-1')[o.order[0]];
+    assert.equal(st.gen2.seed, provenPlan('1-1', entry)!.seed, "the order's first entry");
+    assert.equal(play11Seed(9), entry, 'kept for the play (the list seed)');
     // (planted: without the owed draw the build would fall to the layout variant's seed)
-    assert.notEqual(provenSeedFor('1-1', 9 - 1), st.gen2.seed);
+    assert.notEqual(provenSeedFor('1-1', 9 - 1), entry);
   } finally { undo(); clearPlay11(); }
 });
 

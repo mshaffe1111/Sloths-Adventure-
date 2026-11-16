@@ -211,7 +211,7 @@ export interface Perch {
   placed?: boolean;
 }
 
-/** hand-placed perches per stage ('1-6': [{ x, y }]), for spots the automatic choice gets wrong */
+/** hand-placed perches per stage (stage id: [{ x, y }]), for spots the automatic choice gets wrong */
 const PERCH_OVERRIDES: Record<string, Perch[]> = {};
 export function addPerchOverride(stageId: string, p: Perch): void {
   (PERCH_OVERRIDES[stageId] ??= []).push({ ...p, placed: true });

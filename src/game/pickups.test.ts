@@ -4,6 +4,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { PICKUP_APART, SAFE_APPROACH, validateStage } from './levelCheck.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
+import { isKitSweeper } from './gen2/stillLay.ts';
 
 const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair');
 
@@ -66,14 +67,46 @@ test('no animal patrols within the clear approach of the start, a flag or the ex
   for (const l of levels) {
     setLayoutVariant(null);
     const s = generateStage(l);
-    const spots = [{ x: s.spawnX, y: s.spawnY }, ...(s.checkpoints ?? []), { x: s.exitTotemX, y: s.exitTotemY }];
+    const spots = [{ x: s.spawnX, y: s.spawnY, flag: false }, ...(s.checkpoints ?? []).map((c) => ({ x: c.x, y: c.y, flag: true })), { x: s.exitTotemX, y: s.exitTotemY, flag: false }];
     for (const e of s.enemies) {
+      // (a kit sweeper, castWatches: by the stretch its eye crosses, against the start and the shrine; a flag is fair, the respawn stands
+      // it down for a whole calm, eagleKit.test "back at a flag inside its stretch")
+      const swept = isKitSweeper(e);
       for (const sp of spots) {
+        if (swept && sp.flag) continue;
         if (Math.abs(e.y - sp.y) >= 400) continue;
-        const d = e.type === 'eagle' ? Math.abs(e.x - sp.x) : Math.max(0, e.patrolMinX - sp.x, sp.x - e.patrolMaxX);
-        if (d < (e.type === 'eagle' ? 300 : SAFE_APPROACH)) bad.push(`${l.id}: ${e.type} #${e.id} is ${Math.round(d)} px from a safe spot`);
+        const d = e.type === 'eagle' && !swept ? Math.abs(e.x - sp.x) : Math.max(0, e.patrolMinX - sp.x, sp.x - e.patrolMaxX);
+        if (d < (e.type === 'eagle' && !swept ? 300 : SAFE_APPROACH)) bad.push(`${l.id}: ${e.type} #${e.id} is ${Math.round(d)} px from a safe spot`);
       }
     }
   }
   assert.deepEqual(bad, []);
+});
+
+test('the validator judges a kit sweeper by the stretch its eye crosses: never over the start or the shrine; a flag in it is fair', () => {
+  // (a sweeper laid as castWatches lays one: x at its stretch's start, its stretch [patrolMinX, patrolMaxX], its own calm)
+  const l = levels.find((x) => x.id === '2-2')!;
+  setLayoutVariant(null);
+  const base = generateStage(l);
+  assert.equal(validateStage(base).ok, true);
+  const flag = (base.checkpoints ?? [])[0];
+  assert.ok(flag, '2-2 has a flag');
+  const sweeper = (x0: number, x1: number, y: number, o: Partial<GeneratedStage['enemies'][number]> = {}) => ({
+    id: 99100, type: 'eagle', x: x0, y: y - 220, vx: 0, vy: 0, width: 58, height: 42, hp: 1, maxHp: 1, facing: 1, patrolMinX: x0, patrolMaxX: x1,
+    attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, kitCool: 5.4, ...o,
+  }) as GeneratedStage['enemies'][number];
+  const errs = (e: GeneratedStage['enemies'][number]) => {
+    const st = JSON.parse(JSON.stringify(base)) as GeneratedStage;
+    st.enemies.push(e);
+    return validateStage(st).errors.filter((m) => /#99100 stands too close/.test(m));
+  };
+  // a flag in the MIDDLE of a long stretch, 600 px from where it was laid: the old reading (its laid x, 300 px) saw nothing; it is fair
+  // only by the respawn's stand-down, which eagleKit.test proves
+  assert.deepEqual(errs(sweeper(flag.x - 600, flag.x + 600, flag.y)), [], 'a flag inside its stretch');
+  // planted: the same stretch over the START: its pass can be called at once (the cast's first cool is 0), so it is refused
+  assert.equal(errs(sweeper(base.spawnX - 100, base.spawnX + 1200, base.spawnY)).length, 1, 'over the start');
+  assert.equal(errs(sweeper(base.spawnX + 150, base.spawnX + 1200, base.spawnY)).length, 1, 'within the approach of the start');
+  assert.equal(errs(sweeper(base.exitTotemX - 900, base.exitTotemX + 40, base.exitTotemY)).length, 1, 'over the shrine');
+  // (and the engine's own eagle, no kit calm, is still judged where it hangs: 250 px from a flag is too close)
+  assert.equal(errs(sweeper(flag.x + 250, flag.x + 250, flag.y + 220, { kitCool: undefined })).length, 1, 'an engine eagle by a flag');
 });

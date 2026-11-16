@@ -1,0 +1,383 @@
+TAP version 13
+# Subtest: outside a QA build there is no feel room: no config, and its id builds nothing of it
+ok 1 - outside a QA build there is no feel room: no config, and its id builds nothing of it
+  ---
+  duration_ms: 483.500207
+  type: 'test'
+  ...
+# Subtest: the room: an even field, a mixed field with one gap he must jump, a cluster vine; sound floor, nothing that hurts, no door
+ok 2 - the room: an even field, a mixed field with one gap he must jump, a cluster vine; sound floor, nothing that hurts, no door
+  ---
+  duration_ms: 7.328787
+  type: 'test'
+  ...
+# Subtest: Matt's rule by touch: toward a vine in reach, both hands; again, he lets go of the old; at the field's edge a held push hops off
+ok 3 - Matt's rule by touch: toward a vine in reach, both hands; again, he lets go of the old; at the field's edge a held push hops off
+  ---
+  duration_ms: 106.091104
+  type: 'test'
+  ...
+# Subtest: the 110 px gap is out of reach: a push there takes nothing, a jump across catches the next vine
+ok 4 - the 110 px gap is out of reach: a push there takes nothing, a jump across catches the next vine
+  ---
+  duration_ms: 30.489211
+  type: 'test'
+  ...
+# Subtest: the speeds on the stopwatch: up one hand 220 px/s, two hands 1.6x; the slide down 2x, then 1.6x by the sign; two hands down slow
+ok 5 - the speeds on the stopwatch: up one hand 220 px/s, two hands 1.6x; the slide down 2x, then 1.6x by the sign; two hands down slow
+  ---
+  duration_ms: 203.038681
+  type: 'test'
+  ...
+# Subtest: pushing the cluster: climbing up under it pushes it up its vine, slowly; at the top it tears free and falls
+ok 6 - pushing the cluster: climbing up under it pushes it up its vine, slowly; at the top it tears free and falls
+  ---
+  duration_ms: 56.613781
+  type: 'test'
+  ...
+# Subtest: stepping off a bough to the floor costs nothing (the engine’s own loseLife)
+ok 7 - stepping off a bough to the floor costs nothing (the engine’s own loseLife)
+  ---
+  duration_ms: 28.431293
+  type: 'test'
+  ...
+# Subtest: pods: on a podded vine he is knocked to the floor within a beat (counted, no heart); a vine over is safe; two hands across one are not
+ok 8 - pods: on a podded vine he is knocked to the floor within a beat (counted, no heart); a vine over is safe; two hands across one are not
+  ---
+  duration_ms: 160.743048
+  type: 'test'
+  ...
+# Subtest: a gate: shut, its bough is no footing and the climb stops at the top; the cluster pushed free springs it open and he vaults on
+ok 9 - a gate: shut, its bough is no footing and the climb stops at the top; the cluster pushed free springs it open and he vaults on
+  ---
+  duration_ms: 86.815011
+  type: 'test'
+  ...
+# Subtest: a gate of two lifts a notch for the first cluster and opens on the second; a freed cluster lands on the floor, never on him
+ok 10 - a gate of two lifts a notch for the first cluster and opens on the second; a freed cluster lands on the floor, never on him
+  ---
+  duration_ms: 20.486064
+  type: 'test'
+  ...
+# Subtest: the bots' fig step (tools/inspect/figPush.ts): from under a shut gate of two, pods falling, he frees both and stands on the bough
+ok 11 - the bots' fig step (tools/inspect/figPush.ts): from under a shut gate of two, pods falling, he frees both and stands on the bough
+  ---
+  duration_ms: 84.637112
+  type: 'test'
+  ...
+# Subtest: the sign's lettering is baked once, baked again when the phone takes its canvas back (LESSONS D6) and when the font arrives
+ok 12 - the sign's lettering is baked once, baked again when the phone takes its canvas back (LESSONS D6) and when the font arrives
+  ---
+  duration_ms: 5.060549
+  type: 'test'
+  ...
+# Subtest: the adult (Normal): on flat ground he walks, never hops, and never "stops dead"
+ok 13 - the adult (Normal): on flat ground he walks, never hops, and never "stops dead"
+  ---
+  duration_ms: 1321.162068
+  type: 'test'
+  ...
+# Subtest: the adult (Normal): at a ledge's end he takes off within edgeAim of it, once, and gets across
+ok 14 - the adult (Normal): at a ledge's end he takes off within edgeAim of it, once, and gets across
+  ---
+  duration_ms: 943.596381
+  type: 'test'
+  ...
+# Subtest: the adult (Normal): he stops dead only where something really blocks him, and that is where he jumps
+ok 15 - the adult (Normal): he stops dead only where something really blocks him, and that is where he jumps
+  ---
+  duration_ms: 412.318453
+  type: 'test'
+  ...
+# Subtest: the kid (Easy): on flat ground he walks, never hops, and never "stops dead"
+ok 16 - the kid (Easy): on flat ground he walks, never hops, and never "stops dead"
+  ---
+  duration_ms: 493.313495
+  type: 'test'
+  ...
+# Subtest: the kid (Easy): at a ledge's end he takes off within edgeAim of it, once, and gets across
+ok 17 - the kid (Easy): at a ledge's end he takes off within edgeAim of it, once, and gets across
+  ---
+  duration_ms: 1024.305529
+  type: 'test'
+  ...
+# Subtest: the kid (Easy): he stops dead only where something really blocks him, and that is where he jumps
+ok 18 - the kid (Easy): he stops dead only where something really blocks him, and that is where he jumps
+  ---
+  duration_ms: 463.98169
+  type: 'test'
+  ...
+# Subtest: a climb he keeps falling back down: after the third fall from the same spot he is put past it, not left looping to the cap
+ok 19 - a climb he keeps falling back down: after the third fall from the same spot he is put past it, not left looping to the cap
+  ---
+  duration_ms: 1979.400995
+  type: 'test'
+  ...
+# Subtest: put past a puzzle room he goes on from there, not back into it: 6-3's seesaw reaches the shrine (the kid, every roll)
+ok 20 - put past a puzzle room he goes on from there, not back into it: 6-3's seesaw reaches the shrine (the kid, every roll)
+  ---
+  duration_ms: 8636.336511
+  type: 'test'
+  ...
+# Subtest: a room starts again only when he has fallen back down into it, never while he stands on its top (4-1's knot pulley lift)
+ok 21 - a room starts again only when he has fallen back down into it, never while he stands on its top (4-1's knot pulley lift)
+  ---
+  duration_ms: 5864.924506
+  type: 'test'
+  ...
+# Subtest: a rescue from no further on than the last one puts him further on, never back on the spot he just failed
+ok 22 - a rescue from no further on than the last one puts him further on, never back on the spot he just failed
+  ---
+  duration_ms: 101.663945
+  type: 'test'
+  ...
+# Subtest: 5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)
+ok 23 - 5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)
+  ---
+  duration_ms: 7338.523901
+  type: 'test'
+  ...
+# Subtest: LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid bot's median
+ok 24 - LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid bot's median
+  ---
+  duration_ms: 1.148452
+  type: 'test'
+  ...
+# Subtest: LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot's median)
+ok 25 - LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot's median)
+  ---
+  duration_ms: 11281.427448
+  type: 'test'
+  ...
+# Subtest: the limited bot: without the double (no second jump made) or the bounce, it stops short on 1-6, where the full bot finishes
+ok 26 - the limited bot: without the double (no second jump made) or the bounce, it stops short on 1-6, where the full bot finishes
+  ---
+  duration_ms: 12124.861826
+  type: 'test'
+  ...
+# Subtest: 6-8: hand-built, an ascent; every roll can be climbed on Normal and on Easy (a 70% hold), inside the column, about 2:10 quick
+ok 27 - 6-8: hand-built, an ascent; every roll can be climbed on Normal and on Easy (a 70% hold), inside the column, about 2:10 quick
+  ---
+  duration_ms: 3758.123482
+  type: 'test'
+  ...
+# Subtest: 6-8: every liana and the roots are the way on (take one away and the top cannot be reached); the catches are never a short cut
+ok 28 - 6-8: every liana and the roots are the way on (take one away and the top cannot be reached); the catches are never a short cut
+  ---
+  duration_ms: 1107.768046
+  type: 'test'
+  ...
+# Subtest: 6-8: every liana's let-go onto its perch gives at least 167 ms on Normal and 300 ms on Easy, at the swing the stage gives it
+ok 29 - 6-8: every liana's let-go onto its perch gives at least 167 ms on Normal and 300 ms on Easy, at the swing the stage gives it
+  ---
+  duration_ms: 288.12222
+  type: 'test'
+  ...
+# Subtest: 6-8: the animals are World 6's frog and tayra, on the roots past the first flag, clear of every take-off, landing, root and flag
+ok 30 - 6-8: the animals are World 6's frog and tayra, on the roots past the first flag, clear of every take-off, landing, root and flag
+  ---
+  duration_ms: 65.892371
+  type: 'test'
+  ...
+# Subtest: 6-8: Dot says the water line on the mudflat before any water can reach him; the stage lines are short; the tide plan fits the stage
+ok 31 - 6-8: Dot says the water line on the mudflat before any water can reach him; the stage lines are short; the tide plan fits the stage
+  ---
+  duration_ms: 73.549098
+  type: 'test'
+  ...
+# Subtest: 6-8: the tide never comes within 120 px of a careful player (Normal: half the quick pace; Easy: a third), on every roll
+ok 32 - 6-8: the tide never comes within 120 px of a careful player (Normal: half the quick pace; Easy: a third), on every roll
+  ---
+  duration_ms: 105.940401
+  type: 'test'
+  ...
+# Subtest: 6-8: the tide by its rules: still until he is up the first root, a churn, rises, holds at a flag, catches a player who stops long, starts again under his flag
+ok 33 - 6-8: the tide by its rules: still until he is up the first root, a churn, rises, holds at a flag, catches a player who stops long, starts again under his flag
+  ---
+  duration_ms: 1.207595
+  type: 'test'
+  ...
+# Subtest: 6-8 in the real engine: the water is the stage's, still on the mudflat, turns up the first root with Dot's line, holds at a flag and drowns a long stop
+ok 34 - 6-8 in the real engine: the water is the stage's, still on the mudflat, turns up the first root with Dot's line, holds at a flag and drowns a long stop
+  ---
+  duration_ms: 634.811247
+  type: 'test'
+  ...
+# Subtest: 6-8 in the real engine: the way up works as the game plays it (each root climbed, each hop landed), on two rolls
+ok 35 - 6-8 in the real engine: the way up works as the game plays it (each root climbed, each hop landed), on two rolls
+  ---
+  duration_ms: 541.851626
+  type: 'test'
+  ...
+# Subtest: 6-8 first-timers: nothing hurts before the water line; lives lost stay inside World 6's band (at most 3 a minute)
+ok 36 - 6-8 first-timers: nothing hurts before the water line; lives lost stay inside World 6's band (at most 3 a minute)
+  ---
+  duration_ms: 2700.29969
+  type: 'test'
+  ...
+# Subtest: 6-8 dressing: Matt's World 6 hides and arches stand on the wide shelves, clear of roots, flags and the fern; the sheet's frames match its .json
+ok 37 - 6-8 dressing: Matt's World 6 hides and arches stand on the wide shelves, clear of roots, flags and the fern; the sheet's frames match its .json
+  ---
+  duration_ms: 144.602462
+  type: 'test'
+  ...
+# Subtest: 6-8 ledges: painted in Matt's World 6 pieces, mixed, so ledges near each other differ; a painted ledge is drawn only by its look
+ok 38 - 6-8 ledges: painted in Matt's World 6 pieces, mixed, so ledges near each other differ; a painted ledge is drawn only by its look
+  ---
+  duration_ms: 123.151685
+  type: 'test'
+  ...
+# Subtest: 6-8 nothing floats (the lead's review, 2026-10-29): every stretch of every ledge is held up, by a stump's, arch's or den's roots on the ledge under it or on lashed stilts, a climbing root, a stilt or a rope
+ok 39 - 6-8 nothing floats (the lead's review, 2026-10-29): every stretch of every ledge is held up, by a stump's, arch's or den's roots on the ledge under it or on lashed stilts, a climbing root, a stilt or a rope
+  ---
+  duration_ms: 117.891467
+  type: 'test'
+  ...
+# Subtest: 6-8 keeps World 6's story find: the book in a Hush Fern on the rest shelf, away from its flag, and the climb still checks
+ok 40 - 6-8 keeps World 6's story find: the book in a Hush Fern on the rest shelf, away from its flag, and the climb still checks
+  ---
+  duration_ms: 588.655649
+  type: 'test'
+  ...
+# Subtest: 6-8 the crown: the top of the canopy, the whole width, the shrine at its far end; the reveal of the ruins and the wider view are set
+ok 41 - 6-8 the crown: the top of the canopy, the whole width, the shrine at its far end; the reveal of the ruins and the wider view are set
+  ---
+  duration_ms: 121.821495
+  type: 'test'
+  ...
+# Subtest: 6-8 the tide comes in surges that swell and ease smoothly and average out to its own rise (so the careful-player margins hold)
+ok 42 - 6-8 the tide comes in surges that swell and ease smoothly and average out to its own rise (so the careful-player margins hold)
+  ---
+  duration_ms: 0.513309
+  type: 'test'
+  ...
+# Subtest: 6-8 in the real engine: on the crown he has made it: the tide drains away below him, and the view pulls back for the ruins
+ok 43 - 6-8 in the real engine: on the crown he has made it: the tide drains away below him, and the view pulls back for the ruins
+  ---
+  duration_ms: 36.476922
+  type: 'test'
+  ...
+# Subtest: score: a gentle stage is 0, a brutal one 100, on fixed anchors
+ok 44 - score: a gentle stage is 0, a brutal one 100, on fixed anchors
+  ---
+  duration_ms: 1.531276
+  type: 'test'
+  ...
+# Subtest: score: each part moves it the right way
+ok 45 - score: each part moves it the right way
+  ---
+  duration_ms: 0.416102
+  type: 'test'
+  ...
+# Subtest: score: the hardest jumps are the mean miss of the worst three
+ok 46 - score: the hardest jumps are the mean miss of the worst three
+  ---
+  duration_ms: 0.359035
+  type: 'test'
+  ...
+# Subtest: score: without the first-timer, only the inspector parts count (weights spread over them)
+ok 47 - score: without the first-timer, only the inspector parts count (weights spread over them)
+  ---
+  duration_ms: 0.844549
+  type: 'test'
+  ...
+# Subtest: bands: each world is the spread of its stages, the middle its median
+ok 48 - bands: each world is the spread of its stages, the middle its median
+  ---
+  duration_ms: 0.400656
+  type: 'test'
+  ...
+# Subtest: flags: a world whose band sits below the one before
+ok 49 - flags: a world whose band sits below the one before
+  ---
+  duration_ms: 0.649772
+  type: 'test'
+  ...
+# Subtest: flags: World 2 stage 8 as hard as a World 4 stage is above World 3's middle; a stage below the world before's middle
+ok 50 - flags: World 2 stage 8 as hard as a World 4 stage is above World 3's middle; a stage below the world before's middle
+  ---
+  duration_ms: 0.68066
+  type: 'test'
+  ...
+# Subtest: flags: Easy and Normal bands are judged apart
+ok 51 - flags: Easy and Normal bands are judged apart
+  ---
+  duration_ms: 0.317943
+  type: 'test'
+  ...
+# Subtest: Gemini's floors: Normal 70% in Worlds 1-5, 50% in 6-10; Easy 85% everywhere
+ok 52 - Gemini's floors: Normal 70% in Worlds 1-5, 50% in 6-10; Easy 85% everywhere
+  ---
+  duration_ms: 0.737958
+  type: 'test'
+  ...
+# Subtest: chart: one column per world, a dot per stage and setting, out-of-band stages named
+ok 53 - chart: one column per world, a dot per stage and setting, out-of-band stages named
+  ---
+  duration_ms: 1.480302
+  type: 'test'
+  ...
+# Subtest: score: timing pressure (round 4, 2026-10-28) makes a safe but demanding stage score harder, and counts only when measured
+ok 54 - score: timing pressure (round 4, 2026-10-28) makes a safe but demanding stage score harder, and counts only when measured
+  ---
+  duration_ms: 0.428995
+  type: 'test'
+  ...
+# Subtest: gate (LV-2): a Normal world under its floor, or under the world before it, fails; Easy is not gated
+ok 55 - gate (LV-2): a Normal world under its floor, or under the world before it, fails; Easy is not gated
+  ---
+  duration_ms: 0.381065
+  type: 'test'
+  ...
+# Subtest: told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+ok 56 - told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+  ---
+  duration_ms: 213.965831
+  type: 'test'
+  ...
+# Subtest: a trap over no animal he passes (it is not worth using)
+ok 57 - a trap over no animal he passes (it is not worth using)
+  ---
+  duration_ms: 64.721844
+  type: 'test'
+  ...
+# Subtest: never told of traps, he does not use one (he knows nothing the stage has not told him)
+ok 58 - never told of traps, he does not use one (he knows nothing the stage has not told him)
+  ---
+  duration_ms: 47.78434
+  type: 'test'
+  ...
+# Subtest: coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+ok 59 - coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+  ---
+  duration_ms: 49.66057
+  type: 'test'
+  ...
+# Subtest: his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+ok 60 - his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+  ---
+  duration_ms: 48.142161
+  type: 'test'
+  ...
+# Subtest: (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+ok 61 - (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+  ---
+  duration_ms: 805.665311
+  type: 'test'
+  ...
+# Subtest: the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+ok 62 - the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+  ---
+  duration_ms: 963.153142
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29713.760203
+EXIT 0

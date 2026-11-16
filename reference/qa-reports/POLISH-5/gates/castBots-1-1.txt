@@ -1,0 +1,22 @@
+castBots 1-1, seeds 1-10; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 0/10; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 5: shrine rescued x1  (seeds 2,6,10,1,7)
+        fail 4: shrine rescued x2  (seeds 8,3,5,9)
+        fail 1: shrine rescued x3  (seeds 4)
+kid    easy   PASS 0/10; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 7: shrine rescued x1  (seeds 2,6,8,10,1,5,7)
+        fail 3: shrine rescued x2  (seeds 4,3,9)
+adult  normal PASS 0/10; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 5: shrine rescued x2  (seeds 4,8,1,5,7)
+        fail 3: shrine rescued x1  (seeds 2,6,10)
+        fail 2: shrine rescued x3  (seeds 3,9)
+adult  easy   PASS 0/10; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 5: shrine rescued x2  (seeds 2,4,3,5,9)
+        fail 5: shrine rescued x1  (seeds 6,8,10,1,7)
+child  normal PASS 9/10; under the floor 0; time median 481.7 s (min 415.8); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 2)
+child  easy   PASS 9/10; under the floor 0; time median 329.4 s (min 300.9); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 7)
+middle normal PASS 10/10; under the floor 0; time median 216.2 s (min 198.4); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 10/10; under the floor 0; time median 209.4 s (min 188.2); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 10/10; under the floor 0; time median 192.2 s (min 165); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0

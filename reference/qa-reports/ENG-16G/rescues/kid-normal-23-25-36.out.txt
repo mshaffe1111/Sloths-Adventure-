@@ -1,0 +1,6 @@
+kid normal seed 23: shrine, rescues 1, lives lost ?, hitBy {}, time 216.1
+  rescue at t 156.0 s (frame ~4681), x,y 34525,939: over a pit (no tagged piece under him); last 3 s: swinging 26/90 frames, grounded 11/90, x 34262..34525, y 636..951; last stuck note: t 145.2 in a dip 49 px deep, the way on is 145 px up
+kid normal seed 25: shrine, rescues 1, lives lost ?, hitBy {}, time 258.8
+  rescue at t 244.9 s (frame ~7348), x,y 44000,1074: over a pit (no tagged piece under him); last 3 s: swinging 0/90 frames, grounded 42/90, x 43880..44199, y 506..1074; last stuck note: t 244.9 fell into this pit 3 times (its far wall 202 px up)
+kid normal seed 36: shrine, rescues 1, lives lost ?, hitBy {}, time 273.7
+  rescue at t 246.4 s (frame ~7391), x,y 44311,1037: over a pit (no tagged piece under him); last 3 s: swinging 0/90 frames, grounded 36/90, x 43954..44311, y 771..1037; last stuck note: t 246.4 fell into this pit 3 times (its far wall 196 px up)

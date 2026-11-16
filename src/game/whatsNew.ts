@@ -20,6 +20,21 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.9.9',
+    date: '2026-11-15',
+    title: 'Down to the river',
+    items: [
+      'First Lianas is rebuilt: new swings, and petals that show me where to jump.',
+      'A Very Good Bush: I hide in the green, and only move while the eagle looks away.',
+      'Run! The old limb gives way behind me now, all the way to the far tree.',
+      'World 2 begins! New stage, Down to the River: the trees stop, and the river is my road.',
+      'Listen for the knock: a drifting log is coming to carry me.',
+      'Shallow water just splashes me back. Deep water costs a heart, so I stay on the logs.',
+      'At the end, a whole village of sloths lives right in the riverbank.',
+      'New stage, Petals for the Crown: lily pads sink if I stand, then come back up.',
+    ],
+  },
+  {
     version: '0.9.8',
     date: '2026-11-13',
     title: 'Two new stages',

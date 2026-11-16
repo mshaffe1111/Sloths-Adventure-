@@ -1,0 +1,6 @@
+rescueXs 44632 44532
+{"x":43914,"y":973,"t":236.2,"dur":8.7,"what":"a 225 px wall ahead, an open drop ahead, the way on is 177 px up","step":225,"dip":null,"puzzle":false,"rescued":false}
+{"x":44872,"y":701,"t":251.3,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"x":45670,"y":831,"t":260.3,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+LOOP {"x":3106,"y":915,"n":4,"doubles":4,"deaths":0,"what":"a 225 px wall ahead, an open drop ahead, the way on is 111 px up","step":225,"dip":null,"puzzle":false}
+LOOP {"x":32550,"y":979,"n":2,"doubles":2,"deaths":0,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 145 px up","step":225,"dip":49,"puzzle":false}

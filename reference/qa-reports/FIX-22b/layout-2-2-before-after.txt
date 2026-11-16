@@ -1,0 +1,6 @@
+seed 1 normal 115 platforms 79eedd04dabe
+seed 1 easy 115 platforms e1c570c2bb98
+seed 2 normal 115 platforms bfde5570710e
+seed 2 easy 115 platforms e7ba3633c06a
+seed 3 normal 115 platforms 9a14707cd1a0
+seed 3 easy 115 platforms e9b4990a76c1

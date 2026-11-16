@@ -58,16 +58,44 @@ for (const s of ['normal', 'easy'] as const) {
   });
 }
 
-// (fresh 1-1 seeds whose search, before the repair, laid a dead-zone petal row or an idle mushroom on its returned roll; on the base the
-// yield probe found 37 of 108 clean-but-for-these rolls, Y2/REPORT.md. Every roll the search returns clean carries neither)
-test('fresh 1-1 rolls: no roll the search returns clean has a dead-zone petal or an idle mushroom, and the repair is what cleared them', () => {
+// (fresh 1-1 rolls: every roll the search returns clean carries no dead-zone petal and no idle mushroom. The old existence proof (seeds
+// from 50001 until the repair cleared one) went red once 1-1's sections stopped needing it (0 of 100 by ENG-PETAL): the repair's proof is
+// now the PLANTED roll below, never a wider seed range (INT-10c, the lead agreed)
+test('fresh 1-1 rolls: no roll the search returns clean has a dead-zone petal or an idle mushroom (seeds 50001-50100)', () => {
   const cfg = { ...generateAllLevels().find((l) => l.id === '1-1')!, unlocked: true };
-  let repaired = 0;
-  for (const seed of [50004, 50018, 50031, 50041]) for (const difficulty of ['normal', 'easy'] as const) {
-    const st = buildGen2Stage({ config: cfg, kit: w1World(), seed, difficulty });
-    assert.deepEqual(deadZones(st.platforms, st.collectibles, difficulty), [], `seed ${seed} ${difficulty}`);
-    assert.deepEqual(purposelessBounces(st.platforms, st.collectibles, difficulty), [], `seed ${seed} ${difficulty}`);
-    if (st.gen2.repairs.some((r) => /^landings:/.test(r.note))) repaired++;
+  for (let seed = 50001; seed <= 50100; seed++) {
+    const st = buildGen2Stage({ config: cfg, kit: w1World(), seed, difficulty: 'normal' });
+    if (st.gen2.errors?.length) continue; // (a refused roll is never played: the rule is the clean one's)
+    assert.deepEqual(deadZones(st.platforms, st.collectibles, 'normal'), [], `seed ${seed}`);
+    assert.deepEqual(purposelessBounces(st.platforms, st.collectibles, 'normal'), [], `seed ${seed}`);
   }
-  assert.ok(repaired > 0, 'no roll was repaired: the repair never ran');
+});
+
+// (planted on a real roll: 1-1 seed 50001 Normal; every piece where a petal would be a dead zone is found by deadZones itself, a petal is
+// put on each in turn, and the repair the pipeline runs (pipeline.ts checkAndRepair: repairLandings inside the petal's own section) moves
+// it to a piece a clean flight reaches in that section, and nothing is left in a dead zone)
+test('planted on a real 1-1 roll: a petal put on a dead-zone piece is moved by the repair to a clean piece in its own section', () => {
+  const cfg = { ...generateAllLevels().find((l) => l.id === '1-1')!, unlocked: true };
+  const st = buildGen2Stage({ config: cfg, kit: w1World(), seed: 50001, difficulty: 'normal' });
+  assert.deepEqual(st.gen2.errors ?? [], []);
+  const secs = (st.gen2 as unknown as { sections: Array<{ x0: number; x1: number; room?: unknown }> }).sections;
+  const within = (x: number): readonly [number, number] | undefined => {
+    const q = secs.find((s) => x >= s.x0 && x <= s.x1);
+    return q && !q.room ? [q.x0, q.x1] : undefined;
+  };
+  const on = (p: LandPiece): LandPickup => petal(p.x + p.width / 2, p.y);
+  const dead = st.platforms.filter((p) => p.type === 'solid' && p.width >= 40 && deadZones(st.platforms, [...st.collectibles, on(p)], 'normal').includes(p));
+  assert.ok(dead.length > 0, 'the roll has a piece a petal would be a dead zone on');
+  const L = new Landings(st.platforms, 'normal');
+  for (const p of dead) {
+    const pk: LandPickup[] = [...st.collectibles.map((c) => ({ ...c })), on(p)];
+    assert.deepEqual(deadZones(st.platforms, pk, 'normal'), [p], 'red before the repair: the verdict refuses it');
+    const r = repairLandings(st.platforms, pk, 'normal', within);
+    assert.equal(r.moved, 1);
+    assert.deepEqual(deadZones(st.platforms, pk, 'normal'), []);
+    const c = pk.at(-1)!, to = pickupPiece(c, st.platforms)!;
+    assert.ok(to && to !== p && L.cleanWay(to), `moved onto a piece a clean flight reaches (${Math.round(c.x)})`);
+    const [a, b] = within(p.x + p.width / 2)!;
+    assert.ok(c.x >= a && c.x <= b, 'inside its own section');
+  }
 });

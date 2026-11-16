@@ -1,0 +1,46 @@
+lockall --layouts 2 --check lock-main.json (main 73e7bed0) on t-int-11 cb141f8b8; run 4:30-4:37 PM ET
+1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-3 2-4 2-5 2-6 2-7 2-8 2-9 2-10 3-1 3-2 3-3 3-4 3-5 3-6 3-7 3-8 3-9 3-10 4-1 4-2 4-3 4-4 4-5 4-D 4-6 4-7 4-8 4-9 4-10 5-M 5-1 5-2 5-3 5-4 5-5 5-6 5-7 5-8 5-9 5-10 6-1 6-2 6-3 6-4 6-5 6-6 6-7 6-8 6-9 6-10 7-1 7-2 7-3 7-4 7-5 7-6 7-7 7-8 7-9 7-10 8-1 8-2 8-3 8-4 8-5 8-6 8-7 8-8 8-9 8-10 9-1 9-2 9-3 9-4 9-5 9-6 9-7 9-8 9-9 9-10 10-1 10-2 10-3 10-4 10-5 10-6 10-7 10-8 10-9 10-10 
+lock: 61/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 2-1, 2-2, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9
+  1-1: size, platforms, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, heartFalls, gen2, proto.hints, proto.beats, proto.mixDress, proto.dress
+  1-2: size, platforms, collectibles, easyGoal, normalGoal, proto.hints, proto.dress, gen2
+  1-3: platforms, collectibles, proto.hints
+  1-4: size, platforms, vines, collectibles, spawnY, exitTotemX, checkpoints, gen2, clusters, gates, pods, clocks, proto.hints, proto.beats, proto.kitDecor, proto.dress
+  1-5: platforms, collectibles, proto.hints
+  1-6: size, trees, platforms, vines, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, heartFalls, gen2, clocks, easyGoal, normalGoal, easyToday, proto.hints, proto.covers, proto.beats, proto.gen2, proto.dress, kit, waterY, waterSigns, proto.movedPickups, proto.kitDecor
+  1-7: size, trees, platforms, vines, ropes, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, gen2, proto.hints, proto.covers, proto.beats, proto.bushes, proto.gen2, proto.cast, proto.dress, kit, waterY, proto.movedPickups, proto.watch, proto.kitDecor
+  1-8: size, trees, platforms, vines, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, gen2, groundLook, chase, rolling, proto.hints, proto.beats, proto.findSpot, proto.gen2, proto.bushes, proto.cast, proto.invDress, proto.dress, proto.movedPickups, proto.chase
+  2-1: size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress, waterSigns, proto.movedPickups
+  2-2: size, platforms, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, waterY, gen2, rivers, easyGoal, normalGoal, easyToday, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress, kit, waterSigns, proto.movedPickups, trees, vines
+  3-8: proto.thorns
+  5-4: size, platforms, vines, enemies, collectibles, exitTotemX, checkpoints, w54info, proto.hints, proto.beats, proto.w5, proto.dress
+  5-7: collectibles
+  5-9: collectibles, proto.hints
+  6-1: platforms, collectibles, size, vines, enemies, exitTotemX, checkpoints, gen2, proto.hints, proto.beats, proto.gen2, proto.dress
+  6-2: collectibles, proto.hints
+  6-3: collectibles, size, platforms, vines, enemies, exitTotemX, checkpoints, gen2, proto.hints, proto.beats, proto.watch, proto.bushes, proto.gen2, proto.dress
+  6-4: collectibles, proto.hints
+  6-5: collectibles, proto.hints
+  6-6: platforms, collectibles, proto.hints, size, vines, enemies, exitTotemX, checkpoints, zones, gen2, proto.beats, proto.gen2, proto.dress
+  6-7: platforms, collectibles, kit, size, vines, enemies, exitTotemX, checkpoints, gen2, proto.hints, proto.beats, proto.watch, proto.bushes, proto.gen2, proto.dress
+  6-8: trees, platforms, vines, enemies, collectibles, checkpoints, stilt68, proto.hints, proto.beats, proto.stilt, proto.stiltLedges, proto.dress, size, exitTotemX
+  6-9: collectibles, proto.hints
+  7-1: collectibles, proto.hints
+  7-3: collectibles, proto.hints, platforms
+  7-5: collectibles, proto.hints, size, platforms, vines, enemies, exitTotemX, checkpoints, zones, gen2, proto.beats, proto.gen2, proto.dress
+  7-6: collectibles
+  7-7: collectibles, proto.hints, platforms
+  7-9: collectibles, proto.hints, size, platforms, vines, enemies, exitTotemX, checkpoints, gen2, proto.beats, proto.gen2, proto.dress
+  8-1: platforms, collectibles, proto.hints
+  8-2: size, platforms, collectibles, easyGoal, normalGoal, proto.hints, easyToday
+  8-3: collectibles, platforms, size, vines, enemies, exitTotemX, checkpoints, zones, gen2, proto.beats, proto.gen2, proto.dress
+  8-4: size, trees, platforms, vines, collectibles, exitTotemX, checkpoints, zones, lantern84, proto.hints, proto.beats, proto.lantern, proto.dress
+  8-5: collectibles, platforms, proto.dress, size, vines, enemies, exitTotemX, checkpoints, zones, gen2, proto.beats, proto.gen2
+  8-6: platforms, collectibles, proto.hints
+  8-8: collectibles, proto.hints
+  8-9: collectibles, proto.hints
+  9-3: size, trees, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, zones, lanes, dress
+  9-4: size, trees, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, lanes, dress
+  10-3: size, trees, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, zones, lanes, dress
+  10-6: size, trees, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, zones, lanes, dress
+exit 1

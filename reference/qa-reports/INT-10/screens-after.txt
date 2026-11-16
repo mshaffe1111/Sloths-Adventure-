@@ -1,0 +1,7 @@
+1-1: 1.21 petals per upright screen, 27% of upright screens empty
+1-2: 1.03 petals per upright screen, 37% of upright screens empty
+1-3: 0.86 petals per upright screen, 51% of upright screens empty
+1-5: 1.04 petals per upright screen, 48% of upright screens empty
+1-6: 0.98 petals per upright screen, 34% of upright screens empty
+1-7: 0.44 petals per upright screen, 66% of upright screens empty
+1-8: 0.46 petals per upright screen, 62% of upright screens empty

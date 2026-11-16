@@ -15,6 +15,7 @@
  * animals for Easy's lower bar (budget.quota.check, which caps the goal here). So for them this leaves out the stones, the animal cut
  * and the longer tell (nothing is softened twice), and keeps what gen2 does not do: Easy's goal (`easyGoal`), the 70%-hold check, the flags and a heart at every flag.
  */
+import { withSetting } from './settingDials.ts';
 import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -265,8 +266,6 @@ export const FLAG_SPAN_MAX = 4000;
 export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readonly number[]): number {
   const kind = stage.config.objectiveType;
   if (kind === 'ascent' || kind === 'boss_lair' || stage.boss) return 0;
-  // (a chase's branch is whole again at every restart from a flag, chase.ts restartAt: it may hold one)
-  const chase = !!stage.proto?.chase;
   const cps = (stage.checkpoints ??= []);
   const marks = () => [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
   let m = marks();
@@ -283,7 +282,7 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
   for (const p of stage.platforms) if (reach.has(p.id)) frontier = Math.max(frontier, p.x + p.width);
   if (trail !== undefined) for (const p of stage.platforms) if (p.x > frontier && p.y <= trail && p.y >= trail - 25 && p.height >= 60) reach.add(p.id);
   // (World 2's islands are banks of three short pieces, 110-180 px each: a piece of 140 holds a flag)
-  const ledges = stage.platforms.filter((p) => (still(p) || (chase && p.chase && !p.broken)) && p.type === 'solid' && p.width >= 140 && reach.has(p.id));
+  const ledges = stage.platforms.filter((p) => still(p) && p.type === 'solid' && p.width >= 140 && reach.has(p.id));
   let added = 0;
   for (let guard = 0; guard < 40; guard++) {
     m = marks();
@@ -413,12 +412,14 @@ export function flagHeartsOwed(stage: Stage): boolean {
   return costsHere(stage) || !unshipped;
 }
 
-/** Easy's version of a built stage (the stage passed in is changed and returned) */
+/** Easy's version of a built stage (the stage passed in is changed and returned), judged on Easy's dials (settingDials.ts, R-165.251) */
 export function easyStage(stage: Stage): Stage {
+  return withSetting('easy', () => easyStageOn(stage));
+}
+function easyStageOn(stage: Stage): Stage {
   const kind = stage.config.objectiveType;
   if (kind === 'boss_lair' || stage.boss) return stage;
   const climb = kind === 'ascent';
-  const chase = !!stage.proto?.chase;
   // (a gen2 stage is Easy's already, from the pipeline: generateStage(config, 'easy'); its Normal build cannot be made Easy here)
   const gen2 = !!stage.gen2;
   if (gen2 && stage.gen2!.budget.difficulty !== 'easy') throw new Error(`easyStage: ${stage.config.id} is a gen2 stage built for Normal; build it with generateStage(config, 'easy')`);
@@ -443,9 +444,9 @@ export function easyStage(stage: Stage): Stage {
   // where it is at time t is where Normal's is at EASY_DRIFT x t), and the streaks with it
   if (!gen2) easyDrift(stage);
   // and every hop over still water lands on a wider bank (LV-5; gen2's EASY_LANDING, halved: the jump stays a jump)
-  if (!gen2 && !climb && !chase && stage.config.worldIndex <= 5) easyWaterLandings(stage);
+  if (!gen2 && !climb && stage.config.worldIndex <= 5) easyWaterLandings(stage);
   // far jumps
-  if (!climb && !chase && !gen2) stage.platforms.push(...easyStones(stage));
+  if (!climb && !gen2) stage.platforms.push(...easyStones(stage));
   // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the
   // next). A boulder only the full jump's walk rolls is also left where it stands: the way up behind it is walked while its fall still
   // pours (4-3), and only the full jump reached it
@@ -515,7 +516,7 @@ export function easyStage(stage: Stage): Stage {
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const next = () => cid++;
   const cps = (stage.checkpoints ??= []);
-  if (!climb && !chase) {
+  if (!climb) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
     const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
@@ -528,6 +529,8 @@ export function easyStage(stage: Stage): Stage {
         if (!flagLedge(stage, p, reach)) continue;
         const cx = p.x + p.width / 2;
         if (cx < x0 + 400 || cx > x1 - 400) continue;
+        // (never inside a laid chase's stretch: its flags are its restarts, on the forks only, gen2/chaseLay.ts)
+        if (stage.chase?.stretches.some((t) => cx > t.start && cx < t.end)) continue;
         if (!best || Math.abs(cx - want) < Math.abs(best.x + best.width / 2 - want)) best = p;
       }
       if (best) cps.push({ x: Math.round(best.x + best.width / 2), y: best.y, reached: false });

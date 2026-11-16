@@ -1,0 +1,14 @@
+castBots 1-7, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 38/40; under the floor 0; time median 197.7 s (min 183.3); hits 320 lives 10 (foe:eagle 330); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 2: shrine rescued x1  (seeds 15,32)
+kid    easy   PASS 39/40; under the floor 0; time median 189.5 s (min 176.4); hits 52 lives 0 (foe:eagle 52); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 1: shrine rescued x1  (seeds 29)
+adult  normal PASS 39/40; under the floor 0; time median 197.4 s (min 186.3); hits 94 lives 0 (foe:eagle 94); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 1: shrine rescued x1  (seeds 12)
+adult  easy   PASS 40/40; under the floor 0; time median 192.8 s (min 185.8); hits 39 lives 0 (foe:eagle 39); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+child  normal PASS 39/40; under the floor 0; time median 496.8 s (min 435); hits 108 lives 1 (foe:eagle 108, pit 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+        fail 1: shrine rescued x1  (seeds 17)
+child  easy   PASS 40/40; under the floor 0; time median 352.8 s (min 313.4); hits 37 lives 0 (foe:eagle 37); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+middle normal PASS 40/40; under the floor 0; time median 279.7 s (min 252.4); hits 78 lives 0 (foe:eagle 78); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+middle easy   PASS 40/40; under the floor 0; time median 244.1 s (min 228.3); hits 36 lives 0 (foe:eagle 36); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360
+expert normal PASS 40/40; under the floor 0; time median 242.3 s (min 223.3); hits 79 lives 0 (foe:eagle 79); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 360

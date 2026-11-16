@@ -1,0 +1,2 @@
+castBots 1-5, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+middle easy   PASS 6/6; under the floor 0; time median 176.7 s (min 172.9); hits 0 lives 0 (none); cleared stomp 3, punch 5; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 12

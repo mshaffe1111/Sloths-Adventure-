@@ -1,0 +1,15 @@
+seedlist 1-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-4: FAIL
+  1-4 seed 8 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 8 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 18 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 18 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 22 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 22 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 54 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 54 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 59 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 59 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 66 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 66 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+exit 1

@@ -1,0 +1,13 @@
+head 46a2e5dd (FIX-GATES a+b merged; 1-8 relisted by FIX-GATES), run 5:58-6:00 PM ET; child N rescues: s9 x11389 (stuck x10677 'a drop of 53 px ahead'), s17 x30772 (stuck x33951 'fell back down 8 times'), s25 x31012, s35 x30869
+castBots 1-8, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 40/40; under the floor 0; time median 141.5 s (min 138.7); hits 203 lives 0 (other 163, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+kid    easy   PASS 40/40; under the floor 0; time median 146.5 s (min 139.4); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  normal PASS 40/40; under the floor 0; time median 140.5 s (min 137.8); hits 200 lives 0 (other 160, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 144.4 s (min 140); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  normal PASS 36/40; under the floor 0; time median 315.2 s (min 286.7); hits 289 lives 33 (other 309, pit 8, foe:eagle 5); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+        fail 4: shrine rescued x1  (seeds 9,17,25,35)
+child  easy   PASS 40/40; under the floor 0; time median 234.9 s (min 214.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle normal PASS 40/40; under the floor 0; time median 195.1 s (min 178.7); hits 236 lives 16 (other 241, pit 8, foe:eagle 3); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 176.4 s (min 166.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 173.8 s (min 162.3); hits 211 lives 10 (other 214, pit 6, foe:eagle 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+exit 0

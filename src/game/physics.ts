@@ -433,6 +433,14 @@ export const reachJumpHeld = (dy: number, dbl: boolean, share = EASY_HOLD) => re
 
 // ---- Swinging lianas -------------------------------------------------------
 
+/**
+ * Let go of a liana because something made him (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop, never a leap.
+ * `hop` his speed up (px/s; a hop clears the hands' height, a jump is JUMP_RISE), `keep` the share of the swing's sideways speed he keeps
+ * (a little: he drops near the liana, onto what is under it, not across the gap), `cooldown` before that liana could be caught again (s;
+ * he cannot catch it again in the air anyway: the engine's swungOff holds it until he is down).
+ */
+export const LET_GO = { hop: -220, keep: 0.3, cooldown: 0.5 } as const;
+
 export const SWING = {
   g: 1600,
   steer: 4.8,
@@ -582,9 +590,31 @@ export const SWING_CLEAR = { body: 30, margin: 20 };
 export const swingReach = (v: SwingVine): number => (v.bottomY - v.topY) * Math.sin(vineAmp(v));
 /** do two vines hang side by side (their heights overlap), so that their swings could meet? */
 const sideBySide = (a: SwingVine, b: SwingVine) => a.topY < b.bottomY + 40 && b.topY < a.bottomY + 40;
-/** the clear space (px) between the two vines' swings, with Pokey hanging at the front of either: 0 or more is apart */
+/** how far (px) a vine's rope swings out either side `h` px below its top (its foot's: swingReach; nothing above the top or past the foot) */
+const sweepAt = (v: SwingVine, h: number): number => Math.max(0, Math.min(h, v.bottomY - v.topY)) * Math.sin(vineAmp(v));
+/**
+ * The clear space (px) between two vines' swings, with Pokey hanging at the front of either, height by height (the lead's ruling (b),
+ * 11-14 4:42 PM ET, R-165.246): at every depth he can hang on one (SWING.minLen to its foot), his hold swings out that depth's sweep; the
+ * other vine's rope, where his body is (SWING_CLEAR.body above and below his hold), swings out ITS sweep there (none where it does not
+ * hang); the two, plus his body and the margin, against how far apart they hang. The least over both vines and every shared depth; 0 or
+ * more is apart. Infinity: no depth he can hang on either meets the other's rope.
+ * Two vines of one top and one length read as the old foot-to-foot measure exactly (both feet); it is never stricter than that, so a
+ * swinging pair the old one passed still passes. What it adds: a short vine hung high beside a long liana meets only the liana's upper
+ * rope, which sweeps little, so it may hang close; one hung at the long liana's feet may not (1-6's false liana, 78-85 px in front of a
+ * 420 px liana swinging 0.45: its rope crossed his body there).
+ */
 export function swingClearance(a: SwingVine, b: SwingVine): number {
-  return Math.abs(b.x - a.x) - swingReach(a) - swingReach(b) - SWING_CLEAR.body - SWING_CLEAR.margin;
+  const dx = Math.abs(b.x - a.x);
+  let worst = Infinity;
+  for (const [H, O] of [[a, b], [b, a]] as const) {
+    const L = Math.max(0, H.bottomY - H.topY);
+    // (both sweeps only grow with depth, so the deepest hold whose body still meets the other's rope is the worst)
+    const deepest = Math.min(L, O.bottomY + SWING_CLEAR.body - H.topY);
+    if (deepest < Math.min(SWING.minLen, L) || H.topY + deepest + SWING_CLEAR.body < O.topY) continue;
+    const there = Math.min(H.topY + deepest + SWING_CLEAR.body, O.bottomY) - O.topY;
+    worst = Math.min(worst, dx - sweepAt(H, deepest) - sweepAt(O, there) - SWING_CLEAR.body - SWING_CLEAR.margin);
+  }
+  return worst;
 }
 
 /**
@@ -776,12 +806,15 @@ export const LETGO_FLIGHTS: ReadonlyArray<{ held: number; dbl: number }> = [
  * ms of ONE swing on A in which a press to let go toward +x gets him there (`hits`, asked every frame of the flight with the vines'
  * clock), as the engine plays a press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat
  * late it is the sweet spot's leap; anywhere else a hop off the vine. Caught near the bottom of the vine and higher up: the worse counts.
+ * `seen` (where he is as he presses, his middle and feet): a press counts only if it says yes, asked only of a press that gets him there
+ * (pipeline lianaRelease: the whole perch in view as he presses, cameraFollow.ts SWING_SEEN). Without it every such press counts.
  */
 export function pressWindow(
   A: SwingVine,
   hits: (c: AirBody, t: number, prevY: number) => boolean,
   flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
   grips: readonly number[] = [0.7, 0.95],
+  seen?: (x: number, y: number) => boolean,
 ): number {
   const DT = 1 / 30;
   const len = A.bottomY - A.topY;
@@ -828,11 +861,83 @@ export function pressWindow(
         }
         if (made) break;
       }
-      if (made) ok++;
+      if (made && (!seen || seen(st[k].r.x, st[k].r.y))) ok++;
     }
     worst = Math.min(worst, ok * DT * 1000);
   }
   return worst;
+}
+
+/**
+ * The testers' let-go (RELEASE above: "Testers let go at the FORWARD END of the swing, the natural moment"): the press made as the swing
+ * out in front passes this share of its reach, moving forward (the first-timer bot decides at the same share: tools/inspect/firsttimer.ts
+ * LET_GO_AT, held equal by a test). ENG-16E, R-165.246: the release window counts every press of a swing, so a perch at the far end of its
+ * band can lie past where THIS press lands him (1-6's chain at half the swing, BUILD-16d E1; its FAR perches, BUILD-16c): gen2 lays a perch
+ * he reaches by what he sees only where this press lands him (pipeline lianaBand).
+ */
+export const FORWARD_END = 0.75;
+/**
+ * Does the testers' let-go (FORWARD_END) from every hold in `grips` (shares of the vine's length, pressWindow's) get him there (`hits`,
+ * asked every frame of the flight with the vines' clock, as pressWindow's), the jump held, as the engine plays the press (releaseCall: the
+ * sweet spot's leap, or the leap it just gave when the press comes a beat late)?
+ */
+export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prevY: number) => boolean, grips: readonly number[] = [0.7, 0.95]): boolean {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  for (const g of grips) {
+    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
+    let lastSweet = -1e9;
+    let snap: SwingState | null = null;
+    let pressed = false;
+    // (a swing to settle, then the first forward sweep past FORWARD_END)
+    for (let k = 0; k < 3 * n && !pressed; k++) {
+      const r = swingStep(s0, A, DT, 1, 0);
+      const s = { ...s0 };
+      if (inSweetSpot(s, 1)) { lastSweet = k; snap = s; }
+      const amp = s.amp ?? TIMED.amp;
+      if (k < n || amp < 0.05 || s.omega <= 0 || s.angle / amp < FORWARD_END) continue;
+      pressed = true;
+      const call = releaseCall(s, 1, (k - lastSweet) * DT);
+      // (a press a beat early waits for the sweet spot: at FORWARD_END the sweet spot is on or just past, so it never waits long)
+      let from = s, at = r, t0 = s.t ?? 0;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { const r2 = swingStep(s0, A, DT, 1, 0); at = r2; }
+        from = { ...s0 };
+        t0 = s0.t ?? 0;
+      }
+      const l = timedLaunch(from, 1);
+      const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
+      let t = 0, made = false;
+      for (let i = 1; i <= 90 && !made; i++) {
+        const prevY = c.y;
+        airStep(c, DT, 1, true);
+        t += DT;
+        if (hits(c, t0 + t, prevY)) made = true;
+        if (c.y > A.bottomY + 500) break;
+      }
+      if (!made) return false;
+    }
+    if (!pressed) return false;
+  }
+  return true;
+}
+
+/**
+ * ms of ONE swing on A (the liana he holds) in which a press to let go toward B, the next liana of a chain to the right, puts his hands
+ * on B as it swings (canGrabSwing at the vines' clock, B at its own phase: the stage's, swingSetup's chainPhase): the chain's catch, by
+ * the engine's own press (pressWindow: the sweet spot, a beat early or late, the let-go `flights`) from A's `grips` (undefined: its own
+ * two low holds). `seen`: as pressWindow's (gen2 counts a press only when B's whole swing is in view as he presses). ENG-S5, 1-6 beat 4.
+ */
+export function chainWindow(
+  A: SwingVine,
+  B: SwingVine,
+  flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
+  grips?: readonly number[],
+  seen?: (x: number, y: number) => boolean,
+): number {
+  return pressWindow(A, (c, t) => canGrabSwing(c.x, c.y, B, t), flights, grips, seen);
 }
 
 const chainCache = new Map<string, number>();

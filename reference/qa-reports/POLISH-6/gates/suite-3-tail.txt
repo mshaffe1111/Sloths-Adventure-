@@ -1,0 +1,16 @@
+nture did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+ok 1255 - what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+  ---
+  duration_ms: 0.853824
+  type: 'test'
+  ...
+1..1255
+# tests 1255
+# suites 0
+# pass 1254
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 2716179.54925
+exit 0

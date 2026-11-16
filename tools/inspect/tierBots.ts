@@ -33,10 +33,15 @@ export interface TierRun {
   finishSeconds: number | null;
   lives: number;
   putbacks: number;
+  /** times a drifting log carried him under a bank and he stepped up onto it (firsttimer.ts FTRun.handed) */
+  handed: number;
   rescues: number;
   secondPressMs: number[];
   /** the pieces he entered, in order, and in each the lives and put-backs (soft falls) it cost him */
   pieces: Array<{ id: string; lives: number; putbacks: number; seconds: number }>;
+  /** the spur stones he stood on (FTRun.spurs: OUT-AND-BACK), on a stage with a spur (absent elsewhere: the committed calibration runs
+   *  replay field for field, tierBots.test) */
+  spurs?: number;
   stuck: Array<{ x: number; t: number; piece: string | null; what: string; rescued: boolean }>;
 }
 
@@ -85,8 +90,8 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   for (const x of r.softFallXs ?? []) add(x, 'putbacks');
   return {
     tier, setting, stage, variant, end: r.end, finishSeconds: r.end === 'shrine' ? r.time : null,
-    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
-    pieces: tally, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
+    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, handed: r.handed ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
+    pieces: tally, ...(r.spurs ? { spurs: r.spurs } : {}), stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
   };
 }
 

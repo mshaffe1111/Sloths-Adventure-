@@ -1,0 +1,56 @@
+--- a/src/game/gen2/tower.ts
++++ b/src/game/gen2/tower.ts
+@@ -12,6 +12,7 @@
+ import type { Platform, Vine } from '../types.ts';
+ import type { LocalLayout } from './pipeline.ts';
+ import { ledgeOut, vaultSide } from '../vineTop.ts';
++import { GATE } from '../vineField.ts';
+ 
+ /** which way a graph is laid (MissionGraph.flow) */
+ export type Flow = 'right' | 'up' | 'down' | 'legs';
+@@ -58,6 +59,17 @@
+ const HEAD = 24 + BODY_H + 12;
+ 
+ /**
++ * The room a sealed piece (a shut fig gate's bough) needs under its walk line for him to stand there with his DRAWN head clear of its
++ * DRAWN wood (FIX-15, R-165.212: INT-8 found a ledge 99 px under a gate's sagged end that put his head 72 px into the thatch; HEAD, 84,
++ * reads his 48 px collider and the bough's flat line): the far end's full sag (GATE.sag; read along the whole span, as the lay does not
++ * know which end sags), its drawn underside (GATE.depth of its span), his drawn height (GATE.head, heroSprite.ts, D41) and GATE.clear.
++ * Over its span and GATE.lidSide past either end (where his middle meets its wood: fieldPlay.ts lid).
++ */
++export const sealedRoom = (g: { width: number }): number => GATE.sag + GATE.depth * g.width + GATE.head + GATE.clear;
++/** does wood at (x0-x1) lie under a sealed piece's span, or within GATE.lidSide of its ends? */
++const underSealed = (g: { x: number; width: number }, x0: number, x1: number): boolean => x0 < g.x + g.width + GATE.lidSide && x1 > g.x - GATE.lidSide;
++
++/**
+  * His jump, read GENEROUSLY (whatever the real engine can do, this says yes to): what the tower's own rules ask "could a jump get
+  * there?" with, so a storey is never skipped. `up`: the highest a double jump climbs onto a lip (flown 214 px, reach.md §2; the
+  * closed form DOUBLE_RISE is the apex of his feet), with a margin; `slack`: what the closed-form reach reads short across (reach.md
+@@ -311,8 +323,9 @@
+   const solid = (but: ReadonlyArray<Platform>) => all.filter((q) => !but.includes(q) && q.type === 'solid');
+   // (wood in its way: across other wood at another height with less than his body between the two; `but`: the wood it is laid as
+   // part of. Going down the old rule stands: only wood in the bough's own body)
+-  const cramped = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => solid(but).some((q) => q.x < x1 && q.x + q.width > x0 && Math.abs(q.y - y) > 1
+-    && (flow === 'up' ? Math.abs(q.y - y) < HEAD : q.y < y + 24 && q.y + q.height > y));
++  // (under a sealed piece, a shut gate: his drawn head clear of its drawn sagged wood, sealedRoom, not the collider's HEAD)
++  const cramped = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => solid(but).some((q) => (sealed(q) && y > q.y && underSealed(q, x0, x1) && y - q.y < sealedRoom(q))
++    || (q.x < x1 && q.x + q.width > x0 && Math.abs(q.y - y) > 1 && (flow === 'up' ? Math.abs(q.y - y) < HEAD : q.y < y + 24 && q.y + q.height > y)));
+   // (a storey climbed by a jump: the bough, of storey `L` (or of a lower one, if wood of a lower one could jump onto it), with wood of
+   // a higher storey inside a jump of it. Going down a bough is only ever a way on: nothing to guard)
+   /** the storey a bough at (x0-x1, y) is of: `L`, or a lower one if wood of a lower one could jump onto it; -1: it climbs a storey */
+@@ -422,6 +435,15 @@
+       break;
+     }
+     if (hit) out.push(`tower: the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} is passed without opening it: ${hit}`);
++    // (nor is the shut gate's own top reached by a jump from beside it (FIX-15: with a shut bough footing from above, he would stand on
++    // it, over the platform Matt said he must never get above): wood under its level, not wholly under its lid (fieldPlay.ts lid: every
++    // rise from there stops at its underside), from which a jump reaches its drawn top (its far end sagged: the lowest, read generously))
++    const top = { x: g.x, y: g.y + GATE.sag, width: g.width };
++    const onto = under.find((p) => !(p.x >= g.x - GATE.lidSide && p.x + p.width <= g.x + g.width + GATE.lidSide) && leaps(p, top));
++    if (onto) out.push(`tower: the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} is stood on without opening it: a jump from the piece at x ${R(onto.x)}-${R(onto.x + onto.width)}, y ${R(onto.y)} reaches its top`);
++    // (and no wood stands under it with less room than his drawn height under its drawn sagged wood: his head would be in the thatch)
++    const low = under.find((p) => underSealed(g, p.x, p.x + p.width) && p.y - g.y < sealedRoom(g));
++    if (low) out.push(`tower: the piece at x ${R(low.x)}-${R(low.x + low.width)}, y ${R(low.y)} stands ${R(low.y - g.y)} px under the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)}: his drawn head would be in its drawn wood (it needs ${R(sealedRoom(g))} px)`);
+   }
+   return out;
+ }

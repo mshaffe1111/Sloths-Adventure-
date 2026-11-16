@@ -260,6 +260,8 @@ class SoundEngine {
   playBounce() { this.c.fx('bounce'); }
   /** a pushed log starting to roll (a wooden knock; the bark scrape that follows is the climb's) */
   playLog() { this.c.fx('log'); }
+  /** a drifting log slides out from under its bank (river.ts logKnocks): soft on Normal, louder on Easy (sfxRec.ts KNOCK_DB) */
+  playLogKnock(easy: boolean) { this.c.fx('knock', easy ? 1 : 0); }
   /** World 3's thorn vines lashing (they used to whoosh) */
   playThorns() { this.c.fx('thorns'); }
   /** a wooden gate swinging open (the secret thorn gate; the puzzle gates play it through playPuzzle) */

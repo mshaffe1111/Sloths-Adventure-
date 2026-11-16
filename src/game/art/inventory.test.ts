@@ -224,3 +224,16 @@ test('loadInventory loads one file once and gives its rows', async () => {
   assert.equal((await loadInventory('cast')).rows.length, FILE.cast.rows.length);
   await assert.rejects(loadInventory(11), /no inventory file/);
 });
+
+test("support (the lead 11-14, ART-678b): a pole that holds a bough up is a level row with no scale cap, never a platform", () => {
+  const sup = CSV.filter((r) => r.layer === 'support');
+  assert.ok(sup.length >= 4, 'the live posts and the live pole are supports');
+  assert.ok(LEVEL_LAYERS.has('support'));
+  for (const r of sup) {
+    assert.notEqual(r.scale_ok, 'n', `${r.id}: a support has no cap (scale_ok '${r.scale_ok}')`);
+    if (worldsOf(r.worlds).includes(1)) assert.ok(W(1).byId(r.id), `${r.id} is in w1.json`);
+  }
+  // planted: the same tall pole as a platform would be out of scale (1.0 cap), so the layer is what decides it
+  const pole = sup.find((r) => r.id === 'hf678/w1-livepole');
+  assert.ok(pole && Number(pole.pokey_scale) > 1 && pole.scale_ok === '', `the pole is measured (${pole?.pokey_scale} Pokeys) and given no verdict`);
+});

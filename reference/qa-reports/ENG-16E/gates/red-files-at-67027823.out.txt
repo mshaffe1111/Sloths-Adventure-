@@ -1,0 +1,1590 @@
+TAP version 13
+#   Normal: the hollow 1762..1887, hurt line y 702; put back at x 1682, 1682
+#   put-back from past the pillar at 1780: x 1682 (the ledge ends at 1762)
+#   put-back from past an island at 1780..1870: x 1825
+# Subtest: laid (normal): each hollow's floor is ONE marked piece at the manifest's depth under the lip, no climb-out, and a zone lip to lip with the floor's top as its hurt line
+ok 1 - laid (normal): each hollow's floor is ONE marked piece at the manifest's depth under the lip, no climb-out, and a zone lip to lip with the floor's top as its hurt line
+  ---
+  duration_ms: 76.412706
+  type: 'test'
+  ...
+# Subtest: laid (easy): each hollow's floor is ONE marked piece at the manifest's depth under the lip, no climb-out, and a zone lip to lip with the floor's top as its hurt line
+ok 2 - laid (easy): each hollow's floor is ONE marked piece at the manifest's depth under the lip, no climb-out, and a zone lip to lip with the floor's top as its hurt line
+  ---
+  duration_ms: 89.686291
+  type: 'test'
+  ...
+# Subtest: without the mark the same kit lays its pits as today (a floor and steps out, no hurt line); with the mark and NO row the roll fails by name
+ok 3 - without the mark the same kit lays its pits as today (a floor and steps out, no hurt line); with the mark and NO row the roll fails by name
+  ---
+  duration_ms: 74.067447
+  type: 'test'
+  ...
+# Subtest: typed: a hollow is a heart drop with its own look; a world whose painter draws no hurt floor fails drop.look-lies by name
+ok 4 - typed: a hollow is a heart drop with its own look; a world whose painter draws no hurt floor fails drop.look-lies by name
+  ---
+  duration_ms: 98.284438
+  type: 'test'
+  ...
+# Subtest: drop.look-lies covers all three ways: a soft look, a lethal look and the hurt look never stand in for one another (planted)
+ok 5 - drop.look-lies covers all three ways: a soft look, a lethal look and the hurt look never stand in for one another (planted)
+  ---
+  duration_ms: 0.361713
+  type: 'test'
+  ...
+# Subtest: hazard.untaught (planted): no hurt drop starts before the END of the lesson's showing piece, none within the row's clearStart of the spawn; the lesson's own chain after `show` passes
+ok 6 - hazard.untaught (planted): no hurt drop starts before the END of the lesson's showing piece, none within the row's clearStart of the spawn; the lesson's own chain after `show` passes
+  ---
+  duration_ms: 1.585327
+  type: 'test'
+  ...
+# Subtest: hazard.untaught reads the world's own lesson name off the built stage: the stub roll carries its row, and its showing piece's end once a section teaches the lesson
+ok 7 - hazard.untaught reads the world's own lesson name off the built stage: the stub roll carries its row, and its showing piece's end once a section teaches the lesson
+  ---
+  duration_ms: 203.805403
+  type: 'test'
+  ...
+# Subtest: the level check never stands him on a hurt floor: a hollow too wide to jump is not crossed by way of its floor (planted)
+ok 8 - the level check never stands him on a hurt floor: a hollow too wide to jump is not crossed by way of its floor (planted)
+  ---
+  duration_ms: 0.977238
+  type: 'test'
+  ...
+# Subtest: hurt, Normal, the real engine with the real heartFall and loseLife: 3 falls are 3 hearts, the last one a life; each sets him back on the ledge he left
+ok 9 - hurt, Normal, the real engine with the real heartFall and loseLife: 3 falls are 3 hearts, the last one a life; each sets him back on the ledge he left
+  ---
+  duration_ms: 628.63574
+  type: 'test'
+  ...
+# Subtest: hurt, Easy, the real engine: 3 falls are 0 hearts and 0 lives, each a set-back that blinks
+ok 10 - hurt, Easy, the real engine: 3 falls are 0 hearts and 0 lives, each a set-back that blinks
+  ---
+  duration_ms: 383.860854
+  type: 'test'
+  ...
+# Subtest: the floor itself is never where he is put back, and standing on it is the fall (no walking the hollow)
+ok 11 - the floor itself is never where he is put back, and standing on it is the fall (no walking the hollow)
+  ---
+  duration_ms: 109.546645
+  type: 'test'
+  ...
+# Subtest: the put-back: a pillar (a mushroom on it, hurt floor on both sides) is never the put-back spot; the last ledge that is not one is
+ok 12 - the put-back: a pillar (a mushroom on it, hurt floor on both sides) is never the put-back spot; the last ledge that is not one is
+  ---
+  duration_ms: 109.887072
+  type: 'test'
+  ...
+# Subtest: the put-back: an island (hurt floor on both sides, NO mushroom on it) is a put-back spot: a fall past it sets him back on the island
+ok 13 - the put-back: an island (hurt floor on both sides, NO mushroom on it) is a put-back spot: a fall past it sets him back on the island
+  ---
+  duration_ms: 61.206838
+  type: 'test'
+  ...
+# Subtest: the put-back: on a ledge with a mushroom he is put back short of the mushroom, never inside the cap
+ok 14 - the put-back: on a ledge with a mushroom he is put back short of the mushroom, never inside the cap
+  ---
+  duration_ms: 222.013012
+  type: 'test'
+  ...
+# Subtest: the pit painter is the world's data (INT-E): World 1's kit carries it, so dropsOf draws its thorn bed and pits; a world with none paints nothing
+ok 15 - the pit painter is the world's data (INT-E): World 1's kit carries it, so dropsOf draws its thorn bed and pits; a world with none paints nothing
+  ---
+  duration_ms: 0.665924
+  type: 'test'
+  ...
+# Subtest: general by data: no engine line says what the floor IS (the grep, counted against the base)
+ok 16 - general by data: no engine line says what the floor IS (the grep, counted against the base)
+  ---
+  duration_ms: 13.410136
+  type: 'test'
+  ...
+# Subtest: the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+not ok 17 - the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+  ---
+  duration_ms: 3.78107
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        '1-1': 'normal-1-1',
+        '1-2': 'normal-1-2',
+        '1-3': 'normal-1-3',
+        '1-4': 'normal-1-4',
+        '1-5': 'normal-1-5',
+    +   '1-6': 'normal-1-6'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    1-1: 'normal-1-1'
+    1-2: 'normal-1-2'
+    1-3: 'normal-1-3'
+    1-4: 'normal-1-4'
+    1-5: 'normal-1-5'
+  actual:
+    1-1: 'normal-1-1'
+    1-2: 'normal-1-2'
+    1-3: 'normal-1-3'
+    1-4: 'normal-1-4'
+    1-5: 'normal-1-5'
+    1-6: 'normal-1-6'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+not ok 18 - the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+  ---
+  duration_ms: 1.405596
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:45:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:52:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+not ok 19 - any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+  ---
+  duration_ms: 1.433934
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    no row: nothing judges its arcs
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:60:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+not ok 20 - the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+  ---
+  duration_ms: 0.463322
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:77:1'
+  failureType: 'testCodeFailure'
+  error: 'withTestStage: 1-6 is already listed'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTestStage (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/listed.ts:55:110)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:85:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+not ok 21 - a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+  ---
+  duration_ms: 1.671364
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:104:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/judgedTable.test.ts:119:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+ok 22 - no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+  ---
+  duration_ms: 1.124472
+  type: 'test'
+  ...
+# Subtest: the table: a row per listed stage, its kit and what is that stage's alone as fields
+not ok 23 - the table: a row per listed stage, its kit and what is that stage's alone as fields
+  ---
+  duration_ms: 12.467124
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/listed.test.ts:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a stage with no row is not listed
+    + actual - expected
+    
+    + {
+    +   finish: [Function: finish16],
+    +   kit: [Function: kitLib16]
+    + }
+    - undefined
+    
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+not ok 24 - withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+  ---
+  duration_ms: 0.242055
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/listed.test.ts:30:1'
+  failureType: 'testCodeFailure'
+  error: 'withTestStage: 1-6 is already listed'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTestStage (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/listed.ts:55:110)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/listed.test.ts:32:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: nothing in the game calls withTestStage: tests only
+ok 25 - nothing in the game calls withTestStage: tests only
+  ---
+  duration_ms: 51.065444
+  type: 'test'
+  ...
+# Subtest: the clean planted 1-1 roll is accepted on both settings, nothing left unjudged but the first run (judged on its layout)
+ok 26 - the clean planted 1-1 roll is accepted on both settings, nothing left unjudged but the first run (judged on its layout)
+  ---
+  duration_ms: 8.081939
+  type: 'test'
+  ...
+# Subtest: ALL_VERDICTS is the union, in order, read off verdicts.types.ts
+ok 27 - ALL_VERDICTS is the union, in order, read off verdicts.types.ts
+  ---
+  duration_ms: 0.443969
+  type: 'test'
+  ...
+# Subtest: arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule
+ok 28 - arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule
+  ---
+  duration_ms: 3.989159
+  type: 'test'
+  ...
+# red: arc.single-gap-over: single-gap at x 400 (s1): 140 px, past a flick's 132
+# red: arc.single-gap-over: single-gap at x 400 (s1): 150 px, past a flick's 143
+# Subtest: arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)
+ok 29 - arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)
+  ---
+  duration_ms: 0.47455
+  type: 'test'
+  ...
+# red: arc.single-rise-over: single-rise at x 400 (s1): 120 px, over a flick's climb 117
+# Subtest: block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)
+ok 30 - block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)
+  ---
+  duration_ms: 0.890539
+  type: 'test'
+  ...
+# red: block.lesser-passes: double-test-gap at x 400 (s1): one jump crosses 246, the block is 200
+# red: block.lesser-passes: double-teach-rise at x 400 (s1): one jump climbs 123, the block is 120
+# red: block.lesser-passes: bounce-teach at x 400 (s1): a bounce alone climbs 223, the block is 212
+# Subtest: block.spare-thin: a 126 px double rise, 3 px over one jump's 123, under the 5 px spare
+ok 31 - block.spare-thin: a 126 px double rise, 3 px over one jump's 123, under the 5 px spare
+  ---
+  duration_ms: 0.27635
+  type: 'test'
+  ...
+# red: block.spare-thin: double-teach-rise at x 400 (s1): 3 px over what one jump reaches (123), under 5
+# Subtest: block.taught-fails: a 300 px double gap past the double flick from 70 px (283); a 330 px bounce lip past bounce + air jump (317)
+ok 32 - block.taught-fails: a 300 px double gap past the double flick from 70 px (283); a 330 px bounce lip past bounce + air jump (317)
+  ---
+  duration_ms: 0.285877
+  type: 'test'
+  ...
+# red: block.taught-fails: double-test-gap at x 400 (s1): 300 px, past the taught double-flick's 283
+# red: block.taught-fails: bounce-air-test at x 400 (s1): 330 px, past the taught bounce-air's 317
+# Subtest: band.out: over, under, and a band that is none (Easy's double gap)
+ok 33 - band.out: over, under, and a band that is none (Easy's double gap)
+  ---
+  duration_ms: 0.383781
+  type: 'test'
+  ...
+# red: band.out: double-teach-rise at x 400 (s1): 142 px, over the band's 140
+# red: band.out: bounce-teach at x 400 (s1): 228 px, under the band's 232
+# red: band.out: double-test-gap at x 400 (s1): easy has no double-test-gap (band 'none')
+# Subtest: headroom.cuts-arc: a bough 120 px over a single gap's take-off (needs 97.2 + 48)
+ok 34 - headroom.cuts-arc: a bough 120 px over a single gap's take-off (needs 97.2 + 48)
+  ---
+  duration_ms: 0.406411
+  type: 'test'
+  ...
+# red: headroom.cuts-arc: single-gap at x 400 (s1): 120 px clear over the take-off, the single-flick needs 145
+# Subtest: floor.unmarked: a floorless gap World 1 reads as water, outside a soft zone
+ok 35 - floor.unmarked: a floorless gap World 1 reads as water, outside a soft zone
+  ---
+  duration_ms: 0.631741
+  type: 'test'
+  ...
+# red: floor.unmarked: an unmarked floorless gap at x 2260..2600
+# Subtest: drop.lethal-in-no-lethal: a water drop on 1-1 (warned, drawn as water)
+ok 36 - drop.lethal-in-no-lethal: a water drop on 1-1 (warned, drawn as water)
+  ---
+  duration_ms: 0.264523
+  type: 'test'
+  ...
+# red: drop.lethal-in-no-lethal: a fall into water costs a life at x 1000..1300 on a no-lethal stage
+# Subtest: drop.unwarned: a lethal drop with no Dot line, and one with no sign
+ok 37 - drop.unwarned: a lethal drop with no Dot line, and one with no sign
+  ---
+  duration_ms: 0.179355
+  type: 'test'
+  ...
+# red: drop.unwarned: the lethal drop at x 1000..1300 has no Dot line
+# red: drop.unwarned: the lethal drop at x 1000..1300 has no sign
+# Subtest: drop.look-lies: a soft drop painted as water; a lethal drop drawn as ground
+ok 38 - drop.look-lies: a soft drop painted as water; a lethal drop drawn as ground
+  ---
+  duration_ms: 0.235052
+  type: 'test'
+  ...
+# red: drop.look-lies: the soft drop at x 1000..1300 is drawn as water-art
+# red: drop.look-lies: the lethal drop at x 1000..1300 is drawn as ground
+# Subtest: drop.untyped: a gap on the route with no Drop record
+ok 39 - drop.untyped: a gap on the route with no Drop record
+  ---
+  duration_ms: 0.150917
+  type: 'test'
+  ...
+# red: drop.untyped: a gap at x 1000..1300 the builder laid with no Drop record
+# Subtest: teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the registry's settings)
+ok 40 - teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the registry's settings)
+  ---
+  duration_ms: 0.267299
+  type: 'test'
+  ...
+# red: teach.double-no-gap-after: no gap only the second jump crosses within 1,500 px of the teach (x 0)
+# red: teach.double-gap-unsafe: nothing under the double gap at 1000
+# Subtest: hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)
+ok 41 - hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)
+  ---
+  duration_ms: 9.555885
+  type: 'test'
+  ...
+# red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+# red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+# Subtest: landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)
+ok 42 - landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)
+  ---
+  duration_ms: 11.857717
+  type: 'test'
+  ...
+# red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+# red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+# red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+# red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+# Subtest: chain.mount: a chain's first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on
+ok 43 - chain.mount: a chain's first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on
+  ---
+  duration_ms: 22.89539
+  type: 'test'
+  ...
+# red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 80 (single-rise band)
+# red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 63 (single-rise band)
+# Subtest: first-run.drift: the fixed layout built against its recorded lock
+ok 44 - first-run.drift: the fixed layout built against its recorded lock
+  ---
+  duration_ms: 0.26435
+  type: 'test'
+  ...
+# red: the first run (seed 7) builds ccc on easy, recorded bbb
+# Subtest: every name that can fail in a flown scope has a planted roll above (the union less reach.unflown)
+ok 45 - every name that can fail in a flown scope has a planted roll above (the union less reach.unflown)
+  ---
+  duration_ms: 0.408099
+  type: 'test'
+  ...
+# Subtest: reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged
+not ok 46 - reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged
+  ---
+  duration_ms: 1.220624
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:170:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a 400 px gap is not judged where nothing was flown
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:172:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the verdict path holds no closed-form figure: reach.ts and verdicts.ts name none, and 1-1's envelope reads the bands
+not ok 47 - the verdict path holds no closed-form figure: reach.ts and verdicts.ts name none, and 1-1's envelope reads the bands
+  ---
+  duration_ms: 0.895985
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:177:1'
+  failureType: 'testCodeFailure'
+  error: 'single-hold'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'BUILD-16 fly/normal-all.txt: single hold rise 123 / 116, gap 136 / 222 / 244'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:182:38)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 5-7 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+ok 48 - 5-7 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+  ---
+  duration_ms: 493.31192
+  type: 'test'
+  ...
+# Subtest: 7-1 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+ok 49 - 7-1 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+  ---
+  duration_ms: 271.885789
+  type: 'test'
+  ...
+# Subtest: a bank is a block: Normal's D bank lays 136-140 and Easy's 128-132 (the block rows); a branch lip keeps the thin rows
+ok 50 - a bank is a block: Normal's D bank lays 136-140 and Easy's 128-132 (the block rows); a branch lip keeps the thin rows
+  ---
+  duration_ms: 1.333271
+  type: 'test'
+  ...
+# Subtest: headroom: only a solid piece 50 px or taller over the take-off and the flight cuts the arc; a bough, or a bank over the landing, does not
+ok 51 - headroom: only a solid piece 50 px or taller over the take-off and the flight cuts the arc; a bough, or a bank over the landing, does not
+  ---
+  duration_ms: 0.341585
+  type: 'test'
+  ...
+# Subtest: classify: a "double" place whose figure fits the single band is a single section; a declared double block stays a block
+ok 52 - classify: a "double" place whose figure fits the single band is a single section; a declared double block stays a block
+  ---
+  duration_ms: 0.220539
+  type: 'test'
+  ...
+# Subtest: 1-1's finish reach (stageGenerator finishReach): the far bank of a 256 px gap is on the route, and its flower stays
+not ok 53 - 1-1's finish reach (stageGenerator finishReach): the far bank of a 256 px gap is on the route, and its flower stays
+  ---
+  duration_ms: 1.161484
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:282:1'
+  failureType: 'testCodeFailure'
+  error: 'outside the judged table: the closed form, as before'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:299:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: floorless (the lead's ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172's deck is a real hole, seed 476's stone plugs its slot, seed 323's 23 px opening is no drop
+ok 54 - floorless (the lead's ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172's deck is a real hole, seed 476's stone plugs its slot, seed 323's 23 px opening is no drop
+  ---
+  duration_ms: 4.922811
+  type: 'test'
+  ...
+# Subtest: the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before
+not ok 55 - the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before
+  ---
+  duration_ms: 1.37936
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:335:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    normal: 1-6 (never flown), closed form, as before
+    + actual - expected
+    
+    + []
+    - [
+    -   7
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 7
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/gen2/verdicts.test.ts:344:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: block.spare-thin prints its spare rounded as its measure is (4.6 prints 5, never 4)
+ok 56 - block.spare-thin prints its spare rounded as its measure is (4.6 prints 5, never 4)
+  ---
+  duration_ms: 0.392971
+  type: 'test'
+  ...
+# Subtest: the grip dial: a liana's reach is checked at the holds its row names (pressWindow grips), both settings
+ok 57 - the grip dial: a liana's reach is checked at the holds its row names (pressWindow grips), both settings
+  ---
+  duration_ms: 225.177928
+  type: 'test'
+  ...
+# Subtest: a perch band is flown at its liana's own grip: a cached window of another grip is never reused
+ok 58 - a perch band is flown at its liana's own grip: a cached window of another grip is never reused
+  ---
+  duration_ms: 206.965246
+  type: 'test'
+  ...
+# Subtest: withSwing adds the swing move by data; World 1's own manifest keeps its moves, so 1-1..1-5 build as before
+ok 59 - withSwing adds the swing move by data; World 1's own manifest keeps its moves, so 1-1..1-5 build as before
+  ---
+  duration_ms: 0.47062
+  type: 'test'
+  ...
+# Subtest: World 1's liana rows lay on World 1's and World 6's kits: the grip rides the row to the liana, its perch flies at that grip and lies past every jump
+ok 60 - World 1's liana rows lay on World 1's and World 6's kits: the grip rides the row to the liana, its perch flies at that grip and lies past every jump
+  ---
+  duration_ms: 5326.474343
+  type: 'test'
+  ...
+# Subtest: the level check flies a liana with a grip dial as the engine plays it (opt-in): a FAR gap links from the foot, never without the dial or past his reach
+ok 61 - the level check flies a liana with a grip dial as the engine plays it (opt-in): a FAR gap links from the foot, never without the dial or past his reach
+  ---
+  duration_ms: 13.8372
+  type: 'test'
+  ...
+# Subtest: built: a liana row with the grip dial reaches the stage's Vine, and the stage's own level check links its FAR perch (toy world, both settings)
+ok 62 - built: a liana row with the grip dial reaches the stage's Vine, and the stage's own level check links its FAR perch (toy world, both settings)
+  ---
+  duration_ms: 12580.094801
+  type: 'test'
+  ...
+# Subtest: ENG-S4 (A1 pushback b): a liana row may set its own length; a row without one lays LIANA.len and takes the rolls it took before, and a set length still flies its perch at the row's grip
+ok 63 - ENG-S4 (A1 pushback b): a liana row may set its own length; a row without one lays LIANA.len and takes the rolls it took before, and a set length still flies its perch at the row's grip
+  ---
+  duration_ms: 3168.011589
+  type: 'test'
+  ...
+# Subtest: every puzzle room in Worlds 1 and 2 and the kit test room: what he works and what it works are in view together, upright and sideways
+not ok 64 - every puzzle room in Worlds 1 and 2 and the kit test room: what he works and what it works are in view together, upright and sideways
+  ---
+  duration_ms: 6968.171953
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/puzzleCamera.test.ts:100:1'
+  failureType: 'testCodeFailure'
+  error: '1-6 has puzzle rooms'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/puzzleCamera.test.ts:107:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: sideways the room camera is as it was: three quarters at the most; upright it may pull back to the sideways size on that phone
+ok 65 - sideways the room camera is as it was: three quarters at the most; upright it may pull back to the sideways size on that phone
+  ---
+  duration_ms: 0.303681
+  type: 'test'
+  ...
+# Subtest: the room camera centre moves smoothly: no jump as the key box grows past the view
+ok 66 - the room camera centre moves smoothly: no jump as the key box grows past the view
+  ---
+  duration_ms: 9.520864
+  type: 'test'
+  ...
+# Subtest: leaving a room the view eases back out, with no jump in the zoom or the camera
+ok 67 - leaving a room the view eases back out, with no jump in the zoom or the camera
+  ---
+  duration_ms: 536.799871
+  type: 'test'
+  ...
+# Subtest: P-02: 1-6 seed 1: the twist room's log, walked into from the left, can be got back (the signpost starts the room again)
+not ok 68 - P-02: 1-6 seed 1: the twist room's log, walked into from the left, can be got back (the signpost starts the room again)
+  ---
+  duration_ms: 7775.109513
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/roomLogReset.test.ts:21:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'rooms')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/roomLogReset.test.ts:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: P-02: 1-6 seed 38: the twist room's log, walked into from the left, can be got back (the signpost starts the room again)
+not ok 69 - P-02: 1-6 seed 38: the twist room's log, walked into from the left, can be got back (the signpost starts the room again)
+  ---
+  duration_ms: 6364.863241
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/roomLogReset.test.ts:21:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'rooms')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/roomLogReset.test.ts:24:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 1-6: the seesaw rooms (shown, learned, twisted) pass the validator, and each one needs its log
+ok 70 - 1-6: the seesaw rooms (shown, learned, twisted) pass the validator, and each one needs its log
+  ---
+  duration_ms: 9215.857688
+  type: 'test'
+  ...
+# Subtest: 1-6 in the real engine: push the log onto the near end, up the far end, and the second jump to the bank
+not ok 71 - 1-6 in the real engine: push the log onto the near end, up the far end, and the second jump to the bank
+  ---
+  duration_ms: 8565.920933
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:61:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'rooms')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    roomRun (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:53:57)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:63:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 1-6 in the real engine: the twist, the log pushed back onto the far end, and up from the near end to the branch
+not ok 72 - 1-6 in the real engine: the twist, the log pushed back onto the far end, and up from the near end to the branch
+  ---
+  duration_ms: 860.516102
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:80:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'rooms')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    roomRun (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:53:57)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:82:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 1-6's fallen log: the canopy's face is solid to the ground (no walking under it into the water)
+ok 73 - 1-6's fallen log: the canopy's face is solid to the ground (no walking under it into the water)
+  ---
+  duration_ms: 1420.684699
+  type: 'test'
+  ...
+# Subtest: 1-6 in the real engine: the fallen log moves from a walk into it, the wall stops him, and the pushed log is the way up
+not ok 74 - 1-6 in the real engine: the fallen log moves from a walk into it, the wall stops him, and the pushed log is the way up
+  ---
+  duration_ms: 755.285542
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:128:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'push')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:107:69)
+    Array.find (<anonymous>)
+    fallenLog (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:107:26)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/stage16.test.ts:131:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: every vine flick to the left gives the mirror of the same flick to the right: lianas, trunks and ropes, refined and old rules, upright and sideways
+ok 75 - every vine flick to the left gives the mirror of the same flick to the right: lianas, trunks and ropes, refined and old rules, upright and sideways
+  ---
+  duration_ms: 520.569567
+  type: 'test'
+  ...
+# Subtest: the QA rig's lone flick up and to either side lets go at once on a liana, a trunk and a rope, refined and old, upright and sideways
+ok 76 - the QA rig's lone flick up and to either side lets go at once on a liana, a trunk and a rope, refined and old, upright and sideways
+  ---
+  duration_ms: 1.196185
+  type: 'test'
+  ...
+# Subtest: 1-6 in the real engine: after a pump and a lift, the QA rig's flick up-left lets go exactly as its flick up-right does, at any moment of the swing, upright and sideways
+not ok 77 - 1-6 in the real engine: after a pump and a lift, the QA rig's flick up-left lets go exactly as its flick up-right does, at any moment of the swing, upright and sideways
+  ---
+  duration_ms: 6928.947159
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFlickMirror.test.ts:153:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFlickMirror.test.ts:160:125)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 1-6: pumping, a steer held either way, hands off or climbing down a liana beside the raised ledge never sets him down on it
+ok 78 - 1-6: pumping, a steer held either way, hands off or climbing down a liana beside the raised ledge never sets him down on it
+  ---
+  duration_ms: 37841.425925
+  type: 'test'
+  ...
+# Subtest: QA's v192 repro: grab on 1-6, steer down 400 ms, then steer right, then left (pumping): he stays on the liana
+not ok 79 - QA's v192 repro: grab on 1-6, steer down 400 ms, then steer right, then left (pumping): he stays on the liana
+  ---
+  duration_ms: 289.260011
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:114:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    grabFirst (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:109:119)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:118:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 1-6: holding down and toward the ledge as the swing carries him past it puts him on it, and he stays there
+not ok 80 - 1-6: holding down and toward the ledge as the swing carries him past it puts him on it, and he stays there
+  ---
+  duration_ms: 452.395965
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:143:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:150:72)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 1-6's swing lesson over the soft moss: pumping its lianas at full length never sets him down on a ledge beside them
+not ok 81 - 1-6's swing lesson over the soft moss: pumping its lianas at full length never sets him down on a ledge beside them
+  ---
+  duration_ms: 279576.486696
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:162:1'
+  failureType: 'testCodeFailure'
+  error: 'found 0 soft-moss lianas on 1-6'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:187:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a floor under the vine is still landed on as he climbs down onto it, pumping or not
+ok 82 - a floor under the vine is still landed on as he climbs down onto it, pumping or not
+  ---
+  duration_ms: 168.107677
+  type: 'test'
+  ...
+# Subtest: swingLanding: a ledge beside the vine only on down-and-toward; a steer alone or hands off never
+ok 83 - swingLanding: a ledge beside the vine only on down-and-toward; a steer alone or hands off never
+  ---
+  duration_ms: 0.385728
+  type: 'test'
+  ...
+# Subtest: one thumb: after a pump to the right a flick up and left leaps LEFT, after a pump to the left a flick up and right leaps RIGHT, upright and sideways
+ok 84 - one thumb: after a pump to the right a flick up and left leaps LEFT, after a pump to the left a flick up and right leaps RIGHT, upright and sideways
+  ---
+  duration_ms: 28.074155
+  type: 'test'
+  ...
+# Subtest: a straight-up flick after a pump still climbs the vine and carries no lean
+ok 85 - a straight-up flick after a pump still climbs the vine and carries no lean
+  ---
+  duration_ms: 0.536442
+  type: 'test'
+  ...
+# Subtest: the other thumb: a flick up that leans 20 degrees or more leaps that way, a nearly straight one climbs (Matt, CT-5)
+ok 86 - the other thumb: a flick up that leans 20 degrees or more leaps that way, a nearly straight one climbs (Matt, CT-5)
+  ---
+  duration_ms: 1.675845
+  type: 'test'
+  ...
+# Subtest: letting go of a liana leaps the way the flick leaned, even against the held steer and the way he faces
+ok 87 - letting go of a liana leaps the way the flick leaned, even against the held steer and the way he faces
+  ---
+  duration_ms: 263.063635
+  type: 'test'
+  ...
+# Subtest: leaping off a trunk follows the flick too
+ok 88 - leaping off a trunk follows the flick too
+  ---
+  duration_ms: 87.910758
+  type: 'test'
+  ...
+# Subtest: QA's v192 repro: after a pump to the right, lift, then a one-thumb flick up and left (35 degrees): he goes LEFT, at any moment of the swing, upright and sideways
+not ok 89 - QA's v192 repro: after a pump to the right, lift, then a one-thumb flick up and left (35 degrees): he goes LEFT, at any moment of the swing, upright and sideways
+  ---
+  duration_ms: 2162.701602
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:436:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    grabFirst (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:109:119)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:440:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: on the liana, a plain flick straight up still climbs it (no let-go), upright and sideways
+not ok 90 - on the liana, a plain flick straight up still climbs it (no let-go), upright and sideways
+  ---
+  duration_ms: 413.392049
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:467:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    grabFirst (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:109:119)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:469:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: timedLaunch: out of the sweet spot a leaning flick hops that way; without a lean he goes the way the vine carries him, as before
+ok 91 - timedLaunch: out of the sweet spot a leaning flick hops that way; without a lean he goes the way the vine carries him, as before
+  ---
+  duration_ms: 0.326356
+  type: 'test'
+  ...
+# Subtest: pickLesson: a liana is near by the part he can catch, not its middle, and comes before the gap it hangs over
+ok 92 - pickLesson: a liana is near by the part he can catch, not its middle, and comes before the gap it hangs over
+  ---
+  duration_ms: 1.132887
+  type: 'test'
+  ...
+# Subtest: the new look: the swing lesson said while he is already on the vine starts at letting go, not at grabbing it
+ok 93 - the new look: the swing lesson said while he is already on the vine starts at letting go, not at grabbing it
+  ---
+  duration_ms: 1.340116
+  type: 'test'
+  ...
+# Subtest: 1-6, a fresh player: the swing lesson (Dot's lines) comes before his first let-go, upright and sideways
+not ok 94 - 1-6, a fresh player: the swing lesson (Dot's lines) comes before his first let-go, upright and sideways
+  ---
+  duration_ms: 500.175655
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:559:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'x')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    firstSwing (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:550:44)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineFollowUps.test.ts:563:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the look across a gap shows the liana over it, not the floor of the drop under it
+ok 95 - the look across a gap shows the liana over it, not the floor of the drop under it
+  ---
+  duration_ms: 0.739784
+  type: 'test'
+  ...
+# Subtest: QA's v192 new-look repro: a gap tip from before the vine waits while he swings, and the swing's tips come through
+ok 96 - QA's v192 new-look repro: a gap tip from before the vine waits while he swings, and the swing's tips come through
+  ---
+  duration_ms: 3.158567
+  type: 'test'
+  ...
+# Subtest: self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)
+ok 97 - self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)
+  ---
+  duration_ms: 20888.29328
+  type: 'test'
+  ...
+# Subtest: self-swing: at a steady 30 fps, left and right change nothing (pumping, flicking and hands off give the same swing, frame for frame)
+ok 98 - self-swing: at a steady 30 fps, left and right change nothing (pumping, flicking and hands off give the same swing, frame for frame)
+  ---
+  duration_ms: 1844.236764
+  type: 'test'
+  ...
+# Subtest: self-swing: up and down climb along the vine and the swing goes on as it was
+ok 99 - self-swing: up and down climb along the vine and the swing goes on as it was
+  ---
+  duration_ms: 4198.94193
+  type: 'test'
+  ...
+# Subtest: self-swing: an empty liana swings on its own, a climbing vine hangs still, and a catch never jolts the vine
+ok 100 - self-swing: an empty liana swings on its own, a climbing vine hangs still, and a catch never jolts the vine
+  ---
+  duration_ms: 12846.076778
+  type: 'test'
+  ...
+# Subtest: self-swing: neighbouring vines never swing into each other, nor into Pokey hanging on either, at any moment
+not ok 101 - self-swing: neighbouring vines never swing into each other, nor into Pokey hanging on either, at any moment
+  ---
+  duration_ms: 87156.164951
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineSelfSwing.test.ts:192:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   '1-6 roll 1: vines at 38722 and 38800 -155 px',
+    +   '1-6 roll 1: vines at 45079 and 45162 -150 px',
+    +   '1-6 roll 2: vines at 38928 and 39008 -153 px',
+    +   '1-6 roll 2: vines at 45245 and 45330 -148 px',
+    +   '1-6 roll 3: vines at 38910 and 38987 -156 px',
+    +   '1-6 roll 3: vines at 45257 and 45327 -163 px'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '1-6 roll 1: vines at 38722 and 38800 -155 px'
+    1: '1-6 roll 1: vines at 45079 and 45162 -150 px'
+    2: '1-6 roll 2: vines at 38928 and 39008 -153 px'
+    3: '1-6 roll 2: vines at 45245 and 45330 -148 px'
+    4: '1-6 roll 3: vines at 38910 and 38987 -156 px'
+    5: '1-6 roll 3: vines at 45257 and 45327 -163 px'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/vineSelfSwing.test.ts:209:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: self-swing (Normal): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 167 ms, at the phases the stage gives the vines
+ok 102 - self-swing (Normal): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 167 ms, at the phases the stage gives the vines
+  ---
+  duration_ms: 63435.221245
+  type: 'test'
+  ...
+# Subtest: self-swing (Easy): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 300 ms, at the phases the stage gives the vines
+ok 103 - self-swing (Easy): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least 300 ms, at the phases the stage gives the vines
+  ---
+  duration_ms: 57625.624348
+  type: 'test'
+  ...
+# Subtest: 4-1 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 104 - 4-1 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 4055.288332
+  type: 'test'
+  ...
+# Subtest: 4-2 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 105 - 4-2 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 55168.190991
+  type: 'test'
+  ...
+# Subtest: 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+not ok 106 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below it, and walking there pushes it: the pool's log is never reached (the boulder fixer)
+  ---
+  duration_ms: 40540.603321
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/w4RealReach.test.ts:26:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'seed 1: the shrine is never reached',
+    +   'seed 1: flower #113 at (29700, 950) is never picked up',
+    +   'seed 1: flower #114 at (30035, 820) is never picked up',
+    +   'seed 1: flower #115 at (30255, 690) is never picked up',
+    +   'seed 1: flower #116 at (30591, 472) is never picked up',
+    +   'seed 1: flower #117 at (31111, 386) is never picked up',
+    +   'seed 1: flower #118 at (31465, 386) is never picked up',
+    +   'seed 1: flower #119 at (31580, 386) is never picked up',
+    +   'seed 1: stranded at p1.0 (x 20..303, y 10727)',
+    +   'seed 1: stranded at p2.1 (x 311..524, y 10640)',
+    +   'seed 1: stranded at p3.2 (x 532..745, y 10553)',
+    +   'seed 1: stranded at p4.3 (x 753..1370, y 10466)',
+    +   'seed 1: stranded at v1',
+    +   'seed 1: stranded at p5.4 (x 1386..1699, y 10138)',
+    +   'seed 1: stranded at p8.5 (x 1714..2733, y 10048)',
+    +   'seed 1: stranded at v2',
+    +   'seed 1: stranded at p6.6 (x 2349..2459, y 9449)',
+    +   'seed 1: stranded at p6.7 (x 2593..2758, y 9449)',
+    +   'seed 1: stranded at p7.8 (x 2469..2581, y 9361)',
+    +   'seed 1: stranded at p8.9 (x 1709..2843, y 10048)',
+    +   'seed 1: stranded at p6.10 (x 2350..2637, y 9449)',
+    +   'seed 1: stranded at p6.11 (x 2345..2757, y 9449)',
+    +   'seed 1: stranded at p7.12 (x 2525..2525, y 9361)',
+    +   'seed 1: stranded at p9.13 (x 2853..3063, y 9918)',
+    +   'seed 1: stranded at p7.14 (x 2649..2757, y 9361)',
+    +   'seed 1: stranded at p10.15 (x 3073..3283, y 9788)',
+    +   'seed 1: stranded at p11.16 (x 3291..3503, y 9658)',
+    +   'seed 1: stranded at p12.17 (x 3513..3628, y 9528)',
+    +   'seed 1: stranded at p20.18 (x 3643..4875, y 9432)',
+    +   'seed 1: stranded at p13.19 (x 4274..4456, y 9330)',
+    +   'seed 1: stranded at p14.20 (x 4473..4655, y 9228)',
+    +   'seed 1: stranded at p15.21 (x 4274..4456, y 9126)',
+    +   'seed 1: stranded at p16.22 (x 4473..4655, y 9024)',
+    +   'seed 1: stranded at p18.23 (x 4274..4554, y 8820)',
+    +   'seed 1: stranded at p17.24 (x 4274..4456, y 8922)',
+    +   'seed 1: stranded at p19.25 (x 4562..4680, y 8732)',
+    +   'seed 1: stranded at p18.26 (x 4688..4898, y 8820)',
+    +   'seed 1: stranded at p20.27 (x 3643..4982, y 9432)',
+    +   'seed 1: stranded at p13.28 (x 4274..4456, y 9330)',
+    +   'seed 1: stranded at p14.29 (x 4473..4655, y 9228)',
+    +   'seed 1: stranded at p15.30 (x 4274..4456, y 9126)',
+    +   'seed 1: stranded at p16.31 (x 4473..4655, y 9024)',
+    +   'seed 1: stranded at p18.32 (x 4277..4776, y 8820)',
+    +   'seed 1: stranded at p17.33 (x 4274..4456, y 8922)',
+    +   'seed 1: stranded at p19.34 (x 4621..4621, y 8732)',
+    +   'seed 1: stranded at p18.35 (x 4269..4902, y 8820)',
+    +   'seed 1: stranded at p21.36 (x 4992..5202, y 9302)',
+    +   'seed 1: stranded at p19.37 (x 4791..4900, y 8732)',
+    +   'seed 1: stranded at p22.38 (x 5217..5422, y 9172)',
+    +   'seed 1: stranded at p23.39 (x 5431..5642, y 9042)',
+    +   'seed 1: stranded at p24.40 (x 5652..5774, y 8912)',
+    +   'seed 1: stranded at p25.41 (x 5782..6829, y 8825)',
+    +   'seed 1: stranded at p26.42 (x 6841..7058, y 8732)',
+    +   'seed 1: stranded at p27.43 (x 7070..7578, y 8639)',
+    +   'seed 1: stranded at p28.44 (x 7586..7796, y 8550)',
+    +   'seed 1: stranded at p29.45 (x 7804..8014, y 8461)',
+    +   'seed 1: stranded at p30.46 (x 8022..8545, y 8372)',
+    +   'seed 1: stranded at p31.47 (x 8560..8751, y 8282)',
+    +   'seed 1: stranded at p32.48 (x 8766..9447, y 8192)',
+    +   'seed 1: stranded at p37.49 (x 9459..10709, y 8098)',
+    +   'seed 1: stranded at p34.50 (x 10527..10709, y 7948)',
+    +   'seed 1: stranded at p33.51 (x 10119..10614, y 7808)',
+    +   'seed 1: stranded at v3',
+    +   'seed 1: stranded at p35.52 (x 10151..10398, y 7512)',
+    +   'seed 1: stranded at p36.53 (x 10411..10520, y 7424)',
+    +   'seed 1: stranded at p35.54 (x 10532..10731, y 7512)',
+    +   'seed 1: stranded at p37.55 (x 9459..10819, y 8098)',
+    +   'seed 1: stranded at p34.56 (x 10527..10709, y 7948)',
+    +   'seed 1: stranded at p33.57 (x 10119..10605, y 7808)',
+    +   'seed 1: stranded at p35.58 (x 10147..10613, y 7512)',
+    +   'seed 1: stranded at p36.59 (x 10465..10465, y 7424)',
+    +   'seed 1: stranded at p35.60 (x 10144..10732, y 7512)',
+    +   'seed 1: stranded at p38.61 (x 10829..11039, y 7968)',
+    +   'seed 1: stranded at p36.62 (x 10628..10736, y 7424)',
+    +   'seed 1: stranded at p39.63 (x 11049..11259, y 7838)',
+    +   'seed 1: stranded at p40.64 (x 11269..11479, y 7708)',
+    +   'seed 1: stranded at p41.65 (x 11489..11599, y 7578)',
+    +   'seed 1: stranded at p42.66 (x 11607..12619, y 7489)',
+    +   'seed 1: stranded at v4',
+    +   'seed 1: stranded at p43.67 (x 12635..12947, y 7131)',
+    +   'seed 1: stranded at p44.68 (x 12959..13736, y 7037)',
+    +   'seed 1: stranded at p45.69 (x 13746..13763, y 6907)',
+    +   'seed 1: stranded at p45.70 (x 13745..13799, y 6907)',
+    +   'seed 1: stranded at p46.71 (x 13967..13979, y 6777)',
+    +   'seed 1: stranded at p45.72 (x 13752..13834, y 6907)',
+    +   'seed 1: stranded at p46.73 (x 13971..13997, y 6777)',
+    +   'seed 1: stranded at p45.74 (x 13746..13929, y 6907)',
+    +   'seed 1: stranded at p46.75 (x 13970..14034, y 6777)',
+    +   'seed 1: stranded at p47.76 (x 14187..14496, y 6647)',
+    +   'seed 1: stranded at p46.77 (x 13966..14048, y 6777)',
+    +   'seed 1: stranded at p46.78 (x 13966..14076, y 6777)',
+    +   'seed 1: stranded at p46.79 (x 13965..14103, y 6777)',
+    +   'seed 1: stranded at p46.80 (x 13971..14145, y 6777)',
+    +   'seed 1: stranded at p48.81 (x 14506..14523, y 6517)',
+    +   'seed 1: stranded at p46.82 (x 13965..14176, y 6777)',
+    +   'seed 1: stranded at p48.83 (x 14512..14557, y 6517)',
+    +   'seed 1: stranded at p49.84 (x 14729..14733, y 6387)',
+    +   'seed 1: stranded at p48.85 (x 14509..14591, y 6517)',
+    +   'seed 1: stranded at p49.86 (x 14728..14755, y 6387)',
+    +   'seed 1: stranded at p49.87 (x 14725..14779, y 6387)',
+    +   'seed 1: stranded at p49.88 (x 14727..14799, y 6387)',
+    +   'seed 1: stranded at p49.89 (x 14732..14823, y 6387)',
+    +   'seed 1: stranded at p50.90 (x 14951..15066, y 6257)',
+    +   'seed 1: stranded at p49.91 (x 14854..14948, y 6387)',
+    +   'seed 1: stranded at p51.92 (x 15074..15667, y 6169)',
+    +   'seed 1: stranded at v5',
+    +   'seed 1: stranded at p52.93 (x 15683..16001, y 5800)',
+    +   'seed 1: stranded at p56.94 (x 16009..17259, y 5712)',
+    +   'seed 1: stranded at p54.95 (x 16997..17179, y 5562)',
+    +   'seed 1: stranded at p53.96 (x 16650..17081, y 5422)',
+    +   'seed 1: stranded at v6',
+    +   'seed 1: stranded at p55.97 (x 16678..17164, y 5162)',
+    +   'seed 1: stranded at p57.98 (x 17273..17369, y 5162)',
+    +   'seed 1: stranded at p58.99 (x 17383..18452, y 5066)',
+    +   'seed 1: stranded at v7',
+    +   'seed 1: stranded at p59.100 (x 18468..18769, y 4727)',
+    +   'seed 1: stranded at p60.101 (x 18780..20122, y 4642)',
+    +   'seed 1: stranded at p61.102 (x 20132..20149, y 4512)',
+    +   'seed 1: stranded at p61.103 (x 20131..20185, y 4512)',
+    +   'seed 1: stranded at p62.104 (x 20353..20365, y 4382)',
+    +   'seed 1: stranded at p61.105 (x 20138..20220, y 4512)',
+    +   'seed 1: stranded at p62.106 (x 20357..20383, y 4382)',
+    +   'seed 1: stranded at p61.107 (x 20132..20315, y 4512)',
+    +   'seed 1: stranded at p62.108 (x 20356..20420, y 4382)',
+    +   'seed 1: stranded at p63.109 (x 20573..20882, y 4252)',
+    +   'seed 1: stranded at p62.110 (x 20352..20434, y 4382)',
+    +   'seed 1: stranded at p62.111 (x 20352..20462, y 4382)',
+    +   'seed 1: stranded at p62.112 (x 20351..20489, y 4382)',
+    +   'seed 1: stranded at p62.113 (x 20357..20531, y 4382)',
+    +   'seed 1: stranded at p64.114 (x 20892..20909, y 4122)',
+    +   'seed 1: stranded at p62.115 (x 20351..20562, y 4382)',
+    +   'seed 1: stranded at p64.116 (x 20898..20943, y 4122)',
+    +   'seed 1: stranded at p65.117 (x 21115..21119, y 3992)',
+    +   'seed 1: stranded at p64.118 (x 20895..20977, y 4122)',
+    +   'seed 1: stranded at p65.119 (x 21114..21141, y 3992)',
+    +   'seed 1: stranded at p64.120 (x 20890..21009, y 4122)',
+    +   'seed 1: stranded at p64.121 (x 20890..21083, y 4122)',
+    +   'seed 1: stranded at p65.122 (x 21111..21175, y 3992)',
+    +   'seed 1: stranded at p66.123 (x 21333..21872, y 3862)',
+    +   'seed 1: stranded at p67.124 (x 21880..22077, y 3774)',
+    +   'seed 1: stranded at p68.125 (x 22085..22282, y 3686)',
+    +   'seed 1: stranded at p69.126 (x 22290..22627, y 3598)',
+    +   'seed 1: stranded at p70.127 (x 22642..23240, y 3508)',
+    +   'seed 1: stranded at v8',
+    +   'seed 1: stranded at p65.128 (x 21277..21333, y 3992)',
+    +   'seed 1: stranded at p65.129 (x 21118..21357, y 3992)',
+    +   'seed 1: stranded at p71.130 (x 23256..23577, y 3156)',
+    +   'seed 1: stranded at p72.131 (x 23589..24316, y 3062)',
+    +   'seed 1: stranded at p73.132 (x 24326..24343, y 2932)',
+    +   'seed 1: stranded at p73.133 (x 24325..24379, y 2932)',
+    +   'seed 1: stranded at p74.134 (x 24547..24559, y 2802)',
+    +   'seed 1: stranded at p73.135 (x 24332..24414, y 2932)',
+    +   'seed 1: stranded at p74.136 (x 24551..24577, y 2802)',
+    +   'seed 1: stranded at p73.137 (x 24326..24509, y 2932)',
+    +   'seed 1: stranded at p74.138 (x 24550..24614, y 2802)',
+    +   'seed 1: stranded at p75.139 (x 24767..24776, y 2672)',
+    +   'seed 1: stranded at p74.140 (x 24545..24756, y 2802)',
+    +   'seed 1: stranded at p75.141 (x 24770..24797, y 2672)',
+    +   'seed 1: stranded at p73.142 (x 24325..24536, y 2932)',
+    +   'seed 1: stranded at p75.143 (x 24769..24805, y 2672)',
+    +   'seed 1: stranded at p75.144 (x 24769..24823, y 2672)',
+    +   'seed 1: stranded at p75.145 (x 24765..24856, y 2672)',
+    +   'seed 1: stranded at p76.146 (x 24989..24992, y 2542)',
+    +   'seed 1: stranded at p75.147 (x 24765..24976, y 2672)',
+    +   'seed 1: stranded at p76.148 (x 24991..25017, y 2542)',
+    +   'seed 1: stranded at p76.149 (x 24990..25025, y 2542)',
+    +   'seed 1: stranded at p76.150 (x 24988..25042, y 2542)',
+    +   'seed 1: stranded at p76.151 (x 24989..25053, y 2542)',
+    +   'seed 1: stranded at p76.152 (x 24987..25070, y 2542)',
+    +   'seed 1: stranded at p76.153 (x 24986..25096, y 2542)',
+    +   'seed 1: stranded at p77.154 (x 25205..25350, y 2476)',
+    +   'seed 1: stranded at p78.155 (x 25357..25526, y 2476)',
+    +   'seed 1: stranded at p76.156 (x 24985..25231, y 2542)',
+    +   'seed 1: stranded at v9',
+    +   'seed 1: stranded at p79.157 (x 25534..25652, y 2388)',
+    +   'seed 1: stranded at p80.158 (x 25374..25814, y 3062)',
+    +   'seed 1: stranded at p78.159 (x 25660..25842, y 2476)',
+    +   'seed 1: stranded at p80.160 (x 25374..25828, y 3062)',
+    +   'seed 1: stranded at p83.161 (x 26584..26584, y 2672)',
+    +   'seed 1: stranded at p84.162 (x 26622..26707, y 2542)',
+    +   'seed 1: stranded at p85.163 (x 26718..27300, y 2457)',
+    +   'seed 1: stranded at v10',
+    +   'seed 1: stranded at v11',
+    +   'seed 1: stranded at p80.164 (x 25374..25924, y 3062)',
+    +   'seed 1: stranded at p81.165 (x 25934..26144, y 2932)',
+    +   'seed 1: stranded at p82.166 (x 26157..26364, y 2802)',
+    +   'seed 1: stranded at p83.167 (x 26380..26584, y 2672)',
+    +   'seed 1: stranded at p86.168 (x 27316..27725, y 2120)',
+    +   'seed 1: stranded at p87.169 (x 27741..28037, y 1790)',
+    +   'seed 1: stranded at p88.170 (x 28052..28612, y 1695)',
+    +   'seed 1: stranded at v12',
+    +   'seed 1: stranded at p89.171 (x 28628..29181, y 1374)',
+    +   'seed 1: stranded at p90.172 (x 29191..29208, y 1244)',
+    +   'seed 1: stranded at p48.174 (x 14510..14638, y 6517)',
+    +   'seed 1: stranded at p48.175 (x 14512..14677, y 6517)',
+    +   'seed 1: stranded at p78.176 (x 25364..25718, y 2476)',
+    +   'seed 1: stranded at p84.177 (x 26594..26707, y 2542)',
+    +   'seed 1: the level check reaches platform 91 (x 29420..29640, y 1114), the engine never does',
+    +   'seed 1: the level check reaches platform 92 (x 29640..29925, y 984), the engine never does',
+    +   'seed 1: the level check reaches platform 93 (x 29925..30145, y 854), the engine never does',
+    +   'seed 1: the level check reaches platform 94 (x 30145..30365, y 724), the engine never does',
+    +   'seed 1: the level check reaches platform 95 (x 30365..30476, y 594), the engine never does',
+    +   'seed 1: the level check reaches platform 96 (x 30476..31004, y 506), the engine never does',
+    +   'seed 1: the level check reaches platform 97 (x 31004..31660, y 420), the engine never does'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the shrine is never reached'
+    1: 'seed 1: flower #113 at (29700, 950) is never picked up'
+    2: 'seed 1: flower #114 at (30035, 820) is never picked up'
+    3: 'seed 1: flower #115 at (30255, 690) is never picked up'
+    4: 'seed 1: flower #116 at (30591, 472) is never picked up'
+    5: 'seed 1: flower #117 at (31111, 386) is never picked up'
+    6: 'seed 1: flower #118 at (31465, 386) is never picked up'
+    7: 'seed 1: flower #119 at (31580, 386) is never picked up'
+    8: 'seed 1: stranded at p1.0 (x 20..303, y 10727)'
+    9: 'seed 1: stranded at p2.1 (x 311..524, y 10640)'
+    10: 'seed 1: stranded at p3.2 (x 532..745, y 10553)'
+    11: 'seed 1: stranded at p4.3 (x 753..1370, y 10466)'
+    12: 'seed 1: stranded at v1'
+    13: 'seed 1: stranded at p5.4 (x 1386..1699, y 10138)'
+    14: 'seed 1: stranded at p8.5 (x 1714..2733, y 10048)'
+    15: 'seed 1: stranded at v2'
+    16: 'seed 1: stranded at p6.6 (x 2349..2459, y 9449)'
+    17: 'seed 1: stranded at p6.7 (x 2593..2758, y 9449)'
+    18: 'seed 1: stranded at p7.8 (x 2469..2581, y 9361)'
+    19: 'seed 1: stranded at p8.9 (x 1709..2843, y 10048)'
+    20: 'seed 1: stranded at p6.10 (x 2350..2637, y 9449)'
+    21: 'seed 1: stranded at p6.11 (x 2345..2757, y 9449)'
+    22: 'seed 1: stranded at p7.12 (x 2525..2525, y 9361)'
+    23: 'seed 1: stranded at p9.13 (x 2853..3063, y 9918)'
+    24: 'seed 1: stranded at p7.14 (x 2649..2757, y 9361)'
+    25: 'seed 1: stranded at p10.15 (x 3073..3283, y 9788)'
+    26: 'seed 1: stranded at p11.16 (x 3291..3503, y 9658)'
+    27: 'seed 1: stranded at p12.17 (x 3513..3628, y 9528)'
+    28: 'seed 1: stranded at p20.18 (x 3643..4875, y 9432)'
+    29: 'seed 1: stranded at p13.19 (x 4274..4456, y 9330)'
+    30: 'seed 1: stranded at p14.20 (x 4473..4655, y 9228)'
+    31: 'seed 1: stranded at p15.21 (x 4274..4456, y 9126)'
+    32: 'seed 1: stranded at p16.22 (x 4473..4655, y 9024)'
+    33: 'seed 1: stranded at p18.23 (x 4274..4554, y 8820)'
+    34: 'seed 1: stranded at p17.24 (x 4274..4456, y 8922)'
+    35: 'seed 1: stranded at p19.25 (x 4562..4680, y 8732)'
+    36: 'seed 1: stranded at p18.26 (x 4688..4898, y 8820)'
+    37: 'seed 1: stranded at p20.27 (x 3643..4982, y 9432)'
+    38: 'seed 1: stranded at p13.28 (x 4274..4456, y 9330)'
+    39: 'seed 1: stranded at p14.29 (x 4473..4655, y 9228)'
+    40: 'seed 1: stranded at p15.30 (x 4274..4456, y 9126)'
+    41: 'seed 1: stranded at p16.31 (x 4473..4655, y 9024)'
+    42: 'seed 1: stranded at p18.32 (x 4277..4776, y 8820)'
+    43: 'seed 1: stranded at p17.33 (x 4274..4456, y 8922)'
+    44: 'seed 1: stranded at p19.34 (x 4621..4621, y 8732)'
+    45: 'seed 1: stranded at p18.35 (x 4269..4902, y 8820)'
+    46: 'seed 1: stranded at p21.36 (x 4992..5202, y 9302)'
+    47: 'seed 1: stranded at p19.37 (x 4791..4900, y 8732)'
+    48: 'seed 1: stranded at p22.38 (x 5217..5422, y 9172)'
+    49: 'seed 1: stranded at p23.39 (x 5431..5642, y 9042)'
+    50: 'seed 1: stranded at p24.40 (x 5652..5774, y 8912)'
+    51: 'seed 1: stranded at p25.41 (x 5782..6829, y 8825)'
+    52: 'seed 1: stranded at p26.42 (x 6841..7058, y 8732)'
+    53: 'seed 1: stranded at p27.43 (x 7070..7578, y 8639)'
+    54: 'seed 1: stranded at p28.44 (x 7586..7796, y 8550)'
+    55: 'seed 1: stranded at p29.45 (x 7804..8014, y 8461)'
+    56: 'seed 1: stranded at p30.46 (x 8022..8545, y 8372)'
+    57: 'seed 1: stranded at p31.47 (x 8560..8751, y 8282)'
+    58: 'seed 1: stranded at p32.48 (x 8766..9447, y 8192)'
+    59: 'seed 1: stranded at p37.49 (x 9459..10709, y 8098)'
+    60: 'seed 1: stranded at p34.50 (x 10527..10709, y 7948)'
+    61: 'seed 1: stranded at p33.51 (x 10119..10614, y 7808)'
+    62: 'seed 1: stranded at v3'
+    63: 'seed 1: stranded at p35.52 (x 10151..10398, y 7512)'
+    64: 'seed 1: stranded at p36.53 (x 10411..10520, y 7424)'
+    65: 'seed 1: stranded at p35.54 (x 10532..10731, y 7512)'
+    66: 'seed 1: stranded at p37.55 (x 9459..10819, y 8098)'
+    67: 'seed 1: stranded at p34.56 (x 10527..10709, y 7948)'
+    68: 'seed 1: stranded at p33.57 (x 10119..10605, y 7808)'
+    69: 'seed 1: stranded at p35.58 (x 10147..10613, y 7512)'
+    70: 'seed 1: stranded at p36.59 (x 10465..10465, y 7424)'
+    71: 'seed 1: stranded at p35.60 (x 10144..10732, y 7512)'
+    72: 'seed 1: stranded at p38.61 (x 10829..11039, y 7968)'
+    73: 'seed 1: stranded at p36.62 (x 10628..10736, y 7424)'
+    74: 'seed 1: stranded at p39.63 (x 11049..11259, y 7838)'
+    75: 'seed 1: stranded at p40.64 (x 11269..11479, y 7708)'
+    76: 'seed 1: stranded at p41.65 (x 11489..11599, y 7578)'
+    77: 'seed 1: stranded at p42.66 (x 11607..12619, y 7489)'
+    78: 'seed 1: stranded at v4'
+    79: 'seed 1: stranded at p43.67 (x 12635..12947, y 7131)'
+    80: 'seed 1: stranded at p44.68 (x 12959..13736, y 7037)'
+    81: 'seed 1: stranded at p45.69 (x 13746..13763, y 6907)'
+    82: 'seed 1: stranded at p45.70 (x 13745..13799, y 6907)'
+    83: 'seed 1: stranded at p46.71 (x 13967..13979, y 6777)'
+    84: 'seed 1: stranded at p45.72 (x 13752..13834, y 6907)'
+    85: 'seed 1: stranded at p46.73 (x 13971..13997, y 6777)'
+    86: 'seed 1: stranded at p45.74 (x 13746..13929, y 6907)'
+    87: 'seed 1: stranded at p46.75 (x 13970..14034, y 6777)'
+    88: 'seed 1: stranded at p47.76 (x 14187..14496, y 6647)'
+    89: 'seed 1: stranded at p46.77 (x 13966..14048, y 6777)'
+    90: 'seed 1: stranded at p46.78 (x 13966..14076, y 6777)'
+    91: 'seed 1: stranded at p46.79 (x 13965..14103, y 6777)'
+    92: 'seed 1: stranded at p46.80 (x 13971..14145, y 6777)'
+    93: 'seed 1: stranded at p48.81 (x 14506..14523, y 6517)'
+    94: 'seed 1: stranded at p46.82 (x 13965..14176, y 6777)'
+    95: 'seed 1: stranded at p48.83 (x 14512..14557, y 6517)'
+    96: 'seed 1: stranded at p49.84 (x 14729..14733, y 6387)'
+    97: 'seed 1: stranded at p48.85 (x 14509..14591, y 6517)'
+    98: 'seed 1: stranded at p49.86 (x 14728..14755, y 6387)'
+    99: 'seed 1: stranded at p49.87 (x 14725..14779, y 6387)'
+    100: 'seed 1: stranded at p49.88 (x 14727..14799, y 6387)'
+    101: 'seed 1: stranded at p49.89 (x 14732..14823, y 6387)'
+    102: 'seed 1: stranded at p50.90 (x 14951..15066, y 6257)'
+    103: 'seed 1: stranded at p49.91 (x 14854..14948, y 6387)'
+    104: 'seed 1: stranded at p51.92 (x 15074..15667, y 6169)'
+    105: 'seed 1: stranded at v5'
+    106: 'seed 1: stranded at p52.93 (x 15683..16001, y 5800)'
+    107: 'seed 1: stranded at p56.94 (x 16009..17259, y 5712)'
+    108: 'seed 1: stranded at p54.95 (x 16997..17179, y 5562)'
+    109: 'seed 1: stranded at p53.96 (x 16650..17081, y 5422)'
+    110: 'seed 1: stranded at v6'
+    111: 'seed 1: stranded at p55.97 (x 16678..17164, y 5162)'
+    112: 'seed 1: stranded at p57.98 (x 17273..17369, y 5162)'
+    113: 'seed 1: stranded at p58.99 (x 17383..18452, y 5066)'
+    114: 'seed 1: stranded at v7'
+    115: 'seed 1: stranded at p59.100 (x 18468..18769, y 4727)'
+    116: 'seed 1: stranded at p60.101 (x 18780..20122, y 4642)'
+    117: 'seed 1: stranded at p61.102 (x 20132..20149, y 4512)'
+    118: 'seed 1: stranded at p61.103 (x 20131..20185, y 4512)'
+    119: 'seed 1: stranded at p62.104 (x 20353..20365, y 4382)'
+    120: 'seed 1: stranded at p61.105 (x 20138..20220, y 4512)'
+    121: 'seed 1: stranded at p62.106 (x 20357..20383, y 4382)'
+    122: 'seed 1: stranded at p61.107 (x 20132..20315, y 4512)'
+    123: 'seed 1: stranded at p62.108 (x 20356..20420, y 4382)'
+    124: 'seed 1: stranded at p63.109 (x 20573..20882, y 4252)'
+    125: 'seed 1: stranded at p62.110 (x 20352..20434, y 4382)'
+    126: 'seed 1: stranded at p62.111 (x 20352..20462, y 4382)'
+    127: 'seed 1: stranded at p62.112 (x 20351..20489, y 4382)'
+    128: 'seed 1: stranded at p62.113 (x 20357..20531, y 4382)'
+    129: 'seed 1: stranded at p64.114 (x 20892..20909, y 4122)'
+    130: 'seed 1: stranded at p62.115 (x 20351..20562, y 4382)'
+    131: 'seed 1: stranded at p64.116 (x 20898..20943, y 4122)'
+    132: 'seed 1: stranded at p65.117 (x 21115..21119, y 3992)'
+    133: 'seed 1: stranded at p64.118 (x 20895..20977, y 4122)'
+    134: 'seed 1: stranded at p65.119 (x 21114..21141, y 3992)'
+    135: 'seed 1: stranded at p64.120 (x 20890..21009, y 4122)'
+    136: 'seed 1: stranded at p64.121 (x 20890..21083, y 4122)'
+    137: 'seed 1: stranded at p65.122 (x 21111..21175, y 3992)'
+    138: 'seed 1: stranded at p66.123 (x 21333..21872, y 3862)'
+    139: 'seed 1: stranded at p67.124 (x 21880..22077, y 3774)'
+    140: 'seed 1: stranded at p68.125 (x 22085..22282, y 3686)'
+    141: 'seed 1: stranded at p69.126 (x 22290..22627, y 3598)'
+    142: 'seed 1: stranded at p70.127 (x 22642..23240, y 3508)'
+    143: 'seed 1: stranded at v8'
+    144: 'seed 1: stranded at p65.128 (x 21277..21333, y 3992)'
+    145: 'seed 1: stranded at p65.129 (x 21118..21357, y 3992)'
+    146: 'seed 1: stranded at p71.130 (x 23256..23577, y 3156)'
+    147: 'seed 1: stranded at p72.131 (x 23589..24316, y 3062)'
+    148: 'seed 1: stranded at p73.132 (x 24326..24343, y 2932)'
+    149: 'seed 1: stranded at p73.133 (x 24325..24379, y 2932)'
+    150: 'seed 1: stranded at p74.134 (x 24547..24559, y 2802)'
+    151: 'seed 1: stranded at p73.135 (x 24332..24414, y 2932)'
+    152: 'seed 1: stranded at p74.136 (x 24551..24577, y 2802)'
+    153: 'seed 1: stranded at p73.137 (x 24326..24509, y 2932)'
+    154: 'seed 1: stranded at p74.138 (x 24550..24614, y 2802)'
+    155: 'seed 1: stranded at p75.139 (x 24767..24776, y 2672)'
+    156: 'seed 1: stranded at p74.140 (x 24545..24756, y 2802)'
+    157: 'seed 1: stranded at p75.141 (x 24770..24797, y 2672)'
+    158: 'seed 1: stranded at p73.142 (x 24325..24536, y 2932)'
+    159: 'seed 1: stranded at p75.143 (x 24769..24805, y 2672)'
+    160: 'seed 1: stranded at p75.144 (x 24769..24823, y 2672)'
+    161: 'seed 1: stranded at p75.145 (x 24765..24856, y 2672)'
+    162: 'seed 1: stranded at p76.146 (x 24989..24992, y 2542)'
+    163: 'seed 1: stranded at p75.147 (x 24765..24976, y 2672)'
+    164: 'seed 1: stranded at p76.148 (x 24991..25017, y 2542)'
+    165: 'seed 1: stranded at p76.149 (x 24990..25025, y 2542)'
+    166: 'seed 1: stranded at p76.150 (x 24988..25042, y 2542)'
+    167: 'seed 1: stranded at p76.151 (x 24989..25053, y 2542)'
+    168: 'seed 1: stranded at p76.152 (x 24987..25070, y 2542)'
+    169: 'seed 1: stranded at p76.153 (x 24986..25096, y 2542)'
+    170: 'seed 1: stranded at p77.154 (x 25205..25350, y 2476)'
+    171: 'seed 1: stranded at p78.155 (x 25357..25526, y 2476)'
+    172: 'seed 1: stranded at p76.156 (x 24985..25231, y 2542)'
+    173: 'seed 1: stranded at v9'
+    174: 'seed 1: stranded at p79.157 (x 25534..25652, y 2388)'
+    175: 'seed 1: stranded at p80.158 (x 25374..25814, y 3062)'
+    176: 'seed 1: stranded at p78.159 (x 25660..25842, y 2476)'
+    177: 'seed 1: stranded at p80.160 (x 25374..25828, y 3062)'
+    178: 'seed 1: stranded at p83.161 (x 26584..26584, y 2672)'
+    179: 'seed 1: stranded at p84.162 (x 26622..26707, y 2542)'
+    180: 'seed 1: stranded at p85.163 (x 26718..27300, y 2457)'
+    181: 'seed 1: stranded at v10'
+    182: 'seed 1: stranded at v11'
+    183: 'seed 1: stranded at p80.164 (x 25374..25924, y 3062)'
+    184: 'seed 1: stranded at p81.165 (x 25934..26144, y 2932)'
+    185: 'seed 1: stranded at p82.166 (x 26157..26364, y 2802)'
+    186: 'seed 1: stranded at p83.167 (x 26380..26584, y 2672)'
+    187: 'seed 1: stranded at p86.168 (x 27316..27725, y 2120)'
+    188: 'seed 1: stranded at p87.169 (x 27741..28037, y 1790)'
+    189: 'seed 1: stranded at p88.170 (x 28052..28612, y 1695)'
+    190: 'seed 1: stranded at v12'
+    191: 'seed 1: stranded at p89.171 (x 28628..29181, y 1374)'
+    192: 'seed 1: stranded at p90.172 (x 29191..29208, y 1244)'
+    193: 'seed 1: stranded at p48.174 (x 14510..14638, y 6517)'
+    194: 'seed 1: stranded at p48.175 (x 14512..14677, y 6517)'
+    195: 'seed 1: stranded at p78.176 (x 25364..25718, y 2476)'
+    196: 'seed 1: stranded at p84.177 (x 26594..26707, y 2542)'
+    197: 'seed 1: the level check reaches platform 91 (x 29420..29640, y 1114), the engine never does'
+    198: 'seed 1: the level check reaches platform 92 (x 29640..29925, y 984), the engine never does'
+    199: 'seed 1: the level check reaches platform 93 (x 29925..30145, y 854), the engine never does'
+    200: 'seed 1: the level check reaches platform 94 (x 30145..30365, y 724), the engine never does'
+    201: 'seed 1: the level check reaches platform 95 (x 30365..30476, y 594), the engine never does'
+    202: 'seed 1: the level check reaches platform 96 (x 30476..31004, y 506), the engine never does'
+    203: 'seed 1: the level check reaches platform 97 (x 31004..31660, y 420), the engine never does'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/w4RealReach.test.ts:46:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 4-4 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 107 - 4-4 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 38779.97317
+  type: 'test'
+  ...
+# Subtest: 4-5 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 108 - 4-5 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 24567.222705
+  type: 'test'
+  ...
+# Subtest: 4-6 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 109 - 4-6 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 10859.123356
+  type: 'test'
+  ...
+# Subtest: 4-7 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 110 - 4-7 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 7110.860088
+  type: 'test'
+  ...
+# Subtest: 4-8 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+ok 111 - 4-8 in the real engine: everything picked up, the shrine reached, nowhere he is stranded
+  ---
+  duration_ms: 27544.538381
+  type: 'test'
+  ...
+# Subtest: every golden seed the game writes is part of the adventure: a save file carries it, a New Game clears it
+not ok 112 - every golden seed the game writes is part of the adventure: a save file carries it, a New Game clears it
+  ---
+  duration_ms: 7085.032703
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/writtenKeys.test.ts:31:1'
+  failureType: 'testCodeFailure'
+  error: 'set-up: 1-6 has golden seeds'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    seedKeys (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/writtenKeys.test.ts:24:12)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/2d8892b2-3520-575f-ab3d-254c16f253d1/scratchpad/wt0/src/game/writtenKeys.test.ts:33:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+ok 113 - what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+  ---
+  duration_ms: 1.721465
+  type: 'test'
+  ...
+1..113
+# tests 113
+# suites 0
+# pass 86
+# fail 26
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 347364.958904

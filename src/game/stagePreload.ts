@@ -9,6 +9,7 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { W17_URLS, w17Ready } from './w17Art.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
@@ -25,7 +26,7 @@ import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasL
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
-import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
+import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
@@ -52,6 +53,7 @@ import { WATER_SIGN_URL } from './waterSignData.ts';
 import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
+import { W6_WHEEL_URLS, w6WheelsReady } from './w6WheelArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -68,6 +70,7 @@ import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stage
 import { W1_PIT_URLS, w1PitsReady } from './w1Pits.ts';
 import { W1_CLUE_URL, W1_NEW_URL, w1ClueReady, w1NewReady } from './w1NewArt.ts';
 import { W1_CUT_URL, w1CutReady } from './w1CutArt.ts';
+import { VINE_SNAKE_URLS, vineSnakeArtReady } from './vineSnakeArt.ts';
 import { W1_CREEK_URL, W1_MUD_SPLASH_URL, w1CreekReady } from './w1Creek.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -142,6 +145,9 @@ export function start(keys: readonly string[]): string[] {
       w7PuzzleReady();
       w7TempleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
+    } else if (k === 'w6-wheels') {
+      w6WheelsReady();
+      urls.push(...W6_WHEEL_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);
@@ -175,6 +181,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'props2') {
       warmProto2();
       urls.push(PROTO2_URL);
+    } else if (k === 'props3') {
+      warmProto3();
+      urls.push(PROTO3_URL);
     } else if (k === 'perch') {
       perchArtReady();
       urls.push(DOT_PERCH_URL);
@@ -204,6 +213,12 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w1-cut') {
       w1CutReady();
       urls.push(W1_CUT_URL);
+    } else if (k === 'vine-snake') {
+      vineSnakeArtReady();
+      urls.push(...VINE_SNAKE_URLS);
+    } else if (k === 'w17') {
+      w17Ready();
+      urls.push(...W17_URLS);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();

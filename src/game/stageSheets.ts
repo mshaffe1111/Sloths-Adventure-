@@ -26,6 +26,7 @@
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
+ *   w6-wheels      World 6's painted sluice wheels (w6WheelArt.ts), for a gen2 stage whose required room has a lever with its own `looks`
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
  *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
  *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts), temple walls and lianas (w7TempleArt.ts) and puzzle pieces
@@ -55,7 +56,9 @@ import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
-import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
+import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
+import { gen2Creatures, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
 import { W7_ROOM_STAGES, W7_SENTRY_STAGE } from './gen2/worlds/w7.ts';
@@ -71,13 +74,10 @@ import type { LevelConfig } from './types.ts';
  */
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-3': ['foe:goldsnake'],
-  '1-4': ['foe:goldsnake', 'props2'],
   '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
-  '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
-  '1-8': ['foe:goldsnake'],
+  '1-8': ['foe:eagle', 'props2'], // (the still fork's eagle and its moss cover's bushes; no gold snake since the hand-built 1-8 went, INT-10c)
   '1-9': ['foe:boa', 'foe:goldsnake'],
-  '2-2': ['foe:goldsnake'],
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
   '2-7': ['foe:goldsnake'],
@@ -135,8 +135,9 @@ const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W
 /** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
 export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
 
-/** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
-const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
+/** World 1's stages with puzzle rooms or kit decor: 1-4's nest door (gen2 w1Arc14.ts); 1-6's seesaws and 1-7's acorn meadow left with
+ *  their hand-built stages (R-165.238, BUILD-17): stageSheets.test holds this to the stages that build rooms */
+export const W1_ROOMS: ReadonlySet<string> = new Set(['1-4']);
 
 export interface SheetSwitches {
   /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone) */
@@ -150,14 +151,19 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
   // the vine field's feel test (feelPairStage.ts): World 1's painted ground, the kit's signpost for its speed sign
   if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
+  // the laid chase's dev fixture (chaseFixtureStage.ts): a gen2 World 1 stage, 1-1's sheets
+  if (cfg.id === CHASE_FIXTURE_ID) return stageSheets({ ...cfg, id: '1-1' }, sw);
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
   if (cfg.id === SLIDE_STAGE_ID && sw.hand && !cfg.secret) return ['kit:1', 'kit:7', 'perch', ...everyStage(7)];
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker', ...everyStage(5)];
   const w = cfg.worldIndex;
-  // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
-  const built = !cfg.secret && ((sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
+  // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts; and so is a LISTED stage
+  // with no hand-built plan left, rolled from its world's kit whatever the switch (stageGenerator.ts listedRoll, the same test): it
+  // draws its STAGE_DRAWS row, never the old generator's whole set (1-7's bushes, props2, were never asked for, BUILD-17))
+  const listed = !cfg.secret && !HAND_STAGES[cfg.id] && !!listedStage(cfg.id);
+  const built = !cfg.secret && ((sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg) || listed);
   const hasKit = w === 1 || !!KIT_FRAMES[w];
   const out: string[] = [];
   // (as engine.ts decides paintKit: a hand-built stage always, any other with a kit of its own when painting is on, never a boss lair)
@@ -195,7 +201,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (a web patch is strung with Dot's silk, from her prop sheet alone)
   if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`, ...(w === 5 ? ['dot-props'] : []));
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
-  // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
+  // (World 1's rooms: 1-4's nest door; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
@@ -208,6 +214,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
   // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its ledges and shelves are World 6's pieces (w6StiltArt.ts)
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
+  // (a required room's lever drawn in its world's pictures, World 6's sluice wheel: its sheets with the stage, never a pop-in)
+  if (isGen2Stage(cfg) && wheelRoom(cfg.id)) out.push('w6-wheels');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // (hf-props, 2026-10-31: Worlds 1-7 on every stage but a lair or a secret: the world's new dressing sheet, and on an old-generator
@@ -230,3 +238,9 @@ export function everyStage(w: number): string[] {
 }
 /** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
 export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];
+
+/** a gen2 stage whose required room (its manifest's `required`) has a lever drawn in its world's own pictures (a lever spec's `looks`) */
+function wheelRoom(id: string): boolean {
+  const M = GEN2_STAGES[id]?.kit('normal').manifest;
+  return (M?.required?.[id] ?? []).some((r) => !!M!.sections.find((s) => s.id === r.section)?.room?.pieces.some((pc) => pc.kind === 'lever' && !!pc.looks?.length));
+}

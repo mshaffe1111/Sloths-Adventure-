@@ -1,0 +1,8 @@
+BUILT upright {"stage":"1-1","seed":9800,"rerolls":0,"built":"easy","stored":"easy"}
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x600-upright.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x9000-upright.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x21050-upright.jpg
+BUILT sideways {"stage":"1-1","seed":9800,"rerolls":0,"built":"easy","stored":"easy"}
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x600-sideways.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x9000-sideways.jpg
+wrote reference/qa-reports/INT-7/stills/1-1/first-1-1-L18-easy-x21050-sideways.jpg

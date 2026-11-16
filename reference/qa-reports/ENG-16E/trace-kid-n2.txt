@@ -1,0 +1,154 @@
+  3.50 single from 977,882 hold 0.16 up 0.00 -> 1065,827 ok
+  4.90 single from 1277,827 hold 0.17 up 0.00 -> 1451,877 ok
+  6.30 single from 1691,877 hold 0.23 up 0.00 -> 1813,823 ok
+  9.33 single from 2521,879 hold 0.15 up 0.12 -> 2586,824 ok
+  10.97 single from 2826,832 hold 0.22 up 0.17 -> 3034,969 FELL BACK
+  11.97 single from 3104,969 hold 0.35 up 0.15 -> 3113,969 FELL BACK
+  12.77 double from 3113,969 hold 0.44 up 0.19 -> 3092,810 ok
+  16.57 single from 3152,789 hold 0.18 up 0.00 -> 3391,744 ok
+  19.93 single from 4165,874 hold 0.18 up 0.10 -> 4266,820 ok
+  22.97 single from 4953,871 hold 0.33 up 0.00 -> 5065,819 ok
+  24.27 single from 5313,875 hold 0.12 up 0.00 -> 5461,837 ok
+  26.30 single from 5807,853 hold 0.07 up 0.00 -> 6075,875 ok
+  27.57 single from 6277,875 hold 0.21 up 0.09 -> 6391,823 ok
+  29.53 single from 6787,875 hold 0.23 up 0.14 -> 6873,823 ok
+  31.00 single from 7186,877 hold 0.09 up 0.00 -> 7316,837 ok
+  33.07 single from 7657,854 hold 0.07 up 0.00 -> 7926,877 ok
+  34.33 single from 8125,877 hold 0.28 up 0.00 -> 8237,822 ok
+  36.40 single from 8665,874 hold 0.19 up 0.12 -> 8749,822 ok
+  38.27 single from 9127,877 hold 0.14 up 0.09 -> 9266,855 ok
+  39.30 single from 9422,855 hold 0.22 up 0.14 -> 9550,775 ok
+  41.97 single from 10139,856 hold 0.22 up 0.18 -> 10288,805 ok
+  43.70 single from 10645,859 hold 0.14 up 0.18 -> 10692,805 ok
+  45.90 single from 11152,859 hold 0.07 up 0.00 -> 11299,927 FELL BACK
+  46.90 single from 11299,927 hold 0.11 up 0.11 -> 11327,859 ok
+  49.23 single from 11701,859 hold 0.19 up 0.00 -> 11898,838 ok
+  50.77 single from 12086,848 hold 0.08 up 0.00 -> 12189,788 ok
+  53.23 single from 12319,853 hold 0.19 run false -> PUT BACK
+  54.37 single from 11783,859 hold 0.07 up 0.00 -> 11964,848 ok
+  56.43 single from 12084,848 hold 0.10 up 0.00 -> 12194,789 ok
+  58.97 single from 12322,852 hold 0.17 run false -> PUT BACK
+  59.93 single from 11829,859 hold 0.13 up 0.00 -> 11991,816 ok
+  62.13 single from 12082,846 hold 0.22 up 0.00 -> 12196,770 ok
+  64.67 single from 12323,853 hold 0.23 run false -> PUT BACK
+  65.63 single from 11815,859 hold 0.07 up 0.00 -> 11991,849 ok
+  67.83 single from 12084,848 hold 0.10 up 0.00 -> 12194,789 ok
+  70.43 single from 12327,850 hold 0.09 run false -> PUT BACK
+  71.33 single from 12661,859 hold 0.15 up 0.00 -> 12756,808 ok
+  73.50 single from 13203,861 hold 0.26 up 0.00 -> 13315,806 ok
+  75.13 single from 13637,860 hold 0.12 up 0.00 -> 13806,837 ok
+  76.60 single from 14010,848 hold 0.29 up 0.00 -> 14130,771 ok
+  78.43 single from 14257,855 hold 0.16 up 0.00 -> 14368,776 ok
+  80.77 single from 14498,852 hold 0.12 up 0.00 -> 14766,860 ok
+  81.53 single from 14848,860 hold 0.13 up 0.08 -> 14905,808 ok
+  83.97 single from 15388,859 hold 0.28 up 0.14 -> 15472,806 ok
+  86.03 single from 15868,857 hold 0.26 up 0.00 -> 15980,812 ok
+  87.10 single from 16124,812 hold 0.19 up 0.14 -> 16210,757 ok
+  88.27 single from 16388,757 hold 0.17 up 0.00 -> 16490,702 ok
+  91.60 single from 17264,808 hold 0.20 up 0.12 -> 17361,755 ok
+  93.70 single from 17794,811 hold 0.07 up 0.08 -> 17930,879 FELL BACK
+  94.70 single from 17930,879 hold 0.22 up 0.00 -> 18023,811 ok
+  96.27 single from 18318,811 hold 0.18 up 0.20 -> 18457,758 ok
+  98.37 single from 18900,817 hold 0.07 up 0.20 -> 18926,861 FELL BACK
+  99.07 single from 18927,861 hold 0.25 up 0.00 -> 19066,760 ok
+  101.53 single from 19173,792 hold 0.12 up 0.00 -> 19380,689 ok
+  102.93 single from 19638,769 hold 0.13 up 0.16 -> 19708,717 ok
+  104.30 single from 19892,717 hold 0.25 up 0.20 -> 20084,767 ok
+  104.90 single from 20143,767 hold 0.07 up 0.20 -> 20154,716 ok
+  106.57 single from 20504,770 hold 0.08 up 0.00 -> 20659,732 ok
+  108.43 single from 20976,756 hold 0.07 up 0.00 -> 21111,690 ok
+  110.37 single from 21492,770 hold 0.30 up 0.00 -> 21604,718 ok
+  112.20 single from 22027,770 hold 0.09 up 0.00 -> 22079,716 ok
+  113.53 single from 22254,716 hold 0.22 up 0.00 -> 22447,766 ok
+  115.23 single from 22807,828 hold 0.11 up 0.00 -> 22917,777 ok
+  117.47 single from 23368,833 hold 0.09 up 0.00 -> 23522,942 FELL BACK
+  118.57 single from 23613,998 hold 0.07 up 0.19 -> 23759,1055 ok
+  120.30 single from 23670,1055 hold 0.15 up 0.00 -> 23586,998 ok
+  121.23 single from 23570,998 hold 0.07 up 0.00 -> 23523,942 ok
+  122.57 single from 23470,942 hold 0.13 up 0.11 -> 23423,886 ok
+  123.37 single from 23370,886 hold 0.09 up 0.11 -> 23353,830 ok
+  124.30 double from 23350,830 hold 0.44 up 0.15 -> 23498,668 ok
+  126.90 single from 23711,795 hold 0.30 up 0.00 -> 23978,830 ok
+  127.83 single from 24047,830 hold 0.19 up 0.18 -> 24092,779 ok
+  130.23 single from 24587,835 hold 0.16 up 0.00 -> 24671,781 ok
+  131.47 single from 24836,781 hold 0.16 up 0.00 -> 25012,834 ok
+  132.10 single from 25067,834 hold 0.12 up 0.20 -> 25105,781 ok
+  133.60 single from 25367,781 hold 0.23 up 0.00 -> 25479,731 ok
+  136.47 single from 26142,783 hold 0.13 up 0.00 -> 26240,731 ok
+  137.57 single from 26360,731 hold 0.17 up 0.00 -> 26544,781 ok
+  138.53 single from 26664,781 hold 0.28 up 0.00 -> 26777,730 ok
+  139.67 single from 26906,730 hold 0.18 up 0.00 -> 27091,780 ok
+  140.67 single from 27210,780 hold 0.15 up 0.00 -> 27365,780 ok
+  142.30 single from 27628,780 hold 0.09 up 0.00 -> 27765,836 ok
+  143.33 single from 27894,909 hold 0.10 up 0.00 -> 28051,1005 FELL BACK
+  144.90 single from 27978,1005 hold 0.13 up 0.00 -> 27913,948 ok
+  146.07 single from 27878,948 hold 0.28 up 0.00 -> 27778,892 ok
+  147.50 single from 27778,892 hold 0.19 up 0.11 -> 27693,836 ok
+  148.33 single from 27678,836 hold 0.16 up 0.00 -> 27730,753 ok
+  152.17 single from 27682,747 hold 0.07 up 0.00 -> 27413,780 FELL BACK
+  153.80 single from 27635,780 hold 0.21 up 0.00 -> 27818,711 ok
+  156.30 single from 27983,754 hold 0.28 up 0.00 -> 28246,780 ok
+  157.47 single from 28421,808 hold 0.21 up 0.17 -> 28611,738 ok
+  160.40 single from 28706,745 hold 0.07 up 0.00 -> 28974,780 ok
+  161.63 single from 29167,780 hold 0.33 up 0.00 -> 29286,725 ok
+  162.63 single from 29387,725 hold 0.16 up 0.10 -> 29561,775 ok
+  163.70 single from 29708,775 hold 0.25 up 0.00 -> 29826,722 ok
+  166.60 single from 30498,808 hold 0.15 up 0.00 -> 30607,758 ok
+  169.53 single from 31254,810 hold 0.21 up 0.11 -> 31347,759 ok
+  171.53 single from 31734,810 hold 0.32 up 0.00 -> 31846,760 ok
+  172.70 single from 31974,760 hold 0.30 up 0.15 -> 32169,810 ok
+  174.93 single from 32602,810 hold 0.15 up 0.00 -> 32783,906 FELL BACK
+  175.83 single from 32772,906 hold 0.07 up 0.00 -> 32903,955 ok
+  176.50 single from 32903,955 hold 0.24 up 0.15 -> 32903,955 FELL BACK
+  177.57 double from 32903,955 hold 0.30 up 0.00 -> 32903,955 FELL BACK
+  178.23 double from 32903,955 hold 0.52 up 0.00 -> 32920,767 ok
+  180.47 single from 32810,909 hold 0.14 up 0.00 -> 32903,955 ok
+  181.20 double from 32903,955 hold 0.44 up 0.00 -> 32893,777 ok
+  184.20 single from 32936,777 hold 0.07 up 0.00 -> 33176,730 ok
+  185.60 single from 33423,810 hold 0.15 up 0.00 -> 33516,759 ok
+  187.57 single from 33912,811 hold 0.30 up 0.10 -> 34016,756 ok
+  188.63 single from 34163,756 hold 0.07 up 0.18 -> 34313,806 ok
+  189.00 single from 34340,806 hold 0.12 up 0.00 -> 34456,757 ok
+  196.60 single from 34784,794 hold 0.17 up 0.00 -> 35016,726 ok
+  198.00 single from 35256,806 hold 0.20 up 0.00 -> 35403,755 ok
+  200.03 single from 35817,807 hold 0.24 up 0.10 -> 35914,756 ok
+  203.73 single from 36656,808 hold 0.16 up 0.00 -> 36749,755 ok
+  204.63 single from 36832,763 hold 0.29 up 0.11 -> 36996,754 ok
+  205.73 single from 37116,754 hold 0.20 up 0.17 -> 37302,808 ok
+  206.53 single from 37321,808 hold 0.23 up 0.00 -> 37433,757 ok
+  208.13 single from 37736,812 hold 0.17 up 0.00 -> 37875,759 ok
+  210.17 single from 38270,814 hold 0.18 up 0.13 -> 38434,814 ok
+  211.93 single from 38716,814 hold 0.22 up 0.00 -> 38907,757 ok
+  214.57 single from 39088,796 hold 0.28 up 0.00 -> 39357,814 ok
+  215.77 single from 39541,814 hold 0.36 up 0.17 -> 39690,759 ok
+  217.63 single from 40108,813 hold 0.08 up 0.17 -> 40126,762 ok
+  221.07 single from 40895,838 hold 0.18 up 0.00 -> 40997,787 ok
+  223.47 single from 41555,843 hold 0.07 up 0.00 -> 41602,789 ok
+  225.47 single from 42035,841 hold 0.12 up 0.12 -> 42091,787 ok
+  227.60 single from 42561,839 hold 0.07 up 0.00 -> 42688,839 ok
+  229.70 single from 43008,839 hold 0.19 up 0.00 -> 43208,951 FELL BACK
+  230.53 single from 43223,959 hold 0.09 up 0.00 -> 43386,1064 FELL BACK
+  232.07 single from 43321,1064 hold 0.25 up 0.00 -> 43221,1007 ok
+  233.10 single from 43221,1007 hold 0.13 up 0.08 -> 43165,951 ok
+  234.20 single from 43121,951 hold 0.22 up 0.00 -> 43134,827 ok
+  236.63 single from 43221,1007 hold 0.15 up 0.09 -> 43146,951 ok
+  237.83 single from 43121,951 hold 0.07 up 0.00 -> 43074,895 ok
+  238.93 single from 43021,895 hold 0.22 up 0.00 -> 42909,839 ok
+  239.93 single from 42902,839 hold 0.24 up 0.00 -> 43069,895 ok
+  240.80 single from 43151,923 hold 0.07 up 0.18 -> 43308,1007 FELL BACK
+  242.50 single from 43321,1064 hold 0.14 up 0.17 -> 43274,1007 ok
+  243.57 single from 43221,1007 hold 0.07 up 0.17 -> 43202,951 ok
+  244.93 double from 43121,951 hold 0.50 up 0.18 -> 43025,767 ok
+  248.43 single from 43030,807 hold 0.16 up 0.00 -> 42760,839 FELL BACK
+  250.07 single from 42945,839 hold 0.13 up 0.00 -> 43102,895 ok
+  251.00 single from 43139,912 hold 0.22 up 0.00 -> 43360,1064 FELL BACK
+  253.77 single from 44218,841 hold 0.15 up 0.00 -> 44427,836 ok
+  256.57 single from 44519,819 hold 0.07 up 0.00 -> 44659,758 ok
+  257.90 single from 44880,838 hold 0.30 up 0.00 -> 45073,797 ok
+  260.33 single from 45370,818 hold 0.12 up 0.00 -> 45636,838 ok
+  261.33 single from 45737,838 hold 0.21 up 0.00 -> 45958,826 ok
+  264.23 single from 46076,819 hold 0.19 up 0.00 -> 46343,838 ok
+rescueXs 11788 43360
+{"x":43360,"y":1064,"t":251,"dur":0,"what":"fell into this pit 3 times (its far wall 251 px up)","step":null,"dip":null,"puzzle":false,"rescued":true}
+LOOP {"x":11783,"y":859,"n":3,"doubles":0,"deaths":3,"what":"","step":null,"dip":null,"puzzle":false}
+LOOP {"x":32903,"y":955,"n":2,"doubles":3,"deaths":0,"what":"a 225 px wall ahead, in a dip 49 px deep, an open drop ahead, the way on is 145 px up","step":225,"dip":49,"puzzle":false}

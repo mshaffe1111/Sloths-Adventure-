@@ -1,0 +1,4 @@
+pit-join: planted -> CAUGHT (RED, # fail 1); restored -> GREEN
+walked-span: planted -> CAUGHT (RED, # fail 1); restored -> GREEN
+tell-min: planted -> CAUGHT (RED, # fail 2); restored -> GREEN
+stale-way: planted -> CAUGHT (RED, # fail 1); restored -> GREEN
