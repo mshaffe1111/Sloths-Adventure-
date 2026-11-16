@@ -27,7 +27,7 @@ export const WHATS_NEW: Release[] = [
       'First Lianas is rebuilt: new swings, and petals that show me where to jump.',
       'A Very Good Bush is rebuilt: when the eagle screams, I hide in the green and keep still.',
       'Now the eagle lands and looks around. I only move while it looks away.',
-      'Racing to the shrine: the old limb gives way behind me now, past painted palms.',
+      'Run! The old limb gives way behind me now, all the way to the far tree.',
       'World 2 begins! New stage, Down to the River: the trees stop, and the river is my road.',
       'Listen for the knock: a drifting log is coming to carry me.',
       'Shallow water just splashes me back. Deep water costs a heart, so I stay on the logs.',
