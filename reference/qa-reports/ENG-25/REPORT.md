@@ -1,5 +1,5 @@
 # ENG-25 REPORT (Engine, t-eng-25 from origin/main 6e7b85f8; packet reference/packets/2026-11-18/ENG-25.md; started 12:45 PM ET 11-18)
-**Head:** HEADHASH. **HF:** one sandbox, ~$0.18 of $3. **Pushback:** 3 (below). **Gates on the head:** GATELINE
+**Head:** the commit carrying this line (code head ffc5c99a; this commit adds only REPORT/note text). **HF:** one sandbox, ~$0.18 of $3. **Pushback:** 3 (below). **Gates on ffc5c99a:** all green (4 below).
 
 ## Done-items
 1. **NEW 1 snap stones in play.** pieces/padPiece.ts plays `on: 'bites'` (ride.ts Pad.on): solid always, hurts while 'on' and he stands on
@@ -25,7 +25,7 @@
    lid, no shimmer; each take's own cells drift 5-11 levels on the lid), SHUT from its shut cell (its painted seam) under that lid. 5 frames
    (SHUT, OPEN-1..3, SNAP): counts 1-3 a notch each, four = SNAP 40% then SHUT (snapRow.test.ts pins it). w2-1118/w2-snapstone.webp
    1200x140, walk line 7, 34.5 KB; catalog row + inventory emit (w2, w6). The lead ACCEPTED fb583ab4's sheet at 1:38 PM.
-4. **Nothing shipped moved:** lockall vs main's lock: 102/102 stages unchanged. tsc 0. Suite SUITELINE. generality PASS, knowncheck PASS,
+4. **Nothing shipped moved:** lockall vs main's lock: 102/102 stages unchanged. tsc 0. Suite (3 shards, 1:51-2:22 PM ET): 3,798 pass, 0 fail, 2 todo (main's own: w4RealReach/w4Runtime, unchanged). generality PASS, knowncheck PASS,
    roadmapcheck PASS (unshallowed), coveragecheck PASS after `pad:snap` (5), artcheck PASS, art tests 16/16 on the final emit. Bots: castBots +
    tierBots (1-1 calibration replay) + padRide 43/43. No shipped stage lays an onBeat animal in a cast (the frog's World 6 runs on predatorAI).
 5. **coveragecheck:** `pad:snap` priced by score.ts rideTiming (its pad branch) **per stone**: each stone's own board window (bar less the

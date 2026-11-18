@@ -6,7 +6,8 @@ Rewritten for ENG-25 (11-18, t-eng-25): section 0zl (snap stones in play; the ca
 - **SNAP STONES** (2-5.md NEW 1): a platform with `pad: { by: 'beat', on: 'bites', clock: 'snap-<row>', shift }`, `art: 'snapStone'`, type
   'solid'. pieces/padPiece.ts plays it: `brickNow('bites')` (solid always), `hurts()` while 'on' and he stands on it, returning
   `PieceHurt.hold` (NEW: damagePlayer's knock is vx 0, a straight jolt; the side knock threw him off an 80 px stone into the river). The jaw
-  is drawn by snapStoneArt.ts from `brickCount` (beatBrick.ts: count 1-4 of the bar, a count = the 'on' length). `snapCount(plat)` for bots.
+  is drawn by snapStoneArt.ts from `brickCount` (beatBrick.ts: count 1-4 of the bar, a count = the 'on' length): 5 painted frames, counts
+  1-3 OPEN-1..3, four SNAP (40%) then SHUT (tools/art/hf25/ship.py builds them from ONE painted take cell). `snapCount(plat)` for bots.
 - **The row** is a PadRow `by: 'snap'` (gen2/rideLay.ts): 'snap' and 'stone' pieces, `snap: { count, warn?, wave? }`; snapClock = 4 counts,
   bite = the 4th, creak `warn` 0.5 s at the end of the 3rd; a wave's stone i shifts -i x count (later only). `snapFaults` (in pipeline's
   wet verdict) holds SNAP_FAIR from 2-5.md's flight: 80 px, 30-40 px water, <= 3 in step, wave never earlier, window to leave the bank
