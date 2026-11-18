@@ -97,16 +97,27 @@ Fixture now starts the eye where a pass starts; assertion unchanged; planted (cu
 | full suite | **CUT at 30 min on the merge head; UNRUN on the final head** | - |
 | seedlist 1-9 --check, 1-1 --check, lockall --intended 1-9, coveragecheck, knowncheck, generality, roadmapcheck, drawcheck 1-9 both ways | **UNRUN** (EXACT NEXT STEP 3) | - |
 
-## Bots (castBots 1-40, both settings): RUNNING at the stop (addlevel --relist on 202d198a). Spot traces on seed 1 (202d198a):
-- KID easy / ADULT normal: shrine, ~7 boa hits a run: the first-timer bots do not freeze even after (b) (the freeze plan needs
-  `learned.has('freeze')`; they take Dot's words but did not stop at any rear). Bot model, not level data: traced, named.
-- MIDDLE normal: shrine, 2 hits (the bop beat); MIDDLE easy: shrine, 2 hits (stair, read-bare); EXPERT normal: shrine, 1 hit (stair).
-- No tier springs a trap (told of traps 0): nothing in 1-9 names 1-3's trap (the keeper's lines don't), and the bots carry no earlier
-  stage's lesson. ENGINE-WORTHY below.
+## Bots (castBots 1-40, both settings, on 202d198a via addlevel --relist: READY, 101 s)
+| Tier | Setting | Result | Under 2:00 | Time median | Hits (a run) | Lives |
+|---|---|---|---|---|---|---|
+| kid | normal / easy | PASS 40/40 / 40/40 | 0 / 0 | 143.8 / 147.8 s | 9.5 / 7.0 | 0 / 0 |
+| adult | normal / easy | PASS 40/40 / 40/40 | 0 / 0 | 144.1 / 146.9 s | 6.9 / 5.5 | 0 / 0 |
+| child | normal / easy | PASS 40/40 / 40/40 | 0 / 0 | 433.7 / 291.4 s | 5.6 / 1.8 | 3 / 0 |
+| middle | normal / easy | PASS 40/40 / 40/40 | 0 / 0 | 213.9 / 197.0 s | 2.0 / 1.2 | 0 / 0 |
+| expert | normal | PASS 40/40 | 0 | 177.1 s | 2.1 | 0 |
+Easy is never harder: fewer hits than Normal for every tier. Traps sprung 0/80 for every tier (told of traps 0: nothing in 1-9 names
+1-3's trap; ENGINE-WORTHY 2). Seed list relisted: 100 of 100, --check PASS. Traces (seed 1): the first-timers (kid, adult) do not freeze at
+any rear even after (b) (ENGINE-WORTHY 3), so they are hit at most boas; middle/expert miss 1-2 freezes a run (the stair, the bop beat,
+the bare read): the 0.43 s window on Normal. The child on Normal: 3 lives in 40 runs (ENG-19b Unresolved 1: its 0.49 s reaction).
 
 ## Meter (raw, without anchors; SCALE NaN: EXACT NEXT STEP 4): 1-9 Normal mean 3.4 pts/min, peak 11 (1-7 4.25/11.95; 1-8 15.8/33.8);
 Easy 2.0/9.5 (pre-swap head). Read: 1-9 reads near 1-7, far under its 9.5 target; the meter scores each boa as one "creature" ask
 (no bits for the freeze's nerve window). Named, not tuned.
+
+## Lead's rulings 10:35 AM ET applied
+- Freeze first: in 1-9.md's "AS BUILT" line. 'drops' (movesJournal.ts) no longer opens on 1-9 (R-165.281). (f) R-165.280. Hand plan R-165.282.
+- **(j) NOT LAID:** the keeper's journal tip is 15 words; journal.test.ts:31 caps a tip at 12 (a rule: not loosened). main's old tip stays
+  until the keeper gives a 12-word line (it is untrue for the new boa: "punch it three times").
 
 ## Polish check
 **No stills or clips shot** (rule 29: the bots' 40-seed table is not green yet). Rough spots named now:

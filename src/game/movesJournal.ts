@@ -286,7 +286,9 @@ export const PAGES: JournalPage[] = [
   },
   {
     id: 'drops', chapter: 'dangers', title: 'Snakes from above', demo: 'drops', pose: 'punch',
-    open: { tip: [['1-9', 'ring:go']], cleared: ['1-9'] },
+    // (it opened on clearing the hand-built 1-9's ring; the new 1-9 (BUILD-19) drops no snakes, so nothing opens it until R-165.281
+    //  re-homes it to the first stage that really drops them: the lead's ruling 10:35 AM ET 11-18)
+    open: { tip: [], cleared: [] },
     where: 'Found in World 1', riddle: 'Something is up in the canopy.',
     intro: 'Sometimes snakes drop out of the trees and block the way. Beat every one of them and the way opens.',
     lines: same([{ how: 'Punch and kick them all', what: 'Open the way' }]),
