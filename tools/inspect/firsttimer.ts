@@ -1124,6 +1124,8 @@ export class FirstTimerRun {
   climbBacks = 0;
   /** climbing back out of such a pit: the ledges from the pit's floor up to the route, in order, and the way he heads now */
   private climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null = null;
+  /** the frame the bot itself last set him down (placeAt: a rescue, a put-past): that frame's jump in his place is its own, already found */
+  private placedFrame = -1;
   /** how often he has climbed back out of each pit (its floor): the same pit `tries3` times is a loop, and he is put past it */
   private pitFalls = new Map<Platform, number>();
   /** when he last let go of a liana (s of play): a pit he falls into soon after was a let-go that fell short, and he learns to hang low */
@@ -3075,6 +3077,7 @@ export class FirstTimerRun {
     this.airFrom = null;
     this.blockedT = 0;
     this.prog.relocate(sim.p);
+    this.placedFrame = this.frames;
   }
 
   /** the route point nearest a spot */
@@ -3290,6 +3293,15 @@ export class FirstTimerRun {
     this.moveY = p.y - this.lastY;
     const step = Math.hypot(p.x - this.lastX, p.y - this.lastY);
     if (step < 100) this.walked += step;
+    // (set down by the GAME: a respawn at a flag, a river's splash-back, a put-back; a jump in his place no move of his makes. His place
+    //  along the way is found where he now stands, and a climb back read off where he was is over. BUILD-24b, 2-4: the respawn's relocate
+    //  (respawned, called from loseLife) read the spot he drowned at, a frame before the game moved him to the flag, and Easy's splash-back
+    //  never relocated at all; 900 px off the way, under a liana's catch, pitWayBack set a 20 s climb back the wrong way, and 8 runs of
+    //  the calibrated tiers were rescued for it. setDown.test.ts)
+    if (step >= 100 && this.placedFrame !== this.frames) {
+      this.prog.relocate(p);
+      this.climbBack = null;
+    }
     this.lastX = p.x;
     this.lastY = p.y;
   }
