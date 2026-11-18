@@ -1,0 +1,24 @@
+// VAR-1b probe: walkedPath.test.ts E's case on a stage (layout 1, Normal): the bare stretch it cuts, and where the low fill lays. (D83)
+import '../../../../src/game/headlessDom.ts';
+import { generateStage, setLayoutVariant } from '../../../../src/game/stageGenerator.ts';
+import { generateAllLevels } from '../../../../src/game/worldsData.ts';
+import { petalPass } from '../../../../src/game/petalPass.ts';
+import { isPetal, petalGaps, SPREAD_MAX, type PetalOut } from '../../../../src/game/petals.ts';
+import { withSetting } from '../../../../src/game/settingDials.ts';
+const id = process.argv[2] ?? '1-7';
+const cfg = generateAllLevels().find((c) => c.id === id && !c.secret)!;
+setLayoutVariant(1);
+const st: any = generateStage(cfg, 'normal');
+setLayoutVariant(null);
+const flowers = st.collectibles.filter((c: any) => c.type === 'flower').sort((p: any, q: any) => p.x - q.x);
+const x0 = flowers[Math.floor(flowers.length / 3)].x, len = SPREAD_MAX * 1.35;
+const w: any = { ...st, collectibles: st.collectibles.filter((c: any) => !isPetal(c, st) || c.x <= x0 || c.x >= x0 + len).map((c: any) => ({ ...c })) };
+const before = new Set(w.collectibles.map((c: any) => c.id));
+const out = {} as PetalOut;
+withSetting('normal', () => petalPass(w, out));
+const added = w.collectibles.filter((c: any) => !before.has(c.id) && isPetal(c, w));
+const sec = (x: number) => st.gen2.sections.find((s: any) => x >= s.x0 && x < s.x1)?.template;
+console.log('stretch', Math.round(x0), Math.round(x0 + len), 'added', added.map((c: any) => `${Math.round(c.x)} ${sec(c.x)}${c.arc ? ' arc' : ''}`).join(', '));
+console.log('gaps before (played)', JSON.stringify(petalGaps(st, st.collectibles.filter((c: any) => isPetal(c, st)), SPREAD_MAX)));
+const pts = st.collectibles.filter((c: any) => isPetal(c, st)).map((c: any) => Math.round(c.x)).sort((a: number, b: number) => a - b);
+console.log('petals near', pts.filter((x: number) => x > x0 - 1500 && x < x0 + len + 1500).join(' '));
