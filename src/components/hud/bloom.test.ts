@@ -224,7 +224,7 @@ test("the goal card's words fit the stage", () => {
   assert.equal(goalInfo(cfg({ worldIndex: 3, miniIndex: 6, objectiveType: 'relic_hunt', targetCount: 1 })).line, 'This stage: find 1 keepsake');
   assert.deepEqual(goalInfo(cfg({ worldIndex: 3, miniIndex: 6, objectiveType: 'relic_hunt', targetCount: 4 })).slotIcon(1), { kind: 'pickup', name: 'rattle' });
   // (one pickup, Meeca's petal, everywhere but World 8, whose harvests gather its night blooms: petals.ts)
-  assert.deepEqual(goalInfo(cfg({ worldIndex: 2, objectiveType: 'harvest' })).icon, { kind: 'pickup', name: 'petal' });
+  assert.deepEqual(goalInfo(cfg({ worldIndex: 2, miniIndex: 5, objectiveType: 'harvest' })).icon, { kind: 'pickup', name: 'petal' });
   // (ART-22P: the counter shows the stage's own petal where its plan row names one, StageSpec.looks: 2-2 gathers the river king's
   //  lavender hyacinths, so its HUD never shows Meeca's pink petal beside them; a harvest with no own look keeps hers)
   assert.deepEqual(goalInfo(cfg({ id: '2-2', worldIndex: 2, miniIndex: 2 })).icon, { kind: 'pickup', name: stageLooks(2, 2).petal });

@@ -88,3 +88,9 @@ ART-18 total: ~29 GPU-min, **~$1.34** of its $4 cap (minutes x $2.75/60). Balanc
 |---|---|---|---|---|
 | 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
 ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.
+
+## 2026-11-18 (ART-22P, t-art-22p; the lead's packet cap $4, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 10:14-10:21 AM | sandbox 6afdc0ade41aae15936c90c1 (rtx-pro-6000), about 7.4 min creation to terminate: 8 img2img takes (the shipped petal recoloured lavender / white, tools/art/hf22p/starts.py; s45/s58 x seeds 11/23, ~11 s each after a ~2 min load) + 6 Qwen-Image + style LoRA 0.8 text-to-image takes (lavender hyacinth x4, white lily x2, ~20 s each); spec tools/art/hf22p/spec-22pi.json + spec-22p.json; picks back by hf_sandbox_fs (reference/art/hf22p/) | lead (ART-22P packet) | ~$0.34 | 1 shipped piece (src/assets/pickups/petal-hyacinth.webp, 2-2's pickup and HUD counter): $0.34 a piece; 14 takes, ~$0.02 a take |
+ART-22P total: ~7.4 GPU-min, **~$0.34** of its $4 cap (minutes x $2.75/60). Balance ~$53.6 (from ~$53.9, the last figure on main; later branches' spend not on main is not counted here). Logged 10:23 AM ET.

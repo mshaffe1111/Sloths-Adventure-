@@ -1,7 +1,17 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
+# Hand-off: the art director role (Content), rewritten 2026-11-18 (ART-22P: 2-2's lavender hyacinth petal, wired)
 
-Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-22P (§0g). Before it: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0g. 11-18 ART-22P (t-art-22p): 2-2's pickup is a painted lavender water-hyacinth petal (FIX-22 story fault), WIRED
+- src/assets/pickups/petal-hyacinth.webp (91x96, the shipped petal's size); catalog row hf22p/petal-hyacinth (part H22P, cast.json);
+  stagePlan 2-2 `looks.petal`; the HUD counter follows StageSpec.looks too (goalInfo.ts), so 1-5-style own looks show in the HUD.
+- Method that worked: img2img FROM THE SHIPPED PIECE recoloured (tools/art/hf22p/starts.py: hue-turn the body, keep the warm base)
+  on grey 128, s58: keeps shape, veins, edge weight and shading, so it sits beside the old petal in one style. Text to image (LoRA 0.8)
+  gave flat sticker petals with heavy black outlines (reference/art/hf22p/takes-sheet-t2i.jpg): off-style for a pickup family.
+- White lily (i-white-s58-23) was shot in game and lost: it melts into the pickups' cream glow and the cream sky (REPORT stills).
+- Cut: tools/art/hf22p/cut.py (border-flood grey key, alpha from distance to grey, rim colour un-mixed from the grey, long side 96).
+- Route: one sandbox, run.sh <commit>, crops by crop.py, back by hf_sandbox_fs cat .pN (saved to tool-results) + hfw2/fetch.py.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).

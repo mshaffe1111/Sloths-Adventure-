@@ -1,6 +1,16 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
+Rewritten for ART-22P (11-18, t-art-22p): section 0zl (CI's seed-list matrix, R-165.278). Before it FIX-22b (11-15): section 0zk.
+
+## 0zl. ART-22P (t-art-22p, 11-18): CI checks the proven seed lists in parallel jobs (R-165.278)
+- gates.yml `seedplan` runs `registrycheck.ts --shards --print` (stdout the matrix [1..n], stderr each shard's lists); `seedlists`
+  (matrix, fail-fast off, 25 min limit) job i runs `--lists --shard i/n` then `seedlist.ts <id> --check` per list. n = lists / 4
+  rounded up (SHARD_LISTS, ~2 min a list); shards balanced by seed count. A new list needs no YAML edit.
+- `--shard i/n` exits 1 when n is not today's count or the shard is empty: the old `for s in $(...)` loop checked nothing silently if
+  the list command failed. registrycheck's own `ci-seedlist` need (ciChecks) still reads the matrix line as the --lists loop.
+- registrycheck.test.ts 'R-165.278' proves every list in exactly one shard (1-40 lists) and that the one-job loop is gone.
+- The `rolled` job keeps its other steps and its 60 min limit (now ~5 min of work: lower it once a publish run proves the split).
+- Live proof is the next publish run (deploy.yml needs gates): read the seedplan log for the shard lines and each seedlists job's time.
 
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY
