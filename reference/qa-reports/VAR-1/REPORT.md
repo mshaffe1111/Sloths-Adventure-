@@ -27,7 +27,30 @@ A runs probe (`probes/runs.ts`: every 4-move run a stage repeats more than 3 tim
   eagle's fight seconds leave the beat clock), 1-7 Easy 1.4, 1-8 and 1-1 unchanged. coveragecheck PASS, seedlist --check 1-7/1-8 PASS.
 
 ### B. The level data (the lead's GO 10:19, conditions: rests stay rests, each rest looks different, 1-6's swing load unchanged)
-TBD: the sections table.
+Every piece is World 1's own inventory (moss banks, branches, World 1 climb vines, the hollow log, mushrooms, log and moss-stone blocks):
+no new art, no Hugging Face. Climb (taught in 1-4) added to the three kits' moves.
+
+| Stage | New or reworked | What it is | What it serves |
+|---|---|---|---|
+| 1-6 | each beat's walked ground (`hops` step strings) | each beat walks its OWN ground after its lianas: root up/down, stepping stones over a soft fern gap, a vine up a tall root, the drop | the lianas' rhythm: a different walk between each beat's swings, same swing count |
+| 1-6 | `w1-16-rest-dip` (reworked) | down the dip between the roots, up a vine at the foot of its far wall | "the vines": a rest that climbs |
+| 1-6 | `w1-16-rest-hump` (reworked) | up the great root by its vine, along its hump, a step down | the vines, at rest |
+| 1-6 | `w1-16-rest-stumps` | ends on its mossy floor past the second stump | (the closing root jumps made every rest read alike) |
+| 1-6 | beats' entry join | each beat asks `entry.join: 'walk'` (ENG-LOOK2) | the liana's take-off reached on the level, not past a rolled jump |
+| 1-7 | `w1-17-rest-hollow` (new) | a long mossy floor, a stone, a hollow log walked through, a stone | a green place to hide in, at rest |
+| 1-7 | `w1-17-rest-shelf` (new) | a mushroom up onto a mossy shelf (150 px, as the bounce ships), a root and down | (a rest; a missed bounce is the same ground) |
+| 1-7 | `w1-17-rest-dip` (new) | down a fern dip, a vine at its far wall, a root up and down | the moss and the climb, at rest |
+| 1-7 | `w1-17-rest-moss` (new) | a long mossy floor, two mossy rocks, a fallen log | a quiet floor, nothing watching |
+| 1-7 | `w1-17-rest` (kept) | the roots, now laid ONCE a roll (each rest maxPerStage 1) | |
+| 1-7 | beats' entry join | the beats but the two liana beats ask `entry.join: 'walk'` | (the two liana beats walked into stuck the first-timer bots) |
+| 1-8 | `w1-18-rest-knots` (new) | the knotted bough: a long sound fork, three burls to hop | a living fork: breathe |
+| 1-8 | `w1-18-rest-crook` (new) | up to the high crook by a vine at the trunk's foot, two roots down | a living fork: breathe, high |
+| 1-8 | `w1-18-rest-split` (new) | the fork splits: a high limb over the low one, either way | a choice while he breathes |
+| 1-8 | `w1-18-rest-saddle` (new) | the fork sags into a mossy saddle and rises out by a high root | a living fork's own shape |
+| 1-8 | `w1-18-rest` (kept) | the roots, now laid ONCE a roll | |
+
+Every rest is a rest (the lead's condition 10:19): no pit, no heart on either setting; each rest that climbs has the vine at the foot of
+its wall (a miss is the ground he stood on). Removed on the way: stepping-stone RESTS (soft gaps are pits), a hide in a rest.
 
 ## 3. Flags before / after (funcheck, layouts 1-16, both settings)
 TBD

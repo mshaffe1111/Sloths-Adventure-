@@ -102,9 +102,9 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): So
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
-/** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it. A beat
- *  asks to be walked into (entry.join 'walk', ENG-LOOK2): its take-off is reached on the level, never past a rolled step or pit (VAR-1: the
- *  rolled join was a jump before every liana, rest, jump, swing on every roll); the arrival and the rests keep their rolled joins */
+/** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it. (VAR-1
+ *  tried asking each beat's join to be a walk: the first-timer bots then stuck in the liana beats, kid 6/16 against 15/16 rolled; the joins
+ *  stay rolled, and the rests' own ends give the variety) */
 function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; maxPerStage?: number; versions: V[]; uses?: string[]; /** a lesson the stage only RE-shows (1-2's thorns, as 1-5's brick): it still uses the swing */ reshows?: string }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
@@ -114,7 +114,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, uses, reshows, ...rest } = o;
-  return { ...rest, ...(reshows ? { teaches: reshows } : {}), feel: [STAGE_16], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['swing']), terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', ...(o.jobs.some((j) => j === 'arrive' || j === 'rest') ? {} : { join: 'walk' as const }) }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  return { ...rest, ...(reshows ? { teaches: reshows } : {}), feel: [STAGE_16], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['swing']), terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -202,19 +202,17 @@ function hops(k: string, from: string, n: number, steps: string = 'UD'.repeat(n 
   if ([...steps].reduce((h, c) => h + (RISE[c] ?? NaN), 0) !== end) throw new Error(`1-6 ground "${steps}" must end ${end} root up`);
   const pieces: SectionPiece[] = [];
   let at = from, up = 0;
-  // (the width of the piece he stands on: a climb's vine stands at its far end. The first, `from`, is the beat's own bank, 240+ px)
-  let atW = 240;
-  const W: Record<string, number> = { U: 240, D: 300, s: 220, X: 300, C: 240 };
   [...steps].forEach((c, i) => {
     const key = c === 'U' || c === 'C' ? `${k}u${++up}` : `${k}w${i + 1}`;
     if (c === 'U') pieces.push(bank(key, at, 240, UP));
     else if (c === 'D') pieces.push(bank(key, at, 300, DOWN));
     else if (c === 's') pieces.push(stone(key, at, 220));
     else if (c === 'X') pieces.push(bank(key, at, 300, CLIMB));
-    else if (c === 'C') pieces.push(...wallClimb(key, at, atW, 210, 240));
+    // (a climb walks up to its vine over a level run-up of its own, 360 px: on the root or stone he hopped onto, he landed past the vine at
+    //  the wall's face and the first-timer bots never turned back (VAR-1, castBots 1-6: kid 13/40, adult 8/40, rescued at the wall))
+    else if (c === 'C') pieces.push(bank(`${key}f`, at, 360), ...wallClimb(key, `${key}f`, 360, 210, 240));
     else throw new Error(`1-6 ground: no step "${c}"`);
     at = key;
-    atW = W[c];
   });
   return { pieces, last: at };
 }
@@ -380,7 +378,8 @@ export const QUIET_16: SectionTemplate[] = [
     id: j ? 'long' : 'short',
     lay: { pieces: [bank('a', null, w[0]), bank('b', 'a', 240, UP), bank('c', 'b', w[1], DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pb', 'b', LANDED, 1, 60), petals('pd', 'd', 0.5, 1)] },
   })) }),
-  link({ id: 'w1-16-rest-log', name: 'a rest: along a fallen log', job: 'rest', versions: [{ id: 'log', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 420, UP), { key: 'f', shape: 'block', w: [280, 300], place: { kind: 'on', on: 'b', at: [0.1, 0.15], h: [24, 26] }, style: 'log', main: false }, bank('c', 'b', 300, DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pf', 'f', 0.5, 2, 160), petals('pd', 'd', 0.5, 1)] } }] }),
+  // (it ends on the floor past the log, VAR-1: a root up and down after it read as two more jumps before the next liana)
+  link({ id: 'w1-16-rest-log', name: 'a rest: along a fallen log', job: 'rest', versions: [{ id: 'log', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 420, UP), { key: 'f', shape: 'block', w: [280, 300], place: { kind: 'on', on: 'b', at: [0.1, 0.15], h: [24, 26] }, style: 'log', main: false }, bank('c', 'b', 300, DOWN), bank('z', 'c', 320)], sockets: [flag('c', 0.5), petals('pf', 'f', 0.5, 2, 160), petals('pz', 'z', 0.5, 1)] } }] }),
   // (the great root is a wall, 210 px: a vine at its foot (1-4's climb, past a double jump's 184), along its hump, and a step down off its
   //  far end: nothing to fall into, a miss on the vine is the bank he stood on. VAR-1: the hump read as two more root jumps)
   link({ id: 'w1-16-rest-hump', name: 'a rest: up the great root by its vine', job: 'rest', versions: [{ id: 'hump', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 400, UP),
