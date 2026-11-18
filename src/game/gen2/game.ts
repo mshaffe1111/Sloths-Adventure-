@@ -110,6 +110,21 @@ export function gen2Water(id: string): boolean {
   return M.pit === 'water' || (M.pit === 'void' && !id.startsWith('8-')) || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
+/**
+ * does this gen2 stage lay a river of rafts (a river row with look 'raft', R-165.288, placed by one of its sections on either setting):
+ * it draws World 2's painted raft from the puzzle kit's sheet, so it asks for that sheet before play (stageSheets.ts 'kit-pieces')
+ */
+export function gen2Rafts(id: string): boolean {
+  const entry = GEN2_STAGES[id];
+  if (!entry) return false;
+  return (['normal', 'easy'] as const).some((d) => {
+    const M = entry.kit(d).manifest;
+    const rafts = new Set(Object.entries(M.rivers ?? {}).filter(([, r]) => r.look === 'raft').map(([k]) => k));
+    return rafts.size > 0 && M.sections.some((s) => [...s.pieces, ...(s.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))]
+      .some((p) => p.place.kind === 'river' && rafts.has(p.place.row)));
+  });
+}
+
 /** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */
 export function gen2Creatures(id: string): string[] {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;

@@ -107,7 +107,8 @@ const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, type DriftInfo } from './river.ts';
+import { letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
@@ -960,6 +961,13 @@ export class GameEngine {
   private sweetGlow = 0;
   /** the swing's last moment in its sweet spot (for a press to let go a beat late), and a press made a beat early that is waiting for it */
   private sweetSnap: (SwingState & { dir: -1 | 1; at: number }) | null = null;
+  /** this frame's "let go now" (the glow's target: letGoNow) */
+  private glowCue = false;
+  /** the log river under each liana (letGoNow), found once for the platforms it was found in */
+  private cueRivers: { from: Platform[]; by: Map<number, { logs: DriftInfo[]; flowT: boolean } | null> } | null = null;
+  /** the let-go tables flown (letGoCue.ts), by liana, facing and hold; the one in use */
+  private cueTables = new Map<string, LetGoTable>();
+  private cueTab: { id: number; dir: -1 | 1; len: number; tab: LetGoTable } | null = null;
   private swingLeapWait = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
@@ -1063,6 +1071,9 @@ export class GameEngine {
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
+    this.cueRivers = null;
+    this.cueTables.clear();
+    this.cueTab = null;
     this.vineLash.clear();
     this.vineStruck.clear();
     resetHeroClips();
@@ -2408,6 +2419,7 @@ export class GameEngine {
           // the self-swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
           // him to face the way he will let go, up and down climb, and the only choice is when. A glint shows the sweet spot for letting go.
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const hold0 = sw.len;
           const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
           // (with the vine's own swing, `amp`: a press a beat late leaps from this, and timedLaunch reads the swing it was on. Without it
@@ -2423,9 +2435,13 @@ export class GameEngine {
               this.input.state.jumpPressed = true;
             }
           }
-          this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
+          // the glow and its glints say "let go now": the sweet spot, or over a log river only when a let-go now comes down on a log or
+          // the bank ahead (letGoCue.ts, R-165.289: 2-4's "Let go when it's under you"); display only, the press is played as above
+          const cue = this.letGoNow(nearSwingVine, sw, p.facing, sweet, sw.len !== hold0);
+          this.glowCue = cue;
+          this.sweetGlow += ((cue ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
-          if (sweet && this.sweetGlint <= 0) {
+          if (cue && this.sweetGlint <= 0) {
             this.sweetGlint = 0.14;
             this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG, r.y - Math.cos(sw.angle) * VINE_HANG, '#fde68a');
           }
@@ -6702,6 +6718,40 @@ export class GameEngine {
     const s = this.input.state;
     if (s.jumpLean) return s.jumpLean;
     return s.right ? 1 : s.left ? -1 : fallback;
+  }
+
+  /**
+   * Is this the moment the swing's glow says "let go now"? On a liana over a log river (letGoCue.ts, R-165.289): a let-go pressed now,
+   * toward `dir`, comes down on a log or past the water on the bank ahead (the drop judge's own flight, riverLay.ts); not while his grip
+   * moves (`gripMoved`: the tables are flown at a hold, once it rests) nor over a river a sluice runs (its clock, river.ts logClock, can
+   * stop). Anywhere else the sweet spot (`sweet`), as always.
+   */
+  private letGoNow(v: Vine, sw: SwingState, dir: -1 | 1, sweet: boolean, gripMoved: boolean): boolean {
+    if (this.cueRivers?.from !== this.platforms) this.cueRivers = { from: this.platforms, by: new Map() };
+    let under = this.cueRivers.by.get(v.id);
+    if (under === undefined) {
+      const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && !q.flood && lianasOver([v], q).length > 0);
+      const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === r.x0 && q.drift.x1 === r.x1).map((q) => q.drift!) : [];
+      under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
+      this.cueRivers.by.set(v.id, under);
+    }
+    if (!under) return sweet;
+    if (under.flowT || gripMoved) return false;
+    let at = this.cueTab;
+    if (!at || at.id !== v.id || at.dir !== dir || at.len !== sw.len) {
+      const key = `${v.id}:${dir}:${sw.len}`;
+      let tab = this.cueTables.get(key);
+      if (!tab) {
+        if (this.cueTables.size >= 8) this.cueTables.clear();
+        const d0 = under.logs[0];
+        tab = letGoTable(v, sw.len, dir, d0);
+        this.cueTables.set(key, tab);
+      }
+      at = this.cueTab = { id: v.id, dir, len: sw.len, tab };
+    }
+    const snap = this.sweetSnap;
+    const lateOk = !!snap && snap.dir === dir && this.gameTime - snap.at <= RELEASE.late;
+    return letGoLands(at.tab, sw.t ?? this.vineClock, under.logs, this.gameTime, this.easy, lateOk);
   }
 
   /** a press to let go a beat before the swing's sweet spot toward `dir`: keep it and let go when he gets there (true = held, he swings on) */
