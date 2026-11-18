@@ -47,11 +47,12 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
+import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
 import type { Platform, PlayerState, Vine } from '../../src/game/types.ts';
@@ -639,7 +640,16 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true };
+/**
+ * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
+ * end only when that let-go comes down on a log (or past the water on the far bank), flown as the engine flies it (timedLaunch and the air
+ * tick with the engine's turn), the logs where they will be on their clock; otherwise he rides the swing round and waits for the logs, as
+ * a person watching both clocks does ("not yet... NOW"). `vineFromLog`, a vine from a log: riding a drifting log under a liana hung over
+ * the river ahead (not the one he just left), he jumps for it the moment a jump off the moving log (its carry his, RIDE.keep) catches it
+ * where it will be on the vines' clock (hopCatches), after his thumb's lag. Both fly the press as the phone's touch layer holds it (at
+ * least MIN_TOUCH_JUMP_HOLD_MS from the take-off, inputEngine.ts), never FakeInput's bare one-frame press. Always on outside a test.
+ */
 /**
  * (BUILD-21, 2-1.md NEW 4) `upstream`, against the flow: on a log carrying him back the way he came (a river flowing back at him), every
  * log runs at the river's one speed, so the gap to the next never closes while he waits: waiting at the front end only carries him back.
@@ -699,6 +709,9 @@ export interface FTRun {
   spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
   handed?: number;
+  /** let-gos of a liana that came down on a drifting log (SKILLS.dropOnLog), and lianas caught by a jump off one (SKILLS.vineFromLog) */
+  ontoLog?: number;
+  fromLog?: number;
   perMin: { hits: number; lives: number };
   gameOvers: number;
   firstHarm: FirstHarm[];
@@ -923,6 +936,9 @@ export interface Try {
 export interface RunOptions {
   /** s of play at most */
   cap?: number;
+  /** drive the engine through the game's own InputEngine (RealPlay.useRealInput: the touch layer's calls and minimum hold), never FakeInput's
+   *  bare press: true for the touch's hold, a number for another (ms, the Pad button's PAD_HOP_MS) (ENG-24) */
+  realInput?: true | number;
   /** the route's points; default: the inspector's main route on the engine's own stage */
   route?: Pt[];
   /** stuck this long (s) without progress: put him further on */
@@ -973,6 +989,16 @@ export class FirstTimerRun {
   /** handed to a bank by a log (FTRun.handed): counted where the frame after a log is a bank and he never left the ground */
   handed = 0;
   private wasOnLog = false;
+  /** let-gos onto a log and catches off one (FTRun.ontoLog, fromLog): his last floor a log, his last hold a liana */
+  ontoLog = 0;
+  fromLog = 0;
+  private lastFloorLog = false;
+  /** the let-go coming is aimed at a log (SKILLS.dropOnLog): a drop, no second press after it */
+  private aimedDrop = false;
+  /** a liana's let-gos at a grip (physics.ts pressLaunches), kept by vine, grip and swing (SKILLS.dropOnLog) */
+  private launches = new Map<string, ReturnType<typeof pressLaunches>>();
+  private lastSwung = false;
+  private wasSwinging = false;
   readonly stuck: StuckSpot[] = [];
   readonly puzzles: Array<{ id: string; x: number; t: number }> = [];
   private view = emptyGuideView();
@@ -982,7 +1008,7 @@ export class FirstTimerRun {
   private blockedT = 0;
   private lastX = 0;
   /** a press he has decided on, and when the thumb gets there */
-  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean } | null = null;
+  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean } | null = null;
   private punchAt: number | null = null;
   /** a drop trap he has just hit: he stands until it is down (castPlan) */
   private trapWait: { post: TrapPost; until: number } | null = null;
@@ -1158,6 +1184,7 @@ export class FirstTimerRun {
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
     this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
     this.sim = new RealPlay(id, seed);
+    if (opts.realInput) this.sim.useRealInput(opts.realInput === true ? undefined : opts.realInput);
     this.start = { x: this.sim.p.x };
     this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
@@ -1581,9 +1608,108 @@ export class FirstTimerRun {
    * here catches: on to the lip, then the steer's own jump. 4 s is the most he waits. Measured on 1-6 seeds 1-6: these hops catch 99%
    * (adult) and 85-89% (kid) of the time.
    */
+  /** the press he makes, held (s): his own hold, and on the phone's touch layer never under its minimum (RunOptions.realInput) */
+  private pressHold(): number {
+    const own = this.who.hold[0];
+    const real = this.opts.realInput;
+    return real ? Math.max(own, (real === true ? MIN_TOUCH_JUMP_HOLD_MS : real) / 1000) : own;
+  }
+
+  /**
+   * SKILLS.dropOnLog: on liana `v`, hung over a log river, would a let-go now (after his thumb's lag) MISS the logs? Read as the engine
+   * plays it: the swing where it will be on the vines' clock, its leap (timedLaunch), the air tick with the engine's turn (airStep), the
+   * logs where they will be on their own clock as his feet come down through their top inside the river's window (margin 12 px in from a
+   * log's end); past the water on the far bank is a landing too. Not over a log river: never waits.
+   */
+  private dropWaits(v: Vine, dir: -1 | 1, t: number): boolean {
+    const rivers = this.sim.stage.rivers ?? [];
+    const r = rivers.find((q) => q.speed > 0 && !q.open && lianasOver([v], q).length);
+    if (!r) return false;
+    const logs = this.sim.platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === r.x0 && q.drift.x1 === r.x1 && !q.broken);
+    if (!logs.length) return false;
+    // (his press comes after his thumb's lag, drawn about thumb[0] (decide): he lets go only when the press lands at the lag's middle and
+    //  half a spread either side, as a person aims for the middle of the moment, never its edge)
+    const [mid, sd] = this.who.thumb;
+    return [mid, Math.max(0, mid - sd / 2), mid + sd / 2].some((lag) => this.dropMisses(v, dir, t, lag, r, logs, rivers));
+  }
+
+  /** liana `v` hangs over a log river with logs on it (SKILLS.dropOnLog's ground) */
+  private overLogs(v: Vine): boolean {
+    return (this.sim.stage.rivers ?? []).some((q) => q.speed > 0 && !q.open && lianasOver([v], q).length && this.sim.platforms.some((d) => d.type === 'drift' && d.drift?.x0 === q.x0));
+  }
+
+  /** does a let-go of liana `v` pressed `lag` s from now miss the logs of river `r` (dropWaits)? The press as the engine plays it: the
+   *  let-go of that moment of the swing at his grip (physics.ts pressLaunches: the sweet spot's leap, a press a beat late leaping from the
+   *  sweet spot, a beat early waiting for it), the one gen2's drop judge flies (riverLay lianaDrops) */
+  private dropMisses(v: Vine, dir: -1 | 1, t: number, lag: number, r: RiverZone, logs: readonly Platform[], rivers: readonly RiverZone[]): boolean {
+    const clock = (this.e as unknown as { vineClock: number }).vineClock;
+    const p = this.sim.p;
+    const vlen = v.bottomY - v.topY;
+    const grip = Math.min(1, (p.swingLength ?? vlen) / vlen);
+    const key = `${v.id}:${grip.toFixed(2)}:${vinePeriod(v)}`;
+    let L = this.launches.get(key);
+    if (!L) this.launches.set(key, (L = pressLaunches(v, grip)));
+    const P = vinePeriod(v), mod = (x: number) => ((x % P) + P) % P, ph = mod(clock + lag);
+    let l = L[0];
+    for (const q of L) if (Math.min(Math.abs(mod(q.pt) - ph), P - Math.abs(mod(q.pt) - ph)) < Math.min(Math.abs(mod(l.pt) - ph), P - Math.abs(mod(l.pt) - ph))) l = q;
+    if (dir < 0) return true;
+    const b = { x: l.x, y: l.y, vx: l.vx, vy: l.vy };
+    // (flown as the drop judge flies it, the jump held: a flick lands the same within a point, swingLog.ts)
+    const top = logs[0].y, bankTop = top - LOG_DROP;
+    const leaves = t + lag + (l.t - l.pt);
+    for (let i = 1; i < 90; i++) {
+      const prev = b.y;
+      airStep(b, DT, dir, true, true);
+      if (b.vy < 0) continue;
+      const inWindow = b.x >= r.x0 && b.x <= r.x1;
+      // (the far bank: his middle well onto it, 16 px past its lip; one just past the lip met the bank's face and fell, catch toy v3)
+      if (!inWindow && prev <= bankTop + 14 && b.y >= bankTop) return b.x < r.x1 + 16;
+      if (inWindow && prev <= top + DRIFT_CATCH.drop && b.y >= top) {
+        const at = leaves + i * DT;
+        return !logs.some((q) => { const x = floatAt(rivers, q)(at); return b.x > x + 12 && b.x < x + q.width - 12; });
+      }
+      if (b.y > top + 60) return true;
+    }
+    return true;
+  }
+
+  /**
+   * SKILLS.vineFromLog: standing on a drifting log under a liana hung over its river ahead (never the one he just left), does a jump now
+   * (after his thumb's lag, the log's carry his) catch it where it will be? Then the press.
+   */
+  private vineFromLog(p: RealPlay['p'], dir: -1 | 1, t: number): Pad | null {
+    if (!p.grounded) return null;
+    const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
+    if (!here?.drift) return null;
+    const d = here.drift;
+    const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && q.id !== this.swungOn && q.x > d.x0 && q.x < d.x1
+      && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420);
+    if (!v) return null;
+    const rivers = this.sim.stage.rivers;
+    const carry = ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x;
+    const clock = (this.e as unknown as { vineClock: number }).vineClock;
+    // (the press after his thumb's lag, drawn about thumb[0] (decide): it must catch at the lag's middle and half a spread either side,
+    //  as dropWaits aims; a press at the middle alone missed it on the catch toy, middle Normal variant 5)
+    const [mid, sd] = this.who.thumb;
+    const hold = this.pressHold();
+    // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
+    // (he stands while the press comes (pending.still): flown from where the log carries him, at his speed now and at a stand)
+    const catches = (lag: number) => [p.vx, 0].every((vx) => {
+      const x = p.x + (vx + carry) * lag, lx = floatAt(rivers, here)(t + lag);
+      return x > lx + 10 && x < lx + here.width - 10 && hopCatches(v, x, p.y, dir, hold, clock + lag, vx + carry);
+    });
+    if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
+    const out = this.decide(dir, 'single', true, {});
+    if (this.pending) this.pending.still = true;
+    return out;
+  }
+
   private lianaWait(dir: -1 | 1): Pad | null {
     const p = this.sim.p;
     const here = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+    // (never off a drifting log: its front end is no ledge to wait at (it moves), and stepping toward it he walked off into the water,
+    //  catch toy v3 (ENG-24); a vine from a log is SKILLS.vineFromLog's)
+    if (SKILLS.vineFromLog && here?.type === 'drift') return null;
     const edgeX = here ? (dir > 0 ? here.x + here.width : here.x) : NaN;
     // (160 px out: from a run he slides about 75 px once the steer is let go, and from 70 px he slid off the lip, BUILD-16c's toy)
     const dist = here ? dir * (edgeX - p.x) : Infinity;
@@ -2052,9 +2178,15 @@ export class FirstTimerRun {
       // before; nothing holds him past 14 s)
       const still = !own || vineAmp(own) < 0.05;
       const late = this.swingT > 7 && (still || (a * fdir > 0.3 && om * fdir > 0));
-      if (!this.pending && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || late || this.swingT > 14)) {
+      // (drop on a log, SKILLS.dropOnLog: over a log river he lets go only when the let-go comes down on a log, after his thumb's lag)
+      // (his 7 s "late" let-go too: over the logs he waits for them up to the 14 s cap, as a person watching the river does; the late
+      //  let-go at the forward end then drowned the child on Normal, ENG-24 drop toy gap280)
+      const wait = SKILLS.dropOnLog && own && this.swingT <= 14 && this.dropWaits(own, fdir, t);
+      if (!this.pending && !wait && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || (late && !(SKILLS.dropOnLog && own && this.overLogs(own))) || this.swingT > 14)) {
         this.swingT = 0;
         this.letGoAt = t;
+        // (a let-go aimed at a log is a drop: no second press after it, which threw the middle bot past his log into the water)
+        this.aimedDrop = SKILLS.dropOnLog && !!own && this.overLogs(own);
         return this.decide(fdir, 'single', true, side(fdir));
       }
       return side(fdir);
@@ -2092,6 +2224,11 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (a vine from a log, SKILLS.vineFromLog: riding a log under a liana ahead, he jumps for it when the jump catches it)
+    if (SKILLS.vineFromLog && dir !== 0 && !this.jump && !this.pending) {
+      const go = this.vineFromLog(p, dir, t);
+      if (go) return go;
+    }
     // (a ride on a stage clock, a lift, a drifting log: he reads its clock as a person watching it does, before any other ground move:
     // clockRide. Its edge is the plain look ahead, 22 px and his edgeAim, the float-wait's own)
     // (a pond of sinking pads: he reads each pad's state and a beat row's breath as a person watching does, padRead)
@@ -2198,14 +2335,17 @@ export class FirstTimerRun {
       }
     }
     if (this.lateArmed) return side(this.lateArmed.dir);
-    // (a press on its way: he keeps going until it comes)
-    if (this.pending) return side(this.pending.dir);
+    // (a press on its way: he keeps going until it comes; a jump off a log for a vine he waits for standing, the log carrying him, as it
+    //  was judged (SKILLS.vineFromLog): walking on, he ran off the log's front end before it came, catch toy v3)
+    if (this.pending) return this.pending.still ? {} : side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
     if (t - this.lastLand < 0.1) {
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
-      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead)
-      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad)) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
+      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log, which is the ride skill's
+      //  (SKILLS.ride: he rides it until a flown hop lands on the next log or the bank takes him): after a let-go onto a 150 px log the
+      //  pause flicked him on blind into the water, ENG-24 drop toy gap280, middle Normal 17 lives)
+      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad) && !(SKILLS.ride && here.type === 'drift')) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
       if (!this.padPause) return side(dir);
     }
     if (this.padPause) {
@@ -2886,7 +3026,7 @@ export class FirstTimerRun {
     let hold = flickHold(this.r, who, who.retryHold && this.mem.fails(p.x, p.y) > 0 ? who.retryHold : needs ? (who.readHold ?? 0) : 0);
     let d2 = -1;
     if (who.dbl2Q) {
-      if (kind === 'single' && this.r() < (who.dblShare ?? 0)) kind = 'double';
+      if (kind === 'single' && !this.aimedDrop && this.r() < (who.dblShare ?? 0)) kind = 'double';
       // (up a step, the second press early enough to climb: from dbl2Q's quantiles up to readDbl; across a gap, his own delay)
       const here = this.floorAt(p.x, p.y, 6);
       const climb = overhead || (needs && dir !== 0 && !!here && this.stepUp(here, dir));
@@ -2899,6 +3039,7 @@ export class FirstTimerRun {
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;
     this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), d2, needs: needs || undefined, toX: overhead && toX !== null ? toX : undefined, left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
+    this.aimedDrop = false;
     this.nextStop = null;
     if (this.lianaHop) {
       this.jump.liana = true;
@@ -3155,6 +3296,18 @@ export class FirstTimerRun {
       const pad = this.pad();
       this.sim.frame(pad);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
+      {
+        const p = this.sim.p, sw = !!p.isVineSwinging;
+        if (sw && !this.wasSwinging && this.lastFloorLog) this.fromLog++;
+        if (sw) this.lastSwung = true;
+        if (p.grounded) {
+          const log = this.wasOnLog;
+          if (this.lastSwung && log) this.ontoLog++;
+          this.lastSwung = false;
+          this.lastFloorLog = log;
+        }
+        this.wasSwinging = sw;
+      }
       if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
@@ -3294,6 +3447,8 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     softFalls: run.softFalls.length,
     spurs: run.spursMet.size,
     handed: run.handed,
+    ontoLog: run.ontoLog,
+    fromLog: run.fromLog,
     gameOvers: run.gameOvers,
     firstHarm: fh,
     stuck: run.stuck,

@@ -35,6 +35,9 @@ export interface TierRun {
   putbacks: number;
   /** times a drifting log carried him under a bank and he stepped up onto it (firsttimer.ts FTRun.handed) */
   handed: number;
+  /** let-gos of a liana onto a drifting log, and lianas caught by a jump off one (firsttimer.ts SKILLS.dropOnLog, vineFromLog; ENG-24) */
+  ontoLog: number;
+  fromLog: number;
   rescues: number;
   secondPressMs: number[];
   /** the pieces he entered, in order, and in each the lives and put-backs (soft falls) it cost him */
@@ -65,12 +68,14 @@ export function enteredPieces<P extends PieceSpan>(pieces: P[], far: number, m: 
   return pieces.filter((p) => reached(m, far, entry(p, m)));
 }
 
-export function runTier(tier: Tier, setting: Setting, variant: number, stage = '1-1'): TierRun {
+/** a tier run's options: `realInput`, the engine driven through the game's own InputEngine (firsttimer.ts RunOptions, ENG-24) */
+export interface TierOpts { realInput?: true | number }
+export function runTier(tier: Tier, setting: Setting, variant: number, stage = '1-1', opts: TierOpts = {}): TierRun {
   const who = BOTS[tier][setting];
   if (!who) throw new Error(`no ${tier} bot on ${setting}`);
   const pieces = piecesOf(stage, variant, setting);
   // (the child tier's median finish is 444 s, over the first-timer's 360 s cap: a tier run has 20 minutes)
-  const r = firstTimer(stage, variant, who, { cap: 1200 });
+  const r = firstTimer(stage, variant, who, { cap: 1200, ...opts });
   // (how far on is by the stage's travel; the pieces, his trace and his falls are placed by x, so a climb or a way down has no pieces
   // to count until gen2 lays them with a span along the travel)
   const m = MODES[levelConfig(stage).travel ?? 'right'];
@@ -90,7 +95,7 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   for (const x of r.softFallXs ?? []) add(x, 'putbacks');
   return {
     tier, setting, stage, variant, end: r.end, finishSeconds: r.end === 'shrine' ? r.time : null,
-    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, handed: r.handed ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
+    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, handed: r.handed ?? 0, ontoLog: r.ontoLog ?? 0, fromLog: r.fromLog ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
     pieces: tally, ...(r.spurs ? { spurs: r.spurs } : {}), stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
   };
 }
