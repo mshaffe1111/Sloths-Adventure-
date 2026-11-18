@@ -33,7 +33,9 @@ import fs from 'node:fs';
 import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
 import { fallSeconds, POD } from '../../src/game/podfall.ts';
 import { beatOf } from '../../src/game/clock.ts';
-import { driftCycle, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { driftCycle, lianasOver, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { lianaDrops, logCatches } from '../../src/game/gen2/riverLay.ts';
+import { RIDE } from '../../src/game/ride.ts';
 import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
 import type { Ride } from '../../src/game/ride.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
@@ -128,7 +130,7 @@ export function unpriced(piece: string, where: string, was: number): { bits: num
  *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
 export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
   walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', rope: 'OTHER_BITS.climb', swing: 'swingChallenges',
-  timedHop: 'rideChallenges', lift: 'rideChallenges',
+  timedHop: 'rideChallenges', lift: 'rideChallenges', lianaDrop: 'lianaChallenges', logCatch: 'lianaChallenges',
 };
 /** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
  *  beat) is a choice skipping costs nothing, so it is no challenge (the meter prices the route to the shrine) */
@@ -644,6 +646,85 @@ export function rideChallenges(st: any, route: Route, samples: Sample[], setting
 }
 
 /**
+ * The catch off a riding log (METER-3, R-165.287; reference/design/2-4.md NEW 2, beat 4 "up from the log"): of one swing of liana `v`, how
+ * long (s) a jump off log `d` puts his hands on it, the log carrying him (RIDE.keep of its speed, gen2/riverLay.ts logCatches' own flight)
+ * standing or running, tapped or held. As catchWindow off a bank: a take-off moment counts when ANY point of the ride in reach (every
+ * 15 px from 420 px before the vine to 60 px past it, the stretch logCatches flies) catches it, since he rides through all of them and
+ * picks his press. 0: no jump off this log catches it (NOT MEASURED, never priced as the hardest).
+ */
+export function logCatchWindow(d: DriftInfo, v: any, setting: Setting): number {
+  return withSetting(setting, () => {
+    const dt = SIM_DTS[0];
+    const period = vinePeriod(v);
+    const top = d.baseY;
+    const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
+    const frames = Math.max(1, Math.round(period / dt));
+    let caught = 0;
+    for (let f = 0; f < frames; f++) {
+      const t0 = f * dt;
+      let ok = false;
+      for (let x = Math.max(d.x0, v.x - 420); x <= Math.min(d.x1, v.x + 60) && !ok; x += 15) {
+        for (const run of [0, PHYS.maxRun]) {
+          for (const hold of [false, true]) {
+            b.x = x; b.y = top; b.vx = d.dir * d.speed * RIDE.keep.x + run; b.vy = -PHYS.jumpV;
+            for (let i = 1; i < 90; i++) {
+              airStep(b, dt, 1, hold);
+              if (b.y > top + 40) break;
+              if (canGrabSwing(b.x, b.y, v, t0 + i * dt) && Math.abs(b.vx) > 25) { ok = true; break; }
+            }
+            if (ok) break;
+          }
+          if (ok) break;
+        }
+      }
+      if (ok) caught++;
+    }
+    return caught * dt;
+  });
+}
+
+/**
+ * A liana over a log river (METER-3, R-165.287; ENG-24's pieces, reference/design/2-4.md NEW 1-2), the route's two moves on it:
+ * - a LET-GO ONTO A LOG ('lianaDrop'): two clocks, the vine's swing and the river's logs, and he picks his moment on the vine (a
+ *   reactive window, METER-COVERAGE §1 RW: waiting costs seconds, a misjudged let-go costs the splash). Its window is the share of let-go
+ *   moments that come down on a log (or past the river), read by the judge's own flight (gen2/riverLay.ts lianaDrops: physics.ts
+ *   pressLaunches, the engine's catch on a drift, Easy's forgiveness, the worse of the two grips), so the bits are windowBits(1, share),
+ *   the same Fitts form as boarding a drift from a bank (open of cycle). Wait-and-go: the worst wait is the route's seconds, not bits.
+ * - a JUMP OFF A RIDING LOG UP TO A LIANA ('logCatch'): a timed catch as off a bank (catchWindow), off the moving log (logCatchWindow).
+ * The moves the route makes when a liana hangs over a river (route.ts). A miss falls in the river: its splash-back (soft) where the
+ * river is safe, else what the ground there costs.
+ */
+export function lianaChallenges(st: any, route: Route, setting: Setting, softPits: boolean): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const lianas = (st.vines ?? []).filter((v: any) => v.isSwingingVine && v.snake?.route !== 'still');
+  let base = 0;
+  for (const sg of route.segs) {
+    const v = (sg.kind === 'lianaDrop' || sg.kind === 'logCatch') && lianas.find((q: any) => Math.abs(q.x - (sg.kind === 'lianaDrop' ? sg.x0 : sg.x1)) < 2);
+    const r = v && (st.rivers ?? []).find((q: RiverZone) => lianasOver([v], q).length);
+    const logs: DriftInfo[] = r ? (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1).map((p: any) => p.drift) : [];
+    const log: any = sg.kind === 'logCatch' ? sg.from : (st.platforms ?? []).find((p: any) => p.drift === logs[0]);
+    if (v && logs.length && log?.drift) {
+      const d: DriftInfo = log.drift;
+      const rt = rideTiming(st, log, setting);
+      const cost: Cost = rt?.safe ? 'soft' : costAt(st, softPits, d.x0, d.x1, 'fall');
+      const ys: [number, number] = [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)];
+      if (sg.kind === 'lianaDrop') {
+        const k = lianaDrops(v, logs, setting);
+        out.push({ t: base, x: sg.x0, ys, kind: 'liana-drop', bits: windowBits(1, k.share), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+          note: `let go of liana ${v.id} over the river (onto a log or past it): ${(k.share * 100).toFixed(0)}% of let-go moments land, worst wait ${k.wait.toFixed(2)} s (swing ${k.period.toFixed(2)} s)` });
+      } else {
+        const period = withSetting(setting, () => vinePeriod(v));
+        const w = logCatchWindow(d, v, setting);
+        out.push({ t: base, x: sg.x0, ys, kind: 'log-catch', bits: w > 0 ? windowBits(period, w) : 0, cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+          note: `catch liana ${v.id} off a riding log: ${w > 0 ? `${(w * 1000).toFixed(0)} ms of ${period.toFixed(2)} s` : 'NOT MEASURED (no jump off this log catches it)'}` });
+      }
+    }
+    base += sg.dt;
+  }
+  return out;
+}
+
+/**
  * A timed crossing of a falling hazard's column (METER-1): its period, its quiet (the part of the period nothing falls), and how long the
  * route keeps him in its way. One crossing: the window is the quiet less that time (the entry times that keep all of it quiet). One as
  * long as the quiet: he stops out of reach and goes on in the next, so it is n crossings of inWay / n, each its own press, and he takes
@@ -803,6 +884,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of chaseChallenges(st, samples, setting)) add(c);
   for (const c of rollingChallenges(st, samples, setting)) add(c);
   for (const c of rideChallenges(st, route, samples, setting, softPits, id)) add(c);
+  for (const c of lianaChallenges(st, route, setting, softPits)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
@@ -896,6 +978,16 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): strin
   }
   for (const e of st.enemies ?? []) out.add(`creature:${e.type}`);
   for (const z of st.zones ?? []) out.add(`zone:${z.kind}`);
+  // (a liana hung over a log river lays the let-go over the water and, where a log carries him into its reach, the catch off a log,
+  //  whichever way the route goes (route.ts takes the quicker): the stage lays them, so the gate holds them (METER-3, R-165.287)
+  const lianas = (st.vines ?? []).filter((v: any) => v.isSwingingVine && v.snake?.route !== 'still');
+  for (const r of st.rivers ?? []) {
+    const over = lianasOver(lianas, r);
+    if (!over.length) continue;
+    out.add('move:lianaDrop');
+    const logs = (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    if (over.some((v: any) => logs.some((p: any) => logCatches(v, p.drift)))) out.add('move:logCatch');
+  }
   return [...out].sort();
 }
 

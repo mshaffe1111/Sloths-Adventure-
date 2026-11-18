@@ -1,5 +1,5 @@
 {
- "about": "The meter's coverage table (METER-2a, R-165.272; METER-COVERAGE.md \u00a73): one entry per piece id the code has (coveragecheck.ts reads the ids from the code). bot = the bot code that plays it, channel = the score.ts code that prices it, as file#symbol; null = none yet. rows = METER-COVERAGE.md \u00a72's # rows. A piece a built stage uses must have both, or be on tools/difficulty/coverage.known.json. shippedWorlds: the worlds the testers play, every stage of which the gate holds (plus every stage-table row); seeds: the layouts it scores, both settings.",
+ "about": "The meter's coverage table (METER-2a, R-165.272; METER-COVERAGE.md §3): one entry per piece id the code has (coveragecheck.ts reads the ids from the code). bot = the bot code that plays it, channel = the score.ts code that prices it, as file#symbol; null = none yet. rows = METER-COVERAGE.md §2's # rows. A piece a built stage uses must have both, or be on tools/difficulty/coverage.known.json. shippedWorlds: the worlds the testers play, every stage of which the gate holds (plus every stage-table row); seeds: the layouts it scores, both settings.",
  "shippedWorlds": [
   1
  ],
@@ -372,12 +372,30 @@
     "2"
    ]
   },
+  "move:lianaDrop": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.dropOnLog",
+   "channel": "tools/difficulty/score.ts#lianaChallenges",
+   "rows": [
+    "10",
+    "20"
+   ],
+   "note": "a let-go from a liana onto a log of the river under it (2-4 NEW 1; route.ts: a river with a liana over it that a bank reaches is boarded from the air). Two clocks, he picks the moment (RW): windowBits(1, the share of let-go moments that land, gen2/riverLay.ts lianaDrops). METER-3, R-165.287"
+  },
   "move:lift": {
    "bot": null,
    "channel": "tools/difficulty/score.ts#rideChallenges",
    "rows": [
     "25"
    ]
+  },
+  "move:logCatch": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.vineFromLog",
+   "channel": "tools/difficulty/score.ts#lianaChallenges",
+   "rows": [
+    "10",
+    "20"
+   ],
+   "note": "a jump off a riding log up to a liana hung over the river (2-4 NEW 2): a timed catch as off a bank, off the moving log (score.ts logCatchWindow). METER-3, R-165.287"
   },
   "move:presumed": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.startJump",

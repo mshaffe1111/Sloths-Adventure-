@@ -8,12 +8,14 @@
  * Times are for a brisk player who holds run: Pokey's top run speed (PHYS.maxRun), climbs at the engine's 220 px/s, swings at about
  * 430 px/s, shimmies at ROPE_SPEED, with stageTime.ts's overheads scaled to its quick player.
  */
-import { validateAsJudged, jumpOK, type CheckGraph } from '../../src/game/levelCheck.ts';
+import { validateAsJudged, jumpOK, lianaCaught, type CheckGraph } from '../../src/game/levelCheck.ts';
 import { lesserArcs } from '../../src/game/gen2/reach.ts';
 import { PHYS, JUMP_RISE, reachJump } from '../../src/game/physics.ts';
 import { ROPE_SPEED } from '../../src/game/rope.ts';
 import { TIME, MODEL_TYPICAL, MODEL_FAST } from '../../src/game/stageTime.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
+import { lianasOver } from '../../src/game/river.ts';
+import { logCatches } from '../../src/game/gen2/riverLay.ts';
 import type { Stage } from './stages.ts';
 
 export const RUN = PHYS.maxRun;
@@ -22,7 +24,9 @@ export const SWING_PACE = 430;
 /** stageTime's overheads are for its typical player; the quick player does them this much faster */
 export const K = MODEL_TYPICAL.alpha / MODEL_FAST.alpha;
 
-export type MoveKind = 'walk' | 'drop' | 'hop' | 'jump' | 'bounce' | 'timedHop' | 'glide' | 'climb' | 'swing' | 'rope' | 'lift' | 'draft' | 'presumed';
+export type MoveKind = 'walk' | 'drop' | 'hop' | 'jump' | 'bounce' | 'timedHop' | 'glide' | 'climb' | 'swing' | 'rope' | 'lift' | 'draft' | 'presumed'
+  // (a let-go from a liana onto a log of the river under it, and a jump off a riding log up to a liana: METER-3, R-165.287)
+  | 'lianaDrop' | 'logCatch';
 
 /** one piece of the route: walking along a ledge, or a move from one thing to the next */
 export interface Seg {
@@ -139,6 +143,30 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
       if (w === v) continue;
       const lw = Math.max(80, w.bottomY - w.topY);
       if (Math.abs(w.x - v.x) <= 0.9 * len + 0.9 * lw + 260 && w.bottomY >= v.topY && w.topY <= v.bottomY + 200) { addEdge(`L${v.id}`, `L${w.id}`, 'liana'); added++; }
+    }
+  }
+  // a liana hung over a log river (ENG-24, place `river` after a liana; reference/design/2-4.md NEW 1-2: "2-1 boards logs from the bank;
+  // 2-4 boards from the AIR and leaves UPWARD"): the river's logs are the let-go's landing (a 'lianaDrop'), and a liana its logs carry him
+  // under is caught off a log (a 'logCatch', gen2/riverLay.ts logCatches: the judge's own test). Where a bank reaches such a liana, the
+  // route boards that river from the air, never from the bank: under a liana the hop rule gives way and the judge holds the drop
+  // (riverLay.ts lianaRiverFaults), so no rule vouches for the bank's board there. Where no bank reaches it, he boards from the bank and
+  // catches the liana off the log. (METER-3, R-165.287: the route boarded every such river from the bank and never read the drop)
+  for (const r of stage.rivers ?? []) {
+    const over = lianasOver(lianas, r);
+    if (!over.length) continue;
+    const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    if (!logs.length) continue;
+    const logKeys = new Set(logs.map(keyOf));
+    // (the near bank catches a liana over it as the judge flies it: lianaRiverFaults' own test, levelCheck.ts lianaCaught)
+    const near = walkable.find((p) => p.type === 'solid' && !p.broken && Math.abs(p.x + p.width - r.x0) <= 2);
+    // (then no ground boards these logs: the check's graph links them from any ledge in a hop's reach, the bank before the near bank too)
+    if (near && over.some((v) => lianaCaught(near, v, 1, r.surfaceY))) {
+      for (const [a, list] of edges) if (nodes.get(a)?.kind === 'plat' && !logKeys.has(a)) edges.set(a, list.filter((ed) => !logKeys.has(ed.to)));
+    }
+    for (const v of over) for (const l of logs) {
+      addEdge(`L${v.id}`, keyOf(l), 'liana');
+      if (logCatches(v, l.drift!)) addEdge(keyOf(l), `L${v.id}`, 'liana');
+      added++;
     }
   }
   // shimmy ropes: the two ledges they join (generously: the check asks for an exact fit, and only once every player has the skill)
@@ -417,6 +445,21 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     const v = a.vine!, w = b.vine!;
     segs.push({ kind: 'swing', x0: v.x, y0: at.y, x1: w.x, y1: w.bottomY, dt: Math.abs(w.x - v.x) / SWING_PACE + 1.2, note: 'added' });
     return { segs, at: { x: w.x, y: w.bottomY }, cost: sum(segs) };
+  }
+  const under = a.kind === 'liana' ? (stage.rivers ?? []).find((r) => lianasOver([a.vine!], r).length) : undefined;
+  if (a.kind === 'liana' && b.kind === 'plat' && under && (b.plat!.type === 'drift' || ext(b.plat!)[0] >= under.x1 - 2)) {
+    // (let go over the river: onto a log, or past the water onto the far bank. Both are the same let-go, priced once as its share of
+    //  moments that land on either, score.ts lianaChallenges (gen2/riverLay.ts lianaDrops); a release onto the far bank alone read the
+    //  logs it lands on as misses)
+    const v = a.vine!, B = b.plat!;
+    const lx = clamp(v.x, ...ext(B));
+    segs.push({ kind: 'lianaDrop', x0: v.x, y0: at.y, x1: lx, y1: B.y, dt: 1.2, plat: B, note: 'added' });
+    return { segs, at: { x: lx, y: B.y }, cost: sum(segs) };
+  }
+  if (a.kind === 'plat' && a.plat!.type === 'drift' && b.kind === 'liana') {
+    const A = a.plat!, v = b.vine!;
+    segs.push({ kind: 'logCatch', x0: clamp(v.x, ...ext(A)), y0: A.y, x1: v.x, y1: v.bottomY, dt: Math.abs(v.x - at.x) / Math.max(30, A.drift!.speed) + 0.4, from: A, note: 'added' });
+    return { segs, at: { x: v.x, y: v.bottomY }, cost: sum(segs) };
   }
   if (a.kind === 'liana' && b.kind === 'plat') {
     const v = a.vine!, B = b.plat!;
