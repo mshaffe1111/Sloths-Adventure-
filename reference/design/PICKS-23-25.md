@@ -12,7 +12,7 @@ research about what people LOVED, engine list fits the 2-hour build (2 NEW max).
   into the water and swims to the line). Followers never climb, ride or fall (B's scope cut): they wait at a climb's foot.
 - Dropped: A's "shy one" (a third NEW). Kept as a later-world idea.
 - NEW (2): followers + "bring N home" (M, 3-4 h, follow.ts, path-replay sprites only); the heron reads the line (S, ~1 h).
-- OWED: Matt's OK on the new mission kind "bring them home" (GAME-MAP). Asked 11-18.
+- MATT OK'D 11-18 11:16 AM ET: "bring them home" (answer A: followers + the heron; built after 2-4 and 2-5).
 
 ## 2-4 Over the Water: B's idea "Never Touch the Bank", A's teach "Two clocks"
 - Idea (B): a liana -> log -> liana relay across the water without touching land; the log carries him under the next vine (carry rule).
