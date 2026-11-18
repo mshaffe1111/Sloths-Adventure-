@@ -87,20 +87,25 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-18, 2:20 PM ET; this block wins over everything below; refreshed at check-ins, R-165.242)
+## RIGHT NOW (11-18, 5:40 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
-**Live:** 0.9.9 (main 6e7b85f8). **Tokens:** reset Wed 11-18 2:00 AM ET; Matt chose 4 members at once (9:4x AM).
-**Today's plan (Matt OK'd):** one test link ~6-7 PM: 1-9 built (t-build-19 2097adf7), 1-6/1-7/1-8 variety (VAR-1, t-var-1, final ~3:45),
-2-2 lavender pickups + W2 drift petals + CI seed-list matrix (t-art-22p 877f12f6), 2-4 engine pieces (t-eng-24 b0e94c85). INT-12
-(session_01FhBbYNEmHZgwwkcwsCia5B, t-int-12 adb5392a) merged 3 of 4; heavy gates held for VAR-1's hash; then the lead builds EnK5.
-**Running:** VAR-1 (session_01FhBbYKHeL2w8t1txkcwSym), INT-12, ENG-25 (2-5 engine + snap-stone art; suite rerun; t-eng-25 ffc5c99a;
-NOT in tonight's link), ENG-23 (2-3 followers, t-eng-23, box 6:30; HUD faces mock-up show-first for Matt).
-**Done today, not in the link:** METER-3 (t-meter-3 42459a5c: liana-to-log + boa-read channels; its unrun gates run when it merges with
-2-4's build); designs 2-4/2-5 (t-design-24), 2-3 (t-design-23); picks PICKS-23-25.md, PICKS-26-28.md (first two-lens round: B's cores x3).
-**Matt decided today:** 2-3 "bring them home" OK (11:16); pitch method two lenses (11:29); 2-2 big pads ~2 Pokeys + R-165.284 tap-hop
-re-fly in ONE 2-2 pass TOMORROW (11:47); deploy steps as before.
-**Next (tomorrow):** 2-4 build (needs METER-3 merged), 2-2 pad pass (R-165.284 + pad size), R-165.285 airStep (full re-lock, not under a
-link), 2-5 build (ENG-25), 2-3 build (ENG-23), DESIGN-26-28 finals, next pitch round with separate packets (D85).
+**Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u, the branch this container
+names). **Tokens:** reset Wed 11-18 2:00 AM ET; Matt chose 4 members at once.
+**Tonight's link (EnK5):** INT-12 (session_01FhBbYNEmHZgwwkcwsCia5B, t-int-12 prep 8a60e616 = 1-9 + 2-2 pickups/petals + CI seed matrix +
+2-4 engine pieces, prep gates green) waits for VAR-1b's green hash (~7:15 PM; hard stop 7:30; option b = 1-7 only). Then INT-12 merges,
+ONE full gate run, REPORT by 9:00 PM; the lead builds + publishes EnK5 (read EnK5 + list files; files map; build.py --published) and
+tells Matt with the rough spots named (1-9's 9 funcheck flags -> VAR-19 tomorrow; meter reads low on 1-9/W2; 1-6 traced bot rows).
+**Running:** VAR-1b (session_01FhBbYNjSCAw66VYdFgZK1Y: fixing 3 suite faults in 1-6/1-7 data, ruled (a) 5:33), INT-12 (waiting),
+ENG-24c (session_01FhBbYKDwLF7f1NStSynED8, t-eng-24c 80e53e29: winding down at 538k context, REPORT then stop), PITCH-29B (open lens
+2-9/3-1/3-2, session_01FhBbYJkM9zpUReD7zBdEHe).
+**Next free slot:** TIME-168 (the time-stamp gate, D30 repeat 3) if before 8:30 PM, else Thu first. PITCH-29A Thu.
+**Thursday (planned ahead, Matt 5:13 PM "planning ahead and not reacting"; packets in reference/packets/2026-11-19/):** ENG-285 first
+(judges + bots fly the engine's Pokey + the two bot defects; MEASURE table by 11 AM; step-1 model hash late morning); BUILD-24c, FIX-284,
+VAR-19 do their no-judge work in the morning (raft + petals-in-soil; pad size show-first 11:30; 1-9 data) and merge ENG-285's step-1
+model BEFORE any relist (D40); TIME-168; PITCH-29A then picks + DESIGN-29; INT-13 (packet tonight) in the evening -> test link #2.
+Fresh member every job (Matt 5:15 PM: "keep switching out the builders... I don't want tunnel vision").
+**Matt decided today:** 2-3 "bring them home" (11:16); pitch method two lenses (11:29); 2-2 big pads ~2 Pokeys + tap-hop re-fly (11:47);
+plan ahead + rotate builders (5:13-5:15). **Waiting on Matt:** the 2-3 HUD-faces mock-up answer.
 
 ## RIGHT NOW (11-15, 11:16 PM ET nightly wrap; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
