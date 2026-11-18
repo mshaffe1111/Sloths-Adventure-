@@ -121,7 +121,8 @@ export const WATCH_17 = {
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
-/** a brick (1-6's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it */
+/** a brick (1-6's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it. A beat
+ *  asks to be walked into (entry.join 'walk', ENG-LOOK2), as 1-6's do (VAR-1: the rolled join read rest, jump, eagle on every roll) */
 function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; versions: V[]; uses?: string[] }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
@@ -131,7 +132,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_17], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['hide']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  return { ...rest, feel: [STAGE_17], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['hide']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', ...(o.jobs.some((j) => j === 'arrive' || j === 'rest') ? {} : { join: 'walk' as const }) }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -251,14 +252,15 @@ const climbVine = (key: string, on: string, onW: number, x: number, h: number): 
  * hide in (moss, a hollow, a shelf), the stage's idea at rest. The quiet line: a move within 450 px of each end, none 950 px apart.
  */
 const restRoots = rest('w1-17-rest');
-/** (b) the hollow log: up a root onto a long mossy floor, through a hollow log (1-5's piece), over a stone, then the roots down */
+/** (b) the hollow log: a long mossy floor, a stone to step over, a hollow log he walks through (1-5's piece), another stone (no root hops:
+ *  the rest is walked, VAR-1; every other rest starting with two root jumps read the same after every beat's hop) */
 function restHollow(): SectionTemplate {
   const len = 300, hh = hollowLogSize('moss', len).height;
   return link({ id: 'w1-17-rest-hollow', name: 'a rest: through a hollow log', job: 'rest', versions: [{ id: 'hollow', lay: {
-    pieces: [bank('a', null, 300), root('a2', 'a', 220, UP), root('f', 'a2', 1300, DOWN),
-      { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.22, 0.23], h: [hh, hh] }, landing: true },
-      rock('m', 'f', 0.72), root('g', 'f', 220, UP), root('z', 'g', 320, DOWN)],
-    sockets: [flag('f', 0.08), petals('pa', 'a2', 0.5, 1), petals('pin', 'f', [0.3, 0.31], 2, 70), petals('pm', 'm', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+    pieces: [bank('a', null, 300), bank('f', 'a', 1500), rock('s', 'f', 0.07),
+      { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.3, 0.31], h: [hh, hh] }, landing: true },
+      rock('m', 'f', 0.62)],
+    sockets: [flag('f', 0.2), petals('ps', 's', 0.5, 1), petals('pin', 'f', [0.38, 0.39], 2, 70), petals('pm', 'm', 0.5, 1)] } }] });
 }
 /** (c) the moss shelf: a mushroom bounces him up onto a high mossy bank (1-1's bounce; 150 px, so a double jump makes it too: a rest asks
  *  nothing new, and a lip over the double's reach read as 1-7's own new move to the validator, taking 1-9's), then a root and down */
@@ -275,11 +277,13 @@ const restDip = (): SectionTemplate => link({ id: 'w1-17-rest-dip', name: 'a res
     { key: 's', shape: 'branch', w: [DIP_S, DIP_S], place: { kind: 'over', on: 'v', at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
     root('c', 's', 200, [48, 52]), root('y', 'c', 220, UP), root('z', 'y', 320, [160, 164])],
   sockets: [flag('m', 0.3), petals('pm', 'm', 0.6, 1), petals('ps', 's', 0.5, 2, 100), petals('pz', 'z', 0.5, 1)] } }] });
-/** (e) the stepping stones: four mossy stones across a soft fern hollow, each a small hop (the hop that ends every watched stretch,
- *  here with nothing watching), a root up and down at each end */
-const restStones = (): SectionTemplate => link({ id: 'w1-17-rest-stones', name: 'a rest: the stepping stones', job: 'rest', versions: [{ id: 'stones', lay: {
-  pieces: [bank('a', null, 280), root('r', 'a', 220, UP), root('b', 'r', 300, DOWN), hop('s1', 'b', 200), hop('s2', 's1', 180), hop('s3', 's2', 200), hop('s4', 's3', 180), hop('c', 's4', 320), root('y', 'c', 220, UP), root('z', 'y', 300, DOWN)],
-  sockets: [flag('b', 0.4), petals('p1', 's1', 0.5, 1), petals('p2', 's2', 0.5, 1), petals('p3', 's3', 0.5, 1), petals('p4', 's4', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+/** a fallen log lying on `on` at `at` (World 1's log: 24-26 px thick reads as a fallen log, walked over; level.md World 1 notes) */
+const log = (key: string, on: string, at: number, w: R2): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at: [at, at], h: [24, 26] }, style: 'log', landing: true });
+/** (e) under the hanging moss: a long mossy floor (no pit: a rest), two mossy rocks to hop, a fallen log walked over, and the hanging
+ *  moss that hides him (World 1's cover, the stage's idea at rest), walked from end to end */
+const restMoss = (): SectionTemplate => link({ id: 'w1-17-rest-moss', name: 'a rest: under the hanging moss', job: 'rest', versions: [{ id: 'moss', lay: {
+  pieces: [bank('a', null, 280), bank('f', 'a', 1500), rock('k1', 'f', 0.1), log('lg', 'f', 0.46, [150, 160]), rock('k2', 'f', 0.8)],
+  sockets: [flag('f', 0.36), hide('hm', 'f', 0.63, 'hang'), petals('pk1', 'k1', 0.5, 1), petals('pl', 'lg', 0.5, 1), petals('pk2', 'k2', 0.5, 1)] } }] });
 export const QUIET_17: SectionTemplate[] = [
   // [A] Dot's bush, "a small, worried dent in it"; far off one screech and no shadow; nothing hurts in 1,300 px. The bush line is said at
   // its far end, 800+ px before beat 1's bush
@@ -288,7 +292,7 @@ export const QUIET_17: SectionTemplate[] = [
       sockets: [tip('t-arrive', 'a', 0.6, 'arrive'), hide('dot', 'b', 0.5, 'bush'), petals('pb', 'b', 0.9, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-bush', 'r2', 0.3, 'bush')] } },
   ] }),
   // [R] the rests: each beat's own far bank says the next beat's line, 800+ px before it (a rest between)
-  restRoots, restHollow(), restShelf(), restDip(), restStones(),
+  restRoots, restHollow(), restShelf(), restDip(), restMoss(),
 ];
 /** [E] back under the canopy: her mark (the keeper's words), the totem */
 export const EXIT_17: SectionTemplate = {
