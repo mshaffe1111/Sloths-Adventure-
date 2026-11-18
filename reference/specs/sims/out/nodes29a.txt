@@ -1,0 +1,6 @@
+2-9: A Tw1&<:#soft:&royal_guard*1 Pg1< Pw1&>:&royal_guard*2 Pf1< Xw2&>:#water:&royal_guard*1 R Pg1< Ws1&>:#water:&royal_guard*1 R Pp1> Cw1&>:#water:&royal_guard*2 R Pb1^< V Sw1&<:#water:&royal_guard*3 E
+  17 tokens; checkCode: no errors
+3-1: A Tg1:#dark D_ Pf1<:#dark Xg1>:#dark R Dc1_ Wf1>:#dark@puff R Pb1< Cg1>:#dark@puff R Sg1_<:#dark E
+  14 tokens; checkCode: no errors
+3-2: A Tr1<:#soft Pg1> Pr1<:#dark Pc1> Xr1&<:#dark:&ocelot*1 R Pf1< Wm1&>:#dark:&ocelot*1 R Pg1&<:&ocelot*1 Cr1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E
+  15 tokens; checkCode: no errors

@@ -185,6 +185,10 @@ Every ruling below cites the file and section where it's written in full.
   - stage15's seed clause is to be REWRITTEN to the glint promise, not deleted.
 - **Parked:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes.
 - **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) lies on the twist's hollow floor past its root every roll (FX's findSpot on 'hf' at t 0.66; t 0.6 could stand inside the root), and Dot says "There's something down by the roots..." on the lip (D12, t-12-design@cc0def2a, on INT-2's 90a54102).
+- **PITCH-29A (11-18, fixed lens; reference/design/pitches/PITCH-29A.md on t-pitch-29a):** 2-9 "come up behind them" (guards on rafts
+  face the way they float; board behind, vault the oncoming one; the king's barge), 3-1 "stand still, see the way down" (glowworms wake below),
+  3-2 "prowlers never look up" (hang under roof roots = 1-3's shimmy rope). Waiting on the lead's pick against PITCH-29B. Owed before any build:
+  fly the vault over a 78 px spear on a back raft (rule 24); check GLOW_REACH reads down a shaft; prowlers see 170 px up today (enemyBrain.ts:229).
 
 ## 5. Traps (each of these happened)
 
@@ -250,3 +254,7 @@ Every ruling below cites the file and section where it's written in full.
 - **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
   crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
   Look at the platforms AT the settle (log the settle's input) before blaming the level's data.
+- **Stealth over a predator (PITCH-29A, 11-18):** the GAME-MAP row "hang above the prowlers" fails on main as-is: roam() sees anyone within
+  |dy| < 170 px (enemyBrain.ts:229) and a rope hangs 146 px over its ledges (rope.ts:16). Read a cast's senses before pitching a hide.
+- **Research hosts, still (11-18 6 PM ET):** HG101 under maintenance; WebSearch with allowed_domains gamedeveloper.com/gamesradar.com/pcgamer.com
+  finds real pages fast (gamedeveloper "Retro Game of the Day!" covers most NES/arcade classics); open each with curl before quoting.
