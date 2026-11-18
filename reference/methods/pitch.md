@@ -19,6 +19,23 @@ explain it (6:23-6:28 PM ET). Every lead uses this; improve it after every round
 1. **Pitch ahead.** Pitch the next THREE levels at once (N+1, N+2, N+3) so the engine pieces they need can be built before their builders start.
 2. **Research sites:** Matt allowed 8 hosts on Default (11-14 7:00 PM ET). Tested from the lead's session: en.wikipedia.org, www.hardcoregaming101.net, www.gamedeveloper.com, www.pcgamer.com, www.gamesradar.com open (200); tcrf.net and www.mobygames.com answer 403 (the sites refuse bots); web.archive.org resets the connection. Quote opened pages with URLs; mark the rest [S]. **Two pitchers, blind to each other:** Opus high + Opus xhigh, same packet (template: reference/packets/2026-11-14/PITCH-19-22.md), each
    on its own branch t-pitch-<a|b>, told not to read the other. Tag them "designer" (models.json). Boxes about 90 min.
+2b. **Two lenses, one fixed, one open (Matt, 11-18 11:26-11:29 AM ET: "do you think we mess up by telling them too much? Because they
+   basically... they're always the same"; "You write it into the method... test it out with the next levels... I'm not saying to scrap
+   everything... if some new fun elements are added, then why not take it in? But I'd like to see if this would be different").**
+   Why: the 2-3/2-4/2-5 round handed both pitchers GAME-MAP's mechanic per level and the same reading list; both pitched the same core
+   with the same Wikipedia quotes, so only the twists differed. From the 2-6/2-7/2-8 round on:
+   - **Pitcher A (fixed lens)** gets GAME-MAP's row for each level, as before.
+   - **Pitcher B (open lens)** gets NO GAME-MAP row and NO mechanic per level: only the world's feel and signature, the story beat per
+     level (stagePlan's words), what the engine has (wired / exists-unwired), the phone, and the LADDER MUSTS: the few things a level
+     must teach or remix because later levels build on them (the lead lists them from GAME-MAP §3, nothing else). B never reads GAME-MAP.
+   - **Sources:** every tribute game carries at least one source that is NOT Wikipedia (an interview, a postmortem, a retrospective,
+     a review page opened, from the allowed hosts); Wikipedia may be a second source. Quotes identical to the other pitcher's are fine
+     only if both opened the page.
+   - **Different shelves:** A leads from Blocks 1-2 of PLATFORMER-100-MATT.md, B from Blocks 3-4 (each may add one from anywhere).
+   - **The lead compares** the open pitch to the outline per level and says, with reasons, what the open lens added: take it, merge it, or
+     keep the outline. A better open idea CHANGES GAME-MAP (the outline is not set in stone, Matt 11-14), unless it breaks a ladder must.
+   - **Measure it:** after each round, a line in reference/design/LEVEL-LOG.md: how many of B's ideas made the final design vs A's, and
+     whether Matt liked the levels better. Two rounds without anything from B taken = rethink the lens, not drop it silently.
 3. **What every pitch carries, per level:** the ONE idea; what players LOVED about each source game (cited: a review, interview or
    retrospective, never a feature list), how the original taught it, how we make it feel that good on a phone, what we don't copy; 6-10 beats
    with the teach and the "he feels" line; a node string sketch; the Normal number pasted from DIFFICULTY.md; the engine list (wired /
