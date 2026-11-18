@@ -182,3 +182,19 @@ test("the mossy floor's middle hop is Matt's painted boulder, never a slab drawn
     assert.ok(ps.some((p) => p.style === 'moss_stone' && p.height === 50 && p.width >= 140), `${d} seed ${s}: the boulder, 50 px (${ps.map((p) => `${p.style} ${p.width}x${p.height}`).join(', ')})`);
   }
 });
+
+test("the hollow-log rest: the stone lies 200+ px before the log's mouth, so he lands on the floor and walks in (VAR-1b)", () => {
+  // (93 px between them: the route ran stone -> the log's top, and a child who stepped off the stone stood in the gap under a 124 px face,
+  //  jumping at it until rescued: castBots child Easy seed 4)
+  for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
+    const st = built(s, d);
+    const q = sec(st, 'w1-17-rest-hollow');
+    if (!q) continue;
+    const ps = piecesOf(st.platforms, q.uid).sort((a, b) => a.x - b.x);
+    const log = ps.find((p) => p.hollow);
+    assert.ok(log, `${d} seed ${s}: the hollow log`);
+    const stone = ps.filter((p) => p.x + p.width <= log!.x && p.height <= 60).pop();
+    assert.ok(stone, `${d} seed ${s}: the stone before it`);
+    assert.ok(log!.x - (stone!.x + stone!.width) >= 200, `${d} seed ${s}: ${log!.x - (stone!.x + stone!.width)} px from the stone to the log`);
+  }
+});

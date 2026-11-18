@@ -257,10 +257,13 @@ const restRoots = rest('w1-17-rest');
 function restHollow(): SectionTemplate {
   const len = 300, hh = hollowLogSize('moss', len).height;
   return link({ id: 'w1-17-rest-hollow', name: 'a rest: through a hollow log', job: 'rest', versions: [{ id: 'hollow', lay: {
-    pieces: [bank('a', null, 300), bank('f', 'a', 1500), rock('s', 'f', 0.07),
-      { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.3, 0.31], h: [hh, hh] }, landing: true },
-      rock('m', 'f', 0.62)],
-    sockets: [flag('f', 0.2), petals('ps', 's', 0.5, 1), petals('pin', 'f', [0.38, 0.39], 2, 70), petals('pm', 'm', 0.5, 1)] } }] });
+    // (VAR-1b: the stone 230+ px before the log's mouth, so a hop off it lands on the floor and he walks in. With 93 px between them the
+    //  route ran stone -> the log's top (73 px up) and a child who stepped off the stone stood in the gap under a 124 px face, jumping:
+    //  castBots child Easy seed 4, rescued)
+    pieces: [bank('a', null, 300), bank('f', 'a', 1500), rock('s', 'f', 0.02),
+      { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.36, 0.37], h: [hh, hh] }, landing: true },
+      rock('m', 'f', 0.66)],
+    sockets: [flag('f', 0.2), petals('ps', 's', 0.5, 1), petals('pin', 'f', [0.43, 0.44], 2, 70), petals('pm', 'm', 0.5, 1)] } }] });
 }
 /** (c) the moss shelf: a mushroom bounces him up onto a high mossy bank (1-1's bounce; 150 px, so a double jump makes it too: a rest asks
  *  nothing new, and a lip over the double's reach read as 1-7's own new move to the validator, taking 1-9's), then a root and down */
