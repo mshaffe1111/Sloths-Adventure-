@@ -18,6 +18,7 @@ import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { PREDATOR_ENTRIES } from '../../journal.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { W1_LURE } from './w1.ts';
+import { TRAP_UNDER } from './w1Cast.ts';
 import { LINES_19, MISSION_19, SAID_TRAP_19, SEALED_19, SPLASH_19, STAGE_19 } from './w1Arc19.ts';
 import type { Enemy, Platform } from '../../types.ts';
 
@@ -83,10 +84,12 @@ test("1-9's boas: the designed eleven on both settings (no top-up: its goal is p
     assert.equal(st.enemies.filter((e) => e.type === 'boa').length, 11, `${tag}: eleven boas`);
     for (const [id, n] of Object.entries(PER)) assert.equal(boasIn(st, id).length, n, `${tag}: ${id}`);
     for (const id of ['w1-19-arrival', 'w1-19-exit']) assert.equal(boasIn(st, id).length, 0, `${tag}: no boa in ${id}`);
-    // (a trapped boa lies under its own load: beat 1 and the first read)
-    for (const id of ['w1-19-forest-freeze', 'w1-19-read-load']) {
-      const b = boasIn(st, id)[0];
-      assert.ok(st.proto.cast!.traps.some((t) => Math.abs(t.loadX - (b.x + b.width / 2)) < 80), `${tag}: ${id}'s first boa under a load`);
+    // (a trapped boa lies under its own load: beat 1 and the first read; and beat 1's handle is outside Easy's engage, 195 px)
+    for (const [id, k] of [['w1-19-forest-freeze', 1], ['w1-19-read-load', 0]] as const) {
+      const b = boasIn(st, id)[k];
+      const t = st.proto.cast!.traps.find((q) => Math.abs(q.loadX - b.x) <= TRAP_UNDER);
+      assert.ok(t, `${tag}: ${id}'s trapped boa under its load (armedTraps' own reach)`);
+      assert.ok(b.x - t.x > 195, `${tag}: ${id}'s handle ${b.x - t.x} px from its boa, outside Easy's engage`);
     }
     // (a roost's boa within the roost's reach, W1_LURE)
     for (const id of ['w1-19-roost', 'w1-19-read-roost']) {
@@ -109,7 +112,7 @@ test("beat 2: the freeze boa a root step below the bough he stands on, inside it
     const drop = f.y - e.y;
     // (above its strike, 30 px tall, and its coil, 26: he stands 50-56 px over the bough it lies on, inside its sight's 70)
     assert.ok(drop >= 50 && drop <= 56, `${d} seed ${seed}: the step down ${drop} px`);
-    const b = boasIn(st, 'w1-19-forest-freeze')[1];
+    const b = boasIn(st, 'w1-19-forest-freeze')[0];
     const dx = b.x - (e.x + e.width);
     assert.ok(dx >= 100 && dx <= 150, `${d} seed ${seed}: the boa ${dx} px past the step's edge (Normal's engage 150)`);
   }
@@ -128,7 +131,7 @@ test("beat 7: he is on the creaky limb (Normal) when the roost's boa rears, and 
 });
 
 test('every teach line 800 px or more before the boa it teaches, with no boa between (rule 6)', () => {
-  const PAIRS: Array<[keyof typeof LINES_19, string, number]> = [['boa', 'w1-19-forest-freeze', 0], ['freeze', 'w1-19-forest-freeze', 1], ['miss', 'w1-19-miss', 0], ['nest', 'w1-19-roost', 0], ['eye', 'w1-19-hunters', 0]];
+  const PAIRS: Array<[keyof typeof LINES_19, string, number]> = [['boa', 'w1-19-forest-freeze', 0], ['freeze', 'w1-19-forest-freeze', 0], ['miss', 'w1-19-miss', 0], ['nest', 'w1-19-roost', 0], ['eye', 'w1-19-hunters', 0]];
   for (const d of BOTH) for (const seed of SEEDS) {
     const st = built(seed, d);
     for (const [line, id, k] of PAIRS) {

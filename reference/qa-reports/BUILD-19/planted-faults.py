@@ -11,7 +11,7 @@ FAULTS = [
   ('a keeper line changed', ARC, "freeze: \"Boa rearing up? Don't move, and it slides off!\"", "freeze: \"Boa rearing up? Hold still, and it slides off!\"", TEST, "word for word"),
   ("beat 2's step made level", ARC, "root('f', 'e', 360, DOWN)", "bank('f', 'e', 360)", TEST, 'beat 2:'),
   ("Normal's roost limb made sound", ARC, "limb('k', 'w1', !easy)", "limb('k', 'w1', false)", TEST, 'beat 7:'),
-  ('the freeze line moved beside its boa', ARC, "tip('t-freeze', 'm', 0.2, 'freeze')", "tip('t-freeze', 'e', 0.9, 'freeze')", TEST, '800 px or more'),
+  ('the freeze line moved beside its boa', ARC, "tip('t-freeze', 'a', 0.3, 'freeze')", "tip('t-freeze', 'e', 0.9, 'freeze')", TEST, '800 px or more'),
   ('the reads swapped', ARC, "Cg&:&boa-trapped! Ch&:&boa-roost!", "Ch&:&boa-roost! Cg&:&boa-trapped!", TEST, 'beat for beat'),
 ]
 caught = 0

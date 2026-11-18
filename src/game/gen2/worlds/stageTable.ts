@@ -55,7 +55,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '1-8': { kit: 'w1-18', judged: 'normal-1-8' },
   // (1-9 The Boa's Branches: the designed arc, w1Arc19.ts, on World 1's kit with its own rows (kitLib19) and its finish (finish19: one kit
   //  eagle a watched stretch, the Old Boa under the eye's pass); the hand-built 1-9 is deleted. BUILD-19 11-18)
-  '1-9': { kit: 'w1-19' },
+  //  Judged on its own flown rows, flownArcs.ts normal-1-9 (BUILD-19's flight)
+  '1-9': { kit: 'w1-19', judged: 'normal-1-9' },
   // (2-1 Down to the River and 2-2 Petals for the Crown: World 2's kit (w2.ts, ENG-W2 11-14) on their placeholder arcs, until each
   //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
   //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the

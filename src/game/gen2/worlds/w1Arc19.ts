@@ -81,24 +81,21 @@ const root = (key: string, after: string, w: number, dy: R2): SectionPiece => ({
 /** a low mossy rock to hop on `on` at `at` (1-7's: 50-56 px, a hop, so a walk down a stair is never the quiet line's 4 s of nothing) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [120, 140], place: { kind: 'on', on, at: [at, at], h: [50, 56] }, style: 'moss_stone', landing: true });
 
-/** THE DROP TRAP (1-3's measured unit, w1Arc13.ts core: the handle on a short ledge, a short log on a bed level with it, its load socket at
- *  the log's near end and its animal's at the patch's far end; armedTraps hangs the load over the animal). From the handle the boa lies
- *  ~213 px on: outside its engage on both settings (150, Easy 195), so he drops the load from where it cannot see him move */
-const LOW: R2 = [24, 26], NARROW: R2 = [150, 155], SHORT: R2 = [153, 153];
-const LOAD_T = 0.02, ANIMAL_T = 0.83, HANDLE_T = 0.443;
-const led = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w, place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
-const bed = (key: string, after: string, w: R2): SectionPiece => ({ key, shape: 'bank', w, place: { kind: 'walk', after, dy: [0, 0] }, style: 'moss_stone', main: false });
-const fallen = (key: string, on: string): SectionPiece => ({ key, shape: 'block', w: [900, 900], place: { kind: 'on', on, at: [0, 0], h: LOW }, style: 'log', main: false });
+/** THE DROP TRAP, for a boa (it never paces, so not 1-3's log: there the snake lay 127 px into a log and a boa's rear began as he hopped
+ *  onto it): one 440 px bough walked onto, the handle 44 px in (176 px from the middle of the boa's patch, armedTraps' reach 140-190), the
+ *  load's socket 141 px in (the pair's 85-130 from the handle), the boa 277 px in (136 px from the load's socket, the lay's 120 between an
+ *  animal and a prop). From the handle the boa is ~233 px on: outside its engage on both settings (150, Easy 195), so he drops the
+ *  load from where it cannot see him move; walked past, it rears 150 px out (the freeze, or the bop, still answer it) */
 function trapUnit(k: string, after: string, load: 'trap-hive' | 'trap-stone'): { pieces: SectionPiece[]; sockets: Socket[]; last: string } {
-  const g = `${k}g`, B = `${k}B`, L = `${k}L`, d = `${k}d`;
+  const b = `${k}b`;
   return {
-    pieces: [led(g, after, NARROW), bed(B, g, SHORT), fallen(L, B), led(d, B, NARROW)],
+    pieces: [bank(b, after, 440)],
     sockets: [
-      { id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 },
-      { id: `${k}r`, role: 'receptor', on: L, t: LOAD_T, dn: 0, link: `${k}h`, allow: [load] },
-      boa(`${k}e`, L, ANIMAL_T, 'boa-trapped'),
+      { id: `${k}h`, role: 'source', on: b, t: 0.1, dn: 0 },
+      { id: `${k}r`, role: 'receptor', on: b, t: 0.32, dn: 0, link: `${k}h`, allow: [load] },
+      boa(`${k}e`, b, 0.63, 'boa-trapped'),
     ],
-    last: d,
+    last: b,
   };
 }
 
@@ -137,26 +134,29 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
-/** [T] beats 1 and 2, ONE brick (both safe). Beat 1, the forest does it: a boa coiled on a log past a vine handle, ~213 px on from it
- *  (outside its engage on both settings): he punches the handle, the load drops, the boa slides off offended. Then 800+ px of bough with
- *  the freeze line at its start and nothing that can hurt, and beat 2: a boa on the bough a root step DOWN, its post 140 px past the step
- *  (inside its engage on both settings). On the upper bough he stands 50-56 px over it, above its strike (30 px tall) and its coil, so a
- *  rear cannot touch him there: it rears, he freezes, it slides off for 4 s, he steps down and on. Only stepping down INTO a rear hurts.
- *  (1-9.md put the boa 140 px past a small GAP; the lay keeps every animal JUMP_CLEAR past where a jump lands (pipeline jumpClearance, a
- *  fairness rule), which leaves that bough no patch: the step keeps the design's safety with no jump) */
+/** [T] beats 2 and 1, ONE brick (both safe), the freeze FIRST (BUILD-19, from the bots: they learn the freeze from Dot's (b) and nothing in
+ *  1-9 names 1-3's trap, so with the trapped boa first no tier had an answer and every one walked into its coil). The freeze: Dot's (b) at
+ *  the start, 800+ px of bough with nothing that can hurt, and a boa on the bough a root step DOWN, its post 140 px past the step (inside
+ *  its engage on both settings). On the upper bough he stands 50-56 px over it, above its strike (30 px tall) and its coil, so a rear
+ *  cannot touch him there: it rears, he stops, it slides off for 4 s, he steps down and on. Only stepping down INTO a rear hurts. (1-9.md
+ *  put the boa 140 px past a small GAP; the lay keeps every animal JUMP_CLEAR past where a jump lands, pipeline jumpClearance, a fairness
+ *  rule, which leaves that bough no patch: the step keeps the design's safety with no jump.) Then the forest does it: a boa under a load,
+ *  its vine 233 px back (outside its engage on both settings): punch the vine and the load drops, or don't move when it rears */
 function forestThenFreeze(): Lay {
-  const t = trapUnit('u', 'a', 'trap-hive');
+  const t = trapUnit('u', 'z', 'trap-hive');
   return {
-    pieces: [bank('a', null, 320), ...t.pieces, bank('m', t.last, 300), root('m1', 'm', 260, UP), root('m2', 'm1', 300, DOWN), bank('e', 'm2', 280), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP)],
-    sockets: [petals('pa', 'a', 0.5, 1), ...t.sockets, tip('t-freeze', 'm', 0.2, 'freeze'), petals('pm', 'm1', 0.5, 2, 120), petals('pm2', 'm2', 0.5, 1),
-      boa('b2', 'f', 0.39, 'boa'), petals('pz', 'z', 0.5, 2, 120)],
+    pieces: [bank('a', null, 320), root('m1', 'a', 260, UP), root('m2', 'm1', 300, DOWN), bank('e', 'm2', 280), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP), ...t.pieces, bank('y', t.last, 300)],
+    // (the trap's pair listed first: sockets fill in list order and a pair is paid from the section's threat, which the freeze boa spends)
+    sockets: [...t.sockets, tip('t-freeze', 'a', 0.3, 'freeze'), petals('pa', 'a', 0.7, 1), petals('pm', 'm1', 0.5, 2, 120), petals('pm2', 'm2', 0.5, 1),
+      boa('b2', 'f', 0.39, 'boa'), petals('pz', 'z', 0.5, 1), petals('py', 'y', 0.5, 2, 120)],
   };
 }
-/** [P] beat 3, freeze in stride: a rising stair of landings, a boa on the first and third (no gap to save him); a flag before it */
+/** [P] beat 3, freeze in stride: a rising stair of landings, a boa on the first and third (no gap to save him); a flag before it. Each boa
+ *  210 px into its landing, so its rear (150 px out) starts after the step up has landed, never mid-hop (he can't stop in the air) */
 function freezeStair(easy: boolean): Lay {
   return {
     pieces: [bank('a', null, 320), root('s1', 'a', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('z', 'd2', 320, DOWN)],
-    sockets: [flag('a'), petals('pa', 'a', 0.7, 1), boa('b1', 's1', 0.55, 'boa'), petals('ps2', 's2', 0.5, 1), boa('b2', 's3', 0.55, 'boa', easy ? 'soften' : 'stay'),
+    sockets: [flag('a'), petals('pa', 'a', 0.7, 1), boa('b1', 's1', 0.7, 'boa'), petals('ps2', 's2', 0.5, 1), boa('b2', 's3', 0.7, 'boa', easy ? 'soften' : 'stay'),
       petals('pd', 'd2', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-miss', 'z', 0.7, 'miss')],
   };
 }
@@ -217,7 +217,7 @@ function oldBoa(): Lay {
 
 /** THE ARC'S BRICKS (1-9.md), one job each: the graph's letter in brackets */
 export const BEATS_19: SectionTemplate[] = [
-  brick({ id: 'w1-19-forest-freeze', name: 'the forest does it, then the freeze: it thought I was a branch', jobs: ['teach'], content: 'ground', teaches: 'still', difficulty: 2, versions: [{ id: 'load-then-freeze', lay: forestThenFreeze() }] }),
+  brick({ id: 'w1-19-forest-freeze', name: 'the freeze, then the forest does it: it thought I was a branch', jobs: ['teach'], content: 'ground', teaches: 'still', difficulty: 2, versions: [{ id: 'load-then-freeze', lay: forestThenFreeze() }] }),
   brick({ id: 'w1-19-stair', name: 'freeze in stride: go, stop, go', jobs: ['practise'], content: 'climb', difficulty: 4, versions: [{ id: 'two-on-the-stair', lay: freezeStair(false), easy: freezeStair(true) }] }),
   brick({ id: 'w1-19-miss', name: 'make it miss: missed me, BOP', jobs: ['test'], content: 'hazard', difficulty: 4, versions: [{ id: 'past-a-gap', lay: makeItMiss() }] }),
   brick({ id: 'w1-19-roost', name: "the roost: this time, DON'T stop", jobs: ['twist'], content: 'crumble', difficulty: 5, uses: ['still', 'creak'], versions: [{ id: 'limb-and-roost', lay: roostTwist(false), easy: roostTwist(true) }] }),
