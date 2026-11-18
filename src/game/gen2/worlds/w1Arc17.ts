@@ -267,13 +267,14 @@ function restHollow(): SectionTemplate {
 const restShelf = (): SectionTemplate => link({ id: 'w1-17-rest-shelf', name: 'a rest: bounce up to the moss shelf', job: 'rest', versions: [{ id: 'shelf', lay: {
   pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 420, DOWN), mushroom('bm', 'b', 420), bounced('c', 'b', 'bm', 420, 150), root('d', 'c', 300, [96, 100]), root('e', 'd', 220, UP), root('z', 'e', 320, [100, 104])],
   sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), petals('pe', 'e', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
-/** a vine at the foot of a wall: on `on` (`onW` wide) 120 px short of its end, `h` px tall, a knot of bough at its top (60 px), and the
- *  wall's top `key` (`w` wide) from the knot on, `h` px up, standing over the last 60 px of `on` (so nothing under it is floorless). The vine stands AT the wall: 220 px back from it, the child bot
- *  walked to the wall, found it too high and never looked back (VAR-1, seeds 18 and 20, rescued) */
-const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [
-  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 120) / onW, (onW - 120) / onW], h: [h, h] } },
-  { key: `${key}s`, shape: 'branch', w: [60, 60], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
-  root(key, `${key}s`, w, [-4, 0]),
+/** a vine at the foot of a wall and the wall's top: the vine on `on` (`onW` wide) 20 px short of its end, `h` px tall, and the wall's top
+ *  `key` (`w` wide) laid OVER the vine, 30 px under its top, starting at the vine: at the top of the climb he steps straight onto a flat
+ *  landing as wide as a rest's step (VAR-1, the lead 2:45 PM ET 11-18: a 60 px knot of bough then the root's top cost the child and
+ *  middle bots the step off, 1-6 layouts child N 17, child E 26, middle E 15, 24; and a vine 140-220 px back from its wall stalled the
+ *  child at the wall). The wall's top is a bank, so it stands on ground to the floor: nothing under it is floorless */
+const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [ // (the vine reaches 30 px past the top)
+  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 20) / onW, (onW - 20) / onW], h: [h + 30, h + 30] } },
+  { key, shape: 'bank', w: [w, w], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [30, 30] }, style: 'moss_stone', main: true },
 ];
 /** (d) the fern dip: down into a dip, and a vine at the foot of its far wall (1-4's climb: 212 px, past a double jump's 184) onto the
  *  root over it, a root up and down to the floor line. Nothing to fall into: a miss on the vine is the dip's floor again */

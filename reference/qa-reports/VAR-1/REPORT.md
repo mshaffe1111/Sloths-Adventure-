@@ -152,3 +152,20 @@ each sheet one still per new piece in stage order; shot on the final data of eac
    (w1Arc17.test.ts / w1Arc18.test.ts now do.)
 4. **A chase stage's rests stay near the fork length its chase was laid for** (1-8: about 2,600-2,900 px). Check: the stage's
    teach-line test and a stretch-count probe over 40 rolls.
+
+## 10. EXACT NEXT STEP (open, mine)
+1. 1-6's vine climbs (w1Arc16.ts `wallClimb`: the dip rest, the great root rest, the `C` step of a beat's walked ground): the child and
+   middle bots fail the step off the vine's top (1-6 layouts child N 17, child E 26, middle E 15, 24). Try first: the bough at the
+   vine's top 140-170 px wide reaching over the root's top, the root's top LEVEL with it (`[0, 0]`, not `[-4, 0]`), the vine where it is
+   (60 px from the wall foot). Then: `npx tsx tools/engine/seedlist.ts 1-6 --count 100` (alone: 27 min), `castBots --stage 1-6 --seeds
+   1-40 --bots child,middle --setting both` (must be 40/40, Easy never under Normal), the full funcheck (no flag back), the meter.
+   (1-7's dip and 1-8 use the same helper: their bots are 40/40, but change all three together if the fix is in the helper's shape.)
+2. Trace 1-6 Easy's 9 scored swings against main's 10 (score.ts --detail, seeds 1-4).
+3. Lead: rule on the proposed level.md rules (section 9) and on the runs probe as a tool (tools/validate/runs.ts).
+
+## Method update (law 4)
+- Worked: the runs probe (section 8); a fresh-roll probe for a stage's own test rule (`probes/split18.ts`, 40 rolls in a minute) found
+  1-8's chase problem that 40 bot seeds did not.
+- Failed: relisting two stages at once (the index clobbered, caught and redone); measuring with 8- and 16-seed lists before the bots (the
+  flags were right, the bots then found three defects: run the first-timer and child bots on the 16-seed list in the same loop).
+- Edit for level.md step 6: "run castBots on the 16-seed list (seeds 1-16, every tier) in the tuning loop, before any 100-seed relist".
