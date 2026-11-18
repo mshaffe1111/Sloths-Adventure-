@@ -23,6 +23,7 @@ import type { WatchZone } from '../../watcher.ts';
 import { w1World } from './w1.ts';
 import { W1_LIANA_GAP, w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
 import { eagleOver, w1Still } from './w1Cast.ts';
+import { hollowLogSize } from '../../w1NewArt.ts';
 import { castWatches, clipWatches, STILL, type WatchRow } from '../stillLay.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
@@ -226,7 +227,7 @@ export const BEATS_17: SectionTemplate[] = [
 // ───────────────────────────── 1-7's own quiet: Dot's bush, the rests and the exit ─────────────────────────────
 const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
-  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: o.job === 'arrive' ? 1 : 6,
+  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: 1,
 } as SectionTemplate);
 /** a root hop up or down (1-6's: the quiet line wants a hop within 450 px of each end of a rest and none 950 px apart, listRules quietJudge) */
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
@@ -237,6 +238,48 @@ const rest = (id: string): SectionTemplate => link({ id, name: 'a rest under the
   lay: { pieces: [bank('a', null, 320), root('b', 'a', 240, UP), root('c', 'b', 380, DOWN), root('d', 'c', 220, UP), root('e', 'd', 360, DOWN), root('f', 'e', 240, UP), root('g', 'f', 340, DOWN), root('h', 'g', 220, UP), root('z', 'h', 300, DOWN)],
     sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.5, 1)] },
 }] });
+/** a mushroom on `on`, its cap 30 px up, its edge 30-45 px before `on`'s end (1-2's, as 1-8 lays it) */
+const mushroom = (key: string, on: string, w: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } });
+/** a bank only the mushroom's bounce reaches: `rise` px up, a wall straight off `after`'s end */
+const bounced = (key: string, after: string, from: string, w: number, rise: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'walk', after, dy: [-rise - 4, -rise + 4] }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from });
+/** a straight vine from bank `on` (`onW` wide) up `h` px, `x` px along it (1-4's climb) */
+const climbVine = (key: string, on: string, onW: number, x: number, h: number): SectionPiece => ({ key, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [x / onW, x / onW], h: [h, h] } });
+/**
+ * 1-7's rests (VAR-1, R-165.276; Matt 10-30: "more pieces ... that variety"): five quiet places under the canopy, each its own shape and
+ * its own move, each laid once a roll (maxPerStage 1), so no rest is a reroll of another (funcheck: the one rest laid five times read
+ * "JJJJ" each time, the 4-run repeats and most of 1-7's likeness to 1-6). Nothing watches a rest; each is a green place a sloth would
+ * hide in (moss, a hollow, a shelf), the stage's idea at rest. The quiet line: a move within 450 px of each end, none 950 px apart.
+ */
+const restRoots = rest('w1-17-rest');
+/** (b) the hollow log: up a root onto a long mossy floor, through a hollow log (1-5's piece), over a stone, then the roots down */
+function restHollow(): SectionTemplate {
+  const len = 300, hh = hollowLogSize('moss', len).height;
+  return link({ id: 'w1-17-rest-hollow', name: 'a rest: through a hollow log', job: 'rest', versions: [{ id: 'hollow', lay: {
+    pieces: [bank('a', null, 300), root('a2', 'a', 220, UP), root('f', 'a2', 1300, DOWN),
+      { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.22, 0.23], h: [hh, hh] }, landing: true },
+      rock('m', 'f', 0.72), root('g', 'f', 220, UP), root('z', 'g', 320, DOWN)],
+    sockets: [flag('f', 0.08), petals('pa', 'a2', 0.5, 1), petals('pin', 'f', [0.3, 0.31], 2, 70), petals('pm', 'm', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+}
+/** (c) the moss shelf: a mushroom bounces him up onto a high mossy bank (1-1's bounce; 150 px, so a double jump makes it too: a rest asks
+ *  nothing new, and a lip over the double's reach read as 1-7's own new move to the validator, taking 1-9's), then a root and down */
+const restShelf = (): SectionTemplate => link({ id: 'w1-17-rest-shelf', name: 'a rest: bounce up to the moss shelf', job: 'rest', versions: [{ id: 'shelf', lay: {
+  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 420, DOWN), mushroom('bm', 'b', 420), bounced('c', 'b', 'bm', 420, 150), root('d', 'c', 300, [96, 100]), root('e', 'd', 220, UP), root('z', 'e', 320, [100, 104])],
+  sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), petals('pe', 'e', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+/** (d) the fern dip: down into a dip, a vine up its far side (1-4's climb: 260 px, past a double jump's 184) onto a mossy bough, down the
+ *  bough to a root notch and up out of it (the quiet line: a hop soon after the climb; every bank past the dip stands 200+ px over its
+ *  floor, so the vine is the way out), then down to the floor line. The bough ends 60 px short of the dip floor's end, so the roots
+ *  past it stand on ground on both settings */
+const DIP_W = 720, DIP_X = 460, DIP_UP = 260, DIP_S = 200;
+const restDip = (): SectionTemplate => link({ id: 'w1-17-rest-dip', name: 'a rest: down the fern dip, up the vine', job: 'rest', versions: [{ id: 'dip', lay: {
+  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 200, DOWN), root('m', 'b', DIP_W, [98, 102]), climbVine('v', 'm', DIP_W, DIP_X, DIP_UP),
+    { key: 's', shape: 'branch', w: [DIP_S, DIP_S], place: { kind: 'over', on: 'v', at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
+    root('c', 's', 200, [48, 52]), root('y', 'c', 220, UP), root('z', 'y', 320, [160, 164])],
+  sockets: [flag('m', 0.3), petals('pm', 'm', 0.6, 1), petals('ps', 's', 0.5, 2, 100), petals('pz', 'z', 0.5, 1)] } }] });
+/** (e) the stepping stones: four mossy stones across a soft fern hollow, each a small hop (the hop that ends every watched stretch,
+ *  here with nothing watching), a root up and down at each end */
+const restStones = (): SectionTemplate => link({ id: 'w1-17-rest-stones', name: 'a rest: the stepping stones', job: 'rest', versions: [{ id: 'stones', lay: {
+  pieces: [bank('a', null, 280), root('r', 'a', 220, UP), root('b', 'r', 300, DOWN), hop('s1', 'b', 200), hop('s2', 's1', 180), hop('s3', 's2', 200), hop('s4', 's3', 180), hop('c', 's4', 320), root('y', 'c', 220, UP), root('z', 'y', 300, DOWN)],
+  sockets: [flag('b', 0.4), petals('p1', 's1', 0.5, 1), petals('p2', 's2', 0.5, 1), petals('p3', 's3', 0.5, 1), petals('p4', 's4', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 export const QUIET_17: SectionTemplate[] = [
   // [A] Dot's bush, "a small, worried dent in it"; far off one screech and no shadow; nothing hurts in 1,300 px. The bush line is said at
   // its far end, 800+ px before beat 1's bush
@@ -245,7 +288,7 @@ export const QUIET_17: SectionTemplate[] = [
       sockets: [tip('t-arrive', 'a', 0.6, 'arrive'), hide('dot', 'b', 0.5, 'bush'), petals('pb', 'b', 0.9, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-bush', 'r2', 0.3, 'bush')] } },
   ] }),
   // [R] the rests: each beat's own far bank says the next beat's line, 800+ px before it (a rest between)
-  rest('w1-17-rest'),
+  restRoots, restHollow(), restShelf(), restDip(), restStones(),
 ];
 /** [E] back under the canopy: her mark (the keeper's words), the totem */
 export const EXIT_17: SectionTemplate = {
@@ -334,6 +377,8 @@ export function kitLib17(): WorldKit {
     manifest: { ...M,
       props: [...M.props.filter((p) => !props.some((q) => q.id === p.id)), ...props],
       sections: SECTIONS_17,
+      // (the fern dip rest's vine is 1-4's climb, taught: VAR-1)
+      moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_17) as Array<keyof typeof LINES_17>).map((k) => [lineId(k), LINES_17[k]])) },
