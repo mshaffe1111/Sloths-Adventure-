@@ -3,9 +3,9 @@ Engine, t-eng-24 from origin/main 6e7b85f8. Started 11:06 AM ET 11-18 (by `date`
 Commits: bef5445a (NEW 1), 4d1c2834 (NEW 2), cd312838 (2b: the bot's log changes held to liana rivers), then this report's commit (HEAD below).
 
 ## EXACT NEXT STEP (lead)
-1. Rule on Suggestion A (the meter can't price a let-go onto a log: needed before 2-4's DIFFICULTY verdict) and Suggestion B (the toy clips
-   need a dev fixture: not done here).
-2. Hand the 2-4 builder "What the 2-4 builder needs" below.
+None for this member (the lead's rulings 11:58 AM ET: both pieces accepted; the meter gap is R-165.287, a meter job before 2-4's build,
+Suggestion A its packet seed; clips wait for the real 2-4, rule 29, no dev fixture for the toy). Hand the 2-4 builder "What the 2-4
+builder needs" below.
 
 ## Done-items (packet) and evidence
 1. **NEW 1, the liana over a river.** Data: `{ kind: 'river', after: <liana>, row }` lays the water from the bank the liana (or its chain)
@@ -46,7 +46,8 @@ Commits: bef5445a (NEW 1), 4d1c2834 (NEW 2), cd312838 (2b: the bot's log changes
      no random second press on an aimed drop.
 3. **Nothing shipped moved.** The gate table is below. lockall vs main: 102/102 stages unchanged (on bef5445a and on 4d1c2834; cd312838
    changes tools/ and reference/ only).
-4. **Clips: NOT DONE** (Unresolved 1). The runs are recorded (clipRecord.ts). The page can't draw the toy without a dev fixture.
+4. **Clips: NOT DONE, by the lead's ruling 11:58 AM** (clips wait for the real 2-4, rule 29; no dev fixture for the toy). The runs are
+   recorded (clipRecord.ts) and a draft frame loop is parked (lianaClip-draft.mjs).
 5. **Turnover note:** engine-core.md §0zl (the place, the judge, the bot, the real input, the debt, the traps). The probe scripts use
    relative imports (D83): reference/qa-reports/ENG-24/*.ts.
 
@@ -95,7 +96,7 @@ Commits: bef5445a (NEW 1), 4d1c2834 (NEW 2), cd312838 (2b: the bot's log changes
 4. **Beat 6 (liana, log, liana, log, no bank):** expressible as two swings after the same bank (reach 165 and ~600) and one river after
    the second. The judge holds each liana over the window. **UNTESTED:** fly a two-liana toy first.
 5. **Bots:** the skills are always on outside a test. castBots runs FakeInput; the skills were proven through InputEngine (Suggestion D).
-6. **The meter's reading of 2-4 will miss its drops until Suggestion A lands.**
+6. **The meter's reading of 2-4 will miss its drops until R-165.287 lands** (scheduled before 2-4's build).
 
 ## Polish check
 No player-facing screen changed (engine judge, gen2 place, bot and test harness only). The one look item, the clips, is not done, and the
@@ -109,13 +110,13 @@ draft frames are not fit to show: the page drew 2-1's baked ground under the toy
 3. **The meter can't price the new piece** (the gate table). This is a METER packet, not this one's walls.
 
 ## Suggestions (ready packets)
-A. **METER-24** (Engine/METER, high):
+A. **METER-24, now R-165.287** (the lead, 11:58 AM: a meter job before 2-4's build) (Engine/METER, high):
    - Objective: price a let-go onto a drift. Add a route.ts move from a swing onto a drift (and a jump from a drift to a liana), and a
      score.ts channel from riverLay `lianaDrops` (per release: log2(1 + period / window), 2-4.md's form, on the flown share). Add the
      meter-coverage.json row.
    - Files: tools/inspect/route.ts, tools/difficulty/score.ts, reference/design/meter-coverage.json.
    - Done: meterProbe.ts on the drop toy shows a swing-drop challenge at the liana; coveragecheck holds it.
-B. **CLIP-24** (fresh member, ~1 h):
+B. **CLIP-24** (the lead ruled 11:58 AM: not built; clips on the real 2-4 instead) (fresh member, ~1 h):
    - Objective: the toys on the real page. Add a dev-only `?fixture=liana-drop|liana-catch`, chaseFixtureStage.ts's pattern, so the page
      builds the toy natively.
    - Then: replay clipRecord.ts's runs, or replay the recorded touch calls through clipPress.mjs. reference/qa-reports/ENG-24/
@@ -129,7 +130,7 @@ E. **The pad pause on a with-flow log**, everywhere (not only under a liana): th
    seed-pinned plants, so re-measure them with it.
 
 ## Unresolved
-1. **Clips (packet item 4): not done.** The recordings exist; the page needs a dev fixture (Suggestion B).
+1. **Clips (packet item 4): not done, by the lead's ruling** (they wait for the real 2-4, rule 29).
 2. **The catch toy's boarding lives:** middle Normal variant 3 loses 2-3 lives with the skills on or off (2 off). It is the existing ride,
    not these skills. Traced as far as "stands on the log ~0.3 s, then runs off its front"; the branch steering him is not found. The test
    holds the catch count, not lives, on that toy.
