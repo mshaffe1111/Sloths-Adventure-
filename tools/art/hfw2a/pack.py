@@ -29,9 +29,10 @@ def fur_mean(a):
     m = (al > 200) & (lum > 70)
     return rgb[m].mean(axis=0)
 
-def match(im, ref):
+def match(im, ref, g=None):
     a = np.asarray(im.convert('RGBA')).copy()
-    g = fur_mean(np.asarray(ref.convert('RGBA'))) / fur_mean(a)
+    if g is None:
+        g = fur_mean(np.asarray(ref.convert('RGBA'))) / fur_mean(a)
     a[..., :3] = np.clip(a[..., :3].astype(float) * g, 0, 255).astype(np.uint8)
     return Image.fromarray(a, 'RGBA'), g
 
@@ -40,11 +41,15 @@ sheet = Image.open(P + 'w2-props.webp').convert('RGBA')
 src, F = frames_ts()
 y0 = sheet.height + GAP
 order = [k for k in ('duckWalkA', 'duckWalkB', 'otterWalkA', 'otterWalkB', 'capyWalkA', 'capyWalkB', 'duckPaddle', 'otterPaddle', 'capyPaddle') if k in picks]
-ims = {}
+ims, gains = {}, {}
 for k in order:
     kind = re.match(r'[a-z]+', k)[0]
     hx, hy, hw, hh = F[kind + 'Happy']
-    ims[k], g = match(Image.open(f'{cut_dir}/{picks[k]}.webp'), sheet.crop((hx, hy, hx + hw, hy + hh)))
+    # (a paddle pose shows a different share of fur and chest than the upright Happy pose, so a mean match on it is skewed: it takes
+    # its kind's walk-A gain, the same model's colour bias on the same animal)
+    ims[k], g = match(Image.open(f'{cut_dir}/{picks[k]}.webp'), sheet.crop((hx, hy, hx + hw, hy + hh)),
+                      gains.get(kind + 'WalkA') if k.endswith('Paddle') else None)
+    gains[k] = g
     print(k, picks[k], ims[k].size, 'gain', np.round(g, 3))
 rowh = max([im.height for im in ims.values()] or [0])
 W = sum(im.width + GAP for im in ims.values())
