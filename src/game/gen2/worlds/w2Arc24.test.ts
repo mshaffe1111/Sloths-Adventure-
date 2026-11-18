@@ -73,7 +73,7 @@ test("2-4's lines are the story keeper's, word for word (reference/story/lines-2
 test('the row: 2-4 rolls from its own kit (World 2 with 2-4 rows), CLEAN on both settings, the arc beat for beat, only its own bricks', () => {
   assert.equal(STAGE_TABLE[STAGE_24].kit, 'w2-24');
   assert.equal(kitLib24().manifest.world, 2);
-  const beats = ['edge', 'first-drop', 'bank', 'drop-ride-drop', 'up-from-log', 'rest', 'fig-roots', 'no-land', 'rest', 'kapok', 'long-relay', 'rest', 'great-swing', 'jetty'];
+  const beats = ['edge', 'first-drop', 'bank', 'drop-ride-drop', 'up-from-log', 'rest', 'root-planks', 'no-land', 'rest', 'kapok', 'long-relay', 'rest', 'great-swing', 'jetty'];
   assert.equal(Object.values(ARC_24)[0].split(' ').length, beats.length);
   for (const seed of SEEDS) for (const d of BOTH) {
     const st = built(seed, d);

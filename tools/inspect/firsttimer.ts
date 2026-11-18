@@ -1124,8 +1124,9 @@ export class FirstTimerRun {
   climbBacks = 0;
   /** climbing back out of such a pit: the ledges from the pit's floor up to the route, in order, and the way he heads now */
   private climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null = null;
-  /** the frame the bot itself last set him down (placeAt: a rescue, a put-past): that frame's jump in his place is its own, already found */
-  private placedFrame = -1;
+  /** the bot itself set him down since the last frame (placeAt: a rescue, a put past a puzzle room): that jump in his place is its own,
+   *  his place along the way already found (pastRoom's is never the nearest point, so it must not be found again) */
+  private placed = false;
   /** how often he has climbed back out of each pit (its floor): the same pit `tries3` times is a loop, and he is put past it */
   private pitFalls = new Map<Platform, number>();
   /** when he last let go of a liana (s of play): a pit he falls into soon after was a let-go that fell short, and he learns to hang low */
@@ -3077,7 +3078,7 @@ export class FirstTimerRun {
     this.airFrom = null;
     this.blockedT = 0;
     this.prog.relocate(sim.p);
-    this.placedFrame = this.frames;
+    this.placed = true;
   }
 
   /** the route point nearest a spot */
@@ -3298,10 +3299,11 @@ export class FirstTimerRun {
     //  (respawned, called from loseLife) read the spot he drowned at, a frame before the game moved him to the flag, and Easy's splash-back
     //  never relocated at all; 900 px off the way, under a liana's catch, pitWayBack set a 20 s climb back the wrong way, and 8 runs of
     //  the calibrated tiers were rescued for it. setDown.test.ts)
-    if (step >= 100 && this.placedFrame !== this.frames) {
+    if (step >= 100 && !this.placed) {
       this.prog.relocate(p);
       this.climbBack = null;
     }
+    this.placed = false;
     this.lastX = p.x;
     this.lastY = p.y;
   }

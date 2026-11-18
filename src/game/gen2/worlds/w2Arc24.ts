@@ -177,7 +177,9 @@ const theBank = (): Lay => ({
 /** [Pr] beat 3, drop, ride, drop: a liana over `ride`, a stump bank, a liana over `deep`, both splash-back; the flag before */
 const dropRideDrop = (): Lay => ({
   pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 420), lianaS('l1', 'b'), river('m', 'l1', 'ride24', 520), rock('rm', 'm', 0.15), rock('rn', 'm', 0.92), lianaS('l2', 'm'), river('y', 'l2', 'deep24', 340), rock('ry', 'y', 0.15), bank('z', 'y', 300)],
-  sockets: [flag('a'), petal('pm', 'm', 0.2)],
+  // (its petal mid-bank, clear of the stumps: at 0.2 it sat in the stump `rm` (0.15) and the pickup check took it off, so 2-4 ran 2,438 px
+  //  without a petal from the near bank to the deep river; petals.test.ts 'spread out', BUILD-24b)
+  sockets: [flag('a'), petal('pm', 'm', 0.5)],
 });
 /** [X] beat 4, the TURN, up from the log: the keeper's `catch` 800+ px before; he boards a `twin` log at the bank, rides it under a liana
  *  no bank reaches and jumps up to it (every ride has a catch); splash-back (the lead's ruling (b)); the flag before */
@@ -230,7 +232,7 @@ export const BEATS_24: SectionTemplate[] = [
   brick({ id: 'bank', name: 'stumps and stones along the bank', jobs: ['practise'], difficulty: 2, content: 'ground', versions: [{ id: 'shore', lay: theBank() }] }),
   brick({ id: 'drop-ride-drop', name: 'drop, ride, drop', jobs: ['practise'], difficulty: 3, content: 'rope', uses: [DROP_LESSON], versions: [{ id: 'two', lay: dropRideDrop() }] }),
   brick({ id: 'up-from-log', name: 'up from the log', jobs: ['test'], difficulty: 4, content: 'water', uses: [DROP_LESSON], versions: [{ id: 'catch', lay: upFromLog(false), easy: upFromLog(true) }] }),
-  brick({ id: 'fig-roots', name: 'the fig roots', jobs: ['practise'], difficulty: 1, content: 'floating', versions: [{ id: 'roots', lay: figRoots() }] }),
+  brick({ id: 'root-planks', name: 'the fig roots', jobs: ['practise'], difficulty: 1, content: 'floating', versions: [{ id: 'roots', lay: figRoots() }] }),
   brick({ id: 'no-land', name: 'no land', jobs: ['twist'], difficulty: 5, content: 'rope', uses: [DROP_LESSON], versions: [{ id: 'relay', lay: noLand(false), easy: noLand(true) }] }),
   brick({ id: 'kapok', name: 'up to the kapok', jobs: ['practise'], difficulty: 2, content: 'bounce', versions: [{ id: 'spring', lay: upToKapok() }] }),
   brick({ id: 'long-relay', name: 'the long relay', jobs: ['combine'], difficulty: 6, content: 'water', uses: [DROP_LESSON], versions: [{ id: 'gaps', lay: longRelay(false), easy: longRelay(true) }] }),
