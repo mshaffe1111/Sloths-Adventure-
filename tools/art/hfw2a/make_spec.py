@@ -53,7 +53,22 @@ def r2(picks):
         ed.append({'name': f'{n}-walkB-{tag}', 'src': src, 'prompt': p, 'neg': NEG, 'seeds': [11, 23, 37], 'w': 1024, 'h': 1024})
     return {'tag': 'w2a-r2', 'edits': ed}
 
+def r3(picks):
+    # (round 2's "far foot forward" came back as the same frame: the edit kept the legs. The other frame of a two-frame walk is the
+    # PASSING pose: legs together under the body, body up)
+    ed = []
+    for kv in picks.split(','):
+        n, src = kv.split('=', 1)
+        k, d = WHO[n]
+        p = (f'Picture 1 shows a {k} walking to the right. Redraw the very same {k} in the very same spot, size and view, at the middle of '
+             'its step: its legs no longer apart, now both legs straight down close together under its body with both feet side by side '
+             'flat on the ground, its body lifted a little higher. Keep everything else exactly the same: ' + KEEP.format(k=k, d=d)[5:])
+        tag = src.rsplit('-', 1)[-1].split('.')[0]
+        ed.append({'name': f'{n}-pass-{tag}', 'src': src, 'prompt': p, 'neg': NEG + ', legs apart, striding', 'seeds': [11, 23, 37],
+                   'w': 1024, 'h': 1024})
+    return {'tag': 'w2a-r3', 'edits': ed}
+
 if __name__ == '__main__':
-    sp = r1() if sys.argv[1] == '1' else r2(sys.argv[2])
+    sp = r1() if sys.argv[1] == '1' else r2(sys.argv[2]) if sys.argv[1] == '2' else r3(sys.argv[2])
     json.dump(sp, open(f'tools/art/hfw2a/spec-r{sys.argv[1]}.json', 'w'), indent=1)
     print(len(sp['edits']), 'edits')
