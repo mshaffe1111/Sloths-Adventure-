@@ -178,3 +178,53 @@ each sheet one still per new piece in stage order; shot on the final data of eac
 - Failed: relisting two stages at once (the index clobbered, caught and redone); measuring with 8- and 16-seed lists before the bots (the
   flags were right, the bots then found three defects: run the first-timer and child bots on the 16-seed list in the same loop).
 - Edit for level.md step 6: "run castBots on the 16-seed list (seeds 1-16, every tier) in the tuning loop, before any 100-seed relist".
+
+# VAR-1b: the finish (level builder, 11-18, 3:46-5:45 PM ET by `date`). STOPPED by the lead (5:42 PM): INT-12 relists, bots and gates
+
+**Hash: e3b96a8b4 (data), this REPORT on top.** Branch t-var-1. 1-8 = origin/main exactly (data, tests, list, index line; the lead 5:03
+PM). funknown.json = main's minus 19 entries of 1-6/1-7 this work cleared (0 lowered, 0 added; the lead 5:07 PM).
+**Logged miss:** my first five messages to the lead carried estimated times, not `date`. Lessons applied: D57, D79, D81, D83, D86.
+
+## Fixes and their roots
+| Fix | Root |
+|---|---|
+| 1-7 mossy floor: the middle piece is Matt's painted boulder (moss_stone exactly 50 px, isPaintedRock) | The lead's look question: the "fallen log" (`landing: true`) grew to 53 px, and protoArt paints a log-style block only under 50, so terrain drew a code slab. As a 25 px painted log it was walked over, the floor went quiet, the relist refused 37/137 seeds and funcheck read 1-7 "nothing bites" new. Planted test |
+| 1-7 hollow-log rest: stone 230+ px before the log's mouth | castBots child EASY seed 4 (Normal 40/40) stood in a 93 px gap under the log's 124 px face: the route ran stone -> the log's top. Planted test |
+| 1-6 walk-ins: a non-flat walk-in ends on main's root down | VAR-1's soft jump down left a 60 px slot level with the stone after it: pitJoinWall.test (1-6 N seed 1) and a narrow landing |
+| 1-6 stepping-stone fern gap 80-90 px (share 0.42-0.46) | A 60 px gap's floor was a landing under 64 px: stageQuality "1-6: 2 narrow landings before World 5" |
+| 1-7 moss beat: a petal on `b`, before the eye's stretch | The beat ran ~1,950 px bare (a hair under the 2-screen rule): walkedPath.test E's low fill on 1-7 layout 1 laid inside it |
+| 1-8 knots: REVERTED to main (4 shapes tried) | They are scenery doing a gate's job: the list's quiet line counts them as hop points, the route walks through them, the gated 5 s pacing grid moved 14 -> 15/16 with every real shape. R-165.293 |
+
+Items 1-2 of the packet: **bot defects, not level defects, NOT touched** (the lead's ruling pending; packet BOT-1 below). Kid N L13:
+`Progress.relocate(level=true)` (firsttimer.ts:414) has no distance limit and sent a liana-pit fall at x 5800 to the dip floor 35,000 px
+on. Middle N L34: the gorge is main's byte for byte; a 19 px short let-go, then `pitWayBack`'s `off < 120` early return kept it under
+the far wall. 1-6 Easy 9 vs 10 swings: 10 lianas laid; the meter's route catches the chain's 2nd liana off the bank (phase +0.48).
+
+## The three tests on e3b96a8b4 (run in its tree)
+- pitJoinWall.test.ts (1-6 rolls 1-4): **PASS** (3/3).
+- stageQuality.test.ts "narrow landings are rare and late": **PASS**.
+- walkedPath.test.ts "E: a LOW stage..." (1-6, 1-7): **PASS** (on the OLD 1-7 list; the relist may move layout 1).
+- **STILL RED, found late, NOT fixed:** w1Pits.test.ts "World 1, layout 1: the vault pits are soft pits with steps": "1-6 26199: a soft pit
+  with no step out" (red on 2cec5f64d too, so it is VAR-1's 1-6 data; likely a stepping-stone fern gap with no step out of its floor).
+
+## UNRUN on e3b96a8b4
+Relists 1-6 and 1-7 (the data changed; the committed lists are the old ones, so seedlist --check may refuse), castBots, funcheck, the
+meter, every CLAUDE.md gate, lockall, stills. On 2cec5f64d (before these fixes): tsc, build, chunkcheck, artcheck, knowncheck,
+generality, coveragecheck, roadmapcheck PASS; suite 3784/3790 (the 4 above + 1 TODO); lockall PASS (100/102 unchanged: only 1-6/1-7, 1-8
+unchanged vs main); funcheck = VAR-1's final (the 11 cleared, nothing new); castBots 1-7 (2a8413391's data, before the moss petal):
+child/middle/expert 40/40 both settings, kid/adult N 39 E 40 (light gap). Meter: 1-6 6.5/3.2, 1-7 1.9/1.3, 1-8 (main) 6.8/3.3.
+Stills: reference/qa-reports/VAR-1/stills-b/ (1-7 sheets on 2a8413391 data; 1-6 climbs and rests; 1-8 knots before the revert).
+
+## Packets
+- **BOT-1 (Critic):** firsttimer.ts `relocate(level)` limited to ~600 px of him; `pitWayBack` no early return when the next point is out of
+  reach. Planted: 1-6 kid N L13, middle N L34. Then tierBots + castBots 1-6.
+- **1-6 w1Pits:** the fern gap's pit needs its step out (or the fern gap is laid as no pit); run w1Pits.test.ts with the relist.
+- **1-8 rests, bough-native:** after R-165.293 (the pacing gate on the truer rule).
+
+## Learned
+- A piece's draw path decides its look: check the real footing (probes/rockdraw.ts) before calling it painted.
+- `landing: true` grows a thin block to a step's height.
+- Scenery can be doing a gate's job: read what the quiet line and the route each see before replacing a piece (`seedlist --count 3 --to 12`).
+- A bot's stuck x is where its progress tracker points, not where it was: read FT_TRACE first.
+- Run the suite on the first data commit, not at the end (VAR-1's 4 reds were there all day).
+- Stamp times from `date`, never from memory.
