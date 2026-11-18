@@ -103,8 +103,7 @@ test("World 1's book (finds.ts w1_book) stands on 1-8's first living fork, on a 
     const st = built(seed, d) as unknown as Parameters<typeof addFinds>[0] & { proto: { findSpot?: { x: number; b: number } }; chase: ChaseLay; gen2: { sections: Array<{ uid: string; template: string; x0: number; x1: number }> }; platforms: Platform[] };
     const spot = st.proto.findSpot;
     assert.ok(spot, `${d} seed ${seed}: the rest brick marks the find's spot`);
-    // (the first fork is whichever of 1-8's five rests the roll laid first, VAR-1)
-    const first = st.gen2.sections.find((q) => /^w1-18-rest/.test(q.template))!;
+    const first = st.gen2.sections.find((q) => q.template === 'w1-18-rest')!;
     assert.ok(spot.x > first.x0 && spot.x < first.x1, `${d} seed ${seed}: on the first fork`);
     assert.ok(spot.x < st.chase.stretches[1].start, `${d} seed ${seed}: before the second stretch`);
     assert.ok(st.platforms.some((p) => p.type === 'solid' && Math.abs(p.y - spot.b) <= 1 && p.x <= spot.x && p.x + p.width >= spot.x), `${d} seed ${seed}: on a bank's top`);
@@ -125,9 +124,7 @@ test('1-8 never locks its exit (the keeper: the branch behind him is gone): a sp
 test('the arc beat for beat on every roll, both settings: arrival, the teach, four stretches with rests, the still fork, the last stretch, the tip, the exit', () => {
   for (const d of BOTH) for (const s of SEEDS) {
     const st = built(s, d);
-    const rests = st.gen2.sections.map((q) => q.template).filter((t) => /^w1-18-rest/.test(t));
-    assert.equal(new Set(rests).size, rests.length, `${d} seed ${s}: every fork a different rest, ${rests.join(' ')}`);
-    assert.deepEqual(st.gen2.sections.map((q) => q.template.replace('w1-18-', '').replace(/^rest-.*/, 'rest')), ARC, `${d} seed ${s}`);
+    assert.deepEqual(st.gen2.sections.map((q) => q.template.replace('w1-18-', '')), ARC, `${d} seed ${s}`);
     assert.deepEqual(st.gen2.errors, [], `${d} seed ${s}: no roll errors`);
   }
 });
