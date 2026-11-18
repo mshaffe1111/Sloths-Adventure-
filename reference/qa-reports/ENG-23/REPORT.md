@@ -9,12 +9,12 @@ of this report. Engine only: 2-3 is NOT laid (its builder does).
 
 | # | What | Where | Evidence |
 |---|---|---|---|
-| 1 | follow.ts, pure: the trail (walk / hold: a climb, grab, ride or fall makes the last GROUND point a WAIT; a hop that ends on a vine is cut back to its take-off), stepLine (each chases the one ahead at most `pace`, never closer than `gap`, never past a WAIT), join (a freed one drops from its cage, then walks straight to the end of the line), spook / rejoin, regroup, home, paddle at the surface over splash-back water, zoneLookX (the look sweeps x0-160 to x1+160 in WORLD x), lineSeen (watcherSees with seesStill + the reed inset) | src/game/follow.ts | follow.test.ts (20 tests) |
+| 1 | follow.ts, pure: the trail (walk: on the ground or in the air, his hop or a walk off an edge, judged at the landing: down more than FollowRow.step and the take-off becomes a WAIT; hold: a climb, grab or ride makes the last GROUND point a WAIT; a hop that ends on a vine is cut back to its take-off; a WAIT opens when he is back on that ground or a step below), stepLine (each chases the one ahead at most `pace`, never closer than `gap`, never past a WAIT), join (a freed one drops from its cage, then walks straight to the end of the line), spook / rejoin, regroup, home, paddle at the surface over splash-back water, zoneLookX (the look sweeps x0-160 to x1+160 in WORLD x), lineSeen (watcherSees with seesStill + the reed inset) | src/game/follow.ts | follow.test.ts (20 tests) |
 | 2 | followPlay.ts: the engine glue. One per stage carrying proto.follow; his mode each frame (grounded / his own hop = walk; climbing, swinging, hanging, riding a drift log or ride, or a fall = hold); a set-back (respawn, soft fall, splash-back, or any jump > 150 px) re-forms the line bunched behind him; herons: one WatchState per watched stretch (watcher.ts stepWatch; WatchZone.lag starts a second heron late), reading only the little ones on its own stretch, never him; its first look over a freeFirst stretch only warns (on Easy every heron's first look does, the kit's rule); a spooked one runs to WatchZone.setback (else the stretch's start) | src/game/followPlay.ts | toys 3-6 below |
 | 3 | The engine: startFollow at stage start; updateFollow replaces updateWatch on a follow stage (the eagle never runs there); a burst cage's little one joins the line (crittersRescued still counts the freed for stats); the goal counts HOME ones (goals.ts rescueCount: the ONE count the sealed exit and the HUD read); every set-back calls follow.setBack (crumbledWhole + the two splash put-backs); the cage's own hop-away is not drawn when its little one follows | src/game/engine.ts, goals.ts, riverArt.ts | toy 6, the engine regroup test |
 | 4 | The draw: the little ones at ~45 px tall (33 px wide: Matt's Happy poses, w2-props) behind him and under the reeds; walking bob, paddling (sunk to the chest, a ripple), hiding (crouched behind a reed tuft), home (hopping); the heron (dressnew-w2#w2Heron) wading 70 px past its stretch's end at its level, facing back along it, '!' while it warns, its look a dashed gaze from its eye and a pale wash on the ground | src/game/followArt.ts | stills (section 2) |
 | 5 | World 2's reed clump as a hide: Bush.kind 'reeds' drawn from World 2's own reed paintings (reedTall / reedShort / reedLean, the pattern fixed by where it stands, swaying harder while someone moves in it) | riverArt.ts drawReedClump, watcher.ts, engine.ts drawBushes | stills |
-| 6 | The data row: `W2_FOLLOW = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60, home: 200 }` (the design's FOLLOW + the lead's home) | gen2/worlds/w2.ts | |
+| 6 | The data row: `W2_FOLLOW = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60, home: 200, step: 90 }` (the design's FOLLOW + the lead's home; `step` = W2_GROUND.bankH, "a bank's lip", MY pick of the number for the lead's 3:01 PM ruling: rule it) | gen2/worlds/w2.ts | |
 | 7 | lineFaults (gen2, next to stillFaults): reeds under 260 px (Easy 340); open mud over 500 px (350 under two herons, and on Easy); a watched pond over 360 px; two herons whose longest safe time to leave is under 2.0 s (FLOWN with the game's own FollowPlay, not a formula: LESSONS "a gate must call the same code"); a climb whose top lets him off onto other ground, or with no ground 60 px on; any swing or ride; a cage whose little one drops into nothing or deep water, or past the exit | src/game/gen2/lineFaults.ts | lineFaults.test.ts (8 tests) |
 | 8 | Bot skills (firsttimer.ts LINE_SKILL): WAIT-FOR-THE-TAIL (in the reeds on a watched stretch: walk only as far in as the line needs, stand while a heron looks, go right after a look with the whole line in and still; his late thumb that slides him out of the reeds walks him back in) and FETCH-THE-SPOOKED (back for a spooked one once the heron has looked away; at a sealed door he waits while any little one is still on its way) | tools/inspect/firsttimer.ts | lineBot.test.ts (4 tests; added to gates.yml) |
 
@@ -28,6 +28,8 @@ of this report. Engine only: 2-3 is NOT laid (its builder does).
 | 4 the heron | still in the open: spooked back to the stretch start; still in the reeds: not; the look crosses 600 px behind him (world x); in the real engine he stands in the open under the look: never read, no dive, no heart | a watcher reading him sees him; and the same stretch without the follow row is the eagle, which sees him |
 | 5 the regroup at a flag | the whole line, a spooked one too, bunched behind him (pure, and in the engine through respawnAtCheckpoint) | a regroup that leaves the spooked one strands it at its reed |
 | 6 the goal | Normal 5 / Easy 3 (goals.ts); the door stays shut with all freed and none home, opens when they are home | count the freed: the door opens at the burst |
+| 7 a step down (the lead's ruling 3:01 PM ET) | he walks off a 60 px step: the line follows him down HIS way (his arc, as a hop), none left in the air | the contract as first written (a walk-off is a hold, opened only on the same ground): the line stays at the lip |
+| 8 a drop deeper than a step | 200 px (> FollowRow.step 90): the line waits 34 px short of his last step on the lip and never goes over | no step limit: they go over after him |
 
 Plus: the line paddles across splash-back water on his path, at the surface, nobody hurt (planted: without the surface pin it paddles at
 the height of his hop: RED, then fixed); lineFaults' 8; the bots' 4 (wait-for-the-tail: middle and adult x 3 seeds cross with nobody
@@ -42,9 +44,9 @@ spooked; off: caught on the mud; fetch: all three home; off: the door stays seal
 4. A spooked one ran back THROUGH his trail's history (he had doubled back to fetch, so it ran forward 1,000 px first). Now it scampers
    straight back over the ground he walked there (trailYAt).
 5. Paddlers floated at the height of his hop with ripples round them (still 2-paddle). Now pinned to the surface (planted test).
-7. The suite's font rule (fonts.test.ts) caught the heron's '!' in a bare sans-serif: now the game's display font (re-run: pass).
 6. The heron faced away from its reeds (the painting faces left), stood on a high ledge (the top-most surface), and its look was too
    faint to read. Now it faces its stretch, wades at the reeds' level, and its look is a dashed gaze plus a stronger wash.
+7. The suite's font rule (fonts.test.ts) caught the heron's '!' in a bare sans-serif: now the game's display font (re-run: pass).
 
 **Flown numbers for the builder (the game's own line, a runner at his full run, shortest calm):** two herons out of step, G 350, the
 second 3.2 s later: longest safe leave 2.7 s (the flight said 2.6); G 500 / 4.8 s: 1.6 s (the flight said 0.4; both refused). Mine
@@ -93,6 +95,8 @@ with its pulley room and lines taken out; a toy, not the level.
 - A spooked one hiding at its reed is hard to see (the HUD's '!' face and Dot's line are what find it).
 - A spooked one scampers straight back over the ground he walked; across a pit he hopped it would run along his hop's line (no 2-3 beat
   has a pit inside a watched stretch; lineFaults does not check for it).
+- lineFaults does not yet find a drop deeper than a step ON the line's road (it would strand them at the lip); the built stage's bots
+  would end at a sealed door. A check needs the road (the builder's route): suggest it with the 2-3 build.
 - The bot's fetch walks back with plain steps (fine on 2-3's flat marsh; a pit behind him would need the route).
 - drawcheck / clipcheck not run: no shipped stage draws the new paths (no stage carries proto.follow or a 'reeds' hide); the builder's
   2-3 runs them.

@@ -65,16 +65,13 @@ export class FollowPlay {
   trail: Trail;
   line: Follower[] = [];
   herons: Heron[];
-  /** he left the ground by his own jump (the line hops where he hopped); false: he walked off or let go of something (a fall: hold) */
-  private airJump = false;
   private last: { x: number; y: number };
   private pending = false;
-  private wasGrounded = true;
   readonly pace: number;
 
   constructor(readonly row: FollowRow, readonly easy: boolean, readonly stage: FollowStage, start: { x: number; y: number }) {
     this.pace = easy ? row.pace.easy : row.pace.normal;
-    this.trail = newTrail(start.x, start.y);
+    this.trail = newTrail(start.x, start.y, row.step);
     this.last = { ...start };
     // (two herons over one stretch wade at its two ends; the first at the far end, looking back along it)
     const seen = new Map<string, number>();
@@ -134,15 +131,12 @@ export class FollowPlay {
     const dir = this.stage.dir ?? 1;
     if (this.pending || Math.abs(p.x - this.last.x) > SET_BACK_JUMP || Math.abs(p.y - this.last.y) > SET_BACK_JUMP * 2) {
       this.pending = false;
-      this.trail = regroup(this.line, { x: p.x, y: p.y }, this.row.gap, dir);
-      this.airJump = false;
+      this.trail = regroup(this.line, { x: p.x, y: p.y }, this.row.gap, dir, this.row.step);
     } else {
-      if (p.grounded) this.airJump = false;
-      else if (this.wasGrounded && p.vy < 0) this.airJump = true;
-      const hold = !!p.climbing || !!p.isVineSwinging || !!p.hanging || (p.grounded && rides(on)) || (!p.grounded && !this.airJump);
+      // (in the air, by his hop or off an edge, is a walk: the trail judges the drop when he lands, record)
+      const hold = !!p.climbing || !!p.isVineSwinging || !!p.hanging || (p.grounded && rides(on));
       record(this.trail, p, hold ? 'hold' : 'walk');
     }
-    this.wasGrounded = p.grounded;
     this.last = { x: p.x, y: p.y };
     const before = this.home();
     stepLine(this.trail, this.line, this.pace, this.row.gap, dt, this.surf, this.row.scamper);

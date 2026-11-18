@@ -155,7 +155,7 @@ test('toy 3 planted: with the WAIT ignored (his climb recorded as a walk) the li
   assert.ok(q.up > 0 || q.past > 0, 'planted: nobody climbed');
 });
 
-test('toy 3, the engine\'s mode: climbing, swinging, hanging, riding and a fall are holds; his own hop is a walk (followPlay.ts)', () => {
+test('toy 3, the engine\'s mode: climbing, swinging, hanging and riding are holds; his own hop and a walk off an edge are walks (followPlay.ts)', () => {
   const zones: WatchZone[] = [];
   const fp = new FollowPlay(W2_FOLLOW, false, { exitX: 9000, zones, covers: [], platforms: [floor()], safeWater: [] }, { x: 1000, y: FLOOR });
   const step = (h: Partial<{ x: number; y: number; vy: number; grounded: boolean; climbing: boolean }>) => fp.step(DT, { x: 1000, y: FLOOR, vy: 0, grounded: true, ...h }, floor(), () => 0.5);
@@ -169,7 +169,59 @@ test('toy 3, the engine\'s mode: climbing, swinging, hanging, riding and a fall 
   assert.ok(!fp.trail.held, 'his own hop off the ground is a walk');
   step({ x: 1030, y: FLOOR, grounded: true });
   step({ x: 1040, y: FLOOR + 10, vy: 120, grounded: false });
-  assert.ok(fp.trail.held, 'walking off an edge is a fall: a hold');
+  assert.ok(!fp.trail.held, 'walking off an edge is a walk: the drop is judged when he lands');
+  step({ x: 1050, y: FLOOR + 300, grounded: true });
+  assert.ok(fp.trail.held, 'landing 300 px down, more than a step: they wait at the lip');
+});
+
+/** he walks right off a step `drop` px down (floor A to x 1000, floor B beyond it) and stands on B; the line behind him (Trail.step `step`) */
+function stepDown(drop: number, step: number, contract = false) {
+  const B: Platform = { id: 2, x: 1000, y: FLOOR + drop, width: 9000, height: 200, type: 'solid' } as Platform;
+  const { r, inp } = rig(700, [{ ...floor(1000) } as Platform, B]);
+  const { line } = bunched(r.p.x, 5);
+  const t = newTrail(r.p.x - 600, FLOOR, step);
+  record(t, { x: r.p.x, y: FLOOR, grounded: true }, 'walk');
+  inp.triggerTouchMove('right');
+  let landed = -1, inAir = 0;
+  const his: Array<[number, number]> = [];
+  for (let k = 0; k < 450; k++) {
+    if (r.p.x > 1300) inp.triggerTouchMove('none');
+    r.e.update(DT);
+    // (the contract as first written: a walk off an edge is a hold, and the WAIT opens only on that same ground)
+    if (contract && !r.p.grounded) record(t, r.p, 'hold');
+    else if (contract && t.held && Math.abs(r.p.y - FLOOR) > 12) { /* not back on the lip's ground */ }
+    else record(t, r.p, 'walk');
+    if (!r.p.grounded) his.push([r.p.x, r.p.y]);
+    stepLine(t, line, PACE, GAP, DT);
+    if (landed < 0 && r.p.grounded && r.p.y > FLOOR + 1) landed = k;
+    if (landed >= 0 && !line.some((f) => f.moved)) inAir = line.filter((f) => Math.abs(f.y - FLOOR) > 0.5 && Math.abs(f.y - (FLOOR + drop)) > 0.5).length;
+  }
+  // (the first little one's way down, against his: where it passed his x at the edge, its height was his)
+  return { line, held: t.held, his, inAir, lip: t.pts[t.pts.length - 1] };
+}
+
+test('toy 7, a step down (the lead\'s ruling 3:01 PM): he walks off a 60 px step and the line follows him down HIS way, none left in the air', () => {
+  const q = stepDown(60, W2_FOLLOW.step);
+  assert.equal(q.held, false);
+  q.line.forEach((f, i) => assert.ok(Math.abs(f.y - (FLOOR + 60)) < 0.5 && f.x > 1000, `little one ${i + 1} at ${f.x.toFixed(1)}, ${f.y.toFixed(1)}`));
+  assert.equal(q.inAir, 0);
+});
+
+test('toy 7 planted: the contract as first written (a walk off an edge is a hold, opened only on the same ground) leaves the line at the lip', () => {
+  const q = stepDown(60, W2_FOLLOW.step, true);
+  assert.ok(q.line.every((f) => f.x < 1000 && Math.abs(f.y - FLOOR) < 0.5), `planted: ${q.line.map((f) => Math.round(f.x))}`);
+});
+
+test('toy 8, a drop deeper than a step (200 px > 90): the line waits at the lip and never goes over it', () => {
+  const q = stepDown(200, W2_FOLLOW.step);
+  assert.equal(q.held, true);
+  assert.ok(q.lip.wait && Math.abs(q.lip.y - FLOOR) < 0.5 && q.lip.x <= 1030, `the WAIT is his last step on the lip (${q.lip.x.toFixed(1)})`);
+  q.line.forEach((f, i) => assert.ok(f.x <= q.lip.x - GAP * (i + 1) + 0.5 && Math.abs(f.y - FLOOR) < 0.5, `little one ${i + 1} at ${f.x.toFixed(1)}, ${f.y.toFixed(1)}`));
+});
+
+test('toy 8 planted: with no step limit the line goes over the 200 px drop after him', () => {
+  const q = stepDown(200, Infinity);
+  assert.ok(q.line.some((f) => f.y > FLOOR + 1), 'planted: nobody went over');
 });
 
 /** a heron over [0, 1200]; he holds at a post at 1000, the line bunched at its foot: B at 966 (out of the reeds), A at 932 (in them) */

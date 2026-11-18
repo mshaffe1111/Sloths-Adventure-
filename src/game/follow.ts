@@ -29,6 +29,11 @@ export interface FollowRow {
   rejoin: number;
   /** a little one is home once it is this close before the exit (px): the families wait on the jetty in front of the door */
   home: number;
+  /**
+   * the deepest drop they follow him down (px): one step's height (a stair, a bank's lip; the lead's ruling 3:01 PM ET 11-18), walked
+   * or hopped down along his own path. Deeper, they wait at the lip: they never fall into a pit, deep water or anything he fell through
+   */
+  step: number;
 }
 
 /** a point of his trail: his feet, how far along the trail (s), and whether the line waits here (a climb's foot, a ride's bank) */
@@ -45,8 +50,10 @@ export interface Trail {
   pts: TrailPt[];
   /** his place along the trail (the newest point's s) */
   s: number;
-  /** he is climbing, riding, grabbing or falling: the newest ground point is a WAIT */
+  /** he is climbing, riding or grabbing, or dropped further than a step: the newest ground point is a WAIT */
   held: boolean;
+  /** the deepest drop the line follows him down (FollowRow.step); unset: any */
+  step?: number;
 }
 
 export type FollowKind = 'duck' | 'otter' | 'capy';
@@ -85,32 +92,46 @@ export const SAME_GROUND = 12;
 /** a freed one drops from its cage this fast (px/s) */
 export const DROP_SPEED = 420;
 
-export function newTrail(x: number, y: number): Trail {
-  return { pts: [{ x, y, s: 0 }], s: 0, held: false };
+export function newTrail(x: number, y: number, step?: number): Trail {
+  return { pts: [{ x, y, s: 0 }], s: 0, held: false, ...(step !== undefined ? { step } : {}) };
+}
+
+/** the last ground point becomes a WAIT (the air after it is cut away: a hop that ended on a vine, or a drop deeper than a step) */
+function holdAtGround(t: Trail): void {
+  let i = t.pts.length - 1;
+  while (i > 0 && t.pts[i].air) i--;
+  if (i < t.pts.length - 1) t.pts.length = i + 1;
+  t.pts[i].wait = true;
+  t.s = t.pts[i].s;
+  t.held = true;
 }
 
 /**
- * Add his feet to the trail. `walk`: on the ground, or in the air from his own ground jump (the line hops where he hopped). `hold`: a climb,
- * grab, ride or fall: the last GROUND point becomes a WAIT (a hop that ended on a vine is cut back to where he took off) and nothing more is
- * added until he stands again on that ground or lower.
+ * Add his feet to the trail. `walk`: on the ground, or in the air (his hop, or a walk off an edge: the line goes where he went, a hop down
+ * a step included). On the landing the drop is judged: down more than a step (Trail.step) and the take-off becomes a WAIT, so they never
+ * go over a drop that deep. `hold`: a climb, grab or ride: the last GROUND point becomes a WAIT (a hop that ended on a vine is cut back to
+ * where he took off). After a WAIT nothing more is added until he stands again on that ground, or a step below it.
  */
 export function record(t: Trail, p: { x: number; y: number; grounded: boolean }, mode: TrailMode): void {
   if (mode === 'hold') {
-    if (t.held) return;
-    let i = t.pts.length - 1;
-    while (i > 0 && t.pts[i].air) i--;
-    if (i < t.pts.length - 1) t.pts.length = i + 1;
-    t.pts[i].wait = true;
-    t.s = t.pts[i].s;
-    t.held = true;
+    if (!t.held) holdAtGround(t);
     return;
   }
   const l = t.pts[t.pts.length - 1];
+  const step = t.step ?? Infinity;
   if (t.held) {
-    // (back on the ground: the foot's ground or below; until then the line stays at the foot)
-    if (!p.grounded || p.y < l.y - SAME_GROUND) return;
+    // (back on the ground he left them on, or a step below it; until then the line stays at the foot or the lip)
+    if (!p.grounded || p.y < l.y - SAME_GROUND || p.y > l.y + step) return;
     l.wait = false;
     t.held = false;
+  } else if (p.grounded && l.air) {
+    // (he landed: further down than a step from where he took off, and that is a drop they do not take)
+    let i = t.pts.length - 1;
+    while (i > 0 && t.pts[i].air) i--;
+    if (p.y - t.pts[i].y > step) {
+      holdAtGround(t);
+      return;
+    }
   }
   const d = Math.hypot(p.x - l.x, p.y - l.y);
   if (d < 0.5) {
@@ -307,10 +328,10 @@ export function rejoin(line: Follower[], f: Follower, heX: number, reach: number
  * Re-form the line bunched behind him at `at` (a lost heart's flag, a splash-back): a fresh trail back from where he stands, facing
  * `dir`, and every little one not yet home on it in order, spooked and joining ones too. Returns the new trail.
  */
-export function regroup(line: Follower[], at: { x: number; y: number }, gap: number, dir: 1 | -1 = 1): Trail {
+export function regroup(line: Follower[], at: { x: number; y: number }, gap: number, dir: 1 | -1 = 1, step?: number): Trail {
   const n = line.filter((f) => f.state !== 'home').length;
   const back = gap * (n + 2);
-  const t = newTrail(at.x - dir * back, at.y);
+  const t = newTrail(at.x - dir * back, at.y, step);
   record(t, { x: at.x, y: at.y, grounded: true }, 'walk');
   let k = 0;
   for (const f of line) {
