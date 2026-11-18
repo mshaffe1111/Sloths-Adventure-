@@ -18,9 +18,16 @@ const tapCards = async (p) => {
       const r = el.getBoundingClientRect();
       return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
     });
-    if (!box) return;
+    if (!box) break;
     await p.mouse.click(box.x, box.y);
     await p.waitForTimeout(400);
+  }
+  // (and a line that is only timed, Pokey's or Dot's, is waited out: up to 2 s while the game runs (Pokey's own timed line outlasts it: it stays in the still, the page's real screen), so no still is half covered)
+  for (let i = 0; i < 4; i++) {
+    const up = await p.evaluate(() => [...document.querySelectorAll('body *')].some((el) => el.children.length === 0 && /^(Pokey|Dot)$/.test((el.textContent ?? '').trim()) && el.getBoundingClientRect().width > 0));
+    if (!up) return;
+    await p.evaluate((E) => { const e = eval(E); for (let k = 0; k < 15; k++) e.update(1 / 30); }, "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)");
+    await p.waitForTimeout(500);
   }
 };
 const b = await chromium.launch();
