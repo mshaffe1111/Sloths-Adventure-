@@ -1,4 +1,4 @@
-# Designer handoff (the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (the pitch rows added 2026-11-18 by PITCH-23A: World 2's 2-3/2-4/2-5 pitch and the engine facts it checked; the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -31,6 +31,7 @@ Every ruling below cites the file and section where it's written in full.
 | **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
 | **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
+| **Pitches (the pitch round, reference/methods/pitch.md):** 2-3/2-4/2-5 Pitcher A (11-18) with a fact table of World 2's engine on main 6e7b85f8 (followers MISSING, snap stones a type with no player, the turtle has no trap ending) | `reference/design/pitches/PITCH-23A.md` (t-pitch-23a); the lead's picks go in `reference/design/<level>.md` headers |
 
 ## 2. The section pool (World 1, gen2)
 
@@ -250,3 +251,6 @@ Every ruling below cites the file and section where it's written in full.
 - **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
   crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
   Look at the platforms AT the settle (log the settle's input) before blaming the level's data.
+- **A type is not a piece (11-18, PITCH-23A):** beatBrick's `'bites'` existed as a type and a test while padPiece.ts hardcodes 'gone' (:58, :104): nothing plays
+  it. Before writing "exists" in a pitch or packet, grep for a caller that PLAYS it, not for the name.
+- **Research hosts (11-18):** en.wikipedia.org answers every game page; gamesradar review URLs and hardcoregaming101 article slugs 404 often: search first, fetch the URL it gives.
