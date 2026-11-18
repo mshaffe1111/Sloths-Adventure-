@@ -14,7 +14,7 @@
    dress#w2RiverStone / w2#boulder at 80 px); **flags by the live rule** (pipeline.ts:1748 ROLLED_FLAGS pasted).
 5. **Gates:** sims tsc on main's tree: 0 errors (temp tsconfig extending the project's, lib ES2023 for findLast in nodeCode.ts; project tsc on main 0 errors). knowncheck: FAIL on this branch
    (2 entries this lead branch's old tree carries vs main: generality.known.json, ciTests.known.json; my diff touches neither), PASS in the main worktree with my files added.
-   roadmapcheck: FAIL "shallow clone, proofs cannot be checked" (exit 2); an unshallow fetch is running; its result is in the message to the lead.
+   roadmapcheck (after unshallowing): FAIL (3), all on ROADMAP.md rows R-165.277 (tier) and R-165.279 (tier, Time format), the lead's rows from this branch's base; ROADMAP.md untouched here.
 
 ## Polish check
 Docs only, no stills. Read both designs through against the flights' output files line by line: fixed a typed time (D30: header said 10:57 written at 10:38), an upright-view claim
@@ -37,7 +37,7 @@ Docs only, no stills. Read both designs through against the flights' output file
 
 ## Unresolved
 The stomp bounce (unflown); bits per beat are estimates from the flown windows (the meter reads the built stage); the ride-the-wave bot leaves the bank at any moment (no bank wait),
-so its 76% is a share of bank-leaves, not of skill; quotes not re-opened (taken from the pitches' cited pages); roadmapcheck pending the unshallow.
+so its 76% is a share of bank-leaves, not of skill; quotes not re-opened (taken from the pitches' cited pages).
 
 ## Method used / Lessons applied / Method update
 Used: methods/level.md rules 1-9, 21-24; DESIGNER.md. Lessons: D30/D42 (times from `date`; one typed time caught and fixed), D15 (tested the sims first: two sim bugs found, a per-swing
