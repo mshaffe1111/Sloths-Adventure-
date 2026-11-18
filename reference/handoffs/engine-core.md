@@ -2,6 +2,12 @@
 
 Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
 
+## 0zl. BUILD-19 (t-build-19, 11-18): a stage whose goal counts petals never tops up animals
+- pipeline.ts planBudget `fights` and topUpFoes: a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: stagePlan
+  `gathers: 'petals'`; 1-9) lays its sockets' animals and no more (quota.lay = the goal, no +2; no top-up). Before, 1-9's gauntlet kind
+  topped 12 designed boas up to targetCount + 2 = 16 onto any 248+ px bank. Test: src/game/gen2/petalGoalTopUp.test.ts (planted: the
+  clause removed -> lay 16); the built half on the real stage: w1Arc19.test.ts. The lead's ruling 10:09 AM ET 11-18.
+
 ## 0zd-19b. 1-9's engine finished (ENG-19b, t-eng-19b, 11-15): what the 1-9 builder and the next engineer must know
 - **The kit boa's coil hurts on touch** (the lead 11:20 AM ET): PredatorDef.coil (BOA 58x26); core.ts hurt(): the coil box in rest,
   hunt, tell; the strike's box in act; NONE in recover (the punch's window), stunned, flee, gone. The kit's fairness gate

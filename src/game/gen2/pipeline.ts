@@ -41,6 +41,7 @@ import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { goalCountsPetals } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, PAD_LAY } from './rideLay.ts';
@@ -420,8 +421,10 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const easy = difficulty === 'easy';
   const target = targetSeconds(config.worldIndex, config.miniIndex, archetype);
   const goal = config.targetCount;
-  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to)
-  const fights = archetype === 'purge' || archetype === 'gauntlet';
+  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to. A stage
+  //  whose goal counts petals (goals.ts goalCountsPetals: 1-9, a gauntlet that gathers her petals) never tops up animals to an animal
+  //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
+  const fights = (archetype === 'purge' || archetype === 'gauntlet') && !goalCountsPetals(config);
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
@@ -3821,7 +3824,7 @@ function topUpFoes(
    *  with no ask rolls as it always did */
   ask?: { sections: ReadonlySet<string>; kinds: readonly CreatureDef[]; need: number; salt: number },
 ): FilledSocket[] {
-  if (!ask && budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
+  if (!ask && ((budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') || goalCountsPetals({ objectiveType: budget.archetype, worldIndex: budget.world, miniIndex: budget.stage }))) return [];
   const M = kit.manifest;
   const rows = castRows(M, budget.id);
   const lastX = laid.exit.x - 200;
