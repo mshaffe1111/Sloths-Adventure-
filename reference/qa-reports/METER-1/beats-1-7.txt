@@ -1,0 +1,11 @@
+w1-17-arrival              points   0.4  route s    9  per min   2.4   single 0.4
+w1-17-bush                 points   0.2  route s   12  per min   1.1   single 0.2, watch 0.0
+w1-17-red-green            points   0.3  route s    7  per min   2.7   watch 0.2, single 0.1
+w1-17-rest                 points   0.3  route s   11  per min   1.6   single 0.3
+w1-17-bare-bark            points   1.4  route s    7  per min  11.3   watch 0.9, single 0.5
+w1-17-moss                 points   0.7  route s    9  per min   4.5   single 0.6, watch 0.1
+w1-17-creak                points   2.1  route s   10  per min  13.0   watch 1.3, single 0.8
+w1-17-mossy-lianas         points   5.1  route s   12  per min  25.5   watch 2.3, swing 1.7, catch 0.8, single 0.4
+w1-17-eagle-lands          points   0.3  route s    8  per min   2.0   single 0.3, watch 0.0
+w1-17-light-gap            points   4.1  route s   14  per min  17.6   swing 1.8, single 1.0, watch 0.7, catch 0.6
+w1-17-exit                 points   0.1  route s    3  per min   2.7   single 0.1

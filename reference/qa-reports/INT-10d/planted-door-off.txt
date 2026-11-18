@@ -1,0 +1,18 @@
+# INT-10d planted runs. (1) goals.ts goalCounts without `x.walked !== false` (the door exclusion off): petalFill 1,3 and walkedPath F RED. (2) petalPass with the old LOW skip (`&& !petalsLow(stage)`): walkedPath E RED. Both restored; green on the head.
+not ok 1 - a fill petal on a soft pit's floor is never one the door counts: a creaky limb between two liana gaps, the pit floor the only wide piece (RED: exclusion off)
+ok 2 - the fill still lays on the walked path: a perch level with the banks in the same stretch gets the trail, and the door counts it
+not ok 3 - a fill petal over a hurt floor (the thorn bed) is never counted, with no record of the stage's falls (RED: exclusion off)
+ok 4 - a heart-fall zone counts as a fall: below its lower lip is the pit (gen2 heartFalls, any world)
+# pass 2
+# fail 2
+not ok 1 - F: 1-6 layouts 1-3 (Normal) hold petals off the walked path; the door asks only a share of the walked ones; switched off, it asks more than every run passes (sealed)
+# pass 0
+# fail 1
+not ok 1 - E: a LOW stage with a 2.8-screen bare stretch gets exactly the petals that close it (none outside it, none left over 2 screens); a 1.5-screen one gets none; without the brief the fill lays more
+  error: '1-7: a 2808 px bare stretch under a low brief got no petal'
+PLANT 1 (w1-hop-bounce's declaration out):
+not ok 1 - every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+ok 2 - no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan
+PLANT 2 (the budget offers the combo untaught):
+ok 1 - every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+not ok 2 - no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan

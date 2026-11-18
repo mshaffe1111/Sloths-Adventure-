@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -59,7 +59,6 @@ export interface W2Kit {
   villageEnd(): void;
   floodBasin(islands: number, cageAt: number[], seconds: number, opts?: { safe?: boolean; across?: boolean; need?: number; tips?: RoomTips }): void;
   cageRoom(o: { need: number; mode: 'bank' | 'across' | 'high'; critter: Critter; safe?: boolean; tips?: RoomTips }): void;
-  ferryRoom(o?: { safe?: boolean; tips?: RoomTips; flowers?: number }): void;
   bellGate(tips: RoomTips): { gateX: number; bellX: number };
   bellGallery(guards: number): void;
   sandbar(dirA: 1 | -1, dirB: 1 | -1, speed: number, logW: number, opts?: { safe?: boolean; flowers?: number; tag?: string }): void;
@@ -95,8 +94,6 @@ export interface W2Kit {
 
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-1': ['deep', 'creek', 'reeds', 'swings'],
-  '2-2': ['high', 'ponds', 'snakes', 'posts'],
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-4': ['chains', 'islands', 'reeds', 'ponds'],
   '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
@@ -116,12 +113,10 @@ export interface W2Picks {
 /**
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
- * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-1 and 2-2 (logs, ponds,
- * snakes, posts), 2-3 and 2-8 (the cages), 2-4 and 2-7 (swings and lifts), 2-5 and 2-9 (the animals).
+ * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-3 and 2-8 (the cages),
+ * 2-4 and 2-7 (swings and lifts), 2-5 and 2-9 (the animals). (2-1 and 2-2 are gen2's since ENG-W2, 11-14: gen2/worlds/w2.ts)
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-1': ['deep', 'creek', 'reeds', 'swings'],
-  '2-2': ['snakes', 'posts', 'high', 'ponds'],
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
   '2-4': ['chains', 'islands', 'reeds', 'ponds'],
@@ -315,335 +310,6 @@ class Crossings {
 }
 
 const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
-  // ======================================================================================================================
-  // 2-1 Down to the River: hop the drifting logs down to the riverbank village. The world's first river, and only the river: down the
-  // carved bank to the water, the logs learnt where a splash costs nothing; then the river's way on, rolled: the deep river (with the
-  // current, then flowing back at him), the creek (stepping stones, lily pads and sandbars between the logs), or the reeds (snakes on
-  // every bank, mooring posts up the high banks); all of it quicker at the end, a breath of bank between each crossing, to the village.
-  '2-1': (k, flavour, rng) => {
-    const { R } = k;
-    // (deep water's logs a little shorter and quicker than the teaching ones: a long ride is a stretch with nothing to do)
-    let narrows = 0;
-    const withIt = (speed: number, o: { safe?: boolean; tag?: string } = {}) => (o.safe ? k.river(1, speed, 2, 120, o) : k.river(1, speed + 6, narrows++ % 2 ? 1 : 2, 106, o));
-    const back = (speed: number) => k.river(-1, speed, 2, 108, { gap: 80 });
-    k.open(0, k.G - 150);
-    k.beat(flavour === 'creek' ? 'Learn: the creek and the logs' : 'Learn: the logs drift', () => {
-      k.run(R.r(110, 130));
-      k.addExpert(0.5);
-      k.hint(120, 'Down to the river!');
-      k.stairs(150, false);
-      k.breath();
-      if (flavour === 'creek') {
-        // the creek's way down to the river: reed islands a hop apart first, then the logs (a splash costs nothing on any of them)
-        k.hint(k.x + 20, 'Hop from island to island!');
-        k.channels(3, { safe: true });
-        k.breath();
-        k.hint(k.x + 20, 'The logs drift with the river. Hop on and ride!');
-        k.river(1, 52, 2, 130, { safe: true, tag: 'learn' });
-        k.hint(k.x - 120, 'Missed? Splash! Try again from the bank.');
-        k.breath();
-        k.lilyPond(4, false, undefined, { safe: true });
-        k.flag();
-        return;
-      }
-      k.hint(k.x + 20, 'The logs drift with the river. Hop on and ride!');
-      // the teaching rivers: slow water, two logs' worth, and a miss is only a splash
-      k.river(1, 56, 2, 124, { safe: true, tag: 'learn' });
-      k.hint(k.x - 120, 'Missed? Splash! Try again from the bank.');
-      k.breath();
-      withIt(60, { safe: true, tag: 'learn' });
-      k.breath();
-      // a third, quicker (still safe; two logs: a three-log river was a long ride with nothing to do)
-      k.river(1, 64, 2, 120, { safe: true, tag: 'learn' });
-      k.flag();
-    });
-    if (flavour === 'deep') {
-      // the deep river: logs and only logs, with the current and then against it
-      k.beat('Develop: deep water', () => {
-        k.breath();
-        k.hint(k.x + 10, 'Deep water now. Stay on the logs!');
-        withIt(62);
-        k.heart(k.x - 40, k.G - 60);
-        k.breath();
-        withIt(66);
-        k.breath();
-        k.river(1, 64, 3, 122);
-        pause(k);
-        withIt(68);
-        k.breath();
-        // a golden seed over a river, higher than a hop from a log: a double jump from a log at its moment
-        const r = withIt(70);
-        k.goldenSeed((r.x0 + r.x1) / 2, k.LOG_Y - 175);
-        k.flag();
-      });
-      k.beat('Twist: against the current', () => {
-        k.breath();
-        k.hint(k.x + 10, 'This river flows back at you. Wait for a log, then hop on.');
-        back(56);
-        k.heart(k.x - 50, k.G - 60);
-        k.breath();
-        back(60);
-        pause(k);
-        k.sandbar(1, -1, 62, 116);
-        k.breath();
-        withIt(72);
-        k.breath();
-        back(62);
-        k.breath();
-        k.river(-1, 60, 3, 110, { gap: 84 });
-        k.flag();
-      });
-    } else if (flavour === 'creek') {
-      // the creek: reed islands a hop apart, lily pads and stepping stones, a log river now and then
-      k.beat('Develop: the creek', () => {
-        k.breath();
-        k.hint(k.x + 10, 'Reed islands. Hop, hop, hop!');
-        k.channels(4);
-        k.heart(k.x - 40, k.G - 60);
-        k.breath();
-        k.hint(k.x + 10, 'Lily pads hold you. Hop across!');
-        k.lilyPond(5, false);
-        pause(k);
-        const sx = k.x;
-        k.channels(4);
-        // a golden seed high over the creek: a double jump from an island
-        k.goldenSeed(sx + (k.x - sx) * 0.45, k.ISLAND_TOP - 175);
-        k.flag();
-      });
-      k.beat('Twist: the stepping stones', () => {
-        k.breath();
-        k.hint(k.x + 10, 'Stepping stones. Hop, hop, hop!');
-        k.stones(5, { wide: true });
-        k.heart(k.x - 50, k.G - 60);
-        k.breath();
-        k.channels(3);
-        pause(k);
-        k.lilyPond(6, false);
-        k.breath();
-        k.channels(4);
-        k.flag();
-      });
-    } else if (flavour === 'swings') {
-      // the old rope swings: frames standing in the river, swung across between the log rivers
-      k.beat('Develop: the rope swings', () => {
-        k.breath();
-        k.hint(k.x + 10, 'Swing across on the rope frames!');
-        k.rest(R.r(240, 280), false);
-        k.swingRiver(2, { frames: true });
-        k.heart(k.x - 40, k.G - 60);
-        k.breath();
-        k.hint(k.x + 10, 'Deep water now. Stay on the logs!');
-        withIt(62);
-        k.breath();
-        k.swingRiver(2, { frames: true });
-        k.breath();
-        const r = withIt(66);
-        k.goldenSeed((r.x0 + r.x1) / 2, k.LOG_Y - 175);
-        k.flag();
-      });
-      k.beat('Twist: swings and the current', () => {
-        k.breath();
-        k.hint(k.x + 10, 'This river flows back at you. Wait for a log, then hop on.');
-        k.rest(R.r(240, 280), false);
-        back(58);
-        k.heart(k.x - 50, k.G - 60);
-        k.breath();
-        k.swingRiver(3, { frames: true });
-        k.breath();
-        back(62);
-        k.breath();
-        k.swingRiver(2, { frames: true });
-        k.flag();
-      });
-    } else {
-      // the reeds: a snake on every bank between the rivers, and mooring posts up the high banks
-      k.beat('Develop: snakes in the reeds', () => {
-        k.snakeBank();
-        k.hint(k.x - 120, 'Deep water now. Stay on the logs!');
-        withIt(62);
-        k.heart(k.x - 40, k.G - 60);
-        k.snakeBank();
-        withIt(64);
-        k.snakeBank();
-        back(58);
-        k.snakeBank();
-        const r = withIt(68);
-        k.goldenSeed((r.x0 + r.x1) / 2, k.LOG_Y - 175);
-        k.flag();
-      });
-      k.beat('Twist: the high banks', () => {
-        k.breath();
-        k.hint(k.x + 20, 'Climb the post to get up the bank!', 'Climb the post: hold Up to get up the bank!', 'Climb the post: hold W or Up to get up the bank!');
-        k.postUp();
-        k.snakeBank();
-        withIt(64);
-        k.heart(k.x - 50, k.G - 60);
-        k.postUp();
-        k.snakeBank();
-        back(60);
-        k.postUp();
-        k.snakeBank();
-        k.flag();
-      });
-    }
-    k.beat('Finish: down to the village', () => {
-      type T = 'with' | 'back' | 'wide' | 'snake' | 'stones' | 'pond' | 'sandbar' | 'post' | 'channels' | 'swing';
-      const kinds: Record<string, T[]> = {
-        deep: ['with', 'back', 'wide', 'sandbar', 'with', 'back'],
-        creek: ['channels', 'pond', 'back', 'channels', 'stones', 'pond'],
-        reeds: ['snake', 'post', 'snake', 'snake', 'post', 'snake'],
-        swings: ['swing', 'with', 'swing', 'back', 'swing'],
-      };
-      const turns = new Turns<T>(rng, kinds[flavour], 2);
-      let n = 0;
-      // (the village's walk adds about 5 s; the last crossings come quicker: the climax before the walk out)
-      // (the deep river's logs are crossed a little quicker than the estimate: a few seconds more of them)
-      while (k.expert < k.EXPERT_SECONDS + (flavour === 'deep' ? 34 : 18) && n < 18) {
-        const late = k.expert > k.EXPERT_SECONDS - 6;
-        const t = turns.next();
-        if (t === 'snake') {
-          k.snakeBank();
-          (n % 2 ? back : withIt)(64 + n);
-        } else {
-          if (n % 3 === 2) pause(k);
-          else k.breath();
-          if (t === 'with') withIt(72 + n + (late ? 4 : 0));
-          else if (t === 'back') back(62 + n + (late ? 4 : 0));
-          else if (t === 'wide') k.river(1, 78, 2, 112);
-          else if (t === 'swing') k.swingRiver(n % 3 === 1 ? 3 : 2, { frames: true });
-          else if (t === 'stones') k.stones(R.i(4, 5), { wide: true });
-          else if (t === 'pond') k.lilyPond(R.i(4, 6), false);
-          else if (t === 'channels') k.channels(R.i(3, 5));
-          else if (t === 'sandbar') k.sandbar(n % 2 ? -1 : 1, n % 2 ? 1 : -1, 64 + n, 114);
-          else {
-            k.postUp();
-            k.snakeBank();
-            back(62 + n);
-          }
-        }
-        if (++n % 3 === 0) k.flag();
-      }
-      // (a short bank to the village: the walk through it is the stage's easy walk out, and with a long bank before it the two came to
-      // over four seconds with nothing to do, every roll)
-      k.breath();
-      k.heart(k.x - 60, k.G - 60);
-      // the village: its jetty out over the last river's bank, the sign, the mailbox, round doors in the bank
-      k.villageEnd();
-    });
-  },
-
-  // ======================================================================================================================
-  // 2-2 Petals for the Crown: the river king wants admiring. Gather flowers for his crown: over the logs, high and low, across the lily
-  // ponds and along the stepping stones. The flowers show the way: they arc where the hop goes. The twist is the ferry: a river too
-  // wide to jump, its raft moored under the far bank behind a sluice, and a lever to set the current running. Rolled: the flowers high
-  // over the logs, the lily ponds, or the high banks up the mooring posts with the snakes in the reeds.
-  '2-2': (k, flavour, rng) => {
-    const { R } = k;
-    const note = () => {
-      const find = k.noteId();
-      if (flavour !== 'ponds') {
-        // the note (World 2's story find) waits on a quiet stretch of bank, by the water
-        const x0 = k.x;
-        k.rest(k.R.r(260, 300), false);
-        if (find) k.C.push({ id: k.nextCid(), type: 'find', findId: find, hidden: false, x: (x0 + k.x) / 2, y: k.G - 40, collected: false, bobPhase: 0 });
-        return;
-      }
-      // the note waits on a lily pad in the middle of a quiet pond
-      k.lilyPond(6, true, {
-        at: 3,
-        put: (cx, top) => {
-          if (find) k.C.push({ id: k.nextCid(), type: 'find', findId: find, hidden: false, x: cx, y: top - 40, collected: false, bobPhase: 0 });
-          else k.flower(cx, top - 52, 'lotus');
-        },
-      });
-    };
-    const kinds: Record<string, Kind[]> = {
-      high: ['high', 'with', 'back', 'sandbar', 'high'],
-      ponds: ['pond', 'stones', 'pond', 'stones'],
-      snakes: ['snake', 'channels', 'snake', 'snake', 'channels'],
-      posts: ['post', 'post', 'post', 'with', 'post', 'post', 'back'],
-    };
-    const cross = new Crossings(k, { flowers: true, bankFlowers: flavour !== 'high', speed: 64 });
-    // (the high banks come one after another: no cooldown on the posts)
-    const turns = new Turns<Kind>(rng, kinds[flavour], flavour === 'posts' ? 0 : 2);
-    k.beat('Learn: flowers over the water', () => {
-      // (four seconds and more of dry bank with flowers before the first water, and that first crossing costs no life: a splash puts him
-      // back on the bank. It was 0.8 s of walking to deep water, and QA's upright player lost a life at 0.9 s, before Dot's gap tip could
-      // come: 2026-10-28)
-      // (no petals on it: the gap's lesson comes first, then the petals')
-      k.startWalk(k.START_WALK);
-      k.hint(180, 'Gather flowers for the river king’s crown!');
-      // (the first crossing's tip well before its edge, about 3 s of walking: the lesson for it comes only 340 px short, and Dot takes a
-      // moment to fly in; every crossing of the Learn costs no life)
-      if (flavour === 'ponds') {
-        k.hint(k.x - 750, 'Hop the lily pads. The flowers show the way.');
-        k.lilyPond(5, true, undefined, { safe: true });
-        k.breath();
-        k.stones(4, { flowers: true, wide: true, safe: true });
-        cross.know('pond', 'stones');
-      } else if (flavour === 'snakes') {
-        k.hint(k.x - 750, 'Hop from island to island. The flowers show the way.');
-        k.channels(3, { safe: true, flowers: true });
-        k.breath();
-        k.stones(4, { flowers: true, wide: true, safe: true });
-        cross.know('channels', 'stones');
-      } else {
-        k.hint(k.x - 750, 'Flick up when a log drifts close.');
-        k.river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
-        k.breath();
-        k.river(1, 62, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
-        cross.know('with');
-      }
-      k.flag();
-    });
-    k.beat('Develop: the river’s flowers', () => {
-      // (the lily ponds' roll: a little more bank before the first pond that costs a life, QA 2026-10-29: the Learn's lily tip waits out
-      // Dot's ten seconds after the stage's first lines, and a quick player was at the deep pond before it)
-      if (flavour === 'ponds') {
-        k.rest(R.r(300, 340), false);
-        k.breath();
-      }
-      cross.step(turns.next(), 0, turns.kinds);
-      k.heart(k.x - 40, k.G - 60);
-      cross.step(turns.next(), 1, turns.kinds);
-      // (a flag every two crossings, QA 2026-10-29: the lily ponds' roll had 7000 px between flags, and a run of misses there sent him
-      // back a minute and more)
-      k.flag();
-      k.breath();
-      note();
-      // (the lily ponds' note is a pond of its own: a flag past it too)
-      if (flavour === 'ponds') k.flag();
-      cross.deal(turns, 2);
-    });
-    k.beat('Twist: the ferry', () => {
-      k.breath();
-      // (Dot's word for the ferry before its room: the room's own tip can wait behind her last line)
-      k.hint(k.x - 60, 'A raft across the river! Find the lever.');
-      k.rest(R.r(200, 240), false);
-      // the first sluice: the water costs nothing here
-      k.ferryRoom({
-        safe: true, flowers: 6,
-        tips: { enter: 'A raft! How do we untie it?', open: 'Here comes the raft. Hop on and ride!', nudge: 'That lever works the sluice.', move: 'Pull the lever to let the river run!', mech: 'sluice' },
-      });
-      k.heart(k.x - 50, k.G - 60);
-      // (a flag past the ferry: the room and two crossings were 5000 px with none, QA 2026-10-29)
-      k.flag();
-      cross.deal(turns, 2, false);
-      cross.seedBank();
-      k.flag();
-    });
-    k.beat('Finish: the crown', () => {
-      let n = 0;
-      // (the estimate runs long on the logs and short on the pads: the flavours' own margins, so every roll is over 2:00 and none drags)
-      const target = k.EXPERT_SECONDS + (flavour === 'high' ? 38 : flavour === 'ponds' ? -10 : flavour === 'snakes' ? 10 : 48);
-      while (k.expert < target && n < 16) {
-        cross.step(turns.next(), n, turns.kinds);
-        if (++n % 2 === 0) k.flag();
-      }
-      k.rest(R.r(300, 400), false);
-    });
-  },
-
   // ======================================================================================================================
   // 2-3 Stuck in the Reeds: little ones in reed cages hung over the water on ropes, each over its pulley with a counter-basket on the
   // bank (Matt's sheet). Stones in the basket lift a cage out of the water, and all the way up its floor drops open. Learn with one

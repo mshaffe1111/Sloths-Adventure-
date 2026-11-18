@@ -29,9 +29,11 @@ function seedKeys(ids: string[]): string[] {
 }
 
 test("every golden seed the game writes is part of the adventure: a save file carries it, a New Game clears it", () => {
-  // (1-1's seed has no find id; 1-5's two are `seed-1`, `seed-2`)
-  const keys = seedKeys(['1-1', '1-5']);
-  assert.ok(keys.some((k) => k.includes('-', 'sloth_seed_1-5_'.length)), `set-up: a seed key with its find id (${keys.join(', ')})`);
+  // (1-1's seed has no find id; the hand-built 1-9's is `seed-1`: 1-5 rolls on gen2 from 11-13 and its one seed has none, the gen2 1-6
+  //  has no golden seed (R-165.238: the old hand-built 1-6's two, `seed-1` and `seed-2`, went with its proto plan), and 1-7's lost its
+  //  find id when 1-7 rolled on gen2 (BUILD-17; INT-10b found this set-up red on the integration head): 1-9 is World 1's stage with one)
+  const keys = seedKeys(['1-1', '1-9']);
+  assert.ok(keys.some((k) => k.includes('-', 'sloth_seed_1-9_'.length)), `set-up: a seed key with its find id (${keys.join(', ')})`);
   assert.deepEqual(keys.filter((k) => !isSaveKey(k)), [], 'golden-seed keys on no list');
   const mem = memStorage(Object.fromEntries(keys.map((k) => [k, '1'])));
   assert.deepEqual(Object.keys(buildSave(mem).data).sort(), [...keys].sort(), 'the save file carries every seed');

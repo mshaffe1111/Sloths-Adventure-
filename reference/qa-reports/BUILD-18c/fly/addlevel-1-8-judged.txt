@@ -1,0 +1,24 @@
+
+== 1. the row (at 0 s)
+
+== 2. the rolls: 24 seeds x both settings (libstage.ts) (at 0 s)
+1-8: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 0 of 24 (0%), thrown 0; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     24  verdict band.out: bounce-air-test at x # (s#): # px, under the band's #
+     24  verdict block.lesser-passes: bounce-air-test at x # (s#): a bounce alone climbs #, the block is #
+     24  verdict band.out (normal): bounce-air-test at x # (s#): # px, under the band's #
+     24  verdict block.lesser-passes (normal): bounce-air-test at x # (s#): a bounce alone climbs #, the block is #
+== easy: CLEAN 0 of 24 (0%), thrown 0; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     24  verdict band.out: bounce-air-test at x # (s#): # px, under the band's #
+     24  verdict block.lesser-passes: bounce-air-test at x # (s#): a bounce alone climbs #, the block is #
+     24  verdict band.out (normal): bounce-air-test at x # (s#): # px, under the band's #
+     24  verdict block.lesser-passes (normal): bounce-air-test at x # (s#): a bounce alone climbs #, the block is #
+     24  verdict band.out (easy): bounce-air-test at x # (s#): # px, under the band's #
+     24  verdict block.lesser-passes (easy): bounce-air-test at x # (s#): a bounce alone climbs #, the block is #
+      5  rolling: low at x #: a wall at x # in its run-in
+clean on BOTH settings: 0 of 24 seeds
+pool sections never laid: none
+
+addlevel 1-8: stopped at the rolls: no seed of 24 is clean on both settings, so there is nothing to list. Read the refusals above.

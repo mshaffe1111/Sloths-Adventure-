@@ -1,0 +1,67 @@
+# ENG-S5 gates on a71b5c484 (own worktree), 11:41 AM - 12:34 PM ET
+tsc exit 0
+unit shard 1: # pass 1310 # fail 0 
+unit shard 2: # pass 1049 # fail 0 
+unit shard 3: # pass 1064 # fail 1 
+2399:not ok 399 - general by data: no engine line says what the floor IS (the grep, counted against the base)
+build exit 0 (10 s)
+    precache  1084 entries (174435.21 KiB)
+    files generated
+      dist/sw.js
+      dist/workbox-9c191d2f.js
+chunkcheck exit 0 (0 s)
+      ok       240,143 B    3,754,161 spare  assets/world-1-parts-Bd4UmNSQ.js
+      ok       219,517 B    3,774,787 spare  assets/rolls-C3P_nRMy.js
+      ok       218,749 B    3,775,555 spare  assets/vendor-FrbPb9NH.js
+    chunkcheck: PASS
+artcheck exit 0 (0 s)
+      src/assets/w6to10/bosses/thornbark-anim-0.webp 2048x6757
+      src/assets/w6to10/bosses/thornbark-anim-1.webp 2048x6899
+      src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+    PASS
+knowncheck exit 0 (0 s)
+    ✓ tools/engine/generality.known.json: 27 entries
+    ✓ src/game/ciTests.known.json: 17 entries
+    ✓ src/game/artUse.allow.json: 210 entries
+    PASS
+generalitycheck exit 0 (1 s)
+    generality check: 54 engine files (140 exempt under the engine folders), 27 literals, 27 known
+    PASS
+roadmapcheck exit 2 (0 s)
+    roadmap check: shallow clone, proofs cannot be checked (fetch-depth 0): FAIL
+kbdcheck exit 0 (139 s)
+    ✓ side 60pc ctest-note after typing (box 12-136)
+    ✓ planted: with the keep-in-view off, the check goes red as it must
+    
+    PASS (138 s; stills in reference/qa/tester-page-1106/keyboard/)
+seedlist exit 0 (189 s)
+    seedlist 1-1: the verdicts refuse 0 of 257 listed seeds
+    seedlist 1-1: PASS (257 seeds, each clean on both settings)
+enginetools exit 0 (14 s)
+    # cancelled 0
+    # skipped 0
+    # todo 0
+    # duration_ms 12723.252038
+tierBots exit 0 (19 s)
+    # cancelled 0
+    # skipped 0
+    # todo 0
+    # duration_ms 19317.82517
+drawcheck exit 0 (512 s)
+          src/game/sheetBake.ts:125 (drawSheet) 0.87/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+          src/game/protoArt.ts:553 (drawBranchArt) 0.68/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+    
+    PASS (512 s; raw results in /tmp/drawcheck-dECML9)
+clipcheck exit 0 (315 s)
+      known inset .wm.fixed > .relative.z-10 > .map-node.ready  "Stage 5-M: On the March North, Stealth"  (inside the left inset)
+          world map: World 5 of 10 @ side/done
+    
+    PASS (83 known) (313 s; contact sheet and breaches.json in /tmp/clipcheck-BmlrdJ)
+buildcheck exit 0 (7 s)
+    buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+      normal: p50 65 ms, p95 121 ms, max 197 ms (30 builds, CPU x4)
+      easy: p50 51 ms, p95 88 ms, max 91 ms (30 builds, CPU x4)
+ALL DONE
+# head after: engine.ts comment reworded (hurtFloor generality count); hurtFloor.test.ts + w1Chain.test.ts re-run on it:
+# pass 23
+# fail 0

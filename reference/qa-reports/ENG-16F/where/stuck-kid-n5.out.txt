@@ -1,0 +1,5 @@
+rescueXs 3061
+{"x":3061,"y":1002,"t":10.8,"dur":8.8,"what":"a 68 px waist-high step ahead, in a dip 68 px deep, the way on is 179 px up","step":68,"dip":68,"puzzle":false,"rescued":true}
+{"x":44700,"y":736,"t":225.7,"dur":11,"what":"a drop of 80 px ahead, the way on is 86 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+LOOP {"x":3061,"y":1002,"n":7,"doubles":6,"deaths":0,"what":"a 284 px wall ahead, in a dip 68 px deep, an open drop ahead, the way on is 179 px up","step":284,"dip":68,"puzzle":false}
+LOOP {"x":18819,"y":853,"n":2,"doubles":1,"deaths":0,"what":"a drop of 68 px ahead, the way on is 136 px up","step":null,"dip":null,"puzzle":false}

@@ -1,0 +1,7 @@
+yield 1-4: seeds 1001..1040, 8 s
+NORMAL: clean 40 of 40 (100%)
+  stopped | first | alone | rule
+EASY (carries Normal's errors): clean 40 of 40 (100%)
+  stopped | first | alone | rule
+EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): 0 rolls
+

@@ -47,18 +47,79 @@ test('every ordinary stage takes the typical player at least 125 s and the quick
   assert.deepEqual(bad, []);
 });
 
+/** a stage's typical seconds and its builder (each generator's own time model: a gen2 stage's lianas cost a self-swinging swing's time,
+ *  gen2Model, as its length loop reads it) */
+type Timed = { gen2: boolean; t: number };
+const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[xs.length >> 1];
+/**
+ * The growth check, like with like (the lead's ruling, 11-13 5:03 PM ET; D40). A stage's length comes from its own builder's target:
+ * gen2 lays to STAGE-RULES.md:77's quick floor, the old generator to its linear World 1 -> World 10 target (stageTime.ts:96), so a step
+ * across builders measures the move to gen2, not pacing, and lengthening an old stage to pass it would patch what gen2 replaces (D40).
+ * Two worlds of one builder (all gen2 or all old) compare their medians, as before; two of different kinds, or two mixes (INT-11), compare each
+ * builder's own stages where both worlds hold 3 or more of them (one or two stages are a stage, not a world). At each step a world may
+ * be shorter than the one before by at most 6 s. `worlds[0]` is World 1. Returns the breaks.
+ */
+function growthBreaks(worlds: Timed[][]): string[] {
+  const kind = (w: Timed[]) => (w.every((q) => q.gen2) ? 'gen2' : w.every((q) => !q.gen2) ? 'old' : 'mix');
+  const out: string[] = [];
+  for (let i = 1; i < worlds.length; i++) {
+    const [a, b] = [worlds[i - 1], worlds[i]];
+    // (two mixes read like with like too, by builder: a mix's median across builders measures how many of its stages moved to gen2, not
+    //  pacing. The lead's ruling 11-15 5:19 PM ET (INT-11), the 11-13 like-with-like ruling applied to mixed worlds; World 1 and World 2
+    //  both became mixes when 2-1 and 2-2 moved to gen2)
+    const reads: Array<[string, Timed[], Timed[]]> = kind(a) === kind(b) && kind(a) !== 'mix'
+      ? [['', a, b]]
+      : ([[' (gen2 stages)', true], [' (old-builder stages)', false]] as const)
+          .map(([what, g]): [string, Timed[], Timed[]] => [what, a.filter((q) => q.gen2 === g), b.filter((q) => q.gen2 === g)])
+          .filter(([, x, y]) => x.length >= 3 && y.length >= 3);
+    for (const [what, x, y] of reads) {
+      if (median(y.map((q) => q.t)) < median(x.map((q) => q.t)) - 6) out.push(`World ${i + 1} is shorter than World ${i}${what}`);
+    }
+  }
+  return out;
+}
+
 test('stages grow from about two and a quarter minutes in World 1 to about four in World 10, and none runs past five', () => {
-  const med = (w: number) => {
-    // (each generator's own time model: a gen2 stage's lianas cost a self-swinging swing's time, gen2Model, as its length loop reads it)
-    const xs = levels.filter((l) => l.worldIndex === w).map((l) => (builtOnGen2(l) ? gen2Model(stage(l, null), MODEL_TYPICAL) : modelStage(stage(l, null), MODEL_TYPICAL).total)).sort((a, b) => a - b);
-    return xs[xs.length >> 1];
-  };
+  const worlds: Timed[][] = Array.from({ length: 10 }, (_, i) =>
+    levels.filter((l) => l.worldIndex === i + 1).map((l) => (builtOnGen2(l) ? { gen2: true, t: gen2Model(stage(l, null), MODEL_TYPICAL) } : { gen2: false, t: modelStage(stage(l, null), MODEL_TYPICAL).total })));
+  const med = (w: number) => median(worlds[w - 1].map((q) => q.t));
   const m1 = med(1);
   const m10 = med(10);
-  assert.ok(m1 >= 135 && m1 <= 175, `World 1 median ${m1.toFixed(0)} s`);
+  // (World 1's floor stays; its old 175 s cap was the old generator's own target, TYPICAL_W1 = 135, stageTime.ts:84, not a rule of
+  //  Matt's: his is STAGE-RULES.md:77, at least 2 minutes for a quick player on every roll, "5+ minutes is fine". So World 1 is capped
+  //  only by World 10, the game still growing (the lead's ruling, 11-13 4:49 PM ET; FIX-INT PUSHBACK.md))
+  assert.ok(m1 >= 135, `World 1 median ${m1.toFixed(0)} s`);
   assert.ok(m10 >= 215 && m10 <= 255, `World 10 median ${m10.toFixed(0)} s`);
-  for (let w = 2; w <= 10; w++) assert.ok(med(w) >= med(w - 1) - 6, `World ${w} is shorter than World ${w - 1}`);
+  assert.ok(m1 <= m10, `World 1 median ${m1.toFixed(0)} s is past World 10's ${m10.toFixed(0)} s`);
+  assert.deepEqual(growthBreaks(worlds), []);
   for (const l of levels.filter((x) => x.worldIndex === 10)) assert.ok(modelStage(stage(l, null), MODEL_TYPICAL).total <= 300, `${l.id} runs past five minutes`);
+});
+
+test('two mixed worlds read like with like: a mix of short old stages after a mix of long gen2 ones passes; its gen2 stages 7 s shorter fail (planted)', () => {
+  const T = (gen2: boolean, ts: number[]): Timed[] => ts.map((t) => ({ gen2, t }));
+  // (World 1 tonight: eight gen2 stages and two old; World 2: two gen2 and eight old, the old ones on their own shorter target)
+  const w1 = [...T(true, [180, 213, 240, 213, 261, 250, 260, 255]), ...T(false, [150, 160])];
+  const w2 = [...T(true, [240, 245]), ...T(false, [150, 152, 155, 158, 160, 162, 165, 170])];
+  assert.deepEqual(growthBreaks([w1, w2]), [], 'a raw median across builders is not read');
+  const g1 = median(w1.filter((q) => q.gen2).map((q) => q.t));
+  assert.deepEqual(growthBreaks([w1, [...T(true, Array(3).fill(g1 - 7)), ...T(false, [150, 155, 160])]]), ['World 2 is shorter than World 1 (gen2 stages)']);
+});
+
+test('the growth check reads like with like: a gen2 World 2 shorter than World 1 by 7 s fails, an old-builder World 2 is read against World 1\'s old stages (planted)', () => {
+  const T = (gen2: boolean, ts: number[]): Timed[] => ts.map((t) => ({ gen2, t }));
+  // (World 1 as it is tonight: 1-1..1-5 on gen2, 1-6..1-9 on the old generator)
+  const w1 = [...T(true, [180, 213, 240, 213, 261]), ...T(false, [147, 152, 152, 159])];
+  const g1 = median(w1.filter((q) => q.gen2).map((q) => q.t));
+  assert.deepEqual(growthBreaks([w1, T(true, Array(9).fill(g1 - 7))]), ['World 2 is shorter than World 1 (gen2 stages)']);
+  assert.deepEqual(growthBreaks([w1, T(true, Array(9).fill(g1 - 6))]), []);
+  // (a gen2 World 2 shorter than World 1's whole median by 7 s fails too: it is read against World 1's gen2 stages)
+  assert.deepEqual(growthBreaks([w1, T(true, Array(9).fill(median(w1.map((q) => q.t)) - 7))]), ['World 2 is shorter than World 1 (gen2 stages)']);
+  // (an old World 2, tonight's: against World 1's old stages, never its gen2 ones; 7 s under them fails)
+  const old2 = T(false, [157, 157, 165, 159, 155, 156, 165, 165, 194]);
+  assert.deepEqual(growthBreaks([w1, old2]), []);
+  assert.deepEqual(growthBreaks([w1, T(false, Array(9).fill(median(w1.filter((q) => !q.gen2).map((q) => q.t)) - 7))]), ['World 2 is shorter than World 1 (old-builder stages)']);
+  // (two worlds of one kind compare their medians whole, as before)
+  assert.deepEqual(growthBreaks([T(false, [170, 172, 174]), T(false, [160, 165, 166])]), ['World 2 is shorter than World 1']);
 });
 
 test('the generator lands near the seconds the level list asks for (not far under it, not far over it)', () => {
@@ -137,6 +198,8 @@ test('the lane check catches a lane that cannot be crossed', () => {
 });
 
 test('a fork shows its choice at a glance: the high lane is up in the branches, the low lane on or under the ground, a lure of flowers on each', () => {
+  // (each world's first four stages: with three, 2-1's few petals (the keeper's number) left 148 neighbours, under the guard; with four,
+  //  201, the share judged on more rows, never a lower guard: INT-11 11-15)
   for (const l of horizontal.filter((x) => x.miniIndex <= 4)) {
     const s = stage(l, null);
     for (const f of s.lanes ?? []) {
@@ -249,7 +312,9 @@ test('a row or an arc of flowers is one species', () => {
   // flowers laid in one go share a y-line within a row; here: neighbours closer than 80 px on nearly the same height are one species
   let pairs = 0;
   let mixed = 0;
-  for (const l of horizontal.filter((x) => x.miniIndex <= 3)) {
+  // (each world's first four stages: with three, 2-1's few petals (the keeper's number) left 148 neighbours, under the guard; with four,
+  //  201, the share judged on more rows, never a lower guard: INT-11 11-15)
+  for (const l of horizontal.filter((x) => x.miniIndex <= 4)) {
     const s = stage(l, null);
     const fl = s.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf').sort((a, b) => a.x - b.x);
     for (let i = 1; i < fl.length; i++) {

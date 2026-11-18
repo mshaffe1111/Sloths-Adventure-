@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, FLOWER_GOAL_22, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
 import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
@@ -11,11 +11,11 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' || id === '2-7' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7', '2-8', '2-9'];
+const PLANS: W2Plan[] = ['2-3', '2-4', '2-5', '2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -63,40 +63,6 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? still : r.raft ? logs.length === 1 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
-  }
-});
-
-test('2-1: the first rivers cost no life (a splash puts him back on the bank); the rest are deep; one flows back at him', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-1'), s, '2-1');
-    const rv = st.rivers!;
-    // (the Learn's crossings, three or more by the roll's version, are the only safe ones)
-    const learn = rv.findIndex((r) => !r.safe);
-    assert.ok(learn >= 3, `seed ${s}: the teaching rivers`);
-    assert.ok(rv.slice(learn).every((r) => !r.safe), `seed ${s}: only the first ones are safe`);
-    // (2-1 is the logs' stage: no puzzle rooms, no cages)
-    assert.equal(st.kit, undefined);
-    // the safe river puts him back on the bank he jumped from
-    assert.ok(st.platforms.some((p) => p.type === 'solid' && p.x <= rv[0].safe!.backX && p.x + p.width >= rv[0].safe!.backX && p.y === rv[0].safe!.backY));
-    assert.ok(rv.some((r) => r.dir === -1 && r.speed > 0), `seed ${s}: a river against the current`);
-    // the village at the end: the sign says it, and the mailman walks
-    assert.ok(st.proto.decor!.some((d) => d.text?.join(' ') === 'PLEASE BE PATIENT'));
-    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('po.') && d.walk));
-  }
-});
-
-test('2-2: about one and a half times the flowers the crown needs, the note on the way, and lily ponds', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-2'), s, '2-2');
-    const flowers = st.collectibles.filter((c) => c.type === 'flower').length;
-    // (FLOWER_GOAL_22, or less where the petal pass left fewer than about one and a half times it: petalPass.ts)
-    const goal = st.config.targetCount;
-    assert.ok(goal <= FLOWER_GOAL_22 && goal >= FLOWER_GOAL_22 * 0.65, `seed ${s}: a goal of ${goal}`);
-    assert.ok(flowers >= goal * 1.35 && flowers <= goal * 1.9, `seed ${s}: ${flowers} flowers for ${goal}`);
-    assert.equal(st.collectibles.filter((c) => c.type === 'find').length, 1, `seed ${s}: the note`);
-    // (the lily ponds' roll is all still water; every roll has its ferry)
-    if (w2Picks('2-2', s).flavour === 'ponds') assert.ok(st.rivers!.filter((r) => r.speed === 0).length >= 6, `seed ${s}: lily ponds`);
-    assert.equal(st.rivers!.filter((r) => r.raft).length, 1, `seed ${s}: the ferry`);
   }
 });
 

@@ -1,0 +1,11 @@
+# eagleProbe 1-7 (walk: never hides; sneak: leaves cover the frame its look/pass ends)
+## base, seed 1 Normal walk
+1-7 seed 1 normal eagle#0 stretch 3000-3358 (358 px) walk: hearts lost 0, walk 248 px/s
+1-7 seed 1 normal eagle#1 stretch 4824-5164 (340 px) walk: hearts lost 0, walk 248 px/s
+1-7 seed 1 normal eagle#2 stretch 6187-7222 (1035 px) walk: hearts lost 1, walk 265 px/s
+1-7 seed 1 normal eagle#3 stretch 11069-11909 (840 px) walk: hearts lost 1, walk 259 px/s
+1-7 seed 1 normal eagle#4 stretch 15792-16972 (1180 px) walk: hearts lost 1, walk 250 px/s
+1-7 seed 1 normal eagle#5 stretch 18132-19131 (999 px) walk: hearts lost 1, walk 262 px/s
+1-7 seed 1 normal eagle#6 stretch 22793-25193 (2400 px) walk: hearts lost 3, walk 32 px/s
+1-7 seed 1 normal eagle#7 PERCHED stretch 28478-29598 (1120 px) walk: hearts lost 1, walk 250 px/s
+1-7 seed 1 normal eagle#8 stretch 33144-34081 (937 px) walk: hearts lost 1, walk 255 px/s

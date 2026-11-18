@@ -7,7 +7,8 @@ import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './c
 import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite, flowersPainted } from './flowerSprites.ts';
 import { drawPickup, pickupReady } from './pickupSprites.ts';
-import { isPetalStage, relicArt } from './stagePlan.ts';
+import { isPetalStage, relicArt, stageLooks } from './stagePlan.ts';
+import { drawOne, MARK_RISE, markPatch } from './dressArt.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { drawAura } from './readable.ts';
@@ -1043,7 +1044,7 @@ export function drawCollectible(
   if (item.collected && item.type !== 'thorn_gate' && !item.findId?.endsWith('_snail')) return;
   // (a petal is drawn only as Meeca's petal: until its picture is in, nothing, rim included. It used to fall through to a painted
   // flower, a red passion flower in the 1-2 stills inside the petal's gold rim, or a vector hibiscus: F12)
-  if (item.type === 'flower' && isPetalStage(world, mini) && !pickupReady('petal')) return;
+  if (item.type === 'flower' && isPetalStage(world, mini) && !pickupReady(stageLooks(world, mini).petal ?? 'petal')) return;
   // (one off screen is skipped: 60% of the pickups drawn were, each an aura, a glow and a sprite: PERFORMANCE-RULES.md §2.5)
   const m = ctx.getTransform();
   if (m.b === 0 && m.c === 0 && m.a > 0) {
@@ -1058,7 +1059,7 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
-  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find' && !(item.type === 'relic' && item.hidden)) {
+  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find' && !(item.type === 'relic' && (item.hidden || item.mark))) {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // the gold rim on a soft dark pool (see readable.ts): everything you can take wears it, so it reads on any backdrop
@@ -1092,7 +1093,8 @@ export function drawCollectible(
       fillGlow(ctx, 'bloom', 0, 0, 2, 24, [[0, 'rgba(255, 236, 170, 0.6)'], [1, 'rgba(255, 236, 170, 0)']]);
       // the painted flower when it is on and loaded (the vector bloom below is the fallback and the classic look)
       // World 1's harvests gather Meeca's petals (stagePlan.ts)
-      if (item.type === 'flower' && isPetalStage(world, mini) && drawPickup(ctx, 'petal', 27, -0.3 + Math.sin(time * 2 + item.bobPhase) * 0.12)) break;
+      // (a stage's own petal where its plan row has one, StageSpec.looks: 1-5's folded petals)
+      if (item.type === 'flower' && isPetalStage(world, mini) && drawPickup(ctx, stageLooks(world, mini).petal ?? 'petal', 27, -0.3 + Math.sin(time * 2 + item.bobPhase) * 0.12)) break;
       if (item.type === 'flower' && drawFlowerSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
       const [kind, c1, c2] = CLASSIC_BLOOMS[Math.abs(item.id) % CLASSIC_BLOOMS.length];
       drawBloom(ctx, kind, 0, 0, 13, c1, c2, Math.sin(time * 2) * 0.12, rng(item.id * 17 + 3));
@@ -1140,13 +1142,13 @@ export function drawCollectible(
         break;
       }
       if (item.mark === 'meeca') {
-        // (a carving stands on the ground, it does not bob: the quality supervisor, 2026-11-05, the slabs floated like UI icons. The mark
-        // is laid 34 px over its ledge (mixer/w1mix.ts), so a short carved post runs from under the slab to the ground; the pickup itself is
-        // where it was)
-        ctx.translate(0, -bobY);
-        drawMeecaPost(ctx);
-        fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
-        drawMeecaMark(ctx, time, item.bobPhase);
+        // (her mark is CUT IN A LIVING TRUNK: World 1's dressing lays it, ART's bark patch on a kapok at marching height, and it stays
+        // there once read (gen2/worlds/w1Marks.ts; the lead 11-13: the old carved stake was a made thing). Until he reads it, it wears
+        // what everything he can take wears (readable.ts), around the cut, with the cut drawn again over the pool (the pool over the
+        // dressing hid it: 11-13 still). It does not bob: a cut in bark stays put. The pickup is laid 34 px over its ground)
+        ctx.translate(0, -bobY + 34 - MARK_RISE);
+        drawAura(ctx, 'take', world, 24, 27, time, item.bobPhase);
+        drawOne(ctx, markPatch(item.arrow), 0, 0);
         break;
       }
       fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
@@ -1255,84 +1257,5 @@ export function drawCollectible(
     }
   }
 
-  ctx.restore();
-}
-
-/**
- * One of Meeca's trail marks (1-5 Where She Walked): a slab of bark with her M cut in it and the arrow of the way she went, the cuts
- * glowing warm and breathing softly. A small code-drawn mark on the relic's own glow (STAGE-RULES §4: a minor touch, no new painting),
- * in the colours of meecaArt.ts's trail mark (dark cut, cream light).
- */
-/** the post Meeca's mark is cut into: a short split stake from under the slab to the ground at +34, a tuft of moss where it stands */
-function drawMeecaPost(ctx: CanvasRenderingContext2D) {
-  ctx.save();
-  ctx.fillStyle = '#5a3c22';
-  ctx.strokeStyle = 'rgba(38, 20, 10, 0.9)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(-6, 8);
-  ctx.lineTo(6, 8);
-  ctx.lineTo(7, 33);
-  ctx.quadraticCurveTo(0, 36, -7, 33);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  // (the split down its middle, and the moss at its foot)
-  ctx.strokeStyle = 'rgba(40, 22, 10, 0.5)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(1, 12);
-  ctx.lineTo(-1, 31);
-  ctx.stroke();
-  ctx.fillStyle = '#4f7a3a';
-  ctx.beginPath();
-  ctx.ellipse(0, 34, 11, 3.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawMeecaMark(ctx: CanvasRenderingContext2D, time: number, phase: number) {
-  ctx.save();
-  // the bark slab
-  ctx.fillStyle = '#6b4a2c';
-  ctx.strokeStyle = 'rgba(38, 20, 10, 0.9)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(-14, -20);
-  ctx.quadraticCurveTo(0, -25, 14, -20);
-  ctx.lineTo(15, 14);
-  ctx.quadraticCurveTo(0, 18, -15, 14);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  // grain
-  ctx.strokeStyle = 'rgba(40, 22, 10, 0.45)';
-  ctx.lineWidth = 1;
-  for (const gx of [-9, -2, 6]) {
-    ctx.beginPath();
-    ctx.moveTo(gx, -18);
-    ctx.quadraticCurveTo(gx + 2, 0, gx - 1, 13);
-    ctx.stroke();
-  }
-  // the M and the arrow, cut dark, lit cream; the light breathes
-  const glow = 0.75 + 0.25 * Math.sin(time * 2.4 + phase);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  for (const [c, w] of [['rgba(38, 20, 10, 0.9)', 5], [`rgba(255, 236, 190, ${glow.toFixed(2)})`, 2.6]] as const) {
-    ctx.strokeStyle = c;
-    ctx.lineWidth = w;
-    ctx.beginPath();
-    ctx.moveTo(-9, 2);
-    ctx.lineTo(-9, -12);
-    ctx.lineTo(0, -3);
-    ctx.lineTo(9, -12);
-    ctx.lineTo(9, 2);
-    ctx.moveTo(-8, 9);
-    ctx.lineTo(8, 9);
-    ctx.moveTo(4, 5);
-    ctx.lineTo(8, 9);
-    ctx.lineTo(4, 13);
-    ctx.stroke();
-  }
   ctx.restore();
 }

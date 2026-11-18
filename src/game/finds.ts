@@ -406,7 +406,7 @@ export function saveFinds(found: string[]) {
  * per stage (2026-11-01). Under 12 words, warm, and never the answer.
  */
 export const DOT_HINTS: Record<string, string> = {
-  w1_note: 'Down in the hollow, low against a root.',
+  w1_note: 'Down in the hollow, on the low ledge.',
   w1_keepsake: 'Climb the lone tree in Where She Walked. Check its branch.',
   w1_book: 'On The Long Branch, check by the first knot. Early!',
   w1_notch: 'Up the Kapok, somewhere on a ledge. Keep your eyes open.',

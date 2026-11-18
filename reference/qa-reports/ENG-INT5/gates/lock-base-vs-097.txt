@@ -1,0 +1,4 @@
+99/102 stages unchanged (lock-d8d6a973.json -> lock-f9671e3b.json)
+  1-2: checkpoints, collectibles, easyGoal, exitTotemX, exitTotemY, gen2, heartFalls, normalGoal, platforms, proto.beats, proto.dress, proto.findSpot, proto.hints, size, spawnY
+  1-4: checkpoints, clocks, clusters, collectibles, enemies, exitTotemX, exitTotemY, gates, gen2, kit, platforms, pods, proto.beats, proto.cast, proto.dress, proto.hints, proto.hollows, proto.kitDecor, proto.movedPickups, ropes, size, spawnX, spawnY, trees, vines
+  1-5: checkpoints, collectibles, easyGoal, easyToday, enemies, exitTotemX, exitTotemY, gen2, heartFalls, normalGoal, platforms, proto.beats, proto.cast, proto.dress, proto.findSpot, proto.hints, proto.movedPickups, proto.trunks, ropes, size, spawnY, trees, vines, waterY

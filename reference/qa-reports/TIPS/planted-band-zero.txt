@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: 1-1: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+not ok 1 - 1-1: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+  ---
+  duration_ms: 1219.52656
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/tipBand.test.ts:91:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    1-1 normal: the bands moved a tip
+    + actual - expected
+    
+      [
+        'frame 1: "No soft moss up here!" at x 143 y 1310',
+    +   'frame 255: "Touch anywhere and slide to run." at x 2022 y 1259',
+    -   'frame 254: "Touch anywhere and slide to run." at x 2014 y 1274',
+        'frame 277: "Slide up and across to jump. Kee" at x 2192 y 1310',
+        'frame 538: "Jump the little gaps" at x 3929 y 1310',
+        'frame 720: "Flick up again in the air to jum" at x 5563 y 1300',
+        'frame 1537: "Up the bank! Step to step" at x 11844 y 950'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'frame 1: "No soft moss up here!" at x 143 y 1310'
+    1: 'frame 254: "Touch anywhere and slide to run." at x 2014 y 1274'
+    2: 'frame 277: "Slide up and across to jump. Kee" at x 2192 y 1310'
+    3: 'frame 538: "Jump the little gaps" at x 3929 y 1310'
+    4: 'frame 720: "Flick up again in the air to jum" at x 5563 y 1300'
+    5: 'frame 1537: "Up the bank! Step to step" at x 11844 y 950'
+  actual:
+    0: 'frame 1: "No soft moss up here!" at x 143 y 1310'
+    1: 'frame 255: "Touch anywhere and slide to run." at x 2022 y 1259'
+    2: 'frame 277: "Slide up and across to jump. Kee" at x 2192 y 1310'
+    3: 'frame 538: "Jump the little gaps" at x 3929 y 1310'
+    4: 'frame 720: "Flick up again in the air to jum" at x 5563 y 1300'
+    5: 'frame 1537: "Up the bank! Step to step" at x 11844 y 950'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/tipBand.test.ts:97:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 1-2: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+ok 2 - 1-2: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+  ---
+  duration_ms: 2716.671309
+  type: 'test'
+  ...
+# Subtest: 1-5: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+not ok 3 - 1-5: every tip fires at the same frame with its band as by x alone (the first-timer's run, Normal and Easy)
+  ---
+  duration_ms: 1437.478764
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/tipBand.test.ts:91:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    1-5 normal: the bands moved a tip
+    + actual - expected
+    
+      [
+        `frame 102: "She's making them last." at x 1070 y 566`,
+    +   'frame 596: "Creaky limbs drop you, but only " at x 4883 y 527',
+    -   'frame 570: "Creaky limbs drop you, but only " at x 4679 y 578',
+        'frame 2398: "Never mind the signs. Follow her" at x 18295 y 566'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: `frame 102: "She's making them last." at x 1070 y 566`
+    1: 'frame 570: "Creaky limbs drop you, but only " at x 4679 y 578'
+    2: 'frame 2398: "Never mind the signs. Follow her" at x 18295 y 566'
+  actual:
+    0: `frame 102: "She's making them last." at x 1070 y 566`
+    1: 'frame 596: "Creaky limbs drop you, but only " at x 4883 y 527'
+    2: 'frame 2398: "Never mind the signs. Follow her" at x 18295 y 566'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/tipBand.test.ts:97:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6233.014117

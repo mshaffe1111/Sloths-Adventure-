@@ -325,7 +325,7 @@ const watchGate = (theme: keyof typeof W6_THEME, name: string, extra: Socket[] =
     sockets: [
       tip(WATCH, 'a', 0.2),
       petals('knee', 'knee', 0.5, 1),
-      // (the lesson's calm: watchCalm's [9, 11], from this socket's name)
+      // (the lesson's calm: W6_CALM.teach, [9, 11], from this socket's name: w6.ts W6_STILL)
       watch('shore', 0.03, 'watchLesson'),
       hideAt('h1', 'shore'),
       petals('sk1', 'sk1', 0.5, 1),

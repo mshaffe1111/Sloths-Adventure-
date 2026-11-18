@@ -6,7 +6,7 @@
  */
 export const CREATURE_LORE: Record<string, string> = {
   // ── predators ──
-  snake: 'Golden tree snakes sleep in the sun all morning and are cross about it all afternoon. They rear up and sway to look bigger. Dot says it works on her every time.',
+  snake: 'Golden eyelash vipers sleep in the sun all morning and are cross about it all afternoon. They rear up and sway to look bigger. Dot says it works on her every time.',
   boa: 'The boa has lived on the same low branch for nine years and considers the whole tree hers. She is never in a hurry. Pokey respects that, from a distance.',
   eagle: 'Harpy eagles see a beetle move from a mile up. Their shadow arrives first, which is the only polite thing about them. Hide in a bush and wait.',
   turtle: 'Snapping turtles have been on the riverbank longer than the village. They dislike visitors, boats, weather and especially being kicked. They forgive nobody, but they forget quickly.',

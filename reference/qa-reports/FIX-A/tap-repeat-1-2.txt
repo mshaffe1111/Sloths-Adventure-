@@ -1,0 +1,27 @@
+stage 1-2 normal: Dot's help setting reminders, engine easy false, tapping each card at its reading time
+  6.1 s    1.5 s up / read 5.0 s (x0.3) << 7w "Run through petals to pick them up."
+  8.4 s    4.5 s up / read 5.0 s (x0.9) << 7w "Flick up to hop up or over."
+ 13.8 s    6.4 s up / read 6.0 s (x1.1)    TAPPED (punches 0, jumps 0) 9w "Ooh, thorns. Don't touch those, not even a little."
+ 21.2 s   18.2 s up / read 6.0 s (x3.0)    TAPPED (punches 1, jumps 0; events pointerdown:fixed inset-0 pointer-events-a touchstart:fixed inset-0 pointer-events-a click:fixed inset-0 pointer-events-a; card dg-bub painted in) 9w "Hop on and let the mushrooms do the jumping!"
+ 42.3 s    5.4 s up / read 5.0 s (x1.1)    TAPPED (punches 0, jumps 0) 7w "Run through petals to pick them up."
+ 59.5 s    0.5 s up / read 6.5 s (x0.1) << 10w "She said don't stop to smell the flowers. Picking's different." (run ended)
+6 cards; 2 were taken down before their reading time; 0 blinked off and back
+why each ended (the queue): "Run through petals to pick t" cut at 1.5 s; "Flick up to hop up or over." done at 4.4 s; "Ooh, thorns. Don't touch tho" tapped at 6.1 s; "Hop on and let the mushrooms" read at 18.0 s; "Run through petals to pick t" tapped at 5.1 s
+stage 1-2 normal: Dot's help setting reminders, engine easy false, tapping each card at its reading time
+  6.1 s    1.6 s up / read 5.0 s (x0.3) << 7w "Run through petals to pick them up."
+  8.4 s    4.5 s up / read 5.0 s (x0.9) << 7w "Flick up to hop up or over."
+ 13.8 s    6.4 s up / read 6.0 s (x1.1)    TAPPED (punches 0, jumps 0) 9w "Ooh, thorns. Don't touch those, not even a little."
+ 21.2 s   18.3 s up / read 6.0 s (x3.0)    TAPPED (punches 1, jumps 0; events pointerdown:fixed inset-0 pointer-events-a touchstart:fixed inset-0 pointer-events-a click:fixed inset-0 pointer-events-a; card dg-bub painted in) 9w "Hop on and let the mushrooms do the jumping!"
+ 42.5 s    5.4 s up / read 5.0 s (x1.1)    TAPPED (punches 0, jumps 0) 7w "Run through petals to pick them up."
+ 59.8 s    0.2 s up / read 6.5 s (x0.0) << 10w "She said don't stop to smell the flowers. Picking's different." (run ended)
+6 cards; 2 were taken down before their reading time; 0 blinked off and back
+why each ended (the queue): "Run through petals to pick t" cut at 1.5 s; "Flick up to hop up or over." done at 4.4 s; "Ooh, thorns. Don't touch tho" tapped at 6.1 s; "Hop on and let the mushrooms" read at 18.0 s; "Run through petals to pick t" tapped at 5.1 s
+stage 1-2 normal: Dot's help setting reminders, engine easy false, tapping each card at its reading time
+  6.1 s    1.5 s up / read 5.0 s (x0.3) << 7w "Run through petals to pick them up."
+  8.4 s    4.4 s up / read 5.0 s (x0.9) << 7w "Flick up to hop up or over."
+ 13.8 s    6.4 s up / read 6.0 s (x1.1)    TAPPED (punches 0, jumps 0) 9w "Ooh, thorns. Don't touch those, not even a little."
+ 21.2 s    6.5 s up / read 6.0 s (x1.1)    TAPPED (punches 0, jumps 0) 9w "Hop on and let the mushrooms do the jumping!"
+ 28.5 s    5.5 s up / read 5.0 s (x1.1)    TAPPED (punches 0, jumps 0) 7w "Run through petals to pick them up."
+ 42.4 s    7.1 s up / read 6.5 s (x1.1)    TAPPED (punches 0, jumps 0) 10w "She said don't stop to smell the flowers. Picking's different."
+6 cards; 2 were taken down before their reading time; 0 blinked off and back
+why each ended (the queue): "Run through petals to pick t" cut at 1.5 s; "Flick up to hop up or over." done at 4.3 s; "Ooh, thorns. Don't touch tho" tapped at 6.1 s; "Hop on and let the mushrooms" tapped at 6.3 s; "Run through petals to pick t" tapped at 5.2 s; "She said don't stop to smell" tapped at 6.6 s

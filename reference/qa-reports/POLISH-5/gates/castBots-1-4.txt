@@ -1,0 +1,26 @@
+castBots 1-4, seeds 1-10; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 6/10; under the floor 0; time median 136.1 s (min 119.5); hits 23 lives 2 (other 25); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 7,10)
+        fail 1: time goal 0/1 rescued x1  (seeds 9)
+        fail 1: time goal 0/1  (seeds 8)
+kid    easy   PASS 8/10; under the floor 0; time median 115.8 s (min 113.2); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 2)
+        fail 1: time goal 0/1  (seeds 10)
+adult  normal PASS 10/10; under the floor 0; time median 126 s (min 111.2); hits 20 lives 0 (other 20); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 9/10; under the floor 0; time median 105.1 s (min 101); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 1: time goal 0/1  (seeds 10)
+child  normal PASS 6/10; under the floor 0; time median 254.9 s (min 222.9); hits 34 lives 2 (other 36); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x2  (seeds 7,9,10)
+        fail 1: shrine rescued x1  (seeds 4)
+child  easy   PASS 4/10; under the floor 0; time median 206.6 s (min 156.3); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x2  (seeds 3,6)
+        fail 2: shrine rescued x1  (seeds 5,4)
+        fail 1: shrine rescued x4  (seeds 9)
+        fail 1: time goal 0/1  (seeds 10)
+middle normal PASS 8/10; under the floor 0; time median 173.3 s (min 150.6); hits 31 lives 2 (other 33); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 6,10)
+middle easy   PASS 7/10; under the floor 0; time median 130.3 s (min 110); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 3,8)
+        fail 1: time goal 0/1  (seeds 10)
+expert normal PASS 8/10; under the floor 0; time median 276.7 s (min 138.7); hits 19 lives 0 (other 19); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 7,10)

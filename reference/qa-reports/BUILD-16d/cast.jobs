@@ -1,0 +1,10 @@
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots kid --setting normal > reference/qa-reports/BUILD-16d/cast-kid-normal.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots kid --setting easy > reference/qa-reports/BUILD-16d/cast-kid-easy.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots adult --setting normal > reference/qa-reports/BUILD-16d/cast-adult-normal.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots adult --setting easy > reference/qa-reports/BUILD-16d/cast-adult-easy.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots child --setting normal > reference/qa-reports/BUILD-16d/cast-child-normal.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots child --setting easy > reference/qa-reports/BUILD-16d/cast-child-easy.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots middle --setting normal > reference/qa-reports/BUILD-16d/cast-middle-normal.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots middle --setting easy > reference/qa-reports/BUILD-16d/cast-middle-easy.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots expert --setting normal > reference/qa-reports/BUILD-16d/cast-expert-normal.out.txt 2>&1
+npx tsx tools/inspect/castBots.ts --stage 1-6 --seeds 1-6 --bots expert --setting easy > reference/qa-reports/BUILD-16d/cast-expert-easy.out.txt 2>&1

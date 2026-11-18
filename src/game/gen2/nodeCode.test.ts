@@ -37,7 +37,9 @@ test('each rule, broken on its own, fails with its own number and the token', ()
     ['A T P^^ F R X R S E', 'V10 at token 3'],
     ['A Tg1 Pc1 Pg1 Pg1 F[Pc1+|Pb1] R Xg1 R Sf1 E', 'V11 at token 5'],
     ['A Tg1 Pf1 F[Pc1+|Pg1] R Xc1 R Sf1 E', 'V12 at token 3', { windows: { f: [0.67, 1] } }],
-    ['A T K P F R X R S E', 'V13 at token 3'],
+    ['A T Z P F R X R S E', 'V13 at token 3'],
+    // (K left LATER with B5 CHASE-LAY, gen2/chaseLay.ts; still never in a world's first stage)
+    ['A T K P F R X R S E', 'V13 at token 3', { mini: 1 }],
     ['A Tg1 Pc1 F[Pc1+|Pg1] R Xc1 R Sf1 E', 'V14 at token 1', { deal: { g: 4 } }],
     ['A T P R X R S E', 'V17 at token 1', { needsFork: true }],
     ['A T P& F R X R S E', 'V16 at token 3'],

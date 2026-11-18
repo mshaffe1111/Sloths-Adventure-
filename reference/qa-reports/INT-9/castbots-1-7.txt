@@ -1,0 +1,11 @@
+castBots 1-7, seeds 1-12; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 12/12; under the floor 0; time median 189.6 s (min 180.4); hits 92 lives 2 (other 94); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+kid    easy   PASS 12/12; under the floor 0; time median 176.5 s (min 173.3); hits 0 lives 0 (none); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+adult  normal PASS 12/12; under the floor 0; time median 192.8 s (min 183.8); hits 23 lives 0 (other 23); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+adult  easy   PASS 12/12; under the floor 0; time median 186.3 s (min 182.8); hits 0 lives 0 (none); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+child  normal PASS 12/12; under the floor 0; time median 482.3 s (min 467.6); hits 20 lives 0 (other 20); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+child  easy   PASS 12/12; under the floor 0; time median 340.4 s (min 309.2); hits 1 lives 0 (other 1); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+middle normal PASS 12/12; under the floor 0; time median 261.6 s (min 248.3); hits 8 lives 0 (other 8); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+middle easy   PASS 12/12; under the floor 0; time median 236.1 s (min 220.3); hits 0 lives 0 (none); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+expert normal PASS 12/12; under the floor 0; time median 224.9 s (min 217.1); hits 5 lives 0 (other 5); cleared none; told of traps 0/12; first trap sprung 0/12; traps sprung 0/0; turned back 0; left 108
+exit 0

@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w2' | 'w2-21' | 'w2-22';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -36,6 +36,30 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '1-2': { kit: 'w1-12', judged: 'normal-1-2' },
   // (1-3 Branch Snakes: the designed arc, w1Arc13.ts; judged on its own flown rows, flownArcs.ts normal-1-3, P13 11-12. Its seed list is owed)
   '1-3': { kit: 'w1', judged: 'normal-1-3' },
+  // (1-4 Up the Kapok: the designed arc laid UP (w1Arc14.ts, the ascent lay); its fields, figs, gates and pods by its own finish. Judged on
+  // its own flown rows, flownArcs.ts normal-1-4, INT-3 11-13)
+  '1-4': { kit: 'w1-14', judged: 'normal-1-4' },
+  // (1-5 Where She Walked: the designed arc, w1Arc15.ts, on World 1's kit with its own rows (kitLib15); the mixer's 1-5 is deleted. Judged
+  // on its own flown rows, flownArcs.ts normal-1-5, B15 11-13)
+  '1-5': { kit: 'w1-15', judged: 'normal-1-5' },
+  // (1-6 First Lianas: the designed arc, w1Arc16.ts, on World 1's kit with the swing and its own rows (kitLib16), its snakes by its finish
+  // (finish16); the hand-built seesaw 1-6 is deleted. Judged on its own flown rows, flownArcs.ts normal-1-6, BUILD-16 11-14)
+  '1-6': { kit: 'w1-16', judged: 'normal-1-6' },
+  // (1-7 A Very Good Bush: the designed arc, w1Arc17.ts, on World 1's kit with its own rows (kitLib17) and its finish (finish17: the mossy
+  //  lianas, one eye a beat, the perched eagle); the old hand-built 1-7 (protoStage.ts) is deleted. BUILD-17 11-14)
+  // (1-7 A Very Good Bush: judged on its own flown rows, flownArcs.ts normal-1-7, INT-9 11-14)
+  '1-7': { kit: 'w1-17', judged: 'normal-1-7' },
+  // (1-8 The Long Branch: the designed arc, w1Arc18.ts, on World 1's kit with its own rows (kitLib18) and its finish (finish18: the nuts
+  //  and fruit by data, the still fork, the tip, the hearts); the hand-built 1-8's routing is gone (protoStage HAND_STAGES). BUILD-18 11-14.
+  //  Judged on its own flown rows, flownArcs.ts normal-1-8 (BUILD-18c), since FIX-GATES' bounce-reuse kind judges its plain bounces)
+  '1-8': { kit: 'w1-18', judged: 'normal-1-8' },
+  // (2-1 Down to the River and 2-2 Petals for the Crown: World 2's kit (w2.ts, ENG-W2 11-14) on their placeholder arcs, until each
+  //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
+  //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the
+  //  lead's ruling 11-14: painted water is its own mark; Dot warns at the first water))
+  '2-1': { kit: 'w2-21', judged: 'normal-2-1' },
+  // (2-2 Petals for the Crown: the designed arc, w2Arc22.ts, its own kit 'w2-22' (kitLib22), BUILD-22 11-15; its placeholder arc is gone)
+  '2-2': { kit: 'w2-22', judged: 'normal-2-2' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

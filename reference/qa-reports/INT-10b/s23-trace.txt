@@ -1,0 +1,22 @@
+  298.30 double from 29527,797 hold 0.22 up 0.00 d2 0.51 2nd false -> 29639,745 ok
+  307.10 double from 30293,800 hold 0.07 up 0.16 d2 0.42 2nd false -> 30312,749 ok
+  319.10 double from 30998,805 hold 0.41 up 0.00 d2 0.31 2nd true -> 31215,749 ok
+  323.40 double from 31507,804 hold 0.58 up 0.00 d2 0.44 2nd true -> 31738,751 ok
+  330.10 single from 32270,806 hold 0.18 up 0.00 d2 0.50 2nd false -> 32422,736 ok
+  331.57 single from 32583,905 hold 0.16 up 0.00 d2 0.54 2nd false -> 32671,779 ok
+  333.17 no jump, ground 32574,902 -> LIFE LOST
+  335.20 double from 30288,800 hold 0.08 up 0.00 d2 0.44 2nd false -> 30339,723 ok
+  343.77 double from 30972,805 hold 0.60 up 0.00 d2 0.34 2nd true -> 31249,749 ok
+  347.00 double from 31496,804 hold 0.10 up 0.00 d2 0.47 2nd false -> 31565,751 ok
+  355.73 single from 32241,806 hold 0.28 up 0.00 d2 0.49 2nd false -> 32422,751 ok
+  361.07 single from 32679,738 hold 0.09 up 0.00 d2 0.28 2nd false -> 32676,951 FELL BACK
+  361.90 single from 32676,951 hold 0.23 up 0.00 d2 0.39 2nd false -> 32564,951 FELL BACK
+  362.90 double from 32549,951 hold 0.40 up 0.00 d2 0.28 2nd true -> 32676,951 ok
+  363.40 single from 32676,951 hold 0.05 up 0.14 d2 0.49 2nd false -> 32629,951 FELL BACK
+  364.40 double from 32612,951 hold 0.51 up 0.00 d2 0.38 2nd true -> 32676,951 FELL BACK
+  364.87 single from 32676,951 hold 0.09 up 0.00 d2 0.32 2nd false -> 32620,951 FELL BACK
+  365.73 double from 32620,951 hold 0.39 up 0.09 d2 0.29 2nd true -> 32676,951 FELL BACK
+  366.40 single from 32676,951 hold 0.11 up 0.00 d2 0.38 2nd false -> 32574,951 FELL BACK
+  367.63 double from 32557,951 hold 0.67 up 0.00 d2 0.37 2nd true -> 32676,951 ok
+  368.27 single from 32676,951 hold 0.25 up 0.00 d2 0.30 2nd false -> 32583,951 FELL BACK
+  369.27 double from 32567,951 hold 0.43 up 0.00 d2 0.30 2nd true -> 32676,951 ok

@@ -1,0 +1,259 @@
+TAP version 13
+# Subtest: the clean planted 1-1 roll is accepted on both settings, nothing left unjudged but the first run (judged on its layout)
+ok 1 - the clean planted 1-1 roll is accepted on both settings, nothing left unjudged but the first run (judged on its layout)
+  ---
+  duration_ms: 4.357022
+  type: 'test'
+  ...
+# Subtest: ALL_VERDICTS is the union, in order, read off verdicts.types.ts
+ok 2 - ALL_VERDICTS is the union, in order, read off verdicts.types.ts
+  ---
+  duration_ms: 0.493936
+  type: 'test'
+  ...
+# Subtest: arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule
+ok 3 - arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule
+  ---
+  duration_ms: 1.20552
+  type: 'test'
+  ...
+# red: arc.single-gap-over: single-gap at x 400 (s1): 140 px, past a flick's 132
+# red: arc.single-gap-over: single-gap at x 400 (s1): 150 px, past a flick's 143
+# Subtest: arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)
+ok 4 - arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)
+  ---
+  duration_ms: 0.433824
+  type: 'test'
+  ...
+# red: arc.single-rise-over: single-rise at x 400 (s1): 120 px, over a flick's climb 117
+# Subtest: block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)
+ok 5 - block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)
+  ---
+  duration_ms: 1.080794
+  type: 'test'
+  ...
+# red: block.lesser-passes: double-test-gap at x 400 (s1): one jump crosses 246, the block is 200
+# red: block.lesser-passes: double-teach-rise at x 400 (s1): one jump climbs 123, the block is 120
+# red: block.lesser-passes: bounce-air-test at x 400 (s1): a bounce alone climbs 223, the block is 212
+# red: block.lesser-passes: bounce-teach at x 400 (s1): one jump climbs 123, the block is 120
+# Subtest: the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over
+ok 6 - the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over
+  ---
+  duration_ms: 0.707157
+  type: 'test'
+  ...
+# red: band.out: bounce-teach at x 400 (s1): 168 px, under the band's 174
+# red: band.out: bounce-teach at x 400 (s1): 186 px, over the band's 180
+# Subtest: the double teach's first rise is comfortably doable (POLISH-8, R-165.228, the lead's ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal's old 136 is over the band, 127 under it, 126 spare-thin
+ok 7 - the double teach's first rise is comfortably doable (POLISH-8, R-165.228, the lead's ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal's old 136 is over the band, 127 under it, 126 spare-thin
+  ---
+  duration_ms: 0.874639
+  type: 'test'
+  ...
+# red: band.out: double-teach-first at x 400 (s1): 136 px, over the band's 132
+# red: band.out: double-teach-first at x 400 (s1): 127 px, under the band's 128
+# red: block.spare-thin: double-teach-first at x 400 (s1): 3 px over what one jump reaches (123), under 5
+# Subtest: block.spare-thin: a 126 px double rise, 3 px over one jump's 123, under the 5 px spare
+ok 8 - block.spare-thin: a 126 px double rise, 3 px over one jump's 123, under the 5 px spare
+  ---
+  duration_ms: 0.270416
+  type: 'test'
+  ...
+# red: block.spare-thin: double-teach-rise at x 400 (s1): 3 px over what one jump reaches (123), under 5
+# Subtest: block.taught-fails: a 300 px double gap past the double flick from 70 px (283); a 330 px bounce lip past bounce + air jump (317)
+ok 9 - block.taught-fails: a 300 px double gap past the double flick from 70 px (283); a 330 px bounce lip past bounce + air jump (317)
+  ---
+  duration_ms: 0.496076
+  type: 'test'
+  ...
+# red: block.taught-fails: double-test-gap at x 400 (s1): 300 px, past the taught double-flick's 283
+# red: block.taught-fails: bounce-air-test at x 400 (s1): 330 px, past the taught bounce-air's 317
+# Subtest: band.out: over, under, and a band that is none (Easy's double gap)
+ok 10 - band.out: over, under, and a band that is none (Easy's double gap)
+  ---
+  duration_ms: 0.636893
+  type: 'test'
+  ...
+# red: band.out: double-teach-rise at x 400 (s1): 142 px, over the band's 140
+# red: band.out: bounce-teach at x 400 (s1): 228 px, over the band's 180
+# red: band.out: double-test-gap at x 400 (s1): easy has no double-test-gap (band 'none')
+# Subtest: headroom.cuts-arc: a bough 120 px over a single gap's take-off (needs 97.2 + 48)
+ok 11 - headroom.cuts-arc: a bough 120 px over a single gap's take-off (needs 97.2 + 48)
+  ---
+  duration_ms: 0.32572
+  type: 'test'
+  ...
+# red: headroom.cuts-arc: single-gap at x 400 (s1): 120 px clear over the take-off, the single-flick needs 145
+# Subtest: floor.unmarked: a floorless gap World 1 reads as water, outside a soft zone
+ok 12 - floor.unmarked: a floorless gap World 1 reads as water, outside a soft zone
+  ---
+  duration_ms: 0.421911
+  type: 'test'
+  ...
+# red: floor.unmarked: an unmarked floorless gap at x 2260..2600
+# Subtest: drop.lethal-in-no-lethal: a water drop on 1-1 (warned, drawn as water)
+ok 13 - drop.lethal-in-no-lethal: a water drop on 1-1 (warned, drawn as water)
+  ---
+  duration_ms: 0.274441
+  type: 'test'
+  ...
+# red: drop.lethal-in-no-lethal: a fall into water costs a life at x 1000..1300 on a no-lethal stage
+# Subtest: drop.unwarned: a lethal drop with no Dot line, and one with no sign
+ok 14 - drop.unwarned: a lethal drop with no Dot line, and one with no sign
+  ---
+  duration_ms: 0.232196
+  type: 'test'
+  ...
+# red: drop.unwarned: the lethal drop at x 1000..1300 has no Dot line
+# red: drop.unwarned: the lethal drop at x 1000..1300 has no sign
+# Subtest: drop.look-lies: a soft drop painted as water; a lethal drop drawn as ground
+ok 15 - drop.look-lies: a soft drop painted as water; a lethal drop drawn as ground
+  ---
+  duration_ms: 0.211875
+  type: 'test'
+  ...
+# red: drop.look-lies: the soft drop at x 1000..1300 is drawn as water-art
+# red: drop.look-lies: the lethal drop at x 1000..1300 is drawn as ground
+# Subtest: drop.untyped: a gap on the route with no Drop record
+ok 16 - drop.untyped: a gap on the route with no Drop record
+  ---
+  duration_ms: 0.22747
+  type: 'test'
+  ...
+# red: drop.untyped: a gap at x 1000..1300 the builder laid with no Drop record
+# Subtest: teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the registry's settings)
+ok 17 - teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the registry's settings)
+  ---
+  duration_ms: 0.326984
+  type: 'test'
+  ...
+# red: teach.double-no-gap-after: no gap only the second jump crosses within 1,500 px of the teach (x 0)
+# red: teach.double-gap-unsafe: nothing under the double gap at 1000
+# Subtest: hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)
+ok 18 - hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)
+  ---
+  duration_ms: 0.420067
+  type: 'test'
+  ...
+# red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+# red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+# Subtest: landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)
+ok 19 - landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)
+  ---
+  duration_ms: 9.017294
+  type: 'test'
+  ...
+# red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+# red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+# red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+# red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+# Subtest: chain.mount: a chain's first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on
+ok 20 - chain.mount: a chain's first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on
+  ---
+  duration_ms: 1.109715
+  type: 'test'
+  ...
+# red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 80 (single-rise band)
+# red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 63 (single-rise band)
+# Subtest: first-run.drift: the fixed layout built against its recorded lock
+ok 21 - first-run.drift: the fixed layout built against its recorded lock
+  ---
+  duration_ms: 0.16193
+  type: 'test'
+  ...
+# red: the first run (seed 7) builds ccc on easy, recorded bbb
+# Subtest: every name that can fail in a flown scope has a planted roll above (the union less reach.unflown)
+ok 22 - every name that can fail in a flown scope has a planted roll above (the union less reach.unflown)
+  ---
+  duration_ms: 0.275049
+  type: 'test'
+  ...
+# Subtest: reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged
+ok 23 - reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged
+  ---
+  duration_ms: 0.274604
+  type: 'test'
+  ...
+# Subtest: the verdict path holds no closed-form figure: reach.ts and verdicts.ts name none, and 1-1's envelope reads the bands
+ok 24 - the verdict path holds no closed-form figure: reach.ts and verdicts.ts name none, and 1-1's envelope reads the bands
+  ---
+  duration_ms: 0.794435
+  type: 'test'
+  ...
+# Subtest: 5-7 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+ok 25 - 5-7 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+  ---
+  duration_ms: 148.543346
+  type: 'test'
+  ...
+# Subtest: 7-1 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+ok 26 - 7-1 (outside THE BOUNDARY) builds as on main and carries every verdict as notJudged, with its drops
+  ---
+  duration_ms: 98.099431
+  type: 'test'
+  ...
+# Subtest: a bank is a block: Normal's D bank lays 136-140 and Easy's 128-132 (the block rows); a branch lip keeps the thin rows
+ok 27 - a bank is a block: Normal's D bank lays 136-140 and Easy's 128-132 (the block rows); a branch lip keeps the thin rows
+  ---
+  duration_ms: 1.036547
+  type: 'test'
+  ...
+# Subtest: headroom: only a solid piece 50 px or taller over the take-off and the flight cuts the arc; a bough, or a bank over the landing, does not
+ok 28 - headroom: only a solid piece 50 px or taller over the take-off and the flight cuts the arc; a bough, or a bank over the landing, does not
+  ---
+  duration_ms: 0.223977
+  type: 'test'
+  ...
+# Subtest: classify: a "double" place whose figure fits the single band is a single section; a declared double block stays a block
+ok 29 - classify: a "double" place whose figure fits the single band is a single section; a declared double block stays a block
+  ---
+  duration_ms: 0.311863
+  type: 'test'
+  ...
+# Subtest: 1-1's finish reach (stageGenerator finishReach): the far bank of a 256 px gap is on the route, and its flower stays
+ok 30 - 1-1's finish reach (stageGenerator finishReach): the far bank of a 256 px gap is on the route, and its flower stays
+  ---
+  duration_ms: 0.850783
+  type: 'test'
+  ...
+# Subtest: floorless (the lead's ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172's deck is a real hole, seed 476's stone plugs its slot, seed 323's 23 px opening is no drop
+ok 31 - floorless (the lead's ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172's deck is a real hole, seed 476's stone plugs its slot, seed 323's 23 px opening is no drop
+  ---
+  duration_ms: 0.549467
+  type: 'test'
+  ...
+# Subtest: the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before
+ok 32 - the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before
+  ---
+  duration_ms: 0.610706
+  type: 'test'
+  ...
+# Subtest: block.spare-thin prints its spare rounded as its measure is (4.6 prints 5, never 4)
+ok 33 - block.spare-thin prints its spare rounded as its measure is (4.6 prints 5, never 4)
+  ---
+  duration_ms: 0.228033
+  type: 'test'
+  ...
+# Subtest: the bounce teach is the bounce: 1-1, every listed layout, both settings, walked onto the mushroom with no press, he stands on the bank
+ok 34 - the bounce teach is the bounce: 1-1, every listed layout, both settings, walked onto the mushroom with no press, he stands on the bank
+  ---
+  duration_ms: 60660.538127
+  type: 'test'
+  ...
+# \# normal: 167 teach rises, 129-131 px
+# \# easy: 167 teach rises, 129-131 px
+# Subtest: the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+ok 35 - the double teach's rise is 128-132 px: 1-1, every listed layout, both settings
+  ---
+  duration_ms: 16718.566708
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 61502.631771

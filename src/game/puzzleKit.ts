@@ -66,7 +66,8 @@ export type PieceSpec =
   | { kind: 'plate'; id: string; at: Anchor; w?: number; need?: number }
   /** `look`: the wall over the door: the root wall (World 1's, the default) or bundled reeds (World 2's court) */
   | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number; look?: 'roots' | 'reeds' | 'woven' | 'butler' }
-  | { kind: 'lever'; id: string; at: Anchor; on?: boolean }
+  /** `looks`: the world's own pictures for this lever, one picked by its place (World 6's sluice wheels, w6WheelArt.ts); unset: the kit's lever */
+  | { kind: 'lever'; id: string; at: Anchor; on?: boolean; looks?: readonly string[] }
   | { kind: 'basket'; id: string; at: Anchor; mouth: number; need?: number; drop?: number }
   /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it
    * stays where it was wound to when that goes off (a ratchet), instead of coming back down; `cage`: the reed cage it hangs (World 2: a

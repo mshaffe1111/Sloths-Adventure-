@@ -1,0 +1,18 @@
+adult normal 1 shrine {"got":99,"need":95} rescues 1 RESCUE@gorge:gb2 PIT@hang-low:b1 PIT@creaky-landing:b1 PIT@creaky-landing:b2 PIT@creaky-landing:b2 PIT@risers:b1 PIT@gorge:b2 PIT@gorge:b2 PIT@gorge:gb2 PIT@gorge:gb2
+adult normal 2 shrine {"got":101,"need":94} rescues 0 PIT@creaky-landing:b2 PIT@creaky-landing:b2 PIT@gorge:b1
+adult normal 3 shrine {"got":108,"need":102} rescues 0 PIT@snake-on-vine:b1 PIT@creaky-landing:b1 PIT@creaky-landing:b2 PIT@creaky-landing:b2
+adult normal 4 shrine {"got":105,"need":97} rescues 0 PIT@creaky-landing:b2 PIT@gorge:d2 PIT@gorge:gb2
+adult normal 5 shrine {"got":97,"need":90} rescues 0 PIT@snake-on-vine:b1 PIT@creaky-landing:b2 PIT@creaky-landing:b2 PIT@risers:b1
+adult normal 6 shrine {"got":104,"need":95} rescues 0 PIT@snake-on-vine:b1 PIT@creaky-landing:b2 PIT@creaky-landing:b2 PIT@gorge:b1 PIT@gorge:gb2 PIT@gorge:gb2
+
+TOTALS
+adult normal PIT@creaky-landing:b1 2
+adult normal PIT@creaky-landing:b2 11
+adult normal PIT@gorge:b1 2
+adult normal PIT@gorge:b2 2
+adult normal PIT@gorge:d2 1
+adult normal PIT@gorge:gb2 5
+adult normal PIT@hang-low:b1 1
+adult normal PIT@risers:b1 2
+adult normal PIT@snake-on-vine:b1 3
+adult normal RESCUE@gorge:gb2 1

@@ -25,10 +25,10 @@
 import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
-import type { Bush, WatchZone } from '../../watcher.ts';
 import type { CreatureDef, Difficulty, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
-import { watchCalm } from './w6.ts';
+import { clipWatches, hash01, lookAt, stillEmitters, stillProps, type StillRow } from '../stillLay.ts';
+import { W6_CALM } from './w6.ts';
 
 /** World 8's boughs: their top, depth, and how deep a soft pit's floor lies under its lips (a lower bough, one wide step out) */
 export const W8_GROUND = { y: G, bankH: 90, pitDepth: 120 } as const;
@@ -111,14 +111,21 @@ export const W8_STAGE_FOES: Readonly<Record<number, readonly string[]>> = {
 
 // ───────────────────────────── the props ─────────────────────────────
 
-/** the watcher's bush sizes (protoStage.ts BUSH_W): a tree hollow is drawn like a wide bush, a leaf curtain like a tall one */
-export const W8_HIDE_W = { hollowHide: 170, curtainHide: 124 } as const;
+/**
+ * World 8's hides and its watcher, as stillLay.ts rows: a tree hollow is drawn like a wide bush, a leaf curtain like a tall one. A bat
+ * roost wakes on a rhythm and looks along its bough; the roosts wake a little more often than World 6's water watched (World 8 sits
+ * above it on the band: `lead` 2). A `roostHere` socket watches its own bough only; a `batRun` socket is 8-1's sleeping-bat run
+ * (GRAB-BAG.md E): no hides on its bough, a scare back to its start instead of a hit; its first is taught slow
+ */
+export const W8_STILL: Record<'hollowHide' | 'curtainHide' | 'roost', StillRow> = {
+  hollowHide: { role: 'hide', bush: 'wide', w: 170, looks: ['tree-hollow'] },
+  curtainHide: { role: 'hide', bush: 'tall', w: 124, looks: ['leaf-curtain'] },
+  // (the roost is the beat: its waking is what he waits out, hidden)
+  roost: { role: 'watch', tag: 'roost', calm: { ...W6_CALM, lead: 2 }, lesson: ['roostLesson', 'batRunLesson'], own: ['roostHere'], scare: ['batRun'] },
+};
 
 export const W8_PROPS: PropDef[] = [
-  { id: W8_PROP.hollowHide, tags: ['hide', 'cover'], w: W8_HIDE_W.hollowHide, minApart: 260, looks: ['tree-hollow'] },
-  { id: W8_PROP.curtainHide, tags: ['hide', 'cover'], w: W8_HIDE_W.curtainHide, minApart: 260, looks: ['leaf-curtain'] },
-  // (the roost is the beat: its waking is what he waits out, hidden)
-  { id: W8_PROP.roost, tags: ['roost'], w: 120, minApart: 500, hazard: true, beat: true },
+  ...stillProps(W8_STILL),
   { id: W8_PROP.fungus, tags: ['scenery'], w: 100, minApart: 300, looks: ['shelf-fungus', 'bark-fungus', 'glow-mushrooms'] },
   { id: W8_PROP.nest, tags: ['scenery'], w: 90, minApart: 500, looks: ['bird-nest', 'firefly-leaf'] },
   // (the dark's two ends: World 6's dark props, w6Swing.ts)
@@ -214,90 +221,30 @@ export interface W8Extras {
   meets?: Array<{ kind: string; x: number }>;
 }
 
-const hash01 = (x: number, salt: number): number => {
-  const s = Math.sin(x * 12.9898 + salt * 78.233) * 43758.5453;
-  return s - Math.floor(s);
-};
 const R = Math.round;
 
 export function w8Of(out: StageSink, stage = 1): W8Extras {
   return (out.extras.w8 ??= { mood: w8Mood(stage) }) as W8Extras;
 }
-const look = (p: PropDef, x: number, salt: number) => (p.looks?.length ? p.looks[Math.floor(hash01(x, salt) * p.looks.length)] : p.id);
-
-/** the platform a socket's spot stands on */
-const pieceAt = (out: StageSink, x: number, y: number) =>
-  out.platforms.find((p) => Math.abs(p.y - y) < 1 && x >= p.x && x <= p.x + p.width && p.type !== 'fragile');
-
-/** the longest a roost watches (px) */
-const ROOST_MAX = 1400;
-/** a watched stretch runs this far past the last hiding place along it */
-const ROOST_PAST = 120;
-
-/** the boughs a roost looks along: the piece under it and those walked on from it with no gap between (a knot up and down), to ROOST_MAX */
-function roostRun(out: StageSink, x: number, y: number): [number, number] | null {
-  const p0 = pieceAt(out, x, y);
-  if (!p0) return null;
-  const near = out.platforms.filter((p) => p.type !== 'fragile' && Math.abs(p.y - p0.y) <= 60);
-  let x1 = p0.x + p0.width;
-  for (let grown = true; grown && x1 - p0.x < ROOST_MAX; ) {
-    grown = false;
-    for (const p of near) if (Math.abs(p.x - x1) <= 2 && p.x + p.width > x1) (x1 = Math.min(p.x + p.width, p0.x + ROOST_MAX)), (grown = true);
-  }
-  return [p0.x, x1];
-}
-
-/** each watched stretch clipped to the hiding places along it (being seen with nowhere to go is unfair): pass 6, after they are laid */
-export function clipRoosts(out: StageSink): void {
-  const zones = out.proto.watch;
-  if (!zones?.length) return;
-  const bushes = out.proto.bushes ?? [];
-  out.proto.watch = zones.flatMap((z) => {
-    const inside = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1);
-    // (a bat run has no hides by design: it stays whole)
-    if (z.setback !== undefined) return [z];
-    if (!inside.length) return [];
-    return [{ ...z, x1: R(Math.min(z.x1, Math.max(...inside.map((b) => b.x + b.w)) + ROOST_PAST)) }];
-  });
-}
-
 /** the emitters, for a stage of World 8 (its number sets the roosts' calm and the light) */
 export function w8Emitters(stage: number): Record<string, PropEmitter> {
-  const hide = (kind: Bush['kind']): PropEmitter => (f, p, out) => {
-    const w = W8_HIDE_W[p.id as keyof typeof W8_HIDE_W] ?? 150;
-    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind };
-    (out.proto.bushes ??= []).push(b);
-    (w8Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: look(p, f.x, 1) });
-  };
-  // (the roosts wake a little more often than World 6's water watched: World 8 sits above it on the band, `stage + 2`)
-  const calm = (lesson: boolean) => watchCalm(Math.min(9, stage + 2), lesson);
   return {
     ...W6S_EMIT,
-    hollowHide: hide('wide'),
-    curtainHide: hide('tall'),
-    roost: (f, _p, out) => {
-      const bats = f.socket.startsWith('batRun');
-      const own = f.socket.startsWith('roostHere') || bats ? pieceAt(out, f.x, f.y) : undefined;
-      const run = own ? [own.x, own.x + own.width] : roostRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
-      // (8-1's sleeping-bat run, GRAB-BAG.md E: no hides on its bough, a scare back to its start instead of a hit; its first is taught slow)
-      const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: calm(f.socket === 'roostLesson' || f.socket === 'batRunLesson'), ...(bats ? { setback: R(run[0] + 20) } : {}) };
-      const zones = (out.proto.watch ??= []);
-      if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) {
-        zones.push(z);
-        // (a bat run's row hangs lower, over the bough he runs: sideways the usual height put it under the HUD's progress bar)
-        (w8Of(out, stage).roosts ??= []).push({ x: R(run[0] + 60), y: f.y + (bats ? 40 : 0) });
-      }
-    },
-    fungus: (f, p, out) => void (w8Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 3), x: f.x, b: f.y, w: R(90 + 40 * hash01(f.x, 4)) }),
+    ...stillEmitters(W8_STILL, stage, {
+      hide: (out, at) => void (w8Of(out, stage).hides ??= []).push(at),
+      // (a bat run's row hangs lower, over the bough he runs: sideways the usual height put it under the HUD's progress bar)
+      watch: (out, at) => void (w8Of(out, stage).roosts ??= []).push({ x: R(at.run[0] + 60), y: at.y + (at.scare ? 40 : 0) }),
+    }),
+    fungus: (f, p, out) => void (w8Of(out, stage).scenery ??= []).push({ n: lookAt(p, f.x, 3), x: f.x, b: f.y, w: R(90 + 40 * hash01(f.x, 4)) }),
     nest: (f, p, out) =>
-      void (w8Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 5), x: f.x, b: f.y, w: R(80 + 30 * hash01(f.x, 6)), ...(hash01(f.x, 7) < 0.5 ? { flip: true } : {}) }),
+      void (w8Of(out, stage).scenery ??= []).push({ n: lookAt(p, f.x, 5), x: f.x, b: f.y, w: R(80 + 30 * hash01(f.x, 6)), ...(hash01(f.x, 7) < 0.5 ? { flip: true } : {}) }),
   };
 }
 
 /** the decorator (pass 6): the chosen decor sets into W8Extras.decor, and the roosts' stretches clipped to their hiding places */
 export function w8Decorate(stage: number): NonNullable<WorldKit['decorate']> {
   return (items, out) => {
-    clipRoosts(out);
+    clipWatches(out);
     const decor = (w8Of(out, stage).decor ??= []);
     for (const it of items) decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
   };

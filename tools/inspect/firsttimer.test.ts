@@ -110,6 +110,28 @@ test('in the real engine: a waist-high step is got over with a plain flick; a ta
   assert.ok(wall.loopsReport().some((l) => l.n >= 2 && l.doubles >= 1), 'he falls back, and tries a double after the first failure');
 });
 
+test("in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)", () => {
+  // (a 255 px gap, 1-1's double test: a level put-back sets him 150 px back from the lip and the engine ignores his still-held thumb
+  // for 0.35 s (engine.ts inputGrace). ADULT's stopReact 0.3 read that hold as a wall and jumped where he was set down, standing, until
+  // rescued: 6 of 10 1-1 Normal layouts. Plant: drop `!graceHeld &&` from firsttimer.ts's blockedT and every seed below goes red)
+  const ground = (id: number, x: number, w: number): Platform => ({ id, x, y: 580, width: w, height: 90, type: 'solid' }) as Platform;
+  const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 580 }));
+  for (const seed of [1, 2, 3, 4, 5]) {
+    const run = new FirstTimerRun('1-1', seed, FT_ADULT, { route: line, cap: 30, rescueAfter: 1000 });
+    run.sim.bare([ground(1, 0, 1000), ground(2, 1255, 3000)]);
+    // (a fall out of the toy is a level put-back: 1-1 has them on both settings, gen2 softFalls)
+    (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number } } } }).e.currentStage.config.levelHeight = 700;
+    run.sim.stand(700, 580);
+    run.prog.relocate(run.sim.p);
+    const r = run.play();
+    const tries = r.tries.map((t) => `${t.kind}@${Math.round(t.x)}${t.running ? 'r' : 's'}${t.ok ? '+' : '-'}`).join(' ');
+    assert.ok(r.softFalls.length >= 1, `seed ${seed}: he was put back at least once (${tries})`);
+    assert.equal(r.rescues, 0, `seed ${seed}: never rescued (${tries})`);
+    assert.ok(r.sim.p.x > 1300, `seed ${seed}: over the gap (x ${Math.round(r.sim.p.x)})`);
+    for (const t of r.tries) assert.ok(t.x >= 1000 - FT_ADULT.edgeAim - 60 && t.running, `seed ${seed}: every jump from a run-up near the lip, never where he was set down (${tries})`);
+  }
+});
+
 test('the findings name the rule each breaks', () => {
   const base = { who: 'KID', setting: 'easy', seed: 1, end: 'shrine', time: 120, x: 9000, progress: 1, goal: null, opening: [], harms: [], perMin: { hits: 0, lives: 0 }, gameOvers: 0, firstHarm: [], stuck: [], loops: [], stops: { n: 0, firstJumpFailed: 0, heights: [] }, puzzles: [], rescues: 0, dot: dotReport([], 120), flags: [], tries: [], turns: { n: 0, lag: 0 }, backtrack: { route: 1, bot: 1 }, noRoute: false, frames: 0, ms: 0 } as const;
   const f = flagsFor({ ...base, holdOn: { hit: null, life: { kind: 'life', t: 1.3, x: 504, y: 640, cause: 'water', onScreen: null } }, stuck: [{ x: 600, y: 580, t: 10, dur: 9, what: 'a 60 px waist-high step ahead', step: 60, dip: null, puzzle: false, rescued: false }] } as never);

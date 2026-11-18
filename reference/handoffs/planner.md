@@ -4,11 +4,37 @@ This covers the planner's own work on `engine-chunks`: the pipeline's verdicts, 
 Last code commit 25d2d115 (the Dot teach fix); 00bd44e8 is notes only. Live status: `reference/notes/planner-status.md`. Work saved but
 not live: `reference/notes/planner-wip/`.
 
+**Added by NODES-TRAVEL (1:04 PM ET, 2026-11-13, t-nodes, R-165.196 / .198; milestone 1 of 4, not merged):** a graph's code may carry LEG MARKS
+(`/R /L /U /D`, legs.ts `legMarks`), taken out before `parseCode`; each node's travel rides with its job through the brief's rules in
+`rolledGraph` (`put` / `keep`: every splice and filter of `jobs` goes through them, or travel slips out of step), and lands on
+`MissionNode.travel`. The parser (nodeCode.ts) also reads the long form (`CodeDials`, `&&`, the pick `?[a|b]`, content letters
+s v p t x; rules V22, V23); `rolledGraph` THROWS by name on a graph that writes a dial or a pick, because the lay honours none yet.
+Next: carry `tok.dials` onto `NodeDials` (types.ts has the fields), honour content / shape / tempo / rating / threat kinds and
+count / hazard hurt, add `gen2.dialMiss` to `rollErrors`, then delete the throw. On a stage of legs the column verdicts
+(towerFalls, towerSkips) run per column, each message tagged "[the column at x N]"; strays run per run leg.
+
+**Added by FA (11:36 AM ET, 2026-11-13, t-fa, R-165.170): a stage laid as a tower has three verdicts of its own**, folded by `rollErrors()` as
+`gen2.towerMiss` and `gen2.flagMiss`, each with a planted test in `src/game/gen2/tower.test.ts` and a planted fault in
+`reference/qa-reports/FA/planted-faults.py`:
+- `tower: a fall off the piece at ...` / `tower: the piece at ... gives way over ...` (tower.ts towerFalls): sound wood within 450 px
+  under every open end and every piece that gives way, going up; going down, every drop's landing within TOWER.see.
+- `tower: the storey at y .. is reached from y .. by jumps alone ...` (towerSkips): no jump, catch or step climbs a turn; the reach is
+  LEAP (the flown 214 px climb plus a margin; across, the closed form plus 100 px), deliberately more than the engine can do.
+- `flags: ...` measured in px of WAY (towerFlagBreaches): ROLLED_FLAGS' own numbers, on every tower, rolled graph or not; a run's
+  flags are judged by rolledFlagBreaches as before. The yield of a tower is `npx tsx tools/engine/towerroll.ts --seeds 24`.
+
 ## 1. The verdicts (what makes a roll fail by name)
 
 A roll with any error never reaches the proven list or a player. `provenGen2Stage` walks `seed + k x 7919` for 24 tries, catching throws;
 `buildPlayStage` replays a listed seed's packed plan (`gen2/seedList.ts`). Every verdict below is folded by `rollErrors()` in
 `src/game/gen2/pipeline.ts`.
+- (VARIETY, 11-13) **towerVaults** (tower.ts, in a tower's `towerMiss`): straight up at every climbing vine's top must land on wood,
+  facing either way, read with the engine's own finder (src/game/vineTop.ts). Runs only on a tower or a stage of legs; shipped runs
+  are covered by tools/engine/vaultscan.ts (0 regressions), not by a verdict. A node's shape/move ask is a rule in the deal and the pick
+  where the slot can keep it (engine-core.md 0l).
+- (VARIETY-2, 11-13) **askRefusal** (pipeline.ts, graph time, before the lay): a '_' asked of a `mustRise` node (the node after a late
+  descent on an up stage) throws `... node nN (job) asks shape _ (falling), but V19 makes it climb ...`; planted gen2/askRefusal.test.ts.
+  floor.unmarked's kills on mixed strings come from findW1Pits' one ground line (engine-core.md 0m; §3 "Floors" below), not the asks.
 
 | Verdict | Enforces | Where | Planted test |
 |---|---|---|---|
@@ -16,6 +42,7 @@ A roll with any error never reaches the proven list or a player. `provenGen2Stag
 | missing required | a required section with no node | `layStage` `missing` | required.test |
 | node code V1-V20 | the realised node code breaks a V-rule | `realisedCode` -> `codeErrors` | proven.test (fold) |
 | unsaid tip | a tip id the kit has no Dot words for | `fillSockets` `unsaid` | tips.test |
+| tip reach (R-165.236) | on a tower (up, down, legs): no tip said more than `TIP_NEAR` (PHYS.maxRun 285 px/s x `TIP_SAY_S` 3.6 s = 1,026 px) of route before its socket (`tipReach`: the route's line in 4 px steps, past the tip's x with his feet in its band); a teach tip in the first section to show what it teaches. Every rolled tip carries `band` (`tipBand`: its section's surfaces, BOUNCE_REACH over, DOUBLE_RISE under; no seams) and the engine fires it only inside | `applyVerdicts` tower block -> `towerMiss` (`tipMisses`) | tipBand.test, tools/engine/tipwalk.ts (gate) + tipwalk.test |
 | V19 late rise | on an up stage, the node after a late descent (or the signature, `endHigh`) ends 20 px above the window start and the descent | `layStage` `riseTo` / `needsRise`, `gen2.rise` | v19.test |
 | V19b window | the end log is above the route where the bough window begins: the gate's own `storyChecks.endAboveWindow`, one definition | `applyVerdicts` -> `gen2.windowMiss` | v19.test |
 | rolled flags | `ROLLED_FLAGS`: a flag within 2400 px before each hard node (teach, test, twist, combine, signature, finale) and at least `clear` 1500 px ahead of it; 900-4000 px apart (2300 where a life can be lost); first at least 700 px on; last within 2000 px of the exit | `fillSockets` (placement), `rolledFlagBreaches`, `applyVerdicts` -> `gen2.flagMiss` | rolledFlags.test |
@@ -65,6 +92,18 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
 - **Flags off pieces, the rest** (R-165.156, FX 11-12, reference/qa-reports/FX/REPORT.md): the rolled pass uses flagRuns/standsOnFlag
   (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
   not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
+
+- **A shut fig gate's neighbourhood** (FIX-15 -> FIX-15b, R-165.212, 11-14; reference/qa-reports/FIX-15b/PUSHBACK.md). The engine
+  makes a shut gate wood from every approach, so wood within a jump of its top from BESIDE it lets him STAND on the shut gate (ONTO: 93
+  of 192 gates, 1-4 layouts 0-15 both settings), and wood under its sagged span with less room than his drawn height puts his head in
+  the thatch (LOW: 48). Measure: `npx tsx tools/engine/gatereach.ts 1-4 --layouts 16 --margin 0` (self-contained: runs on any base).
+  **Keeping ONTO wood out of the LAY is impossible as the lay stands** (FIX-15b, 0/40 fresh seeds both settings vs 40/40): the storey
+  laid just above a gate hangs open ends 28-32 px past the gate's ends, and every catch the 450 px fall limit allows under them is inside
+  a double jump (LEAP.up 221 + GATE.sag 56) of the shut top. The LOW half alone rolls 20/40 Normal, 18/40 Easy. The full rule (tower.ts
+  `sealedNear`/`sealedRoom`, the lay's byGate, the verdict, planted tests) is lay-rule-NOT-APPLIED.patch, waiting on the lead's ruling
+  (options A-C: A holds catches beside a gate with it, ClusterGate.with; mock stills qa-reports/FIX-15b/mockA-*.jpg). TRAP: a `with` bough
+  is `broken` (no footing) but the ground painter still draws it; A must hide it while shut. Any change here moves 1-4's rolls: relist 1-4.
+  Rewritten for FIX-15b (11-14, t-fix-15b): this bullet only; the rest of the note is the 11-07 planner's.
 
 ## 4. Traps (each one cost time on 11-06)
 

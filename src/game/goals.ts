@@ -13,6 +13,7 @@
  * Pure: no engine, no canvas.
  */
 import type { GeneratedStage } from './stageGenerator.ts';
+import { stageSpec } from './stagePlan.ts';
 import type { Collectible, Platform } from './types.ts';
 
 /** Normal's shares */
@@ -22,6 +23,10 @@ export const GOAL_SHARE = {
   /** the middle of 70-80% */
   defeat: 0.75,
   rescue: 1,
+  /** her MARKS (a search that follows Meeca's marks, 1-5; gen2 lays every mark a section holds, pipeline): four in five, so Normal misses
+   *  her road at no more than a few splits (1-5's her-road marks are a quarter of them). Measured: at 0.875 the middle and expert bots,
+   *  which never climb to a bough's mark, met the sealed door on 2 of 3 rolls (B15, 11-13) */
+  marks: 0.8,
 } as const;
 
 /** Easy asks this share of Normal's goal (rounded): Matt, 2026-10-29, "softer, 65% of Normal" (LV-6) */
@@ -54,20 +59,39 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
   const ring = (st.proto?.ring?.waves ?? []).reduce((s, w) => s + w.length, 0);
   const guards = (st.proto?.w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff).length;
   return {
-    petals: st.collectibles.filter((x) => (x.type === 'flower' || x.type === 'leaf') && !onCrumbling(x, st.platforms)).length,
+    // (a petal on a crumbling limb, on a hop's arc (Collectible.arc, INT-10), or one the walked path says a run need not pass
+    //  (Collectible.walked false, petals.ts markWalked; the lead's ruling INT-10d 11-15) is a bonus: shown and counted when picked, never
+    //  what the door asks for)
+    petals: st.collectibles.filter((x) => (x.type === 'flower' || x.type === 'leaf') && !x.arc && x.walked !== false && !onCrumbling(x, st.platforms)).length,
     animals: st.enemies.length + ring + guards,
     rescuable: c((t) => t === 'cage') + (st.proto?.w5?.cocoons?.length ?? 0),
     relics: c((t) => t === 'relic'),
   };
 }
 
+/** her marks the stage holds (relics drawn as Meeca's mark): a search that follows them takes a share of them as its goal */
+export const marksHeld = (st: Pick<GeneratedStage, 'collectibles'>): number => st.collectibles.filter((c) => c.type === 'relic' && c.mark === 'meeca').length;
+
+/**
+ * Does the stage's goal count Meeca's petals: a harvest, or a stage whose plan says it gathers them (stagePlan.ts StageSpec.gathers, 1-6's
+ * vine run). The ONE predicate the goal's share, the engine's sealed exit and progress, and the HUD's counter all read (BUILD-16b, the
+ * lead's ruling 11-14 option A): the stage's data decides, never its id or world.
+ */
+export function goalCountsPetals(cfg: { objectiveType: string; worldIndex: number; miniIndex: number }): boolean {
+  return cfg.objectiveType === 'harvest' || stageSpec(cfg.worldIndex, cfg.miniIndex)?.gathers === 'petals';
+}
+/** the goal type the count, the counter and Dot's goal words follow: 'harvest' for a stage that gathers petals, else the mission's own */
+export const countedGoal = (cfg: { objectiveType: string; worldIndex: number; miniIndex: number }): string => (goalCountsPetals(cfg) ? 'harvest' : cfg.objectiveType);
+
 /** how many of what its goal counts the stage holds; null for a stage whose goal is not a share (a sprint, a search, a boss) */
 export function goalHave(st: Stage): number | null {
   const type = st.config.objectiveType;
   const n = goalCounts(st);
-  if (type === 'harvest') return n.petals;
+  if (goalCountsPetals(st.config)) return n.petals;
   if (type === 'rescue') return n.rescuable;
   if (type === 'purge' || type === 'gauntlet') return n.animals;
+  // (a search for her marks is a share of them; any other search keeps its own count)
+  if (type === 'relic_hunt' && marksHeld(st)) return marksHeld(st);
   return null;
 }
 
@@ -76,7 +100,7 @@ export function normalGoal(st: Stage): number | null {
   const type = st.config.objectiveType;
   const have = goalHave(st);
   if (!have) return null;
-  const k = type === 'harvest' ? GOAL_SHARE.collect : type === 'rescue' ? GOAL_SHARE.rescue : GOAL_SHARE.defeat;
+  const k = goalCountsPetals(st.config) ? GOAL_SHARE.collect : type === 'rescue' ? GOAL_SHARE.rescue : type === 'relic_hunt' ? GOAL_SHARE.marks : GOAL_SHARE.defeat;
   return Math.max(1, Math.min(have, Math.round(have * k)));
 }
 

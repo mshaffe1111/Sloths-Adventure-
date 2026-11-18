@@ -1,0 +1,13 @@
+
+[rise] normal: the highest top he ends up standing on (px over the floor), running at it, best of the take-off spots
+                              block    (worst spot)    thin   (worst spot)
+               single hold    123.0     84.0    116.0     90.0
+               double hold    211.0    210.0    204.0    204.0
+              single flick    123.0     70.0    116.0     79.0
+              double flick    210.0    209.0    203.0    203.0
+                single tap     87.0     39.0     80.0     39.0
+                double tap    149.0    133.0    142.0    132.0
+              bounce alone    223.0    123.0    216.0    123.0
+        bounce+double hold    313.0    307.0    304.0    301.0
+       bounce+double flick    313.0    306.0    304.0    300.0
+         bounce+double tap    313.0    306.0    304.0    300.0

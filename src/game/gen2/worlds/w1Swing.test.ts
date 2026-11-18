@@ -1,0 +1,211 @@
+// World 1's lianas and the grip dial (ENGINE-678 A1 SWING-W1): planted tests. Red without the dial (pipeline gripsOf, the swing lay
+// carrying `grip`, lianaBand's cache key) or without withSwing; proven on World 1's kit (1-6) and World 6's (6-3), both settings.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { buildGen2Stage, jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
+import { cfg as toyCfg, kit as toyKit, manifest as toyManifest } from '../toyWorld.ts';
+import { gripsOf, swingLandings, validateStage } from '../../levelCheck.ts';
+import { forwardEndLands, pressWindow, setTimedSwing, TIMED, type AirBody } from '../../physics.ts';
+import { LAND_IN } from '../landings.ts';
+import { LIANA, type LianaSwing, type SectionTemplate, type WorldKit } from '../types.ts';
+import { generateAllLevels } from '../../worldsData.ts';
+import { w1World } from './w1.ts';
+import { w6Kit } from './w6.ts';
+import { W1_LIANA_GAP, W1_SWING_SECTIONS, w1Liana, withSwing } from './w1Swing.ts';
+
+// 1-6.md's measured liana: 420 px long, the ledge it leaves 400 px under its anchor; the perch level with that ledge, `near` px past
+// the anchor, `w` wide. Since Matt's "shorter swings" (R-165.225, 11-14) a dialled liana's perch is laid only where he sees it whole as
+// he presses, all of him in view too (cameraFollow.ts SWING_SEEN): FAR is a narrow perch (120-140 px) ~400-440 px out, no longer 530-560
+// (ENG-S1 cap-seen.out.txt)
+const LIANA_16 = { x: 0, topY: 0, bottomY: 420 };
+const win = (near: number, d: 'normal' | 'easy', grip?: LianaSwing['grip'], w = 300) =>
+  lianaRelease(LIANA_16, { amp: VINE.amp, period: VINE.period[d], ...(grip ? { grip } : {}) }, { x: near, y: 400, w }, d);
+
+test('the grip dial: a liana\'s reach is checked at the holds its row names (pressWindow grips), both settings', () => {
+  // no dial: exactly pressWindow's own two low holds, so every liana laid before the dial keeps its window (and every lock)
+  assert.equal(gripsOf(undefined, 420), undefined);
+  const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= 400 + 14 && c.y >= 400 && c.x > 500 + 10 && c.x < 500 + 300;
+  assert.equal(win(500, 'normal'), pressWindow({ ...LIANA_16, swingAmp: VINE.amp, swingPeriod: VINE.period.normal, swingPhase: 0 }, hits) / 1000);
+  for (const d of ['normal', 'easy'] as const) {
+    const need = LIANA.window[d];
+    // FAR (the lead's ruling (A), 11-14): a narrow perch at the cap. The 'low' dial checks the foot alone and flies it; the top never
+    // does; and 1-6.md's old FAR (540 px, a wide bough) is past what he sees as he presses, so it is never laid
+    const far = 420;
+    assert.ok(win(far, d, 'low', 120) >= need, `${d} ${far} px: the foot's window ${win(far, d, 'low', 120)} s is under ${need} s`);
+    assert.equal(win(far, d, 'high', 120), 0, `${d} ${far} px: the top flies FAR`);
+    assert.equal(win(540, d, 'low', 300), 0, `${d}: the old FAR perch (540 px, 300 wide) is still laid`);
+    // LONG: the low holds fly it, the top does not (1-6.md: "top 0 ms"): a 'high' liana is never laid over it
+    const long = d === 'normal' ? 500 : 480;
+    assert.ok(win(long, d) >= need && win(long, d, 'high') === 0, `${d} ${long} px: LONG from the low holds ${win(long, d)} s, from the top ${win(long, d, 'high')} s`);
+    // SHORT: the top still flies it, so every hold does ("climb high, then let go"), onto World 1's SHORT perch as the cap lays it
+    // (w1Swing.ts: 80-185 px out, 240-320 wide with Easy's pad, its far end within ~450: ENG-S1 lay-s1.out.txt)
+    assert.ok(win(160, d, 'high', 260) >= need, `${d}: SHORT from the top ${win(160, d, 'high', 260)} s`);
+  }
+  // 'high' is the highest hold he can take (SWING.minLen down it), whatever the liana's length
+  assert.deepEqual(gripsOf('high', 420), [80 / 420]);
+  assert.deepEqual(gripsOf('low', 420), [0.95]);
+});
+
+// FAR (the lead's ruling (b), 11-14 3:55 PM ET, on Matt's shorter swings R-165.225): FAR is the farthest swing a real player makes,
+// measured by the testers' let-go from the liana's foot: the press as the swing out passes FORWARD_END (0.75) of its reach (physics
+// forwardEndLands, as gen2 lays it, pipeline lianaBand). `feLands` asks it of a perch, his middle half his body inside (LAND_IN).
+const feLands = (v: { x: number; topY: number; bottomY: number }, swing: { amp: number; period: number }, perch: { x: number; y: number; w: number }, d: 'normal' | 'easy') => {
+  const was = { ...TIMED };
+  setTimedSwing(d === 'easy');
+  try {
+    const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
+    const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= perch.y + 14 && c.y >= perch.y && c.x >= perch.x + LAND_IN.px && c.x <= perch.x + perch.w - LAND_IN.px;
+    return forwardEndLands(A, lands, gripsOf('low', v.bottomY - v.topY)!);
+  } finally {
+    Object.assign(TIMED, was);
+  }
+};
+
+test('a perch band is flown at its liana\'s own grip: a cached window of another grip is never reused, and the foot\'s band ends where the testers\' let-go lands (FAR)', () => {
+  // the same liana and ledge, its band asked at the top first (cached), then at the foot: the foot's band reaches past the top's (1-6.md:
+  // top 0 ms at 480 px). A cache that forgot the grip handed the foot the top's windows
+  const from = { x: -480, y: 400, w: 300 };
+  for (const d of ['normal', 'easy'] as const) {
+    const swing = { amp: VINE.amp, period: VINE.period[d] };
+    // (a FAR perch, 120 px: since R-165.225 a dialled band is flown at the perch's width, SWING_SEEN)
+    const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { ...swing, ...(grip ? { grip } : {}) }, 0, 120, LIANA.window[d], -Infinity, d, true);
+    const high = band('high')!;
+    const low = band('low')!;
+    const plain = band()!;
+    assert.ok(low[1] >= high[1] + 60, `${d}: the foot's band reaches ${low[1]} px, the top's ${high[1]}: the top's cached windows were reused`);
+    // FAR: the testers' let-go from the foot lands him on the band's last perch, and one lay step (20 px) past it does not: the band
+    // ends at the farthest swing a real player makes, never at the farthest press the swing allows
+    assert.ok(feLands(LIANA_16, swing, { x: low[1], y: 400, w: 120 }, d), `${d}: the testers' let-go from the foot misses the band's last perch at ${low[1]} px`);
+    assert.ok(!feLands(LIANA_16, swing, { x: low[1] + 20, y: 400, w: 120 }, d), `${d}: the testers' let-go still lands ${low[1] + 20} px out: the foot's band stops short of FAR`);
+    // and the plain band (no dial) is the level check's of every liana before it: the let-go guard is the dial's, it never cuts it
+    assert.ok(plain[1] >= low[1], `${d}: the plain band ends at ${plain[1]} px, inside the foot's ${low[1]}`);
+  }
+});
+
+const all = generateAllLevels();
+const KITS: Array<[string, WorldKit]> = [['1-6', withSwing(w1World())], ['6-3', withSwing(w6Kit(3))]];
+
+test('withSwing adds the swing move by data; World 1\'s own manifest keeps its moves, so 1-1..1-5 build as before', () => {
+  assert.deepEqual(w1World().manifest.moves, ['double']);
+  assert.ok(withSwing(w1World()).manifest.moves.includes('swing'));
+  const w6 = w6Kit(3);
+  assert.equal(withSwing(w6), w6, 'a kit that has the swing already is returned as it was');
+});
+
+test('World 1\'s liana rows lay on World 1\'s and World 6\'s kits: the grip rides the row to the liana, its perch flies at that grip and lies past every jump', () => {
+  for (const [id, kit] of KITS) {
+    const cfg = { ...all.find((l) => l.id === id)!, unlocked: true };
+    for (const d of ['normal', 'easy'] as const) {
+      const b = planBudget(cfg, kit.manifest, d);
+      for (const t of W1_SWING_SECTIONS) {
+        const gap = t.id.replace('w1-liana-', '') as keyof typeof W1_LIANA_GAP;
+        for (let i = 1; i <= 4; i++) {
+          const L = layLocal(t, b, rngFor(i));
+          const [a, l, p] = ['a', 'l', 'b'].map((k) => L.pieces.find((q) => q.key === k)!);
+          const sw = l.hang!.swing!;
+          assert.equal(sw.grip, W1_LIANA_GAP[gap].grip, `${id} ${d} ${t.id} roll ${i}: the row's grip did not reach the liana`);
+          const w = lianaRelease({ x: l.x, topY: l.y, bottomY: l.y + l.h }, sw, { x: p.x, y: p.y, w: p.w }, d);
+          assert.ok(w >= LIANA.window[d], `${id} ${d} ${t.id} roll ${i}: a ${w} s window at its grip`);
+          // (the lay records it before the pieces are rounded to whole px: one frame either way)
+          assert.ok(Math.abs(l.hang!.window! - w) <= 1 / 30 + 1e-9, `the window the lay records (${l.hang!.window}) is not the one at its grip (${w})`);
+          assert.ok(p.x - (a.x + a.w) > jumpLinkGap(a.y - p.y, b.world, b.stage, b.doubleTaught), `${id} ${d} ${t.id} roll ${i}: a jump crosses it`);
+          // the anchor 400-420 px over the bough it leaves (1-6.md's liana)
+          assert.ok(a.y - l.y >= 400 && a.y - l.y <= 420);
+        }
+      }
+    }
+  }
+});
+
+test('the level check flies a liana with a grip dial as the engine plays it (opt-in): a FAR gap links from the foot, never without the dial or past his reach', () => {
+  // 1-6.md's FAR gap: the perch 540 px past the anchor, level with the ledge he left (400 px under the anchor, the liana 420 long)
+  const near = { id: -1, x: -480, y: 400, width: 300, height: 90, type: 'solid' as const };
+  const lines = (gap: number, grip?: 'low' | 'high', dbl = true) => {
+    const v = { id: 1, x: 0, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana' as const, isSwingingVine: true, ...(grip ? { grip } : {}) };
+    const far = { id: -2, x: gap, y: 400, width: 300, height: 90, type: 'solid' as const };
+    return swingLandings(near, v, 1, [near, far], 1e9, dbl).get(-2) ?? 0;
+  };
+  // with the dial, from the foot with the double: linked (6 lines: a 200 ms press window)
+  assert.ok(lines(540, 'low') >= 6, `FAR from the foot: ${lines(540, 'low')} lines`);
+  // without the dial: the plain check of every liana before it, which never flew a hold or the double, still refuses it
+  assert.equal(lines(540), 0, 'without the dial the plain check is unchanged');
+  // past the foot's measured reach (1-6.md: foot + double 591-607 px), refused even with the dial; and with no double (a stage before it
+  // is taught), the foot alone does not reach a FAR gap
+  assert.equal(lines(640, 'low'), 0, 'past his reach');
+  assert.equal(lines(540, 'low', false), 0, 'no double, no FAR');
+  // the top ('high') links a SHORT gap and not a FAR one
+  assert.ok(lines(420, 'high') >= 6 && lines(540, 'high') === 0);
+  // the other way round: the same gap mirrored is the same answer
+  const v = { id: 1, x: 0, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana' as const, isSwingingVine: true, grip: 'low' as const };
+  const back = { id: -1, x: 180, y: 400, width: 300, height: 90, type: 'solid' as const };
+  const farL = { id: -2, x: -540 - 300, y: 400, width: 300, height: 90, type: 'solid' as const };
+  assert.equal(swingLandings(back, v, -1, [back, farL], 1e9, true).get(-2) ?? 0, lines(540, 'low'));
+});
+
+test('built: a liana row with the grip dial reaches the stage\'s Vine, the stage\'s own level check links its FAR perch, and the testers\' let-go from the foot lands on it (toy world, both settings)', () => {
+  // the toy world's banks over a void, with one more section: a FAR liana (grip 'low'), its perch at the far end of the foot's band
+  const far: SectionTemplate = {
+    id: 'toy-far-liana', name: 'a FAR liana', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 8,
+    pieces: [
+      { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+      { key: 'rope', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near', top: [400, 420], grip: 'low' } },
+      // (a narrow FAR perch, R-165.225: a dialled liana's perch is laid where he sees it whole as he presses)
+      { key: 'far', shape: 'bank', w: [120, 140], place: { kind: 'land', after: 'rope', dy: [0, 0], share: [0.9, 1] } },
+    ],
+    entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  };
+  const world: WorldKit = withSwing({ ...toyKit, manifest: { ...toyManifest, pit: 'void', sections: [...toyManifest.sections, far] } });
+  let built = 0;
+  for (const d of ['normal', 'easy'] as const) {
+    for (let seed = 1; seed <= 6; seed++) {
+      const st = buildGen2Stage({ config: toyCfg('5-7', 'stealth'), kit: world, seed, difficulty: d });
+      const what = `${d} seed ${seed}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      for (const s of st.gen2.sections.filter((x) => x.template === far.id)) {
+        // (this section's own liana: the one hung inside its span)
+        const v = st.vines.find((x) => x.vineType === 'swing_liana' && x.x >= Math.min(s.x0, s.x1) && x.x <= Math.max(s.x0, s.x1));
+        assert.ok(v && v.grip === 'low', `${what}: the built liana lost its grip (${s.uid})`);
+        const perch = st.platforms.filter((p) => p.x > v.x + 40 && Math.abs(p.y - (v.bottomY - 10)) < 120).sort((a, b) => a.x - b.x)[0];
+        assert.ok(perch, `${what}: no FAR perch past the liana (${s.uid})`);
+        const swing = { amp: v.swingAmp ?? VINE.amp, period: v.swingPeriod ?? VINE.period[d] };
+        const at = (dx: number) => feLands(v, swing, { x: perch.x + dx, y: perch.y, w: perch.width }, d);
+        // FAR (the lead's ruling (b)): the farthest swing a real player makes, so the testers' let-go from the foot lands him on it, and
+        // it lies at the far end of that let-go's reach: 60 px further (the band's 10% share, 34 px at most, and one 20 px lay step) it
+        // no longer does. A lay that laid FAR past the testers' let-go (the best press of the swing, BUILD-16c) fails the first; one
+        // that laid it anywhere nearer (a LONG or SHORT perch) the second
+        assert.ok(at(0), `${what}: the testers' let-go from the foot misses the FAR perch ${perch.x - v.x} px past the anchor (${s.uid})`);
+        assert.ok(!at(60), `${what}: the FAR perch ${perch.x - v.x} px past the anchor is short of the testers' reach: 60 px further still lands (${s.uid})`);
+        built++;
+      }
+    }
+  }
+  assert.ok(built > 0, 'no seed laid the FAR liana: the test proves nothing');
+});
+
+test('ENG-S4 (A1 pushback b): a liana row may set its own length; a row without one lays LIANA.len and takes the rolls it took before, and a set length still flies its perch at the row\'s grip', () => {
+  const [id, kit] = KITS[0];
+  const cfg = { ...all.find((l) => l.id === id)!, unlocked: true };
+  for (const d of ['normal', 'easy'] as const) {
+    const b = planBudget(cfg, kit.manifest, d);
+    for (const t of W1_SWING_SECTIONS) {
+      const gap = t.id.replace('w1-liana-', '') as keyof typeof W1_LIANA_GAP;
+      const t420: SectionTemplate = { ...t, pieces: t.pieces.map((q) => (q.key === 'l' ? w1Liana('l', 'a', gap, [420, 420]) : q)) };
+      for (let i = 1; i <= 3; i++) {
+        const P = layLocal(t, b, rngFor(i));
+        const plain = P.pieces.find((q) => q.key === 'l')!;
+        const pa = P.pieces.find((q) => q.key === 'a')!;
+        assert.equal(plain.h, Math.min(LIANA.len, pa.y + 30 - plain.y), `${t.id}: no row length, LIANA.len (${plain.h})`);
+        // (a row without a length takes the rolls it took before: lockall --check 102/102 is the proof across the shipped stages)
+        const L = layLocal(t420, b, rngFor(i));
+        const [a, l, p] = ['a', 'l', 'b'].map((k) => L.pieces.find((q) => q.key === k)!);
+        assert.equal(l.h, Math.min(420, a.y + 30 - l.y), `${d} ${t.id} roll ${i}: the row's 420 px did not reach the liana (${l.h})`);
+        // (the rolls before the length are the plain row's: the anchor and its reach)
+        assert.equal(l.y, plain.y);
+        assert.equal(l.x, plain.x);
+        const w = lianaRelease({ x: l.x, topY: l.y, bottomY: l.y + l.h }, l.hang!.swing!, { x: p.x, y: p.y, w: p.w }, d);
+        assert.ok(w >= LIANA.window[d], `${d} ${t.id} roll ${i}: a ${w} s window at its grip on the 420 px liana`);
+      }
+    }
+  }
+});
+

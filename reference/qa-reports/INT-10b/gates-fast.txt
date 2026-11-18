@@ -1,0 +1,19 @@
+== node tools/perf/knowncheck.mjs
+✓ tools/engine/generality.known.json: 26 entries
+✓ src/game/ciTests.known.json: 16 entries
+✓ src/game/artUse.allow.json: 210 entries
+PASS
+exit 0
+== npx tsx tools/engine/generalitycheck.ts
+generality check: 60 engine files (163 exempt under the engine folders), 26 literals, 26 known
+PASS
+exit 0
+== node tools/roadmapcheck.mjs
+roadmap check: shallow clone, proofs cannot be checked (fetch-depth 0): FAIL
+exit 2
+== node tools/perf/artcheck.mjs
+  src/assets/w6to10/bosses/thornbark-anim-0.webp 2048x6757
+  src/assets/w6to10/bosses/thornbark-anim-1.webp 2048x6899
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+PASS
+exit 0

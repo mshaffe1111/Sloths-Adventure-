@@ -5,6 +5,8 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawPickup, pickupReady } from './pickupSprites.ts';
+import { stageLooks } from './stagePlan.ts';
 import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
@@ -50,6 +52,8 @@ let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+import { drawDrapedPair } from './pairArt.ts';
+import { drawFieldVine } from './vineFieldArt.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -140,7 +144,7 @@ export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: numbe
  * A hiding bush (1-7): Matt's painted bushes, drawn in front of Pokey. `inside`: he is in it, so it is drawn a little see-through
  * (the player can still find him) and rustles when he moves. Returns false until the sheet has loaded.
  */
-export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number): boolean {
+export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number, moss = 0): boolean {
   load2();
   if (!ready2 || !img2) return false;
   const n = b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump';
@@ -158,8 +162,9 @@ export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: nu
       ctx.stroke();
     }
   }
-  // see-through enough with him inside that the player can still find him
-  if (inside) ctx.globalAlpha = 0.62;
+  // see-through enough with him inside that the player can still find him; more as the moss comes over him (1-7: green Pokey behind
+  // green leaves at 0.62 was a ghost nobody could find, ENG-E1's stills), so the moss tint and the sloth both read
+  if (inside) ctx.globalAlpha = 0.62 - 0.2 * Math.max(0, Math.min(1, moss));
   // anchored at the bottom middle (a hanging bush at its top middle), leaning a touch when he rustles it
   const ax = b.x + b.w / 2, ay = b.hanging ? b.y : b.y + 6;
   ctx.translate(ax, ay);
@@ -179,11 +184,17 @@ export function bushHeight(b: { w: number; kind: 'tall' | 'wide' | 'fern' }): nu
 // Matt's long-branch sheet (2026-10-24): 1-8's chase
 let img3: HTMLImageElement | null = null;
 let ready3 = false;
+/** the long-branch sheet (a chase's sections, cracked and broken: drawChaseSection) */
+export const PROTO3_URL = new URL('../assets/proto/props3-atlas.webp', import.meta.url).href;
 function load3() {
   if (img3 || typeof Image === 'undefined') return;
   const im = new Image();
   img3 = im;
-  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; }, () => { img3 = null; ready3 = false; });
+  trackAtlas(im, PROTO3_URL, () => { ready3 = true; }, () => { img3 = null; }, () => { img3 = null; ready3 = false; });
+}
+/** start loading the long-branch sheet (a stage that lays a chase: stageManifest.ts builtStageKeys 'props3', got in behind the card) */
+export function warmProto3() {
+  load3();
 }
 
 /**
@@ -193,9 +204,13 @@ function load3() {
 export function drawChaseSection(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number; chaseTip?: boolean }, cracked: boolean, mirror: boolean, dy = 0): boolean {
   load3();
   if (!ready3 || !img3) return false;
+  // (a bough stage: every section is the bough itself, by world x, so standing ground and falling sections are one branch; the tip keeps
+  // its own shape at the bough's thickness, ENG-LOOK2)
+  // (its tip, the lead's (h): the bough's own bark tapering to a rounded end at the lip, never the sheet's differently painted tip)
+  if (groundLook === 'bough') return drawBoughSection(ctx, p as Platform, dy, !!p.chaseTip);
   const f = PROTO3_FRAMES[p.chaseTip ? 'chaseTip' : cracked ? 'chaseCrack' : 'chaseSeg'];
   // the log is drawn 60 px thick on a 222 px section (the painted proportions); the tip keeps its own shape at the same scale
-  const k = p.width / 370;
+  const k = groundLook === 'bough' ? BOUGH_THICK / 80 : p.width / 370;
   const w = f.w * k, h = f.h * k;
   const top = p.y + 2 - f.top * k + dy;
   ctx.save();
@@ -226,6 +241,297 @@ export function drawCrownArt(ctx: CanvasRenderingContext2D, p: { x: number; y: n
   const k = w / CROWN.w;
   ctx.drawImage(crownImg, p.x - (w - p.width) / 2, p.y - CROWN.top * k, w, CROWN.h * k);
   return true;
+}
+
+/*
+ * The Long Branch's bough (ENG-LOOK2; the lead's three conditions on ENG-CL's mock, 11-14): on a stage whose world data says
+ * `ground.look: 'bough'` (GeneratedStage.groundLook) every bank and every chase section is drawn as ONE painted bough along its top (the
+ * Hugging Face piece src/assets/w1-18/hf18-bough.webp, cut by tools/art/hfbough/cut.py): MASS, its bark BOUGH_THICK under the walkable
+ * moss line (1.2x Pokey's drawn 89.1), a rounded shaded underside over the mist, never soil and never a flat plank; tiled by WORLD x, every
+ * other tile mirrored, so banks, sections and the bake all meet with no seam and no repeat side by side. A bank's free end (nothing meets it
+ * at its height) is the sheet's broken end (chaseBrokenL/R at the bough's thickness), never a square notch.
+ */
+let groundLook: 'bough' | undefined;
+/** the stage's ground look (the engine sets it where the stage starts, from GeneratedStage.groundLook) */
+export function setGroundLook(look: 'bough' | undefined) {
+  if (look === groundLook) return;
+  groundLook = look;
+  releaseGroundChunks();
+}
+export const boughLook = () => groundLook === 'bough';
+/** a piece a bough stage draws as the bough: plain ground he stands on, any depth from 40 px (a climb-out step drew as a grey stone block
+ *  with soil beside the bark, the lead's (j): one material), never a piece with its own look or its own rule */
+export function boughPiece(p: Platform): boolean {
+  return p.type === 'solid' && !p.chase && !p.push && !p.art && !p.hollow && !p.lily && !p.drift && !p.lift && !p.ride && p.height >= 40
+    && p.crumbleAfter === undefined && p.creak === undefined && p.regrowAt === undefined && p.pillar === undefined && p.style !== 'log' && p.style !== 'branch';
+}
+/** the sheet at its own size: `rows` variants stacked, each `w` x `h`, any one following any other (they share one join, cut.py); the
+ *  walkable moss line (`top`, px down a row) and the bark's thickness under it at the joins (`body`; each swells a little between them) */
+export const BOUGH = { w: 600, h: 266, top: 16, body: 220, rows: 3 } as const;
+/** the bark's drawn thickness under the moss line (world px): 1.2x Pokey's drawn 89.1 (D41), the lead's MASS condition */
+export const BOUGH_THICK = 107;
+let boughImg: HTMLImageElement | null = null;
+let boughReady = false;
+function loadBough() {
+  if (boughImg || typeof Image === 'undefined') return;
+  const im = new Image();
+  boughImg = im;
+  trackAtlas(im, new URL('../assets/w1-18/hf18-bough.webp', import.meta.url).href, () => { boughReady = true; }, () => { boughImg = null; }, () => { boughImg = null; boughReady = false; });
+}
+export function warmBough() {
+  loadBough();
+}
+/** the variant a tile of the bough draws (its index by world x, hashed: no run of one variant reads as a repeat) */
+const boughRow = (n: number) => (Math.abs(Math.imul(n, 2654435761) >> 7) % BOUGH.rows);
+/**
+ * The bough along a top at `y` from x0 to x1 (world px), drawn by world x: each tile one of the sheet's variants (no mirroring: a mirrored
+ * seam printed a chevron in the grain, the lead's (f)). `taper` (a branch's TIP): from 0 at x0 to 1 at x1 the bark under the moss line
+ * thins to a third, the moss line kept, drawn in 3 px slices live (12 px read as stairs) and one device px in a bake (`smooth`, ART-18
+ * (l): 3 px stepped the underside and the grain). `body` (a stair's stub, ART-18 (m)): the bark under the moss line drawn this much of
+ * its thickness, the moss line kept. False until its picture is in.
+ */
+export function drawBough(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, dy = 0, taper = false, body = 1, smooth = false): boolean {
+  loadBough();
+  if (!boughReady || !boughImg || x1 <= x0) return false;
+  const k = BOUGH_THICK / BOUGH.body;
+  const tw = BOUGH.w * k, h = BOUGH.h * k, up = BOUGH.top * k;
+  const top = y - up + dy;
+  // (a taper's slices: 3 px live; `smooth` (a bake, ART-18 (l)) one device px, so neither the underside nor the bark's grain steps from
+  // slice to slice (3 px slices printed a saw on both); the moss line, which never tapers, one drawImage a tile; each slice drawn one
+  // slice wider so the next covers the seam)
+  const m = smooth && typeof ctx.getTransform === 'function' ? ctx.getTransform().a : 0;
+  const step = taper ? (m > 0 ? 1 / m : 3) : Infinity, ov = taper ? step : 0;
+  const fAt = (x: number) => body * (taper ? 1 - 0.68 * Math.pow(x - x0 < 0 ? 0 : (x - x0) / (x1 - x0), 1.4) : 1);
+  for (let n = Math.floor(x0 / tw); n * tw < x1; n++) {
+    const t0 = n * tw, sy = boughRow(n) * BOUGH.h;
+    const sa = Math.max(x0, t0), sb = Math.min(x1, t0 + tw);
+    if (sb - sa < 0.25) continue;
+    if (!taper && body === 1) {
+      ctx.drawImage(boughImg, (sa - t0) / k, sy, (sb - sa) / k, BOUGH.h, sa, top, sb - sa, h);
+      continue;
+    }
+    ctx.drawImage(boughImg, (sa - t0) / k, sy, (sb - sa) / k, BOUGH.top, sa, top, sb - sa, up);
+    for (let a = sa; a < sb - 0.01; ) {
+      const b = Math.min(sb, a + step);
+      const u0 = (a - t0) / k, u1 = (b - t0) / k;
+      const o = Math.min(ov, t0 + tw - b), uo = o / k;
+      ctx.drawImage(boughImg, u0, sy + BOUGH.top, u1 - u0 + uo, BOUGH.h - BOUGH.top, a, top + up, b - a + o, (h - up) * fAt((a + b) / 2));
+      a = b;
+    }
+  }
+  return true;
+}
+/** a torn end's splinters: down the bough's face (0 its moss line, 1 its underside), how far each point stands out past the end (px) */
+const TEAR: ReadonlyArray<readonly [number, number]> = [[-0.3, -10], [-0.08, 6], [0.05, 26], [0.16, 8], [0.3, 30], [0.4, 12], [0.52, 4], [0.63, 24], [0.74, 10], [0.86, 20], [0.97, 2], [1.25, -12]];
+/**
+ * One end of a bank on a bough stage, drawn by ERASING into the baked square (never on the live screen: it would cut the backdrop):
+ * `torn`, splintered (a pit's side, the lead's (b): never a square notch), its splinters up to 30 px past the end, shuffled by x so no two
+ * ends match; else `living`, a rounded end cap (the far tree's branch past the tip, the higher bough at a step: never torn).
+ */
+function eraseBoughEnd(ctx: CanvasRenderingContext2D, x: number, y: number, right: boolean, torn: boolean, width = Infinity, T = BOUGH_THICK, xr?: readonly [number, number]) {
+  const prev = ctx.globalCompositeOperation;
+  // (`xr`: the piece's own drawn x range; the erase never reaches past it into a piece drawn before it, ART-18: a higher stair step's
+  // end cut a straight notch out of the lower step beside it)
+  ctx.save();
+  if (xr) {
+    ctx.beginPath();
+    ctx.rect(xr[0], y - 400, xr[1] - xr[0], T + 800);
+    ctx.clip();
+  }
+  ctx.globalCompositeOperation = 'destination-out';
+  const s = right ? 1 : -1;
+  ctx.beginPath();
+  if (torn) {
+    const h = Math.abs(Math.round(x) * 2654435761) % 7;
+    ctx.moveTo(x + s * 80, y - 0.4 * T);
+    for (const [f, d] of TEAR) ctx.lineTo(x + s * (d + ((h * (f * 10 + 3)) % 9) - 4), y + f * T);
+    ctx.lineTo(x + s * 80, y + 1.4 * T);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    // (the part of the end box outside the cap's ellipse, clipped to the box: unclipped, evenodd also cut the ellipse's inner half)
+    // (a narrow step's cap no wider than a third of it: the rounding never eats the step)
+    // (ART-18 (k): a real round end, its middle half the drawn thickness down and its height the thickness, so the moss line and the
+    // underside both round off; ENG-LOOK2's ry 0.62 T at 0.45 T left a near-vertical cut with only its corners rounded)
+    const r = Math.min(T * 0.5, width / 3), cx = x - s * r, cy = y + T * 0.5;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(right ? cx : cx - r * 2, y - 80, r * 2, T + 160);
+    ctx.clip();
+    ctx.beginPath();
+    ctx.rect(right ? cx : cx - r * 2, y - 80, r * 2, T + 160);
+    ctx.ellipse(cx, cy, r, T * 0.54, 0, 0, Math.PI * 2);
+    ctx.fill('evenodd');
+    ctx.restore();
+  }
+  ctx.globalCompositeOperation = prev;
+  ctx.restore();
+}
+type BoughEnd = { right: boolean; x: number; kind: 'joined' | 'under' | 'living' | 'torn' };
+/** what meets each end of a bank or section on a bough stage (`joins`: the banks and the chase's sections, the fallen left out): the same
+ *  height, joined; another bough touching it, a STEP (the lower runs on 30 px under the higher, whose end is living); nothing, a free end:
+ *  torn at a fall, living on the far tree's branch (pit 'drop', layTip) */
+function boughEnds(p: Platform, joins: readonly Platform[], x0 = p.x, x1 = p.x + p.width): [BoughEnd, BoughEnd] {
+  const touching = (x: number) => joins.filter((q) => q !== p && !q.broken && q.x <= x + 2 && q.x + q.width >= x - 2 && Math.abs(q.y - p.y) <= BOUGH_THICK + 60);
+  const end = (right: boolean): BoughEnd => {
+    const x = right ? x1 : x0;
+    const t = touching(x);
+    if (t.some((q) => Math.abs(q.y - p.y) <= 3)) return { right, x, kind: 'joined' };
+    if (t.some((q) => q.y < p.y - 3)) return { right, x, kind: 'under' };
+    if (t.length) return { right, x, kind: 'living' };
+    return { right, x, kind: p.pit === 'drop' && !right ? 'living' : 'torn' };
+  };
+  return [end(false), end(true)];
+}
+const endReach = (e: BoughEnd) => (e.kind === 'under' ? 30 : e.kind === 'torn' ? 32 : 0);
+/** a stair step's stub: narrower than this (world px, two thicknesses) it is its own short branch, never a slab (ART-18 (m)) */
+export const BOUGH_STUB_MAX = BOUGH_THICK * 2;
+/** a stub's bark under its moss line, of the bough's full thickness: the mist shows between the steps of a stair */
+export const BOUGH_STUB_BODY = 0.6;
+/** one stretch of a bank the bough draws: from x0 to x1 (the part no higher piece stands on), a stub or the full bough, and its ends */
+export interface BoughSpan { x0: number; x1: number; stub: boolean; l: BoughEnd['kind']; r: BoughEnd['kind'] }
+/**
+ * Where bank `p` shows (ART-18 (m), the lead's stair ruling): only the part of its top no higher piece of `joins` stands on (a piece over
+ * it whose body reaches down to it), so a stair's stacked steps never draw as one merged slab. A shown stretch narrower than BOUGH_STUB_MAX
+ * is a stub: its own short branch, both ends rounded (joined only where a piece at its height meets it), never run on under another, its
+ * bark BOUGH_STUB_BODY thick; a wider one is the bough with boughEnds' ends at the stretch's own edges.
+ */
+export function boughSpans(p: Platform, joins: readonly Platform[]): BoughSpan[] {
+  const cover = joins
+    .filter((q) => q !== p && !q.broken && q.y < p.y - 3 && q.y + q.height >= p.y - 3 && q.x < p.x + p.width && q.x + q.width > p.x)
+    .map((q) => [Math.max(p.x, q.x), Math.min(p.x + p.width, q.x + q.width)] as const)
+    .sort((a, b) => a[0] - b[0]);
+  const out: BoughSpan[] = [];
+  let at = p.x;
+  for (const [a, b] of [...cover, [p.x + p.width, p.x + p.width] as const]) {
+    if (a - at >= 1) {
+      const [l, r] = boughEnds(p, joins, at, a);
+      const stub = a - at < BOUGH_STUB_MAX;
+      const round = (k: BoughEnd['kind']) => (stub && k !== 'joined' ? 'living' : k);
+      out.push({ x0: at, x1: a, stub, l: round(l.kind), r: round(r.kind) });
+    }
+    at = Math.max(at, b);
+  }
+  return out;
+}
+/**
+ * Every bank of a bough stage: the bough along its top (the lowest first, so a higher bough lies over a lower one) and its ends
+ * (boughEnds). The ends are erased only in a baked square (`erase`): the live fallback draws them plain until the squares are in.
+ */
+function drawBoughGround(ctx: CanvasRenderingContext2D, banks: Platform[], joins: readonly Platform[], view: { x0: number; x1: number }, erase = false) {
+  for (const p of [...banks].sort((a, b) => b.y - a.y)) {
+    if (p.x + p.width < view.x0 - 160 || p.x > view.x1 + 160) continue;
+    // (only where no higher piece stands on it; a narrow stretch is a stair's stub, ART-18 (m): boughSpans)
+    for (const sp of boughSpans(p, joins)) {
+      const l: BoughEnd = { right: false, x: sp.x0, kind: sp.l }, r: BoughEnd = { right: true, x: sp.x1, kind: sp.r };
+      const body = sp.stub ? BOUGH_STUB_BODY : 1;
+      drawBough(ctx, sp.x0 - endReach(l), sp.x1 + endReach(r), p.y, 0, false, body);
+      // (every end on screen is shaped, never a vertical cut (the lead's (g)): an end that runs on under a higher bough is rounded where it
+      // shows below it; a stub's ends are rounded, its cap a third of it at most, never eaten to a sliver)
+      if (erase) {
+        for (const e of [l, r]) {
+          if (e.kind === 'joined') continue;
+          const torn = e.kind === 'torn' && sp.x1 - sp.x0 >= BOUGH_END_MIN;
+          eraseBoughEnd(ctx, e.kind === 'under' ? e.x + (e.right ? 30 : -30) : e.x, p.y, e.right, torn, sp.x1 - sp.x0, BOUGH_THICK * body, [sp.x0 - endReach(l), sp.x1 + endReach(r)]);
+        }
+      }
+    }
+  }
+}
+const BOUGH_END_MIN = 160;
+/** a chase section on a bough stage with an end of its own (a pit beside it, a step): its bough and ends baked once into a small canvas at
+ *  the screen's scale, rebuilt when what meets its ends changes (a neighbour falls); every other section is the plain bough */
+const secBakes = new WeakMap<Platform, { key: string; cv: HTMLCanvasElement; x: number; y: number }>();
+function drawBoughSection(ctx: CanvasRenderingContext2D, p: Platform, dy: number, tip = false): boolean {
+  // (a tumbling tip, a piece of debris drawn about its own middle: the taper alone, live, a few slices for the moment it falls)
+  if (tip && !boughJoins.includes(p)) return drawBough(ctx, p.x, p.x + p.width, p.y + BOUGH_THICK * 0.2, dy, true);
+  const [l, r0] = boughEnds(p, boughJoins);
+  // (a tip's far end is the branch's living end: rounded, never torn)
+  const r: BoughEnd = tip ? { ...r0, kind: 'living' } : r0;
+  const plain = !tip && l.kind === 'joined' && r.kind === 'joined';
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  const x0 = p.x - endReach(l), x1 = p.x + p.width + endReach(r);
+  if (plain || !m || typeof document === 'undefined' || Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6) return drawBough(ctx, x0, x1, p.y, dy);
+  if (!boughReady) return drawBough(ctx, x0, x1, p.y, dy);
+  const scale = m.a;
+  const key = `${scale.toFixed(3)}|${l.kind}|${r.kind}|${tip}|${sheetEpoch.n}`;
+  let b = secBakes.get(p);
+  if (!b || b.key !== key || canvasLost(b.cv, 'bough section')) {
+    const bx = x0 - 40, by = p.y - 60;
+    const cv = document.createElement('canvas');
+    cv.width = Math.ceil((x1 - x0 + 80) * scale);
+    cv.height = Math.ceil((BOUGH_THICK + 160) * scale);
+    const g = cv.getContext('2d');
+    if (!g) return drawBough(ctx, x0, x1, p.y, dy);
+    g.setTransform(scale, 0, 0, scale, -bx * scale, -by * scale);
+    if (tip) {
+      drawBough(g, x0, p.x + 30, p.y);
+      const tc = tipTaper(p, p.x + 30, x1, scale);
+      if (tc) g.drawImage(tc.cv, tc.x, tc.y, tc.cv.width / scale, tc.cv.height / scale);
+      else drawBough(g, p.x + 30, x1, p.y, 0, true);
+    } else drawBough(g, x0, x1, p.y);
+    for (const e of [l, r]) if (e.kind !== 'joined') eraseBoughEnd(g, e.kind === 'under' ? e.x + (e.right ? 30 : -30) : e.x, p.y, e.right, e.kind === 'torn' && p.width >= BOUGH_END_MIN, p.width);
+    b = { key, cv, x: bx, y: by };
+    secBakes.set(p, b);
+  }
+  ctx.drawImage(b.cv, b.x, b.y + dy, b.cv.width / scale, b.cv.height / scale);
+  return true;
+}
+/** a tip's tapered bark, baked once per section and scale (one device px slices, ART-18 (l)), so a section re-bake when what meets its
+ *  ends changes (a neighbour falls, mid-chase) costs one drawImage, never the slices again */
+const tipBakes = new WeakMap<Platform, { scale: number; epoch: number; cv: HTMLCanvasElement; x: number; y: number }>();
+function tipTaper(p: Platform, xa: number, xb: number, scale: number): { cv: HTMLCanvasElement; x: number; y: number } | null {
+  const t = tipBakes.get(p);
+  if (t && t.scale === scale && t.epoch === sheetEpoch.n && !canvasLost(t.cv, 'bough tip')) return t;
+  const bx = xa - 4, by = p.y - 60;
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil((xb - xa + 8) * scale);
+  cv.height = Math.ceil((BOUGH_THICK + 160) * scale);
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  g.setTransform(scale, 0, 0, scale, -bx * scale, -by * scale);
+  if (!drawBough(g, xa, xb, p.y, 0, true, 1, true)) return null;
+  const out = { scale, epoch: sheetEpoch.n, cv, x: bx, y: by };
+  tipBakes.set(p, out);
+  return out;
+}
+/** the mist under a bough stage's branches (ENG-CL's note 3: under the bough the backdrop's own ground strip showed): a pale band from the
+ *  stage's bough line down, thickening to near solid, drawn behind the ground from one baked strip (one drawImage a frame, no gradient) */
+let mistStrip: HTMLCanvasElement | null = null;
+let mistLine: { of: readonly Platform[]; y: number } | null = null;
+const MIST = { rgb: '198,208,203', fall: 420 } as const;
+function drawBoughMist(ctx: CanvasRenderingContext2D, platforms: readonly Platform[], banks: Platform[], view: { x0: number; x1: number; y1?: number }) {
+  if (typeof document === 'undefined') return;
+  if (!mistLine || mistLine.of !== platforms) {
+    // (the stage's bough line: its banks' commonest top, the median, read once per stage)
+    const tops = banks.map((q) => q.y).sort((a, b) => a - b);
+    mistLine = { of: platforms, y: tops.length ? tops[tops.length >> 1] : 0 };
+  }
+  if (!mistStrip || canvasLost(mistStrip, 'bough mist')) {
+    mistStrip = document.createElement('canvas');
+    mistStrip.width = 4;
+    mistStrip.height = 256;
+    const g = mistStrip.getContext('2d');
+    if (!g) return;
+    const gr = g.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, `rgba(${MIST.rgb},0)`);
+    gr.addColorStop(0.35, `rgba(${MIST.rgb},0.55)`);
+    gr.addColorStop(0.75, `rgba(${MIST.rgb},0.86)`);
+    gr.addColorStop(1, `rgba(${MIST.rgb},0.94)`);
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 4, 256);
+  }
+  const top = mistLine.y + BOUGH_THICK * 0.35;
+  const bottom = (view.y1 ?? top + 2000) + 40;
+  if (bottom <= top) return;
+  const x0 = view.x0 - 40, w = view.x1 - view.x0 + 80;
+  ctx.drawImage(mistStrip, 0, 0, 4, 256, x0, top, w, Math.min(MIST.fall, bottom - top));
+  if (bottom > top + MIST.fall) ctx.drawImage(mistStrip, 0, 255, 4, 1, x0, top + MIST.fall, w, bottom - top - MIST.fall);
+}
+/** what a bough stage's banks join (the engine sets it with the look: every solid, the chase's sections included) */
+let boughJoins: readonly Platform[] = [];
+export function setBoughJoins(ps: readonly Platform[]) {
+  boughJoins = ps;
 }
 
 /** one half of a section breaking away (drawn in its own rotated frame by the caller) */
@@ -369,9 +675,27 @@ export function drawRockArt(ctx: CanvasRenderingContext2D, p: Platform): boolean
   return true;
 }
 
-export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number): boolean {
-  if (!protoArtReady()) return false;
+export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number, world = 1, mini = 1): boolean {
+  // (a stage's own golden find where its plan row names one, StageSpec.looks: 1-5's guarana bunch, the inventory's hf1113/guarana-golden;
+  //  the warm glow under it is the golden seed's own)
+  const own = stageLooks(world, mini).find;
+  if (own && !pickupReady(own)) return false;
+  if (!own && !protoArtReady()) return false;
   const bob = Math.sin(t * 2.2 + c.bobPhase) * 4;
+  if (own) {
+    ctx.save();
+    const g = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
+    g.addColorStop(0, 'rgba(255, 226, 120, 0.7)');
+    g.addColorStop(1, 'rgba(255, 200, 60, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y + bob, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.translate(c.x, c.y + bob);
+    drawPickup(ctx, own, 38, Math.sin(t * 1.6 + c.bobPhase) * 0.06);
+    ctx.restore();
+    return true;
+  }
   ctx.save();
   const glow = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
   glow.addColorStop(0, 'rgba(255, 226, 120, 0.75)');
@@ -703,7 +1027,7 @@ export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number;
  * (X shaded) darkened by g toward D * 0.64 + shade * 0.36, the same pixels.
  */
 const WALL_SET_BACK: [number, number, number, number] = [28, 18, 8, 0.36];
-let wallChunks: { key: string; tiles: Map<string, HTMLCanvasElement | null>; order: string[] } | null = null;
+let wallChunks: { key: string; tiles: Map<string, HTMLCanvasElement | null>; order: string[]; epoch: Map<string, number> } | null = null;
 function drawWallChunks(
   ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number },
   a: number, b: number, top: number, bottom: number,
@@ -714,27 +1038,34 @@ function drawWallChunks(
   const scale = m.a;
   const deep = GROUND_FRAMES[kitWorld]?.deep;
   if (!deep) return false;
-  const key = `${kitWorld}|${scale.toFixed(4)}|${sheetEpoch.n}|${wall.x0},${wall.x1},${wall.top},${wall.bottom}`;
+  // (a sheet that arrived since is not in the key: the squares are painted again a few a frame, sheetsSince)
+  const key = `${kitWorld}|${scale.toFixed(4)}|${wall.x0},${wall.x1},${wall.top},${wall.bottom}`;
   if (!wallChunks || wallChunks.key !== key) {
     releaseWallChunks();
-    wallChunks = { key, tiles: new Map(), order: [] };
+    wallChunks = { key, tiles: new Map(), order: [], epoch: new Map() };
   }
   const c = wallChunks;
   const cx0 = Math.floor(a / CHUNK), cx1 = Math.floor((b - 1e-6) / CHUNK);
   const cy0 = Math.floor(top / CHUNK), cy1 = Math.floor((bottom - 1e-6) / CHUNK);
   let budget = CHUNK_BUDGET;
   let missing = false;
+  const stale: string[] = [];
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) {
+        if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
+        continue;
+      }
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
       if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintWallTile(wall, cx, cy, scale));
+      c.epoch.set(k, sheetEpoch.n);
     }
+  budget = sheetsSince(c, stale, budget, (cx, cy) => paintWallTile(wall, cx, cy, scale));
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / 2 / (side * side * 4)));
   for (let i = 0; i < c.order.length && c.order.length > keep; ) {
@@ -746,6 +1077,7 @@ function drawWallChunks(
     }
     freeTile(c.tiles.get(k));
     c.tiles.delete(k);
+    c.epoch.delete(k);
     c.order.splice(i, 1);
   }
   // (a square not painted yet this frame: the whole wall is drawn live, as before)
@@ -825,7 +1157,11 @@ function thinKit(p: Platform): boolean {
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
   const out = new Set<number>();
   for (const p of platforms) {
-    if (p.push) out.add(p.id);
+    // (a chase section is drawn only by its chase drawer, never painted as ground too: pieces/chasePiece.ts)
+    if (p.chase) continue;
+    // (a bough stage's ground is all the bough's, its thin steps too: the default pass draws none of it)
+    if (groundLook === 'bough' && boughPiece(p)) out.add(p.id);
+    else if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
     // (a hollow log: Matt's painted hollow log, w1NewArt.ts)
@@ -1171,7 +1507,8 @@ export function stepFootLips(banks: readonly Platform[]): Array<{ x0: number; x1
  * bank cut its curved outline, laid its soil tiles, darkening and shading, its lip and its ends 30 times a second: the new painted ground
  * took the Pixel, the Samsung and an old OnePlus from ~29.7 fps to ~27 (10-19 on the OnePlus) the night it shipped (QA, 2026-10-30).
  * A square is painted the first time it comes into view (a few a frame, the rest live until then), at the screen's own pixel size, and
- * painted again only when the ground, the world, the view's scale or height, or a sheet that arrived since, changes.
+ * painted again only when the ground, the world, or the view's scale or height changes (all at once), or a sheet arrives (a few a frame,
+ * the old squares drawn meanwhile: sheetsSince).
  */
 const CHUNK = 256;
 /** painted a little past each side, so the soil, lip and end pieces that cross a square's edge are whole in it */
@@ -1188,8 +1525,31 @@ interface GroundChunks {
   plats: Platform[];
   tiles: Map<string, HTMLCanvasElement | null>;
   order: string[];
+  /** the sheets' count (sheetEpoch) each square was painted at */
+  epoch: Map<string, number>;
 }
 let chunks: GroundChunks | null = null;
+
+/**
+ * Squares painted before a sheet arrived (stale, in view) are painted again within this frame's budget, and the old ones drawn until
+ * then. Any sheet arriving (a pad's ripple, a creature's) used to be in the squares' key: every square was thrown away at once and the
+ * whole ground drawn live for the frames it took to paint them again (2-2 sideways, ~5 screens more a frame for 4+ frames: FIX-22b).
+ * Returns the budget left.
+ */
+function sheetsSince(
+  c: { tiles: Map<string, HTMLCanvasElement | null>; epoch: Map<string, number> }, stale: string[], budget: number, paint: (cx: number, cy: number) => HTMLCanvasElement | null,
+): number {
+  for (const k of stale) {
+    if (budget <= 0) break;
+    budget--;
+    const [cx, cy] = k.split(',').map(Number);
+    const old = c.tiles.get(k);
+    c.tiles.set(k, paint(cx, cy));
+    c.epoch.set(k, sheetEpoch.n);
+    freeTile(old);
+  }
+  return budget;
+}
 
 const freeTile = (cv: HTMLCanvasElement | null | undefined) => {
   if (cv) cv.width = cv.height = 0;
@@ -1213,28 +1573,36 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   // (only a plain scale and shift: squares can't be stamped under a turn or a skew)
   if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
   const scale = m.a;
-  const key = `${kitWorld}|${scale.toFixed(4)}|${Math.round(depthView)}|${sheetEpoch.n}|${bankSig(banks)}`;
+  // (a sheet that arrived since is not in the key: those squares are painted again a few a frame, the old ones drawn meanwhile, sheetsSince)
+  const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${Math.round(depthView)}|${bankSig(banks)}`;
   if (!chunks || chunks.key !== key || chunks.plats !== platforms) {
     releaseGroundChunks();
-    chunks = { key, plats: platforms, tiles: new Map(), order: [] };
+    chunks = { key, plats: platforms, tiles: new Map(), order: [], epoch: new Map() };
   }
   const c = chunks;
   const cx0 = Math.floor(view.x0 / CHUNK), cx1 = Math.floor(view.x1 / CHUNK);
   const cy0 = Math.floor(view.y0 / CHUNK), cy1 = Math.floor(view.y1 / CHUNK);
   let budget = CHUNK_BUDGET;
   let missing = false;
+  const stale: string[] = [];
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
       // (a square the phone took back is painted again)
-      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) {
+        // (an empty square, where no ground reaches, takes no sheet)
+        if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
+        continue;
+      }
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
       if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
+      c.epoch.set(k, sheetEpoch.n);
     }
+  sheetsSince(c, stale, budget, (cx, cy) => paintTile(platforms, banks, cx, cy, scale));
   // (the oldest squares out of view go once too many are kept)
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / (side * side * 4)));
@@ -1252,6 +1620,7 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
     if (cv) painted--;
     freeTile(cv);
     c.tiles.delete(k);
+    c.epoch.delete(k);
     c.order.splice(i, 1);
   }
   if (missing) return false;
@@ -1268,8 +1637,11 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
 /** one square of ground painted at the screen's pixel size, or null where no ground reaches it */
 function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: number, scale: number): HTMLCanvasElement | null {
   const x = cx * CHUNK, y = cy * CHUNK;
-  // (a bank's soil runs on down out of sight, its lip and end pieces stand up to ~130 above its top and out ~260 past its ends)
-  if (!banks.some((p) => p.x - 300 < x + CHUNK && p.x + p.width + 300 > x && p.y - 140 < y + CHUNK)) return null;
+  // (a bank's soil runs on down out of sight, its lip and end pieces stand up to ~130 above its top and out ~260 past its ends; a bough
+  // stage's bough only reaches its own thickness and a little under)
+  if (groundLook === 'bough') {
+    if (!banks.some((p) => p.x - 120 < x + CHUNK && p.x + p.width + 120 > x && p.y - 40 < y + CHUNK && p.y + BOUGH_THICK + 60 > y)) return null;
+  } else if (!banks.some((p) => p.x - 300 < x + CHUNK && p.x + p.width + 300 > x && p.y - 140 < y + CHUNK)) return null;
   const size = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const cv = document.createElement('canvas');
   cv.width = cv.height = size;
@@ -1280,6 +1652,10 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
   g.setTransform(scale, 0, 0, scale, -(x - CHUNK_PAD) * scale, -(y - CHUNK_PAD) * scale);
   // (the soil's darkening follows the ground line only here, painted once into the square: drawn live, a frame whose squares are not
   // all painted yet keeps one gradient a bank, PERFORMANCE-RULES §8's per-frame limit)
+  if (groundLook === 'bough') {
+    drawBoughGround(g, banks, boughJoins, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300 }, true);
+    return cv;
+  }
   groundDepth = groundLine(banks);
   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
   groundDepth = null;
@@ -1294,7 +1670,7 @@ export function drawProtoScene(
   ctx: CanvasRenderingContext2D,
   platforms: Platform[],
   trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean; pair?: number; field?: unknown; off?: boolean; kit?: boolean }>,
   t: number,
   view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
@@ -1304,19 +1680,38 @@ export function drawProtoScene(
   // 200 over for the art that hangs past a platform's box)
   const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
-  // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by)
-  const banks = platforms.filter(paintedBank);
+  // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by; on a bough stage never a chase section: the
+  // chase draws its own, live, and the baked squares stay whole while it falls)
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
-  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
-  if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
-  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
+  // (a bough stage: no pit is painted; a gap in the bough is air over the mist, its ends the bough's own, drawBoughGround)
+  const bough = groundLook === 'bough';
+  if (bough) drawBoughMist(ctx, platforms, banks, view);
+  if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'under');
+  if (!drawGroundChunks(ctx, platforms, banks, view)) {
+    if (bough) drawBoughGround(ctx, banks, boughJoins, view);
+    else drawGround(ctx, platforms, banks, view);
+  }
+  if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
+    // (a way up held down by a shut gate's bough is not there to see or take until the bough opens: vineField.ts ClusterGate.ways)
+    if (v.off && !v.kit) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
     if (bottom + 14 < vy0 - 40 || v.topY - 30 > vy1 + 40) continue;
+    // (a draped pair is a liana thrown over the bough, not a trunk: pairArt.ts)
+    if (v.pair) {
+      drawDrapedPair(ctx, v.x, v.topY, bottom, v.pair);
+      continue;
+    }
+    // (a vine field's vines hang free from the bough, one vine a hand: vineFieldArt.ts)
+    if (v.field) {
+      drawFieldVine(ctx, v.x, v.topY, bottom);
+      continue;
+    }
     // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
     // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
     // which stood half over the air like a pasted pane, QA 2026-10-29)
@@ -1378,14 +1773,16 @@ export function drawProtoScene(
     }
   }
   // branches (a perch where a climb trunk ends under one)
-  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
+  // (a draped pair hangs over a plain bough: no kapok perch at its top, pairArt.ts)
+  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope && !v.pair && !v.field);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
-    if (trunk && p.width <= 220) {
+    // (a creaky limb at a trunk's top keeps its own notched look: drawn as a perch it read as a sound branch, gen2/creak.ts)
+    if (trunk && p.width <= 220 && p.type !== 'fragile') {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
     }
@@ -1396,6 +1793,8 @@ export function drawProtoScene(
     }
     if (p.type === 'fragile') {
       if (p.broken) {
+        // (a limb that is a drop trap's load falls as the load, castArt.ts drawTraps: no snapped halves)
+        if ((p as { trapLoad?: true }).trapLoad) continue;
         if (!st.brokeAt.has(p.id)) st.brokeAt.set(p.id, t);
         drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
       } else {

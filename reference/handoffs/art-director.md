@@ -1,7 +1,42 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-11 (R-165.85: the 11-09 batch passed; the 11-11 batch cut)
+# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
 
-Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
+- Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).
+- Re-cut from the kept takes: `python3 -I tools/art/hfw2/ship.py reference/art/hfw2/takes <tmp>` (cut.py: border-flood key, --clip,
+  --decal, --match colour grade; wrap.py: the shallow strip's stone-free wrap + clear top + BED grade). Sheet: tools/art/hfw2/mock.py.
+- Open: the shallow strip's flat BED fill (113,109,78) must never show (the lead 12:49 PM: cap a shallow river's drawn depth at the
+  strip, or bank earth under the bed); w2-bamboo-bounce is scale_ok n (1.68 Pokey; the culm is the tuft's support): the lead's ruling.
+- Traps: Qwen paints the "magenta" background as soft PINK with gradients and sun rays: a hue key eats pink petals and the crimson
+  Victoria rim; flood from the border instead (cut.py). hf_sandbox_fs cat of a .pN part over the token limit is SAVED TO A FILE
+  (not read into context): fetch carriers whole, rebuild with tools/art/hfw2/fetch.py (one sandbox, ~11 min, $0.50 for 30 takes).
+## 0e. 11-14 POLISH-6 (t-polish-6): stones stay on their ground (R-165.226)
+- The lay settles every World 1 stone/stump (WorldKit.settle -> w1CutArt.settleCut): piece with the least move, then a whole-px move back
+  from the lip; a rising bank is no lip; none fits -> the section is re-laid. Platform.cut is now set IN THE LAY; w1Finish keeps it (cutOf).
+- Gate: src/game/w1Overhang.test.ts (every World 1 listed layout, both settings, OVERHANG_MAX 6 px). A new World 1 stage joins it by
+  being in PROVEN_INDEX; a new cut piece is measured by its frame box (cutBox), which IS its opaque extent (measured 11-14).
+- Art faults still open: w1-rock-roots' footing line ~52 px low (a wall behind him); settleCut never picks it as a stand-in.
+- 1-1 layout n plays list index n-1 (layout 17 = seed 9652, Matt's frame; 18 = 9800, the first-run layout).
+## 0e-b. ART-678 / ART-678b (t-art-678b): 26 pieces in src/assets/w1-678/, catalogued, NOT placed
+- Cut from the kept raws (reference/art/hf678/raw/, q95) by `python3 tools/art/hf678/recut.py tools/art/hf678/recut.json reference/art/hf678/raw <out>`
+  (no HF). Its key: background = what floods from the border through key-like px (the key map, its haze to white and shadow to
+  black on a magenta take, the key's hue only on px brighter than a line); edge 1 px in, 0.8 px blur, rim px take the nearest solid
+  colour (despill). Hand boxes, `drop` (paint a neighbour as key), `round` (soften a square twig end), `protect` (a grey beak on grey).
+- Underlayer (R-165.224): w1-underlayer-deep (hf678/underdeep.py from band b: NO grass lip, the lead FAILED the grass bands as a floor
+  he falls through); a/b deleted. Mock-up tool: hf678/undermock.py. Live pole: w1-livepole + hf678/polebuild.py (layer 'support', no cap).
+- Catalog: tools/art/hf678/rows.py -> catalog-rows-hf678.csv -> CATALOG-MASTER.csv -> `catalog_master.py --emit`. One slot a family
+  (snake, harpy, live post, rolling nut): a 1-piece slot is a World 1 "gap" that inventory.test.ts fails unless CATALOG-MASTER.md lists it,
+  and only --merge (needs the B parts) rewrites the .md.
+- Open: snake olive vs brown (lead's pick, beside-2); the engine must fill below the deep band on tall phones. Sheets: reference/qa-reports/ART-678b/.
+- Trap: the model's outline is dark MAROON (30,5,18) on pink takes: a key by hue ate it, leaving line dashes outside the piece (the "halo").
+
+## 0d. 11-13 ART (t-art-1113): handed over mid-task, see reference/qa-reports/ART/HANDOVER.md
+- Packed: Pokey's two-hand climb (hero-climb2), 1-5's set + dusk set (w1dusk), 1-4's pieces, 9 fruit + golden guarana; 29 catalog rows.
+- Left: the creek hurt floor, the oropendola flyer, the leafcutter ant (takes in reference/art/hf1113/left/).
+- This HF credential can't mount the bucket or write repos (403): work in an HF sandbox, files back by hf_sandbox_fs (HANDOVER "Route").
+- Paint reds and pinks on GREY (magenta ate the guarana); a sawn stump is what "carved mark" prompts give: ask for bark filling the frame.
 
 ## 0c. Hugging Face picture list 1 (R-165.100): done, $2.04 of the $6.50 cap
 - 16 pieces at about 2000 px in `src/assets/w1-1111c/` (HF1-*); the stairs and the medium stump go to list 2 (redo/); catalogue `reference/art-incoming/hf-list1/`. Specs and scripts:

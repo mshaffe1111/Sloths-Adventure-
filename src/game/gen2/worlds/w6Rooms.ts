@@ -26,7 +26,7 @@
  * high to jump.
  *
  * What the kit has no art for yet (reported): the raft (the kit's lift is drawn as a plank; the water in the well is Matt's painted calm
- * water, rising and falling with it up to the well's lip: above that the plank rises on alone), the sluice wheel (a lever today), and the dark over the hollow is laid by
+ * water, rising and falling with it up to the well's lip: above that the plank rises on alone), the sluice wheel (the kit's lever drawn as Matt's painted wheel), and the dark over the hollow is laid by
  * w6Swing.ts's dark props (a `dark` zone with no lights: the room's firefly is the light). Dot's lines are new: each needs Matt's approval.
  */
 import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
@@ -100,8 +100,9 @@ export const waterRoomSpec: LocalRoomSpec = {
   below: WATER.dip + 20,
   pieces: [
     { kind: 'reset', id: 'post', at: wa(24) },
-    // (the sluice wheel at the well's lip: in reach from the floor, and from the raft down in the well beside it)
-    { kind: 'lever', id: 'sluice', at: wa(WATER.floorA - 18) },
+    // (the sluice wheel at the well's lip: in reach from the floor, and from the raft down in the well beside it; drawn as one of Matt's
+    // two painted root wheels, w6WheelArt.ts, turned while the water is up)
+    { kind: 'lever', id: 'sluice', at: wa(WATER.floorA - 18), looks: ['sluice-wheel', 'sluice-wheel-b'] },
     // (the raft in the well, against floor A: the water up, it floats level with the shelf; down, it rests a hop over the well's floor)
     // (`water`: the calm water it floats in fills the well, its top just under the plank, up to WATER.lip under the floors: swim.ts)
     { kind: 'lift', id: 'raft', at: ww(WATER.raftW / 2 + 4, -WATER.raftDy), w: WATER.raftW, rise: RAFT_RISE, by: 'sluice', water: WATER.dip - WATER.lip },

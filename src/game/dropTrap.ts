@@ -53,6 +53,14 @@ export function shake(s: TrapState): boolean {
   return true;
 }
 
+/** a 'limb' trap's limb has given way (gen2/creak.ts): it falls at once (its creak was the tell). One already going, or down, stays */
+export function limbGone(s: TrapState): boolean {
+  if (s.phase !== 'set' || s.post.kind !== 'limb') return false;
+  s.phase = 'falling';
+  s.t = 0;
+  return true;
+}
+
 /** one fixed step. True on the step it lands */
 export function stepTrap(s: TrapState, dt: number): boolean {
   s.t += dt;
@@ -88,6 +96,10 @@ export function trapFaults(
 ): string[] {
   const bad: string[] = [];
   for (const p of traps) {
+    if (p.kind === 'limb') {
+      bad.push(...limbFaults(p, animals));
+      continue;
+    }
     if (!Number.isFinite(p.x) || !Number.isFinite(p.loadX)) {
       bad.push(`trap.no-handle: the load at x ${Math.round(p.loadX)} has no handle`);
       continue;
@@ -100,5 +112,20 @@ export function trapFaults(
       (Math.abs(c.x - p.loadX) <= TRAP.clear && c.y >= p.loadY - 80 && c.y <= p.landY) || (Math.abs(c.x - p.x) <= TRAP.clear && c.y >= p.y - TRAP.handle.high - 20 && c.y <= p.y));
     if (hid) bad.push(`trap.hidden: ${at} has a pickup at x ${Math.round(hid.x)} in front of it`);
   }
+  return bad;
+}
+
+/**
+ * A 'limb' trap's rules: an animal stands on the ground the limb comes down on, within TRAP.scare of where it lands (so riding it down
+ * chases it off), and none under the limb itself (it lands BESIDE the animal, never on it: nobody is hurt, and he lands with it).
+ */
+function limbFaults(p: TrapPost, animals: ReadonlyArray<{ x: number; y: number; patrolMinX: number; patrolMaxX: number }>): string[] {
+  const at = `the falling limb at x ${Math.round(p.loadX)}`;
+  if (p.limb === undefined || !p.w) return [`trap.no-limb: ${at} names no creaky limb`];
+  const on = animals.filter((a) => Math.abs(a.y - p.landY) <= TRAP.tall);
+  const bad: string[] = [];
+  if (!on.some((a) => Math.min(Math.abs(a.patrolMinX - p.loadX), Math.abs(a.patrolMaxX - p.loadX)) <= TRAP.scare || (a.patrolMinX <= p.loadX && a.patrolMaxX >= p.loadX))) bad.push(`trap.over-nothing: ${at} comes down beside no animal`);
+  const x0 = p.loadX - p.w / 2, x1 = p.loadX + p.w / 2;
+  if (on.some((a) => a.patrolMinX < x1 && a.patrolMaxX > x0)) bad.push(`trap.limb-on: ${at} comes down ON an animal's ground (it must land beside it)`);
   return bad;
 }

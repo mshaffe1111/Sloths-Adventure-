@@ -67,8 +67,12 @@ const N = 110, E = 160;
  *  wide as the stump it stands on, so no bare wood is left beside it and the caps are his only footing over a thorn bed: the mushrooms
  *  ARE the way across (Matt's purpose rule), not a stair of stumps a full jump could take. Every number stays (chain.md's stumps, the
  *  cap-to-cap S): any bed the generator lays (at most 114 px level, pipeline.ts) is one a full jump clears, so a chain's purpose comes
- *  from cap-only footing, never from bed width. Easy keeps the 70 px cap and its wood beside it: the forgiving miss */
-const CAP = 70;
+ *  from cap-only footing, never from bed width. Easy keeps its wood beside the cap: the forgiving miss.
+ *  ONE cap width on every chain, both settings: the end chains' 110 px (R-165.174, Matt 11-12 9:33 PM ET: "if they were all like the last
+ *  ones"). With 70 px caps on the lesson's 160 px stumps a run with one stray jump press stopped on the wood 11-15 times in 23 (the beat
+ *  broke), where the end chains carried it 19 in 23; at 110 the lesson and again carry it 18-20 in 23 on Normal, every Easy chain 17-20,
+ *  and nobody falls (reference/qa-reports/FIXB/cadence.ts TOL). The stump, so the wood a miss lands on, is unchanged */
+const CAP = 110;
 const capOf = (pw: number, easy: boolean): number => (easy ? CAP : pw);
 /** a chain's floor bank: short, so the walk to its mushroom stays under the quiet line (4 s) */
 const FLOOR: R2 = [300, 340];

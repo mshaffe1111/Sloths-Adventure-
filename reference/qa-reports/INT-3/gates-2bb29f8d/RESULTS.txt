@@ -1,0 +1,9 @@
+tsc 0
+build 0
+chunkcheck 0
+artcheck 0
+knowncheck 0
+generality 0
+roadmap 0
+drawcheck 0
+NOT RUN: the script was killed when the INT-3 session stopped (clipcheck had started; no result): unit, clipcheck, kbdcheck, tool tests, seed lists, registry, tierBots, castBots 1-4, stills 1-4/1-5, buildcheck

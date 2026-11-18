@@ -1,0 +1,15 @@
+# kbdcheck under the runner (load 21 on 4 cores, 8:03-8:06 AM ET):
+✗ planted: with the keep-in-view off, the check STAYS GREEN: the check is broken
+
+FAIL: 1 (201 s; stills in reference/qa/tester-page-1106/keyboard/)
+# kbdcheck alone (load 5.7, 8:51-8:53 AM ET):
+✓ planted: with the keep-in-view off, the check goes red as it must
+PASS (121 s; stills in reference/qa/tester-page-1106/keyboard/)
+PASS (121 s; stills in reference/qa/tester-page-1106/keyboard/)
+# buildcheck:
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 54 ms, p95 113 ms, max 126 ms (30 builds, CPU x4)
+  easy: p50 46 ms, p95 65 ms, max 66 ms (30 builds, CPU x4)
+# drawcheck / clipcheck:
+reference/qa-reports/INT-7/gates/drawcheck.log:PASS (463 s; raw results in /tmp/drawcheck-aJu78J)
+reference/qa-reports/INT-7/gates/clipcheck.log:PASS (83 known) (268 s; contact sheet and breaches.json in /tmp/clipcheck-0Fuhdz)

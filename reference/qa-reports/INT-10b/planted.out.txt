@@ -1,0 +1,13 @@
+CAUGHT (RED): the join laid as its own piece (the old join), the toy
+CAUGHT (RED): the join laid as its own piece (the old join), 1-6 built (gen2Pits.test:61)
+CAUGHT (RED): the later floor left in the stage under the merged one
+CAUGHT (RED): only each floor's far side looked at (a chain never closes from the later floor's near side)
+CAUGHT (RED): a step: the shallower floor not deepened to the deeper one's foot
+CAUGHT (RED): a step: the deeper LATER floor not reaching the shallower one's end
+CAUGHT (RED): a floor reaching a bank: the bank not deepened past it
+CAUGHT (RED): a floor reaching a bank: the floor not lengthened (left short of the bank)
+CAUGHT (RED): the wall not laid at a join
+CAUGHT (RED): a climb trail under a fig gate laid to the vine top (the shut lid ignored)
+CAUGHT (RED): pairPetals moves only petals within 12 px of a line (one hand takes 13-38 px)
+CAUGHT (RED): a spent sweeper still glances (the still fork's second look)
+restored: GREEN

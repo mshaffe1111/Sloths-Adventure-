@@ -1,0 +1,8 @@
+dot fresh upright: "A flag! Fall, and you start again here." hint=yes card 311x76 px, pointer-events auto, badge "+2"
+  tapped: next card "Some stages hide things up high. Have a look."
+dot old upright: "A flag! Fall, and you start again here." hint=no card 311x52 px, pointer-events auto, badge "+2"
+  tapped: next card "Some stages hide things up high. Have a look."
+dot fresh sideways: "A flag! Fall, and you start again here." hint=yes card 281x70 px, pointer-events auto, badge "+2"
+  tapped: next card "Some stages hide things up high. Have a look."
+dot old sideways: "A flag! Fall, and you start again here." hint=no card 281x47 px, pointer-events auto, badge "+3"
+  tapped: next card "Run through petals to pick them up."

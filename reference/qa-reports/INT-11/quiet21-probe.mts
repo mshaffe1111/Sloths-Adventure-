@@ -1,0 +1,16 @@
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+import { buildGen2Stage } from '/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts';
+import { listedStage, playFinish } from '/home/user/Sloths-Adventure-/src/game/gen2/listed.ts';
+import { generateAllLevels } from '/home/user/Sloths-Adventure-/src/game/worldsData.ts';
+const id = '2-1'; const row = listedStage(id)!; const cfg = generateAllLevels().find((l: any) => l.id === id)! as any;
+const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: 'normal' }) as any;
+const R = Math.round, A = 1800, B = 4400;
+const dump = (s: any, tag: string) => { console.log('==', tag);
+  for (const p of s.platforms.filter((p: any) => p.x + p.width > A && p.x < B).sort((a: any, b: any) => a.x - b.x)) console.log(' P', p.id, p.type, R(p.x), R(p.x + p.width), R(p.y), p.tag ?? '', p.pit ?? '');
+  for (const v of (s.vines ?? []).filter((v: any) => v.x > A && v.x < B)) console.log(' V', R(v.x), R(v.topY), R(v.bottomY), v.vineType);
+  for (const r of (s.rivers ?? []).filter((r: any) => r.x1 > A && r.x0 < B)) console.log(' R', R(r.x0), R(r.x1), r.speed, r.safe ? 'safe' : '');
+  for (const f of (s.gen2?.falls ?? []).filter((f: any) => f.x1 > A && f.x0 < B)) console.log(' F', f.kind, R(f.x0), R(f.x1), R(f.y));
+  console.log(' secs', s.gen2.sections.filter((q: any) => q.x1 > A && q.x0 < B).map((q: any) => `${q.template}@${R(q.x0)}-${R(q.x1)}`).join(' '));
+};
+dump(st, 'built');
+dump(playFinish(row, structuredClone(st), 'normal'), 'finished');

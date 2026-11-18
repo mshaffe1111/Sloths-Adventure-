@@ -234,9 +234,15 @@ export interface FlightOpts {
  * cost). Every height is simulated at the middle of its 2 px step, so the same height always gets the same reach whatever was asked
  * before it (the old memo let the first height that fell in a step decide, which made a layout depend on what had been generated
  * earlier in the session).
+ * R-165.207: a table is filled whole the first time any of its heights is asked (fillReach): one flight's frames answer every height
+ * at once, so a table costs a few dozen flights instead of one full simulation (36 flights for a double jump) per height asked. The
+ * height-at-a-time fill cost a phone's first stage builds 100k-680k air frames each (1-1, buildcheck's slow first builds). Every
+ * entry equals simulateReach's own answer for that height (reachFill.test.ts, against a frozen copy of the old simulation).
  */
 const REACH_OFFSET = 4096;
 const REACH_SIZE = REACH_OFFSET * 2 + 1;
+/** a flight is flown at most this many frames (then it has neither landed nor fallen past: no reach) */
+const REACH_FRAMES = 600;
 interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; glide: boolean; vals: Float64Array; far: Map<number, number> }
 const reachTables: ReachTable[] = [];
 
@@ -250,16 +256,15 @@ function reachTable(v0: number, vx: number, dbl: boolean, dt: number, glide = fa
   return t;
 }
 
-/** the value for this height difference, simulating it the first time a 2 px step is asked for */
+/** the value for this height difference: the whole table is filled the first time any height in its range is asked */
 function reachAt(t: ReachTable, dy: number): number {
   const step = Math.round(dy / 2);
   const i = step + REACH_OFFSET;
   if (i >= 0 && i < REACH_SIZE) {
     const hit = t.vals[i];
     if (hit === hit) return hit;
-    const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt, t.glide);
-    t.vals[i] = v;
-    return v;
+    fillReach(t);
+    return t.vals[i];
   }
   const hit = t.far.get(step);
   if (hit !== undefined) return hit;
@@ -277,56 +282,106 @@ export function flightReach(dy: number, o: FlightOpts): number {
   return reachAt(reachTable(o.v0, o.vx, o.dbl, o.dt, !!o.glide), dy);
 }
 
+/** air frames the reach memo has flown since the module loaded (R-165.207: reachFill.test.ts holds a table's fill to a ceiling) */
+let framesFlown = 0;
+export const reachFramesFlown = (): number => framesFlown;
+
+/** the double jump's moments a reach tries (every frame of the first 36 at 30 fps), or none */
+const reachTries = (dbl: boolean, dt: number): number[] => (dbl ? Array.from({ length: 36 }, (_, i) => i * dt * (1 / 30 / dt)) : [-1]);
+
+/** one reach flight between frames: simulateReach and fillReach fly the same frames, in the same order */
+interface ReachFlight { b: AirBody; t: number; doubled: boolean; fallT: number; left: number }
+const reachFlight = (v0: number, vx: number, dbl: boolean): ReachFlight => ({ b: { x: 0, y: 0, vx, vy: -v0 }, t: 0, doubled: !dbl, fallT: 0, left: GLIDE.maxTime });
+
+/** one frame of a reach flight (the double jump at tD, then the air step), handing back his feet's height before it */
+function reachFrame(f: ReachFlight, dt: number, tD: number, glide: boolean): number {
+  const b = f.b;
+  if (!f.doubled && f.t >= tD - 1e-9) {
+    b.vy = -PHYS.doubleV;
+    f.doubled = true;
+  }
+  const prev = b.y;
+  if (glide) {
+    // airStep's steer and gravity, then the leaf's brake, then the move (the engine's order)
+    const x0 = b.x, y0 = b.y;
+    airStep(b, dt, 1, false);
+    b.x = x0;
+    b.y = y0;
+    if (b.vy <= -GLIDE.refillUp) f.left = GLIDE.maxTime;
+    f.fallT = b.vy > GLIDE.minFall ? f.fallT + dt : 0;
+    if (f.fallT >= GLIDE.onset && f.left > 0) {
+      f.left = Math.max(0, f.left - dt);
+      if (b.vy > GLIDE.fallSpeed) b.vy = Math.max(GLIDE.fallSpeed, b.vy - GLIDE.brake * dt);
+    }
+    b.x += b.vx * dt;
+    b.y += b.vy * dt;
+  } else airStep(b, dt, 1, false);
+  f.t += dt;
+  framesFlown++;
+  return prev;
+}
+
+/** one height's reach, flown on its own (heights past the table's range, and maxDropReach) */
 function simulateReach(dy: number, v0: number, vx: number, dbl: boolean, dt: number, glide = false): number {
-  const o: FlightOpts = { v0, vx, dbl, dt, glide };
   const target = -dy;
-  const tries = o.dbl ? Array.from({ length: 36 }, (_, i) => i * o.dt * (1 / 30 / o.dt)) : [-1];
   let best = -1;
-  for (const tD of tries) {
-    const b: AirBody = { x: 0, y: 0, vx: o.vx, vy: -o.v0 };
-    let t = 0;
-    let doubled = !o.dbl;
-    // the leaf: the same rules as the engine (glide.ts), with Jump held the whole way down
-    let fallT = 0;
-    let left: number = GLIDE.maxTime;
-    for (let i = 0; i < 600; i++) {
-      if (!doubled && t >= tD - 1e-9) {
-        b.vy = -PHYS.doubleV;
-        doubled = true;
-      }
-      const prev = b.y;
-      if (glide) {
-        // airStep's steer and gravity, then the leaf's brake, then the move (the engine's order)
-        const x0 = b.x, y0 = b.y;
-        airStep(b, o.dt, 1, false);
-        b.x = x0;
-        b.y = y0;
-        if (b.vy <= -GLIDE.refillUp) left = GLIDE.maxTime;
-        fallT = b.vy > GLIDE.minFall ? fallT + o.dt : 0;
-        if (fallT >= GLIDE.onset && left > 0) {
-          left = Math.max(0, left - o.dt);
-          if (b.vy > GLIDE.fallSpeed) b.vy = Math.max(GLIDE.fallSpeed, b.vy - GLIDE.brake * o.dt);
-        }
-        b.x += b.vx * o.dt;
-        b.y += b.vy * o.dt;
-      } else airStep(b, o.dt, 1, false);
-      t += o.dt;
-      if (b.vy >= 0 && prev <= target + 14 && b.y >= target) {
-        if (b.x > best) best = b.x;
+  // the leaf: the same rules as the engine (glide.ts), with Jump held the whole way down
+  for (const tD of reachTries(dbl, dt)) {
+    const f = reachFlight(v0, vx, dbl);
+    for (let i = 0; i < REACH_FRAMES; i++) {
+      const prev = reachFrame(f, dt, tD, glide);
+      if (f.b.vy >= 0 && prev <= target + 14 && f.b.y >= target) {
+        if (f.b.x > best) best = f.b.x;
         break;
       }
-      if (b.y > target + 400) break;
+      if (f.b.y > target + 400) break;
     }
   }
   return best;
+}
+
+/**
+ * Every height of a table in one pass per flight (R-165.207). simulateReach stops a flight for a height at its first frame that lands
+ * on it (descending, feet crossing it from no more than 14 px over it) or, before that, falls more than 400 px past it; a flight's frames
+ * do not depend on the height, so each frame here lands every height in its crossing span that no earlier frame of the flight landed,
+ * unless an earlier frame had already fallen 400 px past it. A height's reach is the furthest landing over the flights, -1 for none:
+ * simulateReach's answer, entry for entry. A flight stops once it has fallen 400 px past the deepest height in the table.
+ */
+function fillReach(t: ReachTable): void {
+  const vals = t.vals.fill(-1);
+  const seen = new Int32Array(REACH_SIZE);
+  const tries = reachTries(t.dbl, t.dt);
+  for (let k = 0; k < tries.length; k++) {
+    const f = reachFlight(t.v0, t.vx, t.dbl), b = f.b;
+    let lowest = -Infinity;
+    for (let n = 0; n < REACH_FRAMES; n++) {
+      const prev = reachFrame(f, t.dt, tries[k], t.glide);
+      if (b.vy >= 0) {
+        // (the entries whose height lies in [prev - 14, y], a step wider each side; each judged by simulateReach's own test)
+        const lo = Math.max(0, Math.ceil(REACH_OFFSET - b.y / 2) - 1), hi = Math.min(REACH_SIZE - 1, Math.floor(REACH_OFFSET - (prev - 14) / 2) + 1);
+        for (let i = lo; i <= hi; i++) {
+          if (seen[i] === k + 1) continue;
+          const target = -((i - REACH_OFFSET) * 2);
+          if (prev <= target + 14 && b.y >= target) {
+            seen[i] = k + 1;
+            if (!(lowest > target + 400) && b.x > vals[i]) vals[i] = b.x;
+          }
+        }
+      }
+      if (b.y > lowest) lowest = b.y;
+      if (lowest > REACH_OFFSET * 2 + 400) break;
+    }
+  }
 }
 
 const dropReachCache = new Map<number, number>();
 
 /**
  * An upper bound on how far any jump, double jump or mushroom bounce can carry the player horizontally when it lands up to `maxDrop`
- * px below the take-off (or anywhere higher). The validator uses it to skip platform pairs that are too far apart to ever join. It
- * simulates on its own and never touches the memo above, so asking for it changes no other result.
+ * px below the take-off (or anywhere higher). The validator uses it to skip platform pairs that are too far apart to ever join.
+ * R-165.207: each drop's reach is read from the reach tables (the same number simulateReach gives for that height: reachFill.test.ts)
+ * instead of simulated again for every new maxDrop; a table's entries never depend on what was asked before, so asking for it changes
+ * no other result.
  */
 export function maxDropReach(maxDrop: number): number {
   const key = Math.ceil(Math.max(0, maxDrop) / 80);
@@ -337,7 +392,7 @@ export function maxDropReach(maxDrop: number): number {
   for (let d = 0; d <= key + 1; d++) {
     for (const dt of SIM_DTS) {
       for (const dbl of [false, true]) {
-        best = Math.max(best, simulateReach(-d * 80, PHYS.jumpV, PHYS.maxRun, dbl, dt), simulateReach(-d * 80, PHYS.bounceV, PHYS.maxRun, dbl, dt));
+        best = Math.max(best, reachAt(reachTable(PHYS.jumpV, PHYS.maxRun, dbl, dt), -d * 80), reachAt(reachTable(PHYS.bounceV, PHYS.maxRun, dbl, dt), -d * 80));
       }
     }
   }
@@ -377,6 +432,14 @@ export const EASY_HOLD = 0.7;
 export const reachJumpHeld = (dy: number, dbl: boolean, share = EASY_HOLD) => reachMin(dy, Math.round(PHYS.jumpV * Math.sqrt(share)), PHYS.maxRun, dbl);
 
 // ---- Swinging lianas -------------------------------------------------------
+
+/**
+ * Let go of a liana because something made him (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop, never a leap.
+ * `hop` his speed up (px/s; a hop clears the hands' height, a jump is JUMP_RISE), `keep` the share of the swing's sideways speed he keeps
+ * (a little: he drops near the liana, onto what is under it, not across the gap), `cooldown` before that liana could be caught again (s;
+ * he cannot catch it again in the air anyway: the engine's swungOff holds it until he is down).
+ */
+export const LET_GO = { hop: -220, keep: 0.3, cooldown: 0.5 } as const;
 
 export const SWING = {
   g: 1600,
@@ -527,9 +590,31 @@ export const SWING_CLEAR = { body: 30, margin: 20 };
 export const swingReach = (v: SwingVine): number => (v.bottomY - v.topY) * Math.sin(vineAmp(v));
 /** do two vines hang side by side (their heights overlap), so that their swings could meet? */
 const sideBySide = (a: SwingVine, b: SwingVine) => a.topY < b.bottomY + 40 && b.topY < a.bottomY + 40;
-/** the clear space (px) between the two vines' swings, with Pokey hanging at the front of either: 0 or more is apart */
+/** how far (px) a vine's rope swings out either side `h` px below its top (its foot's: swingReach; nothing above the top or past the foot) */
+const sweepAt = (v: SwingVine, h: number): number => Math.max(0, Math.min(h, v.bottomY - v.topY)) * Math.sin(vineAmp(v));
+/**
+ * The clear space (px) between two vines' swings, with Pokey hanging at the front of either, height by height (the lead's ruling (b),
+ * 11-14 4:42 PM ET, R-165.246): at every depth he can hang on one (SWING.minLen to its foot), his hold swings out that depth's sweep; the
+ * other vine's rope, where his body is (SWING_CLEAR.body above and below his hold), swings out ITS sweep there (none where it does not
+ * hang); the two, plus his body and the margin, against how far apart they hang. The least over both vines and every shared depth; 0 or
+ * more is apart. Infinity: no depth he can hang on either meets the other's rope.
+ * Two vines of one top and one length read as the old foot-to-foot measure exactly (both feet); it is never stricter than that, so a
+ * swinging pair the old one passed still passes. What it adds: a short vine hung high beside a long liana meets only the liana's upper
+ * rope, which sweeps little, so it may hang close; one hung at the long liana's feet may not (1-6's false liana, 78-85 px in front of a
+ * 420 px liana swinging 0.45: its rope crossed his body there).
+ */
 export function swingClearance(a: SwingVine, b: SwingVine): number {
-  return Math.abs(b.x - a.x) - swingReach(a) - swingReach(b) - SWING_CLEAR.body - SWING_CLEAR.margin;
+  const dx = Math.abs(b.x - a.x);
+  let worst = Infinity;
+  for (const [H, O] of [[a, b], [b, a]] as const) {
+    const L = Math.max(0, H.bottomY - H.topY);
+    // (both sweeps only grow with depth, so the deepest hold whose body still meets the other's rope is the worst)
+    const deepest = Math.min(L, O.bottomY + SWING_CLEAR.body - H.topY);
+    if (deepest < Math.min(SWING.minLen, L) || H.topY + deepest + SWING_CLEAR.body < O.topY) continue;
+    const there = Math.min(H.topY + deepest + SWING_CLEAR.body, O.bottomY) - O.topY;
+    worst = Math.min(worst, dx - sweepAt(H, deepest) - sweepAt(O, there) - SWING_CLEAR.body - SWING_CLEAR.margin);
+  }
+  return worst;
 }
 
 /**
@@ -721,12 +806,15 @@ export const LETGO_FLIGHTS: ReadonlyArray<{ held: number; dbl: number }> = [
  * ms of ONE swing on A in which a press to let go toward +x gets him there (`hits`, asked every frame of the flight with the vines'
  * clock), as the engine plays a press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat
  * late it is the sweet spot's leap; anywhere else a hop off the vine. Caught near the bottom of the vine and higher up: the worse counts.
+ * `seen` (where he is as he presses, his middle and feet): a press counts only if it says yes, asked only of a press that gets him there
+ * (pipeline lianaRelease: the whole perch in view as he presses, cameraFollow.ts SWING_SEEN). Without it every such press counts.
  */
 export function pressWindow(
   A: SwingVine,
   hits: (c: AirBody, t: number, prevY: number) => boolean,
   flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
   grips: readonly number[] = [0.7, 0.95],
+  seen?: (x: number, y: number) => boolean,
 ): number {
   const DT = 1 / 30;
   const len = A.bottomY - A.topY;
@@ -773,11 +861,83 @@ export function pressWindow(
         }
         if (made) break;
       }
-      if (made) ok++;
+      if (made && (!seen || seen(st[k].r.x, st[k].r.y))) ok++;
     }
     worst = Math.min(worst, ok * DT * 1000);
   }
   return worst;
+}
+
+/**
+ * The testers' let-go (RELEASE above: "Testers let go at the FORWARD END of the swing, the natural moment"): the press made as the swing
+ * out in front passes this share of its reach, moving forward (the first-timer bot decides at the same share: tools/inspect/firsttimer.ts
+ * LET_GO_AT, held equal by a test). ENG-16E, R-165.246: the release window counts every press of a swing, so a perch at the far end of its
+ * band can lie past where THIS press lands him (1-6's chain at half the swing, BUILD-16d E1; its FAR perches, BUILD-16c): gen2 lays a perch
+ * he reaches by what he sees only where this press lands him (pipeline lianaBand).
+ */
+export const FORWARD_END = 0.75;
+/**
+ * Does the testers' let-go (FORWARD_END) from every hold in `grips` (shares of the vine's length, pressWindow's) get him there (`hits`,
+ * asked every frame of the flight with the vines' clock, as pressWindow's), the jump held, as the engine plays the press (releaseCall: the
+ * sweet spot's leap, or the leap it just gave when the press comes a beat late)?
+ */
+export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prevY: number) => boolean, grips: readonly number[] = [0.7, 0.95]): boolean {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  for (const g of grips) {
+    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
+    let lastSweet = -1e9;
+    let snap: SwingState | null = null;
+    let pressed = false;
+    // (a swing to settle, then the first forward sweep past FORWARD_END)
+    for (let k = 0; k < 3 * n && !pressed; k++) {
+      const r = swingStep(s0, A, DT, 1, 0);
+      const s = { ...s0 };
+      if (inSweetSpot(s, 1)) { lastSweet = k; snap = s; }
+      const amp = s.amp ?? TIMED.amp;
+      if (k < n || amp < 0.05 || s.omega <= 0 || s.angle / amp < FORWARD_END) continue;
+      pressed = true;
+      const call = releaseCall(s, 1, (k - lastSweet) * DT);
+      // (a press a beat early waits for the sweet spot: at FORWARD_END the sweet spot is on or just past, so it never waits long)
+      let from = s, at = r, t0 = s.t ?? 0;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { const r2 = swingStep(s0, A, DT, 1, 0); at = r2; }
+        from = { ...s0 };
+        t0 = s0.t ?? 0;
+      }
+      const l = timedLaunch(from, 1);
+      const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
+      let t = 0, made = false;
+      for (let i = 1; i <= 90 && !made; i++) {
+        const prevY = c.y;
+        airStep(c, DT, 1, true);
+        t += DT;
+        if (hits(c, t0 + t, prevY)) made = true;
+        if (c.y > A.bottomY + 500) break;
+      }
+      if (!made) return false;
+    }
+    if (!pressed) return false;
+  }
+  return true;
+}
+
+/**
+ * ms of ONE swing on A (the liana he holds) in which a press to let go toward B, the next liana of a chain to the right, puts his hands
+ * on B as it swings (canGrabSwing at the vines' clock, B at its own phase: the stage's, swingSetup's chainPhase): the chain's catch, by
+ * the engine's own press (pressWindow: the sweet spot, a beat early or late, the let-go `flights`) from A's `grips` (undefined: its own
+ * two low holds). `seen`: as pressWindow's (gen2 counts a press only when B's whole swing is in view as he presses). ENG-S5, 1-6 beat 4.
+ */
+export function chainWindow(
+  A: SwingVine,
+  B: SwingVine,
+  flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
+  grips?: readonly number[],
+  seen?: (x: number, y: number) => boolean,
+): number {
+  return pressWindow(A, (c, t) => canGrabSwing(c.x, c.y, B, t), flights, grips, seen);
 }
 
 const chainCache = new Map<string, number>();

@@ -1,0 +1,8 @@
+stage 1-2 normal: Dot's help setting reminders, engine easy false
+  6.1 s    1.5 s up / read 5.0 s (x0.3) << 7w "Run through petals to pick them up."
+  8.5 s    4.5 s up / read 5.0 s (x0.9) << 7w "Flick up to hop up or over."
+ 13.9 s   18.5 s up / read 6.0 s (x3.1)    9w "Ooh, thorns. Don't touch those, not even a little."
+ 33.4 s   18.3 s up / read 6.0 s (x3.0)    9w "Hop on and let the mushrooms do the jumping!"
+ 52.6 s   15.3 s up / read 5.0 s (x3.1)    7w "Run through petals to pick them up."
+5 cards; 2 were taken down before their reading time; 0 blinked off and back
+why each ended (the queue): "Run through petals to pick t" cut at 1.5 s; "Flick up to hop up or over." done at 4.4 s; "Ooh, thorns. Don't touch tho" read at 18.0 s; "Hop on and let the mushrooms" read at 18.0 s; "Run through petals to pick t" read at 15.0 s

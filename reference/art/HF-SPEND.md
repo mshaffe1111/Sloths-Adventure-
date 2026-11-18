@@ -46,3 +46,45 @@ ART-W1 total: ~42 GPU-min, **~$1.93** of its $6 cap (rtx-pro-6000 ~$2.75/h, from
 | 2:45 PM | ART-W1B sky13-hdF 6af61765 (native pass round the circle), ~2 min | lead (packet) | ~$0.09 | the far at 2160 px; its join still 7.7 (the take's ends painted apart) |
 | 3:28 PM | ART-W1B sky13-S 6af62170 (the 1024 px band round the join repainted whole, 4 takes), ~3 min | lead (packet) | ~$0.14 | s55-7: join 1.69 vs 0.69 between any two columns, no visible join |
 ART-W1B total: ~13 GPU-min, **~$0.61** of its $6 cap (estimates from GPU minutes).
+
+## 2026-11-13 (ART, t-art-1113; the lead's packet cap $15, ~$10 reserve kept)
+Route: this credential is refused for the bucket mount and repo writes (403), so the work runs in one rtx-pro-6000 HF sandbox (~$2.75/h),
+billed from creation to terminate; probes were cpu-basic jobs of seconds.
+
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 10:33 AM | 4 cpu-basic probe jobs (seconds each: which part is refused; bucket mount and repo writes 403) | ART (packet) | ~$0.00 | the route: a sandbox |
+| 10:34 AM-12:06 PM | sandbox 6af72e1c29dd05ff03651469 (rtx-pro-6000), 92 min: climb1 12 edits; climb2 10; props1 42 stills (1-5 set, 1-4 pieces); fruit1 31 (9 fruit + guarana); props2 10 (sign, mark redos); props3 12 (oropendola, ant); props4 8 + props6 8 (dusk img2img); props5 8 (guarana on grey, down sign); oro1 6 edits; props7 4 (creek). ~2 min idle at 10:51 (a watcher bug, own miss) | ART (packet cap $15) | ~$4.22 | Pokey's two-hand climb (packed), 1-5's set + dusk set, 1-4's pieces, 9 fruit + golden guarana (all cut, catalogued); creek, flyer, ant takes for the next session |
+ART 11-13 total: ~92 GPU-min, **~$4.22** of its $15 cap (minutes x $2.75/60, creation to terminate). Balance ~$58.7 (from ~$62.9 at the packet).
+| 12:10-12:18 PM | sandbox 6af7448629dd05ff03653f5e (rtx-pro-6000), 8 min, attempt 3: creek8 6 img2img (the creek's join band repainted, creek-53 s45/s55, creek-11 s50); ant2 6 Qwen-Edit leg edits (leafcutter-11) | ART (packet) | ~$0.37 | w15-creek (band s45-9); the ant walk's two strides (antA-s1, antB-s2) |
+ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3.
+
+## 2026-11-14 (ART-678, t-art-678; the lead's packet cap $8, ~$10+ reserve kept)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
+ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
+
+## 2026-11-14 (BUILD-18, t-build-18; the lead's packet cap $3)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:17-8:26 PM | sandbox 6af9086223985fb9cd82c12e (rtx-pro-6000), about 9 min creation to terminate: 12 Qwen-Image + style LoRA takes (4 pieces x 3 seeds, ~21 s each after a ~2 min load), keyed and cut in the sandbox (/w/key18.py, /w/ship18.py), back by hf_sandbox_fs | lead (BUILD-18 packet; ruling A 8:19 PM: all four) | ~$0.41 | 4 shipped pieces (src/assets/w1-18/): palm nut, cannonball fruit (in game, rollingPiece.ts), palm crown, cannonball trunk with fruit stalks (laid as data, drawn when the inventory-dressing piece lands): **~$0.10 a piece**; the keyed takes' sheet in reference/art/hf18/ |
+BUILD-18 total: ~9 GPU-min, **~$0.41** of its $3 cap (minutes x $2.75/60). Balance ~$56.0 (from ~$56.4).
+
+## 2026-11-15 (ENG-LOOK2, t-eng-look2; the lead's packet cap $3, ONE job)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:12-11:17 AM | sandbox 6af9d9c129dd05ff0368e675 (rtx-pro-6000), about 6 min creation to terminate: 8 Qwen-Image + style LoRA 0.9 takes (2 prompts x 4 seeds, 1792x768, ~27 s each after a 36 s load), spec tools/art/hfbough/spec-bough.json; 3 takes back by hf_sandbox_fs (reference/art/hfbough/, takes-sheet.jpg) | lead (ENG-LOOK2 packet, step 4) | ~$0.28 | 1 shipped piece (src/assets/w1-18/hf18-bough.webp: 3 joinable bough variants from take a-53, cut.py), catalogued hf18/hf18-bough at scale: **~$0.28 a piece** |
+ENG-LOOK2 total: ~6 GPU-min, **~$0.28** of its $3 cap (minutes x $2.75/60). Balance ~$55.7 (from ~$56.0).
+
+## 2026-11-15 (ART-18, t-art-18; the lead's packet cap $4, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:54 AM-12:23 PM | sandbox 6af9e3a229dd05ff0368f022 (rtx-pro-6000), 29 min creation to terminate: 16 palm takes (Qwen-Image + style LoRA 0.6/0.85, 4 prompts x 4 seeds, 928x1664, ~33 s each after a 33 s load; spec tools/art/hfpalm/spec-palm.json), 6 hanging-leaf takes (spec-leaf.json, 1024x1024), keyed and cut in the sandbox (tools/art/hfpalm/cut.py, nutpt.py), back by hf_sandbox_fs | lead (ART-18 packet, step 1 + step 2's one batch) | ~$1.34 | 5 shipped palms (src/assets/w1-18/hf18-palm-{a,b,c,back-a,back-b}.webp, catalogued, in game) and 4 painted hanging-leaf clusters cut for World 1's front leaves (reference/art/hfpalm/leaves/, not wired: R-number in the ART-18 report): **~$0.27 a shipped palm, ~$0.15 a piece**; take sheets reference/art/hfpalm/ |
+ART-18 total: ~29 GPU-min, **~$1.34** of its $4 cap (minutes x $2.75/60). Balance ~$54.4 (from ~$55.7).
+
+## 2026-11-15 (ART-W2, t-art-w2; the lead's packet cap $5, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
+ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.

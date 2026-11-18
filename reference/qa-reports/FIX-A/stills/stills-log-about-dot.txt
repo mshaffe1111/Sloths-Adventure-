@@ -1,0 +1,19 @@
+about story fresh upright: page 699px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh upright: page 1691px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old upright: page 699px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old upright: page 1691px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story fresh sideways: page 517px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh sideways: page 1184px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old sideways: page 517px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old sideways: page 1184px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+dot fresh upright: no card that waits to be read came in 90 s
+dot old upright: no card that waits to be read came in 90 s
+dot FAILED page.evaluate: Execution context was destroyed, most likely because of a navigation

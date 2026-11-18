@@ -1,0 +1,40 @@
+1-6 normal w1-liana-chain2 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.25 win 2533 | perch 278 past l2 w 130 dy 0 win 1267; gaps [[273,969,"hurt"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 2733 | perch 281 past l2 w 137 dy 0 win 1267; gaps [[297,986,"hurt"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.26 win 2467 | perch 321 past l2 w 131 dy 0 win 1267; gaps [[283,1045,"hurt"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | perch 336 past l2 w 129 dy 0 win 1267; gaps [[273,1031,"hurt"]]
+1-6 normal w1-liana-chain3 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.24 win 2633 | l2->l3 dx 244 amps 0.24/0.24 win 2833 | perch 335 past l3 w 133 dy 0 win 1267; gaps [[273,1270,"hurt"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | l2->l3 dx 244 amps 0.24/0.24 win 2867 | perch 316 past l3 w 139 dy 0 win 1267; gaps [[297,1265,"hurt"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.25 win 2467 | l2->l3 dx 256 amps 0.25/0.25 win 2367 | perch 335 past l3 w 125 dy 0 win 1267; gaps [[283,1315,"hurt"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | l2->l3 dx 260 amps 0.24/0.26 win 2400 | perch 288 past l3 w 128 dy 0 win 1267; gaps [[273,1243,"hurt"]]
+1-6 easy w1-liana-chain2 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.25 win 3300 | perch 246 past l2 w 178 dy 0 win 1667; gaps [[273,937,"soft-back"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | perch 232 past l2 w 185 dy 0 win 1667; gaps [[297,937,"soft-back"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.26 win 3100 | perch 284 past l2 w 179 dy 0 win 1667; gaps [[283,1008,"soft-back"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | perch 297 past l2 w 177 dy 0 win 1667; gaps [[273,992,"soft-back"]]
+1-6 easy w1-liana-chain3 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.24 win 3300 | l2->l3 dx 244 amps 0.24/0.24 win 3300 | perch 276 past l3 w 181 dy 0 win 1667; gaps [[273,1211,"soft-back"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | l2->l3 dx 244 amps 0.24/0.24 win 3300 | perch 261 past l3 w 187 dy 0 win 1667; gaps [[297,1210,"soft-back"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.25 win 3167 | l2->l3 dx 256 amps 0.25/0.25 win 3167 | perch 280 past l3 w 173 dy 0 win 1667; gaps [[283,1260,"soft-back"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | l2->l3 dx 260 amps 0.24/0.26 win 3067 | perch 255 past l3 w 176 dy 0 win 1667; gaps [[273,1210,"soft-back"]]
+6-3 normal w1-liana-chain2 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.25 win 2533 | perch 281 past l2 w 130 dy 0 win 1267; gaps [[273,972,"hurt"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 2733 | perch 277 past l2 w 137 dy 0 win 1267; gaps [[297,982,"hurt"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.26 win 2467 | perch 321 past l2 w 131 dy 0 win 1267; gaps [[283,1045,"hurt"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | perch 331 past l2 w 129 dy 0 win 1267; gaps [[273,1026,"hurt"]]
+6-3 normal w1-liana-chain3 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.24 win 2633 | l2->l3 dx 244 amps 0.24/0.24 win 2833 | perch 335 past l3 w 133 dy 0 win 1267; gaps [[273,1270,"hurt"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | l2->l3 dx 244 amps 0.24/0.24 win 2867 | perch 316 past l3 w 139 dy 0 win 1267; gaps [[297,1265,"hurt"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.25 win 2467 | l2->l3 dx 256 amps 0.25/0.25 win 2367 | perch 335 past l3 w 125 dy 0 win 1267; gaps [[283,1315,"hurt"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 2667 | l2->l3 dx 260 amps 0.24/0.26 win 2400 | perch 288 past l3 w 128 dy 0 win 1267; gaps [[273,1243,"hurt"]]
+6-3 easy w1-liana-chain2 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.25 win 3300 | perch 249 past l2 w 178 dy 0 win 1667; gaps [[273,940,"soft-back"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | perch 245 past l2 w 185 dy 0 win 1667; gaps [[297,950,"soft-back"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.26 win 3100 | perch 284 past l2 w 179 dy 0 win 1667; gaps [[283,1008,"soft-back"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | perch 292 past l2 w 177 dy 0 win 1667; gaps [[273,987,"soft-back"]]
+6-3 easy w1-liana-chain3 
+  l1 164 past a | l1->l2 dx 254 amps 0.25/0.24 win 3300 | l2->l3 dx 244 amps 0.24/0.24 win 3300 | perch 276 past l3 w 181 dy 0 win 1667; gaps [[273,1211,"soft-back"]]
+  l1 162 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | l2->l3 dx 244 amps 0.24/0.24 win 3300 | perch 261 past l3 w 187 dy 0 win 1667; gaps [[297,1210,"soft-back"]]
+  l1 183 past a | l1->l2 dx 258 amps 0.26/0.25 win 3167 | l2->l3 dx 256 amps 0.25/0.25 win 3167 | perch 280 past l3 w 173 dy 0 win 1667; gaps [[283,1260,"soft-back"]]
+  l1 176 past a | l1->l2 dx 246 amps 0.24/0.24 win 3300 | l2->l3 dx 260 amps 0.24/0.26 win 3067 | perch 255 past l3 w 176 dy 0 win 1667; gaps [[273,1210,"soft-back"]]

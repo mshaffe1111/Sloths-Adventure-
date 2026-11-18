@@ -1,0 +1,37 @@
+# castBots 1-2 seeds 1-40, BEFORE (main 73e7bed0 tools)
+castBots 1-2, seeds 1-40
+kid    normal PASS 40/40; time median 121.2 s (min 117.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 40/40; time median 122.9 s (min 118); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 40/40; time median 120.4 s (min 118); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; time median 122.7 s (min 119.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 25/40; time median 357.1 s (min 299.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 9: shrine rescued x1  (seeds 12,30,11,22,2,8,32,27,1)
+        fail 1: sealed door goal 64/65  (seeds 36)
+        fail 1: sealed door goal 62/65  (seeds 23)
+        fail 1: sealed door goal 62/64  (seeds 29)
+        fail 1: shrine rescued x2  (seeds 15)
+        fail 1: sealed door goal 66/67 rescued x1  (seeds 25)
+        fail 1: sealed door goal 62/65 rescued x1  (seeds 37)
+child  easy   PASS 40/40; time median 245.9 s (min 220.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; time median 164 s (min 152.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; time median 160.8 s (min 153.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; time median 142.6 s (min 135); hits 0 lives 1 (pit 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+
+# AFTER (t-fix-14 towerRoute fix)
+castBots 1-2, seeds 1-40
+kid    normal PASS 40/40; time median 121.2 s (min 117.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 40/40; time median 122.9 s (min 118); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 40/40; time median 120.4 s (min 118); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; time median 122.7 s (min 119.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 25/40; time median 357.1 s (min 299.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 9: shrine rescued x1  (seeds 12,30,11,27,1,2,8,32,22)
+        fail 1: sealed door goal 64/65  (seeds 36)
+        fail 1: sealed door goal 62/65  (seeds 23)
+        fail 1: sealed door goal 62/64  (seeds 29)
+        fail 1: shrine rescued x2  (seeds 15)
+        fail 1: sealed door goal 66/67 rescued x1  (seeds 25)
+        fail 1: sealed door goal 62/65 rescued x1  (seeds 37)
+child  easy   PASS 40/40; time median 245.9 s (min 220.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; time median 164 s (min 152.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; time median 160.8 s (min 153.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; time median 142.6 s (min 135); hits 0 lives 1 (pit 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0

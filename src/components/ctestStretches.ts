@@ -54,6 +54,9 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-zigzag-run': 'the stairs and banks',
   'w1-stair-gap-twist': 'the stairs and banks',
   'w1-ledges': 'the stairs and banks',
+  // (1-1's closing climb test since POLISH-7: single steps up stones, no double; R-165.228)
+  'w1-stone-stair-test': 'the stairs and banks',
+  'w1-stone-stair-test-back': 'the stairs and banks',
   // the mushroom
   'w1-mushroom-lift': 'the mushroom bounce',
   'w1-mushroom-bank-teach': 'the mushroom bounce',

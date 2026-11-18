@@ -1,0 +1,12 @@
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index 13a2b4053..36771233c 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -2969,6 +2969,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
+     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
+     ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
+     ...(sink.zones.length ? { zones: sink.zones } : {}),
++    ...(sink.clocks?.length ? { clocks: sink.clocks } : {}),
+     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
+     ...(rooms.length ? { kit: { rooms } } : {}),
+     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)

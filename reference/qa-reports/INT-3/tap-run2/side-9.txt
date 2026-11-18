@@ -1,0 +1,5 @@
+stage 1-2 normal: Dot's help setting reminders, engine easy false, tapping each card at its reading time
+  8.1 s    5.4 s up / read 5.0 s (x1.1)    TAPPED (punches 0, jumps 0) 7w "Flick up to hop up or over."
+ 21.8 s    6.9 s up / read 6.5 s (x1.1)    TAPPED (punches 0, jumps 0) 10w "She said don't stop to smell the flowers. Picking's different."
+2 cards; 0 were taken down before their reading time; 0 blinked off and back
+why each ended (the queue): "Flick up to hop up or over." done at 4.9 s; "She said don't stop to smell" tapped at 6.7 s

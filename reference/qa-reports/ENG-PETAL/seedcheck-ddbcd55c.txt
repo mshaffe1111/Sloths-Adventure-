@@ -1,0 +1,7 @@
+== 1-6 22:18
+  1-6 seed 80 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-6 seed 80 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+== 1-7 22:39
+seedlist 1-7: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-7: PASS (100 seeds, each clean on both settings)
+== 1-5 22:43

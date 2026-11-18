@@ -1,0 +1,267 @@
+/**
+ * CAM-THREAT (ENG-S3): a vine snake on his liana is kept in the clear view (PieceHost.focus, cameraFollow.ts focusY). Sideways the view
+ * keeps his head just under the HUD band, so the tell on the bough over his liana was above the clear view: 0 of 6 tell frames seen
+ * (ENG-S2's shots). Now, through the REAL engine and its real camera (realPlay.ts with updateCamera put back, as swingCam.test.ts):
+ *   - sideways on three phones and upright on two, held high and low: the tell is whole in the clear view (under the HUD band, over the
+ *     foot his feet are kept above) on >= 90% of its frames where its box fits, and the snake is in the clear view >= SNAKE.seen s before
+ *     it reaches his hands where it does not; he is never out of the clear view; the view never steps more than CAM_RISE_STEP a frame;
+ *   - gen2's verdict (vineSnake.ts snakeViewFaults) refuses a beat whose snake is not in view 1 s before it reaches his lowest hold on the
+ *     squattest sideways phone, and passes 1-6.md's.
+ * Planted: without host.focus (a no-op) the sideways tests go red (planted.out.txt).
+ */
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { AHEAD, focusY, HUD_BAND, sideClear, FOCUS_CAM, WORLD_VIEW_H, settledView, usualZoom, type Box } from './cameraFollow.ts';
+import { RealPlay } from './realPlay.ts';
+import { GameEngine } from './engine.ts';
+import { beatClock, beatDef } from './beat.ts';
+import { handsAlong } from './pieces/vineSnakePiece.ts';
+import type { Platform, Vine } from './types.ts';
+import { SNAKE, snakeFocusBox, snakeNow, snakeViewFaults, onVine, ROOMY_SITE, type SnakeSite, type VineSnake } from './vineSnake.ts';
+
+const FLOOR = 900;
+type Eng = {
+  updateCamera: (dt?: number) => void;
+  enemies: unknown[];
+  currentStage: GameEngine['builtStage'] extends () => infer S ? S : never;
+  viewCssW: number;
+  viewCssH: number;
+  introT: number;
+  vines: Vine[];
+  camera: { x: number; y: number; viewportWidth: number; viewportHeight: number };
+  zoom: number;
+  clock: ReturnType<typeof beatClock>;
+  startPieces(): void;
+};
+const STEP = 11; // engine.ts CAM_RISE_STEP
+type Site = SnakeSite;
+/** the bare world: a 400 px liana hung 400 px under the top of a level 1100 tall, the floor 100 px under its foot */
+const BARE: Site = { anchorY: FLOOR - 500, levelH: 1100 };
+
+/** the real engine and its real camera on a bare world: a ledge under a liana 400 px long (anchor 500 px over the floor), its snake on a
+ *  beat (off 4, tell 0.6, trip `on`): the tell starts 4 s after he is on */
+function setup(w: number, h: number, sn: Omit<VineSnake, 'clock'>, on = 4, site: Site = BARE) {
+  const r = new RealPlay('1-3', 1);
+  const e = r.e as unknown as Eng;
+  e.updateCamera = (GameEngine.prototype as unknown as Record<string, () => void>).updateCamera.bind(e);
+  const vine = { id: 9, x: 1300, topY: site.anchorY, bottomY: site.anchorY + 400, vineType: 'swing_liana', isSwingingVine: true, swaySpeed: 1.1, swayPhase: 0 } as Vine;
+  const plats = [{ id: 1, x: 0, y: site.anchorY + 500, width: 4000, height: site.levelH - site.anchorY - 500, type: 'solid' }] as Platform[];
+  r.bare(plats, [vine]);
+  e.enemies = [];
+  e.currentStage.config = { ...e.currentStage.config, levelHeight: site.levelH, levelWidth: 4000 };
+  e.viewCssW = w;
+  e.viewCssH = h;
+  e.introT = 99;
+  (e as unknown as { applyZoom(): void }).applyZoom();
+  vine.snake = { ...sn, clock: 'snake' };
+  e.currentStage.clocks = [beatDef('snake', 4 + 0.6 + on, 0.6, on)];
+  // (the beat starts at its off: 4 s off (the camera settles on him first), then the tell)
+  e.clock = beatClock(e.currentStage.clocks, false, 0);
+  e.currentStage.vines = [vine];
+  e.startPieces();
+  return { r, e, v: e.vines[0] as Vine };
+}
+
+/** the clear view now: its top under the HUD band and its foot (world px) */
+function clearNow(e: { camera: { y: number; viewportHeight: number }; zoom: number; viewCssW: number; viewCssH: number }) {
+  const band = (e.viewCssH > e.viewCssW ? HUD_BAND.port : HUD_BAND.land) / e.zoom;
+  return { y0: e.camera.y + band, y1: e.camera.y + e.camera.viewportHeight * AHEAD.heroPad.b };
+}
+
+/** he swings on it from a hold `len` (feet that far down); per frame: is the tell whole in the clear view, is any of the snake, is he */
+function watch(w: number, h: number, sn: Omit<VineSnake, 'clock'>, hold: number, on = 4, site: Site = BARE) {
+  const { r, e, v } = setup(w, h, sn, on, site);
+  r.swing(v, { angle: 0.05, omega: 0.2, len: hold });
+  const len = v.bottomY - v.topY;
+  let tellFrames = 0, tellSeen = 0, tripSeen = 0, gave = 0, heroOut = '', maxStep = 0, touched = false, focusFrames = 0;
+  let lastY = e.camera.y;
+  for (let i = 0; i < 30 * 11 && !touched; i++) {
+    const read = e.clock.read('snake');
+    r.frame();
+    if (!r.p.isVineSwinging) {
+      touched = true;
+      break;
+    }
+    // (from 1.5 s on: the view's own first catch-up to him on the bare world, and the upright swing's widening, are not the focus)
+    if (i > 45) maxStep = Math.max(maxStep, Math.abs(e.camera.y - lastY));
+    lastY = e.camera.y;
+    const c = clearNow(e);
+    const a = v.swingAngle ?? 0;
+    const n = snakeNow(v.snake!, len, read);
+    // (his body, feet at p.y and his head HERO_HEAD over them, while the snake's piece asks for the focus: the focus's promise)
+    const focused = !!(e as unknown as { camFocus: Box | null }).camFocus;
+    if (focused) focusFrames++;
+    if (focused && (r.p.y - 104 < c.y0 - 1 || r.p.y + 12 > c.y1 + 1)) heroOut ||= `frame ${i}: him ${Math.round(r.p.y - 104)}..${Math.round(r.p.y + 12)}, clear ${Math.round(c.y0)}..${Math.round(c.y1)}`;
+    if (!n.shown) continue;
+    gave += 1 / 30;
+    if (n.tell) {
+      tellFrames++;
+      const d = n.dir === 1 ? 0 : len;
+      const ty = v.topY + Math.cos(a) * d;
+      if (ty - SNAKE.tellH >= c.y0 - 0.5 && ty <= c.y1 + 0.5) tellSeen++;
+      continue;
+    }
+    const s = onVine(n, len);
+    if (s && v.topY + Math.cos(a) * s.to >= c.y0 && v.topY + Math.cos(a) * s.from <= c.y1) tripSeen++;
+  }
+  return { tellFrames, tellSeen, seen: (tellSeen + tripSeen) / 30, gave, heroOut, maxStep, touched, focusFrames, hands: handsAlong(hold, len), len };
+}
+
+const SIDE = [[915, 412], [844, 390], [782, 288]] as const;
+const UP = [[412, 915], [390, 844]] as const;
+
+test('sideways, held HIGH (the box fits): the snake\'s tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it', () => {
+  for (const [w, h] of SIDE) {
+    // (a hold whose box fits on this phone: the anchor's tell over him and his feet, within the clear view)
+    const c = sideClear(h);
+    const hold = Math.floor(c.foot - c.top - SNAKE.tellH - 12 - 6);
+    const o = watch(w, h, { route: 'down-off' }, hold);
+    assert.ok(o.tellFrames >= 17, `${w}x${h}: the tell ran (${o.tellFrames} frames)`);
+    assert.ok(o.tellSeen >= 0.9 * o.tellFrames, `${w}x${h} held ${hold}: the tell was whole in the clear view ${o.tellSeen}/${o.tellFrames} frames`);
+    assert.equal(o.heroOut, '', `${w}x${h}: he left the clear view (${o.heroOut})`);
+    assert.ok(o.maxStep <= STEP + 1e-6, `${w}x${h}: the view stepped ${o.maxStep.toFixed(1)} px in a frame`);
+    assert.ok(o.touched, `${w}x${h}: it reached his hands`);
+    assert.ok(o.focusFrames >= 30 * (FOCUS_CAM.lead + 0.6) - 2, `${w}x${h}: the focus was asked ${o.focusFrames} frames`);
+  }
+});
+
+test('sideways, held LOW (the box cannot fit): he stays whole at the foot of the clear view and the snake is in it >= SNAKE.seen s before it reaches his hands; no snap', () => {
+  for (const [w, h] of SIDE) {
+    const o = watch(w, h, { route: 'down-off' }, 400);
+    assert.ok(o.touched, `${w}x${h}: it reached his hands`);
+    assert.equal(o.heroOut, '', `${w}x${h}: he left the clear view (${o.heroOut})`);
+    assert.ok(o.seen >= SNAKE.seen - 1 / 30, `${w}x${h} held low: the snake was in the clear view ${o.seen.toFixed(2)} s of ${o.gave.toFixed(2)} s before it reached his hands`);
+    assert.ok(o.maxStep <= STEP + 1e-6, `${w}x${h}: the view stepped ${o.maxStep.toFixed(1)} px in a frame`);
+    // (the verdict agrees at the lowest hold on every phone: it names none there)
+    assert.ok(!snakeViewFaults({ route: 'down-off', clock: 'snake' }, o.len, beatDef('snake', 8.6, 0.6, 4).phases, BARE, [[w, h]]).some((f) => /held at 400 px/.test(f)), `${w}x${h}: the verdict refused the low hold the engine shows`);
+  }
+});
+
+test('the verdict and the real engine agree: on the squattest phone a 4 s trip is too quick at a middle hold (the tell cut by the HUD, 118 px of trip seen); a 6 s trip is not', () => {
+  const sn = { route: 'down-off' as const };
+  const quick = snakeViewFaults({ ...sn, clock: 'snake' }, 400, beatDef('snake', 8.6, 0.6, 4).phases, BARE, [[782, 288]]);
+  assert.ok(quick.some((f) => /held at 220 px/.test(f)), `the verdict passed a middle hold it cannot show: ${quick.join(' | ')}`);
+  const o = watch(782, 288, sn, 220);
+  assert.ok(o.touched && o.seen < SNAKE.seen, `the engine showed it ${o.seen.toFixed(2)} s: the verdict refused a lay the screen shows`);
+  assert.deepEqual(snakeViewFaults({ ...sn, clock: 'snake' }, 400, beatDef('snake', 10.6, 0.6, 6).phases, BARE, [[782, 288]]), []);
+  const slow = watch(782, 288, sn, 220, 6);
+  assert.ok(slow.touched && slow.seen >= SNAKE.seen - 1 / 30, `a 6 s trip at the middle hold: in view ${slow.seen.toFixed(2)} s`);
+});
+
+test('upright, high and low: the tell is whole in the clear view on >= 90% of its frames (the tall view fits the box)', () => {
+  for (const [w, h] of UP) {
+    for (const hold of [220, 400]) {
+      const o = watch(w, h, { route: 'down-off' }, hold);
+      assert.ok(o.tellSeen >= 0.9 * o.tellFrames && o.tellFrames >= 17, `${w}x${h} held ${hold}: tell ${o.tellSeen}/${o.tellFrames}`);
+      assert.equal(o.heroOut, '', `${w}x${h}: ${o.heroOut}`);
+      assert.ok(o.maxStep <= STEP + 1e-6, `${w}x${h}: stepped ${o.maxStep.toFixed(1)} px`);
+    }
+  }
+});
+
+test('a snake rising from the foot: the focus keeps the foot\'s tell in view under him, sideways, at a middle hold', () => {
+  for (const [w, h] of SIDE) {
+    const o = watch(w, h, { route: 'up', reach: 0.7 }, 300);
+    assert.ok(o.tellSeen >= 0.9 * o.tellFrames && o.tellFrames >= 17, `${w}x${h}: tell ${o.tellSeen}/${o.tellFrames}`);
+    assert.equal(o.heroOut, '', `${w}x${h}: ${o.heroOut}`);
+  }
+});
+
+test('focusY: the box between the HUD band and the foot, moved as little as does it; too tall, him whole on the side the box reaches further', () => {
+  const vh = WORLD_VIEW_H, band = 150, foot = vh * AHEAD.heroPad.b;
+  const hero: Box = { x0: 0, x1: 60, y0: 300, y1: 416 };
+  // (fits: an aim that already shows it is left alone; one too low comes up just enough)
+  const box: Box = { x0: 0, x1: 60, y0: 200, y1: 416 };
+  assert.equal(focusY(20, box, hero, vh, band), 20);
+  assert.equal(focusY(80, box, hero, vh, band), box.y0 - FOCUS_CAM.pad - band);
+  // (too tall above him: his feet at the foot of the clear view; below him: his head under the band)
+  assert.equal(focusY(80, { ...box, y0: -200 }, hero, vh, band), hero.y1 - foot);
+  assert.equal(focusY(-500, { ...box, y1: 1200 }, hero, vh, band), hero.y0 - band);
+});
+
+test('gen2\'s view verdict: a snake too quick to be seen 1 s on the squattest phone sideways is refused; 1-6.md\'s beat-7 pace passes', () => {
+  // (1-6.md beat 7: "a whole swing at least (2.85 s) before it reaches his grip": a 410 px liana, a 6 s trip off the foot)
+  assert.deepEqual(snakeViewFaults({ route: 'down-off', clock: 'c' }, 410, beatDef('c', 12, 0.6, 6).phases), []);
+  const quick = snakeViewFaults({ route: 'down-off', clock: 'c' }, 410, beatDef('c', 12, 0.6, 2).phases);
+  assert.ok(quick.length > 0 && /held at 410 px/.test(quick.join('\n')), `a 2 s trip is too quick at the lowest hold: ${quick[0]}`);
+  // (and on a tall phone sideways, where the box fits higher, the same quick snake still fails at its lowest hold)
+  assert.ok(snakeViewFaults({ route: 'down-off', clock: 'c' }, 410, beatDef('c', 12, 0.6, 2).phases, ROOMY_SITE, [[915, 412]]).length > 0);
+  // a false liana and a snake with no beat are not the verdict's (snakeBeatFaults names the second)
+  assert.deepEqual(snakeViewFaults({ route: 'still' }, 410, []), []);
+  assert.equal(FOCUS_CAM.shortest, 288);
+  // (the box the verdict judges is the piece's own: his feet and the tell over the anchor)
+  const b = snakeFocusBox({ route: 'down-off', clock: 'c' }, 410, 0, 0, 0, 0, 300);
+  assert.ok(b.y0 === -SNAKE.tellH && b.y1 === 312);
+  void FLOOR;
+});
+
+test('the level check leaves a FALSE liana out of the route (it drops him the step he takes it): 6-3 with every liana false has no swing edge; and the stage\'s snake faults name a quick snake, a swinging false liana and a missing beat', async () => {
+  const { validateStage } = await import('./levelCheck.ts');
+  const st = new RealPlay('6-3', 1).stage;
+  const real = validateStage(st);
+  assert.ok(real.stats.swingEdges > 0, `6-3's lianas are a way on (${real.stats.swingEdges} swing edges)`);
+  const lianas = st.vines.filter((v) => v.vineType !== 'tree_climb' && (v.swingAmp ?? 0) > 0);
+  // (ENG-S4: its swing data left as laid, so only the check's own filter can leave it out: M9 in planted.out.txt)
+  for (const v of lianas) v.snake = { route: 'still' };
+  assert.equal(validateStage(st).stats.swingEdges, 0, 'a false liana counted as a way on');
+  for (const v of lianas) v.swingAmp = 0;
+  // (the stage's snake faults, the lay's check)
+  const { snakeFaults } = await import('./vineSnake.ts');
+  assert.deepEqual(snakeFaults(st), []);
+  const v = lianas[0];
+  v.swingAmp = 0.4;
+  assert.match(snakeFaults(st).join(), /a false liana swings/);
+  v.swingAmp = 0;
+  v.snake = { route: 'down-off', clock: 'sn' };
+  assert.match(snakeFaults(st).join(), /beat sn is not in the stage/);
+  st.clocks = [...(st.clocks ?? []), beatDef('sn', 12, 0.6, 1.5)];
+  assert.match(snakeFaults(st).join(), /in the clear view .* under 1.00 s/);
+  st.clocks = [...st.clocks.filter((c) => c.id !== 'sn'), beatDef('sn', 14, 0.6, 7)];
+  // (ENG-S4: 6-3's REAL liana hangs 124 px under the level's top: no view shows past it, so its tell is never under the HUD band on the
+  // squattest phone, and a 7 s trip is refused there; hung 300 px down the same snake is seen)
+  assert.equal(Math.round(v.topY), 124, 'the first liana of 6-3 is the one ENG-S3 shot');
+  assert.match(snakeFaults(st).join(' | '), /hung 124 px under the level's top, 782x288 sideways/);
+  assert.match(snakeFaults(st).join(' | '), /hung 124 px under the level's top, \d+x\d+ upright: its tell is whole in the clear view 0 of/, 'upright is judged too');
+  v.topY += 176;
+  v.bottomY += 176;
+  assert.deepEqual(snakeFaults(st), [], snakeFaults(st).join(' | '));
+});
+
+test('ENG-S4, the level\'s top on the REAL engine (6-3\'s geometry: a liana hung 124 px under the top of a level 900 tall): the tell is never in the clear view, on any phone either way, and the verdict refuses it on each; hung where the verdict allows it, the engine shows the tell and the snake', () => {
+  const sn = { route: 'down-off' as const };
+  const on = 7;
+  const phases = beatDef('snake', 4 + 0.6 + on, 0.6, on).phases;
+  const top63: Site = { anchorY: 124, levelH: 900 };
+  for (const [w, h] of [...SIDE, ...UP]) {
+    const o = watch(w, h, sn, 200, on, top63);
+    assert.ok(o.tellFrames >= 17 && o.tellSeen === 0, `${w}x${h}: 6-3's tell under the HUD band ${o.tellSeen}/${o.tellFrames} frames in view`);
+    const f = snakeViewFaults({ ...sn, clock: 'snake' }, 400, phases, top63, [[w, h]]);
+    assert.ok(f.some((x) => /held at 200 px/.test(x)), `${w}x${h}: the verdict passed a high hold the engine cannot show: ${f[0] ?? '(none)'}`);
+  }
+  const deep: Site = { anchorY: 300, levelH: 900 };
+  assert.deepEqual(snakeViewFaults({ ...sn, clock: 'snake' }, 400, phases, deep), []);
+  for (const [w, h] of [...SIDE, ...UP]) {
+    const hi = watch(w, h, sn, 200, on, deep);
+    assert.ok(hi.tellFrames >= 17 && hi.tellSeen >= 0.9 * hi.tellFrames, `${w}x${h} hung 300 down, held 200: tell ${hi.tellSeen}/${hi.tellFrames}`);
+    assert.equal(hi.heroOut, '', `${w}x${h}: ${hi.heroOut}`);
+    const lo = watch(w, h, sn, 400, on, deep);
+    assert.ok(lo.touched && lo.seen >= SNAKE.seen - 1 / 30, `${w}x${h} hung 300 down, held low: in view ${lo.seen.toFixed(2)} s of ${lo.gave.toFixed(2)} s`);
+  }
+});
+
+test('ENG-S4: the verdict judges the view the engine plays: usualZoom is applyZoom\'s, and settledView\'s band, height and top clamp match the real engine at rest on a level shorter than the sideways view, a short and a tall one, both ways', () => {
+  for (const [w, h] of [...SIDE, ...UP]) {
+    for (const site of [{ anchorY: 124, levelH: 900 }, { anchorY: 400, levelH: 1600 }, { anchorY: 0, levelH: 520 }] as const) {
+      const { e } = setup(w, h, { route: 'down-off' }, 7, site);
+      const sv = settledView(w, h, site.levelH, 1);
+      assert.ok(Math.abs(e.camera.viewportHeight - sv.vh) < 0.01, `${w}x${h} level ${site.levelH}: view ${e.camera.viewportHeight} vs ${sv.vh}`);
+      const band = (h > w ? HUD_BAND.port : HUD_BAND.land) / e.zoom;
+      assert.ok(Math.abs(band - sv.band) < 0.01, `${w}x${h}: band ${band} vs ${sv.band}`);
+      assert.ok(Math.abs(e.zoom - Math.max(usualZoom(w, h, site.levelH), h / site.levelH)) < 1e-9, `${w}x${h}: zoom`);
+      // (the engine's own clamp: a view aimed far over the level's top stops at sv.lo, far under its foot at sv.hi)
+      e.camera.y = -5000;
+      e.updateCamera(1 / 30);
+      assert.ok(e.camera.y >= sv.lo - 0.5, `${w}x${h} level ${site.levelH}: the engine showed past the top (${e.camera.y} < ${sv.lo})`);
+    }
+  }
+});

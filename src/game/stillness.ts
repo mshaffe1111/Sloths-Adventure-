@@ -29,6 +29,8 @@ export interface StillBody {
   grounded: boolean;
   /** holding a vine or a rope (a liana's swing may carry him: that is the vine moving, not him) */
   holding: boolean;
+  /** hanging from a rope by his hands (a kind of holding): his creep along it is him moving (BUILD-17: hanging moss hides a still hang) */
+  hanging?: boolean;
 }
 
 export interface StillState {
@@ -38,9 +40,9 @@ export interface StillState {
 
 export const newStill = (): StillState => ({ held: 0 });
 
-/** is he moving on this frame? In the air, always; on a vine, when he climbs; on the ground, at a walk or more */
+/** is he moving on this frame? In the air, always; on a vine, when he climbs; on a rope, when he creeps along it; on the ground, at a walk or more */
 export const moving = (p: StillBody, set: StillSetting): boolean =>
-  p.holding ? Math.abs(p.vy) > set.speed : !p.grounded || Math.abs(p.vx) > set.speed;
+  p.holding ? Math.abs(p.vy) > set.speed || (!!p.hanging && Math.abs(p.vx) > set.speed) : !p.grounded || Math.abs(p.vx) > set.speed;
 
 /** one fixed step: the hold grows while he is still and is gone the frame he moves */
 export function stepStill(s: StillState, p: StillBody, dt: number, set: StillSetting): StillState {
@@ -75,12 +77,19 @@ export interface Cover {
   hanging?: boolean;
   /** dressing only: not a hiding place */
   secret?: boolean;
+  /** a mossy liana (1-7 NEW 6): holding THIS vine (its id) is cover wherever it swings; x, w and y are not read */
+  rope?: number;
 }
 
 /** is he inside cover? (the same place the bush hide uses, watcher.ts `hidden`; whether he is still is the state's business) */
-export function inCover(covers: readonly Cover[], p: { x: number; y: number; grounded: boolean; holding: boolean }): boolean {
+export function inCover(covers: readonly Cover[], p: { x: number; y: number; grounded: boolean; holding: boolean; rope?: number }): boolean {
   for (const c of covers) {
-    if (c.secret || p.x < c.x + 10 || p.x > c.x + c.w - 10) continue;
+    if (c.secret) continue;
+    if (c.rope !== undefined) {
+      if (p.holding && p.rope === c.rope) return true;
+      continue;
+    }
+    if (p.x < c.x + 10 || p.x > c.x + c.w - 10) continue;
     if (c.hanging ? p.holding && p.y > c.y && p.y < c.y + 150 : p.grounded && Math.abs(p.y - c.y) < 10) return true;
   }
   return false;

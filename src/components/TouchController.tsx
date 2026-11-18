@@ -8,6 +8,7 @@ import { refinedControls } from '../game/refinedControls.ts';
 import { CircleTrace } from '../game/circleTrace.ts';
 import { TouchMarks, touchMarksOn, showTouches, subscribeShowTouches } from '../game/touchMarks.ts';
 import { TouchFeedback } from './TouchFeedback.tsx';
+import { cardTrail } from '../game/dotCardHit.ts';
 
 /** a finger that stays within this many CSS px of where it went down, for this long, is held still (the carving's slow way) */
 const STILL_PX = 14;
@@ -145,8 +146,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
     const now = stamp(e);
     // (a finger whose lift was never reported is let go: it must not hold the steering, CT-16)
     G.keepOnly(Array.from(e.touches, (t) => t.identifier), now);
+    cardTrail.keepOnly(Array.from(e.touches, (t) => t.identifier));
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      // (a finger on a box Dot's card was just in is the card's, never the game's: the card slid from under it, dotCardHit.ts R-165.201)
+      if (cardTrail.claim(t.identifier, t.clientX, t.clientY, performance.now())) continue;
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
       G.down(t.identifier, t.clientX, t.clientY, now);
       trace.current.down(t.identifier, t.clientX, t.clientY);
@@ -157,6 +161,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      if (cardTrail.owns(t.identifier)) continue;
       recorder.touch('m', t.identifier, t.clientX, t.clientY, now);
       const sf = still.current.get(t.identifier);
       if (sf && Math.hypot(t.clientX - sf.x, t.clientY - sf.y) > STILL_PX) still.current.delete(t.identifier);
@@ -177,6 +182,10 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
   const onCancel = (e: React.TouchEvent) => {
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
+      if (cardTrail.owns(e.changedTouches[i].identifier)) {
+        cardTrail.release(e.changedTouches[i].identifier, false);
+        continue;
+      }
       recorder.touch('c', e.changedTouches[i].identifier, 0, 0, now);
       G.cancelFinger(e.changedTouches[i].identifier, now);
       trace.current.up(e.changedTouches[i].identifier);
@@ -187,6 +196,10 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      if (cardTrail.owns(t.identifier)) {
+        cardTrail.release(t.identifier, true);
+        continue;
+      }
       recorder.touch('u', t.identifier, t.clientX, t.clientY, now);
       if (!trace.current.circling(t.identifier)) G.up(t.identifier, t.clientX, t.clientY, now);
       // (a short tap that stayed put, at the trunk: a try at the carving that carved nothing)

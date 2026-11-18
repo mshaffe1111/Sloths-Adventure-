@@ -1,0 +1,6 @@
+{
+ "source": "Qwen-Image-Edit-2511 + Pokey's character model 0.6, from his hang_b between two vines 80 units apart (ART 11-13, the lead's picks)",
+ "dir": "reference/art/hf1113/climbcut",
+ "cycle": ["c1-reachR-s3", "c2-bothhigh-s2", "c2-reachLhigh-s2", "c2-bothhigh-s1"],
+ "still": "c2-hangdangle-s2"
+}

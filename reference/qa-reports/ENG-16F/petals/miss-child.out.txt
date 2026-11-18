@@ -1,0 +1,29 @@
+child 1 sealed door {"got":93,"need":95} missed 16 3419:first-liana:b1@0.77 17125:rest-log:d@0.50 21239:snakes-met:b2@0.77 32863:risers:b1@0.88 37138:rest-dip:c@0.50 42809:gorge:in@0.70 43549:gorge:b1@0.84 44569:gorge:b2@0.85 34439:risers:b2@0.11 34614:risers:b2@0.74 5469:hang-low:qe@0.18 37583:rest-dip:x1@0.15 31153:rest-steps:z@0.21 19246:snakes-met:b1@0.10 19366:snakes-met:b1@0.50 33168:risers:r1-1@0.13
+child 2 sealed door {"got":90,"need":94} missed 17 9545:rest-log:f@0.23 10294:rest-log:d@0.50 12630:chain:cb@0.60 21207:snakes-met:b2@0.77 24046:snake-on-vine:b1@0.86 24906:snake-on-vine:out@0.25 30651:rest-hump:m@0.27 33168:risers:b1@0.88 41684:rest-roots:d@0.50 43674:gorge:b1@0.84 19945:snakes-met:s1-1@0.17 18824:snakes-met:qe@0.83 32563:risers:in@0.91 5431:hang-low:qe@0.84 26896:rest-dip:x1@0.88 8715:hang-low:hu2@0.13 970:arrival:in@0.92
+
+BY PIECE
+rest-log:d 2
+snakes-met:b2 2
+risers:b1 2
+gorge:b1 2
+risers:b2 2
+hang-low:qe 2
+rest-dip:x1 2
+snakes-met:b1 2
+first-liana:b1 1
+rest-dip:c 1
+gorge:in 1
+gorge:b2 1
+rest-steps:z 1
+risers:r1-1 1
+rest-log:f 1
+chain:cb 1
+snake-on-vine:b1 1
+snake-on-vine:out 1
+rest-hump:m 1
+rest-roots:d 1
+snakes-met:s1-1 1
+snakes-met:qe 1
+risers:in 1
+hang-low:hu2 1
+arrival:in 1

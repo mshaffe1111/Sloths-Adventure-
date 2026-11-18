@@ -1,0 +1,559 @@
+{
+ "about": "The meter's coverage table (METER-2a, R-165.272; METER-COVERAGE.md \u00a73): one entry per piece id the code has (coveragecheck.ts reads the ids from the code). bot = the bot code that plays it, channel = the score.ts code that prices it, as file#symbol; null = none yet. rows = METER-COVERAGE.md \u00a72's # rows. A piece a built stage uses must have both, or be on tools/difficulty/coverage.known.json. shippedWorlds: the worlds the testers play, every stage of which the gate holds (plus every stage-table row); seeds: the layouts it scores, both settings.",
+ "shippedWorlds": [
+  1
+ ],
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "pieces": {
+  "beat:Dot's knots": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:animals": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:butlers": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:cages": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:cakes": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:capuchin guards": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:capuchin lookouts": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:capuchin thieves": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:chairs": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:chase": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#chaseChallenges",
+   "rows": [
+    "16"
+   ]
+  },
+  "beat:cocoons": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:crumbling branches": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "9"
+   ]
+  },
+  "beat:eaglet nests": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:falling rocks": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "36"
+   ]
+  },
+  "beat:fruit trees": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:humming threads": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "43"
+   ]
+  },
+  "beat:orchids": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "40"
+   ]
+  },
+  "beat:patience spots": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "39"
+   ]
+  },
+  "beat:pickup arcs": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#OFF_ROUTE",
+   "rows": []
+  },
+  "beat:plugged falls": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:pools": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:push logs and boulders": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.puzzle",
+   "rows": [
+    "50"
+   ]
+  },
+  "beat:puzzle rooms": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.pastRoom",
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.puzzle",
+   "rows": [
+    "59"
+   ]
+  },
+  "beat:relics": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.goalNow",
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.puzzle",
+   "rows": [
+    "32"
+   ]
+  },
+  "beat:ring waves": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#creatureBits",
+   "rows": [
+    "4"
+   ]
+  },
+  "beat:rivers": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideChallenges",
+   "rows": [
+    "20"
+   ]
+  },
+  "beat:rolling hazards": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rollingChallenges",
+   "rows": [],
+   "note": "beats.ts off(): a rolling nut or fruit the route never meets; one it meets is priced where it meets him (rollingChallenges). In the code since ENG-CL (7); its entry added by FIX-22"
+  },
+  "beat:seamstress": {
+   "bot": null,
+   "channel": null,
+   "rows": []
+  },
+  "beat:silk sheets": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "39"
+   ]
+  },
+  "beat:surging falls": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "49"
+   ]
+  },
+  "beat:swaying orchids": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "23"
+   ]
+  },
+  "beat:teapots": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "30"
+   ]
+  },
+  "beat:thorn vines": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "33"
+   ]
+  },
+  "beat:watched stretches": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "13",
+    "15"
+   ]
+  },
+  "brick:bites": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "24"
+   ]
+  },
+  "brick:gone": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "21"
+   ]
+  },
+  "creature:ant_hazard": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:boa": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#creatureBits",
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:boss": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "58"
+   ]
+  },
+  "creature:caiman": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4",
+    "46"
+   ]
+  },
+  "creature:eagle": {
+   "bot": "tools/inspect/firsttimer.ts#stillCoverNear",
+   "channel": "tools/difficulty/score.ts#watchChallenges",
+   "rows": [
+    "13",
+    "15"
+   ]
+  },
+  "creature:frog": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:harpy": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:jaguar": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:ocelot": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:snake": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#creatureBits",
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:spider": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:tayra": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "creature:turtle": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "4"
+   ]
+  },
+  "move:bounce": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.bounceBack",
+   "channel": null,
+   "rows": [
+    "3"
+   ]
+  },
+  "move:climb": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.climb",
+   "rows": [
+    "8"
+   ]
+  },
+  "move:draft": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "38"
+   ]
+  },
+  "move:drop": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#MOVE_CHANNEL.drop",
+   "rows": [
+    "1"
+   ]
+  },
+  "move:glide": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": null,
+   "rows": [
+    "34"
+   ]
+  },
+  "move:hop": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.startJump",
+   "channel": "tools/difficulty/score.ts#moveOf",
+   "rows": [
+    "1"
+   ]
+  },
+  "move:jump": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.jumpFor",
+   "channel": "tools/difficulty/score.ts#moveOf",
+   "rows": [
+    "1",
+    "2"
+   ]
+  },
+  "move:lift": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rideChallenges",
+   "rows": [
+    "25"
+   ]
+  },
+  "move:presumed": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.startJump",
+   "channel": null,
+   "rows": [
+    "1"
+   ]
+  },
+  "move:rope": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#OTHER_BITS.climb",
+   "rows": [
+    "7"
+   ],
+   "note": "a shimmy ledge to ledge, self-paced (SP), priced as a climb; its let-go is onto the far ledge it overhangs (route.ts rope edges). A rope whose end let-go is a jump: row 7's later half (3-2). Channel added by FIX-22 (2-2's spur)"
+  },
+  "move:swing": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.lianaWait",
+   "channel": "tools/difficulty/score.ts#swingChallenges",
+   "rows": [
+    "10",
+    "11"
+   ]
+  },
+  "move:timedHop": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideChallenges",
+   "rows": [
+    "20",
+    "23"
+   ],
+   "note": "bot: the float-wait at a bank and the ride on a drifting log (intend); the board/step-off on a stage clock is METER-2a step 4"
+  },
+  "move:walk": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#MOVE_CHANNEL.walk",
+   "rows": [
+    "1"
+   ]
+  },
+  "pad:beat": {
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.breath",
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "21"
+   ],
+   "note": "a beat row's pad: board on the breath (up or shivering, once a period), off before it goes under (padBeatClock; FIX-22)"
+  },
+  "pad:weight": {
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.keepHopping",
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "21"
+   ],
+   "note": "a sinking pad's dwell: off before it goes under (its count from landing, padSizeClock), always up when he boards (FIX-22)"
+  },
+  "platform:bouncy": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.bounceBack",
+   "channel": "tools/difficulty/score.ts#moveOf",
+   "rows": [
+    "3"
+   ]
+  },
+  "platform:drift": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "20"
+   ]
+  },
+  "platform:fragile": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#CRUMBLE_DY",
+   "rows": [
+    "9"
+   ]
+  },
+  "platform:moving": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "20",
+    "25"
+   ],
+   "note": "a ride.ts ride, a lift.ts lift or a sinking pad (gen2/rideLay.ts layPads); a moving floor on no clock the meter reads is refused (rideChallenges)"
+  },
+  "platform:solid": {
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.intend",
+   "channel": "tools/difficulty/score.ts#landBits",
+   "rows": [
+    "1"
+   ]
+  },
+  "ride:across": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "20"
+   ]
+  },
+  "ride:up": {
+   "bot": null,
+   "channel": "tools/difficulty/score.ts#rideTiming",
+   "rows": [
+    "25"
+   ]
+  },
+  "skill:glide": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "34"
+   ]
+  },
+  "skill:shimmy": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "7"
+   ]
+  },
+  "zone:bolt": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "56"
+   ]
+  },
+  "zone:crumble": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "48"
+   ]
+  },
+  "zone:dark": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "28"
+   ]
+  },
+  "zone:geyser": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "55"
+   ]
+  },
+  "zone:spore": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "30"
+   ]
+  },
+  "zone:tide": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "44"
+   ]
+  },
+  "zone:web": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "41"
+   ]
+  },
+  "zone:wind": {
+   "bot": null,
+   "channel": null,
+   "rows": [
+    "35"
+   ]
+  }
+ }
+}

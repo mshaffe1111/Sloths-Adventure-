@@ -23,7 +23,9 @@ const span = (st: GeneratedStage) => {
 };
 
 test('LV-9: no more than 4000 px between flags on any hand-built stage, layouts 1-3, Normal and Easy', () => {
-  assert.ok(across.length >= 30, `${across.length} stages`);
+  // (the stages it walks: 28 since the hand-built 2-1 and 2-2 left for gen2 (ENG-W2 11-14, on link #5 by INT-11), where a rolled stage's
+  //  flags are held by gen2's own verdict, rolledFlagBreaches; it was 30. The floor keeps the walk from going quietly empty)
+  assert.ok(across.length >= 28, `${across.length} stages`);
   let longest = 0;
   for (const c of across) {
     for (const lay of [1, 2, 3]) {

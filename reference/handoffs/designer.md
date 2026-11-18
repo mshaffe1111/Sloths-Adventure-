@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -8,7 +8,9 @@ Read first, in order:
 - reference/packets/2026-11-11/CONTENT-1-2-relay.md and DESIGN-1-2-notes.md (1-2's packet and its proofs);
 - reference/engine/NODES.md §8 (the node code and its key);
 - reference/engine/W1-NEW-SECTIONS.md (every round);
-- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
+- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc;
+- the hardness meter: reference/design/DIFFICULTY.md (every stage's Normal target, the points, the levers) and its read-only prototype
+  `npx tsx tools/difficulty/score.ts --check` then `--stages <ids> --seeds 1-4 --detail` (on t-diff-algo until it merges).
 
 Every ruling below cites the file and section where it's written in full.
 
@@ -119,6 +121,12 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
+- **The hardness meter (DIFF-ALGO, 11-12, R-165.172; waiting on the lead's PASS):** Normal 0-100 in challenge bits (DIFFICULTY.md §1-§2);
+  SCALE set once by 1-1 Normal = 4 (Matt's rating), never per stage. World 1 reads Normal 4.0 / 2.0 / 1.1, Easy 2.4 / 0.9 / 0.6 (4
+  layouts), on Matt's 4, 2, 1. FREE_BITS = 1 (half the reach is free) is the one constant the anchors move with. Open: the meter's
+  build and gate (a later Opus packet, DIFFICULTY.md §6), the inspector's two route defects first (§5 below), R-165.173 (1-1's double
+  rises to 1-4: 1-1 reads above its 2-3 slot), restraint (the chain's "don't press") has no bits yet, overlap is untested on real stages.
+
 - **From the 1-2 packets (11-11):**
   - BOTH PACKETS PASSED the packet Critic at t-design-1-2@d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md; eight
     rounds). After that head only the Critic's two builder notes on ENGINE item 6 went in (the bloom at 32 px, the allamanda as
@@ -180,6 +188,14 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 5. Traps (each of these happened)
 
+- **The inspector's route jumps OVER blocks (DIFF-ALGO, 11-12):** routeJumps links two banks over a raised hump or a lower dip (1-2's
+  root humps and root steps), and inspectJumps then calls the space under that jump a 231 px pit. A player hops onto the hump or steps
+  down and out. tools/difficulty/score.ts corrects it from the real platforms; the inspector itself is not fixed yet.
+- **The inspector cannot build 1-2 (or any designed arc) on Easy:** stages.ts builds it for Normal and easyStage refuses it ("easyStage:
+  1-2 is a gen2 stage built for Normal"). Build through realPlay.ts (setDifficulty first), as score.ts and tierBots.ts do.
+- **stageTime.ts modelStage reads about 1 s on 4-3:** floor a rate's minutes at the route's own clock.
+- **The tier bots' Easy personas are other testers:** never read Easy vs Normal from them; score both settings with ONE reference thumb.
+
 - **The level check counts no double on 1-2 to 1-5** (levelCheck.ts:132-134): a stage moved to gen2 before 1-6 needs `EARLY_DOUBLE`,
   or every double block reads as unreachable and its section is swapped out with no reason printed.
 - **The node code's V3 knows a move only from a T in the stage** (nodeCode.ts:138-141), not from `lessons`.
@@ -227,3 +243,10 @@ Every ruling below cites the file and section where it's written in full.
 - **A tip in a brick is not a line on the screen** (1-2, 11-12): placed 1,000 px before the lesson, it was still never shown (coach lines and Dot's 30 s spacing). Walk the real page from the start and read the card, every lesson line, before calling it taught.
 - **A brick's flag socket does nothing on a rolled stage:** the rolled-flag pass lays every flag by Matt's rule. Design flags as that rule, not as sockets.
 - **The time model counts 1.5 s a mushroom** (stageTime.ts TIME.bounceExtra): a chain-heavy level reads about 40 s longer than it plays.
+- **A finish that assumes level ground meets a rolled join (BUILD-18b, 1-8, 11-14):** the pipeline rolls the join before every section
+  (pipeline.ts ~2402: walk, step or pit; World 1's floorRoll adds pit weight even on quiet nodes) and no brick can ask for a walk in. 1-8
+  seed 2 rolls a pit at the still fork's start (layStillFork: "ground breaks"); layouts with a step into the tip leave the flag inside
+  layTip's far bough. Both are ENGINE-WORTHY with the lead; never "fix" them by refusing the rolls in the seed list.
+- **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
+  crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
+  Look at the platforms AT the settle (log the settle's input) before blaming the level's data.

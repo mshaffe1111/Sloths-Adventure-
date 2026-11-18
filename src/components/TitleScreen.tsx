@@ -72,6 +72,8 @@ interface TitleScreenProps {
   onUnlockToggled?: () => void;
   /** badges earned, shown on the Trophies button */
   badgeCount?: number;
+  /** the vine pair's feel test (a QA build only, feelPairStage.ts): a row on the Settings card's About page */
+  onFeelTest?: () => void;
 }
 
 /**
@@ -100,6 +102,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   skills,
   onUnlockToggled,
   badgeCount,
+  onFeelTest,
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
@@ -325,6 +328,14 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           onInstallDesktop={onInstallDesktop}
           isInstalled={isInstalled}
           onTapShaffer={tapShaffer}
+          onFeelTest={
+            onFeelTest
+              ? () => {
+                  setMenuOpen(false);
+                  leave(onFeelTest);
+                }
+              : undefined
+          }
           creditMsg={creditMsg}
         />
       )}

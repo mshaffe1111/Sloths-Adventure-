@@ -1,0 +1,77 @@
+{
+ "tag": "bough",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.9
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, trees behind, leaves canopy, people, animals, sloth, cropped top, curved branch, diagonal, fork, two branches, tree trunk",
+ "items": [
+  {
+   "name": "bough-a-11",
+   "prompt": "one single very long straight horizontal living tree bough, a thick rainforest branch running perfectly level from the left edge of the picture to the right edge, both ends cut off by the picture edges, its top a straight flat even line of bright green moss you could walk along, small fern fronds and a few tiny bromeliads sitting on the moss, its side warm reddish-brown bark with deep lengthwise furrows and knots, its underside thick and rounded, curving under like a log seen from the side, shaded darker brown toward the bottom, a few short moss strands hanging from the underside. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 11,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-a-23",
+   "prompt": "one single very long straight horizontal living tree bough, a thick rainforest branch running perfectly level from the left edge of the picture to the right edge, both ends cut off by the picture edges, its top a straight flat even line of bright green moss you could walk along, small fern fronds and a few tiny bromeliads sitting on the moss, its side warm reddish-brown bark with deep lengthwise furrows and knots, its underside thick and rounded, curving under like a log seen from the side, shaded darker brown toward the bottom, a few short moss strands hanging from the underside. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 23,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-a-37",
+   "prompt": "one single very long straight horizontal living tree bough, a thick rainforest branch running perfectly level from the left edge of the picture to the right edge, both ends cut off by the picture edges, its top a straight flat even line of bright green moss you could walk along, small fern fronds and a few tiny bromeliads sitting on the moss, its side warm reddish-brown bark with deep lengthwise furrows and knots, its underside thick and rounded, curving under like a log seen from the side, shaded darker brown toward the bottom, a few short moss strands hanging from the underside. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 37,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-a-53",
+   "prompt": "one single very long straight horizontal living tree bough, a thick rainforest branch running perfectly level from the left edge of the picture to the right edge, both ends cut off by the picture edges, its top a straight flat even line of bright green moss you could walk along, small fern fronds and a few tiny bromeliads sitting on the moss, its side warm reddish-brown bark with deep lengthwise furrows and knots, its underside thick and rounded, curving under like a log seen from the side, shaded darker brown toward the bottom, a few short moss strands hanging from the underside. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 53,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-b-11",
+   "prompt": "one single very long straight horizontal mossy tree limb seen from the side, as thick and heavy as a fallen log, spanning the whole picture width edge to edge, flat level mossy walkable top, rounded bark underside in deep shade, rich brown bark with long furrows, green moss and lichen patches on the side, short hanging moss and thin roots dangling below it. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 11,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-b-23",
+   "prompt": "one single very long straight horizontal mossy tree limb seen from the side, as thick and heavy as a fallen log, spanning the whole picture width edge to edge, flat level mossy walkable top, rounded bark underside in deep shade, rich brown bark with long furrows, green moss and lichen patches on the side, short hanging moss and thin roots dangling below it. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 23,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-b-37",
+   "prompt": "one single very long straight horizontal mossy tree limb seen from the side, as thick and heavy as a fallen log, spanning the whole picture width edge to edge, flat level mossy walkable top, rounded bark underside in deep shade, rich brown bark with long furrows, green moss and lichen patches on the side, short hanging moss and thin roots dangling below it. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 37,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  },
+  {
+   "name": "bough-b-53",
+   "prompt": "one single very long straight horizontal mossy tree limb seen from the side, as thick and heavy as a fallen log, spanning the whole picture width edge to edge, flat level mossy walkable top, rounded bark underside in deep shade, rich brown bark with long furrows, green moss and lichen patches on the side, short hanging moss and thin roots dangling below it. hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, isolated on a flat solid magenta background, the magenta filling everything above and below it",
+   "seed": 53,
+   "w": 1792,
+   "h": 768,
+   "steps": 30
+  }
+ ]
+}

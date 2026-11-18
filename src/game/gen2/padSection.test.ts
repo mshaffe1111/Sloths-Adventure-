@@ -1,0 +1,310 @@
+/**
+ * A pond of sinking pads as a gen2 section (ENG-22's EXACT NEXT STEP 3, written by BUILD-22, 11-15; modelled on riverSection.test.ts):
+ * place `pads` lays the far bank the row's width past `after`, level, its water a river gap (a splash-back on a safe row, else deep), and
+ * asks the crossing as a ride; layStage lays the still water, the pads and stones and their clocks from the same row (rideLay layPads)
+ * BEFORE the check, so padFaults judges what the game plays; every padFaults rule is planted on a built stage and names itself; in the
+ * real engine (RealPlay) a weight pad sinks under him and a beat row breathes in step, weight or not. World-neutral (level.md rules
+ * 21-22): proven on World 2's ground and World 6's.
+ */
+import '../headlessDom.ts';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { buildGen2Stage, layLocal, planBudget, rngFor } from './pipeline.ts';
+import { PAD_FAIR, PAD_LAY, PAD_SIZES, padFaults, padRowWidth, type PadRow } from './rideLay.ts';
+import { cfg as toyCfg, kit as toyKit, meadow } from './toyWorld.ts';
+import { W2_GROUND, W2_PADS } from './worlds/w2.ts';
+import { W6_GROUND } from './worlds/w6.ts';
+import { withTestStage } from './listed.ts';
+import { keptFoes } from './pipeline.ts';
+import { packPlan, plantSeedList } from './seedList.ts';
+import { w2Finish } from './worlds/w2.ts';
+import { RealPlay, withFixtureConfig } from '../realPlay.ts';
+import { crownOpen, padShows } from '../pieces/padPiece.ts';
+import { beatOf } from '../clock.ts';
+import type { Gen2Stage, SectionPiece, SectionTemplate, WorldKit, WorldManifest } from './types.ts';
+import type { Difficulty } from '../difficulty.ts';
+import type { LevelConfig, Platform } from '../types.ts';
+
+// ───────────────────────── a toy pond section on any world's ground ─────────────────────────
+const near: SectionPiece = { key: 'near', shape: 'bank', w: [340, 340], place: { kind: 'start' }, main: true };
+const pond = (row: string, id = 'toy-pond'): SectionTemplate => ({
+  id, name: 'a pond', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [near, { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'pads', after: 'near', row }, main: true, landing: true }],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+});
+const kitOn = (ground: { y: number; bankH: number }, sections: SectionTemplate[], pads: WorldManifest['pads'] = W2_PADS): WorldKit => ({
+  ...toyKit,
+  manifest: { ...toyKit.manifest, world: 2, ground: { ...toyKit.manifest.ground, y: ground.y, bankH: ground.bankH }, corridor: { top: ground.y - 260, bottom: ground.y + 60, soft: 80 }, pads, sections: [{ ...meadow, phases: ['start', 'rest', 'ki', 'sho', 'ten', 'ketsu', 'goal'], mirrorable: false, sockets: meadow.sockets.filter((k) => k.role !== 'prop') }, ...sections], creatures: [], props: [], pairs: [], tips: {} },
+});
+const budgetOf = (k: WorldKit, s: Difficulty = 'normal') => planBudget(toyCfg('5-3', 'sprint'), k.manifest, s);
+const ROWS = Object.keys(W2_PADS) as Array<keyof typeof W2_PADS>;
+
+// ───────────────────────── the place rule ─────────────────────────
+for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as const) {
+  for (const s of ['normal', 'easy'] as const) {
+    test(`${name} ground, ${s}: place 'pads' lays the far bank the row's width past 'after', level; the water is a river gap; the crossing is a ride`, () => {
+      const k = kitOn(ground, []);
+      for (const row of ROWS) {
+        const L = layLocal(pond(row), budgetOf(k, s), rngFor(3, 1), false, { pads: k.manifest.pads });
+        const a = L.pieces.find((p) => p.key === 'near')!, b = L.pieces.find((p) => p.key === 'far')!;
+        assert.equal(b.x - (a.x + a.w), padRowWidth(W2_PADS[row]), `${row}: the water is the row's width`);
+        assert.equal(b.y, a.y, `${row}: the banks are level`);
+        const g = L.gaps.find((q) => q.river === row)!;
+        assert.ok(g, `${row}: its gap is the pond's`);
+        assert.equal(!!g.soft, !!(W2_PADS[row] as PadRow).safe, `${row}: a safe row splashes him back`);
+        assert.equal(!!g.water, !(W2_PADS[row] as PadRow).safe, `${row}: a deep row is water`);
+        assert.equal(L.asks!.find((q) => q.key === 'far')!.move, 'ride', `${row}: the crossing is a ride, never a ${Math.round(g.x1 - g.x0)} px jump`);
+      }
+    });
+  }
+}
+
+test("place 'pads' fails by name: a row the world lacks, a world with no pad table, a mirrored section", () => {
+  const k = kitOn(W2_GROUND, []);
+  assert.throws(() => layLocal(pond('lagoon'), budgetOf(k), rngFor(1), false, { pads: k.manifest.pads }), /pad row "lagoon"/);
+  assert.throws(() => layLocal(pond('hop'), budgetOf(k), rngFor(1), false, {}), /no pad row of that name/);
+  assert.throws(() => layLocal(pond('hop'), budgetOf(k), rngFor(1), true, { pads: k.manifest.pads }), /mirrored section/);
+});
+
+// ───────────────────────── a SPUR (FIX-22): the far end a dead-end stone, the way on from the near bank ─────────────────────────
+const SPUR_ROWS: WorldManifest['pads'] = { ...W2_PADS, spur: { by: 'weight', pads: ['small', 'small', 'stone'], gap: 70, spur: true, safe: true } };
+const spurPond = (up: number, o: { rope?: string | null; ledgeAt?: number; row?: string } = {}): SectionTemplate => ({
+  id: 'toy-spur', name: 'a spur', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [420, 420], place: { kind: 'start' }, main: true },
+    { key: 'vine', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'near', at: [270 / 420, 270 / 420], h: [up, up] } },
+    { key: 'ledge', shape: 'branch', w: [200, 200], place: { kind: 'over', on: 'near', at: [o.ledgeAt ?? 220 / 420, o.ledgeAt ?? 220 / 420], dy: [-up, -up] }, main: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'pads', after: 'near', row: o.row ?? 'spur', ...(o.rope === null ? {} : { rope: o.rope ?? 'ledge' }) }, main: true, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: -up, sockets: [], mirrorable: false,
+});
+for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as const) {
+  for (const s of ['normal', 'easy'] as const) {
+    test(`${name} ground, ${s}: a spur pond lays its far bank level with the rope's ledge, past a double over the dead-end stone, the stone against its foot; the rope crosses the pond`, () => {
+      const k = kitOn(ground, [], SPUR_ROWS);
+      const L = layLocal(spurPond(190), budgetOf(k, s), rngFor(3, 1), false, { pads: k.manifest.pads });
+      const a = L.pieces.find((p) => p.key === 'near')!, h = L.pieces.find((p) => p.key === 'ledge')!, b = L.pieces.find((p) => p.key === 'far')!;
+      assert.equal(b.x - (a.x + a.w), padRowWidth(SPUR_ROWS.spur), 'the water is the row\'s width, no water past the stone');
+      assert.equal(padRowWidth(SPUR_ROWS.spur), 70 + 130 + 70 + 130 + 70 + PAD_LAY.stoneW, 'a spur has no gap past its stone');
+      assert.equal(b.y, h.y, 'the far bank is level with the rope\'s ledge');
+      assert.ok(a.y + PAD_LAY.drop - b.y > 189, 'out of a double\'s reach from the stone');
+      assert.equal(b.ropeFrom, 'ledge', 'the rope hangs from the ledge to the far bank');
+      assert.equal(L.asks!.find((q) => q.key === 'far')!.yLand, a.y, 'the pond is asked as a ride at its own level');
+    });
+  }
+}
+test("a spur fails by name: no rope, a rope on a row that is no spur, a ledge reaching over the pond, a far bank inside a double's reach", () => {
+  const k = kitOn(W2_GROUND, [], SPUR_ROWS);
+  const lay = (t: SectionTemplate) => layLocal(t, budgetOf(k), rngFor(1), false, { pads: k.manifest.pads });
+  assert.throws(() => lay(spurPond(190, { rope: null })), /a spur with no rope/);
+  assert.throws(() => lay(spurPond(190, { row: 'hop' })), /the row is no spur/);
+  assert.throws(() => lay(spurPond(190, { ledgeAt: 0.8 })), /it would stand over the pond/);
+  assert.throws(() => lay(spurPond(140)), /inside a double's reach/);
+});
+test('a spur stage: the stone against the far bank\'s foot is the pond\'s end, named on its zone; padFaults judges no water past it; the rope is out of reach from every pad and the stone', () => {
+  const k0 = kitOn(W2_GROUND, [spurPond(190)], SPUR_ROWS);
+  const k: WorldKit = { ...k0, manifest: { ...k0.manifest, moves: [...k0.manifest.moves, 'climb'] } };
+  let st: Gen2Stage | null = null;
+  for (let seed = 1; seed <= 40 && !st; seed++) {
+    const t = buildGen2Stage({ config: toyCfg('5-3', 'sprint'), kit: k, seed, difficulty: 'normal' });
+    if (t.rivers?.some((r) => r.spur)) st = t;
+  }
+  assert.ok(st, 'a roll in 1-40 lays the spur');
+  const z = st!.rivers!.find((r) => r.spur)!;
+  const stone = st!.platforms.find((p) => !p.pad && p.style === 'moss_stone' && p.x + p.width === z.x1)!;
+  assert.ok(stone, 'the last piece is a stone ending where the pond ends');
+  assert.deepEqual(z.spur, { x: Math.round(stone.x + stone.width / 2), y: stone.y });
+  const wall = st!.platforms.find((p) => p.type === 'solid' && Math.abs(p.x - z.x1) <= 1 && p.y < stone.y)!;
+  assert.ok(wall && stone.y - wall.y > 189, 'the far bank stands against the stone, past a double');
+  assert.deepEqual(padFaults(st!), []);
+  const rope = (st!.ropes ?? []).find((r) => r.x0 < z.x0 && r.x1 > z.x1)!;
+  assert.ok(rope, 'a rope spans the pond');
+  for (const p of st!.platforms.filter((q) => q.x >= z.x0 && q.x < z.x1)) assert.ok(p.y - rope.y > 189 + 48, `the rope is out of reach from the floor at x ${p.x}`);
+});
+
+// ───────────────────────── the stage: pads, stones and clocks laid, judged ─────────────────────────
+/** a toy-world stage with one pond of `row`: the first seed in 1-40 whose roll lays it */
+function pondStage(ground: { y: number; bankH: number }, row: string, s: Difficulty = 'normal', pads: WorldManifest['pads'] = W2_PADS): Gen2Stage {
+  const k = kitOn(ground, [pond(row)], pads);
+  for (let seed = 1; seed <= 40; seed++) {
+    const st = buildGen2Stage({ config: toyCfg('5-3', 'sprint'), kit: k, seed, difficulty: s });
+    if (st.platforms.some((p) => p.pad)) return st;
+  }
+  throw new Error(`no roll of 1-40 lays the pond ${row}`);
+}
+
+for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as const) {
+  for (const s of ['normal', 'easy'] as const) {
+    test(`${name} ground, ${s}: each of World 2's pad rows rolls clean, its pads, stones and clocks laid as its data says, fair by padFaults`, () => {
+      for (const row of ROWS) {
+        const data = W2_PADS[row] as PadRow;
+        const st = pondStage(ground, row, s);
+        assert.deepEqual(st.gen2.errors, [], `${row}: the roll is clean`);
+        assert.deepEqual(padFaults(st), [], `${row}: fair`);
+        const r = st.rivers!.find((z) => z.speed === 0)!;
+        assert.ok(r, `${row}: still water`);
+        assert.equal(!!r.safe, !!data.safe, `${row}: safe as its data says`);
+        const inside = st.platforms.filter((p) => p.x >= r.x0 && p.x + p.width <= r.x1).sort((a, b) => a.x - b.x);
+        assert.deepEqual(inside.map((p) => (p.pad ? (p.pad.by === 'beat' ? 'beat' : p.pad.look) : 'stone')), data.pads.map((k) => (k === 'stone' ? 'stone' : data.by === 'beat' ? 'beat' : k)), `${row}: the row in order`);
+        for (const p of inside.filter((q) => q.pad)) {
+          assert.equal(p.width, PAD_SIZES[p.pad!.by === 'beat' ? (data.pads[inside.indexOf(p)] as 'small' | 'big') : (p.pad!.look as 'small' | 'big')].w, `${row}: a pad its size's width`);
+          assert.ok(st.clocks!.some((c) => c.id === p.pad!.clock), `${row}: its clock ${p.pad!.clock} is listed`);
+        }
+        for (const p of inside.filter((q) => !q.pad)) assert.equal(p.width, PAD_LAY.stoneW, `${row}: a stone`);
+        // (Easy stretches every pad clock by the row's stretch, never shortens it)
+        const def = st.clocks!.find((c) => c.id === inside.find((q) => q.pad)!.pad!.clock)!;
+        const nb = beatOf(def, false), eb = beatOf(def, true);
+        assert.ok(Math.abs(eb.period - nb.period * PAD_LAY.easyStretch) < 1e-6, `${row}: Easy's breath is x${PAD_LAY.easyStretch} (${eb.period} vs ${nb.period})`);
+        // (riding petals sit on the pads their data names)
+        assert.equal(st.collectibles.filter((c) => c.rides && inside.some((q) => q.id === c.rides!.id)).length, data.petals?.length ?? 0, `${row}: its riding petals`);
+      }
+    });
+  }
+}
+
+// ───────────────────────── padFaults: each rule planted on a built stage, by name ─────────────────────────
+test('padFaults: each rule, planted on a built pond, is caught and names itself', () => {
+  const base = pondStage(W2_GROUND, 'back');
+  const pads = base.platforms.filter((p) => p.pad);
+  const plant = (f: (st: Gen2Stage) => void): string[] => {
+    const st = structuredClone(base) as Gen2Stage;
+    f(st);
+    return padFaults(st);
+  };
+  const clockOf = (st: Gen2Stage) => st.clocks!.find((c) => c.id === pads[0].pad!.clock)!;
+  const has = (faults: string[], re: RegExp, what: string) => assert.ok(faults.some((e) => re.test(e)), `${what}: ${JSON.stringify(faults)}`);
+  assert.deepEqual(padFaults(base), [], 'the base is fair');
+  has(plant((st) => { st.clocks = st.clocks!.filter((c) => c.id !== pads[0].pad!.clock); }), /is not in the stage's clocks/, 'an unlisted clock');
+  has(plant((st) => { st.platforms.find((p) => p.id === pads[0].id)!.width = PAD_FAIR.minW - 10; }), /px wide, under 124/, 'a pad too narrow');
+  // (a weight clock that holds 0.6 s: its 'off' cut so the warn starts sooner)
+  has(plant((st) => { const d = clockOf(st); const off = d.phases.find((ph) => ph.name === 'off')!; off.seconds = Math.max(0.05, off.seconds - (PAD_FAIR.hold - 0.6)); }), /holds him .* under 1/, 'a pad that holds under 1.0 s');
+  has(plant((st) => { const d = clockOf(st); const w = d.phases.find((ph) => ph.name === 'warn')!; d.phases.find((ph) => ph.name === 'off')!.seconds += w.seconds - 0.2; w.seconds = 0.2; }), /shiver lasts 0.2 s, under 0.4/, 'a shiver too short');
+  // (the 'whole again within PAD_FAIR.back' rule cannot be planted on a stage: a sunk pad's count sits at most RIDE.padRise (0.6 s) past
+  // its hold, so it is back within hold + 0.6 s whatever its clock; it binds only if padRise grows past 3.4 s. Named in BUILD-22's REPORT)
+  // (water: move the far bank's side of the pond out past a hop, and a stone in close)
+  has(plant((st) => { const p = st.platforms.find((q) => q.id === pads[0].id)!; p.x += 200; }), /past a hop \(160\)/, 'water past a hop');
+  has(plant((st) => { const p = st.platforms.find((q) => q.id === pads[1].id)!; const a = st.platforms.find((q) => q.id === pads[0].id)!; p.x = a.x + a.width + 10; }), /under 20/, 'two pieces closer than 20 px');
+  // (a stone: the breath row's, between its two runs)
+  const br = pondStage(W2_GROUND, 'breath');
+  const stone = br.platforms.find((p) => !p.pad && p.width === PAD_LAY.stoneW && br.rivers!.some((z) => z.speed === 0 && p.x > z.x0 && p.x < z.x1))!;
+  assert.ok(stone, "the 'breath' row has its stone");
+  const narrow = structuredClone(br) as Gen2Stage;
+  narrow.platforms.find((q) => q.id === stone.id)!.width = 100;
+  has(padFaults(narrow), /a stone 100 px wide, under 124/, 'a stone too narrow');
+});
+
+test('padFaults: a beat row whose breath is too short to cross a run is caught (the breath row, its up cut to 0.8 s)', () => {
+  const st = pondStage(W2_GROUND, 'breath');
+  assert.deepEqual(padFaults(st), []);
+  const def = st.clocks!.find((c) => c.id === st.platforms.find((p) => p.pad)!.pad!.clock)!;
+  def.phases.find((ph) => ph.name === 'off')!.seconds = 0.8;
+  assert.ok(padFaults(st).some((e) => /beat pads in a run/.test(e)), JSON.stringify(padFaults(st)));
+});
+
+// ───────────────────────── in the real engine ─────────────────────────
+const ID = '2-93';
+const cfg: LevelConfig = { ...toyCfg(ID, 'sprint'), unlocked: true };
+/** RealPlay on a toy pond, rolled the game's way (the listed row, a planted one-seed list, World 2's finish) */
+function inPlay<T>(row: string, f: (sim: RealPlay) => T): T {
+  const kit = kitOn(W2_GROUND, [pond(row)]);
+  let seed = 1;
+  let st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  while (!st.platforms.some((p) => p.pad) && seed < 40) st = buildGen2Stage({ config: cfg, kit, seed: ++seed, difficulty: 'normal' });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try {
+      return withFixtureConfig(cfg, () => f(new RealPlay(ID, seed, cfg)));
+    } finally {
+      undo();
+    }
+  });
+}
+const padsOf = (sim: RealPlay): Platform[] => (sim as unknown as { platforms: Platform[] }).platforms.filter((p) => p.pad);
+
+test('in play: a weight pad holds him, shivers, sinks under him, and is whole again once he has gone (the first pad, safe)', () => {
+  inPlay('first', (sim) => {
+    const pad = padsOf(sim)[0];
+    assert.ok(pad && padShows(pad)!.solid, 'the pad is up before he comes');
+    sim.p.x = pad.x + pad.width / 2;
+    sim.p.y = pad.y - 120;
+    sim.p.vx = 0;
+    sim.p.vy = 0;
+    let stood = -1, shivered = -1, sank = -1;
+    for (let f = 0; f < 150 && sank < 0; f++) {
+      sim.frame();
+      if (stood < 0 && sim.p.grounded) stood = sim.t;
+      if (stood >= 0 && shivered < 0 && padShows(pad)!.tell > 0) shivered = sim.t;
+      if (stood >= 0 && !padShows(pad)!.solid) sank = sim.t;
+    }
+    assert.ok(stood >= 0, 'he lands on it');
+    assert.ok(shivered > stood, 'it shivers first');
+    assert.ok(sank - stood >= PAD_SIZES.big.hold - 0.05, `it holds him ${PAD_SIZES.big.hold} s (held ${(sank - stood).toFixed(2)})`);
+    let back = -1;
+    for (let f = 0; f < 200 && back < 0; f++) {
+      sim.frame();
+      if (padShows(pad)!.solid && padShows(pad)!.tell === 0) back = sim.t;
+    }
+    assert.ok(back > 0 && back - sank <= PAD_FAIR.back, `it is whole again within ${PAD_FAIR.back} s (${(back - sank).toFixed(2)})`);
+  });
+});
+
+test('in play: a beat row breathes in step, weight or not (the breath row, nobody on it)', () => {
+  inPlay('breath', (sim) => {
+    const pads = padsOf(sim);
+    assert.equal(pads.length, 4);
+    let ups = 0, downs = 0, wasUp = padShows(pads[0])!.solid;
+    for (let f = 0; f < 30 * 7; f++) {
+      sim.frame();
+      const now = pads.map((p) => padShows(p)!.solid);
+      assert.ok(now.every((v) => v === now[0]), `in step at t=${sim.t.toFixed(2)}: ${now}`);
+      if (now[0] && !wasUp) ups++;
+      if (!now[0] && wasUp) downs++;
+      wasUp = now[0];
+    }
+    assert.ok(ups >= 2 && downs >= 2, `it breathes: ${downs} times under, ${ups} times up in 7 s`);
+  });
+});
+
+// ───────────────────────── the crown lily (2-2.md beat 11; BUILD-22, approved by the lead as Architect 4:17 PM ET 11-15) ─────────────────────────
+const CROWN_PADS = { ...W2_PADS, crown: { by: 'weight', pads: ['small', 'crown', 'small'], gap: 70, safe: true } } as const satisfies Record<string, PadRow>;
+
+test("a pad row's 'crown' lays the crown lily: a 300 px floor that is no pad, painted by the pad piece, fair by padFaults", () => {
+  const st = pondStage(W2_GROUND, 'crown', 'normal', CROWN_PADS);
+  const crown = st.platforms.filter((p) => p.art === 'crownLily');
+  assert.equal(crown.length, 1);
+  assert.equal(crown[0].width, PAD_LAY.crownW);
+  assert.equal(crown[0].type, 'solid');
+  assert.ok(!crown[0].pad && !crown[0].lily, 'never a sinking pad, never the sheet lily the engine draws');
+  assert.deepEqual(padFaults(st), []);
+  assert.deepEqual(st.gen2.errors, []);
+});
+
+test('in play: the crown lily holds him as long as he stands, and its flower opens once he has stood on it', () => {
+  const kit = kitOn(W2_GROUND, [pond('crown')], CROWN_PADS);
+  let seed = 1;
+  let st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  while (!st.platforms.some((p) => p.art === 'crownLily') && seed < 40) st = buildGen2Stage({ config: cfg, kit, seed: ++seed, difficulty: 'normal' });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try {
+      withFixtureConfig(cfg, () => {
+        const sim = new RealPlay(ID, seed, cfg);
+        const lily = (sim as unknown as { platforms: Platform[] }).platforms.find((p) => p.art === 'crownLily')!;
+        assert.equal(crownOpen(lily), false, 'closed before he comes');
+        sim.p.x = lily.x + lily.width / 2;
+        sim.p.y = lily.y - 120;
+        sim.p.vx = 0;
+        sim.p.vy = 0;
+        for (let f = 0; f < 30 * 6; f++) sim.frame();
+        assert.ok(sim.p.grounded && !lily.broken, 'six seconds on it and he still stands');
+        assert.equal(crownOpen(lily), true, 'its flower is open');
+      });
+    } finally {
+      undo();
+    }
+  });
+});

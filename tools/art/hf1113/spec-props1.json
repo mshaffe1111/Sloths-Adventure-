@@ -1,0 +1,307 @@
+{
+ "tag": "props1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth",
+ "items": [
+  {
+   "name": "leafsign-right-11",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple fat arrow pointing right painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-right-23",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple fat arrow pointing right painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-right-37",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple fat arrow pointing right painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-up-11",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing up and over painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-up-23",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing up and over painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-up-37",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing up and over painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down-11",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing down and under painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down-23",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing down and under painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down-37",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing down and under painted roughly on the leaf in dark purple berry juice, finger-painted strokes, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafcurtain-11",
+   "prompt": "a curtain of long broad green jungle leaves and thin leafy vines hanging straight down side by side from a mossy branch along the top edge, a dense hanging leaf curtain, the leaf tips ragged at the bottom, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "leafcurtain-23",
+   "prompt": "a curtain of long broad green jungle leaves and thin leafy vines hanging straight down side by side from a mossy branch along the top edge, a dense hanging leaf curtain, the leaf tips ragged at the bottom, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "leafcurtain-37",
+   "prompt": "a curtain of long broad green jungle leaves and thin leafy vines hanging straight down side by side from a mossy branch along the top edge, a dense hanging leaf curtain, the leaf tips ragged at the bottom, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "petal-folded-11",
+   "prompt": "one single soft dusty pink blossom petal folded neatly in half, lying on its side, small and delicate with a pale cream edge and a soft crease, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "petal-folded-23",
+   "prompt": "one single soft dusty pink blossom petal folded neatly in half, lying on its side, small and delicate with a pale cream edge and a soft crease, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "petal-folded-37",
+   "prompt": "one single soft dusty pink blossom petal folded neatly in half, lying on its side, small and delicate with a pale cream edge and a soft crease, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-right-11",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow beside it pointing right, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-right-23",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow beside it pointing right, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-right-37",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow beside it pointing right, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-up-11",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow above it pointing straight up, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-up-23",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow above it pointing straight up, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mark-up-37",
+   "prompt": "a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M freshly carved into the bark and a carved arrow above it pointing straight up, the fresh cuts pale cream wood, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "roottunnel-11",
+   "prompt": "the arched mouth of a low tunnel under huge tangled rainforest tree roots, thick twisting brown roots arching over a dark shadowy opening, moss and ferns on the roots, a flat earth floor running through the tunnel mouth, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "roottunnel-23",
+   "prompt": "the arched mouth of a low tunnel under huge tangled rainforest tree roots, thick twisting brown roots arching over a dark shadowy opening, moss and ferns on the roots, a flat earth floor running through the tunnel mouth, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "roottunnel-37",
+   "prompt": "the arched mouth of a low tunnel under huge tangled rainforest tree roots, thick twisting brown roots arching over a dark shadowy opening, moss and ferns on the roots, a flat earth floor running through the tunnel mouth, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1664,
+   "h": 1088
+  },
+  {
+   "name": "rottentrunk-11",
+   "prompt": "a huge fallen rotten tree trunk lying flat on its side, very long, its flat mossy top a walkway, a hollow dark open end on the left, soft crumbling rotten bark, orange bracket fungus, ferns and moss, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 2048,
+   "h": 832
+  },
+  {
+   "name": "rottentrunk-23",
+   "prompt": "a huge fallen rotten tree trunk lying flat on its side, very long, its flat mossy top a walkway, a hollow dark open end on the left, soft crumbling rotten bark, orange bracket fungus, ferns and moss, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 2048,
+   "h": 832
+  },
+  {
+   "name": "rottentrunk-37",
+   "prompt": "a huge fallen rotten tree trunk lying flat on its side, very long, its flat mossy top a walkway, a hollow dark open end on the left, soft crumbling rotten bark, orange bracket fungus, ferns and moss, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 2048,
+   "h": 832
+  },
+  {
+   "name": "roughbough-11",
+   "prompt": "a long horizontal rainforest tree bough, rotting and spongy, a flat mossy top to walk on, orange-brown bracket fungus shelves growing from its side, a cracked notched sagging underside, soft dark rot patches, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 2048,
+   "h": 640
+  },
+  {
+   "name": "roughbough-23",
+   "prompt": "a long horizontal rainforest tree bough, rotting and spongy, a flat mossy top to walk on, orange-brown bracket fungus shelves growing from its side, a cracked notched sagging underside, soft dark rot patches, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 2048,
+   "h": 640
+  },
+  {
+   "name": "roughbough-37",
+   "prompt": "a long horizontal rainforest tree bough, rotting and spongy, a flat mossy top to walk on, orange-brown bracket fungus shelves growing from its side, a cracked notched sagging underside, soft dark rot patches, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 2048,
+   "h": 640
+  },
+  {
+   "name": "figcluster-11",
+   "prompt": "a small bunch of round orange-red wild figs hanging from a short woody stalk with two green leaves, the figs small and round, glossy, some speckled, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "figcluster-23",
+   "prompt": "a small bunch of round orange-red wild figs hanging from a short woody stalk with two green leaves, the figs small and round, glossy, some speckled, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "figcluster-37",
+   "prompt": "a small bunch of round orange-red wild figs hanging from a short woody stalk with two green leaves, the figs small and round, glossy, some speckled, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "passiontangle-11",
+   "prompt": "a small tangle of passion-flower vine with curly tendrils, three round orange-red fruits and one white and purple passion flower, hanging from a short stem, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "passiontangle-23",
+   "prompt": "a small tangle of passion-flower vine with curly tendrils, three round orange-red fruits and one white and purple passion flower, hanging from a short stem, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "passiontangle-37",
+   "prompt": "a small tangle of passion-flower vine with curly tendrils, three round orange-red fruits and one white and purple passion flower, hanging from a short stem, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-11",
+   "prompt": "one closed kapok tree seed pod, long oval and woody, brown-green with ridges, hanging from a short twig, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-23",
+   "prompt": "one closed kapok tree seed pod, long oval and woody, brown-green with ridges, hanging from a short twig, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-37",
+   "prompt": "one closed kapok tree seed pod, long oval and woody, brown-green with ridges, hanging from a short twig, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-burst-11",
+   "prompt": "one kapok seed pod burst open, split woody brown husk with soft white silky fluff spilling out of it, lying on its side, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-burst-23",
+   "prompt": "one kapok seed pod burst open, split woody brown husk with soft white silky fluff spilling out of it, lying on its side, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "kapokpod-burst-37",
+   "prompt": "one kapok seed pod burst open, split woody brown husk with soft white silky fluff spilling out of it, lying on its side, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

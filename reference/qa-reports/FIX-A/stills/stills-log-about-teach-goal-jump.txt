@@ -1,0 +1,26 @@
+about story fresh upright: page 659px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh upright: page 1714px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old upright: page 659px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old upright: page 1714px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story fresh sideways: page 476px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh sideways: page 1206px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old sideways: page 476px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old sideways: page 1206px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+teach 1-3 normal upright (Dot's help reminders): teach line {"x":2373,"text":"Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright."}, first trap x null; SHOWN "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright." with Pokey at x 3077
+teach 1-3 easy upright (Dot's help teach): teach line {"x":2373,"text":"Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright."}, first trap x null; SHOWN "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright." with Pokey at x 3031
+teach 1-3 normal sideways (Dot's help reminders): teach line {"x":2373,"text":"Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright."}, first trap x null; SHOWN "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright." with Pokey at x 3215
+teach 1-3 easy sideways (Dot's help teach): teach line {"x":2373,"text":"Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright."}, first trap x null; SHOWN "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright." with Pokey at x 3234
+goal 1-3 upright: 13 cleared of 13: the sign reads "Health: 5 of 5 hearts"
+goal 1-3 upright: 15 cleared of 13: the sign reads "Health: 5 of 5 hearts"
+goal 1-3 sideways: 13 cleared of 13: the sign reads "Health: 5 of 5 hearts"
+goal 1-3 sideways: 15 cleared of 13: the sign reads "Health: 5 of 5 hearts"
+jump 1-2 fresh upright: "Flick up to hop up or over." at x 1814
+jump 1-2 fresh sideways: "Flick up to hop up or over." at x 1658

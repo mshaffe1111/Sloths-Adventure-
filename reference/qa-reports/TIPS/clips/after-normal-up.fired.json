@@ -1,0 +1,42 @@
+{
+ "built": {
+  "stage": "1-4",
+  "seed": 1,
+  "built": "normal",
+  "ori": "up",
+  "tips": [
+   "180@9881..10404",
+   "520@8879..9722",
+   "797@8238..9041",
+   "526@7597..8400"
+  ]
+ },
+ "sockets": {
+  "creak": {
+   "x": 180,
+   "y": 10139
+  },
+  "figs": {
+   "x": 526,
+   "y": 8215
+  }
+ },
+ "fired": [
+  {
+   "beat": "the first creaking bough",
+   "s": 12.6,
+   "text": "Creaky limbs drop you, but just one branch down!",
+   "band": "9881..10404",
+   "feet": 10187,
+   "x": 201
+  },
+  {
+   "beat": "the first fig gate",
+   "s": 17.8,
+   "text": "Climb under the figs and push them free!",
+   "band": "7597..8400",
+   "feet": 8263,
+   "x": 538
+  }
+ ]
+}

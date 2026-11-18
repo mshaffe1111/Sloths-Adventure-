@@ -1,0 +1,8 @@
+build exit 0
+node tools/perf/chunkcheck.mjs -> exit 0 0s
+node tools/perf/artcheck.mjs -> exit 0 0s
+node tools/perf/buildcheck.mjs -> exit 1 10s
+node tools/perf/kbdcheck.mjs -> exit 0 185s
+node tools/perf/drawcheck.mjs -> exit 0 618s
+node tools/perf/clipcheck.mjs -> exit 0 555s
+done

@@ -98,8 +98,11 @@ test("every W1 section's every version lays its exit where its exitDy says (with
   const off: string[] = [];
   for (const s of W1_SECTIONS) {
     if (s.needs?.includes('rope')) continue;
+    // (a section laid with the moves it declares: one that needs the bounce + air jump is in a pool only where a stage holds it, so its
+    //  exitDy is true there (the lead's ruling 11-15 3:02 PM ET); with the combo untaught it never leaves the pool to be laid)
+    const b = s.needs?.includes('bounce-air') ? { ...nb, moves: [...nb.moves, 'bounce-air'] } as typeof nb : nb;
     for (const v of s.subBlocks![0].versions) for (const seed of [1, 2, 3]) {
-      const y = layLocal(s, nb, rngFor(seed), false, { versions: { body: v.id } }).exit.y;
+      const y = layLocal(s, b, rngFor(seed), false, { versions: { body: v.id } }).exit.y;
       if (Math.abs(y - s.exitDy) > 25) { off.push(`${s.id}/${v.id}: exitDy ${s.exitDy}, laid ${Math.round(y)}`); break; }
     }
   }

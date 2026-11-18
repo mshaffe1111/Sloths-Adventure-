@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
+      # the type check runs here too, so a red shows in minutes, not after the publish job (0.9.9 run 43810079186)
+      - run: npx tsc --noEmit
       - run: node tools/perf/artcheck.mjs
       # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; tools/perf/chunkplan.mjs splits the game into
       # layered files). Built AS THE DEPLOY BUILDS (deploy.yml publish: the same BASE_PATH), so the gate measures the files that ship:
@@ -41,6 +43,9 @@ jobs:
       - run: node tools/perf/knowncheck.mjs
       # engine code never names one stage, world, seed or x position (R-165.123, D43): today's debt is its shrink-only known list
       - run: npx tsx tools/engine/generalitycheck.ts
+      # no piece a built stage uses without a bot that plays it and a channel that prices it; the meter refuses an unpriced piece (METER-2a,
+      # R-165.272, METER-COVERAGE.md §3): about 25 s; its known gaps are a shrink-only list (knowncheck above)
+      - run: npx tsx tools/difficulty/coveragecheck.ts
       # open work in the repo (defect log, known lists, NEXT.md files) must have an R-id on reference/ROADMAP.md; done items need a real
       # PR or commit (needs the full history above)
       - run: node tools/roadmapcheck.mjs
@@ -81,7 +86,8 @@ jobs:
 
   rolled:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 10 stage lists take ~21 min in the seed-list loop alone (0.9.9 publish run 43801214876 cancelled at 25); R-165.278 splits it
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -89,10 +95,18 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # (the engine tools' own tests, outside the suite glob: the section library, the seed-list writer, the seed yield, the travel
-      # bots, 1-3's designed arc (library13) and the cast bots (castBots, F13 11-12); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
-      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts
-      # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts 1-1)
-      - run: npx tsx tools/engine/seedlist.ts 1-1 --check
+      # bots, 1-3's designed arc (library13), the cast bots (castBots, F13 11-12), the one roll tool and the registry gate (libstage,
+      # registrycheck, ADD-LEVEL R-165.187: about 50 s; the bot out of a pit, pitClimb, BUILD-16c; the chase bots, chaseBots, ENG-DR/BUILD-18; the meter's swings, score, TOOLS-1 R-165.239: about 8 s); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
+      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/chaseBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts
+      # (the tip walk, R-165.236: every climbing or descending rolled stage, 4 layouts x both settings: no tip said a storey early (the
+      # build's tip verdict) and none said with his feet outside its band (the real engine, a 20 s walk from the spawn); about 15 s)
+      - run: npx tsx tools/engine/tipwalk.ts --layouts 4
+      # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts <id>;
+      # EVERY proven list, each by name, from the index: registrycheck.ts --lists. ADD-LEVEL R-165.187: CI checked only 1-1's)
+      - run: for s in $(npx tsx tools/engine/registrycheck.ts --lists); do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done
+      # (every stage-table stage registered everywhere: kit, config, routed, levelSeeds, sheets, a drawcheck scenario, a seed list or stand-in,
+      # flown rows. ADD-LEVEL R-165.187, D51; seconds)
+      - run: npx tsx tools/engine/registrycheck.ts
       # (the child, middle and expert bots, R-165.59: mapped from the tester profiles and calibrated on 1-1; a change to 1-1, the engine
       # or the bots that moves a run fails here until the calibration is re-run and calibration-main.jsonl recommitted with it,
       # reference/qa-reports/R-165.59/BOTS.md; about 40 s)

@@ -1,0 +1,2 @@
+rescueXs 45955
+{"x":45955,"y":1081,"t":240.9,"dur":0,"what":"fell into this pit 3 times (its far wall 235 px up)","step":null,"dip":null,"puzzle":false,"rescued":true}

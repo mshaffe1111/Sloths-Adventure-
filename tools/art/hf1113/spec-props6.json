@@ -1,0 +1,85 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/269ce99824e7699f999118b1a8cbfcd318fa0a2a/reference/art/hf1113/starts/",
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, buildings, daylight, blue daytime sky",
+ "items": [
+  {
+   "name": "dusk2-far-s42-11",
+   "start": "dusk-far.png",
+   "prompt": "the same rainforest canopy valley at dusk, the sun just set behind the far hills, the last warm orange-gold light low on the horizon, rose and violet clouds, the far hills in cool purple haze, the treetops catching rim light, deep blue-violet higher sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.42,
+   "seed": 11,
+   "w": 2048,
+   "h": 1008
+  },
+  {
+   "name": "dusk2-far-s42-23",
+   "start": "dusk-far.png",
+   "prompt": "the same rainforest canopy valley at dusk, the sun just set behind the far hills, the last warm orange-gold light low on the horizon, rose and violet clouds, the far hills in cool purple haze, the treetops catching rim light, deep blue-violet higher sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 2048,
+   "h": 1008
+  },
+  {
+   "name": "dusk2-far-s50-11",
+   "start": "dusk-far.png",
+   "prompt": "the same rainforest canopy valley at dusk, the sun just set behind the far hills, the last warm orange-gold light low on the horizon, rose and violet clouds, the far hills in cool purple haze, the treetops catching rim light, deep blue-violet higher sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 2048,
+   "h": 1008
+  },
+  {
+   "name": "dusk2-far-s50-23",
+   "start": "dusk-far.png",
+   "prompt": "the same rainforest canopy valley at dusk, the sun just set behind the far hills, the last warm orange-gold light low on the horizon, rose and violet clouds, the far hills in cool purple haze, the treetops catching rim light, deep blue-violet higher sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 2048,
+   "h": 1008
+  },
+  {
+   "name": "dusk2-sky-s42-11",
+   "start": "dusk-sky.png",
+   "prompt": "the same sky at dusk, rose, peach and violet clouds lit from below by the set sun, a deep blue-violet sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.42,
+   "seed": 11,
+   "w": 2048,
+   "h": 400
+  },
+  {
+   "name": "dusk2-sky-s42-23",
+   "start": "dusk-sky.png",
+   "prompt": "the same sky at dusk, rose, peach and violet clouds lit from below by the set sun, a deep blue-violet sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 2048,
+   "h": 400
+  },
+  {
+   "name": "dusk2-sky-s50-11",
+   "start": "dusk-sky.png",
+   "prompt": "the same sky at dusk, rose, peach and violet clouds lit from below by the set sun, a deep blue-violet sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 2048,
+   "h": 400
+  },
+  {
+   "name": "dusk2-sky-s50-23",
+   "start": "dusk-sky.png",
+   "prompt": "the same sky at dusk, rose, peach and violet clouds lit from below by the set sun, a deep blue-violet sky, hand-painted 2D storybook game background, painterly, no text",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 2048,
+   "h": 400
+  }
+ ]
+}

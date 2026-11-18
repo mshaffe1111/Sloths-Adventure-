@@ -15,6 +15,7 @@ import { guideShown } from './guideShown.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
+import { FEEL_PAIR_ID, feelPairConfig } from './feelPairStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
 import { newAirDrive, swingClockAt, swingSetup, vineAmp, vineAngle, vineOmega } from './physics.ts';
 import { newGlide } from './glide.ts';
@@ -62,6 +63,15 @@ class FakeInput {
   jumpBuffer = 0;
   punchBuffer = 0;
   kickBuffer = 0;
+  /**
+   * as InputEngine.moves: every fresh input counted (inputEngine.ts fresh(): a jump flick, a punch or kick, a new direction (the gesture
+   * layer sends a move only when the direction changes, touchGestures.ts setDir), a duck or climb starting or ending, a hold or a still
+   * finger put down). The engine ends the steer pause after a put-back or a respawn at the first one (engine.ts inputGrace, graceMoves);
+   * with no count here the pause always ran its whole 0.35 s, so a hop pressed inside it went straight up (ENG-16F, graceFresh.test.ts)
+   */
+  moves = 0;
+  /** the pad of the frame before (what a fresh input is told from) */
+  last = { dir: 0, down: false, up: false, hold: false, touchHold: false };
   /** as InputEngine.dropPresses: the engine drops a press latched while it held the world (a respawn, a resume, an entrance's end) */
   dropPresses() {
     this.state.jumpPressed = false;
@@ -100,9 +110,17 @@ class FakeInput {
 }
 
 const levels = generateAllLevels();
+/** TEST-ONLY: a fixture stage's config by its id (a stage that is no stage of the game, e.g. gen2/toyTower.ts), found by levelConfig
+ *  while `fn` runs, so the bots (tools/inspect) can be flown on it by id. A fixture never stands in for a stage of the game */
+const fixtures = new Map<string, LevelConfig>();
+export function withFixtureConfig<T>(cfg: LevelConfig, fn: () => T): T {
+  if (levels.some((l) => l.id === cfg.id)) throw new Error(`withFixtureConfig: ${cfg.id} is a stage of the game`);
+  fixtures.set(cfg.id, cfg);
+  try { return fn(); } finally { fixtures.delete(cfg.id); }
+}
 export const levelConfig = (id: string): LevelConfig => {
   // (the extra stages, 4-D and 5-M, are only in the list in a browser: extraStages.ts)
-  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : undefined);
+  const c = fixtures.get(id) ?? levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : id === FEEL_PAIR_ID ? feelPairConfig() ?? undefined : undefined);
   if (!c) throw new Error(`no stage ${id}`);
   return { ...c, unlocked: true };
 };
@@ -147,7 +165,7 @@ export class RealPlay {
     // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
     for (const m of COSMETIC) if (!(m === 'updateCamera' && (e.w5 || e.mc))) e[m] = noop;
     const guide = e.guide.bind(e);
-    e.guide = (text: string, seconds: number, o?: { teach?: true }) => {
+    e.guide = (text: string, seconds: number, o?: { teach?: true; lock?: true }) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
       // (and what the line is, as the stage says: its own teach line, StageHint.teach)
       guide(text, seconds, o);
@@ -280,6 +298,11 @@ export class RealPlay {
   /** one frame with these controls */
   frame(pad: Pad = {}) {
     const s = this.input.state;
+    const inp = this.input;
+    const dir = pad.left && !pad.right ? -1 : pad.right && !pad.left ? 1 : 0;
+    if (pad.press || pad.punch || pad.kick !== undefined || dir !== inp.last.dir || !!pad.down !== inp.last.down || !!pad.up !== inp.last.up
+      || (!!pad.hold && !inp.last.hold) || (!!pad.touchHold && !inp.last.touchHold)) inp.moves++;
+    inp.last = { dir, down: !!pad.down, up: !!pad.up, hold: !!pad.hold, touchHold: !!pad.touchHold };
     s.left = !!pad.left && !pad.right;
     s.right = !!pad.right && !pad.left;
     s.down = !!pad.down;
@@ -322,6 +345,12 @@ export class RealPlay {
     swingSetup(vines);
     const st = e.currentStage as GeneratedStage;
     Object.assign(st, { zones: [], waterY: undefined, rivers: [], exitTotemX: 0, checkpoints: [], config: { ...st.config, levelHeight: 100000, levelWidth: 100000 } });
+    // (the side walls are the stage's travel mode's, set when the stage started: a tower's are its own width (1280), so the bare world
+    // must have them made again from its own size, by the same mode, or a sim's pieces past them are out of reach: INT-3, the flight
+    // sim on 1-4 read every jump as 39 px)
+    e.walls = e.mode.bounds({ levelWidth: 100000, exit: { x: 0, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
+    // (and the stage's runtime pieces are started again from the bare world's platforms, as the stage's start does: pieces/index.ts)
+    e.startPieces();
   }
 
   /** stand still for this many seconds */

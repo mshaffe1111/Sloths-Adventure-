@@ -1,0 +1,17 @@
+y * k, f.w * k, f.h * k);
+✓ 1-2 land
+  note shrunkOver2_5x 11.75 at spot 2 (x 20393) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 2.06/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/sheetBake.ts:124 (drawSheet) 1.45/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 1.00/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/w1Pits.ts:961 (drawW1Pits) 0.97/frame  | ctx.drawImage(hl, 0, 0, hw, hh);
+      src/game/w1Pits.ts:956 (drawW1Pits) 0.73/frame  | if (g.lipL) ctx.drawImage(hl, g.x0 - hw * out, yl - 12 * (hw / lw), hw, hh);
+✓ 1-5 land
+  note shrunkOver2_5x 10.63 at spot 2 (x 21488) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 2.50/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 2.50/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/sheetBake.ts:124 (drawSheet) 1.69/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/sheetBake.ts:125 (drawSheet) 0.75/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/protoArt.ts:553 (drawBranchArt) 0.75/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+
+PASS (631 s; raw results in /tmp/drawcheck-KbW4bm)

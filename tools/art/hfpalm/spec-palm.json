@@ -1,0 +1,162 @@
+{
+ "tag": "palm",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.85
+  ],
+  "soft": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.6
+  ]
+ },
+ "neg": "thick black outline, heavy bold outline, clip art, vector art, flat colours, cel shading, sticker, icon, symmetrical, coconut palm beach, sand, island, sky, clouds, sun, scenery behind, background trees, forest behind, ground, grass, soil, roots, pot, text, letters, numbers, watermark, signature, frame, border, panel, photo, 3d render, blurry, people, animals, sloth, monkey, bird, crown cut off at the top, two trees, many trees, duplicate",
+ "items": [
+  {
+   "name": "palm-a-11",
+   "prompt": "one tall slender wild rainforest palm tree, its long thin ringed trunk rising from the bottom edge of the picture and leaning gently to the left with a slight curve, at the top a loose uneven crown of long arching feathery fronds, drooping lower on one side, one old frond hanging down dry and brown, a heavy bunch of round dark brown palm nuts hanging on short orange stalks just under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-a-23",
+   "prompt": "one tall slender wild rainforest palm tree, its long thin ringed trunk rising from the bottom edge of the picture and leaning gently to the left with a slight curve, at the top a loose uneven crown of long arching feathery fronds, drooping lower on one side, one old frond hanging down dry and brown, a heavy bunch of round dark brown palm nuts hanging on short orange stalks just under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-a-37",
+   "prompt": "one tall slender wild rainforest palm tree, its long thin ringed trunk rising from the bottom edge of the picture and leaning gently to the left with a slight curve, at the top a loose uneven crown of long arching feathery fronds, drooping lower on one side, one old frond hanging down dry and brown, a heavy bunch of round dark brown palm nuts hanging on short orange stalks just under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-a-53",
+   "prompt": "one tall slender wild rainforest palm tree, its long thin ringed trunk rising from the bottom edge of the picture and leaning gently to the left with a slight curve, at the top a loose uneven crown of long arching feathery fronds, drooping lower on one side, one old frond hanging down dry and brown, a heavy bunch of round dark brown palm nuts hanging on short orange stalks just under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 53,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-b-11",
+   "prompt": "one tall wild rainforest palm tree, its long ringed trunk rising from the bottom edge of the picture and curving gently to the right, a thin green vine winding up the trunk with a little moss on it, at the top a lopsided crown of long feathery fronds spreading wider to the left than to the right, a big cluster of round brown palm nuts hanging under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-b-23",
+   "prompt": "one tall wild rainforest palm tree, its long ringed trunk rising from the bottom edge of the picture and curving gently to the right, a thin green vine winding up the trunk with a little moss on it, at the top a lopsided crown of long feathery fronds spreading wider to the left than to the right, a big cluster of round brown palm nuts hanging under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-b-37",
+   "prompt": "one tall wild rainforest palm tree, its long ringed trunk rising from the bottom edge of the picture and curving gently to the right, a thin green vine winding up the trunk with a little moss on it, at the top a lopsided crown of long feathery fronds spreading wider to the left than to the right, a big cluster of round brown palm nuts hanging under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-b-53",
+   "prompt": "one tall wild rainforest palm tree, its long ringed trunk rising from the bottom edge of the picture and curving gently to the right, a thin green vine winding up the trunk with a little moss on it, at the top a lopsided crown of long feathery fronds spreading wider to the left than to the right, a big cluster of round brown palm nuts hanging under the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 53,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-c-11",
+   "prompt": "one very tall thin rainforest palm tree, its slim ringed trunk rising from the bottom edge of the picture almost straight up with a slight S bend, a small crown of a few long ragged drooping fronds, some split by the wind, a dense cluster of round dark brown palm nuts with a few orange unripe ones hanging below the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-c-23",
+   "prompt": "one very tall thin rainforest palm tree, its slim ringed trunk rising from the bottom edge of the picture almost straight up with a slight S bend, a small crown of a few long ragged drooping fronds, some split by the wind, a dense cluster of round dark brown palm nuts with a few orange unripe ones hanging below the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-c-37",
+   "prompt": "one very tall thin rainforest palm tree, its slim ringed trunk rising from the bottom edge of the picture almost straight up with a slight S bend, a small crown of a few long ragged drooping fronds, some split by the wind, a dense cluster of round dark brown palm nuts with a few orange unripe ones hanging below the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-c-53",
+   "prompt": "one very tall thin rainforest palm tree, its slim ringed trunk rising from the bottom edge of the picture almost straight up with a slight S bend, a small crown of a few long ragged drooping fronds, some split by the wind, a dense cluster of round dark brown palm nuts with a few orange unripe ones hanging below the crown. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 53,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-d-11",
+   "prompt": "one tall rainforest palm tree, its ringed trunk rising from the bottom edge of the picture and leaning slightly to the right, at the top a full asymmetric crown of long arching fronds with a few broken hanging ones, a bunch of round brown palm nuts under the crown, two or three big broad jungle leaves from a neighbouring plant crossing in front of the upper trunk. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 11,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-d-23",
+   "prompt": "one tall rainforest palm tree, its ringed trunk rising from the bottom edge of the picture and leaning slightly to the right, at the top a full asymmetric crown of long arching fronds with a few broken hanging ones, a bunch of round brown palm nuts under the crown, two or three big broad jungle leaves from a neighbouring plant crossing in front of the upper trunk. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 23,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "style"
+  },
+  {
+   "name": "palm-d-37",
+   "prompt": "one tall rainforest palm tree, its ringed trunk rising from the bottom edge of the picture and leaning slightly to the right, at the top a full asymmetric crown of long arching fronds with a few broken hanging ones, a bunch of round brown palm nuts under the crown, two or three big broad jungle leaves from a neighbouring plant crossing in front of the upper trunk. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 37,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  },
+  {
+   "name": "palm-d-53",
+   "prompt": "one tall rainforest palm tree, its ringed trunk rising from the bottom edge of the picture and leaning slightly to the right, at the top a full asymmetric crown of long arching fronds with a few broken hanging ones, a bunch of round brown palm nuts under the crown, two or three big broad jungle leaves from a neighbouring plant crossing in front of the upper trunk. hand-painted 2D storybook platformer game background prop, seen from the side, soft painterly gouache shading with gentle gradients and soft edges, fine thin dark-brown linework, a muted misty rainforest palette of sage green, olive and soft teal fronds with pale yellow-green light on their tops, a warm grey-brown ringed trunk, soft diffuse light from the upper left, the whole tree from the top of the crown down to the bottom edge of the picture, isolated on a flat solid magenta background, the magenta filling everything around it",
+   "seed": 53,
+   "w": 928,
+   "h": 1664,
+   "steps": 30,
+   "lora": "soft"
+  }
+ ]
+}

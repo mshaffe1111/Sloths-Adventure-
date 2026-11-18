@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: child easy: every mapped number is its profile field
+ok 1 - child easy: every mapped number is its profile field
+  ---
+  duration_ms: 1.707879
+  type: 'test'
+  ...
+# Subtest: child normal: every mapped number is its profile field
+ok 2 - child normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.462205
+  type: 'test'
+  ...
+# Subtest: middle easy: every mapped number is its profile field
+ok 3 - middle easy: every mapped number is its profile field
+  ---
+  duration_ms: 0.540142
+  type: 'test'
+  ...
+# Subtest: middle normal: every mapped number is its profile field
+ok 4 - middle normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.449419
+  type: 'test'
+  ...
+# Subtest: expert normal: every mapped number is its profile field
+ok 5 - expert normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.335064
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 3.835116
+  type: 'test'
+  ...
+# Subtest: three variants a tier and setting replay exactly as committed
+ok 7 - three variants a tier and setting replay exactly as committed
+  ---
+  duration_ms: 11068.646149
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11789.469756

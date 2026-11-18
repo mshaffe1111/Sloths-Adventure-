@@ -826,14 +826,6 @@ function drawBouncer(ctx: CanvasRenderingContext2D, p: Platform, look: Look, tim
     ctx.fill();
   }
   ctx.restore();
-  // up-arrow hint
-  ctx.fillStyle = rgba('#ffffff', 0.55 + 0.35 * Math.sin(time * 4));
-  ctx.beginPath();
-  ctx.moveTo(sx, p.y - 22);
-  ctx.lineTo(sx - 7, p.y - 12);
-  ctx.lineTo(sx + 7, p.y - 12);
-  ctx.closePath();
-  ctx.fill();
 }
 
 // ───────────────────────────── trees ─────────────────────────────

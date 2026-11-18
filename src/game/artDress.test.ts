@@ -6,7 +6,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
+import './headlessDom.ts';
 import { buildProtoStage, HAND_STAGES, type StagePlan } from './protoStage.ts';
+import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { DRESS_SETS, dressStage, RIDDLE_FERNS } from './artDress.ts';
 import { DRESS_FRAMES as FIRST_FRAMES } from './dressAtlasData.ts';
 import { DRESS_NEW_FRAMES } from './dressNewData.ts';
@@ -19,7 +21,7 @@ import type { LevelConfig } from './types.ts';
 
 const levels = generateAllLevels();
 const cfg = (id: string): LevelConfig => levels.find((l) => l.id === id)!;
-const W34 = ['1-4', '1-6', '1-7', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
+const W34 = ['1-6', '1-7', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
 
 test('every piece of the puzzle kit atlas is drawn somewhere in the game', () => {
   const dir = new URL('.', import.meta.url).pathname;
@@ -80,25 +82,21 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
   }
 });
 
-test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
+// (1-4's squirrel lifts went with the hand-built 1-4, B14 11-13: 1-4 is the vine field; their nest door is 1-4's crown dressing now,
+//  w1Arc14.ts finish14, held in w1Arc14.test.ts)
+// (1-6's seesaw rooms and their branch gates went with the hand-built 1-6's proto plan, R-165.238, and 1-7's acorn meadow with the
+//  hand-built 1-7, BUILD-17: no World 1 stage builds a room today (stageSheets.test, W1_ROOMS), so World 1's room dressing is held on a
+//  room laid on a plain bough: the reward rises past the way on, and it is a picture, never a pickup)
+test("World 1's rooms: a petal bundle for every room", () => {
   for (const seed of [1, 2, 3]) {
-    const by = (id: string) => buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
-    const s14 = by('1-4');
-    const lifts = (s14.kit?.rooms ?? []).filter((r) => r.id.startsWith('squirrel-lift'));
-    assert.ok(lifts.length >= 1);
-    for (const r of lifts) {
-      const kd = (s14.proto.kitDecor ?? []).filter((d) => d.room === r.id);
-      assert.ok(kd.some((d) => d.n === 'nestDoorShut' && d.open === 'nestDoorOpen'), `seed ${seed} ${r.id}`);
-      assert.ok(kd.some((d) => d.n === 'petalBundle' && d.pop), `seed ${seed} ${r.id}`);
-    }
-    const s16 = by('1-6');
-    const gated = (s16.kit?.rooms ?? []).filter((r) => r.id.startsWith('seesaw-') && !r.id.startsWith('seesaw-show'));
-    assert.ok(gated.length >= 1);
-    for (const r of gated) assert.ok((s16.proto.kitDecor ?? []).some((d) => d.n === 'branchGate' && d.rise && d.room === r.id), `seed ${seed} ${r.id}`);
-    const s17 = by('1-7');
-    for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
-    // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
-    for (const st of [s14, s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+    const platforms = [{ id: 7, x: 1000, y: 600, width: 400, height: 24 }] as unknown as Parameters<typeof dressStage>[0]['platforms'];
+    const room = { id: 'room-a', left: { on: 7, at: 0 }, right: { on: 7, at: 1 }, above: 200, below: 0, pieces: [], exit: 'gate', beyond: { on: 7, at: 0.75 } };
+    const decor = dressStage({ world: 1, stage: 6, seed, platforms, rooms: [room] as unknown as Parameters<typeof dressStage>[0]['rooms'], collectibles: [] });
+    const bundle = decor.find((d) => d.n === 'petalBundle' && d.room === 'room-a');
+    assert.ok(bundle, `seed ${seed}: the room's petal bundle`);
+    assert.equal((bundle as { x: number }).x, 1300, 'at the spot past the way on');
+    // (a picture, not a pickup: dressing adds no collectible)
+    assert.ok(!decor.some((d) => (d as { findId?: string }).findId === 'petalBundle'));
   }
 });
 
@@ -111,17 +109,26 @@ test('the dressing sheets: every piece is in a set, every set piece is on the sh
 });
 
 test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
-  for (const ids of [['1-2', '1-3'], ['5-1', '5-2']]) {
+  // (World 1's pair is 1-8 and 1-9, two stages in a row, each built the way the game builds it: 1-9 hand-built (HAND_STAGES), 1-8 rolled
+  //  on gen2 since BUILD-18 (t-eng-dr), its first layout. INT-10b: the t-eng-petal side paired 1-8 and 1-9 as two hand-built stages while
+  //  t-eng-dr took 1-8 out of HAND_STAGES, so after the merge this built the default proto plan under 1-8's config, undressed. Before:
+  //  1-7 and 1-8 until 1-7 rolled (BUILD-17); 1-2 and 1-3 built the old hand-built 1-6's default plan until it went, R-165.238)
+  const built = (id: string) => {
+    if (HAND_STAGES[id]) return buildProtoStage(cfg(id), 1, HAND_STAGES[id]) as unknown as { platforms: unknown; proto?: { dress?: Array<{ n: string }> }; dress?: Array<{ n: string }> };
+    setLayoutVariant(1);
+    try { return generateStage({ ...cfg(id), unlocked: true }, 'normal') as unknown as { platforms: unknown; proto?: { dress?: Array<{ n: string }> }; dress?: Array<{ n: string }> }; } finally { setLayoutVariant(null); }
+  };
+  for (const ids of [['1-8', '1-9'], ['5-1', '5-2']]) {
     const looks = ids.map((id) => {
-      const st = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
-      const ds = st.proto.dress ?? [];
+      const st = built(id);
+      const ds = st.proto?.dress ?? st.dress ?? [];
       assert.ok(ds.length > 0, `${id}: dressed`);
       // (the stage without it is the same: dressSets reads the stage, never its random stream)
-      const plain = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
+      const plain = built(id);
       assert.deepEqual(plain.platforms, st.platforms, `${id}: platforms unchanged`);
-      for (const d of ds) assert.ok(DRESS_FRAMES[d.n], `${id}: ${d.n}`);
+      for (const d of ds) assert.ok(DRESS_FRAMES[d.n as DressName], `${id}: ${d.n}`);
       // (the stage's first bank set: within a stage the looks now take turns, hf-props 2026-10-31, so two stages differ by where they start)
-      const bank = new Set(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
+      const bank = new Set<string>(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
       return ds.filter((d) => bank.has(d.n)).slice(0, 3).map((d) => d.n).sort().join();
     });
     assert.notEqual(looks[0], looks[1], `${ids.join(' and ')} wear different bank sets`);

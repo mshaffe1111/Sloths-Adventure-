@@ -9,6 +9,7 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { W17_URLS, w17Ready } from './w17Art.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
@@ -25,9 +26,8 @@ import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasL
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
-import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
+import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
@@ -41,11 +41,10 @@ import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
-import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
+import { stageSheets } from './stageSheets.ts';
 import { ALWAYS } from './stageManifest.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { SPRITES, warmSprites } from './spriteSheets.ts';
-import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { DOT_PERCH_URL, HUD_ATLAS_URL, hudArtReady, perchArtReady } from '../components/hud/painted.tsx';
 import { warmBounce } from './bounceArt.ts';
 import { BOUNCE_URL } from './bounceAtlasData.ts';
@@ -54,6 +53,7 @@ import { WATER_SIGN_URL } from './waterSignData.ts';
 import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
+import { W6_WHEEL_URLS, w6WheelsReady } from './w6WheelArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -70,6 +70,7 @@ import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stage
 import { W1_PIT_URLS, w1PitsReady } from './w1Pits.ts';
 import { W1_CLUE_URL, W1_NEW_URL, w1ClueReady, w1NewReady } from './w1NewArt.ts';
 import { W1_CUT_URL, w1CutReady } from './w1CutArt.ts';
+import { VINE_SNAKE_URLS, vineSnakeArtReady } from './vineSnakeArt.ts';
 import { W1_CREEK_URL, W1_MUD_SPLASH_URL, w1CreekReady } from './w1Creek.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -144,6 +145,9 @@ export function start(keys: readonly string[]): string[] {
       w7PuzzleReady();
       w7TempleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
+    } else if (k === 'w6-wheels') {
+      w6WheelsReady();
+      urls.push(...W6_WHEEL_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);
@@ -177,6 +181,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'props2') {
       warmProto2();
       urls.push(PROTO2_URL);
+    } else if (k === 'props3') {
+      warmProto3();
+      urls.push(PROTO3_URL);
     } else if (k === 'perch') {
       perchArtReady();
       urls.push(DOT_PERCH_URL);
@@ -206,6 +213,12 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w1-cut') {
       w1CutReady();
       urls.push(W1_CUT_URL);
+    } else if (k === 'vine-snake') {
+      vineSnakeArtReady();
+      urls.push(...VINE_SNAKE_URLS);
+    } else if (k === 'w17') {
+      w17Ready();
+      urls.push(...W17_URLS);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();
@@ -257,18 +270,14 @@ let pending: { id: string; done: Promise<void> } | null = null;
  */
 export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean = () => false, ms = 8000): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
-  // (the control test: the mix about to be played, so only its creatures are asked for, and the others' sheets are let go)
-  const mix = ctestEnabled() && cfg.id === CTEST_STAGE_ID ? ctestSeed() : undefined;
-  const id = mix ? `${cfg.id}#${mix}` : cfg.id;
+  const id = cfg.id;
   if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
   // (the dirty water's sheet is the world's own from World 8 on: badWaterArt.ts)
   if (cfg.worldIndex >= 6) setBadWaterWorld(cfg.worldIndex);
-  if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
-  // (and what every stage shows, and for the control test what its mix's built stage holds: stageManifest.ts; the rest of a stage's
-  // built contents are got in once it is built, stageReady.ts)
-  const keys = [...new Set([...stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix }), ...(cfg.id === DOT_STAGE_ID ? [] : ALWAYS), ...(mix ? ctestMixDraws(mix).built : [])])];
+  // (and what every stage shows: stageManifest.ts; the rest of a stage's built contents are got in once it is built, stageReady.ts)
+  const keys = [...new Set([...stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled() }), ...(cfg.id === DOT_STAGE_ID ? [] : ALWAYS)])];
   const urls = start(keys);
   const plains = plainUrls(keys);
   const plainDone = loadPlain(plains);
@@ -311,18 +320,6 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     if (pending === mine) pending = null;
   });
   return done;
-}
-
-/** the control test's creature sheets that this mix does not draw: let go (a decoded clip sheet is 13 to 20 MB) */
-function releaseCtestFoes(keep: readonly string[]) {
-  const urls: string[] = [];
-  for (const n of CTEST_FOES) {
-    if (keep.includes(n)) continue;
-    const u = creatureAnimUrl(n);
-    if (u) urls.push(u);
-    urls.push(...(SPRITES[n]?.urls() ?? []));
-  }
-  releaseSheets(urls);
 }
 
 /**

@@ -9,13 +9,15 @@
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
 import type { CastData, TrapPost } from './castPlay.types.ts';
-import { TRAP, handleBox, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
+import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
+import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
-import { STILLNESS, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
+import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, type Cover } from './stillness.ts';
+import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
@@ -32,6 +34,10 @@ export interface CastHero {
   grounded: boolean;
   /** holding a vine or a rope */
   holding: boolean;
+  /** hanging from a rope (holding it): his creep along it is moving (stillness.ts moving) */
+  hanging?: boolean;
+  /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
+  rope?: number;
 }
 
 export interface CastMember {
@@ -49,6 +55,8 @@ export interface CastStep {
   noticed: Enemy[];
   told: Enemy[];
   struck: Enemy[];
+  /** a sweeper whose act began on its free pass (core.ts sparedPass): it dives and pulls up short, no box hurts (once an act) */
+  spared: Enemy[];
   /** the boxes that hurt this step, each with its animal */
   hurts: Array<{ e: Enemy; box: Box }>;
   /** animals that just left for good */
@@ -70,9 +78,13 @@ export class CastPlay {
   private still = newStill();
   private fall = newFall();
   private readonly covers: readonly Cover[];
+  /** the stage's ground, for a glide that leaves along it (sync) */
+  private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
-  private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
+  /** the stage's lure targets (predators/lure.ts) */
+  private readonly lures: readonly LurePost[];
+  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
 
@@ -82,13 +94,17 @@ export class CastPlay {
    */
   constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
     this.covers = covers;
-    this.loud = TAUGHT.landing <= world;
+    this.ground = platforms;
+    this.loud = data.landing ?? TAUGHT.landing <= world;
+    this.lures = data.lures ?? [];
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
       if (!def || e.defeated) continue;
       const ground = groundUnder(platforms, e);
-      const s = newPredator(def, { x: e.x, y: ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep });
+      // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
+      const perched = !!e.kitPerch && def.habit === 'sweep';
+      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}), ...(e.kitPasses !== undefined ? { passes: e.kitPasses } : {}), ...(e.kitGlance !== undefined ? { glance: e.kitGlance } : {}) });
       e.kit = s;
       const m: CastMember = { e, def, s, foot: ground - e.y, cleared: false };
       this.members.push(m);
@@ -96,15 +112,33 @@ export class CastPlay {
     }
   }
 
+  /** the cast's sweepers (World 1's eagle): drawn from their kit state (sweepPose.ts), not as an animal on the ground */
+  get sweepers(): CastMember[] {
+    return this.members.filter((m) => m.def.habit === 'sweep');
+  }
+
+  /** is this a sweeper's free pass now (core.ts sparedPass)? For the art: its dive pulls up short */
+  spares(m: CastMember, easy: boolean): boolean {
+    return sparedPass(m.def, m.s, easy);
+  }
+
   /** is he hidden-still right now (the calm has come all the way in)? For the art */
   isStill(easy: boolean): boolean {
     return isStill(this.still, STILLNESS[easy ? 'easy' : 'normal']);
   }
 
+  /**
+   * The moss coming over him, 0..1 (stillness.ts calm): how far the calm has come in while he is IN cover, 0 anywhere else (a still
+   * sloth on bare bark gets no tint: it would say 'hidden' where the eagle sees him, 1-7 beat 5). For the art and the calm sound
+   */
+  calmNow(easy: boolean): number {
+    return this.prey.covered ? calm(this.still, STILLNESS[easy ? 'easy' : 'normal']) : 0;
+  }
+
   /** one fixed step of the whole cast. `t`: game time */
   step(hero: CastHero, dt: number, t: number, easy: boolean): CastStep {
     const o = this.out;
-    o.noticed.length = o.told.length = o.struck.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
+    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
     o.landed = null;
     o.woke = 0;
     const set = STILLNESS[easy ? 'easy' : 'normal'];
@@ -114,6 +148,8 @@ export class CastPlay {
     prey.y = hero.y;
     prey.facing = hero.facing;
     prey.still = isStill(this.still, set);
+    // (what a glance sees: him moving on this frame, a step, a hop, a climb; stillness.ts moving, the line the hold is broken by)
+    prey.moving = moving(hero, set);
     prey.covered = inCover(this.covers, hero);
 
     // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
@@ -140,13 +176,16 @@ export class CastPlay {
     sc.dt = dt;
     sc.easy = easy;
     foodChain(this.members, t);
+    if (this.lures.length) stepLures(this.members, this.lures, t);
     for (const m of this.members) {
       if (m.s.phase !== 'gone') {
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);
-        if (ev.act) o.struck.push(m.e);
-        const box = hurt(m.def, m.s);
+        // (a sweeper's free pass: the dive comes, and pulls up short of him; no box hurts. watcher.ts freeFirst, in the kit)
+        const spare = sparedPass(m.def, m.s, easy);
+        if (ev.act) (spare ? o.spared : o.struck).push(m.e);
+        const box = spare ? null : hurt(m.def, m.s);
         if (box) o.hurts.push({ e: m.e, box });
       }
       if (!m.cleared && (m.s.leaving || m.s.phase === 'gone')) {
@@ -158,16 +197,38 @@ export class CastPlay {
     return o;
   }
 
+  /** this animal's act just took a heart (the engine's hurt): one act, one heart, it pulls up (core.ts landed) */
+  struck(e: Enemy): void {
+    const m = this.members.find((q) => q.e === e);
+    if (m) landed(m.s);
+  }
+
   /** try a way on an animal of the cast (a punch, a kick, a stomp), from where he stands. True when it worked */
   beat(e: Enemy, way: Way, t: number, fromX: number): boolean {
     const m = this.members.find((q) => q.e === e);
     return !!m && beat(m.def, m.s, way, t, fromX);
   }
 
+  /**
+   * Something let fall came down at (x, y) as a drop-trap load does (a fruit cluster pushed free in a vine field: fieldPlay.ts): every
+   * animal it would scare (dropTrap.ts scares: within TRAP.scare across, TRAP.tall up or down) is chased off, away from him. How many.
+   */
+  loadLands(x: number, y: number, t: number, heroX: number): number {
+    let n = 0;
+    for (const m of this.members) if (Math.abs(m.s.x - x) <= TRAP.scare && Math.abs(m.s.y - y) <= TRAP.tall && beat(m.def, m.s, 'trap', t, heroX)) n++;
+    return n;
+  }
+
+  /** a creaky limb has given way (engine.ts): the 'limb' trap it is the load of, if any, falls now (returned) */
+  limbGone(platformId: number): TrapPost | null {
+    for (const tr of this.traps) if (tr.post.limb === platformId && limbGone(tr)) return tr.post;
+    return null;
+  }
+
   /** a blow's box against the traps' handles: the first set trap it lands on is let go (returned) */
   strike(box: Box): TrapPost | null {
     for (const tr of this.traps) {
-      if (tr.phase !== 'set') continue;
+      if (tr.phase !== 'set' || tr.post.kind === 'limb') continue;
       const h = handleBox(tr.post);
       if (box.x < h.x + h.w && box.x + box.w > h.x && box.y < h.y + h.h && box.y + box.h > h.y && shake(tr)) return tr.post;
     }
@@ -176,7 +237,7 @@ export class CastPlay {
 
   /** is there a set trap's handle within a blow's reach of him? (for the pad's hint, as an animal or a cage is) */
   handleNear(x: number, y: number, reach = 70): boolean {
-    return this.traps.some((tr) => tr.phase === 'set' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
+    return this.traps.some((tr) => tr.phase === 'set' && tr.post.kind !== 'limb' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
   }
 
   /**
@@ -193,7 +254,10 @@ export class CastPlay {
       s.t = 0;
       s.drawn = false;
       s.lost = 0;
-      s.cool = Math.max(s.cool, coolOf(m.def, easy));
+      s.cool = Math.max(s.cool, coolOf(m.def, easy, s.ownCool));
+      // (its glance stands down too: its head stays away past the calm, so the first thing after a flag is its warned pass, never a
+      //  glance inside the calm; ENG-WATCH, eagleKit.test.ts "back at a flag")
+      if (s.gl) Object.assign(s.gl, { phase: 'away', t: 0, dur: s.cool + (m.def.warn ?? 0) + 1, re: false });
     }
   }
 
@@ -219,6 +283,10 @@ export class CastPlay {
       e.wakeT = 0;
       e.x += s.facing * GLIDE.far * u * u;
       e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));
+      // (down to the ground under it and away along it, never into it: an animal chased off on the flat floor (1-5's den) glided 150 px
+      //  down into the soil; off a branch's end it still drops to what is below, B15 stills 11-13)
+      const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
+      e.y = Math.min(e.y, floor - m.foot);
     }
     if (s.phase === 'gone' && !e.defeated) {
       // out of the stage on its own: no knock-out, nothing to draw

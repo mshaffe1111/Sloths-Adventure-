@@ -64,7 +64,7 @@ test('the World 5 creatures\' clip sheets: one picture each, every frame inside 
 test("Flicker's clips: his thirteen moves (eleven in place, his lead and his dash), one sheet, loaded with Meeca's stage", () => {
   const moves: FlickerMove[] = ['talk', 'blink', 'glow', 'happy', 'sad', 'doze', 'smug', 'startled', 'worried', 'shrug', 'turn', 'lead', 'dart'];
   checkSheet('flicker', FLICKER_ANIM_URL, FLICKER_ANIM_SIZE, FLICKER_ANIM, FLICKER_SEQ, moves);
-  assert.ok(stageSheets({ id: MEECA_STAGE_ID, worldIndex: 5, objectiveType: 'reach_exit', secret: false } as never, { hand: true, paint: true, ctest: false }).includes('anim:flicker'));
+  assert.ok(stageSheets({ id: MEECA_STAGE_ID, worldIndex: 5, objectiveType: 'reach_exit', secret: false } as never, { hand: true, paint: true }).includes('anim:flicker'));
 });
 
 /** the stage as far as Flicker's moves look at it */

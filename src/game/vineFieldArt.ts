@@ -1,0 +1,438 @@
+/**
+ * vineFieldArt — how a vine field draws (vineField.ts, R-165.177). STAND-INS until 1-4's own art (R-165.178), named plainly:
+ *   - a field vine is World 1's painted vine (castArt.ts vineTile) hung straight from its top, a little curl at its free end (a plain
+ *     green line while the sheet loads);
+ *   - a fruit cluster is CODE-DRAWN: a bunch of small round orange-red wild figs on a stalk (circles; the story keeper's nature check,
+ *     11-13: never purple grocery figs), no painted art yet;
+ *   - a falling pod, its burst, a fig bunch and a shut gate's bough are ART's painted pieces (11-13, the inventory's hf1113/w14-*, sized
+ *     by its pokey_scale against his drawn 89.1: pod 0.45, burst 0.34, figs 0.45, bough by its own walk line); the fluff's trickle is a
+ *     small code touch (STAGE-RULES §4). The code-drawn shapes below draw only while a picture loads (named stand-ins).
+ * Nothing allocates per frame (PERFORMANCE-RULES §3.1): the strand's points are a kept array.
+ */
+import type { Platform, Vine } from './types.ts';
+import type { PodColumn, PodState } from './podfall.ts';
+import { trackAtlas } from './atlasLoader.ts';
+
+// ───────────────────────────── 1-4's painted pieces (ART 11-13, the inventory's hf1113/w14-*) ─────────────────────────────
+/** his drawn height (heroSprite.ts; LESSONS D41): the inventory's pokey_scale is a share of it */
+const POKEY_H = 89.1;
+type Piece = { url: string; img: HTMLImageElement | null; ready: boolean };
+const piece = (url: string): Piece => ({ url, img: null, ready: false });
+const PIECES = {
+  // (the pod: Matt's own pod restyled, ART-MATT's HF take, judged PASS by the lead 11-14: hanging, and falling)
+  pod: piece(new URL('../assets/w1-matt/w1m-pod-hang.webp', import.meta.url).href),
+  podFall: piece(new URL('../assets/w1-matt/w1m-pod-fall.webp', import.meta.url).href),
+  // (the tell's dust, Matt's sheet 2: it sifts down the vine a pod is about to leave)
+  dust: piece(new URL('../assets/w1-matt/w1m-dust-puff.webp', import.meta.url).href),
+  burst: piece(new URL('../assets/w1-1113/w14-kapokpod-burst.webp', import.meta.url).href),
+  figs: piece(new URL('../assets/w1-1113/w14-figcluster.webp', import.meta.url).href),
+  bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
+  // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
+  fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
+  // (a shut gate's lock, Matt's sheet 1 of 11-14 cut by ART-MATT, the inventory's hfmatt/w1m-*: a leaf thatch over the bough, tied down
+  // at each fig by a vine tie in three states on one canvas; the snap throws bark chips from his sheet 2)
+  lid: piece(new URL('../assets/w1-matt/w1m-leaf-lid.webp', import.meta.url).href),
+  tieTaut: piece(new URL('../assets/w1-matt/w1m-tie-taut.webp', import.meta.url).href),
+  tieStrain: piece(new URL('../assets/w1-matt/w1m-tie-strain.webp', import.meta.url).href),
+  tieSnap: piece(new URL('../assets/w1-matt/w1m-tie-snap.webp', import.meta.url).href),
+  chips: [1, 2, 3, 4, 5, 6, 7].map((i) => piece(new URL(`../assets/w1-matt/w1m-bark-chips-${i}.webp`, import.meta.url).href)),
+};
+/** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
+function pic(p: Piece): HTMLImageElement | null {
+  if (!p.img && typeof Image !== 'undefined') {
+    const im = new Image();
+    p.img = im;
+    trackAtlas(im, p.url, () => { p.ready = true; }, () => { p.img = null; }, () => { p.img = null; p.ready = false; });
+  }
+  return p.ready ? p.img : null;
+}
+/** drawn heights (px), the inventory's pokey_scale x his drawn height */
+const POD_H = 0.49 * POKEY_H, POD_FALL_H = 0.45 * POKEY_H, BURST_H = 0.34 * POKEY_H, FIGS_H = 0.45 * POKEY_H;
+/** the rough bough's picture: 707 x 180, his feet at 42 px down, walkable from 90 to 666 px across (the inventory row) */
+const BOUGH = { w: 707, h: 180, walkY: 42, x0: 90, x1: 666 } as const;
+import { vineTile } from './castArt.ts';
+import { layRope } from './ropeArt.ts';
+import type { VineCluster } from './vineField.ts';
+
+/** a field vine's drawn thickness (px): thinner than the draped pair's liana (pairArt.ts 15), a vine a hand */
+export const FIELD_THICK = 11;
+
+const pts: Array<[number, number]> = [[0, 0], [0, 0], [0, 0], [0, 0]];
+/** the telling vine's points (drawPod, kept: no allocation a frame) */
+const lit: Array<[number, number]> = [[0, 0], [0, 0], [0, 0], [0, 0]];
+
+/** a field vine, top to its free end */
+export function drawFieldVine(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number) {
+  pts[0][0] = x; pts[0][1] = top - 6;
+  pts[1][0] = x; pts[1][1] = bottom - 22;
+  pts[2][0] = x + 4; pts[2][1] = bottom - 6;
+  pts[3][0] = x + 10; pts[3][1] = bottom + 2;
+  const v = vineTile();
+  if (v) {
+    layRope(ctx, v.src, pts, FIELD_THICK, v.tile);
+    return;
+  }
+  ctx.strokeStyle = '#6f7d2f';
+  ctx.lineWidth = FIELD_THICK * 0.8;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < 4; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.stroke();
+}
+
+/** the bunch's fruit, as offsets in a 1 x 1 box (x from the middle, y up from the bottom), and each one's radius */
+const FRUIT: ReadonlyArray<readonly [number, number, number]> = [
+  [0, 0.16, 0.17], [-0.24, 0.3, 0.16], [0.24, 0.3, 0.16], [-0.12, 0.52, 0.17], [0.13, 0.54, 0.17], [0, 0.74, 0.15],
+];
+
+/** the clusters still on screen: each on its vine's line, its bottom at `y` (stand-in: code-drawn) */
+export function drawClusters(ctx: CanvasRenderingContext2D, clusters: readonly VineCluster[], vines: readonly Vine[], x0: number, x1: number) {
+  for (const c of clusters) {
+    if (c.gone) continue;
+    let x = NaN;
+    for (const v of vines) if (v.id === c.vine) x = v.x + (c.dx ?? 0);
+    if (!(x > x0 - 80 && x < x1 + 80)) continue;
+    const figs = pic(PIECES.figs);
+    if (figs) {
+      // (the bunch hangs from its stalk at the top: its bottom at c.y, its height the inventory's)
+      const w = (FIGS_H * figs.width) / figs.height;
+      ctx.drawImage(figs, x - w / 2, c.y - FIGS_H, w, FIGS_H);
+      continue;
+    }
+    const h = c.h;
+    // the stalk up to the vine
+    ctx.strokeStyle = '#4d5a1e';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x, c.y - h);
+    ctx.lineTo(x, c.y - h * 0.7);
+    ctx.stroke();
+    for (const [fx, fy, r] of FRUIT) {
+      const cx = x + fx * h, cy = c.y - fy * h, rr = r * h;
+      ctx.fillStyle = '#c94a24';
+      ctx.strokeStyle = '#5a1d0c';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255, 214, 170, 0.6)';
+      ctx.beginPath();
+      ctx.arc(cx - rr * 0.35, cy - rr * 0.35, rr * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // a leaf over the stalk
+    ctx.fillStyle = '#3f7d2a';
+    ctx.beginPath();
+    ctx.ellipse(x + h * 0.18, c.y - h * 0.86, h * 0.2, h * 0.08, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/** a kapok pod (stand-in): an upright spindle `r` px across at its widest (drawn 1.5x its hit radius: a pod must read on a phone, and
+ *  a drawing a little bigger than its hit is the forgiving side), a dark outline against the foliage, its seam, a stalk; `shake` rad */
+function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, shake: number, falling = false) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(shake);
+  const im = pic(falling ? PIECES.podFall : PIECES.pod);
+  if (im) {
+    // (the painted pod on its stem, its middle at (x, y), its height the inventory's scaled with r against the stand-in's)
+    const h = (falling ? POD_FALL_H : POD_H) * (r / POD_DRAW), w = (h * im.width) / im.height;
+    ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    ctx.restore();
+    return;
+  }
+  const w = r * 0.95, h = r * 1.9;
+  ctx.fillStyle = '#b08a46';
+  ctx.strokeStyle = '#2a1d0b';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, w, h, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  // its seam, and a pale split showing the fluff inside (a ripe pod)
+  ctx.strokeStyle = '#5a4119';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, -h * 0.85);
+  ctx.lineTo(0, h * 0.85);
+  ctx.stroke();
+  ctx.fillStyle = '#faf8ee';
+  ctx.beginPath();
+  ctx.ellipse(w * 0.32, h * 0.1, w * 0.22, h * 0.42, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // the stalk up to the bough
+  ctx.strokeStyle = '#3e2c12';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, -h);
+  ctx.lineTo(0, -h - 10);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** a fluff tuft: the painted silk tuft (w14-fluff), `r` its half-height-ish size; a white puff stand-in only while it loads */
+function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number, turn = 0, flip = false) {
+  // (no colour string built per tuft: fixed fills and the alpha, PERFORMANCE-RULES §3.1)
+  ctx.globalAlpha = Math.max(0, Math.min(1, a));
+  // (painted: a silk tuft cut from ART's pod-burst plume (w14-fluff), never a code-drawn circle: Matt 11-13, R-165.213, "a column of
+  //  white bubbles" down the fig vine. The circles below draw only while the picture loads)
+  const im = pic(PIECES.fluff);
+  if (im) {
+    const h = r * 3, w = (h * im.width) / im.height;
+    // (each tuft its own turn and side, so no two read as one stamp: the lead's still review 11-13 6:31 PM)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(turn);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    return;
+  }
+  ctx.fillStyle = '#8f8b7e';
+  ctx.beginPath();
+  ctx.arc(x, y + 1, r + 1.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fffdf4';
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+/** the tell's loose tufts: [phase, size, pace (falls a second), spin (rad/s), sway (rad/s)], each its own (four, never a column) */
+const TUFTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
+  [0.0, 1.2, 0.42, 0.7, 1.9],
+  [0.29, 0.75, 0.55, -1.3, 2.6],
+  [0.53, 1.0, 0.37, 1.8, 1.4],
+  [0.8, 0.85, 0.5, -0.5, 2.2],
+];
+
+/** the drawn pod's size (px across its widest, half): 1.5x the hit radius (podfall.ts POD.radius 14) */
+const POD_DRAW = 21;
+
+/**
+ * A falling pod at its phase (podfall.ts podAt): hanging under the bough (idle), shaking with its fluff trickling down the column (the
+ * tell: a stream of tufts that reaches further down the longer it runs, so on a short sideways view he sees fluff falling past him on
+ * his own column), falling with fluff streaming off it, then a white burst on the wood (stand-in, code-drawn).
+ */
+export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState, t: number, vine?: Pick<Vine, 'topY' | 'bottomY'>) {
+  const r = POD_DRAW;
+  // (its bottom hangs at the column's top, where the fall starts: podfall.ts rockAt's y is the pod's bottom)
+  const hangY = p.top - r * 1.9;
+  if (s.phase === 'idle') {
+    // (a new pod swells in over the first part of the beat)
+    const g = Math.min(1, s.u * 4);
+    ctx.globalAlpha = g;
+    podShape(ctx, p.x, hangY, r * (0.6 + 0.4 * g), 0);
+    ctx.globalAlpha = 1;
+    return;
+  }
+  if (s.phase === 'warn') {
+    // the tell is the VINE itself (Matt 11-14, R-165.227: "maybe we have the vines change colors to let us know that there's about to
+    // have something drop"): its own painted vine, laid again over it lit ('lighter', warming up through the tell) and shaking along its
+    // length harder as the drop nears, his sheet-2 dust sifting down it and bark chips trickling, the pod rocking on its stem. No bar,
+    // no glow shape: the vine's own art, brighter (STAGE-RULES §4: only the motion and the light are code)
+    const vt = vineTile();
+    if (vine && vt) {
+      const shake = (1.5 + 4 * s.u) * Math.sin(t * (26 + 14 * s.u));
+      const top = vine.topY, bot = vine.bottomY;
+      lit[0][0] = p.x; lit[0][1] = top - 6;
+      lit[1][0] = p.x + shake; lit[1][1] = top + (bot - top) * 0.35;
+      lit[2][0] = p.x - shake * 0.8; lit[2][1] = top + (bot - top) * 0.7;
+      lit[3][0] = p.x + shake * 0.5; lit[3][1] = bot - 6;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.35 + 0.45 * s.u * (0.75 + 0.25 * Math.sin(t * 18));
+      layRope(ctx, vt.src, lit, FIELD_THICK + 2, vt.tile);
+      ctx.restore();
+    }
+    const dim = pic(PIECES.dust);
+    const reach = (p.land - p.top) * Math.min(1, 0.35 + s.u * 0.9);
+    if (dim) {
+      const dh = 0.42 * POKEY_H, dw = (dh * dim.width) / dim.height;
+      for (let i = 0; i < 3; i++) {
+        const f = (t * 0.55 + i / 3) % 1;
+        ctx.globalAlpha = Math.min(1, f * 5) * (1 - f) * (0.55 + 0.45 * s.u);
+        ctx.drawImage(dim, p.x - dw / 2 + Math.sin(t * 2 + i * 2.1) * 6, p.top - dh * 0.6 + f * reach * 0.6, dw, dh);
+      }
+      ctx.globalAlpha = 1;
+    }
+    for (let i = 0; i < 4; i++) {
+      const c = pic(PIECES.chips[(i * 3) % PIECES.chips.length]);
+      if (!c) continue;
+      const f = (t * (0.7 + i * 0.13) + i * 0.27) % 1;
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, f * 6) * (1 - f * f);
+      ctx.translate(p.x + Math.sin(t * 3 + i * 1.7) * (5 + 10 * f), p.top + 4 + f * reach);
+      ctx.rotate(t * (i % 2 ? 4 : -5) + i);
+      ctx.drawImage(c, -c.width / 6, -c.height / 6, c.width / 3, c.height / 3);
+      ctx.restore();
+    }
+    podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
+    return;
+  }
+  if (s.phase === 'gone') return;
+  if (s.phase === 'fall') {
+    const y = s.y - r * 1.9;
+    for (let i = 0; i < 3; i++) {
+      const [, size, , spin] = TUFTS[i];
+      fluff(ctx, p.x + (i - 1) * 9 + Math.sin(t * 5 + i) * 3, y - r * 1.9 - 8 - i * 16, 5 * size, 0.85 - i * 0.25, spin * t, i === 1);
+    }
+    podShape(ctx, p.x, y, r, 0, true);
+    return;
+  }
+  // the burst: the painted pod burst open on the wood, silk spilling, fading; and a puff of fluff thinning out
+  const bim = pic(PIECES.burst);
+  if (bim) {
+    const w = (BURST_H * bim.width) / bim.height;
+    ctx.globalAlpha = Math.max(0, 1 - s.u * 0.8);
+    ctx.drawImage(bim, p.x - w / 2, p.land - BURST_H, w, BURST_H);
+    ctx.globalAlpha = 1;
+  }
+  for (let i = 0; i < 10; i++) {
+    const a = (i / 10) * Math.PI * 2;
+    const d = 8 + s.u * 30;
+    fluff(ctx, p.x + Math.cos(a) * d, p.land - 10 + Math.sin(a) * d * 0.5 - s.u * 12, 5 + ((i * 7) % 5) * 0.8, 0.95 * (1 - s.u), a + s.u * (i % 2 ? 1.5 : -1.5), i % 2 === 0);
+  }
+}
+
+/**
+ * A shut gate's bough (stand-in): the bough's own length, tilted down at its `far` end by `sag` px under the weight of its fruit, with
+ * bracket-fungus shelves. Drawn only while it sags; once open the stage's painted ground draws it, level.
+ */
+export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, far: -1 | 1, sag: number) {
+  const pivotX = far > 0 ? b.x : b.x + b.width;
+  const ang = Math.atan2(sag, b.width) * far;
+  const thick = Math.max(16, Math.min(26, b.height || 22));
+  ctx.save();
+  ctx.translate(pivotX, b.y);
+  ctx.rotate(ang);
+  const x0 = far > 0 ? 0 : -b.width, w = b.width;
+  const im = pic(PIECES.bough);
+  if (im) {
+    // (the painted rough bough, its walk line on the bough's top, its walkable span over the bough's width, sagging with it)
+    const k = w / (BOUGH.x1 - BOUGH.x0);
+    ctx.drawImage(im, x0 - BOUGH.x0 * k, -BOUGH.walkY * k, BOUGH.w * k, BOUGH.h * k);
+    ctx.restore();
+    return;
+  }
+  ctx.fillStyle = '#5a4026';
+  ctx.beginPath();
+  ctx.roundRect(x0, 0, w, thick, thick / 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 230, 190, 0.18)';
+  ctx.fillRect(x0 + 6, 3, w - 12, 4);
+  ctx.fillStyle = '#c9a25a';
+  for (let i = 1; i <= 3; i++) {
+    const fx = x0 + (w * i) / 4;
+    ctx.beginPath();
+    ctx.ellipse(fx, thick + 2, 12, 5, 0, 0, Math.PI);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** the vine tie's canvas (146 x 324), its knot at (78, 277) on the bough's centre line (the inventory's hfmatt/w1m-tie-*: the three
+ *  states share it), drawn `tall` of his height: the lead's ruling 11-14 2:08 AM, 0.55 Pokey, not the catalog's 1.21 ("a loop taller than
+ *  Pokey standing on the bough reads as a hoop, not a tie... the knot sits on the lid/bough, and the loop is short"); the leaf thatch (720 x 177: 240 x 59 px drawn, its pole along the top,
+ *  stretched 0.8-1.25x along a bough or laid two side by side) */
+const TIE = { w: 146, h: 324, kx: 78, ky: 277, tall: 0.55 } as const;
+const THATCH = { w: 720, h: 177, unit: 3, poleY: 10 } as const;
+/** the bark chips a snapping tie throws (dx, dy px/s, spin), the same every snap */
+const CHIP_FLY = [[-160, -260, 7], [130, -300, -9], [-60, -340, 5], [210, -180, 11], [-230, -150, -6], [60, -230, 8], [-110, -120, -10]] as const;
+
+/** how a shut gate's lock stands now (fieldPlay.ts lockOf) */
+export interface LockState {
+  /** 0..1 the most-pushed fig's way up its vine (to where it tears free): the thatch strains as he pushes */
+  strain: number;
+  /** 0..1 the settle after a fig locks in (a quick shudder down) */
+  settle: number;
+  /** 0..1 the throw once the last fig is in: the thatch is flung up off the bough and is gone */
+  pull: number;
+}
+/** one fig's tie on the bough: at its vine's x, how far its fig has been pushed (0..1), and seconds since it snapped (-1: not yet) */
+export interface TieState {
+  x: number;
+  strain: number;
+  age: number;
+}
+
+/**
+ * A shut gate's lock (Matt, 11-14 12:06 AM: "something that is tying down the thatch, and it shows that it's breaking... or have a
+ * lock... right now it's only a guess"): his own painted leaf thatch lies along the shut bough, tied down at each fig's vine by a vine
+ * tie. As he pushes a fig the tie goes from taut to straining (frayed, pale, shivering harder the further the fig is up); at full push
+ * it SNAPS (its two ends whip apart, bark chips fly) and the thatch shudders; on the last the thatch is flung up off the bough and the
+ * way is open. Only the motion is code (STAGE-RULES §4).
+ */
+export function drawGateLock(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, depth: number, s: LockState, ties: readonly TieState[], t: number) {
+  const lid = pic(PIECES.lid);
+  // (the bough's drawn top at x, sagged as drawGate tilts it)
+  const topAt = (x: number) => b.y + sag * Math.max(0, Math.min(1, far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+  if (lid && s.pull < 1) {
+    const pivotX = far > 0 ? b.x : b.x + b.width;
+    const ang = Math.atan2(sag, b.width) * far;
+    const n = Math.max(1, Math.round(b.width / (THATCH.w / THATCH.unit)));
+    const pw = b.width / n, ph = THATCH.h / THATCH.unit;
+    const shake = s.strain * 1.4 * Math.sin(t * 43) + s.settle * 3 * Math.sin(t * 59);
+    const e = s.pull * s.pull;
+    ctx.save();
+    ctx.translate(pivotX, b.y);
+    ctx.rotate(ang);
+    ctx.globalAlpha = 1 - e;
+    const x0 = far > 0 ? 0 : -b.width;
+    for (let i = 0; i < n; i++) {
+      ctx.save();
+      // (the throw: each half flung up and out to its own side, turning as it goes)
+      const side = n > 1 ? (i < n / 2 ? -1 : 1) : far;
+      ctx.translate(x0 + pw * (i + 0.5) + side * e * 60, -(THATCH.poleY / THATCH.unit) - e * 140 + s.settle * 3 + shake * (i % 2 ? 1 : -1));
+      ctx.rotate(side * e * 0.9);
+      ctx.drawImage(lid, -pw / 2, 0, pw, ph);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  const th = TIE.tall * POKEY_H, k = th / TIE.h, tw = TIE.w * k, kx = TIE.kx * k, ky = TIE.ky * k;
+  for (const tie of ties) {
+    const knotY = topAt(tie.x) + depth / 2;
+    if (tie.age < 0) {
+      if (s.pull >= 1) continue;
+      const im = pic(tie.strain < 0.45 ? PIECES.tieTaut : PIECES.tieStrain);
+      if (!im) continue;
+      // (straining: it shivers harder, and stretches a little up, the further the fig is pushed)
+      const q = Math.max(0, (tie.strain - 0.45) / 0.55);
+      const jx = q * 2.2 * Math.sin(t * 53 + tie.x), stretch = 1 + 0.12 * q;
+      ctx.drawImage(im, tie.x - kx + jx, knotY - ky * stretch, tw, th * stretch);
+      continue;
+    }
+    // snapped: the two ends whip apart (the painted snap) and fade; bark chips fly from the knot and fall
+    if (tie.age > 1.1) continue;
+    const im = pic(PIECES.tieSnap);
+    if (im) {
+      ctx.save();
+      ctx.globalAlpha = tie.age < 0.6 ? 1 : 1 - (tie.age - 0.6) / 0.5;
+      const pop = 1 + 0.15 * Math.max(0, 1 - tie.age / 0.15);
+      ctx.drawImage(im, tie.x - kx * pop, knotY - ky * pop, tw * pop, th * pop);
+      ctx.restore();
+    }
+    if (tie.age < 0.9) {
+      ctx.save();
+      ctx.globalAlpha = 1 - tie.age / 0.9;
+      for (let i = 0; i < CHIP_FLY.length; i++) {
+        const c = pic(PIECES.chips[i]);
+        if (!c) continue;
+        const [vx, vy, spin] = CHIP_FLY[i];
+        const a = tie.age;
+        ctx.save();
+        ctx.translate(tie.x + vx * a, knotY - 6 + vy * a + 450 * a * a);
+        ctx.rotate(spin * a);
+        ctx.drawImage(c, -c.width / 6, -c.height / 6, c.width / 3, c.height / 3);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+  }
+}

@@ -81,6 +81,10 @@ const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 // (re-measured 11-06 under the planner's route walls (a8977c70: the route hops a wall of 50 px or more where he stands on the floor, as
 // a player does): 3, 5, 6, 7, 6, 5 where 5, 6, 4, 6, 6, 5 was recorded, no rescue in any run; the median is 5 either way, so 5-9's Easy
 // goal is unchanged)
+// (re-measured 11-15 by INT-10b under ENG-PETAL's walked-path petals (7e9fe4d8): 3, 5, 6, 7, 7, 5, seed 3's first run one petal more;
+// at 7e9fe4d8^ the recorded runs exactly (firstTimerBot.test GREEN there); the median is 5 either way, so 5-9's Easy goal is unchanged)
+// (re-measured 11-15 by INT-10d, the petal rule decoupled (the lead's ruling 1:54 PM ET: placement back to main's lay): 3, 5, 6, 7, 6, 5,
+// main 73e7bed0's record exactly; the median is 5, so 5-9's Easy goal is unchanged)
 export const KID_RUNS_59 = [3, 5, 6, 7, 6, 5] as const;
 
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {

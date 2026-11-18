@@ -31,9 +31,9 @@
 import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
-import type { Bush, WatchZone } from '../../watcher.ts';
 import type { Zone } from '../../zones.ts';
 import type { CreatureDef, FilledSocket, PlaceRule, PropDef, PropEmitter, PropPair, SectionTemplate, StageSink, WorldKit, WorldManifest } from '../types.ts';
+import { clipWatches, hash01, lookAt, stillEmitters, stillProps, type CalmBand, type StillRow } from '../stillLay.ts';
 import { W6_GROUND_SECTIONS, W6_STAGE_ONLY, W6_STAGE_SKIP } from './w6Ground.ts';
 
 /** World 6's ground, its bank's depth, and how deep a soft pit's floor lies under its lips (one wide step out, as World 5's 110) */
@@ -119,15 +119,25 @@ export const W6_CREATURES: CreatureDef[] = [
 
 // ───────────────────────────── the props ─────────────────────────────
 
-/** the watcher's bush sizes (protoStage.ts BUSH_W): a root den is drawn like a wide bush, a reed bed like a tall one */
-export const W6_HIDE_W = { rootHide: 176, reedHide: 124 } as const;
+/** how long the watched water stays calm between passes (stillLay.ts calmFor): long where it is taught (as 1-7's first bushes), then
+ *  shorter through the world (1-7's later rows); never under 5 s, so the next root is always reached in a calm */
+export const W6_CALM: CalmBand = { teach: [9, 11], early: [7, 8.5], late: [5.5, 7] };
+
+/**
+ * World 6's hides and its watcher, as stillLay.ts rows: a root den is drawn like a wide bush, a reed bed like a tall one (the watcher's
+ * bush sizes, protoStage.ts BUSH_W); the watched water looks along the bank it stands on and the knees joined to it (a `watchHere`
+ * socket: its own bank only, a reed bed's flats each have their own stretch); `watchLesson` is where it is taught
+ */
+export const W6_STILL: Record<'rootHide' | 'reedHide' | 'watch', StillRow> = {
+  rootHide: { role: 'hide', bush: 'wide', w: 176, looks: ['rootDen', 'rootArch'] },
+  reedHide: { role: 'hide', bush: 'tall', w: 124, looks: ['reeds', 'seagrass'] },
+  // (the watcher is the beat: its passes are what he waits out, in the roots)
+  watch: { role: 'watch', calm: W6_CALM, lesson: ['watchLesson'], own: ['watchHere'] },
+};
 
 export const W6_PROPS: PropDef[] = [
   // (`w` the space along the route; `minApart` the least gap to another of its kind, C2)
-  { id: W6_PROP.rootHide, tags: [W6_TAG.hide, W6_TAG.cover], w: W6_HIDE_W.rootHide, minApart: 260, looks: ['rootDen', 'rootArch'] },
-  { id: W6_PROP.reedHide, tags: [W6_TAG.hide, W6_TAG.cover], w: W6_HIDE_W.reedHide, minApart: 260, looks: ['reeds', 'seagrass'] },
-  // (the watcher is the beat: its passes are what he waits out, in the roots)
-  { id: W6_PROP.watch, tags: [W6_TAG.watch], w: 120, minApart: 500, hazard: true, beat: true },
+  ...stillProps(W6_STILL),
   { id: W6_PROP.tidePost, tags: [W6_TAG.post], w: 30, minApart: 400 },
   { id: W6_PROP.lilies, tags: [W6_TAG.scenery], w: 120, minApart: 300, looks: ['lilyPads', 'mudPuddle'] },
   { id: W6_PROP.snag, tags: [W6_TAG.scenery], w: 80, minApart: 400, looks: ['snag', 'snagHook', 'kneeRoot'] },
@@ -217,99 +227,20 @@ export interface W6Extras {
   meets?: Array<{ kind: string; x: number }>;
 }
 
-/** a number in 0..1 from a spot and a salt: the emitters' small rolls (the same socket in the same place always rolls the same) */
-const hash01 = (x: number, salt: number): number => {
-  const s = Math.sin(x * 12.9898 + salt * 78.233) * 43758.5453;
-  return s - Math.floor(s);
-};
 const R = Math.round;
 
 /** the stage's World 6 extras, made on first use */
 export function w6Of(out: StageSink, stage = 2): W6Extras {
   return (out.extras.w6 ??= { mood: w6Mood(stage) }) as W6Extras;
 }
-const look = (p: PropDef, x: number, salt: number) => (p.looks?.length ? p.looks[Math.floor(hash01(x, salt) * p.looks.length)] : p.id);
-
-/** the platform a socket's spot stands on (its top at the spot's y, the spot inside it): the piece a tide or a watch covers */
-function pieceAt(out: StageSink, x: number, y: number): Platform | undefined {
-  return out.platforms.find((p) => Math.abs(p.y - y) < 1 && x >= p.x && x <= p.x + p.width && p.type !== 'fragile');
-}
-
-/** the longest a watched stretch runs (px): a section's banks and knees, not the stage */
-const WATCH_MAX = 1400;
-
-/**
- * The stretch the watcher looks along: the piece under the spot and the pieces walked on from it onward with no gap between (a knee
- * root up and down: the same bank to the water), up to WATCH_MAX; a gap ends it (the next bank has its own watch). It never reaches
- * back (a watch stands at the start of its stretch), and w6Decorate clips it to the roots laid along it.
- */
-function watchedRun(out: StageSink, x: number, y: number): [number, number] | null {
-  const p0 = pieceAt(out, x, y);
-  if (!p0) return null;
-  const banks = out.platforms.filter((p) => p.type !== 'fragile' && Math.abs(p.y - p0.y) <= 60);
-  const x0 = p0.x;
-  let x1 = p0.x + p0.width;
-  for (let grown = true; grown && x1 - x0 < WATCH_MAX; ) {
-    grown = false;
-    for (const p of banks) if (Math.abs(p.x - x1) <= 2 && p.x + p.width > x1) (x1 = Math.min(p.x + p.width, x0 + WATCH_MAX)), (grown = true);
-  }
-  return [x0, x1];
-}
-
-/** a watched stretch runs this far past the last root along it (px): never into a stretch with nowhere to hide */
-const WATCH_PAST = 120;
-
-/**
- * Each watched stretch clipped to the roots laid along it (pass 4 lays the watch before its roots, so this waits for pass 6): from its
- * start to WATCH_PAST past its last root; one with no root in it is no watched stretch at all (being seen with nowhere to go is unfair)
- */
-export function clipWatches(out: StageSink): void {
-  const zones = out.proto.watch;
-  if (!zones?.length) return;
-  const bushes = out.proto.bushes ?? [];
-  out.proto.watch = zones.flatMap((z) => {
-    const inside = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1);
-    if (!inside.length) return [];
-    const x1 = Math.min(z.x1, Math.max(...inside.map((b) => b.x + b.w)) + WATCH_PAST);
-    return [{ ...z, x1: R(x1) }];
-  });
-}
-
-/**
- * How long the watcher stays away between passes (s): long where it is taught (a socket named `watchLesson`, as 1-7's first bushes'
- * [9, 11]), then shorter through the world (1-7's later rows [6.5, 8]); never under 5 s, so the next root is always reached in a calm.
- */
-export function watchCalm(stage: number, lesson: boolean): [number, number] {
-  if (lesson) return [9, 11];
-  const k = Math.max(0, Math.min(1, (stage - 2) / 7));
-  return [Math.round((7 - 1.5 * k) * 10) / 10, Math.round((8.5 - 1.5 * k) * 10) / 10];
-}
-
 /** the emitters, for a stage of World 6 (its number sets the tide's beat, the watcher's calm and the light) */
 export function w6Emitters(stage: number): Record<W6PropId, PropEmitter> {
-  const hide = (kind: Bush['kind']): PropEmitter => (f, p, out) => {
-    const w = W6_HIDE_W[p.id as keyof typeof W6_HIDE_W] ?? 150;
-    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind };
-    (out.proto.bushes ??= []).push(b);
-    (w6Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: look(p, f.x, 1) });
-  };
   return {
-    rootHide: hide('wide'),
-    reedHide: hide('tall'),
-    // the watched stretch: the bank the watch stands on and the knees joined to it, 40 px in from each end (the section lays the roots
-    // along it). Two watches on one stretch make one zone
-    // (a `watchHere` socket watches its own bank only: a reed bed's flats each have their own stretch, the knees between unwatched)
-    watch: (f, _p, out) => {
-      const own = f.socket.startsWith('watchHere') ? pieceAt(out, f.x, f.y) : undefined;
-      const run = own ? [own.x, own.x + own.width] : watchedRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
-      const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: watchCalm(stage, f.socket === 'watchLesson') };
-      const zones = (out.proto.watch ??= []);
-      if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);
-    },
+    ...(stillEmitters(W6_STILL, stage, { hide: (out, at) => void (w6Of(out, stage).hides ??= []).push(at) }) as Record<keyof typeof W6_STILL, PropEmitter>),
     tidePost: (f, _p, out) => void (w6Of(out, stage).posts ??= []).push({ x: f.x, y: f.y }),
-    lilies: (f, p, out) => void (w6Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 3), x: f.x, b: f.y, w: R(100 + 40 * hash01(f.x, 4)) }),
+    lilies: (f, p, out) => void (w6Of(out, stage).scenery ??= []).push({ n: lookAt(p, f.x, 3), x: f.x, b: f.y, w: R(100 + 40 * hash01(f.x, 4)) }),
     snag: (f, p, out) =>
-      void (w6Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 5), x: f.x, b: f.y, w: R(70 + 30 * hash01(f.x, 6)), ...(hash01(f.x, 7) < 0.5 ? { flip: true } : {}) }),
+      void (w6Of(out, stage).scenery ??= []).push({ n: lookAt(p, f.x, 5), x: f.x, b: f.y, w: R(70 + 30 * hash01(f.x, 6)), ...(hash01(f.x, 7) < 0.5 ? { flip: true } : {}) }),
   };
 }
 

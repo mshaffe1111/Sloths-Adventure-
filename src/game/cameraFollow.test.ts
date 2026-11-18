@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AHEAD, CAM, camAnchor, camLook, HERO_HEAD, heroBox, HUD_BAND, landingAhead, landingBox, showBoth, snapCam, underHud, type Box } from './cameraFollow.ts';
+import { AHEAD, CAM, camAnchor, camLook, CLIMB_VIEW, FRAME, framing, HERO_HEAD, heroBox, HUD_BAND, landingAhead, landingBox, showBoth, snapCam, travelFeet, underHud, type Box } from './cameraFollow.ts';
+import { MODES } from './stageModes.ts';
+import { TOWER } from './gen2/tower.ts';
 
 const VH = 720;
 
@@ -172,4 +174,50 @@ test("Pokey's head stays under the HUD band, in every stage and both ways up; th
 test('the camera snaps to whole device pixels', () => {
   assert.equal(snapCam(10.4, 3), 31 / 3);
   assert.equal(snapCam(10.2, 1), 10);
+});
+
+// ───── the climb camera (R-165.170 piece 3) ─────
+
+/** the two phones the stills are shot on: css px, and the px of world the engine shows on each (engine.ts: 540 px tall sideways) */
+const PHONES = [
+  { name: 'sideways 915 x 412', cssW: 915, cssH: 412, vw: 1199.27, vh: 540, band: HUD_BAND.land },
+  { name: 'upright 412 x 915', cssW: 412, cssH: 915, vw: 440, vh: 977.18, band: HUD_BAND.port },
+] as const;
+
+test('the climb camera: on a stage that leads up his feet sit low, so the storey over him shows under the HUD, both ways round', () => {
+  for (const ph of PHONES) {
+    const base = framing(ph.cssW, ph.cssH, ph.vw).feetAt;
+    assert.equal(base, FRAME.feetAt, `${ph.name}: the plain framing on these phones`);
+    const feet = travelFeet(base, MODES.up.lead().dy);
+    assert.equal(feet, CLIMB_VIEW.up);
+    // (the px of world over his feet, and what of it is clear under the HUD's band: the band is css px, the view world px)
+    const over = feet * ph.vh, band = ph.band / (ph.cssH / ph.vh), clear = over - band;
+    const storey = TOWER.clear + 24;
+    assert.ok(clear >= storey, `${ph.name}: ${Math.round(clear)} px clear over his feet, the storey over him ${storey} px up`);
+    // (before: 55% down, the same storey was behind the band sideways)
+    const was = base * ph.vh - band;
+    if (ph.cssW > ph.cssH) assert.ok(was < storey, `${ph.name}: at 55% only ${Math.round(was)} px was clear: the planted case`);
+    // (and he is still on the screen with the ledge he stands on: 20% of the view under his feet)
+    assert.ok((1 - feet) * ph.vh >= 100, `${ph.name}: ${Math.round((1 - feet) * ph.vh)} px under his feet`);
+  }
+});
+
+test('the climb camera: on a stage that leads down his feet sit high, so the landing under him shows; a run keeps its framing', () => {
+  for (const ph of PHONES) {
+    const base = framing(ph.cssW, ph.cssH, ph.vw).feetAt;
+    const feet = travelFeet(base, MODES.down.lead().dy);
+    assert.equal(feet, CLIMB_VIEW.down);
+    // (the engine keeps his head under the HUD's band whatever the view wants, underHud: his feet never sit higher than the band and his
+    // height; what shows under them is the rest)
+    const band = ph.band / (ph.cssH / ph.vh);
+    const rests = Math.max(feet * ph.vh, band + HERO_HEAD), under = ph.vh - rests;
+    assert.ok(under >= TOWER.see - 15, `${ph.name}: ${Math.round(under)} px shows under his feet, a way down drops him ${TOWER.see} px at most`);
+    assert.ok(under > (1 - base) * ph.vh, `${ph.name}: more than the plain framing's ${Math.round((1 - base) * ph.vh)} px`);
+    for (const m of [MODES.right, MODES.left, MODES.stay]) assert.equal(travelFeet(base, m.lead().dy), base, `${ph.name}: ${m.travel} keeps its framing`);
+  }
+  // (a squat sideways screen's own framing, 68% down, is kept where it already shows more: never raised on a climb, never lowered on a way down)
+  assert.equal(travelFeet(FRAME.shortFeetAt, -1), CLIMB_VIEW.up);
+  assert.equal(travelFeet(0.9, -1), 0.9, 'a framing already lower than the climb\'s stays');
+  assert.equal(travelFeet(FRAME.shortFeetAt, 1), CLIMB_VIEW.down);
+  assert.equal(travelFeet(0.2, 1), 0.2);
 });

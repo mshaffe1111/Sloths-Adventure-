@@ -44,6 +44,8 @@ export interface BuiltStage extends StageDraws {
   kit?: unknown;
   rivers?: readonly unknown[];
   waterY?: number;
+  /** a laid chase (stageGenerator.ts GeneratedStage.chase): its sections draw off the long-branch sheet */
+  chase?: unknown;
 }
 
 /** the strips this stage reveals at its top, if any (got in by stageReady.ts with the stage's own backdrop) */
@@ -57,8 +59,14 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.props2 || x.vine) out.add('props2');
   if (x.vine) out.add('vine');
   if (x.rope) out.add('rope');
+  // (a vine snake on a liana: its hanging and hissing poses, vineSnakeArt.ts)
+  if ((st.vines ?? []).some((v) => !!(v as { snake?: unknown }).snake)) out.add('vine-snake');
   // (the art director's cut World 1 pieces, gen2 1-1's stones, stumps and planks: w1CutArt.ts)
   if (st.platforms.some((p) => (p as { cut?: string }).cut)) out.add('w1-cut');
+  // (World 1's moss cover, the Spanish moss on a mossy liana and the perched eagle on its snag: w17Art.ts, 1-7)
+  const MOSS = ['moss', 'mossPatch', 'mossHang'];
+  if (st.proto?.bushes?.some((b) => MOSS.includes((b as { kind?: string }).kind ?? '')) || st.vines?.some((v) => (v as { mossy?: boolean }).mossy) ||
+    st.enemies?.some((e) => (e as { kitPerch?: boolean }).kitPerch)) out.add('w17');
   const w = st.config.worldIndex;
   if (st.boss) {
     out.add(`boss:${w}`);
@@ -77,5 +85,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (w >= 6 && (st.waterY !== undefined || !!st.rivers?.length)) out.add('bad-water');
   if (st.platforms.some((p) => p.type === 'bouncy')) out.add('bounce');
   if (st.platforms.some((p) => p.crumbleAfter !== undefined)) out.add('crumble-tile');
+  // (a laid chase draws its sections off the long-branch sheet, which loaded on the first section drawn: flat brown bars for the first
+  // frames a chase came on screen, B2 11-14)
+  if (st.chase) out.add('props3');
   return [...out];
 }

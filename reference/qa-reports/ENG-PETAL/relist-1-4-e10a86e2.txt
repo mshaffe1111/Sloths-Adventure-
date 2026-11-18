@@ -1,0 +1,17 @@
+start 22:53
+  judged on "normal-1-4", every move Easy flies has its row
+
+== 6. every other registration (tools/engine/registrycheck.ts --stage) (at 263 s)
+registrycheck 1-4: registered everywhere (row, kit, config, routed, attempts, sheets, drawcheck, seeds, flown)
+
+
+== addlevel 1-4: 267 s
+  DONE     row, kit and config resolve
+  DONE     rolls: 24/24 Normal, 24/24 Easy clean; 24/24 on both
+  DONE     seed list written: 100 proven of 100 tried (100%), 58 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  DONE     seed list: --check PASS
+  DONE     flown: judged on normal-1-4
+  DONE     registered everywhere registrycheck looks
+  MISSING  bots: not run (--no-bots): npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --par 2
+addlevel 1-4: NOT READY (1 missing above)
+exit 1 end 22:57

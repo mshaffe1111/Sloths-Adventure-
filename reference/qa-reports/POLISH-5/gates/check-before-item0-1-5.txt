@@ -1,0 +1,12 @@
+seedlist 1-5: the verdicts refuse 0 of 150 listed seeds
+seedlist 1-5: FAIL
+  1-5 seed 14 normal: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 14 easy: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 44 normal: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 44 easy: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 45 normal: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 45 easy: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 86 normal: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 86 easy: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 139 normal: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list
+  1-5 seed 139 easy: its replay differs from its search (platforms, vines, enemies, collectibles): rebuild the list

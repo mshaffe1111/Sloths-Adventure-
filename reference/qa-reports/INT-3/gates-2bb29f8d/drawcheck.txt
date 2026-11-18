@@ -1,0 +1,30 @@
+      src/game/protoArt.ts:553 (drawBranchArt) 1.25/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.75/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.25/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/scenery.ts:2528 (renderWeather) 0.25/frame  | ctx.drawImage(pic, x - R * 2.2, y - R * 2.2, R * 4.4, R * 4.4);
+✓ 7-3 land
+  note shrunkOver2_5x 6.00 at spot 2 (x 22359) (reported; fails over 32)
+      src/game/sheetBake.ts:124 (drawSheet) 2.91/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 1.00/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.75/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+✓ 8-4 land
+  note shrunkOver2_5x 6.00 at spot 2 (x 23450) (reported; fails over 32)
+      src/game/w810FaceArt.ts:75 (drawW8Stones) 3.53/frame  | ctx.drawImage(img!, f.x, f.y, f.w, f.h, -width / 2, -h, width, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.74/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.50/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+✓ 1-2 land
+  note shrunkOver2_5x 13.00 at spot 2 (x 20393) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 1.94/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/sheetBake.ts:124 (drawSheet) 1.53/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 1.00/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/w1Pits.ts:927 (drawW1Pits) 0.94/frame  | ctx.drawImage(hl, 0, 0, hw, hh);
+      src/game/w1Pits.ts:922 (drawW1Pits) 0.71/frame  | if (g.lipL) ctx.drawImage(hl, g.x0 - hw * out, yl - 12 * (hw / lw), hw, hh);
+✓ 1-5 land
+  note shrunkOver2_5x 11.44 at spot 2 (x 21488) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 2.59/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 2.50/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/sheetBake.ts:124 (drawSheet) 1.12/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/protoArt.ts:553 (drawBranchArt) 0.79/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/sheetBake.ts:125 (drawSheet) 0.71/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+
+PASS (585 s; raw results in /tmp/drawcheck-7AFcZg)

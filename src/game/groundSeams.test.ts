@@ -95,12 +95,14 @@ test("a backdrop strip's foot (below its painted bottom, over a chasm) is its bo
   }
 });
 
-test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares with its banks, never live over them: live, laid from the view, it stood as a lighter box between 1-1's earth pillars (R-165.129)", async () => {
+// (pictures that load at once, and canvases whose 2D context records each picture drawn into it; `restore` puts the real ones back)
+type Rec = { into: string; src: unknown; a: number[] };
+// (every ground sheet the stubs made: groundPaint keeps the first it loaded for the rest of the file)
+const sheets: object[] = [];
+function stubArt() {
   const G = globalThis as unknown as Record<string, unknown>;
   const doc = G.document as { createElement: unknown };
   const wasImage = G.Image, wasCreate = doc.createElement;
-  const sheets: object[] = [];
-  // (pictures that load at once, and canvases whose 2D context records each picture drawn into it)
   G.Image = class {
     onload: (() => void) | null = null;
     width = 2048;
@@ -111,7 +113,6 @@ test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares wi
     set src(u: string) { if (u.includes('/ground/')) sheets.push(this); setTimeout(() => this.onload?.(), 0); }
     decode() { return Promise.resolve(); }
   };
-  type Rec = { into: string; src: unknown; a: number[] };
   const recs: Rec[] = [];
   const ctx2d = (name: string, cv: object) => {
     let m = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
@@ -140,6 +141,15 @@ test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares wi
     cv.getContext = () => c;
     return cv;
   };
+  const restore = () => {
+    G.Image = wasImage;
+    doc.createElement = wasCreate;
+  };
+  return { recs, sheets, ctx2d, restore };
+}
+
+test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares with its banks, never live over them: live, laid from the view, it stood as a lighter box between 1-1's earth pillars (R-165.129)", async () => {
+  const { recs, sheets, ctx2d, restore } = stubArt();
   try {
     const { drawProtoScene, protoArtReady, setKitWorld } = await import('./protoArt.ts');
     const { warmGround } = await import('./groundPaint.ts');
@@ -166,8 +176,52 @@ test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares wi
     const live = recs.filter((r) => r.into === 'main' && soil(r));
     assert.equal(live.length, 0, `${live.length} soil tiles drawn live over the ground's squares (the pocket's: laid from the view, a lighter box)`);
   } finally {
-    G.Image = wasImage;
-    doc.createElement = wasCreate;
+    restore();
+  }
+});
+
+// FIX-22b (0.9.9's drawcheck, 2-2 sideways at the spur: 8.18 screens a frame > 7.5): a sheet arriving in play (the pads' ripple, the
+// first time a pad sank) was in the ground squares' key, so every square was thrown away at once and the whole ground drawn live, soil
+// tile by tile and the blob darkening, for the frames it took to paint them again: 5.7 screens a frame became 10.7.
+test('a sheet arriving in play never throws the painted ground away: the squares already painted are drawn while they are painted again, a few a frame (FIX-22b)', async () => {
+  const { recs, sheets, ctx2d, restore } = stubArt();
+  try {
+    const { drawProtoScene, protoArtReady, setKitWorld } = await import('./protoArt.ts');
+    const { warmGround } = await import('./groundPaint.ts');
+    const { sheetEpoch } = await import('./atlasLoader.ts');
+    setKitWorld(1);
+    warmGround(1);
+    protoArtReady();
+    for (let i = 0; i < 20 && !(protoArtReady() && warmGround(1)); i++) await new Promise((r) => setTimeout(r, 5));
+    assert.ok(protoArtReady() && warmGround(1), 'the stubbed sheets loaded');
+    // (a view of 4 x 2 squares over two banks: more squares than a frame paints)
+    const plats = [P(10000, 10700, 1400, { height: 600 }), P(10700, 11400, 1450, { height: 600 })];
+    const main = ctx2d('main', { width: 1100, height: 540 }) as unknown as CanvasRenderingContext2D;
+    main.setTransform(2, 0, 0, 2, -10240 * 2, -1280 * 2);
+    const view = { x0: 10240, x1: 11263, y0: 1280, y1: 1791 };
+    const st = { brokeAt: new Map(), movedAt: new Map() };
+    const fill = GROUND_FRAMES[1].fills;
+    const soil = (r: Rec) => sheets.includes(r.src as object) && r.a.length === 8 && fill.some((f) => r.a[0] >= f.x && r.a[0] < f.x + f.w && r.a[1] >= f.y && r.a[1] < f.y + f.h);
+    const square = (r: Rec) => r.into === 'main' && typeof r.src === 'object' && r.src !== null && 'getContext' in (r.src as object);
+    for (let i = 0; i < 6; i++) drawProtoScene(main, plats, [], [], 0, view, st);
+    recs.length = 0;
+    drawProtoScene(main, plats, [], [], 0, view, st);
+    const whole = recs.filter(square).length;
+    assert.equal(whole, 8, 'all 8 squares painted and drawn before the sheet arrives');
+    // (a sheet nothing in the ground uses arrives)
+    sheetEpoch.n++;
+    for (let f = 0; f < 4; f++) {
+      recs.length = 0;
+      drawProtoScene(main, plats, [], [], 0, view, st);
+      const live = recs.filter((r) => r.into === 'main' && soil(r)).length;
+      assert.equal(live, 0, `frame ${f} after the sheet: ${live} soil tiles drawn live (the squares were thrown away)`);
+      assert.equal(recs.filter(square).length, 8, `frame ${f} after the sheet: every square still drawn`);
+      const painted = recs.filter((r) => r.into !== 'main' && soil(r)).length;
+      if (f < 2) assert.ok(painted > 0, `frame ${f}: squares painted again (with the sheet)`);
+      if (f === 3) assert.equal(painted, 0, 'all painted again by the third frame, then left alone');
+    }
+  } finally {
+    restore();
   }
 });
 
@@ -180,4 +234,66 @@ test("a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank
   assert.equal(lipUnder(lo, [floor, hi, lo], false), LIP_UNDER, 'the bank on its left is higher');
   assert.equal(lipUnder(floor, [floor, P(500, 530, 489)], true), 30, 'never past a narrow bank');
   assert.equal(lipUnder(P(0, 500, 580, { soil: true }), [P(0, 500, 580, { soil: true }), hi], true), 0, "a pit's low step keeps its own ends");
+});
+
+// R-165.243 (the lead's 1-1 x11560 / 1-7 stills, 11-14): a thin dark line straight across World 1's backdrop, one device row, at the
+// top of every ground lip. Lips 0 and 1 are packed right under the soil fills (the sheet row above each is opaque soil in every world:
+// tools in POLISH-10's REPORT), and drawn to their frame's top edge the filter pulled that row in: a ground square's row went from clear
+// to the soil's colour at alpha 95 for its whole width, 30-40 units above the bank. The lip is sampled LIP_INSET rows in from its top and
+// bottom (clear rows in every world), drawn where those rows sat, so the art is where it was.
+test('every ground lip, in every world, is sampled clear of the soil row packed above it, and drawn where its frame puts it (R-165.243)', async () => {
+  const { LIP_INSET, LIP_W, lipSrc, drawLip, warmGround } = await import('./groundPaint.ts');
+  assert.ok(LIP_INSET >= 4, `LIP_INSET ${LIP_INSET}: the soil row is pulled in over 2 rows at half size (a 1x phone), 4 at a quarter`);
+  let n = 0;
+  for (const [w, g] of Object.entries(GROUND_FRAMES)) {
+    for (const l of g.lips ?? [g.lip]) {
+      const [sx, sy, sw, sh] = lipSrc(l);
+      const where = `world ${w} lip at ${l.x},${l.y}`;
+      assert.ok(sy >= l.y + LIP_INSET && sy + sh <= l.y + l.h - LIP_INSET, `${where}: sampled from its top or bottom edge rows`);
+      // (its full width: the lips share their ends, so the one beside it in the sheet is its own continuation, and a cut would show at
+      // every repeat)
+      assert.ok(sx === l.x && sw === l.w, `${where}: cut at its sides`);
+      // (and only the clear rows: the walking line, surf of the way down, is inside what is drawn)
+      assert.ok(sh >= l.h - 2 * LIP_INSET && l.surf * l.h > LIP_INSET, `${where}: cut more than its clear rows`);
+      n++;
+    }
+  }
+  assert.ok(n >= 30, `${n} lips checked`);
+  // drawLip draws through it, at the same place: the art does not move
+  const G = globalThis as unknown as { Image?: unknown };
+  const wasImage = G.Image;
+  class Img {
+    onload: null | (() => void) = null;
+    onerror: null | (() => void) = null;
+    naturalWidth = 2048;
+    naturalHeight = 2944;
+    width = 2048;
+    height = 2944;
+    set src(_v: string) {
+      queueMicrotask(() => this.onload?.());
+    }
+  }
+  G.Image = Img;
+  try {
+    warmGround(1);
+    for (let i = 0; i < 20 && !warmGround(1); i++) await new Promise((r) => setTimeout(r, 5));
+    assert.ok(warmGround(1), 'the stubbed sheet loaded');
+    const calls: number[][] = [];
+    const ctx = { drawImage: (...a: unknown[]) => calls.push(a.slice(1) as number[]) } as unknown as CanvasRenderingContext2D;
+    const y = 1322;
+    drawLip(ctx, 1, 0, 3 * LIP_W, y);
+    assert.equal(calls.length, 3, 'one draw a repeat');
+    const f = GROUND_FRAMES[1].lip;
+    const h = (LIP_W * f.h) / f.w;
+    const top = y - f.surf * h;
+    for (const [sx, sy, sw, sh, , dy, , dh] of calls) {
+      const l = (GROUND_FRAMES[1].lips ?? [f]).find((q) => q.x === sx && sy >= q.y && sy < q.y + q.h)!;
+      assert.ok(l, `drawn from a lip's frame (${sx},${sy})`);
+      assert.ok(sy >= l.y + LIP_INSET && sy + sh <= l.y + l.h - LIP_INSET && sw === l.w, `drawn from ${sx},${sy} ${sw}x${sh}: its edge rows sampled`);
+      // (each sheet row lands where it did when the whole frame was drawn from `top`)
+      assert.ok(Math.abs(dy - (top + ((sy - l.y) * h) / l.h)) < 1e-9 && Math.abs(dh - (sh * h) / l.h) < 1e-9, `row ${sy} drawn at ${dy}, ${dh} tall: the art moved`);
+    }
+  } finally {
+    G.Image = wasImage;
+  }
 });

@@ -150,14 +150,35 @@ test("the QA rig's lone flick up and to either side lets go at once on a liana, 
   }
 });
 
+/**
+ * the new 1-6 (R-165.238: the old 1-6's ground line, y 580, went with its proto plan) from the take-off ledge left of its first liana,
+ * both by the stage's own data, stood on the ledge's near end (its arrival before it is not played here): wait `wait` frames for the
+ * liana to come, then run at it and jump off the ledge's end
+ */
+function ledgeRun(wait: number, clock?: number, r = new RealPlay('1-6', 1)) {
+  const v = r.vines.filter((q) => q.vineType !== 'tree_climb').sort((a, b) => a.x - b.x)[0];
+  const ledge = r.platforms.filter((p) => p.x + p.width < v.x && p.y <= v.bottomY).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+  r.stand(ledge.x + 10, ledge.y);
+  if (clock !== undefined) r.vineClock = clock;
+  for (let i = 0; i < wait; i++) r.frame();
+  for (let i = 0; i < 30 * 4 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
+  return r;
+}
+/** the vines swing on their own clock (physics.ts), so a player waits on the ledge for the first liana to come: how long (frames) */
+function catchWait(): number {
+  const r = new RealPlay('1-6', 1);
+  const clock0 = r.vineClock;
+  for (let wait = 0; wait < 120; wait += 3) if (ledgeRun(wait, clock0, r).p.isVineSwinging) return wait;
+  assert.fail('no wait on the ledge lets a jump off its end catch the first liana');
+}
+
 test("1-6 in the real engine: after a pump and a lift, the QA rig's flick up-left lets go exactly as its flick up-right does, at any moment of the swing, upright and sideways", () => {
+  const wait = catchWait();
   for (const [vn, view] of Object.entries(VIEWS)) {
     for (const side of [1, -1] as const) {
       for (let phase = 0; phase < 57; phase += 7) {
-        const r = new RealPlay('1-6', 1);
-        const v = r.vines.find((q) => q.vineType !== 'tree_climb')!;
-        const ledge = r.platforms.filter((p) => p.x + p.width < v.x && Math.abs(p.y - 580) < 1).sort((a, b) => b.x - a.x)[0];
-        for (let i = 0; i < 30 * 8 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
+        const r = ledgeRun(wait);
+        assert.ok(r.p.isVineSwinging, `${vn} phase ${phase}: he caught the first liana`);
         const held = { left: false, right: false, up: false, down: false };
         let press = false;
         let presses = 0;

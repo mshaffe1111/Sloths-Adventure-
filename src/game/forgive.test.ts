@@ -140,7 +140,11 @@ test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70
   assert.ok(reachJumpHeld(0.85 * JUMP_RISE, false) < 0, 'a 70% hold does not rise 85% of a full jump');
   assert.ok(reachJump(0.85 * JUMP_RISE, false) > 0);
   const make = (rise: number) => {
-    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-3']);
+    // (a shell for the bare course below, a hand-built plan's stage: 1-8's (ENG-16I: 1-7 rolls on gen2 since BUILD-17, so its plan went in the t-tools-2 merge). HAND_STAGES['1-3'] has no plan since 1-3 rolls on gen2, so
+    //  this built the old hand-built 1-6's default proto plan until that went, R-165.238)
+    // (INT-10b: 1-9's plan, World 1's last hand-built one: t-eng-dr took 1-8 out of HAND_STAGES (gen2 since BUILD-18) while this read
+    //  1-8's, so after the merge it built no plan and the course had no ground under the spawn)
+    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-9']);
     const A = floor(0, 900);
     const B = floor(900, 1900, Y - rise, rise + 90);
     Object.assign(st, {

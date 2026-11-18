@@ -1,0 +1,2 @@
+castBots 1-5, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+child  normal PASS 6/6; under the floor 0; time median 398.5 s (min 364.5); hits 5 lives 7 (pit 6, foe:snake 5, other 1); cleared punch 5, stomp 4; told of traps 0/6; first trap sprung 0/6; traps sprung 0/12; turned back 0; left 17

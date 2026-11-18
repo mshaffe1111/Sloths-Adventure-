@@ -1,0 +1,13 @@
+
+[rise] easy: the highest top he ends up standing on (px over the floor), running at it, best of the take-off spots
+                              block    (worst spot)    thin   (worst spot)
+               single hold    123.0     84.0    117.0     91.0
+               double hold    214.0    213.0    208.0    208.0
+              single flick    123.0     70.0    117.0     80.0
+              double flick    212.0    212.0    206.0    206.0
+                single tap     87.0     39.0     81.0     39.0
+                double tap    150.0    134.0    144.0    134.0
+              bounce alone    223.0    123.0    217.0    124.0
+        bounce+double hold    317.0    310.0    309.0    306.0
+       bounce+double flick    316.0    310.0    308.0    304.0
+         bounce+double tap    316.0    310.0    308.0    304.0

@@ -76,3 +76,36 @@ test('the painted flip runs through its sheet once, eased, and holds its last fr
 });
 
 
+
+test('two-hand climb (R-165.178): his paws land on two strands 70-90 apart, the 4 reaches run one climb cycle, held still he hangs', async () => {
+  const { climb2Choice, climb2Frame, CLIMB2_K, CLIMB2_GAP, CLIMB2_TOP, CLIMB2_SX_MIN, CLIMB2_SX_MAX } = await import('./heroClips.ts');
+  const { HERO_UNITS, HERO_SPRITE_SCALE } = await import('./heroSprite.ts');
+  const C = (await import('../assets/hero/hero-climb2.json')).default as unknown as { stand_px: number; cycle: string[]; still: string; frames: Record<string, { w: number; h: number; grips: number[][]; ax: number }> };
+  // drawn at his own height (D41: 89.1 units, read from the code), and the painted gap is FEEL-LATTICE's 80
+  assert.ok(Math.abs(C.stand_px * CLIMB2_K - HERO_UNITS * HERO_SPRITE_SCALE) < 0.01);
+  assert.ok(Math.abs(CLIMB2_GAP - 80) < 1.5, `painted gap ${CLIMB2_GAP}`);
+  // the cycle: four different reaches in order over one cycle; the still hang when held
+  const seen = [0.05, 0.3, 0.55, 0.8].map((u) => climb2Choice(u, true, 80).name);
+  assert.deepEqual(seen, C.cycle);
+  assert.equal(climb2Choice(0.3, false, 80).name, C.still);
+  // the width follows the strands so each paw closes on its own vine (both ends of the field's 70-90 reach), clamped beyond it
+  for (const pair of [70, 80, 90]) {
+    const { sx } = climb2Choice(0, true, pair);
+    for (const n of [...C.cycle, C.still]) {
+      const f = C.frames[n];
+      const gx = Math.abs(f.grips[1][0] - f.grips[0][0]) * CLIMB2_K * sx;
+      assert.ok(Math.abs(gx - pair) < 3, `${n}: paws ${gx.toFixed(1)} apart on strands ${pair} apart`);
+      // and the body hangs between them: the anchor is the paws' midpoint
+      assert.ok(Math.abs((f.grips[0][0] + f.grips[1][0]) / 2 - f.ax) < 1, `${n} not centred between its paws`);
+    }
+  }
+  assert.equal(climb2Choice(0, true, 400).sx, CLIMB2_SX_MAX);
+  assert.equal(climb2Choice(0, true, 10).sx, CLIMB2_SX_MIN);
+  // the frame top (his highest paw) sits where the single climb's paws were; every frame's feet stay above his feet line
+  for (const n of [...C.cycle, C.still]) {
+    const f = climb2Frame(n)!;
+    assert.ok(Math.abs(f.ay * CLIMB2_K - CLIMB2_TOP) < 1e-6);
+    assert.ok(f.ay >= f.h, `${n}: toes below his feet line`);
+  }
+  assert.equal(climb2Frame('nope'), null);
+});

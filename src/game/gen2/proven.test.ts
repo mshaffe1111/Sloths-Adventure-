@@ -8,16 +8,24 @@ import '../headlessDom.ts';
 import { buildGen2Stage, provenGen2Stage, rollErrors } from './pipeline.ts';
 import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
+import ROLLS from '../testlink1_1.json';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
+/** 1-1's kit as it rolled before the A/D-only ruling (sprint-B and -C allowed): its rolls are exactly the old ones, so the first seeds
+ *  whose build fails are planted on it (POLISH-9b, R-165.228: on today's 1-1 nearly every raw roll builds clean, the deal's own fix) */
+const kitWithBC = () => {
+  const k = w1World();
+  const { refuseGraphs: _, ...brief } = k.manifest.graphs!.briefs['1-1'];
+  return { ...k, manifest: { ...k.manifest, graphs: { ...k.manifest.graphs!, briefs: { ...k.manifest.graphs!.briefs, '1-1': brief } } } };
+};
 
 test("a seed whose build fails is never played: the game's road plays a clean seed, the same stage on both settings", () => {
   // (the planted case: the first seed whose raw Normal build fails; seed 3 was one until the deal moved, so it is found, never assumed)
   let bad = -1;
-  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: w1World(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
+  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: kitWithBC(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
   assert.ok(bad > 0, 'no seed of 200 fails its build: the planted case is gone');
-  const n = provenGen2Stage({ config: c, kit: w1World(), seed: bad, difficulty: 'normal' });
-  const e = provenGen2Stage({ config: c, kit: w1World(), seed: bad, difficulty: 'easy' });
+  const n = provenGen2Stage({ config: c, kit: kitWithBC(), seed: bad, difficulty: 'normal' });
+  const e = provenGen2Stage({ config: c, kit: kitWithBC(), seed: bad, difficulty: 'easy' });
   assert.deepEqual(n.gen2.errors ?? [], []);
   assert.deepEqual(e.gen2.errors ?? [], []);
   assert.ok(n.gen2.proven && n.gen2.proven.used !== bad, `seed ${bad} was played`);
@@ -27,8 +35,10 @@ test("a seed whose build fails is never played: the game's road plays a clean se
 });
 
 test('a clean seed is played as asked', () => {
-  // (Roll A, 4106 since the re-lay (testlink1_1.json, C1): clean on both. Changed, INT-1-1: the old Roll A, 79191, no longer lays on the re-lay)
-  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 4106, difficulty: 'normal' });
+  // (Roll A as the test link names it (testlink1_1.json): clean on both. Changed, INT-1-1: the old Roll A, 79191, no longer lays on the
+  // re-lay; POLISH-9b: read from the file, not copied (it was 4106, which POLISH-7's relist rerolls; Roll A is the first run, 9652, picked
+  // because its listed plan is its seed's own first roll))
+  const n = provenGen2Stage({ config: c, kit: w1World(), seed: ROLLS.A, difficulty: 'normal' });
   assert.equal(n.gen2.proven, undefined, 'the walk moved off a clean seed');
   assert.deepEqual(n.gen2.errors ?? [], []);
 });

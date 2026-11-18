@@ -1,0 +1,4 @@
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 46 ms, p95 119 ms, max 137 ms (30 builds, CPU x4)
+  easy: p50 44 ms, p95 66 ms, max 69 ms (30 builds, CPU x4)
+exit 0

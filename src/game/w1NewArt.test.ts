@@ -28,7 +28,7 @@ test("1-1's dressing names pieces the sheet has (bar the clue with no art), and 
   const squirrels = dress.filter((d) => d.n.startsWith('squirrel'));
   assert.ok(squirrels.length >= 3, JSON.stringify(dress));
   for (const d of dress) assert.ok(hasW1New(d.n) || d.n === 'bootprint', d.n);
-  assert.ok(stageSheets({ id: '1-1', worldIndex: 1, objectiveType: 'reach_end' as never, secret: undefined }, { hand: true, paint: true, ctest: false }).includes('w1-new'));
+  assert.ok(stageSheets({ id: '1-1', worldIndex: 1, objectiveType: 'reach_end' as never, secret: undefined }, { hand: true, paint: true }).includes('w1-new'));
 });
 
 test('a hollow log is painted by the kit (its own picture), never as a bank of earth or the drawn ground', () => {

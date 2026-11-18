@@ -1,0 +1,46 @@
+{
+ "cells": [
+  {
+   "x": 0,
+   "y": 0,
+   "w": 219,
+   "h": 165
+  },
+  {
+   "x": 221,
+   "y": 0,
+   "w": 219,
+   "h": 165
+  },
+  {
+   "x": 442,
+   "y": 0,
+   "w": 219,
+   "h": 165
+  }
+ ],
+ "order": [
+  0,
+  1,
+  2,
+  1
+ ],
+ "ax": 161.3,
+ "ay": 85.8,
+ "units_w": 73.0,
+ "units_h": 55.0,
+ "px_per_unit": 3.0,
+ "fps": 8,
+ "source": {
+  "takes": [
+   "reference/art/hf1113/left/oropendola-up-37.webp",
+   "reference/art/hf1113/left/oro1-mid-s1.webp",
+   "reference/art/hf1113/left/oro1-down-s2.webp"
+  ],
+  "mark": [
+   150,
+   218,
+   233
+  ]
+ }
+}

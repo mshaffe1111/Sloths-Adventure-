@@ -1,0 +1,10 @@
+walk: # pass 5 # fail 2  not ok 3 - built: a three-liana chain with no perch between is laid, and the stage's own l;not ok 6 - built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach d;
+lay: # pass 4 # fail 3  not ok 3 - built: a three-liana chain with no perch between is laid, and the stage's own l;not ok 4 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World ;not ok 6 - built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach d;
+seen: # pass 6 # fail 1  not ok 1 - the chain window counts a press only with the next liana's WHOLE swing in view ;
+camera: # pass 6 # fail 1  not ok 5 - upright on a swing, the view leads with the next liana's WHOLE swing (to its fo;
+easy: # pass 5 # fail 2  not ok 4 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World ;not ok 6 - built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach d;
+banks: # pass 6 # fail 1  not ok 6 - built: World 1's chain row over a PAINTED thorn hollow on Normal (banks reach d;
+heldseen: # pass 7 # fail 0  
+under: # pass 6 # fail 1  not ok 5 - upright on a swing, the view leads with the next liana's WHOLE swing (to its fo;
+hurtfocus: # pass 6 # fail 1  not ok 7 - a swing over a hollow that hurts asks the view to keep its thorn bed in (hurtFo;
+heldseen (re-run on f93314bc5): # pass 6 # fail 1  not ok 4 - World 1's chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on World ;

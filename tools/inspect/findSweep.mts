@@ -6,8 +6,8 @@ const store: Record<string,string> = {};
 (globalThis as any).localStorage = { getItem: (k:string)=>store[k]??null, setItem:(k:string,v:string)=>{store[k]=v}, removeItem:()=>{} };
 const { createHash } = await import('node:crypto');
 const { generateAllLevels } = await import('../../src/game/worldsData.ts');
-const { generateStage, setLayoutVariant } = await import('../../src/game/stageGenerator.ts');
-const { isGen2Stage } = await import('../../src/game/gen2/game.ts');
+// (builtOnGen2: the game's one definition, so 1-1 and the listed rolls (1-2, 1-3) are swept on Easy too; S1)
+const { builtOnGen2, generateStage, setLayoutVariant } = await import('../../src/game/stageGenerator.ts');
 const { findForStage } = await import('../../src/game/finds.ts');
 const L = generateAllLevels();
 const N = Number(process.env.N ?? 40);
@@ -15,7 +15,7 @@ const out: string[] = [];
 for (const cfg of L as any[]) {
   if (!findForStage(cfg.worldIndex, cfg.miniIndex) || cfg.secret) continue;
   if (process.env.ONLY && !process.env.ONLY.split(',').includes(cfg.id)) continue;
-  const g2 = isGen2Stage(cfg); const miss: string[] = [];
+  const g2 = builtOnGen2(cfg); const miss: string[] = [];
   for (const diff of (g2 ? ['normal','easy'] : ['normal']) as any[]) for (let s = 0; s <= N; s++) {
     setLayoutVariant(s === 0 ? null : s); let st: any;
     try { st = generateStage({ ...cfg, unlocked: true }, diff); } catch (e: any) { out.push(`${cfg.id} ${diff} ${s} ERR`); continue; } finally { setLayoutVariant(null); }

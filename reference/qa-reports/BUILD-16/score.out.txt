@@ -1,0 +1,7 @@
+1-1 normal score     4 (3.3-4.8 over 4 layouts)  3.385 min  points 22.95  mean 7.15/min  peak 18.9/min  {"single":55,"double":8} route check
+1-5 normal score   4.4 (3.6-4.9 over 4 layouts)  4.27 min  points 24.65  mean 5.75/min  peak 23.25/min  {"single":33,"puzzle":16,"creature-choice":2,"double":12,"creature":2} route check
+1-6 normal score   9.6 (8.8-9.9 over 4 layouts)  4.4 min  points 77.15  mean 17.549999999999997/min  peak 45.400000000000006/min  {"single":22,"swing":32} route extended
+1-1 easy   score   2.5 (2.2-3.2 over 4 layouts)  3.5999999999999996 min  points 14.45  mean 4.25/min  peak 12.65/min  {"single":58,"double":5} route check
+1-5 easy   score   1.2 (1-1.2 over 4 layouts)  4.215 min  points 6.85  mean 1.65/min  peak 6.050000000000001/min  {"single":45,"puzzle":16,"creature-choice":2,"creature":1} route check
+1-6 easy   score   8.8 (8.6-8.8 over 4 layouts)  4.46 min  points 75.05  mean 16.85/min  peak 41.2/min  {"single":21,"swing":32} route extended
+SCALE 0.30179 (1 meter point = 3.3 raw points a minute)

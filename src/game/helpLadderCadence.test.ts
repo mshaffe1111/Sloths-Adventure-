@@ -9,18 +9,33 @@
 // both settings, upright and sideways): never shown at a set-back every 2.0 s or less; shown only when he stands about 1.2 s or more
 // after each set-back. This flies the real engine at 30 fps (RealPlay, blinking as in play: `safe` off) on the real queue.
 import test from 'node:test';
+import type { Platform } from './types.ts';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
 import { RealPlay, DT } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 import { withPlaySeed } from './testlink1_1.ts';
+import { FIRST_RUN_11 } from './gen2/firstRun11.ts';
 import { GuideQueue, type GuideLine } from './dotGuide.ts';
 import { engineGuideLine } from './dotLines.ts';
 import { DANGER } from './dotGuideWatch.ts';
 import { helpGuideLine, pushHelpLine, HELP_LINES, MOVE_LINES, RUNGS, STEP_LINE } from './helpLadder.ts';
+import { skyline } from './helpLadder.ts';
 
-const SEED = 982;
-const PIECE = 'w1-log-chain-rise';
+// (re-pinned by POLISH-9b, R-165.228: 982 left 1-1's list at POLISH-7's relist, and since then this flew a raw search's stage, which
+// the A/D-only graph ruling changed. No listed layout now has a log over a gap that both sets him back and grows steps on both settings
+// (swept: the first 60 listed layouts). The ladder's flight bed is now the first run's w1-last-step-up, whose 60 px hole sets him back on
+// both settings and grows: its take-off and landing read from the ladder's own walking surface (helpLadder.ts skyline), never copied)
+const PIECE = 'w1-last-step-up';
+const SEED = FIRST_RUN_11.seed;
+/** the piece's first hole on its walking surface: the take-off top before it and the landing top after it (as platforms) */
+function hole(e: unknown, piece: Piece): [Platform, Platform] {
+  const segs = skyline(piece, (e as { roadBoxes(): Parameters<typeof skyline>[1] }).roadBoxes());
+  const i = segs.findIndex((a, j) => j + 1 < segs.length && a.x1 >= piece.x0 && a.x1 <= piece.x1 && segs[j + 1].x0 > a.x1 + 1 && a.x1 - a.x0 >= 120);
+  assert.ok(i >= 0, `${PIECE} has a hole in its walking surface`);
+  const plat = (g: (typeof segs)[number]) => ({ id: -1, x: g.x0, y: g.y, width: g.x1 - g.x0, height: g.bottom - g.y, type: 'solid' }) as Platform;
+  return [plat(segs[i]), plat(segs[i + 1])];
+}
 type Piece = { k: string; x0: number; x1: number };
 type Eng = { currentStage: { meta: { pieces: Piece[] } }; help: { count(k: string): number }; helpAsk: (o: unknown, answer: (yes: boolean) => void) => void; stop(): void };
 
@@ -39,12 +54,14 @@ function fly(setting: 'easy' | 'normal', waitS: number, want?: string): { sent: 
     e.helpAsk = (_o, answer) => answer(false);
     const piece = e.currentStage.meta.pieces.find((q) => q.k === PIECE)!;
     assert.ok(piece, `seed ${SEED} lays ${PIECE}`);
-    const log = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece.x0 - 2 && p.x + p.width <= piece.x1 + 2).sort((a, b) => a.x - b.x)[0];
-    r.stand(log.x + log.width - 140, log.y);
+    const [log] = hole(e, piece);
+    r.stand(Math.max(log.x + 20, log.x + log.width - 140), log.y);
     r.p.invincibleTimer = 0;
     // Dot's guide, as DotGuide.tsx runs it each frame (:858-885): her clock, the air time, the queue
     const q = new GuideQueue(true);
-    const line = want ?? MOVE_LINES.single.touch, linePad = want ?? MOVE_LINES.single.pad;
+    // (the move the engine reads for the piece as laid: engine.ts pieceMove)
+    const mv = MOVE_LINES[(e as unknown as { pieceMove(p: Piece): keyof typeof MOVE_LINES }).pieceMove(piece)];
+    const line = want ?? mv.touch, linePad = want ?? mv.pad;
     let clock = 0, airMs = 0, said = 0, passed = 0, sentAt = -1, downAt = -1, up = 0, n = 0, wait = 0, firstBack = -1, lastBack = -1, backsInWindow = 0;
     for (let i = 0; i < 30 * 90 && downAt < 0; i++) {
       r.frame({ right: wait <= 0 });

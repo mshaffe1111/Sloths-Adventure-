@@ -1,0 +1,48 @@
+{
+ "tag": "climb2",
+ "edits": [
+  {
+   "name": "c2-reachLhigh",
+   "src": "b:hfpokey/edits/c1-reachR-s3.png",
+   "w": 1024,
+   "h": 1024,
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "lora": 0.6,
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail, mirrored, satchel on the other side",
+   "prompt": "Swap which arm is high. Now his left arm (on the left of the picture) reaches high up the left vine above his head, gripping it, and his right arm (on the right of the picture) is lower and bent, gripping the right vine at the height of his chest; his left knee is raised and his right leg hangs down. His satchel strap still runs from his shoulder on the right of the picture down to the bag at his hip on the left of the picture, exactly as now: do not mirror him. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture."
+  },
+  {
+   "name": "c2-hangdangle",
+   "src": "b:hfpokey/edits/c1-hang-s1.png",
+   "w": 1024,
+   "h": 1024,
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6,
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail, standing, feet flat",
+   "prompt": "Keep his arms and paws exactly where they are on the two vines. His legs hang down loosely below him, feet dangling with the toes pointing down, never standing as if on the ground. His satchel strap still runs from his shoulder on the right of the picture down to the bag at his hip on the left of the picture, exactly as now: do not mirror him. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture."
+  },
+  {
+   "name": "c2-bothhigh",
+   "src": "b:hfpokey/edits/c1-reachL-s3.png",
+   "w": 1024,
+   "h": 1024,
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6,
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail, standing, feet flat",
+   "prompt": "Keep his arms and paws exactly where they are on the two vines. Both knees are drawn up under him as he pulls himself up, his feet tucked. His satchel strap still runs from his shoulder on the right of the picture down to the bag at his hip on the left of the picture, exactly as now: do not mirror him. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture."
+  }
+ ]
+}
