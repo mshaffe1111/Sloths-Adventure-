@@ -54,6 +54,8 @@
 ✗ gone, delete the entry: 1-5 normal "looks like an earlier stage" (known on 16 layouts, now none)
 ✗ gone, delete the entry: 1-5 normal "looks like the stage before" (known on 4 layouts, now none)
 ✗ gone, delete the entry: 1-5 normal "padding" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-8 easy "one tempo" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-8 normal "one tempo" (known on 16 layouts, now none)
 ✗ gone, delete the entry: 1-9 easy "like an earlier stage" (known on 1 layouts, now none)
 ✗ gone, delete the entry: 1-9 easy "looks like an earlier stage" (known on 16 layouts, now none)
 ✗ gone, delete the entry: 1-9 normal "looks like an earlier stage" (known on 16 layouts, now none)
@@ -71,15 +73,17 @@ the truer rules gate: 1-1, 1-4; the rest on the old rules, the truer count besid
   (truer rule) 1-7 easy "map like the stage before": gated on the old rule at 0 layouts, 14 by the truer rule
   (truer rule) 1-7 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
   (truer rule) 1-7 normal "map like the stage before": gated on the old rule at 0 layouts, 13 by the truer rule
-  (truer rule) 1-8 easy "map like the stage before": gated on the old rule at 0 layouts, 13 by the truer rule
+  (truer rule) 1-8 easy "map like the stage before": gated on the old rule at 0 layouts, 14 by the truer rule
   (truer rule) 1-8 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
-  (truer rule) 1-8 normal "map like the stage before": gated on the old rule at 0 layouts, 13 by the truer rule
-  (truer rule) 1-8 normal "pacing": gated on the old rule at 14 layouts, 0 by the truer rule
-  (truer rule) 1-9 easy "map like the stage before": gated on the old rule at 0 layouts, 4 by the truer rule
+  (truer rule) 1-8 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-8 normal "map like the stage before": gated on the old rule at 0 layouts, 12 by the truer rule
+  (truer rule) 1-8 normal "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-8 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-9 easy "map like the stage before": gated on the old rule at 0 layouts, 6 by the truer rule
   (truer rule) 1-9 easy "nothing bites": gated on the old rule at 16 layouts, 7 by the truer rule
   (truer rule) 1-9 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
-  (truer rule) 1-9 normal "map like the stage before": gated on the old rule at 0 layouts, 3 by the truer rule
+  (truer rule) 1-9 normal "map like the stage before": gated on the old rule at 0 layouts, 5 by the truer rule
   (truer rule) 1-9 normal "nothing bites": gated on the old rule at 15 layouts, 4 by the truer rule
   (truer rule) 1-9 normal "pacing": gated on the old rule at 16 layouts, 12 by the truer rule
   (truer rule) 1-9 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
-FAIL (23 worse or new, 36 to lower or delete; 114 known, 1556 stage-layout flags; 76 s)
+FAIL (23 worse or new, 38 to lower or delete; 116 known, 1590 stage-layout flags; 79 s)

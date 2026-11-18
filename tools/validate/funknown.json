@@ -634,6 +634,13 @@
   {
    "stage": "1-8",
    "setting": "easy",
+   "rule": "one tempo",
+   "layouts": 16,
+   "owner": "World 1 rebuild (D26)"
+  },
+  {
+   "stage": "1-8",
+   "setting": "easy",
    "rule": "pacing",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -655,8 +662,15 @@
   {
    "stage": "1-8",
    "setting": "normal",
+   "rule": "one tempo",
+   "layouts": 16,
+   "owner": "World 1 rebuild (D26)"
+  },
+  {
+   "stage": "1-8",
+   "setting": "normal",
    "rule": "pacing",
-   "layouts": 14,
+   "layouts": 16,
    "owner": "World 1 rebuild (D26)"
   },
   {
