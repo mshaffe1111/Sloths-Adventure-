@@ -2,7 +2,7 @@
  * What a stage's goal is, in the new HUD's words and pictures: the counter's icon, and the stage-start goal card's line
  * ("This stage: collect 33 petals"). Pure, so it is tested without a screen.
  */
-import { relicArt } from '../../game/stagePlan.ts';
+import { relicArt, stageLooks } from '../../game/stagePlan.ts';
 import { stageFlowers } from '../../game/flowerSprites.ts';
 import { MEECA_STAGE_ID } from '../../game/extraStages.ts';
 import { countedGoal } from '../../game/goals.ts';
@@ -123,7 +123,8 @@ export function goalInfo(cfg: Cfg, dotStage = false, creature?: string): GoalInf
   let icon: GoalIcon;
   let slotIcon: (i: number) => GoalIcon;
   if (type === 'harvest') {
-    icon = w !== 8 ? { kind: 'pickup', name: 'petal' } : { kind: 'flower', num: stageFlowers(w, cfg.miniIndex)[0] };
+    // (the counter shows what the stage drops: its own petal where its plan row has one, StageSpec.looks, 2-2's lavender hyacinth)
+    icon = w !== 8 ? { kind: 'pickup', name: stageLooks(w, cfg.miniIndex).petal ?? 'petal' } : { kind: 'flower', num: stageFlowers(w, cfg.miniIndex)[0] };
     slotIcon = () => icon;
   } else if (type === 'relic_hunt') {
     // (her marks, World 1's search: Meeca's carved bark scrap, the painted 'carving', never the stone idol)

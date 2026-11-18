@@ -64,7 +64,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
   ],
   2: [
     S('sprint', 'Down to the River', 'Hop the drifting logs down to the riverbank village.'),
-    S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'),
+    // (the river king's crown is water hyacinths, not Meeca's pink trail petals (FIX-22, lines-2-2.md fault 1): ART-22P's painted lavender
+    //  hyacinth petal, the inventory's hf22p/petal-hyacinth)
+    { ...S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'), looks: { petal: 'petal-hyacinth' } },
     S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.', 5),
     S('vine_runner', 'Over the Water', 'Swing across the river on the hanging vines.'),
     S('purge', 'River Snappers', 'Chase the snappers off the bank.'),
