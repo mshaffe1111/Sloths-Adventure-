@@ -22,7 +22,7 @@ pokeyJournal.ts:57), the banned words (whatsNew.test.ts:28 is What's New only; p
 | (g) | `mark` | Dot, at her mark on the exit (beat 15; the river glints below) | Her mark! Her trail runs down to that river. | 9 |
 | (h) | MISSION_19 | the stage card (stagePlan.ts:63 on main, replaces "Fight through the boa's guards and reach the shrine.") | Boas snap at anything that moves. Outsmart them, and collect her petals. | 12 |
 | (i) | `sealed` | Dot, at a LOCKED exit (1-9's petal count; see "For the builder") | We passed some of her petals. Back we creep! | 9 |
-| (j) | journal `boa` | the creature journal's boa entry (journal.ts:28 `tip`, replaces "Coiled and watching. Let it strike, then punch it three times.") | It senses warmth through its lips. A cool, still sloth seems like a mossy branch. | 15 |
+| (j) | journal `boa` | the creature journal's boa entry (journal.ts:28 `tip`, replaces "Coiled and watching. Let it strike, then punch it three times.") | Senses warmth through its lips. A cool, still sloth seems like moss. | 12 |
 | (k) | `said.trap` | Dot, once, the first time a boa is chased off (1-9's cast `said.trap`: beat 1's dropped load is the first) | Away she slithers. Not hurt, just terribly insulted! | 8 |
 
 Plus one conflict settled (below): Pokey's journal page `'1-9'` (pokeyJournal.ts:57) is rewritten:
@@ -61,7 +61,7 @@ Plus one conflict settled (below): Pokey's journal page `'1-9'` (pokeyJournal.ts
   rears in time), so the line hints how to go back past a boa safely. Distinct from 1-5 "We missed some of her marks", 1-6 "Back we go!",
   1-7 "Sneak back for them!". *Check: 9 words; going back is possible here (the boughs stay; unlike 1-8, whose exit never locks).*
 - **(j) journal.** Fact-checked (below). Replaces a tip that is now untrue: the kit's boa is never punched three times; a punch dazes it
-  (beatenBy.punch 'stunned' 2.5 s). "A mossy branch" ties it to (a). *Check: 15 words (a journal tip, not a speech box); true; no move
+  (beatenBy.punch 'stunned' 2.5 s). "Moss" is the real look (the algae in his fur) and sits beside (a)'s "branches". *Check: 12 words, journal.test.ts:31's cap for tips (KEEPER-19b, 11-18: was 15); true; no "freeze"; no move
   that 1-9 doesn't have.*
 - **(k) said.trap.** W1_CAST_SAID's voice (offended, unhurt) with its own words: the snakes' line is "Off he glides, not a scratch, just
   very offended!" (w1Cast.ts:98); the boa's must not repeat it. *Check: 8 words; once (castPlay.types.ts: `trap` said once); nobody hurt.*
@@ -93,14 +93,14 @@ Plus one conflict settled (below): Pokey's journal page `'1-9'` (pokeyJournal.ts
 | A boa lying in wait on a bough | REAL: boa constrictors are ambush predators that wait for prey to come along (Wikipedia, Boa constrictor) |
 | "Senses warmth through its lips" (j) | REAL: boas "can sense heat via cells in their lips" (same page) |
 | "A cool, still sloth" (j) | REAL: sloths run a low, variable body temperature for a mammal, and their fur carries green algae (Brown-throated sloth) |
-| "Seems like a mossy branch" (j), "only see what moves" (a) | storybook, built on the two facts above; fine for a storybook forest and true of the game's boa |
+| "Seems like moss" (j), "only see wiggles" (a) | storybook, built on the two facts above; fine for a storybook forest and true of the game's boa |
 | Boas wary of the harpy eagle (d, e) | fair: harpies take snakes as well as sloths (Wikipedia, Harpy eagle); a nest that scares a boa off is storybook |
 | The Old Boa swims off (f) | REAL: boas swim |
 | Nobody hurt | HOLDS: every boa slithers, flees, is dazed or swims; no line says anything is caught or eaten |
 
 ## Checked against the rules
 
-- Speech boxes 8-9 words (`wc -w`), under 10 (STAGE-RULES §5b.7, R-165.260); the mission 12 (a card); the journals 15 and 17.
+- Speech boxes 8-9 words (`wc -w`), under 10 (STAGE-RULES §5b.7, R-165.260); the mission 12 (a card); the journal tip 12 (journal.test.ts:31 caps tips at 12), Pokey's page 17.
 - Banned words: none of playerText BANNED; no "slow", "late", "hurry" or "too" (the General's wound). "Branch" is banned in What's New
   only (whatsNew.test.ts:28); it is the stage's own name word.
 - No control words: no tap, press, swipe, flick, button, hold, duck, crouch, slide down. "Punch" (1-3), "creep" (the stage's move).
