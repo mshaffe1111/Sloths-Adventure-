@@ -20,7 +20,7 @@ const across = generateAllLevels().filter((c) => !c.secret && (HAND_STAGES[c.id]
  * level (a stale entry is named), every one that runs across (not secret, not an ascent) is walked, and the walk is never empty. A stage
  * that leaves the tables for gen2 moves it with no number to edit; gen2's own verdict (rolledFlagBreaches) holds a rolled stage's flags.
  */
-export function owedWalk(tables: ReadonlyArray<Record<string, unknown>>, levels: ReadonlyArray<{ id: string; secret?: boolean; objectiveType?: string }>): { owed: string[]; stale: string[] } {
+export function owedWalk(tables: ReadonlyArray<Record<string, unknown>>, levels: ReadonlyArray<{ id: string; secret?: unknown; objectiveType?: string }>): { owed: string[]; stale: string[] } {
   const byId = new Map(levels.map((c) => [c.id, c]));
   const ids = [...new Set(tables.flatMap((t) => Object.keys(t)))].sort();
   const stale = ids.filter((id) => !byId.has(id));
