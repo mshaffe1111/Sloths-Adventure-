@@ -70,6 +70,9 @@ import { sampleRoute } from './beats.ts';
 import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
+import { bucketAngle } from '../../src/game/wheel.ts';
+import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -640,7 +643,17 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, rideWheel: true };
+/**
+ * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
+ * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
+ * bucket he holds still while it carries him (a missed step-off rides round again), settling in its middle on the way up (the window
+ * was flown from there); he steps off when the bucket is inside the street's FLOWN window (wheelFlights.data.ts: the tap hop's window for
+ * a street at the sweep's edge, the held jump's for a street above the top; a street in over the top takes him off itself), after his
+ * tier's reaction to the window opening (stopReact, plus a late press as often as his tier's lateShare), and only while it is still open.
+ * The hops are single (no second press): a double off the jetty or off the top is no step-off. With it off he treats the buckets as
+ * ledges, scrambling bucket to bucket and into the pond (wheelRide.test.ts).
+ */
 /**
  * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
  * end only when that let-go comes down on a log (or past the water on the far bank), flown as the engine flies it (timedLaunch and the air
@@ -1041,6 +1054,11 @@ export class FirstTimerRun {
   private edgeWait = -1;
   /** riding a moving floor: when the next floor first came in reach (s), or -1, and how long his reaction to it takes (clockRide) */
   private offSeen = -1;
+  /** SKILLS.rideWheel: when he saw the step-off window open (game time, -1: not open), his reaction to it, and a wheel hop's own press
+   *  (single, held as long as `wheelHop` s; 0: no wheel hop) */
+  private wheelSeen = -1;
+  private wheelDelay = 0;
+  private wheelHop = 0;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
@@ -2236,6 +2254,11 @@ export class FirstTimerRun {
       const go = this.vineFromLog(p, dir, t);
       if (go) return go;
     }
+    // (a water wheel, SKILLS.rideWheel: board off the jetty, ride, step off inside the flown window: wheelRide)
+    if (SKILLS.rideWheel && !this.jump) {
+      const held = this.wheelRide(p, dir, t);
+      if (held) return held;
+    }
     // (a ride on a stage clock, a lift, a drifting log: he reads its clock as a person watching it does, before any other ground move:
     // clockRide. Its edge is the plain look ahead, 22 px and his edgeAim, the float-wait's own)
     // (a pond of sinking pads: he reads each pad's state and a beat row's breath as a person watching does, padRead)
@@ -2807,6 +2830,70 @@ export class FirstTimerRun {
     return t - this.clockWait < Math.max(6, 2 * cycle) ? {} : null;
   }
 
+  /**
+   * SKILLS.rideWheel (ENG-26): the jetty, the bucket and the step-off as a person who has watched the wheel plays them. Returns a pad to
+   * hold, or null when he is on neither a wheel's jetty (going its way) nor in a bucket.
+   */
+  private wheelRide(p: PlayerState, dir: -1 | 0 | 1, t: number): Pad | null {
+    if (!p.grounded) return null;
+    // (the floor the engine has him on: at a bucket's front end his middle is past it, and the look under his middle finds none)
+    const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn) ?? this.floorAt(p.x, p.y, 6);
+    if (!here) return null;
+    const e = this.e as unknown as { gameTime: number };
+    const who = this.who;
+    // (a press decided before he came down in a bucket, at the edge he was walking to, is no step-off: dropped; his own wheel hop stays)
+    if (this.pending && !(this.wheelHop > 0)) {
+      if (!here.wheel) return null;
+      this.pending = null;
+    }
+    if (this.pending) return null;
+    if (here.wheel) {
+      const w = here.wheel.w, lay = w.lay;
+      if (!lay) return null;
+      const f = WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: lay.street, up: lay.up }, who.setting === 'easy' ? 'easy' : 'normal')];
+      const read = !f ? undefined : lay.street === 'up' ? f.jump : lay.street === 'edge' ? f.tap : undefined;
+      // (a street in over the top sets him down on it: he rides; an unflown wheel he only rides)
+      if (!read || read.from === undefined || read.to === undefined) { this.wheelSeen = -1; return {}; }
+      const phi = bucketAngle(w, here.wheel.i, e.gameTime);
+      const past = (((phi - Math.PI) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+      if (past < read.from || past > read.to) {
+        this.wheelSeen = -1;
+        // (riding up to it he settles in the middle of the bucket, where the window was flown from, well before it opens (a turn back for
+        // it as the window opened left him still sliding back as he stepped off): a step off from its front end goes early and falls short
+        // of the street, the expert on the sparse toy)
+        const off = p.x - (here.x + here.width / 2);
+        return past < read.from - 0.6 && Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
+      }
+      // (the window is open: he reacts to it, as to a ride coming to a stand (clockRide), and goes only while it is still open)
+      if (this.wheelSeen < 0) {
+        this.wheelSeen = t;
+        this.wheelDelay = who.stopReact + (who.lateQ && this.r() < (who.lateShare ?? 0) ? drawQ(this.r, who.lateQ) : 0);
+      }
+      if (t - this.wheelSeen < this.wheelDelay) return {};
+      this.wheelSeen = -1;
+      // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
+      // the flight's jump)
+      this.wheelHop = lay.street === 'edge' ? who.hold[0] : 0.5;
+      const out = this.decide(w.way, 'single', true, {});
+      const pend = this.pending as { still?: boolean } | null;
+      if (pend) pend.still = true;
+      return out;
+    }
+    // on a wheel's jetty, going its way: up to the lip, a stand, then the hop in
+    const w = this.sim.platforms.find((q) => q.wheel?.w.lay?.jetty === here.id)?.wheel?.w;
+    if (!w || dir !== w.way) return null;
+    const lip = w.way > 0 ? here.x + here.width : here.x;
+    const toLip = (lip - p.x) * w.way;
+    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return w.way > 0 ? { right: true } : { left: true };
+    if (Math.abs(p.vx) > 10) return {};
+    this.wheelHop = who.hold[0];
+    const out = this.decide(w.way, 'single', true, {});
+    // (decide may have set a press to come: he stands while it comes, as off a log, vineFromLog)
+    const pend = this.pending as { still?: boolean } | null;
+    if (pend) pend.still = true;
+    return out;
+  }
+
   private bounceBack(fdir: -1 | 1, face: number): Pad | null {
     const p = this.sim.p;
     if (!this.who.holdQ || face <= 170) return null;
@@ -3043,6 +3130,13 @@ export class FirstTimerRun {
       if (kind === 'double') hold = Math.min(hold, d2 - DT);
       this.edge = null;
       this.lateArmed = null;
+    }
+    // (a wheel's hop, SKILLS.rideWheel: single, held at least as long as the skill asked; the draws above are kept, so the stream is as ever)
+    if (this.wheelHop > 0) {
+      kind = 'single';
+      hold = Math.max(hold, this.wheelHop);
+      d2 = -1;
+      this.wheelHop = 0;
     }
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;

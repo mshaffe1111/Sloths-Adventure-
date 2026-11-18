@@ -25,7 +25,7 @@ import { fixtureSeed, toyStage, wheelsOf, type WheelToy } from '../../../tools/i
 import { flyAll } from '../../../tools/engine/wheelflights.ts';
 
 const SETTINGS = ['normal', 'easy'] as const;
-const ROWS = Object.keys(W2_WHEELS) as WheelToy[];
+const ROWS = Object.keys(W2_WHEELS) as Array<keyof typeof W2_WHEELS>;
 
 test('wheel.ts: the top moves the way he travels, the bottom back toward the jetty; the lips a log step from the floor', () => {
   for (const way of [1, -1] as const) {
@@ -157,7 +157,7 @@ test('PLANTED: the street moved out of the flown window is refused by name, and 
   assert.ok(f.step < WHEEL_FAIR.step.normal, `the moved street's step-off window ${f.step} s (as designed: ${WHEEL_FLOWN[flownKey(rowLayout(W2_WHEELS.edge, 'normal'), 'normal')].step} s)`);
 });
 
-test('PLANTED: a moved jetty, a bough in the sweep, no pond, an unflown row, an up street too high: each refused by name', () => {
+test('PLANTED: a moved jetty, a bough in the sweep, a drowned ledge, no pond, an unflown row, an up street too high: each refused by name', () => {
   const seed = fixtureSeed('top')!;
   const st = toyStage('top', seed, 'normal');
   const w = stageWheels(st.platforms)[0];
@@ -168,6 +168,11 @@ test('PLANTED: a moved jetty, a bough in the sweep, no pond, an unflown row, an 
   const bough: Platform = { id: 9999, x: w.cx - 40, y: w.cy, width: w.R + 80, height: 24, type: 'solid' };
   const f2 = wheelFaults({ ...st, platforms: [...st.platforms, bough] }, 'normal');
   assert.ok(f2.some((f) => /platform #9999 .* stands in its sweep/.test(f)), `${f2}`);
+  // a ledge drowned under the pond's water (the lay keeps it clear: tower.ts localExtent reads the pond's depth)
+  const z = st.rivers!.find((r) => r.wheelPond)!;
+  const drowned: Platform = { id: 9998, x: z.x0 + 10, y: z.surfaceY + 30, width: 80, height: 24, type: 'solid' };
+  const f6 = wheelFaults({ ...st, platforms: [...st.platforms, drowned] }, 'normal');
+  assert.ok(f6.some((f) => /platform #9998 .* stands under its pond's water/.test(f)), `${f6}`);
   const f3 = wheelFaults({ ...st, rivers: [] }, 'normal');
   assert.ok(f3.some((f) => /no safe pond under its sweep/.test(f)), `${f3}`);
   // a wheel turned faster than any row: no flight

@@ -94,7 +94,7 @@ export function reflectLocal(L: LocalLayout): LocalLayout {
       x: p.hang ? -p.x : -(p.x + p.w),
       ...(p.hang?.gap ? { hang: { ...p.hang, gap: [-p.hang.gap[1], -p.hang.gap[0]] as [number, number] } } : {}),
     })),
-    gaps: L.gaps.map((g) => ({ ...g, x0: -g.x1, x1: -g.x0 })),
+    gaps: L.gaps.map((g) => ({ ...g, x0: -g.x1, x1: -g.x0, ...(g.pond ? { pond: { ...g.pond, x0: -g.pond.x1, x1: -g.pond.x0 } } : {}) })),
     ...(L.asks ? { asks: L.asks.map((k) => ({ ...k, x0: -k.x1, x1: -k.x0 })) } : {}),
     exit: { ...L.exit, x: -L.exit.x },
   };
@@ -111,6 +111,8 @@ export function localExtent(L: LocalLayout, bankH: number): { x0: number; x1: nu
   // (its gaps' catch boughs are its own wood: a storey laid over other wood keeps its clearance from their undersides too (`low`),
   // and a turn lifts the lowest one's top (`hang`, px under its entry) a turn over the ledge he leaves, so no catch is a rung)
   for (const g of L.gaps) { const cy = gapCatchY(g); if (cy !== undefined) { hang = Math.max(hang, cy); low = Math.max(low, cy + 24); } }
+  // (a water wheel's pond is its own: the storey keeps its water clear of the wood under it, across its whole span; wheelLay.ts)
+  for (const g of L.gaps) if (g.pond) { x0 = Math.min(x0, g.pond.x0); x1 = Math.max(x1, g.pond.x1); low = Math.max(low, g.pond.low); }
   for (const p of L.pieces) {
     x0 = Math.min(x0, p.x);
     x1 = Math.max(x1, p.x + (p.hang ? 0 : p.w));

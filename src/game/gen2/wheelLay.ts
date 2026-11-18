@@ -74,11 +74,13 @@ export function streetFromJetty(row: WheelRow, difficulty: Difficulty): { dx: nu
   return { dx: lips.streetX, dy: lips.streetY };
 }
 
-/** the wheel's sweep in the section's own frame from the jetty's lip at x0 (travelling right): x0 to x1 (px) */
-export function wheelSpan(row: WheelRow, difficulty: Difficulty, x0: number): { x0: number; x1: number } {
+/** the wheel's sweep in the section's own frame from the jetty's lip at (x0, y0) (travelling right): x0 to x1 (px), and its pond (the
+ *  water's span and the depth its water reaches, local y) */
+export function wheelSpan(row: WheelRow, difficulty: Difficulty, x0: number, y0: number): { x0: number; x1: number; pond: { x0: number; x1: number; low: number } } {
   const L = rowLayout(row, difficulty);
-  const ax = axleFromJetty(x0, 0, L.R, L.W, 1);
-  return { x0, x1: ax.cx + L.R + L.W / 2 };
+  const ax = axleFromJetty(x0, y0, L.R, L.W, 1);
+  const box = sweepBox({ cx: ax.cx, cy: ax.cy, R: L.R, W: L.W });
+  return { x0, x1: box.x1, pond: { x0: box.x0 - WHEEL.pondMargin, x1: box.x1 + WHEEL.pondMargin, low: ax.cy + L.R + WHEEL.pond + WHEEL.pondDepth } };
 }
 
 /**
@@ -102,11 +104,17 @@ export function layWheel(row: WheelRow, rowName: string, near: Platform, far: Pl
   }
   const box = sweepBox(wheel);
   const zone: RiverZone = {
-    x0: Math.round(box.x0 - 20), x1: Math.round(box.x1 + 20), surfaceY: Math.round(ax.cy + L.R + WHEEL.pond), dir: way, speed: 0, open: true, wheelPond: true,
+    x0: Math.round(box.x0 - WHEEL.pondMargin), x1: Math.round(box.x1 + WHEEL.pondMargin), surfaceY: Math.round(ax.cy + L.R + WHEEL.pond), dir: way, speed: 0, open: true, wheelPond: true,
     safe: { backX: Math.round(jettyX - way * 40), backY: near.y },
   };
   return { buckets, zone, wheel };
 }
+
+/** each wheel pond as the floor the tower's falls read under its ends (tower.ts towerCatches, towerFalls): a miss off the jetty, the street
+ *  or a bucket lands in it (a splash back onto the jetty), so it is what lies under those ends. A 'moving' platform, so never wood to run on
+ *  or a ledge with ends of its own; never laid, only read. `dx`: moved by this much (a column's frame) */
+export const pondFloors = (rivers: readonly RiverZone[], dx = 0): Platform[] =>
+  rivers.filter((r) => r.wheelPond).map((r, k) => ({ id: -9000 - k, x: r.x0 - dx, y: r.surfaceY, width: r.x1 - r.x0, height: 24, type: 'moving' }));
 
 /** the stage's wheels (each once), from its buckets' seats */
 export const stageWheels = (platforms: readonly Platform[]): Wheel[] => {
@@ -146,9 +154,14 @@ export function wheelFaults(st: { platforms: readonly Platform[]; rivers?: reado
     }
     const box = sweepBox(w);
     const pondY = w.cy + w.R + WHEEL.pond;
-    const pond = (st.rivers ?? []).find((r) => !!r.safe && !!r.wheelPond && Math.abs(r.surfaceY - pondY) <= 2 && r.x0 <= box.x0 + 1 && r.x1 >= box.x1 - 1);
+    const pond = (st.rivers ?? []).find((r) => !!r.safe && !!r.wheelPond && Math.abs(r.surfaceY - pondY) <= 2 && r.x0 <= box.x0 - WHEEL.pondMargin + 1 && r.x1 >= box.x1 + WHEEL.pondMargin - 1);
     const under = (st.rivers ?? []).find((r) => !!r.safe && !!r.wheelPond && Math.abs(r.surfaceY - pondY) <= 2);
-    if (!pond) out.push(under ? `${at}: its pond (x ${Math.round(under.x0)}-${Math.round(under.x1)}) does not lie under the whole sweep (x ${Math.round(box.x0)}-${Math.round(box.x1)}): a miss there falls past it` : `${at} has no safe pond under its sweep: a miss would be a fall`);
+    if (!pond) out.push(under ? `${at}: its pond (x ${Math.round(under.x0)}-${Math.round(under.x1)}) does not reach ${WHEEL.pondMargin} px past the sweep (x ${Math.round(box.x0)}-${Math.round(box.x1)}): a miss there falls past it` : `${at} has no safe pond under its sweep: a miss would be a fall`);
+    // (and nothing stands under its water: a ledge there is drowned, he is splashed back off it)
+    else for (const p of st.platforms) {
+      if (p.wheel || p.broken || p.x + p.width <= pond.x0 || p.x >= pond.x1 || p.y <= pond.surfaceY || p.y > pond.surfaceY + WHEEL.pondDepth) continue;
+      out.push(`${at}: platform #${p.id} (x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, top ${Math.round(p.y)}) stands under its pond's water (surface ${Math.round(pond.surfaceY)})`);
+    }
     // (no other solid in the sweep: a top that crosses a bucket floor's path, sampled every 8 px along it)
     for (const p of st.platforms) {
       if (p.wheel || p.id === lay.jetty || p.id === lay.streetId || p.broken) continue;

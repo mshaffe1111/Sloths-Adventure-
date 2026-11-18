@@ -12,10 +12,11 @@ import { flyWheel, type WheelFlownRow } from '../../src/game/gen2/wheelFlights.t
 import { flownKey, rowLayout, type WheelRow } from '../../src/game/gen2/wheelLay.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { W2_WHEELS } from '../../src/game/gen2/worlds/w2.ts';
+import { TOY_WHEELS } from '../inspect/wheelToys.ts';
 import type { Difficulty } from '../../src/game/difficulty.ts';
 
-/** every world's wheel table (a world that lays wheels adds its table here) */
-export const WORLD_WHEELS: ReadonlyArray<Readonly<Record<string, WheelRow>>> = [W2_WHEELS];
+/** every world's wheel table (a world that lays wheels adds its table here), and the toys' own rows (tools/inspect/wheelToys.ts) */
+export const WORLD_WHEELS: ReadonlyArray<Readonly<Record<string, WheelRow>>> = [W2_WHEELS, TOY_WHEELS];
 
 /** fly every row (each distinct layout once) on both settings */
 export async function flyAll(log = false): Promise<Record<string, WheelFlownRow>> {

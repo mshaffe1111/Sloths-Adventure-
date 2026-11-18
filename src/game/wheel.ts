@@ -22,8 +22,12 @@ export const WHEEL = {
   /** a bucket's floor: its width (px; 2-6.md "buckets 120 px", 1.35 of Pokey's drawn 89.1) and its thickness */
   bucketW: 120,
   bucketH: 16,
-  /** the pond's surface under the wheel's bottom floor (px; the flight's pond) */
+  /** the pond's surface under the wheel's bottom floor (px; the flight's pond), how far it reaches past the sweep each side (a miss off a
+   *  bucket carries on sideways as it falls: a step off the top at a run's speed lands up to this far out), and its water's depth (nothing
+   *  stands under its surface that deep: the lay keeps the room, wheelLay.ts wheelFaults holds it) */
   pond: 160,
+  pondMargin: 160,
+  pondDepth: 60,
   /** an 'in' or 'up' street's lip: this far past the axle, over the top (px; the flight's STREET_IN_X) */
   streetIn: 20,
 } as const;

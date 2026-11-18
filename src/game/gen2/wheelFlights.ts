@@ -35,6 +35,11 @@ export interface WheelLayout {
   moved?: { dx: number; dy: number };
 }
 
+/** a step-off read: the share of a turn's start frames that land him on the street, the longest run of them (s), and where that run starts
+ *  and ends as the bucket's angle past the top (rad, in the way he travels: negative before the top; the bot's cue, firsttimer.ts
+ *  SKILLS.rideWheel) */
+export interface StepRead { share: number; window: number; from?: number; to?: number }
+
 /** what the fairness check reads of a flight (wheelFlights.data.ts rows) */
 export type WheelFlownRow = Omit<WheelFlown, 'misses'>;
 
@@ -45,9 +50,9 @@ export interface WheelFlown {
   board: { tap: { share: number; window: number }; walk: { share: number; window: number } };
   /** doing nothing from the bottom for 1.3 turns: still in his bucket, set down on an 'in' street, or dropped */
   ride: 'stayed in' | 'street' | 'fell';
-  walk: { share: number; window: number };
-  tap: { share: number; window: number };
-  jump: { share: number; window: number };
+  walk: StepRead;
+  tap: StepRead;
+  jump: StepRead;
   /** the step-off window a turn the fairness check reads (s) */
   step: number;
   /** where every miss (board and step-off) landed */
@@ -60,13 +65,17 @@ const JETTY = 1, STREET = 2, POND = 3;
 /** the deepest a clean board lands under the jetty's top: a hop down, never a fall into a bucket lower on the rising side */
 const BOARD_DROP = 70;
 
-const runs = (good: boolean[], dt: number): number => {
-  let best = 0, cur = 0;
-  for (const ok of [...good, ...good]) {
-    cur = ok ? cur + 1 : 0;
-    best = Math.max(best, Math.min(cur, good.length));
+const runs = (good: boolean[], dt: number): number => +(longest(good).n * dt).toFixed(2);
+/** the longest run of good frames, wrapping round (the frames are one period): its first frame and its length */
+const longest = (good: boolean[]): { k: number; n: number } => {
+  let best = { k: 0, n: 0 }, cur = 0;
+  const g = [...good, ...good];
+  for (let i = 0; i < g.length; i++) {
+    cur = g[i] ? cur + 1 : 0;
+    const n = Math.min(cur, good.length);
+    if (n > best.n) best = { k: (i - n + 1) % good.length, n };
   }
-  return +(best * dt).toFixed(2);
+  return best;
 };
 const shareOf = (a: boolean[]) => Math.round((100 * a.filter(Boolean).length) / a.length);
 
@@ -175,15 +184,22 @@ export async function flyWheel(L: WheelLayout, setting: Difficulty): Promise<Whe
     const phi = (((w.V / w.R) * k * DT) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
     return phi > 0.35 * Math.PI && phi < 1.65 * Math.PI;
   };
-  const read = (how: 'walk' | 'tap' | 'jump') => {
+  // (a start frame's bucket angle past the top, rad, in the way he travels: negative still rising to the top, positive past it)
+  const past = (k: number) => {
+    const a = (((w.V / w.R) * k * DT - Math.PI) % (2 * Math.PI) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+    return +a.toFixed(3);
+  };
+  const read = (how: 'walk' | 'tap' | 'jump'): StepRead => {
     const ok: boolean[] = [];
     for (let k = 0; k < nT; k++) ok.push(upper(k) ? stepoff(k * DT, how) === 'street' : false);
-    return { share: shareOf(ok), window: runs(ok, DT) };
+    const run = longest(ok);
+    return { share: shareOf(ok), window: runs(ok, DT), ...(run.n ? { from: past(run.k), to: past(run.k + run.n - 1) } : {}) };
   };
+  const none: StepRead = { share: 0, window: 0 };
   const up = L.street === 'up';
-  const walk = up ? { share: 0, window: 0 } : read('walk');
-  const tap = up ? { share: 0, window: 0 } : read('tap');
-  const jump = up ? read('jump') : { share: 0, window: 0 };
+  const walk = up ? none : read('walk');
+  const tap = up ? none : read('tap');
+  const jump = up ? read('jump') : none;
   return {
     turn: +T.toFixed(2),
     period: +P.toFixed(2),
