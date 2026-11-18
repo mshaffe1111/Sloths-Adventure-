@@ -168,8 +168,8 @@ Easy 2.0/9.5 (pre-swap head). Read: 1-9 reads near 1-7, far under its 9.5 target
 # BUILD-19b: 1-9's proof, gates and stills (t-build-19, from 4ec5147f; started 10:39 AM ET 11-18)
 
 ## Head
-- **FINAL_HEAD** (pushed FINAL_TIME). Commits: b2ab276f shoot19.mjs; a5e698c8 the keeper's boa tip; d94ef514 the suite reds fixed at
-  their source + flags19.ts; c4577463 coverage.known shrinks; 6deac184 stills + clips; the last commit: this REPORT + engine-core.md §0zm.
+- **432f4047** (BUILD-19b's last stage change, pushed 11:4x AM ET; the REPORT commit follows it). Commits: b2ab276f shoot19.mjs; a5e698c8 the keeper's boa tip; d94ef514 the suite reds fixed at
+  their source + flags19.ts; c4577463 coverage.known shrinks; 6deac184 stills + clips; e6894caf REPORT draft + engine-core.md §0zm; 432f4047 1-9's golden seed.
 - Own miss: b2ab276f's `Claude-Session` trailer names the lead's session, not this one (left as is: no force-push on a shared branch).
 
 ## Gate table (each heavy check ONCE)
@@ -188,7 +188,9 @@ Easy 2.0/9.5 (pre-swap head). Read: 1-9 reads near 1-7, far under its 9.5 target
 | generalitycheck | PASS (26 literals, 26 known) | d94ef514 |
 | roadmapcheck | PASS (after `git fetch --unshallow`: a shallow clone FAILs it by design) | c4577463 |
 | planted-faults.py | 6/6 CAUGHT | 6deac184 |
-| drawcheck (all scenarios, 1-9 both ways) | DRAWCHECK_LINE | 6deac184 |
+| drawcheck (all 17 scenarios both ways) | **PASS 34/34 (661 s); 1-9 upright 4.70, sideways 5.25 drawImage screens (limit 7.5, aim <= 7.0)**, gradients/shadow/readbacks 0. An earlier run was VOID: I edited w1Arc19.ts under it, its dev server reloaded and 4-1 errored (own miss) | 432f4047 |
+| lockall again after the golden seed | 101/102 unchanged, only 1-9; exit 0 | 432f4047 |
+| addlevel 1-9 --relist after the golden seed | READY: rolls 24/24 both, seed list 100/100 (file unchanged), every bot tier 40/40 both settings | 432f4047 |
 | bots | not re-run: 1-9's stage data unchanged since 202d198a (BUILD-19's 40/40 every tier both settings stands; lockall shows no other stage moved) | - |
 | clipcheck, kbdcheck, buildcheck, build, chunkcheck, artcheck | not run: no menu, survey page, build path or asset touched (law 5 scoped); the integration head runs them all | - |
 
@@ -202,8 +204,10 @@ Easy 2.0/9.5 (pre-swap head). Read: 1-9 reads near 1-7, far under its 9.5 target
 8. sheetWarm: rings 0 (the ring was the hand-built 1-9's) -> the ring check follows the ring to the hand-built stage that keeps one; `rings > 0` kept.
 9. w1Pits: `soft['1-9'] >= 3` pinned the deleted hand-built 1-9's vault pits (1-9.md names none) -> dropped; every soft pit's step out
    kept, plus a guard that the walk finds soft pits (6 today). The lead may want a different guard.
-10. writtenKeys: needed a World 1 seed with a find id -> **the gen2 1-9 lays no golden seed** (its design names none; the hand-built had
-   `seed-1`): World 1 now has 3 golden seeds (1-1, 1-5, 1-7), none with a find id. Fixture -> 2-3 (`seed-1`). Content/design call.
+10. writtenKeys: needed a World 1 seed with a find id; the gen2 1-9 laid no golden seed then (fixture -> 2-3, `seed-1`). **Since fixed
+   (the lead 11:17 AM): 432f4047 lays 1-9's golden seed** by a 'find' socket in the first rest (after the stair, off every boa read and
+   teach, 60 px over its root step; w1Arc19.test + planted fault 7). It carries no find id (gen2's seeds never do: 1-5, 1-7), so its
+   key is sloth_seed_1-9_seed; World 1 is back to 4 golden seeds.
 
 ## The keeper's journal tip (j): wired verbatim (a5e698c8)
 journal.ts:28 "Senses warmth through its lips. A cool, still sloth seems like moss." (12 words; t-keeper-19@8c1df5bf row (j));
