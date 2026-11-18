@@ -10,6 +10,8 @@ Rewritten for ENG-23 (11-18, t-eng-23): section 0ENG23 (the little ones that fol
   W2_FOLLOW, riverArt.ts drawReedClump (Bush.kind 'reeds'), tools/inspect/firsttimer.ts LINE_SKILL (+ lineBot.test.ts in gates.yml).
 - **A stage turns it on with data only:** proto.follow (a FollowRow). Its watch zones become herons that read the line (never him, never
   a heart); WatchZone.lag starts a second heron late; WatchZone.setback (else the stretch's start) is where a spooked one hides.
+- **His drops (the lead's ruling 3:01 PM ET 11-18):** every air stint, his hop or a walk off an edge, is his path; at the landing the
+  trail judges it: down more than FollowRow.step (World 2: 90, a bank's lip) and the take-off becomes a WAIT. Toys 7-8.
 - **Rules the toys forced (keep them):** a little one never rests mid-hop (finish it, or wait at the take-off: airSpan); a spooked one
   keeps its place (slot) until the look ends, or the one behind is seen closing up; rejoin only once it has run back; it scampers
   STRAIGHT back over his ground (trailYAt), never through his trail's history (he doubles back to fetch); paddling pins y to the surface.
