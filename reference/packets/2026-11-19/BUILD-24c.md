@@ -6,13 +6,19 @@ D86: the FULL CLAUDE.md check list, D87: long commands in the BACKGROUND so the 
 Then the packets BUILD-24 and BUILD-24b (reference/packets/2026-11-18/) for the bar, and BUILD-24's REPORT on origin/t-build-24
 (reference/qa-reports/BUILD-24/REPORT.md): its EXACT NEXT STEP is your plan; "Unresolved" 1-4 are your items. The 2-4 design:
 reference/design/2-4.md (origin/t-design-24); lines: origin/t-keeper-24 reference/story/lines-2-4.md.
-BASE: branch t-build-24c from origin/t-build-24 (38f9b929 or later), then merge ENG-24c's FINAL hash (the lead sends it; its REPORT names
+BASE: branch t-build-24c from origin/t-build-24 (38f9b929 or later), then merge ENG-24c's FINAL hash (1f5c4008 on origin/t-eng-24c; its EXACT NEXT STEP 0, the whole suite, is covered by your full list; its REPORT names
 what the 2-4 builder wires: the raft row's look 'raft' and the glow) so every still, clip and gate is on the 2-4 players will get. Name
 any conflict and how you resolved it.
 1. Morning, on the base (nothing here depends on the judge): the raft beat wired to the raft row's look 'raft' (ENG-24c); the pink specks
    in the soil under 2-4's rivers: find the source (a pickup's y on a river piece? the drift petals?), fix at the source, plant it (every
    layout's petals sit on ground or an arc), say which it was; first stills of the raft and the teach so the lead can judge early.
    NOT yours: the two bot defects (ENG-285 does them with one recalibration for every tool change).
+1b. Also on the base, from ENG-24c's REPORT and the lead's look at its still 2-4-N-up-raft.jpg (origin/t-eng-24c, stills/): (i) wire the
+   raft: w2Arc24.ts slow24 gets look: 'raft' (and any Easy twin), 2-4's sheet pins gain 'kit-pieces', drawcheck 2-4 both ways; (ii) the
+   tsc error on t-build-24 (src/game/flagSpan.test.ts:42, LevelConfig.secret 'thornbark'); (iii) ROUGH LOOK, upright: under the LEFT river
+   bank a grey void and a dark strip show between the bank's cliff and the river's bed band (a hard vertical seam at the join), and tall
+   grass blades are drawn over the soil band at the screen bottom (grass growing underground). Find the cause in the river/bank join (is
+   it in layRiver, shared with LIVE 2-1/2-2? look at both stages' joins upright too), fix at the source, plant it, stills before/after.
 2. When the lead sends ENG-285's step-1 hash (the judge model that flies the press frame and the turn push; expected late morning),
    merge it, THEN Root B: noLand24's log gap so its clock sits about half a log off the liana's 2.85 s swing (today 2.78 s: nearly locked,
    a missed phase waits ~14 s). Flown and judged on the NEW judge (D40: never tune on the model being replaced); the bots' longest liana
