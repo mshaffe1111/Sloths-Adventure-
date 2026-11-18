@@ -123,7 +123,9 @@ function arena(eagle = false) {
 /** run right until he is 100 px short of the boa (its rear starts at 150), lift the thumb, and watch 5 s: the slow motion's most, when it began, when it was cut */
 function freezeIn(o: { eyeOutAt?: 'start' | 'slow' } = {}) {
   const { e, input, b, eagleM } = arena(!!o.eyeOutAt);
-  const eyeOut = () => { eagleM.s.phase = 'hunt'; eagleM.s.t = 0; eagleM.s.eyeX = 3000; };
+  // (its eye out at the end its pass starts from: the end farther from him on main's ENG-WATCH (core.ts passAt 'far', facing set by
+  //  where he is); the near end x0 is that pass's END, where it ends at once. BUILD-19's merge of t-eng-19b onto 0.9.9)
+  const eyeOut = () => { eagleM.s.phase = 'hunt'; eagleM.s.t = 0; eagleM.s.eyeX = eagleM.s.facing > 0 ? eagleM.s.minX : eagleM.s.maxX; };
   if (o.eyeOutAt === 'start') eyeOut();
   let most = 0, began = -1, cut = -1;
   for (let i = 0; i < 160; i++) {
