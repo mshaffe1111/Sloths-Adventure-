@@ -28,6 +28,8 @@ explain it (6:23-6:28 PM ET). Every lead uses this; improve it after every round
    - **Pitcher B (open lens)** gets NO GAME-MAP row and NO mechanic per level: only the world's feel and signature, the story beat per
      level (stagePlan's words), what the engine has (wired / exists-unwired), the phone, and the LADDER MUSTS: the few things a level
      must teach or remix because later levels build on them (the lead lists them from GAME-MAP §3, nothing else). B never reads GAME-MAP.
+   - **One packet per lens (D85):** the open packet carries NO outline words (not even in a section for the other pitcher); the lead
+     greps it for the outline's twist words before sending.
    - **Sources:** every tribute game carries at least one source that is NOT Wikipedia (an interview, a postmortem, a retrospective,
      a review page opened, from the allowed hosts); Wikipedia may be a second source. Quotes identical to the other pitcher's are fine
      only if both opened the page.
