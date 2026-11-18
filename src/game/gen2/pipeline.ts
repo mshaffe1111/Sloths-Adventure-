@@ -412,6 +412,11 @@ export function difficultyScore(world: number, stage: number, band = bandFor(wor
   return band[0] + (band[1] - band[0]) * STAGE_HEAT[Math.max(0, Math.min(8, stage - 1))];
 }
 
+/** a stage that fights for its goal: a purge or gauntlet whose goal counts animals. One whose goal counts petals (goals.ts goalCountsPetals:
+ *  1-9) lays its sockets' animals and no more: no top-up, no reserve for top-up fights, never "thin" or short of animals (BUILD-19) */
+export const fightsForGoal = (b: Pick<StageBudget, 'archetype' | 'world' | 'stage'>): boolean =>
+  (b.archetype === 'purge' || b.archetype === 'gauntlet') && !goalCountsPetals({ objectiveType: b.archetype, worldIndex: b.world, miniIndex: b.stage });
+
 export function planBudget(config: LevelConfig, manifest: WorldManifest, difficulty: Difficulty): StageBudget {
   const archetype = config.objectiveType as Archetype;
   if ((config.objectiveType as string) === 'boss_lair') throw new Error('gen2: the guardian lair is hand-built');
@@ -424,7 +429,7 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to. A stage
   //  whose goal counts petals (goals.ts goalCountsPetals: 1-9, a gauntlet that gathers her petals) never tops up animals to an animal
   //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
-  const fights = (archetype === 'purge' || archetype === 'gauntlet') && !goalCountsPetals(config);
+  const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex });
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
@@ -2210,7 +2215,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const used = new Map<string, number>();
   // (a purge or gauntlet: most of its animals come from pass 4's top-up, which the sections' own seconds can't see; about three
   // quarters of the goal's fights are kept back from the sections' share, so the first plan lands near the clock, not 30% over it)
-  const fightsArch = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+  const fightsArch = fightsForGoal(budget);
   const reserve = fightsArch ? budget.quota.lay * MODEL_TYPICAL.fightGround * 0.75 : 0;
   const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
@@ -3824,7 +3829,7 @@ function topUpFoes(
    *  with no ask rolls as it always did */
   ask?: { sections: ReadonlySet<string>; kinds: readonly CreatureDef[]; need: number; salt: number },
 ): FilledSocket[] {
-  if (!ask && ((budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') || goalCountsPetals({ objectiveType: budget.archetype, worldIndex: budget.world, miniIndex: budget.stage }))) return [];
+  if (!ask && !fightsForGoal(budget)) return [];
   const M = kit.manifest;
   const rows = castRows(M, budget.id);
   const lastX = laid.exit.x - 200;
@@ -4264,7 +4269,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {
-      const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+      const fights = fightsForGoal(budget);
       const before = st.enemies.filter((e) => e.x <= st.exitTotemX - 200).length;
       return fights && before < budget.quota.lay ? { ok: true, thin: true } : { ok: true };
     }
@@ -4313,7 +4318,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       if (!fixed) return { ok: false, swap: bad };
     }
     // (a purge or gauntlet whose top-up found no room for the goal's animals: a longer stage, not a new roll)
-    const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+    const fights = fightsForGoal(budget);
     if (!fixed && fights && res.errors.some((e) => /^not enough enemies/.test(e))) return { ok: false, short: true };
     if (!fixed) return { ok: false, reroll: true };
   }

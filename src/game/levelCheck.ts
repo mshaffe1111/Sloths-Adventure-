@@ -7,6 +7,7 @@
  * Then it walks the graph from the spawn point and checks the exit, the checkpoints,
  * and the quota items are all reachable.
  */
+import { goalCountsPetals } from './goals.ts';
 import { withSetting } from './settingDials.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
@@ -1007,7 +1008,9 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
   const cocoons = (stage as { proto?: { w5?: { cocoons?: unknown[] } } }).proto?.w5?.cocoons?.length ?? 0;
   if (cfg.objectiveType === 'rescue' && count((t) => t === 'cage') + cocoons < need) errors.push('not enough cages for the quota');
   if (cfg.objectiveType === 'relic_hunt' && count((t) => t === 'relic') < need) errors.push('not enough relics for the quota');
-  if (cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') {
+  // (a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: 1-9) holds the animals its sockets lay: its goal is her
+  //  petals, never a count of animals beaten; BUILD-19)
+  if ((cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') && !goalCountsPetals(cfg)) {
     // (4-9: a capuchin guard blown off its ledge counts as one defeated, w4Play.ts)
     const w4 = (stage as { proto?: { w4?: { monkeys?: Array<{ job: string; x: number; blowOff?: number }> } } }).proto?.w4;
     const guards = (w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff);
