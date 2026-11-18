@@ -168,3 +168,17 @@ test('Easy is never harder than Normal (level.md rule 4): no more lianas, no cre
     assert.equal(eagles(e).length, eagles(n).length);
   }
 });
+
+test("the mossy floor's fallen log is Matt's painted log, never a slab drawn by code (VAR-1b, the lead's look question 11-18)", () => {
+  // (a landing log grew to 53 px and terrain drew it as a flat block with straight sides: protoArt paints a log-style block only under 50)
+  for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
+    const st = built(s, d);
+    const moss = sec(st, 'w1-17-rest-moss');
+    if (!moss) continue;
+    const logs = piecesOf(st.platforms, moss.uid).filter((p) => p.style === 'log');
+    assert.equal(logs.length, 1, `${d} seed ${s}: one fallen log on the mossy floor`);
+    // (protoArt.ts paintedPlatforms: a log-style block under 50 px is the painted kit's; 50 or over falls to terrain's code-drawn body.
+    //  The probe reference/qa-reports/VAR-1/probes/rockdraw.ts reads the real game's footing: 'painted thin piece' on 16 of 16 layouts)
+    for (const p of logs) assert.ok(p.height >= 24 && p.height <= 26, `${d} seed ${s}: the log ${p.height} px thick (a fallen log is 24-26, painted under 50)`);
+  }
+});

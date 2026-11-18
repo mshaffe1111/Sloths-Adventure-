@@ -281,8 +281,11 @@ const wallClimb = (key: string, on: string, onW: number, h: number, w: number): 
 const restDip = (): SectionTemplate => link({ id: 'w1-17-rest-dip', name: 'a rest: down the fern dip, up the vine', job: 'rest', versions: [{ id: 'dip', lay: {
   pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 200, DOWN), root('m', 'b', 620, [98, 102]), ...wallClimb('c', 'm', 620, 212, 280), root('y', 'c', 220, UP), root('z', 'y', 320, [162, 166])],
   sockets: [flag('m', 0.3), petals('pm', 'm', 0.6, 1), petals('pc', 'c', 0.5, 2, 100), petals('pz', 'z', 0.5, 1)] } }] });
-/** a fallen log lying on `on` at `at` (World 1's log: 24-26 px thick reads as a fallen log, walked over; level.md World 1 notes) */
-const log = (key: string, on: string, at: number, w: R2): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at: [at, at], h: [24, 26] }, style: 'log', landing: true });
+/** a fallen log lying on `on` at `at` (World 1's log: 24-26 px thick reads as a fallen log, walked over; level.md World 1 notes). Never
+ *  `landing`: a landing block is grown to a step's height (53 px on 1-7 L1), and a log-style block 50 px or over is not Matt's painted log
+ *  (protoArt.ts paintedPlatforms paints it under 50) but terrain drawn by code, a flat slab (VAR-1b, the lead's look question 11-18).
+ *  As 1-6's shipped w1-16-rest-log lays it: main false */
+const log = (key: string, on: string, at: number, w: R2): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at: [at, at], h: [24, 26] }, style: 'log', main: false });
 /** (e) the mossy floor: a long mossy floor (no pit: a rest), two mossy rocks to hop and a fallen log walked over, end to end. (No hide:
  *  with nothing watching, the child bot stood in it and waited, 20 s, seeds 18 and 20; a hide in a rest asks a question it never uses) */
 const restMoss = (): SectionTemplate => link({ id: 'w1-17-rest-moss', name: 'a rest: the mossy floor', job: 'rest', versions: [{ id: 'moss', lay: {
