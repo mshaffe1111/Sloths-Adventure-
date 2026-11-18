@@ -57,18 +57,6 @@
    "why": "the bot treats crumbling wood as ground: it never leaves before it goes"
   },
   {
-   "id": "beat:ring waves",
-   "missing": [
-    "bot"
-   ],
-   "R": "R-165.272",
-   "owner": "METER-2b (the tier bots: a SKILL for it, or the stage replaced by its gen2 build first)",
-   "stages": [
-    "1-9"
-   ],
-   "why": "no bot code for a ring's waves (grep 'ring' in firsttimer.ts: none)"
-  },
-  {
    "id": "creature:boa",
    "missing": [
     "bot"
