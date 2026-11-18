@@ -163,6 +163,12 @@ continuations and redo.
 | **Tue 11-24** | ENG-HANG-1 (if the picks keep hang) | BUILD-28 + 28b (2-8); BUILD-29b | HANG-SPEC show-first | ART-HANG (HF) | INT-16: all of World 2 on one head; full gates | **best case: all of World 2 on the link** |
 | **Wed 11-25** | ENG-HANG-2 / ENG-DARK | buffer: any Nb continuation | PITCH round R3 | | INT-17: Play Store §6 check, release prep | **Release candidate 2: World 2** when Matt says push. Range: Tue 11-24 to Fri 11-27 |
 
+**MATT DECIDED (6:12 PM ET 11-18): keep 4 members at once; World 2 ships in TWO HALVES.** Release 1 (when Matt says push, ~Fri 11-20 night
+or Sat 11-21): World 1's updates (1-6/1-7 variety, 1-9 new + its variety) + 2-2's pads + the new 2-4 and 2-5 (2-3 too if its build is
+green Saturday; any level not ready keeps its live version: new replaces old only when it passes). Release 2: the rest of World 2 (2-6..2-9)
+next week. Around Tue 11-24 Matt and the lead decide from the week's numbers whether to raise the member count (the lead brings: levels
+landed vs plan, member-hours and cost per level, the weekly token %).
+
 **Thursday 11-19 slot plan (lead, written 11-18 evening; packets reference/packets/2026-11-19/):** 8:30 AM start: (1) ENG-285 ->
 ~3 PM -> INT-13 in the same slot (box 8:30 PM, test link #2 ~9 PM); (2) BUILD-24c (raft + petals + bank join in the morning; Root B
 after ENG-285's step-1 model; box 6 PM); (3) FIX-284 (pad size show-first 11:30 AM; tap hop after step 1; box 5 PM) -> ART-W2A (or tonight, 11-18, if a slot frees before 8 PM);

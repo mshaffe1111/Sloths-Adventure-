@@ -105,7 +105,8 @@ VAR-19 do their no-judge work in the morning (raft + petals-in-soil; pad size sh
 model BEFORE any relist (D40); TIME-168; PITCH-29A then picks + DESIGN-29; INT-13 (packet tonight) in the evening -> test link #2.
 Fresh member every job (Matt 5:15 PM: "keep switching out the builders... I don't want tunnel vision").
 **Matt decided today:** 2-3 "bring them home" (11:16); pitch method two lenses (11:29); 2-2 big pads ~2 Pokeys + tap-hop re-fly (11:47);
-plan ahead + rotate builders (5:13-5:15). **Waiting on Matt:** the 2-3 HUD-faces mock-up answer.
+plan ahead + rotate builders (5:13-5:15); 2-9 = the King's Drum + barge ending (6:06); keep 4 members, World 2 in TWO releases (release 1
+~Fri/Sat: World 1 updates + 2-2 pads + 2-4 + 2-5 (+2-3 if green); release 2 next week), revisit member count ~Tue 11-24 (6:12 PM). **Waiting on Matt:** the 2-3 HUD-faces mock-up answer.
 
 ## RIGHT NOW (11-15, 11:16 PM ET nightly wrap; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
