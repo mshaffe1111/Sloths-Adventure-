@@ -1340,6 +1340,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let y = 0;
     let h = pc.h ?? 24;
     let hang: LocalPiece['hang'];
+    // (a river's near bank, when `after` names a liana over it: the bank the liana is caught from)
+    let riverFrom: string | undefined;
     const pl = pc.place;
     const ref = (k: string) => by.get(k)!;
     // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
@@ -1405,9 +1407,16 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const row = lo.rivers?.[pl.row];
       if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays river row "${pl.row}" and world ${budget.world} has no river row of that name (WorldManifest.rivers)`);
       if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
-      const a = ref(pl.after);
+      // (`after` a LIANA (ENG-24, reference/design/2-4.md NEW 1): the liana's landing is the river. The water runs from the bank the liana
+      // (or its chain) is caught from, under the liana, to this far bank: he lets go onto a passing log (riverLay lianaRiverFaults holds the
+      // drop's share and wait on both clocks, never the hop rule), or catches the liana off a log when no bank reaches it)
+      const lv = ref(pl.after);
+      let a = lv;
+      while (a.hang?.kind === 'liana') a = ref(a.hang.from!);
+      riverFrom = a.key;
       x = a.x + a.w + riverWidth(row);
       y = a.y;
+      if (lv !== a) lv.hang!.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
       asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'pads') {
@@ -1596,7 +1605,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -4153,7 +4162,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)

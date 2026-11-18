@@ -194,11 +194,17 @@ export interface AirBody {
   vy: number;
 }
 
-/** One airborne tick, in the same order the engine does it (steer, gravity, move). */
-export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
+/**
+ * One airborne tick, in the same order the engine does it (steer, gravity, move). `turn` (ENG-24): steering against his motion gets the
+ * engine's turn-around push too (engine.ts: `reversing`, PHYS.airTurn on top of airAcc), as the engine flies him. Off by default: every
+ * check that flies through here was laid and locked without it (the lead's call to turn it on everywhere, ENG-24 REPORT); the liana
+ * drop judge (gen2/riverLay.ts lianaDrops) flies with it, so its back-swing hops land where the engine's do.
+ */
+export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, turn = false) {
   if (dir !== 0) {
     if (dir * b.vx < PHYS.maxRun) {
-      b.vx += dir * PHYS.airAcc * dt;
+      const reversing = turn && Math.sign(b.vx) === -dir && Math.abs(b.vx) > 20;
+      b.vx += dir * (PHYS.airAcc + (reversing ? PHYS.airTurn : 0)) * dt;
       if (dir * b.vx > PHYS.maxRun) b.vx = dir * PHYS.maxRun;
     } else {
       b.vx -= dir * PHYS.airDec * dt;
@@ -817,55 +823,93 @@ export function pressWindow(
   seen?: (x: number, y: number) => boolean,
 ): number {
   const DT = 1 / 30;
-  const len = A.bottomY - A.topY;
-  const n = Math.round(vinePeriod(A) / DT);
   let worst = Infinity;
   for (const g of grips) {
-    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
-    // two swings and a bit of states: the presses are the second swing (the first gives "since the sweet spot")
-    const st: Array<{ s: SwingState; r: { x: number; y: number }; sweet: boolean }> = [];
-    for (let k = 0; k < 2 * n + 20; k++) {
-      const r = swingStep(s0, A, DT, 1, 0);
-      st.push({ s: { ...s0 }, r, sweet: inSweetSpot(s0, 1) });
-    }
-    let lastSweet = -1e9;
-    let snap: SwingState | null = null;
-    for (let k = 0; k < n; k++) if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
     let ok = 0;
-    for (let k = n; k < 2 * n; k++) {
-      if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
-      const call = releaseCall(st[k].s, 1, (k - lastSweet) * DT);
-      let at = k, from: SwingState = st[k].s;
-      if (call === 'late' && snap) from = snap;
-      if (call === 'early') {
-        let m = k;
-        while (m < k + Math.round(RELEASE.early / DT) && !st[m].sweet) m++;
-        at = m;
-        from = st[m].s;
-      }
-      const l = timedLaunch(from, 1);
+    for (const l of pressLaunches(A, g)) {
       let made = false;
-      for (const f of flights) {
-        const c: AirBody = { x: st[at].r.x, y: st[at].r.y, vx: l.vx, vy: l.vy };
-        let t = 0, used = false;
-        for (let i = 1; i <= 90 && !made; i++) {
-          if (!used && t >= f.dbl) {
-            c.vy = -PHYS.doubleV;
-            used = true;
-          }
-          const prevY = c.y;
-          airStep(c, DT, 1, i <= f.held);
-          t += DT;
-          if (hits(c, st[at].s.t! + t, prevY)) made = true;
-          if (c.y > A.bottomY + 500) break;
-        }
-        if (made) break;
-      }
-      if (made && (!seen || seen(st[k].r.x, st[k].r.y))) ok++;
+      for (const f of flights) if ((made = flyLaunch(l, f, A.bottomY + 500, hits))) break;
+      if (made && (!seen || seen(l.px, l.py))) ok++;
     }
     worst = Math.min(worst, ok * DT * 1000);
   }
   return worst;
+}
+
+/** one press to let go of a liana, as the engine plays it (pressLaunches): where he leaves it, how fast, the vine's clock as he leaves
+ *  (the sweet spot's leap may come a beat after the press: RELEASE), and where he was as he pressed */
+export interface PressLaunch {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  /** the vine's swing clock as he leaves it (s) */
+  t: number;
+  /** where he was as he pressed, and the vine's clock then */
+  px: number;
+  py: number;
+  pt: number;
+}
+
+/**
+ * Every press of ONE swing on A, holding at `grip` (a share of its length from the anchor), letting go toward +x, as the engine plays a
+ * press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat late it is the sweet spot's leap;
+ * anywhere else a hop off the vine. The presses are the second swing (the first gives "since the sweet spot"); one launch a frame, in
+ * order. pressWindow counts them; gen2/riverLay.ts liana drops land them on moving logs.
+ */
+export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * grip, len - 20), vx: 300, vy: 100 }, A);
+  // two swings and a bit of states: the presses are the second swing (the first gives "since the sweet spot")
+  const st: Array<{ s: SwingState; r: { x: number; y: number }; sweet: boolean }> = [];
+  for (let k = 0; k < 2 * n + 20; k++) {
+    const r = swingStep(s0, A, DT, 1, 0);
+    st.push({ s: { ...s0 }, r, sweet: inSweetSpot(s0, 1) });
+  }
+  let lastSweet = -1e9;
+  let snap: SwingState | null = null;
+  for (let k = 0; k < n; k++) if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
+  const out: PressLaunch[] = [];
+  for (let k = n; k < 2 * n; k++) {
+    if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
+    const call = releaseCall(st[k].s, 1, (k - lastSweet) * DT);
+    let at = k, from: SwingState = st[k].s;
+    if (call === 'late' && snap) from = snap;
+    if (call === 'early') {
+      let m = k;
+      while (m < k + Math.round(RELEASE.early / DT) && !st[m].sweet) m++;
+      at = m;
+      from = st[m].s;
+    }
+    const l = timedLaunch(from, 1);
+    out.push({ x: st[at].r.x, y: st[at].r.y, vx: l.vx, vy: l.vy, t: st[at].s.t!, px: st[k].r.x, py: st[k].r.y, pt: st[k].s.t! });
+  }
+  return out;
+}
+
+/**
+ * Fly one let-go (a launch of pressLaunches) with this flight (the jump held `held` frames, the second jump at `dbl` s), steering +x, up
+ * to 90 frames or until he falls past `floorY`: does `hits` (asked every frame with the vine's clock, and his feet's y the frame before)
+ * say he got there?
+ */
+export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floorY: number, hits: (c: AirBody, t: number, prevY: number) => boolean, turn = false): boolean {
+  const DT = 1 / 30;
+  const c: AirBody = { x: l.x, y: l.y, vx: l.vx, vy: l.vy };
+  let t = 0, used = false;
+  for (let i = 1; i <= 90; i++) {
+    if (!used && t >= f.dbl) {
+      c.vy = -PHYS.doubleV;
+      used = true;
+    }
+    const prevY = c.y;
+    airStep(c, DT, 1, i <= f.held, turn);
+    t += DT;
+    if (hits(c, l.t + t, prevY)) return true;
+    if (c.y > floorY) break;
+  }
+  return false;
 }
 
 /**

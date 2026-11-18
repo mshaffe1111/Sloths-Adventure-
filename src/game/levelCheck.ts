@@ -20,7 +20,7 @@ import { PAST_SHRINE } from './rules.ts';
 import { flagFurther } from './gen2/tower.ts';
 import { isKitSweeper } from './gen2/stillLay.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
-import { hopLimit } from './river.ts';
+import { hopLimit, lianasOver } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -196,7 +196,7 @@ const gripFlights = (dbl: boolean) => (dbl ? LETGO_FLIGHTS : LETGO_FLIGHTS.filte
  * both.)
  */
 /** does a running jump off `a`'s edge (the way `dir`) catch liana `v`, as the plain check and the grip dial's catch it (a jump timed for it)? */
-function lianaCaught(a: Platform, v: Vine, dir: 1 | -1, waterY: number): boolean {
+export function lianaCaught(a: Platform, v: Vine, dir: 1 | -1, waterY: number): boolean {
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
   const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
@@ -1050,7 +1050,8 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const gap = spacing - d.width;
       const limit = hopLimit(d.dir);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
-      if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
+      // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24)
+      if (gap > limit && !lianasOver(stage.vines ?? [], r).length) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
     const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);
