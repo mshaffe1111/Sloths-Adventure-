@@ -12,6 +12,9 @@ art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 t
 - White lily (i-white-s58-23) was shot in game and lost: it melts into the pickups' cream glow and the cream sky (REPORT stills).
 - Cut: tools/art/hf22p/cut.py (border-flood grey key, alpha from distance to grey, rim colour un-mixed from the grey, long side 96).
 - Route: one sandbox, run.sh <commit>, crops by crop.py, back by hf_sandbox_fs cat .pN (saved to tool-results) + hfw2/fetch.py.
+- World 2's drifting petals: src/assets/flora/petals-river.webp (12 frames, petalData RIVER_PETALS), a world picks its set by
+  scenery.ts Look.petals (petalSprites PETAL_SETS). Re-cut: drift.py <take> <out> <frames.json> (7 a row: 8 clipped past 512 px).
+  A new world set = a paste-up (driftstart.py pattern), img2img s52, drift.py, a PETAL_SETS row, the look's `petals`, catalog rows.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).

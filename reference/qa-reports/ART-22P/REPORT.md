@@ -1,5 +1,5 @@
 # ART-22P REPORT: 2-2's pickup painted to its story; the seed-list CI split (R-165.278)
-Branch t-art-22p from origin/main 6e7b85f8f. Head: see the last commit message to the lead (pasted from git). HF: ~$0.34 of the $4 cap.
+Branch t-art-22p from origin/main 6e7b85f8f. Head: see the last commit message to the lead (pasted from git). HF: ~$0.54 of the $4 cap (two sandboxes).
 
 ## Done-items
 1. **Compare first, then paint.** Shipped petal (87x96, soft dark rim, fine veins, cream base) judged beside the folded one. Starts are
@@ -28,30 +28,32 @@ Branch t-art-22p from origin/main 6e7b85f8f. Head: see the last commit message t
    with ciTests). tsc stays first in `gates`; every other step unchanged. **The next publish run is the live proof** (seedplan log,
    each seedlists job's minutes). Noted in reference/methods/gates.md row 8.
 
-## Stills (reference/qa-reports/ART-22P/stills/, 2x, layout 1 = seed 2, setting printed by the game)
-before-after-normal-sideways-x2600.jpg, before-after-easy-sideways-normal-upright.jpg, after-normal.jpg, after-easy.jpg (x2600 bank,
-x4220 pads over water, x13039), judge-pink-lavender-white-1to1.png.
-
+5. **Follow-on (the lead, 11:04 AM): World 2's drifting petals.** Petal sets are data: petalSprites.ts PETAL_SETS ('mixed', 'river'),
+   scenery.ts Look.petals (World 2: 'river'); drawPetal takes the set; stagePreload preloads every set; no world named in engine code.
+   Art: img2img s40/s52 x 2 seeds of a paste-up of the game's own lavender/white petals (driftstart.py), cut in the sandbox (drift.py);
+   picked drift-s52-11 (most even family; s52-23's folded white grew stray stamens): reference/art/hf22p/drift-cuts-sheet.jpg.
+   src/assets/flora/petals-river.webp 512x130, 12 frames (petalData RIVER_PETALS), 12 catalog rows (petals-river#petal0-11).
+   Bug caught and fixed: drift.py packed 8 a row (8 x 66 = 526 px) into a 512 px sheet, clipping the 8th; now 7 a row, asserted, and
+   petalSets.test checks every frame lies inside 512 px. petalSets.test: red with World 2's set removed, green with it.
+   Checks on f698034c8: tsc, artcheck, knowncheck, generalitycheck PASS; build/chunkcheck/drawcheck/buildcheck and the suite: see the
+   message to the lead. Still: stills/drift-before-after.jpg (pink drift before, river drift after, 1:1 zoom).
+## Stills: stills/ (2x, layout 1 = seed 2, setting as BUILT): before-after-*, after-normal/easy (bank, pads, x13039), judge-*, drift-*
 ## Polish check
 - Pickups at 1:1 sideways: clean rim, no grey halo, veins read, same size as the old petal. Upright: same. Over pads and water: reads.
 - HUD counter: lavender, matches the pickups (was pink). Both settings, both ways.
 - Named, not mine: Dot's idle quip card sits mid-screen in every still (the game's chatter, as FIX-22 found); the drifting decor petals
-  (flora/petals.webp) are still pink in 2-2's air (world decor, not the pickup).
+  (flora/petals.webp) were pink in 2-2's air: fixed in the follow-on (item 5).
 
-## Pushback
-- None on the packet. The HUD line is outside "one line" but is the same story fault (FIX-22 named the counter); a stage's own look
-  should show where its goal is counted.
+## Pushback: none. The HUD line is outside "one line" but is the same story fault (FIX-22 named the counter).
 
 ## Suggestions
-- ART packet: a World 2 drifting-petal set (lavender/white) so the air matches what he gathers (flora/petals.webp; ~$0.3).
 - CI: lower `rolled` timeout-minutes from 60 to ~20 once a publish run shows it at ~5 min (the loop has left it).
 
 ## Learned / method update (hf-art.md)
 - For a piece in an existing family, img2img FROM THE SHIPPED PIECE, recoloured, at s58 on grey keeps the family's style; text to
   image with the LoRA drifts to flat stickers. Judge colour candidates IN the game: the pickup glow is cream, so pale pieces vanish.
+- A packed sheet's row must fit its width: assert it in the cutter and test frames against the sheet size (drift.py clipped a piece).
 - hf_sandbox_fs cat of 95 KB parts always saves to a file: plan on hfw2/fetch.py from the start; crop in the sandbox (crop.py) first.
 
-## Lessons applied
-D23/D62 (stills stamped with built setting), D41 (sized to the shipped pickup), D81 (drawcheck named and run for 2-2), D82 (job time
-limit is the gate), D83 (no absolute imports: none added), D59 (no gate left running at report), D36 (own worktree), law 8 (token never
-left the sandbox).
+## Lessons applied: D23/D62 (stills stamped with the built setting), D41 (sized to the shipped pickup), D81 (drawcheck for 2-2), D82,
+D83 (no absolute imports), D59 (no gate running at report), D36 (own worktree), law 8 (token never left the sandbox).
