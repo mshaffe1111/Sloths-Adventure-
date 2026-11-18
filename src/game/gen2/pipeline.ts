@@ -44,6 +44,8 @@ import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../t
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
+import { castDef } from '../predators/registry.ts';
+import { checkOnClock } from '../predators/core.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
@@ -4153,7 +4155,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st).map((e) => `snap: ${e}`)];
+  const wet = [...riverFaults(st).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
@@ -5015,6 +5017,24 @@ export function settleLaid(st: Gen2Stage, settle: WorldKit['settle']): string[] 
     if (dx === 0) continue;
     p.cut = '';
     out.push(`x ${Math.round(p.x)}`);
+  }
+  return out;
+}
+
+/**
+ * An animal laid on a stage clock (Enemy.kitBeat; gen2/worlds/w2Cast.ts) keeps one the stage has, and a fair one for its kind on the beat
+ * (predators/core.ts checkOnClock: a warn before every on, at least its tell long). What is wrong, in words; none = fair (ENG-25)
+ */
+export function beatCastFaults(st: { enemies: readonly Enemy[]; clocks?: readonly ClockDef[] }, world: number): string[] {
+  const out: string[] = [];
+  for (const e of st.enemies) {
+    if (!e.kitBeat) continue;
+    const at = `${e.type} at x=${Math.round(e.x)}`;
+    const clock = (st.clocks ?? []).find((c) => c.id === e.kitBeat!.clock);
+    if (!clock) { out.push(`${at} keeps clock ${e.kitBeat.clock}, which the stage does not have`); continue; }
+    const def = castDef(e.type, world);
+    if (!def) { out.push(`${at}: no creature-kit kind ${e.type} in world ${world}`); continue; }
+    for (const f of checkOnClock({ ...def, onBeat: true }, clock)) out.push(`${at}: ${f}`);
   }
   return out;
 }

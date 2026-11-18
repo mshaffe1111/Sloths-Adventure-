@@ -19,6 +19,7 @@ import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predat
 import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, type Cover } from './stillness.ts';
 import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
+import type { StageClock } from './clock.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
 export const GLIDE = { far: 170, lift: 30, drop: 150 } as const;
@@ -99,8 +100,10 @@ export class CastPlay {
     this.lures = data.lures ?? [];
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
-      const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
-      if (!def || e.defeated) continue;
+      const kind = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
+      if (!kind || e.defeated) continue;
+      // (an animal laid on a stage clock keeps it: the kind run on the beat, by the animal's data, never by its kind; the lead's 11-15 rule)
+      const def: PredatorDef = e.kitBeat ? { ...kind, onBeat: true } : kind;
       const ground = groundUnder(platforms, e);
       // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
       const perched = !!e.kitPerch && def.habit === 'sweep';
@@ -135,8 +138,8 @@ export class CastPlay {
     return this.prey.covered ? calm(this.still, STILLNESS[easy ? 'easy' : 'normal']) : 0;
   }
 
-  /** one fixed step of the whole cast. `t`: game time */
-  step(hero: CastHero, dt: number, t: number, easy: boolean): CastStep {
+  /** one fixed step of the whole cast. `t`: game time; `clock`: the stage's clock, read for each animal that keeps one (Enemy.kitBeat) */
+  step(hero: CastHero, dt: number, t: number, easy: boolean, clock?: Pick<StageClock, 'read'>): CastStep {
     const o = this.out;
     o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
     o.landed = null;
@@ -179,6 +182,10 @@ export class CastPlay {
     if (this.lures.length) stepLures(this.members, this.lures, t);
     for (const m of this.members) {
       if (m.s.phase !== 'gone') {
+        // (an animal on a stage clock reads it each step; one with none has no beat. Before ENG-25 no animal was handed a clock, so an
+        // onBeat kind in play never told nor acted: the beat was proven only on the kit's own fixtures, predators/fixtures.ts)
+        const kb = m.e.kitBeat;
+        sc.beat = kb && clock ? clock.read(kb.clock, kb.shift ?? 0) : undefined;
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);

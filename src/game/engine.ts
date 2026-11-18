@@ -4716,7 +4716,7 @@ export class GameEngine {
     h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
     h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
-    const r = c.step(h, dt, this.gameTime, this.easy);
+    const r = c.step(h, dt, this.gameTime, this.easy, this.clock);
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
     //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
     for (const e of r.noticed) {

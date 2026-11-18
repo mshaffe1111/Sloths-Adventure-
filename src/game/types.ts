@@ -227,6 +227,9 @@ export interface Enemy {
   kitPasses?: number;
   /** a cast sweeper's glance dials for its stretch (predators Post.glance; the still row's, w1Cast.ts eagleOver), or false: it never glances */
   kitGlance?: import('./predators/types.ts').Glance | false;
+  /** a cast animal that KEEPS a stage clock (ENG-25; 2-5.md NEW 2: the snapper on its stones' bar, gen2/worlds/w2Cast.ts): the kit runs it
+   *  as an `onBeat` kind, its tell only on the clock's 'warn' and its act only on its 'on' (castPlay.ts hands it the clock's read) */
+  kitBeat?: import('./beat.ts').OnBeat;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
