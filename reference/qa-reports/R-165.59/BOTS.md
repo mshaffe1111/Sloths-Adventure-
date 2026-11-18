@@ -13,6 +13,7 @@ check the table, and recommit `calibration-main.jsonl` in the same change.
 **11-11, INT-1-1 (C1's re-lay, A1, the help):** recommitted on the re-laid 1-1; the runs the bots were calibrated on (0.9.5's 1-1) are kept as
 `calibration-0.9.5.jsonl`. On the new layout the table no longer matches the testers' profiles, by design (no life lost in 1-1; put-backs a
 run 0.05-2.05 against the testers' 1.5-3.8): the bots stand as calibrated on 0.9.5 until a play window on the new 1-1 re-measures them.
+**11-18, INT-12 (ENG-24's run row, 2:54 PM ET):** recommitted because ENG-24 (t-eng-24@b0e94c85) added `ontoLog`/`fromLog` to every run row (tierBots.ts:39-40) without recommitting; the re-run (the command above) is line-for-line identical to the old file except those two fields, 0 in all 200 runs: no run moved (the table unchanged).
 
 ## Mapping: every field, its value, its source
 
