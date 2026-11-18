@@ -34,3 +34,11 @@ research about what people LOVED, engine list fits the 2-hour build (2 NEW max).
 2-4 first (data + bots on wired parts), then 2-5 ('bites' is tested), then 2-3 (followers: the one real new system, and Matt's OK).
 Each build also deletes a hand build (w2Stages.ts) and its pinned tests (B pushback 1): in the build's packet, named.
 Next: one designer writes the final 2-4 and 2-5 designs (step 6) with the flights; 2-3's final after Matt's answer.
+
+## 2-3 final design (DESIGN-23, t-design-23 @ 260aa398, 12:37 PM ET 11-18): the lead's rulings on its pushback
+1. The heron's look sweeps its zone in WORLD x, not the view (watcher.ts:148 is view-based: upright it never reads a tail >160 px off
+   screen): part of NEW 2 "the heron reads the line", in the engine packet.
+2. N doesn't change the crossing time: noted (the line's length is a look, not a cost).
+3. The teach is "go right after it looks" (going on the warn fails from G 350): the story keeper's ask changes to that.
+4. The HUD's little faces: SHOW FIRST (CLAUDE.md): a mock-up to Matt before the engine member builds them.
+5. Easy gets one heron: accepted (Easy never harder).
