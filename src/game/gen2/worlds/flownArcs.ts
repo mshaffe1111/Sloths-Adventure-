@@ -154,14 +154,14 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n18('bounce', [223, 215], [177, 177, 177], 'chain.md §1 "1-8: bounce 223 / 215, gap 177 / 177 / 177"'),
   ...n18('bounce-air', [311, 301], [334, 334, 334], 'chain.md §1 "1-8: bounce-air 311 / 301, gap 334 / 334 / 334"'),
   // 1-9 on Normal (BUILD-19, 11-18): `FLIGHT_STAGE=1-9 npx tsx reference/specs/sims/flight.ts normal all` on t-build-19 (reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt)
-  ...n19('single-hold', [123, 115], [136, 220, 244], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: single-hold 123 / 115, gap 136 / 220 / 244'),
-  ...n19('single-flick', [123, 115], [126, 210, 238], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: single-flick 123 / 115, gap 126 / 210 / 238'),
-  ...n19('single-tap', [87, 79], [77, 161, 183], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: single-tap 87 / 79, gap 77 / 161 / 183'),
-  ...n19('double-hold', [208, 200], [290, 376, 403], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: double-hold 208 / 200, gap 290 / 376 / 403'),
-  ...n19('double-flick', [207, 199], [272, 357, 385], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: double-flick 207 / 199, gap 272 / 357 / 385'),
-  ...n19('double-tap-tap', [148, 140], [189, 274, 299], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: double-tap-tap 148 / 140, gap 189 / 274 / 299'),
-  ...n19('bounce', [223, 215], [177, 177, 177], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: bounce 223 / 215, gap 177 / 177 / 177'),
-  ...n19('bounce-air', [310, 300], [334, 334, 334], 'reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt: bounce-air 310 / 300, gap 334 / 334 / 334'),
+  ...n19('single-hold', [123, 115], [136, 220, 244], 'chain.md §1 "1-9: single-hold 123 / 115, gap 136 / 220 / 244"'),
+  ...n19('single-flick', [123, 115], [126, 210, 238], 'chain.md §1 "1-9: single-flick 123 / 115, gap 126 / 210 / 238"'),
+  ...n19('single-tap', [87, 79], [77, 161, 183], 'chain.md §1 "1-9: single-tap 87 / 79, gap 77 / 161 / 183"'),
+  ...n19('double-hold', [208, 200], [290, 376, 403], 'chain.md §1 "1-9: double-hold 208 / 200, gap 290 / 376 / 403"'),
+  ...n19('double-flick', [207, 199], [272, 357, 385], 'chain.md §1 "1-9: double-flick 207 / 199, gap 272 / 357 / 385"'),
+  ...n19('double-tap-tap', [148, 140], [189, 274, 299], 'chain.md §1 "1-9: double-tap-tap 148 / 140, gap 189 / 274 / 299"'),
+  ...n19('bounce', [223, 215], [177, 177, 177], 'chain.md §1 "1-9: bounce 223 / 215, gap 177 / 177 / 177"'),
+  ...n19('bounce-air', [310, 300], [334, 334, 334], 'chain.md §1 "1-9: bounce-air 310 / 300, gap 334 / 334 / 334"'),
   // 2-1 and 2-2 on Normal (ENG-W2, 11-14): flown on their own stages on World 2's kit (nW2 above). Their help eases a little past 1-7's
   // (the doubles climb 1-2 px less), so each has its own block
   ...n21('single-hold', [123, 115], [135, 220, 244], 'chain.md §1 "2-1: single-hold 123 / 115, gap 135 / 220 / 244"'),

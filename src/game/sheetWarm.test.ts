@@ -57,6 +57,16 @@ test('every creature of every built World 1 stage is asked for as it starts, the
     if (st.vines.some((v) => v.vineType !== 'tree_climb' && !v.rope)) assert.ok(x.vine);
     if (st.proto?.bushes?.length) assert.ok(x.props2);
   }
+  // (the ring drops left World 1 with the hand-built 1-9, BUILD-19 11-18 (1-9 is gen2's Boa's Branches): they are asked for wherever a
+  //  hand-built stage still keeps a ring, rolls 1-3 of each, so the ring's sheets stay proven where the ring lives)
+  const ringStages = levels.filter((l) => l.worldIndex !== 1 && HAND_STAGES[l.id] && buildProtoStage(l, 1, HAND_STAGES[l.id]).proto?.ring?.waves?.length);
+  for (const st of ringStages.flatMap((l) => [1, 2, 3].map((v) => buildProtoStage(l, v, HAND_STAGES[l.id])))) {
+    const asked = new Set(stageAnims(st));
+    for (const w of st.proto?.ring?.waves ?? []) {
+      rings++;
+      for (const d of w) assert.ok(asked.has(animOf(d.kind)), `${st.config?.id ?? ''}: the ring's ${d.kind}`);
+    }
+  }
   assert.ok(eagles > 0 && rings > 0, `the stages held eagles (${eagles}) and rings (${rings})`);
 });
 
