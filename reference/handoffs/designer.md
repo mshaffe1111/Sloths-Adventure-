@@ -1,4 +1,4 @@
-# Designer handoff (the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (rewritten 2026-11-18 12:32 PM ET by DESIGN-23: 2-3's final design and its flights, on top of DESIGN-24-25's 10:41 AM ET rewrite (2-4, 2-5); World 1 sections below kept from the 11-11/11-12 Designers, R-165.11/.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -8,11 +8,27 @@ Read first, in order:
 - reference/packets/2026-11-11/CONTENT-1-2-relay.md and DESIGN-1-2-notes.md (1-2's packet and its proofs);
 - reference/engine/NODES.md §8 (the node code and its key);
 - reference/engine/W1-NEW-SECTIONS.md (every round);
-- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc;
-- the hardness meter: reference/design/DIFFICULTY.md (every stage's Normal target, the points, the levers) and its read-only prototype
-  `npx tsx tools/difficulty/score.ts --check` then `--stages <ids> --seeds 1-4 --detail` (on t-diff-algo until it merges).
+- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
 
 Every ruling below cites the file and section where it's written in full.
+
+## 0. Now (World 2, 11-18): read this first
+- **World 2's final designs:** reference/design/2-4.md and 2-5.md (this task, t-design-24), 2-2.md (t-pitch-b), 2-1.md. **2-3 is designed too** (reference/design/2-3.md, t-design-23; Matt OK'd "bring them home" 11-18 11:16 AM ET; built AFTER 2-4 and 2-5). Its NEW 1 is follow.ts: the contract is in 2-3.md, the prototype is the pure functions in reference/specs/sims/follow23.ts.
+  Only 2-1 and 2-2 roll on gen2; 2-3..2-9 are still the hand builds in w2Stages.ts: each designed level's build deletes its hand build and the tests that pin it (named in its design).
+- **A doc branch cut from origin/main has a current src** (t-design-23 was: fly there directly). **A lead's doc branch may be OLD.** The lead's doc branches carry a pre-0.9.9 tree (no riverLay.ts, no w2.ts). Fly and read code on a worktree of origin/main (`git worktree add --detach <dir>
+  origin/main`, then `npm install --legacy-peer-deps` there: ~3 min, 2.5 GB); copy the sims back. knowncheck on the doc branch is red for inherited list entries: run it in the main
+  worktree with your files added (PASS there proves your change). tsc excludes reference/ on main: type-check sims with a temp tsconfig that extends the project's and includes them (lib ES2023).
+- **The World 2 flights (reference/specs/sims/, outputs in out/):** swingLog.ts (2-4: a liana's let-go onto drifting logs, every frame of a swing x every frame of a log spacing, and the
+  catch from a moving log); snapClock.ts (2-5: the real tap hop through InputEngine, stone rows and waves replayed against beatBrick's own brickNow); nodes2425.ts (checkCode on both strings); follow23.ts (2-3: the followers' path replay on his real run, the heron's look over the line, clump widths, the pond, two herons out of step); nodes23.ts.
+- **Rulings from the flights (the lead rules on them; until then they are design numbers):** a liana's drop share is set by the GAP between logs, not the log's pass time (every W2 row lands
+  72-93%; gap 200-280 gives 41-51% and a wait up to a swing); snap stones in step: 3 at most; the wave runs AHEAD of him only; Easy cuts a wave to 3 stones (a stretched 5-wave is harder for
+  a straight hopper than Normal's); stones 80 px with 30-40 px water between (a pitch over a tap hop drifts him off).
+- **The real tap hop is 0.43 s, 106-119 px, 62 px up** (InputEngine's 80 ms minimum). 2-2.md and rideLay.ts:260 cite 0.30 s / 83 px from a FakeInput one-frame press: a number no thumb makes.
+
+- **2-3's flown numbers (design numbers until the lead rules):** followers 190 / 230 px/s, 34 px apart; N does not change a crossing (the tail travels his distance); reed clumps >= 260 / 340 px;
+  open mud <= 500 px (two herons 350; Easy 350); a watched pond <= 360 px (hops make the path 1.3 x); going on the warn fails from G 350: the lesson is "go right after a look". The view is
+  440 px upright, 1,199 sideways (applyZoom at 412x915 / 915x412). The heron's look must sweep the ZONE in world x, never the view (watcher.ts shadowX is view-based: upright it never reads a tail
+  more than 160 px off screen).
 
 ## 1. Where the design data lives
 
