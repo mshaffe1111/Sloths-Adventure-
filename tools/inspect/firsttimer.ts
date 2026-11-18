@@ -939,6 +939,8 @@ export interface RunOptions {
   /** drive the engine through the game's own InputEngine (RealPlay.useRealInput: the touch layer's calls and minimum hold), never FakeInput's
    *  bare press: true for the touch's hold, a number for another (ms, the Pad button's PAD_HOP_MS) (ENG-24) */
   realInput?: true | number;
+  /** called after every frame with the run's sim (a clip's recording, ENG-24 lianaClip) */
+  onFrame?: (sim: RealPlay) => void;
   /** the route's points; default: the inspector's main route on the engine's own stage */
   route?: Pt[];
   /** stuck this long (s) without progress: put him further on */
@@ -3301,6 +3303,7 @@ export class FirstTimerRun {
     while (this.t < cap) {
       const pad = this.pad();
       this.sim.frame(pad);
+      this.opts.onFrame?.(this.sim);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       {
         const p = this.sim.p, sw = !!p.isVineSwinging;

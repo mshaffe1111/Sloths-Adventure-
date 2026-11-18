@@ -69,7 +69,7 @@ export function enteredPieces<P extends PieceSpan>(pieces: P[], far: number, m: 
 }
 
 /** a tier run's options: `realInput`, the engine driven through the game's own InputEngine (firsttimer.ts RunOptions, ENG-24) */
-export interface TierOpts { realInput?: true | number }
+export interface TierOpts { realInput?: true | number; onFrame?: (sim: import('../../src/game/realPlay.ts').RealPlay) => void }
 export function runTier(tier: Tier, setting: Setting, variant: number, stage = '1-1', opts: TierOpts = {}): TierRun {
   const who = BOTS[tier][setting];
   if (!who) throw new Error(`no ${tier} bot on ${setting}`);
