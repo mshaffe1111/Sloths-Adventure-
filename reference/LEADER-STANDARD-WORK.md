@@ -22,7 +22,7 @@ what matters is owning them and not repeating them. Retraining someone new often
    number is paired with a quality number (hours per job WITH redos per job; Day 1 hours burned WITH escapes to Matt).
 3. **Great managers coach, empower without micromanaging, communicate, have a clear vision, and are results-oriented** (Google,
    Project Oxygen). RULE: briefs say WHAT and the bar, not every HOW; every send-back names the lesson it broke (coaching, not just
-   correcting); the finish line (Day 1 list, launch date) is restated at every wave. Before sending a packet, ask "does this draw anything new?": if yes, its checks list drawcheck for that stage both ways (D81). After any ROADMAP edit, run `node tools/roadmapcheck.mjs` before committing (D84).
+   correcting); the finish line (Day 1 list, launch date) is restated at every wave. Before sending a packet, ask "does this draw anything new?": if yes, its checks list drawcheck for that stage both ways (D81). After any ROADMAP edit, run `node tools/roadmapcheck.mjs` before committing (D84). A packet's checks are "the CLAUDE.md check list, every item" plus stage-specific ones; never a hand-picked subset (D86).
 4. **Go and see the real work** (Toyota, gemba). The leader observes the work where it happens, to learn, not to judge from a
    report; every observation gets an owner and is checked on the next walk. RULE: the lead opens real screens and code, never only a
    digest; every finding gets an R-number and an owner; the next walk checks it closed.
