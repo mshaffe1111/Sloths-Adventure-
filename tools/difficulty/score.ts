@@ -36,6 +36,7 @@ import { beatOf } from '../../src/game/clock.ts';
 import { driftCycle, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
 import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
 import type { Ride } from '../../src/game/ride.ts';
+import { snapWindow } from '../../src/game/gen2/rideLay.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
  *  with `rolling`, so nothing here asks for it */
 const ROLLING: any = await import(new URL('../../src/game/rolling.ts', import.meta.url).href).catch(() => null);
@@ -644,6 +645,46 @@ export function rideChallenges(st: any, route: Route, samples: Sample[], setting
 }
 
 /**
+ * The snap channel (ENG-25b; 2-5.md "per row, the meter's timed-hazard form log2(1 + cycle / open window) on the flown window"; METER-COVERAGE
+ * pad:snap): a RUN of snap stones (gen2/rideLay.ts layPads `on: 'bites'`, the jaw that bites on four) crossed on the route, between floors
+ * that never bite, is ONE timed press: he must leave the floor before it inside the window from which the whole crossing, a tap hop a stone,
+ * never stands on a stone while it bites. That window is the engine's own read, rideLay.ts snapWindow (the one the stage's verdict snapFaults
+ * holds to SNAP_FAIR.window; flown by 2-5.md's snapClock.ts to within 0.04 s), on the run's own bar and shifts (Easy stretches it, beatOf).
+ * Bits windowBits(bar, window); a bite costs a heart (padPiece.ts plays 'bites': one heart, held on the stone). The hops themselves stay
+ * priced as the jumps they are (moveOf); a stone's own stand was priced as a plain floor before this (nothing: a snap stone is a solid
+ * floor, not a moving one, so rideChallenges never saw it, and step and wave rows read the same; ENG-25b REPORT). A run whose clock the
+ * stage does not list is refused, never priced as nothing.
+ */
+export function snapChallenges(st: any, route: Route, samples: Sample[], setting: Setting, id: string): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const easy = setting === 'easy';
+  const bites = (q: any) => !!q?.pad && q.pad.on === 'bites';
+  let run: Array<{ seg: Route['segs'][number]; stone: any }> = [];
+  const close = () => {
+    if (!run.length) return;
+    const first = run[0], stones = run.map((r) => r.stone);
+    run = [];
+    const def = ((st.clocks ?? []) as any[]).find((c) => c.id === stones[0].pad.clock);
+    if (!def || stones.some((q) => q.pad.clock !== def.id)) {
+      unpriced('pad:snap', `${id} x ${Math.round(first.seg.x0)}: a run of snap stones on ${def ? 'more than one clock' : `no clock the meter reads (${stones[0].pad.clock})`}`, 0);
+      return;
+    }
+    const bar = beatOf(def, easy).period;
+    const open = snapWindow(def, stones.map((q) => q.pad.shift ?? 0), easy);
+    const sg = first.seg;
+    out.push({ t: clockAt(samples, sg.x0, sg.y0), x: sg.x0, ys: [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)], kind: 'snap-run', bits: windowBits(bar, open), cost: 'heart', stakes: STAKES.heart, threat: true,
+      note: `${stones.length} snap stone${stones.length > 1 ? 's' : ''} on ${def.id}: leave inside ${open.toFixed(2)}s of a ${bar.toFixed(2)}s bar` });
+  };
+  // (a run is every stone landed on between two floors that never bite; the route's walk along a stone is on that stone, not a new run)
+  for (const sg of route.segs) {
+    if (!bites(sg.plat)) close();
+    else if (!run.some((r) => r.stone === sg.plat)) run.push({ seg: sg, stone: sg.plat });
+  }
+  close();
+  return out;
+}
+
+/**
  * A timed crossing of a falling hazard's column (METER-1): its period, its quiet (the part of the period nothing falls), and how long the
  * route keeps him in its way. One crossing: the window is the quiet less that time (the entry times that keep all of it quiet). One as
  * long as the quiet: he stops out of reach and goes on in the next, so it is n crossings of inWay / n, each its own press, and he takes
@@ -803,6 +844,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of chaseChallenges(st, samples, setting)) add(c);
   for (const c of rollingChallenges(st, samples, setting)) add(c);
   for (const c of rideChallenges(st, route, samples, setting, softPits, id)) add(c);
+  for (const c of snapChallenges(st, route, samples, setting, id)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
@@ -890,7 +932,9 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): strin
   for (const p of st.platforms ?? []) {
     // (a sinking pad is its own piece, by its row's kind (a weight pad's count, a beat row's breath: gen2/rideLay.ts PadRow.by), not a
     // moving floor's: its bot is the pad skills and its price the dwell, METER-COVERAGE #21)
-    out.add(p.pad ? `pad:${p.pad.by}` : `platform:${p.type}`);
+    // (a snap stone, a 'beat' pad that BITES, is its own piece: its bot is OFF-BEFORE-FOUR and its price the run's window, snapChallenges;
+    // ENG-25's coverage row 'pad:snap' was never read before ENG-25b: every snap stone read as 'pad:beat', the sinking pads' row)
+    out.add(p.pad ? (p.pad.on === 'bites' ? 'pad:snap' : `pad:${p.pad.by}`) : `platform:${p.type}`);
     // (a ride across moves sideways, a ride up moves up and down: ride.ts paths, gen2/rideLay.ts RideWay)
     if (p.ride) out.add(`ride:${p.ride.path.some((q: any, i: number) => i > 0 && Math.abs(q.y - p.ride.path[0].y) > Math.abs(q.x - p.ride.path[0].x)) ? 'up' : 'across'}`);
   }

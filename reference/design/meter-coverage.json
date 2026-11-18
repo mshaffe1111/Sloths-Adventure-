@@ -557,11 +557,11 @@
   },
   "pad:snap": {
    "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.offBefore4",
-   "channel": "tools/difficulty/score.ts#rideTiming",
+   "channel": "tools/difficulty/score.ts#snapChallenges",
    "rows": [
     "24"
    ],
-   "note": "a snap row's stone (ENG-25; 2-5.md NEW 1): on and off between its bites (snapClock); rideTiming prices EACH stone's own board window (its bar less the bite), NOT the run's window to leave the bank (rideLay.ts snapWindow: 0.9-1.6 s), so an in-step run or a wave reads easier than it plays: the run-window channel is missing (ENG-25 REPORT, Suggestions)"
+   "note": "a snap row's stone (ENG-25; 2-5.md NEW 1): it bites on four. Priced (ENG-25b) as a RUN: each run of snap stones between floors that never bite is one timed press, windowBits(bar, rideLay.ts snapWindow), the engine's own window to leave the floor before it (the verdict's, flown to 0.04 s), a heart a bite; the hops stay jumps. Before ENG-25b a snap stone read as 'pad:beat' (piecesUsed) and its bite was priced nowhere (a solid floor: rideChallenges never saw it)"
   }
  }
 }

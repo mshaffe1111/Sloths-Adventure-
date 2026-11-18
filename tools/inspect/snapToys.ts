@@ -43,6 +43,10 @@ export const kitFor = (row: ToySnap, pads: Record<string, PadRow> = TOY_SNAPS): 
   },
 });
 export const ID = '2-94';
+/** the meter's copy of the snap toys (snapChannel.test.ts): a toy id among World 2's first stages, so the level check grants him only what
+ *  he has there (levelCheck.ts skillGuaranteedAt reads the stage's place: on 2-94, the 104th stage, the leaf glide is his and the meter's
+ *  route glided over the whole pond, pricing no stone; 2-5 is the 15th) */
+export const METER_ID = '2-19';
 export const cfg: LevelConfig = { ...toyCfg(ID, 'sprint'), unlocked: true };
 
 /** the first seed whose roll lays the one pond and builds clean */
@@ -58,16 +62,17 @@ export const snapStage = (row: ToySnap, seed: number, s: Setting = 'normal', pad
   buildGen2Stage({ config: cfg, kit: kitFor(row, pads), seed, difficulty: s });
 
 /** play `f` on a snap fixture, rolled the game's way (a planted one-seed list) on `setting` (the meter scores it here: snapChannel.test.ts) */
-export function onSnapToy<T>(row: ToySnap, seed: number, setting: Setting, f: () => T, pads: Record<string, PadRow> = TOY_SNAPS): T {
+export function onSnapToy<T>(row: ToySnap, seed: number, setting: Setting, f: () => T, pads: Record<string, PadRow> = TOY_SNAPS, id = ID): T {
   const kit = kitFor(row, pads);
-  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  const c: LevelConfig = id === ID ? cfg : { ...toyCfg(id, 'sprint'), unlocked: true };
+  const st = buildGen2Stage({ config: c, kit, seed, difficulty: 'normal' });
   const dict: string[] = [];
   const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
-  return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
-    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+  return withTestStage({ [id]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(id, { dict, seeds: [seed], plans: [packed] });
     try {
       setDifficulty(setting);
-      return withFixtureConfig(cfg, f);
+      return withFixtureConfig(c, f);
     } finally {
       undo();
     }
