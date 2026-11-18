@@ -5169,6 +5169,9 @@ export class GameEngine {
 
   /** a knocked-out animal tumbles (small), drops (flyers) or hops and flops belly-up (big), then fades */
   private updateKo(e: Enemy, dt: number) {
+    // (gone on its own: chased off and out of the stage (castPlay), or beaten on a run a flag replays: koLife 0, no knock-out to play, so
+    //  no fall and no landing burst. ENG-19c: 1-9's roost boa left a brown burst where its unplayed knock-out 'landed')
+    if (e.koLife === 0) return;
     e.koTimer += dt;
     const style = TRAITS[e.type].ko;
     e.koVy = (e.koVy ?? 0) + 1500 * dt;
@@ -5383,8 +5386,19 @@ export class GameEngine {
     return x > c.x - pad && x < c.x + c.viewportWidth + pad && y > c.y - pad && y < c.y + c.viewportHeight + pad;
   }
 
-  /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
+  /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten; a cast animal on
+   *  its way out (castPlay `glide`: chased off, or an immobile one's flee past its ground's end) fades as it goes (types.ts glide; ENG-19c) */
   private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
+    const fade = !e.defeated && e.glide ? 1 - e.glide : 1;
+    if (fade <= 0.02) return;
+    if (fade >= 1) return this.drawReacting(ctx, e, paint);
+    ctx.save();
+    ctx.globalAlpha *= fade;
+    this.drawReacting(ctx, e, paint);
+    ctx.restore();
+  }
+
+  private drawReacting(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
     // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
     const draw = () => {
       const b = bodyRect(e);

@@ -23,6 +23,15 @@ export const GONE_AFTER = 1.2;
 export const DROWSY = 1.1;
 /** close enough to a spot to be at it (px) */
 const AT = 6;
+/** an IMMOBILE animal (immobile(), below) beaten into a flee slides this far past its ground's end, out of sight, before it comes back (px).
+ *  ENG-19c (1-9's "Don't move, and it slides off!"): before, a posted boa's flee walked it 'home' where it already lay, so it sat coiled
+ *  on its post for its whole 4 s and he walked through it */
+export const FLEE_OFF = 140;
+/** a chased-off animal leaves AWAY from him when its way out runs into him this close, at its height (px). ENG-19c: 1-9's roost boa
+ *  bolted from the nest straight through him, reading as an attack */
+export const LEAVE_CLEAR = 320;
+/** it never walks (no speed of its own, not a sweeper): its post is its place (a boa on its bough) */
+export const immobile = (def: PredatorDef): boolean => def.habit !== 'sweep' && !def.rides && !(def.speed.rest > 0) && !(def.speed.hunt > 0);
 
 const clamp = (v: number, a: number, b: number): number => Math.max(a, Math.min(b, v));
 const toward = (from: number, to: number, step: number): number => (Math.abs(to - from) <= step ? to : from + Math.sign(to - from) * step);
@@ -394,15 +403,52 @@ function startTell(def: PredatorDef, s: PredatorState, hero: Prey, ev: PredatorE
 /** a beaten animal on its way: home for a while, or out of the stage */
 function stepFlee(def: PredatorDef, s: PredatorState, sc: Scene): void {
   const v = Math.max(def.speed.hunt, def.speed.rest, 60) * 1.5 * sc.dt;
+  // (its first step in the flee: the beat entered it, t = 0, and this step added one dt)
+  const first = s.t <= sc.dt * 1.5;
+  const mid = s.x + (def.coil?.w ?? 0) / 2;
   if (s.leaving) {
+    // (never out through him: when the way away from what beat it runs into him, close and at its height, it leaves the other way)
+    const ahead = Math.sign(sc.hero.x - mid) === s.facing && Math.abs(sc.hero.x - mid) < LEAVE_CLEAR && Math.abs(sc.hero.y - s.y) <= def.sight.tall;
+    if (first && ahead) s.facing = s.facing > 0 ? -1 : 1;
     s.x += s.facing * v;
     s.eyeX += s.facing * v;
     if (s.t >= GONE_AFTER) enter(s, 'gone');
     return;
   }
+  if (immobile(def)) {
+    slideOff(def, s, sc, v / sc.dt, first, mid);
+    return;
+  }
   s.x = toward(s.x, s.homeX, v);
   s.y = toward(s.y, s.homeY, v);
   if (sc.t >= s.awayUntil) {
+    enter(s, 'rest');
+    s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
+  }
+}
+
+/**
+ * An immobile animal's flee, SEEN: it turns away from him, slides along its ground and FLEE_OFF px past its end (castPlay draws it dropping
+ * off that end and fading), waits there, and comes back the same way, home as its away time ends (the beat's `seconds`, unchanged). It
+ * neither hurts nor blocks while it flees (hurt(), blocks()). Its speed: its own flee speed, or fast enough to be out and back in its time.
+ */
+function slideOff(def: PredatorDef, s: PredatorState, sc: Scene, speed: number, first: boolean, mid: number): void {
+  if (first) s.facing = sc.hero.x < mid ? 1 : -1;
+  const out = s.x !== s.homeX ? (s.x > s.homeX ? 1 : -1) : s.facing;
+  const end = out > 0 ? s.maxX + FLEE_OFF : s.minX - FLEE_OFF;
+  const whole = s.awayUntil - (sc.t - s.t);
+  const u = Math.max(speed, whole > 0 ? (2.5 * Math.abs(end - s.homeX)) / whole : speed);
+  const step = u * sc.dt;
+  const back = sc.t >= s.awayUntil - Math.abs(s.x - s.homeX) / u;
+  if (!back) {
+    s.x = toward(s.x, end, step);
+    s.facing = out as 1 | -1;
+  } else {
+    s.x = toward(s.x, s.homeX, step);
+    if (s.x !== s.homeX) s.facing = (out > 0 ? -1 : 1) as 1 | -1;
+  }
+  if (sc.t >= s.awayUntil && Math.abs(s.x - s.homeX) <= AT) {
+    s.x = s.homeX;
     enter(s, 'rest');
     s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
   }

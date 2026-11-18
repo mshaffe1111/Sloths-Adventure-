@@ -13,6 +13,9 @@ FAULTS = [
   ("Normal's roost limb made sound", ARC, "limb('k', 'w1', !easy)", "limb('k', 'w1', false)", TEST, 'beat 7:'),
   ('the freeze line moved beside its boa', ARC, "tip('t-freeze', 'a', 0.3, 'freeze')", "tip('t-freeze', 'e', 0.9, 'freeze')", TEST, '800 px or more'),
   ('the golden seed taken out (BUILD-19b)', ARC, ",\n      { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },", "] },", TEST, 'golden seed'),
+  ('ENG-19c: the immobile slide off (the flee sits on its post)', 'src/game/predators/core.ts', "  if (immobile(def)) {\n    slideOff(", "  if (false && immobile(def)) {\n    slideOff(", 'src/game/fleeSlide.test.ts', 'slides AWAY'),
+  ('ENG-19c: the leave never turns away from him', 'src/game/predators/core.ts', "if (first && ahead) s.facing", "if (false && first && ahead) s.facing", 'src/game/fleeSlide.test.ts', 'never leaves through him'),
+  ('ENG-19c: a gone animal plays its knock-out (the burst)', 'src/game/engine.ts', "    if (e.koLife === 0) return;\n    e.koTimer += dt;", "    e.koTimer += dt;", 'src/game/fleeSlide.test.ts', 'no landing burst'),
   ('the reads swapped', ARC, "Cg&:&boa-trapped! Ch&:&boa-roost!", "Ch&:&boa-roost! Cg&:&boa-trapped!", TEST, 'beat for beat'),
 ]
 caught = 0

@@ -11,7 +11,7 @@
 import type { CastData, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches } from './predators/core.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches, FLEE_OFF } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
@@ -307,7 +307,16 @@ export class CastPlay {
       //  down into the soil; off a branch's end it still drops to what is below, B15 stills 11-13)
       const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
       e.y = Math.min(e.y, floor - m.foot);
-    }
+    } else if (s.phase === 'flee' && (s.x > s.maxX || s.x < s.minX)) {
+      // (an immobile animal's flee past its ground's end, core.ts slideOff: it drops off that end and fades, the leaving glide's look,
+      //  and comes back the same way; ENG-19c, 1-9's "it slides off!")
+      const u = Math.min(1, (s.x > s.maxX ? s.x - s.maxX : s.minX - s.x) / FLEE_OFF);
+      e.glide = u;
+      e.wakeT = 0;
+      e.y += GLIDE.drop * u * u;
+      const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
+      e.y = Math.min(e.y, floor - m.foot);
+    } else if (e.glide) e.glide = 0;
     if (s.phase === 'gone' && !e.defeated) {
       // out of the stage on its own: no knock-out, nothing to draw
       e.defeated = true;
