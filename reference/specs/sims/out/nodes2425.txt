@@ -1,0 +1,4 @@
+2-4: A Ts1<:#soft Pg1< Ps1>:#soft Xw1> R Pf1< Ws1>:#water R Pb1^< Cw1>:#water R Ss1< E
+  14 tokens; checkCode: no errors
+2-5: A Tp1<:#soft Pg1&<:&turtle*1z Pp1> Xw1&>:&turtle R Pr1< Wp1>:#water R Pg1&>:&turtle*3 Cw1&>:#water:&turtle*2 R Sw1< E
+  14 tokens; checkCode: no errors

@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (rewritten 2026-11-18 10:41 AM ET by DESIGN-24-25, the final designs of 2-4 and 2-5 with their flights; World 1 sections below kept from the 11-11/11-12 Designers, R-165.11/.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -11,6 +11,19 @@ Read first, in order:
 - a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
 
 Every ruling below cites the file and section where it's written in full.
+
+## 0. Now (World 2, 11-18): read this first
+- **World 2's final designs:** reference/design/2-4.md and 2-5.md (this task, t-design-24), 2-2.md (t-pitch-b), 2-1.md. 2-3's final waits on Matt's OK for "bring them home" (PICKS-23-25.md).
+  Only 2-1 and 2-2 roll on gen2; 2-3..2-9 are still the hand builds in w2Stages.ts: each designed level's build deletes its hand build and the tests that pin it (named in its design).
+- **This branch's src is OLD.** The lead's doc branches carry a pre-0.9.9 tree (no riverLay.ts, no w2.ts). Fly and read code on a worktree of origin/main (`git worktree add --detach <dir>
+  origin/main`, then `npm install --legacy-peer-deps` there: ~3 min, 2.5 GB); copy the sims back. knowncheck on the doc branch is red for inherited list entries: run it in the main
+  worktree with your files added (PASS there proves your change). tsc excludes reference/ on main: type-check sims with a temp tsconfig that extends the project's and includes them (lib ES2023).
+- **The World 2 flights (reference/specs/sims/, outputs in out/):** swingLog.ts (2-4: a liana's let-go onto drifting logs, every frame of a swing x every frame of a log spacing, and the
+  catch from a moving log); snapClock.ts (2-5: the real tap hop through InputEngine, stone rows and waves replayed against beatBrick's own brickNow); nodes2425.ts (checkCode on both strings).
+- **Rulings from the flights (the lead rules on them; until then they are design numbers):** a liana's drop share is set by the GAP between logs, not the log's pass time (every W2 row lands
+  72-93%; gap 200-280 gives 41-51% and a wait up to a swing); snap stones in step: 3 at most; the wave runs AHEAD of him only; Easy cuts a wave to 3 stones (a stretched 5-wave is harder for
+  a straight hopper than Normal's); stones 80 px with 30-40 px water between (a pitch over a tap hop drifts him off).
+- **The real tap hop is 0.43 s, 106-119 px, 62 px up** (InputEngine's 80 ms minimum). 2-2.md and rideLay.ts:260 cite 0.30 s / 83 px from a FakeInput one-frame press: a number no thumb makes.
 
 ## 1. Where the design data lives
 
@@ -179,6 +192,12 @@ Every ruling below cites the file and section where it's written in full.
 - **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) lies on the twist's hollow floor past its root every roll (FX's findSpot on 'hf' at t 0.66; t 0.6 could stand inside the root), and Dot says "There's something down by the roots..." on the lip (D12, t-12-design@cc0def2a, on INT-2's 90a54102).
 
 ## 5. Traps (each of these happened)
+
+- **A sim that resets a run at a swing boundary halves every window and invents waits (11-18, swingLog.ts):** read runs and waits on the whole timeline; dump the grid (DUMP=1) when a
+  share and a window disagree (82% landing with a 40% window was the tell).
+- **clock.ts reads t + offset + shift:** a + shift runs a stone AHEAD in its cycle (bites EARLIER). Label waves by what the player sees, and check one stone by hand.
+- **A pitch's node sketch is not a node string:** both 2-4's and 2-5's sketches failed checkCode (L is structural, V1; a move is 1 or 2; V11's cap). Run nodes2425.ts-style before writing.
+- **Easy's stretch is not always easier:** it slows a wave so a straight hopper catches the snap. Fly both settings for every row and compare beat for beat (rule 4).
 
 - **The level check counts no double on 1-2 to 1-5** (levelCheck.ts:132-134): a stage moved to gen2 before 1-6 needs `EARLY_DOUBLE`,
   or every double block reads as unreachable and its section is swapped out with no reason printed.
