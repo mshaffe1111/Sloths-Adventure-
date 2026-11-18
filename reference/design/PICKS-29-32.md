@@ -41,3 +41,12 @@ and 3-2, because World 3's arc (dark, then hang) is a world plan the outline car
 Pitfall II's kind falls, glowworms as the light, no World 3 kit yet. Reading: the open lens finds new cores where a stage stands alone
 (a finale, a set piece); the fixed lens wins where a stage is a step in a world's teaching ladder. Keep both lenses; next round (3-3..3-5)
 the same way.
+
+## DESIGN-29's pushback, ruled (6:28 PM ET 11-18; t-design-29 562a8e71, reference/design/2-9.md)
+(1) The royal guard's journal card (met only in 2-9): KEEP a guard on the court's land, posted at the shrine steps facing the water (wired
+today: predatorAI royal; head-on he blocks, from behind a kick), on a rest beat, never on a beat row: the court has guards, the card keeps
+its stage, and it nods to A's "come up behind them". The 2-9 builder places it; the keeper words the card's line.
+(2)-(5) accepted as the designer flew them (beat rows at a RUN pitch, the WAVE as the long row, per-clock easyStretch with Easy rivers as
+their own rows, the bell on the steps' arch, Easy's wheel R160).
+(6) The liana clock (vineClock vs gameTime after a flag resume) is a GENERAL fault (rule 22): R-165.295, fixed in ENG-285 tomorrow (before
+release 1, because 2-4's liana rows depend on it), not inside 2-9's NEW 1.
