@@ -1,0 +1,29 @@
+river27 normal
+1. PUSH: a held jump off the front of what he runs along (level gap cleared): still ground 176 px
+   a log at +70 px/s (with him): 183 px
+   a log at +80 px/s (with him): 185 px
+   a log at -70 px/s (against him): 172 px
+   a log at -80 px/s (against him): 171 px
+
+2. CROSS (bank stand 200 px back -> standing on the far bank; phases = every frame of one log spacing)
+row | water px | log every s | who | crossed | median s | worst s | px/s over (200 + water + 30) | fails | held
+ride +70 | 798 | 3.46 | expert | 104/104 | 9.43 | 11 | 109 | - | held jumps/crossing 1.1
+ride +70 | 798 | 3.46 | middle | 104/104 | 9.97 | 11.67 | 103 | - | held jumps/crossing 1.1
+ride +70 | 798 | 3.46 | ride | 104/104 | 11.8 | 13.5 | 87 | - | held jumps/crossing 0.1
+twin +80 | 738 | 2.77 | expert | 83/83 | 7.73 | 9.17 | 125 | - | held jumps/crossing 1.1
+twin +80 | 738 | 2.77 | middle | 83/83 | 8.43 | 9.8 | 115 | - | held jumps/crossing 1.1
+twin +80 | 738 | 2.77 | ride | 83/83 | 10 | 11.37 | 97 | - | held jumps/crossing 0.1
+long +80 | 696 | 3.90 | expert | 117/117 | 6.77 | 8.63 | 137 | - | held jumps/crossing 1.1
+long +80 | 696 | 3.90 | middle | 117/117 | 7.37 | 9.27 | 126 | - | held jumps/crossing 1.1
+long +80 | 696 | 3.90 | ride | 117/117 | 8.9 | 10.8 | 104 | - | held jumps/crossing 0.1
+back -70 | 540 | 3.29 | expert | 99/99 | 3.47 | 4.4 | 222 | - | held jumps/crossing 1.0
+back -70 | 540 | 3.29 | middle | 99/99 | 11.17 | 15.9 | 69 | - | held jumps/crossing 1.3
+back -70 | 540 | 3.29 | ride | 0/99 | NaN | NaN | - | stuck 99 | held jumps/crossing 7.7
+deep -75 (proposed: deep run back at him) | 924 | 3.61 | expert | 108/108 | 4.97 | 6.4 | 232 | - | held jumps/crossing 4.0
+deep -75 (proposed: deep run back at him) | 924 | 3.61 | middle | 108/108 | 8.7 | 10.5 | 133 | - | held jumps/crossing 4.8
+deep -75 (proposed: deep run back at him) | 924 | 3.61 | ride | 0/108 | NaN | NaN | - | stuck 108 | held jumps/crossing 16.3
+twin -80 (proposed) | 898 | 3.27 | expert | 98/98 | 4.83 | 5.97 | 234 | - | held jumps/crossing 4.0
+twin -80 (proposed) | 898 | 3.27 | middle | 97/98 | 39.2 | 52.1 | 29 | stuck 1 | held jumps/crossing 5.9
+twin -80 (proposed) | 898 | 3.27 | ride | 0/98 | NaN | NaN | - | stuck 98 | held jumps/crossing 12.6
+
+bank run (no water): 1,000 px at a full run from a stand: 3.67 s

@@ -1,0 +1,21 @@
+flood28 easy: 5 little ones, pace 230, gap 34; he runs, stops at a 400 px lag (him to the tail), goes at 200
+road | dawdle s | tail at the fork s | tail off the fork road s (from the turn) | tail home s
+low | 0 | 11.6 | 17.9 | 23.1
+low | 3 | 14.6 | 20.9 | 26.1
+low | 6 | 17.6 | 23.9 | 29.1
+low | 9 | 20.6 | 26.9 | 32.1
+low | 12 | 23.6 | 29.9 | 35.1
+high | 0 | 11.6 | 24.3 | 28.6
+high | 6 | 17.6 | 30.3 | 34.6
+
+T_CLOSE = prompt tail off the low road 17.9 s + 8 s margin = 26 s from the turn (the flood's trigger)
+dawdle s | set on the near bank (in its water when it turned deep) | left short of the low road's end (waiting at the wall) | tail home s
+0 | 0 | 0 | 23.1
+2 | 0 | 0 | 25.1
+4 | 0 | 0 | 27.1
+6 | 0 | 0 | 29.1
+8 | 0 | 0 | 31.1
+10 | 2 | 5 | NaN
+12 | 3 | 5 | NaN
+
+fetching them (he is home; they wait at the low road's near bank): back round the high road and lead them over it = his run back (3560 px at 272 px/s, bank run flown in river27: 13.1 s) + the line over the high road from the fork (17.0 s) vs the low road from the fork (11.5 s)

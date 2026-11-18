@@ -1,0 +1,37 @@
+wheel26 normal: DROP 28, bucket 120 px, the jetty right / the street left; times are s of one bucket period
+wheel | turn s | bucket every s | lift px | board tap: share, window | board walk: share, window | stand on jetty | ride | step off walk: share of a turn, window | step off tap | street IN over the top: step off walk, its falls | misses land (edge street) | deep boards (of both)
+R160 V60 N5 | 16.8 | 3.35 | 264 | 100%, 3.37 | 60%, 2.03 | jetty | stayed in | 12%, 1.93 s | 20%, 3.33 s | 29%, 3.67 s, pond 192 | pond 888 | 0
+R160 V60 N6 | 16.8 | 2.79 | 264 | 100%, 2.8 | 73%, 2.03 | jetty | stayed in | 14%, 1.93 s | 24%, 3.33 s | 29%, 3.67 s, pond 192 | pond 837 | 0
+R160 V70 N5 | 14.4 | 2.87 | 264 | 100%, 2.87 | 62%, 1.77 | jetty | stayed in | 12%, 1.67 s | 20%, 2.87 s | 29%, 3.17 s, pond 163 | pond 759 | 0
+R160 V70 N6 | 14.4 | 2.39 | 264 | 100%, 2.4 | 75%, 1.8 | jetty | stayed in | 13%, 1.67 s | 24%, 2.87 s | 29%, 3.17 s, pond 163 | pond 721 | 0
+R160 V80 N5 | 12.6 | 2.51 | 264 | 100%, 2.5 | 63%, 1.57 | jetty | stayed in | 12%, 1.5 s | 20%, 2.53 s | 29%, 2.83 s, pond 141 | pond 661 | 0
+R160 V80 N6 | 12.6 | 2.09 | 264 | 100%, 2.1 | 76%, 1.6 | jetty | stayed in | 14%, 1.5 s | 22%, 2.53 s | 29%, 2.83 s, pond 141 | pond 634 | 0
+R180 V60 N5 | 18.8 | 3.77 | 304 | 100%, 3.77 | 53%, 1.87 | jetty | stayed in | 10%, 1.97 s | 18%, 3.4 s | 26%, 3.83 s, pond 221 | pond 1022 | 0
+R180 V60 N6 | 18.8 | 3.14 | 304 | 100%, 3.13 | 64%, 1.87 | jetty | stayed in | 10%, 1.97 s | 18%, 3.4 s | 26%, 3.83 s, pond 221 | pond 1003 | 0
+R180 V70 N5 | 16.2 | 3.23 | 304 | 100%, 3.23 | 55%, 1.63 | jetty | stayed in | 11%, 1.7 s | 18%, 2.93 s | 26%, 3.33 s, pond 188 | pond 875 | 0
+R180 V70 N6 | 16.2 | 2.69 | 304 | 100%, 2.7 | 65%, 1.63 | jetty | stayed in | 11%, 1.7 s | 18%, 2.93 s | 27%, 3.33 s, pond 188 | pond 859 | 0
+R180 V80 N5 | 14.1 | 2.83 | 304 | 100%, 2.83 | 55%, 1.47 | jetty | stayed in | 11%, 1.5 s | 18%, 2.6 s | 27%, 2.97 s, pond 163 | pond 763 | 0
+R180 V80 N6 | 14.1 | 2.36 | 304 | 100%, 2.37 | 66%, 1.47 | jetty | stayed in | 11%, 1.5 s | 18%, 2.6 s | 27%, 2.97 s, pond 163 | pond 749 | 0
+R200 V60 N5 | 20.9 | 4.19 | 344 | 98%, 4.13 | 47%, 1.9 | jetty | stayed in | 9%, 1.77 s | 17%, 3.47 s | 24%, 3.93 s, pond 253 | pond 1166 | 0
+R200 V60 N6 | 20.9 | 3.49 | 344 | 100%, 3.5 | 56%, 1.9 | jetty | stayed in | 9%, 1.77 s | 17%, 3.47 s | 24%, 3.93 s, pond 253 | pond 1143 | 0
+R200 V70 N5 | 18.0 | 3.59 | 344 | 99%, 3.57 | 48%, 1.7 | jetty | stayed in | 9%, 1.57 s | 17%, 2.97 s | 24%, 3.4 s, pond 215 | pond 997 | 0
+R200 V70 N6 | 18.0 | 2.99 | 344 | 100%, 3 | 58%, 1.7 | jetty | stayed in | 9%, 1.57 s | 17%, 2.97 s | 24%, 3.4 s, pond 215 | pond 978 | 0
+R200 V80 N5 | 15.7 | 3.14 | 344 | 100%, 3.13 | 50%, 1.5 | jetty | stayed in | 9%, 1.4 s | 17%, 2.63 s | 24%, 3.03 s, pond 186 | pond 866 | 0
+R200 V80 N6 | 15.7 | 2.62 | 344 | 100%, 2.63 | 59%, 1.5 | jetty | stayed in | 9%, 1.4 s | 17%, 2.63 s | 25%, 3.03 s, pond 186 | pond 851 | 0
+
+jump off the top: the street H px above the top bucket floor, its lip 20 px left of the axle; a held jump, left held, from frame k of a turn
+H 40, R180 V70 N6: lands on the street 25% of a turn, longest window 4.1 s; falls to the pond 179 frames
+H 40, R180 V60 N6: lands on the street 25% of a turn, longest window 4.73 s; falls to the pond 209 frames
+H 40, R160 V60 N6: lands on the street 28% of a turn, longest window 4.7 s; falls to the pond 167 frames
+H 60, R180 V70 N6: lands on the street 22% of a turn, longest window 3.5 s; falls to the pond 190 frames
+H 60, R180 V60 N6: lands on the street 22% of a turn, longest window 4.07 s; falls to the pond 222 frames
+H 60, R160 V60 N6: lands on the street 23% of a turn, longest window 3.9 s; falls to the pond 179 frames
+H 80, R180 V70 N6: lands on the street 15% of a turn, longest window 2.27 s; falls to the pond 203 frames
+H 80, R180 V60 N6: lands on the street 15% of a turn, longest window 2.63 s; falls to the pond 237 frames
+H 80, R160 V60 N6: lands on the street 16% of a turn, longest window 2.5 s; falls to the pond 194 frames
+
+throw: a held jump LEFT, left held all the way: from a stand on still ground vs from a bucket at the top (carried at V)
+still ground: carried 0 px/s; clears 162 px level, 183 px to a landing 60 px lower
+bucket at the top (in it: true), V 60: carried -60 px/s; clears 171 px level, 192 px to 60 px lower
+bucket at the top (in it: true), V 70: carried -70 px/s; clears 172 px level, 193 px to 60 px lower
+bucket at the top (in it: true), V 80: carried -80 px/s; clears 174 px level, 195 px to 60 px lower

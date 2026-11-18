@@ -1,0 +1,6 @@
+2-6: A Tp1^:#soft Pg1< Uc1^ Pw1>:#soft Xp1^ R Pf1< Wp1> R Cb1^ R Sp1^< E
+  14 tokens, legs none; checkCode: no errors
+2-7: A Pg1> Pw1>:#soft Pf1> Xw1> R /D Dg1_ /L Tg1<:#soft Pw1> Pb1> Ww1> R Cf1> R Sw1> E
+  16 tokens, legs down/left; checkCode: no errors
+2-8: A Pg1+:+cage Tw1:#soft@flood Pp1+:+cage Xf1+:+cage R Uc1^ /L Kg1>:#water@flood R F[Pf1+|Pw1] Kg1> R Sg1< E
+  14 tokens, legs left; checkCode: no errors
