@@ -30,7 +30,8 @@ Branch t-build-24 from origin/t-meter-3@42459a5c. Started 3:00 PM ET 11-18 (by `
 | seedlist 2-4 (write) | 100/100 | 0a6f2992 |
 | castBots 2-4 1-40, 5 bots x 2 | adult 40/40 both; child N 40/40, E 38/40; middle N 37/40, E 40/40; expert N 37/40; kid N 29/40, E 39/40 | 0a6f2992 |
 | meter (score.ts seeds 1-4) | 2-4 Normal 4.0 (3.9-4.2) vs target 13.5 (DIFFICULTY.md:63; band 9-21): UNDER; Easy 3.0 vs <= 8.1: OK; anchors 2-1 2.7, 2-2 6.4, 1-1 4.0 | 0a6f2992 |
-| seedlist 2-4 --check, 1-1 --check, lockall vs main | RUNNING at the stop: UNRUN (D59) | - |
+| seedlist 2-4 --check | PASS (100 seeds, each clean on both settings; the verdicts refuse 0), finished 3:40 PM ET after the stop | 0a6f2992 |
+| seedlist 1-1 --check, lockall vs main | RUNNING at the stop: UNRUN (D59) | - |
 | full suite, vite build, chunkcheck, artcheck, drawcheck, clipcheck, knowncheck, generality, roadmapcheck, kbdcheck, buildcheck, tool tests, tierBots.test, coveragecheck | UNRUN (box) | - |
 ## Bots: the misses traced (one line each: seed, x, t, what; rescues are the bot's way-finding, no life lost to them)
 middle N s12 rest x17987 t207 "a drop of 50 px ahead" (after drowning in no-land t138); s31 no-land x15802 t109 "water ahead"; s33 relay
