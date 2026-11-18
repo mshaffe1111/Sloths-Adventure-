@@ -398,7 +398,12 @@ export const QUIET_16: SectionTemplate[] = [
   //  root down and down again to the floor line. Nothing to fall into: a miss on the vine is the dip's floor again)
   link({ id: 'w1-16-rest-dip', name: 'a rest: down the dip between the roots, up a vine', job: 'rest', versions: [620, 700].map((m, j) => ({
     id: j ? 'wide' : 'narrow',
-    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m, [150, 156]), ...wallClimb('c', 'm', m, 212, 260), bank('y', 'c', 220, [54, 58]), bank('z', 'y', 260, [54, 58])],
+    // (INT-12: the dip is a soft pit, 150-156 px under the bank, and a soft pit's way out is a step standing in it (w1Pits.test, findW1Pits'
+    //  steps): a stump flush against its near wall, 75 px up from the floor, so he hops back out to the bank; 550+ px from the far wall, so
+    //  it is no way round the vine)
+    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m, [150, 156]),
+      { key: 'st', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0, 0], h: [75, 75] }, style: 'moss_stone', landing: true },
+      ...wallClimb('c', 'm', m, 212, 260), bank('y', 'c', 220, [54, 58]), bank('z', 'y', 260, [54, 58])],
       sockets: [flag('m', 0.3), petals('pm', 'm', 0.5, 1), petals('pc', 'c', 0.5, 2, 80), petals('py', 'y', 0.5, 1)] },
   })) }),
   // (the sixth rest, for beat 4's chain + R (1-6.md): up two roots and down again, a flag on the top one's far side)
