@@ -47,8 +47,8 @@ const BOTH = ['normal', 'easy'] as const;
 const hintX = (st: Built, line: string) => st.proto.hints?.find((h) => h.text === line)?.x;
 /** the log rivers (a current), in order */
 const logRivers = (st: Built) => (st.rivers ?? []).filter((r) => r.speed > 0).sort((a, b) => a.x0 - b.x0);
-/** the beats' log rivers, in order: beat 1, beat 3 (two), beat 4, beat 6, beat 8 (two), beat 9 */
-const RIVER_BEAT = [1, 3, 3, 4, 6, 8, 8, 9];
+/** the beats' log rivers, in order: beat 1, beat 3 (two), beat 4, beat 6, beat 8 (three: its third leg, the lead's ruling (B) 11-18), beat 9 */
+const RIVER_BEAT = [1, 3, 3, 4, 6, 8, 8, 8, 9];
 
 test("2-4's lines are the story keeper's, word for word (reference/story/lines-2-4.md, KEEPER-24 t-keeper-24@fa3b0930), and the stage says them", () => {
   const md = fs.readFileSync(path.join(root, 'reference/story/lines-2-4.md'), 'utf8');
@@ -103,7 +103,7 @@ test('the rivers: every 2-4 row lays fault-free; splash-back where the design is
   }
 });
 
-test('the lianas: each river under its own (one; two at beats 6 and 8), every vine a swinging liana; a log-caught liana out of every bank\'s reach and past the chain distance, so the LOG is the way to it', () => {
+test('the lianas: each river under its own (one; two at beat 6 and over each of beat 8\'s rivers), every vine a swinging liana; a log-caught liana out of every bank\'s reach and past the chain distance, so the LOG is the way to it', () => {
   for (const seed of SEEDS) for (const d of BOTH) {
     const st = built(seed, d);
     assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'), `${seed} ${d}: lianas only`);

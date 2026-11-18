@@ -22,7 +22,7 @@
  *   Pg the bank: stumps and stones                       Pr drop, ride, drop (two lianas, a stump bank between; flag)
  *   X  TURN: up from the log (`catch` 800+ px before)     Pf the fig roots: planks over a reed bed
  *   W  TWIST: no land (the first DEEP river: World 2's water warning): liana, log, liana, log
- *   Pb up to the kapok (World 2's lily bounce)           C  the long relay: wider gaps, two catches from logs (flag)
+ *   Pb up to the kapok (World 2's lily bounce)           C  the long relay: wider gaps, three catches from logs (flag)
  *   S  the great swing onto the slow row (`view`)        E  the jetty
  *   R  a rest on the bank after X, W and C
  * DESIGN CHANGES (the lead's rulings, 3:12 PM ET 11-18): (b) beats 4 and 9 splash-back, so the first deep river is beat 6 where the design
@@ -207,11 +207,14 @@ const upToKapok = (): Lay => {
     sockets: [petal('pw', 'w', 0.5)],
   };
 };
-/** [C] beat 8, the long relay: wider water between logs (200 then 280 px), each river under a bank liana and one caught off a log (two
- *  catches from logs), a stump bank between; deep on Normal (Easy: `twin` then `deep` logs, splash-back); the flag before */
+/** [C] beat 8, the long relay: wider water between logs (200, then 280 twice), each river under a bank liana and one caught off a log
+ *  (three catches from logs), a stump bank between; deep on Normal (Easy: `twin` then `deep` logs, splash-back); the flag before. Its
+ *  third leg (the lead's ruling (B) 4:45 PM ET 11-18, BUILD-24b): more of the signature, all water, so World 2's gen2 stages are not
+ *  shorter than World 1's (stageQuality.test.ts 'stages grow': 2-4 modelled 224 s, 240 s with it) */
 const longRelay = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 300), lianaS('l1', 'b'), lianaW('l2', 'b', FAR_W), river('m', 'l2', easy ? 'gap200Easy' : 'gap200', 340), rock('rm', 'm', 0.15), lianaS('l3', 'm'), lianaW('l4', 'm', FAR_W), river('y', 'l4', easy ? 'gap280Easy' : 'gap280', 340), rock('ry', 'y', 0.15), bank('z', 'y', 300)],
-  sockets: [flag('a'), petal('pm', 'm', 0.5)],
+  pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 300), lianaS('l1', 'b'), lianaW('l2', 'b', FAR_W), river('m', 'l2', easy ? 'gap200Easy' : 'gap200', 340), rock('rm', 'm', 0.15), lianaS('l3', 'm'), lianaW('l4', 'm', FAR_W), river('y', 'l4', easy ? 'gap280Easy' : 'gap280', 340), rock('ry', 'y', 0.15),
+    lianaS('l5', 'y'), lianaW('l6', 'y', FAR_W), river('q', 'l6', easy ? 'gap280Easy' : 'gap280', 340), rock('rq', 'q', 0.15), bank('z', 'q', 300)],
+  sockets: [flag('a'), petal('pm', 'm', 0.5), petal('py', 'y', 0.65)],
 });
 /** [S] beat 9, the signature, the great swing: the longest liana in the game from the kapok's bank, one huge arc onto the slow row's long
  *  log (the raft, a log until R-165.288 lands), drifting to the jetty's planks; Pokey's `view` once he is there (never on the swing) */
