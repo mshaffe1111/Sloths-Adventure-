@@ -50,7 +50,9 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     };
     W.frame = () => new Promise((r) => requestAnimationFrame(() => r(0)));
     // step until ok() (or n frames), each step rendered; returns the frames stepped, or -1 when ok() never came
-    W.until = async (ok, n) => { for (let i = 0; i < n; i++) { if (ok()) return i; e.update(1 / 30); e.clearGuide?.(); e.render(); await W.frame(); } return ok() ? n : -1; };
+    W.until = async (ok, n) => { for (let i = 0; i < n; i++) { if (ok()) return i; e.update(1 / 30); if (!W.keepGuide) e.clearGuide?.(); e.render(); await W.frame(); } return ok() ? n : -1; };
+    // (a boa wakes on movement, never on a still sloth: he WALKS in, holding right, and lets go when ok() comes, as a player does)
+    W.walk = async (dir, ok, n) => { e.input.state.right = dir > 0; e.input.state.left = dir < 0; const f = await W.until(ok, n); e.input.state.right = false; e.input.state.left = false; return f; };
     W.paint = async (k = 20) => { for (let i = 0; i < k; i++) { e.render(); await W.frame(); } };
     W.hurt = () => e.statHeartsLost;
     W.say = (m) => m ? `${m.e.type}@${Math.round(m.e.x)} ${m.s.phase} t${m.s.t.toFixed(2)}` : 'none';
@@ -65,7 +67,18 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   };
   const skip = (name, why) => { skips++; console.log('SKIP', tag, name, why); };
   // (each beat: set up in the page, step to its moment, return {ok, note})
+  // (Dot's card waits to be read; a player taps it once read (.dg-bub takes the tap after 400 ms): tapped before every beat but the arrival)
+  const clearDot = async () => {
+    for (let i = 0; i < 4; i++) {
+      const bub = p.locator('.dg-bub');
+      if (!(await bub.count()) || !(await bub.first().isVisible().catch(() => false))) return;
+      await p.waitForTimeout(450);
+      await bub.first().click({ timeout: 1500 }).catch(() => {});
+      await p.waitForTimeout(350);
+    }
+  };
   const beat = async (name, fn, arg) => {
+    if (!name.startsWith('01')) await clearDot();
     const r = await p.evaluate(fn, arg ?? null).catch((err) => ({ ok: false, note: `threw ${err.message}` }));
     if (r.ok) await shoot(name, r.note); else skip(name, r.note);
   };
@@ -78,9 +91,13 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const line = (e.currentStage.proto.hints ?? []).find((hh) => /Don't move/.test(hh.text));
     if (!line) return { ok: false, note: 'no "Don\'t move" line laid' };
     W.hintsShown(line.text);
-    W.place(line.x - 60);
-    const f = await W.until(() => false, 40);
+    W.keepGuide = true;
+    W.place(line.x - 200);
+    const f = await W.walk(1, () => e.player.x > line.x + 40, 60);
+    await W.until(() => false, 12);
+    await new Promise((r) => setTimeout(r, 900));
     await W.paint(10);
+    W.keepGuide = false;
     return { ok: true, note: `line at ${Math.round(line.x)} "${line.text}" ${f}` };
   });
   // 3-4. beat 2: he stands on the step above the freeze boa; it rears (3), he stays still: the first freeze's slow motion (4)
@@ -88,8 +105,10 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const W = window.__s19, e = W.e;
     W.hintsShown();
     const m = W.boas('w1-19-forest-freeze')[0], step = W.piece('w1-19-forest-freeze', 'e');
-    W.place(step.x + step.width - 12, step, 1);
+    W.place(step.x + 20, step, 1);
+    const w = await W.walk(1, () => m.s.phase !== 'rest', 150);
     const f = await W.until(() => m.s.phase === 'tell' && m.s.t >= 0.45, 150);
+    if (w < 0) return { ok: false, note: `never woke walking the step: ${W.say(m)} him x${Math.round(e.player.x)}` };
     if (f < 0) return { ok: false, note: `no rear in 5 s: ${W.say(m)}` };
     await W.paint(4);
     return { ok: true, note: `${W.say(m)} him x${Math.round(e.player.x)} hurt ${W.hurt()}` };
@@ -101,6 +120,15 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     if (f < 0) return { ok: false, note: `no freeze slow motion: ${W.say(m)} slowMo ${e.slowMoLeft.toFixed(2)} by ${e.slowMoBy}` };
     await W.paint(2);
     return { ok: true, note: `slowMo ${e.slowMoLeft.toFixed(2)} ${W.say(m)} hurt ${W.hurt()}` };
+  });
+  // 4b. 1.5 s after the freeze: does the beaten boa slide off ("Don't move, and it slides off!")?
+  await beat('04b-after-freeze', async () => {
+    const W = window.__s19, e = W.e;
+    const m = W.boas('w1-19-forest-freeze')[0];
+    const x0 = Math.round(m.e.x);
+    await W.until(() => false, 45);
+    await W.paint(2);
+    return { ok: true, note: `${W.say(m)} moved ${Math.round(m.e.x) - x0} px hurt ${W.hurt()}` };
   });
   // 5. beat 1's trapped boa: he at the trap's handle, the load over the boa (trap-stills.mjs shoots the drop itself)
   await beat('05-trapped-boa', async () => {
@@ -118,19 +146,24 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await beat('06-stair', async () => {
     const W = window.__s19, e = W.e;
     const m = W.boas('w1-19-stair')[0], q = W.boughOf(m);
-    W.place(Math.max(q.x + 8, m.e.x - 140), q, 1);
+    W.place(Math.max(q.x + 8, m.e.x - 320), q, 1);
+    await W.walk(1, () => m.s.phase !== 'rest', 150);
     const f = await W.until(() => m.s.phase === 'tell' && m.s.t >= 0.4, 120);
     await W.paint(4);
     return { ok: true, note: `${f < 0 ? 'NO REAR ' : ''}${W.say(m)} hurt ${W.hurt()}` };
   });
   // 7-8. the miss and the bop (beat 5): he waits just outside its strike; its head comes out and misses (7); he steps in and punches (8)
   await beat('07-miss', async (arg) => {
+    // (shot on its first strike frame: the act is 0.42 s)
     const W = window.__s19, e = W.e;
     const m = W.boas('w1-19-miss')[0], q = W.boughOf(m);
     const hurt0 = W.hurt();
-    // (he comes from the left: he stands 140 px short of its body, inside its engage (150), past its strike's reach (128))
-    W.place(m.e.x - 140 - e.player.width, q, 1);
-    const f = await W.until(() => m.s.phase === 'act' && m.s.t >= 0.2, 150);
+    // (he walks in from the left until it rears, then backs off left out of its strike's reach (128) and waits: its head comes out, misses)
+    W.place(Math.max(q.x + 8, m.e.x - 320), q, 1);
+    await W.walk(1, () => m.s.phase === 'tell', 150);
+    // (he keeps moving at the edge of its reach: a step back, a step in, so it strikes at the movement and its head falls short)
+    let f = -1;
+    for (let i = 0; i < 60 && f < 0; i++) f = await W.walk(i % 2 ? -1 : 1, () => m.s.phase === 'act', 1);
     if (f < 0) return { ok: false, note: `no strike: ${W.say(m)}` };
     await W.paint(2);
     const hit = W.hurt() > hurt0;
@@ -139,8 +172,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await beat('08-bop', async () => {
     const W = window.__s19, e = W.e;
     const m = W.boas('w1-19-miss')[0], q = W.boughOf(m);
-    await W.until(() => m.s.phase === 'recover', 30);
-    W.place(m.e.x - e.player.width - 6, q, 1);
+    await W.walk(1, () => m.e.x - (e.player.x + e.player.width) < 20 || m.s.phase === 'recover' && m.s.t > 0.5, 40);
     e.input.state.punchPressed = true;
     const f = await W.until(() => m.s.phase === 'stunned' && m.s.t >= 0.15, 30);
     e.input.state.punchPressed = false;
@@ -152,11 +184,16 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await beat('09-roost', async () => {
     const W = window.__s19, e = W.e;
     const m = W.boas('w1-19-roost')[0], k = W.piece('w1-19-roost', 'k');
-    W.place(k.x + k.width - 14, k, 1);
+    W.place(k.x + 10, k, 1);
+    // (what hurts him here, if anything: the frame, his place, the boa's)
+    let h0 = W.hurt(), why = '';
+    const watch = () => { if (W.hurt() > h0 && !why) why = `HURT at him x${Math.round(e.player.x)} y${Math.round(e.player.y)} boa ${W.say(m)} boa x${Math.round(m.e.x)} limb ${k.broken ? 'broken' : 'whole'}`; return false; };
+    await W.walk(1, () => (watch(), m.s.phase !== 'rest'), 150);
+    await W.until(watch, 45);
     const f = await W.until(() => m.s.phase === 'tell' && m.s.t >= 0.45, 150);
     await W.paint(4);
     const r = (e.currentStage.proto.gen2?.roosts ?? []).map((q) => Math.round(q.x));
-    return { ok: true, note: `${f < 0 ? 'NO REAR ' : ''}${W.say(m)} roosts ${r} limb creak ${!!k.creak}/${k.type} hurt ${W.hurt()}` };
+    return { ok: true, note: `${why} ${f < 0 ? 'NO REAR ' : ''}${W.say(m)} roosts ${r} limb creak ${!!k.creak}/${k.type} hurt ${W.hurt()}` };
   });
   await beat('10-roost-after', async () => {
     const W = window.__s19, e = W.e;
