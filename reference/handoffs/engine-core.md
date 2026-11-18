@@ -1,6 +1,42 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+Rewritten for ENG-26 (11-18, t-eng-26): section 0zm (the water wheel: wheel.ts, its piece, place `wheel`, its flown fairness, the bot's rideWheel). 0zl (ENG-24, a liana over a river) follows.
+
+## 0zm. ENG-26 (t-eng-26 from t-meter-3@42459a5c, 11-18): the water wheel (2-6 NEW 1-2); what the next engineer and the 2-6 builder must know
+- **The wheel (src/game/wheel.ts, pure):** `{cx, cy, R, N, W, V, way, phase?, lay?}`; bucket i's floor `bucketAt(w, i, t)`; its TOP moves `way`
+  (the way he travels), the bottom back toward the jetty (2-6.md:7 says "toward the street side"; its own flight wheel26.ts:10-12 and the
+  build turn it toward the jetty). `wheelLips` (jetty lip WHEEL.drop 28 over the bottom floor where a bucket's near edge meets it; street
+  'edge' 28 under the top at the sweep's edge, 'in' 20 px past the axle over the top, 'up' `up` px over the top floor), `sweepBox`, `inSweep`.
+- **The piece (pieces/wheelPiece.ts, last in PIECE_KINDS):** moves each bucket (a 'moving' Platform with `wheel: {w, i}`, `art: 'hidden'`) to
+  `bucketAt(host.t)` and its rider by dx AND dy; engine.ts's sine loop skips `plat.wheel`; carryVx is the engine's (the jump keeps the
+  bucket's sideways speed). The frame he is set down he is not yet carried (standingOn is found after the pieces step). Draws on 'world'
+  through wheelDraw.ts `drawWheel` (PLACEHOLDER code shapes; the ONE function ART-W2B's painting replaces). 'world' is after the platforms:
+  the painted wheel needs a layer BEHIND them (2-6.md: jetty and street drawn in front): ENGINE-WORTHY, not done.
+- **The place (data):** `{ kind: 'wheel', after: <jetty>, row }` lays the street (this piece) where the row's wheel puts it (wheelLay.ts
+  `streetFromJetty`); layStage lays the buckets and the POND (`layWheel`: a RiverZone `open`, speed 0, `safe` back onto the jetty,
+  `wheelPond`, spanning the sweep +-WHEEL.pondMargin 160, surface WHEEL.pond 160 under the bottom floor). Rows: `WorldManifest.wheels`;
+  World 2's W2_WHEELS (teach/edge/top/great) is NOT in w2Manifest (no shipped roll moves): 2-6's kit adds it. A storey that runs left lays
+  it turned (way -1, reflectLocal mirrors the pond span). The stage shifts (pipeline.ts "right"/"down") move every wheel's axle
+  (`stageWheels`): miss one and wheelFaults names the jetty lip. The tower: `localExtent` reads the pond's span and depth (the storey keeps
+  its water clear), `towerCatches` keeps boughs out of the sweep (keepOut) and, with `towerFalls`, reads the pond as what lies under the ends
+  over it (`pondFloors`). levelCheck: a wheel is two stops (its first bucket at the foot and at the top), the pond needs no banks.
+- **The fairness (wheelFaults, in checkStage):** the row FLOWN on the real engine (wheelFlights.ts `flyWheel`, ~0.5 s a layout; the table
+  wheelFlights.data.ts written ONLY by `npx tsx tools/engine/wheelflights.ts --write`; `--check` and wheel.test.ts re-fly it): tap board 100%,
+  ride never drops him, step-off window (better of walk and tap; jump for 'up') >= 1.5 s Normal / 2.5 s Easy, 'up' <= 80/60 px; and the
+  laid wheel IS the flown layout (lips within 2 px), pond under the sweep +-160, nothing solid in the sweep, nothing under the pond's water.
+  An unflown row is refused by name. The table also holds each window's start/end as the bucket's angle past the top (the bot's cue).
+- **The bot (firsttimer.ts SKILLS.rideWheel, wheelRide):** jetty: walk to the lip, stand, single hop in; bucket: hold still, settle in the
+  middle before the window, step off in the flown window after stopReact (+lateQ): a TAP HOP for 'edge' (the walk-off missed for the
+  expert: his tier-edge logic jumped; the hop is clean on every tier), a held jump for 'up', nothing for 'in' (the ride sets him down). It
+  reads the engine's standingOn (at a bucket's front end floorAt under his middle finds nothing) and drops a press decided before he came
+  down in a bucket. Toys: tools/inspect/wheelToys.ts (toy tower 2-95 on World 2's ground, rolled via listed.ts withTestStage; `sparse` is a
+  toy row: five buckets). Measures: `wheelCrossing` (seconds jetty->street storey, scrambles, pond falls; from 2 s on: the bot's blind
+  start walk). wheelRide.test.ts in gates.yml's tool line.
+- **Open (named):** the painted look and its back layer (above); the meter does not price a wheel (no route move, no score.ts channel:
+  coveragecheck passes only because no built stage lays one); stills/clip are from a page probe (reference/qa-reports/ENG-26/stills.mjs),
+  not a dev fixture; 2-6's hand build (w2Stages.ts '2-6') is untouched (new replaces old when 2-6 is built).
+- **Traps:** a JSON copy of a stage breaks the buckets' shared `w` (re-link by axle, stills.mjs); a short street can be overshot by a
+  step-off (the tower runs its storey on, so it still counts); ENG-285 (in-air turn) changes the air model: re-fly the table after it.
 
 ## 0zl. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
 - **The place (data, no type change):** `{ kind: 'river', after: <a liana's key>, row }` lays the water from the bank the liana (or its
