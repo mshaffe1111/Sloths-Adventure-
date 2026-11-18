@@ -1,7 +1,7 @@
-# TIME-168: every stamp timecheck finds on the lead branch ccr-ea739a2f-dfcee4@2395afa9 (run 5:58 PM ET 11-18 by date)
-# command: node tools/timecheck.mjs --range 6e7b85f8..origin/ccr-ea739a2f-dfcee4  (the range the next release is judged on)
+# TIME-168: every stamp timecheck finds on the lead branch ccr-ea739a2f-dfcee4@56fa3028 (run 6:05 PM ET 11-18 by date); machine-readable: breaches-lead.tsv
+# command: node tools/timecheck.mjs --range 6e7b85f8..origin/ccr-ea739a2f-dfcee4 [--tsv]  (the range the next release is judged on)
 # fix: correct each stamp in place in a new commit (e.g. "5:31 PM ET (first typed 5:40)"); history is not rewritten
-time-stamp check over 6e7b85f8f7da7653b9cf94b86c355605a662945e..origin/ccr-ea739a2f-dfcee4: 217 commits, 52 files, 1299 lines they wrote, 304 stamps
+time-stamp check over 6e7b85f8f7da7653b9cf94b86c355605a662945e..origin/ccr-ea739a2f-dfcee4: 222 commits, 53 files, 1335 lines they wrote, 308 stamps
 ✗ reference/LESSONS.md:107  "11-18 10:52 AM ET" is 2:45 after its commit f63de677 (10:49:15 AM ET 11-18)
 ✗ reference/STATE.md:1437  "11-15 8:55 PM ET" is 3:58 after its commit 55a14743 (8:51:02 PM ET 11-15)
 ✗ reference/STATE.md:1443  "11-15 11:03 PM ET" is 3:47 after its commit 211397cf (10:59:13 PM ET 11-15)

@@ -46,11 +46,17 @@ test('a stamp 10 minutes ahead of its commit fails, with file:line, the stamp an
   const out = run({ repo: r.dir, range: `${base}..HEAD` });
   assert.equal(out.breaches.length, 1);
   assert.deepEqual([out.breaches[0].file, out.breaches[0].n, out.breaches[0].stamp, out.breaches[0].commit, out.breaches[0].aheadS],
-    ['reference/STATE.md', 7, '11-18 5:41 PM ET', c.slice(0, 8), 600]);
+    ['reference/STATE.md', 7, '11-18 5:41 PM ET', c, 600]);
   const cli = spawnSync('node', [TOOL, '--repo', r.dir, '--range', `${base}..HEAD`], { encoding: 'utf8' });
   assert.equal(cli.status, 1);
   assert.match(cli.stdout, /✗ reference\/STATE\.md:7 {2}"11-18 5:41 PM ET" is 10:00 after its commit [0-9a-f]{8} \(5:31:00 PM ET 11-18\)/);
   assert.match(cli.stdout, /FAIL \(1\)/);
+  const tsv = spawnSync('node', [TOOL, '--repo', r.dir, '--range', `${base}..HEAD`, '--tsv'], { encoding: 'utf8' });
+  assert.equal(tsv.status, 1);
+  assert.deepEqual(tsv.stdout.trim().split('\n').map((l) => l.split('\t')), [
+    ['file', 'line', 'stamp', 'stamp_et', 'commit_et', 'commit'],
+    ['reference/STATE.md', '7', '11-18 5:41 PM ET', '5:41 PM ET 11-18', '5:31:00 PM ET 11-18', c],
+  ]);
 });
 
 test('on the minute passes; the 2-minute grace holds; 3 minutes ahead fails', () => {

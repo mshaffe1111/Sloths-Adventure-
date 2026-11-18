@@ -8,6 +8,8 @@
  *                                                   or HEAD^1..HEAD when HEAD is main itself, the deploy run)
  *   node tools/timecheck.mjs --since 2026-11-16 [--rev B]   (judge every commit since that ET day, on B or HEAD)
  *   --repo <dir>                                   (another clone; the tests use it)
+ *   --tsv                                          (breaches only, one per line, tab-separated, for a fixing script:
+ *                                                   file, line, stamp as written, the stamp read as ET, the commit's ET time, commit)
  *
  * What it reads: the lines at the head of the range (B) of reference/STATE.md, reference/LESSONS.md, reference/handoffs/*.md,
  * reference/packets/**\/*.md and reference/qa-reports/**\/REPORT.md, each blamed (git blame -w -M -C) to the commit that last wrote
@@ -244,7 +246,7 @@ export function run(opts) {
       const s = stampsIn(b.line, b.ms, /^\s/.test(b.line) ? all[i - 1]?.line ?? '' : '');
       stamps += s.length;
       for (const x of s.filter((x) => x.ms - b.ms > GRACE_MS))
-        breaches.push({ file: f, n: b.n, stamp: x.text, stampMs: x.ms, commit: b.sha.slice(0, 8), commitMs: b.ms, aheadS: Math.round((x.ms - b.ms) / 1000) });
+        breaches.push({ file: f, n: b.n, stamp: x.text, stampMs: x.ms, commit: b.sha, commitMs: b.ms, aheadS: Math.round((x.ms - b.ms) / 1000) });
     }
   }
   return { label, commits: inRange.size, files: files.length, lines, stamps, breaches };
@@ -258,14 +260,20 @@ function main(argv) {
     else if (a === '--since') opt.since = argv[++i];
     else if (a === '--rev') opt.rev = argv[++i];
     else if (a === '--repo') opt.repo = path.resolve(argv[++i]);
+    else if (a === '--tsv') opt.tsv = true;
     else { console.log(`time-stamp check: unknown argument ${a}: FAIL`); return 2; }
   }
   if (opt.since && !/^\d{4}-\d{2}-\d{2}$/.test(opt.since)) { console.log('time-stamp check: --since takes YYYY-MM-DD: FAIL'); return 2; }
   let r;
   try { r = run(opt); } catch (e) { console.log(`time-stamp check: couldn't run (${String(e.message ?? e).split('\n')[0]}): FAIL`); return 2; }
+  if (opt.tsv) {
+    console.log(['file', 'line', 'stamp', 'stamp_et', 'commit_et', 'commit'].join('\t'));
+    for (const b of r.breaches) console.log([b.file, b.n, b.stamp, etLabel(b.stampMs), etLabel(b.commitMs, true), b.commit].join('\t'));
+    return r.breaches.length ? 1 : 0;
+  }
   console.log(`time-stamp check over ${r.label}: ${r.commits} commits, ${r.files} files, ${r.lines} lines they wrote, ${r.stamps} stamps`);
   for (const b of r.breaches)
-    console.log(`✗ ${b.file}:${b.n}  "${b.stamp}" is ${Math.floor(b.aheadS / 60)}:${String(b.aheadS % 60).padStart(2, '0')} after its commit ${b.commit} (${etLabel(b.commitMs, true)}); a stamp may not be later than its commit (+2 min)`);
+    console.log(`✗ ${b.file}:${b.n}  "${b.stamp}" is ${Math.floor(b.aheadS / 60)}:${String(b.aheadS % 60).padStart(2, '0')} after its commit ${b.commit.slice(0, 8)} (${etLabel(b.commitMs, true)}); a stamp may not be later than its commit (+2 min)`);
   console.log(r.breaches.length ? `FAIL (${r.breaches.length})` : 'PASS');
   return r.breaches.length ? 1 : 0;
 }
