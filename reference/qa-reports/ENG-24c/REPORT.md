@@ -1,10 +1,12 @@
 # ENG-24c REPORT: 2-4's raft look (R-165.288) and the glow that agrees with the log (R-165.289)
 Engine, t-eng-24c from origin/t-meter-3 42459a5c (main + ENG-24 + METER-3). Started 4:17 PM ET 11-18 (by `date`). Packet
 reference/packets/2026-11-18/ENG-24c.md (lead branch). The lead's GO on both departures from the packet's letter: 4:31 PM ET.
-Final head: GATE_HEAD (the gate table names the head each ran on).
+Code head 07410193 (src/ and tools/ unchanged from it to the final head 80e53e29 and this report's commit: `git diff 07410193..HEAD -- src tools` is empty). Real context 538k at the lead's 5:36 PM read: wound down on its word.
 
 ## EXACT NEXT STEP (lead)
-Merge t-eng-24c with BUILD-24b's 2-4 (no conflict on the scratch merge with origin/t-build-24 8f02391f). The 2-4 builder then sets
+0. The suite is UNRUN as a whole (killed at the 30-min limit, 0 failures in the 2,691 that ran): run it once on this head
+   (`npx tsx --test` the CLAUDE.md set, timeout over 30 min, nothing else running) before t-eng-24c is merged.
+Then merge t-eng-24c with BUILD-24b's 2-4 (no conflict on the scratch merge with origin/t-build-24 8f02391f). The 2-4 builder then sets
 `look: 'raft'` on w2Arc24.ts `slow24` (one word, "What the 2-4 builder wires" below) and re-runs 2-4's stageSheets/game.test pins (2-4 gains
 'kit-pieces'). Rule on the debt in "Found" 1 (the judge's flight leaves out the press-frame climb).
 
@@ -49,12 +51,19 @@ Merge t-eng-24c with BUILD-24b's 2-4 (no conflict on the scratch merge with orig
    2-4-N-up/side-glow-clip.mp4 (a hang through the log cycle, then a press at a lit frame onto a log and one at a dark frame splashing back);
    the raft in play at beat 9 (N-up/side-raft, the feet zoom, 2-4-N-up-raft-clip.mp4: the middle bot's real run onto it).
 
+## Polish check (stills/, the real page, layout 1; judged as a player, upright and sideways, the whole screen)
+- Glow lit (N-up/side-glow-lit, E-up/side-glow-lit): the warm disc on his grip, a log sliding under the landing; dark (N-up/side-glow-dark):
+  none. The clip: it lights as a log comes under the landing and goes out the frame it passes; the lit press lands him on the log
+  (N-up/side-landed-on-log), the dark one splashes him back. Pass.
+- The raft (N-up/side-raft, zoom): World 2's painted lashed raft, half sunk in the water like the logs, his feet on its plank deck. Pass.
+- The rest of the screen (D79): petals drawn in the soil band under 2-4's river (Found 4, BUILD-24b's, sent by the lead). Not mine.
+
 ## Found (outside the packet; for the lead)
 1. **The judge and the bot fly a let-go the engine does not quite make** (debt like R-165.285): a jump press is also Up (inputEngine.ts
    triggerTouchUp sets state.up), so the press frame climbs his hold 5 px before he leaves (engine.ts swingStep climb), and an early press
    keeps climbing while it waits for the sweet spot; and lianaDrops reads the logs one frame ahead of the engine (the engine moves the logs,
    then him). Read exactly as the judge, the glow lit over water on 0-5 frames per case (probe, FakeInput thumbs). The judge is left as it
-   was (no list moves); the glow corrects for it (CUE). Suggest: model the press-frame climb in pressLaunches for the judge and the bot.
+   was (no list moves); the glow corrects for it (CUE). Suggest: model the press-frame climb in pressLaunches for the judge and the bot. **The lead logged it: R-165.294.**
 2. **The leaf**: a player who has cleared 4-1 has the glide (skills.ts), and a let-go with the jump HELD opens it and glides ~250 px past
    where the judge, the bot and the glow read (probe trace). A first-time 2-4 player has no leaf; the tests take it off. A returning player
    who taps lands as read. Not fixed: the lead's call (the judge/bot could fly the glide when held, or the glow read both).
@@ -72,7 +81,24 @@ Merge t-eng-24c with BUILD-24b's 2-4 (no conflict on the scratch merge with orig
   drawImage like the log it replaces).
 
 ## Gate table
-GATE_TABLE
+| Gate | Result | Head |
+|---|---|---|
+| `npx tsc --noEmit -p .` | 0 errors | 07410193 (and after every edit) |
+| the suite (the CLAUDE.md set) | **UNRUN as a whole**: killed at the 30-min background limit at 5:40 PM with 2,691 tests passed, **0 failed** (letGoCue.test and riverRaft.test among them, all passing); the rest never ran | 07410193 |
+| letGoCue.test / riverRaft.test (alone) | 4/4, 6/6 | 07410193 |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` + chunkcheck | PASS; largest chunk cast 1,784,668 B, 2,209,636 spare | 07410193 |
+| artcheck / knowncheck / generalitycheck | PASS / PASS / PASS (61 engine files, 26 literals, 26 known) | 07410193 |
+| coveragecheck | PASS (12 built stages, 26 pieces, 6 known) | 07410193 |
+| roadmapcheck (unshallowed) | PASS (503 open, 62 done) | 07410193 |
+| drawcheck (every stage, both ways) | PASS (773 s, no breach; the glow draws nothing new on any shipped stage: none hangs a liana over a river) | 07410193 |
+| clipcheck / kbdcheck | PASS (82 known) / PASS | 07410193 |
+| buildcheck | FAIL 1-1 Normal p95 154 ms (150) run beside the suite at load ~10 on 4 cores; **re-run alone: PASS, Normal p95 106 ms, Easy 64 ms** | 80e53e29 (src as 07410193) |
+| seedlist 1-1 --check | PASS (161 seeds, each clean on both settings) | 07410193 |
+| the CI tool line (gates.yml:100) | 220 pass, 0 fail, 1 todo | 07410193 |
+| tierBots.test | RED on the base too (42459a5c: ENG-24's ontoLog/fromLog not in calibration-main.jsonl, D86); recommitted (BUILD-24's 18ae6ce8 content, checked: only the two fields, 0 on all 210 runs): **7/7** | 80e53e29 |
+| lockall --layouts 16 vs the base's lock (saved before any edit) | **102/102 stages unchanged** | 07410193 |
+| planted-faults.py (this report's folder) | **11/11 CAUGHT** (planted.out.txt) | 80e53e29 |
+| tipwalk, every other seed list (CI also runs them) | UNRUN (not in the packet's list) | - |
 
 ## Method used
 reference/roles/ENGINE.md day one (base lock saved before any edit, lockall --check after), methods/stage-fix.md + render-fix.md,
