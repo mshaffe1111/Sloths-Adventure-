@@ -17,6 +17,7 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { W1_LURE } from './w1.ts';
+import { PREDATOR_ENTRIES } from '../../journal.ts';
 import { TRAP_UNDER } from './w1Cast.ts';
 import { LINES_19, MISSION_19, SAID_TRAP_19, SEALED_19, SPLASH_19, STAGE_19 } from './w1Arc19.ts';
 import type { Enemy, Platform } from '../../types.ts';
@@ -54,8 +55,8 @@ test("1-9's lines are the story keeper's, word for word (reference/story/lines-1
   const md = fs.readFileSync(path.join(root, 'reference/story/lines-1-9.md'), 'utf8');
   const rows = new Map<string, string>();
   for (const m of md.matchAll(/^\| \(([a-k])\) \| [^|]*\|[^|]*\| (.+?) \| \d+ \|$/gm)) rows.set(m[1], m[2].trim());
-  const want: Record<string, string> = { a: LINES_19.boa, b: LINES_19.freeze, c: LINES_19.miss, d: LINES_19.nest, e: LINES_19.eye, f: SPLASH_19, g: LINES_19.mark, h: MISSION_19, i: SEALED_19, k: SAID_TRAP_19 };
-  // ((j), the journal's boa tip, is NOT laid: the keeper's is 15 words and journal.test.ts holds a tip to 12; the keeper rewrites it, BUILD-19)
+  const want: Record<string, string> = { a: LINES_19.boa, b: LINES_19.freeze, c: LINES_19.miss, d: LINES_19.nest, e: LINES_19.eye, f: SPLASH_19, g: LINES_19.mark, h: MISSION_19, i: SEALED_19, j: PREDATOR_ENTRIES.boa.tip, k: SAID_TRAP_19 };
+  // ((j), the journal's boa tip: the keeper's 12-word line (KEEPER-19b, t-keeper-19@8c1df5bf), journal.test.ts:31's cap for tips; BUILD-19b)
   for (const [k, v] of Object.entries(want)) assert.equal(v, rows.get(k), `line (${k})`);
   assert.equal(STAGE_LINES['1-9'], "A boa looked me in the eye and decided I was a branch. I've been called worse.", "Pokey's page (the keeper's conflict 3)");
   // (the keeper's rulings: never "freeze" (the story bible) and never "hold still" (1-7's hide words); "don't move" is the bots' word)
