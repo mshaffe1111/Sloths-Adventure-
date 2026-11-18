@@ -1,6 +1,28 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-25 (11-18, t-eng-25): section 0zl (snap stones in play; the cast reads the stage clock; World 2's snapper row).
+Rewritten for ENG-25b (11-18, t-eng-25b): section 0zm (the snapper's bot skill; the meter's snap channel). ENG-25's 0zl below.
+
+## 0zm. ENG-25b (t-eng-25b from origin/t-eng-25 21668b61, 11-18): the snapper bot skill and the meter's snap run
+- **BONK-AFTER-THE-SNAP** (tools/inspect/firsttimer.ts `SKILLS.bonkAfterSnap`, `snapperPlan`, `bonkAim`, `BONK`): a cast animal a kick ends
+  'chasedOff' AND that keeps a stage clock (`Enemy.kitBeat`; only World 2's snapper rows today). Only clock keepers: World 1's snake is also
+  kicked off and sleeps, and its bots must not move. Asleep or dazed: walk in, kick (`{ kick: dir }`; the kick's box reaches from 8 px ahead,
+  so no stepping back). Awake: wait 50-90 px off (the flown bonk range), step back only while it can bite, go right after the bar's 'on'
+  ends (+ his hesitation) from a STAND (a running hop sails over its back) with its back clear (a floor over it takes the landing), the
+  thumb's lag held still (`pending.still`: the bot's lag normally walks on into a running jump). The hop steers onto its back; once it is
+  dazed the bounce steers back to his side; then the kick. Toy: tools/inspect/snapperBonk.test.ts on snapToys.ts `snapperKit` (ENG-25's
+  row, id 2-89), RED with the skill off (never cleared).
+- **The flight** (reference/qa-reports/ENG-25b/bonkFlight.ts, InputEngine, 30 fps): a tap bonk bounces him 78 px over the bank (54 over
+  its back), a press held through it 131 (107); same on Easy. From a still stand the bonk is clean at every moment of the bar, and a
+  head-on kick is too (its kick has no `when`; the kick lands inside its 0.5 s tell). The snap only carries a stake if TURTLE's kick is
+  `when: 'open'` (the lead's ruling pending; scratch flip: walk-in kick 0/90 clean, 41 bitten).
+- **The meter's snap run** (tools/difficulty/score.ts `snapChallenges`): each run of snap stones between floors that never bite is one
+  press, windowBits(bar, rideLay.ts `snapWindow`), a heart. piecesUsed now names a snap stone `pad:snap` (it read `pad:beat`). Test
+  tools/difficulty/snapChannel.test.ts on `METER_ID` 2-19: a toy id among World 2's first stages, because levelCheck grants the leaf glide by
+  the stage's place (2-94 is the 104th) and the meter's route then glided over the whole pond.
+- **Traps:** (1) a toy's id sets what the level check grants him (skillGuaranteedAt): a 2-9x toy has the glide. (2) The laid snap stones
+  sit 34 px below the banks (top 564 vs 530); 2-5.md's flight flew them level. (3) ENG-25's water lives are the testers' straight-up
+  flick (`upOnly`) from a STAND on a stone: the steer comes 4 frames late, 34-38 px of travel over 40 px of water (waterTrace.ts).
+
 
 ## 0zl. ENG-25 (t-eng-25 from origin/main 6e7b85f8, 11-18): 2-5's two NEW pieces, proven on toys before the builder
 - **SNAP STONES** (2-5.md NEW 1): a platform with `pad: { by: 'beat', on: 'bites', clock: 'snap-<row>', shift }`, `art: 'snapStone'`, type

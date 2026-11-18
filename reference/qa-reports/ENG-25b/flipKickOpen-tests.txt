@@ -1,0 +1,20 @@
+flip-toy.txt:ok 1 - the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+flip-toy.txt:ok 2 - snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 3 - snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 4 - snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 5 - snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 6 - planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+flip-toy.txt:ok 7 - the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+flip-toy.txt:ok 8 - snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 9 - snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 10 - snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 11 - snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+flip-toy.txt:ok 12 - planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+flip-toy.txt:# pass 12
+flip-toy.txt:# fail 0
+flip-w2cast.txt:ok 1 - laid by gen2: the snapper keeps its stones' bar, the asleep row asleep; the clock is the stage's and fair (planted faults named)
+flip-w2cast.txt:ok 2 - in play: the sleeper is kicked off: chased off, counted, and he is never hurt
+flip-w2cast.txt:ok 3 - in play: the awake snapper tells only on the bar's creak and snaps only on four (the stones' count)
+flip-w2cast.txt:ok 4 - planted: with the stage clock withheld from the cast (as before ENG-25), the beat-keeping snapper never tells
+flip-w2cast.txt:# pass 4
+flip-w2cast.txt:# fail 0
