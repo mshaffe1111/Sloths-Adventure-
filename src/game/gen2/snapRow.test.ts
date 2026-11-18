@@ -16,6 +16,7 @@ import { w2Finish } from './worlds/w2.ts';
 import { RealPlay, withFixtureConfig } from '../realPlay.ts';
 import { padShows, snapCount } from '../pieces/padPiece.ts';
 import { brickCount } from '../beatBrick.ts';
+import { snapFrame, SNAP_ART } from '../snapStoneArt.ts';
 import { beatAt, beatOf, checkClock } from '../clock.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { SectionTemplate, WorldKit } from './types.ts';
@@ -165,4 +166,10 @@ test('in play: a snap stone is a floor always; it bites only on four, out of its
 test('SNAP_FAIR cites 2-5.md\'s flown tap (13 frames) and its rulings', () => {
   assert.equal(Math.round(SNAP_FAIR.hop * 30), 13);
   assert.deepEqual([SNAP_FAIR.inStep, SNAP_FAIR.window, SNAP_FAIR.gap[0], SNAP_FAIR.gap[1]], [3, 0.9, 30, 40]);
+});
+
+test('the jaw\'s frames read as the bar: counts 1-3 open a notch each; four claps (SNAP) and holds shut (SHUT); five on the sheet', () => {
+  assert.equal(SNAP_ART.frames, 5);
+  assert.deepEqual([1, 2, 3].map((c) => snapFrame(c, false)), [1, 2, 3], 'OPEN-1, OPEN-2, OPEN-3');
+  assert.deepEqual([0, 0.2, 0.39, 0.5, 0.99].map((u) => snapFrame(4, true, u)), [4, 4, 4, 0, 0], 'the bite: SNAP, then SHUT');
 });

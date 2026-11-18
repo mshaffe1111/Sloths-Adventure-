@@ -1,6 +1,30 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
+Rewritten for ENG-25 (11-18, t-eng-25): section 0zl (snap stones in play; the cast reads the stage clock; World 2's snapper row).
+
+## 0zl. ENG-25 (t-eng-25 from origin/main 6e7b85f8, 11-18): 2-5's two NEW pieces, proven on toys before the builder
+- **SNAP STONES** (2-5.md NEW 1): a platform with `pad: { by: 'beat', on: 'bites', clock: 'snap-<row>', shift }`, `art: 'snapStone'`, type
+  'solid'. pieces/padPiece.ts plays it: `brickNow('bites')` (solid always), `hurts()` while 'on' and he stands on it, returning
+  `PieceHurt.hold` (NEW: damagePlayer's knock is vx 0, a straight jolt; the side knock threw him off an 80 px stone into the river). The jaw
+  is drawn by snapStoneArt.ts from `brickCount` (beatBrick.ts: count 1-4 of the bar, a count = the 'on' length). `snapCount(plat)` for bots.
+- **The row** is a PadRow `by: 'snap'` (gen2/rideLay.ts): 'snap' and 'stone' pieces, `snap: { count, warn?, wave? }`; snapClock = 4 counts,
+  bite = the 4th, creak `warn` 0.5 s at the end of the 3rd; a wave's stone i shifts -i x count (later only). `snapFaults` (in pipeline's
+  wet verdict) holds SNAP_FAIR from 2-5.md's flight: 80 px, 30-40 px water, <= 3 in step, wave never earlier, window to leave the bank
+  >= 0.9 s Normal (snapWindow, within 0.05 s under the flight), Easy >= Normal. padFaults skips bites stones (one model per rule, D80).
+- **The bot** (tools/inspect/firsttimer.ts PAD_SKILL.offBefore4, `snapGo`): plans over the frames of two bars, may wait on a stone not
+  biting (rides the wave), presses a TAP near the lip (SNAP_PRESS 50 px; `snapHop` caps the next jump's hold, never a double).
+  Toys: tools/inspect/snapToys.ts + snapRide.test.ts (step, wave; middle both settings + child Easy unbitten x4 variants; plants red).
+- **THE CAST NEVER HAD A CLOCK** (fixed): CastPlay.step was never handed the stage clock, so an `onBeat` kind in play never told nor
+  acted (the frog, any onBeat animal: proven only on predators/fixtures.ts). Now `Enemy.kitBeat` names the clock an animal keeps; CastPlay
+  runs that animal's kind with onBeat by DATA and reads `clock.read(kitBeat)` each step (engine.ts stepCast passes `this.clock`).
+  `beatCastFaults` (pipeline wet verdict): the clock exists and is fair for the kind's tell (checkOnClock).
+- **World 2's snapper row**: gen2/worlds/w2Cast.ts `w2Snappers(clock)` (awake, asleep-first) + `w2CastSpawn` (kit.spawn: joins the
+  turtle to proto.cast.kinds, no brief needed). Toy: src/game/gen2/w2Cast.test.ts on a gen2-laid row (kick -> chasedOff counted, unhurt;
+  tell on the creak, snap on four; plant: clock withheld -> never tells).
+- **Traps:** RealPlay starts `safe` (invincible 1e9): set `sim.safe = false` to test a hurt. A still sloth is unseen by a cast animal
+  (stillness): a test of its tell must have him move. The bot hook `e.damagePlayer` must pass every argument (it dropped `hold`).
+- **Open for 2-5's builder / next engine:** the meter prices a snap stone per stone (rideTiming), not the run's window (the missing channel,
+  ENG-25 REPORT); no bot skill for the snapper (2-5.md `bonk-after-the-snap`: unbuilt); the stomp's bounce is unflown; no sound for the clack.
 
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY

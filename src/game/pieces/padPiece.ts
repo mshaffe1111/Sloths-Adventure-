@@ -28,7 +28,7 @@ import type { PieceHost, PieceHurt, PieceKind, PieceLayer, StagePiece } from '..
 import type { Platform } from '../types.ts';
 
 /** `bar`: a snap stone's own clock made ready (its count of the bar, `n`, and the seconds into its bite, `into`, for the jaw) */
-interface Run { plat: Platform; beat: Beat | null; count: PadState | null; now: BrickNow; bar: Beat | null; n: number; into: number }
+interface Run { plat: Platform; beat: Beat | null; count: PadState | null; now: BrickNow; bar: Beat | null; n: number; into: number; u: number }
 
 /** what a pad shows now (its tell and whether it holds him), for the drawer and the bots; undefined for a platform that is no pad */
 const NOW = new WeakMap<Platform, BrickNow>();
@@ -79,6 +79,7 @@ class PadPiece implements StagePiece {
     if (r.bar) {
       r.n = brickCount(r.bar, rd);
       r.into = rd.phase === 'on' ? rd.into : 0;
+      r.u = rd.phase === 'on' ? rd.u : 0;
       COUNT_OF.set(r.plat, r.n);
     }
   }
@@ -109,7 +110,7 @@ class PadPiece implements StagePiece {
     for (const r of this.runs) {
       const pl = r.plat;
       if (pl.x + pl.width < x0 || pl.x > x1) continue;
-      if (r.bar) { drawSnapStone(ctx, pl.x, pl.y, pl.width, r.n, r.now.hurts, r.now.tell, r.into, host.t); continue; }
+      if (r.bar) { drawSnapStone(ctx, pl.x, pl.y, pl.width, r.n, r.now.hurts, r.now.tell, r.into, r.u, host.t); continue; }
       drawPad(ctx, pl.pad!.look, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, host.t, r.now, pl.id % 2 === 1);
     }
   }
@@ -129,12 +130,12 @@ export const PAD_PIECE: PieceKind = {
       if (pad.by === 'beat') {
         const bites = pad.on === 'bites';
         if (bites) warmSnapStone();
-        return { plat, beat: null, count: null, now: { solid: true, hurts: false, tell: 0 }, bar: bites ? beatOf(def, host.easy) : null, n: 1, into: 0 };
+        return { plat, beat: null, count: null, now: { solid: true, hurts: false, tell: 0 }, bar: bites ? beatOf(def, host.easy) : null, n: 1, into: 0, u: 0 };
       }
       const beat = beatOf(def, host.easy);
       const count = newPad();
       COUNT.set(plat, { count, beat });
-      return { plat, beat, count, now: padNow(count, beat), bar: null, n: 1, into: 0 };
+      return { plat, beat, count, now: padNow(count, beat), bar: null, n: 1, into: 0, u: 0 };
     });
     const piece = new PadPiece(runs, crowns);
     // (each pad as its clock has it now: a beat row may start down; the player may not be made yet, so no count is stepped here)
