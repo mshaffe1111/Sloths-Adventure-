@@ -18,8 +18,7 @@ Branch t-art-22p from origin/main 6e7b85f8f. Head: see the last commit message t
 3. **Checks (on this branch):** tsc PASS; seedlist 2-2 --check PASS (100 seeds, both settings); lockall --layouts 16 --intended 2-2
    --check vs main's lock (recorded on 6e7b85f8f): **102/102 stages unchanged, 2-2 included: the layout did not move**; drawcheck PASS
    (2-2 land 155 sites, port 135; 733 s); artcheck PASS; build (BASE_PATH=/Sloths-Adventure-/) + chunkcheck PASS; knowncheck,
-   generalitycheck, roadmapcheck PASS; registrycheck PASS. Suite: see the message to the lead (first run cut off at the 30-min
-   background limit with 0 fails besides the bloom case above; re-run in 3 shards).
+   generalitycheck, roadmapcheck PASS; registrycheck PASS. Suite: see item 5 (run on the final game-code head).
 4. **R-165.278:** gates.yml `seedplan` -> `seedlists` matrix (fail-fast off, 25 min limit), job i runs `registrycheck.ts --lists
    --shard i/n`; at most 4 lists a job (~2 min a list, so ~10 min a job with install at any count). `--shard` exits 1 on a stale plan
    or an empty shard (the old `for s in $(...)` loop passed with zero lists if the list command failed). Proof: YAML parses (5 jobs);
@@ -35,8 +34,8 @@ Branch t-art-22p from origin/main 6e7b85f8f. Head: see the last commit message t
    src/assets/flora/petals-river.webp 512x130, 12 frames (petalData RIVER_PETALS), 12 catalog rows (petals-river#petal0-11).
    Bug caught and fixed: drift.py packed 8 a row (8 x 66 = 526 px) into a 512 px sheet, clipping the 8th; now 7 a row, asserted, and
    petalSets.test checks every frame lies inside 512 px. petalSets.test: red with World 2's set removed, green with it.
-   Checks on f698034c8: tsc, artcheck, knowncheck, generalitycheck PASS; build/chunkcheck/drawcheck/buildcheck and the suite: see the
-   message to the lead. Still: stills/drift-before-after.jpg (pink drift before, river drift after, 1:1 zoom).
+   Checks on f698034c8: tsc, artcheck, knowncheck, generalitycheck, roadmapcheck PASS; build + chunkcheck PASS; drawcheck PASS (2-1,
+   2-2 land + port); buildcheck PASS (p95 115/78 ms); suite 3 shards 3790 tests, 0 fail (2 pre-existing TODOs). Still: drift-before-after.jpg.
 ## Stills: stills/ (2x, layout 1 = seed 2, setting as BUILT): before-after-*, after-normal/easy (bank, pads, x13039), judge-*, drift-*
 ## Polish check
 - Pickups at 1:1 sideways: clean rim, no grey halo, veins read, same size as the old petal. Upright: same. Over pads and water: reads.
