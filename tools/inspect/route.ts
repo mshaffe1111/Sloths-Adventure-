@@ -15,7 +15,8 @@ import { ROPE_SPEED } from '../../src/game/rope.ts';
 import { TIME, MODEL_TYPICAL, MODEL_FAST } from '../../src/game/stageTime.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
 import { lianasOver } from '../../src/game/river.ts';
-import { logCatches } from '../../src/game/gen2/riverLay.ts';
+import { logCatches, lianaDrops } from '../../src/game/gen2/riverLay.ts';
+import { difficulty } from '../../src/game/difficulty.ts';
 import type { Stage } from './stages.ts';
 
 export const RUN = PHYS.maxRun;
@@ -453,7 +454,11 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     //  logs it lands on as misses)
     const v = a.vine!, B = b.plat!;
     const lx = clamp(v.x, ...ext(B));
-    segs.push({ kind: 'lianaDrop', x0: v.x, y0: at.y, x1: lx, y1: B.y, dt: 1.2, plat: B, note: 'added' });
+    // (its time: the swing out as any let-go (SWING_PACE, +1.2 s), and the wait on the vine for a moment that lands, half the worst
+    //  wait (riverLay.ts lianaDrops: both clocks, from a moment met at random); a flat 1.2 s read 2-4's ?layout=72140 1 s under its 120)
+    const logs = (stage.platforms ?? []).filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === under.x0 && p.drift.x1 === under.x1).map((p) => p.drift!);
+    const wait = logs.length ? lianaDrops(v, logs, difficulty()).wait / 2 : 0;
+    segs.push({ kind: 'lianaDrop', x0: v.x, y0: at.y, x1: lx, y1: B.y, dt: Math.abs(lx - v.x) / SWING_PACE + 1.2 + wait, plat: B, note: 'added' });
     return { segs, at: { x: lx, y: B.y }, cost: sum(segs) };
   }
   if (a.kind === 'plat' && a.plat!.type === 'drift' && b.kind === 'liana') {
