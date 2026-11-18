@@ -121,6 +121,9 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
+- **PITCH-26A (11-18, fixed lens; reference/design/pitches/PITCH-26A.md on t-pitch-26a):** 2-6 basket lifts up the bank (the hand-off, the
+  water wheel), 2-7 out to the bell and home LEFT upstream, 2-8 lead the freed ones up ahead of rising water. Waiting on the lead's pick
+  against PITCH-26B. Owed before any build: fly the never-stop step-off and the hand-off (rule 24); check legs.ts mirror keeps a river's dir.
 - **The hardness meter (DIFF-ALGO, 11-12, R-165.172; waiting on the lead's PASS):** Normal 0-100 in challenge bits (DIFFICULTY.md §1-§2);
   SCALE set once by 1-1 Normal = 4 (Matt's rating), never per stage. World 1 reads Normal 4.0 / 2.0 / 1.1, Easy 2.4 / 0.9 / 0.6 (4
   layouts), on Matt's 4, 2, 1. FREE_BITS = 1 (half the reach is free) is the one constant the anchors move with. Open: the meter's
@@ -188,6 +191,9 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 5. Traps (each of these happened)
 
+- **Research hosts (PITCH-26A, 11-18):** only en.wikipedia.org, gamesradar, pcgamer and gamedeveloper answer; HG101 shows "under maintenance"
+  on every article, lemon64/retrogamer/eurogamer/kotaku 403. Their site searches are JS (empty): get review URLs from a Wikipedia page's
+  references (grep its HTML for the allowed hosts). Pick tributes you can source BEFORE fitting them to an idea.
 - **The inspector's route jumps OVER blocks (DIFF-ALGO, 11-12):** routeJumps links two banks over a raised hump or a lower dip (1-2's
   root humps and root steps), and inspectJumps then calls the space under that jump a 231 px pit. A player hops onto the hump or steps
   down and out. tools/difficulty/score.ts corrects it from the real platforms; the inspector itself is not fixed yet.

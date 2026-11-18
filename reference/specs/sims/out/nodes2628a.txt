@@ -1,0 +1,9 @@
+2-6: A Tf1^<:#soft@lift Pc1^< Pf1^<:#soft@lift Xp1^>:#soft@ride R Pb1^< Wp1^>:#soft@ride R Cf1^>:#water@lift R Sf1^<:#soft@wheel E
+  13 tokens; legs -------------
+  checkCode: no errors
+2-7: /R A Tw1<:#soft Pg1< Pf1^<:#soft@lift Xw1>:#water R Wf1^<:#soft@lift R /L Pg1<:#soft Pw1>:#water R Cb1>:#water R Sw1<:#soft E
+  15 tokens; legs rrrrrrrrlllllll
+  checkCode: no errors
+2-8: A Pg1< Pc1^< Tw1^<:#water Xc1^>:#water R D_ Wg1>:#water R Pb1^>:#water Cc1^>:#water R Sf1^<:#soft E
+  14 tokens; legs --------------
+  checkCode: no errors
