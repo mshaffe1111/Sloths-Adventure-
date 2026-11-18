@@ -176,6 +176,14 @@ const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
  */
 /** a bank past a small soft gap, level with the one before: a hop over a fern gap (1-7's watched stretches end in one; VAR-1) */
 const stone = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
+/** a vine at the foot of a wall: on `on` (`onW` wide) 120 px short of its end, `h` px tall, a knot of bough at its top (60 px), and the
+ *  wall's top `key` (`w` wide) from the knot on, `h` px up, standing over the last 60 px of `on` (so nothing under it is floorless). The vine stands AT the wall: 140-220 px back from it, the child
+ *  bot walked to the wall, found it too high and never looked back (VAR-1, 1-7 seeds 18 and 20, rescued) */
+const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [
+  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 120) / onW, (onW - 120) / onW], h: [h, h] } },
+  { key: `${key}s`, shape: 'branch', w: [60, 60], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
+  bank(key, `${key}s`, w, [-4, 0]),
+];
 /**
  * How a beat's walked ground goes (VAR-1, R-165.276; Matt 10-30 "more pieces ... that variety"): every beat laid the same root hops, so
  * Easy read 9 swings and ~55 identical jumps (funcheck: "JVJJ" 7 times, "JVJ" back to back). Each beat now walks its OWN ground, a
@@ -194,20 +202,19 @@ function hops(k: string, from: string, n: number, steps: string = 'UD'.repeat(n 
   if ([...steps].reduce((h, c) => h + (RISE[c] ?? NaN), 0) !== end) throw new Error(`1-6 ground "${steps}" must end ${end} root up`);
   const pieces: SectionPiece[] = [];
   let at = from, up = 0;
+  // (the width of the piece he stands on: a climb's vine stands at its far end. The first, `from`, is the beat's own bank, 240+ px)
+  let atW = 240;
+  const W: Record<string, number> = { U: 240, D: 300, s: 220, X: 300, C: 240 };
   [...steps].forEach((c, i) => {
     const key = c === 'U' || c === 'C' ? `${k}u${++up}` : `${k}w${i + 1}`;
     if (c === 'U') pieces.push(bank(key, at, 240, UP));
     else if (c === 'D') pieces.push(bank(key, at, 300, DOWN));
     else if (c === 's') pieces.push(stone(key, at, 220));
     else if (c === 'X') pieces.push(bank(key, at, 300, CLIMB));
-    else if (c === 'C') {
-      // (the vine stands a quarter along the bank he is on; the bough at its top ends short of that bank's end, so the tall root past it
-      //  stands on ground on both settings: 1-7's fern dip, VAR-1)
-      pieces.push({ key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on: at, at: [0.25, 0.25], h: [210, 210] } },
-        { key: `${key}c`, shape: 'branch', w: [140, 140], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
-        bank(key, `${key}c`, 240, [-4, 0]));
-    } else throw new Error(`1-6 ground: no step "${c}"`);
+    else if (c === 'C') pieces.push(...wallClimb(key, at, atW, 210, 240));
+    else throw new Error(`1-6 ground: no step "${c}"`);
     at = key;
+    atW = W[c];
   });
   return { pieces, last: at };
 }
@@ -374,23 +381,17 @@ export const QUIET_16: SectionTemplate[] = [
     lay: { pieces: [bank('a', null, w[0]), bank('b', 'a', 240, UP), bank('c', 'b', w[1], DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pb', 'b', LANDED, 1, 60), petals('pd', 'd', 0.5, 1)] },
   })) }),
   link({ id: 'w1-16-rest-log', name: 'a rest: along a fallen log', job: 'rest', versions: [{ id: 'log', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 420, UP), { key: 'f', shape: 'block', w: [280, 300], place: { kind: 'on', on: 'b', at: [0.1, 0.15], h: [24, 26] }, style: 'log', main: false }, bank('c', 'b', 300, DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pf', 'f', 0.5, 2, 160), petals('pd', 'd', 0.5, 1)] } }] }),
-  // (the great root is a wall, 210 px: a vine up its near face (1-4's climb, past a double jump's 184), along its hump, and a step down
-  //  off its far end: nothing to fall into, a miss on the vine is the bank he stood on. VAR-1: the hump read as two more root jumps)
+  // (the great root is a wall, 210 px: a vine at its foot (1-4's climb, past a double jump's 184), along its hump, and a step down off its
+  //  far end: nothing to fall into, a miss on the vine is the bank he stood on. VAR-1: the hump read as two more root jumps)
   link({ id: 'w1-16-rest-hump', name: 'a rest: up the great root by its vine', job: 'rest', versions: [{ id: 'hump', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 400, UP),
-    { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'b', at: [0.55, 0.55], h: [210, 210] } },
-    { key: 's', shape: 'branch', w: [140, 140], place: { kind: 'over', on: 'v', at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
-    bank('m', 's', 300, [-4, 0]), bank('z', 'm', 260, [262, 266])], sockets: [flag('b', 0.3), petals('pm', 'm', [0.3, 0.7], 2, 160)] } }] }),
-  // (the dip's way out is a vine (1-4's climb, VAR-1): up a root, down into the dip (its floor 100 px under the bank), and at its far end a
-  //  vine up the wall (260 px: neither a jump across nor a double out of the dip, 184 px, makes it) onto a bough 160 px over the bank; the
-  //  root past it at the bough's height and a root down stand 206+ px over the dip's floor (a jump up onto them is no way out), then down
-  //  to the floor line. Nothing to fall into: a miss on the vine is the dip's floor again)
-  link({ id: 'w1-16-rest-dip', name: 'a rest: down the dip between the roots, up a vine', job: 'rest', versions: [[620, 400], [700, 480]].map((m, j) => ({
+    ...wallClimb('m', 'b', 400, 210, 300), bank('z', 'm', 260, [262, 266])], sockets: [flag('b', 0.3), petals('pm', 'm', [0.3, 0.7], 2, 160)] } }] }),
+  // (the dip's way out is a vine (1-4's climb, VAR-1): up a root, down into the dip (its floor 100 px under the bank), and at the foot of
+  //  its far wall a vine (the wall 212 px: neither a jump across nor a double out of the dip, 184 px, makes it) onto the root over it, a
+  //  root down and down again to the floor line. Nothing to fall into: a miss on the vine is the dip's floor again)
+  link({ id: 'w1-16-rest-dip', name: 'a rest: down the dip between the roots, up a vine', job: 'rest', versions: [620, 700].map((m, j) => ({
     id: j ? 'wide' : 'narrow',
-    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m[0], [150, 156]),
-      { key: 'v', shape: 'vine', w: [0, 0], place: { kind: 'climb', on: 'm', at: [m[1] / m[0], m[1] / m[0]], h: [260, 260] } },
-      { key: 's', shape: 'branch', w: [180, 180], place: { kind: 'over', on: 'v', at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, main: true },
-      bank('c', 's', 180, [-4, 0]), bank('y', 'c', 200, [54, 58]), bank('z', 'y', 240, [104, 108])],
-      sockets: [flag('m', 0.3), petals('pm', 'm', 0.5, 1), petals('ps', 's', 0.5, 2, 80), petals('py', 'y', 0.5, 1)] },
+    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m, [150, 156]), ...wallClimb('c', 'm', m, 212, 260), bank('y', 'c', 220, [54, 58]), bank('z', 'y', 260, [54, 58])],
+      sockets: [flag('m', 0.3), petals('pm', 'm', 0.5, 1), petals('pc', 'c', 0.5, 2, 80), petals('py', 'y', 0.5, 1)] },
   })) }),
   // (the sixth rest, for beat 4's chain + R (1-6.md): up two roots and down again, a flag on the top one's far side)
   link({ id: 'w1-16-rest-steps', name: 'a rest: up the root steps and down', job: 'rest', versions: [{ id: 'steps', lay: { pieces: [bank('a', null, 280), bank('b', 'a', 240, UP), bank('c', 'b', 300, UP), bank('d', 'c', 320, DOWN), bank('z', 'd', 260, DOWN)], sockets: [flag('d', 0.5), petals('pc', 'c', LANDED, 1, 60), petals('pd', 'd', 0.3, 1)] } }] }),
