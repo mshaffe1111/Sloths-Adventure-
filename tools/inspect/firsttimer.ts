@@ -51,6 +51,7 @@ import { driftX, logClock, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
+import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
 import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -81,9 +82,22 @@ export const CLOCK_SKILL = { read: true };
  * what a person sees of a pad (pieces/padPiece.ts padShows: down, or its shiver) and of a beat row's breath (the stage clock). Always on
  * outside a test. OUT-AND-BACK (FIX-22): a spur pond's dead-end stone (gen2/rideLay.ts PadRow.spur) is on his way, out for its flower and
  * back to the near bank before the way on (route.ts findRoute `spurs`); on the stone WAIT-FOR-THE-RISE holds him till the pads he sank
- * are up (padRide.test.ts 'the spur').
+ * are up (padRide.test.ts 'the spur'). OFF-BEFORE-FOUR (ENG-25; 2-5.md NEW 1): snap stones bite on four (gen2/rideLay.ts 'snap' rows); he
+ * reads each stone's count (its jaw's notches, the stage clock) and hops onto a run only when he can be off every stone before its four,
+ * waiting on a stone that has counts left while the next bites (riding the wave); off (snapRide.test.ts plants it), he treats a snap
+ * stone as any plain stone.
  */
-export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true, outBack: true };
+export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true, outBack: true, offBefore4: true };
+/** OFF-BEFORE-FOUR's hop: the spread of a single's air (s) from a tap (13 frames, 2-5.md's flight through InputEngine) to his held press,
+ *  and how long he stands on a stone before the next hop leaves it (s) */
+const SNAP_HOP = [0.3, 0.5] as const;
+const SNAP_STAND = 0.15;
+/** he presses for a snap stone within this far of his floor's lip (px): the short hop the plan counts on */
+const SNAP_PRESS = 50;
+/** his hop for a snap stone: a tap (s held; InputEngine's 80 ms minimum, 2-5.md's flown hop) */
+const SNAP_TAP = 0.08;
+/** his thumb: from deciding to the press leaving the floor (s) */
+const SNAP_THUMB = 0.1;
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -1177,10 +1191,10 @@ export class FirstTimerRun {
       this.goal = { got: cur, need: target };
     };
     // real harm: hits and lives, with what did it
-    e.damagePlayer = (amount: number, fromX?: number) => {
+    e.damagePlayer = (amount: number, fromX?: number, hold?: boolean) => {
       const hp = this.sim.p.hp;
       const cause = this.causeNow();
-      proto.damagePlayer.call(e, amount, fromX);
+      proto.damagePlayer.call(e, amount, fromX, hold);
       if (this.sim.p.hp < hp) {
         this.lastCause = cause.cause;
         const h: Harm = { kind: 'hit', t: this.sim.t, x: this.sim.p.x, y: this.sim.p.y, cause: cause.cause, onScreen: cause.onScreen, hiding: this.hiding };
@@ -2532,6 +2546,29 @@ export class FirstTimerRun {
     const approach = (): Pad => (toEdge > stand ? go : {});
     // (a person who does not know pads sink treats one as any small floor: he stops on it a beat when he lands, and stands his time at its
     // edge when his tier stands; KEEP-HOPPING is knowing not to)
+    // (OFF-BEFORE-FOUR, ENG-25: a snap stone is a floor that bites on four, read by its count, never as a pad that sinks. Without the
+    // skill he does not know stones bite: a plain floor, the edge's own walk and jump)
+    const snap = here.pad?.on === 'bites' || next.pad?.on === 'bites';
+    if (snap && !PAD_SKILL.offBefore4) { this.padSeen = -1; return null; }
+    if (snap) {
+      // (from a floor that never bites he goes after his own reaction and his walk to where he presses, planned with both and planned
+      // again every frame: a way that closes while he reacts is let go, and he waits for the next bar, as a person counting does)
+      const stay = here.pad?.on !== 'bites';
+      const react = stay ? (this.padSeen >= 0 ? Math.max(0, who.stopReact - (t - this.padSeen)) : who.stopReact) : 0;
+      const lag = react + (stay ? Math.max(0, toEdge - 40) / PHYS.maxRun : 0) + SNAP_THUMB;
+      if (!this.snapGo(p, dir, here, next, lag)) { this.padSeen = -1; return approach(); }
+      if (stay) {
+        if (this.padSeen < 0) this.padSeen = t;
+        if (t - this.padSeen < who.stopReact) return approach();
+      }
+      // (the hop: as soon as his own press, or a tap, from where he stands comes down on the next floor; never a walk to the lip first)
+      const flies1 = (hold: number) => hopLandsOn(next!, () => next!.x, p.x + p.vx * 0.03, p.y, dir, hold, t + 0.03, p.vx, 6);
+      // (near the lip only: a long held hop from far back flies longer than the hop his count is planned on, ENG-25's wave trace)
+      // (at the lip he presses whatever and stands still while his thumb lags: walking on, the lag walked him off into the water, the
+      // wave toy's middle-Normal trace)
+      if ((toEdge < SNAP_PRESS && flies1(SNAP_TAP)) || toEdge < 12) { this.snapHop = true; return this.decide(dir, 'single', false, toEdge < 12 ? {} : go); }
+      return go;
+    }
     if (here.pad && !PAD_SKILL.keepHopping) {
       if (this.padStop?.id !== here.id) this.padStop = { id: here.id, until: t + between(this.r, [0.25, 0.5]) + (this.edgePlan().how === 'stand' ? this.edgePlan().stand : 0) };
       if (t < this.padStop.until) return approach();
@@ -2577,6 +2614,59 @@ export class FirstTimerRun {
     // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
     if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, 'single', false, go);
     return go;
+  }
+
+  /**
+   * OFF-BEFORE-FOUR (ENG-25): may he leave `here` for `next` in `lag` s and cross the run of snap stones ahead to a floor that never bites,
+   * never standing on a stone while it bites? He reads each stone's count off its jaw (the stage clock, as a person counting the notches),
+   * hops in SNAP_HOP's spread of a single's air (a tap to a held press) and stands SNAP_STAND before the next hop, and may wait on a stone
+   * that is not biting (riding a wave). A plan over the frames of two bars, stone by stone.
+   */
+  /** his next jump is a snap stone's tap (OFF-BEFORE-FOUR) */
+  private snapHop = false;
+
+  private snapGo(p: PlayerState, dir: -1 | 1, here: Platform, next: Platform, lag: number): boolean {
+    const e = this.e as any;
+    const easy = this.who.setting === 'easy';
+    const defs = new Map<string, Beat>();
+    for (const c of ((this.sim.stage as any).clocks ?? []) as any[]) defs.set(c.id, beatOf(c, easy));
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    const row = this.sim.platforms.filter((q) => q !== here && (q.pad || q.type === 'solid') && Math.abs(q.y - p.y) < 90 && (dir > 0 ? q.x >= edgeX - 4 : q.x + q.width <= edgeX + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
+    const i0 = row.indexOf(next);
+    if (i0 < 0) return true;
+    const stones: Platform[] = [];
+    for (let i = i0; i < row.length && row[i].pad?.on === 'bites'; i++) stones.push(row[i]);
+    const t0 = e.clock.time();
+    const F = DT;
+    const bitesAt = (q: Platform, f: number) => {
+      const b = q.pad ? defs.get(q.pad.clock) : undefined;
+      return !!b && beatAt(b, t0 + f * F, q.pad!.shift ?? 0).phase === 'on';
+    };
+    const safe = (q: Platform, f0: number, f1: number) => { for (let f = Math.floor(f0); f <= Math.ceil(f1); f++) if (bitesAt(q, f)) return false; return true; };
+    const [hMin, hMax] = SNAP_HOP.map((s) => Math.round(s / F));
+    const stand = Math.round(SNAP_STAND / F);
+    const horizon = Math.round(((stones.length ? defs.get(stones[0].pad!.clock)?.period ?? 3 : 3) * 2) / F);
+    const memo = new Map<string, boolean>();
+    // (standing on stone k from frame f: can he get off the run? He may wait while it does not bite, then hop to the next)
+    const from = (k: number, f: number): boolean => {
+      if (k >= stones.length) return true;
+      const key = `${k} ${f}`;
+      const m = memo.get(key);
+      if (m !== undefined) return m;
+      let ok = false;
+      for (let w = f; w <= horizon && !ok; w++) {
+        if (bitesAt(stones[k], w)) break;
+        const nx = stones[k + 1];
+        if (!nx || safe(nx, w + hMin, w + hMax + stand)) ok = from(k + 1, w + hMax + stand);
+      }
+      memo.set(key, ok);
+      return ok;
+    };
+    const go = Math.round(lag / F);
+    // (here a snap stone: it must hold him safely until he leaves)
+    if (here.pad?.on === 'bites' && !safe(here, 0, go)) return true;
+    if (!stones.length) return true;
+    return safe(stones[0], go + hMin, go + hMax + stand) && from(0, go + hMax + stand);
   }
 
   /**
@@ -2898,6 +2988,8 @@ export class FirstTimerRun {
     }
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;
+    // (OFF-BEFORE-FOUR: a hop for a snap stone is a tap, one stone at a time, never a double; after his own draws, so no other jump moves)
+    if (this.snapHop) { this.snapHop = false; kind = 'single'; hold = Math.min(hold, SNAP_TAP); d2 = -1; }
     this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), d2, needs: needs || undefined, toX: overhead && toX !== null ? toX : undefined, left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
     this.nextStop = null;
     if (this.lianaHop) {

@@ -13,7 +13,7 @@
  * ride crosses needs a place rule in the pipeline's reach checks (named in the PIECES report).
  */
 import { beatDef, beatFaults, type BeatRule, type BeatSeen } from '../beat.ts';
-import { beatOf } from '../clock.ts';
+import { beatOf, clockAt } from '../clock.ts';
 import { RIDE, rideAt, type Point, type Ride } from '../ride.ts';
 import { brickFair } from '../beatBrick.ts';
 import { surfaceBelowBank, type RiverZone } from '../river.ts';
@@ -210,11 +210,17 @@ export type PadSizeId = keyof typeof PAD_SIZES;
 
 /** a pad row as data: a world's row (WorldManifest.pads, place `pads` names it) */
 export interface PadRow {
-  /** 'weight': each pad sinks under him by its size; 'beat': the row keeps its own breath (`beat`), weight or not */
-  by: 'weight' | 'beat';
-  /** the row, near bank first: a pad's size, 'stone' (a stepping stone that never sinks: a rest, the far end of a there-and-back) or
-   *  'crown' (the crown lily, 2-2.md beat 11: a giant lily that never sinks, its flower opening once he stands on it; pieces/padPiece.ts) */
-  pads: readonly (PadSizeId | 'stone' | 'crown')[];
+  /** 'weight': each pad sinks under him by its size; 'beat': the row keeps its own breath (`beat`), weight or not; 'snap': a row of SNAP
+   *  STONES (ENG-25; 2-5.md NEW 1) on the row's own bar (`snap`): floors that bite on four */
+  by: 'weight' | 'beat' | 'snap';
+  /** the row, near bank first: a pad's size, 'stone' (a stepping stone that never sinks: a rest, the far end of a there-and-back),
+   *  'crown' (the crown lily, 2-2.md beat 11: a giant lily that never sinks, its flower opening once he stands on it; pieces/padPiece.ts)
+   *  or, in a 'snap' row, 'snap' (a snap stone: solid always, it bites while its bar is on four; pieces/padPiece.ts) */
+  pads: readonly (PadSizeId | 'stone' | 'crown' | 'snap')[];
+  /** a 'snap' row's bar on Normal: one `count` (s; the bite lasts one count, the bar is four), the jaw's creak (`warn`, s, at the end of
+   *  count 3; SNAP_LAY.warn when absent) and the WAVE (`wave`: each snap stone bites a count LATER than the one before it, the snap running
+   *  ahead the way he goes; without it the row snaps in step). A wave that runs back at him is never laid (2-5.md's flight: 0-38% safe) */
+  snap?: { count: number; warn?: number; wave?: true };
   /** edge-to-edge water before each piece and before the far bank (px): one for every gap, or one each (pads.length + 1) */
   gap: number | readonly number[];
   /** a 'beat' row's breath on Normal (s): up (holds), shiver (holds, warning), under (gone) */
@@ -273,7 +279,7 @@ export const PAD_FAIR = {
 /** the water before piece i (i = pads.length: before the far bank). A spur's stone stands against the far bank's foot: no water past it,
  *  so its dead end reads at a glance and no step off its far edge is a swim (FIX-22) */
 const gapAt = (row: PadRow, i: number): number => (row.spur && i === row.pads.length ? 0 : typeof row.gap === 'number' ? row.gap : row.gap[i]);
-const pieceW = (k: PadSizeId | 'stone' | 'crown'): number => (k === 'stone' ? PAD_LAY.stoneW : k === 'crown' ? PAD_LAY.crownW : PAD_SIZES[k].w);
+const pieceW = (k: PadRow['pads'][number]): number => (k === 'stone' ? PAD_LAY.stoneW : k === 'crown' ? PAD_LAY.crownW : k === 'snap' ? SNAP_LAY.w : PAD_SIZES[k].w);
 /** the water's width, bank to bank */
 export const padRowWidth = (row: PadRow): number => row.pads.reduce((s, k, i) => s + gapAt(row, i) + pieceW(k), 0) + gapAt(row, row.pads.length);
 /** the clock a weight pad of this size reads by its count */
@@ -293,10 +299,15 @@ export const padBeatClock = (id: ClockId, b: NonNullable<PadRow["beat"]>, easySt
 export function layPads(row: PadRow, id: string, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; pads: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }>; clocks: ClockDef[] } {
   if (typeof row.gap !== 'number' && row.gap.length !== row.pads.length + 1) throw new Error(`pad row ${id}: ${row.gap.length} gaps for ${row.pads.length} pieces (one before each and one before the far bank)`);
   if (row.by === 'beat' && !row.beat) throw new Error(`pad row ${id}: a beat row with no beat`);
+  if ((row.by === 'snap') !== !!row.snap) throw new Error(`pad row ${id}: ${row.by === 'snap' ? 'a snap row with no bar (snap)' : `a ${row.by} row with a snap bar`}`);
+  if (row.pads.some((k) => (k === 'snap') !== (row.by === 'snap') && k !== 'stone')) throw new Error(`pad row ${id}: a ${row.by} row lays only ${row.by === 'snap' ? "'snap' and 'stone'" : "pads, 'stone' and 'crown'"}`);
   const stretch = Math.max(1, row.easyStretch ?? PAD_LAY.easyStretch);
   const clocks: ClockDef[] = [];
   const beatId = `pads-${id}`;
   if (row.by === 'beat') clocks.push(padBeatClock(beatId, row.beat!, stretch));
+  const snapId = `snap-${id}`;
+  if (row.snap) clocks.push(snapClock(snapId, row.snap, stretch));
+  let nSnap = 0;
   const y = bankY + PAD_LAY.drop;
   const pads: Platform[] = [];
   let x = x0;
@@ -307,8 +318,14 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
     } else if (k === 'crown') {
       // (a floor that never sinks, painted by the pad piece: never a `pad`, so nothing reads it as one that sinks)
       pads.push({ id: nextId(), x, y, width: PAD_LAY.crownW, height: PAD_LAY.h, type: 'solid', art: 'crownLily' });
+    } else if (k === 'snap') {
+      // (a snap stone: a floor always ('solid'), painted by the pad piece; the wave's stone i bites i counts later: shift -i x count)
+      const shift = row.snap!.wave ? -nSnap * row.snap!.count : 0;
+      nSnap++;
+      pads.push({ id: nextId(), x, y, width: SNAP_LAY.w, height: SNAP_LAY.h, type: 'solid', art: 'snapStone', pad: { by: 'beat', on: 'bites', clock: snapId, ...(shift ? { shift } : {}), look: 'snap' } });
     } else {
       const clock = row.by === 'beat' ? beatId : `pad-${k}`;
+      if (row.by === 'snap') throw new Error(`pad row ${id}: a snap row lays a ${k} pad`);
       if (row.by === 'weight' && !clocks.some((c) => c.id === clock)) clocks.push(padSizeClock(k, stretch));
       pads.push({ id: nextId(), x, y, width: PAD_SIZES[k].w, height: PAD_LAY.h, type: 'moving', lily: true, pad: { by: row.by, clock, look: row.by === 'beat' ? 'beat' : k } });
     }
@@ -346,6 +363,8 @@ export function padFaults(st: { platforms: readonly Platform[]; rivers?: readonl
     const def = defs.get(q.pad!.clock);
     const at = `pad at x=${Math.round(q.x)}`;
     if (!def) { out.push(`${at}: its clock ${q.pad!.clock} is not in the stage's clocks`); continue; }
+    // (a snap stone is judged by snapFaults on its own flown numbers: its width, its bar, its window; one model per rule, D80)
+    if (q.pad!.on === 'bites') continue;
     if (q.width < PAD_FAIR.minW) out.push(`${at}: ${q.width} px wide, under ${PAD_FAIR.minW}`);
     if (seen.has(def.id)) continue;
     seen.add(def.id);
@@ -388,9 +407,125 @@ export function padFaults(st: { platforms: readonly Platform[]; rivers?: readonl
       clock = null;
     };
     for (const p of row) {
-      if (p.pad?.by === 'beat') { run++; clock = p.pad.clock; } else { close(p.x); from = p.x + p.width; }
+      if (p.pad?.by === 'beat' && p.pad.on !== 'bites') { run++; clock = p.pad.clock; } else { close(p.x); from = p.x + p.width; }
     }
     close(r.x1);
+  }
+  return out;
+}
+
+// ───────────────────────── snap stones (ENG-25; 2-5.md NEW 1, flown: reference/specs/sims/snapClock.ts on DESIGN-24-25) ─────────────────────────
+
+/** a snap stone's floor (px): World 2's river stone 80 px wide, 0.9 of Pokey's drawn 89.1 (2-5.md "Art", D41); its body under its top. The
+ *  creak (s, Normal) a snap row's bar has when its data names none (2-5.md: "warn 0.5 s (the jaw creaks wide: the tell)") */
+export const SNAP_LAY = { w: 80, h: 40, warn: 0.5 } as const;
+
+/**
+ * The numbers a laid snap row is held to (snapFaults), each from 2-5.md's flight on the real engine with the game's InputEngine
+ * (snapClock.ts, out/snapClock-normal.txt, -easy.txt) and the lead's rulings (DESIGN-24-25 REPORT, 10:54 AM ET 11-18):
+ *   hop     a real tap hop's air (s): 13 frames, InputEngine's 80 ms hold ("the hop: a tap is 13 frames in the air (0.43 s)")
+ *   gap     the water each side of a snap stone (px): "30-40 px of water between (a pitch of 110-120 px: one tap hop)"; at 60 he misses
+ *   inStep  snap stones in step in one run, at most ("in-step rows hold 3 stones at most": 5 in step read 18-32% safe)
+ *   window  the window to leave the bank onto a run, straight through on the tap hop (s, Normal: "a window to leave the bank >= 0.9 s")
+ *   warn    the shortest creak he can read (s, Normal)
+ */
+export const SNAP_FAIR = { hop: 13 / 30, gap: [30, 40], inStep: 3, window: 0.9, warn: 0.5 } as const;
+
+/** a snap row's bar: four counts, the bite the fourth, the creak at the end of the third; Easy stretches it */
+export const snapClock = (id: ClockId, b: NonNullable<PadRow['snap']>, easyStretch: number = PAD_LAY.easyStretch): ClockDef =>
+  beatDef(id, 4 * b.count, b.warn ?? SNAP_LAY.warn, b.count, easyStretch);
+
+/**
+ * The window to leave the bank onto a run of snap stones (s): crossing it straight through on the tap hop (one hop a stone, SNAP_FAIR.hop
+ * apart, a frame on each), the longest spell of start moments round the bar from which he never stands on a stone while it bites. The
+ * same read the flight makes of his recorded path (snapClock.ts judge), on the tap hop's own timing: 3 in step at count 0.75 reads 1.38 s
+ * (flown 1.40), a wave of 3 1.61 (flown 1.63), of 5 0.97 (flown 1.00).
+ */
+export function snapWindow(def: ClockDef, shifts: readonly number[], easy: boolean, hop: number = SNAP_FAIR.hop): number {
+  const b = beatOf(def, easy);
+  const dt = 1 / 30;
+  const m = Math.round(b.period / dt);
+  const safe: boolean[] = [];
+  for (let s0 = 0; s0 < m; s0++) {
+    let ok = true;
+    for (let i = 0; i < shifts.length && ok; i++) {
+      const t = s0 * dt + i * hop;
+      for (const tau of [t, t + dt]) if (clockAt(def, tau, easy, shifts[i]).phase === 'on') ok = false;
+    }
+    safe.push(ok);
+  }
+  if (safe.every(Boolean)) return b.period;
+  let best = 0;
+  for (let a = 0; a < m; a++) { let k = 0; while (k < m && safe[(a + k) % m]) k++; best = Math.max(best, k); }
+  return Math.round(best * dt * 100) / 100;
+}
+
+/**
+ * What is unfair about a stage's snap stones, in words (none: they may be laid):
+ *   - each is SNAP_LAY.w wide (the flown stone) and its clock is listed, fair (every bite out of a creak: clock.ts checkClock; a creak of
+ *     SNAP_FAIR.warn or more: beatBrick.ts brickFair) and bites for one count of a four-count bar;
+ *   - the water each side of it is SNAP_FAIR.gap (one tap hop);
+ *   - each run of snap stones between floors that never bite (a bank, a plain stone): at most SNAP_FAIR.inStep in step; a wave runs ahead
+ *     only (each a count later or in step with the one before, never earlier); its window to leave the bank, straight through, is
+ *     SNAP_FAIR.window or more on Normal, and Easy's is never under Normal's (level.md rule 4).
+ */
+export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; clocks?: readonly ClockDef[] }): string[] {
+  const out: string[] = [];
+  const snaps = st.platforms.filter((p) => p.pad?.on === 'bites');
+  if (!snaps.length) return out;
+  const defs = new Map((st.clocks ?? []).map((d) => [d.id, d]));
+  const seen = new Set<string>();
+  for (const q of snaps) {
+    const at = `snap stone at x=${Math.round(q.x)}`;
+    const def = defs.get(q.pad!.clock);
+    if (q.width !== SNAP_LAY.w) out.push(`${at}: ${q.width} px wide, not the flown ${SNAP_LAY.w}`);
+    if (!def) { out.push(`${at}: its clock ${q.pad!.clock} is not in the stage's clocks`); continue; }
+    if (seen.has(def.id)) continue;
+    seen.add(def.id);
+    for (const e of brickFair(def, { warn: SNAP_FAIR.warn, safe: 0 })) out.push(`${at}: ${e}`);
+    const b = beatOf(def, false);
+    const on = b.seconds[b.names.indexOf('on')] ?? 0;
+    if (on > 0 && Math.abs(b.period - 4 * on) > 1e-6) out.push(`${at}: clock ${def.id} bites ${on} s of a ${b.period} s bar, not one count of four`);
+  }
+  for (const r of st.rivers ?? []) {
+    if (r.speed !== 0) continue;
+    const inside = (p: Platform) => p.x + p.width / 2 > r.x0 && p.x + p.width / 2 < r.x1;
+    const row = st.platforms.filter((p) => inside(p) && (p.pad || p.type === 'solid') && p.y > r.surfaceY - 80 && p.y < r.surfaceY + 10).sort((a, b) => a.x - b.x);
+    if (!row.some((p) => p.pad?.on === 'bites')) continue;
+    const pond = `snap pond at x=${Math.round(r.x0)}`;
+    // (the water each side of every snap stone: the near bank's end, the floors between, the far bank's start)
+    const edges = [r.x0, ...row.flatMap((p) => [p.x, p.x + p.width]), r.x1];
+    row.forEach((p, i) => {
+      if (p.pad?.on !== 'bites') return;
+      for (const g of [edges[2 * i + 1] - edges[2 * i], edges[2 * i + 3] - edges[2 * i + 2]]) {
+        if (g < SNAP_FAIR.gap[0] - 0.5 || g > SNAP_FAIR.gap[1] + 0.5) out.push(`${pond}: ${Math.round(g)} px of water beside the snap stone at x=${Math.round(p.x)}, not ${SNAP_FAIR.gap[0]}-${SNAP_FAIR.gap[1]} (one tap hop)`);
+      }
+    });
+    // (each run of snap stones between floors that never bite)
+    const runs: Platform[][] = [];
+    let cur: Platform[] = [];
+    for (const p of row) {
+      if (p.pad?.on === 'bites') cur.push(p);
+      else if (cur.length) { runs.push(cur); cur = []; }
+    }
+    if (cur.length) runs.push(cur);
+    for (const run of runs) {
+      const at = `${pond}: the run of ${run.length} snap stones from x=${Math.round(run[0].x)}`;
+      const clocks = new Set(run.map((p) => p.pad!.clock));
+      if (clocks.size > 1) { out.push(`${at} keeps ${clocks.size} clocks; a run keeps one bar`); continue; }
+      const def = defs.get(run[0].pad!.clock);
+      if (!def) continue;
+      const shifts = run.map((p) => p.pad!.shift ?? 0);
+      let step = 1;
+      for (let i = 1; i < shifts.length; i++) {
+        if (shifts[i] > shifts[i - 1] + 1e-9) out.push(`${at}: the stone at x=${Math.round(run[i].x)} bites before the one behind it: the wave runs back at him (never laid)`);
+        step = Math.abs(shifts[i] - shifts[i - 1]) < 1e-9 ? step + 1 : 1;
+        if (step > SNAP_FAIR.inStep) out.push(`${at}: ${step} stones in step at x=${Math.round(run[i].x)}, over ${SNAP_FAIR.inStep}`);
+      }
+      const wn = snapWindow(def, shifts, false), we = snapWindow(def, shifts, true);
+      if (wn < SNAP_FAIR.window - 1e-6) out.push(`${at}: a ${wn} s window to leave the bank on Normal, under ${SNAP_FAIR.window}`);
+      if (we < wn - 1e-6) out.push(`${at}: Easy's window to leave the bank is ${we} s, under Normal's ${wn} (Easy is never harder)`);
+    }
   }
   return out;
 }

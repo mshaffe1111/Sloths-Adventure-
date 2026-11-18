@@ -2997,7 +2997,7 @@ export class GameEngine {
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
       // (`toFlag`: a heart and back to the flag, heartToFlag)
-      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX);
+      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX, hurt.hold);
     }
     for (const e of this.enemies) {
       if (e.defeated) {
@@ -5593,7 +5593,7 @@ export class GameEngine {
   }
 
   /** a hit: one heart (or `amount`), a flinch and a knock back AWAY from `fromX`, where the hit came from (his back, when it is not known) */
-  private damagePlayer(amount: number, fromX?: number) {
+  private damagePlayer(amount: number, fromX?: number, hold = false) {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
@@ -5607,7 +5607,8 @@ export class GameEngine {
     p.vy = -PHYS.hurtKnockV;     // small knockup
     // away from what hit him: it used to push him away from where he FACED, so a hit from behind threw him back into the foe, which
     // hit him again as soon as the 1.2 s of safety ran out (play-testers, 2026-10-25)
-    p.vx = knockDir(p.x, p.facing, fromX) * 180;
+    // (a hurt that holds him, PieceHurt.hold: straight up and back down where he stood)
+    p.vx = hold ? 0 : knockDir(p.x, p.facing, fromX) * 180;
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
