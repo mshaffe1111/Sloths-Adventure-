@@ -287,7 +287,7 @@ function creakyLanding(easy: boolean): Lay {
  *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row), one liana */
 function risers(easy: boolean): Lay {
   const r = lianaRun('', 'a', easy ? [{ gap: 'short', w: 280 }] : [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }], 2);
-  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'UssDCXU' : 'Uss');
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'UssDCXU' : 'UDU');
   return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], LANDED, 1, 60), petals('ph', 'hu1', LANDED, 2, 60), tip('t-still', 'z', 0.4, 'still')] };
 }
 /** [S] beat 13, the false liana (the signature): a "vine" that does NOT swing hangs from the canopy just past the bank, nearer than the real
