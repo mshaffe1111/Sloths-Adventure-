@@ -2,6 +2,16 @@
 
 Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
 
+## 0zm. BUILD-19b (t-build-19, 11-18): what moved when 1-9 left the hand-built path (no engine code changed)
+- Tests that used the hand-built 1-9 as a fixture now point elsewhere: verdicts' "never flown" stage is 5-7; writtenKeys' seed with a find
+  id is 2-3 (no World 1 stage writes one now); sheetWarm follows the ring drops to the hand-built stage that keeps a ring; w1Pits no
+  longer pins 1-9's vault pits; flagSpan LV-9 walks 27 hand stages (1-9's flags: gen2's verdict, reference/qa-reports/BUILD-19/flags19.ts).
+- A judged stage's flown rows are cited from chain.md §1 (verdicts.test checks the source string), never from the flight log directly.
+- A stage moving to gen2 sheds its known-list entries: coveragecheck names them (1-9's 'beat:ring waves' went).
+- OPEN (for the engine): a boa beaten by a freeze (beatenBy.still 'flees', 4 s) cannot move (speed 0), so it sits coiled with its red
+  ring on, he walks through it, and Dot's "it slides off!" is not shown; the roost's boa flees through him and vanishes at his feet in
+  a dirt burst (ENG-19b's toy, both ways). Stills: reference/qa-reports/BUILD-19/clips and stills.
+
 ## 0zl. BUILD-19 (t-build-19, 11-18): a stage whose goal counts petals never tops up animals
 - pipeline.ts planBudget `fights` and topUpFoes: a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: stagePlan
   `gathers: 'petals'`; 1-9) lays its sockets' animals and no more (quota.lay = the goal, no +2; no top-up). Before, 1-9's gauntlet kind

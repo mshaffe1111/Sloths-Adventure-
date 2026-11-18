@@ -162,3 +162,114 @@ Easy 2.0/9.5 (pre-swap head). Read: 1-9 reads near 1-7, far under its 9.5 target
   commits), D75 (proven on the real row), D77/D78, D81 (drawcheck named in the next step), D83 (probe scripts relative).
 - Method update: level.md step 3 should say "read the per-section animal counts and the trap list on the first roll" (the 16-for-12 and the
   unarmed trap were silent: CLEAN rolls with the wrong cast).
+
+---
+
+# BUILD-19b: 1-9's proof, gates and stills (t-build-19, from 4ec5147f; started 10:39 AM ET 11-18)
+
+## Head
+- **FINAL_HEAD** (pushed FINAL_TIME). Commits: b2ab276f shoot19.mjs; a5e698c8 the keeper's boa tip; d94ef514 the suite reds fixed at
+  their source + flags19.ts; c4577463 coverage.known shrinks; 6deac184 stills + clips; the last commit: this REPORT + engine-core.md §0zm.
+- Own miss: b2ab276f's `Claude-Session` trailer names the lead's session, not this one (left as is: no force-push on a shared branch).
+
+## Gate table (each heavy check ONCE)
+| Gate | Result | Head |
+|---|---|---|
+| tsc | 0 | 4ec5147f, again on d94ef514 |
+| full suite (alone, 29 min) | 3818 tests: 3806 pass, **10 fail**, 2 todo; every red traced to 1-9 leaving the hand path or being flown (below) | b2ab276f (src = 4ec5147f) |
+| the 13 test files the fixes touch (+ the tip's) | 174/174 | d94ef514 |
+| seedlist 1-9 --check | PASS: 0 of 100 refused, each clean both settings (25 s) | d94ef514 |
+| seedlist 1-1 --check | PASS: 0 of 161 refused (3 min) | d94ef514 |
+| lockall --intended 1-9 vs origin/main 6e7b85f8 (16 layouts) | **101/102 stages unchanged; only 1-9 moved (intended)**; exit 0 | d94ef514 + c4577463's known list |
+| flags19.ts (gen2's flag verdict on every proven 1-9 roll) | 200/200 clean (rolledFlagBreaches + pipeline 'flags:'), widest span 3980 px (LV-9 max 4000), 15 flags a roll; PLANT=1 fails by name | d94ef514 |
+| coveragecheck | FAIL first ('beat:ring waves': no built stage uses it now) -> entry removed (shrink-only) -> PASS, 5 known gaps | c4577463 |
+| registrycheck | PASS (11 stages registered everywhere) | d94ef514 |
+| knowncheck | PASS | c4577463 |
+| generalitycheck | PASS (26 literals, 26 known) | d94ef514 |
+| roadmapcheck | PASS (after `git fetch --unshallow`: a shallow clone FAILs it by design) | c4577463 |
+| planted-faults.py | 6/6 CAUGHT | 6deac184 |
+| drawcheck (all scenarios, 1-9 both ways) | DRAWCHECK_LINE | 6deac184 |
+| bots | not re-run: 1-9's stage data unchanged since 202d198a (BUILD-19's 40/40 every tier both settings stands; lockall shows no other stage moved) | - |
+| clipcheck, kbdcheck, buildcheck, build, chunkcheck, artcheck | not run: no menu, survey page, build path or asset touched (law 5 scoped); the integration head runs them all | - |
+
+## The ten suite reds, each fixed at its source (assertion kept, fixture re-pointed or the table brought up to date)
+1. flagSpan LV-9: `across.length >= 28` -> 27 (the hand-built 1-9 left HAND_STAGES; INT-11's 30 -> 28 precedent, 2edb838c); the 4000 px
+   rule untouched; 1-9's flags proven by gen2's verdict (flags19.ts above). The lead's condition (11:05 AM) met.
+2-3. judgedTable (2 tests): JUDGED holds `'1-9': 'normal-1-9'` (BUILD-19 flew it); the table and 1-9's scopes asserted.
+4, 6, 7. verdicts: three tests used '1-9' as the never-flown stage -> '5-7' (assertions unchanged).
+5. verdicts "no closed-form figure": every flown row's source must cite `reach.md §2` or `chain.md §1`; n19 cited the flight log.
+   1-9's rows entered in chain.md §1 (figures checked against flight-1-9-normal.txt's [rise] and [dist]) and cited from flownArcs.ts.
+8. sheetWarm: rings 0 (the ring was the hand-built 1-9's) -> the ring check follows the ring to the hand-built stage that keeps one; `rings > 0` kept.
+9. w1Pits: `soft['1-9'] >= 3` pinned the deleted hand-built 1-9's vault pits (1-9.md names none) -> dropped; every soft pit's step out
+   kept, plus a guard that the walk finds soft pits (6 today). The lead may want a different guard.
+10. writtenKeys: needed a World 1 seed with a find id -> **the gen2 1-9 lays no golden seed** (its design names none; the hand-built had
+   `seed-1`): World 1 now has 3 golden seeds (1-1, 1-5, 1-7), none with a find id. Fixture -> 2-3 (`seed-1`). Content/design call.
+
+## The keeper's journal tip (j): wired verbatim (a5e698c8)
+journal.ts:28 "Senses warmth through its lips. A cool, still sloth seems like moss." (12 words; t-keeper-19@8c1df5bf row (j));
+lines-1-9.md taken from the keeper; w1Arc19.test now checks (j) word for word (planted: one word changed -> red). journal.test 12-word cap: green.
+
+## Meter WITH its anchor (1-1, seeds 1-4, both settings; SCALE 0.28194)
+| Stage | Normal (range) | Easy (range) | mean /min N | read |
+|---|---|---|---|---|
+| 1-9 | **1.7** (1.3-2.1) | **1.2** (1.0-1.3) | 2.7 | target 9.5 (DIFFICULTY.md:67); Easy <= 5.7. **7.8 under on Normal**; Easy/Normal 0.71 |
+| 1-7 / 1-8 (same run) | 2.2 / 6.9 | 1.4 / 3.2 | 4.1 / 15.6 | |
+Plainly: the meter reads 1-9 under 1-7 and far under its target. Its asks: 53 single, 11 creature, 2 watch, 1 hazard (seed 1). It counts
+each boa as one plain "creature" ask, with no bits for the freeze's nerve window. Not tuned (packet); the meter or the stage is the lead's call.
+
+## Stills and clips (Polish check)
+**ENG-19b's roost (toy, clips/roost-*.jpg, frames named):** the boa rears (f27), the nest beats it the next step, he keeps 5/5. Both ways.
+**The middle bot's freeze (clips/bot-middle-up-*.jpg):** rear at step 67; the thumb lifts at step 72 (0.17 s); still by step 76; beaten
+by stillness at step 98 with the slow motion from that step (f49); 5/5, 0 hits.
+**1-9 (stills/, 48 shots by shoot19.mjs, seed 2, Normal + Easy, upright 412x915 + sideways 915x412, the whole screen):** arrival with
+Dot's first card; the teach line on screen; the freeze boa rearing below the step; the slow-motion frame; 1.5 s after; the trapped boa
+under the hive with the vine handle; the stair's boa rearing; the roost on the creaky limb (Normal) and the sound one (Easy); the eagle
+over the hunters' boa; the Old Boa under its eagle; the exit ("33 more" on its door).
+- GOOD: the teach line reads both ways, and sideways its card sits below him, clear of the boa; the rear reads (the "!" and the head
+  up); the trapped boa, the hive load and the vine read together; the exit reads; nothing under the notch; HUD whole.
+- **ROUGH, NOT FIXED (engine; the line and the screen disagree):** a boa beaten by a freeze never slides off. It sits coiled with its
+  red ring for its 4 s flee (moved 0 px after 1.5 s, 04b, both settings), and he walks through its coil (bot clip, after-freeze f68).
+  Dot says "Don't move, and it slides off!" Cause: BOA speed 0 (posted); beatenBy.still 'flees' has nothing to move it; the ring is
+  drawn while it flees. ENGINE-WORTHY 6.
+- **ROUGH, NOT FIXED (engine):** the roost's boa flees toward and through him with its "!" (reads as an attack) and vanishes at his feet
+  in a dirt burst (toy f29-f34, f46-f50, both ways). On 1-9 the roost boa was gone by the time the still was shot (the nest chased it at
+  wake). ENGINE-WORTHY 7.
+- ROUGH, named: the Old Boa is the plain kit boa, so 11 and 12 read alike (R-165.279). Upright, the boa or roost sits at the right edge
+  in 05, 09-12 (he stands 230-260 px short; the view leads him). The slow motion does not show in a still (the view is kept, by design).
+- **UNSHOT:** the miss and the bop (07, 08). A scripted thumb at the edge of the strike's reach was struck (a heart lost, seen in the
+  hurt counter); the bots clear the beat 40/40. Shooting it needs the bot's own pads replayed on 1-9 (boaBotPads on the real stage).
+- UNSHOT: a still of the eagle's eye as a shadow over a boa: the eye's pass is drawn as the eagle; the shot frame has it 180 px off the boa.
+
+## ENGINE-WORTHY (new)
+6. The freeze's "slides off": a beaten-by-still boa slides along its bough away from him (or out of view) and drops its red ring the
+   moment it is beaten; a still 1.5 s after a freeze shows it gone or going. S-M.
+7. A boa chased off by a lure (the roost) leaves AWAY from him when he is on that side, never through him; no exit burst under him. S.
+8. boaBotPads for a real stage (not the toy), so the miss/bop and the freeze are clipped on 1-9 itself. S.
+
+## Learned (for the next builder)
+- 8 of the suite's 10 reds were tests using the old hand-built stage as a fixture. Before the suite, `git grep -n "'1-9'" -- 'src/**/*.test.ts'`
+  and re-point each to a stage that still has the property (never flown, a find id, a ring, vault pits) in the build's own commit.
+- A still sloth wakes no boa. A stills script must WALK him in and let go (place-and-step shows a sleeping stage); tap Dot's card
+  (.dg-bub) before each beat but the arrival; keep the guide (no clearGuide) for a teach-line still; shoot a beat only when its moment is
+  true on that frame (shoot19.mjs).
+- A judged stage's flown rows are cited from chain.md §1 (a test checks it).
+- A stage moving to gen2 sheds its known-list entries (coveragecheck names them) and its golden seed unless the design names one.
+
+## Proposed level.md rule changes (the lead decides)
+- New (step 4, a build that replaces a hand-built stage): "grep every test for the stage's id as a fixture and re-point each in the
+  build's commit; a floor that counts hand stages drops by one only with a proof that gen2's verdict holds the new stage (flags19.ts)."
+  Check: the suite.
+- New (rule 6's pair): "What Dot says an answer does must show on screen: a still 1.5 s after each taught answer shows it (the boa
+  slides off, the load drops)." Check: shoot19.mjs's 04b beat.
+
+## Method used / lessons applied / method update
+- Method: ENGINE.md day one (main's lock first, the stage's seed lists), level.md steps 4-5, gates.md.
+- Lessons: D3/law 3 (each fact checked in code: the tip at its source, the flight figures in the log, the golden seeds by building every
+  stage), D19 (the proof builds 1-9 as the game does), D21 (the ring followed to where it lives), D23 (main 6e7b85f8 is in the branch),
+  D29 (the seed lists checked), D30 (times from date), D62 (the setting by localStorage), D67 (no wait loops), D79 (whole screen),
+  D81 (drawcheck), D83 (flags19.ts and shoot19.mjs import relatively), law 22 (no assertion loosened; fixtures re-pointed).
+- Method update: level.md step 5 should name shoot19.mjs's way (walk in, tap Dot's card, fail-closed beats) as the stills method for a
+  cast stage; tools/engine/runs/stills-at.mjs's place-and-step suits terrain, not animals that wake on movement.
+
+## Turnover note
+reference/handoffs/engine-core.md §0zm (this REPORT's commit).
