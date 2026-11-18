@@ -72,7 +72,31 @@ TBD
 TBD
 
 ## 8. Learned (for the next builder)
-TBD
+- **Map a repeat to its sections before changing anything.** `probes/runs.ts` (each 4-move run repeated over 3 times, with the
+  sections every copy spans) found the real causes in one run: "rest JJ | rolled join J | liana V" on every roll. Two hours of
+  guessing at piece shapes before it moved nothing.
+- **The route reads what a player holding right does**, not the pieces: root banks with no gap still read as jumps (the route jumps
+  root-top to root-top over the low banks). A rest "looks different" to the eye long before it reads different to the reader.
+- **A vine must stand at the foot of its wall**, never 140-220 px back: the child bot walks to the wall, finds it too high and never
+  looks back (rescued). And the bank he reaches the vine from must be walked onto, not hopped onto (he lands past the vine).
+- **A walk-in join into a liana beat stuck the first-timer bots** (1-6 kid 6/16 vs 15/16 rolled; 1-7's two liana beats). Asked
+  joins are fine before ground beats (1-7's eagle beats).
+- **1-8's chase is tuned to its fork length.** Shorter rests moved the flag chain so a stretch stopped early (the still fork's moss
+  26 px past its line); a rest much longer, with a climb, was never laid. Keep a chase stage's rests near the length the chase was
+  designed for, and run the stage's own tests (w1Arc18.test.ts caught it, the bots did not).
+- **Read the inbox** (D57): I worked 50 minutes past the lead's GO and ruling.
+- **Two relists at once clobber the proven index** (each rewrites the whole file from its start-time copy): relist one stage at a
+  time, or re-run the last one; seedlist --check catches it.
+- **The validator's blind spots move verdicts across stages**: 1-4 reads no moves, 1-2's bounces read as jumps, so a climb anywhere
+  later reads as "new" (R-165.283). Real climbs in 1-6..1-8 took 1-9's false "new" away (1-9 "nothing new" 3 -> 5 N, 3 -> 6 E).
 
 ## 9. Proposed level.md rules
-TBD
+1. **Before a variety fix, run the runs probe** (`reference/qa-reports/VAR-1/probes/runs.ts <stage> <layout> <setting>`): every
+   repeated run with its sections. Check: the REPORT carries its output before and after. (Proposed as a tool:
+   tools/validate/runs.ts, ENGINE tier, so it is not a probe copied per builder.)
+2. **A climb vine stands within 60 px of the foot of its wall, reached on a bank he walks onto.** Check: a test on the built stage
+   (vine x to wall x), and the child bot 40/40.
+3. **No two rests of a stage alike: each rest maxPerStage 1, and the stage's test asserts the rests of every roll are different.**
+   (w1Arc17.test.ts / w1Arc18.test.ts now do.)
+4. **A chase stage's rests stay near the fork length its chase was laid for** (1-8: about 2,600-2,900 px). Check: the stage's
+   teach-line test and a stretch-count probe over 40 rolls.
