@@ -20,10 +20,14 @@ edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) 
 bgm = np.isin(lab, list(edge))
 # (grey trapped inside the outline, e.g. between a duckling's legs: any enclosed region of the flat grey over HOLE px is keyed too. A
 # region that size within tol of the grey is never paint: the darkest fur here, the otter's, sits over 40 off it)
-HOLE = 150
-sizes0 = nd.sum(near, lab, range(1, n + 1))
-trapped = [i + 1 for i, sz in enumerate(sizes0) if sz > HOLE and (i + 1) not in edge]
-bgm |= np.isin(lab, trapped)
+# Only FLAT grey counts (within HOLE_TOL of it, the edit's untouched ground): grey paint such as the heron's weathered post is
+# textured and sits further off, so it is never keyed (11-18: tol 26 here punched holes in the post's wood).
+HOLE, HOLE_TOL = 150, 9
+flat = np.abs(a - bg).max(axis=2) <= HOLE_TOL
+labh, nh = nd.label(flat & ~bgm)
+sizes0 = nd.sum(flat & ~bgm, labh, range(1, nh + 1))
+trapped = [i + 1 for i, sz in enumerate(sizes0) if sz > HOLE]
+bgm |= np.isin(labh, trapped)
 fg = ~bgm
 lab2, n2 = nd.label(fg)
 sizes = nd.sum(fg, lab2, range(1, n2 + 1))
