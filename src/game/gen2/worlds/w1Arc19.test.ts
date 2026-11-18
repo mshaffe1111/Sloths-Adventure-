@@ -151,3 +151,20 @@ test('Easy is never harder than Normal: no more boas, no fewer flags', () => {
     assert.ok(e.enemies.filter((q) => q.type === 'boa').length <= n.enemies.filter((q) => q.type === 'boa').length, `seed ${seed}: boas`);
   }
 });
+
+test("1-9's golden seed: one a roll, both settings, in the first rest (after the stair), never inside a boa read or a teach, a hop over its root", () => {
+  // (the lead 11:17 AM ET 11-18: World 1 counts its golden seeds, "SECRET! GOLDEN SEED x OF n"; the hand-built 1-9 carried one)
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const st = built(seed, d) as Built & { collectibles: Array<{ type: string; x: number; y: number }> };
+    const seeds = st.collectibles.filter((c) => c.type === 'seed');
+    assert.equal(seeds.length, 1, `${d} seed ${seed}: ${seeds.length} golden seeds`);
+    const sd = seeds[0];
+    const order = st.gen2.sections.map((q) => q.template);
+    const home = st.gen2.sections.find((q) => { const ps = piecesOf(st, q.uid); return ps.length && sd.x >= Math.min(...ps.map((p) => p.x)) && sd.x <= Math.max(...ps.map((p) => p.x + p.width)); })!;
+    assert.equal(home.template, 'w1-19-rest', `${d} seed ${seed}: the seed in ${home.template}`);
+    assert.equal(st.gen2.sections.indexOf(home), order.indexOf('w1-19-stair') + 1, `${d} seed ${seed}: the first rest, right after the stair`);
+    const step = piece(st, 'w1-19-rest', 'h');
+    assert.ok(step.y - sd.y >= 50 && step.y - sd.y <= 70, `${d} seed ${seed}: ${step.y - sd.y} px over its root step (a hop)`);
+    for (const e of st.enemies.filter((q) => q.type === 'boa')) assert.ok(Math.abs(e.x - sd.x) > 600, `${d} seed ${seed}: a boa ${Math.round(Math.abs(e.x - sd.x))} px from the seed`);
+  }
+});

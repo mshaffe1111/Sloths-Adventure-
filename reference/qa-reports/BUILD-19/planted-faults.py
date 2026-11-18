@@ -12,6 +12,7 @@ FAULTS = [
   ("beat 2's step made level", ARC, "root('f', 'e', 360, DOWN)", "bank('f', 'e', 360)", TEST, 'beat 2:'),
   ("Normal's roost limb made sound", ARC, "limb('k', 'w1', !easy)", "limb('k', 'w1', false)", TEST, 'beat 7:'),
   ('the freeze line moved beside its boa', ARC, "tip('t-freeze', 'a', 0.3, 'freeze')", "tip('t-freeze', 'e', 0.9, 'freeze')", TEST, '800 px or more'),
+  ('the golden seed taken out (BUILD-19b)', ARC, ",\n      { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },", "] },", TEST, 'golden seed'),
   ('the reads swapped', ARC, "Cg&:&boa-trapped! Ch&:&boa-roost!", "Ch&:&boa-roost! Cg&:&boa-trapped!", TEST, 'beat for beat'),
 ]
 caught = 0
