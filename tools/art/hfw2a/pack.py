@@ -16,6 +16,7 @@ cut_dir, picks = sys.argv[1], json.load(open(sys.argv[2]))
 P = 'src/assets/props/'
 DATA = 'src/game/w2PropsData.ts'
 GAP = 4
+Q = 88  # one re-encode of the sheet: Matt's pieces measured 40.3 dB (w2-props) and 39.7 dB (dressnew-w2), max 22 levels
 POST_PAD = 22  # w2Heron's pixels from this far under the post's top edge down (the post's body, rope and water): the look keeps its own toes and post top
 CATTAIL_X = 0.37  # share of w2Heron's width the cattails stand in (the legs start past it)
 
@@ -63,7 +64,7 @@ for k in order:
     new[k] = (x, y0 + rowh - im.height, im.width, im.height)
     x += im.width + GAP
 assert out.height <= 4096
-if ims: out.save(P + 'w2-props.webp', 'WEBP', quality=92, method=6)
+if ims: out.save(P + 'w2-props.webp', 'WEBP', quality=Q, method=6)
 F2 = {**{k: v for k, v in F.items() if k not in new}, **new}
 body = '\n'.join(f'  {k}: {{ x: {v[0]}, y: {v[1]}, w: {v[2]}, h: {v[3]} }},' for k, v in sorted(F2.items()))
 s2 = re.sub(r'(export const W2_FRAMES = \{\n)(.*?)(\n\} as const)', lambda m: m[1] + body + m[3], src, flags=re.S)
@@ -131,7 +132,7 @@ if 'w2HeronLook' in picks:
     out = Image.new('RGBA', (max(ds.width, fw), y1 + fh), (0, 0, 0, 0))
     out.alpha_composite(ds, (0, 0)); out.alpha_composite(fr, (0, y1))
     assert out.height <= 4096
-    out.save(P + 'dressnew-w2.webp', 'WEBP', quality=92, method=6)
+    out.save(P + 'dressnew-w2.webp', 'WEBP', quality=Q, method=6)
     units = round(hu * fw / hw, 2)
     entry = f'"w2HeronLook": {{\n  "x": 0,\n  "y": {y1},\n  "w": {fw},\n  "h": {fh},\n  "units": {units},\n  "world": 2\n }},\n '
     dn = re.sub(r'"w2HeronLook": \{.*?\},\n ', '', dn, flags=re.S)
