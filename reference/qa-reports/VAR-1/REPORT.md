@@ -1,6 +1,7 @@
 # VAR-1: variety for 1-6, 1-7, 1-8 (R-165.276). Level builder, 2026-11-18
 
-Branch `t-var-1` (from origin/main 6e7b85f8f). DRAFT: the numbers below marked TBD are filled from the final head.
+Branch `t-var-1` (from origin/main 6e7b85f8f). Stage data head **fb7008fc2** (every number below is from it unless named); the REPORT and
+funknown.json commit on top changes no stage.
 Method: reference/methods/level.md (rules 1-29), the lead's GO 10:19 AM ET and rulings 10:00 / 10:50 AM ET.
 Lessons applied: D57 (read the inbox: I missed the 10:00 and 10:19 messages until 10:50, my miss), D79 (stills of the whole screen,
 both ways, both settings), D81 (drawcheck both ways), D83 (probe scripts use relative imports: reference/qa-reports/VAR-1/probes/).
@@ -52,24 +53,75 @@ no new art, no Hugging Face. Climb (taught in 1-4) added to the three kits' move
 Every rest is a rest (the lead's condition 10:19): no pit, no heart on either setting; each rest that climbs has the vine at the foot of
 its wall (a miss is the ground he stood on). Removed on the way: stepping-stone RESTS (soft gaps are pits), a hide in a rest.
 
-## 3. Flags before / after (funcheck, layouts 1-16, both settings)
-TBD
+## 3. Flags before / after (funcheck, layouts 1-16, both settings; `funcheck-main-6e7b85f8.txt` vs `funcheck-final-fb7008fc.txt`)
+| Flag (the 11) | main | fb7008fc2 |
+|---|---|---|
+| 1-6 Normal repeat ("JVJ" back to back) | 14/16 (new) | 0 |
+| 1-6 Easy repeat ("JVJJ" 7 times) | 16/16 (new) | 0 |
+| 1-7 Normal repeat ("FjJJ") | 16 (known 13) | 0 |
+| 1-7 Easy repeat | 16 (known 13) | 0 |
+| 1-7 Normal like an earlier stage (1-2) | 6 (known 2) | 0 |
+| 1-7 Easy like the stage before (1-6, 68%) | 16 (known 1) | 0 |
+| 1-7 Normal nothing new | 16 (new) | 0 (the eagle fix) |
+| 1-7 Easy nothing new | 16 (new) | 0 (the eagle fix) |
+| 1-8 Normal like the stage before (1-7) | 13 (new) | 0 |
+| 1-8 Easy like the stage before (1-7) | 16 (new) | 0 |
+| 1-8 Easy like an earlier stage (1-6, 75%) | 11 (new) | 0 |
 
-## 4. Bots (castBots 1-40, both settings)
-TBD
+- The gate's worse-or-new lines: 34 on main, **23** now: exactly these 11 gone; **no other stage's line changed** (diffed, every
+  stage but 1-6/1-7/1-8). Not in the 11 and still there: 1-6 Normal "nothing bites", 15 layouts (main 16; known 1): the walked ground
+  costs nothing when missed, by design of a rest. 1-8's repeats (its chase, known 16) unchanged at 16.
+- funknown.json only shrinks: 21 entries of 1-6/1-7/1-8 that the gate reads as gone deleted, 1-8 Normal "pacing" 16 -> 14 (135 -> 114
+  entries; knowncheck PASS). Other stages' entries untouched (not mine).
+- **1-9 (BUILD-19's) moved, under its known counts**: "nothing new" 3 -> 5 Normal, 3 -> 6 Easy (known 15 / 13). Its only "new" move on
+  those layouts was a climb, new only because the validator reads 1-4 as no moves (R-165.283); 1-6..1-8 now really climb.
+
+## 4. Bots (castBots seeds 1-40 on each final list; main's run where a tier missed, same command on main + the eagle fix)
+| Stage | kid N | kid E | adult N | adult E | child N | child E | middle N | middle E | expert N |
+|---|---|---|---|---|---|---|---|---|---|
+| 1-6 | 35 (main 36) | 40 (39) | 37 (39) | 40 (40) | 39 | 39 | 40 (40) | **38** (40) | 40 |
+| 1-7 | 38 (main 35) | 40 | 39 (main 38) | 40 | 40 | 40 | 40 | 40 | 40 |
+| 1-8 | 40 | 40 | 40 | 40 | 40 (main 36) | 40 | 40 | 40 | 40 |
+
+Every miss traced (castBots --json, the stuck x mapped to its section):
+- 1-7 kid N 4, 12, adult N 11: in the creak, the mossy lianas and the light gap (unchanged beats; main misses more there).
+- 1-6 kid/adult N: the first liana and the creaky landing's pit (unchanged beats; main 36/39).
+- **1-6 child N 17 (the dip rest's vine: "fell back down from here 8 times"), child E 26 and middle E 15 (the vine in the creaky
+  landing's Easy ground: "the way on is 136 px up"), middle E 24 (the dip rest's vine): MY climbs.** The bot climbs and fails the
+  step off the top (a 60 px knot of bough, then the root's top). OPEN: it makes middle Easy (38) read harder than middle Normal (40).
+  Not fixed: a fix needs a 27-minute relist and a 35-minute bot run, past the box; I did not ship an untested change. Next step below.
+- Earlier passes, fixed before this head: the vine 140-220 px back from its wall (child stalled at the wall); the walk-in join into
+  liana beats (first-timers stuck); a hide in a rest (the child waited in it).
 
 ## 5. Meter (score.ts seeds 1-4; before = main + the eagle fix, the same stage set)
 | Stage | Before Normal | After Normal | Before Easy | After Easy |
 |---|---|---|---|---|
-| 1-6 | 5.7 (20 swings) | TBD | 3.2 (10 swings) | TBD |
-| 1-7 | 2.1 | TBD | 1.2 | TBD |
-| 1-8 | 6.8 | TBD | 3.3 | TBD |
+| 1-6 | 5.7 (20 swings) | **7.0** (20 swings) | 3.2 (10 swings) | 3.1 (9 swings) |
+| 1-7 | 2.1 | 1.9 | 1.2 | 1.3 |
+| 1-8 | 6.8 | 6.7 | 3.3 | 3.3 |
+
+DIFFICULTY.md:67 targets: 1-6 6.5, 1-7 5.5, 1-8 7.5. 1-6 Normal went from 0.8 under to 0.5 over: the swing load is unchanged (20 swings,
+the lead's condition) but the walked ground now asks moves (climbs 4, hops) inside the busiest 30 s (peak 29.95 -> 37.1 points a
+minute). 1-6 Easy scored 9 swings over seeds 1-4 against 10: NOT traced (named, not explained). 1-7 stays far under its 5.5, as on main.
 
 ## 6. Gates (on the final head)
 TBD
 
-## 7. Polish check
-TBD
+## 7. Polish check (stills from the real game, layout 1, 412x915 and 915x412 at 2x, Normal and Easy; `stills/sheet-<stage>-<setting>-<way>.jpg`,
+each sheet one still per new piece in stage order; shot on the final data of each stage: 1-7 at a39c90dac's list (1-7 unchanged since),
+1-6 and 1-8 at fb7008fc2. Script: `probes/stills.mjs` (tools/engine/runs/stills-at.mjs with EASY=1))
+- 1-7 (`sheet-1-7-*`): the moss shelf (mushroom by a tall mossy shelf), the mossy floor (rocks, a fallen log), the fern dip (a vine trunk
+  at the foot of the dip's wall), the hollow log: four different pictures, every one a floor he walks, no pit. The round thing on the
+  mossy floor is World 1's cracked-nut decoration, not an animal (checked zoomed). Dot's arrival line is on screen in most stills (the
+  page's own line, not a defect of the rests).
+- 1-8 (`sheet-1-8-*`): the knotted bough, the split fork (high limb over burls), the saddle: each reads. ROUGH, named: the knots draw as
+  flat grey stone slabs on the bough (moss_stone blocks in a world drawn as boughs), and the bough's long seams draw like small breaks
+  over the mist though the floor is continuous (checked: one 1,400 px platform).
+- 1-6 (`sheet-1-6-*`): the beat-ground climb, the great root, the stumps, the log rest, the dip. ROUGH, named: every vine climb
+  (the great root, the dip, the beat-ground climbs) is the same picture, a vine trunk at a tall root wall; the dip differs only by
+  standing in a dip. They read as "climb here" on both phones, but they are one look three times.
+- Before/after of the flag spots: the flags are move strings, not a spot on screen; the runs probe output before (main) and after is
+  the evidence (section 3). Rule 29: these stills are on the final data, but 1-6's bots are not all green (section 4).
 
 ## 8. Learned (for the next builder)
 - **Map a repeat to its sections before changing anything.** `probes/runs.ts` (each 4-move run repeated over 3 times, with the
