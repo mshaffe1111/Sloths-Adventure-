@@ -1,6 +1,22 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+Rewritten for BUILD-24 (11-18, t-build-24): section 0zm (2-4 built on ENG-24's liana-over-river pieces: what the next builder and engineer must know). Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+
+## 0zm. BUILD-24 (t-build-24 from t-meter-3@42459a5c, 11-18): 2-4 "Never Touch the Bank" built on 0zl's pieces; what the next builder and engineer must know
+- **Where:** src/game/gen2/worlds/w2Arc24.ts (kit 'w2-24', kitLib24; RIVERS_24; LINES_24, MISSION_24), stageTable '2-4' judged 'normal-2-4'
+  (flownArcs.ts n24, chain.md §1, reference/qa-reports/BUILD-24/fly-2-4.txt), proven list seeds-2-4.ts (100). The hand-built 2-4 is gone
+  (w2Stages.ts W2_STAGES, w2Sections.ts plan + the kinds only it used, swing4 and island). Tests: w2Arc24.test.ts (planted-faults.py).
+- **Two lianas over ONE river (beats 6, 8):** two swings after the same bank, the river after the second (0zl's form). The second must hang
+  past physics CHAIN.dx (560 px) from the first: closer, the pair is a CHAIN (phased for a leap), the route swings liana to liana and the
+  log between them is skipped (reach 600 was 435 px apart). w2Arc24.ts FAR_W = 765; the test holds >= CHAIN.dx.
+- **The quiet line binds liana rivers (listRules quietJudge, 4 s):** route.ts's lianaDrop is NOT a beat; from the swing to the next action
+  he flies (dist/430 + 1.2 s + half the worst wait) and then walks. A river whose far bank is 600+ px past the liana, or a flat landing
+  bank, reads 4.2-8.5 s. Fix by data: a boulder at each landing (0.15), 2 log spacings for practise rivers. 2-4's list sits at 4 s.
+- **Easy's judge (<= 0.6 s wait) refuses a 320 px log-caught liana on every row (0.63 s) and beat 4's twin/long (0.63-0.70 s):** 340 px
+  under the 410 top, and `deep` logs for Easy's beat 4. A 300 px log at 60 px/s breaks riverFaults' 4 s log beat (no `lashed` row).
+- **A finale brief adds a finale node** (pipeline graphFor `ends`): a design with none needs `ends: 'quiet'`, else the pool is short.
+- **Open (engine, before 2-4 ships; the lead's rulings 3:12/3:15 PM ET):** R-165.288/.289: RiverRow.look 'raft' (beat 9 rides a log) and
+  the sweet-spot glow agreeing with the log on a liana over a river (engine.ts:2412-2426 is phase-only). Not done: the camera pull-out.
 
 ## 0zl. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
 - **The place (data, no type change):** `{ kind: 'river', after: <a liana's key>, row }` lays the water from the bank the liana (or its
