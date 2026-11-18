@@ -50,7 +50,23 @@ table, tests, gates.yml's test list. **Over the box: ended at about 65% real con
   the scratch merge).
 
 ## Gates
-GATES_TABLE
+| Gate | Result | On |
+|---|---|---|
+| tsc --noEmit | PASS | f39cc186 |
+| coveragecheck | PASS (12 built stages, 26 pieces, 6 known gaps) | f39cc186 |
+| knowncheck | PASS | f39cc186 |
+| generalitycheck | PASS (61 engine files, 26 literals, 26 known) | f39cc186 |
+| lianaChannel.test (3) + score.test PREDATOR (2) | 3/3, 2/2 (and 2/2 on the t-build-19 scratch merge: freeze 0.467/0.633) | f39cc186 |
+| roadmapcheck (unshallow), tierBots (1-1 calibration), lockall vs main, the full suite | **NOT VERIFIED BY ME**: started in the background at 12:56 PM ET (`/tmp/claude-0/gates.sh`); stopped at the lead's 50% rule before they reported | - |
+
+## EXACT NEXT STEP (a fresh member or tonight's integration)
+1. On t-meter-3: `node tools/roadmapcheck.mjs` (after `git fetch --unshallow`), `npx tsx --test tools/inspect/tierBots.test.ts` (the 1-1
+   calibration must not move: this branch changes no src/ file and no route without a liana over a river, so it should hold), lockall
+   (`--layouts 16 --check` against main's lock: no src/ change, so no layout can move), and the full suite once (add
+   tools/difficulty/lianaChannel.test.ts; it is in gates.yml).
+2. When the gen2 1-9 (t-build-19) merges: re-run `npx tsx tools/difficulty/score.ts --stages 1-1,1-7,1-9 --seeds 1-4 --settings normal,easy`
+   and score.test.ts's PREDATOR tests (the second bites only there).
+3. Lead's call: whether the hold-until-it-flees (endurance) and the bait/roost get their own channels (1-9's remaining gap to 9.5).
 
 ## Learned
 - A meter channel should read the engine's own judge (lianaDrops, the boa's flight), never a constant: both numbers matched the engine's
