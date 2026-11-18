@@ -86,16 +86,19 @@ export class FollowPlay {
       s.dur = z.calm[0] + (z.lag ?? 0);
       const end: 1 | -1 = i % 2 === 0 ? (stage.dir ?? 1) : (-(stage.dir ?? 1) as 1 | -1);
       const fx = end > 0 ? z.x1 + HERON_OFF : z.x0 - HERON_OFF;
-      return { z, s, end, foot: { x: fx, b: this.groundAt(fx) ?? this.groundAt(end > 0 ? z.x1 : z.x0) ?? start.y }, lookX: null };
+      // (it wades at the level of its stretch: the reeds' ground there, else where he started)
+      const level = stage.covers.find((c) => c.x < z.x1 && c.x + c.w > z.x0)?.y ?? start.y;
+      return { z, s, end, foot: { x: fx, b: this.groundAt(fx, level) ?? level }, lookX: null };
     });
   }
 
-  /** the water or still ground under x (the top-most), null where there is none */
-  groundAt(x: number): number | null {
-    let best = Infinity;
-    for (const w of this.stage.safeWater) if (x >= w.x0 && x <= w.x1) best = Math.min(best, w.y);
-    for (const pl of this.stage.platforms) if (pl.type === 'solid' && !pl.pad && x >= pl.x && x <= pl.x + pl.width) best = Math.min(best, pl.y);
-    return best === Infinity ? null : best;
+  /** the water or still ground under x nearest the height `near` (the top-most when none is given), null where there is none */
+  groundAt(x: number, near?: number): number | null {
+    let best: number | null = null;
+    const better = (y: number) => best === null || (near === undefined ? y < best : Math.abs(y - near) < Math.abs(best - near));
+    for (const w of this.stage.safeWater) if (x >= w.x0 && x <= w.x1 && better(w.y)) best = w.y;
+    for (const pl of this.stage.platforms) if (pl.type === 'solid' && !pl.pad && x >= pl.x && x <= pl.x + pl.width && better(pl.y)) best = pl.y;
+    return best;
   }
 
   /** a cage burst at (x, y): its little one drops to `land` (the ground or water under it) and walks to the end of the line */

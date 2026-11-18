@@ -43,8 +43,8 @@ type R2 = [number, number];
 /**
  * World 2's little ones that follow him home (2-3 "Walk Them Home", reference/design/2-3.md "follow.ts: the engine packet's contract":
  * `FOLLOW = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60 }`, flown in reference/specs/sims/follow23.ts). `home`
- * is the engine packet's (ENG-23): a bunched five stands 170 px behind him (5 x 34), so at the door all five are past the families' jetty
- * 200 px before it. A stage lays it as proto.follow.
+ * is the lead's number (ENG-23, ruled 2:10 PM ET 11-18; to be flown on the real 2-3 by its builder): a bunched five stands 170 px behind
+ * him (5 x 34), so at the door all five are past the families' jetty 200 px before it. A stage lays it as proto.follow.
  */
 export const W2_FOLLOW: FollowRow = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60, home: 200 };
 

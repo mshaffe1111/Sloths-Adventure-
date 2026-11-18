@@ -352,16 +352,19 @@ test('the engine: the line paddles over splash-back water on his path and nobody
   const hp = r.p.hp;
   inp.triggerTouchMove('right');
   let paddled = 0, lift = -1;
+  let atSurface = true;
   for (let k = 0; k < 360; k++) {
     const on = r.platforms.find((q) => q.id === r.standingOn);
     if (r.p.grounded && on && on.x + on.width - r.p.x < 25 && on.id !== 4 && lift < 0) { inp.triggerTouchUp(0, 80); lift = k + 2; }
     if (k === lift) { inp.releaseTouchUp(); lift = -1; }
     r.e.update(DT);
     if (fp.line.some((f) => f.paddle)) paddled++;
+    for (const f of fp.line) if (f.paddle && Math.abs(f.y - (FLOOR + 20)) > 0.5) atSurface = false;
     if (r.p.x > 2100) inp.triggerTouchMove('none');
   }
   assert.ok(!r.died, 'he crossed on the stones');
   assert.ok(paddled > 10, `the line paddled (${paddled} frames)`);
+  assert.ok(atSurface, 'a paddling little one is at the water\'s surface, not at the height of his hop');
   assert.ok(fp.line.every((f) => f.x > 1660 && !f.paddle), `all three across: ${fp.line.map((f) => Math.round(f.x))}`);
   assert.equal(r.p.hp, hp, 'no heart');
 });

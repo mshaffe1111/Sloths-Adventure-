@@ -309,6 +309,29 @@ export function drawReeds(
   return true;
 }
 
+/** the painted reeds a clump is made of, each at its width (px): about 73-116 px tall, over a little one (45) and most of him (89) */
+const CLUMP_REEDS = [['reedTall', 64], ['reedShort', 90], ['reedLean', 72], ['reedTall', 58], ['reedShort', 84]] as const;
+
+/**
+ * World 2's reed clump to hide in (a hide whose Bush.kind is 'reeds': 2-3's little ones hide in them from the heron): its width filled
+ * with the world's painted reeds, the pattern fixed by where it stands, swaying harder while someone moves in it. False until the sheet
+ * has loaded.
+ */
+export function drawReedClump(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, inside: boolean, rustle: number, t: number): boolean {
+  if (!riverArtReady()) return false;
+  const n = Math.max(2, Math.round(b.w / 52));
+  const o = Math.abs(Math.round(b.x / 97));
+  ctx.save();
+  if (inside) ctx.globalAlpha *= 0.85;
+  for (let i = 0; i < n; i++) {
+    const [kind, w] = CLUMP_REEDS[(i + o) % CLUMP_REEDS.length];
+    const cx = b.x + ((i + 0.5) * b.w) / n + Math.sin(t * 14 + i) * 3 * rustle;
+    drawReeds(ctx, kind, cx, b.y + 6, w, t, (i + o) % 2 === 1);
+  }
+  ctx.restore();
+  return true;
+}
+
 // ───────────── the stage's dressing (w2Stages.ts places it) ─────────────
 
 /**

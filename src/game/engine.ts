@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
@@ -9296,6 +9296,18 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      // (World 2's reed clumps, 2-3: riverArt.ts; before the sheet loads, a low green mound)
+      if (b.kind === 'reeds') {
+        if (!drawReedClump(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) {
+          ctx.save();
+          ctx.fillStyle = '#4d7a35';
+          ctx.beginPath();
+          ctx.ellipse(b.x + b.w / 2, b.y - 30, b.w / 2, 36, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        continue;
+      }
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && b.kind !== 'moss' && b.kind !== 'mossPatch' && b.kind !== 'mossHang' && drawW4Bush(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)

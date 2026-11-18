@@ -14,8 +14,10 @@ import type { FollowPlay, Heron } from './followPlay.ts';
 /** a little one's width (px): about 45 px tall, half of Pokey's 89 (2-3.md), so the 34 px gap between them reads */
 export const FOLLOWER_W = 33;
 const HAPPY: Record<FollowKind, W2Piece> = { duck: 'duckHappy', otter: 'otterHappy', capy: 'capyHappy' };
-/** the heron's look on the ground: a pale wash where it is looking (its sight, WATCH.sight either side) */
-const LOOK = { rgb: '255, 248, 214', alpha: 0.32 };
+/** the heron's look: a pale wash on the ground where it is looking (its sight, WATCH.sight either side) and its gaze down to it */
+const LOOK = { rgb: '255, 244, 196', alpha: 0.55, gaze: 0.45 };
+/** where the heron's eye is on its painting, from its foot (px; the painting faces left: its beak at the left) */
+const HERON_EYE = { dx: -14, dy: -104 };
 
 /** the little ones in view, under the reeds (the engine draws the bushes after them) */
 export function drawFollowers(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: number, x0: number, x1: number): void {
@@ -79,8 +81,8 @@ export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: num
   for (const h of fp.herons) {
     if (h.lookX !== null && h.lookX > x0 - WATCH.sight && h.lookX < x1 + WATCH.sight) drawLook(ctx, h, fp);
     if (h.foot.x < x0 - 120 || h.foot.x > x1 + 120) continue;
-    // (facing along its stretch; head up while it warns and looks)
-    drawDress(ctx, [{ n: 'w2Heron', x: h.foot.x, b: h.foot.b, flip: h.end > 0 }], { x0, x1, y0: -1e6, y1: 1e6 });
+    // (facing back along its stretch: the painting faces left, so the one wading past the stretch's start is turned)
+    drawDress(ctx, [{ n: 'w2Heron', x: h.foot.x, b: h.foot.b, flip: h.end < 0 }], { x0, x1, y0: -1e6, y1: 1e6 });
     if (h.s.phase === 'warn') {
       ctx.save();
       ctx.fillStyle = '#fbbf24';
@@ -95,8 +97,18 @@ export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: num
 function drawLook(ctx: CanvasRenderingContext2D, h: Heron, fp: FollowPlay): void {
   const x = h.lookX!;
   const y = fp.groundAt(x) ?? h.foot.b;
-  // (two flat washes, the wide one fainter: no gradient made a frame)
+  // (its gaze from its eye down to where it looks, then two flat washes there, the wide one fainter: no gradient made a frame)
   ctx.save();
+  const ex = h.foot.x + HERON_EYE.dx * (h.end < 0 ? -1 : 1);
+  const ey = h.foot.b + HERON_EYE.dy;
+  ctx.strokeStyle = `rgba(${LOOK.rgb}, ${LOOK.gaze})`;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([10, 9]);
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(x, y - 14);
+  ctx.stroke();
+  ctx.setLineDash([]);
   ctx.fillStyle = `rgba(${LOOK.rgb}, ${LOOK.alpha / 2})`;
   ctx.beginPath();
   ctx.ellipse(x, y - 6, WATCH.sight, 24, 0, 0, Math.PI * 2);

@@ -172,6 +172,19 @@ export function airSpan(t: Trail, s: number): { from: number; to: number } | nul
   return { from: p[i].s, to: j < p.length ? p[j].s : Infinity };
 }
 
+/** the height of his path where it last crossed x (the ground he walked there), or null where it never did */
+export function trailYAt(t: Trail, x: number): number | null {
+  const p = t.pts;
+  for (let i = p.length - 1; i > 0; i--) {
+    const a = p[i - 1];
+    const b = p[i];
+    if ((a.x - x) * (b.x - x) > 0) continue;
+    const k = b.x !== a.x ? (x - a.x) / (b.x - a.x) : 0;
+    return a.y + (b.y - a.y) * k;
+  }
+  return null;
+}
+
 /** the water surface under a little one at (x, y), where that is splash-back water and nothing stands there; null: on ground or in the air */
 export type SurfaceAt = (x: number, y: number) => number | null;
 
@@ -239,11 +252,15 @@ export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, 
         f.x = to;
         f.back = true;
       } else f.x += Math.sign(d) * step;
+      // (over the ground he walked there)
+      f.y = trailYAt(t, f.x) ?? f.y;
     }
     f.moved = Math.abs(f.x - x0) + Math.abs(f.y - y0) > 0.05;
     if (Math.abs(f.x - x0) > 0.05) f.facing = f.x > x0 ? 1 : -1;
+    // (over splash-back water it keeps its place on the trail and swims at the surface, whatever height his hop took him there)
     const w = surf && f.state !== 'home' ? surf(f.x, f.y) : null;
     f.paddle = w !== null && w !== undefined;
+    if (f.paddle) f.y = w!;
   }
 }
 
