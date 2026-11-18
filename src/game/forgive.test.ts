@@ -144,7 +144,8 @@ test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70
     //  this built the old hand-built 1-6's default proto plan until that went, R-165.238)
     // (INT-10b: 1-9's plan, World 1's last hand-built one: t-eng-dr took 1-8 out of HAND_STAGES (gen2 since BUILD-18) while this read
     //  1-8's, so after the merge it built no plan and the course had no ground under the spawn)
-    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-9']);
+    // (BUILD-19: 1-9 rolls on gen2 too, so HAND_STAGES has no '1-9'; its plan is named outright, still a hand-built shell)
+    const st = buildProtoStage(levelConfig('1-3'), 1, '1-9');
     const A = floor(0, 900);
     const B = floor(900, 1900, Y - rise, rise + 90);
     Object.assign(st, {

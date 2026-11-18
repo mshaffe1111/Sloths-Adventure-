@@ -67,6 +67,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   const MOSS = ['moss', 'mossPatch', 'mossHang'];
   if (st.proto?.bushes?.some((b) => MOSS.includes((b as { kind?: string }).kind ?? '')) || st.vines?.some((v) => (v as { mossy?: boolean }).mossy) ||
     st.enemies?.some((e) => (e as { kitPerch?: boolean }).kitPerch)) out.add('w17');
+  // (World 1's eagle roosts, the lure posts a boa fears: w19Art.ts, 1-9)
+  if (((st.proto as { gen2?: { roosts?: unknown[] } } | undefined)?.gen2?.roosts?.length ?? 0) > 0) out.add('w19');
   const w = st.config.worldIndex;
   if (st.boss) {
     out.add(`boss:${w}`);

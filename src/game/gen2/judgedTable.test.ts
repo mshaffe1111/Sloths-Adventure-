@@ -23,7 +23,7 @@ const planted = (stageId: string, gap: number): Judged11 =>
   ({ stageId, setting: 'normal', policy: 'per-gap', drops: [], asks: [{ section: 's1', kind: 'single-gap', x0: 400, x1: 400 + gap, figure: gap, move: 'single-flick', headroom: 9999 }], routeGaps: [] }) as Judged11;
 
 test('the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged', () => {
-  assert.deepEqual(JUDGED, { '1-1': 'normal-1-1', '1-2': 'normal-1-2', '1-3': 'normal-1-3', '1-4': 'normal-1-4', '1-5': 'normal-1-5', '1-6': 'normal-1-6', '1-7': 'normal-1-7', '1-8': 'normal-1-8', '2-1': 'normal-2-1', '2-2': 'normal-2-2' });
+  assert.deepEqual(JUDGED, { '1-1': 'normal-1-1', '1-2': 'normal-1-2', '1-3': 'normal-1-3', '1-4': 'normal-1-4', '1-5': 'normal-1-5', '1-6': 'normal-1-6', '1-7': 'normal-1-7', '1-8': 'normal-1-8', '1-9': 'normal-1-9', '2-1': 'normal-2-1', '2-2': 'normal-2-2' });
   assert.equal(judgedOnArcs('1-1'), true);
   assert.equal(scopeOf('1-1', 'normal'), 'normal-1-1');
   assert.equal(scopeOf('1-1', 'easy'), 'easy-any');
@@ -45,6 +45,9 @@ test('the table: a stage is judged where it has a row; Easy is easy-any; a stage
   // (1-8 on its own flown rows, FIX-GATES 11-15: flownArcs.ts normal-1-8, judged since the bounce-reuse kind)
   assert.equal(scopeOf('1-8', 'normal'), 'normal-1-8');
   assert.equal(scopeOf('1-8', 'easy'), 'easy-any');
+  // (1-9 on its own flown rows, BUILD-19 11-18: flownArcs.ts normal-1-9)
+  assert.equal(scopeOf('1-9', 'normal'), 'normal-1-9');
+  assert.equal(scopeOf('1-9', 'easy'), 'easy-any');
   // (2-1 and 2-2 on their own flown rows, ENG-W2b 11-15: the verdicts read World 2's water; flownArcs.ts normal-2-1 / normal-2-2)
   assert.equal(scopeOf('2-1', 'normal'), 'normal-2-1');
   assert.equal(scopeOf('2-2', 'normal'), 'normal-2-2');
@@ -83,7 +86,7 @@ test('any stage: one table line and the fixture stage is judged (a planted 300 p
     assert.equal(linkArcs('normal', FIX).double.gap, 283, 'its links read its copied rows');
   });
   assert.equal(judgedOnArcs(FIX), false, 'restored');
-  assert.deepEqual(JUDGED, { '1-1': 'normal-1-1', '1-2': 'normal-1-2', '1-3': 'normal-1-3', '1-4': 'normal-1-4', '1-5': 'normal-1-5', '1-6': 'normal-1-6', '1-7': 'normal-1-7', '1-8': 'normal-1-8', '2-1': 'normal-2-1', '2-2': 'normal-2-2' });
+  assert.deepEqual(JUDGED, { '1-1': 'normal-1-1', '1-2': 'normal-1-2', '1-3': 'normal-1-3', '1-4': 'normal-1-4', '1-5': 'normal-1-5', '1-6': 'normal-1-6', '1-7': 'normal-1-7', '1-8': 'normal-1-8', '1-9': 'normal-1-9', '2-1': 'normal-2-1', '2-2': 'normal-2-2' });
   withTestStage({ [FIX]: { kit: w1World, seeds: [1] } }, () => assert.equal(judgedOnArcs(FIX), false, 'a listed stage with no table line is still not judged'));
 });
 

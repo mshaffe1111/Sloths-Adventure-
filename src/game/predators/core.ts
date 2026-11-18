@@ -23,6 +23,15 @@ export const GONE_AFTER = 1.2;
 export const DROWSY = 1.1;
 /** close enough to a spot to be at it (px) */
 const AT = 6;
+/** an IMMOBILE animal (immobile(), below) beaten into a flee slides this far past its ground's end, out of sight, before it comes back (px).
+ *  ENG-19c (1-9's "Don't move, and it slides off!"): before, a posted boa's flee walked it 'home' where it already lay, so it sat coiled
+ *  on its post for its whole 4 s and he walked through it */
+export const FLEE_OFF = 140;
+/** a chased-off animal leaves AWAY from him when its way out runs into him this close, at its height (px). ENG-19c: 1-9's roost boa
+ *  bolted from the nest straight through him, reading as an attack */
+export const LEAVE_CLEAR = 320;
+/** it never walks (no speed of its own, not a sweeper): its post is its place (a boa on its bough) */
+export const immobile = (def: PredatorDef): boolean => def.habit !== 'sweep' && !def.rides && !(def.speed.rest > 0) && !(def.speed.hunt > 0);
 
 const clamp = (v: number, a: number, b: number): number => Math.max(a, Math.min(b, v));
 const toward = (from: number, to: number, step: number): number => (Math.abs(to - from) <= step ? to : from + Math.sign(to - from) * step);
@@ -35,6 +44,8 @@ const enter = (s: PredatorState, phase: Phase): void => {
 
 /** the tell on a setting (s). Easy is never shorter, whatever the data says */
 export const tellOf = (def: PredatorDef, easy: boolean): number => def.tell * (easy ? Math.max(1, def.easy.tell) : 1);
+/** how near he must move for it to start its tell, on a setting (px): Easy's never nearer than Normal's */
+export const engageOf = (def: PredatorDef, easy: boolean): number => def.engage * (easy ? Math.max(1, def.easy.engage ?? 1) : 1);
 /** the beat between attacks on a setting (s) */
 export const coolOf = (def: PredatorDef, easy: boolean, own?: number): number => (own ?? def.cool) * (easy ? Math.max(1, def.easy.cool) : 1);
 
@@ -250,12 +261,18 @@ export function landed(s: PredatorState): void {
   if (s.phase === 'act') enter(s, 'recover');
 }
 
-/** the box that hurts this frame: only while it acts */
-export function hurt(def: PredatorDef, s: PredatorState): Box | null {
-  if (s.phase !== 'act') return null;
+/** the box its act hurts from where it stands now, whatever its phase (its strike's reach: what a freeze inside it beat, castPlay.ts) */
+export function reachBox(def: PredatorDef, s: PredatorState): Box {
   const a = def.act;
   if (a.aim === 'ahead') return { x: s.facing > 0 ? s.x : s.x - a.reach, y: s.y - a.tall, w: a.reach, h: a.tall };
   return { x: s.x - a.reach / 2, y: s.y - a.tall, w: a.reach, h: a.tall };
+}
+
+/** the box that hurts this frame: its strike's while it acts; its coil's (PredatorDef.coil) while it watches or rears */
+export function hurt(def: PredatorDef, s: PredatorState): Box | null {
+  if (s.phase === 'act') return reachBox(def, s);
+  const c = def.coil;
+  return c && !s.leaving && (s.phase === 'rest' || s.phase === 'hunt' || s.phase === 'tell') ? { x: s.x, y: s.y - c.tall, w: c.w, h: c.tall } : null;
 }
 
 /** a hurt box against his body (feet at hero.y) */
@@ -386,15 +403,52 @@ function startTell(def: PredatorDef, s: PredatorState, hero: Prey, ev: PredatorE
 /** a beaten animal on its way: home for a while, or out of the stage */
 function stepFlee(def: PredatorDef, s: PredatorState, sc: Scene): void {
   const v = Math.max(def.speed.hunt, def.speed.rest, 60) * 1.5 * sc.dt;
+  // (its first step in the flee: the beat entered it, t = 0, and this step added one dt)
+  const first = s.t <= sc.dt * 1.5;
+  const mid = s.x + (def.coil?.w ?? 0) / 2;
   if (s.leaving) {
+    // (never out through him: when the way away from what beat it runs into him, close and at its height, it leaves the other way)
+    const ahead = Math.sign(sc.hero.x - mid) === s.facing && Math.abs(sc.hero.x - mid) < LEAVE_CLEAR && Math.abs(sc.hero.y - s.y) <= def.sight.tall;
+    if (first && ahead) s.facing = s.facing > 0 ? -1 : 1;
     s.x += s.facing * v;
     s.eyeX += s.facing * v;
     if (s.t >= GONE_AFTER) enter(s, 'gone');
     return;
   }
+  if (immobile(def)) {
+    slideOff(def, s, sc, v / sc.dt, first, mid);
+    return;
+  }
   s.x = toward(s.x, s.homeX, v);
   s.y = toward(s.y, s.homeY, v);
   if (sc.t >= s.awayUntil) {
+    enter(s, 'rest');
+    s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
+  }
+}
+
+/**
+ * An immobile animal's flee, SEEN: it turns away from him, slides along its ground and FLEE_OFF px past its end (castPlay draws it dropping
+ * off that end and fading), waits there, and comes back the same way, home as its away time ends (the beat's `seconds`, unchanged). It
+ * neither hurts nor blocks while it flees (hurt(), blocks()). Its speed: its own flee speed, or fast enough to be out and back in its time.
+ */
+function slideOff(def: PredatorDef, s: PredatorState, sc: Scene, speed: number, first: boolean, mid: number): void {
+  if (first) s.facing = sc.hero.x < mid ? 1 : -1;
+  const out = s.x !== s.homeX ? (s.x > s.homeX ? 1 : -1) : s.facing;
+  const end = out > 0 ? s.maxX + FLEE_OFF : s.minX - FLEE_OFF;
+  const whole = s.awayUntil - (sc.t - s.t);
+  const u = Math.max(speed, whole > 0 ? (2.5 * Math.abs(end - s.homeX)) / whole : speed);
+  const step = u * sc.dt;
+  const back = sc.t >= s.awayUntil - Math.abs(s.x - s.homeX) / u;
+  if (!back) {
+    s.x = toward(s.x, end, step);
+    s.facing = out as 1 | -1;
+  } else {
+    s.x = toward(s.x, s.homeX, step);
+    if (s.x !== s.homeX) s.facing = (out > 0 ? -1 : 1) as 1 | -1;
+  }
+  if (sc.t >= s.awayUntil && Math.abs(s.x - s.homeX) <= AT) {
+    s.x = s.homeX;
     enter(s, 'rest');
     s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
   }
@@ -500,7 +554,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         break;
       }
       if (!saw) break;
-      if (dist <= def.engage && ready && on('warn')) startTell(def, s, hero, ev);
+      if (dist <= engageOf(def, sc.easy) && ready && on('warn')) startTell(def, s, hero, ev);
       else if (!posted(def) && (def.speed.hunt > 0 || def.shy !== undefined)) {
         enter(s, 'hunt');
         s.lost = 0;
@@ -556,8 +610,8 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       } else s.lost += dt;
       const dir: 1 | -1 = s.goalX >= s.x ? 1 : -1;
       // a shy kind strikes when he crowds it, or when it has backed to the end of its ground and he is still coming
-      const cornered = def.shy !== undefined && (dir > 0 ? s.x <= s.minX + 1 : s.x >= s.maxX - 1) && dist <= def.engage * 1.5;
-      if (saw && ready && on('warn') && (dist <= def.engage || cornered)) {
+      const cornered = def.shy !== undefined && (dir > 0 ? s.x <= s.minX + 1 : s.x >= s.maxX - 1) && dist <= engageOf(def, sc.easy) * 1.5;
+      if (saw && ready && on('warn') && (dist <= engageOf(def, sc.easy) || cornered)) {
         startTell(def, s, hero, ev);
         break;
       }

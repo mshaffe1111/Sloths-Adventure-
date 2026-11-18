@@ -74,9 +74,11 @@ test('World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; 
   }
   // (1-5 rebuilt on the beat, w1Rhythm.ts: its pits are real drops under the snap twigs, painted as drops, never soft or water:
   // stage15.test.ts "every floor gap paints as a drop")
-  // (1-9's vault pits; 1-3's were the hand-built stage's, deleted 11-12 (new replaces old): the designed 1-3 keeps its route LEVEL, no
-  // pit and no fall anywhere (reference/design/1-3.md "the route stays LEVEL"), so it is held to none at all)
-  assert.ok(soft['1-9'] >= 3, JSON.stringify(soft));
+  // (the vault pits were the hand-built 1-9's, deleted 11-18 (BUILD-19: the gen2 1-9, The Boa's Branches, whose design names no vault
+  // pit, reference/design/1-9.md, and whose roost limb drops him "to a lower bough, never a pit"); 1-3's were the hand-built stage's, deleted 11-12 (new
+  // replaces old): the designed 1-3 keeps its route LEVEL, no pit and no fall anywhere (reference/design/1-3.md "the route stays LEVEL"),
+  // so it is held to none at all. Every soft pit World 1 still lays has its step out (above), and the walk must find some: 6 on 11-18)
+  assert.ok(Object.values(soft).reduce((a, b) => a + b, 0) >= 3, `the walk found World 1's soft pits: ${JSON.stringify(soft)}`);
   assert.equal(soft['1-3'], 0, `1-3 is level by design: ${JSON.stringify(soft)}`);
   // (1-8 too, ENG-LOOK2: the tip's gap is a marked fall (layTip marks its far branch); the deleted hand-built 1-8's >= 10 unmarked chase
   // holes went with it, and the rule is now every other World 1 stage's)

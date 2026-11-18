@@ -41,6 +41,7 @@ import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { goalCountsPetals } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, PAD_LAY } from './rideLay.ts';
@@ -411,6 +412,11 @@ export function difficultyScore(world: number, stage: number, band = bandFor(wor
   return band[0] + (band[1] - band[0]) * STAGE_HEAT[Math.max(0, Math.min(8, stage - 1))];
 }
 
+/** a stage that fights for its goal: a purge or gauntlet whose goal counts animals. One whose goal counts petals (goals.ts goalCountsPetals:
+ *  1-9) lays its sockets' animals and no more: no top-up, no reserve for top-up fights, never "thin" or short of animals (BUILD-19) */
+export const fightsForGoal = (b: Pick<StageBudget, 'archetype' | 'world' | 'stage'>): boolean =>
+  (b.archetype === 'purge' || b.archetype === 'gauntlet') && !goalCountsPetals({ objectiveType: b.archetype, worldIndex: b.world, miniIndex: b.stage });
+
 export function planBudget(config: LevelConfig, manifest: WorldManifest, difficulty: Difficulty): StageBudget {
   const archetype = config.objectiveType as Archetype;
   if ((config.objectiveType as string) === 'boss_lair') throw new Error('gen2: the guardian lair is hand-built');
@@ -420,8 +426,10 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const easy = difficulty === 'easy';
   const target = targetSeconds(config.worldIndex, config.miniIndex, archetype);
   const goal = config.targetCount;
-  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to)
-  const fights = archetype === 'purge' || archetype === 'gauntlet';
+  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to. A stage
+  //  whose goal counts petals (goals.ts goalCountsPetals: 1-9, a gauntlet that gathers her petals) never tops up animals to an animal
+  //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
+  const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex });
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
@@ -2216,7 +2224,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const used = new Map<string, number>();
   // (a purge or gauntlet: most of its animals come from pass 4's top-up, which the sections' own seconds can't see; about three
   // quarters of the goal's fights are kept back from the sections' share, so the first plan lands near the clock, not 30% over it)
-  const fightsArch = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+  const fightsArch = fightsForGoal(budget);
   const reserve = fightsArch ? budget.quota.lay * MODEL_TYPICAL.fightGround * 0.75 : 0;
   const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
@@ -3282,6 +3290,7 @@ export interface Filled {
  */
 export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, nodeAsks?: ReadonlyMap<string, NodeAsks>): Filled {
   const M = kit.manifest;
+  const rows = castRows(M, budget.id);
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
   const fills: FilledSocket[] = [];
@@ -3473,7 +3482,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const propThreat = (id: string) => M.props.find((p) => p.id === id)?.threat ?? 0;
 
   // creatures
-  const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
+  const creatureBag = new ShuffleBag<CreatureDef>(rng, rows);
   const pickLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.reward?.pickups !== undefined ? [[node, { left: a.dials.reward.pickups }] as [string, { left: number }]] : [])));
   const threatLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.threat ? [[node, a.dials.threat.map((k) => ({ kind: k.kind, left: k.count }))] as const] : [])));
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
@@ -3533,12 +3542,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const ask = threatLeft.get(sec.node);
         const allowed = (cr: CreatureDef) => (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece);
         let c = ask
-          ? ask.map((q) => (q.left > 0 ? M.creatures.find((cr) => cr.id === q.kind && allowed(cr)) : undefined)).find(Boolean)
-          : [pick, ...M.creatures].find((cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && allowed(cr));
+          ? ask.map((q) => (q.left > 0 ? rows.find((cr) => cr.id === q.kind && allowed(cr)) : undefined)).find(Boolean)
+          : [pick, ...rows].find((cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && allowed(cr));
         // (Easy on Normal's plan: only what Normal kept at this socket, so Easy never keeps an animal Normal's spacing dropped)
         if (normalFoes) {
           const kept = normalFoes.get(`${sec.uid}/${s.id}`);
-          c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
+          c = kept === undefined ? undefined : rows.find((cr) => cr.id === kept);
         }
         if (!(want || ask) || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
         const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
@@ -3606,7 +3615,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   // Poisson spacing over the creatures, the props fixed first (C2): a minimum gap of a kind, any two apart, no long barren run
   const minGap: Record<string, number> = {};
-  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  for (const c of rows) minGap[c.id] = SAME_CREATURE;
   for (const p of M.props) minGap[p.id] = p.minApart;
   // (a tower: the spacing, the opening and the quiet stretches are px of WAY, so each piece's x stands as its route px while it is
   // spaced and is put back after; a beat's from its section's leg)
@@ -3637,7 +3646,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);
     }
   }
-  const byCreature = new Map(M.creatures.map((c) => [c.id, c]));
+  const byCreature = new Map(rows.map((c) => [c.id, c]));
   for (const f of foes) {
     // (an emitter may have laid a zone since the socket was filled)
     if (!kept.has(f) || foeInZone(sink.zones, f.e.x, f.e.y)) continue;
@@ -3666,7 +3675,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       const here = fills.filter((f) => f.role === 'enemy' && f.what && secs.has(f.section) && sink.enemies.some((e) => e.x === R(f.x) || e.x === f.x));
       for (const k of want) {
         const have = here.filter((f) => !k.kind || f.what === k.kind).length;
-        const kinds = k.kind ? M.creatures.filter((c) => c.id === k.kind) : M.creatures.filter((c) => c.terrain !== 'air' && !c.tags?.includes('trapped'));
+        const kinds = k.kind ? rows.filter((c) => c.id === k.kind) : rows.filter((c) => c.terrain !== 'air' && !c.tags?.includes('trapped'));
         if (have >= k.count || !kinds.length) continue;
         const more = topUpFoes(laid, budget, kit, seed, sink, safe, openX, standing(), { sections: secs, kinds, need: k.count - have, salt });
         fills.push(...more);
@@ -3829,13 +3838,14 @@ function topUpFoes(
    *  with no ask rolls as it always did */
   ask?: { sections: ReadonlySet<string>; kinds: readonly CreatureDef[]; need: number; salt: number },
 ): FilledSocket[] {
-  if (!ask && budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
+  if (!ask && !fightsForGoal(budget)) return [];
   const M = kit.manifest;
+  const rows = castRows(M, budget.id);
   const lastX = laid.exit.x - 200;
   const need = ask ? ask.need : budget.quota.lay - sink.enemies.filter((e) => e.x <= lastX).length;
   if (need <= 0) return [];
-  const tagged = M.creatures.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
-  const kinds = ask ? ask.kinds : tagged.length ? tagged : M.creatures.filter((c) => c.terrain !== 'air');
+  const tagged = rows.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
+  const kinds = ask ? ask.kinds : tagged.length ? tagged : rows.filter((c) => c.terrain !== 'air');
   if (!kinds.length) return [];
   const bag = new ShuffleBag<CreatureDef>(ask ? rngFor(seed, 37, 1000 + ask.salt) : rngFor(seed, 37), [...kinds]);
   const flags = safe.slice(1, -1);
@@ -3874,7 +3884,7 @@ function topUpFoes(
     }
   }
   const minGap: Record<string, number> = {};
-  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  for (const c of rows) minGap[c.id] = SAME_CREATURE;
   const spaced = poissonPlace<RoutePiece>(cands, { rng: ask ? rngFor(seed, 41, 1000 + ask.salt) : rngFor(seed, 41), minGap, minGapAny: ANY_APART, maxGap: Infinity, fixed });
   const ok = new Set(spaced.placed);
   const out: FilledSocket[] = [];
@@ -3890,9 +3900,23 @@ function topUpFoes(
   return out;
 }
 
-/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
-function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
-  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+/**
+ * The creature rows a stage lays (ENG-19a, R-165.257): a brief that names a cast lays only animals of the kinds it casts, as the kit runs
+ * only those (castOf; an animal of another kind would play on the old brain, predatorAI.ts), so a world's list can grow (1-9's boas,
+ * w1Cast.ts W1_BOAS) without moving a stage that does not cast them: the creature bag's shuffle runs over every row it holds, so one more
+ * row re-deals every socket after it. A stage whose brief names no cast lays from the whole list, as before.
+ */
+export function castRows(M: WorldManifest, id: string): readonly CreatureDef[] {
+  const cast = M.graphs?.briefs?.[id]?.cast;
+  return cast?.length ? M.creatures.filter((c) => cast.includes(c.enemy)) : M.creatures;
+}
+
+/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage). A brief that teaches
+ *  the kit's 'still' marks the stage as teaching the freeze (CastData.teachStill: its first freeze is the moment wherever he stands) */
+export function castOf(brief: Pick<GraphBrief, 'cast' | 'teaches'> | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
+  const kinds = brief?.cast;
+  if (!kinds?.length) return {};
+  return { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [], ...(brief!.teaches?.includes('still') ? { teachStill: true } : {}) } };
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
@@ -4065,7 +4089,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(heartFalls.length ? { heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
-    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id], proto)),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
     gen2: meta,
   };
@@ -4254,7 +4278,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {
-      const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+      const fights = fightsForGoal(budget);
       const before = st.enemies.filter((e) => e.x <= st.exitTotemX - 200).length;
       return fights && before < budget.quota.lay ? { ok: true, thin: true } : { ok: true };
     }
@@ -4303,7 +4327,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       if (!fixed) return { ok: false, swap: bad };
     }
     // (a purge or gauntlet whose top-up found no room for the goal's animals: a longer stage, not a new roll)
-    const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+    const fights = fightsForGoal(budget);
     if (!fixed && fights && res.errors.some((e) => /^not enough enemies/.test(e))) return { ok: false, short: true };
     if (!fixed) return { ok: false, reroll: true };
   }

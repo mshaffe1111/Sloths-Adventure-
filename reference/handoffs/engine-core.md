@@ -59,6 +59,61 @@ Rewritten for ART-22P (11-18, t-art-22p): section 0zm (CI's seed-list matrix, R-
   jump is asked (the catch toy's is 320). A bot change that skips a random draw (`between(this.r, ...)`) moves every seed-pinned plant
   after it (2-1's upstream/bankUp plants stopped biting until the change was held to liana rivers).
 
+## 0zm. BUILD-19b (t-build-19, 11-18): what moved when 1-9 left the hand-built path (no engine code changed)
+- Tests that used the hand-built 1-9 as a fixture now point elsewhere: verdicts' "never flown" stage is 5-7; writtenKeys' seed with a find
+  id is 2-3 (no World 1 stage writes one now); sheetWarm follows the ring drops to the hand-built stage that keeps a ring; w1Pits no
+  longer pins 1-9's vault pits; flagSpan LV-9 walks 27 hand stages (1-9's flags: gen2's verdict, reference/qa-reports/BUILD-19/flags19.ts).
+- A judged stage's flown rows are cited from chain.md §1 (verdicts.test checks the source string), never from the flight log directly.
+- A stage moving to gen2 sheds its known-list entries: coveragecheck names them (1-9's 'beat:ring waves' went).
+- FIXED by ENG-19c (§0zn): the frozen-out boa sat coiled 4 s (he walked through it); the roost's boa fled through him and left a burst.
+
+## 0zn. ENG-19c (t-build-19, 11-18): a fleeing animal is SEEN to go, and never leaves through him
+- core.ts immobile(def) (no speed, not a sweeper; NOT the habit-based posted()): today the boa and World 6's frog. Its 'flees' beat
+  (still, stomp, ...) runs slideOff: away from him along its range, FLEE_OFF (140) past its end, back home as awayUntil ends (the beat's
+  seconds unchanged); speed its own flee speed or 2.5 x the round trip / its time. A walking animal's flee is unchanged (walks home).
+- core.ts stepFlee leaving: on its first step, if its way out runs into him (LEAVE_CLEAR 320 px, within its sight's height) it turns:
+  general, so every chased-off animal (1-3's trapped snakes too) leaves away from a close Pokey.
+- castPlay.sync: a flee past its range end sets e.glide (drop + fade); 0 again at home. engine.drawWithReaction fades by e.glide (the
+  types.ts promise nothing drew before; leaving animals now fade out too). engine.updateKo returns at koLife 0 (gone on its own / a
+  flag's replay): no gravity, no landing burst.
+- Tests: src/game/fleeSlide.test.ts (8); reference/qa-reports/BUILD-19/planted-faults.py (10, three for this).
+- Trap: 'cleared' fires on the BEAT, not at 'gone' (a test following a leave must follow phase 'gone').
+
+## 0zl. BUILD-19 (t-build-19, 11-18): a stage whose goal counts petals never tops up animals
+- pipeline.ts planBudget `fights` and topUpFoes: a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: stagePlan
+  `gathers: 'petals'`; 1-9) lays its sockets' animals and no more (quota.lay = the goal, no +2; no top-up). Before, 1-9's gauntlet kind
+  topped 12 designed boas up to targetCount + 2 = 16 onto any 248+ px bank. Test: src/game/gen2/petalGoalTopUp.test.ts (planted: the
+  clause removed -> lay 16); the built half on the real stage: w1Arc19.test.ts. The lead's ruling 10:09 AM ET 11-18.
+
+## 0zd-19b. 1-9's engine finished (ENG-19b, t-eng-19b, 11-15): what the 1-9 builder and the next engineer must know
+- **The kit boa's coil hurts on touch** (the lead 11:20 AM ET): PredatorDef.coil (BOA 58x26); core.ts hurt(): the coil box in rest,
+  hunt, tell; the strike's box in act; NONE in recover (the punch's window), stunned, flee, gone. The kit's fairness gate
+  (predators/fixtures.ts) allows outside a strike ONLY exactly that coil box (approved 11:31 AM). boaCoil.test.ts.
+- **Easy notices him 1.3x as far off** (easy.engage, engageOf(); the lead 11:31 AM). From a run: Normal still to 13 frames, Easy to 18
+  (0.60 s). Not 26: the whole boa must sit inside the 270 px an upright phone shows ahead (boaFreeze.test asserts 195 + 58 <= 270).
+- **A stage that teaches the freeze**: its brief's `teaches` holds 'still' and it casts (pipeline castOf writes CastData.teachStill): its
+  first freeze is the slow-motion moment wherever he stands (1-9 beat 2); later ones only inside the strike's reach. castFreeze.test.
+- **The roost is drawn**: w19Art.ts drawEagleRoost at each proto.gen2.roosts post (nest over the post, bough piece on its ground; 145 px,
+  1.63 of Pokey), preloaded only when a stage lays one (stageManifest 'w19'). Asset src/assets/w1-19/w1-roost.webp; catalog hf19/w1-roost.
+- **Bots**: firsttimer.ts freezePlan (learned 'freeze' from "freeze" / "don't move" only, or `knows`; reaction stopReact + thumb lag;
+  the kit's own engageOf per setting). A coiled animal is never hopped as a walker (1-3's snakes, no coil, unchanged). boaBots.test.ts
+  (CI): toys + plants. The roost needs no bot skill (the boa flees in its first rear frame). Clip: boaClip.mjs `bot` replays
+  boaBotPads.ts's recorded thumb.
+- Open (named in reference/qa-reports/ENG-19b/REPORT.md): the child bot on Normal is hit at 3/6 boas (reaction 0.49 s vs 0.43 s);
+  bots pause on a 1.1 s creaky limb (14/30 drops); hopping a rearing coil (an expert's move) has no bot yet; topUpFoes on a NO-cast stage
+  would top up an old-brain boa from W1's 'topup' rows (no stage does today); the red glow under a beaten boa (ENG-19a rough).
+
+## 0zc-19a. 1-9's engine pieces (ENG-19a, t-eng-19, 11-14; stopped at 40% context): what the next engineer must know
+- BOA.tell is 1.0 s (world1.ts:57; boaFreeze.test.ts flies it). Only KIT boas read it: no shipped stage has one (18 boa stages are the OLD
+  brain, predatorAI.ts:300, rear 0.6 s, no freeze; tools/engine/runs/boaReach.ts proves it). The lead rules whether the old brain moves.
+- pipeline.ts castRows: a stage whose brief casts lays only those kinds (fillSockets, topUpFoes). Any new row in a shared manifest re-deals
+  every stage drawing from it otherwise (the bag's shuffle). W1_BOAS (w1Cast.ts) rides on it; lockall 102/102 unchanged.
+- lureLay.ts lureFaults: an animal the kit never moves (speeds all 0) is drawn only where it lies; its rear is the read. W1_LURE (w1.ts) lays
+  'w1-roost' into proto.cast.lures and proto.gen2.roosts; NOTHING DRAWS IT YET. Letter `l` = lure (nodeLetters.ts, FILL_LETTER 'lure').
+- CastStep.froze + CastPlay.eyeOut + engine FREEZE_SLOW (0.6 s, zoom 1, slowMoBy 'freeze' cut when a sweeper's eye comes out).
+- Toy clips: tools/engine/runs/boaClip.mjs (freeze|late|roost, up|side). Trap: GoalCard holds on real time; poke it (a key) before the run.
+- Open: the roost art (REPORT step 1, tools/art/hf19), its draw, the red glow under a beaten boa, the kit boa's missing body block.
+
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY
   sheet that finishes loading) in their key. Any sheet arriving in play (2-2's pad ripple the first time a pad sank; a creature's sheet)

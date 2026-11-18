@@ -32,8 +32,9 @@ export const REFUSE_13 = ['hint.1-1', 'coach.', 'squirrel', 'bootprint', 'canopy
 /** the corridor under the floor line the first lay used (World 1's own 80 px holds the arc: measured, 40 of 40 with --room 0) */
 export const ROOM_13 = 320;
 export const TRAP_LINE = LINES_13.traps;
-/** 1-3's cast rows: w1Cast.ts's four (the snake and the sleeper on a 200 px branch, and each on a trap's short patch) */
-export const CAST_13: CreatureDef[] = W1_CAST_CREATURES;
+/** 1-3's cast rows: w1Cast.ts's rows of the kinds its brief casts (the snake and the sleeper on a 200 px branch, and each on a trap's
+ *  short patch: four), as the pipeline lays them (pipeline.ts castRows); the world's boa rows (W1_BOAS, 1-9) are not 1-3's */
+export const CAST_13: CreatureDef[] = W1_CAST_CREATURES.filter((c) => BRIEF_REAL.cast!.includes(c.enemy));
 
 
 /** arming is World 1's own now (w1Cast.ts `armedTraps`: a trap is one only where a snake stays under it, its load hung over the
