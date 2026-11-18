@@ -554,6 +554,13 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
       // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
       if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }
+      // a water wheel (2-6, wheel.ts) is the same: one stop at its foot and one at its top, two copies of its first bucket under one id, so
+      // riding it joins the jetty to the street (its fairness is wheelLay.ts wheelFaults: the flown board and step-off)
+      if (p.wheel) {
+        const w = p.wheel.w;
+        if (p.wheel.i === 0) plats.push({ ...p, x: w.cx - w.W / 2, y: w.cy + w.R }, { ...p, x: w.cx - w.W / 2, y: w.cy - w.R });
+        continue;
+      }
       if (p.type === 'moving' || p.type === 'drift') { plats.push(p); continue; }
       let spans: Array<[number, number]> = [[p.x, p.x + p.width]];
       for (const b of rollers) if (b.id !== p.id && Math.abs(b.y + b.height - p.y) < 2) spans = cutSpans(spans, boulderX(b.id), boulderX(b.id) + b.width);
@@ -1055,7 +1062,7 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
     }
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
     const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);
-    if (!near || !far) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
+    if ((!near || !far) && !r.wheelPond) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
   }
 
   // zones (Worlds 3 and 4): a rhythm that can always be waited out, a hop that is possible in either state, nothing hostile or

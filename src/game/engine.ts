@@ -1840,7 +1840,7 @@ export class GameEngine {
       if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
     }
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad) continue;
+      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad || plat.wheel) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);

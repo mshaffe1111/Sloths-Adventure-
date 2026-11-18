@@ -44,6 +44,10 @@ import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../t
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, PAD_LAY } from './rideLay.ts';
+import { layWheel, stageWheels, streetFromJetty, wheelFaults, wheelSpan } from './wheelLay.ts';
+import { sweepBox, WHEEL } from '../wheel.ts';
+/** the room a wheel's rider takes over its top floor (px): his body and a hop's margin, kept clear of catch boughs */
+const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
@@ -1138,6 +1142,8 @@ interface LocalPiece {
   river?: { row: string; from: string };
   /** a far bank past a pond of sinking pads (place `pads`): the world's pad row and the near bank's key (layStage lays the water and pads) */
   pads?: { row: string; from: string };
+  /** a street a water wheel lifts him to (place `wheel`): the world's wheel row and the jetty's key (layStage lays the wheel and its pond) */
+  wheel?: { row: string; from: string };
 }
 interface LocalGap {
   x0: number;
@@ -1167,6 +1173,8 @@ interface LocalGap {
   /** a river's water (place `river`): its row's name. Nothing is laid under it (no pit, no bough, no stair): the river zone takes a fall,
    *  a life on a deep row, a splash back onto the near bank on a `safe` one */
   river?: string;
+  /** a water wheel's sweep (place `wheel`): its row's name. Nothing is laid under it: its pond takes a fall (a splash back onto the jetty) */
+  wheel?: string;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
@@ -1202,6 +1210,8 @@ export interface LayLocalOptions {
   rivers?: WorldManifest['rivers'];
   /** the world's pad table (manifest.pads): place `pads` reads its row here */
   pads?: WorldManifest['pads'];
+  /** the world's wheel table (manifest.wheels): place `wheel` reads its row here */
+  wheels?: WorldManifest['wheels'];
 }
 
 /**
@@ -1441,6 +1451,20 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       }
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
       asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: pl.rope ? a.y : y, move: 'ride', thin: false, key: pc.key });
+    } else if (pl.kind === 'wheel') {
+      // a WATER WHEEL (ENG-26; wheelLay.ts): this street where the row's wheel lifts him to from the jetty `after`, on the section's way; the
+      // wheel and its pond are laid in layStage from the same row. Nothing under the sweep but the pond (a fall splashes him back onto the
+      // jetty). Asked as a ride, never a jump: wheelFaults holds the row to its flight and the laid wheel to the flown layout
+      const row = lo.wheels?.[pl.row];
+      if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays wheel row "${pl.row}" and world ${budget.world} has no wheel row of that name (WorldManifest.wheels)`);
+      if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a wheel in a mirrored section, which is not mirrored (a tower's storey that runs left lays it turned the other way)`);
+      const a = ref(pl.after);
+      const at = streetFromJetty(row, budget.difficulty);
+      x = a.x + a.w + at.dx;
+      y = a.y + at.dy;
+      const { x1 } = wheelSpan(row, budget.difficulty, a.x + a.w);
+      gaps.push({ x0: a.x + a.w, x1: Math.max(x, x1), y, lo: a.y, pit: true, soft: true, wheel: pl.row });
+      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'swing' && ref(pl.after).hang?.kind === 'liana') {
       // a CHAIN (ENG-S5, 1-6 beat 4 "The chain"): a liana caught off the liana `after`, no perch or pit between (the gap under the whole
       // chain is its last perch's, `land`). Its anchor `top` over the ledge the chain left, its swing rolled as any liana's; its anchor where
@@ -1605,7 +1629,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1687,7 +1711,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string; /** a wheel's sweep (place `wheel`): ridden, never jumped */ wheel?: string }>;
   /** the reach each jump on the route asks, world px, by section (verdicts.ts judges them on 1-1) */
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
@@ -2255,7 +2279,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let e = exitMemo.get(t.id);
     if (e === undefined) {
       try {
-        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers, pads: M.pads }).exit.y).sort((a, b) => a - b);
+        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers, pads: M.pads, wheels: M.wheels }).exit.y).sort((a, b) => a - b);
         e = ys[1];
       } catch {
         e = t.exitDy;
@@ -2497,11 +2521,20 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
    *  pieces are handed to it moved to its frame). Laid with the section whose piece they hang under */
   const layCatches = (floorY: number) => {
     const fx = frame.x0;
-    const P = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
+    const P0 = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
+    // (a water wheel's pond catches a miss off its jetty, its street and its buckets (a splash back onto the jetty): to the catch boughs it is
+    // what lies under those ends, never wood to run on or a ledge with ends of its own (wheelLay.ts layWheel; its zone is the pond))
+    const ponds = stageWheels(platforms).map((w, k): Platform => {
+      const z = rivers.find((r) => r.wheelPond && r.x0 <= w.cx && r.x1 >= w.cx && Math.abs(r.surfaceY - (w.cy + w.R + WHEEL.pond)) <= 2);
+      return { id: -9000 - k, x: (z?.x0 ?? w.cx - w.R) - (routed ? fx : 0), y: z?.surfaceY ?? w.cy + w.R + WHEEL.pond, width: (z?.x1 ?? w.cx + w.R) - (z?.x0 ?? w.cx - w.R), height: 24, type: 'moving' };
+    });
+    const P = ponds.length ? [...P0, ...ponds] : P0;
     const V = !routed ? vines : vines.slice(mark.v).map((v) => ({ ...v, x: v.x - fx }));
     const Gp = !routed ? gaps : gaps.slice(mark.g).map((g) => ({ ...g, x0: g.x0 - fx, x1: g.x1 - fx }));
     const mine = !routed ? sections : sections.slice(mark.s);
-    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id))) {
+    // (and no catch bough lies in a wheel's sweep or over it where its rider rides: wheel.ts sweepBox, his body over the top floor)
+    const keepOut = stageWheels(platforms).map((w) => { const b = sweepBox(w); return { x0: b.x0 - (routed ? fx : 0), x1: b.x1 - (routed ? fx : 0), y0: b.y0 - WHEEL_RIDER, y1: b.y1 }; });
+    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut)) {
       storeyNow = c.level;
       const cx = c.x + fx;
       const b = mk(cx, c.y, c.w, 'branch', 0);
@@ -2642,7 +2675,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const mirrored = tower ? false : fixed ? fixed.mirrored : flip < 0.5 && hangsNeed(tpl).length === 0 && tpl.content !== 'climb' && !hasBlock(tpl) && Math.abs(exitDyOf(tpl)) <= 25;
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
-      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, pads: M.pads, ...(tempo ? { tempo } : {}) });
+      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, pads: M.pads, wheels: M.wheels, ...(tempo ? { tempo } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -2798,6 +2831,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (r.zone.spur) spurAt.set(lp.key, r.zone.spur);
         for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
       }
+      // (each water wheel (place `wheel`): its buckets and its pond between the jetty and the street, laid by the one wheel lay (wheelLay.ts
+      // layWheel), turned the way the street lies from the jetty (a tower's storey that runs left lays it turned the other way)
+      for (const lp of L.pieces) {
+        if (!lp.wheel) continue;
+        const row = M.wheels?.[lp.wheel.row];
+        if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays wheel row "${lp.wheel.row}" and world ${budget.world} has no wheel row of that name`);
+        const r = layWheel(row, lp.wheel.row, pieceOf(lp.wheel.from), pieceOf(lp.key), budget.difficulty, () => pid++);
+        platforms.push(...r.buckets);
+        placed.seam.push(...r.buckets);
+        rivers.push(r.zone);
+      }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
@@ -2805,12 +2849,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
       if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}), ...(g.wheel ? { wheel: g.wheel } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
         const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
-        if (g.river) {
-          // (a river's water (place `river`): nothing under it, no pit, bough or stair; its zone takes a fall, laid with its logs above)
+        if (g.river || g.wheel) {
+          // (a river's water (place `river`), a wheel's sweep (place `wheel`): nothing under it, no pit, bough or stair; its zone takes a
+          // fall, laid with its logs (its buckets) above)
         } else if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
@@ -3021,6 +3066,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a river's water, and each log's window: its platform moved with the rest)
       for (const r of rivers) { r.x0 += right; r.x1 += right; if (r.safe) r.safe.backX += right; if (r.spur) r.spur.x += right; }
       for (const q of platforms) if (q.drift) { q.drift.x0 += right; q.drift.x1 += right; }
+      // (a water wheel's axle: its buckets moved with the rest, and the piece turns them round it)
+      for (const w of stageWheels(platforms)) w.cx += right;
       for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
       for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
       for (const q of sections) {
@@ -3075,6 +3122,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // log's float line: its platform moved with the rest)
       for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; }
       for (const q of platforms) if (q.drift) q.drift.baseY += down;
+      for (const w of stageWheels(platforms)) w.cy += down;
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
@@ -3687,7 +3735,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const arc = rngFor(seed, 31, gi)() <= 0.7;
     // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap; and none over a river, which is ridden, never jumped: its
     // petals ride its logs, RiverRow.petals (ENG-W2b: an arc hung three petals in the air over the water, out of every rider's reach)
-    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river) continue;
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river || g.wheel) continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
@@ -4162,7 +4210,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
