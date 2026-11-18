@@ -29,6 +29,9 @@ export const TOY_RIVERS = {
   ...W2_RIVERS,
   gap280: { dir: 1, speed: 110, logW: 150, logs: 2, gap: 280 },
   sparse: { dir: 1, speed: 110, logW: 150, logs: 2, gap: 400 },
+  /** a river of rafts (RiverRow.look 'raft', R-165.288; ENG-24c): 2-4's last row's shape (the slow row to the jetty, w2Arc24.ts slow24),
+   *  its carriers drawn as World 2's painted raft */
+  raft: { dir: 1, speed: 70, logW: 200, logs: 2, look: 'raft' },
 } as const satisfies Record<string, RiverRow>;
 export type ToyRiver = keyof typeof TOY_RIVERS;
 export type LianaToy = 'drop' | 'catch';

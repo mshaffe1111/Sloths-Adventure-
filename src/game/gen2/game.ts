@@ -116,9 +116,12 @@ export function gen2Water(id: string): boolean {
  */
 export function gen2Rafts(id: string): boolean {
   const entry = GEN2_STAGES[id];
-  if (!entry) return false;
+  return !!entry && laysRafts(entry.kit);
+}
+/** does a world's kit (on either setting) place a river whose row is a raft row (gen2Rafts) */
+export function laysRafts(kit: (difficulty?: Difficulty) => WorldKit): boolean {
   return (['normal', 'easy'] as const).some((d) => {
-    const M = entry.kit(d).manifest;
+    const M = kit(d).manifest;
     const rafts = new Set(Object.entries(M.rivers ?? {}).filter(([, r]) => r.look === 'raft').map(([k]) => k));
     return rafts.size > 0 && M.sections.some((s) => [...s.pieces, ...(s.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))]
       .some((p) => p.place.kind === 'river' && rafts.has(p.place.row)));

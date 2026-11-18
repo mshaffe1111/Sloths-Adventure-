@@ -16,8 +16,9 @@
  * The glow promises a landing, so it is read a little tighter than the judge's share (CUE, measured against the engine itself, ENG-24c
  * REPORT): the press climbs his hold one frame before he leaves (a jump press is Up too: inputEngine.ts triggerTouchUp), and the catch is
  * read `inset` px narrower at each end on both readings of the river's clock (the judge's, and one frame back: the engine moves the logs
- * before it moves him). Against real let-gos on ENG-24's toy, with the phone's real press (the touch layer's minimum hold), no frame lit
- * over water; it lights about a frame later and goes out about a frame sooner than the true window, which the glow's own ease hides.
+ * before it moves him). Against real let-gos on ENG-24's toy through the game's own touch input (letGoCue.test.ts: long, gap280, the raft
+ * row, both settings, facing back), no frame lit over water, and lit on 83-97% of the frames whose let-go lands: it lights about a frame
+ * later and goes out about a frame sooner than the true window, which the glow's own ease hides. 6 px left one such frame on the raft row.
  */
 import { pressLaunchesFrom, SWING, vineAmp, vineAngle, vineOmega, vinePeriod, type SwingVine } from './physics.ts';
 import type { DriftInfo } from './river.ts';
@@ -25,8 +26,11 @@ import { fallOnLog, letGoFall, type LetGoFall } from './gen2/riverLay.ts';
 
 const DT = 1 / 30;
 
+/** the glow is drawn above this (engine.ts render: the sweet spot's warm disc on his grip) */
+export const GLOW_SHOWN = 0.03;
+
 /** how the glow reads a let-go (above): the press's own climb (frames of SWING.climb), the catch's margin (px), the river's clock readings (s) */
-export const CUE = { climbFrames: 1, inset: 6, clocks: [0, -DT] } as const;
+export const CUE = { climbFrames: 1, inset: 8, clocks: [0, -DT] } as const;
 /** the hold a press made at hold `len` leaves from (it climbs CUE.climbFrames first, never above SWING.minLen) */
 export const pressHold = (len: number): number => Math.max(SWING.minLen, len - CUE.climbFrames * SWING.climb * DT);
 

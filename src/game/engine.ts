@@ -108,7 +108,7 @@ import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawR
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, type DriftInfo } from './river.ts';
-import { letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
+import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
@@ -961,8 +961,8 @@ export class GameEngine {
   private sweetGlow = 0;
   /** the swing's last moment in its sweet spot (for a press to let go a beat late), and a press made a beat early that is waiting for it */
   private sweetSnap: (SwingState & { dir: -1 | 1; at: number }) | null = null;
-  /** this frame's "let go now" (the glow's target: letGoNow) */
-  private glowCue = false;
+  /** the liana he holds hangs over a log river (letGoNow): the glow goes out at once when the moment passes */
+  private cueOverRiver = false;
   /** the log river under each liana (letGoNow), found once for the platforms it was found in */
   private cueRivers: { from: Platform[]; by: Map<number, { logs: DriftInfo[]; flowT: boolean } | null> } | null = null;
   /** the let-go tables flown (letGoCue.ts), by liana, facing and hold; the one in use */
@@ -2438,8 +2438,8 @@ export class GameEngine {
           // the glow and its glints say "let go now": the sweet spot, or over a log river only when a let-go now comes down on a log or
           // the bank ahead (letGoCue.ts, R-165.289: 2-4's "Let go when it's under you"); display only, the press is played as above
           const cue = this.letGoNow(nearSwingVine, sw, p.facing, sweet, sw.len !== hold0);
-          this.glowCue = cue;
-          this.sweetGlow += ((cue ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
+          // (it eases in; over a river it goes out the frame the moment passes, never fading over the water: World 1's still fades)
+          this.sweetGlow = !cue && this.cueOverRiver ? 0 : this.sweetGlow + ((cue ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
           if (cue && this.sweetGlint <= 0) {
             this.sweetGlint = 0.14;
@@ -6735,6 +6735,7 @@ export class GameEngine {
       under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
       this.cueRivers.by.set(v.id, under);
     }
+    this.cueOverRiver = !!under;
     if (!under) return sweet;
     if (under.flowT || gripMoved) return false;
     let at = this.cueTab;
@@ -7611,7 +7612,7 @@ export class GameEngine {
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
     // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
-    if (this.player.isVineSwinging && this.sweetGlow > 0.03) {
+    if (this.player.isVineSwinging && this.sweetGlow > GLOW_SHOWN) {
       const gp = this.player;
       const k = this.sweetGlow;
       const r = 30 * (1 + 0.08 * Math.sin(this.gameTime * 18));
