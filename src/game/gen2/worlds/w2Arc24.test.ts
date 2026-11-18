@@ -61,6 +61,9 @@ test("2-4's lines are the story keeper's, word for word (reference/story/lines-2
   assert.ok(fs.readFileSync(path.join(root, 'src/game/stagePlan.ts'), 'utf8').includes(`S('vine_runner', 'Over the Water', '${MISSION_24}')`), 'stagePlan.ts says MISSION_24');
   assert.equal(cfg.objectiveType, 'vine_runner', 'a vine_runner: its exit never locks (the keeper: no sealed line)');
   assert.ok(!/"hint\.2-4\./.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), "the hand-built 2-4's hints are gone");
+  // (the keeper's rows 8-9, t-keeper-24@18e452c3: Pokey's journal page and the Stage Cleared clue, both rewritten for a stage with no cast)
+  assert.ok(fs.readFileSync(path.join(root, 'src/game/pokeyJournal.ts'), 'utf8').includes(`'2-4': "${rows.get('page')}",`), "pokeyJournal.ts '2-4' is the keeper's page");
+  assert.ok(fs.readFileSync(path.join(root, 'src/components/stageClue.ts'), 'utf8').includes(`'2-4': C('Dry Bootprints', '${rows.get('clue')}'),`), "stageClue.ts '2-4' is the keeper's clue");
   for (const d of BOTH) {
     const said = new Set(built(1, d).proto.hints!.map((h) => h.text));
     for (const v of Object.values(LINES_24)) assert.ok(said.has(v), `${d}: "${v}" is said`);

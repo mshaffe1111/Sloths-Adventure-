@@ -14,6 +14,7 @@ PLANTS = [
     ('the drop teach said at the river (no time to read)', A, "sockets: [tip('t-drop', 'a', 0.1, 'drop')", "sockets: [tip('t-drop', 'b', 0.9, 'drop')"),
     ('Pokey says `view` before the great swing', A, "sockets: [tip('t-view', 'z', 0.05, 'view')]", "sockets: [tip('t-view', 'a', 0.5, 'view')]"),
     ('two beats swapped in the graph', A, "'river-24-arc': 'A Tr Pg Pr Xw R Pf Wr R Pb Cw R S E'", "'river-24-arc': 'A Tr Pg Xw R Pr Pf Wr R Pb Cw R S E'"),
+    ("Pokey's journal page left as the old one", 'src/game/pokeyJournal.ts', "Dropped from the vines onto passing logs and jumped back up.", "Swung across the river on the vines while the crocodile watched."),
     ('the great swing no longer the longest liana', A, "lianaS('l', 'b', [500, 500], [500, 500])", "lianaS('l', 'b')"),
 ]
 bad = 0
