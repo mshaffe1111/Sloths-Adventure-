@@ -163,6 +163,12 @@ continuations and redo.
 | **Tue 11-24** | ENG-HANG-1 (if the picks keep hang) | BUILD-28 + 28b (2-8); BUILD-29b | HANG-SPEC show-first | ART-HANG (HF) | INT-16: all of World 2 on one head; full gates | **best case: all of World 2 on the link** |
 | **Wed 11-25** | ENG-HANG-2 / ENG-DARK | buffer: any Nb continuation | PITCH round R3 | | INT-17: Play Store §6 check, release prep | **Release candidate 2: World 2** when Matt says push. Range: Tue 11-24 to Fri 11-27 |
 
+**Thursday 11-19 slot plan (lead, written 11-18 evening; packets reference/packets/2026-11-19/):** 8:30 AM start: (1) ENG-285 ->
+~3 PM -> INT-13 in the same slot (box 8:30 PM, test link #2 ~9 PM); (2) BUILD-24c (raft + petals + bank join in the morning; Root B
+after ENG-285's step-1 model; box 6 PM); (3) FIX-284 (pad size show-first 11:30 AM; tap hop after step 1; box 5 PM) -> ART-W2A;
+(4) DESIGN-29 (the lead picks 2-9/3-1/3-2 from PITCH-29A/29B tonight) -> VAR-19 (relists on step 1; box 6 PM). ENG-26 moves to Fri.
+TIME-168 runs tonight (11-18). D40 rule for the day: every list is proven on ENG-285's model.
+
 **At most four at once.** Day 1 start order: INT-13, PITCH-29A, PITCH-29B, ENG-285. As slots free: ENG-26, VAR-19, FIX-284, ART-W2A,
 DESIGN-29, INT-13b. Tonight's ART/HF budget: HF balance about $52.5 (INT-12 REPORT, HF-SPEND line) against a reserve of about $10
 (CLAUDE.md). This plan's HF jobs come to about $3-8 at ~$0.075-0.34 a piece **[estimate]**.
