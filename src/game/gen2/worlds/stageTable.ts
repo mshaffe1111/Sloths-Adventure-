@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w2' | 'w2-21' | 'w2-22';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -53,6 +53,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  and fruit by data, the still fork, the tip, the hearts); the hand-built 1-8's routing is gone (protoStage HAND_STAGES). BUILD-18 11-14.
   //  Judged on its own flown rows, flownArcs.ts normal-1-8 (BUILD-18c), since FIX-GATES' bounce-reuse kind judges its plain bounces)
   '1-8': { kit: 'w1-18', judged: 'normal-1-8' },
+  // (1-9 The Boa's Branches: the designed arc, w1Arc19.ts, on World 1's kit with its own rows (kitLib19) and its finish (finish19: one kit
+  //  eagle a watched stretch, the Old Boa under the eye's pass); the hand-built 1-9 is deleted. BUILD-19 11-18)
+  '1-9': { kit: 'w1-19' },
   // (2-1 Down to the River and 2-2 Petals for the Crown: World 2's kit (w2.ts, ENG-W2 11-14) on their placeholder arcs, until each
   //  level's designed arc replaces its bricks (reference/design/2-1.md, 2-2.md); the hand-built 2-1 and 2-2 are deleted. Judged on their
   //  own flown rows (flownArcs.ts normal-2-1 / normal-2-2) since ENG-W2b taught floor.unmarked and drop.unwarned World 2's water (the

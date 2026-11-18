@@ -25,7 +25,7 @@ export interface PredatorEntry {
 
 export const PREDATOR_ENTRIES: Record<PredatorId, PredatorEntry> = {
   snake: { id: 'snake', name: 'Golden Eyelash Viper', tip: 'Rears up, sways, then strikes. Tap to punch it after.', first: 1 },
-  boa: { id: 'boa', name: 'Boa Constrictor', tip: 'Coiled and watching. Let it strike, then punch it three times.', first: 1 },
+  boa: { id: 'boa', name: 'Boa Constrictor', tip: 'It senses warmth through its lips. A cool, still sloth seems like a mossy branch.', first: 1 },
   eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Circles, then dives. Slide down to duck, or hide in a bush.', first: 1, alsoIn: PREDATOR_ALSO_IN.eagle },
   turtle: { id: 'turtle', name: 'Snapping Turtle', tip: 'Head-on it hides. Flick sideways to kick the shell.', first: 2 },
   ocelot: { id: 'ocelot', name: 'Ocelot', tip: 'Crouches, then pounces. Tap twice, or flick sideways to kick.', first: 3 },
