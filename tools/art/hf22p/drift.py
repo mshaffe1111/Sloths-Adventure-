@@ -1,6 +1,6 @@
 """ART-22P (b): cut a repainted drift-petal take (driftstart.py's grid, painted on flat grey) into a packed sheet like
 src/assets/flora/petals.webp: each piece keyed (grey connected to the border; alpha from the distance to the grey; rim colour un-mixed
-from it), long side 64 px, packed 8 a row with a 2 px gap in a 512 px wide sheet; frames as JSON for petalData.ts.
+from it), long side 64 px, packed 7 a row with a 2 px gap in a 512 px wide sheet (7 x 66 = 462; 8 would run past 512 and clip); frames as JSON for petalData.ts.
 
     python3 -I tools/art/hf22p/drift.py <take.png> <out.webp> <frames.json> [min piece area px, default 4000]
 """
@@ -11,7 +11,7 @@ from PIL import Image
 
 src, out, fj = sys.argv[1:4]
 MIN = int(sys.argv[4]) if len(sys.argv) > 4 else 4000
-T_IN, T_OUT, SIDE, GAP, ROW = 14.0, 46.0, 64, 2, 8
+T_IN, T_OUT, SIDE, GAP, ROW = 14.0, 46.0, 64, 2, 7
 px = np.asarray(Image.open(src).convert('RGB')).astype(np.float32)
 H, W, _ = px.shape
 bg = np.median(np.concatenate([px[0], px[-1], px[:, 0], px[:, -1]]), axis=0)
@@ -55,6 +55,7 @@ for n, y0, x0, y1, x1 in parts:
     k = SIDE / max(t.size)
     tiles.append(t.resize((max(1, round(t.width * k)), max(1, round(t.height * k))), Image.LANCZOS))
 rows = (len(tiles) + ROW - 1) // ROW
+assert ROW * (SIDE + GAP) - GAP <= 512, 'a row must fit the 512 px sheet'
 S = Image.new('RGBA', (512, rows * (SIDE + GAP) - GAP), (0, 0, 0, 0))
 frames = []
 for i, t in enumerate(tiles):
