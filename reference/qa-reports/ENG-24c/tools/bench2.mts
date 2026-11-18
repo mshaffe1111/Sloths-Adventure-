@@ -1,0 +1,15 @@
+const ROOT = '/home/user/Sloths-Adventure-';
+const { letGoTable, letGoLands } = await import(`${ROOT}/src/game/letGoCue.ts`);
+const { layRiver } = await import(`${ROOT}/src/game/gen2/riverLay.ts`);
+const { TOY_RIVERS } = await import(`${ROOT}/tools/inspect/lianaRiverToys.ts`);
+let id = 1;
+const { logs } = layRiver(TOY_RIVERS.long, 2000, 800, () => id++);
+const ds = logs.map((p: any) => p.drift);
+const v = { id: 1, x: 2165, topY: 390, bottomY: 800, swingAmp: 0.45, swingPhase: 0.3 } as any;
+const tab = letGoTable(v, 287, 1, ds[0]);
+let n = 0; const N = 200000; const t0 = performance.now();
+for (let i = 0; i < N; i++) if (letGoLands(tab, 20 + i / 30, ds, 11 + i / 30, false, true)) n++;
+const per = (performance.now() - t0) / N * 1000;
+console.log(`letGoLands per frame: ${per.toFixed(3)} us (lit ${(n / N * 100).toFixed(0)}%)`);
+const t1 = performance.now(); for (let i = 0; i < 50; i++) letGoTable(v, 200 + i, i % 2 ? 1 : -1, ds[0]);
+console.log(`table build: ${((performance.now() - t1) / 50).toFixed(3)} ms (gates running alongside)`);

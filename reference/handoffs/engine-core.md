@@ -1,6 +1,30 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+Rewritten for ENG-24c (11-18, t-eng-24c): section 0zm (the raft look; the swing's glow over a river). ENG-24's 0zl below still holds.
+
+## 0zm. ENG-24c (t-eng-24c from t-meter-3 42459a5c, 11-18): the raft look (R-165.288) and the glow that agrees with the log (R-165.289)
+- **The raft (data):** a river row's `look: 'raft'` (gen2/riverLay.ts RiverRow) -> layRiver puts it on every carrier's DriftInfo.look (river.ts;
+  draw only: the judge, the bots and the physics read a raft row exactly as its log row, riverRaft.test.ts). Drawn: on World 2's painted water
+  riverArt.ts drawRiverLog draws World 2's PAINTED raft (puzzle-kit#raft, w2.json, placed as puzzlePlay.ts's sluice raft: deck = the carrier's
+  top); the drawn layer (no painted sheet) gives it platformPlan's 'raft' look (spanArt's code-drawn raft painter), never rotated to barge/pad.
+  The kit's sheet is preloaded for any gen2 stage whose kit places a raft row (gen2/game.ts gen2Rafts/laysRafts -> stageSheets 'kit-pieces').
+  Until the sheet loads the painted log stands in. The toy has a `raft` row (tools/inspect/lianaRiverToys.ts TOY_RIVERS.raft).
+- **The glow (letGoCue.ts):** on a liana over a log river (river.ts lianasOver) the swing's glow and glints (engine.ts sweetGlow) mean "a let-go
+  pressed now comes down on a log or the bank ahead"; anywhere else they are the sweet spot, as always (1-6 test: the drawn glow is World 1's
+  ease to the frame). The swing is a pure function of the vine clock, so per liana, hold and facing ONE table is flown (physics.ts
+  pressLaunchesFrom at two clocks half a frame apart, each press flown by gen2/riverLay.ts letGoFall: the judge's own flight); each frame
+  looks up the press for the vine's phase and tests the logs at the landing time (fallOnLog). Facing back = the same flight on the mirrored
+  vine. 0.19 ms a table (this container), built when he takes hold or his hold rests at a new length; while his grip moves the river says
+  nothing. Over a river the glow goes out the frame the moment passes (no fade over the water).
+- **CUE (letGoCue.ts) is tighter than the judge, measured against the engine:** the press climbs his hold one frame first (a jump press is Up:
+  inputEngine.ts triggerTouchUp), and the catch is read 8 px narrower on both readings of the river clock (the judge's, and one frame back:
+  the engine moves the logs before him). Through the game's own touch input on the toy (long, gap280/deep, the raft row, both settings,
+  facing back): 0 frames lit over water, lit on 83-97% of the frames whose let-go lands (letGoCue.test.ts; 6 px left one frame on the raft row).
+- **Traps:** (1) the judge (lianaDrops) and the bot still leave out the press-frame climb and read the logs one frame ahead: debt, named in
+  the REPORT. (2) The leaf: a returning player who HOLDS the jump glides (glide.ts) far past where the judge, the bot and the glow read; a
+  first-time 2-4 player has no leaf, and the tests take it off. (3) A river run by a sluice (RiverZone.flowT) gets no river glow (its clock
+  can stop). (4) RealPlay.swing does not reset the engine's sweetSnap: a test must clear it, or a 'late' press reads a stale snap.
+  (5) withFixtureConfig / withTestStage are synchronous: an `await` inside them drops the fixture ("no stage 2-94").
 
 ## 0zl. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
 - **The place (data, no type change):** `{ kind: 'river', after: <a liana's key>, row }` lays the water from the bank the liana (or its
