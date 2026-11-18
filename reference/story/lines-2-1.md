@@ -11,7 +11,7 @@ everything around her gets.
 |---|---|---|---|---|
 | 1 | `edge` | Dot, World 2's first line, at the canopy's edge (beat 0) | The trees just stop! The river's our road now. | 9 |
 | 2 | `logs` | Dot, teach, 800+ px before beat 2 (the first log) | Hear the knock? Hop on. Logs carry you! | 8 |
-| 3 | `deep` | Dot, teach, 800+ px before beat 4 (replaces `hint.2-1.deep`) | This river's deep. Stay on the logs! | 7 |
+| 3 | `deep` | Dot, teach, 800+ px before beat 4 (replaces `hint.2-1.deep`; its words replaced world-wide by KEEPER-24, 11-18: lines-2-4.md conflict 1) | This river's deep. Don't touch the water! | 7 |
 | 4 | `back` | Dot, teach, 800+ px before beat 6 (the twist) | It flows the other way! Run, and hop ahead! | 9 |
 | 5 | `village` | Dot, at the village gate (beat 11) | A whole village of sloths! They're all still waving. | 9 |
 | 7 | `mark` | Dot, her mark on the gate (exit) | Her mark, right on the village gate! | 7 |

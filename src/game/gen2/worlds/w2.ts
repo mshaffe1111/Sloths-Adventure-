@@ -59,12 +59,13 @@ export const W2_ART = {
 export const W2_LESSON = { river: 'river', stones: 'stones' } as const;
 
 /**
- * Dot's words in World 2's kit: the story keeper's only (level.md rule 17). `water` is the keeper's approved 2-1 line for the deep river
- * (reference/story/lines-2-1.md `deep`, t-story@50da9e58, approved about 8:20 PM ET 11-14): the pipeline says it before the first deep
- * river (WATER_WARN), as Dot's warning before water in every world. w2.test.ts holds it equal to the keeper's file's words.
+ * Dot's words in World 2's kit: the story keeper's only (level.md rule 17). `water` is the keeper's World 2 line for deep water
+ * (reference/story/lines-2-1.md `deep`; its words replaced world-wide by KEEPER-24, lines-2-4.md conflict 1, 11-18: "Stay on the logs!"
+ * was false at 2-4's beat 6, where he must leave the logs for the vines): the pipeline says it before the first deep river (WATER_WARN),
+ * as Dot's warning before water in every world. w2.test.ts holds it equal to the keeper's file's words.
  */
 export const W2_TIPS: Record<string, string> = {
-  water: 'This river\'s deep. Stay on the logs!',
+  water: 'This river\'s deep. Don\'t touch the water!',
 };
 
 /**
