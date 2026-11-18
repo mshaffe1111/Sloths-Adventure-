@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { BLOOM_MS, GLOW_MS, bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudValues } from './bloom.ts';
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, readMs } from './hudLayout.ts';
 import { goalInfo } from './goalInfo.ts';
+import { stageLooks } from '../../game/stagePlan.ts';
 
 const start = (o: Partial<HudValues> = {}): HudValues => ({ hp: 5, maxHp: 5, goal: 0, target: 16, lives: 3, score: 0, stage: '1-5', power: null, ...o });
 
@@ -215,7 +216,7 @@ test('reading time: 1.5 s plus 0.5 s a word, at least the minimum', () => {
 });
 
 test("the goal card's words fit the stage", () => {
-  const cfg = (o: object) => ({ id: '1-5', worldIndex: 1, miniIndex: 5, objectiveType: 'harvest', targetCount: 33, ...o });
+  const cfg = (o: object) => ({ id: '1-2', worldIndex: 1, miniIndex: 2, objectiveType: 'harvest', targetCount: 33, ...o });
   const petals = goalInfo(cfg({}));
   assert.equal(petals.kind, 'count');
   assert.equal(petals.line, 'This stage: collect 33 petals');
@@ -224,6 +225,11 @@ test("the goal card's words fit the stage", () => {
   assert.deepEqual(goalInfo(cfg({ worldIndex: 3, miniIndex: 6, objectiveType: 'relic_hunt', targetCount: 4 })).slotIcon(1), { kind: 'pickup', name: 'rattle' });
   // (one pickup, Meeca's petal, everywhere but World 8, whose harvests gather its night blooms: petals.ts)
   assert.deepEqual(goalInfo(cfg({ worldIndex: 2, objectiveType: 'harvest' })).icon, { kind: 'pickup', name: 'petal' });
+  // (ART-22P: the counter shows the stage's own petal where its plan row names one, StageSpec.looks: 2-2 gathers the river king's
+  //  lavender hyacinths, so its HUD never shows Meeca's pink petal beside them; a harvest with no own look keeps hers)
+  assert.deepEqual(goalInfo(cfg({ id: '2-2', worldIndex: 2, miniIndex: 2 })).icon, { kind: 'pickup', name: stageLooks(2, 2).petal });
+  assert.notEqual(stageLooks(2, 2).petal, undefined);
+  assert.deepEqual(goalInfo(cfg({ id: '1-2', worldIndex: 1, miniIndex: 2 })).icon, { kind: 'pickup', name: 'petal' });
   assert.equal(goalInfo(cfg({ worldIndex: 8, objectiveType: 'harvest' })).icon.kind, 'flower');
   assert.equal(goalInfo(cfg({ objectiveType: 'sprint' })).line, 'This stage: reach the shrine');
   assert.equal(goalInfo(cfg({ objectiveType: 'sprint' })).kind, 'distance');
