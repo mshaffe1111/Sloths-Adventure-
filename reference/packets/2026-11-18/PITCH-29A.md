@@ -1,4 +1,4 @@
-# PITCH-29A (FIXED LENS): pitch 2-9, 3-1, 3-2. Pitcher A, Opus 5.5 high. Written 5:20 PM ET 11-18 (by `date`). pitch.md step 2b.
+# PITCH-29A (FIXED LENS): pitch 2-9, 3-1, 3-2. Pitcher A, Opus 5.5 high. Written 5:15 PM ET 11-18 (by `date`). pitch.md step 2b.
 Never read branch t-pitch-29b. BOX: 90 min from your start, or 40% REAL context. Report to the lead session_01FhBbYN2CVHnFXg7XzqKXpM.
 Method: reference/methods/pitch.md (WHOLE). Role card DESIGNER.md. Read FIRST level.md (Building rules); the bar: `git show
 origin/t-design-24:reference/design/2-4.md`; the World 2 picks on this branch (PICKS-23-25.md, PICKS-26-28.md); the game outline

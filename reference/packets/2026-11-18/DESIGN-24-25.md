@@ -1,5 +1,5 @@
 # DESIGN-24-25: the final designs for 2-4 "Never Touch the Bank" and 2-5 "Count to Four" (pitch.md step 6), with their flights.
-Designer, Opus 5.5 high. Written 10:22 AM ET 11-18. BOX: 2 h from your start, or 40% REAL context. No shell wait loops.
+Designer, Opus 5.5 high. Written 10:19 AM ET 11-18. BOX: 2 h from your start, or 40% REAL context. No shell wait loops.
 Role card reference/roles/DESIGNER.md. Read FIRST reference/methods/level.md (Building rules) and reference/design/LEVEL-BAR.md, then the
 lead's picks reference/design/PICKS-23-25.md (on this branch: what is taken from which pitch, and what is dropped), then both pitches
 (`git show origin/t-pitch-23a:reference/design/pitches/PITCH-23A.md`, `git show origin/t-pitch-23b:reference/design/pitches/PITCH-23B.md`),

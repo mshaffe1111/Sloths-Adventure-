@@ -1,4 +1,4 @@
-# ENG-W2b: the river as a gen2 section, so 2-1 builds from data. Engine, Opus 5.5 xhigh. Written 11:05 AM ET 11-15. BOX 2.5 h or 40%.
+# ENG-W2b: the river as a gen2 section, so 2-1 builds from data. Engine, Opus 5.5 xhigh. Written 11:01 AM ET 11-15. BOX 2.5 h or 40%.
 Role card ENGINE.md. Read level.md Building rules (21-29 first), then ONLY ENG-W2's REPORT (origin/t-eng-w2: reference/qa-reports/ENG-W2/
 REPORT.md) "EXACT NEXT STEP" (items 0 and 1a-1h are your job, in order) and reference/design/2-1.md (the river is your road; on this branch).
 Branch t-eng-w2b from origin/t-eng-w2 (58182e9a). Every piece for ANY world, by data, planted test red first (rules 21-22).

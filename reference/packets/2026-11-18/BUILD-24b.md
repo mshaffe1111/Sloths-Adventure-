@@ -1,5 +1,5 @@
 # BUILD-24b: finish 2-4 from BUILD-24's EXACT NEXT STEP: fix its calibrated-tier rescues at the root, then every gate, stills and clips.
-Level build, Opus 5.5 high. Written 3:43 PM ET 11-18 (by `date`). BOX: final hash by 9:00 PM ET, or 50% REAL context (get_session at idle).
+Level build, Opus 5.5 high. Written 3:40 PM ET 11-18 (by `date`). BOX: final hash by 9:00 PM ET, or 50% REAL context (get_session at idle).
 NOT in tonight's link (tomorrow's integration with ENG-24 + METER-3).
 Read FIRST the packet BUILD-24 worked from: reference/packets/2026-11-18/BUILD-24.md (the bar, the checks, the polish list), then its
 REPORT on origin/t-build-24 (reference/qa-reports/BUILD-24/REPORT.md: EXACT NEXT STEP first; the lead's rulings: log-caught lianas

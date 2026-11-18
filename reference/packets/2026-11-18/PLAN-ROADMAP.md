@@ -1,5 +1,5 @@
 # PLAN-ROADMAP: a real build roadmap so the team plans ahead instead of reacting. Planner (architect), Opus 5.5 high.
-Written 5:17 PM ET 11-18 (by `date`). MATT 11-18 5:13 PM ET: "Let's continue getting the ideas and planning out everything so that there's
+Written 5:14 PM ET 11-18 (by `date`). MATT 11-18 5:13 PM ET: "Let's continue getting the ideas and planning out everything so that there's
 a real roadmap and we can actually start even getting the engine even more prepped so that we're not constantly juggling. We're actually
 planning ahead and not reacting." BOX: 2 h or 40% context. Docs only: never edit game code, tests or data.
 Read (verify every fact in code or a dated doc; cite file:line; mark guesses): CLAUDE.md, reference/ROADMAP.md (open rows; R-165.250 on),

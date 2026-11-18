@@ -1,5 +1,5 @@
 # ART-22P: 2-2's pickups painted to its story (lavender hyacinth / white lily), then the release-speed fix (R-165.278). Opus 5.5 high.
-Written 9:54 AM ET 11-18. BOX: hash to the lead by 3:30 PM ET, or 50% REAL context. Hugging Face cap for this packet: $4.
+Written 9:48 AM ET 11-18. BOX: hash to the lead by 3:30 PM ET, or 50% REAL context. Hugging Face cap for this packet: $4.
 Role card reference/roles/ENGINE.md + reference/methods/hf-art.md (the token never leaves the environment: never in code, commits, files,
 messages or memory, law 8; log every job in reference/art/HF-SPEND.md with what it bought). Read STAGE-RULES §4-5b and LESSONS.md once.
 PART 1, the art (first):

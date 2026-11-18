@@ -1,4 +1,4 @@
-# PITCH-29B (OPEN LENS): pitch 2-9, 3-1, 3-2. Pitcher B, Opus 5.5 xhigh. Written 5:20 PM ET 11-18 (by `date`). pitch.md step 2b (D85: this
+# PITCH-29B (OPEN LENS): pitch 2-9, 3-1, 3-2. Pitcher B, Opus 5.5 xhigh. Written 5:15 PM ET 11-18 (by `date`). pitch.md step 2b (D85: this
 packet carries no outline; never read reference/plans/GAME-MAP.md, any 2-9/3-x pitch or design, or branch t-pitch-29a).
 BOX: 90 min from your start, or 40% REAL context. No shell wait loops. Report to the lead session_01FhBbYN2CVHnFXg7XzqKXpM with REAL context.
 Method: reference/methods/pitch.md (WHOLE). Role card DESIGNER.md. Read FIRST reference/methods/level.md (Building rules); the bar and the

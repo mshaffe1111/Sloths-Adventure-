@@ -1,5 +1,5 @@
 # KEEPER-19: write and approve 1-9 "The Boa's Branches" player lines (story keeper; Matt 11-13: "the storykeeper has full authority to add
-to the story and to approve all lines"). Opus 5.5 high. Written 9:59 AM ET 11-18 by the lead. 30-minute box.
+to the story and to approve all lines"). Opus 5.5 high. Written 9:56 AM ET 11-18 by the lead. 30-minute box.
 Read reference/story/STORY-KEEPER.md, the design `git show origin/t-pitch-b:reference/design/1-9.md` (beats table; "For the story keeper"
 lines 59-63; "Nature check" from line 81), the house words (src/game/whatsNew.test.ts banned words; the playerText tests), and 1-7's
 lines for voice (reference/story/lines-1-7.md on origin/t-keeper-17, or wherever main has 1-7's lines: grep for them). World 1 has no

@@ -1,5 +1,5 @@
 # ENG-19c: 1-9's promise, made true on screen: the frozen-out boa slides off; the roost's boa leaves AWAY from him. Engine, Opus 5.5 xhigh.
-Written 11:46 AM ET 11-18 (by `date`). BOX: final hash to the lead by 4:30 PM ET, or 50% REAL context (stop with the exact next step pushed).
+Written 11:43 AM ET 11-18 (by `date`). BOX: final hash to the lead by 4:30 PM ET, or 50% REAL context (stop with the exact next step pushed).
 Role card reference/roles/ENGINE.md. Read FIRST level.md (Building rules), LEVEL-BAR.md, STAGE-RULES §5b (the polish bar), LESSONS.md once,
 then BUILD-19's REPORT on origin/t-build-19 (BUILD-19 + BUILD-19b sections; its EXACT NEXT STEP), and 1-9.md ("AS BUILT"), and the
 approved lines (reference/story/lines-1-9.md on t-build-19): Dot's teach says "Boa rearing up? Don't move, and it slides off!"

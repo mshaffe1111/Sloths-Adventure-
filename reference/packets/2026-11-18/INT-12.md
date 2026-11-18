@@ -1,5 +1,5 @@
 # INT-12: tonight's link: merge the day's four green branches onto main, every gate once, hand the lead the head. Integration, Opus 5.5 xhigh.
-Written 12:15 PM ET 11-18 (by `date`). Start when the lead says the branches are final (~4:00-4:30 PM). BOX: green head to the lead by 6:30 PM
+Written 12:10 PM ET 11-18 (by `date`). Start when the lead says the branches are final (~4:00-4:30 PM). BOX: green head to the lead by 6:30 PM
 ET (the lead builds Matt's link from it, ~7-8 PM), or 50% REAL context (stop with the exact next step pushed).
 Role card reference/roles/ENGINE.md (integration half) + reference/methods/gates.md + reference/methods/release.md (merge discipline).
 Read LESSONS.md once (D57 read your inbox; D59 no gate left running at report; D79 whole screen; D81 drawcheck; D82 job limits; D83 no

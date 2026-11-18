@@ -1,4 +1,4 @@
-# ENG-19b: 1-9's engine finished (the roost drawn, bots that play the boa), so 1-9 builds from data. Engine, Opus 5.5 high. Written 11:05 AM ET
+# ENG-19b: 1-9's engine finished (the roost drawn, bots that play the boa), so 1-9 builds from data. Engine, Opus 5.5 high. Written 11:01 AM ET
 11-15. BOX 2 h or 40%. Role card ENGINE.md. Read level.md Building rules (21-29 first), reference/design/1-9.md ("be the bait") and
 reference/design/PICKS-19-22.md, then ONLY ENG-19's REPORT (origin/t-eng-19: reference/qa-reports/ENG-19/REPORT.md): EXACT NEXT STEP,
 Pushback, ENGINE-WORTHY. Branch t-eng-19b from origin/t-eng-19 (141529cc).

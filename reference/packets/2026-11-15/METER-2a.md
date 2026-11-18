@@ -1,7 +1,7 @@
-# METER-2a: the meter refuses what it can't price, and prices World 2's rides. Engine (tools + bots), Opus 5.5 xhigh. Written 11:20 AM ET
+# METER-2a: the meter refuses what it can't price, and prices World 2's rides. Engine (tools + bots), Opus 5.5 xhigh. Written 11:09 AM ET
 11-15. BOX 2.5 h or 40% real context.
 Role card ENGINE.md. Read level.md Building rules (21-29), then reference/design/METER-COVERAGE.md (origin/t-meter-2 b832e240; the lead
-APPROVED it 11:20 AM, pushback included: the gate fails on EITHER a missing bot or a missing channel), §0, §1, §3, §4 in full, the rest as
+APPROVED it 11:09 AM, pushback included: the gate fails on EITHER a missing bot or a missing channel), §0, §1, §3, §4 in full, the rest as
 needed; tools/difficulty/score.ts + DIFFICULTY.md on origin/t-meter-1 (cfa9019a); BOTS.md and tools/inspect/tierBots.test.ts.
 Branch t-meter-2a from origin/t-meter-1, then merge origin/t-meter-2 (its doc) and this branch's head if needed (say what you merged).
 Do §4 steps 1, 2 and 4 (everything tagged [2-1] plus the gate), in order, each with a planted test red first:

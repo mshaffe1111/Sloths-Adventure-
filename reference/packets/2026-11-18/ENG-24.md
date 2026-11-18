@@ -1,5 +1,5 @@
 # ENG-24: 2-4's two NEW engine pieces, proven on planted toys before the builder (rule 21/23). Engine, Opus 5.5 xhigh.
-Written 11:12 AM ET 11-18 (by `date`). BOX: hash to the lead by 4:30 PM ET, or 50% REAL context (stop with the exact next step pushed).
+Written 11:05 AM ET 11-18 (by `date`). BOX: hash to the lead by 4:30 PM ET, or 50% REAL context (stop with the exact next step pushed).
 Role card reference/roles/ENGINE.md. Read FIRST reference/methods/level.md (Building rules), reference/design/LEVEL-BAR.md, LESSONS.md once,
 then the final design `git show origin/t-design-24:reference/design/2-4.md` (WHOLE: the flights, the fairness numbers, the Engine line 50-56)
 and its flight `git show origin/t-design-24:reference/specs/sims/swingLog.ts`, then DESIGN-24-25's REPORT (the lead's four rulings: the

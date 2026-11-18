@@ -1,5 +1,5 @@
 # METER-3: two missing meter prices before the next builds: a liana-to-log drop / log-to-liana catch (R-165.287, 2-4) and a predator's read
-(R-165.286, 1-9's boas). Meter/tools, Opus 5.5 high. Written 12:40 PM ET 11-18 (by `date`). BOX: hash by 4:30 PM ET or 50% REAL context.
+(R-165.286, 1-9's boas). Meter/tools, Opus 5.5 high. Written 12:37 PM ET 11-18 (by `date`). BOX: hash by 4:30 PM ET or 50% REAL context.
 Read FIRST reference/methods/level.md, reference/methods/gates.md (coveragecheck, the meter), the meter's own docs (reference/design/
 METER-COVERAGE.md and METER-2a's REPORT; find them on main), DIFFICULTY.md (the targets and how scores are anchored), LESSONS.md once.
 Then ENG-24's REPORT (`git show origin/t-eng-24:reference/qa-reports/ENG-24/REPORT.md`: Suggestion A, the lianaRide toys, dropOnLog /

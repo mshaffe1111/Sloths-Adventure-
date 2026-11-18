@@ -1,4 +1,4 @@
-# FIX-22b: 2-2 draw budget at the spur (drawcheck RED). Level/scenery fix, Opus 5.5 high. Written 8:53 PM ET 11-15. LEAN; Matt is at 90%
+# FIX-22b: 2-2 draw budget at the spur (drawcheck RED). Level/scenery fix, Opus 5.5 high. Written 8:50 PM ET 11-15. LEAN; Matt is at 90%
 weekly tokens. BOX: hash to the lead by 10:00 PM ET (Matt's 11:30 cutoff; the full gate set re-runs after you, ~60 min). At the stop:
 push, REPORT, EXACT NEXT STEP.
 Read FIRST: reference/PERFORMANCE-RULES.md §1 and §8, reference/methods/gates.md (drawcheck), level.md Building rules, FIX-22's REPORT

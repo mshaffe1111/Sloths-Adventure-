@@ -1,4 +1,4 @@
-# VAR-1: variety for 1-6, 1-7, 1-8 (R-165.276): more pieces, never rerolls. Level builder, Opus 5.5 high. Written 9:52 AM ET 11-18.
+# VAR-1: variety for 1-6, 1-7, 1-8 (R-165.276): more pieces, never rerolls. Level builder, Opus 5.5 high. Written 9:48 AM ET 11-18.
 MATT 11-15 7:47 PM ET shipping 0.9.9 with funcheck accepted: "fix variety next". MATT 10-30 (standing): "I'd rather have more pieces and
 have that variety than trying to just barely squeak past something... that should be the roll forward."
 BOX: final hash to the lead by 4:00 PM ET, or 50% REAL context: push, REPORT, EXACT NEXT STEP. Each heavy check ONCE.

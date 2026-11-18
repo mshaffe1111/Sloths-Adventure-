@@ -1,6 +1,6 @@
 # PITCH-26-28: pitch 2-6, 2-7, 2-8 with TWO LENSES (pitch.md step 2b, Matt 11-18 11:29 AM ET: "test it out with the next levels just to see
 what it would do and if there's anything that we can implement off of it... if some new fun elements are added, then why not take it in?").
-Written 11:33 AM ET 11-18 (by `date`). Pitcher A (fixed lens, high) and Pitcher B (open lens, xhigh), blind to each other.
+Written 11:30 AM ET 11-18 (by `date`). Pitcher A (fixed lens, high) and Pitcher B (open lens, xhigh), blind to each other.
 BOX: 90 min from your start, or 40% REAL context. No shell wait loops. Report to the lead session_01FhBbYN2CVHnFXg7XzqKXpM with your REAL context %.
 Method: reference/methods/pitch.md (READ IT WHOLE, step 2b is new and is why this round exists). Role card DESIGNER.md. Read FIRST
 reference/methods/level.md (Building rules); the format and bar: `git show origin/t-design-24:reference/design/2-4.md` (a final design).

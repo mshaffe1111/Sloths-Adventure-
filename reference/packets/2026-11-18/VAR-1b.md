@@ -1,5 +1,5 @@
 # VAR-1b: finish the 1-6/1-7/1-8 variety pass from VAR-1's EXACT NEXT STEP (its REPORT §10). Level builder, Opus 5.5 high.
-Written 3:50 PM ET 11-18 (by `date`). BOX: final GREEN hash to the lead by 6:45 PM ET (tonight's link waits on it), or 50% REAL context
+Written 3:45 PM ET 11-18 (by `date`). BOX: final GREEN hash to the lead by 6:45 PM ET (tonight's link waits on it), or 50% REAL context
 (get_session at idle; stop with the exact next step pushed). Lean: each heavy check ONCE, relists one stage at a time (two relists
 clobber provenIndex.ts).
 Read FIRST the packet VAR-1 worked from (reference/packets/2026-11-18/VAR-1.md: the bar, the rules: rests stay rests, no pit/heart either

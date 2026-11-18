@@ -1,5 +1,5 @@
 # PITCH-23-25: pitch 2-3, 2-4 and 2-5 (two pitchers, A at high, B at xhigh, blind to each other; the lead picks or sends both back).
-Written 9:56 AM ET 11-18. Method: reference/methods/pitch.md (READ IT WHOLE: Matt's words, the steps, the shelf rule). Role card DESIGNER.md.
+Written 9:48 AM ET 11-18. Method: reference/methods/pitch.md (READ IT WHOLE: Matt's words, the steps, the shelf rule). Role card DESIGNER.md.
 Read FIRST reference/methods/level.md (Building rules), then reference/plans/PLATFORMER-100-MATT.md (WHOLE: "why people loved it" is the
 seed), PLATFORMER-100.md and INSPIRED-BY.md (skim); the format and the bar: `git show origin/t-pitch-b:reference/design/2-1.md` and
 `.../2-2.md` (the last two levels, built and live in 0.9.9); the game outline `git show origin/t-design-game-map:reference/plans/GAME-MAP.md`

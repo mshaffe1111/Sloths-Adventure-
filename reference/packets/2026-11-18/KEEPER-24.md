@@ -1,5 +1,5 @@
 # KEEPER-24: write and approve 2-4 "Never Touch the Bank" player lines (story keeper; Matt 11-13: "the storykeeper has full authority to
-add to the story and to approve all lines"). Opus 5.5 high. Written 3:05 PM ET 11-18 by the lead. 30-minute box.
+add to the story and to approve all lines"). Opus 5.5 high. Written 2:59 PM ET 11-18 by the lead. 30-minute box.
 Read reference/story/STORY-KEEPER.md, the design `git show origin/t-design-24:reference/design/2-4.md` (beats; "For the story keeper"
 asks 1-5 near line 61), the house words (src/game/whatsNew.test.ts banned words; playerText tests; STAGE-RULES §5b.7 speech boxes under 10
 words), 2-1's and 2-2's lines for World 2's voice (grep main's dotLinesData.ts / w2Arc21.ts / w2Arc22.ts tips), and the 1-9 lines you
