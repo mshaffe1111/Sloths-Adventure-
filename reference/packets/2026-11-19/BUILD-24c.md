@@ -1,5 +1,5 @@
 # BUILD-24c: finish 2-4 "Never Touch the Bank" from BUILD-24b's EXACT NEXT STEP, on the real raft and glow, every gate, stills and clips.
-Level build, Opus 5.5 high. Written 5:47 PM ET 11-18 (by `date`) for Thu 11-19, first in the build lane. BOX: early stills by 11:00 AM ET, final hash by 6:00 PM ET,
+Level build, Opus 5.5 high. Written 5:37 PM ET 11-18 (by the commit clock; first typed 5:47, D30) for Thu 11-19, first in the build lane. BOX: early stills by 11:00 AM ET, final hash by 6:00 PM ET,
 or 50% REAL context (get_session at idle; past 400k the lead stops you), whichever first; then the EXACT NEXT STEP pushed.
 Role card reference/roles/ENGINE.md (level half). Read FIRST: reference/methods/level.md (Building rules), LESSONS.md once (D59, D79, D81,
 D86: the FULL CLAUDE.md check list, D87: long commands in the BACKGROUND so the lead's messages reach you; ack each ruling in one line).
