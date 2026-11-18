@@ -59,3 +59,58 @@ the same packet), D59 (running gates named UNRUN), D64/D76 (real context read: 5
 Method update: level.md step 3 add "read the quiet line's position after every change (libstage --json) and fix by data before relisting".
 ## Turnover note
 reference/handoffs/engine-core.md §0zm (0aa411a3).
+
+# BUILD-24b (packet reference/packets/2026-11-18/BUILD-24b.md): the 8 rescues fixed at the root, the suite's 2-4 misses, beat 8's third leg, every gate, stills, clips
+Started 3:42 PM ET 11-18 on t-build-24 @ 872c8693 (by `date`). Gate head **557c363b**. The lead's rulings this task: 4:43 PM ET (no longer
+rests; one more log-to-liana catch; flagSpan derived), 4:45 PM ET ((B): a third relay leg).
+## Done-items and evidence
+1. **The 8 calibrated-tier rescues: ONE root, in the bot** (traced two runs per cause, rule 28; `reference/qa-reports/BUILD-24/geom24.ts`,
+   `trace24.ts`, FT_FRAMES). After the GAME set Pokey down, the bot's place along the way was stale: (a) Normal drowning: `respawned()`
+   (called from the loseLife hook) relocated him at the spot he DROWNED, a frame before the engine moved him to the flag (middle N s12:
+   "relocate at 21557,936", flag 20660); (b) Easy splash-back: the river put him back with no bot respawn at all (child E s6 t192.60:
+   21897 -> 21041). 900 px off the way under a liana's catch, `pitWayBack` set a 20 s climb back the WRONG way (left): he walked back
+   2-4k px until the stuck clock rescued him. The same stale place set his progress mark ahead, so on middle N s31 his 14 s waits on
+   beat 6's liana were never reset. Fix (general, no stage id, nothing loosened): firsttimer.ts `after()`: a 100+ px jump in his place
+   in one frame that the bot did not make itself (`placed`: placeAt, a rescue, a put past a puzzle room) = set down by the game: relocate
+   where he stands, drop the climb back. Planted test `pitClimb.test.ts` "set down by the game": GREEN with, RED with the fix off (both
+   versions proved). Bots before -> after (2-4 as laid by BUILD-24): child E 38 -> 40, middle N 37 -> 40, expert N 37 -> 40; all 8 jobs 0
+   rescues. 1-1 calibration re-run (BOTS.md): 209/210 lines identical; child easy v25 303.6 -> 303.5 s + one more second press (the same
+   defect on 1-1: a stale climb back after a put-back at t286.87); recommitted (1b746f0f), the table lines unchanged.
+2. **The full suite (first full run 2-4 had): 5 misses, all fixed at the root.** firstTimerBot 6-3 seesaw (MINE: the set-down undid
+   pastRoom's placement; now `placed`); artUse (2-4's brick id 'fig-roots' read as a draw site of World 7's fig-roots prop -> 'root-planks');
+   petals 'spread out' (beat 3's petal sat in the stump at 0.2 and was removed: 2,438 px -> moved to 0.5); flagSpan floor (now DERIVED:
+   `owedWalk()` from HAND_STAGES + W2_STAGES, stale ids named, never empty, planted; the lead's ruling); stageQuality 'stages grow' (World
+   2's gen2 median 224.1 < World 1's 240.5 - 6) -> the lead's (B): **beat 8's third relay leg** (a bank liana's drop + a liana caught off a
+   log over one more gap-280 river, Easy its gap280Easy twin, a petal on the stump bank between): 2-4 models 240.1 s.
+3. **Bots on the gate head's data** (castbots-2-4-b.txt): child N 40/40 E 40/40; middle N 40/40 E 40/40; expert N 40/40; adult 40/40 both;
+   kid E 40/40; kid N 36/40 (seeds 17, 30, 31, 37: put past after drowning 4x at no-land x~16331 / the relay's gap-280 legs x~22900-24600:
+   Normal not softened for the kid, level.md rule 4). Easy lives 0 vs Normal 100-139 (water). fromLog 5 / ontoLog 6 on the clip run.
+4. **Stills** (557c363b, layout 1 = seed 65370, Normal + Easy, upright 412x915 + sideways 915x412, 2x, touch-phone context, the start card
+   shot then tapped away; `stills24.mjs`): contact sheets `stills-b/up-normal.jpg`, `up-easy.jpg`, `side-normal.jpg`, `side-easy.jpg`.
+   **Clips** (`clipRecord24.ts normal 1 0,4,7` + `clip24.mjs`, the middle bot's real run, 30 fps and half speed): `stills-b/drop-r0-up.mp4`
+   (the first drop), `drop-r4-side.mp4` (no-land: liana, log, liana, a drowning and the retry), `drop-r7-up.mp4` + `-half` (the NEW third
+   leg: bank liana, let go onto a log, ride, jump up to the log-caught liana, far bank); frame sheets `sheet-drop-r4-side.jpg`, `-r7-up.jpg`.
+## Polish check (each looked at as a player on a phone)
+- The teach (x2108, both settings): Dot's "Knock? Log coming! Let go when it's under you." on screen, 800+ px before the first liana. OK.
+- The start card ("2-4 · Over the Water · This stage: swing to the end"), both orientations, tapped away. ROUGH: it says "swing to the end",
+  not the keeper's mission line "Vines to logs, logs to vines..." (the card's objective wording is the vine_runner kind's; name for the lead).
+- Each beat's bank before its river (drop, board, no-land, relay, leg 3, swing, exit): the liana, the logs and the water read; Easy's rivers
+  are the shallow splash-back look, Normal's no-land and relay deep. The exit door "Touch the door!" shows on Easy sideways.
+- ROUGH (not 2-4's data; art/engine): (a) under each high bank's cliff face beside DEEP water, a grey rounded shape and a pale shallow-water
+  patch show at the screen's bottom (relay x20690 upright, leg 3); (b) upright, the deep river is half the screen of flat dark teal; (c) a
+  heart pickup sits on the flag at the relay's first bank; (d) standing still, Dot's move coaching ("Flick up to hop up or over.", counters
+  +1..+4) takes her bubble on every bank, and my stills could not catch the `catch` and `view` lines on screen for it (tipwalk is the proof
+  they are said: see the gate table); (e) the raft is a long log (R-165.288, named); the glow (R-165.289) is tomorrow's engine job.
+- The swing-to-log feel (R-165.271), from the clips: the let-go drops him straight onto a log under the swing, the log carries him, the jump
+  up meets the second liana at the top of its swing; nothing snaps or jitters in the frames. ROUGH: on a missed phase the bot (and a player
+  who lets go only on the forward swing) waits up to ~14 s on beat 6's first liana: noLand24's log clock (222 px at 80 px/s = 2.78 s)
+  nearly locks with the liana's 2.85 s swing (a missed phase repeats for many swings). Not a rescue cause after the fix; proposed below.
+## Pushback
+- The packet's "fix in 2-4's data, never the bot": the root of all 8 was the bot's bookkeeping (not a skill loosened), fixed generally with a
+  plant; told to the lead at 3:47 / 4:08 PM ET.
+## Suggestions (ready packets)
+- RIVER-CLOCK (engine, riverLay judge): judge a liana river's FORWARD-swing let-go wait as well as any-moment (lianaDrops), so two clocks
+  that nearly lock (beat 6: 2.78 s logs vs 2.85 s swing) are caught; then retune noLand24's gap by the judge, flown. Done-items: the judge's
+  planted case (noLand24 today RED), 2-4 relisted, bots' longest liana wait <= 2 swings.
+- ART-USE gate (tools/art/artuse.mjs owner): a gen2 brick/section id is not a draw site (2-4's 'fig-roots' hid World 7's unused prop).
+- STAGE-CARD wording (keeper + engine): the start card's "swing to the end" vs the stage's mission line.
