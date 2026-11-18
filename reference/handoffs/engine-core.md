@@ -13,8 +13,8 @@ Rewritten for ENG-25b (11-18, t-eng-25b): section 0zm (the snapper's bot skill; 
   row, id 2-89), RED with the skill off (never cleared).
 - **The flight** (reference/qa-reports/ENG-25b/bonkFlight.ts, InputEngine, 30 fps): a tap bonk bounces him 78 px over the bank (54 over
   its back), a press held through it 131 (107); same on Easy. From a still stand the bonk is clean at every moment of the bar, and a
-  head-on kick is too (its kick has no `when`; the kick lands inside its 0.5 s tell). The snap only carries a stake if TURTLE's kick is
-  `when: 'open'` (the lead's ruling pending; scratch flip: walk-in kick 0/90 clean, 41 bitten).
+  head-on kick was too (its kick had no `when`). **TURTLE's kick is now `when: 'open'`** (b1dc6b76, the lead's ruling 6:53 PM ET 11-18:
+  asleep, right after its snap, dazed by a bonk): a head-on walk-in kick 0/90 clean, 41 bitten. Planted in w2Cast.test.ts.
 - **The meter's snap run** (tools/difficulty/score.ts `snapChallenges`): each run of snap stones between floors that never bite is one
   press, windowBits(bar, rideLay.ts `snapWindow`), a heart. piecesUsed now names a snap stone `pad:snap` (it read `pad:beat`). Test
   tools/difficulty/snapChannel.test.ts on `METER_ID` 2-19: a toy id among World 2's first stages, because levelCheck grants the leaf glide by
