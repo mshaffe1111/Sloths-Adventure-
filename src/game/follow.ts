@@ -172,30 +172,13 @@ export function airSpan(t: Trail, s: number): { from: number; to: number } | nul
   return { from: p[i].s, to: j < p.length ? p[j].s : Infinity };
 }
 
-/** the latest place on the trail at or behind s whose x is at `x` (a spooked one runs back along his path to it); 0 when none */
-export function trailBackTo(t: Trail, s: number, x: number): number {
-  const p = t.pts;
-  for (let i = p.length - 1; i > 0; i--) {
-    const a = p[i - 1];
-    const b = p[i];
-    if (a.s > s) continue;
-    const bs = Math.min(b.s, s);
-    const bx = trailAt(t, bs).x;
-    if ((a.x - x) * (bx - x) <= 0) {
-      const k = bx !== a.x ? (x - a.x) / (bx - a.x) : 0;
-      return a.s + (bs - a.s) * Math.max(0, Math.min(1, k));
-    }
-  }
-  return 0;
-}
-
 /** the water surface under a little one at (x, y), where that is splash-back water and nothing stands there; null: on ground or in the air */
 export type SurfaceAt = (x: number, y: number) => number | null;
 
 /**
  * Step the line: each little one that follows chases the one ahead (the first chases him) along the trail, at most `pace` px/s, never
- * closer than `gap`, never past a WAIT. A freed one drops from its cage, then goes straight to the end of the line; a spooked one runs back
- * along the trail at `scamper` to its stretch's start and waits there. `surf`: the splash-back water under a point (it paddles there).
+ * closer than `gap`, never past a WAIT. A freed one drops from its cage, then goes straight to the end of the line; a spooked one runs
+ * straight back at `scamper` to its stretch's start and waits there. `surf`: the splash-back water under a point (it paddles there).
  */
 export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, dt: number, surf?: SurfaceAt, scamper = 300): void {
   let lead = t.s;
@@ -248,12 +231,14 @@ export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, 
       lead = Math.min(lead, f.slot);
     }
     if (f.state === 'spooked' && !f.back) {
-      const to = trailBackTo(t, f.s, f.backX ?? f.x);
-      f.s = Math.max(to, f.s - scamper * dt);
-      const q = trailAt(t, f.s);
-      f.x = q.x;
-      f.y = q.y;
-      if (f.s <= to + 0.01) f.back = true;
+      // (straight back over the ground to its stretch's start, not back through his trail: he may have doubled back since)
+      const to = f.backX ?? f.x;
+      const d = to - f.x;
+      const step = scamper * dt;
+      if (Math.abs(d) <= step) {
+        f.x = to;
+        f.back = true;
+      } else f.x += Math.sign(d) * step;
     }
     f.moved = Math.abs(f.x - x0) + Math.abs(f.y - y0) > 0.05;
     if (Math.abs(f.x - x0) > 0.05) f.facing = f.x > x0 ? 1 : -1;
