@@ -53,7 +53,7 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
 const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
-const n21 = nW2('2-1'), n22 = nW2('2-2');
+const n21 = nW2('2-1'), n22 = nW2('2-2'), n24 = nW2('2-4');
 
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
@@ -165,5 +165,15 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n22('double-tap-tap', [148, 139], [189, 274, 299], 'chain.md §1 "2-2: double-tap-tap 148 / 139, gap 189 / 274 / 299"'),
   ...n22('bounce', [223, 214], [177, 177, 177], 'chain.md §1 "2-2: bounce 223 / 214, gap 177"'),
   ...n22('bounce-air', [307, 296], [333, 333, 333], 'chain.md §1 "2-2: bounce-air 307 / 296, gap 333"'),
+  // 2-4 on Normal (BUILD-24, 11-18): flown on its own stage on World 2's kit (FLIGHT_STAGE=2-4 reference/specs/sims/flight.ts normal all,
+  // reference/qa-reports/BUILD-24/fly-2-4.txt; entered in chain.md §1 "Rows ... Normal 2-4"): stage 4's help, a pixel or two under 2-2's
+  ...n24('single-hold', [123, 114], [135, 219, 244], 'chain.md §1 "2-4: single-hold 123 / 114, gap 135 / 219 / 244"'),
+  ...n24('single-flick', [123, 113], [125, 209, 237], 'chain.md §1 "2-4: single-flick 123 / 113, gap 125 / 209 / 237"'),
+  ...n24('single-tap', [87, 78], [77, 161, 182], 'chain.md §1 "2-4: single-tap 87 / 78, gap 77 / 161 / 182"'),
+  ...n24('double-hold', [204, 194], [289, 375, 402], 'chain.md §1 "2-4: double-hold 204 / 194, gap 289 / 375 / 402"'),
+  ...n24('double-flick', [203, 193], [271, 357, 381], 'chain.md §1 "2-4: double-flick 203 / 193, gap 271 / 357 / 381"'),
+  ...n24('double-tap-tap', [147, 138], [188, 273, 299], 'chain.md §1 "2-4: double-tap-tap 147 / 138, gap 188 / 273 / 299"'),
+  ...n24('bounce', [223, 214], [176, 176, 176], 'chain.md §1 "2-4: bounce 223 / 214, gap 176"'),
+  ...n24('bounce-air', [306, 294], [331, 331, 331], 'chain.md §1 "2-4: bounce-air 306 / 294, gap 331"'),
 ];
 

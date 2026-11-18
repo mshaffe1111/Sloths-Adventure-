@@ -61,8 +61,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (2-2 Petals for the Crown: the designed arc, w2Arc22.ts, its own kit 'w2-22' (kitLib22), BUILD-22 11-15; its placeholder arc is gone)
   '2-2': { kit: 'w2-22', judged: 'normal-2-2' },
   // (2-4 Never Touch the Bank: the designed arc, w2Arc24.ts, its own kit 'w2-24' (kitLib24), BUILD-24 11-18: lianas over log rivers
-  //  (ENG-24's place `river` after a liana); the hand-built 2-4 (w2Stages.ts) is deleted)
-  '2-4': { kit: 'w2-24' },
+  //  (ENG-24's place `river` after a liana); the hand-built 2-4 (w2Stages.ts) is deleted. Judged on its own flown rows, flownArcs.ts normal-2-4)
+  '2-4': { kit: 'w2-24', judged: 'normal-2-4' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
