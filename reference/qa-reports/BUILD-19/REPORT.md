@@ -277,3 +277,45 @@ over the hunters' boa; the Old Boa under its eagle; the exit ("33 more" on its d
 
 ## Turnover note
 reference/handoffs/engine-core.md §0zm (this REPORT's commit).
+
+---
+
+# ENG-19c: 1-9's promise made true on screen (t-build-19 from 432f4047; the lead's packet ENG-19c.md 11:46 AM ET, taken by BUILD-19b at 11:49)
+
+## EXACT NEXT STEP (for whoever picks 1-9 up next)
+1. **The bop still** (a punch on a missed strike, beat 5 'w1-19-miss'): UNSHOT. shoot19.mjs's scripted thumb at the edge of the strike's
+   reach is struck (a heart lost). Do it from a bot's own pads on the REAL stage: boaBotPads.ts drives the toy only (ENGINE-WORTHY 8).
+2. **The eye's shadow over a boa** (beat 11 'w1-19-hunters'): UNSHOT as a shadow; 11-eye-over-boa shows the eagle with its eye 180 px
+   off the boa. Step the page until the eye's x is over the boa's middle (cast.eyeOut() and |eyeX - boa mid| < 40) and shoot.
+3. Everything else in ENG-19c's list is done (below). The golden seed was done by BUILD-19b (432f4047).
+
+## Head
+- **FINAL_HEAD** (pushed FINAL_TIME). Commits: 6f25b6ac the fix + tests; 81d8c686 stills and clips; the REPORT commit.
+
+## The fix (general, by data; no stage id: generalitycheck PASS)
+- **core.ts immobile()** (no speed of its own, not a sweeper): today exactly two animals, the World 1 boa (still) and **World 6's frog**
+  (stomp, still). Its 'flees' beat now runs slideOff: it turns away from him, slides along its ground and 140 px past its end, waits,
+  and comes back the same way, home as its away time ends (the beat's seconds unchanged: 4 s for the boa). It neither hurts nor blocks
+  while it flees (unchanged). A walking animal's flee is untouched (it walks home: the ocelot test).
+- **core.ts stepFlee (leaving):** a chased-off animal whose way out runs into him (within 320 px, at its height) leaves the other way.
+  General: **1-3's trapped snakes** and every chased-off animal now leave away from a close Pokey.
+- **castPlay.ts:** past its ground's end it drops and fades (e.glide), whole again at home. **engine.ts:** e.glide now fades the art
+  (types.ts said "the art fades and flattens it"; nothing drew it): chased-off animals fade out too. An animal gone on its own
+  (koLife 0) plays no knock-out, so no fall and no landing burst (the roost's brown burst at his feet was that knock-out 'landing').
+- **Tests:** src/game/fleeSlide.test.ts, 8: the boa slides away and off its bough, faded, out within 2 s, never back toward him on
+  the way out, home and whole by the end, no hurting box while it flees (Normal and Easy, him on either side); the ocelot unchanged; the
+  chased-off boa leaves away from him when he is 100 px off, away from the nest when he is 700 px off; the real engine plays no burst.
+  planted-faults.py 10/10 (three new: the slide off, the turn off, the knock-out guard off: each turns its test red).
+
+## Gate table (ONCE on FINAL_HEAD)
+GATES_ENG19C
+
+## Seen (Polish check; sheets in stills/eng19c-* and clips/eng19c-*)
+- Toy roost (upright): the boa rears (f27), slithers RIGHT, away from him, under the nest (f29-f31), fades (f34), gone (f40); no burst
+  (f48). Its red ring goes off the moment it flees.
+- Middle bot's freeze (upright): beaten by stillness (f49, the slow motion), uncoils and slithers off (f51-f55), out (f62), gone (f74).
+- 1-9, Normal and Easy, upright and sideways: the rear, the slow motion, 1.5 s later 315 px out and off its bough (out of view), at 3 s on
+  its way back; the roost's boa leaves away from him (gone, x right of its post); the golden seed over the rest's root step reads as a
+  find (both settings). Nothing hurts him in any of it (hurt counter 0 through the freeze beats).
+- Named, NOT SEEN: World 6's frog now slides off too when stomped or frozen (by the rule); I shot no frog, so how its art reads sliding
+  is unjudged. 1-3's trapped snakes leave away from a close Pokey (by the rule): not shot either.

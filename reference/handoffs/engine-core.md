@@ -8,9 +8,19 @@ Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never th
   longer pins 1-9's vault pits; flagSpan LV-9 walks 27 hand stages (1-9's flags: gen2's verdict, reference/qa-reports/BUILD-19/flags19.ts).
 - A judged stage's flown rows are cited from chain.md §1 (verdicts.test checks the source string), never from the flight log directly.
 - A stage moving to gen2 sheds its known-list entries: coveragecheck names them (1-9's 'beat:ring waves' went).
-- OPEN (for the engine): a boa beaten by a freeze (beatenBy.still 'flees', 4 s) cannot move (speed 0), so it sits coiled with its red
-  ring on, he walks through it, and Dot's "it slides off!" is not shown; the roost's boa flees through him and vanishes at his feet in
-  a dirt burst (ENG-19b's toy, both ways). Stills: reference/qa-reports/BUILD-19/clips and stills.
+- FIXED by ENG-19c (§0zn): the frozen-out boa sat coiled 4 s (he walked through it); the roost's boa fled through him and left a burst.
+
+## 0zn. ENG-19c (t-build-19, 11-18): a fleeing animal is SEEN to go, and never leaves through him
+- core.ts immobile(def) (no speed, not a sweeper; NOT the habit-based posted()): today the boa and World 6's frog. Its 'flees' beat
+  (still, stomp, ...) runs slideOff: away from him along its range, FLEE_OFF (140) past its end, back home as awayUntil ends (the beat's
+  seconds unchanged); speed its own flee speed or 2.5 x the round trip / its time. A walking animal's flee is unchanged (walks home).
+- core.ts stepFlee leaving: on its first step, if its way out runs into him (LEAVE_CLEAR 320 px, within its sight's height) it turns:
+  general, so every chased-off animal (1-3's trapped snakes too) leaves away from a close Pokey.
+- castPlay.sync: a flee past its range end sets e.glide (drop + fade); 0 again at home. engine.drawWithReaction fades by e.glide (the
+  types.ts promise nothing drew before; leaving animals now fade out too). engine.updateKo returns at koLife 0 (gone on its own / a
+  flag's replay): no gravity, no landing burst.
+- Tests: src/game/fleeSlide.test.ts (8); reference/qa-reports/BUILD-19/planted-faults.py (10, three for this).
+- Trap: 'cleared' fires on the BEAT, not at 'gone' (a test following a leave must follow phase 'gone').
 
 ## 0zl. BUILD-19 (t-build-19, 11-18): a stage whose goal counts petals never tops up animals
 - pipeline.ts planBudget `fights` and topUpFoes: a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: stagePlan
