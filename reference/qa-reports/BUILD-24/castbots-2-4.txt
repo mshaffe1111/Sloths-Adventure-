@@ -1,0 +1,17 @@
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 29/40; under the floor 0; time median 186.8 s (min 155.4); hits 0 lives 210 (water 210); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 9: shrine rescued x1  (seeds 17,14,20,38,21,22,13,31,37)
+        fail 2: shrine rescued x2  (seeds 30,1)
+kid    easy   PASS 39/40; under the floor 0; time median 156.2 s (min 133.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 13)
+adult  normal PASS 40/40; under the floor 0; time median 163.9 s (min 132.6); hits 0 lives 74 (water 74); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; under the floor 0; time median 136.5 s (min 129.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 344.3 s (min 289.6); hits 0 lives 94 (water 94); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 38/40; under the floor 0; time median 270.9 s (min 215.3); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 6,39)
+middle normal PASS 37/40; under the floor 0; time median 211.3 s (min 169.3); hits 0 lives 92 (water 92); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x1  (seeds 12,33,31)
+middle easy   PASS 40/40; under the floor 0; time median 178.5 s (min 160.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 37/40; under the floor 0; time median 198.6 s (min 167); hits 0 lives 94 (water 94); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x1  (seeds 29,30,31)
+exit 0
