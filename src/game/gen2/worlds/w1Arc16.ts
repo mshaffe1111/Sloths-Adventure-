@@ -175,7 +175,9 @@ const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
  * load; DIFFICULTY.md:61's 6.5 and Easy at ~3 come from fewer swings a minute, not a shorter stage).
  */
 /** a bank past a small soft gap, level with the one before: a hop over a fern gap (1-7's watched stretches end in one; VAR-1) */
-const stone = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
+// (VAR-1b: share 0.42-0.46, a gap of 80-90 px: at 0.3-0.35 the gap was 60 px and its fern floor a landing under 64 px, stageQuality's
+//  narrow landing, two a stage before World 5)
+const stone = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.42, 0.46], soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a vine at the foot of a wall and the wall's top: the vine on `on` (`onW` wide) 20 px short of its end, `h` px tall, and the wall's top
  *  `key` (`w` wide) laid OVER the vine, 30 px under its top, starting at the vine: at the top of the climb he steps straight onto a flat
  *  landing as wide as a rest's step (VAR-1, the lead 2:45 PM ET 11-18: a 60 px knot of bough then the root's top cost the child and
@@ -223,12 +225,15 @@ function hops(k: string, from: string, n: number, steps: string = 'UD'.repeat(n 
 /** a walk-in at a beat's start: bank `a`, `n` root hops, then down to the take-off bank `${k}e` (a beat that follows another beat with no rest
  *  between, T then P and M then X, is spaced from it by ground: score.ts's busiest 30 s held both beats' swings) */
 function walkIn(k: string, n: number, steps?: string, level = false): { pieces: SectionPiece[]; last: string } {
-  // (`level`: the walk-in stays on the floor line, its steps one root up and back (a string ending at +1, then a stepping stone off
-  //  its far side instead of the root down: VAR-1, each beat's own way in)
+  // (`level`: the walk-in stays on the floor line, its steps one root up and back (a string ending at +1, then the root down: VAR-1,
+  //  each beat's own way in)
   // (a `level` walk-in whose steps end on the floor line (a string of stepping stones) ends on one more stone, level)
   const flat = !!steps && [...steps].every((c) => c === 's');
   const h = hops(k, 'a', n, steps, flat ? 0 : 1);
-  return { pieces: [...h.pieces, level ? { ...stone(`${k}e`, h.last, 260), place: { kind: 'jump' as const, after: h.last, dy: flat ? [0, 0] as R2 : DOWN, share: [0.3, 0.35] as R2, soft: true } } : bank(`${k}e`, h.last, 260, DOWN)], last: `${k}e` };
+  // (VAR-1b: a walk-in that ends a root up steps DOWN off it onto the take-off bank, never a soft jump down: the soft jump left a 60 px
+  //  slot whose floor was level with the stone after it, a <64 px landing (stageQuality: 1-6 read 2 narrow landings before World 5) and
+  //  a floor the pit check read as joined under two soft pits with no wall (pitJoinWall.test, 1-6 Normal seed 1))
+  return { pieces: [...h.pieces, level && flat ? stone(`${k}e`, h.last, 260) : bank(`${k}e`, h.last, 260, DOWN)], last: `${k}e` };
 }
 
 /** [T] beat 1, the first liana (Pitfall's moment): a wide bank, ONE liana over a SHORT gap (the top flies it, so every hold does), moss

@@ -170,7 +170,9 @@ function bareBark(easy: boolean): Lay {
 function mossAnywhere(easy: boolean): Lay {
   return {
     pieces: [bank('a', null, 360), bank('b', 'a', 300), bank('w1', 'b', 420), bank('w2', 'w1', 420), rock('r2', 'w2', 0.85), bank('w3', 'w2', easy ? 360 : 420), hop('z', 'w3', 320)],
-    sockets: [petals('pa', 'a', 0.5, 1), watch('moss', 'w1'), hide('c1', 'w1', 0.55, 'carpet'), hide('m1', 'w2', 0.45, 'patch'), hide('m2', 'w3', 0.55, 'patch'),
+    // (VAR-1b: a petal on `b` too, before the eye's stretch: from `a`'s petal to `z`'s the beat ran ~1,950 px bare, a hair under the
+    //  2-screen rule, and a bare stretch cut before it ran on into it: walkedPath.test E's low fill laid inside this beat, 1-7 layout 1)
+    sockets: [petals('pa', 'a', 0.5, 1), petals('pb', 'b', 0.6, 1), watch('moss', 'w1'), hide('c1', 'w1', 0.55, 'carpet'), hide('m1', 'w2', 0.45, 'patch'), hide('m2', 'w3', 0.55, 'patch'),
       { id: 'seed', role: 'find', on: 'w3', t: 0.12, dn: 34 }, petals('pz', 'z', 0.3, 2, 120), tip('t-creak', 'z', 0.5, 'creak')],
   };
 }
