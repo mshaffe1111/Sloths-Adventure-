@@ -36,12 +36,29 @@ const SNAKES: CreatureDef[] = [
 /** and the same two on a SHORT patch (100 px and more; 1-3's is 105), the snake under a trap: it stays under its load and on an upright phone's screen.
  *  A snake under its own trap costs a beat's threat 1, awake or asleep: he has the tool for it right there, so it is less of a
  *  threat than a bare one (2). That is what lets Normal's later beats hold awake snakes (the lead, 11-12: Normal runs hotter) */
-export const W1_CAST_CREATURES: CreatureDef[] = SNAKES.flatMap((c) => [
+const SNAKE_ROWS: CreatureDef[] = SNAKES.flatMap((c) => [
   c,
   // (ASLEEP under its own trap it is the least threat in the level, half a beat's: a teach beat's budget, 0.3 of the stage's, then
   //  holds the lesson's sleeper AND the "now you" one after it; at 1 the second log lay empty, its hive unhung)
   { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: c.id === 'snake' ? 1 : 0.5, minGround: 100, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
 ]);
+
+/**
+ * The Boa Constrictor as a laid creature (ENG-19a NEW 2, 1-9.md "Building blocks": awake on a bough, under a load, beside a roost),
+ * copying the snake's rows: its body is the old generator's (58 x 26, its feet 16 under its middle: stageGenerator.ts boa()), and the
+ * kit never walks it (predators/world1.ts BOA: speed 0, it lies at its post), so its ground is the snake's 200 px bough. Its threat is
+ * the one Worlds 7 and 8 give it (w7.ts, w8.ts: 3), and, by the snake rows' rule, one less where its answer is right beside it: under
+ * its own drop trap (`trapped`, armed by armedTraps(['boa']): the load comes down beside it) or within an eagle's roost's reach
+ * (`roost`: W1_LURE, a lure post; it flees in its first rear frame, lure.ts). Laid only on a stage whose brief casts 'boa'
+ * (pipeline.ts castRows), so no stage that casts the snake alone is re-dealt by these rows.
+ */
+export const W1_BOAS: CreatureDef[] = [
+  { id: 'boa', enemy: 'boa', threat: 3, terrain: 'ledge', minGround: 200, w: 58, h: 26, hp: 1, footY: 16, tags: ['cast', 'topup'] },
+  { id: 'boa-trapped', enemy: 'boa', threat: 2, terrain: 'ledge', minGround: 100, w: 58, h: 26, hp: 1, footY: 16, tags: ['cast', 'trapped'] },
+  { id: 'boa-roost', enemy: 'boa', threat: 2, terrain: 'ledge', minGround: 200, w: 58, h: 26, hp: 1, footY: 16, tags: ['cast', 'roost'] },
+];
+
+export const W1_CAST_CREATURES: CreatureDef[] = [...SNAKE_ROWS, ...W1_BOAS];
 
 export const W1_TRAP_PROPS: PropDef[] = [
   { id: 'trap-hive', tags: ['trap-load'], w: 60, minApart: 300, beat: true },

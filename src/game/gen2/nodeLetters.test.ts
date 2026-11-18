@@ -7,7 +7,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONTENT_LETTERS, CONTENT_WORDS, JOB_LETTERS, PIECE_WORDS, keyBlocks } from './nodeLetters.ts';
 import { CONTENT_OF, JOB_OF, checkCode, parseCode } from './nodeCode.ts';
-import { FILL_LETTER, LATER_CONTENT, TYPE_OF_LETTER } from './nodeAsks.ts';
+import { FILL_LETTER, LATER_CONTENT, TYPE_OF_LETTER, askMisses } from './nodeAsks.ts';
+import { LURE_TAG } from './lureLay.ts';
 
 const KEY = new URL('../../../reference/engine/NODE-KEY.html', import.meta.url);
 
@@ -71,4 +72,16 @@ test('one letter grammar: m (cover) and h (rolling hazard) name their dials and 
   for (const c of [m, h, s]) assert.match(c.dialsBy, /ENGINE-678 [AB]\d/);
   // (and the key shows them on each letter's row)
   for (const l of ['m', 'h', 's']) assert.match(keyBlocks().CONTENT, new RegExp(`\\n${l}:\\[[^\\n]*Dials, named for ENGINE-678`));
+});
+
+test('one letter grammar: l is the lure (a roost), laid by what its node fills (a lure post, gen2/lureLay.ts), so the key says now (ENG-19a NEW 3, 1-9)', () => {
+  assert.equal(CONTENT_OF.l, 'lure');
+  assert.equal(CONTENT_LETTERS.l.key, 'now');
+  assert.equal(FILL_LETTER.l, LURE_TAG, "a node's l is held by a prop tagged as a lure target");
+  assert.match(CONTENT_WORDS.l[1], /roost/);
+  assert.deepEqual(checkCode(parseCode('A Wl1 R S E'), { graph: false }).filter((e) => /V22/.test(e)), [], 'V22 reads l as a letter');
+  // (the node holds it only where a lure post was laid in it: the 1-9 string's `Wl1&>:&boa*1!`, nodeAsks askMisses)
+  const laid = { id: 'n1', token: 'Wl1', sections: [], enemies: [], finds: [], pickups: 0 };
+  assert.deepEqual(askMisses({ content: 'l' } as never, { ...laid, props: [['lure', 'lure-eagle']] } as never, []), []);
+  assert.deepEqual(askMisses({ content: 'l' } as never, { ...laid, props: [['trap-load']] } as never, []), ['node n1 "Wl1": content \'l\' (lure): no lure laid']);
 });

@@ -189,12 +189,13 @@ test('eagle, from World 3 on (so 4-5): a thrown pebble pulls its shadow to the n
 
 // ───────────────────────────── the Boa Constrictor: it strikes at movement ─────────────────────────────
 
-test('boa, the tell and the attack: movement inside 150 px and it rears for 0.8 s, then strikes 128 px, then its head is out for 0.8 s', () => {
+test('boa, the tell and the attack: movement inside 150 px and it rears for its tell (1.0 s, Easy x1.3), then strikes 128 px, then its head is out for 0.8 s', () => {
   for (const easy of [false, true]) {
     const s = newPredator(BOA, bough());
     let bitten = NaN;
     let headOut = 0;
-    const ev = run(BOA, s, 3, (t) => {
+    // (4 s: Easy's 1.3 s rear, the 0.42 s strike and the 0.8 s head-out all fit after he comes inside 150 px at 0.64 s)
+    const ev = run(BOA, s, 4, (t) => {
       const p = prey({ x: Math.min(380 + 110 * t, 490) });
       if (Number.isNaN(bitten) && touches(hurt(BOA, s), p)) bitten = t;
       if (s.phase === 'recover') headOut += DT;

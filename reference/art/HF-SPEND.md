@@ -88,3 +88,16 @@ ART-18 total: ~29 GPU-min, **~$1.34** of its $4 cap (minutes x $2.75/60). Balanc
 |---|---|---|---|---|
 | 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
 ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.
+
+## 2026-11-14 (ENG-19a, t-eng-19; the lead's packet: ONE job, cap $2)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:19-8:29 PM | sandbox 6af9089523985fb9cd82c13a (rtx-pro-6000, 40 min hard timeout), ~10 min creation to terminate: batch 1 spec-roost.json 6 t2i takes (267 s); batch 2 spec-roost2.json started, 2 of 6 done when the session stopped at its 40% context line | ENG-19a (packet) | ~$0.46 | batch 1 judged (reference/qa-reports/ENG-19/clips/roost-batch1-sheet.png): every take runs its limbs off the top edge (a cut end reads as sawn wood), 31 has eggs; 71 the nearest. Nothing kept: batch 2 is the next step |
+ENG-19a total: ~10 GPU-min, **~$0.46** of its $2 cap (minutes x $2.75/60). Balance ~$55.9 (from ~$56.4).
+
+## 2026-11-15 (ENG-19b, t-eng-19b; the same $2 cap as ENG-19a: ~$1.54 left of it)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:08-11:16 AM | sandbox 6af9d8d329dd05ff0368e5a2 (rtx-pro-6000, 40 min hard timeout), ~8 min creation to terminate: spec-roost2.json, 6 t2i takes (~52 s each), CPU cut (hf1113/cutprops.py), 2 parts copied back | ENG-19b (packet step 1) | ~$0.37 | the roost: roostb-101 picked at 190 px tiles (whole piece in frame, nest and feather read; 113/97 run off the edge, 71 a little tree on a mound, 83 a cut stump, 127's nest too small at 145 units); shipped src/assets/w1-19/w1-roost.webp (593x435, 75 KB, 1.63 of Pokey); raws not kept |
+ENG-19 total (a+b): ~18 GPU-min, **~$0.83** of its $2 cap (minutes x $2.75/60). Balance ~$55.5 (from ~$55.9).
+(BUILD-19 merge, 11-18: ENG-19a/b ran beside BUILD-18, ENG-LOOK2, ART-18 and ART-W2 from the same ~$56.4; each "Balance" above is its own branch's figure. Combined: ~$53.9 - ~$0.83 = ~$53.1.)

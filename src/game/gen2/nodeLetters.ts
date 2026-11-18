@@ -69,6 +69,7 @@ export const CONTENT_LETTERS = {
   p: { name: "beat", key: "later", unlaid: "beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged" },
   t: { name: "gate", key: "later", unlaid: "the gate a find opens (the fig gate): B14's emitter on t-b14, not merged" },
   x: { name: "trap", key: "later", unlaid: "the trap (a limb load over an animal): B15's emitter on t-b15, not merged" },
+  l: { name: "lure", key: "now" },
   m: { name: "cover", key: "now", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
   n: { name: "snake", key: "later", unlaid: "the vine snake and the false liana ride a section's laid liana by its piece key: gen2/snakeLay.ts laySnakes, run by a stage's finish (1-4's pattern, listed.ts FINISH); no emitter is keyed by the letter", dials: { route: "down-off|down-back|up|still (still: a false liana)", reach: "the share of the liana it comes", beat: "s off|tell|trip on the stage clock" }, dialsBy: "ENG-S4 SNAKE-LAY" },
 } as const satisfies Readonly<Record<string, ContentLetter>>;
@@ -117,6 +118,7 @@ export const CONTENT_WORDS: Readonly<Record<ContentLetterId, readonly [string, s
   p: ["Beat pieces", "Pieces on the stage clock, every one reading the one beat: pods, snap stones, a ride (beat.ts, clock.ts).", "Things move on a beat: watch the rhythm and go when it is safe."],
   t: ["Gate", "A gate a find opens (the fig gate).", "A gate blocks the way until you find what opens it."],
   x: ["Trap", "A trap: a limb's load dropped over an animal.", "You drop something on a creature from above to get past it."],
+  l: ["Lure (a roost)", "A fixed thing an animal of the cast fears, laid on its ground within the post's reach of where the animal lies or walks (World 1: the harpy eagle's roost, a nest in a living giant's fork; the boa fears it). It works only while the animal is after him: a posted boa that rears at him beside it flees for good (predators/lure.ts, gen2/lureLay.ts).", "A creature is scared of what lives here: walk right past, and when it turns on you it gets a fright and goes."],
   m: ["Cover", "Cover he keeps still in while a watcher looks: a bush, a moss carpet, a patch, or moss hanging from a liana (stillness.ts Cover).", "You duck into a bush or under hanging moss and keep still while it looks."],
   n: ["Vine snake", "A vine snake on a liana's grip line, on the stage beat: down from the bough or up from the foot after a tell of 0.5 s or more; touching his hands makes him let go, never a bite. Its tell is seen on every phone, so a snake from the bough needs its liana hung well under the level's top. A false liana is a snake hanging still in a liana's place: grabbed, it drops with him. Taught 1-6.", "A snake slides along a hanging vine: move or let go before it reaches your hands. One vine doesn't swing: it's a snake."],
 };

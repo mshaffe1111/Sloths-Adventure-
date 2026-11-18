@@ -42,4 +42,9 @@ export interface CastData {
   /** his hard landings are heard in this stage (a stage that teaches quiet feet says so, whatever its world); absent: by the move
    *  ladder (roster.ts TAUGHT.landing) */
   landing?: boolean;
+  /** this stage TEACHES the freeze (its brief's `teaches` holds 'still', the kit's way; pipeline.ts castOf writes it): the stage's FIRST
+   *  animal beaten by his stillness is the freeze moment wherever he stands (inside its engage, outside its strike: 1-9's beat 2, where
+   *  the boa's post is 140 px from the edge he stops at). Later freezes are the moment only inside the strike's reach. Absent: only
+   *  inside the reach, every time (CastStep.froze) */
+  teachStill?: boolean;
 }

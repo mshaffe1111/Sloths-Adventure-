@@ -211,6 +211,7 @@ import { FONT_UI } from './fonts.ts';
 import { withHurtFlash, withWash } from './hurtFlash.ts';
 import { MOSS_TINT, SNAG_PERCH, sweepPose, type SweepPose } from './sweepPose.ts';
 import { drawLianaMoss, drawMossCover, drawPerchedEagle, drawSnag, mossHeight } from './w17Art.ts';
+import { drawEagleRoost } from './w19Art.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -225,6 +226,8 @@ import type { PodCost } from './podfall.ts';
 const TEA_STAND = 150;
 /** how far past the view's edge a log's knock is still heard (px): the bank it slides out from is about to come into view */
 const KNOCK_HEARD = 160;
+/** the freeze moment's slow motion (real seconds; ENG-19a NEW 4, 1-9.md: a cast animal beaten by his stillness inside its reach) */
+const FREEZE_SLOW = 0.6;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
 /** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
@@ -533,6 +536,9 @@ export class GameEngine {
   /** the slow motion's push-in (a giant's last hit and the old 1-8's last liana: 1.3); a piece's moment (PieceHost.slowMo: the tip
    *  falling behind him) keeps the view as it is, or the push-in would crop what it is slowed down to show */
   private slowMoZoom = 1.3;
+  /** what the slow motion playing is for: 'freeze' (a cast animal beaten by his stillness inside its reach, stepCast: cut short when a
+   *  sweeper's eye comes out), null for every other moment */
+  private slowMoBy: 'freeze' | null = null;
   private bossSig = '';
   private clangCd = 0;
   /** seconds the player is stuck in web or goo (he runs slower) */
@@ -691,6 +697,7 @@ export class GameEngine {
     slowMo: (seconds) => {
       e.slowMoLeft = Math.max(e.slowMoLeft, seconds);
       e.slowMoZoom = 1;
+      e.slowMoBy = null;
     },
     letGo: () => e.letGoOfLiana(),
     focus: (b) => {
@@ -4717,6 +4724,18 @@ export class GameEngine {
     h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
     const r = c.step(h, dt, this.gameTime, this.easy);
+    // the freeze (ENG-19a NEW 4, 1-9.md): an animal beaten by his stillness with him inside its strike's reach plays FREEZE_SLOW of the
+    // slow motion, the view kept as it is (a push-in would put the rearing head under the HUD sideways); never while a sweeper's eye is
+    // out (its pass slowed would be a different pass), and cut short the step one comes out
+    const eyeOut = c.eyeOut();
+    if (r.froze.length && !eyeOut) {
+      this.slowMoLeft = Math.max(this.slowMoLeft, FREEZE_SLOW);
+      this.slowMoZoom = 1;
+      this.slowMoBy = 'freeze';
+    } else if (eyeOut && this.slowMoBy === 'freeze' && this.slowMoLeft > 0) {
+      this.slowMoLeft = 0;
+      this.slowMoBy = null;
+    }
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
     //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
     for (const e of r.noticed) {
@@ -5058,6 +5077,7 @@ export class GameEngine {
     if (this.bossDef?.lair) {
       this.slowMoLeft = 1.2;
       this.slowMoZoom = 1.3;
+      this.slowMoBy = null;
     }
     this.camera.trauma = 1;
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
@@ -7454,6 +7474,9 @@ export class GameEngine {
       }
     }
 
+    // World 1's eagle roosts (1-9: the lure posts a boa fears, laid by World 1's kit into proto.gen2.roosts), behind him and the animals
+    const roosts = (this.proto?.gen2 as { roosts?: Array<{ x: number; y: number }> } | undefined)?.roosts;
+    if (roosts) for (const r of roosts) if (this.onScreen(r.x, r.y - 70, 220)) drawEagleRoost(ctx, r.x, r.y);
     profMark(ctx, 'decor');
     // polish prototype: this stage's lighting rig (null when the switch is off)
     const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;

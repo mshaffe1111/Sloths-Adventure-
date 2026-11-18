@@ -1,0 +1,60 @@
+{
+ "tag": "roost19",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "roost-19",
+   "prompt": "a harpy eagle's nest in the fork of a living giant kapok tree: a short thick piece of a huge living bough lies level along the bottom, and from it two thick living limbs rise in a wide V, smooth pale grey-green kapok bark with patches of bright green moss, small ferns and a red bromeliad, fresh green leaves sprouting from the limbs; cradled deep in the crotch of the V sits a big round nest of woven sticks and twigs lined with fresh green leaves, two soft white-grey eagle feathers caught on its rim, no bird, no eggs, a healthy living tree, friendly storybook style, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 19,
+   "w": 1344,
+   "h": 1344
+  },
+  {
+   "name": "roost-23",
+   "prompt": "a harpy eagle's nest in the fork of a living giant kapok tree: a short thick piece of a huge living bough lies level along the bottom, and from it two thick living limbs rise in a wide V, smooth pale grey-green kapok bark with patches of bright green moss, small ferns and a red bromeliad, fresh green leaves sprouting from the limbs; cradled deep in the crotch of the V sits a big round nest of woven sticks and twigs lined with fresh green leaves, two soft white-grey eagle feathers caught on its rim, no bird, no eggs, a healthy living tree, friendly storybook style, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 23,
+   "w": 1344,
+   "h": 1344
+  },
+  {
+   "name": "roost-31",
+   "prompt": "a harpy eagle's nest in the fork of a living giant kapok tree: a short thick piece of a huge living bough lies level along the bottom, and from it two thick living limbs rise in a wide V, smooth pale grey-green kapok bark with patches of bright green moss, small ferns and a red bromeliad, fresh green leaves sprouting from the limbs; cradled deep in the crotch of the V sits a big round nest of woven sticks and twigs lined with fresh green leaves, two soft white-grey eagle feathers caught on its rim, no bird, no eggs, a healthy living tree, friendly storybook style, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 31,
+   "w": 1344,
+   "h": 1344
+  },
+  {
+   "name": "roost-47",
+   "prompt": "a big round harpy eagle nest of woven sticks and twigs lined with fresh green leaves, sitting in the crotch where two thick living branches of a giant kapok tree fork upward in a V from a level mossy bough, the bark smooth pale grey with green moss, vines and orchids, leafy green shoots, one long white-grey eagle feather tucked in the nest rim, no bird, a strong living tree full of leaves, cosy and safe-looking, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 47,
+   "w": 1344,
+   "h": 1344
+  },
+  {
+   "name": "roost-59",
+   "prompt": "a big round harpy eagle nest of woven sticks and twigs lined with fresh green leaves, sitting in the crotch where two thick living branches of a giant kapok tree fork upward in a V from a level mossy bough, the bark smooth pale grey with green moss, vines and orchids, leafy green shoots, one long white-grey eagle feather tucked in the nest rim, no bird, a strong living tree full of leaves, cosy and safe-looking, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 59,
+   "w": 1344,
+   "h": 1344
+  },
+  {
+   "name": "roost-71",
+   "prompt": "a big round harpy eagle nest of woven sticks and twigs lined with fresh green leaves, sitting in the crotch where two thick living branches of a giant kapok tree fork upward in a V from a level mossy bough, the bark smooth pale grey with green moss, vines and orchids, leafy green shoots, one long white-grey eagle feather tucked in the nest rim, no bird, a strong living tree full of leaves, cosy and safe-looking, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, soft warm rainforest light from the upper left, the whole piece in frame with empty space around it, isolated on a flat solid magenta background",
+   "neg": "dead tree, bare dead snag, broken stump, leafless, rotten, perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, labels, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, people, sloth, animal, bird, eagle, eggs, chicks, cropped, cut off at the edge, sawn wood, planks, rope",
+   "seed": 71,
+   "w": 1344,
+   "h": 1344
+  }
+ ]
+}

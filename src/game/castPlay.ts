@@ -11,7 +11,7 @@
 import type { CastData, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
@@ -63,10 +63,17 @@ export interface CastStep {
   cleared: Enemy[];
   /** traps that came down this step */
   fell: TrapPost[];
+  /** animals beaten by his stillness this step with him inside their strike's reach (a boa's rear he froze in): the freeze moment
+   *  (engine.ts plays its slow motion; ENG-19a NEW 4, 1-9.md). On a stage that teaches the freeze (CastData.teachStill) its first one
+   *  wherever he stands. Never a sweeper: its pass is beaten by stillness at its end, far off */
+  froze: Enemy[];
   /** a hard landing's noise (null: he did not land, or landed softly), and how many sleepers it woke */
   landed: Sound | null;
   woke: number;
 }
+
+/** a sweeper's phases with its eye out over its stretch (CastPlay.eyeOut) */
+const EYE_OUT: ReadonlySet<PredatorState['phase']> = new Set(['hunt', 'tell', 'act', 'recover']);
 
 const PHASE_STATE: Record<PredatorState['phase'], string> = {
   rest: 'patrol', hunt: 'alert', tell: 'rear', act: 'strike', recover: 'recover', stunned: 'recover', flee: 'patrol', gone: 'patrol',
@@ -84,7 +91,9 @@ export class CastPlay {
   private readonly loud: boolean;
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
-  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
+  /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
+  private teachStill: boolean;
+  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
 
@@ -97,6 +106,7 @@ export class CastPlay {
     this.ground = platforms;
     this.loud = data.landing ?? TAUGHT.landing <= world;
     this.lures = data.lures ?? [];
+    this.teachStill = !!data.teachStill;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
@@ -115,6 +125,12 @@ export class CastPlay {
   /** the cast's sweepers (World 1's eagle): drawn from their kit state (sweepPose.ts), not as an animal on the ground */
   get sweepers(): CastMember[] {
     return this.members.filter((m) => m.def.habit === 'sweep');
+  }
+
+  /** is a sweeper's eye out (its pass called and crossing, its dive, its climb back: sweepPose.ts draws its gaze or it), not perched
+   *  between passes, leaving or gone? The engine keeps the freeze's slow motion off while one is (ENG-19a NEW 4) */
+  eyeOut(): boolean {
+    return this.members.some((m) => m.def.habit === 'sweep' && EYE_OUT.has(m.s.phase));
   }
 
   /** is this a sweeper's free pass now (core.ts sparedPass)? For the art: its dive pulls up short */
@@ -138,7 +154,7 @@ export class CastPlay {
   /** one fixed step of the whole cast. `t`: game time */
   step(hero: CastHero, dt: number, t: number, easy: boolean): CastStep {
     const o = this.out;
-    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
+    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = o.froze.length = 0;
     o.landed = null;
     o.woke = 0;
     const set = STILLNESS[easy ? 'easy' : 'normal'];
@@ -182,6 +198,10 @@ export class CastPlay {
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);
+        if (ev.beaten === 'still' && m.def.habit !== 'sweep' && (this.teachStill || touches(reachBox(m.def, m.s), hero))) {
+          o.froze.push(m.e);
+          this.teachStill = false;
+        }
         // (a sweeper's free pass: the dive comes, and pulls up short of him; no box hurts. watcher.ts freeFirst, in the kit)
         const spare = sparedPass(m.def, m.s, easy);
         if (ev.act) (spare ? o.spared : o.struck).push(m.e);
