@@ -42,6 +42,7 @@ spooked; off: caught on the mud; fetch: all three home; off: the door stays seal
 4. A spooked one ran back THROUGH his trail's history (he had doubled back to fetch, so it ran forward 1,000 px first). Now it scampers
    straight back over the ground he walked there (trailYAt).
 5. Paddlers floated at the height of his hop with ripples round them (still 2-paddle). Now pinned to the surface (planted test).
+7. The suite's font rule (fonts.test.ts) caught the heron's '!' in a bare sans-serif: now the game's display font (re-run: pass).
 6. The heron faced away from its reeds (the painting faces left), stood on a high ledge (the top-most surface), and its look was too
    faint to read. Now it faces its stretch, wades at the reeds' level, and its look is a dashed gaze plus a stronger wash.
 

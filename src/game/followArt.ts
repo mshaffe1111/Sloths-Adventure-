@@ -6,6 +6,7 @@
  * still pose bobs.
  */
 import { drawDress } from './dressArt.ts';
+import { FONT_DISPLAY } from './fonts.ts';
 import { drawW2Piece, riverArtReady, type W2Piece } from './riverArt.ts';
 import { WATCH } from './watcher.ts';
 import type { FollowKind, Follower } from './follow.ts';
@@ -86,7 +87,7 @@ export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: num
     if (h.s.phase === 'warn') {
       ctx.save();
       ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 26px sans-serif';
+      ctx.font = `26px ${FONT_DISPLAY}`;
       ctx.textAlign = 'center';
       ctx.fillText('!', h.foot.x, h.foot.b - 128 - Math.abs(Math.sin(t * 6)) * 4);
       ctx.restore();
