@@ -15,6 +15,7 @@ import { withTestStage } from './listed.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
 import { w2Finish } from './worlds/w2.ts';
 import { w2CastSpawn, w2Snappers } from './worlds/w2Cast.ts';
+import { TURTLE } from '../predators/world2.ts';
 import { RealPlay, withFixtureConfig } from '../realPlay.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { PadRow } from './rideLay.ts';
@@ -134,4 +135,53 @@ test('in play: the awake snapper tells only on the bar\'s creak and snaps only o
 
 test('planted: with the stage clock withheld from the cast (as before ENG-25), the beat-keeping snapper never tells', () => {
   assert.deepEqual(beats(true), []);
+});
+
+/** he stands `dx` px short of the awake snapper, facing it, and kicks when `when` says; whether it was chased off, and his hearts lost */
+function kickAt(dx: number, when: (e: Enemy, f: number) => boolean, prep?: (sim: RealPlay, e: Enemy) => void) {
+  return inPlay('snapper', (sim, e) => {
+    sim.safe = false;
+    sim.p.invincibleTimer = 0;
+    sim.stand(e.x - dx, e.y + e.height / 2 + 14);
+    sim.p.facing = 1;
+    const x0 = sim.p.x;
+    prep?.(sim, e);
+    const hp = sim.p.hp;
+    let kicked = -1;
+    // (he shuffles in place until he kicks, so it sees him and keeps its count: a still sloth is hidden from it)
+    for (let f = 0; f < 30 * 8 && !e.kit?.leaving; f++) {
+      // (the kick faces him to it: the shuffle leaves him facing away half the time)
+      if (kicked < 0 && when(e, f)) { sim.p.facing = 1; sim.frame({ kick: 1 }); kicked = f; continue; }
+      // (a shuffle on the spot: his feet move, so it sees him, and he is put back where he stood, so he never walks into or past it)
+      sim.frame(kicked < 0 ? (f % 4 < 2 ? { right: true } : { left: true }) : {});
+      if (kicked < 0) sim.p.x = x0;
+      if (kicked >= 0 && f > kicked + 20) break;
+    }
+    return { kicked: kicked >= 0, off: !!e.kit?.leaving, by: e.kit?.beatenBy ?? null, hurt: hp - sim.p.hp, dx: Math.round(e.x - sim.p.x), ph: e.kit?.phase, at: kicked, kicks: (sim as unknown as { e: { statKicks: number } }).e.statKicks };
+  });
+}
+
+test('TURTLE: a head-on kick on a CLOSED snapper (awake, at rest on its count) glances off its shell (the lead\'s ruling 11-18: kick when open)', () => {
+  const r = kickAt(40, (e, f) => f >= 3 && e.kit?.phase === 'rest');
+  assert.ok(r.kicked && r.kicks >= 1 && !r.off, `the kick landed and glanced off: ${JSON.stringify(r)}`);
+});
+
+test('TURTLE: right after its snap (recovering) the kick sends it off; after a bonk (dazed) too', () => {
+  const snap = kickAt(76, (e) => e.kit?.phase === 'recover');
+  assert.ok(snap.off && snap.by === 'kick' && snap.hurt === 0, `after the snap: ${JSON.stringify(snap)}`);
+  // (the bonk: the cast's own stomp, as engine.ts resolveStomps calls it on a cast animal he lands on)
+  const bonk = kickAt(40, (e) => e.kit?.phase === 'stunned', (sim, e) => (sim as unknown as { e: { cast: { beat: (e: Enemy, w: string, t: number, x: number) => boolean } } }).e.cast.beat(e, 'stomp', sim.t, sim.p.x));
+  assert.ok(bonk.off && bonk.by === 'kick' && bonk.hurt === 0, `after a bonk: ${JSON.stringify(bonk)}`);
+});
+
+test('planted: with TURTLE\'s kick back to any moment (no `when`), the same head-on kick on a closed snapper clears it', () => {
+  const k = TURTLE.beatenBy.kick!;
+  const was = k.when;
+  delete (k as { when?: string }).when;
+  try {
+    const r = kickAt(40, (e, f) => f >= 3 && e.kit?.phase === 'rest');
+    assert.ok(r.kicks >= 1 && r.off, `cleared without the rule: ${JSON.stringify(r)}`);
+  } finally {
+    (k as { when?: string }).when = was;
+  }
 });
