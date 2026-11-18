@@ -112,9 +112,20 @@ with its pulley room and lines taken out; a toy, not the level.
 ## 7. Turnover note
 reference/handoffs/engine-core.md section 0ENG23 rewritten (commit below).
 
-## Gates (each once)
-See the final message for the run's numbers: tsc, the suite, lockall vs main (102/102 unchanged), generality PASS, knowncheck PASS,
-roadmapcheck PASS (unshallowed), coveragecheck PASS.
+## Gates (each once, by `date` ET 11-18)
+| Gate | Result |
+|---|---|
+| tsc (`npx tsc --noEmit -p .`) | PASS (clean after every change) |
+| the suite (src: audio, game, components, gen2, worlds, art) | 3,814 tests: 3,811 pass, 2 todo (pre-existing), **1 fail: fonts.test.ts, my heron '!' in a bare sans-serif**; fixed (display font) and fonts.test.ts re-run: pass. The run (28 m 45 s) started at 2:50 PM, before the step rule and the font fix: every test that flies the line was re-run after them (follow.test 22/22, lineFaults.test 8/8, lineBot.test 4/4, fonts.test 2/2) |
+| lockall vs main (`--layouts 16`, main 6e7b85f8) | **102/102 stages unchanged** (the "gained verdicts" line lists gen2 stages that carry verdicts: not a diff) |
+| seedlist 1-1 --check | PASS: 161 seeds, each clean on both settings (run twice: the first run's verdict was cut off by my tail; my waste, named) |
+| tierBots.test (the bot was edited) | 7/7 pass |
+| generalitycheck | PASS (26 literals, 26 known) |
+| knowncheck | PASS (no list grew) |
+| roadmapcheck (unshallowed) | PASS |
+| coveragecheck | PASS (12 built stages, 25 pieces, 6 known gaps); the `line` channel it cannot price is named in Suggestions |
+| BASE_PATH build + chunkcheck + artcheck (not in the packet's list; engine.ts imports 3 new modules) | build PASS, chunkcheck PASS, artcheck PASS |
+| drawcheck / clipcheck | not run: no shipped stage draws the new paths (no stage carries proto.follow or a 'reeds' hide); the 2-3 builder runs them |
 
 ## Lessons applied
 A gate must call the same code the screen calls (safeWindow flies FollowPlay); planted failure first (every toy and the paddle fix);
