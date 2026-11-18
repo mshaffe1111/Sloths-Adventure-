@@ -128,9 +128,10 @@ test('the hop rule gives way only under a liana: gap280 (Normal\'s row; Easy pai
 });
 
 test('a liana no bank reaches is caught from the log (beat 4); on Easy its river runs at most 80 px/s', () => {
-  const seed = fixtureSeed('catch', 'twin');
+  // (Easy's twin row is `long`: the catch toy's 320 px liana over `twin` waits 0.70 s on Easy, over its 0.6, the judge's own refusal)
+  const seed = fixtureSeed('catch', 'twin', ['normal', 'easy'], 'long');
   assert.ok(seed !== null, 'no roll lays the catch toy clean on both settings');
-  const st = toyStage('catch', 'twin', seed!);
+  const st = toyStage('catch', 'twin', seed!, 'normal', 'long');
   const r = st.rivers!.find((q) => q.speed > 0)!;
   const v = st.vines.find((q) => q.vineType === 'swing_liana')!;
   const near = st.platforms.find((p) => p.type === 'solid' && Math.abs(p.x + p.width - r.x0) <= 2)!;
