@@ -7,6 +7,7 @@ import { surfaceOf, jumpEdges } from '../../src/game/stageMetrics.ts';
 import { MODEL_FAST, TIME } from '../../src/game/stageTime.ts';
 import { idleTime } from '../../src/game/zones.ts';
 import { WATCH } from '../../src/game/watcher.ts';
+import { isKitSweeper, sweptZones } from '../../src/game/gen2/stillLay.ts';
 import { DOT_HELP } from '../../src/game/w4Kit.ts';
 import { CHAIR, COCOON } from '../../src/game/w5Kit.ts';
 import { FALLS } from '../../src/game/waterfalls.ts';
@@ -139,6 +140,10 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
 
   // ---- animals ----
   for (const e of stage.enemies) {
+    // (a kit sweeper, World 1's eagle over a watched stretch (stillLay.ts castWatches), is no fight: it is the watched stretch it was laid
+    //  from, read below with the watcher's stretches (VAR-1, the lead 11-18: 1-7's whole idea, hide from the eagle, read as "eagle swoops",
+    //  a fight, the letter of 1-2's snakes)
+    if (isKitSweeper(e)) continue;
     let b: Box;
     if (e.type === 'eagle') b = { x0: e.x - 220, x1: e.x + 220, y0: e.y - 100, y1: e.y + 520 };
     else {
@@ -313,6 +318,13 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;
     span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', w.setback !== undefined ? 'sleeping bats: time the run' : 'eagle sweep: duck into a bush', 1.5, 'watched stretches');
   }
+  // (and each kit sweeper's stretch, the one its eye crosses, on its own cool (stillLay.ts sweptZones), read as the watched stretch it was
+  //  laid from; its family stays the creature's (`creature:eagle`), the bot and the meter's channel that already serve it, METER-COVERAGE)
+  const sweepers = stage.enemies.filter((e) => isKitSweeper(e));
+  sweptZones(sweepers).forEach((w, k) => {
+    const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;
+    span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', 'eagle sweep: duck into a bush', 1.5, 'watched stretches', `creature:${sweepers[k].type}`);
+  });
   for (const r of stage.rivers ?? []) {
     span({ x0: r.x0, x1: r.x1, y0: -1e9, y1: 1e9 }, 1e9, 'Z', 'river crossing: read the logs', 1.0, 'rivers');
   }

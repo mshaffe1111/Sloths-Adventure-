@@ -63,7 +63,10 @@ test('1-7 is the arc beat for beat on every roll, both settings, and builds clea
   for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
     const st = built(s, d);
     assert.deepEqual(st.gen2.errors, [], `${d} ${s}`);
-    assert.deepEqual(st.gen2.plan.map((p) => p.template.replace('w1-17-', '')), ARC, `${d} seed ${s}`);
+    // (the five rests are five different ones, each once a roll (VAR-1: one rest laid five times read the same after every beat))
+    const rests = st.gen2.plan.map((p) => p.template).filter((t) => /^w1-17-rest/.test(t));
+    assert.equal(new Set(rests).size, 5, `${d} seed ${s}: five different rests, ${rests.join(' ')}`);
+    assert.deepEqual(st.gen2.plan.map((p) => p.template.replace('w1-17-', '').replace(/^rest-.*/, 'rest')), ARC, `${d} seed ${s}`);
   }
 });
 
@@ -92,7 +95,9 @@ test('the mossy lianas: only in the twist and the finale, every one there mossy 
     const mossy = st.vines.filter((v) => v.mossy);
     assert.equal(mossy.length, d === 'easy' ? 2 : 4, `${d} ${s}`);
     for (const id of W17_MOSSY) assert.ok(piecesOf(st.vines, sec(st, id).uid).every((v) => v.mossy), id);
-    assert.equal(st.vines.length, mossy.length, 'no other liana in the stage');
+    // (a climb vine (the fern dip rest's, VAR-1) is no liana: a liana swings)
+    const lianas = st.vines.filter((v) => v.vineType === 'swing_liana' || !!v.isSwingingVine);
+    assert.equal(lianas.length, mossy.length, 'no other liana in the stage');
   }
 });
 
@@ -161,5 +166,35 @@ test('Easy is never harder than Normal (level.md rule 4): no more lianas, no cre
     assert.equal(e.platforms.filter((p) => p.creak).length, 0, 'Easy lays sound boughs for the creaky limbs');
     assert.ok(n.platforms.filter((p) => p.creak).length >= 2, 'Normal has its two creaky limbs');
     assert.equal(eagles(e).length, eagles(n).length);
+  }
+});
+
+test("the mossy floor's middle hop is Matt's painted boulder, never a slab drawn by code (VAR-1b, the lead's look question 11-18)", () => {
+  // (a 'fallen log' laid as a landing grew to 53 px and terrain drew it as a flat block with straight sides; protoArt.ts isPaintedRock
+  //  paints a moss_stone block exactly 50 px tall as the boulder. The probe reference/qa-reports/VAR-1/probes/rockdraw.ts reads the
+  //  real game's footing: 'painted rock')
+  for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
+    const st = built(s, d);
+    const moss = sec(st, 'w1-17-rest-moss');
+    if (!moss) continue;
+    const ps = piecesOf(st.platforms, moss.uid);
+    assert.equal(ps.filter((p) => p.style === 'log').length, 0, `${d} seed ${s}: no log-style block (50 px or over it is drawn by code)`);
+    assert.ok(ps.some((p) => p.style === 'moss_stone' && p.height === 50 && p.width >= 140), `${d} seed ${s}: the boulder, 50 px (${ps.map((p) => `${p.style} ${p.width}x${p.height}`).join(', ')})`);
+  }
+});
+
+test("the hollow-log rest: the stone lies 200+ px before the log's mouth, so he lands on the floor and walks in (VAR-1b)", () => {
+  // (93 px between them: the route ran stone -> the log's top, and a child who stepped off the stone stood in the gap under a 124 px face,
+  //  jumping at it until rescued: castBots child Easy seed 4)
+  for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
+    const st = built(s, d);
+    const q = sec(st, 'w1-17-rest-hollow');
+    if (!q) continue;
+    const ps = piecesOf(st.platforms, q.uid).sort((a, b) => a.x - b.x);
+    const log = ps.find((p) => p.hollow);
+    assert.ok(log, `${d} seed ${s}: the hollow log`);
+    const stone = ps.filter((p) => p.x + p.width <= log!.x && p.height <= 60).pop();
+    assert.ok(stone, `${d} seed ${s}: the stone before it`);
+    assert.ok(log!.x - (stone!.x + stone!.width) >= 200, `${d} seed ${s}: ${log!.x - (stone!.x + stone!.width)} px from the stone to the log`);
   }
 });

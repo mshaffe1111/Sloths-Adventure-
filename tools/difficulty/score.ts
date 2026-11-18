@@ -780,6 +780,11 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       if (/the branch collapses behind him|a bouncing fruit/.test(b.what) && (st.chase || st.rolling || st.proto?.chase)) continue;
       // (a river's crossing is priced move by move where the route takes it, onto and off each log: rideChallenges)
       if (b.fam === 'beat:rivers') continue;
+      // (a kit watcher's stretch (stillLay.ts castWatches: World 1's eagle) is scored by watchChallenges, the eye over the ground; beats.ts
+      //  reads it as the watched stretch since VAR-1, a Z beat of the creature's family (it read a fight, a C beat, skipped above for a
+      //  watcher). A watched stretch with no kit watcher over it (proto.watch: World 6's water, World 8's bats) has no channel yet: refused
+      //  below, as before)
+      if (b.fam?.startsWith('creature:')) { const m = memberAt(members, b.x); if (m && isWatcher(m.def)) continue; }
       // (a beat that names its own window is a timed press in it; any other hazard has no channel here: refused, unless known)
       const m = /safe ([\d.]+)s of ([\d.]+)s/.exec(b.what);
       const u = m ? { bits: windowBits(Number(m[2]), Number(m[1])), note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, 2);

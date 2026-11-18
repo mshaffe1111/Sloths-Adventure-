@@ -102,7 +102,9 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): So
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
-/** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it */
+/** a brick (1-5's form): its first piece `in`, its last `out` (both moss banks on the floor line), a version's Easy twin beside it. (VAR-1
+ *  tried asking each beat's join to be a walk: the first-timer bots then stuck in the liana beats, kid 6/16 against 15/16 rolled; the joins
+ *  stay rolled, and the rests' own ends give the variety) */
 function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble' | 'rope'; teaches?: string; maxPerStage?: number; versions: V[]; uses?: string[]; /** a lesson the stage only RE-shows (1-2's thorns, as 1-5's brick): it still uses the swing */ reshows?: string }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
@@ -172,24 +174,66 @@ const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
  * from the rests, never from more lianas (lead's ruling 11-14 10:36 AM ET: 1-6 read 9.6 Normal / 8.8 Easy on the meter, its swings the
  * load; DIFFICULTY.md:61's 6.5 and Easy at ~3 come from fewer swings a minute, not a shorter stage).
  */
-function hops(k: string, from: string, n: number): { pieces: SectionPiece[]; last: string } {
+/** a bank past a small soft gap, level with the one before: a hop over a fern gap (1-7's watched stretches end in one; VAR-1) */
+// (VAR-1b: share 0.42-0.46, a gap of 80-90 px: at 0.3-0.35 the gap was 60 px and its fern floor a landing under 64 px, stageQuality's
+//  narrow landing, two a stage before World 5)
+const stone = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.42, 0.46], soft: true }, style: 'moss_stone', main: true, landing: true });
+/** a vine at the foot of a wall and the wall's top: the vine on `on` (`onW` wide) 20 px short of its end, `h` px tall, and the wall's top
+ *  `key` (`w` wide) laid OVER the vine, 30 px under its top, starting at the vine: at the top of the climb he steps straight onto a flat
+ *  landing as wide as a rest's step (VAR-1, the lead 2:45 PM ET 11-18: a 60 px knot of bough then the root's top cost the child and
+ *  middle bots the step off, 1-6 layouts child N 17, child E 26, middle E 15, 24; and a vine 140-220 px back from its wall stalled the
+ *  child at the wall). The wall's top is a bank, so it stands on ground to the floor: nothing under it is floorless */
+const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [ // (the vine reaches 30 px past the top)
+  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 20) / onW, (onW - 20) / onW], h: [h + 30, h + 30] } },
+  { key, shape: 'bank', w: [w, w], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [30, 30] }, style: 'moss_stone', main: true },
+];
+/**
+ * How a beat's walked ground goes (VAR-1, R-165.276; Matt 10-30 "more pieces ... that variety"): every beat laid the same root hops, so
+ * Easy read 9 swings and ~55 identical jumps (funcheck: "JVJJ" 7 times, "JVJ" back to back). Each beat now walks its OWN ground, a
+ * string of steps, each a piece (the stage's length still comes from walked ground, never from more lianas):
+ *   U  up a root (240 px)            D  down off a root (300 px)        s  a stepping stone over a soft fern gap, level (220 px)
+ *   C  a vine up a tall root (1-4's climb: 210 px, past a double jump's 184, so the vine is the way), onto a bough and the root's top
+ *   X  down off the tall root (210 px)
+ * Every string ends one root up (U +1, D -1, C +4, X -4), so the beat's far bank steps down off it level, as before. The raised banks are
+ * keyed `${k}u1`, `${k}u2`, ... in order (the beats' petal sockets name them); the rest `${k}w<i>`.
+ */
+const CLIMB: R2 = [208, 212];
+function hops(k: string, from: string, n: number, steps: string = 'UD'.repeat(n - 1) + 'U', end = 1): { pieces: SectionPiece[]; last: string } {
   // (it ends UP on a root, and the beat's far bank `z` steps DOWN off it: the last hop stays within the quiet line's reach of the next
   //  beat's take-off, listRules.ts quietJudge; a flat run of two banks there read 4.2-4.5 s with nothing to do, seeds 1-2, 11-14)
+  const RISE: Record<string, number> = { U: 1, D: -1, s: 0, C: 4, X: -4 };
+  if ([...steps].reduce((h, c) => h + (RISE[c] ?? NaN), 0) !== end) throw new Error(`1-6 ground "${steps}" must end ${end} root up`);
   const pieces: SectionPiece[] = [];
-  let at = from;
-  for (let i = 1; i <= n; i++) {
-    if (i > 1) { pieces.push(bank(`${k}w${i - 1}`, at, 300, DOWN)); at = `${k}w${i - 1}`; }
-    pieces.push(bank(`${k}u${i}`, at, 240, UP));
-    at = `${k}u${i}`;
-  }
+  let at = from, up = 0;
+  [...steps].forEach((c, i) => {
+    // (a climb's top is no raised bank for the petals: the beats' sockets name `${k}u1`, and a petal on a top only a climb reaches is a
+    //  dead-zone landing to the verdict, landings.ts deadZones)
+    const key = c === 'U' ? `${k}u${++up}` : `${k}w${i + 1}`;
+    if (c === 'U') pieces.push(bank(key, at, 240, UP));
+    else if (c === 'D') pieces.push(bank(key, at, 300, DOWN));
+    else if (c === 's') pieces.push(stone(key, at, 220));
+    else if (c === 'X') pieces.push(bank(key, at, 300, CLIMB));
+    // (a climb walks up to its vine over a level run-up of its own, 360 px: on the root or stone he hopped onto, he landed past the vine at
+    //  the wall's face and the first-timer bots never turned back (VAR-1, castBots 1-6: kid 13/40, adult 8/40, rescued at the wall))
+    else if (c === 'C') pieces.push(bank(`${key}f`, at, 360), ...wallClimb(key, `${key}f`, 360, 210, 240));
+    else throw new Error(`1-6 ground: no step "${c}"`);
+    at = key;
+  });
   return { pieces, last: at };
 }
 
 /** a walk-in at a beat's start: bank `a`, `n` root hops, then down to the take-off bank `${k}e` (a beat that follows another beat with no rest
  *  between, T then P and M then X, is spaced from it by ground: score.ts's busiest 30 s held both beats' swings) */
-function walkIn(k: string, n: number): { pieces: SectionPiece[]; last: string } {
-  const h = hops(k, 'a', n);
-  return { pieces: [...h.pieces, bank(`${k}e`, h.last, 260, DOWN)], last: `${k}e` };
+function walkIn(k: string, n: number, steps?: string, level = false): { pieces: SectionPiece[]; last: string } {
+  // (`level`: the walk-in stays on the floor line, its steps one root up and back (a string ending at +1, then the root down: VAR-1,
+  //  each beat's own way in)
+  // (a `level` walk-in whose steps end on the floor line (a string of stepping stones) ends on one more stone, level)
+  const flat = !!steps && [...steps].every((c) => c === 's');
+  const h = hops(k, 'a', n, steps, flat ? 0 : 1);
+  // (VAR-1b: a walk-in that ends a root up steps DOWN off it onto the take-off bank, never a soft jump down: the soft jump left a 60 px
+  //  slot whose floor was level with the stone after it, a <64 px landing (stageQuality: 1-6 read 2 narrow landings before World 5) and
+  //  a floor the pit check read as joined under two soft pits with no wall (pitJoinWall.test, 1-6 Normal seed 1))
+  return { pieces: [...h.pieces, level && flat ? stone(`${k}e`, h.last, 260) : bank(`${k}e`, h.last, 260, DOWN)], last: `${k}e` };
 }
 
 /** [T] beat 1, the first liana (Pitfall's moment): a wide bank, ONE liana over a SHORT gap (the top flies it, so every hold does), moss
@@ -210,9 +254,9 @@ function firstLiana(): Lay {
 /** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), two in a row (Easy one).
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
 function hangLow(easy: boolean): Lay {
-  const w = walkIn('q', easy ? 2 : 1);
+  const w = walkIn('q', easy ? 2 : 1, easy ? 'sUs' : 's', true);
   const r = lianaRun('', w.last, easy ? [{ gap: 'long', w: 300 }] : [{ gap: 'long', w: 300 }, { gap: 'long', w: 280 }], 2);
-  const h = hops('h', r.last, easy ? 4 : 2);
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'UCXsDsU' : 'CXU');
   const last = r.perches[r.perches.length - 1];
   return { pieces: [bank('a', null, 300), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [...(easy ? [] : [petals('p1', r.perches[0], LANDED, 1, 60)]), petals('p2', last, LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60), tip('t-snakes', 'z', 0.4, 'snakes')] };
 }
@@ -220,9 +264,9 @@ function hangLow(easy: boolean): Lay {
  *  safe bank; then one starts down HIS liana and turns back a body above his hands (reach 0.6). SHORT gaps: any hold flies them.
  *  Easy: one liana, the one that turns back (W1_SNAKES_16: the passer down the next liana is not laid) */
 function snakesMet(easy: boolean): Lay {
-  const w = walkIn('q', easy ? 2 : 1);
+  const w = walkIn('q', easy ? 2 : 1, easy ? 'ss' : undefined, true);
   const r = lianaRun('', w.last, easy ? [{ gap: 'short', w: 300 }] : [{ gap: 'short', w: 300 }, { gap: 'short', w: 280 }], 2);
-  const h = hops('h', r.last, easy ? 4 : 2);
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'sUssDUs' : 'ssU');
   return { pieces: [bank('a', null, 420), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.3, 1), petals('p1', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60)] };
 }
 /** [X] beat 7, a snake on your vine (required): ONE FAR gap onto a narrow perch; a snake comes down his liana from the anchor (the top never
@@ -230,16 +274,16 @@ function snakesMet(easy: boolean): Lay {
  *  11-15: Easy read 0.63 x Normal on the meter, DIFFICULTY.md G2 asks at most 0.6; this swing was Easy's peak, 4.4 points; with the creaky
  *  landing's below, Easy reads 3.18 against Normal's 5.66, 0.56; Normal unchanged) */
 function snakeOnYourVine(easy: boolean): Lay {
-  const w = walkIn('q', easy ? 3 : 1);
+  const w = walkIn('q', easy ? 3 : 1, easy ? 'sUDUs' : 's', true);
   const r = lianaRun('', w.last, [{ gap: easy ? 'short' : 'far', w: 260 }]);
-  const h = hops('h', r.last, easy ? 4 : 2);
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'DUUsDUs' : 'UDU');
   return { pieces: [bank('a', null, 320), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('pf', r.perches[0], LANDED, 1), petals('ph', 'hu1', LANDED, 1, 60), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9, the creaky landing (1-5's limb with the swing): a liana onto a creaky limb, the only foothold, the next liana's catch
  *  inside its hold. Easy: one SHORT liana onto a sound bough, walked off (INT-10, 11-15: the meter's Easy band, with the snake on your vine) */
 function creakyLanding(easy: boolean): Lay {
   const r = lianaRun('', 'a', easy ? [{ gap: 'short', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
-  const h = hops('h', r.last, easy ? 4 : 2);
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'sCXUDsU' : 'sUs');
   return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
   //  'drop' is not read for tips, pipeline fillSockets)
   sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), ...(easy ? [] : [petals('pc', r.perches[0], 0.5, 1)]), petals('p2', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60), petals('pz', 'z', 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
@@ -248,7 +292,7 @@ function creakyLanding(easy: boolean): Lay {
  *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row), one liana */
 function risers(easy: boolean): Lay {
   const r = lianaRun('', 'a', easy ? [{ gap: 'short', w: 280 }] : [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }], 2);
-  const h = hops('h', r.last, easy ? 4 : 2);
+  const h = hops('h', r.last, easy ? 4 : 2, easy ? 'UssDCXU' : 'UDU');
   return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], LANDED, 1, 60), petals('ph', 'hu1', LANDED, 2, 60), tip('t-still', 'z', 0.4, 'still')] };
 }
 /** [S] beat 13, the false liana (the signature): a "vine" that does NOT swing hangs from the canopy just past the bank, nearer than the real
@@ -257,7 +301,7 @@ function risers(easy: boolean): Lay {
  *  hangs past the first bank, the real one past it (one real liana: the lead's ruling 11-14, length from ground, not lianas) */
 function falseLiana(easy: boolean): Lay {
   const r2 = lianaRun('s', 'a', [{ gap: 'long', w: 300 }]);
-  const h = hops('h', r2.last, easy ? 4 : 2);
+  const h = hops('h', r2.last, easy ? 4 : 2, easy ? 'sUCXDsU' : 'sCXU');
   return {
     pieces: [bank('a', null, 320), stillOne('f', 'a', [90, 110]), ...r2.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)],
     sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('p3', r2.perches[0], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60)],
@@ -294,7 +338,7 @@ function chain(easy: boolean): Lay {
     return b;
   };
   const b1 = run('c', 'show', ['short', 'long']);
-  const h1 = hops('h', b1, easy ? 4 : 2);
+  const h1 = hops('h', b1, easy ? 4 : 2, easy ? 'sUDCXUs' : 'sUs');
   pieces.push(...h1.pieces);
   let last = h1.last;
   const perches = [b1];
@@ -342,15 +386,25 @@ export const QUIET_16: SectionTemplate[] = [
     id: j ? 'long' : 'short',
     lay: { pieces: [bank('a', null, w[0]), bank('b', 'a', 240, UP), bank('c', 'b', w[1], DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pb', 'b', LANDED, 1, 60), petals('pd', 'd', 0.5, 1)] },
   })) }),
-  link({ id: 'w1-16-rest-log', name: 'a rest: along a fallen log', job: 'rest', versions: [{ id: 'log', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 420, UP), { key: 'f', shape: 'block', w: [280, 300], place: { kind: 'on', on: 'b', at: [0.1, 0.15], h: [24, 26] }, style: 'log', main: false }, bank('c', 'b', 300, DOWN), bank('d', 'c', 220, UP), bank('z', 'd', 260, DOWN)], sockets: [flag('c', 0.5), petals('pf', 'f', 0.5, 2, 160), petals('pd', 'd', 0.5, 1)] } }] }),
-  link({ id: 'w1-16-rest-hump', name: 'a rest: over the hump of a great root', job: 'rest', versions: [{ id: 'hump', lay: { pieces: [bank('a', null, 320), bank('m', 'a', 440, UP), bank('b', 'm', 300, DOWN), bank('y', 'b', 220, UP), bank('z', 'y', 260, DOWN)], sockets: [flag('b', 0.5), petals('pm', 'm', [0.3, 0.7], 2, 160)] } }] }),
-  link({ id: 'w1-16-rest-dip', name: 'a rest: the dip between the roots', job: 'rest', versions: [[560, 600], [640, 680]].map((m, j) => ({
+  // (it ends on the floor past the log, VAR-1: a root up and down after it read as two more jumps before the next liana)
+  link({ id: 'w1-16-rest-log', name: 'a rest: along a fallen log', job: 'rest', versions: [{ id: 'log', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 420, UP), { key: 'f', shape: 'block', w: [280, 300], place: { kind: 'on', on: 'b', at: [0.1, 0.15], h: [24, 26] }, style: 'log', main: false }, bank('c', 'b', 300, DOWN), bank('z', 'c', 320)], sockets: [flag('c', 0.5), petals('pf', 'f', 0.5, 2, 160), petals('pz', 'z', 0.5, 1)] } }] }),
+  // (the great root is a wall, 210 px: a vine at its foot (1-4's climb, past a double jump's 184), along its hump, and a step down off its
+  //  far end: nothing to fall into, a miss on the vine is the bank he stood on. VAR-1: the hump read as two more root jumps. Its petals
+  //  are on the bank past it: a petal on a top only a climb reaches is a dead-zone landing to the verdict, landings.ts deadZones)
+  link({ id: 'w1-16-rest-hump', name: 'a rest: up the great root by its vine', job: 'rest', versions: [{ id: 'hump', lay: { pieces: [bank('a', null, 300), bank('b', 'a', 400, UP),
+    ...wallClimb('m', 'b', 400, 210, 300), bank('z', 'm', 300, [262, 266])], sockets: [flag('b', 0.3), petals('pz', 'z', [0.3, 0.7], 2, 160)] } }] }),
+  // (the dip's way out is a vine (1-4's climb, VAR-1): up a root, down into the dip (its floor 100 px under the bank), and at the foot of
+  //  its far wall a vine (the wall 212 px: neither a jump across nor a double out of the dip, 184 px, makes it) onto the root over it, a
+  //  root down and down again to the floor line. Nothing to fall into: a miss on the vine is the dip's floor again)
+  link({ id: 'w1-16-rest-dip', name: 'a rest: down the dip between the roots, up a vine', job: 'rest', versions: [620, 700].map((m, j) => ({
     id: j ? 'wide' : 'narrow',
-    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m[0], DOWN), bank('c', 'm', 220, UP), bank('z', 'c', 300, DOWN)], sockets: [flag('m', 0.5), petals('pc', 'c', 0.5, 1)] },
+    lay: { pieces: [bank('a', null, 300), bank('b', 'a', 220, UP), bank('m', 'b', m, [150, 156]), ...wallClimb('c', 'm', m, 212, 260), bank('y', 'c', 220, [54, 58]), bank('z', 'y', 260, [54, 58])],
+      sockets: [flag('m', 0.3), petals('pm', 'm', 0.5, 1), petals('pc', 'c', 0.5, 2, 80), petals('py', 'y', 0.5, 1)] },
   })) }),
   // (the sixth rest, for beat 4's chain + R (1-6.md): up two roots and down again, a flag on the top one's far side)
   link({ id: 'w1-16-rest-steps', name: 'a rest: up the root steps and down', job: 'rest', versions: [{ id: 'steps', lay: { pieces: [bank('a', null, 280), bank('b', 'a', 240, UP), bank('c', 'b', 300, UP), bank('d', 'c', 320, DOWN), bank('z', 'd', 260, DOWN)], sockets: [flag('d', 0.5), petals('pc', 'c', LANDED, 1, 60), petals('pd', 'd', 0.3, 1)] } }] }),
-  link({ id: 'w1-16-rest-stumps', name: 'a rest: two stumps to hop', job: 'rest', versions: [{ id: 'stumps', lay: { pieces: [bank('a', null, 260), bank('m', 'a', 760), { key: 's1', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.15, 0.16], h: [50, 56] }, style: 'moss_stone', landing: true }, { key: 's2', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.62, 0.63], h: [50, 56] }, style: 'moss_stone', landing: true }, bank('z1', 'm', 200, UP), bank('z', 'z1', 240, DOWN)], sockets: [flag('m', 0.4), petals('ps1', 's1', 0.5, 1), petals('ps2', 's2', 0.5, 1)] } }] }),
+  // (it ends on the mossy floor past the second stump, VAR-1: the root up and down after it read as two more jumps before every liana)
+  link({ id: 'w1-16-rest-stumps', name: 'a rest: two stumps to hop', job: 'rest', versions: [{ id: 'stumps', lay: { pieces: [bank('a', null, 260), bank('m', 'a', 760), { key: 's1', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.15, 0.16], h: [50, 56] }, style: 'moss_stone', landing: true }, { key: 's2', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'm', at: [0.62, 0.63], h: [50, 56] }, style: 'moss_stone', landing: true }], sockets: [flag('m', 0.4), petals('ps1', 's1', 0.5, 1), petals('ps2', 's2', 0.5, 1)] } }] }),
 ];
 /** [E] the far bank: the totem */
 export const EXIT_16: SectionTemplate = {
@@ -400,6 +454,8 @@ export function kitLib16(): WorldKit {
   const k = withSwing(w1World()), M = k.manifest, G = M.graphs!;
   return { ...k, manifest: { ...M,
     sections: SECTIONS_16,
+    // (the walked ground's vine is 1-4's climb, taught: VAR-1)
+    moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5' },
     required: {},
     // (beat 4's thorn hollows under the chains: 1-2's hurt floor row, and the room under the floor line for its depth, as 1-5's kit)
