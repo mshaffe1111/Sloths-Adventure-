@@ -1,0 +1,16 @@
+wheel29 (wheel26.ts, DESIGN-26-28, with the court's wheels: one bucket a bar) normal: DROP 28, bucket 120 px, the jetty right / the street left; times are s of one bucket period
+wheel | turn s | bucket every s | lift px | board tap: share, window | board walk: share, window | stand on jetty | ride | step off walk: share of a turn, window | step off tap | street IN over the top: step off walk, its falls | misses land (edge street) | deep boards (of both)
+R160 V58.79 N6 | 17.1 | 2.85 | 264 | 100%, 2.87 | 73%, 2.1 | jetty | stayed in | 14%, 1.97 s | 25%, 3.4 s | 28%, 3.73 s, pond 196 | pond 852 | 0
+R180 V66.14 N6 | 17.1 | 2.85 | 304 | 100%, 2.83 | 64%, 1.7 | jetty | stayed in | 10%, 1.77 s | 18%, 3.1 s | 27%, 3.53 s, pond 199 | pond 911 | 0
+
+jump off the top: the street H px above the top bucket floor, its lip 20 px left of the axle; a held jump, left held, from frame k of a turn
+H 40, R160 V58.79 N6: lands on the street 28% of a turn, longest window 4.77 s; falls to the pond 168 frames
+H 40, R180 V66.14 N6: lands on the street 25% of a turn, longest window 4.33 s; falls to the pond 189 frames
+H 60, R160 V58.79 N6: lands on the street 23% of a turn, longest window 4 s; falls to the pond 181 frames
+H 60, R180 V66.14 N6: lands on the street 21% of a turn, longest window 3.67 s; falls to the pond 201 frames
+H 80, R160 V58.79 N6: lands on the street 16% of a turn, longest window 2.53 s; falls to the pond 196 frames
+H 80, R180 V66.14 N6: lands on the street 15% of a turn, longest window 2.4 s; falls to the pond 215 frames
+
+throw: a held jump LEFT, left held all the way: from a stand on still ground vs from a bucket at the top (carried at V)
+still ground: carried 0 px/s; clears 162 px level, 183 px to a landing 60 px lower
+bucket at the top (in it: true), V 66.14: carried -66 px/s; clears 172 px level, 193 px to 60 px lower

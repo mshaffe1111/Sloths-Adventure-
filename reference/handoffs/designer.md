@@ -1,4 +1,4 @@
-# Designer handoff (the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (rewritten 2026-11-18 6:22 PM ET by DESIGN-29: 2-9's final design and its flights, on top of DESIGN-26-28's 2:56 PM, DESIGN-23's 12:32 PM and DESIGN-24-25's 10:41 AM ET rewrites; World 1 sections below kept from the 11-11/11-12 Designers, R-165.11/.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -8,11 +8,49 @@ Read first, in order:
 - reference/packets/2026-11-11/CONTENT-1-2-relay.md and DESIGN-1-2-notes.md (1-2's packet and its proofs);
 - reference/engine/NODES.md §8 (the node code and its key);
 - reference/engine/W1-NEW-SECTIONS.md (every round);
-- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc;
-- the hardness meter: reference/design/DIFFICULTY.md (every stage's Normal target, the points, the levers) and its read-only prototype
-  `npx tsx tools/difficulty/score.ts --check` then `--stages <ids> --seeds 1-4 --detail` (on t-diff-algo until it merges).
+- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
 
 Every ruling below cites the file and section where it's written in full.
+
+## 0. Now (World 2, 11-18): read this first
+- **2-9 is designed** (reference/design/2-9.md, t-design-29, Matt's pick A: PITCH-29B's King's Drum core + PITCH-29A's barge and bell ending, no guards). Flights: court29.ts (the court's
+  beat B = TIMED.period / 4, read from the code; hops on every beat over floor rows with the stones' jaws read along the real path; boarding court rivers from the lip on every frame after a
+  knock; a liana let-go over a river locked to the swing, 16 locks), wheel29.ts (wheel26.ts re-timed to a bucket a bar), nodes29.ts. **Findings (design numbers until the lead rules):** a beat
+  row is a RUN row (130 px floors, 60 px water Normal / 50 Easy; from a stand a beat hop is 106 px and never clears it); on the beat a small pad holds with 0.67 s to spare (Easy 1.07); 3 stones in
+  step are safe only from ONE; **the wave (each stone a count later) on the beat is 65% of any phase for 5 stones** (2-5's straight hopper 33%), but Easy's waves past 2 read lower than Normal's
+  (Easy: waves of 2 only); a river's knock lands on game time multiples of its spacing (river.ts:101), so a spacing of whole beats keeps the knock on the drum: the knock is ONE, board on THREE;
+  a liana and a one-bar river never drift: locked, a 2.0 s let-go window (Easy 2.4).
+- **Engine traps for anything on a beat:** lianas swing on `vineClock` (engine.ts:582/:1732), their own sum; a flag resume seeks only gameTime (engine.ts:6010), so a liana falls off the stage clock
+  after a resume. swingSetup gives every liana a phase of its own (+0.618 or a chain phase, physics.ts:641-644) unless the stage sets one. River speeds do NOT stretch on Easy: Easy rows are
+  their own data. heroNoise's 'drum' (heroNoise.ts:26) stuns every predator in 620 px: a music drum must never raise it. The recorded score is not on any stage's tempo (loops.ts).
+- **The royal guard's journal card is met only in 2-9** (journalMet.ts:13): with no guards in 2-9 it needs a new home (2-9.md Pushback, the lead's call).
+- **World 2's final designs:** reference/design/2-4.md and 2-5.md (this task, t-design-24), 2-2.md (t-pitch-b), 2-1.md. **2-3 is designed too** (reference/design/2-3.md, t-design-23; Matt OK'd "bring them home" 11-18 11:16 AM ET; built AFTER 2-4 and 2-5). Its NEW 1 is follow.ts: the contract is in 2-3.md, the prototype is the pure functions in reference/specs/sims/follow23.ts.
+  Only 2-1 and 2-2 roll on gen2; 2-3..2-9 are still the hand builds in w2Stages.ts: each designed level's build deletes its hand build and the tests that pin it (named in its design).
+- **A doc branch cut from origin/main has a current src** (t-design-23 was: fly there directly). **A lead's doc branch may be OLD.** The lead's doc branches carry a pre-0.9.9 tree (no riverLay.ts, no w2.ts). Fly and read code on a worktree of origin/main (`git worktree add --detach <dir>
+  origin/main`, then `npm install --legacy-peer-deps` there: ~3 min, 2.5 GB); copy the sims back. knowncheck on the doc branch is red for inherited list entries: run it in the main
+  worktree with your files added (PASS there proves your change). tsc excludes reference/ on main: type-check sims with a temp tsconfig that extends the project's and includes them (lib ES2023).
+- **The World 2 flights (reference/specs/sims/, outputs in out/):** swingLog.ts (2-4: a liana's let-go onto drifting logs, every frame of a swing x every frame of a log spacing, and the
+  catch from a moving log); snapClock.ts (2-5: the real tap hop through InputEngine, stone rows and waves replayed against beatBrick's own brickNow); nodes2425.ts (checkCode on both strings); follow23.ts (2-3: the followers' path replay on his real run, the heron's look over the line, clump widths, the pond, two herons out of step); nodes23.ts.
+- **Rulings from the flights (the lead rules on them; until then they are design numbers):** a liana's drop share is set by the GAP between logs, not the log's pass time (every W2 row lands
+  72-93%; gap 200-280 gives 41-51% and a wait up to a swing); snap stones in step: 3 at most; the wave runs AHEAD of him only; Easy cuts a wave to 3 stones (a stretched 5-wave is harder for
+  a straight hopper than Normal's); stones 80 px with 30-40 px water between (a pitch over a tap hop drifts him off).
+- **The real tap hop is 0.43 s, 106-119 px, 62 px up** (InputEngine's 80 ms minimum). 2-2.md and rideLay.ts:260 cite 0.30 s / 83 px from a FakeInput one-frame press: a number no thumb makes.
+
+- **2-3's flown numbers (design numbers until the lead rules):** followers 190 / 230 px/s, 34 px apart; N does not change a crossing (the tail travels his distance); reed clumps >= 260 / 340 px;
+  open mud <= 500 px (two herons 350; Easy 350); a watched pond <= 360 px (hops make the path 1.3 x); going on the warn fails from G 350: the lesson is "go right after a look". The view is
+  440 px upright, 1,199 sideways (applyZoom at 412x915 / 915x412). The heron's look must sweep the ZONE in world x, never the view (watcher.ts shadowX is view-based: upright it never reads a tail
+  more than 160 px off screen).
+
+- **2-6, 2-7, 2-8 are designed** (reference/design/2-6.md, 2-7.md, 2-8.md, t-design-26, from PICKS-26-28.md: B's cores). Flights: wheel26.ts (a wheel written as a StagePiece plugged
+  into the real engine, as wheel.ts would be: board, ride, step-off and jump-off windows, every phase), river27.ts (jumps off logs with and against the current; crossings by an expert, a careful
+  middle (FT_MIDDLE standQ p75) and a ride-only player, every phase of each row), flood28.ts (Pokey on the engine leading 2-3's follower contract home over a low road that floods vs a high road),
+  nodes2628.ts (checkCode with leg marks). **Their findings (design numbers until the lead rules):** a wheel's board is 100% at every phase (the bottom is a shelf of buckets); a street that reaches in
+  over the top doubles the step-off window (3.3-4.6 s a turn); **the carry rule does not throw** (a jump steered out of anything moving at 50-80 px/s gains 7-12 px: past his run speed the air brakes him,
+  physics.ts:198-204 airStep; a let-go he does NOT steer keeps it, 2-4's drop), so no beat may rest on "the ride throws you"; **with the current the river sets the pace** (87-137 px/s whoever crosses; a bank run is 272 px/s): a race on water is decided
+  on the banks; against the current boldness pays (expert 222-232 px/s, careful 69-133, riding never crosses); a line home is paced by the LINE (190/230 px/s), so a flood's margin is measured from
+  the tail, not from him. **The first run back left is RULED in 2-7.md** (a /L run leg after a rightward run leg, a third of the content nodes or more, signature and exit on it, run lay only).
+- **Legs (engine, unproven):** a /L leg right after a run leg at the SAME ground is mirrored onto the out leg's own x-range and height (pipeline.ts:2541; legs.test.ts:20 tests /U then /L only):
+  2-7 drops a /D column at the weir and 2-8 rises carved steps before /L. A liana on a left leg is refused (legs.ts:151). Prove both on the engine's first toy before any designer leans on a left leg.
 
 ## 1. Where the design data lives
 
@@ -187,6 +225,10 @@ Every ruling below cites the file and section where it's written in full.
 - **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) lies on the twist's hollow floor past its root every roll (FX's findSpot on 'hf' at t 0.66; t 0.6 could stand inside the root), and Dot says "There's something down by the roots..." on the lip (D12, t-12-design@cc0def2a, on INT-2's 90a54102).
 
 ## 5. Traps (each of these happened)
+- **A sim world at x < 0 hits the bare world's left wall** (realPlay.ts bare: walls from x = 0): the first wheel flight read "fell" because the rider was held at x = 20 while his bucket moved on.
+  Lay sim worlds at x > 1,000. And a "level" landing read in a sim must interpolate the frame he crosses the height in the AIR (a landing frame has vy = 0 and never reads past it).
+- **A crossing bot that only taps proves nothing against the current:** logs moving together keep their gap, so a tap that is short once is short forever (river27's first run: 0 of 98 crossed). Give
+  the bot every jump the player has (tap, held) before reading a row as impossible.
 
 - **The inspector's route jumps OVER blocks (DIFF-ALGO, 11-12):** routeJumps links two banks over a raised hump or a lower dip (1-2's
   root humps and root steps), and inspectJumps then calls the space under that jump a 231 px pit. A player hops onto the hump or steps

@@ -1,0 +1,49 @@
+court29 normal: beat B = TIMED.period / 4 = 2.85 / 4 = 0.7125 s (84.2 BPM); engine '2-9' realPlay + InputEngine; 2026-11-18T23:19:00.091Z
+
+HOP: tap at a run 0.43 s 119 px; from a stand, right held 0.43 s 106 px; a beat is 0.71 s: 0.28 s on the floor between beat hops
+
+BEAT: a tap on every beat (B 0.71 s); small pad holds 1 s on normal (rideLay PAD_SIZES x PAD_LAY.easyStretch on Easy)
+RUN W80 G 30: clean, stood 0.13/0.17/0.20/0.10/0.27 s; pad margin 0.73 s | one beat late on floor 2: stood 0.37 s, margin 0.63 s | in step x2: first hop on count [123-] safe; any phase 66%; in step x3: first hop on count [12--] safe; any phase 45%; in step x5: first hop on count [1---] safe; any phase 17%; wave (a count later) x2: first hop on count [-23-] safe; any phase 51%; wave (a count later) x3: first hop on count [-23-] safe; any phase 47%; wave (a count later) x5: first hop on count [--3-] safe; any phase 22%
+RUN W80 G 40: clean, stood 0.17/0.10/0.33/0.03/0.23 s; pad margin 0.67 s | one beat late on floor 2: stood 0.40 s, margin 0.60 s | in step x2: first hop on count [123-] safe; any phase 66%; in step x3: first hop on count [12--] safe; any phase 41%; in step x5: first hop on count [1---] safe; any phase 16%; wave (a count later) x2: first hop on count [-23-] safe; any phase 52%; wave (a count later) x3: first hop on count [-23-] safe; any phase 45%; wave (a count later) x5: first hop on count [--3-] safe; any phase 23%
+RUN W80 G 50: NOT CLEAN (swam: floors 0)
+RUN W80 G 60: NOT CLEAN (swam: floors 0,1)
+RUN W80 G 70: NOT CLEAN (swam: floors 0,1)
+RUN W80 G 80: NOT CLEAN (swam: floors 0,1,2)
+RUN W80 G 90: NOT CLEAN (swam: floors 0,1,2,3)
+RUN W80 G100: clean, stood 0.30/0.33/0.23/0.20/0.17 s; pad margin 0.67 s | one beat late on floor 2: NOT CLEAN (swam) | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 19%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 64%
+RUN W80 G110: clean, stood 0.30/0.33/0.30/0.30/0.30 s; pad margin 0.67 s | one beat late on floor 2: NOT CLEAN (swam) | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 16%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 65%
+RUN W130 G 30: clean, stood 0.30/0.17/0.17/0.27/0.30 s; pad margin 0.70 s | one beat late on floor 2: stood 0.57 s, margin 0.43 s | in step x2: first hop on count [12--] safe; any phase 47%; in step x3: first hop on count [1---] safe; any phase 26%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [123-] safe; any phase 66%; wave (a count later) x3: first hop on count [-23-] safe; any phase 48%; wave (a count later) x5: first hop on count [-23-] safe; any phase 41%
+RUN W130 G 40: clean, stood 0.30/0.27/0.17/0.13/0.20 s; pad margin 0.70 s | one beat late on floor 2: stood 0.57 s, margin 0.43 s | in step x2: first hop on count [12--] safe; any phase 43%; in step x3: first hop on count [1---] safe; any phase 22%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [123-] safe; any phase 66%; wave (a count later) x3: first hop on count [123-] safe; any phase 51%; wave (a count later) x5: first hop on count [-23-] safe; any phase 44%
+RUN W130 G 50: clean, stood 0.30/0.33/0.23/0.20/0.17 s; pad margin 0.67 s | one beat late on floor 2: stood 0.57 s, margin 0.43 s | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 19%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 64%
+RUN W130 G 60: clean, stood 0.30/0.33/0.30/0.30/0.33 s; pad margin 0.67 s | one beat late on floor 2: NOT CLEAN (swam) | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 16%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 65%
+RUN W130 G 70: clean, stood 0.30/0.33/0.30/0.30/0.33 s; pad margin 0.67 s | one beat late on floor 2: NOT CLEAN (swam) | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 16%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 65%
+RUN W130 G 80: NOT CLEAN (swam: floors 0,1,2)
+RUN W130 G 90: NOT CLEAN (swam: floors 0)
+RUN W130 G100: NOT CLEAN (swam: floors 0)
+RUN W130 G110: NOT CLEAN (swam: floors 0)
+STEP W80 G 30: clean, stood 0.30/0.33/0.30/0.30/0.33 s; pad margin 0.67 s | one beat late on floor 2: stood 1.03 s, margin -0.03 s | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 16%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 65%
+STEP W80 G 40: clean, stood 0.30/0.33/0.30/0.30/0.33 s; pad margin 0.67 s | one beat late on floor 2: stood 1.03 s, margin -0.03 s | in step x2: first hop on count [12--] safe; any phase 41%; in step x3: first hop on count [1---] safe; any phase 16%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 65%; wave (a count later) x3: first hop on count [12--] safe; any phase 65%; wave (a count later) x5: first hop on count [12--] safe; any phase 65%
+STEP W80 G 50: NOT CLEAN (swam: floors 0,1,2,3)
+STEP W80 G 60: NOT CLEAN (swam: floors 0,1,2)
+STEP W80 G 70: NOT CLEAN (swam: floors 0,1)
+STEP W80 G 80: NOT CLEAN (swam: floors 0)
+STEP W80 G 90: NOT CLEAN (swam: floors 0)
+STEP W80 G100: NOT CLEAN (swam: floors 0)
+STEP W80 G110: NOT CLEAN (swam: floors 0)
+STEP W130 G 30: clean, stood 0.30/0.63/0.30/0.33/0.63 s; pad margin 0.37 s | one beat late on floor 2: stood 1.33 s, margin -0.33 s | in step x2: first hop on count [1---] safe; any phase 16%; in step x3: first hop on count [----] safe; any phase 0%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 41%; wave (a count later) x3: first hop on count [12--] safe; any phase 41%; wave (a count later) x5: first hop on count [----] safe; any phase 15%
+STEP W130 G 40: clean, stood 0.30/0.63/0.30/0.63/0.33 s; pad margin 0.37 s | one beat late on floor 2: stood 1.33 s, margin -0.33 s | in step x2: first hop on count [1---] safe; any phase 16%; in step x3: first hop on count [----] safe; any phase 0%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [12--] safe; any phase 41%; wave (a count later) x3: first hop on count [12--] safe; any phase 41%; wave (a count later) x5: first hop on count [----] safe; any phase 15%
+STEP W130 G 50: NOT CLEAN (swam: floors 0)
+STEP W130 G 60: NOT CLEAN (swam: floors 0)
+STEP W130 G 70: NOT CLEAN (swam: floors 0)
+STEP W130 G 80: NOT CLEAN (swam: floors 0,1)
+STEP W130 G 90: NOT CLEAN (swam: floors 0,1,2,3)
+STEP W130 G100: clean, stood 0.63/0.60/0.63/0.63/0.63 s; pad margin 0.37 s | one beat late on floor 2: stood 1.33 s, margin -0.33 s | in step x2: first hop on count [----] safe; any phase 0%; in step x3: first hop on count [----] safe; any phase 0%; in step x5: first hop on count [----] safe; any phase 0%; wave (a count later) x2: first hop on count [1---] safe; any phase 16%; wave (a count later) x3: first hop on count [----] safe; any phase 0%; wave (a count later) x5: first hop on count [----] safe; any phase 0%
+STEP W130 G110: NOT CLEAN (swam: floors 0)
+
+LOG: board from the lip, a tap at every frame of one spacing after a knock (# log, . water, b bank)
+court    speed 80 log 156 gap 72 logs 3: spacing 2.85 s = 4.000 beats; taps after a knock land 80% [######.................###############################################################]; on the beats after the knock: 0:LOG 1:WATER 2:LOG 3:LOG
+double   speed 140 log 127.5 gap 72 logs 3: spacing 1.43 s = 2.000 beats; taps after a knock land 77% [.......#################################...]; on the beats after the knock: 0:WATER 1:LOG
+barge    speed 80 log 384 gap 72 logs 2: spacing 5.70 s = 8.000 beats; taps after a knock land 90% [######.................####################################################################################################################################################]; on the beats after the knock: 0:LOG 1:WATER 2:LOG 3:LOG 4:LOG 5:LOG 6:LOG 7:LOG
+
+SWING: a held let-go (grip 0.7) at every frame of the swing, the river locked 16 ways against it (# log, b bank, . water)
+court    speed 80 log 156 spacing 2.85 s, swing 2.85 s: best lock 5 frames; let-go window 60 frames (2.00 s = 2.81 beats) from swing frame 48; ONE at frame 78.0 lands with 1.00 s either side; presses [######################....#################.....######################################]

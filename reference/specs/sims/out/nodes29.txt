@@ -1,0 +1,6 @@
+2-9 final: A Tp1<:#soft Pw1> Pf1> Xs1>:#water R Pp1&>:&turtle*2 Ws1>:#water R Uc^< Cp1&>:#water:&turtle*2 R Pb1^< Sw1> E
+  15 tokens; checkCode: no errors
+2-9 PITCH-29B: A Tp1<:#soft Pw1> Pf1> Xs1>:#water R Pp1&>:&turtle*2 Cw1>:#water R Ws1>:#water:t0.36 R Uc^< Pf1&>:&turtle*2 Ss1>:#water E
+  15 tokens; checkCode: no errors
+2-9 PITCH-29A: A Tw1&<:#soft:&royal_guard*1 Pg1< Pw1&>:&royal_guard*2 Pf1< Xw2&>:#water:&royal_guard*1 R Pg1< Ws1&>:#water:&royal_guard*1 R Pp1> Cw1&>:#water:&royal_guard*2 R Pb1^< V Sw1&<:#water:&royal_guard*3 E
+  17 tokens; checkCode: no errors
