@@ -69,6 +69,13 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
   };
 }
 
+/**
+ * What a free-them goal has counted so far: the little ones freed, or, on a stage where they follow him home (proto.follow, 2-3
+ * "bring N home"), only those that have reached home with him (followPlay.ts): a freed one still on the way does not open the door.
+ * The ONE count the engine's sealed exit and the HUD's counter read.
+ */
+export const rescueCount = (freed: number, home: number | undefined): number => home ?? freed;
+
 /** her marks the stage holds (relics drawn as Meeca's mark): a search that follows them takes a share of them as its goal */
 export const marksHeld = (st: Pick<GeneratedStage, 'collectibles'>): number => st.collectibles.filter((c) => c.type === 'relic' && c.mark === 'meeca').length;
 

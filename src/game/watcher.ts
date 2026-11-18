@@ -47,6 +47,11 @@ export interface WatchZone {
    * back to this x (the bough's start), no heart lost. Time the run for the doze
    */
   setback?: number;
+  /**
+   * a second watcher over the same stretch, out of step with the first (2-3's two herons, 2-3.md beat 7): its rhythm starts this many
+   * seconds later. Read only where the watcher reads the little ones that follow him (followPlay.ts), never by the eagle's one rhythm
+   */
+  lag?: number;
 }
 
 export const WATCH = {

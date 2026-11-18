@@ -560,6 +560,8 @@ export function drawW2Cage(
   t: number,
   /** a cage hanging from a pulley (2-3, 2-8: the puzzle kit draws its cage, puzzlePlay.ts): only the little one in it, and its hop home */
   bare = false,
+  /** its little one follows him once it is free (proto.follow, followArt.ts draws it): no hop home from the cage */
+  followed = false,
 ): boolean {
   if (!riverArtReady() || !c.critter || c.critter === 'eaglet') return false;
   const floor = c.y + 26;
@@ -584,7 +586,7 @@ export function drawW2Cage(
     drawW2Piece(ctx, 'cageC', c.x, floor + 2, 92);
     ctx.restore();
   }
-  if (since <= FREED_HOP) {
+  if (since <= FREED_HOP && !followed) {
     // three hops away from the cage, getting smaller as it runs home into the reeds
     const u = since / FREED_HOP;
     const hop = Math.abs(Math.sin(u * Math.PI * 3)) * 26;
