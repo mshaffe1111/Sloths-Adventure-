@@ -2,9 +2,8 @@
 
 ## EXACT NEXT STEP (a fresh member; the heavy checks, each ONCE, on the head named in "Head")
 0. `git fetch origin t-build-19 && git checkout t-build-19`; `npm install --no-audit --no-fund --legacy-peer-deps`.
-1. **Bots** (if the 40-seed table below says UNRUN or partial): `npx tsx tools/engine/addlevel.ts 1-9 --relist --par 4` (rolls, relist,
-   bots 1-40 x both settings, registry; ~30-60 min). Commit `src/game/gen2/proven/seeds-1-9.ts` + `provenIndex.ts` it writes. Trace every
-   non-PASS: two runs per cause (seed, x, frame, what took him) with `reference/qa-reports/BUILD-19/` probes (relative imports, D83).
+1. **Bots: DONE** (addlevel READY on 202d198a: every tier 40/40 both settings; seed list committed in 787c5e47). Re-run only if 1-9's
+   data changes: `npx tsx tools/engine/addlevel.ts 1-9 --relist --par 4` (101 s).
 2. **The full suite ONCE, foreground or with a 2 h background limit** (it ran past the 30 min default and was cut on the merge head):
    `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts`.
 3. **Checks ONCE on that head:** tsc; `npx tsx tools/engine/seedlist.ts 1-9 --check`; `npx tsx tools/engine/seedlist.ts 1-1 --check`;
@@ -22,7 +21,8 @@
    over the hunters, the Old Boa with the eagle's pass, the exit; one clip of a freeze (`trap-stills.mjs` / `stills-at.mjs`, level.md step 5).
 
 ## Head
-- **202d198a** (pushed 10:35 AM ET): the last commit with every number below except the bots' 40-seed table (running on it at the stop).
+- **787c5e47** (pushed 10:37 AM ET) = 202d198a's stage + the seed list, the 'drops' ruling, the journal tip held back, the REPORT. Every
+  number below is from 202d198a unless named; planted-faults.py ran on 202d198a (6/6) and was not re-run after 787c5e47's test edit.
 - Commits: 03a64a23 merge; 328eb18d castFreeze fixture; 4378672f + 8e470d9f engine (the lead's (a)); e098427d 1-9 data; 71dc1d81 tests; d2c947bf
   fixtures; 202d198a flight/registry/beat fixes.
 
