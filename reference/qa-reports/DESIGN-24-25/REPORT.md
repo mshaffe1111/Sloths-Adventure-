@@ -46,3 +46,8 @@ reset and inverted wave labels, before any number was written), D34 (cites read 
 (Easy's stretch can make a wave harder); put the node string through checkCode in the design (nodes2425.ts pattern)."
 **Learned:** a let-go's landing spread makes log length nearly irrelevant: measure the landing share over both clocks' phases, never one log. Turnover note: reference/handoffs/designer.md
 rewritten (§0 Now, traps), in this branch's commit.
+
+## The lead's rulings (message at 10:54 AM ET 11-18, read 10:49 AM by this machine's clock)
+All four flight rulings ACCEPTED as written into 2-4.md / 2-5.md: (1) the gap between logs is 2-4's knob; (2) 2-5 in-step rows 3 stones at most, the wave runs ahead only, Easy's wave
+3 stones; (3) the real tap hop 0.43 s / 106-119 px: R-165.284 (2-2 and rideLay.ts:260 re-flown by an engine member); (4) no trap ending, the stomp bounce out of beat 4.
+The roadmapcheck red (R-165.277/.279) and the knowncheck entries came from the base (lead: D84), not this branch.
