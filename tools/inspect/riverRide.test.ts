@@ -162,25 +162,32 @@ test('2-1, against the flow and up the far bank on: the adult and child on Norma
     assert.ok(crossedClean(r), said(r));
   }
 });
-test('planted: with the against-the-flow skill off, the adult and child on Normal drown at 2-1\'s back river and are rescued', () => {
-  SKILLS.upstream = false;
-  try {
-    for (const [bot, setting, seed] of UPSTREAM_CASES) {
-      const r = castRun(bot, setting, '2-1', seed);
-      assert.ok(!crossedClean(r), `upstream off, still clean: ${said(r)}`);
+// (BUILD-24b, the lead's ruling 5:31 PM ET 11-18: these plants once read "rescued" with the skill off; those rescues came from the bot's
+//  stale place after a respawn or a splash-back (firsttimer.ts set-down: it relocated where he drowned, a frame before the flag, so a
+//  20 s climb back ran the wrong way). With that root fixed the skill-off runs cross unrescued, so the plants now measure the SKILL: on the
+//  same cases, measured 11-18 (on -> off): upstream: adult s12 lives 0 -> 5, child s23 2 -> 5; bankUp: child Easy s20 286 -> 319 s,
+//  s23 271 -> 295 s. Margins are about half the smallest measured gap: 2 more drownings, 12 s longer)
+test('planted: with the against-the-flow skill off, the adult and child on Normal drown more at 2-1\'s back river than with it on', () => {
+  for (const [bot, setting, seed] of UPSTREAM_CASES) {
+    const on = castRun(bot, setting, '2-1', seed);
+    SKILLS.upstream = false;
+    try {
+      const off = castRun(bot, setting, '2-1', seed);
+      assert.ok(off.lives >= on.lives + 2, `upstream off drowns no more: on ${said(on)} / off ${said(off)}`);
+    } finally {
+      SKILLS.upstream = true;
     }
-  } finally {
-    SKILLS.upstream = true;
   }
 });
-test('planted: with the up-the-far-bank skill off, the child on Easy walks into 2-1\'s far bank face, splashes back and is rescued', () => {
-  SKILLS.bankUp = false;
-  try {
-    for (const [bot, setting, seed] of BANKUP_CASES) {
-      const r = castRun(bot, setting, '2-1', seed);
-      assert.ok(!crossedClean(r), `bankUp off, still clean: ${said(r)}`);
+test('planted: with the up-the-far-bank skill off, the child on Easy splashes back off 2-1\'s far bank face: 12 s or more longer than with it on', () => {
+  for (const [bot, setting, seed] of BANKUP_CASES) {
+    const on = castRun(bot, setting, '2-1', seed);
+    SKILLS.bankUp = false;
+    try {
+      const off = castRun(bot, setting, '2-1', seed);
+      assert.ok(off.time >= on.time + 12, `bankUp off is no slower: on ${on.time} s / off ${off.time} s (${said(off)})`);
+    } finally {
+      SKILLS.bankUp = true;
     }
-  } finally {
-    SKILLS.bankUp = true;
   }
 });

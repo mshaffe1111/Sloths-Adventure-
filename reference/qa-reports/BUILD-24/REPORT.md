@@ -114,3 +114,49 @@ rests; one more log-to-liana catch; flagSpan derived), 4:45 PM ET ((B): a third 
   planted case (noLand24 today RED), 2-4 relisted, bots' longest liana wait <= 2 swings.
 - ART-USE gate (tools/art/artuse.mjs owner): a gen2 brick/section id is not a draw site (2-4's 'fig-roots' hid World 7's unused prop).
 - STAGE-CARD wording (keeper + engine): the start card's "swing to the end" vs the stage's mission line.
+- riverRide.test's two 2-1 skill plants RESTATED (the lead's ruling (a) 5:31 PM ET): they read "rescued" with the skill off, and those
+  rescues were the stale-relocate root; now, on the same cases: upstream off -> 2+ more drownings than on (measured 0 -> 5, 2 -> 5);
+  bankUp off -> 12+ s longer (measured +33, +24). GREEN with the skill off vs on; equal runs would be RED. Comment in the test says why.
+## Gate table (head 557c363b unless named; the head moved after: 693a2b69 first-frame guard, then the plants, so ALL must run again)
+| Gate | Result |
+|---|---|
+| tsc | PASS (557c363b; a0fdeaab's changes are tests/report) |
+| knowncheck, generalitycheck, roadmapcheck | PASS |
+| seedlist 1-1 --check / 2-4 --check | PASS / PASS (100/100) |
+| tool tests (CI list) | FAIL 3 on 557c363b, all mine: pitClimb shallow pit (FIXED 693a2b69, pitClimb 16/16), riverRide plants 209/210 (RESTATED, 2/2) |
+| tierBots.test / calibration replay | 7/7 / 200 of 200 lines identical (the `placed` version) |
+| coveragecheck | PASS |
+| tipwalk --layouts 4 | PASS |
+| funcheck | FAIL 34 worse/53 to lower: World 1 (1-9 etc.), IDENTICAL on BUILD-24's 872c8693: not 2-4's, pre-existing on the base |
+| meter (score.ts 1-4) | 2-4 Normal 4.0 (3.8-4.5) vs DIFFICULTY.md 13.5 (band 9-21): UNDER, named not tuned (World 2 reads low: 2-1 2.7, 2-2 6.4); Easy 3.1 <= 8.1 |
+| suite, vite build, chunkcheck, artcheck, drawcheck (2-4 both ways in its list), clipcheck, kbdcheck, buildcheck, registry, every list --check, lockall vs main --intended 2-4 | RUNNING at the stop on 557c363b (results in the session's scratch only): UNRUN on the final head (D59) |
+## Unresolved (named): the lead's 3:51-5:24 PM messages reached this session only at 5:28 PM ET (queued); NOT done:
+1. Two more bot defects for the SAME bot commit (the lead 4:00/4:03/4:10): (a) `Progress.relocate(p, level=true)` has no distance limit
+   (1-6 kid N layout 13: picked a point 35,000 px ahead) -> keep `level` points within ~600 px in x, else the plain nearest; (b)
+   `pitWayBack` returns early on `prog.off(p) < 120` (1-6 middle N layout 34: 8 double jumps at the liana foot for 150 s, never the stair).
+   Each with a planted test; then ONE recalibration (tierBots must match the testers, else stop) and the castBots rows that move named on
+   1-6/1-7/1-8 and 2-4.
+2. ROOT B (the lead 3:51: do it): noLand24's log gap so its clock sits about half a log off the liana's 2.85 s swing (today 2.78 s: locked),
+   flown and judged; relist.
+3. PINK PETALS drawn in the soil band under 2-4's rivers (ENG-24c on a scratch merge; the lead 5:13/5:24). My stills show petal-coloured
+   specks below the ground line (e.g. stills-b/up-normal.jpg x23700, x27800, side sheets): NOT YET told apart from the falling-petal
+   ambience. Find the source (a pickup's y on a river piece?), fix, plant, and check every layout's petals sit on ground or an arc.
+4. The stills/clips are on 557c363b; reshoot on the final head if 1-3 move 2-4 (2 and 3 will). The turnover note engine-core.md is NOT
+   rewritten this task.
+## EXACT NEXT STEP (a fresh engine member, high, on t-build-24's head)
+1. Unresolved 1 (both bot defects, planted, one commit), then `npx tsx reference/qa-reports/BUILD-24/recal.ts` + tierBots.test (stop if a
+   tier moves off the testers) and recommit calibration-main.jsonl per BOTS.md; castBots 1-6, 1-7, 1-8, 2-4 1-40 rows named.
+2. Unresolved 2 and 3 (2-4 data / petals), relist 2-4 (`seedlist.ts 2-4`), castBots 2-4 1-40 x5 bots x both.
+3. The FULL CLAUDE.md list + funcheck + tipwalk + registry + every list --check + lockall vs main (`--layouts 16 --intended 2-4 --check`;
+   main's lock: regenerate on origin/main with `--out`), ONCE on the final head; scripts used here: laneA/laneB (the commands are the
+   CLAUDE.md list verbatim plus gates.yml's).
+4. Stills (`stills24.mjs`, spots in this section) and clips (`clipRecord24.ts normal 1 0,4,7` + `clip24.mjs`) on that head.
+## Learned / proposed level.md rules
+- Run the FULL suite before calling a level laid: 2-4's four suite misses (a draw-site name clash, a petal inside a stump, a hard-coded
+  stage count, World 2 shorter than World 1) were all invisible to libstage + seedlist + castBots.
+- A bot rescue is traced before the level is touched: all 8 "level" rescues were one bot bookkeeping defect.
+- Two clocks over one river (log spacing vs swing period) must not nearly lock: check |T_swing mod T_log| per liana river.
+## Method used / Lessons applied / Method update
+level.md rules 13, 14, 19, 20, 26, 28, 29; D19, D30, D59 (running gates named UNRUN), D76 (context), D86 (the full list on the final head:
+not reached; named). Method update: castBots/tierBots plants that expect "rescued" should name the skill's own effect (lives, time),
+never a rescue, which a bot defect can supply.
