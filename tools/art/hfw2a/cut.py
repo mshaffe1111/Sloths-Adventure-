@@ -18,11 +18,17 @@ near = np.abs(a - bg).max(axis=2) <= tol
 lab, n = nd.label(near)
 edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
 bgm = np.isin(lab, list(edge))
+# (grey trapped inside the outline, e.g. between a duckling's legs: any enclosed region of the flat grey over HOLE px is keyed too. A
+# region that size within tol of the grey is never paint: the darkest fur here, the otter's, sits over 40 off it)
+HOLE = 150
+sizes0 = nd.sum(near, lab, range(1, n + 1))
+trapped = [i + 1 for i, sz in enumerate(sizes0) if sz > HOLE and (i + 1) not in edge]
+bgm |= np.isin(lab, trapped)
 fg = ~bgm
 lab2, n2 = nd.label(fg)
 sizes = nd.sum(fg, lab2, range(1, n2 + 1))
 keep = lab2 == (1 + int(np.argmax(sizes)))
-keep = nd.binary_fill_holes(keep) & ~(bgm & ~nd.binary_fill_holes(keep))
+keep = keep & ~bgm
 holes = (nd.binary_fill_holes(keep) & ~keep).sum() / max(1, nd.binary_fill_holes(keep).sum())
 # soft rim: alpha from distance to the grey over the outermost 2 px, colour un-mixed from the grey there
 dist = np.abs(a - bg).max(axis=2)
@@ -39,4 +45,4 @@ box = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
 c = Image.fromarray(rgba, 'RGBA').crop(box)
 c = c.resize((max(1, round(c.width / K)), max(1, round(c.height / K))), Image.LANCZOS)
 c.save(out)
-print(out, 'box', box, 'size', c.size, 'holes %.3f' % holes)
+print(out, 'box', box, 'size', c.size, 'holes %.3f' % holes, 'trapped grey keyed', len(trapped))
