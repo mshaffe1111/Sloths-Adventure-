@@ -423,7 +423,9 @@ test('set down by the game, he finds his place where he stands and a stale climb
     run.sim.bare(PLATS());
     run.sim.stand(3000, BANK);
     run.prog.relocate(run.sim.p);
-    const bot = run as unknown as { climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null; lastX: number; lastY: number; t: number };
+    const bot = run as unknown as { climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null; lastX: number; lastY: number; t: number; frames: number };
+    // (mid-run, as a drowning is: the run's first frame is not read as a set-down, its last place is the harness's own)
+    bot.frames = 30;
     bot.lastX = 3000;
     bot.lastY = BANK;
     bot.climbBack = { path: PLATS().slice(1, 5), dir: -1, t: bot.t };

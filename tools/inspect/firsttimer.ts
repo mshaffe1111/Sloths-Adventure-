@@ -3298,8 +3298,9 @@ export class FirstTimerRun {
     //  along the way is found where he now stands, and a climb back read off where he was is over. BUILD-24b, 2-4: the respawn's relocate
     //  (respawned, called from loseLife) read the spot he drowned at, a frame before the game moved him to the flag, and Easy's splash-back
     //  never relocated at all; 900 px off the way, under a liana's catch, pitWayBack set a 20 s climb back the wrong way, and 8 runs of
-    //  the calibrated tiers were rescued for it. setDown.test.ts)
-    if (step >= 100 && !this.placed) {
+    //  the calibrated tiers were rescued for it. pitClimb.test.ts 'set down by the game'. Not on the run's first frame: its last place is
+    //  wherever the run was made, and a harness that stands him after (pitClimb's shallow pit) has already found his place)
+    if (step >= 100 && !this.placed && this.frames > 1) {
       this.prog.relocate(p);
       this.climbBack = null;
     }
