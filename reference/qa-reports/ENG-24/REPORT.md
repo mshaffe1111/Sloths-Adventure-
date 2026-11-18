@@ -1,6 +1,7 @@
 # ENG-24 REPORT: 2-4's two new engine pieces (a liana over a river; the drop-on-log and vine-from-log bot skills), proven on planted toys
 Engine, t-eng-24 from origin/main 6e7b85f8. Started 11:06 AM ET 11-18 (by `date`). Packet reference/packets/2026-11-18/ENG-24.md (lead branch).
-Commits: bef5445a (NEW 1), 4d1c2834 (NEW 2), cd312838 (2b: the bot's log changes held to liana rivers), then this report's commit (HEAD below).
+Commits: bef5445a (NEW 1), 4d1c2834 (NEW 2), cd312838 (2b: the bot's log changes held to liana rivers), 29a14733 (recorder, engine-core),
+7363533f (test 7's Easy twin), then this report's commit (the hash in the lead's message).
 
 ## EXACT NEXT STEP (lead)
 None for this member (the lead's rulings 11:58 AM ET: both pieces accepted; the meter gap is R-165.287, a meter job before 2-4's build,
@@ -66,15 +67,15 @@ builder needs" below.
 | Gate | Result | Head |
 |---|---|---|
 | `npx tsc --noEmit -p .` | 0 errors | HEAD (re-run at the end) |
-| the suite (the CLAUDE.md set, once) | SUITE_RESULT | SUITE_HEAD |
+| the suite (the CLAUDE.md set, once) | 3792 pass, 1 fail: lianaRiver.test 7 (the catch toy's Easy twin, a test of mine broken by my own TOY_LEN change; fixed in 7363533f, 7/7). Then on the final code the 26 src tests that load tools/inspect + lianaRide + riverRide: 265/1, the same test, fixed | started on 4d1c2834; the subset on 29a14733; the fix 7363533f |
 | lockall --layouts 16 vs main's lock | 102/102 stages unchanged | bef5445a, 4d1c2834 |
-| seedlist 1-1 --check | SEEDLIST_RESULT | SEEDLIST_HEAD |
+| seedlist 1-1 --check | PASS (161 seeds, each clean on both settings; the verdicts refuse 0) | cd312838 |
 | generalitycheck | PASS (61 engine files, 26 literals, 26 known) | HEAD (re-run at the end) |
 | knowncheck | PASS | HEAD (re-run at the end) |
 | roadmapcheck | FAIL (13): the SAME 13 on main's own tree in this container (A-39/A-40...: commits on branches not fetched here); none from this branch | cd312838 and main 6e7b85f8 |
 | coveragecheck | PASS (12 built stages, 25 pieces, 6 known) - and the meter does NOT price a liana-to-log drop (below) | 4d1c2834 |
-| riverRide / padRide / clockRide | 18/18; padRide + clockRide 45/45 total with riverRide on 4d1c2834 (re-run on HEAD: BOTGATES_RESULT) | cd312838 / HEAD |
-| lianaRiver.test / lianaRide.test (gates.yml) | 7/7, 3/3 | cd312838 |
+| riverRide / padRide / clockRide | riverRide 18/18 (cd312838 and 29a14733); padRide + clockRide 27/27 (29a14733) | as named |
+| lianaRiver.test / lianaRide.test (gates.yml) / planted-faults.py | 7/7 (7363533f), 3/3 (29a14733), 5/5 CAUGHT (7363533f) | as named |
 
 **The meter (METER rules): it cannot price a liana-to-log drop. The missing channel:**
 - score.ts on the toys (meterProbe.ts) reads only `ride-board` (boarding the logs from the bank) and `ride-off`. Its route
