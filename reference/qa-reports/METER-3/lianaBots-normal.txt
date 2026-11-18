@@ -1,0 +1,15 @@
+drop/long normal child: misses 0/5 runs, onto-log 5, from-log 1, piece 16.7 s, shrine 5/5
+drop/long normal middle: misses 1/5 runs, onto-log 6, from-log 1, piece 10.4 s, shrine 5/5
+drop/long normal expert: misses 0/5 runs, onto-log 4, from-log 3, piece 9.6 s, shrine 5/5
+drop/ride normal child: misses 0/5 runs, onto-log 5, from-log 1, piece 15.4 s, shrine 5/5
+drop/ride normal middle: misses 0/5 runs, onto-log 5, from-log 2, piece 11.8 s, shrine 5/5
+drop/ride normal expert: misses 0/5 runs, onto-log 5, from-log 2, piece 12.3 s, shrine 5/5
+drop/twin normal child: misses 0/5 runs, onto-log 5, from-log 1, piece 13.0 s, shrine 5/5
+drop/twin normal middle: misses 0/5 runs, onto-log 5, from-log 2, piece 9.6 s, shrine 5/5
+drop/twin normal expert: misses 0/5 runs, onto-log 5, from-log 3, piece 8.0 s, shrine 5/5
+drop/gap280 normal child: misses 2/5 runs, onto-log 5, from-log 0, piece 22.6 s, shrine 5/5
+drop/gap280 normal middle: misses 0/5 runs, onto-log 5, from-log 0, piece 14.3 s, shrine 5/5
+drop/gap280 normal expert: misses 0/5 runs, onto-log 5, from-log 0, piece 14.7 s, shrine 5/5
+catch/twin normal child: misses 1/5 runs, onto-log 0, from-log 4, piece 16.5 s, shrine 5/5
+catch/twin normal middle: misses 5/5 runs, onto-log 3, from-log 4, piece 16.7 s, shrine 5/5
+catch/twin normal expert: misses 1/5 runs, onto-log 0, from-log 3, piece 9.9 s, shrine 5/5

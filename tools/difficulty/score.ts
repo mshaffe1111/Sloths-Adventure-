@@ -15,7 +15,9 @@
  * 0-100 meter: SCALE, set ONCE so that 1-1 on Normal (all seeds) reads Matt's 4 (11-12 8:31 PM ET). Nothing is tuned per stage.
  */
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { RealPlay } from '../../src/game/realPlay.ts';
+import { RealPlay, DT } from '../../src/game/realPlay.ts';
+import { CastPlay } from '../../src/game/castPlay.ts';
+import { castDef } from '../../src/game/predators/registry.ts';
 import { plantSeedList } from '../../src/game/gen2/seedList.ts';
 import { ANCHOR_LIST } from './anchor11.ts';
 import { modelStage, MODEL_TYPICAL } from '../../src/game/stageTime.ts';
@@ -450,6 +452,64 @@ export function memberAt(members: ReadonlyArray<{ e: any; def: any }>, x: number
 export const isWatcher = (def: any): boolean => !!def?.beatenBy?.still && Number(def?.warn) > 0;
 
 /**
+ * A PREDATOR READ (METER-3, R-165.286; 1-9's boas, reference/design/1-9.md; the kit boa, predators/world1.ts BOA): a posted animal that
+ * strikes at movement and is beaten by his stillness (beatenBy.still, no watched stretch: not a watcher). He walks up to it; when it
+ * rears he must STOP inside the rear, and move only outside it (a stop-signal race, METER-COVERAGE §1 WR). The plain creature row priced
+ * it by its whole rear (creatureBits(tell): 1.0 s, 1 bit), but going still takes its own time (stillness.ts calm-in) and its strike's
+ * reach starts before the rear ends, so the window he has is the frames after the rear begins in which a thumb lifted still beats it.
+ * freezeWindow flies exactly that on the REAL engine (realPlay.ts at 30 fps, his own stop) against the REAL kit (castPlay.ts running
+ * predators/core.ts on the stage's own def, fed every frame as engine.ts stepCast feeds it): he runs in with the thumb held, lifts k
+ * frames after the rear begins; the window is the first k that is struck (s). Its bits are a creature's on that window, creatureBits(w).
+ * Null: no lift the flight tries is beaten by stillness (none of its kind on this footing). Memoized by the def and the setting.
+ */
+const FREEZE_MEMO = new Map<string, number | null>();
+export function freezeWindow(def: any, setting: Setting): number | null {
+  const key = `${def.kind}|${setting}|${JSON.stringify(def)}`;
+  if (FREEZE_MEMO.has(key)) return FREEZE_MEMO.get(key)!;
+  const world = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].find((w) => { try { return castDef(def.kind, w) === def; } catch { return false; } }) ?? 1;
+  const easy = setting === 'easy';
+  const fly = (k: number): 'hit' | 'still' | 'none' => withSetting(setting, () => {
+    const FLOOR = 400, AT = 2400;
+    const bough = { id: 1, x: 0, y: FLOOR, width: 8000, height: 200, type: 'solid' } as any;
+    const r = new RealPlay('1-1', 1);
+    r.bare([bough]);
+    r.stand(600, FLOOR);
+    for (let i = 0; i < 10; i++) r.frame();
+    const e = { id: 900, type: def.kind, x: AT, y: FLOOR - 14, vx: 0, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: -1, patrolMinX: AT, patrolMaxX: AT,
+      attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0 } as any;
+    const c = new CastPlay({ kinds: [def.kind], traps: [] } as any, [e], [bough], world);
+    const m = c.members[0];
+    if (!m) return 'none';
+    let t = 0, tellF = -1, liftF = -1;
+    for (let f = 0; f < 380; f++) {
+      r.frame(liftF < 0 ? { right: true } : {});
+      const p: any = r.p;
+      const h: any = { x: p.x, y: p.y, vx: p.vx, vy: p.vy, facing: p.facing, grounded: p.grounded, holding: !!(p.climbing || p.isVineSwinging || p.hanging) };
+      const o = c.step(h, DT, t, easy);
+      if (o.told.length && tellF < 0) tellF = f;
+      if (liftF < 0 && tellF >= 0 && f - tellF >= k) liftF = f;
+      // (a hurt box touching him: his collider, 28 x 44 from his feet, as predators/core.ts touches reads it)
+      for (const z of o.hurts) if (z.box && p.x + 14 > z.box.x && p.x - 14 < z.box.x + z.box.w && p.y > z.box.y && p.y - 44 < z.box.y + z.box.h) return 'hit';
+      if (m.s.beatenBy === 'still') return 'still';
+      t += DT;
+      if (tellF >= 0 && f - tellF > 150) break;
+    }
+    return 'none';
+  });
+  let w: number | null = null;
+  for (let k = 0; k <= 60; k++) {
+    const r = fly(k);
+    if (r === 'still') continue;
+    w = k > 0 ? k * DT : null;
+    break;
+  }
+  FREEZE_MEMO.set(key, w);
+  return w;
+}
+/** an animal read by freezing (a predator read): beaten by stillness, never a watcher, it never walks (posted: its rest and hunt speed 0) */
+export const isPredatorRead = (def: any): boolean => !!def?.beatenBy?.still && !isWatcher(def) && !(def?.speed?.rest > 0) && !(def?.speed?.hunt > 0);
+
+/**
  * The chase (METER-1, R-165.261; chase.ts, 1-8 "the branch is breaking behind you"): each stretch ONE challenge, its bits the share of his
  * run the front asks (fittsBits(front / PHYS.maxRun), the jump's own form: need over reach), the front at its base speed, and on the last
  * stretch with its final burst (chase.ts CHASE_ROWS by setting where the tree has it, else CHASE: Normal 230 px/s of his 285 is 2.4 bits,
@@ -854,6 +914,12 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       if (m && isWatcher(m.def)) continue;
       const tell = m?.def?.tell ? m.def.tell * (setting === 'easy' ? Math.max(1, m.def.easy?.tell ?? 1) : 1) : 0.5;
       const timed = !asleep && !trapped;
+      // (a posted animal beaten by his stillness: the read is the freeze inside its rear, not its whole rear: freezeWindow, METER-3)
+      const fw = timed && m && isPredatorRead(m.def) ? freezeWindow(m.def, setting) : null;
+      if (fw) {
+        add({ t: b.t, x: b.x, kind: 'predator-read', bits: creatureBits(fw), cost: 'heart', stakes: STAKES.heart, threat: true, note: `${b.what}: freeze inside its rear, ${(fw * 1000).toFixed(0)} ms after it begins (rear ${tell.toFixed(2)}s)` });
+        continue;
+      }
       add({ t: b.t, x: b.x, kind: timed ? 'creature' : 'creature-choice', bits: timed ? creatureBits(tell) : OTHER_BITS.choice, cost: 'heart', stakes: STAKES.heart, threat: timed, note: `${b.what}${trapped ? ' (trap)' : ''} tell ${tell.toFixed(2)}s` });
     } else if (b.letter === 'Z') {
       // (a chase's stretch and a bouncing fruit are scored from the stage's own lay, chaseChallenges and rollingChallenges: beats.ts reads
@@ -945,7 +1011,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   // crumbling footing on the route: the clock is the crumble (a fragile platform he stands on): +1 bit on the jump that lands on it
   for (const c of out) {
     // (a swing reads its crumble at the perch it lands on, releaseBits; a snake has no footing of its own)
-    if (c.kind === 'creature' || c.kind === 'hazard' || c.kind === 'swing' || c.kind.startsWith('vine-snake')) continue;
+    if (c.kind === 'creature' || c.kind === 'predator-read' || c.kind === 'hazard' || c.kind === 'swing' || c.kind.startsWith('vine-snake')) continue;
     // (at its own height where the challenge knows it: on a tower the rotten bough 600 px over a climb is not under him, 1-4)
     const frag = st.platforms.some((p: any) => p.type === 'fragile' && c.x >= p.x - 40 && c.x <= p.x + p.width + 40
       && (!c.ys || (p.y >= c.ys[0] - CRUMBLE_DY && p.y <= c.ys[1] + CRUMBLE_DY)));

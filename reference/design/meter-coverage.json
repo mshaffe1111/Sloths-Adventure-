@@ -238,10 +238,12 @@
   },
   "creature:boa": {
    "bot": null,
-   "channel": "tools/difficulty/score.ts#creatureBits",
+   "channel": "tools/difficulty/score.ts#freezeWindow",
    "rows": [
-    "4"
-   ]
+    "4",
+    "6"
+   ],
+   "note": "a posted boa (beaten by stillness, never walks): a PREDATOR READ, the freeze inside its rear, priced by the window the real engine leaves after the rear begins (score.ts freezeWindow, creatureBits on it; isPredatorRead). METER-3, R-165.286"
   },
   "creature:boss": {
    "bot": null,
