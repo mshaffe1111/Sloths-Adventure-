@@ -1,7 +1,8 @@
 # VAR-1: variety for 1-6, 1-7, 1-8 (R-165.276). Level builder, 2026-11-18
 
-Branch `t-var-1` (from origin/main 6e7b85f8f). Stage data head **fb7008fc2** (every number below is from it unless named); the REPORT and
-funknown.json commit on top changes no stage.
+Branch `t-var-1` (from origin/main 6e7b85f8f). Stage data head **afb9f2e69** (the climb-top fix, the lead's 2:45 PM ruling). STOPPED at
+3:50 PM ET before the gates (context; the lead's rule): flags, bots, lists below are from afb9f2e69; the suite, lock, drawcheck and
+seedlist --check were NOT run on it (the runs on 1a1df995b were stopped as void). See section 10.
 Method: reference/methods/level.md (rules 1-29), the lead's GO 10:19 AM ET and rulings 10:00 / 10:50 AM ET.
 Lessons applied: D57 (read the inbox: I missed the 10:00 and 10:19 messages until 10:50, my miss), D79 (stills of the whole screen,
 both ways, both settings), D81 (drawcheck both ways), D83 (probe scripts use relative imports: reference/qa-reports/VAR-1/probes/).
@@ -76,24 +77,23 @@ its wall (a miss is the ground he stood on). Removed on the way: stepping-stone 
 - **1-9 (BUILD-19's) moved, under its known counts**: "nothing new" 3 -> 5 Normal, 3 -> 6 Easy (known 15 / 13). Its only "new" move on
   those layouts was a climb, new only because the validator reads 1-4 as no moves (R-165.283); 1-6..1-8 now really climb.
 
-## 4. Bots (castBots seeds 1-40 on each final list; main's run where a tier missed, same command on main + the eagle fix)
+## 4. Bots (castBots seeds 1-40 on each final list, afb9f2e69; main's run where a tier missed, same command on main + the eagle fix)
 | Stage | kid N | kid E | adult N | adult E | child N | child E | middle N | middle E | expert N |
 |---|---|---|---|---|---|---|---|---|---|
-| 1-6 | 35 (main 36) | 40 (39) | 37 (39) | 40 (40) | 39 | 39 | 40 (40) | **38** (40) | 40 |
-| 1-7 | 38 (main 35) | 40 | 39 (main 38) | 40 | 40 | 40 | 40 | 40 | 40 |
-| 1-8 | 40 | 40 | 40 | 40 | 40 (main 36) | 40 | 40 | 40 | 40 |
+| 1-6 | 33 (main 36) | 40 (39) | 36 (39) | 40 (40) | 40 | 40 | **39** (40) | 40 (40) | 40 |
+| 1-7 | 38 (main 35) | 38 | 38 (main 38) | 40 | 40 | 40 | 40 | 40 | 40 |
+| 1-8 (at fb7008fc2's 1-8, unchanged since) | 40 | 40 | 40 | 40 | 40 (main 36) | 40 | 40 | 40 | 40 |
 
 Every miss traced (castBots --json, the stuck x mapped to its section):
-- 1-7 kid N 4, 12, adult N 11: in the creak, the mossy lianas and the light gap (unchanged beats; main misses more there).
-- 1-6 kid/adult N: the first liana and the creaky landing's pit (unchanged beats; main 36/39).
-- **1-6 child N 17 (the dip rest's vine: "fell back down from here 8 times"), child E 26 and middle E 15 (the vine in the creaky
-  landing's Easy ground: "the way on is 136 px up"), middle E 24 (the dip rest's vine): MY climbs.** The bot climbs and fails the
-  step off the top (a 60 px knot of bough, then the root's top). OPEN: it makes middle Easy (38) read harder than middle Normal (40).
-  Not fixed: a fix needs a 27-minute relist and a 35-minute bot run, past the box; I did not ship an untested change. Next step below.
-- Earlier passes, fixed before this head: the vine 140-220 px back from its wall (child stalled at the wall); the walk-in join into
-  liana beats (first-timers stuck); a hide in a rest (the child waited in it).
-
-## 5. Meter (score.ts seeds 1-4; before = main + the eagle fix, the same stage set)
+- 1-6 middle N 34: the gorge's liana pit, "fell into this pit 8 times" (the gorge beat is unchanged; the stage before it moved). OPEN.
+- 1-6 kid N 13: **the dip rest's vine, "fell back down from here 3 times", a sealed door (28/30 petals): MY climb, OPEN.**
+- 1-6 kid N 15, 26, adult N 3, 24, 29: the creaky landing's pit, the snake on your vine's pit, the first liana (unchanged liana beats;
+  main misses there too, but fewer: kid 36, adult 39).
+- 1-7 kid N 4, 25, kid E 18, 35, adult N 15, 32: the creak, the mossy lianas, the light gap (unchanged beats).
+- Fixed on the way (each found by the bots or the stage's own test): a vine 140-220 px back from its wall (child stalled at the wall);
+  a 60 px knot of bough then the root's top at the vine's top (child/middle failed the step off; now the root's top is laid over the
+  vine, a flat landing at the vine); the walk-in join into liana beats (first-timers stuck); a hide in a rest (the child waited in it).
+## 5. Meter (score.ts seeds 1-4, on fb7008fc2 (before the climb-top fix); before = main + the eagle fix, the same stage set)
 | Stage | Before Normal | After Normal | Before Easy | After Easy |
 |---|---|---|---|---|
 | 1-6 | 5.7 (20 swings) | **7.0** (20 swings) | 3.2 (10 swings) | 3.1 (9 swings) |
@@ -104,8 +104,13 @@ DIFFICULTY.md:67 targets: 1-6 6.5, 1-7 5.5, 1-8 7.5. 1-6 Normal went from 0.8 un
 the lead's condition) but the walked ground now asks moves (climbs 4, hops) inside the busiest 30 s (peak 29.95 -> 37.1 points a
 minute). 1-6 Easy scored 9 swings over seeds 1-4 against 10: NOT traced (named, not explained). 1-7 stays far under its 5.5, as on main.
 
-## 6. Gates (on the final head)
-TBD
+## 6. Gates
+NOT complete on any head: cut by the stop, never passed off as run.
+- On afb9f2e69: funcheck (all 11 clear, nothing new or worse anywhere; the shrunk funknown.json matches exactly), castBots (section 4).
+- On fb7008fc2 / 1a1df995b (before the climb-top fix, stage data since changed): tsc PASS, coveragecheck PASS, registrycheck PASS,
+  generalitycheck PASS, roadmapcheck PASS (after `git fetch --unshallow`), knowncheck PASS, w1Arc17/18 tests 22/22. The suite, the
+  seedlist checks, the lock and drawcheck were started on 1a1df995b and stopped unfinished (the lead's 2:45 ruling made them void).
+- The eagle fix's own commit cac760957 (section 2A): coveragecheck PASS, seedlist --check 1-7 and 1-8 PASS, the planted test, ciTests.
 
 ## 7. Polish check (stills from the real game, layout 1, 412x915 and 915x412 at 2x, Normal and Easy; `stills/sheet-<stage>-<setting>-<way>.jpg`,
 each sheet one still per new piece in stage order; shot on the final data of each stage: 1-7 at a39c90dac's list (1-7 unchanged since),
@@ -121,7 +126,8 @@ each sheet one still per new piece in stage order; shot on the final data of eac
   (the great root, the dip, the beat-ground climbs) is the same picture, a vine trunk at a tall root wall; the dip differs only by
   standing in a dip. They read as "climb here" on both phones, but they are one look three times.
 - Before/after of the flag spots: the flags are move strings, not a spot on screen; the runs probe output before (main) and after is
-  the evidence (section 3). Rule 29: these stills are on the final data, but 1-6's bots are not all green (section 4).
+  the evidence (section 3). Rule 29: these stills are BEFORE the climb-top fix (1-6/1-7 vine tops now differ: a flat root top laid
+  over the vine, no knot); re-shoot the climbs on the green head.
 
 ## 8. Learned (for the next builder)
 - **Map a repeat to its sections before changing anything.** `probes/runs.ts` (each 4-move run repeated over 3 times, with the
@@ -153,15 +159,18 @@ each sheet one still per new piece in stage order; shot on the final data of eac
 4. **A chase stage's rests stay near the fork length its chase was laid for** (1-8: about 2,600-2,900 px). Check: the stage's
    teach-line test and a stretch-count probe over 40 rolls.
 
-## 10. EXACT NEXT STEP (open, mine)
-1. 1-6's vine climbs (w1Arc16.ts `wallClimb`: the dip rest, the great root rest, the `C` step of a beat's walked ground): the child and
-   middle bots fail the step off the vine's top (1-6 layouts child N 17, child E 26, middle E 15, 24). Try first: the bough at the
-   vine's top 140-170 px wide reaching over the root's top, the root's top LEVEL with it (`[0, 0]`, not `[-4, 0]`), the vine where it is
-   (60 px from the wall foot). Then: `npx tsx tools/engine/seedlist.ts 1-6 --count 100` (alone: 27 min), `castBots --stage 1-6 --seeds
-   1-40 --bots child,middle --setting both` (must be 40/40, Easy never under Normal), the full funcheck (no flag back), the meter.
-   (1-7's dip and 1-8 use the same helper: their bots are 40/40, but change all three together if the fix is in the helper's shape.)
-2. Trace 1-6 Easy's 9 scored swings against main's 10 (score.ts --detail, seeds 1-4).
-3. Lead: rule on the proposed level.md rules (section 9) and on the runs probe as a tool (tools/validate/runs.ts).
+## 10. EXACT NEXT STEP (open; for the member who takes it on, from afb9f2e69)
+1. 1-6's dip rest vine (w1Arc16.ts `w1-16-rest-dip`, `wallClimb` in the same file): the kid bot falls back from the top on layout 13
+   (sealed door). Look at the kid's climb-off at the top (tools/inspect castBots --stage 1-6 --seeds 13-13 --bots kid --setting normal
+   --json, then a still at the vine). If the helper changes, 1-7's dip uses the same shape (w1Arc17.ts `wallClimb`): change both.
+2. 1-6 middle N layout 34: the gorge's liana pit (8 falls). Unchanged beat; compare with main's middle on the same plan.
+3. Then, ONCE, on the new head: relist only what changed (one stage at a time: two relists clobber provenIndex.ts), castBots 1-6 all
+   tiers both settings (child, middle, expert 40/40; Easy never under Normal), funcheck (all 11 clear; `funcheck-final-afb9f2e6.txt` is
+   today's), then the gates: tsc, the suite, seedlist --check 1-6 1-7 1-8 1-1, lockall --layouts 16 --intended 1-6,1-7,1-8 --check
+   against main's lock (`npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json` on origin/main first, about 12 minutes),
+   coveragecheck, registrycheck, knowncheck, generality, roadmapcheck (needs a full clone: git fetch --unshallow), drawcheck.
+4. The meter on the final head (section 5 is from fb7008fc2), and 1-6 Easy's 9 scored swings against 10 (not traced).
+5. Lead: rule on section 9's proposed rules.
 
 ## Method update (law 4)
 - Worked: the runs probe (section 8); a fresh-roll probe for a stage's own test rule (`probes/split18.ts`, 40 rolls in a minute) found
