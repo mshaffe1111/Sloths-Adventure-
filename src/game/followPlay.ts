@@ -158,7 +158,8 @@ export class FollowPlay {
       if (h.lookX === null) continue;
       // (its first look over a freeFirst stretch only warns; on Easy every heron's first look does)
       if (h.s.passes === 0 && (z.freeFirst || this.easy)) continue;
-      for (const f of lineSeen(h.lookX, this.line, this.stage.covers, WATCH.sight)) {
+      // (it reads only the little ones on its own stretch: its look runs on 160 px past each end to come and go)
+      for (const f of lineSeen(h.lookX, this.line.filter((q) => near(q.x)), this.stage.covers, WATCH.sight)) {
         spook(f, z.setback ?? (dir === 1 ? z.x0 : z.x1));
         spooked.push(f);
       }
