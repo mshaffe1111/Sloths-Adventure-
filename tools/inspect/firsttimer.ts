@@ -1633,6 +1633,11 @@ export class FirstTimerRun {
     return [mid, Math.max(0, mid - sd / 2), mid + sd / 2].some((lag) => this.dropMisses(v, dir, t, lag, r, logs, rivers));
   }
 
+  /** the drifting log `q` is on a river with a liana hung over it (ENG-24's skills' ground) */
+  private lianaRiver(q: Platform): boolean {
+    return !!q.drift && (this.sim.stage.rivers ?? []).some((r) => r.speed > 0 && r.x0 === q.drift!.x0 && lianasOver(this.sim.vines, r).length);
+  }
+
   /** liana `v` hangs over a log river with logs on it (SKILLS.dropOnLog's ground) */
   private overLogs(v: Vine): boolean {
     return (this.sim.stage.rivers ?? []).some((q) => q.speed > 0 && !q.open && lianasOver([v], q).length && this.sim.platforms.some((d) => d.type === 'drift' && d.drift?.x0 === q.x0));
@@ -1707,9 +1712,9 @@ export class FirstTimerRun {
   private lianaWait(dir: -1 | 1): Pad | null {
     const p = this.sim.p;
     const here = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
-    // (never off a drifting log: its front end is no ledge to wait at (it moves), and stepping toward it he walked off into the water,
-    //  catch toy v3 (ENG-24); a vine from a log is SKILLS.vineFromLog's)
-    if (SKILLS.vineFromLog && here?.type === 'drift') return null;
+    // (never off a drifting log under a liana over its river: its front end is no ledge to wait at (it moves), and a vine from a log is
+    //  SKILLS.vineFromLog's (ENG-24))
+    if (SKILLS.vineFromLog && here?.drift && this.lianaRiver(here)) return null;
     const edgeX = here ? (dir > 0 ? here.x + here.width : here.x) : NaN;
     // (160 px out: from a run he slides about 75 px once the steer is let go, and from 70 px he slid off the lip, BUILD-16c's toy)
     const dist = here ? dir * (edgeX - p.x) : Infinity;
@@ -2342,10 +2347,11 @@ export class FirstTimerRun {
     if (t - this.lastLand < 0.1) {
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
-      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log, which is the ride skill's
-      //  (SKILLS.ride: he rides it until a flown hop lands on the next log or the bank takes him): after a let-go onto a 150 px log the
-      //  pause flicked him on blind into the water, ENG-24 drop toy gap280, middle Normal 17 lives)
-      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad) && !(SKILLS.ride && here.type === 'drift')) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
+      // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log running his way under a liana over
+      //  its river, which the handed skill rides in (SKILLS.handed): after a let-go onto a 150 px log the pause flicked him on blind into
+      //  the water, ENG-24 drop toy gap280, middle Normal 17 lives. Every other river keeps it as it was (its bots' plants are measured on
+      //  it, riverRide.test; the general change is ENG-24 REPORT's suggestion)
+      if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad) && !(SKILLS.ride && SKILLS.handed && SKILLS.dropOnLog && here.drift && here.drift.dir === dir && this.lianaRiver(here))) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
       if (!this.padPause) return side(dir);
     }
     if (this.padPause) {
