@@ -21,6 +21,11 @@ All checked on origin/main 6e7b85f8f.
 | 5 | `kapok` | the journal: the kapok's tip (12 words, journal.test.ts:31's cap; card name "Kapok Tree") | Among the rainforest's tallest trees. Its seeds sail off on silky fluff. | 12 |
 | 6 | `mission` | the stage card (stagePlan.ts:69, replaces "Swing across the river on the hanging vines.") | Vines to logs, logs to vines. Cross the river to the jetty. | 12 |
 | 7 | (none) | SEALED: 2-4's exit never locks, so there is no line (conflict 4) | | |
+| 8 | `page` | Pokey's journal page `'2-4'` (pokeyJournal.ts:63, REPLACES "Swung across the river on the vines while the crocodile watched. Meeca's note said don't swim. I didn't.", conflict 6) | Dropped from the vines onto passing logs and jumped back up. Meeca's note said don't swim, so I flew instead. | 20 |
+| 9 | `clue` | the Stage Cleared clue `'2-4'` (stageClue.ts:30, REPLACES C('A Shadow Underwater', 'Under the still water, a long shadow with a crown on its head.'), conflict 6): title **Dry Bootprints** | On the jetty the bootprints start again, perfectly dry. Somebody carried them over. | 13 |
+
+Code form for the builder: `'2-4': "Dropped from the vines onto passing logs and jumped back up. Meeca's note said don't swim, so I flew instead.",`
+and `'2-4': C('Dry Bootprints', 'On the jetty the bootprints start again, perfectly dry. Somebody carried them over.'),`.
 
 Ids for the kit, as 2-1's (w2Arc21.ts lineId21): `w24.drop`, `w24.catch`, `w24.view`; `deep` stays World 2's kit tip (W2_TIPS.water);
 MISSION_24 for the card. TEACH lines (said on Normal's default Tips as on Help, D50): `drop`, `catch`.
@@ -84,6 +89,20 @@ MISSION_24 for the card. TEACH lines (said on Normal's default Tips as on Help, 
    river (the design's NEW 1), the glow must agree with the log (light only when a let-go will land on a log) or not show, or the two
    teaches fight. The line stays; the cue is the engine packet's call.
 
+6. **2-4 has NO cast, so the journal page and the clue are rewritten (follow-up, 11-18; the earlier "Stay" ruling on both is withdrawn).**
+   The builder reports the new 2-4 has no crocodile and no animals: vines, logs, a river, a raft at the end (the design says "Cast none",
+   2-4.md :25). pokeyJournal.ts:63 "while the crocodile watched" tells a watcher the stage never shows; stageClue.ts:30 shows "a long
+   shadow with a crown" under "the still water", and the water is a current carrying logs. Both untrue now, so both are replaced (rows
+   8, 9). **The page** keeps the old page's one true thing (Meeca's note: "Don't swim.", finds.ts:81) and turns it into Pokey's deadpan
+   with the stage's two moves and its great swing ("so I flew instead"); 20 words, inside pokeyJournal.test.ts:38's 8-23, two sentences,
+   past tense, as its neighbours ('2-1', '2-3'). **The clue** stays on the World 1-4 thread the file names (Meeca's trail and the
+   soldiers', stageClue.ts:4) and calls back 1-1's "A Bootprint": at the jetty the soldiers' prints begin again, DRY, because they were
+   carried over (her note: "The soldiers wouldn't touch the water, so the crocodile carried us over"). It hints at Crocus Rex without
+   putting him in the stage, keeping the crown and the crocodile for 2-9 / 2-10's clues. Not the raft: 2-5's clue is "The Raft" (the
+   village starts building his), so 2-4's own drifting raft is not mentioned. *Checks: no semicolon, spaced hyphen or ellipsis
+   (storyStyle.test.ts); "Dry Bootprints" vs 2-3's "Wet Footprints" differ in more than a number or name (playerText rule 2); grepped
+   src/ for "perfectly dry", "carried them over", "so I flew": no player line uses them; nobody hurt.*
+
 ## Nature check: PASS (two fixes taken in the words)
 
 | Thing | Verdict |
@@ -95,7 +114,7 @@ MISSION_24 for the card. TEACH lines (said on Normal's default Tips as on Help, 
 | Logs drifting on the current, knocking as they leave the bank | REAL (a lake would not carry them: conflict 2) |
 | A sloth dropping onto a drifting log, jumping from it to a vine | storybook, as 2-1's rides; fine |
 | A raft drifting to the village jetty | REAL kinds (sloth-made, as 2-1's jetty) |
-| Nobody hurt | HOLDS: no line names a creature; the crocodile's shadow (stageClue.ts:30) only watches |
+| Nobody hurt | HOLDS: no line names a creature; the stage has no cast, and the old crocodile watcher and shadow are gone (conflict 6) |
 
 Source note: en.wikipedia.org is not reachable from this cloud session (the fetch was refused by the network rules), so the heights are
 from the keeper's own knowledge of the Wikipedia pages "Ceiba pentandra" and "Dinizia excelsa" (the 2019 Amapa measurement); the lead
@@ -118,8 +137,7 @@ can re-check them there. The wording only claims "among the tallest", which hold
 - **New replaces old when 2-4 ships:** dotLinesData.ts:149 `hint.2-4.deep` ("Let go at the front of the swing": contradicts line 1),
   :150 `hint.2-4.vine` ("Flick up": a control word), :159 `hint.2-4.island` (the design has no island), :176 `hint.2-4.missed` (beat 1 is
   splash-back by design; the help line is the engine's), and stagePlan.ts:69's mission (line 6). W2_TIPS.water per conflict 1.
-- **Stay:** way.2-4 (dotLinesData.ts:182, the river), stageClue.ts:30 ("A Shadow Underwater": the crocodile watches from under the
-  water, as pokeyJournal.ts:63 says), pokeyJournal.ts:63 (true: across the river, on the vines, the crocodile watching, didn't swim).
+- **Stay:** way.2-4 (dotLinesData.ts:182, the river). **Replaced:** pokeyJournal.ts:63 (row 8) and stageClue.ts:30 (row 9), conflict 6.
 - **The water warning in 2-4** must fall before beat 6 (the first deadly water), never before beats 1 or 3 (soft, splash-back): w2.test.ts
   :126 already holds "no warning before a splash-back river".
 - **The kapok card:** a ROAD_ENTRIES card needs its own painted picture (journal.test.ts:18-24); or it waits as a journal page with 2-1's
