@@ -290,7 +290,8 @@ reference/handoffs/engine-core.md §0zm (this REPORT's commit).
 3. Everything else in ENG-19c's list is done (below). The golden seed was done by BUILD-19b (432f4047).
 
 ## Head
-- **FINAL_HEAD** (pushed FINAL_TIME). Commits: 6f25b6ac the fix + tests; 81d8c686 stills and clips; the REPORT commit.
+- Every check below ran ONCE on **4adec324** (its src = 6f25b6ac's: no code moved after the fix). Commits: 6f25b6ac the fix + tests;
+  81d8c686 stills and clips; 4adec324 REPORT draft + engine-core.md §0zn; the final commit fills this table (docs only).
 
 ## The fix (general, by data; no stage id: generalitycheck PASS)
 - **core.ts immobile()** (no speed of its own, not a sweeper): today exactly two animals, the World 1 boa (still) and **World 6's frog**
@@ -308,7 +309,30 @@ reference/handoffs/engine-core.md §0zm (this REPORT's commit).
   planted-faults.py 10/10 (three new: the slide off, the turn off, the knock-out guard off: each turns its test red).
 
 ## Gate table (ONCE on FINAL_HEAD)
-GATES_ENG19C
+| Gate | Result |
+|---|---|
+| tsc | 0 |
+| full suite (alone, 28.5 min) | **3827 tests: 3825 pass, 0 fail, 2 todo; exit 0** |
+| fleeSlide.test (8) + planted-faults.py | 8/8; **10/10 caught** (three new for ENG-19c) |
+| seedlist 1-9 --check / 1-1 --check | PASS 100/100 / PASS 161/161 |
+| addlevel 1-9 --relist (rolls, seed list, bots, flown, registry) | **READY**; seed list unchanged; every tier 40/40 both settings (table below) |
+| castBots 1-3 1-40, every tier, both settings (the snakes now leave away from him) | every tier 40/40; **identical to main 6e7b85f8 line for line** (same times, hits, clears) |
+| World 6 frog bots | none to run: no World 6 stage is on gen2 (registry: 1-1..1-9, 2-1, 2-2) |
+| tierBots.test (1-1 calibration) | 7/7 |
+| lockall --intended 1-9 vs main 6e7b85f8 | **101/102 unchanged, only 1-9**; exit 0 |
+| coveragecheck / knowncheck / generalitycheck / roadmapcheck | PASS / PASS / PASS (26 known) / PASS |
+| drawcheck (all 17 scenarios both ways) | **PASS 34/34; 1-9 upright 4.68, sideways 5.27** drawImage screens (limit 7.5, aim <= 7.0) |
+
+1-9's bots, before the fix (432f4047) -> after (hits over 40 runs; lives):
+| Tier | Normal | Easy |
+|---|---|---|
+| kid | 380 -> 378 | 280 -> 280 |
+| adult | 274 -> 274 | 221 -> 221 |
+| child | 225 (3 lives) -> 228 (2 lives) | 71 -> 72 |
+| middle | 79 -> 84 | 49 -> 48 |
+| expert | 84 -> 88 | - |
+Named plainly: middle and expert on Normal take about 0.1 more hits a run (the boa now slides ahead of him and comes home 4 s later,
+where before it sat harmless on its post); no tier fails, no life lost more, and Easy has fewer hits than Normal for every tier.
 
 ## Seen (Polish check; sheets in stills/eng19c-* and clips/eng19c-*)
 - Toy roost (upright): the boa rears (f27), slithers RIGHT, away from him, under the nest (f29-f31), fades (f34), gone (f40); no burst
