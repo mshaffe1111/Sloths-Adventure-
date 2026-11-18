@@ -130,6 +130,24 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     await W.paint(2);
     return { ok: true, note: `${W.say(m)} moved ${Math.round(m.e.x) - x0} px hurt ${W.hurt()}` };
   });
+  // 4c. 3 s after the freeze: gone off its bough's end, or on its way back (ENG-19c)
+  await beat('04c-gone', async () => {
+    const W = window.__s19, e = W.e;
+    const m = W.boas('w1-19-forest-freeze')[0];
+    await W.until(() => false, 45);
+    await W.paint(2);
+    return { ok: true, note: `${W.say(m)} x ${Math.round(m.e.x)} glide ${(m.e.glide ?? 0).toFixed(2)} hurt ${W.hurt()}` };
+  });
+  // 5b. the golden seed in the first rest (BUILD-19b), over the rest's last root step up
+  await beat('05b-golden-seed', async () => {
+    const W = window.__s19, e = W.e;
+    const seed = e.collectibles.find((c) => c.type === 'seed' && !c.collected);
+    if (!seed) return { ok: false, note: 'no golden seed' };
+    W.place(seed.x - 150);
+    await W.until(() => false, 20);
+    await W.paint(10);
+    return { ok: true, note: `seed x ${Math.round(seed.x)} y ${Math.round(seed.y)} hurt ${W.hurt()}` };
+  });
   // 5. beat 1's trapped boa: he at the trap's handle, the load over the boa (trap-stills.mjs shoots the drop itself)
   await beat('05-trapped-boa', async () => {
     const W = window.__s19, e = W.e;
