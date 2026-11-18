@@ -8,7 +8,7 @@ EXACT NEXT STEP: the lead compares reference/design/pitches/PITCH-29A.md with PI
 3. Shelf: lead tributes from Blocks 1-2 (Kung-Fu Master, SMB3; Metroid, DKC; Strider, Castlevania III) + one from anywhere each (Crossy Road, Pitfall II,
    Abe's Oddysee); a pre-1990 classic and a lesser-known title per level; at most one famous (SMB3 / DKC / none). PASS.
 4. Sources: every tribute has a non-Wikipedia page opened (gamedeveloper/gamesradar) EXCEPT Castlevania III (3-2, Grant's ceiling climb: no page opened; [S]). FAIL for that one, named.
-5. Gates (packet: roadmapcheck + knowncheck): knowncheck PASS; roadmapcheck: see Unresolved.
+5. Gates on this head: roadmapcheck PASS (after unshallow + fetching every branch: 13 proofs live on other branches), knowncheck PASS, tsc 0, generalitycheck PASS.
 ## Polish check
 A doc, no screens. Re-read for: every quote from a page opened today (URL beside it), every unopened claim [S], every engine claim file:line on main, cites re-grepped last (D52).
 ## Pushback
