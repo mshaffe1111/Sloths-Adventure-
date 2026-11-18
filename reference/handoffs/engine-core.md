@@ -1,6 +1,53 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for FIX-22b (11-15, t-fix-22b): section 0zk (a sheet arriving never throws the baked ground away; how to find a drawcheck spike).
+Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+
+## 0zl. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
+- **The place (data, no type change):** `{ kind: 'river', after: <a liana's key>, row }` lays the water from the bank the liana (or its
+  chain) is caught from, under the liana, to this piece (the far bank, riverWidth(row) past that bank). pipeline.ts 'river' branch:
+  `riverFrom` (the near bank's key, read by layStage's river lay) and the liana's `hang.gap` = the water. The liana is an ordinary
+  `{ kind: 'swing', after: <bank>, top, reach, len }`; a far `reach` (430 px in the toy) hangs it where no bank reaches it: then the way to
+  it is a jump off a log (2-4 beat 4). The toy section: tools/inspect/lianaRiverToys.ts (sub-block versions give Easy its own row, as 2-1's
+  bricks do: gen2 lays Easy from Normal's plan, so a Normal-only row such as gap280 needs an Easy twin, e.g. `deep`).
+- **The judge (gen2/riverLay.ts):** riverFaults(st, difficulty) finds the lianas over each log river (river.ts `lianasOver`: a swinging
+  liana whose anchor is inside the window). Under one, the hop rule gives way (riverFaults AND levelCheck's own "too far to hop") and
+  `lianaRiverFaults` holds the DROP, LIANA_RIVER: Normal >= 40% of let-go moments land on a log (or past the water on the far bank, never
+  back on the near bank) and the longest wait on the vine <= one swing (the liana's own period); Easy >= 85% and <= 0.6 s; a liana no bank
+  reaches (levelCheck `lianaCaught`, now exported) must be caught by a jump off a log (`logCatches`), and on Easy its river runs <= 80 px/s.
+  `lianaDrops` flies every press of a swing (physics.ts `pressLaunches`, the press as the engine plays it, pulled out of pressWindow,
+  which is unchanged) once, then reads every phase of the log spacing off the flight (engine.ts onFloor's drift catch: DRIFT_CATCH side
+  and drop, Easy's FORGIVE.landPx); the wait is read on the timeline where both clocks run, the river's phase taken AT THE PRESS.
+  It matches the designer's real-engine flight (swingLog.ts) to the point on every forward row (long 86/92, twin 80/88, gap280 41/46
+  Normal/Easy; gap280's wait 2.70 s exact) and a coarse RealPlay flight in its own test. 2-4.md's `back` row reads 65% here vs the
+  design's 73%: the design's figure is grip 0.7 only; the judge takes the worse of grips 0.7 and 0.95.
+- **airStep's engine turn (FOUND, ENGINE-WORTHY):** engine.ts:2567 adds PHYS.airTurn when he steers against his motion in the air;
+  physics.ts airStep did not, so every check's back-swing let-go under-steered by 20-30 px (reference/qa-reports/ENG-24/backProbe.ts).
+  airStep(b, dt, dir, hold, turn = false): the drop judge and the bot fly with turn=true; every other check is as it was (the lock).
+  DEBT, the lead's ruling 11:28 AM ET 11-18: opt-in for the liana judge only; R-165.285 makes every judge's model match the engine with a
+  full re-lock (never under a link night).
+- **The bot (tools/inspect/firsttimer.ts SKILLS):** `dropOnLog` (on a liana over a log river he lets go only when the let-go, at his thumb's
+  lag and half a spread either side, comes down on a log 12 px in from its ends or 16 px onto the far bank; the same pressLaunches
+  launch the judge flies; the 7 s "late" let-go waits too, up to the 14 s cap; an aimed drop gets no random second press). `vineFromLog`
+  (on a log under a liana over its river, ahead and not the one he just left: a jump off the moving log catches it (hopCatches with the
+  carry, at the lag's middle and half a spread either side, at his speed now and standing), taken off while still on the log; the press
+  waits standing (pending.still)). On a log under a liana: no pad pause on a log running his way (it flicked him on blind) and no
+  lianaWait (the log's front is no ledge). Both held to such logs only (`lianaRiver`), so every shipped river's bot run is as on main
+  (riverRide 18/18). TierRun gains `ontoLog`, `fromLog`.
+- **The real input (RealPlay.useRealInput(holdMs?), RunOptions/TierOpts `realInput`):** the bot's pad goes through the game's own
+  InputEngine as TouchController does (triggerTouchMove, triggerTouchUp with the touch's minimum hold, releaseTouchUp, triggerTouchClimb).
+  Proven: a Pad tap at a run is 0.43 s in the air (FakeInput's bare press 0.30 s). Opt-in: no other bot test uses it yet.
+- **Tests:** src/game/gen2/lianaRiver.test.ts (7: the judge vs the flight and the engine, the toy clean both settings, logs out refused,
+  sparse refused by name, the hop rule only under a liana, the catch and Easy's 80 px/s); tools/inspect/lianaRide.test.ts (3, gates.yml:
+  the harness hop, drop-on-log gap280 0 lives on vs 8 off, vine-from-log 4/5 per setting on vs 0/10 off). Planted faults:
+  reference/qa-reports/ENG-24/planted-faults.py (5/5 CAUGHT).
+- **Open (named):** the meter does not see the liana: its route boards the logs from the bank (`ride-board`/`ride-off`), so a let-go onto
+  a log is never priced (no route move onto a drift from a swing, no score.ts channel); coveragecheck passes only because no built stage
+  lays one yet. Clips of the toy: the page cannot build the toy (a dev fixture is needed, chaseFixtureStage.ts's pattern);
+  reference/qa-reports/ENG-24/lianaClip-draft.mjs + clipRecord.ts are the start. The catch toy's middle Normal variant 3 loses 2-3 lives
+  boarding with the skills on or off (the existing ride, not these skills): untraced past "stands on the log, then runs off its front".
+- **Traps:** a toy liana 410 long over a log hangs its foot at the bank's top: a log carries him into it and the engine takes him on, so no
+  jump is asked (the catch toy's is 320). A bot change that skips a random draw (`between(this.r, ...)`) moves every seed-pinned plant
+  after it (2-1's upstream/bankUp plants stopped biting until the change was held to liana rivers).
 
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY

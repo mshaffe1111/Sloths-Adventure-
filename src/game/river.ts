@@ -71,6 +71,15 @@ export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo,
   return t;
 }
 
+/**
+ * The swinging lianas whose anchor hangs over a river's window (its water, bank to bank; ENG-24, place `river` after a liana): such a
+ * river's logs are a let-go's landing, crossed by the vine and never hopped log to log, so the hop rule (levelCheck, gen2/riverLay.ts
+ * riverFaults) gives way to the drop's (riverLay lianaRiverFaults)
+ */
+export function lianasOver<V extends { x: number; vineType?: string; isSwingingVine?: boolean; swingAmp?: number }>(vines: readonly V[], r: { x0: number; x1: number }): V[] {
+  return vines.filter((v) => (v.isSwingingVine || v.vineType === 'swing_liana') && (v.swingAmp ?? 1) > 0 && v.x > r.x0 && v.x < r.x1);
+}
+
 /** the gap between neighbouring logs a hop can take, for logs flowing `dir` (levelCheck.ts checks the river's own; a sluice that turns
  * the current about must keep the logs hoppable the other way too, puzzleCheck.ts) */
 export const hopLimit = (dir: 1 | -1): number => (dir === 1 ? 80 : 130);
