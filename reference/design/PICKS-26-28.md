@@ -28,3 +28,14 @@ final designer's optional reads). Both lenses picked Nebulus (Matt's favourite) 
 see whether a truly blind B diverges further.
 Order (engine first, pitch ahead): 2-6's wheel (M), 2-7's mail boat pacer (M) + the post (S), 2-8's flood (M) + followers meet the flood
 (S-M, needs follow.ts from 2-3). Final designs next, by one designer, with flights.
+
+## Final designs (DESIGN-26-28, t-design-26 @ f596350d, 2:58 PM ET 11-18): the lead's rulings on its pushback
+1. An /L leg laid right after a run leg on the same ground overlays the out leg (pipeline.ts:2541; only /U->/L is tested): ACCEPTED
+   the designer's shape (2-7 drops /D at the weir; 2-8 climbs carved steps first) instead of a third NEW; 2-7's engine packet's FIRST
+   planted toy proves /L after /D lays clean. Lianas stay off left legs (legs.ts:151).
+2. The carry doesn't throw (a steered jump off a moving floor gains 7-12 px): 2-6's beat 8 is a jump UP off the wheel's top: accepted.
+3. With the current the river sets everyone's pace (87-137 px/s): the race is won on the banks: accepted.
+4. "Never by standing still" = never by riding the current alone (ride-only loses by 3.6/2.1 s): accepted.
+5. Followers and a step DOWN: they replay his path down a step he walked or hopped (up to one step's height); never into a pit or deep
+   water: sent to ENG-23 as a contract point (planted).
+"The first run back left" is ruled in 2-7.md (a whole second leg flipped to LEFT at run speed).
