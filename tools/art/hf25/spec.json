@@ -1,0 +1,12 @@
+{
+ "loras": {"style": ["mshaffe111/slothadv-style-lora", "slothadv_style_v1.safetensors", 1.0]},
+ "neg": "teeth, fangs, eyes, face, creature, animal, mouth with tongue, perspective, three-quarter view, seen from above, text, letters, watermark, frame, border, photo, 3d render, blurry, cast shadow, water, splash, background scenery",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/reference/art/hf25/starts/",
+ "sheets": [
+  {"name": "snap", "start": "snapstone.png",
+   "prompt": "a row of four side-view hand-painted 2D platformer game sprites of the same flat-topped mossy river stone, grey-brown stone with soft green moss along its flat top, soft painted light from the upper left, fine dark-brown ink outline, the stone's front has a horizontal seam that parts into a dark stone mouth lined with blunt rounded stone ridges, a stone that claps like a clam, storybook game art, painterly gouache shading, rich colour, isolated on a flat magenta background"}
+ ],
+ "strengths": [0.5, 0.58, 0.66],
+ "seeds": [11, 23],
+ "w": 1792, "h": 320
+}
