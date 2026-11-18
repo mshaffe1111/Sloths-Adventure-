@@ -63,7 +63,10 @@ test('1-7 is the arc beat for beat on every roll, both settings, and builds clea
   for (const d of ['normal', 'easy'] as const) for (const s of SEEDS) {
     const st = built(s, d);
     assert.deepEqual(st.gen2.errors, [], `${d} ${s}`);
-    assert.deepEqual(st.gen2.plan.map((p) => p.template.replace('w1-17-', '')), ARC, `${d} seed ${s}`);
+    // (the five rests are five different ones, each once a roll (VAR-1: one rest laid five times read the same after every beat))
+    const rests = st.gen2.plan.map((p) => p.template).filter((t) => /^w1-17-rest/.test(t));
+    assert.equal(new Set(rests).size, 5, `${d} seed ${s}: five different rests, ${rests.join(' ')}`);
+    assert.deepEqual(st.gen2.plan.map((p) => p.template.replace('w1-17-', '').replace(/^rest-.*/, 'rest')), ARC, `${d} seed ${s}`);
   }
 });
 
@@ -92,7 +95,9 @@ test('the mossy lianas: only in the twist and the finale, every one there mossy 
     const mossy = st.vines.filter((v) => v.mossy);
     assert.equal(mossy.length, d === 'easy' ? 2 : 4, `${d} ${s}`);
     for (const id of W17_MOSSY) assert.ok(piecesOf(st.vines, sec(st, id).uid).every((v) => v.mossy), id);
-    assert.equal(st.vines.length, mossy.length, 'no other liana in the stage');
+    // (a climb vine (the fern dip rest's, VAR-1) is no liana: a liana swings)
+    const lianas = st.vines.filter((v) => v.vineType === 'swing_liana' || !!v.isSwingingVine);
+    assert.equal(lianas.length, mossy.length, 'no other liana in the stage');
   }
 });
 

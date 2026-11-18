@@ -240,14 +240,16 @@ const rest = (id: string): SectionTemplate => link({ id, name: 'a living fork: b
  * 1-8's rests (VAR-1, R-165.276; Matt 10-30: "more pieces ... that variety"): five living forks, each its own shape, each laid once a roll
  * (maxPerStage 1): the one rest laid five times read "JJJJ" after every stretch. A fork is where he breathes: nothing on it falls, the
  * front stops at its edge, nothing to fall into (a rest: no pit, no heart on either setting). Each keeps the find's spot (the stage's
- * find stands on the first fork met) and its petals on the path; the quiet line: a move within 450 px of each end, none 950 apart.
+ * find stands on the first fork met) and its petals on the path; the quiet line: a move within 450 px of each end, none 950 apart. Each is
+ * about the old rest's length (2,600-2,900 px): shorter forks moved the chase's flags so the rhythm stretch stopped early and its still
+ * fork's moss stood 26 px past the fork line (1 roll in 10; never on main; w1Arc18.test.ts's teach-line test)
  */
 /** a knot on the bough `on` at `at` (a mossy burl, 50-56 px: a hop, never walked over) */
 const knot = (key: string, on: string, at: number, w: R2 = [120, 140]): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at: [at, at], h: [50, 56] }, style: 'moss_stone', landing: true });
 const restRoots = rest('w1-18-rest');
 /** (b) the knotted fork: a long sound fork with three burls to hop, the find by the middle one */
 const restKnots = (): SectionTemplate => link({ id: 'w1-18-rest-knots', name: 'a living fork: the knotted bough', job: 'rest', versions: [{ id: 'knots', lay: {
-  pieces: [bank('a', null, 320), bank('f', 'a', 1500), knot('k1', 'f', 0.1), knot('k2', 'f', 0.42, [150, 170]), knot('k3', 'f', 0.74)],
+  pieces: [bank('a', null, 320), root('r', 'a', 240, UP), bank('c', 'r', 380, DOWN), bank('f', 'c', 1400), knot('k1', 'f', 0.1), knot('k2', 'f', 0.42, [150, 170]), knot('k3', 'f', 0.74), root('y', 'f', 220, UP), root('z', 'y', 300, DOWN)],
   sockets: [flag('f', 0.25), petals('p1', 'k1', 0.5, 1), petals('p2', 'k2', 0.5, 2, 90), petals('p3', 'k3', 0.5, 1), { id: 'find', role: 'findSpot', on: 'f', t: 0.58 }] } }] });
 /** a vine at the foot of a wall: on `on` (`onW` wide) 120 px short of its end, `h` px tall, a knot of bough at its top (60 px), and the
  *  wall's top `key` (`w` wide) from the knot on, `h` px up, standing over the last 60 px of `on` (so nothing under it is floorless). The vine stands AT the wall (1-7's dip, VAR-1: 220 px back from
@@ -260,17 +262,17 @@ const wallClimb = (key: string, on: string, onW: number, h: number, w: number): 
 /** (c) the high crook: a vine at the foot of the fork's trunk (1-4's climb: 220 px, past a double jump's 184) onto the crook, along it,
  *  and two roots down to the bough line; a miss on the vine is the bough he stood on */
 const restCrook = (): SectionTemplate => link({ id: 'w1-18-rest-crook', name: 'a living fork: up to the high crook', job: 'rest', versions: [{ id: 'crook', lay: {
-  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), bank('b', 'r', 420, DOWN), ...wallClimb('c', 'b', 420, 220, 380), bank('d', 'c', 260, [108, 112]), bank('z', 'd', 320, [108, 112])],
+  pieces: [bank('a', null, 300), root('q', 'a', 240, UP), bank('p', 'q', 380, DOWN), root('r', 'p', 220, UP), bank('b', 'r', 620, DOWN), ...wallClimb('c', 'b', 620, 220, 600), bank('d', 'c', 260, [108, 112]), bank('z', 'd', 320, [108, 112])],
   sockets: [flag('b', 0.25), petals('pc', 'c', 0.5, 2, 120), { id: 'find', role: 'findSpot', on: 'c', t: 0.8 }, petals('pz', 'z', 0.5, 1)] } }] });
-/** (d) the split fork: the bough splits, a high limb over the low one (a double jump up, or walk on under it), and they meet again */
+/** (d) the split fork: the bough splits, a high limb over the low one (a double jump up, or hop the burls under it), and they meet again */
 const restSplit = (): SectionTemplate => link({ id: 'w1-18-rest-split', name: 'a living fork: high limb or low', job: 'rest', versions: [{ id: 'split', lay: {
-  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), bank('m', 'r', 1100, DOWN),
+  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), bank('m', 'r', 1500, DOWN),
     { key: 'h', shape: 'branch', w: [380, 400], place: { kind: 'over', on: 'm', at: [0.3, 0.3], dy: [-150, -146] }, style: 'branch', landing: true, main: true },
-    root('y', 'm', 220, UP), root('z', 'y', 320, DOWN)],
-  sockets: [flag('m', 0.12), petals('ph', 'h', 0.5, 2, 120), petals('pm', 'm', 0.75, 1), { id: 'find', role: 'findSpot', on: 'm', t: 0.88 }, petals('pz', 'z', 0.5, 1)] } }] });
+    knot('k1', 'm', 0.12), knot('k2', 'm', 0.62), knot('k3', 'm', 0.78), root('y', 'm', 220, UP), root('z', 'y', 520, DOWN)],
+  sockets: [flag('m', 0.04), petals('ph', 'h', 0.5, 2, 120), petals('pm', 'm', 0.75, 1), { id: 'find', role: 'findSpot', on: 'm', t: 0.94 }, petals('pz', 'z', 0.5, 1)] } }] });
 /** (e) the saddle: the fork sags into a shallow mossy saddle and rises out of it by a high root (a jump up), then down to the bough line */
 const restSaddle = (): SectionTemplate => link({ id: 'w1-18-rest-saddle', name: 'a living fork: the saddle', job: 'rest', versions: [{ id: 'saddle', lay: {
-  pieces: [bank('a', null, 320), root('r', 'a', 220, UP), bank('m', 'r', 640, [146, 150]), bank('c', 'm', 300, [-98, -94]), root('y', 'c', 220, UP), root('z', 'y', 340, DOWN)],
+  pieces: [bank('a', null, 320), root('q', 'a', 240, UP), bank('p', 'q', 380, DOWN), root('r', 'p', 220, UP), bank('m', 'r', 640, [146, 150]), bank('c', 'm', 300, [-98, -94]), root('y', 'c', 220, UP), root('z', 'y', 480, DOWN)],
   sockets: [flag('m', 0.3), petals('pm', 'm', 0.6, 1), petals('pc', 'c', 0.5, 1), { id: 'find', role: 'findSpot', on: 'c', t: 0.7 }, petals('pz', 'z', 0.5, 1)] } }] });
 export const QUIET_18: SectionTemplate[] = [
   // [A] the broad base at the trunk, the branch running off up to the far tree; nothing hurts in 1,300 px. The nut line is said on its far
