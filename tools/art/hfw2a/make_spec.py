@@ -49,7 +49,8 @@ def r2(picks):
         p = (f'Picture 1 shows a {k} walking to the right. Redraw the very same {k} in the very same spot and size, one step later in its '
              'waddle: now its far foot steps forward and its near foot pushes off behind, the body bobbed a tiny bit lower. Keep everything '
              'else exactly the same: ' + KEEP.format(k=k, d=d)[5:])
-        ed.append({'name': f'{n}-walkB', 'src': src, 'prompt': p, 'neg': NEG, 'seeds': [11, 23, 37], 'w': 1024, 'h': 1024})
+        tag = src.rsplit('-', 1)[-1].split('.')[0]
+        ed.append({'name': f'{n}-walkB-{tag}', 'src': src, 'prompt': p, 'neg': NEG, 'seeds': [11, 23, 37], 'w': 1024, 'h': 1024})
     return {'tag': 'w2a-r2', 'edits': ed}
 
 if __name__ == '__main__':
