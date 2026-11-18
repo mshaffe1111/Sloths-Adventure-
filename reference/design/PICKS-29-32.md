@@ -3,7 +3,7 @@ A = fixed lens (high, GAME-MAP rows): origin/t-pitch-29a @ 4f6e688e, reference/d
 B = open lens (xhigh, blind: no GAME-MAP, no A): origin/t-pitch-29b @ 9256c27c, PITCH-29B.md (26 min, $8.00, 300k). B's blindness held
 (its header lists what it did not read; grep of its packet: no GAME-MAP rows).
 
-## 2-9 The River King's Court (World 2's finale): MATT'S CALL; lead recommends B's core + A's ending
+## 2-9 The River King's Court (World 2's finale): MATT PICKED "A" (6:06 PM ET 11-18) = B's King's Drum core + A's King's Barge and bell ending
 A "Come up behind them": the king's guards ride the rafts facing the way they float; board behind and kick them off, vault one coming at
 you; end on the King's Barge (three guards, the court bell). Kung-Fu Master, Super Mario Bros. 3's airships, Crossy Road. NEW: a guard
 aboard a raft (M, 3-4 h) + two bot skills (S-M).
@@ -13,7 +13,7 @@ NEW: the court's tempo check (S-M) + the drum cue (S). No new mechanic: the old 
 LEAD: B's core (a finale that combines, not teaches; cheaper engine; "the stage with a song you play" is new in the whole game) with A's
 signature ending: the King's Barge drifting into the shrine and the court bell rung on the downbeat (both wired today: raft rivers,
 puzzleKit bell). A's guards-on-rafts (a third NEW) is parked as a later idea, not lost. The hand build's 14-guard goal goes with it (the
-keeper words the new goal). Matt's question (one, multiple choice) decides the core; DESIGN-29 starts from his answer.
+keeper words the new goal). Matt's answer (his option A, the lead's recommendation): DESIGN-29 starts from it Thu 8:30 AM.
 
 ## 3-1 Into the Grotto: A "Stand still, see the way down" (+ B's kind falls)
 A: going down into the dark, stand still at a shelf's edge and the glowworms below wake and show where to drop; spore puffs light the
