@@ -6157,9 +6157,11 @@ export class GameEngine {
     this.camAnchorY = NaN;
     this.camRunK = 0;
     this.camRunSlow = 0;
-    // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
-    // enough to read; any older words still rising there go first
-    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    // a put-back is a cut under the shut iris: nothing the last life left on the screen is there when it opens (FIX-284b: the world
+    // holds through the down beat, so a drowning's "SPLASH!" and spray kept their whole life and sat on 2-2's risen pad as the iris
+    // opened; only the words within 160 px of the flag went). Every word still rising and every burst (spray, sparks, puffs, feathers)
+    // ends here; the lives note below is the one word at the flag.
+    this.clearScreenFx();
     // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
     // (only when a life went: a chase's catch puts him back a HEART down, and "3 lives left" over him read as a life lost, ENG-B4's clip)
     if (lifeNote) this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
@@ -6400,6 +6402,14 @@ export class GameEngine {
   /** the water zone he last went into (proto.water): one splash an entry */
   private splashedIn: { x0: number; x1: number; y: number } | null = null;
   /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
+  /** every word still rising and every burst on the screen ends now (a put-back's cut under the shut iris, respawnAtCheckpoint) */
+  private clearScreenFx() {
+    this.floatingTexts.length = 0;
+    for (const pt of this.particles) this.particlePool.push(pt);
+    this.particles.length = 0;
+    this.particleWrap = 0;
+  }
+
   private spawnWaterSplash(x: number, y: number, mud = false) {
     // (mud: World 1's murky creek, its muddy splash and brown spray; the clear splash is for clear water)
     this.emit({ x, y: y + 6, vx: 0, vy: 0, color: mud ? 'mud' : '', size: 96, life: 0.55, maxLife: 0.55, type: 'splash' });
