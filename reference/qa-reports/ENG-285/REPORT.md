@@ -1,9 +1,10 @@
 # ENG-285 REPORT (tonight's part: steps 1, 1b, 1c, 2 MEASURE): the judges and bots fly the engine's Pokey
 Engine, t-eng-285 from t-int-12 ce4ad461. Started 7:55 PM ET 11-18 (by `date`); wound down on the lead's word 8:29 PM (real context 414k).
-Commits: 818319b3 (step 1, the model hash sent at 8:12 PM), 8eae49e0 (1c), 8ac8ffc9 (1b), 03ba54ef (engine-core.md §0zo-285), this report.
+Commits: 818319b3 (step 1, the model hash sent at 8:12 PM), 8eae49e0 (1c), 8ac8ffc9 (1b), 03ba54ef (engine-core.md §0zo-285), 0db8e62a + this (report).
 
 ## EXACT NEXT STEP (ENG-285b, Thu 8:30 AM ET, on t-eng-285's head, after the lead rules on the table below)
-1. Seed lists: none fail (1-1..1-9 PASS; 2-1/2-2: see the table). So no relist is forced. The lead rules whether the stages whose
+0. The unit suite is UNRUN as a whole (shards 1-2 stopped at the 30-min background limit: run it once, in the background, limit over 40 min).
+1. Seed lists: none fail (all 11 PASS). So no relist is forced. The lead rules whether the stages whose
    layouts moved but whose lists pass (1-6, 1-8, 2-1) are re-proved anyway (`seedlist.ts <id>` = a new list hash; QA pins re-picked).
 2. The red pin: src/game/gen2/seeds.test.ts:40 (a curated World 6 seed's section plan moved: w6s pieces, 6-1). Re-curate or re-pin
    per its own file's method, as the model change intends (never loosen; law 22). Then the suite's other shards' reds (table).
@@ -32,10 +33,10 @@ Commits: 818319b3 (step 1, the model hash sent at 8:12 PM), 8eae49e0 (1c), 8ac8f
 |---|---|
 | lockall --layouts 16 vs base ce4ad461 | 89/102 unchanged. Moved (layouts N / E): 1-6 16/6 (whole layout), 1-8 4/0 [3,7,10,11] gen2 only, 2-1 1/0 [13] proto.gen2 only, 3-8 13/16 proto.thorns only, 4-4 5/0 [3,9,10,13,16] whole layout, 6-1 16/16 whole, 6-3 6-6 6-7 8-3 16/16 gen2+collectibles, 7-5 16/14 whole, 7-9 15/11 gen2+collectibles, 8-5 16/14 gen2+collectibles |
 | lockall vs main 6e7b85f8 | 15 stages: the 13 above + 1-7, 1-9 (INT-12's own: base vs main moves exactly 1-6, 1-7, 1-9, all layouts) |
-| seedlist --check | 1-1..1-9 PASS, verdicts refuse 0 of each list (1-6: 100/100, 836 s); 2-1, 2-2: see the lead message (rerun after the runner's 30-min stop) |
+| seedlist --check | all 11 lists PASS (1-1..1-9, 2-1, 2-2): the verdicts refuse 0 seeds of each (1-6 100/100 in 836 s; 2-1/2-2 rerun after the first runner's 30-min stop) |
 | tierBots.test.ts | 7/7. Full calibration (3 tiers x both x 1-40): 200/200 runs IDENTICAL to calibration-main.jsonl: no tier moves; recommit not needed |
 | engine tools' tests (gates.yml:135 list) | 225 pass, 0 fail, 1 TODO as before (chase child reaches the fork 1 of 3, ENG-B4) |
-| unit suite (CLAUDE.md set, 3 shards) | see the lead message for the final counts; seen red: seeds.test.ts:40 (above) |
+| unit suite (CLAUDE.md set, 3 shards) | UNRUN as a whole: shard 3 1405/1405 PASS; shards 1-2 stopped at the 30-min background limit after 1057 and 1188 tests: 1 red, seeds.test.ts:40 (above), none other |
 | drop judge, ENG-24 calib.ts rows, base -> now | Normal: back wait 0.97->1.03 s, gap200 wait 1.50->1.23 s, the rest equal. Easy: back 82->77% (Easy bar 85%), ride/deep wait 0.57->0.60 s, lashed 0.60->0.63 s (bar 0.6), gap280 46->45%. BUILD-24c lays 2-4 on these |
 | back-swing hop reach | +4..28.5 px forward (median 22-28) over every back-swing press of a 300/420 px liana: the 20-30 px expected |
 My read: small, as expected. No list fails, no tier moves; the stages that move are those whose laying flies a back-swing or a let-go
