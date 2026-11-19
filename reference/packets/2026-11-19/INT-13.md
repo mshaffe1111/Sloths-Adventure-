@@ -32,7 +32,8 @@ ENG-285's (no `, true`); letGoCue's CUE.climbFrames goes to 0 (pressLaunchesFrom
 letGoCue.test.
 Conflicts: name each and how resolved; gates.yml gets every branch's new step; seed lists and locks: the branch that owns the stage wins
 (1-9 VAR-19; 2-1/2-2 FIX-284; 2-4 BUILD-24c; every other stage ENG-285's relist). After ALL merges: seedlist --check every listed stage
-and RELIST any a later merge invalidated (say which and why); ONE recalibration per BOTS.md (reference/qa-reports/R-165.59/BOTS.md:
+and RELIST any a later merge invalidated (say which and why; KNOWN: 2-1's list replays RED on the t-meter-3 line, METER-3's
+route.ts change: relist 2-1 ONCE after every merge incl. ENG-285b's model, then castBots 2-1); ONE recalibration per BOTS.md (reference/qa-reports/R-165.59/BOTS.md:
 tierBots must match the testers, else stop and tell the lead) and recommit calibration-main.jsonl.
 GATES ONCE on the final head, CLAUDE.md order and gates.md, EVERY item (D86) + the new timecheck: tsc; the suite (shard it; all green;
 any red = fix at the source with the owning branch's evidence, never loosen); BASE_PATH vite build + chunkcheck; artcheck; drawcheck
