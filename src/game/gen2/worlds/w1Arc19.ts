@@ -254,7 +254,7 @@ const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the ol
   //  a knot gap and home. On the route a rest opens 'h j' and closes 'j J', so no rest reads three jumps in a row or opens on one: the
   //  old five root dips read 'JJJJJ' and every rest repeated it)
   lay: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('c2', 'c', 360, DOWN), boulder('kc', 'c2', 0.5), root('d', 'c2', 300, UP), root('d2', 'd', 80, DOWN), root('i', 'd2', 140, UP), root('z', 'i', 100, DOWN)],
-    sockets: [flag('c2', 0.15), petals('pb', 'b', 0.5, 1), petals('pk', 'kc', 0.5, 1), petals('pd', 'd', 0.5, 2, 80),
+    sockets: [flag('c2', 0.15), petals('pb', 'b', 0.5, 1), petals('pk', 'kc', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pi', 'i', 0.5, 1),
       { id: 'seed', role: 'find', on: 'd', t: 0.5, dn: 60 }] },
 }] });
 /** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
@@ -287,8 +287,9 @@ const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t
  *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
 const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
   // (VAR-19c: a step up and a knot gap, up onto the crook and over its boulder, off its end over the long drop, a second boulder on the far
-  //  bough, a knot gap and a short root home (the next beat's walk-in is up to 320 px): 'j .. j J'; each boulder placed so no walk runs 2.5 s)
-  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 380, UP), boulder('k', 'e', 0.8), root('f', 'e', 240, [102, 108]), root('g', 'f', 480, UP), boulder('k2', 'g', 0.4), root('g2', 'g', 80, DOWN), root('i', 'g2', 80, UP), root('z', 'i', 80, DOWN)],
+  //  bough, a hollow walked and a short root up and down home, its step up the last move (the next beat's walk-in is up to 320 px; a jump
+  //  off the bough's end flew the whole tail): 'j J'; each boulder placed so no walk runs 2.5 s)
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 380, UP), boulder('k', 'e', 0.8), root('f', 'e', 240, [102, 108]), root('g', 'f', 400, UP), boulder('k2', 'g', 0.6), root('g2', 'g', 160, DOWN), root('i', 'g2', 80, UP), root('z', 'i', 80, DOWN)],
   sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.4), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 /** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
