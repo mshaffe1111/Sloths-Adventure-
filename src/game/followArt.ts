@@ -47,6 +47,11 @@ const LOOK = { rgb: '255, 244, 196', alpha: 0.55, gaze: 0.45 };
  * painting faces left: its beak at the left). Measured on the packed frame (ART-W2A: eye at 107,33 of 336x586 px, 84.52 units wide).
  */
 const HERON_EYE = { dx: -15, dy: -139 };
+/**
+ * the looking heron's width (units): w2Heron's px a unit (81 units over its 322 px) times the look frame's 336 px at that scale, so its
+ * post lands exactly on w2Heron's (tools/art/hfw2a/pack.py prints it; packed at 0.72 of that px on w2-props: followArt.test.ts)
+ */
+export const HERON_LOOK_W = 84.52;
 /** the '!' of its warning, over the looking pose's head (its crown at 147 units over its foot) */
 const HERON_WARN_Y = -158;
 
@@ -119,7 +124,9 @@ export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: num
     if (h.lookX !== null && h.lookX > x0 - WATCH.sight && h.lookX < x1 + WATCH.sight) drawLook(ctx, h, fp);
     if (h.foot.x < x0 - 120 || h.foot.x > x1 + 120) continue;
     // (facing back along its stretch: the painting faces left, so the one wading past the stretch's start is turned)
-    drawDress(ctx, [{ n: heronPose(h), x: h.foot.x, b: h.foot.b, flip: h.end < 0 }], { x0, x1, y0: -1e6, y1: 1e6 });
+    // (looking: its painted head-up pose from w2-props, at w2Heron's px a unit with its post on w2Heron's: only the bird moves)
+    if (heronPose(h) === 'w2HeronLook' && riverArtReady()) drawW2Piece(ctx, 'w2HeronLook', h.foot.x, h.foot.b, HERON_LOOK_W, h.end < 0);
+    else drawDress(ctx, [{ n: 'w2Heron', x: h.foot.x, b: h.foot.b, flip: h.end < 0 }], { x0, x1, y0: -1e6, y1: 1e6 });
     if (h.s.phase === 'warn') {
       ctx.save();
       ctx.fillStyle = '#fbbf24';

@@ -1,9 +1,11 @@
 """ART-W2A: pack 2-3's painted follow poses into the sheets the game already loads.
-  - the little ones' waddle (A, B) and paddle poses -> new row at the foot of src/assets/props/w2-props.webp, beside Matt's Happy/Sad
-    poses (w2PropsData.ts W2_FRAMES), each colour-matched to its Happy pose (per-channel gain over the fur, outline excluded) and kept at
-    the Happy pose's scale (cut.py K), feet on one line;
-  - the looking heron -> new row at the foot of src/assets/props/dressnew-w2.webp (dressNewData.ts w2HeronLook), scaled so its post
-    matches w2Heron's post and framed so the post sits exactly where w2Heron's does (same foot middle, same bottom, same px a unit).
+  ONE new band at the foot of src/assets/props/w2-props.webp (W2_FRAMES), saved once (one re-encode of Matt's pieces):
+  - the little ones' waddle (A, B) frames, feet on the band's foot, then the paddle poses stacked two high; each colour-matched to its
+    Happy pose (per-channel gain over the fur, outline excluded) and kept at the Happy pose's scale (cut.py K);
+  - the looking heron (w2HeronLook: a 2-3 ACTOR pose, not set dressing: every dressing-sheet piece must be in a dressing set,
+    artDress.test.ts), scaled so its post matches w2Heron's post (dressnew-w2) and framed so the post sits exactly where w2Heron's does
+    (same foot middle, same bottom), then packed at HERON_PACK of that size (still over its on-screen size: the band stays low).
+    followArt draws it HERON_LOOK_W units wide (printed here), i.e. at w2Heron's px a unit. Run it ONCE from the committed sheet.
     python3 -I tools/art/hfw2a/pack.py <cut dir> <picks.json>
 picks.json: {"duckWalkA": "duck-walkA-s11", ..., "w2HeronLook": "heron-look-s11"} (cut dir holds <name>.webp from cut.py)
 """
@@ -18,6 +20,7 @@ DATA = 'src/game/w2PropsData.ts'
 GAP = 4
 Q = 88  # one re-encode of the sheet: Matt's pieces measured 40.3 dB (w2-props) and 39.7 dB (dressnew-w2), max 22 levels
 POST_PAD = 22  # w2Heron's pixels from this far under the post's top edge down (the post's body, rope and water): the look keeps its own toes and post top
+HERON_PACK = 0.72  # the look frame packed at this share of w2Heron's px (242 px wide: on screen it is ~193-237 px at 3x)
 CATTAIL_X = 0.37  # share of w2Heron's width the cattails stand in (the legs start past it)
 
 def frames_ts():
@@ -37,13 +40,13 @@ def match(im, ref, g=None):
     a[..., :3] = np.clip(a[..., :3].astype(float) * g, 0, 255).astype(np.uint8)
     return Image.fromarray(a, 'RGBA'), g
 
-# --- the little ones
+# --- the pieces
 sheet = Image.open(P + 'w2-props.webp').convert('RGBA')
 src, F = frames_ts()
-y0 = sheet.height + GAP
-order = [k for k in ('duckWalkA', 'duckWalkB', 'otterWalkA', 'otterWalkB', 'capyWalkA', 'capyWalkB', 'duckPaddle', 'otterPaddle', 'capyPaddle') if k in picks]
+WALKS = [k for k in ('duckWalkA', 'duckWalkB', 'otterWalkA', 'otterWalkB', 'capyWalkA', 'capyWalkB') if k in picks]
+PADS = [k for k in ('duckPaddle', 'otterPaddle', 'capyPaddle') if k in picks]
 ims, gains = {}, {}
-for k in order:
+for k in WALKS + PADS:
     kind = re.match(r'[a-z]+', k)[0]
     hx, hy, hw, hh = F[kind + 'Happy']
     # (a paddle pose shows a different share of fur and chest than the upright Happy pose, so a mean match on it is skewed: it takes
@@ -52,26 +55,7 @@ for k in order:
                       gains.get(kind + 'WalkA') if k.endswith('Paddle') else None)
     gains[k] = g
     print(k, picks[k], ims[k].size, 'gain', np.round(g, 3))
-rowh = max([im.height for im in ims.values()] or [0])
-W = sum(im.width + GAP for im in ims.values())
-assert W <= sheet.width, f'row {W} px wider than the sheet {sheet.width}'
-out = Image.new('RGBA', (sheet.width, y0 + rowh), (0, 0, 0, 0))
-out.alpha_composite(sheet, (0, 0))
-x, new = 0, {}
-for k in order:
-    im = ims[k]
-    out.alpha_composite(im, (x, y0 + rowh - im.height))  # (feet on one line)
-    new[k] = (x, y0 + rowh - im.height, im.width, im.height)
-    x += im.width + GAP
-assert out.height <= 4096
-if ims: out.save(P + 'w2-props.webp', 'WEBP', quality=Q, method=6)
-F2 = {**{k: v for k, v in F.items() if k not in new}, **new}
-body = '\n'.join(f'  {k}: {{ x: {v[0]}, y: {v[1]}, w: {v[2]}, h: {v[3]} }},' for k, v in sorted(F2.items()))
-s2 = re.sub(r'(export const W2_FRAMES = \{\n)(.*?)(\n\} as const)', lambda m: m[1] + body + m[3], src, flags=re.S)
-if ims: open(DATA, 'w').write(s2)
-print('w2-props', out.size)
 
-# --- the looking heron
 if 'w2HeronLook' in picks:
     DN = 'src/game/dressNewData.ts'
     dn = open(DN).read()
@@ -128,14 +112,31 @@ if 'w2HeronLook' in picks:
     fr = Image.fromarray(np.clip(fa, 0, 255).astype(np.uint8), 'RGBA')
     print('specks dropped', int(small.sum()))
     print('post top', post_top, 'of', hh)
-    y1 = ds.height + GAP
-    out = Image.new('RGBA', (max(ds.width, fw), y1 + fh), (0, 0, 0, 0))
-    out.alpha_composite(ds, (0, 0)); out.alpha_composite(fr, (0, y1))
-    assert out.height <= 4096
-    out.save(P + 'dressnew-w2.webp', 'WEBP', quality=Q, method=6)
-    units = round(hu * fw / hw, 2)
-    entry = f'"w2HeronLook": {{\n  "x": 0,\n  "y": {y1},\n  "w": {fw},\n  "h": {fh},\n  "units": {units},\n  "world": 2\n }},\n '
-    dn = re.sub(r'"w2HeronLook": \{.*?\},\n ', '', dn, flags=re.S)
-    dn = dn.replace('"w2CattailFly": {', entry + '"w2CattailFly": {', 1)
-    open(DN, 'w').write(dn)
-    print('heron look', (fw, fh), 'scale', round(k, 3), 'units', units, 'sheet', out.size)
+    fr = fr.resize((round(fw * HERON_PACK), round(fh * HERON_PACK)), Image.LANCZOS)
+    ims['w2HeronLook'] = fr
+    print('heron look frame', (fw, fh), 'post scale', round(k, 3), 'packed', fr.size, 'HERON_LOOK_W', round(hu * fw / hw, 2))
+
+# --- one band: walks (feet on the band's foot), the heron (foot on it too), the paddles stacked in columns of two
+cols = [PADS[i:i + 2] for i in range(0, len(PADS), 2)]
+band = max([ims[k].height for k in WALKS] + ([ims['w2HeronLook'].height] if 'w2HeronLook' in ims else [])
+           + [sum(ims[k].height for k in c) + GAP * (len(c) - 1) for c in cols] or [0])
+y0 = sheet.height + GAP
+out = Image.new('RGBA', (sheet.width, y0 + band), (0, 0, 0, 0))
+out.alpha_composite(sheet, (0, 0))
+x, new = 0, {}
+def put(k, x, y):
+    out.alpha_composite(ims[k], (x, y)); new[k] = (x, y, ims[k].width, ims[k].height)
+for k in WALKS + (['w2HeronLook'] if 'w2HeronLook' in ims else []):
+    put(k, x, y0 + band - ims[k].height); x += ims[k].width + GAP
+for c in cols:
+    y = y0
+    for k in c:
+        put(k, x, y); y += ims[k].height + GAP
+    x += max(ims[k].width for k in c) + GAP
+assert x - GAP <= sheet.width, f'band {x - GAP} px wider than the sheet {sheet.width}'
+assert out.height <= 4096
+F2 = {**{k: v for k, v in F.items() if k not in new}, **new}
+body = '\n'.join(f'  {k}: {{ x: {v[0]}, y: {v[1]}, w: {v[2]}, h: {v[3]} }},' for k, v in sorted(F2.items()))
+open(DATA, 'w').write(re.sub(r'(export const W2_FRAMES = \{\n)(.*?)(\n\} as const)', lambda m: m[1] + body + m[3], src, flags=re.S))
+out.save(P + 'w2-props.webp', 'WEBP', quality=Q, method=6)
+print('w2-props', out.size, 'band used', x - GAP, 'px wide')

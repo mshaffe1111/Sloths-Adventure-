@@ -203,14 +203,6 @@ export const DRESS_NEW_FRAMES = {
   "units": 81,
   "world": 2
  },
- "w2HeronLook": {
-  "x": 0,
-  "y": 2187,
-  "w": 336,
-  "h": 586,
-  "units": 84.52,
-  "world": 2
- },
  "w2CattailFly": {
   "x": 507,
   "y": 0,

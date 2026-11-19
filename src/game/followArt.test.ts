@@ -5,7 +5,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FOLLOW_STRIDE, FOLLOWER_W, followerPose, heronPose, poseWidth } from './followArt.ts';
+import { FOLLOW_STRIDE, FOLLOWER_W, HERON_LOOK_W, followerPose, heronPose, poseWidth } from './followArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import { DRESS_NEW_FRAMES } from './dressNewData.ts';
 import type { FollowKind } from './follow.ts';
@@ -54,9 +54,12 @@ test('the heron looks up while it warns and while it sweeps, and is plain while 
   assert.equal(heronPose({ s: { phase: 'calm' } as never }), 'w2Heron');
   assert.equal(heronPose({ s: { phase: 'warn' } as never }), 'w2HeronLook');
   assert.equal(heronPose({ s: { phase: 'pass' } as never }), 'w2HeronLook');
-  const plain = DRESS_NEW_FRAMES.w2Heron, look = DRESS_NEW_FRAMES.w2HeronLook;
-  assert.ok(look && look.world === 2, 'the looking heron is on World 2\'s dressing sheet');
-  // (drawn at the plain heron's scale: units per sheet px equal, so the post and legs do not jump when it looks up)
-  // (units are stored to 2 decimals: 1e-4 a sheet px is under 0.06 units over the whole 586 px frame)
-  assert.ok(Math.abs(look.units / look.w - plain.units / plain.w) < 1e-4);
+  const plain = DRESS_NEW_FRAMES.w2Heron, look = W2_FRAMES.w2HeronLook;
+  // (an actor pose on w2-props with the little ones, never on a dressing sheet: every dressing piece must be in a dressing set)
+  assert.ok(look && !('w2HeronLook' in DRESS_NEW_FRAMES), 'the looking heron is on w2-props, not a dressing sheet');
+  // (drawn at w2Heron's px a unit: HERON_LOOK_W in w2Heron's sheet px is the registered frame's 336 px; packed at 0.72 of that, the
+  // same shape, so the post and legs do not jump when it looks up)
+  assert.ok(Math.abs((HERON_LOOK_W * plain.w) / plain.units - 336) < 0.5, 'drawn at w2Heron\'s scale');
+  assert.ok(Math.abs(look.w / look.h - 336 / 586) < 0.005, 'packed at the registered frame\'s shape');
+  assert.ok(Math.abs(look.w / 336 - 0.72) < 0.005, 'packed at 0.72 of it');
 });

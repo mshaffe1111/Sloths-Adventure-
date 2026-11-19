@@ -1,6 +1,17 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-23 (11-18, t-eng-23): section 0ENG23 (the little ones that follow him home, the heron that reads them, lineFaults).
+Rewritten for ART-W2A (11-18, t-art-w2a): section 0W2A (the painted follow poses). Before it, ENG-23 (11-18, t-eng-23): section 0ENG23 (the little ones that follow him home, the heron that reads them, lineFaults).
+
+## 0W2A. ART-W2A (t-art-w2a from t-eng-23, 11-18): the follow poses are painted (followArt.ts)
+- **The little ones:** followArt.ts followerPose (pure, followArt.test.ts) picks the painted pose: paddle -> <kind>Paddle (sunk 40% under
+  the code ripple), home -> <kind>Happy (hopping), spooked and hiding -> <kind>Sad (Matt's painting, crouched behind the code reed tuft:
+  the lead's YES 6:53 PM ET 11-18), else <kind>WalkA / <kind>WalkB swapped by GROUND COVERED (FOLLOW_STRIDE 15 px a frame: no foot-slide
+  at any pace; a stopped one holds its frame). WalkB is the PASSING pose (legs together, body up): the painted bob, so no code lift.
+  poseWidth draws every pose at its Happy pose's scale (FOLLOWER_W 33 for Happy). All nine frames are on w2-props (W2_FRAMES).
+- **The heron:** heronPose -> w2HeronLook while warn or pass, w2Heron while calm; HERON_EYE / HERON_WARN_Y are the LOOK frame's (the
+  gaze and the '!' only show while it looks). w2HeronLook is on dressnew-w2 at w2Heron's px a unit with its post exactly on w2Heron's
+  (tools/art/hfw2a/pack.py), so the swap moves only the bird.
+- **Trap:** re-running pack.py re-encodes both sheets (Q 88: Matt's pieces measured ~40 dB): run it from the committed sheets, once.
 
 ## 0ENG23. ENG-23 (t-eng-23 from main 6e7b85f8, 11-18): followers, "bring N home", the heron reads the line
 - **Where it lives:** src/game/follow.ts (pure: trail, stepLine, join / spook / rejoin / regroup / home, zoneLookX, lineSeen),

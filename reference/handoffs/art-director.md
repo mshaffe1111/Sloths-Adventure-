@@ -1,7 +1,18 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
+# Hand-off: the art director role (Content), updated 2026-11-18 by ART-W2A (section 0g: 2-3's follow poses painted and wired); before it 2026-11-15 12:49 PM ET (ART-W2)
 
 Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0g. 11-18 ART-W2A (t-art-w2a): 2-3's follow poses painted and WIRED (10 pieces, ~$2.11 HF)
+- duck/otter/capy WalkA (stride) + WalkB (passing) + Paddle on w2-props (W2_FRAMES), w2HeronLook on dressnew-w2; catalog part W2A.
+- **Route that worked for new POSES of an existing character:** Qwen-Image-Edit-2511 (tools/art/hfpokey/pokeygpu.py edits, no LoRA)
+  from the shipped piece on flat grey, 1024 square; ~53 s a take; 3 seeds a pose. Starts: tools/art/hfw2a/starts.py; specs:
+  make_spec.py rounds 1-3; one sandbox, rounds queued (run.sh <commit> <round>); cut in the sandbox (cut.py), back as tar parts
+  (sbx.py parts + hfw2/fetch.py). Pack: pack.py (colour gain to the Happy pose; the heron registered on w2Heron's post).
+- **Trap 1:** "the same animal one step later, other foot forward" came back as the SAME frame (12 takes, ~$0.55 wasted). Ask for the
+  PASSING pose (legs together under the body, body up) instead: the model does that, and it is the classic second frame.
+- **Trap 2:** keying grey trapped inside an outline at the normal tol (26) punched holes in a grey wooden post; key only FLAT grey (tol 9).
+- **Trap 3:** a mean colour match on a pose that shows less chest (a swimming otter) is skewed: paddles reuse the walk frame's gain.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).
