@@ -50,3 +50,11 @@ its stage, and it nods to A's "come up behind them". The 2-9 builder places it; 
 their own rows, the bell on the steps' arch, Easy's wheel R160).
 (6) The liana clock (vineClock vs gameTime after a flag resume) is a GENERAL fault (rule 22): R-165.295, fixed in ENG-285 tomorrow (before
 release 1, because 2-4's liana rows depend on it), not inside 2-9's NEW 1.
+
+## The keeper's pushback, ruled (7:55 PM ET 11-18; t-keeper-23-29 e5f754d8, reference/story/lines-2-3.md + lines-2-9.md)
+All 6 accepted: (1) Dot says "Hop to the drum's beat" (BOOM lands only on ONE; a muted phone sees the lanterns). (2) Both stages get fixed
+goal lines (the template's 'late' line runs 11 words). (3) 2-3's words key on the new goal type or a per-stage key, never '2:rescue' (2-7 is
+rescue too). (4) The posted royal guard is NOT in the gauntlet count ("Chase off 5 snappers" stays true). (5) The guard stands BEFORE the
+bell: on the landing as he steps off the barge (this REPLACES the lead's "at the shrine steps"), so bell, silence, "rang" and the shrine stay
+quiet; and a locked shrine needs a way back across the barge (builder). (6) 2-3 post and home and 2-9 rang play even on Normal's default Tips.
+Suggestions (2-5's goal words; dropping "before the sanctuary opens" from goalLine's 'late' line) go to the 2-5 builder's packet.
