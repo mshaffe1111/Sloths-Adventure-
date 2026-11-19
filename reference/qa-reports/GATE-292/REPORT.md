@@ -52,15 +52,69 @@ Planted on real trees (gate run on VAR-1b's commits): 1-7 on e0afa8878^ (the 53-
 16/16 rolls), e.g. seed 2 x12666 155x53 `ground`, the same block the live page reports `ground`. 1-8 on 2a8413391 (knots present):
 **0 breaches**: the knots were painted (see B).
 
-__SWEEP__
+## Sweep: every stage, every listed seed, both settings (the rest on layouts 1-16)
+
+t-int-12 (ce4ad461, this branch's base): **5,334 builds of 102 stages, 8,239 breach lines, 429 ids on 21 stages** (20 min in one process;
+CI runs it in 3 parts). Builds that breach, by stage:
+
+| Stage | Builds | What falls through (typical) |
+|---|---|---|
+| 1-1 | 260/322 | 'log' 50-80 px (w1.ts:907/908/1014/1018) -> `ground`, both settings; Easy: stones widened past 260 lose their cut -> `ground` |
+| 1-6 | 200/200 | moss_stone 56 / 60 -> `ground` (rock painter: exactly 50; bank from 90) |
+| 3-1 3-2 3-3 3-5 3-6 3-7 3-8 3-9 | 8-32 of 32 each | moss_stone 52 -> `pillar`, 80 -> `step`/`ground` |
+| 4-2 4-6 4-8 | 10-32 of 32 | 4-6: 'branch' 56 -> `pillar`/`ground` (a branch paints under 50) |
+| 5-1 5-2 5-3 5-4 5-5 5-7 5-9 | 32/32 each | moss_stone 53-89 -> `ground`/`pillar` (World 5's kit paints 1-50 and 90+) |
+| 6-6 | 32/32 | moss_stone 75 -> `ground` |
+
+All 429 ids are on tools/engine/paintcheck.known.json (shrink-only, the lead's ruling 8:23 PM ET): knowncheck fails an added id,
+paintcheck fails a listed id no build of its stage shows any more. Unpainted (no painter at any height): 0. No build failed.
+
+**main (shipped, 6e7b85f8): the same 21 stages plus 1-9 (32/32 builds)**, 5,166 builds; t-int-12 no longer breaches on 1-9.
+
+**Open branches (D88), World 2 stages on each branch's own tree:** __BRANCHES__
+
+**The rule on the trees that broke it tonight:** 1-7 on e0afa8878^ (VAR-1b's 53-56 px landing log): FAIL, 200/200 builds, 7 new ids;
+1-8 on 2a8413391 (the knots): PASS (painted cut slabs: level B).
 
 ## Stills (reference/qa-reports/GATE-292/stills/, each upright + sideways + a 3x crop; the file name carries the LIVE page's footing)
 
-__STILLS__
+Picked from the gate's list; the file name carries the live page's footing (the page's own terrain.ts, imported from the dev server):
+- 1-1 seed 791759 Normal: log x23840 538x50 and x23444 276x55, `ground`.
+- 1-1 seed 791759 Easy: log x25535 586x50 and x25139 324x55; stones x15238 266x55 and x25065 265x55, `ground`.
+- 5-1 layout 1: x1317 136x60 `pillar` (a small post on two legs), x3246 145x60 `ground`.
+- 1-7 on its pre-fix tree, seed 2: x12666 155x53 `ground` (the gate printed this same block).
+- Best pair to judge: `1-1-s791759-E-land-x15238-moss_stone-266x55-ground-crop3x.png` and `1-7-s2-PREFIX-...-crop3x.png`: a flat
+  bright-green dripping cap on a straight-sided brown box beside Matt's painted ground.
+- WRONG-PICK-* (top folder): my first pair, picked by a height filter; painted cut slabs, not breaches. Kept, renamed, so the miss is visible.
+- var1b-1-8-knots-*: VAR-1b's knot still (painted cut slabs on a bough: level B).
+Pin note: Pokey floats a little above the block in some upright stills: the shooter's pin, not the game.
 
 ## The root fix: options with their cost
 
-__ROOT__
+**Option A, the painter covers the size (the lead's ruling 8:37 PM ET: the direction for World 1, as packet PAINT-292, not on this
+branch).** World 1 already has painted thick logs, cut and never laid: `w1-log-plank-a` 197x60 and `w1-log-plank-b` 198x65
+(src/assets/w1to4art/w1-cut.json; w1CutArt.ts LAID's comment: "Not yet laid: ... the two log planks"). 1-1's 50-80 px logs fall to code
+only because w1CutArt.ts pickCut gives a log a cut under 50 px alone; Easy's stones fall because pickCut's stone limit is 260 wide.
+Prototype (scratch worktree only): pickCut takes a 'log' up to 89 px onto the two planks, each part about 3.9x the block's height wide
+(logParts by height), and a stone up to 320 wide. Before/after: rootfix/1-1-s791759-N-land-x23840-log-538x50-before-after-A-crop3x.png
+and x23444. The live page then reports both logs `painted thin piece`.
+
+**PAINT-292 (ready packet, for the lead to send):** engine member, high. Build option A in w1CutArt.ts (pickCut, LAID, logParts) for
+World 1 only. Bar: (1) the art's TOP is the floor: every plank's walkable line at the collider top, no plank floating above or dipping
+below Pokey's feet, flush tops across a long block; (2) one plank-pile rhythm along a block, no jumbled overlap (the prototype's x23840
+left end overlaps and one part dips into the grass, the right plank floats a few px); (3) stones 261-320 wide get a stone cut with
+stoneMiss's stretch limits, no new stretch; (4) draw-only: lockall vs t-int-12 shows only the `cut` field moving on World 1 stages,
+`seedlist.ts <id> --check` passes on every World 1 list, castBots unchanged; (5) paintcheck: every 1-1 and 1-6 id leaves
+paintcheck.known.json (the gate fails until they are taken off); (6) drawcheck 1-1 both ways (cut pieces are draws); stills upright +
+sideways of x23840/x23444 and an Easy wide stone, judged by the lead before Matt (show first). 1-6's 56/60 px stones: check whether
+they are wider than 260 or not `onGround` (w1.ts:1577) before choosing; 1-9 is clean on t-int-12.
+
+**Option B, the lay snaps sizes to what the painter draws:** does not work for World 1 logs: under 50 a World 1 log is thinArt's code
+log (no thin log painter in World 1), so B means changing the piece (a 90+ bank or a stone) in each section: a design change per section,
+every World 1 seed list rebuilt. For Easy's wide stones B means capping Easy's widening at 260 (an Easy rule, the Designer's).
+
+**Named for Content and the lead (no cut art there):** World 5's moss stones 53-89 px and pillars (5-1..5-9), World 3's 52 px pillars and
+80 px steps, 4-6's 56 px branches, 6-6's 75 px stones. Each needs painted art at that size or a lay change; the known list holds them.
 
 ## Level B candidates (for a later ruling, not gated)
 
