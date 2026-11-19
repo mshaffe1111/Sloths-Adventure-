@@ -51,7 +51,7 @@ import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, type RiverZone } f
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -370,6 +370,8 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
  */
 /** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
 const PIN_AT = 50;
+/** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
+export const LEVEL_REACH = 600;
 export class Progress {
   cur = 0;
   hi = 0;
@@ -422,8 +424,10 @@ export class Progress {
   /** after a respawn or a rescue: find him anywhere along the way */
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
-    // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope && (!level || this.pts[i].y >= p.y - 80);
+    // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
+    //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
+    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
+      && (!level || (this.pts[i].y >= p.y - 80 && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
@@ -846,20 +850,33 @@ export const LET_GO_AT = 0.75;
 const SWING_TOP = SWING.minLen;
 const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
 /**
- * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s (then the engine's cut, PHYS.cutV), taking off at the vines' clock
- * `t0`, meet liana `v` where the engine catches (physics.ts canGrabSwing)? Flown frame by frame with the engine's air tick (airStep)
- * until he is 200 px under the take-off. (FirstTimerRun.lianaWait; pitClimb.test.ts)
+ * One frame of a hop off the ground (frame i = 1 is the press's), the jump held `hold` s (then the engine's cut, PHYS.cutV): the press frame
+ * steered on the ground (physics.ts takeOffStep), the rest with the engine's air tick (airStep). (hopCatches, hopLandsOn: one flight)
+ */
+function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number, dir: -1 | 1, hold: number): void {
+  const held = i * DT < hold;
+  if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+  (i === 1 ? takeOffStep : airStep)(b, DT, dir, held);
+}
+/**
+ * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s, meet liana `v` where the engine catches
+ * (physics.ts canGrabSwing)? (x, y) and `vx0` are where the frame BEFORE the press leaves him; `t0` is the vines' clock on the press's frame
+ * (hopAim). The engine's catch reads his place after a frame against the NEXT frame's clock (engine.ts update: the clock steps, the catch
+ * looks, then he moves), so his place after frame i meets the vine at t0 + i * DT. Flown frame by frame (hopFrame) until he is 200 px
+ * under the take-off. (FirstTimerRun.lianaWait, vineFromLog; pitClimb.test.ts; lianaRide.test.ts pins it against the engine)
  */
 export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): boolean {
+  return hopCatchAt(v, x, y, dir, hold, t0, vx0) > 0;
+}
+/** hopCatches' hop: the frame after the press's on which the engine has him on the liana (1: the one after it), or -1 */
+export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): number {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   for (let i = 1; i < 60; i++) {
-    const held = i * DT < hold;
-    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
-    airStep(b, DT, dir, held);
-    if (canGrabSwing(b.x, b.y, v, t0 + i * DT)) return true;
-    if (b.y > y + 200) return false;
+    hopFrame(b, i, dir, hold);
+    if (canGrabSwing(b.x, b.y, v, t0 + i * DT)) return i;
+    if (b.y > y + 200) return -1;
   }
-  return false;
+  return -1;
 }
 /**
  * Does a hop from (x, y) at game time t0, held `hold` s, come down on the float `q` where it will be (`at(t)`: a drifting log on its
@@ -870,10 +887,8 @@ export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: 
 export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0: number, margin = 24): boolean {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   for (let i = 1; i < 60; i++) {
-    const held = i * DT < hold;
-    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
     const prev = b.y;
-    airStep(b, DT, dir, held);
+    hopFrame(b, i, dir, hold);
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
       if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
       const lx = at(t0 + i * DT);
@@ -885,6 +900,30 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
 }
 /** where a float's left edge is at game time t: a drifting log on its river's clock (river.ts logClock), anything else where it stands */
 const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: number): number => (q.drift ? driftX(q.drift, logClock(rivers, q.drift, t)) : q.x);
+/**
+ * s from now (read after a frame) to the game-time of the frame a press decided on now with thumb lag `lag` reaches the engine (ENG-285,
+ * R-165.294): decide() presses at once when the lag is at most half a frame, else when the bot's clock first reaches now + lag; either way
+ * the press rides the NEXT frame's pad, and that frame's update steps the game's clock (and the lianas', engine.ts update) before he reads
+ * it. The drop aim read the press `lag` on, one frame early (and the logs with it).
+ */
+/** TEST: when on, every decided press the bot makes: the game time it aimed it at (pressIn, what the drop aim reads) and the game time
+ *  of the frame it reached the engine on (tools/inspect/lianaRide.test.ts, ENG-285) */
+export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
+export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
+/**
+ * A hop off the ground pressed now with thumb lag `lag`, as the engine plays it (ENG-285b, R-165.297; the drop aim's frame order, pressIn):
+ * `off`, s from now to the end of the frame before the press (where he takes off from: hopCatches' and hopLandsOn's x, and the log he
+ * stands on then), and `clock`, s from now to the press's frame (the vines' clock hopCatches reads from). Both aims read `clock + lag`, a
+ * frame early on the vine (and the lag never rounded to the frame the press reaches the engine on).
+ */
+export const hopAim = (lag: number): { off: number; clock: number } => ({ off: pressIn(lag) - DT, clock: pressIn(lag) });
+/**
+ * The hold (s, as hopCatches / hopLandsOn count it: frame i is held while i * DT < hold) a press with the bot's own hold `own` gets on the
+ * phone's touch layer, whose minimum `minMs` restarts at the take-off AFTER that frame's countdown (inputEngine.ts noteTakeOff, update):
+ * so the press frame is held and then the minimum's frames, ceil(min / DT) in all (220 ms: 7 frames, 233 ms). It was max(own, min): a
+ * frame short (ENG-285b; lianaRide.test.ts pins it against the engine).
+ */
+export const touchHeld = (own: number, minMs: number): number => Math.max(own, minMs / 1000 + DT);
 
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
@@ -1018,7 +1057,10 @@ export class FirstTimerRun {
   private blockedT = 0;
   private lastX = 0;
   /** a press he has decided on, and when the thumb gets there */
-  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean } | null = null;
+  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number } | null = null;
+  /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
+  private pressWant: number | undefined;
+
   private punchAt: number | null = null;
   /** a drop trap he has just hit: he stands until it is down (castPlan) */
   private trapWait: { post: TrapPost; until: number } | null = null;
@@ -1624,7 +1666,7 @@ export class FirstTimerRun {
   private pressHold(): number {
     const own = this.who.hold[0];
     const real = this.opts.realInput;
-    return real ? Math.max(own, (real === true ? MIN_TOUCH_JUMP_HOLD_MS : real) / 1000) : own;
+    return real ? touchHeld(own, real === true ? MIN_TOUCH_JUMP_HOLD_MS : real) : own;
   }
 
   /**
@@ -1666,17 +1708,19 @@ export class FirstTimerRun {
     const key = `${v.id}:${grip.toFixed(2)}:${vinePeriod(v)}`;
     let L = this.launches.get(key);
     if (!L) this.launches.set(key, (L = pressLaunches(v, grip)));
-    const P = vinePeriod(v), mod = (x: number) => ((x % P) + P) % P, ph = mod(clock + lag);
+    // (the frame order: the press he decides on now reaches the engine with the next frame's pad, whose step moves both clocks on first)
+    const at0 = pressIn(lag);
+    const P = vinePeriod(v), mod = (x: number) => ((x % P) + P) % P, ph = mod(clock + at0);
     let l = L[0];
     for (const q of L) if (Math.min(Math.abs(mod(q.pt) - ph), P - Math.abs(mod(q.pt) - ph)) < Math.min(Math.abs(mod(l.pt) - ph), P - Math.abs(mod(l.pt) - ph))) l = q;
     if (dir < 0) return true;
     const b = { x: l.x, y: l.y, vx: l.vx, vy: l.vy };
     // (flown as the drop judge flies it, the jump held: a flick lands the same within a point, swingLog.ts)
     const top = logs[0].y, bankTop = top - LOG_DROP;
-    const leaves = t + lag + (l.t - l.pt);
+    const leaves = t + at0 + (l.t - l.pt);
     for (let i = 1; i < 90; i++) {
       const prev = b.y;
-      airStep(b, DT, dir, true, true);
+      airStep(b, DT, dir, true);
       if (b.vy < 0) continue;
       const inWindow = b.x >= r.x0 && b.x <= r.x1;
       // (the far bank: his middle well onto it, 16 px past its lip; one just past the lip met the bank's face and fell, catch toy v3)
@@ -1711,9 +1755,11 @@ export class FirstTimerRun {
     const hold = this.pressHold();
     // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
     // (he stands while the press comes (pending.still): flown from where the log carries him, at his speed now and at a stand)
+    // (the press's frame order: hopAim, ENG-285b)
     const catches = (lag: number) => [p.vx, 0].every((vx) => {
-      const x = p.x + (vx + carry) * lag, lx = floatAt(rivers, here)(t + lag);
-      return x > lx + 10 && x < lx + here.width - 10 && hopCatches(v, x, p.y, dir, hold, clock + lag, vx + carry);
+      const aim = hopAim(lag);
+      const x = p.x + (vx + carry) * aim.off, lx = floatAt(rivers, here)(t + aim.off);
+      return x > lx + 10 && x < lx + here.width - 10 && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
     });
     if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
     const out = this.decide(dir, 'single', true, {});
@@ -1742,13 +1788,17 @@ export class FirstTimerRun {
     }
     const clock = (this.e as unknown as { vineClock: number }).vineClock;
     const lag = this.who.thumb[0];
-    const hold = this.who.hold[0];
+    // (held as the press is played: never under the touch layer's minimum, as vineFromLog's, pressHold)
+    const hold = this.pressHold();
     // (the hop he can make from where the press lands, after his thumb's lag: does the engine's catch take him on the way? KID and
     // ADULT never let go of a held steer (thumbify, R-165.59), so they cannot stand and wait: on the run, the press is the only choice,
-    // and they keep running to the lip unless it is now)
-    const from = (x: number, t0: number) => hopCatches(v, x, p.y, dir, hold, t0, p.vx);
-    const takeoff = p.x + p.vx * lag;
-    if (dir * (edgeX - takeoff) >= 0 && from(takeoff, clock + lag)) {
+    // and they keep running to the lip unless it is now. The press's frame order: hopAim, ENG-285b)
+    const from = (x: number, t0: number, vx = p.vx) => hopCatches(v, x, p.y, dir, hold, t0, vx);
+    // (the steer held while the press comes, pending: run on as the engine runs him, physics.ts groundStep)
+    const aim = hopAim(lag);
+    const run = { x: p.x, y: p.y, vx: p.vx, vy: 0 };
+    for (let f = Math.round(aim.off / DT); f > 0; f--) groundStep(run, DT, dir);
+    if (dir * (edgeX - run.x) >= 0 && from(run.x, clock + aim.clock, run.vx)) {
       this.lianaWaitT = 0;
       this.lianaHop = true;
       return this.decide(dir, 'single', true, {});
@@ -2015,7 +2065,11 @@ export class FirstTimerRun {
     if (this.pending && t >= this.pending.at && !this.jump) {
       const q = this.pending;
       this.pending = null;
-      if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) return this.startJump(q.dir, q.kind, q.off);
+      if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) {
+        const out = this.startJump(q.dir, q.kind, q.off);
+        this.pressWant = q.want;
+        return out;
+      }
     }
 
     // the rolling nut and the bouncing fruit, read at a glance as they come at him
@@ -3003,8 +3057,13 @@ export class FirstTimerRun {
   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
   private decide(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean, meanwhile: Pad): Pad {
     const lag = gauss(this.r, this.who.thumb);
-    if (lag <= DT / 2) return this.startJump(dir, kind, off);
-    this.pending = { at: this.t + lag, dir, kind, off };
+    const want = this.t + pressIn(lag);
+    if (lag <= DT / 2) {
+      const out = this.startJump(dir, kind, off);
+      this.pressWant = want;
+      return out;
+    }
+    this.pending = { at: this.t + lag, dir, kind, off, want };
     return meanwhile;
   }
 
@@ -3348,8 +3407,10 @@ export class FirstTimerRun {
     const cap = this.opts.cap ?? Math.max(360, 3 * (STAGE_SECONDS[this.id] ?? 0));
     const e = this.e;
     while (this.t < cap) {
+      this.pressWant = undefined;
       const pad = this.pad();
       this.sim.frame(pad);
+      if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
       this.opts.onFrame?.(this.sim);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       {
