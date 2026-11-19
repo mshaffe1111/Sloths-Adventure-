@@ -31,7 +31,7 @@ Per wheel per frame: 1 save/translate/rotate/restore, 2 + 1 + N drawImage (N=6: 
 0.22 ms at CPU x1 (15.6 vs 0.82 at x4) = ~5 full-screen layer draws: the rotated 754 px square at 2x is the cost (unrotated ~2.4x cheaper).
 On a phone's GPU canvas that is one textured quad; the container can't measure it. **Named, not proven:** time it on a real phone (or
 perf-baseline's mid-range) before 2-6 ships; if it shows, the fix is a pre-scaled cached noria per R and dpr (measured only ~13% here).
-drawcheck can't see it: its '2-6' scenario is the OLD hand-built 2-6 (no wheel); the 2-6 builder adds the new 2-6 to drawcheck (D51).
+**Named risk (the lead's ruling, 9:24 PM ET):** the 2-6 build's drawcheck on 2-6 both ways decides it against §1; if over, the fix is in the draw, not the art (the rim drawn unrotated, only the spokes and buckets moving; or the smallest texture that covers ship size). Not changed tonight. drawcheck can't see it today: its '2-6' scenario is the OLD hand-built 2-6 (no wheel); the 2-6 builder adds the new 2-6 to drawcheck (D51).
 ## Polish check (stills/*-{up,side}.webp, contact-up.jpg, contact-side.jpg, clip-up.mp4; ?fixture=wheel Normal edge R180 V70 N6)
 - Painter: the noria and troughs are World 2's weathered grey-brown wood with rope lashings (beside the jetty in show-first.jpg); they read light
   on the dark painted soil both ways. Rim moss only, no drips on the rim (they would turn with it).
@@ -55,5 +55,5 @@ drawcheck can't see it: its '2-6' scenario is the OLD hand-built 2-6 (no wheel);
 - A rotating piece: paint no drips, light or shadow that must stay down; put the wet look on the parts that stay level (the buckets).
 - Fetch: never `cat` a small file from the sandbox (it lands in context); always sbx.py parts + pull.py.
 ## Lessons applied: D30 BROKEN TWICE: two of my messages to the lead carried a typed time (8:55 for 8:52, 9:25 for 9:23) and the first correction did too (8:53); each was corrected at once. What stopped it: composing the WHOLE message inside the `date` command and pasting its printout, D41 (sizes vs 89.1), D51/D81 (drawcheck run;
-its blind spot named), D57/D87 (ReadNotifications at every push), D59 (no background run left at stop), D63 (clip of board to step-off), D79, law 8.
+its blind spot named), D57/D87 MISSED ONCE (the lead's 9:24 PM perf ruling sat 21 min in my queue: I skipped ReadNotifications at the stills and notes pushes; it matched what I did, now in Perf), D59 (no background run left at stop), D63 (clip of board to step-off), D79, law 8.
 ## Turnover notes: reference/handoffs/engine-core.md 0zo, reference/handoffs/art-director.md 0h (commit 8e626d29f).
