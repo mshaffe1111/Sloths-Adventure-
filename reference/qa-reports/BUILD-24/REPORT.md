@@ -380,3 +380,62 @@ Lessons applied: D19 (the still tool's tap did not call what a thumb calls), D30
 long runs in the background), D59 (unrun gates named), D64/D76 (stopped on the lead's real figure), D69 (clips judged frame by frame),
 D79 (whole-screen pass), D81/D86 (the full list named; drawcheck in the chain).
 Miss to log: d8d70797's Claude-Session line carries the lead's session link, not mine (pushed; not rewritten).
+
+# BUILD-24e (packet reference/packets/2026-11-19/BUILD-24e.md): 2-4's gates on t-build-24c's final head, the rule-8 still; section written 6:03 PM ET 11-19 (by date in the same command)
+No src/, tools/ or stage data changed (git diff c2f7a34a..HEAD -- src tools .github package.json: empty; src last changed d8d70797). Every
+head named below carries d8d70797's code; later commits are reference/ only. Logs: reference/qa-reports/BUILD-24e/gates/.
+## Rule 8 (level.md): 2-4 L1 Normal, the catch beat, UPRIGHT 412x915, real page (rule8still.mjs; stills/, rule8-measures.json)
+- FROM THE LOG (where he decides): YES, the whole liana (pivot and tip) is on screen. Press window, one fresh page per frame (catchsearch.mjs,
+  flick leaning right): opens at ride frame 68 (Pokey x10279), still open at 74. k60 (x10258, the liana swinging back to him): tip 58 px from
+  his head, 260 px head to the right edge; k69 (the press): tip 40 px, pivot at css x296 of 412.
+- FROM THE BANK (x9985, as the log slides out): NO, the liana is off the right edge (pivot css x567, tip x514 of 412); tip 370 px from his head,
+  268 px head to the edge. The lead's ruling (4:32 PM ET): rule 8 PASSES; from the bank the question is the log, which is in view.
+- Sheet: stills/rule8-sheet-bank-k60-k69.jpg. Dot's lines were marked shown and cleared for the shots. The faint "glass" logs in these
+  frames are ENG-24e's item 2b (lead), not this job.
+## Gate table (all on d8d70797's code; head = the commit the log names at its start)
+| Gate | Head | Result | Log |
+|---|---|---|---|
+| tsc | 42aef3d9 | PASS | tsc.txt |
+| full suite, 3 shards (CLAUDE.md glob) | 98261a27..57358137 | PASS 3863 pass, 0 fail, 2 TODO (w4 boulder fixer, on main 6e7b85f8 unchanged) | suite-1/2/3.txt |
+| BASE_PATH vite build + chunkcheck | 42aef3d9 | PASS | build.txt |
+| artcheck / knowncheck / generalitycheck / roadmapcheck (unshallowed) | 42aef3d9 | PASS x4 | artcheck, knowncheck, generality, roadmapcheck.txt |
+| lockall --intended 2-4 vs main 6e7b85f8 (lock regenerated 4:23-4:32 PM) | 8c80eab3 | exit 1: 85/102; 2-4 + 16 others, ATTRIBUTED below | lockall.txt |
+| lockall vs t-int-12 ce4ad461 / vs ENG-285b c255ae4d | 90e12728 | 87/102 / 99/102 | lockall-vs-int12, lockall-vs-eng285b.txt |
+| engine tool tests (CLAUDE.md's 4 files) | 42aef3d9 | PASS | toolTests.txt |
+| gates.yml rolled job's 25 tool-test files | 69341ec2 | 231/233 pass, 1 FAIL riverRide.test bankUp plant, 1 TODO (chaseBots child; on main 6e7b85f8): INHERITED, not 2-4 | toolTestsCI.txt |
+| tierBots.test | 42aef3d9 | PASS | tierBots.txt |
+| castBots 2-4 1-40 x5 bots x both, --par 3 | 42aef3d9 | PASS, row for row = BUILD-24c's castbots-2-4-c.txt (below) | castBots.txt |
+| kbdcheck | 42aef3d9 | PASS (183 s) | kbdcheck.txt |
+| seedlist 1-1 / 2-4 --check | 42aef3d9 | PASS 161/161 / 100/100 | seedlist11, seedlist24.txt |
+| seedlist --check, every other list (1-2..1-9, 2-1, 2-2) | 69341ec2 | 9 PASS; 2-1 FAIL seeds 86, 100 quiet 4.1 s > 4 s: INHERITED, not 2-4 | seedlistsAll.txt |
+| registrycheck (plain; --lists only prints the 12 ids) | 69341ec2 | PASS, 12 stages | registryPlain, registry.txt |
+| tipwalk --layouts 4 | 69341ec2 | PASS | tipwalk.txt |
+| coveragecheck | 69341ec2 | PASS (13 stages incl. 2-4, 5 known gaps) | coverage.txt |
+| funcheck (advisory, not CI) | 69341ec2 | exit 1: 30 worse/new, ALL World 1; 2-4 flags: none (funcheck judges World 1 only, funcheck.ts:4) | funcheck-full.txt |
+| meter score.ts --stages 1-1,2-4 --seeds 1-4 | 53870a69 | 2-4 Normal 4 (3.9-4.4), Easy 3 (2.9-3.1); vs DIFFICULTY.md §4 below | meter-with-anchor.txt |
+| clipcheck | 69341ec2 | PASS (83 known, 340 s) | clipcheck.txt |
+| drawcheck | 69341ec2 | PASS (667 s) | drawcheck.txt |
+| paintcheck (t-gate-292's tool, scratch merge of this head; src diff empty) | 69341ec2 | PASS, 5,502 builds, 0 new; 2-4 breaches none | paintcheck.txt |
+| timecheck (t-time-168b's tool) | 69341ec2 | FAIL 1: VAR-1/REPORT.md:4 "3:50 PM ET" vs its commit 7a8bc47d 3:45 PM: INHERITED (INT-12), not 2-4; BUILD-24e's own commits: see timecheck-own.txt (range c2f7a34a..the report commit) | timecheck.txt |
+| buildcheck, LAST and ALONE | 207cf3d4 | PASS: 1-1 Normal p95 90 ms, Easy p95 52 ms (budget 150 at CPU x4) | buildcheck.txt |
+- lockall attribution (lead accepted 5:04 PM ET): vs ENG-285b only 2-4 + 2-1/2-2 proto.hints move: KEEPER-24's world-wide World 2 water line
+  (BUILD-24 988bbae2, w2.ts W2_TIPS.water; text only, the story keeper's call). The other 12 vs t-int-12 are ENG-285's judge model (1-6, 1-8,
+  3-8, 4-4, 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5); vs main add INT-12's 1-7, 1-9. BUILD-24d's preload moves no stage.
+- INHERITED reds (the lead, 5:59 PM ET): cleared on t-int-13 by INT-13b (the 2-1 relist) and by ENG-285c's restatement of riverRide.test's
+  bankUp plant (b2df1a47, final b84163d6); t-build-24c carries ENG-285b's c255ae4d. timecheck's VAR-1 stamp: for INT-13 to clear.
+- Meter vs DIFFICULTY.md §4 (named, not tuned): 2-4's Normal target is 10(2-1) + T[3] = 13.5, World 2's band 9..21: it reads 4, 9.5 under
+  and below the band (§4 already: World 2's median stage 9.8 short). Easy/Normal 3/4 = 0.75, over the 0.6 cap. The 2-4-only command in
+  BUILD-24d's step printed NaN: SCALE is set from 1-1 Normal (score.ts:1126), so the meter needs 1-1 in --stages.
+## castBots rows vs BUILD-24c (castbots-2-4-c.txt): identical on every row
+kid N 29/40 (11 shrine rescues, the same 11 seeds), kid E 39/40 (seed 4), adult N/E 40/40, child N/E 40/40, middle N/E 40/40, expert N 40/40;
+medians 194.7/172.3, 171.9/149.2, 350.7/260.6, 214.8/187, 206.5 s; lives (water) 295, 121, 161, 114, 106: all equal to BUILD-24c's.
+## Pushback / Unresolved
+- BUILD-24d's step named `registrycheck --lists` as the list check: it only prints the ids; I ran every list's --check (D86).
+- Unresolved: the 2-1 list, riverRide.test and the VAR-1 stamp are red on THIS head (inherited; owned by INT-13b/ENG-285c per the lead).
+  The first suite run hit my 30-min background limit (0 not ok) and was re-run whole with a 2 h limit.
+## Method update (gates.md / methods)
+- The meter command in a packet carries 1-1 (`--stages 1-1,<stage>`), or score.ts fails loudly on a NaN SCALE (proposed: exit 2).
+- Long background runs set timeout 7200000; a member's own 30-min default stops the suite (it did here).
+- The rule-8 frame is found by search, not by eye: one fresh page per candidate press (engine restore leaks after a catch, catchsearch.mjs).
+Lessons applied: D30, D57/D87, D59, D86 (every list, the full CI tool-test line), D88-style attribution before judging, D90 (EXACT NEXT
+STEP only; logs to files; one cropped sheet), D91 (pipefail on every commit). Turnover note: no engine-core.md change (gates only).
