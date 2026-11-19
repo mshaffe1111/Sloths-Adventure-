@@ -175,6 +175,8 @@ after ENG-285's step-1 model; box 6 PM); (3) FIX-284 (pad size show-first 11:30 
 (4) VAR-19 at 8:30 AM (relists on step 1; box 5 PM): DESIGN-29 ran 11-18 evening (Matt picked 2-9 = the King's Drum + barge, 6:06 PM). ENG-26 ran 11-18 evening instead (pulled forward into a free slot, t-eng-26).
 TIME-168 runs tonight (11-18). D40 rule for the day: every list is proven on ENG-285's model.
 
+**PAINT-292 (Thu, a slot after the morning four; packet in origin/t-gate-292 reference/qa-reports/GATE-292/REPORT.md):** World 1's log planks (w1-log-plank-a/b, cut and never laid) cover 1-1/1-6/1-9's 50-89 px logs and stones to 320 wide, art top = floor, draw-only, lock + lists prove no layout moves; finished stills to Matt before release 1. Content list (no cut art yet): W3 pillars/steps, W5 53-89 px stones/pillars, 4-6's 56 px branches, 6-6's 75 px stones (R-165.292).
+
 **At most four at once.** Day 1 start order: INT-13, PITCH-29A, PITCH-29B, ENG-285. As slots free: ENG-26, VAR-19, FIX-284, ART-W2A,
 DESIGN-29, INT-13b. Tonight's ART/HF budget: HF balance about $52.5 (INT-12 REPORT, HF-SPEND line) against a reserve of about $10
 (CLAUDE.md). This plan's HF jobs come to about $3-8 at ~$0.075-0.34 a piece **[estimate]**.

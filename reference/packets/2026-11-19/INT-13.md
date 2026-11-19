@@ -8,6 +8,9 @@ commands in the BACKGROUND; D59 no gate left running at report; D79 whole screen
 (origin/t-int-12 reference/qa-reports/INT-12/REPORT.md) is how last night's merge went: read its merge table and rough spots first.
 BASE: branch t-int-13 from INT-12's final head (the lead sends it; if Matt merged a release by then, from origin/main and say so).
 The branches, in this ORDER (engine-only first, then the model change, then the levels; the lead sends each final hash from its REPORT):
+0. t-gate-292 (65a5fc21): the painted-or-code gate (paintcheck, 3 CI parts, shrink-only paintcheck.known.json: 429 ids on 21 stages);
+   its ROADMAP R-165.292 row overlaps the lead branch's by one row (keep the lead's text + its Source); CLAUDE.md's check list and
+   methods/gates.md get the paintcheck line (the lead reviews the CLAUDE.md wording before merge: Matt's file).
 1. t-time-168b (de3539c7; carries t-time-168): the time-stamp gate with the stage-id fix (tools + CI line; no game code). After ALL merges, run
    timecheck on the merged range and correct every breach in reference/ docs to its commit clock (TIME-168b's sweep.tsv lists 3: VAR-1/REPORT.md:4 '3:50 PM ET'
    vs 3:45; ENG-23/REPORT.md:17 and :99 '3:15 PM' vs 3:09, the last carried by t-eng-23, t-meter-4 and t-art-w2a: correct once; the lead
