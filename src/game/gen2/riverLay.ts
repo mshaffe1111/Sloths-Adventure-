@@ -13,7 +13,7 @@
  */
 import type { Platform, Vine } from '../types.ts';
 import { driftCycle, driftX, gapFor, hopLimit, lianasOver, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, canGrabSwing, FORGIVE, flyLaunch, PHYS, pressLaunches, vinePeriod, type AirBody } from '../physics.ts';
+import { airStep, canGrabSwing, FORGIVE, flyLaunch, PHYS, pressLaunches, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
 import { lianaCaught } from '../levelCheck.ts';
 import { RIDE } from '../ride.ts';
@@ -36,6 +36,9 @@ export interface RiverRow {
   /** how many of its logs carry one petal each, from the first log (data; unset: none). Each rides its log (Collectible.rides,
    *  ridePickups.ts): at its middle, PETAL_SIT over its top, hidden with it under a bank */
   petals?: number;
+  /** what floats on it (data; unset: logs). 'raft': a lashed raft (R-165.288; 2-4's last row to the jetty): the same carrier on the same
+   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider) */
+  look?: 'raft';
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -76,7 +79,7 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   const { count, period } = logLayout({ dir: row.dir, speed: row.speed, logW: row.logW, gap, width });
   const logs: Platform[] = [];
   for (let i = 0; i < count; i++) {
-    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY };
+    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY, ...(row.look ? { look: row.look } : {}) };
     const p: Platform = { id: nextId(), x: x0, y: logY, width: row.logW, height: LOG_HEIGHT, type: 'drift', style: 'log', drift };
     p.x = driftX(drift, 0);
     logs.push(p);
@@ -164,6 +167,51 @@ const FRAME = 1 / 30;
 const BODY_W = 44;
 
 /**
+ * One let-go's way down over a river's window (R-165.289: the drop judge's flight, lianaDrops, and the engine's let-go glow, letGoCue.ts,
+ * fly it here, so the glow and the judge can never disagree): `far`, he comes down on the bank past the water (the way on, whatever the
+ * logs do); else `cross`, the frames his feet come down through a log's top inside the window before any bank takes him (where, how fast,
+ * how long after the press in s, and whether from above). Flown as lianaDrops always has: the jump held, right held, the engine's air turn.
+ */
+export interface LetGoFall {
+  far: boolean;
+  cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
+}
+export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY'>): LetGoFall {
+  const top = w.baseY, bankTop = top - LOG_DROP;
+  const cross: LetGoFall['cross'] = [];
+  let far = false;
+  flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
+    if (c.vy < 0) return false;
+    const inWindow = c.x >= w.x0 && c.x <= w.x1;
+    if (!inWindow && prevY <= bankTop + 14 && c.y >= bankTop) {
+      far = c.x > w.x1;
+      return true;
+    }
+    if (inWindow && prevY <= top + DRIFT_CATCH.drop && c.y >= top) cross.push({ x: c.x, vx: c.vx, dt: t - l.pt, above: prevY < top - 2 });
+    return c.y > top + DRIFT_CATCH.drop;
+  }, true);
+  return { far, cross };
+}
+
+/**
+ * Does let-go `f` come down on one of `logs` when the river's clock reads `off` as he presses? As the engine lands him on a drift
+ * platform (onFloor): his middle within the log by DRIFT_CATCH.side of his width (Easy + easySide), his feet coming down through its top
+ * within DRIFT_CATCH.drop (letGoFall); Easy's ledge forgiveness, FORGIVE.landPx, for a foot just off its end moving toward it. `inset`
+ * (px, the glow's margin, letGoCue.ts; the judge none): the catch that much narrower at each end.
+ */
+export function fallOnLog(f: LetGoFall, logs: readonly DriftInfo[], off: number, easy: boolean, inset = 0): boolean {
+  const half = BODY_W * (DRIFT_CATCH.side + (easy ? DRIFT_CATCH.easySide : 0)) - inset;
+  const landPx = easy ? FORGIVE.easy.landPx : 0;
+  return f.cross.some((q) => logs.some((d) => {
+    const lx = driftX(d, q.dt + off);
+    if (q.x + half > lx && q.x - half < lx + d.width) return true;
+    if (!landPx || !q.above) return false;
+    const missL = lx - (q.x + half), missR = q.x - half - (lx + d.width);
+    return Math.max(missL, missR) <= landPx && (missL > 0 ? q.vx : -q.vx) >= 30;
+  }));
+}
+
+/**
  * Every let-go of liana `v` onto the logs `logs` (one river's: its x0..x1 window), as the engine plays the press (physics.ts pressLaunches:
  * the sweet spot's leap, the press a beat early or late) and lands it (engine.ts onFloor on a drift platform: his middle within the log
  * by DRIFT_CATCH.side of his width (Easy + easySide), his feet coming down through its top within DRIFT_CATCH.drop; Easy's ledge
@@ -176,11 +224,8 @@ export function lianaDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Diff
   return withSetting(difficulty, () => {
     const easy = difficulty === 'easy';
     const d0 = logs[0];
-    const top = d0.baseY, bankTop = top - LOG_DROP;
     const spacing = (d0.x1 - d0.x0 + d0.width) / logs.length / d0.speed;
     const m = Math.max(1, Math.round(spacing / FRAME));
-    const half = BODY_W * (DRIFT_CATCH.side + (easy ? DRIFT_CATCH.easySide : 0));
-    const landPx = easy ? FORGIVE.easy.landPx : 0;
     const period = vinePeriod(v);
     let share = 1, wait = 0;
     for (const g of LIANA_RIVER.grips) {
@@ -188,32 +233,10 @@ export function lianaDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Diff
       const n = L.length;
       const G = new Uint8Array(n * m);
       L.forEach((l, k) => {
-        // (the frames his feet come down through a log's top inside the window, before any bank takes him: where and when)
-        const cross: Array<{ x: number; vx: number; t: number; above: boolean }> = [];
-        let far = false;
-        flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
-          if (c.vy < 0) return false;
-          const inWindow = c.x >= d0.x0 && c.x <= d0.x1;
-          if (!inWindow && prevY <= bankTop + 14 && c.y >= bankTop) {
-            far = c.x > d0.x1;
-            return true;
-          }
-          if (inWindow && prevY <= top + DRIFT_CATCH.drop && c.y >= top) cross.push({ x: c.x, vx: c.vx, t, above: prevY < top - 2 });
-          return c.y > top + DRIFT_CATCH.drop;
-        }, true);
+        const f = letGoFall(l, d0);
         // (on the far bank: the way on, whatever the logs are doing)
-        if (far) G.fill(1, k * m, (k + 1) * m);
-        else for (let j = 0; j < m; j++) {
-          const off = (j * spacing) / m;
-          const on = cross.some((q) => logs.some((d) => {
-            const lx = driftX(d, q.t - l.pt + off);
-            if (q.x + half > lx && q.x - half < lx + d.width) return true;
-            if (!landPx || !q.above) return false;
-            const missL = lx - (q.x + half), missR = q.x - half - (lx + d.width);
-            return Math.max(missL, missR) <= landPx && (missL > 0 ? q.vx : -q.vx) >= 30;
-          }));
-          if (on) G[k * m + j] = 1;
-        }
+        if (f.far) G.fill(1, k * m, (k + 1) * m);
+        else for (let j = 0; j < m; j++) if (fallOnLog(f, logs, (j * spacing) / m, easy)) G[k * m + j] = 1;
       });
       let lands = 0;
       for (let i = 0; i < G.length; i++) lands += G[i];

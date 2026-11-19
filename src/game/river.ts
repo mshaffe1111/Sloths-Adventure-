@@ -26,6 +26,8 @@ export interface DriftInfo {
   offset: number;
   /** the log's top edge, px */
   baseY: number;
+  /** drawn as a raft, not a log (gen2/riverLay.ts RiverRow.look, R-165.288): the painted raft's deck is this top. Draw only */
+  look?: 'raft';
 }
 
 /** a river as the stage keeps it: the water to draw and the surface that is fatal */
