@@ -1,6 +1,6 @@
 # VAR-19b: finish 1-9's variety pass from VAR-19's EXACT NEXT STEP: Normal's dead walks seam by seam, then relist, every gate, castBots, stills.
 Level variety, Opus 5.5 high. Written 3:36 PM ET 11-19 (by `date` in the same command); starts in the first slot that frees (tonight if one
-does by 7:30 PM, else 8:30 AM Fri 11-20). A FRESH member: VAR-19 stopped at its context box (honest, clean head, nothing running).
+does by 7:30 PM, else from 8:30 AM Fri 11-20). A FRESH member: VAR-19 stopped at its context box (honest, clean head, nothing running).
 BOX: final hash by 11:15 PM ET if started tonight (else by 1:00 PM ET Friday), or 400k REAL context (the lead reads it and tells you; you
 cannot read it yourself, D64/D76); then the EXACT NEXT STEP pushed. 1-9 ships in release 1 only when this is green; otherwise the live
 1-9 stays (new replaces old only when it passes).
