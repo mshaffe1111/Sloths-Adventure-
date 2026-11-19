@@ -45,9 +45,10 @@ function engineLetGo(platforms: Platform[], v: Vine, hold: number, pt: number, r
   const vine = r.vines[0];
   const n = Math.round(vinePeriod(vine) / DT);
   const t0 = pt - (n + 1) * DT;
+  // (the game's clock first: the vines' clock is placed against it, engine.ts vineClock)
+  r.t = riverAt - (n + 1) * DT;
   r.swing(vine, { angle: vineAngle(vine, t0), omega: vineOmega(vine, t0), len: hold, t: t0 });
   Object.assign(r.e, { sweetSnap: null, swingLeapWait: 0 });
-  r.t = riverAt - (n + 1) * DT;
   r.useRealInput();
   const drifts = r.platforms.filter((q) => q.type === 'drift');
   const read = (): Frame => {
