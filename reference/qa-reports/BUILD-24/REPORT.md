@@ -288,3 +288,95 @@ lands the far bank from the liana; route.ts boards and rides as before); (4) a p
 5. The CLAUDE.md list once on the final head + funcheck, tipwalk, registrycheck, coveragecheck, every list --check, lockall vs main
    (main's lock: regenerate on origin/main with --out; --intended 2-4), meter 2-4 N/E.
 6. Stills/clips on the final head (stills24.mjs / clip24.mjs; shoot.mjs FREEZE for pairs).
+
+# BUILD-24d (packet reference/packets/2026-11-19/BUILD-24d.md): finish 2-4 from BUILD-24c's EXACT NEXT STEP; section written 3:52 PM ET 11-19
+Branch t-build-24c (from 249f6da4). Final hash: see EXACT NEXT STEP (gates unrun) (code: src/ changed only in d8d70797, every gate below on that src).
+Method used: reference/methods/level.md (rules 6, 8, 11-15, 18, 22), stage-fix.md, gates.md; the stills tools of BUILD-24/24c/ENG-24c.
+
+## EXACT NEXT STEP for BUILD-24e (BUILD-24d STOPPED at 3:52 PM ET 11-19 on the lead's context plan: real ~350k+, box 400k)
+Head: t-build-24c, the commit that adds this note. src/ changed ONLY in d8d70797 (stagePreload.ts + safeRiverPreload.test.ts); later commits
+are stills, logs, the handoff and this report. Items 1, 2, 3 DONE and pushed (below). Nothing of mine is left running: the full suite
+(started 3:43 PM) and lockall --check (started 3:50 PM) were RUNNING at the stop and die with this session = UNRUN (D59).
+1. GATES on the final head (logs to reference/qa-reports/BUILD-24d/gates/; the CLAUDE.md list, every item, once):
+   - PASS already on src d8d70797: tsc (gates/tsc.txt), knowncheck, generalitycheck, roadmapcheck (unshallowed), artcheck (gates/quick.txt),
+     BASE_PATH vite build + chunkcheck (gates/build.txt), safeRiverPreload.test 2/2 + stageSheets.test (10/10 together).
+   - UNRUN: the full suite (the CLAUDE.md line); lockall: main's lock is NOT committed (it was in this session's scratch): regenerate on
+     origin/main 6e7b85f8 (`git worktree add`, symlink node_modules, `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json`,
+     ~10 min), then `--layouts 16 --intended 2-4 --check lock-main.json` here (expect 2-4 only, or stages the merged lines moved: list them
+     for the lead before judging; my change is preload only and moves no layout). Then gates/chain.sh (one script, in the BACKGROUND):
+     the engine tool tests, tierBots.test, castBots 2-4 1-40 x5 bots x both (--par 3), kbdcheck, seedlist 1-1 and 2-4 --check,
+     registrycheck --lists, tipwalk --layouts 4, coveragecheck, funcheck (name every 2-4 flag; BUILD-24c had none), the meter (score.ts
+     --stages 2-4 --seeds 1-4 --settings normal,easy: name vs DIFFICULTY.md, don't tune), clipcheck, drawcheck. buildcheck LAST and ALONE.
+   - No relist needed: no layout moved (lockall confirms). castBots should match BUILD-24c's castbots-2-4-c.txt (no sim change).
+2. Then append the gate table (gate, head, result) and the castBots rows to this section; send the final hash to the lead.
+
+## The lead's quality items, before -> after
+1. **Normal's 'Flick up to hop up or over.' on 6 of 7 frames: a STILL-TOOL fault, not the game's** (lead accepted 3:39 PM ET).
+   - Source: stills24.mjs tapped the screen's MIDDLE to clear "cards", which clears only the stage-start goal card (dataset.hudCard),
+     never Dot's line (DotGuide.tsx: a tap must land ON the card, .dg-bub, onCard -> dotGuide.ts tap); and it never hopped. The hop line is
+     a move tip: it stays until he hops, then its phone reading time (5 s, readMs; R-165.175), or until tapped. So the one unread move tip
+     sat over every spot it teleported to.
+   - The engine's pick is right: lessonProbe.ts (the real engine, lessonTick and camera put back) picks 'gap' ONCE, at x880-1060, before a
+     50 px boulder (x1182, on the bank) he must hop. BUILD-24c's proposed lessons.ts change ("skip a gap whose next platform is the same
+     floor") would have taken the hop lesson off a real hop: NOT made. (Its pick reads the boulder's edge to the next ground, x1298->1400,
+     as a "gap": right moment, odd reason; it touches every stage's first boulder the same way; not changed, named.)
+   - On the real page (window.__dotGuide): the hop counts (jumps 1->2), the card yields while he is in the air and comes back for the rest
+     of its reading time, then goes (x~2156 walking); the stage's teach line then comes. It does NOT sit over the stage.
+   - After: stills24d.mjs (walks the start in real time, hops when stopped against a step or rock, taps Dot's card ON the card): sheet
+     stills/item1-normal-up-hop-card-sequence.jpg (card up at the boulder; gone after the hop; the teach; 'Flick up when a log drifts
+     close.' (+1); 'Flick up into the vine to grab it.'). Per-beat cards, both settings, both ways: stills/beats2/cards-*-run.log.
+2. **Easy SIDEWAYS dark-teal slab: the safe river's shallow strip was never preloaded; its first frame drew the DEEP sheet.** Fixed at the
+   source. riverArt drawRiverWater draws a safe river as ART-W2's shallow strip only once that strip has loaded (safeRiverArtReady), and
+   the strip was asked for only on a safe river's first draw: that frame fell back to the deep sheet (flat dark teal to the screen's foot,
+   the look of a river that costs a life). stagePreload.ts 'w2-props' loaded the river sheet but not the strip. Now it loads both with
+   the stage. Planted: src/game/safeRiverPreload.test.ts (RED without the fix: 'the shallow safe-river strip is asked for with the stage').
+   - Before/after (firstFrame.mjs: the first frame after he is placed by a river, sideways, Easy): item2-2-4-easy-side-x20900-first-frame-
+     before-after.jpg (before: slab; after: bed and stones), item2-2-4-easy-side-before-frames-1-2-4-30.jpg (frame 1 slab, frame 2 bed).
+   - LIVE (main 6e7b85f8, a second dev server): 2-1 and 2-2 show the same slab on their first safe river's first frame:
+     item2-LIVE-main-2-1-2-2-top-vs-branch-bottom-first-frame-side-easy.jpg (top main, bottom this branch). Stages touched: every stage
+     whose sheets include 'w2-props' = every stage that draws a river (stageManifest: st.rivers -> w2-props): World 2's river stages and
+     any other stage with a river; Easy everywhere, Normal at its safe (teaching) rivers. No layout moves (preload only).
+   - Not a sideways rule: BUILD-24c's sheet caught the first frame after a teleport. On the walked stills every Easy river shows its bed
+     upright and sideways (beats2/*easy*-sideways.jpg).
+3. **Full-size stills and the clip** (all on the real page, layout 1; judged as a player, whole screen):
+   - Per beat at each river's own edge, N and E, upright and sideways, Dot's cards shot then tapped: stills/beats2/ (65 files): start hop
+     card, teach ('Knock? Log coming! Let go when it's under you.'), drop x2880, catch (N x9970 / E x10110), no-land (N x15390 / E x15750),
+     relay (N x20640 / E x21020), raft (N x27750 / E x28370), exit x29500.
+   - Glow lit at the press, then the let-go landing on a log (ENG-24c's recGlow + shoot on this tree): stills/full/2-4-{N,E}-{up,side}-1-
+     glow-lit-at-press.jpg, -2-letgo-landing-on-log.jpg, N -3-on-log.jpg; clips stills/full/2-4-N-{up,side}-glow-clip.mp4.
+   - The raft, painted, Pokey on its deck (the middle bot's real run, recRaft): stills/full/2-4-N-{up,side}-6-on-the-painted-raft.jpg,
+     -6-landing-on-raft.jpg, clip 2-4-N-up-raft-clip.mp4.
+   - BUILD-24c's swing-to-log clips judged frame by frame (R-165.271): c24-r0 (beat 1): on the liana src frames 180-190, let-go ~192, a
+     clean arc, down on the log at the far bank ~216, hop up the bank 220-235: no snap, no hitch. c24-r3 (beat 4, log-to-liana): rides the
+     log from ~50, the log half sunk in the light water (full-size frame 90: his feet on it), the catch ~130, swing, let-go ~190, bank
+     ~220. c24-r4 (beat 6 + relay): liana, let-go, the rest bank, the logs (frames ~280-400: the bank-to-log stretch ENG-24e takes),
+     lianas, bank. Nothing wonky seen at 1-in-4 frames; the arcs are smooth both ways.
+## Polish check (the whole screen, D79; each with its still)
+- Hop card (item1-normal-up-hop-card-sequence.jpg): card at the boulder, gone after the hop, then each beat's own card. Pass.
+- Safe rivers, both settings, both ways (beats2/*easy*-sideways.jpg, item2-*): bed, stones and soil on every river from frame 1. Pass.
+- Deep rivers on Normal (beats2 x15390, x20640): the deep sheet, as the lead's ruling 1 wants (a river that costs a life). Pass.
+- Glow (full/2-4-N-up-1-glow-lit-at-press.jpg, crop checked): the warm disc on his grip, the landing on a log. Pass.
+- Raft (full/2-4-N-{up,side}-6-on-the-painted-raft.jpg): World 2's painted lashed raft, his feet on the deck. Pass.
+- ROUGH, named (not mine to change): on a SAFE river the log sits half sunk under drawSafeRiverOver's light band and reads faint on a
+  phone, close to "standing on pale water" (c24-r3 frame 90, beats2 catch). A look call for Content/the lead (touches 2-1, 2-2 too).
+- Named: on Easy no bot boards the raft (recRaft: middle and child 0 frames; the rafts are laid, x28230-28774): the Easy raft is
+  skippable; no Easy raft-ride still from a run (BUILD-24c's placed raft-ride-2-4-N-E-up-side.jpg shows it drawn).
+- Named: the catch beat's liana is off an upright screen from the bank (x9970/x10110); its line comes 800 px before (rule 6) and the
+  question is decided on the log, where it is in view (c24-r3). Judge for rule 8.
+- Tool artifact, not the game: "This way, Pokey! Try over here." on Easy at x27760 (beats run 1) = the stuck watch reading the tool's
+  teleports as turns back; gone when spots are at the river's edge.
+
+4. Gates: see EXACT NEXT STEP (partly run). Commits: ddc44b2d (item 1 tool + sheet), d8d70797 (item 2 fix + test), 640a34b0 (live 2-1/2-2), f15b6111 (stills), 108a9039 (handoff).
+5. ENG-24e (the bank-to-log skip on beats 4 and 6): NOT fixed here (the packet). BUILD-24c's packet text, carried verbatim:
+   (verbatim in the BUILD-24c section above, "### ENG-24e (packet text for Friday's fresh engine member)"; unchanged.)
+## Learned (proposed level.md rules)
+(a) A still tool clears Dot's line by a tap ON her card (.dg-bub) and does the move a move tip asks for; tapping the screen's middle
+    clears only the goal card, and a teleport-only tool shows one unread tip over every spot (stills24d.mjs). Check: the cards log per spot.
+(b) Every picture a stage draws is loaded with the stage (stagePreload), never only on first draw: a first-draw fallback can show the
+    WRONG thing (a safe river drawn deep). Check: a first-frame still after a place (firstFrame.mjs) and a preload test per new look.
+(c) Shoot each beat at its own river's edge for EACH setting (Easy's rivers sit further right than Normal's): spots from the built
+    stage's rivers, not one list for both.
+Lessons applied: D19 (the still tool's tap did not call what a thumb calls), D30 (times from `date`), D57/D87 (notifications at every push;
+long runs in the background), D59 (unrun gates named), D64/D76 (stopped on the lead's real figure), D69 (clips judged frame by frame),
+D79 (whole-screen pass), D81/D86 (the full list named; drawcheck in the chain).
+Miss to log: d8d70797's Claude-Session line carries the lead's session link, not mine (pushed; not rewritten).
