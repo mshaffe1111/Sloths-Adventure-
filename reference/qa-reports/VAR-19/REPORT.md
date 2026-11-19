@@ -22,7 +22,6 @@ Immobile kit rows today: W1 boa, W6 frog (beatenBy.still: reads L too), W7 sentr
 tools/validate/validate.test.ts (not in CI, ciTests.known.json debt) has 5 reds, the same 5 on ce4ad461 (chase outrun, 3 route, 1 beats).
 
 ## 3. Level data
-(to fill)
 Every piece is World 1's inventory (moss_stone banks and roots, Matt's painted 50 px boulder, the W1 climb vine, the mushroom): no new
 art, no Hugging Face. Commits d0b421832, 47adbbbb2, cfcadf997 and the dips commit (section 5).
 | Piece | What | Why |
@@ -49,7 +48,7 @@ layouts, longest s): teach approach x~2500 13 lay. 4.0 s; stair 10 lay. 3.1 s (w
 and walks over 2.5 s at many rest-to-beat seams (x 10000-20500, 1-9 lay. each, up to 4.7 s at 11500). No layout is clean yet.
 
 ## 5. EXACT NEXT STEP (VAR-19 stopped at ~350k context, the lead's box; VAR-19b finishes)
-1. Head: the "dips" commit on t-var-19 (relisted 100/100 on it? NO: relist5 was run on the dips data, the list file is in the commit).
+1. Head: 68df60759 on t-var-19. 1-9's list in it was relisted on that exact data (100 proven of 100, quiet line under 4 s on 100).
 2. Dead walk N to under 15 layouts: run `reference/qa-reports/VAR-19/probes/dead.ts 1-9 1 16 normal`; for each bucket name the seam
    (section before / after). The seam walks are rest end (root down) + rolled join + a beat's walk-in bank: try ending each rest on a
    root DOWN of 200 px (shorter flat), and each beat's first bank (320) cut to ~200. Re-measure; 6 fresh seeds (seedlist --worker 0/1
