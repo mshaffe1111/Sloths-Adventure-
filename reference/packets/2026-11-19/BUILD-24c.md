@@ -30,6 +30,9 @@ letGoCue.test.
 2b. ENG-285's measure (11-18 8:57 PM) on 2-4's drop judge (ENG-24 calib rows), new model vs old: Easy 'back' 82% -> 77% (bar 85%: it was
    already under), Easy lashed wait 0.60 -> 0.63 s (bar 0.6), Normal gap200 wait 1.50 -> 1.23 s, the rest within 0.03 s / 1 point. Re-tune
    2-4's Easy rows on the FINAL model until every row clears its bar, flown; say which rows and by how much.
+2c. With the exact hop judge (ENG-285b) a bot on the lianaRide toy hopped from the BANK straight onto a drifting log and never took the
+   liana. Check 2-4's liana beats on the final model: if a bank-to-log hop skips a liana the design wants taken (the teach, the relay),
+   the lay must start that row's logs beyond hop reach (flown); if the shortcut is fine for the beat, name it. Say which per beat.
 3. Relist 2-4 (seedlist.ts 2-4), castBots 2-4 1-40 x 5 bots x both settings: child/middle/expert 40/40 both settings, Easy fewer hits than
    Normal, kid/adult traced; fromLog > 0 on traced runs.
 4. THE CLAUDE.md CHECK LIST, EVERY ITEM, ONCE on your final head (D86), plus funcheck (name every flag on 2-4; World 1 flags are not
