@@ -7319,6 +7319,8 @@ export class GameEngine {
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     this.drawRivers(ctx, world, false);
+    // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
+    this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
     if (this.proto?.bankWall)
       drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
@@ -7777,7 +7779,7 @@ export class GameEngine {
       this.drawPopups(ctx);
       ctx.restore();
     }
-    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0, ownScene, this.camera.viewportWidth >= this.camera.viewportHeight);
+    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0, ownScene, false);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);

@@ -64,3 +64,28 @@ test('the petals are drawn by renderDrift and left out of the overlay when the g
     }
   }
 });
+
+test("on a stage the frame's foot clumps are never drawn, either way up: every one is code-drawn and the screen's bottom edge is soil (BUILD-24c)", async () => {
+  // (the engine's own call: its last argument is `foot`; the scenery's baked layers cannot be drawn headless (no 2D canvas), so this reads
+  // the one line that decides it, as the game runs it. RED if the stage passes foot true, or by orientation, as it did at 622fa1b4)
+  const fs = await import('node:fs');
+  const src = fs.readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
+  const calls = [...src.matchAll(/renderOverlay\(ctx, world\.id,[^;]*\);/g)].map((m) => m[0]);
+  assert.equal(calls.length, 1, `the engine draws the overlay once: ${calls.join(' | ')}`);
+  assert.match(calls[0], /, false\);$/, `the stage asks for no foot clumps: ${calls[0]}`);
+  // (and every world's foot clump is one of the code-drawn kinds: a PAINTED clump would be a new kind, and may come back sideways)
+  const { ENV } = await import('./envKit.ts');
+  for (const [w, kit] of Object.entries(ENV)) if (kit?.front) assert.ok(['reed', 'fern', 'rock'].includes(kit.front), `world ${w}: foot clump '${kit.front}'`);
+});
+
+test("World 5's own drifting petals are drawn behind the stage too: before the ground, never in its front pass (BUILD-24c)", async () => {
+  const fs = await import('node:fs');
+  const eng = fs.readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
+  const drift = eng.indexOf('this.w5?.drawDrift('), ground = eng.indexOf('renderWorldObjects(\n'), front = eng.indexOf('this.w5?.drawFront(');
+  assert.ok(drift > 0 && ground > 0 && front > 0, 'the three calls are in the engine');
+  assert.ok(drift < ground, 'World 5\'s petals are drawn after the ground (in front of the soil)');
+  // (the front pass draws no petal: w5Play.ts drawFront's body up to the next method)
+  const w5 = fs.readFileSync(new URL('./w5Play.ts', import.meta.url), 'utf8');
+  const body = w5.slice(w5.indexOf('  drawFront('), w5.indexOf('  drawDrift('));
+  assert.ok(body.length > 0 && !body.includes('drawPetal('), "World 5's front pass draws petals over the ground");
+});

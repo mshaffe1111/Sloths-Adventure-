@@ -2418,17 +2418,21 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
   const set = ensure(world);
   const s = vh / H;
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
-  // (`foot` false: the frame's low clumps at the bottom edge are left out, its hanging leaves kept (the top half of the tile). Sideways the
-  // bottom edge is the ground's lip, where the clumps peek in; upright it is deep in the soil, where World 2's reeds and World 1's ferns
-  // read as grass growing underground (BUILD-24c): the game passes foot = sideways)
-  if (!foot) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(0, 0, vw, vh * FRAME_HANG_H);
-    ctx.clip();
+  // (`foot` false, on a stage: the frame's low clumps at the bottom edge are left out and its hanging leaves kept (the top of the tile).
+  // Every foot clump is CODE-DRAWN (envKit.ts paintFrontClump: reed strokes, flora.ts fernFrond, rock polygons; artKit.ts drawBananaLeaf),
+  // and on a stage the screen's bottom edge is soil: World 2's reeds read as grass growing underground, upright most of all (BUILD-24c;
+  // the lead's ruling 2:03 PM ET 11-19: no code-drawn foot clump on a stage, either way up). A painted backdrop's frame is clumps only
+  // (buildFront hangs = false), so it draws nothing on a stage. Menus and story scenes keep the clumps.)
+  if (foot || !set.painted) {
+    if (!foot) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, vw, vh * FRAME_HANG_H);
+      ctx.clip();
+    }
+    drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96, rig ? { layer: 'front', rig, time, sway: !lite && polishTier() < 1 } : undefined);
+    if (!foot) ctx.restore();
   }
-  drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96, rig ? { layer: 'front', rig, time, sway: !lite && polishTier() < 1 } : undefined);
-  if (!foot) ctx.restore();
   if (RICH_MID(look, world)) renderLifeFront(ctx, look, world, camX, vw, vh, time);
   if (rig && !lite) polishFront(ctx, rig, world, camX, vw, vh, time);
   // the dark edge vignette stays on at every quality (it is one small cached picture stretched over the screen): dropping it at lower
