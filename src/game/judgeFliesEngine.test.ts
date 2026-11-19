@@ -13,7 +13,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, DT } from './realPlay.ts';
-import { airStep, PHYS, pressLaunches, setTimedSwing, swingGrab, swingSetup, vinePeriod, vineAngle, vineOmega, type AirBody, type PressLaunch } from './physics.ts';
+import { airStep, groundStep, PHYS, pressLaunches, setTimedSwing, swingGrab, swingSetup, takeOffStep, vinePeriod, vineAngle, vineOmega, type AirBody, type PressLaunch } from './physics.ts';
 import { driftX, LOG_DROP, LOG_HEIGHT, type DriftInfo } from './river.ts';
 import { fallOnLog, letGoFall } from './gen2/riverLay.ts';
 import type { Platform, Vine } from './types.ts';
@@ -194,3 +194,57 @@ test('a no-steer air frame: airStep coasts as the engine does and brakes at airS
   assert.ok(worst < 1e-3, `the worst frame is ${worst.toExponential(2)} px off (${worstAt})`);
 });
 
+/**
+ * ENG-285b (R-165.297): the frames on the ground before and at a jump. The engine steers the frame a jump leaves on ON the ground
+ * (PHYS.groundAcc, the turn bonus reversing; nothing steering brakes nothing that frame) and only then lifts him; a hop flown from its
+ * first frame as an air tick (airStep) under-steered a take-off from below a run (a stand: 4.1 px short over the flight). takeOffStep is
+ * that frame; groundStep a frame of running on flat ground (the bots' run-up while a press is on its way, firsttimer.ts hopAim). Here he
+ * stands at every speed either way, runs or brakes a few frames through the game's own touch input, then jumps, and every frame is the
+ * model's to the pixel.
+ */
+test('the take-off frame and the run-up: takeOffStep and groundStep fly as the engine does, every speed and steer (R-165.297)', () => {
+  const FLAT = { id: 1, x: 0, y: G, width: 4000, height: 40, type: 'solid' } as Platform;
+  let n = 0, worst = 0, worstAt = '', offGround = 0;
+  for (const vx0 of [0, 60, 150, 250, PHYS.maxRun, -150, -PHYS.maxRun]) {
+    for (const run of [1, 0, -1] as const) {
+      for (const jumpDir of [1, 0, -1] as const) {
+        for (const runFrames of [0, 3]) {
+          const r = new RealPlay('2-1', 1);
+          r.e.skills.delete('glide');
+          r.bare([FLAT]);
+          r.useRealInput();
+          r.stand(2000, G);
+          r.p.vx = vx0;
+          const b: AirBody = { x: 2000, y: G, vx: vx0, vy: 0 };
+          const what = `from ${vx0} px/s, run ${run} for ${runFrames}, jump steering ${jumpDir}`;
+          const check = (frame: string) => {
+            const d = Math.max(Math.abs(r.p.x - b.x), Math.abs(r.p.y - b.y), Math.abs(r.p.vx - b.vx) * DT);
+            if (d > worst) { worst = d; worstAt = `${what}, ${frame}`; }
+            assert.ok(d < 1e-6, `${what}, ${frame}: engine ${r.p.x.toFixed(2)},${r.p.y.toFixed(2)} vx ${r.p.vx.toFixed(1)}; model ${b.x.toFixed(2)},${b.y.toFixed(2)} vx ${b.vx.toFixed(1)}`);
+          };
+          for (let i = 0; i < runFrames; i++) {
+            r.frame({ right: run > 0, left: run < 0 });
+            groundStep(b, DT, run);
+            check(`run frame ${i + 1}`);
+            n++;
+          }
+          r.frame({ right: jumpDir > 0, left: jumpDir < 0, press: true, jump: true });
+          b.vy = -PHYS.jumpV;
+          takeOffStep(b, DT, jumpDir, true);
+          assert.ok(!r.p.grounded, `${what}: he left the ground`);
+          check('the take-off frame');
+          n++;
+          if (Math.abs(vx0) < PHYS.maxRun && jumpDir !== 0) offGround++;
+          for (let i = 0; i < 8; i++) {
+            r.frame({ right: jumpDir > 0, left: jumpDir < 0, jump: true });
+            airStep(b, DT, jumpDir, true);
+            check(`air frame ${i + 1}`);
+            n++;
+          }
+        }
+      }
+    }
+  }
+  assert.ok(offGround >= 40, `take-offs steered from below a run: ${offGround}`);
+  assert.ok(worst < 1e-6, `${n} frames; the worst is ${worst.toExponential(2)} px off (${worstAt})`);
+});

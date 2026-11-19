@@ -224,6 +224,45 @@ export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, d
   b.y += b.vy * dt;
 }
 
+/**
+ * The frame a jump leaves the ground (its launch already in `b.vy`), as the engine plays it (ENG-285b, R-165.297): he steers ON the ground
+ * first (PHYS.groundAcc, the turn bonus reversing; nothing steering brakes nothing on the take-off frame, engine.ts `takeOff`), then the
+ * frame's gravity and move are airStep's. Flown as an air tick, a hop from below a run under-steered that frame (a stand: 4.1 px short
+ * over the flight); at a full run the two are the same.
+ */
+export function takeOffStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
+  groundSteer(b, dt, dir, true);
+  airStep(b, dt, 0, hold);
+}
+
+/**
+ * One frame on flat ground, as the engine runs him (ENG-285b): the ground steer (PHYS.groundAcc, the turn bonus reversing; at a run's
+ * top speed the engine's bleed, so a held run steps 285 / 267.7 px/s frame to frame; nothing steering, PHYS.groundDec), then the move.
+ * (the bots' hop aims: where a run carries him while a press is on its way, firsttimer.ts lianaWait)
+ */
+export function groundStep(b: AirBody, dt: number, dir: -1 | 0 | 1) {
+  groundSteer(b, dt, dir, false);
+  b.x += b.vx * dt;
+}
+
+/** the engine's steer of a grounded Pokey (engine.ts, the standard movement; not ducking, no attack, no power-up): `takeOff`, the frame a
+ *  jump leaves on, brakes nothing when nothing steers */
+function groundSteer(b: AirBody, dt: number, dir: -1 | 0 | 1, takeOff: boolean) {
+  if (dir !== 0) {
+    if (dir * b.vx < PHYS.maxRun) {
+      const reversing = Math.sign(b.vx) === -dir && Math.abs(b.vx) > 20;
+      b.vx += dir * (PHYS.groundAcc + (reversing ? PHYS.turnBonus : 0)) * dt;
+      if (dir * b.vx > PHYS.maxRun) b.vx = dir * PHYS.maxRun;
+    } else {
+      b.vx -= dir * PHYS.airDec * dt;
+    }
+  } else if (!takeOff) {
+    const dec = PHYS.groundDec * dt;
+    if (Math.abs(b.vx) <= dec) b.vx = 0;
+    else b.vx -= Math.sign(b.vx) * dec;
+  }
+}
+
 export interface FlightOpts {
   /** launch speed (positive = up) */
   v0: number;

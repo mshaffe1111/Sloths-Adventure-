@@ -14,8 +14,10 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, DT } from '../../src/game/realPlay.ts';
-import type { Platform } from '../../src/game/types.ts';
-import { PRESS_TRACE, SKILLS } from './firsttimer.ts';
+import type { Platform, Vine } from '../../src/game/types.ts';
+import { groundStep, PHYS, swingSetup, vinePeriod } from '../../src/game/physics.ts';
+import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
+import { hopAim, hopCatchAt, hopCatches, pressIn, PRESS_TRACE, SKILLS, touchHeld } from './firsttimer.ts';
 import { fixtureSeed, lianaRun } from './lianaRiverToys.ts';
 
 const VARIANTS = [1, 2, 3, 4, 5];
@@ -94,4 +96,83 @@ test('the bot aims its presses at the frame they reach the engine (ENG-285, R-16
     PRESS_TRACE.on = false;
     PRESS_TRACE.rows.length = 0;
   }
+});
+
+/**
+ * ENG-285b (R-165.297): the bot's hop aims for a liana (lianaWait off a lip, vineFromLog off a log) fly the press as the engine plays it.
+ * Both aimed at `clock + lag`: the vine read a frame early (the engine's catch reads his place after a frame against the NEXT frame's
+ * clock) and the lag never rounded to the frame the press reaches the engine on (pressIn); and the hop's first frame was flown in the air
+ * where the engine steers it on the ground (takeOffStep). Here a press decided now with thumb lag `lag` is played into the REAL engine
+ * (the game's own InputEngine) the way the bot plays it: the steer held through the lag (lianaWait's pending press) or nothing held (a
+ * stand, vineFromLog's `still`), the press on the frame pressIn names, the jump held as pressHold holds it. The aim (hopAim) must name
+ * the engine's take-off (his place on the frame before the press, the vines' clock on the press's), and the bot's own verdict (hopCatches
+ * from that aim) must be the engine's catch, on every lag, take-off spot and moment of two lianas' swings.
+ */
+test('the bot\'s liana hop aims (lianaWait, vineFromLog) name the engine\'s take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)', () => {
+  const G = 2000;
+  const bank = { id: 1, x: 0, y: G, width: 1200, height: 40, type: 'solid' } as Platform;
+  const VINES = [
+    { id: 7, x: 1290, topY: G - 560, bottomY: G - 120, swaySpeed: 1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true },
+    { id: 8, x: 1330, topY: G - 480, bottomY: G - 90, swaySpeed: 1.3, swayPhase: 0.4, vineType: 'swing_liana', isSwingingVine: true },
+  ] as Vine[];
+  // (each its own swing, as a stage with one liana here sets it up: side by side, two this close would have no room to swing at all)
+  for (const v of VINES) swingSetup([v]);
+  assert.ok(VINES.every((v) => (v.swingAmp ?? 0) > 0.3), 'set-up: both lianas swing');
+  let n = 0, caughtN = 0, missedN = 0, worstX = 0;
+  const wrong: string[] = [];
+  for (const v of VINES) {
+    const P = vinePeriod(v);
+    for (const mode of ['run', 'stand'] as const) {
+      for (const lag of [0.01, 0.03, 0.05, 0.09, 0.13, 0.2]) {
+        for (const x0 of mode === 'run' ? [1010, 1060, 1110] : [1080, 1130, 1170]) {
+          for (const own of [0.16, 0.3]) {
+            for (let s = 0; s < 12; s++) {
+              const r = new RealPlay('2-1', 1);
+              r.e.skills.delete('glide');
+              r.bare([bank], [{ ...v }]);
+              r.useRealInput();
+              r.stand(x0, G);
+              r.p.vx = mode === 'run' ? PHYS.maxRun : 0;
+              r.t = 50;
+              r.vineClock = (P * s) / 12;
+              // (the bot reads him now; the press it decides on reaches the engine pressIn(lag) on)
+              const now = { x: r.p.x, vx: r.p.vx, clock: r.vineClock };
+              const aim = hopAim(lag);
+              const hold = touchHeld(own, MIN_TOUCH_JUMP_HOLD_MS);
+              const k = Math.round(pressIn(lag) / DT);
+              const steer = mode === 'run' ? { right: true } : {};
+              for (let i = 1; i < k; i++) r.frame(steer);
+              const what = `vine ${v.id} ${mode} lag ${lag} from ${x0} hold ${own} moment ${s}/12`;
+              // (lianaWait's run-up while the press comes, as the bot flies it; a stand stays put)
+              const run = { x: now.x, y: G, vx: now.vx, vy: 0 };
+              for (let f = Math.round(aim.off / DT); f > 0; f--) groundStep(run, DT, mode === 'run' ? 1 : 0);
+              const dx = Math.max(Math.abs(r.p.x - run.x), Math.abs(r.p.vx - run.vx) * DT);
+              worstX = Math.max(worstX, dx);
+              assert.ok(dx < 1e-6, `${what}: he takes off from ${r.p.x.toFixed(2)} at ${r.p.vx.toFixed(1)}, the aim says ${run.x.toFixed(2)} at ${run.vx.toFixed(1)}`);
+              assert.ok(r.p.grounded, `${what}: still on the bank when the press comes`);
+              r.frame({ right: true, press: true, jump: true });
+              assert.ok(Math.abs(r.vineClock - (now.clock + aim.clock)) < 1e-6, `${what}: the press's frame is at vine clock ${r.vineClock.toFixed(4)}, the aim says ${(now.clock + aim.clock).toFixed(4)}`);
+              // (the frame after the press's on which the engine has him on the liana, -1 for none)
+              let at = -1;
+              for (let i = 0; i < 60; i++) {
+                if (r.p.isVineSwinging) { at = i; break; }
+                if ((r.p.grounded && i > 1) || r.p.y > G + 200) break;
+                r.frame({ right: true, jump: (i + 2) * DT < hold });
+              }
+              const judged = hopCatches(v, run.x, G, 1, hold, now.clock + aim.clock, run.vx);
+              const judgedAt = hopCatchAt(v, run.x, G, 1, hold, now.clock + aim.clock, run.vx);
+              n++;
+              if (at > 0) caughtN++;
+              else missedN++;
+              if (judged !== at > 0 || judgedAt !== at) wrong.push(`${what}: the engine ${at > 0 ? `caught it ${at} frames after the press` : 'missed'}, the bot's aim says ${judgedAt > 0 ? `caught, ${judgedAt} frames after` : 'missed'}`);
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.deepEqual(wrong.slice(0, 12), [], `${wrong.length} of ${n} hops: the bot's verdict (or its frame) is not the engine's`);
+  // (the sample holds both: hops the engine catches and hops it misses)
+  assert.ok(caughtN >= 100 && missedN >= 100, `${caughtN} caught, ${missedN} missed of ${n}`);
+  assert.ok(worstX < 1e-6, `the aim's take-off is ${worstX.toExponential(2)} px off at worst`);
 });
