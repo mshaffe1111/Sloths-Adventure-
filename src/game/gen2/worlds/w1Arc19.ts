@@ -153,18 +153,22 @@ function forestThenFreeze(): Lay {
 }
 /** [P] beat 3, freeze in stride: a rising stair of landings, a boa on the first and third (no gap to save him); a flag before it. Each boa
  *  210 px into its landing, so its rear (150 px out) starts after the step up has landed, never mid-hop (he can't stop in the air) */
+/** (VAR-19, the lead's ruling (a) 3:33 PM ET: a narrow root dip in the stair's opening bank, 'ad', so the walk up to the first boa is not
+ *  a dead walk, 3.7 s on 15 of 16 Normal layouts; each boa keeps its own root and place on it) */
 function freezeStair(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), root('s1', 'a', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('z', 'd2', 320, DOWN)],
+    pieces: [bank('a', null, 120), root('ad', 'a', 160, DOWN), root('ae', 'ad', 160, UP), root('s1', 'ae', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('z', 'd2', 320, DOWN)],
     sockets: [flag('a'), petals('pa', 'a', 0.7, 1), boa('b1', 's1', 0.7, 'boa'), petals('ps2', 's2', 0.5, 1), boa('b2', 's3', 0.7, 'boa', easy ? 'soften' : 'stay'),
       petals('pd', 'd2', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-miss', 'z', 0.7, 'miss')],
   };
 }
 /** [X] beat 5, make it miss (Mario Bros.' closing window): a boa at a bough's end past a gap; he lands outside its strike, it rears and
  *  strikes bark; while its head is out (0.8 s) he steps in and bops it (dazed 2.5 s), or he freezes; a flag before it */
+/** (VAR-19, the lead's ruling (a): the walk-in bank before the hop is a narrow root dip of the same length, 'ad' + 'w1', so the walk up
+ *  to the boa is not a dead walk, 3.7 s on 12 of 16 Normal layouts; the boa's hop and bough unchanged) */
 function makeItMiss(): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 300), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 320)],
+    pieces: [bank('a', null, 320), root('ad', 'a', 150, DOWN), root('w1', 'ad', 150, UP), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 320)],
     sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.62, 'boa'), petals('pc', 'c', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-nest', 'z', 0.7, 'nest')],
   };
 }
@@ -302,7 +306,7 @@ export const QUIET_19: SectionTemplate[] = [
   // (a rolled stage's flag before the teach stands on it, 1,500-2,400 px before the teach: pipeline.ts ROLLED_FLAGS), a boulder on the low
   // bough after it, a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
+    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z1', 'r2', 160, DOWN), root('z2', 'z1', 160, UP), root('z', 'z2', 220, DOWN)],
       sockets: [petals('pb', 'b3', 0.5, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
   rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),

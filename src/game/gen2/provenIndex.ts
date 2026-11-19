@@ -11,7 +11,7 @@ export const PROVEN_INDEX: Record<string, { n: number; version: string; load: ()
   '1-6': { n: 100, version: 'e98480ba', load: () => import('./proven/seeds-1-6.ts') },
   '1-7': { n: 100, version: '89b45774', load: () => import('./proven/seeds-1-7.ts') },
   '1-8': { n: 100, version: 'd9089477', load: () => import('./proven/seeds-1-8.ts') },
-  '1-9': { n: 100, version: '1efb2c98', load: () => import('./proven/seeds-1-9.ts') },
+  '1-9': { n: 100, version: '491c8c95', load: () => import('./proven/seeds-1-9.ts') },
   '2-1': { n: 100, version: '0c8ad7fe', load: () => import('./proven/seeds-2-1.ts') },
   '2-2': { n: 100, version: 'a8d674dd', load: () => import('./proven/seeds-2-2.ts') },
 };
