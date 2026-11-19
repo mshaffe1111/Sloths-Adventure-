@@ -15,6 +15,9 @@ Read first, in order:
 Every ruling below cites the file and section where it's written in full.
 
 ## 1. Where the design data lives
+- **World 3 (DESIGN-31-32, 6:12 PM ET 11-19):** reference/design/3-1.md, 3-2.md (built-ready); the flights `npx tsx reference/specs/sims/w3flight.ts
+  normal|easy hop|wake|drop|puff|rope|prowl|all` (InputEngine; the prowler is the kit's own OCELOT via core.ts stepPredator) and the node
+  strings `npx tsx reference/specs/sims/nodes3132.ts`; outputs in reference/specs/sims/out/w3flight-*.txt.
 
 | What | Where |
 |---|---|
@@ -187,6 +190,14 @@ Every ruling below cites the file and section where it's written in full.
 - **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) lies on the twist's hollow floor past its root every roll (FX's findSpot on 'hf' at t 0.66; t 0.6 could stand inside the root), and Dot says "There's something down by the roots..." on the lip (D12, t-12-design@cc0def2a, on INT-2's 90a54102).
 
 ## 5. Traps (each of these happened)
+
+- **The glowworm wake reads x only (DESIGN-31-32):** a light 3000 px below wakes with one 60 px below (w3flight wake); in a shaft one stop
+  would light everything. ENG-DARK bounds it in y. Fly WHICH lights wake, not only when.
+- **Two prowler brains:** enemyBrain.ts (170 px up, World 6) is not what World 3 casts; the creature kit (predators/world3.ts, core.ts
+  inSight, tall 80) is. Fly the kit's own stepPredator with the hanging feet height the engine gives (94 px at a 190 px root).
+- **No fall hurts in the engine at any height** (flown to 1400 px); the cost of a wrong drop is what is under it. A landing over 80 px only
+  buzzes (haptic); noise starts past 200 px (heroNoise LOUD.landing.soft).
+- **InputEngine has no 'up' move:** Up/Down are `triggerTouchClimb(-1 | 1)`; `triggerTouchMove('up')` silently does nothing.
 
 - **The inspector's route jumps OVER blocks (DIFF-ALGO, 11-12):** routeJumps links two banks over a raised hump or a lower dip (1-2's
   root humps and root steps), and inspectJumps then calls the space under that jump a 231 px pit. A player hops onto the hump or steps

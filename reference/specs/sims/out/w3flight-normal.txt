@@ -1,0 +1,35 @@
+hop normal tap from a full run: 0.40 s in the air, 120 px along, apex 62 px
+hop normal tap from a stand: 0.40 s in the air, 0 px along, apex 62 px
+wake normal from a run (268 px/s when Right let go, 160 px short of the rim): still after 0.10 s, slid 7 px; lights wake 0.80 s after letting go (GLOW_STILL 0.7); fully lit 1.73 s (fade 0.6); 1:awake 2:awake 3:awake 4:asleep (reach back 260 / ahead 1050, by x only)
+wake normal from a stand-start (285 px/s when Right let go, 160 px short of the rim): still after 0.10 s, slid 8 px; lights wake 0.80 s after letting go (GLOW_STILL 0.7); fully lit 1.70 s (fade 0.6); 1:awake 2:awake 3:awake 4:awake (reach back 260 / ahead 1050, by x only)
+wake normal: standing 0.40 s wakes 0 light(s); 0.80 s wakes 3
+drop normal D=80: stand: 0.23 s air, lands 81 px past the rim, 583 px/s HARD, noise none, lives lost 0 | run: 0.23 s air, lands 79 px past the rim, 583 px/s HARD, noise none, lives lost 0
+drop normal D=120: stand: 0.27 s air, lands 89 px past the rim, 667 px/s HARD, noise none, lives lost 0 | run: 0.27 s air, lands 88 px past the rim, 667 px/s HARD, noise none, lives lost 0
+drop normal D=160: stand: 0.33 s air, lands 108 px past the rim, 833 px/s HARD, noise none, lives lost 0 | run: 0.33 s air, lands 106 px past the rim, 833 px/s HARD, noise none, lives lost 0
+drop normal D=200: stand: 0.37 s air, lands 117 px past the rim, 917 px/s HARD, noise none, lives lost 0 | run: 0.37 s air, lands 116 px past the rim, 917 px/s HARD, noise none, lives lost 0
+drop normal D=240: stand: 0.40 s air, lands 126 px past the rim, 950 px/s HARD, noise 216 px, lives lost 0 | run: 0.40 s air, lands 125 px past the rim, 950 px/s HARD, noise 216 px, lives lost 0
+drop normal D=300: stand: 0.47 s air, lands 145 px past the rim, 950 px/s HARD, noise 270 px, lives lost 0 | run: 0.47 s air, lands 143 px past the rim, 950 px/s HARD, noise 270 px, lives lost 0
+drop normal D=400: stand: 0.57 s air, lands 173 px past the rim, 950 px/s HARD, noise 360 px, lives lost 0 | run: 0.57 s air, lands 171 px past the rim, 950 px/s HARD, noise 360 px, lives lost 0
+drop normal D=600: stand: 0.80 s air, lands 237 px past the rim, 950 px/s HARD, noise 540 px, lives lost 0 | run: 0.80 s air, lands 235 px past the rim, 950 px/s HARD, noise 540 px, lives lost 0
+drop normal D=900: stand: 1.10 s air, lands 320 px past the rim, 950 px/s HARD, noise 560 px, lives lost 0 | run: 1.10 s air, lands 318 px past the rim, 950 px/s HARD, noise 560 px, lives lost 0
+drop normal D=1400: stand: 1.63 s air, lands 467 px past the rim, 950 px/s HARD, noise 560 px, lives lost 0 | run: 1.63 s air, lands 466 px past the rim, 950 px/s HARD, noise 560 px, lives lost 0
+drop: LOUD.landing {"soft":200,"min":180,"perPx":0.9,"max":560}
+puff normal D=160: Right pressed at a stand 30 px from the rim -> lands in 0.53 s; lit 3.2 s of 6.4: a press sees and lands in light 2.67 s a cycle (42%), worst wait 3.73 s
+puff normal D=240: Right pressed at a stand 30 px from the rim -> lands in 0.60 s; lit 3.2 s of 6.4: a press sees and lands in light 2.60 s a cycle (41%), worst wait 3.80 s
+puff normal D=320: Right pressed at a stand 30 px from the rim -> lands in 0.70 s; lit 3.2 s of 6.4: a press sees and lands in light 2.50 s a cycle (39%), worst wait 3.90 s
+puff normal D=400: Right pressed at a stand 30 px from the rim -> lands in 0.77 s; lit 3.2 s of 6.4: a press sees and lands in light 2.43 s a cycle (38%), worst wait 3.97 s
+rope normal H=146: tap CATCHES at 0.10 s, hold CATCHES at 0.10 s, hold+up CATCHES at 0.10 s, double+up CATCHES at 0.10 s; hanging feet 50 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.13 s at 393 px/s, noise none (HANG_DROP 86)
+rope normal H=170: tap CATCHES at 0.20 s, hold CATCHES at 0.17 s, hold+up CATCHES at 0.17 s, double+up CATCHES at 0.17 s; hanging feet 74 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.20 s at 560 px/s, noise none (HANG_DROP 86)
+rope normal H=190: tap misses, hold CATCHES at 0.23 s, hold+up CATCHES at 0.23 s, double+up CATCHES at 0.23 s; hanging feet 94 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.23 s at 643 px/s, noise none (HANG_DROP 86)
+rope normal H=210: tap misses, hold misses, hold+up misses, double+up CATCHES at 0.37 s; hanging feet 114 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.23 s at 643 px/s, noise none (HANG_DROP 86)
+rope normal H=230: tap misses, hold misses, hold+up misses, double+up CATCHES at 0.40 s; hanging feet 134 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.27 s at 727 px/s, noise none (HANG_DROP 86)
+rope normal H=250: tap misses, hold misses, hold+up misses, double+up CATCHES at 0.47 s; hanging feet 154 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.30 s at 810 px/s, noise none (HANG_DROP 86)
+rope normal H=280: tap misses, hold misses, hold+up misses, double+up misses; hanging feet 184 px over the floor; creep 120 px/s (ROPE_SPEED 120); Down drops in 0.33 s at 893 px/s, noise none (HANG_DROP 86)
+prowl normal feet 94 px up, dark (today's kit): noticed on 0/48 crossings, tell began on 0/48 (a crossing started at a random moment passes 100%; the longest wait for a clean start 0.00 s); never lit
+prowl normal feet 94 px up, lit ring r=60: noticed on 17/48 crossings, tell began on 35/48 (a crossing started at a random moment passes 27%; the longest wait for a clean start 8.00 s); 1.03 s in the light
+prowl normal feet 94 px up, lit ring r=90: noticed on 34/48 crossings, tell began on 38/48 (a crossing started at a random moment passes 21%; the longest wait for a clean start 8.50 s); 1.50 s in the light
+prowl normal feet 94 px up, lit ring r=120: noticed on 37/48 crossings, tell began on 44/48 (a crossing started at a random moment passes 8%; the longest wait for a clean start 9.50 s); 2.03 s in the light
+prowl normal feet 74 px up, dark (today's kit): noticed on 48/48 crossings, tell began on 48/48 (a crossing started at a random moment passes 0%; the longest wait for a clean start 12.00 s); never lit
+prowl normal feet 74 px up, lit ring r=60: noticed on 48/48 crossings, tell began on 48/48 (a crossing started at a random moment passes 0%; the longest wait for a clean start 12.00 s); 1.03 s in the light
+prowl normal feet 74 px up, lit ring r=90: noticed on 48/48 crossings, tell began on 48/48 (a crossing started at a random moment passes 0%; the longest wait for a clean start 12.00 s); 1.50 s in the light
+prowl normal feet 74 px up, lit ring r=120: noticed on 48/48 crossings, tell began on 48/48 (a crossing started at a random moment passes 0%; the longest wait for a clean start 12.00 s); 2.03 s in the light
