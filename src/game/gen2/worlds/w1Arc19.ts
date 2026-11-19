@@ -250,9 +250,11 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
  *  stair, outside every boa read and every teach */
 const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the old boughs', job: 'rest', versions: [{
   id: 'roots',
-  lay: { pieces: [bank('a', null, 140), root('b', 'a', 160, UP), root('c', 'b', 160, DOWN), root('d', 'c', 160, UP), root('e', 'd', 160, DOWN), root('f', 'e', 160, UP), root('g', 'f', 160, DOWN), root('h', 'g', 160, UP), root('i', 'h', 160, DOWN), root('j', 'i', 140, UP), root('z', 'j', 120, DOWN)],
-    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pf', 'f', 0.5, 2, 80),
-      { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },
+  // (VAR-19c: the knots, its own shape: a long bough with a boulder on it, a wide hollow walked into and stepped out of, then one root
+  //  dip and one narrow knot gap, so its moves read 'J j', not the old five root dips 'JJJJJ' every rest repeated)
+  lay: { pieces: [bank('a', null, 140), root('b', 'a', 340, UP), boulder('kb', 'b', 0.6), root('c', 'b', 200, DOWN), root('d', 'c', 300, UP), root('e', 'd', 160, DOWN), root('f', 'e', 220, UP), root('g', 'f', 80, DOWN), root('h', 'g', 140, UP), root('z', 'h', 100, DOWN)],
+    sockets: [flag('c', 0.5), petals('pb', 'kb', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pf', 'f', 0.5, 2, 80),
+      { id: 'seed', role: 'find', on: 'f', t: 0.5, dn: 60 }] },
 }] });
 /** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
 const boulder = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [140, 150], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
@@ -283,22 +285,28 @@ const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t
  *  climbed by steps alone ran 5-6 s quiet, over the quiet line's 4 s, and seedlist refused it. A walked rise is also held under a single's
  *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
 const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
-  pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('c', 'b', 200, DOWN), root('d', 'c', 300, UP), root('e', 'd', 360, UP), boulder('k', 'e', 0.4), root('f', 'e', 120, DOWN), root('g', 'f', 220, UP), root('h', 'g', 220, [102, 108]), root('i', 'h', 140, UP), root('z', 'i', 120, DOWN)],
+  // (VAR-19c: a knot gap first, then up onto the crook and over its boulder, off the crook's end over its long drop, a second boulder on
+  //  the far bough, a wide hollow and a root up and down home: 'j J', never three root dips in a row; each boulder placed so no walk runs 2.5 s)
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 420, UP), boulder('k', 'e', 0.7), root('f', 'e', 200, [102, 108]), root('g', 'f', 420, UP), boulder('k2', 'g', 0.4), root('h', 'g', 140, DOWN), root('i', 'h', 80, UP), root('z', 'i', 80, DOWN)],
   sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.92), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 /** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
 const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
-  pieces: [bank('a', null, 140), root('r', 'a', 220, UP), root('f', 'r', 300, DOWN), boulder('k1', 'f', 0.5), root('g', 'f', 340, UP), boulder('k2', 'g', 0.4), root('h', 'g', 140, DOWN), root('i', 'h', 140, UP), root('z', 'i', 120, DOWN)],
+  // (VAR-19c: a hop from the root onto the first boulder, down off it and up a root onto the high bough, over its boulder and a knot gap
+  //  home: 'j j', the boulders the rest's own move)
+  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('f', 'r', 320, DOWN), boulder('k1', 'f', 0.45), root('g', 'f', 400, UP), boulder('k2', 'g', 0.3), root('h', 'g', 80, DOWN), root('i', 'h', 120, UP), root('z', 'i', 120, DOWN)],
   sockets: [flag('g', 0.2), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.93, 1), petals('pi', 'i', 0.5, 1)] } }] });
 /** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
  *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
 const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
-  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('m', 'b', 240, DOWN), ...wallClimb('c', 'm', 240, 212, 340), root('y', 'c', 160, UP), root('d', 'y', 160, [128, 132]), root('e', 'd', 140, [102, 108]), root('f', 'e', 100, UP), root('z', 'f', 100, DOWN)],
+  // (VAR-19c: a root up, down to the wall's foot, the climb, a knot gap along the high bough, then the long drops home: 'C j', the vine its own)
+  pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('m', 'b', 180, DOWN), ...wallClimb('c', 'm', 180, 212, 300), root('cd', 'c', 80, DOWN), root('y', 'cd', 120, UP), root('d', 'y', 160, [128, 132]), root('e', 'd', 180, DOWN), root('f', 'e', 100, UP), root('z', 'f', 100, DOWN)],
   sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pf', 'f', 0.5, 2, 60)] } }] });
 /** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
  *  it, a root up and down along it, and the drop home (a hop either side of the bounce: the quiet line, 4 s) */
 const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {
-  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('b', 'r', 240, DOWN), mushroom('bm', 'b', 240), bounced('c', 'b', 'bm', 400, 150), root('y', 'c', 220, UP), root('e', 'y', 260, [96, 100]), root('f', 'e', 260, [96, 100]), root('g', 'f', 140, UP), root('z', 'g', 120, DOWN)],
+  // (VAR-19c: the bounce up, a knot gap along the old bough, then down its long steps home over a boulder: 'J J', not three drops read as jumps)
+  pieces: [bank('a', null, 140), root('r', 'a', 300, UP), root('b', 'r', 240, DOWN), mushroom('bm', 'b', 240), bounced('c', 'b', 'bm', 400, 150), root('cd', 'c', 80, DOWN), root('y', 'cd', 120, UP), root('e', 'y', 260, [96, 100]), boulder('ke', 'e', 0.4), root('f', 'e', 120, DOWN), root('g', 'f', 200, UP), root('z', 'g', 120, DOWN)],
   sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('y', 0.5), petals('pf', 'f', 0.5, 1), petals('pg', 'g', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
   // [A] thick mossy boughs; nothing hurts in 1,300 px. The first move as soon as he can (VAR-19: the old arrival walked 800 px past the
