@@ -675,8 +675,15 @@ export class W5Play {
     this.trayFly.forEach((f) => {
       if (f && f.y < view.y1 + 200) drawFlyingTray(ctx, f.x, f.y, (t - f.at) * 12);
     });
-    if (w5.petals) {
-      // painted petals drifting down through the light, tumbling (petalSprites.ts)
+  }
+
+  /**
+   * World 5's painted petals drifting down through the light, tumbling (petalSprites.ts): drawn BEHIND the stage (the engine calls this
+   * before the ground), so the ground and its soil hide one that drifts below the ground line; drawn in front they tumbled through the
+   * soil band (BUILD-24c, the pair of World 2's weather petals: scenery.ts renderDrift)
+   */
+  drawDrift(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0: number; y1: number }) {
+    if (this.w5.petals) {
       const vw = view.x1 - view.x0, vh = view.y1 - view.y0;
       ctx.save();
       for (let i = 0; i < 14; i++) {

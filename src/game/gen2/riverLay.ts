@@ -36,6 +36,9 @@ export interface RiverRow {
   /** how many of its logs carry one petal each, from the first log (data; unset: none). Each rides its log (Collectible.rides,
    *  ridePickups.ts): at its middle, PETAL_SIT over its top, hidden with it under a bank */
   petals?: number;
+  /** what floats on it (data; unset: logs). 'raft': a lashed raft (R-165.288; 2-4's last row to the jetty): the same carrier on the same
+   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider) */
+  look?: 'raft';
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -76,7 +79,7 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   const { count, period } = logLayout({ dir: row.dir, speed: row.speed, logW: row.logW, gap, width });
   const logs: Platform[] = [];
   for (let i = 0; i < count; i++) {
-    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY };
+    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY, ...(row.look ? { look: row.look } : {}) };
     const p: Platform = { id: nextId(), x: x0, y: logY, width: row.logW, height: LOG_HEIGHT, type: 'drift', style: 'log', drift };
     p.x = driftX(drift, 0);
     logs.push(p);

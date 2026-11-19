@@ -35,7 +35,8 @@ test("gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by high
 
 test('no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before', () => {
   const levels = generateAllLevels().filter((l) => !l.secret && l.worldIndex <= 4 && !builtOnGen2(l)); // (builtOnGen2: the one definition, stageGenerator.ts; 1-1, 1-2 and 1-3 roll on gen2)
-  assert.ok(levels.length >= 30, `${levels.length} stages`);
+  // (29 since 2-4 left for gen2, BUILD-24 (1-9 before it, BUILD-19): the floor keeps the walk from going quietly empty)
+  assert.ok(levels.length >= 29, `${levels.length} stages`);
   for (const l of levels) {
     const st = generateStage(l, 'normal');
     assert.equal(st.platforms.filter((p) => p.ownLook).length, 0, `${l.id}: no ownLook piece`);

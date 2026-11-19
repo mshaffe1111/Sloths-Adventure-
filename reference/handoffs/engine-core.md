@@ -1,6 +1,6 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
@@ -67,6 +67,60 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
   put-back; logs PUTBACK frame/shot for same-moment stills). Report and tables: reference/qa-reports/FIX-284/REPORT.md.
 - Open: kid N 27/40 touch on 2-2 and child N touch 39/40 (deep22 run-offs; accepted, R-165.306, the Designer's); shoot.mjs (kitaudit)
   pins p.y = top - height but p.y is his feet: its stills float him 48 px (Content's tool).
+
+## 0zp-24d. BUILD-24d (t-build-24c, 11-19): a safe river's strip loads with the stage; Dot's cards in stills
+- **A safe river's first frame (R: the lead's item 2):** riverArt drawRiverWater paints a safe river (Easy everywhere, Normal's teaching
+  rivers) from ART-W2's shallow strip only once it has loaded (safeRiverArtReady); until then it falls back to the DEEP sheet, a dark-teal
+  slab, the look of a river that costs a life. stagePreload.ts 'w2-props' now loads the strip with the river sheet (safeRiverPreload.test).
+  Any new river look (a new strip, a new world's water) goes in the same preload branch, never only on first draw.
+- **Stills that show Dot's cards right:** Dot's line is cleared by a tap ON the card (.dg-bub, DotGuide.tsx onCard), not the screen's
+  middle (that clears only the goal card, dataset.hudCard). A move tip ("Flick up to hop up or over.") stays until its move, then its
+  5 s reading time on the phone (R-165.175). A still tool that teleports and never does the move shows one tip over every spot. Use
+  reference/qa-reports/BUILD-24d/stills24d.mjs (walks the start, hops when stopped, taps the card) and window.__dotGuide() (dev) to read
+  the queue (cur, base, moves).
+- **lessons.ts pickLesson 'gap'** fires at a boulder on a bank (reads boulder edge -> next ground as a gap): the right moment for a hop,
+  for an odd reason; every stage's first boulder alike. Left as is (BUILD-24c's proposed change would have dropped a real hop's lesson).
+
+## 0zn-24c. ENG-24c (t-eng-24c from t-meter-3 42459a5c, 11-18): the raft look (R-165.288) and the glow that agrees with the log (R-165.289)
+- **The raft (data):** a river row's `look: 'raft'` (gen2/riverLay.ts RiverRow) -> layRiver puts it on every carrier's DriftInfo.look (river.ts;
+  draw only: the judge, the bots and the physics read a raft row exactly as its log row, riverRaft.test.ts). Drawn: on World 2's painted water
+  riverArt.ts drawRiverLog draws World 2's PAINTED raft (puzzle-kit#raft, w2.json, placed as puzzlePlay.ts's sluice raft: deck = the carrier's
+  top); the drawn layer (no painted sheet) gives it platformPlan's 'raft' look (spanArt's code-drawn raft painter), never rotated to barge/pad.
+  The kit's sheet is preloaded for any gen2 stage whose kit places a raft row (gen2/game.ts gen2Rafts/laysRafts -> stageSheets 'kit-pieces').
+  Until the sheet loads the painted log stands in. The toy has a `raft` row (tools/inspect/lianaRiverToys.ts TOY_RIVERS.raft).
+- **The glow (letGoCue.ts):** on a liana over a log river (river.ts lianasOver) the swing's glow and glints (engine.ts sweetGlow) mean "a let-go
+  pressed now comes down on a log or the bank ahead"; anywhere else they are the sweet spot, as always (1-6 test: the drawn glow is World 1's
+  ease to the frame). The swing is a pure function of the vine clock, so per liana, hold and facing ONE table is flown (physics.ts
+  pressLaunchesFrom at two clocks half a frame apart, each press flown by gen2/riverLay.ts letGoFall: the judge's own flight); each frame
+  looks up the press for the vine's phase and tests the logs at the landing time (fallOnLog). Facing back = the same flight on the mirrored
+  vine. 0.19 ms a table (this container), built when he takes hold or his hold rests at a new length; while his grip moves the river says
+  nothing. Over a river the glow goes out the frame the moment passes (no fade over the water).
+- **CUE (letGoCue.ts) is tighter than the judge, measured against the engine:** the press climbs his hold one frame first (a jump press is Up:
+  inputEngine.ts triggerTouchUp), and the catch is read 8 px narrower on both readings of the river clock (the judge's, and one frame back:
+  the engine moves the logs before him). Through the game's own touch input on the toy (long, gap280/deep, the raft row, both settings,
+  facing back): 0 frames lit over water, lit on 83-97% of the frames whose let-go lands (letGoCue.test.ts; 6 px left one frame on the raft row).
+- **Traps:** (1) the judge (lianaDrops) and the bot still leave out the press-frame climb and read the logs one frame ahead: debt, named in
+  the REPORT. (2) The leaf: a returning player who HOLDS the jump glides (glide.ts) far past where the judge, the bot and the glow read; a
+  first-time 2-4 player has no leaf, and the tests take it off. (3) A river run by a sluice (RiverZone.flowT) gets no river glow (its clock
+  can stop). (4) RealPlay.swing does not reset the engine's sweetSnap: a test must clear it, or a 'late' press reads a stale snap.
+  (5) withFixtureConfig / withTestStage are synchronous: an `await` inside them drops the fixture ("no stage 2-94").
+
+## 0zm-24. BUILD-24 (t-build-24 from t-meter-3@42459a5c, 11-18): 2-4 "Never Touch the Bank" built on 0zl's pieces; what the next builder and engineer must know
+- **Where:** src/game/gen2/worlds/w2Arc24.ts (kit 'w2-24', kitLib24; RIVERS_24; LINES_24, MISSION_24), stageTable '2-4' judged 'normal-2-4'
+  (flownArcs.ts n24, chain.md §1, reference/qa-reports/BUILD-24/fly-2-4.txt), proven list seeds-2-4.ts (100). The hand-built 2-4 is gone
+  (w2Stages.ts W2_STAGES, w2Sections.ts plan + the kinds only it used, swing4 and island). Tests: w2Arc24.test.ts (planted-faults.py).
+- **Two lianas over ONE river (beats 6, 8):** two swings after the same bank, the river after the second (0zl's form). The second must hang
+  past physics CHAIN.dx (560 px) from the first: closer, the pair is a CHAIN (phased for a leap), the route swings liana to liana and the
+  log between them is skipped (reach 600 was 435 px apart). w2Arc24.ts FAR_W = 765; the test holds >= CHAIN.dx.
+- **The quiet line binds liana rivers (listRules quietJudge, 4 s):** route.ts's lianaDrop is NOT a beat; from the swing to the next action
+  he flies (dist/430 + 1.2 s + half the worst wait) and then walks. A river whose far bank is 600+ px past the liana, or a flat landing
+  bank, reads 4.2-8.5 s. Fix by data: a boulder at each landing (0.15), 2 log spacings for practise rivers. 2-4's list sits at 4 s.
+- **Easy's judge (<= 0.6 s wait) refuses a 320 px log-caught liana on every row (0.63 s) and beat 4's twin/long (0.63-0.70 s):** 340 px
+  under the 410 top, and `deep` logs for Easy's beat 4. A 300 px log at 60 px/s breaks riverFaults' 4 s log beat (no `lashed` row).
+- **A finale brief adds a finale node** (pipeline graphFor `ends`): a design with none needs `ends: 'quiet'`, else the pool is short.
+- **Open (engine, before 2-4 ships; the lead's rulings 3:12/3:15 PM ET):** R-165.288/.289: RiverRow.look 'raft' (beat 9 rides a log) and
+  the sweet-spot glow agreeing with the log on a liana over a river (engine.ts:2412-2426 is phase-only). Not done: the camera pull-out.
+
 
 ## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
 - **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against

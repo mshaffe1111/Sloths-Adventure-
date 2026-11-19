@@ -1,0 +1,2 @@
+== npx tsc --noEmit -p . (head 42aef3d90) start 5:02 PM
+exit 0 end 5:02 PM

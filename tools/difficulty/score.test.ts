@@ -301,15 +301,20 @@ test('the anchor is 1-1 on its fixed layouts (anchor11.ts): a relist of 1-1 that
 import { freezeWindow, isPredatorRead, creatureBits } from './score.ts';
 import { BOA, EAGLE, SNAKE } from '../../src/game/predators/world1.ts';
 import { RealPlay } from '../../src/game/realPlay.ts';
-test('PREDATOR READ: the boa is read by its freeze window, flown on the real engine; a longer rear widens it; Easy never narrower', () => {
+test('PREDATOR READ: the boa is read by its freeze window, flown on the real engine; a shorter rear narrows it; Easy never narrower', () => {
   assert.ok(isPredatorRead(BOA) && !isPredatorRead(EAGLE) && !isPredatorRead(SNAKE), 'the boa only: the eagle is a watcher, the snake walks');
   const n = freezeWindow(BOA, 'normal'), e = freezeWindow(BOA, 'easy');
   assert.ok(n !== null && n > 0 && n < BOA.tell, `Normal ${n}: inside its rear`);
   assert.ok(e !== null && e >= n!, `Easy ${e} vs Normal ${n}`);
-  // (PLANTED: the window is the engine's, not a constant: a boa whose rear lasts half a second longer leaves him more frames to stop)
+  // (PLANTED: the window is the engine's, not a constant. Restated at the shipped boa (ENG-285b's measure, 11-19, the lead's ruling 3:16 PM
+  //  ET): METER-3 planted 'a longer rear, a wider window' against the old boa (rear 0.8 s, a harmless coil); the merged 1-9 boa rears
+  //  1.0 s and its coil hurts on touch (the 11-15 ruling), so his run reaches the coil first and a longer rear cannot widen the window,
+  //  while a shorter one still narrows it (0.7 s -> 0.13 s, 0.5 s -> none). A constant window fails the first assert)
   const was = BOA.tell;
+  (BOA as { tell: number }).tell = was - 0.3;
+  try { const w = freezeWindow(BOA, 'normal'); assert.ok(w === null || w < n!, 'a shorter rear, a narrower window'); } finally { (BOA as { tell: number }).tell = was; }
   (BOA as { tell: number }).tell = was + 0.5;
-  try { assert.ok(freezeWindow(BOA, 'normal')! > n!, 'a longer rear, a wider window'); } finally { (BOA as { tell: number }).tell = was; }
+  try { assert.ok(freezeWindow(BOA, 'normal')! >= n!, 'a longer rear never narrows it'); } finally { (BOA as { tell: number }).tell = was; }
   assert.ok(creatureBits(n!) > creatureBits(BOA.tell), 'the read asks more than the plain rear did');
 });
 

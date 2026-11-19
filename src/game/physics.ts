@@ -890,6 +890,8 @@ export interface PressLaunch {
   px: number;
   py: number;
   pt: number;
+  /** what the press did (releaseCall, with a whole swing behind it): a 'late' press leaps from the sweet spot just passed */
+  call?: 'sweet' | 'late' | 'early' | 'now';
 }
 
 /**
@@ -916,10 +918,18 @@ export function pressClimb(len: number, frames: number, v: SwingVine, dt = 1 / 3
  * pressWindow counts them; gen2/riverLay.ts liana drops land them on moving logs; the first-timer bot aims its drops with them.
  */
 export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
-  const DT = 1 / 30;
   const len = A.bottomY - A.topY;
+  return pressLaunchesFrom(A, swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * grip, len - 20), vx: 300, vy: 100 }, A));
+}
+
+/**
+ * pressLaunches from the swing state `s0` (the vine's clock and his hold, `len`): the same presses, one a frame, frames counted from
+ * s0's clock. The engine's let-go cue (letGoCue.ts) holds it at his own hold, and at two clocks half a frame apart, so a press at any
+ * moment of the swing is read off the nearest. `s0` is stepped on (pass a copy to keep it).
+ */
+export function pressLaunchesFrom(A: SwingVine, s0: SwingState): PressLaunch[] {
+  const DT = 1 / 30;
   const n = Math.round(vinePeriod(A) / DT);
-  const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * grip, len - 20), vx: 300, vy: 100 }, A);
   // two swings and a bit of states: the presses are the second swing (the first gives "since the sweet spot")
   const st: Array<{ s: SwingState; r: { x: number; y: number }; sweet: boolean }> = [];
   for (let k = 0; k < 2 * n + 20; k++) {
@@ -946,7 +956,7 @@ export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
     const sa = st[at].s;
     // (a press a beat late leaps from the sweet spot just passed, as it was then: the climb came after it)
     const l = timedLaunch(call === 'late' && snap ? from : { ...from, len }, 1);
-    out.push({ x: A.x + Math.sin(sa.angle) * len, y: A.topY + Math.cos(sa.angle) * len, vx: l.vx, vy: l.vy, t: sa.t!, px: st[k].r.x, py: st[k].r.y, pt: st[k].s.t! });
+    out.push({ x: A.x + Math.sin(sa.angle) * len, y: A.topY + Math.cos(sa.angle) * len, vx: l.vx, vy: l.vy, t: sa.t!, px: st[k].r.x, py: st[k].r.y, pt: st[k].s.t!, call });
   }
   return out;
 }

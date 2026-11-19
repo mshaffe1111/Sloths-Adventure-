@@ -1,0 +1,35 @@
+upright hop 1 at x621 (card: none)
+upright hop 2 at x1163 (card: none)
+upright hop 3 at x2261 (card: Knock? Log coming! Let go when it's under you. [+2])
+upright after the hop x2603: null
+upright x2108 teach: Flick up to hop up or over. [+1]
+upright x2108-teach card0: Flick up to hop up or over. [+1]
+upright x2108-teach card1: Run through petals to pick them up. [+1]
+upright x2108-teach card2: A flag! Fall, and you start again here.
+upright x2880 drop: Flick up when a log drifts close. [+1]
+upright x2880-drop card0: Flick up when a log drifts close. [+1]
+upright x2880-drop card1: Flick up into the vine to grab it.
+upright x2880-drop card2: Flick up as you swing forward to leap.
+upright x10110 catch: null
+upright x15750 noland: null
+upright x21020 relay: null
+upright x28370 raft: null
+upright x29500 exit: null
+sideways hop 1 at x621 (card: none)
+sideways hop 2 at x1163 (card: none)
+sideways hop 3 at x2261 (card: Knock? Log coming! Let go when it's under you. [+2])
+sideways after the hop x2603: Knock? Log coming! Let go when it's under you. [+2]
+sideways start-after-hop card0: Knock? Log coming! Let go when it's under you. [+2]
+sideways start-after-hop card1: Flick up to hop up or over. [+2]
+sideways start-after-hop card2: Flick up when a log drifts close. [+1]
+sideways start-after-hop card3: Run through petals to pick them up.
+sideways x2108 teach: null
+sideways x2880 drop: Flick up into the vine to grab it. [+1]
+sideways x2880-drop card0: Flick up into the vine to grab it. [+1]
+sideways x2880-drop card1: Flick up as you swing forward to leap. [+1]
+sideways x2880-drop card2: A flag! Fall, and you start again here.
+sideways x10110 catch: null
+sideways x15750 noland: null
+sideways x21020 relay: null
+sideways x28370 raft: null
+sideways x29500 exit: null

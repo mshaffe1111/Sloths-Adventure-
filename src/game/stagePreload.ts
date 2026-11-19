@@ -29,7 +29,7 @@ import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets 
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
+import { RIVER_LOOK, W2_PROPS_URL, riverArtReady, safeRiverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
@@ -99,6 +99,10 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w2-props') {
       riverArtReady();
       urls.push(W2_PROPS_URL);
+      // (and the safe river's shallow strip: asked for only at its first draw, that frame drew the DEEP sheet, a dark-teal slab, the look
+      // of a river that costs a life, at the first safe river of every stage; BUILD-24d, safeRiverPreload.test.ts)
+      safeRiverArtReady();
+      urls.push(RIVER_LOOK.safe.url);
     } else if (k === 'w3-props') {
       w3ArtReady();
       urls.push(W3_PROPS_URL);

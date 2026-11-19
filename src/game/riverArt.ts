@@ -10,6 +10,7 @@ import type { Platform } from './types.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
 import { drawSoil } from './groundPaint.ts';
+import { drawKitArt } from './puzzleArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -73,6 +74,12 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+/**
+ * how far behind a bank a river's water, bed and soil are drawn on (engine.ts drawRivers, riverUnderBanks): World 2's painted bank cliff
+ * tapers in below its top by about 70 px at the foot of an upright screen, and the river stopping at the bank's edge left the backdrop
+ * showing in that wedge (BUILD-24c). Twice that, for the cliffs of other banks; the bank is drawn in front and hides the rest.
+ */
+export const RIVER_UNDER_BANK = 140;
 
 /**
  * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the
@@ -185,11 +192,18 @@ export function drawRiverWater(
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */
 export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: number): boolean {
   if (!riverArtReady()) return false;
+  const bob = Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
+  // a raft (RiverRow.look 'raft', R-165.288): World 2's painted raft (puzzle-kit#raft, w2.json), set as the sluice rooms set it
+  // (puzzlePlay.ts: the painting's deck, about a quarter down it, level with the raft's top, where he stands); the log stands in only
+  // until the kit's sheet has loaded (a stage that lays a raft asks for it before play: stageSheets.ts, gen2Rafts)
+  if (p.drift?.look === 'raft') {
+    const rh = p.width * 0.44;
+    if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + rh * 0.72 + bob, { w: p.width * 1.1, h: rh })) return true;
+  }
   const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
   const f = W2_FRAMES[n];
   const w = p.width * 1.08;
   const h = (w * f.h) / f.w;
-  const bob = Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
   // the bark's top is about a fifth of the way down the painting (the moss and the twig stand up above it)
   blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + 2 - h * 0.2 + bob, w, h, p.id % 2 === 1);
   return true;

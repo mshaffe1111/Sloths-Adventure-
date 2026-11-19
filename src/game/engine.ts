@@ -69,7 +69,7 @@ import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite, drawLeafBit } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
+import { renderScenery, renderOverlay, renderDrift, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
 import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -104,10 +104,12 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, type DriftInfo } from './river.ts';
+import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
@@ -981,6 +983,13 @@ export class GameEngine {
   private sweetGlow = 0;
   /** the swing's last moment in its sweet spot (for a press to let go a beat late), and a press made a beat early that is waiting for it */
   private sweetSnap: (SwingState & { dir: -1 | 1; at: number }) | null = null;
+  /** the liana he holds hangs over a log river (letGoNow): the glow goes out at once when the moment passes */
+  private cueOverRiver = false;
+  /** the log river under each liana (letGoNow), found once for the platforms it was found in */
+  private cueRivers: { from: Platform[]; by: Map<number, { logs: DriftInfo[]; flowT: boolean } | null> } | null = null;
+  /** the let-go tables flown (letGoCue.ts), by liana, facing and hold; the one in use */
+  private cueTables = new Map<string, LetGoTable>();
+  private cueTab: { id: number; dir: -1 | 1; len: number; tab: LetGoTable } | null = null;
   private swingLeapWait = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
@@ -1085,6 +1094,9 @@ export class GameEngine {
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
+    this.cueRivers = null;
+    this.cueTables.clear();
+    this.cueTab = null;
     this.vineLash.clear();
     this.vineStruck.clear();
     resetHeroClips();
@@ -2433,6 +2445,7 @@ export class GameEngine {
           // the self-swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
           // him to face the way he will let go, up and down climb, and the only choice is when. A glint shows the sweet spot for letting go.
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const hold0 = sw.len;
           const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
           // (with the vine's own swing, `amp`: a press a beat late leaps from this, and timedLaunch reads the swing it was on. Without it
@@ -2448,9 +2461,13 @@ export class GameEngine {
               this.input.state.jumpPressed = true;
             }
           }
-          this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
+          // the glow and its glints say "let go now": the sweet spot, or over a log river only when a let-go now comes down on a log or
+          // the bank ahead (letGoCue.ts, R-165.289: 2-4's "Let go when it's under you"); display only, the press is played as above
+          const cue = this.letGoNow(nearSwingVine, sw, p.facing, sweet, sw.len !== hold0);
+          // (it eases in; over a river it goes out the frame the moment passes, never fading over the water: World 1's still fades)
+          this.sweetGlow = !cue && this.cueOverRiver ? 0 : this.sweetGlow + ((cue ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
-          if (sweet && this.sweetGlint <= 0) {
+          if (cue && this.sweetGlint <= 0) {
             this.sweetGlint = 0.14;
             this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG, r.y - Math.cos(sw.angle) * VINE_HANG, '#fde68a');
           }
@@ -6201,12 +6218,17 @@ export class GameEngine {
     const t = this.gameTime;
     const bottom = cam.y + cam.viewportHeight + 40;
     for (const r of rivers) {
-      if (r.x1 < cam.x - 40 || r.x0 > cam.x + cam.viewportWidth + 40) continue;
-      const a = Math.max(r.x0, cam.x - 20);
-      const b = Math.min(r.x1, cam.x + cam.viewportWidth + 20);
+      // (behind the banks, the water, its bed and the soil under it run on under each bank that meets the river (riverUnderBanks): a
+      // bank's painted cliff tapers in below its top, and where the river stopped at the bank's edge the backdrop showed through as a
+      // grey wall, a dark strip and a pale patch of the backdrop's water under every river bank, upright; BUILD-24c, 2-1, 2-2 and 2-4)
+      const [ul, ur] = over ? [0, 0] : this.riverUnderBanks(r);
+      const x0 = r.x0 - ul, x1 = r.x1 + ur;
+      if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
+      const a = Math.max(x0, cam.x - 20);
+      const b = Math.min(x1, cam.x + cam.viewportWidth + 20);
       ctx.save();
       ctx.beginPath();
-      ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
+      ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
@@ -6246,6 +6268,19 @@ export class GameEngine {
       ctx.restore();
     }
   }
+
+  /** how far a river's water, bed and soil run on under its left and right banks, behind them (drawRivers): RIVER_UNDER_BANK where a
+   *  solid bank's edge meets the river's edge with its top over the water (the bank is drawn in front and hides it), else 0 */
+  private riverUnderBanks(r: RiverZone): [number, number] {
+    let m = this.riverUnder.get(r);
+    if (!m) {
+      const meets = (edge: (p: Platform) => number, at: number) => this.platforms.some((p) => p.type === 'solid' && Math.abs(edge(p) - at) <= 4 && p.y < r.surfaceY && p.y + p.height > r.surfaceY);
+      m = [meets((p) => p.x + p.width, r.x0) ? RIVER_UNDER_BANK : 0, meets((p) => p.x, r.x1) ? RIVER_UNDER_BANK : 0];
+      this.riverUnder.set(r, m);
+    }
+    return m;
+  }
+  private riverUnder = new WeakMap<RiverZone, [number, number]>();
 
   /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
   private riverLogsPainted(worldId: number): boolean {
@@ -6779,6 +6814,41 @@ export class GameEngine {
     return s.right ? 1 : s.left ? -1 : fallback;
   }
 
+  /**
+   * Is this the moment the swing's glow says "let go now"? On a liana over a log river (letGoCue.ts, R-165.289): a let-go pressed now,
+   * toward `dir`, comes down on a log or past the water on the bank ahead (the drop judge's own flight, riverLay.ts); not while his grip
+   * moves (`gripMoved`: the tables are flown at a hold, once it rests) nor over a river a sluice runs (its clock, river.ts logClock, can
+   * stop). Anywhere else the sweet spot (`sweet`), as always.
+   */
+  private letGoNow(v: Vine, sw: SwingState, dir: -1 | 1, sweet: boolean, gripMoved: boolean): boolean {
+    if (this.cueRivers?.from !== this.platforms) this.cueRivers = { from: this.platforms, by: new Map() };
+    let under = this.cueRivers.by.get(v.id);
+    if (under === undefined) {
+      const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && !q.flood && lianasOver([v], q).length > 0);
+      const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === r.x0 && q.drift.x1 === r.x1).map((q) => q.drift!) : [];
+      under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
+      this.cueRivers.by.set(v.id, under);
+    }
+    this.cueOverRiver = !!under;
+    if (!under) return sweet;
+    if (under.flowT || gripMoved) return false;
+    let at = this.cueTab;
+    if (!at || at.id !== v.id || at.dir !== dir || at.len !== sw.len) {
+      const key = `${v.id}:${dir}:${sw.len}`;
+      let tab = this.cueTables.get(key);
+      if (!tab) {
+        if (this.cueTables.size >= 8) this.cueTables.clear();
+        const d0 = under.logs[0];
+        tab = letGoTable(v, sw.len, dir, d0);
+        this.cueTables.set(key, tab);
+      }
+      at = this.cueTab = { id: v.id, dir, len: sw.len, tab };
+    }
+    const snap = this.sweetSnap;
+    const lateOk = !!snap && snap.dir === dir && this.gameTime - snap.at <= RELEASE.late;
+    return letGoLands(at.tab, sw.t ?? this.vineClock, under.logs, this.gameTime, this.easy, lateOk);
+  }
+
   /** a press to let go a beat before the swing's sweet spot toward `dir`: keep it and let go when he gets there (true = held, he swings on) */
   private holdLeapForSweet(dir: -1 | 1): boolean {
     if (this.swingLeapWait !== 0) {
@@ -7292,7 +7362,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+    if (!ownScene) {
+      renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+      // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
+      setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
+      renderDrift(ctx, world.id, this.camera.x, vw, vh, this.gameTime, this.quality > 0);
+    }
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -7319,6 +7394,8 @@ export class GameEngine {
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     this.drawRivers(ctx, world, false);
+    // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
+    this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
     if (this.proto?.bankWall)
       drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
@@ -7646,7 +7723,7 @@ export class GameEngine {
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
     // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
-    if (this.player.isVineSwinging && this.sweetGlow > 0.03) {
+    if (this.player.isVineSwinging && this.sweetGlow > GLOW_SHOWN) {
       const gp = this.player;
       const k = this.sweetGlow;
       const r = 30 * (1 + 0.08 * Math.sin(this.gameTime * 18));
@@ -7789,7 +7866,7 @@ export class GameEngine {
       this.drawPopups(ctx);
       ctx.restore();
     }
-    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0, ownScene, false);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);
