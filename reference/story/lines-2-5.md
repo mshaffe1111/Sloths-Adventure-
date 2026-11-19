@@ -2,7 +2,7 @@
 
 Authority: Matt 11-13, "the storykeeper has full authority to add to the story and to approve all lines" (packet
 reference/packets/2026-11-20/KEEPER-25.md). For 2-5's build (DESIGN-24-25; the design is origin/t-design-24 reference/design/2-5.md: the
-arc :32-43, "First appearances" :47, "For the story keeper" :61-62). The snapper's rule is ENG-25b's (origin/t-eng-25b
+arc :32-42, "First appearances" :46, "For the story keeper" :65). The snapper's rule is ENG-25b's (origin/t-eng-25b
 src/game/predators/world2.ts TURTLE: `kick: { ends: 'chasedOff', when: 'open' }`, open = asleep, recovering right after its snap, or
 dazed by a bonk; head-on at any other moment the kick glances off and he is bitten; REPORT.md "What the 2-5 builder needs" 1).
 Checked on origin/main 6e7b85f8f: stagePlan.ts:70 (the 2-5 row), goalLine :197, SEALED_LINES :208, GOAL_WORDS :216, countWord :233;
@@ -62,7 +62,7 @@ is 2-2's, not 2-5's. creatureLore.ts:12 (Matt-approved 11-01, "change them only 
 7. **mission.** The stage's idea and its goal on one card. The old line is half true: the snappers sit on sandbars and logs as well as
    the bank, and it leaves out the stones, which ARE the stage. "Send ... home" agrees with the goal card (goalInfo.ts:122, "send 6
    turtles on their way") and with line 2. No count of snappers (the card has it). *Check: 12 words on a card (as 2-4's MISSION_24).*
-8. **sealed.** STAGE-RULES: Dot explains any locked exit. Without this row 2-5's locked exit says goalLine's "Sealed: defeat 2 more
+8. **sealed.** STAGE-RULES:88: Dot explains any locked exit. Without this row 2-5's locked exit says goalLine's "Sealed: defeat 2 more
    predators to open it": "defeat" breaks World 2's rule (nobody hurt; they only paddle off). In the pattern of World 1's own (1-6
    "Petals still on the lianas! Back we go!"): what is missing, and where (the snappers he skipped are behind him on a left-to-right
    stage), and what to do. *Check: 9 words; the number is on the HUD beside it.*
