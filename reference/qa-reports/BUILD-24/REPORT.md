@@ -181,7 +181,7 @@ with this session = UNRUN (D59).
    - UNRUN: lockall --layouts 16 --intended 2-4 --check vs main (regenerate main's lock on origin/main 6e7b85f8 with --out first, ~20 min;
      expect stages from the merged lines (1-9, ENG-285's model) to move: list them for the lead before judging), clipcheck, kbdcheck,
      buildcheck (ALONE: it times), drawcheck again (above), the meter (tools/difficulty score 2-4 N + E vs DIFFICULTY.md: name, don't tune).
-2. POLISH, the lead's 3:25 PM ET check, three items:
+2. POLISH, the lead's 3:19 PM ET check (sent then; its text said 3:25), three items:
    (1) NORMAL's 'Flick up to hop up or over.' card on 6 of 7 frames: SOURCE FOUND, not fixed. The engine picks the 'gap' lesson once per
        run (engine.ts lessonTick: seen.add on pick; lessons.ts pickLesson 'gap' fires at a BOULDER on a bank: rock() is a platform, its
        edge to the bank ahead > 60 px). The card then stays because on Normal (Tips) DotGuide reads it on the page's REAL clock, and the

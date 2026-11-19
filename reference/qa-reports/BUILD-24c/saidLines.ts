@@ -1,4 +1,4 @@
-// BUILD-24c (the lead's check 3:25 PM ET): every line Dot (and Pokey) says in a real playthrough of 2-4 (a tier bot, the real engine), with x
+// BUILD-24c (the lead's check 3:19 PM ET): every line Dot (and Pokey) says in a real playthrough of 2-4 (a tier bot, the real engine), with x
 // and t: does 'Flick up to hop up or over.' come back once a player has hopped? (npx tsx saidLines.ts <setting> <seed> [tier])
 import '../../../src/game/headlessDom.ts';
 import { firstTimer } from '../../../tools/inspect/firsttimer.ts';
