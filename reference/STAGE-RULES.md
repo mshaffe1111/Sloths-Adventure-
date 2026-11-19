@@ -189,6 +189,14 @@ this order, and curation does not start until step 3 is done:
 
 ## 4. Using the art (so each world and each replay looks fresh)
 
+- **Reuse art across worlds where it makes sense (Matt, 2026-11-19 6:09 PM ET: "we can use other worlds, art, and levels. You know, it's a
+  rainforest. Things in the rainforest will be seen in different areas. So as long as it makes sense, let's reuse different areas too.
+  Different areas, arts, that is.").** Before any new piece is painted, the inventory is searched across ALL worlds (src/game/art/inventory.ts,
+  the master catalog), not only the world being built: a root, a stone, a log, a fern or a climb piece from another world is used where it
+  belongs in that place (a grotto can take World 1's roots or World 2's river stones; a mangrove can take World 2's logs). The test is that it
+  makes sense there: the place's own light and palette apply (World 3 is dark with light from sources, rule 4 below), it stays to scale with
+  Pokey, and each world keeps its own signature look (its backdrop, its new pieces, its colour) so the 'looks like an earlier stage' check
+  still passes (variety comes from more pieces, Matt 10-30). Hugging Face paints only what no world's art can do. R-165.318.
 - **Painted art for the big things (Matt, 2026-10-29).** Anything that sets the look of a stage, and above all anything that hurts
   Pokey when he touches it (water, pits, thorns, spikes, the main surfaces he moves on), is painted art from Matt's Gemini sheets or
   the Hugging Face pipeline, so it feels like the rest of the game. Small touches drawn in code are fine: a glow on a firefly, a
