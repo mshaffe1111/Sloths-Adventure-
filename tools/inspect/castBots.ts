@@ -4,7 +4,8 @@
  * with the goal full), and every failure by cause (time, stranded, a sealed door, a game over), how each animal was cleared (the kit's
  * way), the traps sprung, the hits by cause. No stage is named in this file: it is handed one.
  *   npx tsx tools/inspect/castBots.ts --stage 1-3 --seeds 1-40 [--bots kid,adult,child,middle,expert] [--setting both] [--par 6] [--json]
- *     [--input fake|touch|pad]
+ *     [--input fake|touch|pad] [--rows rows.jsonl]
+ * --rows: every run's row, one JSON line each, written to the file (the misses traced from it; FIX-284).
  * --input: how his presses reach the engine (FIX-284): `fake` (the default, unchanged) RealPlay's FakeInput, a press held his own hold;
  * `touch` the game's InputEngine as the phone's touch layer (every press held at least MIN_TOUCH_JUMP_HOLD_MS: a flick is a full jump);
  * `pad` the InputEngine as the Pad's Jump button (a tap held PAD_HOP_MS: the short hop). firsttimer RunOptions.realInput.
@@ -96,6 +97,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
       ch.on('close', () => { for (const l of buf.split('\n')) if (l.startsWith('{')) rows.push(JSON.parse(l)); res(); });
     })));
   }
+  const rowsOut = arg('--rows');
+  if (rowsOut && !process.argv.includes('--json')) (await import('node:fs')).writeFileSync(rowsOut, rows.map((r) => JSON.stringify(r)).join('\n') + '\n');
   // (--proven <file>: the seeds every bot played to the shrine, the goal full, no rescue, on every setting asked, and none under STAGE-RULES'
   // 2 minutes: the candidates for a stage's proven-seed list, tools/engine/seedlist.ts --merge <file>)
   const proven = arg('--proven');

@@ -1,0 +1,13 @@
+castBots 2-2, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 20/40; under the floor 0; time median 149.3 s (min 139.4); hits 0 lives 257 (water 257); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 12: shrine rescued x1  (seeds 20,24,28,6,10,18,26,19,27,31,9,37)
+        fail 8: shrine rescued x2  (seeds 4,16,32,22,23,35,21,25)
+kid    easy   PASS 40/40; under the floor 0; time median 147.7 s (min 139); hits 0 lives 30 (water 30); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 28/40; under the floor 0; time median 146.5 s (min 136.8); hits 0 lives 104 (water 104); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 12: shrine rescued x1  (seeds 4,20,28,32,6,22,23,31,39,21,33,37)
+adult  easy   PASS 40/40; under the floor 0; time median 147.8 s (min 140.5); hits 0 lives 13 (water 13); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 391.3 s (min 335.3); hits 0 lives 243 (water 243); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 271 s (min 242.2); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 213.1 s (min 190.3); hits 0 lives 95 (water 95); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 191.1 s (min 179.9); hits 0 lives 18 (water 18); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 188.8 s (min 170.6); hits 0 lives 109 (water 109); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
