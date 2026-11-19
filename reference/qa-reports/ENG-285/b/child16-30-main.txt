@@ -1,0 +1,1 @@
+{"bot":"child","setting":"normal","stage":"1-6","seed":30,"end":"shrine","pass":false,"time":642.1,"goal":{"got":82,"need":30},"rescues":1,"turnBacks":0,"hits":0,"lives":2,"hitBy":{"pit":2},"cast":null,"stuck":[{"x":29128,"what":"fell into this pit 8 times (its far wall 225 px up)"}]}

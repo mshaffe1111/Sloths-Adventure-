@@ -58,6 +58,39 @@ Turnover note: reference/handoffs/engine-core.md §0zo-285 (03ba54ef).
 Started 1:48 PM ET (by `date`). FINAL MODEL HASH ba6b225b sent to the lead 2:19 PM ET (box 3:30 PM). Commits: 26f5e14b (drift 1),
 00bc2c77 (drift 2 + plants), ba6b225b (DROP ON A LOG, ruling A), e236233c (curated seeds re-pinned), this report + engine-core.md §0zo-285b.
 
+## EXACT NEXT STEP (ENG-285b stopped by the lead at 589k real context, 3:22 PM ET; ENG-285c finishes on t-eng-285's head)
+PUSHED: 26f5e14b, 00bc2c77, ba6b225b (FINAL MODEL HASH, sent 2:19 PM), e236233c (seeds re-pin; the code head), 15a6c859 / a89389ec /
+this commit (docs and data only). Run data of every finished run: reference/qa-reports/ENG-285/b/ (castBots, skill-off runs, lock diffs,
+funcheck, gate logs, contact sheets, the probes skilloff.mts / w6verify.mts / lockdiff.py: scratch tools with absolute paths, D83).
+NOT RUN (were running in ENG-285b's container when it stopped; treat as UNRUN, D59): suite shards 4, 5, 6; the CI tool line
+(gates.yml:135); tierBots.test; drawcheck; clipcheck; kbdcheck; buildcheck; lockall --check vs main --intended; the 1-6/1-8 variant-10
+and 2-1 variant-13 stills; middle 2-1 skill-ON runs (on-middle-2-1, 53/80); 2-2 child bankUp-ON runs (on22-child).
+GREEN ON e236233c's code (15a6c859): suite shards 1, 2, 3 (659 + 613 + 802 tests, 0 fail; CI's 6-way split, deploy.yml:38); tsc, build
+(BASE_PATH), chunkcheck, artcheck, knowncheck, generality, roadmapcheck (needs a blob-less unshallow: `git fetch --unshallow --filter=blob:none`),
+coveragecheck, registrycheck; every seed list --check (11, 0 refused); tierBots calibration 200/200 identical; funcheck = INT-12's run.
+1. Plant re-statements (riverRide.test.ts, the 2-1 skill plants; RED on this head: 'upstream off still clean: child N s23', 'bankUp off
+   still clean: child E s20'). The lead's rulings 3:22 PM ET:
+   - UPSTREAM: keep adult N seed 12 (off: rescued, 5 lives). Replace child N 23 with 'upstream off, the child on Normal loses at least 5
+     more lives than with it' on seeds 4 and 5 (measured off-vs-on: 1->9 lives each; b/off-upstream-child-normal.txt vs b/on-child-2-1.txt).
+     The ON-side test (riverRide.test.ts:159) still needs cases that cross clean with the skill: re-check it with the new seeds.
+   - BANKUP: on 2-1 it is never a rescue and lives move both ways (child N net -7 off, seed 26 0->7; middle N net 0); only time on child
+     Easy: +18 s seed 4, +15 s seed 22 (b/off-bankUp-child-easy.txt vs on-child-2-1.txt). Ruling: if real in lives or a rescue anywhere,
+     plant it there (first check child N seed 26 reproduces 0 -> 7 lives with only bankUp off, and look at 2-2: b/off22-bankUp-child-*.txt
+     has the 2-2 OFF runs, seeds 1-20, the ON side is unrun: castBots --stage 2-2 --seeds 1-20 --bots child --setting both --json);
+     else plant its time effect at about half the measured margin (at least 8 s on child Easy seeds 4 and 22) and say so in this REPORT.
+   Each re-statement: the test RED with the old cases first (shown), GREEN with the new; never delete a plant.
+2. The CLAUDE.md check list, EVERY item, once on the final head after step 1 (the items NOT RUN above, plus tsc and the full suite again
+   since riverRide/test files change; lockall --check reference/..lock-main.json from main's worktree with --intended
+   1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5: the diff I measured, b/lockdiff.txt).
+3. Stills still owed: (a) ENG-285 step 5: the still pair, old vs new judge path drawn over one back-swing hop; (b) the re-prove's 1-6 and
+   1-8 variant 10 and 2-1 variant 13, both ways (variants 3 and 7 shot and judged: b/*.jpg). The kit-audit shooter shoots variant 1
+   whatever ?layout says: pass the variant to window.__play(id, variant) (App.tsx:707); ?layout=N builds variant N+1 (stageGenerator.ts:2804).
+   Named from the judged sheets (existing content, not this branch): 1-6 variant 3, a flat green block with a log on top beside the dip's
+   painted slab stack (b/zoom-green.jpg); 1-8 variants 3 and 7, a flat pale bar under the mushroom log into the fog and the log art cut
+   straight at its lower right (b/zoom-line.jpg); the stage arrival card covers mid-screen in the first shots (the tool doesn't tap through).
+4. REPORT: the gate table from step 2, the plants' red/green, Learned (below) kept; engine-core.md §0zo-285b is written (15a6c859).
+BOX: the lead's 7 PM ET box for the final hash: the model hash is ba6b225b (final); what remains is tests, gates and stills.
+
 ## The two drifts (R-165.297), each planted against RealPlay through the game's own InputEngine
 1. **No-steer air tick (26f5e14b).** airStep dir 0 braked at PHYS.airDec 520; the engine (refined controls, the default) keeps his speed
    and brakes at PHYS.airStop only while Down is held. airStep(b, dt, dir, hold, down). Plant judgeFliesEngine.test.ts test 3: 6 launch
@@ -106,3 +139,17 @@ The drop judge's calibration table (ENG-24 calib.ts, 16 rows) is IDENTICAL on 92
   ENG-285 1b/1c -> 28; step 1 not revertible alone. A 12-seed sample first showed 0 -> 8/12 for the aim: selection bias, withdrawn.
   The rule that fires (lianaWait at the mean lag; the float-wait's any-of-3) leaned on the old one-frame error; the vineFromLog rule
   (mid +/- sd/2) in lianaWait gave 26/40, no gain. Named for an R-id.
+
+## Learned (for the next builder; proposed method updates)
+- A plant on a vine that doesn't swing proves nothing about a clock: two lianas side by side in one swingSetup call get amp 0. Assert the
+  swing in the set-up (lianaRide.test.ts does now).
+- A bisect on the failing seeds alone lies (selection bias: the 2-4 kid 0/12 -> 8/12 vanished at full size, 28/40). Bisect bot changes on
+  the full 40, or on a fixed random sample, never on the seeds that failed.
+- A still is labelled by what the game built (D62): the kit-audit shooter built variant 1 whatever ?layout said; reading gen2.seed back
+  caught it before any judgement.
+- Read the real context figure from the lead at each idle: my running estimate said ~45% when the real figure was 589k (D64/D76 again).
+## Lessons applied
+D19 (plants call the bot's own hopAim/hopCatchAt/touchHeld), D30/D42 (every time from `date`), D40 (both drifts before the re-prove),
+D57/D87 (inbox at every push, ack in one line), D59 (UNRUN named above), D62 (stills labelled from the game), D79 (whole screen judged),
+D83 (probes outside the repo until copied as data), D86 (the full list, not a subset), law 3 (the typed 0.27 corrected by measuring),
+law 22 (no plant loosened: re-stated by the lead's ruling).
