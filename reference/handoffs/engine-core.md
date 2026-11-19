@@ -1,6 +1,21 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock); §0zo-285b ENG-285b 11-19 (the last drifts, the final model). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock); §0zo-285b ENG-285b 11-19 (the last drifts, the final model); §0zo-285c ENG-285c 11-19 (the 2-1 skill plants re-stated, the still pair). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
+- **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
+  child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
+  river, so the lives are the skill's own). BANKUP is THIN: real nowhere in lives or rescues (2-1 every cast bot both settings 1-40; 2-2's
+  rivers all run with him, RIVERS_22 lane22; the toy back river the same lives). Off a log running back at him the UPSTREAM front-end hop
+  (firsttimer.ts `SKILLS.upstream` branch) takes him up the same bank within a frame or two; its one measured effect is child Easy seed 22
+  at the both-ways river, boarding to far bank 4.73 -> 8.56 s: the plant (`bothWaysCrossing`, 2+ s). R-165.309 (the lead's): near-redundant.
+- **Trap: whole-run numbers lie for a skill plant.** Child Normal seed 26 0 -> 7 lives and seed 1 19 -> 4 (the other way) with bankUp off
+  came 60+ s after the bank from drift (different draws), and child Easy s4's +18 s with its bank crossed 0.04 s apart. Measure a skill at
+  its own spot (time or lives in its piece, or the first frame the runs part), never the run total. Probes: qa-reports/ENG-285/c/*.txt.
+- **Still pair** (c/backswing-*): one back-swing let-go on 1-6, the real page and touch pad; the new airStep equals the engine to 0.000 px
+  over the free flight, the old one (no turn push) lands 19-20 px short. Fly a judge from the state after the FIRST WHOLE air frame: the
+  release frame's launch is set inside the engine's step. On the page `__engine` may be the engine object (engine.ts:1022) or App's
+  function; tsx needs `window.__name` defined in the page for evaluated functions.
 
 ## 0zo-285b. ENG-285b (t-eng-285, 11-19): the last two drifts; the final model hash ba6b225b (R-165.297)
 - **No-steer air tick:** physics.ts `airStep(b, dt, dir, hold, down)`: dir 0 COASTS (refined controls, the game's default) and only

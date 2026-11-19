@@ -153,3 +153,75 @@ D19 (plants call the bot's own hopAim/hopCatchAt/touchHeld), D30/D42 (every time
 D57/D87 (inbox at every push, ack in one line), D59 (UNRUN named above), D62 (stills labelled from the game), D79 (whole screen judged),
 D83 (probes outside the repo until copied as data), D86 (the full list, not a subset), law 3 (the typed 0.27 corrected by measuring),
 law 22 (no plant loosened: re-stated by the lead's ruling).
+
+# ENG-285c (Thu 11-19, a fresh member on t-eng-285): the two plants re-stated, the still pair, every gate once
+Started 3:26 PM ET (by `date`). The model is unchanged (ba6b225b; code e236233c). Commits: b2df1a47 (plants), 6c55b4c1 (still pair; the
+CODE HEAD every gate below ran on), then this REPORT + engine-core.md §0zo-285c (docs only). Method: methods/gates.md, stage-fix.md; BOTS.md.
+
+## 1. The plant re-statements (tools/inspect/riverRide.test.ts, b2df1a47; the lead's rulings 1 and 2A)
+| Plant | On c255ae4d (old cases) | Re-stated as | GREEN (c/rr-green.txt) | RED, switch neutralised |
+|---|---|---|---|---|
+| UPSTREAM | RED 'still clean: child N s23' (0 -> 9 lives, 0 rescues) | adult N s12 rescued without it (kept); child N s4, s5: 5+ more lives without it (measured 1 -> 9 each) | ok | RED 'adult s12 still clean' (c/rr-red.txt); the lives assertion alone, adult removed: RED '0 more lives' (c/rr-red2.txt) |
+| BANKUP (THIN) | RED 'still clean: child E s20' | child E s22: boarding to the both-ways far bank 2+ s longer without it (`bothWaysCrossing`; measured 4.73 -> 8.56 s) | ok | RED '4.73 s on, 4.73 s off (+0.00)' |
+The ON-side test now runs adult N 12, child N 4, 5 and child E 22: each crosses clean (shrine, 0 rescues).
+**Why seeds 4/5 are the skill's own:** the on and off runs are frame-identical up to the both-ways back river (s4 parts at t 284 s, x 25,7xx,
+on the back log; s5 parts 1 s at the first back river's far bank) and the 8 extra lives are all at that river (x 24,4xx-25,9xx).
+**The bankUp search (ruling 2A, data c/):** real NOWHERE in lives or rescues. 2-1 kid N/E, adult N/E, middle E, expert N x 1-40: 0 lives,
+0 rescues moved (c/s21-*.jsonl; ENG-285b had child N/E, middle N). 2-2: every river runs with him (RIVERS_22 lane22), child off/on
+identical 1-20. Toy back river (riverRide's BACK): the same lives every tier off (c/toy-back-off.jsonl). With bankUp off the UPSTREAM
+front-end hop (firsttimer.ts:2573) takes him up the same bank (child E s4: 152.77 vs 152.73 s; s20, s23, child N s26 and s1 the same
+rule). Measured AT the bank (boarding to far bank, c/bankat-2-1.jsonl), 8 crossings: only s22's both-ways moves (+3.8 s); the rest within
++/-0.4 s. The whole-run figures are drift: child N s26 0 -> 7 and s1 19 -> 4 (the other way) come 60+ s after the bank; child E s4's +18 s
+with its bank crossed 0.04 s apart. The lead's R-165.309: bankUp near-redundant with upstream on the exact model.
+
+## 2. score.test PREDATOR READ (ruling 3): not applicable here
+t-eng-285 has no PREDATOR READ test (it came with METER-3 on t-build-24c's line; `grep PREDATOR tools/difficulty/score.test.ts` = 0 here,
+and score.test passes in the CI tool line below). INT-13 gets BUILD-24c's 8a78d0ec with that branch.
+
+## 3. The still pair (ENG-285 step 5; c/backswing-{side,up}-{old,new}.jpg, data c/backswing-*.json, tool c/backswing.mts.txt)
+1-6 Normal, layout 0 (built seed 1, printed from the game, D62), the second swinging liana: he catches it, swings, and lets go at the back
+swing's fastest (moving left) while steering right, through the real touch pad (clipPress pressFrame). White dots: the engine, frame by
+frame. Both judges fly from the engine's state after the first whole air frame: NEW airStep = the engine to 0.000 px over the free flight
+(15-16 frames, to his landing); OLD (ce4ad461 physics.ts:203, no turn push) lands 19-20 px short (sideways 18.9, upright 19.5).
+
+## 4. Gates on 6c55b4c1 (the code head; one run, 3:54 PM ET start; logs in the container, summaries here)
+| Gate | Result |
+|---|---|
+| tsc; build (BASE_PATH=/Sloths-Adventure-/); chunkcheck; artcheck | rc 0 each |
+| knowncheck; generalitycheck; roadmapcheck (unshallowed, blob-less) | rc 0 each |
+| drawcheck (764 s); clipcheck (510 s); kbdcheck; buildcheck (1-1 p95 113 ms N, 62 ms E) | rc 0 each |
+| the suite, 3 shards (CLAUDE.md glob) | 1247 + 1189 + 1405 pass, 0 fail (3 todo, already in the repo: e.g. the boulder wall) |
+| CI tool line (gates.yml:135, riverRide/lianaRide/score/castBots/...); the engine tools' line | 226 pass 0 fail (1 todo, in the repo); 37/37 |
+| tierBots.test | 7/7: the calibration replays exactly; no recommit |
+| tipwalk --layouts 4; registrycheck; coveragecheck | rc 0 each |
+| every proven list --check (registrycheck --lists: 1-1..1-9, 2-1, 2-2) | 11/11 PASS, 0 refused (1-1 161, 1-5 150, the rest 100) |
+| lockall --layouts 16 vs main 6e7b85f8 (recorded in a main worktree), --intended 1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 | rc 0: 87/102 unchanged; the 15 moved are exactly the intended list |
+| funcheck (advisory; exit 1 by design on any flag over its counts) | rc 1, line for line ENG-285b's run (b/funcheck-head.txt, 71 lines): nothing new or worse |
+Nothing UNRUN: the runner ended 5:05 PM ET (by `date`) before this report.
+
+## 5. What INT-13 must re-run after merging
+- riverRide.test (CI tool line): the plants' margins (s4/s5 +5 lives, s22 +2 s) on the merged bots; if BUILD-24c/FIX-284/VAR-19 move 2-1 or
+  the bots and a plant goes red, measure at the skill's own spot again (c/bankat.mts.txt, c/skillxt.mts.txt) and re-state with the lead,
+  never loosen. lockall vs main --intended (the 15 above plus each merged branch's own), every list --check, tierBots, the suite.
+- score.test's PREDATOR READ arrives with t-build-24c (8a78d0ec).
+
+## 6. Polish check
+Stills judged both ways at full size: the caption covered the lives counter in the first shot, moved below the play; upright, the camera
+frames him a third in, so the arc's first frames run off the left edge (the end points, where the 19 px shows, are in view). The first
+shots had the arrival card up: the tool now taps it away and lets the intro play out before the hop.
+
+## 7. Unresolved
+- A stray file /rr-up-red.txt in the container's root from my own slip (a backgrounded subshell lost its path); the safety check refused
+  `rm` on a root path. Nothing in the repo. b2df1a47's Claude-Session trailer names the lead's session, not mine (not amended: pushed).
+
+## Learned (proposed method updates, for the lead)
+- A skill plant is measured AT the skill's own spot (the first frame the on and off runs part, or time/lives in its piece), never by the
+  run total: a run total moves by drift (bankUp's +18 s and 0 -> 7 lives were drift). BOTS.md 'plants' (proposed line): "find the first
+  frame the runs part (an x/t trace) and assert at that piece".
+- A still of a judge path: fly it from the state after the first WHOLE air frame (the release frame's launch is set inside the engine's
+  step), and cut the path where the engine first meets something (judge vs engine > 0.5 px).
+## Lessons applied
+D19 (the plants call castRun/firstTimer, the bots the game's stages use), D30/D42 (times from `date`), D40 (no model change; the plants
+re-stated on the final model), D57/D87 (inbox at each push), D59 (no gate left running at report), D62 (the still prints what the game
+built), D79 (the whole still judged), D83 (probes kept as .txt data), D86 (the full list), law 3 (the whole-run number checked at the
+bank before planting it), law 5 and 22 (no plant loosened or deleted: re-stated with the lead's word).
