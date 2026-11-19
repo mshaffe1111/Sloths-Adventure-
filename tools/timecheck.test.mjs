@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { run, stampsIn, judgeLine, etToMs, etLabel } from './timecheck.mjs';
+import { run, stampsIn, judgeLine, etToMs, etLabel, readDate } from './timecheck.mjs';
 
 const TOOL = path.join(path.dirname(fileURLToPath(import.meta.url)), 'timecheck.mjs');
 const ET = (hm, day = '2026-11-18') => `${day}T${hm}:00-05:00`; // November is EST
@@ -169,4 +169,56 @@ test('the default range is the merge base with main; --since judges by ET day; b
 test('the ET clock: November is UTC-5, July UTC-4', () => {
   assert.equal(new Date(etToMs(2026, 11, 18, 17, 31)).toISOString(), '2026-11-18T22:31:00.000Z');
   assert.equal(new Date(etToMs(2026, 7, 4, 12, 0)).toISOString(), '2026-07-04T16:00:00.000Z');
+});
+
+// ---- TIME-168b: a date counts only if it is plausible for its commit (7 days before .. 1 day after); a stage id is no date --------
+test('a stage id before a time is no date: "1-2 at 2:10 PM" committed 11-18 3:00 PM is not a 64,749-minute breach', () => {
+  const r = repo();
+  const base = r.commit('14:00', { 'reference/qa-reports/ENG-23/REPORT.md': `${FILLER}\n` });
+  r.commit('15:00', { 'reference/qa-reports/ENG-23/REPORT.md': `${FILLER}\n**What the toys and stills caught (fixed; the lead accepted 1-2 at 2:10 PM):**\n` });
+  assert.deepEqual(run({ repo: r.dir, range: `${base}..HEAD` }).breaches, []);
+  // it is still judged, as an undated time on the commit's day: 2:10 PM, not 1-2 (next January)
+  const s = stampsIn('the lead accepted 1-2 at 2:10 PM', at('15:00'));
+  assert.deepEqual(s.map((x) => [x.ms, x.dated]), [[at('14:10'), false]]);
+  // so a stage id does not hide a time typed ahead: 3:20 PM in a 3:00 PM commit still fails
+  assert.equal(judgeLine('the lead accepted 1-2 at 3:20 PM', at('15:00')).length, 1);
+  // every stage id 1-1..10-10, at the head of a ledger line too, is no date in November
+  for (let w = 1; w <= 10; w++) for (let st = 1; st <= 10; st++) assert.equal(readDate(0, w, st, at('15:00')), null, `${w}-${st}`);
+  assert.deepEqual(judgeLine('- 1-2 cleared 2:10 PM', at('15:00')), []);
+});
+
+test('a real stamp still fails: "11-18 3:15 PM ET" committed at 3:09 PM', () => {
+  const r = repo();
+  const base = r.commit('15:00', { 'reference/STATE.md': `${FILLER}\n` });
+  r.commit('15:09', { 'reference/STATE.md': `${FILLER}\n- 11-18 3:15 PM ET (lead): INT-13 started on 1-2 and 10-10\n` });
+  const out = run({ repo: r.dir, range: `${base}..HEAD` });
+  assert.equal(out.breaches.length, 1);
+  assert.equal(out.breaches[0].stamp, '11-18 3:15 PM ET');
+  assert.equal(out.breaches[0].aheadS, 6 * 60);
+});
+
+test('"10-10 boss" with no time is ignored; a real "11-17 9:00 PM ET" committed 11-18 passes', () => {
+  assert.deepEqual(stampsIn('- 10-10 boss: the last stage of world 10', at('15:00')), []);
+  const r = repo();
+  const base = r.commit('15:00', { 'reference/STATE.md': `${FILLER}\n` });
+  r.commit('15:30', { 'reference/STATE.md': `${FILLER}\n- 10-10 boss built\n- 11-17 9:00 PM ET (lead): KEEPER-23 started\n` });
+  assert.deepEqual(run({ repo: r.dir, range: `${base}..HEAD` }).breaches, []);
+  assert.deepEqual(stampsIn('- 11-17 9:00 PM ET (lead)', at('15:30')).map((x) => [x.ms, x.dated]), [[at('21:00', '2026-11-17'), true]]);
+});
+
+test('the window\'s edges: 7 days before and 1 day after are dates; a real day outside it is not judged', () => {
+  const c = at('15:00');
+  assert.equal(readDate(0, 11, 11, c).kind, 'date');
+  assert.equal(readDate(0, 11, 19, c).kind, 'date');
+  assert.equal(readDate(2026, 11, 19, c).kind, 'date');
+  assert.equal(readDate(0, 11, 10, c).kind, 'far');
+  assert.equal(readDate(0, 11, 20, c).kind, 'far');
+  assert.equal(readDate(0, 13, 40, c), null);
+  // a stamp dated tomorrow is a day ahead: it fails
+  assert.equal(judgeLine('- 11-19 9:00 AM ET (lead): next', c).length, 1);
+  // an old line re-committed later keeps its old day ("REPEAT 11-02 6:35-6:45 PM ET" re-committed 11-18 at 6:40 PM is not judged
+  // as today's 6:45 PM); a far date ahead is a plan, not a stamp
+  assert.deepEqual(judgeLine('(D30) REPEAT 11-02 6:35-6:45 PM ET: the lead typed ahead', at('18:40')), []);
+  assert.deepEqual(judgeLine('- 11-02 (lead): MATT 6:45 PM said so', at('18:40')), []);
+  assert.deepEqual(judgeLine('ship 12-25 9:00 AM ET', c), []);
 });

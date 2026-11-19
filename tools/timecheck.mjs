@@ -17,7 +17,9 @@
  * stamp corrected by a later commit is judged against the later commit and clears; a line only moved or re-indented keeps its first
  * commit and is not judged again; history is never rewritten.
  * A stamp is a clock time with AM/PM (ET optional; a time in another zone is skipped), as one time or a range ("6:35-6:45 PM": the
- * end is judged). Its day: a date written next to it ("11-18 5:31 PM ET", "2026-11-14 2:05 AM", "Written 5:37 PM ET 11-18"), else
+ * end is judged). A date counts only within 7 days before or 1 day after the commit's ET day (readDate): outside it, a stage id
+ * ("1-2 at 2:10 PM") is no date and its time is judged as an undated time; a real old or far day's time is not judged.
+ * Its day: a date written next to it ("11-18 5:31 PM ET", "2026-11-14 2:05 AM", "Written 5:37 PM ET 11-18"), else
  * the date a ledger line starts with ("- 11-15 6:44 PM ET (lead): MATT 6:44 PM"), else the commit's own ET day (read as the day before when that would put it more than
  * an hour after the commit: "MATT 11:47 PM" in a 12:30 AM commit is last night; a port of an older branch's text re-committed later
  * in the day is not judged as typed ahead). A weekday written next to it ("Fri 5:44 PM") is the latest such day up to the commit. Quotes of what someone else said count the same.
@@ -112,17 +114,32 @@ export function isPlan(line, at, end, prev = '') {
 }
 const ZONE_OK = /^\s*(ET|EST|EDT)?$/;
 
-/** a date token's day, closest to the commit (year chosen around it); null when not within 45 days (a stage id like "1-8") */
-function plausibleDay(yy, mo, d, commitMs) {
+// A date counts only if it is plausible for its commit (TIME-168b): within DATE_BEFORE_DAYS before or DATE_AFTER_DAYS after the commit's
+// own ET day. A stamp is written the day it happens, or quoted from the past week; a "date" outside that is a stage id ("1-2 at 2:10 PM",
+// "10-10 boss": the ten worlds' ids 1-1..10-10 all look like dates) or an old/far day.
+export const DATE_BEFORE_DAYS = 7;
+export const DATE_AFTER_DAYS = 1;
+/** a stage id's shape: two numbers 1..10, no year ("1-2", "10-10") */
+const STAGE_ID = (yy, mo, d) => !yy && mo >= 1 && mo <= 10 && d >= 1 && d <= 10;
+/**
+ * A date token, read against the commit: { kind: 'date', day } when its nearest reading falls in the window; { kind: 'far' } when it is a
+ * real day outside it (its times are skipped: an older day's time is earlier than its commit, a later day's is a plan, and reading it as
+ * the commit's own day would cry wolf on an old line re-committed, "REPEAT 11-12 6:35-6:45 PM ET"); null when it is no date at all
+ * (a stage id out of the window, or "13-40"): its time is then judged as an undated time, like any other.
+ */
+export function readDate(yy, mo, d, commitMs) {
   if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
-  const cy = etParts(commitMs).y;
+  const c = etParts(commitMs);
+  const cDay = Date.UTC(c.y, c.mo - 1, c.d) / 86400e3;
   let best = null;
-  for (const y of yy ? [yy] : [cy - 1, cy, cy + 1]) {
-    const ms = etToMs(y, mo, d, 12, 0);
-    if (etParts(ms).d !== d) continue; // 2-30
-    if (!best || Math.abs(ms - commitMs) < Math.abs(best.ms - commitMs)) best = { y, mo, d, ms };
+  for (const y of yy ? [yy] : [c.y - 1, c.y, c.y + 1]) {
+    const day = Date.UTC(y, mo - 1, d) / 86400e3;
+    if (new Date(day * 86400e3).getUTCDate() !== d) continue; // 2-30
+    if (!best || Math.abs(day - cDay) < Math.abs(best.off)) best = { y, mo, d, off: day - cDay };
   }
-  return best && Math.abs(best.ms - commitMs) <= 45 * 86400e3 ? best : null;
+  if (!best) return null;
+  if (best.off >= -DATE_BEFORE_DAYS && best.off <= DATE_AFTER_DAYS) return { kind: 'date', day: best };
+  return STAGE_ID(yy, mo, d) ? null : { kind: 'far' };
 }
 
 /**
@@ -131,8 +148,8 @@ function plausibleDay(yy, mo, d, commitMs) {
  */
 export function stampsIn(line, commitMs, prev = '') {
   const dates = [...line.matchAll(DATE)]
-    .map((m) => ({ at: m.index, end: m.index + m[0].length, day: plausibleDay(m[1] ? +m[1] : 0, +m[2], +m[3], commitMs) }))
-    .filter((x) => x.day);
+    .map((m) => ({ at: m.index, end: m.index + m[0].length, ...readDate(m[1] ? +m[1] : 0, +m[2], +m[3], commitMs) }))
+    .filter((x) => x.kind);
   // a ledger line's own date, at its head ("- 11-18 5:31 PM ET (lead): ... MATT 5:13 PM"): later dateless times on the line take it
   const head = /^\s*(?:[-*>]|\d+\.)?\s*(?:\*\*)?\s*/.exec(line)[0].length;
   const lead = dates.find((x) => x.at === head) ?? null;
@@ -151,6 +168,7 @@ export function stampsIn(line, commitMs, prev = '') {
       dates.find((x) => x.end <= m.index && /^,?\s*(?:at\s+)?$/.test(line.slice(x.end, m.index))) ??
       dates.find((x) => x.at >= end && /^\s*,?\s*(?:on\s+)?(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?,?\s+)?$/.test(line.slice(end, x.at)));
     const earlier = adj ?? (lead && lead.end <= m.index ? lead : null);
+    if (earlier?.kind === 'far') continue; // a time on a day outside the window: not judged (readDate)
     let ms;
     const wd = !adj && /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?,?\s+$/.exec(line.slice(0, m.index));
     if (wd) {
