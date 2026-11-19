@@ -1,0 +1,10 @@
+== suite shard 2/3 (CLAUDE.md suite glob, --test-shard=2/3); full raw kept in the session's scratch
+# tests 1206
+# pass 1205
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 1980985.583316
+exit 0 head 31ac544cd start 4:54 PM end 5:27 PM
+not ok 1060 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below it, and walking there pushes it: the pool's log is never reached (the boulder fixer)
+# todo 1: the 'not ok ... # TODO' line above is a TODO test already on main 6e7b85f8 (w4RealReach/w4Runtime.test.ts, no diff on this branch); node counts it as todo, not fail
