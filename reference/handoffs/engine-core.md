@@ -19,7 +19,14 @@ Rewritten for ENG-23 (11-18, t-eng-23): section 0ENG23 (the little ones that fol
   end). Any jump of him > 150 px in a frame is a set-back (regroup): a test that teleports him regroups the line. The page's touch layer
   owns the jump press: a page script cannot hop him by input.triggerTouchUp (stills.mjs stages his path as a ready trail instead).
   safeWindow (lineFaults) flies FollowPlay itself: change the line, and the check moves with it.
-- **Open:** the HUD faces (mock-up only, SHOW FIRST: reference/qa-reports/ENG-23/stills/HUD-MOCK-*.webp); a `line` meter channel; the
+- **The meter reads the line (METER-4, t-meter-4, tools only):** score.ts `lineCrossings` / `lineChallenges` price each watched crossing
+  the way lineFaults walks them (stretch start -> clump, clump -> clump, clump -> stretch end; a two-heron crossing once): the LEAVE
+  windowBits(cycle, safeWindow) (lineFaults' flight, n = the cages freed before it, at most the goal), the first crossing a deadline on
+  the stretch's whole first calm, the heron's eye a `span` of (G + N x gap) / pace; the STOP deadlineBits(px / PHYS.maxRun), px from
+  lineInCover (= W - N x gap - 20); a spook 'soft', stakes + fetch (2 x distance / PHYS.maxRun) x STAKES.replayPerSec. Piece `line:follow`
+  (coveragecheck reads it from ProtoExtras' FollowRow field); on a follow stage `beat:watched stretches` is the line's. Toys:
+  tools/difficulty/lineToy.ts (`--read`). Change safeWindow, lineInCover or the row, and the meter moves with them.
+- **Open:** the HUD faces (mock-up only, SHOW FIRST: reference/qa-reports/ENG-23/stills/HUD-MOCK-*.webp); the
   heron's own call and head-up pose (art asks); 2-3 itself (its builder lays it: REPORT §4 lists what it needs).
 
 
