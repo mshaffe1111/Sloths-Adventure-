@@ -191,6 +191,14 @@ ENG-24c's `call` field; riverLay ENG-285's split (no `, true`); letGoCue CUE.cli
    vine clock is gameTime + vineShift, and start() set the swing before the game clock; now the clock first, guarded.
 10. Relist 2-4 on the final model + Root B rows: 100 kept of 100 tried; the list is the same 100 seeds (seeds-2-4.ts byte-identical, 08c32188).
 
+## castBots 2-4 1-40 (reference/qa-reports/BUILD-24c/castbots-2-4-c.txt, the final model + Root B), before -> after (BUILD-24b's head)
+child/middle/expert 40/40 both settings (as before); adult 40/40 both; Easy 0 water lives on every bot vs Normal 106-161 (fewer hits on
+Easy). kid Easy 40 -> 39/40 (one rescue at x28803, the raft/jetty). KID NORMAL 36 -> 29/40: traced (tracekid.ts), 10 of 11 rescues at the
+relay's FIRST river (x~21,500: deep gap200, the design's hardest row; 5 drownings at one flag, then help moves him on), 1 at its third
+(x24869). Attribution: the kid on be615d5e (ENG-285 merged, before Root B) 28/40, 342 water lives
+(castbots-kid-normal-preRootB-be615d5e.txt); after Root B 29/40, 295: the drop came with ENG-285's model (the kid's aim), not 2-4's rows.
+Named for the lead (the relay rows are the design's knob; the kid is traced, not held to 40/40 by the packet).
+
 ## 2c: a beat skipped by riding a log bank to bank (the lead's ruling 2:33 PM ET: (iii) today, (ii) tomorrow, never a 240 px wall)
 Probe reference/qa-reports/BUILD-24c/rideAcross.ts (RealPlay, the game's own update; Pokey boards the first log at the near bank's lip,
 stands, hops onto the far bank, the best of 6 hop timings; never touches a vine). Seeds 1-3, both settings:
