@@ -187,12 +187,37 @@ ENG-24c's `call` field; riverLay ENG-285's split (no `, true`); letGoCue CUE.cli
 8. drawcheck PASS (dbee343a, 17 scenarios both ways, 694 s): 2-4 side 5.75 screens / 1.00 gradients / 1057 fill; 2-2 side gradients 2.00 (at
    the limit; not compared to base).
 
+9. letGoCue.test 4/4 again (17e38bda): test 1's red was the HARNESS, not the model (ENG-285b's diagnosis, 2:28 PM ET): since R-165.295 the
+   vine clock is gameTime + vineShift, and start() set the swing before the game clock; now the clock first, guarded.
+10. Relist 2-4 on the final model + Root B rows: 100 kept of 100 tried; the list is the same 100 seeds (seeds-2-4.ts byte-identical, 08c32188).
+
+## 2c: a beat skipped by riding a log bank to bank (the lead's ruling 2:33 PM ET: (iii) today, (ii) tomorrow, never a 240 px wall)
+Probe reference/qa-reports/BUILD-24c/rideAcross.ts (RealPlay, the game's own update; Pokey boards the first log at the near bank's lip,
+stands, hops onto the far bank, the best of 6 hop timings; never touches a vine). Seeds 1-3, both settings:
+- beat 4 (up-from-log, the log-to-vine catch): CROSSED 6/6 (its far bank z is level with the near bank: upFromLog bank('z','c',300)).
+- beat 6 (no-land, the vine-to-log drops): CROSSED 6/6 (Normal at 100 px/s too).
+- beats 1, 3, 8, 9 (bank-boarding is the design, 2-4.md:48 'the knock'): see the lines pasted below (RIDE-OTHERS).
+Neither forced skill is forced today. Why: riverLay lays a +1 river's logs out from under the near bank's lip and carries them to the far
+bank's lip, 28 px under bank level; a rider steps or hops off. A far bank out of a rider's reach is about 215 px over the log top (a double
+jump rises 184.5 px, physics DOUBLE_RISE): a wall, which the lead ruled out.
+### ENG-24e (packet text for Friday's fresh engine member, the lead's (ii))
+ENG-24e: river logs end short of the far bank, a 'tail' (they sink under an overhang or a fall), out of hop reach, any world; planted;
+2-4's beats 4 and 6 relisted on it. Done-items: (1) RiverRow gains a tail field (data; riverLay layRiver: the carriers' window ends that
+far before x1, the water beyond it log-free; riverFaults judges the rest); (2) the drawn end: World 2's painted overhang or fall where the
+logs go under (art first; Hugging Face if none fits; no code-drawn primitive); (3) the judge and the bots read it (lianaDrops' 'far' still
+lands the far bank from the liana; route.ts boards and rides as before); (4) a planted test: rideAcross.ts's ride-across RED on a tailed row
+(beats 4 and 6 of 2-4) and GREEN on 2-1's plain rows; works for any stage, proven on 2-4 and a toy; no stage id in engine code;
+(5) 2-4's beats 4 and 6 rows gain the tail; relist 2-4; castBots; lockall vs main (only 2-4 moves). 2-4 ships in release 1 ONLY with it.
+
+## The bots' longest liana holds on the final rows (lianaWait.ts, seeds 1-4, every bot; the bar moves to the judge: RIVER-CLOCK, the lead's (b))
+- Normal: relay lianas x20992 13.3 s (child s1), x21592 11.0 s (adult s1), x22582 10.0 s (expert s4), x24062 11.1 s (expert s4),
+  x24662 14.1 s (middle s2); beat 1 x3105 7.6 s (kid s3); beat 6's two lianas under 7.6 s on every run (were 14.0-14.1 s, the cap).
+- Easy: x23522 14.2 s and x28602 14.1 s (kid s4), beat 3 x8213 9.0 s (child s1), relay x21352 8.7 s (child s1), beat 6 x16180 8.3 s
+  (kid s1), x22922 5.9 s (kid s3). The judge (any glow-lit moment) reads every 2-4 liana under one swing on Easy: the lead's guard holds.
+
 ## Open (named)
-- letGoCue.test 1 RED since the ENG-285 merge: the glow lit over water on 29 frames (long normal). ENG-285b diagnoses; BUILD-24c applies.
-- 2c: every liana beat is boardable from the bank (riverLay lays +1 logs out from under the near bank's lip); forcing the liana needs an
-  engine field; lead's ruling pending.
-- The bots' longest liana wait (the bot's one-phase let-go): relay and Easy lianas 9-14 s; the bar moves to a judge job (RIVER-CLOCK, the
-  lead's ruling (b)); per liana / per bot figures to be pasted after the relist.
+- 2c: beats 4 and 6 skippable on a log alone, until ENG-24e (above).
+- The bots' liana holds above (named, not tuned; RIVER-CLOCK).
 
 ## EXACT NEXT STEP (if this session stops)
 1. Relist 2-4 (`npx tsx tools/engine/seedlist.ts 2-4 --count 100`) on t-build-24c's head; commit seeds-2-4.ts + provenIndex.
