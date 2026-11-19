@@ -53,25 +53,30 @@ GATEPLACEHOLDER
 
 ## Pushback
 - 2-6.md:7 "the bottom moves toward the street side" contradicts its own flight (wheel26.ts:10-12: bottom toward the JETTY). Built as flown.
-- "Step-off window >= 2.5 s Easy" read as the better of walk and tap: the edge wheel's Easy WALK-off is 2.2 s (design table 2.3 s), under
-  2.5; only the tap hop (3.5 s) clears it. If the lead means walk, the edge row fails Easy and needs a slower Easy V. Lead's ruling.
-- Easy V is the flown V50/V60 (2-6.md:15,21), not V x 0.85 (51/59.5).
-- Rule 23 "a stageTable row": the toy is rolled as a listed TEST row (listed.ts withTestStage, ENG-24's pattern), not a shipped stageTable
-  row (that would put a toy in every stage gate); addlevel not run on it.
-- Type additions outside my card: Platform.wheel (types.ts), RiverZone.wheelPond (river.ts), PlaceRule 'wheel' + WorldManifest.wheels
-  (gen2/types.ts), all optional fields (the pad/ride precedent). Architect to confirm.
+- "Step-off >= 2.5 s Easy" was read as the better of walk and tap (Easy edge walk-off 2.2 s); RULED 7:25 PM: the walk-off (next step 2).
+- Easy V is the flown V50/V60 (2-6.md:15,21), not V x 0.85 (51/59.5): accepted. The listed test row (rule 23): accepted.
+- Optional fields on Architect-owned types (next step 9): accepted.
 
-## Unresolved (EXACT NEXT STEPS for a fresh member)
-1. ENGINE-WORTHY: a piece layer drawn BEFORE the platforms ('back') so the painted wheel sits behind the jetty and street (2-6.md:22);
-   the placeholder draws on 'world' (over the platform ends).
-2. The meter: no route move or score.ts channel for a wheel (coveragecheck passes only because no built stage lays one).
-3. Perf: the placeholder costs per wheel per frame 1 save/restore, 2 arcs, 1 spoke path, 4N fillRects (N=6: 24); not timed; drawcheck
-   walks shipped stages only (none lays a wheel). Measure with the painted art.
-4. ENG-285 (in-air turn) changes the air model: re-fly the table (`wheelflights.ts --check`) and wheelRide.test.ts after it merges.
-
-## Suggestions
-- Make "a stage shift moves every derived coordinate" one helper (pipeline.ts "right"/"down" blocks): the wheel's axle was missed first.
-
+## Unresolved: EXACT NEXT STEPS for ENG-26b (with the lead's rulings, 7:25 PM ET)
+1. RED (mine): generality fails on `new RealPlay('2-6', 1)` at src/game/gen2/wheelFlights.ts:90 (a stage id in engine code); the suite's
+   30 fails (shard 3, all src/game/gen2/generality.test.ts) are this one literal. Fix: `flyWheel(L, setting, stageId)` as landFlights.ts
+   flyLandFlights takes it, the stage handed in by tools/engine/wheelflights.ts and wheel.test.ts from world data (a World 2 id from the
+   stage table, never a literal in engine code); re-run generalitycheck, generality.test.ts, wheelflights --check, wheel.test.ts.
+2. Ruling (1): Easy's 2.5 s floor is the WALK-off. wheelLay.ts wheelFaults reads `f.walk.window` (not the better of walk and tap) on Easy;
+   give the edge row (and any row whose Easy walk is under 2.5 s: edge 2.2, sparse 2.2) a slower easyV, fly it (wheelflights --write),
+   re-run wheel.test.ts and wheelRide.test.ts (the bot's Easy step-off may then walk: firsttimer.ts wheelRide reads f.tap for 'edge').
+3. Ruling (2): correct 2-6.md:7 to the flight (the bottom moves toward the JETTY; wheel26.ts:10-12).
+4. Ruling (6): a piece layer drawn BEFORE the platforms ('back': stagePiece.types.ts PieceLayer + engine.ts render) so the wheel sits
+   behind the jetty and street (2-6.md:22); move wheelPiece.ts to it.
+5. Ruling (6): `?fixture=wheel` (DEV only, chaseFixtureStage.ts pattern: stageGenerator.ts + App.tsx's fixture line) building
+   wheelToys.kitFor('edge') on World 2; then stills board / mid-ride / step-off upright and sideways, and a clip naming the board and
+   step-off frames (D63). reference/qa-reports/ENG-26/stills.mjs (a live-engine swap) does NOT work: the page keeps 2-6's world.
+6. Ruling (6): the meter's wheel channel (a route move and score.ts channel; coveragecheck is green only because no stage lays one).
+7. Perf: the placeholder per wheel per frame is 1 save/restore, 2 arcs, 1 spoke path, 4N fillRects (N=6: 24), untimed; time it with the
+   painted art; drawcheck walks shipped stages (none lays a wheel).
+8. ENG-285 (in-air turn) changes the air model: re-fly the table (wheelflights --check) and wheelRide.test.ts after it merges.
+9. For INT-13 (ruling 5, accepted): optional fields on Architect-owned types: Platform.wheel (src/game/types.ts), RiverZone.wheelPond
+   (src/game/river.ts), PlaceRule 'wheel' and WorldManifest.wheels (src/game/gen2/types.ts).
 ## Learned (for the next builder)
 - Shared state outside a platform (an axle) must move with every stage shift; the fairness check's lip test caught it at once.
 - A new floor-like thing (a pond) must join every tower read (catches, falls, extent), or the tower lays boughs through it.
