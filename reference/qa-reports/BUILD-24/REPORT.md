@@ -162,6 +162,55 @@ not reached; named). Method update: castBots/tierBots plants that expect "rescue
 never a rescue, which a bot defect can supply.
 
 # BUILD-24c (packet reference/packets/2026-11-19/BUILD-24c.md): finish 2-4 on the real raft and glow; IN PROGRESS (section written 2:29 PM ET 11-19, updated at each step)
+## EXACT NEXT STEP for BUILD-24d (BUILD-24c STOPPED at 3:23 PM ET 11-19 on the lead's D76 STOP: real context 491k of 1M, past the 400k box)
+Head: t-build-24c, the commit that adds this note (code unchanged since 8a78d0ec: src/ and tools/ identical; later commits are report,
+stills, clips, gate logs). Box: final hash by 9:30 PM ET. Nothing of mine is left running: lockall vs main was RUNNING at the stop and dies
+with this session = UNRUN (D59).
+1. GATES, state by head (logs in reference/qa-reports/BUILD-24c/gates/):
+   - PASS on the code of 8a78d0ec or earlier, src unchanged since: tsc, knowncheck, generalitycheck, roadmapcheck (unshallowed),
+     BASE_PATH vite build, chunkcheck, artcheck, tipwalk --layouts 4, registrycheck, coveragecheck, seedlist --check 1-1..1-9, 2-2, 2-4,
+     tierBots.test 7/7, letGoCue.test 4/4, weatherDrift.test 4/4, riverRaft.test 6/6, w2Arc24.test 6/6, seeds.test (after e236233c),
+     pitPocket.test (floor 29), score.test PREDATOR READ (restated, 8a78d0ec), drawcheck PASS on dbee343a (src then = 9fdea9da; the
+     ENG-285 merge changed engine.ts since: RE-RUN drawcheck).
+   - Full suite on efa2c736: 3859/3863 pass, 2 fail = seeds.test (fixed by merging e236233c) + pitPocket (fixed d4b81001): RE-RUN once on
+     the final head (expected green; nothing else changed in src after except score.test, a tool test).
+   - CI tool line on 2d39888a: 230 pass, 2 fail = score.test:304 (fixed 8a78d0ec) + riverRide.test:182 (2-1's bankUp plant, child Easy
+     seed 20: OWNED BY ENG-285b, the lead's ruling 3:13 PM ET; merge its fix when it lands).
+   - seedlist 2-1 --check FAIL: 'replay differs' + 'quiet 4.1 s' = the known METER-3 route red (LESSONS D86 addendum): INT-13 relists.
+   - funcheck FAIL 30 worse / 41 to lower: no flag names 2-4 (grep 0); all World 1 (1-9 etc.): not 2-4's.
+   - UNRUN: lockall --layouts 16 --intended 2-4 --check vs main (regenerate main's lock on origin/main 6e7b85f8 with --out first, ~20 min;
+     expect stages from the merged lines (1-9, ENG-285's model) to move: list them for the lead before judging), clipcheck, kbdcheck,
+     buildcheck (ALONE: it times), drawcheck again (above), the meter (tools/difficulty score 2-4 N + E vs DIFFICULTY.md: name, don't tune).
+2. POLISH, the lead's 3:25 PM ET check, three items:
+   (1) NORMAL's 'Flick up to hop up or over.' card on 6 of 7 frames: SOURCE FOUND, not fixed. The engine picks the 'gap' lesson once per
+       run (engine.ts lessonTick: seen.add on pick; lessons.ts pickLesson 'gap' fires at a BOULDER on a bank: rock() is a platform, its
+       edge to the bank ahead > 60 px). The card then stays because on Normal (Tips) DotGuide reads it on the page's REAL clock, and the
+       still tools step frames with no real time and never tap it, so the one unread card sits over every spot with its +N queue badge.
+       With HOP=1 (shoot.mjs: one real jump first) it still shows at x27760, so it is not only 'he never hopped'. NEXT: shoot Normal with
+       stills24.mjs ALL spots ':dot' (walk in, then 9 s real time so each line is read and gone) to show what a player sees per beat;
+       if a hop card still covers every bank in that, it is rough: the boulder-as-gap pick (lessons.ts pickLesson: skip a gap whose next
+       platform is the SAME floor the boulder stands on) is engine/UI work: ask the lead who owns it.
+   (2) EASY SIDEWAYS deep teal slab (no bed band, final-2-4-easy-up-and-side-sheet.jpg row 2): NOT investigated. Easy's no-land/relay rows
+       are 'safe' (drawRiverWater's safe band: shallow strip + soil) but row 2's river is drawn as the deep sheet: check which river it is
+       (x20690 Easy = relay gap200Easy, safe) and whether painted safe-river art (safeRiverArtReady) had loaded at the shot; compare live
+       2-1 sideways; if the safe band is missing by code, fix at the source (riverArt drawRiverWater / engine drawRivers) with before/after.
+   (3) Full-size stills per beat, upright + sideways (teach, let-go onto a log with the glow lit, log-to-liana catch, relay, raft, exit):
+       full-size frames exist for teach/drop/catch/relay/swing(raft bank)/exit, both settings, both ways, but only in this session's scratch
+       (lost). RE-SHOOT with stills24.mjs (spots: 2108:teach:dot 2880:drop 9400:catch 15380:noland 20690:relay 27760:swing 29500:exit) and
+       commit them full-size under reference/qa-reports/BUILD-24c/stills/final/; the glow-lit let-go needs ENG-24c's stills method
+       (reference/qa-reports/ENG-24c/stills/*glow-lit*).
+   CLIPS (R-165.271, swing-to-log feel): pushed, reference/qa-reports/BUILD-24c/clips/c24-r{0,3,4}-{up,side}.mp4 (Normal L1, the middle
+   tier's run through the game's InputEngine: river 0 = beat 1's first drop, 3 = beat 4's log-to-liana catch, 4 = beat 6 no-land). NOT
+   yet looked at frame by frame (D69): judge them, name the frame of each let-go and catch.
+3. Then: append the gate table (each gate, head, result), the Polish check (each item with its still), Learned + proposed level.md rules
+   (below), lessons applied; send the final hash to the lead.
+Learned (proposed level.md rules): (a) every stage-count floor in a test is derived from the tables, never a literal (flagSpan, pitPocket:
+twice now); (b) a liana beat that must FORCE its skill is proven by a ride-across probe (rideAcross.ts) on every listed seed, both settings;
+(c) two clocks over one river (log spacing vs swing) are kept a third to a half of a log apart, measured by the bots' holds (lianaWait.ts);
+(d) a still tool must let the page's real clock run (or tap the cards) or it shows one unread card over every spot.
+Lessons applied: D19, D30 (one miss: a typed '2:41 PM' corrected to the lead), D36, D57, D59, D62, D69 (clips not yet judged: named),
+D76 (context: stopped at 491k on the lead's read; my mid-turn estimates were guesses), D79, D81, D86, D87.
+
 Branch t-build-24c: base t-build-24 38f9b929 + ENG-24c 1f5c4008 (merged 50ce4eca: engine-core.md both sections, ENG-24c's as §0zn;
 calibration-main.jsonl took ENG-24c's rows, recalibrated on the final head) + ENG-285 final model t-eng-285 ba6b225b (merged 2a3e061a:
 8 conflicts: listed/stageTable/gates.yml/judgedTable unions of 1-9 and 2-4; flagSpan keeps owedWalk; physics.ts ENG-285's pressClimb +

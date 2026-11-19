@@ -16,6 +16,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, DIFF);
   // (FREEZE=1: the same frame on every run, for a before/after pair: the page's randomness seeded and its clock stepped only by the
   //  shooter (Pokey's idle poses and their cross-fade, Dot's comings and goings run on them; a pair once caught him mid-blend))
+  if (process.env.HOP) await ctx.addInitScript(() => { window.__HOP = true; });
   if (process.env.FREEZE) await ctx.addInitScript(() => {
     let s = 12345; Math.random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
     let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; };
@@ -41,6 +42,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       Object.assign(e.player, { x, y: under ? under.y : 580, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 });
       for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
       e.clearGuide?.();
+      // (HOP=1: a player who has hopped: one jump press on the real input, landed, before the 60 frames)
+      if (window.__HOP) { e.input.triggerTouchUp(0, 200); for (let i = 0; i < 40; i++) e.update(1 / 30); e.input.releaseTouchUp?.(); for (let i = 0; i < 30; i++) e.update(1 / 30); }
       for (let i = 0; i < 60; i++) { e.update(1 / 30); e.clearGuide?.(); }
     }, [x, E, name]);
     for (let i = 0; i < (name.startsWith('ride') ? 4 : 30); i++) {
