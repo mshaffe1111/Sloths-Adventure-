@@ -1,7 +1,12 @@
 # INT-13: Thursday's integration: one World 2 base with 2-4 finished, the judges fixed, 2-2's pads, 1-9's variety; every gate once; test link #2.
 Integration, Opus 5.5 xhigh. Written 5:50 PM ET 11-18 (by `date` in the same command) for Thu 11-19. START: in ENG-285's slot when it reports (~3:00 PM
-ET): prep merges 1-4 first, the levels as each member's REPORT lands. BOX: green head + REPORT by 8:30 PM ET, or 50% REAL context (past 400k
-the lead stops you); then the EXACT NEXT STEP pushed. A FRESH member (not INT-12).
+ET): prep merges 1-4 first, the levels as each member's REPORT lands. BOX: green head + REPORT by 11:15 PM ET, or 400k REAL context (the lead
+reads it and tells you); then the EXACT NEXT STEP pushed. LEAD UPDATE 3:32 PM ET 11-19: no slot was free at 3 PM (four members running); START in the first slot that frees
+(expected ENG-285c's, around 6-7 PM): prep merges 0-3c at once (all final), then t-eng-285 (ENG-285c's final), t-fix-284 (FIX-284b's final,
+by 8:30 PM), t-var-19 (by 8:30 PM), t-build-24c (BUILD-24d's final, by 9:30 PM). Start the slow gates on each intermediate head in the
+BACKGROUND so the final head's run is the only one left; every gate still runs ONCE on the final head (law 5). If the final head cannot
+be green by 11:15 PM, push the merged head with every gate's state named: the Friday 8:30 AM members base on it and you (or INT-13b)
+finish the gates first thing. A FRESH member (not INT-12).
 Role card reference/roles/ENGINE.md (integration half) + reference/methods/gates.md + reference/methods/release.md (merge discipline).
 Read LESSONS.md once (D57/D87: call ReadNotifications whenever a notice says pending, at every push and before every report; long
 commands in the BACKGROUND; D59 no gate left running at report; D79 whole screen; D81; D83; D86 the FULL list). INT-12's REPORT
