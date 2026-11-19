@@ -6,11 +6,17 @@
  * called 1-9 "nothing new" on every layout. Planted: without the fix in tools/inspect/beats.ts (POSTED_STILL on a stillBeaten animal) and
  * tools/validate/core.ts (moveOf 'L') the stage tests here are red. The stages are read from the stage table (the first whose layout 1
  * lays a posted still-beaten animal, the first that lays a walking one), so no stage id is named here.
+ * And the fun gate's "enemy by a landing" (tools/validate/mechanics.ts enemyJobs) measures a posted animal from its body, never a patrol
+ * span it never walks, and a walking one from its patrol span (VAR-19, the lead's ruling R2 11-19 1:55 PM ET: every 1-9 boa read 24-89 px
+ * from a landing off its span; LANDING_CLEAR is unchanged). Planted: with the span read for the boa, the far boa reads 10 px and is red.
  */
 import '../../src/game/headlessDom.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { build, moveOf } from '../validate/core.ts';
+import { build, fromStage, moveOf } from '../validate/core.ts';
+import { enemyJobs, LANDING_CLEAR } from '../validate/mechanics.ts';
+import type { Platform } from '../../src/game/types.ts';
+import type { Stage } from './stages.ts';
 import { stillBeaten } from './beats.ts';
 import { STAGE_TABLE } from '../../src/game/gen2/worlds/stageTable.ts';
 import { RealPlay } from '../../src/game/realPlay.ts';
@@ -60,4 +66,22 @@ for (const setting of ['normal', 'easy'] as const) {
 test('the move letter: a posted animal stillness beats is L, a plain animal F', () => {
   assert.equal(moveOf({ letter: 'C', what: 'boa (posted: hold still in its strike)', count: 1 }), 'L');
   assert.equal(moveOf({ letter: 'C', what: 'snake', count: 1 }), 'F');
+});
+
+test('enemy by a landing: a posted boa is measured from its body, a walking snake from its patrol span', () => {
+  const G = 580;
+  const floor = (x0: number, x1: number, id: number): Platform => ({ id, x: x0, y: G, width: x1 - x0, height: 90, type: 'solid', style: 'log' } as Platform);
+  const ps = [floor(100, 600, 1), floor(680, 2400, 2)];
+  // (the same span for both, 200 px back from the body: the jump onto the far floor lands at about 680-700)
+  const near = (type: string, x: number): number | null => {
+    const r = new RealPlay('1-2', 1);
+    r.bare(ps);
+    Object.assign(r.stage as Stage & Record<string, unknown>, { platforms: ps, vines: [], ropes: [], zones: [], checkpoints: [], trees: [], spawnX: 150, spawnY: G, exitTotemX: 2300, exitTotemY: G, proto: undefined, kit: undefined,
+      enemies: [{ id: 1, type, x, y: G - 26, width: 58, height: 26, patrolMinX: x - 200, patrolMaxX: x + 60, hp: 1, maxHp: 1, defeated: false }] });
+    return enemyJobs(fromStage('fixture', 1, 'normal', r, r.stage as Stage)).jobs[0].nearLanding;
+  };
+  const far = near('boa', 900);
+  assert.equal(far, null, `a boa whose body is ${LANDING_CLEAR}+ px past the landing is clear, though its span reaches back: ${far}`);
+  assert.notEqual(near('boa', 760), null, 'a boa whose body is by the landing is still flagged');
+  assert.notEqual(near('snake', 900), null, 'a snake whose patrol reaches the landing is still flagged');
 });
