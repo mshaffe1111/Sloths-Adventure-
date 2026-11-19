@@ -130,7 +130,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', join: 'walk' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -231,7 +231,10 @@ export const BEATS_19: SectionTemplate[] = [
 // ───────────────────────────── 1-9's own quiet: the boughs, the rests and the exit ─────────────────────────────
 const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
-  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: o.job === 'arrive' ? 1 : 6,
+  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: 1,
+  // (VAR-19: each rest is laid once a roll and walked into: the one rest laid five times, after a rolled jump, read "jJJJ" after every
+  //  beat, Easy's 4-run repeat and most of 1-9's likeness to 1-7 and 1-8, as VAR-1 found on 1-7/1-8)
+  ...(o.job === 'rest' ? { entry: { piece: 'in', kind: 'ground', join: 'walk' } } : {}),
 } as SectionTemplate);
 /** a rest along the old boughs: a flag between root hops (1-7's rest: a hop within 450 px of each end, none 950 px apart). The golden seed
  *  (the lead 11:17 AM ET 11-18: World 1's "SECRET! GOLDEN SEED x OF n" counts it; the hand-built 1-9 carried one) sits over the last
@@ -243,13 +246,58 @@ const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the ol
     sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.5, 1),
       { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },
 }] });
+/** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
+const boulder = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [140, 150], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
+/** a vine at the foot of a wall and the wall's top (VAR-1's form, 1-7's wallClimb): the vine on `on` (`onW` wide) 20 px short of its end,
+ *  `h` px tall, and the wall's top `key` (`w` wide) laid over the vine, 30 px under its top: at the top of the climb he steps straight on */
+const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [
+  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 20) / onW, (onW - 20) / onW], h: [h + 30, h + 30] } },
+  { key, shape: 'bank', w: [w, w], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [30, 30] }, style: 'moss_stone', main: true },
+];
+/** a mushroom on `on`, its cap 30 px up, its edge 30-45 px before `on`'s end (1-2's) */
+const mushroom = (key: string, on: string, w: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } });
+/** a bough only the mushroom's bounce (or a double jump) reaches: `rise` px up, a wall straight off `after`'s end */
+const bounced = (key: string, after: string, from: string, w: number, rise: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'walk', after, dy: [-rise - 4, -rise + 4] }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from });
+/** the golden seed (World 1's "SECRET! GOLDEN SEED"): gen2 lays a find once a stage, in the first section that holds one, so every rest
+ *  carries the socket over its high ground and the first rest laid (after the stair, outside every boa read and every teach) keeps it */
+const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t, dn: 60 });
+/**
+ * 1-9's rests (VAR-19, R-165.291; Matt 10-30: "more pieces ... that variety"): five quiet places on the boa's old boughs, each its own
+ * shape and its own move, each laid once a roll and walked into, so no rest is a reroll of another and none is a rest 1-6/1-7/1-8 lays
+ * (theirs: root hops, the hollow log, the moss shelf, the fern dip, the mossy floor, the knots, the crook vine, the split, the saddle).
+ * Nothing watches a rest and nothing hurts in one (no pit, no heart): every miss is the ground he stood on. The quiet line: a move within
+ * 450 px of each end, none 950 px apart.
+ */
+/** (b) the old crook: two root steps up onto the high crook, a boulder on it, and one long drop home (a walked rise is held under a
+ *  single's reach, pipeline.ts riseCap, so the crook is climbed by root steps that stand the same on both settings; the drop matches them) */
+const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
+  pieces: [bank('a', null, 300), root('b', 'a', 200, UP), root('c', 'b', 620, UP), boulder('k', 'c', 0.5), root('z', 'c', 360, [100, 112])],
+  sockets: [flag('a', 0.4), petals('pc', 'c', [0.15, 0.2], 2, 100), petals('pk', 'k', 0.5, 1), seed('c', 0.85), petals('pz', 'z', 0.5, 1)] } }] });
+/** (c) the boulder stair: a painted boulder on the floor, a root step up, a second boulder on the bough, and a step down home (each 50 px) */
+const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
+  pieces: [bank('a', null, 300), bank('f', 'a', 560), boulder('k1', 'f', 0.15), root('g', 'f', 560, UP), boulder('k2', 'g', 0.45), root('z', 'g', 340, DOWN)],
+  sockets: [flag('f', 0.55), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.85, 1), petals('pz', 'z', 0.5, 1)] } }] });
+/** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, along
+ *  it, and two drops home */
+const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
+  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('m', 'b', 460, DOWN), ...wallClimb('c', 'm', 460, 212, 480), root('d', 'c', 280, [96, 100]), root('z', 'd', 320, [80, 84])],
+  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('c', 0.8), petals('pz', 'z', 0.5, 1)] } }] });
+/** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
+ *  it, and down by two root steps and a drop */
+const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {
+  pieces: [bank('a', null, 300), root('b', 'a', 380, [0, 0]), mushroom('bm', 'b', 380), bounced('c', 'b', 'bm', 520, 150), root('d', 'c', 240, DOWN), root('e', 'd', 240, DOWN), root('z', 'e', 320, [44, 48])],
+  sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('c', 0.85), petals('pe', 'e', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
-  // [A] thick mossy boughs; nothing hurts in 1,300 px. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
+  // [A] thick mossy boughs; nothing hurts in 1,300 px; the first move inside his first second (VAR-19: the old arrival walked 800 px, 3.1 s,
+  // to its first jump: "dead walk" at x 140): off the spawn bank straight up onto the old bough, a boulder on it, down a step and a drop,
+  // a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 300), root('r0', 'a', 220, UP), root('b', 'r0', 360, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 340, DOWN), root('r2', 'c', 240, UP), root('z', 'r2', 320, DOWN)],
-      sockets: [petals('pb', 'b', 0.6, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
+    { id: 'boughs', lay: { pieces: [bank('a', null, 260), root('b', 'a', 460, [-92, -88]), boulder('k', 'b', 0.45), root('c', 'b', 340, DOWN), root('r1', 'c', 340, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
+      // (a flag on the low bough: the teach is the first hard node, and with the walk-in join it starts inside ROLLED_FLAGS' reach of the
+      //  start, so it needs a flag within 2,400 px before it, pipeline.ts rolledFlagBreaches)
+      sockets: [petals('pb', 'b', 0.2, 1), petals('pk', 'k', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), flag('r1', 0.5), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
-  rest('w1-19-rest'),
+  rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),
 ];
 /** [E] the bough down toward the river: her mark (the keeper's words), the totem */
 export const EXIT_19: SectionTemplate = {
@@ -310,6 +358,8 @@ export function kitLib19(): WorldKit {
     manifest: { ...M,
       props: [...M.props.filter((p) => !props.some((q) => q.id === p.id)), ...props],
       sections: SECTIONS_19,
+      // (the bough wall rest's vine is 1-4's climb, taught: VAR-19)
+      moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', traps: '1-3', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_19) as Array<keyof typeof LINES_19>).map((k) => [lineId(k), LINES_19[k]])) },
