@@ -1,0 +1,6 @@
+3-3: A Tf1&:&ocelot*1!:#spore Pg1&< Xr1&:&ocelot*2! R Pc1^ Wg1&:&ocelot*1z R Cf1&:&ocelot*2! R Sg1&:&ocelot*3! E
+  12 tokens; checkCode: no errors
+3-4: A Uc1^ Tp1^:#soft Pf1^ R Xp1^ R Pc1^ Wp1^ R Cf1^ R Sp1^ E
+  14 tokens; checkCode: no errors
+3-5: A Tg1&:&thornvine*1z Dc1_ Pg1< R Xr1&:&thornvine*3z R Wm1< R Cc1_&:&thornvine*2z R Sc1_&<:&thornvine*4z E
+  13 tokens; checkCode: no errors
