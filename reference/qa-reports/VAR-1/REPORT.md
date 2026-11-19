@@ -1,7 +1,7 @@
 # VAR-1: variety for 1-6, 1-7, 1-8 (R-165.276). Level builder, 2026-11-18
 
 Branch `t-var-1` (from origin/main 6e7b85f8f). Stage data head **afb9f2e69** (the climb-top fix, the lead's 2:45 PM ruling). STOPPED at
-3:50 PM ET before the gates (context; the lead's rule): flags, bots, lists below are from afb9f2e69; the suite, lock, drawcheck and
+3:45 PM ET before the gates (context; the lead's rule): flags, bots, lists below are from afb9f2e69; the suite, lock, drawcheck and
 seedlist --check were NOT run on it (the runs on 1a1df995b were stopped as void). See section 10.
 Method: reference/methods/level.md (rules 1-29), the lead's GO 10:19 AM ET and rulings 10:00 / 10:50 AM ET.
 Lessons applied: D57 (read the inbox: I missed the 10:00 and 10:19 messages until 10:50, my miss), D79 (stills of the whole screen,
