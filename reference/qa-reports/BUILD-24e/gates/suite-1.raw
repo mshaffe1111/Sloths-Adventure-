@@ -4923,3 +4923,177 @@ ok 818 - 5-M room 5 (easy, seed 2, 448x998): walked into the far wall she is dra
   duration_ms: 185.19899
   type: 'test'
   ...
+# Subtest: 5-M seed 1, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+ok 819 - 5-M seed 1, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+  ---
+  duration_ms: 1866.738838
+  type: 'test'
+  ...
+# Subtest: 5-M seed 38, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+ok 820 - 5-M seed 38, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+  ---
+  duration_ms: 1821.554192
+  type: 'test'
+  ...
+# Subtest: 5-M seed 75, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+ok 821 - 5-M seed 75, sideways: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+  ---
+  duration_ms: 1400.091999
+  type: 'test'
+  ...
+# Subtest: 5-M seed 1, upright: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+ok 822 - 5-M seed 1, upright: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+  ---
+  duration_ms: 1629.593886
+  type: 'test'
+  ...
+# Subtest: 5-M seed 112, upright: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+ok 823 - 5-M seed 112, upright: a full playthrough: the mark and five warnings cut, every trail walked, the ending and the clear
+  ---
+  duration_ms: 1596.8867
+  type: 'test'
+  ...
+# Subtest: 5-M the hard way (upright): the chair, the silk line and a polite cup of tea each hold her a moment, cost nothing, and lead nowhere
+ok 824 - 5-M the hard way (upright): the chair, the silk line and a polite cup of tea each hold her a moment, cost nothing, and lead nowhere
+  ---
+  duration_ms: 2212.541256
+  type: 'test'
+  ...
+# Subtest: room 1, DON'T SIT: the soft chair holds her (no jump gets her off it), she wiggles free and is popped back the way she came; the sapling bends her onto the ledge
+ok 825 - room 1, DON'T SIT: the soft chair holds her (no jump gets her off it), she wiggles free and is popped back the way she came; the sapling bends her onto the ledge
+  ---
+  duration_ms: 172.749902
+  type: 'test'
+  ...
+# Subtest: room 2, DON'T EAT: the beetle by the door eats its cake and falls asleep as she comes in; two plates, one Meeca: a cake on the far plate brings the other beetle
+ok 826 - room 2, DON'T EAT: the beetle by the door eats its cake and falls asleep as she comes in; two plates, one Meeca: a cake on the far plate brings the other beetle
+  ---
+  duration_ms: 746.282262
+  type: 'test'
+  ...
+# Subtest: room 3, HANDS OFF THE SILK: the silk line holds her and drops her, never higher than she caught it; a pinecone thrown up snaps the knot and the ladder unrolls
+ok 827 - room 3, HANDS OFF THE SILK: the silk line holds her and drops her, never higher than she caught it; a pinecone thrown up snaps the knot and the ladder unrolls
+  ---
+  duration_ms: 490.319618
+  type: 'test'
+  ...
+# Subtest: room 4, NO TEA. BE RUDE.: manners get a cup and a sleepy moment, the arch cannot be walked through, tea tipped from the floor sends the lift up alone (the post sets the table again), from the lift it lifts her over
+ok 828 - room 4, NO TEA. BE RUDE.: manners get a cup and a sleepy moment, the arch cannot be walked through, tea tipped from the floor sends the lift up alone (the post sets the table again), from the lift it lifts her over
+  ---
+  duration_ms: 713.557129
+  type: 'test'
+  ...
+# Subtest: room 5, DON'T STOP TO LOOK: the steps show only in Flicker's light; the pit under them is soft, with a way out
+ok 829 - room 5, DON'T STOP TO LOOK: the steps show only in Flicker's light; the pit under them is soft, with a way out
+  ---
+  duration_ms: 1005.137378
+  type: 'test'
+  ...
+# Subtest: the carving: the circle carves only at a trunk, she cannot walk on past one she has not marked, and through the camp she tiptoes
+ok 830 - the carving: the circle carves only at a trunk, she cannot walk on past one she has not marked, and through the camp she tiptoes
+  ---
+  duration_ms: 98.314516
+  type: 'test'
+  ...
+# Subtest: Easy's sparkle comes for going back and forth with nothing changing, not for standing about; Flicker's hints only when asked, a step at a time
+ok 831 - Easy's sparkle comes for going back and forth with nothing changing, not for standing about; Flicker's hints only when asked, a step at a time
+  ---
+  duration_ms: 678.299684
+  type: 'test'
+  ...
+# Subtest: the trails' floor, in the engine: walking along it never gets her through a section, and hopping without climbing never gets her past a trunk
+ok 832 - the trails' floor, in the engine: walking along it never gets her through a section, and hopping without climbing never gets her past a trunk
+  ---
+  duration_ms: 23400.158143
+  type: 'test'
+  ...
+# Subtest: she has no leaf: a jump held all the way over a gully never glides; she drops into it, and its stairs lead back
+ok 833 - she has no leaf: a jump held all the way over a gully never glides; she drops into it, and its stairs lead back
+  ---
+  duration_ms: 57.985275
+  type: 'test'
+  ...
+# Subtest: 5-M on Easy, upright: a full playthrough (the stage as Easy makes it), no heart and no life lost
+ok 834 - 5-M on Easy, upright: a full playthrough (the stage as Easy makes it), no heart and no life lost
+  ---
+  duration_ms: 1679.623923
+  type: 'test'
+  ...
+# Subtest: (a) the weak point's closing flicker follows the opening the run is played on, not the menu
+ok 835 - (a) the weak point's closing flicker follows the opening the run is played on, not the menu
+  ---
+  duration_ms: 100.121447
+  type: 'test'
+  ...
+# Subtest: (b) the jump buffer is the run's, set by the engine as it builds the stage
+ok 836 - (b) the jump buffer is the run's, set by the engine as it builds the stage
+  ---
+  duration_ms: 600.138583
+  type: 'test'
+  ...
+# Subtest: the "New look coming soon" tag is on Worlds 9 and 10 only, from the list each rebuild trims (World 8 rebuilt, 2026-10-31)
+ok 837 - the "New look coming soon" tag is on Worlds 9 and 10 only, from the list each rebuild trims (World 8 rebuilt, 2026-10-31)
+  ---
+  duration_ms: 0.890177
+  type: 'test'
+  ...
+# Subtest: UI-20: the store build never shows the tag
+ok 838 - UI-20: the store build never shows the tag
+  ---
+  duration_ms: 0.07666
+  type: 'test'
+  ...
+# Subtest: 1-1's lines are old 1-1's measured medians, not its profile words: a planted 1-1 with 20 splits fails, one with 34 and 0.61 passes
+ok 839 - 1-1's lines are old 1-1's measured medians, not its profile words: a planted 1-1 with 20 splits fails, one with 34 and 0.61 passes
+  ---
+  duration_ms: 41.461553
+  type: 'test'
+  ...
+# Subtest: A-06 a paused stage is not redrawn every frame, and its picture does not shake (2 s at 30 fps)
+ok 840 - A-06 a paused stage is not redrawn every frame, and its picture does not shake (2 s at 30 fps)
+  ---
+  duration_ms: 430.03584
+  type: 'test'
+  ...
+# Subtest: a paused stage is not redrawn 30 times a second (PERFORMANCE-RULES §3.5)
+ok 841 - a paused stage is not redrawn 30 times a second (PERFORMANCE-RULES §3.5)
+  ---
+  duration_ms: 244.365745
+  type: 'test'
+  ...
+# Subtest: a shake under way when the game is paused is not still shaking a second later
+ok 842 - a shake under way when the game is paused is not still shaking a second later
+  ---
+  duration_ms: 128.586117
+  type: 'test'
+  ...
+# Subtest: paused, the still is drawn again after the view changes size, and play draws every frame again on resume
+ok 843 - paused, the still is drawn again after the view changes size, and play draws every frame again on resume
+  ---
+  duration_ms: 247.520961
+  type: 'test'
+  ...
+# Subtest: a fill petal on a soft pit's floor is never one the door counts: a creaky limb between two liana gaps, the pit floor the only wide piece (RED: exclusion off)
+ok 844 - a fill petal on a soft pit's floor is never one the door counts: a creaky limb between two liana gaps, the pit floor the only wide piece (RED: exclusion off)
+  ---
+  duration_ms: 9.540465
+  type: 'test'
+  ...
+# Subtest: the fill still lays on the walked path: a perch level with the banks in the same stretch gets the trail, and the door counts it
+ok 845 - the fill still lays on the walked path: a perch level with the banks in the same stretch gets the trail, and the door counts it
+  ---
+  duration_ms: 1.455319
+  type: 'test'
+  ...
+# Subtest: a fill petal over a hurt floor (the thorn bed) is never counted, with no record of the stage's falls (RED: exclusion off)
+ok 846 - a fill petal over a hurt floor (the thorn bed) is never counted, with no record of the stage's falls (RED: exclusion off)
+  ---
+  duration_ms: 0.855878
+  type: 'test'
+  ...
+# Subtest: a heart-fall zone counts as a fall: below its lower lip is the pit (gen2 heartFalls, any world)
+ok 847 - a heart-fall zone counts as a fall: below its lower lip is the pit (gen2 heartFalls, any world)
+  ---
+  duration_ms: 16.92255
+  type: 'test'
+  ...
