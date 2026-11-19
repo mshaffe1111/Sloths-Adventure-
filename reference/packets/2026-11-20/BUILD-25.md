@@ -21,6 +21,19 @@ fly, judge, list and tune NO snap row (the lay being replaced).
    w1NewArt.test.ts:92). Lines: KEEPER-25's approved lines verbatim (the lead sends them, expected by 9:30 AM; lay with placeholder ids
    until then). Engine work is NOT done here: a NEW piece -> stop and tell the lead with its size. ENG-25b's builder items: a snapper's
    ground under no step (ENG-25c's rule checks it), the bounce to a high stone only for the held press, Dot's beat-4 line teaches the wait.
+1b. KEEPER-25's APPROVED lines (t-keeper-25 a7ad4455, reference/story/lines-2-5.md; the lead accepted its pushback 5:14 PM ET 11-19: line 3
+   teaches the KICK after the snap, because on ENG-25b's TURTLE the bonk dazes at any moment and only the kick needs it open). Lay them
+   verbatim (teach lines play on Normal's default Tips): w25.count "The stones bite on four! One, two, three, off!" (before beat 1);
+   w25.snapper "Snappers are just grumpy. A kick sends them home!" (before beat 2); w25.snap "Awake ones? Stand back, let it snap, then
+   kick!" (before beat 4); w25.follow "The snaps run ahead now. Stay right behind them!" (before beat 6); w25.quiet "Shh. Hear that? Just
+   the river again." (once, after the Big Snap); journal turtle tip "Can't hide in its shell, so it snaps. Kick right after!"; MISSION_25
+   "The stones bite on four. Hop across and send the snappers home."; SEALED_LINES['2:purge'] "Some snappers are still back there. Send
+   them home!". KEEPER-25's four conflicts are YOURS, each fixed at the source and planted: (1) engine.ts's 'late' line "Still N predators
+   to defeat before the sanctuary opens" breaks World 2's nobody-hurt rule: it must read the world's own goal words (GOAL_WORDS(2,'purge') =
+   Chase off / snapper / snappers; countWord(2,'purge')) for every world, not 'defeat'; (2) the journal tip lands WITH the new snapper (the
+   old 'Head-on it hides' tip retires with the hand build); (3) the old 2-5 rows in dotLinesData.ts (the old turtle's lines) retire with the
+   old stage and never fire on the kit 2-5; (4) the goal card says 'turtles' (the cast kind's name) while every line says 'snappers': the
+   card reads the world's countWord.
 2. Every first appearance taught (the bite on soft water first; the sleeper's kick cannot fail; the bonk after the snap; the wave with
    Dot before it); nothing that hurts between a teach and its thing; stage at least 2 minutes; every stage works upright and sideways.
 3. Relist 2-5 (seedlist.ts 2-5; check 6 fresh builds pass seedlist's judge BEFORE starting the relist: VAR-19 lost 58 min on 11-19);
