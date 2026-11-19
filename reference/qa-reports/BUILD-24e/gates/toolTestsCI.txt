@@ -1,0 +1,7 @@
+== gates.yml rolled job's tool tests, all 25 files (head 69341ec26) start 5:55 PM
+not ok 125 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 219 - planted: with the up-the-far-bank skill off, the child on Easy splashes back off 2-1's far bank face: 12 s or more longer than with it on
+# tests 233
+# pass 231
+# fail 1
+exit 1 end 5:59 PM

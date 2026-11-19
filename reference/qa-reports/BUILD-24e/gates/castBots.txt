@@ -1,0 +1,14 @@
+== npx tsx tools/inspect/castBots.ts --stage 2-4 --seeds 1-40 --bots kid,adult,child,middle,expert --setting both --par 3 (head 42aef3d90) start 5:04 PM
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 29/40; under the floor 0; time median 194.7 s (min 154.9); hits 0 lives 295 (water 295); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 11: shrine rescued x1  (seeds 5,8,17,20,26,36,1,28,31,37,40)
+kid    easy   PASS 39/40; under the floor 0; time median 172.3 s (min 139.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 4)
+adult  normal PASS 40/40; under the floor 0; time median 171.9 s (min 139); hits 0 lives 121 (water 121); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; under the floor 0; time median 149.2 s (min 135.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 350.7 s (min 308.5); hits 0 lives 161 (water 161); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 260.6 s (min 235.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 214.8 s (min 194.5); hits 0 lives 114 (water 114); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 187 s (min 170.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 206.5 s (min 174.3); hits 0 lives 106 (water 106); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+exit 0 end 5:09 PM

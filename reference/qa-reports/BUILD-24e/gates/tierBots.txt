@@ -1,0 +1,27 @@
+== npx tsx --test tools/inspect/tierBots.test.ts (head 42aef3d90) start 5:04 PM
+  ---
+  duration_ms: 0.342498
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 4.016048
+  type: 'test'
+  ...
+# Subtest: three variants a tier and setting replay exactly as committed
+ok 7 - three variants a tier and setting replay exactly as committed
+  ---
+  duration_ms: 20214.053205
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22265.243026
+exit 0 end 5:04 PM
