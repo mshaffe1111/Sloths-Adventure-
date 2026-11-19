@@ -1,0 +1,15 @@
+FakeInput tap hop standing: press to landing 9 frames (0.30 s), left the ground frame 1, 0 px along, 30 px up
+FakeInput tap hop at a run: press to landing 9 frames (0.30 s), left the ground frame 1, 83 px along, 30 px up
+FakeInput held jump standing: press to landing 20 frames (0.67 s), left the ground frame 1, 0 px along, 98 px up
+FakeInput held jump at a run: press to landing 20 frames (0.67 s), left the ground frame 1, 184 px along, 98 px up
+InputEngine touch flick tap hop standing: press to landing 19 frames (0.63 s), left the ground frame 1, 0 px along, 97 px up
+InputEngine touch flick tap hop at a run: press to landing 19 frames (0.63 s), left the ground frame 1, 175 px along, 97 px up
+InputEngine touch flick held jump standing: press to landing 20 frames (0.67 s), left the ground frame 1, 0 px along, 98 px up
+InputEngine touch flick held jump at a run: press to landing 20 frames (0.67 s), left the ground frame 1, 184 px along, 98 px up
+Pad button (PAD_HOP_MS 80) tap hop standing: press to landing 13 frames (0.43 s), left the ground frame 1, 0 px along, 62 px up
+Pad button (PAD_HOP_MS 80) tap hop at a run: press to landing 13 frames (0.43 s), left the ground frame 1, 119 px along, 62 px up
+Pad button (PAD_HOP_MS 80) held jump standing: press to landing 20 frames (0.67 s), left the ground frame 1, 0 px along, 98 px up
+Pad button (PAD_HOP_MS 80) held jump at a run: press to landing 20 frames (0.67 s), left the ground frame 1, 184 px along, 98 px up
+FakeInput chain of 6 tap hops at a run: 54 frames (1.80 s), 497 px: 276 px/s
+InputEngine touch flick chain of 6 tap hops at a run: 114 frames (3.80 s), 1050 px: 276 px/s
+Pad button (PAD_HOP_MS 80) chain of 6 tap hops at a run: 78 frames (2.60 s), 718 px: 276 px/s

@@ -300,7 +300,8 @@ export class RealPlay {
    * TEST: drive the engine through the game's own InputEngine from now on (ENG-24; DESIGN-24-25 R-165.284), as the phone's touch layer
    * does (TouchController.tsx): a direction is triggerTouchMove, a jump press is triggerTouchUp with the touch's minimum hold (inputEngine.ts
    * MIN_TOUCH_JUMP_HOLD_MS from the take-off, or the Pad button's PAD_HOP_MS: `holdMs`), lifting the thumb is releaseTouchUp, a climb is
-   * triggerTouchClimb. FakeInput's bare press is a hop no thumb makes (0.30 s / 83 px where the real tap hop is 0.43 s / 106-119 px)
+   * triggerTouchClimb. FakeInput's bare press is a hop no thumb makes (0.30 s / 83 px / 30 px up): a touch flick is a full jump by design
+   * (0.63 s / 175 px / 97 px up) and the Pad button's tap the shortest real hop (0.43 s / 119 px / 62 px up): gen2 rideLay PAD_HOP, flown
    */
   useRealInput(holdMs?: number): InputEngine {
     const inp = new InputEngine();

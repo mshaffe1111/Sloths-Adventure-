@@ -251,20 +251,38 @@ export const PAD_LAY = {
   easyStretch: 1.5,
 } as const;
 
+/**
+ * Pokey's hops as a thumb makes them (FIX-284, R-165.284): the real engine at 30 fps, flat floor, through the game's own InputEngine
+ * (RealPlay.useRealInput), press to landing; `along` at a full run. padHop.test.ts flies every row and holds it to the frame. The old
+ * 0.30 s / 83 px / 30 px "tap hop" (2-2.md, hopAir.ts) was FakeInput's one-frame press, a hop no control makes.
+ */
+export const PAD_HOP = {
+  /** a touch flick, the default control: held MIN_TOUCH_JUMP_HOLD_MS (220 ms) from the take-off, a full jump by design (inputEngine.ts:7) */
+  touch: { frames: 19, along: 175, up: 97 },
+  /** a tap of the Pad's Jump button (padControl.ts PAD_HOP_MS 80 ms): the shortest hop any player makes */
+  pad: { frames: 13, along: 119, up: 62 },
+  /** a jump held to its top, on either control */
+  held: { frames: 20, along: 184, up: 98 },
+  /** px/s along a chain of hops at a run, each pressed as he lands (on every control: his speed in the air is his run's) */
+  chain: 276,
+} as const;
+
 /** the numbers a laid pad row is held to (padFaults) */
 export const PAD_FAIR = {
-  /** a weight pad holds a landing and one more decision (s, Normal): 2-2.md, a child's land-decide-tap 0.2-0.4 s plus the tap hop's 0.30 s */
+  /** a weight pad holds a landing and one more decision (s, Normal): 2-2.md, a child's land-decide-press 0.2-0.4 s, and his press leaves the
+   *  pad the next frame on every control (PAD_HOP; the hop's own air time is spent off the pad, so it does not count here) */
   hold: 1.0,
   /** a shiver he can read before it goes (s, Normal) */
   shiver: 0.4,
   /** a sunk pad is whole again (holds a landing and a decision) within a wait he can count (s; riverLay RIVER_LAY.beat) */
   back: 4,
-  /** how fast he crosses a pond, hopping and running pad to pad (px/s): a tap hop flies 83 px in 0.30 s (277 px/s, hopAir.ts) and his run
-   *  tops out at 285 px/s (physics.ts maxRun), less his landings; a beat row's run must be crossed inside one breath at this pace */
+  /** how fast he crosses a pond, hopping and running pad to pad (px/s): a chain of hops at a run makes PAD_HOP.chain (276 px/s, on every
+   *  control; his run tops out at 285, physics.ts maxRun), less his landings and lining up; a beat row's run must be crossed inside one
+   *  breath at this pace */
   pace: 230,
   /** a person's reaction to a beat row rising before he goes (s) */
   react: 0.3,
-  /** the widest water between two pieces (px): a held jump flies 184 px (hopAir.ts), less a margin so the child makes it */
+  /** the widest water between two pieces (px): a held jump flies PAD_HOP.held.along (184 px), less a margin so the child makes it */
   reach: 160,
   /** the least water between two pieces (px): closer, two read as one */
   apart: 20,

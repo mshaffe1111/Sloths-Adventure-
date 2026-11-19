@@ -207,3 +207,11 @@ test('the cover a bot heads for: the nearest ground cover at his level, never ha
   assert.equal(stillCoverNear(covers, 800, Y)?.x, 700, 'inside it');
   assert.equal(stillCoverNear(covers, 2000, Y), null, 'none within 600 px');
 });
+
+test('castBots --input: touch drives the touch layer (its minimum hold), pad the Jump button (PAD_HOP_MS), fake stays the default (FIX-284)', async () => {
+  const { realInputOf } = await import('./castBots.ts');
+  const { PAD_HOP_MS } = await import('../../src/game/padControl.ts');
+  assert.equal(realInputOf('touch'), true);
+  assert.equal(realInputOf('pad'), PAD_HOP_MS);
+  assert.equal(realInputOf('fake'), undefined);
+});

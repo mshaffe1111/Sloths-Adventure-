@@ -4,6 +4,10 @@
  * with the goal full), and every failure by cause (time, stranded, a sealed door, a game over), how each animal was cleared (the kit's
  * way), the traps sprung, the hits by cause. No stage is named in this file: it is handed one.
  *   npx tsx tools/inspect/castBots.ts --stage 1-3 --seeds 1-40 [--bots kid,adult,child,middle,expert] [--setting both] [--par 6] [--json]
+ *     [--input fake|touch|pad]
+ * --input: how his presses reach the engine (FIX-284): `fake` (the default, unchanged) RealPlay's FakeInput, a press held his own hold;
+ * `touch` the game's InputEngine as the phone's touch layer (every press held at least MIN_TOUCH_JUMP_HOLD_MS: a flick is a full jump);
+ * `pad` the InputEngine as the Pad's Jump button (a tap held PAD_HOP_MS: the short hop). firsttimer RunOptions.realInput.
  * A seed is the stage's layout variant (RealPlay -> setLayoutVariant): on a listed stage its n-th proven seed, on a test-side roll its
  * gen2 seed (tools/engine/runs/page13.py's hook in a worktree).
  */
@@ -12,6 +16,7 @@ import { spawn } from 'node:child_process';
 import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer, type FTRun } from './firsttimer.ts';
 import { RULES, isClimb } from './eraRoll.ts';
 import { RealPlay, levelConfig } from '../../src/game/realPlay.ts';
+import { PAD_HOP_MS } from '../../src/game/padControl.ts';
 
 type Setting = 'easy' | 'normal';
 /** STAGE-RULES.md:77 "Every stage takes at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short": the floor a run
@@ -37,10 +42,15 @@ export interface CastRun {
   error?: string;
 }
 
-export function castRun(bot: string, setting: Setting, stage: string, seed: number): CastRun {
+/** how his presses reach the engine (--input): FakeInput, the touch layer, or the Pad's Jump button (FIX-284) */
+export type CastInput = 'fake' | 'touch' | 'pad';
+export const realInputOf = (input: CastInput): true | number | undefined => (input === 'touch' ? true : input === 'pad' ? PAD_HOP_MS : undefined);
+
+export function castRun(bot: string, setting: Setting, stage: string, seed: number, input: CastInput = 'fake'): CastRun {
   const who = CAST_BOTS[bot][setting]!;
   // (Dot as the phone's default setting lets her speak: Tips on Normal, Help on Easy)
-  const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true });
+  const real = realInputOf(input);
+  const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true, ...(real !== undefined ? { realInput: real } : {}) });
   const hitBy: Record<string, number> = {};
   for (const h of r.harms) hitBy[h.cause] = (hitBy[h.cause] ?? 0) + 1;
   const goalFull = !r.goal || r.goal.got >= r.goal.need;
@@ -62,13 +72,15 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
   const want = arg('--setting') ?? 'both';
   const settings: Setting[] = want === 'both' ? ['normal', 'easy'] : [want as Setting];
   const par = Number(arg('--par') ?? 1);
+  const input = (arg('--input') ?? 'fake') as CastInput;
+  if (!['fake', 'touch', 'pad'].includes(input)) throw new Error(`--input ${input}: fake, touch or pad`);
   const rows: CastRun[] = [];
   if (process.argv.includes('--json') || par <= 1) {
     for (const bot of bots) for (const setting of settings) {
       if (!CAST_BOTS[bot]?.[setting]) continue;
       for (const seed of seeds) {
         let row: CastRun;
-        try { row = castRun(bot, setting, stage, seed); } catch (err) {
+        try { row = castRun(bot, setting, stage, seed, input); } catch (err) {
           row = { bot, setting, stage, seed, end: 'stranded', pass: false, time: 0, goal: null, rescues: 0, turnBacks: 0, hits: 0, lives: 0, hitBy: {}, cast: null, stuck: [], error: String(err).slice(0, 200) };
         }
         if (process.argv.includes('--json')) console.log(JSON.stringify(row));
@@ -78,7 +90,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
   } else {
     const chunks = Array.from({ length: par }, (_, i) => seeds.filter((_, j) => j % par === i)).filter((c) => c.length);
     await Promise.all(chunks.map((c) => new Promise<void>((res) => {
-      const ch = spawn(process.execPath, ['--import', 'tsx', process.argv[1], '--json', '--stage', stage, '--bots', bots.join(','), '--setting', want, '--seeds', c.join(',')], { stdio: ['ignore', 'pipe', 'inherit'] });
+      const ch = spawn(process.execPath, ['--import', 'tsx', process.argv[1], '--json', '--stage', stage, '--bots', bots.join(','), '--setting', want, '--input', input, '--seeds', c.join(',')], { stdio: ['ignore', 'pipe', 'inherit'] });
       let buf = '';
       ch.stdout.on('data', (b) => (buf += b));
       ch.on('close', () => { for (const l of buf.split('\n')) if (l.startsWith('{')) rows.push(JSON.parse(l)); res(); });
