@@ -74,6 +74,12 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+/**
+ * how far behind a bank a river's water, bed and soil are drawn on (engine.ts drawRivers, riverUnderBanks): World 2's painted bank cliff
+ * tapers in below its top by about 70 px at the foot of an upright screen, and the river stopping at the bank's edge left the backdrop
+ * showing in that wedge (BUILD-24c). Twice that, for the cliffs of other banks; the bank is drawn in front and hides the rest.
+ */
+export const RIVER_UNDER_BANK = 140;
 
 /**
  * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the

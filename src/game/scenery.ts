@@ -2391,19 +2391,55 @@ function drawVignette(ctx: CanvasRenderingContext2D, col: string, vw: number, vh
   ctx.imageSmoothingEnabled = prev;
 }
 
-/** Frame leaves + vignette + weather — drawn over the playfield. */
-export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite = false) {
+/**
+ * The drifting things that are THINGS (falling petals, falling leaves: Worlds 1, 2, 5, 7) as opposed to the air itself (rain, mist,
+ * motes of light). They drift in the air between the backdrop and the stage: the game draws them right after the backdrop
+ * (renderDrift), so the ground, its soil and the water hide one that drifts below the ground line. Drawn over the playfield (the old
+ * way) they fell through the soil band, which reads as petals in the dirt (BUILD-24c: the pink specks under 2-4's rivers, upright).
+ */
+/** the share of the frame tile, from the top, its hanging leaves stay inside (buildFront: they hang from y -50 to under 200 of 720; the
+ *  low clumps stand from about 600 down): what an upright screen keeps of it (renderOverlay `foot`) */
+export const FRAME_HANG_H = 0.5;
+
+export const driftsBehind = (world: number): boolean => { const w = lookFor(world).weather; return w === 'petals' || w === 'leaves'; };
+
+/** the falling petals or leaves of a world, drawn behind the playfield (call after the backdrop, before the stage); none for other weather */
+export function renderDrift(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite = false) {
+  if (driftsBehind(world)) renderWeather(ctx, lookFor(world), world, camX, vw, vh, time, lite);
+}
+
+/**
+ * Frame leaves + vignette + weather — drawn over the playfield. `drift` false: the falling petals or leaves were drawn behind the
+ * playfield already (renderDrift; the game does), so only the air's weather is drawn here. Menus and story scenes have no ground in
+ * front, and keep them here.
+ */
+export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite = false, drift = true, foot = true) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
+  // (`foot` false: the frame's low clumps at the bottom edge are left out, its hanging leaves kept (the top half of the tile). Sideways the
+  // bottom edge is the ground's lip, where the clumps peek in; upright it is deep in the soil, where World 2's reeds and World 1's ferns
+  // read as grass growing underground (BUILD-24c): the game passes foot = sideways)
+  if (!foot) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, vh * FRAME_HANG_H);
+    ctx.clip();
+  }
   drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96, rig ? { layer: 'front', rig, time, sway: !lite && polishTier() < 1 } : undefined);
+  if (!foot) ctx.restore();
   if (RICH_MID(look, world)) renderLifeFront(ctx, look, world, camX, vw, vh, time);
   if (rig && !lite) polishFront(ctx, rig, world, camX, vw, vh, time);
   // the dark edge vignette stays on at every quality (it is one small cached picture stretched over the screen): dropping it at lower
   // quality made the whole picture suddenly lighter when the quality governor stepped down
   drawVignette(ctx, darken(look.sky[0], 0.6), vw, vh);
-  renderWeather(ctx, look, world, camX, vw, vh, time, lite);
+  renderOverlayWeather(ctx, world, camX, vw, vh, time, lite, drift);
+}
+
+/** the overlay's weather: the air's always, and the falling petals or leaves only when `drift` (renderOverlay's last step) */
+export function renderOverlayWeather(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite: boolean, drift: boolean) {
+  if (drift || !driftsBehind(world)) renderWeather(ctx, lookFor(world), world, camX, vw, vh, time, lite);
 }
 
 /**

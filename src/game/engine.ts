@@ -69,7 +69,7 @@ import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite, drawLeafBit } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
+import { renderScenery, renderOverlay, renderDrift, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
 import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -104,7 +104,8 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, type DriftInfo } from './river.ts';
@@ -6150,12 +6151,17 @@ export class GameEngine {
     const t = this.gameTime;
     const bottom = cam.y + cam.viewportHeight + 40;
     for (const r of rivers) {
-      if (r.x1 < cam.x - 40 || r.x0 > cam.x + cam.viewportWidth + 40) continue;
-      const a = Math.max(r.x0, cam.x - 20);
-      const b = Math.min(r.x1, cam.x + cam.viewportWidth + 20);
+      // (behind the banks, the water, its bed and the soil under it run on under each bank that meets the river (riverUnderBanks): a
+      // bank's painted cliff tapers in below its top, and where the river stopped at the bank's edge the backdrop showed through as a
+      // grey wall, a dark strip and a pale patch of the backdrop's water under every river bank, upright; BUILD-24c, 2-1, 2-2 and 2-4)
+      const [ul, ur] = over ? [0, 0] : this.riverUnderBanks(r);
+      const x0 = r.x0 - ul, x1 = r.x1 + ur;
+      if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
+      const a = Math.max(x0, cam.x - 20);
+      const b = Math.min(x1, cam.x + cam.viewportWidth + 20);
       ctx.save();
       ctx.beginPath();
-      ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
+      ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
@@ -6195,6 +6201,19 @@ export class GameEngine {
       ctx.restore();
     }
   }
+
+  /** how far a river's water, bed and soil run on under its left and right banks, behind them (drawRivers): RIVER_UNDER_BANK where a
+   *  solid bank's edge meets the river's edge with its top over the water (the bank is drawn in front and hides it), else 0 */
+  private riverUnderBanks(r: RiverZone): [number, number] {
+    let m = this.riverUnder.get(r);
+    if (!m) {
+      const meets = (edge: (p: Platform) => number, at: number) => this.platforms.some((p) => p.type === 'solid' && Math.abs(edge(p) - at) <= 4 && p.y < r.surfaceY && p.y + p.height > r.surfaceY);
+      m = [meets((p) => p.x + p.width, r.x0) ? RIVER_UNDER_BANK : 0, meets((p) => p.x, r.x1) ? RIVER_UNDER_BANK : 0];
+      this.riverUnder.set(r, m);
+    }
+    return m;
+  }
+  private riverUnder = new WeakMap<RiverZone, [number, number]>();
 
   /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
   private riverLogsPainted(worldId: number): boolean {
@@ -7268,7 +7287,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+    if (!ownScene) {
+      renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+      // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
+      setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
+      renderDrift(ctx, world.id, this.camera.x, vw, vh, this.gameTime, this.quality > 0);
+    }
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -7753,7 +7777,7 @@ export class GameEngine {
       this.drawPopups(ctx);
       ctx.restore();
     }
-    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0, ownScene, this.camera.viewportWidth >= this.camera.viewportHeight);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);
