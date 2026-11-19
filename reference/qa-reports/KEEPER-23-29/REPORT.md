@@ -20,7 +20,10 @@ here; one tip; cite; read the goal type and its words before an exit line), and 
   checked against pokeyJournal.ts `opener` and World 2's pages; no BANNED filler (playerText.test.ts:35); no workshop words.
 - Fact checks: cocoi heron (Wikipedia, read 11-18); crocodilian head slaps (Dinets, Copeia 2013); the "water dance" NOT used (alligators,
   and Crocus Rex is a crocodile).
-- Gates: roadmapcheck PASS, knowncheck PASS, timecheck (below).
+- Gates (LAWS 5 scoped: docs only, the fast gates): \`npx tsc --noEmit -p .\` PASS (exit 0; deps by \`npm ci --legacy-peer-deps\`: plain
+  \`npm ci\` stops on a peer-dependency conflict in this container), \`node tools/roadmapcheck.mjs\` PASS (after an unshallow fetch of
+  every branch; on the shallow clone it fails on 13 proofs it cannot see), \`node tools/perf/knowncheck.mjs\` PASS,
+  \`npx tsx tools/engine/generalitycheck.ts\` PASS, timecheck (origin/t-time-168:tools/timecheck.mjs, \`--repo\`) PASS: 1 commit, 1 stamp.
 
 ## 2. Polish check
 No screen to shoot: the lines are not in the game until 2-3's and 2-9's builds (both "DESIGN ONLY", 2-3.md:1, 2-9.md:1). Judged instead
