@@ -114,6 +114,18 @@ Rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the sam
 - Toy clips: tools/engine/runs/boaClip.mjs (freeze|late|roost, up|side). Trap: GoalCard holds on real time; poke it (a key) before the run.
 - Open: the roost art (REPORT step 1, tools/art/hf19), its draw, the red glow under a beaten boa, the kit boa's missing body block.
 
+## 0zl. TIME-168 (t-time-168 from origin/main@6e7b85f8, 11-18): the time-stamp gate (R-165.168)
+- `tools/timecheck.mjs` (+ `tools/timecheck.test.mjs` on gates.yml's tools tsx line; the run is after roadmapcheck): a dated ET
+  time a commit adds to STATE, LESSONS, handoffs, packets or a qa-reports REPORT.md may not be later than that commit (+2 min).
+  Lines are blamed at the head over the FULL history (`-w -M -C`) and kept only if `rev-list` puts their commit in the range: a
+  stamp corrected by a later commit clears, a moved line keeps its first commit. Exit 2 on a shallow clone.
+- Ruling to keep (lead, 11-18 5:45 PM ET): judge what is still at the head; history is never rewritten.
+- Traps: blame's own range/--since marks boundaries wrongly (and this container's clone was shallow: `git fetch --unshallow`);
+  plan words must be read inside the time's clause, never a fixed word window (a 3-word window hid "(lead, by date): MATT 11:29 AM");
+  "by Matt 11-09 9:10 PM" is a record, "Stop line 7:45 PM" a plan. Tune any rule change on a 10-day `--since` scan, reading every
+  hit and a listing of every skipped time. Open: R-165.168 to done at merge; the lead corrects the 75 lead-branch stamps first
+  (reference/qa-reports/TIME-168/breaches-lead.txt), or the release gate is red.
+
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY
   sheet that finishes loading) in their key. Any sheet arriving in play (2-2's pad ripple the first time a pad sank; a creature's sheet)
