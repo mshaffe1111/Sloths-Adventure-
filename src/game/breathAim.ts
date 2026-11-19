@@ -12,7 +12,8 @@
  * watches him pass the row's mark, `near` px before its first pad: noteArrivals), which goes with him to any flag he is put back at. However he plays it, he meets a whole breath, never the same bad
  * moment again. What was tried first and failed (FIX-284 REPORT): aiming at the soonest every try (its own lockstep for anyone slower:
  * kid Normal 18 -> 6 of 40), and turning each try a golden share of a breath on (no lock, but it hands some tries a bad moment on purpose:
- * the respawn clip drowned on its second try). Nothing else on the clock moves (1-4's pods, 1-6's vine snakes are no floor that goes).
+ * the respawn clip drowned on its second try). Nothing else on the clock moves (1-4's pods, 1-6's vine snakes are no floor that goes;
+ * a snap stone's bar is a floor that stays and bites, read by its creak: INT-13b).
  *
  * Pure (no canvas, no engine, no stage ids): what is a breathing row and where it stands come from the platforms.
  */
@@ -35,7 +36,9 @@ export interface BreathWatch { clock: string; mark: number; from: number; soones
 export function breathsAhead(platforms: readonly Platform[], fromX: number, reach: number = BREATH_AIM.reach): Array<{ clock: string; shift: number; x: number; dist: number }> {
   const near = new Map<string, { clock: string; shift: number; x: number; dist: number }>();
   for (const q of platforms) {
-    if (q.pad?.by !== 'beat') continue;
+    // (a snap stone, pad { by: 'beat', on: 'bites' } (rideLay.ts, ENG-25b), is a floor that stays and bites on four, never a row that
+    // breathes: its bar is the stage's own, read by its creak, and is never moved: INT-13b, breathAim.test.ts 'a SNAP STONE row')
+    if (q.pad?.by !== 'beat' || q.pad.on === 'bites') continue;
     const dist = q.x - fromX;
     if (dist < 0 || dist > reach) continue;
     const had = near.get(q.pad.clock);

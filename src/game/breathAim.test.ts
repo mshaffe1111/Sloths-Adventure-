@@ -57,3 +57,16 @@ test('breathsAhead / aimBreaths / noteArrivals: the nearest beat pad of each row
   aimBreaths(P, 600, 40, 285, clock, lags);
   assert.ok(Math.abs(got[1][1] - (40 + (mark - 600) / 285 + late - BREATH_AIM.lead)) < 1e-9, `aimed at his own pace: ${got[1][1]}`);
 });
+
+test('a SNAP STONE row is no breathing row: a put-back never aims its bar (INT-13b: ENG-25b snap stones x FIX-284 breath aim)', () => {
+  // (rideLay.ts lays a snap stone as pad { by: 'beat', on: 'bites' }: a floor always, that bites on four; aiming its bar at a put-back
+  // turned a wave row's first stone 'just out of its bite', so the second and third bit him as he came: snapRide.test.ts wave child Easy
+  // v1 'bitten 2 times', red on the merge, green on each branch alone)
+  const lily = (id: number, x: number, clock: string): Platform => ({ id, x, y: 600, width: 130, height: 12, type: 'moving', lily: true, pad: { by: 'beat', clock, look: 'small' } } as Platform);
+  const stone = (id: number, x: number, shift: number): Platform => ({ id, x, y: 600, width: 80, height: 40, type: 'solid', art: 'snapStone', pad: { by: 'beat', on: 'bites', clock: 'snap-r', shift, look: 'snap' } } as Platform);
+  const P = [stone(1, 700, 0), stone(2, 820, -0.75), stone(3, 940, -1.5), lily(4, 1300, 'beat-r')];
+  assert.deepEqual(breathsAhead(P, 500).map((b) => b.clock), ['beat-r'], 'only the breathing row ahead is aimed');
+  const got: string[] = [];
+  aimBreaths(P, 500, 20, 285, { align: (id: string) => { got.push(id); } }, new Map());
+  assert.deepEqual(got, ['beat-r'], "the snap row's bar is never moved");
+});
