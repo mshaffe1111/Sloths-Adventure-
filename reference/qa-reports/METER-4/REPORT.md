@@ -121,7 +121,7 @@ seconds. One rough spot fixed: the first toy run carried 2-3's hand stage's puzz
 | score.ts --check | PASS (14 planted cases) |
 | touched tests: lineChannel, score, coveragecheck, rideChannel, src/game/ciTests | PASS (exit 0, 10.7 s) |
 | coveragecheck | PASS (12 built stages, 25 pieces used, 6 known gaps; 42 s) |
-| the CI tool line, exactly as gates.yml line 100 has it (with lineChannel.test.ts), CI=1 FORCE_COLOR=1 | GATE-CI |
+| the CI tool line, exactly as gates.yml line 100 has it (with lineChannel.test.ts), CI=1 FORCE_COLOR=1 | PASS: exit 0, 223 tests, 222 pass, 0 fail, 1 todo (the existing chase-bots child-on-Normal TODO, ENG-B4; not mine), 2 m 44 s |
 | before/after meter, 12 stages x 2 settings x seeds 1-4 | byte-identical JSON |
 | timecheck | not in the tree (above) |
 
