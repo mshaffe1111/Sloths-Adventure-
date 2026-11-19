@@ -5,8 +5,8 @@ const ctx = await b.newContext({ viewport: { width: 915, height: 412 }, deviceSc
 await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
 const p = await ctx.newPage();
 const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
-await p.goto('http://127.0.0.1:5199/'); await p.waitForTimeout(2500);
-await p.evaluate((s) => window.__play(s, 1), stage); await p.waitForTimeout(4000);
+await p.goto(`http://127.0.0.1:${process.env.PORT ?? 5199}/`); await p.waitForTimeout(2500);
+await p.evaluate((s) => window.__play(s, 1), stage); await p.waitForTimeout(+(process.env.WAIT ?? 4000));
 for (let k = 0; k < 6 && (await p.evaluate(() => document.documentElement.dataset.hudCard === '1')); k++) { await p.touchscreen.tap(450, 200); await p.waitForTimeout(700); }
 const shallowBefore = await p.evaluate(() => performance.getEntriesByType('resource').filter((r) => /shallow/.test(r.name)).map((r) => [r.name.split('/').pop(), Math.round(r.startTime)]));
 console.log('shallow loaded before any river drawn:', JSON.stringify(shallowBefore), 'now', Math.round(await p.evaluate(() => performance.now())));
