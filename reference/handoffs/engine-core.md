@@ -1,8 +1,23 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten for BUILD-24d (11-19, t-build-24c): section 0zp-24d (the safe river's strip preloaded; Dot's cards in still tools).
+
 Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk. Merged into t-build-24c (11-19) with ENG-24c's and BUILD-24's sections below (§0zn, §0zm).
 
 Rewritten for ENG-24c (11-18, t-eng-24c): section 0zn (the raft look; the swing's glow over a river). ENG-24's 0zl below still holds. Rewritten for BUILD-24 (11-18, t-build-24): section 0zm (2-4 built on ENG-24's liana-over-river pieces: what the next builder and engineer must know). Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
+
+## 0zp-24d. BUILD-24d (t-build-24c, 11-19): a safe river's strip loads with the stage; Dot's cards in stills
+- **A safe river's first frame (R: the lead's item 2):** riverArt drawRiverWater paints a safe river (Easy everywhere, Normal's teaching
+  rivers) from ART-W2's shallow strip only once it has loaded (safeRiverArtReady); until then it falls back to the DEEP sheet, a dark-teal
+  slab, the look of a river that costs a life. stagePreload.ts 'w2-props' now loads the strip with the river sheet (safeRiverPreload.test).
+  Any new river look (a new strip, a new world's water) goes in the same preload branch, never only on first draw.
+- **Stills that show Dot's cards right:** Dot's line is cleared by a tap ON the card (.dg-bub, DotGuide.tsx onCard), not the screen's
+  middle (that clears only the goal card, dataset.hudCard). A move tip ("Flick up to hop up or over.") stays until its move, then its
+  5 s reading time on the phone (R-165.175). A still tool that teleports and never does the move shows one tip over every spot. Use
+  reference/qa-reports/BUILD-24d/stills24d.mjs (walks the start, hops when stopped, taps the card) and window.__dotGuide() (dev) to read
+  the queue (cur, base, moves).
+- **lessons.ts pickLesson 'gap'** fires at a boulder on a bank (reads boulder edge -> next ground as a gap): the right moment for a hop,
+  for an odd reason; every stage's first boulder alike. Left as is (BUILD-24c's proposed change would have dropped a real hop's lesson).
 
 ## 0zn. ENG-24c (t-eng-24c from t-meter-3 42459a5c, 11-18): the raft look (R-165.288) and the glow that agrees with the log (R-165.289)
 - **The raft (data):** a river row's `look: 'raft'` (gen2/riverLay.ts RiverRow) -> layRiver puts it on every carrier's DriftInfo.look (river.ts;
