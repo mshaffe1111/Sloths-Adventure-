@@ -14,7 +14,7 @@ BASE: branch t-var-19 from tonight's integration head (t-int-12 final; the lead 
 1. By data, VAR-1's method: 1-9's own rests and joins (pieces 1-6/1-7/1-8 do not use; use the inventory, to scale with Pokey; any new
    painted piece needed = tell the lead, Hugging Face is the lead's call), break the JJJF run, move the boa off the landing (>= the
    STAGE-RULES distance), a first screen that does something in its first second. Run the suite after the first change (VAR-1b lesson).
-ENG-285's model is t-eng-285 @ 8ac8ffc9 (11-18 8:20 PM ET: step 1 the air model + press frame, 1c one liana clock, 1b the relocate bot fix; merge THIS hash).
+ENG-285's model: merge the FINAL model hash ENG-285b sends Thursday morning (t-eng-285: 8ac8ffc9 + the last two drift fixes, R-165.297); if it is not out by 10:30 AM, the lead says whether to merge 8ac8ffc9 and re-merge later.
 2. When the lead sends ENG-285's step-1 hash (the judge model that flies the engine's Pokey), merge it BEFORE you relist (D40: never prove
    a list on the model being replaced). Relist 1-9 (seedlist.ts 1-9), castBots 1-9 1-40 x tiers x both: child/middle/expert 40/40 both,
    Easy fewer hits than Normal, kid/adult traced; the flee rule still holds (posted animals slide away; the roost boa leaves away).
