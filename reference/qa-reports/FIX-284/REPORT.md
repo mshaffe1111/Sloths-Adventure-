@@ -1,6 +1,6 @@
-# FIX-284 REPORT (STOPPED at the lead's word 3:22 PM ET, real context ~415k of the 400k box; FIX-284b finishes from the note below)
+# FIX-284 REPORT (FIX-284 stopped 3:22 PM ET at context; FIX-284b finished it, final section written 4:40 PM ET 11-19)
 
-## EXACT NEXT STEP (for FIX-284b; branch t-fix-284, push only it; read this whole section first)
+## EXACT NEXT STEP (for FIX-284b) -- DONE by FIX-284b: see the FIX-284b section at the end (kept as history)
 STATE at the stop (3:22 PM ET 11-19, by `date`): branch t-fix-284, base t-int-12 ce4ad461 + ENG-285b's final model ba6b225b (merged, 1acd9668).
 The head I push now carries everything below; nothing else is running when I stop (the deepBeat22 clip re-shoot is waited for, then pushed).
 THE LEAD'S RULINGS (in force): (1) show-first OK 2:37 PM: big pad 260 -> 180 (2.0 Pokeys), art = floor on EVERY stood-on pond piece
@@ -139,3 +139,51 @@ Show-first pair judged (stills/pair-*.png; the lead judged pad85 + crown99). Fin
 D41 (Pokey's drawn height 89.1, from the code), D19 (the hop test calls the engine through the game's own InputEngine, not a copy),
 D59/D87 (every long run in the background; inbox read between steps), D86 (the CLAUDE.md list, every item), D81 (drawcheck 2-2 both ways:
 pads redrawn), D40 (ENG-285's model merged first, so the hop work is not built on a model about to change), D30 (times from `date`).
+
+## FIX-284b (fresh Engine member, 11-19 from c8ee7b96; final code head 5fb2c95c, final head = this commit's)
+**The put-back is a cut (the lead's polish item).** The world holds through the down beat (DOWN_SECS 0.75), so a drowning's "SPLASH!" (life
+0.8 s) and spray (0.55-0.7 s) kept their whole life and sat on 2-2's risen pad as the iris opened; respawnAtCheckpoint only dropped words
+within 160 px of the flag. Now it calls `clearScreenFx()` (every floating word + every particle: spray, sparks, puffs, feathers, stars,
+hearts, a beaten animal's tumble), every stage, every caller (a lost life, heartToFlag, startAtFlag); the lives note comes after it. Planted:
+src/game/respawnClears.test.ts (2-2 deep river + 1-1 pit): RED 2/2 before, GREEN after. Live 2-2 did it at every drowning put-back.
+**Clips (approved by the lead 3:37 PM):** clips/respawn-deepBeat22-{upright,sideways}-{fast,slow}.mp4 (fast: 1 put-back, crosses; slow =
+stands 1.5 s at the flag: 2 put-backs, crosses on try 3 once the aim has his lag); sheets clips/sheet-respawn-*-slow.jpg; the pre-fix
+sideways take kept as *-BEFORE-284b. cliprespawn.mjs: `fast|slow`, first run starts on the warn's edge (every take drowns), PUTBACK log.
+**Breath toy:** breath-toy-red.txt (aim off: 17/18 Normal tries meet the row sunk or shivering) / breath-toy-green.txt (every try up,
+0.07 s in after try 0, Normal + Easy).
+**Frozen finals on 180:** stills/final/2-2-L1-{normal,easy}-pad{big1-edgeL,big1-mid,big1-edgeR,big2-mid,big3-mid,crown-mid}-{upright,
+sideways}.jpg + sheet-final-*.jpg; built setting printed by the game (seed 2, normal/easy); feet = pad top, grounded, every shot.
+**castBots:** FIX-284's table (section 4) stands: re-run on the final code head, 2-2 seeds 1-40 x kid/adult/child/middle/expert x both, touch/pad/fake: 360 rows each, byte-identical (sorted) to castBots-2-2-{touch,pad,fake}-aim.jsonl.
+**Gates on the final code head (5fb2c95c + docs):**
+| gate | result |
+|---|---|
+| tsc / knowncheck / generality / roadmapcheck | PASS / PASS / PASS / PASS (unshallowed clone) |
+| suite, 3 shards | 1273/0, 1312/0, 1264/1: seeds.test.ts:40 (6-1 69793 curation) red on this head, cleared by e236233c when INT-13 merges t-eng-285 (red alone on ba6b225b, green on ce4ad461) |
+| build (BASE_PATH) / chunkcheck / artcheck | PASS / PASS / PASS |
+| drawcheck (2-2 both ways) / clipcheck | PASS 700 s / PASS (83 known) |
+| kbdcheck / buildcheck | PASS / PASS alone p95 87 ms (152 ms on a first run with all 4 cores busy: load) |
+| seed lists --check, every list (registrycheck --lists) | PASS, all 11: 1-1..1-9, 2-1, 2-2 (2-2: 100 seeds, 0 refused) |
+| engine tools' tests (gates.yml:135) | 226/2: riverRide.test.ts:165 upstream, :176 bankUp: inherited from ba6b225b (same red there), re-stated by ENG-285c on t-eng-285, cleared on merge |
+| tierBots / coveragecheck / registrycheck | 7/7 PASS / PASS / PASS |
+| funcheck (advisory, World 1 only: no 2-x rows) | FAIL 30 worse/new, flag list IDENTICAL on ba6b225b: none new or worse from this branch |
+| lockall vs ENG-285's lock (ba6b225b) --intended 2-2 | 101/102 unchanged; 2-2 only (intended) |
+The respawn change touches every stage with a breathing row at run time only (nothing at build time: the lock is the proof); every list re-run.
+## Polish check (FIX-284b)
+- Put-back, same moment (put-back + 4 and + 8 shots): stills/putback/before-after-ba-{side,up}-pb{4,8}.jpg: before = SPLASH (and upright a
+  spray feather) on the risen pad; after = clean, only "2 lives left" at the flag. Pads already up as the iris opens and steady through it.
+- Finals judged whole-screen (D79): all painted, no float/sink, no card or box over him. Named: the crown shot catches a "+100" petal pop
+  (the shooter set him onto a petal), and upright big1-edgeL hangs his body past the pad's left edge (that is the 0.12 share).
+- The lead's pond-join seam (big1-edgeR upright: hard seam, dark strip, a backdrop-water patch underground, petals over the soil): answer (a).
+  2-2's pad pond IS a river zone (safe river 2660-2960, L1) drawn by drawRivers' loop over currentStage.rivers (engine.ts:6184/6189) and
+  both banks meet it (bank 8 ends 2660, bank 9 starts 2960, tops 631 above surface 673), so 622fa1b4's riverUnderBanks gives [140, 140].
+  Proved on a scratch cherry-pick of 622fa1b4 onto this head (never committed): stills/seam/seam-2-2-big1-mine-vs-plus622fa1b4-{upright,
+  sideways}.jpg: seam, strip, patch and petals gone. INT-13 verifies after merging both. No change here.
+## Learned (FIX-284b)
+- RealPlay stubs the screen's words and bursts as COSMETIC (realPlay.ts:133): a test of what the player sees restores them from the prototype.
+- "The world holds" in the down beat means every transient effect outlives it by its own life: anything timed must end at the cut, not decay.
+- A clip that must show a death starts on a phase EDGE, never on whatever phase the frozen clock lands on (the old upright take had no death).
+- A temporary code edit under a running vite dev server hot-reloads the page and kills a clip mid-take: never edit while a take runs.
+## Lessons applied (FIX-284b)
+D30 (every stamp from `date`; one MISS: a hash typed into a message to the lead (c1f5d6b9 for da56696b), corrected at once), D59/D87 (every
+long run in the background, inbox at every push), D86 (the CLAUDE.md list, every item, plus coverage/registry/funcheck/lock), D62 (built
+setting printed), D63/D69 (judged the clip by named frames: PUTBACK shots), D79 (whole screen), D19 (the test drives the real engine path).
