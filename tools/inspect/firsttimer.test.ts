@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_KID, gauss, peakStress, Progress, rng, SpotMemory, teaches,
+  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SpotMemory, teaches,
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
@@ -38,6 +38,20 @@ test('progress follows him along the route, never jumps to a far part of it, and
   assert.equal(pr.cur, 2);
   assert.ok(pr.best >= 10, 'the best so far is kept');
   assert.deepEqual(pr.target({ x: 48, y: 580 }), pts[6], 'heads for the first point over 90 px on');
+});
+
+test('after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)', () => {
+  // the route runs along a bank at y 580 over a pit floor at y 900 (no route point on it), and 35,000 px on drops to a low valley at y 900
+  const pts = [...Array.from({ length: 101 }, (_, i) => ({ x: i * 24, y: 580 })), ...Array.from({ length: 20 }, (_, i) => ({ x: 37000 + i * 24, y: 900 }))];
+  const pr = new Progress(pts);
+  pr.relocate({ x: 1200, y: 900 }, true);
+  assert.ok(Math.abs(pts[pr.cur].x - 1200) <= LEVEL_REACH, `fallen into the pit at x 1200: put at the route point x ${pts[pr.cur].x}, never the valley 35,000 px on`);
+  assert.equal(pr.cur, 50, 'no level point near him: the plain nearest (the bank over him)');
+  // a level point near him is still the one taken
+  const near = [...pts, { x: 1500, y: 900 }];
+  const pr2 = new Progress(near);
+  pr2.relocate({ x: 1200, y: 900 }, true);
+  assert.equal(near[pr2.cur].x, 1500, 'a point at his height 300 px on is taken');
 });
 
 test("the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames", () => {
