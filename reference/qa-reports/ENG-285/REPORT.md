@@ -53,3 +53,28 @@ D59 (long runs in the background; the killed list runner named and rerun), D64/D
 (probes in the scratchpad, not the repo), D86 (the measure lists what the CLAUDE.md list will need), D19 (the test calls the judge's
 own landing, not a copy). Method update (engine-core.md §0zo-285): a harness sets the game's clock BEFORE placing a swing now.
 Turnover note: reference/handoffs/engine-core.md §0zo-285 (03ba54ef).
+
+# ENG-285b (Thu 11-19, a fresh member on t-eng-285): the last two drifts, the final model hash, the measure, the re-prove
+Started 1:48 PM ET (by `date`). FINAL MODEL HASH ba6b225b sent to the lead 2:19 PM ET (box 3:30 PM). Commits: 26f5e14b (drift 1),
+00bc2c77 (drift 2 + plants), ba6b225b (DROP ON A LOG, ruling A), e236233c (curated seeds re-pinned), this report + engine-core.md §0zo-285b.
+
+## The two drifts (R-165.297), each planted against RealPlay through the game's own InputEngine
+1. **No-steer air tick (26f5e14b).** airStep dir 0 braked at PHYS.airDec 520; the engine (refined controls, the default) keeps his speed
+   and brakes at PHYS.airStop only while Down is held. airStep(b, dt, dir, hold, down). Plant judgeFliesEngine.test.ts test 3: 6 launch
+   speeds x 5 steer plans (coast, Down, steer then let go, push back then let go, let go then Down), 24 frames each: RED on the old tick
+   (frame 1: engine vx 285.0, airStep 267.7), GREEN to 1e-3 px. The one dir-0 caller with speed: tools/inspect/jumps.ts.
+2. **The bot's liana hop aims (00bc2c77).** Measured: in one engine frame the vine clock steps, the catch scan reads his place from the end
+   of the LAST frame against THIS frame's clock, then he moves; so the hop's vine clock is the press frame's (pressIn(lag)) and the take-off
+   the frame before. `hopAim` names both; lianaWait and vineFromLog use it (both read `clock + lag`: a frame early on the vine, and the lag
+   never rounded to the frame the press reaches the engine on). The plant exposed two more slips of the class, fixed in the same commit:
+   the press frame is steered ON THE GROUND (physics.ts takeOffStep; groundStep for the run-up: a held run's top speed steps 285/267.7),
+   and the touch layer's 220 ms minimum holds 7 frames (`touchHeld`; lianaWait now holds as pressHold does).
+   Plant lianaRide.test.ts test 5: 1,728 hops (2 SWINGING lianas x run/stand x 6 lags x 3 spots x 2 holds x 12 moments): the aim's
+   take-off = the engine's to 1e-6 px, the press frame's vine clock = the aim's, the bot's verdict AND catch frame = the engine's on every
+   hop. RED on the old aim: 245 of 1,728 wrong (the clock alone 144; one frame earlier still, 140). judgeFliesEngine.test.ts test 4:
+   takeOffStep/groundStep vs the engine, 7 speeds x 3 run steers x 3 jump steers x 2 run-ups, every frame to 1e-6 px (RED with the take-off
+   frame flown as an air tick: 2001.89 vs 2002.89).
+3. **Ruling A (ba6b225b):** with the exact hop judge, DROP ON A LOG's variant 3 hops from the bank onto a log (and lands) and rides across,
+   0 lives, never catching the liana. The test runs v1-6: >= 5 catch the liana (6 of 7 do), each lets go onto a log; one that does not
+   must cross standing on a log with no life lost (asserted); planted OFF 24 lives over v1-5 (was 19).
+The drop judge's calibration table (ENG-24 calib.ts, 16 rows) is IDENTICAL on 925eba15 and this model: today's drifts don't touch it.

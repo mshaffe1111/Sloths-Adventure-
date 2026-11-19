@@ -1,6 +1,33 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock); §0zo-285b ENG-285b 11-19 (the last drifts, the final model). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0zo-285b. ENG-285b (t-eng-285, 11-19): the last two drifts; the final model hash ba6b225b (R-165.297)
+- **No-steer air tick:** physics.ts `airStep(b, dt, dir, hold, down)`: dir 0 COASTS (refined controls, the game's default) and only
+  `down` brakes, at PHYS.airStop (engine.ts, the air `dec` of the no-steer branch). The one dir-0 caller with speed: tools/inspect/jumps.ts
+  (the noisy-thumb bots' drifting thumb). Planted: judgeFliesEngine.test.ts test 3 (RED on the old 520 brake).
+- **A hop's frame order (the bot's liana aims):** in one engine frame the vine clock steps, the catch scan reads his place from the END OF
+  THE LAST frame against THIS frame's clock, then he moves. So a hop's vine clock is the press frame's, pressIn(lag), and the take-off is the
+  frame before it: firsttimer.ts `hopAim(lag)` = { off: pressIn - DT, clock: pressIn }; `hopCatches(.., t0)` takes the press frame's vine
+  clock; `hopCatchAt` returns the catch frame. lianaWait and vineFromLog use hopAim; lianaWait runs the lag's frames with groundStep (a
+  held run's top speed steps 285 / 267.7 px/s frame to frame: engine.ts's `<` at exactly maxRun, the engine's real feel, parked by the lead).
+- **The take-off frame:** physics.ts `takeOffStep` (the ground steer, then airStep with no steer) is the first frame of the bot's hop flights
+  (hopCatches, hopLandsOn: firsttimer `hopFrame`); `groundStep` is a frame of running. Flown as an air tick a stand was 4.1 px short.
+- **The touch hold:** the touch layer's minimum restarts after the take-off frame's countdown (inputEngine.ts noteTakeOff), so 220 ms holds
+  7 frames: firsttimer `touchHeld`; pressHold uses it; lianaWait now holds as pressHold does (real-input runs only).
+- Planted: lianaRide.test.ts test 5 (1,728 hops into the real engine: take-off, vine clock and catch frame equal; RED 245 on the old aim),
+  judgeFliesEngine.test.ts test 4 (takeOffStep/groundStep to 1e-6 px). DROP ON A LOG runs v1-6 (ruling A): v3 rides a log off the bank.
+- **Harness traps:** two lianas side by side in ONE swingSetup call get no room to swing (amp 0): a plant on a still vine proves nothing
+  about a clock; assert the swing. Since 1c a harness sets the game clock BEFORE r.swing (§0zo-285); letGoCue.test's start() had it the
+  other way (BUILD-24c's glow red): guard the set-up with an assert on both clocks.
+- **Left as they are (not one decided press):** the float-wait's "a log is near" (any of 3 take-offs, 0/0.1/0.2 s) and the pad hop's
+  [0.03, 0.1] are loose windows. sovereignReach.ts:108-109 (4-10's opening timer) keeps its own air model (no turn push, dir 0 = airStop):
+  both slower than Pokey, errs safe. The judge flies a let-go with the jump HELD; a flick loses the apex hang (8-37 px by air frame 21-29,
+  40 of 86 presses of one swing): named for the lead. The kid's 2-4 Normal 36 -> 28 (BUILD-24c): no single bot slip (full-40 bisect);
+  his rules fire at the first predicted moment (lianaWait, mean lag only) and on any of 3 take-offs (the float-wait): named for an R-id.
+- Lock: today's commits move no stage (102/102 vs 925eba15). Curated seeds: the 3 plans ENG-285's model moved (6-1 69793, 205913; 7-5
+  928604) re-pinned after curate.ts's own rules passed; 7 more (8-5 x5, 8-6 x2) differ from seeds.ts on main already, unseen by the
+  guard's two seeds a stage.
 
 ## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
 - **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against
