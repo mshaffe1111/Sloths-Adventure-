@@ -64,7 +64,7 @@ this commit (docs and data only). Run data of every finished run: reference/qa-r
 funcheck, gate logs, contact sheets, the probes skilloff.mts / w6verify.mts / lockdiff.py: scratch tools with absolute paths, D83).
 NOT RUN (were running in ENG-285b's container when it stopped; treat as UNRUN, D59): suite shards 4, 5, 6; the CI tool line
 (gates.yml:135); tierBots.test; drawcheck; clipcheck; kbdcheck; buildcheck; lockall --check vs main --intended; the 1-6/1-8 variant-10
-and 2-1 variant-13 stills; middle 2-1 skill-ON runs (on-middle-2-1, 53/80); 2-2 child bankUp-ON runs (on22-child).
+and 2-1 variant-13 stills; middle 2-1 skill-ON runs (on-middle-2-1, 53/80).
 GREEN ON e236233c's code (15a6c859): suite shards 1, 2, 3 (659 + 613 + 802 tests, 0 fail; CI's 6-way split, deploy.yml:38); tsc, build
 (BASE_PATH), chunkcheck, artcheck, knowncheck, generality, roadmapcheck (needs a blob-less unshallow: `git fetch --unshallow --filter=blob:none`),
 coveragecheck, registrycheck; every seed list --check (11, 0 refused); tierBots calibration 200/200 identical; funcheck = INT-12's run.
@@ -76,7 +76,7 @@ coveragecheck, registrycheck; every seed list --check (11, 0 refused); tierBots 
    - BANKUP: on 2-1 it is never a rescue and lives move both ways (child N net -7 off, seed 26 0->7; middle N net 0); only time on child
      Easy: +18 s seed 4, +15 s seed 22 (b/off-bankUp-child-easy.txt vs on-child-2-1.txt). Ruling: if real in lives or a rescue anywhere,
      plant it there (first check child N seed 26 reproduces 0 -> 7 lives with only bankUp off, and look at 2-2: b/off22-bankUp-child-*.txt
-     has the 2-2 OFF runs, seeds 1-20, the ON side is unrun: castBots --stage 2-2 --seeds 1-20 --bots child --setting both --json);
+     has the 2-2 OFF runs, seeds 1-20, b/on22-child.txt the ON runs (finished 3:23 PM, not yet compared));
      else plant its time effect at about half the measured margin (at least 8 s on child Easy seeds 4 and 22) and say so in this REPORT.
    Each re-statement: the test RED with the old cases first (shown), GREEN with the new; never delete a plant.
 2. The CLAUDE.md check list, EVERY item, once on the final head after step 1 (the items NOT RUN above, plus tsc and the full suite again
