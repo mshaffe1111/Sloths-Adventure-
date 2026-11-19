@@ -24,7 +24,7 @@ import { runTier, type Setting, type Tier, type TierOpts, type TierRun } from '.
  *  apart to scramble up hopping bucket to bucket, so only a ride and a step-off at the edge takes him up (the bot skill's planted toy) */
 export const TOY_WHEELS = {
   ...W2_WHEELS,
-  sparse: { R: 180, V: 70, easyV: 60, N: 5, street: 'edge' },
+  sparse: { R: 180, V: 70, easyV: 50, N: 5, street: 'edge' },
 } as const satisfies Record<string, WheelRow>;
 export type WheelToy = keyof typeof TOY_WHEELS;
 

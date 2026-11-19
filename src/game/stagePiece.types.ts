@@ -14,12 +14,14 @@ import type { Platform, PlayerState } from './types.ts';
 
 /**
  * Where in the frame a piece draws (engine.ts render, in this order):
+ *   'back'   in the world, over the water's body and the bank wall, BEHIND the platforms (a water wheel turning behind its jetty and
+ *            street, 2-6.md: the jetty and the street drawn in front of it)
  *   'world'  in the world, after the platforms and the cast's traps, BEHIND him (a rolling nut, a shadow on the ground)
  *   'front'  in the world, OVER him, with the bushes (cover he stands in, a sweeper's shadow passing over)
  *   'screen' after the world transform, in screen pixels, with the chase and watch edges (a calm tint, an edge warning)
  */
-export type PieceLayer = 'world' | 'front' | 'screen';
-export const PIECE_LAYERS: readonly PieceLayer[] = ['world', 'front', 'screen'];
+export type PieceLayer = 'back' | 'world' | 'front' | 'screen';
+export const PIECE_LAYERS: readonly PieceLayer[] = ['back', 'world', 'front', 'screen'];
 
 /** what a piece may read of the engine: live, each read the engine's own value now */
 export interface PieceHost {
@@ -86,7 +88,7 @@ export interface StagePiece {
   readonly layers: readonly PieceLayer[];
   /** one fixed step (dt s) */
   step(dt: number, host: PieceHost): void;
-  /** draw on one of its layers (ctx is in world px for 'world' and 'front', screen px for 'screen') */
+  /** draw on one of its layers (ctx is in world px for 'back', 'world' and 'front', screen px for 'screen') */
   draw?(ctx: CanvasRenderingContext2D, layer: PieceLayer, host: PieceHost): void;
   /** he has respawned at a flag: put back what his run changed (a required piece is whole again, STAGE-RULES) */
   respawn?(host: PieceHost): void;

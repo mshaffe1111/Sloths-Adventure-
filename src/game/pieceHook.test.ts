@@ -90,7 +90,7 @@ for (const id of ['1-2', '2-1', '3-3']) {
   });
 }
 
-test("piece hook: render() draws every layer once, in the frame's order: 'world' behind him, 'front' over him, 'screen' after the world", () => {
+test("piece hook: render() draws every layer once, in the frame's order: 'back' behind the platforms, 'world' behind him, 'front' over him, 'screen' after the world", () => {
   // (the headless canvas steps the engine but cannot paint its scenery, so the call sites are pinned in render()'s own text)
   const src = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   const body = src.slice(src.indexOf('  public render() {'), src.indexOf('\n  }\n', src.indexOf('  public render() {')));
@@ -104,7 +104,10 @@ test("piece hook: render() draws every layer once, in the frame's order: 'world'
   const hero = body.lastIndexOf('drawHeroSloth(');
   const bushes = at('this.drawBushes(ctx)');
   const worldEnd = at('ctx.restore(); // end world transform');
-  assert.ok(traps < layer.world && layer.world < hero, "'world' is after the platforms and traps, before he is drawn");
+  const platforms = at('else renderWorldObjects(');
+  const under = at('this.drawRivers(ctx, world, false)');
+  assert.ok(under < layer.back && layer.back < platforms, "'back' is over the water's body, BEHIND the platforms (a wheel turning behind its jetty and street)");
+  assert.ok(platforms < traps && traps < layer.world && layer.world < hero, "'world' is after the platforms and traps, before he is drawn");
   assert.ok(hero < bushes && bushes < layer.front && layer.front < worldEnd, "'front' is over him, with the bushes, inside the world");
   assert.ok(worldEnd < layer.screen, "'screen' is after the world transform ends");
   assert.equal(src.split('drawPieces(').length - 1, PIECE_LAYERS.length, 'no other drawPieces call: one per layer');
@@ -113,7 +116,7 @@ test("piece hook: render() draws every layer once, in the frame's order: 'world'
 test('piece hook: the registry asks a piece to draw only on the layers it names', () => {
   const p = new Probe();
   const host = {} as PieceHost;
-  for (const layer of ['world', 'front', 'screen'] as const) drawPieces([p], {} as CanvasRenderingContext2D, layer, host);
+  for (const layer of PIECE_LAYERS) drawPieces([p], {} as CanvasRenderingContext2D, layer, host);
   assert.deepEqual(p.drawn, ['world', 'screen']);
 });
 

@@ -79,15 +79,15 @@ const longest = (good: boolean[]): { k: number; n: number } => {
 };
 const shareOf = (a: boolean[]) => Math.round((100 * a.filter(Boolean).length) / a.length);
 
-/** fly one layout on one setting (about a second of CPU) */
-export async function flyWheel(L: WheelLayout, setting: Difficulty): Promise<WheelFlown> {
+/** fly one layout on one setting on `stageId`'s RealPlay (about a second of CPU): the bare world replaces the stage's pieces, its own help
+ *  (physics.ts ASSIST) stays in the flight; the caller hands in the stage the wheel is for, from world data (as landFlights.ts flyLandFlights) */
+export async function flyWheel(L: WheelLayout, setting: Difficulty, stageId: string): Promise<WheelFlown> {
   await import('../headlessDom.ts');
   const { RealPlay, DT } = await import('../realPlay.ts');
   const { setDifficulty } = await import('../difficulty.ts');
   const { InputEngine } = await import('../inputEngine.ts');
   setDifficulty(setting);
-  // (any stage: the bare world replaces it; 2-6's is the one the wheel is for)
-  const r = new RealPlay('2-6', 1);
+  const r = new RealPlay(stageId, 1);
   const inp = new InputEngine();
   inp.source = 'pad';
   const e = r.e as unknown as { input: unknown; gameTime: number; update: (dt: number) => void };

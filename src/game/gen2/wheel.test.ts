@@ -18,10 +18,10 @@ import { setDifficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import { flyWheel } from './wheelFlights.ts';
 import { WHEEL_FLOWN } from './wheelFlights.data.ts';
-import { flownKey, layWheel, rowLayout, stageWheels, streetFromJetty, wheelFaults, WHEEL_FAIR } from './wheelLay.ts';
-import { W2_WHEELS } from './worlds/w2.ts';
+import { flownKey, layWheel, rowLayout, stageWheels, stepFault, streetFromJetty, wheelFaults, WHEEL_FAIR } from './wheelLay.ts';
+import { W2_WHEEL_STAGE, W2_WHEELS } from './worlds/w2.ts';
 import { validateStage } from '../levelCheck.ts';
-import { fixtureSeed, toyStage, wheelsOf, type WheelToy } from '../../../tools/inspect/wheelToys.ts';
+import { fixtureSeed, toyStage, TOY_WHEELS, wheelsOf, type WheelToy } from '../../../tools/inspect/wheelToys.ts';
 import { flyAll } from '../../../tools/engine/wheelflights.ts';
 
 const SETTINGS = ['normal', 'easy'] as const;
@@ -135,7 +135,7 @@ test('turned the other way round: the lay right is the lay left mirrored, clean,
     }
   }
   const L = rowLayout(W2_WHEELS.edge, 'normal');
-  const [left, right] = [await flyWheel({ ...L, way: -1 }, 'normal'), await flyWheel({ ...L, way: 1 }, 'normal')];
+  const [left, right] = [await flyWheel({ ...L, way: -1 }, 'normal', W2_WHEEL_STAGE), await flyWheel({ ...L, way: 1 }, 'normal', W2_WHEEL_STAGE)];
   assert.deepEqual({ ...right, misses: {} }, { ...left, misses: {} }, 'the flight is the same either way round');
 });
 
@@ -153,8 +153,27 @@ test('PLANTED: the street moved out of the flown window is refused by name, and 
   // the engine: the same wheel with its street 90 px further on: no walk reaches it, a tap hop only 0.83 s a turn (60 px on still holds
   // 1.83 s by a tap: the check refuses every layout but the flown one, stricter than the engine needs)
   const L = { ...rowLayout(W2_WHEELS.edge, 'normal'), moved: { dx: 90, dy: 0 } };
-  const f = await flyWheel(L, 'normal');
+  const f = await flyWheel(L, 'normal', W2_WHEEL_STAGE);
   assert.ok(f.step < WHEEL_FAIR.step.normal, `the moved street's step-off window ${f.step} s (as designed: ${WHEEL_FLOWN[flownKey(rowLayout(W2_WHEELS.edge, 'normal'), 'normal')].step} s)`);
+});
+
+test("PLANTED: Easy's floor is the walk-off: a wheel whose tap hop holds 2.5 s but whose walk-off does not is refused by name", async () => {
+  // the engine: ENG-26's Easy edge row (R180 V60 N6 'edge') walks off 2.2 s a turn and tap hops 3.5 s; the old rule (the better of the two)
+  // passed it, the walk-off rule refuses it
+  const old = await flyWheel({ ...rowLayout(W2_WHEELS.edge, 'easy'), V: 60 }, 'easy', W2_WHEEL_STAGE);
+  assert.ok(old.walk.window < WHEEL_FAIR.step.easy && old.tap.window >= WHEEL_FAIR.step.easy, `V60 Easy: walk ${old.walk.window} s, tap ${old.tap.window} s`);
+  assert.match(stepFault(old, 'edge', 'easy') ?? '', /walk off onto the street is open .* under the 2\.5 s easy asks/);
+  // the same flight on Normal's rule passes by its tap hop (Normal keeps the better of walk and tap), and an 'up' street reads the jump
+  assert.equal(stepFault(old, 'edge', 'normal'), null);
+  assert.equal(stepFault({ step: 3, walk: { share: 0, window: 0 } }, 'up', 'easy'), null);
+  // every World 2 and toy row as built walks off within Easy's floor, and lays clean
+  for (const row of [...ROWS, 'sparse'] as const) {
+    const L = rowLayout(TOY_WHEELS[row], 'easy');
+    const f = WHEEL_FLOWN[flownKey(L, 'easy')];
+    assert.ok(f, `${row}: flown`);
+    if (L.street !== 'up') assert.ok(f.walk.window >= WHEEL_FAIR.step.easy, `${row} Easy walk-off ${f.walk.window} s`);
+    assert.equal(stepFault(f, L.street, 'easy'), null, row);
+  }
 });
 
 test('PLANTED: a moved jetty, a bough in the sweep, a drowned ledge, no pond, an unflown row, an up street too high: each refused by name', () => {

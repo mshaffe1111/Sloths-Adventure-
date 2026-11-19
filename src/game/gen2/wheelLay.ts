@@ -9,8 +9,8 @@
  * (wheelFlights.ts, FLOWN; the table wheelFlights.data.ts), and the laid wheel to the layout that was flown, each fault in words:
  *   - board    a tap hop off the jetty lands in a bucket at EVERY moment of the wheel (2-6.md: 100% of phases);
  *   - ride     doing nothing in a bucket never drops him: he rides round again (or, an 'in' street, is set down on it);
- *   - step     the street's step-off window a turn (the better of a walk and a tap hop; a jump off the top for an 'up' street) is at
- *              least WHEEL_FAIR.step s (Normal 1.5, Easy 2.5: 2-6.md line 22);
+ *   - step     the street's step-off window a turn is at least WHEEL_FAIR.step s (Normal 1.5, Easy 2.5: 2-6.md line 22): on Normal the
+ *              better of a walk and a tap hop, on Easy the walk-off alone (stepFault); a jump off the top for an 'up' street;
  *   - up       an 'up' street stands at most WHEEL_FAIR.up px over the top floor (Normal 80, Easy 60);
  *   - layout   the jetty's and the street's lips stand where the flown layout puts them (2 px), the pond under the whole sweep, and no
  *              other solid's top crosses a bucket floor's path (it would knock him out of his bucket).
@@ -21,6 +21,7 @@ import type { RiverZone } from '../river.ts';
 import type { Platform } from '../types.ts';
 import { axleFromJetty, inSweep, sweepBox, wheelLips, WHEEL, type StreetKind, type Wheel } from '../wheel.ts';
 import { WHEEL_FLOWN } from './wheelFlights.data.ts';
+import type { WheelFlownRow } from './wheelFlights.ts';
 
 /**
  * A world's wheel row (WorldManifest.wheels; place `wheel` names it): the wheel's rim R (px to a bucket's floor), its rim speed V (px/s)
@@ -48,6 +49,18 @@ export const WHEEL_FAIR = {
   /** how far a laid lip may stand from the flown layout's (px) */
   lip: 2,
 } as const;
+
+/**
+ * the step-off a row is held to on a setting, and its fault in words (null: fair). An 'up' street: the jump off the top. An 'edge' or 'in'
+ * street: on Normal the better of a walk and a tap hop; on EASY the WALK-OFF alone (the lead's ruling, 11-18 7:25 PM ET: Easy's 2.5 s floor
+ * is the walk-off, the way a child steps off; a tap hop that holds the window does not stand in for it)
+ */
+export function stepFault(flown: Pick<WheelFlownRow, 'step' | 'walk'>, street: StreetKind, difficulty: Difficulty): string | null {
+  const need = WHEEL_FAIR.step[difficulty];
+  if (street === 'up') return flown.step < need ? `the jump off the top is open ${flown.step} s a turn, under the ${need} s ${difficulty} asks` : null;
+  if (difficulty === 'easy') return flown.walk.window < need ? `the walk off onto the street is open ${flown.walk.window} s a turn, under the ${need} s easy asks (Easy's floor is the walk-off)` : null;
+  return flown.step < need ? `the step off onto the street is open ${flown.step} s a turn, under the ${need} s ${difficulty} asks` : null;
+}
 
 /** the layout a row is flown and laid at on a setting (wheelFlights.ts WheelLayout) */
 export const rowLayout = (row: WheelRow, difficulty: Difficulty) => ({
@@ -136,8 +149,8 @@ export function wheelFaults(st: { platforms: readonly Platform[]; rivers?: reado
     else {
       if (flown.board.tap.share < 100) out.push(`${at}: a tap hop off the jetty boards a bucket at only ${flown.board.tap.share}% of the wheel's moments (every moment is the rule)`);
       if (flown.ride === 'fell') out.push(`${at}: doing nothing in a bucket drops him (a missed step-off must ride round again)`);
-      const need = WHEEL_FAIR.step[difficulty];
-      if (flown.step < need) out.push(`${at}: the ${lay.street === 'up' ? 'jump off the top' : 'step off onto the street'} is open ${flown.step} s a turn, under the ${need} s ${difficulty} asks`);
+      const step = stepFault(flown, lay.street, difficulty);
+      if (step) out.push(`${at}: ${step}`);
     }
     if (lay.street === 'up' && lay.up > WHEEL_FAIR.up[difficulty]) out.push(`${at}: its street stands ${lay.up} px over the top bucket, past the ${WHEEL_FAIR.up[difficulty]} px a jump off the top is held to on ${difficulty}`);
     const jetty = st.platforms.find((p) => p.id === lay.jetty), street = st.platforms.find((p) => p.id === lay.streetId);

@@ -7267,6 +7267,8 @@ export class GameEngine {
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // any inventory piece the stage's data places as dressing, behind the play layer (art/invDress.ts: sized by the inventory, by Pokey)
     if (this.proto?.invDress) drawInvDress(ctx, this.proto.invDress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.config.worldIndex, 'behind');
+    // (the stage's runtime pieces that stand behind the platforms: pieces/index.ts, layer 'back': a water wheel behind its jetty and street)
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost);
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(

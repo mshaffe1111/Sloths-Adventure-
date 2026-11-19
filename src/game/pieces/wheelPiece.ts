@@ -5,7 +5,7 @@
  * before its carry read (engine.ts carryVx), so a jump out of a bucket keeps its sideways speed by the one carry rule (ride.ts RIDE.keep).
  *
  * No timer of its own (the wheel never stops; pauses hold the game's time), so a respawn only puts each bucket where the turn says now.
- * It draws the wheel behind him (wheelDraw.ts drawWheel: the hook the painted wheel replaces) and never hurts him: a miss falls into the
+ * It draws the wheel on layer 'back', behind its jetty and street as well as him (wheelDraw.ts drawWheel: the hook the painted wheel replaces) and never hurts him: a miss falls into the
  * pond under it (a safe water zone that sets him back on the jetty, wheelLay.ts).
  */
 import type { PieceHost, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
@@ -15,7 +15,7 @@ import { drawWheel } from '../wheelDraw.ts';
 
 class WheelPiece implements StagePiece {
   readonly kind = 'wheel';
-  readonly layers: readonly PieceLayer[] = ['world'];
+  readonly layers: readonly PieceLayer[] = ['back'];
   /** each wheel and its buckets, in bucket order */
   private readonly wheels: Array<{ w: Wheel; buckets: Platform[] }> = [];
   constructor(buckets: readonly Platform[]) {

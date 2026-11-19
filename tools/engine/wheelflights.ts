@@ -11,21 +11,25 @@ import { fileURLToPath } from 'node:url';
 import { flyWheel, type WheelFlownRow } from '../../src/game/gen2/wheelFlights.ts';
 import { flownKey, rowLayout, type WheelRow } from '../../src/game/gen2/wheelLay.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
-import { W2_WHEELS } from '../../src/game/gen2/worlds/w2.ts';
+import { W2_WHEEL_STAGE, W2_WHEELS } from '../../src/game/gen2/worlds/w2.ts';
 import { TOY_WHEELS } from '../inspect/wheelToys.ts';
 import type { Difficulty } from '../../src/game/difficulty.ts';
 
-/** every world's wheel table (a world that lays wheels adds its table here), and the toys' own rows (tools/inspect/wheelToys.ts) */
-export const WORLD_WHEELS: ReadonlyArray<Readonly<Record<string, WheelRow>>> = [W2_WHEELS, TOY_WHEELS];
+/** every world's wheel table with the stage it is flown on (a world that lays wheels adds its table and stage here, both from its world
+ *  data), and the toys' own rows (tools/inspect/wheelToys.ts: a World 2 toy, flown on World 2's wheel stage) */
+export const WORLD_WHEELS: ReadonlyArray<{ stage: string; rows: Readonly<Record<string, WheelRow>> }> = [
+  { stage: W2_WHEEL_STAGE, rows: W2_WHEELS },
+  { stage: W2_WHEEL_STAGE, rows: TOY_WHEELS },
+];
 
 /** fly every row (each distinct layout once) on both settings */
 export async function flyAll(log = false): Promise<Record<string, WheelFlownRow>> {
   const out: Record<string, WheelFlownRow> = {};
-  for (const table of WORLD_WHEELS) for (const [name, row] of Object.entries(table)) for (const d of ['normal', 'easy'] as Difficulty[]) {
+  for (const { stage, rows } of WORLD_WHEELS) for (const [name, row] of Object.entries(rows)) for (const d of ['normal', 'easy'] as Difficulty[]) {
     const L = rowLayout(row, d);
     const key = flownKey(L, d);
     if (out[key]) continue;
-    const { misses, ...flown } = await flyWheel(L, d);
+    const { misses, ...flown } = await flyWheel(L, d, stage);
     out[key] = flown;
     if (log) console.log(`${key} (${name}): board tap ${flown.board.tap.share}% ${flown.board.tap.window} s, walk ${flown.board.walk.share}%; ride ${flown.ride}; step ${flown.step} s (walk ${flown.walk.window}, tap ${flown.tap.window}, jump ${flown.jump.window}); misses ${JSON.stringify(misses)}`);
   }
