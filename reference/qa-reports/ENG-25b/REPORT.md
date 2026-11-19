@@ -1,6 +1,7 @@
 # ENG-25b REPORT (Engine, t-eng-25b from origin/t-eng-25 21668b61; packet reference/packets/2026-11-19/ENG-25b.md; started 6:29 PM ET 11-18)
-**Code head:** b1dc6b76 (the TURTLE rule, its own commit). **Gates run on:** fda49390 (b1dc6b76 + the turnover note and probe outputs).
-This report's commit adds only REPORT text. **HF:** none. **Pushback:** 1 (the snap had no stake; ruled by the lead, below).
+**Code head:** fe3faf7e (fda49390 + one test brought to the TURTLE rule). **Gates run on:** fda49390 (the TURTLE rule b1dc6b76 + the
+turnover note). After the run: fe3faf7e changes ONLY src/game/predatorCasts.test.ts (the suite's one red, below), re-run alone 8/8; the full
+suite was NOT re-run on fe3faf7e. This report's commit adds only REPORT text. **HF:** none. **Pushback:** 1 (the snap had no stake; ruled by the lead, below).
 
 ## Done-items
 ### 1. BONK-AFTER-THE-SNAP (tools/inspect/firsttimer.ts `SKILLS.bonkAfterSnap`; `snapperPlan`, `bonkAim`, `BONK`)
@@ -17,7 +18,7 @@ own side; he kicks it while it is dazed. Nothing names a stage, kind or x (gener
 | bounce, the press held through the bonk | apex 131 px over the bank, 107 over its back (from 200+ px: a held press from closer sails over it) | same (131 / 107) |
 | tap bonk from a still stand 70 px off, every start round the bar | 90 of 90 stomped clean, 0 bitten | 112 of 135 clean, 0 bitten, 23 missed (the bar's last 0.77 s) |
 | head-on walk-in kick from 160 px, every start (kick at ANY moment, as ENG-25 laid it) | 90 of 90 cleared clean | 135 of 135 |
-| the same, with TURTLE's kick only when open (scratch flip, then the ruling) | 0 cleared, 41 bitten, 49 glanced off | (in bonkFlight-easy.txt on b1dc6b76) |
+| the same, with TURTLE's kick only when open (the ruling, b1dc6b76) | 0 cleared, 41 bitten, 49 glanced off | 0 cleared, 44 bitten, 91 glanced off |
 So the design's "bounce off his back to a high stone": a tap gives 54 px over its back, a held press 107. 2-5.md's beat 4 can use the
 held bounce for a stone up to ~100 px over the snapper's back (flown from a run-in of 200+ px); a tap's bounce reaches no higher than a
 tap hop (62 px).
@@ -77,7 +78,26 @@ snapper lands and glances off (and he is bitten, 1 heart); right after its snap 
 with the rule removed the closed kick clears it (RED). The bonk toy 12/12 and ENG-25's 4 w2Cast tests unchanged.
 
 ### 4. Gates (the CLAUDE.md list, once, on fda49390)
-GATES_TABLE
+| Gate | Result on fda49390 | Time |
+|---|---|---|
+| tsc --noEmit | PASS | 3 s |
+| the suite (CLAUDE.md's command, one process) | **3,800 pass, 1 FAIL, 2 todo** (main's own todo: 4-3 boulder, w4). The FAIL: predatorCasts.test.ts:33 "turtle: ... a kick sends the shell away", which kicked a fresh, closed turtle (the old any-moment kick). Fixed in fe3faf7e to the ruled rule (closed glances off; right after its snap, sent off away from the kicker): that file 8/8. **Suite not re-run on fe3faf7e** | 40 min |
+| BASE_PATH build + chunkcheck | PASS, PASS | 7 s |
+| artcheck | PASS | 0 s |
+| drawcheck | PASS | 664 s |
+| clipcheck | PASS (83 known) | 457 s |
+| knowncheck / generalitycheck / roadmapcheck (unshallowed) | PASS / PASS / PASS | seconds |
+| kbdcheck | PASS (its stills, rewritten by the run, were restored, not committed) | 131 s |
+| buildcheck (alone, last) | PASS: Normal p95 97 ms, Easy p95 55 ms (limit 150) | 5 s |
+| seedlist 1-1 --check | PASS (161 seeds, both settings) | 384 s |
+| the CI tool line, exactly as gates.yml has it (+ snapperBonk, snapChannel) | 242 pass, 0 fail, 1 todo (chaseBots' open child todo, main's) | 171 s |
+| tierBots | 7/7 (1-1 calibration unchanged: no recommit) | 25 s |
+| coveragecheck | PASS (12 built stages, 25 pieces, 6 known gaps) | 104 s |
+| registrycheck | PASS (10 stages) | 65 s |
+| lockall vs main (16 layouts) | **102/102 stages unchanged** | 863 s |
+Probes on the same head: snapper skill ON 39/40 runs cleared clean (the miss: child Normal v2, not held by rule 4, NOT traced: the lead's
+wind-down at 7:25 PM); OFF 40/40 never cleared. The flight under the rule: walk-in kick Normal 0/90 clean (41 bitten, 49 glanced), Easy
+0/135 (44 bitten, 91 glanced); the still-stand bonk unchanged (90/90; Easy 112/135, 23 missed late in the bar, 0 bitten).
 
 ### 5. Note for INT-13 (packet item 4)
 Tomorrow ENG-285 changes the judges' air model: re-run tools/inspect/snapperBonk.test.ts and src/game/gen2/w2Cast.test.ts on it after the
@@ -96,6 +116,12 @@ merge (the bonk's hop is flown from a stand at 50-90 px; a changed arc moves BON
 
 ## Polish check
 No screen changed: bots, a meter channel and a kit rule. The snapper's look is ENG-25's; nothing drawn was added.
+
+## EXACT NEXT STEP (a fresh member or INT-13)
+1. On t-eng-25b (fe3faf7e or later): run the full suite once (CLAUDE.md's command, in the background); expect 3,801 pass, 0 fail, 2 todo.
+   fe3faf7e changed only src/game/predatorCasts.test.ts, so nothing else should move.
+2. Optional: trace the snapper probe's one miss (child Normal v2: `npx tsx reference/qa-reports/ENG-25b/snapperProbe.ts`, then the trace in
+   the probe's way: not held by rule 4, but rule 28 asks for the cause).
 
 ## Pushback
 1. (6:38 PM, sent) the snap had no stake: a kick at any moment cleared the snapper (90/90). Ruled 6:53 PM: TURTLE's kick only when open (done).
