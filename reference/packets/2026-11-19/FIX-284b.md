@@ -6,7 +6,9 @@ Role card reference/roles/ENGINE.md. Read FIRST: LESSONS.md once (D40, D59, D86;
 pending, at every push and before every report; long commands in the BACKGROUND with run_in_background so their end wakes you; D30: every
 time you write comes from `date` in the same command), STAGE-RULES §5b, the packet FIX-284 (this folder) and the REPORT on origin/t-fix-284
 (reference/qa-reports/FIX-284/REPORT.md): the EXACT NEXT STEP at its top is your plan. ROADMAP rows R-165.284, .302, .306.
-BASE: continue on t-fix-284 at its head (pull; push there).
+BASE: continue on t-fix-284 at its head (c8ee7b96 or later; pull; push there). FIX-284's stop note: the SIDEWAYS respawn clip is pushed
+(clips/respawn-deepBeat22-sideways.mp4); the UPRIGHT take showed no death, so the upright respawn clip is OWED; no frozen finals shot;
+the full check list UNRUN on the final head.
 THE LEAD'S RULINGS (11-19):
 1. The big pad stays 180 px (Matt's ~2 Pokeys). Child N touch 39/40 (seed 9) is accepted as traced (fake/pad 40/40, every Easy 40); the
    deep22 touch note is on R-165.306 (the Designer's, after release 1). Do not re-open the size.

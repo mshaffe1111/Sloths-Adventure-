@@ -7,7 +7,9 @@ D86: the FULL CLAUDE.md check list; D57/D87: call ReadNotifications whenever a n
 long commands in the BACKGROUND with run_in_background so their end wakes you; D30: every time you write comes from `date` in the same
 command), STAGE-RULES §5b (the polish bar), the packet BUILD-24c (this folder) and reference/qa-reports/BUILD-24/REPORT.md on
 origin/t-build-24c: the BUILD-24c section's EXACT NEXT STEP at its top is your plan. Design: reference/design/2-4.md (origin/t-design-24).
-BASE: continue on t-build-24c at its head (pull; push there). The judge model is FINAL (ENG-285b, merged): do not change engine or tools
+BASE: continue on t-build-24c at its head (249f6da4 or later; pull; push there). BUILD-24c's stop note: the Normal hop card's source is
+pickLesson's 'gap' firing at a boulder on a bank (not fixed); the sideways bed not investigated; per-beat stills must be re-shot (its
+scratch was lost); swing-to-log clips pushed (clips/c24-r0/r3/r4 up+side) but not judged frame by frame: judge them. The judge model is FINAL (ENG-285b, merged): do not change engine or tools
 except where a 2-4 fix needs it at the source (then say so).
 THE LEAD'S QUALITY ITEMS (from BUILD-24c's final sheets 075ba0ed; each answered with a still in your Polish check):
 1. Normal upright: 'Flick up to hop up or over.' (+3 / +1 badge) shows in 6 of 7 frames, the liana and raft frames included, while Easy

@@ -7,15 +7,18 @@ every push and before every report; long commands in the BACKGROUND with run_in_
 every time you write comes from `date` in the same command), the packets ENG-285 and ENG-285b (this folder), BOTS.md
 (reference/qa-reports/R-165.59/BOTS.md), and reference/qa-reports/ENG-285/REPORT.md on origin/t-eng-285: the ENG-285b section's EXACT
 NEXT STEP at its top is your plan.
-BASE: continue on t-eng-285 at its head (pull; push there). The model is FINAL (ba6b225b; code e236233c): do not change it.
+BASE: continue on t-eng-285 at its head (c255ae4d or later; pull; push there). The model is FINAL (ba6b225b; code e236233c): do not change it.
 THE LEAD'S RULINGS (11-19, already in ENG-285b's note):
 1. UPSTREAM skill plant (riverRide, 2-1): keep adult Normal seed 12 (rescue). Replace the child Normal seed 23 case with: 'upstream off,
    the child on Normal loses at least 5 more lives than with it' on seeds 4 and 5 (measured +8 each on the final model). Planted: show it
    RED with the skill switched off in the test's own way, GREEN with it on.
-2. BANKUP skill plant: from the bankUp-off runs (child Normal, middle both settings; rerun them if their output did not land): where it is
-   real in lives or a rescue, re-state the plant there; if only seconds everywhere, re-state it as its time effect at about half the
-   measured margin on the seeds where it shows (e.g. at least 8 s on child Easy seeds 4 and 22, measured +18/+15). Say which in the REPORT.
-   Never loosen a judge (law 22): these are the bots' skill plants, re-stated to what the exact model measures.
+2. BANKUP skill plant: ENG-285b measured it (reference/qa-reports/ENG-285/b/): on 2-1 on the final model it matters NOWHERE (child Easy
+   +18 s / +15 s on seeds 4 and 22 only; child Normal net noise; middle nothing; the old cases child Easy 20 and 23 cross clean without it).
+   Ruling (ENG-285b's option A): FIRST search 2-2 and the river toys (tools/inspect/*.test.ts) for a place its effect is real in lives or a
+   rescue (about 20 min of CPU, in the background) and re-state the plant there, RED with the skill off, GREEN with it on. If it is real
+   nowhere, re-state it on 2-1 child Easy seeds 4 and 22 as its time effect (at least 8 s each, measured +18/+15), name it as thin in the
+   REPORT, and tell the lead: a plant is never deleted without the lead's word (law 5). Never loosen a judge (law 22): these are the
+   bots' skill plants, re-stated to what the exact model measures.
 3. The score.test PREDATOR READ restatement is BUILD-24c's commit 8a78d0ec (on t-build-24c), from ENG-285b's diagnosis; if the same red
    is on t-eng-285, apply the same restatement here as its own commit (shown RED for a constant window, then GREEN) and name it.
 4. Still pair owed (ENG-285 packet step 5): old vs new judge path drawn over one back-swing hop, so the lead can see the 20-30 px.
