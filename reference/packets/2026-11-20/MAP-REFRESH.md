@@ -1,3 +1,4 @@
+# CANCELLED (lead 5:43 PM ET 11-19, Matt 5:42 PM: "If we don't think doing all 100 makes sense, then let's not do that and have them focus on different levels."): the 11-11 game map already holds a one-line idea for every level and the whole-game engine list (GAME-MAP §4, §5, §10); the agents go to World 3's next levels instead (PITCH-33A/B, PITCH-36A/B, DESIGN-31-32). Kept for the record; do not start.
 # MAP-REFRESH: all 100 levels on paper at idea depth, with their engine needs, so the engine is planned whole (Matt's pick 11-19, R-165.314).
 Designer, Opus 5.5 high. Written 5:36 PM ET 11-19 (by `date` in the same command); starts Fri 11-20 in the first free slot after PLAN-W3
 (World 3 + World 4) lands. A FRESH member. BOX: 3 h from start or 400k REAL context (the lead reads it and tells you); then the EXACT NEXT
