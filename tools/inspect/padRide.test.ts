@@ -83,3 +83,51 @@ test("OUT-AND-BACK's pin: he is followed out to the stone first, and once he has
   pr.relocate({ x: 100, y: 730 });
   assert.ok(pr.cur > 12, `a respawn put him back on the way out (${pr.cur})`);
 });
+
+// FIX-284 (R-165.284; the lead's ruling A, 11-19): A BREATHING ROW NEVER MEETS HIM IN LOCKSTEP. On 2-2's finale a first-timer drowned at a
+// beat pair, was put back and ran back in two whole breaths, so every try met the pair at the same bad moment until the rescue
+// (reference/qa-reports/FIX-284/phase.ts). The engine now turns every breathing row ahead of him at each put-back (breathAim.ts, in
+// respawnAtCheckpoint while the iris is closed): at the soonest moment he can reach it at a run, the first try finds it just risen and each
+// later try a golden share of a breath further on. Put back twelve times at moments a few frames apart, on both settings, the row at his
+// soonest arrival is exactly there every time, so a player who comes back at the same pace never meets the same moment twice running.
+// PLANTED: without the aim the row is wherever the clock happens to be (red on most of the twelve).
+test('the breath toy: put back again and again, the breathing row ahead is turned on, never met at the same moment twice running (FIX-284)', async () => {
+  const { padPlay } = await import('./padToys.ts');
+  const { PHYS } = await import('../../src/game/physics.ts');
+  const { DT } = await import('../../src/game/realPlay.ts');
+  const { BREATH_AIM } = await import('../../src/game/breathAim.ts');
+  const seed = fixtureSeed('breath');
+  for (const setting of ['normal', 'easy'] as const) {
+    padPlay('breath', seed, (r) => {
+      const e = r.e as any;
+      const first = (e.platforms as any[]).filter((q) => q.pad?.by === 'beat').sort((a, b) => a.x - b.x)[0];
+      assert.ok(first, 'the toy lays a beat row');
+      // (his flag on the near bank, 300 px before the first pad: the floor under that point)
+      const under = (e.platforms as any[]).filter((q) => !q.pad && q.x <= first.x - 300 && q.x + q.width >= first.x - 300).sort((a, b) => a.y - b.y)[0];
+      e.checkpoint = { x: first.x - 300, y: under.y - 1 };
+      const bad: string[] = [];
+      let prev = NaN;
+      for (let k = 0; k < 12; k++) {
+        for (let i = 0; i < 7 + k; i++) r.frame();
+        e.respawnAtCheckpoint('water');
+        const arrive = e.clock.time() + e.inputGrace + (first.x - e.player.x) / PHYS.maxRun;
+        while (e.clock.time() < arrive - 1e-9) r.frame();
+        const now = e.clock.read(first.pad.clock, first.pad.shift);
+        // (where in its breath the row stands, from the rise, as a share of its period: the stage's def, stretched as the engine runs it)
+        const def = (e.currentStage.clocks as any[]).find((d) => d.id === first.pad.clock);
+        const st = e.easy ? def.easyStretch : 1;
+        const lens = def.phases.map((ph: any) => ph.seconds * st);
+        const period = lens.reduce((a: number, b: number) => a + b, 0);
+        const onEnd = lens.slice(0, def.phases.findIndex((ph: any) => ph.name === 'on') + 1).reduce((a: number, b: number) => a + b, 0);
+        const pos = lens.slice(0, now.index).reduce((a: number, b: number) => a + b, 0) + now.into;
+        const at = ((((pos - onEnd) / period) % 1) + 1) % 1;
+        const want = (k * BREATH_AIM.turn) % 1;
+        if (Math.abs(((at - want + 1.5) % 1) - 0.5) > 1.5 * DT / period) bad.push(`try ${k}: ${now.phase} ${now.into.toFixed(2)} s in (${at.toFixed(3)} of the breath, aimed ${want.toFixed(3)})`);
+        if (k && Math.abs(((at - prev + 1.5) % 1) - 0.5) < 0.05) bad.push(`try ${k}: met at the same moment as try ${k - 1}`);
+        prev = at;
+      }
+      assert.equal(!!e.easy, setting === 'easy', 'the engine plays the setting');
+      assert.deepEqual(bad, [], `${setting}: the row at his soonest arrival after each put-back`);
+    }, setting);
+  }
+});

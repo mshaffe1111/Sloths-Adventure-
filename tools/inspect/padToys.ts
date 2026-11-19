@@ -7,7 +7,8 @@ import { withTestStage } from '../../src/game/gen2/listed.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { packPlan, plantSeedList } from '../../src/game/gen2/seedList.ts';
 import type { PadRow } from '../../src/game/gen2/rideLay.ts';
-import { withFixtureConfig } from '../../src/game/realPlay.ts';
+import { RealPlay, withFixtureConfig } from '../../src/game/realPlay.ts';
+import { setDifficulty } from '../../src/game/difficulty.ts';
 import { cfg as toyCfg, kit as toyKit, meadow } from '../../src/game/gen2/toyWorld.ts';
 import { w2Finish } from '../../src/game/gen2/worlds/w2.ts';
 import type { Gen2Stage, SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
@@ -71,6 +72,23 @@ export function padRun(row: ToyPad, tier: Tier, setting: Setting, seed: number, 
     const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
     try {
       return withFixtureConfig(cfg, () => runTier(tier, setting, variant, ID));
+    } finally {
+      undo();
+    }
+  });
+}
+
+/** the real engine on a pond fixture, rolled the game's way as padRun rolls it (FIX-284: the breath-aim toy drives it by hand) */
+export function padPlay<T>(row: ToyPad, seed: number, fn: (r: RealPlay) => T, setting: Setting = 'normal'): T {
+  const kit = kitFor(row);
+  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: setting });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try {
+      setDifficulty(setting);
+      return withFixtureConfig(cfg, () => fn(new RealPlay(ID, 1)));
     } finally {
       undo();
     }

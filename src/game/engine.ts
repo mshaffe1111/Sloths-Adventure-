@@ -220,6 +220,7 @@ import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pus
 import { drawClusters } from './vineFieldArt.ts';
 import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
+import { aimBreaths } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
@@ -605,6 +606,8 @@ export class GameEngine {
   /** the stage's one clock (clock.ts), stepped on the fixed step. `gameTime` is its time, read and written through it, so every timer
    *  reads the one clock and a harness that places game time (realPlay.ts `t`, tools/perf/frozen.mjs) places the clock */
   private clock: StageClock = stageClock([], false);
+  /** how many times each breathing row has been aimed at a put-back on this stage (breathAim.ts) */
+  private readonly breathTries = new Map<string, number>();
   private get gameTime(): number { return this.clock.time(); }
   private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
@@ -1109,6 +1112,7 @@ export class GameEngine {
     const st = this.currentStage;
     // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
     this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
+    this.breathTries.clear();
     // (the stage's runtime pieces, once its platforms and its clock are made: pieces/index.ts)
     this.startPieces();
     this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
@@ -6157,6 +6161,9 @@ export class GameEngine {
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
+    // a breathing row ahead never meets him in lockstep (breathAim.ts, FIX-284): each is turned on its breath (just risen at his soonest
+    // arrival the first time, a golden share further each later try), while the iris is still fully closed (nothing is seen to jump)
+    aimBreaths(this.platforms, p.x, this.clock.time(), this.inputGrace, PHYS.maxRun, this.clock, this.breathTries);
     // (the stage's runtime pieces put back what his run changed: pieces/index.ts)
     if (this.pieces.length) respawnPieces(this.pieces, this.pieceHost);
   }
