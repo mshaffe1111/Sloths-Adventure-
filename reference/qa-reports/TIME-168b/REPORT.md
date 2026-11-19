@@ -27,7 +27,7 @@ message, pasted from git). Engine member (tools half). Written 7:52 PM ET 11-18 
 | "11-18 3:15 PM ET" committed 3:09 PM (full repo, a line also naming 1-2 and 10-10) | fails, 6:00 ahead |
 | "10-10 boss" with no time | no stamp |
 | real "11-17 9:00 PM ET" committed 11-18 3:30 PM | passes (read as 11-17, dated) |
-| window edges, 11-18 commit: 11-11 and 11-19 dates; 11-10, 11-20 far; "13-40" none; "11-19 9:00 AM ET" fails | as stated |
+| window edges, 11-18 commit: 11-11 and 11-19 dates; 11-10, 11-20 far; "13-40" none; a stamp dated 11-19 (9 AM, tomorrow) fails | as stated |
 | "REPEAT 11-02 6:35-6:45 PM ET" and "- 11-02 (lead): MATT 6:45 PM" at 6:40 PM; "ship 12-25 9:00 AM ET" | not judged |
 Mutation runs (each rule red without it): window back to 45 days: 2 fail; no stage-id rule: 2 fail (also TIME-168's shapes test);
 no far skip: 1 fail.
@@ -43,7 +43,7 @@ Range merge-base(origin/main)..head per branch, all on base 6e7b85f8; full histo
 | t-eng-23 | 9e306581 | 9 | 2: ENG-23/REPORT.md:17 "3:15 PM ET", :99 "(the lead, 3:15 PM)" vs commit d729206e 3:09:05 PM 11-18 |
 | t-meter-4 | 8dd661d0 | 13 | the same 2 (it carries d729206e) |
 | t-art-w2a | 44e5884f | 19 | the same 2 (it carries d729206e) |
-| t-eng-25b, t-eng-26, t-design-29, t-build-24, t-eng-24c, t-time-168b | 73318234, e5695a93, 562a8e71, 38f9b929, 1f5c4008, this head | 14, 16, 1, 31, 17, 3 | 0 |
+| t-eng-25b, t-eng-26, t-design-29, t-build-24, t-eng-24c, t-time-168b | 73318234, e5695a93, 562a8e71, 38f9b929, 1f5c4008, 9510b3c9 (the fix; the final head re-checked PASS) | 14, 16, 1, 31, 17, 3 | 0 |
 | t-keeper-23-29 | not pushed (checked by fetch at the sweep) | - | not swept |
 **3 unique breaches, 7 rows** (one commit's 2 on three branches). Each read by eye: real (both ENG-23 lines write the lead's 3:15 PM
 into a 3:09 PM commit; VAR-1 stamps 3:50 PM in a 3:45 PM commit). The old tool also printed "1-2 at 2:10 PM" on t-eng-23, t-meter-4
@@ -54,6 +54,8 @@ Deps installed as CI does (npm install --legacy-peer-deps); full history. tsc ex
 generality PASS (26/26 known); timecheck tests 14/14; ciTests 4/4; the gates.yml tools tsx line (line 103, run verbatim) 226 pass /
 0 fail / 1 TODO (chaseBots ENG-B4, not mine, as in TIME-168); timecheck over this branch's own range (6e7b85f8..head) PASS, re-run
 on the final head after this report's commit (result in the lead message).
+The first run on the final head FAILED on this report: §2's table quoted the planted "tomorrow" stamp verbatim; reworded the
+line (the gate stays as it is). Proof the gate judges its own reports.
 
 ## 5. Polish check: no screen. A sweep row was read as INT-13 will read it: branch, head, base, file, line, stamp as written, the stamp
 in ET, the commit's ET time with seconds, the full commit hash (to find the line to correct).
