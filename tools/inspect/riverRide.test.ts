@@ -9,9 +9,11 @@
  * Normal/Easy, child Normal/Easy; off, 7/0/0/3).
  * BUILD-21 (2-1.md NEW 4): AGAINST THE FLOW (SKILLS.upstream) on a river flowing back at him (W2_RIVERS.back): every tier crosses the
  * toy. Its plant moved to 2-1 itself (FIX-GATES 11-15, the lead's ruling 5:32 PM ET): since FIX-21 9137470f (the look past the floor's
- * end) no toy river drowned a bot without it, but 2-1's deep Normal back river does (adult seed 12, child seed 23, 5 lives, rescued).
+ * end) no toy river drowned a bot without it, but 2-1's deep Normal back river does (adult seed 12, 5 lives, rescued; ENG-285c re-stated
+ * the child's case on the final judge model as lives: seeds 4 and 5, at least 5 more lost without it, measured 1 -> 9).
  * UP THE FAR BANK (SKILLS.bankUp, FIX-GATES): off a log running back at him he hops up the far bank's 28 px face; without it the child on
- * Easy walked into the face, was carried off and splashed back until rescued (2-1 seeds 20, 23). HANDED TO THE BANK (SKILLS.handed) on the long log (W2_RIVERS.long, laid deep here): he rides a log running his
+ * Easy walked into the face, was carried off and splashed back until rescued (2-1 seeds 20, 23; ENG-285c re-stated it on the final judge
+ * model, THIN, at its own bank: seed 22, boarding to the both-ways far bank at least 2 s longer without it, measured +3.8 s). HANDED TO THE BANK (SKILLS.handed) on the long log (W2_RIVERS.long, laid deep here): he rides a log running his
  * way in until it hands him onto the bank; planted on the middle bot on Normal (lives at the river 1 with it, 3 without, t-int-11 7b012852e).
  */
 import '../../src/game/headlessDom.ts';
@@ -25,8 +27,9 @@ import { cfg as toyCfg, kit as toyKit, meadow } from '../../src/game/gen2/toyWor
 import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
-import { SKILLS } from './firsttimer.ts';
-import { castRun } from './castBots.ts';
+import type { RiverZone } from '../../src/game/river.ts';
+import { SKILLS, firstTimer } from './firsttimer.ts';
+import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
 const ID = '2-91';
@@ -153,33 +156,74 @@ test('planted: with the handed-to-the-bank skill off, the middle on Normal hops 
 //  seed, both rolls the game plays). Measured on t-int-11 7b012852e and this head: every case below passes with its skill on)
 const crossedClean = (r: ReturnType<typeof castRun>) => r.end === 'shrine' && r.rescues === 0;
 const said = (r: ReturnType<typeof castRun>) => `${r.bot} ${r.setting} seed ${r.seed}: ${r.end}, rescues ${r.rescues}, lives ${r.lives}, stuck ${JSON.stringify(r.stuck)}`;
-const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['adult', 'normal', 12], ['child', 'normal', 23]];
-const BANKUP_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'easy', 20], ['child', 'easy', 23]];
+// (ENG-285c 11-19, the lead's ruling 1: on the final judge model (ENG-285b ba6b225b, code e236233c) the child on Normal, seed 23, is no
+//  longer rescued with the skill off (shrine, 0 rescues, 0 -> 9 lives), so 'rescued' holds for the adult on Normal, seed 12, alone; the
+//  child's case is re-stated as LIVES on seeds 4 and 5: with the skill on and off his runs are the same frame for frame up to 2-1's
+//  both-ways back river (seed 4: t 284 s, x 25,7xx; seed 5 parts 1 s at the first back river's far bank), and off he loses 8 more lives
+//  each, at that river (1 -> 9, x 24,4xx-25,9xx))
+const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['adult', 'normal', 12]];
+const UPSTREAM_LIVES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 4], ['child', 'normal', 5]];
+/** with the against-the-flow skill off, at least this many more lives than with it (measured +8 on each of UPSTREAM_LIVES) */
+const UPSTREAM_MORE = 5;
+// (ENG-285c, the lead's ruling 2 (A): on the final judge model the child on Easy, seeds 20 and 23, crosses clean without the skill, and
+//  bankUp moves no life and no rescue anywhere (2-1 every cast bot both settings 1-40; 2-2 lays no river running back at him; the toy
+//  back river the same lives every tier): off a log running back at him, the against-the-flow front-end hop (SKILLS.upstream) takes him
+//  up the same bank within a frame or two on most crossings. Its one measured effect is at its own bank: the child on Easy, seed 22, at
+//  2-1's both-ways back river is carried back on the log and stands on the far bank 3.8 s later without it (4.73 -> 8.56 s from
+//  boarding); the other crossings measured move under 0.4 s (seeds 4, 20, 23). THIN: a time plant at the skill's bank, not lives)
+const BANKUP_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'easy', 22]];
+/** with the up-the-far-bank skill off, at least this much longer (s) from boarding the both-ways back river to its far bank (+3.8 s) */
+const BANKUP_MORE_S = 2;
+/** 2-1's both-ways back river (the one running back at him laid just past a river running his way, w2Arc21 bothWays) for the cast bot's
+ *  run of `seed`: the s from first standing on one of its logs to first standing on its far bank */
+function bothWaysCrossing(bot: string, setting: 'normal' | 'easy', seed: number) {
+  let back: RiverZone | null | undefined, boarded: number | undefined, banked: number | undefined;
+  const r = firstTimer('2-1', seed, CAST_BOTS[bot][setting]!, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+    if (back === undefined) {
+      const rivers = (sim.stage as { rivers?: RiverZone[] }).rivers ?? [];
+      const found = rivers.filter((b) => b.dir < 0 && b.speed > 0 && rivers.some((w) => w.dir > 0 && w.speed > 0 && b.x0 > w.x1 && b.x0 - w.x1 < 600));
+      back = found.length === 1 ? found[0] : null;
+    }
+    if (!back || !sim.p.grounded) return;
+    if (boarded === undefined && sim.p.x > back.x0 && sim.p.x < back.x1) boarded = sim.t;
+    if (boarded !== undefined && banked === undefined && sim.p.x > back.x1 + 4 && sim.p.x < back.x1 + 400) banked = sim.t;
+  } });
+  assert.ok(back, `seed ${seed}: one both-ways back river on 2-1 (a back river just past one running his way)`);
+  assert.ok(boarded !== undefined && banked !== undefined, `seed ${seed}: boarded ${boarded}, on the far bank ${banked}, ended ${r.end}`);
+  return { seconds: banked! - boarded!, boarded: boarded!, end: r.end };
+}
 
-test('2-1, against the flow and up the far bank on: the adult and child on Normal (12, 23) and the child on Easy (20, 23) cross clean', () => {
-  for (const [bot, setting, seed] of [...UPSTREAM_CASES, ...BANKUP_CASES]) {
+test('2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean', () => {
+  for (const [bot, setting, seed] of [...UPSTREAM_CASES, ...UPSTREAM_LIVES, ...BANKUP_CASES]) {
     const r = castRun(bot, setting, '2-1', seed);
     assert.ok(crossedClean(r), said(r));
   }
 });
-test('planted: with the against-the-flow skill off, the adult and child on Normal drown at 2-1\'s back river and are rescued', () => {
+test('planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1\'s back river (12) and the child on Normal loses 5+ more lives (4, 5)', () => {
+  const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;
   try {
     for (const [bot, setting, seed] of UPSTREAM_CASES) {
       const r = castRun(bot, setting, '2-1', seed);
       assert.ok(!crossedClean(r), `upstream off, still clean: ${said(r)}`);
     }
+    UPSTREAM_LIVES.forEach(([bot, setting, seed], i) => {
+      const r = castRun(bot, setting, '2-1', seed);
+      assert.ok(r.lives - withIt[i].lives >= UPSTREAM_MORE, `upstream off, ${r.lives - withIt[i].lives} more lives (at least ${UPSTREAM_MORE}): on ${said(withIt[i])}; off ${said(r)}`);
+    });
   } finally {
     SKILLS.upstream = true;
   }
 });
-test('planted: with the up-the-far-bank skill off, the child on Easy walks into 2-1\'s far bank face, splashes back and is rescued', () => {
+test('planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1\'s both-ways log and reaches its far bank 2+ s later (22)', () => {
+  const withIt = BANKUP_CASES.map(([bot, setting, seed]) => bothWaysCrossing(bot, setting, seed));
   SKILLS.bankUp = false;
   try {
-    for (const [bot, setting, seed] of BANKUP_CASES) {
-      const r = castRun(bot, setting, '2-1', seed);
-      assert.ok(!crossedClean(r), `bankUp off, still clean: ${said(r)}`);
-    }
+    BANKUP_CASES.forEach(([bot, setting, seed], i) => {
+      const off = bothWaysCrossing(bot, setting, seed);
+      const more = off.seconds - withIt[i].seconds;
+      assert.ok(more >= BANKUP_MORE_S, `bankUp off, ${bot} ${setting} seed ${seed}: boarding to far bank ${withIt[i].seconds.toFixed(2)} s on, ${off.seconds.toFixed(2)} s off (+${more.toFixed(2)}, at least ${BANKUP_MORE_S})`);
+    });
   } finally {
     SKILLS.bankUp = true;
   }

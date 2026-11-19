@@ -1,0 +1,12 @@
+{"skill":"none","bot":"child","setting":"easy","seed":4,"end":"shrine","lives":0,"time":253.7,"cross":{"20140":6.2,"26447":1.87},"farBankAt":{"20140":153.33,"26447":204.27}}
+{"skill":"none","bot":"child","setting":"easy","seed":20,"end":"shrine","lives":0,"time":268.2,"cross":{"20229":8.17,"26522":8.47},"farBankAt":{"20229":167.8,"26522":221.07}}
+{"skill":"none","bot":"child","setting":"easy","seed":22,"end":"shrine","lives":0,"time":265.6,"cross":{"20215":11.14,"26427":4.73},"farBankAt":{"20215":160.07,"26427":202.8}}
+{"skill":"none","bot":"child","setting":"easy","seed":23,"end":"shrine","lives":0,"time":282.5,"cross":{"20375":7.27,"26587":6.73},"farBankAt":{"20375":174,"26587":231.3}}
+{"skill":"none","bot":"child","setting":"normal","seed":26,"end":"shrine","lives":0,"time":368.7,"cross":{"19952":6.5,"25890":2.47},"farBankAt":{"19952":219.43,"25890":289.37}}
+{"skill":"none","bot":"child","setting":"normal","seed":1,"end":"shrine","lives":19,"time":521.3,"cross":{"20018":31.74,"25956":137.97},"farBankAt":{"20018":244.67,"25956":445.87}}
+{"skill":"bankUp","bot":"child","setting":"easy","seed":4,"end":"shrine","lives":0,"time":271.4,"cross":{"20140":6.24,"26447":1.44},"farBankAt":{"20140":153.37,"26447":208.87}}
+{"skill":"bankUp","bot":"child","setting":"easy","seed":20,"end":"shrine","lives":0,"time":272.7,"cross":{"20229":7.87,"26522":7.46},"farBankAt":{"20229":167.5,"26522":221.63}}
+{"skill":"bankUp","bot":"child","setting":"easy","seed":22,"end":"shrine","lives":0,"time":280.1,"cross":{"20215":11.14,"26427":8.56},"farBankAt":{"20215":160.07,"26427":206.63}}
+{"skill":"bankUp","bot":"child","setting":"easy","seed":23,"end":"shrine","lives":0,"time":286.3,"cross":{"20375":7.27,"26587":6.93},"farBankAt":{"20375":174,"26587":231.5}}
+{"skill":"bankUp","bot":"child","setting":"normal","seed":26,"end":"shrine","lives":7,"time":447.4,"cross":{"19952":7.64,"25890":103.5},"farBankAt":{"19952":220.57,"25890":379.7}}
+{"skill":"bankUp","bot":"child","setting":"normal","seed":1,"end":"shrine","lives":4,"time":379.8,"cross":{"20018":27.2,"25956":19.34},"farBankAt":{"20018":240.13,"25956":310.77}}

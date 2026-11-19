@@ -1,0 +1,11 @@
+head e236233cd 2:47
+tsc exit 0 17s
+build exit 0 17s
+chunkcheck exit 0 0s
+artcheck exit 0 4s
+knowncheck exit 0 0s
+generality exit 0 2s
+roadmapcheck exit 2 1s
+coveragecheck exit 0 71s
+registrycheck exit 0 62s
+done 2:50

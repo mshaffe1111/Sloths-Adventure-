@@ -585,9 +585,14 @@ export class GameEngine {
   private acc = 0;
   /**
    * the swinging vines' clock (physics.ts, the self-swing): every liana's angle is worked out from it, so it swings the same on every
-   * screen and frame rate, and the same whether he is on it or not. It runs with the game (stops for a pause, slows with slow motion).
+   * screen and frame rate, and the same whether he is on it or not. It IS the game's clock (ENG-285, R-165.295): it was its own sum, so a
+   * flag resume, which puts back only the game's time, set every liana's phase against the river's logs, stones and pads (all on the
+   * game's clock) unlike a straight run's. `vineShift` is a test seam only (a harness that places a swing: realPlay.ts swing, the
+   * `vineClock` setter); the game never sets it.
    */
-  private vineClock = 0;
+  private vineShift = 0;
+  private get vineClock(): number { return this.gameTime + this.vineShift; }
+  private set vineClock(t: number) { this.vineShift = t - this.gameTime; }
   /** paused, the stage has been drawn once, still: the loop leaves the canvas alone until play resumes or it must be drawn again (A-06) */
   private stillDrawn = false;
   /**
@@ -1741,7 +1746,6 @@ export class GameEngine {
     }
     this.clock.step(dt);
     this.irisOpen = Math.max(0, this.irisOpen - dt);
-    this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
     for (const v of this.vines) {
       if (v.vineType === 'tree_climb') continue;

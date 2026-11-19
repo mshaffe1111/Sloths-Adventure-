@@ -1,6 +1,68 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
+- **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
+  child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
+  river, so the lives are the skill's own). BANKUP is THIN: real nowhere in lives or rescues (2-1 every cast bot both settings 1-40; 2-2's
+  rivers all run with him, RIVERS_22 lane22; the toy back river the same lives). Off a log running back at him the UPSTREAM front-end hop
+  (firsttimer.ts `SKILLS.upstream` branch) takes him up the same bank within a frame or two; its one measured effect is child Easy seed 22
+  at the both-ways river, boarding to far bank 4.73 -> 8.56 s: the plant (`bothWaysCrossing`, 2+ s). R-165.309 (the lead's): near-redundant.
+- **Trap: whole-run numbers lie for a skill plant.** Child Normal seed 26 0 -> 7 lives and seed 1 19 -> 4 (the other way) with bankUp off
+  came 60+ s after the bank from drift (different draws), and child Easy s4's +18 s with its bank crossed 0.04 s apart. Measure a skill at
+  its own spot (time or lives in its piece, or the first frame the runs part), never the run total. Probes: qa-reports/ENG-285/c/*.txt.
+- **Still pair** (c/backswing-*): one back-swing let-go on 1-6, the real page and touch pad; the new airStep equals the engine to 0.000 px
+  over the free flight, the old one (no turn push) lands 19-20 px short. Fly a judge from the state after the FIRST WHOLE air frame: the
+  release frame's launch is set inside the engine's step. On the page `__engine` may be the engine object (engine.ts:1022) or App's
+  function; tsx needs `window.__name` defined in the page for evaluated functions.
+
+## 0zo-285b. ENG-285b (t-eng-285, 11-19): the last two drifts; the final model hash ba6b225b (R-165.297)
+- **No-steer air tick:** physics.ts `airStep(b, dt, dir, hold, down)`: dir 0 COASTS (refined controls, the game's default) and only
+  `down` brakes, at PHYS.airStop (engine.ts, the air `dec` of the no-steer branch). The one dir-0 caller with speed: tools/inspect/jumps.ts
+  (the noisy-thumb bots' drifting thumb). Planted: judgeFliesEngine.test.ts test 3 (RED on the old 520 brake).
+- **A hop's frame order (the bot's liana aims):** in one engine frame the vine clock steps, the catch scan reads his place from the END OF
+  THE LAST frame against THIS frame's clock, then he moves. So a hop's vine clock is the press frame's, pressIn(lag), and the take-off is the
+  frame before it: firsttimer.ts `hopAim(lag)` = { off: pressIn - DT, clock: pressIn }; `hopCatches(.., t0)` takes the press frame's vine
+  clock; `hopCatchAt` returns the catch frame. lianaWait and vineFromLog use hopAim; lianaWait runs the lag's frames with groundStep (a
+  held run's top speed steps 285 / 267.7 px/s frame to frame: engine.ts's `<` at exactly maxRun, the engine's real feel, parked by the lead).
+- **The take-off frame:** physics.ts `takeOffStep` (the ground steer, then airStep with no steer) is the first frame of the bot's hop flights
+  (hopCatches, hopLandsOn: firsttimer `hopFrame`); `groundStep` is a frame of running. Flown as an air tick a stand was 4.1 px short.
+- **The touch hold:** the touch layer's minimum restarts after the take-off frame's countdown (inputEngine.ts noteTakeOff), so 220 ms holds
+  7 frames: firsttimer `touchHeld`; pressHold uses it; lianaWait now holds as pressHold does (real-input runs only).
+- Planted: lianaRide.test.ts test 5 (1,728 hops into the real engine: take-off, vine clock and catch frame equal; RED 245 on the old aim),
+  judgeFliesEngine.test.ts test 4 (takeOffStep/groundStep to 1e-6 px). DROP ON A LOG runs v1-6 (ruling A): v3 rides a log off the bank.
+- **Harness traps:** two lianas side by side in ONE swingSetup call get no room to swing (amp 0): a plant on a still vine proves nothing
+  about a clock; assert the swing. Since 1c a harness sets the game clock BEFORE r.swing (§0zo-285); letGoCue.test's start() had it the
+  other way (BUILD-24c's glow red): guard the set-up with an assert on both clocks.
+- **Left as they are (not one decided press):** the float-wait's "a log is near" (any of 3 take-offs, 0/0.1/0.2 s) and the pad hop's
+  [0.03, 0.1] are loose windows. sovereignReach.ts:108-109 (4-10's opening timer) keeps its own air model (no turn push, dir 0 = airStop):
+  both slower than Pokey, errs safe. The judge flies a let-go with the jump HELD; a flick loses the apex hang (8-37 px by air frame 21-29,
+  40 of 86 presses of one swing): named for the lead. The kid's 2-4 Normal 36 -> 28 (BUILD-24c): no single bot slip (full-40 bisect);
+  his rules fire at the first predicted moment (lianaWait, mean lag only) and on any of 3 take-offs (the float-wait): named for an R-id.
+- Lock: today's commits move no stage (102/102 vs 925eba15). Curated seeds: the 3 plans ENG-285's model moved (6-1 69793, 205913; 7-5
+  928604) re-pinned after curate.ts's own rules passed; 7 more (8-5 x5, 8-6 x2) differ from seeds.ts on main already, unseen by the
+  guard's two seeds a stage.
+
+## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
+- **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against
+  vx > 20) for EVERY caller; the `turn` switch and flyLaunch's `turn` are gone. Back-swing hops carry 4-28.5 px further (median 22-28,
+  scratch probe over every back-swing press of a 300/420 px liana). Still drifted (named, not fixed): a no-steer tick (dir 0) brakes at
+  PHYS.airDec 520 where the engine brakes 0 (refined touch) or PHYS.airStop 1300 (engine.ts:2587); callers protoCheck.ts:50, jumps.ts:240.
+- **The press (R-165.294):** a jump press is Up too (inputEngine.ts triggerTouchUp; a touch keeps it past the longest sweet-spot wait), so
+  from the press frame to the leave frame (both counted) his grip climbs SWING.climb/s: physics.ts `pressClimb`, used by pressLaunches
+  and forwardEndLands; he leaves from the climbed hold; a 'late' press still leaps from the sweet spot's snap (unclimbed). The judge's log
+  clock was already the engine's (logs move before him, from the press frame: judgeFliesEngine.test.ts 2 pins it); the BOT's was a frame
+  early: firsttimer `pressIn(lag)` = the next frame's pad (decide's lag rounding + 1 frame); PRESS_TRACE records aimed vs real frames.
+- **riverLay:** `letGoFall` + `fallOnLog` split out of lianaDrops word for word as ENG-24c (t-eng-24c) split them. When t-eng-24c merges:
+  take this side for riverLay (no `, true`), and set letGoCue.ts CUE.climbFrames to 0 (pressLaunchesFrom climbs inside now).
+- **One liana clock (R-165.295):** engine.ts `vineClock` is a getter = gameTime + vineShift (a test seam only: RealPlay.swing and the
+  setter place a swing against the CURRENT game time, so a harness sets `t` first, then the swing). The separate `+= dt` is gone.
+- **Bot (a):** Progress.relocate(p, level) keeps level points within LEVEL_REACH 600 px in x, else the plain nearest. (b) pitWayBack's
+  off<120 early return: not reproduced on this base or on t-build-24's head; unchanged.
+- Planted tests: src/game/judgeFliesEngine.test.ts, src/game/lianaClock.test.ts, lianaRide.test.ts (press frames), firsttimer.test.ts
+  (relocate). The measure and the EXACT NEXT STEP: reference/qa-reports/ENG-285/REPORT.md.
+
 
 ## 0zo. ART-W2B (t-art-w2b from t-eng-26@fa8a92bf, 11-18): the wheel's painted look; what the next engineer and the 2-6 builder must know
 - **wheelDraw.ts is painted now** (the placeholder shapes are gone): `drawWheel` -> `paintWheel(ctx, im, w, buckets)` draws from ONE sheet,
@@ -193,9 +255,7 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
   design's 73%: the design's figure is grip 0.7 only; the judge takes the worse of grips 0.7 and 0.95.
 - **airStep's engine turn (FOUND, ENGINE-WORTHY):** engine.ts:2567 adds PHYS.airTurn when he steers against his motion in the air;
   physics.ts airStep did not, so every check's back-swing let-go under-steered by 20-30 px (reference/qa-reports/ENG-24/backProbe.ts).
-  airStep(b, dt, dir, hold, turn = false): the drop judge and the bot fly with turn=true; every other check is as it was (the lock).
-  DEBT, the lead's ruling 11:28 AM ET 11-18: opt-in for the liana judge only; R-165.285 makes every judge's model match the engine with a
-  full re-lock (never under a link night).
+  SUPERSEDED by ENG-285 (§0zo-285): the `turn` switch is gone, airStep turns for every caller (R-165.285).
 - **The bot (tools/inspect/firsttimer.ts SKILLS):** `dropOnLog` (on a liana over a log river he lets go only when the let-go, at his thumb's
   lag and half a spread either side, comes down on a log 12 px in from its ends or 16 px onto the far bank; the same pressLaunches
   launch the judge flies; the 7 s "late" let-go waits too, up to the 14 s cap; an aimed drop gets no random second press). `vineFromLog`

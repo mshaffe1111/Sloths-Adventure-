@@ -1,0 +1,17 @@
+// usage: tsx bankat.mts <skill|none> <bot> <setting> <stage> <seeds,comma>
+import '/home/user/w285/src/game/headlessDom.ts';
+import { SKILLS, firstTimer } from '/home/user/w285/tools/inspect/firsttimer.ts';
+import { CAST_BOTS } from '/home/user/w285/tools/inspect/castBots.ts';
+const [skill, bot, setting, stage, seeds] = process.argv.slice(2);
+if (skill !== 'none') (SKILLS as any)[skill] = false;
+for (const s of seeds.split(',').map(Number)) {
+  const up: Record<string, number> = {}; const on: Record<string, number> = {};
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    for (const rv of sim.stage.rivers ?? []) if (rv.dir < 0 && rv.speed > 0) {
+      const k = String(Math.round(rv.x1));
+      if (on[k] === undefined && sim.p.grounded && sim.p.x > rv.x0 && sim.p.x < rv.x1) on[k] = +sim.t.toFixed(2);
+      if (up[k] === undefined && sim.p.grounded && sim.p.x > rv.x1 + 4 && sim.p.x < rv.x1 + 400) up[k] = +sim.t.toFixed(2);
+    }
+  } });
+  console.log(JSON.stringify({ skill, bot, setting, seed: s, end: r.end, lives: r.harms.filter((h: any) => h.kind === 'life').length, time: r.time, cross: Object.fromEntries(Object.keys(up).map((k) => [k, on[k] === undefined ? null : +(up[k] - on[k]).toFixed(2)])), farBankAt: up }));
+}
