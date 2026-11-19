@@ -1,6 +1,6 @@
 # KEEPER-25: write and APPROVE 2-5 "River Snappers: Count to Four" player lines (story keeper; Matt 11-13: "the storykeeper has full
-authority to add to the story and to approve all lines"). Opus 5.5 high. Written 3:29 PM ET 11-19 (by `date` in the same command) for Fri
-11-20, 8:30 AM. A FRESH member. BOX: 45 minutes.
+authority to add to the story and to approve all lines"). Opus 5.5 high. Written 3:29 PM ET 11-19 (by `date` in the same command),
+to start at 8:30 AM Fri 11-20. A FRESH member. BOX: 45 minutes.
 Read reference/LAWS.md + LESSONS.md once, reference/story/STORY-KEEPER.md, the design reference/design/2-5.md (origin/t-design-24; beats and
 "For the story keeper" asks 1-6), ENG-25b's "What the 2-5 builder needs" (on INT-13's head, reference/qa-reports/ENG-25b/REPORT.md: the
 snapper now needs the WAIT: a head-on kick glances off and he is bitten; the sleeper of beat 2 still takes a plain kick), the house words
