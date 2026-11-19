@@ -130,7 +130,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', join: 'walk' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -233,7 +233,8 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
   phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: 1,
   // (VAR-19: each rest is laid once a roll and walked into: the one rest laid five times, after a rolled jump, read "jJJJ" after every
-  //  beat, Easy's 4-run repeat and most of 1-9's likeness to 1-7 and 1-8, as VAR-1 found on 1-7/1-8)
+  //  beat, Easy's 4-run repeat and most of 1-9's likeness to 1-7 and 1-8, as VAR-1 found on 1-7/1-8. The beats keep their rolled join:
+  //  walked into, a rest's last hop to the beat's first ran past the quiet line's 4 s, seedlist refused every seed)
   ...(o.job === 'rest' ? { entry: { piece: 'in', kind: 'ground', join: 'walk' } } : {}),
 } as SectionTemplate);
 /** a rest along the old boughs: a flag between root hops (1-7's rest: a hop within 450 px of each end, none 950 px apart). The golden seed
@@ -266,36 +267,41 @@ const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t
  * shape and its own move, each laid once a roll and walked into, so no rest is a reroll of another and none is a rest 1-6/1-7/1-8 lays
  * (theirs: root hops, the hollow log, the moss shelf, the fern dip, the mossy floor, the knots, the crook vine, the split, the saddle).
  * Nothing watches a rest and nothing hurts in one (no pit, no heart): every miss is the ground he stood on. The quiet line: a move within
- * 450 px of each end, none 950 px apart.
+ * 450 px of each end, none 950 px apart; on the route only a narrow dip between two roots reads as a jump (steps up are bumps, walked
+ * drops nothing), so every rest ends as the old one does, a root up and a root down (VAR-19: rests that ended on drops ran 4.5-6 s quiet
+ * into the next beat and seedlist refused every seed).
  */
-/** (b) the old crook: two root steps up onto the high crook, a boulder on it, and one long drop home (a walked rise is held under a
- *  single's reach, pipeline.ts riseCap, so the crook is climbed by root steps that stand the same on both settings; the drop matches them) */
+/** (b) the old crook: over a root dip, a step up onto the high crook (a boulder on it), over the dip off its end, and two root steps home.
+ *  (On the route only a dip between two roots reads as a jump: straight steps up are bumps and walked drops are nothing, so a crook
+ *  climbed by steps alone ran 5-6 s quiet, over the quiet line's 4 s, and seedlist refused it. A walked rise is also held under a single's
+ *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
 const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
-  pieces: [bank('a', null, 300), root('b', 'a', 200, UP), root('c', 'b', 620, UP), boulder('k', 'c', 0.5), root('z', 'c', 360, [100, 112])],
-  sockets: [flag('a', 0.4), petals('pc', 'c', [0.15, 0.2], 2, 100), petals('pk', 'k', 0.5, 1), seed('c', 0.85), petals('pz', 'z', 0.5, 1)] } }] });
-/** (c) the boulder stair: a painted boulder on the floor, a root step up, a second boulder on the bough, and a step down home (each 50 px) */
+  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('c', 'b', 200, DOWN), root('d', 'c', 300, UP), root('e', 'd', 520, UP), boulder('k', 'e', 0.5), root('f', 'e', 200, DOWN), root('g', 'f', 240, UP), root('h', 'g', 300, [102, 108]), root('i', 'h', 220, UP), root('z', 'i', 300, DOWN)],
+  sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.85), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+/** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
+ *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
 const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
-  pieces: [bank('a', null, 300), bank('f', 'a', 560), boulder('k1', 'f', 0.15), root('g', 'f', 560, UP), boulder('k2', 'g', 0.45), root('z', 'g', 340, DOWN)],
-  sockets: [flag('f', 0.55), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.85, 1), petals('pz', 'z', 0.5, 1)] } }] });
-/** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, along
- *  it, and two drops home */
+  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('f', 'r', 360, DOWN), boulder('k1', 'f', 0.5), root('g', 'f', 520, UP), boulder('k2', 'g', 0.45), root('h', 'g', 260, DOWN), root('i', 'h', 240, UP), root('z', 'i', 320, DOWN)],
+  sockets: [flag('g', 0.2), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.85, 1), petals('pi', 'i', 0.5, 1)] } }] });
+/** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
+ *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
 const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
-  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('m', 'b', 460, DOWN), ...wallClimb('c', 'm', 460, 212, 480), root('d', 'c', 280, [96, 100]), root('z', 'd', 320, [80, 84])],
-  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('c', 0.8), petals('pz', 'z', 0.5, 1)] } }] });
+  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('m', 'b', 460, DOWN), ...wallClimb('c', 'm', 460, 212, 400), root('y', 'c', 220, UP), root('d', 'y', 300, [128, 132]), root('e', 'd', 260, [102, 108]), root('f', 'e', 220, UP), root('z', 'f', 300, DOWN)],
+  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pe', 'e', 0.5, 1), petals('pf', 'f', 0.5, 1)] } }] });
 /** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
- *  it, and down by two root steps and a drop */
+ *  it, a root up and down along it, and the drop home (a hop either side of the bounce: the quiet line, 4 s) */
 const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {
-  pieces: [bank('a', null, 300), root('b', 'a', 380, [0, 0]), mushroom('bm', 'b', 380), bounced('c', 'b', 'bm', 520, 150), root('d', 'c', 240, DOWN), root('e', 'd', 240, DOWN), root('z', 'e', 320, [44, 48])],
-  sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('c', 0.85), petals('pe', 'e', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 420, DOWN), mushroom('bm', 'b', 420), bounced('c', 'b', 'bm', 460, 150), root('y', 'c', 220, UP), root('e', 'y', 260, [96, 100]), root('f', 'e', 260, [96, 100]), root('g', 'f', 220, UP), root('z', 'g', 300, DOWN)],
+  sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('y', 0.5), petals('pf', 'f', 0.5, 1), petals('pg', 'g', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
-  // [A] thick mossy boughs; nothing hurts in 1,300 px; the first move inside his first second (VAR-19: the old arrival walked 800 px, 3.1 s,
-  // to its first jump: "dead walk" at x 140): off the spawn bank straight up onto the old bough, a boulder on it, down a step and a drop,
-  // a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
+  // [A] thick mossy boughs; nothing hurts in 1,300 px. The first move as soon as he can (VAR-19: the old arrival walked 800 px past the
+  // runway to its first jump, 3.1 s from the spawn: "dead walk" at x 140): an 80 px foot, then straight up onto the old bough, about 2 s
+  // from the spawn (the runway, pipeline.ts RUNWAY, is 500 px of every stage's start: no section can move sooner). The bough is left clear
+  // (a rolled stage's flag before the teach stands on it, 1,500-2,400 px before the teach: pipeline.ts ROLLED_FLAGS), a boulder on the low
+  // bough after it, a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 260), root('b', 'a', 460, [-92, -88]), boulder('k', 'b', 0.45), root('c', 'b', 340, DOWN), root('r1', 'c', 340, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
-      // (a flag on the low bough: the teach is the first hard node, and with the walk-in join it starts inside ROLLED_FLAGS' reach of the
-      //  start, so it needs a flag within 2,400 px before it, pipeline.ts rolledFlagBreaches)
-      sockets: [petals('pb', 'b', 0.2, 1), petals('pk', 'k', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), flag('r1', 0.5), tip('t-boa', 'r2', 0.3, 'boa')] } },
+    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('b', 'a', 520, [-92, -88]), root('c', 'b', 420, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
+      sockets: [petals('pb', 'b', 0.75, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
   rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),
 ];
