@@ -44,6 +44,10 @@ import { bucketPeriod, turnTime } from '../../src/game/wheel.ts';
 import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
 import type { Ride } from '../../src/game/ride.ts';
 import { snapWindow } from '../../src/game/gen2/rideLay.ts';
+import { safeWindow } from '../../src/game/gen2/lineFaults.ts';
+import { lineInCover, type FollowRow } from '../../src/game/follow.ts';
+import type { FollowStage } from '../../src/game/followPlay.ts';
+import { WATCH, type Bush } from '../../src/game/watcher.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
  *  with `rolling`, so nothing here asks for it */
 const ROLLING: any = await import(new URL('../../src/game/rolling.ts', import.meta.url).href).catch(() => null);
@@ -618,6 +622,103 @@ export function watchChallenges(members: ReadonlyArray<{ e: any; def: any }>, co
  *  window counted from the moment it opens, REF_S the reference press) */
 export const deadlineBits = (open: number): number => Math.log2(1 + REF_S / Math.max(0.05, open));
 
+/**
+ * The LINE channel (METER-4; 2-3 "Walk Them Home", follow.ts / followPlay.ts / gen2/lineFaults.ts on ENG-23): on a stage whose little
+ * ones follow him home (proto.follow) the heron never reads him (followPlay: it reads only the line), so a watched stretch is priced by
+ * what it asks of the LINE, crossing by crossing, as lineFaults walks them (each watched stretch's open ground: its start to its first reed
+ * clump, clump to clump, its last clump to its end; a crossing two herons watch is priced once, with both):
+ *   - THE LEAVE (kind 'line'): a timed press he may wait for in the reeds (the meter's ride-board form), windowBits(cycle, safe): `safe` is
+ *     lineFaults' own safeWindow, FLOWN with the game's line and herons (FollowPlay) at the hardest calm, for the N little ones that follow
+ *     him there; `cycle` the herons' calm + warn + pass, as safeWindow takes them. The stretch's first crossing (from its start, before any
+ *     look: stepWatch gives a stretch's first calm whole, zone.calm[0], and the calm waits while he is out of it) is a deadline instead,
+ *     deadlineBits(calm[0] + warn - cross). Its eye is on the line while it crosses: `span` [leave, leave + cross], every move there is
+ *     done watched (OVERLAP), with the line's crossing time cross = (G + N x gap) / pace (G the open ground, gap and pace the follow row's).
+ *   - THE STOP (kind 'line-stop'): he must let go where he AND all N stand inside the reeds (lineInCover, the game's own test), a press he
+ *     cannot wait out at a run: deadlineBits(span / PHYS.maxRun), span the px of stops that hold them (for a bunched line, W - N x gap - 20).
+ *   - A MISS spooks the tail back to the stretch's start (WatchZone.setback): no heart (2-3: nobody hurt), he fetches it: 2 x distance /
+ *     PHYS.maxRun s, the distance from the far side of the crossing back to where it runs. Priced as the meter prices replay: stakes
+ *     STAKES.soft + fetch x STAKES.replayPerSec ('soft'). A stretch whose first look only warns (freeFirst; every heron on Easy) makes its
+ *     first crossing a free retry.
+ * N: the cages freed before the crossing, at most the stage's goal (the easiest way he has: on Easy he need bring only targetCount home).
+ * Right-running stages only (safeWindow flies to the right); a left-running follow stage is refused, not guessed.
+ */
+export interface LineCrossing {
+  /** the open ground: from a (A's far end, or the stretch's start) to b (B's near end, or the stretch's end) */
+  a: number; b: number; A: Bush | null; B: Bush | null; herons: number;
+  n: number; cross: number; safe: number; cycle: number; first: boolean; free: boolean; stop: number | null; fetch: number;
+}
+/** where he may let go inside clump B and have him and the n little ones bunched behind him all inside it (lineInCover), px */
+export function stopSpan(B: Bush, n: number, gap: number): number {
+  let px = 0;
+  for (let x = B.x - 40; x <= B.x + B.w + 40; x++) {
+    let ok = true;
+    for (let k = 0; k <= n && ok; k++) ok = lineInCover([B], { x: x - k * gap, y: B.y, paddle: false });
+    if (ok) px++;
+  }
+  return Math.max(0, px - 1);
+}
+export function lineCrossings(fs: FollowStage, row: FollowRow, setting: Setting, cages: readonly number[], target: number): LineCrossing[] {
+  if ((fs.dir ?? 1) !== 1) throw new UnpricedPiece('line:follow', 'a left-running follow stage (safeWindow flies to the right)');
+  const easy = setting === 'easy';
+  const covers = fs.covers.filter((c) => !c.secret && !c.hanging).sort((p, q) => p.x - q.x) as Bush[];
+  const zones = fs.zones;
+  const over = (a: number, b: number) => zones.filter((q) => q.x0 < b && q.x1 > a);
+  const out: LineCrossing[] = [];
+  const done = new Set<string>();
+  for (const z of zones) {
+    const inside = covers.filter((c) => c.x + c.w > z.x0 && c.x < z.x1);
+    if (!inside.length) continue; // (no reeds at all: lineFaults refuses the stretch; nothing to cross between)
+    const edges: Array<[number, number, Bush | null, Bush | null]> = [[z.x0, inside[0].x, null, inside[0]]];
+    for (let i = 1; i < inside.length; i++) edges.push([inside[i - 1].x + inside[i - 1].w, inside[i].x, inside[i - 1], inside[i]]);
+    const last = inside[inside.length - 1];
+    edges.push([last.x + last.w, z.x1, last, null]);
+    for (const [a, b, A, B] of edges) {
+      if (b <= a || done.has(`${a}:${b}`)) continue;
+      done.add(`${a}:${b}`);
+      const n = Math.min(target, cages.filter((x) => x < a).length);
+      if (n <= 0) continue; // (nobody follows him yet: the stretch asks nothing of a line)
+      const zs = over(a, b);
+      const y = (A ?? B)!.y;
+      const pace = row.pace[setting];
+      const cross = (b - a + n * row.gap) / pace;
+      // (the herons' cycle as safeWindow takes it: the hardest calm, the longest warn and pass)
+      const calm = Math.max(...zs.map((q) => q.calm[0]));
+      const warn = Math.max(...zs.map((q) => q.warn ?? WATCH.warn));
+      const cycle = calm + warn + Math.max(...zs.map((q) => q.pass ?? WATCH.pass));
+      // (off the stretch the heron reads nobody, followPlay `near`: the start and the end are a clump of their own for the flight)
+      const A1: Bush = A ?? { x: a - 400, w: 400, y, kind: 'reeds' };
+      const B1: Bush = B ?? { x: b, w: 400, y, kind: 'reeds' };
+      const first = !A;
+      const safe = first ? 0 : safeWindow(row, easy, A1, B1, zs, fs.platforms, fs.safeWater, n);
+      const free = first && (easy || zs.some((q) => q.freeFirst));
+      const setback = Math.min(...zs.map((q) => q.setback ?? q.x0));
+      out.push({ a, b, A, B, herons: zs.length, n, cross, safe, cycle, first, free, stop: B ? stopSpan(B, n, row.gap) : null, fetch: (2 * Math.max(0, b - setback)) / PHYS.maxRun });
+    }
+  }
+  return out;
+}
+/** the line channel's challenges on a follow stage (see lineCrossings); `firstCalm` read per crossing from its herons */
+export function lineChallenges(fs: FollowStage, row: FollowRow, samples: Sample[], setting: Setting, cages: readonly number[], target: number): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  for (const c of lineCrossings(fs, row, setting, cages, target)) {
+    const zs = fs.zones.filter((q) => q.x0 < c.b && q.x1 > c.a);
+    const t = clockAtX(samples, c.a);
+    const stakes = c.free ? 1 : STAKES.soft + c.fetch * STAKES.replayPerSec;
+    const cost: Cost = c.free ? 'retry' : 'soft';
+    const open = c.first ? Math.min(...zs.map((q) => q.calm[0])) + Math.min(...zs.map((q) => q.warn ?? WATCH.warn)) - c.cross : c.safe;
+    const bits = c.first ? deadlineBits(open) : windowBits(c.cycle, c.safe);
+    const what = `${c.n} following over ${Math.round(c.b - c.a)} px ${c.A ? `from the reeds at ${Math.round(c.A.x)}` : 'from the stretch\'s start'}${c.herons > 1 ? `, ${c.herons} herons` : ''}`;
+    out.push({ t, x: c.a, kind: 'line', bits, cost, stakes, threat: true, span: [t, t + c.cross],
+      note: `${what}: crossing ${c.cross.toFixed(2)}s, ${c.first ? `first calm leaves ${open.toFixed(2)}s` : `safe to leave ${c.safe.toFixed(1)}s of ${c.cycle.toFixed(1)}s`}${c.free ? ' (first look only warns)' : `; a spook: fetch ${c.fetch.toFixed(1)}s`}` });
+    if (c.B && c.stop !== null) {
+      const w = c.stop / PHYS.maxRun;
+      out.push({ t: clockAtX(samples, c.B.x), x: c.B.x, kind: 'line-stop', bits: deadlineBits(w), cost, stakes, threat: false,
+        note: `stop in the reeds at ${Math.round(c.B.x)} (${Math.round(c.B.w)} px) holding him + ${c.n}: ${c.stop} px, ${w.toFixed(2)}s at a run` });
+    }
+  }
+  return out;
+}
+
 /** how a moving floor moves, for the ride channel: its board window (the share of its cycle a hop onto it can land: he may wait for it,
  *  RW) and its step-off window (how long, once he rides it, a hop off to the next floor stays open before it carries him away or under:
  *  he cannot wait that out, FB). Null: a floor that moves by no clock the meter reads (refused: unpriced) */
@@ -934,13 +1035,15 @@ export interface StageScore {
 }
 
 /** one stage, one setting, one layout: its challenges and raw load (seen: earlier exposures by move kind, carried in game order) */
-export function scoreStage(id: string, setting: Setting, seed: number, seen: Map<string, number>): StageScore {
+export function scoreStage(id: string, setting: Setting, seed: number, seen: Map<string, number>, prep?: (rp: RealPlay) => void): StageScore {
   setDifficulty(setting);
   // (the anchor, 1-1, is built from its FIXED layouts (anchor11.ts, by content), never from the list's moving positions: a relist of 1-1
   //  moved every stage's reading x0.87 (INT-10, 11-15; the lead's ruling: fix the anchor, never tune a level to it)
   const undo = id === ANCHOR.id ? plantSeedList(ANCHOR.id, ANCHOR_LIST) : null;
   let rp: RealPlay;
   try { rp = new RealPlay(id, seed); } finally { undo?.(); }
+  // (a toy laid over the built stage (the line channel's toys, METER-4): the hook changes the stage, then the meter reads it as any)
+  prep?.(rp);
   // (a vine-field stage is walked with its fig gates open, as a puzzle room's stage is walked solved: each gate is a puzzle below, and
   //  the engine shuts them at the start: fieldPlay.ts. Every other stage is the same object, unchanged)
   const st = gatesOpened(rp.stage as any) as any;
@@ -1003,6 +1106,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       //  a stretch as a pacing beat every 1.5 s, which this loop scored as ~16 two-bit hazards a stretch, the old 1-8's 28)
       if (/the branch collapses behind him|a bouncing fruit/.test(b.what) && (st.chase || st.rolling || st.proto?.chase)) continue;
       // (a river's crossing is priced move by move where the route takes it, onto and off each log: rideChallenges)
+      // (on a follow stage the heron reads only the line, never him (followPlay.ts): its watched stretch is the line channel's, below)
+      if (b.fam === 'beat:watched stretches' && rp.e.follow) continue;
       if (b.fam === 'beat:rivers') continue;
       // (a kit watcher's stretch (stillLay.ts castWatches: World 1's eagle) is scored by watchChallenges, the eye over the ground; beats.ts
       //  reads it as the watched stretch since VAR-1, a Z beat of the creature's family (it read a fight, a C beat, skipped above for a
@@ -1037,6 +1142,13 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of wheelChallenges(st, route, samples, setting, id)) add(c);
   for (const c of lianaChallenges(st, route, setting, softPits)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
+  // the little ones that follow him home (METER-4): the line's crossings under the herons, from the engine's own FollowPlay (its stage:
+  // the zones, reeds, ground and water the game built), N from the cages on the way, at most the stage's goal
+  const fp = rp.e.follow as { row: FollowRow; stage: FollowStage } | null | undefined;
+  if (fp) {
+    const cages = (st.collectibles ?? []).filter((c: any) => c.type === 'cage').map((c: any) => c.x as number);
+    for (const c of lineChallenges(fp.stage, fp.row, samples, setting, cages, Number(st.config.targetCount ?? cages.length))) add(c);
+  }
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
   // period; a heart where the pod costs one, a retry where it only knocks him off (Easy). Once a column, where the route first passes it
@@ -1111,15 +1223,18 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     id, setting, seed, minutes: Math.round(minutes * 100) / 100, traced: route.traced, soft: softPits, route, count,
     bits: Math.round(out.reduce((s, c) => s + c.bits, 0) * 10) / 10, points: Math.round(points * 10) / 10,
     mean: Math.round(mean * 10) / 10, peak: Math.round(peak * 10) / 10, raw: rawOf(mean, peak), challenges: out,
-    pieces: piecesUsed(st, route, br.beats),
+    pieces: piecesUsed(st, route, br.beats, !!fp),
   };
 }
 
 /** the pieces a built stage uses (METER-2a, coveragecheck.ts): read from the built stage, never from its data */
-export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): string[] {
+export function piecesUsed(st: any, route: Route, beats: readonly Beat[], follow = false): string[] {
   const out = new Set<string>();
   for (const sg of route.segs) out.add(`move:${sg.kind}`);
   for (const b of beats) if (b.fam) out.add(b.fam);
+  // (a follow stage (proto.follow, the engine's FollowPlay): its watched stretches are the line's (the heron never reads him), one piece,
+  //  line:follow, its bot LINE_SKILL and its channel lineChallenges (METER-4))
+  if (follow) { out.delete('beat:watched stretches'); out.add('line:follow'); }
   for (const p of st.platforms ?? []) {
     // (a sinking pad is its own piece, by its row's kind (a weight pad's count, a beat row's breath: gen2/rideLay.ts PadRow.by), not a
     // moving floor's: its bot is the pad skills and its price the dwell, METER-COVERAGE #21)
