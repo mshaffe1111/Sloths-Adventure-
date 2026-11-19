@@ -137,12 +137,11 @@ export interface StageClock {
   seek(t: number): void;
   read(id: ClockId, shift?: number): ClockRead;
   /**
-   * Set one beat so that at game time `at` a piece on it with stagger `shift` stands `turn` of a period past the end of its 'on' (its
-   * first; the cycle's start when it has none): turn 0, a breathing row's pad has just risen (breathAim.ts). The beat keeps its own
-   * lengths; only where it stands in its cycle moves, from now on, until the stage starts again. Used only while the screen is dark (a
-   * respawn's closed iris).
+   * Set one beat so that at game time `at` a piece on it with stagger `shift` has just come out of its 'on' (its first; the cycle's start
+   * when it has none): a breathing row's pad has just risen (breathAim.ts). The beat keeps its own lengths; only where it stands in its
+   * cycle moves, from now on, until the stage starts again. Used only while the screen is dark (a respawn's closed iris).
    */
-  align(id: ClockId, at: number, shift?: number, turn?: number): void;
+  align(id: ClockId, at: number, shift?: number): void;
 }
 
 export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock {
@@ -159,7 +158,7 @@ export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock
       if (!b) throw new Error(`no clock named ${id} in this stage`);
       return beatAt(b, t + (moved.get(id) ?? 0), shift);
     },
-    align: (id, at, shift = 0, turn = 0) => {
+    align: (id, at, shift = 0) => {
       const b = beats.get(id);
       if (!b) throw new Error(`no clock named ${id} in this stage`);
       if (!(b.period > 0)) return;
@@ -168,7 +167,7 @@ export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock
       let after = 0;
       if (on >= 0) for (let i = 0; i <= on; i++) after += b.seconds[i];
       // (a microsecond past it: the float sum of `at` and the move must never land a hair before the rise)
-      moved.set(id, cyclePos(after + turn * b.period + 1e-6, -(at + b.offset + shift * b.stretch), b.period));
+      moved.set(id, cyclePos(after + 1e-6, -(at + b.offset + shift * b.stretch), b.period));
     },
   };
 }
