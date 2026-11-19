@@ -1,6 +1,30 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten for ENG-26 (11-18, t-eng-26): section 0zm (the water wheel: wheel.ts, its piece, place `wheel`, its flown fairness, the bot's rideWheel). 0zl (ENG-24, a liana over a river) follows.
+Rewritten for ENG-26b (11-18, t-eng-26): section 0zn (the wheel finished: flights by stage from world data, Easy's walk-off floor, the 'back' layer over the painted soil, the dev fixture and its clip tool, the meter's wheel channel). 0zm (ENG-26, the wheel) and 0zl (ENG-24, a liana over a river) follow.
+
+## 0zn. ENG-26b (t-eng-26, 11-18): the water wheel finished; what the next engineer and the 2-6 builder must know
+- **Flights take their stage (generality):** `flyWheel(L, setting, stageId)` as landFlights.ts flyLandFlights; tools/engine/wheelflights.ts
+  WORLD_WHEELS rows carry `{ stage, rows }`, World 2's from world data (w2.ts `W2_WHEEL_STAGE`). A world that lays wheels adds its table
+  and its stage there. No stage id in engine code (generalitycheck PASS).
+- **Easy's floor is the WALK-off** (the lead's ruling, 7:25 PM ET 11-18): wheelLay.ts `stepFault` (in wheelFaults): 'up' reads the jump;
+  'edge'/'in' read the better of walk and tap on Normal, the walk alone on Easy. Easy edge and the toy `sparse` fly at V50 (walk-off 2.63 s;
+  V60 was 2.2 s). The table (wheelFlights.data.ts) is re-flown; wheel.test.ts plants the V60 row and sees it refused by name.
+- **Layer 'back'** (stagePiece.types.ts PieceLayer): the wheel draws in FRONT of the earth and BEHIND its jetty, street and every ledge.
+  Painted ground: engine.ts hands its one `drawBack` to protoArt.ts drawProtoScene (`afterGround`, right after the soil, before trunks
+  and ledges: the soil of a bank ABOVE runs all the way down through the sweep, so a wheel drawn before the ground pass vanished, ENG-26b's
+  first stills); drawn ground: before the platforms. Once a frame either way; pieceHook.test.ts pins both orders.
+- **Dev fixture** (src/game/wheelFixtureStage.ts, DEV only): `?fixture=wheel` (toy tower, travels left), `?fixture=wheel-right` (toy run,
+  travels right), `&wheel=<row>`; `window.__play('2-95'|'2-96')`. It holds the toys' ONE kit (tools/inspect/wheelToys.ts re-exports it).
+  Clip + named stills from the real page: `node reference/qa-reports/ENG-26/wheelClip.mjs <port> <out> [normal|easy] [up|side]
+  [wheel|wheel-right] [row]` on a dev vite (frame-stepped, every press lift-checked, steps off in the FLOWN window; exit 3 on no board,
+  a pond fall or no street).
+- **The meter** (step 6): route.ts rides a wheel as ONE move `'wheel'` jetty -> street (the buckets are no route floor; dt = half a
+  bucket period + half a turn); score.ts `wheelChallenges`: 'wheel-board' (0 bits when every moment boards, else windowBits over the
+  period) and 'wheel-off' (windowBits over the turn of the flown step window, the easiest way; none for an 'in' street), cost soft (the
+  safe pond); an unflown row is refused ('move:wheel'). meter-coverage.json `move:wheel` (bot SKILLS.rideWheel). Planted:
+  tools/difficulty/wheelChannel.test.ts (in gates.yml's tool line).
+- **Open:** the painted wheel (ART-W2B; wheelDraw.ts is still flat code boxes, brown on brown in the toy); the toy tower stands inside
+  earth columns (its storeys are 90 px banks), not 2-6's look; step 8 (re-fly after ENG-285's in-air turn).
 
 ## 0zm. ENG-26 (t-eng-26 from t-meter-3@42459a5c, 11-18): the water wheel (2-6 NEW 1-2); what the next engineer and the 2-6 builder must know
 - **The wheel (src/game/wheel.ts, pure):** `{cx, cy, R, N, W, V, way, phase?, lay?}`; bucket i's floor `bucketAt(w, i, t)`; its TOP moves `way`

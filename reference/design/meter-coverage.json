@@ -438,6 +438,15 @@
     "1"
    ]
   },
+  "move:wheel": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.rideWheel",
+   "channel": "tools/difficulty/score.ts#wheelChallenges",
+   "rows": [
+    "20",
+    "25"
+   ],
+   "note": "a water wheel ridden from its jetty to its street (2-6 NEW 1-2, ENG-26/26b; route.ts: its buckets are no floor of the route's, the move is jetty -> street): the board by a tap hop (windowBits over the bucket period, 0 when every moment boards) and the step-off (windowBits over the turn of the flown window, the easiest way; an 'in' street asks none), from the row's flown table wheelFlights.data.ts; a miss is the safe pond (soft)"
+  },
   "pad:beat": {
    "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.breath",
    "channel": "tools/difficulty/score.ts#rideTiming",

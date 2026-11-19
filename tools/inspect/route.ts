@@ -17,6 +17,8 @@ import type { Platform, Vine } from '../../src/game/types.ts';
 import { lianasOver } from '../../src/game/river.ts';
 import { logCatches, lianaDrops } from '../../src/game/gen2/riverLay.ts';
 import { difficulty } from '../../src/game/difficulty.ts';
+import { bucketPeriod, turnTime } from '../../src/game/wheel.ts';
+import { stageWheels } from '../../src/game/gen2/wheelLay.ts';
 import type { Stage } from './stages.ts';
 
 export const RUN = PHYS.maxRun;
@@ -27,7 +29,9 @@ export const K = MODEL_TYPICAL.alpha / MODEL_FAST.alpha;
 
 export type MoveKind = 'walk' | 'drop' | 'hop' | 'jump' | 'bounce' | 'timedHop' | 'glide' | 'climb' | 'swing' | 'rope' | 'lift' | 'draft' | 'presumed'
   // (a let-go from a liana onto a log of the river under it, and a jump off a riding log up to a liana: METER-3, R-165.287)
-  | 'lianaDrop' | 'logCatch';
+  | 'lianaDrop' | 'logCatch'
+  // (a water wheel ridden from its jetty to its street: board a bucket, ride it up, step off: ENG-26b, score.ts wheelChallenges)
+  | 'wheel';
 
 /** one piece of the route: walking along a ledge, or a move from one thing to the next */
 export interface Seg {
@@ -66,7 +70,7 @@ interface Node {
 }
 interface Edge {
   to: string;
-  kind: 'graph' | 'liana' | 'rope' | 'presumed';
+  kind: 'graph' | 'liana' | 'rope' | 'presumed' | 'wheel';
 }
 
 const ext = (p: Platform): [number, number] =>
@@ -169,6 +173,17 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
       if (logCatches(v, l.drift!)) addEdge(keyOf(l), `L${v.id}`, 'liana');
       added++;
     }
+  }
+  // a water wheel (ENG-26b; wheel.ts, gen2/wheelLay.ts layWheel): its buckets turn, so none is a floor of the route's own (the check links
+  // a wheel as two stops, its first bucket at the foot and at the top, and the route would hop on and off them as moving ledges on no
+  // clock the meter reads). The way is ONE move, the jetty to the street: board a bucket, ride it up, step off ('wheel', priced by
+  // score.ts wheelChallenges from the row's flown table). A wheel the stage did not lay by place `wheel` (no jetty or street) is left out.
+  for (const w of stageWheels(plats)) {
+    const bucketKeys = new Set(plats.filter((p) => p.wheel?.w === w).map(keyOf));
+    for (const k of bucketKeys) { edges.delete(k); nodes.delete(k); }
+    for (const [a, list] of edges) edges.set(a, list.filter((ed) => !bucketKeys.has(ed.to)));
+    const jetty = w.lay && plats.find((p) => p.id === w.lay!.jetty), street = w.lay && plats.find((p) => p.id === w.lay!.streetId);
+    if (jetty && street) { addEdge(keyOf(jetty), keyOf(street), 'wheel'); added++; }
   }
   // shimmy ropes: the two ledges they join (generously: the check asks for an exact fit, and only once every player has the skill)
   for (const r of stage.ropes ?? []) {
@@ -375,7 +390,8 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     let k: MoveKind;
     const lo = Math.min(tx, lx), hi = Math.max(tx, lx);
     const byRope = gap > 60 && (stage.ropes ?? []).some((r) => r.x0 <= lo + 90 && r.x1 >= hi - 90 && Math.abs(r.g0 - A.y) < 60 && Math.abs(r.g1 - B.y) < 60);
-    if (kind === 'presumed') { k = 'presumed'; penalty = 4; }
+    if (kind === 'wheel') k = 'wheel';
+    else if (kind === 'presumed') { k = 'presumed'; penalty = 4; }
     else if (kind === 'rope' || byRope) k = 'rope';
     else if (A.type === 'bouncy') k = 'bounce';
     else if (A.type === 'drift' || B.type === 'drift' || A.type === 'moving' || B.type === 'moving') k = A.lift || B.lift ? 'lift' : 'timedHop';
@@ -398,6 +414,11 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
     else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;
     else if (k === 'drop') dt += Math.sqrt((2 * Math.max(0, -rise)) / 1800);
+    else if (k === 'wheel') {
+      // (the wait for a bucket at the jetty, half a bucket's period on average, then the ride from the foot over to the street: half a turn)
+      const w = stageWheels(stage.platforms).find((q) => q.lay?.jetty === A.id);
+      dt = w ? bucketPeriod(w) / 2 + turnTime(w) / 2 : dt;
+    }
     // (down into a soft pit that has lianas or silk lines hung over it: that pit is the miss, and a player takes the swing. Only the
     // route's choice is weighed, not its time: 5-4's quick route dropped through every pit under its silk lines, 2026-10-31)
     if ((k === 'drop' || k === 'hop' || k === 'jump' || k === 'swing') && rise < -60 && (B.style === 'moss_stone' || B.style === 'branch')

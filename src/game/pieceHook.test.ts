@@ -107,6 +107,14 @@ test("piece hook: render() draws every layer once, in the frame's order: 'back' 
   const platforms = at('else renderWorldObjects(');
   const under = at('this.drawRivers(ctx, world, false)');
   assert.ok(under < layer.back && layer.back < platforms, "'back' is over the water's body, BEHIND the platforms (a wheel turning behind its jetty and street)");
+  // (painted ground: the same one 'back' draw goes to protoArt.ts drawProtoScene, which draws it over its soil (a bank above runs its soil
+  //  down through a wheel's sweep: ENG-26b's fixture stills) and before its trunks and ledges; drawn ground: before the platforms, once)
+  assert.ok(body.includes("const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };"), 'the one back draw');
+  assert.ok(body.includes('if (!paintedGround) drawBack();') && body.includes('this.protoScene, drawBack)'), 'drawn once: before the drawn platforms, or over the painted soil');
+  const proto = readFileSync(new URL('./protoArt.ts', import.meta.url), 'utf8');
+  const scene = proto.slice(proto.indexOf('export function drawProtoScene('));
+  const soil = scene.indexOf('drawGround(ctx, platforms, banks, view)'), hook = scene.indexOf('afterGround?.()'), trunks = scene.indexOf('// the climb trunks');
+  assert.ok(soil > 0 && soil < hook && hook < trunks, "drawProtoScene draws 'back' over its soil, before its trunks and ledges");
   assert.ok(platforms < traps && traps < layer.world && layer.world < hero, "'world' is after the platforms and traps, before he is drawn");
   assert.ok(hero < bushes && bushes < layer.front && layer.front < worldEnd, "'front' is over him, with the bushes, inside the world");
   assert.ok(worldEnd < layer.screen, "'screen' is after the world transform ends");

@@ -38,6 +38,9 @@ import { beatOf } from '../../src/game/clock.ts';
 import { driftCycle, lianasOver, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
 import { lianaDrops, logCatches } from '../../src/game/gen2/riverLay.ts';
 import { RIDE } from '../../src/game/ride.ts';
+import { stageWheels, flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { bucketPeriod, turnTime } from '../../src/game/wheel.ts';
 import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
 import type { Ride } from '../../src/game/ride.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
@@ -132,7 +135,7 @@ export function unpriced(piece: string, where: string, was: number): { bits: num
  *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
 export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
   walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', rope: 'OTHER_BITS.climb', swing: 'swingChallenges',
-  timedHop: 'rideChallenges', lift: 'rideChallenges', lianaDrop: 'lianaChallenges', logCatch: 'lianaChallenges',
+  timedHop: 'rideChallenges', lift: 'rideChallenges', lianaDrop: 'lianaChallenges', logCatch: 'lianaChallenges', wheel: 'wheelChallenges',
 };
 /** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
  *  beat) is a choice skipping costs nothing, so it is no challenge (the meter prices the route to the shrine) */
@@ -706,6 +709,39 @@ export function rideChallenges(st: any, route: Route, samples: Sample[], setting
 }
 
 /**
+ * A water wheel ridden from its jetty to its street (ENG-26b; reference/design/2-6.md NEW 1; the route's one 'wheel' move, route.ts), priced
+ * from the row's FLOWN table (wheelFlights.data.ts: the real engine's numbers, the same table the stage's fairness check holds the wheel to):
+ *   - 'wheel-board': a tap hop off the jetty into a bucket, a timed press he may wait for (RW): windowBits over the bucket period of the
+ *     longest boarding window; a row that boards at EVERY moment (2-6.md: 100% of phases) asks no timing, 0 bits;
+ *   - 'wheel-off': the step-off onto the street, a timed press in a window he can wait out (a missed window rides round again, wheelFaults
+ *     'ride'): windowBits over the turn of the step-off window, the easiest way (the better of a walk and a tap hop; a jump off the top for
+ *     an 'up' street), as the meter prices every move by the way a player may pick. An 'in' street asks nothing: the ride sets him down.
+ * A miss is the pond under the sweep, a safe still water that sets him back on the jetty (wheelLay.ts layWheel): a soft set-back. A wheel
+ * whose row is not flown is refused (unpriced 'move:wheel'), never priced from a guess.
+ */
+export function wheelChallenges(st: any, route: Route, samples: Sample[], setting: Setting, id: string): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const wheels = stageWheels(st.platforms ?? []);
+  for (const sg of route.segs) {
+    if (sg.kind !== 'wheel') continue;
+    const w = wheels.find((q) => q.lay?.jetty === sg.from?.id);
+    const flown = w?.lay ? WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: w.lay.street, up: w.lay.up }, setting)] : undefined;
+    if (!w || !flown) { unpriced('move:wheel', `${id} x ${Math.round(sg.x0)}: a wheel ${w ? 'whose row was never flown' : 'the route rides that no laid wheel owns'}`, 0); continue; }
+    const t = clockAt(samples, sg.x0, sg.y0);
+    const ys: [number, number] = [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)];
+    const cost: Cost = 'soft';
+    const period = bucketPeriod(w), turn = turnTime(w);
+    const board = flown.board.tap;
+    out.push({ t, x: sg.x0, ys, kind: 'wheel-board', bits: board.share >= 100 ? 0 : windowBits(period, board.window), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+      note: `board a water wheel's bucket by a tap hop: ${board.share >= 100 ? 'every moment boards' : `open ${board.window}s of ${period.toFixed(2)}s`}` });
+    if (w.lay!.street === 'in') continue;
+    out.push({ t: t + (sg.dt ?? 0), x: sg.x1, ys, kind: 'wheel-off', bits: windowBits(turn, flown.step), cost, stakes: stakesOf(st, cost, sg.x1), threat: false,
+      note: `${w.lay!.street === 'up' ? 'jump off the top of a water wheel' : 'step off a water wheel onto the street'}: open ${flown.step}s of a ${turn.toFixed(1)}s turn (a miss rides round)` });
+  }
+  return out;
+}
+
+/**
  * The catch off a riding log (METER-3, R-165.287; reference/design/2-4.md NEW 2, beat 4 "up from the log"): of one swing of liana `v`, how
  * long (s) a jump off log `d` puts his hands on it, the log carrying him (RIDE.keep of its speed, gen2/riverLay.ts logCatches' own flight)
  * standing or running, tapped or held. As catchWindow off a bank: a take-off moment counts when ANY point of the ride in reach (every
@@ -934,7 +970,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     } else if (b.letter === 'V') {
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
       // (a swing is priced at its release, swingChallenges; a lift by the ride channel, rideChallenges)
-      if (b.fam === 'move:swing' || b.fam === 'move:lift') continue;
+      // (a wheel by the wheel channel, wheelChallenges)
+      if (b.fam === 'move:swing' || b.fam === 'move:lift' || b.fam === 'move:wheel') continue;
       // (a climb up a trunk or vine: OTHER_BITS.climb. A rope shimmy is the same self-paced hold (METER-COVERAGE #7, SP): the route's rope
       // runs ledge to ledge (route.ts 'rope' edges), so its let-go at the end is onto the far ledge it overhangs, no jump to price (a rope
       // whose end let-go is a jump is row 7's later half, 3-2). A lift or warm air scored as that climb: now refused, unless known)
@@ -950,6 +987,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of chaseChallenges(st, samples, setting)) add(c);
   for (const c of rollingChallenges(st, samples, setting)) add(c);
   for (const c of rideChallenges(st, route, samples, setting, softPits, id)) add(c);
+  for (const c of wheelChallenges(st, route, samples, setting, id)) add(c);
   for (const c of lianaChallenges(st, route, setting, softPits)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
