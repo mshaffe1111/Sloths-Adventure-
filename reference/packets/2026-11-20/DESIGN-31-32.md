@@ -8,6 +8,11 @@ lead's picks reference/design/PICKS-29-32.md (3-1 = A "Stand still, see the way 
 `git show origin/t-pitch-29b:reference/design/pitches/PITCH-29B.md`, the 3-1 and 3-2 pages only), the format and bar `git show
 origin/t-design-24:reference/design/2-4.md`, and WORLD-3-PLAN.md on origin/t-plan-w3 if it exists (what the engine has). STAGE-RULES §0-5b,
 DIFFICULTY.md (paste targets), LESSONS.md once (D30, D57/D87, D83 relative imports in sims, D90).
+LEAD UPDATE 6:00 PM ET 11-19: started TONIGHT in a free slot. PLAN-W3 is approved (origin/t-plan-w3 09ba018c, reference/plans/WORLD-3-PLAN.md:
+read §1's 3-1/3-2 rows, §2, §6 and its Pushback): the prowler fix is in the creature kit (predators/world3.ts OCELOT sight.tall 80, core.ts
+inSight), NOT enemyBrain.ts; the rope creep and still hang are painted (heroRope.ts). 3-2's hang DEFAULTS to PLAN-W3's Q1 option A (1-3's
+rope creep on roots under the roof; the full under-any-branch move R-160.1 waits for World 6/8) until Matt answers; design so B (full move)
+or C (A + sloping roots he slides down) would change only the hang beats, and say what each would change.
 Write reference/design/3-1.md and reference/design/3-2.md built-ready, exactly as 2-4.md: one idea; tributes kept; beats table (s, bits,
 what is there, he does, he feels); first appearances taught (3-1 teaches DARK, 3-2 teaches HANG UNDER; one new thing per stage; every drop in
 3-1's teach soft); a node string passing checkCode (run it); Normal + Easy targets pasted; EVERY number flown on the real engine through
