@@ -8,7 +8,7 @@ import './headlessDom.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { driftsBehind, lookFor, renderDrift, renderOverlayWeather } from './scenery.ts';
-import { petalsReady } from './petalSprites.ts';
+import { PETAL_SET_IDS, petalsReady } from './petalSprites.ts';
 
 const g = globalThis as Record<string, unknown>;
 
@@ -44,9 +44,10 @@ test('the petals are drawn by renderDrift and left out of the overlay when the g
   class Loaded { onload: (() => void) | null = null; onerror: (() => void) | null = null; naturalWidth = 1024; naturalHeight = 1024; private s = '';
     get src() { return this.s; } set src(v: string) { this.s = v; setTimeout(() => this.onload?.(), 0); } }
   g.Image = Loaded;
-  petalsReady();
+  // (every petal set: a world's look names its own, World 2's the river's, ART-22P; stagePreload asks for every set)
+  for (const set of PETAL_SET_IDS) petalsReady(set);
   await new Promise((r) => setTimeout(r, 20));
-  assert.ok(petalsReady(), 'the petal sheet did not load');
+  for (const set of PETAL_SET_IDS) assert.ok(petalsReady(set), `the ${set} petal sheet did not load`);
   for (let w = 1; w <= 10; w++) {
     // (time and camera where a full set of motes is on screen; lite off)
     const drift = counter();

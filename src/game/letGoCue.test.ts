@@ -184,13 +184,17 @@ test('flown once per hold, never on the play frame: a long hang flies one table;
   });
 });
 
-test('the judge flies the shared flight (riverLay letGoFall, fallOnLog) and reads exactly as before it was shared (origin/t-meter-3 42459a5c)', () => {
+test('the judge flies the shared flight (riverLay letGoFall, fallOnLog) and reads the final model\'s numbers (t-eng-285 ba6b225b)', () => {
   // (lianaRiver.test.ts's world: a liana over a toy row laid from a bank ending at 2000, its top `top`, `len` long, out `dx`)
+  // (RE-PINNED at BUILD-24c's merge of ENG-285's final model, ba6b225b, the lead's ruling 2:23 PM ET 11-19: the press now climbs his hold
+  //  before he leaves (physics.ts pressClimb, R-165.294) and the judge flies from there. Moved from origin/t-meter-3 42459a5c's numbers:
+  //  long N share 0.857086 -> 0.859273; gap280 N 0.413337 -> 0.412741, wait 2.7333 -> 2.7; deep E 0.888129 -> 0.886825, wait 0.5667
+  //  -> 0.6; long E 0.915307 -> 0.917206, wait 0.6667 -> 0.7)
   const want: Array<[ToyRiver, Difficulty, number, number, number, number, number, number, number]> = [
-    ['long', 'normal', 165, 390, 410, 0.45, 0, 0.857086066388392, 0.6],
-    ['gap280', 'normal', 300, 450, 320, 0.45, 0.81, 0.4133373086861459, 2.7333333333333334],
-    ['deep', 'easy', 165, 390, 410, 0.45, 0, 0.8881285978060172, 0.5666666666666667],
-    ['long', 'easy', 120, 300, 380, 0.3, 0.37, 0.9153069153069153, 0.6666666666666666],
+    ['long', 'normal', 165, 390, 410, 0.45, 0, 0.8592725104353012, 0.6],
+    ['gap280', 'normal', 300, 450, 320, 0.45, 0.81, 0.4127410057642616, 2.7],
+    ['deep', 'easy', 165, 390, 410, 0.45, 0, 0.8868252416639514, 0.6],
+    ['long', 'easy', 120, 300, 380, 0.3, 0.37, 0.9172062505395838, 0.7],
   ];
   try {
     for (const [row, d, dx, top, len, amp, ph, share, wait] of want) {
