@@ -1,6 +1,5 @@
 # ART-W2A REPORT: 2-3's painted follow poses (the little ones waddle, paddle, hide; the heron looks up), wired in followArt.ts
 Branch t-art-w2a from origin/t-eng-23 9e306581; head in the last message to the lead. Lead OK 6:53 PM ET; re-layout accepted 7:25 PM.
-
 ## Done-items
 1. **Show first:** reference/qa-reports/ART-W2A/show-first.jpg (sheet px beside Matt's Happy poses, colour-matched; game size on 2-3's own
    stills both ways; edges 3x on light and dark) and post-edge-3x.jpg (the lead's post check: the staircase top edge is w2Heron's own).
