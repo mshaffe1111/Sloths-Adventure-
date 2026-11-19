@@ -196,7 +196,11 @@ Probe reference/qa-reports/BUILD-24c/rideAcross.ts (RealPlay, the game's own upd
 stands, hops onto the far bank, the best of 6 hop timings; never touches a vine). Seeds 1-3, both settings:
 - beat 4 (up-from-log, the log-to-vine catch): CROSSED 6/6 (its far bank z is level with the near bank: upFromLog bank('z','c',300)).
 - beat 6 (no-land, the vine-to-log drops): CROSSED 6/6 (Normal at 100 px/s too).
-- beats 1, 3, 8, 9 (bank-boarding is the design, 2-4.md:48 'the knock'): see the lines pasted below (RIDE-OTHERS).
+- beats 1, 3, 8, 9 (bank-boarding is the design, 2-4.md:48 'the knock'; RIDE-OTHERS, seeds 1-3): beat 1 (teach) Normal CROSSED 3/3, Easy
+  the probe never boarded (timeout: NOT shown either way); beat 3 (drop-ride-drop) its second river CROSSED 6/6, its first never boarded;
+  beat 8 (relay) its third river CROSSED 4 of 4 runs that boarded (first two never boarded); beat 9 (great swing, the raft to the jetty)
+  CROSSED 6/6 (the raft is ridden by design). A 'timeout' is the probe's boarding rule (a log reaching back under the lip) never firing,
+  not a proof that the river cannot be ridden.
 Neither forced skill is forced today. Why: riverLay lays a +1 river's logs out from under the near bank's lip and carries them to the far
 bank's lip, 28 px under bank level; a rider steps or hops off. A far bank out of a rider's reach is about 215 px over the log top (a double
 jump rises 184.5 px, physics DOUBLE_RISE): a wall, which the lead ruled out.
