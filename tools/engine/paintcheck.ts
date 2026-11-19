@@ -42,11 +42,13 @@ const all = generateAllLevels().filter((c) => !c.secret && (!only || only.includ
 const levels = all.filter((_, i) => i % partN === partI);
 const listed = new Set(Object.keys(PROVEN_INDEX));
 // the breaches already there the day the gate started (law 5): shrink-only. One id per stage, style, height and code look; a breach not
-// on it fails; on a whole sweep (every stage, 16 layouts, one part) an id no build shows any more fails too (fixed: take it off)
+// on it fails; on a sweep of a part on the full 16 layouts (no --stages), an id of that part's stages no build shows any more fails too (fixed: take it off)
 const KNOWN_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'paintcheck.known.json');
 const knownJson = JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')) as { known: string[] };
 const known = new Set(knownJson.known);
-const whole = !only && N === 16 && partN === 1;
+// (a sweep of its part's stages on the full 16 layouts judges the list for those stages: an id no build of them shows any more is stale)
+const whole = !only && N === 16;
+const mine = new Set(levels.map((c) => c.id));
 const idOf = (stage: string, b: { style: string; h: number; drawn: string }) => `${stage}|${b.style}|h${b.h}|${b.drawn}`;
 
 let builds = 0;
@@ -91,13 +93,15 @@ for (const c of levels) {
 }
 process.stderr.write('\n');
 if (process.argv.includes('--write-known')) {
-  fs.writeFileSync(KNOWN_FILE, JSON.stringify({ ...knownJson, known: [...seen.keys()].sort() }, null, 1) + '\n');
+  // (writes this run's ids for its stages, keeping the other stages' ids: a list is seeded once, the day the gate starts, then only shrinks)
+  const keep = knownJson.known.filter((k) => !mine.has(k.split('|')[0]));
+  fs.writeFileSync(KNOWN_FILE, JSON.stringify({ ...knownJson, known: [...new Set([...keep, ...seen.keys()])].sort() }, null, 1) + '\n');
   console.log(`paintcheck: wrote ${seen.size} known ids`);
   process.exit(0);
 }
 console.log(`paintcheck: ${builds} builds of ${levels.length} stages${partN > 1 ? ` (part ${partI}/${partN})` : ''} (listed stages on every listed seed, the rest on layouts 1-${N}), both settings`);
 for (const [id, r] of byStage) if (r.hit) console.log(`  ${id}: ${r.hit}/${r.builds} builds breach (${[...r.ids].filter((k) => known.has(k)).length} known ids, ${[...r.ids].filter((k) => !known.has(k)).length} new)`);
-const stale = whole ? [...known].filter((k) => !seen.has(k)) : [];
+const stale = whole ? [...known].filter((k) => mine.has(k.split('|')[0]) && !seen.has(k)) : [];
 if (showUnpainted) {
   console.log(`\nunpainted (no painter at any height in that stage: not a breach, missing art for Content): ${unpaintedSeen.size}`);
   for (const [k, at] of unpaintedSeen) console.log(`  ${k} (first: ${at})`);
