@@ -78,3 +78,31 @@ Started 1:48 PM ET (by `date`). FINAL MODEL HASH ba6b225b sent to the lead 2:19 
    0 lives, never catching the liana. The test runs v1-6: >= 5 catch the liana (6 of 7 do), each lets go onto a log; one that does not
    must cross standing on a log with no life lost (asserted); planted OFF 24 lives over v1-5 (was 19).
 The drop judge's calibration table (ENG-24 calib.ts, 16 rows) is IDENTICAL on 925eba15 and this model: today's drifts don't touch it.
+
+## MEASURE on the final model (code head e236233c = ba6b225b + the curated-seed re-pin)
+| Check | Result |
+|---|---|
+| lockall 16 vs 925eba15 (ENG-285's model) | 102/102 unchanged: today's commits move no stage |
+| lockall vs ce4ad461 | 89/102; moved = ENG-285's 13: 1-6 N16/E6, 1-8 N[3,7,10,11], 2-1 N[13], 3-8 (proto.thorns), 4-4 N[3,9,10,13,16], 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5 |
+| lockall vs main 6e7b85f8 | 87/102: the 13 + 1-7, 1-9 (INT-12's own); the intended list for the final check: 1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 |
+| seedlist --check, all 11 lists | PASS each, 0 refused (1-1 161, 1-5 150, the rest 100) |
+| tierBots full calibration (3 tiers x both x 1-40) | 200/200 runs identical to calibration-main.jsonl: no recalibration, no recommit |
+| funcheck | line for line INT-12's d7cb8240 run: 30 worse/new (main 34): nothing new or worse |
+| seeds.test.ts:40 (e236233c) | the 3 plans ENG-285's model moved (6-1 69793, 6-1 205913, 7-5 928604) re-verified with curate.ts's own measures and rules (levelCheck both settings, clock floors, quiet, dead, animals, unswung lianas, kid 85% / adult 70% bots): all pass on the same layout seed; re-pinned (sections + re-measured numbers). All 16 of 6-1's seeds pass. FOUND: 7 more (8-5 x5, 8-6 x2) already differ on main and ce4ad461 (the guard checks 2 seeds a stage) |
+
+## Re-prove: castBots 1-40 x tiers x both on the final model (expert plays Normal only, castBots.ts:31)
+| Stage | Calibrated (child / middle / expert) | First-timers (kid / adult) | Each miss |
+|---|---|---|---|
+| 1-6 | E 40/40; N child 39, middle 40, expert 40 | N kid 26, adult 40; E 40 / 40 | the packet's rows child N L28, child N L34, middle N L39 PASS. child N seed 30: 40 double jumps straight up on the creaky-landing pit's floor (x 29,128, far wall 225 px) for 100 s, rescued: BUILD-24b's bot defect (b), REPRODUCED; pitWayBack's `prog.off(p) < 120` return comes before ENG-16F's liana-foot rule; a one-line fix made it worse (4 rescues), reverted; middle/expert pass seed 30, the child passed it on ce4ad461: the bot, not the level (the lead rules). kid N: the same two pits as INT-12 (x~28-29k, ~46k), re-rolled (INT-12 29) |
+| 1-8 | N child 36 (seeds 9,17,25,35), rest 40/40 | 40/40 | identical to main and INT-12 (VAR-1 §4) |
+| 2-1 | all 40/40 except child E 39 | kid N 32, E 39; adult N 40, E 39 | vs ce4ad461 today: child E seed 21 NEW (0 lives, stands at the water x 19,694 until rescued; passes on 925eba15 and with the old liana aim: the exact aim re-rolls it; a wait-loop change had no effect, reverted); kid E seed 26 new (x 9,340); kid N 32 = 32; adult E seed 8 = ce4's |
+
+## Diagnoses for the lead (read-only, scratch worktrees)
+- letGoCue.test reds on t-build-24c 2a3e061a: NOT the model. GLOW: the test's start() placed the swing before the game clock (since 1c the
+  vine clock is gameTime + shift): fix = game clock first + a set-up guard (RED with the old order). Test 4: re-pin t-meter-3's judge numbers
+  to the model's (identical on ba6b225b and 2a3e061a). Both applied by BUILD-24c (17e38bda, be615d5e); letGoCue 4/4 three runs.
+  Every press of one swing, flicked or held, leaves the liana where pressLaunches says (344/344).
+- KID 2-4 Normal 36 -> 28 (BUILD-24c be615d5e): no single bot slip. Full-40 bisect: revert all of drift 2 -> 31; its aim alone -> 28;
+  ENG-285 1b/1c -> 28; step 1 not revertible alone. A 12-seed sample first showed 0 -> 8/12 for the aim: selection bias, withdrawn.
+  The rule that fires (lianaWait at the mean lag; the float-wait's any-of-3) leaned on the old one-frame error; the vineFromLog rule
+  (mid +/- sd/2) in lianaWait gave 26/40, no gain. Named for an R-id.
