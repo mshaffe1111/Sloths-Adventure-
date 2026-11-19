@@ -68,3 +68,53 @@ and walks over 2.5 s at many rest-to-beat seams (x 10000-20500, 1-9 lay. each, u
 - Reader (for the lead's roadmap, my view): the dead walk counts the walk up to a posted boa (which the player must do slowly, to time the
   freeze) as dead; the beat's own L carries a fight time but the approach before it does not. If the walk inside a posted boa's engage
   (150 px, Easy 195) is part of the freeze, the reader is wrong there; if not, the beats need dips. Not decided by me.
+
+## 7. VAR-19b (written 4:19 PM ET 11-19; data pass on t-var-19; files in reference/qa-reports/VAR-19b/). STOPPED at the context box: NOT GREEN
+### 7.1 EXACT NEXT STEP (for the next member: read only this subsection and 7.2)
+1. Head: the commit that adds this section on t-var-19 (data + list at 2e06b856a; relisted 100/104, `seedlist 1-9 --check` PASS).
+2. ONE funcheck breach left, 1-9's own: Easy "repeat" 13 layouts (known 8) (funcheck-2e06b856a.txt; Normal repeat 6, known 12, better).
+   Cause (probes/reps.ts -> repeat-easy.tsv): the run "jJJJ" = a beat's tail hop (j) then three dip-jumps (J); the rests are now all
+   narrow root dips, so every rest reads JJJJ (Easy has fewer boa stops between). Fix by DATA in the rests (w1Arc19.ts rest(), restStair,
+   restCrook): break the J runs with moves that are not J (a boulder hop, a wider dip walked into and stepped out of = 'h', not in the
+   string; vary note value/height), keeping a move every <=440 px (dead walk 0) and each rest's LENGTH (shorter rests throw 'no section
+   fits node n15' on raw seed 2: the node time budget). Re-run probes/seams.ts (N, E: must stay 0), probes/reps.ts (E under 8 layouts),
+   w1Arc19.test.ts (8/8), probe 6 fresh seeds, relist, --check, funcheck (no other stage moves: diff non-1-9 lines vs
+   VAR-19/funcheck-r2.txt), then funknown lowered for 1-9 only, only down (FUNCHECK_WRITE=1 on that final head; 1-9's lines only).
+3. Then VAR-19c's item 4 as the packet says (suite in 3 background shards, castBots 1-40 x tiers x both, the full CLAUDE.md list,
+   coveragecheck, registrycheck, every list --check, lockall --intended 1-9) and item 5 (stills N+E both ways, opening clip).
+### 7.2 Numbers (all on 2e06b856a unless named)
+- Dead walk per seam (probes/seams.ts, ends from the steps' own x): Normal 236 walks on 16/16 layouts -> 0 on 0/16; Easy -> 0 on 0/16.
+  Table: VAR-19b/dead-walk-seams.md. funcheck: dead walk GONE on both settings; also lower: N nothing bites 5 (16), N enemy by a
+  landing 10 (16), E 10 (13), E nothing bites 7 (16), N repeat 6 (12); gone: N/E padding, N one tempo, nothing new, looks like an earlier
+  stage, E like an earlier stage. Every non-1-9 line identical to VAR-19's r2 run.
+- Modelled time (probes/times.ts, 100 listed layouts; gen2.modelled): Normal typical min 184 s / median 189 s, fast 146 / 149; Easy
+  typical 186 / 191, fast 148 / 151. Base a1cf0c8e6: Normal typical 220 / 223, fast 175 / 177; Easy 223 / 225, 177 / 178. None under
+  120 s. Built length layout 1: ~27,700 px (base ~34,500).
+- Tests: w1Arc19.test.ts 8/8 (tests 2 and 8 read the five rests: they still expected VAR-19's old single rest). Planted fault for the
+  new 'each rest laid once' assert NOT run (name it: UNRUN). The suite, castBots, gates: UNRUN (VAR-19c).
+- Stills: layout 1 Normal, 20 seams, upright + sideways shot at 2e06b856a (shooter in /tmp, not kept); sideways contact sheet cropped
+  to the play band: VAR-19b/stills-L1-normal-sideways.jpg. They move with the repeat fix: re-shoot on the final head.
+### 7.3 What changed (w1Arc19.ts, data only)
+Rests: walk-in 140, roots 160-220, last up 140 + down 120 (rest, crook, stair, wall, bounce; petals moved off dips the route walked into
+for them, same count); arrival tail 100/100; beats: walk-in 120-140 (read-load keeps 320), narrow dips at forest's tail and before its
+freeze boa, stair's opening (120) and tail, read-load on the high bough (90) and after the trap bough (90), hunters between the moss and
+the boa and after the boa, old boa before its moss (moss ~327 px back from the boa, was 308), roost's rock -> a dip; read-roost/bare tails
+short; the exit bough two dips. trapUnit takes an optional step (unused now). Every boa on the same piece at the same place.
+### 7.4 Polish check (sideways sheet)
+Rough, named: the rests read as a saw-tooth of identical 160 px root notches (x20700 the plainest): the same thing the repeat flag
+sees; the repeat fix should vary them (a boulder, a longer bough). A Dot line box covers the lower middle of every still: the shooter
+does not tap the opening line away (a tool limit, not the stage). Every dip is a walkable root notch; boas, props and petals stand on
+ground; no gap or overhang seen.
+### 7.5 Learned (proposed, for the lead)
+- **R-165.310 (reader, NOT changed, law 22):** tools/validate/core.ts deadWalks (181-201) takes t0/t1 from the steps' clock (Step.t:
+  movement + fights + waits, core.ts:25) but its xAt (183-188) and busyBetween (169-178, called at 196) read Sample.base, the movement
+  clock. They drift apart by every fight and wait (~25 s by 1-9's exit), so a dead walk's x is wrong late in a stage and a climb's busy
+  time is subtracted from the wrong interval (VAR-19's 'C>J 3.9 s' at the wall rest). probes/seams.ts names ends from the steps' own x.
+- **ENGINE-WORTHY:** read-load's trap pair is not laid on raw seeds 2 and 4 when the beat's FIRST piece is 140-200 px wide (320 lays it;
+  the distance to the trap is not the cause: 680 px kept, still failed). The boa lands on a2 at its middle with no load. Not traced
+  further; read-load keeps 320 (comment in readTrap).
+- Rule for level.md: **a move every <=440 px of walk, read from the route**: a move is a step UP or a dip's take-off; walked drops,
+  painted boulders and a hop DOWN are not moves; the route walks into a dip that holds petals. Section walk-in <=140, tail <=260.
+- Rule: **dips alone make a repeat**: after a dead-walk pass, run the repeat probe; vary the move kinds, not only their spacing.
+- Lessons applied: D30 (times from date), D57 (ReadNotifications at pushes), D59 (nothing left running), D83 (probes import relative),
+  D87 (long runs in the background), D90 (read only VAR-19 4-6, cropped stills, output to files), rule 27 (numbers from the built stage).
