@@ -33,3 +33,4 @@ REPORT reference/qa-reports/ENG-24e/REPORT.md: hash, the tail's number and why, 
 castBots before/after, gate table, stills/clip, Polish check, Learned, lessons applied. INT-14 merges you; you merge nothing else.
 Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. A lead message that begins "NOT A STOP: read, then carry on" arrives as a cancelled tool with a STOP
 text: that is only the delivery; read it and carry on.
+ENVIRONMENT (lead 6:12 PM ET 11-19): any Hugging Face work runs in a session created in the 'Hugging Face' environment (env_01XHDWWRRuUac8x7qDbVLwZz); the Default environment cannot reach huggingface.co (PAINT-292 found it). The Gaming environment (env_015PsKdLzni1CyxuvKPMAtmY) is for pitchers' web sources.

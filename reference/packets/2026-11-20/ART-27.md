@@ -23,3 +23,4 @@ REPORT reference/qa-reports/ART-27/REPORT.md: hash, the takes and why each shipp
 Polish check (each piece beside Pokey, upright-phone scale), Learned. Send the hash to the lead and it goes to ENG-27.
 Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. A lead message that begins "NOT A STOP: read, then carry on" arrives as a cancelled tool with a STOP
 text: that is only the delivery; read it and carry on.
+ENVIRONMENT (lead 6:12 PM ET 11-19): any Hugging Face work runs in a session created in the 'Hugging Face' environment (env_01XHDWWRRuUac8x7qDbVLwZz); the Default environment cannot reach huggingface.co (PAINT-292 found it). The Gaming environment (env_015PsKdLzni1CyxuvKPMAtmY) is for pitchers' web sources.
