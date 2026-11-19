@@ -21,6 +21,10 @@
  *   npx tsx tools/engine/registrycheck.ts                 the gate (seconds; exit 1 on any miss)
  *   npx tsx tools/engine/registrycheck.ts --stage 1-4     one stage's misses (addlevel.ts prints these); exit 1 if any
  *   npx tsx tools/engine/registrycheck.ts --lists         the stages with a proven list, one a line (gates.yml loops seedlist over them)
+ *   npx tsx tools/engine/registrycheck.ts --shards        CI's seed-list matrix, a JSON array [1..n] (R-165.278: n = lists / SHARD_LISTS,
+ *                                                         rounded up); with --print, each shard's lists on stderr
+ *   npx tsx tools/engine/registrycheck.ts --lists --shard i/n   shard i's lists, one a line (gates.yml's seedlists matrix job i); exit 1 if
+ *                                                         n is not today's shard count or the shard is empty, so a stale plan never checks nothing
  */
 import '../../src/game/headlessDom.ts';
 import fs from 'node:fs';
@@ -114,6 +118,26 @@ export function ciChecks(yml: string, id: string): boolean {
   return lines.some((l) => (l.includes(CI_LOOP) && /seedlist\.ts\s+\S+\s+--check/.test(l)) || new RegExp(`seedlist\\.ts\\s+${id.replace(/[-]/g, '\\-')}\\s+--check`).test(l));
 }
 
+/** at most this many proven lists in one CI seed-list job: a list's --check takes ~2 min (0.9.9: 10 lists ~21 min in one job), so a
+ *  shard of 4 runs ~9-10 min with its install, inside the ~15 min a gate job may take (R-165.278) */
+export const SHARD_LISTS = 4;
+/** how many seed-list jobs CI runs for these lists */
+export const shardCount = (lists: number) => Math.max(1, Math.ceil(lists / SHARD_LISTS));
+/** the lists split into `of` shards: every list in exactly one, at most SHARD_LISTS a shard (when of >= shardCount), balanced by seed count
+ *  (the biggest list first onto the lightest shard with room; ties to the lower shard, then by id), so the result is the same everywhere */
+export function shardLists(lists: Array<{ id: string; n: number }>, of: number): string[][] {
+  const cap = Math.max(SHARD_LISTS, Math.ceil(lists.length / of));
+  const out: string[][] = Array.from({ length: of }, () => []);
+  const load = new Array(of).fill(0);
+  for (const l of [...lists].sort((a, b) => b.n - a.n || a.id.localeCompare(b.id))) {
+    let best = -1;
+    for (let i = 0; i < of; i++) if (out[i].length < cap && (best < 0 || load[i] < load[best])) best = i;
+    out[best].push(l.id);
+    load[best] += l.n;
+  }
+  return out.map((s) => s.sort());
+}
+
 /** every miss for one stage */
 export async function stageMisses(id: string, I: RegistryInputs): Promise<Miss[]> {
   const out: Miss[] = [];
@@ -150,6 +174,22 @@ export async function allMisses(I: RegistryInputs): Promise<Miss[]> {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const argv = process.argv.slice(2);
+  const lists = Object.entries(PROVEN_INDEX).map(([id, v]) => ({ id, n: v.n }));
+  if (argv.includes('--shards')) {
+    const n = shardCount(lists.length);
+    console.log(JSON.stringify(Array.from({ length: n }, (_, i) => i + 1)));
+    if (argv.includes('--print')) shardLists(lists, n).forEach((s, i) => console.error(`shard ${i + 1}/${n}: ${s.join(' ')}`));
+    process.exit(0);
+  }
+  if (argv.includes('--lists') && argv.includes('--shard')) {
+    const [i, n] = (argv[argv.indexOf('--shard') + 1] ?? '').split('/').map(Number);
+    const want = shardCount(lists.length);
+    if (n !== want || !(i >= 1 && i <= n)) { console.error(`registrycheck --shard ${i}/${n}: today's lists make ${want} shards`); process.exit(1); }
+    const mine = shardLists(lists, n)[i - 1];
+    if (!mine.length) { console.error(`registrycheck --shard ${i}/${n}: empty`); process.exit(1); }
+    for (const id of mine) console.log(id);
+    process.exit(0);
+  }
   if (argv.includes('--lists')) { for (const id of Object.keys(PROVEN_INDEX)) console.log(id); process.exit(0); }
   const I = realInputs();
   const one = argv.includes('--stage') ? argv[argv.indexOf('--stage') + 1] : undefined;

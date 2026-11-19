@@ -4,8 +4,10 @@ name: Gates (art, known lists, clip, draw)
 # failing gate blocks the live site. The unit tests (playerText.test.ts among them) run in deploy.yml's own test shards.
 #   gates      artcheck (1 s) + build and chunkcheck (about 30 s) + knowncheck (1 s) + roadmapcheck (1 s) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
 #   drawcheck  its own runner, side by side: about 6.5 min with setup (measured 2026-11-01)
-#   rolled     the rolled stages' proven-seed lists (seedlist --check: every listed seed clean on both settings, its replay identical to
-#              its search) and the stage-start build time (buildcheck: p95 <= 150 ms at CPU x4): about 1 + 3 min here, 2026-11-06
+#   rolled     the engine tools' tests, the tip walk, the registry, the tier bots and the stage-start build time (buildcheck: p95 <= 150 ms
+#              at CPU x4): about 1 + 3 min here, 2026-11-06
+#   seedplan + seedlists   the rolled stages' proven-seed lists (seedlist --check: every listed seed clean on both settings, its replay
+#              identical to its search), split over parallel jobs of at most 4 lists (R-165.278; ~2 min a list)
 # Both run alongside deploy.yml's test shards, so they add to the deploy only if they outlast the slowest shard.
 on:
   workflow_call:
@@ -84,9 +86,42 @@ jobs:
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       - run: node tools/perf/drawcheck.mjs
 
+  # (R-165.278: 10 stage lists took ~21 min in one job's seed-list loop, 0.9.9 publish run 43801214876 cancelled at 25 min. The lists are
+  # now split over parallel jobs, at most 4 lists a job (registrycheck.ts SHARD_LISTS), so no seed-list job runs past ~15 min at any count)
+  seedplan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      shards: ${{ steps.plan.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      # the matrix, [1..n], and each shard's lists printed in the log
+      - id: plan
+        run: echo "shards=$(npx tsx tools/engine/registrycheck.ts --shards --print)" >> "$GITHUB_OUTPUT"
+  seedlists:
+    needs: seedplan
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.seedplan.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts <id>;
+      # EVERY proven list, each by name, from the index: registrycheck.ts --lists, this job's shard of it (exit 1 on a stale or empty plan,
+      # so a shard never checks nothing). ADD-LEVEL R-165.187: CI checked only 1-1's)
+      - run: L=$(npx tsx tools/engine/registrycheck.ts --lists --shard ${{ matrix.shard }}/${{ strategy.job-total }}) || exit 1; for s in $L; do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done
   rolled:
     runs-on: ubuntu-latest
-    # 10 stage lists take ~21 min in the seed-list loop alone (0.9.9 publish run 43801214876 cancelled at 25); R-165.278 splits it
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -97,13 +132,11 @@ jobs:
       # (the engine tools' own tests, outside the suite glob: the section library, the seed-list writer, the seed yield, the travel
       # bots, 1-3's designed arc (library13), the cast bots (castBots, F13 11-12), the one roll tool and the registry gate (libstage,
       # registrycheck, ADD-LEVEL R-165.187: about 50 s; the bot out of a pit, pitClimb, BUILD-16c; the chase bots, chaseBots, ENG-DR/BUILD-18; the meter's swings, score, TOOLS-1 R-165.239: about 8 s); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
-      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/chaseBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/difficulty/lianaChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts
+      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/sweeper.test.ts tools/inspect/chaseBots.test.ts tools/inspect/boaBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/difficulty/lianaChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts
       # (the tip walk, R-165.236: every climbing or descending rolled stage, 4 layouts x both settings: no tip said a storey early (the
       # build's tip verdict) and none said with his feet outside its band (the real engine, a 20 s walk from the spawn); about 15 s)
       - run: npx tsx tools/engine/tipwalk.ts --layouts 4
-      # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts <id>;
-      # EVERY proven list, each by name, from the index: registrycheck.ts --lists. ADD-LEVEL R-165.187: CI checked only 1-1's)
-      - run: for s in $(npx tsx tools/engine/registrycheck.ts --lists); do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done
+      # (the proven seed lists are checked in the seedlists matrix below, R-165.278)
       # (every stage-table stage registered everywhere: kit, config, routed, levelSeeds, sheets, a drawcheck scenario, a seed list or stand-in,
       # flown rows. ADD-LEVEL R-165.187, D51; seconds)
       - run: npx tsx tools/engine/registrycheck.ts

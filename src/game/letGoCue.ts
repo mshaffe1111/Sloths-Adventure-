@@ -30,7 +30,7 @@ const DT = 1 / 30;
 export const GLOW_SHOWN = 0.03;
 
 /** how the glow reads a let-go (above): the press's own climb (frames of SWING.climb), the catch's margin (px), the river's clock readings (s) */
-export const CUE = { climbFrames: 1, inset: 8, clocks: [0, -DT] } as const;
+export const CUE = { climbFrames: 0, inset: 8, clocks: [0, -DT] } as const;
 /** the hold a press made at hold `len` leaves from (it climbs CUE.climbFrames first, never above SWING.minLen) */
 export const pressHold = (len: number): number => Math.max(SWING.minLen, len - CUE.climbFrames * SWING.climb * DT);
 

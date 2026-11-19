@@ -1,5 +1,7 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk. Merged into t-build-24c (11-19) with ENG-24c's and BUILD-24's sections below (§0zn, §0zm).
+
 Rewritten for ENG-24c (11-18, t-eng-24c): section 0zn (the raft look; the swing's glow over a river). ENG-24's 0zl below still holds. Rewritten for BUILD-24 (11-18, t-build-24): section 0zm (2-4 built on ENG-24's liana-over-river pieces: what the next builder and engineer must know). Rewritten for ENG-24 (11-18, t-eng-24): section 0zl (a liana over a river: the place, its drop judge, the two bot skills, the real-input harness).
 
 ## 0zn. ENG-24c (t-eng-24c from t-meter-3 42459a5c, 11-18): the raft look (R-165.288) and the glow that agrees with the log (R-165.289)
@@ -42,7 +44,36 @@ Rewritten for ENG-24c (11-18, t-eng-24c): section 0zn (the raft look; the swing'
 - **Open (engine, before 2-4 ships; the lead's rulings 3:12/3:15 PM ET):** R-165.288/.289: RiverRow.look 'raft' (beat 9 rides a log) and
   the sweet-spot glow agreeing with the log on a liana over a river (engine.ts:2412-2426 is phase-only). Not done: the camera pull-out.
 
-## 0zl. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
+## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
+- **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against
+  vx > 20) for EVERY caller; the `turn` switch and flyLaunch's `turn` are gone. Back-swing hops carry 4-28.5 px further (median 22-28,
+  scratch probe over every back-swing press of a 300/420 px liana). Still drifted (named, not fixed): a no-steer tick (dir 0) brakes at
+  PHYS.airDec 520 where the engine brakes 0 (refined touch) or PHYS.airStop 1300 (engine.ts:2587); callers protoCheck.ts:50, jumps.ts:240.
+- **The press (R-165.294):** a jump press is Up too (inputEngine.ts triggerTouchUp; a touch keeps it past the longest sweet-spot wait), so
+  from the press frame to the leave frame (both counted) his grip climbs SWING.climb/s: physics.ts `pressClimb`, used by pressLaunches
+  and forwardEndLands; he leaves from the climbed hold; a 'late' press still leaps from the sweet spot's snap (unclimbed). The judge's log
+  clock was already the engine's (logs move before him, from the press frame: judgeFliesEngine.test.ts 2 pins it); the BOT's was a frame
+  early: firsttimer `pressIn(lag)` = the next frame's pad (decide's lag rounding + 1 frame); PRESS_TRACE records aimed vs real frames.
+- **riverLay:** `letGoFall` + `fallOnLog` split out of lianaDrops word for word as ENG-24c (t-eng-24c) split them. When t-eng-24c merges:
+  take this side for riverLay (no `, true`), and set letGoCue.ts CUE.climbFrames to 0 (pressLaunchesFrom climbs inside now).
+- **One liana clock (R-165.295):** engine.ts `vineClock` is a getter = gameTime + vineShift (a test seam only: RealPlay.swing and the
+  setter place a swing against the CURRENT game time, so a harness sets `t` first, then the swing). The separate `+= dt` is gone.
+- **Bot (a):** Progress.relocate(p, level) keeps level points within LEVEL_REACH 600 px in x, else the plain nearest. (b) pitWayBack's
+  off<120 early return: not reproduced on this base or on t-build-24's head; unchanged.
+- Planted tests: src/game/judgeFliesEngine.test.ts, src/game/lianaClock.test.ts, lianaRide.test.ts (press frames), firsttimer.test.ts
+  (relocate). The measure and the EXACT NEXT STEP: reference/qa-reports/ENG-285/REPORT.md.
+
+## 0zm-22p. ART-22P (t-art-22p, 11-18): CI checks the proven seed lists in parallel jobs (R-165.278)
+- gates.yml `seedplan` runs `registrycheck.ts --shards --print` (stdout the matrix [1..n], stderr each shard's lists); `seedlists`
+  (matrix, fail-fast off, 25 min limit) job i runs `--lists --shard i/n` then `seedlist.ts <id> --check` per list. n = lists / 4
+  rounded up (SHARD_LISTS, ~2 min a list); shards balanced by seed count. A new list needs no YAML edit.
+- `--shard i/n` exits 1 when n is not today's count or the shard is empty: the old `for s in $(...)` loop checked nothing silently if
+  the list command failed. registrycheck's own `ci-seedlist` need (ciChecks) still reads the matrix line as the --lists loop.
+- registrycheck.test.ts 'R-165.278' proves every list in exactly one shard (1-40 lists) and that the one-job loop is gone.
+- The `rolled` job keeps its other steps and its 60 min limit (now ~5 min of work: lower it once a publish run proves the split).
+- Live proof is the next publish run (deploy.yml needs gates): read the seedplan log for the shard lines and each seedlists job's time.
+
+## 0zl-24. ENG-24 (t-eng-24 from main 6e7b85f8, 11-18): a liana over a river (2-4 NEW 1-2); what the next engineer and the 2-4 builder must know
 - **The place (data, no type change):** `{ kind: 'river', after: <a liana's key>, row }` lays the water from the bank the liana (or its
   chain) is caught from, under the liana, to this piece (the far bank, riverWidth(row) past that bank). pipeline.ts 'river' branch:
   `riverFrom` (the near bank's key, read by layStage's river lay) and the liana's `hang.gap` = the water. The liana is an ordinary
@@ -62,9 +93,7 @@ Rewritten for ENG-24c (11-18, t-eng-24c): section 0zn (the raft look; the swing'
   design's 73%: the design's figure is grip 0.7 only; the judge takes the worse of grips 0.7 and 0.95.
 - **airStep's engine turn (FOUND, ENGINE-WORTHY):** engine.ts:2567 adds PHYS.airTurn when he steers against his motion in the air;
   physics.ts airStep did not, so every check's back-swing let-go under-steered by 20-30 px (reference/qa-reports/ENG-24/backProbe.ts).
-  airStep(b, dt, dir, hold, turn = false): the drop judge and the bot fly with turn=true; every other check is as it was (the lock).
-  DEBT, the lead's ruling 11:28 AM ET 11-18: opt-in for the liana judge only; R-165.285 makes every judge's model match the engine with a
-  full re-lock (never under a link night).
+  SUPERSEDED by ENG-285 (§0zo-285): the `turn` switch is gone, airStep turns for every caller (R-165.285).
 - **The bot (tools/inspect/firsttimer.ts SKILLS):** `dropOnLog` (on a liana over a log river he lets go only when the let-go, at his thumb's
   lag and half a spread either side, comes down on a log 12 px in from its ends or 16 px onto the far bank; the same pressLaunches
   launch the judge flies; the 7 s "late" let-go waits too, up to the 14 s cap; an aimed drop gets no random second press). `vineFromLog`
@@ -88,6 +117,61 @@ Rewritten for ENG-24c (11-18, t-eng-24c): section 0zn (the raft look; the swing'
 - **Traps:** a toy liana 410 long over a log hangs its foot at the bank's top: a log carries him into it and the engine takes him on, so no
   jump is asked (the catch toy's is 320). A bot change that skips a random draw (`between(this.r, ...)`) moves every seed-pinned plant
   after it (2-1's upstream/bankUp plants stopped biting until the change was held to liana rivers).
+
+## 0zm. BUILD-19b (t-build-19, 11-18): what moved when 1-9 left the hand-built path (no engine code changed)
+- Tests that used the hand-built 1-9 as a fixture now point elsewhere: verdicts' "never flown" stage is 5-7; writtenKeys' seed with a find
+  id is 2-3 (no World 1 stage writes one now); sheetWarm follows the ring drops to the hand-built stage that keeps a ring; w1Pits no
+  longer pins 1-9's vault pits; flagSpan LV-9 walks 27 hand stages (1-9's flags: gen2's verdict, reference/qa-reports/BUILD-19/flags19.ts).
+- A judged stage's flown rows are cited from chain.md §1 (verdicts.test checks the source string), never from the flight log directly.
+- A stage moving to gen2 sheds its known-list entries: coveragecheck names them (1-9's 'beat:ring waves' went).
+- FIXED by ENG-19c (§0zn): the frozen-out boa sat coiled 4 s (he walked through it); the roost's boa fled through him and left a burst.
+
+## 0zn. ENG-19c (t-build-19, 11-18): a fleeing animal is SEEN to go, and never leaves through him
+- core.ts immobile(def) (no speed, not a sweeper; NOT the habit-based posted()): today the boa and World 6's frog. Its 'flees' beat
+  (still, stomp, ...) runs slideOff: away from him along its range, FLEE_OFF (140) past its end, back home as awayUntil ends (the beat's
+  seconds unchanged); speed its own flee speed or 2.5 x the round trip / its time. A walking animal's flee is unchanged (walks home).
+- core.ts stepFlee leaving: on its first step, if its way out runs into him (LEAVE_CLEAR 320 px, within its sight's height) it turns:
+  general, so every chased-off animal (1-3's trapped snakes too) leaves away from a close Pokey.
+- castPlay.sync: a flee past its range end sets e.glide (drop + fade); 0 again at home. engine.drawWithReaction fades by e.glide (the
+  types.ts promise nothing drew before; leaving animals now fade out too). engine.updateKo returns at koLife 0 (gone on its own / a
+  flag's replay): no gravity, no landing burst.
+- Tests: src/game/fleeSlide.test.ts (8); reference/qa-reports/BUILD-19/planted-faults.py (10, three for this).
+- Trap: 'cleared' fires on the BEAT, not at 'gone' (a test following a leave must follow phase 'gone').
+
+## 0zl. BUILD-19 (t-build-19, 11-18): a stage whose goal counts petals never tops up animals
+- pipeline.ts planBudget `fights` and topUpFoes: a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: stagePlan
+  `gathers: 'petals'`; 1-9) lays its sockets' animals and no more (quota.lay = the goal, no +2; no top-up). Before, 1-9's gauntlet kind
+  topped 12 designed boas up to targetCount + 2 = 16 onto any 248+ px bank. Test: src/game/gen2/petalGoalTopUp.test.ts (planted: the
+  clause removed -> lay 16); the built half on the real stage: w1Arc19.test.ts. The lead's ruling 10:09 AM ET 11-18.
+
+## 0zd-19b. 1-9's engine finished (ENG-19b, t-eng-19b, 11-15): what the 1-9 builder and the next engineer must know
+- **The kit boa's coil hurts on touch** (the lead 11:20 AM ET): PredatorDef.coil (BOA 58x26); core.ts hurt(): the coil box in rest,
+  hunt, tell; the strike's box in act; NONE in recover (the punch's window), stunned, flee, gone. The kit's fairness gate
+  (predators/fixtures.ts) allows outside a strike ONLY exactly that coil box (approved 11:31 AM). boaCoil.test.ts.
+- **Easy notices him 1.3x as far off** (easy.engage, engageOf(); the lead 11:31 AM). From a run: Normal still to 13 frames, Easy to 18
+  (0.60 s). Not 26: the whole boa must sit inside the 270 px an upright phone shows ahead (boaFreeze.test asserts 195 + 58 <= 270).
+- **A stage that teaches the freeze**: its brief's `teaches` holds 'still' and it casts (pipeline castOf writes CastData.teachStill): its
+  first freeze is the slow-motion moment wherever he stands (1-9 beat 2); later ones only inside the strike's reach. castFreeze.test.
+- **The roost is drawn**: w19Art.ts drawEagleRoost at each proto.gen2.roosts post (nest over the post, bough piece on its ground; 145 px,
+  1.63 of Pokey), preloaded only when a stage lays one (stageManifest 'w19'). Asset src/assets/w1-19/w1-roost.webp; catalog hf19/w1-roost.
+- **Bots**: firsttimer.ts freezePlan (learned 'freeze' from "freeze" / "don't move" only, or `knows`; reaction stopReact + thumb lag;
+  the kit's own engageOf per setting). A coiled animal is never hopped as a walker (1-3's snakes, no coil, unchanged). boaBots.test.ts
+  (CI): toys + plants. The roost needs no bot skill (the boa flees in its first rear frame). Clip: boaClip.mjs `bot` replays
+  boaBotPads.ts's recorded thumb.
+- Open (named in reference/qa-reports/ENG-19b/REPORT.md): the child bot on Normal is hit at 3/6 boas (reaction 0.49 s vs 0.43 s);
+  bots pause on a 1.1 s creaky limb (14/30 drops); hopping a rearing coil (an expert's move) has no bot yet; topUpFoes on a NO-cast stage
+  would top up an old-brain boa from W1's 'topup' rows (no stage does today); the red glow under a beaten boa (ENG-19a rough).
+
+## 0zc-19a. 1-9's engine pieces (ENG-19a, t-eng-19, 11-14; stopped at 40% context): what the next engineer must know
+- BOA.tell is 1.0 s (world1.ts:57; boaFreeze.test.ts flies it). Only KIT boas read it: no shipped stage has one (18 boa stages are the OLD
+  brain, predatorAI.ts:300, rear 0.6 s, no freeze; tools/engine/runs/boaReach.ts proves it). The lead rules whether the old brain moves.
+- pipeline.ts castRows: a stage whose brief casts lays only those kinds (fillSockets, topUpFoes). Any new row in a shared manifest re-deals
+  every stage drawing from it otherwise (the bag's shuffle). W1_BOAS (w1Cast.ts) rides on it; lockall 102/102 unchanged.
+- lureLay.ts lureFaults: an animal the kit never moves (speeds all 0) is drawn only where it lies; its rear is the read. W1_LURE (w1.ts) lays
+  'w1-roost' into proto.cast.lures and proto.gen2.roosts; NOTHING DRAWS IT YET. Letter `l` = lure (nodeLetters.ts, FILL_LETTER 'lure').
+- CastStep.froze + CastPlay.eyeOut + engine FREEZE_SLOW (0.6 s, zoom 1, slowMoBy 'freeze' cut when a sweeper's eye comes out).
+- Toy clips: tools/engine/runs/boaClip.mjs (freeze|late|roost, up|side). Trap: GoalCard holds on real time; poke it (a key) before the run.
+- Open: the roost art (REPORT step 1, tools/art/hf19), its draw, the red glow under a beaten boa, the kit boa's missing body block.
 
 ## 0zk. FIX-22b (t-fix-22b from t-fix-22@a1acbbe2, 11-15): the ground squares and a sheet arriving
 - **The fault (general, every stage):** protoArt.ts drawGroundChunks and drawWallChunks had `sheetEpoch.n` (atlasLoader: counts EVERY

@@ -49,7 +49,10 @@ export function run(
       assert.ok(told >= tellOf(def, !!o.easy) - 1e-9, `${def.kind}: act after only ${told.toFixed(3)} s of tell`);
     }
     told = s.phase === 'tell' ? (before === 'tell' ? told + DT : DT) : 0;
-    if (s.phase !== 'act') assert.equal(hurt(def, s), null, `${def.kind}: a hurt box in ${s.phase}`);
+    // (outside its strike the ONLY hurt is its own body on touch, where its data gives one (PredatorDef.coil: the lead's ruling 11-15,
+    // the kit boa): exactly its coil at its post, while it watches or rears, never moving, never bigger. Anything else fails)
+    const c = def.coil, body = c && !s.leaving && (s.phase === 'rest' || s.phase === 'hunt' || s.phase === 'tell') ? { x: s.x, y: s.y - c.tall, w: c.w, h: c.tall } : null;
+    if (s.phase !== 'act') assert.deepEqual(hurt(def, s), body, `${def.kind}: a hurt box in ${s.phase}`);
   }
   return out;
 }

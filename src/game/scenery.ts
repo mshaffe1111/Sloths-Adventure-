@@ -50,6 +50,8 @@ export interface Look {
   rays: string;
   rayA: number;
   weather: Weather;
+  /** the painted drifting-petal set its petal weather draws (petalSprites.ts PETAL_SETS); unset, the mixed sheet */
+  petals?: string;
   grade: [string, number];
   glow?: string;
   ground: {
@@ -86,7 +88,8 @@ export const LOOKS: Record<number, Look> = {
     trunk: ['#ecd08c', '#8a6a46'], crowns: ['#2fc08a', '#7ed95a', '#1fa888', '#b6e04a'],
     trees: ['palm', 'willow', 'palm', 'jungle'],
     leaves: ['#18b58c', '#7ed95a', '#0e8f7a', '#c4e24a'], flora: ['#ff8a2a', '#ff5a5a', '#ffd23a', '#ff9ad0'],
-    rays: '#ffd08a', rayA: 0.2, weather: 'petals', grade: ['#ff9a40', 0.08],
+    // (its drifting petals are the river's: lavender water hyacinth and white lily, what 2-2 gathers for the king's crown, ART-22P)
+    rays: '#ffd08a', rayA: 0.2, weather: 'petals', petals: 'river', grade: ['#ff9a40', 0.08],
     ground: { cap: '#7fae46', capHi: '#b6d07a', capDark: '#4a7a30', dirt: '#c5a568', dirtDark: '#6a4a3a', stone: '#e8d4a8', outline: '#4a2a10', kind: 'grass' },
     // the river is "wide, brown, and in no hurry" (the story, and the painted backdrop): slow green-brown water, not turquoise
     water: { top: '#8a7d55', bottom: '#3a3220', foam: '#efe4c4' },
@@ -2605,7 +2608,7 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         // painted leaves for the leaf worlds, painted petals for Worlds 2 and 5 (petalSprites.ts)
         if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clear)) continue;
         if (look.weather === 'petals') {
-          drawPetal(ctx, m.c / 1000 + m.p, x, y, (12 + m.s * 9) * Math.max(0.8, vh / 720), time * m.s * 1.2 + m.p, Math.cos(time * m.s + m.p), 0.95 * clear);
+          drawPetal(ctx, m.c / 1000 + m.p, x, y, (12 + m.s * 9) * Math.max(0.8, vh / 720), time * m.s * 1.2 + m.p, Math.cos(time * m.s + m.p), 0.95 * clear, look.petals);
           continue;
         }
         // (the leaves' stand-in while their sheet loads, or with ?leaves=classic)

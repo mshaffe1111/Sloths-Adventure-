@@ -1,0 +1,85 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth, whole flower, stem, leaves, several petals",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/reference/art/hf22p/starts/",
+ "items": [
+  {
+   "name": "i-lav-s45-11",
+   "start": "petal-lav.png",
+   "prompt": "one single loose water hyacinth petal, soft pale lavender with fine darker violet veins and a small golden-yellow spot ringed in deep violet near its base, a pale cream base where it joined the flower, rounded softly ruffled edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.45,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-lav-s45-23",
+   "start": "petal-lav.png",
+   "prompt": "one single loose water hyacinth petal, soft pale lavender with fine darker violet veins and a small golden-yellow spot ringed in deep violet near its base, a pale cream base where it joined the flower, rounded softly ruffled edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-lav-s58-11",
+   "start": "petal-lav.png",
+   "prompt": "one single loose water hyacinth petal, soft pale lavender with fine darker violet veins and a small golden-yellow spot ringed in deep violet near its base, a pale cream base where it joined the flower, rounded softly ruffled edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.58,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-lav-s58-23",
+   "start": "petal-lav.png",
+   "prompt": "one single loose water hyacinth petal, soft pale lavender with fine darker violet veins and a small golden-yellow spot ringed in deep violet near its base, a pale cream base where it joined the flower, rounded softly ruffled edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.58,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-white-s45-11",
+   "start": "petal-white.png",
+   "prompt": "one single loose white water lily petal, creamy white with a soft pink blush toward the tip and fine pale veins, a pale golden base where it joined the flower, rounded softly cupped edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.45,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-white-s45-23",
+   "start": "petal-white.png",
+   "prompt": "one single loose white water lily petal, creamy white with a soft pink blush toward the tip and fine pale veins, a pale golden base where it joined the flower, rounded softly cupped edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-white-s58-11",
+   "start": "petal-white.png",
+   "prompt": "one single loose white water lily petal, creamy white with a soft pink blush toward the tip and fine pale veins, a pale golden base where it joined the flower, rounded softly cupped edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.58,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "i-white-s58-23",
+   "start": "petal-white.png",
+   "prompt": "one single loose white water lily petal, creamy white with a soft pink blush toward the tip and fine pale veins, a pale golden base where it joined the flower, rounded softly cupped edge, hand-painted 2D storybook platformer game pickup, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich saturated colour, isolated on a flat plain mid grey background",
+   "strength": 0.58,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

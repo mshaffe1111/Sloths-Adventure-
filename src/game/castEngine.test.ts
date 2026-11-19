@@ -42,8 +42,9 @@ const walkTo = (e: Eng, input: { state: { right: boolean; left: boolean } }, x: 
 const punch = (e: Eng, input: { state: { punchPressed: boolean } }, n = 14) => { input.state.punchPressed = true; step(e, 1); input.state.punchPressed = false; step(e, n); };
 
 test('a stage that names no cast has none: its animals are still predatorAI\'s', () => {
-  // (1-9 The Boa's Branches: hand-built, snakes and a boa, no cast named)
-  const { e } = makeEngine('1-9');
+  // (3-9 The Prowler's Ring: hand-built, its animals on predatorAI, no cast named. 1-9 was this test's stage until it rolled on gen2
+  //  with a boa cast, BUILD-19 11-18)
+  const { e } = makeEngine('3-9');
   assert.equal(e.cast, null);
   step(e, 30);
   assert.ok(e.enemies.length > 0 && e.enemies.every((q: Enemy) => q.kit === undefined), 'not one of its animals has kit state');

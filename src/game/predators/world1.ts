@@ -53,14 +53,21 @@ export const BOA: PredatorDef = {
   speed: { rest: 0, hunt: 0 },
   wakeAt: 40,
   engage: 150,
-  // today 0.6 s; 0.8 s so that going still (calm in 0.5 s, stillness.ts) fits inside the rear with room to react
-  tell: 0.8,
+  // 1.0 s (the lead's ruling, 7:47 PM ET 11-14, from 1-9's flight reference/specs/sims/boaFreeze.ts): at 0.8 s a thumb running in had
+  // to lift within 7 frames (0.23 s) of the rear's start, under a touch player's reaction; 1.0 s gives 13 frames (0.43 s) on Normal, and
+  // Easy keeps its own row (x1.3). Going still (calm in 0.5 s, stillness.ts) fits inside the rear with room to react (boaFreeze.test.ts)
+  tell: 1.0,
   callsOff: true,
   act: { aim: 'ahead', seconds: 0.42, speed: 0, reach: 128, tall: 30 },
+  // (its coil hurts on touch, the lead's ruling 11:20 AM ET 11-15: running through it inside its rear was a free pass; the body as laid,
+  // 58 x 26, w1Cast.ts W1_BOAS)
+  coil: { w: 58, tall: 26 },
   recover: 0.8,
   cool: 1.1,
   giveUp: 2,
-  easy: EASY,
+  // (Easy notices him 1.3 times as far off, 195 px: the lead's ruling 11:31 AM ET 11-15, so Easy's freeze window stays about double
+  // Normal's with the coil; boaFreeze.test flies it)
+  easy: { ...EASY, engage: 1.3 },
   beatenBy: {
     trap: { ends: 'chasedOff' },
     lure: { ends: 'chasedOff' },

@@ -171,6 +171,8 @@ const BODY_W = 44;
  * fly it here, so the glow and the judge can never disagree): `far`, he comes down on the bank past the water (the way on, whatever the
  * logs do); else `cross`, the frames his feet come down through a log's top inside the window before any bank takes him (where, how fast,
  * how long after the press in s, and whether from above). Flown as lianaDrops always has: the jump held, right held, the engine's air turn.
+ * (ENG-285: split out as ENG-24c split it, word for word, so the planted test lands the judge's own call against the engine's; the
+ * engine's frame order is pinned there: the logs move before he does, on the game's clock, from the frame of the press.)
  */
 export interface LetGoFall {
   far: boolean;
@@ -189,7 +191,7 @@ export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'base
     }
     if (inWindow && prevY <= top + DRIFT_CATCH.drop && c.y >= top) cross.push({ x: c.x, vx: c.vx, dt: t - l.pt, above: prevY < top - 2 });
     return c.y > top + DRIFT_CATCH.drop;
-  }, true);
+  });
   return { far, cross };
 }
 
@@ -266,7 +268,7 @@ export function logCatches(v: Vine, d: DriftInfo): boolean {
     for (const run of [0, PHYS.maxRun]) {
       const b: AirBody = { x, y: top, vx: d.dir * d.speed * RIDE.keep.x + run, vy: -PHYS.jumpV };
       for (let i = 0; i < 90; i++) {
-        airStep(b, FRAME, 1, true, true);
+        airStep(b, FRAME, 1, true);
         if (b.y > top + 40) break;
         if (canGrabSwing(b.x, b.y, v) && Math.abs(b.vx) > 25) return true;
       }

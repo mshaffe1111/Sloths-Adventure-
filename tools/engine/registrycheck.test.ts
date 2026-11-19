@@ -2,7 +2,8 @@
 // need is proven by a planted fault on the real inputs (one registration taken away, nothing else changed), each failing by its name.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { allMisses, ciChecks, CI_LOOP, realInputs, realSheetMisses, stageMisses, type RegistryInputs } from './registrycheck.ts';
+import fs from 'node:fs';
+import { allMisses, ciChecks, CI_LOOP, realInputs, realSheetMisses, SHARD_LISTS, shardCount, shardLists, stageMisses, type RegistryInputs } from './registrycheck.ts';
 import { stageSheets } from '../../src/game/stageSheets.ts';
 
 const real = realInputs();
@@ -83,4 +84,24 @@ test('planted: gates.yml without a seed-list check for a list fails "ci-seedlist
   const I = quick({ gatesYml: bare, lists: ['1-1', '1-3'] });
   const miss = (await allMisses(I)).filter((x) => x.need === 'ci-seedlist').map((x) => x.stage);
   assert.deepEqual(miss, ['1-3']);
+});
+
+test('R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop', () => {
+  for (let L = 1; L <= 40; L++) {
+    const lists = Array.from({ length: L }, (_, i) => ({ id: `${1 + Math.floor(i / 9)}-${1 + (i % 9)}`, n: i === 0 ? 161 : 100 + ((i * 37) % 60) }));
+    const n = shardCount(L);
+    const sh = shardLists(lists, n);
+    assert.equal(sh.length, n);
+    const all = sh.flat().sort();
+    assert.deepEqual(all, lists.map((l) => l.id).sort(), `${L} lists: every list in exactly one shard`);
+    assert.ok(sh.every((s) => s.length >= 1 && s.length <= SHARD_LISTS), `${L} lists: ${sh.map((s) => s.length)}`);
+    assert.deepEqual(shardLists([...lists].reverse(), n), sh, 'the same split whatever order the index lists them in');
+  }
+  // planted: a shard plan that drops a list is caught by the union check above
+  const ids = real.lists.map((id) => ({ id, n: 100 }));
+  assert.equal(shardLists(ids, shardCount(ids.length)).flat().length, ids.length);
+  const yml = fs.readFileSync('.github/workflows/gates.yml', 'utf8');
+  assert.ok(yml.includes('registrycheck.ts --shards'), 'gates.yml plans its seed-list matrix from --shards');
+  assert.ok(ciChecks(yml, ids[0].id), 'the matrix line is still the --lists loop registrycheck accepts');
+  assert.ok(!/^\s*- run: for s in \$\(npx tsx tools\/engine\/registrycheck\.ts --lists\);/m.test(yml), 'the one-job loop is gone (new replaces old)');
 });

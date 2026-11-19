@@ -38,7 +38,7 @@ const span = (st: GeneratedStage) => {
 test('LV-9: no more than 4000 px between flags on any hand-built stage, layouts 1-3, Normal and Easy', () => {
   // (the stages it walks: 28 since the hand-built 2-1 and 2-2 left for gen2 (ENG-W2 11-14, on link #5 by INT-11), where a rolled stage's
   //  flags are held by gen2's own verdict, rolledFlagBreaches; it was 30. The walk is kept from going quietly empty: the
-  //  floor now follows the hand tables, owedWalk)
+  //  floor now follows the hand tables, owedWalk: 1-9 (BUILD-19) and 2-4 (BUILD-24) leaving for gen2 move it with no edit here)
   const { owed, stale } = owedWalk([HAND_STAGES, W2_STAGES], generateAllLevels());
   assert.deepEqual(stale, [], 'hand-table ids that are no level');
   assert.ok(owed.length > 0, 'the walk is empty');

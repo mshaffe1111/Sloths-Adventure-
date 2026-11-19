@@ -28,7 +28,6 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'eng.watch.hide.bush': 'watcher',
   'hint.1-7.hide': 'watcher',
   'eng.watch.seen.bush': 'watcherSeen',
-  'hint.1-9.guard': 'guardSnake',
   // World 2
   'hint.2-1.upstream': 'upstream',
   'hint.2-2.upstream': 'upstream',
