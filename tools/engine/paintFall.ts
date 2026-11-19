@@ -51,9 +51,10 @@ export function ranges(hs: number[]): string {
   return out.join(', ');
 }
 
-/** the block's look and behaviour without where it is or how big: two blocks with the same key are painted at the same heights */
+/** the block's look and behaviour without where it is, how big or which laid piece it came from (`tag`: no painter reads it, terrain.ts,
+ *  protoArt.ts, platformPlan.ts, w1Pits.ts): two blocks with the same key are painted at the same heights */
 function key(p: Platform): string {
-  const { id: _i, x: _x, y: _y, width: _w, height: _h, ...rest } = p as Platform & Record<string, unknown>;
+  const { id: _i, x: _x, y: _y, width: _w, height: _h, tag: _t, ...rest } = p as Platform & Record<string, unknown>;
   return JSON.stringify(rest);
 }
 

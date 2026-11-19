@@ -1,0 +1,4 @@
+{
+ "defect": "R-165.292: breaches present when paintcheck started (11-18). Owner: the lead (ruling: no painter or data change until shown to Matt). Shrink-only: knowncheck.mjs fails an added id; paintcheck fails a fixed id still listed.",
+ "known": []
+}

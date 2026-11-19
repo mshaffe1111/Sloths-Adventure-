@@ -19,10 +19,11 @@ const { stagePaintInput } = await import('./paintStage.ts');
 const { paintFalls, ranges, CODE_TERRAIN } = await import('./paintFall.ts');
 const { footingOf } = await import('../../src/game/terrain.ts');
 const { setGroundPaint, setKitWorld, setGroundLook } = await import('../../src/game/protoArt.ts');
+const cutArt = await import('../../src/game/w1CutArt.ts');
 
 let nid = 1;
 /** a stage: a long painted bank (moss_stone, 120 tall) with the pieces under test standing on it, as gen2's `on` blocks stand */
-function stage(...pieces: Array<Partial<Platform>>): { platforms: Platform[] } {
+function stage(...pieces: Array<Partial<Platform>>): { platforms: Platform[]; groundLook?: 'bough' } {
   const G = 1000;
   const bank: Platform = { id: nid++, x: 0, y: G, width: 4000, height: 120, type: 'solid', style: 'moss_stone' } as Platform;
   let x = 200;
@@ -118,6 +119,25 @@ test('the rule reads the screen\'s own decision: every breach is a footing terra
   const r = paintFalls(st.platforms, inp.f);
   for (const b of r.breaches) assert.ok(CODE_TERRAIN.has(footingOf(st.platforms.find((p) => p.id === b.id)!, inp.f).drawn));
   assert.deepEqual(r.breaches.map((b) => b.h).sort(), [53, 70]);
+});
+
+test('a World 1 stone keeps its cut piece only up to 260 wide (w1Finish + w1CutArt.ts pickCut): 255 wide GREEN, 266 wide (an Easy-widened stone, 1-1 seed 791759 Easy x15238) RED', () => {
+  const { pickCut } = cutArt;
+  const mk = (w: number) => { const st = stage({ style: 'moss_stone', height: 55, width: w }); const q = st.platforms[1]; const c = pickCut(q); if (c) q.cut = c; return st; };
+  assert.equal(judge(mk(255), W1).breaches.length, 0);
+  const wide = judge(mk(266), W1);
+  assert.equal(wide.breaches.length, 1, JSON.stringify(wide));
+  assert.equal(wide.breaches[0].w, 266);
+});
+
+test('1-8\'s reverted knots (VAR-1b, w1Arc18 knot(): moss_stone 50-56 on a bough) are painted, not level A: the cut slab on a bough stage', () => {
+  // (their "grey slabs" were the art director's painted slab cut, w1-rock-slabs-*, the wrong object for a burl: a level-B look, named in
+  // the report, never a code fill; VAR-1b's still reference/qa-reports/GATE-292/var1b-1-8-knots-x10041-normal-sideways-PAINTED-cut.jpg)
+  const { pickCut } = cutArt;
+  const st = { ...stage({ style: 'moss_stone', height: 53, width: 130 }), groundLook: 'bough' as const };
+  const q = st.platforms[1]; const c = pickCut(q); if (c) q.cut = c;
+  assert.ok(q.cut, 'a 53 px moss stone gets a cut');
+  assert.equal(judge(st, W1).breaches.length, 0);
 });
 
 test('ranges prints whole heights as runs', () => {
