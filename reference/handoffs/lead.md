@@ -94,7 +94,7 @@ v262 (1795047706-c97a) = t-int-12 ce4ad461 (476 files; dist-published in scratch
 **Matt decided 11-18:** 2-3 "bring them home"; two pitch lenses; 2-2 big pads ~2 Pokeys; plan ahead + rotate builders; 2-9 = the King's Drum +
 barge/bell (6:06 PM); keep 4 members, World 2 in TWO releases (release 1 ~Fri/Sat: W1 updates + 2-2 pads + 2-4 + 2-5 (+2-3 if green)),
 revisit member count Mon 11-23 evening (scheduled task set). Shown to Matt (no answer needed): live 1-1's code-drawn green boxes + the
-log-plank fix prototype (R-165.292; PAINT-292 tomorrow, show the finished stills before release 1). **Waiting on Matt:** the 2-3 HUD-faces answer.
+log-plank fix prototype (R-165.292; PAINT-292 tomorrow, show the finished stills before release 1). **Matt tested v262 at 10:20 PM: "all is good"** (no difficulty tuning from the meter's low reads). **Waiting on Matt:** the 2-3 HUD-faces answer.
 **THURSDAY 11-19, 8:30 AM start (packets in reference/packets/2026-11-19/, all written):**
 1. ENG-285b (xhigh): the last two judge drifts (R-165.297) FIRST, final model hash by 10:30 AM, re-measure, re-prove shipped 1-6/1-8/2-1, re-curate
    seeds.test (W6 seed), lock update. Base t-eng-285 925eba15.
