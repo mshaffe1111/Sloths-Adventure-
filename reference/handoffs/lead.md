@@ -87,25 +87,29 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-18, 5:40 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
+## RIGHT NOW (11-18 nightly wrap, 10:01 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
-**Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u, the branch this container
-names). **Tokens:** reset Wed 11-18 2:00 AM ET; Matt chose 4 members at once.
-**Tonight's link (EnK5) PUBLISHED 7:22 PM:** v262 (1795047706-c97a) from t-int-12 ce4ad461 (476 files; dist-published in scratchpad/link4
-at ce4ad461): 1-6/1-7 variety, 1-9 new gen2, 2-2 lavender pickups + W2 drift petals. Rough spots told to Matt: 1-9's 8 samey flags
-(VAR-19 Thu), 1-6 N repeat 6/16, 1-6 child/middle N bot misses (ENG-285 Thu), meters read low (1-7, 1-9, W2).
-**Running:** VAR-1b (session_01FhBbYNjSCAw66VYdFgZK1Y: fixing 3 suite faults in 1-6/1-7 data, ruled (a) 5:33), INT-12 (waiting),
-ENG-24c (session_01FhBbYKDwLF7f1NStSynED8, t-eng-24c 80e53e29: winding down at 538k context, REPORT then stop), PITCH-29B (open lens
-2-9/3-1/3-2, session_01FhBbYJkM9zpUReD7zBdEHe).
-**Next free slot:** TIME-168 (the time-stamp gate, D30 repeat 3) if before 8:30 PM, else Thu first. PITCH-29A Thu.
-**Thursday (planned ahead, Matt 5:13 PM "planning ahead and not reacting"; packets in reference/packets/2026-11-19/):** ENG-285 first
-(judges + bots fly the engine's Pokey + the two bot defects; MEASURE table by 11 AM; step-1 model hash late morning); BUILD-24c, FIX-284,
-VAR-19 do their no-judge work in the morning (raft + petals-in-soil; pad size show-first 11:30; 1-9 data) and merge ENG-285's step-1
-model BEFORE any relist (D40); TIME-168; PITCH-29A then picks + DESIGN-29; INT-13 (packet tonight) in the evening -> test link #2.
-Fresh member every job (Matt 5:15 PM: "keep switching out the builders... I don't want tunnel vision").
-**Matt decided today:** 2-3 "bring them home" (11:16); pitch method two lenses (11:29); 2-2 big pads ~2 Pokeys + tap-hop re-fly (11:47);
-plan ahead + rotate builders (5:13-5:15); 2-9 = the King's Drum + barge ending (6:06); keep 4 members, World 2 in TWO releases (release 1
-~Fri/Sat: World 1 updates + 2-2 pads + 2-4 + 2-5 (+2-3 if green); release 2 next week), revisit member count ~Tue 11-24 (6:12 PM). **Waiting on Matt:** the 2-3 HUD-faces mock-up answer.
+**Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u). **Matt's test link (EnK5):**
+v262 (1795047706-c97a) = t-int-12 ce4ad461 (476 files; dist-published in scratchpad/link4 at ce4ad461): 1-6/1-7 variety, 1-9 new, 2-2 pickups.
+**Matt decided 11-18:** 2-3 "bring them home"; two pitch lenses; 2-2 big pads ~2 Pokeys; plan ahead + rotate builders; 2-9 = the King's Drum +
+barge/bell (6:06 PM); keep 4 members, World 2 in TWO releases (release 1 ~Fri/Sat: W1 updates + 2-2 pads + 2-4 + 2-5 (+2-3 if green)),
+revisit member count Mon 11-23 evening (scheduled task set). Shown to Matt (no answer needed): live 1-1's code-drawn green boxes + the
+log-plank fix prototype (R-165.292; PAINT-292 tomorrow, show the finished stills before release 1). **Waiting on Matt:** the 2-3 HUD-faces answer.
+**THURSDAY 11-19, 8:30 AM start (packets in reference/packets/2026-11-19/, all written):**
+1. ENG-285b (xhigh): the last two judge drifts (R-165.297) FIRST, final model hash by 10:30 AM, re-measure, re-prove shipped 1-6/1-8/2-1, re-curate
+   seeds.test (W6 seed), lock update. Base t-eng-285 925eba15.
+2. BUILD-24c (high): 2-4 on t-build-24 + t-eng-24c 1f5c4008 (raft wire, petals-in-soil, bank-join look, flagSpan tsc) in the morning; merges
+   ENG-285b's FINAL model hash, then Root B + the Easy drop-judge re-tune (back 77% vs 85%, lashed 0.63 vs 0.6), relist, castBots, gates.
+3. FIX-284 (high): 2-2 big pads show-first 11:30 AM, then the real tap hop on the final model.
+4. VAR-19 (high): 1-9 variety (9 flags) on the final model.
+Later Thursday: PAINT-292 (from GATE-292's REPORT packet: W1 log planks, art top = floor) when a slot frees; INT-13 (packet written:
+merge order time-168b, eng-23, eng-25b, eng-26 (generality green), art-w2b, meter-4, art-w2a, eng-285, fix-284, var-19, build-24c,
+keeper-23-29 lines as data; correct stamp breaches; one recal; every gate once) -> test link #2 ~9 PM.
+**Built tonight (not merged, all reported):** t-time-168/168b (timecheck), t-eng-25b (2-5 snapper skill + meter + TURTLE kick-when-open),
+t-eng-26 (2-6 wheel + ride-wheel + meter + fixture), t-art-w2a (2-3 frames + heron look), t-art-w2b (painted wheel), t-meter-4 (2-3 line
+channel), t-design-29 (2-9 final), t-keeper-23-29 (2-3 + 2-9 lines), t-eng-285 (judge model + measure), t-gate-292 (finishing at the wrap).
+**Open finding at the wrap:** 2-1's proven list replays RED on the t-meter-3/t-eng-24 line (ENG-26b; INT-12's head was PASS): the lead traced
+it tonight (STATE); INT-13 must see 2-1 --check PASS after merges.
 
 ## RIGHT NOW (11-15, 11:16 PM ET nightly wrap; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
