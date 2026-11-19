@@ -186,8 +186,10 @@ function roostTwist(easy: boolean): Lay {
 /** [C] beat 9a, read it: a load. (Each read is ~1,700 px of bough: the rolled flags put a hard node's flag 1,500-2,400 px before it and
  *  none within 900 px of the last, so three reads back to back need that much ground to each hold its own flag) */
 function readTrap(): Lay {
-  const t = trapUnit('u', 'a2d', 'trap-stone', UP);
-  return { pieces: [bank('a', null, 140), root('a2', 'a', 240, UP), root('a2d', 'a2', 120, DOWN), ...t.pieces, root('zd', t.last, 90, DOWN), root('z', 'zd', 330, UP), rock('rz', 'z', 0.5), root('z2', 'z', 120, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.25, 2, 80)] };
+  // (VAR-19b: a narrow dip on the high bough, the trap bough the same 680 px from the beat's start. The walk-in stays 320: at 140-200 the
+  //  trap pair is not laid on some rolls (seeds 2 and 4 lay the boa on a2 with no load; ENGINE-WORTHY, VAR-19's REPORT, VAR-19b))
+  const t = trapUnit('u', 'a3', 'trap-stone');
+  return { pieces: [bank('a', null, 320), root('a2', 'a', 180, UP), root('a2d', 'a2', 90, DOWN), root('a3', 'a2d', 90, UP), ...t.pieces, root('zd', t.last, 90, DOWN), root('z', 'zd', 330, UP), rock('rz', 'z', 0.5), root('z2', 'z', 120, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.25, 2, 80)] };
 }
 /** [C] beat 9b, read it: a roost */
 function readRoost(): Lay {
@@ -291,8 +293,8 @@ const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a
 /** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
  *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
 const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
-  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('m', 'b', 240, DOWN), ...wallClimb('c', 'm', 240, 212, 280), root('y', 'c', 160, UP), root('d', 'y', 160, [128, 132]), root('e', 'd', 140, [102, 108]), root('f', 'e', 140, UP), root('z', 'f', 120, DOWN)],
-  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pf', 'f', 0.5, 2, 80)] } }] });
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('m', 'b', 240, DOWN), ...wallClimb('c', 'm', 240, 212, 340), root('y', 'c', 160, UP), root('d', 'y', 160, [128, 132]), root('e', 'd', 140, [102, 108]), root('f', 'e', 100, UP), root('z', 'f', 100, DOWN)],
+  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pf', 'f', 0.5, 2, 60)] } }] });
 /** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
  *  it, a root up and down along it, and the drop home (a hop either side of the bounce: the quiet line, 4 s) */
 const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {

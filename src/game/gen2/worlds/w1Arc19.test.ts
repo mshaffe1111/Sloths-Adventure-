@@ -74,7 +74,14 @@ test("1-9's lines are the story keeper's, word for word (reference/story/lines-1
 
 test('1-9 the arc beat for beat, on every roll and both settings', () => {
   const ARC = ['arrival', 'forest-freeze', 'stair', 'rest', 'miss', 'rest', 'roost', 'rest', 'read-load', 'read-roost', 'read-bare', 'rest', 'hunters', 'rest', 'old-boa', 'exit'].map((s) => `w1-19-${s}`);
-  for (const d of BOTH) for (const seed of SEEDS) assert.deepEqual(built(seed, d).gen2.sections.map((s) => s.template), ARC, `${d} seed ${seed}`);
+  // (a rest slot is any of 1-9's five rests, each laid at most once a roll: VAR-19, R-165.291)
+  const RESTS = ['w1-19-rest', 'w1-19-rest-crook', 'w1-19-rest-stair', 'w1-19-rest-wall', 'w1-19-rest-bounce'];
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const got = built(seed, d).gen2.sections.map((s) => s.template);
+    assert.deepEqual(got.map((t) => (RESTS.includes(t) ? 'w1-19-rest' : t)), ARC, `${d} seed ${seed}`);
+    const rests = got.filter((t) => RESTS.includes(t));
+    assert.equal(new Set(rests).size, rests.length, `${d} seed ${seed}: each rest laid once (${rests.join(', ')})`);
+  }
 });
 
 test("1-9's boas: the designed eleven on both settings (no top-up: its goal is petals), each beside its tool; two eagles", () => {
@@ -161,9 +168,11 @@ test("1-9's golden seed: one a roll, both settings, in the first rest (after the
     const sd = seeds[0];
     const order = st.gen2.sections.map((q) => q.template);
     const home = st.gen2.sections.find((q) => { const ps = piecesOf(st, q.uid); return ps.length && sd.x >= Math.min(...ps.map((p) => p.x)) && sd.x <= Math.max(...ps.map((p) => p.x + p.width)); })!;
-    assert.equal(home.template, 'w1-19-rest', `${d} seed ${seed}: the seed in ${home.template}`);
+    // (each of the five rests carries the socket over its own high ground, w1Arc19.ts seed(); the first rest laid keeps it)
+    const HOST: Record<string, string> = { 'w1-19-rest': 'h', 'w1-19-rest-crook': 'e', 'w1-19-rest-stair': 'k2', 'w1-19-rest-wall': 'y', 'w1-19-rest-bounce': 'y' };
+    assert.ok(home.template in HOST, `${d} seed ${seed}: the seed in ${home.template}`);
     assert.equal(st.gen2.sections.indexOf(home), order.indexOf('w1-19-stair') + 1, `${d} seed ${seed}: the first rest, right after the stair`);
-    const step = piece(st, 'w1-19-rest', 'h');
+    const step = piece(st, home.template, HOST[home.template]);
     assert.ok(step.y - sd.y >= 50 && step.y - sd.y <= 70, `${d} seed ${seed}: ${step.y - sd.y} px over its root step (a hop)`);
     for (const e of st.enemies.filter((q) => q.type === 'boa')) assert.ok(Math.abs(e.x - sd.x) > 600, `${d} seed ${seed}: a boa ${Math.round(Math.abs(e.x - sd.x))} px from the seed`);
   }
