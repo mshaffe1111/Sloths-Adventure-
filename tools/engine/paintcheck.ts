@@ -46,12 +46,15 @@ for (const c of levels) {
   const runs = hasList ? seeds.map((s, i) => ({ v: i, seed: s })) : Array.from({ length: N }, (_, i) => ({ v: i + 1, seed: i + 1 }));
   const row = { builds: 0, hit: 0, keys: new Set<string>() };
   byStage.set(c.id, row);
-  for (const setting of ['normal', 'easy'] as const) for (const { v, seed } of runs) {
+  for (const setting of ['normal', 'easy'] as const) for (const { v, seed: asked } of runs) {
     setLayoutVariant(v);
     let st: ReturnType<typeof generateStage>;
     try { st = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal')); }
-    catch (e) { breachLines.push(`${c.id} ${setting} seed ${seed}: BUILD FAILED ${(e as Error).message.slice(0, 100)}`); setLayoutVariant(null); continue; }
+    catch (e) { breachLines.push(`${c.id} ${setting} seed ${asked}: BUILD FAILED ${(e as Error).message.slice(0, 100)}`); setLayoutVariant(null); continue; }
     setLayoutVariant(null);
+    // (labelled by what the game BUILT, D62: the gen2 seed the stage carries, else the layout asked for)
+    const g2 = st as { gen2?: { seed?: number }; proto?: { gen2?: { seed?: number } } };
+    const seed = (g2.gen2 ?? g2.proto?.gen2)?.seed ?? `layout ${asked}`;
     builds++; row.builds++;
     const inp = stagePaintInput(st, c);
     if (!inp) continue;
