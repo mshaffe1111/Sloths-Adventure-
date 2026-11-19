@@ -8,7 +8,7 @@ Role card reference/roles/ENGINE.md (level half). Read FIRST: reference/methods/
 once (D30: every time you write from `date` in the same command; D40; D57/D87: ReadNotifications whenever a notice says pending, at every
 push, before every report; long commands in the BACKGROUND with run_in_background so their end wakes you; D59; D76; D79; D86 the FULL
 check list), STAGE-RULES §1-5b, the packet VAR-19 (this folder) and VAR-19's REPORT on origin/t-var-19
-(reference/qa-reports/VAR-19/REPORT.md): section 5 EXACT NEXT STEP is your plan; section 6 Learned is binding (probe 6 fresh seeds before a
+(reference/qa-reports/VAR-19/REPORT.md): read ONLY sections 4-6 (`sed -n '/^## 4/,$p'`; D90): section 5 EXACT NEXT STEP is your plan; section 6 Learned is binding (probe 6 fresh seeds before a
 relist; build() rolls from the proven list; on the route only a narrow dip between two roots is a move; never run the suite while data
 changes).
 BASE: continue on t-var-19 at its head (a1cf0c8e or later; pull; push there). The judge model is FINAL (ENG-285b ba6b225b, merged).
@@ -20,7 +20,9 @@ THE LEAD'S RULINGS (11-19):
    px, Easy 195) is under 0.6 s of the 3.7-4.7 s measured, so the dips are needed either way.
 2. The opening: first move about 2.0 s from spawn is accepted (runway-bound, R-165.308); do not touch RUNWAY.
 3. R1 (be030685) and R2 (79c9be2a) reader fixes are approved and stay as they are.
-4. Then VAR-19 section 5 steps 3-4 in full: the suite (3 background shards, on a head where the data no longer moves), castBots 1-9 1-40
+SCOPE SPLIT (lead 3:54 PM ET, D90: a fresh member reaches about 300k within 25 minutes): VAR-19b does items 1-3, the relist, funcheck and
+cropped stills of each changed seam, then STOPS with the EXACT NEXT STEP pushed; a fresh VAR-19c does item 4 and the report.
+4. (VAR-19c) Then VAR-19 section 5 steps 3-4 in full: the suite (3 background shards, on a head where the data no longer moves), castBots 1-9 1-40
    x 5 bots x both (child/middle/expert 40/40 both or each miss traced; Easy fewer hits than Normal; the flee rule holds: posted animals
    slide away, the roost boa leaves away), THE CLAUDE.md CHECK LIST, EVERY ITEM, ONCE on your final head, plus funcheck (every 1-9 flag
    named; no other stage moves), coveragecheck, registrycheck, paintcheck, every list --check, lockall vs main --intended 1-9 (any other
