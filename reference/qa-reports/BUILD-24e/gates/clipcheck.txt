@@ -1,0 +1,42 @@
+== node tools/perf/clipcheck.mjs (head 69341ec26) start 5:27 PM
+  known inset .jr-split > .jr-chapters > .jr-ch  "Finding things 0/8"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Moving 3/6"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Sneaking 0/2"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .ui-panel.jr > .jr-head > .nv-x.nv-inline  "Close"  (inside the right inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/old; world map: World 2 of 10 @ side/old; world map: World 3 of 10 @ side/old; world map: World 1 of 10 @ side/done; +10 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 2-10: Crocus Rex's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 2 of 10 @ side/old; world map: World 2 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 10-10: General Iron-Claw's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 10 of 10 @ side/done; world map: Worlds pop-up @ side/done; world map: Worlds pop-up (scrolled to the end) @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 9-10: Magma Drake's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 9 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 6-10: Marsh Reaver's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 6 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 8-10: Night-Wing Monarch's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 8 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 3-10: Shadow Prowler's Lair, Boss, 1 stars"  (inside the right inset)
+      world map: World 3 of 10 @ side/old; world map: World 3 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 4-10: Sky Sovereign's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 4 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 7-10: Stone Idol Golem's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 7 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 5-10: Tarantula Queen's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 5 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 1-10: Venom Fang's Lair, Boss, 2 stars"  (inside the right inset)
+      world map: World 1 of 10 @ side/old; world map: World 1 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 4-10: Sky Sovereign's Lair, Boss, locked"  (inside the right inset)
+      world map: World 4 of 10 @ side/old; world map: Worlds pop-up @ side/old; world map: Worlds pop-up (scrolled to the end) @ side/old
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 1-10: Venom Fang's Lair, Boss, locked"  (inside the right inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh; world map: World 4 of 10 @ side/old; +2 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "Stage 5-M: On the March North, Stealth"  (inside the left inset)
+      world map: World 5 of 10 @ side/done
+
+PASS (83 known) (340 s; contact sheet and breaches.json in /tmp/clipcheck-3pw3nk)
+exit 0 end 5:33 PM
