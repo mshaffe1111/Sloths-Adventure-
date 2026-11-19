@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
-import { MAX_STRETCH, PLANK_MAX, W1_CUT, cutBox, logPart, logParts, pickCut } from './w1CutArt.ts';
+import { LAID, MAX_STRETCH, PLANK_MAX, STONE_W_MAX, THICK_LOG_MAX, W1_CUT, cutBox, logPart, logParts, partsOf, pickCut, thickParts } from './w1CutArt.ts';
 import { newPlay11, clearPlay11 } from './testlink1_1.ts';
 import { w1Finish } from './gen2/worlds/w1.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -13,6 +13,7 @@ import type { Platform } from './types.ts';
 
 test('a cut stone stands its whole width on the platform (stand span = width), its footing on top, sunk to 3 px into the ground; a plank spans its platform', () => {
   for (const [n, c] of Object.entries(W1_CUT)) {
+    if (LAID[n] === 'log') continue; // (the thick planks are drawn as a stone is: their test is below, PAINT-292)
     for (const p of c.kind === 'log' ? [{ x: 1000, y: 500, width: 300, height: 24 }] : [{ x: 1000, y: 600, width: 140, height: 56 }, { x: 1000, y: 600, width: 80, height: 110 }, { x: 1000, y: 600, width: 200, height: 36 }]) {
       const b = cutBox(p, c);
       assert.ok(Math.abs(b.y + c.fy * b.sy - p.y) < 0.01, `${n}: its footing at the top`);
@@ -67,4 +68,50 @@ test('gen2 1-1 draws several cut kinds; a stone over air keeps no cut piece (pla
   const toy = w1Finish({ platforms: [P(1, 0, 706, 2000, 300), P(2, 900, 650, 140, 56), P(3, 1400, 500, 140, 56)] });
   assert.ok(toy.platforms[1].cut, 'on the ground: cut');
   assert.equal(toy.platforms[2].cut, undefined, 'over air: none');
+});
+
+test('PAINT-292: a 50-89 px log is laid as thick painted planks: each piece\'s top on the log\'s top, its body to the foot, one length along the block, no gap, no new stretch (planted: before, no piece under 50 px only)', () => {
+  const thick = Object.keys(LAID).filter((n) => LAID[n] === 'log');
+  assert.deepEqual(thick.sort(), ['w1-log-plank-a', 'w1-log-plank-b']);
+  // (the sizes 1-1 lays: 1-1 seed 791759's 538x50 and 276x55, the tallest 79, a 702 long road and a short one)
+  for (const [width, height] of [[538, 50], [276, 55], [702, 52], [229, 79], [226, 73], [252, 78], [130, 60], [586, 50], [324, 55]]) {
+    const p = { id: 108, x: 23840, y: 637, width, height, style: 'log' as const };
+    const cut = pickCut(p);
+    assert.ok(cut && thick.includes(cut), `${width}x${height}: a thick plank (${cut})`);
+    const c = W1_CUT[cut!];
+    const n = partsOf(p, c);
+    assert.equal(n, thickParts(p));
+    for (let i = 0; i < n; i++) {
+      const q = logPart(p, i, n, 0);
+      assert.ok(Math.abs(q.width - width / n) < 0.01, 'every piece the same length');
+      assert.ok(Math.abs(q.x - (p.x + (i * width) / n)) < 0.01, 'end to end, no gap and no overlap of stand spans');
+      for (const name of thick) {
+        const b = cutBox(q, W1_CUT[name]);
+        assert.ok(Math.abs(b.y + W1_CUT[name].fy * b.sy - p.y) < 0.01, `${width}x${height} ${name}: its walk line is the log's top`);
+        assert.ok(Math.abs(b.x + W1_CUT[name].fx0 * b.sx - q.x) < 0.01 && Math.abs((W1_CUT[name].fx1 - W1_CUT[name].fx0) * b.sx - q.width) < 0.01, 'its stand span is its share');
+        const stretch = Math.max(b.sx / b.sy, b.sy / b.sx);
+        assert.ok(stretch <= MAX_STRETCH + 1e-9, `${width}x${height} ${name}: stretch ${stretch.toFixed(2)}`);
+        // (its body down to the foot, sunk 3 px: no air under it where it stands on the ground; drawn no lower than that)
+        assert.ok(b.y + b.h <= p.y + height + 3 + 0.01, 'nothing drawn below the foot + 3');
+        assert.ok(b.y + (W1_CUT[name].fb ?? 0) * b.sy >= p.y + height + 3 - 0.01 || stretch > MAX_STRETCH - 1e-6, `${width}x${height} ${name}: its body reaches the foot`);
+      }
+    }
+  }
+  // (under 50 a log keeps a thin ledge, as before: the thin planks' choice is unchanged)
+  const thin = pickCut({ id: 7, x: 0, y: 0, width: 262, height: 24, style: 'log' });
+  assert.ok(thin && LAID[thin] === 'plank', `${thin}`);
+  // (from 90 a log is a bank's, the bank painter's)
+  assert.equal(pickCut({ id: 7, x: 0, y: 0, width: 300, height: THICK_LOG_MAX + 1, style: 'log' }), undefined);
+});
+
+test('PAINT-292: a stone up to STONE_W_MAX wide and under 90 px gets a stone piece within MAX_STRETCH (Easy 1-1 266x55, 1-6 300x56, 1-6 Easy 400x45); 90 and over stays the bank painter\'s', () => {
+  for (const [width, height] of [[266, 55], [268, 82], [300, 56], [300, 60], [400, 45], [400, 48]]) {
+    const p = { id: 66, x: 15238, y: 913, width, height, style: 'moss_stone' as const };
+    const cut = pickCut(p);
+    assert.ok(cut, `${width}x${height}: a piece`);
+    const b = cutBox(p, W1_CUT[cut!]);
+    assert.ok(Math.max(b.sx / b.sy, b.sy / b.sx) <= MAX_STRETCH + 1e-9, `${width}x${height}: no new stretch`);
+  }
+  assert.equal(pickCut({ id: 1, x: 0, y: 0, width: 300, height: 90, style: 'moss_stone' }), undefined, '300x90: the bank painter, as before');
+  assert.equal(pickCut({ id: 1, x: 0, y: 0, width: STONE_W_MAX + 1, height: 55, style: 'moss_stone' }), undefined);
 });

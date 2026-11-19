@@ -121,13 +121,20 @@ test('the rule reads the screen\'s own decision: every breach is a footing terra
   assert.deepEqual(r.breaches.map((b) => b.h).sort(), [53, 70]);
 });
 
-test('a World 1 stone keeps its cut piece only up to 260 wide (w1Finish + w1CutArt.ts pickCut): 255 wide GREEN, 266 wide (an Easy-widened stone, 1-1 seed 791759 Easy x15238) RED', () => {
-  const { pickCut } = cutArt;
+test('a World 1 stone keeps its cut piece up to STONE_W_MAX wide (PAINT-292; before it, 260): 255 and 266 wide (an Easy-widened stone, 1-1 seed 791759 Easy x15238) GREEN, one wider RED', () => {
+  const { pickCut, STONE_W_MAX } = cutArt;
   const mk = (w: number) => { const st = stage({ style: 'moss_stone', height: 55, width: w }); const q = st.platforms[1]; const c = pickCut(q); if (c) q.cut = c; return st; };
   assert.equal(judge(mk(255), W1).breaches.length, 0);
-  const wide = judge(mk(266), W1);
+  assert.equal(judge(mk(266), W1).breaches.length, 0, 'PAINT-292: a stone cut');
+  const wide = judge(mk(STONE_W_MAX + 1), W1);
   assert.equal(wide.breaches.length, 1, JSON.stringify(wide));
-  assert.equal(wide.breaches[0].w, 266);
+  assert.equal(wide.breaches[0].w, STONE_W_MAX + 1);
+});
+
+test('PAINT-292: a World 1 log 50-89 px tall is drawn by the thick painted planks (538x50 GREEN; before it, code ground); a 49 px one keeps a ledge', () => {
+  const { pickCut } = cutArt;
+  const mk = (w: number, h: number) => { const st = stage({ style: 'log', height: h, width: w }); const q = st.platforms[1]; const c = pickCut(q); if (c) q.cut = c; return st; };
+  for (const [w, h] of [[538, 50], [276, 55], [229, 79], [262, 49]]) assert.equal(judge(mk(w, h), W1).breaches.length, 0, `${w}x${h}`);
 });
 
 test('1-8\'s reverted knots (VAR-1b, w1Arc18 knot(): moss_stone 50-56 on a bough) are painted, not level A: the cut slab on a bough stage', () => {
