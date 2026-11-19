@@ -370,6 +370,8 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
  */
 /** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
 const PIN_AT = 50;
+/** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
+export const LEVEL_REACH = 600;
 export class Progress {
   cur = 0;
   hi = 0;
@@ -422,8 +424,10 @@ export class Progress {
   /** after a respawn or a rescue: find him anywhere along the way */
   relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
-    // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
-    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope && (!level || this.pts[i].y >= p.y - 80);
+    // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
+    //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
+    const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
+      && (!level || (this.pts[i].y >= p.y - 80 && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
