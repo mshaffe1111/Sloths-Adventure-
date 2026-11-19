@@ -30,6 +30,10 @@ the 1-3 shimmy on new ground: R-160.1's 10-16 h under-branch move stays for Worl
 a slide) is what makes the hang new in kind (B: shimmy was taught at 1-3); the final designer takes it into NEW 2 if it stays within
 size (M), else it goes to 3-3+.
 
+**MATT PICKED 3-2's hang = A (6:08 PM ET 11-19, PLAN-W3's Q1):** 3-2 uses 1-3's rope creep on roots under the cave roof (exists with painted
+frames, heroRope.ts); the full under-any-branch move (R-160.1) waits for World 6/8. So: ENG-ROOT (the roof-root lay: a rope under the
+roof, no posts, M) is 3-2's engine piece; no HANG-SPEC mock-up and no ART-HANG job; DESIGN-31-32 designs 3-2 on A as final.
+
 ## Foundations first (D40; both pitchers said it)
 World 3 has no gen2 kit (gen2/worlds: w1, w2, w5-w8): ENG-W3a (the World 3 kit, a DOWN stage proven on a real row) and W3-ART (World 3's
 standing and climb pieces, the thinnest art in the game) come BEFORE DESIGN-31-32's finals are built. 2-9 builds after 2-4/2-5/2-6's
