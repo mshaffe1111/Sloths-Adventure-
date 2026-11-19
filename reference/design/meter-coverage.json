@@ -1,5 +1,5 @@
 {
- "about": "The meter's coverage table (METER-2a, R-165.272; METER-COVERAGE.md \u00a73): one entry per piece id the code has (coveragecheck.ts reads the ids from the code). bot = the bot code that plays it, channel = the score.ts code that prices it, as file#symbol; null = none yet. rows = METER-COVERAGE.md \u00a72's # rows. A piece a built stage uses must have both, or be on tools/difficulty/coverage.known.json. shippedWorlds: the worlds the testers play, every stage of which the gate holds (plus every stage-table row); seeds: the layouts it scores, both settings.",
+ "about": "The meter's coverage table (METER-2a, R-165.272; METER-COVERAGE.md §3): one entry per piece id the code has (coveragecheck.ts reads the ids from the code). bot = the bot code that plays it, channel = the score.ts code that prices it, as file#symbol; null = none yet. rows = METER-COVERAGE.md §2's # rows. A piece a built stage uses must have both, or be on tools/difficulty/coverage.known.json. shippedWorlds: the worlds the testers play, every stage of which the gate holds (plus every stage-table row); seeds: the layouts it scores, both settings.",
  "shippedWorlds": [
   1
  ],
@@ -216,7 +216,7 @@
    ]
   },
   "brick:bites": {
-   "bot": null,
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.offBefore4",
    "channel": null,
    "rows": [
     "24"
@@ -554,6 +554,14 @@
    "rows": [
     "35"
    ]
+  },
+  "pad:snap": {
+   "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.offBefore4",
+   "channel": "tools/difficulty/score.ts#snapChallenges",
+   "rows": [
+    "24"
+   ],
+   "note": "a snap row's stone (ENG-25; 2-5.md NEW 1): it bites on four. Priced (ENG-25b) as a RUN: each run of snap stones between floors that never bite is one timed press, windowBits(bar, rideLay.ts snapWindow), the engine's own window to leave the floor before it (the verdict's, flown to 0.04 s), a heart a bite; the hops stay jumps. Before ENG-25b a snap stone read as 'pad:beat' (piecesUsed) and its bite was priced nowhere (a solid floor: rideChallenges never saw it)"
   }
  }
 }

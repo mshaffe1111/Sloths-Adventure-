@@ -1,6 +1,53 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0zm-25b. ENG-25b (t-eng-25b from origin/t-eng-25 21668b61, 11-18): the snapper bot skill and the meter's snap run
+- **BONK-AFTER-THE-SNAP** (tools/inspect/firsttimer.ts `SKILLS.bonkAfterSnap`, `snapperPlan`, `bonkAim`, `BONK`): a cast animal a kick ends
+  'chasedOff' AND that keeps a stage clock (`Enemy.kitBeat`; only World 2's snapper rows today). Only clock keepers: World 1's snake is also
+  kicked off and sleeps, and its bots must not move. Asleep or dazed: walk in, kick (`{ kick: dir }`; the kick's box reaches from 8 px ahead,
+  so no stepping back). Awake: wait 50-90 px off (the flown bonk range), step back only while it can bite, go right after the bar's 'on'
+  ends (+ his hesitation) from a STAND (a running hop sails over its back) with its back clear (a floor over it takes the landing), the
+  thumb's lag held still (`pending.still`: the bot's lag normally walks on into a running jump). The hop steers onto its back; once it is
+  dazed the bounce steers back to his side; then the kick. Toy: tools/inspect/snapperBonk.test.ts on snapToys.ts `snapperKit` (ENG-25's
+  row, id 2-89), RED with the skill off (never cleared).
+- **The flight** (reference/qa-reports/ENG-25b/bonkFlight.ts, InputEngine, 30 fps): a tap bonk bounces him 78 px over the bank (54 over
+  its back), a press held through it 131 (107); same on Easy. From a still stand the bonk is clean at every moment of the bar, and a
+  head-on kick was too (its kick had no `when`). **TURTLE's kick is now `when: 'open'`** (b1dc6b76, the lead's ruling 6:53 PM ET 11-18:
+  asleep, right after its snap, dazed by a bonk): a head-on walk-in kick 0/90 clean, 41 bitten. Planted in w2Cast.test.ts.
+- **The meter's snap run** (tools/difficulty/score.ts `snapChallenges`): each run of snap stones between floors that never bite is one
+  press, windowBits(bar, rideLay.ts `snapWindow`), a heart. piecesUsed now names a snap stone `pad:snap` (it read `pad:beat`). Test
+  tools/difficulty/snapChannel.test.ts on `METER_ID` 2-19: a toy id among World 2's first stages, because levelCheck grants the leaf glide by
+  the stage's place (2-94 is the 104th) and the meter's route then glided over the whole pond.
+- **Traps:** (1) a toy's id sets what the level check grants him (skillGuaranteedAt): a 2-9x toy has the glide. (2) The laid snap stones
+  sit 34 px below the banks (top 564 vs 530); 2-5.md's flight flew them level. (3) ENG-25's water lives are the testers' straight-up
+  flick (`upOnly`) from a STAND on a stone: the steer comes 4 frames late, 34-38 px of travel over 40 px of water (waterTrace.ts).
+
+
+## 0zl-25. ENG-25 (t-eng-25 from origin/main 6e7b85f8, 11-18): 2-5's two NEW pieces, proven on toys before the builder
+- **SNAP STONES** (2-5.md NEW 1): a platform with `pad: { by: 'beat', on: 'bites', clock: 'snap-<row>', shift }`, `art: 'snapStone'`, type
+  'solid'. pieces/padPiece.ts plays it: `brickNow('bites')` (solid always), `hurts()` while 'on' and he stands on it, returning
+  `PieceHurt.hold` (NEW: damagePlayer's knock is vx 0, a straight jolt; the side knock threw him off an 80 px stone into the river). The jaw
+  is drawn by snapStoneArt.ts from `brickCount` (beatBrick.ts: count 1-4 of the bar, a count = the 'on' length): 5 painted frames, counts
+  1-3 OPEN-1..3, four SNAP (40%) then SHUT (tools/art/hf25/ship.py builds them from ONE painted take cell). `snapCount(plat)` for bots.
+- **The row** is a PadRow `by: 'snap'` (gen2/rideLay.ts): 'snap' and 'stone' pieces, `snap: { count, warn?, wave? }`; snapClock = 4 counts,
+  bite = the 4th, creak `warn` 0.5 s at the end of the 3rd; a wave's stone i shifts -i x count (later only). `snapFaults` (in pipeline's
+  wet verdict) holds SNAP_FAIR from 2-5.md's flight: 80 px, 30-40 px water, <= 3 in step, wave never earlier, window to leave the bank
+  >= 0.9 s Normal (snapWindow, within 0.05 s under the flight), Easy >= Normal. padFaults skips bites stones (one model per rule, D80).
+- **The bot** (tools/inspect/firsttimer.ts PAD_SKILL.offBefore4, `snapGo`): plans over the frames of two bars, may wait on a stone not
+  biting (rides the wave), presses a TAP near the lip (SNAP_PRESS 50 px; `snapHop` caps the next jump's hold, never a double).
+  Toys: tools/inspect/snapToys.ts + snapRide.test.ts (step, wave; middle both settings + child Easy unbitten x4 variants; plants red).
+- **THE CAST NEVER HAD A CLOCK** (fixed): CastPlay.step was never handed the stage clock, so an `onBeat` kind in play never told nor
+  acted (the frog, any onBeat animal: proven only on predators/fixtures.ts). Now `Enemy.kitBeat` names the clock an animal keeps; CastPlay
+  runs that animal's kind with onBeat by DATA and reads `clock.read(kitBeat)` each step (engine.ts stepCast passes `this.clock`).
+  `beatCastFaults` (pipeline wet verdict): the clock exists and is fair for the kind's tell (checkOnClock).
+- **World 2's snapper row**: gen2/worlds/w2Cast.ts `w2Snappers(clock)` (awake, asleep-first) + `w2CastSpawn` (kit.spawn: joins the
+  turtle to proto.cast.kinds, no brief needed). Toy: src/game/gen2/w2Cast.test.ts on a gen2-laid row (kick -> chasedOff counted, unhurt;
+  tell on the creak, snap on four; plant: clock withheld -> never tells).
+- **Traps:** RealPlay starts `safe` (invincible 1e9): set `sim.safe = false` to test a hurt. A still sloth is unseen by a cast animal
+  (stillness): a test of its tell must have him move. The bot hook `e.damagePlayer` must pass every argument (it dropped `hold`).
+- **Open for 2-5's builder / next engine:** the meter prices a snap stone per stone (rideTiming), not the run's window (the missing channel,
+  ENG-25 REPORT); no bot skill for the snapper (2-5.md `bonk-after-the-snap`: unbuilt); the stomp's bounce is unflown; no sound for the clack.
 
 ## 0ENG23. ENG-23 (t-eng-23 from main 6e7b85f8, 11-18): followers, "bring N home", the heron reads the line
 - **Where it lives:** src/game/follow.ts (pure: trail, stepLine, join / spook / rejoin / regroup / home, zoneLookX, lineSeen),

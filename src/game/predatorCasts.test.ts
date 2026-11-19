@@ -35,8 +35,11 @@ test('turtle: all shell from the front. A punch only works from behind; a kick s
   assert.equal(beat(TURTLE, s, 'punch', 0, 440), false, 'from the front: the shell');
   assert.equal(beat(TURTLE, s, 'punch', 0), false, 'and with no side given, it is not behind');
   assert.equal(beat(TURTLE, s, 'punch', 0, 560), true, 'from behind');
+  // (a kick only when OPEN: asleep, right after its snap, dazed by a bonk; head-on at rest it glances off. ENG-25b, the lead's ruling 11-18)
   const k = newPredator(TURTLE, post({ facing: -1 }));
-  assert.equal(beat(TURTLE, k, 'kick', 0, 440), true);
+  assert.equal(beat(TURTLE, k, 'kick', 0, 440), false, 'closed: the kick glances off');
+  k.phase = 'recover';
+  assert.equal(beat(TURTLE, k, 'kick', 0, 440), true, 'right after its snap');
   assert.deepEqual([k.leaving, k.facing], [true, 1]);
   // nosy: it walks to a noise and he passes behind its back
   const n = newPredator(TURTLE, post());

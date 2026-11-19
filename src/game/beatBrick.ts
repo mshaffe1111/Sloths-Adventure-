@@ -6,7 +6,7 @@
  * Pure (no canvas, no engine).
  */
 import type { ClockDef, ClockId, ClockState } from './stageKit.types.ts';
-import { checkClock } from './clock.ts';
+import { checkClock, type Beat, type ClockRead } from './clock.ts';
 
 /** what a brick does while its clock is on: 'bites' = it still holds him but hurts (a snap-jaw stone); 'gone' = it gives way (a sinking pad) */
 export type BrickOn = 'bites' | 'gone';
@@ -50,4 +50,17 @@ export function brickFair(def: ClockDef, need: { warn: number; safe: number }): 
     spell = 0;
   }
   return bad;
+}
+
+/**
+ * Which count of its bar a brick is on (1-based): the bar is counted in its 'on' phase's length (one count: a snap stone's jaw bites for
+ * one count, 2-5.md "count 0.75 s ... on 0.75 s"), so a four-count bar reads 1, 2, 3 (open a notch a count, the last ending in the
+ * warning's creak) and 4 (the bite). A clock with no 'on' is all count 1.
+ */
+export function brickCount(b: Beat, r: ClockRead): number {
+  const on = b.seconds[b.names.indexOf('on')];
+  if (!(on > 0)) return 1;
+  let pos = r.into;
+  for (let i = 0; i < r.index; i++) pos += b.seconds[i];
+  return Math.min(Math.round(b.period / on), Math.floor(pos / on + 1e-6) + 1);
 }

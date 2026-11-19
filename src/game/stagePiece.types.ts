@@ -76,6 +76,9 @@ export interface PieceHurt {
   amount: number;
   fromX: number;
   toFlag?: boolean;
+  /** the hurt HOLDS him where he stands: a straight jolt up, no knock to the side (a snap stone's bite, 2-5.md: "it still holds him and
+   *  hurts"; the side knock threw him off an 80 px stone into the river, a heart and a life for one bite) */
+  hold?: boolean;
 }
 
 /** one piece running on this stage */

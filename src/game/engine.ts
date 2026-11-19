@@ -3011,7 +3011,7 @@ export class GameEngine {
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
       // (`toFlag`: a heart and back to the flag, heartToFlag)
-      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX);
+      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX, hurt.hold);
     }
     for (const e of this.enemies) {
       if (e.defeated) {
@@ -4734,7 +4734,7 @@ export class GameEngine {
     h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
     h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
-    const r = c.step(h, dt, this.gameTime, this.easy);
+    const r = c.step(h, dt, this.gameTime, this.easy, this.clock);
     // the freeze (ENG-19a NEW 4, 1-9.md): an animal beaten by his stillness with him inside its strike's reach plays FREEZE_SLOW of the
     // slow motion, the view kept as it is (a push-in would put the rearing head under the HUD sideways); never while a sweeper's eye is
     // out (its pass slowed would be a different pass), and cut short the step one comes out
@@ -5638,7 +5638,7 @@ export class GameEngine {
   }
 
   /** a hit: one heart (or `amount`), a flinch and a knock back AWAY from `fromX`, where the hit came from (his back, when it is not known) */
-  private damagePlayer(amount: number, fromX?: number) {
+  private damagePlayer(amount: number, fromX?: number, hold = false) {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
@@ -5652,7 +5652,8 @@ export class GameEngine {
     p.vy = -PHYS.hurtKnockV;     // small knockup
     // away from what hit him: it used to push him away from where he FACED, so a hit from behind threw him back into the foe, which
     // hit him again as soon as the 1.2 s of safety ran out (play-testers, 2026-10-25)
-    p.vx = knockDir(p.x, p.facing, fromX) * 180;
+    // (a hurt that holds him, PieceHurt.hold: straight up and back down where he stood)
+    p.vx = hold ? 0 : knockDir(p.x, p.facing, fromX) * 180;
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();

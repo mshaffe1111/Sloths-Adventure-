@@ -127,8 +127,13 @@ export interface Pad {
   clock: ClockId;
   /** a beat pad's stagger on its clock (s on Normal); a row in step has none */
   shift?: number;
-  /** the look slot the painter fills (gen2 PadRow / PAD_SIZES: 'small', 'big', 'beat'); the drawer falls back to the plain lily */
+  /** the look slot the painter fills (gen2 PadRow / PAD_SIZES: 'small', 'big', 'beat', 'snap'); the drawer falls back to the plain lily */
   look?: string;
+  /**
+   * what it does while its clock is 'on' (beatBrick.ts BrickOn): 'gone' (the default) it sinks, no floor; 'bites' it is a SNAP STONE
+   * (ENG-25; 2-5.md NEW 1): a floor always, that hurts him while 'on' (it claps shut on four), its jaw opening a notch a count before
+   */
+  on?: import('./beatBrick.ts').BrickOn;
 }
 
 /** the pad now: whether it holds him, and its tell */
