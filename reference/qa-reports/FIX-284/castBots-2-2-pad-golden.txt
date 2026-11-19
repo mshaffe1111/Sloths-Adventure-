@@ -1,0 +1,14 @@
+castBots 2-2, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 22/40; under the floor 0; time median 158.5 s (min 141.8); hits 0 lives 350 (water 350); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 10: shrine rescued x1  (seeds 26,29,35,24,27,16,19,28,31,37)
+        fail 7: shrine rescued x2  (seeds 20,23,6,18,33,4,22)
+        fail 1: shrine rescued x3  (seeds 10)
+kid    easy   PASS 40/40; under the floor 0; time median 147.4 s (min 139); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 36/40; under the floor 0; time median 149.8 s (min 136.8); hits 0 lives 110 (water 110); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 4: shrine rescued x1  (seeds 8,32,22,37)
+adult  easy   PASS 40/40; under the floor 0; time median 147.8 s (min 140.5); hits 0 lives 12 (water 12); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 389.4 s (min 339.6); hits 0 lives 271 (water 271); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 270.5 s (min 242.2); hits 0 lives 33 (water 33); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 210.8 s (min 191.8); hits 0 lives 97 (water 97); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 191.5 s (min 179.9); hits 0 lives 19 (water 19); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 188.9 s (min 170.6); hits 0 lives 102 (water 102); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0

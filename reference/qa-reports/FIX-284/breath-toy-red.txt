@@ -1,0 +1,20 @@
+# breath toy RED: engine.ts respawnAtCheckpoint's aimBreaths line skipped (breathWatch = []), run 3:33 PM ET 11-19 on 5fb2c95c
+# pass 0
+# fail 1
+0: 'wait 0 try 0: off 1.23 s in'
+1: 'wait 0 try 1: on 0.17 s in'
+2: 'wait 0 try 2: off 1.00 s in'
+3: 'wait 0 try 3: on 0.13 s in'
+4: 'wait 0 try 4: off 1.17 s in'
+5: 'wait 0 try 5: on 0.50 s in'
+6: 'wait 0.9 try 0: warn 0.23 s in'
+7: 'wait 0.9 try 1: off 1.27 s in'
+8: 'wait 0.9 try 2: off 0.60 s in'
+9: 'wait 0.9 try 4: on 0.17 s in'
+10: 'wait 0.9 try 5: warn 0.40 s in'
+11: 'wait 1.9 try 0: warn 0.53 s in'
+12: 'wait 1.9 try 1: on 0.17 s in'
+13: 'wait 1.9 try 2: on 0.50 s in'
+14: 'wait 1.9 try 3: off 0.33 s in'
+15: 'wait 1.9 try 4: off 0.87 s in'
+16: 'wait 1.9 try 5: off 1.50 s in'

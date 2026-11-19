@@ -105,13 +105,14 @@ class PadPiece implements StagePiece {
     for (const c of this.crowns) {
       const pl = c.plat;
       if (pl.x + pl.width < x0 || pl.x > x1) continue;
-      drawCrownLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, host.t, c.open);
+      drawCrownLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width, host.t, c.open);
     }
     for (const r of this.runs) {
       const pl = r.plat;
       if (pl.x + pl.width < x0 || pl.x > x1) continue;
       if (r.bar) { drawSnapStone(ctx, pl.x, pl.y, pl.width, r.n, r.now.hurts, r.now.tell, r.into, r.u, host.t); continue; }
-      drawPad(ctx, pl.pad!.look, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, host.t, r.now, pl.id % 2 === 1);
+      // (the painting's top is laid on the floor exactly: riverArt pondBox, FIX-284; it was drawn 1.15x the floor, its rim over the water)
+      drawPad(ctx, pl.pad!.look, pl.x + pl.width / 2, pl.y + 8, pl.width, host.t, r.now, pl.id % 2 === 1);
     }
   }
 }

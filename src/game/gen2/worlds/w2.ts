@@ -96,8 +96,9 @@ export const W2_RIVERS = {
 
 /**
  * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).
- * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: a tap hop's 83 px edge to edge in the
- * teach, up to a held jump's reach (PAD_FAIR.reach) after.
+ * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: well under the shortest hop a player
+ * makes (rideLay PAD_HOP.pad, the Pad button's 119 px; a touch flick is a full jump, 175 px) in the teach, up to a held jump's reach
+ * (PAD_FAIR.reach) after.
  */
 export const W2_PADS = {
   /** beat 1: one big pad over shallow water at the bank: he stands, it shivers and sinks, he splashes back and watches it come up */

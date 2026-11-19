@@ -1,0 +1,37 @@
+# breath toy GREEN: the same toy with the aim (every try printed; the test asserts off + 0.10 +-2 frames after try 0), run 3:33 PM ET 11-19 on 5fb2c95c
+normal wait 0 try 0: off 0.19 s in 
+wait 0 try 1: off 0.07 s in 
+wait 0 try 2: off 0.07 s in 
+wait 0 try 3: off 0.07 s in 
+wait 0 try 4: off 0.07 s in 
+wait 0 try 5: off 0.07 s in 
+wait 0.9 try 0: off 0.97 s in 
+wait 0.9 try 1: off 0.07 s in 
+wait 0.9 try 2: off 0.07 s in 
+wait 0.9 try 3: off 0.07 s in 
+wait 0.9 try 4: off 0.07 s in 
+wait 0.9 try 5: off 0.07 s in 
+wait 1.9 try 0: off 1.07 s in 
+wait 1.9 try 1: off 0.07 s in 
+wait 1.9 try 2: off 0.07 s in 
+wait 1.9 try 3: off 0.07 s in 
+wait 1.9 try 4: off 0.07 s in 
+wait 1.9 try 5: off 0.07 s in
+easy wait 0 try 0: off 0.19 s in 
+wait 0 try 1: off 0.06 s in 
+wait 0 try 2: off 0.07 s in 
+wait 0 try 3: off 0.07 s in 
+wait 0 try 4: off 0.07 s in 
+wait 0 try 5: off 0.07 s in 
+wait 0.9 try 0: off 0.93 s in 
+wait 0.9 try 1: off 0.07 s in 
+wait 0.9 try 2: off 0.07 s in 
+wait 0.9 try 3: off 0.07 s in 
+wait 0.9 try 4: off 0.07 s in 
+wait 0.9 try 5: off 0.07 s in 
+wait 1.9 try 0: off 1.07 s in 
+wait 1.9 try 1: off 0.07 s in 
+wait 1.9 try 2: off 0.07 s in 
+wait 1.9 try 3: off 0.07 s in 
+wait 1.9 try 4: off 0.07 s in 
+wait 1.9 try 5: off 0.07 s in

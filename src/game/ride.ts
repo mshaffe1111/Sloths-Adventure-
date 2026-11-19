@@ -127,7 +127,7 @@ export interface Pad {
   clock: ClockId;
   /** a beat pad's stagger on its clock (s on Normal); a row in step has none */
   shift?: number;
-  /** the look slot the painter fills (gen2 PadRow / PAD_SIZES: 'small', 'big', 'beat', 'snap'); the drawer falls back to the plain lily */
+  /** the look slot the painter fills: the pad's size (gen2 PadRow / PAD_SIZES: 'small', 'big'; a beat row's pads too, told apart by `by`), or 'snap' for a snap stone (ENG-25b); the drawer falls back to the plain lily */
   look?: string;
   /**
    * what it does while its clock is 'on' (beatBrick.ts BrickOn): 'gone' (the default) it sinks, no floor; 'bites' it is a SNAP STONE
