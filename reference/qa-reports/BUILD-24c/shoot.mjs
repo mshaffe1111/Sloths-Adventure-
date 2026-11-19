@@ -14,6 +14,12 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   if (ORIENT !== 'both' && ORIENT !== tag) continue;
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
   await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, DIFF);
+  // (FREEZE=1: the same frame on every run, for a before/after pair: the page's randomness seeded and its clock stepped only by the
+  //  shooter (Pokey's idle poses and their cross-fade, Dot's comings and goings run on them; a pair once caught him mid-blend))
+  if (process.env.FREEZE) await ctx.addInitScript(() => {
+    let s = 12345; Math.random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+    let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; };
+  });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message));
   await p.goto(`http://127.0.0.1:${port}/`);
@@ -38,9 +44,11 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       for (let i = 0; i < 60; i++) { e.update(1 / 30); e.clearGuide?.(); }
     }, [x, E, name]);
     for (let i = 0; i < (name.startsWith('ride') ? 4 : 30); i++) {
-      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
-      await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+      await p.evaluate((E) => { const e = eval(E); window.__tick?.(33.3); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+      if (!process.env.FREEZE) await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     }
+    const st = await p.evaluate((E) => { const e = eval(E), pl = e.player; return Object.entries(pl).filter(([k, v]) => v === true || (typeof v === 'number' && v !== 0 && /timer|hid|cover|hurt|blink|fade|alpha/i.test(k)) || (typeof v === 'string' && /state|anim|pose|mode/i.test(k))).map(([k, v]) => `${k}=${typeof v === 'number' ? v.toFixed(2) : v}`).join(' '); }, E);
+    console.log('STATE', tag, x, st);
     const f = path.join(out, `${stage}-L${layout}-${DIFF}-x${x}-${name}-${tag}.jpg`);
     await p.screenshot({ path: f, type: 'jpeg', quality: 80 });
     console.log('wrote', f, '|', built);
