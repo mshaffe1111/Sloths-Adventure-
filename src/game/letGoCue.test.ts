@@ -79,10 +79,14 @@ function readCue(r: RealPlay, e: Eng, dir: 1 | -1, grip = 0.7): Read {
   const mid = (river.x0 + river.x1) / 2;
   // (on the liana a whole swing before the read, so the engine's memory of the sweet spot, sweetSnap, is a real one)
   const start = () => {
+    // (the game clock FIRST: since ENG-285 1c (R-165.295) the vine clock is gameTime + vineShift and RealPlay.swing places the swing
+    //  against the game time now; set after, every restart read the glow at one phase and pressed at another. ENG-285b's diagnosis,
+    //  2:28 PM ET 11-19; the guard keeps the order)
+    r.t = GT0 - T;
     r.swing(v, { angle: 0, omega: 0, len: L, t: VC0 - T });
+    assert.ok(Math.abs(r.vineClock - (VC0 - T)) < 1e-9 && Math.abs(r.t - (GT0 - T)) < 1e-9, `set-up: vine clock ${r.vineClock}, game clock ${r.t}`);
     e.sweetSnap = null;
     e.swingLeapWait = 0;
-    r.t = GT0 - T;
     for (let i = 0; i < Math.round(T / DT); i++) r.frame(pad);
   };
   start();
