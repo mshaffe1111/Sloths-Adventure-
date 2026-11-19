@@ -1,0 +1,44 @@
+{
+ "tag": "w2a-r3",
+ "edits": [
+  {
+   "name": "duck-pass-s11",
+   "src": "b:hfpokey/edits/duck-walkA-s11.png",
+   "prompt": "Picture 1 shows a cartoon duckling walking to the right. Redraw the very same cartoon duckling in the very same spot, size and view, at the middle of its step: its legs no longer apart, now both legs straight down close together under its body with both feet side by side flat on the ground, its body lifted a little higher. Keep everything else exactly the same: the same cartoon duckling: the same fluffy yellow feathers, the same orange beak and orange webbed feet, the same little wings, the same round face and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry, legs apart, striding",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "otter-pass-s37",
+   "src": "b:hfpokey/edits/otter-walkA-s37.png",
+   "prompt": "Picture 1 shows a cartoon baby otter walking to the right. Redraw the very same cartoon baby otter in the very same spot, size and view, at the middle of its step: its legs no longer apart, now both legs straight down close together under its body with both feet side by side flat on the ground, its body lifted a little higher. Keep everything else exactly the same: the same cartoon baby otter: the same dark brown fur, the same cream muzzle and chest, the same small round ears, the same long tapering tail, the same face, nose and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry, legs apart, striding",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "capy-pass-s23",
+   "src": "b:hfpokey/edits/capy-walkA-s23.png",
+   "prompt": "Picture 1 shows a cartoon baby capybara walking to the right. Redraw the very same cartoon baby capybara in the very same spot, size and view, at the middle of its step: its legs no longer apart, now both legs straight down close together under its body with both feet side by side flat on the ground, its body lifted a little higher. Keep everything else exactly the same: the same cartoon baby capybara: the same warm brown fur, the same big blunt dark-brown nose, the same small round ears, the same face and big dark eyes, the same short legs, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry, legs apart, striding",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

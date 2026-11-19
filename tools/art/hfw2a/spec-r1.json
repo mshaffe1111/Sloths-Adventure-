@@ -1,0 +1,96 @@
+{
+ "tag": "w2a-r1",
+ "edits": [
+  {
+   "name": "duck-walkA",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/duck-happy.png",
+   "prompt": "Redraw the cartoon duckling in Picture 1 walking along to the right, seen from the side in a three-quarter view, mid-waddle: its near foot stepping forward and its far foot pushing off behind, arms (little wings) relaxed at its sides, body upright, a happy content smile, looking ahead to the right. Keep the same cartoon duckling: the same fluffy yellow feathers, the same orange beak and orange webbed feet, the same little wings, the same round face and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "duck-paddle",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/duck-happy.png",
+   "prompt": "Redraw the cartoon duckling in Picture 1 swimming to the right, seen from the side in a three-quarter view: body low and leaning forward as if floating, head held up above the water line, (little wings) reaching forward paddling, a happy determined smile, looking ahead to the right. Do not draw any water. Keep the same cartoon duckling: the same fluffy yellow feathers, the same orange beak and orange webbed feet, the same little wings, the same round face and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "otter-walkA",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/otter-happy.png",
+   "prompt": "Redraw the cartoon baby otter in Picture 1 walking along to the right, seen from the side in a three-quarter view, mid-waddle: its near foot stepping forward and its far foot pushing off behind, arms (little paws) relaxed at its sides, body upright, a happy content smile, looking ahead to the right. Keep the same cartoon baby otter: the same dark brown fur, the same cream muzzle and chest, the same small round ears, the same long tapering tail, the same face, nose and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "otter-paddle",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/otter-happy.png",
+   "prompt": "Redraw the cartoon baby otter in Picture 1 swimming to the right, seen from the side in a three-quarter view: body low and leaning forward as if floating, head held up above the water line, (little paws) reaching forward paddling, a happy determined smile, looking ahead to the right. Do not draw any water. Keep the same cartoon baby otter: the same dark brown fur, the same cream muzzle and chest, the same small round ears, the same long tapering tail, the same face, nose and big dark eyes, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "capy-walkA",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/capy-happy.png",
+   "prompt": "Redraw the cartoon baby capybara in Picture 1 walking along to the right, seen from the side in a three-quarter view, mid-waddle: its near foot stepping forward and its far foot pushing off behind, arms (front paws) relaxed at its sides, body upright, a happy content smile, looking ahead to the right. Keep the same cartoon baby capybara: the same warm brown fur, the same big blunt dark-brown nose, the same small round ears, the same face and big dark eyes, the same short legs, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "capy-paddle",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/capy-happy.png",
+   "prompt": "Redraw the cartoon baby capybara in Picture 1 swimming to the right, seen from the side in a three-quarter view: body low and leaning forward as if floating, head held up above the water line, (front paws) reaching forward paddling, a happy determined smile, looking ahead to the right. Do not draw any water. Keep the same cartoon baby capybara: the same warm brown fur, the same big blunt dark-brown nose, the same small round ears, the same face and big dark eyes, the same short legs, the same thin dark brown outline, the same soft painted children's-book cartoon style, the same colours and lighting, the same size, on the same flat plain grey background.",
+   "neg": "extra limbs, extra legs, extra feet, extra tail, two animals, changed face, different species, water, ripples, shadow on the ground, grass, ground, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "heron-look",
+   "src": "gh:COMMIT:reference/art/hfw2a/starts/heron.png",
+   "prompt": "Make the heron in Picture 1 alert and watching: it raises its head and stretches its long neck up tall and straight, its head turned to peer down and to the left at the ground in front of it, beak pointing down to the left, eyes wide and staring. Keep everything else exactly the same: the same grey-blue heron, the same body, wing feathers and legs standing on the same wooden post with the same rope, the same cattails and reeds, the same thin dark outline, the same soft painted cartoon style and colours, the same flat plain grey background.",
+   "neg": "extra heads, two herons, extra legs, changed post, missing post, water, scenery, text, border, frame, realistic, 3d render, blurry",
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "w": 768,
+   "h": 1120
+  }
+ ]
+}

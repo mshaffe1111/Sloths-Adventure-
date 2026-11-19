@@ -1,9 +1,20 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-18 (ART-22P: 2-2's lavender hyacinth petal, wired)
+# Hand-off: the art director role (Content), merged at INT-13 2026-11-19: ART-22P (§0g-22p, 2-2's lavender hyacinth petal, wired) and ART-W2A (§0g-w2a, 2-3's follow poses painted and wired) wrote the same day; before them 2026-11-15 (ART-W2)
 
-Last task: ART-22P (§0g). Before it: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last tasks: ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
-## 0g. 11-18 ART-22P (t-art-22p): 2-2's pickup is a painted lavender water-hyacinth petal (FIX-22 story fault), WIRED
+## 0g-w2a. 11-18 ART-W2A (t-art-w2a): 2-3's follow poses painted and WIRED (10 pieces, ~$2.11 HF)
+- duck/otter/capy WalkA (stride) + WalkB (passing) + Paddle on w2-props (W2_FRAMES), w2HeronLook on dressnew-w2; catalog part W2A.
+- **Route that worked for new POSES of an existing character:** Qwen-Image-Edit-2511 (tools/art/hfpokey/pokeygpu.py edits, no LoRA)
+  from the shipped piece on flat grey, 1024 square; ~53 s a take; 3 seeds a pose. Starts: tools/art/hfw2a/starts.py; specs:
+  make_spec.py rounds 1-3; one sandbox, rounds queued (run.sh <commit> <round>); cut in the sandbox (cut.py), back as tar parts
+  (sbx.py parts + hfw2/fetch.py). Pack: pack.py (colour gain to the Happy pose; the heron registered on w2Heron's post).
+- **Trap 1:** "the same animal one step later, other foot forward" came back as the SAME frame (12 takes, ~$0.55 wasted). Ask for the
+  PASSING pose (legs together under the body, body up) instead: the model does that, and it is the classic second frame.
+- **Trap 2:** keying grey trapped inside an outline at the normal tol (26) punched holes in a grey wooden post; key only FLAT grey (tol 9).
+- **Trap 3:** a mean colour match on a pose that shows less chest (a swimming otter) is skewed: paddles reuse the walk frame's gain.
+
+## 0g-22p. 11-18 ART-22P (t-art-22p): 2-2's pickup is a painted lavender water-hyacinth petal (FIX-22 story fault), WIRED
 - src/assets/pickups/petal-hyacinth.webp (91x96, the shipped petal's size); catalog row hf22p/petal-hyacinth (part H22P, cast.json);
   stagePlan 2-2 `looks.petal`; the HUD counter follows StageSpec.looks too (goalInfo.ts), so 1-5-style own looks show in the HUD.
 - Method that worked: img2img FROM THE SHIPPED PIECE recoloured (tools/art/hf22p/starts.py: hue-turn the body, keep the warm base)

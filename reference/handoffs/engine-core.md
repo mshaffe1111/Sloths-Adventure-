@@ -1,6 +1,6 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
 ## 0zn-26b. ENG-26b (t-eng-26, 11-18): the water wheel finished; what the next engineer and the 2-6 builder must know
 - **Flights take their stage (generality):** `flyWheel(L, setting, stageId)` as landFlights.ts flyLandFlights; tools/engine/wheelflights.ts
@@ -110,6 +110,18 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
   (stillness): a test of its tell must have him move. The bot hook `e.damagePlayer` must pass every argument (it dropped `hold`).
 - **Open for 2-5's builder / next engine:** the meter prices a snap stone per stone (rideTiming), not the run's window (the missing channel,
   ENG-25 REPORT); no bot skill for the snapper (2-5.md `bonk-after-the-snap`: unbuilt); the stomp's bounce is unflown; no sound for the clack.
+
+## 0W2A. ART-W2A (t-art-w2a from t-eng-23, 11-18): the follow poses are painted (followArt.ts)
+- **The little ones:** followArt.ts followerPose (pure, followArt.test.ts) picks the painted pose: paddle -> <kind>Paddle (sunk 40% under
+  the code ripple), home -> <kind>Happy (hopping), spooked and hiding -> <kind>Sad (Matt's painting, crouched behind the code reed tuft:
+  the lead's YES 6:53 PM ET 11-18), else <kind>WalkA / <kind>WalkB swapped by GROUND COVERED (FOLLOW_STRIDE 15 px a frame: no foot-slide
+  at any pace; a stopped one holds its frame). WalkB is the PASSING pose (legs together, body up): the painted bob, so no code lift.
+  poseWidth draws every pose at its Happy pose's scale (FOLLOWER_W 33 for Happy). All nine frames are on w2-props (W2_FRAMES).
+- **The heron:** heronPose -> w2HeronLook while warn or pass, w2Heron while calm; HERON_EYE / HERON_WARN_Y are the LOOK frame's (the
+  gaze and the '!' only show while it looks). w2HeronLook is on dressnew-w2 at w2Heron's px a unit with its post exactly on w2Heron's
+  (tools/art/hfw2a/pack.py), so the swap moves only the bird.
+- **Trap:** re-running pack.py re-encodes both sheets (Q 88: Matt's pieces measured ~40 dB): run it from the committed sheets, once.
+
 
 ## 0ENG23. ENG-23 (t-eng-23 from main 6e7b85f8, 11-18): followers, "bring N home", the heron reads the line
 - **Where it lives:** src/game/follow.ts (pure: trail, stepLine, join / spook / rejoin / regroup / home, zoneLookX, lineSeen),
