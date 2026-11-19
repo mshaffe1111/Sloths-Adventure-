@@ -10,7 +10,11 @@ BASE: branch t-int-13 from INT-12's final head (the lead sends it; if Matt merge
 The branches, in this ORDER (engine-only first, then the model change, then the levels; the lead sends each final hash from its REPORT):
 1. t-time-168: the time-stamp gate (tools + CI line; no game code).
 2. t-eng-23 (9e306581): 2-3's followers (follow.ts, bring N home, heron reads the line): engine pieces, nothing shipped moves.
-3. t-eng-25 (21668b61): 2-5's snap stones + snapper rows + stone art: engine pieces, nothing shipped moves.
+3. t-eng-25b (73318234; code fe3faf7e; it carries t-eng-25 21668b61): 2-5's snap stones, snapper rows, stone art, the bonk-after-the-snap
+   bot skill, the meter's snap channel, and TURTLE kick only when open (no live stage lays the kit TURTLE). Its suite was NOT re-run after
+   fe3faf7e (predatorCasts.test.ts re-pinned): your full suite covers it; name the result for that file.
+3b. t-eng-26 (the water wheel + ride-wheel; ENG-26's REPORT names its final hash and the optional type fields it added) and t-meter-4 /
+   t-art-w2a (2-3's meter channel and frames) if their REPORTs are green: engine/tools/art only, nothing shipped moves.
 4. t-eng-285: the judges and bots fly the engine's Pokey + the two bot defects; its relists and its recalibration.
 5. t-fix-284: 2-2's big pads (~2 Pokeys, art = floor) + the real tap hop (2-1/2-2 relisted).
 6. t-var-19: 1-9's variety (relisted on ENG-285's model).
