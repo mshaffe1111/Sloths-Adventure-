@@ -1,7 +1,11 @@
 # INT-13: Thursday's integration: one World 2 base with 2-4 finished, the judges fixed, 2-2's pads, 1-9's variety; every gate once; test link #2.
 Integration, Opus 5.5 xhigh. Written 5:50 PM ET 11-18 (by `date` in the same command) for Thu 11-19. START: in ENG-285's slot when it reports (~3:00 PM
 ET): prep merges 1-4 first, the levels as each member's REPORT lands. BOX: green head + REPORT by 11:15 PM ET, or 400k REAL context (the lead
-reads it and tells you); then the EXACT NEXT STEP pushed. LEAD UPDATE 3:32 PM ET 11-19: no slot was free at 3 PM (four members running); START in the first slot that frees
+reads it and tells you); then the EXACT NEXT STEP pushed. LEAD UPDATE 2 3:35 PM ET 11-19: a slot freed (VAR-19 stopped at its context box): START NOW. BASE t-int-12 @ ce4ad461 (main 6e7b85f8
+has no newer release). Final hashes for 0-3c: t-gate-292 65a5fc21, t-time-168b de3539c7, t-eng-23 9e306581, t-eng-25b 73318234,
+t-eng-26 64acd5f5 (ENG-26b), t-art-w2b c877623e, t-meter-4 8dd661d0, t-art-w2a 4f664fde. Step 6 t-var-19 is NOT green (VAR-19 stopped,
+a fresh VAR-19b continues): do NOT merge it tonight unless the lead sends VAR-19b's green final by 9:30 PM; otherwise 1-9 merges in
+INT-14. Send the lead the CLAUDE.md diff from t-gate-292 before you merge it (Matt's file). LEAD UPDATE 3:32 PM ET 11-19: no slot was free at 3 PM (four members running); START in the first slot that frees
 (expected ENG-285c's, around 6-7 PM): prep merges 0-3c at once (all final), then t-eng-285 (ENG-285c's final), t-fix-284 (FIX-284b's final,
 by 8:30 PM), t-var-19 (by 8:30 PM), t-build-24c (BUILD-24d's final, by 9:30 PM). Start the slow gates on each intermediate head in the
 BACKGROUND so the final head's run is the only one left; every gate still runs ONCE on the final head (law 5). If the final head cannot
