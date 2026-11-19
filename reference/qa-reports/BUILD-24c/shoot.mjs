@@ -25,16 +25,19 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   console.log('BUILT', tag, built);
   for (const spot of spots) {
     const [xs, name = 'spot'] = spot.split(':'); const x = +xs;
-    await p.evaluate(([x, E]) => {
+    await p.evaluate(([x, E, name]) => {
       const e = eval(E);
       e.isPaused = true;
+      // (a spot named ride*: he stands on the drift carrier nearest x, the raft or log, and rides it)
+      const ride = name.startsWith('ride') ? e.platforms.filter((q) => q.type === 'drift').sort((a, c) => Math.abs(a.x - x) - Math.abs(c.x - x))[0] : null;
+      if (ride) { Object.assign(e.player, { x: ride.x + ride.width / 2 - e.player.width / 2, y: ride.y - e.player.height, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 }); for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true; e.clearGuide?.(); for (let i = 0; i < 20; i++) { e.update(1 / 30); e.clearGuide?.(); } return; }
       const under = e.platforms.filter((q) => !q.broken && !q.soil && !q.decorative && q.type !== 'bouncy' && q.type !== 'drift' && x >= q.x && x <= q.x + q.width).sort((a, c) => a.y - c.y)[0];
       Object.assign(e.player, { x, y: under ? under.y : 580, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 });
       for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
       e.clearGuide?.();
       for (let i = 0; i < 60; i++) { e.update(1 / 30); e.clearGuide?.(); }
-    }, [x, E]);
-    for (let i = 0; i < 30; i++) {
+    }, [x, E, name]);
+    for (let i = 0; i < (name.startsWith('ride') ? 4 : 30); i++) {
       await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
       await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     }
