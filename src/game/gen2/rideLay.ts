@@ -200,11 +200,13 @@ export function rideFaults(st: { platforms: readonly Platform[]; clocks?: readon
 
 /** a pad's size (2-2.md "the pads, measured from code first, and the hop FLOWN"): its width (px), how long it holds him on Normal (s),
  *  and when its shiver starts (s). Widths: the hand-built ponds' 124-144 px floor (w2Stages.ts, QA 2026-10-29: on narrower pads a hop
- *  past a pad's middle ran on off its far end) for a small one, twice that for a big one, so the two read at a glance */
+ *  past a pad's middle ran on off its far end) for a small one; a big one about two Pokeys wide (his drawn height, 89.1: heroSprite.ts
+ *  HERO_UNITS x HERO_SPRITE_SCALE), its painting's top exactly on its floor (riverArt pondBox), still clearly bigger than a small one
+ *  (Matt 11-18 "Sure", R-165.284: at 260 drawn 1.15x it was about four Pokeys on screen, its rim over the water) */
 export interface PadSize { w: number; hold: number; shiver: number }
 export const PAD_SIZES = {
   small: { w: 130, hold: 1.0, shiver: 0.5 },
-  big: { w: 260, hold: 2.0, shiver: 1.2 },
+  big: { w: 180, hold: 2.0, shiver: 1.2 },
 } as const satisfies Record<string, PadSize>;
 export type PadSizeId = keyof typeof PAD_SIZES;
 
@@ -310,7 +312,7 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
     } else {
       const clock = row.by === 'beat' ? beatId : `pad-${k}`;
       if (row.by === 'weight' && !clocks.some((c) => c.id === clock)) clocks.push(padSizeClock(k, stretch));
-      pads.push({ id: nextId(), x, y, width: PAD_SIZES[k].w, height: PAD_LAY.h, type: 'moving', lily: true, pad: { by: row.by, clock, look: row.by === 'beat' ? 'beat' : k } });
+      pads.push({ id: nextId(), x, y, width: PAD_SIZES[k].w, height: PAD_LAY.h, type: 'moving', lily: true, pad: { by: row.by, clock, look: k } });
     }
     x += pieceW(k);
   });

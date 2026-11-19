@@ -205,18 +205,21 @@ export function drawLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: nu
 }
 
 // ───────────── the pond's own pieces (ART-W2, src/assets/w2-1115 + Matt's Victoria pads; BUILD-22 wires them) ─────────────
-/** each painted pond piece: its file and size (px); catalog rows w2-1115/w2-pad-*, w2-crown-*, M-02-a, M-03-a */
+/** each painted pond piece: its file and size (px); catalog rows w2-1115/w2-pad-*, w2-crown-*, M-02-a, M-03-a. `top`: the painted top's span
+ *  across the picture (its widest opaque row, as shares of the width; FIX-284, measured by reference/qa-reports/FIX-284/padtop.py): the
+ *  span laid exactly on the floor that holds him (art = floor), so no painted rim overhangs where he can stand (Matt 11-18, "Why is that one
+ *  lily pad so huge?"). Pieces that are not stood on (the ripple, the flowers) have none */
 const POND_ART = {
-  small: { url: new URL('../assets/w2-1115/w2-pad-small.webp', import.meta.url).href, w: 300, h: 146 },
-  smallSunk: { url: new URL('../assets/w2-1115/w2-pad-small-sunk.webp', import.meta.url).href, w: 300, h: 142 },
-  big: { url: new URL('../assets/w1-1109/M-03-a.png', import.meta.url).href, w: 816, h: 397 },
-  bigSunk: { url: new URL('../assets/w2-1115/w2-pad-big-sunk.webp', import.meta.url).href, w: 540, h: 272 },
+  small: { url: new URL('../assets/w2-1115/w2-pad-small.webp', import.meta.url).href, w: 300, h: 146, top: [0, 1] },
+  smallSunk: { url: new URL('../assets/w2-1115/w2-pad-small-sunk.webp', import.meta.url).href, w: 300, h: 142, top: [0.007, 0.997] },
+  big: { url: new URL('../assets/w1-1109/M-03-a.png', import.meta.url).href, w: 816, h: 397, top: [0.002, 0.996] },
+  bigSunk: { url: new URL('../assets/w2-1115/w2-pad-big-sunk.webp', import.meta.url).href, w: 540, h: 272, top: [0, 1] },
   ripple: { url: new URL('../assets/w2-1115/w2-pad-ripple.webp', import.meta.url).href, w: 400, h: 114 },
-  giant: { url: new URL('../assets/w1-1109/M-02-a.png', import.meta.url).href, w: 815, h: 543 },
+  giant: { url: new URL('../assets/w1-1109/M-02-a.png', import.meta.url).href, w: 815, h: 543, top: [0.002, 0.998] },
   bud: { url: new URL('../assets/w2-1115/w2-crown-bud.webp', import.meta.url).href, w: 160, h: 310 },
   open: { url: new URL('../assets/w2-1115/w2-crown-open.webp', import.meta.url).href, w: 360, h: 353 },
-} as const;
-type PondPiece = keyof typeof POND_ART;
+} as const satisfies Record<string, { url: string; w: number; h: number; top?: readonly [number, number] }>;
+export type PondPiece = keyof typeof POND_ART;
 const pondImg: Partial<Record<PondPiece, HTMLImageElement | null>> = {};
 const pondReady: Partial<Record<PondPiece, boolean>> = {};
 function pondArt(n: PondPiece): HTMLImageElement | null {
@@ -227,17 +230,37 @@ function pondArt(n: PondPiece): HTMLImageElement | null {
   }
   return pondReady[n] ? pondImg[n] ?? null : null;
 }
-/** a pond piece `w` wide, centred on cx, set on the water as drawLily sets the sheet's lily (its top at surfaceY - 0.55 of its height) */
-function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfaceY: number, w: number, flip: boolean): boolean {
+/**
+ * Where a pond piece is drawn for a floor `floorW` wide centred on cx (FIX-284, art = floor): a piece that is stood on is scaled so its
+ * painted top (POND_ART `top`) spans the floor exactly, edge to edge; one that is not (the ripple) is `floorW` wide. Set on the water as
+ * drawLily sets the sheet's lily: its top at surfaceY - 0.55 of its height. Pure (no image needed): the tests read it.
+ */
+export function pondBox(n: PondPiece, cx: number, surfaceY: number, floorW: number): { x: number; y: number; w: number; h: number } {
+  const a = POND_ART[n];
+  const top = 'top' in a ? a.top : ([0, 1] as const);
+  const w = floorW / (top[1] - top[0]);
+  const h = (w * a.h) / a.w;
+  return { x: cx - floorW / 2 - top[0] * w, y: surfaceY - h * 0.55, w, h };
+}
+/** the painted top's span (x0, x1) of a piece drawn by pondBox: the floor's own span when the art = floor */
+export function pondTopSpan(n: PondPiece, cx: number, surfaceY: number, floorW: number): [number, number] {
+  const a = POND_ART[n];
+  const top = 'top' in a ? a.top : ([0, 1] as const);
+  const b = pondBox(n, cx, surfaceY, floorW);
+  return [b.x + top[0] * b.w, b.x + top[1] * b.w];
+}
+/** a pond piece for a floor `floorW` wide, centred on cx (pondBox) */
+function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfaceY: number, floorW: number, flip: boolean): boolean {
   const im = pondArt(n);
   if (!im) return false;
-  const h = (w * POND_ART[n].h) / POND_ART[n].w;
-  if (!flip) ctx.drawImage(im, cx - w / 2, surfaceY - h * 0.55, w, h);
+  const b = pondBox(n, cx, surfaceY, floorW);
+  if (!flip) ctx.drawImage(im, b.x, b.y, b.w, b.h);
   else {
+    // mirrored about the floor's centre: the painted top keeps its span (a piece whose top is off-centre in its picture mirrors to the floor)
     ctx.save();
-    ctx.translate(cx + w / 2, surfaceY - h * 0.55);
+    ctx.translate(2 * cx - b.x, b.y);
     ctx.scale(-1, 1);
-    ctx.drawImage(im, 0, 0, w, h);
+    ctx.drawImage(im, 0, 0, b.w, b.h);
     ctx.restore();
   }
   return true;
@@ -246,42 +269,42 @@ function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfa
 /**
  * A sinking pad (pieces/padPiece.ts) where its clock has it, in ART-W2's states (its REPORT's slot map): UP, the pad (a small one's own
  * painting, a big one Matt's Victoria pad M-03-a); SHIVER, the same pad jiggled by its tell, half-sunk (its -sunk painting) through the
- * second half of the warning, dipping as it goes; UNDER, the ripple decal where it went (a big one's at about 200 u). The size is read
- * from its width (a big pad is twice a small one's, rideLay PAD_SIZES), so a beat row's pads ('beat' look) are painted by their size too.
+ * second half of the warning, dipping as it goes; UNDER, the ripple decal where it went. `look` is the pad's size (rideLay PAD_SIZES; a
+ * beat row's pads carry theirs too) and `floorW` the floor that holds him: the painting's top is laid on it exactly (pondBox, FIX-284).
  * Until a piece has loaded, the sheet's lily moved by its tell, as before.
  */
-export function drawPad(ctx: CanvasRenderingContext2D, _look: string | undefined, cx: number, surfaceY: number, w: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
+export function drawPad(ctx: CanvasRenderingContext2D, look: string | undefined, cx: number, surfaceY: number, floorW: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
   if (!riverArtReady()) return false;
-  const big = w > 220;
+  const big = look === 'big';
   const shake = now.solid ? Math.sin(t * 38 + cx) * 2.2 * now.tell : 0;
   const dip = now.solid ? 5 * now.tell : 12;
   if (!now.solid) {
-    if (blitPond(ctx, 'ripple', cx, surfaceY + 2, big ? 200 : w * 0.9, flip)) return true;
+    if (blitPond(ctx, 'ripple', cx, surfaceY + 2, floorW * 0.9, flip)) return true;
   } else {
     const bob = Math.sin(t * 1.8 + cx * 0.01) * 1.2 * (1 - now.tell);
     const piece: PondPiece = now.tell >= 0.5 ? (big ? 'bigSunk' : 'smallSunk') : big ? 'big' : 'small';
-    // (Matt's Victoria pads are painted larger than their floor: the rim is drawn at the floor's width, as the sheet's lily is)
-    if (blitPond(ctx, piece, cx + shake, surfaceY + dip + bob, w, flip)) return true;
+    if (blitPond(ctx, piece, cx + shake, surfaceY + dip + bob, floorW, flip)) return true;
   }
-  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, w, t, flip);
+  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, floorW, t, flip);
   ctx.save();
   if (!now.solid) ctx.globalAlpha = 0.28;
-  const ok = drawLily(ctx, cx + shake, surfaceY + dip, w, t, flip);
+  const ok = drawLily(ctx, cx + shake, surfaceY + dip, floorW, t, flip);
   ctx.restore();
   return ok;
 }
 
 /**
- * The crown lily (2-2.md beat 11; ART-W2's slot map): Matt's giant Victoria pad M-02-a, `w` wide, and its flower standing on its centre,
- * closed (w2-crown-bud) until he has stood on it, then open (w2-crown-open), its foot on the pad's centre. Returns false until loaded.
+ * The crown lily (2-2.md beat 11; ART-W2's slot map): Matt's giant Victoria pad M-02-a on its floor `floorW` wide (its painted top laid on
+ * the floor, pondBox), and its flower standing on its centre, closed (w2-crown-bud) until he has stood on it, then open (w2-crown-open),
+ * its foot on the pad's centre. Returns false until loaded.
  */
-export function drawCrownLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: number, w: number, t: number, open: boolean): boolean {
+export function drawCrownLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: number, floorW: number, t: number, open: boolean): boolean {
   const bob = Math.sin(t * 1.1 + cx * 0.01) * 0.8;
-  if (!blitPond(ctx, 'giant', cx, surfaceY + bob, w, false)) return false;
+  if (!blitPond(ctx, 'giant', cx, surfaceY + bob, floorW, false)) return false;
   // (the flower's foot on the pad's middle: the pad's painted centre sits about 0.05 of its height over the surface line)
-  const hPad = (w * POND_ART.giant.h) / POND_ART.giant.w;
-  const foot = surfaceY + bob - hPad * 0.05;
-  const k = w / 300;
+  const pad = pondBox('giant', cx, surfaceY + bob, floorW);
+  const foot = surfaceY + bob - pad.h * 0.05;
+  const k = pad.w / 300;
   const f: PondPiece = open ? 'open' : 'bud';
   const fw = (open ? 110 : 46) * k, fh = (fw * POND_ART[f].h) / POND_ART[f].w;
   const im = pondArt(f);
