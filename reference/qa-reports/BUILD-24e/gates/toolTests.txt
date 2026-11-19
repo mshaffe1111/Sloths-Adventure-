@@ -1,0 +1,27 @@
+== npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts (head 42aef3d90) start 5:02 PM
+  ---
+  duration_ms: 10011.52281
+  type: 'test'
+  ...
+# Subtest: the first-timer on a run (1-1): furthest on is still the furthest right
+ok 36 - the first-timer on a run (1-1): furthest on is still the furthest right
+  ---
+  duration_ms: 1542.154487
+  type: 'test'
+  ...
+# Subtest: the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+ok 37 - the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+  ---
+  duration_ms: 0.416429
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 79748.994496
+exit 0 end 5:04 PM
