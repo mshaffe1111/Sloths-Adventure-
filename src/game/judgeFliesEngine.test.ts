@@ -13,7 +13,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, DT } from './realPlay.ts';
-import { airStep, pressLaunches, setTimedSwing, swingGrab, swingSetup, vinePeriod, vineAngle, vineOmega, type AirBody, type PressLaunch } from './physics.ts';
+import { airStep, PHYS, pressLaunches, setTimedSwing, swingGrab, swingSetup, vinePeriod, vineAngle, vineOmega, type AirBody, type PressLaunch } from './physics.ts';
 import { driftX, LOG_DROP, LOG_HEIGHT, type DriftInfo } from './river.ts';
 import { fallOnLog, letGoFall } from './gen2/riverLay.ts';
 import type { Platform, Vine } from './types.ts';
@@ -150,3 +150,47 @@ test('a let-go over drifting logs: the judge\'s own landing (letGoFall + fallOnL
   }
   assert.ok(ons >= 10 && offs >= 10, `the sample holds both: ${ons} on a log, ${offs} in the water`);
 });
+
+/**
+ * R-165.297 (ENG-285b): a frame in the air with nothing steering. The engine (the game's refined controls) keeps his speed when the thumb
+ * leaves the glass and brakes at PHYS.airStop only while Down is held (engine.ts, the air `dec` of the no-steer branch); airStep braked
+ * PHYS.airDec (520) either way, so every check and bot that let go of the steer in mid-air flew a Pokey that slowed when the real one
+ * coasts (the noisy-thumb bots' drifting thumb, tools/inspect/jumps.ts). Here he is put in the air and flown by the game's own touch
+ * input, the steer and Down given frame by frame, against airStep given the same, to the pixel: coasting, braking with Down, a steer
+ * then a let-go, a push back then a let-go, and faster than a run (a vine's throw) let go.
+ */
+test('a no-steer air frame: airStep coasts as the engine does and brakes at airStop only with Down held (R-165.297)', () => {
+  type In = { dir: -1 | 0 | 1; down: boolean };
+  const FRAMES = 24;
+  const plans: { name: string; vx: number; vy: number; at: (i: number) => In }[] = [];
+  for (const [vx, vy] of [[PHYS.maxRun, -200], [PHYS.maxRun, 0], [-PHYS.maxRun, 150], [140, -100], [420, -150], [-420, 60]] as const) {
+    plans.push({ name: `coast ${vx},${vy}`, vx, vy, at: () => ({ dir: 0, down: false }) });
+    plans.push({ name: `Down ${vx},${vy}`, vx, vy, at: () => ({ dir: 0, down: true }) });
+    plans.push({ name: `steer then let go ${vx},${vy}`, vx, vy, at: (i) => ({ dir: i < 6 ? (vx > 0 ? 1 : -1) : 0, down: false }) });
+    plans.push({ name: `push back then let go ${vx},${vy}`, vx, vy, at: (i) => ({ dir: i < 5 ? (vx > 0 ? -1 : 1) : 0, down: false }) });
+    plans.push({ name: `let go then Down ${vx},${vy}`, vx, vy, at: (i) => ({ dir: 0, down: i >= 8 }) });
+  }
+  let coasted = 0, braked = 0, worst = 0, worstAt = '';
+  for (const pl of plans) {
+    const r = new RealPlay('2-1', 1);
+    r.e.skills.delete('glide');
+    r.bare([]);
+    r.useRealInput();
+    r.fly(1000, G, pl.vx, pl.vy);
+    const b: AirBody = { x: 1000, y: G, vx: pl.vx, vy: pl.vy };
+    for (let i = 0; i < FRAMES; i++) {
+      const { dir, down } = pl.at(i);
+      r.frame({ right: dir > 0, left: dir < 0, down });
+      airStep(b, DT, dir, false, down);
+      const d = Math.max(Math.abs(r.p.x - b.x), Math.abs(r.p.y - b.y), Math.abs(r.p.vx - b.vx) * DT);
+      if (d > worst) { worst = d; worstAt = `${pl.name} frame ${i + 1}`; }
+      assert.ok(!r.p.grounded, `${pl.name}: still in the air at frame ${i + 1}`);
+      assert.ok(d < 1e-3, `${pl.name}, frame ${i + 1} (steer ${dir}, Down ${down}): engine ${r.p.x.toFixed(2)},${r.p.y.toFixed(2)} vx ${r.p.vx.toFixed(1)}; airStep ${b.x.toFixed(2)},${b.y.toFixed(2)} vx ${b.vx.toFixed(1)}`);
+      if (dir === 0 && i > 0 && Math.abs(r.p.vx) > 1) (down ? braked++ : coasted++);
+    }
+  }
+  // (the sample holds the cases this is about: frames that coast and frames that brake)
+  assert.ok(coasted >= 100 && braked >= 20, `no-steer frames flown: ${coasted} coasting, ${braked} braking with Down`);
+  assert.ok(worst < 1e-3, `the worst frame is ${worst.toExponential(2)} px off (${worstAt})`);
+});
+

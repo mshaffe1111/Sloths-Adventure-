@@ -198,9 +198,11 @@ export interface AirBody {
  * One airborne tick, in the same order the engine does it (steer, gravity, move), for every check and bot that flies him. Steering
  * against his motion gets the engine's turn-around push too (engine.ts: `reversing`, PHYS.airTurn on top of airAcc), as the engine flies
  * him: one model for every caller (ENG-285, R-165.285; it was the liana judge's alone, ENG-24, and every other check's back-swing hop
- * under-steered by 20-30 px).
+ * under-steered by 20-30 px). A tick with nothing steering is the engine's too (ENG-285b, R-165.297): the game's controls (refined, the
+ * default) keep his speed when the thumb leaves the glass, and only Down held (`down`) brakes him, at PHYS.airStop (engine.ts, the air
+ * `dec` of the no-steer branch). It braked at PHYS.airDec either way, so a let-go of the steer flew short of where the real Pokey coasts.
  */
-export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
+export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, down = false) {
   if (dir !== 0) {
     if (dir * b.vx < PHYS.maxRun) {
       const reversing = Math.sign(b.vx) === -dir && Math.abs(b.vx) > 20;
@@ -209,8 +211,8 @@ export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
     } else {
       b.vx -= dir * PHYS.airDec * dt;
     }
-  } else {
-    const dec = PHYS.airDec * dt;
+  } else if (down) {
+    const dec = PHYS.airStop * dt;
     if (Math.abs(b.vx) <= dec) b.vx = 0;
     else b.vx -= Math.sign(b.vx) * dec;
   }
