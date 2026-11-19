@@ -1,0 +1,11 @@
+== node tools/perf/knowncheck.mjs (head 42aef3d90) start 5:02 PM
+known-list check against 6e7b85f8
+✓ tools/perf/clipknown.json: 44 entries
+✓ src/game/playerText.known.json: 4 entries
+✓ tools/perf/limits.json: 14 entries
+✓ tools/engine/generality.known.json: 26 entries
+✓ src/game/ciTests.known.json: 16 entries
+✓ tools/difficulty/coverage.known.json: 6 entries, 1 fewer than the base
+✓ src/game/artUse.allow.json: 210 entries
+PASS
+exit 0 end 5:02 PM
