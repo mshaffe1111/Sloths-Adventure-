@@ -196,7 +196,7 @@ this order, and curation does not start until step 3 is done:
   belongs in that place (a grotto can take World 1's roots or World 2's river stones; a mangrove can take World 2's logs). The test is that it
   makes sense there: the place's own light and palette apply (World 3 is dark with light from sources, rule 4 below), it stays to scale with
   Pokey, and each world keeps its own signature look (its backdrop, its new pieces, its colour) so the 'looks like an earlier stage' check
-  still passes (variety comes from more pieces, Matt 10-30). Hugging Face paints only what no world's art can do. R-165.318.
+  still passes (variety comes from more pieces, Matt 10-30). Hugging Face paints only what no world's art can do. R-165.318. The catalog already maps this (Matt 6:09 PM: "Every object in the game should be mapped to what world it can be used in... and how it can be used"): reference/art/CATALOG-MASTER.csv's `worlds` column lists EVERY world a piece fits with how it is used there (e.g. '3 Mossy Grotto: darker tint: a grotto earth wall'), plus engine_slot, layer, footing and scale; inventory/wN.json holds every piece that fits world N. Count and plan art by `worlds` (every fit), NEVER by `world_best` alone: on 11-19 a World 3 plan counted 38 pieces to stand on and 0 to climb by best fit, where every-fit gives 194 to stand on and 21 to climb.
 - **Painted art for the big things (Matt, 2026-10-29).** Anything that sets the look of a stage, and above all anything that hurts
   Pokey when he touches it (water, pits, thorns, spikes, the main surfaces he moves on), is painted art from Matt's Gemini sheets or
   the Hugging Face pipeline, so it feels like the rest of the game. Small touches drawn in code are fine: a glow on a firefly, a
