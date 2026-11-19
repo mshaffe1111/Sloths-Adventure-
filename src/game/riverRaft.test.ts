@@ -7,8 +7,8 @@
  *     rooms place it, its deck the carrier's top (art = collider: the walkable top is its floor), and a log is still the painted log;
  *     where no painted sheet draws (the drawn layer, platformPlan.ts) it is the raft painter (spanArt 'raft'), never turned into a barge
  *     or a pad, and logs keep their river looks;
- *   - loaded before play: a gen2 stage whose kit places a raft row asks for the kit's sheet (stageSheets.ts 'kit-pieces', gen2Rafts);
- *     no stage laid today does, so no stage's sheets change;
+ *   - loaded before play: a gen2 or listed stage whose kit places a raft row asks for the kit's sheet (stageSheets.ts 'kit-pieces',
+ *     gen2Rafts / laysRafts): 2-4 (listed) is the one that does;
  *   - laid by gen2 on a rolled row (rule 23): ENG-24's drop toy over the raft row builds clean on both settings, every carrier a raft.
  */
 import './headlessDom.ts';
@@ -16,6 +16,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { layRiver, lianaDrops, riverFaults, type RiverRow } from './gen2/riverLay.ts';
 import { GEN2_STAGES, gen2Rafts, laysRafts } from './gen2/game.ts';
+import { LISTED } from './gen2/listed.ts';
+import { stageSheets } from './stageSheets.ts';
+import { generateAllLevels } from './worldsData.ts';
 import { planStage, type ThinLook } from './platformPlan.ts';
 import { drawRiverLog, riverArtReady } from './riverArt.ts';
 import { kitArtReady } from './puzzleArt.ts';
@@ -109,11 +112,18 @@ test('drawn where no painted sheet draws: a raft is the raft painter, never a ba
   }
 });
 
-test('loaded before play: a kit that places a raft row asks for the kit\'s sheet; the log toy does not; no stage laid today does', () => {
+test('loaded before play: a kit that places a raft row asks for the kit\'s sheet; the log toy does not; 2-4 (listed) does, and only it', () => {
   assert.equal(laysRafts(() => kitFor('drop', 'raft')), true);
   assert.equal(laysRafts((d) => kitFor('drop', 'long', d === 'easy' ? 'raft' : 'long')), true, 'an Easy-only raft row');
   assert.equal(laysRafts(() => kitFor('drop', 'long')), false);
-  for (const id of Object.keys(GEN2_STAGES)) assert.equal(gen2Rafts(id), false, `${id} lays a raft already: its sheets change with this branch`);
+  for (const id of Object.keys(GEN2_STAGES)) assert.equal(gen2Rafts(id), false, `${id} lays a raft: name it here`);
+  // (the stages rolled from a stageTable kit (gen2/listed.ts) are not in GEN2_STAGES: the sheet list asks their kit too, BUILD-24c)
+  const rafted = Object.keys(LISTED).filter((id) => laysRafts(LISTED[id].kit));
+  assert.deepEqual(rafted, ['2-4'], 'the listed stages that lay a river of rafts');
+  const on = { hand: true, paint: true, ctest: false };
+  for (const l of generateAllLevels().filter((l) => LISTED[l.id] && !l.secret)) {
+    assert.equal(stageSheets(l, on).includes('kit-pieces') || !rafted.includes(l.id), true, `${l.id} lays rafts but never loads the raft's sheet`);
+  }
 });
 
 test('laid by gen2 on a rolled row (rule 23): the drop toy over the raft row builds clean on both settings, every carrier a raft', () => {

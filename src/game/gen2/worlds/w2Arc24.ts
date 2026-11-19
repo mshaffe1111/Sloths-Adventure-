@@ -96,8 +96,8 @@ export const RIVERS_24 = {
   gap280: { dir: 1, speed: 110, logW: 150, logs: 2, gap: 280 },
   gap200Easy: { ...W2_RIVERS.twin, logs: 5, safe: true },
   gap280Easy: { ...W2_RIVERS.deep, logs: 5, safe: true },
-  /** beat 9, the great swing onto the slow row to the jetty, splash-back (the raft is a log until RiverRow.look 'raft' lands) */
-  slow24: { dir: 1, speed: 70, logW: 200, logs: 2, safe: true },
+  /** beat 9, the great swing onto the slow row of RAFTS to the jetty (2-4.md:39/:60; World 2's painted puzzle-kit#raft, ENG-24c), splash-back */
+  slow24: { dir: 1, speed: 70, logW: 200, logs: 2, safe: true, look: 'raft' },
 } as const satisfies Record<string, RiverRow>;
 type Row24 = keyof typeof RIVERS_24;
 

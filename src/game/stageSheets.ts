@@ -57,7 +57,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
-import { gen2Creatures, gen2Rafts, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { gen2Creatures, gen2Rafts, gen2Water, GEN2_STAGES, isGen2Stage, laysRafts } from './gen2/game.ts';
 import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
@@ -203,8 +203,10 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's nest door; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
-  // (and a gen2 stage that lays a river of rafts: World 2's painted raft is the kit's, riverArt.ts drawRiverLog, R-165.288)
-  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair') || (isGen2Stage(cfg) && gen2Rafts(cfg.id)))) out.push('kit-pieces');
+  // (and a gen2 or LISTED stage that lays a river of rafts: World 2's painted raft is the kit's, riverArt.ts drawRiverLog, R-165.288;
+  // a listed stage (2-4) is rolled from its stageTable kit, which GEN2_STAGES does not hold: BUILD-24c found 2-4 asking for no raft sheet)
+  const rafts = isGen2Stage(cfg) ? gen2Rafts(cfg.id) : listed && laysRafts(listedStage(cfg.id)!.kit);
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair') || rafts)) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
   if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water; Worlds 9-10's every stage, whose pits are their own painted water;
