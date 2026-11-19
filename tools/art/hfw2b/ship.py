@@ -59,8 +59,29 @@ sim, sb = cut(picks['spill'])
 FADE = 70
 import numpy as np
 a = np.asarray(sim).astype(np.float32)
+# the splash crown at the stream's foot (faint teal spray either side, joined to the stream by faint px): under BAND px from the bottom,
+# keep only the stream's own columns (where it is solid, BAND px up), +-3 px
+BAND = 48
+row = a[sim.height - BAND - 1]
+cols = np.nonzero((row[:, 3] > 128) & (row[:, 2] > row[:, 0] + 20))[0]
+if len(cols):
+    lo, hi = cols.min() - 3, cols.max() + 3
+    band = a[sim.height - BAND:]
+    band[:, :max(0, lo), 3] = 0
+    band[:, hi + 1:, 3] = 0
 ramp = np.clip((sim.height - 1 - np.arange(sim.height)) / FADE, 0, 1)
 a[..., 3] *= ramp[:, None]
+# the cut splash pool leaves loose teal specks under the stream (the lead, 8:54 PM ET 11-18): keep only what joins the trough (alpha over
+# 8, 8-connected to the biggest part); everything else, and any faint px under 8, goes clear
+from scipy import ndimage as nd
+solid = a[..., 3] > 8
+lab, n = nd.label(solid, structure=np.ones((3, 3)))
+if n > 1:
+    sizes = nd.sum(solid, lab, range(1, n + 1))
+    keep = lab == (1 + int(np.argmax(sizes)))
+    print('spill: dropped', n - 1, 'loose parts,', int(solid.sum() - keep.sum()), 'px')
+    a[~keep, 3] = 0
+a[a[..., 3] <= 8, 3] = 0
 sim = Image.fromarray(a.astype(np.uint8), 'RGBA')
 ims['bucketSpillR'], fr['bucketSpillR'] = bucket(sim, sb)
 ims['bucketSpillL'] = ImageOps.mirror(ims['bucketSpillR'])
