@@ -1,7 +1,7 @@
 # GATE-292: painted style falling through to code terrain (R-165.292)
 
 Engine member, branch `t-gate-292` from `t-int-12` @ ce4ad461. Packet: reference/packets/2026-11-19/GATE-292.md (on the lead's branch).
-HASH: __HASH__ (filled at the last push). Written __TIME__.
+HASH: code and lists final at 131b3366 (this REPORT is the commit after it). Written 10:02 PM ET 11-18.
 
 ## The rule as coded (level A, the lead's ruling 8:27 PM ET)
 
@@ -32,7 +32,7 @@ Why a tool gate, not drawcheck or a lay verdict: drawcheck plays one layout per 
 function both the renderer and footingOf read, so a headless sweep judges every listed seed of every stage, both settings, in minutes. A
 lay verdict would refuse seeds today (1-1's logs are on most rolls) and needs the root fix first.
 
-## Planted (tools/engine/paintFall.test.ts, __PLANTED__)
+## Planted (tools/engine/paintFall.test.ts, 10 tests, all pass)
 
 | Case | Result | Why |
 |---|---|---|
@@ -71,7 +71,12 @@ paintcheck fails a listed id no build of its stage shows any more. Unpainted (no
 
 **main (shipped, 6e7b85f8): the same 21 stages plus 1-9 (32/32 builds)**, 5,166 builds; t-int-12 no longer breaches on 1-9.
 
-**Open branches (D88), World 2 stages on each branch's own tree:** __BRANCHES__
+**Open branches (D88), World 2 stages on each branch's own tree:** all PASS on their own trees, World 2's ten stages each (0 known ids there): t-art-w2a 4f664fde, t-art-w2b d52c5b70,
+t-eng-26 fa8a92bf, t-build-24 38f9b929, t-eng-23 9e306581, t-eng-24c 1f5c4008, t-eng-25 21668b61, t-eng-25b 73318234, t-eng-285 03ba54ef,
+t-meter-4 8dd661d0. Branches with no src/ change since their base (t-keeper-23-29, t-time-168b, t-design-29, t-meter-3, t-design-26) and
+t-var-1 (in t-int-12) were not swept. A miss of mine, caught: the first run of seven of these silently ran on MY tree (the disk was full,
+`git worktree add` failed, the script carried on in the current directory); found by the HEAD each run printed, the runner now fails loudly
+and every result above carries its branch's own commit.
 
 **The rule on the trees that broke it tonight:** 1-7 on e0afa8878^ (VAR-1b's 53-56 px landing log): FAIL, 200/200 builds, 7 new ids;
 1-8 on 2a8413391 (the knots): PASS (painted cut slabs: level B).
@@ -126,14 +131,28 @@ every World 1 seed list rebuilt. For Easy's wide stones B means capping Easy's w
 - A cut piece drawn far off its own proportions (a log plank split into parts, a stone stretched to its block): a stretch figure per
   piece would be the B measure (cutBox vs the frame's aspect), not built tonight.
 
-## Gate table (t-gate-292 @ __HASH__)
+## Gate table (t-gate-292 @ 131b3366, the code and lists this report judges)
 
-__GATES__
+| Check | Result |
+|---|---|
+| `npx tsc --noEmit -p .` | PASS |
+| unit suite (the CLAUDE.md glob) | 3,838 tests, 0 fail |
+| tools/engine/paintFall.test.ts (added to gates.yml's tool line) | 10/10 |
+| `npx tsx tools/engine/paintcheck.ts --part i/3` (as CI runs it, `CI=1 FORCE_COLOR=1`) | PASS x3: 212 + 107 + 110 = 429 known ids seen, 0 new, 0 stale; 5 m 12 s, 6 m 22 s, 6 m 10 s (job limit 25) |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` + chunkcheck | PASS, PASS |
+| artcheck | PASS |
+| drawcheck | PASS (689 s) |
+| knowncheck | PASS (paintcheck.known.json: new list, 429) |
+| generalitycheck | PASS (26 known) |
+| roadmapcheck | PASS (after carrying the lead's R-165.292 row with the known list in its Source; the lead will see that row on both branches at merge) |
+| timecheck (origin/t-time-168b's tool, `--range ce4ad461..HEAD`) | PASS on this branch's commits; the default range from main also flags reference/qa-reports/VAR-1/REPORT.md:4 ("3:50 PM ET", 4:57 after its commit 7a8bc47d), inherited from t-int-12 (VAR-1b's), not this branch |
+| lockall vs main (6e7b85f8, 16 layouts) | 99/102 unchanged; 1-6, 1-7, 1-9 moved: t-int-12's own work (VAR-1, 1-9), not this branch: `git diff ce4ad461 HEAD -- src/` is empty |
+| seedlist --check, tierBots, kbdcheck, clipcheck, buildcheck | not run: this branch changes nothing under src/, no list, no screen (law 5, member scope); they ran on t-int-12 (INT-12) |
 
 ## Lessons applied
 D19 (the gate calls the screen's code; proven on the live page), D62 (breaches and stills labelled by the seed the game BUILT), D88
 (look-alikes planted; every open branch swept), D57/D87 (ReadNotifications at every push; long runs in the background), D30 (times from
-`date`), D59 (no background job left running at stop: __D59__), law 22 (no rule loosened: day-one breaches go on a shrink-only list,
+`date`), D59 (no background job left running at stop: none: every sweep, shot and check finished before this report), law 22 (no rule loosened: day-one breaches go on a shrink-only list,
 the lead's ruling 8:23 PM ET), law 3 (the "49 px log GREEN" and "1-8 knots are code" premises checked in code before planting).
 
 My miss tonight, owned: the first still pair was picked by a height filter (51-89 px), not from the gate's list; on Normal those 1-1
