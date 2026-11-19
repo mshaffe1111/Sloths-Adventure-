@@ -118,3 +118,44 @@ ground; no gap or overhang seen.
 - Rule: **dips alone make a repeat**: after a dead-walk pass, run the repeat probe; vary the move kinds, not only their spacing.
 - Lessons applied: D30 (times from date), D57 (ReadNotifications at pushes), D59 (nothing left running), D83 (probes import relative),
   D87 (long runs in the background), D90 (read only VAR-19 4-6, cropped stills, output to files), rule 27 (numbers from the built stage).
+## 8. VAR-19c (written 5:44 PM ET 11-19; rests varied from 1-9's own pieces; files in reference/qa-reports/VAR-19c/). STOPPED by the lead's ruling (~342k real context): NOT GREEN
+### 8.1 EXACT NEXT STEP for VAR-19d (read only 8.1 and 8.2)
+1. Head: the commit that adds this section on t-var-19 (data + list at 8e1d33126; `seedlist 1-9 --check` PASS, 100 seeds).
+2. ONE RED: w1Arc19.test.ts 7/8, test 3 "a roost's boa in its roost's reach" on raw seed 1, both settings. Cause (probes/roost2.ts): a
+   rolled flag lands on the roost's bough (x 14013), its safe approach pushes the 'stay' boa off, the lay re-seats it on the bough before
+   the limb, 592 px from the roost. Pre-existing: the base list (837269b5f) lists 3 such layouts (L37 both, L85 Easy), this list 2 (L100
+   both) (probes/roostlist.ts). The lead's ruling (5:23 PM ET): level.md rule 19, NOT rest data (law 22); the engine root is R-165.312.
+   Do: (a) the test's rule ("a designed stay boa sits in its roost's reach") into tools/engine/listRules.ts's judge with a planted case
+   (red with the judge off); (b) 6 fresh seeds (`seedlist 1-9 --worker 0/1 --count 6 --part x.json`), relist (`--count 100`), --check;
+   (c) roostlist.ts 1 100 = 0; w1Arc19.test.ts 8/8; re-run probes seams (VAR-19b) N/E = 0 and str.ts N/E (repeat targets below);
+   (d) funcheck, non-1-9 lines vs VAR-19c/funcheck-8e1d33126.txt identical, then FUNCHECK_WRITE=1 for 1-9's lines only, only down.
+3. Then the packet's gates: the suite in 3 background shards; castBots 1-9 1-40 x 5 bots x both; the full CLAUDE.md list; coveragecheck,
+   registrycheck, paintcheck (the boulders: protoArt isPaintedRock, 50 px moss_stone; nothing code-drawn added), every list --check,
+   lockall vs main --intended 1-9; the planted fault for 'each rest laid once' (test 2, UNRUN since VAR-19b); the opening clip.
+   Re-shoot stills only if the relist moves layout 1 (`node reference/qa-reports/VAR-19c/stills19c.mjs 5199 <out> 1-9 1 $(npx tsx
+   reference/qa-reports/VAR-19c/probes/spots.ts 1-9 1 normal)`, DIFF=easy for Easy; taps Dot's card .dg-bub).
+### 8.2 Numbers (all on 8e1d33126, layouts 1-16 unless named)
+- funcheck repeat: Normal 1 layout (known 12; VAR-19b 6), Easy 1 (known 8; VAR-19b 13). Dead walk 0 both settings (probes seams.ts).
+  funcheck 1-9: nothing new or worse; dead walk, padding, nothing new, looks like, one tempo gone; N enemy by a landing 7 (16).
+- List: 100 proven of 101 tried; quiet line longest 2.8 s, median 2.6 s. Modelled time (100 layouts): Normal typical min 185 / median
+  189 s, fast 146 / 149; Easy 187 / 190, 148 / 150. None under 120 s.
+- Stills (layout 1, both settings, upright + sideways, 30 spots: each rest at 1/4, 1/2, 3/4 and every seam; Dot's cards read 2 s, shot,
+  tapped on the card): 90 N + 83 E, cards logged in VAR-19c/cards-1-9-*-L1.txt; cropped sheets VAR-19c/stills-L1-*.jpg.
+### 8.3 What changed (w1Arc19.ts rest(), restCrook, restStair, restWall, restBounce; data only; lengths, ids, flags, seeds, petals kept)
+- Each rest opens on a step up and (four of five) a knot gap, carries its own move, and closes on a knot gap or a step: the knots (a
+  wide walked hollow with a boulder), the crook (onto the crook over its boulder, off over the long drop, a second boulder), the stair
+  (two boulders, high then low), the wall (the vine), the bounce (a boulder up front, the mushroom). Strings went from 'JJJJJ' rests to
+  e.g. 'jJjj', 'jCJj', 'hjhhJhJ'.
+### 8.4 Polish check (sheets, cropped)
+- Rests read as different shapes; the saw-tooth is gone. Rough spots, named: the 80 px knot gaps are still small root notches (one or
+  two per rest, no longer a run); some Dot cards (kit tips "Big ones take several hits", "Flick up to hop") sit over the ground below
+  him mid-screen (the card's place is engine, not this data); a sheet's crop cut the top of one card (x24056 Easy upright: the crop,
+  not the game). The boulders draw as Matt's painted slab rock.
+### 8.5 Lessons applied, method update, unresolved
+- Lessons: D30 (times from date), D57 (notifications at pushes), D59 (no background run left: vite stopped), D90 (lean reads, files),
+  D46/law 22 (the roost boa reported, not tuned around), level.md 19 (the test's rule to the judge, ruled for VAR-19d).
+- Method update (proposed level.md World 1 notes): the route reads a boulder off its top, a bump under ~240 px and a dip under ~250 px as
+  JUMPS; only a step up onto a wide bough (h) and an 80 px gap between level boughs (j) are not; a boulder where a jump lands makes the lay
+  refuse every roll (stair, crook); a rest's last move must sit ~120 px from its end (read-load's 320 px walk-in). Probes str.ts/steps.ts.
+- Unresolved: test 3 (above); funknown not lowered (after VAR-19d's relist); turnover note not rewritten (stopped by the lead).
+  My first safe-keeping commit (c60c353f0) carries VAR-19b's Claude-Session link by mistake; every later one carries mine.

@@ -1,0 +1,90 @@
+upright hop 1 at x621 (card: Too small to be worth chasing. Best thing about me, honestly.)
+upright start x864 (frame 88): Flick up to hop up or over.
+upright hop 2 at x901 (card: Flick up to hop up or over.)
+upright hop 3 at x1101 (card: Flick up to hop up or over. [+1])
+upright hop 4 at x1521 (card: Flick up to hop up or over. [+1])
+upright hop 5 at x1810 (card: Flick up to hop up or over. [+1])
+upright the hop card went at x2212 (frame 266, after 5 hop(s)); now: null
+upright after the hop x2212: null
+upright x2940 seam-into-forest-freeze: Too small to be worth chasing. Best thing about me, honestly.
+upright x2940-seam-into-forest-freeze card0: Too small to be worth chasing. Best thing about me, honestly.
+upright x5200 seam-into-stair: null
+upright x7320 seam-into-rest-wall: When a boa misses, punch its nose. Bop!
+upright x7320-seam-into-rest-wall card0: When a boa misses, punch its nose. Bop!
+upright x7655 rest-wall-25: null
+upright x8050 rest-wall-50: Slide your thumb up to climb.
+upright x8050-rest-wall-50 card0: Slide your thumb up to climb.
+upright x8445 rest-wall-75: null
+upright x9042 seam-into-miss: null
+upright x10693 seam-into-rest: Eagle's nest! Boas bolt from it. So do we!
+upright x10693-seam-into-rest card0: Eagle's nest! Boas bolt from it. So do we!
+upright x11053 rest-25: null
+upright x11473 rest-50: null
+upright x11893 rest-75: null
+upright x12515 seam-into-roost: null
+upright x14046 seam-into-rest-crook: null
+upright x14501 rest-crook-25: null
+upright x15016 rest-crook-50: null
+upright x15531 rest-crook-75: null
+upright x16106 seam-into-read-load: null
+upright x17908 seam-into-read-roost: null
+upright x19113 seam-into-read-bare: Tap to punch it when it's close.
+upright x19113-seam-into-read-bare card0: Tap to punch it when it's close.
+upright x20213 seam-into-rest-bounce: Eagle! Into the green. Its eye scares boas off!
+upright x20213-seam-into-rest-bounce card0: Eagle! Into the green. Its eye scares boas off!
+upright x20638 rest-bounce-25: null
+upright x21123 rest-bounce-50: Flick up onto the mushroom to bounce.
+upright x21123-rest-bounce-50 card0: Flick up onto the mushroom to bounce.
+upright x21608 rest-bounce-75: null
+upright x22153 seam-into-hunters: null
+upright x23815 seam-into-rest-stair: null
+upright x24105 rest-stair-25: null
+upright x24455 rest-stair-50: null
+upright x24805 rest-stair-75: null
+upright x25215 seam-into-old-boa: null
+upright x26738 seam-into-exit: null
+sideways hop 1 at x621 (card: Too small to be worth chasing. Best thing about me, honestly.)
+sideways start x827 (frame 84): Flick up to hop up or over.
+sideways hop 2 at x901 (card: Flick up to hop up or over.)
+sideways hop 3 at x1101 (card: Flick up to hop up or over. [+1])
+sideways hop 4 at x1521 (card: Flick up to hop up or over. [+1])
+sideways hop 5 at x1810 (card: Flick up to hop up or over. [+1])
+sideways the hop card went at x2175 (frame 262, after 5 hop(s)); now: null
+sideways after the hop x2175: null
+sideways x2940 seam-into-forest-freeze: Too small to be worth chasing. Best thing about me, honestly.
+sideways x2940-seam-into-forest-freeze card0: Too small to be worth chasing. Best thing about me, honestly.
+sideways x5200 seam-into-stair: null
+sideways x7320 seam-into-rest-wall: When a boa misses, punch its nose. Bop!
+sideways x7320-seam-into-rest-wall card0: When a boa misses, punch its nose. Bop!
+sideways x7655 rest-wall-25: null
+sideways x8050 rest-wall-50: Slide your thumb up to climb.
+sideways x8050-rest-wall-50 card0: Slide your thumb up to climb.
+sideways x8445 rest-wall-75: null
+sideways x9042 seam-into-miss: null
+sideways x10693 seam-into-rest: Eagle's nest! Boas bolt from it. So do we!
+sideways x10693-seam-into-rest card0: Eagle's nest! Boas bolt from it. So do we!
+sideways x11053 rest-25: null
+sideways x11473 rest-50: null
+sideways x11893 rest-75: null
+sideways x12515 seam-into-roost: null
+sideways x14046 seam-into-rest-crook: Tap to punch it when it's close.
+sideways x14501 rest-crook-25: null
+sideways x15016 rest-crook-50: null
+sideways x15531 rest-crook-75: null
+sideways x16106 seam-into-read-load: null
+sideways x17908 seam-into-read-roost: null
+sideways x19113 seam-into-read-bare: Big ones take several hits. Step back when it rears.
+sideways x19113-seam-into-read-bare card0: Big ones take several hits. Step back when it rears.
+sideways x20213 seam-into-rest-bounce: Eagle! Into the green. Its eye scares boas off!
+sideways x20213-seam-into-rest-bounce card0: Eagle! Into the green. Its eye scares boas off!
+sideways x20638 rest-bounce-25: null
+sideways x21123 rest-bounce-50: Flick up onto the mushroom to bounce.
+sideways x21123-rest-bounce-50 card0: Flick up onto the mushroom to bounce.
+sideways x21608 rest-bounce-75: null
+sideways x22153 seam-into-hunters: null
+sideways x23815 seam-into-rest-stair: null
+sideways x24105 rest-stair-25: null
+sideways x24455 rest-stair-50: null
+sideways x24805 rest-stair-75: null
+sideways x25215 seam-into-old-boa: null
+sideways x26738 seam-into-exit: null
