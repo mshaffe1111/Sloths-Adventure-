@@ -287,9 +287,9 @@ const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t
  *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
 const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
   // (VAR-19c: a step up and a knot gap, up onto the crook and over its boulder, off its end over the long drop, a second boulder on the far
-  //  bough, and down onto a wide low bough with a third boulder, the rest's last move (the next beat's walk-in is up to 320 px, and a short
-  //  root tail was flown in one jump): 'j J'; each boulder placed so no walk runs 2.5 s)
-  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 380, UP), boulder('k', 'e', 0.8), root('f', 'e', 240, [102, 108]), root('g', 'f', 360, UP), boulder('k2', 'g', 0.5), root('z', 'g', 360, DOWN), boulder('kz', 'z', 0.5)],
+  //  bough, a knot gap onto a root long enough to land on and home (the next beat's walk-in is up to 320 px: an 80 px root was flown in
+  //  one jump, and a boulder on a low end bough sat level with the bough before it, so no move): 'j J'; no walk runs 2.5 s)
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 380, UP), boulder('k', 'e', 0.8), root('f', 'e', 240, [102, 108]), root('g', 'f', 360, UP), boulder('k2', 'g', 0.5), root('g2', 'g', 80, DOWN), root('i', 'g2', 160, UP), root('z', 'i', 120, DOWN)],
   sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.4), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 /** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
