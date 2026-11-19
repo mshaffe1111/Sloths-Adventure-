@@ -1,7 +1,18 @@
-# Hand-off: the art director role (Content), merged at INT-13 2026-11-19: ART-22P (§0g-22p, 2-2's lavender hyacinth petal, wired) and ART-W2A (§0g-w2a, 2-3's follow poses painted and wired) wrote the same day; before them 2026-11-15 (ART-W2)
+# Hand-off: the art director role (Content), merged at INT-13 2026-11-19: ART-22P (§0g-22p, 2-2's lavender hyacinth petal, wired), ART-W2A (§0g-w2a, 2-3's follow poses painted and wired) and ART-W2B (§0h, 2-6's noria painted and wired) wrote the same day; before them 2026-11-15 (ART-W2)
 
-Last tasks: ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last tasks: ART-W2B (§0h), ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0h. 11-18 ART-W2B (t-art-w2b): 2-6's noria painted and wired (rim + spokes, bucket dry/spilling, millrace wall); $1.15 of $4
+- Route: ONE HF sandbox, Qwen-Image-Edit-2511 (no LoRA) from GEOMETRY PASTE-UPS on flat grey (tools/art/hfw2b/starts.py: exact 6 spokes, the
+  120 px trough at 7x) with World 2's own wood (jetty, ladder, lashed frame) as the 2nd image: the painter matched first time, the geometry
+  held. Spill = an edit OF the picked dry take (one cell). Cut in the sandbox (hfw2b/cut.py = hfw2a's), packed by tools/art/hfw2b/ship.py,
+  catalogued by hfw2b/catalog.py (part W2B, 5 rows) then `catalog_master.py --emit`. Takes/cuts: reference/art/hfw2b/.
+- Fetch lean: never `cat` a small file from the sandbox (it lands IN context: ~10k tokens for a 24 KB jpg); always `python sbx.py parts`
+  (95 KB padded parts are saved to files) and rebuild with hf1113/pull.py. Pick from a JPEG contact sheet first, then tar only the cut picks.
+- Traps: a take whose splash pool is cropped leaves a faint spray crown joined by low alpha (keep only the stream's columns near the foot:
+  ship.py BAND); catalog rows copied from a template carry its walk line: set walk_y/x0/x1 per piece (inventory.test "footing inside image").
+- Open: the 2-7 half of ART-W2B (boat, letter, door, weir).
 
 ## 0g-w2a. 11-18 ART-W2A (t-art-w2a): 2-3's follow poses painted and WIRED (10 pieces, ~$2.11 HF)
 - duck/otter/capy WalkA (stride) + WalkB (passing) + Paddle on w2-props (W2_FRAMES), w2HeronLook on dressnew-w2; catalog part W2A.

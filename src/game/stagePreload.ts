@@ -55,6 +55,8 @@ import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterA
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { W6_WHEEL_URLS, w6WheelsReady } from './w6WheelArt.ts';
+import { w2WheelReady } from './wheelDraw.ts';
+import { W2_WHEEL_URL } from './w2WheelData.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -146,6 +148,9 @@ export function start(keys: readonly string[]): string[] {
       w7PuzzleReady();
       w7TempleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
+    } else if (k === 'w2-wheel') {
+      w2WheelReady();
+      urls.push(W2_WHEEL_URL);
     } else if (k === 'w6-wheels') {
       w6WheelsReady();
       urls.push(...W6_WHEEL_URLS);
