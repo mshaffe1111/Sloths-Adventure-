@@ -88,7 +88,21 @@ by a guess of what breaches instead of by the gate's output. Countermeasure used
 asks the page's own terrain module for code-drawn blocks) and writes the page's footing into each file name.
 
 ## Learned
-__LEARNED__
+- A size gate must read the drawing decision, not the style name: 1-1's 53 px stone and 1-7's 53 px log both looked like "a block grown
+  past 50", yet one is Matt's painted cut slab (w1Finish gives every moss stone up to 260 wide a cut) and the other a code box. Only the
+  engine's own footing (paintedPlatforms -> terrainLook) tells them apart, so the gate reads that and nothing else.
+- Easy is its own picture: 1-1's stones are painted on Normal and code on Easy where the Easy build widens them past 260. Judge both
+  settings (the packet said so; the trial would have missed it on Normal alone).
+- Art that would fix a fall-through may already be cut and unused: grep the cut sheets (w1-cut.json) before asking for new art.
+- A headless gate that needs "art loaded" can stub Image with a synchronous decode; an async decode left every sheet unloaded in a
+  synchronous sweep and turned every bank into a false breach (my first trial).
+- The probe cache key must drop per-piece ids (`tag`): with it, every block probed 420 heights again and a stage took minutes.
 
 ## Method update
-__METHOD__
+- reference/methods/gates.md: add paintcheck (what it catches, how to read a breach line: stage, setting, BUILT seed, x, style, size, the
+  code look, the heights its painter draws; `--unpainted`, `--known`, `--part i/n`; the known list is shrink-only both ways).
+- reference/methods/render-fix.md (proposal): a still for a look question is picked from the gate's own list or from the page's own
+  terrain.ts footingsFor (the shooter imports it from the dev server), never by a size filter; the file name carries the page's footing.
+  Proof: my x743 mis-pick (a painted cut called code for 5 minutes); the corrected stills all match the gate line for line.
+- CLAUDE.md check list (the lead's file): add `npx tsx tools/engine/paintcheck.ts` (minutes; CI runs it in 3 parts) and
+  tools/engine/paintFall.test.ts to the tool-test line.
