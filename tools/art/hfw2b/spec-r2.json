@@ -1,0 +1,21 @@
+{
+ "tag": "w2b-r2",
+ "edits": [
+  {
+   "name": "spill",
+   "src": "b:hfpokey/edits/bucket-s23.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw2b/starts/ref-w2wood.png"
+   ],
+   "w": 1024,
+   "h": 512,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Keep this exact wooden bucket trough unchanged, the same planks, posts and rope. Add clear blue-green river water spilling over its right end in a thin curling stream falling down past its floor, a few drops, and two drips falling from its floor. Keep the flat plain grey background.",
+   "neg": "photo, 3d render, blurry, text, watermark, frame, border, scenery, sky, ground, grass, water background, people, animals, sloth, extra objects, thick black outline, flat vector, harsh shadow"
+  }
+ ]
+}
