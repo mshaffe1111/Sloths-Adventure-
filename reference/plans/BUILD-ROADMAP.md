@@ -169,8 +169,8 @@ green Saturday; any level not ready keeps its live version: new replaces old onl
 next week. Around Tue 11-24 Matt and the lead decide from the week's numbers whether to raise the member count (the lead brings: levels
 landed vs plan, member-hours and cost per level, the weekly token %).
 
-**Thursday 11-19 slot plan (lead, written 11-18 evening; packets reference/packets/2026-11-19/):** 8:30 AM start: (1) ENG-285 ->
-~3 PM -> INT-13 in the same slot (box 8:30 PM, test link #2 ~9 PM); (2) BUILD-24c (raft + petals + bank join in the morning; Root B
+**Thursday 11-19 slot plan (lead, written 11-18 evening; packets reference/packets/2026-11-19/):** 8:30 AM start: (1) ENG-285b (ENG-285 ran steps 1-2 on 11-18 evening: the lead rules on its measure at 8:30, then relists/recal/castBots) ->
+~1-3 PM -> INT-13 in the same slot (box 8:30 PM, test link #2 ~9 PM); (2) BUILD-24c (raft + petals + bank join in the morning; Root B
 after ENG-285's step-1 model; box 6 PM); (3) FIX-284 (pad size show-first 11:30 AM; tap hop after step 1; box 5 PM) -> ART-W2A (or tonight, 11-18, if a slot frees before 8 PM);
 (4) VAR-19 at 8:30 AM (relists on step 1; box 5 PM): DESIGN-29 ran 11-18 evening (Matt picked 2-9 = the King's Drum + barge, 6:06 PM). ENG-26 ran 11-18 evening instead (pulled forward into a free slot, t-eng-26).
 TIME-168 runs tonight (11-18). D40 rule for the day: every list is proven on ENG-285's model.
