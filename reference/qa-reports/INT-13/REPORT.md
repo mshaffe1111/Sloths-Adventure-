@@ -1,7 +1,7 @@
 # INT-13 REPORT (hand-off to INT-13b; written 5:28 PM ET 11-19 at the lead's word, context box)
 
 ## EXACT NEXT STEP (INT-13b starts here; t-int-13 @ 2a895bcc, every merge below is in)
-1. Read §"Gates per head" below for the f993eb31 runs (12 list checks, suite): any list RED = relist it (owner rule: 2-1/2-2
+1. 2-1's list is RED on f993eb31 (§"Gates per head"): relist it first; any other list RED later = relist it (owner rule: 2-1/2-2
    FIX-284, 2-4 BUILD-24c, every other ENG-285's relist; 1-9 is ENG-285's list, t-var-19 is NOT merged). Packet KNOWN: relist 2-1
    ONCE after every merge (METER-3's route.ts line), then castBots 2-1 1-40 x tiers x both. Any suite red: fix at its source with
    the owning branch's evidence, never loosen.
@@ -46,7 +46,12 @@
 - baf5d277 (prep, 0-3c): suite 3,898 tests, 3,896 pass, 0 fail, 2 todo (pre-existing); drawcheck PASS 698 s; lockall vs main
   99/102 (moved 1-6, 1-7, 1-9 = INT-12's, nothing new); timecheck: the 3 known only.
 - e95bed18 (after 4, 5): suite and CI tool line stopped at merge 7, 0 fails up to the stop (not a result).
-- f993eb31 (after 7): 12 list checks (1-1..1-9, 2-1, 2-2, 2-4) and the suite RUNNING at the time above: results below when in.
+- f993eb31 (after 7; results recorded 5:48 PM ET): suite 3 shards 5:10-5:46 PM: 3,934 tests, 3,932 pass, 0 fail, 2 todo (pre-existing 4-3
+  boulder + 1). seedlist --check: 1-1 PASS (161), 1-2, 1-3, 1-4 PASS (100 each), 1-5 PASS (150), 1-6, 1-7, 1-8, 1-9, 2-2, 2-4 PASS (100 each);
+  **2-1 FAIL**: verdicts refuse 0 of 100, but 18 lines 'its replay differs from its search (platforms, vines, rivers, collectibles)'
+  (seeds 3, 9, 28, ... both settings) + 'seed 100: 4.1 s quiet, over the line 4 s' = the packet's KNOWN 2-1 relist (METER-3's line):
+  relist 2-1 ONCE (`npx tsx tools/engine/seedlist.ts 2-1`), then castBots 2-1. Logs: none kept in the repo (scratch only).
+- After the timecheck fix (9261367a's parent): timecheck --range origin/main..HEAD PASS.
 
 ## Odd things seen
 - A test run in the merge tree read conflict markers (2 false reds at merge 3): tests now run in a pinned worktree only.
