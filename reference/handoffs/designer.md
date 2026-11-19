@@ -32,6 +32,10 @@ Every ruling below cites the file and section where it's written in full.
 | **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
 
+- **World 3, 3-6..3-9 + the Cave Slide (PITCH-36A, fixed lens, 6:50 PM ET 11-19):** reference/design/pitches/PITCH-36A.md on t-pitch-36a; node strings
+  `npx tsx reference/specs/sims/nodes3639.ts` (the slide checked as a GRAPH: it is not a gen2 roll). The light ladder: 3-6 carry and toss
+  the cap, 3-7 listen (rustle), 3-8 the liana hides you, 3-9 light makes the jaguar flee (V preview). The picks are the lead's.
+
 ## 2. The section pool (World 1, gen2)
 
 - **The harvest:** old 1-1's stretches (learn, stones, cache-stones, stump-stones, stone-dips, second-jump, leap-stones, high-leaps, hop-bounce, bounce-run, stone-road, meadow, low-boughs, ledges, ropes).
@@ -250,3 +254,9 @@ Every ruling below cites the file and section where it's written in full.
 - **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
   crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
   Look at the platforms AT the settle (log the settle's input) before blaming the level's data.
+
+- **Kit rules with no emitter (PITCH-36A):** the jaguar's `light: flees` (predators/world3.ts:30), the bell lure and punch noise exist as
+  DATA; castPlay.ts sends none of them (only landings). Grep beatenBy AND castPlay.ts before calling a behaviour wired.
+- **Carrying blocks the jump** (puzzlePlay.ts:704): any carried thing (3-6's cap) turns jump into throw; a level built on carrying
+  must keep that rule when its piece moves into gen2.
+- **Hidden stages have no difficulty slot** (DIFFICULTY.md:63-65 covers stages 1-9 and guardians only): ask the lead, never type one.
