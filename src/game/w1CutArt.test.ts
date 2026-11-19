@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
-import { LAID, MAX_STRETCH, PLANK_MAX, STONE_W_MAX, THICK_LOG_MAX, W1_CUT, cutBox, logPart, logParts, partsOf, pickCut, thickParts } from './w1CutArt.ts';
+import { LAID, MAX_STRETCH, PLANK_MAX, STONE_ONE_MAX, STONE_PART_W, STONE_W_MAX, THICK_LOG_MAX, stoneParts, stonePartCuts, W1_CUT, cutBox, logPart, logParts, partsOf, pickCut, thickParts } from './w1CutArt.ts';
 import { newPlay11, clearPlay11 } from './testlink1_1.ts';
 import { w1Finish } from './gen2/worlds/w1.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -104,14 +104,29 @@ test('PAINT-292: a 50-89 px log is laid as thick painted planks: each piece\'s t
   assert.equal(pickCut({ id: 7, x: 0, y: 0, width: 300, height: THICK_LOG_MAX + 1, style: 'log' }), undefined);
 });
 
-test('PAINT-292: a stone up to STONE_W_MAX wide and under 90 px gets a stone piece within MAX_STRETCH (Easy 1-1 266x55, 1-6 300x56, 1-6 Easy 400x45); 90 and over stays the bank painter\'s', () => {
+test('PAINT-292: a stone over STONE_ONE_MAX (to STONE_W_MAX, under 90 px) is laid as 2+ flat-topped stone pieces end to end, each a normal stone\'s size (Easy 1-1 266x55, 1-6 300x56, 1-6 Easy 400x45; the lead 5:39 PM ET: never a boulder, never one piece blown up); 90 and over stays the bank painter\'s', () => {
   for (const [width, height] of [[266, 55], [268, 82], [300, 56], [300, 60], [400, 45], [400, 48]]) {
     const p = { id: 66, x: 15238, y: 913, width, height, style: 'moss_stone' as const };
     const cut = pickCut(p);
     assert.ok(cut, `${width}x${height}: a piece`);
-    const b = cutBox(p, W1_CUT[cut!]);
-    assert.ok(Math.max(b.sx / b.sy, b.sy / b.sx) <= MAX_STRETCH + 1e-9, `${width}x${height}: no new stretch`);
+    const n = stoneParts(p), cuts = stonePartCuts(p);
+    assert.ok(n >= 2 && cuts.length === n, `${width}x${height}: ${n} pieces`);
+    assert.equal(cut, cuts[0]);
+    for (let i = 0; i < n; i++) {
+      assert.equal(LAID[cuts[i]], 'stone', `${width}x${height} piece ${i}: ${cuts[i]} is a flat-topped stone (no boulder, no stump)`);
+      const q = logPart(p, i, n, 0);
+      assert.ok(q.width <= STONE_ONE_MAX && Math.abs(q.width - STONE_PART_W) <= 50, `piece ${i} ${q.width} wide: a normal stone's size`);
+      assert.ok(Math.abs(q.x - (p.x + (i * width) / n)) < 0.01, 'end to end');
+      const b = cutBox(q, W1_CUT[cuts[i]]);
+      assert.ok(Math.abs(b.y + W1_CUT[cuts[i]].fy * b.sy - p.y) < 0.01, 'its top on the stone\'s top');
+      assert.ok(Math.max(b.sx / b.sy, b.sy / b.sx) <= MAX_STRETCH + 1e-9, `${width}x${height}: no new stretch`);
+      // (no piece drawn bigger than the same stone gets as a 200 px stone today)
+      const one = cutBox({ x: 0, y: 0, width: 200, height }, W1_CUT[cuts[i]]);
+      assert.ok(b.sx <= one.sx + 1e-9, `${cuts[i]}: drawn at ${b.sx.toFixed(2)}, a 200 px stone's ${one.sx.toFixed(2)}`);
+    }
   }
+  // (up to 260 one piece, as before)
+  assert.equal(stoneParts({ width: 260 }), 1);
   assert.equal(pickCut({ id: 1, x: 0, y: 0, width: 300, height: 90, style: 'moss_stone' }), undefined, '300x90: the bank painter, as before');
   assert.equal(pickCut({ id: 1, x: 0, y: 0, width: STONE_W_MAX + 1, height: 55, style: 'moss_stone' }), undefined);
 });
