@@ -1,6 +1,5 @@
 # ART-W2A REPORT: 2-3's painted follow poses (the little ones waddle, paddle, hide; the heron looks up), wired in followArt.ts
-Branch t-art-w2a from origin/t-eng-23 9e306581. Head: see the last commit message to the lead (pasted from git). Packet
-reference/packets/2026-11-19/ART-W2A.md. Lead OK on the show-first sheet 6:53 PM ET; re-layout + w2-props move accepted 7:25 PM ET.
+Branch t-art-w2a from origin/t-eng-23 9e306581; head in the last message to the lead. Lead OK 6:53 PM ET; re-layout accepted 7:25 PM.
 
 ## Done-items
 1. **Show first:** reference/qa-reports/ART-W2A/show-first.jpg (sheet px beside Matt's Happy poses, colour-matched; game size on 2-3's own
@@ -21,13 +20,10 @@ reference/packets/2026-11-19/ART-W2A.md. Lead OK on the show-first sheet 6:53 PM
 |---|---|
 | tsc | PASS |
 | followArt.test, artDress.test, artUse.test, art/*.test | PASS (4, 1+, 1, 16) |
-| full suite, 3 shards | SEE BELOW (the run started on 1af947c75, before the heron move; shard 1's one red was that, fixed) |
+| full suite, 3 shards | PASS: 1276/1276 + 1409 (1 existing TODO, 4-3) + 1136/1136; shards 1-2 re-run on 44e5884f4 (7:50 PM ET), shard 3 on 1af947c75 (its files untouched since) |
 | artcheck, knowncheck, generalitycheck, roadmapcheck | PASS (roadmapcheck after `git fetch --unshallow`) |
-| lockall vs main (lock-main.json on 6e7b85f8f, 102 stages) | UNRUN |
-| BASE_PATH build + chunkcheck | UNRUN |
-| drawcheck (both ways) | UNRUN |
-| clipcheck | UNRUN (no screen or menu changed) |
-| kbdcheck, buildcheck, seedlist 1-1 --check, engine tool tests, tierBots | UNRUN (no stage, seed, bot or build path changed) |
+| lockall vs main; BASE_PATH build + chunkcheck; drawcheck (both ways) | UNRUN (wind-down at 438k context, the lead's call 7:25 PM ET) |
+| clipcheck; kbdcheck, buildcheck, seedlist 1-1 --check, engine tool tests, tierBots | UNRUN (no screen, stage, seed, bot or build path changed) |
 | walk clip (no foot-slide) | UNRUN: reference/qa-reports/ART-W2A/clip.mjs written, never run |
 
 **EXACT NEXT STEP for a fresh member (branch t-art-w2a, worktree with node_modules):**
@@ -52,8 +48,7 @@ reference/packets/2026-11-19/ART-W2A.md. Lead OK on the show-first sheet 6:53 PM
 ## HF: one sandbox 6afe2efd545f95df1c06c8a8, 6:04-6:50 PM ET, 46 min, ~$2.11 of $4; balance ~$51.3 (HF-SPEND.md). 10 pieces kept
 (~$0.21 a piece); round 2 (~$0.55) wasted: "other foot forward" came back as the same frame.
 
-## Pushback: none. Suggestions: the 2-3 builder judges the hiding Sad pose on the real stage (raise it in the reeds or add a '!' over it
-if a player cannot find it); a heron call sound (ENG-23's ask) is still open.
+## Pushback: none. Suggestion: the 2-3 builder judges the hiding Sad pose on the real stage; a heron call sound is still open.
 
 ## Learned / method update (hf-art.md, proposed)
 - New POSES of an existing painted character: Qwen-Image-Edit-2511 from the shipped piece on flat grey (no LoRA) keeps the painter; 3
