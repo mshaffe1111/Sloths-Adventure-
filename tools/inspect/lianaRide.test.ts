@@ -6,6 +6,11 @@
  *   - DROP ON A LOG (firsttimer.ts SKILLS.dropOnLog) on the design's widest relay row, gap280 (41% of let-gos land; Easy's twin `deep`):
  *     with the skill he lets go only when the let-go comes down on a log and crosses with no life lost (measured 11-18: 0 lives on each of
  *     variants 1-5, Normal); PLANTED: without it he lets go at the swing's forward end whatever the logs do (8 lives over the same five).
+ *     ENG-285b (11-19, the lead's ruling A): with the bot's hop judged as the engine plays it (firsttimer.ts hopAim, takeOffStep), variant 3
+ *     sees a hop from the bank straight onto a drifting log, lands it and rides across (0 lives), never catching the liana: a real shortcut
+ *     of the toy's river, asserted here, not hidden. So it is run over variants 1-6: at least 5 catch the liana (as many swinging runs as
+ *     before), every one that does lets go onto a log, one that does not crosses on a log with no life lost (measured 11-19: 6 of 7 catch,
+ *     each onto a log; v3 rides; planted, without the skill: 24 lives over 1-5).
  *   - A VINE FROM A LOG (SKILLS.vineFromLog) on the catch toy (a liana no bank reaches, 320 px long, over `twin`; Easy's twin `long`): he
  *     rides a log under it and jumps up to it (measured: caught off a log in 4 of 5 variants on each setting); PLANTED: without it he
  *     rides the log to the bank every time (0 of 10).
@@ -43,21 +48,38 @@ test('the harness drives the engine through the real InputEngine: a Pad tap at a
 test('DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns', () => {
   const seed = fixtureSeed('drop', 'gap280', ['normal', 'easy'], 'deep');
   assert.ok(seed !== null, 'no roll lays the gap280 drop toy clean');
+  // (ruling A, ENG-285b: variants 1-6, at least 5 of them catching the liana; see the head of this file)
+  const DROP_VARIANTS = [1, 2, 3, 4, 5, 6];
   const lives = (on: boolean) => {
     const was = SKILLS.dropOnLog;
     SKILLS.dropOnLog = on;
     try {
-      return VARIANTS.map((v) => {
-        const r = lianaRun('drop', 'gap280', 'middle', 'normal', seed!, v, 'deep', { realInput: true });
+      let caughtRuns = 0;
+      const out = DROP_VARIANTS.map((v) => {
+        // (counted from the engine frame by frame: the catches of the liana, and a frame stood on a drifting log)
+        let catches = 0, swinging = false, onLog = false;
+        const r = lianaRun('drop', 'gap280', 'middle', 'normal', seed!, v, 'deep', { realInput: true, onFrame: (sim) => {
+          if (sim.p.isVineSwinging && !swinging) catches++;
+          swinging = !!sim.p.isVineSwinging;
+          if (sim.p.grounded && sim.platforms.find((q) => q.id === sim.standingOn)?.type === 'drift') onLog = true;
+        } });
         assert.equal(r.end, 'shrine', `v${v} ${on ? 'on' : 'off'}: ended ${r.end}`);
-        if (on) assert.ok(r.ontoLog >= 1, `v${v}: no let-go came down on a log`);
-        return at(r, 'drop')?.lives ?? 0;
+        const lost = at(r, 'drop')?.lives ?? 0;
+        if (on && catches > 0) {
+          caughtRuns++;
+          assert.ok(r.ontoLog >= 1, `v${v}: caught the liana ${catches} times and no let-go came down on a log`);
+        }
+        // (the shortcut, v3 on 11-19: no liana, a hop from the bank onto a log and a ride to the far bank, no life lost)
+        if (on && catches === 0) assert.ok(onLog && lost === 0, `v${v}: never caught the liana and ${onLog ? `lost ${lost} lives` : 'never stood on a log'} crossing`);
+        return lost;
       });
+      if (on) assert.ok(caughtRuns >= 5, `with the skill: ${caughtRuns} of ${DROP_VARIANTS.length} variants caught the liana (5 or more give the skill's evidence)`);
+      return out;
     } finally { SKILLS.dropOnLog = was; }
   };
   const on = lives(true), off = lives(false);
   assert.ok(on.reduce((a, b) => a + b, 0) <= 1, `with the skill: lives at the river ${on.join(',')}`);
-  assert.ok(off.reduce((a, b) => a + b, 0) >= 4, `PLANTED, without it: lives ${off.join(',')} (measured 8 over five)`);
+  assert.ok(off.reduce((a, b) => a + b, 0) >= 4, `PLANTED, without it: lives ${off.join(',')} (measured 8 over five on 11-18, 24 over 1-5 on 11-19)`);
 });
 
 test('A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never', () => {
