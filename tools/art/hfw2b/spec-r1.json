@@ -1,0 +1,69 @@
+{
+ "tag": "w2b-r1",
+ "edits": [
+  {
+   "name": "wheel",
+   "src": "gh:COMMIT:reference/art/hfw2b/starts/wheel.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw2b/starts/ref-w2wood.png"
+   ],
+   "w": 1024,
+   "h": 1024,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the wooden wheel in the first image as an old wooden water wheel (a noria) seen exactly front-on, in exactly the hand-painted storybook style of the wooden pieces in the second image: weathered warm grey-brown planks with visible wood grain, soft painterly gouache shading, fine thin dark-brown linework, rope lashings like the ladder, muted colours, soft even light. Keep the exact shape and size: a perfectly round rim of plank segments, exactly six straight spokes meeting at a round hub, rope lashing where each spoke meets the rim. Dark wet wood, a little green moss and damp streaks on the rim. Keep the flat plain grey background around it and inside it between the spokes.",
+   "neg": "photo, 3d render, blurry, text, watermark, frame, border, scenery, sky, ground, grass, water background, people, animals, sloth, extra objects, thick black outline, flat vector, harsh shadow"
+  },
+  {
+   "name": "bucket",
+   "src": "gh:COMMIT:reference/art/hfw2b/starts/bucket.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw2b/starts/ref-w2wood.png"
+   ],
+   "w": 1024,
+   "h": 512,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the box in the first image as an empty wooden water-wheel bucket trough seen exactly side-on, in exactly the hand-painted storybook style of the wooden pieces in the second image: weathered warm grey-brown planks with visible wood grain, soft painterly gouache shading, fine thin dark-brown linework, rope lashings like the ladder, muted colours, soft even light. Keep the exact shape and size: a long open trough of horizontal planks with a thick end post at each end, a thick flat floor board along the bottom, a rope band round it. Damp dark wood at the bottom. It is dry and empty. Keep the flat plain grey background.",
+   "neg": "photo, 3d render, blurry, text, watermark, frame, border, scenery, sky, ground, grass, water background, people, animals, sloth, extra objects, thick black outline, flat vector, harsh shadow, water"
+  },
+  {
+   "name": "spillA",
+   "src": "gh:COMMIT:reference/art/hfw2b/starts/bucket.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw2b/starts/ref-w2wood.png"
+   ],
+   "w": 1024,
+   "h": 512,
+   "seeds": [
+    11,
+    23
+   ],
+   "prompt": "Repaint the box in the first image as a wooden water-wheel bucket trough seen exactly side-on, in exactly the hand-painted storybook style of the wooden pieces in the second image: weathered warm grey-brown planks with visible wood grain, soft painterly gouache shading, fine thin dark-brown linework, rope lashings like the ladder, muted colours, soft even light. Keep the exact shape and size. Clear blue-green river water spills over its right end in a thin curling stream with a few drops falling, and drips from its floor. Keep the flat plain grey background.",
+   "neg": "photo, 3d render, blurry, text, watermark, frame, border, scenery, sky, ground, grass, water background, people, animals, sloth, extra objects, thick black outline, flat vector, harsh shadow"
+  },
+  {
+   "name": "lip",
+   "src": "gh:COMMIT:reference/art/hfw2b/starts/lip.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw2b/starts/ref-w2wood.png"
+   ],
+   "w": 1024,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the planks in the first image as the wooden lip of a village millrace channel seen exactly side-on, in exactly the hand-painted storybook style of the wooden pieces in the second image: weathered warm grey-brown planks with visible wood grain, soft painterly gouache shading, fine thin dark-brown linework, rope lashings like the ladder, muted colours, soft even light. Keep the exact shape: a long flat coping board along the top on squat wooden posts, a planked side under it, wet and darker at the bottom with a little moss. Keep the flat plain grey background above and below.",
+   "neg": "photo, 3d render, blurry, text, watermark, frame, border, scenery, sky, ground, grass, water background, people, animals, sloth, extra objects, thick black outline, flat vector, harsh shadow"
+  }
+ ]
+}
