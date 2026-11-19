@@ -295,13 +295,15 @@ const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 
   sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('y', 0.5), petals('pf', 'f', 0.5, 1), petals('pg', 'g', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
   // [A] thick mossy boughs; nothing hurts in 1,300 px. The first move as soon as he can (VAR-19: the old arrival walked 800 px past the
-  // runway to its first jump, 3.1 s from the spawn: "dead walk" at x 140): an 80 px foot, then straight up onto the old bough, about 2 s
-  // from the spawn (the runway, pipeline.ts RUNWAY, is 500 px of every stage's start: no section can move sooner). The bough is left clear
+  // runway to its first jump, 3.1 s from the spawn: "dead walk" at x 140): an 80 px foot, then a narrow root dip to jump (the route reads
+  // only a dip between roots as a move; a step up onto the bough is a bump), about 2 s from the spawn: first move ~2.0 s, runway-bound
+  // (pipeline.ts RUNWAY is 500 px of every stage's start; the first second is R-165.308, the lead 3:27 PM ET). Then up onto the old
+  // bough over its own root dip (a clear run on it for the flag; a move every ~2 s, the dead walk's 2.5 s), left clear
   // (a rolled stage's flag before the teach stands on it, 1,500-2,400 px before the teach: pipeline.ts ROLLED_FLAGS), a boulder on the low
   // bough after it, a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('b', 'a', 520, [-92, -88]), root('c', 'b', 420, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
-      sockets: [petals('pb', 'b', 0.75, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
+    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z', 'r2', 340, DOWN)],
+      sockets: [petals('pb', 'b3', 0.5, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
   rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),
 ];
