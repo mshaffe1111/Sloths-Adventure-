@@ -195,15 +195,15 @@ export interface AirBody {
 }
 
 /**
- * One airborne tick, in the same order the engine does it (steer, gravity, move). `turn` (ENG-24): steering against his motion gets the
- * engine's turn-around push too (engine.ts: `reversing`, PHYS.airTurn on top of airAcc), as the engine flies him. Off by default: every
- * check that flies through here was laid and locked without it (the lead's call to turn it on everywhere, ENG-24 REPORT); the liana
- * drop judge (gen2/riverLay.ts lianaDrops) flies with it, so its back-swing hops land where the engine's do.
+ * One airborne tick, in the same order the engine does it (steer, gravity, move), for every check and bot that flies him. Steering
+ * against his motion gets the engine's turn-around push too (engine.ts: `reversing`, PHYS.airTurn on top of airAcc), as the engine flies
+ * him: one model for every caller (ENG-285, R-165.285; it was the liana judge's alone, ENG-24, and every other check's back-swing hop
+ * under-steered by 20-30 px).
  */
-export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, turn = false) {
+export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
   if (dir !== 0) {
     if (dir * b.vx < PHYS.maxRun) {
-      const reversing = turn && Math.sign(b.vx) === -dir && Math.abs(b.vx) > 20;
+      const reversing = Math.sign(b.vx) === -dir && Math.abs(b.vx) > 20;
       b.vx += dir * (PHYS.airAcc + (reversing ? PHYS.airTurn : 0)) * dt;
       if (dir * b.vx > PHYS.maxRun) b.vx = dir * PHYS.maxRun;
     } else {
@@ -852,10 +852,27 @@ export interface PressLaunch {
 }
 
 /**
+ * His hold on a liana as he leaves it after a press, from hold `len` at the press: a jump press is Up too (inputEngine.ts
+ * triggerTouchUp sets up, and a touch keeps it on past the longest wait for the sweet spot: MIN_TOUCH_JUMP_HOLD_MS + pressKeep), so on
+ * every frame from the press's to the one he leaves on (`frames`, both counted: 1 when he leaves on the press's frame) the engine's
+ * swing step climbs his grip SWING.climb a second (engine.ts swingStep with climb -1), clamped as swingStep clamps it. ENG-285, R-165.294
+ * (ENG-24c found it: the judge and the bot flew the let-go from the hold before the press, 5 px a frame low).
+ */
+export function pressClimb(len: number, frames: number, v: SwingVine, dt = 1 / 30): number {
+  for (let i = 0; i < frames; i++) {
+    len += -1 * SWING.climb * dt;
+    len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, len));
+  }
+  return len;
+}
+
+/**
  * Every press of ONE swing on A, holding at `grip` (a share of its length from the anchor), letting go toward +x, as the engine plays a
  * press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat late it is the sweet spot's leap;
- * anywhere else a hop off the vine. The presses are the second swing (the first gives "since the sweet spot"); one launch a frame, in
- * order. pressWindow counts them; gen2/riverLay.ts liana drops land them on moving logs.
+ * anywhere else a hop off the vine; he leaves from the hold the press climbed him to (pressClimb). The presses are the second swing (the
+ * first gives "since the sweet spot"); one launch a frame, in order: launch k is the press made on the frame whose swing step put the vine
+ * at clock `pt` (the engine reads the press after that frame's step), and he leaves on the frame of clock `t`, flying from the next.
+ * pressWindow counts them; gen2/riverLay.ts liana drops land them on moving logs; the first-timer bot aims its drops with them.
  */
 export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
   const DT = 1 / 30;
@@ -883,8 +900,12 @@ export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
       at = m;
       from = st[m].s;
     }
-    const l = timedLaunch(from, 1);
-    out.push({ x: st[at].r.x, y: st[at].r.y, vx: l.vx, vy: l.vy, t: st[at].s.t!, px: st[k].r.x, py: st[k].r.y, pt: st[k].s.t! });
+    // (the press is Up too: his grip climbs from the press's frame to the one he leaves on, and he leaves from there: pressClimb)
+    const len = pressClimb(st[k].s.len, at - k + 1, A, DT);
+    const sa = st[at].s;
+    // (a press a beat late leaps from the sweet spot just passed, as it was then: the climb came after it)
+    const l = timedLaunch(call === 'late' && snap ? from : { ...from, len }, 1);
+    out.push({ x: A.x + Math.sin(sa.angle) * len, y: A.topY + Math.cos(sa.angle) * len, vx: l.vx, vy: l.vy, t: sa.t!, px: st[k].r.x, py: st[k].r.y, pt: st[k].s.t! });
   }
   return out;
 }
@@ -894,7 +915,7 @@ export function pressLaunches(A: SwingVine, grip: number): PressLaunch[] {
  * to 90 frames or until he falls past `floorY`: does `hits` (asked every frame with the vine's clock, and his feet's y the frame before)
  * say he got there?
  */
-export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floorY: number, hits: (c: AirBody, t: number, prevY: number) => boolean, turn = false): boolean {
+export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floorY: number, hits: (c: AirBody, t: number, prevY: number) => boolean): boolean {
   const DT = 1 / 30;
   const c: AirBody = { x: l.x, y: l.y, vx: l.vx, vy: l.vy };
   let t = 0, used = false;
@@ -904,7 +925,7 @@ export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floo
       used = true;
     }
     const prevY = c.y;
-    airStep(c, DT, 1, i <= f.held, turn);
+    airStep(c, DT, 1, i <= f.held);
     t += DT;
     if (hits(c, l.t + t, prevY)) return true;
     if (c.y > floorY) break;
@@ -936,7 +957,7 @@ export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prev
     let pressed = false;
     // (a swing to settle, then the first forward sweep past FORWARD_END)
     for (let k = 0; k < 3 * n && !pressed; k++) {
-      const r = swingStep(s0, A, DT, 1, 0);
+      swingStep(s0, A, DT, 1, 0);
       const s = { ...s0 };
       if (inSweetSpot(s, 1)) { lastSweet = k; snap = s; }
       const amp = s.amp ?? TIMED.amp;
@@ -944,15 +965,17 @@ export function forwardEndLands(A: SwingVine, hits: (c: AirBody, t: number, prev
       pressed = true;
       const call = releaseCall(s, 1, (k - lastSweet) * DT);
       // (a press a beat early waits for the sweet spot: at FORWARD_END the sweet spot is on or just past, so it never waits long)
-      let from = s, at = r, t0 = s.t ?? 0;
+      let from = s, leave = s, t0 = s.t ?? 0, frames = 1;
       if (call === 'late' && snap) from = snap;
       if (call === 'early') {
-        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { const r2 = swingStep(s0, A, DT, 1, 0); at = r2; }
-        from = { ...s0 };
+        for (let m = 0; m < Math.round(RELEASE.early / DT) && !inSweetSpot(s0, 1); m++) { swingStep(s0, A, DT, 1, 0); frames++; }
+        from = leave = { ...s0 };
         t0 = s0.t ?? 0;
       }
-      const l = timedLaunch(from, 1);
-      const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
+      // (the press is Up too: he leaves from the hold it climbed him to, pressLaunches' pressClimb)
+      const len = pressClimb(s.len, frames, A, DT);
+      const l = timedLaunch(call === 'late' && snap ? from : { ...from, len }, 1);
+      const c: AirBody = { x: A.x + Math.sin(leave.angle) * len, y: A.topY + Math.cos(leave.angle) * len, vx: l.vx, vy: l.vy };
       let t = 0, made = false;
       for (let i = 1; i <= 90 && !made; i++) {
         const prevY = c.y;

@@ -15,7 +15,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, DT } from '../../src/game/realPlay.ts';
 import type { Platform } from '../../src/game/types.ts';
-import { SKILLS } from './firsttimer.ts';
+import { PRESS_TRACE, SKILLS } from './firsttimer.ts';
 import { fixtureSeed, lianaRun } from './lianaRiverToys.ts';
 
 const VARIANTS = [1, 2, 3, 4, 5];
@@ -76,5 +76,22 @@ test('A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving l
     const on = caught(true), off = caught(false);
     assert.ok(on.filter((n) => n >= 1).length >= 4, `${setting}, with the skill: catches off a log ${on.join(',')}`);
     assert.deepEqual(off.filter((n) => n >= 1), [], `${setting}, PLANTED, without it: ${off.join(',')}`);
+  }
+});
+
+test('the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at', () => {
+  const seed = fixtureSeed('drop', 'gap280', ['normal', 'easy'], 'deep');
+  assert.ok(seed !== null, 'no roll lays the gap280 drop toy clean');
+  PRESS_TRACE.on = true;
+  PRESS_TRACE.rows.length = 0;
+  try {
+    for (const setting of ['normal', 'easy'] as const) for (const v of [1, 2, 3]) lianaRun('drop', 'gap280', 'middle', setting, seed!, v, 'deep', { realInput: true });
+    const rows = PRESS_TRACE.rows;
+    assert.ok(rows.length >= 12, `decided presses traced: ${rows.length}`);
+    const off = rows.filter((r) => Math.abs(r.got - r.want) > 1e-6);
+    assert.deepEqual(off.map((r) => `aimed ${r.want.toFixed(3)}, reached ${r.got.toFixed(3)}`), [], `${off.length} of ${rows.length} presses reached the engine off the frame aimed`);
+  } finally {
+    PRESS_TRACE.on = false;
+    PRESS_TRACE.rows.length = 0;
   }
 });
