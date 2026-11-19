@@ -2,7 +2,7 @@
 // only by this shooter, so no still catches Pokey mid idle-pose cross-fade), the engine paused, Pokey set standing on each pad's floor at a
 // share of its width and stepped STEP frames (8: a weight pad holds 1-2 s, so it is still up), Dot's lines marked said, dsf 2.
 //   node shootfinal.mjs <port> <out dir> <stage> <layout> <padId:share:name> ...   (ORIENT=upright|sideways|both, DIFF=normal|easy)
-// padId 'crown' = the crown lily. Prints the pad's floor and his feet per shot.
+// padId 'crown' = the crown lily, 'bigN' = the n-th big pad by x. Prints the pad's floor and his feet per shot.
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -21,7 +21,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, DIFF);
   await ctx.addInitScript(() => {
     let s = 12345; Math.random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
-    let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; };
+    // (the clock freezes only once the stage's goal card has gone: frozen from the start, its shrink never ends and it covers every frame)
+    window.__freezeNow = () => { let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; }; };
   });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message.slice(0, 160)));
@@ -30,7 +31,11 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await p.waitForTimeout(2500);
   await p.evaluate(([s, v]) => window.__play(s, v), [stage, +layout]);
   await p.waitForTimeout(5000);
-  for (let k = 0; k < 6 && (await p.evaluate(() => document.documentElement.dataset.hudCard === '1')); k++) { await p.touchscreen.tap(w / 2, h / 2); await p.waitForTimeout(700); }
+  // (the stage's goal card runs on real timers and comes up a moment after the stage: wait for it, tap it away, then wait for it to go)
+  { let seen = false, gone = 0; for (let k = 0; k < 40 && gone < 4; k++) { const up = await p.evaluate(() => document.documentElement.dataset.hudCard === '1'); if (up) { seen = true; gone = 0; await p.touchscreen.tap(w / 2, h / 2); } else if (seen) gone++; await p.waitForTimeout(500); } }
+  // (Dot's own boxes ("Tap here when you've read it"): tapped away so no box sits over the frames)
+  for (let k = 0; k < 6; k++) { const box = p.getByText("Tap here when you", { exact: false }).first(); if (!(await box.isVisible().catch(() => false))) break; await box.click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(600); }
+  await p.evaluate(() => window.__freezeNow?.());
   const built = await p.evaluate((E) => { const e = eval(E); const g = e?.currentStage?.gen2; return `${e?.currentStage?.config?.id} seed ${g?.seed} built ${g?.budget?.difficulty} stored ${localStorage.getItem('sloth_difficulty')}`; }, E);
   console.log('BUILT', tag, built);
   for (const spot of spots) {
@@ -38,7 +43,9 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const info = await p.evaluate(([id, share, E, STEP]) => {
       const e = eval(E);
       e.isPaused = true;
-      const pl = id === 'crown' ? e.platforms.find((q) => q.art === 'crownLily') : e.platforms.find((q) => q.id === +id);
+      // ('crown', 'bigN' the n-th big pad by x (1-based, the same call on either setting), or a platform id)
+      const bigs = e.platforms.filter((q) => q.pad?.look === 'big').sort((a, c) => a.x - c.x);
+      const pl = id === 'crown' ? e.platforms.find((q) => q.art === 'crownLily') : id.startsWith('big') ? bigs[+id.slice(3) - 1] : e.platforms.find((q) => q.id === +id);
       if (!pl) return null;
       const x = pl.x + pl.width * +share - e.player.width / 2;
       Object.assign(e.player, { x, y: pl.y, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 });

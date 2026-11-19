@@ -16,7 +16,8 @@ await ctx.route(/script\.google\.com/, (r) => r.abort());
 await ctx.addInitScript(() => { try { localStorage.setItem('sloth_difficulty', 'normal'); } catch {} });
 await ctx.addInitScript(() => {
   let s = 12345; Math.random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
-  let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; };
+  // (the clock freezes only once the stage's goal card has gone: frozen from the start, its shrink never ends and it covers every frame)
+  window.__freezeNow = () => { let now = 100000; performance.now = () => now; window.__tick = (ms) => { now += ms; }; };
 });
 const p = await ctx.newPage();
 p.on('pageerror', (e) => console.log('ERR', e.message.slice(0, 160)));
@@ -25,7 +26,11 @@ for (let t = Date.now(); Date.now() - t < 300000; ) { if (await p.evaluate(() =>
 await p.waitForTimeout(2500);
 await p.evaluate(() => window.__play('2-2', 1));
 await p.waitForTimeout(5000);
-for (let k = 0; k < 6 && (await p.evaluate(() => document.documentElement.dataset.hudCard === '1')); k++) { await p.touchscreen.tap(VP.width / 2, VP.height / 2); await p.waitForTimeout(700); }
+// (the stage's goal card runs on real timers and comes up a moment after the stage: wait for it, tap it away, then wait for it to go)
+  { let seen = false, gone = 0; for (let k = 0; k < 40 && gone < 4; k++) { const up = await p.evaluate(() => document.documentElement.dataset.hudCard === '1'); if (up) { seen = true; gone = 0; await p.touchscreen.tap(VP.width / 2, VP.height / 2); } else if (seen) gone++; await p.waitForTimeout(500); } }
+  // (Dot's own boxes ("Tap here when you've read it"): tapped away so no box sits over the frames)
+  for (let k = 0; k < 6; k++) { const box = p.getByText("Tap here when you", { exact: false }).first(); if (!(await box.isVisible().catch(() => false))) break; await box.click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(600); }
+  await p.evaluate(() => window.__freezeNow?.());
 const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
 const setup = await p.evaluate((E) => {
   const e = eval(E);
@@ -59,7 +64,9 @@ const step = (shoot) => p.evaluate(([E, shoot]) => {
   const dir = go && !e.down ? 1 : 0;
   if (dir !== window.__dir) { inp.triggerTouchMove(dir > 0 ? 'right' : 'none'); window.__dir = dir; }
   // (a flick at a floor's end, the next floor ahead: a full jump, as the touch layer gives one)
-  const under = pl.grounded ? e.platforms.find((q) => q.id === e.standingOn) : null;
+  // (the floor under his feet, by where he stands: the engine's standingOn is not set on the frames right after a put-back)
+  const mid = pl.x + pl.width / 2;
+  const under = pl.grounded ? e.platforms.find((q) => !q.broken && mid >= q.x && mid <= q.x + q.width && Math.abs(q.y - pl.y) < 6) : null;
   if (go && under && pl.grounded && under.x + under.width - (pl.x + pl.width / 2) < 30 && !window.__pressed) { inp.triggerTouchUp(0); window.__pressed = 3; }
   if (window.__pressed) { window.__pressed--; if (!window.__pressed) inp.releaseTouchUp(); }
   window.__tick?.(33.3);
