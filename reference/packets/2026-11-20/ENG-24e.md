@@ -16,6 +16,10 @@ BASE: branch t-eng-24e from INT-13's final head (the lead sends it at start; if 
    master catalog): name what you tried. If nothing fits, ONE Hugging Face job is approved by the lead (img2img from the closest World 2
    piece, one sandbox, cap $3, logged in reference/art/HF-SPEND.md, the token never in code, commits, files, messages or memory); show the
    lead the takes before shipping one (show first). No code-drawn primitive for it (paintcheck must stay green).
+2b. (lead 3:55 PM ET 11-19, from BUILD-24d's stills) The drawn LOG on a SAFE river reads as a faint glass tube: only its top sliver shows
+   and the pale over-band washes the body out (2-4 catch beat upright; LIVE 2-1 and 2-2 too). Fix it at the source in the river draw (every
+   stage that draws a safe river): a log reads as a solid floor he can stand on (its body clearly wood, the water line crossing it
+   low), deep rivers unchanged unless they show the same; before/after stills on 2-1, 2-2 and 2-4, upright + sideways; drawcheck both ways.
 3. The judge and the bots read it: lianaDrops' 'far' still lands the far bank from the liana; route.ts boards and rides as before; no
    judge loosened (law 22).
 4. Planted: rideAcross.ts's ride-across RED on a tailed row (2-4 beats 4 and 6, and a toy) and GREEN on 2-1's plain rows (2-1 must not move).
