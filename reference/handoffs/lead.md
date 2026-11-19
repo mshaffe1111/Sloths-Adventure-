@@ -91,10 +91,9 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 
 **Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u, the branch this container
 names). **Tokens:** reset Wed 11-18 2:00 AM ET; Matt chose 4 members at once.
-**Tonight's link (EnK5):** INT-12 (session_01FhBbYNEmHZgwwkcwsCia5B, t-int-12 prep 8a60e616 = 1-9 + 2-2 pickups/petals + CI seed matrix +
-2-4 engine pieces, prep gates green) waits for VAR-1b's green hash (~7:15 PM; hard stop 7:30; option b = 1-7 only). Then INT-12 merges,
-ONE full gate run, REPORT by 9:00 PM; the lead builds + publishes EnK5 (read EnK5 + list files; files map; build.py --published) and
-tells Matt with the rough spots named (1-9's 9 funcheck flags -> VAR-19 tomorrow; meter reads low on 1-9/W2; 1-6 traced bot rows).
+**Tonight's link (EnK5) PUBLISHED 7:22 PM:** v262 (1795047706-c97a) from t-int-12 ce4ad461 (476 files; dist-published in scratchpad/link4
+at ce4ad461): 1-6/1-7 variety, 1-9 new gen2, 2-2 lavender pickups + W2 drift petals. Rough spots told to Matt: 1-9's 8 samey flags
+(VAR-19 Thu), 1-6 N repeat 6/16, 1-6 child/middle N bot misses (ENG-285 Thu), meters read low (1-7, 1-9, W2).
 **Running:** VAR-1b (session_01FhBbYNjSCAw66VYdFgZK1Y: fixing 3 suite faults in 1-6/1-7 data, ruled (a) 5:33), INT-12 (waiting),
 ENG-24c (session_01FhBbYKDwLF7f1NStSynED8, t-eng-24c 80e53e29: winding down at 538k context, REPORT then stop), PITCH-29B (open lens
 2-9/3-1/3-2, session_01FhBbYJkM9zpUReD7zBdEHe).
