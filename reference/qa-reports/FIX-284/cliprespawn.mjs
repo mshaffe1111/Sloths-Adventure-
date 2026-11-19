@@ -2,12 +2,15 @@
 // iris closes and opens at his flag, and he runs back to the pair turned on its breath (breathAim.ts) and crosses. Real page (dev server),
 // BUILD-24c's frozen pattern (Math.random seeded, the clock stepped only here), every press through the touch layer's own calls
 // (InputEngine triggerTouchMove / triggerTouchUp / releaseTouchUp), stepped frame by frame and shot every 2nd frame (15 fps), dsf 2.
-//   node cliprespawn.mjs <port> <out dir> [up|side]     then ffmpeg (printed)
+//   node cliprespawn.mjs <port> <out dir> [up|side] [fast|slow]     then ffmpeg (printed)
+// (FIX-284b) pace: fast runs on at once after every put-back; slow stands SLOW_WAIT s at the flag first (a player who takes a breath),
+// so the aim's learned lag (breathAim.ts) shows: put-backs are logged as PUTBACK <frame> <shot> for before/after stills.
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)('playwright');
-const [port, out, ori = 'side'] = process.argv.slice(2);
+const [port, out, ori = 'side', pace = 'fast'] = process.argv.slice(2);
+const SLOW_WAIT = 1.5;
 const VP = ori === 'side' ? { width: 915, height: 412 } : { width: 412, height: 915 };
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
@@ -58,9 +61,17 @@ const step = (shoot) => p.evaluate(([E, shoot]) => {
   const now = e.clock.read(pair[0].pad.clock, pair[0].pad.shift);
   window.__phase = now.phase;
   // waiting: he stands until the pair starts its warning, then runs on (the late start that drowns him); after a put-back he runs at once
-  const go = window.__go || (window.__wait && now.phase === 'warn') || e.lives < window.__lives;
+  // (a put-back: the slow player stands SLOW_WAIT s at the flag first, counted from the frame the beat ends)
+  if (e.lives < window.__lives) { window.__lives = e.lives; window.__back = 0; window.__putback = true; }
+  if (window.__back !== undefined && !e.down) window.__back += 1 / 30;
+  const held = window.__slow && window.__back !== undefined && window.__back < window.__slowWait;
+  // (the first run starts on the warn's first frame (its edge), never part way in: the late start that drowns him, every take)
+  const edge = now.phase === 'warn' && window.__lastPhase !== undefined && window.__lastPhase !== 'warn';
+  window.__lastPhase = now.phase;
+  const go = !held && (window.__go || (window.__wait && edge) || window.__back !== undefined);
   if (!window.__wait && !window.__go) window.__wait = true;
   if (go) window.__go = true;
+  if (held) window.__go = false;
   const dir = go && !e.down ? 1 : 0;
   if (dir !== window.__dir) { inp.triggerTouchMove(dir > 0 ? 'right' : 'none'); window.__dir = dir; }
   // (a flick at a floor's end, the next floor ahead: a full jump, as the touch layer gives one)
@@ -73,14 +84,17 @@ const step = (shoot) => p.evaluate(([E, shoot]) => {
   e.update(1 / 30);
   e.clearGuide?.();
   if (shoot) e.render();
-  return { x: Math.round(pl.x), lives: e.lives, down: !!e.down, phase: now.phase };
+  const pb = window.__putback && !e.down; if (pb) window.__putback = false;
+  return { x: Math.round(pl.x), lives: e.lives, down: !!e.down, phase: now.phase, pb };
 }, [E, shoot]);
+await p.evaluate(([slow, w]) => { window.__slow = slow; window.__slowWait = w; }, [pace === 'slow', SLOW_WAIT]);
 let f = 0, shot = 0, crossedAt = -1;
-for (; f < 30 * 22; f++) {
+for (; f < 30 * 30; f++) {
   const shoot = f % 2 === 0;
   const s = await step(shoot);
   if (shoot) { await p.screenshot({ path: path.join(out, `f${String(shot).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 82 }); shot++; }
   if (f % 30 === 0) console.log('t', (f / 30).toFixed(1), JSON.stringify(s));
+  if (s.pb) console.log('PUTBACK frame', f, 'shot', shot, 't', (f / 30).toFixed(2));
   if (s.x > setup.pair[1][1] + setup.pair[1][2] + 160 && crossedAt < 0) { crossedAt = f; }
   if (crossedAt >= 0 && f > crossedAt + 30) break;
 }

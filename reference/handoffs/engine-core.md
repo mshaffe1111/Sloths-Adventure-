@@ -2,6 +2,30 @@
 
 Rewritten at the INT-12 merge (11-18, t-int-12); §0zo-285 ENG-285 added 11-18 night (one air model, the press climb, one liana clock). Four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zp-284. FIX-284 + FIX-284b (t-fix-284 from t-int-12 ce4ad461 + ENG-285b ba6b225b, 11-19; this entry 3:32 PM ET): 2-2's big pads, the hop, the breath aim, the put-back's cut
+- **Big pad 180 px (R-165.284, the lead's show-first 2:37 PM):** rideLay PAD_SIZES.big.w 180 (2.02 Pokeys of drawn height 89.1). Art = floor
+  on every stood-on pond piece: riverArt POND_ART carries each piece's measured painted `top` (padtop.py), pondBox/pondTopSpan lay it on
+  the floor (mirrored too); padPiece's blanket `width * 1.15` is gone. A pad's `look` is its size (beat rows told by `pad.by`): never
+  guess big from width. Pinned: padArt.test.ts.
+- **The hop (padHop.test.ts, hopReal.ts):** a touch flick is a full jump (19 frames, 175 px at a run); the Pad tap (PAD_HOP_MS) 13 frames,
+  119 px; held 20 frames, 184 px. castBots `--input fake|touch|pad` (default fake; switching the default + tierBots recalibration is the
+  lead's own R-row) and `--rows`.
+- **breathAim.ts (respawn phase lock, ruling A 2:51 PM):** at every put-back (respawnAtCheckpoint, iris shut) each beat row within 1600 px
+  ahead is turned on its breath to have just risen 0.1 s before he reaches its mark (100 px before its first pad): first at the soonest
+  (full run at once), after that with the lag he really took last time (noteArrivals; `breathLags` follow him to any flag). Failed first:
+  aim-at-soonest every try (its own lockstep for slow players: kid N 18 -> 6/40) and a golden-share turn (hands some tries a bad moment;
+  the clip drowned on its 2nd try). Proven: padRide.test.ts "breath toy" (RED without: breath-plant.txt), breathAim.test.ts.
+- **A put-back is a cut (FIX-284b, the lead's polish item):** the world HOLDS through the down beat (DOWN_SECS 0.75), so a drowning's
+  "SPLASH!" (0.8 s) and spray (0.55-0.7 s) kept their whole life and showed on 2-2's risen pad as the iris opened; only words within
+  160 px of the flag were dropped. Now respawnAtCheckpoint calls `clearScreenFx()`: every floating word and every particle (spray,
+  sparks, puffs, feathers, stars, hearts, a beaten animal's tumble) ends there, every stage and every caller (a lost life, heartToFlag,
+  startAtFlag); the lives note is added after it. Pinned: respawnClears.test.ts (2-2 water + 1-1 pit, RED 2/2 before). TRAP: RealPlay
+  stubs addFloatingText / spawn* as COSMETIC (realPlay.ts:133), so a test of the screen's words must restore them from the prototype.
+- **Clips:** reference/qa-reports/FIX-284/cliprespawn.mjs `<port> <dir> up|side fast|slow` (slow stands 1.5 s at the flag after each
+  put-back; logs PUTBACK frame/shot for same-moment stills). Report and tables: reference/qa-reports/FIX-284/REPORT.md.
+- Open: kid N 27/40 touch on 2-2 and child N touch 39/40 (deep22 run-offs; accepted, R-165.306, the Designer's); shoot.mjs (kitaudit)
+  pins p.y = top - height but p.y is his feet: its stills float him 48 px (Content's tool).
+
 ## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
 - **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against
   vx > 20) for EVERY caller; the `turn` switch and flyLaunch's `turn` are gone. Back-swing hops carry 4-28.5 px further (median 22-28,
