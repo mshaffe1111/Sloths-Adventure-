@@ -160,3 +160,45 @@ rests; one more log-to-liana catch; flagSpan derived), 4:45 PM ET ((B): a third 
 level.md rules 13, 14, 19, 20, 26, 28, 29; D19, D30, D59 (running gates named UNRUN), D76 (context), D86 (the full list on the final head:
 not reached; named). Method update: castBots/tierBots plants that expect "rescued" should name the skill's own effect (lives, time),
 never a rescue, which a bot defect can supply.
+
+# BUILD-24c (packet reference/packets/2026-11-19/BUILD-24c.md): finish 2-4 on the real raft and glow; IN PROGRESS (section written 2:29 PM ET 11-19, updated at each step)
+Branch t-build-24c: base t-build-24 38f9b929 + ENG-24c 1f5c4008 (merged 50ce4eca: engine-core.md both sections, ENG-24c's as §0zn;
+calibration-main.jsonl took ENG-24c's rows, recalibrated on the final head) + ENG-285 final model t-eng-285 ba6b225b (merged 2a3e061a:
+8 conflicts: listed/stageTable/gates.yml/judgedTable unions of 1-9 and 2-4; flagSpan keeps owedWalk; physics.ts ENG-285's pressClimb +
+ENG-24c's `call` field; riverLay ENG-285's split (no `, true`); letGoCue CUE.climbFrames 0 per the MERGE NOTE; engine-core.md both).
+
+## Done (each planted; stills in reference/qa-reports/BUILD-24c/stills/)
+1. Raft wired (slow24 look 'raft'). FOUND: ENG-24c's raft-sheet preload asked GEN2_STAGES only; 2-4 is a LISTED stage, so 2-4 never loaded
+   'kit-pieces' (the raft would have shown as a log). Fixed in stageSheets.ts (listed stages ask their kit); riverRaft.test planted (RED on
+   the old stageSheets). Stills: raft-ride-2-4-N-E-up-side.jpg (Pokey on the painted raft, deck under his feet).
+2. flagSpan tsc: already fixed by BUILD-24b 557c363b.
+3. Pink specks in the soil = World 2's falling-petal WEATHER drawn over the whole screen (scenery renderWeather), not a pickup (1,808 pickups,
+   L1-16 both settings, 0 inside a floor: BUILD-24c/soilprobe.ts). Petals and leaves now drift BEHIND the stage (renderDrift after the
+   backdrop); World 5's own petals (w5Play) the same (drawDrift). weatherDrift.test 4/4 (planted).
+4. Grey wall / dark strip / pale patch under every river bank (LIVE 2-1, 2-2 too) = the backdrop through the gap where the bank's painted
+   cliff tapers in and the river stopped at the bank's edge: the river's water, bed and soil run RIVER_UNDER_BANK 140 px under a bank that
+   meets it (engine riverUnderBanks, behind pass only). Stills before/after (7 banks).
+5. Grass underground = the frame's code-drawn foot clumps (envKit reeds/rocks, flora fernFrond, artKit drawBananaLeaf). Upright: none on a
+   stage. SIDEWAYS: off on this branch too, WAITING ON MATT (the lead asks him; pair at stills/frame-plants-sideways/, same frame: shoot.mjs
+   FREEZE). The first pair's faded Pokey was an idle-pose cross-fade on the real clock, not an alpha leak (instrumented). Planted.
+6. letGoCue.test 4 re-pinned to ba6b225b (the lead's ruling 2:23 PM ET; old/new numbers in its comment).
+7. ROOT B (the lead's ruling 2:27 PM ET): noLand24 speed 100 gap 64 (log clock 2.14 s vs swing 2.85 s; was 2.78 s), noLand24Easy speed 80
+   logW 150 gap 60 (2.63 s vs 3.3 s; was 3.09 s). Judge waits 0.20 / 0.13 swings. Bots (lianaWait.ts) before: beat 6 at the 14 s cap.
+8. drawcheck PASS (dbee343a, 17 scenarios both ways, 694 s): 2-4 side 5.75 screens / 1.00 gradients / 1057 fill; 2-2 side gradients 2.00 (at
+   the limit; not compared to base).
+
+## Open (named)
+- letGoCue.test 1 RED since the ENG-285 merge: the glow lit over water on 29 frames (long normal). ENG-285b diagnoses; BUILD-24c applies.
+- 2c: every liana beat is boardable from the bank (riverLay lays +1 logs out from under the near bank's lip); forcing the liana needs an
+  engine field; lead's ruling pending.
+- The bots' longest liana wait (the bot's one-phase let-go): relay and Easy lianas 9-14 s; the bar moves to a judge job (RIVER-CLOCK, the
+  lead's ruling (b)); per liana / per bot figures to be pasted after the relist.
+
+## EXACT NEXT STEP (if this session stops)
+1. Relist 2-4 (`npx tsx tools/engine/seedlist.ts 2-4 --count 100`) on t-build-24c's head; commit seeds-2-4.ts + provenIndex.
+2. `ROWS= npx tsx reference/qa-reports/BUILD-24c/lianaWait.ts normal 1-4` and `easy 1-4`: paste per-liana worst holds here.
+3. Apply ENG-285b's glow fix; letGoCue.test green.
+4. castBots 2-4 1-40 x5 bots x both; tierBots recal (reference/qa-reports/BUILD-24/recal.ts) + recommit calibration-main.jsonl.
+5. The CLAUDE.md list once on the final head + funcheck, tipwalk, registrycheck, coveragecheck, every list --check, lockall vs main
+   (main's lock: regenerate on origin/main with --out; --intended 2-4), meter 2-4 N/E.
+6. Stills/clips on the final head (stills24.mjs / clip24.mjs; shoot.mjs FREEZE for pairs).
