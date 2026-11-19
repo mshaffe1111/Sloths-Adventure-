@@ -22,6 +22,9 @@ The branches, in this ORDER (engine-only first, then the model change, then the 
 5. t-fix-284: 2-2's big pads (~2 Pokeys, art = floor) + the real tap hop (2-1/2-2 relisted).
 6. t-var-19: 1-9's variety (relisted on ENG-285's model).
 7. t-build-24c: 2-4 finished (carries t-build-24, t-eng-24c, t-meter-3, ENG-24, and ENG-285's step-1 model).
+MERGE NOTE (ENG-285, 8:12 PM): where t-eng-24c meets it, riverLay letGoFall/fallOnLog are ENG-24c's split word for word: take
+ENG-285's (no `, true`); letGoCue's CUE.climbFrames goes to 0 (pressLaunchesFrom now climbs inside: double count otherwise); re-run
+letGoCue.test.
 Conflicts: name each and how resolved; gates.yml gets every branch's new step; seed lists and locks: the branch that owns the stage wins
 (1-9 VAR-19; 2-1/2-2 FIX-284; 2-4 BUILD-24c; every other stage ENG-285's relist). After ALL merges: seedlist --check every listed stage
 and RELIST any a later merge invalidated (say which and why); ONE recalibration per BOTS.md (reference/qa-reports/R-165.59/BOTS.md:

@@ -19,6 +19,10 @@ any conflict and how you resolved it.
    bank a grey void and a dark strip show between the bank's cliff and the river's bed band (a hard vertical seam at the join), and tall
    grass blades are drawn over the soil band at the screen bottom (grass growing underground). Find the cause in the river/bank join (is
    it in layRiver, shared with LIVE 2-1/2-2? look at both stages' joins upright too), fix at the source, plant it, stills before/after.
+ENG-285's step-1 model is t-eng-285 @ 818319b3 (11-18 8:12 PM ET; or the later hash the lead sends that adds 1c, the one liana clock).
+MERGE NOTE (ENG-285, 8:12 PM): where t-eng-24c meets it, riverLay letGoFall/fallOnLog are ENG-24c's split word for word: take
+ENG-285's (no `, true`); letGoCue's CUE.climbFrames goes to 0 (pressLaunchesFrom now climbs inside: double count otherwise); re-run
+letGoCue.test.
 2. When the lead sends ENG-285's step-1 hash (the judge model that flies the press frame and the turn push; expected late morning),
    merge it, THEN Root B: noLand24's log gap so its clock sits about half a log off the liana's 2.85 s swing (today 2.78 s: nearly locked,
    a missed phase waits ~14 s). Flown and judged on the NEW judge (D40: never tune on the model being replaced); the bots' longest liana
