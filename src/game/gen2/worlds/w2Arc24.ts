@@ -88,9 +88,14 @@ export const RIVERS_24 = {
   twin24: { ...W2_RIVERS.twin, safe: true },
   /** its Easy twin: `deep`'s slower, longer logs (at `long` or `twin` Easy's judge waits 0.63-0.70 s on the vine, over its 0.6 s) */
   twin24Easy: { ...W2_RIVERS.deep, safe: true },
-  /** beat 6, no land: ONE river under two lianas (liana, log, liana, log), DEEP on Normal; its Easy twin the `deep` logs, splash-back */
-  noLand24: { ...W2_RIVERS.twin, logs: 5 },
-  noLand24Easy: { ...W2_RIVERS.deep, logs: 5, safe: true },
+  /** beat 6, no land: ONE river under two lianas (liana, log, liana, log), DEEP on Normal; its Easy twin the `deep` logs, splash-back.
+   *  ROOT B (BUILD-24c, the lead's ruling 2:27 PM ET 11-19): the log clock sits off the liana's swing, so a missed phase comes round again
+   *  in a swing or two. At `twin`'s 80 px/s it was 222/80 = 2.78 s against the 2.85 s swing (nearly locked: the bots waited the 14 s cap
+   *  on both lianas); 214/100 = 2.14 s now (2.85 mod 2.14 = a third of a log). Easy: `deep`'s 232/75 = 3.09 s against its 3.3 s swing,
+   *  now 210/80 = 2.63 s (a quarter off: the most within Easy's 80 px/s log-catch cap, LIANA_RIVER.easyCatch, riverFaults' 60 px gap
+   *  and never harder than Normal's row). Measured: reference/qa-reports/BUILD-24c */
+  noLand24: { ...W2_RIVERS.twin, logs: 5, speed: 100, gap: 64 },
+  noLand24Easy: { ...W2_RIVERS.deep, logs: 5, safe: true, speed: 80, logW: 150, gap: 60 },
   /** beat 8, the long relay: the gap is the knob, 200 then 280 px of water between logs (51%, 41%: wait up to a swing), DEEP */
   gap200: { dir: 1, speed: 100, logW: 150, logs: 3, gap: 200 },
   gap280: { dir: 1, speed: 110, logW: 150, logs: 2, gap: 280 },
