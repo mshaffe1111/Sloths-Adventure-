@@ -72,6 +72,7 @@ import { sampleRoute } from './beats.ts';
 import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
+import type { FollowPlay } from '../../src/game/followPlay.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -87,6 +88,16 @@ export const CLOCK_SKILL = { read: true };
  * are up (padRide.test.ts 'the spur').
  */
 export const PAD_SKILL = { keepHopping: true, waitRise: true, breath: true, outBack: true };
+
+/**
+ * The bot's skills with the little ones that follow him home (ENG-23; 2-3.md "Bot skills"; level.md rule 21, toys first:
+ * tools/inspect/lineBot.test.ts plants each off -> RED). Read off what a person sees: the heron's warning and its look (followPlay.ts
+ * Heron, its '!' and the pale wash on the ground) and where the little ones are. WAIT-FOR-THE-TAIL: on a watched stretch, in the reeds he
+ * walks to their far end and stands while a heron warns or looks, and goes on only right after a look has ended with the whole line in
+ * the reeds and still (2-3.md: "go right after a look"). FETCH-THE-SPOOKED: one the heron spooked, hiding where it ran to, he walks back
+ * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home.
+ */
+export const LINE_SKILL = { waitTail: true, fetch: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -1086,6 +1097,11 @@ export class FirstTimerRun {
   private stillT = 0;
   private hideFrom = -1;
   private warnSeenAt = -1;
+  /** the little ones' herons: whether one warned or looked last frame, when the last look ended, and the reeds he decided to leave */
+  private lineLooking = false;
+  private lineLookEnd = -Infinity;
+  private lineGo: unknown = null;
+  private lineWait: unknown = null;
   /** when the kit eagle's look over his stretch began (its screech), or -1 */
   private castWarnAt = -1;
   /** when a watcher's head began to turn toward him (its glance), or -1 */
@@ -1888,6 +1904,69 @@ export class FirstTimerRun {
     return d > 400;
   }
 
+  /**
+   * The little ones (followPlay.ts), LINE_SKILL: a spooked one hiding where it ran to, he goes back for; in the reeds on a watched
+   * stretch he waits for the tail and goes right after a look. Null: nothing to do with them this frame (the route goes on).
+   */
+  private lineMove(p: PlayerState, t: number, fdir: -1 | 1, side: (d: -1 | 0 | 1) => Pad): Pad | null {
+    const fp = this.e.follow as FollowPlay | null | undefined;
+    if (!fp) return null;
+    const mine = fp.herons.filter((h) => p.x >= h.z.x0 - 40 && p.x <= h.z.x1 + 40);
+    // (a warning or a look over his stretch: he does not leave the reeds; while it LOOKS he stands still, as the line must)
+    const warned = mine.some((h) => h.s.phase === 'warn' || h.s.phase === 'pass');
+    const look = mine.some((h) => h.s.phase === 'pass');
+    if (this.lineLooking && !warned) this.lineLookEnd = t;
+    this.lineLooking = warned;
+    if (LINE_SKILL.fetch) {
+      // (back for it once the heron has looked away: walking back under its look, the line he leads back is seen moving)
+      const lost = fp.line.find((f) => f.state === 'spooked' && f.back);
+      if (lost && Math.abs(lost.x - p.x) > fp.row.rejoin - 20) {
+        this.lineGo = null;
+        this.lineWait = null;
+        if (look && LINE_SKILL.waitTail) return {};
+        return side(lost.x > p.x ? 1 : -1);
+      }
+    }
+    if (!LINE_SKILL.waitTail || !p.grounded) return null;
+    if (!mine.length) return null;
+    const inner = (b: { x: number; w: number }) => p.x > b.x + 10 && p.x < b.x + b.w - 10;
+    const here = fp.stage.covers.find((b) => !b.secret && !b.hanging && inner(b) && Math.abs(b.y - p.y) < 14);
+    // (his thumb came off late and he slid out past the reeds he meant to wait in: back into them)
+    const wait = this.lineWait as { x: number; w: number } | null;
+    if (!here && wait && this.lineGo !== wait) {
+      const past = fdir > 0 ? p.x - (wait.x + wait.w - 10) : wait.x + 10 - p.x;
+      if (past > 0 && past < 150 && !look) return side(fdir > 0 ? -1 : 1);
+      this.lineWait = null;
+    }
+    if (!here) {
+      this.lineGo = null;
+      return null;
+    }
+    // (he decided to go from these reeds: on, until he is out of them)
+    if (this.lineGo === here && !warned) return null;
+    this.lineGo = null;
+    this.lineWait = here;
+    if (look) {
+      this.hiding = true;
+      return {};
+    }
+    const inLine = fp.line.filter((f) => f.state === 'follow' || f.state === 'join');
+    const allIn = inLine.every((f) => f.state === 'follow' && !f.moved && f.x > here.x + 10 && f.x < here.x + here.w - 10);
+    if (!warned && allIn && t - this.lineLookEnd <= 1.2 + this.who.heed) {
+      this.lineGo = here;
+      this.lineWait = null;
+      return null;
+    }
+    // (far enough into the reeds that the whole line fits in behind him, and no further: his thumb comes off late, and every step back
+    // he takes the line walks too, to where he turned; there he stands)
+    const n = fp.line.filter((f) => f.state !== 'home').length;
+    const fit = Math.min(here.w - 60, 10 + fp.row.gap * n + 10);
+    const lo = fdir > 0 ? here.x + fit : here.x + here.w - fit;
+    if ((lo - p.x) * fdir > 0) return side(fdir);
+    this.hiding = true;
+    return {};
+  }
+
   /** what Dot has had on screen long enough for him to take in */
   private takeIn() {
     for (const s of [...this.dot.up(), ...this.dot.shown.slice(-4)]) {
@@ -2021,6 +2100,10 @@ export class FirstTimerRun {
     // the rolling nut and the bouncing fruit, read at a glance as they come at him
     const rolled = this.rollPlan(dir, side);
     if (rolled) return rolled;
+
+    // the little ones following him home (2-3): back for a spooked one, and the tail waited for in the reeds (LINE_SKILL)
+    const line = this.lineMove(p, t, fdir, side);
+    if (line) return line;
 
     // the watching eagle: once told how to hide, he heads for the nearest bush a second after its cry, and stays down until it has gone
     const w = e.proto?.watch ? e.watch : null;
@@ -3325,7 +3408,9 @@ export class FirstTimerRun {
           this.turnBacks++;
         }
       }
-      if (!this.hunt) this.sealedT += DT;
+      // (a door that opens on the little ones home: while one is still on its way to it, he waits for it, LINE_SKILL.fetch)
+      const coming = LINE_SKILL.fetch && ((this.e.follow?.line ?? []) as Array<{ state: string }>).some((f) => f.state === 'follow' || f.state === 'join');
+      if (!this.hunt && !coming) this.sealedT += DT;
     }
     if (p.grounded) this.ground = { x: p.x, y: p.y };
     if (p.x > this.maxX) this.maxX = p.x;

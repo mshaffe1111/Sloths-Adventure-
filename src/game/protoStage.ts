@@ -176,6 +176,12 @@ export interface ProtoExtras {
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
+  /**
+   * the little ones freed from its cages follow him home (2-3 "Walk Them Home": follow.ts, run by followPlay.ts): the world's follow row
+   * (World 2's W2_FOLLOW). On such a stage the watched stretches are herons that read the line, never him, and the goal counts the little
+   * ones home, not freed (goals.ts rescueCount)
+   */
+  follow?: import('./follow.ts').FollowRow;
   /** World 4's rocks, patience spots, falls and pools, chimes, Dot's knots, capuchins and fruit (w4Play.ts) */
   w4?: import('./w4Play.ts').W4Extras;
   /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */

@@ -37,7 +37,7 @@ import { pickCut } from './w1CutArt.ts';
 import { easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
-import { countedGoal, withGoals } from './goals.ts';
+import { countedGoal, rescueCount, withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
@@ -220,6 +220,8 @@ import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pus
 import { drawClusters } from './vineFieldArt.ts';
 import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
+import { FollowPlay } from './followPlay.ts';
+import { drawFollowers, drawHerons } from './followArt.ts';
 import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
@@ -808,6 +810,8 @@ export class GameEngine {
   private goalSaid = { start: false, late: false };
   /** the watching eagle (1-7: watcher.ts): its rhythm, the eagle drawn for it, where it was when it saw him, and rustling bushes */
   private watch: WatchState = newWatch();
+  /** the little ones that follow him home and the herons that watch them (2-3: proto.follow, followPlay.ts); null on every other stage */
+  follow: FollowPlay | null = null;
   private watchEagle: Enemy | null = null;
   private watchFrom = { x: 0, y: 0 };
   private bushRustle = new Map<number, number>();
@@ -1067,6 +1071,7 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
+    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
@@ -2912,6 +2917,7 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
+        this.follow?.setBack();
         p.vx = 0;
         p.vy = 0;
         p.grounded = true;
@@ -2923,6 +2929,7 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
+        this.follow?.setBack();
         p.vx = 0;
         p.vy = 0;
         p.grounded = true;
@@ -3267,7 +3274,9 @@ export class GameEngine {
     }
 
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
-    if (this.proto?.watch) this.updateWatch(dt);
+    // (a stage whose little ones follow him home: its watchers read THEM, never him, followPlay.ts)
+    if (this.follow) this.updateFollow(dt);
+    else if (this.proto?.watch) this.updateWatch(dt);
     if (this.tide) this.updateTide(dt);
     if (this.proto?.reveal) this.updateReveal(dt);
     if (this.ringDrops.length) this.stepDrops(dt);
@@ -3479,7 +3488,7 @@ export class GameEngine {
         currentProgress = p.relicsFound;
         break;
       case 'rescue':
-        currentProgress = p.crittersRescued;
+        currentProgress = rescueCount(p.crittersRescued, this.follow?.home());
         break;
       case 'gauntlet':
         currentProgress = p.enemiesDefeated;
@@ -4448,6 +4457,8 @@ export class GameEngine {
     c.collected = true;
     c.freedAt = this.gameTime;
     this.player.crittersRescued++;
+    // (2-3: the little one drops out and follows him; the goal counts it once it is home, rescueCount)
+    if (this.follow && c.critter && c.critter !== 'eaglet') this.follow.free(c.critter, { x: c.x, y: c.y }, this.landUnder(c.x, c.y + 26));
     this.runScore += 400;
     sound.playCritterRescued();
     this.addFloatingText('+400', c.x, c.y - 30, '#c084fc');
@@ -5979,6 +5990,8 @@ export class GameEngine {
    * for 30-35 s and until it was off screen (regrow.ts), and from the ledge he was set back on it could be in view for good.
    */
   private crumbledWhole() {
+    // (every set-back re-forms the little ones' line behind him where he comes back, followPlay.ts)
+    this.follow?.setBack();
     for (const pl of this.platforms) {
       if (pl.type === 'fragile') {
         pl.broken = false;
@@ -7457,7 +7470,7 @@ export class GameEngine {
         return;
       }
       // World 2's painted reed cages, and the little one hopping home once it is free
-      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
+      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime, false, !!this.follow)) return;
       // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
       if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
@@ -7593,7 +7606,8 @@ export class GameEngine {
       const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
-    if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.proto?.watch && !this.follow) this.drawWatchBack(ctx);
+    if (this.follow) drawHerons(ctx, this.follow, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
     if (this.cast?.sweepers.length) this.drawCastSky(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
@@ -7633,6 +7647,8 @@ export class GameEngine {
     // withWash); never outside cover (castPlay.ts calmNow), so it never says 'hidden' where the eagle sees him
     const moss = this.cast && !kitPose ? this.cast.calmNow(this.easy) : 0;
     const mossWash = moss > 0 ? `rgba(${MOSS_TINT.rgb}, ${(MOSS_TINT.alpha * moss).toFixed(3)})` : null;
+    // (the little ones walk behind him, under the reeds: the bushes are drawn over them, so in a clump they are hidden)
+    if (this.follow) drawFollowers(ctx, this.follow, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
     // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
     if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
@@ -7726,7 +7742,7 @@ export class GameEngine {
     ctx.restore(); // end world transform
     // (the stage's runtime pieces in screen px, with the chase and watch edges: layer 'screen')
     if (this.pieces.length) drawPieces(this.pieces, ctx, 'screen', this.pieceHost);
-    if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.proto?.watch && !this.follow) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -8623,6 +8639,57 @@ export class GameEngine {
   /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
   private watchVoiced = 0;
 
+  /**
+   * A stage whose little ones follow him home (proto.follow, 2-3): the line and its herons (followPlay.ts), started from the stage's own
+   * data. Every other stage: none. (Public: a toy test sets a bare stage's proto and starts it again, follow.test.ts.)
+   */
+  startFollow() {
+    const row = this.proto?.follow;
+    if (!row) {
+      this.follow = null;
+      return;
+    }
+    const st = this.currentStage;
+    const p = this.player;
+    const safeWater = [
+      ...(st.rivers ?? []).filter((r) => r.safe).map((r) => ({ x0: r.x0, x1: r.x1, y: r.surfaceY })),
+      ...(st.waterY !== undefined ? (st.safeWater ?? []).map((w) => ({ x0: w.x0, x1: w.x1, y: st.waterY! })) : []),
+    ];
+    this.follow = new FollowPlay(row, this.easy, {
+      exitX: st.exitTotemX,
+      dir: this.mode.travel === 'left' ? -1 : 1,
+      zones: this.proto?.watch ?? [],
+      covers: this.proto?.bushes ?? [],
+      platforms: this.platforms,
+      safeWater,
+    }, { x: p.x, y: p.y });
+  }
+
+  /** where a little one dropping from (x, y) lands: the first still ground or splash-back water under it */
+  private landUnder(x: number, y: number): { x: number; y: number } {
+    let best = Infinity;
+    for (const pl of this.platforms) if (pl.type === 'solid' && !pl.pad && x >= pl.x && x <= pl.x + pl.width && pl.y >= y - 4 && pl.y < best) best = pl.y;
+    for (const w of this.follow?.stage.safeWater ?? []) if (x >= w.x0 && x <= w.x1 && w.y >= y - 4 && w.y < best) best = w.y;
+    return { x, y: best === Infinity ? y : best };
+  }
+
+  /** the line and its herons, once a frame after he has moved (followPlay.ts); the herons never read him and never cost a heart */
+  private updateFollow(dt: number) {
+    const f = this.follow!;
+    const p = this.player;
+    const on = this.platforms.find((pl) => pl.id === this.standingOnId);
+    const ev = f.step(dt, p, p.grounded ? on : undefined, Math.random);
+    if (ev.warned) {
+      // (the heron's cry and the alarm over his head, as every watcher's warning: no words floating in the world; Dot's lines are the
+      // story keeper's)
+      sound.playEagleScreech();
+      this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
+      this.input.triggerHaptic(120);
+    }
+    for (const s of ev.spooked) this.addFloatingText('!', s.x, s.y - 50, '#fde68a');
+    if (ev.homed) sound.playCritterRescued();
+  }
+
   private updateWatch(dt: number) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
@@ -9266,6 +9333,18 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      // (World 2's reed clumps, 2-3: riverArt.ts; before the sheet loads, a low green mound)
+      if (b.kind === 'reeds') {
+        if (!drawReedClump(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) {
+          ctx.save();
+          ctx.fillStyle = '#4d7a35';
+          ctx.beginPath();
+          ctx.ellipse(b.x + b.w / 2, b.y - 30, b.w / 2, 36, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        continue;
+      }
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && b.kind !== 'moss' && b.kind !== 'mossPatch' && b.kind !== 'mossHang' && drawW4Bush(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)

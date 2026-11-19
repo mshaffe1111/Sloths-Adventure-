@@ -1,6 +1,26 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0ENG23. ENG-23 (t-eng-23 from main 6e7b85f8, 11-18): followers, "bring N home", the heron reads the line
+- **Where it lives:** src/game/follow.ts (pure: trail, stepLine, join / spook / rejoin / regroup / home, zoneLookX, lineSeen),
+  src/game/followPlay.ts (the per-stage glue: his mode each frame, set-backs, one heron per proto.watch stretch), src/game/followArt.ts
+  (the draw), engine.ts startFollow / updateFollow / landUnder (a follow stage never runs updateWatch: the eagle is off there),
+  goals.ts rescueCount (the ONE count the door and the HUD read: home, not freed), gen2/lineFaults.ts (the builder's check), w2.ts
+  W2_FOLLOW, riverArt.ts drawReedClump (Bush.kind 'reeds'), tools/inspect/firsttimer.ts LINE_SKILL (+ lineBot.test.ts in gates.yml).
+- **A stage turns it on with data only:** proto.follow (a FollowRow). Its watch zones become herons that read the line (never him, never
+  a heart); WatchZone.lag starts a second heron late; WatchZone.setback (else the stretch's start) is where a spooked one hides.
+- **His drops (the lead's ruling 3:01 PM ET 11-18):** every air stint, his hop or a walk off an edge, is his path; at the landing the
+  trail judges it: down more than FollowRow.step (World 2: 90, a bank's lip) and the take-off becomes a WAIT. Toys 7-8.
+- **Rules the toys forced (keep them):** a little one never rests mid-hop (finish it, or wait at the take-off: airSpan); a spooked one
+  keeps its place (slot) until the look ends, or the one behind is seen closing up; rejoin only once it has run back; it scampers
+  STRAIGHT back over his ground (trailYAt), never through his trail's history (he doubles back to fetch); paddling pins y to the surface.
+- **Traps:** path replay means his own step back pulls the line to where he turned (the bot stops where the line fits, not at the far
+  end). Any jump of him > 150 px in a frame is a set-back (regroup): a test that teleports him regroups the line. The page's touch layer
+  owns the jump press: a page script cannot hop him by input.triggerTouchUp (stills.mjs stages his path as a ready trail instead).
+  safeWindow (lineFaults) flies FollowPlay itself: change the line, and the check moves with it.
+- **Open:** the HUD faces (mock-up only, SHOW FIRST: reference/qa-reports/ENG-23/stills/HUD-MOCK-*.webp); a `line` meter channel; the
+  heron's own call and head-up pose (art asks); 2-3 itself (its builder lays it: REPORT §4 lists what it needs).
 
 ## 0zm-22p. ART-22P (t-art-22p, 11-18): CI checks the proven seed lists in parallel jobs (R-165.278)
 - gates.yml `seedplan` runs `registrycheck.ts --shards --print` (stdout the matrix [1..n], stderr each shard's lists); `seedlists`
@@ -114,7 +134,7 @@ Rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the sam
 - Toy clips: tools/engine/runs/boaClip.mjs (freeze|late|roost, up|side). Trap: GoalCard holds on real time; poke it (a key) before the run.
 - Open: the roost art (REPORT step 1, tools/art/hf19), its draw, the red glow under a beaten boa, the kit boa's missing body block.
 
-## 0zl. TIME-168 (t-time-168 from origin/main@6e7b85f8, 11-18): the time-stamp gate (R-165.168)
+## 0zl-168. TIME-168 (t-time-168 from origin/main@6e7b85f8, 11-18): the time-stamp gate (R-165.168)
 - `tools/timecheck.mjs` (+ `tools/timecheck.test.mjs` on gates.yml's tools tsx line; the run is after roadmapcheck): a dated ET
   time a commit adds to STATE, LESSONS, handoffs, packets or a qa-reports REPORT.md may not be later than that commit (+2 min).
   Lines are blamed at the head over the FULL history (`-w -M -C`) and kept only if `rev-list` puts their commit in the range: a

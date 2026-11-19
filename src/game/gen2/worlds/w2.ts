@@ -32,12 +32,22 @@ import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, So
 import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
+import type { FollowRow } from '../../follow.ts';
 import { W1_KIT } from './w1.ts';
 import { W1_LIANA_GAP } from './w1Swing.ts';
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
 export const W2_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
 type R2 = [number, number];
+
+/**
+ * World 2's little ones that follow him home (2-3 "Walk Them Home", reference/design/2-3.md "follow.ts: the engine packet's contract":
+ * `FOLLOW = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60 }`, flown in reference/specs/sims/follow23.ts). `home`
+ * is the lead's number (ENG-23, ruled 2:10 PM ET 11-18; to be flown on the real 2-3 by its builder): a bunched five stands 170 px behind
+ * him (5 x 34), so at the door all five are past the families' jetty 200 px before it. `step`: they follow him down a step up to a
+ * bank's depth (the lead's ruling 3:01 PM ET 11-18: a stair, a bank's lip); deeper, they wait at the lip. A stage lays it as proto.follow.
+ */
+export const W2_FOLLOW: FollowRow = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60, home: 200, step: W2_GROUND.bankH };
 
 /**
  * The inventory rows World 2's pieces are drawn as (src/game/art/inventory/w2.json; the engine's World 2 kit painter and river art draw

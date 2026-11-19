@@ -15,8 +15,9 @@ export interface Bush {
   x: number;
   w: number;
   y: number;
-  /** 'grotto': World 3's fern (w3Art.ts); 'moss' a moss carpet, 'mossPatch' a moss mound, 'mossHang' hanging moss (World 1's 1-7, w17Art.ts) */
-  kind: 'tall' | 'wide' | 'fern' | 'grotto' | 'moss' | 'mossPatch' | 'mossHang';
+  /** 'grotto': World 3's fern (w3Art.ts); 'moss' a moss carpet, 'mossPatch' a moss mound, 'mossHang' hanging moss (World 1's 1-7, w17Art.ts);
+   *  'reeds' World 2's reed clump (2-3's little ones hide in it: riverArt.ts drawReedClump) */
+  kind: 'tall' | 'wide' | 'fern' | 'grotto' | 'moss' | 'mossPatch' | 'mossHang' | 'reeds';
   hanging?: boolean;
   /** the bush in front of the hidden hollow: not a hiding place (there is no ground under it) */
   secret?: boolean;
@@ -47,6 +48,11 @@ export interface WatchZone {
    * back to this x (the bough's start), no heart lost. Time the run for the doze
    */
   setback?: number;
+  /**
+   * a second watcher over the same stretch, out of step with the first (2-3's two herons, 2-3.md beat 7): its rhythm starts this many
+   * seconds later. Read only where the watcher reads the little ones that follow him (followPlay.ts), never by the eagle's one rhythm
+   */
+  lag?: number;
 }
 
 export const WATCH = {
