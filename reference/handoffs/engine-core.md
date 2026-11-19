@@ -24,7 +24,9 @@ Rewritten for ENG-26b (11-18, t-eng-26): section 0zn (the wheel finished: flight
   safe pond); an unflown row is refused ('move:wheel'). meter-coverage.json `move:wheel` (bot SKILLS.rideWheel). Planted:
   tools/difficulty/wheelChannel.test.ts (in gates.yml's tool line).
 - **Open:** the painted wheel (ART-W2B; wheelDraw.ts is still flat code boxes, brown on brown in the toy); the toy tower stands inside
-  earth columns (its storeys are 90 px banks), not 2-6's look; step 8 (re-fly after ENG-285's in-air turn).
+  earth columns (its storeys are 90 px banks), not 2-6's look; step 8 (re-fly after ENG-285's in-air turn); travelling RIGHT on the page
+  (`?fixture=wheel-right` lays no wheel: the toy run has no graph, and the toy tower turns left on every seed 1-300); 2-1's proven list
+  is RED on this base and on 908ee7e5 alike (6 seeds replay differently: rebuild it), not the wheel's.
 
 ## 0zm. ENG-26 (t-eng-26 from t-meter-3@42459a5c, 11-18): the water wheel (2-6 NEW 1-2); what the next engineer and the 2-6 builder must know
 - **The wheel (src/game/wheel.ts, pure):** `{cx, cy, R, N, W, V, way, phase?, lay?}`; bucket i's floor `bucketAt(w, i, t)`; its TOP moves `way`
