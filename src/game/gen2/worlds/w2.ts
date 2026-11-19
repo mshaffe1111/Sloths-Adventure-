@@ -33,6 +33,7 @@ import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
 import type { FollowRow } from '../../follow.ts';
+import type { WheelRow } from '../wheelLay.ts';
 import { W1_KIT } from './w1.ts';
 import { W1_LIANA_GAP } from './w1Swing.ts';
 
@@ -111,6 +112,27 @@ export const W2_PADS = {
   /** beats 9 and 12: deep water, held jumps between the sizes */
   deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
 } as const satisfies Record<string, PadRow>;
+
+/**
+ * World 2's water wheels (ENG-26; place `wheel` names a row; wheelLay.ts layWheel): 2-6's norias by its design (reference/design/2-6.md,
+ * "The wheel, FLOWN" and the arc), every row flown on the real engine (wheelFlights.data.ts; wheelFaults holds each to it). Buckets 120 px,
+ * the jetty's and the street's lips a log's step (28 px) from the bucket floor (wheel.ts WHEEL). Easy's rim speed is the flown V50-60
+ * (2-6.md: "Easy V x 0.85 (V50-60)"), V50 where Easy steps off by a walk at the sweep's edge.
+ */
+export const W2_WHEELS = {
+  /** beat 1, the teach: the street reaches in over the top (the buckets pass behind it: he is set down on it), the pond under it */
+  teach: { R: 160, V: 60, easyV: 50, N: 6, street: 'in' },
+  /** beat 5: the street at the sweep's edge, a step off as the bucket comes level (a miss rides round). Easy V50 (ENG-26b): Easy's floor
+   *  is the WALK-off (wheelLay.ts stepFault), flown 2.63 s a turn at V50 (2.2 s at V60) */
+  edge: { R: 180, V: 70, easyV: 50, N: 6, street: 'edge' },
+  /** beat 8, the twist: the street 80 px ABOVE the top bucket (Easy 60): only a jump off the top reaches it */
+  top: { R: 180, V: 70, easyV: 60, N: 6, street: 'up', up: { normal: 80, easy: 60 } },
+  /** beat 12, the great wheel: the last bank, the street in over the top */
+  great: { R: 200, V: 70, easyV: 60, N: 6, street: 'in' },
+} as const satisfies Record<string, WheelRow>;
+/** the stage World 2's wheels are flown on (wheelFlights.ts flyWheel: its RealPlay, the stage's own help in the flight): 2-6, the level of
+ *  the norias (reference/design/2-6.md) */
+export const W2_WHEEL_STAGE = '2-6';
 
 // ───────────────────────────── World 2's lianas (BUILD-21; as w1Swing.ts is World 1's) ─────────────────────────────
 /**

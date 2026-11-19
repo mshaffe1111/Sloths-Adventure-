@@ -1,0 +1,19 @@
+drop/long easy child: misses 0/5 runs, onto-log 2, from-log 2, piece 11.3 s, shrine 5/5
+drop/long easy middle: misses 0/5 runs, onto-log 5, from-log 0, piece 7.9 s, shrine 5/5
+/home/user/Sloths-Adventure-/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/Sloths-Adventure-/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/Sloths-Adventure-/tools/inspect/lianaRiverToys.ts:89:43)
+    at withFixtureConfig (/home/user/Sloths-Adventure-/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/Sloths-Adventure-/tools/inspect/lianaRiverToys.ts:89:14)
+    at withTestStage (/home/user/Sloths-Adventure-/src/game/gen2/listed.ts:90:12)
+    at lianaRun (/home/user/Sloths-Adventure-/tools/inspect/lianaRiverToys.ts:86:10)
+    at <anonymous> (/home/user/Sloths-Adventure-/reference/qa-reports/METER-3/lianaBots.ts:12:17)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.5

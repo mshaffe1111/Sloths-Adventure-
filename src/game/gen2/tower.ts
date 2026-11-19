@@ -94,7 +94,7 @@ export function reflectLocal(L: LocalLayout): LocalLayout {
       x: p.hang ? -p.x : -(p.x + p.w),
       ...(p.hang?.gap ? { hang: { ...p.hang, gap: [-p.hang.gap[1], -p.hang.gap[0]] as [number, number] } } : {}),
     })),
-    gaps: L.gaps.map((g) => ({ ...g, x0: -g.x1, x1: -g.x0 })),
+    gaps: L.gaps.map((g) => ({ ...g, x0: -g.x1, x1: -g.x0, ...(g.pond ? { pond: { ...g.pond, x0: -g.pond.x1, x1: -g.pond.x0 } } : {}) })),
     ...(L.asks ? { asks: L.asks.map((k) => ({ ...k, x0: -k.x1, x1: -k.x0 })) } : {}),
     exit: { ...L.exit, x: -L.exit.x },
   };
@@ -111,6 +111,8 @@ export function localExtent(L: LocalLayout, bankH: number): { x0: number; x1: nu
   // (its gaps' catch boughs are its own wood: a storey laid over other wood keeps its clearance from their undersides too (`low`),
   // and a turn lifts the lowest one's top (`hang`, px under its entry) a turn over the ledge he leaves, so no catch is a rung)
   for (const g of L.gaps) { const cy = gapCatchY(g); if (cy !== undefined) { hang = Math.max(hang, cy); low = Math.max(low, cy + 24); } }
+  // (a water wheel's pond is its own: the storey keeps its water clear of the wood under it, across its whole span; wheelLay.ts)
+  for (const g of L.gaps) if (g.pond) { x0 = Math.min(x0, g.pond.x0); x1 = Math.max(x1, g.pond.x1); low = Math.max(low, g.pond.low); }
   for (const p of L.pieces) {
     x0 = Math.min(x0, p.x);
     x1 = Math.max(x1, p.x + (p.hang ? 0 : p.w));
@@ -296,7 +298,9 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
  * one. And none lies across other wood with less than his body between them (HEAD), nor over a jump its storey was laid with.
  * Laid until no open end is left, or a pass adds none (towerFalls then names what is left, and the roll is refused).
  */
-export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false): Array<{ x: number; y: number; w: number; level: number }> {
+export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false,
+  /** boxes no bough may lie in (a water wheel's sweep and its rider over it, ENG-26: a bough there knocks him out of his bucket) */
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
@@ -330,8 +334,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   // a bough from just under its level up to a jump over it, within a hop across of its span, would be a way round)
   const gates = platforms.filter(sealed);
   const hop = Math.max(0, reachJump(0, true)) + LEAP.slack;
-  const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop);
-  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey or lies by a gate */
+  const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop)
+    || keepOut.some((k) => x0 < k.x1 && x1 > k.x0 && y >= k.y0 && y <= k.y1);
+  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box */
   const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);

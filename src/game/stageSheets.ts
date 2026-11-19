@@ -57,6 +57,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
+import { WHEEL_FIXTURE_IDS } from './wheelFixtureStage.ts';
 import { gen2Creatures, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
@@ -153,6 +154,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
   // the laid chase's dev fixture (chaseFixtureStage.ts): a gen2 World 1 stage, 1-1's sheets
   if (cfg.id === CHASE_FIXTURE_ID) return stageSheets({ ...cfg, id: '1-1' }, sw);
+  // the water wheel's dev fixture (wheelFixtureStage.ts): a gen2 World 2 toy, 2-1's sheets (World 2's gen2 ground and river)
+  if (WHEEL_FIXTURE_IDS.includes(cfg.id)) return stageSheets({ ...cfg, id: '2-1' }, sw);
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)

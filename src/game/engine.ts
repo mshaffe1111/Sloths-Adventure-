@@ -1852,7 +1852,7 @@ export class GameEngine {
       if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
     }
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad) continue;
+      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad || plat.wheel) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -7315,6 +7315,12 @@ export class GameEngine {
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // any inventory piece the stage's data places as dressing, behind the play layer (art/invDress.ts: sized by the inventory, by Pokey)
     if (this.proto?.invDress) drawInvDress(ctx, this.proto.invDress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.config.worldIndex, 'behind');
+    // (the stage's runtime pieces that stand behind the platforms: pieces/index.ts, layer 'back': a water wheel behind its jetty and street,
+    //  in front of the earth. Painted ground: drawn by protoArt.ts drawProtoScene over its soil, before its trunks and ledges (the soil of a
+    //  bank above runs down through the wheel's sweep); drawn ground: here, before the platforms. Once a frame either way)
+    const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };
+    const paintedGround = this.paintKit && protoArtReady();
+    if (!paintedGround) drawBack();
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -7355,7 +7361,7 @@ export class GameEngine {
     const w8set = (this.proto?.gen2 as { w8?: W8DecorSet } | undefined)?.w8;
     if (w8set) drawW8Decor(ctx, w8set, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     setDepthView(this.camera.viewportHeight);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    if (!(paintedGround && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene, drawBack)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.clusters.length) drawClusters(ctx, this.clusters, this.vines, this.camera.x, this.camera.x + this.camera.viewportWidth);

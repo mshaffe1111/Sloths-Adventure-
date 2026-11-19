@@ -115,7 +115,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   for (let si = 0; si < route.segs.length; si++) {
     const s = route.segs[si];
     // a move keeps him busy while it lasts; a climb only for its first 2.5 s (a long plain climb past that is quiet)
-    const busy = s.kind === 'climb' ? Math.min(2.5, s.dt + (route.segs[si + 1]?.kind === 'climb' ? route.segs[si + 1].dt : 0)) : s.kind === 'lift' ? 0.5 : s.dt;
+    const busy = s.kind === 'climb' ? Math.min(2.5, s.dt + (route.segs[si + 1]?.kind === 'climb' ? route.segs[si + 1].dt : 0)) : s.kind === 'lift' || s.kind === 'wheel' ? 0.5 : s.dt;
     const at = { base: t, dur: 0, act: busy, x: s.x0, y: s.y0, count: 1, k: moveKind(stage, s, glideHeld) ?? undefined, fam: `move:${s.kind}` };
     switch (s.kind) {
       case 'hop': raw.push({ ...at, letter: 'h', what: s.y1 < s.y0 - 16 ? 'hop up a step' : 'small hop' }); break;
@@ -128,6 +128,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'swing': raw.push({ ...at, letter: 'V', what: s.note === 'added' && !s.from ? 'swing on to the next liana' : 'swing on a liana' }); break;
       case 'rope': raw.push({ ...at, letter: 'V', what: 'shimmy along a rope' }); break;
       case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
+      case 'wheel': raw.push({ ...at, letter: 'V', what: 'ride a water wheel up' }); break;
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
     }

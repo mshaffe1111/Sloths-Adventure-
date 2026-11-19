@@ -238,10 +238,12 @@
   },
   "creature:boa": {
    "bot": null,
-   "channel": "tools/difficulty/score.ts#creatureBits",
+   "channel": "tools/difficulty/score.ts#freezeWindow",
    "rows": [
-    "4"
-   ]
+    "4",
+    "6"
+   ],
+   "note": "a posted boa (beaten by stillness, never walks): a PREDATOR READ, the freeze inside its rear, priced by the window the real engine leaves after the rear begins (score.ts freezeWindow, creatureBits on it; isPredatorRead). METER-3, R-165.286"
   },
   "creature:boss": {
    "bot": null,
@@ -372,12 +374,30 @@
     "2"
    ]
   },
+  "move:lianaDrop": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.dropOnLog",
+   "channel": "tools/difficulty/score.ts#lianaChallenges",
+   "rows": [
+    "10",
+    "20"
+   ],
+   "note": "a let-go from a liana onto a log of the river under it (2-4 NEW 1; route.ts: a river with a liana over it that a bank reaches is boarded from the air). Two clocks, he picks the moment (RW): windowBits(1, the share of let-go moments that land, gen2/riverLay.ts lianaDrops). METER-3, R-165.287"
+  },
   "move:lift": {
    "bot": null,
    "channel": "tools/difficulty/score.ts#rideChallenges",
    "rows": [
     "25"
    ]
+  },
+  "move:logCatch": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.vineFromLog",
+   "channel": "tools/difficulty/score.ts#lianaChallenges",
+   "rows": [
+    "10",
+    "20"
+   ],
+   "note": "a jump off a riding log up to a liana hung over the river (2-4 NEW 2): a timed catch as off a bank, off the moving log (score.ts logCatchWindow). METER-3, R-165.287"
   },
   "move:presumed": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.startJump",
@@ -417,6 +437,15 @@
    "rows": [
     "1"
    ]
+  },
+  "move:wheel": {
+   "bot": "tools/inspect/firsttimer.ts#SKILLS.rideWheel",
+   "channel": "tools/difficulty/score.ts#wheelChallenges",
+   "rows": [
+    "20",
+    "25"
+   ],
+   "note": "a water wheel ridden from its jetty to its street (2-6 NEW 1-2, ENG-26/26b; route.ts: its buckets are no floor of the route's, the move is jetty -> street): the board by a tap hop (windowBits over the bucket period, 0 when every moment boards) and the step-off (windowBits over the turn of the flown window, the easiest way; an 'in' street asks none), from the row's flown table wheelFlights.data.ts; a miss is the safe pond (soft)"
   },
   "pad:beat": {
    "bot": "tools/inspect/firsttimer.ts#PAD_SKILL.breath",

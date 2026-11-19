@@ -15,7 +15,9 @@
  * 0-100 meter: SCALE, set ONCE so that 1-1 on Normal (all seeds) reads Matt's 4 (11-12 8:31 PM ET). Nothing is tuned per stage.
  */
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { RealPlay } from '../../src/game/realPlay.ts';
+import { RealPlay, DT } from '../../src/game/realPlay.ts';
+import { CastPlay } from '../../src/game/castPlay.ts';
+import { castDef } from '../../src/game/predators/registry.ts';
 import { plantSeedList } from '../../src/game/gen2/seedList.ts';
 import { ANCHOR_LIST } from './anchor11.ts';
 import { modelStage, MODEL_TYPICAL } from '../../src/game/stageTime.ts';
@@ -33,7 +35,12 @@ import fs from 'node:fs';
 import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
 import { fallSeconds, POD } from '../../src/game/podfall.ts';
 import { beatOf } from '../../src/game/clock.ts';
-import { driftCycle, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { driftCycle, lianasOver, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { lianaDrops, logCatches } from '../../src/game/gen2/riverLay.ts';
+import { RIDE } from '../../src/game/ride.ts';
+import { stageWheels, flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { bucketPeriod, turnTime } from '../../src/game/wheel.ts';
 import { liftCycle, type LiftInfo } from '../../src/game/lift.ts';
 import type { Ride } from '../../src/game/ride.ts';
 import { snapWindow } from '../../src/game/gen2/rideLay.ts';
@@ -129,7 +136,7 @@ export function unpriced(piece: string, where: string, was: number): { bits: num
  *  walk-off fall ask no precision (the plain walk-off fall is the safe way down, STAGE-RULES §1); a move not here is refused */
 export const MOVE_CHANNEL: Readonly<Partial<Record<Route['segs'][number]['kind'], string>>> = {
   walk: 'free', drop: 'free', hop: 'moveOf', jump: 'moveOf', climb: 'OTHER_BITS.climb', rope: 'OTHER_BITS.climb', swing: 'swingChallenges',
-  timedHop: 'rideChallenges', lift: 'rideChallenges',
+  timedHop: 'rideChallenges', lift: 'rideChallenges', lianaDrop: 'lianaChallenges', logCatch: 'lianaChallenges', wheel: 'wheelChallenges',
 };
 /** pieces the meter leaves out on purpose, each with why: an optional jump OFF the route for a pickup (beats.ts 'pickup arcs', a half
  *  beat) is a choice skipping costs nothing, so it is no challenge (the meter prices the route to the shrine) */
@@ -449,6 +456,64 @@ export function memberAt(members: ReadonlyArray<{ e: any; def: any }>, x: number
 export const isWatcher = (def: any): boolean => !!def?.beatenBy?.still && Number(def?.warn) > 0;
 
 /**
+ * A PREDATOR READ (METER-3, R-165.286; 1-9's boas, reference/design/1-9.md; the kit boa, predators/world1.ts BOA): a posted animal that
+ * strikes at movement and is beaten by his stillness (beatenBy.still, no watched stretch: not a watcher). He walks up to it; when it
+ * rears he must STOP inside the rear, and move only outside it (a stop-signal race, METER-COVERAGE §1 WR). The plain creature row priced
+ * it by its whole rear (creatureBits(tell): 1.0 s, 1 bit), but going still takes its own time (stillness.ts calm-in) and its strike's
+ * reach starts before the rear ends, so the window he has is the frames after the rear begins in which a thumb lifted still beats it.
+ * freezeWindow flies exactly that on the REAL engine (realPlay.ts at 30 fps, his own stop) against the REAL kit (castPlay.ts running
+ * predators/core.ts on the stage's own def, fed every frame as engine.ts stepCast feeds it): he runs in with the thumb held, lifts k
+ * frames after the rear begins; the window is the first k that is struck (s). Its bits are a creature's on that window, creatureBits(w).
+ * Null: no lift the flight tries is beaten by stillness (none of its kind on this footing). Memoized by the def and the setting.
+ */
+const FREEZE_MEMO = new Map<string, number | null>();
+export function freezeWindow(def: any, setting: Setting): number | null {
+  const key = `${def.kind}|${setting}|${JSON.stringify(def)}`;
+  if (FREEZE_MEMO.has(key)) return FREEZE_MEMO.get(key)!;
+  const world = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].find((w) => { try { return castDef(def.kind, w) === def; } catch { return false; } }) ?? 1;
+  const easy = setting === 'easy';
+  const fly = (k: number): 'hit' | 'still' | 'none' => withSetting(setting, () => {
+    const FLOOR = 400, AT = 2400;
+    const bough = { id: 1, x: 0, y: FLOOR, width: 8000, height: 200, type: 'solid' } as any;
+    const r = new RealPlay('1-1', 1);
+    r.bare([bough]);
+    r.stand(600, FLOOR);
+    for (let i = 0; i < 10; i++) r.frame();
+    const e = { id: 900, type: def.kind, x: AT, y: FLOOR - 14, vx: 0, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: -1, patrolMinX: AT, patrolMaxX: AT,
+      attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0 } as any;
+    const c = new CastPlay({ kinds: [def.kind], traps: [] } as any, [e], [bough], world);
+    const m = c.members[0];
+    if (!m) return 'none';
+    let t = 0, tellF = -1, liftF = -1;
+    for (let f = 0; f < 380; f++) {
+      r.frame(liftF < 0 ? { right: true } : {});
+      const p: any = r.p;
+      const h: any = { x: p.x, y: p.y, vx: p.vx, vy: p.vy, facing: p.facing, grounded: p.grounded, holding: !!(p.climbing || p.isVineSwinging || p.hanging) };
+      const o = c.step(h, DT, t, easy);
+      if (o.told.length && tellF < 0) tellF = f;
+      if (liftF < 0 && tellF >= 0 && f - tellF >= k) liftF = f;
+      // (a hurt box touching him: his collider, 28 x 44 from his feet, as predators/core.ts touches reads it)
+      for (const z of o.hurts) if (z.box && p.x + 14 > z.box.x && p.x - 14 < z.box.x + z.box.w && p.y > z.box.y && p.y - 44 < z.box.y + z.box.h) return 'hit';
+      if (m.s.beatenBy === 'still') return 'still';
+      t += DT;
+      if (tellF >= 0 && f - tellF > 150) break;
+    }
+    return 'none';
+  });
+  let w: number | null = null;
+  for (let k = 0; k <= 60; k++) {
+    const r = fly(k);
+    if (r === 'still') continue;
+    w = k > 0 ? k * DT : null;
+    break;
+  }
+  FREEZE_MEMO.set(key, w);
+  return w;
+}
+/** an animal read by freezing (a predator read): beaten by stillness, never a watcher, it never walks (posted: its rest and hunt speed 0) */
+export const isPredatorRead = (def: any): boolean => !!def?.beatenBy?.still && !isWatcher(def) && !(def?.speed?.rest > 0) && !(def?.speed?.hunt > 0);
+
+/**
  * The chase (METER-1, R-165.261; chase.ts, 1-8 "the branch is breaking behind you"): each stretch ONE challenge, its bits the share of his
  * run the front asks (fittsBits(front / PHYS.maxRun), the jump's own form: need over reach), the front at its base speed, and on the last
  * stretch with its final burst (chase.ts CHASE_ROWS by setting where the tree has it, else CHASE: Normal 230 px/s of his 285 is 2.4 bits,
@@ -685,6 +750,118 @@ export function snapChallenges(st: any, route: Route, samples: Sample[], setting
 }
 
 /**
+ * A water wheel ridden from its jetty to its street (ENG-26b; reference/design/2-6.md NEW 1; the route's one 'wheel' move, route.ts), priced
+ * from the row's FLOWN table (wheelFlights.data.ts: the real engine's numbers, the same table the stage's fairness check holds the wheel to):
+ *   - 'wheel-board': a tap hop off the jetty into a bucket, a timed press he may wait for (RW): windowBits over the bucket period of the
+ *     longest boarding window; a row that boards at EVERY moment (2-6.md: 100% of phases) asks no timing, 0 bits;
+ *   - 'wheel-off': the step-off onto the street, a timed press in a window he can wait out (a missed window rides round again, wheelFaults
+ *     'ride'): windowBits over the turn of the step-off window, the easiest way (the better of a walk and a tap hop; a jump off the top for
+ *     an 'up' street), as the meter prices every move by the way a player may pick. An 'in' street asks nothing: the ride sets him down.
+ * A miss is the pond under the sweep, a safe still water that sets him back on the jetty (wheelLay.ts layWheel): a soft set-back. A wheel
+ * whose row is not flown is refused (unpriced 'move:wheel'), never priced from a guess.
+ */
+export function wheelChallenges(st: any, route: Route, samples: Sample[], setting: Setting, id: string): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const wheels = stageWheels(st.platforms ?? []);
+  for (const sg of route.segs) {
+    if (sg.kind !== 'wheel') continue;
+    const w = wheels.find((q) => q.lay?.jetty === sg.from?.id);
+    const flown = w?.lay ? WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: w.lay.street, up: w.lay.up }, setting)] : undefined;
+    if (!w || !flown) { unpriced('move:wheel', `${id} x ${Math.round(sg.x0)}: a wheel ${w ? 'whose row was never flown' : 'the route rides that no laid wheel owns'}`, 0); continue; }
+    const t = clockAt(samples, sg.x0, sg.y0);
+    const ys: [number, number] = [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)];
+    const cost: Cost = 'soft';
+    const period = bucketPeriod(w), turn = turnTime(w);
+    const board = flown.board.tap;
+    out.push({ t, x: sg.x0, ys, kind: 'wheel-board', bits: board.share >= 100 ? 0 : windowBits(period, board.window), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+      note: `board a water wheel's bucket by a tap hop: ${board.share >= 100 ? 'every moment boards' : `open ${board.window}s of ${period.toFixed(2)}s`}` });
+    if (w.lay!.street === 'in') continue;
+    out.push({ t: t + (sg.dt ?? 0), x: sg.x1, ys, kind: 'wheel-off', bits: windowBits(turn, flown.step), cost, stakes: stakesOf(st, cost, sg.x1), threat: false,
+      note: `${w.lay!.street === 'up' ? 'jump off the top of a water wheel' : 'step off a water wheel onto the street'}: open ${flown.step}s of a ${turn.toFixed(1)}s turn (a miss rides round)` });
+  }
+  return out;
+}
+
+/**
+ * The catch off a riding log (METER-3, R-165.287; reference/design/2-4.md NEW 2, beat 4 "up from the log"): of one swing of liana `v`, how
+ * long (s) a jump off log `d` puts his hands on it, the log carrying him (RIDE.keep of its speed, gen2/riverLay.ts logCatches' own flight)
+ * standing or running, tapped or held. As catchWindow off a bank: a take-off moment counts when ANY point of the ride in reach (every
+ * 15 px from 420 px before the vine to 60 px past it, the stretch logCatches flies) catches it, since he rides through all of them and
+ * picks his press. 0: no jump off this log catches it (NOT MEASURED, never priced as the hardest).
+ */
+export function logCatchWindow(d: DriftInfo, v: any, setting: Setting): number {
+  return withSetting(setting, () => {
+    const dt = SIM_DTS[0];
+    const period = vinePeriod(v);
+    const top = d.baseY;
+    const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
+    const frames = Math.max(1, Math.round(period / dt));
+    let caught = 0;
+    for (let f = 0; f < frames; f++) {
+      const t0 = f * dt;
+      let ok = false;
+      for (let x = Math.max(d.x0, v.x - 420); x <= Math.min(d.x1, v.x + 60) && !ok; x += 15) {
+        for (const run of [0, PHYS.maxRun]) {
+          for (const hold of [false, true]) {
+            b.x = x; b.y = top; b.vx = d.dir * d.speed * RIDE.keep.x + run; b.vy = -PHYS.jumpV;
+            for (let i = 1; i < 90; i++) {
+              airStep(b, dt, 1, hold);
+              if (b.y > top + 40) break;
+              if (canGrabSwing(b.x, b.y, v, t0 + i * dt) && Math.abs(b.vx) > 25) { ok = true; break; }
+            }
+            if (ok) break;
+          }
+          if (ok) break;
+        }
+      }
+      if (ok) caught++;
+    }
+    return caught * dt;
+  });
+}
+
+/**
+ * A liana over a log river (METER-3, R-165.287; ENG-24's pieces, reference/design/2-4.md NEW 1-2), the route's two moves on it:
+ * - a LET-GO ONTO A LOG ('lianaDrop'): two clocks, the vine's swing and the river's logs, and he picks his moment on the vine (a
+ *   reactive window, METER-COVERAGE §1 RW: waiting costs seconds, a misjudged let-go costs the splash). Its window is the share of let-go
+ *   moments that come down on a log (or past the river), read by the judge's own flight (gen2/riverLay.ts lianaDrops: physics.ts
+ *   pressLaunches, the engine's catch on a drift, Easy's forgiveness, the worse of the two grips), so the bits are windowBits(1, share),
+ *   the same Fitts form as boarding a drift from a bank (open of cycle). Wait-and-go: the worst wait is the route's seconds, not bits.
+ * - a JUMP OFF A RIDING LOG UP TO A LIANA ('logCatch'): a timed catch as off a bank (catchWindow), off the moving log (logCatchWindow).
+ * The moves the route makes when a liana hangs over a river (route.ts). A miss falls in the river: its splash-back (soft) where the
+ * river is safe, else what the ground there costs.
+ */
+export function lianaChallenges(st: any, route: Route, setting: Setting, softPits: boolean): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const lianas = (st.vines ?? []).filter((v: any) => v.isSwingingVine && v.snake?.route !== 'still');
+  let base = 0;
+  for (const sg of route.segs) {
+    const v = (sg.kind === 'lianaDrop' || sg.kind === 'logCatch') && lianas.find((q: any) => Math.abs(q.x - (sg.kind === 'lianaDrop' ? sg.x0 : sg.x1)) < 2);
+    const r = v && (st.rivers ?? []).find((q: RiverZone) => lianasOver([v], q).length);
+    const logs: DriftInfo[] = r ? (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1).map((p: any) => p.drift) : [];
+    const log: any = sg.kind === 'logCatch' ? sg.from : (st.platforms ?? []).find((p: any) => p.drift === logs[0]);
+    if (v && logs.length && log?.drift) {
+      const d: DriftInfo = log.drift;
+      const rt = rideTiming(st, log, setting);
+      const cost: Cost = rt?.safe ? 'soft' : costAt(st, softPits, d.x0, d.x1, 'fall');
+      const ys: [number, number] = [Math.min(sg.y0, sg.y1), Math.max(sg.y0, sg.y1)];
+      if (sg.kind === 'lianaDrop') {
+        const k = lianaDrops(v, logs, setting);
+        out.push({ t: base, x: sg.x0, ys, kind: 'liana-drop', bits: windowBits(1, k.share), cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+          note: `let go of liana ${v.id} over the river (onto a log or past it): ${(k.share * 100).toFixed(0)}% of let-go moments land, worst wait ${k.wait.toFixed(2)} s (swing ${k.period.toFixed(2)} s)` });
+      } else {
+        const period = withSetting(setting, () => vinePeriod(v));
+        const w = logCatchWindow(d, v, setting);
+        out.push({ t: base, x: sg.x0, ys, kind: 'log-catch', bits: w > 0 ? windowBits(period, w) : 0, cost, stakes: stakesOf(st, cost, sg.x0), threat: false,
+          note: `catch liana ${v.id} off a riding log: ${w > 0 ? `${(w * 1000).toFixed(0)} ms of ${period.toFixed(2)} s` : 'NOT MEASURED (no jump off this log catches it)'}` });
+      }
+    }
+    base += sg.dt;
+  }
+  return out;
+}
+
+/**
  * A timed crossing of a falling hazard's column (METER-1): its period, its quiet (the part of the period nothing falls), and how long the
  * route keeps him in its way. One crossing: the window is the quiet less that time (the entry times that keep all of it quiet). One as
  * long as the quiet: he stops out of reach and goes on in the next, so it is n crossings of inWay / n, each its own press, and he takes
@@ -814,6 +991,12 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       if (m && isWatcher(m.def)) continue;
       const tell = m?.def?.tell ? m.def.tell * (setting === 'easy' ? Math.max(1, m.def.easy?.tell ?? 1) : 1) : 0.5;
       const timed = !asleep && !trapped;
+      // (a posted animal beaten by his stillness: the read is the freeze inside its rear, not its whole rear: freezeWindow, METER-3)
+      const fw = timed && m && isPredatorRead(m.def) ? freezeWindow(m.def, setting) : null;
+      if (fw) {
+        add({ t: b.t, x: b.x, kind: 'predator-read', bits: creatureBits(fw), cost: 'heart', stakes: STAKES.heart, threat: true, note: `${b.what}: freeze inside its rear, ${(fw * 1000).toFixed(0)} ms after it begins (rear ${tell.toFixed(2)}s)` });
+        continue;
+      }
       add({ t: b.t, x: b.x, kind: timed ? 'creature' : 'creature-choice', bits: timed ? creatureBits(tell) : OTHER_BITS.choice, cost: 'heart', stakes: STAKES.heart, threat: timed, note: `${b.what}${trapped ? ' (trap)' : ''} tell ${tell.toFixed(2)}s` });
     } else if (b.letter === 'Z') {
       // (a chase's stretch and a bouncing fruit are scored from the stage's own lay, chaseChallenges and rollingChallenges: beats.ts reads
@@ -833,7 +1016,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     } else if (b.letter === 'V') {
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
       // (a swing is priced at its release, swingChallenges; a lift by the ride channel, rideChallenges)
-      if (b.fam === 'move:swing' || b.fam === 'move:lift') continue;
+      // (a wheel by the wheel channel, wheelChallenges)
+      if (b.fam === 'move:swing' || b.fam === 'move:lift' || b.fam === 'move:wheel') continue;
       // (a climb up a trunk or vine: OTHER_BITS.climb. A rope shimmy is the same self-paced hold (METER-COVERAGE #7, SP): the route's rope
       // runs ledge to ledge (route.ts 'rope' edges), so its let-go at the end is onto the far ledge it overhangs, no jump to price (a rope
       // whose end let-go is a jump is row 7's later half, 3-2). A lift or warm air scored as that climb: now refused, unless known)
@@ -850,6 +1034,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of rollingChallenges(st, samples, setting)) add(c);
   for (const c of rideChallenges(st, route, samples, setting, softPits, id)) add(c);
   for (const c of snapChallenges(st, route, samples, setting, id)) add(c);
+  for (const c of wheelChallenges(st, route, samples, setting, id)) add(c);
+  for (const c of lianaChallenges(st, route, setting, softPits)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
   // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
   // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
@@ -910,7 +1096,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   // crumbling footing on the route: the clock is the crumble (a fragile platform he stands on): +1 bit on the jump that lands on it
   for (const c of out) {
     // (a swing reads its crumble at the perch it lands on, releaseBits; a snake has no footing of its own)
-    if (c.kind === 'creature' || c.kind === 'hazard' || c.kind === 'swing' || c.kind.startsWith('vine-snake')) continue;
+    if (c.kind === 'creature' || c.kind === 'predator-read' || c.kind === 'hazard' || c.kind === 'swing' || c.kind.startsWith('vine-snake')) continue;
     // (at its own height where the challenge knows it: on a tower the rotten bough 600 px over a climb is not under him, 1-4)
     const frag = st.platforms.some((p: any) => p.type === 'fragile' && c.x >= p.x - 40 && c.x <= p.x + p.width + 40
       && (!c.ys || (p.y >= c.ys[0] - CRUMBLE_DY && p.y <= c.ys[1] + CRUMBLE_DY)));
@@ -945,6 +1131,16 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[]): strin
   }
   for (const e of st.enemies ?? []) out.add(`creature:${e.type}`);
   for (const z of st.zones ?? []) out.add(`zone:${z.kind}`);
+  // (a liana hung over a log river lays the let-go over the water and, where a log carries him into its reach, the catch off a log,
+  //  whichever way the route goes (route.ts takes the quicker): the stage lays them, so the gate holds them (METER-3, R-165.287)
+  const lianas = (st.vines ?? []).filter((v: any) => v.isSwingingVine && v.snake?.route !== 'still');
+  for (const r of st.rivers ?? []) {
+    const over = lianasOver(lianas, r);
+    if (!over.length) continue;
+    out.add('move:lianaDrop');
+    const logs = (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    if (over.some((v: any) => logs.some((p: any) => logCatches(v, p.drift)))) out.add('move:logCatch');
+  }
   return [...out].sort();
 }
 
