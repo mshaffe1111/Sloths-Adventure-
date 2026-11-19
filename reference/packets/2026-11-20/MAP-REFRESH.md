@@ -5,6 +5,11 @@ STEP pushed.
 WHY (Matt 11-19): "we might even need to think about how do we finish all the levels so they're all written out"; he picked "Ideas all,
 designs 2 ahead": every level gets a current one-line idea and its engine needs now; full designs stay two worlds ahead (they go stale
 when the engine changes).
+SPLIT (lead 5:38 PM ET 11-19, Matt 5:37 PM: "have three different agents, one doing like multiple leve[ls]"): THREE fresh members in
+parallel, each its own branch and section file, same depth and columns: MAP-REFRESH-A Worlds 5-6, -B Worlds 7-8, -C Worlds 9-10 (each:
+items 1-3 below for its worlds only, written to reference/plans/map/W5-6.md etc.). Then ONE short MAP-MERGE member stitches GAME-MAP.md
+(Worlds 1-2 from what shipped, World 3-4 from PLAN-W3, 5-10 from A/B/C), the deduplicated engine list in dependency order, and item 4's
+timeline. Each of A/B/C: BOX 2 h. If fewer than three slots are free, run them one after another in the same order.
 Role card reference/roles/DESIGNER.md. Read: reference/LAWS.md + LESSONS.md once (D30, D57/D87, D90 lean reads), and ONLY:
 `git show origin/t-design-game-map:reference/plans/GAME-MAP.md` (the 11-11 draft: §1-§5, §8, §10), PLAN-W3's WORLD-3-PLAN.md (its World 3 and
 World 4 rows are the depth to match; do not redo them), reference/plans/BUILD-ROADMAP.md, the picks files reference/design/PICKS-*.md, and
