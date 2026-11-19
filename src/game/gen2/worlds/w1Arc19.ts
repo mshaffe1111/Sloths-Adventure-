@@ -72,7 +72,7 @@ export const MISSION_19 = 'Boas snap at anything that moves. Outsmart them, and 
 /** a mossy bough he walks on, `w` exact, level with the one before */
 const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'moss_stone', main: true });
 /** a bough past a small soft hop (World 1's soft pit under it: a miss is a climb back) */
-const hop = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
+const hop = (key: string, after: string, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy, share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a limb over a soft gap: creaky (gives way 1.1 s after he lands; whole on a set-back) or, Easy, a sound bough */
 const limb = (key: string, after: string, creak: boolean): SectionPiece => ({ key, shape: 'branch', w: [150, 160], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) });
 /** a root step up or down (50-56 px: a hop, never a fall) */
@@ -86,10 +86,11 @@ const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shap
  *  load's socket 141 px in (the pair's 85-130 from the handle), the boa 277 px in (136 px from the load's socket, the lay's 120 between an
  *  animal and a prop). From the handle the boa is ~233 px on: outside its engage on both settings (150, Easy 195), so he drops the
  *  load from where it cannot see him move; walked past, it rears 150 px out (the freeze, or the bop, still answer it) */
-function trapUnit(k: string, after: string, load: 'trap-hive' | 'trap-stone'): { pieces: SectionPiece[]; sockets: Socket[]; last: string } {
+function trapUnit(k: string, after: string, load: 'trap-hive' | 'trap-stone', dy: R2 = [0, 0]): { pieces: SectionPiece[]; sockets: Socket[]; last: string } {
   const b = `${k}b`;
   return {
-    pieces: [bank(b, after, 440)],
+    // (`dy`: the bough a root step up from `after`, reached over a narrow dip: VAR-19b, read-load's walk-in. The pair and the boa keep their places on it)
+    pieces: [root(b, after, 440, dy)],
     sockets: [
       { id: `${k}h`, role: 'source', on: b, t: 0.1, dn: 0 },
       { id: `${k}r`, role: 'receptor', on: b, t: 0.32, dn: 0, link: `${k}h`, allow: [load] },
@@ -145,9 +146,9 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 function forestThenFreeze(): Lay {
   const t = trapUnit('u', 'z', 'trap-hive');
   return {
-    pieces: [bank('a', null, 320), root('m1', 'a', 260, UP), root('m2', 'm1', 300, DOWN), bank('e', 'm2', 280), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP), ...t.pieces, bank('y', t.last, 300)],
+    pieces: [bank('a', null, 120), root('m1', 'a', 140, UP), root('m2', 'm1', 140, DOWN), root('ed', 'm2', 120, DOWN), root('e', 'ed', 360, UP), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP), ...t.pieces, root('yd', t.last, 120, DOWN), root('y', 'yd', 160, UP)],
     // (the trap's pair listed first: sockets fill in list order and a pair is paid from the section's threat, which the freeze boa spends)
-    sockets: [...t.sockets, tip('t-freeze', 'a', 0.3, 'freeze'), petals('pa', 'a', 0.7, 1), petals('pm', 'm1', 0.5, 2, 120), petals('pm2', 'm2', 0.5, 1),
+    sockets: [...t.sockets, tip('t-freeze', 'a', 0.3, 'freeze'), petals('pa', 'a', 0.75, 1), petals('pm', 'm1', 0.5, 2, 80), petals('pm2', 'm2', 0.5, 1),
       boa('b2', 'f', 0.39, 'boa'), petals('pz', 'z', 0.5, 1), petals('py', 'y', 0.5, 2, 120)],
   };
 }
@@ -157,9 +158,9 @@ function forestThenFreeze(): Lay {
  *  a dead walk, 3.7 s on 15 of 16 Normal layouts; each boa keeps its own root and place on it) */
 function freezeStair(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 120), root('ad', 'a', 160, DOWN), root('ae', 'ad', 160, UP), root('s1', 'ae', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('z', 'd2', 320, DOWN)],
+    pieces: [bank('a', null, 120), root('ad', 'a', 120, DOWN), root('ae', 'ad', 200, UP), root('s1', 'ae', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('zd', 'd2', 120, DOWN), root('zu', 'zd', 140, UP), root('z', 'zu', 120, DOWN)],
     sockets: [flag('a'), petals('pa', 'a', 0.7, 1), boa('b1', 's1', 0.7, 'boa'), petals('ps2', 's2', 0.5, 1), boa('b2', 's3', 0.7, 'boa', easy ? 'soften' : 'stay'),
-      petals('pd', 'd2', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-miss', 'z', 0.7, 'miss')],
+      petals('pd', 'd2', 0.5, 1), petals('pz', 'zu', 0.5, 2, 100), tip('t-miss', 'z', 0.5, 'miss')],
   };
 }
 /** [X] beat 5, make it miss (Mario Bros.' closing window): a boa at a bough's end past a gap; he lands outside its strike, it rears and
@@ -168,7 +169,7 @@ function freezeStair(easy: boolean): Lay {
  *  to the boa is not a dead walk, 3.7 s on 12 of 16 Normal layouts; the boa's hop and bough unchanged) */
 function makeItMiss(): Lay {
   return {
-    pieces: [bank('a', null, 320), root('ad', 'a', 150, DOWN), root('w1', 'ad', 150, UP), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 320)],
+    pieces: [bank('a', null, 140), root('ad', 'a', 150, DOWN), root('w1', 'ad', 320, UP), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 240)],
     sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.62, 'boa'), petals('pc', 'c', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-nest', 'z', 0.7, 'nest')],
   };
 }
@@ -178,25 +179,25 @@ function makeItMiss(): Lay {
  *  rear frame; a freeze on the limb drops him to the moss below (never a pit) */
 function roostTwist(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), rock('ra', 'a', 0.6), bank('w1', 'a', 300), limb('k', 'w1', !easy), bank('b', 'k', 400), hop('z', 'b', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.25, 'boa-roost'), roost('r1', 'b', 0.57), petals('pz', 'z', 0.5, 2, 120)],
+    pieces: [bank('a', null, 140), root('ad', 'a', 120, DOWN), root('w1', 'ad', 360, UP), limb('k', 'w1', !easy), bank('b', 'k', 400), hop('z', 'b', 240)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), boa('b1', 'b', 0.25, 'boa-roost'), roost('r1', 'b', 0.57), petals('pz', 'z', 0.5, 2, 120)],
   };
 }
 /** [C] beat 9a, read it: a load. (Each read is ~1,700 px of bough: the rolled flags put a hard node's flag 1,500-2,400 px before it and
  *  none within 900 px of the last, so three reads back to back need that much ground to each hold its own flag) */
 function readTrap(): Lay {
-  const t = trapUnit('u', 'a2', 'trap-stone');
-  return { pieces: [bank('a', null, 320), root('a2', 'a', 360, UP), ...t.pieces, bank('z', t.last, 360), rock('rz', 'z', 0.6), root('z2', 'z', 320, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.5, 2, 120)] };
+  const t = trapUnit('u', 'a2d', 'trap-stone', UP);
+  return { pieces: [bank('a', null, 140), root('a2', 'a', 240, UP), root('a2d', 'a2', 120, DOWN), ...t.pieces, root('zd', t.last, 90, DOWN), root('z', 'zd', 330, UP), rock('rz', 'z', 0.5), root('z2', 'z', 120, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.25, 2, 80)] };
 }
 /** [C] beat 9b, read it: a roost */
 function readRoost(): Lay {
-  return { pieces: [bank('a', null, 320), root('a2', 'a', 360, UP), bank('b', 'a2', 380), hop('z', 'b', 320), root('z2', 'z', 320, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), boa('b1', 'b', 0.3, 'boa-roost'), roost('r1', 'b', 0.68), petals('pz', 'z', 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 140), root('a2', 'a', 360, UP), bank('b', 'a2', 380), hop('z', 'b', 160), root('z2', 'z', 100, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), boa('b1', 'b', 0.3, 'boa-roost'), roost('r1', 'b', 0.68), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9c, read it: a bare boa up a step (freeze, or let it miss and bop it) */
 function readBare(): Lay {
   return {
-    pieces: [bank('a', null, 320), root('s1', 'a', 260, UP), root('b', 's1', 340, UP), root('d1', 'b', 260, DOWN), rock('rd', 'd1', 0.5), root('z', 'd1', 320, DOWN)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.55, 'boa', 'soften'), petals('pz', 'z', 0.5, 2, 120), tip('t-eye', 'z', 0.7, 'eye')],
+    pieces: [bank('a', null, 140), root('s1', 'a', 260, UP), root('b', 's1', 340, UP), root('d1', 'b', 240, DOWN), rock('rd', 'd1', 0.5), root('z', 'd1', 120, DOWN)],
+    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.55, 'boa', 'soften'), petals('pz', 'z', 0.5, 2, 80), tip('t-eye', 'z', 0.7, 'eye')],
   };
 }
 /** [L] beat 12, two hunters: the eagle's eye on its rounds over moss (1-7's sweeper and cover) and a boa on its line; a flag before it.
@@ -204,8 +205,8 @@ function readBare(): Lay {
  *  one; the eagle and the boa are the two hunters) */
 function twoHunters(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 360), bank('w1', 'a', 420), bank('w2', 'w1', 420), bank('w3', 'w2', 420), hop('z', 'w3', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('hunters', 'w1'), hide('c1', 'w1', 0.4, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.2, 'patch'),
+    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), hop('z', 'w3', 200)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('hunters', 'w1', 0.045), hide('c1', 'w1', 0.6, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.3, 'patch'),
       petals('pz', 'z', 0.5, 2, 120)],
   };
 }
@@ -214,8 +215,8 @@ function twoHunters(easy: boolean): Lay {
  *  into its face and freeze */
 function oldBoa(): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 420), bank('w2', 'w1', 560), hop('z', 'w2', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('old', 'w1'), hide('c1', 'w1', 0.8, 'patch'), boa('ob', 'w2', 0.4, 'boa'), petals('pz', 'z', 0.5, 2, 120)],
+    pieces: [bank('a', null, 140), bank('w1', 'a', 200), root('wd', 'w1', 120, DOWN), root('w1b', 'wd', 240, UP), bank('w2', 'w1b', 560), hop('z', 'w2', 200)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('old', 'w1'), hide('c1', 'w1b', 0.55, 'patch'), boa('ob', 'w2', 0.4, 'boa'), petals('pz', 'z', 0.5, 2, 120)],
   };
 }
 
@@ -247,8 +248,8 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
  *  stair, outside every boa read and every teach */
 const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the old boughs', job: 'rest', versions: [{
   id: 'roots',
-  lay: { pieces: [bank('a', null, 320), root('b', 'a', 240, UP), root('c', 'b', 380, DOWN), root('d', 'c', 220, UP), root('e', 'd', 360, DOWN), root('f', 'e', 240, UP), root('g', 'f', 340, DOWN), root('h', 'g', 220, UP), root('z', 'h', 300, DOWN)],
-    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.5, 1),
+  lay: { pieces: [bank('a', null, 140), root('b', 'a', 160, UP), root('c', 'b', 160, DOWN), root('d', 'c', 160, UP), root('e', 'd', 160, DOWN), root('f', 'e', 160, UP), root('g', 'f', 160, DOWN), root('h', 'g', 160, UP), root('i', 'h', 160, DOWN), root('j', 'i', 140, UP), root('z', 'j', 120, DOWN)],
+    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pf', 'f', 0.5, 2, 80),
       { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },
 }] });
 /** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
@@ -280,22 +281,22 @@ const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t
  *  climbed by steps alone ran 5-6 s quiet, over the quiet line's 4 s, and seedlist refused it. A walked rise is also held under a single's
  *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
 const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
-  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('c', 'b', 200, DOWN), root('d', 'c', 300, UP), root('e', 'd', 520, UP), boulder('k', 'e', 0.5), root('f', 'e', 200, DOWN), root('g', 'f', 240, UP), root('h', 'g', 300, [102, 108]), root('i', 'h', 220, UP), root('z', 'i', 300, DOWN)],
-  sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.85), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+  pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('c', 'b', 200, DOWN), root('d', 'c', 300, UP), root('e', 'd', 360, UP), boulder('k', 'e', 0.4), root('f', 'e', 120, DOWN), root('g', 'f', 220, UP), root('h', 'g', 220, [102, 108]), root('i', 'h', 140, UP), root('z', 'i', 120, DOWN)],
+  sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.92), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
 /** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
 const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
-  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('f', 'r', 360, DOWN), boulder('k1', 'f', 0.5), root('g', 'f', 520, UP), boulder('k2', 'g', 0.45), root('h', 'g', 260, DOWN), root('i', 'h', 240, UP), root('z', 'i', 320, DOWN)],
-  sockets: [flag('g', 0.2), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.85, 1), petals('pi', 'i', 0.5, 1)] } }] });
+  pieces: [bank('a', null, 140), root('r', 'a', 220, UP), root('f', 'r', 300, DOWN), boulder('k1', 'f', 0.5), root('g', 'f', 340, UP), boulder('k2', 'g', 0.4), root('h', 'g', 140, DOWN), root('i', 'h', 140, UP), root('z', 'i', 120, DOWN)],
+  sockets: [flag('g', 0.2), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pg', 'g', 0.93, 1), petals('pi', 'i', 0.5, 1)] } }] });
 /** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
  *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
 const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
-  pieces: [bank('a', null, 300), root('b', 'a', 240, UP), root('m', 'b', 460, DOWN), ...wallClimb('c', 'm', 460, 212, 400), root('y', 'c', 220, UP), root('d', 'y', 300, [128, 132]), root('e', 'd', 260, [102, 108]), root('f', 'e', 220, UP), root('z', 'f', 300, DOWN)],
-  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pe', 'e', 0.5, 1), petals('pf', 'f', 0.5, 1)] } }] });
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('m', 'b', 240, DOWN), ...wallClimb('c', 'm', 240, 212, 280), root('y', 'c', 160, UP), root('d', 'y', 160, [128, 132]), root('e', 'd', 140, [102, 108]), root('f', 'e', 140, UP), root('z', 'f', 120, DOWN)],
+  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pf', 'f', 0.5, 2, 80)] } }] });
 /** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
  *  it, a root up and down along it, and the drop home (a hop either side of the bounce: the quiet line, 4 s) */
 const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {
-  pieces: [bank('a', null, 300), root('r', 'a', 220, UP), root('b', 'r', 420, DOWN), mushroom('bm', 'b', 420), bounced('c', 'b', 'bm', 460, 150), root('y', 'c', 220, UP), root('e', 'y', 260, [96, 100]), root('f', 'e', 260, [96, 100]), root('g', 'f', 220, UP), root('z', 'g', 300, DOWN)],
+  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('b', 'r', 240, DOWN), mushroom('bm', 'b', 240), bounced('c', 'b', 'bm', 400, 150), root('y', 'c', 220, UP), root('e', 'y', 260, [96, 100]), root('f', 'e', 260, [96, 100]), root('g', 'f', 140, UP), root('z', 'g', 120, DOWN)],
   sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('y', 0.5), petals('pf', 'f', 0.5, 1), petals('pg', 'g', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
   // [A] thick mossy boughs; nothing hurts in 1,300 px. The first move as soon as he can (VAR-19: the old arrival walked 800 px past the
@@ -306,7 +307,7 @@ export const QUIET_19: SectionTemplate[] = [
   // (a rolled stage's flag before the teach stands on it, 1,500-2,400 px before the teach: pipeline.ts ROLLED_FLAGS), a boulder on the low
   // bough after it, a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 300, [36, 40]), root('r2', 'r1', 280, UP), root('z1', 'r2', 160, DOWN), root('z2', 'z1', 160, UP), root('z', 'z2', 220, DOWN)],
+    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 220, [36, 40]), root('r2', 'r1', 280, UP), root('z1', 'r2', 140, DOWN), root('z2', 'z1', 100, UP), root('z', 'z2', 100, DOWN)],
       sockets: [petals('pb', 'b3', 0.5, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
   rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),
@@ -314,8 +315,10 @@ export const QUIET_19: SectionTemplate[] = [
 /** [E] the bough down toward the river: her mark (the keeper's words), the totem */
 export const EXIT_19: SectionTemplate = {
   id: 'w1-19-exit', name: 'the bough down to the river', feel: [STAGE_19], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
-  pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
-  subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank' as const, w: [560, 600] as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 2, 120), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
+  pieces: [{ key: 'in', shape: 'bank', w: [200, 220], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
+  // (VAR-19b: two narrow root dips on the way down, so the walk to her mark is never 4-6 s with nothing to do: funcheck's dead walk)
+  subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [root('e1', 'in', 140, DOWN), root('e2', 'e1', 220, UP), root('e3', 'e2', 140, DOWN),
+    { key: 'out', shape: 'bank' as const, w: [400, 420] as R2, place: { kind: 'walk' as const, after: 'e3', dy: UP }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 2, 120), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [tip('t-mark', 'in', 0.5, 'mark')], mirrorable: false,
 } as SectionTemplate;
 
