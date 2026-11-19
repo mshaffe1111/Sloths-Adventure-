@@ -16,7 +16,7 @@ The branches, in this ORDER (engine-only first, then the model change, then the 
 3. t-eng-25b (73318234; code fe3faf7e; it carries t-eng-25 21668b61): 2-5's snap stones, snapper rows, stone art, the bonk-after-the-snap
    bot skill, the meter's snap channel, and TURTLE kick only when open (no live stage lays the kit TURTLE). Its suite was NOT re-run after
    fe3faf7e (predatorCasts.test.ts re-pinned): your full suite covers it; name the result for that file.
-3b. t-eng-26 (the water wheel + ride-wheel; ENG-26's REPORT names its final hash and the optional type fields it added) and t-meter-4 /
+3b. t-eng-26 ONLY once ENG-26b's section of the ENG-26 REPORT shows generality GREEN (ENG-26 left it red: a stage id in gen2/wheelFlights.ts:90; the water wheel + ride-wheel; the optional type fields it added are named there) and t-meter-4 /
    t-art-w2a (2-3's meter channel and frames) if their REPORTs are green: engine/tools/art only, nothing shipped moves.
 4. t-eng-285: the judges and bots fly the engine's Pokey + the two bot defects; its relists and its recalibration.
 5. t-fix-284: 2-2's big pads (~2 Pokeys, art = floor) + the real tap hop (2-1/2-2 relisted).
