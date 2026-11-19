@@ -8,7 +8,9 @@ commands in the BACKGROUND; D59 no gate left running at report; D79 whole screen
 (origin/t-int-12 reference/qa-reports/INT-12/REPORT.md) is how last night's merge went: read its merge table and rough spots first.
 BASE: branch t-int-13 from INT-12's final head (the lead sends it; if Matt merged a release by then, from origin/main and say so).
 The branches, in this ORDER (engine-only first, then the model change, then the levels; the lead sends each final hash from its REPORT):
-1. t-time-168: the time-stamp gate (tools + CI line; no game code).
+1. t-time-168b (carries t-time-168): the time-stamp gate with the stage-id fix (tools + CI line; no game code). After ALL merges, run
+   timecheck on the merged range and correct every breach in reference/ docs to its commit clock (TIME-168b's sweep.tsv lists them;
+   the lead did the same for 75 on 11-18): never loosen the gate.
 2. t-eng-23 (9e306581): 2-3's followers (follow.ts, bring N home, heron reads the line): engine pieces, nothing shipped moves.
 3. t-eng-25b (73318234; code fe3faf7e; it carries t-eng-25 21668b61): 2-5's snap stones, snapper rows, stone art, the bonk-after-the-snap
    bot skill, the meter's snap channel, and TURTLE kick only when open (no live stage lays the kit TURTLE). Its suite was NOT re-run after
