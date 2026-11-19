@@ -1,5 +1,11 @@
 # Designer handoff (the meter rows rewritten 2026-11-12 by DIFF-ALGO, R-165.172: the hardness meter, reference/design/DIFFICULTY.md; rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
+## World plans (PLAN-W3, 5:55 PM 11-19 ET)
+- World 3 + World 4 outline: reference/plans/WORLD-3-PLAN.md (branch t-plan-w3 until merged). Method: reference/methods/world-plan.md.
+- Traps found: prowler sight lives in TWO paths (old enemyBrain.ts:229 170 px, used by World 6; the kit's world3.ts:13 sight.tall 80 via
+  core.ts:236-239): World 3 fixes the kit. Noise that wakes sleepers already runs in castPlay.ts:155-162. The rope hang has painted
+  frames (heroRope.ts). glowWake reaches by x only (zones.ts:81): a down shaft needs a vertical reach.
+
 Read first, in order:
 - reference/LAWS.md;
 - this file;
