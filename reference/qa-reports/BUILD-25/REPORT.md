@@ -4,6 +4,26 @@ Branch t-build-25 from t-int-14 6ab312e4 (ENG-25c already in, not re-merged). He
 Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0 plan sent 11:49 AM ET; the lead's GO 11:50 AM ET.
 
 
+## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
+
+### EXACT NEXT STEP (for a fresh member at high, on t-build-25 at the head that carries this line)
+1. Item 3a (wayside line): scratchpad script way.mjs (copy below, "How 3a is shot") pins Pokey like BUILD-25b's stills. FACT: the line
+   is a 12-word story card, readMs = 1.5 s + 0.5 s/word = 7.5 s of play (dotGuide.ts readMs/showFor); BUILD-25b's three pins 2.5 s
+   apart all fall inside it. Pinned at x14800 for 15 s the line never fired (the progress ratio needs `bestAt`, engine.ts:3715). Still
+   to do: timed stills that show it come AND go, or the lead's call that the read time explains it.
+2. Item 3b (rope trees): FACT: the trunk is `w1-traps#trunk` (CATALOG-MASTER worlds: USED 1, COULD 5/6; NOT 2). World 2's own rope is
+   the default look (rope-kit#tile/#post, world_best 2, "the river village: boards, rope and wicker", used 2-6). Fix: drop `look: 'vine'`
+   from ropeOver in src/game/gen2/worlds/w2Arc25.ts:126 (+ its comment), run w2Arc25.test, shoot after-stills at x11500 upright +
+   sideways (before: way/timed-*-t150.png in the scratchpad; to copy into stills/), push unread, tell the lead.
+3. Item 4: WAIT for the lead's ENG-SNAP hash; MERGE (never rebase); CI tool line + tsc; castBots 2-5 1-40 x 5 bots x N+E; child trace at
+   the first awake snapper (tools/engine/runs/childtrace25.ts). Item 5: the full check list on the merged head (it gates ENG-SNAP too).
+
+### Done
+- Item 1 (87b90eb5): goalLine.test ('chase' a verb goalLine speaks; planted 'Chase off free' CAUGHT) and pitPocket.test (walks every
+  World 2-4 stage whoever builds it; floor 32 = stages walked) — the lead's OK before the commit, lines in the message.
+- Item 2 (6104648f): Dot's `snap` teach = the lead's pick B "Go near till it creaks. Back off. Missed? Kick!" (9 words, 47 chars);
+  lines-2-5.md row 3 + why (R-165.341); LINES_25.snap; w2Arc25.test 7/7.
+
 ## BUILD-25b (Opus 5.5 high; written 12:38 PM ET Fri 11-20 by `date`; stopped at the lead's context plan, ~360k real)
 
 ### EXACT NEXT STEP (BUILD-25c, a fresh builder at high, on t-build-25 at this report's commit)
