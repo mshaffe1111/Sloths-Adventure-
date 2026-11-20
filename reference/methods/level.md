@@ -54,6 +54,8 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 - **Easy lays Normal's kinds, then cuts by count:** the piece your level is built round may be what it cuts. `Socket.easy: 'stay'`.
 - **Green tests with the wiring missing; a tool script outside tsc crashing in the background.** Rule 12; run a tool once in the foreground after editing it.
 
+- **A rule added to the list judge that the library builder does not use.** (VAR-19f, 11-20): VAR-19d/e grew listJudge (lure posts, seat breaches) but tools/engine/libstage.ts built with quietJudge only, so the library and the seed-list search laid different beats and libstage.test went red two members later. Now: a rule added to listJudge lands with libstage.test (and the CI tool line) run in the same commit; libstage builds with listJudge.
+
 ## World 1 notes (World 1's own; later worlds add their own section)
 - World 1 paints a log-style block 24-26 px thick as its fallen log; 50 px thick it is a green hedge, and over 400 px long it is two pieces with a seam.
 - An upright phone shows about 425 px of stage, 270 px past where he stands at a handle; sideways about 150 px over his head is behind the goal sign.
