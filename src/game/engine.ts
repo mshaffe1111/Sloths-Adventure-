@@ -118,6 +118,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
+import { punchNoise } from './heroNoise.ts';
 import { drawPieces, piecesHurt, respawnPieces, startPieces, stepPieces } from './pieces/index.ts';
 import { isFalseLiana } from './vineSnake.ts';
 import type { PieceHost, StagePiece } from './stagePiece.types.ts';
@@ -695,6 +696,10 @@ export class GameEngine {
   private mossWas = 0;
   /** his swing's rope length on the last cast step (NaN off a swing): climbing a swinging liana is moving, the swing is not */
   private swingLenWas = NaN;
+  /** the platform the cast last asked about (stepCast: is the ground he stands on quiet?), and its answer: looked up only when he stands
+   *  on another one */
+  private quietId = -1;
+  private quietWas = false;
   /** the game time the sweepers were last drawn at (their easing's step) */
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
@@ -914,7 +919,8 @@ export class GameEngine {
 
   // --- fight system (see fight.ts) ---
   /** the attack being played: which move, how far into it, which animals it has already hit */
-  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant } | null = null;
+  /** the swing in play. `rang`: it struck a sounding thing (its sound is the blow's only noise); `noised`: its noise went to the cast */
+  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant; rang?: boolean; noised?: boolean } | null = null;
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
   /** game time until which a touch jab may still be taken back, and waits in its wind-up (CT-17) */
   private jabHold = 0;
@@ -4424,6 +4430,8 @@ export class GameEngine {
         this.onStrikeBegin(a0.move);
       }
       this.strike(a0, t0, a0.t);
+      // (his punch is heard when its strike is over: by then it is known whether it rang a sounding thing, ENG-NOISE)
+      if (!a0.noised && a0.t >= a0.move.startup + a0.move.active) this.blowNoise(a0);
       if (a0.t >= moveLength(a0.move)) this.endAttack();
     }
 
@@ -4461,11 +4469,25 @@ export class GameEngine {
   private endAttack() {
     const a = this.atk;
     if (!a) return;
+    // (a blow cut short inside its strike, by the next press: its noise still goes, once)
+    if (a.sounded && !a.noised) this.blowNoise(a);
     const id = a.move.id;
     this.lastPunch = id === 'jab' || id === 'cross' ? id : null;
     this.chainTimer = this.lastPunch ? 0.35 : 0;
     this.kickChain = id === 'kick' ? 0.5 : 0;
     this.atk = null;
+  }
+
+  /**
+   * A blow's noise into the cast's one channel (ENG-NOISE; castPlay.ts noise): his punch at his place, a kick or a mega the same: once a
+   * swing, when its strike is over. A blow that rang a sounding thing makes no noise of its own: that thing's sound is the only one (its
+   * own noise would call a hunter to HIM, not to the stone: 3-3.md). Heard only from the world that teaches noise (castPlay.ts)
+   */
+  private blowNoise(a: NonNullable<GameEngine['atk']>) {
+    a.noised = true;
+    if (a.rang || !this.cast) return;
+    const p = this.player;
+    this.cast.noise(punchNoise(p.x, p.y, this.gameTime));
   }
 
   /** the strike starts: the swoosh, the step forward, the shake of a mega punch */
@@ -4577,6 +4599,17 @@ export class GameEngine {
       sound.playWhoosh();
       this.spawnDebrisBurst(sprung.x, sprung.y - 70, '#65a30d');
       recorder.event('trap', sprung.kind);
+    }
+
+    // a blow on a sounding thing (a chime stone; castPlay.types.ts SoundPost): it rings, once a swing, and its sound is the blow's only
+    // noise (blowNoise; ENG-NOISE)
+    const si = this.cast && !a.rang ? this.cast.soundAt(box) : -1;
+    if (si >= 0) {
+      a.rang = true;
+      a.connected = true;
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+      sound.playShrineUnlocked();
+      this.cast!.ring(si, this.gameTime);
     }
 
     const b = this.boss;
@@ -4735,6 +4768,8 @@ export class GameEngine {
     const ropes = this.vines.filter((v) => v.mossy).map((v) => ({ x: 0, w: 0, y: 0, rope: v.id }));
     this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes]) : null;
     this.swingLenWas = NaN;
+    this.quietId = -1;
+    this.quietWas = false;
     this.sweepDrawn.clear();
     this.mossWas = 0;
     // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
@@ -4764,6 +4799,13 @@ export class GameEngine {
     h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
     h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
+    // (the ground he stands on: quiet ground (moss, Platform.quiet) takes a landing without a sound, castPlay.ts; asked again only when he
+    //  stands on another platform)
+    if (p.grounded && this.standingOnId !== this.quietId) {
+      this.quietId = this.standingOnId;
+      this.quietWas = !!this.platforms.find((q) => q.id === this.standingOnId)?.quiet;
+    }
+    h.quiet = p.grounded && this.quietWas;
     const r = c.step(h, dt, this.gameTime, this.easy, this.clock);
     // the freeze (ENG-19a NEW 4, 1-9.md): an animal beaten by his stillness with him inside its strike's reach plays FREEZE_SLOW of the
     // slow motion, the view kept as it is (a push-in would put the rearing head under the HUD sideways); never while a sweeper's eye is

@@ -27,6 +27,22 @@ export interface TrapPost {
   landY: number;
 }
 
+/**
+ * A SOUNDING thing as a stage lays it (ENG-NOISE; gen2/soundLay.ts lays it from a prop socket): a fixed thing that makes ITS noise at its
+ * place when a blow lands on it (a chime stone, a bell: heroNoise.ts bellNoise, the call that carries), or when the stage fires it
+ * (CastPlay.ring). A blow that strikes one makes only that thing's sound, never his punch's (engine.ts strike).
+ */
+export interface SoundPost {
+  /** its middle, and the surface it stands on (the noise is made there, at the cast's own ground height) */
+  x: number;
+  y: number;
+  /** its box over that surface (px): what a blow must reach */
+  w: number;
+  h: number;
+  /** the noise it makes (heroNoise.ts) */
+  sound: 'bell';
+}
+
 export interface CastData {
   /** the kinds this stage's cast names (predators/registry.ts): an animal of one of these kinds is run by the kit */
   kinds: string[];
@@ -39,6 +55,8 @@ export interface CastData {
   said?: { trap?: string; punch?: string; spared?: string };
   /** the stage's lure targets (predators/lure.ts; gen2/lureLay.ts lays them): fixed things an animal of the cast fears */
   lures?: LurePost[];
+  /** the stage's sounding things (gen2/soundLay.ts lays them): struck by a blow, or fired by the stage, each makes its own noise */
+  sounds?: SoundPost[];
   /** his hard landings are heard in this stage (a stage that teaches quiet feet says so, whatever its world); absent: by the move
    *  ladder (roster.ts TAUGHT.landing) */
   landing?: boolean;

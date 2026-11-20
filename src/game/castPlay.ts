@@ -3,14 +3,16 @@
  * between the engine and the pure kit: when a stage's brief names a cast (`proto.cast`, castPlay.types.ts), every animal of a named
  * kind is stepped HERE on the fixed step, never by predatorAI.ts, with
  *   - Pokey's stillness (stillness.ts) and the cover he stands in,
- *   - the noise of his landings (heroNoise.ts: a hard one wakes sleepers, a soft one makes no event), from the world that teaches it,
+ *   - ONE noise channel (ENG-NOISE): every noise he or the stage makes reaches every animal here, in the order made: his hard landing
+ *     (heroNoise.ts: a soft one, or one on quiet ground, makes none), his punch (the engine's blow, from the world that teaches noise),
+ *     a struck or fired sounding thing (castPlay.types.ts SoundPost: its own noise at its place, never his punch's),
  *   - the stage's drop traps (dropTrap.ts), which beat what they come down beside by the kit's 'trap' way.
  * A blow, a stomp or a trap is tried on the kit (`beat`); what it does is the animal's data. Nothing here is a stage's: no ids, no
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
-import type { CastData, TrapPost } from './castPlay.types.ts';
+import type { CastData, SoundPost, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
-import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
+import { bellNoise, landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches, FLEE_OFF } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
@@ -39,6 +41,8 @@ export interface CastHero {
   hanging?: boolean;
   /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
   rope?: number;
+  /** the ground he stands on is quiet (Platform.quiet: moss): a landing on it makes no noise (heroNoise.ts landingNoise) */
+  quiet?: boolean;
 }
 
 export interface CastMember {
@@ -68,8 +72,11 @@ export interface CastStep {
    *  (engine.ts plays its slow motion; ENG-19a NEW 4, 1-9.md). On a stage that teaches the freeze (CastData.teachStill) its first one
    *  wherever he stands. Never a sweeper: its pass is beaten by stillness at its end, far off */
   froze: Enemy[];
-  /** a hard landing's noise (null: he did not land, or landed softly), and how many sleepers it woke */
+  /** a hard landing's noise (null: he did not land, or landed softly or on quiet ground) */
   landed: Sound | null;
+  /** every noise the cast heard this step, in the order made (the one channel: his landing, his punch, a sounding thing), and how many
+   *  sleepers they woke */
+  heard: Sound[];
   woke: number;
 }
 
@@ -90,11 +97,18 @@ export class CastPlay {
   private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
+  /** his punch is heard here: only from the world that teaches noise (roster.ts TAUGHT.noise; before it a blow is silent, as a landing is
+   *  before TAUGHT.landing: nothing wakes to a mechanic nobody has taught) */
+  private readonly punchLoud: boolean;
+  /** the stage's sounding things (castPlay.types.ts SoundPost) */
+  readonly sounds: readonly SoundPost[];
+  /** the noises made since the last step (noise()): the step hears them, in order, after his landing */
+  private made: Sound[] = [];
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
   /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
   private teachStill: boolean;
-  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, woke: 0 };
+  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, heard: [], woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
 
@@ -106,7 +120,9 @@ export class CastPlay {
     this.covers = covers;
     this.ground = platforms;
     this.loud = data.landing ?? TAUGHT.landing <= world;
+    this.punchLoud = TAUGHT.noise <= world;
     this.lures = data.lures ?? [];
+    this.sounds = (data.sounds ?? []).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
     this.teachStill = !!data.teachStill;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
@@ -157,7 +173,7 @@ export class CastPlay {
   /** one fixed step of the whole cast. `t`: game time; `clock`: the stage's clock, read for each animal that keeps one (Enemy.kitBeat) */
   step(hero: CastHero, dt: number, t: number, easy: boolean, clock?: Pick<StageClock, 'read'>): CastStep {
     const o = this.out;
-    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = o.froze.length = 0;
+    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = o.froze.length = o.heard.length = 0;
     o.landed = null;
     o.woke = 0;
     const set = STILLNESS[easy ? 'easy' : 'normal'];
@@ -171,15 +187,21 @@ export class CastPlay {
     prey.moving = moving(hero, set);
     prey.covered = inCover(this.covers, hero);
 
-    // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
-    // teaches quiet feet (roster.ts TAUGHT.landing)
+    // his landing: how far he fell says how far it carries; a soft one makes no noise at all, nor one on quiet ground (moss), and none
+    // does before the world that teaches quiet feet (roster.ts TAUGHT.landing)
     const fell = stepFall(this.fall, hero);
     if (fell !== null && this.loud) {
-      const n = landingNoise(hero.x, hero.y, t, fell);
+      const n = landingNoise(hero.x, hero.y, t, fell, hero);
       if (n) {
         o.landed = n;
-        for (const m of this.members) if (hear(m.def, m.s, n) === 'woke') o.woke++;
+        this.hearAll(n);
       }
+    }
+    // then every other noise made since the last step, on the same channel and in the order made (his punch, a sounding thing)
+    if (this.made.length) {
+      const made = this.made;
+      this.made = [];
+      for (const n of made) this.hearAll(n);
     }
 
     // the traps: one that comes down chases off what stands beside it
@@ -222,6 +244,42 @@ export class CastPlay {
       this.sync(m, t, dt, easy);
     }
     return o;
+  }
+
+  /** one noise reaches every animal of the cast (core.ts hear: a sleeper in reach wakes, a hunter is drawn or comes looking) */
+  private hearAll(n: Sound): void {
+    const o = this.out;
+    o.heard.push(n);
+    for (const m of this.members) if (hear(m.def, m.s, n) === 'woke') o.woke++;
+  }
+
+  /**
+   * THE CHANNEL's way in (ENG-NOISE): a noise made off the cast's own step (his punch: engine.ts at the end of a blow; a sounding thing:
+   * ring). Heard on the next step, after his landing, in the order made. His punch is dropped before the world that teaches noise
+   * (TAUGHT.noise); his landing comes in through the step itself (it reads his fall and the ground)
+   */
+  noise(n: Sound): void {
+    if (n.from === 'punch' && !this.punchLoud) return;
+    if (n.from === 'landing' && !this.loud) return;
+    this.made.push(n);
+  }
+
+  /** the first sounding thing a blow's box reaches (its index in `sounds`), or -1 */
+  soundAt(box: Box): number {
+    for (let i = 0; i < this.sounds.length; i++) {
+      const p = this.sounds[i];
+      if (box.x < p.x + p.w / 2 && box.x + box.w > p.x - p.w / 2 && box.y < p.y && box.y + box.h > p.y - p.h) return i;
+    }
+    return -1;
+  }
+
+  /** sounding thing `i` makes its noise at its place now (a blow landed on it, or the stage fired it): the noise made, or null */
+  ring(i: number, t: number): Sound | null {
+    const p = this.sounds[i];
+    if (!p) return null;
+    const n = bellNoise(p.x, p.y, t);
+    this.noise(n);
+    return n;
   }
 
   /** this animal's act just took a heart (the engine's hurt): one act, one heart, it pulls up (core.ts landed) */
@@ -274,6 +332,7 @@ export class CastPlay {
   calm(easy: boolean): void {
     this.still = newStill();
     this.fall = newFall();
+    this.made = [];
     for (const m of this.members) {
       const s = m.s;
       if (s.phase === 'gone' || s.phase === 'flee' || s.phase === 'stunned' || s.asleep) continue;

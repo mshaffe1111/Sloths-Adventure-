@@ -380,6 +380,9 @@ export interface SectionPiece {
    * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
    */
   creak?: boolean;
+  /** QUIET ground (moss; ENG-NOISE, 3-5.md): the platform takes any landing without a sound (types.ts Platform.quiet). Play only: the
+   *  piece's look is its style or slot, never this */
+  quiet?: boolean;
   /**
    * a SEALED piece (a gate bough, 1-4's fig gates; R-165.170, the lead 11-13): in a tower the lay adds nothing of its own level with
    * it or within a hop of it: no run-on to a wall, no bridge, no catch shelf, and the section after it is always a storey up by a

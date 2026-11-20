@@ -14,6 +14,25 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
 - **clipcheck under heavy load** (3 suite shards + paintcheck beside it) reported 4 known entries 'stale' (74 of 83 seen, 900 s); alone it
   passes (83, 324 s). Run it with the machine quiet before calling its stale list real.
 
+## 0zq-NOISE. ENG-NOISE (t-eng-noise from t-int-13 8efb1bba, 11-19; this entry 7:37 PM ET): one noise channel the cast hears (World 3's first foundation)
+- **The channel** (castPlay.ts): `noise(n)` queues any heroNoise.ts Sound; the step hears his landing first, then the queue in order made,
+  every member through core.ts `hear`; `CastStep.heard` lists what it heard (`landed`, `woke` as before). `ring(i, t)` makes sounding thing
+  i's bellNoise at its place (a blow on it, or the stage firing it); `soundAt(box)` finds the one a blow reaches. `calm` clears the queue.
+- **Who emits** (engine.ts): a blow's noise (punch, kick, mega alike: `punchNoise` at his place) once a swing, when its strike window
+  closes (`blowNoise`; or at `endAttack` if cut short); a taken-back jab makes none. A blow that reaches a SoundPost rings it (hitstop
+  0.04, `playShrineUnlocked`) and makes NO noise of its own (`atk.rang`). The landing reads `standingOnId`'s `Platform.quiet` (looked up
+  only when the platform changes) into `CastHero.quiet`; `landingNoise(..., ground)` returns null on quiet ground.
+- **The ladder:** his punch is heard only from `TAUGHT.noise` (World 3); his landing from `TAUGHT.landing` (2) as before; a bell is
+  heard where the kit's `inWorld` lets the kind hear (TAUGHT.bell). So no World 1-2 cast hears a blow: castNoise.test.ts pins it.
+- **Data:** `CastData.sounds: SoundPost[]` ({x, y foot, w, h, sound:'bell'}), laid by gen2/soundLay.ts from a prop socket tagged
+  'sounding' (soundProps/soundSocket/soundEmitters, as lureLay.ts); `SectionPiece.quiet` -> `Platform.quiet` (pipeline.ts LocalPiece).
+  Neither has a look: the world's art and `note` hook draw it (ENG-LURE's 'chime'; 3-5's moss piece). World 1's 'moss_stone' is NOT quiet.
+- **Proof:** gen2/noiseRow.test.ts (toy World 3 rows laid by gen2, RealPlay) and castNoise.test.ts. Trap: a kit ocelot patrols at 55 px/s,
+  so "it came near the stone" proves nothing; test `s.drawn` and `s.goalX` (the first plant read 80 px from patrol alone).
+- **Open for the next engineer:** ENG-LURE (the chime look, its once-a-call rule, the patch's clock gate); ENG-VINE (the thorn vine as a
+  kit sleeper hears this channel; stepThornVines still hears only the puzzle kit's noise); the puzzle kit's own noises (puzzlePlay.ts
+  thrown/bell) do NOT reach the cast yet; no recorder event for a ring or a punch noise (only 'landing').
+
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
   child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
