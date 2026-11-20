@@ -103,7 +103,7 @@ as a swing (level.md World 2 notes) + 2b logs + drawn end PASS; castBots Normal 
 (VAR-19e: R-165.327 boa off socket, R-165.328 eagle past rounds, funcheck repeat), t-eng-25c d13ebdaa (ENG-25c FINAL via ENG-25d: every gate PASS but buildcheck
 under load (PASS alone) and funcheck = base; BUILD-25 starts on it), t-gate-flake 7ae0b8a6 (stopped clean: 2 of 5 loaded runs PASS;
 continuation: 3 more loaded runs, 1 alone, the full list, and R-165.330 paintcheck's empty part; EXACT NEXT STEP atop its REPORT).
-**FRIDAY: START ONLY ON MATT'S WORD** (Matt 11-19 10:26 PM: "tomorrow morning, I can tell you when to start again"; the 8:20 AM trigger trig_018TmBom1EwGGSK9azWvZk8a is DISABLED, its prompt is the plan to run by hand). Order: ENG-24g, ENG-24h (HF env), VAR-19e, BUILD-25 (or
+**FRIDAY STARTED 9:27 AM ET on Matt's word ('Lets start up for the day'): INT-14, ENG-24g, ENG-24h, VAR-19e running (ids in STATE).** Was: START ONLY ON MATT'S WORD (Matt 11-19 10:26 PM: "tomorrow morning, I can tell you when to start again"; the 8:20 AM trigger trig_018TmBom1EwGGSK9azWvZk8a is DISABLED, its prompt is the plan to run by hand). Order: ENG-24g, ENG-24h (HF env), VAR-19e, BUILD-25 (or
 ENG-25e first); then GATE-FLAKE's continuation, BUILD-24f, INT-14's packet, World 3 pieces, ENG-27, ART-27.
 **Rulings tonight to carry:** a liana over a river's tail = World 1 swing rules (level.md); 2-5 stones level + 30 px (walkable is fine, the
 count is the lesson), a stone bites only with his middle over it; kicks are noisy; no dev-scene still for the leap (R-165.322); 2-4 ships only
