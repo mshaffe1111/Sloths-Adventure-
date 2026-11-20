@@ -2,79 +2,79 @@ TAP version 13
 # Subtest: (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 1 - (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 5982.933146
+  duration_ms: 7588.48441
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 2 - (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 3401.055672
+  duration_ms: 4001.909055
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 3 - (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 2255.64292
+  duration_ms: 2433.634044
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 4 - (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 2500.555098
+  duration_ms: 2602.183042
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 5 - (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 2013.586169
+  duration_ms: 2215.356317
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: adult normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 6 - (a) bonkBrake: adult normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 1810.535095
+  duration_ms: 2111.538349
   type: 'test'
   ...
 # Subtest: (a) bonkBrake: adult easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
 ok 7 - (a) bonkBrake: adult easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 1727.828988
+  duration_ms: 1853.765074
   type: 'test'
   ...
 # Subtest: (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
 ok 8 - (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 4510.981386
+  duration_ms: 4842.569165
   type: 'test'
   ...
 # Subtest: (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
 ok 9 - (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 3364.113424
+  duration_ms: 3695.631307
   type: 'test'
   ...
 # Subtest: (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
 ok 10 - (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 1694.569834
+  duration_ms: 1834.685907
   type: 'test'
   ...
 # Subtest: (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
 ok 11 - (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
   ---
-  duration_ms: 2075.074727
+  duration_ms: 2131.541375
   type: 'test'
   ...
 # Subtest: planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
 ok 12 - planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
   ---
-  duration_ms: 8218.79441
+  duration_ms: 8775.766416
   type: 'test'
   ...
 # Subtest: planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
 ok 13 - planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
   ---
-  duration_ms: 12867.731007
+  duration_ms: 14075.237136
   type: 'test'
   ...
 1..13
@@ -85,4 +85,4 @@ ok 13 - planted (b): with letItSnap off, the child and the kid bonk it by choice
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 53402.204631
+# duration_ms 59145.655312

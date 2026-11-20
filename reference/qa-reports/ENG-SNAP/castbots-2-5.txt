@@ -1,0 +1,41 @@
+castBots 2-5, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 0/40; under the floor 0; time median - s (min -); hits 894 lives 223 (other 981, foe:turtle 13, water 123); cleared kick 274; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 181; left 86
+        fail 6: shrine rescued x5  (seeds 15,24,36,39,2,35)
+        fail 4: stranded goal 6/8 rescued x8  (seeds 6,32,25,31)
+        fail 3: shrine rescued x8  (seeds 3,23,34)
+        fail 3: shrine rescued x4  (seeds 33,14,40)
+        fail 3: stranded goal 7/8 rescued x7  (seeds 8,13,22)
+        fail 2: stranded goal 7/8 rescued x8  (seeds 9,16)
+        fail 2: shrine rescued x14  (seeds 18,21)
+        fail 2: stranded goal 5/8 rescued x8  (seeds 27,28)
+        fail 2: stranded goal 4/8 rescued x10  (seeds 5,37)
+        fail 2: shrine rescued x6  (seeds 4,10)
+        fail 1: stranded goal 5/8 rescued x9  (seeds 12)
+        fail 1: stranded goal 4/8 rescued x8  (seeds 30)
+        fail 1: stranded goal 6/8 rescued x9  (seeds 11)
+        fail 1: stranded goal 4/8 rescued x11  (seeds 17)
+        fail 1: stranded goal 7/8 rescued x10  (seeds 20)
+        fail 1: shrine rescued x3  (seeds 26)
+        fail 1: shrine rescued x9  (seeds 29)
+        fail 1: stranded goal 7/8 rescued x9  (seeds 38)
+        fail 1: shrine rescued x7  (seeds 1)
+        fail 1: stranded goal 5/8 rescued x10  (seeds 7)
+        fail 1: time goal 7/8 rescued x20  (seeds 19)
+kid    easy   PASS 4/40; under the floor 0; time median 197.2 s (min 168.2); hits 104 lives 0 (other 104); cleared kick 276; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 4; left 84
+        fail 12: shrine rescued x3  (seeds 3,9,24,27,33,2,5,11,38,13,34,37)
+        fail 12: shrine rescued x2  (seeds 12,21,39,14,17,23,35,7,22,25,28,31)
+        fail 5: shrine rescued x1  (seeds 15,30,8,26,19)
+        fail 4: shrine rescued x5  (seeds 18,32,1,4)
+        fail 2: shrine rescued x4  (seeds 36,10)
+        fail 1: shrine rescued x6  (seeds 20)
+adult  normal PASS 40/40; under the floor 0; time median 163.3 s (min 147.8); hits 149 lives 12 (other 88, foe:turtle 61, water 12); cleared kick 342; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 18
+adult  easy   PASS 40/40; under the floor 0; time median 168.5 s (min 152.5); hits 129 lives 0 (other 67, foe:turtle 62); cleared kick 343; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 17
+child  normal PASS 40/40; under the floor 0; time median 379.4 s (min 345.2); hits 38 lives 14 (other 29, foe:turtle 9, water 14); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 281.2 s (min 259.2); hits 16 lives 0 (other 14, foe:turtle 2); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 203 s (min 187.9); hits 12 lives 10 (water 10, other 10, foe:turtle 2); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 199.1 s (min 178.8); hits 4 lives 0 (foe:turtle 1, other 3); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 184.2 s (min 173.5); hits 13 lives 9 (other 13, water 9); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+
+real	1m52.094s
+user	5m21.989s
+sys	0m3.317s

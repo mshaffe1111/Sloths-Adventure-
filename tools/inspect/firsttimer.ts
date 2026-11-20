@@ -121,7 +121,7 @@ const SNAP_TAP = 0.08;
  */
 // (`restomp`: how far past the edge of its head a landing still counts as a stomp, fight.ts stompTest's own 18 px: a dazed snapper is still
 //  stomped, so a bounce that comes down that near it bounces him again, ENG-SNAP)
-const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200, restomp: 18, lastPush: 0.15 } as const;
+const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200, restomp: 18, lastPush: 0.15, landTol: 3 } as const;
 /** his thumb: from deciding to the press leaving the floor (s) */
 const SNAP_THUMB = 0.1;
 
@@ -2951,7 +2951,8 @@ export class FirstTimerRun {
     //  its engage, and snaps on four at the spot he left)
     //  A first-timer's thumb (the kid's) never lets a steer go (its late lift-off re-arms every frame, R-165.59): a step back ran him
     //  back onto the snap stones, kid Easy v2, so only a thumb that lets go steps)
-    if (now === 'warn' && ph !== 'tell' && Math.abs(p.vx) <= BONK.still && !!who.holdQ) return back;
+    //  The step is one move on the creak, made then: no pause between steers (rhythm) holds it past the creak, child Normal L30 on 2-5)
+    if (now === 'warn' && ph !== 'tell' && Math.abs(p.vx) <= BONK.still && !!who.holdQ) { this.steady = true; return back; }
     return {};
   }
 
@@ -2974,13 +2975,13 @@ export class FirstTimerRun {
     // (where he comes down: onto its back before the bonk, the ground it stands on after; the bounce off its back is a launch, which a
     //  let-go of the jump does not cut short, engine.ts `launched`)
     const dazed = m.s.phase === 'stunned';
-    return this.steerToLand(aimX, dazed ? m.s.y : headRect(m.e).y, dazed ? Infinity : holdLeft);
+    return this.steerToLand(aimX, dazed ? m.s.y : headRect(m.e).y, dazed ? Infinity : holdLeft, dazed ? BONK.landTol : 6);
   }
 
   /** steer so a coast comes down at `x` on a floor at `y` (feet), from where he is in the air now: see bonkSteer. `holdLeft`: the seconds
    *  his thumb still holds the jump; after that the engine cuts his rise to PHYS.cutV (a tap hop), which the estimate must see coming or
    *  it judged the long held rise, let go, and then steered on again at full run once the cut came (adult Normal v1) */
-  private steerToLand(x: number, y: number, holdLeft = Infinity): Pad {
+  private steerToLand(x: number, y: number, holdLeft = Infinity, tol = 6): Pad {
     const p = this.sim.p, who = this.who;
     // (the time to come down to y: the engine's own gravity, up and down; already under it, now)
     let vy = p.vy, py = p.y, T = 0;
@@ -2998,8 +2999,10 @@ export class FirstTimerRun {
     // (no new steer in his last moment in the air either way: it reaches the ground as a run, and a thumb whose lift-off re-arms ran
     //  him on through it, adult Normal v4)
     if (T <= BONK.lastPush) return {};
-    const vLet = Math.max(-PHYS.maxRun, Math.min(PHYS.maxRun, p.vx + d * PHYS.airAcc * DT * lift));
-    if ((x - (p.x + vLet * T)) * d > 6) return d > 0 ? { right: true } : { left: true };
+    // (the lift-off only runs on a steer he is making: not steering, it is no part of a coast, and counted anyway he judged a nudge he
+    //  never made would get him there and bounced on its back, still, until the help ladder came, middle Normal L4 on 2-5)
+    const vLet = this.lastSteer === d ? Math.max(-PHYS.maxRun, Math.min(PHYS.maxRun, p.vx + d * PHYS.airAcc * DT * lift)) : p.vx;
+    if ((x - (p.x + vLet * T)) * d > tol) return d > 0 ? { right: true } : { left: true };
     const over = (p.x + p.vx * T - x) * (p.vx >= 0 ? 1 : -1);
     if (over > BONK.band && Math.abs(p.vx) > 20) return p.vx > 0 ? { left: true } : { right: true };
     return {};
@@ -3015,11 +3018,13 @@ export class FirstTimerRun {
     if (!SKILLS.bonkBrake || !SKILLS.bonkAfterSnap) return false;
     const p = this.sim.p;
     const c = this.e.cast as { members: Array<{ e: { id: number; kitBeat?: unknown }; def: PredatorDef; s: PredatorState }> } | null;
+    // (just dazed under him; or, with no jump of his own, any dazed one he is bouncing on: on its back, over it, a stomp again each
+    //  time he comes down, middle Normal L4 on 2-5 bounced so 13 s, still, until the help ladder came)
     const m = c?.members.find((q) => q.s.phase === 'stunned' && !!q.e.kitBeat && q.def.beatenBy.kick?.ends === 'chasedOff'
-      && q.s.t < 0.2 && Math.abs(q.s.x - p.x) < BONK.from[0] && Math.abs(q.s.y - p.y) < BONK.clear);
+      && Math.abs(q.s.x - p.x) < BONK.from[0] && Math.abs(q.s.y - p.y) < BONK.clear && (q.s.t < 0.2 || (!j && q.s.y > p.y)));
     if (!m) return false;
-    // (the way he went at it: from the jump's take-off, or, stomped on the landing's re-check after his jump had ended, his run)
-    const dir: -1 | 1 = j ? (m.s.x >= j.x ? 1 : -1) : p.vx >= 0 ? 1 : -1;
+    // (the way he went at it: from the jump's take-off; with no jump, the side he is over now is his)
+    const dir: -1 | 1 = j ? (m.s.x >= j.x ? 1 : -1) : m.s.x >= p.x ? 1 : -1;
     if (j) {
       j.bonk = m.e.id;
       j.bonkDir = dir;
@@ -3059,12 +3064,14 @@ export class FirstTimerRun {
    * (ENG-SNAP, bonkBrake) where his bounce comes down: his own side, clear of its back. A dazed snapper is still stomped (fight.ts stompTest
    * takes any landing within its head's half-width and 18 px of its middle), so the old aim, half the kick's reach off it (29 px), came
    * down on its back again: a second bounce with no plan of his own, and the way on steered it over to its far side (the toy's child
-   * Normal v6). Just clear of its stomp's reach and inside the kick's (BONK.kick): a landing farther out needed a walk in, which his
+   * Normal v6). Just clear of its stomp's reach (6 px, steered to within BONK.landTol: with 5 px and the 6 px of an ordinary steer he
+   * hung at 48 px, the reach's very edge, and bounced there until the help ladder came, middle Normal L6 on 2-5) and inside the kick's
+   * (BONK.kick): a landing farther out needed a walk in, which his
    * thumb's measured pauses between steers (rhythm) held up until it woke (middle Normal v1: a 1 s gap). He holds still as he lands (the
    * engine checks a landing once more as a stomp for 0.09 s, engine.ts groundedFor: a step in then bounced him again, adult Normal v3).
    */
   private offItsBack(m: { e: Enemy; s: PredatorState }, dir: -1 | 1): number {
-    return m.s.x - dir * (headRect(m.e).w / 2 + BONK.restomp + 5);
+    return m.s.x - dir * (headRect(m.e).w / 2 + BONK.restomp + 6);
   }
 
   /** (bonkBrake) in the air off its back with no jump of his own (bounced again), he steers for his side, clear of its back */
@@ -3078,7 +3085,7 @@ export class FirstTimerRun {
     const m = c?.members.find((q) => q.e.id === this.bonk!.id);
     if (!m || m.s.phase !== 'stunned' || Math.abs(m.s.y - p.y) > BONK.clear) return null;
     const mine: -1 | 1 = this.bonkSide ?? (p.x < m.s.x ? -1 : 1);
-    return this.steerToLand(this.offItsBack(m, mine === -1 ? 1 : -1), m.s.y);
+    return this.steerToLand(this.offItsBack(m, mine === -1 ? 1 : -1), m.s.y, Infinity, BONK.landTol);
   }
 
   /**
