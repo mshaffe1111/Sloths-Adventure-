@@ -31,7 +31,10 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 - FAIL funcheck (30 worse or new, 41 to lower or delete): the SAME ✗ lines on the base 6a61c36c (diff empty); none names 2-5
   (World 1 lines only). Not 2-5's.
 - PASS lockall --check vs 6a61c36c --intended 2-5 (453 s): 101/102 stages unchanged; only 2-5 moved (intended). goals.ts moved no other stage.
-- timecheck and paintcheck (3 parts): RUNNING at this commit (the runner left them out; started 1:49 PM ET); lines follow.
+- FAIL timecheck: "couldn't run (a shallow clone: blame needs the full history)": the same shallow-clone cause as roadmapcheck; CI runs it
+  with fetch-depth 0. (The runner had left timecheck and paintcheck out; 25b ran them after, 1:49-1:59 PM ET, same head.)
+- PASS paintcheck, all 3 parts (0/3: 1714 builds, 1/3: 2028 builds incl. 2-5, 2/3: 1928 builds; 102 stages, both settings): no new painted
+  style falls through to code terrain. (25b first ran parts 1-3: parts are 0-based, 3/3 is empty; part 0/3 then run.)
 
 ### What 25b did (each on t-build-25; heads named)
 - **The quiet line** (e4da942b): traced (quietOf, seeds 1-20): the same joins ran 4.2-7.0 s with nothing to do (reach->teach stone 4.2,
