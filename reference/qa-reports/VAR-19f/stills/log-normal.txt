@@ -1,0 +1,8 @@
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-goal0-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-hop-card-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-at-rock-card-up-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-at-rock-card-up-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-at-rock-card-up-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-at-rock-card-up-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-hop-card-gone-upright.jpg
+wrote reference/qa-reports/VAR-19f/stills/1-9-L1-normal-start-after-hop-upright.jpg
