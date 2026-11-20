@@ -12,6 +12,7 @@ import { easyStage } from '../../src/game/easyMode.ts';
 import type { BuildRequest, Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 import { invDressBreaches, type InvDress } from '../../src/game/art/invDress.ts';
 import type { Inventory } from '../../src/game/art/inventory.ts';
+import { lureFaults } from '../../src/game/gen2/lureLay.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 
 /** a roll's finish as Play gives it (listed.ts playFinish, by the stage's row), on a stage it may write onto */
@@ -77,9 +78,23 @@ export function listJudge(cfg: LevelConfig, finish: RollFinish, max: number = QU
   return (st, difficulty) => {
     let played: Gen2Stage;
     try { played = finish(structuredClone(st), difficulty); } catch (err) { return [{ line: thrown(difficulty, err) }]; }
+    // (each lure post works on an animal that fears it, on each setting: a line with no slot, so the stage is rolled again; VAR-19d)
+    const lure = lureBreaches(played, difficulty, cfg.worldIndex).map((line) => ({ line }));
     // (quietJudge's own rule, on the stage just finished: quietOf with no finish measures the stage it is handed)
-    return difficulty !== 'normal' ? [] : quietLine(st, quietOf(cfg, played), max);
+    return difficulty !== 'normal' ? lure : [...lure, ...quietLine(st, quietOf(cfg, played), max)];
   };
+}
+
+/**
+ * Each lure post as played works on an animal that fears it (src/game/gen2/lureLay.ts lureFaults, the engine's own rule, run on the stage
+ * the row's finish lays: a post nothing there fears, a post no animal that fears it can be drawn to, an animal that starts inside a
+ * post's reach, an animal whose first way is the lure with nothing to lure it to). level.md rule 19, VAR-19d (R-165.312): 1-9's roost
+ * beat, a designed stay boa within its roost's reach (w1Arc19.test.ts), was refused by the test on a listed layout (seed 1: a rolled flag
+ * on the roost's bough pushed the boa 592 px from the roost) while this judge listed it. `st` is already finished (the caller's copy).
+ */
+export function lureBreaches(st: Gen2Stage, difficulty: 'normal' | 'easy', world: number): string[] {
+  const s = st as unknown as Parameters<typeof lureFaults>[0] & { proto?: { cast?: Parameters<typeof lureFaults>[0]['cast'] } };
+  return lureFaults({ enemies: s.enemies, platforms: s.platforms, cast: s.proto?.cast }, world).map((l) => `a lure (${difficulty}): ${l}`);
 }
 
 /**
@@ -120,6 +135,7 @@ export function asPlayedBreaches(cfg: LevelConfig, kit: () => WorldKit, seeds: r
     const q = difficulty === 'normal' ? quietOf(cfg, played).quiet : 0;
     if (q > max) out.push(`${cfg.id} seed ${seed}: ${q} s quiet, over the line ${max} s (the outro excluded)`);
     for (const l of helpRoomBreaches(played, difficulty)) out.push(`${cfg.id} seed ${seed}: ${l}`);
+    for (const l of lureBreaches(played, difficulty, cfg.worldIndex)) out.push(`${cfg.id} seed ${seed}: ${l}`);
   }
   return out;
 }

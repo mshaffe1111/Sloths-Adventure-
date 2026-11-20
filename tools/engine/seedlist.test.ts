@@ -216,3 +216,43 @@ test('the list judges each listed seed\'s dressing rows against its world\'s inv
   assert.equal(lines.length, 2, lines.join('\n'));
   for (const d of ['normal', 'easy']) assert.ok(lines.some((l) => l.startsWith(`1-8 seed ${seed} ${d}: dressing at x `) && l.endsWith("'hf18-palm-crown' is in no row of World 1's inventory (src/game/art/inventory/w1.json): name it by its catalog id, in a world it fits")), d);
 });
+
+// VAR-19d (level.md rule 19, R-165.312): w1Arc19.test.ts refused a LISTED 1-9 layout (seed 1, both settings: a rolled flag on the
+// roost's bough pushed the roost's stay boa 592 px from the roost, whose reach is 150) that the list's judge had let through. The rule is
+// now the judge's own: lureLay.ts lureFaults on the stage as played (listRules.ts lureBreaches). Planted on a listed 1-9 seed as Play
+// builds it: a finish that stands each boa in a post's reach 600 px back is refused by name, by the search's judge and by --check.
+test('a lure post as played works on an animal that fears it: the roost boa out of its roost\'s reach is refused by the list\'s judge', async () => {
+  await import('../../src/game/headlessDom.ts');
+  const { listedStage, playFinish } = await import('../../src/game/gen2/listed.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { buildPlayStage, loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList.ts');
+  const { asPlayedBreaches, listJudge, lureBreaches } = await import('./listRules.ts');
+  const cfg = generateAllLevels().find((l) => l.id === '1-9' && !l.secret)!;
+  const row = listedStage('1-9')!;
+  assert.ok(await loadSeedList('1-9'), 'the list loads');
+  const seed = provenSeeds('1-9')[0];
+  type St = Parameters<typeof lureBreaches>[0];
+  type Post = { x: number; reach: number };
+  const real = (st: St, d: 'normal' | 'easy') => playFinish(row, st, d);
+  // (planted: every boa a post's reach covers stood 600 px back, its patch with it: the post then draws nothing)
+  const away = (st: St, d: 'normal' | 'easy') => {
+    const s = real(st, d) as St & { proto?: { cast?: { lures?: Post[] } } };
+    const posts = s.proto?.cast?.lures ?? [];
+    for (const e of s.enemies) if (e.type === 'boa' && posts.some((p) => Math.abs(p.x - (e.x + e.width / 2)) <= p.reach)) { e.x -= 600; e.patrolMinX -= 600; e.patrolMaxX -= 600; }
+    return s;
+  };
+  const st = { normal: buildPlayStage(cfg, row.kit(), seed, 'normal'), easy: buildPlayStage(cfg, row.kit(), seed, 'easy') };
+  for (const d of ['normal', 'easy'] as const) {
+    const posts = ((real(structuredClone(st[d]), d) as St & { proto?: { cast?: { lures?: Post[] } } }).proto?.cast?.lures ?? []);
+    assert.equal(posts.length, 2, `${d}: 1-9's two roosts`);
+    // (a) the listed seed as Play finishes it: nothing; planted: one line per roost, its setting and the engine's words
+    assert.deepEqual(lureBreaches(real(structuredClone(st[d]), d), d, cfg.worldIndex), [], `${d}: the listed seed`);
+    const want = posts.map((p) => `a lure (${d}): lure target at ${p.x} (eagle): no animal that fears it can be drawn to it`);
+    assert.deepEqual(lureBreaches(away(structuredClone(st[d]), d), d, cfg.worldIndex), want, `${d}: planted`);
+    // (b) the search's judge (BuildRequest.also) refuses it with no slot (the stage is rolled again); the real finish adds nothing
+    assert.deepEqual(listJudge(cfg, away)(st[d], d).filter((l) => l.line.startsWith('a lure')), want.map((line) => ({ line })), `${d}: the judge`);
+    assert.deepEqual(listJudge(cfg, real)(st[d], d).filter((l) => l.line.startsWith('a lure')), [], `${d}: the judge, real`);
+    // (c) --check's own lines
+    assert.deepEqual(asPlayedBreaches(cfg, row.kit, [seed], away).filter((l) => l.includes(`${d}): lure`)), want.map((l) => `1-9 seed ${seed}: ${l}`), `${d}: --check`);
+  }
+});

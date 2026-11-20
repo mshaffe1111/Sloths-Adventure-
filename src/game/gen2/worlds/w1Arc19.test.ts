@@ -12,7 +12,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage } from '../pipeline.ts';
-import { listedStage } from '../listed.ts';
+import { listedStage, playFinish } from '../listed.ts';
+import { buildPlayStage, loadSeedList, provenSeeds } from '../seedList.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN, sealedLine } from '../../stagePlan.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
@@ -30,15 +31,21 @@ type Built = {
   gen2: { sections: Array<{ uid: string; template: string }> };
 };
 const memo = new Map<string, Built>();
-function built(seed: number, d: 'normal' | 'easy'): Built {
-  const k = `${seed}:${d}`;
+// (each roll as Play lays it, D19: the LISTED layout `v` (1-based), its proven plan replayed (seedList.ts buildPlayStage), then the row's
+// whole finish (listed.ts playFinish). VAR-19d, the lead's ruling 11-19: the test judges what ships; it had laid RAW seeds 1-4 with no
+// list judge, so a raw roll the list refuses (seed 1's roost, R-165.312) kept it red whatever the list held. That raw defect stays
+// visible as the todo test at the end of this file)
+assert.ok(await loadSeedList(STAGE_19), "1-9's list loads");
+function built(v: number, d: 'normal' | 'easy'): Built {
+  const k = `${v}:${d}`;
   if (!memo.has(k)) {
     const row = listedStage(STAGE_19)!;
-    const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d });
-    memo.set(k, row.finish!(st, d) as unknown as Built);
+    const st = buildPlayStage(cfg, row.kit(), provenSeeds(STAGE_19)[v - 1], d);
+    memo.set(k, playFinish(row, st, d) as unknown as Built);
   }
   return memo.get(k)!;
 }
+/** the listed layouts 1-4 (a test's "seed N" is listed layout N) */
 const SEEDS = [1, 2, 3, 4];
 const BOTH = ['normal', 'easy'] as const;
 const piecesOf = (st: Built, uid: string) => st.platforms.filter((p) => p.tag?.startsWith(`${uid}:`));
@@ -175,5 +182,17 @@ test("1-9's golden seed: one a roll, both settings, in the first rest (after the
     const step = piece(st, home.template, HOST[home.template]);
     assert.ok(step.y - sd.y >= 50 && step.y - sd.y <= 70, `${d} seed ${seed}: ${step.y - sd.y} px over its root step (a hop)`);
     for (const e of st.enemies.filter((q) => q.type === 'boa')) assert.ok(Math.abs(e.x - sd.x) > 600, `${d} seed ${seed}: a boa ${Math.round(Math.abs(e.x - sd.x))} px from the seed`);
+  }
+});
+
+// R-165.312 (VAR-19d, the lead's ruling 11-19): the RAW generator's defect the list's judge now refuses (listRules.ts lureBreaches,
+// level.md rule 19): on raw seed 1 a rolled flag lands on the roost's bough, its safe approach pushes the 'stay' boa off, and the lay
+// re-seats it 592 px from the roost (reach 150). Red today, so todo; R-165.312's job (the flag placer) turns it into a real test.
+test('R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer)', { todo: 'R-165.312: the flag placer, an engine job after release 1' }, () => {
+  const row = listedStage(STAGE_19)!;
+  for (const d of BOTH) {
+    const st = row.finish!(buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: d }), d) as unknown as Built;
+    const b = boasIn(st, 'w1-19-roost')[0];
+    assert.ok((st.proto.gen2?.roosts ?? []).some((r) => Math.abs(r.x - (b.x + b.width / 2)) <= W1_LURE['w1-roost'].reach), `raw seed 1 ${d}: the roost's boa ${Math.round(b.x)} in its roost's reach`);
   }
 });
