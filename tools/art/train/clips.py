@@ -92,12 +92,21 @@ SOURCE = {
     'move-climb': ('pa-climb-s3', list(range(12, 33)), None),
     # the walk (spec-anim4.json): pa-walk-s3's gentle walk on the spot, one seamless 17-frame loop (13-29; 0-8 wave an arm)
     'move-walk': ('pa-walk-s3', list(range(13, 30)), None),
+    # ANIM-NEXT (11-20, hfpokey/spec-anim1*.json, the lead's picks; takes in reference/art/anim-next/takes/, cropped x0.66, unzipped to
+    # vids/<take>/ as PNG). freeze: sheet frames 0-13 are the stop (one-shot, ~0.9 s: paws snapped to his chest, eyes squeezed shut,
+    # then the peek: the eye opens wide, looking aside), 14-19 the hold (the wide eye, a breath there and back, looped while he stays
+    # frozen). Take frames 1-2 are skipped: an arm flung out wide (reads as a wave at game size)
+    'freeze': ('an1-freeze-s11', [0, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26] + [28, 30, 32, 34, 32, 30], None),
+    # tiptoe: one sneak cycle, 13-34 (frame 35 matches 13 best, silhouette IoU 0.966)
+    'tiptoe': ('an1-tiptoe2-s5', list(range(13, 35)), None),
+    # drowsy walk: one slow trudge, 19-42 (frame 43 matches 19, IoU 0.987)
+    'drowsy-walk': ('an1-drowsy-walk-s11', list(range(19, 43)), None),
 }
 # sheets whose frames are re-centred on his torso one by one (a run or walk drifts a little in the clip; in the game the body must stay put)
-RECENTER = {'move-run', 'move-walk', 'move-flip', 'move-climb'}
+RECENTER = {'move-run', 'move-walk', 'move-flip', 'move-climb', 'tiptoe', 'drowsy-walk'}
 # sheets whose frames are lined up one by one up and down too: on his feet (a jump: the clip's own rise and fall would add to the
 # physics'), or on the middle of his body (the flip, which turns about it)
-ALIGN_Y = {'move-walk': 'feet', 'move-flip': 'middle', 'move-climb': 'middle'}
+ALIGN_Y = {'move-walk': 'feet', 'move-flip': 'middle', 'move-climb': 'middle', 'tiptoe': 'feet', 'drowsy-walk': 'feet'}
 
 
 def torso_x(alpha):
