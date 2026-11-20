@@ -16,7 +16,7 @@ def at(im, w):  # an image drawn w world px wide, at D
 def pokey(): return at(hero, 127 * P / 200)
 def piece(n): return at(Image.open(C + n + '.png').convert('RGBA'), SIZE[n])
 def sheet(bgc, ink):
-    W = int(1000 * D); s = Image.new('RGBA', (W, int((P + 141 + 30 + P + 345 + 20) * D) + 40), bgc); d = ImageDraw.Draw(s)
+    W = int(1000 * D); s = Image.new('RGBA', (W, int((P + 141 + 30 + P + 346 + 20) * D) + 40), bgc); d = ImageDraw.Draw(s)
     def bar(x, base):
         d.rectangle([x, base - P * D, x + 6, base], fill=(255, 210, 40, 255))
     def label(x, y, t): d.text((x, y), t, fill=ink)
@@ -30,8 +30,8 @@ def sheet(bgc, ink):
     # row 2: the weir, Pokey on its middle step top, and the door closed / open + the letters, each beside Pokey
     y2 = y + b.height + int(30 * D)
     w = piece('weir'); s.alpha_composite(w, (10, y2 + int(P * D)))
-    step = y2 + int(P * D) + round(94 * w.height / 367); s.alpha_composite(pokey(), (10 + int(215 * D), step - pokey().height)); bar(10 + int(205 * D), step)
-    label(10, y2 + int(P * D) + w.height + 2, 'weir (s41) 921 x 345: a tier = 1 Pokey, him on the left middle rock (the foot fades: the river is drawn over it)')
+    step = y2 + int(P * D) + round(96 * w.height / 371); s.alpha_composite(pokey(), (10 + int(215 * D), step - pokey().height)); bar(10 + int(205 * D), step)
+    label(10, y2 + int(P * D) + w.height + 2, 'weir (s41) 921 x 346: a tier = 1 Pokey, him on the left middle rock (the foot fades: the river is drawn over it)')
     return s
 def row3(bgc, ink):
     s = Image.new('RGBA', (int(1000 * D), int(150 * D)), bgc); d = ImageDraw.Draw(s); base = int(130 * D); x = 10
