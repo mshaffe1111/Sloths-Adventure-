@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+ok 1 - told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+  ---
+  duration_ms: 223.234178
+  type: 'test'
+  ...
+# Subtest: a trap over no animal he passes (it is not worth using)
+ok 2 - a trap over no animal he passes (it is not worth using)
+  ---
+  duration_ms: 76.170404
+  type: 'test'
+  ...
+# Subtest: never told of traps, he does not use one (he knows nothing the stage has not told him)
+ok 3 - never told of traps, he does not use one (he knows nothing the stage has not told him)
+  ---
+  duration_ms: 83.567285
+  type: 'test'
+  ...
+# Subtest: coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+ok 4 - coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+  ---
+  duration_ms: 67.250459
+  type: 'test'
+  ...
+# Subtest: his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+ok 5 - his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+  ---
+  duration_ms: 70.95675
+  type: 'test'
+  ...
+# Subtest: (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+ok 6 - (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+  ---
+  duration_ms: 794.265441
+  type: 'test'
+  ...
+# Subtest: the tower route goes down to a sunk vine's foot before it climbs (a down-then-up leg)
+ok 7 - the tower route goes down to a sunk vine's foot before it climbs (a down-then-up leg)
+  ---
+  duration_ms: 0.782284
+  type: 'test'
+  ...
+# Subtest: the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+ok 8 - the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+  ---
+  duration_ms: 1157.272319
+  type: 'test'
+  ...
+# Subtest: told how to hide, on the kit eagle's screech the bot goes still in the nearest cover (a moss carpet) and is never taken
+ok 9 - told how to hide, on the kit eagle's screech the bot goes still in the nearest cover (a moss carpet) and is never taken
+  ---
+  duration_ms: 275.647721
+  type: 'test'
+  ...
+# Subtest: never told how to hide, the bot walks on in the open under the kit eagle and is taken (the stage must teach it)
+ok 10 - never told how to hide, the bot walks on in the open under the kit eagle and is taken (the stage must teach it)
+  ---
+  duration_ms: 57.880186
+  type: 'test'
+  ...
+# Subtest: the cover a bot heads for: the nearest ground cover at his level, never hanging moss or a hollow's dressing
+ok 11 - the cover a bot heads for: the nearest ground cover at his level, never hanging moss or a hollow's dressing
+  ---
+  duration_ms: 0.14652
+  type: 'test'
+  ...
+# Subtest: castBots --input: touch drives the touch layer (its minimum hold), pad the Jump button (PAD_HOP_MS), fake stays the default (FIX-284)
+ok 12 - castBots --input: touch drives the touch layer (its minimum hold), pad the Jump button (PAD_HOP_MS), fake stays the default (FIX-284)
+  ---
+  duration_ms: 0.470678
+  type: 'test'
+  ...
+# Subtest: spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+ok 13 - spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+  ---
+  duration_ms: 1.29444
+  type: 'test'
+  ...
+# Subtest: progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+ok 14 - progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+  ---
+  duration_ms: 0.424147
+  type: 'test'
+  ...
+# Subtest: after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+ok 15 - after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+  ---
+  duration_ms: 0.235512
+  type: 'test'
+  ...
+# Subtest: the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+ok 16 - the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+  ---
+  duration_ms: 4.981394
+  type: 'test'
+  ...
+# Subtest: Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+ok 17 - Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+  ---
+  duration_ms: 0.520607
+  type: 'test'
+  ...
+# Subtest: the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+ok 18 - the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+  ---
+  duration_ms: 0.420434
+  type: 'test'
+  ...
+# Subtest: the gates: survival per edge over the tries, and peak stress per burst before a rest
+ok 19 - the gates: survival per edge over the tries, and peak stress per burst before a rest
+  ---
+  duration_ms: 0.293802
+  type: 'test'
+  ...
+# Subtest: in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+ok 20 - in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+  ---
+  duration_ms: 366.403008
+  type: 'test'
+  ...
+# Subtest: in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+ok 21 - in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+  ---
+  duration_ms: 569.382292
+  type: 'test'
+  ...
+# Subtest: the findings name the rule each breaks
+ok 22 - the findings name the rule each breaks
+  ---
+  duration_ms: 0.750113
+  type: 'test'
+  ...
+# Subtest: the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+ok 23 - the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+  ---
+  duration_ms: 1375.344906
+  type: 'test'
+  ...
+# Subtest: DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+ok 24 - DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+  ---
+  duration_ms: 6687.448219
+  type: 'test'
+  ...
+# Subtest: A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+ok 25 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+  ---
+  duration_ms: 8167.559786
+  type: 'test'
+  ...
+# Subtest: A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+ok 26 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+  ---
+  duration_ms: 19069.5012
+  type: 'test'
+  ...
+# Subtest: the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+ok 27 - the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+  ---
+  duration_ms: 2567.601134
+  type: 'test'
+  ...
+# Subtest: the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+ok 28 - the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+  ---
+  duration_ms: 24620.758132
+  type: 'test'
+  ...
+# Subtest: the fixture: one deep log river, rolled clean
+ok 29 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 51.916886
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 30 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 841.285773
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 31 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 563.18584
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 32 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 801.825304
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 33 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 484.830837
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+ok 34 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 2120.246112
+  type: 'test'
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 35 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 334.254954
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 36 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 331.451343
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 37 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 347.10358
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 38 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 352.825606
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 39 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 703.019446
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 40 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 689.964718
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 41 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 505.564642
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 42 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 488.061642
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+ok 43 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 461.699115
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean
+ok 44 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean
+  ---
+  duration_ms: 7110.257122
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+ok 45 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+  ---
+  duration_ms: 4317.958364
+  type: 'test'
+  ...
+# Subtest: planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22)
+ok 46 - planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22)
+  ---
+  duration_ms: 1467.904886
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63239.089374

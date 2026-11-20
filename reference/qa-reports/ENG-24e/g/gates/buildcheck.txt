@@ -1,0 +1,6 @@
+$ node tools/perf/buildcheck.mjs
+start 12:28:03 PM ET, head 4a88cabd
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 46 ms, p95 89 ms, max 110 ms (30 builds, CPU x4)
+  easy: p50 36 ms, p95 52 ms, max 65 ms (30 builds, CPU x4)
+EXIT 0, end 12:28:08 PM ET

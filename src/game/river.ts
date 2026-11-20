@@ -28,7 +28,17 @@ export interface DriftInfo {
   baseY: number;
   /** drawn as a raft, not a log (gen2/riverLay.ts RiverRow.look, R-165.288): the painted raft's deck is this top. Draw only */
   look?: 'raft';
+  /**
+   * the river's TAIL (gen2/riverLay.ts RiverRow.tail, ENG-24e): log-free water this wide (px) past `x1` before the far bank. The logs go
+   * under (or come out from under) World 2's painted end at `x1`, in mid-water, so no bank stands there: nothing hands a rider over at
+   * that end (engine.ts), he rides into the water. The window is still `x0..x1`, the river's water `x0..riverEnd`
+   */
+  tail?: number;
 }
+/** where the water a log rides on ends: its far bank's lip, `tail` past the logs' own end (RiverRow.tail) */
+export const riverEnd = (d: Pick<DriftInfo, 'x1' | 'tail'>): number => d.x1 + (d.tail ?? 0);
+/** is `d` one of river `r`'s logs (its window starts at the river's near end and its water ends at the river's far end) */
+export const onRiver = (d: Pick<DriftInfo, 'x0' | 'x1' | 'tail'>, r: Pick<RiverZone, 'x0' | 'x1'>): boolean => d.x0 === r.x0 && riverEnd(d) === r.x1;
 
 /** a river as the stage keeps it: the water to draw and the surface that is fatal */
 export interface RiverZone {
@@ -48,6 +58,9 @@ export interface RiverZone {
   spur?: { x: number; y: number };
   /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
   open?: boolean;
+  /** its logs' TAIL (DriftInfo.tail, RiverRow.tail): the last `tail` px before the far bank are log-free; the logs go under World 2's painted
+   *  end at `x1 - tail` (riverArt.ts drawRiverTail) */
+  tail?: number;
   /** a water wheel's pond (gen2/wheelLay.ts layWheel, ENG-26): still water under a wheel's whole sweep, its jetty and its street standing
    *  over it, so it has no banks at its ends (levelCheck asks none); a fall into it splashes him back onto the jetty (`safe`) */
   wheelPond?: true;
@@ -83,6 +96,16 @@ export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo,
  */
 export function lianasOver<V extends { x: number; vineType?: string; isSwingingVine?: boolean; swingAmp?: number }>(vines: readonly V[], r: { x0: number; x1: number }): V[] {
   return vines.filter((v) => (v.isSwingingVine || v.vineType === 'swing_liana') && (v.swingAmp ?? 1) > 0 && v.x > r.x0 && v.x < r.x1);
+}
+/**
+ * The lianas over a river whose throw has LOGS under it (ENG-24f, the lead's ruling 11-19 9:12 PM ET, level.md World 2 notes): the anchor
+ * hangs over the logs' window, before the painted end where they go under (RiverZone.tail). Every let-go leaves forward of the anchor, so
+ * one hung at or past the window's end (over the TAIL, log-free water) throws over open water: a swing held to World 1's vine rules
+ * (gen2/riverLay.ts tailLianaFaults), never the log-drop share, and the logs before it are hopped as on any river (the hop rule stands).
+ */
+export function lianasOverLogs<V extends { x: number; vineType?: string; isSwingingVine?: boolean; swingAmp?: number }>(vines: readonly V[], r: { x0: number; x1: number; tail?: number }): V[] {
+  const end = r.x1 - (r.tail ?? 0);
+  return lianasOver(vines, r).filter((v) => v.x < end);
 }
 
 /** the gap between neighbouring logs a hop can take, for logs flowing `dir` (levelCheck.ts checks the river's own; a sluice that turns

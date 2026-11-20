@@ -15,6 +15,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { GROUND_FRAMES, type GroundSheet } from './groundAtlasData.ts';
 import { lookHash } from './artRoll.ts';
+import { canvasLost } from './canvasLost.ts';
 
 type C = CanvasRenderingContext2D;
 
@@ -269,21 +270,122 @@ export function endFace(w: number, x: number, y: number, bottom: number, right: 
   return pts;
 }
 
+/**
+ * How the bank end's rock is made solid (ENG-24h, R-165.323 2c), in sheet pixels of the 384 x 576 piece. The sheet's piece keeps only a
+ * rim along its face (tools/art/hfground/pack.py: 70 px, fading over 50 more and blurred, and its last 120 rows faded out), so the bank's
+ * soil showed THROUGH the rock: the stones and the river bed's band ran on across the face line (the lead's spots, 2-2 pondFar and 2-4
+ * catch). The paint under that fade is whole (the column is painted to its foot), so the rock is laid solid from its face in to
+ * END_SOLID.rim, handing over to the soil in END_SOLID.feather (about the old fade's middle, so the rock reads as wide as before), and
+ * solid down to its last END_SOLID.foot rows, which fade into the soil carrying the face on below it.
+ */
+export const END_SOLID = { rim: 95, feather: 16, foot: 36, erode: 5, smooth: 4 };
+
+/**
+ * The bank end piece's alpha made solid over its rock (END_SOLID), from its own alpha (`a`, w x h, row by row): per row, the rock's face
+ * is the right edge of its body (alpha over half the row's highest, a run at least 2 * erode + 1 wide, so a hanging root does not set it;
+ * its median over 2 * smooth + 1 rows), and every pixel within rim + feather of it, from the row's first painted pixel out, is raised, never
+ * lowered (a clear one there is a crack in the rock: endSolid paints it). Pure, so groundEnd.test.ts checks it on a made-up piece.
+ */
+export function solidEndAlpha(a: Uint8ClampedArray | number[], w: number, h: number, s = END_SOLID): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(a.length);
+  for (let i = 0; i < a.length; i++) out[i] = a[i];
+  const raw = new Float64Array(h).fill(-1);
+  for (let y = 0; y < h; y++) {
+    let mx = 0;
+    for (let x = 0; x < w; x++) mx = Math.max(mx, a[y * w + x]);
+    if (mx < 8) continue;
+    const t = mx / 2;
+    let run = 0;
+    for (let x = 0; x < w; x++) {
+      run = a[y * w + x] >= t ? run + 1 : 0;
+      if (run >= 2 * s.erode + 1) raw[y] = x;
+    }
+  }
+  for (let y = 0; y < h; y++) {
+    if (raw[y] < 0) continue;
+    const near: number[] = [];
+    for (let k = Math.max(0, y - s.smooth); k <= Math.min(h - 1, y + s.smooth); k++) if (raw[k] >= 0) near.push(raw[k]);
+    near.sort((p, q) => p - q);
+    const edge = near[near.length >> 1];
+    const foot = Math.max(0, Math.min(1, (h - 1 - y) / s.foot));
+    // (a clear pixel is raised only between painted ones in its row, a crack in the rock (World 9's columns): endSolid paints it)
+    let first = -1;
+    for (let x = 0; x <= Math.min(w - 1, edge); x++) if (a[y * w + x]) { first = x; break; }
+    if (first < 0) continue;
+    for (let x = first; x <= Math.min(w - 1, edge); x++) {
+      const i = y * w + x;
+      const keep = Math.max(0, Math.min(1, 1 - (edge - x - s.rim) / s.feather)) * foot;
+      out[i] = Math.max(a[i], Math.round(255 * keep));
+    }
+  }
+  return out;
+}
+
+const solidEnds = new Map<string, HTMLCanvasElement | null>();
+/**
+ * The end piece with its rock solid (solidEndAlpha), baked once per world's piece; null where the page cannot read the sheet back (then
+ * the sheet's own piece is drawn). Baked again when the phone has taken the copy back (canvasLost.ts, LESSONS D6).
+ */
+export function endSolid(img: HTMLImageElement, e: GroundSheet['end'], w: number): HTMLCanvasElement | null {
+  const key = `${w}:${e.x},${e.y}`;
+  const had = solidEnds.get(key);
+  if (had && !canvasLost(had, 'bank end')) return had;
+  if (had === null) return null;
+  let c: HTMLCanvasElement | null = null;
+  try {
+    c = document.createElement('canvas');
+    c.width = e.w;
+    c.height = e.h;
+    const g = c.getContext('2d', { willReadFrequently: true })!;
+    g.drawImage(img, e.x, e.y, e.w, e.h, 0, 0, e.w, e.h);
+    const d = g.getImageData(0, 0, e.w, e.h);
+    const al = new Uint8ClampedArray(e.w * e.h);
+    for (let i = 0; i < al.length; i++) al[i] = d.data[i * 4 + 3];
+    const solid = solidEndAlpha(al, e.w, e.h);
+    const px = d.data, W = e.w;
+    // (a crack made solid takes the darker of the paint either side of it in its row)
+    const near = (i: number, step: number, lim: number) => { for (let j = i + step; j !== lim; j += step) if (al[j]) return j; return -1; };
+    for (let i = 0; i < al.length; i++) {
+      if (!al[i] && solid[i]) {
+        const r0 = i - (i % W), l = near(i, -1, r0 - 1), r = near(i, 1, r0 + W);
+        const sum = (j: number) => (j < 0 ? 1e9 : px[j * 4] + px[j * 4 + 1] + px[j * 4 + 2]);
+        const j = sum(l) <= sum(r) ? l : r;
+        if (j >= 0) for (let c = 0; c < 3; c++) px[i * 4 + c] = px[j * 4 + c];
+        else solid[i] = 0;
+      }
+      px[i * 4 + 3] = solid[i];
+    }
+    g.putImageData(d, 0, 0);
+  } catch {
+    c = null;
+  }
+  solidEnds.set(key, c);
+  return c;
+}
+
 const cutEnds = new Map<string, HTMLCanvasElement | null>();
+/** which solid piece each step's copy was cut from (a solid piece baked again means its steps are cut again) */
+const cutFrom = new WeakMap<HTMLCanvasElement, HTMLCanvasElement | null>();
 /**
  * The end piece faded out toward `cut` units below its top (a step down to a lower bank: the lower bank's lip takes over there). Baked
- * once per world and cut (to 8 units), so a step's end has no hard line where it stops.
+ * once per world and cut (to 8 units), so a step's end has no hard line where it stops. Made from the solid piece (endSolid) where there
+ * is one; baked again when either copy is taken back (LESSONS D6).
  */
-function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
+export function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
   const key = `${w}:${e.x},${e.y}:${Math.round(cut / 8)}:${fade}`;
-  if (cutEnds.has(key)) return cutEnds.get(key)!;
+  const src = endSolid(img, e, w);
+  const had = cutEnds.get(key);
+  if (had && !canvasLost(had, 'bank end step') && (cutFrom.get(had) ?? null) === src) return had;
+  if (had === null) return null;
   let c: HTMLCanvasElement | null = null;
   try {
     c = document.createElement('canvas');
     c.width = e.w;
     c.height = e.h;
     const g = c.getContext('2d')!;
-    g.drawImage(img, e.x, e.y, e.w, e.h, 0, 0, e.w, e.h);
+    if (src) g.drawImage(src, 0, 0);
+    else g.drawImage(img, e.x, e.y, e.w, e.h, 0, 0, e.w, e.h);
+    cutFrom.set(c, src);
     g.globalCompositeOperation = 'destination-in';
     const k = e.h / END_H;
     // (fade 0: cut clean, for a short step whose lower bank's lip covers the cut)
@@ -300,11 +402,41 @@ function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: 
   return c;
 }
 
+let shaded: HTMLCanvasElement | null = null;
+/**
+ * `pic` (a piece's copy, its frame's size) darkened with depth as the soil around it is (shadeSoil's depthBand: nothing above the middle
+ * of the bank's view, DEPTH_DARK in the world's deep colour by its bottom), on its own pixels only, in a scratch canvas reused for every
+ * end. Solid now down to its foot, the rock drawn unshaded stood as a lighter stripe down the darkened soil (ENG-24h's first stills, 2-2
+ * and 2-4 upright). The banks are painted once into the ground's squares, so this runs when a square is painted, not each frame.
+ */
+function shadeEnd(pic: CanvasImageSource, fw: number, fh: number, top: number, deep: GroundSheet['deep'], depth: [number, number]): CanvasImageSource {
+  try {
+    if (!shaded || canvasLost(shaded, 'bank end shade')) shaded = document.createElement('canvas');
+    if (shaded.width !== fw || shaded.height !== fh) { shaded.width = fw; shaded.height = fh; }
+    const g = shaded.getContext('2d')!;
+    g.globalCompositeOperation = 'copy';
+    g.drawImage(pic, 0, 0, fw, fh);
+    g.globalCompositeOperation = 'source-atop';
+    const [vt, vb] = depth;
+    const at = (yy: number) => ((yy - top) * fh) / END_H;
+    const gr = g.createLinearGradient(0, at(vt + (vb - vt) * 0.5), 0, at(vb));
+    gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+    gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
+    g.fillStyle = gr;
+    g.fillRect(0, 0, fw, fh);
+    g.globalCompositeOperation = 'source-over';
+    return shaded;
+  } catch {
+    return pic;
+  }
+}
+
 /**
  * the bank end piece at a right (or, mirrored, left) end x with the walking line at y; `cutAt`: faded out by that height (a step) over
- * `fade` px (0: cut clean, a short step)
+ * `fade` px (0: cut clean, a short step); `depth`: the bank's view (the top and bottom shadeSoil darkens its soil by), and the rock is
+ * darkened with depth alike (shadeEnd)
  */
-export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number): boolean {
+export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number, depth?: [number, number]): boolean {
   const s = sheet(w);
   if (!s) return false;
   const e = endFrame(s.g, x);
@@ -313,10 +445,12 @@ export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean,
   const top = y - e.surf * END_H;
   const faded = cutAt !== undefined ? endFaded(s.img, e, w, cutAt - top, fade) : null;
   if (cutAt !== undefined && !faded) return true;
+  const own = faded ?? endSolid(s.img, e, w);
+  const pic = own && depth ? shadeEnd(own, e.w, e.h, top, s.g.deep, depth) : own;
   ctx.save();
   ctx.translate(x, 0);
   if (!right) ctx.scale(-1, 1);
-  if (faded) ctx.drawImage(faded, -e.cx * ew, top, ew, END_H);
+  if (pic) ctx.drawImage(pic, -e.cx * ew, top, ew, END_H);
   else ctx.drawImage(s.img, e.x, e.y, e.w, e.h, -e.cx * ew, top, ew, END_H);
   ctx.restore();
   return true;

@@ -1,0 +1,15 @@
+$ npx tsx tools/engine/paintcheck.ts --part 0/3
+start 12:28:35 PM ET, head 4a88cabd (code = a3f430dc)
+1-1 1-4 1-7 1-10 2-3 2-6 2-9 3-2 3-5 3-8 4-1 4-4 4-6 4-9 5-1 5-4 5-7 5-10 6-3 6-6 6-9 7-2 7-5 7-8 8-1 8-4 8-7 8-10 9-3 9-6 9-9 10-2 10-5 10-8 
+paintcheck: 1714 builds of 34 stages (part 0/3) (listed stages on every listed seed, the rest on layouts 1-16), both settings
+  1-1: 260/322 builds breach (42 known ids, 0 new)
+  3-2: 20/32 builds breach (1 known ids, 0 new)
+  3-5: 18/32 builds breach (1 known ids, 0 new)
+  3-8: 32/32 builds breach (9 known ids, 0 new)
+  4-6: 32/32 builds breach (2 known ids, 0 new)
+  5-1: 32/32 builds breach (44 known ids, 0 new)
+  5-4: 32/32 builds breach (46 known ids, 0 new)
+  5-7: 32/32 builds breach (66 known ids, 0 new)
+  6-6: 32/32 builds breach (1 known ids, 0 new)
+paintcheck: PASS, no new painted style falls through to code terrain (212 known ids seen, R-165.292)
+EXIT 0, end 12:33:15 PM ET

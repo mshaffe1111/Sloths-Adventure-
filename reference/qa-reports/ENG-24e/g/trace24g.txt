@@ -1,0 +1,264 @@
+== child seed 2 Normal (before: 4c34eb81)
+end time time 1200 x 10897 lives 
+fromLog 1 ontoLog 1 rescues 0 stuck []
+loops [{"x":10131,"y":886,"n":15,"doubles":87,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:360s 10000:248s 10250:246s 10750:224s 7750:8s 5750:6s 1000:6s 5000:6s 9250:5s 250:5s
+ f x2977 y847 air->vine:1
+ f x3256 y833 vine:1->air
+ f x3530 y921 air->drift
+ f x3571 y893 drift->solid
+ f x3508 y921 air->drift
+ f x3562 y893 drift->solid
+ f x7052 y888 air->drift
+ f x7122 y869 drift->air
+ f x7078 y835 air->vine:2
+ f x7336 y802 vine:2->air
+ f x8166 y888 air->drift
+ f x8463 y891 drift->air
+ f x8227 y844 air->vine:3
+ f x8403 y805 vine:3->air
+ f x10194 y914 air->drift
+ f x10895 y917 drift->air
+ f x10306 y914 air->drift
+ f x10894 y917 drift->air
+ f x10211 y914 air->drift
+ f x10894 y917 drift->air
+ f x10213 y914 air->drift
+ f x10894 y917 drift->air
+ f x10384 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10209 y914 air->drift
+ f x10894 y917 drift->air
+ f x10214 y914 air->drift
+ f x10896 y917 drift->air
+ f x10381 y914 air->drift
+ f x10894 y917 drift->air
+ f x10209 y914 air->drift
+ f x10895 y917 drift->air
+ f x10206 y914 air->drift
+ f x10895 y917 drift->air
+ f x10208 y914 air->drift
+ f x10895 y917 drift->air
+ f x10214 y914 air->drift
+== child seed 2 Normal (after: vineOverTail)
+end shrine time 450.2 x 30326 lives 16923@281 17070@293 24394@378 25085@382 24490@383 24555@385
+fromLog 7 ontoLog 8 rescues 0 stuck []
+loops [{"x":10131,"y":886,"n":2,"doubles":5,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false},{"x":16774,"y":874,"n":2,"doubles":1,"deaths":2,"what":"drowned going on from here","step":null,"dip":null,"puzzle":false},{"x":20365,"y":780,"n":2,"doubles":3,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false},{"x":24103,"y":730,"n":2,"doubles":0,"deaths":1,"what"
+time by x (250 px buckets): 10500:30s 10000:27s 10250:22s 10750:19s 15750:8s 7750:8s 18250:8s 24000:7s 16000:7s 24250:7s
+ f x2977 y847 air->vine:1
+ f x3256 y833 vine:1->air
+ f x3530 y921 air->drift
+ f x3571 y893 drift->solid
+ f x3508 y921 air->drift
+ f x3562 y893 drift->solid
+ f x7052 y888 air->drift
+ f x7122 y869 drift->air
+ f x7078 y835 air->vine:2
+ f x7336 y802 vine:2->air
+ f x8166 y888 air->drift
+ f x8463 y891 drift->air
+ f x8227 y844 air->vine:3
+ f x8403 y805 vine:3->air
+ f x10194 y914 air->drift
+ f x10895 y917 drift->air
+ f x10306 y914 air->drift
+ f x10883 y895 drift->air
+ f x10332 y914 air->drift
+ f x10858 y895 drift->air
+ f x10325 y914 air->drift
+ f x10894 y917 drift->air
+ f x10212 y914 air->drift
+ f x10893 y917 drift->air
+ f x10241 y914 air->drift
+ f x10895 y917 drift->air
+ f x10398 y914 air->drift
+ f x10895 y917 drift->air
+ f x10211 y914 air->drift
+ f x10877 y895 drift->air
+ f x10363 y914 air->drift
+ f x10865 y895 drift->air
+ f x10190 y914 air->drift
+ f x10878 y895 drift->air
+ f x10876 y780 air->vine:4
+ f x11143 y769 vine:4->air
+ f x16270 y874 air->drift
+ f x16343 y855 drift->air
+ f x16450 y760 air->vine:5
+== middle seed 2 Normal (before: 4c34eb81)
+end time time 1200 x 10870 lives 
+fromLog 2 ontoLog 1 rescues 0 stuck []
+loops [{"x":10149,"y":886,"n":6,"doubles":26,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:417s 10250:320s 10750:256s 10000:148s 3500:3s 2750:3s 7500:3s 9250:3s 2250:2s 7000:2s
+ f x2992 y921 air->drift
+ f x3018 y902 drift->air
+ f x3165 y794 air->vine:1
+ f x3219 y773 vine:1->air
+ f x3502 y921 air->drift
+ f x3571 y893 drift->solid
+ f x7063 y888 air->drift
+ f x7085 y869 drift->air
+ f x7188 y829 air->vine:2
+ f x7313 y795 vine:2->air
+ f x8076 y813 air->vine:3
+ f x8404 y811 vine:3->air
+ f x10194 y914 air->drift
+ f x10227 y895 drift->air
+ f x10327 y914 air->drift
+ f x10895 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10236 y914 air->drift
+ f x10895 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10293 y914 air->drift
+ f x10896 y917 drift->air
+ f x10209 y914 air->drift
+ f x10893 y917 drift->air
+ f x10212 y914 air->drift
+ f x10895 y917 drift->air
+ f x10300 y914 air->drift
+ f x10894 y917 drift->air
+ f x10211 y914 air->drift
+ f x10893 y917 drift->air
+ f x10208 y914 air->drift
+ f x10895 y917 drift->air
+ f x10207 y914 air->drift
+ f x10894 y917 drift->air
+ f x10213 y914 air->drift
+== middle seed 2 Normal (after: vineOverTail)
+end shrine time 241.9 x 30324 lives 16963@133 23653@194
+fromLog 7 ontoLog 8 rescues 0 stuck []
+loops [{"x":23128,"y":741,"n":2,"doubles":0,"deaths":0,"what":"water ahead, the way on is 87 px up","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:13s 10250:10s 22750:9s 10750:8s 23000:8s 21250:6s 16000:6s 21750:5s 10000:5s 22000:4s
+ f x2992 y921 air->drift
+ f x3018 y902 drift->air
+ f x3165 y794 air->vine:1
+ f x3219 y773 vine:1->air
+ f x3502 y921 air->drift
+ f x3571 y893 drift->solid
+ f x7063 y888 air->drift
+ f x7085 y869 drift->air
+ f x7188 y829 air->vine:2
+ f x7313 y795 vine:2->air
+ f x8076 y813 air->vine:3
+ f x8404 y811 vine:3->air
+ f x10194 y914 air->drift
+ f x10227 y895 drift->air
+ f x10327 y914 air->drift
+ f x10895 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10236 y914 air->drift
+ f x10834 y895 drift->air
+ f x10930 y793 air->vine:4
+ f x11130 y770 vine:4->air
+ f x16258 y730 air->vine:5
+ f x16409 y705 vine:5->air
+ f x16694 y874 air->drift
+ f x16796 y855 drift->air
+ f x16303 y836 air->vine:5
+ f x16458 y796 vine:5->air
+ f x16733 y874 air->drift
+ f x16799 y855 drift->air
+ f x17036 y729 air->vine:6
+ f x17058 y716 vine:6->air
+ f x21285 y716 air->vine:7
+ f x21548 y700 vine:7->air
+ f x21832 y808 air->drift
+ f x21871 y789 drift->air
+ f x22079 y686 air->vine:8
+== expert seed 2 Normal (before: 4c34eb81)
+end time time 1200 x 10429 lives 
+fromLog 0 ontoLog 1 rescues 0 stuck []
+loops [{"x":10096,"y":886,"n":8,"doubles":24,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:422s 10250:342s 10750:256s 10000:132s 4500:2s 2500:2s 5000:2s 8750:2s 1500:2s 6500:2s
+ f x2962 y827 air->vine:1
+ f x3257 y818 vine:1->air
+ f x3537 y921 air->drift
+ f x3571 y893 drift->solid
+ f x7037 y828 air->vine:2
+ f x7340 y806 vine:2->air
+ f x8080 y815 air->vine:3
+ f x8409 y809 vine:3->air
+ f x10212 y914 air->drift
+ f x10894 y917 drift->air
+ f x10248 y914 air->drift
+ f x10893 y917 drift->air
+ f x10269 y914 air->drift
+ f x10896 y917 drift->air
+ f x10212 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10215 y914 air->drift
+ f x10893 y917 drift->air
+ f x10213 y914 air->drift
+ f x10893 y917 drift->air
+ f x10271 y914 air->drift
+ f x10895 y917 drift->air
+ f x10212 y914 air->drift
+ f x10895 y917 drift->air
+ f x10436 y914 air->drift
+ f x10894 y917 drift->air
+ f x10244 y914 air->drift
+ f x10472 y895 drift->air
+ f x10642 y914 air->drift
+ f x10895 y917 drift->air
+ f x10213 y914 air->drift
+ f x10894 y917 drift->air
+ f x10357 y914 air->drift
+ f x10893 y917 drift->air
+ f x10214 y914 air->drift
+== expert seed 2 Normal (after: vineOverTail)
+end shrine time 219.2 x 30327 lives 16998@93 22006@126 23648@163 25126@182
+fromLog 8 ontoLog 10 rescues 0 stuck [{"x":21869,"y":808,"t":143.2,"dur":8.5,"what":"drowned going on from here","step":null,"dip":null,"puzzle":false,"rescued":false}]
+loops [{"x":16420,"y":784,"n":2,"doubles":0,"deaths":0,"what":"water ahead, the way on is 83 px up","step":null,"dip":null,"puzzle":false},{"x":21538,"y":746,"n":2,"doubles":0,"deaths":0,"what":"water ahead, the way on is 87 px up","step":null,"dip":null,"puzzle":false},{"x":23147,"y":739,"n":2,"doubles":0,"deaths":0,"what":"an open drop ahead, water ahead, the way on is 90 px up","step":null,"dip
+time by x (250 px buckets): 21750:7s 22750:7s 21250:7s 16000:7s 22000:7s 24250:6s 16250:6s 23000:6s 21000:5s 21500:4s
+ f x2962 y827 air->vine:1
+ f x3257 y818 vine:1->air
+ f x3537 y921 air->drift
+ f x3571 y893 drift->solid
+ f x7037 y828 air->vine:2
+ f x7340 y806 vine:2->air
+ f x8080 y815 air->vine:3
+ f x8409 y809 vine:3->air
+ f x10212 y914 air->drift
+ f x10870 y895 drift->air
+ f x11007 y806 air->vine:4
+ f x11119 y780 vine:4->air
+ f x16182 y874 air->drift
+ f x16295 y855 drift->air
+ f x16435 y778 air->vine:5
+ f x16425 y777 vine:5->air
+ f x16700 y874 air->drift
+ f x16813 y855 drift->air
+ f x16186 y874 air->drift
+ f x16258 y855 drift->air
+ f x16251 y828 air->vine:5
+ f x16444 y797 vine:5->air
+ f x16717 y874 air->drift
+ f x16827 y855 drift->air
+ f x17037 y748 air->vine:6
+ f x17062 y735 vine:6->air
+ f x21232 y732 air->vine:7
+ f x21544 y739 vine:7->air
+ f x21809 y808 air->drift
+ f x21835 y789 drift->air
+ f x21395 y756 air->vine:7
+ f x21554 y720 vine:7->air
+ f x21837 y808 air->drift
+ f x21886 y789 drift->air
+ f x22100 y622 air->vine:8
+ f x22101 y616 vine:8->air
+ f x22403 y808 air->drift
+ f x22503 y761 drift->air
+ f x22819 y730 air->vine:9

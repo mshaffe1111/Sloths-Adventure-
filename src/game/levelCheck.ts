@@ -21,7 +21,8 @@ import { PAST_SHRINE } from './rules.ts';
 import { flagFurther } from './gen2/tower.ts';
 import { isKitSweeper } from './gen2/stillLay.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
-import { hopLimit, lianasOver } from './river.ts';
+import { hopLimit, lianasOver, lianasOverLogs, onRiver } from './river.ts';
+import { logCatches } from './gen2/riverLay.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -828,6 +829,24 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       }
     }
 
+    // 3a'. a liana caught off a log over a river's TAIL (ENG-24f, the lead's ruling 11-19, level.md World 2 notes; gen2/riverLay.ts RiverRow
+    // .tail): the logs go under short of the far bank, out of a jump's reach, so the way on is the liana a held jump off a riding log catches
+    // (riverLay logCatches, the judge's own test). The log -> the liana (a node of its own, as a chain's), the liana -> where a press from
+    // its holds lands him (heldLandings, 6 lines or more). The testers' let-go onto the far bank is riverLay tailLianaFaults' (World 1's FAR
+    // rule). Only over a tailed river: on any other the logs reach the far bank, and the walks locked on them stay as they are
+    for (const r of stage.rivers ?? []) {
+      if (!r.tail || r.speed === 0) continue;
+      const logs = plats.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r) && !p.broken);
+      for (const v of lianasOver(sized, r)) {
+        let caught = false;
+        for (const l of logs) if (logCatches(v, l.drift!)) { link(`p${l.id}`, vid(v)); caught = true; }
+        if (!caught) continue;
+        usedSwing.add(v.id);
+        swingEdges++;
+        for (const [id, lines] of heldCached(v, 1, landingPack(v, plats), waterY, allowDouble)) if (lines >= 6) link(vid(v), `p${id}`);
+      }
+    }
+
     // 3b. shimmy ropes: a rope joins the two ledges it hangs over, but only counts where EVERY player has the skill (a stage
     // entered before that may have ropes as extras, and must be finishable without them)
     for (const r of stage.ropes ?? []) {
@@ -1048,7 +1067,7 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
 
   // rivers: the logs must be spaced so a hop between neighbours is easy, and a bank must stand at each end of the water
   for (const r of stage.rivers ?? []) {
-    const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    const logs = plats.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r));
     // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
     if (r.speed === 0 || r.open) { /* no logs to space */ }
     // (a ferry raft, run by a sluice: one wide log that carries him the whole way across, river.ts `raft`)
@@ -1060,8 +1079,9 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const gap = spacing - d.width;
       const limit = hopLimit(d.dir);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
-      // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24)
-      if (gap > limit && !lianasOver(stage.vines ?? [], r).length) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
+      // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24; a
+      //  liana over the river's TAIL throws over open water, so the logs before it are hopped as ever: river.ts lianasOverLogs, ENG-24f)
+      if (gap > limit && !lianasOverLogs(stage.vines ?? [], r).length) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
     const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);

@@ -981,7 +981,9 @@ export function drawBankArt(
     // (only an end on screen: a long bank's far end is thousands of units off)
     if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
     const short = step !== undefined && step - p.y < SHORT_STEP;
-    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined);
+    // (the rock darkened with depth as this bank's soil is: drawSoil's view above, the ground's line where there is one)
+    const depth: [number, number] = groundDepth ? groundDepth(x) : [sy - DEPTH_ABOVE * depthView, sy + DEPTH_BELOW * depthView];
+    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined, depth);
   };
   if (open.bare) return true;
   if (open.right) end(true, open.rightStep);

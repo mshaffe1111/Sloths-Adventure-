@@ -14,6 +14,12 @@
  *   - A VINE FROM A LOG (SKILLS.vineFromLog) on the catch toy (a liana no bank reaches, 320 px long, over `twin`; Easy's twin `long`): he
  *     rides a log under it and jumps up to it (measured: caught off a log in 4 of 5 variants on each setting); PLANTED: without it he
  *     rides the log to the bank every time (0 of 10).
+ *   - A VINE OVER THE TAIL (SKILLS.vineOverTail, ENG-24g, level.md rule 21) on the tail toy (2-4's beat 4 on Normal: `twin` with a 430 px
+ *     TAIL, the liana 90 px past where the logs go under, 340 long, DEEP): the judge's own reach holds (riverLay.ts logCatches: a jump off
+ *     a log catches it) and the child, middle and expert bots ride a log and jump to it, every run (measured 11-20: 15 of 15 to the shrine
+ *     with no rescue, each caught off a log, 12 lives in all; the same at 2-4's first 110); PLANTED: looking for a liana only over the
+ *     logs' window (the old reach) he rides into the tail and drowns until the harness rescues him (13 of 15 rescued, 139 lives) - 2-4's
+ *     castBots FAIL of 11-19.
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -23,7 +29,9 @@ import type { Platform, Vine } from '../../src/game/types.ts';
 import { groundStep, PHYS, swingSetup, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { hopAim, hopCatchAt, hopCatches, pressIn, PRESS_TRACE, SKILLS, touchHeld } from './firsttimer.ts';
-import { fixtureSeed, lianaRun } from './lianaRiverToys.ts';
+import { fixtureSeed, lianaRun, toyStage } from './lianaRiverToys.ts';
+import { logCatches } from '../../src/game/gen2/riverLay.ts';
+import { lianasOverLogs, onRiver, riverEnd } from '../../src/game/river.ts';
 
 const VARIANTS = [1, 2, 3, 4, 5];
 const at = (r: ReturnType<typeof lianaRun>, toy: string) => r.pieces.find((q) => q.id === `toy-liana-${toy}`);
@@ -101,6 +109,32 @@ test('A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving l
     assert.ok(on.filter((n) => n >= 1).length >= 4, `${setting}, with the skill: catches off a log ${on.join(',')}`);
     assert.deepEqual(off.filter((n) => n >= 1), [], `${setting}, PLANTED, without it: ${off.join(',')}`);
   }
+});
+
+test('A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge\'s own reach holds and child, middle and expert jump from the moving log to the liana past the logs\' end, every run; PLANTED: looking only over the logs\' window, he rides into the tail until rescued', () => {
+  const seed = fixtureSeed('tail', 'tail', ['normal']);
+  assert.ok(seed !== null, 'no roll lays the tail toy clean');
+  // (the toy is the case: a tailed river, its one liana over the tail (past where the logs go under, before the far bank), no bank reaches
+  //  it, and the judge says a jump off a log catches it; Normal only, as 2-4's tail)
+  const st = toyStage('tail', 'tail', seed!, 'normal');
+  const r = (st.rivers ?? []).find((q) => q.speed > 0)!;
+  const d = st.platforms.find((q) => q.type === 'drift' && q.drift && onRiver(q.drift, r))!.drift!;
+  const v = st.vines.find((q) => q.vineType === 'swing_liana')!;
+  assert.ok((d.tail ?? 0) >= 418, `a tailed river (tail ${d.tail})`);
+  assert.ok(v.x > d.x1 && v.x < riverEnd(d), `the liana at ${v.x} hangs over the tail ${d.x1}-${riverEnd(d)}`);
+  assert.deepEqual(lianasOverLogs(st.vines, r), [], 'no liana over the logs\' window');
+  assert.ok(logCatches(v, d), 'the judge\'s own reach: a jump off a log catches it');
+  const runs = (on: boolean) => {
+    const was = SKILLS.vineOverTail;
+    SKILLS.vineOverTail = on;
+    try {
+      return (['child', 'middle', 'expert'] as const).flatMap((tier) => VARIANTS.map((n) => ({ tier, n, r: lianaRun('tail', 'tail', tier, 'normal', seed!, n, 'tail', { realInput: true }) })));
+    } finally { SKILLS.vineOverTail = was; }
+  };
+  const say = (xs: ReturnType<typeof runs>) => xs.map(({ tier, n, r: q }) => `${tier} v${n}: ${q.end} from ${q.fromLog} rescues ${q.rescues} lives ${q.lives}`).join('; ');
+  const on = runs(true), off = runs(false);
+  assert.ok(on.every(({ r: q }) => q.end === 'shrine' && q.rescues === 0 && q.fromLog >= 1), `with the skill: ${say(on)}`);
+  assert.ok(off.filter(({ r: q }) => q.rescues >= 1).length >= 12, `PLANTED, without it (measured 13 of 15 rescued): ${say(off)}`);
 });
 
 test('the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at', () => {

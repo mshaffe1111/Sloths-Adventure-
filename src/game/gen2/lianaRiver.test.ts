@@ -16,7 +16,8 @@ import { setDifficulty } from '../difficulty.ts';
 import { setTimedSwing, TIMED } from '../physics.ts';
 import { lianaCaught, validateStage } from '../levelCheck.ts';
 import type { Platform, Vine } from '../types.ts';
-import { layRiver, lianaDrops, logCatches, riverFaults, riverWidth, LIANA_RIVER } from './riverLay.ts';
+import { layRiver, lianaDrops, logCatches, riverFaults, riverWidth, LIANA_RIVER, type RiverRow } from './riverLay.ts';
+import { lianasOverLogs } from '../river.ts';
 import { W2_RIVERS } from './worlds/w2.ts';
 import { fixtureSeed, toyStage, TOY_RIVERS, TOY_REACH } from '../../../tools/inspect/lianaRiverToys.ts';
 
@@ -142,4 +143,36 @@ test('a liana no bank reaches is caught from the log (beat 4); on Easy its river
   assert.match((easy.gen2.errors ?? []).join(' | '), new RegExp(`caught from a log on a river at 110 px/s, over Easy's ${LIANA_RIVER.easyCatch}`));
   const normal = toyStage('catch', 'gap280', 1, 'normal');
   assert.doesNotMatch((normal.gen2.errors ?? []).join(' | '), /over Easy's/);
+});
+
+test('PLANTED (ENG-24f, the lead\'s ruling 11-19): a liana over a river\'s TAIL is judged by World 1\'s FAR rule, never the log-drop share', () => {
+  // (a liana hung past the logs' window end throws over log-free water: the testers' let-go (physics FORWARD_END) must land him on the far
+  //  bank; the logs before it are hopped, so the hop rule stands. Was: lianasOver lifted the hop rule and held it to the share)
+  setDifficulty('normal');
+  setTimedSwing(false);
+  try {
+    const lay = (row: RiverRow) => {
+      let id = 100;
+      const { logs, zone } = layRiver(row, 2000, 800, () => id++);
+      const end = logs[0].drift!.x1;
+      // (2-4's w liana, 410 over the bank and 340 long, 110 px past where the logs go under)
+      const v = { id: 50, x: end + 110, topY: 390, bottomY: 730, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0.45, swingPeriod: TIMED.period, swingPhase: 0, swaySpeed: 1, swayPhase: 0 } as unknown as Vine;
+      const near: Platform = { id: 1, x: 0, y: 800, width: 2000, height: 200, type: 'solid' } as Platform;
+      const far: Platform = { id: 2, x: zone.x1, y: 800, width: 340, height: 200, type: 'solid' } as Platform;
+      return { v, logs, zone, st: { platforms: [near, far, ...logs], rivers: [zone], vines: [v] } };
+    };
+    // (in the testers' let-go: the far bank 320 px past the anchor; a jump off a log near the window's end catches it)
+    const inReach = lay({ ...W2_RIVERS.twin, tail: 430 });
+    assert.ok(lianasOverLogs(inReach.st.vines, inReach.zone).length === 0, 'the liana past the logs\' end reads as over the logs');
+    assert.ok(inReach.logs.some((p) => logCatches(inReach.v, p.drift!)), 'no jump off a log catches the tail liana');
+    assert.deepEqual(riverFaults(inReach.st), []);
+    // (out of it: 490 px past the anchor, beyond the farthest the testers' let-go lands, 360): refused by the FAR rule, never by the share
+    const outReach = lay({ ...W2_RIVERS.twin, tail: 600 });
+    const faults = riverFaults(outReach.st);
+    assert.ok(faults.some((f) => /over the tail: the testers' let-go \(FORWARD_END 0\.75\) does not land him/.test(f)), faults.join(' | '));
+    assert.ok(!faults.some((f) => /let-gos land on a log|waits .* for a let-go/.test(f)), `a tail liana judged by the log-drop share: ${faults.join(' | ')}`);
+    // (the hop rule stands under a tail liana: 280 px between logs is past a hop, whatever hangs over the tail)
+    const wide = lay({ ...TOY_RIVERS.gap280, tail: 430 });
+    assert.ok(riverFaults(wide.st).some((f) => /past a hop/.test(f)), riverFaults(wide.st).join(' | '));
+  } finally { restore(); }
 });
