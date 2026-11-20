@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, type RiverZone } from '../../src/game/river.ts';
+import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverEnd, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
@@ -696,7 +696,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, bonkAfterSnap: true, rideWheel: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -715,6 +715,11 @@ export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, 
  * the river ahead (not the one he just left), he jumps for it the moment a jump off the moving log (its carry his, RIDE.keep) catches it
  * where it will be on the vines' clock (hopCatches), after his thumb's lag. Both fly the press as the phone's touch layer holds it (at
  * least MIN_TOUCH_JUMP_HOLD_MS from the take-off, inputEngine.ts), never FakeInput's bare one-frame press. Always on outside a test.
+ * `vineOverTail` (ENG-24g, level.md rule 21): the liana he looks for from a log is any hung over the river's WATER, its TAIL too (river.ts
+ * riverEnd: a liana past where the logs go under, World 1's swing over open water, riverLay.ts tailLianaFaults; logCatches says a jump off
+ * a log catches it), and on a tailed river he takes off only from the log's part short of the painted end (past it the log is under, no
+ * floor: engine.ts drift loop). With it off he looks only over the logs' window (x0..x1, the old reach) and rides into the tail every
+ * time (lianaRide.test.ts 'A VINE OVER THE TAIL'). Always on outside a test.
  *
  * (ENG-25b, 2-5.md NEW 2) `bonkAfterSnap`, BONK-AFTER-THE-SNAP: an animal of the cast that a kick chases off (its kit's beatenBy.kick ends
  * 'chasedOff') and that keeps a stage clock (Enemy.kitBeat: World 2's snapper rows on their stones' bar, awake or the lesson's sleeper),
@@ -1832,7 +1837,9 @@ export class FirstTimerRun {
     const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
     if (!here?.drift) return null;
     const d = here.drift;
-    const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && q.id !== this.swungOn && q.x > d.x0 && q.x < d.x1
+    // (over the river's water, its tail too: SKILLS.vineOverTail)
+    const end = SKILLS.vineOverTail ? riverEnd(d) : d.x1;
+    const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && q.id !== this.swungOn && q.x > d.x0 && q.x < end
       && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420);
     if (!v) return null;
     const rivers = this.sim.stage.rivers;
@@ -1848,7 +1855,9 @@ export class FirstTimerRun {
     const catches = (lag: number) => [p.vx, 0].every((vx) => {
       const aim = hopAim(lag);
       const x = p.x + (vx + carry) * aim.off, lx = floatAt(rivers, here)(t + aim.off);
-      return x > lx + 10 && x < lx + here.width - 10 && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
+      // (a tailed river's log is under past the painted end at x1: no floor to take off from there, SKILLS.vineOverTail)
+      const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
+      return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
     });
     if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
     const out = this.decide(dir, 'single', true, {});

@@ -1,0 +1,31 @@
+TAP version 13
+# Subtest: A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+not ok 1 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+  ---
+  duration_ms: 23204.808279
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/lianaRide.test.ts:113:1'
+  failureType: 'testCodeFailure'
+  error: 'with the skill: child v1: shrine from 0 rescues 1 lives 8; child v2: shrine from 1 rescues 0 lives 0; child v3: shrine from 0 rescues 1 lives 10; child v4: shrine from 0 rescues 1 lives 14; child v5: shrine from 0 rescues 1 lives 12; middle v1: shrine from 0 rescues 1 lives 9; middle v2: shrine from 0 rescues 1 lives 9; middle v3: shrine from 0 rescues 1 lives 11; middle v4: shrine from 0 rescues 1 lives 9; middle v5: shrine from 0 rescues 1 lives 11; expert v1: shrine from 0 rescues 1 lives 9; expert v2: shrine from 0 rescues 1 lives 10; expert v3: shrine from 0 rescues 1 lives 10; expert v4: shrine from 1 rescues 0 lives 7; expert v5: shrine from 0 rescues 1 lives 10'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/lianaRide.test.ts:135:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23855.912452
+EXIT 1
