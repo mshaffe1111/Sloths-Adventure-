@@ -7514,7 +7514,7 @@ export class GameEngine {
       for (const r of this.currentStage.rivers ?? []) {
         if (!r.tail || r.speed === 0) continue;
         const x1 = r.x1 - r.tail;
-        if (this.onScreen(x1, r.surfaceY, 200)) drawRiverTailEnd(ctx, x1, r.surfaceY, this.gameTime);
+        if (this.onScreen(x1, r.surfaceY, 200)) drawRiverTailEnd(ctx, x1, r.surfaceY, this.gameTime, !r.safe);
       }
     }
     // a ripple where the next log is about to slide out from under the bank, so it never appears without warning

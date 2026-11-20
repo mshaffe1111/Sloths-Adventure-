@@ -181,6 +181,8 @@ export function riverWaterOutline(w: number, x0: number, x1: number, nearY: numb
 
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
+/** the water strip's frayed bottom rows (its cut-out's edge), left out where it meets the deep fill (drawRiverWater) */
+const WATER_FRAY = 6;
 
 /**
  * The river's water between x0 and x1, from the surface down to `bottom`: the painted strip repeated along the river, sliding slowly
@@ -230,12 +232,16 @@ export function drawRiverWater(
   const th = (WATER_TILE * f.h) / f.w;
   // the strip's wave crests sit a few rows down its picture: line them up with the surface
   const top = surfaceY - th * 0.045;
+  // (the strip's last WATER_FRAY rows are its cut-out's frayed edge, darker and half see-through (29,50,55 at alpha 204-247 over the
+  //  fill): over the deep fill they drew a hard dark line across every deep river (the lead, 11-19, 2-4 beat 6 upright). The strip is
+  //  drawn without them, its last whole row (38,67,71) meeting the deep fill RIVER_DEEP (38,66,71) under it, ENG-24f)
+  const sh = f.h - WATER_FRAY, dh = (th * sh) / f.h;
   ctx.fillStyle = RIVER_DEEP;
-  ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
+  ctx.fillRect(x0, top + dh - 1, x1 - x0, Math.max(0, bottom - (top + dh - 1)));
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
   const shift = (((t * speed * 0.35 * dir) % WATER_TILE) + WATER_TILE) % WATER_TILE;
   const start = Math.floor((x0 - shift) / WATER_TILE) * WATER_TILE + shift;
-  for (let x = start; x < x1; x += WATER_TILE - 1) blit(ctx, 'water', x, top, WATER_TILE, th);
+  for (let x = start; x < x1; x += WATER_TILE - 1) ctx.drawImage(img!, f.x, f.y, f.w, sh, x, top, WATER_TILE, dh);
   return true;
 }
 
@@ -409,19 +415,30 @@ export const TAIL_END = {
   hide: 30,
   /** how far under the surface the reeds stand (px): their feet in the water */
   sink: 22,
+  /** on a deep river, how far under the surface the reeds are cut (px), under the foam */
+  cut: 4,
 } as const;
 /** the clump's reeds: [kind, width px, flipped, where across the clump (0..1)]; a back row, then a front row thickest over the logs' cut */
 const TAIL_REEDS = [
   ['reedTall', 60, false, 0.12], ['reedLean', 78, true, 0.42], ['reedTall', 58, true, 0.7], ['reedShort', 90, false, 0.92],
   ['reedLean', 74, false, 0.05], ['reedShort', 96, true, 0.36], ['reedTall', 64, false, 0.55], ['reedShort', 88, false, 0.62], ['reedLean', 70, true, 0.84],
 ] as const;
-export function drawRiverTailEnd(ctx: CanvasRenderingContext2D, x1: number, surfaceY: number, t: number): boolean {
+export function drawRiverTailEnd(ctx: CanvasRenderingContext2D, x1: number, surfaceY: number, t: number, deep = false): boolean {
   if (!riverArtReady()) return false;
   const x0 = x1 - TAIL_END.from, w = TAIL_END.from + TAIL_END.to;
+  // (a DEEP river: only the reeds rise out of it, cut at the surface under the foam; their base under a deep sheet read as a little grass
+  //  island to stand on, the lead 11-19 on 2-4 beat 6)
+  ctx.save();
+  if (deep) {
+    ctx.beginPath();
+    ctx.rect(x0 - 200, surfaceY - 600, w + 400, 600 + TAIL_END.cut);
+    ctx.clip();
+  }
   TAIL_REEDS.forEach(([kind, rw, flip, at], i) => {
     // (staggered depths, the front row lower: the clump stands in the water, not on a line)
     drawReeds(ctx, kind, x0 + at * w, surfaceY + TAIL_END.sink + (i >= 4 ? 10 : 0) + (i % 2) * 5, rw, t, flip);
   });
+  ctx.restore();
   for (let i = 0; i < 3; i++) drawRiverFoam(ctx, 7 + i, x0 + 10 + (i * w) / 3, surfaceY + 5, 60, 0.85, i % 2 === 1);
   return true;
 }
