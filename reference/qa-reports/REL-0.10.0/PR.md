@@ -68,7 +68,21 @@ GATE_TABLE
   L1 x6532); under each river bank face (2-1 x8483, 2-4 x28856) the river bed's soil meets the bank's soil in a faint straight
   vertical tone step in the deep soil. R-165.324 / R-165.345.
 - **funcheck FAIL: 22 flags, all present before this release, ruled by the lead 11-20 1:38 PM ET** (the table below; one is on a stage
-  this release changed, 1-6). The known list was only lowered (104 -> 77), never raised. FUNCHECK_TABLE
+  this release changed, 1-6). The known list was only lowered (104 -> 77), never raised. On b5b0e019: "FAIL (22 worse or new, 0 to lower or delete; 77 known, 1067 stage-layout flags)", the same 22 as INT-14's ruled
+  table, stage, setting, rule and layout count each (none added, none gone):
+
+| # | stage | setting | rule | layouts | R-id |
+|---|---|---|---|---|---|
+| 1-2 | 1-1 | Normal / Easy | dead walk | 16 / 16 | R-165.310 (the dead-walk reader's clocks) |
+| 3 | 1-5 | Normal | dead walk | 16 | R-165.310 |
+| 4-5 | 1-1 | Normal / Easy | pacing (no gentle intro) | 12 / 10 | R-165.48 |
+| 6-7 | 1-1 | Normal / Easy | nothing bites | 15 / 16 | R-165.50 |
+| 8-11 | 1-2 | Normal / Easy | looks like the stage before; nothing new | 16 each | R-165.51 / R-165.283 (readers on unchanged stages) |
+| 12-15 | 1-3 | Normal / Easy | looks like the stage before (16 / 16); nothing bites (5 / 8) | | R-165.51 / R-165.283 |
+| 16-21 | 1-4 | Normal / Easy | pacing; nothing bites; nothing new | 16 each | R-165.222 |
+| 22 | 1-6 | Normal | repeat ("JJJV" x4 at x 9165) | 6 | R-165.276 (the one flag on a stage this release changed) |
+
+  1-2 to 1-5 are unchanged from main in lockall, and main itself fails 34 against its own (unlowered) list (INT-14's run of main, INT-12/funcheck-main-6e7b85f8.txt).
 
 ## What to check after the merge (reference/methods/release.md "After the merge")
 1. GitHub Actions on the merge commit, three runs green: "Publish game to the gh-pages branch" (the suite in 6 shards + every gate,
