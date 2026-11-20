@@ -377,6 +377,8 @@ test('generating a stage is quick: p90 under 500 ms, none over 1500 ms (this thr
   for (const l of speedSample) { stage(l, null); } // warm-up (compilation, tables)
   const ms = buildCpu(speedSample, 2);
   speedSeen = speedSample.map((l, i) => ({ l, ms: ms[i] }));
+  const s = [...ms].sort((a, b) => a - b);
+  console.log(`speed: thread CPU p90 ${s[Math.floor(s.length * 0.9)].toFixed(0)} ms, max ${s[s.length - 1].toFixed(0)} ms (${s.length} stages)`);
   assert.equal(speedFault(ms), '', `CPU ms per stage: ${ms.map((m) => m.toFixed(0)).join(' ')}`);
 });
 

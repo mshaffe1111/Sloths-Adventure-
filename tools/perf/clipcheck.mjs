@@ -404,7 +404,7 @@ async function walk(browser, base, save, size, devBase) {
   // opens: until `selector` shows (as Playwright's own waitFor judged it); FAILS when the page went STILL for STILL_FAIL frames in a row
   // without it (nothing loading, nothing pending, nothing moving: nothing left could open it), or after MAX_FRAMES frames of a page that
   // never went still
-  const opens = async (selector, state = 'visible') => {
+  const opens = async (selector, state = 'visible', max = MAX_FRAMES) => {
     const step = stillRun();
     for (;;) {
       if (await shows(selector, state)) return;
@@ -413,7 +413,7 @@ async function walk(browser, base, save, size, devBase) {
         if (await shows(selector, state)) return;
         throw new Error(`${selector} never showed: the page went still without it (${STILL_FAIL} frames in a row, nothing loading, pending or moving)`);
       }
-      if (r.f >= MAX_FRAMES) throw new Error(`${selector} never showed in ${MAX_FRAMES} frames (the page never went still: ${r.why})`);
+      if (r.f >= max) throw new Error(`${selector} never showed in ${max} frames (the page never went still: ${r.why})`);
     }
   };
   // until: the game's own state, in the page: frames until `fn(arg)` has been true `hold` frames in a row (a React effect that follows
@@ -513,11 +513,13 @@ async function walk(browser, base, save, size, devBase) {
   await seed(page, save);
   await home();
   await judge('start screen');
-  // the planted screen that never opens, every run (R-165.215): waiting on a selector nothing will ever show must FAIL, and fail as a
-  // page gone still (not by a clock, not as a page that never settled), or the open wait itself is broken
+  // the planted screen that never opens, every run (R-165.215): waiting on a selector nothing will ever show must FAIL by one of the two
+  // frame rules (gone still without it, or its frames run out on a page that never went still: under load the title keeps fetching in
+  // the background, so that page may never go still), never open, or the open wait itself is broken. Its own 600 frames, to stay cheap.
   if (!ONLY && !STEPS.length) {
-    const said = await opens('.cc-never-opens').then(() => 'it opened', (e) => String(e.message));
-    if (!/went still without it/.test(said)) missed.push(`planted never-opening screen: not failed as gone still (${said.slice(0, 120)})`);
+    const said = await opens('.cc-never-opens', 'visible', 600).then(() => 'it opened', (e) => String(e.message));
+    if (!/went still without it|never showed in 600 frames/.test(said)) missed.push(`planted never-opening screen: not failed by a frame rule (${said.slice(0, 120)})`);
+    else console.log(`  planted never-opening screen (${tag}): FAILED as it must: ${said.replace(/^\.cc-never-opens /, '').slice(0, 90)}`);
   }
 
   // Settings, every tab, and the pop-ups behind its buttons
