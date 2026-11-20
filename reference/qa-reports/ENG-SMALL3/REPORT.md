@@ -1,6 +1,6 @@
 # ENG-SMALL3 (Engine): R-165.319, R-165.321, R-165.317
 
-Branch t-eng-small3 from origin/t-int-13 8efb1bba5. Final hash: FINAL_HASH. Packet: reference/packets/2026-11-20/ENG-SMALL3.md.
+Branch t-eng-small3 from origin/t-int-13 8efb1bba5. Final hash: the commit that adds this line (git log -1 t-eng-small3; its parent 4aa2ce98 holds the same src). Packet: reference/packets/2026-11-20/ENG-SMALL3.md.
 
 ## Done-items
 1. **R-165.319, the threat dial takes the kit's ids** (b6f175b1). nodeCode.ts `ID`, one spelling for a threat kind, hazard, clock and
@@ -30,7 +30,7 @@ Branch t-eng-small3 from origin/t-int-13 8efb1bba5. Final hash: FINAL_HASH. Pack
 | lockall --layouts 16 vs base 8efb1bba | 100/102 unchanged; 3-6, 3-7 collectibles (intended: the names) |
 | lockall vs main 6e7b85f8 | 19 stages move: the base's own 17 plus 3-6/3-7 collectibles; no layout move from this job |
 | funcheck | FAIL, identical on the base 8efb1bba (30 worse or new, 41 to lower; 1,590 flags; diff 0 lines): t-int-13's, not this job's |
-| paintcheck (CI's, 3 parts) | PAINTCHECK |
+| paintcheck (CI's, 3 parts) | PASS: 0 new in each part (296-389 s) |
 
 ## Polish check
 No drawing changed. The one player-facing change: 3-6/3-7's "GRANDMA'S <THING>!" text (engine.ts:3396) in list order, words unchanged.
