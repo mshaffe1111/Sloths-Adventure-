@@ -1,41 +1,55 @@
-# ANIM-NEXT report (R-165.349): Pokey's animation needs for 2-6..3-9 + the W2/W3 special stages
+# ANIM-NEXT report (R-165.349): Pokey's animation needs for 2-6..3-9 + the W2/W3 special stages, and job 1's clips
 
-Status 5:19 PM ET 11-20: job 1 RUN and DONE; sandbox terminated 5:17 PM (CANCELED), ~$2.05 of $2.50 (HF-SPEND). 8 takes in reference/art/anim-next/takes/; picks review reference/art/anim-next/picks/. Cut waits on the lead's tiptoe pick + Matt.
+Status 5:27 PM ET 11-20: DONE. Needs list, job 1 (+ the tiptoe reroll) run, picked by the lead, cut and catalogued. NOT wired (a builder's job).
 
-## Done-items
-1. Needs list: reference/art/ANIM-NEEDS.md (21 rows: HAVE / ADAPT / NEW, ranked by first stage). 3 NEW for job 1, 1 low NEW + 2 optional for job 2.
-2. Job 1 plan (below), spec committed: tools/art/hfpokey/spec-anim1.json.
-3. (on the go) takes sheet + preview per clip to the lead before any cut.
+## Done-items (3/3)
+1. Needs list: reference/art/ANIM-NEEDS.md (21 rows, HAVE / ADAPT / NEW, ranked by first stage). World 2 needs no new clip.
+2. Job 1 plan to the lead 4:28 PM; go 4:31 PM, cap $2.50; reroll yes 4:58 PM.
+3. Takes sheet + preview per clip to the lead before any cut (freeze 4:49, tiptoe 5:00, drowsy 5:08, tiptoe2 5:20); picks: freeze s11,
+   drowsy-walk s11, tiptoe2 s5; one set for Matt: reference/art/anim-next/picks/picks-preview.mp4. Then cut + catalogue.
 
-## Job 1 plan
-- Clips: drowsy-walk (3-1), freeze (3-3; six W3 stages), tiptoe (3-7), x seeds 3 and 11 = 6 takes, 704x704, 49 frames.
-- Method: the proven hfpokey route (pokeygpu.py clips(): Wan 2.2 I2V A14B + Matt's slothadv motion LoRA 1.0), start
-  tools/art/hfpokey/starts/ref-stand-satchel.png @ 6e7b85f8f (x14's start: the step-back passed Matt's bar).
-- ONE sandbox (rtx-pro-6000, ~$2.75/h), terminated the moment the zips + sheets are back (hf_sandbox_fs, saved to files).
-- Estimate: x14-clips1 ran 4 takes in 20.7 min ($0.95); 6 takes ~30-35 min wall incl. load = ~$1.40-1.60. Cap asked: $2.50.
-- Then: takes sheet + 16 fps preview per clip (tools/art/reanim/preview_anim.py) to the lead; the lead picks; cut (tools/art/train/clips.py)
-  to src/assets/hero/clips/<name>.webp + heroClipsData rows; catalog; HF-SPEND. Wiring (when each plays) is a builder's job.
+## Spend
+ONE sandbox 6b00bc7befaf5e14f4b3e954, 4:32-5:17 PM ET (terminated, status CANCELED), 44.7 min, ~$2.05 of $2.50; 8 takes, every take
+pulled as it landed (D98). Logged in reference/art/HF-SPEND.md. Token never left the sandbox's forwarded env.
 
-## Picks (lead)
-- freeze = s11 (4:48 PM ET): cut 0-8 one-shot stop + a 3-4 frame breathing hold loop; cut waits for all three picks.
-- drowsy-walk = s11 (5:15 PM ET): loop ~15-48, the closest frame pair for the joint.
-- tiptoe: s3/s11 rejected (wave; faces camera). Reroll (stricter prompt) tiptoe2 s5 = my lean (one hunched sneak shape, clear leg-back strides 12-15 / 36-39, loop ~9-33); s21 dives nearly flat at 21-27 (reads "searching"). Waiting on the lead.
+## What shipped on the branch
+- src/assets/hero/clips/freeze.webp (20 frames: 0-13 stop one-shot, 14-19 hold loop), tiptoe.webp (22-frame loop), drowsy-walk.webp
+  (24-frame loop); cut by tools/art/train/clips.py (SOURCE rows name the frames; loop joints by silhouette IoU 0.966 / 0.987).
+- Rows HELD in reference/art/anim-next/heroClips-rows.json, NOT in heroClipsData.ts (see Pushback 1).
+- Catalog: 66 rows in reference/art/CATALOG-MASTER.csv (status "ready (not in the build: no code plays it yet)"), --emit -> cast.json.
+- Reviews: reference/art/anim-next/review/ (every take), picks/cut-preview.mp4 (the final loops at sheet size and 89 px on W3 dark).
+
+## Polish check
+- Each clip judged at 89 px on World 3's dark (picks-preview, cut-preview): freeze reads "hiding" (paws gripped, wide eye aside),
+  tiptoe reads "sneaking" (hunched, paws at chest, strides), drowsy reads "nodding off" (half lids, arms hanging).
+- Fixed before reporting: the first freeze cut held on the squeezed-shut eyes (looked asleep) and kept an arm-fling frame (a wave);
+  recut to the wide-eyed peek and skipped take frames 1-2.
+- Edge: a faint pale key fringe at 3x zoom, the same as the shipped step-back (same keyer): not visible at 89 px.
+
+## Gates (run at 7f61083a + the report)
+tsc PASS; tsx tests (heroClips, heroStandard, artUse, src/game/art/*, dressArt, brickSlots, w6WheelArt) 45/45 PASS; artcheck PASS;
+knowncheck PASS; BASE_PATH vite build PASS; chunkcheck PASS; buildcheck PASS. NOT run: the full 3-shard suite, drawcheck, clipcheck,
+kbdcheck, seedlist, tierBots (no code path draws or reads these sheets yet; the builder that wires them runs all of them).
 
 ## Pushback
-- None on the packet. Notes: World 2's hidden stage "The Rapids" has no design (WORLD-MAP only): its row is provisional. R-165.178's
-  two-vine climb shipped: art 2e203b44b (hero-climb2.webp/.json, ART 11-13), wired be0b28c48 (B14b), both on main via PR #71
-  (release-0.9.8, merge 73e7bed03): the row can close. The idle chain (yawn/wave after 4 s) would play
-  during a freeze or a long hide in W3 today: the freeze clip's wiring must suppress it (a builder's line, in Suggestions).
-
-## Suggestions
-- Builder packet (after the pick): play `freeze` when grounded, |vx| < 25 and a watcher/sleeper is in reach (3-5's freeze rule), and hold
-  off the idle chain while it does; `tiptoe` under the quiet line (200 px/s) on stages with a listener; `drowsy-walk` while drowsy.
+1. Rows held out of HERO_CLIPS: heroClips.ts warmHeroClips() loads every row at each stage start, so 3 unplayed rows would cost every
+   stage ~430 KB and ~9 MB decoded (PERFORMANCE-RULES). The wiring builder pastes them in with the code that plays them.
+2. World 2's hidden stage "The Rapids" has no design: its needs row is provisional. R-165.349 is not on ROADMAP.md yet (the lead's row).
 
 ## Miss (owned)
-- Commit 29cc0b6e's Claude-Session line names the lead's session, not mine (paste slip); a force-push fix was refused by the guard; the lead noted it in STATE. Countermeasure: copy the trailer from the previous commit, never retype it.
+Commit 29cc0b6e's Claude-Session line names the lead's session (paste slip); force-push fix refused by the guard; the lead noted it in
+STATE. Countermeasure: copy the trailer from the previous commit, never retype it.
+
+## Lessons applied
+D41 (sized on 89.1 px drawn height), show first (every take to the lead before any cut), D3 (status -sb before commits, ls-remote = HEAD
+after pushes), D54 (grep proof for R-165.178: art 2e203b44b + wiring be0b28c48 on main via PR #71, merge 73e7bed03), D97/D98 (sandbox
+only, pull each take as it lands).
+
+## Suggestions (ready packets, not done)
+- BUILDER (engine, after Matt's look): paste reference/art/anim-next/heroClips-rows.json into HERO_CLIPS; play freeze (stop once, then
+  loop 14-19) when grounded, |vx| < 25 and a watcher/sleeper is in reach, and hold off the idle chain while frozen; tiptoe under the quiet
+  line (200 px/s) on stages with a listener; drowsy-walk while drowsy. Run every CLAUDE.md gate.
+- Job 2 (parked by the lead): sit-in-moonlight (3-4), the fern find, a winch-crank turn.
 
 ## EXACT NEXT STEP
-On the lead's tiptoe pick (and Matt's word via the lead): unzip the 3 picked takes (reference/art/anim-next/takes/), cut with
-tools/art/train/clips.py's keying (box.json gives crop + x0.66 scale: STAND_PX = measured stand height in the pulled frames) into
-src/assets/hero/clips/{freeze,drowsy-walk,tiptoe}.webp + heroClipsData rows (freeze: 0-8 one-shot + a 3-4 frame breath hold;
-drowsy 15-48 loop; tiptoe ~9-33 loop, joints by the closest frame pair); catalog rows; run every CLAUDE.md check; report. Wiring = a builder.
+None for this packet. Next owner: the wiring builder (Suggestions 1) once Matt has seen picks-preview.mp4.

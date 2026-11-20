@@ -1,7 +1,26 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
+# Hand-off: the art director role (Content), rewritten 2026-11-20 5:25 PM ET (ANIM-NEXT: Pokey's freeze, tiptoe, drowsy-walk clips cut + catalogued; NOT wired)
 
-Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last task: ANIM-NEXT (§0g). Before it: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0g. 11-20 ANIM-NEXT (t-anim-next, R-165.349): Pokey's animation needs for 2-6..3-9 + the W2/W3 special stages; 3 clips cut, NOT wired
+- Needs list: reference/art/ANIM-NEEDS.md (World 2 needs no new clip; World 3 needs freeze, tiptoe, drowsy-walk; job 2 candidates parked:
+  sit-in-moonlight 3-4, the fern "find", a winch-crank turn, each "not yet" by the lead 4:31 PM ET 11-20).
+- Made: one HF sandbox, 8 Wan 2.2 + motion LoRA takes, ~$2.05 (HF-SPEND 11-20). Picks (lead): freeze s11, drowsy-walk s11, tiptoe2 s5.
+  Takes (cropped x0.66 WebP zips): reference/art/anim-next/takes/; reviews reference/art/anim-next/review/, picks/ (picks-preview.mp4
+  went to Matt; cut-preview.mp4 is the final loops).
+- Cut: src/assets/hero/clips/{freeze,tiptoe,drowsy-walk}.webp by tools/art/train/clips.py (SOURCE rows name the frames). freeze = 20
+  frames: 0-13 the stop (one-shot: paws snap in, eyes squeezed, then the wide-eyed peek), 14-19 the hold loop; tiptoe 22-frame loop
+  (13-34), drowsy-walk 24-frame loop (19-42); joints by silhouette IoU (0.966 / 0.987).
+- The rows are HELD in reference/art/anim-next/heroClips-rows.json, NOT in src/game/heroClipsData.ts: heroClips.ts warmHeroClips() loads
+  every HERO_CLIPS row at each stage start, so an unplayed row costs ~430 KB and ~9 MB decoded on every stage. The builder that wires
+  them pastes the rows in. Catalog: 66 rows (B4:hero/clips/<n>#<n>.i, status "ready (not in the build ...)") in CATALOG-MASTER.csv +
+  --emit (cast.json).
+- Traps: (1) clips.py write_data writes heroClipsData.ts every run: rerunning it for an unwired clip puts the row back (see above).
+  (2) the Wan freeze take squeezes its eyes shut 4-18 and opens them wide from ~22: a hold cut from the middle looks asleep, not hiding.
+  (3) pulling takes: crop + x0.66 WebP in the sandbox gets a 49-frame take to ~400 KB = 6 hf_sandbox_fs cats (tools/art/hfpokey/anim1gpu.py).
+  (4) a Python csv.DictWriter writes CRLF: strip it (sed 's/\r$//') or the CSV diff is every line. (5) tools/art/train/vids/ is not
+  ignored: never `git add -A` there.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).
