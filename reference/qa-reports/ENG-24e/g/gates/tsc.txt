@@ -1,0 +1,3 @@
+$ npx tsc --noEmit -p .
+start 10:54:26 AM ET, head a3f430dc
+EXIT 0, end 10:54:34 AM ET
