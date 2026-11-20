@@ -14,7 +14,7 @@ import '../../src/game/headlessDom.ts';
 import { withTestStage } from '../../src/game/gen2/listed.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { packPlan, plantSeedList } from '../../src/game/gen2/seedList.ts';
-import type { RiverRow } from '../../src/game/gen2/riverLay.ts';
+import { carrierWidth, type RiverRow } from '../../src/game/gen2/riverLay.ts';
 import { withFixtureConfig } from '../../src/game/realPlay.ts';
 import { cfg as toyCfg, kit as toyKit, meadow } from '../../src/game/gen2/toyWorld.ts';
 import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
@@ -32,14 +32,21 @@ export const TOY_RIVERS = {
   /** a river of rafts (RiverRow.look 'raft', R-165.288; ENG-24c): 2-4's last row's shape (the slow row to the jetty, w2Arc24.ts slow24),
    *  its carriers drawn as World 2's painted raft */
   raft: { dir: 1, speed: 70, logW: 200, logs: 2, look: 'raft' },
+  /** a river with a TAIL (RiverRow.tail, ENG-24e): `twin`'s logs go under World 2's painted end 430 px short of the far bank (past the
+   *  farthest a rider reaches off a log's end, riverLay.ts riverFaults), DEEP; 2-4's beat 4 row on Normal (w2Arc24.ts twin24) */
+  tail: { ...W2_RIVERS.twin, tail: 430 },
 } as const satisfies Record<string, RiverRow>;
 export type ToyRiver = keyof typeof TOY_RIVERS;
-export type LianaToy = 'drop' | 'catch';
-/** how far past the bank's end the liana hangs (px): 2-1's measured 165 (the bank's catch), or out of every bank's reach (from a log) */
-export const TOY_REACH: Record<LianaToy, number> = { drop: 165, catch: 430 };
+/** 'tail' (ENG-24g, level.md rule 21): the liana hung OVER THE TAIL, 90 px past where the logs go under (2-4's OVER_TAIL), out of every
+ *  bank's reach: caught by a jump off a moving log (riverLay.ts logCatches, the judge's own test), let go over open water onto the far bank */
+export type LianaToy = 'drop' | 'catch' | 'tail';
+/** how far past the bank's end the liana hangs (px): 2-1's measured 165 (the bank's catch), out of every bank's reach (from a log), or
+ *  90 px past the tail row's logs' window (the window starts at the bank's end) */
+export const TOY_REACH: Record<LianaToy, number> = { drop: 165, catch: 430, tail: carrierWidth(TOY_RIVERS.tail) + 90 };
 /** its length (px): 2-1's 410 (its foot at the bank's top), or 320 for the catch, its foot ~118 px over a log's top: a jump catches it,
- *  never a ride under it (at 410 the engine took him onto it as the log carried him through its foot, so no jump was asked) */
-export const TOY_LEN: Record<LianaToy, number> = { drop: 410, catch: 320 };
+ *  never a ride under it (at 410 the engine took him onto it as the log carried him through its foot, so no jump was asked); 2-4's 340
+ *  over the tail (w2Arc24.ts lianaW: no log passes under it there) */
+export const TOY_LEN: Record<LianaToy, number> = { drop: 410, catch: 320, tail: 340 };
 
 const section = (toy: LianaToy, row: ToyRiver, easyRow: ToyRiver): SectionTemplate => {
   const body = (r: ToyRiver): SectionPiece[] => [

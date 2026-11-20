@@ -21,7 +21,7 @@ import {
   seesawTilt, THROW, throwStart, aimUp, tradeTakes, useReach, type FlightWorld, type PieceSpec, type RoomSpec,
 } from './puzzleKit.ts';
 import { NOISE } from './noise.ts';
-import { hopLimit } from './river.ts';
+import { hopLimit, onRiver } from './river.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 
@@ -198,7 +198,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     if (!r) { errors.add(`${name}: ${sl.spec.id} runs river ${sl.spec.river}, which is not there`); continue; }
     // turned about, its logs must still be a hop apart the other way (river.ts hopLimit)
     if ([sl.spec.opened ?? 'with', sl.spec.shut ?? 'still'].includes('against')) {
-      const ls = stage.platforms.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+      const ls = stage.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r));
       const d = ls[0]?.drift;
       if (d && ls.length >= 2) {
         const gap = (d.x1 - d.x0 + d.width) / ls.length - d.width;

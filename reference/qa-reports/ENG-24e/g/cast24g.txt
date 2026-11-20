@@ -1,0 +1,18 @@
+Fri Nov 20 09:36:43 EST 2026
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 22/40; under the floor 0; time median 271.9 s (min 206); hits 0 lives 388 (water 388); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 15: shrine rescued x1  (seeds 5,17,4,12,24,32,36,40,27,31,35,10,14,18,34)
+        fail 3: shrine rescued x2  (seeds 23,26,38)
+kid    easy   PASS 39/40; under the floor 0; time median 172.3 s (min 139.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 4)
+adult  normal PASS 36/40; under the floor 0; time median 203.1 s (min 171.8); hits 0 lives 158 (water 158); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 4: shrine rescued x1  (seeds 5,13,33,20)
+adult  easy   PASS 40/40; under the floor 0; time median 149.2 s (min 135.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 38/40; under the floor 0; time median 379 s (min 300.3); hits 0 lives 188 (water 188); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: time goal 0/1  (seeds 19,14)
+child  easy   PASS 40/40; under the floor 0; time median 260.6 s (min 235.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 241.9 s (min 206.9); hits 0 lives 129 (water 129); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 187 s (min 170.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 213.2 s (min 184); hits 0 lives 126 (water 126); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+EXIT 0
+Fri Nov 20 09:38:27 EST 2026

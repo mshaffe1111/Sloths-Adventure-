@@ -12,10 +12,11 @@
  *   - each log's offset spaces it on the river's one clock (driftX), so the game, the validator and the bots agree where a log is.
  */
 import type { Platform, Vine } from '../types.ts';
-import { driftCycle, driftX, gapFor, hopLimit, lianasOver, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, canGrabSwing, FORGIVE, flyLaunch, PHYS, pressLaunches, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
+import { driftCycle, driftX, gapFor, hopLimit, lianasOver, lianasOverLogs, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
+import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
-import { lianaCaught } from '../levelCheck.ts';
+import { gripsOf, lianaCaught } from '../levelCheck.ts';
+import { LAND_IN } from './landings.ts';
 import { RIDE } from '../ride.ts';
 import type { Difficulty } from '../difficulty.ts';
 
@@ -39,6 +40,13 @@ export interface RiverRow {
   /** what floats on it (data; unset: logs). 'raft': a lashed raft (R-165.288; 2-4's last row to the jetty): the same carrier on the same
    *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider) */
   look?: 'raft';
+  /**
+   * its TAIL (ENG-24e, R-165.301; data, unset: none): log-free water this wide (px) between where the logs go under and the far bank. The
+   * logs' window (`logs` spacings, as ever) ends `tail` short of the far bank, under World 2's painted end (riverArt.ts drawRiverTail), so a
+   * rider cannot ride a log bank to bank: the way across is something else (2-4's liana: up from the log, its let-go onto the far bank).
+   * riverFaults holds it wider than the farthest a rider reaches off a log's end (rideReach + RIVER_LAY.tailMargin)
+   */
+  tail?: number;
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -58,33 +66,40 @@ export const RIVER_LAY = {
   /** the most of the river an upright phone shows ahead of where he stands (px; level.md World 1 notes): the next log's slide-out tell
    *  must be inside it from the bank he boards at, or he hops blind */
   view: 425,
+  /** a tail's margin past the farthest a rider reaches off a log's end (px; rideReach): two frames of the fastest run on the fastest
+   *  river ((PHYS.maxRun 285 + RIVER_LAY.speed 143) / 30 = 14.3 px a frame), for a take-off a frame off the flight's */
+  tailMargin: 30,
 } as const;
 
 /** the gap a row's logs keep */
 export const rowGap = (row: Pick<RiverRow, 'dir' | 'speed' | 'gap'>): number => row.gap ?? Math.round(gapFor(row.dir, row.speed));
-/** the water's width, bank to bank */
-export const riverWidth = (row: RiverRow): number => (row.logs + 1) * (row.logW + rowGap(row)) - row.logW;
+/** the logs' window: from the near bank to where they go under (the far bank, or the painted end before a tail) */
+export const carrierWidth = (row: RiverRow): number => (row.logs + 1) * (row.logW + rowGap(row)) - row.logW;
+/** the water's width, bank to bank (the logs' window and its tail) */
+export const riverWidth = (row: RiverRow): number => carrierWidth(row) + (row.tail ?? 0);
 /** how long he waits at the bank between two logs (s) */
 export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / row.speed;
 
 /**
  * Lay one river: the water from `x0` (the near bank's end) across `riverWidth(row)` to the far bank's start, under banks whose top is
- * `bankY`, and its logs (platforms 'drift', ids from `nextId`). The zone's `safe` sets him back 70 px short of the edge on the near bank.
+ * `bankY`, and its logs (platforms 'drift', ids from `nextId`) across the logs' window (carrierWidth: the water less its tail). The zone's
+ * `safe` sets him back 70 px short of the edge on the near bank.
  */
 export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; logs: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
   const gap = rowGap(row);
-  const width = riverWidth(row);
+  const width = carrierWidth(row);
+  const tail = row.tail ?? 0;
   const x1 = x0 + width;
   const logY = bankY + LOG_DROP;
   const { count, period } = logLayout({ dir: row.dir, speed: row.speed, logW: row.logW, gap, width });
   const logs: Platform[] = [];
   for (let i = 0; i < count; i++) {
-    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY, ...(row.look ? { look: row.look } : {}) };
+    const drift: DriftInfo = { x0, x1, dir: row.dir, speed: row.speed, width: row.logW, offset: (i * period) / count, baseY: logY, ...(row.look ? { look: row.look } : {}), ...(tail ? { tail } : {}) };
     const p: Platform = { id: nextId(), x: x0, y: logY, width: row.logW, height: LOG_HEIGHT, type: 'drift', style: 'log', drift };
     p.x = driftX(drift, 0);
     logs.push(p);
   }
-  const zone: RiverZone = { x0, x1, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}) };
+  const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}) };
   const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
   return { zone, logs, petals };
 }
@@ -96,7 +111,9 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
  *   - a bank at each end, with RIVER_LAY.board of it to wait on before the water;
  *   - the next log's slide-out (where it comes out from under a bank) is inside an upright screen of where he boards: with the current,
  *     the near bank's own edge; against it, the far bank's edge, which must be within RIVER_LAY.view of the near one plus a log he can
- *     see coming (so a river flowing back at him is never wider than the view plus its logs' spacing).
+ *     see coming (so a river flowing back at him is never wider than the view plus its logs' spacing);
+ *   - a TAIL (RiverRow.tail) is wider than the farthest a rider reaches off a log's end (rideReach) by RIVER_LAY.tailMargin, so no log
+ *     carries him within a jump of the far bank.
  * Still water (speed 0, a splash-back pond, a lily pond) and open water (crossed some other way) are not log rivers: none of this applies.
  */
 export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty = 'normal'): string[] {
@@ -106,9 +123,12 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
     if (r.speed === 0 || r.open || r.raft || r.flood) continue;
     const at = `river at x=${Math.round(r.x0)}`;
     // (a liana hung over it (place `river` after a liana, ENG-24): its logs are a let-go's landing, crossed by the vine, never hopped log
-    //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands)
-    const over = lianasOver(st.vines ?? [], r);
-    const logs = st.platforms.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1).map((p) => p.drift!);
+    //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands. ENG-24f, the lead's ruling 11-19 9:12 PM
+    //  ET: a liana is judged by what is under its throw. One hung over the TAIL (river.ts lianasOverLogs: its anchor at or past the logs'
+    //  window end) throws over open water: World 1's vine rules (tailLianaFaults), never the share, and the logs before it are hopped)
+    const over = lianasOverLogs(st.vines ?? [], r);
+    const overTail = lianasOver(st.vines ?? [], r).filter((v) => !over.includes(v));
+    const logs = st.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
     if (logs.length < 2) { out.push(`${at}: ${logs.length} logs, under 2`); continue; }
     const d = logs[0];
     const spacing = (d.x1 - d.x0 + d.width) / logs.length;
@@ -126,10 +146,47 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
     const far = solids.find((p) => Math.abs(p.x - r.x1) <= 2);
     if (!near || !far) { out.push(`${at}: no bank at one end`); continue; }
     if (near.width < RIVER_LAY.board) out.push(`${at}: ${near.width} px of bank to wait on, under ${RIVER_LAY.board}`);
-    if (d.dir === -1 && r.x1 - r.x0 > RIVER_LAY.view + spacing) out.push(`${at}: it flows back at him across ${Math.round(r.x1 - r.x0)} px, so the next log comes out of sight (over ${Math.round(RIVER_LAY.view + spacing)})`);
+    // (a river flowing back at him: its logs come out at the window's far end, the painted end before a tail or the far bank)
+    if (d.dir === -1 && d.x1 - r.x0 > RIVER_LAY.view + spacing) out.push(`${at}: it flows back at him across ${Math.round(d.x1 - r.x0)} px, so the next log comes out of sight (over ${Math.round(RIVER_LAY.view + spacing)})`);
+    if (d.tail) {
+      const reach = Math.ceil(rideReach(d.dir, d.speed));
+      if (d.tail < reach + RIVER_LAY.tailMargin) out.push(`${at}: its tail of ${Math.round(d.tail)} px is inside a jump off a log's end (${reach} px + ${RIVER_LAY.tailMargin}): he rides to the far bank on a log alone`);
+    }
     if (over.length) out.push(...lianaRiverFaults(r, logs, over, near, difficulty).map((f) => `${at}: ${f}`));
+    if (overTail.length) out.push(...tailLianaFaults(r, logs, overTail, near, far, difficulty).map((f) => `${at}: ${f}`));
   }
   return out;
+}
+
+/**
+ * The farthest a rider reaches toward the far bank off a log's end (px, from his middle where the log goes under, river.ts DriftInfo.x1, to
+ * the bank's lip), on a river flowing `dir` at `speed` px/s: what a TAIL must be wider than (riverFaults). Flown with the engine's own air
+ * step (physics.ts airStep, 30 fps) at the strongest jump the game ever gives, Easy's (whatever the setting: a player just off Easy keeps
+ * its help for five stages, engine.ts assistNow): he runs off the log's end at his full run plus the log's speed (RIDE.keep), jumps
+ * within his coyote time (FORGIVE.easy.coyote + ASSIST.coyote) unless the water takes him first (feet 8 px under its surface, engine.ts),
+ * holds it, and takes the second jump (ASSIST.doubleJump stronger) on its best frame. He reaches the bank when his front (his middle + 22,
+ * half his 44 px body) meets its lip with his feet no lower than its top's hoist (FORGIVE.mantle) and not rising fast (engine.ts mantle).
+ */
+export function rideReach(dir: 1 | -1, speed: number): number {
+  const F = 1 / 30, top = 0, bankTop = top - LOG_DROP, sink = top + (surfaceBelowBank - LOG_DROP) + 8;
+  const coyote = FORGIVE.easy.coyote + ASSIST.coyote;
+  let best = 0;
+  for (let c = 0; c * F <= coyote + 1e-9; c++) {
+    for (let k = 1; k <= 45; k++) {
+      const b: AirBody = { x: 0, y: top, vx: PHYS.maxRun + dir * speed * RIDE.keep.x, vy: 0 };
+      let wet = false;
+      for (let i = 0; i < c && !wet; i++) { airStep(b, F, 1); wet = b.y > sink; }
+      if (wet) break;
+      b.vy = -PHYS.jumpV;
+      for (let i = 1; i <= 120; i++) {
+        if (i === k) b.vy = secondJumpV(b.vy, PHYS.doubleV * (1 + ASSIST.doubleJump));
+        airStep(b, F, 1, true);
+        if (b.y <= bankTop + FORGIVE.easy.mantle && b.vy >= -120) best = Math.max(best, b.x + BODY_W / 2);
+        if (b.y > sink) break;
+      }
+    }
+  }
+  return best;
 }
 
 // ───────────────────────────── a liana over a river (ENG-24; reference/design/2-4.md NEW 1) ─────────────────────────────
@@ -178,15 +235,17 @@ export interface LetGoFall {
   far: boolean;
   cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
 }
-export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY'>): LetGoFall {
+export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall {
   const top = w.baseY, bankTop = top - LOG_DROP;
+  // (the far bank's lip: the logs' window's end, or past its tail of log-free water, ENG-24e: a let-go into the tail is in the water)
+  const end = riverEnd(w);
   const cross: LetGoFall['cross'] = [];
   let far = false;
   flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
     if (c.vy < 0) return false;
     const inWindow = c.x >= w.x0 && c.x <= w.x1;
-    if (!inWindow && prevY <= bankTop + 14 && c.y >= bankTop) {
-      far = c.x > w.x1;
+    if ((c.x < w.x0 || c.x > end) && prevY <= bankTop + 14 && c.y >= bankTop) {
+      far = c.x > end;
       return true;
     }
     if (inWindow && prevY <= top + DRIFT_CATCH.drop && c.y >= top) cross.push({ x: c.x, vx: c.vx, dt: t - l.pt, above: prevY < top - 2 });
@@ -289,6 +348,36 @@ export function lianaRiverFaults(r: RiverZone, logs: readonly DriftInfo[], over:
     if (share < needShare) out.push(`${at}: ${Math.round(share * 100)}% of its let-gos land on a log, under ${Math.round(needShare * 100)}%`);
     if (wait > needWait + 1e-6) out.push(`${at}: he waits ${wait.toFixed(2)} s on it for a let-go that lands on a log, over ${needWait.toFixed(2)} s`);
     // (no bank reaches it: the way on is a catch from a log)
+    const fromBank = !!near && lianaCaught(near, v, 1, r.surfaceY);
+    if (!fromBank) {
+      if (!logs.some((d) => logCatches(v, d))) out.push(`${at}: no bank reaches it and no jump off a log catches it`);
+      if (easy && r.speed > LIANA_RIVER.easyCatch) out.push(`${at}: caught from a log on a river at ${r.speed} px/s, over Easy's ${LIANA_RIVER.easyCatch}`);
+    }
+  }
+  return out;
+}
+
+/**
+ * What is unfair about the lianas hung over a log river's TAIL (ENG-24f, the lead's ruling 11-19 9:12 PM ET, level.md World 2 notes): its
+ * anchor at or past the logs' window end (river.ts lianasOverLogs), so every let-go throws over log-free water, a swing over open water
+ * held to World 1's vine rules, never the log-drop share (which no let-go over a tail can meet: no log is under it):
+ *   - FAR, the testers' let-go (level.md World 1 notes; physics.ts forwardEndLands, FORWARD_END 0.75, from every hold its grip dial names,
+ *     the jump held, as gen2 lays a perch he reaches by what he sees, pipeline lianaBand): it lands his middle LAND_IN inside the far bank;
+ *   - the wait: that let-go is on the first forward sweep of every swing, so he never waits more than one swing on it for a landing one
+ *     (lianaRiverFaults' Normal wait), with nothing to time against the logs;
+ *   - caught as a liana over logs is: from the near bank (levelCheck lianaCaught), else by a held jump off a log the river carries under it
+ *     (logCatches), on Easy only on a river at most LIANA_RIVER.easyCatch fast.
+ * Its way on is the far bank (a liana chained past it over the tail is not judged here: such a stage is refused until it is).
+ */
+export function tailLianaFaults(r: RiverZone, logs: readonly DriftInfo[], over: readonly Vine[], near: Platform | undefined, far: Platform, difficulty: Difficulty): string[] {
+  const out: string[] = [];
+  const easy = difficulty === 'easy';
+  for (const v of over) {
+    const at = `the liana at x=${Math.round(v.x)} over the tail`;
+    const y = far.y;
+    const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= y + 14 && c.y >= y && c.x >= far.x + LAND_IN.px && c.x <= far.x + far.width - LAND_IN.px;
+    const fwd = withSetting(difficulty, () => forwardEndLands({ x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: v.swingAmp, swingPeriod: v.swingPeriod, swingPhase: 0 }, lands, gripsOf(v.grip, v.bottomY - v.topY)));
+    if (!fwd) out.push(`${at}: the testers' let-go (FORWARD_END ${FORWARD_END}) does not land him ${LAND_IN.px} px inside the far bank`);
     const fromBank = !!near && lianaCaught(near, v, 1, r.surfaceY);
     if (!fromBank) {
       if (!logs.some((d) => logCatches(v, d))) out.push(`${at}: no bank reaches it and no jump off a log catches it`);

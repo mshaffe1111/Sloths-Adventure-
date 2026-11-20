@@ -35,7 +35,7 @@ import fs from 'node:fs';
 import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
 import { fallSeconds, POD } from '../../src/game/podfall.ts';
 import { beatOf } from '../../src/game/clock.ts';
-import { driftCycle, lianasOver, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
+import { driftCycle, lianasOver, onRiver, type DriftInfo, type RiverZone } from '../../src/game/river.ts';
 import { lianaDrops, logCatches } from '../../src/game/gen2/riverLay.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { stageWheels, flownKey } from '../../src/game/gen2/wheelLay.ts';
@@ -939,7 +939,7 @@ export function lianaChallenges(st: any, route: Route, setting: Setting, softPit
   for (const sg of route.segs) {
     const v = (sg.kind === 'lianaDrop' || sg.kind === 'logCatch') && lianas.find((q: any) => Math.abs(q.x - (sg.kind === 'lianaDrop' ? sg.x0 : sg.x1)) < 2);
     const r = v && (st.rivers ?? []).find((q: RiverZone) => lianasOver([v], q).length);
-    const logs: DriftInfo[] = r ? (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1).map((p: any) => p.drift) : [];
+    const logs: DriftInfo[] = r ? (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p: any) => p.drift) : [];
     const log: any = sg.kind === 'logCatch' ? sg.from : (st.platforms ?? []).find((p: any) => p.drift === logs[0]);
     if (v && logs.length && log?.drift) {
       const d: DriftInfo = log.drift;
@@ -1253,7 +1253,7 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[], follow
     const over = lianasOver(lianas, r);
     if (!over.length) continue;
     out.add('move:lianaDrop');
-    const logs = (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    const logs = (st.platforms ?? []).filter((p: any) => p.type === 'drift' && p.drift && onRiver(p.drift, r));
     if (over.some((v: any) => logs.some((p: any) => logCatches(v, p.drift)))) out.add('move:logCatch');
   }
   return [...out].sort();
