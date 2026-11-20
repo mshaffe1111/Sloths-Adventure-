@@ -10,10 +10,9 @@ Not merged yet: §0zq-25c ENG-25c (t-eng-25c; INT-14 merges it). Merged at INT-1
   (worldsData.generateAllLevels): the engine builds with the real config, and 2-5 is a purge of 12. The dev server reloads the page on a
   stage's first launch: re-plant. **p.y is Pokey's FEET** (engine.ts:4500); invincibleTimer drawn = the hurt blink and face.
 - **The real tap hop** (InputEngine.triggerTouchUp from a script) did not take him off the bank in fallShot's harness: not chased, UNPROVEN.
-- **EXACT NEXT STEP (stopped 11:10 PM ET Thu 11-19):** every gate in the REPORT's table is PASS (funcheck = the base's own) except ONE UNRUN:
-  `npx tsx tools/engine/seedlist.ts 1-6 --check` (it was running at the stop). Run it on this head; PASS = ENG-25c is final (send the lead
-  the hash, write it into the REPORT's 1-6 row); FAIL = stop and tell the lead (no game code changed since c794249d; lockall vs base is
-  102/102 unchanged, so a 1-6 FAIL would be the base's own: check it on d36638be too).
+- **EXACT NEXT STEP (11:13 PM ET):** none for ENG-25c: every gate in the REPORT's table is PASS (funcheck FAILs identically on the base: the
+  base's own), 1-6's list included (PASS 11:13 PM). INT-14 merges t-eng-25c; BUILD-25 lays 2-5 on it (BUILD-25 still proves 2-5 itself:
+  these stills are the toy under 2-7).
 
 ## 0zq-25c. ENG-25c (t-eng-25c from t-int-13 d36638be, 11-19 evening): snap rows level with the banks; the snapper's ground; the straddle
 - **A snap row's floors sit level with the banks** (rideLay.ts layPads; snapFaults "not level with the banks"). Pads still float PAD_LAY.drop

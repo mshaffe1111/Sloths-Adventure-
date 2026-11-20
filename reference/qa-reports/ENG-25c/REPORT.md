@@ -64,7 +64,7 @@ docs, stills and the stills tools after it). Clock times by `date` (ET), 11-19.
 | registrycheck | PASS | 12 stages registered everywhere, 12 lists |
 | seed lists `--check`: 1-1, 2-1, 2-2, 2-4 | PASS ×4 | 161 / 100 / 100 / 100 seeds, each clean on both settings |
 | seed lists `--check`: 1-2, 1-3, 1-4, 1-5, 1-7, 1-8, 1-9 | PASS ×7 | 10:58-11:03 PM |
-| seed list `--check`: **1-6** | **UNRUN (still running at the 11:15 PM stop)** | started 11:00 PM; a fresh member runs it first (EXACT NEXT STEP, engine-core.md §0zq-25d) |
+| seed list `--check`: 1-6 | PASS | 100 seeds, each clean on both settings, 777 s, 11:13 PM |
 | engine tool tests (CI's 34 files, incl. the CLAUDE.md four) | PASS | tests 305 / pass 304 / fail 0 / todo 1 (run twice, both PASS) |
 | tierBots | PASS | fail 0 (the 1-1 calibration does not move; firsttimer.ts's changes are snap/kitBeat-only) |
 | tipwalk --layouts 4 | PASS | |
