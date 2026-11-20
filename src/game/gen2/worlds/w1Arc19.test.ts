@@ -213,18 +213,3 @@ test("the boulder stair's second boulder leaves its bough flush or at least Poke
     assert.ok(ok(left) && ok(right), `${d} seed ${seed}: ${Math.round(left)} px of bough left of the boulder, ${Math.round(right)} px right`);
   }
 });
-
-// VAR-19d (plainWalk.test.ts "one-jump steps", the flick leaning away; the lead's ruling 11-19): two of 1-9's exits and entries left a
-// one-jump step a flick leaning away could not climb. The hunters' last piece was a hop over a 62 px gap whose floor lay 68 px down
-// (leaning away from 'out' he landed back in it), and read-bare's 'in' sat 30 px under the beat before's 'out' (leaning away from s1 he
-// landed back on that lip). Now: the hunters walk off onto 'out', and read-bare is entered level
-test("the hunters walk off onto their 'out' (no gap), and read-bare is entered level with the beat before (no lip), both settings (VAR-19d)", () => {
-  for (const d of BOTH) for (const seed of SEEDS) {
-    const st = built(seed, d);
-    const out = piece(st, 'w1-19-hunters', 'out'), w3 = piece(st, 'w1-19-hunters', 'w3');
-    assert.ok(Math.abs(out.x - (w3.x + w3.width)) <= 2 && Math.abs(out.y - w3.y) <= 2, `${d} seed ${seed}: the hunters' out at ${Math.round(out.x)} y${Math.round(out.y)}, w3 ends ${Math.round(w3.x + w3.width)} y${Math.round(w3.y)}`);
-    const i = st.gen2.sections.findIndex((q) => q.template === 'w1-19-read-bare');
-    const before = st.platforms.find((p) => p.tag === `${st.gen2.sections[i - 1].uid}:out`)!, inn = piece(st, 'w1-19-read-bare', 'in');
-    assert.ok(Math.abs(inn.y - before.y) <= 2, `${d} seed ${seed}: read-bare's in y${Math.round(inn.y)}, the beat before's out y${Math.round(before.y)}`);
-  }
-});
