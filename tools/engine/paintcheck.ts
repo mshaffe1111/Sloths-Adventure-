@@ -5,7 +5,8 @@
 // is not what this gate judges).
 //   npx tsx tools/engine/paintcheck.ts                          sweep; exit 1 on any breach
 //   npx tsx tools/engine/paintcheck.ts --stages 1-7,5-1 --layouts 4 --unpainted --known   a few stages; list the unpainted and known
-//   npx tsx tools/engine/paintcheck.ts --part 0/3                one of three shares (CI)
+//   npx tsx tools/engine/paintcheck.ts --part 0/3                one of three shares (CI; 0-based, 0/3..2/3; a part, run or stage
+//   with 0 builds FAILS, R-165.330: a gate never passes having checked nothing)
 // Breaches there the day the gate started are on paintcheck.known.json (shrink-only, law 5; R-165.292's owner: the lead).
 // Prints every breach: stage, setting, seed, x, style, size, what it draws as and the heights its painter draws.
 import fs from 'node:fs';
@@ -37,9 +38,17 @@ const N = Number(arg('--layouts') ?? 16);
 const only = arg('--stages')?.split(',');
 const showUnpainted = process.argv.includes('--unpainted');
 // (--part i/n: the i-th of n shares of the stages, for CI's parallel steps; a stage is in share (its index mod n))
+// (R-165.330: a part is 0-based, 0..n-1; '--part 3/3' once checked no stage and PASSED. A part out of range, a part or a stage with 0
+// builds FAILS: a gate never passes having checked nothing. Every part's stage count is printed, so an empty share shows.)
 const [partI, partN] = (arg('--part') ?? '0/1').split('/').map(Number);
+if (!Number.isInteger(partI) || !Number.isInteger(partN) || partN < 1 || partI < 0 || partI >= partN) {
+  console.log(`paintcheck: FAIL, --part ${arg('--part')} is not a part: parts are 0-based, 0/${partN} .. ${partN - 1}/${partN} (R-165.330)`);
+  process.exit(1);
+}
 const all = generateAllLevels().filter((c) => !c.secret && (!only || only.includes(c.id)));
 const levels = all.filter((_, i) => i % partN === partI);
+const shares = Array.from({ length: partN }, (_, k) => all.filter((_, i) => i % partN === k).length);
+console.log(`paintcheck: stages per part ${shares.map((n, k) => `${k}/${partN}: ${n}`).join(', ')}; this run part ${partI}/${partN}`);
 const listed = new Set(Object.keys(PROVEN_INDEX));
 // the breaches already there the day the gate started (law 5): shrink-only. One id per stage, style, height and code look; a breach not
 // on it fails; on a sweep of a part on the full 16 layouts (no --stages), an id of that part's stages no build shows any more fails too (fixed: take it off)
@@ -109,6 +118,13 @@ if (showUnpainted) {
 if (process.argv.includes('--known')) for (const [id, l] of seen) if (known.has(id)) console.log(`  known: ${l}`);
 for (const l of newLines) console.log(`NEW: ${l}`);
 for (const k of stale) console.log(`FIXED, still listed (take it off ${path.basename(KNOWN_FILE)}): ${k}`);
-const bad = newLines.length + stale.length;
-console.log(bad ? `paintcheck: FAIL, ${newLines.length} new breach lines, ${stale.length} fixed ids still listed` : `paintcheck: PASS, no new painted style falls through to code terrain (${[...seen.keys()].filter((k) => known.has(k)).length} known ids seen, R-165.292)`);
-process.exit(bad ? 1 : 0);
+const unbuilt = [...byStage].filter(([, r]) => r.builds === 0).map(([id]) => id);
+const missing = (only ?? []).filter((id) => !all.some((c) => c.id === id));
+for (const id of unbuilt) console.log(`EMPTY: ${id} had 0 builds (an empty seed list?): checked nothing`);
+for (const id of missing) console.log(`EMPTY: --stages ${id} is no stage: checked nothing`);
+const empty = builds === 0 || unbuilt.length > 0 || missing.length > 0;
+const breach = newLines.length + stale.length;
+if (empty) console.log(`paintcheck: FAIL, checked nothing: ${builds} builds of ${levels.length} stages, ${unbuilt.length} stages with 0 builds, ${missing.length} --stages ids that are no stage (R-165.330)`);
+if (breach) console.log(`paintcheck: FAIL, ${newLines.length} new breach lines, ${stale.length} fixed ids still listed`);
+if (!empty && !breach) console.log(`paintcheck: PASS, no new painted style falls through to code terrain (${[...seen.keys()].filter((k) => known.has(k)).length} known ids seen, R-165.292)`);
+process.exit(empty || breach ? 1 : 0);
