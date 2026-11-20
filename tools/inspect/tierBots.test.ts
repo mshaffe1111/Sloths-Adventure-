@@ -8,7 +8,7 @@
  *      give the committed table, and EVERY committed run (5 tiers and settings x variants 1-40: 200) replays exactly as committed, so a
  *      change to the bots, the engine or the stage that moves any run is caught here (R-165.317: a replay of three variants a tier missed
  *      child Easy variant 25's move on t-build-24c).
- *   npx tsx --test tools/inspect/tierBots.test.ts   (all 200 runs: minutes, timed in gates.yml)
+ *   npx tsx --test tools/inspect/tierBots.test.ts   (about 4 min: 200 runs replayed in 206 s on 4 cores, 11-19)
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
