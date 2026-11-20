@@ -1,10 +1,10 @@
 # INT-14 REPORT: release 1 (Friday 11-20): merge what is green, hold back what is not, every gate once
 
-## INT-14b: release 1 finished (late joiners merged, every gate once on the final head) — kept current; last update 2:16 PM ET
+## INT-14b: release 1 finished (late joiners merged, every gate once on the final head) — kept current; last update 2:35 PM ET
 **EXACT NEXT STEP (for INT-14c if INT-14b stops):** final CODE head = **453b69c2** (t-int-14 after it adds only: 6ef8de7b the timecheck doc
 fix, c4dc1867 funknown.json lowered, 4aa6770d stills, this REPORT). Gates run in worktree /home/user/wt/453b69c2 (gone? `git worktree add
---detach <dir> 453b69c2`, `ln -s <repo>/node_modules <dir>/node_modules`; INT-14/scripts/*.sh need `S=<scratchpad>`). STILL TO RUN, in this
-order: (a) castBots 1-9 and 2-4 (npx tsx tools/inspect/castBots.ts --stage <s> --seeds 1-40 --setting both --par 2; child/middle/expert lines into the castBots table, each miss traced); (b) lists 1-6 and 2-4 (npx tsx tools/engine/seedlist.ts <s> --check); (c) ALONE, nothing else running: node tools/perf/clipcheck.mjs, then node tools/perf/buildcheck.mjs, then node tools/perf/kbdcheck.mjs (then `git checkout reference/qa/tester-page-1106/keyboard/`, never commit those); (d) the test link count: python3 tools/testlink/build.py in a scratch worktree of 453b69c2 (478 on the base; limit 480); (e) npm run build:store (release.md's list). Then fill the PENDING rows below, push, ReadNotifications, send the lead the final hash. Nothing else is open.
+--detach <dir> 453b69c2`, `ln -s <repo>/node_modules <dir>/node_modules`; INT-14/scripts/*.sh need `S=<scratchpad>`). STILL TO RUN:
+NOTHING from INT-14b's list: every gate has run once on 453b69c2. Open with the lead: the 3:30 PM ruling on FIX-TAB (t-fix-tab, 1-6's grass tab under the painted stone block): if a draw-only fix merges, re-run drawcheck, paintcheck 0/3 1/3 2/3, the suite (3 shards) and the CI tool line on the new head and update this table.
 
 **Merges (each from the lead's verified final; D92 = tsc + the CI tool line after each):**
 | # | branch @ head (code) | merged as | conflicts | D92 |
@@ -25,14 +25,14 @@ calibration-main.jsonl (210 lines): nothing to recommit; tierBots.test PASS on t
 | BASE_PATH vite build + chunkcheck | PASS / PASS |
 | artcheck | PASS |
 | drawcheck (every stage, both ways) | PASS (747 s) |
-| clipcheck (ALONE) | PENDING (alone) |
+| clipcheck (ALONE) | PASS (83 known; 365 s; alone) |
 | knowncheck | PASS (also after the funknown lowering) |
 | generality | PASS |
 | roadmapcheck (unshallowed) | PASS |
 | timecheck --range origin/main..HEAD | FAIL on 453b69c2 (1: VAR-19/REPORT.md:243, VAR-19's own record of a typed-ahead "10:12 PM"), fixed at the source in timecheck's own wrong-stamp form ("typed 10:12 PM", meaning unchanged, 6ef8de7b): PASS after (437 commits, 281 stamps) |
-| kbdcheck | PENDING |
-| buildcheck (ALONE) | PENDING (alone) |
-| every list --check (12) | PENDING: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-7, 1-8, 1-9, 2-1, 2-2 PASS so far; 1-6, 2-4 running |
+| kbdcheck | PASS (129 s, alone; its planted keep-in-view check goes red as it must; re-run after a container restart cut the first run at about 2:30 PM; the keyboard screenshots restored with git checkout both times, never committed) |
+| buildcheck (ALONE) | PASS (alone; 1-1 at CPU x4: Normal p50 45 / p95 98 / max 106 ms, Easy p95 57 ms; budget p95 <= 150 ms) |
+| every list --check (12) | PASS 12/12: 1-1 (161 seeds), 1-2, 1-3, 1-4, 1-5 (150), 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4 (100 each), each clean on both settings |
 | CI tool line, exactly gates.yml | PASS: 319 tests / 318 pass / 0 fail / 1 todo (the chase-bots todo) |
 | tierBots.test | PASS 9/9 |
 | coveragecheck | PASS |
@@ -41,9 +41,9 @@ calibration-main.jsonl (210 lines): nothing to recommit; tierBots.test PASS on t
 | paintcheck 0/3, 1/3, 2/3 | PASS each: 34 stages per part; 1,714 / 2,028 / 1,760 builds; 0 new ids |
 | funcheck vs base | FAIL: 22 worse/new, all inherited, ruled by the lead 1:38 PM (table below); funknown.json lowered only (104 -> 77) |
 | lockall vs main 6e7b85f8 --intended (20) | PASS: 82/102 unchanged; moved = exactly 1-1,1-6,1-7,1-8,1-9,2-1,2-2,2-4,3-6,3-7,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 |
-| castBots 1-40 x 5 bots x both | PENDING: 1-1, 1-6, 1-8 done (table); 1-9, 2-4 running |
-| test link file count | PENDING |
-| npm run build:store | PENDING |
+| castBots 1-40 x 5 bots x both | PASS: child/middle/expert 40/40 both on 1-8, 1-9, 2-4; 1-1 child N 35/40 and 1-6 child N 39/40, every miss traced to the committed runs (table) |
+| test link file count | PASS: 478 files (the tool refuses over 480; the artifact holds 511), python3 tools/testlink/build.py in a scratch worktree of 453b69c2 |
+| npm run build:store | PASS ("Store build check passed: dist has no tracking, ads, collector, service worker or outside addresses") |
 
 **castBots (tier bots; kid/adult first-timers in the logs), final code head:**
 | stage | child N | child E | middle N | middle E | expert N | misses traced |
@@ -51,8 +51,8 @@ calibration-main.jsonl (210 lines): nothing to recommit; tierBots.test PASS on t
 | 1-1 | 35/40 | 40/40 | 40/40 | 40/40 | 40/40 | child N: 5 "shrine rescued x1" on seeds 1,5,7,12,33 = exactly the committed calibration's child-Normal rescues (calibration-main.jsonl): inherited, by design (BOTS.md) |
 | 1-6 | 39/40 | 40/40 | 40/40 | 40/40 | 40/40 | child N seed 30 "rescued x1": identical line to ENG-285b's committed cast-1-6.txt (median 483.5 s, lives 9 pit): inherited |
 | 1-8 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
-| 1-9 | PENDING | | | | | |
-| 2-4 | PENDING | | | | | |
+| 1-9 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
+| 2-4 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
 (expert has no Easy tier.) castBots ran on the stages PAINT-292 moved (1-1, 1-6, 1-8) and the late joiners' (1-9, 2-4), as INT-14's hand-over
 named; the other lockall-moved stages were cast on INT-13b's final and are unchanged since (no merge here touched their data).
 
