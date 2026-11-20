@@ -1,0 +1,1 @@
+clip check: every menu screen at 412x915 and 915x412, on a fresh, an old and a finished save
