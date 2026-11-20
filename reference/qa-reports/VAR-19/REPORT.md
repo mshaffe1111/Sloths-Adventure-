@@ -159,3 +159,87 @@ ground; no gap or overhang seen.
   refuse every roll (stair, crook); a rest's last move must sit ~120 px from its end (read-load's 320 px walk-in). Probes str.ts/steps.ts.
 - Unresolved: test 3 (above); funknown not lowered (after VAR-19d's relist); turnover note not rewritten (stopped by the lead).
   My first safe-keeping commit (c60c353f0) carries VAR-19b's Claude-Session link by mistake; every later one carries mine.
+
+## 9. VAR-19d (written 10:04 PM ET 11-19 by `date`; rule 19 into the list's judge, relist, plainWalk's reds traced; files in reference/qa-reports/VAR-19d/). STOPPED at the lead's box (11:15 PM): NOT GREEN
+### 9.1 EXACT NEXT STEP for Friday's member (read 9.1 and 9.2 only)
+1. Head: a10bbf8bc on t-var-19 (base 0b1f9e46; seedlist 1-9 --check PASS, 100 seeds; w1Arc19.test 10/10 + 1 todo).
+2. Open on 1-9, each with the lead's ruling (11-19):
+   (a) R-165.327 (the lead's number): the list judge refuses a layout where a socket predator was re-seated off its designed piece (rule 19
+       generalized, beside listRules.ts lureBreaches), planted on read-bare's L1 boa (RED today: probes/bareboa.ts 1 normal: its flag socket
+       is flag('a') on 'in', the lay put the flag on 'b' at x 19736 beside the boa's socket (b at 0.55), and the boa sits 380 px back on s1
+       at 19281, 65 px past the step's top). Relist. The placer root stays R-165.312 (the todo test at the end of w1Arc19.test.ts).
+   (b) R-165.328: the hunters' eagle strikes past its rounds' end (L1 rounds 22273..23502, it struck him at 23518 standing in the exit gap
+       at 23502; L2/L3 the same, 23802/23812). Check 1-7's eagle kit (its rounds / passAt): if the rounds bound where it may strike, an engine
+       fix + plant; if a dive may by design carry past, cite the line and move the hunters' exit step out of its reach in data.
+   (c) funcheck repeat on 1-9 Normal 2 of 16 (VAR-19c 1; L3, L10 "jJJj" x4 at x 6762, stair -> rest-wall), Easy 1 of 16. Shapes tried
+       for rest-stair (bough 200/260/320 x boulder 0/0.5/1, --count 16): Normal 3-4 on each (16-seed lists), 2 on the 100-seed list.
+       Vary the move in the sections that make it (str.ts per section), never by a rule change. funknown 1-9 was lowered tonight to
+       repeat 1/1 on e8e4684d0, so funcheck FAILS "worse" on 1-9 repeat until (c) is fixed (do NOT raise the entry: law 22).
+3. Then plainWalk.test.ts "one-jump steps" (it fails on (a) and (b) only now: probes/replay.ts 1-9 1..3 logs each failure's cause), the
+   suite in 3 background shards, castBots 1-9 1-40 x 5 bots x both, the full CLAUDE.md list, coveragecheck, registrycheck, every list
+   --check, lockall vs 0b1f9e46 (lock-base) --intended 1-9, FUNCHECK_WRITE=1 for 1-9 only on the final head, then the opening clip (Normal,
+   upright, 3 s) and cropped stills of one rest of each kind (stills19c.mjs, tap Dot's card ON .dg-bub). Rule 29: shots last, on the green head.
+### 9.2 What was done (each RED planted, then GREEN)
+- **Rule 19 into the list's judge:** tools/engine/listRules.ts `lureBreaches` = the engine's own lureLay.ts `lureFaults` (it had no caller
+  outside its tests) on the stage as played, in `listJudge` (no slot: the roll is rerolled) and `asPlayedBreaches` (--check). Planted in
+  tools/engine/seedlist.test.ts ('a lure post as played works on an animal that fears it'): every boa in a post's reach stood 600 px back;
+  RED with the judge's rule off ("normal: the judge", plant-rule19-judge-off.txt), GREEN on (plant-rule19-judge-on.txt). Probe lureall.ts over
+  EVERY listed stage: only 1-9 lays lure posts; it fired on exactly the 2 known bad builds (listed seed 1, both settings); no other stage moves.
+  6 fresh seeds kept 6/6 (seed 1 rerolled 3 times to a clean roll, probes/judged.ts). roostlist 0/100 both settings.
+- **w1Arc19.test lays the listed layouts as Play does** (the lead's ruling A): built() = buildPlayStage on provenSeeds + playFinish (was raw
+  seeds 1-4 with no judge, so the raw roll the list refuses kept test 3 red whatever the list held). The raw defect stays visible: todo test
+  'R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer)' (red today, so todo).
+- **plainWalk.test.ts 'one-jump steps' was red on 1-9 (10 lines), identical on 0b1f9e46 (the suite never ran on VAR-19/19b/19c); green on
+  INT-12 ce4ad461 and on main** (main has no w1Arc19.ts). Bisect: VAR-19 a1cf0c8e6 red (a 56 px step, later gone), VAR-19b 837269b5f red
+  (the hunters' 'out'), VAR-19c adds read-bare s1 and the rest-stair. probes/replay.ts (the test replayed verbatim on one sim, each failure's
+  cause logged) found: rest-stair = a real death (from the 21 px slot under k2's face he fell through to y 1139); the hunters' 'out' and
+  read-bare's s1 = an eagle's and a boa's hits on the lean-away flick (the plain flick before woke them), NOT the geometry; probes/flick.ts:
+  every lean-away flick there climbs in isolation.
+- **rest-stair fixed at the source:** k2 at the bough's far end, flush with u (down onto the bough, up the boulder, walk on). Centred on a
+  320 px bough Easy's landing softener (easyMode.ts easyHoldSoften ~162: it widens a landing toward where he jumps from by min(gap-4,
+  gap-room+6), so over a walkable pocket it leaves ~37 px whatever the data's gap) grew k2 back into a 37 px notch; flush leaves none. Planted
+  in w1Arc19.test.ts ('the boulder stair's second boulder leaves its bough flush or at least Pokey's width each side', Pokey = the engine's
+  44 px): RED on the old data ("21 px of bough left of the boulder, 30 px right"), GREEN now, both settings.
+- **Reverted (not needed, by the replay):** a walk-off for the hunters' 'out' and a walked join for read-bare (the lead's first ruling read
+  them as geometry); both moved the hits, fixed nothing. Their planted test removed with them.
+- **'each rest laid once' plant** (w1Arc19.test test 2, UNRUN since VAR-19b): plant-rest-once.sh (link()'s maxPerStage 1 -> 5 AND the list
+  rebuilt, since the test reads the list): RED "each rest laid once (... rest-crook ... rest-crook)", restored clean.
+- **BUILD-19's 10 planted faults:** 10/10 CAUGHT. Its golden-seed plant was stale since VAR-19c's rests (each of the five carries the seed):
+  it now takes the seed out of all five (the script takes several edits a fault).
+- **funknown 1-9 lowered** on e8e4684d0 (4 lowered, 10 deleted; every other stage's entries as they were; knowncheck PASS). Superseded by
+  (c): the rest-stair fix after it raised 1-9 repeat.
+- **Suite** (3 shards on e8e4684d0, before the rest-stair fix): 3844 tests, 2 fail, 3 todo: seeds.test 6-1 seed 69793 (inherited: same red on
+  0b1f9e46; t-int-13 carries ENG-285b's re-curation, the lead) and plainWalk one-jump (above). NOT re-run on the final head: UNRUN.
+- **lockall:** vs main --intended 1-9: 14 other stages move (1-6, 1-7, 1-8, 2-1, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5): the 125
+  commits t-var-19 carries over main, not this work: 0b1f9e46 vs e8e4684d0 --intended 1-9 = 102/102 unchanged (lockall builds raw rolls).
+- UNRUN tonight (name them): castBots (started, stopped when the data moved), the CLAUDE.md list after the suite, coveragecheck,
+  registrycheck, every other list --check, stills, the clip. paintcheck: no tool by that name; by hand: nothing code-drawn added (the only
+  data change is k2's place; the boulders stay protoArt isPaintedRock moss_stone).
+### 9.3 Numbers on a10bbf8bc
+- List: 100 proven of 101 tried; quiet line longest 2.8 s, median 2.6 s; seedlist 1-9 --check PASS (verdicts refuse 0 of 100).
+- w1Arc19.test: 9 pass + 1 todo (R-165.312). roostlist 1-100: 0 out of reach, both settings. lureall 1-9: 0 of 200 builds faulted.
+- Dead walk (VAR-19b seams.ts) 0 rows on Normal and Easy. Repeat (str.ts / funcheck): Normal 2 of 16 (L3, L10: "jJJj" x4 at x 6762, in
+  stair -> rest-wall, sections this work did not touch: the relist reshuffles which rolls are listed), Easy 1 of 16.
+- funcheck (funcheck-final-shape.txt): 1-9 "repeat" Normal worse (2 vs known 1); every other 1-9 line clean; the 22-23 worse/new lines
+  on 1-1..1-6 are identical to VAR-19c's run on 8e1d33126 (inherited).
+- plainWalk one-jump via probes/replay.ts 1-9 1..3: only (a) read-bare's boa (L1 x 19193) and (b) the hunters' eagle (L1-L3 'out').
+### 9.4 Polish check
+- No stills or clip tonight (rule 29: the bots are not green; the layout still moves). Rough spots, named: 1-9 repeat Normal 3 / Easy
+  1 of 16; read-bare's boa on s1's lip (a); the hunters' eagle past its rounds (b). Dot's kit-tip cards over the ground mid-screen
+  sideways: R-165.316 (the card placer), not this work.
+### 9.5 Learned, method update, lessons applied, misses
+- Learned: (1) a test that plays every face on ONE sim carries the cast's state from face to face: replay it with causes logged before
+  reading a red as geometry (probes/replay.ts); (2) Easy's landing softener re-narrows any walkable pocket to ~37 px: flush or none;
+  (3) when a list's judge changes, a test that lays RAW seeds keeps reading rolls the list refuses: tests read the listed layouts (D19).
+- Proposed level.md rule (World 1 notes): "a block on a bough sits flush with an end or leaves at least Pokey's width (44 px) each side,
+  on Easy too (easyHoldSoften widens toward the jump)", check: w1Arc19.test 'the boulder stair'. Proposed for the roadmap: plainWalk's
+  one-jump test runs on Easy too (it plays Normal only, so Easy's softener-made notches are judged by nothing: probes/notches.ts found
+  1-1/1-2/1-8 Easy pockets 32-40 px, uncalibrated, not gated).
+- Method update: probes notches.ts / replay.ts / flick.ts / where.ts / bareboa.ts / lureall.ts / judged.ts (VAR-19d/probes).
+- Lessons applied: D19 (tests and judges read what Play builds), D46/law 22 (no rule loosened; the raw defect kept as a todo; repeat not
+  raised), D57 (notifications read at pushes), D59 (no background run left), D86 (the full list named, UNRUN named), D90 (lean reads,
+  output to files), "prove a change is needed; revert what isn't" (the hunters/read-bare reverts), D15 (the notch probe's threshold
+  checked against shipped stages before gating it: not gated).
+- MISSES (own them): D30 broken: three messages to the lead carried hand-typed times ahead of the clock (9:55, 10:09, 10:12 PM; delivered
+  9:48, 9:55, 9:56 PM). No committed file carries a typed time. I also first read the hunters/read-bare reds as geometry and changed data
+  before replaying the test: one wasted relist.
