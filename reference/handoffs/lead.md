@@ -87,6 +87,26 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
+## RIGHT NOW (11-19 evening, refreshed 7:50 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
+
+**Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u). **Matt's test link (EnK5):** still
+v262 (t-int-12 ce4ad461); link #2 waits for INT-13b's final hash (build in scratchpad/link4, `python3 tools/testlink/build.py "<note>"`, Artifact to EnK5, then `build.py --published`).
+**Matt decided 11-19:** make up ground; plan ahead, not react; designs two stages ahead, ideas for all (MAP-REFRESH of all 100 CANCELLED: agents on the next levels);
+3-2 hang = A (reuse 1-3's rope creep on roof roots); reuse art across worlds where it makes sense; every object mapped to the worlds it fits and how
+(CATALOG-MASTER.csv `worlds` column; STAGE-RULES §4, R-165.318). 2-hour levels: not there yet (2-4 took about 9 h across 3 builders; LEVEL-LOG).
+**World 3 is fully designed** (picks: reference/design/PICKS-29-32.md, PICKS-33-35.md, PICKS-36-39.md; WORLD-3-PLAN on t-plan-w3 09ba018c; finals
+t-design-31-32 98a419dd, t-design-33-35 5d857054, t-design-36-39 50e066ec; lines t-keeper-3x 5b63cd8c). Builds: 3-1 Tue 12-1, 3-2 Wed 12-2, 3-3..3-5 from Fri 12-4, 3-6..3-9 from Tue 12-8.
+**Running now (cap 4):** INT-13b (session_01FhBbYJdBoPXCLaKbimQmA6, xhigh): merged head 4529d5e6 (breath aim skips bite stones), drawcheck PASS,
+suite + streams running -> stills, REPORT, final hash (~9 PM) -> test link #2. ENG-NOISE (session_01FhBbYKUvjsSLVDnyUBjhKm): plants green, gates running,
+t-eng-noise 015e4209. ENG-PROWL (session_01FhBbYK49EaZf4QqRWCy7kX): sight.up + leap (lit = seen waits for ENG-DARK). ENG-SMALL3
+(session_01FhBbYLQrwAzHPtBaSAofUX): R-165.319 + .321 done (ca206de5), R-165.317 (tierBots all 200 runs) next. If INT-13b stops before its hash: INT-13c (integration tag, xhigh).
+**Check-ins:** #12 due by 8:08 PM (trig_01LTWwxScz44dEuJaMRuuNZe); FIRST step = real context per member (last assistant usage). Wrap by 11:15 PM.
+**FRIDAY 11-20 start:** trigger trig_018TmBom1EwGGSK9azWvZk8a (8:20 AM): ENG-24e, ENG-25c, BUILD-25, VAR-19d at 8:30, then BUILD-24f, W3-ART-1 (HF env),
+ENG-W3a, ENG-DARK, ENG-27, ART-27 (HF env). INT-14 (release 1) merges t-paint-292 05cebafa, t-var-19 (after VAR-19d), t-eng-noise, t-eng-prowl,
+t-eng-small3, ENG-24e and the rest of the release-1 list (W1 updates + 2-2 pads + 2-4 + 2-5 (+2-3 if green)).
+**Ask Matt (one at a time, at the wrap):** the five new World 3 journal cards (Glowworms, Moonflowers, Thorn Vines, Glow Caps, Ferns) change the
+Naturalist count; creatureLore says "jaguars of the cascades" but the jaguar is first met in 3-7 (grotto). Still owed by Matt: sideways frame plants (A/B/C), 2-3 HUD faces.
+
 ## RIGHT NOW (11-18 nightly wrap, 10:01 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
 **Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u). **Matt's test link (EnK5):**
