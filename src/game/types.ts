@@ -315,6 +315,9 @@ export interface Platform {
   /** a creaking limb (1-4 on, the mixer's creaky boughs; World 1's own branch art): seconds it holds once stepped on (instead of the usual
    *  1.1); unlike crumbleAfter it keeps the branch's look (the notch and the shake), not World 7's tiles */
   creak?: number;
+  /** QUIET ground (moss; ENG-NOISE, 3-5.md): a landing on it makes no noise however far he fell (heroNoise.ts landingNoise reads it).
+   *  Play only: its look is the piece's own art, never this field (World 1's 'moss_stone' style is a look, and it is not quiet) */
+  quiet?: boolean;
   /** drawn as bare bark: the branch picture without its bromeliad and moss (draw only) */
   bare?: boolean;
   /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */

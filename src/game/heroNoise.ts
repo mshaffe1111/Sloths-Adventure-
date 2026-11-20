@@ -36,9 +36,13 @@ export interface Sound {
   from: 'landing' | 'punch' | 'break' | 'drum' | 'thrown' | 'bell';
 }
 
-/** the noise of a landing after a fall of `fell` px, or null when it was soft */
-export function landingNoise(x: number, y: number, t: number, fell: number): Sound | null {
+/**
+ * the noise of a landing after a fall of `fell` px onto `ground` (the platform he landed on), or null when it was soft or the ground
+ * is quiet (Platform.quiet: moss takes any fall without a sound, ENG-NOISE)
+ */
+export function landingNoise(x: number, y: number, t: number, fell: number, ground?: { quiet?: boolean } | null): Sound | null {
   const L = LOUD.landing;
+  if (ground?.quiet) return null;
   return fell > L.soft ? { x, y, t, r: Math.min(L.max, L.min + (fell - L.soft) * L.perPx), from: 'landing' } : null;
 }
 export const punchNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.punch.r, from: 'punch' });
