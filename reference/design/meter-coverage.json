@@ -318,11 +318,12 @@
    ]
   },
   "creature:turtle": {
-   "bot": null,
-   "channel": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.snapperPlan",
+   "channel": "tools/difficulty/score.ts#creatureBits",
    "rows": [
     "4"
-   ]
+   ],
+   "note": "2-5's snappers (World 2's kit TURTLE on a snap row's clock, w2Cast.ts): played by the cast bots' snapper plan (ENG-SNAP: the bonk after the snap; the child and kid let it snap, then kick in its recovery); priced as every cast creature's 'C' beat is, creatureBits(its tell, Easy x1.3) (score.ts, the beat loop). BUILD-25c 11-20. Whether the rhythm (near, back off, kick in the 0.75 s recovery) needs its own channel is the meter's call, not tuned here (Matt 11-18)"
   },
   "line:follow": {
    "bot": "tools/inspect/firsttimer.ts#LINE_SKILL",
