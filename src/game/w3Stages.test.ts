@@ -160,6 +160,21 @@ test("3-6: Grandma's things hidden in ferns, more than it asks for, each one in 
   }
 });
 
+test("3-6, 3-7 (planted, R-165.321): a hunt's finds name different things of Grandma's, none twice before every name is used", () => {
+  // (the name was picked by the stage's shared collectible counter, so a hunt named the same thing twice in its first four finds; it is
+  // picked by the things placed. A hunt lays more finds than it has names (3-6: 8-15 over its list), so the names then come round again
+  // in the same order)
+  for (const id of ['3-6', '3-7'] as const) {
+    const rolls = SEEDS.flatMap((s) => [false, true].map((easy) => ({ s, easy, names: buildProtoStage(cfg(id), s, id, easy).collectibles.filter((c) => c.type === 'relic').sort((a, b) => a.id - b.id).map((c) => c.thing!) })));
+    const list = new Set(rolls.flatMap((r) => r.names)).size;
+    for (const { s, easy, names } of rolls) {
+      const k = Math.min(names.length, list);
+      assert.equal(new Set(names.slice(0, k)).size, k, `${id} seed ${s}${easy ? ' Easy' : ''}: ${names.join(' / ')}`);
+      for (let i = k; i < names.length; i++) assert.equal(names[i], names[i - k], `${id} seed ${s}${easy ? ' Easy' : ''}: find ${i + 1} out of turn: ${names.join(' / ')}`);
+    }
+  }
+});
+
 test('3-2 holds World 3\'s note in plain sight', () => {
   for (const s of SEEDS.slice(0, 6)) {
     const st = buildProtoStage(cfg('3-2'), s, '3-2');

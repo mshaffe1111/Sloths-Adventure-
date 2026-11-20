@@ -2541,10 +2541,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   // (3-7's things are others of hers: Dot hid a great many things)
   const THINGS = plan === '3-7' ? ['teacup', 'spectacles', 'thimble', 'ball of wool', 'seed pouch'] : ['locket', 'rattle', 'teddy bear', 'bell'];
   let thingsPlaced = 0;
-  /** one of Grandma's things in a fern at px on the surface: crouch beside it to find it (engine.ts, a hidden relic) */
+  /** one of Grandma's things in a fern at px on the surface: crouch beside it to find it (engine.ts, a hidden relic). Its name is the
+   *  next of THINGS by the things placed, never by the shared collectible id (R-165.321: that named the same thing twice in a hunt) */
   const thingFern = (px: number, surface: number) => {
     const id = cid++;
-    C.push({ id, type: 'relic', hidden: true, x: Math.round(px), y: surface - 26, collected: false, bobPhase: 0, thing: THINGS[id % THINGS.length] });
+    C.push({ id, type: 'relic', hidden: true, x: Math.round(px), y: surface - 26, collected: false, bobPhase: 0, thing: THINGS[thingsPlaced % THINGS.length] });
     thingsPlaced++;
     // nothing else in the fern: a flower there would hide it (and give it away)
     for (let i = C.length - 2; i >= 0; i--) if (C[i].type === 'flower' && Math.abs(C[i].x - px) < 90 && Math.abs(C[i].y - (surface - 26)) < 90) C.splice(i, 1);
