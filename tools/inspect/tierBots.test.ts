@@ -5,14 +5,16 @@
  *      (reference/qa-reports/R-165.59/BOTS.md has the table).
  *   2. The calibration: the committed runs (reference/qa-reports/R-165.59/calibration-main.jsonl, the current 1-1, variants 1-40; the
  *      runs the bots were calibrated on, 0.9.5's 1-1, are calibration-0.9.5.jsonl: recommitted by INT-1-1 for C1's re-lay) re-judged
- *      give the committed table, and a short replay of three variants per tier and setting gives exactly the committed lines, so a change
- *      to the bots, the engine or the stage that moves a run is caught here.
- *   npx tsx --test tools/inspect/tierBots.test.ts   (about 40 s)
+ *      give the committed table, and EVERY committed run (5 tiers and settings x variants 1-40: 200) replays exactly as committed, so a
+ *      change to the bots, the engine or the stage that moves any run is caught here (R-165.317: a replay of three variants a tier missed
+ *      child Easy variant 25's move on t-build-24c).
+ *   npx tsx --test tools/inspect/tierBots.test.ts   (all 200 runs: minutes, timed in gates.yml)
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { FT_ADULT, FT_KID, type FirstTimer, type Q5 } from './firsttimer.ts';
 import { BOTS, calibrate, loadProfile, runTier, type Calibration, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
@@ -91,12 +93,44 @@ test('the committed calibration runs, judged again, give the committed table', (
   }
 });
 
-test('three variants a tier and setting replay exactly as committed', () => {
-  for (const c of table) {
-    for (const v of [1, 2, 3]) {
-      const want = runs.find((r) => r.tier === c.tier && r.setting === c.setting && r.variant === v);
-      assert.ok(want, `${c.tier} ${c.setting} variant ${v} committed`);
-      assert.deepEqual(runTier(c.tier, c.setting, v), want, `${c.tier} ${c.setting} variant ${v}`);
-    }
+/** every committed run that replays differently, each named with the fields that moved; `replay` is called once for every committed run */
+function movedRuns(committed: readonly TierRun[], replay: (tier: Tier, setting: Setting, variant: number) => TierRun): string[] {
+  const out: string[] = [];
+  for (const want of committed) {
+    const got = replay(want.tier, want.setting, want.variant) as unknown as Record<string, unknown>;
+    const w = want as unknown as Record<string, unknown>;
+    const fields = [...new Set([...Object.keys(w), ...Object.keys(got)])].filter((k) => !isDeepStrictEqual(w[k], got[k]));
+    if (fields.length) out.push(`${want.tier} ${want.setting} variant ${want.variant}: ${fields.map((k) => `${k} ${JSON.stringify(w[k])} -> ${JSON.stringify(got[k])}`).join(', ')}`);
   }
+  return out;
+}
+
+test('every tier and setting in the table has its 40 variants committed, once each', () => {
+  for (const c of table) {
+    const vs = runs.filter((r) => r.tier === c.tier && r.setting === c.setting).map((r) => r.variant).sort((a, b) => a - b);
+    assert.deepEqual(vs, Array.from({ length: 40 }, (_, i) => i + 1), `${c.tier} ${c.setting}`);
+  }
+  assert.equal(runs.length, table.length * 40);
+});
+
+test('the replay check (planted, R-165.317): one moved run among 200, outside the first three variants, is named, and every run is replayed', () => {
+  // (BUILD-24c's case: child Easy variant 25 finished 303.6 s, then 303.5 s; the old replay of variants 1-3 passed it)
+  const asCommitted = (tier: Tier, setting: Setting, variant: number) => structuredClone(runs.find((r) => r.tier === tier && r.setting === setting && r.variant === variant)!);
+  let calls = 0;
+  const count = (tier: Tier, setting: Setting, variant: number) => (calls++, asCommitted(tier, setting, variant));
+  assert.deepEqual(movedRuns(runs, count), []);
+  assert.equal(calls, runs.length, 'every committed run is replayed');
+  const moved = (tier: Tier, setting: Setting, variant: number) => {
+    const r = asCommitted(tier, setting, variant) as unknown as Record<string, unknown>;
+    if (tier === 'child' && setting === 'easy' && variant === 25) r.finishSeconds = (r.finishSeconds as number) - 0.1;
+    return r as unknown as TierRun;
+  };
+  const named = movedRuns(runs, moved);
+  assert.equal(named.length, 1, named.join('; '));
+  assert.match(named[0], /^child easy variant 25: finishSeconds \d+(\.\d+)? -> \d+(\.\d+)?$/);
+});
+
+test('every committed run (all 200) replays exactly as committed', () => {
+  const moved = movedRuns(runs, runTier);
+  assert.deepEqual(moved, [], `${moved.length} of ${runs.length} runs moved: re-run the calibration and recommit calibration-main.jsonl (BOTS.md)\n${moved.join('\n')}`);
 });
