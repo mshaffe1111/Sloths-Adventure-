@@ -1,0 +1,13 @@
+import '../../../../src/game/headlessDom.ts';
+import { generateAllLevels } from '../../../../src/game/worldsData.ts';
+import { listedStage, playFinish } from '../../../../src/game/gen2/listed.ts';
+import { loadSeedList, provenSeeds, buildPlayStage } from '../../../../src/game/gen2/seedList.ts';
+const [v, d] = [Number(process.argv[2] ?? 1), (process.argv[3] ?? 'normal') as 'normal' | 'easy'];
+const cfg = generateAllLevels().find((c) => c.id === '1-9' && !c.secret)!;
+const row = listedStage('1-9')!;
+await loadSeedList('1-9');
+const raw: any = buildPlayStage(cfg, row.kit(), provenSeeds('1-9')[v - 1], d);
+const q = raw.gen2.sections.find((s: any) => s.template === 'w1-19-read-bare');
+console.log(JSON.stringify(Object.fromEntries(Object.entries(q).map(([k,v]) => [k, typeof v === "object" ? (Array.isArray(v) ? `arr${v.length}` : "obj") : v]))));
+console.log(JSON.stringify(raw.gen2.fills.filter((f: any) => f.section === q.uid)));
+console.log(JSON.stringify(raw.enemies.filter((e: any) => e.x >= q.x0 && e.x < q.x1)));

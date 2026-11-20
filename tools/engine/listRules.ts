@@ -74,12 +74,13 @@ const thrown = (difficulty: 'normal' | 'easy', err: unknown) => `the finish thro
  * roll's finish must not throw (finishThrow: a line with no slot, so the search rolls the stage again, R-165.120), and on Normal the quiet
  * line (quietJudge), measured on the same finish. One finish per setting.
  */
-export function listJudge(cfg: LevelConfig, finish: RollFinish, max: number = QUIET_MAX): NonNullable<BuildRequest['also']> {
+export function listJudge(cfg: LevelConfig, finish: RollFinish, max: number = QUIET_MAX, kit?: () => WorldKit): NonNullable<BuildRequest['also']> {
   return (st, difficulty) => {
     let played: Gen2Stage;
     try { played = finish(structuredClone(st), difficulty); } catch (err) { return [{ line: thrown(difficulty, err) }]; }
-    // (each lure post works on an animal that fears it, on each setting: a line with no slot, so the stage is rolled again; VAR-19d)
-    const lure = lureBreaches(played, difficulty, cfg.worldIndex).map((line) => ({ line }));
+    // (each lure post works on an animal that fears it, on each setting: a line with no slot, so the stage is rolled again; VAR-19d;
+    // and, given the row's kit, each socket predator stands on its designed piece, R-165.327 seatBreaches)
+    const lure = [...lureBreaches(played, difficulty, cfg.worldIndex), ...(kit ? seatBreaches(played, kit(), difficulty) : [])].map((line) => ({ line }));
     // (quietJudge's own rule, on the stage just finished: quietOf with no finish measures the stage it is handed)
     return difficulty !== 'normal' ? lure : [...lure, ...quietLine(st, quietOf(cfg, played), max)];
   };
@@ -95,6 +96,45 @@ export function listJudge(cfg: LevelConfig, finish: RollFinish, max: number = QU
 export function lureBreaches(st: Gen2Stage, difficulty: 'normal' | 'easy', world: number): string[] {
   const s = st as unknown as Parameters<typeof lureFaults>[0] & { proto?: { cast?: Parameters<typeof lureFaults>[0]['cast'] } };
   return lureFaults({ enemies: s.enemies, platforms: s.platforms, cast: s.proto?.cast }, world).map((l) => `a lure (${difficulty}): ${l}`);
+}
+
+/**
+ * Each socket predator as played stands on its designed piece (R-165.327, level.md rule 19 generalized; the lead's ruling 11-19): an
+ * animal in a section whose enemy sockets name its kind (a socket's `allow`: creature ids or tags, the creature's enemy type) stands on a
+ * piece one of those sockets is `on` (the platform tagged `<section>:<piece>`, its middle over the piece's top; judged where the stage as
+ * played still names those pieces). VAR-19d found 1-9's
+ * read-bare boa (socket b1 on 'b') laid 380 px back on 's1' on a listed layout: a rolled flag on 'b' left its socket no patch, and the
+ * node's asked boa was topped up on the section's widest piece instead (pipeline.ts topUp). The placer's own fix is R-165.312.
+ */
+export function seatBreaches(st: Gen2Stage, kit: WorldKit, difficulty: 'normal' | 'easy'): string[] {
+  const M = kit.manifest;
+  const out: string[] = [];
+  const s = st as unknown as { enemies: Array<{ type: string; x: number; y: number; width: number; height: number }>; platforms: Array<{ x: number; y: number; width: number; tag?: string }> };
+  for (const sec of st.gen2?.sections ?? []) {
+    const t = M.sections.find((q) => q.id === sec.template);
+    if (!t) continue;
+    const socks = [...t.sockets, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.sockets ?? []))].filter((k) => k.role === 'enemy');
+    if (!socks.length) continue;
+    // (the enemy types a socket may hold: the creatures its allow names, by id or tag; none named, every creature of the world)
+    const types = (k: (typeof socks)[number]) => new Set(M.creatures.filter((c) => !k.allow?.length || k.allow.includes(c.id) || c.tags?.some((g) => k.allow!.includes(g))).map((c) => c.enemy));
+    for (const e of s.enemies) {
+      const mid = e.x + e.width / 2;
+      if (mid < sec.x0 || mid >= sec.x1) continue;
+      const mine = socks.filter((k) => types(k).has(e.type as never));
+      if (!mine.length) continue;
+      const ons = [...new Set(mine.map((k) => k.on))];
+      // (judged only where every piece its sockets name is still tagged on the stage as played: a finish that re-lays the ground (1-3's
+      // and 1-5's logs) keeps no piece names, so there the rule cannot see a piece and says nothing, rather than guess)
+      if (!ons.every((on) => s.platforms.some((p) => p.tag === `${sec.uid}:${on}`))) continue;
+      // (standing on it: the piece's top inside the animal's height, a little either way: a creature's foot line is its own, footY)
+      const stands = (p: { y: number }) => p.y >= e.y - 8 && p.y <= e.y + e.height + 8;
+      const onIt = ons.some((on) => s.platforms.some((p) => p.tag === `${sec.uid}:${on}` && mid >= p.x && mid <= p.x + p.width && stands(p)));
+      if (onIt) continue;
+      const under = s.platforms.find((p) => p.tag?.startsWith(`${sec.uid}:`) && mid >= p.x && mid <= p.x + p.width && stands(p));
+      out.push(`a predator off its piece (${difficulty}): the ${e.type} at ${Math.round(e.x)} in ${sec.template} stands on ${under ? `'${under.tag!.split(':')[1]}'` : 'no piece of its section'}, its socket${mine.length > 1 ? 's' : ''} ${mine.map((k) => `${k.id} on '${k.on}'`).join(', ')}`);
+    }
+  }
+  return out;
 }
 
 /**
@@ -136,6 +176,7 @@ export function asPlayedBreaches(cfg: LevelConfig, kit: () => WorldKit, seeds: r
     if (q > max) out.push(`${cfg.id} seed ${seed}: ${q} s quiet, over the line ${max} s (the outro excluded)`);
     for (const l of helpRoomBreaches(played, difficulty)) out.push(`${cfg.id} seed ${seed}: ${l}`);
     for (const l of lureBreaches(played, difficulty, cfg.worldIndex)) out.push(`${cfg.id} seed ${seed}: ${l}`);
+    for (const l of seatBreaches(played, kit(), difficulty)) out.push(`${cfg.id} seed ${seed}: ${l}`);
   }
   return out;
 }
