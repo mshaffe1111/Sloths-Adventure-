@@ -44,7 +44,9 @@ Packet: reference/packets/2026-11-20/ENG-ROCK.md (on ccr-ea739a2f-dfcee4). Start
 - before/ and after/: every full-size still (bank-* beside, ontop-* on the rock).
 - 2-5: NOT shot. On this base 2-5 builds no painted rocks (t-build-25 is not on it); its rocks take their looks the same way when it lands.
 
-## Polish check (the lead judged the stills; my own read)
+## Polish check (the lead judged the after-stills at 21af89b4 ACCEPTED, no redo, 1:10 PM ET; my own read below)
+- The lead accepted compare-sideways.jpg and compare-feet-2x-ontop.jpg (the 2x crops of Pokey's feet on each rock). Run 2 changes no pixel:
+  the ids are the same strings, and lockall/drawcheck pass.
 - Footing: on every picture Pokey's feet sit on the painted top at the line the boulder's crown is at today (ontop crops). PASS.
 - rock-b (the lobed one) stretched: no smeared moss tuft, no lobe past the collider (2-1 x5747, 2-4 x4646 ontop crops). PASS, so no
   fallback to s68-23-L.
@@ -55,7 +57,26 @@ Packet: reference/packets/2026-11-20/ENG-ROCK.md (on ccr-ea739a2f-dfcee4). Start
   their kits get a second rock (W3's with W3-ART-1).
 
 ## Gates (on the final list; every line PASS or FAIL)
-GATES_HERE
+Run 2, on 1f1af8bb4 (the final code), 2:21-3:21 PM ET 11-20; each line is the gate's own exit:
+- tsc: PASS (exit 0)
+- lockall vs base 73717be8 (16 layouts): PASS, 102/102 stages unchanged (nothing moves)
+- suite, 4 shards (`--test-shard=i/4`, the CLAUDE.md test list): PASS, 3987 tests / 3984 pass / 0 fail / 3 todo (shards 995/890/981/1121)
+- generalitycheck: PASS (26 literals, 26 known)
+- knowncheck: PASS (artUse.allow.json 210 entries, none added)
+- roadmapcheck: PASS (run after `git fetch --unshallow`)
+- build (BASE_PATH=/Sloths-Adventure-/): PASS
+- chunkcheck: PASS
+- artcheck: PASS
+- paintcheck 0/3, 1/3, 2/3: PASS, PASS, PASS
+- drawcheck: PASS (599 s; 2-1, 2-2, 2-4 upright and sideways each passed)
+
+Run 1, on 21af89b4, FAILED three lines, so run 2 is on the fixed tree. Every other run-1 line passed.
+- suite shard 4: 2 fails, both mine:
+  - inventory.test: the 9 tall-cut rows pointed at reference/...; a row must be src/ or `origin/<branch>:path`. Fix: `origin/t-eng-rock:...`,
+    used_in "none (not placed)", and the census of branch-only cut pieces is 194 -> 203. Those are 9 real new rows; the count is a census, not a known-defect list.
+  - artUse.test: the art-use text check does not read `'w2-rocks#rock-a'` as a use of rock-a ('#' is not a word character in it), so it
+    called the drawn rocks unused. Fix in rockLooks.ts: `pieceId('w2-rocks', 'rock-a')` (the same strings at runtime). The gate is unchanged.
+- roadmapcheck: "shallow clone, proofs cannot be checked". Fix: an environment fix, unshallow the clone first.
 
 ## Method used
 - reference/methods/render-fix.md (a shared drawer: one fix for every stage, stills both ways, the whole-picture check) and
@@ -80,8 +101,14 @@ GATES_HERE
   results that big are saved to disk, not shown, so this costs little context. The bucket refused the forwarded token (403) again.
 - A sandbox job like this one (one start, 9 takes, cut in the sandbox) ran in ~7 billed minutes (~$0.32): one queued script, no waiting.
 
+- tools/art/artuse.mjs: **read a quoted inventory id `'<sheet>#<frame>'` as a use of `<frame>`** (lists like W2_ART name pieces by
+  id; today a piece named only that way reads as unused). This is a gate change, so the lead decides. Until then, write the frame name as its own string.
+- inventory.test: a cut piece kept in reference/ (not shipped) has no row form but `origin/<branch>:path`; a row form for a cut piece kept on main
+  would stop it depending on a work branch.
+
 ## Learned (for the next engine member)
 - A kit frame's NAME is not proof of a picture: diff the cells before planning variety on them.
+- Run the suite before the long gates (or with them): both run-1 fails were seconds-long tests that a 1-hour run found last.
 - Assign looks once at stage start, in x order, so "never the same beside" is a property, not luck; a pure per-id hash cannot promise it.
 
-Final hash: FINAL_HASH
+Final code head: 1f1af8bb4 (every gate above ran on it); this REPORT is the one commit after it (the hash sent to the lead).
