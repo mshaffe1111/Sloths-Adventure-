@@ -70,6 +70,7 @@ Base: t-int-14 from t-int-13 @ d36638be (INT-13b's final). main = 6e7b85f8 (no n
 | 3 | t-eng-prowl @ 33e43c57 | 4d5e0554 | castPlay.ts auto-merged (prey.hanging after prey.covered, beside ENG-NOISE's channel, as the lead's trial); engine-core.md union | PASS | PASS: 306 / 305 / 0 fail / 1 todo |
 | 4 | t-eng-small3 @ 9b1767f9 | acd0046c | engine-core.md union | PASS | PASS: 306 / 305 / 0 fail / 1 todo |
 | 5 | t-eng-25c @ d13ebdaa | bdee80c8 | pipeline.ts auto-merged; engine-core.md top: one "Merged at INT-14" line naming today's sections, the INT-13 line kept word for word | PASS | first run FAIL 1 (seedlist.test 'a listed stage with no list yet': "unable to write file" in its scratch worktree = the disk allowance full, 98%, from my own per-merge worktrees); worktrees removed (19 GB free), seedlist.test alone 8/8, the whole line re-run: PASS 306 / 305 / 0 fail / 1 todo |
+| - | timecheck fix | c44a3b20 | engine-core.md §0zq-25d heading 11:15 -> 11:10 PM ET (commit fb8f56c1's clock), carried in by merge 5; timecheck --range origin/main..HEAD PASS, timecheck PASS | | |
 The 1 todo everywhere: 'chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork' (pre-existing, as INT-13b's).
 
 ## Hold-backs, prepared before the late joiners are decided (side branches, pushed; NOT merged)
