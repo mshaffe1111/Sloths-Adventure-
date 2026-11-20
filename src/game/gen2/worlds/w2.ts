@@ -57,9 +57,9 @@ export const W2_FOLLOW: FollowRow = { pace: { normal: 190, easy: 230 }, gap: 34,
 export const W2_ART = {
   /** the earth bank: its fill, its wall, its end at the water (w2.webp kit frames) */
   bank: ['w2#fill', 'w2#wall', 'w2#bankEnd', 'w2#fill0', 'w2#fill1', 'w2#fill2', 'w2#fill3'],
-  /** a rock to hop on the bank: the kit's boulder and the two painted river stones, each also mirrored, never the same beside
-   *  (rockLooks.ts ROCK_FRAMES, R-165.338; the kit's 'stump' cell is the boulder again, so it is not a second rock) */
-  rock: ['w2#boulder', 'w2-new#stone-a', 'w2-new#stone-b'],
+  /** a rock to hop on the bank: the kit's boulder and two rocks painted from it (w2-rocks.webp), each also mirrored, never the same
+   *  beside (rockLooks.ts ROCK_FRAMES, R-165.338; the kit's 'stump' cell is the boulder again, so it is not a second rock) */
+  rock: ['w2#boulder', 'w2-rocks#rock-a', 'w2-rocks#rock-b'],
   /** the river: the painted water strip and the reeds at a bank's edge (w2-props.webp) */
   water: ['w2-props#water'],
   reeds: ['w2-props#reedTall', 'w2-props#reedShort', 'w2-props#reedLean'],
