@@ -1,6 +1,6 @@
 # ANIM-NEXT report (R-165.349): Pokey's animation needs for 2-6..3-9 + the W2/W3 special stages
 
-Status 4:29 PM ET 11-20: step 1 (needs list) and step 2 (job 1's plan) DONE; WAITING for the lead's go and cap. No HF spend yet.
+Status 4:36 PM ET 11-20: steps 1-2 DONE; lead's GO 4:31 PM (cap $2.50). Sandbox 6b00bc7befaf5e14f4b3e954 created 4:32 PM ET, pulling its image.
 
 ## Done-items
 1. Needs list: reference/art/ANIM-NEEDS.md (21 rows: HAVE / ADAPT / NEW, ranked by first stage). 3 NEW for job 1, 1 low NEW + 2 optional for job 2.
@@ -18,7 +18,8 @@ Status 4:29 PM ET 11-20: step 1 (needs list) and step 2 (job 1's plan) DONE; WAI
 
 ## Pushback
 - None on the packet. Notes: World 2's hidden stage "The Rapids" has no design (WORLD-MAP only): its row is provisional. R-165.178's
-  two-vine climb frames already shipped 11-13 (hero-climb2): nothing owed there. The idle chain (yawn/wave after 4 s) would play
+  two-vine climb shipped: art 2e203b44b (hero-climb2.webp/.json, ART 11-13), wired be0b28c48 (B14b), both on main via PR #71
+  (release-0.9.8, merge 73e7bed03): the row can close. The idle chain (yawn/wave after 4 s) would play
   during a freeze or a long hide in W3 today: the freeze clip's wiring must suppress it (a builder's line, in Suggestions).
 
 ## Suggestions
@@ -26,5 +27,7 @@ Status 4:29 PM ET 11-20: step 1 (needs list) and step 2 (job 1's plan) DONE; WAI
   off the idle chain while it does; `tiptoe` under the quiet line (200 px/s) on stages with a listener; `drowsy-walk` while drowsy.
 
 ## EXACT NEXT STEP
-Wait for the lead's go + cap. On the go: open ONE rtx-pro-6000 sandbox, run pokeygpu.py clips() on spec-anim1.json, pull the 6 zips +
-sheets by hf_sandbox_fs, terminate, log HF-SPEND, make the takes sheet + previews, send the lead the paths.
+Sandbox hfsb2:mshaffe111:6b00bc7befaf5e14f4b3e954 (anim-next1): once running, exec detached `sh anim1.sh 21667c79` (curl
+tools/art/hfpokey/anim1.sh first), poll /w/out for DONE-<name>; per take: `python sbx.py parts /w/out/<name>.zip`, cat each .pN
+(--max-bytes 100000), rebuild with tools/art/hf1113/pull.py into reference/art/anim-next/takes/, commit; after the last take TERMINATE,
+log HF-SPEND; per clip run tools/art/hfpokey/anim1preview.py -> sheet + mp4 to the lead. If the sandbox is gone: check `hf_sandbox status`.
