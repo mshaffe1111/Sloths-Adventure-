@@ -2,20 +2,9 @@
 
 Engine (tools) member, session_01FhBbYMwELLxM66X3iXAadC. Branch t-gate-flake from t-int-13 d36638be. Code head: see "Final head".
 
-## EXACT NEXT STEP (Friday 8:30 AM, a fresh member)
-Stopped clean at the 11:15 PM ET box (11:06 PM by `date`) with the code done and pushed; the proof is 2 of 5 loaded runs (table below). On t-gate-flake at the final
-head (the commit that adds this report section; ls-remote it):
-1. `npm install --no-audit --no-fund --legacy-peer-deps` (this container had no node_modules), then `git checkout package-lock.json`.
-2. The 5-run loaded proof on that one head: start the load (`drawcheck` + suite shards 1/6, 2/6, 3/6, each in a loop: the scripts are
-   copied in this folder as `load.sh` and `proof.sh`), then `N=5 TAG=load proof.sh` (it runs clipcheck then the speed test, 5 times,
-   and stops the load). Expect about 18 min a clipcheck run under this load (load average 20-34 on 4 cores). Then once alone:
-   `node tools/perf/clipcheck.mjs` and `npx tsx --test --test-name-pattern="generating a stage|speed test" src/game/stageQuality.test.ts`.
-   Pass: all 5 clipcheck runs PASS (83 known, 0 new, 0 stale, every 'planted never-opening screen ... FAILED as it must' line), all 5
-   speed runs pass 2/0. Fill the "after" table.
-3. Item 4 of the packet: the CLAUDE.md check list, every item, once, on that head (suite in 6 shards, run_in_background, timeout
-   over 30 min), every line PASS or FAIL. Not started tonight.
-4. Send the lead the hash; ROADMAP rows R-165.215, R-165.245 (done by these commits) and R-165.325 (on the lead's branch) are the
-   lead's to close once 2-3 are green.
+## EXACT NEXT STEP
+None: done by GATE-FLAKE-b on 11-20 (section at the end): 5 of 5 loaded runs and 1 alone run agree (PASS); R-165.330 fixed; the
+CLAUDE.md check list, every item, PASS on the code head 7f05a1c0. The lead closes the ROADMAP rows.
 
 ## What changed and why
 Both gates answered by the wall clock, so a busy box changed the answer (D15: a gate gives the same answer on the same code).
@@ -85,9 +74,14 @@ After, beside drawcheck + suite shards 1/6, 2/6, 3/6 looped (load average 19-34 
 | L1 | f11bc2d4 | every real screen opened; 83 known seen, 0 new, 0 stale. FAIL only on the planted never-opening screen's own rule (it failed by the frame cap, not as "went still": the title keeps fetching under load), fixed in 3858372a | 1,066 s | pass 2/0 |
 | L2 | 3858372a | PASS (83 known, 0 new, 0 stale; the planted never-opening screen FAILED as it must on all 6 walks, by the 600-frame cap: "the page never went still: a request") | 877 s | pass 2/0, CPU p90 87 ms, max 207 |
 | L3 | 3858372a | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 806 s | pass 2/0, CPU p90 102 ms, max 241 |
+| L4 | 7ae0b8a6 (code = 3858372a) | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 770 s | pass 2/0, CPU p90 103 ms, max 215 |
+| L5 | 7ae0b8a6 (code = 3858372a) | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 804 s | pass 2/0, CPU p90 97 ms, max 189 |
+| L6 | 7ae0b8a6 (code = 3858372a) | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 831 s | pass 2/0, CPU p90 90 ms, max 209 |
+| alone | 7ae0b8a6 (code = 3858372a) | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 372 s | pass 2/0, CPU p90 84 ms, max 200 |
 
-So far on 3858372a: 2 of 2 loaded clipcheck runs and 2 of 2 loaded speed runs agree (PASS), against 2 of 2 loaded clipcheck FAILs and
-1 speed FAIL on 11-19's heads. Owed (next step 2): 3 more loaded runs and 1 alone run on one head.
+On 3858372a's code: 5 of 5 loaded clipcheck runs and 5 of 5 loaded speed runs agree (PASS; L2-L6), and so does the run alone, against
+2 of 2 loaded clipcheck FAILs and 1 speed FAIL on 11-19's heads. (L4-L6 and alone by GATE-FLAKE-b, 10:57-11:46 AM ET 11-20, load.sh +
+proof.sh from this folder, load average 19-34 on 4 cores; the alone run started at load average 6.7 falling, nothing else running.)
 
 Quiet runs of the new waits on the way: f11bc2d4 quiet found two real step bugs (Pause on the fresh save; the testers' second tap),
 fixed and step-checked (`CLIPCHECK_STEPS=pause`: 3 walks PASS, the Pause card judged, still checked by eye; `testers link, help offer,
@@ -98,7 +92,7 @@ Dot's first tip, stories`: 2 walks PASS).
 |---|---|---|
 | `npx tsc --noEmit -p .` | 3858372a | PASS |
 | stageQuality speed tests (2) | 3858372a | PASS (loaded, above) |
-| the rest of the CLAUDE.md list | - | NOT RUN tonight (next step 3) |
+| the whole CLAUDE.md list | 7f05a1c0 | PASS, every line: GATE-FLAKE-b's gate table below |
 
 ## Learned
 - A wait on "the page is still" must count the browser's requests itself, and a request of the page before a `goto` never ends in
@@ -111,3 +105,63 @@ Dot's first tip, stories`: 2 walks PASS).
   fixed tool" (the before runs are the 11-19 failures plus a quiet base run), the D30 time rule (every time here from `date`).
 - Method update (proposed, gates.md): "Adding a new check" gets a line: no fixed sleep or wall timeout as a verdict; wait on the page's
   or the code's own state, and plant the failure the wait must still catch.
+
+## GATE-FLAKE-b (11-20, Engine tools, session_01FhBbYMA7DNVEhaSwSaWGKz)
+Packet: reference/packets/2026-11-20/GATE-FLAKE-b.md. Base t-gate-flake 7ae0b8a6. Code head **7f05a1c0** (every gate below ran on it);
+the final head adds only this report.
+
+**1. The proof** (table above, L4-L6 and alone): 3 more loaded runs, all PASS; with L2-L3, 5 of 5 loaded runs on one code agree, and
+the alone run agrees. Each clipcheck run: 83 known seen, 0 new, 0 stale, and the planted never-opening screen 'FAILED as it must' on
+6 of 6 walks. Each speed run: 2 pass / 0 fail, thread CPU p90 84-103 ms (bar 500).
+
+**2. R-165.330, paintcheck passed having checked nothing.** Root cause: `--part i/n` is 0-based (a stage is in part index mod n), but
+nothing refused an index out of range, so `--part 3/3` (ENG-25d's "part 3 of 3") selected no stage, built 0 and printed PASS; a
+`--stages` id that is no stage did the same. Fix (tools/engine/paintcheck.ts): a part out of range FAILS at once (`--part 3/3 is not a
+part: parts are 0-based, 0/3 .. 2/3`); a run with 0 builds, any stage with 0 builds (`EMPTY: <id> had 0 builds`) or a `--stages` id
+that is no stage FAILS (`paintcheck: FAIL, checked nothing`); every run prints the stage count of every part (`stages per part 0/3: 34,
+1/3: 34, 2/3: 34`) and its own builds. The split itself was already even (index mod 3: 34/34/34), so no rebalance.
+Planted: tools/engine/paintcheck.test.ts (3 cases: `--part 3/3`; `--stages no-such-stage`; an unlisted stage on `--layouts 0`): on the
+old paintcheck **3 of 3 RED** (each PASSED on nothing, exit 0), on 7f05a1c0 **3 of 3 GREEN**. It is on gates.yml's tool test line (the
+ciTests guard passes 4/0); gates.yml's paintcheck comment and gates.md row 8c say what changed. Real parts on 7f05a1c0: 0/3 1,714
+builds, 1/3 2,028, 2/3 1,760, each PASS.
+
+**3. Gate table, code head 7f05a1c0** (11:46 AM - 1:00 PM ET by `date`; one script, nothing else running):
+
+| gate | result |
+|---|---|
+| `npx tsc --noEmit -p .` | PASS |
+| suite, 6 shards (1-3 then 4-6, 3 at a time) | PASS: 3,936 tests / 3,934 pass / 0 fail / 2 todo (the two boulder-wall todos, as before) |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS |
+| chunkcheck | PASS |
+| artcheck | PASS |
+| drawcheck | PASS (654 s) |
+| clipcheck | PASS (83 known, 0 new, 0 stale; plant failed as it must 6/6) (403 s) |
+| knowncheck | PASS |
+| generalitycheck | PASS |
+| roadmapcheck | PASS (the first try FAILED "shallow clone, proofs cannot be checked": this container's clone was shallow; after `git fetch --unshallow` it PASSES, same head) |
+| kbdcheck | PASS |
+| buildcheck | PASS |
+| `seedlist.ts 1-1 --check` | PASS (161 seeds) |
+| tool tests (gates.yml's whole tool line, incl. paintcheck.test.ts) | PASS: 308 tests / 307 pass / 0 fail / 1 todo |
+| tierBots | PASS: 7 / 7 / 0 / 0 |
+| paintcheck `--part 0/3`, `1/3`, `2/3` | PASS, PASS, PASS (1,714 / 2,028 / 1,760 builds) |
+
+Not run here (CI-only, not on the CLAUDE.md list, untouched by this work): coveragecheck, timecheck, tipwalk, registrycheck, every
+proven seed list by shard. kbdcheck rewrites its committed screenshots (reference/qa/tester-page-1106/keyboard/) when it runs; put back
+with `git checkout`, not committed.
+
+**Closes (when the lead agrees): R-165.215, R-165.245, R-165.325** (5 of 5 loaded + alone agree on one code, every gate PASS) and
+**R-165.330** (planted RED 3/3 -> GREEN 3/3, real parts PASS with builds counted).
+
+Learned
+- A gate's own arguments are input: an index that selects nothing must be refused, not run. "Passed on nothing" is the same lie as a
+  flaky pass; any gate that filters (parts, shards, `--stages`) should fail on an empty selection and print what it selected.
+- The load script leaves orphans when stopped by its flag (each loop finishes its round; drawcheck's vite servers outlive it): kill
+  the loops, chromium and `vite --port` before an alone run, and check with `ps` that nothing is left.
+- roadmapcheck needs full history: in a fresh container `git fetch --unshallow` first, or its FAIL is the clone, not the roadmap.
+- Lessons applied: D15 (a gate gives the same answer on the same code; a gate that checks nothing is not a pass: planted first), the
+  shrink-only / never loosen rule (no bar moved: paintcheck only got stricter), D30 (every time here from `date`), D86/D93 (suite line
+  with shards and counts; every gate PASS or FAIL), ReadNotifications at every push.
+- Method update (proposed, gates.md "Adding a new check"): a gate that takes a part, shard or filter prints what it selected and FAILS
+  on an empty selection (as registrycheck's `--lists --shard` already does), with a planted empty case on the tool line.
+

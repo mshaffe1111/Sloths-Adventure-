@@ -1,0 +1,8 @@
+clip load run 1 exit 0 771 s at 11:10:32 AM : PASS (83 known) (770 s; contact sheet and breaches.json in (scratchpad)/cc-load-1)
+speed load run 1 exit 0 16 s at 11:10:49 AM : # pass 2 # fail 0  speed: thread CPU p90 103 ms, max 215 ms (24 stages)
+clip load run 2 exit 0 805 s at 11:24:14 AM : PASS (83 known) (804 s; contact sheet and breaches.json in (scratchpad)/cc-load-2)
+speed load run 2 exit 0 17 s at 11:24:31 AM : # pass 2 # fail 0  speed: thread CPU p90 97 ms, max 189 ms (24 stages)
+clip load run 3 exit 0 832 s at 11:38:23 AM : PASS (83 known) (831 s; contact sheet and breaches.json in (scratchpad)/cc-load-3)
+speed load run 3 exit 0 15 s at 11:38:38 AM : # pass 2 # fail 0  speed: thread CPU p90 90 ms, max 209 ms (24 stages)
+clip alone run 1 exit 0 373 s at 11:45:59 AM : PASS (83 known) (372 s; contact sheet and breaches.json in (scratchpad)/cc-alone-1)
+speed alone run 1 exit 0 7 s at 11:46:06 AM : # pass 2 # fail 0  speed: thread CPU p90 84 ms, max 200 ms (24 stages)
