@@ -1,0 +1,20 @@
+JJJJLLJJLLjJJjJJjJJjLjjCjJJjBLjJJjjLjJLjJLJjJjEJLJjjjjJEJLjJJJ
+[{"kind":"4-run","run":"jJJj","n":4,"at":[6762,8762,11776,13693]},{"kind":"3-back","run":"jJJ","n":3,"at":[6762]}]
+arrival: J@720 J@1540 J@2540 
+forest-freeze: J@3140 L@3736 L@4397 J@4860 
+?: J@5140 
+stair: L@5700 L@6238 j@6762 J@6957 J@7282 
+rest: j@7782 J@8102 J@8354 j@8762 J@8982 
+miss: J@9364 j@9834 L@9875 j@10576 
+rest-wall: j@11176 C@11516 j@11776 J@11976 
+roost: J@12596 j@13076 B@13139 L@13271 j@13693 
+rest-bounce: J@14719 J@15119 j@15539 
+read-load: j@16439 L@16597 j@17059 J@17479 
+read-roost: L@18217 j@18621 J@18845 
+read-bare: L@19463 J@19827 
+rest-crook: j@20527 J@21287 j@22047 
+hunters: E@22434 J@22667 L@22784 J@23227 j@23647 
+rest-stair: j@24247 j@24621 j@24987 J@25187 
+old-boa: E@25633 J@25789 L@26125 j@26709 
+?: J@26969 
+exit: J@27323 J@27683 

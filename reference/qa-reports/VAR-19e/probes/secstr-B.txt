@@ -1,0 +1,64 @@
+normal L1: arrival:JJJ forest-freeze:JLLJ stair:LLJ rest:jJJjJ miss:JjLj rest-wall:jCjJ roost:JjBLj rest-bounce:JJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-stair:jjjJ old-boa:EJLj exit:JJ
+normal L2: arrival:JJJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJjJ miss:JjLj rest:jJJjJ roost:JjBLj rest-wall:jCJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-stair:jjj old-boa:EJLj exit:JJ
+normal L3: arrival:JJ forest-freeze:JLLJ stair:JLLJ rest-wall:jCjJJ miss:JjLj rest-stair:jjjJ roost:JjBLj rest-bounce:JJjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest:jJJj old-boa:EJLj exit:JJ
+normal L4: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-wall:jCjJJ roost:jBLj rest:jJJjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-stair:jjjJ old-boa:EJLj exit:JJ
+normal L5: arrival:JJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-wall:jCJj roost:JjBLj rest-stair:jjjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest:jJJjJ hunters:EJLJj rest-crook:jjj old-boa:EJLj exit:JJ
+normal L6: arrival:JJJJ forest-freeze:JLLJ stair:LLJ rest-crook:jjj miss:JjLj rest-stair:jjjJ roost:JjBLj rest:jJJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-bounce:JJjJ hunters:EJLJj rest-wall:jCjJ old-boa:EJLj exit:JJ
+normal L7: arrival:JJJ forest-freeze:JLLJ stair:LLJ rest-bounce:JJj miss:JjLj rest-wall:jCjJ roost:JjBLj rest-crook:jjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest:jJJjJ hunters:EJLJj rest-stair:jjjJ old-boa:EJLj exit:JJ
+normal L8: arrival:JJ forest-freeze:JLLJ stair:JLLJ rest-wall:jCJjJ miss:JjLj rest-stair:jjj roost:JjBLj rest-bounce:Jjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest:jJJj old-boa:EJLj exit:JJ
+normal L9: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jjj miss:JjLj rest-wall:jCjJJ roost:JjBLj rest:jJJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-bounce:JJjJ hunters:EJLJj rest-stair:jjj old-boa:EJLj exit:JJ
+normal L10: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest:jJJj roost:JjBLj rest-wall:jCjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-stair:jjj old-boa:EJLj exit:JJ
+normal L11: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest:jJJj roost:JjBLj rest-stair:jjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-wall:jCjJJ old-boa:EJLj exit:JJ
+normal L12: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jjj miss:JjLj rest-wall:jCjJJ roost:JjBLj rest-bounce:JJjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest:jJJjJ hunters:EJLJj rest-stair:jjjJ old-boa:EJLj exit:JJ
+normal L13: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-stair:jjj roost:JjBLj rest-wall:jCJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest:jJJj old-boa:EJLj exit:JJ
+normal L14: arrival:JJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest-wall:jCJj roost:JjBLj rest:jJJj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jjj hunters:EJLJj rest-stair:jjjJ old-boa:EJLj exit:JJ
+normal L15: arrival:JJJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest-wall:jCJj roost:JjBLj rest-stair:jjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest:jJJjJ hunters:EJLJj rest-crook:jjj old-boa:EJLj exit:JJ
+normal L16: arrival:JJJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jjj miss:JjLj rest-bounce:JJj roost:JjBLj rest-wall:jCjJJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest:jJJjJ hunters:EJLJj rest-stair:jjj old-boa:EJLj exit:JJ
+easy L1: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest:jJjjJ miss:JjLj rest-wall:jCjJ roost:JjLj rest-bounce:JJj read-load:jLjJ read-roost:LjJ read-bare:Ljj rest-crook:jJJj hunters:EJLJj rest-stair:JjjJ old-boa:EJLj exit:JJ
+easy L2: arrival:JJjJJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJjJ miss:JjLj rest:jJjjJ roost:JjLj rest-wall:jCJj read-load:jLJJ read-roost:LjJ read-bare:LJ rest-crook:jJJj hunters:EJLJj rest-stair:Jjj old-boa:EJLj exit:JJ
+easy L3: arrival:JjJJ forest-freeze:JLLJ stair:JLLJ rest-wall:jCjJJ miss:JjLj rest-stair:JjjJ roost:JjLj rest-bounce:JJjJ read-load:jLJJ read-roost:Lj read-bare:JLjj rest-crook:jJj hunters:EJLJj rest:jJjj old-boa:EJLj exit:JJ
+easy L4: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-wall:jCjJ roost:JjLj rest:jJjjJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jJj hunters:EJLJj rest-stair:JjjJ old-boa:EJLj exit:JJ
+easy L5: arrival:JjJJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-wall:jCJj roost:JjLj rest-stair:JjjJ read-load:jLJJ read-roost:LjJ read-bare:Ljj rest:jJjjJ hunters:EJLJj rest-crook:jJJj old-boa:EJLj exit:JJ
+easy L6: arrival:JJjJJ forest-freeze:JLLJ stair:LLJ rest-crook:jJJj miss:JjLj rest-stair:JjjJ roost:JjLj rest:jJjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-bounce:JJjJ hunters:EJLJj rest-wall:jCjJ old-boa:EJLj exit:JJ
+easy L7: arrival:JJjJJ forest-freeze:JLLJ stair:LLJ rest-bounce:JJj miss:JjLj rest-wall:jCjJ roost:JjLj rest-crook:jJJj read-load:jLj read-roost:LjJ read-bare:LJ rest:jJjjJ hunters:EJLJj rest-stair:JjjJ old-boa:EJLj exit:JJ
+easy L8: arrival:JjJJ forest-freeze:JLLJ stair:JLLJ rest-wall:jCJjJ miss:JjLj rest-stair:Jjj roost:JjLj rest-bounce:Jjj read-load:jLJJ read-roost:LjJ read-bare:LJ rest-crook:jJj hunters:EJLJj rest:jJjj old-boa:EJLj exit:JJ
+easy L9: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jJj miss:jLj rest-wall:jCjJJ roost:JjLj rest:jJjj read-load:jLjJ read-roost:Lj read-bare:Ljj rest-bounce:JJjJ hunters:EJLJj rest-stair:Jjj old-boa:EJLj exit:JJ
+easy L10: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest:jJjj roost:JjLj rest-wall:jCjJJ read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jJj hunters:EJLJj rest-stair:Jjj old-boa:EJLj exit:JJ
+easy L11: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest:jJjj roost:JjLj rest-stair:Jjj read-load:jLJJ read-roost:LjJ read-bare:LJ rest-crook:jJj hunters:EJLJj rest-wall:jCjJJ old-boa:EJLj exit:JJ
+easy L12: arrival:JJjJJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jJJj miss:jLj rest-wall:jCjJJ roost:JjLj rest-bounce:JJjJ read-load:jLjJ read-roost:LjJ read-bare:Ljj rest:jJjjJ hunters:EJLJj rest-stair:JjjJ old-boa:EJLj exit:JJ
+easy L13: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJjJ miss:jLj rest-stair:Jjj roost:JjLj rest-wall:jCJj read-load:jLjJ read-roost:Lj read-bare:JLJ rest-crook:jJj hunters:EJLJj rest:jJjj old-boa:EJLj exit:JJ
+easy L14: arrival:JJjJJ forest-freeze:JLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest-wall:jCJj roost:JjLj rest:jJjj read-load:jLjJ read-roost:LjJ read-bare:LJ rest-crook:jJj hunters:EJLJj rest-stair:JjjJ old-boa:EJLj exit:JJ
+easy L15: arrival:JJjJJ forest-freeze:JJLLJ stair:JLLJ rest-bounce:JJj miss:JjLj rest-wall:jCJj roost:JjLj rest-stair:Jjj read-load:jLJJ read-roost:LjJ read-bare:LJ rest:jJjjJ hunters:EJLJj rest-crook:jJJj old-boa:EJLj exit:JJ
+easy L16: arrival:JJjJJJ forest-freeze:JLLJ stair:JLLJ rest-crook:jJJj miss:JjLj rest-bounce:JJj roost:JjLj rest-wall:jCjJ read-load:jLJJ read-roost:LjJ read-bare:LJ rest:jJjjJ hunters:EJLJj rest-stair:Jjj old-boa:EJLj exit:JJ
+easy arrival: JJjJJx11 JjJJx3 JJjJJJx2
+easy exit: JJx16
+easy forest-freeze: JLLJx13 JJLLJx3
+easy hunters: EJLJjx16
+easy miss: JjLjx11 jLjx5
+easy old-boa: EJLjx16
+easy read-bare: Ljjx4 LJx10 JLjjx1 JLJx1
+easy read-load: jLjJx8 jLJJx7 jLjx1
+easy read-roost: LjJx13 Ljx3
+easy rest: jJjjJx8 jJjjx8
+easy rest-bounce: JJjx7 JJjJx8 Jjjx1
+easy rest-crook: jJJjx8 jJjx8
+easy rest-stair: JjjJx8 Jjjx8
+easy rest-wall: jCjJx5 jCJjx5 jCjJJx5 jCJjJx1
+easy roost: JjLjx16
+easy stair: JLLJx14 LLJx2
+normal arrival: JJJx11 JJx3 JJJJx2
+normal exit: JJx16
+normal forest-freeze: JLLJx13 JJLLJx3
+normal hunters: EJLJjx16
+normal miss: JjLjx13 jLjx3
+normal old-boa: EJLjx16
+normal read-bare: LJx16
+normal read-load: jLjJx16
+normal read-roost: LjJx16
+normal rest: jJJjJx8 jJJjx8
+normal rest-bounce: JJjx7 JJjJx8 Jjjx1
+normal rest-crook: jjjx16
+normal rest-stair: jjjJx8 jjjx8
+normal rest-wall: jCjJx4 jCJjx5 jCjJJx6 jCJjJx1
+normal roost: JjBLjx15 jBLjx1
+normal stair: LLJx3 JLLJx13

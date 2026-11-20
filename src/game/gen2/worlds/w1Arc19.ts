@@ -204,10 +204,14 @@ function readBare(): Lay {
 }
 /** [L] beat 12, two hunters: the eagle's eye on its rounds over moss (1-7's sweeper and cover) and a boa on its line; a flag before it.
  *  (1-9.md has two boas here: L is structural, so its node names no threat and its sockets pay from the section's budget, which holds
- *  one; the eagle and the boa are the two hunters) */
+ *  one; the eagle and the boa are the two hunters)
+ *  (VAR-19e, funcheck's repeat on Easy: its exit was a hop, so the beat read 'EJLJj' and the rests that open 'J j' on Easy (rest-stair,
+ *  and others) made 'JjJj' four times on 3 of 16 Easy layouts (STAGE-RULES §0.3, at most 3). It now ends with no hop, 'EJLJ'; the
+ *  hunt is the eagle, the moss and the boa, never the exit). It ends on a flat bank: as a root step down it ran the line 50 px lower and
+ *  10 of 320 raw rolls (seeds 1-160, both settings) found no section for the next node ("the pool is spent"), probes/throws.ts) */
 function twoHunters(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), hop('z', 'w3', 200)],
+    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), bank('z', 'w3', 200)],
     sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('hunters', 'w1', 0.045), hide('c1', 'w1', 0.6, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.3, 'patch'),
       petals('pz', 'z', 0.5, 2, 120)],
   };
@@ -248,14 +252,23 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
  *  (the lead 11:17 AM ET 11-18: World 1's "SECRET! GOLDEN SEED x OF n" counts it; the hand-built 1-9 carried one) sits over the last
  *  root step up, a hop above it: gen2 lays a find once a stage, in the first section that holds one, so it is the first rest's, after the
  *  stair, outside every boa read and every teach */
+/** the rest's sockets (both orders hold the same pieces) */
+const restSockets = (): Socket[] => [flag('c2', 0.15), petals('pb', 'b', 0.5, 1), petals('pk', 'kc', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pi', 'i', 0.5, 1),
+  { id: 'seed', role: 'find', on: 'd', t: 0.5, dn: 60 }];
 const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the old boughs', job: 'rest', versions: [{
   id: 'roots',
   // (VAR-19c: the knots, its own shape: a step up and a knot gap, a wide hollow walked into with Matt's boulder in it, then a long bough,
   //  a knot gap and home. On the route a rest opens 'h j' and closes 'j J', so no rest reads three jumps in a row or opens on one: the
   //  old five root dips read 'JJJJJ' and every rest repeated it)
-  lay: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('c2', 'c', 360, DOWN), boulder('kc', 'c2', 0.5), root('d', 'c2', 300, UP), root('d2', 'd', 80, DOWN), root('i', 'd2', 140, UP), root('z', 'i', 100, DOWN)],
-    sockets: [flag('c2', 0.15), petals('pb', 'b', 0.5, 1), petals('pk', 'kc', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pi', 'i', 0.5, 1),
-      { id: 'seed', role: 'find', on: 'd', t: 0.5, dn: 60 }] },
+  // (VAR-19e, funcheck's repeat on Normal: in that order the rest read 'jJJjJ' on Normal, the same four moves 'jJJj' as the stair's end
+  //  into a rest, roost into rest-bounce and others, 4 times on 4 of 16 Normal layouts (STAGE-RULES §0.3, at most 3). On Normal the
+  //  second knot gap now comes before the long bough and the hollow: two knots, the bough, the boulder's hollow, home ('jjJJ'). Easy keeps
+  //  VAR-19c's order, its twin: Easy's route reads the hollow and its boulder as a hop ('jJjjJ'), and the new order read 'jjJjJ' there and
+  //  made 'JjJJ' four times on a fifth Easy layout)
+  lay: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('d2', 'c', 80, DOWN), root('d', 'd2', 300, UP), root('c2', 'd', 360, DOWN), boulder('kc', 'c2', 0.5), root('i', 'c2', 140, UP), root('z', 'i', 100, DOWN)],
+    sockets: restSockets() },
+  easy: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('c2', 'c', 360, DOWN), boulder('kc', 'c2', 0.5), root('d', 'c2', 300, UP), root('d2', 'd', 80, DOWN), root('i', 'd2', 140, UP), root('z', 'i', 100, DOWN)],
+    sockets: restSockets() },
 }] });
 /** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
 const boulder = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [140, 150], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });

@@ -13,3 +13,8 @@ console.log(JSON.stringify(repeats(str, b.quick, b.stage.proto?.bpm)));
 let cur = '', line = '';
 moves.forEach((m: any, i: number) => { const s = sec(m.x); if (s !== cur) { if (line) console.log(line); cur = s; line = `${s}: `; } line += `${str[i]}@${Math.round(m.x)} `; });
 console.log(line);
+const tpl = process.argv[5];
+if (tpl) for (const q of secs.filter((s: any) => s.template === tpl)) {
+  for (const p of b.stage.platforms.filter((p: any) => p.tag?.startsWith(`${(q as any).uid}:`))) console.log(`  ${p.tag} x${Math.round(p.x)}-${Math.round(p.x + p.width)} y${Math.round(p.y)}`);
+  console.log('  moves: ' + moves.map((m: any, i: number) => [m, i]).filter(([m]: any) => m.x >= q.x0 && m.x < q.x1).map(([m, i]: any) => `${str[i]}@${Math.round(m.x)}(${m.what ?? ''})`).join(' '));
+}
