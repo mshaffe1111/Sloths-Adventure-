@@ -52,6 +52,19 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
   ocelot yet; a castBots proof of the leap waits for ENG-ROOT's rope over floor. The drawn ocelot keeps its feet on the ground in the
   act (castPlay.sync): its leap pose is not drawn yet.
 
+## 0zq-small3. ENG-SMALL3 (t-eng-small3 from t-int-13 8efb1bba, 11-19 evening): three small fixes, one plant each
+- **The node dials' id spelling (R-165.319, nodeCode.ts `ID`):** a threat kind, hazard, clock or find is written as the kit writes its id:
+  a small letter first, then letters of either case, digits, '-' or '_'. gen2's casts are kebab-case (w1Cast.ts 'snake-asleep'), the
+  predators' roster camelCase (predators/roster.ts 'thornVine', 'riverGuard'); both read now, a capital first still fails. The dial is
+  matched to a world's cast by `c.id` in nodeAsks.ts askMisses, so a W3 design that names `thornVine` needs a W3 cast whose id is
+  `thornVine` when W3 moves to gen2. Plant: nodeDials.test 'R-165.319'.
+- **Grandma's things' names (R-165.321, protoStage.ts thingFern):** picked by `thingsPlaced`, not the shared collectible id. 3-6 lays
+  8-15 finds over 4 names, 3-7 lays 9 over 5, so the names come round again in order after the list; the keeper's longer lists
+  (lines-3.md on t-keeper-3x: 'garden trowel', 'button tin') are content for the 3-6/3-7 builds (the lead's ruling, D40). Plant:
+  w3Stages.test 'R-165.321' (it reads the list length from the rolls, so it holds when the names are added).
+- **tierBots.test replays all 200 calibration runs (R-165.317):** `movedRuns` names each moved run with its fields; about 4 min (206 s,
+  4 cores). The command is unchanged and already in CI's rolled job. Trap: the run row's finish field is `finishSeconds`.
+
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
   child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
