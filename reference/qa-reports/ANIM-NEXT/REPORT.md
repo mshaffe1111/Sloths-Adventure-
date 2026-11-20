@@ -1,6 +1,6 @@
 # ANIM-NEXT report (R-165.349): Pokey's animation needs for 2-6..3-9 + the W2/W3 special stages
 
-Status 4:36 PM ET 11-20: steps 1-2 DONE; lead's GO 4:31 PM (cap $2.50). Sandbox 6b00bc7befaf5e14f4b3e954 created 4:32 PM ET, pulling its image.
+Status 5:19 PM ET 11-20: job 1 RUN and DONE; sandbox terminated 5:17 PM (CANCELED), ~$2.05 of $2.50 (HF-SPEND). 8 takes in reference/art/anim-next/takes/; picks review reference/art/anim-next/picks/. Cut waits on the lead's tiptoe pick + Matt.
 
 ## Done-items
 1. Needs list: reference/art/ANIM-NEEDS.md (21 rows: HAVE / ADAPT / NEW, ranked by first stage). 3 NEW for job 1, 1 low NEW + 2 optional for job 2.
@@ -18,6 +18,8 @@ Status 4:36 PM ET 11-20: steps 1-2 DONE; lead's GO 4:31 PM (cap $2.50). Sandbox 
 
 ## Picks (lead)
 - freeze = s11 (4:48 PM ET): cut 0-8 one-shot stop + a 3-4 frame breathing hold loop; cut waits for all three picks.
+- drowsy-walk = s11 (5:15 PM ET): loop ~15-48, the closest frame pair for the joint.
+- tiptoe: s3/s11 rejected (wave; faces camera). Reroll (stricter prompt) tiptoe2 s5 = my lean (one hunched sneak shape, clear leg-back strides 12-15 / 36-39, loop ~9-33); s21 dives nearly flat at 21-27 (reads "searching"). Waiting on the lead.
 
 ## Pushback
 - None on the packet. Notes: World 2's hidden stage "The Rapids" has no design (WORLD-MAP only): its row is provisional. R-165.178's
@@ -29,8 +31,11 @@ Status 4:36 PM ET 11-20: steps 1-2 DONE; lead's GO 4:31 PM (cap $2.50). Sandbox 
 - Builder packet (after the pick): play `freeze` when grounded, |vx| < 25 and a watcher/sleeper is in reach (3-5's freeze rule), and hold
   off the idle chain while it does; `tiptoe` under the quiet line (200 px/s) on stages with a listener; `drowsy-walk` while drowsy.
 
+## Miss (owned)
+- Commit 29cc0b6e's Claude-Session line names the lead's session, not mine (paste slip); a force-push fix was refused by the guard; the lead noted it in STATE. Countermeasure: copy the trailer from the previous commit, never retype it.
+
 ## EXACT NEXT STEP
-Sandbox hfsb2:mshaffe111:6b00bc7befaf5e14f4b3e954 (anim-next1): once running, exec detached `sh anim1.sh 21667c79` (curl
-tools/art/hfpokey/anim1.sh first), poll /w/out for DONE-<name>; per take: `python sbx.py parts /w/out/<name>.zip`, cat each .pN
-(--max-bytes 100000), rebuild with tools/art/hf1113/pull.py into reference/art/anim-next/takes/, commit; after the last take TERMINATE,
-log HF-SPEND; per clip run tools/art/hfpokey/anim1preview.py -> sheet + mp4 to the lead. If the sandbox is gone: check `hf_sandbox status`.
+On the lead's tiptoe pick (and Matt's word via the lead): unzip the 3 picked takes (reference/art/anim-next/takes/), cut with
+tools/art/train/clips.py's keying (box.json gives crop + x0.66 scale: STAND_PX = measured stand height in the pulled frames) into
+src/assets/hero/clips/{freeze,drowsy-walk,tiptoe}.webp + heroClipsData rows (freeze: 0-8 one-shot + a 3-4 frame breath hold;
+drowsy 15-48 loop; tiptoe ~9-33 loop, joints by the closest frame pair); catalog rows; run every CLAUDE.md check; report. Wiring = a builder.
