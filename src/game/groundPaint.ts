@@ -402,11 +402,41 @@ function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: 
   return c;
 }
 
+let shaded: HTMLCanvasElement | null = null;
+/**
+ * `pic` (a piece's copy, its frame's size) darkened with depth as the soil around it is (shadeSoil's depthBand: nothing above the middle
+ * of the bank's view, DEPTH_DARK in the world's deep colour by its bottom), on its own pixels only, in a scratch canvas reused for every
+ * end. Solid now down to its foot, the rock drawn unshaded stood as a lighter stripe down the darkened soil (ENG-24h's first stills, 2-2
+ * and 2-4 upright). The banks are painted once into the ground's squares, so this runs when a square is painted, not each frame.
+ */
+function shadeEnd(pic: CanvasImageSource, fw: number, fh: number, top: number, deep: GroundSheet['deep'], depth: [number, number]): CanvasImageSource {
+  try {
+    if (!shaded || canvasLost(shaded, 'bank end shade')) shaded = document.createElement('canvas');
+    if (shaded.width !== fw || shaded.height !== fh) { shaded.width = fw; shaded.height = fh; }
+    const g = shaded.getContext('2d')!;
+    g.globalCompositeOperation = 'copy';
+    g.drawImage(pic, 0, 0, fw, fh);
+    g.globalCompositeOperation = 'source-atop';
+    const [vt, vb] = depth;
+    const at = (yy: number) => ((yy - top) * fh) / END_H;
+    const gr = g.createLinearGradient(0, at(vt + (vb - vt) * 0.5), 0, at(vb));
+    gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+    gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
+    g.fillStyle = gr;
+    g.fillRect(0, 0, fw, fh);
+    g.globalCompositeOperation = 'source-over';
+    return shaded;
+  } catch {
+    return pic;
+  }
+}
+
 /**
  * the bank end piece at a right (or, mirrored, left) end x with the walking line at y; `cutAt`: faded out by that height (a step) over
- * `fade` px (0: cut clean, a short step)
+ * `fade` px (0: cut clean, a short step); `depth`: the bank's view (the top and bottom shadeSoil darkens its soil by), and the rock is
+ * darkened with depth alike (shadeEnd)
  */
-export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number): boolean {
+export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number, depth?: [number, number]): boolean {
   const s = sheet(w);
   if (!s) return false;
   const e = endFrame(s.g, x);
@@ -415,12 +445,12 @@ export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean,
   const top = y - e.surf * END_H;
   const faded = cutAt !== undefined ? endFaded(s.img, e, w, cutAt - top, fade) : null;
   if (cutAt !== undefined && !faded) return true;
+  const own = faded ?? endSolid(s.img, e, w);
+  const pic = own && depth ? shadeEnd(own, e.w, e.h, top, s.g.deep, depth) : own;
   ctx.save();
   ctx.translate(x, 0);
   if (!right) ctx.scale(-1, 1);
-  const solid = faded ? null : endSolid(s.img, e, w);
-  if (faded) ctx.drawImage(faded, -e.cx * ew, top, ew, END_H);
-  else if (solid) ctx.drawImage(solid, -e.cx * ew, top, ew, END_H);
+  if (pic) ctx.drawImage(pic, -e.cx * ew, top, ew, END_H);
   else ctx.drawImage(s.img, e.x, e.y, e.w, e.h, -e.cx * ew, top, ew, END_H);
   ctx.restore();
   return true;
