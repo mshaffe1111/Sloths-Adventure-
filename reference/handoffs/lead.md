@@ -100,8 +100,9 @@ mapped to its worlds (CATALOG-MASTER.csv `worlds`). World 3 is fully designed (P
 **Finals tonight (ready for INT-14):** t-paint-292 05cebafa, t-eng-noise c59928a4, t-eng-prowl 33e43c57 (castPlay.ts shared with noise;
 lead's trial merge clean), t-eng-small3 9b1767f9. **Stopped clean, continue Friday:** t-eng-24e 4c34eb81 (tail piece + tail liana judged
 as a swing (level.md World 2 notes) + 2b logs + drawn end PASS; castBots Normal FAIL -> ENG-24g; 2c -> ENG-24h), t-var-19 e2d60037
-(VAR-19e: R-165.327 boa off socket, R-165.328 eagle past rounds, funcheck repeat), t-eng-25c (ENG-25d tonight: lock PASS, stills, gates;
-see STATE for its final or stop), t-gate-flake (GATE-FLAKE tonight: clipcheck + speed test load-proof; see STATE).
+(VAR-19e: R-165.327 boa off socket, R-165.328 eagle past rounds, funcheck repeat), t-eng-25c d13ebdaa (ENG-25c FINAL via ENG-25d: every gate PASS but buildcheck
+under load (PASS alone) and funcheck = base; BUILD-25 starts on it), t-gate-flake 7ae0b8a6 (stopped clean: 2 of 5 loaded runs PASS;
+continuation: 3 more loaded runs, 1 alone, the full list, and R-165.330 paintcheck's empty part; EXACT NEXT STEP atop its REPORT).
 **FRIDAY: START ONLY ON MATT'S WORD** (Matt 11-19 10:26 PM: "tomorrow morning, I can tell you when to start again"; the 8:20 AM trigger trig_018TmBom1EwGGSK9azWvZk8a is DISABLED, its prompt is the plan to run by hand). Order: ENG-24g, ENG-24h (HF env), VAR-19e, BUILD-25 (or
 ENG-25e first); then GATE-FLAKE's continuation, BUILD-24f, INT-14's packet, World 3 pieces, ENG-27, ART-27.
 **Rulings tonight to carry:** a liana over a river's tail = World 1 swing rules (level.md); 2-5 stones level + 30 px (walkable is fine, the
