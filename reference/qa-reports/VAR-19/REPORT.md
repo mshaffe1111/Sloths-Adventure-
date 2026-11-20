@@ -310,7 +310,7 @@ Base 1c313657 (VAR-19e's final; data + list e2769e09). No data or engine change.
   'gone, delete the entry: 1-9 easy/normal "enemy by a landing"'. Those two entries were deleted by hand: FUNCHECK_WRITE would have written
   the other stages' 'worse' counts in too (the known list only shrinks). knowncheck PASS after.
 
-### 11.1 Gate table (head 38b11fa1 for the list run; code unchanged since but for libstage.ts (re-run below) and funknown.json)
+### 11.1 Gate table (the list ran on 38b11fa1's code plus libstage.ts from 10:56; code final at 494c9474: funknown.json since, re-run below)
 | Gate | Result |
 |---|---|
 | tsc | PASS |
@@ -331,7 +331,8 @@ Base 1c313657 (VAR-19e's final; data + list e2769e09). No data or engine change.
 | kbdcheck | PASS |
 | buildcheck (alone) | PASS (1-1: Normal p95 107 ms, Easy 68 ms; budget 150 ms at CPU x4) |
 | clipcheck | PASS (83 known) |
-| drawcheck | DRAWCHECK |
+| drawcheck | PASS (615 s) |
+| final re-run on code head 494c9474 (final/, 11:39-11:42 AM ET by date) | CI tool line 236 / 233 / 2 fail (the same riverRide pair) / 1 todo; funcheck FAIL with exactly VAR-19e relist3's lines minus 1-9's two (104 known, 1411 flags); tsc PASS; knowncheck PASS |
 | already PASS on e2769e09 (VAR-19e, not re-run) | lockall vs 0b1f9e46 --intended 1-9 (101/102 unchanged); plainWalk one-jump 2/2; seedlist 1-9 --check; the R-165.327/.328 plants |
 
 ### 11.2 castBots 1-9, seeds 1-40, both settings (castbots-1-9-1-40.txt; the expert plays Normal only, castBots.ts:31, so 9 rows)
