@@ -1,0 +1,8 @@
+normal s1 up-from-log river 10028-11196 tail 430: never crossed: back on a bank, timeout riding, far bank, a vine held
+normal s1 no-land river 15877-17013 tail 430: never crossed: timeout (never boarded), far bank, a vine held, water
+easy s1 up-from-log river 10172-10940 tail 0: CROSSED (take-off -25/14)
+easy s1 no-land river 15813-16923 tail 0: CROSSED (take-off -25/19)
+normal s2 up-from-log river 10155-11323 tail 430: never crossed: back on a bank, timeout riding, far bank, a vine held
+normal s2 no-land river 16131-17267 tail 430: never crossed: timeout (never boarded), far bank, a vine held, water
+easy s2 up-from-log river 10273-11041 tail 0: CROSSED (take-off -25/14)
+easy s2 no-land river 16016-17126 tail 0: CROSSED (take-off -25/19)

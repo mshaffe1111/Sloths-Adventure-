@@ -1,12 +1,12 @@
-seed 2 river 10155-10893 tail 430 speed 80 logClock 1.88 liana x 11003 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.3% from x1-55..x1-10 | middle stand: 11.4% from x1-85..x1-10 | middle run: 13.0% from x1-100..x1-10 | expert stand: 11.4% from x1-85..x1-10 | expert run: 13.0% from x1-100..x1-10
-seed 2 river 16131-16837 tail 430 speed 100 logClock 1.50 liana x 16947 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.5% from x1-60..x1-10 | middle stand: 11.6% from x1-90..x1-10 | middle run: 13.5% from x1-105..x1-10 | expert stand: 11.6% from x1-90..x1-10 | expert run: 13.5% from x1-105..x1-10
-seed 14 river 10145-10883 tail 430 speed 80 logClock 1.88 liana x 10993 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.3% from x1-55..x1-10 | middle stand: 11.4% from x1-85..x1-10 | middle run: 13.0% from x1-100..x1-10 | expert stand: 11.4% from x1-85..x1-10 | expert run: 13.0% from x1-100..x1-10
-seed 14 river 16248-16954 tail 430 speed 100 logClock 1.50 liana x 17064 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.5% from x1-60..x1-10 | middle stand: 11.6% from x1-90..x1-10 | middle run: 13.5% from x1-105..x1-10 | expert stand: 11.6% from x1-90..x1-10 | expert run: 13.5% from x1-105..x1-10
-seed 19 river 10028-10766 tail 430 speed 80 logClock 1.88 liana x 10876 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.3% from x1-55..x1-10 | middle stand: 11.4% from x1-85..x1-10 | middle run: 13.0% from x1-100..x1-10 | expert stand: 11.4% from x1-85..x1-10 | expert run: 13.0% from x1-100..x1-10
-seed 19 river 15871-16577 tail 430 speed 100 logClock 1.50 liana x 16687 (x1+110) period 2.85 logCatches true
-   child stand: 2.9% from x1-45..x1-10 | child run: 4.5% from x1-60..x1-10 | middle stand: 11.6% from x1-90..x1-10 | middle run: 13.5% from x1-105..x1-10 | expert stand: 11.6% from x1-90..x1-10 | expert run: 13.5% from x1-105..x1-10
+seed 2 river 10155-10893 tail 430 speed 80 liana x 10983 (x1+90) period 2.85 logCatches true
+   child stand: 5.1% from x1-65..x1-10 | child run: 6.5% from x1-75..x1-10 | middle stand: 14.2% from x1-105..x1-10 | middle run: 15.7% from x1-120..x1-10 | expert stand: 14.2% from x1-105..x1-10 | expert run: 15.7% from x1-120..x1-10
+seed 2 river 16131-16837 tail 430 speed 100 liana x 16927 (x1+90) period 2.85 logCatches true
+   child stand: 5.2% from x1-65..x1-10 | child run: 6.9% from x1-80..x1-10 | middle stand: 14.4% from x1-110..x1-10 | middle run: 16.2% from x1-125..x1-10 | expert stand: 14.4% from x1-110..x1-10 | expert run: 16.2% from x1-125..x1-10
+seed 14 river 10145-10883 tail 430 speed 80 liana x 10973 (x1+90) period 2.85 logCatches true
+   child stand: 5.1% from x1-65..x1-10 | child run: 6.5% from x1-75..x1-10 | middle stand: 14.2% from x1-105..x1-10 | middle run: 15.7% from x1-120..x1-10 | expert stand: 14.2% from x1-105..x1-10 | expert run: 15.7% from x1-120..x1-10
+seed 14 river 16248-16954 tail 430 speed 100 liana x 17044 (x1+90) period 2.85 logCatches true
+   child stand: 5.2% from x1-65..x1-10 | child run: 6.9% from x1-80..x1-10 | middle stand: 14.4% from x1-110..x1-10 | middle run: 16.2% from x1-125..x1-10 | expert stand: 14.4% from x1-110..x1-10 | expert run: 16.2% from x1-125..x1-10
+seed 19 river 10028-10766 tail 430 speed 80 liana x 10856 (x1+90) period 2.85 logCatches true
+   child stand: 5.1% from x1-65..x1-10 | child run: 6.5% from x1-75..x1-10 | middle stand: 14.2% from x1-105..x1-10 | middle run: 15.7% from x1-120..x1-10 | expert stand: 14.2% from x1-105..x1-10 | expert run: 15.7% from x1-120..x1-10
+seed 19 river 15871-16577 tail 430 speed 100 liana x 16667 (x1+90) period 2.85 logCatches true
+   child stand: 5.2% from x1-65..x1-10 | child run: 6.9% from x1-80..x1-10 | middle stand: 14.4% from x1-110..x1-10 | middle run: 16.2% from x1-125..x1-10 | expert stand: 14.4% from x1-110..x1-10 | expert run: 16.2% from x1-125..x1-10

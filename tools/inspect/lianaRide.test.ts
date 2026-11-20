@@ -15,10 +15,11 @@
  *     rides a log under it and jumps up to it (measured: caught off a log in 4 of 5 variants on each setting); PLANTED: without it he
  *     rides the log to the bank every time (0 of 10).
  *   - A VINE OVER THE TAIL (SKILLS.vineOverTail, ENG-24g, level.md rule 21) on the tail toy (2-4's beat 4 on Normal: `twin` with a 430 px
- *     TAIL, the liana 110 px past where the logs go under, 340 long, DEEP): the judge's own reach holds (riverLay.ts logCatches: a jump off
+ *     TAIL, the liana 90 px past where the logs go under, 340 long, DEEP): the judge's own reach holds (riverLay.ts logCatches: a jump off
  *     a log catches it) and the child, middle and expert bots ride a log and jump to it, every run (measured 11-20: 15 of 15 to the shrine
- *     with no rescue, each caught off a log, 12 lives in all); PLANTED: looking for a liana only over the logs' window (the old reach) he
- *     rides into the tail and drowns until the harness rescues him (13 of 15 rescued, 139 lives) - 2-4's castBots FAIL of 11-19.
+ *     with no rescue, each caught off a log, 12 lives in all; the same at 2-4's first 110); PLANTED: looking for a liana only over the
+ *     logs' window (the old reach) he rides into the tail and drowns until the harness rescues him (13 of 15 rescued, 139 lives) - 2-4's
+ *     castBots FAIL of 11-19.
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';

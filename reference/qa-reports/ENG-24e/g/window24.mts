@@ -24,7 +24,7 @@ for (const seed of [2, 14, 19]) {
           row.push(`${name} ${run ? 'run' : 'stand'}: ${(100 * n / k).toFixed(1)}% from x1-${xs.size ? d.x1 - Math.min(...xs) : '-'}..x1-${xs.size ? d.x1 - Math.max(...xs) : '-'}`);
         }
       }
-      console.log(`seed ${seed} river ${d.x0}-${d.x1} tail ${d.tail} speed ${d.speed} logClock ${((d.width + (0)) / d.speed).toFixed(2)} liana x ${Math.round(v.x)} (x1+${Math.round(v.x - d.x1)}) period ${P.toFixed(2)} logCatches ${logCatches(v, d)}`);
+      console.log(`seed ${seed} river ${d.x0}-${d.x1} tail ${d.tail} speed ${d.speed} liana x ${Math.round(v.x)} (x1+${Math.round(v.x - d.x1)}) period ${P.toFixed(2)} logCatches ${logCatches(v, d)}`);
       console.log('   ' + row.join(' | '));
     }
   }

@@ -37,12 +37,12 @@ export const TOY_RIVERS = {
   tail: { ...W2_RIVERS.twin, tail: 430 },
 } as const satisfies Record<string, RiverRow>;
 export type ToyRiver = keyof typeof TOY_RIVERS;
-/** 'tail' (ENG-24g, level.md rule 21): the liana hung OVER THE TAIL, 110 px past where the logs go under (2-4's OVER_TAIL), out of every
+/** 'tail' (ENG-24g, level.md rule 21): the liana hung OVER THE TAIL, 90 px past where the logs go under (2-4's OVER_TAIL), out of every
  *  bank's reach: caught by a jump off a moving log (riverLay.ts logCatches, the judge's own test), let go over open water onto the far bank */
 export type LianaToy = 'drop' | 'catch' | 'tail';
 /** how far past the bank's end the liana hangs (px): 2-1's measured 165 (the bank's catch), out of every bank's reach (from a log), or
- *  110 px past the tail row's logs' window (the window starts at the bank's end) */
-export const TOY_REACH: Record<LianaToy, number> = { drop: 165, catch: 430, tail: carrierWidth(TOY_RIVERS.tail) + 110 };
+ *  90 px past the tail row's logs' window (the window starts at the bank's end) */
+export const TOY_REACH: Record<LianaToy, number> = { drop: 165, catch: 430, tail: carrierWidth(TOY_RIVERS.tail) + 90 };
 /** its length (px): 2-1's 410 (its foot at the bank's top), or 320 for the catch, its foot ~118 px over a log's top: a jump catches it,
  *  never a ride under it (at 410 the engine took him onto it as the log carried him through its foot, so no jump was asked); 2-4's 340
  *  over the tail (w2Arc24.ts lianaW: no log passes under it there) */

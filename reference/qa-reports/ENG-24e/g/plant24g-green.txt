@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
 ok 1 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
   ---
-  duration_ms: 19854.532862
+  duration_ms: 20385.125877
   type: 'test'
   ...
 1..1
@@ -13,5 +13,5 @@ ok 1 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own 
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 20452.877584
+# duration_ms 21252.815382
 EXIT 0

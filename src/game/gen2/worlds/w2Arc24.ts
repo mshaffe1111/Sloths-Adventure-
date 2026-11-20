@@ -82,11 +82,14 @@ export const TEACH_24 = ['drop', 'catch'] as const;
  * 430 px short of the far bank, past the farthest a rider reaches off a log's end (riverLay.ts rideReach: 388 px at 80 px/s, 392 at 100,
  * + RIVER_LAY.tailMargin 30 = 418 and 422), so no log carries him across alone; the liana he catches off a log hangs OVER_TAIL past where
  * they go under, a swing over open water held to World 1's FAR rule (riverLay.ts tailLianaFaults): caught off a log up to 200 px past the
- * logs' end, the testers' let-go lands a level far bank up to 360 px past the anchor (flown, ENG-24f), so the far bank 320 px past it
- * lands him with 40 px to spare. Easy keeps no tail (the vine optional on Easy only; its logs under the throw, the log-drop share).
+ * logs' end, the testers' let-go lands a level far bank up to 360 px past the anchor (flown, ENG-24f), so the far bank 340 px past it
+ * lands him with 20 px to spare. OVER_TAIL 90, not 110 (the lead's ruling B, 11-20 9:45 AM ET, ENG-24g): the nearer the logs' end, the
+ * more of a log's ride a jump catches it from; at 110 a child's own hop caught it from the last 45 px only (2.9% of take-off and swing
+ * moments; castBots child 38/40), at 90 from the last 65 px (5.1%) (reference/qa-reports/ENG-24e/g/window24.mts). Easy keeps no tail
+ * (the vine optional on Easy only; its logs under the throw, the log-drop share).
  */
 const TAIL_24 = 430;
-const OVER_TAIL = 110;
+const OVER_TAIL = 90;
 export const RIVERS_24 = {
   ...W2_RIVERS,
   /** beat 1, the first drop: the widest, calmest logs, splash-back (86% Normal, 92% Easy) */

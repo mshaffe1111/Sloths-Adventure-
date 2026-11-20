@@ -718,8 +718,9 @@ export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, 
  * `vineOverTail` (ENG-24g, level.md rule 21): the liana he looks for from a log is any hung over the river's WATER, its TAIL too (river.ts
  * riverEnd: a liana past where the logs go under, World 1's swing over open water, riverLay.ts tailLianaFaults; logCatches says a jump off
  * a log catches it), and on a tailed river he takes off only from the log's part short of the painted end (past it the log is under, no
- * floor: engine.ts drift loop). With it off he looks only over the logs' window (x0..x1, the old reach) and rides into the tail every
- * time (lianaRide.test.ts 'A VINE OVER THE TAIL'). Always on outside a test.
+ * floor: engine.ts drift loop); a tail liana he let go of short is tried again (never 'the one he just left': no let-go from it lands on
+ * a log). With it off he looks only over the logs' window (x0..x1, the old reach) and rides into the tail every time (lianaRide.test.ts
+ * 'A VINE OVER THE TAIL'). Always on outside a test.
  *
  * (ENG-25b, 2-5.md NEW 2) `bonkAfterSnap`, BONK-AFTER-THE-SNAP: an animal of the cast that a kick chases off (its kit's beatenBy.kick ends
  * 'chasedOff') and that keeps a stage clock (Enemy.kitBeat: World 2's snapper rows on their stones' bar, awake or the lesson's sleeper),
@@ -1837,10 +1838,12 @@ export class FirstTimerRun {
     const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
     if (!here?.drift) return null;
     const d = here.drift;
-    // (over the river's water, its tail too: SKILLS.vineOverTail)
+    // (over the river's water, its tail too: SKILLS.vineOverTail. Never the liana he just left, a let-go onto a log under it, except one
+    //  over the tail: no let-go from it lands on a log, so a log under it means a let-go that fell short, a splash-back or a life, and he
+    //  tries it again as a person does; kept as 'just left', he rode into the tail to the 1200 s cap, castBots 2-4 child seed 8, ENG-24g)
     const end = SKILLS.vineOverTail ? riverEnd(d) : d.x1;
-    const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && q.id !== this.swungOn && q.x > d.x0 && q.x < end
-      && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420);
+    const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && (q.id !== this.swungOn || (SKILLS.vineOverTail && q.x >= d.x1))
+      && q.x > d.x0 && q.x < end && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420);
     if (!v) return null;
     const rivers = this.sim.stage.rivers;
     const carry = ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x;
