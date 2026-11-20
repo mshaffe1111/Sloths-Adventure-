@@ -48,15 +48,13 @@ No drawing changed. The one player-facing change: 3-6/3-7's "GRANDMA'S <THING>!"
 ## Unresolved
 - The suite's timing red (R-165.325, logged by the lead) and funcheck's FAIL (the base's own, t-int-13) are not this job's to fix.
 
-## Method used, lessons applied, method update
+## Method used, lessons applied, method update, learned
 - Method: gates.md "Adding a new check" (defect named, plant, run twice, wired, runtime reported); ENGINE.md day one (plants, locks).
 - Lessons: D21 (the id rule spread to hazard/clock/find; the counter pattern grepped: one site), D30, D57/D87, D59, D86, D88 (plants use
   the repo's look-alikes: kebab and camel ids, a capital first refused), D90 (outputs to files, summary lines only).
 - Method update (proposal): gates.md's table gets a tierBots.test row (every committed run replays; about 4 min; rolled), and step 5
   says: a gate that replays a SAMPLE of a committed record is weaker than its spec; replay it all unless measured too slow.
-
-## Learned
-A pin's spec and its code drift apart quietly (BOTS.md: "any run that moves fails it"; the test replayed 15 of 200): read the test.
+- Learned: a pin's spec and its code drift apart quietly (BOTS.md: "any run that moves fails it"; the test replayed 15): read the test.
 
 ## Turnover note
 reference/handoffs/engine-core.md §0zq-small3 (a8e5a455).
