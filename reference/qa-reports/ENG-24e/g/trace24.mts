@@ -23,7 +23,7 @@ const r = firstTimer('2-4', Number(seedS), who, { cap: Number(capS), dotSetting:
   const st = p.isVineSwinging ? 'vine:' + p.swingVineId : on ? on.type : 'air';
   const sk = st.startsWith('vine') ? st : st;
   if (sk !== prevState && (sk.startsWith('vine') || sk === 'drift' || prevState.startsWith('vine') || prevState === 'drift')) {
-    evs.push(`${(rp as any).time?.toFixed?.(1) ?? ''} f x${Math.round(p.x)} y${Math.round(p.y)} ${prevState}->${sk}`);
+    evs.push(`${(fr / 30).toFixed(2)}s x${Math.round(p.x)} y${Math.round(p.y)} ${prevState}->${sk}`);
   }
   prevState = sk;
 } });
