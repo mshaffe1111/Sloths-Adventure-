@@ -137,9 +137,9 @@ for (const o of ORIENTS) {
         const p = this.player;
         const f = this.currentStage.platforms.find((q) => pin.x >= q.x && pin.x <= q.x + q.width && Math.abs(q.y - pin.y) < 60);
         const top = f ? f.y : pin.y;
-        p.x = pin.x - (p.width || 40) / 2; p.y = top - (p.height || 48); p.vx = 0; p.vy = 0; p.grounded = true;
+        p.x = pin.x - (p.width || 40) / 2; p.y = top; p.vx = 0; p.vy = 0; p.grounded = true; // (p.y is his FEET: ENG-25c's top - height floated him 48 px)
         if (this.lives < 5) this.lives = 9;
-        window.__pinTop = { top, feet: p.y + (p.height || 48), mid: p.x + (p.width || 40) / 2 };
+        window.__pinTop = { top, feet: p.y, mid: p.x + (p.width || 40) / 2 };
       }
       const keep = this.player ? this.player.invincibleTimer : 0;
       if (pin && this.player) this.player.invincibleTimer = 0;
