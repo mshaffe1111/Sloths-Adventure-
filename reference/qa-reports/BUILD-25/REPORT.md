@@ -21,8 +21,13 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
      (ENG-25's w2Cast.test.ts shows how). skills.test.ts:11 and w1NewArt.test.ts:92 are id-only (check they pass).
    - Plants still owed for accepted engine bits: PadRow.clock (two bars under one name throws; an Easy twin keeps its Normal clock) and
      snapFaults(st, 'normal') skipping the Easy comparison while the Easy build still judges it (snapRow.test.ts).
-3. Seed list: a 6-seed try was started (`npx tsx tools/engine/seedlist.ts 2-5 --count 6` -> reference/qa-reports/BUILD-25/seedlist-6.txt;
-   its output was empty at the stop: rerun it first, then the full relist; it writes src/game/gen2/proven/seeds-2-5.ts + provenIndex.ts).
+3. Seed list: **the 6-seed try FAILED the packet's pre-check** (`npx tsx tools/engine/seedlist.ts 2-5 --count 6`, 73 s,
+   reference/qa-reports/BUILD-25/seedlist-6.txt): 5 kept of 1,199 fresh seeds (0%), 1,194 refused by THE QUIET LINE (over 4 s with
+   nothing to do). Its 5-seed list was NOT committed. Fix the lay first: the long plain banks before each teach (Dot's 800 px: a 700 px
+   bank in beat 4, 480+400 in beats 1/2/6), the snapper grounds' 3x150 + 300 banks between snappers, the rests. Trace which x the quiet
+   stretches sit at (the tool's refusal names `# s ... at x #`: run one seed with the stage's own quiet report), then give those stretches
+   something to do (petals, a rock, a log) without breaking the teach rule (nothing that HURTS between a teach and its thing) or the
+   snapper ground rule (no higher floor within 176 px of a patch: a rock must keep away). Only when 6 fresh builds pass, the full relist.
    Then flown rows if the judge asks (2-4: FLIGHT_STAGE=2-4 flight.ts normal all -> flownArcs normal-2-5, stageTable `judged`).
    Run the list judge's R-165.327 seat rule on 2-5's list (the lead, 12:05 PM).
 4. Early stills (beats 1-3, upright + sideways) to the lead; then castBots 2-5 1-40 x 5 bots x both settings, meter N+E, the full
