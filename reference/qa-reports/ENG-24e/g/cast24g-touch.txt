@@ -1,0 +1,17 @@
+Fri Nov 20 09:41:59 EST 2026
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 33/40; under the floor 0; time median 202.9 s (min 171.8); hits 0 lives 200 (water 200); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 6: shrine rescued x1  (seeds 30,34,9,29,20,27)
+        fail 1: shrine rescued x2  (seeds 18)
+kid    easy   PASS 39/40; under the floor 0; time median 168.6 s (min 142.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 24)
+adult  normal PASS 37/40; under the floor 0; time median 171.8 s (min 162.3); hits 0 lives 123 (water 123); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x1  (seeds 6,33,32)
+adult  easy   PASS 40/40; under the floor 0; time median 149.1 s (min 139); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 345.7 s (min 291.4); hits 0 lives 173 (water 173); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 250.3 s (min 227.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 220.9 s (min 206.3); hits 0 lives 150 (water 150); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 185 s (min 173.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 208.6 s (min 175.7); hits 0 lives 139 (water 139); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+EXIT 0
+Fri Nov 20 09:43:48 EST 2026

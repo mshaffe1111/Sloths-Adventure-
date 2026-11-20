@@ -227,6 +227,9 @@ export interface Enemy {
   kitPasses?: number;
   /** a cast sweeper's glance dials for its stretch (predators Post.glance; the still row's, w1Cast.ts eagleOver), or false: it never glances */
   kitGlance?: import('./predators/types.ts').Glance | false;
+  /** a cast animal that KEEPS a stage clock (ENG-25; 2-5.md NEW 2: the snapper on its stones' bar, gen2/worlds/w2Cast.ts): the kit runs it
+   *  as an `onBeat` kind, its tell only on the clock's 'warn' and its act only on its 'on' (castPlay.ts hands it the clock's read) */
+  kitBeat?: import('./beat.ts').OnBeat;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
@@ -312,6 +315,9 @@ export interface Platform {
   /** a creaking limb (1-4 on, the mixer's creaky boughs; World 1's own branch art): seconds it holds once stepped on (instead of the usual
    *  1.1); unlike crumbleAfter it keeps the branch's look (the notch and the shake), not World 7's tiles */
   creak?: number;
+  /** QUIET ground (moss; ENG-NOISE, 3-5.md): a landing on it makes no noise however far he fell (heroNoise.ts landingNoise reads it).
+   *  Play only: its look is the piece's own art, never this field (World 1's 'moss_stone' style is a look, and it is not quiet) */
+  quiet?: boolean;
   /** drawn as bare bark: the branch picture without its bromeliad and moss (draw only) */
   bare?: boolean;
   /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
@@ -350,10 +356,13 @@ export interface Platform {
   /** a sinking pad (ride.ts Pad; pieces/padPiece.ts runs it, gen2/rideLay.ts layPads lays it): a 'moving' platform that never moves, which
    *  sinks by its clock (a weight pad while he stands on it, a beat pad on the stage's beat) and is no floor while it is down */
   pad?: import('./ride.ts').Pad;
+  /** a water wheel's bucket (wheel.ts WheelSeat: its wheel, shared by its buckets, and its index; pieces/wheelPiece.ts turns it, gen2/wheelLay.ts
+   *  lays it): a 'moving' platform carried round the wheel's rim, level, carrying whoever stands in it */
+  wheel?: import('./wheel.ts').WheelSeat;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden' | 'crownLily';
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden' | 'crownLily' | 'snapStone';
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it

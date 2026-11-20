@@ -1,0 +1,227 @@
+# ENG-285 REPORT (tonight's part: steps 1, 1b, 1c, 2 MEASURE): the judges and bots fly the engine's Pokey
+Engine, t-eng-285 from t-int-12 ce4ad461. Started 7:55 PM ET 11-18 (by `date`); wound down on the lead's word 8:29 PM (real context 414k).
+Commits: 818319b3 (step 1, the model hash sent at 8:12 PM), 8eae49e0 (1c), 8ac8ffc9 (1b), 03ba54ef (engine-core.md §0zo-285), 0db8e62a + this (report).
+
+## EXACT NEXT STEP (ENG-285b, Thu 8:30 AM ET, on t-eng-285's head, after the lead rules on the table below)
+0. The unit suite is UNRUN as a whole (shards 1-2 stopped at the 30-min background limit: run it once, in the background, limit over 40 min).
+1. Seed lists: none fail (all 11 PASS). So no relist is forced. The lead rules whether the stages whose
+   layouts moved but whose lists pass (1-6, 1-8, 2-1) are re-proved anyway (`seedlist.ts <id>` = a new list hash; QA pins re-picked).
+2. The red pin: src/game/gen2/seeds.test.ts:40 (a curated World 6 seed's section plan moved: w6s pieces, 6-1). Re-curate or re-pin
+   per its own file's method, as the model change intends (never loosen; law 22). Then the suite's other shards' reds (table).
+3. castBots every shipped stage whose layouts moved (1-6, 1-8, 2-1 tonight; packet step 3's 1-6 list: child N L28, child N L34,
+   middle N L39 (still a rescue tonight: "fell back down from here 8 times" at the gorge x44004, traced with (a) in: he climbs back
+   out at 272.8 s), kid N, adult N), child/middle/expert 40/40 both, each miss traced. tierBots needs NO recalibration (below).
+4. Packet steps 4-5 as written (the full CLAUDE.md list once on the final head, funcheck, coveragecheck, registrycheck, every list
+   --check, lockall vs main --intended <the lead's stages>; the still pair of one back-swing hop, old vs new path).
+
+## Done-items tonight
+1. **One model (818319b3).** airStep turns for every caller (`turn` gone); pressLaunches/forwardEndLands climb his grip from the press
+   frame to the leave frame (`pressClimb`); the bot's drop aim reads the press at the frame it reaches the engine (`pressIn`).
+   riverLay's letGoFall/fallOnLog split as ENG-24c wrote it. Planted: src/game/judgeFliesEngine.test.ts (every press of one swing x
+   both grips, 120 presses, vs the real engine via InputEngine: worst 1e-3 px; let-gos over logs: the judge's own landing = the
+   engine's on every sampled pair, the logs' clock checked each frame): RED on the base model (an early press leaves 10 px lower;
+   landings disagree). lianaRide.test.ts "aims its presses": 17 of 17 presses off the aimed frame with the old aim, 0 now.
+   Finding: the JUDGE's log clock already matched the engine; the one-frame slip was the BOT's.
+2. **1c (8eae49e0).** vineClock = gameTime (+ a test-only shift). Planted src/game/lianaClock.test.ts (1-6 L3, straight run vs a flag
+   resume, 30 frames): RED on the old engine (-0.3275 vs -0.3608 rad). The 107 tests that read the vine clock: 107/107.
+3. **1b (8ac8ffc9).** (a) relocate's level points within LEVEL_REACH 600 px, else the plain nearest: planted (red on the old code: put
+   at x 37000). (b) pitWayBack NOT changed: not reproduced (castBots 1-6 child+middle N L28/34/39 on the step-1 head: 5/6 pass, no pit
+   stall; t-build-24's own head L34 middle N: no stall over 12 s; a toy from the description climbs back on the old code). No red, no fix.
+
+## MEASURE (lock/lists on the step-1 model 818319b3; bots and suite on 03ba54ef; 1b/1c touch no gen2 code)
+| Check | Result |
+|---|---|
+| lockall --layouts 16 vs base ce4ad461 | 89/102 unchanged. Moved (layouts N / E): 1-6 16/6 (whole layout), 1-8 4/0 [3,7,10,11] gen2 only, 2-1 1/0 [13] proto.gen2 only, 3-8 13/16 proto.thorns only, 4-4 5/0 [3,9,10,13,16] whole layout, 6-1 16/16 whole, 6-3 6-6 6-7 8-3 16/16 gen2+collectibles, 7-5 16/14 whole, 7-9 15/11 gen2+collectibles, 8-5 16/14 gen2+collectibles |
+| lockall vs main 6e7b85f8 | 15 stages: the 13 above + 1-7, 1-9 (INT-12's own: base vs main moves exactly 1-6, 1-7, 1-9, all layouts) |
+| seedlist --check | all 11 lists PASS (1-1..1-9, 2-1, 2-2): the verdicts refuse 0 seeds of each (1-6 100/100 in 836 s; 2-1/2-2 rerun after the first runner's 30-min stop) |
+| tierBots.test.ts | 7/7. Full calibration (3 tiers x both x 1-40): 200/200 runs IDENTICAL to calibration-main.jsonl: no tier moves; recommit not needed |
+| engine tools' tests (gates.yml:135 list) | 225 pass, 0 fail, 1 TODO as before (chase child reaches the fork 1 of 3, ENG-B4) |
+| unit suite (CLAUDE.md set, 3 shards) | UNRUN as a whole: shard 3 1405/1405 PASS; shards 1-2 stopped at the 30-min background limit after 1057 and 1188 tests: 1 red, seeds.test.ts:40 (above), none other |
+| drop judge, ENG-24 calib.ts rows, base -> now | Normal: back wait 0.97->1.03 s, gap200 wait 1.50->1.23 s, the rest equal. Easy: back 82->77% (Easy bar 85%), ride/deep wait 0.57->0.60 s, lashed 0.60->0.63 s (bar 0.6), gap280 46->45%. BUILD-24c lays 2-4 on these |
+| back-swing hop reach | +4..28.5 px forward (median 22-28) over every back-swing press of a 300/420 px liana: the 20-30 px expected |
+My read: small, as expected. No list fails, no tier moves; the stages that move are those whose laying flies a back-swing or a let-go
+(the 1-6 lianas; World 6-8's swing and thorn placement; 4-4, 7-5 re-roll). The relist question is the lead's (EXACT NEXT STEP 1).
+
+## Found (for the lead)
+1. Still drifted: a no-steer air tick (dir 0) brakes at PHYS.airDec 520; the engine brakes 0 (refined touch) or airStop 1300
+   (engine.ts:2587). Callers protoCheck.ts:50, jumps.ts:240 (and any dir-0 frame in levelCheck/score). Same class; worth an R-id.
+2. vineFromLog and lianaWait aim with `clock + lag` (the same one-frame slip as the drop aim had); not changed tonight (no plant yet).
+3. INT-13 merging t-eng-24c: take this branch's riverLay (no `, true`); letGoCue CUE.climbFrames -> 0 (pressLaunchesFrom climbs now).
+
+## Lessons applied / method
+D59 (long runs in the background; the killed list runner named and rerun), D64/D76 (my context estimate read low: 414k real), D83
+(probes in the scratchpad, not the repo), D86 (the measure lists what the CLAUDE.md list will need), D19 (the test calls the judge's
+own landing, not a copy). Method update (engine-core.md §0zo-285): a harness sets the game's clock BEFORE placing a swing now.
+Turnover note: reference/handoffs/engine-core.md §0zo-285 (03ba54ef).
+
+# ENG-285b (Thu 11-19, a fresh member on t-eng-285): the last two drifts, the final model hash, the measure, the re-prove
+Started 1:48 PM ET (by `date`). FINAL MODEL HASH ba6b225b sent to the lead 2:19 PM ET (box 3:30 PM). Commits: 26f5e14b (drift 1),
+00bc2c77 (drift 2 + plants), ba6b225b (DROP ON A LOG, ruling A), e236233c (curated seeds re-pinned), this report + engine-core.md §0zo-285b.
+
+## EXACT NEXT STEP (ENG-285b stopped by the lead at 589k real context, 3:22 PM ET; ENG-285c finishes on t-eng-285's head)
+PUSHED: 26f5e14b, 00bc2c77, ba6b225b (FINAL MODEL HASH, sent 2:19 PM), e236233c (seeds re-pin; the code head), 15a6c859 / a89389ec /
+this commit (docs and data only). Run data of every finished run: reference/qa-reports/ENG-285/b/ (castBots, skill-off runs, lock diffs,
+funcheck, gate logs, contact sheets, the probes skilloff.mts / w6verify.mts / lockdiff.py: scratch tools with absolute paths, D83).
+NOT RUN (were running in ENG-285b's container when it stopped; treat as UNRUN, D59): suite shards 4, 5, 6; the CI tool line
+(gates.yml:135); tierBots.test; drawcheck; clipcheck; kbdcheck; buildcheck; lockall --check vs main --intended; the 1-6/1-8 variant-10
+and 2-1 variant-13 stills; middle 2-1 skill-ON runs (on-middle-2-1, 53/80).
+GREEN ON e236233c's code (15a6c859): suite shards 1, 2, 3 (659 + 613 + 802 tests, 0 fail; CI's 6-way split, deploy.yml:38); tsc, build
+(BASE_PATH), chunkcheck, artcheck, knowncheck, generality, roadmapcheck (needs a blob-less unshallow: `git fetch --unshallow --filter=blob:none`),
+coveragecheck, registrycheck; every seed list --check (11, 0 refused); tierBots calibration 200/200 identical; funcheck = INT-12's run.
+1. Plant re-statements (riverRide.test.ts, the 2-1 skill plants; RED on this head: 'upstream off still clean: child N s23', 'bankUp off
+   still clean: child E s20'). The lead's rulings 3:22 PM ET:
+   - UPSTREAM: keep adult N seed 12 (off: rescued, 5 lives). Replace child N 23 with 'upstream off, the child on Normal loses at least 5
+     more lives than with it' on seeds 4 and 5 (measured off-vs-on: 1->9 lives each; b/off-upstream-child-normal.txt vs b/on-child-2-1.txt).
+     The ON-side test (riverRide.test.ts:159) still needs cases that cross clean with the skill: re-check it with the new seeds.
+   - BANKUP: on 2-1 it is never a rescue and lives move both ways (child N net -7 off, seed 26 0->7; middle N net 0); only time on child
+     Easy: +18 s seed 4, +15 s seed 22 (b/off-bankUp-child-easy.txt vs on-child-2-1.txt). Ruling: if real in lives or a rescue anywhere,
+     plant it there (first check child N seed 26 reproduces 0 -> 7 lives with only bankUp off, and look at 2-2: b/off22-bankUp-child-*.txt
+     has the 2-2 OFF runs, seeds 1-20, b/on22-child.txt the ON runs (finished 3:23 PM, not yet compared));
+     else plant its time effect at about half the measured margin (at least 8 s on child Easy seeds 4 and 22) and say so in this REPORT.
+   Each re-statement: the test RED with the old cases first (shown), GREEN with the new; never delete a plant.
+2. The CLAUDE.md check list, EVERY item, once on the final head after step 1 (the items NOT RUN above, plus tsc and the full suite again
+   since riverRide/test files change; lockall --check reference/..lock-main.json from main's worktree with --intended
+   1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5: the diff I measured, b/lockdiff.txt).
+3. Stills still owed: (a) ENG-285 step 5: the still pair, old vs new judge path drawn over one back-swing hop; (b) the re-prove's 1-6 and
+   1-8 variant 10 and 2-1 variant 13, both ways (variants 3 and 7 shot and judged: b/*.jpg). The kit-audit shooter shoots variant 1
+   whatever ?layout says: pass the variant to window.__play(id, variant) (App.tsx:707); ?layout=N builds variant N+1 (stageGenerator.ts:2804).
+   Named from the judged sheets (existing content, not this branch): 1-6 variant 3, a flat green block with a log on top beside the dip's
+   painted slab stack (b/zoom-green.jpg); 1-8 variants 3 and 7, a flat pale bar under the mushroom log into the fog and the log art cut
+   straight at its lower right (b/zoom-line.jpg); the stage arrival card covers mid-screen in the first shots (the tool doesn't tap through).
+4. REPORT: the gate table from step 2, the plants' red/green, Learned (below) kept; engine-core.md §0zo-285b is written (15a6c859).
+BOX: the lead's 7 PM ET box for the final hash: the model hash is ba6b225b (final); what remains is tests, gates and stills.
+
+## The two drifts (R-165.297), each planted against RealPlay through the game's own InputEngine
+1. **No-steer air tick (26f5e14b).** airStep dir 0 braked at PHYS.airDec 520; the engine (refined controls, the default) keeps his speed
+   and brakes at PHYS.airStop only while Down is held. airStep(b, dt, dir, hold, down). Plant judgeFliesEngine.test.ts test 3: 6 launch
+   speeds x 5 steer plans (coast, Down, steer then let go, push back then let go, let go then Down), 24 frames each: RED on the old tick
+   (frame 1: engine vx 285.0, airStep 267.7), GREEN to 1e-3 px. The one dir-0 caller with speed: tools/inspect/jumps.ts.
+2. **The bot's liana hop aims (00bc2c77).** Measured: in one engine frame the vine clock steps, the catch scan reads his place from the end
+   of the LAST frame against THIS frame's clock, then he moves; so the hop's vine clock is the press frame's (pressIn(lag)) and the take-off
+   the frame before. `hopAim` names both; lianaWait and vineFromLog use it (both read `clock + lag`: a frame early on the vine, and the lag
+   never rounded to the frame the press reaches the engine on). The plant exposed two more slips of the class, fixed in the same commit:
+   the press frame is steered ON THE GROUND (physics.ts takeOffStep; groundStep for the run-up: a held run's top speed steps 285/267.7),
+   and the touch layer's 220 ms minimum holds 7 frames (`touchHeld`; lianaWait now holds as pressHold does).
+   Plant lianaRide.test.ts test 5: 1,728 hops (2 SWINGING lianas x run/stand x 6 lags x 3 spots x 2 holds x 12 moments): the aim's
+   take-off = the engine's to 1e-6 px, the press frame's vine clock = the aim's, the bot's verdict AND catch frame = the engine's on every
+   hop. RED on the old aim: 245 of 1,728 wrong (the clock alone 144; one frame earlier still, 140). judgeFliesEngine.test.ts test 4:
+   takeOffStep/groundStep vs the engine, 7 speeds x 3 run steers x 3 jump steers x 2 run-ups, every frame to 1e-6 px (RED with the take-off
+   frame flown as an air tick: 2001.89 vs 2002.89).
+3. **Ruling A (ba6b225b):** with the exact hop judge, DROP ON A LOG's variant 3 hops from the bank onto a log (and lands) and rides across,
+   0 lives, never catching the liana. The test runs v1-6: >= 5 catch the liana (6 of 7 do), each lets go onto a log; one that does not
+   must cross standing on a log with no life lost (asserted); planted OFF 24 lives over v1-5 (was 19).
+The drop judge's calibration table (ENG-24 calib.ts, 16 rows) is IDENTICAL on 925eba15 and this model: today's drifts don't touch it.
+
+## MEASURE on the final model (code head e236233c = ba6b225b + the curated-seed re-pin)
+| Check | Result |
+|---|---|
+| lockall 16 vs 925eba15 (ENG-285's model) | 102/102 unchanged: today's commits move no stage |
+| lockall vs ce4ad461 | 89/102; moved = ENG-285's 13: 1-6 N16/E6, 1-8 N[3,7,10,11], 2-1 N[13], 3-8 (proto.thorns), 4-4 N[3,9,10,13,16], 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5 |
+| lockall vs main 6e7b85f8 | 87/102: the 13 + 1-7, 1-9 (INT-12's own); the intended list for the final check: 1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 |
+| seedlist --check, all 11 lists | PASS each, 0 refused (1-1 161, 1-5 150, the rest 100) |
+| tierBots full calibration (3 tiers x both x 1-40) | 200/200 runs identical to calibration-main.jsonl: no recalibration, no recommit |
+| funcheck | line for line INT-12's d7cb8240 run: 30 worse/new (main 34): nothing new or worse |
+| seeds.test.ts:40 (e236233c) | the 3 plans ENG-285's model moved (6-1 69793, 6-1 205913, 7-5 928604) re-verified with curate.ts's own measures and rules (levelCheck both settings, clock floors, quiet, dead, animals, unswung lianas, kid 85% / adult 70% bots): all pass on the same layout seed; re-pinned (sections + re-measured numbers). All 16 of 6-1's seeds pass. FOUND: 7 more (8-5 x5, 8-6 x2) already differ on main and ce4ad461 (the guard checks 2 seeds a stage) |
+
+## Re-prove: castBots 1-40 x tiers x both on the final model (expert plays Normal only, castBots.ts:31)
+| Stage | Calibrated (child / middle / expert) | First-timers (kid / adult) | Each miss |
+|---|---|---|---|
+| 1-6 | E 40/40; N child 39, middle 40, expert 40 | N kid 26, adult 40; E 40 / 40 | the packet's rows child N L28, child N L34, middle N L39 PASS. child N seed 30: 40 double jumps straight up on the creaky-landing pit's floor (x 29,128, far wall 225 px) for 100 s, rescued: BUILD-24b's bot defect (b), REPRODUCED; pitWayBack's `prog.off(p) < 120` return comes before ENG-16F's liana-foot rule; a one-line fix made it worse (4 rescues), reverted; middle/expert pass seed 30, the child passed it on ce4ad461: the bot, not the level (the lead rules). kid N: the same two pits as INT-12 (x~28-29k, ~46k), re-rolled (INT-12 29) |
+| 1-8 | N child 36 (seeds 9,17,25,35), rest 40/40 | 40/40 | identical to main and INT-12 (VAR-1 §4) |
+| 2-1 | all 40/40 except child E 39 | kid N 32, E 39; adult N 40, E 39 | vs ce4ad461 today: child E seed 21 NEW (0 lives, stands at the water x 19,694 until rescued; passes on 925eba15 and with the old liana aim: the exact aim re-rolls it; a wait-loop change had no effect, reverted); kid E seed 26 new (x 9,340); kid N 32 = 32; adult E seed 8 = ce4's |
+
+## Diagnoses for the lead (read-only, scratch worktrees)
+- letGoCue.test reds on t-build-24c 2a3e061a: NOT the model. GLOW: the test's start() placed the swing before the game clock (since 1c the
+  vine clock is gameTime + shift): fix = game clock first + a set-up guard (RED with the old order). Test 4: re-pin t-meter-3's judge numbers
+  to the model's (identical on ba6b225b and 2a3e061a). Both applied by BUILD-24c (17e38bda, be615d5e); letGoCue 4/4 three runs.
+  Every press of one swing, flicked or held, leaves the liana where pressLaunches says (344/344).
+- KID 2-4 Normal 36 -> 28 (BUILD-24c be615d5e): no single bot slip. Full-40 bisect: revert all of drift 2 -> 31; its aim alone -> 28;
+  ENG-285 1b/1c -> 28; step 1 not revertible alone. A 12-seed sample first showed 0 -> 8/12 for the aim: selection bias, withdrawn.
+  The rule that fires (lianaWait at the mean lag; the float-wait's any-of-3) leaned on the old one-frame error; the vineFromLog rule
+  (mid +/- sd/2) in lianaWait gave 26/40, no gain. Named for an R-id.
+
+## Learned (for the next builder; proposed method updates)
+- A plant on a vine that doesn't swing proves nothing about a clock: two lianas side by side in one swingSetup call get amp 0. Assert the
+  swing in the set-up (lianaRide.test.ts does now).
+- A bisect on the failing seeds alone lies (selection bias: the 2-4 kid 0/12 -> 8/12 vanished at full size, 28/40). Bisect bot changes on
+  the full 40, or on a fixed random sample, never on the seeds that failed.
+- A still is labelled by what the game built (D62): the kit-audit shooter built variant 1 whatever ?layout said; reading gen2.seed back
+  caught it before any judgement.
+- Read the real context figure from the lead at each idle: my running estimate said ~45% when the real figure was 589k (D64/D76 again).
+## Lessons applied
+D19 (plants call the bot's own hopAim/hopCatchAt/touchHeld), D30/D42 (every time from `date`), D40 (both drifts before the re-prove),
+D57/D87 (inbox at every push, ack in one line), D59 (UNRUN named above), D62 (stills labelled from the game), D79 (whole screen judged),
+D83 (probes outside the repo until copied as data), D86 (the full list, not a subset), law 3 (the typed 0.27 corrected by measuring),
+law 22 (no plant loosened: re-stated by the lead's ruling).
+
+# ENG-285c (Thu 11-19, a fresh member on t-eng-285): the two plants re-stated, the still pair, every gate once
+Started 3:26 PM ET (by `date`). The model is unchanged (ba6b225b; code e236233c). Commits: b2df1a47 (plants), 6c55b4c1 (still pair; the
+CODE HEAD every gate below ran on), then this REPORT + engine-core.md §0zo-285c (docs only). Method: methods/gates.md, stage-fix.md; BOTS.md.
+
+## 1. The plant re-statements (tools/inspect/riverRide.test.ts, b2df1a47; the lead's rulings 1 and 2A)
+| Plant | On c255ae4d (old cases) | Re-stated as | GREEN (c/rr-green.txt) | RED, switch neutralised |
+|---|---|---|---|---|
+| UPSTREAM | RED 'still clean: child N s23' (0 -> 9 lives, 0 rescues) | adult N s12 rescued without it (kept); child N s4, s5: 5+ more lives without it (measured 1 -> 9 each) | ok | RED 'adult s12 still clean' (c/rr-red.txt); the lives assertion alone, adult removed: RED '0 more lives' (c/rr-red2.txt) |
+| BANKUP (THIN) | RED 'still clean: child E s20' | child E s22: boarding to the both-ways far bank 2+ s longer without it (`bothWaysCrossing`; measured 4.73 -> 8.56 s) | ok | RED '4.73 s on, 4.73 s off (+0.00)' |
+The ON-side test now runs adult N 12, child N 4, 5 and child E 22: each crosses clean (shrine, 0 rescues).
+**Why seeds 4/5 are the skill's own:** the on and off runs are frame-identical up to the both-ways back river (s4 parts at t 284 s, x 25,7xx,
+on the back log; s5 parts 1 s at the first back river's far bank) and the 8 extra lives are all at that river (x 24,4xx-25,9xx).
+**The bankUp search (ruling 2A, data c/):** real NOWHERE in lives or rescues. 2-1 kid N/E, adult N/E, middle E, expert N x 1-40: 0 lives,
+0 rescues moved (c/s21-*.jsonl; ENG-285b had child N/E, middle N). 2-2: every river runs with him (RIVERS_22 lane22), child off/on
+identical 1-20. Toy back river (riverRide's BACK): the same lives every tier off (c/toy-back-off.jsonl). With bankUp off the UPSTREAM
+front-end hop (firsttimer.ts:2573) takes him up the same bank (child E s4: 152.77 vs 152.73 s; s20, s23, child N s26 and s1 the same
+rule). Measured AT the bank (boarding to far bank, c/bankat-2-1.jsonl), 8 crossings: only s22's both-ways moves (+3.8 s); the rest within
++/-0.4 s. The whole-run figures are drift: child N s26 0 -> 7 and s1 19 -> 4 (the other way) come 60+ s after the bank; child E s4's +18 s
+with its bank crossed 0.04 s apart. The lead's R-165.309: bankUp near-redundant with upstream on the exact model.
+
+## 2. score.test PREDATOR READ (ruling 3): not applicable here
+t-eng-285 has no PREDATOR READ test (it came with METER-3 on t-build-24c's line; `grep PREDATOR tools/difficulty/score.test.ts` = 0 here,
+and score.test passes in the CI tool line below). INT-13 gets BUILD-24c's 8a78d0ec with that branch.
+
+## 3. The still pair (ENG-285 step 5; c/backswing-{side,up}-{old,new}.jpg, data c/backswing-*.json, tool c/backswing.mts.txt)
+1-6 Normal, layout 0 (built seed 1, printed from the game, D62), the second swinging liana: he catches it, swings, and lets go at the back
+swing's fastest (moving left) while steering right, through the real touch pad (clipPress pressFrame). White dots: the engine, frame by
+frame. Both judges fly from the engine's state after the first whole air frame: NEW airStep = the engine to 0.000 px over the free flight
+(15-16 frames, to his landing); OLD (ce4ad461 physics.ts:203, no turn push) lands 19-20 px short (sideways 18.9, upright 19.5).
+
+## 4. Gates on 6c55b4c1 (the code head; one run, 3:54 PM ET start; logs in the container, summaries here)
+| Gate | Result |
+|---|---|
+| tsc; build (BASE_PATH=/Sloths-Adventure-/); chunkcheck; artcheck | rc 0 each |
+| knowncheck; generalitycheck; roadmapcheck (unshallowed, blob-less) | rc 0 each |
+| drawcheck (764 s); clipcheck (510 s); kbdcheck; buildcheck (1-1 p95 113 ms N, 62 ms E) | rc 0 each |
+| the suite, 3 shards (CLAUDE.md glob) | 1247 + 1189 + 1405 pass, 0 fail (3 todo, already in the repo: e.g. the boulder wall) |
+| CI tool line (gates.yml:135, riverRide/lianaRide/score/castBots/...); the engine tools' line | 226 pass 0 fail (1 todo, in the repo); 37/37 |
+| tierBots.test | 7/7: the calibration replays exactly; no recommit |
+| tipwalk --layouts 4; registrycheck; coveragecheck | rc 0 each |
+| every proven list --check (registrycheck --lists: 1-1..1-9, 2-1, 2-2) | 11/11 PASS, 0 refused (1-1 161, 1-5 150, the rest 100) |
+| lockall --layouts 16 vs main 6e7b85f8 (recorded in a main worktree), --intended 1-6,1-7,1-8,1-9,2-1,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 | rc 0: 87/102 unchanged; the 15 moved are exactly the intended list |
+| funcheck (advisory; exit 1 by design on any flag over its counts) | rc 1, line for line ENG-285b's run (b/funcheck-head.txt, 71 lines): nothing new or worse |
+Nothing UNRUN: the runner ended 5:05 PM ET (by `date`) before this report.
+
+## 5. What INT-13 must re-run after merging
+- riverRide.test (CI tool line): the plants' margins (s4/s5 +5 lives, s22 +2 s) on the merged bots; if BUILD-24c/FIX-284/VAR-19 move 2-1 or
+  the bots and a plant goes red, measure at the skill's own spot again (c/bankat.mts.txt, c/skillxt.mts.txt) and re-state with the lead,
+  never loosen. lockall vs main --intended (the 15 above plus each merged branch's own), every list --check, tierBots, the suite.
+- score.test's PREDATOR READ arrives with t-build-24c (8a78d0ec).
+
+## 6. Polish check
+Stills judged both ways at full size: the caption covered the lives counter in the first shot, moved below the play; upright, the camera
+frames him a third in, so the arc's first frames run off the left edge (the end points, where the 19 px shows, are in view). The first
+shots had the arrival card up: the tool now taps it away and lets the intro play out before the hop.
+
+## 7. Unresolved
+- A stray file /rr-up-red.txt in the container's root from my own slip (a backgrounded subshell lost its path); the safety check refused
+  `rm` on a root path. Nothing in the repo. b2df1a47's Claude-Session trailer names the lead's session, not mine (not amended: pushed).
+
+## Learned (proposed method updates, for the lead)
+- A skill plant is measured AT the skill's own spot (the first frame the on and off runs part, or time/lives in its piece), never by the
+  run total: a run total moves by drift (bankUp's +18 s and 0 -> 7 lives were drift). BOTS.md 'plants' (proposed line): "find the first
+  frame the runs part (an x/t trace) and assert at that piece".
+- A still of a judge path: fly it from the state after the first WHOLE air frame (the release frame's launch is set inside the engine's
+  step), and cut the path where the engine first meets something (judge vs engine > 0.5 px).
+## Lessons applied
+D19 (the plants call castRun/firstTimer, the bots the game's stages use), D30/D42 (times from `date`), D40 (no model change; the plants
+re-stated on the final model), D57/D87 (inbox at each push), D59 (no gate left running at report), D62 (the still prints what the game
+built), D79 (the whole still judged), D83 (probes kept as .txt data), D86 (the full list), law 3 (the whole-run number checked at the
+bank before planting it), law 5 and 22 (no plant loosened or deleted: re-stated with the lead's word).

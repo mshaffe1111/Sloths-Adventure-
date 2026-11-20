@@ -1,0 +1,30 @@
+upright start x876 (frame 80): Flick up to hop up or over.
+upright hop 1 at x901 (card: Flick up to hop up or over.)
+upright hop 2 at x1101 (card: Flick up to hop up or over. [+1])
+upright hop 3 at x1521 (card: Flick up to hop up or over. [+1])
+upright hop 4 at x1811 (card: Flick up to hop up or over. [+1])
+upright the hop card went at x2226 (frame 258, after 4 hop(s)); now: null
+upright after the hop x2226: null
+upright x19480 readbare-boa-near: Too small to be worth chasing. Best thing about me, honestly.
+upright x19480-readbare-boa-near card0: Too small to be worth chasing. Best thing about me, honestly.
+upright x19620 readbare-boa-on-b: Tap to punch it when it's close. [+1]
+upright x19620-readbare-boa-on-b card0: Tap to punch it when it's close. [+1]
+upright x23700 hunters-exit: Big ones take several hits. Step back when it rears.
+upright x23700-hunters-exit card0: Big ones take several hits. Step back when it rears. [+1]
+upright x23700-hunters-exit card1: A flag! Fall, and you start again here.
+upright x24380 reststair-boulder: null
+sideways start x793 (frame 71): Flick up to hop up or over.
+sideways hop 1 at x901 (card: Flick up to hop up or over.)
+sideways hop 2 at x1101 (card: Flick up to hop up or over. [+1])
+sideways hop 3 at x1521 (card: Flick up to hop up or over. [+1])
+sideways hop 4 at x1811 (card: Flick up to hop up or over. [+1])
+sideways the hop card went at x2125 (frame 247, after 4 hop(s)); now: null
+sideways after the hop x2125: null
+sideways x19480 readbare-boa-near: Too small to be worth chasing. Best thing about me, honestly.
+sideways x19480-readbare-boa-near card0: Too small to be worth chasing. Best thing about me, honestly.
+sideways x19620 readbare-boa-on-b: Tap to punch it when it's close. [+1]
+sideways x19620-readbare-boa-on-b card0: Tap to punch it when it's close. [+1]
+sideways x23700 hunters-exit: Big ones take several hits. Step back when it rears.
+sideways x23700-hunters-exit card0: Big ones take several hits. Step back when it rears. [+1]
+sideways x23700-hunters-exit card1: A flag! Fall, and you start again here.
+sideways x24380 reststair-boulder: null

@@ -88,3 +88,53 @@ ART-18 total: ~29 GPU-min, **~$1.34** of its $4 cap (minutes x $2.75/60). Balanc
 |---|---|---|---|---|
 | 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
 ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.
+
+## 2026-11-14 (ENG-19a, t-eng-19; the lead's packet: ONE job, cap $2)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:19-8:29 PM | sandbox 6af9089523985fb9cd82c13a (rtx-pro-6000, 40 min hard timeout), ~10 min creation to terminate: batch 1 spec-roost.json 6 t2i takes (267 s); batch 2 spec-roost2.json started, 2 of 6 done when the session stopped at its 40% context line | ENG-19a (packet) | ~$0.46 | batch 1 judged (reference/qa-reports/ENG-19/clips/roost-batch1-sheet.png): every take runs its limbs off the top edge (a cut end reads as sawn wood), 31 has eggs; 71 the nearest. Nothing kept: batch 2 is the next step |
+ENG-19a total: ~10 GPU-min, **~$0.46** of its $2 cap (minutes x $2.75/60). Balance ~$55.9 (from ~$56.4).
+
+## 2026-11-15 (ENG-19b, t-eng-19b; the same $2 cap as ENG-19a: ~$1.54 left of it)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:08-11:16 AM | sandbox 6af9d8d329dd05ff0368e5a2 (rtx-pro-6000, 40 min hard timeout), ~8 min creation to terminate: spec-roost2.json, 6 t2i takes (~52 s each), CPU cut (hf1113/cutprops.py), 2 parts copied back | ENG-19b (packet step 1) | ~$0.37 | the roost: roostb-101 picked at 190 px tiles (whole piece in frame, nest and feather read; 113/97 run off the edge, 71 a little tree on a mound, 83 a cut stump, 127's nest too small at 145 units); shipped src/assets/w1-19/w1-roost.webp (593x435, 75 KB, 1.63 of Pokey); raws not kept |
+ENG-19 total (a+b): ~18 GPU-min, **~$0.83** of its $2 cap (minutes x $2.75/60). Balance ~$55.5 (from ~$55.9).
+(BUILD-19 merge, 11-18: ENG-19a/b ran beside BUILD-18, ENG-LOOK2, ART-18 and ART-W2 from the same ~$56.4; each "Balance" above is its own branch's figure. Combined: ~$53.9 - ~$0.83 = ~$53.1.)
+
+## 2026-11-18 (ART-22P, t-art-22p; the lead's packet cap $4, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 10:14-10:21 AM | sandbox 6afdc0ade41aae15936c90c1 (rtx-pro-6000), about 7.4 min creation to terminate: 8 img2img takes (the shipped petal recoloured lavender / white, tools/art/hf22p/starts.py; s45/s58 x seeds 11/23, ~11 s each after a ~2 min load) + 6 Qwen-Image + style LoRA 0.8 text-to-image takes (lavender hyacinth x4, white lily x2, ~20 s each); spec tools/art/hf22p/spec-22pi.json + spec-22p.json; picks back by hf_sandbox_fs (reference/art/hf22p/) | lead (ART-22P packet) | ~$0.34 | 1 shipped piece (src/assets/pickups/petal-hyacinth.webp, 2-2's pickup and HUD counter): $0.34 a piece; 14 takes, ~$0.02 a take |
+| 11:06-11:11 AM | sandbox 6afdccfce41aae15936ca35a (rtx-pro-6000), about 4.4 min creation to terminate: 4 img2img takes of World 2's drift-petal paste-up (tools/art/hf22p/driftstart.py: the game's own lavender and white petals; s40/s52 x seeds 11/23, 1536x1152, ~19 s each after the load), cut in the sandbox by drift.py; spec tools/art/hf22p/spec-drift.json | lead (ART-22P follow-on, 11:04 AM message) | ~$0.20 | 1 shipped sheet of 12 drifting petals (src/assets/flora/petals-river.webp, World 2's weather): ~$0.017 a petal |
+ART-22P total: ~11.8 GPU-min, **~$0.54** of its $4 cap (minutes x $2.75/60). Balance ~$53.4 (from ~$53.9, the last figure on main; later branches' spend not on main is not counted here). Logged (first job) 10:23 AM ET. Second job logged 11:13 AM ET.
+(INT-12 merge, 11-18: ART-22P's "~$53.4" above does not count ENG-19a/b's ~$0.83, which reached main through BUILD-19 in the same integration. Combined: ~$53.9 - ~$0.83 - ~$0.54 = ~$52.5.)
+
+## 2026-11-18 (ENG-25, t-eng-25; the lead's packet cap $3, ONE job)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 12:54-12:57 PM | sandbox 6afde63d545f95df1c0678df (rtx-pro-6000), about 4 min creation to terminate: 6 img2img takes (Qwen-Image + style LoRA 1.0, s50/s58/s66 x seeds 11/23, 1792x320, ~8 s each after the model load) of a 4-frame paste-up from World 2's own boulder (kits/w2.webp#boulder recoloured to the river stone's grey-brown; tools/art/hf25/starts.py, spec.json, run.sh); back as one carrier by hf_sandbox_fs (saved to files) | lead (ENG-25 packet, step 3) | ~$0.18 | 1 shipped piece, the snap stone's 4-frame sheet (src/assets/w2-1118/w2-snapstone.webp, built from take s50-11 by tools/art/hf25/ship.py; catalogued w2-1118/w2-snapstone): **~$0.18 a piece**; all 6 takes kept (reference/art/hf25/takes/) |
+ENG-25 total: ~4 GPU-min, **~$0.18** of its $3 cap (minutes x $2.75/60). Balance ~$53.7 (from ~$53.9, the last balance on main; branches not yet merged may log jobs of their own). Logged 1:21 PM ET.
+(INT-13 merge, 11-19: ENG-25's "~$53.7" above does not count ENG-19a/b (~$0.83) and ART-22P (~$0.54), merged at INT-12. Combined: ~$52.5 - ~$0.18 = ~$52.3.)
+
+## 2026-11-18 (ART-W2A, t-art-w2a; the lead's packet cap $4, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 6:04-6:50 PM | sandbox 6afe2efd545f95df1c06c8a8 (rtx-pro-6000), 46 min creation to terminate (~2 min image pull, ~1 min model download): 42 Qwen-Image-Edit-2511 edits (no LoRA; ~53 s each at 1024, 45 s for the heron) from Matt's Happy poses and w2Heron on flat grey (reference/art/hfw2a/starts/): round 1, 21 (walk A + paddle per little one, the looking heron, 3 seeds each); round 2, 12 (walk B "far foot forward": came back the SAME frame, unused); round 3, 9 (the passing frame: legs together); cut in the sandbox (tools/art/hfw2a/cut.py), back by hf_sandbox_fs | lead (ART-W2A packet) | ~$2.11 | 10 pieces picked (tools/art/hfw2a/picks.json): duck/otter/capy walk A + walk B (passing) + paddle, the looking heron: **~$0.21 a piece**; round 2's 12 takes (~$0.55) were the waste |
+ART-W2A total: ~46 GPU-min, **~$2.11** of its $4 cap (minutes x $2.75/60). Balance ~$51.3 (from ~$53.4, ART-22P's figure on origin/t-art-22p; branches not yet on main are not counted). Logged 6:51 PM ET.
+(INT-13 merge, 11-19: ART-W2A's "~$51.3" above starts from ART-22P's figure and does not count ENG-19a/b (~$0.83) or ENG-25 (~$0.18). Combined: ~$52.3 - ~$2.11 = ~$50.2.)
+
+## 2026-11-18 (ART-W2B, t-art-w2b; the lead's packet cap $4, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 8:24-8:49 PM | sandbox 6afe4fba545f95df1c06e370 (rtx-pro-6000), 25 min creation to terminate (~1 min model download): 15 Qwen-Image-Edit-2511 edits (no LoRA) from paste-up starts on flat grey + World 2's own wood pieces as the style reference (reference/art/hfw2b/starts/; tools/art/hfw2b/make_spec.py): round 1, 12 (the noria x4 at 1024, ~95 s each; the dry bucket x3, a spill fallback x2, the millrace lip x3 at 1024x512/384, ~72 s each); round 2, 3 (the spill FROM the picked dry take); cut in the sandbox (tools/art/hfw2b/cut.py), back by hf_sandbox_fs | lead (ART-W2B packet) | ~$1.15 | 4 pieces + 1 mirror shipped (tools/art/hfw2b/picks.json: noria wheel-s37, bucket-s23, spill spillc-s37 (+ its mirror), lip-s11): **~$0.29 a piece**; the 2 spill fallbacks from the start (~$0.08) went unused |
+ART-W2B total: ~25 GPU-min, **~$1.15** of its $4 cap (minutes x $2.75/60). Balance ~$50.2 (from ~$51.3, ART-W2A's figure on origin/t-art-w2a; branches not yet on main are not counted). Logged 8:52 PM ET.
+(INT-13 merge, 11-19: ART-W2B's "~$50.2" above starts from ART-W2A's figure and does not count ENG-19a/b (~$0.83) or ENG-25 (~$0.18). Combined: ~$50.2 - ~$1.15 = ~$49.0.)
+
+## 2026-11-19 (PAINT-292, t-paint-292; the lead's ruling: ONE upscale job of the two thick plank frames, cap $1)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 5:55-6:02 PM | sandbox 6aff7e454fdc5ab3c55a6bc5 (cpu-upgrade, no GPU, no token forwarded), about 7 min create to terminate: torch CPU + spandrel, ai-forever/Real-ESRGAN RealESRGAN_x4.pth (pure super-resolution, no repaint) on w1-log-plank-a | the lead, 5:39 PM ruling 4 | about $0.01 (CPU minutes; the job page has the exact charge) | NOTHING shipped: the run was still on CPU when the member's context box closed, and this container cannot reach huggingface.co or the sandbox URL, so a result could only come back as base64 through the member's context (~50k+ tokens a frame). Terminated. PAINT-292b's EXACT NEXT STEP names the way to finish it. |
+PAINT-292 total: about $0.01 of its $1 cap. Balance about $52.5 (main's last figure; unchanged at the cent level). Logged 6:10 PM ET.
+(INT-14 merge, 11-20: PAINT-292's "about $52.5" above is main's figure and does not count the INT-13 merges above. Combined: ~$49.0 - ~$0.01 = ~$49.0.)
+

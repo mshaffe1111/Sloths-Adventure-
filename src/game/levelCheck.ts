@@ -7,6 +7,7 @@
  * Then it walks the graph from the spawn point and checks the exit, the checkpoints,
  * and the quota items are all reachable.
  */
+import { goalCountsPetals } from './goals.ts';
 import { withSetting } from './settingDials.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
@@ -20,7 +21,8 @@ import { PAST_SHRINE } from './rules.ts';
 import { flagFurther } from './gen2/tower.ts';
 import { isKitSweeper } from './gen2/stillLay.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
-import { hopLimit } from './river.ts';
+import { hopLimit, lianasOver, lianasOverLogs, onRiver } from './river.ts';
+import { logCatches } from './gen2/riverLay.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -196,7 +198,7 @@ const gripFlights = (dbl: boolean) => (dbl ? LETGO_FLIGHTS : LETGO_FLIGHTS.filte
  * both.)
  */
 /** does a running jump off `a`'s edge (the way `dir`) catch liana `v`, as the plain check and the grip dial's catch it (a jump timed for it)? */
-function lianaCaught(a: Platform, v: Vine, dir: 1 | -1, waterY: number): boolean {
+export function lianaCaught(a: Platform, v: Vine, dir: 1 | -1, waterY: number): boolean {
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
   const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
@@ -554,6 +556,13 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
       // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
       if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }
+      // a water wheel (2-6, wheel.ts) is the same: one stop at its foot and one at its top, two copies of its first bucket under one id, so
+      // riding it joins the jetty to the street (its fairness is wheelLay.ts wheelFaults: the flown board and step-off)
+      if (p.wheel) {
+        const w = p.wheel.w;
+        if (p.wheel.i === 0) plats.push({ ...p, x: w.cx - w.W / 2, y: w.cy + w.R }, { ...p, x: w.cx - w.W / 2, y: w.cy - w.R });
+        continue;
+      }
       if (p.type === 'moving' || p.type === 'drift') { plats.push(p); continue; }
       let spans: Array<[number, number]> = [[p.x, p.x + p.width]];
       for (const b of rollers) if (b.id !== p.id && Math.abs(b.y + b.height - p.y) < 2) spans = cutSpans(spans, boulderX(b.id), boulderX(b.id) + b.width);
@@ -820,6 +829,24 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       }
     }
 
+    // 3a'. a liana caught off a log over a river's TAIL (ENG-24f, the lead's ruling 11-19, level.md World 2 notes; gen2/riverLay.ts RiverRow
+    // .tail): the logs go under short of the far bank, out of a jump's reach, so the way on is the liana a held jump off a riding log catches
+    // (riverLay logCatches, the judge's own test). The log -> the liana (a node of its own, as a chain's), the liana -> where a press from
+    // its holds lands him (heldLandings, 6 lines or more). The testers' let-go onto the far bank is riverLay tailLianaFaults' (World 1's FAR
+    // rule). Only over a tailed river: on any other the logs reach the far bank, and the walks locked on them stay as they are
+    for (const r of stage.rivers ?? []) {
+      if (!r.tail || r.speed === 0) continue;
+      const logs = plats.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r) && !p.broken);
+      for (const v of lianasOver(sized, r)) {
+        let caught = false;
+        for (const l of logs) if (logCatches(v, l.drift!)) { link(`p${l.id}`, vid(v)); caught = true; }
+        if (!caught) continue;
+        usedSwing.add(v.id);
+        swingEdges++;
+        for (const [id, lines] of heldCached(v, 1, landingPack(v, plats), waterY, allowDouble)) if (lines >= 6) link(vid(v), `p${id}`);
+      }
+    }
+
     // 3b. shimmy ropes: a rope joins the two ledges it hangs over, but only counts where EVERY player has the skill (a stage
     // entered before that may have ropes as extras, and must be finishable without them)
     for (const r of stage.ropes ?? []) {
@@ -1007,7 +1034,9 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
   const cocoons = (stage as { proto?: { w5?: { cocoons?: unknown[] } } }).proto?.w5?.cocoons?.length ?? 0;
   if (cfg.objectiveType === 'rescue' && count((t) => t === 'cage') + cocoons < need) errors.push('not enough cages for the quota');
   if (cfg.objectiveType === 'relic_hunt' && count((t) => t === 'relic') < need) errors.push('not enough relics for the quota');
-  if (cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') {
+  // (a purge or gauntlet whose goal counts petals (goals.ts goalCountsPetals: 1-9) holds the animals its sockets lay: its goal is her
+  //  petals, never a count of animals beaten; BUILD-19)
+  if ((cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') && !goalCountsPetals(cfg)) {
     // (4-9: a capuchin guard blown off its ledge counts as one defeated, w4Play.ts)
     const w4 = (stage as { proto?: { w4?: { monkeys?: Array<{ job: string; x: number; blowOff?: number }> } } }).proto?.w4;
     const guards = (w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff);
@@ -1038,7 +1067,7 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
 
   // rivers: the logs must be spaced so a hop between neighbours is easy, and a bank must stand at each end of the water
   for (const r of stage.rivers ?? []) {
-    const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    const logs = plats.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r));
     // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
     if (r.speed === 0 || r.open) { /* no logs to space */ }
     // (a ferry raft, run by a sluice: one wide log that carries him the whole way across, river.ts `raft`)
@@ -1050,11 +1079,13 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const gap = spacing - d.width;
       const limit = hopLimit(d.dir);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
-      if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
+      // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24; a
+      //  liana over the river's TAIL throws over open water, so the logs before it are hopped as ever: river.ts lianasOverLogs, ENG-24f)
+      if (gap > limit && !lianasOverLogs(stage.vines ?? [], r).length) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
     const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);
-    if (!near || !far) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
+    if ((!near || !far) && !r.wheelPond) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
   }
 
   // zones (Worlds 3 and 4): a rhythm that can always be waited out, a hop that is possible in either state, nothing hostile or

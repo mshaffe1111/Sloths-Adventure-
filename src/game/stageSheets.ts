@@ -26,6 +26,8 @@
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
+ *   w2-wheel       World 2's painted noria: its rim and spokes, its buckets dry and spilling, the millrace wall (wheelDraw.ts), for a gen2
+ *                  stage that lays a water wheel (and the wheel's dev fixture)
  *   w6-wheels      World 6's painted sluice wheels (w6WheelArt.ts), for a gen2 stage whose required room has a lever with its own `looks`
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
  *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
@@ -57,7 +59,8 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
-import { gen2Creatures, gen2Water, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { WHEEL_FIXTURE_IDS } from './wheelFixtureStage.ts';
+import { gen2Creatures, gen2Rafts, gen2Water, GEN2_STAGES, isGen2Stage, laysRafts } from './gen2/game.ts';
 import { listedStage } from './gen2/listed.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
@@ -77,7 +80,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:eagle', 'props2'], // (the still fork's eagle and its moss cover's bushes; no gold snake since the hand-built 1-8 went, INT-10c)
-  '1-9': ['foe:boa', 'foe:goldsnake'],
+  '1-9': ['foe:boa', 'foe:eagle', 'props2'], // (the kit's boas, the eagle over the hunters and the Old Boa, its moss cover's bushes; no gold snake since the hand-built 1-9 went, BUILD-19)
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
   '2-7': ['foe:goldsnake'],
@@ -153,6 +156,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
   // the laid chase's dev fixture (chaseFixtureStage.ts): a gen2 World 1 stage, 1-1's sheets
   if (cfg.id === CHASE_FIXTURE_ID) return stageSheets({ ...cfg, id: '1-1' }, sw);
+  // the water wheel's dev fixture (wheelFixtureStage.ts): a gen2 World 2 toy, 2-1's sheets (World 2's gen2 ground and river)
+  if (WHEEL_FIXTURE_IDS.includes(cfg.id)) return [...stageSheets({ ...cfg, id: '2-1' }, sw), 'w2-wheel'];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
@@ -203,7 +208,10 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's nest door; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
-  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
+  // (and a gen2 or LISTED stage that lays a river of rafts: World 2's painted raft is the kit's, riverArt.ts drawRiverLog, R-165.288;
+  // a listed stage (2-4) is rolled from its stageTable kit, which GEN2_STAGES does not hold: BUILD-24c found 2-4 asking for no raft sheet)
+  const rafts = isGen2Stage(cfg) ? gen2Rafts(cfg.id) : listed && laysRafts(listedStage(cfg.id)!.kit);
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair') || rafts)) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
   if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water; Worlds 9-10's every stage, whose pits are their own painted water;
@@ -216,6 +224,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (a required room's lever drawn in its world's pictures, World 6's sluice wheel: its sheets with the stage, never a pop-in)
   if (isGen2Stage(cfg) && wheelRoom(cfg.id)) out.push('w6-wheels');
+  // (a gen2 stage whose sections lay a water wheel, place 'wheel': World 2's painted noria, its buckets and the millrace wall, wheelDraw.ts)
+  if (isGen2Stage(cfg) && laysWheel(cfg.id)) out.push('w2-wheel');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // (hf-props, 2026-10-31: Worlds 1-7 on every stage but a lair or a secret: the world's new dressing sheet, and on an old-generator
@@ -238,6 +248,11 @@ export function everyStage(w: number): string[] {
 }
 /** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
 export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];
+
+/** a gen2 stage any of whose sections lays a water wheel (a piece placed `{ kind: 'wheel' }`: gen2/wheelLay.ts) */
+function laysWheel(id: string): boolean {
+  return !!GEN2_STAGES[id]?.kit('normal').manifest.sections.some((s) => s.pieces.some((pc) => pc.place?.kind === 'wheel'));
+}
 
 /** a gen2 stage whose required room (its manifest's `required`) has a lever drawn in its world's own pictures (a lever spec's `looks`) */
 function wheelRoom(id: string): boolean {

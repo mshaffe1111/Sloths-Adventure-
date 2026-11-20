@@ -113,7 +113,7 @@ test('the rivers: every fall is a river with a bank at each end; soft falls spla
 });
 
 test("the first deep river: a flag before it and Dot's warning in the keeper's words (lines-2-1.md `deep`, verbatim)", () => {
-  assert.equal(W2_TIPS.water, "This river's deep. Stay on the logs!");
+  assert.equal(W2_TIPS.water, "This river's deep. Don't touch the water!");
   for (const id of W2_GEN2_STAGES) for (const d of BOTH) {
     const st = built(id, d);
     const deep = (st.rivers ?? []).filter((r) => !r.safe).sort((a, b) => a.x0 - b.x0)[0];

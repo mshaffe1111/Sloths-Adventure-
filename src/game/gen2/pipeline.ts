@@ -41,9 +41,16 @@ import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { goalCountsPetals } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
-import { layPads, padFaults, padRowWidth, PAD_LAY } from './rideLay.ts';
+import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
+import { castDef } from '../predators/registry.ts';
+import { checkOnClock } from '../predators/core.ts';
+import { layWheel, pondFloors, stageWheels, streetFromJetty, wheelFaults, wheelSpan } from './wheelLay.ts';
+import { sweepBox } from '../wheel.ts';
+/** the room a wheel's rider takes over its top floor (px): his body and a hop's margin, kept clear of catch boughs */
+const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
@@ -411,6 +418,11 @@ export function difficultyScore(world: number, stage: number, band = bandFor(wor
   return band[0] + (band[1] - band[0]) * STAGE_HEAT[Math.max(0, Math.min(8, stage - 1))];
 }
 
+/** a stage that fights for its goal: a purge or gauntlet whose goal counts animals. One whose goal counts petals (goals.ts goalCountsPetals:
+ *  1-9) lays its sockets' animals and no more: no top-up, no reserve for top-up fights, never "thin" or short of animals (BUILD-19) */
+export const fightsForGoal = (b: Pick<StageBudget, 'archetype' | 'world' | 'stage'>): boolean =>
+  (b.archetype === 'purge' || b.archetype === 'gauntlet') && !goalCountsPetals({ objectiveType: b.archetype, worldIndex: b.world, miniIndex: b.stage });
+
 export function planBudget(config: LevelConfig, manifest: WorldManifest, difficulty: Difficulty): StageBudget {
   const archetype = config.objectiveType as Archetype;
   if ((config.objectiveType as string) === 'boss_lair') throw new Error('gen2: the guardian lair is hand-built');
@@ -420,8 +432,10 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const easy = difficulty === 'easy';
   const target = targetSeconds(config.worldIndex, config.miniIndex, archetype);
   const goal = config.targetCount;
-  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to)
-  const fights = archetype === 'purge' || archetype === 'gauntlet';
+  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to. A stage
+  //  whose goal counts petals (goals.ts goalCountsPetals: 1-9, a gauntlet that gathers her petals) never tops up animals to an animal
+  //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
+  const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex });
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
@@ -1123,6 +1137,8 @@ interface LocalPiece {
   crumble?: boolean;
   /** a creaky limb (SectionPiece.creak; creak.ts) */
   creak?: boolean;
+  /** quiet ground (SectionPiece.quiet: a landing on it makes no noise) */
+  quiet?: boolean;
   /** a sealed piece (SectionPiece.sealed) */
   sealed?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
@@ -1138,6 +1154,8 @@ interface LocalPiece {
   river?: { row: string; from: string };
   /** a far bank past a pond of sinking pads (place `pads`): the world's pad row and the near bank's key (layStage lays the water and pads) */
   pads?: { row: string; from: string };
+  /** a street a water wheel lifts him to (place `wheel`): the world's wheel row and the jetty's key (layStage lays the wheel and its pond) */
+  wheel?: { row: string; from: string };
 }
 interface LocalGap {
   x0: number;
@@ -1167,6 +1185,10 @@ interface LocalGap {
   /** a river's water (place `river`): its row's name. Nothing is laid under it (no pit, no bough, no stair): the river zone takes a fall,
    *  a life on a deep row, a splash back onto the near bank on a `safe` one */
   river?: string;
+  /** a water wheel's sweep (place `wheel`): its row's name. Nothing is laid under it: its pond takes a fall (a splash back onto the jetty) */
+  wheel?: string;
+  /** a wheel's pond (local): its span and how deep its water reaches under the section's entry (tower.ts localExtent keeps it clear) */
+  pond?: { x0: number; x1: number; low: number };
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
@@ -1202,6 +1224,8 @@ export interface LayLocalOptions {
   rivers?: WorldManifest['rivers'];
   /** the world's pad table (manifest.pads): place `pads` reads its row here */
   pads?: WorldManifest['pads'];
+  /** the world's wheel table (manifest.wheels): place `wheel` reads its row here */
+  wheels?: WorldManifest['wheels'];
 }
 
 /**
@@ -1340,6 +1364,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let y = 0;
     let h = pc.h ?? 24;
     let hang: LocalPiece['hang'];
+    // (a river's near bank, when `after` names a liana over it: the bank the liana is caught from)
+    let riverFrom: string | undefined;
     const pl = pc.place;
     const ref = (k: string) => by.get(k)!;
     // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
@@ -1405,9 +1431,16 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const row = lo.rivers?.[pl.row];
       if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays river row "${pl.row}" and world ${budget.world} has no river row of that name (WorldManifest.rivers)`);
       if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
-      const a = ref(pl.after);
+      // (`after` a LIANA (ENG-24, reference/design/2-4.md NEW 1): the liana's landing is the river. The water runs from the bank the liana
+      // (or its chain) is caught from, under the liana, to this far bank: he lets go onto a passing log (riverLay lianaRiverFaults holds the
+      // drop's share and wait on both clocks, never the hop rule), or catches the liana off a log when no bank reaches it)
+      const lv = ref(pl.after);
+      let a = lv;
+      while (a.hang?.kind === 'liana') a = ref(a.hang.from!);
+      riverFrom = a.key;
       x = a.x + a.w + riverWidth(row);
       y = a.y;
+      if (lv !== a) lv.hang!.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
       asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'pads') {
@@ -1432,6 +1465,20 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       }
       gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: a.y, pit: true, river: pl.row, ...(row.safe ? { soft: true } : { water: true }) });
       asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: pl.rope ? a.y : y, move: 'ride', thin: false, key: pc.key });
+    } else if (pl.kind === 'wheel') {
+      // a WATER WHEEL (ENG-26; wheelLay.ts): this street where the row's wheel lifts him to from the jetty `after`, on the section's way; the
+      // wheel and its pond are laid in layStage from the same row. Nothing under the sweep but the pond (a fall splashes him back onto the
+      // jetty). Asked as a ride, never a jump: wheelFaults holds the row to its flight and the laid wheel to the flown layout
+      const row = lo.wheels?.[pl.row];
+      if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays wheel row "${pl.row}" and world ${budget.world} has no wheel row of that name (WorldManifest.wheels)`);
+      if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a wheel in a mirrored section, which is not mirrored (a tower's storey that runs left lays it turned the other way)`);
+      const a = ref(pl.after);
+      const at = streetFromJetty(row, budget.difficulty);
+      x = a.x + a.w + at.dx;
+      y = a.y + at.dy;
+      const span = wheelSpan(row, budget.difficulty, a.x + a.w, a.y);
+      gaps.push({ x0: a.x + a.w, x1: Math.max(x, span.x1), y, lo: a.y, pit: true, soft: true, wheel: pl.row, pond: span.pond });
+      asks.push({ x0: a.x + a.w, x1: x, yTake: a.y, yLand: y, move: 'ride', thin: false, key: pc.key });
     } else if (pl.kind === 'swing' && ref(pl.after).hang?.kind === 'liana') {
       // a CHAIN (ENG-S5, 1-6 beat 4 "The chain"): a liana caught off the liana `after`, no perch or pit between (the gap under the whole
       // chain is its last perch's, `land`). Its anchor `top` over the ledge the chain left, its swing rolled as any liana's; its anchor where
@@ -1596,7 +1643,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pc.quiet && !hang ? { quiet: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1678,7 +1725,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; /** a river's water (place `river`): ridden, never jumped */ river?: string; /** a wheel's sweep (place `wheel`): ridden, never jumped */ wheel?: string }>;
   /** the reach each jump on the route asks, world px, by section (verdicts.ts judges them on 1-1) */
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
@@ -2207,7 +2254,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const used = new Map<string, number>();
   // (a purge or gauntlet: most of its animals come from pass 4's top-up, which the sections' own seconds can't see; about three
   // quarters of the goal's fights are kept back from the sections' share, so the first plan lands near the clock, not 30% over it)
-  const fightsArch = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+  const fightsArch = fightsForGoal(budget);
   const reserve = fightsArch ? budget.quota.lay * MODEL_TYPICAL.fightGround * 0.75 : 0;
   const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
@@ -2246,7 +2293,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let e = exitMemo.get(t.id);
     if (e === undefined) {
       try {
-        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers, pads: M.pads }).exit.y).sort((a, b) => a - b);
+        const ys = [0, 1, 2].map((k) => layLocal(t, budget, rngFor(7, k), false, { pitDepth: M.pitDepth, rivers: M.rivers, pads: M.pads, wheels: M.wheels }).exit.y).sort((a, b) => a - b);
         e = ys[1];
       } catch {
         e = t.exitDy;
@@ -2488,11 +2535,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
    *  pieces are handed to it moved to its frame). Laid with the section whose piece they hang under */
   const layCatches = (floorY: number) => {
     const fx = frame.x0;
-    const P = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
+    const P0 = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
+    // (a water wheel's pond catches a miss off its jetty, its street and its buckets (a splash back onto the jetty): to the catch boughs it is
+    // what lies under those ends, never wood to run on or a ledge with ends of its own (wheelLay.ts layWheel; its zone is the pond))
+    const ponds = pondFloors(rivers, routed ? fx : 0);
+    const P = ponds.length ? [...P0, ...ponds] : P0;
     const V = !routed ? vines : vines.slice(mark.v).map((v) => ({ ...v, x: v.x - fx }));
     const Gp = !routed ? gaps : gaps.slice(mark.g).map((g) => ({ ...g, x0: g.x0 - fx, x1: g.x1 - fx }));
     const mine = !routed ? sections : sections.slice(mark.s);
-    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id))) {
+    // (and no catch bough lies in a wheel's sweep or over it where its rider rides: wheel.ts sweepBox, his body over the top floor)
+    const keepOut = stageWheels(platforms).map((w) => { const b = sweepBox(w); return { x0: b.x0 - (routed ? fx : 0), x1: b.x1 - (routed ? fx : 0), y0: b.y0 - WHEEL_RIDER, y1: b.y1 }; });
+    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut)) {
       storeyNow = c.level;
       const cx = c.x + fx;
       const b = mk(cx, c.y, c.w, 'branch', 0);
@@ -2633,7 +2686,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const mirrored = tower ? false : fixed ? fixed.mirrored : flip < 0.5 && hangsNeed(tpl).length === 0 && tpl.content !== 'climb' && !hasBlock(tpl) && Math.abs(exitDyOf(tpl)) <= 25;
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
-      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, pads: M.pads, ...(tempo ? { tempo } : {}) });
+      let L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, rivers: M.rivers, pads: M.pads, wheels: M.wheels, ...(tempo ? { tempo } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -2739,6 +2792,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
         if (tagged) (p as Platform & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
         if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
+        if (lp.quiet) p.quiet = true;
         if (lp.sealed) sealedIds.add(p.id);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
@@ -2789,6 +2843,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (r.zone.spur) spurAt.set(lp.key, r.zone.spur);
         for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
       }
+      // (each water wheel (place `wheel`): its buckets and its pond between the jetty and the street, laid by the one wheel lay (wheelLay.ts
+      // layWheel), turned the way the street lies from the jetty (a tower's storey that runs left lays it turned the other way)
+      for (const lp of L.pieces) {
+        if (!lp.wheel) continue;
+        const row = M.wheels?.[lp.wheel.row];
+        if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays wheel row "${lp.wheel.row}" and world ${budget.world} has no wheel row of that name`);
+        const r = layWheel(row, lp.wheel.row, pieceOf(lp.wheel.from), pieceOf(lp.key), budget.difficulty, () => pid++);
+        platforms.push(...r.buckets);
+        placed.seam.push(...r.buckets);
+        rivers.push(r.zone);
+      }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
@@ -2796,12 +2861,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
       if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}), ...(g.river ? { river: g.river } : {}), ...(g.wheel ? { wheel: g.wheel } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
         const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
-        if (g.river) {
-          // (a river's water (place `river`): nothing under it, no pit, bough or stair; its zone takes a fall, laid with its logs above)
+        if (g.river || g.wheel) {
+          // (a river's water (place `river`), a wheel's sweep (place `wheel`): nothing under it, no pit, bough or stair; its zone takes a
+          // fall, laid with its logs (its buckets) above)
         } else if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
@@ -3012,6 +3078,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a river's water, and each log's window: its platform moved with the rest)
       for (const r of rivers) { r.x0 += right; r.x1 += right; if (r.safe) r.safe.backX += right; if (r.spur) r.spur.x += right; }
       for (const q of platforms) if (q.drift) { q.drift.x0 += right; q.drift.x1 += right; }
+      // (a water wheel's axle: its buckets moved with the rest, and the piece turns them round it)
+      for (const w of stageWheels(platforms)) w.cx += right;
       for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
       for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
       for (const q of sections) {
@@ -3066,6 +3134,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // log's float line: its platform moved with the rest)
       for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; }
       for (const q of platforms) if (q.drift) q.drift.baseY += down;
+      for (const w of stageWheels(platforms)) w.cy += down;
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
@@ -3273,6 +3342,7 @@ export interface Filled {
  */
 export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, nodeAsks?: ReadonlyMap<string, NodeAsks>): Filled {
   const M = kit.manifest;
+  const rows = castRows(M, budget.id);
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
   const fills: FilledSocket[] = [];
@@ -3464,7 +3534,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const propThreat = (id: string) => M.props.find((p) => p.id === id)?.threat ?? 0;
 
   // creatures
-  const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
+  const creatureBag = new ShuffleBag<CreatureDef>(rng, rows);
   const pickLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.reward?.pickups !== undefined ? [[node, { left: a.dials.reward.pickups }] as [string, { left: number }]] : [])));
   const threatLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.threat ? [[node, a.dials.threat.map((k) => ({ kind: k.kind, left: k.count }))] as const] : [])));
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
@@ -3524,12 +3594,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const ask = threatLeft.get(sec.node);
         const allowed = (cr: CreatureDef) => (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece);
         let c = ask
-          ? ask.map((q) => (q.left > 0 ? M.creatures.find((cr) => cr.id === q.kind && allowed(cr)) : undefined)).find(Boolean)
-          : [pick, ...M.creatures].find((cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && allowed(cr));
+          ? ask.map((q) => (q.left > 0 ? rows.find((cr) => cr.id === q.kind && allowed(cr)) : undefined)).find(Boolean)
+          : [pick, ...rows].find((cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && allowed(cr));
         // (Easy on Normal's plan: only what Normal kept at this socket, so Easy never keeps an animal Normal's spacing dropped)
         if (normalFoes) {
           const kept = normalFoes.get(`${sec.uid}/${s.id}`);
-          c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
+          c = kept === undefined ? undefined : rows.find((cr) => cr.id === kept);
         }
         if (!(want || ask) || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
         const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
@@ -3597,7 +3667,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   // Poisson spacing over the creatures, the props fixed first (C2): a minimum gap of a kind, any two apart, no long barren run
   const minGap: Record<string, number> = {};
-  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  for (const c of rows) minGap[c.id] = SAME_CREATURE;
   for (const p of M.props) minGap[p.id] = p.minApart;
   // (a tower: the spacing, the opening and the quiet stretches are px of WAY, so each piece's x stands as its route px while it is
   // spaced and is put back after; a beat's from its section's leg)
@@ -3628,7 +3698,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);
     }
   }
-  const byCreature = new Map(M.creatures.map((c) => [c.id, c]));
+  const byCreature = new Map(rows.map((c) => [c.id, c]));
   for (const f of foes) {
     // (an emitter may have laid a zone since the socket was filled)
     if (!kept.has(f) || foeInZone(sink.zones, f.e.x, f.e.y)) continue;
@@ -3657,7 +3727,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       const here = fills.filter((f) => f.role === 'enemy' && f.what && secs.has(f.section) && sink.enemies.some((e) => e.x === R(f.x) || e.x === f.x));
       for (const k of want) {
         const have = here.filter((f) => !k.kind || f.what === k.kind).length;
-        const kinds = k.kind ? M.creatures.filter((c) => c.id === k.kind) : M.creatures.filter((c) => c.terrain !== 'air' && !c.tags?.includes('trapped'));
+        const kinds = k.kind ? rows.filter((c) => c.id === k.kind) : rows.filter((c) => c.terrain !== 'air' && !c.tags?.includes('trapped'));
         if (have >= k.count || !kinds.length) continue;
         const more = topUpFoes(laid, budget, kit, seed, sink, safe, openX, standing(), { sections: secs, kinds, need: k.count - have, salt });
         fills.push(...more);
@@ -3678,7 +3748,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const arc = rngFor(seed, 31, gi)() <= 0.7;
     // (GraphBrief.petals 'low', or 'few' (fewer still): no arc over any gap; and none over a river, which is ridden, never jumped: its
     // petals ride its logs, RiverRow.petals (ENG-W2b: an arc hung three petals in the air over the water, out of every rider's reach)
-    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river) continue;
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low' || brief?.petals === 'few' || g.river || g.wheel) continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
@@ -3820,13 +3890,14 @@ function topUpFoes(
    *  with no ask rolls as it always did */
   ask?: { sections: ReadonlySet<string>; kinds: readonly CreatureDef[]; need: number; salt: number },
 ): FilledSocket[] {
-  if (!ask && budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
+  if (!ask && !fightsForGoal(budget)) return [];
   const M = kit.manifest;
+  const rows = castRows(M, budget.id);
   const lastX = laid.exit.x - 200;
   const need = ask ? ask.need : budget.quota.lay - sink.enemies.filter((e) => e.x <= lastX).length;
   if (need <= 0) return [];
-  const tagged = M.creatures.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
-  const kinds = ask ? ask.kinds : tagged.length ? tagged : M.creatures.filter((c) => c.terrain !== 'air');
+  const tagged = rows.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
+  const kinds = ask ? ask.kinds : tagged.length ? tagged : rows.filter((c) => c.terrain !== 'air');
   if (!kinds.length) return [];
   const bag = new ShuffleBag<CreatureDef>(ask ? rngFor(seed, 37, 1000 + ask.salt) : rngFor(seed, 37), [...kinds]);
   const flags = safe.slice(1, -1);
@@ -3865,7 +3936,7 @@ function topUpFoes(
     }
   }
   const minGap: Record<string, number> = {};
-  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  for (const c of rows) minGap[c.id] = SAME_CREATURE;
   const spaced = poissonPlace<RoutePiece>(cands, { rng: ask ? rngFor(seed, 41, 1000 + ask.salt) : rngFor(seed, 41), minGap, minGapAny: ANY_APART, maxGap: Infinity, fixed });
   const ok = new Set(spaced.placed);
   const out: FilledSocket[] = [];
@@ -3881,9 +3952,23 @@ function topUpFoes(
   return out;
 }
 
-/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
-function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
-  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+/**
+ * The creature rows a stage lays (ENG-19a, R-165.257): a brief that names a cast lays only animals of the kinds it casts, as the kit runs
+ * only those (castOf; an animal of another kind would play on the old brain, predatorAI.ts), so a world's list can grow (1-9's boas,
+ * w1Cast.ts W1_BOAS) without moving a stage that does not cast them: the creature bag's shuffle runs over every row it holds, so one more
+ * row re-deals every socket after it. A stage whose brief names no cast lays from the whole list, as before.
+ */
+export function castRows(M: WorldManifest, id: string): readonly CreatureDef[] {
+  const cast = M.graphs?.briefs?.[id]?.cast;
+  return cast?.length ? M.creatures.filter((c) => cast.includes(c.enemy)) : M.creatures;
+}
+
+/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage). A brief that teaches
+ *  the kit's 'still' marks the stage as teaching the freeze (CastData.teachStill: its first freeze is the moment wherever he stands) */
+export function castOf(brief: Pick<GraphBrief, 'cast' | 'teaches'> | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
+  const kinds = brief?.cast;
+  if (!kinds?.length) return {};
+  return { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [], ...(brief!.teaches?.includes('still') ? { teachStill: true } : {}) } };
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
@@ -4056,7 +4141,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(heartFalls.length ? { heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
-    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id], proto)),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
     gen2: meta,
   };
@@ -4153,7 +4238,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
@@ -4245,7 +4330,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {
-      const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+      const fights = fightsForGoal(budget);
       const before = st.enemies.filter((e) => e.x <= st.exitTotemX - 200).length;
       return fights && before < budget.quota.lay ? { ok: true, thin: true } : { ok: true };
     }
@@ -4294,7 +4379,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       if (!fixed) return { ok: false, swap: bad };
     }
     // (a purge or gauntlet whose top-up found no room for the goal's animals: a longer stage, not a new roll)
-    const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+    const fights = fightsForGoal(budget);
     if (!fixed && fights && res.errors.some((e) => /^not enough enemies/.test(e))) return { ok: false, short: true };
     if (!fixed) return { ok: false, reroll: true };
   }
@@ -4550,7 +4635,9 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
       ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
-    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    // (a wheel's pond is what lies under the ends over it: wheelLay.ts pondFloors)
+    const ponds = pondFloors(st.rivers ?? []);
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
     // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
     // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
     falls.push(...tipMisses(st, req.kit.manifest));
@@ -5015,6 +5102,45 @@ export function settleLaid(st: Gen2Stage, settle: WorldKit['settle']): string[] 
     if (dx === 0) continue;
     p.cut = '';
     out.push(`x ${Math.round(p.x)}`);
+  }
+  return out;
+}
+
+/**
+ * The bonk's landing over an animal laid on a stage clock (ENG-25c; ENG-25b's bonkFlight on the real engine with the game's InputEngine,
+ * reference/qa-reports/ENG-25b/bonkFlight-normal.txt): the press held through the bonk rises `over` px over its back (107; a tap 54), and
+ * a tap's bounce lands up to `past` px past its middle (176, from 50 px off). A floor inside that takes his landing before the ground he
+ * must kick it from (ENG-25b's middle Normal v3: it walked to its bank's end under the next section's 48 px step).
+ */
+export const BONK_LANDING = { over: 107, past: 176 } as const;
+
+/**
+ * An animal laid on a stage clock (Enemy.kitBeat; gen2/worlds/w2Cast.ts) keeps one the stage has, and a fair one for its kind on the beat
+ * (predators/core.ts checkOnClock: a warn before every on, at least its tell long). Its GROUND (ENG-25c): no floor stands over the ground it
+ * walks within its bonk's landing (BONK_LANDING: under `over` px over its back, out to `past` px past either end of where it walks), so the
+ * bounce comes down where the kick is. Any world: every clock-keeping animal, by data. What is wrong, in words; none = fair (ENG-25)
+ */
+export function beatCastFaults(st: { enemies: readonly Enemy[]; clocks?: readonly ClockDef[]; platforms?: readonly Platform[] }, world: number): string[] {
+  const out: string[] = [];
+  for (const e of st.enemies) {
+    if (!e.kitBeat) continue;
+    const at = `${e.type} at x=${Math.round(e.x)}`;
+    // (its ground: the highest floor under its middle, its top between its middle and its feet)
+    const plats = st.platforms ?? [];
+    const ground = plats.filter((p) => !p.broken && e.x >= p.x && e.x <= p.x + p.width && p.y >= e.y && p.y <= e.y + e.height).sort((a, b) => a.y - b.y)[0];
+    if (ground) {
+      const back = ground.y - e.height;
+      const x0 = e.patrolMinX - BONK_LANDING.past, x1 = e.patrolMaxX + BONK_LANDING.past;
+      for (const q of plats) {
+        if (q === ground || q.broken || q.y >= ground.y || q.y <= back - BONK_LANDING.over || q.x >= x1 || q.x + q.width <= x0) continue;
+        out.push(`${at}: a floor at x=${Math.round(q.x)} ${Math.round(ground.y - q.y)} px over its ground, inside its bonk's landing (no floor within ${BONK_LANDING.over} px over its back, out to ${BONK_LANDING.past} px past where it walks: the bounce lands there first)`);
+      }
+    }
+    const clock = (st.clocks ?? []).find((c) => c.id === e.kitBeat!.clock);
+    if (!clock) { out.push(`${at} keeps clock ${e.kitBeat.clock}, which the stage does not have`); continue; }
+    const def = castDef(e.type, world);
+    if (!def) { out.push(`${at}: no creature-kit kind ${e.type} in world ${world}`); continue; }
+    for (const f of checkOnClock({ ...def, onBeat: true }, clock)) out.push(`${at}: ${f}`);
   }
   return out;
 }

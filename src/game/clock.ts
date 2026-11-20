@@ -136,10 +136,18 @@ export interface StageClock {
   /** place game time (a test harness or a frozen frame sets the moment; the game itself only steps) */
   seek(t: number): void;
   read(id: ClockId, shift?: number): ClockRead;
+  /**
+   * Set one beat so that at game time `at` a piece on it with stagger `shift` has just come out of its 'on' (its first; the cycle's start
+   * when it has none): a breathing row's pad has just risen (breathAim.ts). The beat keeps its own lengths; only where it stands in its
+   * cycle moves, from now on, until the stage starts again. Used only while the screen is dark (a respawn's closed iris).
+   */
+  align(id: ClockId, at: number, shift?: number): void;
 }
 
 export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock {
   const beats = new Map(defs.map((d) => [d.id, beatOf(d, easy)]));
+  /** each aligned beat's move through its cycle (s; align) */
+  const moved = new Map<ClockId, number>();
   let t = 0;
   return {
     step: (dt) => { t += dt; },
@@ -148,7 +156,18 @@ export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock
     read: (id, shift = 0) => {
       const b = beats.get(id);
       if (!b) throw new Error(`no clock named ${id} in this stage`);
-      return beatAt(b, t, shift);
+      return beatAt(b, t + (moved.get(id) ?? 0), shift);
+    },
+    align: (id, at, shift = 0) => {
+      const b = beats.get(id);
+      if (!b) throw new Error(`no clock named ${id} in this stage`);
+      if (!(b.period > 0)) return;
+      // (where its first 'on' ends in the cycle; then cyclePos(at + m, offset + shift) = that: m = that - (at + offset + shift) mod period)
+      const on = b.names.indexOf('on');
+      let after = 0;
+      if (on >= 0) for (let i = 0; i <= on; i++) after += b.seconds[i];
+      // (a microsecond past it: the float sum of `at` and the move must never land a hair before the rise)
+      moved.set(id, cyclePos(after + 1e-6, -(at + b.offset + shift * b.stretch), b.period));
     },
   };
 }

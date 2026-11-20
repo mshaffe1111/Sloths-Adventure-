@@ -37,7 +37,7 @@ import { pickCut } from './w1CutArt.ts';
 import { easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
-import { countedGoal, withGoals } from './goals.ts';
+import { countedGoal, rescueCount, withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -69,7 +69,7 @@ import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite, drawLeafBit } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
+import { renderScenery, renderOverlay, renderDrift, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
 import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -104,10 +104,12 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, logClock, logKnocks, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, type DriftInfo } from './river.ts';
+import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
@@ -116,6 +118,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
+import { punchNoise } from './heroNoise.ts';
 import { drawPieces, piecesHurt, respawnPieces, startPieces, stepPieces } from './pieces/index.ts';
 import { isFalseLiana } from './vineSnake.ts';
 import type { PieceHost, StagePiece } from './stagePiece.types.ts';
@@ -211,6 +214,7 @@ import { FONT_UI } from './fonts.ts';
 import { withHurtFlash, withWash } from './hurtFlash.ts';
 import { MOSS_TINT, SNAG_PERCH, sweepPose, type SweepPose } from './sweepPose.ts';
 import { drawLianaMoss, drawMossCover, drawPerchedEagle, drawSnag, mossHeight } from './w17Art.ts';
+import { drawEagleRoost } from './w19Art.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -219,12 +223,17 @@ import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pus
 import { drawClusters } from './vineFieldArt.ts';
 import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
+import { FollowPlay } from './followPlay.ts';
+import { drawFollowers, drawHerons } from './followArt.ts';
+import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
 /** how far past the view's edge a log's knock is still heard (px): the bank it slides out from is about to come into view */
 const KNOCK_HEARD = 160;
+/** the freeze moment's slow motion (real seconds; ENG-19a NEW 4, 1-9.md: a cast animal beaten by his stillness inside its reach) */
+const FREEZE_SLOW = 0.6;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
 /** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
@@ -533,6 +542,9 @@ export class GameEngine {
   /** the slow motion's push-in (a giant's last hit and the old 1-8's last liana: 1.3); a piece's moment (PieceHost.slowMo: the tip
    *  falling behind him) keeps the view as it is, or the push-in would crop what it is slowed down to show */
   private slowMoZoom = 1.3;
+  /** what the slow motion playing is for: 'freeze' (a cast animal beaten by his stillness inside its reach, stepCast: cut short when a
+   *  sweeper's eye comes out), null for every other moment */
+  private slowMoBy: 'freeze' | null = null;
   private bossSig = '';
   private clangCd = 0;
   /** seconds the player is stuck in web or goo (he runs slower) */
@@ -577,9 +589,14 @@ export class GameEngine {
   private acc = 0;
   /**
    * the swinging vines' clock (physics.ts, the self-swing): every liana's angle is worked out from it, so it swings the same on every
-   * screen and frame rate, and the same whether he is on it or not. It runs with the game (stops for a pause, slows with slow motion).
+   * screen and frame rate, and the same whether he is on it or not. It IS the game's clock (ENG-285, R-165.295): it was its own sum, so a
+   * flag resume, which puts back only the game's time, set every liana's phase against the river's logs, stones and pads (all on the
+   * game's clock) unlike a straight run's. `vineShift` is a test seam only (a harness that places a swing: realPlay.ts swing, the
+   * `vineClock` setter); the game never sets it.
    */
-  private vineClock = 0;
+  private vineShift = 0;
+  private get vineClock(): number { return this.gameTime + this.vineShift; }
+  private set vineClock(t: number) { this.vineShift = t - this.gameTime; }
   /** paused, the stage has been drawn once, still: the loop leaves the canvas alone until play resumes or it must be drawn again (A-06) */
   private stillDrawn = false;
   /**
@@ -594,6 +611,10 @@ export class GameEngine {
   /** the stage's one clock (clock.ts), stepped on the fixed step. `gameTime` is its time, read and written through it, so every timer
    *  reads the one clock and a harness that places game time (realPlay.ts `t`, tools/perf/frozen.mjs) places the clock */
   private clock: StageClock = stageClock([], false);
+  /** breathAim.ts: how much longer than the soonest he took from a put-back to each breathing row's mark (s, by clock), and the rows
+   *  aimed and not yet reached */
+  private readonly breathLags = new Map<string, number>();
+  private breathWatch: BreathWatch[] = [];
   private get gameTime(): number { return this.clock.time(); }
   private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
@@ -675,6 +696,10 @@ export class GameEngine {
   private mossWas = 0;
   /** his swing's rope length on the last cast step (NaN off a swing): climbing a swinging liana is moving, the swing is not */
   private swingLenWas = NaN;
+  /** the platform the cast last asked about (stepCast: is the ground he stands on quiet?), and its answer: looked up only when he stands
+   *  on another one */
+  private quietId = -1;
+  private quietWas = false;
   /** the game time the sweepers were last drawn at (their easing's step) */
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
@@ -691,6 +716,7 @@ export class GameEngine {
     slowMo: (seconds) => {
       e.slowMoLeft = Math.max(e.slowMoLeft, seconds);
       e.slowMoZoom = 1;
+      e.slowMoBy = null;
     },
     letGo: () => e.letGoOfLiana(),
     focus: (b) => {
@@ -801,6 +827,8 @@ export class GameEngine {
   private goalSaid = { start: false, late: false };
   /** the watching eagle (1-7: watcher.ts): its rhythm, the eagle drawn for it, where it was when it saw him, and rustling bushes */
   private watch: WatchState = newWatch();
+  /** the little ones that follow him home and the herons that watch them (2-3: proto.follow, followPlay.ts); null on every other stage */
+  follow: FollowPlay | null = null;
   private watchEagle: Enemy | null = null;
   private watchFrom = { x: 0, y: 0 };
   private bushRustle = new Map<number, number>();
@@ -891,7 +919,8 @@ export class GameEngine {
 
   // --- fight system (see fight.ts) ---
   /** the attack being played: which move, how far into it, which animals it has already hit */
-  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant } | null = null;
+  /** the swing in play. `rang`: it struck a sounding thing (its sound is the blow's only noise); `noised`: its noise went to the cast */
+  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant; rang?: boolean; noised?: boolean } | null = null;
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
   /** game time until which a touch jab may still be taken back, and waits in its wind-up (CT-17) */
   private jabHold = 0;
@@ -960,6 +989,13 @@ export class GameEngine {
   private sweetGlow = 0;
   /** the swing's last moment in its sweet spot (for a press to let go a beat late), and a press made a beat early that is waiting for it */
   private sweetSnap: (SwingState & { dir: -1 | 1; at: number }) | null = null;
+  /** the liana he holds hangs over a log river (letGoNow): the glow goes out at once when the moment passes */
+  private cueOverRiver = false;
+  /** the log river under each liana (letGoNow), found once for the platforms it was found in */
+  private cueRivers: { from: Platform[]; by: Map<number, { logs: DriftInfo[]; flowT: boolean } | null> } | null = null;
+  /** the let-go tables flown (letGoCue.ts), by liana, facing and hold; the one in use */
+  private cueTables = new Map<string, LetGoTable>();
+  private cueTab: { id: number; dir: -1 | 1; len: number; tab: LetGoTable } | null = null;
   private swingLeapWait = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
@@ -1060,9 +1096,13 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
+    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
+    this.cueRivers = null;
+    this.cueTables.clear();
+    this.cueTab = null;
     this.vineLash.clear();
     this.vineStruck.clear();
     resetHeroClips();
@@ -1097,6 +1137,8 @@ export class GameEngine {
     const st = this.currentStage;
     // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
     this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
+    this.breathLags.clear();
+    this.breathWatch = [];
     // (the stage's runtime pieces, once its platforms and its clock are made: pieces/index.ts)
     this.startPieces();
     this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
@@ -1728,8 +1770,9 @@ export class GameEngine {
       return;
     }
     this.clock.step(dt);
+    // (a breathing row aimed at his last put-back: when he reaches its mark, the pace he came back at is kept for the next: breathAim.ts)
+    if (this.breathWatch.length) this.breathWatch = noteArrivals(this.breathWatch, this.player.x + this.player.width / 2, this.clock.time(), this.breathLags);
     this.irisOpen = Math.max(0, this.irisOpen - dt);
-    this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
     for (const v of this.vines) {
       if (v.vineType === 'tree_climb') continue;
@@ -1840,7 +1883,7 @@ export class GameEngine {
       if (this.hurtFloors.length) this.camFocus = hurtFocus(this.hurtFloors, this.player.x, this.player.y);
     }
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad) continue;
+      if (plat.type !== 'moving' || plat.broken || plat.ride || plat.pad || plat.wheel) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -1876,7 +1919,9 @@ export class GameEngine {
         // is no floor (onFloor), and he dropped into the water at the bank's foot (FIX-21: 2-1 Normal kid seed 4, logHandover.test.ts)
         const step = p.x + p.vx * dt;
         const right = p.x > d.x1 || (step > d.x1 && p.vx > 0);
-        if (right || p.x < d.x0 || (step < d.x0 && p.vx < 0)) {
+        // (a river with a TAIL, ENG-24e: its logs go under World 2's painted end at x1 in mid-water, with no bank there to step up onto, so
+        // a rider carried (or walking) past it goes on into the water: river.ts DriftInfo.tail)
+        if ((right && !d.tail) || p.x < d.x0 || (step < d.x0 && p.vx < 0)) {
           p.x = right ? d.x1 + 6 : d.x0 - 6;
           p.y = d.baseY - LOG_DROP;
           p.vy = 0;
@@ -2408,6 +2453,7 @@ export class GameEngine {
           // the self-swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
           // him to face the way he will let go, up and down climb, and the only choice is when. A glint shows the sweet spot for letting go.
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const hold0 = sw.len;
           const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
           // (with the vine's own swing, `amp`: a press a beat late leaps from this, and timedLaunch reads the swing it was on. Without it
@@ -2423,9 +2469,13 @@ export class GameEngine {
               this.input.state.jumpPressed = true;
             }
           }
-          this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
+          // the glow and its glints say "let go now": the sweet spot, or over a log river only when a let-go now comes down on a log or
+          // the bank ahead (letGoCue.ts, R-165.289: 2-4's "Let go when it's under you"); display only, the press is played as above
+          const cue = this.letGoNow(nearSwingVine, sw, p.facing, sweet, sw.len !== hold0);
+          // (it eases in; over a river it goes out the frame the moment passes, never fading over the water: World 1's still fades)
+          this.sweetGlow = !cue && this.cueOverRiver ? 0 : this.sweetGlow + ((cue ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
-          if (sweet && this.sweetGlint <= 0) {
+          if (cue && this.sweetGlint <= 0) {
             this.sweetGlint = 0.14;
             this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG, r.y - Math.cos(sw.angle) * VINE_HANG, '#fde68a');
           }
@@ -2905,6 +2955,7 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
+        this.follow?.setBack();
         p.vx = 0;
         p.vy = 0;
         p.grounded = true;
@@ -2916,6 +2967,7 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
+        this.follow?.setBack();
         p.vx = 0;
         p.vy = 0;
         p.grounded = true;
@@ -2997,7 +3049,7 @@ export class GameEngine {
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
       // (`toFlag`: a heart and back to the flag, heartToFlag)
-      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX);
+      if (hurt) hurt.toFlag ? this.heartToFlag() : this.damagePlayer(hurt.amount, hurt.fromX, hurt.hold);
     }
     for (const e of this.enemies) {
       if (e.defeated) {
@@ -3260,7 +3312,9 @@ export class GameEngine {
     }
 
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
-    if (this.proto?.watch) this.updateWatch(dt);
+    // (a stage whose little ones follow him home: its watchers read THEM, never him, followPlay.ts)
+    if (this.follow) this.updateFollow(dt);
+    else if (this.proto?.watch) this.updateWatch(dt);
     if (this.tide) this.updateTide(dt);
     if (this.proto?.reveal) this.updateReveal(dt);
     if (this.ringDrops.length) this.stepDrops(dt);
@@ -3472,7 +3526,7 @@ export class GameEngine {
         currentProgress = p.relicsFound;
         break;
       case 'rescue':
-        currentProgress = p.crittersRescued;
+        currentProgress = rescueCount(p.crittersRescued, this.follow?.home());
         break;
       case 'gauntlet':
         currentProgress = p.enemiesDefeated;
@@ -4378,6 +4432,8 @@ export class GameEngine {
         this.onStrikeBegin(a0.move);
       }
       this.strike(a0, t0, a0.t);
+      // (his punch is heard when its strike is over: by then it is known whether it rang a sounding thing, ENG-NOISE)
+      if (!a0.noised && a0.t >= a0.move.startup + a0.move.active) this.blowNoise(a0);
       if (a0.t >= moveLength(a0.move)) this.endAttack();
     }
 
@@ -4415,11 +4471,25 @@ export class GameEngine {
   private endAttack() {
     const a = this.atk;
     if (!a) return;
+    // (a blow cut short inside its strike, by the next press: its noise still goes, once)
+    if (a.sounded && !a.noised) this.blowNoise(a);
     const id = a.move.id;
     this.lastPunch = id === 'jab' || id === 'cross' ? id : null;
     this.chainTimer = this.lastPunch ? 0.35 : 0;
     this.kickChain = id === 'kick' ? 0.5 : 0;
     this.atk = null;
+  }
+
+  /**
+   * A blow's noise into the cast's one channel (ENG-NOISE; castPlay.ts noise): his punch at his place, a kick or a mega the same: once a
+   * swing, when its strike is over. A blow that rang a sounding thing makes no noise of its own: that thing's sound is the only one (its
+   * own noise would call a hunter to HIM, not to the stone: 3-3.md). Heard only from the world that teaches noise (castPlay.ts)
+   */
+  private blowNoise(a: NonNullable<GameEngine['atk']>) {
+    a.noised = true;
+    if (a.rang || !this.cast) return;
+    const p = this.player;
+    this.cast.noise(punchNoise(p.x, p.y, this.gameTime));
   }
 
   /** the strike starts: the swoosh, the step forward, the shake of a mega punch */
@@ -4441,6 +4511,8 @@ export class GameEngine {
     c.collected = true;
     c.freedAt = this.gameTime;
     this.player.crittersRescued++;
+    // (2-3: the little one drops out and follows him; the goal counts it once it is home, rescueCount)
+    if (this.follow && c.critter && c.critter !== 'eaglet') this.follow.free(c.critter, { x: c.x, y: c.y }, this.landUnder(c.x, c.y + 26));
     this.runScore += 400;
     sound.playCritterRescued();
     this.addFloatingText('+400', c.x, c.y - 30, '#c084fc');
@@ -4529,6 +4601,17 @@ export class GameEngine {
       sound.playWhoosh();
       this.spawnDebrisBurst(sprung.x, sprung.y - 70, '#65a30d');
       recorder.event('trap', sprung.kind);
+    }
+
+    // a blow on a sounding thing (a chime stone; castPlay.types.ts SoundPost): it rings, once a swing, and its sound is the blow's only
+    // noise (blowNoise; ENG-NOISE)
+    const si = this.cast && !a.rang ? this.cast.soundAt(box) : -1;
+    if (si >= 0) {
+      a.rang = true;
+      a.connected = true;
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+      sound.playShrineUnlocked();
+      this.cast!.ring(si, this.gameTime);
     }
 
     const b = this.boss;
@@ -4687,6 +4770,8 @@ export class GameEngine {
     const ropes = this.vines.filter((v) => v.mossy).map((v) => ({ x: 0, w: 0, y: 0, rope: v.id }));
     this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes]) : null;
     this.swingLenWas = NaN;
+    this.quietId = -1;
+    this.quietWas = false;
     this.sweepDrawn.clear();
     this.mossWas = 0;
     // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
@@ -4716,7 +4801,26 @@ export class GameEngine {
     h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
     h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
-    const r = c.step(h, dt, this.gameTime, this.easy);
+    // (the ground he stands on: quiet ground (moss, Platform.quiet) takes a landing without a sound, castPlay.ts; asked again only when he
+    //  stands on another platform)
+    if (p.grounded && this.standingOnId !== this.quietId) {
+      this.quietId = this.standingOnId;
+      this.quietWas = !!this.platforms.find((q) => q.id === this.standingOnId)?.quiet;
+    }
+    h.quiet = p.grounded && this.quietWas;
+    const r = c.step(h, dt, this.gameTime, this.easy, this.clock);
+    // the freeze (ENG-19a NEW 4, 1-9.md): an animal beaten by his stillness with him inside its strike's reach plays FREEZE_SLOW of the
+    // slow motion, the view kept as it is (a push-in would put the rearing head under the HUD sideways); never while a sweeper's eye is
+    // out (its pass slowed would be a different pass), and cut short the step one comes out
+    const eyeOut = c.eyeOut();
+    if (r.froze.length && !eyeOut) {
+      this.slowMoLeft = Math.max(this.slowMoLeft, FREEZE_SLOW);
+      this.slowMoZoom = 1;
+      this.slowMoBy = 'freeze';
+    } else if (eyeOut && this.slowMoBy === 'freeze' && this.slowMoLeft > 0) {
+      this.slowMoLeft = 0;
+      this.slowMoBy = null;
+    }
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
     //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
     for (const e of r.noticed) {
@@ -5058,6 +5162,7 @@ export class GameEngine {
     if (this.bossDef?.lair) {
       this.slowMoLeft = 1.2;
       this.slowMoZoom = 1.3;
+      this.slowMoBy = null;
     }
     this.camera.trauma = 1;
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
@@ -5149,6 +5254,9 @@ export class GameEngine {
 
   /** a knocked-out animal tumbles (small), drops (flyers) or hops and flops belly-up (big), then fades */
   private updateKo(e: Enemy, dt: number) {
+    // (gone on its own: chased off and out of the stage (castPlay), or beaten on a run a flag replays: koLife 0, no knock-out to play, so
+    //  no fall and no landing burst. ENG-19c: 1-9's roost boa left a brown burst where its unplayed knock-out 'landed')
+    if (e.koLife === 0) return;
     e.koTimer += dt;
     const style = TRAITS[e.type].ko;
     e.koVy = (e.koVy ?? 0) + 1500 * dt;
@@ -5363,8 +5471,19 @@ export class GameEngine {
     return x > c.x - pad && x < c.x + c.viewportWidth + pad && y > c.y - pad && y < c.y + c.viewportHeight + pad;
   }
 
-  /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
+  /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten; a cast animal on
+   *  its way out (castPlay `glide`: chased off, or an immobile one's flee past its ground's end) fades as it goes (types.ts glide; ENG-19c) */
   private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
+    const fade = !e.defeated && e.glide ? 1 - e.glide : 1;
+    if (fade <= 0.02) return;
+    if (fade >= 1) return this.drawReacting(ctx, e, paint);
+    ctx.save();
+    ctx.globalAlpha *= fade;
+    this.drawReacting(ctx, e, paint);
+    ctx.restore();
+  }
+
+  private drawReacting(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
     // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
     const draw = () => {
       const b = bodyRect(e);
@@ -5593,7 +5712,7 @@ export class GameEngine {
   }
 
   /** a hit: one heart (or `amount`), a flinch and a knock back AWAY from `fromX`, where the hit came from (his back, when it is not known) */
-  private damagePlayer(amount: number, fromX?: number) {
+  private damagePlayer(amount: number, fromX?: number, hold = false) {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
@@ -5607,7 +5726,8 @@ export class GameEngine {
     p.vy = -PHYS.hurtKnockV;     // small knockup
     // away from what hit him: it used to push him away from where he FACED, so a hit from behind threw him back into the foe, which
     // hit him again as soon as the 1.2 s of safety ran out (play-testers, 2026-10-25)
-    p.vx = knockDir(p.x, p.facing, fromX) * 180;
+    // (a hurt that holds him, PieceHurt.hold: straight up and back down where he stood)
+    p.vx = hold ? 0 : knockDir(p.x, p.facing, fromX) * 180;
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
@@ -5945,6 +6065,8 @@ export class GameEngine {
    * for 30-35 s and until it was off screen (regrow.ts), and from the ledge he was set back on it could be in view for good.
    */
   private crumbledWhole() {
+    // (every set-back re-forms the little ones' line behind him where he comes back, followPlay.ts)
+    this.follow?.setBack();
     for (const pl of this.platforms) {
       if (pl.type === 'fragile') {
         pl.broken = false;
@@ -6110,15 +6232,21 @@ export class GameEngine {
     this.camAnchorY = NaN;
     this.camRunK = 0;
     this.camRunSlow = 0;
-    // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
-    // enough to read; any older words still rising there go first
-    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    // a put-back is a cut under the shut iris: nothing the last life left on the screen is there when it opens (FIX-284b: the world
+    // holds through the down beat, so a drowning's "SPLASH!" and spray kept their whole life and sat on 2-2's risen pad as the iris
+    // opened; only the words within 160 px of the flag went). Every word still rising and every burst (spray, sparks, puffs, feathers)
+    // ends here; the lives note below is the one word at the flag.
+    this.clearScreenFx();
     // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
     // (only when a life went: a chase's catch puts him back a HEART down, and "3 lives left" over him read as a life lost, ENG-B4's clip)
     if (lifeNote) this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
+    // a breathing row ahead never meets him in lockstep (breathAim.ts, FIX-284): each is turned on its breath to have just risen as he
+    // comes to it (at the soonest the first time, then as late as he came back last time), while the iris is still fully closed
+    // (nothing is seen to jump)
+    this.breathWatch = aimBreaths(this.platforms, p.x + p.width / 2, this.clock.time(), PHYS.maxRun, this.clock, this.breathLags);
     // (the stage's runtime pieces put back what his run changed: pieces/index.ts)
     if (this.pieces.length) respawnPieces(this.pieces, this.pieceHost);
   }
@@ -6134,13 +6262,30 @@ export class GameEngine {
     const t = this.gameTime;
     const bottom = cam.y + cam.viewportHeight + 40;
     for (const r of rivers) {
-      if (r.x1 < cam.x - 40 || r.x0 > cam.x + cam.viewportWidth + 40) continue;
-      const a = Math.max(r.x0, cam.x - 20);
-      const b = Math.min(r.x1, cam.x + cam.viewportWidth + 20);
+      // (behind the banks, the water, its bed and the soil under it run on under each bank that meets the river (riverUnderBanks): a
+      // bank's painted cliff tapers in below its top, and where the river stopped at the bank's edge the backdrop showed through as a
+      // grey wall, a dark strip and a pale patch of the backdrop's water under every river bank, upright; BUILD-24c, 2-1, 2-2 and 2-4)
+      const [ul, ur] = over ? [0, 0] : this.riverUnderBanks(r);
+      const x0 = r.x0 - ul, x1 = r.x1 + ur;
+      if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
+      const a = Math.max(x0, cam.x - 20);
+      const b = Math.min(x1, cam.x + cam.viewportWidth + 20);
       ctx.save();
       ctx.beginPath();
-      ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
+      ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
+      // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
+      if ((ul || ur) && this.paintKit && protoArtReady()) {
+        const bk = this.riverBanks(r);
+        // (the face the bank's soil is clipped to: its own edge and top, the kit's world, protoArt.ts setKitWorld)
+        const nb = ul ? bk.near : undefined, fb = ur ? bk.far : undefined;
+        const o = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+        ctx.beginPath();
+        ctx.moveTo(o[0][0], o[0][1]);
+        for (let i = 1; i < o.length; i++) ctx.lineTo(o[i][0], o[i][1]);
+        ctx.closePath();
+        ctx.clip();
+      }
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
@@ -6158,8 +6303,22 @@ export class GameEngine {
           }
         }
       } else if (r.safe) {
-        // (a safe river: a short band of its own shallow water at the log line, never the deep sheet below; nothing until its strip loads)
-        if (painted && drawSafeRiverOver(ctx, a, b, r.surfaceY, t, r.dir, r.speed)) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
+        // (a safe river: on each log its own waterline, low on its body, in the river's own shallow water, and the foam along it; never the
+        // deep sheet below, nor a band across the open water; nothing until its strip loads: riverArt.ts drawSafeRiverOver, ENG-24e 2b)
+        const logs = this.logsOf(r).filter((lg) => !lg.broken && lg.x + lg.width > a && lg.x < b);
+        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd)
+        if (r.tail) {
+          ctx.beginPath();
+          ctx.rect(x0, r.surfaceY - 200, r.x1 - r.tail + TAIL_END.hide - x0, bottom - r.surfaceY + 200);
+          ctx.clip();
+        }
+        if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
+          for (const lg of logs) {
+            if (lg.drift?.look === 'raft') continue;
+            const ly = safeLogLine(lg, t);
+            for (let x = lg.x + 22; x < lg.x + lg.width - 8; x += 50) drawRiverFoam(ctx, Math.round(x / 50) + lg.id, x, ly + 2, 56, 0.75, (lg.id + Math.round(x / 50)) % 2 === 0);
+          }
+        }
       } else {
         const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
         // (the painted river's own colours when it is painted, so the logs sink into the same water)
@@ -6179,6 +6338,39 @@ export class GameEngine {
       ctx.restore();
     }
   }
+
+  /** the logs (or rafts) that ride river `r` (river.ts onRiver), kept while the platforms are the same list */
+  private logsOf(r: RiverZone): Platform[] {
+    if (this.riverLogs?.from !== this.platforms) this.riverLogs = { from: this.platforms, by: new WeakMap() };
+    let l = this.riverLogs.by.get(r);
+    if (!l) this.riverLogs.by.set(r, (l = this.platforms.filter((q) => q.type === 'drift' && !!q.drift && onRiver(q.drift, r))));
+    return l;
+  }
+  private riverLogs?: { from: Platform[]; by: WeakMap<RiverZone, Platform[]> };
+
+  /** how far a river's water, bed and soil run on under its left and right banks, behind them (drawRivers): RIVER_UNDER_BANK where a
+   *  solid bank's edge meets the river's edge with its top over the water (the bank is drawn in front and hides it), else 0 */
+  private riverUnderBanks(r: RiverZone): [number, number] {
+    let m = this.riverUnder.get(r);
+    if (!m) {
+      const b = this.riverBanks(r);
+      m = [b.near ? RIVER_UNDER_BANK : 0, b.far ? RIVER_UNDER_BANK : 0];
+      this.riverUnder.set(r, m);
+    }
+    return m;
+  }
+  private riverUnder = new WeakMap<RiverZone, [number, number]>();
+  /** the solid banks whose edge meets river `r`'s ends with their top over the water (riverUnderBanks, riverWaterOutline) */
+  private riverBanks(r: RiverZone): { near?: Platform; far?: Platform } {
+    let b = this.riverBankOf.get(r);
+    if (!b) {
+      const meets = (edge: (p: Platform) => number, at: number) => this.platforms.find((p) => p.type === 'solid' && Math.abs(edge(p) - at) <= 4 && p.y < r.surfaceY && p.y + p.height > r.surfaceY);
+      b = { near: meets((p) => p.x + p.width, r.x0), far: meets((p) => p.x, r.x1) };
+      this.riverBankOf.set(r, b);
+    }
+    return b;
+  }
+  private riverBankOf = new WeakMap<RiverZone, { near?: Platform; far?: Platform }>();
 
   /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
   private riverLogsPainted(worldId: number): boolean {
@@ -6349,6 +6541,14 @@ export class GameEngine {
   /** the water zone he last went into (proto.water): one splash an entry */
   private splashedIn: { x0: number; x1: number; y: number } | null = null;
   /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
+  /** every word still rising and every burst on the screen ends now (a put-back's cut under the shut iris, respawnAtCheckpoint) */
+  private clearScreenFx() {
+    this.floatingTexts.length = 0;
+    for (const pt of this.particles) this.particlePool.push(pt);
+    this.particles.length = 0;
+    this.particleWrap = 0;
+  }
+
   private spawnWaterSplash(x: number, y: number, mud = false) {
     // (mud: World 1's murky creek, its muddy splash and brown spray; the clear splash is for clear water)
     this.emit({ x, y: y + 6, vx: 0, vy: 0, color: mud ? 'mud' : '', size: 96, life: 0.55, maxLife: 0.55, type: 'splash' });
@@ -6702,6 +6902,41 @@ export class GameEngine {
     const s = this.input.state;
     if (s.jumpLean) return s.jumpLean;
     return s.right ? 1 : s.left ? -1 : fallback;
+  }
+
+  /**
+   * Is this the moment the swing's glow says "let go now"? On a liana over a log river (letGoCue.ts, R-165.289): a let-go pressed now,
+   * toward `dir`, comes down on a log or past the water on the bank ahead (the drop judge's own flight, riverLay.ts); not while his grip
+   * moves (`gripMoved`: the tables are flown at a hold, once it rests) nor over a river a sluice runs (its clock, river.ts logClock, can
+   * stop). Anywhere else the sweet spot (`sweet`), as always.
+   */
+  private letGoNow(v: Vine, sw: SwingState, dir: -1 | 1, sweet: boolean, gripMoved: boolean): boolean {
+    if (this.cueRivers?.from !== this.platforms) this.cueRivers = { from: this.platforms, by: new Map() };
+    let under = this.cueRivers.by.get(v.id);
+    if (under === undefined) {
+      const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && !q.flood && lianasOver([v], q).length > 0);
+      const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && onRiver(q.drift, r)).map((q) => q.drift!) : [];
+      under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
+      this.cueRivers.by.set(v.id, under);
+    }
+    this.cueOverRiver = !!under;
+    if (!under) return sweet;
+    if (under.flowT || gripMoved) return false;
+    let at = this.cueTab;
+    if (!at || at.id !== v.id || at.dir !== dir || at.len !== sw.len) {
+      const key = `${v.id}:${dir}:${sw.len}`;
+      let tab = this.cueTables.get(key);
+      if (!tab) {
+        if (this.cueTables.size >= 8) this.cueTables.clear();
+        const d0 = under.logs[0];
+        tab = letGoTable(v, sw.len, dir, d0);
+        this.cueTables.set(key, tab);
+      }
+      at = this.cueTab = { id: v.id, dir, len: sw.len, tab };
+    }
+    const snap = this.sweetSnap;
+    const lateOk = !!snap && snap.dir === dir && this.gameTime - snap.at <= RELEASE.late;
+    return letGoLands(at.tab, sw.t ?? this.vineClock, under.logs, this.gameTime, this.easy, lateOk);
   }
 
   /** a press to let go a beat before the swing's sweet spot toward `dir`: keep it and let go when he gets there (true = held, he swings on) */
@@ -7217,7 +7452,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+    if (!ownScene) {
+      renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+      // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
+      setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
+      renderDrift(ctx, world.id, this.camera.x, vw, vh, this.gameTime, this.quality > 0);
+    }
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -7244,6 +7484,8 @@ export class GameEngine {
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     this.drawRivers(ctx, world, false);
+    // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
+    this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
     if (this.proto?.bankWall)
       drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
@@ -7267,6 +7509,12 @@ export class GameEngine {
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // any inventory piece the stage's data places as dressing, behind the play layer (art/invDress.ts: sized by the inventory, by Pokey)
     if (this.proto?.invDress) drawInvDress(ctx, this.proto.invDress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.config.worldIndex, 'behind');
+    // (the stage's runtime pieces that stand behind the platforms: pieces/index.ts, layer 'back': a water wheel behind its jetty and street,
+    //  in front of the earth. Painted ground: drawn by protoArt.ts drawProtoScene over its soil, before its trunks and ledges (the soil of a
+    //  bank above runs down through the wheel's sweep); drawn ground: here, before the platforms. Once a frame either way)
+    const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };
+    const paintedGround = this.paintKit && protoArtReady();
+    if (!paintedGround) drawBack();
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -7286,7 +7534,30 @@ export class GameEngine {
 
     // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
     if (this.riverLogsPainted(world.id)) {
-      for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
+      for (const pl of this.platforms) {
+        if (pl.type !== 'drift' || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
+        // (a river with a TAIL: its logs go under behind the painted reeds at the logs' window end, never drawn out over the tail where
+        //  they hold no one: riverArt.ts drawRiverTailEnd, ENG-24f)
+        const end = pl.drift?.tail ? pl.drift.x1 + TAIL_END.hide : undefined;
+        if (end !== undefined && pl.x >= end) continue;
+        if (end !== undefined && pl.x + pl.width > end) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(pl.x - 200, pl.y - 400, end - (pl.x - 200), 800);
+          ctx.clip();
+          drawRiverLog(ctx, pl, this.gameTime);
+          ctx.restore();
+        } else drawRiverLog(ctx, pl, this.gameTime);
+      }
+    }
+    // where a river's logs go under short of its far bank (a TAIL): World 2's painted reeds standing in the water there, in front of
+    // the logs and under the water's sheet (drawRivers' over pass), so what stands under the surface is in the water
+    if (this.riverLogsPainted(world.id)) {
+      for (const r of this.currentStage.rivers ?? []) {
+        if (!r.tail || r.speed === 0) continue;
+        const x1 = r.x1 - r.tail;
+        if (this.onScreen(x1, r.surfaceY, 200)) drawRiverTailEnd(ctx, x1, r.surfaceY, this.gameTime, !r.safe);
+      }
     }
     // a ripple where the next log is about to slide out from under the bank, so it never appears without warning
     for (const pl of this.platforms) {
@@ -7307,7 +7578,7 @@ export class GameEngine {
     const w8set = (this.proto?.gen2 as { w8?: W8DecorSet } | undefined)?.w8;
     if (w8set) drawW8Decor(ctx, w8set, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     setDepthView(this.camera.viewportHeight);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    if (!(paintedGround && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene, drawBack)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.clusters.length) drawClusters(ctx, this.clusters, this.vines, this.camera.x, this.camera.x + this.camera.viewportWidth);
@@ -7423,7 +7694,7 @@ export class GameEngine {
         return;
       }
       // World 2's painted reed cages, and the little one hopping home once it is free
-      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
+      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime, false, !!this.follow)) return;
       // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
       if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
@@ -7454,6 +7725,9 @@ export class GameEngine {
       }
     }
 
+    // World 1's eagle roosts (1-9: the lure posts a boa fears, laid by World 1's kit into proto.gen2.roosts), behind him and the animals
+    const roosts = (this.proto?.gen2 as { roosts?: Array<{ x: number; y: number }> } | undefined)?.roosts;
+    if (roosts) for (const r of roosts) if (this.onScreen(r.x, r.y - 70, 220)) drawEagleRoost(ctx, r.x, r.y);
     profMark(ctx, 'decor');
     // polish prototype: this stage's lighting rig (null when the switch is off)
     const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;
@@ -7556,12 +7830,13 @@ export class GameEngine {
       const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
-    if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.proto?.watch && !this.follow) this.drawWatchBack(ctx);
+    if (this.follow) drawHerons(ctx, this.follow, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
     if (this.cast?.sweepers.length) this.drawCastSky(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
     // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
-    if (this.player.isVineSwinging && this.sweetGlow > 0.03) {
+    if (this.player.isVineSwinging && this.sweetGlow > GLOW_SHOWN) {
       const gp = this.player;
       const k = this.sweetGlow;
       const r = 30 * (1 + 0.08 * Math.sin(this.gameTime * 18));
@@ -7596,6 +7871,8 @@ export class GameEngine {
     // withWash); never outside cover (castPlay.ts calmNow), so it never says 'hidden' where the eagle sees him
     const moss = this.cast && !kitPose ? this.cast.calmNow(this.easy) : 0;
     const mossWash = moss > 0 ? `rgba(${MOSS_TINT.rgb}, ${(MOSS_TINT.alpha * moss).toFixed(3)})` : null;
+    // (the little ones walk behind him, under the reeds: the bushes are drawn over them, so in a clump they are hidden)
+    if (this.follow) drawFollowers(ctx, this.follow, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
     // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
     if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
@@ -7689,7 +7966,7 @@ export class GameEngine {
     ctx.restore(); // end world transform
     // (the stage's runtime pieces in screen px, with the chase and watch edges: layer 'screen')
     if (this.pieces.length) drawPieces(this.pieces, ctx, 'screen', this.pieceHost);
-    if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.proto?.watch && !this.follow) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -7702,7 +7979,7 @@ export class GameEngine {
       this.drawPopups(ctx);
       ctx.restore();
     }
-    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0, ownScene, false);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);
@@ -8586,6 +8863,57 @@ export class GameEngine {
   /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
   private watchVoiced = 0;
 
+  /**
+   * A stage whose little ones follow him home (proto.follow, 2-3): the line and its herons (followPlay.ts), started from the stage's own
+   * data. Every other stage: none. (Public: a toy test sets a bare stage's proto and starts it again, follow.test.ts.)
+   */
+  startFollow() {
+    const row = this.proto?.follow;
+    if (!row) {
+      this.follow = null;
+      return;
+    }
+    const st = this.currentStage;
+    const p = this.player;
+    const safeWater = [
+      ...(st.rivers ?? []).filter((r) => r.safe).map((r) => ({ x0: r.x0, x1: r.x1, y: r.surfaceY })),
+      ...(st.waterY !== undefined ? (st.safeWater ?? []).map((w) => ({ x0: w.x0, x1: w.x1, y: st.waterY! })) : []),
+    ];
+    this.follow = new FollowPlay(row, this.easy, {
+      exitX: st.exitTotemX,
+      dir: this.mode.travel === 'left' ? -1 : 1,
+      zones: this.proto?.watch ?? [],
+      covers: this.proto?.bushes ?? [],
+      platforms: this.platforms,
+      safeWater,
+    }, { x: p.x, y: p.y });
+  }
+
+  /** where a little one dropping from (x, y) lands: the first still ground or splash-back water under it */
+  private landUnder(x: number, y: number): { x: number; y: number } {
+    let best = Infinity;
+    for (const pl of this.platforms) if (pl.type === 'solid' && !pl.pad && x >= pl.x && x <= pl.x + pl.width && pl.y >= y - 4 && pl.y < best) best = pl.y;
+    for (const w of this.follow?.stage.safeWater ?? []) if (x >= w.x0 && x <= w.x1 && w.y >= y - 4 && w.y < best) best = w.y;
+    return { x, y: best === Infinity ? y : best };
+  }
+
+  /** the line and its herons, once a frame after he has moved (followPlay.ts); the herons never read him and never cost a heart */
+  private updateFollow(dt: number) {
+    const f = this.follow!;
+    const p = this.player;
+    const on = this.platforms.find((pl) => pl.id === this.standingOnId);
+    const ev = f.step(dt, p, p.grounded ? on : undefined, Math.random);
+    if (ev.warned) {
+      // (the heron's cry and the alarm over his head, as every watcher's warning: no words floating in the world; Dot's lines are the
+      // story keeper's)
+      sound.playEagleScreech();
+      this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
+      this.input.triggerHaptic(120);
+    }
+    for (const s of ev.spooked) this.addFloatingText('!', s.x, s.y - 50, '#fde68a');
+    if (ev.homed) sound.playCritterRescued();
+  }
+
   private updateWatch(dt: number) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
@@ -9229,6 +9557,18 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      // (World 2's reed clumps, 2-3: riverArt.ts; before the sheet loads, a low green mound)
+      if (b.kind === 'reeds') {
+        if (!drawReedClump(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) {
+          ctx.save();
+          ctx.fillStyle = '#4d7a35';
+          ctx.beginPath();
+          ctx.ellipse(b.x + b.w / 2, b.y - 30, b.w / 2, 36, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        continue;
+      }
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && b.kind !== 'moss' && b.kind !== 'mossPatch' && b.kind !== 'mossHang' && drawW4Bush(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)

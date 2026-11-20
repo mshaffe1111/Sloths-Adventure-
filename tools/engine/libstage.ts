@@ -1,8 +1,10 @@
 /**
  * ONE roll tool for any stage gen2 rolls from data (ADD-LEVEL, R-165.187; ENGINE-NEEDS.md §3 item 1). It reads the stage's row in the ONE
  * stage table (gen2/worlds/stageTable.ts, through listed.ts: its kit) and its config (worldsData.ts), and builds each seed the way the
- * stage's seed-list search builds it (tools/engine/seedlist.ts: buildGen2Stage with the quiet line, listRules.ts quietJudge), on both
- * settings. No stage is named in this file: it is handed one. It replaces copying library13.ts per stage (level.md step 3); a stage's own
+ * stage's seed-list search builds it (tools/engine/seedlist.ts: buildGen2Stage with the list's whole judge, listRules.ts listJudge:
+ * the quiet line, the lure posts and the seated predators, given the row's kit; VAR-19f: a judge here short of the search's laid other
+ * beats wherever the search rerolled), on both settings. No stage is named in this file: it is handed one. It replaces copying
+ * library13.ts per stage (level.md step 3); a stage's own
  * counts (1-3's traps and snakes) stay in its own test, read from the build this tool returns.
  *   npx tsx tools/engine/libstage.ts --stage 1-3 [--seeds 24] [--from 1] [--par 4] [--json]
  * Prints, per setting: how many rolls are CLEAN (no gen2.errors, the verdict accepted: seedList.ts seedListBreaches' rule), thrown, every
@@ -15,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
-import { quietJudge } from './listRules.ts';
+import { listJudge } from './listRules.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { WorldKit } from '../../src/game/gen2/types.ts';
 
@@ -37,7 +39,7 @@ export function stageSource(stageId: string): { kit: () => WorldKit; cfg: LevelC
 export function buildStage(stageId: string, seed: number, difficulty: Setting): Any {
   const { kit, cfg } = stageSource(stageId);
   const row = listedStage(stageId)!;
-  return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also: quietJudge(cfg, (st, d) => playFinish(row, st, d)) });
+  return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also: listJudge(cfg, (st, d) => playFinish(row, st, d), undefined, kit) });
 }
 
 export interface StageRoll {

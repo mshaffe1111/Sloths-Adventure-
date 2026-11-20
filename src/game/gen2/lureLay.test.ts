@@ -211,3 +211,41 @@ test('laid through the real pipeline (the toy world, 8 seeds, both settings): th
   }
   assert.ok(laid >= 8, `targets laid: ${laid}`);
 });
+
+// ───────────────────────────── a POSTED animal and its lure (ENG-19a NEW 3: the boa by the eagle's roost, 1-9 beat 7) ─────────────────────────────
+// A boa never leaves its post (world1.ts BOA: speed 0 at rest, hunting and striking), so a roost can work on it only where it lies, and
+// its rear IS the moment the roost works (lure.ts: a post works while the animal is after him): 1-9.md beat 7, "it rears at him beside
+// the nest and flees for good in its first rear frame".
+
+test('a posted animal by its lure: a roost whose reach covers where the boa lies is fair (its rear is the read); one past it can draw nothing, the boa never moves', () => {
+  const boa = beast('boa', 600);
+  const boaStage = (lures: LurePost[]) => ({ enemies: [boa], platforms: plats, cast: { kinds: ['boa'], lures } });
+  assert.deepEqual(lureFaults(boaStage([post(700, 'eagle', 150)]), 1), [], 'the roost 100 px past the boa, its reach 150: fair');
+  // planted: past its reach of where the boa lies (it does not walk its patch to it: the patch is where the lay stood it, not where it goes)
+  assert.deepEqual(lureFaults(boaStage([post(780, 'eagle', 150)]), 1), ['lure target at 780 (eagle): no animal that fears it can be drawn to it']);
+  // a walking animal keeps both rules: drawn along its patch, never started inside the reach
+  assert.deepEqual(lureFaults(stage([beast('tayra', 200)], [post(240, 'caiman', 70)]), 6), ['lure target at 240 (caiman): the tayra starts inside its reach (at 200), and would run the moment it noticed him']);
+});
+
+test("in the engine's cast (CastPlay): he walks in on a boa that lies by the eagle's roost; it rears at him and flees for good in its first rear frame, never striking; with no roost it strikes", () => {
+  const run = (lures?: LurePost[]) => {
+    const b = beast('boa', 600, { facing: -1, patrolMinX: 600, patrolMaxX: 600 });
+    const c = new CastPlay({ kinds: ['boa'], traps: [], ...(lures ? { lures } : {}) }, [b], [bank], 1);
+    let told = -1, gone = -1, struck = 0;
+    for (let i = 0, t = 0; i < Math.round(4 / DT); i++, t += DT) {
+      const r = c.step(hero({ x: Math.min(380 + 110 * t, 520), facing: 1, vx: t * 110 < 140 ? 110 : 0 }), DT, t, false);
+      if (r.told.length && told < 0) told = i;
+      if (b.kit!.beatenBy === 'lure' && gone < 0) gone = i;
+      struck += r.struck.length;
+    }
+    return { told, gone, struck, way: b.kit!.beatenBy };
+  };
+  const lured = run([post(700, 'eagle', 150)]);
+  assert.ok(lured.told >= 0, 'it reared at him');
+  assert.equal(lured.way, 'lure');
+  assert.equal(lured.gone, lured.told + 1, 'chased off the frame after its rear began');
+  assert.equal(lured.struck, 0, 'it never struck');
+  const bare = run();
+  assert.ok(bare.struck > 0, 'the control: no roost, and it strikes');
+  assert.notEqual(bare.way, 'lure');
+});

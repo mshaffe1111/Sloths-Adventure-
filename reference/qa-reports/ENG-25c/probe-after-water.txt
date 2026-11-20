@@ -1,0 +1,26 @@
+step: pond 1723-2083, stones 1753-1833 1863-1943 1973-2053, top y 530
+  middle normal v1: bites 0 lives@pond 0 
+  middle normal v2: bites 0 lives@pond 0 
+  middle normal v3: bites 0 lives@pond 0 
+  middle normal v4: bites 0 lives@pond 0 
+  middle easy v1: bites 0 lives@pond 0 
+  middle easy v2: bites 0 lives@pond 0 
+  middle easy v3: bites 0 lives@pond 0 
+  middle easy v4: bites 0 lives@pond 0 
+  child easy v1: bites 0 lives@pond 0 
+  child easy v2: bites 0 lives@pond 0 
+  child easy v3: bites 0 lives@pond 0 
+  child easy v4: bites 0 lives@pond 0 
+wave: pond 1723-2083, stones 1753-1833 1863-1943 1973-2053, top y 530
+  middle normal v1: bites 0 lives@pond 0 
+  middle normal v2: bites 0 lives@pond 0 
+  middle normal v3: bites 0 lives@pond 0 
+  middle normal v4: bites 0 lives@pond 0 
+  middle easy v1: bites 0 lives@pond 0 
+  middle easy v2: bites 0 lives@pond 0 
+  middle easy v3: bites 0 lives@pond 0 
+  middle easy v4: bites 0 lives@pond 0 
+  child easy v1: bites 0 lives@pond 0 
+  child easy v2: bites 0 lives@pond 0 
+  child easy v3: bites 0 lives@pond 0 
+  child easy v4: bites 0 lives@pond 0 

@@ -1,0 +1,155 @@
+TAP version 13
+# Subtest: a stage with no row is refused by name, and rolls report it as thrown, never clean
+ok 1 - a stage with no row is refused by name, and rolls report it as thrown, never clean
+  ---
+  duration_ms: 1.05789
+  type: 'test'
+  ...
+# Subtest: every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
+not ok 2 - every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
+  ---
+  duration_ms: 44341.116639
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/engine/libstage.test.ts:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    1-9 seed 1: the beats its list replays
+    + actual - expected
+    
+      [
+        'w1-19-arrival',
+        'w1-19-forest-freeze',
+        'w1-19-stair',
+    +   'w1-19-rest-wall',
+    -   'w1-19-rest-crook',
+        'w1-19-miss',
+    +   'w1-19-rest-bounce',
+    -   'w1-19-rest-stair',
+        'w1-19-roost',
+    +   'w1-19-rest-crook',
+    -   'w1-19-rest-wall',
+        'w1-19-read-load',
+        'w1-19-read-roost',
+        'w1-19-read-bare',
+    +   'w1-19-rest-stair',
+    -   'w1-19-rest-bounce',
+        'w1-19-hunters',
+        'w1-19-rest',
+        'w1-19-old-boa',
+        'w1-19-exit'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'w1-19-arrival'
+    1: 'w1-19-forest-freeze'
+    2: 'w1-19-stair'
+    3: 'w1-19-rest-crook'
+    4: 'w1-19-miss'
+    5: 'w1-19-rest-stair'
+    6: 'w1-19-roost'
+    7: 'w1-19-rest-wall'
+    8: 'w1-19-read-load'
+    9: 'w1-19-read-roost'
+    10: 'w1-19-read-bare'
+    11: 'w1-19-rest-bounce'
+    12: 'w1-19-hunters'
+    13: 'w1-19-rest'
+    14: 'w1-19-old-boa'
+    15: 'w1-19-exit'
+  actual:
+    0: 'w1-19-arrival'
+    1: 'w1-19-forest-freeze'
+    2: 'w1-19-stair'
+    3: 'w1-19-rest-wall'
+    4: 'w1-19-miss'
+    5: 'w1-19-rest-bounce'
+    6: 'w1-19-roost'
+    7: 'w1-19-rest-crook'
+    8: 'w1-19-read-load'
+    9: 'w1-19-read-roost'
+    10: 'w1-19-read-bare'
+    11: 'w1-19-rest-stair'
+    12: 'w1-19-hunters'
+    13: 'w1-19-rest'
+    14: 'w1-19-old-boa'
+    15: 'w1-19-exit'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/engine/libstage.test.ts:29:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
+not ok 3 - the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
+  ---
+  duration_ms: 89945.134559
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/engine/libstage.test.ts:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    1-9: clean on both = listed
+    + actual - expected
+    
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+    +   6,
+        7,
+        8,
+    +   9,
+        10,
+    +   11,
+        12
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 1
+    1: 2
+    2: 3
+    3: 4
+    4: 5
+    5: 7
+    6: 8
+    7: 10
+    8: 12
+  actual:
+    0: 1
+    1: 2
+    2: 3
+    3: 4
+    4: 5
+    5: 6
+    6: 7
+    7: 8
+    8: 9
+    9: 10
+    10: 11
+    11: 12
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/engine/libstage.test.ts:43:73)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
+ok 4 - planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
+  ---
+  duration_ms: 0.360546
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 135044.60431

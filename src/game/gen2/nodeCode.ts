@@ -46,6 +46,8 @@ export interface CodeToken {
  *                  keeps a named clock's beat (`:#pods@beat`)
  *   `:+seed`       reward: what the find is (the `+` mark says there is one)
  *   `:$8`          reward: how many pickups the node lays
+ * A kind, hazard, clock or find is written as the kit writes its id (R-165.319): a small letter first, then letters of either case,
+ * digits, '-' or '_', so gen2's kebab-case cast ids (`snake-asleep`) and the predators' roster's camelCase ones (`thornVine`) both read.
  */
 export interface CodeDials {
   rating?: number;
@@ -72,6 +74,11 @@ export const SHAPE_OF: Readonly<Record<CodeToken['shape'], NodeShape | 'shaft' |
 export const MARK_OF: Readonly<Record<NodeShape, CodeToken['shape']>> = { flat: '', rising: '^', falling: '_', 'two-road': '' };
 
 const ONE = /^([A-Z])([a-z])?([12])?(\^\^|\^|_|@|\*)?(\+)?(&&|&)?([<>])?$/;
+/** an id as a kit writes it (R-165.319): a small letter first, then letters of either case, digits, '-' or '_' */
+const ID = '[a-z][A-Za-z0-9_-]*';
+const THREAT = new RegExp(`^(${ID})(?:\\*(\\d+)([!z])?|(!))?$`);
+const HAZARD = new RegExp(`^(${ID})(?:@(${ID}))?$`);
+const FIND = new RegExp(`^${ID}$`);
 
 /** a token's long-form dials, from the text after its head (`:7:p5.5:&snake*2!`); a sign that is none of them fails by name */
 function dialsOf(tail: string, t: string, at: number): CodeDials | undefined {
@@ -88,17 +95,17 @@ function dialsOf(tail: string, t: string, at: number): CodeDials | undefined {
     else if (sign === '&') {
       d.threat = rest.split(',').map((one) => {
         // (asleep is written after the count, "snake*1z": a bare trailing z would be a letter of the kind's own name)
-        const m = /^([a-z][a-z0-9_-]*)(?:\*(\d+)([!z])?|(!))?$/.exec(one);
+        const m = THREAT.exec(one);
         if (!m) return bad(`"${one}" is not a threat ("kind", "kind*2", "kind!" or "kind*2!" awake, "kind*2z" asleep)`);
         const mark = m[3] ?? m[4];
         return { kind: m[1], count: m[2] ? Number(m[2]) : 1, ...(mark ? { state: mark === '!' ? ('awake' as const) : ('asleep' as const) } : {}) };
       });
     } else if (sign === '#') {
-      const m = /^([a-z][a-z0-9_-]*)(?:@([a-z][a-z0-9_-]*))?$/.exec(rest);
+      const m = HAZARD.exec(rest);
       if (!m) return bad(`"${part}" is not a hazard (":#hurt", ":#pods@beat")`);
       d.hazard = { kind: m[1], ...(m[2] ? { clock: m[2] } : {}) };
     } else if (sign === '+') {
-      if (!/^[a-z][a-z0-9_-]*$/.test(rest)) bad(`"${part}" is not a find (":+seed")`);
+      if (!FIND.test(rest)) bad(`"${part}" is not a find (":+seed")`);
       d.reward = { ...d.reward, find: rest };
     } else if (sign === '$') d.reward = { ...d.reward, pickups: num(rest, 'the pickups dial (":$8")') };
     else bad(`":${part}" is not a dial (":7", ":p5.5", ":t0.9", ":&kind*n!", ":#hazard", ":+find", ":$n")`);

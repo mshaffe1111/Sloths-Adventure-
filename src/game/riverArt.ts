@@ -7,9 +7,11 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
+import { endFace } from './groundPaint.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
 import { drawSoil } from './groundPaint.ts';
+import { drawKitArt } from './puzzleArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -73,6 +75,12 @@ export function w2Height(n: W2Piece, w: number): number {
 
 /** the painted water's colours: the top of the strip, and the deep water below it */
 export const RIVER_DEEP = '#264247';
+/**
+ * how far behind a bank a river's water, bed and soil are drawn on (engine.ts drawRivers, riverUnderBanks): World 2's painted bank cliff
+ * tapers in below its top by about 70 px at the foot of an upright screen, and the river stopping at the bank's edge left the backdrop
+ * showing in that wedge (BUILD-24c). Twice that, for the cliffs of other banks; the bank is drawn in front and hides the rest.
+ */
+export const RIVER_UNDER_BANK = 140;
 
 /**
  * The river LOOKS by kind (the lead's ruling 1, 11-15: a river that costs nothing never looks like one that costs a life). `safe`, the
@@ -101,29 +109,80 @@ export function safeRiverArtReady(): boolean {
   return shallowReady && !!shallow;
 }
 /**
- * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): only a short band at the log
- * line, the shallow strip's own top rows at part strength, so a log sinks into the same light water it floats on; never the deep river's
- * dark sheet down to the screen's foot, which made every safe river read as deep (the lead's still review 11-15 1:36 PM ET, FIX-21).
- * The band slides with the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
+ * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): on each log (or raft) only, its
+ * own WATERLINE low on its body, the shallow strip's crest row laid `line` px under the river's surface with the strip's water under it
+ * at part strength down to `below` under the line, bobbing with the log (logBob). So a log reads as a solid floor of wood riding high in
+ * the light water, the water line crossing it low (ENG-24e 2b, the lead 3:55 PM ET 11-19 from BUILD-24d's stills: a band of the strip
+ * laid across the WHOLE river at its surface, 4 over to 16 under at 60%, covered a log from 10 px under its top, so only its top sliver
+ * showed and the pale water washed the body out: a faint glass tube on every safe river, 2-1, 2-2 and 2-4). Over the open water nothing
+ * is drawn (the strip there is the river's own, drawRiverWater), never the deep river's dark sheet either (FIX-21). The band slides with
+ * the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
  */
-export const SAFE_OVER = { above: 4, below: 16, alpha: 0.6 } as const;
-export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, x0: number, x1: number, surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
+export const SAFE_OVER = { line: 0.7, alpha: 0.6, inset: 5 } as const;
+/** a raft's painting (drawRiverLog): drawn this tall for its width, its foot this share of that under the deck (the deck about a quarter
+ *  down the painting, level with the raft's top, as the sluice rooms set it) */
+const RAFT = { h: 0.44, foot: 0.72 } as const;
+/** a log's painting (drawRiverLog): its piece, drawn size, and its bark's top and foot under the log's top (px), unbobbed; a raft's deck
+ *  and foot (RiverRow.look 'raft') */
+export function logPaint(p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): { n: W2Piece; w: number; h: number; barkTop: number; barkFoot: number } {
+  if (p.drift?.look === 'raft') { const rh = p.width * RAFT.h; return { n: 'logLong', w: p.width * 1.1, h: rh, barkTop: 0, barkFoot: rh * RAFT.foot }; }
+  const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
+  const f = W2_FRAMES[n];
+  const w = p.width * 1.08;
+  const h = (w * f.h) / f.w;
+  // (the bark's top is about a fifth of the way down the painting: the moss and the twig stand up above it)
+  return { n, w, h, barkTop: 2, barkFoot: 2 + h * 0.8 };
+}
+/** where a safe river's waterline crosses a floating log, under the log's top (px): `SAFE_OVER.line` of the way down its bark */
+export const logLineAt = (p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): number => { const b = logPaint(p); return b.barkTop + (b.barkFoot - b.barkTop) * SAFE_OVER.line; };
+export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly Platform[], surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
   if (!safeRiverArtReady()) return false;
+  if (!logs.length) return true;
   const L = RIVER_LOOK.safe;
-  const top = surfaceY - L.h * L.crest;
   const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
-  const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
   ctx.save();
-  ctx.beginPath();
-  ctx.rect(x0, surfaceY - SAFE_OVER.above, x1 - x0, SAFE_OVER.above + SAFE_OVER.below);
-  ctx.clip();
   ctx.globalAlpha *= SAFE_OVER.alpha;
-  for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+  for (const lg of logs) {
+    // (a raft's painting is drawn whole on the water, no waterline over it: its own waterline is NOT proven yet, ENG-24e's still showed
+    //  the band under its painting)
+    if (lg.drift?.look === 'raft') continue;
+    const line = lg.y + logLineAt(lg) + logBob(lg, t);
+    const foot = lg.y + logPaint(lg).barkFoot + logBob(lg, t) + 2;
+    const x0 = lg.x + SAFE_OVER.inset, x1 = lg.x + lg.width - SAFE_OVER.inset;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x0, line - L.h * L.crest, x1 - x0, foot - line + L.h * L.crest);
+    ctx.clip();
+    const top = line - L.h * L.crest;
+    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+    ctx.restore();
+  }
   ctx.restore();
   return true;
 }
+/** where a safe river's waterline crosses a floating log (drawSafeRiverOver), for the foam along it: y, bobbing with the log */
+export const safeLogLine = (lg: Platform, t: number): number => lg.y + logLineAt(lg) + logBob(lg, t);
+/**
+ * The outline a river's water is drawn inside (engine.ts drawRivers' under pass, ENG-24e 2c, R-165.323): from the top down the near bank's
+ * painted face (groundPaint endFace: the very line that bank's soil is clipped to, protoArt drawProtoScene), across under the river, and up
+ * the far bank's face; a side with no painted bank (`nearY`/`farY` null) runs straight down its edge. Under a bank the water, its bed and
+ * the earth below run on only as far as the bank's face slopes back in (the wedge under its lip, where the backdrop showed before
+ * BUILD-24c's run), never behind the face: the 140 px run (RIVER_UNDER_BANK, 622fa1b4) laid the bed's stones and the shallow earth behind
+ * the see-through lower part of the bank's end piece, so the rock read as glass with pond stones in it, and where the run stopped a
+ * faint vertical seam ran down the soil (INT-13b's merged-head stills, the lead 8:13 PM ET 11-19).
+ */
+export function riverWaterOutline(w: number, x0: number, x1: number, nearY: number | null, farY: number | null, top: number, bottom: number): Array<[number, number]> {
+  const face = (x: number, y: number | null, right: boolean): Array<[number, number]> => {
+    const f = y === null ? [[x, top], [x, bottom]] as Array<[number, number]> : endFace(w, x, y, bottom, right);
+    return [[f[0][0], top], ...f, [f[f.length - 1][0], bottom + 40]];
+  };
+  return [...face(x0, nearY, true), ...face(x1, farY, false).reverse()];
+}
+
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
+/** the water strip's frayed bottom rows (its cut-out's edge), left out where it meets the deep fill (drawRiverWater) */
+const WATER_FRAY = 6;
 
 /**
  * The river's water between x0 and x1, from the surface down to `bottom`: the painted strip repeated along the river, sliding slowly
@@ -173,25 +232,35 @@ export function drawRiverWater(
   const th = (WATER_TILE * f.h) / f.w;
   // the strip's wave crests sit a few rows down its picture: line them up with the surface
   const top = surfaceY - th * 0.045;
+  // (the strip's last WATER_FRAY rows are its cut-out's frayed edge, darker and half see-through (29,50,55 at alpha 204-247 over the
+  //  fill): over the deep fill they drew a hard dark line across every deep river (the lead, 11-19, 2-4 beat 6 upright). The strip is
+  //  drawn without them, its last whole row (38,67,71) meeting the deep fill RIVER_DEEP (38,66,71) under it, ENG-24f)
+  const sh = f.h - WATER_FRAY, dh = (th * sh) / f.h;
   ctx.fillStyle = RIVER_DEEP;
-  ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
+  ctx.fillRect(x0, top + dh - 1, x1 - x0, Math.max(0, bottom - (top + dh - 1)));
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
   const shift = (((t * speed * 0.35 * dir) % WATER_TILE) + WATER_TILE) % WATER_TILE;
   const start = Math.floor((x0 - shift) / WATER_TILE) * WATER_TILE + shift;
-  for (let x = start; x < x1; x += WATER_TILE - 1) blit(ctx, 'water', x, top, WATER_TILE, th);
+  for (let x = start; x < x1; x += WATER_TILE - 1) ctx.drawImage(img!, f.x, f.y, f.w, sh, x, top, WATER_TILE, dh);
   return true;
 }
 
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */
+/** a floating log's bob on the current (px): its painting and its waterline (drawSafeRiverOver) move together */
+export const logBob = (p: Pick<Platform, 'id'>, t: number): number => Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
 export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: number): boolean {
   if (!riverArtReady()) return false;
-  const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
-  const f = W2_FRAMES[n];
-  const w = p.width * 1.08;
-  const h = (w * f.h) / f.w;
-  const bob = Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
+  const bob = logBob(p, t);
+  // a raft (RiverRow.look 'raft', R-165.288): World 2's painted raft (puzzle-kit#raft, w2.json), set as the sluice rooms set it
+  // (puzzlePlay.ts: the painting's deck, about a quarter down it, level with the raft's top, where he stands); the log stands in only
+  // until the kit's sheet has loaded (a stage that lays a raft asks for it before play: stageSheets.ts, gen2Rafts)
+  if (p.drift?.look === 'raft') {
+    const r = logPaint(p);
+    if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + r.barkFoot + bob, { w: r.w, h: r.h })) return true;
+  }
+  const { n, w, h, barkTop } = logPaint(p);
   // the bark's top is about a fifth of the way down the painting (the moss and the twig stand up above it)
-  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + 2 - h * 0.2 + bob, w, h, p.id % 2 === 1);
+  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + barkTop - h * 0.2 + bob, w, h, p.id % 2 === 1);
   return true;
 }
 
@@ -205,18 +274,21 @@ export function drawLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: nu
 }
 
 // ───────────── the pond's own pieces (ART-W2, src/assets/w2-1115 + Matt's Victoria pads; BUILD-22 wires them) ─────────────
-/** each painted pond piece: its file and size (px); catalog rows w2-1115/w2-pad-*, w2-crown-*, M-02-a, M-03-a */
+/** each painted pond piece: its file and size (px); catalog rows w2-1115/w2-pad-*, w2-crown-*, M-02-a, M-03-a. `top`: the painted top's span
+ *  across the picture (its widest opaque row, as shares of the width; FIX-284, measured by reference/qa-reports/FIX-284/padtop.py): the
+ *  span laid exactly on the floor that holds him (art = floor), so no painted rim overhangs where he can stand (Matt 11-18, "Why is that one
+ *  lily pad so huge?"). Pieces that are not stood on (the ripple, the flowers) have none */
 const POND_ART = {
-  small: { url: new URL('../assets/w2-1115/w2-pad-small.webp', import.meta.url).href, w: 300, h: 146 },
-  smallSunk: { url: new URL('../assets/w2-1115/w2-pad-small-sunk.webp', import.meta.url).href, w: 300, h: 142 },
-  big: { url: new URL('../assets/w1-1109/M-03-a.png', import.meta.url).href, w: 816, h: 397 },
-  bigSunk: { url: new URL('../assets/w2-1115/w2-pad-big-sunk.webp', import.meta.url).href, w: 540, h: 272 },
+  small: { url: new URL('../assets/w2-1115/w2-pad-small.webp', import.meta.url).href, w: 300, h: 146, top: [0, 1] },
+  smallSunk: { url: new URL('../assets/w2-1115/w2-pad-small-sunk.webp', import.meta.url).href, w: 300, h: 142, top: [0.007, 0.997] },
+  big: { url: new URL('../assets/w1-1109/M-03-a.png', import.meta.url).href, w: 816, h: 397, top: [0.002, 0.996] },
+  bigSunk: { url: new URL('../assets/w2-1115/w2-pad-big-sunk.webp', import.meta.url).href, w: 540, h: 272, top: [0, 1] },
   ripple: { url: new URL('../assets/w2-1115/w2-pad-ripple.webp', import.meta.url).href, w: 400, h: 114 },
-  giant: { url: new URL('../assets/w1-1109/M-02-a.png', import.meta.url).href, w: 815, h: 543 },
+  giant: { url: new URL('../assets/w1-1109/M-02-a.png', import.meta.url).href, w: 815, h: 543, top: [0.002, 0.998] },
   bud: { url: new URL('../assets/w2-1115/w2-crown-bud.webp', import.meta.url).href, w: 160, h: 310 },
   open: { url: new URL('../assets/w2-1115/w2-crown-open.webp', import.meta.url).href, w: 360, h: 353 },
-} as const;
-type PondPiece = keyof typeof POND_ART;
+} as const satisfies Record<string, { url: string; w: number; h: number; top?: readonly [number, number] }>;
+export type PondPiece = keyof typeof POND_ART;
 const pondImg: Partial<Record<PondPiece, HTMLImageElement | null>> = {};
 const pondReady: Partial<Record<PondPiece, boolean>> = {};
 function pondArt(n: PondPiece): HTMLImageElement | null {
@@ -227,17 +299,37 @@ function pondArt(n: PondPiece): HTMLImageElement | null {
   }
   return pondReady[n] ? pondImg[n] ?? null : null;
 }
-/** a pond piece `w` wide, centred on cx, set on the water as drawLily sets the sheet's lily (its top at surfaceY - 0.55 of its height) */
-function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfaceY: number, w: number, flip: boolean): boolean {
+/**
+ * Where a pond piece is drawn for a floor `floorW` wide centred on cx (FIX-284, art = floor): a piece that is stood on is scaled so its
+ * painted top (POND_ART `top`) spans the floor exactly, edge to edge; one that is not (the ripple) is `floorW` wide. Set on the water as
+ * drawLily sets the sheet's lily: its top at surfaceY - 0.55 of its height. Pure (no image needed): the tests read it.
+ */
+export function pondBox(n: PondPiece, cx: number, surfaceY: number, floorW: number): { x: number; y: number; w: number; h: number } {
+  const a = POND_ART[n];
+  const top = 'top' in a ? a.top : ([0, 1] as const);
+  const w = floorW / (top[1] - top[0]);
+  const h = (w * a.h) / a.w;
+  return { x: cx - floorW / 2 - top[0] * w, y: surfaceY - h * 0.55, w, h };
+}
+/** the painted top's span (x0, x1) of a piece drawn by pondBox: the floor's own span when the art = floor */
+export function pondTopSpan(n: PondPiece, cx: number, surfaceY: number, floorW: number): [number, number] {
+  const a = POND_ART[n];
+  const top = 'top' in a ? a.top : ([0, 1] as const);
+  const b = pondBox(n, cx, surfaceY, floorW);
+  return [b.x + top[0] * b.w, b.x + top[1] * b.w];
+}
+/** a pond piece for a floor `floorW` wide, centred on cx (pondBox) */
+function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfaceY: number, floorW: number, flip: boolean): boolean {
   const im = pondArt(n);
   if (!im) return false;
-  const h = (w * POND_ART[n].h) / POND_ART[n].w;
-  if (!flip) ctx.drawImage(im, cx - w / 2, surfaceY - h * 0.55, w, h);
+  const b = pondBox(n, cx, surfaceY, floorW);
+  if (!flip) ctx.drawImage(im, b.x, b.y, b.w, b.h);
   else {
+    // mirrored about the floor's centre: the painted top keeps its span (a piece whose top is off-centre in its picture mirrors to the floor)
     ctx.save();
-    ctx.translate(cx + w / 2, surfaceY - h * 0.55);
+    ctx.translate(2 * cx - b.x, b.y);
     ctx.scale(-1, 1);
-    ctx.drawImage(im, 0, 0, w, h);
+    ctx.drawImage(im, 0, 0, b.w, b.h);
     ctx.restore();
   }
   return true;
@@ -246,42 +338,42 @@ function blitPond(ctx: CanvasRenderingContext2D, n: PondPiece, cx: number, surfa
 /**
  * A sinking pad (pieces/padPiece.ts) where its clock has it, in ART-W2's states (its REPORT's slot map): UP, the pad (a small one's own
  * painting, a big one Matt's Victoria pad M-03-a); SHIVER, the same pad jiggled by its tell, half-sunk (its -sunk painting) through the
- * second half of the warning, dipping as it goes; UNDER, the ripple decal where it went (a big one's at about 200 u). The size is read
- * from its width (a big pad is twice a small one's, rideLay PAD_SIZES), so a beat row's pads ('beat' look) are painted by their size too.
+ * second half of the warning, dipping as it goes; UNDER, the ripple decal where it went. `look` is the pad's size (rideLay PAD_SIZES; a
+ * beat row's pads carry theirs too) and `floorW` the floor that holds him: the painting's top is laid on it exactly (pondBox, FIX-284).
  * Until a piece has loaded, the sheet's lily moved by its tell, as before.
  */
-export function drawPad(ctx: CanvasRenderingContext2D, _look: string | undefined, cx: number, surfaceY: number, w: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
+export function drawPad(ctx: CanvasRenderingContext2D, look: string | undefined, cx: number, surfaceY: number, floorW: number, t: number, now: { solid: boolean; tell: number }, flip = false): boolean {
   if (!riverArtReady()) return false;
-  const big = w > 220;
+  const big = look === 'big';
   const shake = now.solid ? Math.sin(t * 38 + cx) * 2.2 * now.tell : 0;
   const dip = now.solid ? 5 * now.tell : 12;
   if (!now.solid) {
-    if (blitPond(ctx, 'ripple', cx, surfaceY + 2, big ? 200 : w * 0.9, flip)) return true;
+    if (blitPond(ctx, 'ripple', cx, surfaceY + 2, floorW * 0.9, flip)) return true;
   } else {
     const bob = Math.sin(t * 1.8 + cx * 0.01) * 1.2 * (1 - now.tell);
     const piece: PondPiece = now.tell >= 0.5 ? (big ? 'bigSunk' : 'smallSunk') : big ? 'big' : 'small';
-    // (Matt's Victoria pads are painted larger than their floor: the rim is drawn at the floor's width, as the sheet's lily is)
-    if (blitPond(ctx, piece, cx + shake, surfaceY + dip + bob, w, flip)) return true;
+    if (blitPond(ctx, piece, cx + shake, surfaceY + dip + bob, floorW, flip)) return true;
   }
-  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, w, t, flip);
+  if (now.solid && now.tell <= 0) return drawLily(ctx, cx, surfaceY, floorW, t, flip);
   ctx.save();
   if (!now.solid) ctx.globalAlpha = 0.28;
-  const ok = drawLily(ctx, cx + shake, surfaceY + dip, w, t, flip);
+  const ok = drawLily(ctx, cx + shake, surfaceY + dip, floorW, t, flip);
   ctx.restore();
   return ok;
 }
 
 /**
- * The crown lily (2-2.md beat 11; ART-W2's slot map): Matt's giant Victoria pad M-02-a, `w` wide, and its flower standing on its centre,
- * closed (w2-crown-bud) until he has stood on it, then open (w2-crown-open), its foot on the pad's centre. Returns false until loaded.
+ * The crown lily (2-2.md beat 11; ART-W2's slot map): Matt's giant Victoria pad M-02-a on its floor `floorW` wide (its painted top laid on
+ * the floor, pondBox), and its flower standing on its centre, closed (w2-crown-bud) until he has stood on it, then open (w2-crown-open),
+ * its foot on the pad's centre. Returns false until loaded.
  */
-export function drawCrownLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: number, w: number, t: number, open: boolean): boolean {
+export function drawCrownLily(ctx: CanvasRenderingContext2D, cx: number, surfaceY: number, floorW: number, t: number, open: boolean): boolean {
   const bob = Math.sin(t * 1.1 + cx * 0.01) * 0.8;
-  if (!blitPond(ctx, 'giant', cx, surfaceY + bob, w, false)) return false;
+  if (!blitPond(ctx, 'giant', cx, surfaceY + bob, floorW, false)) return false;
   // (the flower's foot on the pad's middle: the pad's painted centre sits about 0.05 of its height over the surface line)
-  const hPad = (w * POND_ART.giant.h) / POND_ART.giant.w;
-  const foot = surfaceY + bob - hPad * 0.05;
-  const k = w / 300;
+  const pad = pondBox('giant', cx, surfaceY + bob, floorW);
+  const foot = surfaceY + bob - pad.h * 0.05;
+  const k = pad.w / 300;
   const f: PondPiece = open ? 'open' : 'bud';
   const fw = (open ? 110 : 46) * k, fh = (fw * POND_ART[f].h) / POND_ART[f].w;
   const im = pondArt(f);
@@ -305,6 +397,71 @@ export function drawReeds(
   ctx.translate(cx, bottom);
   ctx.transform(1, 0, Math.sin(t * 1.3 + cx * 0.02) * 0.05, 1, 0, 0);
   blit(ctx, kind, -w / 2, -h, w, h, flip);
+  ctx.restore();
+  return true;
+}
+
+/**
+ * Where a river's logs go under short of the far bank (its TAIL, river.ts DriftInfo.tail; ENG-24f, R-165.301): World 2's painted reeds
+ * standing in the water across the logs' window end `x1`, in front of the logs, the river's foam about their feet. The logs are drawn
+ * only up to TAIL_END.hide past x1 (engine.ts), behind the reeds, so a log is never drawn out over the tail where it holds no one
+ * (engine.ts onFloor: a rider's middle past x1 is in the water). Reeds, never a stone or a bank: nothing that reads as a landing.
+ */
+export const TAIL_END = {
+  /** the clump's span about x1 (px): from `from` before it to `to` past it */
+  from: 46,
+  to: 92,
+  /** how far past x1 a log is still drawn (px): its cut end well inside the clump */
+  hide: 30,
+  /** how far under the surface the reeds stand (px): their feet in the water */
+  sink: 22,
+  /** on a deep river, how far under the surface the reeds are cut (px), under the foam */
+  cut: 4,
+} as const;
+/** the clump's reeds: [kind, width px, flipped, where across the clump (0..1)]; a back row, then a front row thickest over the logs' cut */
+const TAIL_REEDS = [
+  ['reedTall', 60, false, 0.12], ['reedLean', 78, true, 0.42], ['reedTall', 58, true, 0.7], ['reedShort', 90, false, 0.92],
+  ['reedLean', 74, false, 0.05], ['reedShort', 96, true, 0.36], ['reedTall', 64, false, 0.55], ['reedShort', 88, false, 0.62], ['reedLean', 70, true, 0.84],
+] as const;
+export function drawRiverTailEnd(ctx: CanvasRenderingContext2D, x1: number, surfaceY: number, t: number, deep = false): boolean {
+  if (!riverArtReady()) return false;
+  const x0 = x1 - TAIL_END.from, w = TAIL_END.from + TAIL_END.to;
+  // (a DEEP river: only the reeds rise out of it, cut at the surface under the foam; their base under a deep sheet read as a little grass
+  //  island to stand on, the lead 11-19 on 2-4 beat 6)
+  ctx.save();
+  if (deep) {
+    ctx.beginPath();
+    ctx.rect(x0 - 200, surfaceY - 600, w + 400, 600 + TAIL_END.cut);
+    ctx.clip();
+  }
+  TAIL_REEDS.forEach(([kind, rw, flip, at], i) => {
+    // (staggered depths, the front row lower: the clump stands in the water, not on a line)
+    drawReeds(ctx, kind, x0 + at * w, surfaceY + TAIL_END.sink + (i >= 4 ? 10 : 0) + (i % 2) * 5, rw, t, flip);
+  });
+  ctx.restore();
+  for (let i = 0; i < 3; i++) drawRiverFoam(ctx, 7 + i, x0 + 10 + (i * w) / 3, surfaceY + 5, 60, 0.85, i % 2 === 1);
+  return true;
+}
+
+/** the painted reeds a clump is made of, each at its width (px): about 73-116 px tall, over a little one (45) and most of him (89) */
+const CLUMP_REEDS = [['reedTall', 64], ['reedShort', 90], ['reedLean', 72], ['reedTall', 58], ['reedShort', 84]] as const;
+
+/**
+ * World 2's reed clump to hide in (a hide whose Bush.kind is 'reeds': 2-3's little ones hide in them from the heron): its width filled
+ * with the world's painted reeds, the pattern fixed by where it stands, swaying harder while someone moves in it. False until the sheet
+ * has loaded.
+ */
+export function drawReedClump(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, inside: boolean, rustle: number, t: number): boolean {
+  if (!riverArtReady()) return false;
+  const n = Math.max(2, Math.round(b.w / 52));
+  const o = Math.abs(Math.round(b.x / 97));
+  ctx.save();
+  if (inside) ctx.globalAlpha *= 0.85;
+  for (let i = 0; i < n; i++) {
+    const [kind, w] = CLUMP_REEDS[(i + o) % CLUMP_REEDS.length];
+    const cx = b.x + ((i + 0.5) * b.w) / n + Math.sin(t * 14 + i) * 3 * rustle;
+    drawReeds(ctx, kind, cx, b.y + 6, w, t, (i + o) % 2 === 1);
+  }
   ctx.restore();
   return true;
 }
@@ -560,6 +717,8 @@ export function drawW2Cage(
   t: number,
   /** a cage hanging from a pulley (2-3, 2-8: the puzzle kit draws its cage, puzzlePlay.ts): only the little one in it, and its hop home */
   bare = false,
+  /** its little one follows him once it is free (proto.follow, followArt.ts draws it): no hop home from the cage */
+  followed = false,
 ): boolean {
   if (!riverArtReady() || !c.critter || c.critter === 'eaglet') return false;
   const floor = c.y + 26;
@@ -584,7 +743,7 @@ export function drawW2Cage(
     drawW2Piece(ctx, 'cageC', c.x, floor + 2, 92);
     ctx.restore();
   }
-  if (since <= FREED_HOP) {
+  if (since <= FREED_HOP && !followed) {
     // three hops away from the cage, getting smaller as it runs home into the reeds
     const u = since / FREED_HOP;
     const hop = Math.abs(Math.sin(u * Math.PI * 3)) * 26;

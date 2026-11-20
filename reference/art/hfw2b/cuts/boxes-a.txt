@@ -1,0 +1,2 @@
+/w/cut/a/wheel-s37.png box (92, 89, 932, 936) size (840, 847) holes 0.616 trapped grey keyed 6
+/w/cut/a/bucket-s23.png box (112, 85, 931, 435) size (819, 350) holes 0.000 trapped grey keyed 0

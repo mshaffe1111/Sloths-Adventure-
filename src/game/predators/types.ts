@@ -42,15 +42,26 @@ export type Outcome =
   | { ends: 'dozes'; when?: When }
   | { ends: 'chasedOff'; when?: When };
 
+/**
+ * An act. `aim`: 'ahead' runs or strikes along the ground the way it faces; 'below' comes straight down to where he was when the tell
+ * began (move on and it misses); 'him' follows him (a sweeper's dive: only hiding before the tell ends stops it); 'up' leaps from its
+ * ground at the spot he hung over when the tell began, running along its ground to it (move on along the rope and it misses: the
+ * mirror of 'below'). `speed` px/s for `seconds` at most; `reach` x `tall`: the box in front of it (or round it, in the air; for 'up',
+ * `tall` up from its ground) that hurts while it acts
+ */
+export interface Act { aim: 'ahead' | 'below' | 'him' | 'up'; seconds: number; speed: number; reach: number; tall: number }
+
 export interface PredatorDef {
   /** the animal, by the name the game already has for it */
   kind: string;
   habit: Habit;
   /**
-   * what it sees: a box round its eye, further ahead than behind. `seesStill`: holding still in the open does not hide him from it.
-   * `remembers`: stillness in the open hides him only until it has seen him once (the Drake's gaze)
+   * what it sees: a box round its eye, further ahead than behind. `tall`: how far below its feet it sees, and above them too unless `up`
+   * says otherwise. `up`: how far ABOVE its feet it sees (a prowler that never looks up: World 3's ocelot under a hanging sloth, 3-2.md
+   * NEW 1 ENG-PROWL); absent, `tall` (every kind before it: nothing shipped changed). `seesStill`: holding still in the open does not hide
+   * him from it. `remembers`: stillness in the open hides him only until it has seen him once (the Drake's gaze)
    */
-  sight: { ahead: number; behind: number; tall: number; seesStill?: boolean; remembers?: boolean };
+  sight: { ahead: number; behind: number; tall: number; up?: number; seesStill?: boolean; remembers?: boolean };
   /**
    * the noise lure: it goes to a noise it hears and looks around there this long (s), noticing nobody. Absent: a noise only wakes it
    */
@@ -86,12 +97,13 @@ export interface PredatorDef {
    * called on the 'warn' and its eye starts across on the 'on')
    */
   onBeat?: boolean;
+  /** the act (Act): what it does when its tell has run its full length */
+  act: Act;
   /**
-   * the act. `aim`: 'ahead' runs or strikes along the ground the way it faces; 'below' comes straight down to where he was when the
-   * tell began (move on and it misses); 'him' follows him (a sweeper's dive: only hiding before the tell ends stops it). `speed` px/s for `seconds` at most; `reach` x `tall`: the box in front of it (or round it, in the air)
-   * that hurts while it acts
+   * the LEAP: its act when the tell began on a sloth hanging over it (Prey.hanging), aim 'up' (3-2.md NEW 1 ENG-PROWL: World 3's
+   * prowler under a rope). Absent: a hanging sloth gets its plain act, as before. `checkPredator` holds it to the tell's escapes on Easy
    */
-  act: { aim: 'ahead' | 'below' | 'him'; seconds: number; speed: number; reach: number; tall: number };
+  leap?: Act & { aim: 'up' };
   /** seconds it is open after acting, and seconds before it may tell again */
   recover: number;
   cool: number;
@@ -99,8 +111,14 @@ export interface PredatorDef {
   giveUp: number;
   /** it stands in the way: he cannot walk through it while it is up */
   blocks?: boolean;
-  /** Easy, as multiples of Normal: the tell and the cool never shorter (>= 1), the speeds never faster (<= 1) */
-  easy: { tell: number; cool: number; speed: number };
+  /** its body hurts on touch while it watches or rears (rest, hunt, tell): a box `w` wide from its post, `tall` over its ground, like
+   *  every foe's (the lead's ruling 11-15 on the kit boa: the rear is the only door, on any bough). Never while it strikes (its strike's
+   *  box), with its head out after (recover: the punch's window), dazed, fleeing or gone. Absent: only its strike hurts */
+  coil?: { w: number; tall: number };
+  /** Easy, as multiples of Normal: the tell and the cool never shorter (>= 1), the speeds never faster (<= 1); `engage` (>= 1, absent 1)
+   *  how much further off it starts its tell (the lead's ruling 11:31 AM ET 11-15: a posted boa's coil hurts, so from a run he reaches it
+   *  on the same frame whatever the tell's length; on Easy it notices him earlier instead) */
+  easy: { tell: number; cool: number; speed: number; engage?: number };
   /** every way that works, and how each ends */
   beatenBy: Partial<Record<Way, Outcome>>;
   /** the way its world teaches first */
@@ -195,6 +213,8 @@ export interface PredatorState extends Listener {
   /** where the act is going: set when the tell begins and not changed after, so a dodge is a dodge (but an act that aims 'him' follows him) */
   aimX: number;
   aimY: number;
+  /** the act under way (or told) is its leap (PredatorDef.leap): set when the tell begins, from whether he hung over it then */
+  leaping?: boolean;
   /** where it is heading on the hunt: him, or a noise */
   goalX: number;
   /** it is following a noise, not him, and has looked at the spot for `look` seconds */
@@ -240,6 +260,8 @@ export interface Prey {
   covered: boolean;
   /** stillness.ts `moving` on this frame (what a glance sees: a step, a hop, a climb). Unset: read as not still */
   moving?: boolean;
+  /** hanging from a rope by his hands (castPlay.ts CastHero.hanging): a kind with a leap answers him with it. Unset: not hanging */
+  hanging?: boolean;
 }
 
 /** one fixed step of the stage, as a predator sees it */

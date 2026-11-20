@@ -9,6 +9,7 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
 import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
+import { buildWheelFixtureStage, wheelFixtureFor } from './wheelFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
@@ -2879,8 +2880,13 @@ export const aheadKeys = (): string[] => [...ahead.keys()];
  * and test (which had built Easy on Normal's). The caller's dials are put back after.
  */
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
+  for (let k = 1; k < buildRepeatForTest; k++) withSetting(difficulty, () => generateStageOn(config, difficulty));
   return withSetting(difficulty, () => generateStageOn(config, difficulty));
 }
+/** the speed test's planted slowdown (stageQuality.test.ts, R-165.325): every stage built this many times over, as a doubled loop
+ *  would; 1 (once) everywhere else. Only that test sets it, and puts it back to 1 */
+let buildRepeatForTest = 1;
+export function setBuildRepeatForTest(n: number): void { buildRepeatForTest = Math.max(1, Math.floor(n)); }
 function generateStageOn(config: LevelConfig, difficulty: Difficulty): GeneratedStage {
   if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
     const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
@@ -2896,6 +2902,8 @@ function generateStageOn(config: LevelConfig, difficulty: Difficulty): Generated
   if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
   // a real laid chase with its nuts and fruit, before 1-8 exists (a dev build only: chaseFixtureStage.ts, ENG-B5)
   if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
+  // a real laid water wheel on World 2's ground, before 2-6 is built (a dev build only: wheelFixtureStage.ts, ENG-26b)
+  if (wheelFixtureFor(config.id)) return buildWheelFixtureStage(config, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);

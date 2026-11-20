@@ -20,6 +20,21 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.0',
+    date: '2026-11-20',
+    title: 'Across the river',
+    items: [
+      'The Boa’s Branches is rebuilt: boas snap at what moves, so I keep still and outsmart them.',
+      'Over the Water is rebuilt: vines to logs, logs to vines, all the way across the river.',
+      'The fallen logs and stones in the forest are painted now, flat on top where I stand.',
+      'First Lianas and A Very Good Bush mix it up: fewer repeats, more kinds of climbs and hops.',
+      'Petals for the Crown: the lily pads are bigger, and a quick tap is a little hop.',
+      'If I fall in at Petals for the Crown, I come back safe on a pad.',
+      'The river king’s crown is water hyacinths now: the petals I gather for it are purple.',
+      'The riverbanks are solid rock and soil now.',
+    ],
+  },
+  {
     version: '0.9.9',
     date: '2026-11-15',
     title: 'Down to the river',

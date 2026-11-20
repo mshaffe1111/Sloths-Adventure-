@@ -1,0 +1,10 @@
+// usage: tsx rivers.mts <stage> <seed> <normal|easy>
+import '/home/user/w285/src/game/headlessDom.ts';
+import { setDifficulty } from '/home/user/w285/src/game/difficulty.ts';
+import { RealPlay } from '/home/user/w285/src/game/realPlay.ts';
+const [stage, seed, setting] = process.argv.slice(2);
+setDifficulty(setting as any);
+const sim: any = new RealPlay(stage, Number(seed));
+for (const r of sim.stage.rivers ?? []) console.log(JSON.stringify({ x0: Math.round(r.x0), x1: Math.round(r.x1), dir: r.dir, speed: r.speed, safe: r.safe ?? false, logW: r.logW }));
+const secs = sim.stage.gen2?.plan ?? sim.stage.gen2?.sections;
+if (sim.stage.gen2?.placed) for (const s of sim.stage.gen2.placed) console.log('sec', s.id ?? s.section, Math.round(s.x0 ?? s.x), Math.round(s.x1 ?? 0));

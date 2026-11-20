@@ -10,6 +10,7 @@
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
 import { W17_URLS, w17Ready } from './w17Art.ts';
+import { W19_URLS, w19Ready } from './w19Art.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
@@ -28,11 +29,11 @@ import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets 
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
+import { RIVER_LOOK, W2_PROPS_URL, riverArtReady, safeRiverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
-import { PETALS_URL, petalsReady } from './petalSprites.ts';
+import { PETAL_SET_IDS, PETAL_SETS, petalsReady } from './petalSprites.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { NIGHT_ART_URL, nightArtReady } from './meecaNightArt.ts';
@@ -54,6 +55,8 @@ import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterA
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { W6_WHEEL_URLS, w6WheelsReady } from './w6WheelArt.ts';
+import { w2WheelReady } from './wheelDraw.ts';
+import { W2_WHEEL_URL } from './w2WheelData.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -96,6 +99,10 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w2-props') {
       riverArtReady();
       urls.push(W2_PROPS_URL);
+      // (and the safe river's shallow strip: asked for only at its first draw, that frame drew the DEEP sheet, a dark-teal slab, the look
+      // of a river that costs a life, at the first safe river of every stage; BUILD-24d, safeRiverPreload.test.ts)
+      safeRiverArtReady();
+      urls.push(RIVER_LOOK.safe.url);
     } else if (k === 'w3-props') {
       w3ArtReady();
       urls.push(W3_PROPS_URL);
@@ -145,6 +152,9 @@ export function start(keys: readonly string[]): string[] {
       w7PuzzleReady();
       w7TempleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
+    } else if (k === 'w2-wheel') {
+      w2WheelReady();
+      urls.push(W2_WHEEL_URL);
     } else if (k === 'w6-wheels') {
       w6WheelsReady();
       urls.push(...W6_WHEEL_URLS);
@@ -219,6 +229,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w17') {
       w17Ready();
       urls.push(...W17_URLS);
+    } else if (k === 'w19') {
+      w19Ready();
+      urls.push(...W19_URLS);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();
@@ -302,9 +315,12 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   // (and the bosses' painted attacks: small, and a boss can close any world)
   bossAtkReady();
   urls.push(BOSS_ATK_URL);
-  // (the painted petals: Worlds 2 and 5's weather and petals, and the petals blown about in Dot's flight too)
-  petalsReady();
-  urls.push(PETALS_URL);
+  // (the painted petals, every set: Worlds 2 and 5's weather and petals, and the petals blown about in Dot's flight too; a world's look
+  //  may name its own set, scenery.ts Look.petals, and the sets are small)
+  for (const set of PETAL_SET_IDS) {
+    petalsReady(set);
+    urls.push(PETAL_SETS[set].url);
+  }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
   // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
   void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));

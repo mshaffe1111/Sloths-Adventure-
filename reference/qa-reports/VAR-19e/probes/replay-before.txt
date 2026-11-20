@@ -1,0 +1,2 @@
+FAIL x19193 rise 50 lean -1: hurt (hp 5->4); at x19174 y620 (top 589, floor 639); near: boa@19258,573
+FAIL x23555 rise 68 lean -1: hurt (hp 4->3); at x23502 y736 (top 668, floor 736); near: eagle@23518,495

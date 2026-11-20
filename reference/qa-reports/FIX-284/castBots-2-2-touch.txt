@@ -1,0 +1,20 @@
+castBots 2-2, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 20/40; under the floor 0; time median 149.2 s (min 139.4); hits 0 lives 249 (water 249); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 13: shrine rescued x1  (seeds 9,21,37,4,8,16,20,24,32,36,18,22,39)
+        fail 5: shrine rescued x2  (seeds 6,14,26,15,23)
+        fail 2: shrine rescued x3  (seeds 25,10)
+kid    easy   PASS 40/40; under the floor 0; time median 144.6 s (min 139.2); hits 0 lives 18 (water 18); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 28/40; under the floor 0; time median 146.9 s (min 137.5); hits 0 lives 82 (water 82); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 12: shrine rescued x1  (seeds 9,21,25,37,16,20,24,6,22,26,23,39)
+adult  easy   PASS 40/40; under the floor 0; time median 144.1 s (min 138.7); hits 0 lives 7 (water 7); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 39/40; under the floor 0; time median 373.6 s (min 327.2); hits 0 lives 281 (water 281); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 33)
+child  easy   PASS 40/40; under the floor 0; time median 267.8 s (min 232.1); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 210.8 s (min 196.7); hits 0 lives 102 (water 102); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 191.7 s (min 179.7); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 184.9 s (min 169.7); hits 0 lives 80 (water 80); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+
+real	1m6.469s
+user	4m4.014s
+sys	0m3.804s
+EXIT 0

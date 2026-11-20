@@ -81,6 +81,11 @@ export function vocabulary(): string[] {
   add('pad', fieldUnionOf(read('src/game/gen2/rideLay.ts'), 'PadRow', 'by'));
   add('skill', unionOf(read('src/game/skills.ts'), 'SkillId'));
   ids.push(...beatFamiliesOf(read('tools/inspect/beats.ts')));
+  // (the stage-wide rows a stage may carry that make a piece of their own: ProtoExtras' field typed FollowRow, the little ones that follow
+  //  him home (protoStage.ts proto.follow, run by followPlay.ts): its piece is the line, line:<field> (METER-4))
+  const proto = strip(read('src/game/protoStage.ts'));
+  const at = proto.search(/interface\s+ProtoExtras\b[^{]*\{/);
+  for (const m of proto.slice(at).matchAll(/\n\s*(\w+)\?\s*:\s*import\('\.\/follow\.ts'\)\.FollowRow;/g)) ids.push(`line:${m[1]}`);
   return [...new Set(ids)].sort();
 }
 

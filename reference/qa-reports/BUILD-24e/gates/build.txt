@@ -1,0 +1,27 @@
+== bash -c BASE_PATH=/Sloths-Adventure-/ npx vite build && node tools/perf/chunkcheck.mjs (head 42aef3d90) start 5:02 PM
+precache  1142 entries (181485.39 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 14.3s of this 16.3s build (88%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin vite-plugin-pwa:build closeBundle (25%, 4.1s, 1 call)
+Additional callback time came from the callbacks below and from callbacks under 1s.
+4 callbacks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+  - plugin vite:asset load (867 calls)
+  - plugin vite:asset-import-meta-url transform (135 calls)
+  - plugin vite:css transform (10 calls)
+  … and 1 more
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 62 JS files, 22 loaded at the start
+  ok     1,784,908 B    2,209,396 spare  assets/cast-1RphrhxI.js
+  ok       842,544 B    3,151,760 spare  assets/stagekit-C_q_JX4M.js
+  ok       781,014 B    3,213,290 spare  assets/oldgen-CZ4vfjKv.js
+  ok       731,797 B    3,262,507 spare  assets/index-BOh-gqgK.js
+  ok       292,321 B    3,701,983 spare  assets/world-1-parts-ldd0q8JM.js
+  ok       289,858 B    3,704,446 spare  assets/story-DdQDY_5T.js
+  ok       289,767 B    3,704,537 spare  assets/sheets-BOigFvAp.js
+  ok       253,791 B    3,740,513 spare  assets/w6-CPnVYrtX.js
+chunkcheck: PASS
+exit 0 end 5:02 PM

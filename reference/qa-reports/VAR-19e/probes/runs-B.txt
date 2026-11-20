@@ -1,0 +1,44 @@
+normal L1: -
+normal L2: -
+normal L3: -
+normal L4: -
+normal L5: -
+normal L6: -
+normal L7: -
+normal L8: -
+normal L9: -
+normal L10: -
+normal L11: -
+normal L12: -
+normal L13: -
+normal L14: -
+normal L15: -
+normal L16: -
+easy L1: jJJjx4
+easy L2: -
+easy L3: -
+easy L4: -
+easy L5: -
+easy L6: -
+easy L7: JjJjx4
+easy L8: -
+easy L9: -
+easy L10: -
+easy L11: -
+easy L12: -
+easy L13: -
+easy L14: JjJjx4
+easy L15: -
+easy L16: JjJjx4
+3	easy JjJj: hunters > hunters > rest-stair > rest-stair
+2	easy JjJj: rest-bounce > rest-bounce > miss > miss
+2	easy JjJj: read-bare > rest > rest > rest
+1	easy jJJj: rest > rest > miss > miss
+1	easy jJJj: rest-wall > rest-wall > roost > roost
+1	easy jJJj: roost > rest-bounce > rest-bounce > rest-bounce
+1	easy jJJj: rest-crook > rest-crook > rest-crook > rest-crook
+1	easy JjJj: rest-crook > rest-crook > ? > read-load
+1	easy JjJj: rest-wall > rest-wall > roost > roost
+1	easy JjJj: read-bare > rest-crook > rest-crook > rest-crook
+1	easy JjJj: rest-crook > rest-crook > miss > miss
+1	easy JjJj: rest-bounce > rest-bounce > roost > roost

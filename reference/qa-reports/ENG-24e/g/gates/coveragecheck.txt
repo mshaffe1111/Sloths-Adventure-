@@ -1,0 +1,5 @@
+$ npx tsx tools/difficulty/coveragecheck.ts
+start 12:08:38 PM ET, head 4a88cabd
+meter coverage: 13 built stages (1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-4), 26 pieces used, 5 known gaps
+coveragecheck: PASS
+EXIT 0, end 12:09:35 PM ET

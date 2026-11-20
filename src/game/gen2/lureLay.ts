@@ -67,7 +67,8 @@ type Beast = Pick<Enemy, 'type' | 'x' | 'y' | 'height' | 'patrolMinX' | 'patrolM
  *   - a target nothing in the stage's cast fears, in this world: it is scenery that promises a trick;
  *   - a target no animal that fears it can be drawn to: the kit keeps an animal on its patch, so the target must stand on the
  *     animal's ground within its reach of that patch;
- *   - a target within its reach of where an animal that fears it starts: it would run the moment it noticed him, with no chase to read;
+ *   - a target within its reach of where an animal that fears it starts: it would run the moment it noticed him, with no chase to read
+ *     (an animal that never leaves its post is the one exception: a post can work on it only where it lies, and its rear is the read);
  *   - an animal whose FIRST way here is the lure (its world teaches it so), with nothing to lure it to: no target it can be drawn to
  *     and none of the kinds it fears in the stage.
  */
@@ -78,8 +79,11 @@ export function lureFaults(st: { enemies: readonly Beast[]; platforms: readonly 
   const cast = st.enemies.filter((e) => !e.defeated && kinds.includes(e.type)).map((e) => ({ e, def: castDef(e.type, world), y: groundUnder(st.platforms, e) }));
   const fearing = (fear: string) => cast.filter((m) => m.def?.beatenBy.lure && m.def.fears?.includes(fear));
   type Laid = (typeof cast)[number];
-  const drawnTo = (m: Laid, p: LurePost): boolean => inReach(p, Math.max(m.e.patrolMinX, Math.min(m.e.patrolMaxX, p.x)), m.y);
-  const atStart = (m: Laid, p: LurePost): boolean => inReach(p, m.e.x, m.y);
+  // (an animal the kit never moves from its post, at rest, hunting or striking (the boa: world1.ts BOA) is drawn to nothing: a post works
+  //  on it only where it lies, and there its rear IS the moment the post works, the read (1-9.md beat 7, lure.ts AFTER_HIM); ENG-19a)
+  const staysPut = (m: Laid): boolean => !!m.def && m.def.speed.rest === 0 && m.def.speed.hunt === 0 && m.def.act.speed === 0;
+  const drawnTo = (m: Laid, p: LurePost): boolean => inReach(p, staysPut(m) ? m.e.x : Math.max(m.e.patrolMinX, Math.min(m.e.patrolMaxX, p.x)), m.y);
+  const atStart = (m: Laid, p: LurePost): boolean => !staysPut(m) && inReach(p, m.e.x, m.y);
   for (const p of posts) {
     const name = `lure target at ${p.x} (${p.fear})`;
     const who = fearing(p.fear);

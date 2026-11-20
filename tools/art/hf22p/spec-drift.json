@@ -1,0 +1,49 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, isometric, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth, stems, leaves, overlapping petals",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/reference/art/hf22p/starts/",
+ "items": [
+  {
+   "name": "drift-s40-11",
+   "start": "drift-w2.png",
+   "prompt": "twelve separate loose flower petals and small blossoms from a sunlit river: soft lavender water hyacinth petals with fine violet veins and a golden base, creamy white water lily petals with a pale pink blush, each one apart from the others, hand-painted 2D storybook platformer game sprites, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich colour, isolated on a flat plain mid grey background",
+   "strength": 0.4,
+   "seed": 11,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "drift-s40-23",
+   "start": "drift-w2.png",
+   "prompt": "twelve separate loose flower petals and small blossoms from a sunlit river: soft lavender water hyacinth petals with fine violet veins and a golden base, creamy white water lily petals with a pale pink blush, each one apart from the others, hand-painted 2D storybook platformer game sprites, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich colour, isolated on a flat plain mid grey background",
+   "strength": 0.4,
+   "seed": 23,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "drift-s52-11",
+   "start": "drift-w2.png",
+   "prompt": "twelve separate loose flower petals and small blossoms from a sunlit river: soft lavender water hyacinth petals with fine violet veins and a golden base, creamy white water lily petals with a pale pink blush, each one apart from the others, hand-painted 2D storybook platformer game sprites, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich colour, isolated on a flat plain mid grey background",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "drift-s52-23",
+   "start": "drift-w2.png",
+   "prompt": "twelve separate loose flower petals and small blossoms from a sunlit river: soft lavender water hyacinth petals with fine violet veins and a golden base, creamy white water lily petals with a pale pink blush, each one apart from the others, hand-painted 2D storybook platformer game sprites, soft painterly gouache shading, fine thin dark linework, seen flat from the front, rich colour, isolated on a flat plain mid grey background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 1536,
+   "h": 1152
+  }
+ ]
+}

@@ -1,0 +1,172 @@
+{
+ "bank": {
+  "built": {
+   "diff": "normal",
+   "orient": "412x915"
+  },
+  "worldX": 9985,
+  "onGround": true,
+  "swinging": false,
+  "headCss": [
+   144,
+   525
+  ],
+  "pivotCss": [
+   567,
+   225
+  ],
+  "tipCss": [
+   514,
+   539
+  ],
+  "nearestCss": [
+   514,
+   539
+  ],
+  "headToNearestPx": 370,
+  "headToTipPx": 370,
+  "headToRightEdgePx": 268,
+  "lianaOnScreen": {
+   "pivot": false,
+   "tip": false
+  }
+ },
+ "k60": {
+  "built": {
+   "diff": "normal",
+   "orient": "412x915"
+  },
+  "worldX": 10258,
+  "onGround": true,
+  "swinging": false,
+  "headCss": [
+   152,
+   552
+  ],
+  "pivotCss": [
+   319,
+   225
+  ],
+  "tipCss": [
+   201,
+   521
+  ],
+  "nearestCss": [
+   201,
+   521
+  ],
+  "headToNearestPx": 58,
+  "headToTipPx": 58,
+  "headToRightEdgePx": 260,
+  "lianaOnScreen": {
+   "pivot": true,
+   "tip": true
+  }
+ },
+ "k66": {
+  "built": {
+   "diff": "normal",
+   "orient": "412x915"
+  },
+  "worldX": 10274,
+  "onGround": true,
+  "swinging": false,
+  "headCss": [
+   152,
+   552
+  ],
+  "pivotCss": [
+   304,
+   225
+  ],
+  "tipCss": [
+   166,
+   512
+  ],
+  "nearestCss": [
+   166,
+   512
+  ],
+  "headToNearestPx": 42,
+  "headToTipPx": 42,
+  "headToRightEdgePx": 260,
+  "lianaOnScreen": {
+   "pivot": true,
+   "tip": true
+  }
+ },
+ "k69": {
+  "built": {
+   "diff": "normal",
+   "orient": "412x915"
+  },
+  "worldX": 10282,
+  "onGround": true,
+  "swinging": false,
+  "headCss": [
+   152,
+   552
+  ],
+  "pivotCss": [
+   296,
+   225
+  ],
+  "tipCss": [
+   159,
+   512
+  ],
+  "nearestCss": [
+   159,
+   512
+  ],
+  "headToNearestPx": 40,
+  "headToTipPx": 40,
+  "headToRightEdgePx": 260,
+  "lianaOnScreen": {
+   "pivot": true,
+   "tip": true
+  }
+ },
+ "noPress": [
+  [
+   10284,
+   true,
+   false
+  ],
+  [
+   10287,
+   true,
+   false
+  ],
+  [
+   10290,
+   true,
+   false
+  ],
+  [
+   10292,
+   true,
+   false
+  ],
+  [
+   10295,
+   true,
+   false
+  ],
+  [
+   10298,
+   true,
+   false
+  ],
+  [
+   10300,
+   true,
+   false
+  ],
+  [
+   10303,
+   true,
+   false
+  ]
+ ]
+}

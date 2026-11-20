@@ -981,7 +981,9 @@ export function drawBankArt(
     // (only an end on screen: a long bank's far end is thousands of units off)
     if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
     const short = step !== undefined && step - p.y < SHORT_STEP;
-    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined);
+    // (the rock darkened with depth as this bank's soil is: drawSoil's view above, the ground's line where there is one)
+    const depth: [number, number] = groundDepth ? groundDepth(x) : [sy - DEPTH_ABOVE * depthView, sy + DEPTH_BELOW * depthView];
+    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined, depth);
   };
   if (open.bare) return true;
   if (open.right) end(true, open.rightStep);
@@ -1674,6 +1676,9 @@ export function drawProtoScene(
   t: number,
   view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
+  /** drawn over the ground's soil, behind the trunks and every ledge (engine.ts: the pieces' 'back' layer, a water wheel in front of the
+   *  earth and behind its jetty and street) */
+  afterGround?: () => void,
 ): boolean {
   if (!protoArtReady()) return false;
   // (up and down too: a tall stage's branches and trunks above or below the screen were drawn every frame, PERF-F 2026-10-30;
@@ -1693,6 +1698,7 @@ export function drawProtoScene(
     else drawGround(ctx, platforms, banks, view);
   }
   if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
+  afterGround?.();
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {

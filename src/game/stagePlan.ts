@@ -60,13 +60,19 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the story keeper's line 7, reference/story/lines-1-8.md (t-story@2e40e6a3): gen2/worlds/w1Arc18.ts MISSION_18, held equal by
     //  w1Arc18.test.ts; sprint, so its exit never locks (no gathers): the petals are score and medals only, the keeper's ruling)
     S('sprint', 'The Long Branch', 'Race the long branch before it gives way, and gather her petals.'),
-    S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
+    // (1-9 rolls on gen2 from 11-18 (BUILD-19, w1Arc19.ts): its goal is petals (1-9.md "Goal"; goals.ts goalCountsPetals), its kind kept;
+    //  the story keeper's mission line (h), reference/story/lines-1-9.md: w1Arc19.ts MISSION_19, held equal by w1Arc19.test.ts)
+    { ...S('gauntlet', "The Boa's Branches", 'Boas snap at anything that moves. Outsmart them, and collect her petals.'), gathers: 'petals' },
   ],
   2: [
     S('sprint', 'Down to the River', 'Hop the drifting logs down to the riverbank village.'),
-    S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'),
+    // (the river king's crown is water hyacinths, not Meeca's pink trail petals (FIX-22, lines-2-2.md fault 1): ART-22P's painted lavender
+    //  hyacinth petal, the inventory's hf22p/petal-hyacinth)
+    { ...S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'), looks: { petal: 'petal-hyacinth' } },
     S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.', 5),
-    S('vine_runner', 'Over the Water', 'Swing across the river on the hanging vines.'),
+    // (the story keeper's line 6, reference/story/lines-2-4.md (t-keeper-24@fa3b0930): gen2/worlds/w2Arc24.ts MISSION_24, held equal by
+    //  w2Arc24.test.ts; vine_runner, so its exit never locks (the keeper's conflict 4))
+    S('vine_runner', 'Over the Water', 'Vines to logs, logs to vines. Cross the river to the jetty.'),
     S('purge', 'River Snappers', 'Chase the snappers off the bank.'),
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
@@ -211,6 +217,8 @@ export const SEALED_LINES: Readonly<Record<string, string>> = {
   // (1-7, World 1's only stealth stage: the keeper's 9b, held equal to w1Arc17.ts SEALED_17. It speaks once 1-7's exit can seal: with
   //  1-6's StageSpec.gathers (merged with t-build-16 by ENG-16H) 1-7 may take `gathers: 'petals'`, the lead's call; until then its exit is never locked)
   '1:stealth': 'We left some of her petals behind. Sneak back for them!',
+  // (World 1's only gauntlet is 1-9: the story keeper's (i), reference/story/lines-1-9.md, w1Arc19.ts SEALED_19)
+  '1:gauntlet': 'We passed some of her petals. Back we creep!',
 };
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {

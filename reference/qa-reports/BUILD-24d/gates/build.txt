@@ -1,0 +1,9 @@
+head 640a34b03 src = d8d70797
+precache  1142 entries (181485.39 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+build exit 0
+  ok       289,767 B    3,704,537 spare  assets/sheets-BOigFvAp.js
+  ok       253,791 B    3,740,513 spare  assets/w6-CPnVYrtX.js
+chunkcheck: PASS

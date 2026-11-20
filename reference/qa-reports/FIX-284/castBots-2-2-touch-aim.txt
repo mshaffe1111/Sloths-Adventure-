@@ -1,0 +1,13 @@
+castBots 2-2, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 27/40; under the floor 0; time median 147.6 s (min 138.2); hits 0 lives 193 (water 193); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 10: shrine rescued x1  (seeds 21,25,37,30,31,39,4,8,24,36)
+        fail 3: shrine rescued x2  (seeds 6,10,15)
+kid    easy   PASS 40/40; under the floor 0; time median 144.6 s (min 139.2); hits 0 lives 15 (water 15); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 40/40; under the floor 0; time median 149.3 s (min 137.5); hits 0 lives 60 (water 60); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; under the floor 0; time median 144.1 s (min 138.7); hits 0 lives 7 (water 7); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 39/40; under the floor 0; time median 376.6 s (min 330.3); hits 0 lives 299 (water 299); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 9)
+child  easy   PASS 40/40; under the floor 0; time median 269.5 s (min 231.7); hits 0 lives 33 (water 33); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 209.7 s (min 194.5); hits 0 lives 95 (water 95); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 191.3 s (min 179.7); hits 0 lives 32 (water 32); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 186.9 s (min 169.7); hits 0 lives 85 (water 85); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0

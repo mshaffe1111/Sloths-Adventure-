@@ -3,15 +3,17 @@
  * between the engine and the pure kit: when a stage's brief names a cast (`proto.cast`, castPlay.types.ts), every animal of a named
  * kind is stepped HERE on the fixed step, never by predatorAI.ts, with
  *   - Pokey's stillness (stillness.ts) and the cover he stands in,
- *   - the noise of his landings (heroNoise.ts: a hard one wakes sleepers, a soft one makes no event), from the world that teaches it,
+ *   - ONE noise channel (ENG-NOISE): every noise he or the stage makes reaches every animal here, in the order made: his hard landing
+ *     (heroNoise.ts: a soft one, or one on quiet ground, makes none), his punch (the engine's blow, from the world that teaches noise),
+ *     a struck or fired sounding thing (castPlay.types.ts SoundPost: its own noise at its place, never his punch's),
  *   - the stage's drop traps (dropTrap.ts), which beat what they come down beside by the kit's 'trap' way.
  * A blow, a stomp or a trap is tried on the kit (`beat`); what it does is the animal's data. Nothing here is a stage's: no ids, no
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
-import type { CastData, TrapPost } from './castPlay.types.ts';
+import type { CastData, SoundPost, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
-import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
-import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, sparedPass, stepPredator, tellOf } from './predators/core.ts';
+import { bellNoise, landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
+import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches, FLEE_OFF } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
 import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
@@ -19,6 +21,7 @@ import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predat
 import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, type Cover } from './stillness.ts';
 import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
+import type { StageClock } from './clock.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
 export const GLIDE = { far: 170, lift: 30, drop: 150 } as const;
@@ -38,6 +41,8 @@ export interface CastHero {
   hanging?: boolean;
   /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
   rope?: number;
+  /** the ground he stands on is quiet (Platform.quiet: moss): a landing on it makes no noise (heroNoise.ts landingNoise) */
+  quiet?: boolean;
 }
 
 export interface CastMember {
@@ -63,10 +68,20 @@ export interface CastStep {
   cleared: Enemy[];
   /** traps that came down this step */
   fell: TrapPost[];
-  /** a hard landing's noise (null: he did not land, or landed softly), and how many sleepers it woke */
+  /** animals beaten by his stillness this step with him inside their strike's reach (a boa's rear he froze in): the freeze moment
+   *  (engine.ts plays its slow motion; ENG-19a NEW 4, 1-9.md). On a stage that teaches the freeze (CastData.teachStill) its first one
+   *  wherever he stands. Never a sweeper: its pass is beaten by stillness at its end, far off */
+  froze: Enemy[];
+  /** a hard landing's noise (null: he did not land, or landed softly or on quiet ground) */
   landed: Sound | null;
+  /** every noise the cast heard this step, in the order made (the one channel: his landing, his punch, a sounding thing), and how many
+   *  sleepers they woke */
+  heard: Sound[];
   woke: number;
 }
+
+/** a sweeper's phases with its eye out over its stretch (CastPlay.eyeOut) */
+const EYE_OUT: ReadonlySet<PredatorState['phase']> = new Set(['hunt', 'tell', 'act', 'recover']);
 
 const PHASE_STATE: Record<PredatorState['phase'], string> = {
   rest: 'patrol', hunt: 'alert', tell: 'rear', act: 'strike', recover: 'recover', stunned: 'recover', flee: 'patrol', gone: 'patrol',
@@ -82,9 +97,18 @@ export class CastPlay {
   private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
+  /** his punch is heard here: only from the world that teaches noise (roster.ts TAUGHT.noise; before it a blow is silent, as a landing is
+   *  before TAUGHT.landing: nothing wakes to a mechanic nobody has taught) */
+  private readonly punchLoud: boolean;
+  /** the stage's sounding things (castPlay.types.ts SoundPost) */
+  readonly sounds: readonly SoundPost[];
+  /** the noises made since the last step (noise()): the step hears them, in order, after his landing */
+  private made: Sound[] = [];
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
-  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
+  /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
+  private teachStill: boolean;
+  private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, heard: [], woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
 
@@ -96,11 +120,16 @@ export class CastPlay {
     this.covers = covers;
     this.ground = platforms;
     this.loud = data.landing ?? TAUGHT.landing <= world;
+    this.punchLoud = TAUGHT.noise <= world;
     this.lures = data.lures ?? [];
+    this.sounds = (data.sounds ?? []).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+    this.teachStill = !!data.teachStill;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
-      const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
-      if (!def || e.defeated) continue;
+      const kind = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
+      if (!kind || e.defeated) continue;
+      // (an animal laid on a stage clock keeps it: the kind run on the beat, by the animal's data, never by its kind; the lead's 11-15 rule)
+      const def: PredatorDef = e.kitBeat ? { ...kind, onBeat: true } : kind;
       const ground = groundUnder(platforms, e);
       // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
       const perched = !!e.kitPerch && def.habit === 'sweep';
@@ -115,6 +144,12 @@ export class CastPlay {
   /** the cast's sweepers (World 1's eagle): drawn from their kit state (sweepPose.ts), not as an animal on the ground */
   get sweepers(): CastMember[] {
     return this.members.filter((m) => m.def.habit === 'sweep');
+  }
+
+  /** is a sweeper's eye out (its pass called and crossing, its dive, its climb back: sweepPose.ts draws its gaze or it), not perched
+   *  between passes, leaving or gone? The engine keeps the freeze's slow motion off while one is (ENG-19a NEW 4) */
+  eyeOut(): boolean {
+    return this.members.some((m) => m.def.habit === 'sweep' && EYE_OUT.has(m.s.phase));
   }
 
   /** is this a sweeper's free pass now (core.ts sparedPass)? For the art: its dive pulls up short */
@@ -135,10 +170,10 @@ export class CastPlay {
     return this.prey.covered ? calm(this.still, STILLNESS[easy ? 'easy' : 'normal']) : 0;
   }
 
-  /** one fixed step of the whole cast. `t`: game time */
-  step(hero: CastHero, dt: number, t: number, easy: boolean): CastStep {
+  /** one fixed step of the whole cast. `t`: game time; `clock`: the stage's clock, read for each animal that keeps one (Enemy.kitBeat) */
+  step(hero: CastHero, dt: number, t: number, easy: boolean, clock?: Pick<StageClock, 'read'>): CastStep {
     const o = this.out;
-    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = 0;
+    o.noticed.length = o.told.length = o.struck.length = o.spared.length = o.hurts.length = o.cleared.length = o.fell.length = o.froze.length = o.heard.length = 0;
     o.landed = null;
     o.woke = 0;
     const set = STILLNESS[easy ? 'easy' : 'normal'];
@@ -151,16 +186,24 @@ export class CastPlay {
     // (what a glance sees: him moving on this frame, a step, a hop, a climb; stillness.ts moving, the line the hold is broken by)
     prey.moving = moving(hero, set);
     prey.covered = inCover(this.covers, hero);
+    // (hanging from a rope over it: a kind with a leap answers him with it, predators/core.ts startTell; ENG-PROWL)
+    prey.hanging = !!hero.hanging;
 
-    // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
-    // teaches quiet feet (roster.ts TAUGHT.landing)
+    // his landing: how far he fell says how far it carries; a soft one makes no noise at all, nor one on quiet ground (moss), and none
+    // does before the world that teaches quiet feet (roster.ts TAUGHT.landing)
     const fell = stepFall(this.fall, hero);
     if (fell !== null && this.loud) {
-      const n = landingNoise(hero.x, hero.y, t, fell);
+      const n = landingNoise(hero.x, hero.y, t, fell, hero);
       if (n) {
         o.landed = n;
-        for (const m of this.members) if (hear(m.def, m.s, n) === 'woke') o.woke++;
+        this.hearAll(n);
       }
+    }
+    // then every other noise made since the last step, on the same channel and in the order made (his punch, a sounding thing)
+    if (this.made.length) {
+      const made = this.made;
+      this.made = [];
+      for (const n of made) this.hearAll(n);
     }
 
     // the traps: one that comes down chases off what stands beside it
@@ -179,9 +222,17 @@ export class CastPlay {
     if (this.lures.length) stepLures(this.members, this.lures, t);
     for (const m of this.members) {
       if (m.s.phase !== 'gone') {
+        // (an animal on a stage clock reads it each step; one with none has no beat. Before ENG-25 no animal was handed a clock, so an
+        // onBeat kind in play never told nor acted: the beat was proven only on the kit's own fixtures, predators/fixtures.ts)
+        const kb = m.e.kitBeat;
+        sc.beat = kb && clock ? clock.read(kb.clock, kb.shift ?? 0) : undefined;
         const ev = stepPredator(m.def, m.s, sc);
         if (ev.notice) o.noticed.push(m.e);
         if (ev.tell) o.told.push(m.e);
+        if (ev.beaten === 'still' && m.def.habit !== 'sweep' && (this.teachStill || touches(reachBox(m.def, m.s), hero))) {
+          o.froze.push(m.e);
+          this.teachStill = false;
+        }
         // (a sweeper's free pass: the dive comes, and pulls up short of him; no box hurts. watcher.ts freeFirst, in the kit)
         const spare = sparedPass(m.def, m.s, easy);
         if (ev.act) (spare ? o.spared : o.struck).push(m.e);
@@ -195,6 +246,42 @@ export class CastPlay {
       this.sync(m, t, dt, easy);
     }
     return o;
+  }
+
+  /** one noise reaches every animal of the cast (core.ts hear: a sleeper in reach wakes, a hunter is drawn or comes looking) */
+  private hearAll(n: Sound): void {
+    const o = this.out;
+    o.heard.push(n);
+    for (const m of this.members) if (hear(m.def, m.s, n) === 'woke') o.woke++;
+  }
+
+  /**
+   * THE CHANNEL's way in (ENG-NOISE): a noise made off the cast's own step (his punch: engine.ts at the end of a blow; a sounding thing:
+   * ring). Heard on the next step, after his landing, in the order made. His punch is dropped before the world that teaches noise
+   * (TAUGHT.noise); his landing comes in through the step itself (it reads his fall and the ground)
+   */
+  noise(n: Sound): void {
+    if (n.from === 'punch' && !this.punchLoud) return;
+    if (n.from === 'landing' && !this.loud) return;
+    this.made.push(n);
+  }
+
+  /** the first sounding thing a blow's box reaches (its index in `sounds`), or -1 */
+  soundAt(box: Box): number {
+    for (let i = 0; i < this.sounds.length; i++) {
+      const p = this.sounds[i];
+      if (box.x < p.x + p.w / 2 && box.x + box.w > p.x - p.w / 2 && box.y < p.y && box.y + box.h > p.y - p.h) return i;
+    }
+    return -1;
+  }
+
+  /** sounding thing `i` makes its noise at its place now (a blow landed on it, or the stage fired it): the noise made, or null */
+  ring(i: number, t: number): Sound | null {
+    const p = this.sounds[i];
+    if (!p) return null;
+    const n = bellNoise(p.x, p.y, t);
+    this.noise(n);
+    return n;
   }
 
   /** this animal's act just took a heart (the engine's hurt): one act, one heart, it pulls up (core.ts landed) */
@@ -247,6 +334,7 @@ export class CastPlay {
   calm(easy: boolean): void {
     this.still = newStill();
     this.fall = newFall();
+    this.made = [];
     for (const m of this.members) {
       const s = m.s;
       if (s.phase === 'gone' || s.phase === 'flee' || s.phase === 'stunned' || s.asleep) continue;
@@ -287,7 +375,16 @@ export class CastPlay {
       //  down into the soil; off a branch's end it still drops to what is below, B15 stills 11-13)
       const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
       e.y = Math.min(e.y, floor - m.foot);
-    }
+    } else if (s.phase === 'flee' && (s.x > s.maxX || s.x < s.minX)) {
+      // (an immobile animal's flee past its ground's end, core.ts slideOff: it drops off that end and fades, the leaving glide's look,
+      //  and comes back the same way; ENG-19c, 1-9's "it slides off!")
+      const u = Math.min(1, (s.x > s.maxX ? s.x - s.maxX : s.minX - s.x) / FLEE_OFF);
+      e.glide = u;
+      e.wakeT = 0;
+      e.y += GLIDE.drop * u * u;
+      const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
+      e.y = Math.min(e.y, floor - m.foot);
+    } else if (e.glide) e.glide = 0;
     if (s.phase === 'gone' && !e.defeated) {
       // out of the stage on its own: no knock-out, nothing to draw
       e.defeated = true;

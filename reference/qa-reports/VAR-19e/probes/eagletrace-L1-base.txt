@@ -1,0 +1,14 @@
+face x23213 lean 0 (stand 23143): eagle[22273-23453] hunt eye23453 x23453 t1.50 | eagle[25335-26257] rest eye26257 x26257 t83.97
+    he x23146 y719 hp4: eagle[22273-23453] hunt eye23453 x23453 t1.53 | eagle[25335-26257] rest eye26257 x26257 t84.00
+  -> climbed hp 4->4
+face x23213 lean -1 (stand 23143): eagle[22273-23453] hunt eye23357 x23357 t2.27 | eagle[25335-26257] rest eye26257 x26257 t84.73
+    he x23194 y683 hp4: eagle[22273-23453] tell eye23261 x23261 t0.00 | eagle[25335-26257] rest eye26257 x26257 t85.03
+  -> climbed hp 4->4
+face x23555 lean 0 (stand 23485): eagle[22273-23453] tell eye23261 x23261 t0.47 | eagle[25335-26257] rest eye26257 x26257 t85.50
+    he x23536 y700 hp4: eagle[22273-23453] act eye23261 x23261 t0.00 | eagle[25335-26257] rest eye26257 x26257 t85.80
+  -> climbed hp 4->4
+face x23555 lean -1 (stand 23485): eagle[22273-23453] act eye23261 x23563 t0.43 | eagle[25335-26257] rest eye26257 x26257 t86.23
+    he x23502 y736 hp3: eagle[22273-23453] recover eye23261 x23518 t0.00 | eagle[25335-26257] rest eye26257 x26257 t86.33
+  -> false hp 4->3
+face x23895 lean 0 (stand 23825): eagle[22273-23453] recover eye23261 x23518 t0.00 | eagle[25335-26257] rest eye26257 x26257 t86.33
+    he x23928 y573 hp3: eagle[22273-23453] rest eye23261 x23518 t0.00 | eagle[25335-26257] rest eye26257 x26257 t86.93

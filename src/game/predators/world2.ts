@@ -12,7 +12,11 @@ const EASY = { tell: 1.3, cool: 1.5, speed: 0.85 } as const;
 export const TURTLE: PredatorDef = {
   kind: 'turtle', habit: 'seek', sight: { ahead: 180, behind: 30, tall: 60 }, hears: NOISE.dur, speed: { rest: 22, hunt: 26 },
   engage: 85, tell: 0.5, act: { aim: 'ahead', seconds: 0.18, speed: 0, reach: 46, tall: 24 }, recover: 0.75, cool: 1.6, giveUp: 2, easy: EASY,
-  beatenBy: { kick: { ends: 'chasedOff' }, stomp: { ends: 'stunned', seconds: 1.8 }, punch: { ends: 'stunned', seconds: 1.5, when: 'behind' } },
+  // (a kick sends it off only when it is OPEN: asleep, recovering right after its snap, or dazed by a bonk; head-on at any other moment it
+  // glances off its shell. ENG-25b flew it: with a kick at any moment, a head-on walk-in kick cleared it from 90 of 90 starts round the bar,
+  // so 2-5's "wait for the snap" had no stake; the lead's ruling 11-18 6:53 PM ET. It reaches no live stage: only World 2's kit rows,
+  // gen2/worlds/w2Cast.ts; the hand-built rivers' turtles run predatorAI.ts)
+  beatenBy: { kick: { ends: 'chasedOff', when: 'open' }, stomp: { ends: 'stunned', seconds: 1.8 }, punch: { ends: 'stunned', seconds: 1.5, when: 'behind' } },
   first: 'kick',
 };
 

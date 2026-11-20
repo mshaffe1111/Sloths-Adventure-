@@ -1,0 +1,3 @@
+/w/cut/b/spillc-s37.png box (115, 84, 985, 462) size (870, 378) holes 0.000 trapped grey keyed 0
+/w/cut/b/lip-s11.png box (0, 53, 1024, 330) size (1024, 277) holes 0.000 trapped grey keyed 0
+/w/cut/b/lip-s37.png box (0, 50, 1024, 339) size (1024, 289) holes 0.000 trapped grey keyed 0

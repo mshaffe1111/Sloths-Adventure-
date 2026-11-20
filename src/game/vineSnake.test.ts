@@ -75,7 +75,9 @@ function snaked(id: string, sn: Omit<VineSnake, 'clock'>, easy = false) {
   return { r, e, v, hearts: () => hearts, piece: () => e.pieces.find((p) => p.kind === 'vine-snake') as (StagePiece & { letGos: number }) | undefined };
 }
 
-for (const id of ['6-3', '2-4']) {
+// (re-pointed from 2-4's hand build to 1-6, the stage that lays vine snakes (w1Arc16.ts laySnakes): 2-4 is gen2's since BUILD-24 11-18,
+//  and its lianas hang over log rivers, where a false liana's drop has no floor below)
+for (const id of ['6-3', '1-6']) {
   test(`${id}, the real engine: a snake coming down his liana makes him let go when it reaches his hands (a hop, no heart), never in its tell, and he cannot catch that liana again in the air`, () => {
     const { r, e, v, hearts, piece } = snaked(id, { route: 'down-off' });
     assert.ok(piece(), 'the piece started from the liana\'s data');
@@ -170,7 +172,7 @@ test('the vine snake is a registered piece, and a stage with no snake starts non
   assert.equal((r.e as unknown as Eng).pieces.filter((p) => p.kind === 'vine-snake').length, 0);
 });
 
-for (const id of ['6-3', '2-4']) {
+for (const id of ['6-3', '1-6']) {
   // (ENG-16H 11-14, R-165.246, the lead's packet item 3: castBots 1-6 Normal kid seeds 21, 23, 25 and 36 caught a liana whose riser was
   //  already at his hands, and the startle hop came the frame after the catch (f3436 -> f3437): no player reacts in 33 ms. Planted: RED
   //  with the startle on the first frame of a catch (vineSnakePiece.ts without `held`), planted-faults.py)
@@ -198,7 +200,7 @@ for (const id of ['6-3', '2-4']) {
   });
 }
 
-for (const id of ['6-3', '2-4']) {
+for (const id of ['6-3', '1-6']) {
   test(`${id}, the real engine: a FALSE liana (the snake hanging still) startles when he takes it: he hops off, it is not there to catch again, it drops onto the floor below, slithers off away from him and is gone; whole again when he respawns`, () => {
     const r = new RealPlay(id, 1);
     const e = r.e as unknown as Eng & { respawnAtCheckpoint(reason: 'pit', take?: boolean): void };
@@ -250,7 +252,7 @@ for (const id of ['6-3', '2-4']) {
   });
 }
 
-for (const id of ['6-3', '2-4']) {
+for (const id of ['6-3', '1-6']) {
   test(`${id}, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs`, () => {
     for (const side of [-1, 1] as const) {
       const r = new RealPlay(id, 1);

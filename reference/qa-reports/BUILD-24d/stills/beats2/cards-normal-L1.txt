@@ -1,0 +1,34 @@
+upright hop 1 at x621 (card: none)
+upright start x999 (frame 100): Flick up to hop up or over.
+upright hop 2 at x1163 (card: Flick up to hop up or over.)
+upright hop 3 at x1381 (card: Flick up to hop up or over.)
+upright the hop card went at x2156 (frame 240, after 3 hop(s)); now: null
+upright after the hop x2156: Knock? Log coming! Let go when it's under you.
+upright start-after-hop card0: Knock? Log coming! Let go when it's under you.
+upright x2108 teach: null
+upright x2880 drop: Flick up when a log drifts close. [+1]
+upright x2880-drop card0: Flick up when a log drifts close. [+1]
+upright x2880-drop card1: Flick up into the vine to grab it.
+upright x2880-drop card2: Flick up as you swing forward to leap.
+upright x9970 catch: null
+upright x15390 noland: null
+upright x20640 relay: null
+upright x27750 raft: null
+upright x29500 exit: null
+sideways hop 1 at x621 (card: none)
+sideways start x1009 (frame 101): Flick up to hop up or over.
+sideways hop 2 at x1163 (card: Flick up to hop up or over.)
+sideways hop 3 at x1381 (card: Flick up to hop up or over.)
+sideways the hop card went at x2156 (frame 240, after 3 hop(s)); now: null
+sideways after the hop x2156: Knock? Log coming! Let go when it's under you.
+sideways start-after-hop card0: Knock? Log coming! Let go when it's under you.
+sideways x2108 teach: null
+sideways x2880 drop: Flick up when a log drifts close. [+1]
+sideways x2880-drop card0: Flick up when a log drifts close. [+1]
+sideways x2880-drop card1: Flick up into the vine to grab it.
+sideways x2880-drop card2: Flick up as you swing forward to leap.
+sideways x9970 catch: null
+sideways x15390 noland: null
+sideways x20640 relay: null
+sideways x27750 raft: null
+sideways x29500 exit: null

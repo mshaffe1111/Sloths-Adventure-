@@ -12,11 +12,12 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import type { Enemy } from './types.ts';
 
-test("1-9: the ring's animals he beats are in the stage's count of predators beaten", () => {
-  const r = new RealPlay('1-9', 1);
+// (3-9 The Prowler's Ring: 1-9's ring was this test's until 1-9 rolled on gen2 with no ring, BUILD-19 11-18)
+test("3-9: the ring's animals he beats are in the stage's count of predators beaten", () => {
+  const r = new RealPlay('3-9', 1);
   const e = r.e;
   const ring = e.proto?.ring as { x0: number; x1: number; waves: unknown[][] } | undefined;
-  assert.ok(ring, '1-9 has its ring');
+  assert.ok(ring, '3-9 has its ring');
   const floor = r.platforms.filter((p) => ring.x0 + 300 >= p.x && ring.x0 + 300 <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
   r.stand(ring.x0 + 300, floor?.y ?? r.p.y);
   // the first wave drops and lands

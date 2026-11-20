@@ -1,0 +1,114 @@
+1-1 normal score     4 (3.5-4.3 over 4 layouts)  3.07 min  points 24.5  mean 7.9/min  peak 20.45/min  {"single":64,"double":6,"bounce":1} route check
+2-1 normal score   2.7 (1.3-3.2 over 4 layouts)  3.8600000000000003 min  points 15.4  mean 4.1/min  peak 15.3/min  {"single":40,"catch":4,"ride-board":6,"ride-off":6,"swing":1} route extended
+2-2 normal score   6.4 (6.3-6.6 over 4 layouts)  4.279999999999999 min  points 43.25  mean 10.1/min  peak 35.099999999999994/min  {"single":38,"ride-board":18,"ride-off":18,"climb":1} route check
+2-4 normal score     4 (3.9-4.2 over 4 layouts)  3.7 min  points 19.4  mean 5.199999999999999/min  peak 23.4/min  {"single":38,"catch":7,"liana-drop":7,"ride-board":1,"ride-off":1,"swing":3,"double":1} route extended
+1-1 easy   score   2.6 (1.5-2.9 over 4 layouts)  3.26 min  points 16.6  mean 5.05/min  peak 13.5/min  {"single":65,"double":6,"bounce":1} route check
+2-1 easy   score   1.6 (1-2.7 over 4 layouts)  3.915 min  points 8.95  mean 2.3/min  peak 9.2/min  {"single":40,"catch":4,"ride-board":6,"ride-off":6,"swing":1} route extended
+2-2 easy   score   4.7 (4.7-4.8 over 4 layouts)  4.34 min  points 36.900000000000006  mean 8.5/min  peak 25/min  {"single":38,"ride-board":17,"ride-off":17,"climb":1} route check
+2-4 easy   score     3 (3-3.1 over 4 layouts)  3.765 min  points 18.450000000000003  mean 4.8/min  peak 16.65/min  {"single":37,"catch":7,"liana-drop":4,"swing":6,"ride-board":1,"ride-off":1,"double":1} route extended
+SCALE 0.28194 (1 meter point = 3.5 raw points a minute)
+-- 1-1 normal seed 1: the 12 heaviest challenges
+   t   26s x   5797 double           bits 2.69 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 2.29  gap 0 rise 130 land 319 share 0.61
+   t   46s x  10379 bounce           bits 2.22 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 1.82  gap 0 rise 175 land 339 share 0.78
+   t  118s x  25998 double           bits 2.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 1.57  gap 0 rise 103 land 179 share 0.49
+   t   11s x   2664 double           bits 2.00 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 1.49  gap 0 rise 79 land 138 share 0.37
+   t   91s x  19965 double           bits 1.98 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 1.27  gap 0 rise 78 land 135 share 0.37
+   t  117s x  25708 double           bits 2.00 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 1.24  gap 0 rise 79 land 169 share 0.37
+   t  120s x  26266 double           bits 1.98 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 1.19  gap 0 rise 78 land 189 share 0.37
+   t  104s x  22831 single           bits 1.93 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 1.00  gap 0 rise 76 land 275 share 0.74
+   t   98s x  21345 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.95  gap 0 rise 75 land 313 share 0.73
+   t  101s x  22259 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.95  gap 0 rise 75 land 277 share 0.73
+   t  130s x  28553 single           bits 1.78 x stakes 1.00 (soft) x overlap 1.0 x new 1.07 = 0.83  gap 67 rise 73 land 435 share 0.71
+   t   28s x   6371 single           bits 1.64 x stakes 1.00 (retry) x overlap 1.0 x new 1.14 = 0.74  gap 0 rise 70 land 253 share 0.68
+-- 2-1 normal seed 1: the 12 heaviest challenges
+   t  113s x  25176 ride-board       bits 1.66 x stakes 1.00 (soft) x overlap 1.5 x new 1.22 = 1.22  board a drift: open 1.32s of 2.88s
+   t   86s x  19478 ride-board       bits 1.66 x stakes 1.00 (soft) x overlap 1.0 x new 1.29 = 0.86  board a drift: open 1.51s of 3.29s
+   t   37s x   8483 ride-board       bits 1.55 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 0.82  board a drift: open 1.80s of 3.46s
+   t   63s x  14329 ride-board       bits 1.58 x stakes 1.00 (soft) x overlap 1.0 x new 1.35 = 0.79  board a drift: open 1.55s of 3.09s
+   t  110s x  24438 ride-board       bits 1.63 x stakes 1.00 (soft) x overlap 1.0 x new 1.25 = 0.79  board a drift: open 1.32s of 2.77s
+   t   59s x  13430 single           bits 1.53 x stakes 1.00 (soft) x overlap 1.0 x new 1.05 = 0.55  gap 119 rise 0 land 360 share 0.65
+   t  136s x  30250 ride-board       bits 1.37 x stakes 1.00 (soft) x overlap 1.0 x new 1.20 = 0.45  board a drift: open 2.45s of 3.90s
+   t    9s x   2400 catch            bits 1.28 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 0.42  catch liana 1 off the bank: 2000 ms of 2.85 s
+   t   16s x   3688 catch            bits 1.29 x stakes 1.00 (soft) x overlap 1.0 x new 1.35 = 0.40  catch liana 2 off the bank: 1967 ms of 2.85 s
+   t  119s x  26616 single           bits 1.37 x stakes 1.00 (soft) x overlap 1.0 x new 1.05 = 0.39  gap 112 rise 0 land 320 share 0.61
+   t   84s x  17597 catch            bits 1.31 x stakes 1.00 (soft) x overlap 1.0 x new 1.25 = 0.38  catch liana 4 off the bank: 1933 ms of 2.85 s
+   t   22s x   4761 catch            bits 1.26 x stakes 1.00 (soft) x overlap 1.0 x new 1.29 = 0.34  catch liana 3 off the bank: 2033 ms of 2.85 s
+-- 2-2 normal seed 1: the 12 heaviest challenges
+   t  113s x  21723 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.5 x new 1.12 = 8.77  board a pad: open 2.40s of 3.00s, still jump 5.06 bits
+   t   45s x  10243 ride-board       bits 5.29 x stakes 1.00 (soft) x overlap 1.5 x new 1.15 = 7.41  board a pad: open 2.40s of 3.00s, still jump 4.12 bits
+   t   17s x   4260 ride-board       bits 5.06 x stakes 1.00 (soft) x overlap 1.5 x new 1.17 = 7.10  board a pad: open 2.00s of 2.00s, still jump 5.06 bits
+   t   74s x  13079 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.0 x new 1.14 = 5.98  board a pad: open 2.40s of 3.00s, still jump 5.06 bits
+   t   77s x  13849 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.0 x new 1.14 = 5.95  board a pad: open 2.40s of 3.00s, still jump 5.06 bits
+   t  150s x  29863 ride-board       bits 1.73 x stakes 1.00 (soft) x overlap 2.0 x new 1.10 = 1.61  board a pad: open 2.60s of 3.20s, still jump 0.57 bits
+   t  149s x  29653 ride-board       bits 1.73 x stakes 1.00 (soft) x overlap 1.5 x new 1.10 = 1.21  board a pad: open 2.60s of 3.20s, still jump 0.57 bits
+   t   43s x   9833 ride-board       bits 1.50 x stakes 1.00 (soft) x overlap 2.0 x new 1.16 = 1.16  board a pad: open 2.40s of 3.00s, still jump 0.33 bits
+   t   29s x   6890 single           bits 1.62 x stakes 1.00 (soft) x overlap 1.0 x new 1.05 = 0.65  gap 123 rise 0 land 320 share 0.67
+   t   89s x  16479 single           bits 1.57 x stakes 1.00 (soft) x overlap 1.0 x new 1.04 = 0.60  gap 121 rise 0 land 320 share 0.66
+   t  108s x  20535 ride-board       bits 1.46 x stakes 1.00 (soft) x overlap 1.0 x new 1.12 = 0.51  board a drift: open 2.08s of 3.63s
+   t   98s x  18560 single           bits 1.44 x stakes 1.00 (soft) x overlap 1.0 x new 1.04 = 0.46  gap 115 rise 0 land 360 share 0.63
+-- 2-4 normal seed 1: the 12 heaviest challenges
+   t   89s x  19184 double           bits 5.75 x stakes 1.00 (retry) x overlap 1.0 x new 1.19 = 5.65  gap 0 rise 178 land 380 share 0.95
+   t  107s x  20789 swing            bits 2.90 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 2.45  swing on to the next liana: release 1433 ms of 2.85 s with the double onto 98
+   t  116s x  22379 swing            bits 2.40 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 1.75  swing on to the next liana: release 667 ms of 2.85 s onto 102
+   t   82s x  15747 swing            bits 2.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 1.49  swing on to the next liana: release 867 ms of 2.85 s onto 73
+   t  108s x  22979 liana-drop       bits 1.63 x stakes 1.00 (soft) x overlap 1.0 x new 1.20 = 0.76  let go of liana 10 over the river (onto a log or past it): 48% of let-go moments land, worst wait 2.17 s (swing 2.85 s)
+   t   42s x   9128 single           bits 1.72 x stakes 1.00 (soft) x overlap 1.0 x new 1.04 = 0.75  gap 127 rise 0 land 480 share 0.70
+   t   99s x  21389 liana-drop       bits 1.57 x stakes 1.00 (soft) x overlap 1.0 x new 1.22 = 0.70  let go of liana 8 over the river (onto a log or past it): 51% of let-go moments land, worst wait 1.63 s (swing 2.85 s)
+   t   47s x  10155 ride-board       bits 1.63 x stakes 1.00 (soft) x overlap 1.0 x new 1.10 = 0.69  board a drift: open 1.32s of 2.77s
+   t   38s x   7919 catch            bits 1.34 x stakes 1.00 (retry) x overlap 1.0 x new 1.19 = 0.40  catch liana 3 off the bank: 1867 ms of 2.85 s
+   t   31s x   6876 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 0.33  catch liana 2 off the bank: 2000 ms of 2.85 s
+   t   80s x  15582 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.18 = 0.33  catch liana 5 off the bank: 2000 ms of 2.85 s
+   t   12s x   2940 catch            bits 1.26 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 0.32  catch liana 1 off the bank: 2033 ms of 2.85 s
+-- 1-1 easy seed 1: the 12 heaviest challenges
+   t   26s x   6171 double           bits 2.69 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 2.29  gap 0 rise 130 land 367 share 0.61
+   t   46s x  10853 bounce           bits 2.22 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 1.82  gap 0 rise 175 land 387 share 0.78
+   t  122s x  27812 double           bits 2.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 1.57  gap 0 rise 103 land 227 share 0.49
+   t   11s x   2799 double           bits 2.00 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 1.49  gap 0 rise 79 land 186 share 0.37
+   t   93s x  21322 double           bits 1.98 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 1.27  gap 0 rise 78 land 183 share 0.37
+   t  121s x  27513 double           bits 2.00 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 1.24  gap 0 rise 79 land 217 share 0.37
+   t  124s x  28090 double           bits 1.98 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 1.19  gap 0 rise 78 land 237 share 0.37
+   t  100s x  22752 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.39  gap 0 rise 63 land 361 share 0.61
+   t  102s x  23113 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 0 rise 63 land 355 share 0.61
+   t  105s x  23810 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 0 rise 63 land 325 share 0.61
+   t  106s x  24135 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 0 rise 63 land 343 share 0.61
+   t  107s x  24478 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 0 rise 63 land 323 share 0.61
+-- 2-1 easy seed 1: the 12 heaviest challenges
+   t  114s x  25908 ride-board       bits 1.58 x stakes 1.00 (soft) x overlap 1.5 x new 1.22 = 1.06  board a drift: open 1.57s of 3.13s
+   t   85s x  19696 ride-board       bits 1.58 x stakes 1.00 (soft) x overlap 1.0 x new 1.29 = 0.74  board a drift: open 1.80s of 3.57s
+   t   36s x   8426 ride-board       bits 1.46 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 0.68  board a drift: open 2.23s of 3.89s
+   t   84s x  17770 swing            bits 1.45 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 0.68  swing on a liana: release 1900 ms of 3.30 s onto 77 hold high
+   t   62s x  14364 ride-board       bits 1.48 x stakes 1.00 (soft) x overlap 1.0 x new 1.35 = 0.65  board a drift: open 1.95s of 3.49s
+   t  110s x  24792 ride-board       bits 1.51 x stakes 1.00 (soft) x overlap 1.0 x new 1.25 = 0.64  board a drift: open 1.70s of 3.15s
+   t  136s x  30786 ride-board       bits 1.37 x stakes 1.00 (soft) x overlap 1.0 x new 1.20 = 0.45  board a drift: open 2.45s of 3.90s
+   t    9s x   2400 catch            bits 1.28 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 0.43  catch liana 1 off the bank: 2300 ms of 3.30 s
+   t   16s x   3749 catch            bits 1.30 x stakes 1.00 (soft) x overlap 1.0 x new 1.35 = 0.40  catch liana 2 off the bank: 2267 ms of 3.30 s
+   t   84s x  17770 catch            bits 1.30 x stakes 1.00 (soft) x overlap 1.0 x new 1.25 = 0.37  catch liana 4 off the bank: 2267 ms of 3.30 s
+   t   22s x   4882 catch            bits 1.27 x stakes 1.00 (soft) x overlap 1.0 x new 1.29 = 0.35  catch liana 3 off the bank: 2333 ms of 3.30 s
+   t    3s x   1060 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 340 share 0.53
+-- 2-2 easy seed 1: the 12 heaviest challenges
+   t   73s x  13198 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.0 x new 1.14 = 5.98  board a pad: open 3.60s of 4.50s, still jump 5.06 bits
+   t   77s x  14016 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.0 x new 1.14 = 5.95  board a pad: open 3.60s of 4.50s, still jump 5.06 bits
+   t  113s x  22106 ride-board       bits 6.23 x stakes 1.00 (soft) x overlap 1.0 x new 1.12 = 5.85  board a pad: open 3.60s of 4.50s, still jump 5.06 bits
+   t  149s x  30180 ride-board       bits 6.22 x stakes 1.00 (soft) x overlap 1.0 x new 1.10 = 5.76  board a pad: open 3.90s of 4.80s, still jump 5.06 bits
+   t   17s x   4328 ride-board       bits 3.94 x stakes 1.00 (soft) x overlap 1.5 x new 1.17 = 5.15  board a pad: open 3.00s of 3.00s, still jump 3.94 bits
+   t   45s x  10314 ride-board       bits 3.94 x stakes 1.00 (soft) x overlap 1.5 x new 1.15 = 5.08  board a pad: open 3.60s of 4.50s, still jump 2.77 bits
+   t   43s x   9904 ride-board       bits 1.36 x stakes 1.00 (soft) x overlap 2.0 x new 1.16 = 0.83  board a pad: open 3.60s of 4.50s, still jump 0.19 bits
+   t  108s x  20810 ride-board       bits 1.41 x stakes 1.00 (soft) x overlap 1.0 x new 1.12 = 0.46  board a drift: open 2.35s of 3.89s
+   t   40s x   9264 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.38  gap 0 rise 63 land 300 share 0.61
+   t   41s x   9394 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.38  gap 0 rise 63 land 130 share 0.61
+   t   42s x   9524 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.38  gap 0 rise 63 land 130 share 0.61
+   t   29s x   6986 single           bits 1.11 x stakes 1.00 (soft) x overlap 1.0 x new 1.05 = 0.12  gap 98 rise 0 land 320 share 0.54
+-- 2-4 easy seed 1: the 12 heaviest challenges
+   t   88s x  19622 double           bits 4.68 x stakes 1.00 (retry) x overlap 1.0 x new 1.19 = 4.37  gap 0 rise 178 land 428 share 0.90
+   t  132s x  26740 swing            bits 2.63 x stakes 1.00 (retry) x overlap 1.0 x new 1.19 = 1.94  swing on a liana: release 633 ms of 3.30 s onto 120
+   t   31s x   6924 swing            bits 2.14 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 1.55  swing on a liana: release 967 ms of 3.30 s onto 34
+   t   37s x   8048 swing            bits 2.18 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 1.52  swing on a liana: release 933 ms of 3.30 s onto 37
+   t  106s x  21275 swing            bits 2.22 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 1.50  swing on to the next liana: release 900 ms of 3.30 s onto 98
+   t   81s x  16087 swing            bits 2.18 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 1.48  swing on to the next liana: release 933 ms of 3.30 s onto 73
+   t  115s x  22845 swing            bits 2.18 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 1.42  swing on to the next liana: release 933 ms of 3.30 s onto 104
+   t   45s x  10273 ride-board       bits 1.58 x stakes 1.00 (soft) x overlap 1.0 x new 1.10 = 0.64  board a drift: open 1.55s of 3.09s
+   t   11s x   2940 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 0.35  catch liana 1 off the bank: 2300 ms of 3.30 s
+   t   31s x   6924 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 0.34  catch liana 2 off the bank: 2300 ms of 3.30 s
+   t   79s x  15922 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.18 = 0.33  catch liana 5 off the bank: 2300 ms of 3.30 s
+   t  104s x  21110 catch            bits 1.28 x stakes 1.00 (retry) x overlap 1.0 x new 1.17 = 0.33  catch liana 7 off the bank: 2300 ms of 3.30 s
+exit 0

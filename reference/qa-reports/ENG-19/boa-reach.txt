@@ -1,0 +1,19 @@
+1-9: 48 boas over 8 builds, 0 on the kit
+5-6: 8 boas over 8 builds, 0 on the kit
+7-3: 8 boas over 8 builds, 0 on the kit
+7-6: 8 boas over 8 builds, 0 on the kit
+7-9: 24 boas over 8 builds, 0 on the kit
+8-6: 20 boas over 8 builds, 0 on the kit
+8-9: 132 boas over 8 builds, 0 on the kit
+9-1: 8 boas over 8 builds, 0 on the kit
+9-3: 12 boas over 8 builds, 0 on the kit
+9-4: 12 boas over 8 builds, 0 on the kit
+9-5: 8 boas over 8 builds, 0 on the kit
+9-6: 8 boas over 8 builds, 0 on the kit
+9-8: 8 boas over 8 builds, 0 on the kit
+9-9: 24 boas over 8 builds, 0 on the kit
+10-3: 20 boas over 8 builds, 0 on the kit
+10-6: 4 boas over 8 builds, 0 on the kit
+10-7: 24 boas over 8 builds, 0 on the kit
+10-9: 24 boas over 8 builds, 0 on the kit
+stages with boas: 18; boas the kit runs (read BOA.tell): 0

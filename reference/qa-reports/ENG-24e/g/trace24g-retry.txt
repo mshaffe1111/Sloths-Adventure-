@@ -1,0 +1,30 @@
+== child seed 8 Normal at OVER_TAIL 90, before the retry (swungOn kept): the swing at beat 4, then never retried
+SWING 112.97 11069 a 0.64 om 0.77 wait false pending false swingT 0.70 len 325 overLogs true
+SWING 113.00 11076 a 0.69 om 0.72 wait false pending false swingT 0.73 len 325 overLogs true
+SWING 113.03 11083 a 0.74 om 0.67 wait false pending false swingT 0.77 len 325 overLogs true
+SWING 113.07 11090 a 0.79 om 0.61 wait false pending false swingT 0.80 len 325 overLogs true
+SWING 113.10 11096 a 0.83 om 0.55 wait false pending false swingT 0.83 len 325 overLogs true
+SWING 113.13 11101 a 0.87 om 0.49 wait false pending false swingT 0.87 len 325 overLogs true
+SWING 113.17 11106 a 0.90 om 0.42 wait false pending false swingT 0.90 len 325 overLogs true
+SWING 113.20 11109 a 0.93 om 0.36 wait false pending false swingT 0.93 len 325 overLogs true
+SWING 113.23 11113 a 0.96 om 0.29 wait false pending false swingT 0.97 len 325 overLogs true
+SWING 113.27 11115 a 0.98 om 0.22 wait false pending false swingT 1.00 len 325 overLogs true
+SWING 113.30 11117 a 0.99 om 0.15 wait false pending false swingT 1.03 len 325 overLogs true
+LETGO 113.30 11117 wait false late false swingT 0
+SWING 113.33 11118 a 1.00 om 0.07 wait true pending true swingT 0.03 len 325 overLogs true
+SWING 113.37 11118 a 1.00 om 0.00 wait true pending true swingT 0.07 len 325 overLogs true
+SWING 113.40 11118 a 1.00 om -0.07 wait true pending true swingT 0.10 len 325 overLogs true
+SWING 113.43 11117 a 0.99 om -0.14 wait true pending true swingT 0.13 len 325 overLogs true
+
+== child 8 before the retry
+end time time 1200 x 10650 lives 
+fromLog 1 ontoLog 1 rescues 0 stuck []
+== child 8 after the retry
+end shrine time 332.9 x 30326 lives 22108@249 22945@261
+fromLog 8 ontoLog 6 rescues 0 stuck []
+== child 29 before the retry
+end time time 1200 x 10336 lives 
+fromLog 1 ontoLog 0 rescues 0 stuck []
+== child 29 after the retry
+end shrine time 342.4 x 30045 lives 16807@187 23364@269 23067@273
+fromLog 7 ontoLog 7 rescues 0 stuck []

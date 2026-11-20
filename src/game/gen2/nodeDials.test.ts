@@ -61,6 +61,24 @@ test('node dials (planted): a sign that is no dial, a number that means nothing 
   assert.equal(errs('A P R ?[M|P] R S E'), '');
 });
 
+test("node dials (planted, R-165.319): a threat, hazard, clock or find takes the kit's ids as written, camelCase included", () => {
+  // (the casts write ids two ways: gen2's kits in kebab-case (w1Cast.ts 'snake-asleep'), the predators' roster in camelCase
+  // (predators/roster.ts 'thornVine', 'riverGuard'); one spelling rule takes both: a small letter first, then letters of either
+  // case, digits, '-' or '_')
+  const [t] = parseCode('Xf2&&:&thornVine*2z,riverGuard!,snake-asleep:#thornBed@vineClock:+buttonTin');
+  assert.deepEqual(t.dials, {
+    threat: [{ kind: 'thornVine', count: 2, state: 'asleep' }, { kind: 'riverGuard', count: 1, state: 'awake' }, { kind: 'snake-asleep', count: 1 }],
+    hazard: { kind: 'thornBed', clock: 'vineClock' }, reward: { find: 'buttonTin' },
+  });
+  assert.equal(formatToken(t), 'Xf2&&:&thornVine*2z,riverGuard!,snake-asleep:#thornBed@vineClock:+buttonTin');
+  // (every id the roster's casts name reads back as itself)
+  for (const kind of ['grottoEyes', 'capuchinThief', 'capuchinLookout', 'blinkingLog', 'lavaLizard']) assert.deepEqual(parseCode(`Xf2&:&${kind}`)[0].dials!.threat, [{ kind, count: 1 }], kind);
+  // (still refused: a capital first, a digit first, a space or a dot)
+  for (const bad of ['Xf2:&ThornVine', 'Xf2:&2vine', 'Xf2:&thorn.vine']) assert.throws(() => parseCode(bad), /is not a threat/, bad);
+  assert.throws(() => parseCode('Xf2:#Pods'), /is not a hazard/);
+  assert.throws(() => parseCode('Xf2:+Seed'), /is not a find/);
+});
+
 test('node dials: a graph that writes a dial is laid with it (or the roll fails by name, nodeAsks.ts); a pick fails by name', () => {
   const build = (code: string) => buildGen2Stage({ config: towerCfg('5-95', 'sprint'), kit: legsKit('5-95', code), seed: 1, difficulty: 'normal' });
   const st = build('A P:$8 M R S E');

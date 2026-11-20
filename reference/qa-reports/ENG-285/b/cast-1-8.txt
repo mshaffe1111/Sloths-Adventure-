@@ -1,0 +1,13 @@
+== 1-8 2:43
+castBots 1-8, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+child  normal PASS 36/40; under the floor 0; time median 315.2 s (min 286.7); hits 294 lives 35 (other 315, pit 9, foe:eagle 5); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+        fail 4: shrine rescued x1  (seeds 9,17,25,35)
+child  easy   PASS 40/40; under the floor 0; time median 236.1 s (min 216.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle normal PASS 40/40; under the floor 0; time median 195.2 s (min 178.7); hits 236 lives 16 (other 241, foe:eagle 3, pit 8); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 175.7 s (min 163.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 173.4 s (min 162.3); hits 210 lives 10 (other 213, pit 6, foe:eagle 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+kid    normal PASS 40/40; under the floor 0; time median 141.6 s (min 138.7); hits 203 lives 0 (other 163, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+kid    easy   PASS 40/40; under the floor 0; time median 146.4 s (min 139.4); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  normal PASS 40/40; under the floor 0; time median 140.5 s (min 137.8); hits 200 lives 0 (other 160, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 144.4 s (min 140); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+exit 0 2:46

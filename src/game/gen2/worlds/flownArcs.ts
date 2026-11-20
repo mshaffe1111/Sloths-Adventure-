@@ -42,6 +42,12 @@ const n18 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-8', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-9's own scope (BUILD-19 11-18: flown on 1-9, reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt; within 0-1 px
+ *  of 1-8's flight but the double flick's widest, 385 for 391) */
+const n19 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-9', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** a Normal row of 1-4's own scope (INT-3, 11-13: flown on the tower once RealPlay.bare opened its walls) */
 const n14 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
@@ -53,7 +59,7 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
 const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
-const n21 = nW2('2-1'), n22 = nW2('2-2');
+const n21 = nW2('2-1'), n22 = nW2('2-2'), n24 = nW2('2-4');
 
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
@@ -147,6 +153,15 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n18('double-tap-tap', [148, 141], [189, 274, 299], 'chain.md §1 "1-8: double-tap-tap 148 / 141, gap 189 / 274 / 299"'),
   ...n18('bounce', [223, 215], [177, 177, 177], 'chain.md §1 "1-8: bounce 223 / 215, gap 177 / 177 / 177"'),
   ...n18('bounce-air', [311, 301], [334, 334, 334], 'chain.md §1 "1-8: bounce-air 311 / 301, gap 334 / 334 / 334"'),
+  // 1-9 on Normal (BUILD-19, 11-18): `FLIGHT_STAGE=1-9 npx tsx reference/specs/sims/flight.ts normal all` on t-build-19 (reference/qa-reports/BUILD-19/fly/flight-1-9-normal.txt)
+  ...n19('single-hold', [123, 115], [136, 220, 244], 'chain.md §1 "1-9: single-hold 123 / 115, gap 136 / 220 / 244"'),
+  ...n19('single-flick', [123, 115], [126, 210, 238], 'chain.md §1 "1-9: single-flick 123 / 115, gap 126 / 210 / 238"'),
+  ...n19('single-tap', [87, 79], [77, 161, 183], 'chain.md §1 "1-9: single-tap 87 / 79, gap 77 / 161 / 183"'),
+  ...n19('double-hold', [208, 200], [290, 376, 403], 'chain.md §1 "1-9: double-hold 208 / 200, gap 290 / 376 / 403"'),
+  ...n19('double-flick', [207, 199], [272, 357, 385], 'chain.md §1 "1-9: double-flick 207 / 199, gap 272 / 357 / 385"'),
+  ...n19('double-tap-tap', [148, 140], [189, 274, 299], 'chain.md §1 "1-9: double-tap-tap 148 / 140, gap 189 / 274 / 299"'),
+  ...n19('bounce', [223, 215], [177, 177, 177], 'chain.md §1 "1-9: bounce 223 / 215, gap 177 / 177 / 177"'),
+  ...n19('bounce-air', [310, 300], [334, 334, 334], 'chain.md §1 "1-9: bounce-air 310 / 300, gap 334 / 334 / 334"'),
   // 2-1 and 2-2 on Normal (ENG-W2, 11-14): flown on their own stages on World 2's kit (nW2 above). Their help eases a little past 1-7's
   // (the doubles climb 1-2 px less), so each has its own block
   ...n21('single-hold', [123, 115], [135, 220, 244], 'chain.md §1 "2-1: single-hold 123 / 115, gap 135 / 220 / 244"'),
@@ -165,5 +180,15 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n22('double-tap-tap', [148, 139], [189, 274, 299], 'chain.md §1 "2-2: double-tap-tap 148 / 139, gap 189 / 274 / 299"'),
   ...n22('bounce', [223, 214], [177, 177, 177], 'chain.md §1 "2-2: bounce 223 / 214, gap 177"'),
   ...n22('bounce-air', [307, 296], [333, 333, 333], 'chain.md §1 "2-2: bounce-air 307 / 296, gap 333"'),
+  // 2-4 on Normal (BUILD-24, 11-18): flown on its own stage on World 2's kit (FLIGHT_STAGE=2-4 reference/specs/sims/flight.ts normal all,
+  // reference/qa-reports/BUILD-24/fly-2-4.txt; entered in chain.md §1 "Rows ... Normal 2-4"): stage 4's help, a pixel or two under 2-2's
+  ...n24('single-hold', [123, 114], [135, 219, 244], 'chain.md §1 "2-4: single-hold 123 / 114, gap 135 / 219 / 244"'),
+  ...n24('single-flick', [123, 113], [125, 209, 237], 'chain.md §1 "2-4: single-flick 123 / 113, gap 125 / 209 / 237"'),
+  ...n24('single-tap', [87, 78], [77, 161, 182], 'chain.md §1 "2-4: single-tap 87 / 78, gap 77 / 161 / 182"'),
+  ...n24('double-hold', [204, 194], [289, 375, 402], 'chain.md §1 "2-4: double-hold 204 / 194, gap 289 / 375 / 402"'),
+  ...n24('double-flick', [203, 193], [271, 357, 381], 'chain.md §1 "2-4: double-flick 203 / 193, gap 271 / 357 / 381"'),
+  ...n24('double-tap-tap', [147, 138], [188, 273, 299], 'chain.md §1 "2-4: double-tap-tap 147 / 138, gap 188 / 273 / 299"'),
+  ...n24('bounce', [223, 214], [176, 176, 176], 'chain.md §1 "2-4: bounce 223 / 214, gap 176"'),
+  ...n24('bounce-air', [306, 294], [331, 331, 331], 'chain.md §1 "2-4: bounce-air 306 / 294, gap 331"'),
 ];
 

@@ -8,11 +8,17 @@ import type { PredatorDef } from './types.ts';
 
 const EASY = { tell: 1.3, cool: 1.5, speed: 0.85 } as const;
 
-/** Ocelot (the prowler): creeps while his back is turned, crawls when faced, loses a still sloth, comes to noise */
+/**
+ * Ocelot (the prowler): creeps while his back is turned, crawls when faced, loses a still sloth, comes to noise. It never looks up
+ * (3-2.md NEW 1 ENG-PROWL: a sloth hanging from a root more than 40 px over its feet is out of its sight; Easy's root hangs him 74 px
+ * up); one it does see hanging, it leaps at, from its ground, where he hung when it told
+ */
 export const OCELOT: PredatorDef = {
-  kind: 'ocelot', habit: 'stalk', sight: { ahead: 240, behind: 150, tall: 80 }, hears: NOISE.dur, speed: { rest: 55, hunt: 95 }, watched: 0.3,
+  kind: 'ocelot', habit: 'stalk', sight: { ahead: 240, behind: 150, tall: 80, up: 40 }, hears: NOISE.dur, speed: { rest: 55, hunt: 95 }, watched: 0.3,
   // today's windup is 0.38 s (predatorAI.ts): the kit's floor is 0.5
   engage: 150, tell: 0.5, callsOff: true, act: { aim: 'ahead', seconds: 0.36, speed: 400, reach: 44, tall: 28 }, recover: 0.4, cool: 1.6, giveUp: 3,
+  // the leap: 3-2.md's aim 'up' and tall 130; its time, speed and reach are its pounce's (no number of its own until 3-2 tunes it)
+  leap: { aim: 'up', seconds: 0.36, speed: 400, reach: 44, tall: 130 },
   easy: EASY,
   beatenBy: {
     still: { ends: 'flees', seconds: 5 }, trap: { ends: 'chasedOff' }, drum: { ends: 'stunned', seconds: 3 },

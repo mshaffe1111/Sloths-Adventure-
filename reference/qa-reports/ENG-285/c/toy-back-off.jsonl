@@ -1,0 +1,16 @@
+{"off":"none","tier":"middle","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":7.5},"time":null}
+{"off":"none","tier":"middle","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":1,"putbacks":0,"seconds":8.5},"time":null}
+{"off":"none","tier":"child","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":13.5},"time":null}
+{"off":"none","tier":"child","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":9.5},"time":null}
+{"off":"bankUp","tier":"middle","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":7.5},"time":null}
+{"off":"bankUp","tier":"middle","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":1,"putbacks":0,"seconds":9.5},"time":null}
+{"off":"bankUp","tier":"child","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":13.5},"time":null}
+{"off":"bankUp","tier":"child","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":9.5},"time":null}
+{"off":"upstream","tier":"middle","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":7.5},"time":null}
+{"off":"upstream","tier":"middle","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":1,"putbacks":0,"seconds":8.5},"time":null}
+{"off":"upstream","tier":"child","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":17.5},"time":null}
+{"off":"upstream","tier":"child","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":14},"time":null}
+{"off":"both","tier":"middle","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":7.5},"time":null}
+{"off":"both","tier":"middle","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":1,"putbacks":0,"seconds":9},"time":null}
+{"off":"both","tier":"child","setting":"normal","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":18},"time":null}
+{"off":"both","tier":"child","setting":"easy","end":"shrine","atRiver":{"id":"toy-one-river","lives":0,"putbacks":0,"seconds":14},"time":null}

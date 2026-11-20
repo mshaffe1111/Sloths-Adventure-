@@ -27,6 +27,8 @@ const LISTS = [
   { file: 'src/game/ciTests.known.json', ids: (j) => j.known.map((k) => k.file) },
   // the meter's known coverage gaps (METER-2a, R-165.272): a piece a built stage uses with no bot or no channel, one id per missing half
   { file: 'tools/difficulty/coverage.known.json', ids: (j) => j.known.flatMap((k) => k.missing.map((h) => `${k.id}|${h}`)) },
+  // (R-165.292: a painted style drawn through code terrain by its size, tools/engine/paintcheck.ts; one id per stage, style, height, look)
+  { file: 'tools/engine/paintcheck.known.json', ids: (j) => j.known },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 

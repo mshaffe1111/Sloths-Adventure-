@@ -1,0 +1,139 @@
+// ENG-285c still pair (ENG-285 step 5): one back-swing hop off a liana on the real page (the real touch pad's calls, clipPress.mjs
+// pressFrame), the engine's own path recorded frame by frame; the old judge (airStep at ce4ad461, no air turn push for any caller but
+// ENG-24's liana judge) and the new judge (airStep on this head) flown from the engine's own take-off state, drawn over the hop.
+//   npx tsx backswing.mts <port> <outDir> <side|up> [stage] [layout] [nth liana]
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import { pressFrame } from '/home/user/w285/tools/inspect/clipPress.mjs';
+import { airStep, PHYS } from '/home/user/w285/src/game/physics.ts';
+const { chromium } = createRequire(import.meta.url)('playwright');
+const [port, out, ori = 'side', stage = '1-6', layout = '0', nth = '0'] = process.argv.slice(2);
+const VP = ori === 'side' ? { width: 915, height: 412 } : { width: 412, height: 915 };
+fs.mkdirSync(out, { recursive: true });
+/** the air tick every check flew before ENG-285 (ce4ad461 physics.ts:203, called with turn = false): no turn push */
+function oldAirStep(b: { x: number; y: number; vx: number; vy: number }, dt: number, dir: -1 | 0 | 1, hold = false) {
+  if (dir !== 0) {
+    if (dir * b.vx < PHYS.maxRun) {
+      b.vx += dir * PHYS.airAcc * dt;
+      if (dir * b.vx > PHYS.maxRun) b.vx = dir * PHYS.maxRun;
+    } else b.vx -= dir * PHYS.airDec * dt;
+  } else {
+    const dec = PHYS.airDec * dt;
+    if (Math.abs(b.vx) <= dec) b.vx = 0; else b.vx -= Math.sign(b.vx) * dec;
+  }
+  let g = b.vy < 0 ? PHYS.gravUp : PHYS.gravDown;
+  if (hold && Math.abs(b.vy) < 90) g *= 0.72;
+  b.vy += g * dt;
+  if (b.vy > PHYS.maxFall) b.vy = PHYS.maxFall;
+  b.x += b.vx * dt;
+  b.y += b.vy * dt;
+}
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: VP, deviceScaleFactor: 2 });
+await ctx.addInitScript(() => { try { localStorage.setItem('sloth_difficulty', 'normal'); } catch {} });
+await ctx.addInitScript({ content: 'window.__name = (f) => f;' });
+const p = await ctx.newPage();
+p.on('pageerror', (e: Error) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(([s, L]: [string, number]) => (window as any).__play(s, L), [stage, +layout] as [string, number]);
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2500);
+// (the arrival card goes to the counter at the first touch, as on the phone; then the stage's own intro plays out in real time)
+await p.mouse.click(VP.width / 2, VP.height / 2);
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => console.log('CARD still up'));
+await p.waitForTimeout(6000);
+await p.waitForFunction(() => { const e = (typeof (window as any).__engine === 'function' ? (window as any).__engine() : (window as any).__engine); return !!(e && e.currentStage && e.player); }, null, { timeout: 60000 });
+await p.addScriptTag({ content: `window.__pressFrame = ${pressFrame.toString()};` });
+const rec = await p.evaluate((nth: number) => {
+  const w = window as any; const e = (typeof (window as any).__engine === 'function' ? (window as any).__engine() : (window as any).__engine); const P = e.player; const step = (inp: object) => w.__pressFrame(e, inp, { safe: true }, false);
+  e.isPaused = true;
+  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  const built = { stage: e.currentStage?.config?.id, seed: e.currentStage?.gen2?.seed, difficulty: localStorage.getItem('sloth_difficulty'), vw: e.camera.viewportWidth, vh: e.camera.viewportHeight };
+  const lianas = e.vines.filter((v: any) => v.vineType !== 'tree_climb');
+  step({});
+  const a0 = lianas.map((v: any) => v.swingAngle);
+  for (let i = 0; i < 6; i++) step({});
+  // (past the stage's arrival card and its zoom: the world in view, as he plays it)
+  for (let i = 0; i < 240; i++) step({});
+  const swinging = lianas.filter((v: any, i: number) => Math.abs(v.swingAngle - a0[i]) > 1e-4 && v.bottomY - v.topY >= 250);
+  const v = swinging[nth];
+  if (!v) return { err: `no swinging liana #${nth} (${lianas.length} lianas, ${swinging.length} swinging)`, built, dbg: { t: e.gameTime, clock: e.vineClock, down: e.down, help: e.helpAsking, amps: lianas.slice(0, 8).map((q: any) => [Math.round(q.x), q.swingAmp, +q.swingAngle.toFixed(3), Math.round(q.bottomY - q.topY)]), px: P.x } };
+  const len = (v.bottomY - v.topY) * 0.8;
+  const place = () => Object.assign(P, { x: v.x + Math.sin(v.swingAngle) * len, y: v.topY + Math.cos(v.swingAngle) * len, vx: 80, vy: 0, grounded: false, climbing: false, isVineSwinging: false, jumpsLeft: 1 });
+  place();
+  let caught = false;
+  for (let i = 0; i < 4 && !caught; i++) { step({ right: true }); caught = !!P.isVineSwinging; if (!caught) place(); }
+  if (!caught) return { err: 'no catch', built };
+  // (swing a while so the camera settles on him, then let go on the first back swing past the bottom: moving left, steering right)
+  let px = P.x, k = 0, go = -1, lastVx = 0;
+  for (; k < 240; k++) {
+    step({});
+    const vx = (P.x - px) * 30; px = P.x;
+    // (at the back swing's fastest: moving left, the first frame it stops speeding up)
+    if (k > 60 && vx < -150 && vx > lastVx) { go = k; break; }
+    lastVx = vx;
+  }
+  if (go < 0) return { err: 'no back swing', built };
+  const at = { x: P.x, y: P.y, angle: P.swingAngle, omega: P.swingAngularVelocity, len: P.swingLength, liana: { x: v.x, topY: v.topY, bottomY: v.bottomY } };
+  const press = step({ jump: true, right: true, holdMs: 300 });
+  const frames: any[] = [{ x: P.x, y: P.y, vx: P.vx, vy: P.vy, held: !!e.input.state.jumpHeld, swinging: !!P.isVineSwinging, grounded: !!P.grounded }];
+  for (let i = 0; i < 60 && !P.grounded; i++) {
+    step({ right: true });
+    frames.push({ x: P.x, y: P.y, vx: P.vx, vy: P.vy, held: !!e.input.state.jumpHeld, swinging: !!P.isVineSwinging, grounded: !!P.grounded });
+  }
+  return { built, at, press, frames };
+}, +nth);
+if ((rec as any).err) { console.log(JSON.stringify(rec)); await b.close(); process.exit(2); }
+const { built, at, press, frames } = rec as any;
+console.log('BUILT', JSON.stringify(built), 'let-go', JSON.stringify(at), 'press', JSON.stringify(press?.lift));
+// (the judges fly from the engine's own state the frame after the let-go press: the press frame is the engine's, ENG-285b takeOffStep)
+const DT = 1 / 30;
+// (the release frame sets his launch inside the engine's own step (pressLaunches); the judges fly the air ticks after it, from the state
+//  the engine left at the end of the first whole air frame: there, planted (judgeFliesEngine.test 3), the new tick is the engine's)
+const air = frames.findIndex((f: any) => !f.swinging) + 1;
+if (air < 1) { console.log('never left the liana'); process.exit(2); }
+const nw = { ...frames[air] }, od = { ...frames[air] };
+const newPath = [{ x: nw.x, y: nw.y }], oldPath = [{ x: od.x, y: od.y }];
+let worst = 0;
+for (let i = air + 1; i < frames.length; i++) {
+  if (frames[i].grounded) break;
+  airStep(nw, DT, 1, frames[i].held); oldAirStep(od, DT, 1, frames[i].held);
+  // (free flight ends where the engine meets something (a wall, a ledge): the judges fly open air only)
+  const miss = Math.hypot(nw.x - frames[i].x, nw.y - frames[i].y);
+  if (miss > 0.5) { console.log(`frame ${i}: the engine met something (judge ${nw.x.toFixed(1)},${nw.y.toFixed(1)} vs engine ${frames[i].x.toFixed(1)},${frames[i].y.toFixed(1)}): free flight ends`); break; }
+  newPath.push({ x: nw.x, y: nw.y }); oldPath.push({ x: od.x, y: od.y });
+  worst = Math.max(worst, miss);
+}
+const last = newPath.length - 1;
+const gap = newPath[last].x - oldPath[last].x;
+const minX = Math.min(...frames.slice(air).map((f: any) => f.x));
+console.log(`air from frame ${air}: ${last} air frames; new judge vs engine worst ${worst.toFixed(4)} px; old judge ${gap.toFixed(1)} px behind at frame ${last}; back to x ${minX.toFixed(0)} (let-go x ${frames[air].x.toFixed(0)})`);
+const engPath = frames.slice(air, air + last + 1).map((f: any) => ({ x: f.x, y: f.y }));
+for (const [tag, path, colour, label] of [['old', oldPath, '#ff4d4d', `OLD judge (no air turn push): ${gap.toFixed(0)} px short`], ['new', newPath, '#38e07b', `NEW judge = the engine (worst ${worst.toFixed(3)} px)`]] as const) {
+  await p.evaluate(([path, eng, colour, label]: [any[], any[], string, string]) => {
+    const w = window as any; const e = (typeof (window as any).__engine === 'function' ? (window as any).__engine() : (window as any).__engine);
+    document.getElementById('bsov')?.remove();
+    const cv = [...document.querySelectorAll('canvas')].sort((a, b2) => b2.width * b2.height - a.width * a.height)[0] as HTMLCanvasElement;
+    const r = cv.getBoundingClientRect();
+    const dpr = typeof e.renderDpr === 'function' ? e.renderDpr() : devicePixelRatio;
+    const k = (r.width * dpr) / cv.width;
+    const sx = (x: number) => r.left + (x - e.camera.x) * e.zoom * k, sy = (y: number) => r.top + (y - e.camera.y) * e.zoom * k;
+    const o = document.createElement('canvas'); o.id = 'bsov';
+    Object.assign(o.style, { position: 'fixed', left: '0', top: '0', width: innerWidth + 'px', height: innerHeight + 'px', zIndex: '99999', pointerEvents: 'none' });
+    o.width = innerWidth * 2; o.height = innerHeight * 2; document.body.appendChild(o);
+    const c = o.getContext('2d')!; c.scale(2, 2);
+    c.lineWidth = 3; c.strokeStyle = colour; c.setLineDash(colour === '#ff4d4d' ? [8, 5] : []);
+    c.beginPath(); path.forEach((q, i) => (i ? c.lineTo(sx(q.x), sy(q.y)) : c.moveTo(sx(q.x), sy(q.y)))); c.stroke();
+    c.setLineDash([]);
+    const endP = path[path.length - 1]; c.fillStyle = colour; c.beginPath(); c.arc(sx(endP.x), sy(endP.y), 6, 0, 7); c.fill();
+    c.fillStyle = '#ffffff'; for (const q of eng) { c.beginPath(); c.arc(sx(q.x), sy(q.y), 2.4, 0, 7); c.fill(); }
+    c.font = 'bold 15px sans-serif'; const tw = c.measureText(label).width;
+    c.fillStyle = 'rgba(0,0,0,0.6)'; c.fillRect(10, innerHeight - 70, tw + 16, 50);
+    c.fillStyle = colour; c.fillText(label, 18, innerHeight - 50);
+    c.fillStyle = '#ffffff'; c.font = '13px sans-serif'; c.fillText('white dots: Pokey on the real engine, frame by frame', 18, innerHeight - 30);
+  }, [path, engPath, colour, label] as [any[], any[], string, string]);
+  await p.screenshot({ path: `${out}/backswing-${ori}-${tag}.png` });
+}
+fs.writeFileSync(`${out}/backswing-${ori}.json`, JSON.stringify({ built, at, air, worst, gap, oldPath, newPath, engPath }, null, 0));
+await b.close();

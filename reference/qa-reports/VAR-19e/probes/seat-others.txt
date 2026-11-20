@@ -1,0 +1,10 @@
+1-1: 161 seeds, 0 breaches
+1-2: 100 seeds, 0 breaches
+1-3: 100 seeds, 0 breaches
+1-4: 100 seeds, 0 breaches
+1-5: 150 seeds, 0 breaches
+1-6: 100 seeds, 0 breaches
+1-7: 100 seeds, 0 breaches
+1-8: 100 seeds, 0 breaches
+2-1: 100 seeds, 0 breaches
+2-2: 100 seeds, 0 breaches

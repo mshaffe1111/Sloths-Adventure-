@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+ok 1 - the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+  ---
+  duration_ms: 1.008774
+  type: 'test'
+  ...
+# Subtest: the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+ok 2 - the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+  ---
+  duration_ms: 0.678078
+  type: 'test'
+  ...
+# Subtest: any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+ok 3 - any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+  ---
+  duration_ms: 0.591045
+  type: 'test'
+  ...
+# Subtest: the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+ok 4 - the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+  ---
+  duration_ms: 765.960452
+  type: 'test'
+  ...
+# Subtest: a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+ok 5 - a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+  ---
+  duration_ms: 1.277621
+  type: 'test'
+  ...
+# Subtest: no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+ok 6 - no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+  ---
+  duration_ms: 0.350687
+  type: 'test'
+  ...
+# Subtest: the drop judge reads the design's real-engine flight (2-4.md, swingLog.ts): share to 2 points, wait to 0.1 s
+ok 7 - the drop judge reads the design's real-engine flight (2-4.md, swingLog.ts): share to 2 points, wait to 0.1 s
+  ---
+  duration_ms: 119.878612
+  type: 'test'
+  ...
+# Subtest: the drop judge agrees with the engine itself (RealPlay at 30 fps) press by press on `long`, every 4th frame of both clocks
+ok 8 - the drop judge agrees with the engine itself (RealPlay at 30 fps) press by press on `long`, every 4th frame of both clocks
+  ---
+  duration_ms: 2659.213399
+  type: 'test'
+  ...
+# Subtest: the toy: a liana over `long` laid by place `river` after the liana builds clean on both settings, the river under the liana
+ok 9 - the toy: a liana over `long` laid by place `river` after the liana builds clean on both settings, the river under the liana
+  ---
+  duration_ms: 923.057975
+  type: 'test'
+  ...
+# Subtest: PLANTED: the toy with its logs taken out is refused (riverFaults and levelCheck)
+ok 10 - PLANTED: the toy with its logs taken out is refused (riverFaults and levelCheck)
+  ---
+  duration_ms: 785.005464
+  type: 'test'
+  ...
+# Subtest: PLANTED: logs too far apart for the drop are refused by the judge by name, on every roll
+ok 11 - PLANTED: logs too far apart for the drop are refused by the judge by name, on every roll
+  ---
+  duration_ms: 8573.543745
+  type: 'test'
+  ...
+# Subtest: the hop rule gives way only under a liana: gap280 (Normal's row; Easy pairs it with `deep`) passes under one, fails both checks without
+ok 12 - the hop rule gives way only under a liana: gap280 (Normal's row; Easy pairs it with `deep`) passes under one, fails both checks without
+  ---
+  duration_ms: 149.418563
+  type: 'test'
+  ...
+# Subtest: a liana no bank reaches is caught from the log (beat 4); on Easy its river runs at most 80 px/s
+ok 13 - a liana no bank reaches is caught from the log (beat 4); on Easy its river runs at most 80 px/s
+  ---
+  duration_ms: 375.064575
+  type: 'test'
+  ...
+# Subtest: PLANTED (ENG-24f, the lead's ruling 11-19): a liana over a river's TAIL is judged by World 1's FAR rule, never the log-drop share
+ok 14 - PLANTED (ENG-24f, the lead's ruling 11-19): a liana over a river's TAIL is judged by World 1's FAR rule, never the log-drop share
+  ---
+  duration_ms: 3.137912
+  type: 'test'
+  ...
+# Subtest: 2-4's lines are the story keeper's, word for word (reference/story/lines-2-4.md, KEEPER-24 t-keeper-24@fa3b0930), and the stage says them
+ok 15 - 2-4's lines are the story keeper's, word for word (reference/story/lines-2-4.md, KEEPER-24 t-keeper-24@fa3b0930), and the stage says them
+  ---
+  duration_ms: 1372.465153
+  type: 'test'
+  ...
+# Subtest: the row: 2-4 rolls from its own kit (World 2 with 2-4 rows), CLEAN on both settings, the arc beat for beat, only its own bricks
+ok 16 - the row: 2-4 rolls from its own kit (World 2 with 2-4 rows), CLEAN on both settings, the arc beat for beat, only its own bricks
+  ---
+  duration_ms: 1440.618425
+  type: 'test'
+  ...
+# Subtest: the rivers: every 2-4 row lays fault-free; splash-back where the design is soft, deep on Normal at beats 6 and 8 only; every Easy row splash-back and never harder than Normal
+ok 17 - the rivers: every 2-4 row lays fault-free; splash-back where the design is soft, deep on Normal at beats 6 and 8 only; every Easy row splash-back and never harder than Normal
+  ---
+  duration_ms: 180.82157
+  type: 'test'
+  ...
+# Subtest: the lianas: each river under its own (one; two at beat 6 and over each of beat 8's rivers), every vine a swinging liana; a log-caught liana out of every bank's reach and past the chain distance, so the LOG is the way to it
+ok 18 - the lianas: each river under its own (one; two at beat 6 and over each of beat 8's rivers), every vine a swinging liana; a log-caught liana out of every bank's reach and past the chain distance, so the LOG is the way to it
+  ---
+  duration_ms: 1.073943
+  type: 'test'
+  ...
+# Subtest: the drops tell the truth: every splash-back river is drawn as the shallow backwater, every deep one as deep water
+ok 19 - the drops tell the truth: every splash-back river is drawn as the shallow backwater, every deep one as deep water
+  ---
+  duration_ms: 0.314757
+  type: 'test'
+  ...
+# Subtest: Dot teaches before the thing, with time to read (level.md rule 6): `drop` 800+ px before beat 1's river, `catch` before beat 4's, nothing deep between; the first deep river (beat 6) warned in the keeper's words; Pokey's `view` after the great swing
+ok 20 - Dot teaches before the thing, with time to read (level.md rule 6): `drop` 800+ px before beat 1's river, `catch` before beat 4's, nothing deep between; the first deep river (beat 6) warned in the keeper's words; Pokey's `view` after the great swing
+  ---
+  duration_ms: 0.368067
+  type: 'test'
+  ...
+# Subtest: layRiver carries a raft row's look onto every carrier; a log row's carriers are exactly as before
+ok 21 - layRiver carries a raft row's look onto every carrier; a log row's carriers are exactly as before
+  ---
+  duration_ms: 1.860237
+  type: 'test'
+  ...
+# Subtest: the judge reads a raft row as the log row it is (riverFaults, lianaDrops: the same numbers)
+ok 22 - the judge reads a raft row as the log row it is (riverFaults, lianaDrops: the same numbers)
+  ---
+  duration_ms: 51.463324
+  type: 'test'
+  ...
+# Subtest: drawn on World 2's painted water: a raft is the painted raft (puzzle-kit\#raft), its deck the carrier's top; a log is still the painted log
+ok 23 - drawn on World 2's painted water: a raft is the painted raft (puzzle-kit\#raft), its deck the carrier's top; a log is still the painted log
+  ---
+  duration_ms: 26.525277
+  type: 'test'
+  ...
+# Subtest: drawn where no painted sheet draws: a raft is the raft painter, never a barge or a pad; logs keep their river looks; a moving raft keeps its family
+ok 24 - drawn where no painted sheet draws: a raft is the raft painter, never a barge or a pad; logs keep their river looks; a moving raft keeps its family
+  ---
+  duration_ms: 1.226711
+  type: 'test'
+  ...
+# Subtest: loaded before play: a kit that places a raft row asks for the kit's sheet; the log toy does not; 2-4 (listed) does, and only it
+ok 25 - loaded before play: a kit that places a raft row asks for the kit's sheet; the log toy does not; 2-4 (listed) does, and only it
+  ---
+  duration_ms: 23.438723
+  type: 'test'
+  ...
+# Subtest: laid by gen2 on a rolled row (rule 23): the drop toy over the raft row builds clean on both settings, every carrier a raft
+ok 26 - laid by gen2 on a rolled row (rule 23): the drop toy over the raft row builds clean on both settings, every carrier a raft
+  ---
+  duration_ms: 662.138971
+  type: 'test'
+  ...
+# Subtest: toy (2-1's first river, normal): crossed on a log as built; with a tail of two spacings, never
+ok 27 - toy (2-1's first river, normal): crossed on a log as built; with a tail of two spacings, never
+  ---
+  duration_ms: 3372.799709
+  type: 'test'
+  ...
+# Subtest: toy, normal: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+ok 28 - toy, normal: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+  ---
+  duration_ms: 120.573803
+  type: 'test'
+  ...
+# Subtest: toy (2-1's first river, easy): crossed on a log as built; with a tail of two spacings, never
+ok 29 - toy (2-1's first river, easy): crossed on a log as built; with a tail of two spacings, never
+  ---
+  duration_ms: 3111.295409
+  type: 'test'
+  ...
+# Subtest: toy, easy: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+ok 30 - toy, easy: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+  ---
+  duration_ms: 80.449316
+  type: 'test'
+  ...
+# Subtest: 2-4 (seed 1): beats 4 and 6 are never crossed on a log alone on Normal (the liana each is built on is the way); on Easy, ridden across
+ok 31 - 2-4 (seed 1): beats 4 and 6 are never crossed on a log alone on Normal (the liana each is built on is the way); on Easy, ridden across
+  ---
+  duration_ms: 2425.366774
+  type: 'test'
+  ...
+# Subtest: a tail is judged against the flown reach: riverFaults names a tail inside it, and passes one past it
+ok 32 - a tail is judged against the flown reach: riverFaults names a tail inside it, and passes one past it
+  ---
+  duration_ms: 0.967673
+  type: 'test'
+  ...
+# Subtest: World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way
+ok 33 - World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way
+  ---
+  duration_ms: 7733.823846
+  type: 'test'
+  ...
+# Subtest: 2-3: five little ones, each in a reed cage hung on a pulley over the water, lifted out by stones in its counter-basket
+ok 34 - 2-3: five little ones, each in a reed cage hung on a pulley over the water, lifted out by stones in its counter-basket
+  ---
+  duration_ms: 425.930488
+  type: 'test'
+  ...
+# Subtest: 2-8: reed cages hung on pulleys off the islands, in water that rises over them (and stops under the banks); stones thrown across
+ok 35 - 2-8: reed cages hung on pulleys off the islands, in water that rises over them (and stops under the banks); stones thrown across
+  ---
+  duration_ms: 73.298383
+  type: 'test'
+  ...
+# Subtest: 2-9: the court: guards (royal snappers) and snappers, about one and a half times the goal, a row close enough to bowl over
+ok 36 - 2-9: the court: guards (royal snappers) and snappers, about one and a half times the goal, a row close enough to bowl over
+  ---
+  duration_ms: 74.217277
+  type: 'test'
+  ...
+# Subtest: 2-7: steps up, porches, lifts up to ground a double jump cannot reach, swing frames, and the village at the end
+ok 37 - 2-7: steps up, porches, lifts up to ground a double jump cannot reach, swing frames, and the village at the end
+  ---
+  duration_ms: 352.774547
+  type: 'test'
+  ...
+# Subtest: 2-5: snappers, about one and a half times the goal, a row close enough for one kicked shell to bowl over
+ok 38 - 2-5: snappers, about one and a half times the goal, a row close enough for one kicked shell to bowl over
+  ---
+  duration_ms: 233.336477
+  type: 'test'
+  ...
+# Subtest: the snapper: head-on it hides, its shell is kicked away, and from behind (or open after a snap) the blow lands
+ok 39 - the snapper: head-on it hides, its shell is kicked away, and from behind (or open after a snap) the blow lands
+  ---
+  duration_ms: 0.263663
+  type: 'test'
+  ...
+# Subtest: 2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top
+ok 40 - 2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top
+  ---
+  duration_ms: 586.34641
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15010.267869

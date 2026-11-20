@@ -127,7 +127,8 @@ export function baseLook(p: Platform): ThinLook {
   if (p.type === 'fragile') return p.crumbleAfter !== undefined ? 'ruin' : 'plank';
   if (p.type === 'bouncy') return 'toadstool';
   if (p.type === 'moving') return 'raft';
-  if (p.type === 'drift') return 'drift';
+  // (a river of rafts, RiverRow.look 'raft' (R-165.288): its carriers are the raft itself, drawn by the raft painter, never a log)
+  if (p.type === 'drift') return p.drift?.look === 'raft' ? 'raft' : 'drift';
   switch (p.style) {
     case 'fungus_shelf': return 'shelf';
     case 'canopy_bridge': return 'bridge';
@@ -161,10 +162,10 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
   const looks: ThinLook[] = thin.map(baseLook);
   const n = thin.length;
   // fragile platforms (and bounce plants) take turns among their faces, so a run of them is never one repeated shape
-  const rotate = (from: ThinLook, family: ThinLook[], salt: number) => {
+  const rotate = (from: ThinLook, family: ThinLook[], salt: number, keep?: (p: Platform) => boolean) => {
     let last: ThinLook | null = null;
     for (let i = 0; i < n; i++) {
-      if (looks[i] !== from) continue;
+      if (looks[i] !== from || keep?.(thin[i])) continue;
       const opts = family.filter((k) => k !== last && !(i > 0 && looks[i - 1] === k));
       const pick = opts[Math.floor(h01(thin[i].id, world, salt) * opts.length) % opts.length];
       looks[i] = pick;
@@ -173,7 +174,7 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
   };
   rotate('plank', FRAGILE_LOOKS, 23);
   rotate('toadstool', BOUNCE_LOOKS, 29);
-  rotate('raft', RAFT_LOOKS, 31);
+  rotate('raft', RAFT_LOOKS, 31, (p) => p.type === 'drift');
   rotate('drift', DRIFT_LOOKS, 37);
   // the world's own material takes its share of the ordinary stepping platforms (chosen by hash, so it never changes between visits)
   const sig = SIGNATURE[world];

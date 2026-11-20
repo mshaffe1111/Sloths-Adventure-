@@ -1,0 +1,5 @@
+== npx tsx tools/difficulty/score.ts --stages 2-4 --seeds 1-4 --settings normal,easy (head 69341ec26) start 5:27 PM
+2-4 normal score   NaN (NaN-NaN over 4 layouts)  4 min  points 24.549999999999997  mean 6.1/min  peak 25.85/min  {"single":39,"catch":7,"liana-drop":7,"ride-board":1,"ride-off":1,"swing":5,"double":2} route extended
+2-4 easy   score   NaN (NaN-NaN over 4 layouts)  4.06 min  points 20.700000000000003  mean 5.1/min  peak 18.450000000000003/min  {"single":40,"catch":8,"liana-drop":5,"swing":7,"ride-board":1,"ride-off":1,"double":1} route extended
+SCALE NaN (1 meter point = NaN raw points a minute)
+exit 0 end 5:27 PM

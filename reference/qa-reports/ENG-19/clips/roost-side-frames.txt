@@ -1,0 +1,77 @@
+f0000.jpg step 0 x 143 vx 87 hp 5 boa rest slow 0
+f0001.jpg step 2 x 157 vx 260 hp 5 boa rest slow 0
+f0002.jpg step 4 x 176 vx 268 hp 5 boa rest slow 0
+f0003.jpg step 6 x 194 vx 268 hp 5 boa rest slow 0
+f0004.jpg step 8 x 213 vx 268 hp 5 boa rest slow 0
+f0005.jpg step 10 x 231 vx 268 hp 5 boa rest slow 0
+f0006.jpg step 12 x 249 vx 268 hp 5 boa rest slow 0
+f0007.jpg step 14 x 268 vx 268 hp 5 boa rest slow 0
+f0008.jpg step 16 x 286 vx 268 hp 5 boa rest slow 0
+f0009.jpg step 18 x 305 vx 268 hp 5 boa rest slow 0
+f0010.jpg step 20 x 323 vx 268 hp 5 boa rest slow 0
+f0011.jpg step 22 x 342 vx 268 hp 5 boa rest slow 0
+f0012.jpg step 24 x 360 vx 268 hp 5 boa rest slow 0
+f0013.jpg step 26 x 378 vx 268 hp 5 boa rest slow 0
+f0014.jpg step 28 x 397 vx 268 hp 5 boa rest slow 0
+f0015.jpg step 30 x 415 vx 268 hp 5 boa rest slow 0
+f0016.jpg step 32 x 434 vx 268 hp 5 boa rest slow 0
+f0017.jpg step 34 x 452 vx 268 hp 5 boa rest slow 0
+f0018.jpg step 36 x 471 vx 268 hp 5 boa rest slow 0
+f0019.jpg step 38 x 489 vx 268 hp 5 boa rest slow 0
+f0020.jpg step 40 x 507 vx 268 hp 5 boa rest slow 0
+f0021.jpg step 42 x 526 vx 268 hp 5 boa rest slow 0
+f0022.jpg step 44 x 544 vx 268 hp 5 boa rest slow 0
+f0023.jpg step 46 x 563 vx 268 hp 5 boa rest slow 0
+f0024.jpg step 48 x 581 vx 268 hp 5 boa rest slow 0
+f0025.jpg step 50 x 599 vx 268 hp 5 boa rest slow 0
+f0026.jpg step 52 x 618 vx 268 hp 5 boa rest slow 0
+f0027.jpg step 54 x 636 vx 268 hp 5 boa tell slow 0
+BEATEN by lure at step 55
+f0028.jpg step 56 x 655 vx 268 hp 5 boa flee beaten:lure slow 0
+f0029.jpg step 58 x 673 vx 268 hp 5 boa flee beaten:lure slow 0
+f0030.jpg step 60 x 680 vx 41 hp 5 boa flee beaten:lure slow 0
+f0031.jpg step 62 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0032.jpg step 64 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0033.jpg step 66 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0034.jpg step 68 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0035.jpg step 70 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0036.jpg step 72 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0037.jpg step 74 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0038.jpg step 76 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0039.jpg step 78 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0040.jpg step 80 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0041.jpg step 82 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0042.jpg step 84 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0043.jpg step 86 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0044.jpg step 88 x 680 vx 0 hp 5 boa flee beaten:lure slow 0
+f0045.jpg step 90 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0046.jpg step 92 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0047.jpg step 94 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0048.jpg step 96 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0049.jpg step 98 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0050.jpg step 100 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0051.jpg step 102 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0052.jpg step 104 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0053.jpg step 106 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0054.jpg step 108 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0055.jpg step 110 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0056.jpg step 112 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0057.jpg step 114 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0058.jpg step 116 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0059.jpg step 118 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0060.jpg step 120 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0061.jpg step 122 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0062.jpg step 124 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0063.jpg step 126 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0064.jpg step 128 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0065.jpg step 130 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0066.jpg step 132 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0067.jpg step 134 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0068.jpg step 136 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0069.jpg step 138 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0070.jpg step 140 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0071.jpg step 142 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0072.jpg step 144 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0073.jpg step 146 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+f0074.jpg step 148 x 680 vx 0 hp 5 boa gone beaten:lure slow 0
+END hp 5/5 beaten lure

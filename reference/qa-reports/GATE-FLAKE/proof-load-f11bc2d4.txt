@@ -1,0 +1,2 @@
+clip load run 1 exit 2 1066 s at 10:35:53 PM : FAIL: some screens could not be opened (83 known) (1065 s; contact sheet and breaches.json in /tmp/claude-0/-home-user-Sloths-Adventure-/a0959451-3679-52bc-b531-cd87c8d23fb5/scratchpad/cc-load-1)
+speed load run 1 exit 0 18 s at 10:36:11 PM : # pass 2 # fail 0  

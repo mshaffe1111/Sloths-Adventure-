@@ -1,0 +1,13 @@
+// usage: tsx skillx.mts <skill|none> <bot> <setting> <stage> <from> <to>
+import '/home/user/w285probe/src/game/headlessDom.ts';
+import { SKILLS } from '/home/user/w285probe/tools/inspect/firsttimer.ts';
+import { CAST_BOTS } from '/home/user/w285probe/tools/inspect/castBots.ts';
+import { firstTimer } from '/home/user/w285probe/tools/inspect/firsttimer.ts';
+const [skill, bot, setting, stage, from, to] = process.argv.slice(2);
+if (skill !== 'none') (SKILLS as any)[skill] = false;
+for (let s = Number(from); s <= Number(to); s++) {
+  const t0 = Date.now();
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true });
+  const lives = r.harms.filter((h: any) => h.kind === 'life');
+  console.log(JSON.stringify({ skill, bot, setting, stage, seed: s, end: r.end, rescues: r.rescues, lives: lives.length, time: r.time, lx: lives.map((h: any) => [+h.t.toFixed(1), Math.round(h.x), Math.round(h.y)]), ms: Date.now() - t0 }));
+}

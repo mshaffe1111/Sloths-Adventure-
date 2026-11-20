@@ -14,6 +14,12 @@ check the table, and recommit `calibration-main.jsonl` in the same change.
 `calibration-0.9.5.jsonl`. On the new layout the table no longer matches the testers' profiles, by design (no life lost in 1-1; put-backs a
 run 0.05-2.05 against the testers' 1.5-3.8): the bots stand as calibrated on 0.9.5 until a play window on the new 1-1 re-measures them.
 
+**11-18, INT-12 (ENG-24's run row, 2:54 PM ET):** recommitted because ENG-24 (t-eng-24@b0e94c85) added `ontoLog`/`fromLog` to every run row (tierBots.ts:39-40) without recommitting; the re-run (the command above) is line-for-line identical to the old file except those two fields, 0 in all 200 runs: no run moved (the table unchanged).
+
+**11-19, INT-13b (t-build-24c's merge, 5:59 PM ET):** recommitted: ONE run of 200 moved, child Easy variant 25 (finish 303.6 -> 303.5 s; one more second press, 31 -> 32; w1-canopy-rungs-level 33.5 -> 30 s, w1-last-step-up 18.5 -> 22 s, lives and put-backs unchanged). Bisected with `tierBots.ts --tiers child --seeds 25 --setting easy`: main 6e7b85f8, INT-13's prep baf5d277, after ENG-285 29865500 and FIX-284 e95bed18 give 303.6; t-build-24c ALONE (98261a27) and the merge f993eb31 give 303.5, so t-build-24c's own change moved it and its branch did not recommit (tierBots.test replays three variants a tier and setting, and 25 is not one of them, so BUILD-24e's tierBots.test passed). The calibration and pieceSeconds rows are identical: the table unchanged.
+
+**11-19, ENG-SMALL3 (R-165.317):** the pin now holds as written: `tierBots.test.ts` replays EVERY committed run (all 200, variants 1-40 of each tier and setting), not three variants a tier, and names each moved run with its fields; planted with BUILD-24c's case (child Easy variant 25 moved). About 4 min.
+
 ## Mapping: every field, its value, its source
 
 | Field | child N / child E | middle N / middle E | expert N | Source |

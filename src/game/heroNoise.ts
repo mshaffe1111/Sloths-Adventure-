@@ -1,7 +1,8 @@
 /**
  * heroNoise — the noise Pokey makes (GAME-MAP B10), the partner of stillness (stillness.ts): a hard landing, a punch, a break, and the
  * drum. Each is an event with a place, a time and a radius; a sleeper inside the radius wakes. What keeps a sleeper asleep is what
- * makes no event at all: holding still, a soft landing, catching a vine.
+ * makes no event at all: holding still, a soft landing, a landing on quiet ground (moss: Platform.quiet), catching a vine. Every event
+ * reaches a stage's cast on one channel (castPlay.ts noise; ENG-NOISE).
  *
  * The drum is the loud tool on purpose: it stuns every awake predator in its radius for a set time (and wakes any sleeper there).
  *
@@ -36,9 +37,13 @@ export interface Sound {
   from: 'landing' | 'punch' | 'break' | 'drum' | 'thrown' | 'bell';
 }
 
-/** the noise of a landing after a fall of `fell` px, or null when it was soft */
-export function landingNoise(x: number, y: number, t: number, fell: number): Sound | null {
+/**
+ * the noise of a landing after a fall of `fell` px onto `ground` (the platform he landed on), or null when it was soft or the ground
+ * is quiet (Platform.quiet: moss takes any fall without a sound, ENG-NOISE)
+ */
+export function landingNoise(x: number, y: number, t: number, fell: number, ground?: { quiet?: boolean } | null): Sound | null {
   const L = LOUD.landing;
+  if (ground?.quiet) return null;
   return fell > L.soft ? { x, y, t, r: Math.min(L.max, L.min + (fell - L.soft) * L.perPx), from: 'landing' } : null;
 }
 export const punchNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.punch.r, from: 'punch' });

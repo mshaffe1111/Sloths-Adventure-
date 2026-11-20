@@ -8,6 +8,7 @@
  * walk to (`stand`, `hang`, `climb`) and it keeps him from being hurt (a rock or a dive costs time, never the way on). A fall into the
  * water, the mist or a pit is noted (`died`) and ends the move instead of sending him back to a flag.
  */
+import { InputEngine } from './inputEngine.ts';
 import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
 import { helpLineOnScreen } from './helpLadder.ts';
@@ -181,6 +182,24 @@ export class RealPlay {
     // reaches it without asking for it answers no, so play goes on. A test of the offer sets its own helpAsk, helpLadder11.test.ts)
     if ('helpAsk' in e) e.helpAsk = (_o: unknown, answer: (yes: boolean) => void) => answer(false);
     e.inputGrace = 0;
+    // (each cast animal's own fields as the stage starts, for calmCast: its kit state, `kit`, is rebuilt, never copied)
+    if (e.cast) this.castAtStart = (e.enemies as Array<Record<string, unknown>>).map((en) => [en, Object.fromEntries(Object.entries(en).filter(([k, v]) => k !== 'kit' && (v === null || typeof v !== 'object')))] as const);
+  }
+
+  private castAtStart: ReadonlyArray<readonly [Record<string, unknown>, Record<string, unknown>]> = [];
+
+  /**
+   * The stage's cast (castPlay.ts) back as the stage starts it: every cast animal on its own post, at rest, nothing told or striking, as
+   * the engine's startCast lays it. For a test whose trials stand him at one place after another on ONE sim (plainWalk's one-jump steps),
+   * so an animal's tell or dive begun at one trial never lands in the next one, where he was never really moved from (R-165.328, VAR-19e:
+   * the hunters' eagle saw him at the face inside its rounds, its dive followed him to the next face, by design, predator-kit.md "The dive
+   * follows him"). An animal the stage has already taken out of its list stays out. No cast: nothing.
+   */
+  calmCast(): void {
+    const e = this.e;
+    if (!e.cast) return;
+    for (const [en, at] of this.castAtStart) Object.assign(en, at);
+    e.startCast();
   }
 
   get p(): PlayerState {
@@ -295,8 +314,37 @@ export class RealPlay {
     this.e.vineClock = t;
   }
 
+  /**
+   * TEST: drive the engine through the game's own InputEngine from now on (ENG-24; DESIGN-24-25 R-165.284), as the phone's touch layer
+   * does (TouchController.tsx): a direction is triggerTouchMove, a jump press is triggerTouchUp with the touch's minimum hold (inputEngine.ts
+   * MIN_TOUCH_JUMP_HOLD_MS from the take-off, or the Pad button's PAD_HOP_MS: `holdMs`), lifting the thumb is releaseTouchUp, a climb is
+   * triggerTouchClimb. FakeInput's bare press is a hop no thumb makes (0.30 s / 83 px / 30 px up): a touch flick is a full jump by design
+   * (0.63 s / 175 px / 97 px up) and the Pad button's tap the shortest real hop (0.43 s / 119 px / 62 px up): gen2 rideLay PAD_HOP, flown
+   */
+  useRealInput(holdMs?: number): InputEngine {
+    const inp = new InputEngine();
+    this.real = { inp, holdMs, last: { dir: 0, climb: 0, jump: false } };
+    this.e.input = inp;
+    return inp;
+  }
+  private real: { inp: InputEngine; holdMs?: number; last: { dir: number; climb: number; jump: boolean } } | null = null;
+
   /** one frame with these controls */
   frame(pad: Pad = {}) {
+    if (this.real) {
+      const { inp, holdMs, last } = this.real;
+      const dir = pad.left && !pad.right ? -1 : pad.right && !pad.left ? 1 : 0;
+      if (dir !== last.dir) inp.triggerTouchMove(dir > 0 ? 'right' : dir < 0 ? 'left' : 'none');
+      const climb = pad.down ? 1 : pad.up && !pad.jump && !pad.press ? -1 : 0;
+      if (climb !== last.climb) inp.triggerTouchClimb(climb as -1 | 0 | 1);
+      if (pad.press) inp.triggerTouchUp(0, holdMs);
+      else if (last.jump && !pad.jump) inp.releaseTouchUp();
+      this.real.last = { dir, climb, jump: !!pad.jump || !!pad.press };
+      if (this.safe) this.p.invincibleTimer = Math.max(this.p.invincibleTimer, 1e9);
+      this.placed = false;
+      this.e.update(DT);
+      return;
+    }
     const s = this.input.state;
     const inp = this.input;
     const dir = pad.left && !pad.right ? -1 : pad.right && !pad.left ? 1 : 0;

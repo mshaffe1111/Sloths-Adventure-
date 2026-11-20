@@ -1,0 +1,21 @@
+== lockall --layouts 16 --intended 2-4 --check lock-main.json (main 6e7b85f8 lock, written 4:23-4:32 PM) head 8c80eab39 start 4:33 PM
+lock: 85/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9
+  1-6: size, platforms, vines, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, heartFalls, gen2, easyGoal, normalGoal, proto.hints, proto.beats, proto.gen2, proto.dress
+  1-7: size, platforms, vines, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, gen2, proto.hints, proto.beats, proto.bushes, proto.gen2, proto.dress
+  1-8: proto.gen2, gen2
+  1-9: size, platforms, ropes, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, gen2, easyGoal, normalGoal, easyToday, proto.hints, proto.beats, proto.cast, proto.bushes, proto.gen2, proto.dress, waterY, proto.movedPickups, proto.ring, trees, vines
+  2-1: proto.hints, proto.gen2
+  2-2: proto.hints
+  2-4 (intended): size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress, waterSigns, proto.movedPickups, enemies
+  3-8: proto.thorns
+  4-4: size, platforms, vines, collectibles, exitTotemX, checkpoints, zones, proto.hints, proto.covers, proto.beats, proto.w4, proto.kitDecor, proto.dress, trees
+  6-1: gen2, proto.gen2, collectibles, size, platforms, vines, exitTotemX, exitTotemY, checkpoints, proto.beats, proto.dress, proto.hints
+  6-3: gen2, proto.gen2, collectibles
+  6-6: gen2, proto.gen2, collectibles
+  6-7: gen2, proto.gen2, collectibles
+  7-5: proto.gen2, gen2, size, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, proto.beats, proto.dress
+  7-9: gen2, proto.gen2, collectibles
+  8-3: gen2, proto.gen2, collectibles
+  8-5: collectibles, gen2, proto.gen2
+exit 1 end 4:41 PM

@@ -32,12 +32,23 @@ import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, So
 import { hash01 } from '../stillLay.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
+import type { FollowRow } from '../../follow.ts';
+import type { WheelRow } from '../wheelLay.ts';
 import { W1_KIT } from './w1.ts';
 import { W1_LIANA_GAP } from './w1Swing.ts';
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
 export const W2_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
 type R2 = [number, number];
+
+/**
+ * World 2's little ones that follow him home (2-3 "Walk Them Home", reference/design/2-3.md "follow.ts: the engine packet's contract":
+ * `FOLLOW = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60 }`, flown in reference/specs/sims/follow23.ts). `home`
+ * is the lead's number (ENG-23, ruled 2:10 PM ET 11-18; to be flown on the real 2-3 by its builder): a bunched five stands 170 px behind
+ * him (5 x 34), so at the door all five are past the families' jetty 200 px before it. `step`: they follow him down a step up to a
+ * bank's depth (the lead's ruling 3:01 PM ET 11-18: a stair, a bank's lip); deeper, they wait at the lip. A stage lays it as proto.follow.
+ */
+export const W2_FOLLOW: FollowRow = { pace: { normal: 190, easy: 230 }, gap: 34, scamper: 300, rejoin: 60, home: 200, step: W2_GROUND.bankH };
 
 /**
  * The inventory rows World 2's pieces are drawn as (src/game/art/inventory/w2.json; the engine's World 2 kit painter and river art draw
@@ -59,12 +70,13 @@ export const W2_ART = {
 export const W2_LESSON = { river: 'river', stones: 'stones' } as const;
 
 /**
- * Dot's words in World 2's kit: the story keeper's only (level.md rule 17). `water` is the keeper's approved 2-1 line for the deep river
- * (reference/story/lines-2-1.md `deep`, t-story@50da9e58, approved about 8:20 PM ET 11-14): the pipeline says it before the first deep
- * river (WATER_WARN), as Dot's warning before water in every world. w2.test.ts holds it equal to the keeper's file's words.
+ * Dot's words in World 2's kit: the story keeper's only (level.md rule 17). `water` is the keeper's World 2 line for deep water
+ * (reference/story/lines-2-1.md `deep`; its words replaced world-wide by KEEPER-24, lines-2-4.md conflict 1, 11-18: "Stay on the logs!"
+ * was false at 2-4's beat 6, where he must leave the logs for the vines): the pipeline says it before the first deep river (WATER_WARN),
+ * as Dot's warning before water in every world. w2.test.ts holds it equal to the keeper's file's words.
  */
 export const W2_TIPS: Record<string, string> = {
-  water: 'This river\'s deep. Stay on the logs!',
+  water: 'This river\'s deep. Don\'t touch the water!',
 };
 
 /**
@@ -85,8 +97,9 @@ export const W2_RIVERS = {
 
 /**
  * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).
- * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: a tap hop's 83 px edge to edge in the
- * teach, up to a held jump's reach (PAD_FAIR.reach) after.
+ * Starting rows for the 2-2 builder, each passing padFaults; the builder tunes them by data. Gaps: well under the shortest hop a player
+ * makes (rideLay PAD_HOP.pad, the Pad button's 119 px; a touch flick is a full jump, 175 px) in the teach, up to a held jump's reach
+ * (PAD_FAIR.reach) after.
  */
 export const W2_PADS = {
   /** beat 1: one big pad over shallow water at the bank: he stands, it shivers and sinks, he splashes back and watches it come up */
@@ -101,6 +114,27 @@ export const W2_PADS = {
   /** beats 9 and 12: deep water, held jumps between the sizes */
   deep: { by: 'weight', pads: ['small', 'big', 'small'], gap: 120, petals: [0, 2] },
 } as const satisfies Record<string, PadRow>;
+
+/**
+ * World 2's water wheels (ENG-26; place `wheel` names a row; wheelLay.ts layWheel): 2-6's norias by its design (reference/design/2-6.md,
+ * "The wheel, FLOWN" and the arc), every row flown on the real engine (wheelFlights.data.ts; wheelFaults holds each to it). Buckets 120 px,
+ * the jetty's and the street's lips a log's step (28 px) from the bucket floor (wheel.ts WHEEL). Easy's rim speed is the flown V50-60
+ * (2-6.md: "Easy V x 0.85 (V50-60)"), V50 where Easy steps off by a walk at the sweep's edge.
+ */
+export const W2_WHEELS = {
+  /** beat 1, the teach: the street reaches in over the top (the buckets pass behind it: he is set down on it), the pond under it */
+  teach: { R: 160, V: 60, easyV: 50, N: 6, street: 'in' },
+  /** beat 5: the street at the sweep's edge, a step off as the bucket comes level (a miss rides round). Easy V50 (ENG-26b): Easy's floor
+   *  is the WALK-off (wheelLay.ts stepFault), flown 2.63 s a turn at V50 (2.2 s at V60) */
+  edge: { R: 180, V: 70, easyV: 50, N: 6, street: 'edge' },
+  /** beat 8, the twist: the street 80 px ABOVE the top bucket (Easy 60): only a jump off the top reaches it */
+  top: { R: 180, V: 70, easyV: 60, N: 6, street: 'up', up: { normal: 80, easy: 60 } },
+  /** beat 12, the great wheel: the last bank, the street in over the top */
+  great: { R: 200, V: 70, easyV: 60, N: 6, street: 'in' },
+} as const satisfies Record<string, WheelRow>;
+/** the stage World 2's wheels are flown on (wheelFlights.ts flyWheel: its RealPlay, the stage's own help in the flight): 2-6, the level of
+ *  the norias (reference/design/2-6.md) */
+export const W2_WHEEL_STAGE = '2-6';
 
 // ───────────────────────────── World 2's lianas (BUILD-21; as w1Swing.ts is World 1's) ─────────────────────────────
 /**

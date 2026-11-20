@@ -43,7 +43,8 @@ export const TYPE_OF_LETTER: Readonly<Partial<Record<string, ContentType>>> = {
 
 /** a content letter laid by what a node's sections FILL, not by the deal's section type: the prop tag a node asking for it must have
  *  laid at least one of (m: cover, World 1's hides through stillLay.ts, 1-7's 'Tm<': a bush, a moss carpet, a patch, hanging moss) */
-export const FILL_LETTER: Readonly<Record<string, string>> = { m: 'hide' };
+// (l, the lure: a node holds it where a lure target was laid in it, a prop tagged 'lure' (gen2/lureLay.ts LURE_TAG; nodeLetters.test))
+export const FILL_LETTER: Readonly<Record<string, string>> = { m: 'hide', l: 'lure' };
 
 /** the building blocks with no emitter in this tree yet, and where each is built (packet NODES-2: named, never dropped; the one
  *  letter table's `unlaid` rows, nodeLetters.ts) */

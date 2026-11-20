@@ -1,7 +1,42 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-15 12:49 PM ET (ART-W2: World 2 river/pond pieces cut, catalogued; nothing wired)
+# Hand-off: the art director role (Content), merged at INT-13 2026-11-19: ART-22P (§0g-22p, 2-2's lavender hyacinth petal, wired), ART-W2A (§0g-w2a, 2-3's follow poses painted and wired) and ART-W2B (§0h, 2-6's noria painted and wired) wrote the same day; before them 2026-11-15 (ART-W2)
 
-Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last tasks: ART-W2B (§0h), ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0h. 11-18 ART-W2B (t-art-w2b): 2-6's noria painted and wired (rim + spokes, bucket dry/spilling, millrace wall); $1.15 of $4
+- Route: ONE HF sandbox, Qwen-Image-Edit-2511 (no LoRA) from GEOMETRY PASTE-UPS on flat grey (tools/art/hfw2b/starts.py: exact 6 spokes, the
+  120 px trough at 7x) with World 2's own wood (jetty, ladder, lashed frame) as the 2nd image: the painter matched first time, the geometry
+  held. Spill = an edit OF the picked dry take (one cell). Cut in the sandbox (hfw2b/cut.py = hfw2a's), packed by tools/art/hfw2b/ship.py,
+  catalogued by hfw2b/catalog.py (part W2B, 5 rows) then `catalog_master.py --emit`. Takes/cuts: reference/art/hfw2b/.
+- Fetch lean: never `cat` a small file from the sandbox (it lands IN context: ~10k tokens for a 24 KB jpg); always `python sbx.py parts`
+  (95 KB padded parts are saved to files) and rebuild with hf1113/pull.py. Pick from a JPEG contact sheet first, then tar only the cut picks.
+- Traps: a take whose splash pool is cropped leaves a faint spray crown joined by low alpha (keep only the stream's columns near the foot:
+  ship.py BAND); catalog rows copied from a template carry its walk line: set walk_y/x0/x1 per piece (inventory.test "footing inside image").
+- Open: the 2-7 half of ART-W2B (boat, letter, door, weir).
+
+## 0g-w2a. 11-18 ART-W2A (t-art-w2a): 2-3's follow poses painted and WIRED (10 pieces, ~$2.11 HF)
+- duck/otter/capy WalkA (stride) + WalkB (passing) + Paddle on w2-props (W2_FRAMES), w2HeronLook on dressnew-w2; catalog part W2A.
+- **Route that worked for new POSES of an existing character:** Qwen-Image-Edit-2511 (tools/art/hfpokey/pokeygpu.py edits, no LoRA)
+  from the shipped piece on flat grey, 1024 square; ~53 s a take; 3 seeds a pose. Starts: tools/art/hfw2a/starts.py; specs:
+  make_spec.py rounds 1-3; one sandbox, rounds queued (run.sh <commit> <round>); cut in the sandbox (cut.py), back as tar parts
+  (sbx.py parts + hfw2/fetch.py). Pack: pack.py (colour gain to the Happy pose; the heron registered on w2Heron's post).
+- **Trap 1:** "the same animal one step later, other foot forward" came back as the SAME frame (12 takes, ~$0.55 wasted). Ask for the
+  PASSING pose (legs together under the body, body up) instead: the model does that, and it is the classic second frame.
+- **Trap 2:** keying grey trapped inside an outline at the normal tol (26) punched holes in a grey wooden post; key only FLAT grey (tol 9).
+- **Trap 3:** a mean colour match on a pose that shows less chest (a swimming otter) is skewed: paddles reuse the walk frame's gain.
+
+## 0g-22p. 11-18 ART-22P (t-art-22p): 2-2's pickup is a painted lavender water-hyacinth petal (FIX-22 story fault), WIRED
+- src/assets/pickups/petal-hyacinth.webp (91x96, the shipped petal's size); catalog row hf22p/petal-hyacinth (part H22P, cast.json);
+  stagePlan 2-2 `looks.petal`; the HUD counter follows StageSpec.looks too (goalInfo.ts), so 1-5-style own looks show in the HUD.
+- Method that worked: img2img FROM THE SHIPPED PIECE recoloured (tools/art/hf22p/starts.py: hue-turn the body, keep the warm base)
+  on grey 128, s58: keeps shape, veins, edge weight and shading, so it sits beside the old petal in one style. Text to image (LoRA 0.8)
+  gave flat sticker petals with heavy black outlines (reference/art/hf22p/takes-sheet-t2i.jpg): off-style for a pickup family.
+- White lily (i-white-s58-23) was shot in game and lost: it melts into the pickups' cream glow and the cream sky (REPORT stills).
+- Cut: tools/art/hf22p/cut.py (border-flood grey key, alpha from distance to grey, rim colour un-mixed from the grey, long side 96).
+- Route: one sandbox, run.sh <commit>, crops by crop.py, back by hf_sandbox_fs cat .pN (saved to tool-results) + hfw2/fetch.py.
+- World 2's drifting petals: src/assets/flora/petals-river.webp (12 frames, petalData RIVER_PETALS), a world picks its set by
+  scenery.ts Look.petals (petalSprites PETAL_SETS). Re-cut: drift.py <take> <out> <frames.json> (7 a row: 8 clipped past 512 px).
+  A new world set = a paste-up (driftstart.py pattern), img2img s52, drift.py, a PETAL_SETS row, the look's `petals`, catalog rows.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).

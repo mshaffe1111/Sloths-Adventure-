@@ -408,3 +408,31 @@ test('in the pit past a crumbled creaky limb he climbs the stair, takes the next
     assert.ok(run.sim.p.x > 1562 && run.sim.p.y < 870, `${who.name} from x ${x}: ends at x ${Math.round(run.sim.p.x)} y ${Math.round(run.sim.p.y)}, not on the far bank`);
   }
 });
+
+/**
+ * BUILD-24b (2-4, 11-18): set down by the GAME (a respawn at a flag, a river's splash-back), his place along the way is found where he
+ * now stands and a climb back read off where he was is over. The respawn's relocate read the spot he drowned at, a frame before the game
+ * moved him to the flag (Easy's splash-back never relocated at all): 900 px off the way, under a liana's catch, pitWayBack set a 20 s climb
+ * back the wrong way, and 8 calibrated-tier runs of 2-4 were rescued for it (middle Normal seed 12: drowned at x 21557, put at the flag
+ * 20660, walked back to 16809). A toy: his place read at x 3000 (where he "drowned") with a climb back toward the stair, then the game
+ * stands him on the far bank at 1700. RED without the set-down: he walks back left toward the pit.
+ */
+test('set down by the game, he finds his place where he stands and a stale climb back is dropped: he goes on, never back', () => {
+  for (const who of [FT_MIDDLE, FT_CHILD]) {
+    const run = new FirstTimerRun('1-1', 1, who, { route: ROUTE, cap: 4, rescueAfter: 100 });
+    run.sim.bare(PLATS());
+    run.sim.stand(3000, BANK);
+    run.prog.relocate(run.sim.p);
+    const bot = run as unknown as { climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null; lastX: number; lastY: number; t: number; frames: number };
+    // (mid-run, as a drowning is: the run's first frame is not read as a set-down, its last place is the harness's own)
+    bot.frames = 30;
+    bot.lastX = 3000;
+    bot.lastY = BANK;
+    bot.climbBack = { path: PLATS().slice(1, 5), dir: -1, t: bot.t };
+    // (the game moves him: no bot call, as the engine's respawn and a river's splash-back do)
+    run.sim.stand(1700, BANK);
+    run.play();
+    assert.equal(bot.climbBack, null, `${who.name}: the climb back read off where he was is over`);
+    assert.ok(run.sim.p.x > 1800, `${who.name}: he goes on from where he was set down (x ${Math.round(run.sim.p.x)})`);
+  }
+});

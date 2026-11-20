@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+not ok 1 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+  ---
+  duration_ms: 4918.145364
+  type: 'test'
+  location: '/home/user/w285/tools/inspect/riverRideRed2.test.ts:202:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, 0 more lives (at least 5): on child normal seed 4: shrine, rescues 0, lives 1, stuck []; off child normal seed 4: shrine, rescues 0, lives 1, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/w285/tools/inspect/riverRideRed2.test.ts:212:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/w285/tools/inspect/riverRideRed2.test.ts:210:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5768.4155

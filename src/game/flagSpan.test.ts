@@ -14,6 +14,19 @@ import { SAFE_APPROACH } from './levelCheck.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 
 const across = generateAllLevels().filter((c) => !c.secret && (HAND_STAGES[c.id] || W2_STAGES[c.id]) && c.objectiveType !== 'ascent');
+/**
+ * The walk this test owes, derived from the hand tables themselves (the lead's ruling 4:43 PM ET 11-18, BUILD-24b: the floor was a number
+ * edited each time a stage left for gen2: 30, 28, then 27 twice in one day (t-build-19, BUILD-24)). Every id in a hand table must be a
+ * level (a stale entry is named), every one that runs across (not secret, not an ascent) is walked, and the walk is never empty. A stage
+ * that leaves the tables for gen2 moves it with no number to edit; gen2's own verdict (rolledFlagBreaches) holds a rolled stage's flags.
+ */
+export function owedWalk(tables: ReadonlyArray<Record<string, unknown>>, levels: ReadonlyArray<{ id: string; secret?: unknown; objectiveType?: string }>): { owed: string[]; stale: string[] } {
+  const byId = new Map(levels.map((c) => [c.id, c]));
+  const ids = [...new Set(tables.flatMap((t) => Object.keys(t)))].sort();
+  const stale = ids.filter((id) => !byId.has(id));
+  const owed = ids.filter((id) => { const c = byId.get(id); return !!c && !c.secret && c.objectiveType !== 'ascent'; });
+  return { owed, stale };
+}
 const build = (c: (typeof across)[number], lay: number): GeneratedStage => (HAND_STAGES[c.id] ? buildProtoStage(c, lay, HAND_STAGES[c.id]) : buildW2Stage(c, lay, W2_STAGES[c.id]));
 const span = (st: GeneratedStage) => {
   const xs = [st.spawnX, ...(st.checkpoints ?? []).map((p) => p.x), st.exitTotemX].sort((a, b) => a - b);
@@ -24,8 +37,12 @@ const span = (st: GeneratedStage) => {
 
 test('LV-9: no more than 4000 px between flags on any hand-built stage, layouts 1-3, Normal and Easy', () => {
   // (the stages it walks: 28 since the hand-built 2-1 and 2-2 left for gen2 (ENG-W2 11-14, on link #5 by INT-11), where a rolled stage's
-  //  flags are held by gen2's own verdict, rolledFlagBreaches; it was 30. The floor keeps the walk from going quietly empty)
-  assert.ok(across.length >= 28, `${across.length} stages`);
+  //  flags are held by gen2's own verdict, rolledFlagBreaches; it was 30. The walk is kept from going quietly empty: the
+  //  floor now follows the hand tables, owedWalk: 1-9 (BUILD-19) and 2-4 (BUILD-24) leaving for gen2 move it with no edit here)
+  const { owed, stale } = owedWalk([HAND_STAGES, W2_STAGES], generateAllLevels());
+  assert.deepEqual(stale, [], 'hand-table ids that are no level');
+  assert.ok(owed.length > 0, 'the walk is empty');
+  assert.deepEqual(across.map((c) => c.id).sort(), owed, 'the walk is every hand-built stage that runs across');
   let longest = 0;
   for (const c of across) {
     for (const lay of [1, 2, 3]) {
@@ -52,4 +69,14 @@ test('LV-9: no more than 4000 px between flags on any hand-built stage, layouts 
     }
   }
   assert.ok(longest > 3000, 'the stages are long enough for this to mean something');
+});
+
+test('the walk owed is derived from the hand tables: a stale id is named, an empty walk and a lost stage are caught (planted)', () => {
+  const levels = [{ id: 'a-1' }, { id: 'a-2', objectiveType: 'ascent' }, { id: 'a-3', secret: true }, { id: 'a-4' }];
+  assert.deepEqual(owedWalk([{ 'a-1': 1, 'a-2': 1 }, { 'a-3': 1, 'a-4': 1 }], levels), { owed: ['a-1', 'a-4'], stale: [] });
+  // (planted: an id no level has is stale; a table emptied by a move to gen2 owes nothing, so the test's own `owed.length > 0` is red)
+  assert.deepEqual(owedWalk([{ 'a-1': 1, 'z-9': 1 }], levels).stale, ['z-9']);
+  assert.deepEqual(owedWalk([{}, {}], levels).owed, []);
+  // (planted: a walk that lost a stage the tables still hold differs from what is owed)
+  assert.notDeepEqual(['a-1'], owedWalk([{ 'a-1': 1, 'a-4': 1 }], levels).owed);
 });

@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: the join: two soft floors either side of a perch with no earth under it are joined at the deeper floor; earth, width or depth keep them apart
+ok 1 - the join: two soft floors either side of a perch with no earth under it are joined at the deeper floor; earth, width or depth keep them apart
+  ---
+  duration_ms: 1.543978
+  type: 'test'
+  ...
+# Subtest: the fill to a bank: a floor whose lip has a perch over a hole up to the next bank reaches that bank; a pit's own stair is no bank
+ok 2 - the fill to a bank: a floor whose lip has a perch over a hole up to the next bank reaches that bank; a pit's own stair is no bank
+  ---
+  duration_ms: 0.396597
+  type: 'test'
+  ...
+# Subtest: joined soft-pit floors are ONE piece: no floor end inside a joined run, a stair starts inside its floor, the wall still stands
+ok 3 - joined soft-pit floors are ONE piece: no floor end inside a joined run, a stair starts inside its floor, the wall still stands
+  ---
+  duration_ms: 1.026838
+  type: 'test'
+  ...
+# Subtest: 1-6, every roll 1-6 on both settings: it builds, and no hole in the earth lies between two soft falls a perch apart, or beside one
+ok 4 - 1-6, every roll 1-6 on both settings: it builds, and no hole in the earth lies between two soft falls a perch apart, or beside one
+  ---
+  duration_ms: 18852.254396
+  type: 'test'
+  ...
+# Subtest: the wall: at the earlier floor's end, a face he cannot climb, never over the lip; none in a floor too shallow for one
+ok 5 - the wall: at the earlier floor's end, a face he cannot climb, never over the lip; none in a floor too shallow for one
+  ---
+  duration_ms: 1.02284
+  type: 'test'
+  ...
+# Subtest: 1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall, so the earlier pit's only way up is its own stair
+ok 6 - 1-6 rolls 1-4, both settings: every joined pair of soft pits has its wall, so the earlier pit's only way up is its own stair
+  ---
+  duration_ms: 13311.987807
+  type: 'test'
+  ...
+# Subtest: 1-6 as the game plays it, the rescue layouts, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back)
+ok 7 - 1-6 as the game plays it, the rescue layouts, both settings: every soft pit climbs back to its take-off, each rise a plain jump (the way back)
+  ---
+  duration_ms: 15124.771988
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28947.770065
+EXIT 0

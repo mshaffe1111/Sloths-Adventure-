@@ -1,0 +1,40 @@
+== child seed 14 Normal (fake input, d9b0854c)
+end time time 1200 x 10623 lives 
+fromLog 1 ontoLog 1 rescues 0 stuck []
+loops [{"x":10114,"y":865,"n":21,"doubles":88,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:359s 10000:267s 10250:263s 10750:209s 1000:5s 5250:5s 9750:5s 9250:5s 3000:4s 8750:4s
+== child seed 19 Normal (fake input, d9b0854c)
+end time time 1200 x 10317 lives 
+fromLog 2 ontoLog 1 rescues 0 stuck []
+loops [{"x":9965,"y":976,"n":16,"doubles":58,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false},{"x":10029,"y":976,"n":3,"doubles":19,"deaths":0,"what":"water ahead","step":null,"dip":null,"puzzle":false}]
+time by x (250 px buckets): 10500:370s 10250:337s 10000:245s 9750:105s 10750:37s 2250:8s 5000:7s 6000:6s 9250:5s 4500:5s
+== child seed 2 presses at beat 4 (VFL GO = the aim says all three lags catch; PEND = the press's drawn lag)
+PEND 15.63 lag 0.165 single
+PEND 16.47 lag 0.070 single
+PEND 26.77 lag 0.116 single
+PEND 30.73 lag 0.121 single
+PEND 35.70 lag 0.047 single
+PEND 36.70 lag 0.053 single
+PEND 39.43 lag 0.045 double
+PEND 58.43 lag 0.029 double
+PEND 72.20 lag 0.208 double
+PEND 73.13 lag 0.158 single
+VFL GO 81.43 7099 0.0 clock 81.43
+PEND 81.43 lag 0.222 single
+PEND 85.23 lag 0.175 single
+PEND 88.63 lag 0.030 double
+PEND 96.40 lag 0.060 single
+PEND 103.43 lag 0.092 single
+PEND 117.03 lag 0.092 double
+PEND 117.90 lag 0.089 single
+VFL GO 142.53 10859 0.0 clock 142.53
+PEND 142.53 lag 0.178 single
+VFL GO 154.00 10850 0.0 clock 154.00
+PEND 155.37 lag 0.138 double
+VFL GO 200.53 10856 0.0 clock 200.53
+PEND 200.53 lag 0.156 single
+VFL GO 209.10 10856 0.0 clock 209.10
+VFL GO 220.20 10865 0.0 clock 220.20
+PEND 220.20 lag 0.063 single
+PEND 221.47 lag 0.076 single
+PEND 222.67 lag 0.163 double

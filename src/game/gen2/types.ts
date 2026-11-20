@@ -227,6 +227,8 @@ export interface WorldManifest {
   rivers?: Readonly<Record<string, RiverRow>>;
   /** this world's pad table (place `pads` names a row): World 2's W2_PADS. A world with none lays no pads */
   pads?: Readonly<Record<string, import('./rideLay.ts').PadRow>>;
+  /** this world's water wheel table (place `wheel` names a row; ENG-26): World 2's W2_WHEELS. A world with none lays no wheel */
+  wheels?: Readonly<Record<string, import('./wheelLay.ts').WheelRow>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -330,7 +332,14 @@ export type PlaceRule =
    *  a high bank before it that he climbs back up to, by a vine), out of a double's reach from the stone; the way on is the rope hung from
    *  `rope` to it over the pond, so he goes out for the stone's flower, waits there for the pads, comes back and climbs. A spur row with
    *  no `rope`, a `rope` on a row that is no spur, or a ledge reaching over the pond fails the section by name */
-  | { kind: 'pads'; after: string; row: string; rope?: string };
+  | { kind: 'pads'; after: string; row: string; rope?: string }
+  /** a WATER WHEEL (ENG-26; wheelLay.ts; reference/design/2-6.md NEW 1): this piece is the STREET the wheel of the world's row `row`
+   *  (WorldManifest.wheels) lifts him to from the jetty `after`, on the way the section runs: the wheel stands between them, its axle where
+   *  a bucket's floor rises past the jetty's lip a log's step under it (wheel.ts WHEEL.drop), the street over the top where the row puts it
+   *  (wheelLay.ts streetFromJetty: at the sweep's edge, in over the top, or a jump above it), the pond under the sweep (a fall splashes him
+   *  back onto the jetty). No dy, no share: the row decides it all, so the laid wheel is the flown one (wheelFaults). A row the world lacks
+   *  fails the section by name */
+  | { kind: 'wheel'; after: string; row: string };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -371,6 +380,9 @@ export interface SectionPiece {
    * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
    */
   creak?: boolean;
+  /** QUIET ground (moss; ENG-NOISE, 3-5.md): the platform takes any landing without a sound (types.ts Platform.quiet). Play only: the
+   *  piece's look is its style or slot, never this */
+  quiet?: boolean;
   /**
    * a SEALED piece (a gate bough, 1-4's fig gates; R-165.170, the lead 11-13): in a tower the lay adds nothing of its own level with
    * it or within a hop of it: no run-on to a wall, no bridge, no catch shelf, and the section after it is always a storey up by a
