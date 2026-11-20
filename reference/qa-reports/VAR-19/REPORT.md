@@ -292,3 +292,76 @@ ground; no gap or overhang seen.
 - Lessons applied: prove a cause on a replay before changing data (R-165.328's w3 change proved unneeded and reverted); D30 (times from
   date); D36 (ls-remote = HEAD after each push); lock the branch base (VAR-19d's trap 3).
 - Misses: a 1.7 MB base lock file is committed in qa-reports (the next member needs it; delete it once lockall is read).
+
+## 11. VAR-19f (written 11:30 AM ET 11-20 by `date`; the gates, castBots and stills on one head; files in reference/qa-reports/VAR-19f/)
+Base 1c313657 (VAR-19e's final; data + list e2769e09). No data or engine change. Three changes, each traced first and each on the lead's GO:
+- **A stale test key from 9148e8e4 (found because the suite finally ran, D86 REPEAT):** w1Arc19.test.ts's golden-seed test named the
+  plain rest's seed piece 'h'. VAR-19c's 9148e8e48 rebuilt the rest and moved its seed socket to 'd' (no 'h' since then), but left the
+  test's map alone. The branch was reached only once VAR-19e's relist put w1-19-rest straight after the stair (layout 1). The map now says
+  'd' and the test's asserts are unchanged. A probe with 'd' passed 1/1 before the change (golden-host-d-probe.txt).
+- **libstage judged short of the list search (D19: a tool must call the code the thing it stands for calls):** libstage.buildStage
+  judged with quietJudge alone, while seedlist.ts:42 judges with listJudge: the quiet line plus VAR-19d's lure posts and VAR-19e's
+  seatBreaches. Where those refuse a roll, the search rolls again and libstage did not. So 1-9 seed 1 laid other rests in libstage, and
+  libstage called seeds 6/9/11 clean on both settings although the list refuses them. The 1-9 list was NOT stale.
+  tools/engine/libstage.ts now builds with listJudge(cfg, finish, undefined, kit). libstage.test: 4/4 (was 2/4: libstage-before.txt,
+  libstage-after.txt), test expectations unchanged. Its other users re-run on the new tool: pitJoin.test + pitJoinWall.test 7/7, and
+  registrycheck PASS (after-libstage/).
+- **funknown.json, 1-9 only:** funcheck's lines are identical to VAR-19e's relist3. For 1-9 there is nothing worse or new; its only lines were
+  'gone, delete the entry: 1-9 easy/normal "enemy by a landing"'. Those two entries were deleted by hand: FUNCHECK_WRITE would have written
+  the other stages' 'worse' counts in too (the known list only shrinks). knowncheck PASS after.
+
+### 11.1 Gate table (head 38b11fa1 for the list run; code unchanged since but for libstage.ts (re-run below) and funknown.json)
+| Gate | Result |
+|---|---|
+| tsc | PASS |
+| the suite, 3 shards | shard 1: 1248 tests / 1246 pass / 1 fail / 1 todo; shard 2 (after the key fix): 1192 / 1190 / 0 / 2; shard 3: 1406 / 1406 / 0 / 0. Total 3846 / 3842 / 1 / 3: FAIL, the 1 fail is the inherited seeds.test 6-1 (sections changed since curation, seed 69793), fixed on t-int-13 by ENG-285b |
+| BASE_PATH build | PASS |
+| chunkcheck | PASS |
+| artcheck | PASS |
+| knowncheck | PASS (again PASS after the funknown.json change) |
+| generalitycheck | PASS |
+| roadmapcheck | PASS on full history (the first run FAILED only on the shallow clone: "proofs cannot be checked") |
+| coveragecheck | PASS |
+| registrycheck | PASS (11 stages, 11 lists); again PASS on the new libstage |
+| every list --check | PASS, 11 of 11 (1-1 161 seeds; 1-5 150; the rest 100 each, 1-9 included) |
+| CI tool line (gates.yml, exactly) | 236 tests / 233 pass / 2 fail / 1 todo: FAIL, the 2 fails are riverRide.test.ts:165/:176 (the old 2-1 skill plants), red on t-var-19 alone (the same on base 1c313657; 18/18 at the merge-base 6e7b85f8 and on t-int-13 d36638be), inherited, fixed on t-int-13 by ENG-285c b2df1a472 ("the 2-1 skill plants re-stated on the final judge model"); INT-14's trial merge ran them green. libstage.test inside it: PASS |
+| tipwalk --layouts 4 | PASS |
+| tierBots.test | 7 / 7 / 0 / 0: PASS (no 1-1 change; calibration untouched) |
+| funcheck | FAIL as before: the same lines as VAR-19e's relist3 (inherited debt of t-var-19, every other stage); 1-9: nothing worse or new |
+| kbdcheck | PASS |
+| buildcheck (alone) | PASS (1-1: Normal p95 107 ms, Easy 68 ms; budget 150 ms at CPU x4) |
+| clipcheck | PASS (83 known) |
+| drawcheck | DRAWCHECK |
+| already PASS on e2769e09 (VAR-19e, not re-run) | lockall vs 0b1f9e46 --intended 1-9 (101/102 unchanged); plainWalk one-jump 2/2; seedlist 1-9 --check; the R-165.327/.328 plants |
+
+### 11.2 castBots 1-9, seeds 1-40, both settings (castbots-1-9-1-40.txt; the expert plays Normal only, castBots.ts:31, so 9 rows)
+| Bot | Setting | Pass | Under 120 s | Median | Min | Hits | Lives lost |
+|---|---|---|---|---|---|---|---|
+| kid | normal | 40/40 | 0 | 138.1 s | 130.4 s | 415 (boa 275, eagle 166) | 26 |
+| kid | easy | 40/40 | 0 | 141.7 s | 133.5 s | 285 | 0 |
+| adult | normal | 40/40 | 0 | 138.2 s | 132.8 s | 304 | 4 |
+| adult | easy | 40/40 | 0 | 143.2 s | 137.4 s | 213 | 0 |
+| child | normal | 40/40 | 0 | 336 s | 300.4 s | 251 | 7 |
+| child | easy | 40/40 | 0 | 245.1 s | 226.4 s | 104 | 0 |
+| middle | normal | 40/40 | 0 | 191.5 s | 181.1 s | 98 | 0 |
+| middle | easy | 40/40 | 0 | 181.4 s | 169.9 s | 56 | 0 |
+| expert | normal | 40/40 | 0 | 168.4 s | 157.1 s | 97 | 0 |
+Every run ended at the shrine, none was stranded and none turned back. Named plainly: the kid on Normal takes ~10 hits a run (boa and eagle) and lost 26 lives
+over 40 runs; on Easy, 0 lives. 1-9 has no traps, so 'first trap sprung 0/40' is empty, not a miss.
+
+### 11.3 Stills (stills/, layout 1, Normal and Easy, upright and sideways, 48 files, 0 page errors; pushed unopened for the lead, D90)
+The opening (the goal card, Dot's hop card and his four hops, the card gone at x ~2226/2125), read-bare's boa near and on its piece 'b'
+(Normal x 19480/19620, Easy 19640/19780), the hunters' flat exit (23700 / 23860), the rest-stair boulder (24380 / 24470). Dot's lines at
+each spot are in stills/log-*.txt. The spots are entered by a jump-cut (stills19f.mjs = VAR-19c's stills19c.mjs), so a teach card can show where
+the walk would already have said it (the hunters' flag card at its exit).
+
+### 11.4 Learned, method update, lessons applied, misses
+- Learned: (1) a suite that is not run hides stale keys for days: the golden-seed key sat stale from 9148e8e4 until a relist made the
+  branch reachable; (2) a judge added to the list search must also go into every tool that claims to "build as the search does"
+  (libstage), or the two drift with no gate red until a later relist.
+- Method update (proposed, level.md / gates.md): "A rule added to listJudge lands with libstage.test run in the same commit" (libstage.test
+  is the check: it compares libstage's rolls to the list).
+- Lessons applied: trace before changing (each red to its cause, the lead told before any change); D19; D30 (every time from date); D86
+  (shard count and tests / pass / fail / todo); D93 (every gate line PASS or FAIL); D36 (ls-remote = HEAD after each push).
+- Misses: the stills script's first run failed to find Playwright from the reports folder (PW= the installed path fixed it); a
+  riverRide bisect started before INT-14's merge result reached me (stopped on the lead's word, worktrees removed).
