@@ -2,8 +2,20 @@
 
 Engine (tools) member, session_01FhBbYMwELLxM66X3iXAadC. Branch t-gate-flake from t-int-13 d36638be. Code head: see "Final head".
 
-## EXACT NEXT STEP
-(filled in at the stop)
+## EXACT NEXT STEP (Friday 8:30 AM, a fresh member)
+Stopped clean at the 11:15 PM ET box with the code done and pushed; the proof is part-done (table below). On t-gate-flake at the final
+head (the commit that adds this report section; ls-remote it):
+1. `npm install --no-audit --no-fund --legacy-peer-deps` (this container had no node_modules), then `git checkout package-lock.json`.
+2. The 5-run loaded proof on that one head: start the load (`drawcheck` + suite shards 1/6, 2/6, 3/6, each in a loop: the scripts are
+   copied in this folder as `load.sh` and `proof.sh`), then `N=5 TAG=load proof.sh` (it runs clipcheck then the speed test, 5 times,
+   and stops the load). Expect about 18 min a clipcheck run under this load (load average 20-34 on 4 cores). Then once alone:
+   `node tools/perf/clipcheck.mjs` and `npx tsx --test --test-name-pattern="generating a stage|speed test" src/game/stageQuality.test.ts`.
+   Pass: all 5 clipcheck runs PASS (83 known, 0 new, 0 stale, every 'planted never-opening screen ... FAILED as it must' line), all 5
+   speed runs pass 2/0. Fill the "after" table.
+3. Item 4 of the packet: the CLAUDE.md check list, every item, once, on that head (suite in 6 shards, run_in_background, timeout
+   over 30 min), every line PASS or FAIL. Not started tonight.
+4. Send the lead the hash; ROADMAP rows R-165.215, R-165.245 (done by these commits) and R-165.325 (on the lead's branch) are the
+   lead's to close once 2-3 are green.
 
 ## What changed and why
 Both gates answered by the wall clock, so a busy box changed the answer (D15: a gate gives the same answer on the same code).
@@ -56,10 +68,42 @@ Three things the first runs found, fixed before the proof:
 - clipcheck: the never-opening screen above, every walk, every run; the existing planted 26 px buttons and too-tall card still run.
 
 ## Proof tables
-(filled in)
+Before (the base, d36638be's tools):
+
+| run | where | result | wall |
+|---|---|---|---|
+| clipcheck quiet (here, 9:31 PM) | d36638be | PASS (83 known) | 267 s |
+| clipcheck beside 3 suite shards + paintcheck (INT-13b, 11-19) | 4529d5e6 tree | FAIL: 4 'stale' known, 74 of 83 seen | 900 s |
+| clipcheck beside suite + seed lists + drawcheck (ENG-PROWL, 11-19) | ee28d135 | FAIL: 'how to play' (old/up) past its 30 s | 781 s |
+| speed test beside 4 jobs (ENG-SMALL3, 11-19) | its head | FAIL: p90 657 ms (wall) | - |
+| speed test, 24 stages, here | d36638be | wall p90 101 alone, 284-327 beside 8 busy processes | - |
+
+After, beside drawcheck + suite shards 1/6, 2/6, 3/6 looped (load average 19-34 on 4 cores):
+
+| run | head | clipcheck | wall | speed test (thread CPU) |
+|---|---|---|---|---|
+| L1 | f11bc2d4 | every real screen opened; 83 known seen, 0 new, 0 stale. FAIL only on the planted never-opening screen's own rule (it failed by the frame cap, not as "went still": the title keeps fetching under load), fixed in 3858372a | 1,066 s | pass 2/0 |
+RUNS_HERE
+
+Quiet runs of the new waits on the way: f11bc2d4 quiet found two real step bugs (Pause on the fresh save; the testers' second tap),
+fixed and step-checked (`CLIPCHECK_STEPS=pause`: 3 walks PASS, the Pause card judged, still checked by eye; `testers link, help offer,
+Dot's first tip, stories`: 2 walks PASS).
 
 ## Gate table
-(filled in)
+| gate | head | result |
+|---|---|---|
+| `npx tsc --noEmit -p .` | 3858372a | PASS |
+| stageQuality speed tests (2) | 3858372a | PASS (loaded, above) |
+| the rest of the CLAUDE.md list | - | NOT RUN tonight (next step 3) |
 
 ## Learned
-(filled in)
+- A wait on "the page is still" must count the browser's requests itself, and a request of the page before a `goto` never ends in
+  Playwright's events: clear the count on navigation, or every later wait looks busy.
+- Under real load the title page keeps fetching for minutes, so "went still" is not the only honest failure of a never-opening screen;
+  the frame cap on a never-still page is the other. Both are frames, not seconds.
+- A test-only key path can hide a game quirk: on a fresh save, Escape on the prologue both finishes it and pauses 1-1 (keyboard only).
+- Time the work, not the room: thread CPU time held at p90 103-109 ms with the box at 2x while the wall clock tripled.
+- Lessons applied: D15 (test the measuring tool: each gate carries its own plant, run every time), "prove a change is needed with the
+  fixed tool" (the before runs are the 11-19 failures plus a quiet base run), the D30 time rule (every time here from `date`).
+- Method update (proposed, gates.md): "Adding a new check" gets a line: no fixed sleep or wall timeout as a verdict; wait on the page's
+  or the code's own state, and plant the failure the wait must still catch.
