@@ -17,7 +17,7 @@ Every speech line is under 10 words (STAGE-RULES §5b.7).
 |---|---|---|---|---|
 | 1 | `count` | Dot, THE teach, 800+ px before beat 1 (the one soft stone), on the arrival bank as the clack echoes | The stones bite on four! One, two, three, off! | 9 |
 | 2 | `snapper` | Dot, teach, 800+ px before beat 2 (the sleeper on the sandbar) | Snappers are just grumpy. A kick sends them home! | 9 |
-| 3 | `snap` | Dot, teach, 800+ px before beat 4 (the first AWAKE snapper, on the bank by the logs); the rule line | Awake ones? Stand back, let it snap, then kick! | 9 |
+| 3 | `snap` | Dot, teach, 800+ px before beat 4 (the first AWAKE snapper, on the bank by the logs); the rule line (BUILD-25c, the lead's pick 11-20, R-165.341) | Go near till it creaks. Back off. Missed? Kick! | 9 |
 | 4 | `follow` | Dot, teach, 800+ px before beat 6 (the wave, Normal 5 stones, Easy 3) | The snaps run ahead now. Stay right behind them! | 9 |
 | 5 | `quiet` | Dot, once, at beat 9 after the Big Snap, when the last snappers have dived and Pokey stands on the old mossy stone (he is still: the box covers no jump) | Shh. Hear that? Just the river again. | 7 |
 | 6 | journal `turtle` | the Snapping Turtle card's tip (journal.ts:30, REPLACES "Head-on it hides. Flick sideways to kick the shell.", conflict 2) | Can't hide in its shell, so it snaps. Kick right after! | 11 |
@@ -41,14 +41,18 @@ is 2-2's, not 2-5's. creatureLore.ts:12 (Matt-approved 11-01, "change them only 
 2. **snapper.** The design's "only grumpy" (World 2: nobody hurt; it paddles off huffy) and the one move that ends it, the kick (TURTLE
    `first: 'kick'`, the only `chasedOff`). True at beat 2: the sleeper is OPEN, so the plain kick cannot fail (ENG-25b 1). "Home",
    not "away" or "off": a child's word, and kinder. *Check: 9 words; "kick" is a move word.*
-3. **snap.** The rule the packet asked to make plain, without the word "wait" (it stays out of Pokey's help, lines-2-2.md:23): "let it
-   snap, then kick" IS the wait, in order. "Stand back" is the half a child needs to live through it: the snap reaches 46 px ahead
-   (TURTLE act.reach) and it engages at 85, so from a step back the snap misses and the kick lands in the 0.75 s it recovers. "Awake
-   ones?" turns line 2 (the sleeper took a plain kick) into the new case in two words. **Kick, not bonk (pushback on the ask's "bonk it
-   right after it snaps"):** on ENG-25b's TURTLE the bonk (stomp) has no `when`: it dazes a snapper at ANY moment, so a line telling him to
-   wait before the bonk teaches a wait that is not there, and leaves the move that DOES fail head-on (the kick) unexplained. The kick is
-   what glances off; the line is about the kick. A bonk stays the player's own find (design beat 4's "Bonk! Off you go."). *Check: 9 words;
-   true on the kit rule; said before beat 4, the first awake snapper (beat 2's is asleep).*
+3. **snap.** (Rewritten 11-20 for R-165.341, BUILD-25c, the lead's pick B of two; it replaces "Awake ones? Stand back, let it snap, then
+   kick!".) The old line, taken literally, made a child wait forever: World 2's stillness rule hides a still Pokey (still for calmIn, 0.5 s
+   Normal, 0.35 s Easy, a snapper does not see him: TURTLE has no seesStill, predators/world2.ts), a tell needs 'saw' (predators/core.ts,
+   rest and hunt), and in hunt it gives up after 2 s; there is no idle snap. So the line must SEND HIM NEAR, then say the rest of the
+   real rhythm in order: near (it sees him moving 180 px ahead and tells on the bar's creak once he is within 85 px) / back off (the snap
+   reaches 46 px ahead, TURTLE act.reach) / it misses / kick (open for the 0.75 s it recovers). "Go near till it creaks" names the cue
+   in plain words; "Missed?" says it snapped at nothing, the cue to kick. Every phrase is something Pokey does or sees: the lead
+   passed on option A ("Step close. Creak? Back off! Snap! Now kick!") because in a row of commands "Snap!" reads as one more thing to
+   do. No "wait", "slow", "late", "hurry", "too"; no control word. **Kick, not bonk** (kept from the first line, ENG-25b's TURTLE):
+   the bonk (stomp) has no `when` and dazes at any moment; the kick is the move that glances off head-on, so the line is about the kick.
+   *Check: 9 words, 47 characters (no longer than the line it replaces); true on the kit rule; said before beat 4, the first awake
+   snapper (beat 2's is asleep); the child bot's trace at that snapper (BUILD-25c item 4).*
 4. **follow.** The twist named the design's way ("Follow the snap!"): the wave runs AHEAD, so he goes behind it. It promises no timing
    it cannot keep (it does not say "hop on the one that just snapped": a stone stays shut 0.75 s after its clap and bites anyone who lands
    in it). True on Easy's 3-wave as on Normal's 5. The design never lays a wave that runs back at him ("never laid"), so "ahead" is

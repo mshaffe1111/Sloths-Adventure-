@@ -58,8 +58,8 @@ export const LINES_25 = {
   count: 'The stones bite on four! One, two, three, off!',
   /** Dot, teach, 800+ px before beat 2 (the sleeper) */
   snapper: 'Snappers are just grumpy. A kick sends them home!',
-  /** Dot, teach, 800+ px before beat 4 (the first AWAKE snapper) */
-  snap: 'Awake ones? Stand back, let it snap, then kick!',
+  /** Dot, teach, 800+ px before beat 4 (the first AWAKE snapper): the real rhythm, near till it creaks, back off, it misses, kick (a still Pokey is unseen in World 2, so the line sends him near: R-165.341, the lead's pick 11-20) */
+  snap: 'Go near till it creaks. Back off. Missed? Kick!',
   /** Dot, teach, 800+ px before beat 6 (the wave) */
   follow: 'The snaps run ahead now. Stay right behind them!',
   /** Dot, once, after the Big Snap */
