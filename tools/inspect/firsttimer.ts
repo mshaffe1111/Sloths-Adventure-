@@ -1021,6 +1021,10 @@ interface Jump {
    *  steered back to his own side of it */
   bonk?: number;
   bonkDir?: -1 | 1;
+  /** OFF-BEFORE-FOUR (ENG-25c): the snap stone this hop leaves (Platform id): coming down, he never steers back onto it as a small
+   *  landing (overSmall). A straight-up flick from its far lip steered back onto it, twice, until he stood on it into four (the step
+   *  toy's middle-Normal v1 trace on the level 30 px lay) */
+  snapFrom?: number;
   left: boolean;
   /** the face stop (stops[]) this jump answers */
   stop?: number;
@@ -1568,7 +1572,7 @@ export class FirstTimerRun {
    * research's Channel 2: the lift-off then comes late, thumbify, so he may still run off its far side)
    */
   /** over a small landing, falling to it: 1 near its middle (let go of the steer), 2 past it (steer back), 0 not over one */
-  private overSmall(dir: -1 | 0 | 1): 0 | 1 | 2 {
+  private overSmall(dir: -1 | 0 | 1, leaving?: number): 0 | 1 | 2 {
     const p = this.sim.p;
     // (on a tower's stair of short steps he is already over the next step on the way up: he lets go there, as a thumb does, not at the
     // top of the arc; waiting for the fall carried him off a 100 px rotten step's far end at a run (1-4's crown, POLISH-1 11-13))
@@ -1578,6 +1582,8 @@ export class FirstTimerRun {
     const from = this.airFrom?.y ?? p.y;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      // (never the snap stone a snap hop leaves: he is going on, not back; ENG-25c)
+      if (leaving !== undefined && q.id === leaving) continue;
       if (rising && q.y > from - 20) continue;
       // (a tier bot does not aim to land on a bounce mushroom: on w1-twin-mushroom-fork he steered back onto one until rescued)
       if (this.who.holdQ && q.type === 'bouncy') continue;
@@ -2331,7 +2337,7 @@ export class FirstTimerRun {
       }
       // (past the middle of a small landing, a log or a pad, the thumb steers back onto it: round 2 of LV-2, 2-1's drownings were the bot
       // landing on a log's far end at a run and running off it)
-      const small = age < j.upOnly || j.liana ? 0 : this.overSmall(j.dir);
+      const small = age < j.upOnly || j.liana ? 0 : this.overSmall(j.dir, j.snapFrom);
       const out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
       if (age < j.hold) out.jump = true;
       if (j.kind === 'double' && !j.pressed2 && (j.d2 >= 0 ? age >= j.d2 - 1e-6 : age > j.hold + DT && p.vy > j.dblAt) && !p.grounded && p.jumpsLeft > 0) {
@@ -2803,13 +2809,17 @@ export class FirstTimerRun {
     const p = this.sim.p, t = this.t, who = this.who;
     if (!c || !p.grounded || p.climbing) return null;
     const out = (q: { cleared: boolean; s: PredatorState }) => q.cleared || !!q.s.leaving || q.s.phase === 'gone';
+    // (dazed with time left to run back and kick it: he knows it is there however far his bounce carried him. A bounce off its back at a
+    // run (the hop off the last stone came down on it) carried him 220 px past, outside `behind`, with 1.2 s of its daze left, and he ran
+    // on: middle Easy v2 on the level 30 px lay, ENG-25c). Once he has turned for it he keeps it while it is dazed (and after: it wakes near)
+    const dazedReach = (q: { s: PredatorState }) => q.s.phase === 'stunned' && Math.max(0, Math.abs(q.s.x - p.x) - BONK.kick[1]) / PHYS.maxRun < q.s.stunUntil - (this.e as any).gameTime - BONK.dazedLeft;
     let m = this.bonk ? c.members.find((q) => q.e.id === this.bonk!.id) : undefined;
-    if (m && (out(m) || Math.abs(m.s.y - p.y) > BONK.sameGround || Math.abs(m.s.x - p.x) > BONK.sees)) m = undefined;
+    if (m && (out(m) || Math.abs(m.s.y - p.y) > BONK.sameGround || (Math.abs(m.s.x - p.x) > BONK.sees && m.s.phase !== 'stunned'))) m = undefined;
     if (!m) {
       this.bonk = null;
       this.kickAt = null;
       m = c.members.find((q) => !out(q) && q.def.beatenBy.kick?.ends === 'chasedOff' && !!q.e.kitBeat
-        && Math.abs(q.s.y - p.y) <= BONK.sameGround && (q.s.x - p.x) * fdir > -BONK.behind && (q.s.x - p.x) * fdir < BONK.sees);
+        && Math.abs(q.s.y - p.y) <= BONK.sameGround && (((q.s.x - p.x) * fdir > -BONK.behind && (q.s.x - p.x) * fdir < BONK.sees) || dazedReach(q)));
       if (!m) return null;
       this.bonk = { id: m.e.id, sawFour: false, goAt: -1 };
     }
@@ -3037,7 +3047,14 @@ export class FirstTimerRun {
       // (near the lip only: a long held hop from far back flies longer than the hop his count is planned on, ENG-25's wave trace)
       // (at the lip he presses whatever and stands still while his thumb lags: walking on, the lag walked him off into the water, the
       // wave toy's middle-Normal trace)
-      if ((toEdge < SNAP_PRESS && flies1(SNAP_TAP)) || toEdge < 12) { this.snapHop = true; return this.decide(dir, 'single', false, toEdge < 12 ? {} : go); }
+      // (and at the lip the stand holds through the lag (pending.still): only the decision's frame stood, then the press on its way walked him
+      // on 17 px at a run and the tap skipped the next stone onto the one after it on its four, the wave toy's child Easy v2, ENG-25c)
+      if ((toEdge < SNAP_PRESS && flies1(SNAP_TAP)) || toEdge < 12) {
+        this.snapHop = true;
+        const out = this.decide(dir, 'single', false, toEdge < 12 ? {} : go);
+        if (toEdge < 12 && this.pending) this.pending.still = true;
+        return out;
+      }
       return go;
     }
     if (here.pad && !PAD_SKILL.keepHopping) {
@@ -3134,8 +3151,10 @@ export class FirstTimerRun {
       return ok;
     };
     const go = Math.round(lag / F);
-    // (here a snap stone: it must hold him safely until he leaves)
-    if (here.pad?.on === 'bites' && !safe(here, 0, go)) return true;
+    // (here a snap stone: it must hold him safely until he leaves. It has him only with his middle over it, padPiece.ts hurts: standing
+    // across the water on its lip it cannot bite him, and fleeing it hopped him into the next stone on its four, the wave toy's child Easy
+    // v2 on the level 30 px lay, ENG-25c)
+    if (here.pad?.on === 'bites' && p.x >= here.x && p.x <= here.x + here.width && !safe(here, 0, go)) return true;
     if (!stones.length) return true;
     return safe(stones[0], go + hMin, go + hMax + stand) && from(0, go + hMax + stand);
   }
@@ -3536,6 +3555,7 @@ export class FirstTimerRun {
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;
     // (OFF-BEFORE-FOUR: a hop for a snap stone is a tap, one stone at a time, never a double; after his own draws, so no other jump moves)
+    const snapFrom = this.snapHop ? this.sim.standingOn : undefined;
     if (this.snapHop) { this.snapHop = false; kind = 'single'; hold = Math.min(hold, SNAP_TAP); d2 = -1; }
     // (BONK-AFTER-THE-SNAP: a tap onto its back, never a double)
     const bonk = this.bonkHop;
@@ -3544,6 +3564,7 @@ export class FirstTimerRun {
     this.aimedDrop = false;
     this.nextStop = null;
     if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; }
+    if (snapFrom !== undefined && snapFrom >= 0) this.jump.snapFrom = snapFrom;
     if (this.lianaHop) {
       this.jump.liana = true;
       this.lianaHop = false;

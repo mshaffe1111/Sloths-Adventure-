@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: the straddle (ENG-25c, the lead's ruling 11-19): a stone bites him only when his MIDDLE is over it, not one his toes barely touch
+not ok 1 - the straddle (ENG-25c, the lead's ruling 11-19): a stone bites him only when his MIDDLE is over it, not one his toes barely touch
+  ---
+  duration_ms: 125.037633
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/snapRow.test.ts:188:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    his middle over the water: the stone his toes touch does not bite him
+    
+    4 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 4
+  operator: 'strictEqual'
+  stack: |-
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/snapRow.test.ts:219:16)
+    withFixtureConfig (/home/user/Sloths-Adventure-/src/game/realPlay.ts:120:16)
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/snapRow.test.ts:198:7)
+    withTestStage (/home/user/Sloths-Adventure-/src/game/gen2/listed.ts:92:12)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/snapRow.test.ts:195:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 760.951377

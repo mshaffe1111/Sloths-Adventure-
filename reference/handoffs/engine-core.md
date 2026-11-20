@@ -1,8 +1,56 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-ENG-PROWL (11-19 evening, t-eng-prowl): §0zq-PROWL.
+Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+## 0zq-25d. ENG-25d (t-eng-25c, 11-19 9:50-11:15 PM ET): ENG-25c finished: lock, gates, stills, REPORT (no game code; code head c794249d)
+- **REPORT: reference/qa-reports/ENG-25c/REPORT.md** (the gate table, the lock, the stills, Learned). lockall vs BASE d36638be 102/102
+  unchanged; so vs main's 17 are the base's own. funcheck FAILs identically on base and branch (the base's flags).
+- **Stills of a toy row on the real page:** reference/qa-reports/ENG-25d/shootSnap.mjs (pinned) and fallShot.mjs (no pin: a real fall,
+  the update held the frame after he lands). Plant a toy under a stage whose goal it can meet (2-7, a sprint) WITH that stage's real config
+  (worldsData.generateAllLevels): the engine builds with the real config, and 2-5 is a purge of 12. The dev server reloads the page on a
+  stage's first launch: re-plant. **p.y is Pokey's FEET** (engine.ts:4500); invincibleTimer drawn = the hurt blink and face.
+- **The real tap hop** (InputEngine.triggerTouchUp from a script) did not take him off the bank in fallShot's harness: not chased, UNPROVEN.
+- **EXACT NEXT STEP (11:13 PM ET):** none for ENG-25c: every gate in the REPORT's table is PASS (funcheck FAILs identically on the base: the
+  base's own), 1-6's list included (PASS 11:13 PM). INT-14 merges t-eng-25c; BUILD-25 lays 2-5 on it (BUILD-25 still proves 2-5 itself:
+  these stills are the toy under 2-7).
+
+## 0zq-25c. ENG-25c (t-eng-25c from t-int-13 d36638be, 11-19 evening): snap rows level with the banks; the snapper's ground; the straddle
+- **A snap row's floors sit level with the banks** (rideLay.ts layPads; snapFaults "not level with the banks"). Pads still float PAD_LAY.drop
+  under. The flight (snapClock.ts) flew it level; at 34 px under, the flick from the last stone up to the far bank lost 26 of 265 to water.
+- **Level rows are WALKABLE** (reference/qa-reports/ENG-25c/walkFlight.txt): his feet stand 13 px past a floor's end and the walk-off grace
+  carries him, so 30-44 px of water crosses dry with no hop (50 from a run; 56+ drops him). The lead ruled 11-19: fine, 2-5's lesson is the
+  count, not the hop. Do not "fix" it by widening the water without a design re-fly (SNAP_FAIR.gap is 30-40).
+- **A snap stone bites only with his MIDDLE over it** (padPiece.ts hurts: grounded, feet at its top, p.x within it), never by standingOnId:
+  straddling 30 px of water his toes touch the next stone. Any bot or tool that asks "is he on a biting stone" must use the same rule
+  (firsttimer.ts snapGo's flee branch does).
+- **The snapper's ground** (pipeline.ts beatCastFaults, BONK_LANDING { over: 107, past: 176 } from ENG-25b's bonkFlight): any clock-keeping
+  animal (Enemy.kitBeat), any world: no floor higher than its ground within 107 px over its back, out to 176 px past its patch.
+- **Bots on a 110 px pitch** (30 px water; the run tap is 119 px): he arrives at stones' far lips. Three traced bot faults fixed in
+  firsttimer.ts, all snap/kitBeat-only: overSmall never steers a snap hop back onto the stone it leaves (jump.snapFrom); at a stone's lip
+  the press holds still through the thumb's lag (pending.still); a dazed snapper he can still reach is kept however far the bounce took him.
+- **Stills of a toy row on the real page** without game code: reference/qa-reports/ENG-25c/shootSnap.mjs plants the toy as 2-5's listed roll
+  in page memory (dev vite). Use its pattern until 2-5 is laid (it does not launch yet: see the next step).
+- **STATE at stop (9:47 PM ET 11-19, the lead's context stop; code head c794249d, docs after it):** DONE and proven: (1) level lay +
+  snapFaults rule (RED red-level.txt -> green); (2) snapper ground rule (RED red-ground.txt -> green); (3) the lead's straddle ruling,
+  padPiece.ts hurts by his middle (RED red-straddle.txt: 4 hearts standing across the water -> green); (4) three bot fixes. Proven on
+  c794249d: tsc PASS; snapRow + w2Cast + snapRide + snapperBonk + snapChannel + predatorCasts 56 pass / 0 fail; probes (ENG-25b's tools,
+  base d36638be vs c794249d): water 5 lives at the pond in 24 runs -> 0 (bites 0 -> 0); snapper 39/40 cleared clean -> 40/40, skill off
+  0/40 -> 0/40; flick from a stand (flickFlight.txt) last stone to bank 89% -> 100%, stone to stone 96% -> 99%.
+  lockall vs MAIN 6e7b85f8: 85/102 unchanged, 17 moved (lockall-vs-main-c794249d.txt: 1-6..1-9, 2-1, 2-2, 2-4, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7,
+  7-5, 7-9, 8-3, 8-5). EXPECTED to be the base's own moves since main (INT-13 carries 1-6..1-9, FIX-284's 2-x, ENG-285), NOT PROVEN: the
+  branch-vs-BASE lock was stopped unfinished. NOT DONE: stills (shootSnap.mjs plants the toy as 2-5's listed roll in page memory, but
+  `__play('2-5')` never starts an engine: diag listed true, W2_STAGES 2-5 removed, listedRoll true, engine false, no page/console error);
+  the full gate list; the REPORT.
+- **EXACT NEXT STEP (a fresh member, from t-eng-25c head):** (a) `npm install --no-save --no-audit --no-fund --legacy-peer-deps`.
+  (b) In a worktree of d36638be: `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json`; on t-eng-25c:
+  `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-base.json`: expect 102/102 unchanged (2-5 is not laid; no shipped stage has a
+  snap row or a kitBeat animal). Any move: stop and tell the lead. (c) The CLAUDE.md list once on the head, the suite in shards, plus
+  coveragecheck and every seed list --check, tierBots (firsttimer.ts changed: snap/kitBeat-only branches, the 1-1 calibration must not
+  move). (d) Stills: find why `__play('2-5')` does not launch after the plant (App.tsx __play: allLevels.find; check 2-5's config and
+  launchEngine's story/cutscene path), or plant under a stage id __play does launch; shoot upright 412x915 and sideways 915x412, Pokey on a
+  stone and on the bank lip, whole screen; the lead judges them. (e) REPORT reference/qa-reports/ENG-25c/REPORT.md: the numbers above, the
+  plants, the gate table (each PASS/FAIL), stills, the walkable finding + the lead's ruling (for BUILD-25 and the designer), Learned:
+  "fly the counter-move (walking) before calling a gap a hop", "a bot's 'on' must use the engine's own rule (middle over), not standingOnId".
 
 ## 0zq-13b. INT-13b (t-int-13, 11-19 evening): the integration's last merge, one cross-branch red, every gate once
 - **Snap stones are pad { by: 'beat', on: 'bites' } (rideLay.ts):** any code that treats every `by: 'beat'` pad as a breathing (sinking)

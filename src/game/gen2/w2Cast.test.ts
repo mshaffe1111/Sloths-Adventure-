@@ -24,7 +24,7 @@ import type { Enemy, LevelConfig } from '../types.ts';
 
 const ID = '2-96';
 const cfg: LevelConfig = { ...toyCfg(ID, 'sprint'), unlocked: true };
-const ROW = { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75 } } as const satisfies PadRow;
+const ROW = { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } } as const satisfies PadRow;
 const section: SectionTemplate = {
   id: 'toy-snapper', name: 'a snapper by the stones', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
   pieces: [
@@ -82,6 +82,26 @@ test('laid by gen2: the snapper keeps its stones\' bar, the asleep row asleep; t
     assert.match(beatCastFaults({ ...st, enemies: t.map((e) => ({ ...e, kitBeat: { clock: 'snap-none' } })) }, 2).join(), /does not have/);
     const short = (st.clocks ?? []).map((c) => (c.id === 'snap-step' ? { ...c, phases: c.phases.map((p) => (p.name === 'warn' ? { ...p, seconds: 0.3 } : p)) as unknown as typeof c.phases } : c));
     assert.match(beatCastFaults({ ...st, clocks: short }, 2).join(), /warn is shorter than its 0.5 s tell/);
+  }
+});
+
+test('the snapper\'s ground (ENG-25c): no floor within its bonk\'s landing over its back, out past where it walks (planted by name)', () => {
+  // (ENG-25b's bonkFlight: a tap bonk rises 54 px over its back and lands up to 176 px past its middle, a held one 107 px over it; ENG-25b's
+  // middle Normal v3 trace: it had walked to its bank's end under the next section's 48 px step, and the bounce landed on the step)
+  for (const which of ['snapper', 'snapper-asleep'] as const) {
+    const { st } = built(which);
+    const e = st.enemies.find((q) => q.type === 'turtle')!;
+    const ground = st.platforms.find((p) => p.type === 'solid' && e.x >= p.x && e.x <= p.x + p.width && p.y >= e.y && p.y <= e.y + e.height)!;
+    assert.ok(ground, `${which}: the bank it stands on`);
+    assert.deepEqual(beatCastFaults(st, 2).filter((f) => /landing/.test(f)), [], `${which}: the toy's own ground is clear`);
+    const plant = (q: { x: number; y: number; width: number }) => beatCastFaults({ ...st, platforms: [...st.platforms, { id: 99999, height: 48, type: 'solid', ...q }] }, 2).join(' | ');
+    // (a 48 px step just past the end of where it walks: the v3 trace; and a ledge over its patch 100 px over its back)
+    assert.match(plant({ x: e.patrolMaxX + 60, y: ground.y - 48, width: 200 }), /a floor at x=\d+ 48 px over its ground, inside its bonk's landing/);
+    assert.match(plant({ x: e.patrolMinX - 300, y: ground.y - 24 - 100, width: 340 }), /124 px over its ground, inside its bonk's landing/);
+    // (clear: a floor over the held bounce's 107 px over its back; a step past the tap's 176 px carry; a floor no higher than its ground)
+    assert.equal(plant({ x: e.patrolMinX - 100, y: ground.y - 24 - 110, width: 200 }), '');
+    assert.equal(plant({ x: e.patrolMaxX + 180, y: ground.y - 48, width: 200 }), '');
+    assert.equal(plant({ x: e.patrolMaxX + 60, y: ground.y, width: 200 }), '');
   }
 });
 
