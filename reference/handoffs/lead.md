@@ -91,8 +91,8 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 
 **Live:** 0.9.9 (main 6e7b85f8). **Lead branch:** ccr-ea739a2f-dfcee4 (also pushed to ccr-e71c7674-i0i93u). **Matt's test link (EnK5):** v263
 (1795138406-e52a) = t-int-13 d36638be (478 of the tool's 480 files: the next link must free room; scratchpad/link4 holds dist-published).
-**Matt 11-19 10:14 PM:** tested v263, "everything looks good"; asked when the next release is. Lead's answer: RELEASE 1 Saturday 11-21
-afternoon (INT-14 Saturday morning; anything not green by Saturday noon stays out); asked A (Saturday) / B (Friday night, partial). Open,
+**Matt 11-19 10:14 PM:** tested v263, "everything looks good"; asked when the next release is. Lead's answer: RELEASE 1 Saturday; MATT PICKED B (10:29 PM): "friday night to avoid stacking things up. Get things released when done":
+RELEASE 1 = FRIDAY NIGHT with what is green; the rest ships in the next release when done (INT-14 holds back 2-4 if not green; 2-5 next release). Open,
 one at a time after that: the five World 3 journal cards vs the Naturalist count (A count all 23 / B keep 18 animals / C leave out), then
 the jaguar lore ('jaguars of the cascades' -> 'of the grotto', creatureLore.ts is Matt's). Also owed by Matt: sideways frame plants, 2-3 HUD faces.
 **Matt 11-19 (earlier):** plan ahead, designs two stages ahead, no all-100 map refresh; 3-2 hang = A; reuse art across worlds; every object
