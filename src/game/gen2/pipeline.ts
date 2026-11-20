@@ -41,7 +41,7 @@ import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
-import { goalCountsPetals } from '../goals.ts';
+import { goalCountsPetals, heldEasyGoal } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
@@ -437,7 +437,7 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
   const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex, ...(config.countSet ? { countSet: true as const } : {}) });
   // (a goal the stage's design sets, LevelConfig.countSet: Easy is held to easyMode's goal of it all the same, and the lay is its sockets')
-  const check = (fights || config.countSet) && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
+  const check = (fights || config.countSet) && easy ? heldEasyGoal(goal) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
   // `lessons` row, as the node code's V3 reads it; carried only where the old rule does not already count it, so no stage that

@@ -120,6 +120,43 @@ test('snapFaults: each rule, planted on a built pond, is caught and names itself
   assert.equal(plant({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75, wave: true } }), '', 'a wave of 3');
 });
 
+test("snapFaults by setting (BUILD-25): a Normal build skips Easy's comparison (its Easy twin is what Easy plays); an Easy build, and a call with no setting, still judge it", () => {
+  const { st } = built({ p: { by: 'snap', pads: ['snap', 'snap', 'snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75, wave: true } } }, 'p');
+  const easyLine = /Easy's window .* under Normal's/;
+  assert.doesNotMatch(snapFaults(st, 'normal').join(' | '), easyLine, 'Normal: its row is never played on Easy');
+  assert.match(snapFaults(st, 'easy').join(' | '), easyLine, 'Easy: the row it lays is judged against Normal');
+  assert.match(snapFaults(st).join(' | '), easyLine, 'no setting: both');
+});
+
+/** a section with two snap ponds in a row, each on its own row (near, mid, far) */
+const twoPonds = (a: string, b: string): SectionTemplate => ({
+  id: 'toy-snap-two', name: 'two snap ponds', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [340, 340], place: { kind: 'start' }, main: true },
+    { key: 'mid', shape: 'bank', w: [300, 300], place: { kind: 'pads', after: 'near', row: a }, main: true, landing: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'pads', after: 'mid', row: b }, main: true, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+});
+function builtTwo(rows: Record<string, PadRow>) {
+  const kit: WorldKit = { ...kitOf(rows, 'a'), manifest: { ...kitOf(rows, 'a').manifest, sections: [...kitOf(rows, 'a').manifest.sections.filter((q) => !q.id.startsWith('toy-snap-')), twoPonds('a', 'b')] } };
+  for (let seed = 1; seed <= 40; seed++) {
+    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    if (st.platforms.filter((p) => p.pad?.on === 'bites').length === 2) return st;
+  }
+  throw new Error('no roll lays the two ponds');
+}
+
+test('PadRow.clock (BUILD-25, 2-5.md "one count for the whole river"): two rows naming one clock keep ONE bar; two bars under one name throw; unnamed, each row its own', () => {
+  const one = { by: 'snap', pads: ['snap'], gap: 30, snap: { count: 0.75 }, clock: 'river' } as const satisfies PadRow;
+  const st = builtTwo({ a: one, b: one });
+  assert.deepEqual(st.platforms.filter((p) => p.pad?.on === 'bites').map((p) => p.pad!.clock), ['snap-river', 'snap-river']);
+  assert.deepEqual((st.clocks ?? []).filter((c) => c.id.startsWith('snap-')).map((c) => c.id), ['snap-river'], 'one bar, listed once');
+  assert.throws(() => builtTwo({ a: one, b: { ...one, snap: { count: 0.6 } } }), /keeps clock snap-river on another bar/);
+  const own = builtTwo({ a: { ...one, clock: undefined }, b: { ...one, clock: undefined } });
+  assert.deepEqual(own.platforms.filter((p) => p.pad?.on === 'bites').map((p) => p.pad!.clock), ['snap-a', 'snap-b']);
+});
+
 test('level with the banks (ENG-25c): every floor of a snap pond stands with its top level with the banks, as 2-5.md\'s flight flew it', () => {
   // (snapClock.ts flies the bank, the stones and the far bank all at one height; ENG-25 laid them 34 px down, so the last hop up was unflown)
   for (const row of Object.keys(ROWS)) {
