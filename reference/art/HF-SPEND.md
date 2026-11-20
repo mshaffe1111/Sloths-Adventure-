@@ -88,3 +88,9 @@ ART-18 total: ~29 GPU-min, **~$1.34** of its $4 cap (minutes x $2.75/60). Balanc
 |---|---|---|---|---|
 | 12:31-12:41 PM | sandbox 6af9ec6a23985fb9cd8391e2 (rtx-pro-6000), about 11 min creation to terminate: 8 img2img takes (shallow backwater strip from the deep tile + W2 stones, s50/s62; long log from logLong, s40/s52; ~8 s each after a 39 s load) + 22 Qwen-Image + style LoRA 0.85 takes (7 prompts x 3-4 seeds, ~21 s each); spec tools/art/hfw2/spec-w2i.json + spec-w2.json; back as two carriers by hf_sandbox_fs (saved to files, not read into context) | lead (ART-W2 packet) | ~$0.50 | 9 shipped pieces (src/assets/w2-1115/): shallow backwater strip, long log, small pad + sunk, big sunk pad, ripple decal, crown bud + open flower, bent-bamboo bounce: **~$0.06 a piece**; all 30 takes kept (reference/art/hfw2/takes/) |
 ART-W2 total: ~11 GPU-min, **~$0.50** of its $5 cap (minutes x $2.75/60). Balance ~$53.9 (from ~$54.4, ART-18's figure on origin/t-art-18). Logged 12:46 PM ET.
+
+## 2026-11-20 (ART-NEXT batch 1, t-art-next; the lead's cap $3, ONE sandbox; from Matt's $50.25 at 2:38 PM)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 3:39-4:24 PM | sandbox 6b00afea4fdc5ab3c55be6fd (rtx-pro-6000), 45 min creation to terminate: Qwen-Image-Edit-2511 (tools/art/hfnext/run.sh, spec-b1.json: 34 takes, 24 frame-A + 10 frame-B; the model download took ~1 min, ~76 s a 1024x640 take). At ~3:55 PM the session's sandbox token was lost (exec and file reads 403 "invalid or missing X-Sandbox-Token"; status OK, stage RUNNING); a worker restart followed. No route back to /w without the token, so it was terminated at 4:24 PM to stop the meter. | lead (ART-NEXT batch 1, cap $3) | ~$2.06 | NOTHING retrieved: the takes stayed in the sandbox. 3 boat takes were seen done at 3:45 PM. |
+ART-NEXT batch 1 total: 45 GPU-min, **~$2.06** of its $3 cap (minutes x $2.75/60). Balance ~$48.19 (from $50.25). Logged 4:24 PM ET.
