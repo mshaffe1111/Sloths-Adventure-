@@ -20,7 +20,7 @@ Branch t-eng-small3 from origin/t-int-13 8efb1bba5. Final hash: FINAL_HASH. Pack
 
 | Gate | Result |
 |---|---|
-| suite, 3 shards | 3,937 tests: 3,934 pass, 2 todo, 1 red: stageQuality 'generating a stage is quick' (p90 657 ms with 4 jobs on 4 cores); PASS re-run alone |
+| suite, 3 shards | FAIL 1 (timing under load; PASS alone; R-165.325): 3,937 tests, 3,934 pass, 2 todo, 1 red, stageQuality 'generating a stage is quick' p90 657 ms with 4 jobs on 4 cores |
 | tsc; vite build (BASE_PATH); chunkcheck; artcheck; knowncheck; generality | PASS each |
 | roadmapcheck | exit 2 at first (this clone was shallow); PASS after `git fetch --unshallow` |
 | drawcheck; clipcheck; kbdcheck; buildcheck | PASS (690 s); PASS, 83 known (327 s); PASS (re-shot stills restored, not committed); PASS |
@@ -46,7 +46,7 @@ No drawing changed. The one player-facing change: 3-6/3-7's "GRANDMA'S <THING>!"
   all different (once the keeper's lists land) whatever order he searches. Files: engine.ts, protoStage.ts; done: an out-of-order plant.
 
 ## Unresolved
-UNRESOLVED
+- The suite's timing red (R-165.325, logged by the lead) and funcheck's FAIL (the base's own, t-int-13) are not this job's to fix.
 
 ## Method used, lessons applied, method update
 - Method: gates.md "Adding a new check" (defect named, plant, run twice, wired, runtime reported); ENGINE.md day one (plants, locks).
