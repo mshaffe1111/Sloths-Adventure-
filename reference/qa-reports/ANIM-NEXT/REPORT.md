@@ -16,6 +16,9 @@ Status 4:36 PM ET 11-20: steps 1-2 DONE; lead's GO 4:31 PM (cap $2.50). Sandbox 
 - Then: takes sheet + 16 fps preview per clip (tools/art/reanim/preview_anim.py) to the lead; the lead picks; cut (tools/art/train/clips.py)
   to src/assets/hero/clips/<name>.webp + heroClipsData rows; catalog; HF-SPEND. Wiring (when each plays) is a builder's job.
 
+## Picks (lead)
+- freeze = s11 (4:48 PM ET): cut 0-8 one-shot stop + a 3-4 frame breathing hold loop; cut waits for all three picks.
+
 ## Pushback
 - None on the packet. Notes: World 2's hidden stage "The Rapids" has no design (WORLD-MAP only): its row is provisional. R-165.178's
   two-vine climb shipped: art 2e203b44b (hero-climb2.webp/.json, ART 11-13), wired be0b28c48 (B14b), both on main via PR #71
