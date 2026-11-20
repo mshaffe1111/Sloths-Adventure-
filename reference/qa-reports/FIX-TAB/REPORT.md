@@ -1,17 +1,39 @@
 # FIX-TAB REPORT (R-165.344): the grass tab under World 1's painted stones, fixed at the root in the draw
-Engine (draw). Branch t-fix-tab (base 453b69c2, merged t-int-14 ca74f4fa: no code). Updated 2:54 PM ET.
+Engine (draw). Branch t-fix-tab (base 453b69c2 + merged t-int-14 ca74f4fa, which adds no code). Updated 3:05 PM ET.
 
 ## EXACT NEXT STEP
-Stills before/after per world running (tools: /tmp scratch, servers 3103 = 453b69c2, 3101 = this branch); lockall base recording on
-453b69c2. Next: judge stills, commit them under stills/after-fix/, then gates in order (see table), then this report final.
+Gates running (unit suite in 3 shards, coveragecheck, registrycheck, lockall --check vs 453b69c2's lock in /tmp). Next: drawcheck, clipcheck,
+kbdcheck, paintcheck 0/3 1/3 2/3, seed lists, the CI tool line, tipwalk, tierBots, buildcheck alone, funcheck, castBots; fill the table; final hash.
 
 ## Done-items
 | # | Item | Evidence | Status |
 |---|---|---|---|
-| 1 | Fact + on main | FACTS.md §1 | done (2:38 PM) |
-| 2 | Count | FACTS.md §2: 100 tabs, 16/72 builds, 1-6 + 1-7 | done |
-| 3a | Root fix in the draw | protoArt.ts stepDownTo + faceCut; drawGround lower() and drawBankArt side() call them | done 8d0ecd05 |
-| 3b | Planted RED | groundSeams.test.ts 'R-165.344': planted (first lower bank) = 21 visible lip rows, FAIL; fix = 0, PASS (probe/planted-red.txt) | done |
-| 3c | Reach in every world | probe/endsteps.ts: 425 open bank ends change step: W1 100 (1-6, 1-7), W5 8 (5-M), W7 53 (7-5, 7-9 Easy), W8 264 (8-2/3/5/6/9); W2-4, 6, 9, 10: 0 | done |
-| 3d | Before/after stills | pending | |
-| 3e | Gates | pending | |
+| 1 | What the tab is + is it on main | FACTS.md §1 (floor lip run under the wall in a notch; on main too: 71 on main's 1-6) | PASS (2:38 PM) |
+| 2 | Count | FACTS.md §2: 100 tabs in 16/72 W1 builds, all 1-6 (N51 E25) + 1-7 (N16 E8) | PASS |
+| 3a | Root fix in the draw, no stage data | protoArt.ts `stepDownTo` (the highest lower bank beside an end) + `faceCut`; drawGround's lower() and drawBankArt's side() call them | PASS 8d0ecd05 |
+| 3b | Planted RED (toy) | groundSeams.test.ts 'R-165.344': planted (first lower bank) = 21 visible lip rows under the block, FAIL; fix = 0, PASS; same test holds the hole check (the notch is the wall's soil from the block's foot down). probe/planted-red.txt | PASS |
+| 3c | W1 count after | probe/count-after-fix.txt: 1-6 + 1-7, 16 builds: 100 -> 0 tabs, 43 -> 0 lone strips | PASS |
+| 3d | Hole check (pixels) | 160 orphan lip runs: changed px when the run is drawn vs not, base max 559 (143 > 20) -> fixed max 0: nothing can show through | PASS |
+| 3e | Reach, every world | probe/endsteps.ts -> endsteps.txt / endsteps-changed.json: 425 open bank ends change step: W1 100 (1-6, 1-7), W5 8 (5-M), W7 53 (7-5, 7-9 Easy), W8 264 (8-2/3/5/6/9); W2, 3, 4, 6, 9, 10: 0 | PASS |
+| 3f | Before/after stills per world | stills/before-after/: w1a 1-6, w1b 1-7, w5 5-M, w7a 7-5, w7b 7-9, w8a 8-2, w8b 8-3, w8c 8-6, w8d 8-9; each -sideways, -upright (side by side, before left) and -crop2x | PASS (see Polish) |
+| 3g | Gates | table below | running |
+
+## Polish check (stills/before-after, judged at phone size and in the 2x crops)
+- W1 1-6, 1-7: the grass tab under the stone/stump is gone; the soil runs on under the art (w1a, w1b crop2x).
+- W5 5-M: before, a see-through gap of backdrop down the wall's face beside the step; after, soil (w5 crop2x).
+- W7 7-5: before, a pale see-through box under the temple wall's end; after, soil (w7a crop2x). 7-9: same look at this sample.
+- W8 8-2/8-3/8-6/8-9: before, a column of chopped lip and face pieces down the wall's end (each stair step's lip run peeking in the notch); after, one clean soil face (w8a..w8d; w8a-stair-before-top-after-bottom.jpg).
+- NAMED, not new: where the new step is a deep plinth (48-59 below, e.g. 8-2's wall over its first stair step, 56), the face stops flat at the
+  step's top and the wall's soil runs on below: a straight foot edge. That is the existing plinth look on the base (BASE-existing-deep-plinths-
+  8-6-x18365-2-1-x1400.jpg: same edge on unchanged ends in 8-6 and 2-1). Suggestion below.
+
+## Gates (D93: every line PASS or FAIL)
+| Gate | Result |
+|---|---|
+| tsc | PASS |
+| artcheck | PASS |
+| knowncheck | PASS |
+| generalitycheck | PASS (26 literals, 26 known) |
+| roadmapcheck (after unshallow) | PASS |
+| timecheck | PASS (after merging t-int-14: 453b69c2 alone FAILS on VAR-19/REPORT.md:243, fixed at 6ef8de7b5 on t-int-14) |
+| vite build (deploy base) + chunkcheck | PASS + PASS |
