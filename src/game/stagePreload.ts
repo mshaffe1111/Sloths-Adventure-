@@ -27,7 +27,8 @@ import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasL
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
-import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
+import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, rockSheetReady, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
+import { rockSheetUrls } from './rockLooks.ts';
 import { protoStageEnabled } from './protoStage.ts';
 import { RIVER_LOOK, W2_PROPS_URL, riverArtReady, safeRiverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
@@ -232,6 +233,10 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w19') {
       w19Ready();
       urls.push(...W19_URLS);
+    } else if (k.startsWith('rocks:')) {
+      const u = rockSheetUrls(Number(k.slice(6)));
+      for (const url of u) rockSheetReady(url);
+      urls.push(...u);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();
