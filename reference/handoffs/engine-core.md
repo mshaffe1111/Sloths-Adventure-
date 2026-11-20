@@ -2,6 +2,19 @@
 
 Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-small3. ENG-SMALL3 (t-eng-small3 from t-int-13 8efb1bba, 11-19 evening): three small fixes, one plant each
+- **The node dials' id spelling (R-165.319, nodeCode.ts `ID`):** a threat kind, hazard, clock or find is written as the kit writes its id:
+  a small letter first, then letters of either case, digits, '-' or '_'. gen2's casts are kebab-case (w1Cast.ts 'snake-asleep'), the
+  predators' roster camelCase (predators/roster.ts 'thornVine', 'riverGuard'); both read now, a capital first still fails. The dial is
+  matched to a world's cast by `c.id` in nodeAsks.ts askMisses, so a W3 design that names `thornVine` needs a W3 cast whose id is
+  `thornVine` when W3 moves to gen2. Plant: nodeDials.test 'R-165.319'.
+- **Grandma's things' names (R-165.321, protoStage.ts thingFern):** picked by `thingsPlaced`, not the shared collectible id. 3-6 lays
+  8-15 finds over 4 names, 3-7 lays 9 over 5, so the names come round again in order after the list; the keeper's longer lists
+  (lines-3.md on t-keeper-3x: 'garden trowel', 'button tin') are content for the 3-6/3-7 builds (the lead's ruling, D40). Plant:
+  w3Stages.test 'R-165.321' (it reads the list length from the rolls, so it holds when the names are added).
+- **tierBots.test replays all 200 calibration runs (R-165.317):** `movedRuns` names each moved run with its fields; about 4 min (206 s,
+  4 cores). The command is unchanged and already in CI's rolled job. Trap: the run row's finish field is `finishSeconds`.
+
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
   child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
