@@ -176,7 +176,7 @@ test("1-9's golden seed: one a roll, both settings, in the first rest (after the
     const order = st.gen2.sections.map((q) => q.template);
     const home = st.gen2.sections.find((q) => { const ps = piecesOf(st, q.uid); return ps.length && sd.x >= Math.min(...ps.map((p) => p.x)) && sd.x <= Math.max(...ps.map((p) => p.x + p.width)); })!;
     // (each of the five rests carries the socket over its own high ground, w1Arc19.ts seed(); the first rest laid keeps it)
-    const HOST: Record<string, string> = { 'w1-19-rest': 'h', 'w1-19-rest-crook': 'e', 'w1-19-rest-stair': 'k2', 'w1-19-rest-wall': 'y', 'w1-19-rest-bounce': 'y' };
+    const HOST: Record<string, string> = { 'w1-19-rest': 'd', 'w1-19-rest-crook': 'e', 'w1-19-rest-stair': 'k2', 'w1-19-rest-wall': 'y', 'w1-19-rest-bounce': 'y' };
     assert.ok(home.template in HOST, `${d} seed ${seed}: the seed in ${home.template}`);
     assert.equal(st.gen2.sections.indexOf(home), order.indexOf('w1-19-stair') + 1, `${d} seed ${seed}: the first rest, right after the stair`);
     const step = piece(st, home.template, HOST[home.template]);

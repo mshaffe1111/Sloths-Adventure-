@@ -7907,3 +7907,601 @@ ok 1308 - 4-7 in the real engine: the falling rocks leave a fair line, and a roc
   duration_ms: 3355.819586
   type: 'test'
   ...
+# Subtest: World 4's rooms: the validator solves each on every roll, each fails without its stone, mango or lever, and none can be passed by
+ok 1309 - World 4's rooms: the validator solves each on every roll, each fails without its stone, mango or lever, and none can be passed by
+  ---
+  duration_ms: 35767.354955
+  type: 'test'
+  ...
+# Subtest: World 4's rooms: narrow and tall enough for an upright phone, nothing in them that hurts, and each says what it is
+ok 1310 - World 4's rooms: narrow and tall enough for an upright phone, nothing in them that hurts, and each says what it is
+  ---
+  duration_ms: 13073.802562
+  type: 'test'
+  ...
+# Subtest: 4-1 in the real engine: a stone from the heap, set in Dot's basket from the lift, winds him up to the ledge above
+ok 1311 - 4-1 in the real engine: a stone from the heap, set in Dot's basket from the lift, winds him up to the ledge above
+  ---
+  duration_ms: 473.201453
+  type: 'test'
+  ...
+# Subtest: 4-6 in the real engine: shut, the pinwheel stands still; the lever opens the shutter and the gusts wind the lift up with him on it
+ok 1312 - 4-6 in the real engine: shut, the pinwheel stands still; the lever opens the shutter and the gusts wind the lift up with him on it
+  ---
+  duration_ms: 1301.768018
+  type: 'test'
+  ...
+# Subtest: 4-8 in the real engine: a mango for the capuchin, its stone back, the stone in the basket, up to the nest, and the chick freed
+ok 1313 - 4-8 in the real engine: a mango for the capuchin, its stone back, the stone in the basket, up to the nest, and the chick freed
+  ---
+  duration_ms: 565.917223
+  type: 'test'
+  ...
+# Subtest: 4-3 is hand-built
+ok 1314 - 4-3 is hand-built
+  ---
+  duration_ms: 574.061307
+  type: 'test'
+  ...
+# Subtest: 4-3: every roll can be finished, has one exit, takes a quick player its own length (3.5 minutes), and needs no pickup moved
+ok 1315 - 4-3: every roll can be finished, has one exit, takes a quick player its own length (3.5 minutes), and needs no pickup moved
+  ---
+  duration_ms: 626.055326
+  type: 'test'
+  ...
+# Subtest: 4-3: each fall is a different idea, in order: plugs, the pool and its log, the surges, then the surges with the others
+ok 1316 - 4-3: each fall is a different idea, in order: plugs, the pool and its log, the surges, then the surges with the others
+  ---
+  duration_ms: 14.331225
+  type: 'test'
+  ...
+# Subtest: 4-3: pouring water is too strong to climb a wet step, and a dry one is an easy double jump
+ok 1317 - 4-3: pouring water is too strong to climb a wet step, and a dry one is an easy double jump
+  ---
+  duration_ms: 0.169105
+  type: 'test'
+  ...
+# Subtest: 4-3: while a fall pours, its steps are the only way on, and the way to stop it is open
+ok 1318 - 4-3: while a fall pours, its steps are the only way on, and the way to stop it is open
+  ---
+  duration_ms: 5079.556263
+  type: 'test'
+  ...
+# Subtest: 4-3: the order puzzle: the log is the only way to the boulder, and nothing done in any order strands him
+ok 1319 - 4-3: the order puzzle: the log is the only way to the boulder, and nothing done in any order strands him
+  ---
+  duration_ms: 6653.227078
+  type: 'test'
+  ...
+# Subtest: 4-3: the surge: a cave halfway up behind the water, and the keepsake in a fern at its back
+ok 1320 - 4-3: the surge: a cave halfway up behind the water, and the keepsake in a fern at its back
+  ---
+  duration_ms: 11.398253
+  type: 'test'
+  ...
+# Subtest: 4-3: the thief sits by a petal and runs off up the terraces, post to post, every post on ground he can reach
+ok 1321 - 4-3: the thief sits by a petal and runs off up the terraces, post to post, every post on ground he can reach
+  ---
+  duration_ms: 291.298754
+  type: 'test'
+  ...
+# Subtest: 4-3: every new thing is taught where it first appears, and the rocks are fair
+ok 1322 - 4-3: every new thing is taught where it first appears, and the rocks are fair
+  ---
+  duration_ms: 8.369491
+  type: 'test'
+  ...
+# Subtest: 4-3: the tide pool: the surge lifts the log to the only way up, and the fall pours over the gap at the top
+ok 1323 - 4-3: the tide pool: the surge lifts the log to the only way up, and the fall pours over the gap at the top
+  ---
+  duration_ms: 955.53087
+  type: 'test'
+  ...
+# Subtest: 4-3: the boulder up the surge: its shelf is reached only up the surge stair, and a slip off the shelf only costs a climb
+ok 1324 - 4-3: the boulder up the surge: its shelf is reached only up the surge stair, and a slip off the shelf only costs a climb
+  ---
+  duration_ms: 569.147231
+  type: 'test'
+  ...
+# Subtest: 4-3: every surge goes quiet for long enough to climb from the foot of its water to the next dry spot (its water washes him down)
+ok 1325 - 4-3: every surge goes quiet for long enough to climb from the foot of its water to the next dry spot (its water washes him down)
+  ---
+  duration_ms: 6.623017
+  type: 'test'
+  ...
+# Subtest: 4-3: the boulder is taught as it is moved (walk into it from beside it on its shelf), and every plug fall knows the ground past it
+ok 1326 - 4-3: the boulder is taught as it is moved (walk into it from beside it on its shelf), and every plug fall knows the ground past it
+  ---
+  duration_ms: 5.592733
+  type: 'test'
+  ...
+# Subtest: 4-3: from the log at its highest the ledge is a double jump straight up (it reaches out over the log), with a petal on it there and Dot saying so
+ok 1327 - 4-3: from the log at its highest the ledge is a double jump straight up (it reaches out over the log), with a petal on it there and Dot saying so
+  ---
+  duration_ms: 14.240634
+  type: 'test'
+  ...
+# Subtest: 4-3: every rock warns for ROCK_WARN seconds, and Dot's rock line is the one w4Play says if it was missed
+ok 1328 - 4-3: every rock warns for ROCK_WARN seconds, and Dot's rock line is the one w4Play says if it was missed
+  ---
+  duration_ms: 16.525121
+  type: 'test'
+  ...
+# Subtest: 4-3: at the foot of the first fall, held upright, the view turns to show the tree as well as him (QA 2026-10-29)
+ok 1329 - 4-3: at the foot of the first fall, held upright, the view turns to show the tree as well as him (QA 2026-10-29)
+  ---
+  duration_ms: 16.861878
+  type: 'test'
+  ...
+# Subtest: 4-3: the first fall's steps are each a double jump up, and the line as its boulder goes in says so, before he is down at them
+ok 1330 - 4-3: the first fall's steps are each a double jump up, and the line as its boulder goes in says so, before he is down at them
+  ---
+  duration_ms: 8.657738
+  type: 'test'
+  ...
+# Subtest: 4-6 is hand-built, and is judged without the leaf (4-7 is the first stage that needs it)
+ok 1331 - 4-6 is hand-built, and is judged without the leaf (4-7 is the first stage that needs it)
+  ---
+  duration_ms: 0.762166
+  type: 'test'
+  ...
+# Subtest: 4-6: every roll can be finished, has one exit, and takes a quick climber its four minutes
+ok 1332 - 4-6: every roll can be finished, has one exit, and takes a quick climber its four minutes
+  ---
+  duration_ms: 6431.334577
+  type: 'test'
+  ...
+# Subtest: 4-6: each mist spot has a ledge to stand still on and hides only real ledges, all inside its band of mist
+ok 1333 - 4-6: each mist spot has a ledge to stand still on and hides only real ledges, all inside its band of mist
+  ---
+  duration_ms: 2755.052256
+  type: 'test'
+  ...
+# Subtest: 4-6: the mist starts small and grows, the hidden ledges are the way up, and every miss lands on the wide ledge below
+ok 1334 - 4-6: the mist starts small and grows, the hidden ledges are the way up, and every miss lands on the wide ledge below
+  ---
+  duration_ms: 3870.997536
+  type: 'test'
+  ...
+# Subtest: 4-6: the nests are fair: taught alone first, time to cross while they sleep, room to be blown back, clear of the trunks
+ok 1335 - 4-6: the nests are fair: taught alone first, time to cross while they sleep, room to be blown back, clear of the trunks
+  ---
+  duration_ms: 2406.844901
+  type: 'test'
+  ...
+# Subtest: the mist: thick until he stands still on the spot, clear once it settles, and back again a couple of seconds after he moves
+ok 1336 - the mist: thick until he stands still on the spot, clear once it settles, and back again a couple of seconds after he moves
+  ---
+  duration_ms: 735.835423
+  type: 'test'
+  ...
+# Subtest: the nests: moving while they look blows him back a few steps; standing still while they look, nothing happens
+ok 1337 - the nests: moving while they look blows him back a few steps; standing still while they look, nothing happens
+  ---
+  duration_ms: 0.704997
+  type: 'test'
+  ...
+# Subtest: 4-6: no hop in the mist needs more than a plain jump across
+ok 1338 - 4-6: no hop in the mist needs more than a plain jump across
+  ---
+  duration_ms: 2395.692944
+  type: 'test'
+  ...
+# Subtest: 4-6: the nests and the mist together: the eaglets watch the spot and the first step, stand clear of the mist, and the climb leaves their sight
+ok 1339 - 4-6: the nests and the mist together: the eaglets watch the spot and the first step, stand clear of the mist, and the climb leaves their sight
+  ---
+  duration_ms: 2537.97516
+  type: 'test'
+  ...
+# Subtest: 4-6: across the tree: ropes between nest ledges, each rope landing and leaving out of the eaglets' sight
+ok 1340 - 4-6: across the tree: ropes between nest ledges, each rope landing and leaving out of the eaglets' sight
+  ---
+  duration_ms: 2645.591397
+  type: 'test'
+  ...
+# Subtest: 4-6: the high mist: two tall columns, each with a ledge halfway that the lower mist shows and that settles the upper mist
+ok 1341 - 4-6: the high mist: two tall columns, each with a ledge halfway that the lower mist shows and that settles the upper mist
+  ---
+  duration_ms: 1862.221137
+  type: 'test'
+  ...
+# Subtest: the high mist in play: standing at the foot shows the ledge halfway but not above it; standing on that ledge shows the rest
+ok 1342 - the high mist in play: standing at the foot shows the ledge halfway but not above it; standing on that ledge shows the rest
+  ---
+  duration_ms: 623.259646
+  type: 'test'
+  ...
+# Subtest: 4-6: no high branch ends in a long fall: each end over a drop of more than a few hops has a knot of wood (a little wall) at it
+ok 1343 - 4-6: no high branch ends in a long fall: each end over a drop of more than a few hops has a knot of wood (a little wall) at it
+  ---
+  duration_ms: 2031.679125
+  type: 'test'
+  ...
+# Subtest: 4-6: back on the forest floor, a trail of petals leads to the one trunk up from it, and Dot points the way
+ok 1344 - 4-6: back on the forest floor, a trail of petals leads to the one trunk up from it, and Dot points the way
+  ---
+  duration_ms: 2216.630942
+  type: 'test'
+  ...
+# Subtest: 4-6: the ledge halfway up the high mist settles the mist from anywhere on it
+ok 1345 - 4-6: the ledge halfway up the high mist settles the mist from anywhere on it
+  ---
+  duration_ms: 1835.837018
+  type: 'test'
+  ...
+# Subtest: 4-1 is hand-built
+ok 1346 - 4-1 is hand-built
+  ---
+  duration_ms: 0.571555
+  type: 'test'
+  ...
+# Subtest: 4-1: every roll can be finished, has one exit, and takes a quick climber most of two minutes
+ok 1347 - 4-1: every roll can be finished, has one exit, and takes a quick climber most of two minutes
+  ---
+  duration_ms: 1894.261517
+  type: 'test'
+  ...
+# Subtest: 4-1: the rocks are fair: a warning first, time to spare, never where he must climb, and one rock to a ledge
+ok 1348 - 4-1: the rocks are fair: a warning first, time to spare, never where he must climb, and one rock to a ledge
+  ---
+  duration_ms: 893.68014
+  type: 'test'
+  ...
+# Subtest: 4-1: the shrine is across a gap no jump crosses, bridged by the fern frond, and the frond is taught
+ok 1349 - 4-1: the shrine is across a gap no jump crosses, bridged by the fern frond, and the frond is taught
+  ---
+  duration_ms: 1372.880755
+  type: 'test'
+  ...
+# Subtest: 4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and runs its full length (STAGE_SECONDS)
+ok 1350 - 4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and runs its full length (STAGE_SECONDS)
+  ---
+  duration_ms: 2078.592284
+  type: 'test'
+  ...
+# Subtest: 4-2: every gust lane has its chimes, gusts blow both ways, and the leaf and the chimes are taught
+ok 1351 - 4-2: every gust lane has its chimes, gusts blow both ways, and the leaf and the chimes are taught
+  ---
+  duration_ms: 930.198322
+  type: 'test'
+  ...
+# Subtest: 4-2: the second twist rides the leaf on a high wind and turns the wind halfway over the stones, each taught as it first comes
+ok 1352 - 4-2: the second twist rides the leaf on a high wind and turns the wind halfway over the stones, each taught as it first comes
+  ---
+  duration_ms: 952.461776
+  type: 'test'
+  ...
+# Subtest: 4-2 in the real engine: a short flick off the lesson perches drops him in a soft pit, two hops out either way, back up the trunk in seconds
+ok 1353 - 4-2 in the real engine: a short flick off the lesson perches drops him in a soft pit, two hops out either way, back up the trunk in seconds
+  ---
+  duration_ms: 887.531038
+  type: 'test'
+  ...
+# Subtest: World 5's light goes gold, dusk, twilight as the orchids close (Matt, 2026-10-26)
+ok 1354 - World 5's light goes gold, dusk, twilight as the orchids close (Matt, 2026-10-26)
+  ---
+  duration_ms: 3.74307
+  type: 'test'
+  ...
+# Subtest: the two takes of each mood alternate stage to stage: no two stages in a row look the same
+ok 1355 - the two takes of each mood alternate stage to stage: no two stages in a row look the same
+  ---
+  duration_ms: 0.20219
+  type: 'test'
+  ...
+# Subtest: every World 5 strip set is on disk, far, mid and near, and the arena's two paintings
+ok 1356 - every World 5 strip set is on disk, far, mid and near, and the arena's two paintings
+  ---
+  duration_ms: 1.986303
+  type: 'test'
+  ...
+# Subtest: the lip's hoist puts a foot on the ledge: caught at its corner with only a pixel over the edge, he stands, never hangs there
+ok 1357 - the lip's hoist puts a foot on the ledge: caught at its corner with only a pixel over the edge, he stands, never hangs there
+  ---
+  duration_ms: 2719.966898
+  type: 'test'
+  ...
+# Subtest: at a soft pit's far side, a flick that leans either way climbs: one up each step, two from the floor up onto the bank
+ok 1358 - at a soft pit's far side, a flick that leans either way climbs: one up each step, two from the floor up onto the bank
+  ---
+  duration_ms: 10730.199433
+  type: 'test'
+  ...
+# Subtest: a jump into a face carries him over its top with the thumb lifted after it, and steering away still drops him back
+ok 1359 - a jump into a face carries him over its top with the thumb lifted after it, and steering away still drops him back
+  ---
+  duration_ms: 762.954098
+  type: 'test'
+  ...
+# Subtest: 5-3 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+ok 1360 - 5-3 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+  ---
+  duration_ms: 4227.597383
+  type: 'test'
+  ...
+# Subtest: 5-4 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+ok 1361 - 5-4 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+  ---
+  duration_ms: 6583.939586
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+ok 1362 - 5-5 in the real engine: every lip in the stage (its soft pits' steps and banks, its stumps) is climbed by a flick leaning either way
+  ---
+  duration_ms: 2516.125382
+  type: 'test'
+  ...
+# Subtest: 5-5: every cocoon opens to three taps from the ground (or the branch) it hangs over, standing anywhere a fist reaches it
+ok 1363 - 5-5: every cocoon opens to three taps from the ground (or the branch) it hangs over, standing anywhere a fist reaches it
+  ---
+  duration_ms: 5949.52759
+  type: 'test'
+  ...
+# Subtest: 5-5: the wrapped chairs read as furniture (wood and cloth showing) and stand well away from the cocoons; none lies there shut
+ok 1364 - 5-5: the wrapped chairs read as furniture (wood and cloth showing) and stand well away from the cocoons; none lies there shut
+  ---
+  duration_ms: 82.847861
+  type: 'test'
+  ...
+# Subtest: World 5's jumping spiders: a clean stomp beats one, and a jump over one, crouched or rushing, costs nothing
+ok 1365 - World 5's jumping spiders: a clean stomp beats one, and a jump over one, crouched or rushing, costs nothing
+  ---
+  duration_ms: 3358.002366
+  type: 'test'
+  ...
+# Subtest: 5-1: a crouching spider's "!" is drawn over the light and the pop-up words, as large on a sideways screen as upright
+ok 1366 - 5-1: a crouching spider's "!" is drawn over the light and the pop-up words, as large on a sideways screen as upright
+  ---
+  duration_ms: 31.565845
+  type: 'test'
+  ...
+# Subtest: the pouch scene's lines are said once: a line that gives way or is cut after it has been mostly read is not said again
+ok 1367 - the pouch scene's lines are said once: a line that gives way or is cut after it has been mostly read is not said again
+  ---
+  duration_ms: 2.237359
+  type: 'test'
+  ...
+# Subtest: 5-5: no picture sequence of the pouch follows 5-5 (it plays in the stage); the other worlds keep theirs, World 4 after 4-D
+ok 1368 - 5-5: no picture sequence of the pouch follows 5-5 (it plays in the stage); the other worlds keep theirs, World 4 after 4-D
+  ---
+  duration_ms: 0.306853
+  type: 'test'
+  ...
+# Subtest: 5-5: while the pouch scene plays, Dot's bubble keeps off Pokey and off every cocoon still shut
+ok 1369 - 5-5: while the pouch scene plays, Dot's bubble keeps off Pokey and off every cocoon still shut
+  ---
+  duration_ms: 19.906177
+  type: 'test'
+  ...
+# Subtest: 5-4: the silk is taught in silk words, and the let-go follows the grab at once, while he swings
+ok 1370 - 5-4: the silk is taught in silk words, and the let-go follows the grab at once, while he swings
+  ---
+  duration_ms: 923.667777
+  type: 'test'
+  ...
+# Subtest: 5-4: with the Seamstress's lace on him at her sheet, one slide back and forth frees him as surely as separate short slides
+ok 1371 - 5-4: with the Seamstress's lace on him at her sheet, one slide back and forth frees him as surely as separate short slides
+  ---
+  duration_ms: 224.431058
+  type: 'test'
+  ...
+# Subtest: the new HUD's goal counter never fades past reading (over a log it stays at least 60% there)
+ok 1372 - the new HUD's goal counter never fades past reading (over a log it stays at least 60% there)
+  ---
+  duration_ms: 0.474557
+  type: 'test'
+  ...
+# Subtest: 5-2: back at a flag after a lost life, standing untouched costs no heart (as at the stage start)
+ok 1373 - 5-2: back at a flag after a lost life, standing untouched costs no heart (as at the stage start)
+  ---
+  duration_ms: 611.498039
+  type: 'test'
+  ...
+# Subtest: 5-5 is hand-built: a rescue, about three minutes, in the dusk (the other take from 5-4), free 12 creatures
+ok 1374 - 5-5 is hand-built: a rescue, about three minutes, in the dusk (the other take from 5-4), free 12 creatures
+  ---
+  duration_ms: 140.484362
+  type: 'test'
+  ...
+# Subtest: 5-5: every roll can be finished, runs its full length, holds the goal half again over, and keeps nothing past the shrine
+ok 1375 - 5-5: every roll can be finished, runs its full length, holds the goal half again over, and keeps nothing past the shrine
+  ---
+  duration_ms: 594.426657
+  type: 'test'
+  ...
+# Subtest: 5-5: the first cocoons hang low over the ground, before any that needs a branch, the web or a spider
+ok 1376 - 5-5: the first cocoons hang low over the ground, before any that needs a branch, the web or a spider
+  ---
+  duration_ms: 306.339793
+  type: 'test'
+  ...
+# Subtest: 5-5: the high web only a silk line reaches (above any jump), over ground or a soft pit, with its cocoons on top of the goal
+ok 1377 - 5-5: the high web only a silk line reaches (above any jump), over ground or a soft pit, with its cocoons on top of the goal
+  ---
+  duration_ms: 364.550064
+  type: 'test'
+  ...
+# Subtest: 5-5: the rest branch where the orchids hang in rows, a hop up, with nothing that bites near it, and the keepsake's fern
+ok 1378 - 5-5: the rest branch where the orchids hang in rows, a hop up, with nothing that bites near it, and the keepsake's fern
+  ---
+  duration_ms: 252.488258
+  type: 'test'
+  ...
+# Subtest: the pouch scene keeps the script's lines (12 words or fewer each), with its speakers, and a breath between them
+ok 1379 - the pouch scene keeps the script's lines (12 words or fewer each), with its speakers, and a breath between them
+  ---
+  duration_ms: 13.676133
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: the pouch scene plays at the rest branch in order, and standing there through it the silk never creeps
+ok 1380 - 5-5 in the real engine: the pouch scene plays at the rest branch in order, and standing there through it the silk never creeps
+  ---
+  duration_ms: 536.410011
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: off the rest branch, while the scene plays, standing still still brings the silk
+ok 1381 - 5-5 in the real engine: off the rest branch, while the scene plays, standing still still brings the silk
+  ---
+  duration_ms: 66.759294
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: three taps free a creature, Dot says what to do first, and the goal counts it
+ok 1382 - 5-5 in the real engine: three taps free a creature, Dot says what to do first, and the goal counts it
+  ---
+  duration_ms: 78.167248
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: every cocoon off the web is freed by three taps from where it hangs
+ok 1383 - 5-5 in the real engine: every cocoon off the web is freed by three taps from where it hangs
+  ---
+  duration_ms: 264.243738
+  type: 'test'
+  ...
+# Subtest: Meeca's stage is the first of World 5 (before 5-1), as Dot's flight 4-D sits after 4-5: the built stages keep their numbers
+ok 1384 - Meeca's stage is the first of World 5 (before 5-1), as Dot's flight 4-D sits after 4-5: the built stages keep their numbers
+  ---
+  duration_ms: 0.261145
+  type: 'test'
+  ...
+# Subtest: 5-5: the first cocoon is tied across the path: he cannot walk or hop past it until three taps punch it open
+ok 1385 - 5-5: the first cocoon is tied across the path: he cannot walk or hop past it until three taps punch it open
+  ---
+  duration_ms: 573.945163
+  type: 'test'
+  ...
+# Subtest: 5-5: the cocoons read: at his head, wriggling, eyes looking out, and Dot's ring on the first, upright and sideways
+ok 1386 - 5-5: the cocoons read: at his head, wriggling, eyes looking out, and Dot's ring on the first, upright and sideways
+  ---
+  duration_ms: 223.331396
+  type: 'test'
+  ...
+# Subtest: 5-5 in the real engine: the pouch scene plays on the calm stretch only: walked on past it, it waits, and the spiders after it are spiders
+ok 1387 - 5-5 in the real engine: the pouch scene plays on the calm stretch only: walked on past it, it waits, and the spiders after it are spiders
+  ---
+  duration_ms: 350.869027
+  type: 'test'
+  ...
+# Subtest: 5-1: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new
+ok 1388 - 5-1: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new
+  ---
+  duration_ms: 284.77292
+  type: 'test'
+  ...
+# Subtest: 5-2: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new
+ok 1389 - 5-2: standing still, Dot's silk warning is on screen before the wrap, in the old look and the new
+  ---
+  duration_ms: 85.90605
+  type: 'test'
+  ...
+# Subtest: every roll on both settings has a clear lane he can reach, room between obstacles, and time to read them
+ok 1390 - every roll on both settings has a clear lane he can reach, room between obstacles, and time to read them
+  ---
+  duration_ms: 89.596954
+  type: 'test'
+  ...
+# Subtest: a sure player slides the whole chute without a hit, on both settings, and it takes about 110 s
+ok 1391 - a sure player slides the whole chute without a hit, on both settings, and it takes about 110 s
+  ---
+  duration_ms: 180.546077
+  type: 'test'
+  ...
+# Subtest: Easy is slower with fewer obstacles, never two lanes of heads at once
+ok 1392 - Easy is slower with fewer obstacles, never two lanes of heads at once
+  ---
+  duration_ms: 0.254661
+  type: 'test'
+  ...
+# Subtest: the first of each kind is taught: his line comes before it, and running into it costs no heart
+ok 1393 - the first of each kind is taught: his line comes before it, and running into it costs no heart
+  ---
+  duration_ms: 43.794166
+  type: 'test'
+  ...
+# Subtest: a hit costs one heart and a moment of safety, not a life; a life lost goes back to the last flag
+ok 1394 - a hit costs one heart and a moment of safety, not a life; a life lost goes back to the last flag
+  ---
+  duration_ms: 0.899523
+  type: 'test'
+  ...
+# Subtest: 7-4 side-on: the crumble drops into the chute, the hall floor runs on past it, a hidden catch floor under it, the shrine in the chamber
+ok 1395 - 7-4 side-on: the crumble drops into the chute, the hall floor runs on past it, a hidden catch floor under it, the shrine in the chamber
+  ---
+  duration_ms: 1.767312
+  type: 'test'
+  ...
+# Subtest: every move is needed (Matt: "everything can be done just by avoiding objects"): a player who only steers is hit by every wall, gap and doorway after the taught ones
+ok 1396 - every move is needed (Matt: "everything can be done just by avoiding objects"): a player who only steers is hit by every wall, gap and doorway after the taught ones
+  ---
+  duration_ms: 42.546929
+  type: 'test'
+  ...
+# Subtest: the dark under the temple: every obstacle has its own light, well above the ambient, and Pokey never goes below 60%
+ok 1397 - the dark under the temple: every obstacle has its own light, well above the ambient, and Pokey never goes below 60%
+  ---
+  duration_ms: 44.546741
+  type: 'test'
+  ...
+# Subtest: every jump is makeable by a real thumb (Matt, 2026-10-29: "Couldn't make it thru... let's make sure it's possible")
+ok 1398 - every jump is makeable by a real thumb (Matt, 2026-10-29: "Couldn't make it thru... let's make sure it's possible")
+  ---
+  duration_ms: 98.586614
+  type: 'test'
+  ...
+# Subtest: every slide petal is possible, and none makes a required jump fail if he goes for it (Matt, 2026-10-29)
+ok 1399 - every slide petal is possible, and none makes a required jump fail if he goes for it (Matt, 2026-10-29)
+  ---
+  duration_ms: 82.872057
+  type: 'test'
+  ...
+# Subtest: a boulder in the channel dries the fall; rolled back out, the fall pours again
+ok 1400 - a boulder in the channel dries the fall; rolled back out, the fall pours again
+  ---
+  duration_ms: 0.608212
+  type: 'test'
+  ...
+# Subtest: a surge fall pours, eases (the warning), then goes quiet, on its own rhythm
+ok 1401 - a surge fall pours, eases (the warning), then goes quiet, on its own rhythm
+  ---
+  duration_ms: 0.178554
+  type: 'test'
+  ...
+# Subtest: the pool drains slowly after its fall is plugged, and its log sinks with it
+ok 1402 - the pool drains slowly after its fall is plugged, and its log sinks with it
+  ---
+  duration_ms: 0.14458
+  type: 'test'
+  ...
+# Subtest: pouring water pushes him down in the air and slows his walk; a trickle does nothing
+ok 1403 - pouring water pushes him down in the air and slows his walk; a trickle does nothing
+  ---
+  duration_ms: 0.506487
+  type: 'test'
+  ...
+# Subtest: inside a fall means between its edges and overlapping its height
+ok 1404 - inside a fall means between its edges and overlapping its height
+  ---
+  duration_ms: 4.185012
+  type: 'test'
+  ...
+# Subtest: every golden seed the game writes is part of the adventure: a save file carries it, a New Game clears it
+ok 1405 - every golden seed the game writes is part of the adventure: a save file carries it, a New Game clears it
+  ---
+  duration_ms: 407.6111
+  type: 'test'
+  ...
+# Subtest: what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+ok 1406 - what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file
+  ---
+  duration_ms: 1.063862
+  type: 'test'
+  ...
+1..1406
+# tests 1406
+# suites 0
+# pass 1406
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1465461.807659
+EXIT 0
