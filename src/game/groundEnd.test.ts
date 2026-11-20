@@ -7,7 +7,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { END_SOLID, solidEndAlpha } from './groundPaint.ts';
+import { END_SOLID, endFaded, endSolid, solidEndAlpha } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 
 const W = 200, H = 300, EDGE = 160;
@@ -53,5 +53,49 @@ test('2c: every world\'s face line (the soil\'s and the river\'s cut) has 25 poi
       assert.ok(e.face[0] <= e.cx + 1e-9, `w${w}: the face starts at the corner or in`);
       for (const f of e.face) assert.ok(f > 0.2 && f < 1, `w${w}: face share ${f} on the piece`);
     }
+  }
+});
+
+/** a canvas that records its bakes and can report a 2D context loss (canvasLost.ts asks isContextLost) */
+function bakeable(made: unknown[]) {
+  let lost = false;
+  const cv = {
+    width: 0, height: 0,
+    getContext: () => ({
+      isContextLost: () => lost, drawImage() {}, putImageData() {}, fillRect() {}, createLinearGradient: () => ({ addColorStop() {} }),
+      getImageData: () => ({ data: new Uint8ClampedArray(cv.width * cv.height * 4) }),
+      set globalCompositeOperation(_v: string) {}, set fillStyle(_v: unknown) {},
+    }),
+    addEventListener() {},
+    lose() { lost = true; },
+  };
+  made.push(cv);
+  return cv;
+}
+
+test('2c: the solid bank end and its step copies are baked again when the phone takes their canvas back (LESSONS D6)', () => {
+  const g = globalThis as { document?: unknown };
+  const doc = g.document;
+  const made: Array<ReturnType<typeof bakeable>> = [];
+  g.document = { createElement: () => bakeable(made) };
+  try {
+    const img = {} as HTMLImageElement;
+    const e = { ...GROUND_FRAMES[2].end, x: 1, y: 7 };
+    const a = endSolid(img, e, 2);
+    assert.ok(a, 'baked');
+    assert.equal(endSolid(img, e, 2), a, 'kept while it holds its picture');
+    const s1 = endFaded(img, e, 2, 120);
+    assert.ok(s1, 'a step copy cut from it');
+    assert.equal(endFaded(img, e, 2, 120), s1, 'the step copy kept');
+    (made[0] as ReturnType<typeof bakeable>).lose();
+    const b = endSolid(img, e, 2);
+    assert.ok(b && b !== a, 'a new solid copy after the loss');
+    const s2 = endFaded(img, e, 2, 120);
+    assert.ok(s2 && s2 !== s1, 'the step is cut again from the new solid copy');
+    (made[made.length - 1] as ReturnType<typeof bakeable>).lose();
+    const s3 = endFaded(img, e, 2, 120);
+    assert.ok(s3 && s3 !== s2, 'a lost step copy is cut again');
+  } finally {
+    g.document = doc;
   }
 });

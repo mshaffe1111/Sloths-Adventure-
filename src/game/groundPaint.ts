@@ -326,7 +326,7 @@ const solidEnds = new Map<string, HTMLCanvasElement | null>();
  * The end piece with its rock solid (solidEndAlpha), baked once per world's piece; null where the page cannot read the sheet back (then
  * the sheet's own piece is drawn). Baked again when the phone has taken the copy back (canvasLost.ts, LESSONS D6).
  */
-function endSolid(img: HTMLImageElement, e: GroundSheet['end'], w: number): HTMLCanvasElement | null {
+export function endSolid(img: HTMLImageElement, e: GroundSheet['end'], w: number): HTMLCanvasElement | null {
   const key = `${w}:${e.x},${e.y}`;
   const had = solidEnds.get(key);
   if (had && !canvasLost(had, 'bank end')) return had;
@@ -371,7 +371,7 @@ const cutFrom = new WeakMap<HTMLCanvasElement, HTMLCanvasElement | null>();
  * once per world and cut (to 8 units), so a step's end has no hard line where it stops. Made from the solid piece (endSolid) where there
  * is one; baked again when either copy is taken back (LESSONS D6).
  */
-function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
+export function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
   const key = `${w}:${e.x},${e.y}:${Math.round(cut / 8)}:${fade}`;
   const src = endSolid(img, e, w);
   const had = cutEnds.get(key);
