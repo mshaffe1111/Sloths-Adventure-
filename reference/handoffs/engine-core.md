@@ -17,7 +17,28 @@ Not merged yet: §0zq-25c ENG-25c (t-eng-25c; INT-14 merges it). Merged at INT-1
   firsttimer.ts, all snap/kitBeat-only: overSmall never steers a snap hop back onto the stone it leaves (jump.snapFrom); at a stone's lip
   the press holds still through the thumb's lag (pending.still); a dazed snapper he can still reach is kept however far the bounce took him.
 - **Stills of a toy row on the real page** without game code: reference/qa-reports/ENG-25c/shootSnap.mjs plants the toy as 2-5's listed roll
-  in page memory (dev vite). Use its pattern until 2-5 is laid.
+  in page memory (dev vite). Use its pattern until 2-5 is laid (it does not launch yet: see the next step).
+- **STATE at stop (9:47 PM ET 11-19, the lead's context stop; code head c794249d, docs after it):** DONE and proven: (1) level lay +
+  snapFaults rule (RED red-level.txt -> green); (2) snapper ground rule (RED red-ground.txt -> green); (3) the lead's straddle ruling,
+  padPiece.ts hurts by his middle (RED red-straddle.txt: 4 hearts standing across the water -> green); (4) three bot fixes. Proven on
+  c794249d: tsc PASS; snapRow + w2Cast + snapRide + snapperBonk + snapChannel + predatorCasts 56 pass / 0 fail; probes (ENG-25b's tools,
+  base d36638be vs c794249d): water 5 lives at the pond in 24 runs -> 0 (bites 0 -> 0); snapper 39/40 cleared clean -> 40/40, skill off
+  0/40 -> 0/40; flick from a stand (flickFlight.txt) last stone to bank 89% -> 100%, stone to stone 96% -> 99%.
+  lockall vs MAIN 6e7b85f8: 85/102 unchanged, 17 moved (lockall-vs-main-c794249d.txt: 1-6..1-9, 2-1, 2-2, 2-4, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7,
+  7-5, 7-9, 8-3, 8-5). EXPECTED to be the base's own moves since main (INT-13 carries 1-6..1-9, FIX-284's 2-x, ENG-285), NOT PROVEN: the
+  branch-vs-BASE lock was stopped unfinished. NOT DONE: stills (shootSnap.mjs plants the toy as 2-5's listed roll in page memory, but
+  `__play('2-5')` never starts an engine: diag listed true, W2_STAGES 2-5 removed, listedRoll true, engine false, no page/console error);
+  the full gate list; the REPORT.
+- **EXACT NEXT STEP (a fresh member, from t-eng-25c head):** (a) `npm install --no-save --no-audit --no-fund --legacy-peer-deps`.
+  (b) In a worktree of d36638be: `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json`; on t-eng-25c:
+  `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-base.json`: expect 102/102 unchanged (2-5 is not laid; no shipped stage has a
+  snap row or a kitBeat animal). Any move: stop and tell the lead. (c) The CLAUDE.md list once on the head, the suite in shards, plus
+  coveragecheck and every seed list --check, tierBots (firsttimer.ts changed: snap/kitBeat-only branches, the 1-1 calibration must not
+  move). (d) Stills: find why `__play('2-5')` does not launch after the plant (App.tsx __play: allLevels.find; check 2-5's config and
+  launchEngine's story/cutscene path), or plant under a stage id __play does launch; shoot upright 412x915 and sideways 915x412, Pokey on a
+  stone and on the bank lip, whole screen; the lead judges them. (e) REPORT reference/qa-reports/ENG-25c/REPORT.md: the numbers above, the
+  plants, the gate table (each PASS/FAIL), stills, the walkable finding + the lead's ruling (for BUILD-25 and the designer), Learned:
+  "fly the counter-move (walking) before calling a gap a hop", "a bot's 'on' must use the engine's own rule (middle over), not standingOnId".
 
 ## 0zq-13b. INT-13b (t-int-13, 11-19 evening): the integration's last merge, one cross-branch red, every gate once
 - **Snap stones are pad { by: 'beat', on: 'bites' } (rideLay.ts):** any code that treats every `by: 'beat'` pad as a breathing (sinking)
