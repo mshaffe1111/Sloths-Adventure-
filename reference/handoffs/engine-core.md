@@ -2,6 +2,18 @@
 
 Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-13b. INT-13b (t-int-13, 11-19 evening): the integration's last merge, one cross-branch red, every gate once
+- **Snap stones are pad { by: 'beat', on: 'bites' } (rideLay.ts):** any code that treats every `by: 'beat'` pad as a breathing (sinking)
+  row must also skip `on === 'bites'`. breathAim.ts breathsAhead (FIX-284) did not and aimed a wave row's bar at a put-back (2 bites for
+  the child on Easy, snapRide.test 'wave'); fixed in 4529d5e6 with the plant breathAim.test.ts 'a SNAP STONE row'. padPiece.ts and
+  rideLay.ts:430 already split them. Whether 2-5's snap rows get their own put-back aim is BUILD-25's design call (today: none).
+- **Trap: a merge can be red where both branches are green.** The red came only from FIX-284's merge over ENG-25b's stones, and it lives in
+  the CI tool line (tools/inspect/*.test.ts), not the suite. Run tsc + the CI tool line after EVERY integration merge (D92, release.md step 0).
+- **tierBots.test samples 3 variants a tier and setting:** t-build-24c moved child Easy v25 on 1-1 (303.6 -> 303.5 s) and its test
+  passed; the full calibration (BOTS.md command, about 3 min) is the only check that sees every run (R-165.317 widens the test).
+- **clipcheck under heavy load** (3 suite shards + paintcheck beside it) reported 4 known entries 'stale' (74 of 83 seen, 900 s); alone it
+  passes (83, 324 s). Run it with the machine quiet before calling its stale list real.
+
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
   child on Normal as LIVES: seeds 4 and 5, 5+ more lost without it (measured 1 -> 9; the runs are frame-identical up to the both-ways back
