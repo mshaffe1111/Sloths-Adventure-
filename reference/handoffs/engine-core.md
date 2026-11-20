@@ -1,6 +1,23 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+Not merged yet: §0zq-25c ENG-25c (t-eng-25c; INT-14 merges it). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
+
+## 0zq-25c. ENG-25c (t-eng-25c from t-int-13 d36638be, 11-19 evening): snap rows level with the banks; the snapper's ground; the straddle
+- **A snap row's floors sit level with the banks** (rideLay.ts layPads; snapFaults "not level with the banks"). Pads still float PAD_LAY.drop
+  under. The flight (snapClock.ts) flew it level; at 34 px under, the flick from the last stone up to the far bank lost 26 of 265 to water.
+- **Level rows are WALKABLE** (reference/qa-reports/ENG-25c/walkFlight.txt): his feet stand 13 px past a floor's end and the walk-off grace
+  carries him, so 30-44 px of water crosses dry with no hop (50 from a run; 56+ drops him). The lead ruled 11-19: fine, 2-5's lesson is the
+  count, not the hop. Do not "fix" it by widening the water without a design re-fly (SNAP_FAIR.gap is 30-40).
+- **A snap stone bites only with his MIDDLE over it** (padPiece.ts hurts: grounded, feet at its top, p.x within it), never by standingOnId:
+  straddling 30 px of water his toes touch the next stone. Any bot or tool that asks "is he on a biting stone" must use the same rule
+  (firsttimer.ts snapGo's flee branch does).
+- **The snapper's ground** (pipeline.ts beatCastFaults, BONK_LANDING { over: 107, past: 176 } from ENG-25b's bonkFlight): any clock-keeping
+  animal (Enemy.kitBeat), any world: no floor higher than its ground within 107 px over its back, out to 176 px past its patch.
+- **Bots on a 110 px pitch** (30 px water; the run tap is 119 px): he arrives at stones' far lips. Three traced bot faults fixed in
+  firsttimer.ts, all snap/kitBeat-only: overSmall never steers a snap hop back onto the stone it leaves (jump.snapFrom); at a stone's lip
+  the press holds still through the thumb's lag (pending.still); a dazed snapper he can still reach is kept however far the bounce took him.
+- **Stills of a toy row on the real page** without game code: reference/qa-reports/ENG-25c/shootSnap.mjs plants the toy as 2-5's listed roll
+  in page memory (dev vite). Use its pattern until 2-5 is laid.
 
 ## 0zq-13b. INT-13b (t-int-13, 11-19 evening): the integration's last merge, one cross-branch red, every gate once
 - **Snap stones are pad { by: 'beat', on: 'bites' } (rideLay.ts):** any code that treats every `by: 'beat'` pad as a breathing (sinking)
