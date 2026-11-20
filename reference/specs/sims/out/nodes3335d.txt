@@ -1,0 +1,8 @@
+3-3: A Tx1&<:#spore@puff:&ocelot*1 Pf1> Pg1&<:#spore@puff:&ocelot*1 Xx1&>:#spore@puff:&ocelot*2 R Pc1^< Wg1&>:#spore@puff:&ocelot*1 R Pf1< Cx1&>:#spore@puff:&ocelot*2 R Sx1&<:#spore@puff:&ocelot*3 E
+  14 tokens; checkCode: no errors
+3-4: A Pc1^< Tp1^<:#soft@moon Pf1^< Xp1^>:#soft@moon R Pr1< Wp1^>:#soft@moon R Pb1^< Cf1^>:#soft@moon R Sp1^<:#soft@moon E
+  14 tokens; checkCode: no errors
+3-5: A Th1<:#soft:#vine Pg1> Pr1<:#vine Xh1>:#vine R Pc1_< Wh1>:#vine R Pf1< Cm1>:#vine R Sr1<:#vine E
+  14 tokens; checkCode: no errors
+3-5 with the roster id (R-165.319): A Th1&<:#soft:&thornVine*1 Pg1> E
+  0 tokens; parseCode refused: node code: token 2 "Th1&<:#soft:&thornVine*1": "thornVine*1" is not a threat ("kind", "kind*2", "kind!" or "kind*2!" awake, "kind*2z" asleep)  (refused, as R-165.319 says)

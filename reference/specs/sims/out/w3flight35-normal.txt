@@ -1,0 +1,100 @@
+hop normal tap from a full run: 0.43 s from the press to the ground, 120 px along, apex 62 px
+hop normal tap from a stand: 0.43 s from the press to the ground, 0 px along, apex 62 px
+punch normal: the claw first reaches out 0.10 s after the press; the move ends at 0.33 s (jab startup 0.06 active 0.08 recovery 0.14)
+come normal bell 150 px off (drawn): under the bell in 1.53 s (hunt 95 px/s); looks 4.53 s (hears 4.5); back on its round 6.07 s after the ring
+come normal bell 300 px off (drawn): under the bell in 3.13 s (hunt 95 px/s); looks 4.53 s (hears 4.5); back on its round 7.67 s after the ring
+come normal bell 450 px off (drawn): under the bell in 4.70 s (hunt 95 px/s); looks 4.53 s (hears 4.5); back on its round 9.23 s after the ring
+come normal bell 600 px off (drawn): under the bell in 6.30 s (hunt 95 px/s); looks 4.53 s (hears 4.5); back on its round 10.83 s after the ring
+come normal bell 680 px off (drawn): under the bell in 6.30 s (hunt 95 px/s); looks 4.53 s (hears 4.5); back on its round 10.83 s after the ring
+come normal: a round 600 px wide with the bell at one end: in hearing 100% of the time; a full lap 21.8 s
+come normal: a round 900 px wide with the bell at one end: in hearing 80% of the time; a full lap 32.7 s
+come normal: a round 1200 px wide with the bell at one end: in hearing 53% of the time; a full lap 43.6 s
+lure normal cloud 6.4/2.2 (clear 4.2 s), ocelot 200 px off, dwell 0.3: caught on 95% of rings; ring->yawn mean 3.2 s, worst 5.9 s
+lure normal cloud 6.4/2.2 (clear 4.2 s), ocelot 500 px off, dwell 0.3: caught on 95% of rings; ring->yawn mean 6.3 s, worst 9.1 s
+lure normal cloud 6.4/2.2: rung as the warn glow starts -> 100 px: 1.4 s, 300 px: 2.7 s, 500 px: 7.8 s
+lure normal cloud 7/2.2 (clear 4.8 s), ocelot 200 px off, dwell 0.3: caught on 87% of rings; ring->yawn mean 3.2 s, worst 5.9 s
+lure normal cloud 7/2.2 (clear 4.8 s), ocelot 500 px off, dwell 0.3: caught on 87% of rings; ring->yawn mean 6.3 s, worst 9.1 s
+lure normal cloud 7/2.2: rung as the warn glow starts -> 100 px: 1.4 s, 300 px: 2.7 s, 500 px: 8.4 s
+lure normal cloud 7.2/2 (clear 5.2 s), ocelot 200 px off, dwell 0.3: caught on 82% of rings; ring->yawn mean 3.2 s, worst 5.9 s
+lure normal cloud 7.2/2 (clear 5.2 s), ocelot 500 px off, dwell 0.3: caught on 82% of rings; ring->yawn mean 6.4 s, worst 9.1 s
+lure normal cloud 7.2/2: rung as the warn glow starts -> 100 px: 1.4 s, 300 px: 2.7 s, 500 px: 8.6 s
+lure normal cloud 8.4/2 (clear 6.4 s), ocelot 200 px off, dwell 0.3: caught on 69% of rings; ring->yawn mean 3.2 s, worst 5.9 s
+lure normal cloud 8.4/2 (clear 6.4 s), ocelot 500 px off, dwell 0.3: caught on 71% of rings; ring->yawn mean 6.4 s, worst 9.1 s
+lure normal cloud 8.4/2: rung as the warn glow starts -> 100 px: 1.4 s, 300 px: 2.7 s, 500 px: MISS
+lure normal cloud 9.6/2 (clear 7.6 s), ocelot 200 px off, dwell 0.3: caught on 61% of rings; ring->yawn mean 3.2 s, worst 5.9 s
+lure normal cloud 9.6/2 (clear 7.6 s), ocelot 500 px off, dwell 0.3: caught on 62% of rings; ring->yawn mean 6.4 s, worst 9.1 s
+lure normal cloud 9.6/2: rung as the warn glow starts -> 100 px: 1.4 s, 300 px: 2.7 s, 500 px: MISS
+bait normal: a 400 px drop lands 397 px of fall (noise 358 px); landing -> feet over its sight (tall 80) 0.57 s (walk 220 px from the rim side + climb)
+bait normal cloud 6.4/2.2, ocelot 200 px off, he lands 120 px past the patch's middle: caught 49% of landing phases, tell on him 0%; landing->yawn worst 3.0 s
+bait normal cloud 6.4/2.2, ocelot 200 px off, he lands 140 px past the patch's middle: caught 49% of landing phases, tell on him 0%; landing->yawn worst 3.0 s
+bait normal cloud 6.4/2.2, ocelot 300 px off, he lands 120 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal cloud 6.4/2.2, ocelot 300 px off, he lands 140 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal cloud 6.4/2.2, ocelot 450 px off, he lands 120 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal cloud 7/2.2, ocelot 200 px off, he lands 120 px past the patch's middle: caught 45% of landing phases, tell on him 0%; landing->yawn worst 3.0 s
+bait normal cloud 7/2.2, ocelot 200 px off, he lands 140 px past the patch's middle: caught 45% of landing phases, tell on him 0%; landing->yawn worst 3.0 s
+bait normal cloud 7/2.2, ocelot 300 px off, he lands 120 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal cloud 7/2.2, ocelot 300 px off, he lands 140 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal cloud 7/2.2, ocelot 450 px off, he lands 120 px past the patch's middle: caught 0% of landing phases, tell on him 0%; landing->yawn worst - s
+bait normal landed (120 px past) as the warn starts, ocelot 200 px off: caught at 1.7 s
+bait normal landed (120 px past) as the warn starts, ocelot 450 px off: MISS
+climb normal: Up at a root's foot: feet 90 px up at 0.43 s, 200 px at 0.93 s, 400 px at 1.83 s; 222 px/s on the column
+stair normal: a held jump (the Pad held 220 ms) tops out 97 px, 0.63 s from the press to the ground
+stair normal rise 80 on 140 (steps 120 wide): walk to the edge, 0.1 s, held jump: on step 3 at 2.10 s
+stair normal rise 80 on 140 (steps 120 wide): walk to the edge, 0.3 s, held jump: on step 3 at 2.70 s
+stair normal rise 80 on 140 (steps 120 wide): walk to the edge, 0.5 s, held jump: on step 3 at 3.30 s
+stair normal rise 100 on 140 (steps 120 wide): walk to the edge, 0.1 s, held jump: on step 3 at 2.00 s
+stair normal rise 100 on 140 (steps 120 wide): walk to the edge, 0.3 s, held jump: on step 3 at 2.60 s
+stair normal rise 100 on 140 (steps 120 wide): walk to the edge, 0.5 s, held jump: on step 3 at 3.20 s
+stair normal rise 100 on 120 (steps 120 wide): walk to the edge, 0.1 s, held jump: on step 3 at 1.87 s
+stair normal rise 100 on 120 (steps 120 wide): walk to the edge, 0.3 s, held jump: on step 3 at 2.47 s
+stair normal rise 100 on 120 (steps 120 wide): walk to the edge, 0.5 s, held jump: on step 3 at 3.07 s
+stair normal rise 120 on 120 (steps 120 wide): walk to the edge, 0.1 s, held jump: reached step 0 only
+stair normal rise 120 on 120 (steps 120 wide): walk to the edge, 0.3 s, held jump: reached step 0 only
+stair normal rise 120 on 120 (steps 120 wide): walk to the edge, 0.5 s, held jump: reached step 0 only
+stair normal rise 140 on 120 (steps 120 wide): walk to the edge, 0.1 s, held jump: reached step 0 only
+stair normal rise 140 on 120 (steps 120 wide): walk to the edge, 0.3 s, held jump: reached step 0 only
+stair normal rise 140 on 120 (steps 120 wide): walk to the edge, 0.5 s, held jump: reached step 0 only
+beam normal Normal storey (open 0.4 + rest 3.6 + droop 1 = 5.0 s): sees it 0.3 s after the bloom, 0.1 s on each step -> on the top stone at 2.97 s; left the last flower at 2.60 s; the least time to spare on any flower 2.40 s (lives lost 0)
+beam normal Normal storey (open 0.4 + rest 3.6 + droop 1 = 5.0 s): sees it 0.5 s after the bloom, 0.3 s on each step -> on the top stone at 3.77 s; left the last flower at 3.40 s; the least time to spare on any flower 1.60 s (lives lost 0)
+beam normal Normal storey (open 0.4 + rest 3.6 + droop 1 = 5.0 s): sees it 0.8 s after the bloom, 0.5 s on each step -> on the top stone at 4.67 s; left the last flower at 4.30 s; the least time to spare on any flower 0.70 s (lives lost 0)
+beam normal Normal storey (open 0.4 + rest 3.6 + droop 1 = 5.0 s): sees it 1.2 s after the bloom, 0.5 s on each step -> on the top stone at 5.07 s; left the last flower at 4.70 s; the least time to spare on any flower 0.30 s (lives lost 0)
+beam normal Easy storey (open 0.4 + rest 4.8 + droop 1.6 = 6.8 s): sees it 0.3 s after the bloom, 0.1 s on each step -> on the top stone at 2.97 s; left the last flower at 2.60 s; the least time to spare on any flower 4.20 s (lives lost 0)
+beam normal Easy storey (open 0.4 + rest 4.8 + droop 1.6 = 6.8 s): sees it 0.5 s after the bloom, 0.3 s on each step -> on the top stone at 3.77 s; left the last flower at 3.40 s; the least time to spare on any flower 3.40 s (lives lost 0)
+beam normal Easy storey (open 0.4 + rest 4.8 + droop 1.6 = 6.8 s): sees it 0.8 s after the bloom, 0.5 s on each step -> on the top stone at 4.67 s; left the last flower at 4.30 s; the least time to spare on any flower 2.50 s (lives lost 0)
+beam normal Easy storey (open 0.4 + rest 4.8 + droop 1.6 = 6.8 s): sees it 1.2 s after the bloom, 0.5 s on each step -> on the top stone at 5.07 s; left the last flower at 4.70 s; the least time to spare on any flower 2.10 s (lives lost 0)
+beam normal plant: sees it 3.0 s after the bloom, 0.5 s a step, Normal -> FELL off a closing flower at 5.03 s (closed at 5.0 s)
+beam normal RISING Normal band 300 px climbing 70 px/s, droop 1 (6 flowers): sees 0.3 s, 0.1 s a step -> on the top stone at 5.27 s; left the last flower at 4.90 s; the least time to spare on any flower 1.00 s (lives lost 0)
+beam normal RISING Normal band 300 px climbing 70 px/s, droop 1 (6 flowers): sees 0.5 s, 0.3 s a step -> on the top stone at 6.17 s; left the last flower at 5.80 s; the least time to spare on any flower 0.60 s (lives lost 0)
+beam normal RISING Normal band 300 px climbing 70 px/s, droop 1 (6 flowers): sees 0.8 s, 0.5 s a step -> on the top stone at 7.67 s; left the last flower at 7.30 s; the least time to spare on any flower 0.10 s (lives lost 0)
+beam normal RISING Normal band 300 px climbing 90 px/s, droop 1 (6 flowers): sees 0.3 s, 0.1 s a step -> on the top stone at 4.77 s; left the last flower at 4.40 s; the least time to spare on any flower 0.68 s (lives lost 0)
+beam normal RISING Normal band 300 px climbing 90 px/s, droop 1 (6 flowers): sees 0.5 s, 0.3 s a step -> on the top stone at 6.17 s; left the last flower at 5.80 s; the least time to spare on any flower 0.28 s (lives lost 0)
+beam normal RISING Normal band 300 px climbing 90 px/s, droop 1 (6 flowers): sees 0.8 s, 0.5 s a step -> FELL off a closing flower at 2.17 s (closed at 1.4 s)
+beam normal RISING Easy band 400 px climbing 55 px/s, droop 1.6 (6 flowers): sees 0.3 s, 0.1 s a step -> on the top stone at 4.77 s; left the last flower at 4.40 s; the least time to spare on any flower 1.98 s (lives lost 0)
+beam normal RISING Easy band 400 px climbing 55 px/s, droop 1.6 (6 flowers): sees 0.5 s, 0.3 s a step -> on the top stone at 6.17 s; left the last flower at 5.80 s; the least time to spare on any flower 1.58 s (lives lost 0)
+beam normal RISING Easy band 400 px climbing 55 px/s, droop 1.6 (6 flowers): sees 0.8 s, 0.5 s a step -> on the top stone at 7.67 s; left the last flower at 7.30 s; the least time to spare on any flower 1.08 s (lives lost 0)
+beam normal RISING Easy band 400 px climbing 70 px/s, droop 1.6 (6 flowers): sees 0.3 s, 0.1 s a step -> on the top stone at 4.77 s; left the last flower at 4.40 s; the least time to spare on any flower 1.60 s (lives lost 0)
+beam normal RISING Easy band 400 px climbing 70 px/s, droop 1.6 (6 flowers): sees 0.5 s, 0.3 s a step -> on the top stone at 6.17 s; left the last flower at 5.80 s; the least time to spare on any flower 1.20 s (lives lost 0)
+beam normal RISING Easy band 400 px climbing 70 px/s, droop 1.6 (6 flowers): sees 0.8 s, 0.5 s a step -> on the top stone at 7.67 s; left the last flower at 7.30 s; the least time to spare on any flower 0.70 s (lives lost 0)
+quiet normal drop D=160: fell 157 px by the engine's measure; silent; on moss: silent
+quiet normal drop D=200: fell 197 px by the engine's measure; silent; on moss: silent
+quiet normal drop D=240: fell 237 px by the engine's measure; wakes a sleeper up to 214 px off (vines out of reach at 105-214 px wake but can't lash); on moss: silent
+quiet normal drop D=300: fell 297 px by the engine's measure; wakes a sleeper up to 268 px off (vines out of reach at 105-268 px wake but can't lash); on moss: silent
+quiet normal drop D=400: fell 397 px by the engine's measure; wakes a sleeper up to 358 px off (vines out of reach at 105-358 px wake but can't lash); on moss: silent
+quiet normal drop D=500: fell 497 px by the engine's measure; wakes a sleeper up to 448 px off (vines out of reach at 105-448 px wake but can't lash); on moss: silent
+quiet normal drop D=600: fell 597 px by the engine's measure; wakes a sleeper up to 538 px off (vines out of reach at 105-538 px wake but can't lash); on moss: silent
+quiet normal let go of a root 190 px up: fell 94 px (his hanging feet that high); silent; hanging over a vine whose bud is 112 px up he is below the bud: IN its reach (lashed if he creeps while it looks)
+quiet normal let go of a root 230 px up: fell 134 px (his hanging feet that high); silent; hanging over a vine whose bud is 112 px up he is ABOVE the bud: out of its reach
+quiet normal let go of a root 250 px up: fell 154 px (his hanging feet that high); silent; hanging over a vine whose bud is 112 px up he is ABOVE the bud: out of its reach
+quiet normal let go of a root 290 px up: fell 194 px (his hanging feet that high); silent; hanging over a vine whose bud is 112 px up he is ABOVE the bud: out of its reach
+quiet normal let go of a root 300 px up: fell 204 px (his hanging feet that high); LOUD 184 px; hanging over a vine whose bud is 112 px up he is ABOVE the bud: out of its reach
+quiet normal a tap jump on flat ground: fell 62 px; silent
+quiet normal a hold jump on flat ground: fell 97 px; silent
+quiet normal a double jump on flat ground: fell 163 px; silent
+quiet normal the freeze: from a full run he is still for a vine 0.13 s after letting go (slides 8 px)
+quiet normal walk past a vine from a stand 150 px short of it: in its reach at 0.13 s, out the far side at 1.10 s (0.97 s inside)
+quiet normal walk past a vine from a stand 250 px short of it: in its reach at 0.50 s, out the far side at 1.47 s (0.97 s inside)
+quiet normal walk past a vine from a stand 350 px short of it: in its reach at 0.87 s, out the far side at 1.83 s (0.97 s inside)
+quiet normal walk past a PAIR (220 px apart) from a stand 230 px short of the first: out of the second's reach at 2.20 s
+quiet normal the twist's drop D=400 (walked off, Right let go on landing): lands 180 px past the rim, noise 358 px, still 0.10 s after landing
+quiet normal the twist's drop D=500 (walked off, Right let go on landing): lands 206 px past the rim, noise 448 px, still 0.10 s after landing
+quiet: LOUD {"landing":{"soft":200,"min":180,"perPx":0.9,"max":560},"punch":{"r":240},"breaking":{"r":420},"thrown":{"r":520},"bell":{"r":680},"drum":{"r":620,"stun":3}}; NOISE.hearY 360; the vines' reach 105 (protoStage 3-5 :2493), stir 1.1, look 1.7
