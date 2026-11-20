@@ -7,22 +7,27 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 ## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
 
 ### EXACT NEXT STEP (for a fresh member at high, on t-build-25 at the head that carries this line)
-1. Item 3a (wayside line): scratchpad script way.mjs (copy below, "How 3a is shot") pins Pokey like BUILD-25b's stills. FACT: the line
-   is a 12-word story card, readMs = 1.5 s + 0.5 s/word = 7.5 s of play (dotGuide.ts readMs/showFor); BUILD-25b's three pins 2.5 s
-   apart all fall inside it. Pinned at x14800 for 15 s the line never fired (the progress ratio needs `bestAt`, engine.ts:3715). Still
-   to do: timed stills that show it come AND go, or the lead's call that the read time explains it.
-2. Item 3b (rope trees): FACT: the trunk is `w1-traps#trunk` (CATALOG-MASTER worlds: USED 1, COULD 5/6; NOT 2). World 2's own rope is
-   the default look (rope-kit#tile/#post, world_best 2, "the river village: boards, rope and wicker", used 2-6). Fix: drop `look: 'vine'`
-   from ropeOver in src/game/gen2/worlds/w2Arc25.ts:126 (+ its comment), run w2Arc25.test, shoot after-stills at x11500 upright +
-   sideways (before: way/timed-*-t150.png in the scratchpad; to copy into stills/), push unread, tell the lead.
-3. Item 4: WAIT for the lead's ENG-SNAP hash; MERGE (never rebase); CI tool line + tsc; castBots 2-5 1-40 x 5 bots x N+E; child trace at
-   the first awake snapper (tools/engine/runs/childtrace25.ts). Item 5: the full check list on the merged head (it gates ENG-SNAP too).
+1. Items 1-3 DONE and accepted by the lead (below). t-eng-snap 476523fd MERGED (d0bc8695; tsc PASS). In flight at 2:19 PM ET: the CI
+   tool line (gates.yml:154) on d0bc8695. Next, in order: the snapper toys `npx tsx --test tools/inspect/snapperTaught.test.ts
+   tools/inspect/snapperBonk.test.ts tools/inspect/snapRide.test.ts` (ENG-SNAP expects 13/13 and 24/24); tierBots (1-1 must not move:
+   if it does, to the lead); castBots `npx tsx tools/inspect/castBots.ts --stage 2-5 --seeds 1-40 --bots kid,adult,child,middle,expert
+   --setting both --par 4 --rows <file>` (bar: child/middle/expert 40/40 or every miss traced, two runs per cause; child misses on the
+   count of 8 -> the lead first); the child's trace at the first awake snapper (tools/engine/runs/childtrace25.ts child normal <seed> x0 x1).
+2. Item 5: the whole CLAUDE.md list on the final head (frozen worktree, suite in shards), plus seedlist 2-5 --check, lockall vs 6a61c36c
+   --intended 2-5, funcheck, coveragecheck + registrycheck (2-5's own FAILs per ENG-SNAP: the turtle's meter bot/channel; fly 2-5's row,
+   FLIGHT_STAGE=2-5), tipwalk, buildcheck ALONE, roadmapcheck/timecheck after `git fetch --unshallow`; the water jump at x~21000 traced.
 
 ### Done
 - Item 1 (87b90eb5): goalLine.test ('chase' a verb goalLine speaks; planted 'Chase off free' CAUGHT) and pitPocket.test (walks every
   World 2-4 stage whoever builds it; floor 32 = stages walked) — the lead's OK before the commit, lines in the message.
 - Item 2 (6104648f): Dot's `snap` teach = the lead's pick B "Go near till it creaks. Back off. Missed? Kick!" (9 words, 47 chars);
-  lines-2-5.md row 3 + why (R-165.341); LINES_25.snap; w2Arc25.test 7/7.
+  lines-2-5.md row 3 + why (R-165.341); LINES_25.snap; w2Arc25.test 7/7. Accepted by the lead.
+- Item 3b (89953516, stills bf22b1e7): the rope's anchor trees were w1-traps#trunk (catalog worlds 1, could 5/6; not 2); 2-5's rope is
+  now World 2's own painted rope between posts (rope-kit, world_best 2): `look: 'vine'` dropped. Drawing only. ACCEPTED by the lead
+  (stills/s25c-rope-x11500-{before,after}-{upright,sideways}.jpg).
+- Item 3a: no change, ACCEPTED by the lead as designed: the wayside line is a 12-word story card (readMs 7.5 s) that the phone keeps
+  FADE_K = 3 reading times untapped (dotGuide.ts:281, R-165.175: 22.5 s of play), and a story aside that yields to a waiting teach comes
+  back in full; that spans ~11,000 px at a run, and BUILD-25b's pins were 2.5 s apart. The global rule, not 2-5's.
 
 ## BUILD-25b (Opus 5.5 high; written 12:38 PM ET Fri 11-20 by `date`; stopped at the lead's context plan, ~360k real)
 
