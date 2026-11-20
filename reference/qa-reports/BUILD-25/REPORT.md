@@ -8,17 +8,30 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 
 ### EXACT NEXT STEP (BUILD-25c, a fresh builder at high, on t-build-25 at this report's commit)
 1. `npm install --no-audit --no-fund --legacy-peer-deps`, then `git checkout package-lock.json`.
-2. Read the gate list's result: it was RUNNING when 25b stopped (head 9b645fbf, the lay's final head; runner
-   scratchpad gates.sh, logs NOT kept). If the lead did not collect it: run THE CLAUDE.md CHECK LIST once on this head on a frozen worktree
-   (`git worktree add --detach`, node_modules symlinked), every gate line PASS or FAIL, the suite line with shard count and
-   tests / pass / fail / todo; plus `seedlist 2-5 --check`, `funcheck 2-5` (repeat lines for 2-5), lockall recorded on 6a61c36c and checked
-   here with `--intended 2-5` (the goal fix touches goals.ts: lockall must show only 2-5 moved; any other stage moving goes to the lead).
+2. The gate list on 9b645fbf is IN (below, "THE CHECK LIST"). The 3 FAILs are not 2-5's (each is red on the base 6a61c36c too);
+   two of them (goalLine "Chase off 1 snapper", pitPocket "28 stages") were born on this branch in BUILD-25 and go to the lead.
 3. WAIT for R-165.339 (bots: the bonk's steer-back at the child's thumb, and the taught "wait for the snap, then kick" for child/kid,
    proven on a toy) to land, merge it, then castBots 2-5 1-40 x kid,adult,child,middle,expert x both again; every child/middle/expert miss
    traced (two runs per cause). If the child misses on the count of 8: to the lead before changing anything.
 4. WAIT for R-165.338 (drawRockArt picks among the kit's rock frames + mirror by platform id), merge it, re-shoot the rock stills
    (x 821/1495/1832/3082/3420 on L1 sideways) and judge them for repeats.
 5. The lead judges the stills below; fix what he sends back; then the REPORT's final polish check.
+
+### THE CHECK LIST (CLAUDE.md, once, on 9b645fbf, frozen worktree; started 12:37 PM ET, ended 1:48 PM ET)
+- PASS tsc (4 s)
+- FAIL suite: 4 shards, 607 files; tests 3978 / pass 3974 / fail 2 / todo 2 (1835 s). The 2 fails, BOTH red on the base 6a61c36c too
+  (run there by hand: pass 1 / fail 2): goalLine.test.ts:7 "one verb: Chase off 1 snapper to open the sanctuary" (2-5's goal verb,
+  BUILD-25 7de7bdf4, not in the test's verb list); pitPocket.test.ts:36 "28 stages" (Worlds 1-4 pockets). Not fixed by 25b: to the lead.
+- PASS vite build (4 s); PASS chunkcheck; PASS artcheck; PASS drawcheck (664 s, "2-5" in its scenarios); PASS clipcheck (275 s)
+- PASS knowncheck; PASS generalitycheck
+- FAIL roadmapcheck: "shallow clone, proofs cannot be checked (fetch-depth 0)": the container's clone is shallow
+  (`git rev-parse --is-shallow-repository` = true); not a 2-5 finding, CI runs it on a full clone.
+- PASS kbdcheck (112 s); PASS buildcheck; PASS seedlist 1-1 --check (166 s); PASS engine tools' tests (17 s); PASS tierBots (179 s)
+- PASS seedlist 2-5 --check (11 s, the 100 seeds)
+- FAIL funcheck (30 worse or new, 41 to lower or delete): the SAME ✗ lines on the base 6a61c36c (diff empty); none names 2-5
+  (World 1 lines only). Not 2-5's.
+- PASS lockall --check vs 6a61c36c --intended 2-5 (453 s): 101/102 stages unchanged; only 2-5 moved (intended). goals.ts moved no other stage.
+- timecheck and paintcheck (3 parts): RUNNING at this commit (the runner left them out; started 1:49 PM ET); lines follow.
 
 ### What 25b did (each on t-build-25; heads named)
 - **The quiet line** (e4da942b): traced (quietOf, seeds 1-20): the same joins ran 4.2-7.0 s with nothing to do (reach->teach stone 4.2,
@@ -51,7 +64,7 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
   level changed for it (the lead's ruling).
 - **The meter** (meter-2-5.txt, scale anchored on 1-1 N = 4): 2-5 Normal 3.7 (3.3-3.7), Easy 2.4 (2.1-2.4); 2-4 Normal 4, Easy 3.
   2-5.md's target is Normal 16.0 (World 2 band 9-21), Easy at most 9.6: **Normal is far UNDER its band** (as 2-4 is; DIFFICULTY.md:76
-  already says nothing past World 2 is in its band). Easy is under Normal. Not tuned here: the lead's call.
+  already says nothing past World 2 is in its band). Easy is under Normal. **Not tuned** (Matt 11-18: no tuning from the meter's low World 2 reads; the same as 2-4).
 - **Rock variety**: R-165.338 (engine, draw only): every 50 px moss_stone is painted by drawRockArt with the one 'boulder' frame; the
   World 2 atlas has a 'stump' frame nothing draws. The kit cannot vary it (a wider rock rescales the picture off its collider).
 
