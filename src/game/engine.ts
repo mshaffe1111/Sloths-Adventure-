@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
@@ -6264,6 +6264,12 @@ export class GameEngine {
         // (a safe river: on each log its own waterline, low on its body, in the river's own shallow water, and the foam along it; never the
         // deep sheet below, nor a band across the open water; nothing until its strip loads: riverArt.ts drawSafeRiverOver, ENG-24e 2b)
         const logs = this.logsOf(r).filter((lg) => !lg.broken && lg.x + lg.width > a && lg.x < b);
+        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd)
+        if (r.tail) {
+          ctx.beginPath();
+          ctx.rect(x0, r.surfaceY - 200, r.x1 - r.tail + TAIL_END.hide - x0, bottom - r.surfaceY + 200);
+          ctx.clip();
+        }
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
             if (lg.drift?.look === 'raft') continue;
@@ -7486,7 +7492,30 @@ export class GameEngine {
 
     // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
     if (this.riverLogsPainted(world.id)) {
-      for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
+      for (const pl of this.platforms) {
+        if (pl.type !== 'drift' || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
+        // (a river with a TAIL: its logs go under behind the painted reeds at the logs' window end, never drawn out over the tail where
+        //  they hold no one: riverArt.ts drawRiverTailEnd, ENG-24f)
+        const end = pl.drift?.tail ? pl.drift.x1 + TAIL_END.hide : undefined;
+        if (end !== undefined && pl.x >= end) continue;
+        if (end !== undefined && pl.x + pl.width > end) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(pl.x - 200, pl.y - 400, end - (pl.x - 200), 800);
+          ctx.clip();
+          drawRiverLog(ctx, pl, this.gameTime);
+          ctx.restore();
+        } else drawRiverLog(ctx, pl, this.gameTime);
+      }
+    }
+    // where a river's logs go under short of its far bank (a TAIL): World 2's painted reeds standing in the water there, in front of
+    // the logs and under the water's sheet (drawRivers' over pass), so what stands under the surface is in the water
+    if (this.riverLogsPainted(world.id)) {
+      for (const r of this.currentStage.rivers ?? []) {
+        if (!r.tail || r.speed === 0) continue;
+        const x1 = r.x1 - r.tail;
+        if (this.onScreen(x1, r.surfaceY, 200)) drawRiverTailEnd(ctx, x1, r.surfaceY, this.gameTime);
+      }
     }
     // a ripple where the next log is about to slide out from under the bank, so it never appears without warning
     for (const pl of this.platforms) {

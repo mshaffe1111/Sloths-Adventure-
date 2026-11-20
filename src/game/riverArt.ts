@@ -395,6 +395,37 @@ export function drawReeds(
   return true;
 }
 
+/**
+ * Where a river's logs go under short of the far bank (its TAIL, river.ts DriftInfo.tail; ENG-24f, R-165.301): World 2's painted reeds
+ * standing in the water across the logs' window end `x1`, in front of the logs, the river's foam about their feet. The logs are drawn
+ * only up to TAIL_END.hide past x1 (engine.ts), behind the reeds, so a log is never drawn out over the tail where it holds no one
+ * (engine.ts onFloor: a rider's middle past x1 is in the water). Reeds, never a stone or a bank: nothing that reads as a landing.
+ */
+export const TAIL_END = {
+  /** the clump's span about x1 (px): from `from` before it to `to` past it */
+  from: 46,
+  to: 92,
+  /** how far past x1 a log is still drawn (px): its cut end well inside the clump */
+  hide: 30,
+  /** how far under the surface the reeds stand (px): their feet in the water */
+  sink: 22,
+} as const;
+/** the clump's reeds: [kind, width px, flipped, where across the clump (0..1)]; a back row, then a front row thickest over the logs' cut */
+const TAIL_REEDS = [
+  ['reedTall', 60, false, 0.12], ['reedLean', 78, true, 0.42], ['reedTall', 58, true, 0.7], ['reedShort', 90, false, 0.92],
+  ['reedLean', 74, false, 0.05], ['reedShort', 96, true, 0.36], ['reedTall', 64, false, 0.55], ['reedShort', 88, false, 0.62], ['reedLean', 70, true, 0.84],
+] as const;
+export function drawRiverTailEnd(ctx: CanvasRenderingContext2D, x1: number, surfaceY: number, t: number): boolean {
+  if (!riverArtReady()) return false;
+  const x0 = x1 - TAIL_END.from, w = TAIL_END.from + TAIL_END.to;
+  TAIL_REEDS.forEach(([kind, rw, flip, at], i) => {
+    // (staggered depths, the front row lower: the clump stands in the water, not on a line)
+    drawReeds(ctx, kind, x0 + at * w, surfaceY + TAIL_END.sink + (i >= 4 ? 10 : 0) + (i % 2) * 5, rw, t, flip);
+  });
+  for (let i = 0; i < 3; i++) drawRiverFoam(ctx, 7 + i, x0 + 10 + (i * w) / 3, surfaceY + 5, 60, 0.85, i % 2 === 1);
+  return true;
+}
+
 /** the painted reeds a clump is made of, each at its width (px): about 73-116 px tall, over a little one (45) and most of him (89) */
 const CLUMP_REEDS = [['reedTall', 64], ['reedShort', 90], ['reedLean', 72], ['reedTall', 58], ['reedShort', 84]] as const;
 
