@@ -1,1 +1,10 @@
 head 38b11fa15 started Fri Nov 20 10:40:48 EST 2026
+tsc: PASS (exit 0, 11 s, done 10:40)
+build: PASS (exit 0, 13 s, done 10:41)
+chunkcheck: PASS (exit 0, 0 s, done 10:41)
+artcheck: PASS (exit 0, 0 s, done 10:41)
+knowncheck: PASS (exit 0, 0 s, done 10:41)
+generalitycheck: PASS (exit 0, 1 s, done 10:41)
+roadmapcheck: FAIL (exit 2, 0 s, done 10:41)
+coveragecheck: PASS (exit 0, 69 s, done 10:42)
+registrycheck: PASS (exit 0, 41 s, done 10:43)
