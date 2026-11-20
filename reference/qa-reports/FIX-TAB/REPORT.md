@@ -1,11 +1,8 @@
 # FIX-TAB REPORT (R-165.344): the grass tab under World 1's painted stones, fixed at the root in the draw
-Engine (draw). Branch t-fix-tab (base 453b69c2 + merged t-int-14 ca74f4fa, which adds no code). Updated 3:05 PM ET.
+Engine (draw). Branch t-fix-tab (base 453b69c2 + merged t-int-14 ca74f4fa, which adds no code). Updated 4:58 PM ET.
 
 ## EXACT NEXT STEP
-Running in this container: the unit suite (3 shards, /tmp/claude-0/ft/suite-*.log), drawcheck (drawcheck.log), then /tmp/claude-0/ft/rest.sh in order:
-clipcheck, kbdcheck, paintcheck 0/3 1/3 2/3, every registered seed list --check, the CI tool line (gates.yml:155), tipwalk, tierBots,
-funcheck, buildcheck alone; one line each in /tmp/claude-0/ft/rest-summary.txt. Next: copy those lines into the gate table, add the
-engine-core.md entry (drafted at /tmp/claude-0/ft/note.md), push, final hash to the lead. Stills ACCEPTED by the lead (3:19 PM ET).
+DONE (4:58 PM ET): every gate below run, logs in gates/ (rest-summary.txt, gate-*.log); engine-core.md §0zq-TAB written. Nothing left on this packet.
 
 ## Done-items
 | # | Item | Evidence | Status |
@@ -18,7 +15,7 @@ engine-core.md entry (drafted at /tmp/claude-0/ft/note.md), push, final hash to 
 | 3d | Hole check (pixels) | 160 orphan lip runs: changed px when the run is drawn vs not, base max 559 (143 > 20) -> fixed max 0: nothing can show through | PASS |
 | 3e | Reach, every world | probe/endsteps.ts -> endsteps.txt / endsteps-changed.json: 425 open bank ends change step: W1 100 (1-6, 1-7), W5 8 (5-M), W7 53 (7-5, 7-9 Easy), W8 264 (8-2/3/5/6/9); W2, 3, 4, 6, 9, 10: 0 | PASS |
 | 3f | Before/after stills per world | stills/before-after/: w1a 1-6, w1b 1-7, w5 5-M, w7a 7-5, w7b 7-9, w8a 8-2, w8b 8-3, w8c 8-6, w8d 8-9; each -sideways, -upright (side by side, before left) and -crop2x | PASS; ACCEPTED by the lead 3:19 PM ET |
-| 3g | Gates | table below | running |
+| 3g | Gates | table below; gates/ | PASS (funcheck FAIL is the base's, identical) |
 
 ## Polish check (stills/before-after, judged at phone size and in the 2x crops)
 - W1 1-6, 1-7: the grass tab under the stone/stump is gone; the soil runs on under the art (w1a, w1b crop2x).
@@ -42,3 +39,20 @@ engine-core.md entry (drafted at /tmp/claude-0/ft/note.md), push, final hash to 
 | coveragecheck | PASS |
 | registrycheck | PASS (12 stages) |
 | lockall vs 453b69c2 (no --intended) | PASS: 102/102 stages unchanged (probe/lockall-vs-453b69c2.txt) |
+| unit suite (3 shards) | PASS: 1385 + 1420 + 1175, 0 fail |
+| drawcheck | PASS (737 s) |
+| clipcheck | PASS (83 known; its planted never-opening screen FAILED as it must) |
+| kbdcheck | PASS (its regenerated stills restored, not mine) |
+| paintcheck 0/3, 1/3, 2/3 | PASS, PASS, PASS (170 / 107 / 106 known ids seen) |
+| seedlist --check, all 12 lists | PASS each (1-1 161 seeds, 1-5 150, the rest 100; both settings) |
+| CI tool line (gates.yml) | PASS: 318 pass, 0 fail |
+| tipwalk / tierBots / buildcheck | PASS / PASS (9, 0 fail) / PASS (p95 <= 150 ms) |
+| funcheck | FAIL: 22 worse or new (layout flags, 1-1..1-6). NOT this change: the same run on release 1's head ca74f4fa fails with the identical 22 lines (gates/funcheck-base-ca74f4fab.log); a draw-only change cannot move it. Not in gates.yml. |
+
+## Lessons applied / method
+- Planted RED before the fix; check the fact on the base before calling a red mine (funcheck); every gate runs, the FULL set (D96); probe hooks never committed.
+- Method: a draw fix is proven by a pixel diff with the drawn piece on vs off (hole check), not by stills alone: written in engine-core §0zq-TAB.
+
+## Suggestions
+- Plinth packet: draw the lower bank's lip over a deep plinth's foot (step 48-59) after the banks, as stepFootLips does (8-2, 8-6 x18365, 2-1 x1400).
+- funcheck's 22 base flags need an owner (layout, not engine draw).
