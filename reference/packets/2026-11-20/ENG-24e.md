@@ -20,6 +20,12 @@ BASE: branch t-eng-24e from INT-13's final head (the lead sends it at start; if 
    and the pale over-band washes the body out (2-4 catch beat upright; LIVE 2-1 and 2-2 too). Fix it at the source in the river draw (every
    stage that draws a safe river): a log reads as a solid floor he can stand on (its body clearly wood, the water line crossing it
    low), deep rivers unchanged unless they show the same; before/after stills on 2-1, 2-2 and 2-4, upright + sideways; drawcheck both ways.
+2c. (lead 8:13 PM ET 11-19, R-165.323, from INT-13b's merged-head stills: reference/qa-reports/INT-13/stills-b/22-pad/*upright.jpg and 24/*catch-upright.jpg
+   on t-int-13) Under every river or pond bank, upright, the bank's lower face reads see-through: the pond-floor stones show through the
+   rock and a faint vertical seam runs down the soil about 140 px in from the bank edge (riverUnderBanks' 140 px run, 622fa1b4, meeting
+   the bank's tapering cliff). Fix it at the source with 2b (same river draw): no bed or stones drawn behind the rock, the soil run joins
+   the bank's soil with no edge. Before/after stills of the 2-1, 2-2 and 2-4 bank joins upright + sideways, each with a 2x crop of the bank
+   face down to the screen bottom (that crop is where this hid: at phone scale it is faint, zoomed it is plain).
 3. The judge and the bots read it: lianaDrops' 'far' still lands the far bank from the liana; route.ts boards and rides as before; no
    judge loosened (law 22).
 4. Planted: rideAcross.ts's ride-across RED on a tailed row (2-4 beats 4 and 6, and a toy) and GREEN on 2-1's plain rows (2-1 must not move).
