@@ -6,16 +6,38 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 
 ## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
 
-### EXACT NEXT STEP (for a fresh member at high, on t-build-25 at the head that carries this line)
-1. Items 1-3 DONE and accepted by the lead (below). t-eng-snap 476523fd MERGED (d0bc8695; tsc PASS). In flight at 2:19 PM ET: the CI
-   tool line (gates.yml:154) on d0bc8695. Next, in order: the snapper toys `npx tsx --test tools/inspect/snapperTaught.test.ts
-   tools/inspect/snapperBonk.test.ts tools/inspect/snapRide.test.ts` (ENG-SNAP expects 13/13 and 24/24); tierBots (1-1 must not move:
-   if it does, to the lead); castBots `npx tsx tools/inspect/castBots.ts --stage 2-5 --seeds 1-40 --bots kid,adult,child,middle,expert
-   --setting both --par 4 --rows <file>` (bar: child/middle/expert 40/40 or every miss traced, two runs per cause; child misses on the
-   count of 8 -> the lead first); the child's trace at the first awake snapper (tools/engine/runs/childtrace25.ts child normal <seed> x0 x1).
-2. Item 5: the whole CLAUDE.md list on the final head (frozen worktree, suite in shards), plus seedlist 2-5 --check, lockall vs 6a61c36c
-   --intended 2-5, funcheck, coveragecheck + registrycheck (2-5's own FAILs per ENG-SNAP: the turtle's meter bot/channel; fly 2-5's row,
-   FLIGHT_STAGE=2-5), tipwalk, buildcheck ALONE, roadmapcheck/timecheck after `git fetch --unshallow`; the water jump at x~21000 traced.
+### EXACT NEXT STEP (BUILD-25d, a fresh member at high, on t-build-25 at the head carrying this line; BUILD-25c stopped ~2:30 PM ET at its context limit)
+1. FIRST, the lead's call on the seedlist red (to the lead before changing anything): on 4eeedef5, judging 2-5 on its own flown rows
+   (normal-2-5) makes `npx tsx tools/engine/seedlist.ts 2-5 --check` FAIL (PASS on 34c001b3 without them): the verdicts refuse 0 of 100,
+   but seedlist's own checks fail 9 seeds: flags 2518-2600 px apart at x ~20000-20400 where a life can be lost (6 seeds, both settings:
+   the quickening and the water jump ENG-SNAP named at x ~21000, where expert/middle/child lose water lives 9/10/12 on Normal) and the
+   quiet line 4.4-4.6 s at x ~10200-10345 (3 seeds). Files: seedlist-2-5-judged-full.txt. Either relist 2-5 (seedlist.ts, the proven
+   list) or fix the lay (a flag at the quickening's rest / a beat in the quiet stretch: level.md rule 19 says a refused layout's rule
+   moves into the list's judge). Then trace ONE run of the water jump at x ~21000 (is it within the rule numbers, or a bot miss).
+2. Then the snapper toys (`npx tsx --test tools/inspect/snapperTaught.test.ts tools/inspect/snapperBonk.test.ts tools/inspect/snapRide.test.ts`;
+   ENG-SNAP expects 13/13 and 24/24; they passed inside the CI tool line on d0bc8695) and tierBots (1-1 must not move); the child's trace at
+   the first awake snapper (tools/engine/runs/childtrace25.ts child normal <seed> <x0> <x1>): does it go near, back off on the creak, kick
+   after the miss (the line Dot now says).
+3. Item 5: the whole CLAUDE.md list on the final head (frozen worktree, suite in shards: count, tests/pass/fail/todo), plus seedlist 2-5
+   --check, lockall vs 6a61c36c --intended 2-5, funcheck (World 1's lines are the base's), coveragecheck (PASS on 34c001b3), registrycheck
+   (its test PASS on 4eeedef5), tipwalk, buildcheck ALONE, roadmapcheck/timecheck after `git fetch --unshallow`. Then the REPORT's gate table,
+   Polish check, Learned, and the final hash to the lead.
+
+### Item 4 so far (on the t-eng-snap merge d0bc8695 + 34c001b3)
+- CI tool line (gates.yml:154) on d0bc8695: tests 319 / pass 317 / fail 1 / todo 1: the fail was registrycheck.test "2-5 flown: its row is
+  not judged" (fixed in 4eeedef5: 16/16); the todo is chase bots ENG-B4 (open, not 2-5's). tsc PASS.
+- castBots 2-5 1-40 (castbots-2-5-25c.txt, 2:23-2:25 PM ET): | bot | Normal (25b -> 25c) | Easy (25b -> 25c) |: kid 0 -> 0, 0 -> 4;
+  adult 40 -> 40, 40 -> 40; child 7 -> 40, 16 -> 40; middle 39 -> 40, 40 -> 40; expert 40 -> 40 (Normal only). The bar (child/middle/expert
+  40/40) is MET; no miss to trace. Water lives on Normal: child 12, middle 10, expert 9 (the jump at x ~21000, step 1 above).
+- coveragecheck (34c001b3): creature:turtle wired: bot firsttimer.ts#FirstTimerRun.snapperPlan, channel score.ts#creatureBits (its tell,
+  Easy x1.3), as every cast creature's 'C' beat is priced: PASS. Not tuned (Matt 11-18); a rhythm channel is the meter's call.
+
+### Learned (proposed for level.md, the lead decides)
+- A hand-pinned count in a test ("28 stages") breaks at every level that moves a stage; walk the set the rule is about instead (pitPocket).
+- Judging a stage on its own flown rows is part of laying it (registrycheck), and it can expose layout faults the unflown scope hid: fly
+  it BEFORE listing the seeds, not after (2-5: 9 seeds fail seedlist once judged).
+- Pinned stills cannot show timing: three pins 2.5 s apart sit inside one 22.5 s card; prove timing from the rule (readMs x FADE_K) or a
+  played run, never from pins.
 
 ### Done
 - Item 1 (87b90eb5): goalLine.test ('chase' a verb goalLine speaks; planted 'Chase off free' CAUGHT) and pitPocket.test (walks every
