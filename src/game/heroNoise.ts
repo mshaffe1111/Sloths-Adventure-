@@ -1,7 +1,8 @@
 /**
  * heroNoise — the noise Pokey makes (GAME-MAP B10), the partner of stillness (stillness.ts): a hard landing, a punch, a break, and the
  * drum. Each is an event with a place, a time and a radius; a sleeper inside the radius wakes. What keeps a sleeper asleep is what
- * makes no event at all: holding still, a soft landing, catching a vine.
+ * makes no event at all: holding still, a soft landing, a landing on quiet ground (moss: Platform.quiet), catching a vine. Every event
+ * reaches a stage's cast on one channel (castPlay.ts noise; ENG-NOISE).
  *
  * The drum is the loud tool on purpose: it stuns every awake predator in its radius for a set time (and wakes any sleeper there).
  *
