@@ -6,11 +6,11 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 
 ## BUILD-25d (Opus 5.5 high; section started 2:47 PM ET Fri 11-20 by `date`; kept current)
 
-### EXACT NEXT STEP (kept current; written 2:55 PM ET)
-1. DONE: the lay fixed (6ee2f3c2), the relist (f97a8de9: `seedlist 2-5 --check` PASS), the water trace, the toys, tierBots, the child's
-   snapper trace, castBots after.
-2. NOW: THE FULL SET (gates.md "THE FULL SET, named") on the final head, frozen worktree; gate log committed as gates-<hash>.txt.
-3. Then stills of the new rest + hop (412x915, 915x412), Polish check, Learned, final hash to the lead.
+### EXACT NEXT STEP (kept current; written 4:18 PM ET)
+1. DONE: items 1-5. The gate head is c74a35542 (code = 74b72c84); the gate log is gates-c74a3554.txt (9a4b4361). Final hash: the commit
+   carrying this line.
+2. Nothing left in this packet. Waiting for the lead: R-165.346 (1-7 + 2-1 exit-on-a-boulder, the lead's own item), and Matt's play on the
+   child's river lives (the lead's ruling: no change now).
 
 ### Item 1: the lay (what was wrong, what changed, the proof)
 - **Flags (6 seeds)**: a rolled stage lays no flag from a socket (pipeline.ts rolledFlags: `checkpoints.length = 0`, then the hard nodes'
@@ -66,6 +66,83 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
   NAMED: the child's water lives doubled (12 -> 24); the river row is unchanged, the list changed (seeds 1-40 are new rolls), so this is
   not a same-seed comparison; every child water life traced is a timing miss on the river's logs. Kid Easy: every run reaches the shrine;
   the 4 that passed had no rescue, now every run has 1-5 (102 rescues over 40 runs vs 99 over 36). The kid is not the bar (level.md rule 4).
+
+### Item 5: THE FULL SET (gates.md D96) on c74a35542, frozen worktree, 3:01-4:17 PM ET (gates-c74a3554.txt)
+| gate | result |
+|---|---|
+| tsc, artcheck, vite build (deploy base) + chunkcheck, knowncheck, generalitycheck | PASS each |
+| coveragecheck, registrycheck, tipwalk --layouts 4 | PASS each |
+| roadmapcheck, timecheck (after `git fetch --unshallow`) | PASS, PASS |
+| clipcheck, kbdcheck, drawcheck | PASS each |
+| every registered seed list (13: 1-1..1-9, 2-1, 2-2, 2-4, 2-5), `--check` each | PASS (13/13) |
+| paintcheck parts 0/3, 1/3, 2/3 | PASS each (my first run named 1-3 of 3; parts are 0-based, so 0/3 was re-run; the empty 3/3 is in the log) |
+| the CI tool line (gates.yml rolled) | PASS: 319 tests, 318 pass, 0 fail, 1 todo |
+| tierBots | PASS: 9/9 |
+| the suite in 6 shards | PASS: 560 + 605 + 788 + 648 + 618 + 761 = **3,980 tests, 3,978 pass, 0 fail, 2 todo** |
+| lockall --layouts 16 vs 6a61c36c --intended 2-5 | PASS: 101/102 stages unchanged; 2-5 (intended) changed |
+| funcheck | **FAIL, exit 1, the same as the base**: the head's output is identical to 6a61c36c's but its run time (30 worse/new, 41 to lower; all on other stages, World 1's the base's); 2-5 lines: none |
+| buildcheck, ALONE | PASS: Normal p95 84 ms, Easy p95 49 ms (limit 150) |
+| seedlist 2-5 --check (also above) | PASS, 0 of 100 refused |
+| castBots 2-5 1-40 (on 74b72c84, same code) | adult/child/middle/expert PASS 40/40 both settings (Item 4) |
+
+### Stills (head c74a3554, layout 1, Normal, 412x915 and 915x412 at 2x; stills/25d/)
+x1450 the reach's boulder, x3150 the teaching stone's far-bank boulder, x10150 the awake beat's new boulder, x21400 the near bank of the
+quickening's log river, x22300 the quickening's new rest (its flag at 22408). Pushed for the lead's look (the lead's ask, 2:56 PM).
+
+### Polish check (looked at, as a player on a phone)
+- x22300 sideways and upright: the rest reads as the safe bank past the logs: water and logs behind, the flag standing on it with the
+  heart beside it, the first quickened snapper ahead with room to stop before it. Nothing under the HUD; Dot's story card sits over the
+  soil, not the path. Fixed on the way: the first shoot picked the riverbed under x21400 (`low`), so he drowned twice and Dot's "That spot
+  again" card and the lives -2 carried into the other stills; reshot with `high`, all ten clean (lives x3, no loss).
+- x10150 sideways: the new boulder sits on level bank past the pond, half his height (to scale), the rest's boulder about 520 px on: two
+  even hops, petals arcing between. Not rough.
+- Not opened by me: x1450, x3150, x21400 (the lead asked to look at them unopened). The boulders there did not change art or size, only
+  their order in the brick.
+
+### Pushback
+- The packet's "a flag at the quickening's rest in the PIECE": a rolled stage lays no flag from a piece's socket (pipeline rolledFlags
+  clears them), so a flag socket would have done nothing; the fix that works is the ground the flag rule needs (a bank wide enough for a
+  spot within reach). The quickening's `flag('a')` socket and the other flag sockets in 2-5 are dead on a rolled stage (named, not removed:
+  outside this packet's ask).
+
+### Unresolved (named plainly)
+- The child's water lives on Normal: 24 over 40 seeds, all traced on the quickening's log river, its own timing misses (the lead's
+  ruling, message read 3:21 PM: no change now, no bot or row tuning; Matt's play on his link decides whether Normal's river row softens).
+- Kid Easy 4/40 -> 0/40 (every run reaches the shrine; 1-5 rescues each). The kid is not the bar.
+- R-165.346 (the lead's): the same exit-on-a-boulder fault in 1-7's two rests and 2-1's `down/lianas` (+easy), and a kit-wide test.
+- castBots after the lay change ran on 74b72c84, whose code is the gate head's (c74a3554 adds stills only).
+
+### Method used / lessons applied
+- Method: reference/methods/level.md (rules 12, 19, 20, 22, 27, 28, 29), gates.md THE FULL SET (D96).
+- Lessons: check the fact in code before acting (the flag sockets read as live; the pipeline clears them); test the measuring tool
+  (yield.ts's per-rule table showed the boulder "fix" was mostly the next section lifting level with it, until the route trace showed he
+  walked under it); fix the root, never relist around (law 22); every plant RED before the claim; read the result before committing; stills
+  judged on the real screen, the bad first shoot named and redone.
+
+### Learned (proposed for level.md, the lead decides)
+- **A brick's exit is its LAST piece: list a boulder (any `on` piece) before the bank it stands on.** Otherwise the next section hangs off
+  the boulder's top over the bank, and the route walks under it (no beat). Check: a kit-wide test that no section's exit piece is `on`
+  another (R-165.346).
+- **On a rolled stage, a flag comes from ground, not a socket.** Give a long lethal beat a bank over 2 x FLAG_SPAN.pad wide placed so a
+  spot sits inside min(prev + 2300, next - 900); measure it with `yield.ts <stage> --list --count 1000` (seconds), not with a few seeds:
+  the search re-rolls past a refused roll, so 12 seeds hid a 4-in-1,000 fault.
+- **Measure a lay change with the listable yield before and after** (`yield.ts --list`, 1,000 seeds in about 50 s at --par 4): it named
+  both faults by rule and count (217 -> 1000), and each plant's share.
+
+### Method update
+- level.md step 3: after "roll it", add "`yield.ts <stage> --list --count 1000 --par 4`: 100% listable on both settings before the relist;
+  a rule that stops any roll is a lay fault to fix in the pieces (law 22), never a relist that filters it".
+- gates.md: funcheck's own exit is 1 on the base (30 lines); a builder reports it by diff against the base's output, not by its exit.
+
+### Done (BUILD-25d; heads)
+- Item 1 (6ee2f3c2): the lay fixed in the pieces; listable yield 217 -> 1000 of 1000; two new tests, each plant RED. ACCEPTED by the lead.
+- Item 2 (f97a8de9): relist 100/100; `seedlist 2-5 --check` PASS. ACCEPTED.
+- Item 3 (74b72c84): the water jump within the rule numbers; the child's lives its own misses. ACCEPTED; no change (the lead's ruling).
+- Item 4 (74b72c84): toys 37/37, tierBots 9/9, the child's snapper trace, castBots after.
+- Stills (c74a3554); the full set (9a4b4361); planted-faults.py + 4 BUILD-25d plants: **24/24 CAUGHT**, exit 0 (planted-25d.out.txt,
+  4:17-4:18 PM ET); every source put back (`git status` clean after).
+- Turnover: this REPORT's EXACT NEXT STEP (a level builder's packet; no handoff file of its own). Scratch tools committed:
+  tools/engine/runs/flags25.ts, segs25.ts, exiton.ts, water25.ts, spots25.ts, pagespots25.mjs.
 
 ## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
 

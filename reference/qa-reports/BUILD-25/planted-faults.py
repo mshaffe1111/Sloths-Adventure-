@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BUILD-25 / BUILD-25b planted faults (level.md rule 12): each plant breaks one rule 2-5's data or its engine pieces hold, runs the test
+"""BUILD-25 / BUILD-25b / BUILD-25d planted faults (level.md rule 12): each plant breaks one rule 2-5's data or its engine pieces hold, runs the test
 file that holds it, and must turn it RED; the source is put back after each. Run from the repo root (needs 2-5's seed list in the tree):
 python3 reference/qa-reports/BUILD-25/planted-faults.py"""
 import subprocess, sys
@@ -30,6 +30,11 @@ PLANTS = [
     ("snapFaults compares Easy on a Normal build too", SNAP, R, "if (difficulty !== 'normal' && we < wn - 1e-6)", "if (we < wn - 1e-6)"),
     ('PadRow.clock ignored (each row its own bar)', SNAP, R, "const snapId = `snap-${row.clock ?? id}`;", "const snapId = `snap-${id}`;"),
     ('two bars under one name let through', SNAP, 'src/game/gen2/pipeline.ts', "if (had && JSON.stringify(had) !== JSON.stringify(c)) throw", "if (false && had && JSON.stringify(had) !== JSON.stringify(c)) throw"),
+    # BUILD-25d (the lay passes seedlist's own rules, judged on the flown rows)
+    ("the quickening's rest back at 300 px (no flag spot in reach over the water: 4 of 1,000 rolls)", ARC, A, "const QUICK_REST = 420;", "const QUICK_REST = 300;"),
+    ("the awake beat's boulder removed (the quiet line at x ~10200: 788 of 1,000 rolls)", ARC, A, "pond('d', 'c', 'pair25', 340), rock('rz', 'z', 0.6), bank('z', 'd', 300)]", "pond('d', 'c', 'pair25', 340), bank('z', 'd', 300)]"),
+    ("the teaching stone's far-bank boulder listed last (the brick's exit a boulder)", ARC, A, "pond('c', 'b', 'teach25', 340), rock('rz', 'z', 0.6), bank('z', 'c', 300)]", "pond('c', 'b', 'teach25', 340), bank('z', 'c', 300), rock('rz', 'z', 0.6)]"),
+    ("the reach's boulder listed last (the brick's exit a boulder)", ARC, A, "rock('rz', 'z', 0.3), bank('z', 'b', 300)]", "bank('z', 'b', 300), rock('rz', 'z', 0.3)]"),
 ]
 bad = 0
 for name, test, path, old, new in PLANTS:
