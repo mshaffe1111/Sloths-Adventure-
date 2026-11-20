@@ -39,3 +39,14 @@ A reward stage: calm, beautiful, short.
   the stage that opens it, minus one step, Easy as usual, and no heart on its teach.
 - The secret gate is hard-coded to 7-7 (PITCH-36B): R-165.320 makes it general (any stage opens its world's hidden stage by data).
 - The pre-1990 tribute is always B's 'from anywhere' pick (Blocks 3-4 of PLATFORMER-100-MATT have none): pitch.md note for the next round.
+
+## The lead's rulings on DESIGN-36-39's decisions (11-19 7:22 PM ET; t-design-36-39 50e066ec)
+- (a) The hidden stage's target: **25.0 / Easy 15.0** (a calm reward: 3-6's band, below 3-7's 28).
+- (c) 3-7's control: **"go slow or stop"** replaces "walk soft": the pad has no walk (full run in 0.13 s), so the quiet line is a speed (200 px/s)
+  met by stopping, a tap-walk, carrying or the creep; no new control. Matt is told; he may overrule.
+- (d) Where the JAGUAR is first met: **3-7**. Its 'eyes that pass' are the jaguar above (world3.ts: it waits above and comes down where he was
+  when it growled): the growl is the tell, a fern the hiding place, taught safe first (rule 6/7). 3-7's builder adds it (2 NEW max still holds:
+  the jaguar is kit data). The 3-9 preview stays on ocelots.
+- (b) To the story keeper (KEEPER-3X): 3-9's goal line (drive off vs break out), 3-8's ('without touching the thorns' while he rides them),
+  3-7 (6 finds, 5 names), 3-2's ('Keep low' while he hangs high).
+- Method: level.md rule 24 gains "fly the button first" (both pitches named an input the pad lacks or maps elsewhere).
