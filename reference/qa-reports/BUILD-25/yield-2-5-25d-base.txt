@@ -1,0 +1,13 @@
+yield 2-5: seeds 1..1000, 86 s (LISTABLE: the finish and the quiet line held too)
+NORMAL: clean 217 of 1000 (22%)
+  stopped | first | alone | rule
+      754 |   323 |   323 | the quiet line: # s with nothing to do at x #, over # s (the goal run-
+      460 |   460 |     0 | flags: # px apart at x # (#-#, a life can be lost in it)
+      460 |     0 |     0 | flags: the last # px from the exit (within #)
+EASY (carries Normal's errors): clean 217 of 1000 (22%)
+  stopped | first | alone | rule
+      754 |   323 |   323 | the quiet line: # s with nothing to do at x #, over # s (the goal run-
+      460 |   460 |     0 | flags: # px apart at x # (#-#, a life can be lost in it)
+      460 |     0 |     0 | flags: the last # px from the exit (within #)
+EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): 0 rolls
+
