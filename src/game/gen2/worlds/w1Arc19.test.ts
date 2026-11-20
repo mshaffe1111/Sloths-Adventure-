@@ -196,3 +196,31 @@ test('R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer)', { t
     assert.ok((st.proto.gen2?.roosts ?? []).some((r) => Math.abs(r.x - (b.x + b.width / 2)) <= W1_LURE['w1-roost'].reach), `raw seed 1 ${d}: the roost's boa ${Math.round(b.x)} in its roost's reach`);
   }
 });
+
+// VAR-19d (plainWalk.test.ts "one-jump steps" red on listed layouts 1-3, the lead's ruling 11-19): the boulder stair's second boulder
+// (w1-19-rest-stair k2, VAR-19c) sat on a 200 px bough with 21 px of it to its left and 34 px to its right, each under a 50 px face: a
+// notch narrower than Pokey, where he stands with no room to flick up out. Any floor walled both sides by a rise of 40 px or more is at
+// least his width (the real engine's player, 44 px)
+const NOTCH_RISE = 40;
+function notches(st: Built, pw: number): string[] {
+  const solid = st.platforms.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving');
+  const out: string[] = [];
+  for (const f of solid) {
+    // (a wall: a solid whose top is 40 px or more above f's and whose body reaches down to f, standing on it or beside its ends)
+    const walls = solid.filter((q) => q !== f && q.y <= f.y - NOTCH_RISE && q.y + q.height >= f.y - 2 && q.x < f.x + f.width + 2 && q.x + q.width > f.x - 2)
+      .map((q) => [q.x, q.x + q.width] as const).sort((a, b) => a[0] - b[0]);
+    let x = f.x, walledLeft = walls.some(([a, b]) => a <= f.x + 1 && b >= f.x - 2 && b <= f.x + 2) || walls.some(([a, b]) => a < f.x && b > f.x);
+    for (const [a, b] of walls) {
+      if (b <= x) continue;
+      if (a > x) { const w = Math.min(a, f.x + f.width) - x; if (walledLeft && w < pw && a <= f.x + f.width + 2) out.push(`a ${Math.round(w)} px notch at x ${Math.round(x)} on ${f.tag ?? 'a floor'}`); }
+      x = Math.max(x, b); walledLeft = true;
+    }
+  }
+  return out;
+}
+test("no notch narrower than Pokey on 1-9: a floor walled both sides by a rise of 40 px or more is at least his width (VAR-19d)", async () => {
+  const { RealPlay } = await import('../../realPlay.ts');
+  const pw = new RealPlay(STAGE_19, 1).p.width;
+  assert.equal(pw, 44, "the real engine's Pokey");
+  for (const d of BOTH) for (const seed of SEEDS) assert.deepEqual(notches(built(seed, d), pw), [], `${d} seed ${seed}`);
+});

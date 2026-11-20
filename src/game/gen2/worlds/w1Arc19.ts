@@ -295,8 +295,10 @@ const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
 const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
   // (VAR-19c: a step up and a knot gap, a boulder at the far end of the high bough (a boulder where the knot hop lands: the lay refuses every
-  //  roll), down and a boulder on the low one, up, a knot gap and home: 'j .. j J')
-  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('rk', 'r', 80, DOWN), root('s', 'rk', 320, UP), boulder('k1', 's', 0.85), root('t', 's', 200, DOWN), boulder('k2', 't', 0.4), root('u', 't', 140, UP), root('u2', 'u', 80, DOWN), root('i', 'u2', 120, UP), root('z', 'i', 120, DOWN)],
+  //  roll), down and a boulder on the low one, up, a knot gap and home: 'j .. j J'. VAR-19d: the low bough 320 px with its boulder in the
+  //  middle, ~85 px of floor each side (Pokey is 44): on 200 px at 0.4 it left 21 and 34 px notches under 50 px faces, where he stood
+  //  with no room to flick out (plainWalk.test.ts one-jump steps; w1Arc19.test.ts 'no notch narrower than Pokey'))
+  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('rk', 'r', 80, DOWN), root('s', 'rk', 320, UP), boulder('k1', 's', 0.85), root('t', 's', 320, DOWN), boulder('k2', 't', 0.5), root('u', 't', 140, UP), root('u2', 'u', 80, DOWN), root('i', 'u2', 120, UP), root('z', 'i', 120, DOWN)],
   sockets: [flag('s', 0.1), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pu', 'u', 0.5, 1), petals('pi', 'i', 0.5, 1)] } }] });
 /** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
  *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
