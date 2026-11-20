@@ -1,0 +1,20 @@
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 21/40; under the floor 0; time median 320 s (min 226); hits 0 lives 387 (water 387); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 17: shrine rescued x1  (seeds 2,8,11,14,35,12,15,18,33,36,39,13,16,25,28,31,37)
+        fail 2: shrine rescued x2  (seeds 26,38)
+kid    easy   PASS 39/40; under the floor 0; time median 172.3 s (min 139.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 4)
+adult  normal PASS 9/40; under the floor 0; time median 339.9 s (min 183.3); hits 0 lives 65 (water 65); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 27: time goal 0/1  (seeds 2,5,8,14,20,32,35,3,9,12,15,21,24,27,33,36,39,1,7,10,16,19,28,31,34,37,40)
+        fail 4: shrine rescued x1  (seeds 17,4,13,25)
+adult  easy   PASS 40/40; under the floor 0; time median 149.2 s (min 135.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 4/40; under the floor 0; time median 634.9 s (min 422.9); hits 0 lives 24 (water 24); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 36: time goal 0/1  (seeds 2,11,17,20,23,26,29,32,35,38,3,6,9,12,15,18,21,24,27,30,33,36,39,1,4,10,13,16,19,22,25,28,31,34,37,40)
+child  easy   PASS 40/40; under the floor 0; time median 260.6 s (min 235.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 1/40; under the floor 0; time median 414.8 s (min 414.8); hits 0 lives 7 (water 7); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 39: time goal 0/1  (seeds 2,5,8,11,14,17,20,23,26,29,32,35,38,3,6,9,12,15,18,21,24,27,30,33,36,39,1,4,10,13,16,19,22,25,28,31,34,37,40)
+middle easy   PASS 40/40; under the floor 0; time median 187 s (min 170.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 4/40; under the floor 0; time median 537.2 s (min 204); hits 0 lives 19 (water 19); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 36: time goal 0/1  (seeds 2,5,8,11,17,20,26,29,32,35,38,3,6,9,12,18,21,24,27,30,36,39,1,4,7,10,13,16,19,22,25,28,31,34,37,40)
+EXIT 0
+Thu Nov 19 21:51:42 EST 2026
