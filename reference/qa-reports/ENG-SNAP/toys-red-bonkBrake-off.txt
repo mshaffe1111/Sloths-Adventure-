@@ -1,0 +1,404 @@
+TAP version 13
+# Subtest: (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 1 - (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 6364.598378
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bonked 2 times (the far-side loop): child normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":1,"past":66,"farLand":false,"kickedIn":"stunned","events":"stun@6v268:656 land@82:684 woke:725 snap@66:789 stun@0v268:833 land@91:861 kick@48(stunned):884"}',
+    +   'bounced 66 px past its middle (over 38): child normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":1,"past":66,"farLand":false,"kickedIn":"stunned","events":"stun@6v268:656 land@82:684 woke:725 snap@66:789 stun@0v268:833 land@91:861 kick@48(stunned):884"}',
+    +   'bonked 2 times (the far-side loop): child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}',
+    +   'bounced 210 px past its middle (over 38): child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}',
+    +   'came down on its far side while it was dazed: child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}',
+    +   'bonked 6 times (the far-side loop): child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}',
+    +   'bounced 103 px past its middle (over 38): child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}',
+    +   'came down on its far side while it was dazed: child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}',
+    +   'bonked 4 times (the far-side loop): child normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":4,"bonkHops":4,"adopted":0,"snaps":0,"past":82,"farLand":false,"kickedIn":"stunned","events":"stun@-19v268:770 land@75:798 woke:839 stun@-8v285:928 land@80:956 woke:997 stun@-32v285:1108 land@97:1136 woke:1176 stun@21v268:1289 land@103:1317 kick@55(stunned):1341"}',
+    +   'bounced 82 px past its middle (over 38): child normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":4,"bonkHops":4,"adopted":0,"snaps":0,"past":82,"farLand":false,"kickedIn":"stunned","events":"stun@-19v268:770 land@75:798 woke:839 stun@-8v285:928 land@80:956 woke:997 stun@-32v285:1108 land@97:1136 woke:1176 stun@21v268:1289 land@103:1317 kick@55(stunned):1341"}',
+    +   'bounced 76 px past its middle (over 38): child normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":76,"farLand":true,"kickedIn":"stunned","events":"stun@41v268:744 land@-76:759 kick@57(stunned):779"}',
+    +   'came down on its far side while it was dazed: child normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":76,"farLand":true,"kickedIn":"stunned","events":"stun@41v268:744 land@-76:759 kick@57(stunned):779"}',
+    +   'bonked 5 times (the far-side loop): child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}',
+    +   'bounced 211 px past its middle (over 38): child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}',
+    +   'came down on its far side while it was dazed: child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bonked 2 times (the far-side loop): child normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":1,"past":66,"farLand":false,"kickedIn":"stunned","events":"stun@6v268:656 land@82:684 woke:725 snap@66:789 stun@0v268:833 land@91:861 kick@48(stunned):884"}'
+    1: 'bounced 66 px past its middle (over 38): child normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":1,"past":66,"farLand":false,"kickedIn":"stunned","events":"stun@6v268:656 land@82:684 woke:725 snap@66:789 stun@0v268:833 land@91:861 kick@48(stunned):884"}'
+    2: 'bonked 2 times (the far-side loop): child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}'
+    3: 'bounced 210 px past its middle (over 38): child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}'
+    4: 'came down on its far side while it was dazed: child normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":210,"farLand":true,"kickedIn":"stunned","events":"stun@-20v268:1015 land@54:1055 land@-185:1081 woke:1121 stun@11v285:1203 land@59:1218 kick@47(stunned):1239"}'
+    5: 'bonked 6 times (the far-side loop): child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}'
+    6: 'bounced 103 px past its middle (over 38): child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}'
+    7: 'came down on its far side while it was dazed: child normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":6,"bonkHops":6,"adopted":0,"snaps":0,"past":103,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:649 land@-83:663 woke:703 stun@-30v285:743 land@-100:771 woke:810 stun@20v268:927 land@-93:955 woke:995 stun@-31v268:1105 land@-102:1133 woke:1173 stun@-36v268:1284 land@-90:1312 woke:1352 stun@-4v285:1471 land@-96:1499 kick@54(stunned):1533"}'
+    8: 'bonked 4 times (the far-side loop): child normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":4,"bonkHops":4,"adopted":0,"snaps":0,"past":82,"farLand":false,"kickedIn":"stunned","events":"stun@-19v268:770 land@75:798 woke:839 stun@-8v285:928 land@80:956 woke:997 stun@-32v285:1108 land@97:1136 woke:1176 stun@21v268:1289 land@103:1317 kick@55(stunned):1341"}'
+    9: 'bounced 82 px past its middle (over 38): child normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":4,"bonkHops":4,"adopted":0,"snaps":0,"past":82,"farLand":false,"kickedIn":"stunned","events":"stun@-19v268:770 land@75:798 woke:839 stun@-8v285:928 land@80:956 woke:997 stun@-32v285:1108 land@97:1136 woke:1176 stun@21v268:1289 land@103:1317 kick@55(stunned):1341"}'
+    10: 'bounced 76 px past its middle (over 38): child normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":76,"farLand":true,"kickedIn":"stunned","events":"stun@41v268:744 land@-76:759 kick@57(stunned):779"}'
+    11: 'came down on its far side while it was dazed: child normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":76,"farLand":true,"kickedIn":"stunned","events":"stun@41v268:744 land@-76:759 kick@57(stunned):779"}'
+    12: 'bonked 5 times (the far-side loop): child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}'
+    13: 'bounced 211 px past its middle (over 38): child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}'
+    14: 'came down on its far side while it was dazed: child normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":2,"past":211,"farLand":true,"kickedIn":"stunned","events":"stun@35v285:835 land@-49:850 land@-97:876 woke:915 stun@6v285:1017 land@54:1032 land@-185:1058 woke:1098 stun@-9v268:1191 land@-82:1219 woke:1260 snap@86:1329 stun@20v268:1378 land@-93:1406 woke:1446 snap@68:1510 stun@-2v268:1554 land@-97:1582 kick@35(stunned):1615"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 2 - (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 3662.945878
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bonked 3 times (the far-side loop): child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}',
+    +   'bounced 146 px past its middle (over 38): child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}',
+    +   'came down on its far side while it was dazed: child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}',
+    +   'bonked 3 times (the far-side loop): child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}',
+    +   'bounced 138 px past its middle (over 38): child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}',
+    +   'came down on its far side while it was dazed: child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}',
+    +   'bonked 2 times (the far-side loop): child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}',
+    +   'bounced 142 px past its middle (over 38): child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}',
+    +   'came down on its far side while it was dazed: child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}',
+    +   'bonked 2 times (the far-side loop): child easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":65,"farLand":false,"kickedIn":"stunned","events":"stun@13v285:566 land@86:594 woke:634 stun@14v285:698 land@99:726 kick@37(stunned):750"}',
+    +   'bounced 65 px past its middle (over 38): child easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":65,"farLand":false,"kickedIn":"stunned","events":"stun@13v285:566 land@86:594 woke:634 stun@14v285:698 land@99:726 kick@37(stunned):750"}',
+    +   'bonked 5 times (the far-side loop): child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}',
+    +   'bounced 117 px past its middle (over 38): child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}',
+    +   'came down on its far side while it was dazed: child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}',
+    +   'bounced 80 px past its middle (over 38): child easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":80,"farLand":true,"kickedIn":"stunned","events":"stun@19v268:456 land@-75:471 kick@45(stunned):491"}',
+    +   'came down on its far side while it was dazed: child easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":80,"farLand":true,"kickedIn":"stunned","events":"stun@19v268:456 land@-75:471 kick@45(stunned):491"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bonked 3 times (the far-side loop): child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}'
+    1: 'bounced 146 px past its middle (over 38): child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}'
+    2: 'came down on its far side while it was dazed: child easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":146,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:698 land@-55:713 land@-112:739 woke:778 stun@-4v285:836 land@-56:876 land@-78:902 woke:941 stun@30v285:993 land@-77:1021 kick@30(stunned):1054"}'
+    3: 'bonked 3 times (the far-side loop): child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}'
+    4: 'bounced 138 px past its middle (over 38): child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}'
+    5: 'came down on its far side while it was dazed: child easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":3,"adopted":0,"snaps":0,"past":138,"farLand":true,"kickedIn":"stunned","events":"stun@-7v285:711 land@-55:726 land@-112:752 woke:791 stun@-20v268:836 land@-102:864 woke:903 stun@-21v285:972 land@-105:1000 kick@48(stunned):1032"}'
+    6: 'bonked 2 times (the far-side loop): child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}'
+    7: 'bounced 142 px past its middle (over 38): child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}'
+    8: 'came down on its far side while it was dazed: child easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":142,"farLand":true,"kickedIn":"stunned","events":"stun@-2v285:701 land@-51:716 land@-108:742 woke:781 stun@12v285:876 land@61:891 kick@49(stunned):898"}'
+    9: 'bonked 2 times (the far-side loop): child easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":65,"farLand":false,"kickedIn":"stunned","events":"stun@13v285:566 land@86:594 woke:634 stun@14v285:698 land@99:726 kick@37(stunned):750"}'
+    10: 'bounced 65 px past its middle (over 38): child easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":2,"adopted":0,"snaps":0,"past":65,"farLand":false,"kickedIn":"stunned","events":"stun@13v285:566 land@86:594 woke:634 stun@14v285:698 land@99:726 kick@37(stunned):750"}'
+    11: 'bonked 5 times (the far-side loop): child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}'
+    12: 'bounced 117 px past its middle (over 38): child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}'
+    13: 'came down on its far side while it was dazed: child easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":5,"bonkHops":5,"adopted":0,"snaps":0,"past":117,"farLand":true,"kickedIn":"stunned","events":"stun@3v285:563 land@54:603 land@-77:617 woke:658 stun@20v268:701 land@-93:729 woke:768 stun@-7v285:837 land@-105:890 woke:929 stun@16v268:969 land@-97:997 woke:1037 stun@20v268:1106 land@-94:1134 kick@42(stunned):1168"}'
+    14: 'bounced 80 px past its middle (over 38): child easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":80,"farLand":true,"kickedIn":"stunned","events":"stun@19v268:456 land@-75:471 kick@45(stunned):491"}'
+    15: 'came down on its far side while it was dazed: child easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":80,"farLand":true,"kickedIn":"stunned","events":"stun@19v268:456 land@-75:471 kick@45(stunned):491"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 3 - (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2315.416979
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bounced 55 px past its middle (over 38): middle normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":55,"farLand":false,"kickedIn":"stunned","events":"stun@-6v285:379 land@78:407 kick@37(stunned):433"}',
+    +   'bounced 54 px past its middle (over 38): middle normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":54,"farLand":false,"kickedIn":"stunned","events":"stun@-5v285:402 land@76:455 kick@53(stunned):471"}',
+    +   'bounced 47 px past its middle (over 38): middle normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:382 land@75:410 kick@52(stunned):425"}',
+    +   'bounced 58 px past its middle (over 38): middle normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":58,"farLand":false,"kickedIn":"stunned","events":"stun@-9v285:380 land@75:408 kick@27(stunned):422"}',
+    +   'bounced 48 px past its middle (over 38): middle normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":48,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:378 land@73:406 kick@24(stunned):420"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bounced 55 px past its middle (over 38): middle normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":55,"farLand":false,"kickedIn":"stunned","events":"stun@-6v285:379 land@78:407 kick@37(stunned):433"}'
+    1: 'bounced 54 px past its middle (over 38): middle normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":54,"farLand":false,"kickedIn":"stunned","events":"stun@-5v285:402 land@76:455 kick@53(stunned):471"}'
+    2: 'bounced 47 px past its middle (over 38): middle normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:382 land@75:410 kick@52(stunned):425"}'
+    3: 'bounced 58 px past its middle (over 38): middle normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":58,"farLand":false,"kickedIn":"stunned","events":"stun@-9v285:380 land@75:408 kick@27(stunned):422"}'
+    4: 'bounced 48 px past its middle (over 38): middle normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":48,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:378 land@73:406 kick@24(stunned):420"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 4 - (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2362.388039
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bonked 3 times (the far-side loop): middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}',
+    +   'bounced 228 px past its middle (over 38): middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}',
+    +   'came down on its far side while it was dazed: middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}',
+    +   'bounced 47 px past its middle (over 38): middle easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:426 land@74:454 kick@39(stunned):474"}',
+    +   'bounced 42 px past its middle (over 38): middle easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":42,"farLand":false,"kickedIn":"stunned","events":"stun@8v285:425 land@78:465 kick@38(stunned):481"}',
+    +   'bounced 61 px past its middle (over 38): middle easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":false,"kickedIn":"stunned","events":"snap@84:372 stun@-12v285:429 land@88:457 kick@43(stunned):471"}',
+    +   'bounced 114 px past its middle (over 38): middle easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":114,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:320 land@-88:334 kick@57(stunned):367"}',
+    +   'came down on its far side while it was dazed: middle easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":114,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:320 land@-88:334 kick@57(stunned):367"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bonked 3 times (the far-side loop): middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}'
+    1: 'bounced 228 px past its middle (over 38): middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}'
+    2: 'came down on its far side while it was dazed: middle easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":3,"bonkHops":2,"adopted":0,"snaps":0,"past":228,"farLand":true,"kickedIn":"stunned","events":"stun@48v268:319 land@-183:344 woke:384 stun@20v268:424 land@-88:477 woke:516 stun@11v285:557 land@-86:661 kick@28(stunned):683"}'
+    3: 'bounced 47 px past its middle (over 38): middle easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:426 land@74:454 kick@39(stunned):474"}'
+    4: 'bounced 42 px past its middle (over 38): middle easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":42,"farLand":false,"kickedIn":"stunned","events":"stun@8v285:425 land@78:465 kick@38(stunned):481"}'
+    5: 'bounced 61 px past its middle (over 38): middle easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":false,"kickedIn":"stunned","events":"snap@84:372 stun@-12v285:429 land@88:457 kick@43(stunned):471"}'
+    6: 'bounced 114 px past its middle (over 38): middle easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":114,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:320 land@-88:334 kick@57(stunned):367"}'
+    7: 'came down on its far side while it was dazed: middle easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":114,"farLand":true,"kickedIn":"stunned","events":"stun@41v285:320 land@-88:334 kick@57(stunned):367"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 5 - (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2106.077436
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bounced 49 px past its middle (over 38): expert normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":49,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:382 land@84:422 kick@32(stunned):449"}',
+    +   'bounced 48 px past its middle (over 38): expert normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":48,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:378 land@74:406 kick@25(stunned):420"}',
+    +   'bounced 44 px past its middle (over 38): expert normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":44,"farLand":false,"kickedIn":"stunned","events":"stun@6v285:380 land@78:408 kick@37(stunned):422"}',
+    +   'bounced 59 px past its middle (over 38): expert normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":59,"farLand":false,"kickedIn":"stunned","events":"stun@-10v285:382 land@82:601 kick@35(stunned):614"}',
+    +   'bounced 42 px past its middle (over 38): expert normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":42,"farLand":false,"kickedIn":"stunned","events":"stun@7v285:380 land@78:420 kick@46(stunned):443"}',
+    +   'bounced 47 px past its middle (over 38): expert normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:381 land@74:409 kick@25(stunned):423"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bounced 49 px past its middle (over 38): expert normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":49,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:382 land@84:422 kick@32(stunned):449"}'
+    1: 'bounced 48 px past its middle (over 38): expert normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":48,"farLand":false,"kickedIn":"stunned","events":"stun@1v285:378 land@74:406 kick@25(stunned):420"}'
+    2: 'bounced 44 px past its middle (over 38): expert normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":44,"farLand":false,"kickedIn":"stunned","events":"stun@6v285:380 land@78:408 kick@37(stunned):422"}'
+    3: 'bounced 59 px past its middle (over 38): expert normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":59,"farLand":false,"kickedIn":"stunned","events":"stun@-10v285:382 land@82:601 kick@35(stunned):614"}'
+    4: 'bounced 42 px past its middle (over 38): expert normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":42,"farLand":false,"kickedIn":"stunned","events":"stun@7v285:380 land@78:420 kick@46(stunned):443"}'
+    5: 'bounced 47 px past its middle (over 38): expert normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":47,"farLand":false,"kickedIn":"stunned","events":"stun@2v285:381 land@74:409 kick@25(stunned):423"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: (a) bonkBrake: adult normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 6 - (a) bonkBrake: adult normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1677.438145
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bounced 41 px past its middle (over 38): adult normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":41,"farLand":true,"kickedIn":"stunned","events":"snap@90:339 stun@15v285:379 land@68:407 kick@44(stunned):421"}',
+    +   'came down on its far side while it was dazed: adult normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":41,"farLand":true,"kickedIn":"stunned","events":"snap@90:339 stun@15v285:379 land@68:407 kick@44(stunned):421"}',
+    +   'bounced 116 px past its middle (over 38): adult normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":116,"farLand":true,"kickedIn":"stunned","events":"stun@47v285:226 land@-82:240 kick@3(stunned):265"}',
+    +   'came down on its far side while it was dazed: adult normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":116,"farLand":true,"kickedIn":"stunned","events":"stun@47v285:226 land@-82:240 kick@3(stunned):265"}',
+    +   'bounced 55 px past its middle (over 38): adult normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":55,"farLand":true,"kickedIn":"stunned","events":"snap@68:257 stun@-19v268:290 land@74:318 kick@10(stunned):332"}',
+    +   'came down on its far side while it was dazed: adult normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":55,"farLand":true,"kickedIn":"stunned","events":"snap@68:257 stun@-19v268:290 land@74:318 kick@10(stunned):332"}',
+    +   'bounced 59 px past its middle (over 38): adult normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":59,"farLand":false,"kickedIn":"stunned","events":"stun@-10v285:294 land@91:322 kick@46(stunned):337"}',
+    +   'bounced 52 px past its middle (over 38): adult normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":52,"farLand":false,"kickedIn":"stunned","events":"snap@88:249 stun@-2v285:289 land@82:317 kick@33(stunned):331"}',
+    +   'bonked 2 times (the far-side loop): adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}',
+    +   'bounced 230 px past its middle (over 38): adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}',
+    +   'came down on its far side while it was dazed: adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bounced 41 px past its middle (over 38): adult normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":41,"farLand":true,"kickedIn":"stunned","events":"snap@90:339 stun@15v285:379 land@68:407 kick@44(stunned):421"}'
+    1: 'came down on its far side while it was dazed: adult normal v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":41,"farLand":true,"kickedIn":"stunned","events":"snap@90:339 stun@15v285:379 land@68:407 kick@44(stunned):421"}'
+    2: 'bounced 116 px past its middle (over 38): adult normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":116,"farLand":true,"kickedIn":"stunned","events":"stun@47v285:226 land@-82:240 kick@3(stunned):265"}'
+    3: 'came down on its far side while it was dazed: adult normal v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":0,"past":116,"farLand":true,"kickedIn":"stunned","events":"stun@47v285:226 land@-82:240 kick@3(stunned):265"}'
+    4: 'bounced 55 px past its middle (over 38): adult normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":55,"farLand":true,"kickedIn":"stunned","events":"snap@68:257 stun@-19v268:290 land@74:318 kick@10(stunned):332"}'
+    5: 'came down on its far side while it was dazed: adult normal v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":55,"farLand":true,"kickedIn":"stunned","events":"snap@68:257 stun@-19v268:290 land@74:318 kick@10(stunned):332"}'
+    6: 'bounced 59 px past its middle (over 38): adult normal v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":0,"past":59,"farLand":false,"kickedIn":"stunned","events":"stun@-10v285:294 land@91:322 kick@46(stunned):337"}'
+    7: 'bounced 52 px past its middle (over 38): adult normal v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":52,"farLand":false,"kickedIn":"stunned","events":"snap@88:249 stun@-2v285:289 land@82:317 kick@33(stunned):331"}'
+    8: 'bonked 2 times (the far-side loop): adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}'
+    9: 'bounced 230 px past its middle (over 38): adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}'
+    10: 'came down on its far side while it was dazed: adult normal v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":2,"bonkHops":1,"adopted":0,"snaps":0,"past":230,"farLand":true,"kickedIn":"stunned","events":"stun@45v268:219 land@-185:244 woke:284 stun@10v285:379 land@63:407 kick@7(stunned):415"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: (a) bonkBrake: adult easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+not ok 7 - (a) bonkBrake: adult easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1765.138856
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:79:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'bounced 57 px past its middle (over 38): adult easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":57,"farLand":true,"kickedIn":"stunned","events":"snap@77:245 stun@-7v285:334 land@77:362 kick@4(stunned):376"}',
+    +   'came down on its far side while it was dazed: adult easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":57,"farLand":true,"kickedIn":"stunned","events":"snap@77:245 stun@-7v285:334 land@77:362 kick@4(stunned):376"}',
+    +   'bounced 56 px past its middle (over 38): adult easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":56,"farLand":true,"kickedIn":"stunned","events":"snap@64:242 stun@-7v285:290 land@77:318 kick@38(stunned):332"}',
+    +   'came down on its far side while it was dazed: adult easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":56,"farLand":true,"kickedIn":"stunned","events":"snap@64:242 stun@-7v285:290 land@77:318 kick@38(stunned):332"}',
+    +   'bounced 59 px past its middle (over 38): adult easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":59,"farLand":true,"kickedIn":"stunned","events":"snap@68:237 stun@-9v285:290 land@91:318 kick@29(stunned):333"}',
+    +   'came down on its far side while it was dazed: adult easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":59,"farLand":true,"kickedIn":"stunned","events":"snap@68:237 stun@-9v285:290 land@91:318 kick@29(stunned):333"}',
+    +   'bounced 54 px past its middle (over 38): adult easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":54,"farLand":false,"kickedIn":"stunned","events":"snap@76:237 stun@-18v268:288 land@75:316 kick@8(stunned):330"}',
+    +   'bounced 63 px past its middle (over 38): adult easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":63,"farLand":true,"kickedIn":"stunned","events":"snap@64:237 stun@-33v285:290 land@77:318 kick@39(stunned):332"}',
+    +   'came down on its far side while it was dazed: adult easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":63,"farLand":true,"kickedIn":"stunned","events":"snap@64:237 stun@-33v285:290 land@77:318 kick@39(stunned):332"}',
+    +   'bounced 61 px past its middle (over 38): adult easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":true,"kickedIn":"stunned","events":"snap@85:237 stun@-31v285:330 land@79:358 kick@32(stunned):372"}',
+    +   'came down on its far side while it was dazed: adult easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":true,"kickedIn":"stunned","events":"snap@85:237 stun@-31v285:330 land@79:358 kick@32(stunned):372"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bounced 57 px past its middle (over 38): adult easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":57,"farLand":true,"kickedIn":"stunned","events":"snap@77:245 stun@-7v285:334 land@77:362 kick@4(stunned):376"}'
+    1: 'came down on its far side while it was dazed: adult easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":57,"farLand":true,"kickedIn":"stunned","events":"snap@77:245 stun@-7v285:334 land@77:362 kick@4(stunned):376"}'
+    2: 'bounced 56 px past its middle (over 38): adult easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":56,"farLand":true,"kickedIn":"stunned","events":"snap@64:242 stun@-7v285:290 land@77:318 kick@38(stunned):332"}'
+    3: 'came down on its far side while it was dazed: adult easy v2: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":56,"farLand":true,"kickedIn":"stunned","events":"snap@64:242 stun@-7v285:290 land@77:318 kick@38(stunned):332"}'
+    4: 'bounced 59 px past its middle (over 38): adult easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":59,"farLand":true,"kickedIn":"stunned","events":"snap@68:237 stun@-9v285:290 land@91:318 kick@29(stunned):333"}'
+    5: 'came down on its far side while it was dazed: adult easy v3: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":59,"farLand":true,"kickedIn":"stunned","events":"snap@68:237 stun@-9v285:290 land@91:318 kick@29(stunned):333"}'
+    6: 'bounced 54 px past its middle (over 38): adult easy v4: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":54,"farLand":false,"kickedIn":"stunned","events":"snap@76:237 stun@-18v268:288 land@75:316 kick@8(stunned):330"}'
+    7: 'bounced 63 px past its middle (over 38): adult easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":63,"farLand":true,"kickedIn":"stunned","events":"snap@64:237 stun@-33v285:290 land@77:318 kick@39(stunned):332"}'
+    8: 'came down on its far side while it was dazed: adult easy v5: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":63,"farLand":true,"kickedIn":"stunned","events":"snap@64:237 stun@-33v285:290 land@77:318 kick@39(stunned):332"}'
+    9: 'bounced 61 px past its middle (over 38): adult easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":true,"kickedIn":"stunned","events":"snap@85:237 stun@-31v285:330 land@79:358 kick@32(stunned):372"}'
+    10: 'came down on its far side while it was dazed: adult easy v6: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":1,"adopted":0,"snaps":1,"past":61,"farLand":true,"kickedIn":"stunned","events":"snap@85:237 stun@-31v285:330 land@79:358 kick@32(stunned):372"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:81:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 8 - (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 4393.650146
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 9 - (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 3319.294198
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+ok 10 - (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2000.556117
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+not ok 11 - (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2289.929679
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:86:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'kick not in its recovery after its snap (stunned): kid easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":4,"past":120,"farLand":true,"kickedIn":"stunned","events":"stun@44v268:803 land@-85:817 kick@79(stunned):851"}'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'kick not in its recovery after its snap (stunned): kid easy v1: {"end":"shrine","shrine":true,"cleared":{"kick":1},"left":0,"hits":0,"lives":0,"causes":[],"bonks":1,"bonkHops":0,"adopted":0,"snaps":4,"past":120,"farLand":true,"kickedIn":"stunned","events":"stun@44v268:803 land@-85:817 kick@79(stunned):851"}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/snapperTaught.test.ts:88:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 3
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 33420.888489

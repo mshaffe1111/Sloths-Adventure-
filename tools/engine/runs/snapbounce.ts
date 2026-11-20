@@ -1,22 +1,17 @@
+// ENG-SNAP: every tier on the awake snapper toy (snapToys.ts snapperWatch), one line a run: bonks, how far past, far-side landings, the kick
+// npx tsx tools/engine/runs/snapbounce.ts [bots e.g. child:normal,kid:easy] [variants e.g. 1-6] [skill-off]
 import '../../../src/game/headlessDom.ts';
-import { firstTimer } from '../../inspect/firsttimer.ts';
+import { SKILLS } from '../../inspect/firsttimer.ts';
 import { CAST_BOTS } from '../../inspect/castBots.ts';
-import { onSnapper, snapperSeed, SNAPPER_ID } from '../../inspect/snapToys.ts';
+import { snapperSeed, snapperWatch } from '../../inspect/snapToys.ts';
+const [botsArg, vArg, offArg] = process.argv.slice(2);
+const bots = (botsArg ?? 'child:normal,child:easy,kid:normal,kid:easy,middle:normal,middle:easy,expert:normal,adult:normal,adult:easy').split(',').map((b) => b.split(':') as [string, 'normal' | 'easy']);
+const [v0, v1] = (vArg ?? '1-6').split('-').map(Number);
+for (const k of (offArg ?? '').split(',').filter(Boolean)) (SKILLS as Record<string, boolean>)[k] = false;
 const seed = snapperSeed('snapper');
-for (const [bot, setting] of [['child','normal'],['child','easy'],['kid','normal'],['kid','easy'],['middle','normal'],['middle','easy'],['expert','normal'],['adult','normal'],['adult','easy']] as const) {
-  const out: string[] = [];
-  for (const v of [1,2,3,4,5,6]) {
-    let side = 0, past = 0, farLand = 0, prevPh = '', kickSide = 0, bonks = 0, approachSide = 0;
-    const r = onSnapper('snapper', seed, setting, () => firstTimer(SNAPPER_ID, v, CAST_BOTS[bot][setting]!, { cap: 600, onFrame: (sim: any) => {
-      const p = sim.p, c = sim.e.cast; const m = c?.members.find((q: any) => q.e.kitBeat); if (!m) return;
-      const ph = m.s.phase;
-      if (ph !== 'stunned' && Math.abs(m.s.x - p.x) < 200 && p.grounded) approachSide = Math.sign(p.x - m.s.x);
-      if (ph === 'stunned' && prevPh !== 'stunned') { side = approachSide; bonks++; }
-      if (ph === 'stunned' && side) { past = Math.max(past, (m.s.x - p.x) * side); if (p.grounded && (p.x - m.s.x) * side < 0) farLand = 1; }
-      if (m.cleared && !kickSide && side) kickSide = Math.sign(p.x - m.s.x) === side ? 1 : -1;
-      prevPh = ph;
-    } }));
-    out.push(`v${v}:${r.cast?.cleared?.kick ? 'K' : '-'} b${bonks} past${Math.round(past)}${farLand ? ' FAR' : ''}`);
+for (const [bot, setting] of bots) {
+  for (let v = v0; v <= (v1 ?? v0); v++) {
+    const a = snapperWatch('snapper', CAST_BOTS[bot][setting]!, seed, v);
+    console.log(`${bot} ${setting} v${v}: ${a.cleared.kick ? 'K' : '-'} shrine ${a.shrine ? 1 : 0} hits ${a.hits + a.lives} bonks ${a.bonks} (hops ${a.bonkHops}, adopted ${a.adopted}) past ${a.past}${a.farLand ? ' FAR' : ''} | ${a.events}`);
   }
-  console.log(bot, setting, out.join(' | '));
 }
