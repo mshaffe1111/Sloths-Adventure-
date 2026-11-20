@@ -171,32 +171,5 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "ax": 71.5,
   "ay": 210.8,
   "fps": 16
- },
- "freeze": {
-  "n": 20,
-  "cols": 8,
-  "w": 144,
-  "h": 205,
-  "ax": 70.1,
-  "ay": 202.0,
-  "fps": 16
- },
- "tiptoe": {
-  "n": 22,
-  "cols": 8,
-  "w": 184,
-  "h": 193,
-  "ax": 106.0,
-  "ay": 187.3,
-  "fps": 16
- },
- "drowsy-walk": {
-  "n": 24,
-  "cols": 8,
-  "w": 143,
-  "h": 215,
-  "ax": 71.7,
-  "ay": 209.4,
-  "fps": 16
  }
 };

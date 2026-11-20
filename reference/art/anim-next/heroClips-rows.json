@@ -1,0 +1,32 @@
+{
+ "note": "ANIM-NEXT 11-20: Pokey's freeze/tiptoe/drowsy-walk clip rows, held OUT of src/game/heroClipsData.ts until a builder wires them: heroClips.ts warmHeroClips() loads every HERO_CLIPS row at each stage start (~430 KB, ~9 MB decoded), so an unplayed row costs every stage. Wiring = paste these rows into HERO_CLIPS (or run tools/art/train/clips.py freeze tiptoe drowsy-walk with the takes unzipped to tools/art/train/vids/). freeze: frames 0-13 the stop (one-shot), 14-19 the hold loop; tiptoe and drowsy-walk: whole-sheet loops.",
+ "rows": {
+  "freeze": {
+   "n": 20,
+   "cols": 8,
+   "w": 144,
+   "h": 205,
+   "ax": 70.1,
+   "ay": 202.0,
+   "fps": 16
+  },
+  "tiptoe": {
+   "n": 22,
+   "cols": 8,
+   "w": 184,
+   "h": 193,
+   "ax": 106.0,
+   "ay": 187.3,
+   "fps": 16
+  },
+  "drowsy-walk": {
+   "n": 24,
+   "cols": 8,
+   "w": 143,
+   "h": 215,
+   "ax": 71.7,
+   "ay": 209.4,
+   "fps": 16
+  }
+ }
+}
