@@ -62,6 +62,15 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 - The snake: shy, 0.5 s rear, strikes where he WAS; every ending is the glide. Drop traps: `predator-kit.md`.
 - Petals on a landing go where the landing sets him (0.88 of the way); no stretch over 1,050 px without a socket petal, or the shared fill (petals.ts fillGaps) lays them on pit floors; a creaky limb can't hold a petal (flowerReach.ts:140) (BUILD-16c, 11-14).
 
+## World 2 notes (World 2's own)
+- A liana over a river is judged by what is under its throw (the lead, 11-19 9:13 PM ET, from ENG-24e's flights on 2-4): with LOGS under the
+  throw it meets the log-drop share (gen2/riverLay.ts lianaRiverFaults: its logs are a let-go's landing); over a river's TAIL (log-free
+  water) it is a swing over open water and meets the World 1 vine rules (FAR, the testers' let-go; levelCheck reach; the wait), and the
+  river must still fail every log-only crossing (rideAcross). The fairness proof is castBots child/middle/expert 40/40 both settings, or each
+  miss traced. Physics fact behind it: a liana caught off a log carries him no farther than a double jump off that log, and a let-go with no
+  logs under it lands only on the forward swing (a bank-only landing tops out near half the let-go moments), so open water alone never
+  forces a liana and the log-drop share can never be met over a tail. Easy may keep logs under the throw (the vine optional on Easy only).
+
 ## Learned, level by level
 | Level | Builder | Better or worse than the last level | Rule changed |
 |---|---|---|---|
