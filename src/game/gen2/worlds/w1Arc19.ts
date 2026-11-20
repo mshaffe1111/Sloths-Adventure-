@@ -72,7 +72,7 @@ export const MISSION_19 = 'Boas snap at anything that moves. Outsmart them, and 
 /** a mossy bough he walks on, `w` exact, level with the one before */
 const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'moss_stone', main: true });
 /** a bough past a small soft hop (World 1's soft pit under it: a miss is a climb back) */
-const hop = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
+const hop = (key: string, after: string, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy, share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a limb over a soft gap: creaky (gives way 1.1 s after he lands; whole on a set-back) or, Easy, a sound bough */
 const limb = (key: string, after: string, creak: boolean): SectionPiece => ({ key, shape: 'branch', w: [150, 160], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) });
 /** a root step up or down (50-56 px: a hop, never a fall) */
@@ -86,10 +86,11 @@ const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shap
  *  load's socket 141 px in (the pair's 85-130 from the handle), the boa 277 px in (136 px from the load's socket, the lay's 120 between an
  *  animal and a prop). From the handle the boa is ~233 px on: outside its engage on both settings (150, Easy 195), so he drops the
  *  load from where it cannot see him move; walked past, it rears 150 px out (the freeze, or the bop, still answer it) */
-function trapUnit(k: string, after: string, load: 'trap-hive' | 'trap-stone'): { pieces: SectionPiece[]; sockets: Socket[]; last: string } {
+function trapUnit(k: string, after: string, load: 'trap-hive' | 'trap-stone', dy: R2 = [0, 0]): { pieces: SectionPiece[]; sockets: Socket[]; last: string } {
   const b = `${k}b`;
   return {
-    pieces: [bank(b, after, 440)],
+    // (`dy`: the bough a root step up from `after`, reached over a narrow dip: VAR-19b, read-load's walk-in. The pair and the boa keep their places on it)
+    pieces: [root(b, after, 440, dy)],
     sockets: [
       { id: `${k}h`, role: 'source', on: b, t: 0.1, dn: 0 },
       { id: `${k}r`, role: 'receptor', on: b, t: 0.32, dn: 0, link: `${k}h`, allow: [load] },
@@ -145,26 +146,30 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 function forestThenFreeze(): Lay {
   const t = trapUnit('u', 'z', 'trap-hive');
   return {
-    pieces: [bank('a', null, 320), root('m1', 'a', 260, UP), root('m2', 'm1', 300, DOWN), bank('e', 'm2', 280), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP), ...t.pieces, bank('y', t.last, 300)],
+    pieces: [bank('a', null, 120), root('m1', 'a', 140, UP), root('m2', 'm1', 140, DOWN), root('ed', 'm2', 120, DOWN), root('e', 'ed', 360, UP), root('f', 'e', 360, DOWN), root('z', 'f', 300, UP), ...t.pieces, root('yd', t.last, 120, DOWN), root('y', 'yd', 160, UP)],
     // (the trap's pair listed first: sockets fill in list order and a pair is paid from the section's threat, which the freeze boa spends)
-    sockets: [...t.sockets, tip('t-freeze', 'a', 0.3, 'freeze'), petals('pa', 'a', 0.7, 1), petals('pm', 'm1', 0.5, 2, 120), petals('pm2', 'm2', 0.5, 1),
+    sockets: [...t.sockets, tip('t-freeze', 'a', 0.3, 'freeze'), petals('pa', 'a', 0.75, 1), petals('pm', 'm1', 0.5, 2, 80), petals('pm2', 'm2', 0.5, 1),
       boa('b2', 'f', 0.39, 'boa'), petals('pz', 'z', 0.5, 1), petals('py', 'y', 0.5, 2, 120)],
   };
 }
 /** [P] beat 3, freeze in stride: a rising stair of landings, a boa on the first and third (no gap to save him); a flag before it. Each boa
  *  210 px into its landing, so its rear (150 px out) starts after the step up has landed, never mid-hop (he can't stop in the air) */
+/** (VAR-19, the lead's ruling (a) 3:33 PM ET: a narrow root dip in the stair's opening bank, 'ad', so the walk up to the first boa is not
+ *  a dead walk, 3.7 s on 15 of 16 Normal layouts; each boa keeps its own root and place on it) */
 function freezeStair(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), root('s1', 'a', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('z', 'd2', 320, DOWN)],
+    pieces: [bank('a', null, 120), root('ad', 'a', 120, DOWN), root('ae', 'ad', 200, UP), root('s1', 'ae', 300, UP), root('s2', 's1', 240, UP), root('s3', 's2', 300, UP), root('d1', 's3', 200, DOWN), root('d2', 'd1', 260, DOWN), rock('rd', 'd2', 0.5), root('zd', 'd2', 120, DOWN), root('zu', 'zd', 140, UP), root('z', 'zu', 120, DOWN)],
     sockets: [flag('a'), petals('pa', 'a', 0.7, 1), boa('b1', 's1', 0.7, 'boa'), petals('ps2', 's2', 0.5, 1), boa('b2', 's3', 0.7, 'boa', easy ? 'soften' : 'stay'),
-      petals('pd', 'd2', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-miss', 'z', 0.7, 'miss')],
+      petals('pd', 'd2', 0.5, 1), petals('pz', 'zu', 0.5, 2, 100), tip('t-miss', 'z', 0.5, 'miss')],
   };
 }
 /** [X] beat 5, make it miss (Mario Bros.' closing window): a boa at a bough's end past a gap; he lands outside its strike, it rears and
  *  strikes bark; while its head is out (0.8 s) he steps in and bops it (dazed 2.5 s), or he freezes; a flag before it */
+/** (VAR-19, the lead's ruling (a): the walk-in bank before the hop is a narrow root dip of the same length, 'ad' + 'w1', so the walk up
+ *  to the boa is not a dead walk, 3.7 s on 12 of 16 Normal layouts; the boa's hop and bough unchanged) */
 function makeItMiss(): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 300), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 320)],
+    pieces: [bank('a', null, 140), root('ad', 'a', 150, DOWN), root('w1', 'ad', 320, UP), hop('b', 'w1', 420), bank('c', 'b', 260), hop('z', 'c', 240)],
     sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.62, 'boa'), petals('pc', 'c', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), tip('t-nest', 'z', 0.7, 'nest')],
   };
 }
@@ -174,34 +179,40 @@ function makeItMiss(): Lay {
  *  rear frame; a freeze on the limb drops him to the moss below (never a pit) */
 function roostTwist(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 320), rock('ra', 'a', 0.6), bank('w1', 'a', 300), limb('k', 'w1', !easy), bank('b', 'k', 400), hop('z', 'b', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.25, 'boa-roost'), roost('r1', 'b', 0.57), petals('pz', 'z', 0.5, 2, 120)],
+    pieces: [bank('a', null, 140), root('ad', 'a', 120, DOWN), root('w1', 'ad', 360, UP), limb('k', 'w1', !easy), bank('b', 'k', 400), hop('z', 'b', 240)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), boa('b1', 'b', 0.25, 'boa-roost'), roost('r1', 'b', 0.57), petals('pz', 'z', 0.5, 2, 120)],
   };
 }
 /** [C] beat 9a, read it: a load. (Each read is ~1,700 px of bough: the rolled flags put a hard node's flag 1,500-2,400 px before it and
  *  none within 900 px of the last, so three reads back to back need that much ground to each hold its own flag) */
 function readTrap(): Lay {
-  const t = trapUnit('u', 'a2', 'trap-stone');
-  return { pieces: [bank('a', null, 320), root('a2', 'a', 360, UP), ...t.pieces, bank('z', t.last, 360), rock('rz', 'z', 0.6), root('z2', 'z', 320, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.5, 2, 120)] };
+  // (VAR-19b: a narrow dip on the high bough, the trap bough the same 680 px from the beat's start. The walk-in stays 320: at 140-200 the
+  //  trap pair is not laid on some rolls (seeds 2 and 4 lay the boa on a2 with no load; ENGINE-WORTHY, VAR-19's REPORT, VAR-19b))
+  const t = trapUnit('u', 'a3', 'trap-stone');
+  return { pieces: [bank('a', null, 320), root('a2', 'a', 180, UP), root('a2d', 'a2', 90, DOWN), root('a3', 'a2d', 90, UP), ...t.pieces, root('zd', t.last, 90, DOWN), root('z', 'zd', 330, UP), rock('rz', 'z', 0.5), root('z2', 'z', 120, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), ...t.sockets, petals('pz', 'z', 0.25, 2, 80)] };
 }
 /** [C] beat 9b, read it: a roost */
 function readRoost(): Lay {
-  return { pieces: [bank('a', null, 320), root('a2', 'a', 360, UP), bank('b', 'a2', 380), hop('z', 'b', 320), root('z2', 'z', 320, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), boa('b1', 'b', 0.3, 'boa-roost'), roost('r1', 'b', 0.68), petals('pz', 'z', 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 140), root('a2', 'a', 360, UP), bank('b', 'a2', 380), hop('z', 'b', 160), root('z2', 'z', 100, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), boa('b1', 'b', 0.3, 'boa-roost'), roost('r1', 'b', 0.68), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9c, read it: a bare boa up a step (freeze, or let it miss and bop it) */
 function readBare(): Lay {
   return {
-    pieces: [bank('a', null, 320), root('s1', 'a', 260, UP), root('b', 's1', 340, UP), root('d1', 'b', 260, DOWN), rock('rd', 'd1', 0.5), root('z', 'd1', 320, DOWN)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.55, 'boa', 'soften'), petals('pz', 'z', 0.5, 2, 120), tip('t-eye', 'z', 0.7, 'eye')],
+    pieces: [bank('a', null, 140), root('s1', 'a', 260, UP), root('b', 's1', 340, UP), root('d1', 'b', 240, DOWN), rock('rd', 'd1', 0.5), root('z', 'd1', 120, DOWN)],
+    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), boa('b1', 'b', 0.55, 'boa', 'soften'), petals('pz', 'z', 0.5, 2, 80), tip('t-eye', 'z', 0.7, 'eye')],
   };
 }
 /** [L] beat 12, two hunters: the eagle's eye on its rounds over moss (1-7's sweeper and cover) and a boa on its line; a flag before it.
  *  (1-9.md has two boas here: L is structural, so its node names no threat and its sockets pay from the section's budget, which holds
- *  one; the eagle and the boa are the two hunters) */
+ *  one; the eagle and the boa are the two hunters)
+ *  (VAR-19e, funcheck's repeat on Easy: its exit was a hop, so the beat read 'EJLJj' and the rests that open 'J j' on Easy (rest-stair,
+ *  and others) made 'JjJj' four times on 3 of 16 Easy layouts (STAGE-RULES §0.3, at most 3). It now ends with no hop, 'EJLJ'; the
+ *  hunt is the eagle, the moss and the boa, never the exit). It ends on a flat bank: as a root step down it ran the line 50 px lower and
+ *  10 of 320 raw rolls (seeds 1-160, both settings) found no section for the next node ("the pool is spent"), probes/throws.ts) */
 function twoHunters(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 360), bank('w1', 'a', 420), bank('w2', 'w1', 420), bank('w3', 'w2', 420), hop('z', 'w3', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('hunters', 'w1'), hide('c1', 'w1', 0.4, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.2, 'patch'),
+    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), bank('z', 'w3', 200)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('hunters', 'w1', 0.045), hide('c1', 'w1', 0.6, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.3, 'patch'),
       petals('pz', 'z', 0.5, 2, 120)],
   };
 }
@@ -210,8 +221,8 @@ function twoHunters(easy: boolean): Lay {
  *  into its face and freeze */
 function oldBoa(): Lay {
   return {
-    pieces: [bank('a', null, 320), bank('w1', 'a', 420), bank('w2', 'w1', 560), hop('z', 'w2', 320)],
-    sockets: [flag('a'), petals('pa', 'a', 0.5, 1), watch('old', 'w1'), hide('c1', 'w1', 0.8, 'patch'), boa('ob', 'w2', 0.4, 'boa'), petals('pz', 'z', 0.5, 2, 120)],
+    pieces: [bank('a', null, 140), bank('w1', 'a', 200), root('wd', 'w1', 120, DOWN), root('w1b', 'wd', 240, UP), bank('w2', 'w1b', 560), hop('z', 'w2', 200)],
+    sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('old', 'w1'), hide('c1', 'w1b', 0.55, 'patch'), boa('ob', 'w2', 0.4, 'boa'), petals('pz', 'z', 0.5, 2, 120)],
   };
 }
 
@@ -231,31 +242,114 @@ export const BEATS_19: SectionTemplate[] = [
 // ───────────────────────────── 1-9's own quiet: the boughs, the rests and the exit ─────────────────────────────
 const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
-  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: o.job === 'arrive' ? 1 : 6,
+  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', maxPerStage: 1,
+  // (VAR-19: each rest is laid once a roll and walked into: the one rest laid five times, after a rolled jump, read "jJJJ" after every
+  //  beat, Easy's 4-run repeat and most of 1-9's likeness to 1-7 and 1-8, as VAR-1 found on 1-7/1-8. The beats keep their rolled join:
+  //  walked into, a rest's last hop to the beat's first ran past the quiet line's 4 s, seedlist refused every seed)
+  ...(o.job === 'rest' ? { entry: { piece: 'in', kind: 'ground', join: 'walk' } } : {}),
 } as SectionTemplate);
 /** a rest along the old boughs: a flag between root hops (1-7's rest: a hop within 450 px of each end, none 950 px apart). The golden seed
  *  (the lead 11:17 AM ET 11-18: World 1's "SECRET! GOLDEN SEED x OF n" counts it; the hand-built 1-9 carried one) sits over the last
  *  root step up, a hop above it: gen2 lays a find once a stage, in the first section that holds one, so it is the first rest's, after the
  *  stair, outside every boa read and every teach */
+/** the rest's sockets (both orders hold the same pieces) */
+const restSockets = (): Socket[] => [flag('c2', 0.15), petals('pb', 'b', 0.5, 1), petals('pk', 'kc', 0.5, 1), petals('pd', 'd', 0.5, 2, 80), petals('pi', 'i', 0.5, 1),
+  { id: 'seed', role: 'find', on: 'd', t: 0.5, dn: 60 }];
 const rest = (id: string): SectionTemplate => link({ id, name: 'a rest on the old boughs', job: 'rest', versions: [{
   id: 'roots',
-  lay: { pieces: [bank('a', null, 320), root('b', 'a', 240, UP), root('c', 'b', 380, DOWN), root('d', 'c', 220, UP), root('e', 'd', 360, DOWN), root('f', 'e', 240, UP), root('g', 'f', 340, DOWN), root('h', 'g', 220, UP), root('z', 'h', 300, DOWN)],
-    sockets: [flag('c', 0.5), petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pe', 'e', 0.5, 2, 120), petals('pf', 'f', 0.5, 1),
-      { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },
+  // (VAR-19c: the knots, its own shape: a step up and a knot gap, a wide hollow walked into with Matt's boulder in it, then a long bough,
+  //  a knot gap and home. On the route a rest opens 'h j' and closes 'j J', so no rest reads three jumps in a row or opens on one: the
+  //  old five root dips read 'JJJJJ' and every rest repeated it)
+  // (VAR-19e, funcheck's repeat on Normal: in that order the rest read 'jJJjJ' on Normal, the same four moves 'jJJj' as the stair's end
+  //  into a rest, roost into rest-bounce and others, 4 times on 4 of 16 Normal layouts (STAGE-RULES §0.3, at most 3). On Normal the
+  //  second knot gap now comes before the long bough and the hollow: two knots, the bough, the boulder's hollow, home ('jjJJ'). Easy keeps
+  //  VAR-19c's order, its twin: Easy's route reads the hollow and its boulder as a hop ('jJjjJ'), and the new order read 'jjJjJ' there and
+  //  made 'JjJJ' four times on a fifth Easy layout)
+  lay: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('d2', 'c', 80, DOWN), root('d', 'd2', 300, UP), root('c2', 'd', 360, DOWN), boulder('kc', 'c2', 0.5), root('i', 'c2', 140, UP), root('z', 'i', 100, DOWN)],
+    sockets: restSockets() },
+  easy: { pieces: [bank('a', null, 140), root('b', 'a', 240, UP), root('b2', 'b', 80, DOWN), root('c', 'b2', 240, UP), root('c2', 'c', 360, DOWN), boulder('kc', 'c2', 0.5), root('d', 'c2', 300, UP), root('d2', 'd', 80, DOWN), root('i', 'd2', 140, UP), root('z', 'i', 100, DOWN)],
+    sockets: restSockets() },
 }] });
+/** Matt's painted mossy boulder on `on` at `at` (protoArt.ts isPaintedRock: a moss_stone block exactly 50 px tall), a hop up and over */
+const boulder = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [140, 150], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
+/** a vine at the foot of a wall and the wall's top (VAR-1's form, 1-7's wallClimb): the vine on `on` (`onW` wide) 20 px short of its end,
+ *  `h` px tall, and the wall's top `key` (`w` wide) laid over the vine, 30 px under its top: at the top of the climb he steps straight on */
+const wallClimb = (key: string, on: string, onW: number, h: number, w: number): SectionPiece[] => [
+  { key: `${key}v`, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [(onW - 20) / onW, (onW - 20) / onW], h: [h + 30, h + 30] } },
+  { key, shape: 'bank', w: [w, w], place: { kind: 'over', on: `${key}v`, at: [0, 0], dy: [30, 30] }, style: 'moss_stone', main: true },
+];
+/** a mushroom on `on`, its cap 30 px up, its edge 30-45 px before `on`'s end (1-2's) */
+const mushroom = (key: string, on: string, w: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } });
+/** a bough only the mushroom's bounce (or a double jump) reaches: `rise` px up, a wall straight off `after`'s end */
+const bounced = (key: string, after: string, from: string, w: number, rise: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'walk', after, dy: [-rise - 4, -rise + 4] }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from });
+/** the golden seed (World 1's "SECRET! GOLDEN SEED"): gen2 lays a find once a stage, in the first section that holds one, so every rest
+ *  carries the socket over its high ground and the first rest laid (after the stair, outside every boa read and every teach) keeps it */
+const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t, dn: 60 });
+/**
+ * 1-9's rests (VAR-19, R-165.291; Matt 10-30: "more pieces ... that variety"): five quiet places on the boa's old boughs, each its own
+ * shape and its own move, each laid once a roll and walked into, so no rest is a reroll of another and none is a rest 1-6/1-7/1-8 lays
+ * (theirs: root hops, the hollow log, the moss shelf, the fern dip, the mossy floor, the knots, the crook vine, the split, the saddle).
+ * Nothing watches a rest and nothing hurts in one (no pit, no heart): every miss is the ground he stood on. The quiet line: a move within
+ * 450 px of each end, none 950 px apart; on the route only a narrow dip between two roots reads as a jump (steps up are bumps, walked
+ * drops nothing), so every rest ends as the old one does, a root up and a root down (VAR-19: rests that ended on drops ran 4.5-6 s quiet
+ * into the next beat and seedlist refused every seed).
+ */
+/** (b) the old crook: over a root dip, a step up onto the high crook (a boulder on it), over the dip off its end, and two root steps home.
+ *  (On the route only a dip between two roots reads as a jump: straight steps up are bumps and walked drops are nothing, so a crook
+ *  climbed by steps alone ran 5-6 s quiet, over the quiet line's 4 s, and seedlist refused it. A walked rise is also held under a single's
+ *  reach, pipeline.ts riseCap: the crook is two root steps up, the same on both settings) */
+const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a rest: up the old crook', job: 'rest', versions: [{ id: 'crook', lay: {
+  // (VAR-19c: a step up and a knot gap, up onto the crook and over its boulder, off its end over the long drop, a second boulder on the far
+  //  bough, and a knot gap onto the last root, the rest's last move ~120 px from the next beat (whose walk-in is up to 320 px and can sit a
+  //  root lower: a knot gap or a boulder further back left 2.7-3.2 s walked; a 300 px hollow there broke every roll): 'j J'; no walk runs 2.5 s)
+  pieces: [bank('a', null, 140), root('b', 'a', 200, UP), root('c', 'b', 80, DOWN), root('d', 'c', 300, UP), root('e', 'd', 380, UP), boulder('k', 'e', 0.8), root('f', 'e', 240, [102, 108]), root('g', 'f', 520, UP), boulder('k2', 'g', 0.5), root('g2', 'g', 80, DOWN), root('z', 'g2', 120, UP)],
+  sockets: [flag('a', 0.4), petals('pd', 'd', 0.5, 1), petals('pk', 'k', 0.5, 1), seed('e', 0.4), petals('pg', 'g', 0.5, 1), petals('pz', 'z', 0.5, 1)] } }] });
+/** (c) the boulder stair: a root up and down, a painted boulder on the floor, a root step up, a second boulder on the bough, and a step
+ *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
+const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
+  // (VAR-19c: a step up and a knot gap, a boulder at the far end of the high bough (a boulder where the knot hop lands: the lay refuses every
+  //  roll), down and a boulder on the low one, up, a knot gap and home: 'j .. j J'. VAR-19d: the low bough's boulder at its far end,
+  //  flush with u (down onto the bough, up the boulder, walk on; ~51 px of bough before it): at 0.4 it left 21 and 34 px notches under 50 px faces,
+  //  where Pokey (44 px) had no room: a flick from there fell him through to his death (plainWalk.test.ts one-jump steps; VAR-19d's
+  //  probes/replay.ts); centred, Easy's landing softener (easyMode.ts
+  //  easyHoldSoften) grew it into its right notch again, 37 px; flush leaves no notch to grow into (w1Arc19.test.ts 'the boulder stair'))
+  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('rk', 'r', 80, DOWN), root('s', 'rk', 320, UP), boulder('k1', 's', 0.85), root('t', 's', 200, DOWN), boulder('k2', 't', 1), root('u', 't', 140, UP), root('u2', 'u', 80, DOWN), root('i', 'u2', 120, UP), root('z', 'i', 120, DOWN)],
+  sockets: [flag('s', 0.1), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pu', 'u', 0.5, 1), petals('pi', 'i', 0.5, 1)] } }] });
+/** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
+ *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */
+const restWall = (): SectionTemplate => link({ id: 'w1-19-rest-wall', name: 'a rest: up the bough wall by its vine', job: 'rest', versions: [{ id: 'wall', lay: {
+  // (VAR-19c: a step up and a knot gap, down to the wall's foot, the climb, off the top over a knot, the long drop, a knot gap and home:
+  //  'j C J j J', the vine its own)
+  pieces: [bank('a', null, 140), root('b', 'a', 160, UP), root('b2', 'b', 80, DOWN), root('b3', 'b2', 120, UP), root('m', 'b3', 160, DOWN), ...wallClimb('c', 'm', 160, 212, 260), root('cd', 'c', 80, DOWN), root('y', 'cd', 120, UP), root('d', 'y', 160, [128, 132]), root('dk', 'd', 80, DOWN), root('i', 'dk', 120, UP), root('z', 'i', 120, DOWN)],
+  sockets: [flag('m', 0.3), petals('pc', 'c', 0.5, 2, 140), seed('y', 0.5), petals('pi', 'i', 0.5, 2, 60)] } }] });
+/** (e) the mushroom bough: a mushroom at the old bough's foot bounces him up onto it (1-1's bounce, 150 px: a double makes it too), along
+ *  it, a root up and down along it, and the drop home (a hop either side of the bounce: the quiet line, 4 s) */
+const restBounce = (): SectionTemplate => link({ id: 'w1-19-rest-bounce', name: 'a rest: bounce up onto the old bough', job: 'rest', versions: [{ id: 'bounce', lay: {
+  // (VAR-19c: a step up over a boulder (not the knot gap the other rests open with), the bounce up onto the old bough, off it over a knot,
+  //  down its long step, a knot gap and home)
+  pieces: [bank('a', null, 140), root('r', 'a', 340, UP), boulder('kr', 'r', 0.6), root('b', 'r', 240, DOWN), mushroom('bm', 'b', 240), bounced('c', 'b', 'bm', 400, 150), root('cd', 'c', 80, DOWN), root('y', 'cd', 120, UP), root('e', 'y', 220, [96, 100]), root('ek', 'e', 80, DOWN), root('i', 'ek', 200, UP), root('z', 'i', 120, DOWN)],
+  sockets: [flag('b', 0.3), petals('pc', 'c', [0.4, 0.6], 2, 160), seed('y', 0.5), petals('pe', 'e', 0.5, 1), petals('pi', 'i', 0.5, 1)] } }] });
 export const QUIET_19: SectionTemplate[] = [
-  // [A] thick mossy boughs; nothing hurts in 1,300 px. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
+  // [A] thick mossy boughs; nothing hurts in 1,300 px. The first move as soon as he can (VAR-19: the old arrival walked 800 px past the
+  // runway to its first jump, 3.1 s from the spawn: "dead walk" at x 140): an 80 px foot, then a narrow root dip to jump (the route reads
+  // only a dip between roots as a move; a step up onto the bough is a bump), about 2 s from the spawn: first move ~2.0 s, runway-bound
+  // (pipeline.ts RUNWAY is 500 px of every stage's start; the first second is R-165.308, the lead 3:27 PM ET). Then up onto the old
+  // bough over its own root dip (a clear run on it for the flag; a move every ~2 s, the dead walk's 2.5 s), left clear
+  // (a rolled stage's flag before the teach stands on it, 1,500-2,400 px before the teach: pipeline.ts ROLLED_FLAGS), a boulder on the low
+  // bough after it, a root up and down. Dot's boa line (a) at its far end, 800+ px before beat 1's boa
   link({ id: 'w1-19-arrival', name: 'the old boughs', job: 'arrive', versions: [
-    { id: 'boughs', lay: { pieces: [bank('a', null, 300), root('r0', 'a', 220, UP), root('b', 'r0', 360, DOWN), root('r1', 'b', 240, UP), root('c', 'r1', 340, DOWN), root('r2', 'c', 240, UP), root('z', 'r2', 320, DOWN)],
-      sockets: [petals('pb', 'b', 0.6, 1), petals('pr', 'r1', 0.5, 1), petals('pc', 'c', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
+    { id: 'boughs', lay: { pieces: [bank('a', null, 80), root('d1', 'a', 200, DOWN), root('d2', 'd1', 200, UP), root('b', 'd2', 240, [-92, -88]), root('b2', 'b', 180, DOWN), root('b3', 'b2', 220, UP), root('c', 'b3', 280, DOWN), boulder('k', 'c', 0.5), root('r1', 'c', 220, [36, 40]), root('r2', 'r1', 280, UP), root('z1', 'r2', 140, DOWN), root('z2', 'z1', 100, UP), root('z', 'z2', 100, DOWN)],
+      sockets: [petals('pb', 'b3', 0.5, 1), petals('pk', 'k', 0.5, 1), petals('pr', 'r1', 0.5, 2, 120), tip('t-boa', 'r2', 0.3, 'boa')] } },
   ] }),
-  rest('w1-19-rest'),
+  rest('w1-19-rest'), restCrook(), restStair(), restWall(), restBounce(),
 ];
 /** [E] the bough down toward the river: her mark (the keeper's words), the totem */
 export const EXIT_19: SectionTemplate = {
   id: 'w1-19-exit', name: 'the bough down to the river', feel: [STAGE_19], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
-  pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
-  subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank' as const, w: [560, 600] as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 2, 120), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
+  pieces: [{ key: 'in', shape: 'bank', w: [200, 220], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
+  // (VAR-19b: two narrow root dips on the way down, so the walk to her mark is never 4-6 s with nothing to do: funcheck's dead walk)
+  subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [root('e1', 'in', 140, DOWN), root('e2', 'e1', 220, UP), root('e3', 'e2', 140, DOWN),
+    { key: 'out', shape: 'bank' as const, w: [400, 420] as R2, place: { kind: 'walk' as const, after: 'e3', dy: UP }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 2, 120), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [tip('t-mark', 'in', 0.5, 'mark')], mirrorable: false,
 } as SectionTemplate;
 
@@ -310,6 +404,8 @@ export function kitLib19(): WorldKit {
     manifest: { ...M,
       props: [...M.props.filter((p) => !props.some((q) => q.id === p.id)), ...props],
       sections: SECTIONS_19,
+      // (the bough wall rest's vine is 1-4's climb, taught: VAR-19)
+      moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
       lessons: { jump: '1-1', double: '1-1', bounce: '1-1', traps: '1-3', climb: '1-4', creak: '1-5', swing: '1-6', hide: '1-7' },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_19) as Array<keyof typeof LINES_19>).map((k) => [lineId(k), LINES_19[k]])) },

@@ -1,0 +1,11 @@
+castBots 1-9, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 40/40; under the floor 0; time median 138.1 s (min 130.4); hits 415 lives 26 (foe:boa 275, foe:eagle 166); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 360
+kid    easy   PASS 40/40; under the floor 0; time median 141.7 s (min 133.5); hits 285 lives 0 (foe:boa 273, foe:eagle 12); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 360
+adult  normal PASS 40/40; under the floor 0; time median 138.2 s (min 132.8); hits 304 lives 4 (foe:boa 236, foe:eagle 72); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 360
+adult  easy   PASS 40/40; under the floor 0; time median 143.2 s (min 137.4); hits 213 lives 0 (foe:boa 211, foe:eagle 2); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 360
+child  normal PASS 40/40; under the floor 0; time median 336 s (min 300.4); hits 251 lives 7 (foe:boa 141, foe:eagle 117); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 360
+child  easy   PASS 40/40; under the floor 0; time median 245.1 s (min 226.4); hits 104 lives 0 (foe:boa 97, foe:eagle 7); cleared lure 158; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 362
+middle normal PASS 40/40; under the floor 0; time median 191.5 s (min 181.1); hits 98 lives 0 (foe:boa 67, foe:eagle 31); cleared lure 159; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 361
+middle easy   PASS 40/40; under the floor 0; time median 181.4 s (min 169.9); hits 56 lives 0 (foe:boa 53, foe:eagle 3); cleared lure 153; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 367
+expert normal PASS 40/40; under the floor 0; time median 168.4 s (min 157.1); hits 97 lives 0 (foe:boa 69, foe:eagle 28); cleared lure 155; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 365
+EXIT 0

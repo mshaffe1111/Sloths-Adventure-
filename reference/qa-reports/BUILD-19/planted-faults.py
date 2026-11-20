@@ -12,7 +12,9 @@ FAULTS = [
   ("beat 2's step made level", ARC, "root('f', 'e', 360, DOWN)", "bank('f', 'e', 360)", TEST, 'beat 2:'),
   ("Normal's roost limb made sound", ARC, "limb('k', 'w1', !easy)", "limb('k', 'w1', false)", TEST, 'beat 7:'),
   ('the freeze line moved beside its boa', ARC, "tip('t-freeze', 'a', 0.3, 'freeze')", "tip('t-freeze', 'e', 0.9, 'freeze')", TEST, '800 px or more'),
-  ('the golden seed taken out (BUILD-19b)', ARC, ",\n      { id: 'seed', role: 'find', on: 'h', t: 0.5, dn: 60 }] },", "] },", TEST, 'golden seed'),
+  # (VAR-19d: VAR-19c's five rests each carry the seed (gen2 lays the first a roll holds), so it is taken out of all five: the plain
+  # rest's own socket and the seed() helper the other four use, a petal in its place)
+  ('the golden seed taken out (BUILD-19b)', ARC, [",\n      { id: 'seed', role: 'find', on: 'd', t: 0.5, dn: 60 }] },", "const seed = (on: string, t = 0.5): Socket => ({ id: 'seed', role: 'find', on, t, dn: 60 });"], ["] },", "const seed = (on: string, t = 0.5): Socket => petals('ps', on, t, 1);"], TEST, 'golden seed'),
   ('ENG-19c: the immobile slide off (the flee sits on its post)', 'src/game/predators/core.ts', "  if (immobile(def)) {\n    slideOff(", "  if (false && immobile(def)) {\n    slideOff(", 'src/game/fleeSlide.test.ts', 'slides AWAY'),
   ('ENG-19c: the leave never turns away from him', 'src/game/predators/core.ts', "if (first && ahead) s.facing", "if (false && first && ahead) s.facing", 'src/game/fleeSlide.test.ts', 'never leaves through him'),
   ('ENG-19c: a gone animal plays its knock-out (the burst)', 'src/game/engine.ts', "    if (e.koLife === 0) return;\n    e.koTimer += dt;", "    e.koTimer += dt;", 'src/game/fleeSlide.test.ts', 'no landing burst'),
@@ -22,8 +24,13 @@ caught = 0
 for name, f, old, new, test, title in FAULTS:
   p = os.path.join(ROOT, f)
   src = open(p).read()
-  assert old in src, f'{name}: the line to plant on is gone ({f})'
-  open(p, 'w').write(src.replace(old, new, 1))
+  # (old/new: one edit, or a list of edits applied together: VAR-19d)
+  olds, news = (old, new) if isinstance(old, list) else ([old], [new])
+  planted = src
+  for o, n in zip(olds, news):
+    assert o in planted, f'{name}: the line to plant on is gone ({f})'
+    planted = planted.replace(o, n, 1)
+  open(p, 'w').write(planted)
   try:
     r = subprocess.run(['npx', 'tsx', '--test', test], cwd=ROOT, capture_output=True, text=True)
     red = any(l.startswith('not ok') and title in l for l in r.stdout.splitlines())

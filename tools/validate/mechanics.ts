@@ -7,6 +7,8 @@ import type { Platform } from '../../src/game/types.ts';
 import type { Built, Step } from './core.ts';
 import { PHYS, reachJump } from '../../src/game/physics.ts';
 import { liftCycle } from '../../src/game/lift.ts';
+import { castDef } from '../../src/game/predators/registry.ts';
+import { immobile } from '../../src/game/predators/core.ts';
 
 type Eng = Record<string, any>;
 
@@ -253,11 +255,18 @@ export const LANDING_CLEAR = 150;
 export const ENEMY_FREE_TARGET = 0.35;
 export function enemyJobs(b: Built): { jobs: EnemyJob[]; freeShare: number } {
   const st = b.stage as Eng;
+  const world: number = st.config.worldIndex;
   const lands = b.route.segs.filter((g) => g.kind === 'jump' || g.kind === 'hop' || g.kind === 'bounce' || g.kind === 'swing' || g.kind === 'glide').map((g) => ({ x: g.x1, y: g.y1 }));
   const jobs: EnemyJob[] = [];
   for (const m of st.enemies as Eng[]) {
     if (m.type === 'eagle') continue;
-    const lo = Math.min(m.patrolMinX ?? m.x, m.x), hi = Math.max(m.patrolMaxX ?? m.x, m.x);
+    // (where the animal can BE: a posted one (its kit row never walks, predators/core.ts `immobile`: World 1's boa) is only ever its body,
+    //  whatever patrol span the stage gives it; one that walks is its patrol span. VAR-19, the lead's ruling R2 11-19 1:55 PM ET: every
+    //  1-9 boa read 24-89 px from a landing off a span it never walks, the stair's boa 210 px past its landing from its body. LANDING_CLEAR
+    //  is unchanged)
+    const def = castDef(m.type, world);
+    const posted = !!def && immobile(def);
+    const lo = posted ? m.x : Math.min(m.patrolMinX ?? m.x, m.x), hi = posted ? m.x + (m.width ?? 0) : Math.max(m.patrolMaxX ?? m.x, m.x);
     const surface = m.y + m.height;
     const near = lands.filter((l) => Math.abs(l.y - surface) < 40 && l.x > lo - LANDING_CLEAR && l.x < hi + LANDING_CLEAR);
     // (World 1's vine snake IS what he catches: it hangs on the liana, its tell starts a jump away, R-159.1; not an ambush where he lands)

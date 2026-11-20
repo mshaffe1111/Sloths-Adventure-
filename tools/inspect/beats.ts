@@ -8,6 +8,8 @@ import { MODEL_FAST, TIME } from '../../src/game/stageTime.ts';
 import { idleTime } from '../../src/game/zones.ts';
 import { WATCH } from '../../src/game/watcher.ts';
 import { isKitSweeper, sweptZones } from '../../src/game/gen2/stillLay.ts';
+import { castDef } from '../../src/game/predators/registry.ts';
+import { immobile } from '../../src/game/predators/core.ts';
 import { DOT_HELP } from '../../src/game/w4Kit.ts';
 import { CHAIR, COCOON } from '../../src/game/w5Kit.ts';
 import { FALLS } from '../../src/game/waterfalls.ts';
@@ -20,6 +22,17 @@ import { moveKind } from './lookalike.ts';
 import type { Stage } from './stages.ts';
 
 export type Letter = 'W' | 'h' | 'J' | 'V' | 'C' | 'Z' | 'P';
+
+/** what an animal beat says when the animal is POSTED (the kit's row never walks: predators/core.ts `immobile`) and stillness beats it
+ *  (its row's beatenBy.still): World 1's boa, the freeze (VAR-19, the lead's ruling R1 1:55 PM ET 11-19: 1-9's whole idea, hold still in
+ *  its rear, read as "boa", the fight letter of 1-2's snakes, so 1-9 read "nothing new" on every layout). The meter's beat family stays
+ *  creature:<kind>: only the move the route asks is read truly (core.ts moveOf: 'L') */
+export const POSTED_STILL = ' (posted: hold still in its strike)';
+/** a kind that waits at its post and is beaten by his stillness, in this world (the kit's own row; a kind with no kit row reads as before) */
+export function stillBeaten(kind: string, world: number): boolean {
+  const def = castDef(kind, world);
+  return !!def && immobile(def) && !!def.beatenBy.still;
+}
 export const WEIGHT: Record<Letter, number> = { W: 0.2, h: 0.5, J: 1, V: 2, C: 2.2, Z: 2, P: 2.8 };
 
 export interface Beat {
@@ -153,7 +166,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     }
     const i = firstIn(samples, b);
     if (i < 0) { off('animals'); continue; }
-    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround, 1, `creature:${e.type}`);
+    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : stillBeaten(e.type, cfg.worldIndex) ? POSTED_STILL : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround, 1, `creature:${e.type}`);
   }
   const ring = stage.proto?.ring;
   if (ring) {
