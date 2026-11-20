@@ -8,7 +8,7 @@ art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 t
   puzzle rooms, W2/W3 bosses) per the lead 3:52 PM; batches 2-7 each on the lead's go.
 - Batch 1: Qwen-Image-Edit-2511 from paste-ups (tools/art/hfnext/starts.py; the weir from World 2's BROWN rocks, origin/t-eng-rock
   w2-rocks.webp: the lead ruled w2-new#stone-* grey stones out of World 2). 34 takes in reference/art/hfnext/takes/, sheet
-  batch1-takes.jpg. OPEN: the lead's picks, then cut + catalog (REPORT.md EXACT NEXT STEP).
+  batch1-takes.jpg. The lead's picks are in REPORT.md (5:15 PM; reeds rejected -> batch 2). OPEN: cut + catalog.
 - Route that works: packer.py in the sandbox packs each PIECE into 95 KB parts the moment its takes are done; `hf_sandbox_fs cat
   <part> --max-bytes 100000` (saved to a file, ~1.2k tokens of context), rebuild with tools/art/hf1113/pull.py, commit per piece.
 - Traps: (1) the sandbox token lives in the session's connection: a reset (worker restart) gave 403 "invalid or missing

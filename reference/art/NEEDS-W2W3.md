@@ -79,7 +79,7 @@ Pokey's height (L9): a code-and-tint push-back of the far layers (KIT-AUDIT Phas
 | Batch | First stage | Pieces | Style |
 |---|---|---|---|
 | **1 World 2 village** | 2-7 | mail boat (2 rowing frames), letter + reply (2 flutter frames each), door OPEN, the weir, flood-line reeds, the King's Barge | Qwen-Image-Edit-2511 from World 2's own pieces (ART-W2A/W2B's method) |
-| **2 grotto floor kit** | 3-1 | small shelf S, floor lip x2, lit-rim versions of shelf S/short/long, soft fungus mat, sleepy-mushroom shelf | Qwen-Image-Edit from w3-new#shelf-long/short (World 3's own stone) |
+| **2 grotto floor kit** (+ 2-8's flood-line reeds, redone: dark wet brown + silt, never grey; the lead 5:15 PM) | 3-1 | small shelf S, floor lip x2, lit-rim versions of shelf S/short/long, soft fungus mat, sleepy-mushroom shelf | Qwen-Image-Edit from w3-new#shelf-long/short (World 3's own stone) |
 | 3 grotto climbs + walls | 3-4 (3-2 if needed) | root columns 2/3/4 Pokey, sinkhole wall stone, root-in-rock ends x2 (only if 3-2's dark stills fail the W7 anchors) | Qwen-Image-Edit from w3-props#rootLadder + shelf stone |
 | 4 grotto sleepers | 3-3 | ocelot yawn + pad-home frames, the puffball (rest, swell), the oldest vine's eye (shut/open), the holdable thorn liana (3 states) | Qwen-Image-Edit from ocelot-anim, thorn0, w3#liana |
 | 5 grotto glow props | 3-4 | moonflower step (3 states), glowing moss carpet, Grandma's lamp (dark/lit), golden guarana, grotto stone jetty | Qwen-Image + style LoRA (hfpalm's method), magenta key |

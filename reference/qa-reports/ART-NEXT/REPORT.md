@@ -1,13 +1,12 @@
 # ART-NEXT REPORT (R-165.342): World 2/3 art needs vs the inventory, then batches
 Branch t-art-next from origin/main 6e7b85f8f. Updated 5:11 PM ET 11-20.
 ## EXACT NEXT STEP (for a fresh member; I stopped at ~350k)
-1. **The lead picks** from reference/art/hfnext/batch1-takes.jpg (34 takes; each with a keyed preview at game size beside Pokey).
-   My recommendations: barge-s23 (alt s11); weir-s41 (alt s23); door-s11; letter-s37 + letterB-from37-s37; reply-s11 +
-   replyB-from11-s11; boat-s11 + boatB-from11-s11 (alt the s37 pair; REJECT boatB-from23 (drifted orange-red) and the s41 pair
-   (light-ray haze in a corner, keys badly)); reeds-s23 (the flood band reads; weakest piece: the band reads as a grey collar at
-   game size, a redo is cheap if the lead wants it). NOTE: the boat's frame B differs from A only a little (the oar's swing is small):
-   at game size the row may read weak; the lead decides (a code bob on top is a small touch).
-2. **Then cut** the picks (tools/art/hfnext/cut.py <take.png> <out.png> <K>; takes are WebP q88: convert to PNG first), into
+1. **DONE: the lead's picks (5:15 PM ET):** barge-s23; weir-s41; door-s11; letter-s37 + letterB-from37-s37; reply-s11 +
+   replyB-from11-s11; boat-s11 + boatB-from11-s11 (frame B moves the oar only a little: cut both; the builder may add a small code
+   bob/oar sway if the row reads weak, named in the catalog notes). REJECTED: boatB-from23 (orange drift), the boat s41 pair (haze),
+   and ALL THREE REEDS (the flood band reads as a grey collar at game size): the flood-line reeds move to batch 2, the band painted
+   as dark wet brown + silt, never grey.
+2. **Cut** the 6 picked pieces (8 files with the B frames) (tools/art/hfnext/cut.py <take.png> <out.png> <K>; takes are WebP q88: convert to PNG first), into
    reference/art/hfnext/cut/ (NOT src/assets: artUse.allow.json only shrinks, an unplaced asset fails the gate). Edges 3x on light +
    dark (ART-W2B show-first). Catalog rows part NEXT1 (model tools/art/hfw2b/catalog.py on origin/t-art-w2b; file
    'origin/t-art-next:reference/art/hfnext/cut/<n>.png'; status "cut, not placed (ART-NEXT): a level builder wires it"; worlds
