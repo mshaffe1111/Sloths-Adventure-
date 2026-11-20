@@ -4,7 +4,7 @@ import '../../../../src/game/headlessDom.ts';
 import { RealPlay } from '../../../../src/game/realPlay.ts';
 import { setDifficulty } from '../../../../src/game/difficulty.ts';
 const [stage, v, ...xs] = process.argv.slice(2);
-setDifficulty('normal');
+setDifficulty((process.env.DIFF ?? 'normal') as 'normal' | 'easy');
 const st: any = new RealPlay(stage, Number(v)).stage;
 for (const x of xs.map(Number)) {
   const q = st.gen2.sections.find((s: any) => x >= s.x0 && x < s.x1);

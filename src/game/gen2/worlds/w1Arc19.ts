@@ -122,7 +122,7 @@ const tip = (id: string, on: string, t: number, line: keyof typeof LINES_19): So
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
 /** a brick (1-6/1-7's form): its first piece `in`, its last `out` (both on the floor line), a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble'; teaches?: string; versions: V[]; uses?: string[] }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble'; teaches?: string; versions: V[]; uses?: string[]; join?: 'walk' }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
@@ -130,8 +130,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
-  const { versions: _v, uses, ...rest } = o;
-  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  const { versions: _v, uses, join, ...rest } = o;
+  return { ...rest, feel: [STAGE_19], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : (uses ?? ['still']), terrain: 'raised-logs', maxPerStage: 1, pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground', ...(join ? { join } : {}) }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 // ───────────────────────────── the beats ─────────────────────────────
@@ -196,6 +196,8 @@ function readRoost(): Lay {
   return { pieces: [bank('a', null, 140), root('a2', 'a', 360, UP), bank('b', 'a2', 380), hop('z', 'b', 160), root('z2', 'z', 100, DOWN)], sockets: [flag('a'), petals('pa', 'a', 0.5, 1), petals('pa2', 'a2', 0.5, 1), boa('b1', 'b', 0.3, 'boa-roost'), roost('r1', 'b', 0.68), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9c, read it: a bare boa up a step (freeze, or let it miss and bop it) */
+// (VAR-19d: entered on a walked join (brick join 'walk'): its 'in' sat 30 px under the beat before's 'out', and a flick leaning away from
+// s1 landed him back on that lip, plainWalk.test.ts one-jump steps)
 function readBare(): Lay {
   return {
     pieces: [bank('a', null, 140), root('s1', 'a', 260, UP), root('b', 's1', 340, UP), root('d1', 'b', 240, DOWN), rock('rd', 'd1', 0.5), root('z', 'd1', 120, DOWN)],
@@ -205,9 +207,11 @@ function readBare(): Lay {
 /** [L] beat 12, two hunters: the eagle's eye on its rounds over moss (1-7's sweeper and cover) and a boa on its line; a flag before it.
  *  (1-9.md has two boas here: L is structural, so its node names no threat and its sockets pay from the section's budget, which holds
  *  one; the eagle and the boa are the two hunters) */
+// (VAR-19d: the hunters walk off onto 'out': a hop there left a 62 px gap 68 px deep, and a flick leaning away from 'out' landed him
+// back in it, plainWalk.test.ts one-jump steps)
 function twoHunters(easy: boolean): Lay {
   return {
-    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), hop('z', 'w3', 200)],
+    pieces: [bank('a', null, 140), bank('w1', 'a', 280), root('wd', 'w1', 140, DOWN), root('w2', 'wd', 420, UP), root('w2d', 'w2', 140, DOWN), root('w3', 'w2d', 280, UP), bank('z', 'w3', 200)],
     sockets: [flag('a'), petals('pa', 'a', 0.6, 1), watch('hunters', 'w1', 0.045), hide('c1', 'w1', 0.6, 'carpet'), boa('b1', 'w2', 0.72, 'boa'), hide('m1', 'w3', 0.3, 'patch'),
       petals('pz', 'z', 0.5, 2, 120)],
   };
@@ -230,7 +234,7 @@ export const BEATS_19: SectionTemplate[] = [
   brick({ id: 'w1-19-roost', name: "the roost: this time, DON'T stop", jobs: ['twist'], content: 'crumble', difficulty: 5, uses: ['still', 'creak'], versions: [{ id: 'limb-and-roost', lay: roostTwist(false), easy: roostTwist(true) }] }),
   brick({ id: 'w1-19-read-load', name: 'read it: a load', jobs: ['combine'], content: 'ground', difficulty: 5, uses: ['still', 'traps'], versions: [{ id: 'load', lay: readTrap() }] }),
   brick({ id: 'w1-19-read-roost', name: 'read it: a roost', jobs: ['combine'], content: 'hazard', difficulty: 5, versions: [{ id: 'roost', lay: readRoost() }] }),
-  brick({ id: 'w1-19-read-bare', name: 'read it: nothing but me', jobs: ['combine'], content: 'climb', difficulty: 6, versions: [{ id: 'bare', lay: readBare() }] }),
+  brick({ id: 'w1-19-read-bare', name: 'read it: nothing but me', jobs: ['combine'], content: 'climb', difficulty: 6, join: 'walk', versions: [{ id: 'bare', lay: readBare() }] }),
   brick({ id: 'w1-19-hunters', name: 'two hunters: hide... NOW go', jobs: ['finale'], content: 'hazard', difficulty: 8, uses: ['still', 'hide'], versions: [{ id: 'eye-and-two', lay: twoHunters(false), easy: twoHunters(true) }] }),
   brick({ id: 'w1-19-old-boa', name: 'the Old Boa: I set the eagle on it', jobs: ['signature'], content: 'hazard', difficulty: 7, uses: ['still', 'hide'], versions: [{ id: 'longest-bough', lay: oldBoa() }] }),
 ];
@@ -295,10 +299,11 @@ const restCrook = (): SectionTemplate => link({ id: 'w1-19-rest-crook', name: 'a
  *  down home (each 50 px; root hops between the boulders, which read as bumps: the quiet line, 4 s) */
 const restStair = (): SectionTemplate => link({ id: 'w1-19-rest-stair', name: 'a rest: boulders on the old bough', job: 'rest', versions: [{ id: 'stair', lay: {
   // (VAR-19c: a step up and a knot gap, a boulder at the far end of the high bough (a boulder where the knot hop lands: the lay refuses every
-  //  roll), down and a boulder on the low one, up, a knot gap and home: 'j .. j J'. VAR-19d: the low bough 320 px with its boulder in the
-  //  middle, ~85 px of floor each side (Pokey is 44): on 200 px at 0.4 it left 21 and 34 px notches under 50 px faces, where he stood
-  //  with no room to flick out (plainWalk.test.ts one-jump steps; w1Arc19.test.ts 'no notch narrower than Pokey'))
-  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('rk', 'r', 80, DOWN), root('s', 'rk', 320, UP), boulder('k1', 's', 0.85), root('t', 's', 320, DOWN), boulder('k2', 't', 0.5), root('u', 't', 140, UP), root('u2', 'u', 80, DOWN), root('i', 'u2', 120, UP), root('z', 'i', 120, DOWN)],
+  //  roll), down and a boulder on the low one, up, a knot gap and home: 'j .. j J'. VAR-19d: the low bough 320 px with its boulder at its
+  //  far end, flush with u (down onto the bough, up the boulder, walk on): on 200 px at 0.4 it left 21 and 34 px notches under 50 px faces,
+  //  where Pokey (44 px) stood with no room to flick out (plainWalk.test.ts one-jump steps); centred, Easy's landing softener (easyMode.ts
+  //  easyHoldSoften) grew it into its right notch again, 37 px; flush leaves no notch to grow into (w1Arc19.test.ts 'the boulder stair'))
+  pieces: [bank('a', null, 140), root('r', 'a', 200, UP), root('rk', 'r', 80, DOWN), root('s', 'rk', 320, UP), boulder('k1', 's', 0.85), root('t', 's', 320, DOWN), boulder('k2', 't', 1), root('u', 't', 140, UP), root('u2', 'u', 80, DOWN), root('i', 'u2', 120, UP), root('z', 'i', 120, DOWN)],
   sockets: [flag('s', 0.1), petals('pk1', 'k1', 0.5, 1), seed('k2', 0.5), petals('pu', 'u', 0.5, 1), petals('pi', 'i', 0.5, 1)] } }] });
 /** (d) the bough wall: a root up, down to the wall's foot, its vine (1-4's climb, 212 px: past a double's 184) onto the high bough, a
  *  root up and down along it, and the long drop home (a hop either side of the climb: the quiet line, 4 s) */

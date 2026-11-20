@@ -199,28 +199,32 @@ test('R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer)', { t
 
 // VAR-19d (plainWalk.test.ts "one-jump steps" red on listed layouts 1-3, the lead's ruling 11-19): the boulder stair's second boulder
 // (w1-19-rest-stair k2, VAR-19c) sat on a 200 px bough with 21 px of it to its left and 34 px to its right, each under a 50 px face: a
-// notch narrower than Pokey, where he stands with no room to flick up out. Any floor walled both sides by a rise of 40 px or more is at
-// least his width (the real engine's player, 44 px)
-const NOTCH_RISE = 40;
-function notches(st: Built, pw: number): string[] {
-  const solid = st.platforms.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving');
-  const out: string[] = [];
-  for (const f of solid) {
-    // (a wall: a solid whose top is 40 px or more above f's and whose body reaches down to f, standing on it or beside its ends)
-    const walls = solid.filter((q) => q !== f && q.y <= f.y - NOTCH_RISE && q.y + q.height >= f.y - 2 && q.x < f.x + f.width + 2 && q.x + q.width > f.x - 2)
-      .map((q) => [q.x, q.x + q.width] as const).sort((a, b) => a[0] - b[0]);
-    let x = f.x, walledLeft = walls.some(([a, b]) => a <= f.x + 1 && b >= f.x - 2 && b <= f.x + 2) || walls.some(([a, b]) => a < f.x && b > f.x);
-    for (const [a, b] of walls) {
-      if (b <= x) continue;
-      if (a > x) { const w = Math.min(a, f.x + f.width) - x; if (walledLeft && w < pw && a <= f.x + f.width + 2) out.push(`a ${Math.round(w)} px notch at x ${Math.round(x)} on ${f.tag ?? 'a floor'}`); }
-      x = Math.max(x, b); walledLeft = true;
-    }
-  }
-  return out;
-}
-test("no notch narrower than Pokey on 1-9: a floor walled both sides by a rise of 40 px or more is at least his width (VAR-19d)", async () => {
+// notch narrower than Pokey (the real engine's player, 44 px), where he stood with no room to flick up out. Now the bough is 320 px with
+// the boulder in its middle: at least his width of bough each side (or none: flush)
+test("the boulder stair's second boulder leaves its bough flush or at least Pokey's width each side, both settings (VAR-19d)", async () => {
   const { RealPlay } = await import('../../realPlay.ts');
   const pw = new RealPlay(STAGE_19, 1).p.width;
   assert.equal(pw, 44, "the real engine's Pokey");
-  for (const d of BOTH) for (const seed of SEEDS) assert.deepEqual(notches(built(seed, d), pw), [], `${d} seed ${seed}`);
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const st = built(seed, d);
+    const t = piece(st, 'w1-19-rest-stair', 't'), k = piece(st, 'w1-19-rest-stair', 'k2');
+    const left = k.x - t.x, right = t.x + t.width - (k.x + k.width);
+    const ok = (w: number) => w <= 2 || w >= pw;
+    assert.ok(ok(left) && ok(right), `${d} seed ${seed}: ${Math.round(left)} px of bough left of the boulder, ${Math.round(right)} px right`);
+  }
+});
+
+// VAR-19d (plainWalk.test.ts "one-jump steps", the flick leaning away; the lead's ruling 11-19): two of 1-9's exits and entries left a
+// one-jump step a flick leaning away could not climb. The hunters' last piece was a hop over a 62 px gap whose floor lay 68 px down
+// (leaning away from 'out' he landed back in it), and read-bare's 'in' sat 30 px under the beat before's 'out' (leaning away from s1 he
+// landed back on that lip). Now: the hunters walk off onto 'out', and read-bare is entered level
+test("the hunters walk off onto their 'out' (no gap), and read-bare is entered level with the beat before (no lip), both settings (VAR-19d)", () => {
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const st = built(seed, d);
+    const out = piece(st, 'w1-19-hunters', 'out'), w3 = piece(st, 'w1-19-hunters', 'w3');
+    assert.ok(Math.abs(out.x - (w3.x + w3.width)) <= 2 && Math.abs(out.y - w3.y) <= 2, `${d} seed ${seed}: the hunters' out at ${Math.round(out.x)} y${Math.round(out.y)}, w3 ends ${Math.round(w3.x + w3.width)} y${Math.round(w3.y)}`);
+    const i = st.gen2.sections.findIndex((q) => q.template === 'w1-19-read-bare');
+    const before = st.platforms.find((p) => p.tag === `${st.gen2.sections[i - 1].uid}:out`)!, inn = piece(st, 'w1-19-read-bare', 'in');
+    assert.ok(Math.abs(inn.y - before.y) <= 2, `${d} seed ${seed}: read-bare's in y${Math.round(inn.y)}, the beat before's out y${Math.round(before.y)}`);
+  }
 });
