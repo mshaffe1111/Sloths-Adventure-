@@ -4,7 +4,7 @@ token, 11-20: a lost token costs one piece at most). Watches /w/hfpokey/edits; p
 whatever is there, marked PARTIAL)."""
 import glob, os, subprocess, tarfile, time, json
 from PIL import Image
-spec = json.load(open('/w/hfpokey/jobs/spec-b1.json'))
+spec = json.load(open(os.environ.get("SPECF", "/w/hfpokey/jobs/spec-b1.json")))
 groups = {}
 for it in spec['edits']:
     g = it['name'].split('-')[0].rstrip('B') if not it['name'].endswith('B') else it['name'][:-1]

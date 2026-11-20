@@ -1,0 +1,174 @@
+{
+ "tag": "next-b2",
+ "edits": [
+  {
+   "name": "reeds2",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/reeds2.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts/ref-w2.png"
+   ],
+   "w": 512,
+   "h": 768,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the first image as these two clumps of river reeds and bulrushes, in exactly the hand-painted storybook style of the reeds in the second image: soft painterly gouache shading, fine thin dark-brown linework, fresh green and straw leaves above. Below the wavy flood line every stem and leaf is soaked dark wet brown, glistening, dusted with fine pale silt specks; the colour change follows each stem with a darker wet edge where the water stood. Dark wet brown, never grey: no band, no collar, no ring across the clumps. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, grey band, grey collar, grey stripe, ring, water, mud puddle"
+  },
+  {
+   "name": "shelfS",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/shelfS.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one short thick slab of grotto stone, a small ledge to stand on, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours, like the stone shelves in the second image: a flat walkable top face, a cracked front face, a rough rock underside tapering down, a small fern tuft and moss on the top at the left. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "mat",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/mat.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one low, wide, soft spongy fungus mat, seen side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours: a cushiony flat top in soft rings of dusky violet and cool teal, faintly glowing like the mushrooms in the second image, a thin soft edge, nothing under it. It looks soft and safe to land on. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, spikes, thorns"
+  },
+  {
+   "name": "sleepy",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/sleepy.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 512,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one stone ledge seen exactly side-on with a clump of sleepy glowing mushrooms growing at the back left of its top, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours, the mushrooms like those in the second image but drowsy: caps drooping and half-closed, their glow soft and dim, as if dozing. A flat walkable top face, a cracked front face, a rough rock underside. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "rimShort",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/rimShort.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    11,
+    23
+   ],
+   "prompt": "Keep this exact stone shelf, its fern, moss, cracks and shape unchanged, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours. A soft cool blue-green glowworm light falls on its TOP RIM only: a thin glowing highlight along the front edge of the top face, fading quickly down the front; the rest of the stone stays dim and shadowed. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "rimLong",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/rimLong.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 1024,
+   "h": 384,
+   "seeds": [
+    11,
+    23
+   ],
+   "prompt": "Keep this exact long stone shelf, its fern, moss, cracks and shape unchanged, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours. A soft cool blue-green glowworm light falls on its TOP RIM only: a thin glowing highlight along the front edge of the top face, fading quickly down the front; the rest of the stone stays dim and shadowed. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "lipA",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/lipA.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 1024,
+   "h": 320,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one long low strip of grotto floor stone, the edge of the cave floor, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours: a flat walkable top with a little moss and one fern, a short cracked front face, a shallow rough rock skirt under it, both ends smoothly rounded. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "lipB",
+   "src": "gh:COMMIT:reference/art/hfnext/starts2/lipB.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 1024,
+   "h": 320,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one long low strip of grotto floor stone, the edge of the cave floor, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, cool dark grey-green cave stone with soft moss, muted colours: a flat walkable top with a little moss and one fern, a short cracked front face, a shallow rough rock skirt under it, both ends broken off into rough chipped rock. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "rimS-from11",
+   "src": "b:hfpokey/edits/shelfS-s11.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    11
+   ],
+   "prompt": "Keep this exact stone ledge, its fern, moss, cracks and shape unchanged. A soft cool blue-green glowworm light falls on its TOP RIM only: a thin glowing highlight along the front edge of the top face, fading quickly down the front; the rest of the stone stays dim and shadowed. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "rimS-from23",
+   "src": "b:hfpokey/edits/shelfS-s23.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    23
+   ],
+   "prompt": "Keep this exact stone ledge, its fern, moss, cracks and shape unchanged. A soft cool blue-green glowworm light falls on its TOP RIM only: a thin glowing highlight along the front edge of the top face, fading quickly down the front; the rest of the stone stays dim and shadowed. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  },
+  {
+   "name": "rimS-from37",
+   "src": "b:hfpokey/edits/shelfS-s37.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    37
+   ],
+   "prompt": "Keep this exact stone ledge, its fern, moss, cracks and shape unchanged. A soft cool blue-green glowworm light falls on its TOP RIM only: a thin glowing highlight along the front edge of the top face, fading quickly down the front; the rest of the stone stays dim and shadowed. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects"
+  }
+ ]
+}
