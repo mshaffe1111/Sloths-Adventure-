@@ -1,10 +1,10 @@
 # INT-14 REPORT: release 1 (Friday 11-20): merge what is green, hold back what is not, every gate once
 
-## INT-14b: release 1 finished (late joiners merged, every gate once on the final head) — kept current; last update 2:35 PM ET
+## INT-14b: release 1 finished (late joiners merged, every gate once on the final head) — kept current; last update 2:36 PM ET
 **EXACT NEXT STEP (for INT-14c if INT-14b stops):** final CODE head = **453b69c2** (t-int-14 after it adds only: 6ef8de7b the timecheck doc
 fix, c4dc1867 funknown.json lowered, 4aa6770d stills, this REPORT). Gates run in worktree /home/user/wt/453b69c2 (gone? `git worktree add
 --detach <dir> 453b69c2`, `ln -s <repo>/node_modules <dir>/node_modules`; INT-14/scripts/*.sh need `S=<scratchpad>`). STILL TO RUN:
-NOTHING from INT-14b's list: every gate has run once on 453b69c2. Open with the lead: the 3:30 PM ruling on FIX-TAB (t-fix-tab, 1-6's grass tab under the painted stone block): if a draw-only fix merges, re-run drawcheck, paintcheck 0/3 1/3 2/3, the suite (3 shards) and the CI tool line on the new head and update this table.
+NOTHING from INT-14b's list: every gate has run once on 453b69c2. Open with the lead: FIX-TAB (t-fix-tab, 1-6's grass tab under the painted stone block), the lead's ruling due 3:30 PM: if a draw-only fix merges, re-run drawcheck, paintcheck 0/3 1/3 2/3, the suite (3 shards) and the CI tool line on the new head and update this table.
 
 **Merges (each from the lead's verified final; D92 = tsc + the CI tool line after each):**
 | # | branch @ head (code) | merged as | conflicts | D92 |
