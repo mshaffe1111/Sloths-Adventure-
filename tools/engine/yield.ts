@@ -101,7 +101,7 @@ async function main(): Promise<void> {
   const list = process.argv.includes('--list');
   // (the list's own judge, on the roll as Play finishes it: listed.ts playFinish, ENG-CL (7); its finish on each setting must not throw,
   // a squirrels row's too few spots among them, ENG-DR (1): listRules.ts listJudge, the one seedlist.ts holds the search to)
-  const also = list ? (await import('./listRules.ts')).listJudge(config, (st, d) => playFinish(row!, st, d)) : undefined;
+  const also = list ? (await import('./listRules.ts')).listJudge(config, (st, d) => playFinish(row!, st, d), undefined, row!.kit) : undefined;
   const raw = arg('--raw', ''), par = Math.max(1, Number(arg('--par', '1')));
   type Raw = Array<{ seed: number; normal: string[]; easy: string[]; plan: string[] }>;
   let rolls: Raw = [];

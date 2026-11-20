@@ -182,6 +182,24 @@ export class RealPlay {
     // reaches it without asking for it answers no, so play goes on. A test of the offer sets its own helpAsk, helpLadder11.test.ts)
     if ('helpAsk' in e) e.helpAsk = (_o: unknown, answer: (yes: boolean) => void) => answer(false);
     e.inputGrace = 0;
+    // (each cast animal's own fields as the stage starts, for calmCast: its kit state, `kit`, is rebuilt, never copied)
+    if (e.cast) this.castAtStart = (e.enemies as Array<Record<string, unknown>>).map((en) => [en, Object.fromEntries(Object.entries(en).filter(([k, v]) => k !== 'kit' && (v === null || typeof v !== 'object')))] as const);
+  }
+
+  private castAtStart: ReadonlyArray<readonly [Record<string, unknown>, Record<string, unknown>]> = [];
+
+  /**
+   * The stage's cast (castPlay.ts) back as the stage starts it: every cast animal on its own post, at rest, nothing told or striking, as
+   * the engine's startCast lays it. For a test whose trials stand him at one place after another on ONE sim (plainWalk's one-jump steps),
+   * so an animal's tell or dive begun at one trial never lands in the next one, where he was never really moved from (R-165.328, VAR-19e:
+   * the hunters' eagle saw him at the face inside its rounds, its dive followed him to the next face, by design, predator-kit.md "The dive
+   * follows him"). An animal the stage has already taken out of its list stays out. No cast: nothing.
+   */
+  calmCast(): void {
+    const e = this.e;
+    if (!e.cast) return;
+    for (const [en, at] of this.castAtStart) Object.assign(en, at);
+    e.startCast();
   }
 
   get p(): PlayerState {

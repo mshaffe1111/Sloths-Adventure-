@@ -1,0 +1,15 @@
+L2	4-run	jJJJ	x4	arrival,stair,rest-stair,roost
+L3	4-run	jJJJ	x4	miss,rest-stair,read-bare,hunters
+L4	4-run	jJJJ	x4	arrival,stair,roost,rest-stair
+L5	4-run	jJJJ	x4	arrival,stair,rest-stair,roost
+L6	4-run	jJJJ	x4	arrival,miss,roost,hunters
+L6	4-run	LjJJ	x4	stair,miss,roost,old-boa
+L7	4-run	jJJJ	x4	arrival,stair,miss,hunters
+L8	4-run	jJJJ	x5	arrival,stair,miss,rest-stair,hunters
+L9	4-run	jJJJ	x5	arrival,stair,miss,rest-stair,hunters
+L11	4-run	jJJJ	x4	arrival,stair,rest-stair,hunters
+L12	4-run	jJJJ	x5	arrival,stair,miss,rest-stair,hunters
+L13	4-run	jJJJ	x4	arrival,miss,roost,hunters
+L13	4-run	LjJJ	x4	stair,miss,roost,old-boa
+L14	4-run	jJJJ	x4	arrival,stair,miss,hunters
+L16	4-run	jJJJ	x4	arrival,stair,miss,hunters

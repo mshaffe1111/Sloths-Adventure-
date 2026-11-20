@@ -1,0 +1,37 @@
+TAP version 13
+# Subtest: a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+not ok 1 - a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+  ---
+  duration_ms: 420.21441
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/engine/seedlist.test.ts:265:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    normal: listed layout 1
+    + actual - expected
+    
+    + [
+    +   "a predator off its piece (normal): the boa at 19281 in w1-19-read-bare stands on 's1', its socket b1 on 'b'"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: "a predator off its piece (normal): the boa at 19281 in w1-19-read-bare stands on 's1', its socket b1 on 'b'"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/engine/seedlist.test.ts:295:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 511.957103

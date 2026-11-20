@@ -54,8 +54,12 @@ function facesOf(plats: Platform[]): Face[] {
 }
 
 /** steer right up to the face, lift, one straight flick (leaning `lean` by chance): on top of it after? */
-function flickUp(sim: RealPlay, f: Face, lean: -1 | 0): 'climbed' | 'past' | false {
+function flickUp(sim: RealPlay, f: Face, lean: -1 | 0, atFace?: (sim: RealPlay) => void): 'climbed' | 'past' | false {
   sim.stand(f.x - 70, f.floorY);
+  // (each face meets the cast as the stage starts: a tell or dive begun at the face before, where he was never really moved from, does
+  // not land here; R-165.328, VAR-19e, the lead's ruling A 11-20. An animal that sees him AT this face still counts: the plant below)
+  sim.calmCast();
+  atFace?.(sim);
   sim.p.facing = 1;
   // (the hazards count here: a carried-past landing must be safe ground, so he can be hurt and the hurt is noticed)
   sim.safe = false;
@@ -103,6 +107,7 @@ function safeGround(sim: RealPlay): boolean {
 /** the step climbed another way: from standing flush at its face, steer on into it and flick up (a thumb kept on the glass) */
 function climbFromFace(sim: RealPlay, f: Face): boolean {
   sim.stand(f.x - 24, f.floorY);
+  sim.calmCast();
   sim.p.facing = 1;
   for (let i = 0; i < 30 * 2; i++) {
     sim.frame({ right: true, press: i === 0, jump: i < 7 });
@@ -262,4 +267,29 @@ test('the relative dip check: a dip a single flick climbs out of passes; one onl
     const f = relFlicks(sim, dips[0].d, dips[0].top);
     assert.equal(f >= 0 && f <= 3, out, `${depth} px deep: ${f} flicks`);
   }
+});
+
+// R-165.328 (VAR-19e, the lead's ruling A 11-20): the one-jump trials stand him at one face after another on ONE sim, so the hunters' eagle,
+// seeing him at the face inside its rounds, carried its dive (it follows him, by design: predator-kit.md "The dive follows him; only hiding
+// before the tell ends calls it off") into the NEXT trial and struck him at the exit's face, 148 px past its rounds' end (probe
+// reference/qa-reports/VAR-19e/probes/eagletrace.ts). Each trial now meets the cast as the stage starts (RealPlay.calmCast). Planted: an
+// eagle that sees him AT a face inside its rounds (its tell begun on him there) still fails that face; the same face, calm, climbs.
+test('one-jump steps still count an eagle that sees him at the face: its tell begun there fails the flick; calm, the face climbs (R-165.328, planted)', () => {
+  const sim = touchPlay('1-9', 1);
+  type M = { def: { kind: string; tell: number }; s: { phase: string; t: number; minX: number; maxX: number; eyeX: number; x: number; aimX: number; aimY: number; saw: boolean; knows: boolean } };
+  const eagles = () => ((sim.e as unknown as { cast?: { members: M[] } }).cast?.members ?? []).filter((m) => m.def.kind === 'eagle');
+  const rounds = eagles().map((m) => [m.s.minX, m.s.maxX] as const);
+  assert.ok(rounds.length >= 1, "1-9's eagles");
+  const f = facesOf(sim.platforms).find((q) => rounds.some(([a, b]) => q.x - 70 >= a && q.x <= b));
+  assert.ok(f, 'a face inside an eagle\'s rounds');
+  // (calm: the face climbs)
+  assert.equal(flickUp(sim, f, 0), 'climbed', `the face at ${Math.round(f.x)}, the cast calm`);
+  // (planted: the eagle whose rounds hold the face saw him on his way up to it, its eye over him: its tell ends as he stands at the face)
+  const seen = (s: RealPlay) => {
+    for (const m of eagles()) {
+      if (s.p.x < m.s.minX || s.p.x > m.s.maxX) continue;
+      Object.assign(m.s, { phase: 'tell', t: m.def.tell - 1 / 30, eyeX: s.p.x, x: s.p.x, aimX: s.p.x, aimY: s.p.y, saw: true, knows: true });
+    }
+  };
+  assert.equal(flickUp(sim, f, 0, seen), false, `the face at ${Math.round(f.x)}, the eagle's tell begun on him there`);
 });

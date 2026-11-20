@@ -46,7 +46,7 @@ test('every beat the inspector names maps to its move letter', () => {
     ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'K'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
     // (World 1's tricks, R-159.1: the inspector names them, beats.ts)
-    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'snake (vine snake: punched stiff)', 'G'], ['C', 'boa', 'F'],
+    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'snake (vine snake: punched stiff)', 'G'], ['C', 'boa', 'F'], ['C', 'boa (posted: hold still in its strike)', 'L'],
   ];
   for (const [letter, what, want] of cases) assert.equal(moveOf({ letter: letter as never, what, count: 1 }), want, what);
   assert.equal(moveOf({ letter: 'h', what: 'pickup arc over a gap (optional jump)', count: 0.5 }), null, 'an optional pickup arc is not a move');

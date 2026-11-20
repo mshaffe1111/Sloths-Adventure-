@@ -7,7 +7,7 @@
  *
  * The move string (research 2026-11-04 §7, PLAN-TO-80 A.1): J jump, V vine (liana), B branch (breaking), W wind, S slow (webs, spores,
  * sleepy things), C climb, P puzzle, and the tags this game needs on top: M mushroom bounce, R rope, F fight (an animal on the way),
- * E eagle (or any watcher), D dark, X river or moving logs; J is a jump with a real fall under it and j a safe one (the inspector's
+ * E eagle (or any watcher), L hold still in a posted animal's strike (1-9's freeze), D dark, X river or moving logs; J is a jump with a real fall under it and j a safe one (the inspector's
  * 'hop': a floor within 200 px under a gap under 200 px, route.ts), h a hop up a step (a bump in the walk, not a move of its own).
  */
 import '../../src/game/headlessDom.ts';
@@ -19,7 +19,7 @@ import { reachJump, TAKEOFF_SLACK } from '../../src/game/physics.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'N' | 'O' | 'Y' | 'G' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'L' | 'N' | 'O' | 'Y' | 'G' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -35,7 +35,7 @@ export type Setting = 'normal' | 'easy';
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
   J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', K: 'the chase: the branch collapses behind him', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
-  F: 'fight an animal', N: 'daze a snake, then stomp it (World 1)', O: 'kick a coiled boa to roll it (World 1)', Y: 'stomp vault off a snake (World 1)', G: 'a vine snake: punch it stiff, then climb its liana (World 1)', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
+  F: 'fight an animal', N: 'daze a snake, then stomp it (World 1)', O: 'kick a coiled boa to roll it (World 1)', L: 'hold still in a posted animal\'s strike (World 1\'s boa: the freeze)', Y: 'stomp vault off a snake (World 1)', G: 'a vine snake: punch it stiff, then climb its liana (World 1)', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
 /** a beat's move letter, from what the inspector says it is (beats.ts `what`), one to one */
@@ -63,6 +63,8 @@ export function moveOf(b: Pick<Beat, 'letter' | 'what' | 'count'>): Move | null 
   if (b.letter === 'C' && /\(stomp vault\)/.test(w)) return 'Y';
   if (b.letter === 'C' && /\(dazed, then stomped\)/.test(w)) return 'N';
   if (b.letter === 'C' && /\(coiled: kicked to roll\)/.test(w)) return 'O';
+  // (a posted animal stillness beats, World 1's boa: the freeze, not a fight; beats.ts POSTED_STILL, VAR-19 R1)
+  if (b.letter === 'C' && /\(posted: hold still in its strike\)/.test(w)) return 'L';
   if (b.letter === 'C') return 'F';
   if (b.letter === 'P') return 'P';
   if (b.letter === 'J') return 'J';

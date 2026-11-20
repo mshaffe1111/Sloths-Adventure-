@@ -39,7 +39,7 @@ const cfg = generateAllLevels().find((l) => l.id === id)!;
 // (1): the help-room rule and the squirrels ran World 1's alone, so a seed whose own finish (finish14, finish17, finish18) throws on a
 // setting, a stage that does not load on a phone, could be listed. The search holds a roll to it on each setting: listRules.ts listJudge)
 const played = (st: ReturnType<typeof buildGen2Stage>, d: 'normal' | 'easy') => playFinish(row, st, d);
-const also = listJudge(cfg, played);
+const also = listJudge(cfg, played, QUIET_MAX, kit);
 const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st, played);
 if (process.argv.includes('--check')) {
   // (the list is its own file, loaded as the game loads it, seedList.ts loadSeedList: a file the index names that does not load, or is not

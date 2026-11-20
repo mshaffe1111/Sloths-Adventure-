@@ -233,6 +233,19 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   the sweet-spot glow agreeing with the log on a liana over a river (engine.ts:2412-2426 is phase-only). Not done: the camera pull-out.
 
 
+## 0zp-19d. VAR-19d (t-var-19, level half, 11-19 night; written 10:04 PM ET by `date`): 1-9 NOT green; the EXACT NEXT STEP is REPORT.md 9.1
+- **Read first:** reference/qa-reports/VAR-19/REPORT.md section 9 (9.1 the next step, 9.2 what was done). Head a10bbf8bc + the report commit.
+- **The list's judge holds the lure rule** (level.md rule 19): tools/engine/listRules.ts `lureBreaches` runs the engine's own lureLay.ts
+  `lureFaults` on the stage as played, in `listJudge` (reroll) and `asPlayedBreaches` (--check); planted in seedlist.test.ts. Only 1-9 lays
+  lure posts today, so no other list moves. The lead's next judge rule (R-165.327): a socket predator re-seated off its piece is refused.
+- **w1Arc19.test lays the LISTED layouts** (buildPlayStage + playFinish), not raw seeds; R-165.312's raw defect is its todo test.
+- **Traps learned:** (1) plainWalk's one-jump test plays every face on ONE sim, so the cast wakes from face to face: replay it with causes
+  (VAR-19d/probes/replay.ts) before reading a red as geometry; (2) Easy's easyHoldSoften widens a landing over a walkable pocket and leaves
+  ~37 px: a block on a bough sits flush or a body width (44 px) clear, on Easy too; (3) lockall vs main shows 14 stages moving that are
+  t-var-19's 125 inherited commits: lock the branch base (0b1f9e46) to see your own change.
+- **Open for the engine:** R-165.312 (flag placer moves a flag onto a designed boa's ground; the boa re-seats: the roost on raw seed 1, and
+  read-bare on L1, its boa 65 px past s1's top); R-165.328 (the hunters' eagle strikes past its rounds' end).
+
 ## 0zo-285. ENG-285 (t-eng-285 from t-int-12 ce4ad461, 11-18 night, steps 1/1b/1c/2): the judges and bots fly the engine's Pokey
 - **One air model (R-165.285):** physics.ts `airStep(b, dt, dir, hold)` adds the engine's turn push (PHYS.airTurn when steering against
   vx > 20) for EVERY caller; the `turn` switch and flyLaunch's `turn` are gone. Back-swing hops carry 4-28.5 px further (median 22-28,

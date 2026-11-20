@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: one-jump steps: a straight flick with the thumb lifted climbs every one or carries him past it onto safe ground, and every one climbs from its face (leaning either way), in Worlds 1 and 2, three rolls
+ok 1 - one-jump steps: a straight flick with the thumb lifted climbs every one or carries him past it onto safe ground, and every one climbs from its face (leaning either way), in Worlds 1 and 2, three rolls
+  ---
+  duration_ms: 15938.043274
+  type: 'test'
+  ...
+# Subtest: one-jump steps still count an eagle that sees him at the face: its tell begun there fails the flick; calm, the face climbs (R-165.328, planted)
+ok 2 - one-jump steps still count an eagle that sees him at the face: its tell begun there fails the flick; calm, the face climbs (R-165.328, planted)
+  ---
+  duration_ms: 62.700822
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16604.029565
