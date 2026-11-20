@@ -3,7 +3,7 @@
 Engine (tools) member, session_01FhBbYMwELLxM66X3iXAadC. Branch t-gate-flake from t-int-13 d36638be. Code head: see "Final head".
 
 ## EXACT NEXT STEP (Friday 8:30 AM, a fresh member)
-Stopped clean at the 11:15 PM ET box with the code done and pushed; the proof is part-done (table below). On t-gate-flake at the final
+Stopped clean at the 11:15 PM ET box (11:06 PM by `date`) with the code done and pushed; the proof is 2 of 5 loaded runs (table below). On t-gate-flake at the final
 head (the commit that adds this report section; ls-remote it):
 1. `npm install --no-audit --no-fund --legacy-peer-deps` (this container had no node_modules), then `git checkout package-lock.json`.
 2. The 5-run loaded proof on that one head: start the load (`drawcheck` + suite shards 1/6, 2/6, 3/6, each in a loop: the scripts are
@@ -83,7 +83,11 @@ After, beside drawcheck + suite shards 1/6, 2/6, 3/6 looped (load average 19-34 
 | run | head | clipcheck | wall | speed test (thread CPU) |
 |---|---|---|---|---|
 | L1 | f11bc2d4 | every real screen opened; 83 known seen, 0 new, 0 stale. FAIL only on the planted never-opening screen's own rule (it failed by the frame cap, not as "went still": the title keeps fetching under load), fixed in 3858372a | 1,066 s | pass 2/0 |
-RUNS_HERE
+| L2 | 3858372a | PASS (83 known, 0 new, 0 stale; the planted never-opening screen FAILED as it must on all 6 walks, by the 600-frame cap: "the page never went still: a request") | 877 s | pass 2/0, CPU p90 87 ms, max 207 |
+| L3 | 3858372a | PASS (83 known, 0 new, 0 stale; plant FAILED as it must on all 6 walks) | 806 s | pass 2/0, CPU p90 102 ms, max 241 |
+
+So far on 3858372a: 2 of 2 loaded clipcheck runs and 2 of 2 loaded speed runs agree (PASS), against 2 of 2 loaded clipcheck FAILs and
+1 speed FAIL on 11-19's heads. Owed (next step 2): 3 more loaded runs and 1 alone run on one head.
 
 Quiet runs of the new waits on the way: f11bc2d4 quiet found two real step bugs (Pause on the fresh save; the testers' second tap),
 fixed and step-checked (`CLIPCHECK_STEPS=pause`: 3 walks PASS, the Pause card judged, still checked by eye; `testers link, help offer,

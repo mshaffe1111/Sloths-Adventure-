@@ -1,0 +1,4 @@
+clip load run 1 exit 0 878 s at 10:51:41 PM : PASS (83 known) (877 s; contact sheet and breaches.json in /tmp/claude-0/-home-user-Sloths-Adventure-/a0959451-3679-52bc-b531-cd87c8d23fb5/scratchpad/cc-load-1)
+speed load run 1 exit 0 18 s at 10:51:59 PM : # pass 2 # fail 0  speed: thread CPU p90 87 ms, max 207 ms (24 stages)
+clip load run 2 exit 0 807 s at 11:05:26 PM : PASS (83 known) (806 s; contact sheet and breaches.json in /tmp/claude-0/-home-user-Sloths-Adventure-/a0959451-3679-52bc-b531-cd87c8d23fb5/scratchpad/cc-load-2)
+speed load run 2 exit 0 17 s at 11:05:43 PM : # pass 2 # fail 0  speed: thread CPU p90 102 ms, max 241 ms (24 stages)
