@@ -90,7 +90,39 @@ bonkBeside), which no World 1 animal reaches (no kitBeat). tierBots (1-1 calibra
 
 ## 5. The gate list on the final head
 
-FILL
+**Gates: NOT RUN to completion on a4f966ac by ENG-SNAP; stopped at 400k+ (the lead's STOP, 2:14 PM ET). The full CLAUDE.md list on the
+merged t-build-25 head is BUILD-25c's item 5, which covers this code.** What finished (logs in gates/, run in parallel groups from
+2:05 PM ET on a4f966ac):
+
+| gate | result |
+|---|---|
+| tsc | PASS |
+| knowncheck | PASS |
+| generalitycheck | PASS |
+| roadmapcheck | PASS (FAIL in the shallow clone; PASS after fetching full history and every branch, as CI checks out) |
+| timecheck | PASS (same: needs origin/main) |
+| artcheck | PASS |
+| vite build (BASE_PATH) | PASS |
+| chunkcheck | PASS |
+| kbdcheck | PASS |
+| suite shard 1/6 | PASS: 560 tests / 560 pass / 0 fail / 0 todo |
+| coveragecheck | **FAIL**: "creature:turtle on 2-5: no bot / no channel" (the meter's coverage of 2-5's turtle; not code this task touched; not checked on the base) |
+| registrycheck | **FAIL**: "2-5 flown: its row is not judged (no `judged` scope) ... Fly it: FLIGHT_STAGE=2-5 ..." (2-5's registry row; not this code; not checked on the base) |
+| buildcheck | **FAIL**: 1-1 normal p95 158 ms over 150 (CPU x4), measured while three gate groups shared 4 cores; this task changes no src/ code; not re-run alone |
+| suite shards 2-6, CI tool line (incl. snapperTaught), tierBots, tipwalk, seedlist 1-1 and every list, paintcheck 3 parts, clipcheck, drawcheck | **NOT RUN** (stopped) |
+
+The toys themselves were run alone on a4f966ac: 13/13 (toys-green.txt), RED again with each skill off.
+
+## EXACT NEXT STEP (BUILD-25c, after merging a4f966ac / this branch's head)
+Run, on the merged head: `npx tsx --test tools/inspect/snapperTaught.test.ts tools/inspect/snapperBonk.test.ts tools/inspect/snapRide.test.ts`
+(expect 13/13 and 24/24); `npx tsx --test tools/inspect/tierBots.test.ts` (1-1 calibration: this task never ran it; the bots' 1-1 code
+paths are untouched in principle (the new code acts only on cast animals with a `kitBeat`, and FT_CHILD/FT_KID gained only a `letSnap`
+field), but if 1-1 moves at all it goes to the lead, BOTS.md); castBots 2-5 1-40 both settings against section 3's table (child, middle,
+expert, adult 40/40; kid 0 N / 4 E); then the full CLAUDE.md list (BUILD-25c item 5), and settle the three FAILs above: coveragecheck
+and registrycheck are 2-5's own wiring (a meter bot and channel for the turtle; flying 2-5's row so it is judged), buildcheck should be
+re-run alone. Read the two named notes in section 3 before judging: adult snapper bites 46 -> 54 on Normal (scattered per seed), and
+expert's water lives 4 -> 9 at the pre-existing water jump at x ~21000 (no snapper near; the base dies there too). "For the lead" holds
+the possible design gap (a still child never draws the snap).
 
 ## Polish check
 Bots only: nothing Matt sees changed. The toys' frame logs (toy-runs.txt) are the "screens" here: every child run reads snap@~90 then
