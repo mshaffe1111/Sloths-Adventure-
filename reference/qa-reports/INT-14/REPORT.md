@@ -1,5 +1,123 @@
 # INT-14 REPORT: release 1 (Friday 11-20): merge what is green, hold back what is not, every gate once
 
+## INT-14b: release 1 finished (late joiners merged, every gate once on the final head) — kept current; last update 2:36 PM ET
+**EXACT NEXT STEP (for INT-14c if INT-14b stops):** final CODE head = **453b69c2** (t-int-14 after it adds only: 6ef8de7b the timecheck doc
+fix, c4dc1867 funknown.json lowered, 4aa6770d stills, this REPORT). Gates run in worktree /home/user/wt/453b69c2 (gone? `git worktree add
+--detach <dir> 453b69c2`, `ln -s <repo>/node_modules <dir>/node_modules`; INT-14/scripts/*.sh need `S=<scratchpad>`). STILL TO RUN:
+NOTHING from INT-14b's list: every gate has run once on 453b69c2. Open with the lead: FIX-TAB (t-fix-tab, 1-6's grass tab under the painted stone block), the lead's ruling due 3:30 PM: if a draw-only fix merges, re-run drawcheck, paintcheck 0/3 1/3 2/3, the suite (3 shards) and the CI tool line on the new head and update this table.
+
+**Merges (each from the lead's verified final; D92 = tsc + the CI tool line after each):**
+| # | branch @ head (code) | merged as | conflicts | D92 |
+|---|---|---|---|---|
+| 1 | t-var-19 @ b38d9efb (494c9474, VAR-19f) | f4979d03 (11:46 AM) | gates.yml tool line = ours + posted.test.ts; provenIndex '1-9' = VAR-19's a0046243 (its seeds-1-9.ts), '2-1' = ours 1950fa0c (seeds-2-1.ts untouched by it) | tsc PASS; tool line PASS 315/314/0/1; riverRide's two 2-1 plants GREEN; seeds.test (6-1) GREEN 2/2 |
+| 2 | t-eng-24e @ b6d15a11 (a3f430dc = ENG-24g + 24h) | 73717be8 (12:34 PM) | none | tsc PASS; tool line PASS 316/315/0/1 |
+| 3 | t-gate-flake @ 68b176b8 (7f05a1c0, GATE-FLAKE-b) | 453b69c2 (1:03 PM) | gates.yml tool line = ours + paintcheck.test.ts (all 35 tool tests of both sides kept) | in the final gates below (319/318/0/1) |
+**Held back: nothing.** Both late stages ship (1-9: VAR-19f; 2-4: ENG-24g/h, the lead 12:34 PM); t-int-14-hold19 / -hold24 not applied.
+**Relists: none.** Every list --check passes on the final head (below). **Calibration:** the ONE recalibration (BOTS.md command, 1-1, child/
+middle/expert, 1-40, both; on 73717be8, t-gate-flake only adds a test hook defaulting to 1) is byte-identical to the committed
+calibration-main.jsonl (210 lines): nothing to recommit; tierBots.test PASS on the final head pins it.
+
+**Gate table, final code head 453b69c2 (each ONCE; D93):**
+| gate | verdict |
+|---|---|
+| tsc | PASS |
+| suite (3 shards) | PASS: 3 shards, 3,982 tests / 3,979 pass / 0 fail / 3 todo (D86) |
+| BASE_PATH vite build + chunkcheck | PASS / PASS |
+| artcheck | PASS |
+| drawcheck (every stage, both ways) | PASS (747 s) |
+| clipcheck (ALONE) | PASS (83 known; 365 s; alone) |
+| knowncheck | PASS (also after the funknown lowering) |
+| generality | PASS |
+| roadmapcheck (unshallowed) | PASS |
+| timecheck --range origin/main..HEAD | FAIL on 453b69c2 (1: VAR-19/REPORT.md:243, VAR-19's own record of a typed-ahead "10:12 PM"), fixed at the source in timecheck's own wrong-stamp form ("typed 10:12 PM", meaning unchanged, 6ef8de7b): PASS after (437 commits, 281 stamps) |
+| kbdcheck | PASS (129 s, alone; its planted keep-in-view check goes red as it must; re-run after a container restart cut the first run at about 2:30 PM; the keyboard screenshots restored with git checkout both times, never committed) |
+| buildcheck (ALONE) | PASS (alone; 1-1 at CPU x4: Normal p50 45 / p95 98 / max 106 ms, Easy p95 57 ms; budget p95 <= 150 ms) |
+| every list --check (12) | PASS 12/12: 1-1 (161 seeds), 1-2, 1-3, 1-4, 1-5 (150), 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4 (100 each), each clean on both settings |
+| CI tool line, exactly gates.yml | PASS: 319 tests / 318 pass / 0 fail / 1 todo (the chase-bots todo) |
+| tierBots.test | PASS 9/9 |
+| coveragecheck | PASS |
+| registrycheck | PASS (12 stages, each registered everywhere) |
+| tipwalk | PASS |
+| paintcheck 0/3, 1/3, 2/3 | PASS each: 34 stages per part; 1,714 / 2,028 / 1,760 builds; 0 new ids |
+| funcheck vs base | FAIL: 22 worse/new, all inherited, ruled by the lead 1:38 PM (table below); funknown.json lowered only (104 -> 77) |
+| lockall vs main 6e7b85f8 --intended (20) | PASS: 82/102 unchanged; moved = exactly 1-1,1-6,1-7,1-8,1-9,2-1,2-2,2-4,3-6,3-7,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5 |
+| castBots 1-40 x 5 bots x both | PASS: child/middle/expert 40/40 both on 1-8, 1-9, 2-4; 1-1 child N 35/40 and 1-6 child N 39/40, every miss traced to the committed runs (table) |
+| test link file count | PASS: 478 files (the tool refuses over 480; the artifact holds 511), python3 tools/testlink/build.py in a scratch worktree of 453b69c2 |
+| npm run build:store | PASS ("Store build check passed: dist has no tracking, ads, collector, service worker or outside addresses") |
+
+**castBots (tier bots; kid/adult first-timers in the logs), final code head:**
+| stage | child N | child E | middle N | middle E | expert N | misses traced |
+|---|---|---|---|---|---|---|
+| 1-1 | 35/40 | 40/40 | 40/40 | 40/40 | 40/40 | child N: 5 "shrine rescued x1" on seeds 1,5,7,12,33 = exactly the committed calibration's child-Normal rescues (calibration-main.jsonl): inherited, by design (BOTS.md) |
+| 1-6 | 39/40 | 40/40 | 40/40 | 40/40 | 40/40 | child N seed 30 "rescued x1": identical line to ENG-285b's committed cast-1-6.txt (median 483.5 s, lives 9 pit): inherited |
+| 1-8 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
+| 1-9 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
+| 2-4 | 40/40 | 40/40 | 40/40 | 40/40 | 40/40 | none |
+(expert has no Easy tier.) castBots ran on the stages PAINT-292 moved (1-1, 1-6, 1-8) and the late joiners' (1-9, 2-4), as INT-14's hand-over
+named; the other lockall-moved stages were cast on INT-13b's final and are unchanged since (no merge here touched their data).
+
+### funcheck debt (final code head 453b69c2, after the lowering c4dc1867): FAIL 22 worse/new, all inherited, ruled by the lead 1:38 PM ET
+Accepted for release 1 as named debt (the lead): none new since INT-14's bdee80c8 run (identical stage, rule and layout count; that run
+matched INT-13b's green t-int-13, test link #2); 1-2..1-5 are UNCHANGED vs main in lockall and 1-1 plays byte-identically for the bots
+(the recalibration), so their moves are the judge's readers, not the stages; main itself fails 34 against its unlowered list. funknown.json
+is only lowered (104 -> 77), never raised or added to (law 22). R-165.276/.283/.310's rows are on the lead's ROADMAP (ccr-ea739a2f-dfcee4),
+not yet on t-int-14's.
+
+| # | stage | setting | rule | layouts (known) | R-id |
+|---|---|---|---|---|---|
+| 1 | 1-1 | Normal | dead walk | 16 (14) | R-165.310 (dead-walk reader clocks) |
+| 2 | 1-1 | Easy | dead walk | 16 (14) | R-165.310 |
+| 3 | 1-5 | Normal | dead walk | 16 (15) | R-165.310 |
+| 4 | 1-1 | Normal | pacing | 12 (8) | R-165.48 (1-1's gentle intro) |
+| 5 | 1-1 | Easy | pacing | 10 (2) | R-165.48 |
+| 6 | 1-1 | Normal | nothing bites | 15 (4) | R-165.50 |
+| 7 | 1-1 | Easy | nothing bites | 16 (4) | R-165.50 |
+| 8 | 1-2 | Normal | looks like the stage before | 16 (15) | R-165.51 / R-165.283 (readers on locked stages) |
+| 9 | 1-2 | Easy | looks like the stage before | 16 (15) | R-165.51 / R-165.283 |
+| 10 | 1-2 | Normal | nothing new | 16 (10) | R-165.51 / R-165.283 |
+| 11 | 1-2 | Easy | nothing new | 16 (10) | R-165.51 / R-165.283 |
+| 12 | 1-3 | Normal | looks like the stage before | 16 (new) | R-165.51 / R-165.283 |
+| 13 | 1-3 | Easy | looks like the stage before | 16 (new) | R-165.51 / R-165.283 |
+| 14 | 1-3 | Normal | nothing bites | 5 (new) | R-165.51 / R-165.283 |
+| 15 | 1-3 | Easy | nothing bites | 8 (1) | R-165.51 / R-165.283 |
+| 16 | 1-4 | Normal | pacing | 16 (14) | R-165.222 |
+| 17 | 1-4 | Easy | pacing | 16 (new) | R-165.222 |
+| 18 | 1-4 | Normal | nothing bites | 16 (new) | R-165.222 |
+| 19 | 1-4 | Easy | nothing bites | 16 (new) | R-165.222 |
+| 20 | 1-4 | Normal | nothing new | 16 (new) | R-165.222 |
+| 21 | 1-4 | Easy | nothing new | 16 (new) | R-165.222 |
+| 22 | 1-6 | Normal | repeat ("JJJV" x4 at x 9165) | 6 (new) | R-165.276 (Matt's "fix variety next"): the ONE flag on a stage this release changed |
+Known-issues line for the notes: "The fun check still flags World 1 pacing/variety items (22, all present before this release, tracked; one on 1-6)."
+
+**Stills (reference/qa-reports/INT-14/stills-final/, upright + sideways, whole screen, dsf 2; built seed in each name):** 1-1 L1 easy x15371
+(painted stones) + L1 normal x23560 (painted logs); 1-6 L0 normal x5977 + L1 easy x6532 (painted stone / stump); 2-2 crown lily + big1 +
+big2 (FIX-284's shooter); 2-1 L1 x8420 bank join + 2x crop from the bank face (x8483) to the screen foot; 1-9 L1 x300 + x900 (opening);
+2-4 L1 x28400 the raft row (painted rafts), x28920 the jetty join + crop (x28856), x10700 logs' end (rivershot) and x10050 the last log.
+**My read (the lead judges):** World 1's painted stones and logs read flat on top, Pokey standing on them; 2-2's pads are big flat floors,
+petals purple; banks are solid soil and rock, the river stops at the face; 2-4's rafts are painted rafts reaching the jetty.
+**Rough spots, named (not fixed here):** (1) 1-6: soil under neighbouring ground blocks is shaded differently, a vertical tone seam (L0 x5977
+sideways near screen x 545; L1 x6532 near x 815) and a small grass tab under the stone block's foot. (2) Under each bank face (2-1 x8483,
+2-4 x28856) the river bed's soil meets the bank's soil in a faint straight vertical tone step in the deep soil (upright 2x crops). (3) Shooter
+artifacts, not the game: a Dot/Pokey bubble caught mid fade-out (1-1 x23560 sideways, 2-4 raft upright: the frozen clock); the x10700
+upright logs'-end still caught a splash with Pokey off the right edge (he was set in the water; x10050 re-shot him on the last log).
+
+**Release notes draft (what a player sees new since 0.9.9; each checked on t-int-14; version + title the lead's):**
+- "New stage, The Boa's Branches: boas snap at anything that moves. I stay still, outsmart them, and collect her petals." (1-9, VAR-19f)
+- "New stage, Over the Water: vines to logs, logs to vines, across the river to the jetty." (2-4, ENG-24g/h)
+- "The forest's fallen logs and stones are painted now, flat on top where I stand." (PAINT-292)
+- "1-6 and 1-7 mix things up more: fewer repeated stretches, more different kinds of climbs and hops." (VAR-1; the lead's words)
+- "Petals for the Crown: the lily pads are bigger, and a quick tap is a little hop." (FIX-284)
+- "The petals drifting down by the river are not all pink anymore." (ART-22p)
+- "If I fall in at Petals for the Crown, I'm put back safe on a pad." (FIX-284b)
+- "The river king's crown is water hyacinths now." (ART-22p)
+- "River banks are solid rock and soil now: no grey wall, nothing see-through." (ENG-24h 2c, BUILD-24c)
+- "Grandma's things: each one I find in a hunt is a different thing." (R-165.321; 3-6, 3-7)
+- Known issue: "The fun check still flags World 1 pacing/variety items (22, all present before this release, tracked; one on 1-6)."
+**Lessons applied:** D30 (every time from `date`), D86/D93 (suite line in full; every gate PASS or FAIL), D92 (CI tool line after each
+merge), law 22 (timecheck fixed at the source in the tool's own form; funknown only lowered), D62 (built seed in every still's name).
+**Method update:** rivershot.mjs needs `PW=$(node -e "console.log(require.resolve('playwright'))")` here (ESM import misses the global
+playwright); drifting logs move before the shot, so shootx's x must be the log's runtime x (printed in its output), not its built x.
+
 ## EXACT NEXT STEP (hand-over to INT-14b; written 11:26 AM ET 11-20 at the lead's context call)
 **State.** t-int-14 = this commit; the last code merge is bdee80c8 (the 5 early branches; every line below proven on it). Nothing of the
 late joiners is merged into t-int-14. Helper scripts: reference/qa-reports/INT-14/scripts/ (set `S=<your scratchpad>`; each logs there):

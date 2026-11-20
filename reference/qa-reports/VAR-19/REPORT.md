@@ -240,7 +240,7 @@ ground; no gap or overhang seen.
   raised), D57 (notifications read at pushes), D59 (no background run left), D86 (the full list named, UNRUN named), D90 (lean reads,
   output to files), "prove a change is needed; revert what isn't" (the hunters/read-bare reverts), D15 (the notch probe's threshold
   checked against shipped stages before gating it: not gated).
-- MISSES (own them): D30 broken: three messages to the lead carried hand-typed times ahead of the clock (9:55, 10:09, 10:12 PM; delivered
+- MISSES (own them): D30 broken: three messages to the lead carried hand-typed times ahead of the clock (typed 9:55, typed 10:09, typed 10:12 PM; delivered
   9:48, 9:55, 9:56 PM). No committed file carries a typed time. I also first read the hunters/read-bare reds as geometry and changed data
   before replaying the test: one wasted relist.
 
