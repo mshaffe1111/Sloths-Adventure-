@@ -241,6 +241,10 @@ export interface PadRow {
   /** a 'snap' row that TEACHES the bite: each stone's bite jolts and holds him but costs no heart (Pad.freeBite; the lead's ruling
    *  11-20: a teach never costs a heart). Set on the row a lesson is taught on, never on a row that asks for the count */
   freeBite?: true;
+  /** a 'snap' row's clock by name (`snap-<clock>`), shared by every row that names it: one bar for the whole river, and an Easy twin row
+   *  on its Normal row's clock, so an animal on that clock keeps it on both settings (BUILD-25, 2-5.md "one count for the whole river").
+   *  Rows that share a clock keep one bar (the pipeline refuses two bars under one name). Unset: the row's own, `snap-<its key>` */
+  clock?: string;
 }
 
 export const PAD_LAY = {
@@ -328,7 +332,7 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
   const clocks: ClockDef[] = [];
   const beatId = `pads-${id}`;
   if (row.by === 'beat') clocks.push(padBeatClock(beatId, row.beat!, stretch));
-  const snapId = `snap-${id}`;
+  const snapId = `snap-${row.clock ?? id}`;
   if (row.snap) clocks.push(snapClock(snapId, row.snap, stretch));
   let nSnap = 0;
   // (a pad floats on the water, PAD_LAY.drop under the banks; every floor of a SNAP row, its snap stones and its plain stones, stands
@@ -495,7 +499,7 @@ export function snapWindow(def: ClockDef, shifts: readonly number[], easy: boole
  *     only (each a count later or in step with the one before, never earlier); its window to leave the bank, straight through, is
  *     SNAP_FAIR.window or more on Normal, and Easy's is never under Normal's (level.md rule 4).
  */
-export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; clocks?: readonly ClockDef[] }): string[] {
+export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; clocks?: readonly ClockDef[] }, difficulty?: 'normal' | 'easy'): string[] {
   const out: string[] = [];
   const snaps = st.platforms.filter((p) => p.pad?.on === 'bites');
   if (!snaps.length) return out;
@@ -557,7 +561,10 @@ export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readon
       }
       const wn = snapWindow(def, shifts, false), we = snapWindow(def, shifts, true);
       if (wn < SNAP_FAIR.window - 1e-6) out.push(`${at}: a ${wn} s window to leave the bank on Normal, under ${SNAP_FAIR.window}`);
-      if (we < wn - 1e-6) out.push(`${at}: Easy's window to leave the bank is ${we} s, under Normal's ${wn} (Easy is never harder)`);
+      // (Easy against Normal on the row EASY plays (BUILD-25, 2-5's wave: Normal lays five, Easy its own three, 2-5.md): a Normal build's
+      //  row with an Easy twin is never played on Easy, so the Normal build judges Normal's window; the Easy build, which lays Normal's plan
+      //  with every twin in its place, judges each row it lays against that row's Normal reading. Unset (a test of the rule): both)
+      if (difficulty !== 'normal' && we < wn - 1e-6) out.push(`${at}: Easy's window to leave the bank is ${we} s, under Normal's ${wn} (Easy is never harder)`);
     }
   }
   return out;

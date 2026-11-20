@@ -2843,7 +2843,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         rivers.push(r.zone);
         riverPetals.push(...r.petals);
         if (r.zone.spur) spurAt.set(lp.key, r.zone.spur);
-        for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
+        for (const c of r.clocks) {
+          const had = padClocks.find((q) => q.id === c.id);
+          // (rows that share a clock by name, PadRow.clock: one bar, or the stage would keep two under one name)
+          if (had && JSON.stringify(had) !== JSON.stringify(c)) throw new Error(`gen2 section ${tpl.id}: pad row "${lp.pads.row}" keeps clock ${c.id} on another bar than the row before it`);
+          if (!had) padClocks.push(c);
+        }
       }
       // (each water wheel (place `wheel`): its buckets and its pond between the jetty and the street, laid by the one wheel lay (wheelLay.ts
       // layWheel), turned the way the street lies from the jetty (a tower's storey that runs left lays it turned the other way)
@@ -4240,7 +4245,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
