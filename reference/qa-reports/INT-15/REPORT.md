@@ -20,3 +20,18 @@ No HF-SPEND.md conflict on (c) (t-build-25 does not touch it).
 
 2-5 on the merged code builds as on t-build-25: layout 1 (seed 2) has the same 16 painted rocks at the same x (818, 1494, 1958, 3212,
 3620, ...) on both heads (probe: a headless build of each, /home/user/int15-out/rocks2.mts).
+
+## Item 2: stills (pushed UNOPENED for the lead; shot 6:35-6:38 PM ET on a dev server of b75cc44a3, whose code = the final head 0eefc707e)
+reference/qa-reports/INT-15/stills/ (whole screen, 2x device pixels) and stills/crop2x/ (a 400x250-unit box round his feet, scaled 2x).
+Shooter: FIX-TAB's frozen-clock page shooter (stills/logs/shoot.mjs, unchanged), Normal; every file name carries the seed the page
+BUILT (stills/logs/shoot-*.log: the BUILT line, the platform he stands on, his feet). Not opened by me (the packet).
+| Stage / layout (built seed) | Spots | Orientation | Notes (facts from the logs, not a judgement) |
+|---|---|---|---|
+| 2-5 L1 (seed 2) | x821, x1495 (`rock-left-edge-on-bank`) | sideways | your x's are each rock's left edge (rocks 818-934, 1494-1613): placed on the rock, he slid off onto the bank (feet 580, rock top 530) and stands overlapping the rock's left end; renamed so the file says so |
+| 2-5 L1 (seed 2) | x1832, x3082, x3420 (`bank`) | sideways | on the bank 126 / 130 / 200 px before the rocks at 1958, 3212, 3620 |
+| 2-5 L1 (seed 2) | x876, x1553, x2017, x3268, x3676 (`rock-centre`) | sideways | ADDED: him standing ON each of the first five rocks (feet 530 = the rock top): looks rock-b mirrored, boulder, rock-b mirrored, rock-a mirrored, boulder mirrored (assignRockLooks on this build) |
+| 2-5 L1 (seed 2) | x876 (`rock-centre`, on rock-b), x1832 (`bank`) | upright | the one upright, plus the bank spot |
+| 2-1 L1 (seed 2) | x5747 on the rock (5689-5804, rock-b) | both | ENG-ROCK's spot again |
+| 2-2 L1 (seed 2) | x7405 on the rock (7348-7458, boulder mirrored) | both | ENG-ROCK's spot again |
+| 2-4 L1 (seed 65370) | x4646 on the rock (4590-4702, rock-b) | both | ENG-ROCK's spot again |
+| 1-6 L0 (seed 1) | x5977, on floor 36 (5827, top 1058: FACTS.md's floor) | sideways | FIX-TAB's tab spot; the crop holds world x 5775-6175, y 888-1138 (the tab was at 5792-5827, 1061-1081) |
