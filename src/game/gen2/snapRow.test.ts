@@ -185,6 +185,48 @@ test('in play: a snap stone is a floor always; it bites only on four, out of its
   });
 });
 
+test('the straddle (ENG-25c, the lead\'s ruling 11-19): a stone bites him only when his MIDDLE is over it, not one his toes barely touch', () => {
+  // (his feet stand 13 px past a floor's end, so over 30 px of water he can stand across two stones; the wave toy's child Easy v2 was
+  // bitten at x 1849 with his middle over the water, 14 px short of the biting stone. Any world: the pad piece's rule, by the platform)
+  const { kit, seed, st } = built(ROWS, 'step');
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  setDifficulty('normal');
+  withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try {
+      withFixtureConfig(cfg, () => {
+        // (he stands still at `at` through a whole bar and more: the hearts it took, and that he stood there all along)
+        const standAt = (at: (s: Platform[]) => number) => {
+          const sim = new RealPlay(ID, seed, cfg);
+          const stones = (sim as unknown as { platforms: Platform[] }).platforms.filter((p) => p.pad?.on === 'bites').sort((a, b) => a.x - b.x);
+          sim.safe = false;
+          const x = at(stones);
+          sim.stand(x, stones[1].y);
+          const hp0 = sim.p.hp;
+          let stood = true;
+          for (let f = 0; f < 30 * 4; f++) {
+            sim.p.invincibleTimer = 0;
+            sim.frame();
+            // (the bite holds him where he stands, lifting him a few px: he never moves along and never drops into the water)
+            if (Math.abs(sim.p.x - x) > 1 || sim.p.y > stones[1].y + 5) stood = false;
+          }
+          return { lost: hp0 - sim.p.hp, stood };
+        };
+        // (his middle over the water, 10 px short of stone 2; his toes on it)
+        const water = standAt((s) => s[1].x - 10);
+        assert.ok(water.stood, 'he stands across the water on stone 2\'s lip');
+        assert.equal(water.lost, 0, 'his middle over the water: the stone his toes touch does not bite him');
+        // (his middle just over stone 2: it bites)
+        const over = standAt((s) => s[1].x + 4);
+        assert.ok(over.lost >= 1, 'his middle over the stone: it bites on four');
+      });
+    } finally {
+      undo();
+    }
+  });
+});
+
 test('SNAP_FAIR cites 2-5.md\'s flown tap (13 frames) and its rulings', () => {
   assert.equal(Math.round(SNAP_FAIR.hop * 30), 13);
   assert.deepEqual([SNAP_FAIR.inStep, SNAP_FAIR.window, SNAP_FAIR.gap[0], SNAP_FAIR.gap[1]], [3, 0.9, 30, 40]);
