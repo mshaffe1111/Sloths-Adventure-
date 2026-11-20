@@ -102,7 +102,7 @@ lead's trial merge clean), t-eng-small3 9b1767f9. **Stopped clean, continue Frid
 as a swing (level.md World 2 notes) + 2b logs + drawn end PASS; castBots Normal FAIL -> ENG-24g; 2c -> ENG-24h), t-var-19 e2d60037
 (VAR-19e: R-165.327 boa off socket, R-165.328 eagle past rounds, funcheck repeat), t-eng-25c (ENG-25d tonight: lock PASS, stills, gates;
 see STATE for its final or stop), t-gate-flake (GATE-FLAKE tonight: clipcheck + speed test load-proof; see STATE).
-**FRIDAY 8:30 AM:** trigger trig_018TmBom1EwGGSK9azWvZk8a (8:20 AM) carries the order: ENG-24g, ENG-24h (HF env), VAR-19e, BUILD-25 (or
+**FRIDAY: START ONLY ON MATT'S WORD** (Matt 11-19 10:26 PM: "tomorrow morning, I can tell you when to start again"; the 8:20 AM trigger trig_018TmBom1EwGGSK9azWvZk8a is DISABLED, its prompt is the plan to run by hand). Order: ENG-24g, ENG-24h (HF env), VAR-19e, BUILD-25 (or
 ENG-25e first); then GATE-FLAKE's continuation, BUILD-24f, INT-14's packet, World 3 pieces, ENG-27, ART-27.
 **Rulings tonight to carry:** a liana over a river's tail = World 1 swing rules (level.md); 2-5 stones level + 30 px (walkable is fine, the
 count is the lesson), a stone bites only with his middle over it; kicks are noisy; no dev-scene still for the leap (R-165.322); 2-4 ships only
