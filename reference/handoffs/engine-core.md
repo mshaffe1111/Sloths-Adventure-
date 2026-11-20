@@ -2,6 +2,19 @@
 
 Not merged yet: §0zq-25c ENG-25c (t-eng-25c; INT-14 merges it). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-25d. ENG-25d (t-eng-25c, 11-19 9:50-11:15 PM ET): ENG-25c finished: lock, gates, stills, REPORT (no game code; code head c794249d)
+- **REPORT: reference/qa-reports/ENG-25c/REPORT.md** (the gate table, the lock, the stills, Learned). lockall vs BASE d36638be 102/102
+  unchanged; so vs main's 17 are the base's own. funcheck FAILs identically on base and branch (the base's flags).
+- **Stills of a toy row on the real page:** reference/qa-reports/ENG-25d/shootSnap.mjs (pinned) and fallShot.mjs (no pin: a real fall,
+  the update held the frame after he lands). Plant a toy under a stage whose goal it can meet (2-7, a sprint) WITH that stage's real config
+  (worldsData.generateAllLevels): the engine builds with the real config, and 2-5 is a purge of 12. The dev server reloads the page on a
+  stage's first launch: re-plant. **p.y is Pokey's FEET** (engine.ts:4500); invincibleTimer drawn = the hurt blink and face.
+- **The real tap hop** (InputEngine.triggerTouchUp from a script) did not take him off the bank in fallShot's harness: not chased, UNPROVEN.
+- **EXACT NEXT STEP (stopped 11:10 PM ET Thu 11-19):** every gate in the REPORT's table is PASS (funcheck = the base's own) except ONE UNRUN:
+  `npx tsx tools/engine/seedlist.ts 1-6 --check` (it was running at the stop). Run it on this head; PASS = ENG-25c is final (send the lead
+  the hash, write it into the REPORT's 1-6 row); FAIL = stop and tell the lead (no game code changed since c794249d; lockall vs base is
+  102/102 unchanged, so a 1-6 FAIL would be the base's own: check it on d36638be too).
+
 ## 0zq-25c. ENG-25c (t-eng-25c from t-int-13 d36638be, 11-19 evening): snap rows level with the banks; the snapper's ground; the straddle
 - **A snap row's floors sit level with the banks** (rideLay.ts layPads; snapFaults "not level with the banks"). Pads still float PAD_LAY.drop
   under. The flight (snapClock.ts) flew it level; at 34 px under, the flick from the last stone up to the far bank lost 26 of 265 to water.

@@ -1,0 +1,7 @@
+C head 12506300 start Thu Nov 19 22:34:29 EST 2026
+PASS kbdcheck exit=0 130s 10:36PM
+FAIL buildcheck exit=1 11s 10:36PM
+PASS clipcheck exit=0 459s 10:44PM
+PASS drawcheck exit=0 720s 10:56PM
+C end Thu Nov 19 22:56:29 EST 2026
+PASS buildcheck-alone exit=0 5s 10:56PM (paintcheck paused: SIGSTOP)
