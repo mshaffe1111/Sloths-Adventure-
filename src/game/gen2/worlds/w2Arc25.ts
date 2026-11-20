@@ -116,7 +116,9 @@ export const SNAPPERS_25: CreatureDef[] = [{ ...awake, tags: ['cast'] }, asleep,
 // ───────────────────────────── the pieces (World 2's: its earth bank, its boulder, its river, its snap stones) ─────────────────────────────
 /** a bank he walks on, `w` exact, level with the one before (or the section's first) */
 const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'log', main: true });
-/** World 2's boulder to hop on the bank (a moss stone exactly 50 px tall is the kit's painted rock); never within a snapper's bonk landing */
+/** World 2's boulder to hop on the bank (a moss stone exactly 50 px tall is the kit's painted rock); never within a snapper's bonk landing.
+ *  Listed BEFORE the bank it stands on when that bank ends the brick: a brick's exit is its last piece, and a boulder as the exit hung the
+ *  next section off its top, over the bank under it, and the route walked under it, no beat (BUILD-25d, the quiet line at x ~10200) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
 /** the far bank of a snap pond laid from `after` on 2-5's row `row` (gen2 place `pads`, rideLay.ts layPads) */
 const pond = (key: string, after: string, row: Pond25, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'pads', after, row }, style: 'log', main: true, landing: true });
@@ -169,12 +171,12 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 // ───────────────────────────── the beats ─────────────────────────────
 /** [A] beat 0, arrive: the reach, a boulder to hop, the clack of the stones ahead */
 const arrival: Lay = {
-  pieces: [bank('a', null, 440), rock('ra', 'a', 0.55), bank('b', 'a', 360), bank('z', 'b', 300), rock('rz', 'z', 0.3)],
+  pieces: [bank('a', null, 440), rock('ra', 'a', 0.55), bank('b', 'a', 360), rock('rz', 'z', 0.3), bank('z', 'b', 300)],
   sockets: [petal('pb', 'b', 0.5)],
 };
 /** [T] beat 1, ONE stone, safe: Dot's `count` 800+ px before it, the teaching stone over splash-back water (its bite costs no heart) */
 const teachStone: Lay = {
-  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), pond('c', 'b', 'teach25', 340), bank('z', 'c', 300), rock('rz', 'z', 0.6)],
+  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), pond('c', 'b', 'teach25', 340), rock('rz', 'z', 0.6), bank('z', 'c', 300)],
   sockets: [tip('t-count', 'a', 0.1, 'count'), petal('pz', 'z', 0.25)],
 };
 /** [Pg] beat 2, the first snapper, ASLEEP on a long bank (`snapper` 800+ px before; nothing that hurts between): the kick cannot fail */
@@ -188,9 +190,10 @@ const threeInStep = (easy: boolean): Lay => ({
   sockets: [flag('a'), petal('pc', 'c', 0.5)],
 });
 /** [X] beat 4, awake: Dot's `snap` 800+ px before the first awake snapper on a plain bank (nothing that hurts between), then 2-1's logs
- *  (splash-back) and two stones in step (splash-back) */
+ *  (splash-back) and two stones in step (splash-back) A boulder to hop on the far bank (BUILD-25d, the quiet line: 4.4-4.6 s with nothing to do from the last stone
+ *  through the rest's first bank, x ~10200 on seeds 3, 11 and 12; the teaching stone's far bank's hop, BUILD-25b), its snapper 1,000+ px back */
 const awakeOne: Lay = {
-  pieces: [bank('a', null, 700), rock('ra', 'a', 0.5), ...snapperGround('b', 'a'), bank('m', 'b-out', 300), river('c', 'm', 'ride', 340), pond('d', 'c', 'pair25', 340), bank('z', 'd', 300)],
+  pieces: [bank('a', null, 700), rock('ra', 'a', 0.5), ...snapperGround('b', 'a'), bank('m', 'b-out', 300), river('c', 'm', 'ride', 340), pond('d', 'c', 'pair25', 340), rock('rz', 'z', 0.6), bank('z', 'd', 300)],
   sockets: [tip('t-snap', 'a', 0.1, 'snap'), snapper('e', 'b', 0.5, 'snapper'), petal('pc', 'c', 0.5)],
 };
 /** [Pr] beat 5, the rope over the channel (deep on Normal), two snappers on the far bank past its landing */
@@ -208,9 +211,19 @@ const sandbars: Lay = {
   pieces: [bank('a', null, 300), ...snapperGround('b', 'a'), bank('m1', 'b-out', 300), ...snapperGround('c', 'm1'), bank('m2', 'c-out', 300), ...snapperGround('d', 'm2'), bank('z', 'd-out', 300)],
   sockets: [snapper('e1', 'b', 0.5, 'snapper'), snapper('e2', 'c', 0.5, 'snapper'), snapper('e3', 'd', 0.5, 'snapper'), petal('pm1', 'm1', 0.5), petal('pm2', 'm2', 0.5)],
 };
-/** [C] beat 8, the quickening: the count at 0.6 s, three in step, logs, two snappers on its clock, three in step again; the flag before */
+/**
+ * the quickening's rest: the log river's far bank, the one bank between its water half (three in step, the logs) and its snappers' half,
+ * QUICK_REST px (BUILD-25d; was 300). A rolled stage lays no flag from a socket (pipeline rolledFlags: the hard nodes' flags, then every span
+ * past its cap split at the furthest spot in reach that keeps ROLLED_FLAGS.min from the next); the big snap's flag stands on the bank between
+ * the quickening's snappers (m), 670 px past the end of this one, so this bank holds a spot `min` short of it only when it is over 310 px
+ * wide (a spot is FLAG_SPAN.pad/2 in from each end). At 300 no spot fit 2300 px (`lethal`) past the flag before the three in step, and 6 of
+ * 100 listed seeds failed seedlist's flags (2518-2600 px apart over the water jump). 420 leaves a spot for every flag before (the three in
+ * step's far bank takes the rest).
+ */
+const QUICK_REST = 420;
+/** [C] beat 8, the quickening: the count at 0.6 s, three in step, logs, its rest, two snappers on its clock, three in step again; the flag before */
 const quickening = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 420), rock('ra', 'a', 0.6), bank('b', 'a', 300), pond('c', 'b', easy ? 'quick25e' : 'quick25', 340), river('d', 'c', easy ? 'ride' : 'deep', 300), ...snapperGround('e', 'd'), bank('m', 'e-out', 300), ...snapperGround('f', 'm'), pond('y', 'f-out', easy ? 'quick25e' : 'quick25', 340), bank('z', 'y', 300)],
+  pieces: [bank('a', null, 420), rock('ra', 'a', 0.6), bank('b', 'a', 300), pond('c', 'b', easy ? 'quick25e' : 'quick25', 340), river('d', 'c', easy ? 'ride' : 'deep', QUICK_REST), ...snapperGround('e', 'd'), bank('m', 'e-out', 300), ...snapperGround('f', 'm'), pond('y', 'f-out', easy ? 'quick25e' : 'quick25', 340), bank('z', 'y', 300)],
   sockets: [flag('a'), snapper('e1', 'e', 0.5, 'snapper-quick'), snapper('e2', 'f', 0.5, 'snapper-quick'), petal('pc', 'c', 0.5)],
 });
 /** [S] beat 9, the Big Snap: the old mossy stone between two pairs that clap on four together; Dot's `quiet` once, after it */

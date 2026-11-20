@@ -201,3 +201,23 @@ test("the quiet line holds on the stage as Play builds it: nowhere before the fa
     assert.ok(q.quiet <= QUIET_MAX, `seed ${seed}: ${q.quiet} s with nothing to do at x ${Math.round(q.x)}`);
   }
 });
+
+test("the lay keeps the seed list's own rules as its search builds it (seeds 1-12 and the four a 300 px quickening rest broke, both settings): flags within 2300 px over the quickening's water and snappers, and the quiet line past the awake beat's logs (BUILD-25d: 9 of 100 listed seeds failed both once 2-5 was judged on its flown rows; fixed in the pieces, never relisted around; yield.ts --list 217 -> 1000 of 1000)", async () => {
+  const { listJudge } = await import('../../../../tools/engine/listRules.ts');
+  const row = listedStage(STAGE_25)!;
+  const also = listJudge(cfg, (s, d) => playFinish(row, s, d));
+  const bad: string[] = [];
+  for (const seed of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 426, 429, 564, 658]) for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty, also });
+    for (const e of st.gen2.errors ?? []) bad.push(`seed ${seed} ${difficulty}: ${e}`);
+  }
+  assert.deepEqual(bad, []);
+});
+
+test("no 2-5 brick ends on a boulder: its exit is a bank, so the next section starts at the bank's end and the boulder is a hop on the route (BUILD-25d: a boulder listed last was the exit, the next section hung off its top over the bank, and the route walked under it)", async () => {
+  const { SECTIONS_25 } = await import('./w2Arc25.ts');
+  for (const t of SECTIONS_25) for (const v of t.subBlocks?.flatMap((b) => b.versions) ?? []) {
+    const ex = [...t.pieces, ...v.pieces].find((p) => p.key === t.exit.piece);
+    assert.ok(ex && ex.place.kind !== 'on', `${t.id}/${v.id}: its exit '${t.exit.piece}' is ${ex?.shape} on '${ex && 'on' in ex.place ? ex.place.on : '?'}'`);
+  }
+});

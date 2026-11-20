@@ -4,6 +4,39 @@ Branch t-build-25 from t-int-14 6ab312e4 (ENG-25c already in, not re-merged). He
 Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0 plan sent 11:49 AM ET; the lead's GO 11:50 AM ET.
 
 
+## BUILD-25d (Opus 5.5 high; section started 2:47 PM ET Fri 11-20 by `date`; kept current)
+
+### EXACT NEXT STEP (kept current; written 2:47 PM ET Fri 11-20)
+1. DONE (this push): the lay fixed in the pieces (w2Arc25.ts), never relisted around. Next: the full relist
+   `npx tsx tools/engine/seedlist.ts 2-5` (writes src/game/gen2/proven/seeds-2-5.ts + provenIndex.ts), then `seedlist 2-5 --check` PASS.
+2. Trace ONE run of the water jump at x ~21000 (the quickening's log river, `deep` on Normal): rule numbers or bot miss. Facts to the lead.
+3. Snapper toys (13/13, 24/24), tierBots (1-1 must not move), childtrace25 at the first awake snapper, castBots 2-5 again (before/after).
+4. THE FULL SET (gates.md "THE FULL SET, named") on the final head; gate log committed; stills of the new rest + hop; REPORT; hash to the lead.
+
+### Item 1: the lay (what was wrong, what changed, the proof)
+- **Flags (6 seeds)**: a rolled stage lays no flag from a socket (pipeline.ts rolledFlags: `checkpoints.length = 0`, then the hard nodes'
+  flags, then each span past its cap split at the furthest spot <= min(prev + cap - 20, next - 900)). The big snap's hard flag stands on the
+  bank between the quickening's snappers (m), 670 px past the end of the log river's far bank; at 300 px that bank's only flag spot
+  (FLAG_SPAN.pad/2 = 80 in from each end) starts 10 px past `next - 900` (seed 1: spot 21684, limit 21674), so no spot split the 2518 px
+  over the water. FIX: that bank is the quickening's rest, `QUICK_REST` 420 (a spot fits whenever it is over 310).
+- **Quiet line (3 seeds)**: 4.4-4.6 s from the last stone of the awake beat's pond to the rest's boulder. FIX: a boulder on the awake
+  beat's far bank, LISTED BEFORE that bank. Found on the way: a boulder listed last was the brick's EXIT (brick(): out = the last piece),
+  so the next section hung off the boulder's top 75 px over the bank under it, and the route walked UNDER the boulder (no beat): the
+  reach's and the teaching stone's far-bank boulders (25b) had the same fault; all three now listed before their bank (route trace, seed
+  232: `hop 10177,535 -> 10177,485` where it walked through before).
+- **Yield** (`yield.ts 2-5 --from 1 --count 1000 --list --par 4`, LISTABLE: the search with the list's judge), Normal / Easy clean:
+  base f2b32b27 **217 / 217** (quiet 754, flags 460) -> rest 420 + awake boulder last 990 -> **final 1000 / 1000**. Plants on the final
+  pieces: rest 300 -> 996 (flags 4: seeds 426, 429, 564, 658); awake boulder off -> 212 (quiet 788).
+- **Tests** (w2Arc25.test.ts, 9/9): NEW "the lay keeps the seed list's own rules as its search builds it" (seeds 1-12 + 426/429/564/658,
+  both settings, `listJudge`: no gen2 error) and NEW "no 2-5 brick ends on a boulder". Plants, each RED: rest 300 -> test 8; teaching
+  stone's boulder last -> test 9; awake boulder off -> tests 7 and 8. Restored file byte-identical (diff -q).
+- 6 fresh builds: `libstage.ts --stage 2-5 --seeds 6`: CLEAN 6/6 Normal, 6/6 Easy, turtles 9, 208-212 s.
+- The list's judge: both rules ARE in the search seedlist runs (flags: pipeline gen2.errors; quiet: listRules.ts listJudge), so nothing to
+  move (level.md rule 19). The 9 failed because the list was searched before 2-5 was judged on its flown rows (the roll moved under it).
+- **For the lead (rule 22, not built: other stages' locks)**: the same exit-on-a-boulder pattern lives in w1-17-rest-hollow, w1-17-rest-moss
+  (1-7) and w2-21-down/lianas (+easy) (2-1) (tools/engine/runs/exiton.ts lists every kit's). Proposed: a kit-wide test that a section's exit
+  piece is never placed `on` another, with those four fixed under their stages' own lock change.
+
 ## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
 
 ### EXACT NEXT STEP (BUILD-25d, a fresh member at high, on t-build-25 at the head carrying this line; BUILD-25c stopped ~2:30 PM ET at its context limit)
