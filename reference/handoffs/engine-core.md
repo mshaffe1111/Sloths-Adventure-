@@ -1,5 +1,7 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
+ENG-PROWL (11-19 evening, t-eng-prowl): §0zq-PROWL.
+
 Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
 ## 0zq-13b. INT-13b (t-int-13, 11-19 evening): the integration's last merge, one cross-branch red, every gate once
@@ -32,6 +34,23 @@ Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads 
 - **Open for the next engineer:** ENG-LURE (the chime look, its once-a-call rule, the patch's clock gate); ENG-VINE (the thorn vine as a
   kit sleeper hears this channel; stepThornVines still hears only the puzzle kit's noise); the puzzle kit's own noises (puzzlePlay.ts
   thrown/bell) do NOT reach the cast yet; no recorder event for a ring or a punch noise (only 'landing').
+
+## 0zq-PROWL. ENG-PROWL (t-eng-prowl from t-int-13 8efb1bba, 11-19 evening): World 3's prowler never looks up; the leap (3-2 NEW 1)
+- **Fields (predators/types.ts):** `sight.up` (how far ABOVE its feet it sees; absent = `tall`, so every kind before it sees as it did);
+  `Act` (aim 'ahead' | 'below' | 'him' | 'up'); `PredatorDef.leap` (an Act aimed 'up'); `PredatorState.leaping`; `Prey.hanging`.
+  World 3's OCELOT: up 40, leap { up, 0.36 s, 400 px/s, reach 44, tall 130 } (its pounce's time/speed/reach; 3-2 tunes them).
+- **The rule (predators/core.ts):** `startTell` sets `leaping` once per tell (a kind with a leap, him hanging); `actOf` is the act that
+  runs, read by `reachBox`, `startTell`'s aim and the act phase. 'up' runs along its own ground (aimY = its feet, aimX clamped to its
+  patch) to where he hung when it told; the box rises `tall` from its ground. `checkPredator`: a leaper `callsOff` (the freeze), and
+  ROPE_SPEED x the Easy tell >= reach/2 + HERO_HALF_W (the creep on). castPlay.ts fills `prey.hanging` from CastHero (one line).
+- **THE 'LIT = SEEN' SEAM (for ENG-DARK):** `upOf(def)` in core.ts is the only reader of `up`. ENG-DARK adds its ring report to Prey,
+  fills it in castPlay.step beside `prey.hanging`, and makes `upOf` return Infinity for a lit sloth; the leap's `tall` stays the reach.
+- **Proof:** src/game/predatorWorld3.test.ts (11 tests); planted faults reference/qa-reports/EN-P/planted-faults.py (now takes a 4th
+  field: a file other than core.ts) 10/10 PROWL caught, 50/50 in all.
+- **Traps:** creeping TOWARD a leaper in front is not an escape (it runs to where he hung, through him): the freeze is; the bots'
+  hanging branch (firsttimer.ts `if (p.hanging)`) returns before `freezePlan`, so a hanging bot only creeps on. No stage casts a kit
+  ocelot yet; a castBots proof of the leap waits for ENG-ROOT's rope over floor. The drawn ocelot keeps its feet on the ground in the
+  act (castPlay.sync): its leap pose is not drawn yet.
 
 ## 0zo-285c. ENG-285c (t-eng-285, 11-19 afternoon): the 2-1 skill plants re-stated; the still pair (no model change)
 - **riverRide.test.ts, the 2-1 plants (the lead's rulings):** UPSTREAM keeps adult Normal seed 12 'rescued without it' and states the
