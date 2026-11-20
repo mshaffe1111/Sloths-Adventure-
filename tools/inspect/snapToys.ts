@@ -20,10 +20,11 @@ import { firstTimer, type FTRun } from './firsttimer.ts';
 import { BOTS, type Setting, type Tier } from './tierBots.ts';
 
 /** the toys' snap rows (the toys' own data: 2-5's builder lays World 2's): 2-5.md's practice row (3 in step at count 0.75) and its wave
- *  (3, each a count later: Easy's twist and the head of Normal's), both over deep water, 40 px of water each side (a tap hop) */
+ *  (3, each a count later: Easy's twist and the head of Normal's), both over deep water, 30 px of water each side (SNAP_FAIR.gap's low end, ENG-25c: 40 cost the straight-up flick from a stand 5 of 24 runs, ENG-25b),
+ *  every floor level with the banks (rideLay.ts layPads) */
 export const TOY_SNAPS = {
-  step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75 } },
-  wave: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75, wave: true } },
+  step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } },
+  wave: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75, wave: true } },
 } as const satisfies Record<string, PadRow>;
 export type ToySnap = keyof typeof TOY_SNAPS;
 

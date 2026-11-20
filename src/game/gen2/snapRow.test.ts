@@ -23,8 +23,8 @@ import type { SectionTemplate, WorldKit } from './types.ts';
 import type { LevelConfig, Platform } from '../types.ts';
 
 const ROWS = {
-  step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75 } },
-  wave: { by: 'snap', pads: ['snap', 'snap', 'snap', 'stone', 'snap'], gap: 40, snap: { count: 0.75, wave: true } },
+  step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } },
+  wave: { by: 'snap', pads: ['snap', 'snap', 'snap', 'stone', 'snap'], gap: 30, snap: { count: 0.75, wave: true } },
 } as const satisfies Record<string, PadRow>;
 
 test('the bar: four counts, the bite the fourth, out of a creak at the end of the third; Easy stretches it; the count reads 1-4', () => {
@@ -48,7 +48,7 @@ test('the lay: a snap row is stones 80 px wide, solid, painted by the pad piece,
     assert.equal(p.art, 'snapStone');
     assert.deepEqual({ ...p.pad, shift: p.pad!.shift ?? 0 }, { by: 'beat', on: 'bites', clock: 'snap-step', look: 'snap', shift: 0 });
   }
-  assert.deepEqual(step.pads.map((p, i) => p.x - (i ? step.pads[i - 1].x + SNAP_LAY.w : 1000)), [40, 40, 40], '40 px of water each side');
+  assert.deepEqual(step.pads.map((p, i) => p.x - (i ? step.pads[i - 1].x + SNAP_LAY.w : 1000)), [30, 30, 30], '30 px of water each side (SNAP_FAIR.gap\'s low end, ENG-25c)');
   assert.deepEqual(step.clocks.map((c) => c.id), ['snap-step']);
   const wave = layPads(ROWS.wave, 'wave', 1000, 800, () => id++);
   assert.deepEqual(wave.pads.map((p) => (p.pad ? p.pad.shift ?? 0 : 'rest')), [0, -0.75, -1.5, 'rest', -2.25], 'the wave runs ahead, across a rest');
@@ -116,6 +116,28 @@ test('snapFaults: each rule, planted on a built pond, is caught and names itself
   // (2-5.md's own rows lay fair: the teach, the practice, the quickening, Easy's wave of 3 and Normal's wave of 5 on Normal's own window)
   assert.equal(plant({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.6 } }), '', 'the quickening (3 in step at 0.6)');
   assert.equal(plant({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75, wave: true } }), '', 'a wave of 3');
+});
+
+test('level with the banks (ENG-25c): every floor of a snap pond stands with its top level with the banks, as 2-5.md\'s flight flew it', () => {
+  // (snapClock.ts flies the bank, the stones and the far bank all at one height; ENG-25 laid them 34 px down, so the last hop up was unflown)
+  for (const row of Object.keys(ROWS)) {
+    const { st } = built(ROWS, row);
+    const r = (st.rivers ?? []).find((z) => z.speed === 0 && st.platforms.some((p) => p.pad?.on === 'bites' && p.x > z.x0 && p.x < z.x1))!;
+    const near = st.platforms.find((p) => p.type === 'solid' && !p.pad && Math.abs(p.x + p.width - r.x0) <= 1)!;
+    const far = st.platforms.find((p) => p.type === 'solid' && !p.pad && Math.abs(p.x - r.x1) <= 1)!;
+    assert.ok(near && far, `${row}: the pond's two banks`);
+    assert.equal(far.y, near.y, `${row}: the far bank level with the near one`);
+    const floors = st.platforms.filter((p) => p.x > r.x0 - 1 && p.x + p.width < r.x1 + 1);
+    assert.equal(floors.length, ROWS[row as keyof typeof ROWS].pads.length, `${row}: every floor of the row`);
+    for (const p of floors) assert.equal(p.y, near.y, `${row}: the floor at x=${p.x} (${p.art ?? p.style}) tops at ${p.y}, the banks at ${near.y}`);
+  }
+  // (planted by name: a stone set down into the water, as ENG-25 laid it; and one raised over the banks)
+  const { st } = built(ROWS, 'wave');
+  const plant = (dy: number, which: (p: Platform) => boolean) => snapFaults({ ...st, platforms: st.platforms.map((p) => (which(p) ? { ...p, y: p.y + dy } : p)) }).join(' | ');
+  const first = st.platforms.find((p) => p.pad?.on === 'bites')!;
+  assert.match(plant(34, (p) => p === first), new RegExp(`snap stone at x=${Math.round(first.x)} stands 34 px below the banks: not level with the banks`));
+  assert.match(plant(-20, (p) => p === first), /stands 20 px above the banks: not level with the banks/);
+  assert.match(plant(34, (p) => p.style === 'moss_stone'), /plain stone at x=\d+ stands 34 px below the banks: not level with the banks/);
 });
 
 test('in play: a snap stone is a floor always; it bites only on four, out of its creak; the bite HOLDS him (no knock off the stone)', () => {

@@ -5104,14 +5104,35 @@ export function settleLaid(st: Gen2Stage, settle: WorldKit['settle']): string[] 
 }
 
 /**
- * An animal laid on a stage clock (Enemy.kitBeat; gen2/worlds/w2Cast.ts) keeps one the stage has, and a fair one for its kind on the beat
- * (predators/core.ts checkOnClock: a warn before every on, at least its tell long). What is wrong, in words; none = fair (ENG-25)
+ * The bonk's landing over an animal laid on a stage clock (ENG-25c; ENG-25b's bonkFlight on the real engine with the game's InputEngine,
+ * reference/qa-reports/ENG-25b/bonkFlight-normal.txt): the press held through the bonk rises `over` px over its back (107; a tap 54), and
+ * a tap's bounce lands up to `past` px past its middle (176, from 50 px off). A floor inside that takes his landing before the ground he
+ * must kick it from (ENG-25b's middle Normal v3: it walked to its bank's end under the next section's 48 px step).
  */
-export function beatCastFaults(st: { enemies: readonly Enemy[]; clocks?: readonly ClockDef[] }, world: number): string[] {
+export const BONK_LANDING = { over: 107, past: 176 } as const;
+
+/**
+ * An animal laid on a stage clock (Enemy.kitBeat; gen2/worlds/w2Cast.ts) keeps one the stage has, and a fair one for its kind on the beat
+ * (predators/core.ts checkOnClock: a warn before every on, at least its tell long). Its GROUND (ENG-25c): no floor stands over the ground it
+ * walks within its bonk's landing (BONK_LANDING: under `over` px over its back, out to `past` px past either end of where it walks), so the
+ * bounce comes down where the kick is. Any world: every clock-keeping animal, by data. What is wrong, in words; none = fair (ENG-25)
+ */
+export function beatCastFaults(st: { enemies: readonly Enemy[]; clocks?: readonly ClockDef[]; platforms?: readonly Platform[] }, world: number): string[] {
   const out: string[] = [];
   for (const e of st.enemies) {
     if (!e.kitBeat) continue;
     const at = `${e.type} at x=${Math.round(e.x)}`;
+    // (its ground: the highest floor under its middle, its top between its middle and its feet)
+    const plats = st.platforms ?? [];
+    const ground = plats.filter((p) => !p.broken && e.x >= p.x && e.x <= p.x + p.width && p.y >= e.y && p.y <= e.y + e.height).sort((a, b) => a.y - b.y)[0];
+    if (ground) {
+      const back = ground.y - e.height;
+      const x0 = e.patrolMinX - BONK_LANDING.past, x1 = e.patrolMaxX + BONK_LANDING.past;
+      for (const q of plats) {
+        if (q === ground || q.broken || q.y >= ground.y || q.y <= back - BONK_LANDING.over || q.x >= x1 || q.x + q.width <= x0) continue;
+        out.push(`${at}: a floor at x=${Math.round(q.x)} ${Math.round(ground.y - q.y)} px over its ground, inside its bonk's landing (no floor within ${BONK_LANDING.over} px over its back, out to ${BONK_LANDING.past} px past where it walks: the bounce lands there first)`);
+      }
+    }
     const clock = (st.clocks ?? []).find((c) => c.id === e.kitBeat!.clock);
     if (!clock) { out.push(`${at} keeps clock ${e.kitBeat.clock}, which the stage does not have`); continue; }
     const def = castDef(e.type, world);

@@ -328,7 +328,10 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
   const snapId = `snap-${id}`;
   if (row.snap) clocks.push(snapClock(snapId, row.snap, stretch));
   let nSnap = 0;
-  const y = bankY + PAD_LAY.drop;
+  // (a pad floats on the water, PAD_LAY.drop under the banks; every floor of a SNAP row, its snap stones and its plain stones, stands
+  // level with the banks, as 2-5.md's flight flew the row (snapClock.ts: bank, stones and far bank at one height). ENG-25 laid them 34 px
+  // down, so every hop of the row and the last one up onto the far bank were unflown (ENG-25b's water probe; snapFaults holds it)
+  const y = row.by === 'snap' ? bankY : bankY + PAD_LAY.drop;
   const pads: Platform[] = [];
   let x = x0;
   row.pads.forEach((k, i) => {
@@ -513,6 +516,13 @@ export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readon
     const row = st.platforms.filter((p) => inside(p) && (p.pad || p.type === 'solid') && p.y > r.surfaceY - 80 && p.y < r.surfaceY + 10).sort((a, b) => a.x - b.x);
     if (!row.some((p) => p.pad?.on === 'bites')) continue;
     const pond = `snap pond at x=${Math.round(r.x0)}`;
+    // (LEVEL WITH THE BANKS, ENG-25c: every floor of the pond, snap stone or plain stone, tops level with its banks, as the flight flew it;
+    // the banks' top is the pond's surface less river.ts surfaceBelowBank, as layPads lays the zone)
+    const bankTop = r.surfaceY - surfaceBelowBank;
+    for (const p of row) {
+      const dy = Math.round(p.y - bankTop);
+      if (dy !== 0) out.push(`${pond}: the ${p.pad?.on === 'bites' ? 'snap stone' : 'plain stone'} at x=${Math.round(p.x)} stands ${Math.abs(dy)} px ${dy > 0 ? 'below' : 'above'} the banks: not level with the banks (2-5.md's flight flew the row level)`);
+    }
     // (the water each side of every snap stone: the near bank's end, the floors between, the far bank's start)
     const edges = [r.x0, ...row.flatMap((p) => [p.x, p.x + p.width]), r.x1];
     row.forEach((p, i) => {

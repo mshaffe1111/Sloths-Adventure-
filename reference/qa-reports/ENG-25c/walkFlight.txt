@@ -1,0 +1,18 @@
+gap 40 drop 34, walking right from a stand, no jump: falls in at x 2381
+gap 40 drop 34, walking right from a run, no jump: falls in at x 2381
+gap 30 drop 34, walking right from a stand, no jump: crosses dry to x 2341 (far bank at 2360)
+gap 30 drop 34, walking right from a run, no jump: crosses dry to x 2341 (far bank at 2360)
+gap 30 drop 0, walking right from a stand, no jump: crosses dry to x 3085 (far bank at 2360)
+gap 30 drop 0, walking right from a run, no jump: crosses dry to x 2796 (far bank at 2360)
+gap 40 drop 0, walking right from a stand, no jump: crosses dry to x 3094 (far bank at 2400)
+gap 40 drop 0, walking right from a run, no jump: crosses dry to x 2799 (far bank at 2400)
+gap 44 drop 0, walking right from a stand, no jump: crosses dry to x 3092 (far bank at 2416)
+gap 44 drop 0, walking right from a run, no jump: crosses dry to x 2806 (far bank at 2416)
+gap 50 drop 0, walking right from a stand, no jump: falls in at x 2054
+gap 50 drop 0, walking right from a run, no jump: crosses dry to x 2802 (far bank at 2440)
+gap 56 drop 0, walking right from a stand, no jump: falls in at x 2054
+gap 56 drop 0, walking right from a run, no jump: falls in at x 2058
+gap 60 drop 0, walking right from a stand, no jump: falls in at x 2054
+gap 60 drop 0, walking right from a run, no jump: falls in at x 2058
+gap 70 drop 0, walking right from a stand, no jump: falls in at x 2054
+gap 70 drop 0, walking right from a run, no jump: falls in at x 2058
