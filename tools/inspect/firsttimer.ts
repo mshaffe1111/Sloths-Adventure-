@@ -57,7 +57,8 @@ import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, 
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
-import type { Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import type { Enemy, Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import { headRect } from '../../src/game/fight.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import { engageOf } from '../../src/game/predators/core.ts';
@@ -118,7 +119,9 @@ const SNAP_TAP = 0.08;
  *   sees       he deals with it from this far (an upright phone shows ~270 px ahead of him)
  *   behind     or this far behind him (he landed past it)
  */
-const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200 } as const;
+// (`restomp`: how far past the edge of its head a landing still counts as a stomp, fight.ts stompTest's own 18 px: a dazed snapper is still
+//  stomped, so a bounce that comes down that near it bounces him again, ENG-SNAP)
+const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200, restomp: 18, lastPush: 0.15, landTol: 3 } as const;
 /** his thumb: from deciding to the press leaving the floor (s) */
 const SNAP_THUMB = 0.1;
 
@@ -240,6 +243,9 @@ export interface FirstTimer {
    *  reaction (stopReact, then the thumb's lag: BOTS.md keeps both from KID / ADULT, no profile measures reaction) the thumb comes off
    *  and stays off until it is beaten (it flees) or its strike is over */
   noFreeze?: boolean;
+  /** (ENG-SNAP, R-165.339; SKILLS.letItSnap) an awake snapper on a clock he plays the TAUGHT way (Dot's line: stand back, let it snap,
+   *  then kick; the lead's ruling 11-18): the child and the kid. Unset, he bonks it (BONK-AFTER-THE-SNAP), as middle, expert and adult */
+  letSnap?: boolean;
 
   /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
@@ -259,7 +265,7 @@ export interface FirstTimer {
 export const FT_KID: FirstTimer = {
   name: 'KID', setting: 'easy', look: 1.2, heed: 1.1, stopReact: 0.4, thumb: [0.09, 0.065], hold: [0.16, 0.08], short: 0.08, upOnly: 0.45,
   upOnlyT: [0.08, 0.2], edgeAim: 32, dblAt: [-260, 160], hopFoe: 0.55, hesitate: 0.4, swap: [0.133, 0.2], drift: [4, 2], thumbSpeed: 180,
-  slip: 0.03, slipFrames: [3, 6], release: [0.7, 0.5], releaseMax: [1, 4],
+  slip: 0.03, slipFrames: [3, 6], release: [0.7, 0.5], releaseMax: [1, 4], letSnap: true,
 };
 export const FT_ADULT: FirstTimer = {
   name: 'ADULT', setting: 'normal', look: 0.8, heed: 0.9, stopReact: 0.3, thumb: [0.03, 0.03], hold: [0.2, 0.035], short: 0.03, upOnly: 0.25,
@@ -294,14 +300,14 @@ export const FT_MIDDLE_EASY: FirstTimer = {
   steerQ: ms([107, 169, 367, 767, 1401]), gapQ: ms([102, 233, 393, 615, 863]),
 };
 export const FT_CHILD: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'normal', upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'normal', letSnap: true, upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([22, 49, 74, 115, 231]), aimQ: [1, 28, 73, 119, 232], lateShare: 0.121, lateQ: ms([18, 46, 83, 113, 129]),
   standShare: 0.81, standQ: ms([237, 394, 560, 740, 1131]), dblShare: 0.234, dbl2Q: ms([291, 323, 406, 530, 710]),
   steerQ: ms([56, 80, 120, 192, 524]), gapQ: ms([268, 420, 630, 1041, 1489]),
 };
 /** the child tier's one Easy run (P27, 37 minutes, 187 put-backs): an outlier no bot is tuned to; printed, never checked */
 export const FT_CHILD_EASY: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'easy', upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'easy', letSnap: true, upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([49, 100, 219, 395, 1108]), aimQ: [0, 27, 71, 161, 245], lateShare: 0.25, lateQ: ms([65, 100, 180, 247, 362]),
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
@@ -696,7 +702,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, bonkAfterSnap: true, rideWheel: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -796,6 +802,10 @@ export interface FTRun {
   stops: { n: number; firstJumpFailed: number; heights: number[] };
   puzzles: Array<{ id: string; x: number; t: number }>;
   rescues: number;
+  /** (ENG-SNAP) snapper bonks: the hops he took as a bonk (snapperPlan), and the stomps he came down on without meaning to and took as
+   *  his bonk (adoptBonk: a hop off the last snap stone onto it, the landing's re-check) */
+  bonkHops?: number;
+  adopted?: number;
   /** where each rescue picked him up and where each soft fall set him back (x): a gate that limits a move reads these inside a node */
   rescueXs: number[];
   softFallXs: number[];
@@ -1021,6 +1031,8 @@ interface Jump {
    *  steered back to his own side of it */
   bonk?: number;
   bonkDir?: -1 | 1;
+  /** (bonkBrake) a bonk hopped straight up from beside it (bonkBeside): no steer until it is dazed */
+  bonkUp?: boolean;
   /** OFF-BEFORE-FOUR (ENG-25c): the snap stone this hop leaves (Platform id): coming down, he never steers back onto it as a small
    *  landing (overSmall). A straight-up flick from its far lip steered back onto it, twice, until he stood on it into four (the step
    *  toy's middle-Normal v1 trace on the level 30 px lay) */
@@ -1319,7 +1331,16 @@ export class FirstTimerRun {
   /** BONK-AFTER-THE-SNAP: the animal he is at, whether he has seen its bar's four since he last went, and when he may go */
   private bonk: { id: number; sawFour: boolean; goAt: number } | null = null;
   /** his next jump is a bonk at this animal (snapperPlan) */
-  private bonkHop: { id: number; dir: -1 | 1 } | null = null;
+  private bonkHop: { id: number; dir: -1 | 1; beside?: boolean } | null = null;
+  bonkHops = 0;
+  adopted = 0;
+  /** (letItSnap) when the creak he is hearing began, and the last moment he heard it */
+  private creakAt = -1;
+  private creakSeen = -1;
+  /** (bonkBrake) this frame's steer is a step or two in to kick a dazed snapper: no pause between steers (rhythm), as in a chase */
+  private steady = false;
+  /** (bonkBrake) the side of the snapper his bonk's hop left from: his side, where the bounce comes down */
+  private bonkSide: -1 | 1 | null = null;
   /** getting ready to kick (a moment's hesitation, as a punch) */
   private kickAt: number | null = null;
   /** when he was last put back (a tier bot does not read the set-back's stillness as being stopped dead) */
@@ -1449,6 +1470,7 @@ export class FirstTimerRun {
     this.punchAt = null;
     this.bonk = null;
     this.bonkHop = null;
+    this.bonkSide = null;
     this.kickAt = null;
     this.jump = null;
     this.airFrom = null;
@@ -2320,10 +2342,11 @@ export class FirstTimerRun {
         j.d2 = age + drawQ(this.r, who.dbl2Q!, 2 * DT, 0, who.readDbl ?? 1);
       }
       // (a bonk: onto its back, then, once it is dazed, back to his own side of it to kick it: snapperPlan)
+      if (j.bonk === undefined) this.adoptBonk(j);
       if (j.bonk !== undefined) j.toX = this.bonkAim(j);
       const aimX = j.back && j.backX !== undefined ? j.backX : j.toX;
       if (aimX !== undefined) {
-        const out: Pad = Math.abs(p.x - aimX) > 6 ? side(aimX > p.x ? 1 : -1) : {};
+        const out: Pad = j.bonk !== undefined && SKILLS.bonkBrake ? this.bonkSteer(j.bonk, aimX, j.hold - age, j.bonkUp) : Math.abs(p.x - aimX) > 6 ? side(aimX > p.x ? 1 : -1) : {};
         if (age < j.hold) out.jump = true;
         // (the second press on the way up to a high mushroom)
         if (j.kind === 'double' && !j.pressed2 && j.d2 >= 0 && age >= j.d2 - 1e-6 && !p.grounded && p.jumpsLeft > 0) {
@@ -2351,6 +2374,10 @@ export class FirstTimerRun {
       if (this.learned.has('glide') && e.skills?.has('glide') && !p.grounded && p.vy > 150 && age > 0.4) out.jump = true;
       return out;
     }
+
+    // (bonkBrake: bounced again off a dazed snapper's back with no jump of his own: he steers for his side, clear of it)
+    const ba = this.bonkAir();
+    if (ba) return ba;
 
     // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
     if (p.climbing) {
@@ -2817,6 +2844,7 @@ export class FirstTimerRun {
     if (m && (out(m) || Math.abs(m.s.y - p.y) > BONK.sameGround || (Math.abs(m.s.x - p.x) > BONK.sees && m.s.phase !== 'stunned'))) m = undefined;
     if (!m) {
       this.bonk = null;
+      this.bonkSide = null;
       this.kickAt = null;
       m = c.members.find((q) => !out(q) && q.def.beatenBy.kick?.ends === 'chasedOff' && !!q.e.kitBeat
         && Math.abs(q.s.y - p.y) <= BONK.sameGround && (((q.s.x - p.x) * fdir > -BONK.behind && (q.s.x - p.x) * fdir < BONK.sees) || dazedReach(q)));
@@ -2829,10 +2857,21 @@ export class FirstTimerRun {
     // asleep, or dazed by his bonk with time left to reach it: walk in and kick it (a kick ends it 'chasedOff', the kit's data)
     const dazed = m.s.phase === 'stunned' && m.s.stunUntil - (this.e as any).gameTime > BONK.dazedLeft;
     if (m.s.asleep || dazed) {
-      if (dx > BONK.kick[1]) { this.kickAt = null; return side(toward); }
+      // (bonkBrake: dazed by his bonk, he means to kick from the moment it is dazed: his hesitation counts from then (m.s.t, its time
+      //  dazed), so it is spent in the bounce's air; on the ground he steps in, never pausing between steers (rhythm), and the kick goes
+      //  as he arrives. Begun only once in reach, a thumb that cannot let go at once (KID and ADULT's late lift-off re-arms, R-165.59)
+      //  walked him on through it to its far side, adult Normal v3, v4)
+      const lined = dazed && SKILLS.bonkBrake;
+      if (dx > BONK.kick[1]) {
+        if (!lined) { this.kickAt = null; return side(toward); }
+        if (this.kickAt === null) this.kickAt = t - m.s.t + who.hesitate;
+        if (t < this.kickAt) return {};
+        this.steady = true;
+        return side(toward);
+      }
       // (close in is fine: the kick's box starts 8 px ahead of him and its body is 28 px either side of its middle; the flick turns him
       //  to it, engine.ts kickDir. Stepping back to a 'right' distance had him dither on the spot, middle Normal v3)
-      if (this.kickAt === null) this.kickAt = t + who.hesitate;
+      if (this.kickAt === null) this.kickAt = (lined ? t - m.s.t : t) + who.hesitate;
       if (t < this.kickAt || t - this.lastPress < this.swapGap) return {};
       this.kickAt = null;
       this.swapGap = between(this.r, who.swap);
@@ -2844,15 +2883,23 @@ export class FirstTimerRun {
     if (!kb) return null;
     const bk = this.bonk!;
     const hold = m.def.act.reach + BONK.half + BONK.margin;
+
     const now = (this.e as any).clock.read(kb.clock, kb.shift ?? 0).phase as string;
+    // (letItSnap waits on firm ground: on a snap stone (or any pad) the crossing is his business first; waiting on one in its creak, the
+    //  stone bit him, kid Easy v2 on the toy, whose stones lie level with the banks)
+    if (SKILLS.letItSnap && who.letSnap) return this.floorAt(p.x, p.y, 6)?.pad ? null : this.letItSnap(m as never, toward, dx, hold, now);
     // (four seen, then his own hesitation; a go not taken before the next creak waits for the next four)
     if (now === 'on') { bk.sawFour = true; bk.goAt = -1; }
     else if (now === 'off' && bk.sawFour && bk.goAt < 0) bk.goAt = t + who.hesitate;
     else if (now !== 'off') { bk.sawFour = false; bk.goAt = -1; }
     const go = bk.goAt >= 0 && t >= bk.goAt && now === 'off';
+    // (bonkBrake, a slow thumb: in the quiet he walks right up beside it, inside its stomp's reach, and hops straight up onto its back:
+    //  bonkBeside)
+    const beside = this.bonkBeside(m.e as unknown as Enemy);
+    if (beside !== null && go && dx > beside) { this.steady = true; return side(toward); }
     // (the bonk is flown clean from a stand anywhere in BONK.from; outside the bar's quiet he keeps off its bite)
     if (dx > BONK.from[1]) return side(toward);
-    if (dx < BONK.from[0] || (!go && dx < hold - BONK.band && now !== 'off')) return side(toward === 1 ? -1 : 1);
+    if ((dx < BONK.from[0] && !(beside !== null && go)) || (!go && dx < hold - BONK.band && now !== 'off')) return side(toward === 1 ? -1 : 1);
     if (!go) return {};
     // (from a stand, as flown: a hop at a run carries him over its back, middle Normal v3's trace, onto the ledge past it)
     if (Math.abs(p.vx) > BONK.still) return {};
@@ -2861,19 +2908,200 @@ export class FirstTimerRun {
     if (this.sim.platforms.some((q) => !q.broken && q.y < m!.s.y - 2 && q.y > m!.s.y - BONK.clear && q.x < m!.s.x + BONK.kick[1] && q.x + q.width > m!.s.x - BONK.kick[1])) return {};
     bk.sawFour = false;
     bk.goAt = -1;
-    this.bonkHop = { id: m.e.id, dir: toward };
-    const press = this.decide(toward, 'single', false, {});
+    this.bonkHop = { id: m.e.id, dir: toward, beside: beside !== null };
+    this.bonkSide = toward === 1 ? -1 : 1;
+    const press = this.decide(beside !== null ? 0 : toward, 'single', false, {});
     if (this.pending) this.pending.still = true;
     return press;
   }
 
+  /**
+   * (ENG-SNAP, R-165.339) `letItSnap`, the TAUGHT way with an awake snapper (Dot's line: stand back, let it snap, then kick; the lead's
+   * ruling 11-18; TURTLE's kick is `when: 'open'`, predators/world2.ts): the child and the kid (FirstTimer.letSnap). He stands just off
+   * its bite (its act's reach, his half-body and a margin: `hold`) and inside the distance at which it starts its tell (engageOf, less a
+   * margin), still, so it creaks and snaps at nothing on four; from its snap (the act) his own hesitation, then he steps in (no pause
+   * between steers) and kicks while it recovers. Its recovery over before the kick lands, he backs off to his stand again. With it off he
+   * bonks it as the others do, and BUILD-25's child looped there (snapperTaught.test.ts (b)). Nothing here names a stage or an x.
+   */
+  private letItSnap(m: { e: Enemy & { id: number }; def: PredatorDef; s: PredatorState }, toward: -1 | 1, dx: number, hold: number, now: string): Pad {
+    const t = this.t, who = this.who;
+    // (when its creak began, as he heard it: his reaction to it runs from then)
+    if (now === 'warn') {
+      if (this.creakAt < 0 || t - this.creakSeen > 1.5 * DT) this.creakAt = t;
+      this.creakSeen = t;
+    } else this.creakAt = -1;
+    const back = side1(toward === 1 ? -1 : 1), on = side1(toward);
+    const ph = m.s.phase;
+    if (ph === 'act' || ph === 'recover') {
+      // (his hesitation from the snap he saw: the act began m.s.t ago, or the act's length and its recovery's time ago)
+      const snapAt = ph === 'act' ? t - m.s.t : t - m.s.t - m.def.act.seconds;
+      if (ph === 'act' || t < snapAt + who.hesitate) return dx < hold - BONK.band ? back : {};
+      this.steady = true;
+      if (dx > BONK.kick[1]) return on;
+      if (t - this.lastPress < this.swapGap) return {};
+      this.swapGap = between(this.r, who.swap);
+      return { kick: toward };
+    }
+    // (out of its reach, inside where it starts its tell: it comes to him and snaps on four. He walks in only in the bar's quiet, never
+    //  in its creak or its tell (walked in from 97 px in its tell, the child's step carried him into its bite on four, child Easy v3),
+    //  and lets go of the steer a stop short of the band: the ground's braking and his thumb's late lift-off at its longest carried the
+    //  child on 35 px, into its bite in the tell, child Easy v2)
+    const engage = engageOf(m.def, who.setting === 'easy') - BONK.band / 2;
+    const p = this.sim.p;
+    const stop = (p.vx * p.vx) / (2 * PHYS.groundDec) + Math.abs(p.vx) * DT * who.releaseMax[1];
+    const closing = p.vx * toward > 0, opening = p.vx * toward < 0;
+    const quiet = now === 'off';
+    // (inside its bite he backs off at once, no pause between steers: crept in on him in its creak while his thumb's rhythm held the
+    //  step, child Easy L35 on 2-5)
+    if (dx < hold - BONK.band) {
+      if (opening && dx + stop > hold) return {};
+      this.steady = true;
+      return back;
+    }
+    if (dx > Math.max(hold, engage)) return quiet && ph !== 'tell' && !(closing && dx - stop < engage) ? on : {};
+    // (at its creak, inside where it tells and not yet telling: he steps back, "stand back". It sees only what moves (TURTLE's sight
+    //  has no seesStill; stillness.ts: still for calmIn and he is lost to it), so standing still in the band it never told and he stood
+    //  there until the help ladder put him past it, child Normal v4; the step is the movement it sees, it tells on that frame, inside
+    //  its engage, and snaps on four at the spot he left)
+    //  A first-timer's thumb (the kid's) never lets a steer go (its late lift-off re-arms every frame, R-165.59): a step back ran him
+    //  back onto the snap stones, kid Easy v2, so only a thumb that lets go steps)
+    //  The step comes after his own reaction to the creak (stopReact: no reflex his tier's calibration does not have, the lead 11-20),
+    //  and is one move, made then: no pause between steers (rhythm) holds it past the creak, child Normal L30 on 2-5)
+    if (now === 'warn' && t >= this.creakAt + who.stopReact && ph !== 'tell' && Math.abs(p.vx) <= BONK.still && !!who.holdQ) { this.steady = true; return back; }
+    return {};
+  }
+
+  /**
+   * (ENG-SNAP, R-165.339) `bonkBrake`: a bonk's hop and its bounce steered as a person steers a hop: by where it will come down. The game's
+   * controls keep his speed when the thumb lets go in mid-air (engine.ts, refined: only Down brakes), so he steers toward the spot only
+   * while a coast from here would come down short of it, counting the frames his thumb's late lift-off adds (`release`, its mean), and
+   * pushes back (a turn: his thumb's travel) only when the coast would carry him past. Before the bonk the spot is its middle (onto its
+   * back); once it is dazed, his own side clear of its back (offItsBack). Steered at full run onto its back instead (the old aim: toward
+   * the spot until there), he reached it at 268-285 px/s, the bounce carried him on while his thumb turned (0.18-0.35 s for the child),
+   * he came down on or past its far side, bonked it again from there once it woke, and looped (2-5's child, BUILD-25
+   * trace-child-N-L4.txt; the toy, snapperTaught.test.ts (a): child 2-6 bonks, 66-211 px past; middle Easy and adult the same).
+   */
+  private bonkSteer(id: number, aimX: number, holdLeft: number, up = false): Pad {
+    const c = this.e.cast as { members: Array<{ e: Enemy & { id: number }; s: PredatorState }> } | null;
+    const m = c?.members.find((q) => q.e.id === id);
+    if (!m) return {};
+    // (a hop from beside it goes straight up and comes down on its back where it stands: no steer until it is dazed)
+    if (up && m.s.phase !== 'stunned') return {};
+    // (where he comes down: onto its back before the bonk, the ground it stands on after; the bounce off its back is a launch, which a
+    //  let-go of the jump does not cut short, engine.ts `launched`)
+    const dazed = m.s.phase === 'stunned';
+    return this.steerToLand(aimX, dazed ? m.s.y : headRect(m.e).y, dazed ? Infinity : holdLeft, dazed ? BONK.landTol : 6);
+  }
+
+  /** steer so a coast comes down at `x` on a floor at `y` (feet), from where he is in the air now: see bonkSteer. `holdLeft`: the seconds
+   *  his thumb still holds the jump; after that the engine cuts his rise to PHYS.cutV (a tap hop), which the estimate must see coming or
+   *  it judged the long held rise, let go, and then steered on again at full run once the cut came (adult Normal v1) */
+  private steerToLand(x: number, y: number, holdLeft = Infinity, tol = 6): Pad {
+    const p = this.sim.p, who = this.who;
+    // (the time to come down to y: the engine's own gravity, up and down; already under it, now)
+    let vy = p.vy, py = p.y, T = 0;
+    for (let i = 0; i < 90 && !(vy > 0 && py >= y); i++) {
+      if (T >= holdLeft && vy < -PHYS.cutV) vy = -PHYS.cutV;
+      vy = Math.min(PHYS.maxFall, vy + (vy < 0 ? PHYS.gravUp : PHYS.gravDown) * DT);
+      py += vy * DT;
+      T += DT;
+    }
+    const lift = Math.min(who.releaseMax[1], Math.max(who.releaseMax[0], Math.exp(who.release[0])));
+    const d: -1 | 1 = x >= p.x + p.vx * T ? 1 : -1;
+    // (on toward it while even the frames his thumb lifts late would not get the coast there; push back only once the coast with no
+    //  steer at all carries him past it by more than BONK.band: between the two he lets the coast run. Read either way every frame, the
+    //  estimate flipped with his own steer and he wagged left-right in the air, child Easy v1)
+    // (no new steer in his last moment in the air either way: it reaches the ground as a run, and a thumb whose lift-off re-arms ran
+    //  him on through it, adult Normal v4)
+    if (T <= BONK.lastPush) return {};
+    // (the lift-off only runs on a steer he is making: not steering, it is no part of a coast, and counted anyway he judged a nudge he
+    //  never made would get him there and bounced on its back, still, until the help ladder came, middle Normal L4 on 2-5)
+    const vLet = this.lastSteer === d ? Math.max(-PHYS.maxRun, Math.min(PHYS.maxRun, p.vx + d * PHYS.airAcc * DT * lift)) : p.vx;
+    if ((x - (p.x + vLet * T)) * d > tol) return d > 0 ? { right: true } : { left: true };
+    const over = (p.x + p.vx * T - x) * (p.vx >= 0 ? 1 : -1);
+    if (over > BONK.band && Math.abs(p.vx) > 20) return p.vx > 0 ? { left: true } : { right: true };
+    return {};
+  }
+
+  /**
+   * (bonkBrake) a jump that was not a bonk came down on a snapper's back and dazed it (a hop off the last snap stone onto it, middle
+   * Easy v2 on the toy: the hop came down on the far bank at a run, the engine's landing re-check took the next frame as a stomp, 228 px
+   * on with the way on steering, and it looped from the far side): he takes it as his bonk from there, his side the one he came from,
+   * and steers the bounce back to it as a bonk's (in a jump, or in the air with none: bonkAir)
+   */
+  private adoptBonk(j: Jump | null): boolean {
+    if (!SKILLS.bonkBrake || !SKILLS.bonkAfterSnap) return false;
+    const p = this.sim.p;
+    const c = this.e.cast as { members: Array<{ e: { id: number; kitBeat?: unknown }; def: PredatorDef; s: PredatorState }> } | null;
+    // (just dazed under him; or, with no jump of his own, any dazed one he is bouncing on: on its back, over it, a stomp again each
+    //  time he comes down, middle Normal L4 on 2-5 bounced so 13 s, still, until the help ladder came)
+    const m = c?.members.find((q) => q.s.phase === 'stunned' && !!q.e.kitBeat && q.def.beatenBy.kick?.ends === 'chasedOff'
+      && Math.abs(q.s.x - p.x) < BONK.from[0] && Math.abs(q.s.y - p.y) < BONK.clear && (q.s.t < 0.2 || (!j && q.s.y > p.y)));
+    if (!m) return false;
+    // (the way he went at it: from the jump's take-off; with no jump, the side he is over now is his)
+    const dir: -1 | 1 = j ? (m.s.x >= j.x ? 1 : -1) : m.s.x >= p.x ? 1 : -1;
+    if (j) {
+      j.bonk = m.e.id;
+      j.bonkDir = dir;
+    }
+    this.bonk = { id: m.e.id, sawFour: false, goAt: -1 };
+    this.bonkSide = dir === 1 ? -1 : 1;
+    this.adopted++;
+    return true;
+  }
+
+  /**
+   * (bonkBrake) a thumb too slow to place a steered hop on its back hops from beside it instead: how near he stands (px from its middle),
+   * or null for a thumb that steers the hop from BONK.from. The shortest steer a thumb makes is one frame and its late lift-off: for a
+   * lift-off of up to 4 frames (KID's thumb: the child and the kid) that alone runs him up to 228-285 px/s, and a tap hop's coast then
+   * carries 80-105 px, past its back from any stand in BONK.from (the toy's child: stunned on its near edge at full run, 41 px short of
+   * its middle, and the bounce took him to its far side, v3, v5). Not the adult's thumb (its lift-off re-arms every frame, R-165.59):
+   * walking in beside it, it could not stop and ran on through it, then met its bite coming back on the creak (2-5's adult took 61
+   * snapper bites against 46 before, all on seeds that had none); it keeps its steered hop. Beside it, inside its stomp's reach (fight.ts stompTest) by the band,
+   * a hop straight up comes down on its back with no speed to carry him on. Only in the bar's quiet, as any bonk.
+   */
+  private bonkBeside(e: Enemy): number | null {
+    // (a first-timer's thumb, no measured hold, KID's and ADULT's: its late lift-off re-arms every frame, R-165.59, so its steer runs on)
+    if (!SKILLS.bonkBrake || this.who.releaseMax[1] <= 2) return null;
+    return headRect(e).w / 2 + BONK.restomp - BONK.band;
+  }
+
   /** where a bonk's hop steers: over the animal's back until his bonk has dazed it, then back to his own side of it, kick range off it */
   private bonkAim(j: Jump): number | undefined {
-    const c = this.e.cast as { members: Array<{ e: { id: number }; s: PredatorState }> } | null;
+    const c = this.e.cast as { members: Array<{ e: Enemy & { id: number }; s: PredatorState }> } | null;
     const m = c?.members.find((q) => q.e.id === j.bonk);
     if (!m) return undefined;
     if (m.s.phase !== 'stunned') return m.s.x;
+    if (SKILLS.bonkBrake) return this.offItsBack(m, j.bonkDir ?? 1);
     return m.s.x - (j.bonkDir ?? 1) * (BONK.kick[0] + BONK.kick[1]) / 2;
+  }
+
+  /**
+   * (ENG-SNAP, bonkBrake) where his bounce comes down: his own side, clear of its back. A dazed snapper is still stomped (fight.ts stompTest
+   * takes any landing within its head's half-width and 18 px of its middle), so the old aim, half the kick's reach off it (29 px), came
+   * down on its back again: a second bounce with no plan of his own, and the way on steered it over to its far side (the toy's child
+   * Normal v6). Just clear of its stomp's reach (6 px, steered to within BONK.landTol: with 5 px and the 6 px of an ordinary steer he
+   * hung at 48 px, the reach's very edge, and bounced there until the help ladder came, middle Normal L6 on 2-5) and inside the kick's
+   * (BONK.kick): a landing farther out needed a walk in, which his
+   * thumb's measured pauses between steers (rhythm) held up until it woke (middle Normal v1: a 1 s gap). He holds still as he lands (the
+   * engine checks a landing once more as a stomp for 0.09 s, engine.ts groundedFor: a step in then bounced him again, adult Normal v3).
+   */
+  private offItsBack(m: { e: Enemy; s: PredatorState }, dir: -1 | 1): number {
+    return m.s.x - dir * (headRect(m.e).w / 2 + BONK.restomp + 6);
+  }
+
+  /** (bonkBrake) in the air off its back with no jump of his own (bounced again), he steers for his side, clear of its back */
+  private bonkAir(): Pad | null {
+    if (!SKILLS.bonkBrake || this.jump) return null;
+    const p = this.sim.p;
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) return null;
+    if (!this.bonk || this.bonkSide === null) this.adoptBonk(null);
+    if (!this.bonk) return null;
+    const c = this.e.cast as { members: Array<{ e: Enemy & { id: number }; s: PredatorState }> } | null;
+    const m = c?.members.find((q) => q.e.id === this.bonk!.id);
+    if (!m || m.s.phase !== 'stunned' || Math.abs(m.s.y - p.y) > BONK.clear) return null;
+    const mine: -1 | 1 = this.bonkSide ?? (p.x < m.s.x ? -1 : 1);
+    return this.steerToLand(this.offItsBack(m, mine === -1 ? 1 : -1), m.s.y, Infinity, BONK.landTol);
   }
 
   /**
@@ -3515,8 +3743,9 @@ export class FirstTimerRun {
   private pad(): Pad {
     this.figTap = false;
     this.rollHeld = false;
+    this.steady = false;
     const intended = this.intend();
-    const want = this.rollHeld || this.runnerAhead() ? intended : this.rhythm(intended);
+    const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
@@ -3559,11 +3788,11 @@ export class FirstTimerRun {
     if (this.snapHop) { this.snapHop = false; kind = 'single'; hold = Math.min(hold, SNAP_TAP); d2 = -1; }
     // (BONK-AFTER-THE-SNAP: a tap onto its back, never a double)
     const bonk = this.bonkHop;
-    if (bonk) { this.bonkHop = null; kind = 'single'; hold = Math.min(hold, SNAP_TAP); d2 = -1; }
+    if (bonk) { this.bonkHop = null; this.bonkHops++; kind = 'single'; hold = Math.min(hold, SNAP_TAP); d2 = -1; }
     this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), d2, needs: needs || undefined, toX: overhead && toX !== null ? toX : undefined, left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
     this.aimedDrop = false;
     this.nextStop = null;
-    if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; }
+    if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; if (bonk.beside) this.jump.bonkUp = true; }
     if (snapFrom !== undefined && snapFrom >= 0) this.jump.snapFrom = snapFrom;
     if (this.lianaHop) {
       this.jump.liana = true;
@@ -3997,6 +4226,8 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     stops: run.stopsReport(),
     puzzles: run.puzzles,
     rescues: run.rescues,
+    bonkHops: run.bonkHops,
+    adopted: run.adopted,
     rescueXs: run.rescueXs,
     softFallXs: run.softFalls.map((f) => Math.round(f.x)),
     dot,

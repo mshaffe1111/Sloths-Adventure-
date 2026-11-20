@@ -328,6 +328,24 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **Traps:** a JSON copy of a stage breaks the buckets' shared `w` (re-link by axle, stills.mjs); a short street can be overshot by a
   step-off (the tower runs its storey on, so it still counts); ENG-285 (in-air turn) changes the air model: re-fly the table after it.
 
+## 0zm-snap. ENG-SNAP (t-eng-snap from t-build-25 76c05cbc, 11-20, R-165.339): the snapper bots play 2-5 the taught way
+- **Two skills** (tools/inspect/firsttimer.ts SKILLS; toys tools/inspect/snapperTaught.test.ts on snapToys.ts's awake row, `snapperWatch`
+  logs every stun/landing/kick): `bonkBrake` (a bonk's bounce keeps his side) and `letItSnap` (FirstTimer.letSnap: the child and the kid
+  stand off its bite inside its engage, walk in only in the bar's quiet, step back on its creak, kick in its recovery after its snap).
+  Middle, expert and adult still bonk. castBots 2-5: child 40/40 both settings (was 7/16), every other tier 40/40, kid 0 N / 4 E.
+- **Physics the bot must respect** (each one cost a trace): (1) refined controls keep his speed on a mid-air let-go (engine.ts: only Down
+  brakes), so a hop is steered by where its coast comes down (`steerToLand`, with the jump's `cutV` cut once his hold ends), never "toward
+  it until there"; (2) a dazed snapper is still stomped (fight.ts stompTest: within its head's half-width + 18 px), so his bounce comes
+  down 6 px clear of that (`offItsBack`, BONK.landTol 3) and inside the kick's 58; (3) the engine re-checks a landing as a stomp for
+  0.09 s, so no steer in his last 0.15 s of air (BONK.lastPush); (4) KID/ADULT thumbs re-arm their late lift-off every frame (R-165.59:
+  a KID steer is never let go) and the child's runs up to 4 frames, so those thumbs hop straight up from beside it (`bonkBeside`);
+  (5) TURTLE sees only movement (no seesStill; stillness.ts calmIn 0.5/0.35 s): standing still in its band he is lost to it, so the
+  creak step back is what it tells on; (6) tier thumbs pause between steers (rhythm): a step that must happen now sets `steady`.
+- **Adoption** (`adoptBonk`, `bonkAir`): a stomp he did not mean (a hop off the last snap stone onto it; a bounce loop on its back) is
+  taken as his bonk. FTRun.bonkHops / adopted count them. The kid lands on it this way in most toy runs (its route hop off the stones).
+- **Traps:** the toy's stones are level with the banks, so a wait must not run on a pad (`floorAt(...).pad` → crossing logic first);
+  the kid cannot hold a stand at all (its thumb), so its toy rows hold only "no bonk by choice, never hurt, kicks in its recovery".
+
 ## 0zm-25b. ENG-25b (t-eng-25b from origin/t-eng-25 21668b61, 11-18): the snapper bot skill and the meter's snap run
 - **BONK-AFTER-THE-SNAP** (tools/inspect/firsttimer.ts `SKILLS.bonkAfterSnap`, `snapperPlan`, `bonkAim`, `BONK`): a cast animal a kick ends
   'chasedOff' AND that keeps a stage clock (`Enemy.kitBeat`; only World 2's snapper rows today). Only clock keepers: World 1's snake is also
