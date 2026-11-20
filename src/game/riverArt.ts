@@ -7,6 +7,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
+import { endFace } from './groundPaint.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
 import { drawSoil } from './groundPaint.ts';
@@ -108,27 +109,76 @@ export function safeRiverArtReady(): boolean {
   return shallowReady && !!shallow;
 }
 /**
- * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): only a short band at the log
- * line, the shallow strip's own top rows at part strength, so a log sinks into the same light water it floats on; never the deep river's
- * dark sheet down to the screen's foot, which made every safe river read as deep (the lead's still review 11-15 1:36 PM ET, FIX-21).
- * The band slides with the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
+ * A safe river's water drawn again OVER what floats in it (the engine's over pass, after the platforms): on each log (or raft) only, its
+ * own WATERLINE low on its body, the shallow strip's crest row laid `line` px under the river's surface with the strip's water under it
+ * at part strength down to `below` under the line, bobbing with the log (logBob). So a log reads as a solid floor of wood riding high in
+ * the light water, the water line crossing it low (ENG-24e 2b, the lead 3:55 PM ET 11-19 from BUILD-24d's stills: a band of the strip
+ * laid across the WHOLE river at its surface, 4 over to 16 under at 60%, covered a log from 10 px under its top, so only its top sliver
+ * showed and the pale water washed the body out: a faint glass tube on every safe river, 2-1, 2-2 and 2-4). Over the open water nothing
+ * is drawn (the strip there is the river's own, drawRiverWater), never the deep river's dark sheet either (FIX-21). The band slides with
+ * the strip under it (drawRiverWater's shift). False when the strip has not loaded (the caller draws nothing).
  */
-export const SAFE_OVER = { above: 4, below: 16, alpha: 0.6 } as const;
-export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, x0: number, x1: number, surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
+export const SAFE_OVER = { line: 0.7, alpha: 0.6, inset: 5 } as const;
+/** a raft's painting (drawRiverLog): drawn this tall for its width, its foot this share of that under the deck (the deck about a quarter
+ *  down the painting, level with the raft's top, as the sluice rooms set it) */
+const RAFT = { h: 0.44, foot: 0.72 } as const;
+/** a log's painting (drawRiverLog): its piece, drawn size, and its bark's top and foot under the log's top (px), unbobbed; a raft's deck
+ *  and foot (RiverRow.look 'raft') */
+export function logPaint(p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): { n: W2Piece; w: number; h: number; barkTop: number; barkFoot: number } {
+  if (p.drift?.look === 'raft') { const rh = p.width * RAFT.h; return { n: 'logLong', w: p.width * 1.1, h: rh, barkTop: 0, barkFoot: rh * RAFT.foot }; }
+  const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
+  const f = W2_FRAMES[n];
+  const w = p.width * 1.08;
+  const h = (w * f.h) / f.w;
+  // (the bark's top is about a fifth of the way down the painting: the moss and the twig stand up above it)
+  return { n, w, h, barkTop: 2, barkFoot: 2 + h * 0.8 };
+}
+/** where a safe river's waterline crosses a floating log, under the log's top (px): `SAFE_OVER.line` of the way down its bark */
+export const logLineAt = (p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): number => { const b = logPaint(p); return b.barkTop + (b.barkFoot - b.barkTop) * SAFE_OVER.line; };
+export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly Platform[], surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
   if (!safeRiverArtReady()) return false;
+  if (!logs.length) return true;
   const L = RIVER_LOOK.safe;
-  const top = surfaceY - L.h * L.crest;
   const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
-  const start = Math.floor((x0 - shift) / L.w) * L.w + shift;
   ctx.save();
-  ctx.beginPath();
-  ctx.rect(x0, surfaceY - SAFE_OVER.above, x1 - x0, SAFE_OVER.above + SAFE_OVER.below);
-  ctx.clip();
   ctx.globalAlpha *= SAFE_OVER.alpha;
-  for (let x = start; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+  for (const lg of logs) {
+    // (a raft's painting is drawn whole on the water, no waterline over it: its own waterline is NOT proven yet, ENG-24e's still showed
+    //  the band under its painting)
+    if (lg.drift?.look === 'raft') continue;
+    const line = lg.y + logLineAt(lg) + logBob(lg, t);
+    const foot = lg.y + logPaint(lg).barkFoot + logBob(lg, t) + 2;
+    const x0 = lg.x + SAFE_OVER.inset, x1 = lg.x + lg.width - SAFE_OVER.inset;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x0, line - L.h * L.crest, x1 - x0, foot - line + L.h * L.crest);
+    ctx.clip();
+    const top = line - L.h * L.crest;
+    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
+    ctx.restore();
+  }
   ctx.restore();
   return true;
 }
+/** where a safe river's waterline crosses a floating log (drawSafeRiverOver), for the foam along it: y, bobbing with the log */
+export const safeLogLine = (lg: Platform, t: number): number => lg.y + logLineAt(lg) + logBob(lg, t);
+/**
+ * The outline a river's water is drawn inside (engine.ts drawRivers' under pass, ENG-24e 2c, R-165.323): from the top down the near bank's
+ * painted face (groundPaint endFace: the very line that bank's soil is clipped to, protoArt drawProtoScene), across under the river, and up
+ * the far bank's face; a side with no painted bank (`nearY`/`farY` null) runs straight down its edge. Under a bank the water, its bed and
+ * the earth below run on only as far as the bank's face slopes back in (the wedge under its lip, where the backdrop showed before
+ * BUILD-24c's run), never behind the face: the 140 px run (RIVER_UNDER_BANK, 622fa1b4) laid the bed's stones and the shallow earth behind
+ * the see-through lower part of the bank's end piece, so the rock read as glass with pond stones in it, and where the run stopped a
+ * faint vertical seam ran down the soil (INT-13b's merged-head stills, the lead 8:13 PM ET 11-19).
+ */
+export function riverWaterOutline(w: number, x0: number, x1: number, nearY: number | null, farY: number | null, top: number, bottom: number): Array<[number, number]> {
+  const face = (x: number, y: number | null, right: boolean): Array<[number, number]> => {
+    const f = y === null ? [[x, top], [x, bottom]] as Array<[number, number]> : endFace(w, x, y, bottom, right);
+    return [[f[0][0], top], ...f, [f[f.length - 1][0], bottom + 40]];
+  };
+  return [...face(x0, nearY, true), ...face(x1, farY, false).reverse()];
+}
+
 /** how wide one repeat of the water strip is drawn, in world units */
 const WATER_TILE = 300;
 
@@ -190,22 +240,21 @@ export function drawRiverWater(
 }
 
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */
+/** a floating log's bob on the current (px): its painting and its waterline (drawSafeRiverOver) move together */
+export const logBob = (p: Pick<Platform, 'id'>, t: number): number => Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
 export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: number): boolean {
   if (!riverArtReady()) return false;
-  const bob = Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
+  const bob = logBob(p, t);
   // a raft (RiverRow.look 'raft', R-165.288): World 2's painted raft (puzzle-kit#raft, w2.json), set as the sluice rooms set it
   // (puzzlePlay.ts: the painting's deck, about a quarter down it, level with the raft's top, where he stands); the log stands in only
   // until the kit's sheet has loaded (a stage that lays a raft asks for it before play: stageSheets.ts, gen2Rafts)
   if (p.drift?.look === 'raft') {
-    const rh = p.width * 0.44;
-    if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + rh * 0.72 + bob, { w: p.width * 1.1, h: rh })) return true;
+    const r = logPaint(p);
+    if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + r.barkFoot + bob, { w: r.w, h: r.h })) return true;
   }
-  const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
-  const f = W2_FRAMES[n];
-  const w = p.width * 1.08;
-  const h = (w * f.h) / f.w;
+  const { n, w, h, barkTop } = logPaint(p);
   // the bark's top is about a fifth of the way down the painting (the moss and the twig stand up above it)
-  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + 2 - h * 0.2 + bob, w, h, p.id % 2 === 1);
+  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + barkTop - h * 0.2 + bob, w, h, p.id % 2 === 1);
   return true;
 }
 

@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
@@ -6232,6 +6232,18 @@ export class GameEngine {
       ctx.beginPath();
       ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
+      // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
+      if ((ul || ur) && this.paintKit && protoArtReady()) {
+        const bk = this.riverBanks(r);
+        // (the face the bank's soil is clipped to: its own edge and top, the kit's world, protoArt.ts setKitWorld)
+        const nb = ul ? bk.near : undefined, fb = ur ? bk.far : undefined;
+        const o = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+        ctx.beginPath();
+        ctx.moveTo(o[0][0], o[0][1]);
+        for (let i = 1; i < o.length; i++) ctx.lineTo(o[i][0], o[i][1]);
+        ctx.closePath();
+        ctx.clip();
+      }
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
@@ -6249,8 +6261,16 @@ export class GameEngine {
           }
         }
       } else if (r.safe) {
-        // (a safe river: a short band of its own shallow water at the log line, never the deep sheet below; nothing until its strip loads)
-        if (painted && drawSafeRiverOver(ctx, a, b, r.surfaceY, t, r.dir, r.speed)) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
+        // (a safe river: on each log its own waterline, low on its body, in the river's own shallow water, and the foam along it; never the
+        // deep sheet below, nor a band across the open water; nothing until its strip loads: riverArt.ts drawSafeRiverOver, ENG-24e 2b)
+        const logs = this.logsOf(r).filter((lg) => !lg.broken && lg.x + lg.width > a && lg.x < b);
+        if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
+          for (const lg of logs) {
+            if (lg.drift?.look === 'raft') continue;
+            const ly = safeLogLine(lg, t);
+            for (let x = lg.x + 22; x < lg.x + lg.width - 8; x += 50) drawRiverFoam(ctx, Math.round(x / 50) + lg.id, x, ly + 2, 56, 0.75, (lg.id + Math.round(x / 50)) % 2 === 0);
+          }
+        }
       } else {
         const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
         // (the painted river's own colours when it is painted, so the logs sink into the same water)
@@ -6271,18 +6291,38 @@ export class GameEngine {
     }
   }
 
+  /** the logs (or rafts) that ride river `r` (river.ts onRiver), kept while the platforms are the same list */
+  private logsOf(r: RiverZone): Platform[] {
+    if (this.riverLogs?.from !== this.platforms) this.riverLogs = { from: this.platforms, by: new WeakMap() };
+    let l = this.riverLogs.by.get(r);
+    if (!l) this.riverLogs.by.set(r, (l = this.platforms.filter((q) => q.type === 'drift' && !!q.drift && onRiver(q.drift, r))));
+    return l;
+  }
+  private riverLogs?: { from: Platform[]; by: WeakMap<RiverZone, Platform[]> };
+
   /** how far a river's water, bed and soil run on under its left and right banks, behind them (drawRivers): RIVER_UNDER_BANK where a
    *  solid bank's edge meets the river's edge with its top over the water (the bank is drawn in front and hides it), else 0 */
   private riverUnderBanks(r: RiverZone): [number, number] {
     let m = this.riverUnder.get(r);
     if (!m) {
-      const meets = (edge: (p: Platform) => number, at: number) => this.platforms.some((p) => p.type === 'solid' && Math.abs(edge(p) - at) <= 4 && p.y < r.surfaceY && p.y + p.height > r.surfaceY);
-      m = [meets((p) => p.x + p.width, r.x0) ? RIVER_UNDER_BANK : 0, meets((p) => p.x, r.x1) ? RIVER_UNDER_BANK : 0];
+      const b = this.riverBanks(r);
+      m = [b.near ? RIVER_UNDER_BANK : 0, b.far ? RIVER_UNDER_BANK : 0];
       this.riverUnder.set(r, m);
     }
     return m;
   }
   private riverUnder = new WeakMap<RiverZone, [number, number]>();
+  /** the solid banks whose edge meets river `r`'s ends with their top over the water (riverUnderBanks, riverWaterOutline) */
+  private riverBanks(r: RiverZone): { near?: Platform; far?: Platform } {
+    let b = this.riverBankOf.get(r);
+    if (!b) {
+      const meets = (edge: (p: Platform) => number, at: number) => this.platforms.find((p) => p.type === 'solid' && Math.abs(edge(p) - at) <= 4 && p.y < r.surfaceY && p.y + p.height > r.surfaceY);
+      b = { near: meets((p) => p.x + p.width, r.x0), far: meets((p) => p.x, r.x1) };
+      this.riverBankOf.set(r, b);
+    }
+    return b;
+  }
+  private riverBankOf = new WeakMap<RiverZone, { near?: Platform; far?: Platform }>();
 
   /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
   private riverLogsPainted(worldId: number): boolean {
