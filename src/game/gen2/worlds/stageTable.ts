@@ -68,8 +68,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  (ENG-24's place `river` after a liana); the hand-built 2-4 (w2Stages.ts) is deleted. Judged on its own flown rows, flownArcs.ts normal-2-4)
   '2-4': { kit: 'w2-24', judged: 'normal-2-4' },
   // (2-5 River Snappers: the designed arc, w2Arc25.ts, its own kit 'w2-25' (kitLib25), BUILD-25 11-20: snap stones (ENG-25's row, level
-  //  with the banks, ENG-25c) and World 2's snappers on their clock (w2Cast.ts); the hand-built 2-5 (w2Stages.ts) is deleted)
-  '2-5': { kit: 'w2-25' },
+  //  with the banks, ENG-25c) and World 2's snappers on their clock (w2Cast.ts); the hand-built 2-5 (w2Stages.ts) is deleted. Judged on its own
+  //  flown rows, flownArcs.ts normal-2-5, BUILD-25c 11-20)
+  '2-5': { kit: 'w2-25', judged: 'normal-2-5' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

@@ -59,7 +59,7 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
 const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
-const n21 = nW2('2-1'), n22 = nW2('2-2'), n24 = nW2('2-4');
+const n21 = nW2('2-1'), n22 = nW2('2-2'), n24 = nW2('2-4'), n25 = nW2('2-5');
 
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
@@ -190,5 +190,15 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n24('double-tap-tap', [147, 138], [188, 273, 299], 'chain.md §1 "2-4: double-tap-tap 147 / 138, gap 188 / 273 / 299"'),
   ...n24('bounce', [223, 214], [176, 176, 176], 'chain.md §1 "2-4: bounce 223 / 214, gap 176"'),
   ...n24('bounce-air', [306, 294], [331, 331, 331], 'chain.md §1 "2-4: bounce-air 306 / 294, gap 331"'),
+  // 2-5 on Normal (BUILD-25c, 11-20): flown on its own stage on World 2's kit (FLIGHT_STAGE=2-5 reference/specs/sims/flight.ts normal all,
+  // reference/qa-reports/BUILD-25/fly-2-5.txt; entered in chain.md §1 "Rows ... Normal 2-5"): stage 5's help, a pixel or two under 2-4's
+  ...n25('single-hold', [123, 114], [135, 218, 244], 'chain.md §1 "2-5: single-hold 123 / 114, gap 135 / 218 / 244"'),
+  ...n25('single-flick', [123, 113], [125, 209, 236], 'chain.md §1 "2-5: single-flick 123 / 113, gap 125 / 209 / 236"'),
+  ...n25('single-tap', [87, 78], [77, 160, 181], 'chain.md §1 "2-5: single-tap 87 / 78, gap 77 / 160 / 181"'),
+  ...n25('double-hold', [203, 193], [287, 372, 400], 'chain.md §1 "2-5: double-hold 203 / 193, gap 287 / 372 / 400"'),
+  ...n25('double-flick', [202, 192], [268, 354, 381], 'chain.md §1 "2-5: double-flick 202 / 192, gap 268 / 354 / 381"'),
+  ...n25('double-tap-tap', [147, 137], [188, 273, 299], 'chain.md §1 "2-5: double-tap-tap 147 / 137, gap 188 / 273 / 299"'),
+  ...n25('bounce', [223, 214], [176, 176, 176], 'chain.md §1 "2-5: bounce 223 / 214, gap 176"'),
+  ...n25('bounce-air', [305, 293], [323, 323, 323], 'chain.md §1 "2-5: bounce-air 305 / 293, gap 323"'),
 ];
 
