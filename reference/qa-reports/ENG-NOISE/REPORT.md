@@ -25,7 +25,7 @@ order (landing, punch, bell), a stage-fired ring draws an ocelot, soundAt's edge
 | suite, 3 shards | 3,948 tests: 3,946 pass, 0 fail, 2 TODO (already there: 4-3's boulder wall); noiseRow + castNoise in it, green |
 | drawcheck (706 s); clipcheck (365 s, 83 known); kbdcheck; buildcheck | PASS each |
 | engine tool tests; tierBots | 37 pass; 7 pass (identical: nothing recommitted, no 1-1 change) |
-| seedlist --check, EVERY list (registrycheck --lists: 12) | 11 of 12 PASS (1-1..1-9, 2-1, 2-2; 1-6 752 s); 2-4 RUNNING at this commit |
+| seedlist --check, EVERY list (registrycheck --lists: 12) | 12 of 12 PASS (1-1..1-9, 2-1, 2-2, 2-4; each list clean on both settings) |
 | funcheck | FAIL 30 worse/new, 41 to lower: BYTE-IDENTICAL on the base 8efb1bba (run there, diffed): none new or worse from this branch |
 | lockall --layouts 16 (3,264 builds) | mine == base 8efb1bba, every build; vs main 6e7b85f8 = base vs main exactly (int-13's 17 stages: 1-6..1-9, 2-1, 2-2, 2-4, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5) |
 Nothing shipped moved: no shipped stage lays a sounding thing or a quiet piece, and no World 1-2 cast hears a blow.
