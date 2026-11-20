@@ -17,6 +17,10 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 - D28 (0.9.5): the lead believed the testers' link was EnK5. It isn't. Check this table before telling Matt where testers will play.
 
 ## Before the PR
+0. **Every integration merge runs the CI tool line and tsc right after it lands (D92, 11-19 7:00 PM ET),** not only at the end: INT-13 ran
+   the CI tool line only after the last merge, so a red made by two branches meeting (FIX-284's respawn aim turning ENG-25b's snap stones
+   mid-bite) was found three merges late and bisected by hand. The CI tool line is about 3 minutes; the full slow set still runs once on the
+   final head.
 1. **Candidate branch** `release-<version>`: cut from origin/main, plus ONLY the named branches, MERGED in, never rebased. Never from
    ccr-0d59a91c-oy3imz or the lead branch (D40).
 2. **Remove what doesn't ship** (new replaces old): the old builder, test-only pickers and toggles. Script it so each anchor is asserted

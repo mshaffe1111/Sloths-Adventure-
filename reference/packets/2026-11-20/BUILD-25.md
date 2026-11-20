@@ -34,6 +34,9 @@ fly, judge, list and tune NO snap row (the lay being replaced).
    old 'Head-on it hides' tip retires with the hand build); (3) the old 2-5 rows in dotLinesData.ts (the old turtle's lines) retire with the
    old stage and never fire on the kit 2-5; (4) the goal card says 'turtles' (the cast kind's name) while every line says 'snappers': the
    card reads the world's countWord.
+1c. (lead 7:00 PM ET 11-19, from INT-13b) The respawn aim that turns breathing pad rows after a put-back (FIX-284's breathAim.ts) now SKIPS
+   snap stones (on:'bites'): a snap row keeps its own clock after a respawn (ENG-25's proven behaviour). Decide, flown, whether 2-5 wants a
+   snap row to get its own put-back aim (e.g. the wave's first stone just snapped as he arrives); name it either way.
 2. Every first appearance taught (the bite on soft water first; the sleeper's kick cannot fail; the bonk after the snap; the wave with
    Dot before it); nothing that hurts between a teach and its thing; stage at least 2 minutes; every stage works upright and sideways.
 3. Relist 2-5 (seedlist.ts 2-5; check 6 fresh builds pass seedlist's judge BEFORE starting the relist: VAR-19 lost 58 min on 11-19);
