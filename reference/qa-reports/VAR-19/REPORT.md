@@ -253,8 +253,10 @@ ground; no gap or overhang seen.
    (whole World 1, funcheck-relist3.txt): 1-9 nothing worse or new, the only 1-9 lines are 'gone, delete the entry: 1-9 easy/normal "enemy
    by a landing"' (FUNCHECK_WRITE for 1-9 only, on the final head, lowers them); every other stage's lines identical to the run before my
    change (inherited debt of t-var-19's 125 commits, not mine; the gate FAILS on them as it did on e2d60037).
-3. RUNNING at stop (background, results to files; read them, do not trust this line): lockall vs the base --intended 1-9
-   (lockall-vs-base.txt) and `PLAIN_STAGES=1-9 plainWalk.test 'one-jump'` (plainwalk-1-9.txt).
+3. Also GREEN on e2769e098 (finished after the section was written): lockall vs the base --intended 1-9 PASS, "101/102 stages unchanged",
+   only 1-9 moved (lockall-vs-base.txt); plainWalk.test 'one-jump' on its full STAGES: 2 tests / 2 pass / 0 fail / 0 todo (the steps test
+   and the R-165.328 plant; plainwalk-all.txt). (With PLAIN_STAGES=1-9 alone the steps test stops at its own count, '202 steps', under its
+   300: not a step failure; plainwalk-1-9.txt.)
 4. NOT RUN (do them in this order, all on one head): plainWalk.test on its full STAGES; the suite in 3 background shards (timeout over 30
    min; name shards and tests / pass / fail / todo); castBots 1-9 --seeds 1-40, 5 bots, --setting both; tierBots (no 1-1 change: should
    be untouched); THE CLAUDE.md CHECK LIST once on the final head; coveragecheck, registrycheck, every list --check (seatBreaches is in
