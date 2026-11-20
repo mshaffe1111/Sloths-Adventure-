@@ -24,14 +24,17 @@ ocelot, soundAt's box edges, quiet ground silent for any fall, a flag clears the
 ## Gates on b85e5aee0
 GATE_TABLE
 ## Lockall
-LOCK_LINE
+`lockall --layouts 16` (3,264 builds, 102 stages) on main 6e7b85f8, the base 8efb1bba and b85e5aee0: mine == base, every build
+(IDENTICAL); mine vs main = base vs main exactly (the same 17 stages, int-13's own: 1-6 1-7 1-8 1-9 2-1 2-2 2-4 3-8 4-4 6-1 6-3 6-6 6-7
+7-5 7-9 8-3 8-5). Nothing shipped moved: no shipped stage lays a sounding thing or a quiet piece, and no World 1-2 cast hears a blow.
 ## Polish check
-Nothing drawn changed: no new art, sprite, screen or text; nothing to shoot upright or sideways. A struck stone has no look yet and its
-only feedback is the ring sound and a 0.04 s hitstop (named: ENG-LURE adds the 'chime' look). The toy rows exist only inside the test.
+Nothing drawn changed: no new art, sprite, screen or text; nothing to shoot upright or sideways (drawcheck/clipcheck PASS). ROUGH,
+NAMED: a struck stone has no look yet, and its ring is a STAND-IN sound, `sound.playShrineUnlocked()` (the puzzle bell's ring) plus a
+0.04 s hitstop, until the chime's own sound and look (ENG-LURE). The toy rows exist only inside the test.
 ## Pushback
-- "lockall vs main": t-int-13 itself already differs from main on 18 stages (its own merges, listed above), so the lock was taken on
+- "lockall vs main": t-int-13 itself already differs from main on 17 stages (its own merges, listed above), so the lock was taken on
   main AND on the base: mine equals the base exactly, and mine vs main equals base vs main.
-- Ruling to confirm: "his punch" = every blow (punch, kick, mega): one noise a swing. If a kick should be quiet, it is one line in blowNoise.
+- "His punch" = every blow (punch, kick, mega): one noise a swing. The lead ruled: kept (every blow is heard from World 3 on).
 - "Fired by the stage as data": built as the API (`ring`), not a clock-fired SoundPost: no design names its timing yet (D40).
 ## What the 3-3/3-5 builders need
 - A sounding thing: a world row in its kit (`soundProps({ chime: { w, h, looks } })`, `emit: soundEmitters(rows, note)` for the look),
