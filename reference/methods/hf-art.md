@@ -137,6 +137,7 @@ $25.20 of Claude for ~$4.22 of Hugging Face). So:
 - **Sheets, not single pieces:** related pieces share one canvas (a creature's poses: hanging, sliding, coiled; a hazard family: nut,
   pod, husk; a cover set: moss tufts, mossy bough, mossy liana), 4-6 per sheet, same light and palette by construction; cut with the
   existing cutters into catalog rows. One take = several pieces.
+- **Paint touching the frame edge = reject before the pick (11-20, ART-NEXT-b):** the lead picked barge-s23 from a takes sheet whose game-size previews hid that its stern and snout were cut flat by the frame (paint on 44% of the left edge); s41, clean on all four sides, shipped. The takes sheet prints each take's edge-paint % beside it.
 - **Pull each piece's takes the moment it finishes, and commit them as they land (D98, 11-20):** ART-NEXT's batch 1 lost every take (about $2.06) when its sandbox token was lost at a worker restart about 15 minutes into a 45-minute run (exec and fs both 403 'invalid or missing X-Sandbox-Token' while the sandbox still ran); the takes were only to be fetched at the end. Order the run cheapest piece first; a lost token then costs one piece at most. hf_jobs 'logs' and 'run' ask a human for approval (do not wait on them, D97); hf_sandbox create/exec/fs/terminate do not.
 - **One sandbox, one model load, one queued script:** every sheet's takes run back to back from a prepared prompt file; terminate the
   moment the last file lands. Cheap picking pass first (4 takes a sheet), the native pass only on the picked takes.
