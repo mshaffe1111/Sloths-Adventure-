@@ -34,7 +34,35 @@ both CAUGHT. All 50/50 (GATE TABLE row).
 lit ring: seen, tell, leap, one heart (3-2.md NEW 1's toy).
 
 ## 4. Gate table (each ran once on ee28d135b, the code head; the docs commit after it re-ran the docs gates)
-GATES_PENDING
+The container started with no node_modules and a shallow clone: installed with `npm ci --legacy-peer-deps` (CI's flag) and `git fetch
+--unshallow` before the gates. Outputs in the member's scratchpad; the summary line of each is quoted.
+| Gate | Verdict | Result |
+|---|---|---|
+| `npx tsc --noEmit -p .` | PASS | exit 0 |
+| Unit suite, 6 shards (the CLAUDE.md file list, `--test-shard=k/6`) | SUITE_VERDICT | SUITE_ROWS |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS | exit 0 |
+| `node tools/perf/chunkcheck.mjs` | PASS | "chunkcheck: PASS" (largest asset 254,365 B, 3,739,939 spare) |
+| `node tools/perf/artcheck.mjs` | PASS | PASS |
+| `node tools/perf/drawcheck.mjs` | PASS | "PASS (805 s)" |
+| `node tools/perf/clipcheck.mjs` | PASS | re-run: "PASS (83 known) (406 s)". First run FAIL with 0 new breaches: one screen (old save, upright, 'how to play') timed out opening (30 s) while all 4 cores ran the suite, the seed lists and drawcheck (781 s); re-run alone it opened. No screen code changed |
+| `node tools/perf/knowncheck.mjs` | PASS | PASS |
+| `npx tsx tools/engine/generalitycheck.ts` | PASS | "65 engine files, 26 literals, 26 known: PASS" (no stage id, world number or x added) |
+| `node tools/roadmapcheck.mjs` | PASS | PASS (first try "shallow clone: FAIL", fixed by unshallowing; no ROADMAP edit here) |
+| `node tools/timecheck.mjs` | PASS | "288 commits, 224 stamps: PASS" (also re-run on the final docs head: see the last line) |
+| `npx tsx tools/difficulty/coveragecheck.ts` | PASS | "coveragecheck: PASS" (13 built stages, 5 known gaps) |
+| `npx tsx tools/engine/registrycheck.ts` | PASS | "PASS (12 stages ... 12 lists checked in CI)" |
+| `node tools/perf/kbdcheck.mjs` | PASS | "PASS (163 s)" (its stills were rewritten by the run and restored, not committed) |
+| `node tools/perf/buildcheck.mjs` | PASS | "buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS" |
+| Every proven seed list `seedlist.ts <s> --check` (registrycheck's 12: 1-1..1-9, 2-1, 2-2, 2-4) | PASS | all 12 "PASS ... each clean on both settings": 1-1 161, 1-5 150, the other ten 100 seeds each (1,311) |
+| CI's tools test line (gates.yml, 34 files incl. library, seedlist, yield, travelBots, castBots, boaBots, firsttimer) | PASS | 305 tests, 304 pass, 0 fail (1 todo) |
+| `npx tsx --test tools/inspect/tierBots.test.ts` | PASS | 7/7 (the bots still match the testers' calibration on 1-1: identical; no recommit needed) |
+| `npx tsx tools/engine/tipwalk.ts --layouts 4` | PASS | "tipwalk: PASS" |
+| `npx tsx tools/engine/paintcheck.ts --part k/3`, k = 1..3 | PASS | 3 x "paintcheck: PASS" |
+| lockall `--layouts 16 --check` vs the BASE (8efb1bba5) | PASS | "lock: 102/102 stages unchanged" |
+| lockall `--layouts 16 --check` vs MAIN (6e7b85f8f) | FAIL (base's own) | "85/102 unchanged": 1-6 1-7 1-8 1-9 2-1 2-2 2-4 3-8 4-4 6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5. Base vs main (the two recorded locks) differs on exactly these 17: t-int-13's own stage work; ENG-PROWL moves none (row above) |
+| castBots, every stage that casts kit predators (1-3, 1-4, 1-5, 1-7, 1-8, 1-9), seeds 1-10, both settings, all five bots, base vs branch `--rows` | PASS (identical) | 6 x 90 = 540 run rows byte-identical. (1-4's kid/child/middle/expert pass 1-9 of 10 on BOTH: pre-existing, not this job) |
+| funcheck (`tools/validate/funcheck.ts`; the lead's add) | FAIL (base's own) | "FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags)" on the branch AND the base; the two outputs identical line for line but the run time |
+| Planted faults (`reference/qa-reports/EN-P/planted-faults.py`) | PASS | 10/10 ENG-PROWL CAUGHT; the 2 stale entries re-pointed and CAUGHT; 50/50, none missing |
 
 ## 5. Polish check
 No screen changed: nothing draws differently (no drawing code touched), no stage moved (lockall, castBots). **The leap is proven by the toys
