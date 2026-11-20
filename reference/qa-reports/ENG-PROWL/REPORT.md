@@ -39,7 +39,7 @@ The container started with no node_modules and a shallow clone: installed with `
 | Gate | Verdict | Result |
 |---|---|---|
 | `npx tsc --noEmit -p .` | PASS | exit 0 |
-| Unit suite, 6 shards (the CLAUDE.md file list, `--test-shard=k/6`) | SUITE_VERDICT | SUITE_ROWS |
+| Unit suite, 6 shards (the CLAUDE.md file list, `--test-shard=k/6`) | PASS | 3,946 tests: 3,944 pass, 0 fail, 2 todo (pre-existing, e.g. 4-3's boulder TODO); shards 558/840/641/603/671/633; predatorWorld3.test.ts ran in shard 6 |
 | `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS | exit 0 |
 | `node tools/perf/chunkcheck.mjs` | PASS | "chunkcheck: PASS" (largest asset 254,365 B, 3,739,939 spare) |
 | `node tools/perf/artcheck.mjs` | PASS | PASS |
@@ -62,7 +62,7 @@ The container started with no node_modules and a shallow clone: installed with `
 | lockall `--layouts 16 --check` vs MAIN (6e7b85f8f) | FAIL (base's own) | "85/102 unchanged": 1-6 1-7 1-8 1-9 2-1 2-2 2-4 3-8 4-4 6-1 6-3 6-6 6-7 7-5 7-9 8-3 8-5. Base vs main (the two recorded locks) differs on exactly these 17: t-int-13's own stage work; ENG-PROWL moves none (row above) |
 | castBots, every stage that casts kit predators (1-3, 1-4, 1-5, 1-7, 1-8, 1-9), seeds 1-10, both settings, all five bots, base vs branch `--rows` | PASS (identical) | 6 x 90 = 540 run rows byte-identical. (1-4's kid/child/middle/expert pass 1-9 of 10 on BOTH: pre-existing, not this job) |
 | funcheck (`tools/validate/funcheck.ts`; the lead's add) | FAIL (base's own) | "FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags)" on the branch AND the base; the two outputs identical line for line but the run time |
-| Planted faults (`reference/qa-reports/EN-P/planted-faults.py`) | PASS | 10/10 ENG-PROWL CAUGHT; the 2 stale entries re-pointed and CAUGHT; 50/50, none missing |
+| Planted faults (`reference/qa-reports/EN-P/planted-faults.py`) | PASS | one full run after the suite, on the quiet tree: "50/50 planted faults caught []" (10 ENG-PROWL, the 2 re-pointed stale entries, none missing) |
 
 ## 5. Polish check
 No screen changed: nothing draws differently (no drawing code touched), no stage moved (lockall, castBots). **The leap is proven by the toys
@@ -113,13 +113,21 @@ ENG-ROOT's toy row, before 3-2's build.
 D30 (every time from `date` in the same command), D40 ('lit = seen' left as a named seam), D21 (the pair: up AND down planted), D19 (the wiring
 test calls CastPlay.step, the engine's call), D43 (no stage id, world number or x in core.ts; generalitycheck), D57/D87 (ReadNotifications at
 the push and before this report), D59 (no gate running at report), D75 (pushback 1: no dev fixture), D86 (the CLAUDE.md list and CI's, every
-item), D90 (spec section only; gate output to files), D91 (see Learned).
+item), D90 (spec section only; gate output to files), D91 (see Learned), D92 (the CI tool line ran once on the single head; no merges here),
+D93 (a verdict word, PASS or FAIL, on every gate row; the two FAILs are named as the base's own, with the base-vs-branch proof).
 
 ## 11. Learned (for the next engine member)
 - This container had NO node_modules: the first `npm ci` failed on a peer-dependency conflict, and my wrapper `(...) > log; tail` reported
   exit 0 (D91's pipe trap in a member's setup step). Install the way CI does (`npm ci --legacy-peer-deps`), and print the command's own exit
   code before trusting any gate. tsc said "Cannot find type definition file for vite/client": that line means no node_modules, not a type error.
-- The planted-fault script rewrites the source in place: nothing else may run on the tree while it runs (I held the gates until it ended).
+- The planted-fault script rewrites the source in place: nothing else may run on the tree while it runs (I ran it before the gates and once
+  more after the suite).
+- The unit suite is the long pole on a 4-core container shared with the other gates: shards 1-2 took ~22 min each while the seed lists,
+  locks and castBots ran beside them, shards 3-6 4-12 min each once those ended (68 min in all). Start it first, give it the cores, and run
+  the browser gates (clipcheck opens screens on a 30 s timer) only beside light work: under full load one screen missed its timer.
+- A wrapper that kills a sequential loop's shell (kill -9 on the loop's bash) leaves its in-flight child running to completion with its log:
+  how I split the 12 seed lists into two claim-based loops (mkdir as the claim) without losing the 10 minutes 1-6 had run.
 - Turnover note: reference/handoffs/engine-core.md §0zq-PROWL (commit: see the last line).
 
-FINAL_HASH_PENDING
+Code head (every gate above): ee28d135b. Final hash: the commit that adds this line (the branch head sent to the lead); after it only the
+docs gates (roadmapcheck, knowncheck, timecheck, generality) were re-run, on that head.
