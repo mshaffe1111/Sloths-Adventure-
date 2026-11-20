@@ -31,6 +31,7 @@ for (const o of ORIENTS) {
   await ctx.route(/script\.google\.com/, (r) => r.abort());
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 200)));
+  page.on('console', (m) => { if (m.type() === 'error') console.log('console error', m.text().slice(0, 200)); });
   await page.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) {
     if (await page.evaluate(() => typeof window.__play === 'function')) break;
@@ -77,9 +78,9 @@ for (const o of ORIENTS) {
   });
   console.log(o.id, 'planted', JSON.stringify(planted));
   let ok = false;
-  for (let tries = 0; tries < 3 && !ok; tries++) {
-    await page.evaluate(() => window.__play('2-5'));
-    await sleep(5000);
+  await page.evaluate(() => window.__play('2-5'));
+  for (let t = Date.now(); !ok && Date.now() - t < 90000; ) {
+    await sleep(1000);
     ok = await page.evaluate(() => { const e = window.__engine(); return !!(e && e.currentStage && e.currentStage.platforms.some((p) => p.pad?.on === 'bites')); });
   }
   if (!ok) {
