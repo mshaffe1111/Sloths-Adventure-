@@ -51,3 +51,9 @@ Return REPORT.json: {status: PASS|REJECT, violations: [{file, line, rule, eviden
 Also judge the builder's Pushback and Suggestions (does each hold?) and check its turnover note was rewritten.
 Never edit production code.
 ```
+
+## Player words in a packet (REL-0100 pushback, 11-20)
+A packet that hands a member player-facing words (What's New lines, Dot lines, signs) counts them against the gates that check them
+BEFORE it goes out (whatsNew.test: an entry has 3-8 lines, each at most 90 characters; playerText.test), and checks each line is TRUE
+in the code. 11-20: the lead sent 9 What's New lines; 3 were over 90 characters, one was untrue, two said "New stage" for stages that
+already existed by name.
