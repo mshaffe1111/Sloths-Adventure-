@@ -68,7 +68,46 @@ under the same skill (a liana over the tail is never "just left"). Seeds 8 / 29 
 
 ### 5. Gate table (the joint head, ENG-24h merged)
 
-(filled in on the joint head)
+Code gated: **a3f430dc** (this line at bc8c896c + ENG-24h's final ddbe83237, merged). The commits after it (5bac0a34, 4a88cabd and
+this report) touch only `reference/` (`git diff a3f430dc HEAD -- . ':!reference'` is empty). Runner: the scratchpad's gates24g.sh;
+every gate's output is in `g/gates/<name>.txt`, one line each in `g/gates/summary.txt` (started 10:54:26 AM ET, ALL DONE 12:28:08 PM
+ET, then the three reruns below).
+
+| Gate | Result | Summary line |
+|---|---|---|
+| tsc | PASS | `npx tsc --noEmit -p .`, 8 s |
+| suite (CLAUDE.md list) | PASS | 4 shards, 3947 tests / 3945 pass / 0 fail / 2 todo (938/938/0/0, 1018/1018/0/0, 977/976/0/1, 1014/1013/0/1) |
+| every list `--check` (12) | PASS | 1-1 161 seeds, 1-5 150, 1-2 1-3 1-4 1-6 1-7 1-8 1-9 2-1 2-2 **2-4** 100 each: the verdicts refuse 0, each clean on both settings |
+| seedlist 1-1 `--check` | PASS | 161 seeds, each clean on both settings |
+| lockall `--check` vs d36638be `--intended 2-4` | PASS | 101/102 stages unchanged; 2-4 (intended) changed |
+| funcheck, base vs branch | PASS vs base | the gate exits 1 on **both**, with the same summary: FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags). The two outputs match line for line (sorted diff: only the runner's own lines differ). This line adds no finding; the debt is the base's |
+| paintcheck `--part 0/3` | PENDING | (rerun, see below) |
+| paintcheck `--part 1/3` | PASS | 2028 builds of 34 stages, 0 new (107 known ids seen) |
+| paintcheck `--part 2/3` | PASS | 1760 builds of 34 stages, 0 new (110 known ids seen) |
+| coveragecheck | PASS | 13 built stages, 26 pieces used, 5 known gaps |
+| registrycheck | PASS | 12 stages registered everywhere; 12 lists checked in CI |
+| generalitycheck | PASS | 65 engine files, 26 literals, 26 known |
+| roadmapcheck | PASS | rerun on the full history (see below) |
+| knowncheck | PASS | no known list gained an entry |
+| timecheck | PASS | rerun on the full history: 315 commits, 26 files, 236 stamps |
+| artcheck | PASS | no image over 4096 px |
+| build (`BASE_PATH=/Sloths-Adventure-/`) | PASS | built in 9.98 s |
+| chunkcheck | PASS | every JS file under the limit on the deploy's base |
+| drawcheck | PASS | 651 s |
+| clipcheck | PASS | 83 known (the list did not grow), 269 s |
+| kbdcheck | PASS | planted RED as it must, 112 s |
+| endcheck | PASS | every world's bank end solid; plant RED as it must |
+| buildcheck | PASS | 1-1 normal p95 89 ms, easy p95 52 ms (budget 150 ms at CPU x4) |
+| engine tools' tests (gates.yml) | PASS | 306 tests / 305 pass / 0 fail / 1 todo |
+| tierBots | PASS | 7 tests / 7 pass / 0 fail / 0 todo |
+| tipwalk `--layouts 4` | PASS | (context; not on the CLAUDE.md list) |
+
+**Three gates were rerun because of how I ran them, not because of the code.** All three reruns were on the same code (a3f430dc).
+- **paintcheck:** its parts are numbered **0..2** (gates.yml `part: [0, 1, 2]`; `levels.filter((_, i) => i % partN === partI)`).
+  My runner ran 1/3, 2/3, 3/3. Part 3/3 matched no stage ("0 builds of 0 stages") and exited PASS, so a third of the stages
+  went unchecked until part 0/3 was rerun.
+- **roadmapcheck and timecheck:** both refused the session's shallow clone (exit 2: "shallow clone, proofs cannot be checked" and "blame
+  needs the full history"). They were rerun after `git fetch --unshallow`. CI checks out with fetch-depth 0.
 
 ### Polish check
 
@@ -84,6 +123,12 @@ and 6 (Normal): the lead judges the stills of the moved liana from ENG-24h's joi
   a beat is laid on one. Proposed: tailLianaFaults also reports the stand-jump catch share from a log for the child's hold, and the
   lead sets its floor.
 - Trace before fixing: both rounds of child misses were different causes (a thin window; then a memory that never expired).
+- A gate that checks nothing can still print PASS. `paintcheck --part 3/3` built 0 stages and passed. CLAUDE.md's "`--part i/3`"
+  reads as 1..3, but CI runs 0..2. Proposed fixes, a check first:
+  - paintcheck exits non-zero when a part has 0 stages or partI >= partN;
+  - CLAUDE.md and gates.md spell out `--part 0/3`, `1/3`, `2/3`.
+- A cloud session's clone is shallow, and roadmapcheck and timecheck refuse it (exit 2, which a quick read can take for a finding).
+  Proposed: gates.md's local-run section starts with `git fetch --unshallow`, as CI's fetch-depth 0 does.
 
 ### Lessons applied
 

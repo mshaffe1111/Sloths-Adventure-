@@ -1,0 +1,5 @@
+$ npx tsx tools/engine/generalitycheck.ts
+start 12:08:37 PM ET, head 4a88cabd
+generality check: 65 engine files (193 exempt under the engine folders), 26 literals, 26 known
+PASS
+EXIT 0, end 12:08:38 PM ET

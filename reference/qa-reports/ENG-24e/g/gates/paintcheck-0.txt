@@ -1,0 +1,3 @@
+$ npx tsx tools/engine/paintcheck.ts --part 0/3
+start 12:28:35 PM ET, head 4a88cabd (code = a3f430dc)
+1-1 1-4 1-7 1-10 2-3 2-6 2-9 3-2 3-5 3-8 4-1 
