@@ -1,0 +1,25 @@
+upright hop 1 at x621 (card: none)
+upright start x1036 (frame 104): Flick up to hop up or over.
+upright hop 2 at x1163 (card: Flick up to hop up or over.)
+upright hop 3 at x1381 (card: Flick up to hop up or over.)
+upright the hop card went at x2146 (frame 239, after 3 hop(s)); now: null
+upright after the hop x2146: Knock? Log coming! Let go when it's under you.
+upright start-after-hop card0: Knock? Log coming! Let go when it's under you.
+upright x9970 catch: Flick up when a log drifts close.
+upright x9970-catch card0: Flick up when a log drifts close.
+upright x27750 raft: Flick up into the vine to grab it. [+1]
+upright x27750-raft card0: Flick up into the vine to grab it. [+1]
+upright x27750-raft card1: Flick up as you swing forward to leap. [+1]
+sideways hop 1 at x140 (card: none)
+sideways hop 2 at x621 (card: none)
+sideways start x972 (frame 113): Flick up to hop up or over.
+sideways hop 3 at x1163 (card: Flick up to hop up or over.)
+sideways hop 4 at x1381 (card: Flick up to hop up or over.)
+sideways the hop card went at x2156 (frame 256, after 4 hop(s)); now: null
+sideways after the hop x2156: Knock? Log coming! Let go when it's under you.
+sideways start-after-hop card0: Knock? Log coming! Let go when it's under you.
+sideways x9970 catch: Flick up when a log drifts close.
+sideways x9970-catch card0: Flick up when a log drifts close.
+sideways x27750 raft: Flick up into the vine to grab it. [+1]
+sideways x27750-raft card0: Flick up into the vine to grab it. [+1]
+sideways x27750-raft card1: Flick up as you swing forward to leap. [+1]
