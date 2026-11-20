@@ -1334,6 +1334,9 @@ export class FirstTimerRun {
   private bonkHop: { id: number; dir: -1 | 1; beside?: boolean } | null = null;
   bonkHops = 0;
   adopted = 0;
+  /** (letItSnap) when the creak he is hearing began, and the last moment he heard it */
+  private creakAt = -1;
+  private creakSeen = -1;
   /** (bonkBrake) this frame's steer is a step or two in to kick a dazed snapper: no pause between steers (rhythm), as in a chase */
   private steady = false;
   /** (bonkBrake) the side of the snapper his bonk's hop left from: his side, where the bounce comes down */
@@ -2922,6 +2925,11 @@ export class FirstTimerRun {
    */
   private letItSnap(m: { e: Enemy & { id: number }; def: PredatorDef; s: PredatorState }, toward: -1 | 1, dx: number, hold: number, now: string): Pad {
     const t = this.t, who = this.who;
+    // (when its creak began, as he heard it: his reaction to it runs from then)
+    if (now === 'warn') {
+      if (this.creakAt < 0 || t - this.creakSeen > 1.5 * DT) this.creakAt = t;
+      this.creakSeen = t;
+    } else this.creakAt = -1;
     const back = side1(toward === 1 ? -1 : 1), on = side1(toward);
     const ph = m.s.phase;
     if (ph === 'act' || ph === 'recover') {
@@ -2943,7 +2951,13 @@ export class FirstTimerRun {
     const stop = (p.vx * p.vx) / (2 * PHYS.groundDec) + Math.abs(p.vx) * DT * who.releaseMax[1];
     const closing = p.vx * toward > 0, opening = p.vx * toward < 0;
     const quiet = now === 'off';
-    if (dx < hold - BONK.band) return opening && dx + stop > hold ? {} : back;
+    // (inside its bite he backs off at once, no pause between steers: crept in on him in its creak while his thumb's rhythm held the
+    //  step, child Easy L35 on 2-5)
+    if (dx < hold - BONK.band) {
+      if (opening && dx + stop > hold) return {};
+      this.steady = true;
+      return back;
+    }
     if (dx > Math.max(hold, engage)) return quiet && ph !== 'tell' && !(closing && dx - stop < engage) ? on : {};
     // (at its creak, inside where it tells and not yet telling: he steps back, "stand back". It sees only what moves (TURTLE's sight
     //  has no seesStill; stillness.ts: still for calmIn and he is lost to it), so standing still in the band it never told and he stood
@@ -2951,8 +2965,9 @@ export class FirstTimerRun {
     //  its engage, and snaps on four at the spot he left)
     //  A first-timer's thumb (the kid's) never lets a steer go (its late lift-off re-arms every frame, R-165.59): a step back ran him
     //  back onto the snap stones, kid Easy v2, so only a thumb that lets go steps)
-    //  The step is one move on the creak, made then: no pause between steers (rhythm) holds it past the creak, child Normal L30 on 2-5)
-    if (now === 'warn' && ph !== 'tell' && Math.abs(p.vx) <= BONK.still && !!who.holdQ) { this.steady = true; return back; }
+    //  The step comes after his own reaction to the creak (stopReact: no reflex his tier's calibration does not have, the lead 11-20),
+    //  and is one move, made then: no pause between steers (rhythm) holds it past the creak, child Normal L30 on 2-5)
+    if (now === 'warn' && t >= this.creakAt + who.stopReact && ph !== 'tell' && Math.abs(p.vx) <= BONK.still && !!who.holdQ) { this.steady = true; return back; }
     return {};
   }
 
@@ -3040,13 +3055,14 @@ export class FirstTimerRun {
    * or null for a thumb that steers the hop from BONK.from. The shortest steer a thumb makes is one frame and its late lift-off: for a
    * lift-off of up to 4 frames (KID's thumb: the child and the kid) that alone runs him up to 228-285 px/s, and a tap hop's coast then
    * carries 80-105 px, past its back from any stand in BONK.from (the toy's child: stunned on its near edge at full run, 41 px short of
-   * its middle, and the bounce took him to its far side, v3, v5); a first-timer's thumb (the adult's) re-arms its lift-off every frame
-   * and reached its back at full run too (51-52 px past its middle in the bounce, adult Normal v3, v5). Beside it, inside its stomp's reach (fight.ts stompTest) by the band,
+   * its middle, and the bounce took him to its far side, v3, v5). Not the adult's thumb (its lift-off re-arms every frame, R-165.59):
+   * walking in beside it, it could not stop and ran on through it, then met its bite coming back on the creak (2-5's adult took 61
+   * snapper bites against 46 before, all on seeds that had none); it keeps its steered hop. Beside it, inside its stomp's reach (fight.ts stompTest) by the band,
    * a hop straight up comes down on its back with no speed to carry him on. Only in the bar's quiet, as any bonk.
    */
   private bonkBeside(e: Enemy): number | null {
     // (a first-timer's thumb, no measured hold, KID's and ADULT's: its late lift-off re-arms every frame, R-165.59, so its steer runs on)
-    if (!SKILLS.bonkBrake || (this.who.releaseMax[1] <= 2 && !!this.who.holdQ)) return null;
+    if (!SKILLS.bonkBrake || this.who.releaseMax[1] <= 2) return null;
     return headRect(e).w / 2 + BONK.restomp - BONK.band;
   }
 

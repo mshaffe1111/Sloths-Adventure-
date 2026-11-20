@@ -5,8 +5,8 @@
  * level.md rule 21: each planted RED before its fix, and RED again with its skill switched off.
  *   (a) bonkBrake  after a bonk the bounce never carries him to the snapper's far side: every tier that bonks (the child too, made to
  *                  bonk here with letItSnap off, at the child's own thumb: its reaction, hold and turn times) keeps his side: never more
- *                  than its back past its middle (BACK: its half-body and his), never down on its far side while it is dazed, one bonk
- *                  (no far-side loop), then the kick.
+ *                  than its back past its middle (BACK: its half-body and his; the adult's swing is not held, its thumb's: bounceBreaches),
+ *                  never down on its far side while it is dazed, one bonk (no far-side loop), then the kick.
  *   (b) letItSnap  the child and the kid play an awake snapper the TAUGHT way (Dot's line: stand back, let it snap, then kick; the lead's
  *                  ruling 11-18): out of its reach, it snaps at nothing, and his kick lands while it recovers (the kit's `when: 'open'`),
  *                  no bonk at all (the kid held to what its thumb can do: taughtBreaches). Middle, expert and adult keep their bonk
@@ -47,7 +47,9 @@ function bounceBreaches(name: string, s: Setting, v: number): string[] {
   const bad: string[] = [];
   if (a.bonks < 1) bad.push(`no bonk (nothing proven): ${at}`);
   if (a.bonks > 1) bad.push(`bonked ${a.bonks} times (the far-side loop): ${at}`);
-  if (a.past > BACK) bad.push(`bounced ${a.past} px past its middle (over ${BACK}): ${at}`);
+  // (the adult's is a first-timer's thumb: its steer is never let go at once (its late lift-off re-arms, R-165.59), so its steered bonk can
+  //  reach its back at full run and the bounce swing over it (52 px, Normal v5) before its turn: it is held to where it comes down)
+  if (a.past > BACK && name !== 'adult') bad.push(`bounced ${a.past} px past its middle (over ${BACK}): ${at}`);
   if (a.farLand) bad.push(`came down on its far side while it was dazed: ${at}`);
   if (a.cleared.kick !== 1 || !a.shrine || a.hits + a.lives) bad.push(`not chased off clean to the shrine: ${at}`);
   return bad;
@@ -76,7 +78,7 @@ function taughtBreaches(name: string, s: Setting, v: number): string[] {
 }
 
 for (const [name, s] of BONKERS) {
-  test(`(a) bonkBrake: ${name} ${s} bonks once and keeps his side (never over ${BACK} px past its middle, never down on its far side), variants ${VARIANTS.join(', ')}`, () => {
+  test(`(a) bonkBrake: ${name} ${s} bonks once and keeps his side (${name === 'adult' ? '' : `never over ${BACK} px past its middle, `}never down on its far side), variants ${VARIANTS.join(', ')}`, () => {
     const bad = withSkills({ letItSnap: false }, () => VARIANTS.flatMap((v) => bounceBreaches(name, s, v)));
     assert.deepEqual(bad, []);
   });

@@ -1,54 +1,54 @@
-child normal v1: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@91:798 kick@36(recover):820
-child normal v2: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@91:1240 kick@41(recover):1262
-child normal v3: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@99:789 kick@42(recover):812
-child normal v4: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@98:1066 kick@41(recover):1089
-child normal v5: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@91:890 kick@41(recover):912
-child normal v6: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@110:880 kick@42(recover):904
-child easy v1: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@78:1047 kick@33(recover):1068
-child easy v2: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@76:1047 kick@31(recover):1068
-child easy v3: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@88:1182 kick@38(recover):1204
-child easy v4: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@82:1047 kick@37(recover):1068
-child easy v5: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@85:1047 kick@45(recover):1068
-child easy v6: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@102:1182 kick@44(recover):1205
-kid normal v1: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 18 | stun@45v268:230 land@53:294 land@64:346 kick@8(stunned):354
-kid normal v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 46 | stun@17v268:225 land@79:265 kick@32(stunned):275
+child normal v1: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@102:802 kick@45(recover):825
+child normal v2: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@102:1073 kick@44(recover):1096
+child normal v3: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@68:789 kick@36(recover):809
+child normal v4: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@84:879 kick@45(recover):900
+child normal v5: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@110:802 kick@42(recover):826
+child normal v6: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@102:892 kick@45(recover):915
+child easy v1: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@98:1047 kick@40(recover):1070
+child easy v2: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@79:1058 kick@39(recover):1079
+child easy v3: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@86:1047 kick@36(recover):1069
+child easy v4: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@74:1047 kick@42(recover):1067
+child easy v5: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@91:1058 kick@41(recover):1080
+child easy v6: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | snap@102:1058 kick@44(recover):1081
+kid normal v1: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 18 | stun@45v268:230 land@76:268 kick@38(stunned):282
+kid normal v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 46 | stun@17v268:225 land@74:291 kick@18(stunned):299
 kid normal v3: K shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | kick@36(recover):358
-kid normal v4: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 16 | stun@47v268:223 land@69:274 kick@32(stunned):282
-kid normal v5: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 22 | stun@41v268:220 land@75:258 kick@38(stunned):272
-kid normal v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 17 | stun@46v268:258 land@54:322 land@65:374 kick@9(stunned):382
-kid easy v1: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 19 | stun@44v268:803 land@68:843 kick@36(stunned):851
-kid easy v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 27 | stun@41v285:659 land@65:697 kick@38(stunned):704
+kid normal v4: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 16 | stun@47v268:223 land@78:261 kick@31(stunned):276
+kid normal v5: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 22 | stun@41v268:220 land@72:258 kick@34(stunned):272
+kid normal v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 17 | stun@46v268:258 land@77:296 kick@39(stunned):310
+kid easy v1: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 19 | stun@44v268:803 land@57:843 kick@18(stunned):850
+kid easy v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 27 | stun@41v285:659 land@78:697 kick@30(stunned):712
 kid easy v3: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 33 | stun@44v285:305 land@67:343 kick@32(stunned):351
-kid easy v4: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 27 | stun@41v285:403 land@77:569 kick@38(stunned):577
+kid easy v4: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 27 | stun@41v285:403 land@70:443 kick@29(stunned):451
 kid easy v5: - shrine 1 hits 0 bonks 0 (hops 0, adopted 0) past 0 | 
-kid easy v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 25 | stun@43v285:409 land@63:511 kick@36(stunned):518
-middle normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 7 | stun@-2v198:379 land@57:432 kick@13(stunned):440
-middle normal v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 6 | stun@-1v198:402 land@69:442 kick@46(stunned):450
-middle normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@36v268:375 land@49:390 kick@52(stunned):398
-middle normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 10 | stun@1v285:382 land@71:410 kick@54(stunned):421
-middle normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 2 | stun@-2v112:380 land@60:420 kick@22(stunned):428
-middle normal v6: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 12 | stun@-1v285:378 land@63:418 kick@55(stunned):428
-middle easy v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@30v268:423 land@52:451 kick@55(stunned):459
-middle easy v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 0 | stun@48v268:319 land@55:383 kick@58(stunned):391
-middle easy v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@7v257:426 land@57:454 kick@19(stunned):462
-middle easy v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 5 | stun@6v285:425 land@51:453 kick@12(stunned):461
-middle easy v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@84:372 stun@8v200:429 land@59:457 kick@51(stunned):466
-middle easy v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 8 | stun@41v285:320 land@74:360 kick@37(stunned):372
-expert normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 12 | stun@-1v285:382 land@68:422 kick@35(stunned):430
-expert normal v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@7v257:378 land@60:418 kick@52(stunned):427
-expert normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 7 | stun@4v285:380 land@61:408 kick@23(stunned):416
-expert normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@10v200:382 land@60:397 kick@42(stunned):407
-expert normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 6 | stun@6v285:380 land@72:420 kick@44(stunned):431
-expert normal v6: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@8v257:381 land@61:421 kick@22(stunned):429
-adult normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@11v0:304 land@59:370 kick@30(stunned):388
-adult normal v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 2 | stun@47v285:226 land@70:279 kick@39(stunned):287
-adult normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@68:257 stun@23v0:317 land@61:345 kick@12(stunned):353
-adult normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@90:339 stun@4v0:390 land@63:469 kick@37(stunned):488
-adult normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@88:249 stun@25v0:301 land@49:329 land@50:355 land@66:369 kick@30(stunned):377
-adult normal v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 0 | stun@45v268:219 land@62:321 kick@22(stunned):329
-adult easy v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@77:245 stun@22v0:301 land@66:367 kick@51(stunned):386
-adult easy v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@64:242 stun@5v0:326 land@60:392 kick@26(stunned):400
-adult easy v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@68:237 stun@14v0:299 land@67:339 kick@42(stunned):347
-adult easy v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@76:237 stun@16v0:297 land@80:350 kick@37(stunned):360
-adult easy v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@64:237 stun@34v0:301 land@72:316 kick@48(stunned):336
-adult easy v6: K shrine 1 hits 0 bonks 1 (hops 2, adopted 0) past 0 | snap@85:237 stun@12v0:484 land@60:537 kick@20(stunned):544
+kid easy v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 25 | stun@43v285:409 land@81:447 kick@32(stunned):462
+middle normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 7 | stun@-2v198:379 land@68:420 kick@33(stunned):428
+middle normal v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 6 | stun@-1v198:402 land@64:443 kick@44(stunned):453
+middle normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@36v268:375 land@51:390 kick@12(stunned):398
+middle normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 10 | stun@1v285:382 land@59:423 kick@19(stunned):431
+middle normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@5v170:380 land@54:395 kick@57(stunned):403
+middle normal v6: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 12 | stun@-1v285:378 land@74:419 kick@36(stunned):428
+middle easy v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | stun@30v268:423 land@60:451 kick@23(stunned):459
+middle easy v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 0 | stun@48v268:319 land@76:357 kick@40(stunned):369
+middle easy v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@7v257:426 land@64:466 kick@28(stunned):474
+middle easy v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 5 | stun@6v285:425 land@66:465 kick@32(stunned):473
+middle easy v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 17 | snap@84:372 stun@-5v285:429 land@66:457 kick@45(stunned):467
+middle easy v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 8 | stun@41v285:320 land@58:360 kick@27(stunned):368
+expert normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 12 | stun@-1v285:382 land@62:435 kick@41(stunned):445
+expert normal v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@7v257:378 land@64:418 kick@26(stunned):426
+expert normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 7 | stun@4v285:380 land@58:421 kick@17(stunned):429
+expert normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 10 | stun@-6v198:382 land@63:422 kick@28(stunned):430
+expert normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 6 | stun@6v285:380 land@76:395 kick@43(stunned):407
+expert normal v6: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 1 | stun@8v257:381 land@65:421 kick@45(stunned):431
+adult normal v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@90:339 stun@16v268:379 land@61:407 kick@13(stunned):415
+adult normal v2: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 2 | stun@47v285:226 land@52:253 kick@4(stunned):261
+adult normal v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 8 | snap@68:257 stun@-5v170:290 land@73:330 kick@54(stunned):338
+adult normal v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 4 | stun@-3v112:294 land@76:322 kick@37(stunned):334
+adult normal v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 52 | snap@88:249 stun@-2v285:289 land@72:342 kick@35(stunned):354
+adult normal v6: K shrine 1 hits 0 bonks 1 (hops 0, adopted 1) past 0 | stun@45v268:219 land@53:257 kick@4(stunned):265
+adult easy v1: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 10 | snap@77:245 stun@-5v197:334 land@66:374 kick@25(stunned):382
+adult easy v2: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 10 | snap@64:242 stun@-5v197:290 land@71:330 kick@37(stunned):338
+adult easy v3: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 12 | snap@68:237 stun@-7v197:290 land@75:330 kick@37(stunned):342
+adult easy v4: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 8 | snap@76:237 stun@-5v170:288 land@83:341 kick@40(stunned):354
+adult easy v5: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@64:237 stun@28v173:290 land@60:305 kick@43(stunned):315
+adult easy v6: K shrine 1 hits 0 bonks 1 (hops 1, adopted 0) past 0 | snap@85:237 stun@17v117:330 land@79:345 kick@46(stunned):357
