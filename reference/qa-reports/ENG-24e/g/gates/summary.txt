@@ -54,3 +54,4 @@ PASS buildcheck (exit 0, 5s, ended 12:28:08 PM ET)
 ALL DONE 12:28:08 PM ET
 PASS roadmapcheck (exit 0, 3s, ended 12:30:12 PM ET; rerun on the full history, the first run hit a shallow clone)
 PASS timecheck (exit 0, 4s, ended 12:30:16 PM ET; rerun on the full history, the first run hit a shallow clone)
+PASS paintcheck-0 (exit 0, 280s, ended 12:33:15 PM ET; rerun: parts are 0-2, the first run did 1-3)

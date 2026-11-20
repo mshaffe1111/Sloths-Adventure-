@@ -81,7 +81,7 @@ ET, then the three reruns below).
 | seedlist 1-1 `--check` | PASS | 161 seeds, each clean on both settings |
 | lockall `--check` vs d36638be `--intended 2-4` | PASS | 101/102 stages unchanged; 2-4 (intended) changed |
 | funcheck, base vs branch | PASS vs base | the gate exits 1 on **both**, with the same summary: FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags). The two outputs match line for line (sorted diff: only the runner's own lines differ). This line adds no finding; the debt is the base's |
-| paintcheck `--part 0/3` | PENDING | (rerun, see below) |
+| paintcheck `--part 0/3` | PASS | rerun (see below): 1714 builds of 34 stages, 0 new (212 known ids seen), ended 12:33:15 PM ET; parts 0+1+2 = 102 stages, all of them |
 | paintcheck `--part 1/3` | PASS | 2028 builds of 34 stages, 0 new (107 known ids seen) |
 | paintcheck `--part 2/3` | PASS | 1760 builds of 34 stages, 0 new (110 known ids seen) |
 | coveragecheck | PASS | 13 built stages, 26 pieces used, 5 known gaps |
