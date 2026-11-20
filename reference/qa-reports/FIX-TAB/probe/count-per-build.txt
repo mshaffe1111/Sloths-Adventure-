@@ -1,0 +1,72 @@
+1-1:0 normal seed 88861 lipRuns 46 TAB_UNDER_ART 0  || LONE 0 
+1-1:1 normal seed 791759 lipRuns 44 TAB_UNDER_ART 0  || LONE 0 
+1-1:2 normal seed 2328 lipRuns 42 TAB_UNDER_ART 0  || LONE 0 
+1-1:3 normal seed 5033 lipRuns 38 TAB_UNDER_ART 0  || LONE 0 
+1-2:0 normal seed 1 lipRuns 44 TAB_UNDER_ART 0  || LONE 0 
+1-2:1 normal seed 2 lipRuns 41 TAB_UNDER_ART 0  || LONE 0 
+1-2:2 normal seed 3 lipRuns 43 TAB_UNDER_ART 0  || LONE 0 
+1-2:3 normal seed 4 lipRuns 35 TAB_UNDER_ART 0  || LONE 0 
+1-3:0 normal seed 1 lipRuns 87 TAB_UNDER_ART 0  || LONE 0 
+1-3:1 normal seed 2 lipRuns 84 TAB_UNDER_ART 0  || LONE 0 
+1-3:2 normal seed 3 lipRuns 91 TAB_UNDER_ART 0  || LONE 0 
+1-3:3 normal seed 4 lipRuns 82 TAB_UNDER_ART 0  || LONE 0 
+1-4:0 normal seed 1 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:1 normal seed 2 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:2 normal seed 3 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:3 normal seed 4 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-5:0 normal seed 1 lipRuns 63 TAB_UNDER_ART 0  || LONE 0 
+1-5:1 normal seed 2 lipRuns 58 TAB_UNDER_ART 0  || LONE 0 
+1-5:2 normal seed 3 lipRuns 63 TAB_UNDER_ART 0  || LONE 0 
+1-5:3 normal seed 4 lipRuns 52 TAB_UNDER_ART 0  || LONE 0 
+1-6:0 normal seed 1 lipRuns 167 TAB_UNDER_ART 13 f16L@2862-2922 art[17:w1-boulder-grey-moss,18:w1-stump-wide] px177 | f36L@5767-5827 art[37:w1-rock-root-block,38:w1-rock-block-big] px440 | f40L@7616-7676 art[41:w1-rock-root-block,42:w1-rock-block-big] px490 | f89L@18706-18766 art[90:w1-rock-slabs-low,91:w1-stump-wide] px228 | f92L@20527-20587 art[93:w1-rock-slabs-stacked-big,94:w1-stump-wide] px290 | f107L@23362-23422 art[108:w1-rock-root-block,109:w1-rock-slabs-low] px421 | f125L@27287-27347 art[126:w1-rock-root-block,127:w1-rock-roots] px559 | f158L@32760-32820 art[159:w1-rock-boulder-moss-big,160:w1-stump-wide] px250 | f161L@34561-34621 art[162:w1-rock-slabs-low,163:w1-stump-wide] px277 | f179L@38634-38694 art[180:w1-rock-root-block,181:w1-rock-slabs-low] px534 | f201L@43441-43501 art[202:w1-rock-root-block,203:w1-rock-roots] px444 | f205L@44611-44671 art[206:w1-boulder-grey-moss,207:w1-stump-wide] px289 | f208L@45386-45446 art[209:w1-rock-root-block,210:w1-rock-block-big] px485 || LONE 7 f38L@5767 px139 f42L@7616 px145 f109L@23362 px164 f127L@27287 px197 f181L@38634 px186 f203L@43441 px154 f210L@45386 px150
+1-6:1 normal seed 2 lipRuns 164 TAB_UNDER_ART 12 f15L@2740-2800 art[16:w1-rock-boulder-moss-big,17:w1-stump-wide] px269 | f34L@5553-5613 art[35:w1-rock-root-block,36:w1-rock-slabs-stacked-big] px311 | f38L@7389-7449 art[39:w1-rock-root-block,40:w1-rock-block-big] px398 | f91L@21023-21083 art[92:w1-boulder-grey-moss,93:w1-stump-wide] px143 | f106L@23923-23983 art[107:w1-rock-root-block,108:w1-rock-slabs-low] px362 | f127L@28472-28532 art[128:w1-rock-root-block,129:w1-rock-slabs-low] px305 | f156L@33212-33272 art[157:w1-rock-root-block,158:w1-stump-wide] px271 | f159L@35061-35121 art[160:w1-rock-slabs-low,161:w1-stump-wide] px213 | f178L@39317-39377 art[179:w1-rock-root-block,180:w1-rock-block-big] px314 | f199L@43549-43609 art[200:w1-rock-root-block,201:w1-rock-block-big] px350 | f203L@44741-44801 art[204:w1-rock-block-big,205:w1-stump-wide] px298 | f206L@45557-45617 art[207:w1-rock-root-block,208:w1-rock-block-big] px347 || LONE 1 f201L@43549 px24
+1-6:2 normal seed 3 lipRuns 169 TAB_UNDER_ART 13 f16L@2882-2942 art[17:w1-boulder-grey-moss,18:w1-stump-wide] px129 | f35L@5663-5723 art[36:w1-rock-root-block,37:w1-rock-slabs-low] px342 | f39L@7532-7592 art[40:w1-rock-root-block,41:w1-rock-slabs-low] px375 | f92L@19786-19846 art[93:w1-rock-slabs-stacked-big,94:w1-stump-wide] px210 | f95L@21596-21656 art[96:w1-rock-boulder-moss-big,97:w1-stump-wide] px206 | f111L@24574-24634 art[112:w1-rock-root-block,113:w1-rock-slabs-low] px382 | f129L@28521-28581 art[130:w1-rock-root-block,131:w1-rock-roots] px303 | f158L@32751-32811 art[159:w1-rock-boulder-moss-big,160:w1-stump-wide] px178 | f161L@34537-34597 art[162:w1-rock-slabs-low,163:w1-stump-wide] px187 | f180L@38758-38818 art[181:w1-rock-root-block,182:w1-rock-block-big] px396 | f202L@43556-43616 art[203:w1-rock-root-block,204:w1-stump-wide] px344 | f206L@44735-44795 art[207:w1-rock-slabs-low,208:w1-stump-wide] px204 | f209L@45522-45582 art[210:w1-rock-root-block,211:w1-stump-wide] px352 || LONE 0 
+1-6:3 normal seed 4 lipRuns 159 TAB_UNDER_ART 13 f15L@2740-2800 art[16:w1-rock-boulder-moss-big,17:w1-stump-wide] px295 | f34L@5545-5605 art[35:w1-rock-root-block,36:w1-rock-slabs-stacked-big] px382 | f38L@7381-7441 art[39:w1-rock-root-block,40:w1-rock-block-big] px499 | f90L@19595-19655 art[91:w1-rock-slabs-low,92:w1-stump-wide] px265 | f93L@21464-21524 art[94:w1-rock-block-big,95:w1-stump-wide] px330 | f108L@24366-24426 art[109:w1-rock-root-block,110:w1-rock-block-big] px482 | f125L@28171-28231 art[126:w1-rock-root-block,127:w1-rock-roots] px456 | f155L@33033-33093 art[156:w1-rock-boulder-moss-big,157:w1-stump-wide] px376 | f158L@34882-34942 art[159:w1-rock-slabs-stacked,160:w1-stump-wide] px411 | f175L@38387-38447 art[176:w1-rock-root-block,177:w1-boulder-grey-moss] px402 | f196L@43066-43126 art[197:w1-rock-root-block,198:w1-rock-block-big] px491 | f200L@44234-44294 art[201:w1-rock-slabs-stacked-big,202:w1-stump-wide] px242 | f203L@45032-45092 art[204:w1-rock-root-block,205:w1-rock-slabs-low] px428 || LONE 7 f36L@5545 px113 f40L@7381 px132 f110L@24366 px127 f127L@28171 px135 f177L@38387 px143 f198L@43066 px173 f205L@45032 px106
+1-7:0 normal seed 1 lipRuns 70 TAB_UNDER_ART 4 f84L@20975-21035 art[85:w1-rock-roots,86:w1-stump-wide] px237 | f87L@21797-21857 art[88:w1-rock-block-big,89:w1-stump-wide] px224 | f122L@30268-30328 art[123:w1-rock-boulder-moss-big,124:w1-stump-wide] px217 | f125L@31078-31138 art[126:w1-rock-slabs-low,127:w1-stump-wide] px233 || LONE 0 
+1-7:1 normal seed 2 lipRuns 73 TAB_UNDER_ART 4 f83L@20734-20794 art[84:w1-rock-block-big,85:w1-stump-wide] px311 | f86L@21624-21684 art[87:w1-rock-root-block,88:w1-stump-wide] px311 | f122L@30408-30468 art[123:w1-rock-slabs-stacked-big,124:w1-stump-wide] px310 | f125L@31295-31355 art[126:w1-rock-boulder-moss-big,127:w1-stump-wide] px323 || LONE 0 
+1-7:2 normal seed 3 lipRuns 70 TAB_UNDER_ART 4 f80L@19783-19843 art[81:w1-rock-slabs-low,82:w1-stump-wide] px199 | f83L@20600-20660 art[84:w1-rock-slabs-stacked-big,85:w1-stump-wide] px227 | f122L@30275-30335 art[123:w1-rock-boulder-moss-big,124:w1-stump-wide] px213 | f125L@31089-31149 art[126:w1-rock-slabs-low,127:w1-stump-wide] px244 || LONE 0 
+1-7:3 normal seed 4 lipRuns 69 TAB_UNDER_ART 4 f83L@20839-20899 art[84:w1-rock-slabs-stacked-big,85:w1-stump-wide] px236 | f86L@21655-21715 art[87:w1-rock-boulder-moss-big,88:w1-stump-wide] px221 | f120L@30013-30073 art[121:w1-rock-roots,122:w1-stump-wide] px343 | f123L@30903-30963 art[124:w1-rock-block-big,125:w1-stump-wide] px342 || LONE 0 
+1-8:0 normal seed 1 lipRuns 83 TAB_UNDER_ART 0  || LONE 0 
+1-8:1 normal seed 2 lipRuns 82 TAB_UNDER_ART 0  || LONE 0 
+1-8:2 normal seed 3 lipRuns 83 TAB_UNDER_ART 0  || LONE 0 
+1-8:3 normal seed 4 lipRuns 79 TAB_UNDER_ART 0  || LONE 0 
+1-9:0 normal seed 88118 lipRuns 123 TAB_UNDER_ART 0  || LONE 0 
+1-9:1 normal seed 89127 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 
+1-9:2 normal seed 3 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 
+1-9:3 normal seed 35712 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 
+1-1:0 easy seed 88861 lipRuns 48 TAB_UNDER_ART 0  || LONE 0 
+1-1:1 easy seed 791759 lipRuns 46 TAB_UNDER_ART 0  || LONE 0 
+1-1:2 easy seed 2328 lipRuns 44 TAB_UNDER_ART 0  || LONE 0 
+1-1:3 easy seed 5033 lipRuns 40 TAB_UNDER_ART 0  || LONE 0 
+1-2:0 easy seed 1 lipRuns 42 TAB_UNDER_ART 0  || LONE 0 
+1-2:1 easy seed 2 lipRuns 39 TAB_UNDER_ART 0  || LONE 0 
+1-2:2 easy seed 3 lipRuns 41 TAB_UNDER_ART 0  || LONE 0 
+1-2:3 easy seed 4 lipRuns 33 TAB_UNDER_ART 0  || LONE 0 
+1-3:0 easy seed 1 lipRuns 83 TAB_UNDER_ART 0  || LONE 0 
+1-3:1 easy seed 2 lipRuns 82 TAB_UNDER_ART 0  || LONE 0 
+1-3:2 easy seed 3 lipRuns 87 TAB_UNDER_ART 0  || LONE 0 
+1-3:3 easy seed 4 lipRuns 80 TAB_UNDER_ART 0  || LONE 0 
+1-4:0 easy seed 1 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:1 easy seed 2 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:2 easy seed 3 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-4:3 easy seed 4 lipRuns 0 TAB_UNDER_ART 0  || LONE 0 
+1-5:0 easy seed 1 lipRuns 63 TAB_UNDER_ART 0  || LONE 0 
+1-5:1 easy seed 2 lipRuns 58 TAB_UNDER_ART 0  || LONE 0 
+1-5:2 easy seed 3 lipRuns 63 TAB_UNDER_ART 0  || LONE 0 
+1-5:3 easy seed 4 lipRuns 52 TAB_UNDER_ART 0  || LONE 0 
+1-6:0 easy seed 1 lipRuns 180 TAB_UNDER_ART 8 f16L@2837-2897 art[17:w1-boulder-grey-moss,18:w1-stump-wide] px312 | f37L@6331-6391 art[38:w1-rock-root-block] px350 | f64L@12312-12372 art[65:w1-rock-root-block] px520 | f94L@18562-18622 art[95:w1-rock-boulder-moss,96:w1-stump-wide] px286 | f120L@23856-23916 art[121:w1-rock-slabs-low,122:w1-stump-wide] px373 | f144L@29198-29258 art[145:w1-rock-boulder-moss-big,146:w1-stump-wide] px465 | f193L@41018-41078 art[194:w1-rock-root-block] px405 | f211L@46783-46843 art[212:w1-rock-root-block] px453 || LONE 8 f39L@6331 px307 f40L@6331 px158 f66L@12312 px331 f67L@12312 px159 f195L@41018 px266 f196L@41018 px116 f213L@46783 px250 f214L@46783 px144
+1-6:1 easy seed 2 lipRuns 176 TAB_UNDER_ART 6 f15L@2740-2800 art[16:w1-rock-boulder-moss-big,17:w1-stump-wide] px310 | f35L@6122-6182 art[36:w1-rock-root-block,38:w1-stump-wide] px335 | f62L@12078-12138 art[63:w1-rock-root-block,65:w1-rock-slabs-low] px397 | f145L@30123-30183 art[146:w1-rock-boulder-moss-big,147:w1-stump-wide] px264 | f191L@41391-41451 art[192:w1-rock-root-block,194:w1-stump-wide] px483 | f208L@46634-46694 art[209:w1-rock-root-block,211:w1-rock-slabs-low] px491 || LONE 8 f37L@6122 px155 f38L@6122 px143 f64L@12078 px214 f65L@12078 px181 f193L@41391 px280 f194L@41391 px206 f210L@46634 px268 f211L@46634 px198
+1-6:2 easy seed 3 lipRuns 180 TAB_UNDER_ART 6 f16L@2853-2913 art[17:w1-boulder-grey-moss,18:w1-stump-wide] px238 | f36L@6236-6296 art[37:w1-rock-root-block] px360 | f65L@12710-12770 art[66:w1-rock-root-block] px328 | f146L@30209-30269 art[147:w1-rock-slabs-stacked-big,148:w1-stump-wide] px234 | f192L@41000-41060 art[193:w1-rock-root-block] px373 | f210L@46762-46822 art[211:w1-rock-root-block] px388 || LONE 8 f38L@6236 px224 f39L@6236 px169 f67L@12710 px290 f68L@12710 px167 f194L@41000 px286 f195L@41000 px133 f212L@46762 px281 f213L@46762 px179
+1-6:3 easy seed 4 lipRuns 169 TAB_UNDER_ART 5 f34L@6027-6087 art[35:w1-rock-root-block,37:w1-rock-slabs-low] px295 | f61L@12095-12155 art[62:w1-rock-root-block,64:w1-stump-wide] px317 | f141L@29786-29846 art[142:w1-rock-block-big,143:w1-stump-wide] px340 | f186L@40473-40533 art[187:w1-rock-root-block,189:w1-rock-slabs-low] px387 | f203L@46141-46201 art[204:w1-rock-root-block] px424 || LONE 4 f64L@12095 px30 f189L@40473 px25 f205L@46141 px315 f206L@46141 px177
+1-7:0 easy seed 1 lipRuns 62 TAB_UNDER_ART 2 f83L@21007-21067 art[84:w1-rock-slabs-stacked-big,85:w1-stump-wide] px328 | f117L@29781-29841 art[118:w1-rock-boulder-moss-big,119:w1-stump-wide] px345 || LONE 0 
+1-7:1 easy seed 2 lipRuns 65 TAB_UNDER_ART 2 f82L@20809-20869 art[83:w1-rock-slabs-stacked-big,84:w1-stump-wide] px264 | f117L@29781-29841 art[118:w1-rock-boulder-moss,119:w1-stump-wide] px229 || LONE 0 
+1-7:2 easy seed 3 lipRuns 62 TAB_UNDER_ART 2 f79L@19940-20000 art[80:w1-boulder-grey-moss,81:w1-stump-wide] px322 | f117L@29787-29847 art[118:w1-rock-boulder-moss-big,119:w1-stump-wide] px347 || LONE 0 
+1-7:3 easy seed 4 lipRuns 61 TAB_UNDER_ART 2 f82L@20904-20964 art[83:w1-rock-root-block,84:w1-stump-wide] px316 | f115L@29568-29628 art[116:w1-rock-boulder-moss-big,117:w1-stump-wide] px319 || LONE 0 
+1-8:0 easy seed 1 lipRuns 84 TAB_UNDER_ART 0  || LONE 0 
+1-8:1 easy seed 2 lipRuns 82 TAB_UNDER_ART 0  || LONE 0 
+1-8:2 easy seed 3 lipRuns 83 TAB_UNDER_ART 0  || LONE 0 
+1-8:3 easy seed 4 lipRuns 79 TAB_UNDER_ART 0  || LONE 0 
+1-9:0 easy seed 88118 lipRuns 123 TAB_UNDER_ART 0  || LONE 0 
+1-9:1 easy seed 89127 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 
+1-9:2 easy seed 3 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 
+1-9:3 easy seed 35712 lipRuns 124 TAB_UNDER_ART 0  || LONE 0 

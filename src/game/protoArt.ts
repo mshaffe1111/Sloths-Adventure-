@@ -916,7 +916,7 @@ export function drawBankArt(
     const face = endFace(w, x, p.y, bottom, right);
     if (step === undefined) return face;
     // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
-    const cut = step - p.y < SHORT_STEP ? step : step + 24;
+    const cut = faceCut(p.y, step);
     const pts = face.filter((q) => q[1] < cut);
     return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
   };
@@ -1411,7 +1411,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
     const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
-    const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
+    const lower = (side: 'l' | 'r') => stepDownTo(p, banks, side) ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
     // (a World 7 high ledge's sides over a floor HIGH_LEDGE or more below: the soil wraps round the wall's corner there, w7TempleArt.ts)
     const drop = (side: 'l' | 'r') => {
@@ -1463,6 +1463,24 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   }
   shadeUpTo(-Infinity);
 }
+
+/**
+ * The top of the bank p's end steps down to on that side: of the lower banks that meet the end, the HIGHEST, the one that stands against
+ * its face (R-165.344, FIX-TAB). The first one in the list was taken: where a step stands on the floor at a wall's foot (1-6's stair of
+ * stones), that was the floor, so the wall's end face and its soil's cut-back ran down to the floor's top past the step, and the notch
+ * between them was left to the floor's lip run under the wall: a grass tab hanging under the painted stone in front (100 in World 1).
+ */
+export function stepDownTo(p: Platform, banks: readonly Platform[], side: 'l' | 'r'): number | undefined {
+  let y: number | undefined;
+  for (const q of banks) {
+    if (q === p || q.y <= p.y + 2 || Math.abs(side === 'l' ? q.x + q.width - p.x : p.x + p.width - q.x) >= 2) continue;
+    if (y === undefined || q.y < y) y = q.y;
+  }
+  return y;
+}
+/** where a bank's end face stops, stepping down from top to a lower bank at `step`: a short step (a plinth) at that bank's top, else
+ *  24 under it; below that the bank's soil runs straight down at its end (drawBankArt) */
+export const faceCut = (top: number, step: number): number => (step - top < SHORT_STEP ? step : step + 24);
 
 /** how far a floor's lip runs on under a higher bank beside it (world units: past the most a World 1 end face curves back in, 20, at 90 down) */
 export const LIP_UNDER = 60;
