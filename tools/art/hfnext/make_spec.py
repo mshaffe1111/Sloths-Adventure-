@@ -61,5 +61,10 @@ for it, pr in [('boat', 'Keep this exact boat, the sloth mailman, his cap, the s
     for s in src['seeds']:
         r2.append({'name': f'{it}B-from{s}', 'src': f'b:hfpokey/edits/{it}-s{s}.png', 'refs': [src['refs'][0]], 'w': src['w'],
                    'h': src['h'], 'seeds': [s], 'prompt': pr, 'neg': src['neg']})
-json.dump({'tag': 'next-b1', 'edits': r1 + r2}, open('tools/art/hfnext/spec-b1.json', 'w'), indent=1)  # ONE load: r2 runs after r1
-print(len(r1 + r2), 'items', sum(len(i['seeds']) for i in r1 + r2), 'takes')
+# cheapest first (the lead 4:25 PM): letters, door, reeds, weir, then the boats and the barge; each frame B right after its A's
+by = {i['name']: i for i in r1 + r2}
+order = ['letter', 'letterB', 'reply', 'replyB', 'door', 'reeds', 'weir', 'boat', 'boatB', 'barge']
+items = [i for o in order for i in r1 + r2 if i['name'] == o or i['name'].startswith(o + '-from')]
+assert len(items) == len(r1 + r2)
+json.dump({'tag': 'next-b1', 'edits': items}, open('tools/art/hfnext/spec-b1.json', 'w'), indent=1)  # ONE load: r2 runs after r1
+print([i['name'] for i in items]); print(len(r1 + r2), 'items', sum(len(i['seeds']) for i in r1 + r2), 'takes')
