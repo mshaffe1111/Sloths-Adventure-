@@ -9,6 +9,8 @@ tools/art/hfpokey/ (jobs.txt + make_spec.py header: the proven method), ROADMAP 
 grep for what POKEY does (verbs: carry, hold, kick, crouch, sneak, slow, swim, ride, push, toss, hang, climb...): origin/t-design-26
 (2-6..2-8), origin/t-design-29 (2-9), origin/t-design-31-32, origin/t-design-33-35, origin/t-design-36-39 (World 3). LAWS + LESSONS headlines.
 BASE: branch t-anim-next from origin/main. Push there.
+SCOPE (Matt 11-20 3:52 PM ET: "Special stages and regular"): every regular stage named AND the special stages of Worlds 2 and 3: each world's
+   hidden stage, puzzle rooms, boss fights (find their designs by grep: reference/design/, origin/t-design-*, origin/boss-design-*).
 1. THE NEEDS LIST (reference/art/ANIM-NEEDS.md): every action Pokey does in 2-6..3-9 (+ hidden) and the open rows: HAVE (a clip exists and
    reads right for it) / ADAPT (an existing clip re-timed or mirrored) / NEW (no clip: a new HF clip). For each NEW: the first stage that
    needs it, frame count, loop or one-shot, and what it must read as on a phone at Pokey's size. Ranked by first stage.

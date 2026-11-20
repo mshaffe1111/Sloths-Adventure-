@@ -10,6 +10,8 @@ by grep, never whole); the designs by grep for their pieces/props/hazards/set pi
 2-8.md, origin/t-design-29 2-9.md, origin/t-design-31-32 3-1.md 3-2.md, origin/t-design-33-35 3-3..3-5.md, origin/t-design-36-39 3-6..3-9.md
 (+ the hidden stage); the takes pattern of a past job (tools/art/hfrock/ or tools/art/hfpalm/ spec + cut).
 BASE: branch t-art-next from origin/main. Push there.
+SCOPE (Matt 11-20 3:52 PM ET: "Special stages and regular"): every regular stage named AND the special stages of Worlds 2 and 3: each world's
+   hidden stage, puzzle rooms, boss fights (find their designs by grep: reference/design/, origin/t-design-*, origin/boss-design-*).
 1. THE NEEDS TABLE (reference/art/NEEDS-W2W3.md): for each stage 2-6..2-9, 3-1..3-9 (+hidden), every piece its design names that a player
    SEES (standables, props, hazards, set pieces, creatures' homes, backdrops' readable shapes): HAVE (an inventory row fits: world, footing,
    scale vs Pokey) / REUSE (a row from another world fits by look and its 'could' worlds; name it) / GAP (nothing painted fits, or only a
