@@ -1,0 +1,352 @@
+THE FULL SET (gates.md D96) on release-0.10.0 head b5b0e019 (= t-int-14 ca74f4fa + version/What's New), pinned worktree; REL-0100.
+Every line: exit code, seconds, end time (Eastern, from date in the run). Script: full.sh (phase 0 fast gates + main's lock record; then clipcheck, kbdcheck, buildcheck ALONE; then lanes in parallel).
+
+== SUMMARY
+FULL SET on b5b0e019111f3f9563839bcec00291cdaaed4175 started 2:55:06 PM
+tsc exit 0 (4 s, ended 2:55:10 PM)
+artcheck exit 0 (0 s, ended 2:55:10 PM)
+vitebuild exit 0 (5 s, ended 2:55:15 PM)
+chunkcheck exit 0 (0 s, ended 2:55:15 PM)
+knowncheck exit 0 (0 s, ended 2:55:15 PM)
+generality exit 0 (0 s, ended 2:55:15 PM)
+coveragecheck exit 0 (58 s, ended 2:56:13 PM)
+roadmapcheck exit 0 (4 s, ended 2:56:17 PM)
+timecheck exit 0 (3 s, ended 2:56:20 PM)
+lock-main-record exit 0 (439 s, ended 3:02:25 PM)
+clipcheck exit 0 (371 s, ended 3:08:36 PM)
+kbdcheck exit 0 (110 s, ended 3:10:26 PM)
+buildcheck exit 0 (5 s, ended 3:10:31 PM)
+lists: 1-1
+drawcheck exit 0 (754 s, ended 3:23:05 PM)
+list-1-1 exit 0 (1080 s, ended 3:28:40 PM)
+  list 1-1: seedlist 1-1: PASS (161 seeds, each clean on both settings)
+list-1-2 exit 0 (249 s, ended 3:32:49 PM)
+  list 1-2: seedlist 1-2: PASS (100 seeds, each clean on both settings)
+list-1-3 exit 0 (123 s, ended 3:34:52 PM)
+  list 1-3: seedlist 1-3: PASS (100 seeds, each clean on both settings)
+suite shard 2 exit 0 (ended 3:41:15 PM)
+toolline exit 0 (1127 s, ended 3:41:52 PM)
+toolline: # tests 319 # pass 318 # fail 0 # cancelled 0 # todo 1 
+tipwalk exit 0 (47 s, ended 3:42:39 PM)
+list-1-4 exit 0 (548 s, ended 3:44:00 PM)
+  list 1-4: seedlist 1-4: PASS (100 seeds, each clean on both settings)
+registrycheck exit 0 (146 s, ended 3:45:05 PM)
+lockall exit 0 (2193 s, ended 3:47:04 PM)
+list-1-5 exit 0 (270 s, ended 3:48:30 PM)
+  list 1-5: seedlist 1-5: PASS (150 seeds, each clean on both settings)
+funcheck exit 1 (220 s, ended 3:50:44 PM)
+suite shard 1 exit 0 (ended 3:51:38 PM)
+tierBots exit 0 (445 s, ended 3:52:30 PM)
+cast-1-1 exit 0 (209 s, ended 3:54:13 PM)
+suite shard 3 exit 0 (ended 3:58:36 PM)
+suite shard 1: # tests 1386 # pass 1385 # fail 0 # cancelled 0 # skipped 0 # todo 1 
+suite shard 2: # tests 1420 # pass 1420 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+suite shard 3: # tests 1176 # pass 1174 # fail 0 # cancelled 0 # skipped 0 # todo 2 
+paintcheck-0 exit 0 (397 s, ended 3:59:07 PM)
+cast-1-6 exit 0 (512 s, ended 4:02:45 PM)
+cast-1-8 exit 0 (134 s, ended 4:04:59 PM)
+list-1-6 exit 0 (1024 s, ended 4:05:34 PM)
+  list 1-6: seedlist 1-6: PASS (100 seeds, each clean on both settings)
+paintcheck-1 exit 0 (400 s, ended 4:05:47 PM)
+cast-1-9 exit 0 (139 s, ended 4:07:18 PM)
+list-1-7 exit 0 (220 s, ended 4:09:14 PM)
+  list 1-7: seedlist 1-7: PASS (100 seeds, each clean on both settings)
+cast-2-4 exit 0 (161 s, ended 4:09:59 PM)
+buildstore exit 0 (3 s, ended 4:10:02 PM)
+list-1-8 exit 0 (49 s, ended 4:10:03 PM)
+  list 1-8: seedlist 1-8: PASS (100 seeds, each clean on both settings)
+testlink exit 0 (5 s, ended 4:10:07 PM)
+list-1-9 exit 0 (133 s, ended 4:12:16 PM)
+  list 1-9: seedlist 1-9: PASS (100 seeds, each clean on both settings)
+paintcheck-2 exit 0 (438 s, ended 4:13:05 PM)
+list-2-1 exit 0 (310 s, ended 4:17:27 PM)
+  list 2-1: seedlist 2-1: PASS (100 seeds, each clean on both settings)
+list-2-2 exit 0 (16 s, ended 4:17:43 PM)
+  list 2-2: seedlist 2-2: PASS (100 seeds, each clean on both settings)
+list-2-4 exit 0 (542 s, ended 4:26:45 PM)
+  list 2-4: seedlist 2-4: PASS (100 seeds, each clean on both settings)
+FULL SET ended 4:26:45 PM
+
+== suite (3 shards, the CLAUDE.md glob): totals
+# tests 1386 # pass 1385 # fail 0 # cancelled 0 # todo 1 
+# tests 1420 # pass 1420 # fail 0 # cancelled 0 # todo 0 
+# tests 1176 # pass 1174 # fail 0 # cancelled 0 # todo 2 
+ok 1303 - walking along the floor under a boulder never moves it, and it is no wall down there # TODO the engine's wall check has no bottom: every block 50+ tall is a wall all the way down, so walking under a boulder on a ledge above pushes it (4-3, 4-8) — for the boulder fixer
+not ok 615 - R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer) # TODO R-165.312: the flag placer, an engine job after release 1
+not ok 1029 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below it, and walking there pushes it: the pool's log is never reached (the boulder fixer)
+
+== CI tool line (exactly gates.yml, CI=1 FORCE_COLOR=1)
+npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/sweeper.test.ts tools/inspect/chaseBots.test.ts tools/inspect/boaBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts tools/engine/paintFall.test.ts tools/timecheck.test.mjs tools/inspect/lineBot.test.ts tools/inspect/snapRide.test.ts tools/inspect/snapperBonk.test.ts tools/difficulty/snapChannel.test.ts tools/inspect/wheelRide.test.ts tools/difficulty/lianaChannel.test.ts tools/difficulty/wheelChannel.test.ts tools/difficulty/lineChannel.test.ts tools/inspect/posted.test.ts tools/engine/paintcheck.test.ts
+# tests 319
+# pass 318
+# fail 0
+# todo 1
+not ok 158 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+
+== tsc (last lines)
+
+== artcheck (last lines)
+  src/assets/w6to10/bosses/ironclaw-anim-1.webp 2048x5755
+  src/assets/w6to10/bosses/thornbark-anim-0.webp 2048x6757
+  src/assets/w6to10/bosses/thornbark-anim-1.webp 2048x6899
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+PASS
+
+== vitebuild (last lines)
+mode      generateSW
+precache  1144 entries (182135.69 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+
+== chunkcheck (last lines)
+  ok       295,461 B    3,698,843 spare  assets/world-1-parts-2AY8q3KA.js
+  ok       292,231 B    3,702,073 spare  assets/sheets-Bgt_7lHk.js
+  ok       289,853 B    3,704,451 spare  assets/story-Vm9QxJtH.js
+  ok       254,365 B    3,739,939 spare  assets/w6-D-eq93kF.js
+chunkcheck: PASS
+
+== knowncheck (last lines)
+✓ src/game/ciTests.known.json: 16 entries
+✓ tools/difficulty/coverage.known.json: 6 entries, 1 fewer than the base
+  tools/engine/paintcheck.known.json: new list (383 entries), not on the base yet
+✓ src/game/artUse.allow.json: 210 entries
+PASS
+
+== generality (last lines)
+generality check: 66 engine files (194 exempt under the engine folders), 26 literals, 26 known
+PASS
+
+== coveragecheck (last lines)
+meter coverage: 13 built stages (1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-4), 26 pieces used, 5 known gaps
+coveragecheck: PASS
+
+== roadmapcheck (last lines)
+  R-161 Bosses: three ways to win (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 34 helper hours
+  R-162 Later (PLAN-TO-80's "Later" list: good ideas, not for launch): S183 M77 L18 = 699.6 helper hours
+  by tier (helper hours, measured, R-12): Day 1 953, Important 358.5, Parking lot 147.5, Matt's call 4.1
+  all: 1463.1 helper hours (Matt's own items and the decisions left out: 23)
+PASS
+
+== timecheck (last lines)
+time-stamp check over origin/main..HEAD: 443 commits, 34 files, 5463 lines they wrote, 289 stamps
+PASS
+
+== clipcheck (last lines)
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh; world map: World 4 of 10 @ side/old; +2 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "Stage 5-M: On the March North, Stealth"  (inside the left inset)
+      world map: World 5 of 10 @ side/done
+PASS (83 known) (371 s; contact sheet and breaches.json in /tmp/clipcheck-IkLDqx)
+
+== kbdcheck (last lines)
+✓ side 60pc ctest-looked after typing (box 12-136)
+✓ side 60pc ctest-note focused (box 12-136)
+✓ side 60pc ctest-note after typing (box 12-136)
+✓ planted: with the keep-in-view off, the check goes red as it must
+PASS (110 s; stills in reference/qa/tester-page-1106/keyboard/)
+
+== buildcheck (last lines)
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 44 ms, p95 88 ms, max 123 ms (30 builds, CPU x4)
+  easy: p50 34 ms, p95 55 ms, max 55 ms (30 builds, CPU x4)
+
+== drawcheck (last lines)
+  note shrunkOver2_5x 6.00 at spot 1 (x 9368) (reported; fails over 32)
+      src/game/sheetBake.ts:125 (drawSheet) 2.79/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.76/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.52/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+PASS (754 s; raw results in /tmp/drawcheck-H5oDmc)
+
+== tipwalk (last lines)
+  after 20 s: x 1260 y 10984
+1-4 easy layout 4 (up):
+  spawn x 140 y 10984, built easy seed 5, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 10984
+tipwalk: PASS
+
+== registrycheck (last lines)
+registrycheck: PASS (12 stages: 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, each registered everywhere; 12 lists checked in CI; 144 s)
+
+== tierBots (last lines)
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 443669.036915
+
+== paintcheck-0 (last lines)
+  5-1: 32/32 builds breach (44 known ids, 0 new)
+  5-4: 32/32 builds breach (46 known ids, 0 new)
+  5-7: 32/32 builds breach (66 known ids, 0 new)
+  6-6: 32/32 builds breach (1 known ids, 0 new)
+paintcheck: PASS, no new painted style falls through to code terrain (170 known ids seen, R-165.292)
+
+== paintcheck-1 (last lines)
+  3-9: 8/32 builds breach (1 known ids, 0 new)
+  4-2: 10/32 builds breach (3 known ids, 0 new)
+  5-2: 32/32 builds breach (49 known ids, 0 new)
+  5-5: 32/32 builds breach (48 known ids, 0 new)
+paintcheck: PASS, no new painted style falls through to code terrain (107 known ids seen, R-165.292)
+
+== paintcheck-2 (last lines)
+  3-7: 26/32 builds breach (1 known ids, 0 new)
+  4-8: 32/32 builds breach (1 known ids, 0 new)
+  5-3: 32/32 builds breach (41 known ids, 0 new)
+  5-9: 32/32 builds breach (59 known ids, 0 new)
+paintcheck: PASS, no new painted style falls through to code terrain (106 known ids seen, R-165.292)
+
+== lockall (last lines)
+  6-7 (intended): gen2, proto.gen2, collectibles
+  7-5 (intended): proto.gen2, gen2, size, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, proto.beats, proto.dress
+  7-9 (intended): gen2, proto.gen2, collectibles
+  8-3 (intended): gen2, proto.gen2, collectibles
+  8-5 (intended): collectibles, gen2, proto.gen2
+
+== funcheck (last lines)
+  (truer rule) 1-9 easy "map like the stage before": gated on the old rule at 0 layouts, 6 by the truer rule
+  (truer rule) 1-9 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-9 normal "map like the stage before": gated on the old rule at 0 layouts, 8 by the truer rule
+  (truer rule) 1-9 normal "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+FAIL (22 worse or new, 0 to lower or delete; 77 known, 1067 stage-layout flags; 218 s)
+
+== buildstore (last lines)
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.31s
+Store build check passed: dist has no tracking, ads, collector, service worker or outside addresses.
+
+== testlink (last lines)
+✓ built in 4.13s
+test link: 478 files (limit 480)
+test link: no dist-published (a fresh machine): the map lists every file and removes none; add every live path not in dist as null first (Artifact list, scope "files"), and run build.py --published once it is published
+477 new/changed, 0 removed against the last publish -> tools/testlink/filesmap.json
+work-index.html refreshed from dist/index.html
+
+== paintcheck build counts
+paintcheck: 1714 builds of 34 stages (part 0/3) (listed stages on every listed seed, the rest on layouts 1-16), both settings
+paintcheck: 2028 builds of 34 stages (part 1/3) (listed stages on every listed seed, the rest on layouts 1-16), both settings
+paintcheck: 1760 builds of 34 stages (part 2/3) (listed stages on every listed seed, the rest on layouts 1-16), both settings
+
+== lockall moved stages (vs main 6e7b85f8's lock, recorded in a main worktree this run: 3264 builds of 102 stages)
+lock: 82/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9
+  1-1 (intended): platforms
+  1-6 (intended): size, platforms, vines, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, heartFalls, gen2, easyGoal, normalGoal, proto.hints, proto.beats, proto.gen2, proto.dress
+  1-7 (intended): size, platforms, vines, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, gen2, proto.hints, proto.beats, proto.bushes, proto.gen2, proto.dress
+  1-8 (intended): platforms, proto.gen2, gen2
+  1-9 (intended): size, platforms, vines, ropes, enemies, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, gen2, easyGoal, normalGoal, easyToday, proto.hints, proto.beats, proto.cast, proto.bushes, proto.gen2, proto.dress, waterY, proto.movedPickups,
+  2-1 (intended): proto.hints, size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.beats, proto.gen2, proto.decor, proto.dress
+  2-2 (intended): size, platforms, ropes, rivers, collectibles, exitTotemX, checkpoints, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress, easyGoal, normalGoal
+  2-4 (intended): size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress, waterSigns, proto.movedPickups, enemies
+  3-6 (intended): collectibles
+  3-7 (intended): collectibles
+  3-8 (intended): proto.thorns
+  4-4 (intended): size, platforms, vines, collectibles, exitTotemX, checkpoints, zones, proto.hints, proto.covers, proto.beats, proto.w4, proto.kitDecor, proto.dress, trees
+  6-1 (intended): gen2, proto.gen2, collectibles, size, platforms, vines, exitTotemX, exitTotemY, checkpoints, proto.beats, proto.dress, proto.hints
+  6-3 (intended): gen2, proto.gen2, collectibles
+  6-6 (intended): gen2, proto.gen2, collectibles
+  6-7 (intended): gen2, proto.gen2, collectibles
+  7-5 (intended): proto.gen2, gen2, size, platforms, vines, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, proto.beats, proto.dress
+  7-9 (intended): gen2, proto.gen2, collectibles
+  8-3 (intended): gen2, proto.gen2, collectibles
+  8-5 (intended): collectibles, gen2, proto.gen2
+
+== funcheck: every worse/new flag (compared with INT-14's ruled table: identical, 22 = 22)
+✗ worse: 1-1 normal "dead walk" on 16 layouts, known 14 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 3 s of walking with nothing to do at x 743
+✗ worse: 1-1 normal "pacing" on 12 layouts, known 8 (1,2,3,4,5,6,7,8,10,12,13,14); e.g. no gentle intro: the first 15 s already ask for more than 0.8 moves a second
+✗ worse: 1-1 normal "nothing bites" on 15 layouts, known 4 (1,2,3,4,5,6,7,8,9,10,11,12,14,15,16); e.g. 97% of the beats after the first 30 s cost nothing when missed (0 cost a setback, 1 a life)
+✗ worse: 1-2 normal "looks like the stage before" on 16 layouts, known 15 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 49% alike in its pieces and art to 1-1 (at most 45% for the stage right befor
+✗ worse: 1-2 normal "nothing new" on 16 layouts, known 10 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (17 new 3-move runs of old mov
+✗ new: 1-3 normal "looks like the stage before" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 49% alike in its pieces and art to 1-2 (at most 45% for the stage right before)
+✗ worse: 1-4 normal "pacing" on 16 layouts, known 14 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. only 0 groups of moves (§0b.2: four parts, introduce, develop, twist, master)
+✗ new: 1-4 normal "nothing bites" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 100% of the beats after the first 30 s cost nothing when missed (0 cost a setback, 0 a life)
+✗ new: 1-4 normal "nothing new" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (0 new 3-move runs of old moves)
+✗ worse: 1-5 normal "dead walk" on 16 layouts, known 15 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 3.2 s of walking with nothing to do at x 140
+✗ new: 1-6 normal "repeat" on 6 of 16 layouts (1,2,6,11,14,16); e.g. the same four moves "JJJV" 4 times at x 9165
+✗ worse: 1-1 easy "dead walk" on 16 layouts, known 14 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 3.4 s of walking with nothing to do at x 719
+✗ worse: 1-1 easy "pacing" on 10 layouts, known 2 (1,2,3,4,7,8,10,12,13,14); e.g. no gentle intro: the first 15 s already ask for more than 0.8 moves a second
+✗ worse: 1-1 easy "nothing bites" on 16 layouts, known 4 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 97% of the beats after the first 30 s cost nothing when missed (1 cost a setback, 0 a life)
+✗ worse: 1-2 easy "looks like the stage before" on 16 layouts, known 15 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 49% alike in its pieces and art to 1-1 (at most 45% for the stage right before)
+✗ worse: 1-2 easy "nothing new" on 16 layouts, known 10 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (23 new 3-move runs of old moves
+✗ new: 1-3 easy "looks like the stage before" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 49% alike in its pieces and art to 1-2 (at most 45% for the stage right before)
+✗ new: 1-4 easy "pacing" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. only 0 groups of moves (§0b.2: four parts, introduce, develop, twist, master)
+✗ new: 1-4 easy "nothing bites" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 100% of the beats after the first 30 s cost nothing when missed (0 cost a setback, 0 a life)
+✗ new: 1-4 easy "nothing new" on 16 of 16 layouts (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (0 new 3-move runs of old moves)
+✗ new: 1-3 normal "nothing bites" on 5 of 16 layouts (2,11,13,14,15); e.g. 86% of the beats after the first 30 s cost nothing when missed (0 cost a setback, 1 a life)
+✗ worse: 1-3 easy "nothing bites" on 8 layouts, known 1 (2,4,10,11,13,14,15,16); e.g. 86% of the beats after the first 30 s cost nothing when missed (1 cost a setback, 0 a life)
+FAIL (22 worse or new, 0 to lower or delete; 77 known, 1067 stage-layout flags; 218 s)
+
+== castBots 1-40, kid/adult/child/middle/expert, both settings (expert Normal only)
+1-1  kid    normal PASS 27/40; under the floor 0; time median 142.8 s (min 131.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1          fail 12: shrine rescued x1  (seeds 10,18,24,28,36,11,15,23,25,27,35,37)
+1-1          fail 1: shrine rescued x2  (seeds 32)
+1-1  kid    easy   PASS 33/40; under the floor 0; time median 147.8 s (min 136.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1          fail 7: shrine rescued x1  (seeds 18,24,28,30,32,11,37)
+1-1  adult  normal PASS 33/40; under the floor 0; time median 143.2 s (min 132.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1          fail 7: shrine rescued x1  (seeds 18,20,24,28,32,11,37)
+1-1  adult  easy   PASS 32/40; under the floor 0; time median 144.5 s (min 133.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1          fail 8: shrine rescued x1  (seeds 18,22,24,28,30,32,11,37)
+1-1  child  normal PASS 35/40; under the floor 0; time median 406.7 s (min 367.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1          fail 5: shrine rescued x1  (seeds 12,1,5,7,33)
+1-1  child  easy   PASS 40/40; under the floor 0; time median 292.3 s (min 266.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1  middle normal PASS 40/40; under the floor 0; time median 204.7 s (min 189.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1  middle easy   PASS 40/40; under the floor 0; time median 192.9 s (min 180.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-1  expert normal PASS 40/40; under the floor 0; time median 172.1 s (min 162.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-6  kid    normal PASS 26/40; under the floor 0; time median 247.6 s (min 222); hits 0 lives 4 (pit 4); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left
+1-6          fail 14: shrine rescued x1  (seeds 1,7,9,19,23,31,33,37,39,2,14,30,32,36)
+1-6  kid    easy   PASS 40/40; under the floor 0; time median 209 s (min 202.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 
+1-6  adult  normal PASS 40/40; under the floor 0; time median 233.4 s (min 221.9); hits 0 lives 3 (pit 3); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; le
+1-6  adult  easy   PASS 40/40; under the floor 0; time median 205.5 s (min 199); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 
+1-6  child  normal PASS 39/40; under the floor 0; time median 483.5 s (min 429); hits 0 lives 9 (pit 9); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left
+1-6          fail 1: shrine rescued x1  (seeds 30)
+1-6  child  easy   PASS 40/40; under the floor 0; time median 380.4 s (min 345.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-6  middle normal PASS 40/40; under the floor 0; time median 287.7 s (min 263.7); hits 0 lives 2 (pit 2); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; le
+1-6  middle easy   PASS 40/40; under the floor 0; time median 262.9 s (min 251.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-6  expert normal PASS 40/40; under the floor 0; time median 251.6 s (min 233.5); hits 0 lives 11 (pit 11); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; 
+1-8  kid    normal PASS 40/40; under the floor 0; time median 141.6 s (min 138.7); hits 203 lives 0 (other 163, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/
+1-8  kid    easy   PASS 40/40; under the floor 0; time median 146.4 s (min 139.4); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-8  adult  normal PASS 40/40; under the floor 0; time median 140.5 s (min 137.8); hits 200 lives 0 (other 160, foe:eagle 40); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/
+1-8  adult  easy   PASS 40/40; under the floor 0; time median 144.4 s (min 140); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 
+1-8  child  normal PASS 40/40; under the floor 0; time median 318.2 s (min 286.7); hits 326 lives 46 (other 350, pit 17, foe:eagle 5); cleared none; told of traps 0/40; first trap sprung 0/40; traps s
+1-8  child  easy   PASS 40/40; under the floor 0; time median 236.1 s (min 216.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-8  middle normal PASS 40/40; under the floor 0; time median 195.2 s (min 178.7); hits 248 lives 20 (other 255, foe:eagle 3, pit 10); cleared none; told of traps 0/40; first trap sprung 0/40; traps s
+1-8  middle easy   PASS 40/40; under the floor 0; time median 175.7 s (min 163.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+1-8  expert normal PASS 40/40; under the floor 0; time median 173.4 s (min 162.3); hits 216 lives 12 (other 221, pit 6, foe:eagle 1); cleared none; told of traps 0/40; first trap sprung 0/40; traps sp
+1-9  kid    normal PASS 40/40; under the floor 0; time median 138.1 s (min 130.4); hits 415 lives 26 (foe:boa 275, foe:eagle 166); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps s
+1-9  kid    easy   PASS 40/40; under the floor 0; time median 141.7 s (min 133.5); hits 285 lives 0 (foe:boa 273, foe:eagle 12); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps spr
+1-9  adult  normal PASS 40/40; under the floor 0; time median 138.2 s (min 132.8); hits 304 lives 4 (foe:boa 236, foe:eagle 72); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps spr
+1-9  adult  easy   PASS 40/40; under the floor 0; time median 143.2 s (min 137.4); hits 213 lives 0 (foe:boa 211, foe:eagle 2); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps spru
+1-9  child  normal PASS 40/40; under the floor 0; time median 336 s (min 300.4); hits 251 lives 7 (foe:boa 141, foe:eagle 117); cleared lure 160; told of traps 0/40; first trap sprung 0/40; traps spru
+1-9  child  easy   PASS 40/40; under the floor 0; time median 245.1 s (min 226.4); hits 104 lives 0 (foe:boa 97, foe:eagle 7); cleared lure 158; told of traps 0/40; first trap sprung 0/40; traps sprun
+1-9  middle normal PASS 40/40; under the floor 0; time median 191.5 s (min 181.1); hits 98 lives 0 (foe:boa 67, foe:eagle 31); cleared lure 159; told of traps 0/40; first trap sprung 0/40; traps sprun
+1-9  middle easy   PASS 40/40; under the floor 0; time median 181.4 s (min 169.9); hits 56 lives 0 (foe:boa 53, foe:eagle 3); cleared lure 153; told of traps 0/40; first trap sprung 0/40; traps sprung
+1-9  expert normal PASS 40/40; under the floor 0; time median 168.4 s (min 157.1); hits 97 lives 0 (foe:boa 69, foe:eagle 28); cleared lure 155; told of traps 0/40; first trap sprung 0/40; traps sprun
+2-4  kid    normal PASS 30/40; under the floor 0; time median 268.7 s (min 183.2); hits 0 lives 318 (water 318); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back
+2-4          fail 9: shrine rescued x1  (seeds 1,13,19,29,35,14,18,26,36)
+2-4          fail 1: shrine rescued x2  (seeds 39)
+2-4  kid    easy   PASS 39/40; under the floor 0; time median 172.3 s (min 139.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+2-4          fail 1: shrine rescued x1  (seeds 4)
+2-4  adult  normal PASS 38/40; under the floor 0; time median 183.3 s (min 163.3); hits 0 lives 142 (water 142); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back
+2-4          fail 2: shrine rescued x1  (seeds 1,36)
+2-4  adult  easy   PASS 40/40; under the floor 0; time median 149.2 s (min 135.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+2-4  child  normal PASS 40/40; under the floor 0; time median 365 s (min 310.9); hits 0 lives 177 (water 177); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0
+2-4  child  easy   PASS 40/40; under the floor 0; time median 260.6 s (min 235.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+2-4  middle normal PASS 40/40; under the floor 0; time median 225.4 s (min 208.7); hits 0 lives 115 (water 115); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back
+2-4  middle easy   PASS 40/40; under the floor 0; time median 187 s (min 170.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 
+2-4  expert normal PASS 40/40; under the floor 0; time median 209.6 s (min 175.8); hits 0 lives 132 (water 132); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back
+
+== seed lists
+seedlist 1-1: PASS (161 seeds, each clean on both settings)
+seedlist 1-2: PASS (100 seeds, each clean on both settings)
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+seedlist 1-4: PASS (100 seeds, each clean on both settings)
+seedlist 1-5: PASS (150 seeds, each clean on both settings)
+seedlist 1-6: PASS (100 seeds, each clean on both settings)
+seedlist 1-7: PASS (100 seeds, each clean on both settings)
+seedlist 1-8: PASS (100 seeds, each clean on both settings)
+seedlist 1-9: PASS (100 seeds, each clean on both settings)
+seedlist 2-1: PASS (100 seeds, each clean on both settings)
+seedlist 2-2: PASS (100 seeds, each clean on both settings)
+seedlist 2-4: PASS (100 seeds, each clean on both settings)

@@ -47,19 +47,46 @@ INT-14 and INT-14b (t-int-14):
 - t-gate-flake @ 68b176b8 (453b69c2): clipcheck/buildcheck load flakes fixed, paintcheck parts 0-2 (an empty part fails).
 
 ## Gate table (THE FULL SET, gates.md D96, each once on b5b0e019)
-GATE_TABLE
+Full log: reference/qa-reports/REL-0.10.0/gates-b5b0e019.txt. Run 2:55-4:26 PM ET 11-20 in a worktree pinned to b5b0e019.
+
+| gate | verdict |
+|---|---|
+| tsc | PASS |
+| the full suite, 3 shards | PASS: 3,982 tests / 3,979 pass / 0 fail / 3 todo (the 3 todos are known open items: the boulder wall check x2, R-165.312) |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` + chunkcheck | PASS / PASS |
+| npm run build:store | PASS ("dist has no tracking, ads, collector, service worker or outside addresses") |
+| artcheck | PASS |
+| knowncheck | PASS |
+| generalitycheck | PASS |
+| coveragecheck | PASS |
+| roadmapcheck (full history) | PASS |
+| timecheck --range origin/main..HEAD | PASS |
+| clipcheck (alone) | PASS (83 known; 371 s) |
+| kbdcheck (CI=1) | PASS (its planted failure goes red as it must; the keyboard stills restored, none changed) |
+| buildcheck (alone) | PASS (1-1 at CPU x4: Normal p95 88 ms, Easy p95 55 ms; budget 150 ms) |
+| drawcheck (every stage, both ways) | PASS (754 s) |
+| every registered seed list --check (12) | PASS 12/12: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4 (100 each), each clean on both settings |
+| CI tool line, exactly gates.yml | PASS: 319 tests / 318 pass / 0 fail / 1 todo (the open chase-bots todo) |
+| tierBots.test | PASS 9/9 |
+| tipwalk --layouts 4 | PASS |
+| registrycheck | PASS (12 stages, each registered everywhere) |
+| paintcheck 0/3, 1/3, 2/3 | PASS each: 34 stages per part; 1,714 / 2,028 / 1,760 builds; 0 new ids |
+| lockall vs main 6e7b85f8's lock (recorded this run) --intended (20) | PASS: 82/102 unchanged; moved = exactly 1-1, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 3-6, 3-7, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5 |
+| funcheck | FAIL, accepted: 22 worse/new, all present before this release, the lead's ruling 11-20 1:38 PM ET (table under Rough spots); identical to INT-14's final, flag for flag |
+| castBots 1-40 x kid/adult/child/middle/expert x both, on 1-1, 1-6, 1-8, 1-9, 2-4 | PASS every line. Tier bots: 1-8, 1-9, 2-4 40/40 everywhere; 1-1 child Normal 35/40 (shrine rescues on seeds 1, 5, 7, 12, 33 = the committed calibration's) and 1-6 child Normal 39/40 (seed 30, as committed): identical to INT-14's final |
+| test link file count | PASS: 478 files (limit 480) |
 
 ## Play Store check (PLAY-STORE-RULES §6, all 8)
 | # | item | proof, or "not checked, and why" |
 |---|---|---|
-| 1 | Nothing tappable or readable under the status bar, notch, camera hole or nav bar, both orientations, a foldable size | clipcheck CLIP_V: every menu screen and pop-up at 412x915 and 915x412, fresh / old / finished saves, fails a tap target inside the insets. In play, every changed stage draws both ways (drawcheck DRAW_V). **Foldable size: not checked** (clipcheck has no foldable viewport); no menu screen changed in this release (src/components: the HUD counter's petal icon and one stage clue's words only). |
+| 1 | Nothing tappable or readable under the status bar, notch, camera hole or nav bar, both orientations, a foldable size | clipcheck PASS: every menu screen and pop-up at 412x915 and 915x412, fresh / old / finished saves, fails a tap target inside the insets. In play, every changed stage draws both ways (drawcheck PASS). **Foldable size: not checked** (clipcheck has no foldable viewport); no menu screen changed in this release (src/components: the HUD counter's petal icon and one stage clue's words only). |
 | 2 | Back does something sensible on the new screen | **No new screen in this release** (diff of src/components and src/App.tsx vs main: the HUD icon, a clue's words, a test hook). Back was not re-checked on a phone. |
-| 3 | Nothing new is sent off the phone | npm run build:store STORE_V ("dist has no tracking, ads, collector, service worker or outside addresses"); no fetch, XMLHttpRequest, http(s) address or navigator call added anywhere in src (grep of the diff vs main). |
-| 4 | Nothing loads from the web; works in airplane mode | build:store STORE_V (no outside addresses); every new picture is bundled under src/assets (artcheck ARTV, vite build). **Airplane mode on a real phone: not checked** (no phone here). |
+| 3 | Nothing new is sent off the phone | npm run build:store PASS ("dist has no tracking, ads, collector, service worker or outside addresses"); no fetch, XMLHttpRequest, http(s) address or navigator call added anywhere in src (grep of the diff vs main). |
+| 4 | Nothing loads from the web; works in airplane mode | build:store PASS (no outside addresses); every new picture is bundled under src/assets (artcheck PASS, vite build). **Airplane mode on a real phone: not checked** (no phone here). |
 | 5 | Sound stops in the background; nothing keeps the phone awake | No audio, lifecycle or wake code changed (no AudioContext, visibilitychange, App listener or wake lock added; grep of the diff vs main). **Not re-checked on a phone.** |
-| 6 | Leaving, coming back and rotating keeps the player's place | No save, resume or lifecycle code changed: of the files that read or write saved data, App.tsx gained the test hook, protoStage.ts changed only level-building lines (its golden-seed save at line ~5765 is untouched) and movesJournal.ts only 1-9's page-opening rule; no saved key or shape changed. Every changed stage plays upright and sideways (drawcheck DRAW_V). **Not re-checked on a phone.** |
-| 7 | No dead ends or placeholder screens in the store build | No new screen. build:store STORE_V. Named: a test hook `?fixture=wheel` (shows 2-6's water wheel before 2-6 is built) joins the existing `?fixture=chase`; it opens only from a web address, and the store app has no address bar. |
-| 8 | Saves survive an update, the phone killing the app, a crash mid-stage, a full phone | No save format change (above); clipcheck walks old and finished saves CLIP_V. **The "kill it at the worst moment" check on a real phone: not checked** (no phone in this container; Matt's phone check before the closed test). |
+| 6 | Leaving, coming back and rotating keeps the player's place | No save, resume or lifecycle code changed: of the files that read or write saved data, App.tsx gained the test hook, protoStage.ts changed only level-building lines (its golden-seed save at line ~5765 is untouched) and movesJournal.ts only 1-9's page-opening rule; no saved key or shape changed. Every changed stage plays upright and sideways (drawcheck PASS). **Not re-checked on a phone.** |
+| 7 | No dead ends or placeholder screens in the store build | No new screen. build:store PASS. Named: a test hook `?fixture=wheel` (shows 2-6's water wheel before 2-6 is built) joins the existing `?fixture=chase`; it opens only from a web address, and the store app has no address bar. |
+| 8 | Saves survive an update, the phone killing the app, a crash mid-stage, a full phone | No save format change (above); clipcheck walks old and finished saves PASS. **The "kill it at the worst moment" check on a real phone: not checked** (no phone in this container; Matt's phone check before the closed test). |
 
 ## Rough spots, named (not fixed in this release)
 - **1-6 and 1-7: a small grass tab under the painted stone blocks' foot.** It is on main too (71 on main's 1-6). R-165.344, fixed
