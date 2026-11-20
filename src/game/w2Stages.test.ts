@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, ISLAND_TOP, type W2Plan } from './w2Stages.ts';
 import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
@@ -11,12 +11,12 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts)
-const PLANS: W2Plan[] = ['2-3', '2-5', '2-7', '2-8', '2-9'];
+const PLANS: W2Plan[] = ['2-3', '2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -152,7 +152,7 @@ test('2-9: the court: guards (royal snappers) and snappers, about one and a half
 
 test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swing frames, and the village at the end', () => {
   for (const s of SEEDS) {
-    const st = buildW2Stage({ ...cfg('2-5'), id: '2-7', miniIndex: 7, objectiveType: 'sprint' } as LevelConfig, s, '2-7');
+    const st = buildW2Stage({ ...cfg('2-7'), id: '2-7', miniIndex: 7, objectiveType: 'sprint' } as LevelConfig, s, '2-7');
     const lifts = st.platforms.filter((p) => p.lift);
     // (every round rides the basket up at least twice; the ride back down became a drop off the high ground's end, 2026-10-28)
     assert.ok(lifts.length >= 2, `seed ${s}: ${lifts.length} lifts`);
@@ -172,21 +172,7 @@ test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swi
   }
 });
 
-test('2-5: snappers, about one and a half times the goal, a row close enough for one kicked shell to bowl over', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-5'), s, '2-5');
-    assert.equal(st.config.targetCount, SNAPPER_GOAL_25);
-    assert.ok(st.enemies.every((e) => e.type === 'turtle'));
-    assert.ok(st.enemies.length >= SNAPPER_GOAL_25 * 1.4, `seed ${s}: ${st.enemies.length} snappers`);
-    const xs = st.enemies.map((e) => e.x).sort((a, b) => a - b);
-    let run = 1, best = 1;
-    for (let i = 1; i < xs.length; i++) {
-      run = xs[i] - xs[i - 1] < 160 ? run + 1 : 1;
-      best = Math.max(best, run);
-    }
-    assert.ok(best >= 4, `seed ${s}: a row of four`);
-  }
-});
+// (2-5's own tests moved with it to gen2/worlds/w2Arc25.test.ts when the hand build was deleted, BUILD-25: its snappers, its goal)
 
 test('the snapper: head-on it hides, its shell is kicked away, and from behind (or open after a snap) the blow lands', () => {
   const t = (state: string, facing: 1 | -1) => ({ x: 100, state, facing }) as unknown as Enemy;
@@ -201,7 +187,7 @@ test('the snapper: head-on it hides, its shell is kicked away, and from behind (
 
 test('2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top', () => {
   for (const s of SEEDS.slice(0, 8)) {
-    const st = buildW2Stage({ ...cfg('2-5'), id: '2-6', miniIndex: 6, objectiveType: 'ascent' } as LevelConfig, s, '2-6');
+    const st = buildW2Stage({ ...cfg('2-6'), id: '2-6', miniIndex: 6, objectiveType: 'ascent' } as LevelConfig, s, '2-6');
     assert.ok(st.proto.bankWall, `seed ${s}`);
     assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${s}: doors`);
     assert.ok(st.proto.ladders, 'the climbs are ladders');

@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 1 - the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 152.163498
+  type: 'test'
+  ...
+# Subtest: planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+ok 2 - planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 45.090772
+  type: 'test'
+  ...
+# Subtest: step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 3 - step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1983.636825
+  type: 'test'
+  ...
+# Subtest: step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 4 - step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1557.352369
+  type: 'test'
+  ...
+# Subtest: step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 5 - step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1992.135211
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+ok 6 - planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 4542.470783
+  type: 'test'
+  ...
+# Subtest: the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 7 - the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 50.095006
+  type: 'test'
+  ...
+# Subtest: planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+ok 8 - planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 23.44598
+  type: 'test'
+  ...
+# Subtest: wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 9 - wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1329.485463
+  type: 'test'
+  ...
+# Subtest: wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 10 - wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1360.392553
+  type: 'test'
+  ...
+# Subtest: wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 11 - wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1896.702775
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+ok 12 - planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 4439.94856
+  type: 'test'
+  ...
+# Subtest: the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+ok 13 - the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+  ---
+  duration_ms: 108.3792
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 14 - snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2214.354694
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 15 - snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1660.929132
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 16 - snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2128.193232
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 17 - snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1179.728121
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+ok 18 - planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 3273.071388
+  type: 'test'
+  ...
+# Subtest: the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+ok 19 - the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+  ---
+  duration_ms: 75.550171
+  type: 'test'
+  ...
+# Subtest: snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 20 - snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1451.185636
+  type: 'test'
+  ...
+# Subtest: snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 21 - snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1425.271991
+  type: 'test'
+  ...
+# Subtest: snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 22 - snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2182.462654
+  type: 'test'
+  ...
+# Subtest: snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 23 - snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1201.575841
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+ok 24 - planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 3262.990303
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21104.239109

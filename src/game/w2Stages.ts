@@ -31,15 +31,12 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-3': '2-3',
-  '2-5': '2-5',
   '2-6': '2-6',
   '2-7': '2-7',
   '2-8': '2-8',
   '2-9': '2-9',
 };
 
-/** 2-5 asks for 14 snappers chased off (the stage holds about 21) */
-export const SNAPPER_GOAL_25 = 14;
 /** 2-3: five little ones to free (capybaras, ducklings and otters), each in a reed cage on a pulley */
 export const CAGES_23 = 5;
 /** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
@@ -1081,7 +1078,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
+  const targetCount = plan === '2-3' ? CAGES_23 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

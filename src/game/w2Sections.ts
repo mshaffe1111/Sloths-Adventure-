@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-3' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-3' | '2-6' | '2-7' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -95,7 +95,6 @@ export interface W2Kit {
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
-  '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
@@ -113,13 +112,12 @@ export interface W2Picks {
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
  * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-3 and 2-8 (the cages),
- * 2-4 and 2-7 (swings and lifts), 2-5 and 2-9 (the animals). (2-1 and 2-2 are gen2's since ENG-W2, 11-14: gen2/worlds/w2.ts)
+ * 2-4 and 2-7 (swings and lifts). (2-1, 2-2, 2-4 and 2-5 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts)
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
-  '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
 };
 
@@ -393,121 +391,6 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? 2 : 12);
       while (k.expert < target && n < 14) {
         cross.step(turns.next(), n, turns.kinds);
-        if (++n % 2 === 0) k.flag();
-      }
-      k.rest(R.r(300, 400), false);
-    });
-  },
-
-  // ======================================================================================================================
-  // 2-5 River Snappers: chase the snapping turtles off the bank, and out on the river: the snappers' own fight. Learn: one at a time;
-  // a blow to the face only sends it into its shell, so get behind it or stomp it. Then, by the roll: rows of them on the banks where a
-  // kicked shell bowls the rest over; the river itself, a snapper on each sandbar between the crossings; or the lily ponds, a snapper
-  // on the bank between each pond and the stepping stones.
-  '2-5': (k, flavour, rng) => {
-    const { R } = k;
-    /** a long bank with snappers spread along it, each on its own patch, clear of the flags at either end */
-    const snapperBank = (n: number, spacing: [number, number]) => {
-      const x0b = k.x;
-      // (a short walk in and out: the long banks either side of the snappers were the dead time on 2-5's rolls)
-      k.run(R.r(110, 140));
-      for (let i = 0; i < n; i++) {
-        k.run(R.r(spacing[0], spacing[1]));
-        k.turtle(k.x);
-      }
-      k.run(R.r(220, 250));
-      k.row(x0b + 120, k.x - 120, k.G - 34, Math.max(2, Math.round((k.x - x0b) / 200)), 'hibiscus');
-      k.addExpert((k.x - x0b) / 285 + n * 1.6);
-      k.mark(`snappers${n}`, x0b);
-    };
-    /** a sandbar between two crossings with a snapper on it: the fight, then the rest of the sand to breathe on before the next logs */
-    const sandFight = () => {
-      const ix = k.x;
-      k.island(R.r(470, 520));
-      // (far enough along the sand to be clear of a flag on the bank before it)
-      k.turtle(ix + 220, k.G, 90);
-      k.addExpert((k.x - ix) / 285 + 2);
-      k.mark('sandFight', ix);
-    };
-    /** a bank between two crossings with one snapper on it, and a breath of bank to walk after */
-    const bankFight = () => {
-      const ix = k.x;
-      k.run(R.r(180, 220));
-      k.turtle(k.x + 60, k.G, 100);
-      k.run(R.r(300, 340));
-      k.addExpert((k.x - ix) / 285 + 2);
-      k.mark('bankFight', ix);
-    };
-    const cross = new Crossings(k, { speed: 64 });
-    cross.know('with');
-    // the snappers' ways about the river, by the roll: rows of them on long banks; one on each sandbar between the logs; one between each
-    // lily pond and run of stepping stones; or out on the reed islands of the creek, one by each channel
-    type T = 'row' | 'pair' | 'sand' | 'pond' | 'stones' | 'channels' | 'back' | 'with';
-    const kinds: Record<string, T[]> = {
-      banks: ['row', 'pair', 'row', 'with'],
-      sandbars: ['sand', 'back', 'sand', 'with'],
-      ponds: ['pond', 'stones', 'pond', 'stones'],
-      creek: ['channels', 'channels', 'back'],
-    };
-    const turns = new Turns<T>(rng, kinds[flavour], 1);
-    const fight = (t: T) => {
-      if (t === 'row') snapperBank(4, [120, 150]);
-      else if (t === 'pair') snapperBank(2, [260, 320]);
-      else if (t === 'sand') {
-        cross.go('back');
-        sandFight();
-      } else if (t === 'pond' || t === 'stones' || t === 'channels') {
-        cross.go(t);
-        bankFight();
-      } else {
-        cross.go(t);
-        if (flavour === 'creek') bankFight();
-      }
-    };
-    k.beat('Learn: one snapper', () => {
-      // (the first snapper well past four seconds of walking: it was 1 s in, and bit him before Dot's first line, QA 2026-10-28)
-      // (and past five and a half seconds: at 4.7 s the first-timer bot's plain walk was still bitten, 2026-10-28)
-      k.startWalk(k.START_WALK + 400);
-      k.hint(200, 'Snappers! Hit one from behind, or jump on it.');
-      k.run(R.r(120, 160));
-      k.turtle(k.x, k.G, 100);
-      k.run(R.r(260, 300));
-      k.addExpert(3);
-      k.hint(k.x - 200, 'Head-on, it hides. Kick the shell!');
-      snapperBank(2, [300, 360]);
-      narrow(k, 1, 66, { safe: true });
-      k.flag();
-    });
-    k.beat(`Develop: the snappers’ ${flavour}`, () => {
-      k.breath();
-      if (flavour === 'banks') k.hint(k.x + 20, 'A row of snappers. Kick a shell into the others!');
-      else if (flavour === 'sandbars') k.hint(k.x + 10, 'Snappers out on the sandbars!');
-      fight(turns.next());
-      k.heart(k.x - 40, k.G - 60);
-      fight(turns.next());
-      fight(turns.next());
-      k.flag();
-    });
-    k.beat('Twist: bowl them over', () => {
-      k.breath();
-      if (flavour !== 'banks') k.hint(k.x + 20, 'A row of snappers. Kick a shell into the others!');
-      // close together: a shell kicked along this bank meets every one of them
-      snapperBank(4, [110, 140]);
-      k.heart(k.x - 40, k.G - 60);
-      fight(turns.next());
-      // a golden seed high over a row of snappers: the top of a double jump from the middle of the bank
-      const sx = k.x;
-      snapperBank(3, [200, 240]);
-      k.goldenSeed((sx + k.x) / 2, k.G - 190);
-      k.flag();
-    });
-    k.beat('Finish', () => {
-      let n = 0;
-      const target = k.EXPERT_SECONDS - 4 + (flavour === 'ponds' || flavour === 'creek' ? -6 : 6);
-      // (and snappers enough, about one and a half times the goal, whatever the roll)
-      while ((k.expert < target || k.enemies() < 21) && n < 24) {
-        k.breath();
-        fight(turns.next());
         if (++n % 2 === 0) k.flag();
       }
       k.rest(R.r(300, 400), false);

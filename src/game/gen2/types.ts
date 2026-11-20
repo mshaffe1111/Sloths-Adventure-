@@ -590,6 +590,8 @@ export interface StageBudget {
   /** the world's `lessons` say an EARLIER stage taught the double and the old rule (levelCheck doubleAllowed) does not already count it
    *  here: the built stage's config carries it, and the lay's link reach reads it (packet E12 item 5) */
   doubleTaught?: true;
+  /** the goal's count is the stage's design (LevelConfig.countSet): its sockets' animals are laid, no top-up (fightsForGoal) */
+  countSet?: true;
   archetype: Archetype;
   /** the stage is laid as a tower (MissionGraph.flow, R-165.170): UP for an ascent or a stage whose data says it travels up, DOWN for
    *  one whose data says it travels down (LevelConfig.travel, the one place a stage names its travel). Unset on a run */

@@ -15,8 +15,9 @@ test('Dot\'s goal lines read right for every goal, every world and any count (2-
           // no word twice in a row
           for (let i = 1; i < words.length; i++) assert.notEqual(words[i], words[i - 1], line);
           // no doubled verb ("Free 3 animals freed", "Still 3 predators to find")
-          assert.ok(!/freed|found|defeated|collected/i.test(line), `a past tense in a goal: ${line}`);
-          const verbs = line.toLowerCase().match(/\b(free|find|defeat|collect)\b/g) ?? [];
+          assert.ok(!/freed|found|defeated|collected|chased/i.test(line), `a past tense in a goal: ${line}`);
+          // (chase: World 2's purge, 2-5, where nobody is hurt and the snappers are only chased off: the story keeper's words, KEEPER-25)
+          const verbs = line.toLowerCase().match(/\b(free|find|defeat|collect|chase)\b/g) ?? [];
           assert.equal(verbs.length, 1, `one verb: ${line}`);
           // one thing is singular, more are plural
           const counted = line.match(new RegExp(`\\b${n} (?:more )?([a-z]+(?: [a-z]+)?)`))?.[1] ?? '';
@@ -31,6 +32,10 @@ test('Dot\'s goal lines read right for every goal, every world and any count (2-
   assert.equal(goalLine('start', 2, 'rescue', 1), 'Free 1 animal to open the sanctuary');
   assert.equal(goalLine('late', 1, 'harvest', 5), 'Still 5 petals to collect before the sanctuary opens');
   assert.equal(goalLine('sealed', 4, 'purge', 2), 'Sealed: defeat 2 more predators to open it');
+  assert.equal(goalLine('start', 2, 'purge', 1), 'Chase off 1 snapper to open the sanctuary');
+  assert.equal(goalLine('late', 2, 'purge', 3), 'Still 3 snappers to chase off before the sanctuary opens');
+  assert.equal(goalLine('sealed', 2, 'purge', 2), 'Sealed: chase off 2 more snappers to open it');
+  assert.equal(goalLine('start', 3, 'purge', 2), 'Defeat 2 predators to open the sanctuary');
   assert.equal(goalLine('start', 3, 'relic_hunt', 4), 'Find 4 keepsakes to open the sanctuary');
   // a stage with no count to reach has no goal line
   assert.equal(goalLine('start', 1, 'sprint', 1), '');

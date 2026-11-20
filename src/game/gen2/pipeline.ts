@@ -41,7 +41,7 @@ import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
-import { goalCountsPetals } from '../goals.ts';
+import { goalCountsPetals, heldEasyGoal } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
@@ -420,8 +420,8 @@ export function difficultyScore(world: number, stage: number, band = bandFor(wor
 
 /** a stage that fights for its goal: a purge or gauntlet whose goal counts animals. One whose goal counts petals (goals.ts goalCountsPetals:
  *  1-9) lays its sockets' animals and no more: no top-up, no reserve for top-up fights, never "thin" or short of animals (BUILD-19) */
-export const fightsForGoal = (b: Pick<StageBudget, 'archetype' | 'world' | 'stage'>): boolean =>
-  (b.archetype === 'purge' || b.archetype === 'gauntlet') && !goalCountsPetals({ objectiveType: b.archetype, worldIndex: b.world, miniIndex: b.stage });
+export const fightsForGoal = (b: Pick<StageBudget, 'archetype' | 'world' | 'stage' | 'countSet'>): boolean =>
+  (b.archetype === 'purge' || b.archetype === 'gauntlet') && !b.countSet && !goalCountsPetals({ objectiveType: b.archetype, worldIndex: b.world, miniIndex: b.stage });
 
 export function planBudget(config: LevelConfig, manifest: WorldManifest, difficulty: Difficulty): StageBudget {
   const archetype = config.objectiveType as Archetype;
@@ -435,8 +435,9 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to. A stage
   //  whose goal counts petals (goals.ts goalCountsPetals: 1-9, a gauntlet that gathers her petals) never tops up animals to an animal
   //  goal: it lays its sockets' animals, BUILD-19 / the lead's ruling 10:09 AM ET 11-18)
-  const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex });
-  const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
+  const fights = fightsForGoal({ archetype, world: config.worldIndex, stage: config.miniIndex, ...(config.countSet ? { countSet: true as const } : {}) });
+  // (a goal the stage's design sets, LevelConfig.countSet: Easy is held to easyMode's goal of it all the same, and the lay is its sockets')
+  const check = (fights || config.countSet) && easy ? heldEasyGoal(goal) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
   // `lessons` row, as the node code's V3 reads it; carried only where the old rule does not already count it, so no stage that
@@ -448,6 +449,7 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
     world: config.worldIndex,
     stage: config.miniIndex,
     ...(doubleTaught ? { doubleTaught: true as const } : {}),
+    ...(config.countSet ? { countSet: true as const } : {}),
     archetype,
     // (a tower, R-165.170: an ascent is laid up; a stage whose data says it travels up or down is laid that way. A run names nothing)
     ...(config.travel === 'up' || config.travel === 'down' ? { flow: config.travel } : archetype === 'ascent' ? { flow: 'up' as const } : {}),
@@ -2841,7 +2843,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         rivers.push(r.zone);
         riverPetals.push(...r.petals);
         if (r.zone.spur) spurAt.set(lp.key, r.zone.spur);
-        for (const c of r.clocks) if (!padClocks.some((q) => q.id === c.id)) padClocks.push(c);
+        for (const c of r.clocks) {
+          const had = padClocks.find((q) => q.id === c.id);
+          // (rows that share a clock by name, PadRow.clock: one bar, or the stage would keep two under one name)
+          if (had && JSON.stringify(had) !== JSON.stringify(c)) throw new Error(`gen2 section ${tpl.id}: pad row "${lp.pads.row}" keeps clock ${c.id} on another bar than the row before it`);
+          if (!had) padClocks.push(c);
+        }
       }
       // (each water wheel (place `wheel`): its buckets and its pond between the jetty and the street, laid by the one wheel lay (wheelLay.ts
       // layWheel), turned the way the street lies from the jetty (a tower's storey that runs left lays it turned the other way)
@@ -4238,7 +4245,7 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)

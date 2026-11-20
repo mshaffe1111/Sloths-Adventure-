@@ -351,6 +351,9 @@ export function generateAllLevels(): LevelConfig[] {
           break;
       }
 
+      // (a count the stage's design sets, StageSpec.count: the goal is that, and gen2 lays its own animals, no top-up; LevelConfig.countSet)
+      if (spec?.count !== undefined) targetCount = spec.count;
+
       // Check persisted progress
       let unlocked = world.id === 1 && miniIndex === 1;
       let completed = false;
@@ -376,6 +379,7 @@ export function generateAllLevels(): LevelConfig[] {
         name: objType === 'boss_lair' || !spec ? `${world.bossName}'s Lair` : spec.name,
         objectiveType: objType,
         targetCount,
+        ...(spec?.count !== undefined ? { countSet: true as const } : {}),
         timeLimit,
         levelWidth,
         levelHeight,

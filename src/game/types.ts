@@ -83,6 +83,9 @@ export interface LevelConfig {
   /** (gen2) an earlier stage's lesson taught the double jump, so this stage's checks count it (levelCheck.ts doubleAllowed); set only by
    *  pipeline.ts planBudget from the world's `lessons`, and only where the old rule (mission 6 on) does not already count it */
   doubleTaught?: true;
+  /** the goal's count is the stage's design (stagePlan.ts StageSpec.count, R-165.336): `targetCount` is that count, and gen2 lays the
+   *  stage's own sockets' animals, no top-up (pipeline.ts fightsForGoal). Data: no engine line names a stage */
+  countSet?: true;
   name: string;
   objectiveType: ObjectiveType;
   targetCount: number;

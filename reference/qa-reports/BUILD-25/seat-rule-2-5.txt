@@ -1,0 +1,2 @@
+seat rule (R-165.327, t-int-14's seatBreaches) on 2-5's list: 100 seeds x 2 settings = 200 builds, 200 with piece tags; 0 breaches
+PLANT (awake snapper 300 px back): a predator off its piece (normal): the turtle at 7507 in w2-25-awake stands on 'in', its socket e on 'b'
