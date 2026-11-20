@@ -1,22 +1,26 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-20 for ART-NEXT (§0i); §0h and below still true
+# Hand-off: the art director role (Content), rewritten 2026-11-20 for ART-NEXT-b (§0i); §0h and below still true
 
 Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
-## 0i. 11-20 ART-NEXT (t-art-next): World 2/3 needs table + batch 1 (2-7..2-9 village pieces); takes back, picks/cut OPEN
-- Needs: reference/art/NEEDS-W2W3.md (HAVE/REUSE/GAP per regular stage, 7 batches by first stage). OPEN: the special stages (W2 hidden,
-  puzzle rooms, W2/W3 bosses) per the lead 3:52 PM; batches 2-7 each on the lead's go.
-- Batch 1: Qwen-Image-Edit-2511 from paste-ups (tools/art/hfnext/starts.py; the weir from World 2's BROWN rocks, origin/t-eng-rock
-  w2-rocks.webp: the lead ruled w2-new#stone-* grey stones out of World 2). 34 takes in reference/art/hfnext/takes/, sheet
-  batch1-takes.jpg. The lead's picks are in REPORT.md (5:15 PM; reeds rejected -> batch 2). OPEN: cut + catalog.
-- Route that works: packer.py in the sandbox packs each PIECE into 95 KB parts the moment its takes are done; `hf_sandbox_fs cat
-  <part> --max-bytes 100000` (saved to a file, ~1.2k tokens of context), rebuild with tools/art/hf1113/pull.py, commit per piece.
-- Traps: (1) the sandbox token lives in the session's connection: a reset (worker restart) gave 403 "invalid or missing
-  X-Sandbox-Token" on exec AND fs for the rest of the sandbox's life; the first run's takes were lost ($2.06). Pull per piece. (2) A
-  SMALL `cat` (under the token limit) lands IN context and is NOT saved: never peek that way. (3) hf_jobs "logs" asks a human for
-  approval nobody can give from a member session: don't call it. (4) Unplaced cut art can't go in src/assets (artUse.allow.json
-  only shrinks): keep cuts under reference/art/hfnext/cut/ with origin/<branch>: paths in the catalog. (5) cut.py needs scipy
-  (`pip install scipy` in a fresh container).
+## 0i. 11-20 ART-NEXT + ART-NEXT-b (t-art-next): batch 1 cut + catalogued (ACCEPTED); special stages in NEEDS; batch 2 run
+- Needs: reference/art/NEEDS-W2W3.md: regular stages, the SPECIAL stages (The Rapids has no design; no new W2/W3 puzzle room is
+  designed; Crocus Rex / Shadow Prowler art in game, a bigger repaint only if PREDATORS.md's "ten guardians" is adopted), batches 1-7,
+  the batch 2 plan. Batches 3-7 each wait on the lead's go.
+- Batch 1 (World 2 village): 9 cuts in reference/art/hfnext/cut/ (NOT placed: artUse.allow.json only shrinks), rows w2-next#* part
+  NEXT1 (tools/art/hfnext/catalog.py; file 'origin/t-art-next:...'; used_in MUST be 'none (not placed)'; slot 'new slot: World 2 ...'
+  or a standable slot opens a gap in every world; inventory.test.ts pins the branch-only count, now 203). Contact sheet
+  hfnext/batch1-cuts.jpg (contact.py), weir mock with the deep river hfnext/weir-river-mock.jpg (weirmock.py). A level builder wires them.
+- Batch 2 (grotto floor kit + 2-8 reeds redo): starts tools/art/hfnext/starts2.py -> reference/art/hfnext/starts2/, spec
+  make_spec2.py -> spec-b2.json, run `bash run.sh <commit> spec-b2` in ONE sandbox created with **--forward-hf-token** (pokeygpu.py
+  reads HF_TOKEN; without it the run dies at once: 11-20 a first sandbox was lost that way, ~1 min). Takes to reference/art/hfnext/
+  takes2/<group>/; REPORT.md "EXACT NEXT STEP" has where it stands.
+- Tools: cut.py (border-flood key; `keep=x0,y0,x1,y1` protects grey paint the trapped-grey rule would punch: boatB's hull); weirfoot.py
+  (a piece whose take paints a pool off the frame: drop the water outside the outer rocks, fade the foot, round a frame-sliced rock);
+  sheet.py (takes sheet; FRAME EDGE flag: paint on >1% of a frame edge = reject before the pick, the lead 11-20).
+- Traps: (1) a pick can be cut off by its frame and the game-size preview hides it (barge s23): read the FRAME EDGE flags. (2) a colour
+  test for "rock" must hold on the shadow side (mauve read as water). (3) sandbox token lives in the session's connection: pull per piece.
+  (4) a SMALL `cat` lands in context and is not saved: never peek. (5) hf_jobs "logs" asks a human: don't call it. (6) cut.py needs scipy.
 
 ## 0f. 11-15 ART-W2 (t-art-w2): 9 World 2 pieces in src/assets/w2-1115/, catalogued (part W2A), NOT wired
 - Slots: reference/qa-reports/ART-W2/REPORT.md "Slot map" (BUILD-21: shallow look + long log + bounce; ENG-22: pad states + crown).
