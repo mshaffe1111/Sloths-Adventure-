@@ -85,7 +85,8 @@ class PadPiece implements StagePiece {
   }
 
   /**
-   * a snap stone biting under him: a heart that holds him where he stands (PieceHurt.hold), once its bite has him; null otherwise. It has
+   * a snap stone biting under him: a heart that holds him where he stands (PieceHurt.hold), once its bite has him (on a teaching row,
+   * Pad.freeBite, the same jolt and hold for no heart); null otherwise. It has
    * him when he stands on its top with his MIDDLE over it (ENG-25c; the lead's ruling 11-19): his feet stand 13 px past a floor's end, so
    * over 30 px of water he can stand across two stones, and the one his toes barely touch never bites him (the wave toy's straddle)
    */
@@ -94,7 +95,7 @@ class PadPiece implements StagePiece {
     if (!p?.grounded) return null;
     for (const r of this.runs) {
       const q = r.plat;
-      if (r.bar && r.now.hurts && Math.abs(p.y - q.y) <= 1 && p.x >= q.x && p.x <= q.x + q.width) return { amount: 1, fromX: q.x + q.width / 2, hold: true };
+      if (r.bar && r.now.hurts && Math.abs(p.y - q.y) <= 1 && p.x >= q.x && p.x <= q.x + q.width) return { amount: q.pad?.freeBite ? 0 : 1, fromX: q.x + q.width / 2, hold: true };
     }
     return null;
   }

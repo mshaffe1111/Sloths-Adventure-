@@ -238,6 +238,9 @@ export interface PadRow {
    *  stone (RiverZone.spur), which the route visits out and back (route.ts). Its stone stands against the far bank's foot (no water past
    *  it; its last gap is not used) */
   spur?: true;
+  /** a 'snap' row that TEACHES the bite: each stone's bite jolts and holds him but costs no heart (Pad.freeBite; the lead's ruling
+   *  11-20: a teach never costs a heart). Set on the row a lesson is taught on, never on a row that asks for the count */
+  freeBite?: true;
 }
 
 export const PAD_LAY = {
@@ -345,7 +348,7 @@ export function layPads(row: PadRow, id: string, x0: number, bankY: number, next
       // (a snap stone: a floor always ('solid'), painted by the pad piece; the wave's stone i bites i counts later: shift -i x count)
       const shift = row.snap!.wave ? -nSnap * row.snap!.count : 0;
       nSnap++;
-      pads.push({ id: nextId(), x, y, width: SNAP_LAY.w, height: SNAP_LAY.h, type: 'solid', art: 'snapStone', pad: { by: 'beat', on: 'bites', clock: snapId, ...(shift ? { shift } : {}), look: 'snap' } });
+      pads.push({ id: nextId(), x, y, width: SNAP_LAY.w, height: SNAP_LAY.h, type: 'solid', art: 'snapStone', pad: { by: 'beat', on: 'bites', clock: snapId, ...(shift ? { shift } : {}), look: 'snap', ...(row.freeBite ? { freeBite: true as const } : {}) } });
     } else {
       const clock = row.by === 'beat' ? beatId : `pad-${k}`;
       if (row.by === 'snap') throw new Error(`pad row ${id}: a snap row lays a ${k} pad`);

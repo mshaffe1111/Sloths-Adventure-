@@ -25,6 +25,8 @@ import type { LevelConfig, Platform } from '../types.ts';
 const ROWS = {
   step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } },
   wave: { by: 'snap', pads: ['snap', 'snap', 'snap', 'stone', 'snap'], gap: 30, snap: { count: 0.75, wave: true } },
+  /** a TEACHING row (R-165.337, the lead's ruling 11-20: a teach never costs a heart): its bite jolts and holds, no heart */
+  teach: { by: 'snap', pads: ['snap'], gap: 30, snap: { count: 0.75 }, safe: true, freeBite: true },
 } as const satisfies Record<string, PadRow>;
 
 test('the bar: four counts, the bite the fourth, out of a creak at the end of the third; Easy stretches it; the count reads 1-4', () => {
@@ -236,4 +238,42 @@ test('the jaw\'s frames read as the bar: counts 1-3 open a notch each; four clap
   assert.equal(SNAP_ART.frames, 5);
   assert.deepEqual([1, 2, 3].map((c) => snapFrame(c, false)), [1, 2, 3], 'OPEN-1, OPEN-2, OPEN-3');
   assert.deepEqual([0, 0.2, 0.39, 0.5, 0.99].map((u) => snapFrame(4, true, u)), [4, 4, 4, 0, 0], 'the bite: SNAP, then SHUT');
+});
+
+test('a teaching row (R-165.337): the bite jolts and holds him as any bite does, and costs no heart; planted: the same row without freeBite costs one', () => {
+  const bite = (rows: Record<string, PadRow>) => {
+    const { kit, seed, st } = built(rows, 'teach');
+    const dict: string[] = [];
+    const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+    setDifficulty('normal');
+    return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+      const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+      try {
+        return withFixtureConfig(cfg, () => {
+          const sim = new RealPlay(ID, seed, cfg);
+          const stone = (sim as unknown as { platforms: Platform[] }).platforms.find((p) => p.pad?.on === 'bites')!;
+          sim.p.x = stone.x + stone.width / 2;
+          sim.p.y = stone.y - 60;
+          sim.p.vx = sim.p.vy = 0;
+          sim.safe = false;
+          sim.p.invincibleTimer = 0;
+          const hp0 = sim.p.hp;
+          let jolted = false, vx = NaN;
+          for (let f = 0; f < 30 * 4 && !jolted; f++) {
+            sim.frame();
+            if (sim.p.invincibleTimer > 0) { jolted = true; vx = sim.p.vx; }
+          }
+          return { free: stone.pad?.freeBite === true, jolted, vx, lost: hp0 - sim.p.hp };
+        });
+      } finally {
+        undo();
+      }
+    });
+  };
+  const t = bite(ROWS);
+  assert.ok(t.free && t.jolted, 'the teaching stone bites (the jolt, its safe time)');
+  assert.equal(t.vx, 0, 'it holds him on the stone');
+  assert.equal(t.lost, 0, 'no heart for a teach');
+  const plant = bite({ ...ROWS, teach: { ...ROWS.teach, freeBite: undefined } as PadRow });
+  assert.ok(!plant.free && plant.jolted && plant.lost === 1, `the plant: the same row without freeBite costs a heart (lost ${plant.lost})`);
 });

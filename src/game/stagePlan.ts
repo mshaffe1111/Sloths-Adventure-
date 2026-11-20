@@ -23,6 +23,10 @@ export interface StageSpec {
   desc?: string;
   /** the count {n} names: what the engine's goal is on every roll (stagePlanGoals.test.ts checks it) */
   goal?: number;
+  /** the goal's count AS DESIGNED (R-165.336, BUILD-25 11-20: 2-5.md lays 7 snappers and asks 6): it IS the stage's targetCount (worldsData.ts),
+   *  and gen2 lays the stage's own sockets' animals, never a top-up to the goal + 2 (pipeline.ts fightsForGoal; LevelConfig.countSet).
+   *  Unset, the mission's formula and its top-up */
+  count?: number;
   /** which way the route leads when it is not the mission's usual way (a climb goes up, the rest right): 4-7 goes down the cliff */
   travel?: import('./stageKit.types.ts').Travel;
   /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
