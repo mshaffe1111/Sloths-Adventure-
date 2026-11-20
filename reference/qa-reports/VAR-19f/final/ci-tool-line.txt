@@ -1,0 +1,103 @@
+TAP version 13
+# Subtest: the vocabulary is read from the code: a new ZoneKind with no table entry fails (a)
+ok 1 - the vocabulary is read from the code: a new ZoneKind with no table entry fails (a)
+  ---
+  duration_ms: 86.901564
+  type: 'test'
+  ...
+# Subtest: beats.ts's families are its off() labels: addAs, a 'beat:' literal and a span's label; a zone span passes its own
+ok 2 - beats.ts's families are its off() labels: addAs, a 'beat:' literal and a span's label; a zone span passes its own
+  ---
+  duration_ms: 0.151395
+  type: 'test'
+  ...
+# Subtest: a symbol the table names must resolve: a renamed channel fails (e)
+ok 3 - a symbol the table names must resolve: a renamed channel fails (e)
+  ---
+  duration_ms: 22.293197
+  type: 'test'
+  ...
+# Subtest: a piece a built stage uses needs a bot AND a channel, or a known-list entry for the missing half (b)
+ok 4 - a piece a built stage uses needs a bot AND a channel, or a known-list entry for the missing half (b)
+  ---
+  duration_ms: 64.50818
+  type: 'test'
+  ...
+# Subtest: the known list only shrinks: a covered entry, or one no built stage uses, fails (d)
+ok 5 - the known list only shrinks: a covered entry, or one no built stage uses, fails (d)
+  ---
+  duration_ms: 54.992206
+  type: 'test'
+  ...
+# Subtest: the meter refuses a piece it has no channel for: unpriced throws, a known one keeps its old price; a refusal is a fault (c)
+ok 6 - the meter refuses a piece it has no channel for: unpriced throws, a known one keeps its old price; a refusal is a fault (c)
+  ---
+  duration_ms: 24.651636
+  type: 'test'
+  ...
+# Subtest: on real stages: a stage with an unpriced piece is refused (4-2's wind), never a flat 2; 1-4's known crumbling branch keeps its 2 bits, marked
+ok 7 - on real stages: a stage with an unpriced piece is refused (4-2's wind), never a flat 2; 1-4's known crumbling branch keeps its 2 bits, marked
+  ---
+  duration_ms: 2911.849022
+  type: 'test'
+  ...
+# Subtest: a hop onto a drifting log is a moving jump: its board window (feet on the log, once a log spacing), not nothing (planted: the old meter priced it 0)
+ok 8 - a hop onto a drifting log is a moving jump: its board window (feet on the log, once a log spacing), not nothing (planted: the old meter priced it 0)
+  ---
+  duration_ms: 1.387901
+  type: 'test'
+  ...
+# Subtest: the step-off is a forced deadline: a single jump's reach over the log's speed, or half the ride, the shorter; Easy no harder
+ok 9 - the step-off is a forced deadline: a single jump's reach over the log's speed, or half the ride, the shorter; Easy no harder
+  ---
+  duration_ms: 0.363674
+  type: 'test'
+  ...
+# Subtest: a miss into the water costs what the water costs: a teaching river splashes him back (soft), a deep one is a life
+ok 10 - a miss into the water costs what the water costs: a teaching river splashes him back (soft), a deep one is a life
+  ---
+  duration_ms: 0.153046
+  type: 'test'
+  ...
+# Subtest: a ride on a stage beat (ride.ts): board while it stands at the near end, once in two periods, plus the still jump; Easy stretches it
+ok 11 - a ride on a stage beat (ride.ts): board while it stands at the near end, once in two periods, plus the still jump; Easy stretches it
+  ---
+  duration_ms: 0.379512
+  type: 'test'
+  ...
+# Subtest: a moving floor on no clock the meter reads is refused, never priced as nothing
+ok 12 - a moving floor on no clock the meter reads is refused, never priced as nothing
+  ---
+  duration_ms: 0.400201
+  type: 'test'
+  ...
+# Subtest: on a real river stage (the hand-built 2-1): every hop onto or off a log is priced, and its river beat is no flat 2
+ok 13 - on a real river stage (the hand-built 2-1): every hop onto or off a log is priced, and its river beat is no flat 2
+  ---
+  duration_ms: 2185.645662
+  type: 'test'
+  ...
+# Subtest: a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused
+ok 14 - a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused
+  ---
+  duration_ms: 0.71683
+  type: 'test'
+  ...
+# Subtest: a beat pad is priced from its row's breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)
+ok 15 - a beat pad is priced from its row's breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)
+  ---
+  duration_ms: 0.234421
+  type: 'test'
+  ...
+# Subtest: a pad whose clock the stage does not list is refused, never priced as nothing
+ok 16 - a pad whose clock the stage does not list is refused, never priced as nothing
+  ---
+  duration_ms: 0.360561
+  type: 'test'
+  ...
+# Subtest: 2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE \#7), the stage scored, never refused
+ok 17 - 2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE \#7), the stage scored, never refused
+  ---
+  duration_ms: 1282.486619
+  type: 'test'
+  ...
