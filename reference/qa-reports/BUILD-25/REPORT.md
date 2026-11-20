@@ -3,6 +3,84 @@
 Branch t-build-25 from t-int-14 6ab312e4 (ENG-25c already in, not re-merged). Head: the commit carrying this report.
 Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0 plan sent 11:49 AM ET; the lead's GO 11:50 AM ET.
 
+
+## BUILD-25b (Opus 5.5 high; written 12:38 PM ET Fri 11-20 by `date`; stopped at the lead's context plan, ~360k real)
+
+### EXACT NEXT STEP (BUILD-25c, a fresh builder at high, on t-build-25 at this report's commit)
+1. `npm install --no-audit --no-fund --legacy-peer-deps`, then `git checkout package-lock.json`.
+2. Read the gate list's result: it was RUNNING when 25b stopped (head 9b645fbf, the lay's final head; runner
+   scratchpad gates.sh, logs NOT kept). If the lead did not collect it: run THE CLAUDE.md CHECK LIST once on this head on a frozen worktree
+   (`git worktree add --detach`, node_modules symlinked), every gate line PASS or FAIL, the suite line with shard count and
+   tests / pass / fail / todo; plus `seedlist 2-5 --check`, `funcheck 2-5` (repeat lines for 2-5), lockall recorded on 6a61c36c and checked
+   here with `--intended 2-5` (the goal fix touches goals.ts: lockall must show only 2-5 moved; any other stage moving goes to the lead).
+3. WAIT for R-165.339 (bots: the bonk's steer-back at the child's thumb, and the taught "wait for the snap, then kick" for child/kid,
+   proven on a toy) to land, merge it, then castBots 2-5 1-40 x kid,adult,child,middle,expert x both again; every child/middle/expert miss
+   traced (two runs per cause). If the child misses on the count of 8: to the lead before changing anything.
+4. WAIT for R-165.338 (drawRockArt picks among the kit's rock frames + mirror by platform id), merge it, re-shoot the rock stills
+   (x 821/1495/1832/3082/3420 on L1 sideways) and judge them for repeats.
+5. The lead judges the stills below; fix what he sends back; then the REPORT's final polish check.
+
+### What 25b did (each on t-build-25; heads named)
+- **The quiet line** (e4da942b): traced (quietOf, seeds 1-20): the same joins ran 4.2-7.0 s with nothing to do (reach->teach stone 4.2,
+  teach stone->sleeper 4.5-7.0, three->awake 5.2, rope->wave 5.3, sandbars->quickening 4.7-5.0); petals on flat ground are not a beat, a hop
+  is. A 50 px moss_stone rock (the rest's stump) on reach z 0.3, one-stone z 0.6, sleeper a 0.6, awake a 0.5, wave a 0.6, quickening a 0.6
+  (each 290+ px from a snapper patch, nothing that hurts between a tip and its thing); the rest's end banks 300 -> 240. The lead accepted
+  it 12:14 PM. 6-seed pre-check 6 of 6 (was 5 of 1,199).
+- **R-165.336 finished** (6ba1a4b7, the lead's ruling): Play asked 2-5 for 7 / Easy 6 (withGoals ignored countSet, a share of the 9 laid).
+  goals.ts: a countSet stage's goal IS its targetCount, Easy `heldEasyGoal` (round x 0.6), the ONE helper pipeline.ts's Easy check calls
+  too. Play now asks 8 / 5 (RealPlay('2-5', 1), both settings).
+- **Tests and plants**: w2Arc25.test.ts (8 tests: lines verbatim + where said; the arc beat for beat; snap rows by beat, the two bars,
+  free teach bite; nine snappers by beat and bar, the first asleep, Play's goal 8 / 5; teach distances, quiet past the Big Snap, the water
+  warning; the quiet line <= 4 s on seeds 1-6; the find on the first rest); goalsEasy.test.ts (every countSet stage asks its designed goal
+  in Play); snapRow.test.ts (PadRow.clock: one bar, two bars under one name throw, unnamed each its own; snapFaults by setting);
+  snapperCount.test.ts re-pointed to the kit's snappers (the sleeper kicked, an awake one bonked then kicked, each counts 1).
+  planted-faults.py: 20 plants, 19 run CAUGHT at 877d3505 (planted.out.txt); plant 20 (the find) proven red by hand at 9b645fbf
+  ("the find at 2401, in one-stone"); re-run the file once on the final head.
+- **The list** (seedlist-100.txt): 100 kept of 104 (4 refused on flag spacing), quiet line longest 3.8 s, median 3.7 s; `--check` PASS.
+  The R-165.327 seat rule (t-int-14's seatBreaches, run here by scratch copy): 0 breaches in 200 builds, a planted 300 px re-seat caught
+  (seat-rule-2-5.txt). The rule itself is not on this branch; it arrives with t-int-14.
+- **The find** (9b645fbf): the stage's find stood at x 2401 beside the teaching stone on every layout; its HOLD DOWN sign read as the
+  stone's answer (my still at x 2440). A findSpot socket on the first rest (1-8's rule); tested and planted.
+- **drawcheck**: 2-5 added to tools/perf/limits.json scenarios.
+- **castBots** (castbots-2-5.txt, castrows-2-5.jsonl, head 6ba1a4b7): adult 40/40 N, 40/40 E; middle 39/40 N, 40/40 E; expert 40/40 N;
+  child 7/40 N, 16/40 E; kid 0/40 N, 0/40 E. **PENDING R-165.339** (the lead, 12:35 PM): the child's misses are help-ladder rescues at
+  every awake snapper ground (stuck 'a turtle near': sandbars 66 N / 45 E, rope 43/39, quickening 28/28, awake 26/22), not the count
+  (only L6, L8, L29 on Normal). Traces trace-child-N-L4.txt, trace-child-E-L10.txt: the bot's bonkAfterSnap bonk dazes it, the bounce
+  steers to the far side at full run and lands him 100-145 px past; he gets back as the daze ends (or stands still at dx -72, L4), it
+  wakes, he bonks from the far side and loops. And no tier plays the taught way ("stand back, let it snap, then kick"). Nothing in the
+  level changed for it (the lead's ruling).
+- **The meter** (meter-2-5.txt, scale anchored on 1-1 N = 4): 2-5 Normal 3.7 (3.3-3.7), Easy 2.4 (2.1-2.4); 2-4 Normal 4, Easy 3.
+  2-5.md's target is Normal 16.0 (World 2 band 9-21), Easy at most 9.6: **Normal is far UNDER its band** (as 2-4 is; DIFFICULTY.md:76
+  already says nothing past World 2 is in its band). Easy is under Normal. Not tuned here: the lead's call.
+- **Rock variety**: R-165.338 (engine, draw only): every 50 px moss_stone is painted by drawRockArt with the one 'boulder' frame; the
+  World 2 atlas has a 'stump' frame nothing draws. The kit cannot vary it (a wider rock rescales the picture off its collider).
+
+### Stills (pushed UNREAD for the lead; layout 1, Normal, 412x915 and 915x412 at 2x)
+reference/qa-reports/BUILD-25/stills/s25-2-5-L1-x<X>-{upright,sideways}.jpg: x1560 the count tip and reach rock; x2440 the teaching
+stone (the find sign gone?); x4180 the sleeper; x5550 three in step (deep); x11500 the rope over the channel; x14800 the wave; x20050 the
+quickening; x25650 the Big Snap; x25990 the mossy stone. What I saw myself on the first beat 1-3 set (before the find fix): the five
+rocks identical (R-165.338); the HOLD DOWN sign by the teaching stone (fixed); Normal's deep pond at beat 3 drawn as one flat teal slab to
+the screen's bottom (World 2's shared deep-water painter, as 2-4's; named, not changed); two flags on one sideways screen around the
+sleeper (3847 / 4747 on L1: the shared flag rules, within them); petals 3-4 a screen at beats 3 and 5 for a brief of 'few'.
+
+### Polish check: NOT done (the lead judges the stills; castBots pending; rock art pending). Rough spots named above.
+
+### Learned (for the next builder)
+- Trace the quiet line before relisting: `quietOf` on 20 seeds with each stretch's section names the joins in minutes; petals on flat
+  ground never count, a hop does. A 6-seed pre-check is the right gate before any relist.
+- Read the goal AS PLAY BUILDS IT (RealPlay / withGoals), never `config.targetCount`: 2-5's designed goal never reached Play.
+- A plant on kit data does not reach a test that replays the committed list (RealPlay): aim such a test's plant at the engine path it
+  holds. And a sleeper is the arc's node ask, not the socket's allow.
+- Look at the beat stills BEFORE the gates: the HOLD DOWN sign by the teach cost a relist and a gate restart.
+### Proposed rule changes (level.md; the lead decides)
+- Rule 6 add: "nothing to READ between a teach and its thing either: a find's HOLD DOWN sign by a hazard reads as its answer; a stage
+  with a find gives it a findSpot on a rest" (check: the stage's arc test seats the find; 1-8 and 2-5 both hit it).
+- New: "a stage whose design sets its goal is tested on the goal Play asks (withGoals on both settings)" (check: goalsEasy.test.ts).
+- New: "a long plain bank before a teach gets a hop, not a petal" with the quiet trace as its check (seedlist's quiet line).
+### Lessons applied
+Judge the real screen (the stills found the find sign); check the fact in code before acting (the goal read on RealPlay, not data);
+an engine gap is reported at once (rock art, bots), never coded around; every gate on the final head (restarted after the find fix).
+
 ## EXACT NEXT STEP (BUILD-25b, a fresh builder at high, on this head)
 1. `npm install --no-audit --no-fund --legacy-peer-deps` (npm ci fails ERESOLVE; then `git checkout package-lock.json`).
 2. Write src/game/gen2/worlds/w2Arc25.test.ts (2-4's w2Arc24.test.ts is the pattern; build through listedStage + worldFinish), each with
