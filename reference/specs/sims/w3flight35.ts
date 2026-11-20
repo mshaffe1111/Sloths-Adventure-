@@ -4,7 +4,7 @@
  * predators/core.ts (hear, stepPredator) and predators/lure.ts (a LurePost), the spore clock is zones.ts zoneState, the vine clock is
  * thornVine.ts. Designer sim; nothing in the game imports it.
  *
- *   npx tsx reference/specs/sims/w3flight35.ts <normal|easy> <hop|punch|come|lure|bait|climb|stair|beam|quiet|all>
+ *   npx tsx reference/specs/sims/w3flight35.ts <normal|easy> <hop|punch|come|lure|bait|climb|stair|beam|quiet|twist|all>
  *
  * hop    the rig's check: a tapped hop reads the known 0.43 s / 106-119 px
  * punch  from the punch press to the claw's first strike frame (fight.ts jab), standing at a chime stone
@@ -96,7 +96,7 @@ class Rig {
     if (this.lift === this.frames) this.inp.releaseTouchUp();
     this.r.e.update(DT);
     this.frames++;
-    return stepFall(this.fall, { y: this.p.y, grounded: this.p.grounded, holding: !!(this.p.hanging || this.p.isClimbing || this.p.isVineSwinging) });
+    return stepFall(this.fall, { y: this.p.y, grounded: this.p.grounded, holding: !!(this.p.hanging || this.p.climbing || this.p.isVineSwinging) });
   }
 }
 
@@ -211,6 +211,7 @@ function lure() {
   const dwell = 0.3;
   for (const clock of [
     { period: 6.4, active: 2.2 },
+    { period: 6.4, active: 2.6 },
     { period: 7.0, active: 2.2 },
     { period: 7.2, active: 2.0 },
     { period: 8.4, active: 2.0 },
@@ -285,7 +286,7 @@ function bait() {
   const outS = (out - land) * DT;
   say(`bait ${setting}: a ${D} px drop lands ${Math.round(fell)} px of fall (noise ${n ? Math.round(n.r) + ' px' : 'none'}); landing -> feet over its sight (tall ${OCELOT.sight.tall}) ${outS.toFixed(2)} s (walk ${Math.round(V.x - LIP)} px from the rim side + climb)`);
   // the kit: the ocelot hunts to his landing; he is seen until he is out (modelled from the flown time), then lost; does the cloud take it
-  for (const clock of [{ period: 6.4, active: 2.2 }, { period: 7.0, active: 2.2 }]) {
+  for (const clock of [{ period: 6.4, active: 2.2 }, { period: 6.4, active: 2.6 }, { period: 7.0, active: 2.2 }]) {
     for (const [Dk, at] of [[200, 120], [200, 140], [300, 120], [300, 140], [450, 120]]) {
       let n2 = 0, caught = 0, seen = 0;
       const ts: number[] = [];
@@ -351,7 +352,7 @@ function stair() {
           }
         }
         g.frame();
-        if (air && g.p.grounded && Math.abs(g.p.vy) < 1 && !g.p.isClimbing) {
+        if (air && g.p.grounded && Math.abs(g.p.vy) < 1 && !g.p.climbing) {
           const st = steps.findIndex((q) => Math.abs(g.p.y - q.y) < 3);
           if (process.env.TRACE) say(`  landed f${f} x ${Math.round(g.p.x - LIP)} y ${Math.round(FLOOR - g.p.y)} step ${st + 1}`);
           air = false;
@@ -562,5 +563,45 @@ function quiet() {
   say(`quiet: LOUD ${JSON.stringify(LOUD)}; NOISE.hearY ${NOISE.hearY}; the vines' reach ${VINE_REACH} (protoStage 3-5 :2493), stir 1.1, look 1.7`);
 }
 
-const MODES: Record<string, () => unknown> = { hop, punch, come, lure, bait, climb, stair, beam, quiet };
+/**
+ * twist (3-5): a PAIR of light sleepers (thornVine.ts vinePhase: sleep 1.0, stir 1.1, look 1.7; the second 1.9 s behind), 220 px apart,
+ * reach 105 (below 140); his walk is FLOWN (the engine's x per frame from a stand 230 px short of the first, Right held). Lashed = in a
+ * looking vine's reach while moving (vineSees). (a) today's rhythm: a walk started at every 0.1 s of the cycle; (b) the twist: a loud
+ * landing wakes both at t0 (stir 1.1, look 1.7, then a DEEP sleep `deep` s: the rule ENG-VINE's 3-5 data builds); he starts walking
+ * `go` s after the look ends
+ */
+function twist() {
+  const g = new Rig('3-5');
+  g.world([solid(1, 0, FLOOR, 20000)]);
+  g.start(LIP - 230, FLOOR, 0);
+  g.right(true);
+  const xs: number[] = [];
+  for (let k = 0; k < 150 && g.p.x < LIP + 220 + VINE_REACH + 25; k++) {
+    g.frame();
+    xs.push(g.p.x);
+  }
+  const vines = [LIP, LIP + 220];
+  const rhythm = { sleep: 1.0, stir: 1.1, look: 1.7 };
+  const P = rhythm.sleep + rhythm.stir + rhythm.look;
+  const lookingAt = (i: number, t: number) => {
+    const c = (((t + i * 1.9) % P) + P) % P;
+    return c >= rhythm.sleep + rhythm.stir;
+  };
+  const lashed = (start: number, looking: (i: number, t: number) => boolean) =>
+    xs.some((x, k) => vines.some((vx, i) => Math.abs(x - vx) < VINE_REACH && looking(i, start + (k + 1) * DT)));
+  let pass = 0, n = 0;
+  for (let t0 = 0; t0 < P; t0 += 0.1, n++) if (!lashed(t0, lookingAt)) pass++;
+  say(`twist ${setting}: the pair on its own rhythm (sleep ${rhythm.sleep}, stir ${rhythm.stir}, look ${rhythm.look}, 1.9 s apart): a walk past both (flown, ${s2(xs.length)} s) started at any of ${n} moments passes ${pass} (${Math.round((100 * pass) / n)}%)`);
+  for (const deep of [0, 2.5, 4.0]) {
+    for (const go of [0, 0.5, 1.5]) {
+      // woken together at 0: stir to 1.1, look to 2.8, deep sleep to 2.8 + deep, then the rhythm again from its start
+      const woke = (_i: number, t: number) => (t >= 1.1 && t < 2.8) || (t >= 2.8 + deep && lookingAt(0, t - 2.8 - deep));
+      const start = 2.8 + go;
+      const ok = !lashed(start, woke);
+      say(`twist ${setting}: woken by his landing, deep sleep ${deep} s, he walks ${go} s after the look ends: ${ok ? 'PASSES' : 'LASHED'} (out of reach at ${(start + xs.length * DT).toFixed(2)} s; the deep sleep ends at ${(2.8 + deep).toFixed(1)} s)`);
+    }
+  }
+}
+
+const MODES: Record<string, () => unknown> = { hop, punch, come, lure, bait, climb, stair, beam, quiet, twist };
 for (const [k, fn] of Object.entries(MODES)) if (mode === 'all' || mode === k) fn();

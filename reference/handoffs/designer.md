@@ -16,6 +16,12 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 1. Where the design data lives
 
+- **World 3, 3-3..3-5 (DESIGN-33-35, 7:17 PM ET 11-19):** reference/design/3-3.md, 3-4.md, 3-5.md (built-ready; the engine order for all three is in 3-5.md
+  "The engine order": ENG-NOISE -> ENG-VINE -> ENG-LURE -> 3-5's deep sleep + bots; ENG-MOON beside). Flights: `npx tsx reference/specs/sims/w3flight35.ts
+  normal|easy hop|punch|come|lure|bait|climb|stair|beam|quiet|twist|all` (Pokey through InputEngine; the prowler is the kit's OCELOT via core.ts hear +
+  stepPredator; moonflowers are real platforms taken out of the world the frame they close); node strings `npx tsx reference/specs/sims/nodes3335d.ts`
+  with C33/C34/C35 (and C35R: R-165.319's refusal); outputs in reference/specs/sims/out/w3flight35-*.txt, nodes3335d.txt.
+
 | What | Where |
 |---|---|
 | The section specs, Rounds 1-12 and every amendment, with the supervisor's verdicts | `reference/engine/W1-NEW-SECTIONS.md` (engine-spec) |
@@ -250,3 +256,11 @@ Every ruling below cites the file and section where it's written in full.
 - **A gate that reads a stage after the chase splits it (BUILD-18b):** the World 1 settle runs before the chase lay cuts a bank into
   crumble pieces, so a pit-stair stone settled against the whole bank reads 54 px past its ground on the finished stage (w1Overhang 1-8).
   Look at the platforms AT the settle (log the settle's input) before blaming the level's data.
+
+- **A hunting animal stops SHORT of a noise (DESIGN-33-35):** core.ts:576 walks a hunt only until engage x 0.8 (ocelot: 120 px) from his
+  landing, so a patch 40 px before the landing caught 0%; a re-heard bell resets the look (core.ts:344-346), so "one ring per call" is a rule
+  the engine must hold. Fly where it stops, and fly a second ring.
+- **A vine sees a HANGING Pokey as moving (DESIGN-33-35):** thornVine.ts vineSees returns true for any off-the-ground Pokey in reach (only a
+  liana swing is exempt); with a bud 112 px up a 190 px root puts his feet in reach. Roots over vines 230 px+.
+- **Fly a stair as a thumb climbs it:** with Right held through the landing he runs off a 100-120 px step; walk to the edge, stop, jump.
+  A held jump tops out 97 px (the Pad held 220 ms): no step over 100 px without the double.

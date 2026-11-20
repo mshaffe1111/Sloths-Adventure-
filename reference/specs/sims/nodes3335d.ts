@@ -9,10 +9,12 @@
 import { checkCode, parseCode } from '../../../src/game/gen2/nodeCode.ts';
 
 const CODES: Array<{ id: string; code: string; mini: number; creatures?: boolean; expectBad?: boolean }> = [
-  { id: '3-3', mini: 3, creatures: true, code: process.env.C33 ?? '' },
-  { id: '3-4', mini: 4, code: process.env.C34 ?? '' },
-  { id: '3-5', mini: 5, creatures: true, code: process.env.C35 ?? '' },
-  { id: '3-5 with the roster id (R-165.319)', mini: 5, creatures: true, expectBad: true, code: process.env.C35R ?? '' },
+  { id: '3-3', mini: 3, creatures: true, code: process.env.C33 ?? 'A Tx1&<:#spore@puff:&ocelot*1 Pf1> Pg1&<:#spore@puff:&ocelot*1 Xx1&>:#spore@puff:&ocelot*2 R Pc1^< Wg1&>:#spore@puff:&ocelot*1 R Pf1< Cx1&>:#spore@puff:&ocelot*2 R Sx1&<:#spore@puff:&ocelot*3 E' },
+  { id: '3-4', mini: 4, code: process.env.C34 ?? 'A Pc1^< Tp1^<:#soft@moon Pf1^< Xp1^>:#soft@moon R Pr1< Wp1^>:#soft@moon R Pb1^< Cf1^>:#soft@moon R Sp1^<:#soft@moon E' },
+  { id: '3-5', mini: 5, creatures: true, code: process.env.C35 ?? 'A Th1<:#soft:#vine Pg1> Pr1<:#vine Xh1>:#vine R Pc1_< Wh1>:#vine R Pf1< Cm1>:#vine R Sr1<:#vine E' },
+  // (after R-165.319: the same with the creature dial; the lower-case id stands in for the grammar until the dial takes `thornVine`)
+  { id: '3-5 after R-165.319 (lower-case stand-in)', mini: 5, creatures: true, code: process.env.C35F ?? 'A Th1&<:#soft:#vine:&thornvine*1z Pg1> Pr1&<:#vine:&thornvine*3z Xh1&>:#vine:&thornvine*3z R Pc1_< Wh1&>:#vine:&thornvine*2 R Pf1< Cm1&>:#vine:&thornvine*2z R Sr1&<:#vine:&thornvine*1z E' },
+  { id: '3-5 with the roster id (R-165.319)', mini: 5, creatures: true, expectBad: true, code: process.env.C35R ?? 'A Th1&<:#soft:&thornVine*1 Pg1> E' },
 ];
 let bad = 0;
 for (const c of CODES) {
