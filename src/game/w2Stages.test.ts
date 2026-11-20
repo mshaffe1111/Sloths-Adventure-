@@ -11,18 +11,19 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-// (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts)
-const PLANS: W2Plan[] = ['2-3', '2-5', '2-7', '2-8', '2-9'];
+const PLANS: W2Plan[] = ['2-3', '2-4', '2-5', '2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
     for (const s of SEEDS) {
       const st = buildW2Stage(cfg(plan), s, plan);
-      {
+      // (the reachability check models a single liana from ledge to ledge, not a chain of them: 2-4's chains are checked as they are
+      // built instead, with World 1's swing checks, protoCheck.ts, and its pickups by flowerReach.ts below)
+      if (plan !== '2-4') {
         // (2-7's vine crossings are chains too, and so are the vines' rolls of 2-1..2-3: a bridge stands in for each, checked by the swing
         // tests as they are built, and the rest is checked here)
         const swings = (st.rivers ?? []).some((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1));
@@ -45,7 +46,9 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
       assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
       assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 1, `${plan}: one golden seed`);
       assert.ok(st.collectibles.filter((c) => c.type === 'heart').length >= 2, `${plan} seed ${s}: hearts on the hard stretches`);
-      assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `${plan} seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
+      // (2-4's own clock under-counts its swings and logs, so its finish is trimmed by flavour, LV-15: its quick player is 2:07-2:40 on
+      // the 200-roll tool's route, and rollGuard.test.ts holds the real 2:00 floor)
+      assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - (plan === '2-4' ? 50 : 15), `${plan} seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
       assert.equal(st.proto.movedPickups, 0, `${plan} seed ${s}: every pickup placed where he can get it`);
       // every river has a bank at both ends and logs (a lily pond has pads instead)
       for (const r of st.rivers ?? []) {
@@ -94,6 +97,18 @@ test('2-3: five little ones, each in a reed cage hung on a pulley over the water
     assert.ok(rooms.some((r) => r.ground.length >= 2), `seed ${s}: the stones across the water`);
     // and the mooring posts up onto the high banks (the posts' roll; the others cross the reeds on lily pads, past snakes, or on vines)
     if (w2Picks('2-3', s).flavour === 'posts') assert.ok(st.vines.filter((v) => v.vineType === 'tree_climb').length >= 3, `seed ${s}: the posts`);
+  }
+});
+
+test('2-4: the first crossings on the vines cost no life, the rest are deep, and the twist lands on an island before the logs', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-4'), s, '2-4');
+    const open = st.rivers!.filter((r) => r.open);
+    assert.ok(open[0].safe && open[1].safe && open.slice(2).every((r) => !r.safe), `seed ${s}`);
+    assert.ok(open.length >= 6, `seed ${s}: ${open.length} vine crossings`);
+    // an island: a vine crossing that ends where a log river begins, a short bank apart (long enough to catch his breath on)
+    assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 700)), `seed ${s}: vines then logs`);
+    assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
   }
 });
 

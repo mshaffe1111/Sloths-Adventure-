@@ -17,6 +17,7 @@ import assert from 'node:assert/strict';
 import { layRiver, lianaDrops, riverFaults, type RiverRow } from './gen2/riverLay.ts';
 import { GEN2_STAGES, gen2Rafts, laysRafts } from './gen2/game.ts';
 import { LISTED } from './gen2/listed.ts';
+import { kitLib24 } from './gen2/worlds/w2Arc24.ts';
 import { stageSheets } from './stageSheets.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { planStage, type ThinLook } from './platformPlan.ts';
@@ -119,7 +120,9 @@ test('loaded before play: a kit that places a raft row asks for the kit\'s sheet
   for (const id of Object.keys(GEN2_STAGES)) assert.equal(gen2Rafts(id), false, `${id} lays a raft: name it here`);
   // (the stages rolled from a stageTable kit (gen2/listed.ts) are not in GEN2_STAGES: the sheet list asks their kit too, BUILD-24c)
   const rafted = Object.keys(LISTED).filter((id) => laysRafts(LISTED[id].kit));
-  assert.deepEqual(rafted, ['2-4'], 'the listed stages that lay a river of rafts');
+  // (2-4 is the one while its row is on the table; held back in release 1 (INT-14) its designed kit still lays the raft, as a toy)
+  assert.deepEqual(rafted, LISTED['2-4'] ? ['2-4'] : [], 'the listed stages that lay a river of rafts');
+  assert.equal(laysRafts(kitLib24), true, "2-4's designed kit lays a river of rafts");
   const on = { hand: true, paint: true, ctest: false };
   for (const l of generateAllLevels().filter((l) => LISTED[l.id] && !l.secret)) {
     assert.equal(stageSheets(l, on).includes('kit-pieces') || !rafted.includes(l.id), true, `${l.id} lays rafts but never loads the raft's sheet`);

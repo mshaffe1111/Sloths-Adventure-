@@ -14,14 +14,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, dropsOf } from '../pipeline.ts';
-import { listedStage, worldFinish } from '../listed.ts';
+import { listedStage, worldFinish, type ListedStage } from '../listed.ts';
 import { riverFaults, riverWidth } from '../riverLay.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { lianaCaught } from '../../levelCheck.ts';
 import { CHAIN } from '../../physics.ts';
 import { lianasOver, type RiverZone } from '../../river.ts';
 import { STAGE_TABLE } from './stageTable.ts';
-import { W2_TIPS } from './w2.ts';
+import { W2_TIPS, w2Finish } from './w2.ts';
 import { ARC_24, BRIEF_24, LINES_24, MISSION_24, RIVERS_24, STAGE_24, TEACH_24, kitLib24 } from './w2Arc24.ts';
 import type { Platform, Vine } from '../../types.ts';
 
@@ -32,11 +32,15 @@ type Built = {
   gen2: { errors?: string[]; sections: Array<{ template: string; x0: number; x1: number }> };
 };
 const memo = new Map<string, Built>();
+/** World 2's finish, as listed.ts gives every World 2 row */
+const W2_FINISH: NonNullable<ListedStage['world']> = (st, _squirrels, difficulty) => w2Finish(st as never, difficulty) as typeof st;
 /** the stage as the game builds it: its listed kit, then World 2's finish */
 function built(seed: number, d: 'normal' | 'easy'): Built {
   const k = `${seed}:${d}`;
   if (!memo.has(k)) {
-    const row = listedStage(STAGE_24)!;
+    // (the stage's row when 2-4 is on the stage table; while it is held back (release 1, INT-14: the hand-built 2-4 ships) the same kit
+    //  and World 2's finish as a toy row, so every test below still reads the designed arc as the game would build it)
+    const row: ListedStage = listedStage(STAGE_24) ?? { kit: kitLib24, world: W2_FINISH };
     const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d });
     memo.set(k, worldFinish(row)(st as never, false, d) as unknown as Built);
   }
@@ -57,13 +61,20 @@ test("2-4's lines are the story keeper's, word for word (reference/story/lines-2
   for (const [k, v] of Object.entries(LINES_24)) assert.equal(v, rows.get(k), `line ${k}`);
   assert.equal(MISSION_24, rows.get('mission'), 'the stage card');
   assert.equal(W2_TIPS.water, rows.get('deep'), "World 2's water warning is the keeper's `deep`");
-  // (the card the game shows: stagePlan.ts's 2-4 row, held to the keeper's words; the old 2-4 hints are gone, new replaces old)
-  assert.ok(fs.readFileSync(path.join(root, 'src/game/stagePlan.ts'), 'utf8').includes(`S('vine_runner', 'Over the Water', '${MISSION_24}')`), 'stagePlan.ts says MISSION_24');
+  // (the card the game shows, its Dot lines, Pokey's page and the clue follow 2-4's routing: the keeper's while 2-4 is on the stage table;
+  //  the hand-built 2-4's (main 6e7b85f8's) while it is held back, INT-14; the old 2-4 hints go when the row comes back, new replaces old)
+  const routed = !!listedStage(STAGE_24);
+  if (routed) assert.ok(fs.readFileSync(path.join(root, 'src/game/stagePlan.ts'), 'utf8').includes(`S('vine_runner', 'Over the Water', '${MISSION_24}')`), 'stagePlan.ts says MISSION_24');
   assert.equal(cfg.objectiveType, 'vine_runner', 'a vine_runner: its exit never locks (the keeper: no sealed line)');
-  assert.ok(!/"hint\.2-4\./.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), "the hand-built 2-4's hints are gone");
+  if (routed) assert.ok(!/"hint\.2-4\./.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), "the hand-built 2-4's hints are gone");
   // (the keeper's rows 8-9, t-keeper-24@18e452c3: Pokey's journal page and the Stage Cleared clue, both rewritten for a stage with no cast)
-  assert.ok(fs.readFileSync(path.join(root, 'src/game/pokeyJournal.ts'), 'utf8').includes(`'2-4': "${rows.get('page')}",`), "pokeyJournal.ts '2-4' is the keeper's page");
-  assert.ok(fs.readFileSync(path.join(root, 'src/components/stageClue.ts'), 'utf8').includes(`'2-4': C('Dry Bootprints', '${rows.get('clue')}'),`), "stageClue.ts '2-4' is the keeper's clue");
+  if (routed) assert.ok(fs.readFileSync(path.join(root, 'src/game/pokeyJournal.ts'), 'utf8').includes(`'2-4': "${rows.get('page')}",`), "pokeyJournal.ts '2-4' is the keeper's page");
+  if (routed) assert.ok(fs.readFileSync(path.join(root, 'src/components/stageClue.ts'), 'utf8').includes(`'2-4': C('Dry Bootprints', '${rows.get('clue')}'),`), "stageClue.ts '2-4' is the keeper's clue");
+  if (!routed) {
+    // (held back: the hand-built 2-4's card and Dot's four lines, main 6e7b85f8's words, pinned)
+    assert.ok(fs.readFileSync(path.join(root, 'src/game/stagePlan.ts'), 'utf8').includes("S('vine_runner', 'Over the Water', 'Swing across the river on the hanging vines.')"), 'stagePlan.ts: the hand-built 2-4 card');
+    for (const id of ['deep', 'vine', 'island', 'missed']) assert.ok(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8').includes(`"hint.2-4.${id}"`), `the hand-built 2-4's hint.2-4.${id}`);
+  }
   for (const d of BOTH) {
     const said = new Set(built(1, d).proto.hints!.map((h) => h.text));
     for (const v of Object.values(LINES_24)) assert.ok(said.has(v), `${d}: "${v}" is said`);
@@ -71,7 +82,7 @@ test("2-4's lines are the story keeper's, word for word (reference/story/lines-2
 });
 
 test('the row: 2-4 rolls from its own kit (World 2 with 2-4 rows), CLEAN on both settings, the arc beat for beat, only its own bricks', () => {
-  assert.equal(STAGE_TABLE[STAGE_24].kit, 'w2-24');
+  if (listedStage(STAGE_24)) assert.equal(STAGE_TABLE[STAGE_24].kit, 'w2-24');
   assert.equal(kitLib24().manifest.world, 2);
   const beats = ['edge', 'first-drop', 'bank', 'drop-ride-drop', 'up-from-log', 'rest', 'root-planks', 'no-land', 'rest', 'kapok', 'long-relay', 'rest', 'great-swing', 'jetty'];
   assert.equal(Object.values(ARC_24)[0].split(' ').length, beats.length);

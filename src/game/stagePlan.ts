@@ -70,9 +70,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     //  hyacinth petal, the inventory's hf22p/petal-hyacinth)
     { ...S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'), looks: { petal: 'petal-hyacinth' } },
     S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.', 5),
-    // (the story keeper's line 6, reference/story/lines-2-4.md (t-keeper-24@fa3b0930): gen2/worlds/w2Arc24.ts MISSION_24, held equal by
-    //  w2Arc24.test.ts; vine_runner, so its exit never locks (the keeper's conflict 4))
-    S('vine_runner', 'Over the Water', 'Vines to logs, logs to vines. Cross the river to the jetty.'),
+    S('vine_runner', 'Over the Water', 'Swing across the river on the hanging vines.'),
     S('purge', 'River Snappers', 'Chase the snappers off the bank.'),
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),

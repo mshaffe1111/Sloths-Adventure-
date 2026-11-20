@@ -31,6 +31,7 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-3': '2-3',
+  '2-4': '2-4',
   '2-5': '2-5',
   '2-6': '2-6',
   '2-7': '2-7',

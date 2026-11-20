@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-3' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -95,6 +95,7 @@ export interface W2Kit {
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
+  '2-4': ['chains', 'islands', 'reeds', 'ponds'],
   '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
@@ -118,6 +119,7 @@ export interface W2Picks {
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
+  '2-4': ['chains', 'islands', 'reeds', 'ponds'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
@@ -172,7 +174,7 @@ const pause = (k: W2Kit) => k.rest(k.R.r(300, 340), false);
 
 /** the river's ways across, and the banks between them, as the dealers deal them */
 type Kind =
-  | 'with' | 'back' | 'wide' | 'sandbar' | 'stones' | 'pond' | 'channels' | 'snake' | 'post' | 'swing2' | 'swing3'
+  | 'with' | 'back' | 'wide' | 'sandbar' | 'stones' | 'pond' | 'channels' | 'snake' | 'post' | 'swing2' | 'swing3' | 'swing4' | 'island'
   | 'frames' | 'porches' | 'lift' | 'high';
 /** Dot's tip the first time a kind comes in a stage (before it: STAGE-RULES §1 "Teaching"), as [touch, pad, keys] */
 const TEACH: Partial<Record<Kind, [string, string?, string?]>> = {
@@ -186,12 +188,14 @@ const TEACH: Partial<Record<Kind, [string, string?, string?]>> = {
   post: ['Climb the post to get up the bank!', 'Climb the post: hold Up to get up the bank!', 'Climb the post: hold W or Up to get up the bank!'],
   swing2: ['Jump into a vine to grab it. Let go at the front!'],
   swing3: ['Jump into a vine to grab it. Let go at the front!'],
+  swing4: ['Jump into a vine to grab it. Let go at the front!'],
+  island: ['Swing to the island, then ride the logs!'],
   frames: ['Swing across on the rope frames!'],
   porches: ['Up the steps, and hop along the porches!'],
   lift: ['Step into the basket. It carries you up!'],
 };
 /** kinds that teach the same thing (a tip said for one is not said again for the other) */
-const SAME: Partial<Record<Kind, string>> = { swing2: 'swing', swing3: 'swing', with: 'logs', wide: 'logs' };
+const SAME: Partial<Record<Kind, string>> = { swing2: 'swing', swing3: 'swing', swing4: 'swing', with: 'logs', wide: 'logs' };
 
 /**
  * One stage's crossings: each kind built from the kit, Dot's tip the first time a kind comes (with a breath of bank after it, so her
@@ -240,7 +244,13 @@ class Crossings {
     else if (kind === 'post') k.postUp();
     else if (kind === 'swing2') k.swingRiver(2);
     else if (kind === 'swing3') k.swingRiver(3);
-    else if (kind === 'frames') k.swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
+    else if (kind === 'swing4') k.swingRiver(4);
+    else if (kind === 'island') {
+      // (an island long enough to land the swing and catch his breath, short enough that the logs come next: at 430-480 px it was over
+      // two seconds of plain walking)
+      k.swingRiver(2, { island: Math.round(k.R.r(320, 360)) });
+      k.river(n % 2 ? -1 : 1, sp, 2, n % 2 ? 108 : 120, n % 2 ? { gap: 80 } : {});
+    } else if (kind === 'frames') k.swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
     else if (kind === 'porches') {
       // (the porches along the bank, at its own height: the carved steps up and down either side were four and more seconds of plain
       // walking, every roll of 2-7, 2026-10-28; the steps stay in the Learn)
@@ -392,6 +402,64 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       let n = 0;
       const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? 2 : 12);
       while (k.expert < target && n < 14) {
+        cross.step(turns.next(), n, turns.kinds);
+        if (++n % 2 === 0) k.flag();
+      }
+      k.rest(R.r(300, 400), false);
+    });
+  },
+
+  // ======================================================================================================================
+  // 2-4 Over the Water: swing across the river on the hanging vines. Learn over water that costs no life, two vines at a time; then
+  // the river's way on, rolled: long chains of vines over the deep river; swings onto islands with the logs carrying him on; or the
+  // reeds, swings between banks with snakes and stepping stones.
+  '2-4': (k, flavour, rng) => {
+    const { R } = k;
+    const shortRest = () => k.rest(R.r(100, 170), false);
+    const kinds: Record<string, Kind[]> = {
+      chains: ['swing3', 'swing4', 'swing3', 'swing4'],
+      islands: ['island', 'sandbar', 'with', 'back', 'sandbar'],
+      reeds: ['snake', 'channels', 'snake', 'swing2', 'snake'],
+      ponds: ['pond', 'stones', 'swing2', 'pond', 'stones'],
+    };
+    const cross = new Crossings(k, { speed: 64 });
+    cross.know('swing2');
+    const turns = new Turns<Kind>(rng, kinds[flavour], flavour === 'chains' ? 0 : 1);
+    k.beat('Learn: swing over the water', () => {
+      k.rest(R.r(260, 300), false);
+      k.hint(200, 'Swing over the river! Jump into a vine to grab it.');
+      k.swingRiver(2, { safe: true });
+      k.hint(k.x - 160, 'Missed? Splash! Try again from the bank.');
+      shortRest();
+      k.swingRiver(2, { safe: true });
+      k.flag();
+    });
+    k.beat(flavour === 'islands' ? 'Develop: vines and logs' : 'Develop: the long swing', () => {
+      shortRest();
+      k.hint(k.x + 10, 'Deep water now. Let go at the front of the swing.');
+      cross.go(kinds[flavour][0]);
+      k.heart(k.x - 40, k.G - 60);
+      cross.deal(turns, 2);
+    });
+    k.beat('Twist: vines and logs', () => {
+      shortRest();
+      cross.go('island');
+      k.heart(k.x - 40, k.G - 60);
+      cross.deal(turns, 1, false);
+      pause(k);
+      // a golden seed for the chain: over the far bank, a full jump up from where he lands off it (it was up by the last vine, a leap
+      // from the top of its swing, which the level check never reaches: it follows a swing from ledge to ledge; 37 of 40 rolls failed)
+      k.swingRiver(flavour === 'chains' ? 4 : 2);
+      k.goldenSeed(k.x + 70, k.G - 165);
+      k.flag();
+    });
+    k.beat('Finish', () => {
+      let n = 0;
+      // (LV-15, polish report 2026-10-29: 2-4 ran about 8 minutes for a first play. The kit's clock under-counts the swings and the logs,
+      // so the long-swing flavours finish sooner: about 2:25-2:30 for a quick player on every flavour, the islands as they were)
+      const trim: Record<string, number> = { islands: 10, reeds: -14, ponds: -32, chains: -38 };
+      const target = k.EXPERT_SECONDS - 2 + (trim[flavour] ?? 0);
+      while (k.expert < target && n < 18) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();
       }
