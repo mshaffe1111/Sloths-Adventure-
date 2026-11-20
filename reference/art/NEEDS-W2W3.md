@@ -75,6 +75,28 @@ nothing painted fits. "check" = fits by the catalog; the level builder's stills 
 Pokey's height (L9): a code-and-tint push-back of the far layers (KIT-AUDIT Phase A item 3), free, an engine/level job, not Hugging Face.
 (3) Stalagmites on the walk line read as spikes (L3): a dressing rule for the level builders, no new art.
 
+## Special stages: Worlds 2 and 3's hidden stages, puzzle rooms and bosses (Matt 11-20 3:52 PM: "Special stages and regular"; ART-NEXT-b)
+Found by grep (D90): `git ls-tree` of every origin/t-design-*, origin/boss-design-* and origin/t-*-design branch for reference/design/
+2-hidden / 3-hidden / 2-10 / 3-10 / boss files; WORLD-MAP.html (each world's hidden + boss); PREDATORS.md "The ten guardians"; the
+designs' own "replaces" lines; w2Puzzles.test.ts / w3Puzzles.test.ts headers (the rooms in game today). 3-hidden (The Cave Slide) is in
+the World 3 table above (DESIGN-36-39). Bosses are hand-built fights, not gen2 stages: their art is in game.
+| Stage | Piece the player sees | Verdict | Row / note | Batch |
+|---|---|---|---|---|
+| W2 hidden **The Rapids** | (WORLD-MAP: "a raft ride down white water"; INSPIRED-BY #6: a lily-pad raft that scrolls by itself) | **NO DESIGN YET** | no reference/design/2-hidden.md on any design branch (grep 11-20). The list below is provisional, for the designer; the real GAPs come from its design's Art paragraph | after its design |
+| The Rapids | the raft | HAVE | puzzle-kit#raft (platform 0.79 ok), dressnew-w2#w2Raft (0.77 ok); a lily-pad raft: w2-props#lily (2-2's sinking pad) if the design keeps INSPIRED-BY's pad | - |
+| The Rapids | the white-water river's backdrop | HAVE | B3-w2rapids-sky/far/mid/near (World 2's packed rapids set, in game) | - |
+| The Rapids | rocks to dodge in the current | HAVE / check | w2#boulder (step 0.83 ok); World 2's brown rocks (origin/t-eng-rock w2-rocks.webp) | - |
+| The Rapids | a drop over a ledge | HAVE (off main) | w2-next#weir (ART-NEXT-b, this branch: tiers + white water) | - |
+| The Rapids | the white-water lane itself (foam, standing waves, a surface the raft rides) | likely GAP | World 2's shallow strip and pit water are calm; no foaming strip in any world. Not batched until designed (D40: nothing for a stage with no design) | after its design |
+| W2 puzzle rooms | the rooms in game: 2-2's ferry raft + sluice, 2-3/2-8's reed cages on pulleys, 2-9's court bell and reed gate wall | HAVE (in game) | puzzle-kit#* + riverArt.ts cages (code-drawn reeds) + puzzlePlay.ts reed wall | - |
+| W2 puzzle rooms | the NEW designs | **NONE DESIGNED** | 2-8's and 2-9's designs take their stages out of W2_PUZZLES ("replaces" lines; the old 2-2 room went with the hand-built 2-2, ENG-W2 11-14). No new room is designed for 2-6..2-9 | - |
+| W3 puzzle rooms | the rooms in game: 3-2's glowing mushroom, 3-5's awake thorn vines + bell + pebbles, 3-7's "Which fern?" | HAVE (in game) | puzzle-kit#mushroom/#mushroomDim, #fernStone, w3-props#thorn0..15 | - |
+| W3 puzzle rooms | the NEW designs | **NONE DESIGNED** as rooms; 3-6 lays a real kit room (the carried light) inside a stage | 3-2, 3-5, 3-7 leave W3_PUZZLES (their "replaces" lines); 3-6's pieces are in the World 3 table above (3-6 rows) | - |
+| W2 boss **Crocus Rex** | the croc (all moves), his crest, the lair calm + rage, the foreground reeds, the story card | HAVE (in game) | enemies/croc-anim (117 frames) + croc-atlas (crest), lairs/lair-croc-calm, lair-croc-rage, fg-croc, story/cards/crocus-rex | - |
+| Crocus Rex | the BIGGER guardian (PREDATORS.md: 270 x 600, 3.0 Pokey, long and low; headroom today 0.78: the art is already stretched) | GAP **if adopted** (the lead's call, then Matt's) | no boss design for 2-10 on any branch (PLAN-ROADMAP asks "hand-made? on gen2?"); new art at ~1.7x today's sheet res for every move frame: a big job (117 frames), not a Qwen edit batch | not batched |
+| W3 boss **Shadow Prowler** | the jaguar (all moves), his crest, the lair, the story card | HAVE (in game) | enemies/prowler-anim (172 frames) + prowler-atlas (crest), lairs/prowler-lair (one plate: no calm/rage pair as Crocus Rex and Sky Sovereign have), story/cards/shadow-prowler | - |
+| Shadow Prowler | the BIGGER guardian (PREDATORS.md: 270 x 640, 3.0 Pokey; headroom today 0.92) | GAP **if adopted** (the lead's call) | as Crocus Rex: no boss design for 3-10; 172 frames at ~1.6x | not batched |
+
 ## The GAPs ranked by first stage, in batches (one prompt style each)
 | Batch | First stage | Pieces | Style |
 |---|---|---|---|
@@ -86,10 +108,14 @@ Pokey's height (L9): a code-and-tint push-back of the far layers (KIT-AUDIT Phas
 | 6 painted light + shadow | 3-4 | moonbeam shaft, the arch shadow, the dust-and-spore puff | Qwen-Image + LoRA on black, cut as additive/alpha (hf-backdrops' light method) |
 | 7 backdrops (lead's call, each) | 2-9 | throne island at dusk, glowworm sky, moon over the mouth, shrine steps in moonlight, the dome | hf-backdrops.md (far layers) |
 
+**Special stages in the batches (ART-NEXT-b):** none enter batches 2-7. The Rapids has no design (its likely white-water lane is named
+above, batched once designed); no new W2/W3 puzzle room is designed; the two bosses' art is in game, and their bigger re-paint is a
+separate, much larger job that waits on the lead's ruling on PREDATORS.md's "ten guardians" proposal.
+
 Estimate for all 7 (measured: ART-W2B 15 edit takes in 25 min $1.15; ART-W2 30 takes in 11 min $0.50): edits ~70 s a take at 1024,
 LoRA stills ~25-33 s. Batches 1-4 ~$2-3 each, 5-6 ~$1 each, 7 ~$2-3: **about $13-17 in all**, inside $50.25 less the $10 reserve.
 
-## Batch 1 plan (World 2 village: 2-7, 2-8, 2-9), waiting on the lead's go and cap
+## Batch 1 plan (World 2 village: 2-7, 2-8, 2-9): RUN and CUT (ART-NEXT-b 11-20: 9 cuts, rows w2-next#*, sheet hfnext/batch1-cuts.jpg; the reeds to batch 2)
 Method: tools/art/hfpokey/pokeygpu.py, Qwen-Image-Edit-2511, no LoRA (ART-W2A/W2B's method: geometry paste-ups on flat grey + World 2's
 own painted pieces as the style reference). ONE sandbox (rtx-pro-6000, $2.75/h); round 2 is chained in the same run on EVERY round-1
 take of the two-frame pieces, so the lead picks matched pairs from one takes sheet and the sandbox is terminated the moment the takes
