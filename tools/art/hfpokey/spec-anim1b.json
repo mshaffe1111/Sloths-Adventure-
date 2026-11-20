@@ -1,0 +1,34 @@
+{
+ "tag": "anim-next1b",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "an1-tiptoe2-s5",
+   "src": "gh:6e7b85f8f:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, strict side profile view facing right the whole time, he sneaks on tiptoe in place: body crouched low and hunched forward, both paws held up close to his chest, he lifts one knee up high with the toes pointed down, sets the foot down softly on its toes, then lifts the other knee high, slow exaggerated cartoon sneaking steps, eyes glancing sideways, a smooth repeating sneak, he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, running, waving, yawning, background scenery, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom, facing the camera, front view, three-quarter view, arms raised, arms out wide, waving, hand up",
+   "seed": 5,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "an1-tiptoe2-s21",
+   "src": "gh:6e7b85f8f:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, strict side profile view facing right the whole time, he sneaks on tiptoe in place: body crouched low and hunched forward, both paws held up close to his chest, he lifts one knee up high with the toes pointed down, sets the foot down softly on its toes, then lifts the other knee high, slow exaggerated cartoon sneaking steps, eyes glancing sideways, a smooth repeating sneak, he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, running, waving, yawning, background scenery, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom, facing the camera, front view, three-quarter view, arms raised, arms out wide, waving, hand up",
+   "seed": 21,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}
