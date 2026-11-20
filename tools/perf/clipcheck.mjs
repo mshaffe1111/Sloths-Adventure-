@@ -647,8 +647,13 @@ async function walk(browser, base, save, size, devBase) {
     await page.goto(`${base}/?lessons=off&autostart=1&level=1-1`);
     // (until 11-19 a 7 s sleep stood in for the stage starting: now the stage's own HUD up and its goal card gone)
     await opens('canvas', 'attached');
-    await running();
-    await page.keyboard.press('Escape');
+    // (a fresh save's autostart opens World 1's prologue first: Escape finishes a story (StoryPlayer.tsx), as the old sleep's Escape did)
+    await until('the prologue or the stage up', () => !!document.querySelector('.sp-next') || (document.documentElement.dataset.hud === 'vine' && document.documentElement.dataset.hudCard !== '1'), null, 10);
+    // (that Escape also leaves the stage paused, on the keyboard: Pause is pressed for only when it is not up already, or the press
+    //  would resume the stage)
+    if (await page.locator('.sp-next').count()) await page.keyboard.press('Escape');
+    await until('the stage running (its HUD up, its goal card gone) or paused', () => !!document.querySelector('.pm-card') || (document.documentElement.dataset.hud === 'vine' && document.documentElement.dataset.hudCard !== '1'), null, 10);
+    if (!(await page.locator('.pm-card').count())) await page.keyboard.press('Escape');
     await opens('.pm-card');
     await settle();
     await judge('pause');
