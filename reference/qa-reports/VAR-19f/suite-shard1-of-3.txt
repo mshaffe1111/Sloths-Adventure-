@@ -1,0 +1,1484 @@
+TAP version 13
+# Subtest: the worlds fall into the story's three acts
+ok 1 - the worlds fall into the story's three acts
+  ---
+  duration_ms: 1.237197
+  type: 'test'
+  ...
+# Subtest: the bosses follow the acts
+ok 2 - the bosses follow the acts
+  ---
+  duration_ms: 0.262389
+  type: 'test'
+  ...
+# Subtest: every world keeps to its own style's tempo band (styles.ts): the canopy bounces, the grotto and the ruins are slow
+ok 3 - every world keeps to its own style's tempo band (styles.ts): the canopy bounces, the grotto and the ruins are slow
+  ---
+  duration_ms: 806.673215
+  type: 'test'
+  ...
+# Subtest: the story's own tunes are quoted exactly, each in its own act and mode
+ok 4 - the story's own tunes are quoted exactly, each in its own act and mode
+  ---
+  duration_ms: 377.126447
+  type: 'test'
+  ...
+# Subtest: the lament is the lullaby's own notes in the relative minor, and the march is the lullaby with its third and sixth lowered
+ok 5 - the lament is the lullaby's own notes in the relative minor, and the march is the lullaby with its third and sixth lowered
+  ---
+  duration_ms: 0.556606
+  type: 'test'
+  ...
+# Subtest: the tune sits in the lead's range: the lead and anyone who takes over from it can play every note
+ok 6 - the tune sits in the lead's range: the lead and anyone who takes over from it can play every note
+  ---
+  duration_ms: 706.950172
+  type: 'test'
+  ...
+# Subtest: the placing rules: a tune takes the nearest octave that fits, and a tune that fits nowhere is refused
+ok 7 - the placing rules: a tune takes the nearest octave that fits, and a tune that fits nowhere is refused
+  ---
+  duration_ms: 1.228248
+  type: 'test'
+  ...
+# Subtest: Act I is sunny, Act II somber, Act III heavy
+ok 8 - Act I is sunny, Act II somber, Act III heavy
+  ---
+  duration_ms: 413.701763
+  type: 'test'
+  ...
+# Subtest: Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck
+ok 9 - Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck
+  ---
+  duration_ms: 111.5241
+  type: 'test'
+  ...
+# Subtest: the dressing leaves the tune to the fuller orchestra: no second set of doubles
+ok 10 - the dressing leaves the tune to the fuller orchestra: no second set of doubles
+  ---
+  duration_ms: 1.204323
+  type: 'test'
+  ...
+# Subtest: only Act I falls back to a written world theme; the later acts always get their own composed sound
+ok 11 - only Act I falls back to a written world theme; the later acts always get their own composed sound
+  ---
+  duration_ms: 9.529993
+  type: 'test'
+  ...
+# Subtest: each act's mix thins or thickens the orchestra the way its sound needs
+ok 12 - each act's mix thins or thickens the orchestra the way its sound needs
+  ---
+  duration_ms: 0.090959
+  type: 'test'
+  ...
+# Subtest: a composed stage is valid notation for every world and many seeds
+ok 13 - a composed stage is valid notation for every world and many seeds
+  ---
+  duration_ms: 671.829519
+  type: 'test'
+  ...
+# Subtest: the lead melody is in key, singable, and mostly stepwise
+ok 14 - the lead melody is in key, singable, and mostly stepwise
+  ---
+  duration_ms: 281.428924
+  type: 'test'
+  ...
+# Subtest: strong beats land on chord tones
+ok 15 - strong beats land on chord tones
+  ---
+  duration_ms: 378.198951
+  type: 'test'
+  ...
+# Subtest: a tune states an idea, answers it, and repeats it (not a random walk)
+ok 16 - a tune states an idea, answers it, and repeats it (not a random walk)
+  ---
+  duration_ms: 338.280905
+  type: 'test'
+  ...
+# Subtest: phrases close: a long final note on a stable note, and the loop turns over on the dominant side
+ok 17 - phrases close: a long final note on a stable note, and the loop turns over on the dominant side
+  ---
+  duration_ms: 441.888536
+  type: 'test'
+  ...
+# Subtest: the B section reaches higher than the A section
+ok 18 - the B section reaches higher than the A section
+  ---
+  duration_ms: 612.246386
+  type: 'test'
+  ...
+# Subtest: it is deterministic, and different seeds give different music
+ok 19 - it is deterministic, and different seeds give different music
+  ---
+  duration_ms: 319.155685
+  type: 'test'
+  ...
+# Subtest: each world keeps its character
+ok 20 - each world keeps its character
+  ---
+  duration_ms: 635.754551
+  type: 'test'
+  ...
+# Subtest: chord spelling follows the key
+ok 21 - chord spelling follows the key
+  ---
+  duration_ms: 0.353462
+  type: 'test'
+  ...
+# Subtest: a composed stage can be asked for by id
+ok 22 - a composed stage can be asked for by id
+  ---
+  duration_ms: 1.776386
+  type: 'test'
+  ...
+# Subtest: jennifur: a long, valid piece that builds from quiet to full and settles
+ok 23 - jennifur: a long, valid piece that builds from quiet to full and settles
+  ---
+  duration_ms: 0.722536
+  type: 'test'
+  ...
+# Subtest: storyDusk: a long, valid piece that builds from quiet to full and settles
+ok 24 - storyDusk: a long, valid piece that builds from quiet to full and settles
+  ---
+  duration_ms: 0.296742
+  type: 'test'
+  ...
+# Subtest: storyStorm: a long, valid piece that builds from quiet to full and settles
+ok 25 - storyStorm: a long, valid piece that builds from quiet to full and settles
+  ---
+  duration_ms: 0.341898
+  type: 'test'
+  ...
+# Subtest: ending: a long, valid piece that builds from quiet to full and settles
+ok 26 - ending: a long, valid piece that builds from quiet to full and settles
+  ---
+  duration_ms: 0.33484
+  type: 'test'
+  ...
+# Subtest: the story scores use the recurring tunes
+ok 27 - the story scores use the recurring tunes
+  ---
+  duration_ms: 0.401815
+  type: 'test'
+  ...
+# Subtest: the story scores are the same every time
+ok 28 - the story scores are the same every time
+  ---
+  duration_ms: 0.909634
+  type: 'test'
+  ...
+# Subtest: every world and pace is valid notation, with the tune and the low end intact
+ok 29 - every world and pace is valid notation, with the tune and the low end intact
+  ---
+  duration_ms: 200.504177
+  type: 'test'
+  ...
+# Subtest: written pieces (worlds, bosses, results, game over) can all be dressed in the orchestra
+ok 30 - written pieces (worlds, bosses, results, game over) can all be dressed in the orchestra
+  ---
+  duration_ms: 3.492693
+  type: 'test'
+  ...
+# Subtest: the objective sets the pace
+ok 31 - the objective sets the pace
+  ---
+  duration_ms: 0.522566
+  type: 'test'
+  ...
+# Subtest: stages of one world are dressed differently from each other
+ok 32 - stages of one world are dressed differently from each other
+  ---
+  duration_ms: 96.937838
+  type: 'test'
+  ...
+# Subtest: calm: the piece plays whole and no layer does
+ok 33 - calm: the piece plays whole and no layer does
+  ---
+  duration_ms: 0.694069
+  type: 'test'
+  ...
+# Subtest: each state moves the stems as it moved the parts
+ok 34 - each state moves the stems as it moved the parts
+  ---
+  duration_ms: 18.825846
+  type: 'test'
+  ...
+# Subtest: every role is in exactly one of the stems a stage records, and the mix holds every non-layer role
+ok 35 - every role is in exactly one of the stems a stage records, and the mix holds every non-layer role
+  ---
+  duration_ms: 0.494486
+  type: 'test'
+  ...
+# Subtest: a stage piece is known by its world and pace
+ok 36 - a stage piece is known by its world and pace
+  ---
+  duration_ms: 6.469652
+  type: 'test'
+  ...
+# Subtest: a piece plays its own recording; a stage's composition its world's, whatever its pace
+ok 37 - a piece plays its own recording; a stage's composition its world's, whatever its pace
+  ---
+  duration_ms: 0.193784
+  type: 'test'
+  ...
+# Subtest: every piece the game can ask for has a recording (the screens, every stage at any roll, every boss, the story)
+ok 38 - every piece the game can ask for has a recording (the screens, every stage at any roll, every boss, the story)
+  ---
+  duration_ms: 11.625346
+  type: 'test'
+  ...
+# Subtest: every world has its stage piece, and each piece fits the phones' memory (35 MB decoded)
+ok 39 - every world has its stage piece, and each piece fits the phones' memory (35 MB decoded)
+  ---
+  duration_ms: 0.22328
+  type: 'test'
+  ...
+# Subtest: the manifest is whole: every stem file it names exists, and every loop is longer than a few bars
+ok 40 - the manifest is whole: every stem file it names exists, and every loop is longer than a few bars
+  ---
+  duration_ms: 1.033364
+  type: 'test'
+  ...
+# Subtest: a figure that repeats is played bowed, not plucked or struck; a tune keeps its own instrument
+ok 41 - a figure that repeats is played bowed, not plucked or struck; a tune keeps its own instrument
+  ---
+  duration_ms: 0.626581
+  type: 'test'
+  ...
+# Subtest: every part a performance adds is one the engine can play, with a sensible level and gate
+ok 42 - every part a performance adds is one the engine can play, with a sensible level and gate
+  ---
+  duration_ms: 7.96561
+  type: 'test'
+  ...
+# Subtest: the story cue pieces keep their own tunes: they get the beds and nothing sings with them
+ok 43 - the story cue pieces keep their own tunes: they get the beds and nothing sings with them
+  ---
+  duration_ms: 0.268701
+  type: 'test'
+  ...
+# Subtest: a tune is joined by players who play its notes: same bars, same seed for the composed bars, a legal range
+ok 44 - a tune is joined by players who play its notes: same bars, same seed for the composed bars, a legal range
+  ---
+  duration_ms: 4.814164
+  type: 'test'
+  ...
+# Subtest: every recorded voice the real orchestra plays has a place on the stage, and the plan is on the stage
+ok 45 - every recorded voice the real orchestra plays has a place on the stage, and the plan is on the stage
+  ---
+  duration_ms: 4.189809
+  type: 'test'
+  ...
+# Subtest: folding moves a note by whole octaves into a range and never changes its pitch class
+ok 46 - folding moves a note by whole octaves into a range and never changes its pitch class
+  ---
+  duration_ms: 0.379585
+  type: 'test'
+  ...
+# Subtest: the harmony part is a chord tone a third to a sixth under the tune, or the octave when none is near
+ok 47 - the harmony part is a chord tone a third to a sixth under the tune, or the octave when none is near
+  ---
+  duration_ms: 0.286673
+  type: 'test'
+  ...
+# Subtest: the eight pieces are written in the keys and at the speeds of what they are
+ok 48 - the eight pieces are written in the keys and at the speeds of what they are
+  ---
+  duration_ms: 22.45269
+  type: 'test'
+  ...
+# Subtest: each piece sounds within the first dozen seconds, and none is longer than two minutes
+ok 49 - each piece sounds within the first dozen seconds, and none is longer than two minutes
+  ---
+  duration_ms: 2.488895
+  type: 'test'
+  ...
+# Subtest: nothing in these pieces is a bell, a pluck or a mallet, and no melody goes above A5
+ok 50 - nothing in these pieces is a bell, a pluck or a mallet, and no melody goes above A5
+  ---
+  duration_ms: 9.296211
+  type: 'test'
+  ...
+# Subtest: every piece keeps its tune in voices that every phone plays: a melody that is neither gated away nor optional
+ok 51 - every piece keeps its tune in voices that every phone plays: a melody that is neither gated away nor optional
+  ---
+  duration_ms: 0.22034
+  type: 'test'
+  ...
+# Subtest: hush is almost nothing: no drums, no loud voice, the lullaby sung once at the start and once at the end, the middle gone
+ok 52 - hush is almost nothing: no drums, no loud voice, the lullaby sung once at the start and once at the end, the middle gone
+  ---
+  duration_ms: 0.484603
+  type: 'test'
+  ...
+# Subtest: dread: the cello creeps the Iron-Claw figure, the March is only hinted, and the piece never plays it through
+ok 53 - dread: the cello creeps the Iron-Claw figure, the March is only hinted, and the piece never plays it through
+  ---
+  duration_ms: 1.53393
+  type: 'test'
+  ...
+# Subtest: war: the March, whole, twice, low in the trombone, with the timpani on one and three
+ok 54 - war: the March, whole, twice, low in the trombone, with the timpani on one and three
+  ---
+  duration_ms: 0.435555
+  type: 'test'
+  ...
+# Subtest: chase: Pokey's tune cut short and breathless, passed from voice to voice, caught by the iron figure, and every round is harmonized as the tune leans
+ok 55 - chase: Pokey's tune cut short and breathless, passed from voice to voice, caught by the iron figure, and every round is harmonized as the tune leans
+  ---
+  duration_ms: 0.74166
+  type: 'test'
+  ...
+# Subtest: reveal: the lullaby is sung up to its climb, its last two bars are withheld, and the fall stops on the second note, hanging
+ok 56 - reveal: the lullaby is sung up to its climb, its last two bars are withheld, and the fall stops on the second note, hanging
+  ---
+  duration_ms: 0.613089
+  type: 'test'
+  ...
+# Subtest: resolve: Pokey's tune alone in the cello, Grandma's four rising notes climbing from higher steps, then the tune brave with the four notes as a flick
+ok 57 - resolve: Pokey's tune alone in the cello, Grandma's four rising notes climbing from higher steps, then the tune brave with the four notes as a flick
+  ---
+  duration_ms: 1.063762
+  type: 'test'
+  ...
+# Subtest: mercy: the March unlocks into the lullaby: the sixth rises first, then the third, then the lilt, and the tune ends on the D the two songs share
+ok 58 - mercy: the March unlocks into the lullaby: the sixth rises first, then the third, then the lilt, and the tune ends on the D the two songs share
+  ---
+  duration_ms: 10.273015
+  type: 'test'
+  ...
+# Subtest: finale: the song three times, the bud first, the tune climbing D E F-sharp over the bloom, and Grandma's phrase at last arriving on the tonic
+ok 59 - finale: the song three times, the bud first, the tune climbing D E F-sharp over the bloom, and Grandma's phrase at last arriving on the tonic
+  ---
+  duration_ms: 3.418148
+  type: 'test'
+  ...
+# Subtest: the pieces share one tonal world: the March is the lullaby's notes with the third and sixth lowered, and nothing else
+ok 60 - the pieces share one tonal world: the March is the lullaby's notes with the third and sixth lowered, and nothing else
+  ---
+  duration_ms: 0.458859
+  type: 'test'
+  ...
+# Subtest: every effect the game asks for has recorded takes, and every take its level
+ok 61 - every effect the game asks for has recorded takes, and every take its level
+  ---
+  duration_ms: 33.155673
+  type: 'test'
+  ...
+# Subtest: the effects that fire often have three or more takes, and every hit is its own body (no shared generic hit)
+ok 62 - the effects that fire often have three or more takes, and every hit is its own body (no shared generic hit)
+  ---
+  duration_ms: 2.032205
+  type: 'test'
+  ...
+# Subtest: a landing is picked by how far he fell; footsteps by the ground
+ok 63 - a landing is picked by how far he fell; footsteps by the ground
+  ---
+  duration_ms: 0.095917
+  type: 'test'
+  ...
+# Subtest: the shuffle bag plays every take once before any repeats, and never the same one twice in a row
+ok 64 - the shuffle bag plays every take once before any repeats, and never the same one twice in a row
+  ---
+  duration_ms: 0.245614
+  type: 'test'
+  ...
+# Subtest: rocks never stack: four inside 0.7 s play at most three, and two inside the gap play one
+ok 65 - rocks never stack: four inside 0.7 s play at most three, and two inside the gap play one
+  ---
+  duration_ms: 0.143342
+  type: 'test'
+  ...
+# Subtest: every place has its recorded bed and level, and its one-shots exist
+ok 66 - every place has its recorded bed and level, and its one-shots exist
+  ---
+  duration_ms: 12.891875
+  type: 'test'
+  ...
+# Subtest: the recorded set stays small: under 3 MB in all, no take over 200 KB, and the pack adds up
+ok 67 - the recorded set stays small: under 3 MB in all, no take over 200 KB, and the pack adds up
+  ---
+  duration_ms: 0.448567
+  type: 'test'
+  ...
+# Subtest: there is music for every world, boss and scene
+ok 68 - there is music for every world, boss and scene
+  ---
+  duration_ms: 15.358319
+  type: 'test'
+  ...
+# Subtest: world1: notation is valid and in tune
+ok 69 - world1: notation is valid and in tune
+  ---
+  duration_ms: 0.803163
+  type: 'test'
+  ...
+# Subtest: world1: hand-written melody stays mostly in its key and in a singable range
+ok 70 - world1: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.226156
+  type: 'test'
+  ...
+# Subtest: world2: notation is valid and in tune
+ok 71 - world2: notation is valid and in tune
+  ---
+  duration_ms: 0.140572
+  type: 'test'
+  ...
+# Subtest: world2: hand-written melody stays mostly in its key and in a singable range
+ok 72 - world2: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.086526
+  type: 'test'
+  ...
+# Subtest: world3: notation is valid and in tune
+ok 73 - world3: notation is valid and in tune
+  ---
+  duration_ms: 0.099247
+  type: 'test'
+  ...
+# Subtest: world3: hand-written melody stays mostly in its key and in a singable range
+ok 74 - world3: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.109272
+  type: 'test'
+  ...
+# Subtest: world4: notation is valid and in tune
+ok 75 - world4: notation is valid and in tune
+  ---
+  duration_ms: 0.085003
+  type: 'test'
+  ...
+# Subtest: world4: hand-written melody stays mostly in its key and in a singable range
+ok 76 - world4: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 8.54912
+  type: 'test'
+  ...
+# Subtest: world5: notation is valid and in tune
+ok 77 - world5: notation is valid and in tune
+  ---
+  duration_ms: 0.284188
+  type: 'test'
+  ...
+# Subtest: world5: hand-written melody stays mostly in its key and in a singable range
+ok 78 - world5: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.071647
+  type: 'test'
+  ...
+# Subtest: world6: notation is valid and in tune
+ok 79 - world6: notation is valid and in tune
+  ---
+  duration_ms: 0.120782
+  type: 'test'
+  ...
+# Subtest: world6: hand-written melody stays mostly in its key and in a singable range
+ok 80 - world6: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.052757
+  type: 'test'
+  ...
+# Subtest: world7: notation is valid and in tune
+ok 81 - world7: notation is valid and in tune
+  ---
+  duration_ms: 0.059626
+  type: 'test'
+  ...
+# Subtest: world7: hand-written melody stays mostly in its key and in a singable range
+ok 82 - world7: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.037092
+  type: 'test'
+  ...
+# Subtest: world8: notation is valid and in tune
+ok 83 - world8: notation is valid and in tune
+  ---
+  duration_ms: 0.057312
+  type: 'test'
+  ...
+# Subtest: world8: hand-written melody stays mostly in its key and in a singable range
+ok 84 - world8: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.036342
+  type: 'test'
+  ...
+# Subtest: world9: notation is valid and in tune
+ok 85 - world9: notation is valid and in tune
+  ---
+  duration_ms: 0.063378
+  type: 'test'
+  ...
+# Subtest: world9: hand-written melody stays mostly in its key and in a singable range
+ok 86 - world9: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.039674
+  type: 'test'
+  ...
+# Subtest: world10: notation is valid and in tune
+ok 87 - world10: notation is valid and in tune
+  ---
+  duration_ms: 0.069815
+  type: 'test'
+  ...
+# Subtest: world10: hand-written melody stays mostly in its key and in a singable range
+ok 88 - world10: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.040961
+  type: 'test'
+  ...
+# Subtest: bossA: notation is valid and in tune
+ok 89 - bossA: notation is valid and in tune
+  ---
+  duration_ms: 0.066537
+  type: 'test'
+  ...
+# Subtest: bossA: hand-written melody stays mostly in its key and in a singable range
+ok 90 - bossA: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.04037
+  type: 'test'
+  ...
+# Subtest: bossB: notation is valid and in tune
+ok 91 - bossB: notation is valid and in tune
+  ---
+  duration_ms: 0.059217
+  type: 'test'
+  ...
+# Subtest: bossB: hand-written melody stays mostly in its key and in a singable range
+ok 92 - bossB: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.038108
+  type: 'test'
+  ...
+# Subtest: bossC: notation is valid and in tune
+ok 93 - bossC: notation is valid and in tune
+  ---
+  duration_ms: 9.017307
+  type: 'test'
+  ...
+# Subtest: bossC: hand-written melody stays mostly in its key and in a singable range
+ok 94 - bossC: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.075037
+  type: 'test'
+  ...
+# Subtest: bossFinal: notation is valid and in tune
+ok 95 - bossFinal: notation is valid and in tune
+  ---
+  duration_ms: 0.157457
+  type: 'test'
+  ...
+# Subtest: bossFinal: hand-written melody stays mostly in its key and in a singable range
+ok 96 - bossFinal: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.058161
+  type: 'test'
+  ...
+# Subtest: results: notation is valid and in tune
+ok 97 - results: notation is valid and in tune
+  ---
+  duration_ms: 0.067817
+  type: 'test'
+  ...
+# Subtest: results: hand-written melody stays mostly in its key and in a singable range
+ok 98 - results: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.047068
+  type: 'test'
+  ...
+# Subtest: gameover: notation is valid and in tune
+ok 99 - gameover: notation is valid and in tune
+  ---
+  duration_ms: 0.04624
+  type: 'test'
+  ...
+# Subtest: gameover: hand-written melody stays mostly in its key and in a singable range
+ok 100 - gameover: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.035397
+  type: 'test'
+  ...
+# Subtest: jennifur: notation is valid and in tune
+ok 101 - jennifur: notation is valid and in tune
+  ---
+  duration_ms: 0.181259
+  type: 'test'
+  ...
+# Subtest: jennifur: hand-written melody stays mostly in its key and in a singable range
+ok 102 - jennifur: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.131056
+  type: 'test'
+  ...
+# Subtest: storyDusk: notation is valid and in tune
+ok 103 - storyDusk: notation is valid and in tune
+  ---
+  duration_ms: 0.171924
+  type: 'test'
+  ...
+# Subtest: storyDusk: hand-written melody stays mostly in its key and in a singable range
+ok 104 - storyDusk: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.196349
+  type: 'test'
+  ...
+# Subtest: storyStorm: notation is valid and in tune
+ok 105 - storyStorm: notation is valid and in tune
+  ---
+  duration_ms: 0.155462
+  type: 'test'
+  ...
+# Subtest: storyStorm: hand-written melody stays mostly in its key and in a singable range
+ok 106 - storyStorm: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 12.787635
+  type: 'test'
+  ...
+# Subtest: ending: notation is valid and in tune
+ok 107 - ending: notation is valid and in tune
+  ---
+  duration_ms: 0.232701
+  type: 'test'
+  ...
+# Subtest: ending: hand-written melody stays mostly in its key and in a singable range
+ok 108 - ending: hand-written melody stays mostly in its key and in a singable range
+  ---
+  duration_ms: 0.18996
+  type: 'test'
+  ...
+# Subtest: generated melodies stay in key, in range and never leap wildly
+ok 109 - generated melodies stay in key, in range and never leap wildly
+  ---
+  duration_ms: 17.225796
+  type: 'test'
+  ...
+# Subtest: the generator is repeatable: same seed, same tune
+ok 110 - the generator is repeatable: same seed, same tune
+  ---
+  duration_ms: 0.633026
+  type: 'test'
+  ...
+# Subtest: pad voicings move smoothly between chords
+ok 111 - pad voicings move smoothly between chords
+  ---
+  duration_ms: 0.378776
+  type: 'test'
+  ...
+# Subtest: R-165.125 every slider step is the same number of decibels, top to bottom, and 0 is off
+ok 112 - R-165.125 every slider step is the same number of decibels, top to bottom, and 0 is off
+  ---
+  duration_ms: 0.73865
+  type: 'test'
+  ...
+# Subtest: R-165.125 the overall level (the louder slider) is applied after the dynamics; the other sets the balance before them
+ok 113 - R-165.125 the overall level (the louder slider) is applied after the dynamics; the other sets the balance before them
+  ---
+  duration_ms: 0.604178
+  type: 'test'
+  ...
+# Subtest: R-165.125 a new game starts both lower than the top (Matt: the music "a little too loud", the effects clearly lower than it)
+ok 114 - R-165.125 a new game starts both lower than the top (Matt: the music "a little too loud", the effects clearly lower than it)
+  ---
+  duration_ms: 0.100554
+  type: 'test'
+  ...
+# Subtest: a New Game and a Load both re-read the game through one list
+ok 115 - a New Game and a Load both re-read the game through one list
+  ---
+  duration_ms: 0.561783
+  type: 'test'
+  ...
+# Subtest: every state App.tsx loads from storage is re-read after a New Game or a Load (the journal and the flashbacks included)
+ok 116 - every state App.tsx loads from storage is re-read after a New Game or a Load (the journal and the flashbacks included)
+  ---
+  duration_ms: 0.681829
+  type: 'test'
+  ...
+# Subtest: the last game's run is forgotten too (its result card, medals and Game Over count)
+ok 117 - the last game's run is forgotten too (its result card, medals and Game Over count)
+  ---
+  duration_ms: 0.080071
+  type: 'test'
+  ...
+# Subtest: medals known a moment after the card opened still come in, with their chime
+ok 118 - medals known a moment after the card opened still come in, with their chime
+  ---
+  duration_ms: 21.692081
+  type: 'test'
+  ...
+# Subtest: medals that arrive after the count has ended bring the row in, and a tap then skips to it
+ok 119 - medals that arrive after the count has ended bring the row in, and a tap then skips to it
+  ---
+  duration_ms: 0.542522
+  type: 'test'
+  ...
+# Subtest: the control: medals known at the opening come in at their time, and no medals means no chime
+ok 120 - the control: medals known at the opening come in at their time, and no medals means no chime
+  ---
+  duration_ms: 6.101756
+  type: 'test'
+  ...
+# Subtest: the count starts at nothing, eases out and lands exactly on the final number
+ok 121 - the count starts at nothing, eases out and lands exactly on the final number
+  ---
+  duration_ms: 0.587881
+  type: 'test'
+  ...
+# Subtest: ticks every 50 ms, sixteen at most, and none for a count of nothing
+ok 122 - ticks every 50 ms, sixteen at most, and none for a count of nothing
+  ---
+  duration_ms: 0.485324
+  type: 'test'
+  ...
+# Subtest: the stars land after the counts, one by one, and the medals after the last star
+ok 123 - the stars land after the counts, one by one, and the medals after the last star
+  ---
+  duration_ms: 0.108368
+  type: 'test'
+  ...
+# Subtest: goalShown: progress to the goal, never past it; anything with no count goal as it is
+ok 124 - goalShown: progress to the goal, never past it; anything with no count goal as it is
+  ---
+  duration_ms: 0.567192
+  type: 'test'
+  ...
+# Subtest: the HUD shows its count through goalShown, and a clear past the goal flies no icon (VineHud.tsx: it imports CSS, so it is read here, not rendered)
+ok 125 - the HUD shows its count through goalShown, and a clear past the goal flies no icon (VineHud.tsx: it imports CSS, so it is read here, not rendered)
+  ---
+  duration_ms: 0.370505
+  type: 'test'
+  ...
+# Subtest: no player-facing component renders the old vector <Icon> beyond the allow-list, and the list only shrinks
+ok 126 - no player-facing component renders the old vector <Icon> beyond the allow-list, and the list only shrinks
+  ---
+  duration_ms: 49.727911
+  type: 'test'
+  ...
+# Subtest: every painted icon has its file, each under 60 KB and 4096 px
+ok 127 - every painted icon has its file, each under 60 KB and 4096 px
+  ---
+  duration_ms: 22.840838
+  type: 'test'
+  ...
+# Subtest: one object per meaning on every screen: Satchel is always the satchel, How to Play always the lantern (lead, 2026-11-01)
+ok 128 - one object per meaning on every screen: Satchel is always the satchel, How to Play always the lantern (lead, 2026-11-01)
+  ---
+  duration_ms: 19.106685
+  type: 'test'
+  ...
+# Subtest: no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list
+ok 129 - no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list
+  ---
+  duration_ms: 3.665335
+  type: 'test'
+  ...
+# Subtest: the map's star total is three a stage, counted from the stages (UI-11)
+ok 130 - the map's star total is three a stage, counted from the stages (UI-11)
+  ---
+  duration_ms: 24.094654
+  type: 'test'
+  ...
+# Subtest: the file line: stages, stories and finds travel in the save file; sound does not, and the words say exactly that
+ok 131 - the file line: stages, stories and finds travel in the save file; sound does not, and the words say exactly that
+  ---
+  duration_ms: 5.003385
+  type: 'test'
+  ...
+# Subtest: the dialog promises no sound setting, volume or mute (the file carries none)
+ok 132 - the dialog promises no sound setting, volume or mute (the file carries none)
+  ---
+  duration_ms: 0.182609
+  type: 'test'
+  ...
+# Subtest: the save-error and load-note lines are the story keeper's
+ok 133 - the save-error and load-note lines are the story keeper's
+  ---
+  duration_ms: 0.07478
+  type: 'test'
+  ...
+# Subtest: LV-19: a fresh save meets How to Play, then the mode card, and never reaches 1-1 without a stored mode
+ok 134 - LV-19: a fresh save meets How to Play, then the mode card, and never reaches 1-1 without a stored mode
+  ---
+  duration_ms: 18.617662
+  type: 'test'
+  ...
+# Subtest: LV-19: an old save with no mode stored goes straight on, and still reads Normal
+ok 135 - LV-19: an old save with no mode stored goes straight on, and still reads Normal
+  ---
+  duration_ms: 0.1332
+  type: 'test'
+  ...
+# Subtest: the typed count belongs to its own picture and page: a new picture starts at 0 on its first render
+ok 136 - the typed count belongs to its own picture and page: a new picture starts at 0 on its first render
+  ---
+  duration_ms: 15.033549
+  type: 'test'
+  ...
+# Subtest: StoryPlayer derives the count (no effect resets it, so the voice never sees the last line's count)
+ok 137 - StoryPlayer derives the count (no effect resets it, so the voice never sees the last line's count)
+  ---
+  duration_ms: 0.401923
+  type: 'test'
+  ...
+# Subtest: the save summary does not count the secret stage (a finished game reads as it did before his result was kept)
+ok 138 - the save summary does not count the secret stage (a finished game reads as it did before his result was kept)
+  ---
+  duration_ms: 1.296957
+  type: 'test'
+  ...
+# Subtest: The End's expedition score does not add the secret stage's score
+ok 139 - The End's expedition score does not add the secret stage's score
+  ---
+  duration_ms: 0.283788
+  type: 'test'
+  ...
+#   60 dressing rows on 11 listed stages x 2 layouts x 2 settings, each through the gate
+# Subtest: planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+ok 140 - planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+  ---
+  duration_ms: 3.504156
+  type: 'test'
+  ...
+# Subtest: the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+ok 141 - the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+  ---
+  duration_ms: 170.6293
+  type: 'test'
+  ...
+# Subtest: the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+ok 142 - the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+  ---
+  duration_ms: 0.477679
+  type: 'test'
+  ...
+# Subtest: every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces
+ok 143 - every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces
+  ---
+  duration_ms: 59576.670252
+  type: 'test'
+  ...
+# Subtest: no code lays dressing rows on a stage this gate does not build: every writer of proto.invDress is a listed stage's world file
+ok 144 - no code lays dressing rows on a stage this gate does not build: every writer of proto.invDress is a listed stage's world file
+  ---
+  duration_ms: 124.243496
+  type: 'test'
+  ...
+# Subtest: readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved
+ok 145 - readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved
+  ---
+  duration_ms: 9.698007
+  type: 'test'
+  ...
+# Subtest: every piece of the puzzle kit atlas is drawn somewhere in the game
+ok 146 - every piece of the puzzle kit atlas is drawn somewhere in the game
+  ---
+  duration_ms: 584.823756
+  type: 'test'
+  ...
+# Subtest: the dressing adds pictures only: platforms, pickups, enemies and rooms are the same as without it
+ok 147 - the dressing adds pictures only: platforms, pickups, enemies and rooms are the same as without it
+  ---
+  duration_ms: 19756.413961
+  type: 'test'
+  ...
+# Subtest: 3-7's hollows: the three ferns of each are one kind (only Dot's stones tell them apart), and the rolls use all of Matt's
+ok 148 - 3-7's hollows: the three ferns of each are one kind (only Dot's stones tell them apart), and the rolls use all of Matt's
+  ---
+  duration_ms: 5440.774231
+  type: 'test'
+  ...
+# Subtest: World 3 floor sets and World 4 bridges: never the same set in two stages in a row
+ok 149 - World 3 floor sets and World 4 bridges: never the same set in two stages in a row
+  ---
+  duration_ms: 7421.478112
+  type: 'test'
+  ...
+# Subtest: World 1's rooms: a petal bundle for every room
+ok 150 - World 1's rooms: a petal bundle for every room
+  ---
+  duration_ms: 0.327949
+  type: 'test'
+  ...
+# Subtest: the dressing sheets: every piece is in a set, every set piece is on the sheet
+ok 151 - the dressing sheets: every piece is in a set, every set piece is on the sheet
+  ---
+  duration_ms: 0.33843
+  type: 'test'
+  ...
+# Subtest: Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added
+ok 152 - Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added
+  ---
+  duration_ms: 1650.699092
+  type: 'test'
+  ...
+# Subtest: every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+ok 153 - every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+  ---
+  duration_ms: 21966.426426
+  type: 'test'
+  ...
+# Subtest: the ascent a player is given (a random layout, checked) can be climbed
+ok 154 - the ascent a player is given (a random layout, checked) can be climbed
+  ---
+  duration_ms: 30639.057808
+  type: 'test'
+  ...
+# Subtest: the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+ok 155 - the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+  ---
+  duration_ms: 807.372589
+  type: 'test'
+  ...
+# Subtest: the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+ok 156 - the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+  ---
+  duration_ms: 104.972427
+  type: 'test'
+  ...
+# Subtest: every method on the sound's front door (game/audio.ts) is called by the game or its tools
+ok 157 - every method on the sound's front door (game/audio.ts) is called by the game or its tools
+  ---
+  duration_ms: 526.786555
+  type: 'test'
+  ...
+# Subtest: no no-op left standing in for a feature: the conductor has no setTempo
+ok 158 - no no-op left standing in for a feature: the conductor has no setTempo
+  ---
+  duration_ms: 0.134801
+  type: 'test'
+  ...
+# Subtest: the storm pictures of the story have the storm around them (the thunderstorm ambience)
+ok 159 - the storm pictures of the story have the storm around them (the thunderstorm ambience)
+  ---
+  duration_ms: 18.829266
+  type: 'test'
+  ...
+# Subtest: a strip laid along a long bank keeps only the repeats on screen, each where the full strip has it
+ok 160 - a strip laid along a long bank keeps only the repeats on screen, each where the full strip has it
+  ---
+  duration_ms: 1.353698
+  type: 'test'
+  ...
+# Subtest: a long ground bank (3-3's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is
+ok 161 - a long ground bank (3-3's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is
+  ---
+  duration_ms: 389.022749
+  type: 'test'
+  ...
+# Subtest: walking through a watching boa takes a heart, Normal and Easy (its rear starts as he comes in: he runs through the coil inside it)
+ok 162 - walking through a watching boa takes a heart, Normal and Easy (its rear starts as he comes in: he runs through the coil inside it)
+  ---
+  duration_ms: 784.919838
+  type: 'test'
+  ...
+# Subtest: PLANTED: the coil off, the same walk through costs nothing (the strike aims where he was): the coil is what hurts
+ok 163 - PLANTED: the coil off, the same walk through costs nothing (the strike aims where he was): the coil is what hurts
+  ---
+  duration_ms: 320.766234
+  type: 'test'
+  ...
+# Subtest: never through a beaten boa: dazed (stunned), fleeing or gone, he walks through unhurt
+ok 164 - never through a beaten boa: dazed (stunned), fleeing or gone, he walks through unhurt
+  ---
+  duration_ms: 503.480472
+  type: 'test'
+  ...
+# Subtest: the kit's hurt box by phase: its coil while it watches or rears, its strike's box while it strikes, none with its head out or beaten
+ok 165 - the kit's hurt box by phase: its coil while it watches or rears, its strike's box while it strikes, none with its head out or beaten
+  ---
+  duration_ms: 0.287398
+  type: 'test'
+  ...
+# Subtest: 1-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 166 - 1-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 74.921045
+  type: 'test'
+  ...
+# Subtest: 2-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 167 - 2-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 42.625135
+  type: 'test'
+  ...
+# Subtest: 3-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 168 - 3-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 28.790713
+  type: 'test'
+  ...
+# Subtest: 4-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 169 - 4-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 70.892311
+  type: 'test'
+  ...
+# Subtest: 5-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 170 - 5-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 14.237763
+  type: 'test'
+  ...
+# Subtest: 6-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 171 - 6-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 15.623568
+  type: 'test'
+  ...
+# Subtest: 7-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 172 - 7-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 1.101395
+  type: 'test'
+  ...
+# Subtest: 8-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 173 - 8-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 9.402987
+  type: 'test'
+  ...
+# Subtest: 9-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 174 - 9-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 2.107426
+  type: 'test'
+  ...
+# Subtest: 10-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 175 - 10-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 14.556764
+  type: 'test'
+  ...
+# Subtest: an idle boss breathes about 1: never more than 3% off
+ok 176 - an idle boss breathes about 1: never more than 3% off
+  ---
+  duration_ms: 1.019562
+  type: 'test'
+  ...
+# Subtest: a wind-up crouches more the longer it runs, and trembles at the end
+ok 177 - a wind-up crouches more the longer it runs, and trembles at the end
+  ---
+  duration_ms: 12.291785
+  type: 'test'
+  ...
+# Subtest: an attack starts stretched along its facing and settles back
+ok 178 - an attack starts stretched along its facing and settles back
+  ---
+  duration_ms: 0.27223
+  type: 'test'
+  ...
+# Subtest: a hit shoves the boss back for a moment only
+ok 179 - a hit shoves the boss back for a moment only
+  ---
+  duration_ms: 0.527618
+  type: 'test'
+  ...
+# Subtest: a stunned boss wobbles, a dead one is still
+ok 180 - a stunned boss wobbles, a dead one is still
+  ---
+  duration_ms: 0.167233
+  type: 'test'
+  ...
+# Subtest: phase 2 breathes faster than phase 1
+ok 181 - phase 2 breathes faster than phase 1
+  ---
+  duration_ms: 0.454622
+  type: 'test'
+  ...
+# Subtest: 1-10: Dot's tip comes before the first lunge, which rears back for at least 0.6 s with a hiss
+ok 182 - 1-10: Dot's tip comes before the first lunge, which rears back for at least 0.6 s with a hiss
+  ---
+  duration_ms: 254.15297
+  type: 'test'
+  ...
+# Subtest: 3-10: in the dark the Prowler is drawn back over it, faintly while he prowls and lit as he winds up and strikes
+ok 183 - 3-10: in the dark the Prowler is drawn back over it, faintly while he prowls and lit as he winds up and strikes
+  ---
+  duration_ms: 40.32078
+  type: 'test'
+  ...
+# Subtest: the hit pop says what came off the bar: half a hit, one, or two
+ok 184 - the hit pop says what came off the bar: half a hit, one, or two
+  ---
+  duration_ms: 0.156231
+  type: 'test'
+  ...
+# Subtest: 3-10: his body never hurts by touch, before a move or during one: only his strikes do
+ok 185 - 3-10: his body never hurts by touch, before a move or during one: only his strikes do
+  ---
+  duration_ms: 10.368496
+  type: 'test'
+  ...
+# Subtest: 3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it
+ok 186 - 3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it
+  ---
+  duration_ms: 36.493707
+  type: 'test'
+  ...
+# Subtest: 3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them
+ok 187 - 3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them
+  ---
+  duration_ms: 360.906759
+  type: 'test'
+  ...
+# Subtest: 1-10 upright: the tree, the stump and the vine stay in view through every lunge
+ok 188 - 1-10 upright: the tree, the stump and the vine stay in view through every lunge
+  ---
+  duration_ms: 108.395969
+  type: 'test'
+  ...
+# Subtest: 3-10: a hero near him who dodges LEFT out of the ring to the wall still meets his back when he lands (QA repro), both ways up
+ok 189 - 3-10: a hero near him who dodges LEFT out of the ring to the wall still meets his back when he lands (QA repro), both ways up
+  ---
+  duration_ms: 94.487609
+  type: 'test'
+  ...
+# Subtest: 1-10: his coils never hurt by touch, and Dot's cracking-stump line waits until Pokey stands on the cracking stump
+ok 190 - 1-10: his coils never hurt by touch, and Dot's cracking-stump line waits until Pokey stands on the cracking stump
+  ---
+  duration_ms: 11.212356
+  type: 'test'
+  ...
+# Subtest: 3-10: a move's first wind-up, when Dot names it, runs long enough to read her line before it strikes
+ok 191 - 3-10: a move's first wind-up, when Dot names it, runs long enough to read her line before it strikes
+  ---
+  duration_ms: 52.512936
+  type: 'test'
+  ...
+# Subtest: 2-10, 4-10 and 5-10: the body never hurts by touch while the boss winds up (QA, Matt's 2up4: 4 of 8 hearts in 2-10 were touching a winding-up caiman)
+ok 192 - 2-10, 4-10 and 5-10: the body never hurts by touch while the boss winds up (QA, Matt's 2up4: 4 of 8 hearts in 2-10 were touching a winding-up caiman)
+  ---
+  duration_ms: 106.352404
+  type: 'test'
+  ...
+# Subtest: 2-10: Pokey standing against the caiman through his wind-ups is never hurt before a move begins
+ok 193 - 2-10: Pokey standing against the caiman through his wind-ups is never hurt before a move begins
+  ---
+  duration_ms: 197.458273
+  type: 'test'
+  ...
+# Subtest: A-04 a jump pressed just before landing in a web is the same jump as one pressed standing in it
+ok 194 - A-04 a jump pressed just before landing in a web is the same jump as one pressed standing in it
+  ---
+  duration_ms: 605.615781
+  type: 'test'
+  ...
+# Subtest: A-04b a crumbling platform landed on with a buffered jump still starts to crumble
+ok 195 - A-04b a crumbling platform landed on with a buffered jump still starts to crumble
+  ---
+  duration_ms: 274.570894
+  type: 'test'
+  ...
+# Subtest: A-04c a jump buffered into a spore cloud is judged drowsy at its take-off, like one pressed standing in it
+ok 196 - A-04c a jump buffered into a spore cloud is judged drowsy at its take-off, like one pressed standing in it
+  ---
+  duration_ms: 591.886186
+  type: 'test'
+  ...
+# Subtest: cadence: a ramp that cools passes; a flat 6-7 run from slot 3 on, a peak that never cools, and a front-loaded stage fail
+ok 197 - cadence: a ramp that cools passes; a flat 6-7 run from slot 3 on, a peak that never cools, and a front-loaded stage fail
+  ---
+  duration_ms: 1.112262
+  type: 'test'
+  ...
+# Subtest: a hop does not move the camera: in the air it holds the ground height
+ok 198 - a hop does not move the camera: in the air it holds the ground height
+  ---
+  duration_ms: 0.751855
+  type: 'test'
+  ...
+# Subtest: landing on a higher ledge moves the camera up to it; a fall is followed down
+ok 199 - landing on a higher ledge moves the camera up to it; a fall is followed down
+  ---
+  duration_ms: 0.091313
+  type: 'test'
+  ...
+# Subtest: a high bounce is followed once he is well above the ground
+ok 200 - a high bounce is followed once he is well above the ground
+  ---
+  duration_ms: 0.054811
+  type: 'test'
+  ...
+# Subtest: on a swinging vine the camera keeps level with the bottom of the arc, whatever the swing is doing
+ok 201 - on a swinging vine the camera keeps level with the bottom of the arc, whatever the swing is doing
+  ---
+  duration_ms: 0.106623
+  type: 'test'
+  ...
+# Subtest: climbing and hanging follow him; a respawn far away moves the anchor at once
+ok 202 - climbing and hanging follow him; a respawn far away moves the anchor at once
+  ---
+  duration_ms: 0.065606
+  type: 'test'
+  ...
+# Subtest: turning round eases the look-ahead across instead of jumping it
+ok 203 - turning round eases the look-ahead across instead of jumping it
+  ---
+  duration_ms: 0.146787
+  type: 'test'
+  ...
+# Subtest: at the end of a ledge, the view shows the far side of the gap, upright and sideways (testers, 4-4 and 4-7)
+ok 204 - at the end of a ledge, the view shows the far side of the gap, upright and sideways (testers, 4-4 and 4-7)
+  ---
+  duration_ms: 22.525695
+  type: 'test'
+  ...
+# Subtest: the next vine past the end of a ledge is shown whole upright, not cut off at the edge (4-4)
+ok 205 - the next vine past the end of a ledge is shown whole upright, not cut off at the edge (4-4)
+  ---
+  duration_ms: 0.113391
+  type: 'test'
+  ...
+# Subtest: swinging on a vine, the view shows where letting go throws him: the next vine or ledge the way he faces (1-8)
+ok 206 - swinging on a vine, the view shows where letting go throws him: the next vine or ledge the way he faces (1-8)
+  ---
+  duration_ms: 0.305982
+  type: 'test'
+  ...
+# Subtest: no look across where there is no gap, or he is still far from the end
+ok 207 - no look across where there is no gap, or he is still far from the end
+  ---
+  duration_ms: 0.207913
+  type: 'test'
+  ...
+# Subtest: Pokey's head stays under the HUD band, in every stage and both ways up; the look across or down gives way first
+ok 208 - Pokey's head stays under the HUD band, in every stage and both ways up; the look across or down gives way first
+  ---
+  duration_ms: 0.242993
+  type: 'test'
+  ...
+# Subtest: the camera snaps to whole device pixels
+ok 209 - the camera snaps to whole device pixels
+  ---
+  duration_ms: 0.161779
+  type: 'test'
+  ...
+# Subtest: the climb camera: on a stage that leads up his feet sit low, so the storey over him shows under the HUD, both ways round
+ok 210 - the climb camera: on a stage that leads up his feet sit low, so the storey over him shows under the HUD, both ways round
+  ---
+  duration_ms: 0.161352
+  type: 'test'
+  ...
+# Subtest: the climb camera: on a stage that leads down his feet sit high, so the landing under him shows; a run keeps its framing
+ok 211 - the climb camera: on a stage that leads down his feet sit high, so the landing under him shows; a run keeps its framing
+  ---
+  duration_ms: 0.113191
+  type: 'test'
+  ...
+# Subtest: turning round on a stepping stone between two gaps eases the view across: no jump, upright or sideways
+ok 212 - turning round on a stepping stone between two gaps eases the view across: no jump, upright or sideways
+  ---
+  duration_ms: 1422.656043
+  type: 'test'
+  ...
+# Subtest: pumping a swing (each swing back turns him round): the view holds steady, no jump
+ok 213 - pumping a swing (each swing back turns him round): the view holds steady, no jump
+  ---
+  duration_ms: 812.493382
+  type: 'test'
+  ...
+# Subtest: turning round at the end of a ledge, the landing across the gap is still in view within half a second
+ok 214 - turning round at the end of a ledge, the landing across the gap is still in view within half a second
+  ---
+  duration_ms: 546.790614
+  type: 'test'
+  ...
+# Subtest: a thief grabs the petal when he comes close, runs to a post and teases there
+ok 215 - a thief grabs the petal when he comes close, runs to a post and teases there
+  ---
+  duration_ms: 1.104561
+  type: 'test'
+  ...
+# Subtest: catching up while it teases makes it drop the petal; a punch does too
+ok 216 - catching up while it teases makes it drop the petal; a punch does too
+  ---
+  duration_ms: 6.896526
+  type: 'test'
+  ...
+# Subtest: a thief nobody catches ends up in its den, still holding the petal
+ok 217 - a thief nobody catches ends up in its den, still holding the petal
+  ---
+  duration_ms: 0.402157
+  type: 'test'
+  ...
+# Subtest: at a post it waits for him to come in sight before it teases and runs on, so it always stops where he can catch it
+ok 218 - at a post it waits for him to come in sight before it teases and runs on, so it always stops where he can catch it
+  ---
+  duration_ms: 0.712514
+  type: 'test'
+  ...
+# Subtest: it runs faster than he walks, so he catches it at a post, not on the way
+ok 219 - it runs faster than he walks, so he catches it at a post, not on the way
+  ---
+  duration_ms: 0.124664
+  type: 'test'
+  ...
+# Subtest: a lookout stares before it screeches, and ducking back under cover in time stops it
+ok 220 - a lookout stares before it screeches, and ducking back under cover in time stops it
+  ---
+  duration_ms: 0.224286
+  type: 'test'
+  ...
+# Subtest: hidden, or outside its stretch, it sees nothing
+ok 221 - hidden, or outside its stretch, it sees nothing
+  ---
+  duration_ms: 0.150809
+  type: 'test'
+  ...
+# Subtest: a fruit nearby draws it off to eat, and while it eats it never screeches
+ok 222 - a fruit nearby draws it off to eat, and while it eats it never screeches
+  ---
+  duration_ms: 0.269772
+  type: 'test'
+  ...
+# Subtest: a guard paces its ledge and blocks the way
+ok 223 - a guard paces its ledge and blocks the way
+  ---
+  duration_ms: 6.383798
+  type: 'test'
+  ...
+# Subtest: a strong gust knocks a guard down; it stops blocking and climbs back later
+ok 224 - a strong gust knocks a guard down; it stops blocking and climbs back later
+  ---
+  duration_ms: 0.266912
+  type: 'test'
+  ...
+# Subtest: on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height
+ok 225 - on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height
+  ---
+  duration_ms: 5.402286
+  type: 'test'
+  ...
+# Subtest: the foot never stands over a gap: with no ground where it would go, a bough end holds the load
+ok 226 - the foot never stands over a gap: with no ground where it would go, a bough end holds the load
+  ---
+  duration_ms: 0.179717
+  type: 'test'
+  ...
+# Subtest: a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its foot on the ground, at about its usual size at a rope's height
+ok 227 - a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its foot on the ground, at about its usual size at a rope's height
+  ---
+  duration_ms: 0.10957
+  type: 'test'
+  ...
+# Subtest: the vine's tile and the tinted rope tile are baked again when the phone takes their canvas back (LESSONS D6: a lost copy draws nothing)
+ok 228 - the vine's tile and the tinted rope tile are baked again when the phone takes their canvas back (LESSONS D6: a lost copy draws nothing)
+  ---
+  duration_ms: 0.397097
+  type: 'test'
+  ...
+# Subtest: no punch, no line: a stage run starts with no moments, and walking and waiting make none
+ok 229 - no punch, no line: a stage run starts with no moments, and walking and waiting make none
+  ---
+  duration_ms: 544.512579
+  type: 'test'
+  ...
+# Subtest: the first punch that sends a snake gliding: the moment, and Dot's "excuse me" is due
+ok 230 - the first punch that sends a snake gliding: the moment, and Dot's "excuse me" is due
+  ---
+  duration_ms: 216.738394
+  type: 'test'
+  ...
+# Subtest: a punch that only shoves it (mid-branch) is no moment, and no line
+ok 231 - a punch that only shoves it (mid-branch) is no moment, and no line
+  ---
+  duration_ms: 155.862454
+  type: 'test'
+  ...
+# Subtest: a trap is its own moment, never the punch's: the trap line stays the stage's own (castPlay said.trap), and "excuse me" waits
+ok 232 - a trap is its own moment, never the punch's: the trap line stays the stage's own (castPlay said.trap), and "excuse me" waits
+  ---
+  duration_ms: 170.947208
+  type: 'test'
+  ...
+# Subtest: a stage hint its data marks `teach` reaches Dot as the stage's own teach line (onGuide o.teach); a plain hint does not
+ok 233 - a stage hint its data marks `teach` reaches Dot as the stage's own teach line (onGuide o.teach); a plain hint does not
+  ---
+  duration_ms: 127.965999
+  type: 'test'
+  ...
+# Subtest: the engine fires no stock foe lesson at a snake under a set drop trap; with the trap gone, it does
+ok 234 - the engine fires no stock foe lesson at a snake under a set drop trap; with the trap gone, it does
+  ---
+  duration_ms: 282.222128
+  type: 'test'
+  ...
+# Subtest: the collapse waits until he passes its start, then sets off behind him
+ok 235 - the collapse waits until he passes its start, then sets off behind him
+  ---
+  duration_ms: 0.760184
+  type: 'test'
+  ...
+# Subtest: a player who keeps running pulls away; one who stops is caught within a few seconds
+ok 236 - a player who keeps running pulls away; one who stops is caught within a few seconds
+  ---
+  duration_ms: 1.182986
+  type: 'test'
+  ...
+# Subtest: it goes faster the farther ahead he is, and faster again on the last stretch
+ok 237 - it goes faster the farther ahead he is, and faster again on the last stretch
+  ---
+  duration_ms: 0.089597
+  type: 'test'
+  ...
+# Subtest: a restart puts the collapse well behind the flag and holds it a moment
+ok 238 - a restart puts the collapse well behind the flag and holds it a moment
+  ---
+  duration_ms: 0.110309
+  type: 'test'
+  ...
+# Subtest: the rows: Normal is the old 1-8 (unchanged); Easy is at most 200 px/s and never faster than his run, last stretch included
+ok 239 - the rows: Normal is the old 1-8 (unchanged); Easy is at most 200 px/s and never faster than his run, last stretch included
+  ---
+  duration_ms: 0.371917
+  type: 'test'
+  ...
+# Subtest: a lay that cannot run is named: overlapping stretches, an end before its start, a "last" that is not last, none at all
+ok 240 - a lay that cannot run is named: overlapping stretches, an end before its start, a "last" that is not last, none at all
+  ---
+  duration_ms: 0.449809
+  type: 'test'
+  ...
+# Subtest: Normal: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+ok 241 - Normal: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+  ---
+  duration_ms: 0.983223
+  type: 'test'
+  ...
+# Subtest: Normal: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+ok 242 - Normal: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+  ---
+  duration_ms: 9.551905
+  type: 'test'
+  ...
+# Subtest: Normal: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+ok 243 - Normal: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+  ---
+  duration_ms: 0.499191
+  type: 'test'
+  ...
+# Subtest: Easy: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+ok 244 - Easy: a runner in stride is never caught; each front stops at its fork; the next cracks behind him as he leaves the fork
+  ---
+  duration_ms: 1.048704
+  type: 'test'
+  ...
+# Subtest: Easy: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+ok 245 - Easy: he stops on a stretch and is caught within its stop budget; he stops on the fork and is never caught
+  ---
+  duration_ms: 15.450512
+  type: 'test'
+  ...
+# Subtest: Easy: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+ok 246 - Easy: back at a flag on the fork, the stretch behind stays fallen to its fork and the next waits; a flag in a stretch holds its front
+  ---
+  duration_ms: 0.10697
+  type: 'test'
+  ...
+# Subtest: sections: each on its own stretch's ground; one on a fork or past the last fork belongs to none and never falls
+ok 247 - sections: each on its own stretch's ground; one on a fork or past the last fork belongs to none and never falls
+  ---
+  duration_ms: 0.263996
+  type: 'test'
+  ...
