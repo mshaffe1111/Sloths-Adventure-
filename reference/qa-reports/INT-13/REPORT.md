@@ -60,7 +60,7 @@
 
 # INT-13b (fresh integration member; started 5:49 PM ET 11-19; this section first written 7:06 PM ET)
 
-## INT-13b EXACT NEXT STEP (if INT-13b stops before its final line below)
+## INT-13b EXACT NEXT STEP: DONE (every item below ran; kept for the record)
 Gated head = 4529d5e6 (the last src/tools change). Gate logs: scratchpad only; every result is copied into the gate table below.
 1. Read the gate table below; any gate marked RUNNING or UNRUN on 4529d5e6 runs once on t-int-13's head (whose src/, tools/, public/,
    .github/, configs and reference/ outside qa-reports/ and handoffs/ must equal 4529d5e6's: `git diff --name-only 4529d5e6 HEAD`).
@@ -87,3 +87,54 @@ third stones, a count and two counts later, were mid-bite as he came. Fix: breat
 already tell them apart; the bot and meter were ENG-25's own). Planted test breathAim.test.ts 'a SNAP STONE row' red before, green after;
 snapRide 12/12. No laid stage has a snap stone yet (2-5 is not built), so today it changes only the toys. Whether a snap row wants its own
 respawn aim is a 2-5 design point (today: none, ENG-25's proven behaviour).
+
+## Gate table (INT-13b; every gate once on 4529d5e6's tree)
+Gated tree: 4529d5e6 (the last src/tools change). Every later commit (595f0981, 8efb1bba, fab317c2, cac84a18 and this REPORT) changes only
+reference/qa-reports/ and reference/handoffs/engine-core.md (the lead's equal-tree rule, 6:00 PM and 6:05 PM: the only readers of
+reference/handoffs in src/ and tools/ are tools/timecheck.mjs + its test and the session hook laws-short.mjs); the gates that read
+reference/ (timecheck, roadmapcheck, knowncheck, the CI tool line) run again on the final head (last rows).
+| Gate | Head | Result |
+|---|---|---|
+| tsc | 4529d5e6 | PASS (0) |
+| suite, 3 shards | 4529d5e6 | 3,935 tests: 3,933 pass, 0 fail, 2 todo (= main's 3 todo markers, identical) |
+| BASE_PATH vite build + chunkcheck | 4529d5e6 tree | PASS; biggest JS cast 1,788,517 B (2,205,787 spare) |
+| artcheck | 4529d5e6 tree | PASS |
+| drawcheck | 4529d5e6 | PASS (1,070 s) |
+| clipcheck | 4529d5e6 tree | FAIL under heavy load (4 'stale' known, 74 of 83 seen, 900 s; 3 suite shards + paintcheck beside it), then PASS quiet (83 known, 324 s): R-165.215's flake (the lead), not rerun again |
+| kbdcheck | 4529d5e6 tree | PASS (204 s); its re-shot stills restored to the committed copies |
+| paintcheck 0/3, 1/3, 2/3 | 4529d5e6 tree | PASS, 0 new (212 / 107 / 110 known ids). Times under load: 14.5 / 10.6 / 9.5 min here; on cc8c0e97 with less load 5.4 / 6.5 / 6.2 min = 18.1 min summed (CLAUDE.md "about 18 minutes" holds for the parts summed; side by side about 12 min wall) |
+| every proven list --check (registrycheck --lists: 1-1..1-9, 2-1, 2-2, 2-4) | 4529d5e6 tree | 12/12 PASS |
+| lockall --check vs main 6e7b85f8 (recorded on a main worktree, 3,264 builds) | 4529d5e6 tree | PASS: 85/102 unchanged; moved = exactly the 17 intended (1-6,1-7,1-8,1-9,2-1,2-2,2-4,3-8,4-4,6-1,6-3,6-6,6-7,7-5,7-9,8-3,8-5) |
+| castBots 2-1 / 2-2 / 2-4, 1-40, kid,adult,child,middle,expert, both | 4529d5e6 tree | rows identical to cc8c0e97's; 2-1 kid N 32/40 (= ENG-285, INT-11's ruled twin river), rest 40/40; 2-2 kid N 24/40 (FIX-284's final 23), adult N 40/40 (39), rest 40/40; 2-4 = BUILD-24e's (kid N 29/40, same 11 seeds) |
+| CI tool line (CI=1 FORCE_COLOR=1, exactly gates.yml) | 4529d5e6 tree | 305 tests: 304 pass, 0 fail, 1 todo (chase bots OPEN, pre-existing). On cc8c0e97: 1 FAIL = the red above |
+| tipwalk --layouts 4 / registrycheck / coveragecheck | 4529d5e6 tree | PASS / PASS (12 stages) / PASS |
+| tierBots.test | 4529d5e6 tree | 7/7 (after the recalibration) |
+| funcheck (advisory) vs INT-12/funcheck-main-6e7b85f8.txt | 4529d5e6 tree | flag for flag = INT-12's final d7cb8240 (nothing new or worse); vs main only INT-12's 1-6 and 1-9 flags. Output: funcheck-final-4529d5e6.txt |
+| buildcheck ALONE | 4529d5e6 tree | PASS: Normal p95 91 ms, Easy 52 ms (budget 150) |
+| generality, knowncheck, roadmapcheck, timecheck (+ --range origin/main..HEAD) | final head | see the last section |
+
+## Stills (reference/qa-reports/INT-13/stills-b/; judged cropped; whole screens committed for the lead)
+- 22-pad: 2-2 L1 Normal (built normal, seed 2) big1 at 0.88, edgeR, up + side: Pokey on the pad's floor; no grey wall, dark strip,
+  underground water patch or petals over the soil; the bank's lower face shows BUILD-24c's river-under-bank run as a soft edge.
+- 24: 2-4 L1 Normal x9970 catch (Dot: "Flick up when a log drifts close.") and x27750 raft (Dot: "Flick up into the vine to grab it."), up + side.
+- 22-putback: cliprespawn.mjs fast, the first frame after the iris opens: up f0045, side f0072: risen pads clean, no SPLASH, no spray,
+  only "2 lives left" at the flag.
+- The lead judged and accepted them for the test link (8:14 PM message).
+
+## Polish check / anything rough
+- FOUND BY THE LEAD on a 2x crop, assigned (not INT-13b's): upright, under river and pond banks the lower bank face reads see-through
+  (floor stones through the rock, a faint seam about 140 px in = riverUnderBanks' run end): R-165.323, ENG-24e item 2c.
+- Seen and named, not new from the merge (identical in BUILD-24d's / FIX-284b's own stills): 2-4's drifting logs read pale under the
+  surface band at the catch beat; 2-2's pond floor ends in a straight cut into the soil, sideways. In the sideways raft frame the HUD score
+  pill is caught mid-fade (a frame-timing moment).
+
+## Method used, lessons applied, method update
+- Method: methods/gates.md + release.md (re-run a timing test alone; todo count vs main; CI's exact command line).
+- Lessons: D30 (every time from date in the same command), D57/D87 (inbox at every push), D59 (no gate left running at report), D86 (the
+  full list), D90 (logs to files, summary lines only; stills cropped), D21 (spread the fix to its pair: every by 'beat' reader checked).
+- Method update (proposed): (1) after EVERY integration merge run tsc + the CI tool line (the lead made it D92 / release.md step 0);
+  (2) heavy gates are not run beside 3 suite shards on a 4-core box: clipcheck and the timing test both broke under load 19.
+
+## Final head
+The commit that adds this section; its hash is in the message to the lead. On it: generality, knowncheck, roadmapcheck, timecheck,
+timecheck --range origin/main..HEAD and the CI tool line, results in that message.
