@@ -182,3 +182,5 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
 - Is it the one tip for that move, at a rest or before the move, never repeated?
 - Cite the file and line. Matt's words, verbatim, when it's his call.
 - Before approving an exit or mission line, read the stage's goal type (goals.ts) and its words (stagePlan.ts GOAL_WORDS / SEALED_LINES): a goal with no words leaves a locked exit silent (KEEPER-16, 11-14: 1-6's vine_runner had no petal count).
+
+**Check the world's count words too (11-19 7:34 PM ET, KEEPER-3X's method update, approved by the lead):** before writing a stage's mission line, read GOAL_WORDS / countWord for that world, not only the mission (World 3 said 'Defeat {n} predators' in a world where nobody is hurt, and no design asked).
