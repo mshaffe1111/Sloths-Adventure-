@@ -19,7 +19,8 @@ import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { W1_LURE } from './w1.ts';
 import { PREDATOR_ENTRIES } from '../../journal.ts';
 import { TRAP_UNDER } from './w1Cast.ts';
-import { LINES_19, MISSION_19, SAID_TRAP_19, SEALED_19, SPLASH_19, STAGE_19 } from './w1Arc19.ts';
+import { finish19, kitLib19, LINES_19, MISSION_19, SAID_TRAP_19, SEALED_19, SPLASH_19, STAGE_19 } from './w1Arc19.ts';
+import type { ListedStage } from '../listed.ts';
 import type { Enemy, Platform } from '../../types.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -33,9 +34,19 @@ const memo = new Map<string, Built>();
 function built(seed: number, d: 'normal' | 'easy'): Built {
   const k = `${seed}:${d}`;
   if (!memo.has(k)) {
-    const row = listedStage(STAGE_19)!;
-    const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d });
-    memo.set(k, row.finish!(st, d) as unknown as Built);
+    // (the stage's row when 1-9 is on the stage table; while it is held back (release 1, INT-14: the hand-built 1-9 ships) the same kit and
+    //  finish as a toy row, so every test below still reads the designed arc as the game would build it)
+    const row: ListedStage = listedStage(STAGE_19) ?? { kit: kitLib19, finish: finish19 as ListedStage['finish'] };
+    // (the toy carries the designed arc's mission too: its goal is petals (stagePlan's 1-9 spec while routed), so no guard top-up)
+    const spec = STAGE_PLAN[1][8];
+    const was = spec.gathers;
+    spec.gathers = 'petals';
+    try {
+      const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d });
+      memo.set(k, row.finish!(st, d) as unknown as Built);
+    } finally {
+      if (was) spec.gathers = was; else delete spec.gathers;
+    }
   }
   return memo.get(k)!;
 }
@@ -57,13 +68,23 @@ test("1-9's lines are the story keeper's, word for word (reference/story/lines-1
   for (const m of md.matchAll(/^\| \(([a-k])\) \| [^|]*\|[^|]*\| (.+?) \| \d+ \|$/gm)) rows.set(m[1], m[2].trim());
   const want: Record<string, string> = { a: LINES_19.boa, b: LINES_19.freeze, c: LINES_19.miss, d: LINES_19.nest, e: LINES_19.eye, f: SPLASH_19, g: LINES_19.mark, h: MISSION_19, i: SEALED_19, j: PREDATOR_ENTRIES.boa.tip, k: SAID_TRAP_19 };
   // ((j), the journal's boa tip: the keeper's 12-word line (KEEPER-19b, t-keeper-19@8c1df5bf), journal.test.ts:31's cap for tips; BUILD-19b)
-  for (const [k, v] of Object.entries(want)) assert.equal(v, rows.get(k), `line (${k})`);
-  assert.equal(STAGE_LINES['1-9'], "A boa looked me in the eye and decided I was a branch. I've been called worse.", "Pokey's page (the keeper's conflict 3)");
+  // ((j) is the journal's, a player line: it is the keeper's only while 1-9 is routed (below); the arc holds its own copy in the test)
+  const routed = !!listedStage(STAGE_19);
+  for (const [k, v] of Object.entries(want)) if (k !== 'j' || routed) assert.equal(v, rows.get(k), `line (${k})`);
   // (the keeper's rulings: never "freeze" (the story bible) and never "hold still" (1-7's hide words); "don't move" is the bots' word)
   for (const v of Object.values(want)) assert.ok(!/freeze|hold still/i.test(v), v);
   assert.match(LINES_19.freeze.toLowerCase(), /don't move/, "the freeze teach holds the bots' word, firsttimer.ts takeIn");
-  assert.equal(STAGE_PLAN[1][8].desc, MISSION_19, "stagePlan's mission line for 1-9");
-  assert.equal(sealedLine(1, 'gauntlet'), SEALED_19, 'the locked exit line, keyed to World 1 gauntlet (1-9 alone)');
+  // (the player's lines for 1-9 follow its routing: the keeper's while 1-9 is on the stage table; the hand-built 1-9's (main 6e7b85f8's
+  //  words, pinned) while it is held back, INT-14)
+  if (routed) {
+    assert.equal(STAGE_LINES['1-9'], "A boa looked me in the eye and decided I was a branch. I've been called worse.", "Pokey's page (the keeper's conflict 3)");
+    assert.equal(STAGE_PLAN[1][8].desc, MISSION_19, "stagePlan's mission line for 1-9");
+    assert.equal(sealedLine(1, 'gauntlet'), SEALED_19, 'the locked exit line, keyed to World 1 gauntlet (1-9 alone)');
+  } else {
+    assert.equal(STAGE_LINES['1-9'], "Fought the boa's guards all the way along his branches. They were only doing their job. So was I.", "Pokey's page (hand-built 1-9)");
+    assert.equal(STAGE_PLAN[1][8].desc, "Fight through the boa's guards and reach the shrine.", "stagePlan's mission line (hand-built 1-9)");
+    assert.equal(PREDATOR_ENTRIES.boa.tip, 'Coiled and watching. Let it strike, then punch it three times.', "the journal's boa tip (hand-built 1-9)");
+  }
   for (const d of BOTH) {
     const st = built(1, d);
     const said = new Set(st.proto.hints!.map((h) => h.text));

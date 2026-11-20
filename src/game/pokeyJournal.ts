@@ -54,7 +54,7 @@ export const STAGE_LINES: Record<string, string> = {
   '1-6': "First lianas. You have to let go of one before you've got the next. Nobody mentioned that part.",
   '1-7': "An eagle looked straight at me and saw moss. Dot called it brave. Keeping still is just what sloths do.",
   '1-8': "The branch came apart behind me, so I ran. Meeca always said I could. I'd never checked.",
-  '1-9': "A boa looked me in the eye and decided I was a branch. I've been called worse.",
+  '1-9': "Fought the boa's guards all the way along his branches. They were only doing their job. So was I.",
   '1-10': "He pictured a soldier, or a hawk. He got me. He's still working out how that happened.",
   // World 2 · Sunlit Riverbank
   '2-1': 'Hopped the logs drifting down to the village. They were in no hurry at all. I liked them right away.',
