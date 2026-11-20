@@ -8,7 +8,7 @@
  * their snap on four): kick one right after it snaps and it paddles off downstream, huffy, never hurt (TURTLE: the kick only when open).
  *
  * THE PIECES (ENG-25's snap row, rideLay.ts PadRow by 'snap', level with the banks, 30 px of water each side, ENG-25c; World 2's snapper
- * rows, w2Cast.ts w2Snappers on a snap row's clock; 2-1's logs; 1-3's rope between living trunks).
+ * rows, w2Cast.ts w2Snappers on a snap row's clock; 2-1's logs; World 2's rope between posts, BUILD-25c).
  *
  * THE ARC (2-5.md "THE NODE STRING" `A Tp1<:#soft Pg1&<:&turtle*1z Pp1> Xw1&>:&turtle R Pr1< Wp1>:#water R Pg1&>:&turtle*3
  * Cw1&>:#water:&turtle*2 R Sw1< E`, one brick a beat; the design's p (snap stones: nodeLetters 'later', no section type) is laid as f,
@@ -122,8 +122,10 @@ const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shap
 const pond = (key: string, after: string, row: Pond25, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'pads', after, row }, style: 'log', main: true, landing: true });
 /** the far bank of 2-1's log river laid from `after` (gen2 place `river`, riverLay.ts) */
 const river = (key: string, after: string, row: Row25, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'river', after, row }, style: 'log', main: true, landing: true });
-/** the far bank of 1-3's rope between living trunks over the channel (gen2 place `rope`, look 'vine'), splash-back when `soft` */
-const ropeOver = (key: string, after: string, w: number, soft: boolean): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'rope', after, gap: [440, 460], look: 'vine', ...(soft ? { soft: true } : {}) }, style: 'log', main: true, landing: true });
+/** the far bank of World 2's own rope over the channel (gen2 place `rope`, no look: rope-kit's painted rope between posts, world_best 2,
+ *  "the river village"; BUILD-25c: 1-3's living trunks, look 'vine', are w1-traps#trunk, a World 1 piece, and stood bright yellow-green
+ *  against World 2's muted backdrop, the lead's 12:41 PM still review), splash-back when `soft` */
+const ropeOver = (key: string, after: string, w: number, soft: boolean): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'rope', after, gap: [440, 460], ...(soft ? { soft: true } : {}) }, style: 'log', main: true, landing: true });
 
 /**
  * a snapper's ground: three short level banks (`k-in`, `k`, `k-out`, SNAP_PATCH px each), the snapper in the middle one. None is wide
