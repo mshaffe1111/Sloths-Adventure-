@@ -9,6 +9,14 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 - Member branches that touch game code (Matt, 11-14): tsc, the full unit tests, and the checks for what they touched (their stages' seed
   lists, bots, locks; drawcheck/clipcheck/kbdcheck only if drawing, screens or the survey page changed; buildcheck only if the build path
   or a stage's build changed). Every gate runs once on the integration head before Matt sees anything; CI runs all before main.
+- **THE FULL SET, named (D96, 11-20):** a final or integration run = every `run:` line in .github/workflows/gates.yml (tsc, artcheck,
+  vite build + chunkcheck, knowncheck, generalitycheck, **coveragecheck** (`npx tsx tools/difficulty/coveragecheck.ts`), roadmapcheck,
+  **timecheck** (`node tools/timecheck.mjs`; both need `git fetch --unshallow` in a container), clipcheck, kbdcheck, drawcheck, every
+  registered seed list (`registrycheck.ts --lists` then seedlist each), **paintcheck parts 0/3 1/3 2/3**, the CI tool line, **tipwalk**
+  (`npx tsx tools/engine/tipwalk.ts --layouts 4`), **registrycheck** (`npx tsx tools/engine/registrycheck.ts`), tierBots, buildcheck ALONE)
+  + the unit suite in shards + for a level or engine change: lockall vs the integration base with --intended, funcheck, castBots.
+  CLAUDE.md's Checks paragraph does not name coveragecheck, registrycheck, tipwalk, paintcheck or timecheck: a packet that says
+  'the CLAUDE.md list' MUST add them (BUILD-25b skipped three; ENG-SNAP found coverage + registry red on 2-5).
 - When a defect escapes (CONTINUOUS-IMPROVEMENT.md): the countermeasure is a new check here (L3), built with "Adding a new check" below.
 
 ## The gates (what each catches, how long, where)
