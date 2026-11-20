@@ -23,9 +23,12 @@ export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'm
 /** the kit boulder of whatever world is drawing (its own kit, or World 1's) */
 export const KIT_BOULDER = 'kit#boulder';
 
+/** an inventory id, `<sheet>#<frame>` (the frame named on its own, so tools/art/artuse.mjs sees the piece drawn) */
+const pieceId = (sheet: string, frame: string) => `${sheet}#${frame}`;
+
 /** each world's rock pictures, by inventory id; the first is the world's kit boulder (world data: W2_ART.rock holds World 2's) */
 export const ROCK_FRAMES: Readonly<Record<number, readonly string[]>> = {
-  2: ['w2#boulder', 'w2-rocks#rock-a', 'w2-rocks#rock-b'],
+  2: ['w2#boulder', pieceId('w2-rocks', 'rock-a'), pieceId('w2-rocks', 'rock-b')],
 };
 /** a world's rock pictures (its kit boulder alone where it has no list) */
 export const rockFramesOf = (w: number): readonly string[] => ROCK_FRAMES[w] ?? [KIT_BOULDER];
