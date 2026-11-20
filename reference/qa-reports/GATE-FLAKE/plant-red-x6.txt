@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: generating a stage is quick: p90 under 500 ms, none over 1500 ms (this thread's CPU time, so the box's other jobs do not count)
+not ok 1 - generating a stage is quick: p90 under 500 ms, none over 1500 ms (this thread's CPU time, so the box's other jobs do not count)
+  ---
+  duration_ms: 19389.423319
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/stageQuality.test.ts:376:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    CPU ms per stage: 300 448 195 119 36 76 39 95 67 61 78 65 267 256 172 167 517 195 925 1179 71 123 75 76
+    
+    'p90 517 ms' !== ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: 'p90 517 ms'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/stageQuality.test.ts:380:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21062.380282

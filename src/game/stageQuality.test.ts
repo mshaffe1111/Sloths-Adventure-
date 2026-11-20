@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
-import { buildStage, builtOnGen2, generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { buildStage, builtOnGen2, generateStage, setBuildRepeatForTest, setLayoutVariant } from './stageGenerator.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { checkLanes, validateAsJudged, validateStage } from './levelCheck.ts';
 import { measureStage } from './stageMetrics.ts';
@@ -350,16 +350,46 @@ test('the same stage and layout number always give the same stage, byte for byte
   }
 });
 
-test('generating a stage is quick: p90 under 500 ms, none over 1500 ms', () => {
-  const ms: number[] = [];
-  const sample = horizontal.filter((_, i) => i % 3 === 0);
-  for (const l of sample) { stage(l, null); } // warm-up (compilation, tables)
-  for (const l of sample) {
+// R-165.325 (11-19): timed by the wall clock, this failed at p90 657 ms with 4 jobs running beside it and passed alone. A stage is built
+// in one synchronous run on this thread, so the work it costs is this thread's own CPU time (process.threadCpuUsage): other jobs on the
+// box stretch the wall clock (p90 101 ms alone, 284-327 ms beside 8 busy processes on 4 cores) but hardly that (103 alone, 105-109
+// loaded). A real slowdown is more work on this thread, so it still shows: the next test plants one and must see it fail.
+const cpuMs = (): number => { const u = process.threadCpuUsage(); return (u.user + u.system) / 1000; };
+const SPEED = { p90: 500, max: 1500 };
+/** each stage's best of `runs` builds, in this thread's CPU ms */
+function buildCpu(sample: (typeof levels)[number][], runs: number): number[] {
+  return sample.map((l) => {
     let best = Infinity;
-    for (let k = 0; k < 2; k++) { const t0 = performance.now(); stage(l, null); best = Math.min(best, performance.now() - t0); }
-    ms.push(best);
-  }
-  ms.sort((a, b) => a - b);
-  assert.ok(ms[Math.floor(ms.length * 0.9)] <= 500, `p90 ${ms[Math.floor(ms.length * 0.9)].toFixed(0)} ms`);
-  assert.ok(ms[ms.length - 1] <= 1500, `max ${ms[ms.length - 1].toFixed(0)} ms`);
+    for (let k = 0; k < runs; k++) { const c0 = cpuMs(); stage(l, null); best = Math.min(best, cpuMs() - c0); }
+    return best;
+  });
+}
+/** what is wrong with these timings against SPEED ('' when they pass) */
+function speedFault(ms: number[]): string {
+  const s = [...ms].sort((a, b) => a - b);
+  const p90 = s[Math.floor(s.length * 0.9)], max = s[s.length - 1];
+  return [p90 > SPEED.p90 && `p90 ${p90.toFixed(0)} ms`, max > SPEED.max && `max ${max.toFixed(0)} ms`].filter(Boolean).join(', ');
+}
+const speedSample = horizontal.filter((_, i) => i % 3 === 0);
+let speedSeen: { l: (typeof levels)[number]; ms: number }[] = [];
+
+test('generating a stage is quick: p90 under 500 ms, none over 1500 ms (this thread\'s CPU time, so the box\'s other jobs do not count)', () => {
+  for (const l of speedSample) { stage(l, null); } // warm-up (compilation, tables)
+  const ms = buildCpu(speedSample, 2);
+  speedSeen = speedSample.map((l, i) => ({ l, ms: ms[i] }));
+  assert.equal(speedFault(ms), '', `CPU ms per stage: ${ms.map((m) => m.toFixed(0)).join(' ')}`);
+});
+
+test('the speed test fails on a planted slowdown (every stage built over, as a doubled loop would: enough to cross the bar)', () => {
+  assert.ok(speedSeen.length, 'the speed test ran first');
+  // the three stages nearest the real p90, each built `repeat` times over: repeat is set from this run's own p90 so the planted p90 is
+  // at least 1.25 times the bar
+  const bySpeed = [...speedSeen].sort((a, b) => a.ms - b.ms);
+  const at = Math.floor(bySpeed.length * 0.9);
+  const three = bySpeed.slice(Math.max(0, at - 2), at + 1);
+  const repeat = Math.ceil((SPEED.p90 * 1.25) / Math.max(5, three[0].ms));
+  setBuildRepeatForTest(repeat);
+  let fault = '';
+  try { fault = speedFault(buildCpu(three.map((x) => x.l), 1)); } finally { setBuildRepeatForTest(1); }
+  assert.match(fault, /p90/, `built ${repeat} times over, the speed test still passed`);
 });

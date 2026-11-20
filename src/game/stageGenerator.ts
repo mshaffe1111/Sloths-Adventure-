@@ -2880,8 +2880,13 @@ export const aheadKeys = (): string[] => [...ahead.keys()];
  * and test (which had built Easy on Normal's). The caller's dials are put back after.
  */
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
+  for (let k = 1; k < buildRepeatForTest; k++) withSetting(difficulty, () => generateStageOn(config, difficulty));
   return withSetting(difficulty, () => generateStageOn(config, difficulty));
 }
+/** the speed test's planted slowdown (stageQuality.test.ts, R-165.325): every stage built this many times over, as a doubled loop
+ *  would; 1 (once) everywhere else. Only that test sets it, and puts it back to 1 */
+let buildRepeatForTest = 1;
+export function setBuildRepeatForTest(n: number): void { buildRepeatForTest = Math.max(1, Math.floor(n)); }
 function generateStageOn(config: LevelConfig, difficulty: Difficulty): GeneratedStage {
   if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
     const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
