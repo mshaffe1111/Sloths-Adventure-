@@ -1,0 +1,16 @@
+PAINT-292b: 1-1's fixed first run (firstRun11.ts, seed 9652) rebuilt as tools/engine/seedlist.ts firstRunBreaches builds it, on both trees.
+Made Thu Nov 19 18:42:22 EST 2026. Script: firstrun-lock.mts <tree root> (lock = sha256 of stageParts, 16 hex; lockNoCut = same with every platform's 'cut' removed).
+Trees: base = ce4ad461 (t-int-12; src identical to t-gate-292 65a5fc21), head = t-paint-292 95bafdd0 (before this re-record).
+
+normal: lock base f405e1cea982681d head f405e1cea982681d | cut stripped: base 6623fded781e4ab9 head 6623fded781e4ab9
+  parts moved: none
+  cut only on base: none
+  cut only on head: none
+  cut on both, same: 47
+easy: lock base 91fcb58a12c2c26a head a9525e8f62636c3a | cut stripped: base ac91ca572d785e74 head ac91ca572d785e74
+  parts moved: ['platforms']
+  cut only on base: none
+  cut only on head: ["44@10051 moss_stone 266x54 -> 'w1-rock-root-block'"]
+  cut on both, same: 45
+
+Recorded before: normal f405e1cea982681d, easy 91fcb58a12c2c26a (both = base exactly). Re-recorded: easy a9525e8f62636c3a; normal unchanged.

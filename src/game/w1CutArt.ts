@@ -13,7 +13,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import type { Platform } from './types.ts';
 import FRAMES from '../assets/w1to4art/w1-cut.json';
 
-type Cut = { kind: 'stone' | 'stump' | 'perch' | 'log'; x: number; y: number; w: number; h: number; fy: number; fx0: number; fx1: number };
+type Cut = { kind: 'stone' | 'stump' | 'perch' | 'log'; x: number; y: number; w: number; h: number; fy: number; fx0: number; fx1: number; fb?: number };
 export const W1_CUT: Record<string, Cut> = FRAMES as Record<string, Cut>;
 export const W1_CUT_URL = new URL('../assets/w1to4art/w1-cut.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -39,12 +39,14 @@ export const MAX_STRETCH = 1.5;
  */
 export function cutBox(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, c: Cut): { x: number; y: number; w: number; h: number; sx: number; sy: number; srcH: number } {
   const span = Math.max(1, c.fx1 - c.fx0);
-  if (c.kind === 'log') {
+  if (c.kind === 'log' && !THICK_CUTS.has(c)) {
     const k = p.width / span;
     return { x: p.x - c.fx0 * k, y: p.y - c.fy * k, w: c.w * k, h: c.h * k, sx: k, sy: k, srcH: c.h };
   }
   const sx = p.width / span;
-  const reach = (p.height + SINK) / Math.max(1, c.h - c.fy);
+  // (a thick log, PAINT-292: like a stone, its top on the platform's top and its body down to the foot, sunk SINK; it reaches by `fb`, the
+  //  row its levelled body reaches under most of its stand span, so its round underside is in the ground, never a gap of air under it)
+  const reach = (p.height + SINK) / Math.max(1, (c.fb ?? c.h) - c.fy);
   const sy = Math.min(sx * MAX_STRETCH, Math.max(reach, sx / MAX_STRETCH));
   const y = p.y - c.fy * sy;
   const foot = p.y + p.height + SINK;
@@ -63,10 +65,11 @@ function stoneMiss(p: Pick<Platform, 'width' | 'height'>, c: Cut): number {
 
 /**
  * The pieces gen2 1-1 lays, by what each is for (pickCut picks only from these; the art-use gate reads the names here). Not yet laid:
- * the two hollow hiding stumps (a hiding spot's, not a step's), the two log planks and the tall vine post (1-1 has no tall post on the
- * ground for it: every 120 px narrow piece is a dip's pocket)
+ * the two hollow hiding stumps (a hiding spot's, not a step's) and the tall vine post (1-1 has no tall post on the ground for it: every
+ * 120 px narrow piece is a dip's pocket). The two thick log planks ('log', PAINT-292) are a 50-89 px log's: their tops levelled in the sheet
+ * by tools/art/flattenlogs.py, so the painted top is the floor
  */
-export const LAID: Readonly<Record<string, 'stone' | 'boulder' | 'stump' | 'plank'>> = {
+export const LAID: Readonly<Record<string, 'stone' | 'boulder' | 'stump' | 'plank' | 'log'>> = {
   'w1-rock-slabs-low': 'stone',
   'w1-rock-slabs-stacked': 'stone',
   'w1-rock-slabs-stacked-big': 'stone',
@@ -81,39 +84,97 @@ export const LAID: Readonly<Record<string, 'stone' | 'boulder' | 'stump' | 'plan
   'w1-plank-ledge-a': 'plank',
   'w1-plank-ledge-b': 'plank',
   'w1-plank-ledge-c': 'plank',
+  'w1-log-plank-a': 'log',
+  'w1-log-plank-b': 'log',
 };
+/** the thick log planks' frames (cutBox draws them as a stone is drawn: top on the top, body to the foot) */
+const THICK_CUTS: ReadonlySet<Cut> = new Set(Object.keys(LAID).filter((n) => LAID[n] === 'log').map((n) => W1_CUT[n]));
+/** the tallest log the thick planks are laid on: from 90 a log is a bank, the bank painter's (protoArt.ts) */
+export const THICK_LOG_MAX = 89;
+/** the widest stone a stone piece is laid on (PAINT-292: Easy widens 1-1's stones to 268, 1-6 lays 300; stoneMiss keeps its stretch in
+ *  MAX_STRETCH). Over 260 only under BANK_FROM: from there the bank painter (protoArt.ts) already paints a wide stone, as before */
+export const STONE_W_MAX = 400;
+export const BANK_FROM = 90;
+/** a stone wider than this is laid as several stone pieces end to end (PAINT-292, the lead's ruling 5:39 PM ET 11-19: one piece blown up
+ *  to 300-400 wide drew a blurry domed boulder), each a normal stone's size: about STONE_PART_W wide, flat-topped kinds only */
+export const STONE_ONE_MAX = 260;
+export const STONE_PART_W = 100;
+/** how much worse than the best fit a wide stone's end piece may fit, to be the one whose art reaches least past the end */
+const ENDS_SLACK = 0.6;
 
 /** a plank longer than this is laid as several pieces end to end (the end log, 686 px: one piece stretched that long drew 3x too thick) */
 export const PLANK_MAX = 360;
 /** how many pieces a plank this long is laid as */
 export const logParts = (width: number): number => Math.max(1, Math.ceil(width / PLANK_MAX));
-/** the i-th piece's share of a long plank (each the same length, a few px over the next so no seam shows) */
-export function logPart<P extends Pick<Platform, 'x' | 'y' | 'width' | 'height'>>(p: P, i: number): P {
-  const n = logParts(p.width), w = p.width / n;
-  return { ...p, x: p.x + i * w - (i ? 4 : 0), width: w + (i ? 4 : 0) };
+/** the thick planks' mean stand span and reach (frame px), what a 50-89 px log's pieces are counted by */
+const THICK = [...THICK_CUTS];
+const THICK_SPAN = THICK.reduce((s, c) => s + c.fx1 - c.fx0, 0) / Math.max(1, THICK.length);
+const THICK_REACH = THICK.reduce((s, c) => s + (c.fb ?? c.h) - c.fy, 0) / Math.max(1, THICK.length);
+/** how many thick planks a 50-89 px log is laid as: each drawn at the scale its height needs, as near its own length as whole pieces allow
+ *  (one rhythm along the block: every piece the same length, never one stretched long beside one squeezed) */
+export const thickParts = (p: Pick<Platform, 'width' | 'height'>): number =>
+  Math.max(1, Math.round(p.width / (THICK_SPAN * (p.height + SINK) / THICK_REACH)));
+/** how many pieces a log's cut is drawn as */
+export const partsOf = (p: Pick<Platform, 'width' | 'height'>, c: Cut): number => (THICK_CUTS.has(c) ? thickParts(p) : logParts(p.width));
+/** the i-th piece's share of a long plank (each the same length; a thin plank's a few px over the next so no seam shows, a thick one's
+ *  ends overlap by their own ragged tips, drawCutArt) */
+export function logPart<P extends Pick<Platform, 'x' | 'y' | 'width' | 'height'>>(p: P, i: number, n = logParts(p.width), seam = 4): P {
+  const w = p.width / n;
+  return { ...p, x: p.x + i * w - (i ? seam : 0), width: w + (i ? seam : 0) };
 }
-/** the piece each part of a long plank uses: the picked one, then the other plank cuts in turn, so the end log is not one piece repeated */
+/** the piece each part of a long plank uses: the picked one, then the other plank cuts of its class in turn, so the end log is not one
+ *  piece repeated */
 function partCut(first: string, i: number): string {
   if (!i) return first;
-  const logs = Object.keys(LAID).filter((n) => LAID[n] === 'plank');
+  const logs = Object.keys(LAID).filter((n) => LAID[n] === LAID[first]);
   const at = Math.max(0, logs.indexOf(first));
   return logs[(at + i) % logs.length] ?? first;
 }
 
 /** a platform's piece: of the kind it is, one of those that fit it about as well as the best (ties by its id) */
 export function pickCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style'>): string | undefined {
-  const kind: Cut['kind'] | null = p.style === 'log' && p.height < 50 ? 'log'
-    : p.style === 'moss_stone' && p.height >= 30 && p.height <= 140 && p.width <= 260 ? (p.height > 90 && p.width < 150 ? 'stump' : 'stone') : null;
+  const kind: Cut['kind'] | null = p.style === 'log' && p.height <= THICK_LOG_MAX ? 'log'
+    : p.style === 'moss_stone' && p.height >= 30 && p.height <= 140 && (p.width <= 260 || (p.width <= STONE_W_MAX && p.height < BANK_FROM)) ? (p.height > 90 && p.width < 150 ? 'stump' : 'stone') : null;
   if (!kind) return undefined;
-  const fits = Object.entries(W1_CUT).filter(([n]) => n in LAID).filter(([, c]) => c.kind === kind || (kind === 'stone' && c.kind === 'stump' && p.height > 70)).map(([n, c]) => {
-    // (a log is drawn at its width: how far its height is from a plank's 30 px; a stone by stoneMiss)
-    return { n, miss: kind === 'log' ? Math.abs(cutBox(logPart(p, 0), c).h - 30) / 30 : stoneMiss(p, c) };
+  if (kind === 'stone' && stoneParts(p) > 1) return stonePartCuts(p)[0];
+  // (a log under 50 px is a thin plank's, the ledges; 50-89 a thick plank's, PAINT-292: the thin ledges drawn that tall were 3x too thick)
+  const thick = kind === 'log' && p.height >= 50;
+  const fits = Object.entries(W1_CUT).filter(([n]) => n in LAID && (kind !== 'log' || (LAID[n] === 'log') === thick)).filter(([, c]) => c.kind === kind || (kind === 'stone' && c.kind === 'stump' && p.height > 70)).map(([n, c]) => {
+    // (a thin log is drawn at its width: how far its height is from a plank's 30 px; a thick one or a stone by stoneMiss)
+    return { n, miss: kind === 'log' && !thick ? Math.abs(cutBox(logPart(p, 0), c).h - 30) / 30 : stoneMiss(thick ? logPart(p, 0, thickParts(p), 0) : p, c) };
   }).sort((a, b) => a.miss - b.miss);
   if (!fits.length) return undefined;
   // (every piece that fits about as well as the best takes its turn, the round and grey boulders too: the lead, 11-06, "at least 6 kinds
   // a roll"; a top-three the flat slabs and blocks always filled had cut them off)
-  const best = kind === 'log' ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + 0.2);
+  const best = kind === 'log' && !thick ? fits.filter((f) => f.miss <= fits[0].miss + 0.25).slice(0, 3) : fits.filter((f) => f.miss <= fits[0].miss + 0.2);
   return best[Math.abs(p.id * 2654435761) % best.length].n;
+}
+/** how many stone pieces a stone is laid as (1 up to STONE_ONE_MAX wide) */
+export const stoneParts = (p: Pick<Platform, 'width'>): number => (p.width > STONE_ONE_MAX ? Math.max(2, Math.round(p.width / STONE_PART_W)) : 1);
+/** a wide stone's pieces, one per part (each the part's own fit among the flat-topped stones, never a boulder or a stump: the pieces sit
+ *  side by side, so a round top would dip between them), alternating through the ones that fit about as well as the best */
+export function stonePartCuts(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height'>): string[] {
+  const n = stoneParts(p);
+  const q = logPart(p, 0, n, 0);
+  const fits = Object.keys(LAID).filter((k) => LAID[k] === 'stone' && k !== 'w1-rock-roots').map((k) => ({ k, miss: stoneMiss(q, W1_CUT[k]) })).sort((a, b) => a.miss - b.miss || (a.k < b.k ? -1 : 1));
+  const band = fits.filter((f) => f.miss <= fits[0].miss + 0.2);
+  const at = Math.abs(p.id * 2654435761) % band.length;
+  // (the two end pieces: of those that fit, the one whose art reaches least past the stone's end on that side, so the pile sits on its own
+  //  ground where it was laid (settleCut never moves a wide stone); the ones between take their turn)
+  //  (chosen from a wider margin of fit than the middle ones, ENDS_SLACK: the end is where a lip is)
+  const ends = fits.filter((f) => f.miss <= fits[0].miss + ENDS_SLACK);
+  const least = (side: (c: Cut) => number) => ends.reduce((m, f) => (side(W1_CUT[f.k]) < side(W1_CUT[m.k]) - 1e-9 ? f : m), ends[0]).k;
+  const left = least((c) => c.fx0 / (c.fx1 - c.fx0)), right = least((c) => (c.w - c.fx1) / (c.fx1 - c.fx0));
+  return Array.from({ length: n }, (_, i) => (i === 0 ? left : i === n - 1 ? right : band[(at + i) % band.length].k));
+}
+/** where a stone's art is drawn, all of it (a wide stone's pieces together): what the overhang and the settle judge */
+export function pieceBox(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height'>, cut: string): { x: number; w: number } {
+  const c = W1_CUT[cut];
+  if (c.kind === 'log' || stoneParts(p) === 1) { const b = cutBox(p, c); return { x: b.x, w: b.w }; }
+  const n = stoneParts(p), cuts = stonePartCuts(p);
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0; i < n; i++) { const b = cutBox(logPart(p, i, n, 0), W1_CUT[cuts[i]]); lo = Math.min(lo, b.x); hi = Math.max(hi, b.x + b.w); }
+  return { x: lo, w: hi - lo };
 }
 /** a stone's piece as World 1 draws it: the one the lay settled on its ground (Platform.cut, settleCut), else pickCut's; none when the lay
  *  said none (cut '': no piece keeps it on its ground once a chase is laid, so it is drawn as its ground, pipeline.ts settleLaid) */
@@ -148,8 +209,8 @@ export function groundRun(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, sol
   return [wl ? Math.min(x0, wl.x) : x0, wr ? Math.max(x1, wr.x + wr.width) : x1];
 }
 /** how far a piece's drawn box reaches past its ground run, the worse side (px; 0 when it is on its ground) */
-export function overhang(p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>, cut: string, run: readonly [number, number]): number {
-  const b = cutBox(p, W1_CUT[cut]);
+export function overhang(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height'>, cut: string, run: readonly [number, number]): number {
+  const b = pieceBox(p, cut);
   return Math.max(0, run[0] - b.x, b.x + b.w - run[1]);
 }
 /**
@@ -167,11 +228,14 @@ export function settleCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height
   const run = groundRun(p, solids);
   if (!run) return undefined;
   if (overhang(p, picked, run) <= OVERHANG_MAX) return { cut: picked, dx: 0 };
+  // (a wide stone's pieces, PAINT-292, are a look only: never moved, the roll never refused for them (pipeline.ts settleLaid's rule); where
+  //  they would reach past their ground, NO piece: drawn as its ground, as it was before them)
+  if (stoneParts(p) > 1) return { cut: '', dx: 0 };
   const foot = p.y + p.height;
   // (the move a piece needs: its box inside the run, OVERHANG_MAX each side; NaN if the box is wider than the run allows, or the move hits
   //  another piece standing on the same ground or hanging over it)
   const move = (cut: string): number => {
-    const b = cutBox(p, W1_CUT[cut]);
+    const b = pieceBox(p, cut);
     const lo = run[0] - OVERHANG_MAX, hi = run[1] + OVERHANG_MAX;
     if (b.w > hi - lo) return NaN;
     // (whole px, rounded inward: the stage's own x stay as they were laid, and the piece ends inside the limit)
@@ -213,11 +277,17 @@ export function overhangs(platforms: readonly (Solid & Pick<Platform, 'id' | 'cu
 export function drawCutArt(ctx: CanvasRenderingContext2D, p: Platform): boolean {
   const c = p.cut ? W1_CUT[p.cut] : undefined;
   if (!c || !w1CutReady() || !img) return false;
-  // (a long plank: its pieces end to end, the art director's ledges in turn)
-  const n = c.kind === 'log' ? logParts(p.width) : 1;
-  for (let i = 0; i < n; i++) {
-    const cc = n > 1 ? W1_CUT[partCut(p.cut!, i)] : c;
-    const b = cutBox(n > 1 ? logPart(p, i) : p, cc);
+  // (a long plank: its pieces end to end, the art director's ledges in turn. A thick one's are drawn right to left, each the same length,
+  //  so every piece's own rounded right end lies in front of the next one's start: one pile of logs, its top one level line, PAINT-292)
+  //  A wide stone's pieces likewise, each its own flat-topped stone (stonePartCuts), drawn right to left the same way
+  const thick = THICK_CUTS.has(c);
+  const wide = c.kind !== 'log' && stoneParts(p) > 1;
+  const n = c.kind === 'log' ? partsOf(p, c) : wide ? stoneParts(p) : 1;
+  const stones = wide ? stonePartCuts(p) : undefined;
+  for (let j = 0; j < n; j++) {
+    const i = thick || wide ? n - 1 - j : j;
+    const cc = stones ? W1_CUT[stones[i]] : n > 1 ? W1_CUT[partCut(p.cut!, i)] : c;
+    const b = cutBox(n > 1 ? (thick || wide ? logPart(p, i, n, 0) : logPart(p, i)) : p, cc);
     // (only the part above its foot: the rest is in the ground)
     ctx.drawImage(img, cc.x, cc.y, cc.w, b.srcH, b.x, b.y, b.w, b.h);
   }

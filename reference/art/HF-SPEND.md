@@ -131,3 +131,10 @@ ART-W2A total: ~46 GPU-min, **~$2.11** of its $4 cap (minutes x $2.75/60). Balan
 ART-W2B total: ~25 GPU-min, **~$1.15** of its $4 cap (minutes x $2.75/60). Balance ~$50.2 (from ~$51.3, ART-W2A's figure on origin/t-art-w2a; branches not yet on main are not counted). Logged 8:52 PM ET.
 (INT-13 merge, 11-19: ART-W2B's "~$50.2" above starts from ART-W2A's figure and does not count ENG-19a/b (~$0.83) or ENG-25 (~$0.18). Combined: ~$50.2 - ~$1.15 = ~$49.0.)
 
+## 2026-11-19 (PAINT-292, t-paint-292; the lead's ruling: ONE upscale job of the two thick plank frames, cap $1)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 5:55-6:02 PM | sandbox 6aff7e454fdc5ab3c55a6bc5 (cpu-upgrade, no GPU, no token forwarded), about 7 min create to terminate: torch CPU + spandrel, ai-forever/Real-ESRGAN RealESRGAN_x4.pth (pure super-resolution, no repaint) on w1-log-plank-a | the lead, 5:39 PM ruling 4 | about $0.01 (CPU minutes; the job page has the exact charge) | NOTHING shipped: the run was still on CPU when the member's context box closed, and this container cannot reach huggingface.co or the sandbox URL, so a result could only come back as base64 through the member's context (~50k+ tokens a frame). Terminated. PAINT-292b's EXACT NEXT STEP names the way to finish it. |
+PAINT-292 total: about $0.01 of its $1 cap. Balance about $52.5 (main's last figure; unchanged at the cent level). Logged 6:10 PM ET.
+(INT-14 merge, 11-20: PAINT-292's "about $52.5" above is main's figure and does not count the INT-13 merges above. Combined: ~$49.0 - ~$0.01 = ~$49.0.)
+
