@@ -52,3 +52,46 @@ re-shot), D79 (whole-screen pass: found the block-big top), D81/D86 (drawcheck +
 ## Method update (proposed)
 - level.md / stage-piece.md: "a new painted piece on an existing block is a look only: never moved, the roll never refused; no fit = no piece".
 - gates.md: the lock names stages, not fields; keep a field-diff tool (tools/engine) for draw-only packets.
+
+## PAINT-292b: the gates on the final head (written 7:35 PM ET 11-19)
+Final code head **25c23536** (t-paint-292; this section's commit is docs only). Base for the lock and diffs: ce4ad461 (t-int-12; src = t-gate-292 65a5fc21).
+No art changed; src: only the ruled first-run re-record (below). HF plank upscale (EXACT NEXT STEP 4): dropped by the lead's ruling, not attempted.
+
+| Gate | Head | Result | Log / numbers |
+|---|---|---|---|
+| paintcheck 1-1,1-6,1-9 --known --unpainted | cf917b7b (src = 95bafdd0) | PASS | 722 builds, 0 breaches, 0 unpainted |
+| 46 ids off paintcheck.known.json (42 of 1-1, 4 of 1-6; 1-9 had none) | 95bafdd0 | done | 429 -> 383 ids |
+| paintcheck --part 0/3, 1/3, 2/3 | 95bafdd0 (src as 25c23536 bar a 1-1 lock constant) | PASS x3 | 1714/1860/1760 builds; 170+107+106 = 383 known ids seen, none stale |
+| lockall --layouts 16 vs ce4ad461 | 95bafdd0 src* | PASS | 99/102 unchanged; 1-1, 1-6, 1-8 'platforms' only (intended) |
+| field diff (cut stripped), every World 1 listed seed, both settings | 95bafdd0 src* | draw-only | 2054 builds; every part equal with cut stripped; cut moved on 1-1 261, 1-6 200, 1-8 100 builds |
+| castBots 1-1, 1-6, 1-8 seeds 1-10, all 5 bots, both settings | 95bafdd0 src* vs ce4ad461 | unchanged | 90 runs each, JSON byte-identical base vs head (proof: same rows, cmp) |
+| seedlist --check 1-1 | 25c23536 | PASS | 161 seeds (on 95bafdd0: FAIL first-run.drift Easy; fixed below) |
+| seedlist --check 1-2..1-9, 2-1, 2-2 | 95bafdd0/25c23536 | PASS | 100/100/100/150/100/100/100/100, 100, 100 seeds |
+| tsc | 25c23536 | PASS | |
+| suite, 3 shards | 25c23536 | PASS | 3840 tests: 3838 pass, 0 fail, 2 todo (18:45-19:30) |
+| vite build (BASE_PATH) + chunkcheck | 25c23536 | PASS | |
+| artcheck, knowncheck, generality, roadmapcheck | 25c23536 | PASS | generality 26/26 known |
+| drawcheck (all stages) | 25c23536 | PASS | 753 s; screens 1-1 land 5.32 / port 5.40, 1-6 land 5.29 / port 4.98 (limit 7.5); calls 49-86 (limit 400) |
+| clipcheck | 25c23536 | PASS | 83 known, 273 s (first run under suite load: 3 goto timeouts, exit 2; re-run quiet: PASS) |
+| kbdcheck | 25c23536 | PASS | 136 s |
+| buildcheck | 25c23536 | PASS | 1-1 p95 normal 107 ms, easy 57 ms (budget 150) |
+| engine tool tests (gates.yml rolled list) | 25c23536 | PASS | 234 pass, 0 fail |
+| tipwalk --layouts 4, registrycheck, coveragecheck | 25c23536 | PASS | registry 11 lists |
+| tierBots.test | 25c23536 | PASS | 7 pass |
+
+\* 95bafdd0's src = 25c23536's but for firstRun11.ts's lock hashes, which only verdicts.ts firstRunVerdicts reads (grep: every other reader uses its seed and plan), so no build differs.
+
+**The red and its fix (lead's ruling):** seedlist 1-1 --check failed first-run.drift on Easy (91fcb58a12c2c26a recorded, a9525e8f62636c3a built). Traced: base
+rebuilds both old hashes exactly; on the head only 'platforms' moves, and with every cut stripped both trees hash alike. The one change: platform 44 at
+x10051, a 266x54 moss_stone, now cut 'w1-rock-root-block' (the bar's item 3 working). Easy re-recorded in src/game/gen2/firstRun11.ts with its proof line
+(25c23536); proof: firstrun-lock.txt + firstrun-lock.mts here.
+
+**Polish check:** none of mine: no art or look changed; the stills are PAINT-292's (showfirst/, stills2/), approved by the lead.
+**Pushback:** none. **Unresolved:** the HF upscale of the two thick planks (a later art job, the lead's ruling). **Turnover note:** none written (the packet's
+WRITE list is this REPORT); suggested line for handoffs/engine-core.md §3 below.
+**Lessons applied:** D30 (times from date), D57/D87 (inbox at each push), D59 (no gate left running), D86 (the full list, plus CI's extras), D90 (only the
+EXACT NEXT STEP read; logs to files), D91 (check && commit in one chain).
+**Learned / Suggestions:** (1) a draw-only change still moves 1-1's first-run lock: stageParts hashes 'platforms' with its draw field 'cut'. Either hash the
+lock without draw-only fields, or name it in every World 1 draw packet's checks (engine-core.md §3 trap). (2) clipcheck under the suite's load (4 CPUs, load
+~15) times out on goto; run it after the suite, never beside it (gates.md pitfalls). (3) a src edit mid-run invalidates every running gate: restart them.
+**Method update (gates.md, proposed):** add (2) and (3) to "Pitfalls we already paid for".
