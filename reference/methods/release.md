@@ -42,6 +42,7 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
    - kbdcheck, buildcheck and `npx tsx tools/engine/seedlist.ts 1-1 --check` (CI runs all three: .github/workflows/gates.yml).
    **The deploy itself runs the full suite in 6 shards and publishes only if every shard is green**, so a red test anywhere means the live
    site doesn't update.
+4b. **CI's own time limits (D99, 0.10.0):** for each gates.yml / deploy.yml job with timeout-minutes, name its expected time on a CI runner vs the limit (the seed-list shards: the sum of their lists' times); any job within 20% of its limit is raised or split BEFORE the PR. 0.10.0 passed every gate and still did not publish (seed-list shard 1 hit 25 min).
 5. **NO PR UNTIL EVERY GATE IS GREEN (D29, 0.9.5).** The lead opened PR #63 while the suite was still running. Matt merged at once, and
    one stale test (pitPocket.test pinned to an old Roll B seed) failed the deploy. It took a second PR (#64) to get the site live.
 6. **After ANY proven-seed-list rebuild**, run every test that pins a roll or a seed, BEFORE the PR:
