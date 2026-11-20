@@ -1,9 +1,8 @@
 import subprocess, sys, shutil
 P='src/game/predators/core.ts'
-orig=open(P).read()
 M=[
  ("tell gate: act after half a tell", "if (s.t < tellOf(def, easy) || !on('on')) break;", "if (s.t < tellOf(def, easy) * 0.5 || !on('on')) break;"),
- ("hurt box outside act", "if (s.phase !== 'act') return null;", "if (s.phase !== 'act' && s.phase !== 'recover') return null;"),
+ ("hurt box outside act", "  if (s.phase === 'act') return reachBox(def, s);", "  if (s.phase === 'act' || s.phase === 'recover') return reachBox(def, s);"),
  ("Easy tell may be shorter", "def.tell * (easy ? Math.max(1, def.easy.tell) : 1)", "def.tell * (easy ? def.easy.tell * 0.5 : 1)"),
  ("Easy may be faster", "(easy ? Math.min(1, def.easy.speed) : 1)", "(easy ? 1.2 : 1)"),
  ("open ways work any time", "if (o.when === 'open' && !open(def, s)) return false;", ""),
@@ -32,7 +31,7 @@ M=[
  ("behind works from the front", "if (o.when === 'behind' && !(fromX !== undefined && (fromX - s.x) * s.facing < 0)) return false;", ""),
  ("no pause in the gait", "      if (paused(def, s)) v = 0;", ""),
  ("the pause is not open", "|| s.phase === 'stunned' || paused(def, s);", "|| s.phase === 'stunned';"),
- ("the caiman leaves its ripple", "        if (def.rides) s.x = s.eyeX;\n        if (sees(def, s, hero)) {", "        if (sees(def, s, hero)) {"),
+ ("the caiman leaves its ripple", "        if (rides) s.x = s.eyeX;\n        if (sees(def, s, hero)) {", "        if (sees(def, s, hero)) {"),
  ("a rooted kind never finishes looking", "if (Math.abs(g - s.x) > AT && walk > 0) s.x = toward(s.x, g, walk);", "if (Math.abs(g - s.x) > AT) s.x = toward(s.x, g, walk);"),
  ("stillness never beats one at its post", "if (!sweep && posted(def) && hero.still && beat(def, s, 'still', sc.t)) {", "if (false) {"),
  ("a sweeper hears at its body", "!reaches(n, def.habit === 'sweep' ? { x: s.eyeX, y: n.y } : s)", "!reaches(n, s)"),
@@ -42,16 +41,31 @@ M=[
  ("the bell is no lure", "  if (n.from !== 'thrown' && n.from !== 'bell') {", "  if (n.from !== 'thrown') {"),
  ("his own landing calls a sweeper off its pass", "if (def.habit === 'sweep' || posted(def) || !(def.speed.hunt > 0) || s.phase !== 'rest') return null;", "if (posted(def) && def.habit !== 'sweep' || !(def.speed.rest > 0) || s.phase === 'gone') return null;"),
  ("dozes does not sleep", "    s.asleep = true;\n    enter(s, 'rest');", "    enter(s, 'rest');"),
+ # ENG-PROWL (11-19): sight.up, the leap, the Easy escapes (src/game/predatorWorld3.test.ts). A fourth field names a file other than core.ts
+ ("PROWL: up ignored, it looks up as far as down", "(over > 0 ? over <= upOf(def) : -over <= def.sight.tall)", "Math.abs(over) <= def.sight.tall"),
+ ("PROWL: up read below its feet too", "(over > 0 ? over <= upOf(def) : -over <= def.sight.tall)", "(over > 0 ? over <= upOf(def) : -over <= upOf(def))"),
+ ("PROWL: the ocelot looks up (data)", "sight: { ahead: 240, behind: 150, tall: 80, up: 40 }", "sight: { ahead: 240, behind: 150, tall: 80 }", 'src/game/predators/world3.ts'),
+ ("PROWL: no leap for a hanging sloth", "s.leaping = !!def.leap && !!hero.hanging;", "s.leaping = false;"),
+ ("PROWL: castPlay never says he hangs", "prey.hanging = !!hero.hanging;", "prey.hanging = false;", 'src/game/castPlay.ts'),
+ ("PROWL: the leap follows him", "        if (a.aim === 'him') {", "        if (a.aim === 'him' || a.aim === 'up') {"),
+ ("PROWL: the leap runs off its patch", "a.aim === 'up' ? clamp(hero.x, s.minX, s.maxX) : hero.x;", "hero.x;"),
+ ("PROWL: the leap's box is the pounce's", "export function reachBox(def: PredatorDef, s: PredatorState): Box {\n  const a = actOf(def, s);", "export function reachBox(def: PredatorDef, s: PredatorState): Box {\n  const a = def.act;"),
+ ("PROWL: the creep escape unchecked (check)", "if (!(creep >= clear)) say(", "if (false) say("),
+ ("PROWL: a leaper need not call off (check)", "if (!def.callsOff) say('a leaper", "if (false) say('a leaper"),
 ]
 ok=0; bad=[]
-try:
-  for name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[0]]):
-    if a not in orig: bad.append((name,'PATTERN MISSING')); continue
-    open(P,'w').write(orig.replace(a,b,1))
+run=(M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[0]])
+for m in run:
+  name,a,b=m[0],m[1],m[2]
+  F=m[3] if len(m)>3 else P
+  src=open(F).read()
+  if a not in src: bad.append((name,'PATTERN MISSING')); print(f"MISSING  {name}"); continue
+  try:
+    open(F,'w').write(src.replace(a,b,1))
     r=subprocess.run("npx tsx --test src/game/predator*.test.ts 2>&1 | grep -E '^# fail'",shell=True,capture_output=True,text=True)
     fails=r.stdout.strip()
     if fails and fails!='# fail 0': ok+=1; print(f"CAUGHT  {name}  ({fails})")
     else: bad.append((name,'SURVIVED')); print(f"SURVIVED  {name}")
-finally:
-  open(P,'w').write(orig)
-print(f"{ok}/{len(M)} planted faults caught", bad)
+  finally:
+    open(F,'w').write(src)
+print(f"{ok}/{len(run)} planted faults caught", bad)

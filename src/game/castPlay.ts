@@ -170,6 +170,8 @@ export class CastPlay {
     // (what a glance sees: him moving on this frame, a step, a hop, a climb; stillness.ts moving, the line the hold is broken by)
     prey.moving = moving(hero, set);
     prey.covered = inCover(this.covers, hero);
+    // (hanging from a rope over it: a kind with a leap answers him with it, predators/core.ts startTell; ENG-PROWL)
+    prey.hanging = !!hero.hanging;
 
     // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
     // teaches quiet feet (roster.ts TAUGHT.landing)

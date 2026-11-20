@@ -11,9 +11,10 @@
  */
 import { checkClock } from '../clock.ts';
 import { hears as reaches, sound, stunned as isStunned, type Sound } from '../heroNoise.ts';
+import { ROPE_SPEED } from '../rope.ts';
 import { watcherSees } from '../stillness.ts';
 import type { ClockDef } from '../stageKit.types.ts';
-import type { Box, Glance, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
+import type { Act, Box, Glance, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
 
 /** the shortest tell any kind may have (s): R-159.1's "0.5 s warning" */
 export const TELL_MIN = 0.5;
@@ -78,6 +79,17 @@ export function checkPredator(def: PredatorDef): string[] {
   }
   if (!real(def.act.seconds) || !real(def.act.reach) || !real(def.act.tall) || !(def.act.speed >= 0)) say('its act needs seconds, reach and tall above 0');
   if (!real(def.sight.ahead) || !(def.sight.behind >= 0) || !real(def.sight.tall)) say('its sight needs ahead and tall above 0');
+  if (def.sight.up !== undefined && !(def.sight.up >= 0)) say('its sight up is how far above its feet it sees: 0 or more');
+  if (def.leap) {
+    const l = def.leap;
+    if (l.aim !== 'up' || !real(l.seconds) || !real(l.reach) || !real(l.tall) || !(l.speed >= 0)) say("its leap aims 'up' and needs seconds, reach and tall above 0");
+    // (the tell's two escapes for a sloth hanging over it, Easy first (3-2.md NEW 1 ENG-PROWL): FREEZE on the rope, and the tell is called
+    // off when it ends (Easy's calm-in is under every tell: STILLNESS.easy.calmIn 0.35 s < TELL_MIN), or CREEP ON along the rope away from
+    // it: the leap goes where he hung when the tell began, so the creep must carry his body clear of its box in the Easy tell)
+    if (!def.callsOff) say('a leaper calls its tell off when it no longer sees him: freezing on the rope must stop the leap');
+    const creep = ROPE_SPEED * tellOf(def, true), clear = l.reach / 2 + HERO_HALF_W;
+    if (!(creep >= clear)) say(`creeping on along the rope for its Easy tell (${Math.round(creep)} px) does not clear its leap (${Math.round(clear)} px from where he hung)`);
+  }
   if (!real(def.giveUp) || !(def.recover >= 0) || !(def.cool >= 0) || !real(def.engage)) say('giveUp and engage above 0; recover and cool not below 0');
   if (def.habit === 'guard' && (def.beatenBy.stomp || def.beatenBy.punch)) say('a guard cannot be stomped or punched: give it a tool of its world');
   if (def.habit === 'sweep' && (!real(def.warn ?? 0) || !real(def.speed.rest))) say('a sweeper needs a warn before its eye starts across, and an eye speed');
@@ -244,9 +256,19 @@ function stepGlance(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorE
 /** where it looks from: a sweeper's eye is its shadow, its gaze, its ripple */
 export const eyeOf = (def: PredatorDef, s: PredatorState): number => (def.habit === 'sweep' ? s.eyeX : s.x);
 
+/**
+ * How far ABOVE its feet it sees him (px): its `sight.up`, else its `tall` (every kind before ENG-PROWL: unchanged).
+ * THE 'LIT = SEEN' SEAM, for ENG-DARK (3-2.md NEW 1: "inside a light's ring, as ENG-DARK reports it, up reaches any height"): when Prey
+ * carries ENG-DARK's report that he is inside a light's ring, this returns Infinity for him. Not built here (D40: ENG-DARK defines how a
+ * ring is reported); the one place `up` is read is this function, so ENG-DARK changes only it (and Prey, and castPlay's prey fill)
+ */
+export const upOf = (def: PredatorDef): number => def.sight.up ?? def.sight.tall;
+
 const inSight = (def: PredatorDef, s: PredatorState, hero: Prey): boolean => {
   const dx = hero.x - eyeOf(def, s);
-  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && Math.abs(hero.y - s.y) <= def.sight.tall;
+  // (above its feet up to `up`, below them down to `tall`: the y axis points down, so he is above when his feet are under its y)
+  const over = s.y - hero.y;
+  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && (over > 0 ? over <= upOf(def) : -over <= def.sight.tall);
 };
 
 /** does it see him this frame? Its own box, then stillness.ts's rule */
@@ -261,9 +283,12 @@ export function landed(s: PredatorState): void {
   if (s.phase === 'act') enter(s, 'recover');
 }
 
+/** the act it runs (or tells) now: its leap when its tell began on a sloth hanging over it (PredatorDef.leap), else its act */
+export const actOf = (def: PredatorDef, s: PredatorState): Act => (s.leaping && def.leap) || def.act;
+
 /** the box its act hurts from where it stands now, whatever its phase (its strike's reach: what a freeze inside it beat, castPlay.ts) */
 export function reachBox(def: PredatorDef, s: PredatorState): Box {
-  const a = def.act;
+  const a = actOf(def, s);
   if (a.aim === 'ahead') return { x: s.facing > 0 ? s.x : s.x - a.reach, y: s.y - a.tall, w: a.reach, h: a.tall };
   return { x: s.x - a.reach / 2, y: s.y - a.tall, w: a.reach, h: a.tall };
 }
@@ -275,8 +300,11 @@ export function hurt(def: PredatorDef, s: PredatorState): Box | null {
   return c && !s.leaving && (s.phase === 'rest' || s.phase === 'hunt' || s.phase === 'tell') ? { x: s.x, y: s.y - c.tall, w: c.w, h: c.tall } : null;
 }
 
+/** half his body's width (px): a hurt box touches him this far either side of his middle */
+export const HERO_HALF_W = 14;
+
 /** a hurt box against his body (feet at hero.y) */
-export const touches = (b: Box | null, hero: { x: number; y: number }, halfW = 14, tall = 44): boolean =>
+export const touches = (b: Box | null, hero: { x: number; y: number }, halfW = HERO_HALF_W, tall = 44): boolean =>
   !!b && hero.x + halfW > b.x && hero.x - halfW < b.x + b.w && hero.y > b.y && hero.y - tall < b.y + b.h;
 
 /** does it stand in his way right now? (a guard, while it is up) */
@@ -394,8 +422,12 @@ const posted = (def: PredatorDef): boolean =>
 
 function startTell(def: PredatorDef, s: PredatorState, hero: Prey, ev: PredatorEvents): void {
   if (def.habit !== 'sweep') s.facing = hero.x >= s.x ? 1 : -1;
-  s.aimX = def.act.aim === 'below' ? s.x : hero.x;
-  s.aimY = hero.y;
+  // (a sloth hanging over a kind with a leap gets the leap: decided here, once, for this tell and its act)
+  s.leaping = !!def.leap && !!hero.hanging;
+  const a = actOf(def, s);
+  // ('up' runs along its own ground to the spot he hung over, its box rising `tall` from there: never off its patch, never off the ground)
+  s.aimX = a.aim === 'below' ? s.x : a.aim === 'up' ? clamp(hero.x, s.minX, s.maxX) : hero.x;
+  s.aimY = a.aim === 'up' ? s.y : hero.y;
   enter(s, 'tell');
   ev.tell = true;
 }
@@ -659,7 +691,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
     }
 
     case 'act': {
-      const a = def.act;
+      const a = actOf(def, s);
       let done = s.t >= a.seconds;
       if (a.aim === 'ahead') {
         if (a.speed > 0) {
