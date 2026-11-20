@@ -132,3 +132,25 @@ are back (no paid idle time waiting on a pick). Takes sheet reference/art/hfnext
 Total 34 takes, ~1,630 s of generation + two model loads (~2 min) + setup/cut/fetch (~6 min): **about 36 GPU-min, ~$1.65.**
 **Cap asked: $3** (room for ONE redo round on a single piece if a whole row fails; no second sandbox).
 Pick criteria on the sheet: the stage's own light, Pokey's yellow bar beside each, edges 3x on light and dark (ART-W2B's show-first).
+
+## Batch 2 plan (grotto floor kit for 3-1 + 2-8's reeds redo), ART-NEXT-b: waiting on the lead's go and cap
+Sizes from WORLD-3-PLAN.md §2 (origin/t-plan-w3) and DESIGN 3-1's Art paragraph; Pokey 89.1 px drawn. Method as batch 1:
+Qwen-Image-Edit-2511 (tools/art/hfpokey/pokeygpu.py, no LoRA) from paste-ups of World 3's own stone (w3-new#shelf-short/long) on flat
+grey, ONE sandbox (rtx-pro-6000, $2.75/h), the frame-B style edits chained on every round-1 take in the same run. **Per-piece pulls
+(D98):** packer.py packs each piece's takes the moment they are done; I pull and commit each piece as it lands, cheapest first, so a
+lost sandbox token costs one piece at most; the sandbox is terminated the moment the last piece is pulled.
+**Show first (no spend):** the paste-ups sheet goes to the lead before the run (the reeds' band above all).
+| # | Piece (layer) | Size beside Pokey (world px) | Start (paste-up) | Canvas | Takes |
+|---|---|---|---|---|---|
+| 1 | **flood-line reeds REDO** (decor near) | as w2-props#reedTall/#reedLean (1.46 Pokey) | the two clumps; under a WAVY flood line (never straight across: a straight band read as a collar), each stem multiplied to dark wet brown (~(70,48,28)), pale silt specks (~(176,156,112)), a darker brown wet edge at the line (batch 1's light line and see-through dark read GREY); prompt "dark wet brown, glistening, fine pale silt specks; follows each stem; never grey, no band, no collar" | 512x768 | 4 |
+| 2 | small shelf S (platform, walk line measured) | 120 wide, 0.3-0.5 Pokey thick (27-45) | w3-new#shelf-short cut down to 120:40 | 768x384 | 3 |
+| 3 | lit rim on shelf S (platform, frame B) | as shelf S | chained edit of each S take: a cool glowworm light along the top rim, the rest in shadow | 768x384 | 3 |
+| 4 | soft fungus mat (soft landing) | ~130 wide, 0.2 Pokey thick (18) | w1-fungus-shelf-big's shape flattened (scale_ok n today) + w3-props#glowDim's colour | 768x384 | 3 |
+| 5 | sleepy-mushroom shelf (platform + a puff source at its back) | 200 wide, 0.4 Pokey thick + the caps | w3-new#shelf-short + w3-props#mushrooms at its back, half-closed caps | 768x512 | 3 |
+| 6 | lit rims on shelf short / long (platform) | as w3-new#shelf-short (130x63) / -long (220x67) | edits of the in-game pieces themselves | 768x384 / 1024x384 | 2 + 2 |
+| 7 | grotto floor lip A + B (platform, terrain) | 320-480 wide, 0.25-0.35 Pokey thick (22-31) | the top of w3-new#shelf-long stretched to a lip strip; A ends rounded, B ends broken | 1024x320 | 3 + 3 |
+Order = cheapest first (512-768 px, few takes) to the widest; pulls in that order. **26 takes** at the batch 1 re-run's measured rate
+(~62 s a 512 take, ~76 s a 1024 take; 44 min for 34 takes all in): about 28 GPU-min of generation + ~1 min model download + ~5 min
+set-up = **~35 GPU-min, ~$1.60.** **Cap asked: $2.50** (room for ONE redo of a single row; no second sandbox). Balance ~$46.17 before,
+~$44.5 after; reserve $10 untouched. Pick sheet: every take at game size beside Pokey's bar, on the grotto's dark AND on light, edges 3x,
+and (new, the lead 5:21 PM) **any paint on a frame edge flagged on the sheet: reject before the pick** (batch 1's barge s23 lesson).
