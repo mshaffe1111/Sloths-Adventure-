@@ -2,8 +2,10 @@
 Engine (draw). Branch t-fix-tab (base 453b69c2 + merged t-int-14 ca74f4fa, which adds no code). Updated 3:05 PM ET.
 
 ## EXACT NEXT STEP
-Gates running (unit suite in 3 shards, coveragecheck, registrycheck, lockall --check vs 453b69c2's lock in /tmp). Next: drawcheck, clipcheck,
-kbdcheck, paintcheck 0/3 1/3 2/3, seed lists, the CI tool line, tipwalk, tierBots, buildcheck alone, funcheck, castBots; fill the table; final hash.
+Running in this container: the unit suite (3 shards, /tmp/claude-0/ft/suite-*.log), drawcheck (drawcheck.log), then /tmp/claude-0/ft/rest.sh in order:
+clipcheck, kbdcheck, paintcheck 0/3 1/3 2/3, every registered seed list --check, the CI tool line (gates.yml:155), tipwalk, tierBots,
+funcheck, buildcheck alone; one line each in /tmp/claude-0/ft/rest-summary.txt. Next: copy those lines into the gate table, add the
+engine-core.md entry (drafted at /tmp/claude-0/ft/note.md), push, final hash to the lead. Stills ACCEPTED by the lead (3:19 PM ET).
 
 ## Done-items
 | # | Item | Evidence | Status |
@@ -15,7 +17,7 @@ kbdcheck, paintcheck 0/3 1/3 2/3, seed lists, the CI tool line, tipwalk, tierBot
 | 3c | W1 count after | probe/count-after-fix.txt: 1-6 + 1-7, 16 builds: 100 -> 0 tabs, 43 -> 0 lone strips | PASS |
 | 3d | Hole check (pixels) | 160 orphan lip runs: changed px when the run is drawn vs not, base max 559 (143 > 20) -> fixed max 0: nothing can show through | PASS |
 | 3e | Reach, every world | probe/endsteps.ts -> endsteps.txt / endsteps-changed.json: 425 open bank ends change step: W1 100 (1-6, 1-7), W5 8 (5-M), W7 53 (7-5, 7-9 Easy), W8 264 (8-2/3/5/6/9); W2, 3, 4, 6, 9, 10: 0 | PASS |
-| 3f | Before/after stills per world | stills/before-after/: w1a 1-6, w1b 1-7, w5 5-M, w7a 7-5, w7b 7-9, w8a 8-2, w8b 8-3, w8c 8-6, w8d 8-9; each -sideways, -upright (side by side, before left) and -crop2x | PASS (see Polish) |
+| 3f | Before/after stills per world | stills/before-after/: w1a 1-6, w1b 1-7, w5 5-M, w7a 7-5, w7b 7-9, w8a 8-2, w8b 8-3, w8c 8-6, w8d 8-9; each -sideways, -upright (side by side, before left) and -crop2x | PASS; ACCEPTED by the lead 3:19 PM ET |
 | 3g | Gates | table below | running |
 
 ## Polish check (stills/before-after, judged at phone size and in the 2x crops)
@@ -37,3 +39,6 @@ kbdcheck, paintcheck 0/3 1/3 2/3, seed lists, the CI tool line, tipwalk, tierBot
 | roadmapcheck (after unshallow) | PASS |
 | timecheck | PASS (after merging t-int-14: 453b69c2 alone FAILS on VAR-19/REPORT.md:243, fixed at 6ef8de7b5 on t-int-14) |
 | vite build (deploy base) + chunkcheck | PASS + PASS |
+| coveragecheck | PASS |
+| registrycheck | PASS (12 stages) |
+| lockall vs 453b69c2 (no --intended) | PASS: 102/102 stages unchanged (probe/lockall-vs-453b69c2.txt) |
