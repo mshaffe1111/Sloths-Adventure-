@@ -28,7 +28,17 @@ export interface DriftInfo {
   baseY: number;
   /** drawn as a raft, not a log (gen2/riverLay.ts RiverRow.look, R-165.288): the painted raft's deck is this top. Draw only */
   look?: 'raft';
+  /**
+   * the river's TAIL (gen2/riverLay.ts RiverRow.tail, ENG-24e): log-free water this wide (px) past `x1` before the far bank. The logs go
+   * under (or come out from under) World 2's painted end at `x1`, in mid-water, so no bank stands there: nothing hands a rider over at
+   * that end (engine.ts), he rides into the water. The window is still `x0..x1`, the river's water `x0..riverEnd`
+   */
+  tail?: number;
 }
+/** where the water a log rides on ends: its far bank's lip, `tail` past the logs' own end (RiverRow.tail) */
+export const riverEnd = (d: Pick<DriftInfo, 'x1' | 'tail'>): number => d.x1 + (d.tail ?? 0);
+/** is `d` one of river `r`'s logs (its window starts at the river's near end and its water ends at the river's far end) */
+export const onRiver = (d: Pick<DriftInfo, 'x0' | 'x1' | 'tail'>, r: Pick<RiverZone, 'x0' | 'x1'>): boolean => d.x0 === r.x0 && riverEnd(d) === r.x1;
 
 /** a river as the stage keeps it: the water to draw and the surface that is fatal */
 export interface RiverZone {
@@ -48,6 +58,9 @@ export interface RiverZone {
   spur?: { x: number; y: number };
   /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
   open?: boolean;
+  /** its logs' TAIL (DriftInfo.tail, RiverRow.tail): the last `tail` px before the far bank are log-free; the logs go under World 2's painted
+   *  end at `x1 - tail` (riverArt.ts drawRiverTail) */
+  tail?: number;
   /** a water wheel's pond (gen2/wheelLay.ts layWheel, ENG-26): still water under a wheel's whole sweep, its jetty and its street standing
    *  over it, so it has no banks at its ends (levelCheck asks none); a fall into it splashes him back onto the jetty (`safe`) */
   wheelPond?: true;

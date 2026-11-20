@@ -20,7 +20,7 @@ import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
 import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
-import type { RiverZone } from './river.ts';
+import { onRiver, type RiverZone } from './river.ts';
 import { drawW4 } from './w4Art.ts';
 import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
@@ -416,7 +416,7 @@ export class KitPlay {
         if (pc.kind === 'sluice' && a) {
           const river = world.rivers?.[pc.river];
           // (2-2's ferry: its raft is painted as the raft it is, over the log the river draws)
-          const rafts = river?.raft ? platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === river.x0 && q.drift.x1 === river.x1) : [];
+          const rafts = river?.raft ? platforms.filter((q) => q.type === 'drift' && q.drift && onRiver(q.drift, river)) : [];
           room.sluices.push({ spec: pc, x: a.x, y: a.y, river, open: false, rate: 1, rafts });
         }
         if (pc.kind === 'trader' && a) room.traders.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, done: false, t: 0 });

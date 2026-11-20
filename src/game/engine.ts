@@ -108,7 +108,7 @@ import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawR
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, type DriftInfo } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, type DriftInfo } from './river.ts';
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -1913,7 +1913,9 @@ export class GameEngine {
         // is no floor (onFloor), and he dropped into the water at the bank's foot (FIX-21: 2-1 Normal kid seed 4, logHandover.test.ts)
         const step = p.x + p.vx * dt;
         const right = p.x > d.x1 || (step > d.x1 && p.vx > 0);
-        if (right || p.x < d.x0 || (step < d.x0 && p.vx < 0)) {
+        // (a river with a TAIL, ENG-24e: its logs go under World 2's painted end at x1 in mid-water, with no bank there to step up onto, so
+        // a rider carried (or walking) past it goes on into the water: river.ts DriftInfo.tail)
+        if ((right && !d.tail) || p.x < d.x0 || (step < d.x0 && p.vx < 0)) {
           p.x = right ? d.x1 + 6 : d.x0 - 6;
           p.y = d.baseY - LOG_DROP;
           p.vy = 0;
@@ -6825,7 +6827,7 @@ export class GameEngine {
     let under = this.cueRivers.by.get(v.id);
     if (under === undefined) {
       const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && !q.flood && lianasOver([v], q).length > 0);
-      const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === r.x0 && q.drift.x1 === r.x1).map((q) => q.drift!) : [];
+      const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && onRiver(q.drift, r)).map((q) => q.drift!) : [];
       under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
       this.cueRivers.by.set(v.id, under);
     }

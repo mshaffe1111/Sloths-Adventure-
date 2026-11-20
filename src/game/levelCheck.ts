@@ -21,7 +21,7 @@ import { PAST_SHRINE } from './rules.ts';
 import { flagFurther } from './gen2/tower.ts';
 import { isKitSweeper } from './gen2/stillLay.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
-import { hopLimit, lianasOver } from './river.ts';
+import { hopLimit, lianasOver, onRiver } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -1048,7 +1048,7 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
 
   // rivers: the logs must be spaced so a hop between neighbours is easy, and a bank must stand at each end of the water
   for (const r of stage.rivers ?? []) {
-    const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    const logs = plats.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r));
     // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
     if (r.speed === 0 || r.open) { /* no logs to space */ }
     // (a ferry raft, run by a sluice: one wide log that carries him the whole way across, river.ts `raft`)

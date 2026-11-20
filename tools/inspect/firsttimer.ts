@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, type RiverZone } from '../../src/game/river.ts';
+import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
@@ -1768,7 +1768,7 @@ export class FirstTimerRun {
     const rivers = this.sim.stage.rivers ?? [];
     const r = rivers.find((q) => q.speed > 0 && !q.open && lianasOver([v], q).length);
     if (!r) return false;
-    const logs = this.sim.platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === r.x0 && q.drift.x1 === r.x1 && !q.broken);
+    const logs = this.sim.platforms.filter((q) => q.type === 'drift' && q.drift && onRiver(q.drift, r) && !q.broken);
     if (!logs.length) return false;
     // (his press comes after his thumb's lag, drawn about thumb[0] (decide): he lets go only when the press lands at the lag's middle and
     //  half a spread either side, as a person aims for the middle of the moment, never its edge)
