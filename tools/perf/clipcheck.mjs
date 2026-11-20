@@ -289,11 +289,69 @@ const scrollAll = (page) => page.evaluate(() => {
   return n;
 });
 
+// ---- waiting on the page's own state, never on the clock (R-165.215 / R-165.245 / R-165.325, GATE-FLAKE 11-19) -----------------------
+// Until 11-19 the walk slept a fixed time after each tap (300-7000 ms) and gave each screen 10-30 s to open. Beside 4 heavy jobs a
+// screen still loading was judged (4 'stale' known entries on INT-13b's head) and one only slow to open ran out its 30 s (ENG-PROWL's).
+// Now every wait ends on the page's own state, counted in the page's own animation frames (a starved box draws fewer frames, so the
+// wait stretches with the load by itself):
+//   STILL  no request in flight (the browser's own request events, counted per page below), every picture loaded, the fonts in, no
+//          finite CSS animation or transition running, no short one-shot timer the page set still pending (the app's own delays: a card
+//          armed after 1.2 s, the title's leaves), and the DOM unchanged for a run of frames in a row
+//   OPEN   a screen opens when its selector shows. It FAILS when the page goes still for a long run (STILL_FAIL frames: nothing loading,
+//          nothing pending, nothing moving) without it: nothing left could ever open it. A slow screen is never still: its script or
+//          pictures are still coming or its card still animating, so it is waited for however long the box takes.
+//   A page that never goes still (a live stage's HUD can change every frame) is bounded in FRAMES too (MAX_FRAMES: a busy box draws
+//   them slower, so the bound stretches with it), and HANG_MS is only the guard against a page whose frames stopped altogether.
+const SHORT_TIMER_MS = 3000;
+const QUIET_FRAMES = 12;
+const STILL_FAIL = 240;
+const MAX_FRAMES = 4500;
+const SETTLE_MAX = 300;
+const HANG_MS = 600000;
+// (every page of a walk: counts the DOM's changes and the page's pending short timers; installed before any of the game's own script)
+function instrumentPage(SHORT) {
+  if (window.__cc) return;
+  const cc = (window.__cc = { mut: 0, timers: new Map() });
+  const st = window.setTimeout, ct = window.clearTimeout;
+  window.setTimeout = function (fn, ms, ...a) {
+    const d = Number(ms) || 0;
+    const id = st.call(window, function () { cc.timers.delete(id); return typeof fn === 'function' ? fn.apply(this, arguments) : (0, eval)(String(fn)); }, ms, ...a);
+    if (d > 0 && d <= SHORT) cc.timers.set(id, d);
+    return id;
+  };
+  window.clearTimeout = function (id) { cc.timers.delete(id); return ct.call(window, id); };
+  new MutationObserver((l) => { cc.mut += l.length; }).observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+}
+// (in the page: `max` frames; returns how many of the last ones in a row were still, and what moved last)
+function stillFrames({ max }) {
+  const cc = window.__cc;
+  const moving = () => {
+    if ([...document.images].some((i) => !i.complete)) return 'a picture loading';
+    if (document.fonts && document.fonts.status !== 'loaded') return 'fonts loading';
+    if (cc && cc.timers.size) return `${cc.timers.size} short timer(s) pending`;
+    if (document.getAnimations().some((a) => a.playState === 'running' && a.effect?.getComputedTiming().iterations !== Infinity)) return 'an animation running';
+    return '';
+  };
+  return new Promise((done) => {
+    let n = 0, run = 0, lastMut = cc ? cc.mut : 0, why = '';
+    const tick = () => {
+      const m = cc ? cc.mut : 0;
+      const w = m !== lastMut ? 'the page changing' : moving();
+      lastMut = m;
+      if (w) { why = w; run = 0; } else run++;
+      if (++n >= max) return done({ n, run, why });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
 // ---- one walk: one save at one size -----------------------------------------------------------------------------------------------
 async function walk(browser, base, save, size, devBase) {
   const tag = `${save} ${size.id}`;
   const ctx = await browser.newContext({ viewport: size.viewport, deviceScaleFactor: 1, hasTouch: true, isMobile: true, serviceWorkers: 'block' });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
+  await ctx.addInitScript(instrumentPage, SHORT_TIMER_MS);
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
   await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: size.insets });
@@ -303,7 +361,87 @@ async function walk(browser, base, save, size, devBase) {
   const found = [];
   const missed = [];
   let shotN = 0;
-  const settle = (ms = 550) => page.waitForTimeout(ms);
+  // requests in flight on this page (a sound streaming is not the screen; an aborted one ends with requestfailed)
+  const inflight = new Set();
+  page.on('request', (r) => { if (r.resourceType() !== 'media') inflight.add(r); });
+  page.on('requestfinished', (r) => inflight.delete(r));
+  page.on('requestfailed', (r) => inflight.delete(r));
+  // (a request of the page before a navigation gets neither event: without this the count only grew, 34 to 96 in one walk)
+  page.on('framenavigated', (f) => { if (f === page.mainFrame()) inflight.clear(); });
+  // (what the waits did on this walk, printed at its end: settles that went still, ones that met SETTLE_MAX and what kept them busy)
+  const waits = { settled: 0, capped: [], frames: 0 };
+  let net = 0;
+  for (const ev of ['request', 'requestfinished', 'requestfailed']) page.on(ev, () => net++);
+  const hung = () => new Promise((_, no) => setTimeout(() => no(new Error(`the page drew no frame for ${HANG_MS / 1000} s (hung)`)), HANG_MS).unref());
+  // (frames in a batch, and the run of still frames carried across batches: a request in flight or any request event since the last
+  //  batch breaks the run)
+  const stillRun = () => {
+    let run = 0, f = 0, seen = net, why = '';
+    return async (batch) => {
+      const r = await Promise.race([page.evaluate(stillFrames, { max: batch }), hung()]);
+      f += r.n;
+      run = r.run === r.n ? run + r.n : r.run;
+      if (r.why) why = r.why;
+      if (inflight.size || net !== seen) { run = 0; why = inflight.size ? `${inflight.size} request(s) in flight: ${[...inflight][0].url().replace(/^.*\//, '').slice(0, 40)}` : 'a request'; }
+      seen = net;
+      return { run, f, why };
+    };
+  };
+  // settle: until the page is STILL for QUIET_FRAMES frames in a row, or SETTLE_MAX frames of a page that never is (a live stage's HUD);
+  // it never fails: the judge after it decides
+  const settle = async () => {
+    const step = stillRun();
+    for (;;) {
+      const r = await step(QUIET_FRAMES);
+      if (r.run >= QUIET_FRAMES) { waits.settled++; waits.frames += r.f; return; }
+      if (r.f >= SETTLE_MAX) { waits.capped.push(r.why); waits.frames += r.f; return; }
+    }
+  };
+  const shows = async (selector, state) => {
+    const l = page.locator(selector).first();
+    return state === 'attached' ? (await l.count()) > 0 : l.isVisible();
+  };
+  // opens: until `selector` shows (as Playwright's own waitFor judged it); FAILS when the page went STILL for STILL_FAIL frames in a row
+  // without it (nothing loading, nothing pending, nothing moving: nothing left could open it), or after MAX_FRAMES frames of a page that
+  // never went still
+  const opens = async (selector, state = 'visible') => {
+    const step = stillRun();
+    for (;;) {
+      if (await shows(selector, state)) return;
+      const r = await step(10);
+      if (r.run >= STILL_FAIL) {
+        if (await shows(selector, state)) return;
+        throw new Error(`${selector} never showed: the page went still without it (${STILL_FAIL} frames in a row, nothing loading, pending or moving)`);
+      }
+      if (r.f >= MAX_FRAMES) throw new Error(`${selector} never showed in ${MAX_FRAMES} frames (the page never went still: ${r.why})`);
+    }
+  };
+  // until: the game's own state, in the page: frames until `fn(arg)` has been true `hold` frames in a row (a React effect that follows
+  // the same commit lands within a frame or two); FAILS after MAX_FRAMES frames
+  const until = async (what, fn, arg = null, hold = 1) => {
+    const ok = await Promise.race([
+      page.evaluate(({ src, arg, max, hold }) => new Promise((done) => {
+        const f = new Function(`return (${src})`)();
+        let n = 0, run = 0;
+        const tick = () => {
+          let v = false;
+          try { v = !!f(arg); } catch {}
+          run = v ? run + 1 : 0;
+          if (run >= hold) return done(true);
+          if (++n >= max) return done(false);
+          requestAnimationFrame(tick);
+        };
+        tick();
+      }), { src: fn.toString(), arg, max: MAX_FRAMES, hold }),
+      hung(),
+    ]);
+    if (!ok) throw new Error(`${what}: not so in ${MAX_FRAMES} frames`);
+  };
+  // frames: `n` of the page's own frames (a live stage's own clock: the engine steps once a frame), where a fixed sleep stood in for
+  // the game moving on
+  const frames = (n) => until(`${n} frames`, (k) => --k.n <= 0, { n }, 1);
+  // running: a stage is up and playing (its vine HUD is up, the stage's goal card gone, for 10 frames in a row)
+  const running = () => until('a stage running (its HUD up, its goal card gone)', () => document.documentElement.dataset.hud === 'vine' && document.documentElement.dataset.hudCard !== '1', null, 10);
   // (judge only inside this, when set: a screen laid over another)
   let scope = '';
   // (a card that must fit the safe area with nothing scrolled, when set; and a phone size tried on top of this walk's, when set)
@@ -313,11 +451,9 @@ async function walk(browser, base, save, size, devBase) {
   const judge = async (screen) => {
     if (ONLY && !screen.includes(ONLY)) return;
     const take = async (name) => {
-      // let the pictures load and every finite animation and transition end (a card popping in, the map panning), at most 2.5 s
-      await page.evaluate(() => Promise.race([
-        Promise.all([...document.images].filter((i) => !i.complete).map((i) => new Promise((r) => { i.onload = i.onerror = r; }))).then(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {})))),
-        new Promise((r) => setTimeout(r, 2500)),
-      ]));
+      // let the pictures load and every finite animation and transition end (a card popping in, the map panning): the page STILL
+      // (until 11-19 at most 2.5 s, so a loaded box judged a card still popping in)
+      await settle();
       const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: extra?.insets ?? size.insets, scope, fit });
       // (CLIPCHECK_SHOTS=1: every judged screen shot as judged, breach or not, so a step's own run can be looked at, not only passed)
       if (SHOTS) await page.screenshot({ path: path.join(out, 'shots', `seen-${save}-${extra?.id ?? size.id}-${name.replace(/\W+/g, '_')}.png`) });
@@ -342,7 +478,7 @@ async function walk(browser, base, save, size, devBase) {
     };
     await take(screen);
     if (await scrollAll(page)) {
-      await settle(300);
+      await settle();
       await take(`${screen} (scrolled to the end)`);
     }
   };
@@ -356,25 +492,33 @@ async function walk(browser, base, save, size, devBase) {
       missed.push(`${what}: ${m[0].slice(0, 100)} ${loc.trim().slice(0, 120)} (screen: ${file})`);
     }
   };
-  const back = async () => { await page.keyboard.press('Escape'); await settle(450); };
+  const back = async () => { await page.keyboard.press('Escape'); await settle(); };
   // (20 s: on a busy machine the title's leaves can arrive well after the Play board)
   // navigation taps go straight to the element (the check judges what is on screen, not Playwright's hit-testing; a toast over an
   // arrow must not stall the walk)
-  const click = async (selector) => {
-    await page.locator(selector).first().waitFor({ state: 'attached', timeout: 20000 });
+  // (still = false: the next tap must follow at once, as a player's does: the testers' "I'm done" asks "Tap again to finish" for 3 s
+  //  only, and a settle over a live stage can outlast that)
+  const click = async (selector, still = true) => {
+    await opens(selector, 'attached');
     await page.locator(selector).first().evaluate((e) => e.click());
-    await settle();
+    if (still) await settle();
   };
   const home = async () => {
     await page.goto(`${base}/?lessons=off`);
-    await page.locator('.ttl-play').waitFor({ state: 'visible', timeout: 30000 });
-    await settle(2500);
+    await opens('.ttl-play');
+    await settle();
   };
 
   await page.goto(`${base}/?lessons=off`);
   await seed(page, save);
   await home();
   await judge('start screen');
+  // the planted screen that never opens, every run (R-165.215): waiting on a selector nothing will ever show must FAIL, and fail as a
+  // page gone still (not by a clock, not as a page that never settled), or the open wait itself is broken
+  if (!ONLY && !STEPS.length) {
+    const said = await opens('.cc-never-opens').then(() => 'it opened', (e) => String(e.message));
+    if (!/went still without it/.test(said)) missed.push(`planted never-opening screen: not failed as gone still (${said.slice(0, 120)})`);
+  }
 
   // Settings, every tab, and the pop-ups behind its buttons
   await tryStep('settings', async () => {
@@ -425,8 +569,8 @@ async function walk(browser, base, save, size, devBase) {
       await judge('who is exploring');
       await click('.mp-row button >> nth=1');
     }
-    await page.locator('.wm-head').waitFor({ timeout: 10000 });
-    await settle(900);
+    await opens('.wm-head');
+    await settle();
     // start from World 1
     for (let i = 0; i < 12 && (await page.locator('.wm-arrow[aria-label="Previous world"]:not([disabled])').count()); i++) await click('.wm-arrow[aria-label="Previous world"]');
     const NEXT = '.wm-arrow[aria-label="Next world"]:not([disabled]):not([data-locked])';
@@ -460,7 +604,7 @@ async function walk(browser, base, save, size, devBase) {
           if (!(await page.locator('.tr-sec:has-text("Keepsakes") + .tr-grid .tr-find.open').count())) return;
           await click('.tr-sec:has-text("Keepsakes") + .tr-grid .tr-find.open');
           await page.evaluate(() => document.querySelector('.sc-page')?.scrollIntoView({ block: 'start' }));
-          await settle(300);
+          await settle();
           await judge('satchel: keepsake story');
         });
       }
@@ -501,11 +645,12 @@ async function walk(browser, base, save, size, devBase) {
   // 11-06 this step judged the start screen). Fails closed: no pause card up is a screen that could not be opened
   await tryStep('pause', async () => {
     await page.goto(`${base}/?lessons=off&autostart=1&level=1-1`);
-    await page.locator('canvas').first().waitFor({ state: 'attached', timeout: 30000 });
-    await settle(7000);
+    // (until 11-19 a 7 s sleep stood in for the stage starting: now the stage's own HUD up and its goal card gone)
+    await opens('canvas', 'attached');
+    await running();
     await page.keyboard.press('Escape');
-    await page.locator('.pm-card').first().waitFor({ state: 'visible', timeout: 15000 });
-    await settle(900);
+    await opens('.pm-card');
+    await settle();
     await judge('pause');
     await plant('pause: planted', '.pm-card');
   });
@@ -519,20 +664,21 @@ async function walk(browser, base, save, size, devBase) {
     await page.evaluate(() => localStorage.setItem('sloth_difficulty', 'normal'));
     // (the development build's own route into 1-1: a fresh save's autostart opens World 1's story first)
     await page.goto(`${devBase}/?lessons=off`);
-    await page.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 60000 });
+    await until('the game loaded (window.__play)', () => typeof window.__play === 'function');
     await page.evaluate(() => window.__play('1-1'));
-    await page.locator('canvas').first().waitFor({ state: 'attached', timeout: 30000 });
-    await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine()?.helpState?.().on, null, { timeout: 30000 });
-    await settle(4000);
+    await opens('canvas', 'attached');
+    await until("the help offer's watch on", () => typeof window.__engine === 'function' && !!window.__engine()?.helpState?.().on);
+    await running();
     for (let n = 0; n < 16 && !(await page.locator('.ho-scrim').count()); n++) {
       // (dropped under the middle of the first piece where a step can be offered (the engine's canGrowAt: re-pinned on the re-laid 1-1,
       // INT-1-1; the second piece offered nothing there): the fall's x is the piece it counts at; A1 sets him back where he stood)
       await page.evaluate(() => { const e = window.__engine(); const p = e.player; const pc = e.currentStage.meta.pieces.find((q) => e.canGrowAt(q) && (q.x1 - q.x0) > 400); p.x = (pc.x0 + pc.x1) / 2; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
-      await page.waitForFunction(() => { const e = window.__engine(); return !!document.querySelector('.ho-scrim') || (e.player.grounded && e.player.y < e.currentStage.config.levelHeight); }, null, { timeout: 8000 });
-      await settle(700);
+      await until('set back on the stage (or the offer up)', () => { const e = window.__engine(); return !!document.querySelector('.ho-scrim') || (e.player.grounded && e.player.y < e.currentStage.config.levelHeight); });
+      // (a moment of the game's own frames before the next fall: until 11-19, 700 ms of the clock)
+      await frames(42);
     }
-    await page.locator('.ho-card').first().waitFor({ state: 'visible', timeout: 10000 });
-    await settle(900);
+    await opens('.ho-card');
+    await settle();
     await judge('play: help offer');
     await plant('help offer: planted', '.ho-card');
   });
@@ -563,8 +709,8 @@ async function walk(browser, base, save, size, devBase) {
       requestAnimationFrame(hold);
     });
     await page.goto(`${devBase}/?autostart=1&level=1-3&clipHold=1`);
-    await page.waitForFunction(() => window.__clipHeld === true && window.__engine()?.currentStage?.config?.id === '1-3', null, { timeout: 60000 });
-    await page.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 });
+    await until('1-3 up and held at its first frame', () => window.__clipHeld === true && window.__engine()?.currentStage?.config?.id === '1-3');
+    await until("the stage's goal card gone", () => document.documentElement.dataset.hudCard !== '1', null, 10);
     const walked = await page.evaluate((src) => new Promise((done) => {
       const e = window.__engine();
       e.isPaused = true;
@@ -591,8 +737,8 @@ async function walk(browser, base, save, size, devBase) {
     if (walked.none) throw new Error(`no Skip tips button in 90 s of game time (x ${walked.x}, ${walked.taps} cards tapped)`);
     console.log(`  Dot's first tip (${tag}): game frame ${walked.n}, x ${walked.x}, ${walked.taps} card${walked.taps === 1 ? '' : 's'} tapped: "${walked.tip}"`);
     // (the Skip is faded and lets touches through for its first 1.2 s, a real-time timer: judged once it is armed)
-    await page.locator('.dg-skip:not(.unarmed)').first().waitFor({ state: 'attached', timeout: 10000 });
-    await settle(300);
+    await opens('.dg-skip:not(.unarmed)', 'attached');
+    await settle();
     scope = '.dg-root';
     await judge("play: Dot's first tip");
     scope = '';
@@ -605,26 +751,26 @@ async function walk(browser, base, save, size, devBase) {
     await page.goto(`${devBase}/?lessons=off`);
     await seed(page, save);
     await page.goto(`${devBase}/?lessons=off`);
-    await page.waitForFunction(() => typeof window.__story === 'function' && typeof window.__win === 'function', null, { timeout: 60000 });
+    await until('the game loaded (window.__story, __win)', () => typeof window.__story === 'function' && typeof window.__win === 'function');
     await page.evaluate(() => window.__story('1-1', 'story_cutscene'));
-    await page.locator('.sp-next').first().waitFor({ state: 'visible', timeout: 20000 });
+    await opens('.sp-next');
     for (let i = 0; i < 12 && !(await page.locator('.sp-back').count()); i++) {
       await page.locator('.sp-next').first().evaluate((e) => e.click());
-      await settle(300);
+      await settle();
     }
-    await settle(900);
+    await settle();
     await judge('cards: a story picture, with Skip and Back');
     await page.evaluate(() => window.__story('10-10', 'boss_card'));
-    await page.locator('.boss-card').first().waitFor({ state: 'visible', timeout: 20000 });
-    await settle(900);
+    await opens('.boss-card');
+    await settle();
     await judge("cards: the guardian's card");
     await page.evaluate(() => window.__story('10-10', 'story_ending'));
-    await page.locator('.ending-card').first().waitFor({ state: 'visible', timeout: 20000 });
-    await settle(900);
+    await opens('.ending-card');
+    await settle();
     await judge('cards: The End');
     await page.evaluate((m) => window.__win('1-2', 3, m), IDS.badges.slice(0, 2));
-    await page.locator('.clr-medals.in').first().waitFor({ state: 'visible', timeout: 20000 });
-    await settle(600);
+    await opens('.clr-medals.in');
+    await settle();
     // the card fits the safe area with nothing scrolled (PROOF-1 violation 2: sideways at 844x390 its bottom row sat in the home bar,
     // and at 915x412 and upright under 915 px it started off the screen, while this walk's scroll pass called it fine): judged as
     // opened at this walk's size and at a common shorter phone, the same way up
@@ -634,19 +780,19 @@ async function walk(browser, base, save, size, devBase) {
       extra = ex;
       await page.setViewportSize(ex.viewport);
       await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: ex.insets });
-      await settle(700);
+      await settle();
       // (back to nothing scrolled: the judge before this one scrolled every box to its end)
       await page.evaluate(() => { for (const e of document.querySelectorAll('*')) if (e.scrollTop || e.scrollLeft) { e.scrollTop = 0; e.scrollLeft = 0; } });
-      await settle(200);
+      await settle();
       await judge(`cards: stage cleared, with medals, at ${ex.viewport.width}x${ex.viewport.height}`);
     }
     // the planted failure, every run: the card made 200 px taller must put its bottom row in the inset, or this rule itself is broken
     if (!ONLY || 'cards: stage cleared, planted'.includes(ONLY)) {
       await page.evaluate(() => { const s = document.createElement('style'); s.id = 'cc-plant-tall'; s.textContent = '.clr-card.clr-won .clr-main { padding-top: 200px !important; }'; document.head.appendChild(s); });
-      await settle(300);
+      await settle();
       // (as opened, nothing scrolled: the scrim's scroll anchoring follows the grown card, so the scroll is reset after the plant)
       await page.evaluate(() => { for (const e of document.querySelectorAll('*')) if (e.scrollTop) e.scrollTop = 0; });
-      await settle(200);
+      await settle();
       const caught = (await page.evaluate(audit, { minTap: MIN_TAP, insets: extra?.insets ?? size.insets, fit })).some((x) => x.kind === 'inset' && /clr-btn2|pm-go/.test(x.sel));
       await page.evaluate(() => document.getElementById('cc-plant-tall')?.remove());
       if (!caught) missed.push('cards: the planted too-tall stage-cleared card was NOT caught: the nothing-scrolled inset rule is broken');
@@ -655,26 +801,27 @@ async function walk(browser, base, save, size, devBase) {
       extra = null;
       await page.setViewportSize(size.viewport);
       await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: size.insets });
-      await settle(400);
+      await settle();
     }
     fit = '';
     // Game Over, then again until the extra-lives offer (assist.ts OFFER_AFTER_FAILS)
     await page.evaluate(() => window.__play('1-3'));
     for (let n = 0; n < 4 && !(await page.locator('.clr-help').count()); n++) {
-      await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine(), null, { timeout: 30000 });
-      await settle(2500);
+      await until('the engine up', () => typeof window.__engine === 'function' && !!window.__engine());
+      await running();
       // (__kill takes the lives it can: one a respawn, so it is asked again until the card is up)
       for (let k = 0; k < 12 && !(await page.locator('.clr-card.lost').count()); k++) {
         await page.evaluate(() => window.__kill());
-        await settle(1500);
+        // (his fall and the respawn or the card, in the game's own frames: until 11-19, 1.5 s of the clock)
+        await frames(90);
       }
-      await page.locator('.clr-card.lost').first().waitFor({ state: 'visible', timeout: 20000 });
-      await settle(1200);
+      await opens('.clr-card.lost');
+      await settle();
       if (n === 0) await judge('cards: Game Over');
       if (await page.locator('.clr-help').count()) break;
       await page.evaluate(() => window.__play('1-3'));
     }
-    await page.locator('.clr-help').first().waitFor({ state: 'visible', timeout: 5000 });
+    await opens('.clr-help');
     await judge('cards: Game Over, the extra-lives offer');
   });
 
@@ -683,12 +830,13 @@ async function walk(browser, base, save, size, devBase) {
   // past because these screens were never walked (tester-page, 11-06)
   if (save === 'fresh') await tryStep('testers link', async () => {
     await page.goto(`${base}/?lessons=off&ctest=1`);
-    await page.locator('#ctest-name').waitFor({ state: 'visible', timeout: 30000 });
-    await settle(900);
+    await opens('#ctest-name');
+    await settle();
     await judge('testers: front page');
     await page.fill('#ctest-name', 'clipcheck');
     await click('button[type=submit]');
-    await settle(7000);
+    // (until 11-19 a 7 s sleep stood in for the level starting: now its own HUD up and its goal card gone)
+    await running();
     // (the level under the badge is the game's own HUD, judged by Pause; only the badge is the testers' page)
     if (!ONLY || 'testers: done badge'.includes(ONLY)) {
       const b = (await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets })).filter((x) => /done|Tap again/i.test(x.text));
@@ -703,10 +851,10 @@ async function walk(browser, base, save, size, devBase) {
     scope = '.dg-root';
     await judge("testers: Dot's bubble");
     scope = '';
-    await click('button:has-text("I\'m done")');
+    await click('button:has-text("I\'m done")', false);
     await click('button:has-text("Tap again to finish")');
-    await page.locator('button:text-is("Send")').waitFor({ timeout: 20000 });
-    await settle(900);
+    await opens('button:text-is("Send")');
+    await settle();
     // (the end questions lie over the stopped level: only the testers' card is judged; the level's HUD is Pause's)
     scope = '.fixed.inset-0.z-\\[60\\]';
     await judge('testers: end questions');
@@ -725,6 +873,8 @@ async function walk(browser, base, save, size, devBase) {
   });
 
   await ctx.close();
+  const why = [...new Set(waits.capped)].slice(0, 3).join('; ');
+  console.log(`  waits (${tag}): ${waits.settled} settled still, ${waits.capped.length} met ${SETTLE_MAX} frames${why ? ` (${why})` : ''}, ${waits.frames} frames waited`);
   return { tag, found, missed, errors };
 }
 

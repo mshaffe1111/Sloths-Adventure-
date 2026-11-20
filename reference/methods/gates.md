@@ -105,6 +105,27 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 - 2026-11-01: playerText first built each Journal page by calling stageEntry() once per stage. The Satchel builds the page with worldEntries(), which shares one used-lines set across the page, so the gate was judging a page no player sees. **A gate calls the same function the player's screen calls** (find it from the component: JournalBook → worldEntries).
 - 2026-11-01: the merge rule for shrink-only lists: a known entry is deleted in the same commit that fixes it. Deleting it on a branch where the defect is still there fails that branch's own gate.
 
+- 2026-11-19 (GATE-FLAKE, R-165.215/.245/.325): two gates failed under load and passed alone: clipcheck (4 'stale' known on INT-13b's
+  head beside 3 suite shards + paintcheck; one screen past its 30 s open timer on ENG-PROWL's) and stageQuality's 'generating a stage is
+  quick' (p90 657 ms with 4 jobs running). A gate waits on the code's own state, never on the clock. What each wait became:
+  - clipcheck `settle(300..7000 ms)` (30 fixed sleeps) -> `settle()`: until the page is STILL for 12 frames in a row (no request in
+    flight from the browser's own request events, every picture loaded, fonts in, no finite animation running, no one-shot timer of
+    3 s or less the page set still pending, the DOM unchanged), at most 300 page frames for a page that never goes still.
+  - the judge's own "at most 2.5 s" for pictures and pop-in animations -> the same `settle()` (no clock cap).
+  - every `waitFor({ timeout: 5-30 s })` open timer -> `opens(selector)`: until it shows; FAILS when the page went still for 240 frames
+    without it (nothing loading, pending or moving: nothing left could open it), or after 4,500 frames of a page that never went still.
+    A slow screen is told apart from one that never opens by that: a slow one is still loading or moving. A planted never-opening
+    screen on every walk must fail as gone still, every run.
+  - `waitForFunction(..., { timeout: 8-60 s })` -> `until(what, fn)`: the game's own state, frames until true (4,500 at most).
+  - the 7 s "stage started" sleeps (Pause, the testers' link) and 2.5-4 s ones (help offer, Game Over) -> `running()`: the stage's HUD up
+    (`data-hud=vine`) and its goal card gone (`data-hud-card`), 10 frames in a row. The 700 ms and 1.5 s sleeps between put-backs and
+    kills -> `frames(42)` / `frames(90)`: the page's own frames, which the engine steps on.
+  - Counted in frames, every wait stretches with a starved box by itself; the one wall clock left is HANG_MS (10 min: a page that drew
+    no frame at all), a hang guard, not a verdict.
+  - stageQuality's speed test: wall time -> this thread's CPU time (`process.threadCpuUsage`: p90 103 ms alone, 105-109 beside 8 busy
+    processes, while the wall clock read 284-327). The bar is unchanged (p90 500, max 1500); the next test plants a doubled loop
+    (`setBuildRepeatForTest`) sized from the same run's p90 and must see it fail, every run.
+
 ## Tried and didn't work
 - Hard-coding unsafe-inset bands and ignoring CSS: headless Chrome's `env(safe-area-inset-*)` is 0, so the game placed things in the bands and every screen "failed". Chrome's CDP `Emulation.setSafeAreaInsetsOverride` (Chromium 153 here) makes `env()` real; use it.
 - Counting every text line past an overflow-hidden ancestor: every scrolled list "failed". Stop the ancestor walk at a scroll box on that axis.
