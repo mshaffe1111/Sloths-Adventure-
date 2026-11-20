@@ -243,3 +243,50 @@ ground; no gap or overhang seen.
 - MISSES (own them): D30 broken: three messages to the lead carried hand-typed times ahead of the clock (9:55, 10:09, 10:12 PM; delivered
   9:48, 9:55, 9:56 PM). No committed file carries a typed time. I also first read the hunters/read-bare reds as geometry and changed data
   before replaying the test: one wasted relist.
+
+## 10. VAR-19e (written 10:05 AM ET 11-20 by `date`; R-165.327, R-165.328, the funcheck repeat; files in reference/qa-reports/VAR-19e/). STOPPED at the lead's context box: NOT GREEN (the gates below are not run)
+### 10.1 EXACT NEXT STEP (read 10.1 and 10.2 only)
+1. Head: e2769e098 on t-var-19 (data + list), plus this REPORT commit. Base for lockall: reference/qa-reports/VAR-19e/lock-base-0b1f9e46.json
+   (recorded on 0b1f9e46 in a worktree). Do NOT merge t-int-13.
+2. GREEN on e2769e098: tsc PASS; `seedlist 1-9 --check` PASS (100 seeds; seedlist-1-9-check-3.txt); seatBreaches 0 of 100 listed 1-9
+   seeds (probes/seatall.ts); the R-165.327 plant (seedlist.test.ts) and the R-165.328 plant (plainWalk.test.ts) pass by name; funcheck
+   (whole World 1, funcheck-relist3.txt): 1-9 nothing worse or new, the only 1-9 lines are 'gone, delete the entry: 1-9 easy/normal "enemy
+   by a landing"' (FUNCHECK_WRITE for 1-9 only, on the final head, lowers them); every other stage's lines identical to the run before my
+   change (inherited debt of t-var-19's 125 commits, not mine; the gate FAILS on them as it did on e2d60037).
+3. RUNNING at stop (background, results to files; read them, do not trust this line): lockall vs the base --intended 1-9
+   (lockall-vs-base.txt) and `PLAIN_STAGES=1-9 plainWalk.test 'one-jump'` (plainwalk-1-9.txt).
+4. NOT RUN (do them in this order, all on one head): plainWalk.test on its full STAGES; the suite in 3 background shards (timeout over 30
+   min; name shards and tests / pass / fail / todo); castBots 1-9 --seeds 1-40, 5 bots, --setting both; tierBots (no 1-1 change: should
+   be untouched); THE CLAUDE.md CHECK LIST once on the final head; coveragecheck, registrycheck, every list --check (seatBreaches is in
+   every list's --check now: 1-1..1-8, 2-1, 2-2 measured 0 breaches each, probes/seat-others.txt); FUNCHECK_WRITE=1 for 1-9 only; stills of
+   read-bare's boa on 'b' and the hunters' new flat exit, upright + sideways, pushed for the lead (rule 29: shots last, on the green head).
+### 10.2 What was done (each planted RED, then GREEN)
+- **R-165.327 (the list's judge, level.md rule 19 generalized):** tools/engine/listRules.ts `seatBreaches`: an animal in a section whose
+  enemy sockets name its kind stands on a piece one of those sockets is `on` (piece identity by tag, never distance), in `listJudge`
+  (given the row's kit; seedlist.ts and yield.ts pass it) and `asPlayedBreaches` (--check). Judged only where the stage as played still
+  tags those pieces (1-3's and 1-5's finishes drop the tags: the rule says nothing there rather than guess). Cause found: read-bare's socket
+  b1 on 'b' got no patch (a rolled flag on 'b', pipeline.ts patchFor) and the node's asked boa was topped up on the widest piece 's1'
+  (topUp, fill socket 'topup'); 128 of 131 breaches on the old list (Normal 63, Easy 65; 3 = miss's boa on 'w1', Easy). Planted in
+  tools/engine/seedlist.test.ts: RED on the old listed layout 1 (plant-327-red-listed-L1.txt), GREEN after the relist. The placer root
+  stays R-165.312. Yield 67% (100 of 149).
+- **R-165.328 (the lead's ruling A):** not an engine bug: the hunters' eagle saw him at the face INSIDE its rounds (x 23213), and plainWalk's
+  next trial stood him at the exit's face; the dive (aim 'him', by design: predator-kit.md:80-81, core.ts:641) followed him there
+  (probes/eagletrace.ts; eagletrace-L1-base.txt). A longer last bough (280->420) moved nothing (same hit at the new face): reverted.
+  RealPlay.calmCast() rebuilds the cast as the stage starts; called only by plainWalk's flickUp and climbFromFace. Planted in
+  plainWalk.test.ts: a face in an eagle's rounds climbs calm; the eagle's tell ending on him at that face fails it.
+- **funcheck repeat (only by the pieces, no rule moved):** on the R-165.327 relist 1-9 repeat was N 4/16, E 4/16 (known 1). probes/runs.ts
+  and secstr.ts (each 4-run by the sections that make it): the plain rest read 'jJJjJ' on Normal inside itself (in all 4 flagged Normal
+  layouts); Easy's 'JjJj' came from the hunters' exit hop before rests that open 'J j' on Easy. Fixes: the rest's Normal order puts the
+  second knot gap before the long bough and the hollow ('jjJJ'); its Easy twin keeps VAR-19c's order (the new order read 'jjJjJ' on Easy
+  and made 'JjJJ' 4 times on a new layout); the hunters end on a flat bank (as a root step DOWN, 10 of 320 raw rolls threw "no section fits
+  node n13 (ketsu): the pool is spent", probes/throws.ts; flat: 0). Tried and reverted: the stair's rock removed (its long jump went with
+  it: dead walk 3.4 s on 14/16 Normal); both boulders flush (Easy unchanged).
+### 10.3 Learned, method update, lessons applied, misses
+- Learned: (1) the route reader reads Easy differently (a hop as a jump): measure every repeat on BOTH settings after a reorder; (2) a
+  piece change can make the RAW generator throw where the list hides it (yield drops, the list stays clean): run probes/throws.ts on 1..160
+  after any piece change; (3) runs.ts + secstr.ts make a repeat fix minutes, not a relist each (they measure today's plans: relist after).
+- Method update (proposed, level.md): "A repeat flag is fixed by the section that holds the run inside itself first (probes/secstr.ts),
+  checked on both settings and on raw rolls (probes/throws.ts) before the relist." Check: secstr shows no section with a flagged run inside.
+- Lessons applied: prove a cause on a replay before changing data (R-165.328's w3 change proved unneeded and reverted); D30 (times from
+  date); D36 (ls-remote = HEAD after each push); lock the branch base (VAR-19d's trap 3).
+- Misses: a 1.7 MB base lock file is committed in qa-reports (the next member needs it; delete it once lockall is read).
