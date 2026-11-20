@@ -15,6 +15,11 @@ Read first, in order:
 Every ruling below cites the file and section where it's written in full.
 
 ## 1. Where the design data lives
+- **World 3, the back half (DESIGN-36-39, 7:20 PM ET 11-19):** reference/design/3-6.md, 3-7.md, 3-8.md, 3-9.md, 3-hidden.md (built-ready); the flights
+  `npx tsx reference/specs/sims/w3flight39.ts normal|easy hop|cap|quiet|sleeper|bait|raft|rock|all` (a real KitPlay room for the glow cap; the Pad's
+  Jump/Kick/Punch through InputEngine; a drift raft under a dark roof; the kit's own OCELOT via core.ts hear + stepPredator) and the node strings
+  `npx tsx reference/specs/sims/nodes3639.ts`; outputs in reference/specs/sims/out/w3flight39-*.txt, nodes3639.txt. Traps found: the pad has no
+  walk (full run in 0.13 s), the carried cap's forward toss is the KICK button (Jump tosses high), the kit's light way makes prowlers FLEE.
 
 | What | Where |
 |---|---|
