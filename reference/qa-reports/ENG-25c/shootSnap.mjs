@@ -82,7 +82,18 @@ for (const o of ORIENTS) {
     await sleep(5000);
     ok = await page.evaluate(() => { const e = window.__engine(); return !!(e && e.currentStage && e.currentStage.platforms.some((p) => p.pad?.on === 'bites')); });
   }
-  if (!ok) { console.log(o.id, 'the toy did not load'); continue; }
+  if (!ok) {
+    const why = await page.evaluate(async () => {
+      const L = await import('/src/game/gen2/listed.ts');
+      const W2S = await import('/src/game/w2Stages.ts');
+      const SG = await import('/src/game/stageGenerator.ts');
+      const e = window.__engine();
+      const s = e?.currentStage;
+      return { engine: !!e, id: s?.id ?? e?.config?.id, gen2: !!s?.gen2, plats: s?.platforms?.length, listed: !!L.LISTED['2-5'], w2: '2-5' in W2S.W2_STAGES, roll: !!SG.listedRoll({ id: '2-5' }) };
+    });
+    console.log(o.id, 'the toy did not load', JSON.stringify(why));
+    continue;
+  }
   const info = await page.evaluate(() => {
     const e = window.__engine();
     const s = e.currentStage;
