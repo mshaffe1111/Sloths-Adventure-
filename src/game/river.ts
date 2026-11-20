@@ -97,6 +97,16 @@ export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo,
 export function lianasOver<V extends { x: number; vineType?: string; isSwingingVine?: boolean; swingAmp?: number }>(vines: readonly V[], r: { x0: number; x1: number }): V[] {
   return vines.filter((v) => (v.isSwingingVine || v.vineType === 'swing_liana') && (v.swingAmp ?? 1) > 0 && v.x > r.x0 && v.x < r.x1);
 }
+/**
+ * The lianas over a river whose throw has LOGS under it (ENG-24f, the lead's ruling 11-19 9:12 PM ET, level.md World 2 notes): the anchor
+ * hangs over the logs' window, before the painted end where they go under (RiverZone.tail). Every let-go leaves forward of the anchor, so
+ * one hung at or past the window's end (over the TAIL, log-free water) throws over open water: a swing held to World 1's vine rules
+ * (gen2/riverLay.ts tailLianaFaults), never the log-drop share, and the logs before it are hopped as on any river (the hop rule stands).
+ */
+export function lianasOverLogs<V extends { x: number; vineType?: string; isSwingingVine?: boolean; swingAmp?: number }>(vines: readonly V[], r: { x0: number; x1: number; tail?: number }): V[] {
+  const end = r.x1 - (r.tail ?? 0);
+  return lianasOver(vines, r).filter((v) => v.x < end);
+}
 
 /** the gap between neighbouring logs a hop can take, for logs flowing `dir` (levelCheck.ts checks the river's own; a sluice that turns
  * the current about must keep the logs hoppable the other way too, puzzleCheck.ts) */

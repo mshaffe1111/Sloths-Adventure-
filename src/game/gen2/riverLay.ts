@@ -12,10 +12,11 @@
  *   - each log's offset spaces it on the river's one clock (driftX), so the game, the validator and the bots agree where a log is.
  */
 import type { Platform, Vine } from '../types.ts';
-import { driftCycle, driftX, gapFor, hopLimit, lianasOver, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
+import { driftCycle, driftX, gapFor, hopLimit, lianasOver, lianasOverLogs, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
+import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
-import { lianaCaught } from '../levelCheck.ts';
+import { gripsOf, lianaCaught } from '../levelCheck.ts';
+import { LAND_IN } from './landings.ts';
 import { RIDE } from '../ride.ts';
 import type { Difficulty } from '../difficulty.ts';
 
@@ -122,8 +123,11 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
     if (r.speed === 0 || r.open || r.raft || r.flood) continue;
     const at = `river at x=${Math.round(r.x0)}`;
     // (a liana hung over it (place `river` after a liana, ENG-24): its logs are a let-go's landing, crossed by the vine, never hopped log
-    //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands)
-    const over = lianasOver(st.vines ?? [], r);
+    //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands. ENG-24f, the lead's ruling 11-19 9:12 PM
+    //  ET: a liana is judged by what is under its throw. One hung over the TAIL (river.ts lianasOverLogs: its anchor at or past the logs'
+    //  window end) throws over open water: World 1's vine rules (tailLianaFaults), never the share, and the logs before it are hopped)
+    const over = lianasOverLogs(st.vines ?? [], r);
+    const overTail = lianasOver(st.vines ?? [], r).filter((v) => !over.includes(v));
     const logs = st.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
     if (logs.length < 2) { out.push(`${at}: ${logs.length} logs, under 2`); continue; }
     const d = logs[0];
@@ -149,6 +153,7 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
       if (d.tail < reach + RIVER_LAY.tailMargin) out.push(`${at}: its tail of ${Math.round(d.tail)} px is inside a jump off a log's end (${reach} px + ${RIVER_LAY.tailMargin}): he rides to the far bank on a log alone`);
     }
     if (over.length) out.push(...lianaRiverFaults(r, logs, over, near, difficulty).map((f) => `${at}: ${f}`));
+    if (overTail.length) out.push(...tailLianaFaults(r, logs, overTail, near, far, difficulty).map((f) => `${at}: ${f}`));
   }
   return out;
 }
@@ -343,6 +348,36 @@ export function lianaRiverFaults(r: RiverZone, logs: readonly DriftInfo[], over:
     if (share < needShare) out.push(`${at}: ${Math.round(share * 100)}% of its let-gos land on a log, under ${Math.round(needShare * 100)}%`);
     if (wait > needWait + 1e-6) out.push(`${at}: he waits ${wait.toFixed(2)} s on it for a let-go that lands on a log, over ${needWait.toFixed(2)} s`);
     // (no bank reaches it: the way on is a catch from a log)
+    const fromBank = !!near && lianaCaught(near, v, 1, r.surfaceY);
+    if (!fromBank) {
+      if (!logs.some((d) => logCatches(v, d))) out.push(`${at}: no bank reaches it and no jump off a log catches it`);
+      if (easy && r.speed > LIANA_RIVER.easyCatch) out.push(`${at}: caught from a log on a river at ${r.speed} px/s, over Easy's ${LIANA_RIVER.easyCatch}`);
+    }
+  }
+  return out;
+}
+
+/**
+ * What is unfair about the lianas hung over a log river's TAIL (ENG-24f, the lead's ruling 11-19 9:12 PM ET, level.md World 2 notes): its
+ * anchor at or past the logs' window end (river.ts lianasOverLogs), so every let-go throws over log-free water, a swing over open water
+ * held to World 1's vine rules, never the log-drop share (which no let-go over a tail can meet: no log is under it):
+ *   - FAR, the testers' let-go (level.md World 1 notes; physics.ts forwardEndLands, FORWARD_END 0.75, from every hold its grip dial names,
+ *     the jump held, as gen2 lays a perch he reaches by what he sees, pipeline lianaBand): it lands his middle LAND_IN inside the far bank;
+ *   - the wait: that let-go is on the first forward sweep of every swing, so he never waits more than one swing on it for a landing one
+ *     (lianaRiverFaults' Normal wait), with nothing to time against the logs;
+ *   - caught as a liana over logs is: from the near bank (levelCheck lianaCaught), else by a held jump off a log the river carries under it
+ *     (logCatches), on Easy only on a river at most LIANA_RIVER.easyCatch fast.
+ * Its way on is the far bank (a liana chained past it over the tail is not judged here: such a stage is refused until it is).
+ */
+export function tailLianaFaults(r: RiverZone, logs: readonly DriftInfo[], over: readonly Vine[], near: Platform | undefined, far: Platform, difficulty: Difficulty): string[] {
+  const out: string[] = [];
+  const easy = difficulty === 'easy';
+  for (const v of over) {
+    const at = `the liana at x=${Math.round(v.x)} over the tail`;
+    const y = far.y;
+    const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= y + 14 && c.y >= y && c.x >= far.x + LAND_IN.px && c.x <= far.x + far.width - LAND_IN.px;
+    const fwd = withSetting(difficulty, () => forwardEndLands({ x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: v.swingAmp, swingPeriod: v.swingPeriod, swingPhase: 0 }, lands, gripsOf(v.grip, v.bottomY - v.topY)));
+    if (!fwd) out.push(`${at}: the testers' let-go (FORWARD_END ${FORWARD_END}) does not land him ${LAND_IN.px} px inside the far bank`);
     const fromBank = !!near && lianaCaught(near, v, 1, r.surfaceY);
     if (!fromBank) {
       if (!logs.some((d) => logCatches(v, d))) out.push(`${at}: no bank reaches it and no jump off a log catches it`);

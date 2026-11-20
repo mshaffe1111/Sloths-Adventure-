@@ -33,7 +33,7 @@
  */
 import { withSwing } from './w1Swing.ts';
 import { W2_RIVERS, w2World } from './w2.ts';
-import type { RiverRow } from '../riverLay.ts';
+import { carrierWidth, type RiverRow } from '../riverLay.ts';
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 
 export const STAGE_24 = '2-4';
@@ -77,6 +77,16 @@ export const TEACH_24 = ['drop', 'catch'] as const;
  * table; ENG-24's judge holds every one: Normal >= 40% of let-gos onto a log and the worst wait <= one swing; Easy >= 85% and <= 0.6 s,
  * a log-caught liana's river <= 80 px/s). Every Easy row is the splash-back kind (2-1's ruling 1).
  */
+/**
+ * The TAIL of beats 4 and 6 on Normal (ENG-24e/f, R-165.301; the lead's ruling 11-19 9:12 PM ET, level.md World 2 notes): the logs go under
+ * 430 px short of the far bank, past the farthest a rider reaches off a log's end (riverLay.ts rideReach: 388 px at 80 px/s, 392 at 100,
+ * + RIVER_LAY.tailMargin 30 = 418 and 422), so no log carries him across alone; the liana he catches off a log hangs OVER_TAIL past where
+ * they go under, a swing over open water held to World 1's FAR rule (riverLay.ts tailLianaFaults): caught off a log up to 200 px past the
+ * logs' end, the testers' let-go lands a level far bank up to 360 px past the anchor (flown, ENG-24f), so the far bank 320 px past it
+ * lands him with 40 px to spare. Easy keeps no tail (the vine optional on Easy only; its logs under the throw, the log-drop share).
+ */
+const TAIL_24 = 430;
+const OVER_TAIL = 110;
 export const RIVERS_24 = {
   ...W2_RIVERS,
   /** beat 1, the first drop: the widest, calmest logs, splash-back (86% Normal, 92% Easy) */
@@ -85,7 +95,7 @@ export const RIVERS_24 = {
   ride24: { ...W2_RIVERS.ride, logs: 2, safe: true },
   deep24: { ...W2_RIVERS.deep, logs: 2, safe: true },
   /** beat 4, up from the log: `twin` carries him under a liana no bank reaches; splash-back (the lead's ruling (b)) */
-  twin24: { ...W2_RIVERS.twin, safe: true },
+  twin24: { ...W2_RIVERS.twin, safe: true, tail: TAIL_24 },
   /** its Easy twin: `deep`'s slower, longer logs (at `long` or `twin` Easy's judge waits 0.63-0.70 s on the vine, over its 0.6 s) */
   twin24Easy: { ...W2_RIVERS.deep, safe: true },
   /** beat 6, no land: ONE river under two lianas (liana, log, liana, log), DEEP on Normal; its Easy twin the `deep` logs, splash-back.
@@ -93,8 +103,9 @@ export const RIVERS_24 = {
    *  in a swing or two. At `twin`'s 80 px/s it was 222/80 = 2.78 s against the 2.85 s swing (nearly locked: the bots waited the 14 s cap
    *  on both lianas); 214/100 = 2.14 s now (2.85 mod 2.14 = a third of a log). Easy: `deep`'s 232/75 = 3.09 s against its 3.3 s swing,
    *  now 210/80 = 2.63 s (a quarter off: the most within Easy's 80 px/s log-catch cap, LIANA_RIVER.easyCatch, riverFaults' 60 px gap
-   *  and never harder than Normal's row). Measured: reference/qa-reports/BUILD-24c */
-  noLand24: { ...W2_RIVERS.twin, logs: 5, speed: 100, gap: 64 },
+   *  and never harder than Normal's row). Measured: reference/qa-reports/BUILD-24c. Normal's TAIL (ENG-24f): its logs' window 3 logs
+   *  long (706 px: the same spacing, so the same 2.14 s clock), the second liana over the tail past it (liana, log, liana, the far bank) */
+  noLand24: { ...W2_RIVERS.twin, logs: 3, speed: 100, gap: 64, tail: TAIL_24 },
   noLand24Easy: { ...W2_RIVERS.deep, logs: 5, safe: true, speed: 80, logW: 150, gap: 60 },
   /** beat 8, the long relay: the gap is the knob, 200 then 280 px of water between logs (51%, 41%: wait up to a swing), DEEP */
   gap200: { dir: 1, speed: 100, logW: 150, logs: 3, gap: 200 },
@@ -189,7 +200,7 @@ const dropRideDrop = (): Lay => ({
 /** [X] beat 4, the TURN, up from the log: the keeper's `catch` 800+ px before; he boards a `twin` log at the bank, rides it under a liana
  *  no bank reaches and jumps up to it (every ride has a catch); splash-back (the lead's ruling (b)); the flag before */
 const upFromLog = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), lianaW('l', 'b', 430), river('c', 'l', easy ? 'twin24Easy' : 'twin24', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 420), lianaW('l', 'b', easy ? 430 : carrierWidth(RIVERS_24.twin24) + OVER_TAIL), river('c', 'l', easy ? 'twin24Easy' : 'twin24', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)],
   sockets: [tip('t-catch', 'a', 0.1, 'catch'), flag('b', 0.2), petal('pc', 'c', 0.5)],
 });
 /** [Pf] beat 5, the fig roots: planks over a reed bed (splash-back), a stump up and down, a breath */
@@ -200,7 +211,7 @@ const figRoots = (): Lay => ({
 /** [W] beat 6, the TWIST, no land: ONE river under two lianas, the first caught from the bank, the second off a log (liana, log, liana,
  *  log, no bank between); the first DEEP river on Normal (World 2's water warning before it); a heart after (the pipeline's) */
 const noLand = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 320), lianaS('l1', 'b'), lianaW('l2', 'b', FAR_W), river('c', 'l2', easy ? 'noLand24Easy' : 'noLand24', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)],
+  pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 320), lianaS('l1', 'b'), lianaW('l2', 'b', easy ? FAR_W : carrierWidth(RIVERS_24.noLand24) + OVER_TAIL), river('c', 'l2', easy ? 'noLand24Easy' : 'noLand24', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)],
   sockets: [flag('a'), petal('pz', 'z', 0.5)],
 });
 /** [Pb] beat 7, up to the kapok: World 2's lily bounce at the foot of the high bank (the bounce teach's band, 174-180 px: 2-1's ruling),

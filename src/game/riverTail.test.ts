@@ -11,8 +11,10 @@
  * or in his coyote time past it). Planted both ways:
  *   - a TOY: 2-1's first river laid again by riverLay from a row with a tail (its logs' window two spacings shorter, the far bank where it
  *     was), never crossed; the same river as built, crossed (the probe crosses where the river lets him: 2-1 must not move);
- * 2-4's beats 4 and 6 take no tail yet (ENG-24e: no tail passes the drop judge there, the lead's ruling pending): their ride-across is
- * reference/qa-reports/ENG-24e/rideAcross24.ts, which prints CROSSED on both today.
+ *   - 2-4's beats 4 (up from the log) and 6 (no land) on Normal (ENG-24f, the lead's ruling 11-19 9:12 PM ET): each river's logs go
+ *     under 430 px short of the far bank and the liana he catches off a log hangs over the tail (riverLay tailLianaFaults, World 1's FAR
+ *     rule), so the probe never crosses on a log alone; on Easy they keep no tail (the vine optional on Easy only) and it does.
+ * The same ride on every seed: reference/qa-reports/ENG-24e/rideAcross24.ts [seed].
  */
 import './headlessDom.ts';
 import test from 'node:test';
@@ -149,6 +151,30 @@ for (const setting of ['normal', 'easy'] as Difficulty[]) {
   });
 
 }
+
+test('2-4 (seed 1): beats 4 and 6 are never crossed on a log alone on Normal (the liana each is built on is the way); on Easy, ridden across', () => {
+  for (const setting of ['normal', 'easy'] as Difficulty[]) {
+    setDifficulty(setting);
+    try {
+      const rp = new RealPlay('2-4', 1);
+      const secs = (rp.stage as { gen2?: { sections?: Array<{ template: string; x0: number; x1: number }> } }).gen2?.sections ?? [];
+      for (const beat of ['up-from-log', 'no-land']) {
+        const sec = secs.find((q) => q.template.includes(beat));
+        assert.ok(sec, `2-4 lays beat ${beat}`);
+        const rivers = (rp.stage.rivers ?? []).filter((q) => q.speed > 0 && q.x0 >= sec.x0 - 5 && q.x1 <= sec.x1 + 5);
+        assert.equal(rivers.length, 1, `${beat}: one log river`);
+        const r = rivers[0];
+        const res = rideAll(rp, r);
+        if (setting === 'normal') {
+          assert.ok((r.tail ?? 0) >= Math.ceil(rideReach(r.dir, r.speed)) + RIVER_LAY.tailMargin, `${beat}: a tail past a ride's reach (${r.tail})`);
+          assert.ok(!res.crossed, `${setting} ${beat}: crossed on a log alone (take-off ${res.ends[0]})`);
+        } else assert.ok(res.crossed && !r.tail, `${setting} ${beat}: Easy keeps no tail and is ridden across: ${res.ends.join(', ')}`);
+      }
+    } finally {
+      setDifficulty('normal');
+    }
+  }
+});
 
 test('a tail is judged against the flown reach: riverFaults names a tail inside it, and passes one past it', async () => {
   const { riverFaults } = await import('./gen2/riverLay.ts');
