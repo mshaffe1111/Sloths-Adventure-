@@ -1,7 +1,9 @@
 """ART-NEXT (copied from ART-W2B, unchanged but this line; W2B copied from ART-W2A's tools/art/hfw2a/cut.py, unchanged but this line): cut an edit take off its flat grey (flood from the border, so a grey otter is never keyed inside its outline), keep the
 biggest piece, un-mix the rim from the grey, crop, and scale by K (edit px per sheet px: the starts put Matt's 260 px Happy pose at 737 px,
 so K 2.835 keeps every frame at the Happy pose's scale; the heron 405/471 px).
-    python3 -I tools/art/hfw2a/cut.py <take.png> <out.png> <K> [tol 26]
+    python3 -I tools/art/hfw2a/cut.py <take.png> <out.png> <K> [tol 26] [keep=x0,y0,x1,y1]
+keep= (ART-NEXT-b): a trapped flat-grey region wholly inside that box (take px) is paint, not a gap, and is never keyed (11-20:
+boatB's weathered grey hull planks came out as two holes, 208 and 245 px, at 739-827 x 457-487).
 Prints the box and the share of holes inside the piece (a fail over ~0.10: hf-art.md 11-02).
 """
 import sys
@@ -10,7 +12,8 @@ from PIL import Image, ImageFilter
 from scipy import ndimage as nd
 
 src, out, K = sys.argv[1], sys.argv[2], float(sys.argv[3])
-tol = float(sys.argv[4]) if len(sys.argv) > 4 else 26
+tol = float(sys.argv[4]) if len(sys.argv) > 4 and not sys.argv[4].startswith('keep=') else 26
+KEEP = [tuple(int(v) for v in x[5:].split(',')) for x in sys.argv[4:] if x.startswith('keep=')]
 im = Image.open(src).convert('RGB')
 a = np.asarray(im).astype(np.float32)
 bg = np.median(np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]]), axis=0)
@@ -26,7 +29,10 @@ HOLE, HOLE_TOL = 150, 9
 flat = np.abs(a - bg).max(axis=2) <= HOLE_TOL
 labh, nh = nd.label(flat & ~bgm)
 sizes0 = nd.sum(flat & ~bgm, labh, range(1, nh + 1))
-trapped = [i + 1 for i, sz in enumerate(sizes0) if sz > HOLE]
+def kept(i):
+    ys, xs = np.nonzero(labh == i)
+    return any(x0 <= xs.min() and xs.max() <= x1 and y0 <= ys.min() and ys.max() <= y1 for x0, y0, x1, y1 in KEEP)
+trapped = [i + 1 for i, sz in enumerate(sizes0) if sz > HOLE and not kept(i + 1)]
 bgm |= np.isin(labh, trapped)
 fg = ~bgm
 lab2, n2 = nd.label(fg)
