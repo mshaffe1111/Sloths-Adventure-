@@ -35,6 +35,7 @@ for (const o of ORIENTS) {
   await ctx.route(/script\.google\.com/, (r) => r.abort());
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 200)));
+  page.on('response', (r) => { if (r.status() === 404) console.log('404', r.url().slice(0, 200)); });
   page.on('console', (m) => { if (m.type() === 'error') console.log('console error', m.text().slice(0, 200)); });
   await page.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) {
@@ -129,8 +130,21 @@ for (const o of ORIENTS) {
     const R = Object.getPrototypeOf(e).render;
     e.render = function () {
       const pin = window.__pin;
-      if (pin && this.player) { const p = this.player; p.x = pin.x; p.y = pin.y - (p.height || 48); p.vx = 0; p.vy = 0; p.grounded = true; if (this.lives < 5) this.lives = 9; p.invincibleTimer = 99; }
+      // (ENG-25d, the lead's note on ENG-25c's frames: the pin's invincibleTimer is what drew him see-through with the hurt face,
+      // heroBlink.ts and miloVariants.ts read it; so it keeps him safe through the update only and is 0 for the draw. His middle is over
+      // the pinned spot and his feet on the floor's LIVE top under it, so a floor that moves cannot leave him floating)
+      if (pin && this.player) {
+        const p = this.player;
+        const f = this.currentStage.platforms.find((q) => pin.x >= q.x && pin.x <= q.x + q.width && Math.abs(q.y - pin.y) < 60);
+        const top = f ? f.y : pin.y;
+        p.x = pin.x - (p.width || 40) / 2; p.y = top - (p.height || 48); p.vx = 0; p.vy = 0; p.grounded = true;
+        if (this.lives < 5) this.lives = 9;
+        window.__pinTop = { top, feet: p.y + (p.height || 48), mid: p.x + (p.width || 40) / 2 };
+      }
+      const keep = this.player ? this.player.invincibleTimer : 0;
+      if (pin && this.player) this.player.invincibleTimer = 0;
       R.call(this);
+      if (pin && this.player) this.player.invincibleTimer = Math.max(keep, 99);
     };
     let diff = null;
     try { diff = localStorage.getItem('sloth_difficulty'); } catch { /* none */ }
@@ -147,7 +161,7 @@ for (const o of ORIENTS) {
     await sleep(2500);
     const f = path.join(outDir, `snaprow-${o.id}-${o.viewport.width}x${o.viewport.height}-${sp.name}.png`);
     await page.screenshot({ path: f });
-    console.log('shot', f);
+    console.log('shot', f, JSON.stringify(await page.evaluate(() => window.__pinTop)));
   }
   await ctx.close();
 }
