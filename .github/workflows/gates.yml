@@ -108,7 +108,9 @@ jobs:
   seedlists:
     needs: seedplan
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 45, not 25 (0.10.0's publish, 11-20): shard 1 of 3 holds 1-1 (3.5 min) + 1-6 (17.6 min) + 1-9 (2.8 min) + 2-4 on a CI runner and was
+    # cancelled at 25 min mid 2-4 with every list so far PASS; balancing the shards by measured time is R-165.352
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
