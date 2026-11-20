@@ -1,0 +1,55 @@
+castBots 2-5, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 0/40; under the floor 0; time median - s (min -); hits 894 lives 223 (water 123, other 981, foe:turtle 13); cleared kick 274; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 182; left 86
+        fail 6: shrine rescued x5  (seeds 24,36,2,15,35,39)
+        fail 4: stranded goal 6/8 rescued x8  (seeds 32,6,31,25)
+        fail 3: stranded goal 7/8 rescued x7  (seeds 8,22,13)
+        fail 3: shrine rescued x4  (seeds 40,14,33)
+        fail 3: shrine rescued x8  (seeds 34,3,23)
+        fail 2: shrine rescued x6  (seeds 4,10)
+        fail 2: stranded goal 7/8 rescued x8  (seeds 16,9)
+        fail 2: stranded goal 5/8 rescued x8  (seeds 28,27)
+        fail 2: shrine rescued x14  (seeds 18,21)
+        fail 2: stranded goal 4/8 rescued x10  (seeds 5,37)
+        fail 1: stranded goal 5/8 rescued x9  (seeds 12)
+        fail 1: stranded goal 7/8 rescued x10  (seeds 20)
+        fail 1: shrine rescued x3  (seeds 26)
+        fail 1: stranded goal 4/8 rescued x8  (seeds 30)
+        fail 1: stranded goal 7/8 rescued x9  (seeds 38)
+        fail 1: stranded goal 5/8 rescued x10  (seeds 7)
+        fail 1: stranded goal 6/8 rescued x9  (seeds 11)
+        fail 1: time goal 7/8 rescued x20  (seeds 19)
+        fail 1: shrine rescued x7  (seeds 1)
+        fail 1: stranded goal 4/8 rescued x11  (seeds 17)
+        fail 1: shrine rescued x9  (seeds 29)
+kid    easy   PASS 4/40; under the floor 0; time median 197.2 s (min 168.2); hits 104 lives 0 (other 104); cleared kick 276; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 4; left 84
+        fail 12: shrine rescued x2  (seeds 12,28,14,22,7,23,31,35,39,17,21,25)
+        fail 12: shrine rescued x3  (seeds 24,2,34,38,3,11,27,5,9,13,33,37)
+        fail 5: shrine rescued x1  (seeds 8,26,30,15,19)
+        fail 4: shrine rescued x5  (seeds 4,32,18,1)
+        fail 2: shrine rescued x4  (seeds 36,10)
+        fail 1: shrine rescued x6  (seeds 20)
+adult  normal PASS 26/40; under the floor 0; time median 165.4 s (min 150.1); hits 164 lives 8 (foe:turtle 57, other 108, water 7); cleared kick 340; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 20
+        fail 11: shrine rescued x1  (seeds 4,8,22,34,7,19,39,5,9,21,33)
+        fail 3: shrine rescued x2  (seeds 32,6,31)
+adult  easy   PASS 24/40; under the floor 0; time median 173.3 s (min 155.3); hits 130 lives 0 (foe:turtle 67, other 63); cleared kick 344; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 16
+        fail 15: shrine rescued x1  (seeds 4,20,36,40,2,22,26,38,15,23,39,9,13,21,25)
+        fail 1: shrine rescued x3  (seeds 27)
+child  normal PASS 39/40; under the floor 0; time median 390.1 s (min 354.3); hits 59 lives 31 (other 45, water 31, foe:turtle 14); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 30)
+child  easy   PASS 40/40; under the floor 0; time median 292.2 s (min 260.7); hits 16 lives 0 (other 15, foe:turtle 1); cleared kick 360; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 13/40; under the floor 0; time median 205.1 s (min 195.4); hits 4 lives 19 (water 19, other 4); cleared kick 350; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 10
+        fail 17: shrine rescued x1  (seeds 4,12,20,28,22,30,34,3,7,11,15,27,35,1,13,29,37)
+        fail 9: shrine rescued x2  (seeds 8,16,2,6,14,19,23,17,21)
+        fail 1: shrine rescued x3  (seeds 10)
+middle easy   PASS 16/40; under the floor 0; time median 196.8 s (min 189); hits 8 lives 0 (other 7, foe:turtle 1); cleared kick 354; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 6
+        fail 12: shrine rescued x2  (seeds 10,18,22,26,3,7,23,31,17,25,29,33)
+        fail 11: shrine rescued x1  (seeds 8,28,6,14,30,15,35,39,1,13,21)
+        fail 1: shrine rescued x3  (seeds 5)
+expert normal PASS 18/40; under the floor 0; time median 183.3 s (min 176.3); hits 8 lives 8 (other 8, water 8); cleared kick 358; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 2
+        fail 14: shrine rescued x1  (seeds 16,20,36,40,2,14,22,3,15,19,31,17,25,37)
+        fail 6: shrine rescued x2  (seeds 24,30,34,39,1,21)
+        fail 2: shrine rescued x3  (seeds 7,13)
+
+real	1m31.484s
+user	5m40.323s
+sys	0m5.093s
