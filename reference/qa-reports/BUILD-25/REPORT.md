@@ -6,12 +6,11 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 
 ## BUILD-25d (Opus 5.5 high; section started 2:47 PM ET Fri 11-20 by `date`; kept current)
 
-### EXACT NEXT STEP (kept current; written 2:47 PM ET Fri 11-20)
-1. DONE (this push): the lay fixed in the pieces (w2Arc25.ts), never relisted around. Next: the full relist
-   `npx tsx tools/engine/seedlist.ts 2-5` (writes src/game/gen2/proven/seeds-2-5.ts + provenIndex.ts), then `seedlist 2-5 --check` PASS.
-2. Trace ONE run of the water jump at x ~21000 (the quickening's log river, `deep` on Normal): rule numbers or bot miss. Facts to the lead.
-3. Snapper toys (13/13, 24/24), tierBots (1-1 must not move), childtrace25 at the first awake snapper, castBots 2-5 again (before/after).
-4. THE FULL SET (gates.md "THE FULL SET, named") on the final head; gate log committed; stills of the new rest + hop; REPORT; hash to the lead.
+### EXACT NEXT STEP (kept current; written 2:55 PM ET)
+1. DONE: the lay fixed (6ee2f3c2), the relist (f97a8de9: `seedlist 2-5 --check` PASS), the water trace, the toys, tierBots, the child's
+   snapper trace, castBots after.
+2. NOW: THE FULL SET (gates.md "THE FULL SET, named") on the final head, frozen worktree; gate log committed as gates-<hash>.txt.
+3. Then stills of the new rest + hop (412x915, 915x412), Polish check, Learned, final hash to the lead.
 
 ### Item 1: the lay (what was wrong, what changed, the proof)
 - **Flags (6 seeds)**: a rolled stage lays no flag from a socket (pipeline.ts rolledFlags: `checkpoints.length = 0`, then the hard nodes'
@@ -36,6 +35,37 @@ Packet reference/packets/2026-11-20/BUILD-25.md (on ccr-ea739a2f-dfcee4). STEP 0
 - **For the lead (rule 22, not built: other stages' locks)**: the same exit-on-a-boulder pattern lives in w1-17-rest-hollow, w1-17-rest-moss
   (1-7) and w2-21-down/lianas (+easy) (2-1) (tools/engine/runs/exiton.ts lists every kit's). Proposed: a kit-wide test that a section's exit
   piece is never placed `on` another, with those four fixed under their stages' own lock change.
+
+### Item 2: the relist
+`npx tsx tools/engine/seedlist.ts 2-5` (f97a8de9): 100 kept of 100 fresh seeds tried (100%), 7 s; longest quiet 3.7 s, median 3.4 s; outro
+860-880 px; provenIndex 2-5 version bf327cfd. `--check`: "the verdicts refuse 0 of 100 listed seeds", **PASS** (seedlist-2-5-25d-check.txt).
+
+### Item 3: the water jump at x ~21000 (facts; nothing changed)
+- The piece: the quickening's log river (`deep` on Normal, W2_RIVERS: 3 logs 160 px, 75 px/s with him), 768 px of water, logs 28 px under
+  the banks, 72 px between logs and from the last log to the far bank. 72 px is under the flown single-tap's 77 px (flownArcs.ts n25
+  single-tap gap 77/160/181): **within the rule numbers**.
+- ONE run traced, child Normal seed 1 (water-2-5-25d-child-s1.txt; in play the near bank is 21110-21450): 3 water lives, **all bot misses
+  on the moving logs**: (1) x21630: from the bank, over a log, a second jump in the air sails past the log it was landing on and drops in
+  the 72 px gap; (2) x21508: walks off the bank's end with no log below; (3) x21875: from a log, a short hop off its end before the next
+  log is in reach. Expert and middle on seed 1: no lives.
+- castBots (below): every child water life checked (seeds 1, 14, 20, 25, 38) is on this river (x 21370-21875 in play).
+
+### Item 4: toys, tierBots, the child at the first awake snapper, castBots after
+- Snapper toys (snapperTaught, snapperBonk, snapRide): **37/37** (13 + 24). tierBots: **9/9** (1-1 unmoved).
+- Child, Normal seed 1, first awake snapper (childtrace-2-5-25d-s1.txt): **goes near** (259 -> 71 px in short steps while it hunts),
+  **backs off on the creak** (tell: 71 -> 94 px), waits out the snap, **kicks after the miss** (walks in on `recover`, cleared). Shrine,
+  goal 9/8, 0 rescues.
+- castBots 2-5 seeds 1-40 (castbots-2-5-25d.txt, rows castrows-2-5-25d.jsonl), before (25c, old list) -> after (new list):
+  | bot / setting | PASS | lives (water) |
+  |---|---|---|
+  | adult normal / easy | 40/40 -> 40/40, 40/40 -> 40/40 | 6 (5) -> 7 (7); 0 -> 0 |
+  | child normal / easy | 40/40 -> 40/40, 40/40 -> 40/40 | 12 (12) -> **24 (24)**; 0 -> 0 |
+  | middle normal / easy | 40/40 -> 40/40, 40/40 -> 40/40 | 10 (10) -> 7 (7); 0 -> 0 |
+  | expert normal | 40/40 -> 40/40 | 9 (9) -> 7 (7) |
+  | kid normal / easy | 0/40 -> 0/40, **4/40 -> 0/40** | 223 -> 214; 0 -> 0 |
+  NAMED: the child's water lives doubled (12 -> 24); the river row is unchanged, the list changed (seeds 1-40 are new rolls), so this is
+  not a same-seed comparison; every child water life traced is a timing miss on the river's logs. Kid Easy: every run reaches the shrine;
+  the 4 that passed had no rescue, now every run has 1-5 (102 rescues over 40 runs vs 99 over 36). The kid is not the bar (level.md rule 4).
 
 ## BUILD-25c (Opus 5.5 high; section started 2:15 PM ET Fri 11-20 by `date`; kept current)
 
