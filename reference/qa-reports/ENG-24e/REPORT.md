@@ -4,7 +4,7 @@
 
 ## ENG-24h: 2c, the bank's rock solid (R-165.323), and the log-going-in clip (draw only)
 
-Branch t-eng-24h from t-eng-24e 4c34eb81. Final hash: FINAL_HASH (gates on it below). Packet: reference/packets/2026-11-20/ENG-24h.md.
+Branch t-eng-24h from t-eng-24e 4c34eb81. Final hash: the commit that carries this report (its last line, sent to ENG-24g and the lead); code as gated: cc421d154. Packet: reference/packets/2026-11-20/ENG-24h.md.
 Lead's ruling on the 2c stills (a51677686, 11-20 morning): PASS; the named residual accepted; World 1 kept on its old face line.
 
 ### The root (measured, three parts)
@@ -71,9 +71,24 @@ halfway line already heard: on a fresh save his line sat over the reeds for the 
 the reed clump and is gone at about x10904 (x1 + TAIL_END.hide) while the next follows. Beat 6 (deep): the same at about x16710; the logs
 read against the dark water by their pale bark. Each frame's log positions: `2-4-*-track.json`.
 
-### Gates (on GATE_HASH)
+### Gates
 
-GATES_TABLE
+Code at cc421d154 (the commits after it are this report and the endcheck output only). Times ET 11-20.
+
+| gate | result |
+|---|---|
+| `npx tsc --noEmit -p .` | PASS |
+| the suite, 6 shards (`--test-shard=k/6`, CI's glob), 10:02-10:52 | PASS: 3947 tests / 3945 pass / 0 fail / 2 todo (shards: 624, 810, 698 (1 todo), 616 (1 todo), 593, 606; groundEnd's 3 included) |
+| river + ground tests (river*, log*, lianaClock, runnerLiana, safeRiverPreload, groundEnd, hollowWalls, pitPocket, groundSeams, canvasLost) | PASS: 54 / 54 / 0 / 0 (then groundEnd 3/3 with the loss test) |
+| `node tools/perf/drawcheck.mjs` (its fixed set: 2-1, 2-2, 2-4 upright and sideways among 36), 10:00-10:17 | PASS (36/36, 1002 s) |
+| `npx tsx tools/engine/paintcheck.ts`, 10:00-10:27 | PASS (429 known ids seen, 0 new) |
+| `node tools/perf/artcheck.mjs` | PASS |
+| `npx tsx tools/engine/generalitycheck.ts` | PASS |
+| `node tools/perf/knowncheck.mjs` | PASS |
+| `node tools/perf/endcheck.mjs` (new) | PASS (plant RED every world) |
+
+Not run here (ENG-24g runs the full CLAUDE.md list on the joint head): the build + chunkcheck, clipcheck, kbdcheck, buildcheck, seedlist,
+the engine tools' tests, tierBots, roadmapcheck.
 
 ### Polish check (STAGE-RULES §5b)
 
