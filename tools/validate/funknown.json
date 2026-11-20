@@ -683,13 +683,6 @@
   {
    "stage": "1-9",
    "setting": "easy",
-   "rule": "enemy by a landing",
-   "layouts": 10,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-9",
-   "setting": "easy",
    "rule": "nothing bites",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -713,13 +706,6 @@
    "setting": "easy",
    "rule": "repeat",
    "layouts": 1,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-9",
-   "setting": "normal",
-   "rule": "enemy by a landing",
-   "layouts": 7,
    "owner": "World 1 rebuild (D26)"
   },
   {

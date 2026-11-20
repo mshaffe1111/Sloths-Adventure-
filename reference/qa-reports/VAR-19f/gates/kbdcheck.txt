@@ -1,0 +1,6 @@
+✓ up 30pc ctest-name focused (box 433-481)
+✓ up 30pc ctest-name after typing (box 433-481)
+✓ up 30pc ctest-looked focused (box 428-552)
+✓ up 30pc ctest-looked after typing (box 428-552)
+✓ up 30pc ctest-note focused (box 302-426)
+✓ up 30pc ctest-note after typing (box 302-426)
