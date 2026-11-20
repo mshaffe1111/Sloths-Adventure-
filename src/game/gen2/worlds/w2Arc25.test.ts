@@ -18,6 +18,7 @@ import { listedStage, playFinish, worldFinish } from '../listed.ts';
 import { snapFaults } from '../rideLay.ts';
 import { loadSeedList, QUIET_MAX } from '../seedList.ts';
 import { generateAllLevels } from '../../worldsData.ts';
+import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
 import { countWord, goalLine, SEALED_LINES } from '../../stagePlan.ts';
 import { PREDATOR_ENTRIES } from '../../journal.ts';
 import { goalInfo } from '../../../components/hud/goalInfo.ts';
@@ -97,6 +98,19 @@ test('the row: 2-5 rolls from its own kit (World 2 with 2-5 rows), CLEAN on both
     assert.deepEqual(st.gen2.sections.map((s) => s.template.replace('w2-25-', '')), BEATS, `${seed} ${d}`);
   }
   assert.equal(BRIEF_25.petals, 'few', "the keeper's 2-1 ruling: Meeca's petals are few in World 2");
+});
+
+test("the stage's find stands on the first rest, as Play builds it (BUILD-25b: its HOLD DOWN sign stood beside the teaching stone and read as the stone's answer; 1-8's rule)", async () => {
+  await loadSeedList(STAGE_25);
+  for (const v of [1, 2, 3, 4]) for (const d of BOTH) {
+    setLayoutVariant(v);
+    const st = generateStage(cfg, d) as unknown as Built & { collectibles: Array<{ type: string; x: number }> };
+    const finds = st.collectibles.filter((c) => c.type === 'find');
+    assert.equal(finds.length, 1, `L${v} ${d}: one find`);
+    const rest = st.gen2.sections.find((s) => s.template === 'w2-25-rest')!;
+    assert.ok(finds[0].x >= rest.x0 && finds[0].x < rest.x1, `L${v} ${d}: the find at ${Math.round(finds[0].x)}, in ${beatAt(st, finds[0].x)}, not the first rest (${Math.round(rest.x0)}-${Math.round(rest.x1)})`);
+  }
+  setLayoutVariant(null);
 });
 
 test('the snap rows by the beat: the teaching stone splash-back and its bite free; deep on Normal from beat 3 but beat 4; every Easy pond splash-back; the wave 5 / Easy 3; the river\'s one bar, the quickening its own', () => {

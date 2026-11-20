@@ -219,7 +219,9 @@ const bigSnap = (easy: boolean): Lay => ({
 /** [R] a rest on the bank between beats: a stump to hop */
 const rest: Lay = {
   pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)],
-  sockets: [],
+  // (the stage's find stands on the first rest met, never by a stone or a snapper: its HOLD DOWN sign beside the teaching stone read as the
+  //  stone's answer, BUILD-25b's still; 1-8's rule, BUILD-18)
+  sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }],
 };
 
 /** THE ARC'S BRICKS (2-5.md), one job each */

@@ -25,6 +25,7 @@ PLANTS = [
     ('`quiet` said before the Big Snap', ARC, A, "sockets: [tip('t-quiet', 'z', 0.1, 'quiet')]", "sockets: [tip('t-quiet', 'a', 0.1, 'quiet')]"),
     ('two beats swapped in the graph', ARC, A, "'A Tf Pg&:&snapper-asleep*1 Pf Xw&:&snapper*1 R", "'A Pg&:&snapper-asleep*1 Tf Pf Xw&:&snapper*1 R"),
     ("the sleeper's hop removed (the quiet line: teach stone -> sleeper 4.5-7.0 s)", ARC, A, "pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), ...snapperGround('c', 'b')", "pieces: [bank('a', null, 480), bank('b', 'a', 400), ...snapperGround('c', 'b')"),
+    ("the find's spot dropped (it stands where the finish puts it: by the teaching stone)", ARC, A, "  sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }],", "  sockets: [],"),
     ("snapFaults never compares Easy (no setting reads it)", SNAP, R, "if (difficulty !== 'normal' && we < wn - 1e-6)", "if (difficulty === undefined && we < wn - 1e-6)"),
     ("snapFaults compares Easy on a Normal build too", SNAP, R, "if (difficulty !== 'normal' && we < wn - 1e-6)", "if (we < wn - 1e-6)"),
     ('PadRow.clock ignored (each row its own bar)', SNAP, R, "const snapId = `snap-${row.clock ?? id}`;", "const snapId = `snap-${id}`;"),
