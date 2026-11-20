@@ -57,3 +57,33 @@
 - A test run in the merge tree read conflict markers (2 false reds at merge 3): tests now run in a pinned worktree only.
 - rerere is on in this clone (resolutions for t-fix-284 recorded on a side head, replayed at merge 5).
 - ENG-285c sent its final hash to me directly (5:06 PM); ls-remote matched.
+
+# INT-13b (fresh integration member; started 5:49 PM ET 11-19; this section first written 7:06 PM ET)
+
+## INT-13b EXACT NEXT STEP (if INT-13b stops before its final line below)
+Gated head = 4529d5e6 (the last src/tools change). Gate logs: scratchpad only; every result is copied into the gate table below.
+1. Read the gate table below; any gate marked RUNNING or UNRUN on 4529d5e6 runs once on t-int-13's head (whose src/, tools/, public/,
+   .github/, configs and reference/ outside qa-reports/ and handoffs/ must equal 4529d5e6's: `git diff --name-only 4529d5e6 HEAD`).
+2. buildcheck ALONE (nothing else running): `node tools/perf/buildcheck.mjs`.
+3. On the final head: timecheck, roadmapcheck, knowncheck, the CI tool line (CI=1 FORCE_COLOR=1, exactly as gates.yml) (they read reference/).
+4. Stills not yet shot: the 2-2 put-back (no SPLASH on a risen pad): `node reference/qa-reports/FIX-284/cliprespawn.mjs <port> <out> up`
+   and `side`, judged on the first frame after the iris opens, cropped.
+5. Send the lead the final hash.
+
+## Merges and commits (INT-13b)
+| # | What | Commit | Notes |
+|---|---|---|---|
+| 1 | 2-1 relisted (METER-3's route line, the packet's KNOWN) | 862b7cc8 | 100 of 100, version 1950fa0c; quiet longest 4 s, median 3.7 s; --check PASS |
+| 2 | The one recalibration (BOTS.md) | 64e87365 | ONE run of 200 moved: child Easy v25 303.6 -> 303.5 s; bisected to t-build-24c alone (98261a27); table unchanged; BOTS.md note; tierBots.test 7/7 |
+| 3 | t-build-24c @ 92dfd78e (BUILD-24e final, via the lead) | cc8c0e97 | past 98261a27 only reference/qa-reports/ (BUILD-24e/gates x25, BUILD-24 x1); equal trees vs 64e87365 outside qa-reports/ (24 top-level entries, 77 in reference/) |
+| 4 | RED fixed at its source: snap stones x breath aim | 4529d5e6 | see "The red" below |
+
+## The red (found by the CI tool line on cc8c0e97; INT-13 never ran that line after merge 5)
+snapRide.test.ts 'wave: child, easy crosses unbitten' failed: child easy v1 bitten 2 times at the pond. Bisect (the test alone): prep
+baf5d277 PASS, ENG-285 merge 29865500 PASS, FIX-284 merge e95bed18 FAIL, f993eb31 and cc8c0e97 FAIL (FIX-284 alone has no snap stones).
+Root: breathAim.ts breathsAhead (FIX-284) aimed every pad with by 'beat' at a put-back; rideLay.ts lays ENG-25b's snap stones as
+pad { by: 'beat', on: 'bites' }, so the wave row's bar was aligned on its FIRST stone's stagger ('just out of its bite'), and the second and
+third stones, a count and two counts later, were mid-bite as he came. Fix: breathsAhead skips on 'bites' (padPiece.ts and rideLay.ts:430
+already tell them apart; the bot and meter were ENG-25's own). Planted test breathAim.test.ts 'a SNAP STONE row' red before, green after;
+snapRide 12/12. No laid stage has a snap stone yet (2-5 is not built), so today it changes only the toys. Whether a snap row wants its own
+respawn aim is a 2-5 design point (today: none, ENG-25's proven behaviour).
