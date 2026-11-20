@@ -16,7 +16,7 @@
     41
    ],
    "prompt": "Repaint the first image as these two clumps of river reeds and bulrushes, in exactly the hand-painted storybook style of the reeds in the second image: soft painterly gouache shading, fine thin dark-brown linework, fresh green and straw leaves above. Below the wavy flood line every stem and leaf is soaked dark wet brown, glistening, dusted with fine pale silt specks; the colour change follows each stem with a darker wet edge where the water stood. Dark wet brown, never grey: no band, no collar, no ring across the clumps. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
-   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, grey band, grey collar, grey stripe, ring, water, mud puddle"
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, grey band, grey collar, grey stripe, ring, water, mud puddle, white foam line, water ripples, water surface"
   },
   {
    "name": "shelfS",

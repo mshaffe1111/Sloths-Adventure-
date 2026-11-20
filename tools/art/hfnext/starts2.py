@@ -63,12 +63,15 @@ def slab(w, thick, under, seed, ends='round'):
 # 1 reeds REDO: the two clumps as batch 1; below a WAVY flood line each stem is multiplied to dark wet brown, a darker wet edge at
 #   the line, pale silt specks on the stems below it (batch 1: a see-through dark band + a light line read as a grey collar)
 R = canvas(512, 768)
-rt = fit(REED_T, h=700); rl = fit(REED_L, h=560)
-R.alpha_composite(rl, (10, 768 - rl.height - 20)); R.alpha_composite(rt, (220, 768 - rt.height - 20))
-ra = Image.new('L', R.size, 0); ra.paste(rl.split()[3], (10, 768 - rl.height - 20)); ra.paste(rt.split()[3], (220, 768 - rt.height - 20), rt.split()[3])
+# (both clumps INSIDE the 512 px frame with 16 px to spare: batch 1's layout put the tall clump at x 220..605 and every take came back
+# cut off on the right, batch 2 too, 11-20; the frame check at the end of this file now refuses a start that touches its frame)
+rt = fit(REED_T, h=560); rl = fit(REED_L, h=450)
+RT_X = 512 - rt.width - 16
+R.alpha_composite(rl, (16, 768 - rl.height - 24)); R.alpha_composite(rt, (RT_X, 768 - rt.height - 24))
+ra = Image.new('L', R.size, 0); ra.paste(rl.split()[3], (16, 768 - rl.height - 24)); ra.paste(rt.split()[3], (RT_X, 768 - rt.height - 24), rt.split()[3])
 A = np.asarray(R).astype(np.float32); M = np.asarray(ra).astype(np.float32) / 255
 xs = np.arange(512)
-line = 480 + 12 * np.sin(xs / 37.0) + 6 * np.sin(xs / 13.0 + 1.3)
+line = 530 + 12 * np.sin(xs / 37.0) + 6 * np.sin(xs / 13.0 + 1.3)
 yy = np.arange(768)[:, None]
 below = (yy > line[None, :]).astype(np.float32) * M
 wet = np.array([70, 48, 28], np.float32)
@@ -77,7 +80,7 @@ edge = ((yy > line[None, :] - 2) & (yy < line[None, :] + 4)).astype(np.float32) 
 A[..., :3] = A[..., :3] * (1 - edge[..., None]) + np.array([46, 30, 16], np.float32) * edge[..., None]
 rnd = np.random.default_rng(7)
 for _ in range(260):
-    x, y = int(rnd.integers(0, 512)), int(rnd.integers(486, 750))
+    x, y = int(rnd.integers(0, 512)), int(rnd.integers(536, 744))
     if below[y, x] > 0.5 and y > line[x] + 6:
         A[y:y + 2, x:x + 2, :3] = (176, 156, 112)
 Image.fromarray(A.astype(np.uint8), 'RGBA').convert('RGB').save(OUT / 'reeds2.png')
@@ -109,6 +112,13 @@ for n, ends in (('lipA', 'round'), ('lipB', 'broken')):
     L.alpha_composite(fit(crop(SH_L, 0, 0, 160, 60), w=150), (110, 64))
     L.convert('RGB').save(OUT / f'{n}.png')
 
+# every start must sit inside its frame with grey all round (a start that touches its frame gives takes cut off by it)
+for f in sorted(OUT.glob('*.png')):
+    if f.name.startswith('ref-'): continue
+    e = np.asarray(Image.open(f).convert('RGB')).astype(int)
+    edges = np.concatenate([e[0], e[-1], e[:, 0], e[:, -1]])
+    bad = (np.abs(edges - np.array(GREY)).max(axis=1) > 6).mean()
+    assert bad < 0.002, f'{f.name}: paint on {bad:.1%} of its frame edge'
 # the show-first sheet: every start beside Pokey's bar at its game size (yellow = 89 px), the canvas in grey
 GAME = {'reeds2': ('h', 130), 'shelfS': ('w', 120 * 768 / 480), 'mat': ('w', 130 * 768 / 520), 'sleepy': ('w', 200 * 768 / 600),
         'rimShort': ('w', 130 * 768 / 620), 'rimLong': ('w', 220 * 1024 / 940), 'lipA': ('w', 400 * 1024 / 880), 'lipB': ('w', 400 * 1024 / 880)}

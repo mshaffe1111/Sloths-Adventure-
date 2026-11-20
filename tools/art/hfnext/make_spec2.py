@@ -21,7 +21,7 @@ r1 = [
                'leaves above. Below the wavy flood line every stem and leaf is soaked dark wet brown, glistening, dusted with fine pale '
                'silt specks; the colour change follows each stem with a darker wet edge where the water stood. Dark wet brown, never grey: '
                'no band, no collar, no ring across the clumps.' + KEEP,
-     'neg': NEG + ', grey band, grey collar, grey stripe, ring, water, mud puddle'},
+     'neg': NEG + ', grey band, grey collar, grey stripe, ring, water, mud puddle, white foam line, water ripples, water surface'},
     {'name': 'shelfS', 'src': ST + 'shelfS.png', 'refs': [REF], 'w': 768, 'h': 384, 'seeds': S3,
      'prompt': 'Repaint the first image as one short thick slab of grotto stone, a small ledge to stand on, seen exactly side-on, ' + STYLE +
                ', like the stone shelves in the second image: a flat walkable top face, a cracked front face, a rough rock underside '
@@ -53,3 +53,7 @@ r2 = [{'name': f'rimS-from{s}', 'src': f'b:hfpokey/edits/shelfS-s{s}.png', 'refs
 spec = {'tag': 'next-b2', 'edits': r1 + r2}
 json.dump(spec, open('tools/art/hfnext/spec-b2.json', 'w'), indent=1)
 print('spec-b2.json', sum(len(e['seeds']) for e in spec['edits']), 'takes')
+# the reeds REDO alone (11-20: batch 2's reeds were all cut off by the frame: the start ran past it; fixed in starts2.py), named reedsR
+redo = dict(r1[0], name='reedsR')
+json.dump({'tag': 'next-b2r', 'edits': [redo]}, open('tools/art/hfnext/spec-b2r.json', 'w'), indent=1)
+print('spec-b2r.json', len(redo['seeds']), 'takes')

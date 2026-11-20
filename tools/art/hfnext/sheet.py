@@ -11,7 +11,7 @@ d, out = sys.argv[1], sys.argv[2]
 GAME = {'boat': ('w', 240), 'letter': ('w', 28), 'reply': ('w', 28), 'door': ('h', 86), 'weir': ('w', 400), 'reeds': ('h', 130),
         'barge': ('w', 387),
         # batch 2 (WORLD-3-PLAN §2): shelf S 120, the mat ~130, the sleepy shelf 200, the lit rims as shelf-short 130 / -long 220, lips ~400
-        'shelfS': ('w', 120), 'mat': ('w', 130), 'sleepy': ('w', 200), 'rimShort': ('w', 130), 'rimLong': ('w', 220), 'lip': ('w', 400)}
+        'shelfS': ('w', 120), 'rimS': ('w', 120), 'mat': ('w', 130), 'sleepy': ('w', 200), 'rimShort': ('w', 130), 'rimLong': ('w', 220), 'lip': ('w', 400)}
 import numpy as np
 def frame_paint(im, tol=26):
     """share of each frame edge (top, bottom, left, right) the take paints on: anything over 1% is a piece the frame cut off (11-20:
@@ -28,7 +28,7 @@ for f in files:
     name = os.path.splitext(os.path.basename(f))[0]
     base = re.match(r'[a-z]+', name).group(0).rstrip('B') if not name.startswith('boatB') else 'boat'
     base = 'letter' if name.startswith('letter') else 'reply' if name.startswith('reply') else base
-    base = next((k for k in ('shelfS', 'rimShort', 'rimLong', 'lip', 'sleepy', 'mat') if name.startswith(k)), base)
+    base = next((k for k in ('shelfS', 'rimShort', 'rimLong', 'rimS', 'lip', 'sleepy', 'mat') if name.startswith(k)), base)
     raw = Image.open(f).convert('RGB')
     r = raw.resize((TW, round(raw.height * TW / raw.width)))
     png = os.path.join(tmp, name + '.png'); raw.save(png)
