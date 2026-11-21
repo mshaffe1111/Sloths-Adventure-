@@ -101,6 +101,7 @@ import { swimHeadY } from './heroSwim.ts';
 import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
+import { stackZonesOf } from './groundStack.ts';
 import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
@@ -199,7 +200,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -1161,6 +1162,8 @@ export class GameEngine {
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves, this.platforms, this.proto?.water);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
+    // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts; none on any other stage)
+    setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs), this.currentStage.rivers);
     // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
     if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
@@ -6279,6 +6282,11 @@ export class GameEngine {
       ctx.beginPath();
       ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
+      // (a river on a leg another leg runs under: its water, bed and soil end at the ceiling as its banks' earth does, the underside on its
+      // soil; they ran to the view's foot as columns of earth over the race leg's banks and planks, 2-7's re-shoot: groundStack.ts,
+      // ENG-GROUND-b. None where no leg is stacked)
+      const lid = riverLid(this.platforms, r.x0, r.x1, r.surfaceY);
+      if (lid) clipAboveLines(ctx, lid, x0, x1, r.surfaceY - 30);
       // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
       if ((ul || ur) && this.paintKit && protoArtReady()) {
         const bk = this.riverBanks(r);
@@ -6341,6 +6349,8 @@ export class GameEngine {
         if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
       ctx.restore();
+      // (its underside after the clip is lifted, over the river's own span: the strip's roots hang below the line, ENG-GROUND-b)
+      if (lid && !over) riverUnderside(ctx, lid, r.x0, r.x1, { x0: a, x1: b });
     }
   }
 

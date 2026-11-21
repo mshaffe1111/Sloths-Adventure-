@@ -256,8 +256,8 @@ export function flagsInOrder<T extends { x: number; y: number }>(stage: object, 
 
 // ───────────────────────────── the tower's verdicts ─────────────────────────────
 
-/** the top of the first sound piece under (x, y), within `reach` px; undefined: nothing catches */
-function catchUnder(platforms: readonly Platform[], x: number, y: number, reach: number): number | undefined {
+/** the top of the first sound piece under (x, y), within `reach` px; undefined: nothing catches (also World 2's finish: an open gap's drop) */
+export function catchUnder(platforms: readonly Platform[], x: number, y: number, reach: number): number | undefined {
   let best: number | undefined;
   for (const p of platforms) {
     if (p.type === 'fragile' || x < p.x || x > p.x + p.width || p.y <= y + 1 || p.y > y + reach) continue;

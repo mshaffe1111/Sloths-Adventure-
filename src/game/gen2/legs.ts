@@ -66,6 +66,18 @@ export function legsOf(nodes: ReadonlyArray<{ travel?: Travel }>, flow: Travel):
  *  (up or down) its frame, its floor's top and the storey joins it climbs or comes down by */
 export interface LaidLeg { travel: Travel; i0: number; i1: number; x0: number; x1: number; y0: number; y1: number; /** a run leg (right or left): its own ground, the height it began at */ ground?: number; frame?: Frame; floorY?: number; turns?: Array<{ x: number; from: number; to: number }> }
 
+/** his collider's height: the least clear air between a leg and the run leg laid under it */
+const STACK_CLEAR = 48;
+/**
+ * The run legs (right or left) laid wholly UNDER another run leg they share x with, his height clear between (the out-and-back toy's race
+ * leg under its out leg, 2-7): one rule for the painted ground's ceilings (groundStack.ts stackZonesOf) and World 2's finish (w2.ts, a soft
+ * gap over such a leg's floor is left open). None on a lay that stacks no leg.
+ */
+export function stackedUnder<L extends { travel: string; x0: number; x1: number; y0: number; y1: number }>(legs: readonly L[] | undefined): L[] {
+  const run = (legs ?? []).filter((l) => l.travel === 'left' || l.travel === 'right');
+  return run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + STACK_CLEAR));
+}
+
 /** is a graph laid as legs (a route through more than one travel, or a run laid left)? A graph of one right leg is a run and one of
  *  a single up or down leg is a tower, each laid exactly as before legs */
 export const mixed = (legs: readonly Leg[]): boolean => legs.length > 1 || legs[0]?.travel === 'left';

@@ -28,6 +28,8 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
+import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, type Ceiling, type StackZone, type UpperWater } from './groundStack.ts';
+import { riverPaintFoot } from './riverArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -68,6 +70,38 @@ export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: 
 const SHORT_STEP = 60;
 let groundOn = false;
 /** whether this stage paints its banks (engine.ts paintKit): the drawn ground then leaves them to the painted soil (bankPainted) */
+/** the zones the stage's lay stacks a leg under another (groundStack.ts stackZonesOf; engine.ts sets them at a stage's start): over each,
+ *  the upper leg's soil ends at a ceiling (ENG-GROUND). None on a stage whose lay stacks no leg: it draws exactly as before */
+let stackZones: readonly StackZone[] = [];
+/** the stage's rivers (its x0..x1 and surface), set with the zones: a bank's underside that ends beside an upper leg's river runs on
+ *  under the river's own (riverUnderside), so its end is not open to the air (the painted corner goes only where it is) */
+let stackRivers: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }> = [];
+/** the same rivers as the ceilings see them: each with the foot of its own paint (an upper leg's pool is never cut above its bed) */
+let stackWaters: readonly UpperWater[] = [];
+export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: ReadonlyArray<{ x0: number; x1: number; surfaceY: number; safe?: unknown }>) {
+  stackZones = z ?? [];
+  stackRivers = stackZones.length ? rivers ?? [] : [];
+  stackWaters = stackRivers.map((r) => ({ x0: r.x0, x1: r.x1, top: r.surfaceY, foot: riverPaintFoot(r.surfaceY, !!(r as { safe?: unknown }).safe) }));
+}
+/**
+ * The ceilings over a river of an upper leg (its surface above the line all along x0..x1), or null: engine.ts drawRivers ends the river's
+ * water, bed and soil there (clipAboveLines) and draws the underside on its soil (riverUnderside), as each bank's earth ends (drawGround).
+ * The out leg's still pools ran down to the race leg as columns of earth over its banks and planks (ENG-GROUND-b, 2-7's re-shoot at
+ * x 15350 and the join). None where no leg is stacked, and none for the lower leg's own rivers (under the line).
+ */
+export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY: number): Ceiling[] | null {
+  if (!stackZones.length) return null;
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
+  const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
+  return over.length ? over : null;
+}
+/** a lidded river's underside over its own x0..x1 (between its banks, whose own undersides meet it there): the banks' painted strip or
+ *  stand-in (groundStack.ts drawUnderside), drawn after the river's clip is lifted so the strip's roots hang below the line */
+export function riverUnderside(ctx: CanvasRenderingContext2D, lid: readonly Ceiling[], x0: number, x1: number, view: { x0: number; x1: number }) {
+  drawUnderside(ctx, kitWorld, { x: x0, width: x1 - x0 }, lid, view);
+}
+export { clipAboveLines };
 export function setGroundPaint(on: boolean) {
   groundOn = on;
 }
@@ -961,7 +995,7 @@ export function drawBankArt(
     const x = right ? p.x + p.width : p.x, d = right ? 1 : -1;
     if (!(right ? open.right : open.left)) return [[x + d, soilTop], [x + d, bottom]];
     const step = right ? open.rightStep : open.leftStep;
-    const face = endFace(w, x, p.y, bottom, right);
+    const face = endFace(w, x, p.y, bottom, right, right ? p.x : p.x + p.width);
     if (step === undefined) return face;
     // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
     const cut = faceCut(p.y, step);
@@ -1398,6 +1432,8 @@ function groundLine(banks: Platform[]): DepthAt {
  */
 function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }) {
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
+  // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts. None where no leg is stacked)
+  const cs = stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters) : [];
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);
@@ -1407,8 +1443,10 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a hollow's hurt floor, gen2 pit 'hurt': its hole is painted whole by World 1's pit painter, w1Pits.ts. This shade's straight sides
     // stood under its thorns as a blue-grey box, the lead 11-12)
     if (p.pit === 'hurt') continue;
-    const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
-    const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
+    // (a piece of a stacked lower leg is no pit's floor between two banks of the leg over it)
+    const walls = cs.length && underCeiling(p, cs) ? tall.filter((q) => !ceilingsOver(q, cs).length) : tall;
+    const L = walls.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const R = walls.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
     if (!L || !R) continue;
     const x0 = L.x + L.width, x1 = R.x;
     if (x1 - x0 < 20 || x1 - x0 > 700) continue;
@@ -1440,6 +1478,12 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
     // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
     const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+    // (a bank a stacked leg runs under: all its paint is clipped clear of the air under the ceiling, its underside drawn on its soil)
+    const over = cs.length ? ceilingsOver(p, cs) : [];
+    if (over.length) {
+      ctx.save();
+      clipAbove(ctx, over, p.x - 400, p.x + p.width + 400, p.y - 400, Math.max(view.y1 ?? 0, ...over.map((c) => Math.max(...c.ys))) + 400);
+    }
     // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
     const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
@@ -1473,6 +1517,19 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
     drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+    if (over.length) {
+      ctx.restore();
+      // (its underside AFTER the ceiling's clip, over its own x span only: the painted strip's edge on the line and its roots hanging
+      // below it; drawn inside the soil's clip they were cut off at the line, the lead's ruling for ART-UNDER, ENG-GROUND-b)
+      // (an end with no upper bank or upper river beside it is open to the air: the painted corner turns the underside up into its end
+      // face there; of two banks ending together, the wider draws it)
+      const open = (side: 'l' | 'r') => {
+        const ex = side === 'l' ? p.x : p.x + p.width, out = side === 'l' ? ex - 4 : ex + 4;
+        if (banks.some((q) => q !== p && (q.x <= out && q.x + q.width >= out ? ceilingsOver(q, cs).length > 0 : (side === 'l' ? q.x + q.width : q.x) === ex && q.width > p.width))) return false;
+        return !stackRivers.some((r) => r.x0 <= out && r.x1 >= out && ceilingsOverSpan(r.x0, r.x1, r.surfaceY, cs).length > 0);
+      };
+      drawUnderside(ctx, kitWorld, p, over, view, { l: open('l'), r: open('r') });
+    }
   }
   // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
   // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)

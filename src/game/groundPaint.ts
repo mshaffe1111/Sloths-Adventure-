@@ -54,6 +54,8 @@ function sheet(w: number): { img: HTMLImageElement; g: GroundSheet } | null {
   const img = imgs.get(w);
   return img ? { img, g: GROUND_FRAMES[w] } : null;
 }
+/** a world's ground sheet once it has loaded (groundStack.ts draws a painted underside strip from it), or null */
+export const groundSheetImage = (w: number): HTMLImageElement | null => sheet(w)?.img ?? null;
 
 /**
  * which soil tile (col, row) wears. With four (the clean sweep, G1): (col + 2 row) mod 4, so a tile never matches the one beside it or
@@ -244,11 +246,14 @@ export function lipSrc(l: { x: number; y: number; w: number; h: number }): [numb
   return [l.x, l.y + LIP_INSET, l.w, l.h - 2 * LIP_INSET];
 }
 
+/** how far the wobble's centre keeps out from the bank's other side (its swing is at most 19), and the depth it eases out over */
+export const FACE_CLEAR = 28, FACE_EASE = 120;
+
 /**
  * The bank end's shape for a right end at x (the walkable end) with the walking line at y: where the face runs at each height, down to
  * `bottom` (below the painted piece the edge carries on down with a wobble). For a left end, mirrored about x.
  */
-export function endFace(w: number, x: number, y: number, bottom: number, right: boolean): Array<[number, number]> {
+export function endFace(w: number, x: number, y: number, bottom: number, right: boolean, inner?: number): Array<[number, number]> {
   const g = GROUND_FRAMES[w];
   if (!g) return [[x, y], [x, bottom]];
   const e = endFrame(g, x);
@@ -262,10 +267,15 @@ export function endFace(w: number, x: number, y: number, bottom: number, right: 
   for (let i = 0; i < e.face.length; i++) pts.push([px(e.face[i]), top + (END_H * i) / (e.face.length - 1)]);
   const [lx, ly] = pts[pts.length - 1];
   const seed = Math.round(x);
+  // (`inner`: the bank's other side. On a bank narrower than the piece's foot comes in (a 60-wide wall), the wobble swung back in past
+  // that side, the soil's outline crossed itself, and past the floor's end nothing was painted from about 240 under the wall's foot down:
+  // the lead's corner still, ENG-GROUND-e. Its centre keeps FACE_CLEAR out from that side, eased in over FACE_EASE, the wobble kept)
+  const base = inner === undefined ? lx : right ? Math.max(lx, inner + FACE_CLEAR) : Math.min(lx, inner - FACE_CLEAR);
   for (let yy = ly + 24; yy < bottom + 24; yy += 24) {
     const t = yy - ly;
     const wob = 10 * Math.sin(t / 41 + lookHash(seed, 3) * 6) + 6 * Math.sin(t / 17 + lookHash(seed, 5) * 6) + (lookHash(seed + yy, 9) - 0.5) * 6;
-    pts.push([lx + dir * wob, yy]);
+    const u = Math.min(1, t / FACE_EASE), at = lx + (base - lx) * u * u * (3 - 2 * u);
+    pts.push([at + dir * wob, yy]);
   }
   return pts;
 }
