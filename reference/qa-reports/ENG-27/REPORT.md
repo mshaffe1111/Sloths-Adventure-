@@ -3,14 +3,17 @@
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Worktrees are 2.7 GB each and the disk fills: make
    them sparse (no reference/ except reference/qa-reports/R-165.59/), as ENG-27g's mkwt.sh did (below). Probes: copy each .txt here to
    tools/inspect/_<name>.ts, never commit. ENG-27g's rule-28 runner and patch: r28-runner-27g.ts.txt and r28patch-27g.py.txt here.
-1. **Rule 28 for SKILLS.boardLog (c92cf743c)** on every log-river stage (the lead's GO): ENG-27g started the chain (base = both of
-   ENG-27g's skills off, head = both on, same frozen tree; 2-3 on origin/t-build-23 and 2-5 on origin/t-build-25 with both hunks
-   patched in, their base checked equal to BUILD-23e's / BUILD-25d's committed rows). If its rows are not committed here as
-   r28-<stage>-base.jsonl / -head.jsonl, re-run: per stage `python3 r28patch-27g.py <worktree>`, then in it
-   `R28_BASE=1 npx tsx tools/inspect/_r28.ts <stage> <seeds>` (base) and without R28_BASE (head), seeds 1-40 split in two processes;
-   then `python3 r28diff-27g.py <stage> base.jsonl head.jsonl [committed rows]` (2-3: BUILD-23e castbots23e-rows on t-build-23;
-   2-5: reference/qa-reports/BUILD-25/castrows-2-5-25d.jsonl). The bar (the lead): no pass may flip; every moved row explained (each
-   has a stand over water or a log under the lip on its base run: the script names any that has neither). Send the lead the table.
+1. **Rule 28 for SKILLS.boardLog (c92cf743c): RUN, RED on 8 flips, TRACE THEM FIRST.** Rows and diffs: r28-27g/<stage>-base.jsonl,
+   -head.jsonl, -diff.txt (base = both of ENG-27g's skills off, head = both on, the same frozen tree; 2-3 on origin/t-build-23, 2-5 on
+   origin/t-build-25 with both hunks, r28patch-27g.py.txt; runner r28-runner-27g.ts.txt; diff r28diff-27g.py.txt).
+   - 2-3: base = BUILD-23e 360/360; 75 moved (all the take-off read's; the hop moves none), no flips. 2-5: base = BUILD-25d 360/360;
+     214 moved (104 take-off, 170 hop), no flips. 2-6: 0 moved.
+   - 2-1: 310 moved, P->F 1 (kid Normal 11), F->P 4. 2-2: 155 moved, P->F 1 (kid Normal 4), F->P 5. 2-4: 337 moved, P->F 6 (kid
+     Normal 9, 10, 16, 22, 27; adult Normal 18), F->P 8. Every pass count rose (2-1 kid N 32->35; 2-2 kid N 24->28; 2-4 kid N 30->31,
+     adult N 38->39); every moved row has a read a skill changes on its base run (no row unexplained). But the lead's bar is NO flip.
+   - Do next: trace the 8 P->F (two runs per cause: the death probe death-27e.ts.txt, or the runner with an onFrame), find whether
+     each is the hop's or the take-off read's and at what x, and fix where the cause lives or bring the lead the trace. The kid and
+     adult (first-timers) are touched by the hop: it sits in the edge read every bot shares. Then send the lead the table.
 2. The merge: origin/t-eng-ground at the hash the lead sends (ENG-GROUND-c has one more fix first). --no-ff. Two conflicts known
    (trial merge on 3e805121d): reference/handoffs/engine-core.md, and src/game/gen2/worlds/w2.ts `lip()` in banks(): this branch has
    `p.y >= y - 2 && p.y <= y + LIP_RISE` (ENG-27e: never over the fall's height), t-eng-ground `p.y <= y + LIP_RISE && p.y >= y - LIP_RISE`
@@ -42,7 +45,7 @@
   races win whether the take-off read is on or off (post 5 by 8.1 s with it, 1.0 s without), so the take-off plants run with the
   boarding hop off (where their misses happen). pacerLay 19/19 (pacerLay-27g.txt). Home races, middle, seeds 1-3 both settings: all
   six win with both skills.
-- NOT done: rule 28 for boardLog (running, step 1 above), the merge (no hash yet), the race table, stills, THE CLIP, THE FULL SET.
+- Rule 28 for boardLog: RUN (step 1 above: 8 P->F flips on 2-1, 2-2, 2-4, untraced). NOT done:, the merge (no hash yet), the race table, stills, THE CLIP, THE FULL SET.
 
 ## Lessons applied
 D57/D87 (inbox read at every step and push), D94 (both baselines re-run before any diff), D96 (gates named UNRUN), D102 (lean reads;

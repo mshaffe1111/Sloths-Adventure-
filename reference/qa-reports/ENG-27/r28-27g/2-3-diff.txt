@@ -1,0 +1,88 @@
+2-3: base run (both skills off) vs the committed rows: 360/360 equal
+kid    normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy   rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal rows 40 moved   0  pass 39/40 -> 39/40  flips -
+adult  easy   rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal rows 40 moved  14  pass 40/40 -> 40/40  flips -
+child  easy   rows 40 moved  16  pass 40/40 -> 40/40  flips -
+middle normal rows 40 moved  13  pass 40/40 -> 40/40  flips -
+middle easy   rows 40 moved  18  pass 40/40 -> 40/40  flips -
+expert normal rows 40 moved  14  pass 40/40 -> 40/40  flips -
+2-3: moved 75 of 360; P->F 0, F->P 0
+moved rows with no read either skill changes on the base run: none
+moved rows touched by the take-off read (a stand over water): 75; by the boarding hop (a log his way under the lip): 0
+  child  easy    2 P->P time 312.7 -> 300.6 lives 0->0 rescues 0->0; first: stand over water x 10596 (run 44 + gap 113) t 101
+  child  easy    3 P->P time 319.5 -> 299.5 lives 0->0 rescues 0->0; first: stand over water x 10704 (run 39 + gap 106) t 95.6
+  child  easy    5 P->P time 305 -> 278.3 lives 0->0 rescues 0->0; first: stand over water x 4423 (run 57 + gap 97) t 33
+  child  easy   10 P->P time 294.5 -> 309.5 lives 0->0 rescues 0->0; first: stand over water x 8406 (run 59 + gap 109) t 80.1
+  child  easy   13 P->P time 295.7 -> 304.8 lives 0->0 rescues 0->0; first: stand over water x 8312 (run 48 + gap 106) t 77.7
+  child  easy   16 P->P time 295.7 -> 306.9 lives 0->0 rescues 0->0; first: stand over water x 14486 (run 57 + gap 110) t 153.5
+  child  easy   19 P->P time 277.2 -> 275.8 lives 0->0 rescues 0->0; first: stand over water x 9093 (run 99 + gap 60) t 79.1
+  child  easy   21 P->P time 286.9 -> 300.2 lives 0->0 rescues 0->0; first: stand over water x 8890 (run 106 + gap 60) t 77.2
+  child  easy   24 P->P time 287.9 -> 290.5 lives 0->0 rescues 0->0; first: stand over water x 10587 (run 53 + gap 99) t 98.9
+  child  easy   25 P->P time 296.2 -> 282 lives 0->0 rescues 0->0; first: stand over water x 10684 (run 55 + gap 108) t 97.1
+  child  easy   27 P->P time 278.8 -> 288.1 lives 0->0 rescues 0->0; first: stand over water x 2153 (run 47 + gap 110) t 19.5
+  child  easy   34 P->P time 345.9 -> 306 lives 0->0 rescues 0->0; first: stand over water x 19982 (run 55 + gap 113) t 217.6
+  child  easy   37 P->P time 307.4 -> 304.8 lives 0->0 rescues 0->0; first: stand over water x 8878 (run 118 + gap 60) t 93.2
+  child  easy   38 P->P time 285.7 -> 283.2 lives 0->0 rescues 0->0; first: stand over water x 10709 (run 37 + gap 113) t 83.9
+  child  easy   39 P->P time 291.1 -> 291.1 lives 0->0 rescues 0->0; first: stand over water x 4430 (run 50 + gap 97) t 36.4
+  child  easy   40 P->P time 282.2 -> 280.5 lives 0->0 rescues 0->0; first: stand over water x 19977 (run 45 + gap 101) t 191.9
+  child  normal  2 P->P time 402.2 -> 403 lives 0->0 rescues 0->0; first: stand over water x 10499 (run 53 + gap 142) t 141.1
+  child  normal  5 P->P time 392.7 -> 396.3 lives 0->0 rescues 0->0; first: stand over water x 4387 (run 93 + gap 121) t 54.1
+  child  normal  8 P->P time 446.1 -> 396.5 lives 0->0 rescues 0->0; first: stand over water x 4428 (run 52 + gap 136) t 59.6
+  child  normal  9 P->P time 427.5 -> 393.7 lives 0->0 rescues 0->0; first: stand over water x 14382 (run 59 + gap 127) t 195.9
+  child  normal 11 P->P time 410.9 -> 413.5 lives 0->0 rescues 0->0; first: stand over water x 4578 (run 33 + gap 142) t 60.5
+  child  normal 13 P->P time 404.8 -> 407.6 lives 0->0 rescues 0->0; first: stand over water x 8278 (run 42 + gap 133) t 109.9
+  child  normal 14 P->P time 388.3 -> 383.2 lives 0->0 rescues 0->0; first: stand over water x 16305 (run 58 + gap 124) t 206.6
+  child  normal 15 P->P time 419.8 -> 437.1 lives 0->0 rescues 0->0; first: stand over water x 10496 (run 56 + gap 129) t 140.8
+  child  normal 16 P->P time 421.8 -> 434.5 lives 0->0 rescues 0->0; first: stand over water x 14387 (run 67 + gap 138) t 218.1
+  child  normal 27 P->P time 413.6 -> 394 lives 0->0 rescues 0->0; first: stand over water x 14674 (run 51 + gap 139) t 190.9
+  child  normal 28 P->P time 396.7 -> 419.5 lives 0->0 rescues 0->0; first: stand over water x 8280 (run 40 + gap 142) t 97.8
+  child  normal 30 P->P time 401.8 -> 393.6 lives 0->0 rescues 0->0; first: stand over water x 14397 (run 47 + gap 136) t 199.3
+  child  normal 34 P->P time 402.4 -> 403 lives 0->0 rescues 0->0; first: stand over water x 10513 (run 39 + gap 137) t 142.1
+  child  normal 35 P->P time 386.6 -> 429.5 lives 0->0 rescues 0->0; first: stand over water x 20009 (run 59 + gap 138) t 272.6
+  expert normal  1 P->P time 234 -> 229.3 lives 0->0 rescues 0->0; first: stand over water x 8273 (run 47 + gap 131) t 55.2
+  expert normal  2 P->P time 233.4 -> 232.9 lives 0->0 rescues 0->0; first: stand over water x 24173 (run 50 + gap 142) t 208.1
+  expert normal  8 P->P time 228.7 -> 228 lives 0->0 rescues 0->0; first: stand over water x 4418 (run 62 + gap 136) t 23.2
+  expert normal 10 P->P time 231.4 -> 224.1 lives 0->0 rescues 0->0; first: stand over water x 8409 (run 42 + gap 136) t 51.5
+  expert normal 11 P->P time 237.9 -> 225.9 lives 0->0 rescues 0->0; first: stand over water x 4562 (run 49 + gap 142) t 23.8
+  expert normal 16 P->P time 239.7 -> 237.4 lives 0->0 rescues 0->0; first: stand over water x 14411 (run 43 + gap 138) t 112.4
+  expert normal 19 P->P time 224.6 -> 235.7 lives 0->0 rescues 0->0; first: stand over water x 10496 (run 56 + gap 126) t 63.6
+  expert normal 20 P->P time 222.6 -> 222.7 lives 0->0 rescues 0->0; first: stand over water x 24260 (run 67 + gap 124) t 197.6
+  expert normal 21 P->P time 228 -> 223.8 lives 0->0 rescues 0->0; first: stand over water x 10502 (run 50 + gap 126) t 65.9
+  expert normal 26 P->P time 229.4 -> 222.2 lives 0->0 rescues 0->0; first: stand over water x 10493 (run 59 + gap 121) t 62.3
+  expert normal 30 P->P time 238.1 -> 250.9 lives 0->0 rescues 0->0; first: stand over water x 8274 (run 46 + gap 132) t 51.9
+  expert normal 31 P->P time 240.5 -> 241.6 lives 0->0 rescues 0->0; first: stand over water x 10628 (run 49 + gap 132) t 62.5
+  expert normal 34 P->P time 236.9 -> 235.6 lives 0->0 rescues 0->0; first: stand over water x 10503 (run 49 + gap 137) t 66
+  expert normal 38 P->P time 234.4 -> 234.2 lives 0->0 rescues 0->0; first: stand over water x 4434 (run 46 + gap 134) t 24.3
+  middle easy    2 P->P time 222.4 -> 223.6 lives 0->0 rescues 0->0; first: stand over water x 10599 (run 41 + gap 113) t 70.6
+  middle easy    6 P->P time 222.6 -> 221.3 lives 0->0 rescues 0->0; first: stand over water x 16023 (run 67 + gap 92) t 113.8
+  middle easy    7 P->P time 232.6 -> 221.8 lives 0->0 rescues 0->0; first: stand over water x 9307 (run 86 + gap 60) t 62.2
+  middle easy    8 P->P time 217.3 -> 222.9 lives 0->0 rescues 0->0; first: stand over water x 8988 (run 116 + gap 60) t 56.2
+  middle easy    9 P->P time 226.1 -> 223 lives 0->0 rescues 0->0; first: stand over water x 20073 (run 59 + gap 97) t 150.1
+  middle easy   10 P->P time 223 -> 220.4 lives 0->0 rescues 0->0; first: stand over water x 8420 (run 45 + gap 109) t 54.5
+  middle easy   11 P->P time 221.1 -> 219.6 lives 0->0 rescues 0->0; first: stand over water x 14708 (run 35 + gap 112) t 99.8
+  middle easy   13 P->P time 224.3 -> 224.6 lives 0->0 rescues 0->0; first: stand over water x 8319 (run 41 + gap 106) t 56.1
+  middle easy   14 P->P time 225.1 -> 221.9 lives 0->0 rescues 0->0; first: stand over water x 14589 (run 45 + gap 108) t 106.4
+  middle easy   16 P->P time 225.5 -> 230.4 lives 0->0 rescues 0->0; first: stand over water x 4444 (run 36 + gap 113) t 25.3
+  middle easy   20 P->P time 219.4 -> 217.8 lives 0->0 rescues 0->0; first: stand over water x 24523 (run 92 + gap 99) t 196.8
+  middle easy   21 P->P time 218.4 -> 218.7 lives 0->0 rescues 0->0; first: stand over water x 16153 (run 37 + gap 108) t 111.9
+  middle easy   22 P->P time 224.1 -> 219.1 lives 0->0 rescues 0->0; first: stand over water x 8875 (run 121 + gap 60) t 54.5
+  middle easy   27 P->P time 229.2 -> 225.2 lives 0->0 rescues 0->0; first: stand over water x 4544 (run 46 + gap 106) t 26.4
+  middle easy   28 P->P time 217 -> 218.3 lives 0->0 rescues 0->0; first: stand over water x 8321 (run 39 + gap 113) t 50.2
+  middle easy   34 P->P time 221.2 -> 220.6 lives 0->0 rescues 0->0; first: stand over water x 19996 (run 41 + gap 113) t 146.7
+  middle easy   37 P->P time 229.3 -> 229.4 lives 0->0 rescues 0->0; first: stand over water x 24273 (run 35 + gap 113) t 207.9
+  middle easy   38 P->P time 224.7 -> 225.2 lives 0->0 rescues 0->0; first: stand over water x 10709 (run 37 + gap 113) t 69
+  middle normal  1 P->P time 237 -> 238.8 lives 0->0 rescues 0->0; first: stand over water x 8276 (run 44 + gap 131) t 57.7
+  middle normal  2 P->P time 245 -> 244 lives 0->0 rescues 0->0; first: stand over water x 19785 (run 39 + gap 139) t 160.5
+  middle normal  6 P->P time 240.2 -> 232 lives 0->0 rescues 0->0; first: stand over water x 8830 (run 126 + gap 60) t 59.8
+  middle normal  9 P->P time 237.8 -> 235.7 lives 0->0 rescues 0->0; first: stand over water x 19884 (run 54 + gap 122) t 154.7
+  middle normal 11 P->P time 237.5 -> 240 lives 0->0 rescues 0->0; first: stand over water x 4570 (run 41 + gap 142) t 28.5
+  middle normal 16 P->P time 240.9 -> 241.6 lives 0->0 rescues 0->0; first: stand over water x 4447 (run 33 + gap 142) t 26.7
+  middle normal 19 P->P time 235 -> 233.9 lives 0->0 rescues 0->0; first: stand over water x 16043 (run 55 + gap 131) t 117.7
+  middle normal 20 P->P time 245.3 -> 240.7 lives 0->0 rescues 0->0; first: stand over water x 9162 (run 124 + gap 60) t 61.6
+  middle normal 27 P->P time 238 -> 240.9 lives 0->0 rescues 0->0; first: stand over water x 2145 (run 55 + gap 138) t 13.3
+  middle normal 28 P->P time 235.8 -> 236 lives 0->0 rescues 0->0; first: stand over water x 8280 (run 40 + gap 142) t 55.2
+  middle normal 30 P->P time 237.3 -> 236.5 lives 0->0 rescues 0->0; first: stand over water x 8961 (run 127 + gap 60) t 59
+  middle normal 35 P->P time 239.9 -> 242.8 lives 0->0 rescues 0->0; first: stand over water x 10623 (run 44 + gap 134) t 73.1
+  middle normal 37 P->P time 234.8 -> 237.5 lives 0->0 rescues 0->0; first: stand over water x 23908 (run 34 + gap 142) t 209.5
