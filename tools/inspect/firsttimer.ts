@@ -131,9 +131,10 @@ const SNAP_THUMB = 0.1;
  * Heron, its '!' and the pale wash on the ground) and where the little ones are. WAIT-FOR-THE-TAIL: on a watched stretch, in the reeds he
  * walks to their far end and stands while a heron warns or looks, and goes on only right after a look has ended with the whole line in
  * the reeds and still (2-3.md: "go right after a look"). FETCH-THE-SPOOKED: one the heron spooked, hiding where it ran to, he walks back
- * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home.
+ * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home. HOP-BACK:
+ * on that walk back, stopped dead against a face (a boulder on the mud), a plain hop over it (ENG-CAGE).
  */
-export const LINE_SKILL = { waitTail: true, fetch: true };
+export const LINE_SKILL = { waitTail: true, fetch: true, hopBack: true };
 /**
  * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
  * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
@@ -1258,6 +1259,10 @@ export class FirstTimerRun {
   /** CAGE_SKILL: the cage he is opening (its id), when his next blow comes (Infinity: not stood at it yet), the climbing vine it hangs
    *  up (its x; null: at his height on the ground), and whether he is on his way back down that vine after it opened */
   private cageAim: { id: number; at: number; vineX: number | null; down: boolean } | null = null;
+  /** LINE_SKILL.fetch: how long (s) he has stood stopped dead on his way back for a spooked little one */
+  private fetchStill = 0;
+  /** where the game last set him down (a splash-back, a put-back), his best progress then, and how often in a row at that place */
+  private setDowns: { x: number; y: number; top: number; n: number } | null = null;
   /** when he was last put past each puzzle room */
   private roomAt = new Map<number, number>();
   /** the trunk he is on, and whether climbing down it got him nowhere */
@@ -2182,7 +2187,16 @@ export class FirstTimerRun {
         this.lineGo = null;
         this.lineWait = null;
         if (look && LINE_SKILL.waitTail) return {};
-        return side(lost.x > p.x ? 1 : -1);
+        const back: -1 | 1 = lost.x > p.x ? 1 : -1;
+        // (a boulder on the way back (2-3's 50 px moss stone on the mud between clumps): stopped dead against its face, after his stop
+        // reaction a plain hop over it, as on the way on. He stood against it until rescued: castBots 2-3 middle Normal seed 1 x 20828,
+        // child Normal seeds 5 x 11590 and 8 x 11841, ENG-CAGE)
+        this.fetchStill = p.grounded && Math.abs(this.moveX) < 0.8 ? this.fetchStill + DT : 0;
+        if (LINE_SKILL.hopBack && this.fetchStill >= this.who.stopReact && !this.pending && !this.jump) {
+          this.fetchStill = 0;
+          return this.decide(back, 'single', false, side(back));
+        }
+        return side(back);
       }
     }
     if (!LINE_SKILL.waitTail || !p.grounded) return null;
@@ -4158,8 +4172,24 @@ export class FirstTimerRun {
     //  the calibrated tiers were rescued for it. pitClimb.test.ts 'set down by the game'. Not on the run's first frame: its last place is
     //  wherever the run was made, and a harness that stands him after (pitClimb's shallow pit) has already found his place)
     if (step >= 100 && !this.placed && this.frames > 1) {
+      const top = this.prog.best;
       this.prog.relocate(p);
       this.climbBack = null;
+      // (set down at the same place again and again, never getting further: three are a loop, as three falls back are, and he is put
+      // past. A splash-back costs no life, and each relocate wound his progress back, so the walk on to the same pond counted as
+      // progress and no rescue ever came: 2-3's sinking-pad pond, the kid Normal set down at its near bank every 20 s to the 1200 s cap,
+      // 34 of 40 seeds, ENG-CAGE)
+      const sd = this.setDowns;
+      // ("no further": within two route points, about a step, of his best at the first set-down; the frame he is caught on varies)
+      if (sd && Math.abs(sd.x - p.x) < 80 && Math.abs(sd.y - p.y) < 40 && top <= sd.top + 2) sd.n++;
+      else this.setDowns = { x: p.x, y: p.y, top, n: 1 };
+      if (this.setDowns!.n >= this.tries3) {
+        this.setDowns = null;
+        const at = this.prog.pts[top] ?? p;
+        this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +this.t.toFixed(1), dur: 0, what: `set down here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: false });
+        this.prog.hi = Math.max(this.prog.hi, top);
+        if (!this.rescue()) this.end = 'stranded';
+      }
     }
     this.placed = false;
     this.lastX = p.x;
