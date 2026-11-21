@@ -1,3 +1,60 @@
+# BUILD-26d (on t-build-26 from 5be367dd8): the lost runs traced (2-6 and 1-4), one bot fix as an UNPLANTED TRIAL. Started 5:52 PM ET 11-21 (by `date`); handed over at the 28-minute box
+Commits: this one (TRIAL: firsttimer.ts climbUpVine, the climb-jump toward a vine beside him, never his facing; this REPORT; b26d/).
+Saved: b26d/ (trace-childN-base.txt, trace-childN-trial.txt, trace-14-base.txt; traceS.ts, framesS.ts, dumpS.ts, cornersS.mts: the b26
+tools with a stage argument (STAGE env / 4th arg), copy them back to tools/inspect/b26/ to run; toy-vinefoot.test.ts.txt: the toy, NOT in CI).
+
+## EXACT NEXT STEP (the next level builder; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND on frozen worktrees
+1. **Make the toy's PLANT RED, then plant it (rule 21).** b26d/toy-vinefoot.test.ts.txt: with the fix he climbs (GREEN); with the skill
+   taken away (`climbUpVine = () => undefined`) he ALSO climbs, so the toy does not show the fault yet. The toy misses what set
+   `dir = -1` (firsttimer.ts:2230 fdir) at x 235 on the real run: on 2-6 child Normal seed 8 he lands at x 235 at t ~56.2 from a single
+   jump left off x 397 (FT_TRACE line `56.23 single from 397,4927 -> 235,4927 ok`) and at once doubles LEFT (`57.53 double from 235,4927
+   hold 0.52 -> 20,5278 FELL BACK`). Find dir's source there (FT_FRAMES on frames 1688-1692, or a one-line stderr print of dir, tgt,
+   far in the climb-jump branch, firsttimer.ts ~2612), build that into the toy (likely: he arrives moving left from a jump, the target
+   within 16 px across so d falls to his facing), confirm plant RED / fix GREEN, then append it to castBots.test.ts.
+2. **Then castBots 2-6 x40 both settings on a frozen worktree of the trial** vs b26c/rows/cast-fix2.jsonl, row for row (python3 on
+   (bot, setting, seed)); and 1-4 x40 vs b26c/rows/c14-fix2.jsonl: the fix is in the bot, so 1-4 MAY move: the lead is told before it lands.
+3. Then the packet's steps 1 (the remaining causes, below), 2, 3 and 4 as written (BUILD-26d.md).
+
+## Step 0: the suite on 5be367dd8, frozen (D114)
+Running in the background at hand-over: **1,247 ok, 0 failed** at hand-over, not finished (log lost with the container). It does not
+carry to this commit (the trial changes tools/inspect/firsttimer.ts). Run it WHOLE on the head after the fix is planted.
+
+## Step 1: the 15 lost runs, traced (rule 28; frozen 5be367dd8, single-bot traces; t in s, frame = t x 30)
+**Cause A (2-6, the edge-wheel turn's vine foot; child N 3, 5, 7, 8, 18).** Leg s5 runs left along y 4927 to the turn's vine (x 250,
+4422-4927), which stands 25 px in from the ledge's left end (#22 x 225-465; the street #82 is 351 px under it).
+- seed 8: t 56.2 lands at x 235 (15 px left of the vine, facing left), at once a double LEFT (the tier bot's climb-jump: no ledge
+  60-260 px over him, the target within 16 px across, so firsttimer.ts:2611 falls back to his facing); a jump away from a trunk never
+  grabs it (engine.ts wantGrab), off the end at x 225, down to the street; from the street the vine's foot is 351 px up: 8 falls, rescued t 65.8.
+- seed 3: t 68.0, x 233, y 4856, the same spot (fell back 8 times), rescued. seeds 5 (x 401), 7 (x 243), 18 (x 248): the same ledge, the same line.
+- **Trial fix (this commit, bot):** in that branch, no ledge and a climbing vine within 60 px leading up from his feet: the jump goes
+  toward the vine (straight up within 6 px), never his facing. Measured on frozen head-to-be: seed 3 GAINED (151.9 s, 0 rescues);
+  seed 8 passes the vine (60.5 s on the next floor) and is now rescued LATER at a second spot (cause C); seeds 5, 7, 18 still rescued
+  (5: still at #22, x 401, t 76.9: not yet traced on the trial). Not x40, not planted: a TRIAL.
+**Cause C (2-6, the high wheel; child N 24; seed 8 on the trial):** seed 24 t 124.1, x 1529, y 1395, fell back 8 times under #65/#66
+(x 1067-1547, y 1556; wheel `edge` cx 430 cy 1886); seed 8 (trial) t 150.7, x 1529, y 1418, the same spot. Not yet traced frame by frame.
+**Child N 28:** t 138.9, x 1557, y 1736, 20 s stuck, "an open drop ahead, water ahead, the way on is 180 px up" (#90's floor). Not traced.
+**Child E 11, expert N 12:** not traced (rows: E 11 x 1482 fell back 8 times; expert 12 x 635 y ~ in a dip 353 px, x 1419 in a dip 179 px).
+**Cause B (1-4, a leg's exit past a gap; child E 17, 35; middle E 35 and child E 37 the same x):** child E 17: corners `534,5005
+1190,4965 1190,4684` (leg s14 entry 560,5005, exit 1208,4965; the next turn's vine x 1190, 4684-4965). He walks right along y 5005,
+at x 1025 doubles right with up held 0.35 s, passes x 1200 at y 5140 (under the vine's foot), lands at 1260,5325 (FT_TRACE `112.13
+double from 1025,5105 -> 1260,5325 FELL BACK`), rescued t 116.4. child E 35: t 104.1, x 1190, y 4588, fell back 8 times (#39 x 234-1164).
+Not yet read why the floor ends at about x 1025-1050 under a leg that runs to 1208: dumpS.ts and cornersS.mts disagree on 1-4's
+heights (dumpS builds through listedStage/buildGen2Stage, cornersS through RealPlay; about 337 px apart): settle which is the PLAYED
+stage first.
+**1-4 adult N 23:** t 86.6, x 899, y 4411, fell back 3 times, hits 2 ('other'). **1-4 child N 20:** t 108.6, x 1137, y 6896, 17.6 s
+"the way on is 301 px down"; t 164.2, x 245, y 6079, fell back 8 times. Not yet traced frame by frame.
+
+## On the trial (this commit's tree, before commit): `npx tsc --noEmit -p .` clean; castBots.test.ts `tower` tests 3/3; tierBots 1-1 **9/9**.
+## Steps 2-4: NOT STARTED (box): 2-1..2-5 x40, the WHOLE castBots.test.ts, the --proven relist and yield, the stills. The hearts test (06096c3b4) is still UNRUN.
+
+## Lessons applied
+D111 (handed over at the box with the exact next step), D113 (every run in the background), D114 (the base's suite started first),
+D115 (traces on a frozen worktree at 5be367dd8 before the edit), rule 21 (a toy whose plant is not RED is not landed as proof).
+## Learned (for level.md, proposed)
+- A bot fix's toy must be built from the traced frame's own state (how he arrived, his facing, where Progress points), not the
+  stage's shape alone: my first toy reproduced the ledge and vine and still climbed with the skill removed.
+- The b26 tools hard-code '2-6': a stage argument (b26d/*S.ts) saves every later builder the copy.
+
 # BUILD-26c (on t-build-26 from fd3ce98b1): 2-6's bots on the current engine, every miss traced, the beat table, the hearts question. Started 5:27 PM ET 11-21 (by `date`)
 Commits: 06096c3b4 (hearts test counts every cost), 2b123df7c (towerRoute: no entry corner beside a turn's top), b039ee3fb (its planted
 test), 4ed9af678 (TRIAL: the bots take a tower's own route on every tower), ca9ba7d38 (that choice as takesTowerRoute, planted

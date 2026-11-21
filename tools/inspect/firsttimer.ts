@@ -2609,7 +2609,12 @@ export class FirstTimerRun {
       // ledges, 137 and 142 px, from a block's corner; steering on the whole way he flew off the block, 8 times)
       // (no ledge there, the route's point in the air on a way down: he goes on the way the route does, as before)
       const far = this.prog.target(p, 200);
-      const d: -1 | 1 = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
+      // (no ledge, and the way up is a climbing vine beside him: he jumps for the vine, toward it or straight up, never his facing.
+      // A jump away from a trunk never grabs it (engine.ts wantGrab), and his facing ran off the ledge's end: 2-6 child Normal 3, 5,
+      // 7, 8, 18, from x 235 on the edge-wheel turn's ledge (x 225-465), 15 px left of its vine (x 250), a double left off the end,
+      // 351 px down to the street, 8 times, rescued (BUILD-26d))
+      const trunk = q ? undefined : this.climbUpVine(p);
+      const d: -1 | 0 | 1 = trunk ? (trunk.x > p.x + 6 ? 1 : trunk.x < p.x - 6 ? -1 : 0) : far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
       const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : null;
       this.climbJump = true;
       this.climbToX = toX;
@@ -3674,6 +3679,16 @@ export class FirstTimerRun {
       if (lip !== null && p.x <= lip && p.x >= lip - RUNNER.from) return true;
     }
     return false;
+  }
+
+  /** the climbing vine within 60 px across that leads up from his feet (its foot at or under them, its top a hop over them), nearest first */
+  climbUpVine(p: { x: number; y: number }): Vine | undefined {
+    let best: Vine | undefined;
+    for (const v of this.sim.vines as Vine[]) {
+      if (v.vineType !== 'tree_climb' || v.off || Math.abs(v.x - p.x) > 60 || v.topY > p.y - 60 || v.bottomY < p.y - 12) continue;
+      if (!best || Math.abs(v.x - p.x) < Math.abs(best.x - p.x)) best = v;
+    }
+    return best;
   }
 
   /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
