@@ -2,11 +2,13 @@
 Integration (Opus 5.5 xhigh), session_01FhBbYL5weS2PSfgDeDQ4kd. Branch t-int-15 from origin/main 107870f5 (0.10.0 live + PR #76).
 Packet: reference/packets/2026-11-20/INT-15.md (on ccr-ea739a2f-dfcee4). Started 6:14 PM ET 11-20 (by `date`).
 
-## EXACT NEXT STEP (kept current; written 6:33 PM ET)
-All three merges are on t-int-15 and each PASSED tsc + the CI tool line; the final code head is 0eefc707e (its code tree = b75cc44a3,
-where (c) was gated). Next: item 2 (the stills, from a dev server on the b75cc44a3 worktree, pushed unopened) and item 3 (THE FULL SET on
-a frozen worktree at 0eefc707e). main's lock is recorded (/home/user/int15-out/lockall-main-107870f5.json, 3,264 builds of 102 stages,
-6:23-6:32 PM ET) for `lockall --check --intended 2-5`. Early check: `seedlist 2-5 --check` on the merged code PASS (0 of 100 refused).
+## EXACT NEXT STEP (kept current; written 7:07 PM ET)
+THE FULL SET is running on the frozen worktree /home/user/wt-final at 0eefc707e (three jobs, started 6:40 PM ET; logs in
+/home/user/int15-out/gates/, one PASS/FAIL line each in summary-1/2/3.txt). Green so far: tsc, artcheck, vite build (deploy base),
+chunkcheck, knowncheck, generalitycheck, coveragecheck, roadmapcheck, timecheck, registrycheck, clipcheck, kbdcheck, suite shards 1-2 of 6,
+the CI tool line, seed lists 1-1..1-5. Still to land: drawcheck, suite shards 3-6, seed lists 1-6..2-5, paintcheck 0-2/3, tipwalk,
+tierBots, lockall --intended 2-5, funcheck, castBots 2-5, the test-link count; then build:store and buildcheck ALONE. If stopped: rerun
+the missing lines with /home/user/int15-out/job*.sh's own commands on 0eefc707e.
 
 ## Merge table (MERGED, never rebased; tsc + the CI tool line (gates.yml, CI=1) after each)
 | # | Branch @ head | Merge commit | Conflicts | tsc | CI tool line |
@@ -35,3 +37,17 @@ BUILT (stills/logs/shoot-*.log: the BUILT line, the platform he stands on, his f
 | 2-2 L1 (seed 2) | x7405 on the rock (7348-7458, boulder mirrored) | both | ENG-ROCK's spot again |
 | 2-4 L1 (seed 65370) | x4646 on the rock (4590-4702, rock-b) | both | ENG-ROCK's spot again |
 | 1-6 L0 (seed 1) | x5977, on floor 36 (5827, top 1058: FACTS.md's floor) | sideways | FIX-TAB's tab spot; the crop holds world x 5775-6175, y 888-1138 (the tab was at 5792-5827, 1061-1081) |
+
+## D99 / release.md 4b: CI's own time limits with 2-5's list added (CI times read from main's last deploy run, 44828148552, on 107870f5, 11-20 5:20-5:43 PM ET; per-list times from each seed-list job's log stamps)
+Per seed list on a CI runner: 1-1 2:00, 1-2 0:58, 1-3 0:27, 1-4 2:03, 1-5 1:22, 1-6 8:53, 1-7 3:27, 1-8 0:33, 1-9 1:31, 2-1 5:27, 2-2 0:14,
+2-4 7:15; 2-5 is new (here: 19 s on the merged code, about as long as 2-2 here; CI estimate below from the same-run ratio once job 3's
+lists finish). With 2-5 the registry makes **4 shards** (registrycheck --shards: [1,2,3,4]), each about 1 min of setup plus:
+| Seed-list shard (4 on this head) | Lists | Expected CI time | Limit | Share |
+|---|---|---|---|---|
+| 1/4 | 1-1 1-8 2-4 | 9:48 + ~1 setup = ~11 min | 45 | 24% |
+| 2/4 | 1-5 1-7 2-2 | 5:03 + ~1 = ~6 min | 45 | 13% |
+| 3/4 | 1-2 1-4 1-9 2-5 | 4:32 + 2-5 + ~1 = ~6-7 min | 45 | ~15% |
+| 4/4 | 1-3 1-6 2-1 | 14:47 + ~1 = ~16 min | 45 | 36% |
+The other jobs with a limit (main's run, minutes): gates 10.8 / 25 (43%), drawcheck 11.4 / 30 (38%; +2-5's two builds), seedplan 0.8 / 10,
+paintcheck 7.5 / 9.2 / 6.9 of 25 (max 37%; 2-5 joins one part), rolled 10.9 / 60 (18%; + snapperTaught.test). deploy.yml's jobs carry no
+timeout-minutes (GitHub's 360-min default); its longest test shard was 15.7 min. **No job is within 20% of its limit: nothing to raise or split.**
