@@ -2,6 +2,38 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-GROUND. ENG-GROUND, -b, -c (t-eng-ground, 11-21): a leg laid under another leg shows; the out leg's earth ends at a ceiling
+**Read reference/qa-reports/ENG-GROUND/REPORT.md's top section first.** The painted ground runs each bank's soil (protoArt.ts drawBankArt)
+and each river's water, bed and soil (engine.ts drawRivers) on down to the view's foot. Where the lay puts one run leg UNDER another (2-7's
+out-and-back: the race leg under the out leg), that buried the lower leg in the upper leg's earth. Now, only where the lay stacks a leg:
+- **Where it lives (§2).** src/game/groundStack.ts holds the geometry and the two clips. `stackZonesOf(legs)`: a run leg (left or right)
+  wholly under another run leg it shares x with (from the gen2 lay's LaidLeg boxes, `gen2.tower.legs`); engine.ts sets them at a stage's
+  start through protoArt `setGroundStacks`. No zone, no ceiling: a stage whose lay stacks no leg draws exactly as before (1-4's summit and
+  7-4's ruin banks are not legs: R-165.376). `findCeilings(platforms, banks, zones)`: the lower leg's static pieces under earth with
+  HEADROOM (his 48 + a double jump) clear over them; a line HEADROOM + UNDER_HANG (40) over each, SIDE (160) past their ends, pieces a
+  BRIDGE (1100) apart one ceiling, smoothed by a cone (0.6) so it never steps, **no sag** (never dips between two higher stretches: a
+  river-bed piece once hung a column of bank earth over the race leg), a wobble only UP (2..34), never into an upper bank's collider, the
+  ends slanting into the hillside (1.1). `ceilingsFor` memoises it per stage. Banks: protoArt drawGround clips each upper bank's paint
+  (soil, wall art, end pieces) with `clipAbove` (everything but the air under the lines). Rivers: protoArt `riverLid` (ceilingsOverSpan:
+  the lines a river's whole stretch stands over) and `clipAboveLines` in engine.ts drawRivers, so an upper leg's river ends at the
+  ceiling as its banks do. **The underside** (`drawUnderside`) is drawn AFTER the clip is lifted (the lead's ART-UNDER ruling), over the
+  bank's or the river's own span only (each 16-unit column cut at the span's ends), the strip's ragged edge on the line (`edge`) and its
+  roots hanging below into UNDER_HANG. Painted when the world's ground sheet has `unders` (groundAtlasData.ts, ids `w<n>#under0..2`;
+  `underFrames(w)` is the hook), else the code stand-in (the soil's edge darkened, a 4 x 64 band made once): the stand-in is allowed on
+  the toy only; 2-7 ships with the painted strip.
+- **The join (w2.ts w2Finish).** A run of falls joined by planks (pieces under 90 deep over the water) is ONE river under a bridge, bank
+  to bank, at one surface (it was a pocket per gap: water in slices, the backdrop under each plank, the middle pocket 20 higher). A fall's
+  bank is found within LIP_RISE of the fall's HEIGHT, and a fall has its river only when one spans it at its height. No shipped stage
+  lays a plank between two pockets (tools/engine/plankscan.ts).
+- **Traps (§3).** (1) Soil and rivers both run to the view's foot: a stacked leg needs BOTH lidded, or a column of water and soil stands
+  over the lower leg. (2) Stacked legs share x: w2Finish (and every finish or lookup) must match banks and rivers at a fall's HEIGHT, never
+  by x alone (ENG-27's riverAt rule). (3) A test that builds an engine must build it BEFORE it sets protoArt's stacks or world: the stage
+  start resets them. (4) The underside drawn INSIDE the clip loses its roots at the line (groundStack.test 6 plants it).
+- **Proof.** groundStack.test.ts (6: the toy's real gen2 roll both settings; 1-4/7-4 untouched; the engine's own river painter; the
+  roots below the line), w2.test 'bridge over ONE river'. Tools: stackscan.ts (which stages stack), plankscan.ts (planks between pockets).
+- **Open.** The painted strip (ART-UNDER) drawn and re-shot when its rows are packed; 1-4's summit column can take the same rule once the
+  tower lay marks its storeys as stacked (R-165.376).
+
 ## 0zq-27. ENG-27 (t-eng-27 from 0eefc707e, 11-20 evening; stopped 8:33 PM ET at real context ~427k): 2-7's left leg after a drop
 **Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** Done: the out-and-back toy (gen2/toyHome.ts, tools/inspect/homeToys.ts
 on a listed test row) lays clean; a left leg's rivers are mirrored (legs.ts reflectLeg, RiverZone.way); legOverlaps refuses a leg laid

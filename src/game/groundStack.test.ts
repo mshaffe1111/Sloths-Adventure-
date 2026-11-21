@@ -38,7 +38,7 @@ type Pt = [number, number];
 
 /** a 2D context that keeps, for every image and rect it fills, the box filled and the clips in force (paths in world units) */
 class RecordingCtx {
-  draws: Array<{ box: [number, number, number, number]; clips: Array<{ polys: Pt[][]; evenodd: boolean }> }> = [];
+  draws: Array<{ box: [number, number, number, number]; clips: Array<{ polys: Pt[][]; evenodd: boolean }>; quad?: Pt[] }> = [];
   private m = [1, 0, 0, 1, 0, 0];
   private clips: Array<{ polys: Pt[][]; evenodd: boolean }> = [];
   private stack: Array<{ m: number[]; n: number }> = [];
@@ -72,7 +72,10 @@ class RecordingCtx {
   private box(x: number, y: number, w: number, h: number) {
     if (this.off) return;
     const a = this.tp(x, y), b = this.tp(x + w, y + h);
-    this.draws.push({ box: [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[0], b[0]), Math.max(a[1], b[1])], clips: [...this.clips] });
+    // (the four corners as drawn: a sheared column's box is not its two corners)
+    const quad = [a, this.tp(x + w, y), b, this.tp(x, y + h)];
+    const xs = quad.map((q) => q[0]), ys = quad.map((q) => q[1]);
+    this.draws.push({ box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], clips: [...this.clips], quad });
   }
   drawImage(_img: unknown, ...a: number[]) {
     if (a.length === 2) return; // (no size: an image drawn at its own size, never the soil)
@@ -292,7 +295,7 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
       ...st.rivers.filter((z) => stack!.ceilingsOverSpan(z.x0, z.x1, z.surfaceY, cs).length).map((z) => ({ what: `pool x ${Math.round(z.x0)}`, x0: z.x0, x1: z.x1, river: true })),
     ];
     assert.ok(spans.filter((s) => s.river).length >= 2 && spans.filter((s) => !s.river).length >= 4, `the out leg's banks and pools over the race leg (${spans.length})`);
-    const bare: string[] = [], spill: string[] = [];
+    const bare: string[] = [], spill: string[] = [], stair: string[] = [];
     for (const s of spans) {
       const mid = (s.x0 + s.x1) / 2;
       const ly = line(mid);
@@ -315,9 +318,21 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
       // (the strip stays over its own span: no strip-sized draw starts left of x0 or ends right of x1, under the line)
       const out = r.draws.filter((d) => d.box[3] - d.box[1] > 60 && d.box[3] - d.box[1] < 200 && d.box[1] < line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) && d.box[3] > line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) + 4 && (d.box[0] < s.x0 - 0.01 || d.box[2] > s.x1 + 0.51) && d.box[2] > s.x0 - 40 && d.box[0] < s.x1 + 40);
       if (s.river && out.length) spill.push(`${s.what}: ${out.length} strip columns past its ends`);
+      // (the strip's ragged edge runs ON the line along every column, both ends: ENG-GROUND-c's re-shoot found each 16-unit column
+      //  set at the lower of its two ends, so the edge stepped by up to the line's rise over a column: stairs every 16 units)
+      const lineNear = (x: number, y: number) => Math.min(...cs.filter((c) => x >= c.x0 - 1 && x <= c.x1 + 1).map((c) => Math.abs(stack!.ceilingAt(c, x) - y)));
+      let worst = 0, cols = 0;
+      for (const d of r.draws) {
+        const q = d.quad;
+        if (!q || Math.abs(q[3][1] - q[0][1] - 128) > 1 || q[1][0] - q[0][0] > 17 || q[1][0] < s.x0 || q[0][0] > s.x1) continue;
+        cols++;
+        worst = Math.max(worst, lineNear(q[0][0], q[0][1] + 0.75 * (q[3][1] - q[0][1])), lineNear(q[1][0], q[1][1] + 0.75 * (q[2][1] - q[1][1])));
+      }
+      if (cols && worst > 1) stair.push(`${s.what}: the strip's edge ${worst.toFixed(1)} off the line at a column's end (${cols} columns)`);
     }
     assert.deepEqual(bare, [], 'the roots are cut off at the line');
     assert.deepEqual(spill, [], 'the strip spills past its span');
+    assert.deepEqual(stair, [], "the strip's edge steps off the line between columns");
   } finally {
     g2.unders = had;
   }

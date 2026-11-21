@@ -238,22 +238,28 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
   const frames = underFrames(w);
   const img = frames && s ? null : underBand(GROUND_FRAMES[w]?.deep ?? [20, 14, 10]);
   if (!frames && !img) return;
+  ctx.save();
   for (const c of cs) {
     const a = Math.max(p.x, c.x0, view.x0 - STEP), b = Math.min(p.x + p.width, c.x1, view.x1 + STEP);
     for (let x = Math.floor(a / STEP) * STEP; x < b; x += STEP) {
       const xs = Math.max(x, a), xe = Math.min(x + STEP, b);
       if (xe <= xs) continue;
-      const y = Math.max(ceilingAt(c, xs), ceilingAt(c, xe));
       // (each column overlaps the next by half a unit so no hairline shows between them; the last stops on the span's end)
       const dw = xe - xs + (xe < b ? 0.5 : 0);
+      // (the column is sheared to the line, its edge on it at BOTH ends: set level at the lower end, the edge stepped by the line's
+      //  rise over each column, stairs every 16 units (ENG-GROUND-c's re-shoot). The shear moves y only, so the columns still meet.)
+      const y = ceilingAt(c, xs), k = (ceilingAt(c, xs + dw) - y) / dw;
+      ctx.transform(1, k, 0, 1, 0, -k * xs);
       if (frames && s) {
-        const k = Math.floor(xs / UNDER_W), f = frames[((k % frames.length) + frames.length) % frames.length];
+        const n = Math.floor(xs / UNDER_W), f = frames[((n % frames.length) + frames.length) % frames.length];
         const h = (UNDER_W * f.h) / f.w;
-        const sx = f.x + ((xs - k * UNDER_W) / UNDER_W) * f.w, sw = ((xe - xs) * f.w) / UNDER_W;
+        const sx = f.x + ((xs - n * UNDER_W) / UNDER_W) * f.w, sw = ((xe - xs) * f.w) / UNDER_W;
         ctx.drawImage(s, sx, f.y, sw, f.h, xs, y - f.edge * h, dw, h);
       } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - 56, dw, 58);
+      ctx.transform(1, -k, 0, 1, 0, k * xs);
     }
   }
+  ctx.restore();
 }
 /** the world's ground sheet, once its underside frames are packed in it (the painted path only) */
 const underSheet = (w: number): CanvasImageSource | null => (underFrames(w) ? groundSheetImage(w) : null);
