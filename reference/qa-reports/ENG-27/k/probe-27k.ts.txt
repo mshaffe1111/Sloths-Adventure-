@@ -1,0 +1,18 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE } from '../../src/game/gen2/toyHome.ts';
+import { pacerMargin } from '../../src/game/pacer.ts';
+const seed = Number(process.argv[2] ?? 2), setting = (process.argv[3] ?? 'normal') as 'normal' | 'easy';
+let piece: any, lives: number | undefined, last: any = null, open: any = null, t0: number | null = null;
+const out: string[] = [];
+const r = homeRun('middle', setting, seed, 1, { onFrame: (sim: any) => {
+  const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); if (!piece) return;
+  const P = piece.pacer, m = piece.clock === null ? null : pacerMargin(P, e.player.x, piece.clock);
+  if (piece.clock !== null && t0 === null) { t0 = e.gameTime; out.push(`set off t ${e.gameTime.toFixed(1)} x ${Math.round(e.player.x)}`); }
+  if (lives !== undefined && e.lives < lives) { open = { m: last, x: e.player.x, t: e.gameTime }; out.push(`life lost t ${e.gameTime.toFixed(1)} x ${Math.round(e.player.x)} margin ${last?.toFixed(2)} clock ${piece.clock?.toFixed(1)}`); }
+  else if (open && !e.down && e.player.grounded) { out.push(`  stood t ${e.gameTime.toFixed(1)} x ${Math.round(e.player.x)} margin ${m?.toFixed(2)}`); open = null; }
+  if (piece.clock !== null && Math.round(e.gameTime * 30) % 150 === 0) out.push(`    t ${e.gameTime.toFixed(1)} x ${Math.round(e.player.x)} margin ${m?.toFixed(2)} clock ${piece.clock.toFixed(1)}`);
+  last = m; lives = e.lives;
+} } as never, HOME_CODE);
+console.log(out.join('\n'));
+console.log(`verdict ${JSON.stringify(piece?.verdict)} end ${r.end}`);

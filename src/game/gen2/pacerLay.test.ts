@@ -11,7 +11,7 @@ import { HOME_CODE, POST_CODE, homeKit } from './toyHome.ts';
 import { layPacer, pacerShoreFaults } from './pacerLay.ts';
 import { PACER_SHORE, pacerLength } from '../pacerDraw.ts';
 import { W2_RACE, W2_RIVERS } from './worlds/w2.ts';
-import { middleAt, pacerFaults, pacerOff, pacerReplace, pacerX, riversLeft, type Pacer } from '../pacer.ts';
+import { pacerFaults, pacerMargin, pacerOff, pacerX } from '../pacer.ts';
 import { PacerPiece } from '../pieces/pacerPiece.ts';
 
 const ID = '2-97';
@@ -48,10 +48,6 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
       assert.ok(Math.abs(P.seconds - Math.min(P.middle * (1 + share), P.rideOnly - W2_RACE.under)) < 0.02, `${at}: ${P.seconds} s against ${P.middle} s x ${1 + share}`);
       assert.ok(P.middle < P.seconds && P.seconds <= P.rideOnly - W2_RACE.under, `${at}: ${P.middle} < ${P.seconds} <= ${P.rideOnly} - 2`);
       assert.deepEqual(pacerFaults(P, W2_RACE.under), [], at);
-      // (the middle's marks run from 0 at the start to its whole time at the dock, never back)
-      assert.equal(middleAt(P, P.x0), 0, at);
-      assert.ok(Math.abs(middleAt(P, P.x1) - P.middle) < 0.02, at);
-      for (let i = 1; i < P.marks.length; i++) assert.ok(P.marks[i][1] >= P.marks[i - 1][1] && (P.marks[i][0] - P.marks[i - 1][0]) * P.dir >= 0, `${at}: mark ${i}`);
       // planted RED: a boat no slower than the careful middle (he cannot win), and one slower than the ride-only less 2 s (riding wins)
       assert.match(pacerFaults({ ...P, seconds: P.middle }, W2_RACE.under).join('\n'), /is not over the careful middle's .*: he cannot win the race/, at);
       assert.match(pacerFaults({ ...P, seconds: P.rideOnly - 1 }, W2_RACE.under).join('\n'), /is over the ride-only .* less 2 s: letting the current carry him wins/, at);
@@ -59,40 +55,8 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
   }
   // (2-7's own table, the design's margins as shares of the careful middle's time (the lead's ruling, 11-21): Normal 7% (2-7.md's +3 s on
   // its 42 s home leg), Easy 10% (+5 s on its 47.8 s Easy leg); under 2 s; the boat's two rowing frames)
-  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank, W2_RACE.floor], [{ normal: 0.07, easy: 0.1 }, 2, 272, { normal: 2, easy: 3 }]);
+  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 0.07, easy: 0.1 }, 2, 272]);
   assert.deepEqual(W2_RACE.art, ['w2-next#mailBoat', 'w2-next#mailBoatB']);
-});
-
-// (the lead's ruling (1), 11-21, ENG-27f: after a fall the floor counts each crossing he must still make from where he respawns (a fall
-//  that sends him a river back costs that river's log wait again: post Normal seed 4 respawned two crossings out with the one floor's
-//  2 s, and the re-crossing's log wait cost 2.8 s over the flown marks), never more than a clean run's margin (a fall must never pay),
-//  never less than the one floor; the ride-only bound still caps it except on the last crossing. Planted RED both ways: the old single
-//  floor gives two crossings out 2.0 s, where the cap allows 2.29; per crossing alone, the first river's respawn got 11.7 s, a clean
-//  run 6.6)
-test('pacer (planted): after a fall the floor counts each crossing left, never more than a clean run\'s margin, post Normal seed 4', () => {
-  const P = buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: homeKit(ID, POST_CODE), seed: 4, difficulty: 'normal' }).pacer!;
-  const margin = (q: Pacer, x: number) => q.seconds - pacerReplace(q, x) - (q.middle - middleAt(q, x));
-  const share = P.seconds / P.middle - 1, most = (P.rideOnly - P.under) / P.middle - 1, clean = P.seconds - P.middle;
-  // (each far bank is a crossing made: the marks are x0, then each crossing's near and far bank, the dock last)
-  assert.equal(riversLeft(P, P.x0), (P.marks.length - 1) / 2);
-  assert.equal(riversLeft(P, P.x1), 0);
-  // (two crossings out: the bank before the river before the last, as a flag there stands)
-  const two = P.marks.at(-4)![0] - P.dir * 80, twoLeft = P.middle - middleAt(P, two);
-  assert.equal(riversLeft(P, two), 2);
-  const want2 = Math.max(twoLeft * share, Math.min(2 * P.floor, twoLeft * most, clean));
-  assert.ok(want2 > P.floor + 0.2, `two crossings out the rule gives ${want2} s, over the one floor`);
-  assert.ok(Math.abs(margin(P, two) - want2) < 1e-6, `two crossings out: ${margin(P, two)} s, want ${want2} (RED on the one floor: ${P.floor})`);
-  // (the first river's respawn, ten crossings out: never more than a clean run's margin)
-  const early = P.marks[1][0] + P.dir * 60;
-  assert.ok(riversLeft(P, early) >= 8 && (P.middle - middleAt(P, early)) * most > clean, 'early: per crossing and the cap alone are over a clean run');
-  assert.ok(Math.abs(margin(P, early) - clean) < 1e-6, `early: ${margin(P, early)} s, a clean run's ${clean} (RED per crossing alone: 12.6 here)`);
-  // (every respawn on the leg keeps at least the one floor (on the last crossing whole, ruling A), and never more than a clean run)
-  for (let i = 1; i < P.marks.length; i++) {
-    const x = P.marks[i][0] - P.dir * 30, left = P.middle - middleAt(P, x);
-    const m = margin(P, x);
-    assert.ok(m <= Math.max(clean, left * share) + 1e-6, `x ${x}: ${m} s, over a clean run's ${clean}`);
-    if (riversLeft(P, x) <= 1 || left * most >= P.floor) assert.ok(m >= Math.min(P.floor, P.seconds - left) - 1e-6, `x ${x}: ${m} s, under the floor`);
-  }
 });
 
 test('pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none', () => {
@@ -104,7 +68,7 @@ test('pacer (planted): a river on the race leg that no flown row matches is refu
   assert.deepEqual(layPacer({ ...st, gen2: { ...st.gen2, tower: undefined } } as never, W2_RACE, W2_RIVERS, false).problems, ['pacer: no run leg laid after a column to race on']);
 });
 
-test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin\'s share', () => {
+test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell', () => {
   const st = build(2);
   const P = st.pacer!;
   const player = { x: P.x0 + 200, y: P.yMin - 400 } as { x: number; y: number };
@@ -121,43 +85,31 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   for (let i = 0; i < 300; i++) piece.step(1 / 30, host);
   assert.ok(Math.abs(piece.clock! - 10) < 1e-6);
   assert.ok(Math.abs(piece.x - pacerX(P, 10)) < 1e-6 && piece.x < P.x0);
-  // (a respawn at a flag a third of the way home: level with him plus the margin's share of the way left, or the floor for each crossing
-  //  left where that is more, within the ride-only bound and a clean run's margin (the lead's ruling (1), 11-21, ENG-27f))
+  // (the lead's ruling, Option A, 11-21 (D112): a fall neither costs nor pays race time. He falls a third of the way home, ahead of the
+  //  boat, then behind it; each time the respawn at a flag behind him keeps EXACTLY the margin he had the frame before the life was lost,
+  //  and the boat holds it to him while he is in the air (the respawn's lost time forgiven); it runs on from the frame he stands.
+  //  The grid's invariant (every 2-7 row, every bot): tools/inspect/pacerRespawn.test.ts, RED on the floor it replaced)
   const flag = P.x0 + (P.x1 - P.x0) / 3;
-  Object.assign(player, { x: flag, y: P.yMin + 60 });
-  piece.respawn(host);
-  const left = P.middle - middleAt(P, flag);
-  const keep = Math.max(left * (P.seconds / P.middle - 1), Math.min(riversLeft(P, flag) * P.floor, left * ((P.rideOnly - P.under) / P.middle - 1), P.seconds - P.middle));
-  assert.ok(riversLeft(P, flag) > 1, 'a third of the way home is not the last crossing');
-  assert.ok(Math.abs(P.seconds - piece.clock! - left - keep) < 1e-6, 'its time left is his careful-middle time left and the margin the rule keeps');
-  assert.ok(Math.abs(piece.clock! - pacerReplace(P, flag)) < 1e-9);
-  assert.ok(Math.abs(pacerReplace(P, P.x0)) < 1e-9);
-  // (planted, the lead's ruling 11-21: a respawn near the dock keeps the floor's margin, 2 s on Normal; the share alone left it none)
-  assert.equal(P.floor, W2_RACE.floor.normal);
-  // (a flag a fifth from the dock: the share there is under the floor, the ride-only bound over it: the floor holds)
-  const late = P.x1 - (P.x1 - P.x0) / 5;
-  const lateLeft = P.middle - middleAt(P, late);
-  const most = (P.rideOnly - P.under) / P.middle - 1;
-  assert.ok(lateLeft * (P.seconds / P.middle - 1) < P.floor && lateLeft * most > P.floor, `the late flag: share ${lateLeft * (P.seconds / P.middle - 1)} < 2 < bound ${lateLeft * most}`);
-  // (the floor for each crossing left there, within the bound and a clean run's margin: ruling (1), ENG-27f)
-  const lateKeep = Math.max(P.floor, Math.min(riversLeft(P, late) * P.floor, lateLeft * most, P.seconds - P.middle));
-  assert.ok(Math.abs(P.seconds - pacerReplace(P, late) - (lateLeft + lateKeep)) < 1e-6, `a respawn a fifth from the dock: his time left + ${lateKeep} s (${riversLeft(P, late)} crossings left)`);
-  assert.ok(Math.abs(pacerReplace({ ...P, floor: 0 }, late) - (P.seconds - (lateLeft * P.seconds) / P.middle)) < 1e-6, 'RED without the floor: the share alone');
-  // (the lead's ruling A, 11-21: on the LAST crossing (no river left between him and the dock's) the floor holds whole: the floor is the
-  //  child's safety net after a fall. Planted RED on the cap there (before ENG-27e the ride-only bound cut it to ~1 s near the dock))
-  const share = P.seconds / P.middle - 1;
-  const lastFar = P.marks.at(-3)![0], lastNear = P.marks.at(-2)![0];
-  const onLast = lastNear - P.dir * 80; // (the bank before the last river, as a flag there would stand)
-  const lastLeft = P.middle - middleAt(P, onLast);
-  assert.ok((onLast - lastFar) * P.dir >= 0 && lastLeft * most < P.floor, `on the last crossing the bound (${lastLeft * most}) is under the floor`);
-  assert.ok(Math.abs(P.seconds - pacerReplace(P, onLast) - (lastLeft + Math.max(lastLeft * share, P.floor))) < 1e-6, 'on the last crossing: his time left + the floor, uncapped');
-  const capped = P.seconds - Math.max(0, P.seconds - lastLeft - Math.max(lastLeft * share, Math.min(P.floor, lastLeft * most)));
-  assert.ok(P.seconds - pacerReplace(P, onLast) > capped + 0.5, 'RED with the cap: the floor cut to the ride-only share');
-  // (farther out, before the last crossing, the ride-only bound still caps the floor (the lead's 11:13 AM ruling stands there))
-  const before = lastFar - P.dir * 40;
-  const beforeLeft = P.middle - middleAt(P, before);
-  if (beforeLeft * most < P.floor) assert.ok(Math.abs(P.seconds - pacerReplace(P, before) - (beforeLeft + Math.max(beforeLeft * share, beforeLeft * most))) < 1e-6, 'before the last crossing: capped by the ride-only bound');
-  assert.equal(build(2, 'easy').pacer!.floor, W2_RACE.floor.easy);
+  for (const lead of [300, -900]) {
+    const fell = piece.x + P.dir * lead;
+    Object.assign(player, { x: fell, y: P.yMin + 60, grounded: true });
+    piece.step(1 / 30, host);
+    const had = pacerMargin(P, fell, piece.clock! - 1 / 30);
+    assert.ok(Math.sign(had) === Math.sign(lead), `he was ${lead > 0 ? 'ahead' : 'behind'} (${had} s)`);
+    Object.assign(player, { x: flag - P.dir * 200, y: P.yMin + 60, grounded: false });
+    piece.respawn(host);
+    assert.ok(Math.abs(pacerMargin(P, player.x, piece.clock!) - had) < 1e-9, `the respawn keeps his ${had} s`);
+    // (in the air after the respawn, drifting on: the boat stays level with his margin)
+    for (let i = 0; i < 20; i++) { player.x += P.dir * 4; piece.step(1 / 30, host); }
+    assert.ok(Math.abs(pacerMargin(P, player.x, piece.clock!) - had) < 1e-9, `in the air: still ${had} s`);
+    // (he stands: the race runs on from there)
+    Object.assign(player, { grounded: true });
+    const c = piece.clock!;
+    piece.step(1 / 30, host);
+    assert.ok(Math.abs(piece.clock! - c - 1 / 30) < 1e-9, 'the step it sees him stand, it runs on');
+    piece.step(1 / 30, host);
+    assert.ok(Math.abs(piece.clock! - c - 2 / 30) < 1e-9, 'and on');
+  }
   // (a docked boat stays docked: the race is decided, no later fall rewinds it (ruling A (i); planted RED: before ENG-27e a fall after the
   //  dock put it back level with him and the race ran again, post Normal seeds 1 and 3's ride-only runs))
   const was = piece.clock;
@@ -186,26 +138,23 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
 
 // (the race with the bots: every claim is its own test, so one miss never hides another (ENG-27d's run stopped at its first assertion
 //  and the ride-only claim after it never ran; the lead 11-21))
-type RaceRun = { v: NonNullable<PacerPiece['verdict']>; lastFall: boolean };
+type RaceRun = { v: NonNullable<PacerPiece['verdict']> };
 async function raceRun(setting: 'normal' | 'easy', seed: number, rideOnly: boolean): Promise<RaceRun> {
   const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
   const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
   const was = { race: SKILLS.race, rideOnly: SKILLS.rideOnly };
-  let piece: PacerPiece | undefined, lives: number | undefined, lastFall = false;
+  let piece: PacerPiece | undefined;
   try {
     if (rideOnly) Object.assign(SKILLS, { race: false, rideOnly: true });
     const r = homeRun('middle', setting, seed, 1, { onFrame: (sim: { e: unknown }) => {
       const e = sim.e as { pieces: unknown[]; lives: number; player: { x: number; y: number } };
       piece ??= e.pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
-      // (a fall on the race leg's last crossing: a life lost past the far bank of the river before the last)
-      if (piece && lives !== undefined && e.lives < lives && e.player.y >= piece.pacer.yMin && (e.player.x - piece.pacer.marks.at(-3)![0]) * piece.pacer.dir >= 0) lastFall = true;
-      lives = e.lives;
     } } as never);
     assert.equal(r.end, 'shrine', `${setting} seed ${seed}: finishes`);
   } finally {
     Object.assign(SKILLS, was);
   }
-  return { v: piece!.verdict!, lastFall };
+  return { v: piece!.verdict! };
 }
 for (const setting of ['normal', 'easy'] as const) {
   for (const seed of [1, 2, 3]) {
@@ -213,13 +162,11 @@ for (const setting of ['normal', 'easy'] as const) {
       const { v } = await raceRun(setting, seed, false);
       assert.ok(v.won, `middle ${setting} seed ${seed}: ${v.him} s against the boat's ${v.boat} s`);
     });
-    // (the floor is the child's safety net after a fall, and on the last crossing it holds whole (the lead's ruling A, 11-21); the
-    //  ride-only bot checks the race is never won WITHOUT effort, and falling in is not winning without effort: a run with a fall on the
-    //  last crossing is no test of it, so it is named, not judged)
-    test(`pacer race (the bots): the ride-only player never wins without a fall on the last crossing, ${setting} seed ${seed}`, async (t) => {
-      const { v, lastFall } = await raceRun(setting, seed, true);
-      if (lastFall) t.diagnostic(`ride-only ${setting} seed ${seed}: fell on the last crossing (${v.won ? 'won' : 'lost'}, ${v.him} s against ${v.boat} s): not judged`);
-      assert.ok(lastFall || !v.won, `ride-only ${setting} seed ${seed}: ${v.him} s against the boat's ${v.boat} s`);
+    // (a fall neither costs nor pays race time (the lead's ruling, Option A, D112), so letting the current carry him never wins, fall
+    //  or none: the last-crossing exemption that let two ride-only runs win by a fall's pay is deleted with the floor, ENG-27k)
+    test(`pacer race (the bots): the ride-only player never wins, ${setting} seed ${seed}`, async () => {
+      const { v } = await raceRun(setting, seed, true);
+      assert.ok(!v.won, `ride-only ${setting} seed ${seed}: ${v.him} s against the boat's ${v.boat} s`);
     });
   }
 }

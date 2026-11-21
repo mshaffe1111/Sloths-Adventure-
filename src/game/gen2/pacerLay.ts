@@ -56,7 +56,6 @@ export function layPacer(st: Gen2Stage, table: PacerRow, rows: Readonly<Record<s
   const rivers = leg.slice(leg.indexOf(first) + 1, leg.indexOf(last) + 1);
   const problems: string[] = [];
   const flown = Object.keys(table.rivers);
-  const marks: Array<[number, number]> = [[x0, 0]];
   let at = x0, tMid = 0, tRide = 0;
   const bankS = (px: number) => px / table.bank;
   for (const r of rivers) {
@@ -74,21 +73,18 @@ export function layPacer(st: Gen2Stage, table: PacerRow, rows: Readonly<Record<s
     //  the bank rate, so the leg's total is the rule's)
     tMid += bankS(Math.abs(near - at));
     tRide += bankS(Math.abs(near - at));
-    marks.push([near, tMid]);
     tMid += cross / rate.middle - bankS(table.crossingBank);
     tRide += cross / rate.rideOnly - bankS(table.crossingBank);
-    if (r !== last) marks.push([far, tMid]);
     at = far;
   }
   if (problems.length) return { problems };
   const middle = tMid, rideOnly = tRide;
-  marks.push([dock, middle]);
   const seconds = Math.min(middle * (1 + (easy ? table.margin.easy : table.margin.normal)), rideOnly - table.under);
   const R = (v: number) => Math.round(v * 100) / 100;
   const yMin = race.y0 - ON_LEG;
   // (its lane: the lowest surface of the water it is seen on, the river it waits over included (pacerDraw.ts pacerWaters keeps no river
   //  lower than the lane; a wait river lower than the rest was left out and the waiting boat not drawn, ENG-27e, home seed 6))
   const lane = Math.max(first.surfaceY, ...rivers.map((r) => r.surfaceY));
-  const pacer: Pacer = { x0, x1: dock, lane, dir, yMin, seconds: R(seconds), middle: R(middle), rideOnly: R(rideOnly), marks: marks.map(([x, t]) => [x, R(t)] as const), floor: easy ? table.floor.easy : table.floor.normal, under: table.under, art: table.art };
+  const pacer: Pacer = { x0, x1: dock, lane, dir, yMin, seconds: R(seconds), middle: R(middle), rideOnly: R(rideOnly), under: table.under, art: table.art };
   return { pacer, problems: [...pacerShoreFaults(pacer, len, leg), ...pacerFaults(pacer, table.under)] };
 }

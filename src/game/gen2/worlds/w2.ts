@@ -117,7 +117,6 @@ export const W2_RACE: PacerRow = {
   crossingBank: 230,
   margin: { normal: 0.07, easy: 0.1 },
   under: 2,
-  floor: { normal: 2, easy: 3 },
   art: [next('mailBoat'), next('mailBoatB')],
 };
 
