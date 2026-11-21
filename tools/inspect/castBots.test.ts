@@ -133,6 +133,25 @@ test('the tower route goes down to a sunk vine\'s foot before it climbs (a down-
   assert.ok(at(plain, 300, 1000) >= 0 && at(plain, 300, 760) === at(plain, 300, 1000) + 1, `an ordinary climb is no longer straight up: ${JSON.stringify(plain)}`);
 });
 
+// (BUILD-26c, 2-6: a leg that starts at the top of the turn just climbed has no corner at its entry, 26 px past the vine: off the vine he
+// lands past it and went BACK for it, down the climb's hole (child Easy 2, 8 times, rescued) or off the lip into the shaft (expert
+// Normal 1, about 8 s). Planted: the base (fd3ce98b1) keeps the corner. An entry well away from the vine keeps its corner)
+test('the tower route goes on from a turn\'s top along the leg, never back to an entry beside the vine', async () => {
+  const { towerCorners } = await import('./towerRoute.ts');
+  const tower = (entryX: number) => ({
+    gen2: { plan: [{ join: 'turn' }], tower: { route: { legs: [{ entry: { x: entryX, y: 700 }, exit: { x: 100, y: 700 } }], spawn: { x: 900, y: 1000 } }, turns: [{ x: 600, from: 1000, to: 700 }] } },
+    vines: [{ x: 600, topY: 700, bottomY: 1000, vineType: 'tree_climb' }],
+  });
+  const at = (c: { x: number; y: number }[], x: number, y: number) => c.findIndex((p) => Math.abs(p.x - x) < 1 && Math.abs(p.y - y) < 1);
+  const beside = towerCorners(tower(626) as never, { x: 900, y: 1000 })!;
+  const top = at(beside, 600, 700);
+  assert.ok(top >= 0, `no corner at the vine's top: ${JSON.stringify(beside)}`);
+  assert.equal(at(beside, 626, 700), -1, `a corner at the entry beside the vine (he goes back for it): ${JSON.stringify(beside)}`);
+  assert.deepEqual(beside[top + 1], { x: 100, y: 700 }, `from the vine's top the way is not straight on along the leg: ${JSON.stringify(beside)}`);
+  const away = towerCorners(tower(400) as never, { x: 900, y: 1000 })!;
+  assert.ok(at(away, 400, 700) === at(away, 600, 700) + 1, `an entry 200 px from the vine lost its corner: ${JSON.stringify(away)}`);
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {
