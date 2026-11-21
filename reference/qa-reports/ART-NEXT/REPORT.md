@@ -1,3 +1,48 @@
+# ART-SHEETS-c (11-21): R-165.382 drawcheck GREEN (cheer cut DONE); pose families + the single-pose clamp; the affine-per-group grade of the seven non-clip sheets
+## EXACT NEXT STEP
+Status: R-165.382 DONE (drawcheck green). R-165.379: the seven graded candidates are made but NOT in src/ yet (parked in
+reference/art/hfnext/hero/sheets/c8d47c90e/: the .webp sheets, sheetgrade.json, grade-log.txt, strips <sheet>-strip-game.jpg / -2x.jpg,
+columns plain | before 4f0853b96 | mean e41c738bf | after; strip.py.txt rebuilds them). src/ on t-art-next is unchanged (heroClipsBody.test
+still RED for the 7 unrecorded sheets, as before).
+1. THE LEAD judges each strip (2x first), sheet by sheet. My own look at atlas-strip-2x.jpg (see Polish check): NOT clean on every pose.
+2. Per sheet the lead accepts: cp reference/art/hfnext/hero/sheets/c8d47c90e/<sheet>.webp src/assets/hero/; then (frozen worktree of that
+   commit, run_in_background) python3 -I tools/art/hfnext/herobody.py --write, then --ratchet <accepted sheet names>; heroBody.known.json:
+   climb2's mean row off if it now passes; the plant (git show e41c738bf:src/assets/hero/pokey-swim.webp into a scratch copy, herobody.py there,
+   see the ratchet fail; restore); heroClipsBody.test GREEN; tsc, artcheck, knowncheck, herobody --check; tools/art/hfnext/sheetgrade.json
+   from the parked copy (only the accepted sheets' rows).
+3. A sheet the lead rejects: the likely lever is the clamp (atlas: 7 of 8 single poses clamped; story: 14 of 22), e.g. clamp to the pooled
+   sheet line instead of the families' min-max, or fold the singles into one 'body' group; re-grade that sheet alone on a frozen tree.
+## What this box did (no Hugging Face spend)
+- R-165.382 step 1: drawcheck ALONE on a frozen 4f0853b96 worktree (fresh container, npm install --legacy-peer-deps): PASS, 32 of 32
+  (16 scenarios x upright/sideways, 0 fail), 574 s, about 35 s a scenario. ART-SHEETS-b's run hit its 30-minute limit at 3 of 16 because it
+  shared the 4 cores with the unit suite and the swim grades (its own named deviation); alone it takes under 10 minutes. With step 0's suite
+  (3,798 pass, 0 fail on the same hash) R-165.382 (the cheer cut) is DONE.
+- The groups printed first (fam(): name less trailing letter+digits) were NOT pose families: atlas 36 frames -> 33 groups (run_a..run_j ten
+  groups, climb_a..d four, idle_a/idle_blink apart), story 43 -> 43 (every frame alone); studies fine (s1 8, s3 12, s4 7, s5 2). Lead ruled:
+  a trailing _letter, _digits, _rec, _blink (and _up/_down: look_a/up/down) is stripped, face_* one group taking the sheet's whole-body curve
+  (0c15af0c7, in sheetgrade.py AND herobody.py so the bands are measured on the same groups): atlas run(10) climb(4) idle(2) punch(5) +
+  mega kick jump fall hurt duck land guard alone; story look(3) talk(2) sneak(2) point(2) away(4) + 22 alone.
+- The lead's condition (c8d47c90e): a one-pose group's L shift at its light and dark band means and its a/b shift at its mean L are held
+  inside the min-max the sheet's pose families take; its per-frame a/b pull (--even) is off; clamped groups recorded in sheetgrade.json
+  'clamped' and named in each strip's caption.
+- THE GRADE (frozen c8d47c90e, sheets from git 4f0853b96, alone, about 12.5 min). Pooled fur dE before -> after / worst frame after:
+  rope 10.16 -> 0.05 / 1.51; swim 6.17 -> 0.08 / 1.12; vine 4.77 -> 0.01 / 0.67; climb2 2.81 -> 0.03 / 0.83; atlas 4.19 -> 0.12 / 2.45;
+  story 6.09 -> 0.49 / 2.65; studies 5.54 -> 0.27 / 2.13. CLAMPED: atlas duck, fall, guard, hurt, jump, land, mega (7 of 8 singles; land's
+  b went -0.57 -> -3.2, i.e. the clamp PUSHED it to the families' range, look at it); story alarm, cheer, crossed, impatient, resolve,
+  scared, shock, shout, sleep, slump, thumbs, tired, wipe, worried (14 of 22). Full numbers: c8d47c90e/grade-log.txt.
+## Polish check
+- atlas-strip-2x.jpg (my look at 2x, the only strip I opened before the box): smooth fur, no mottle, no blocks, the green pack and bedroll
+  untouched (masked). BUT after is visibly PALER and pinker than the plain pose on climb_b, duck, hurt and fall (climb_b the worst: washed,
+  pinkish arms and legs), and the run frames read lighter than plain; mega, kick, punch_3, idle_a, guard read as the same sloth. Not clean
+  on every pose: the lead judges; I would not ship climb and the clamped tumble poses as they are.
+- rope, swim, vine, climb2, story, studies strips: made, NOT opened by me (box). Named, not hidden.
+- Nothing shipped to src/.
+## Lessons applied
+D115 (drawcheck on frozen 4f0853b96; the grade on frozen c8d47c90e, sheets read from git 4f0853b96; edits only in a third tree), D113 (every
+run run_in_background, no foreground wait), D111 (box by date: started 5:57 PM ET, 28 minutes), D109 (no clock times to the lead), D105
+(ReadNotifications at each boundary and push), D102 (read lean), D114 (drawcheck first, alone). One heavy run at a time held: drawcheck
+ran alone, the grade ran after it.
+
 # ART-SHEETS-b (11-21): bands PER MOVE GROUP on swim (R-165.379), the band gate planted red; R-165.382 step 0 running
 ## EXACT NEXT STEP
 THE LEAD'S RULINGS (this box): (1) per-group QUANTILE rejected (mottled heads); AFFINE per group is THE method unless the blurred-L
