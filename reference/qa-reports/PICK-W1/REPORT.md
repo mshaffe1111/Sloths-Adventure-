@@ -96,7 +96,7 @@ walking-only and never offered):
 | 1-8 | 8 | the rolling nuts · the first race · the race over the lianas · the high bough · little and big nuts at once · the fork to stop at · the last stretch · the swing off the tip |
 | 1-9 | 9 | freezing like a branch · freezing on the stairs · bopping a boa · the creaky limb by the nest · the boa under a trap · the boa by the eagle's nest · the boa with nothing near · the two boas · the Old Boa |
 
-The lead (9:26 PM ET): the keeper check trims each stage to its 6 clearest. The counts above are the most a roll can offer, before Running and Nothing are added; a single roll shows only the beats it lays (1-6 seed 1 showed 9, 1-9 showed 9).
+The lead (11-20, before 9:24 PM ET; first typed 9:26 PM): the keeper check trims each stage to its 6 clearest. The counts above are the most a roll can offer, before Running and Nothing are added; a single roll shows only the beats it lays (1-6 seed 1 showed 9, 1-9 showed 9).
 want to merge some (for example the three fig chips into one).
 
 ## Gate table (THE FULL SET)
