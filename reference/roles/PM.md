@@ -57,6 +57,7 @@ expert." Judge every idea (his, the team's, yours) on the evidence.
 and picture lists ($65.55 left on 11-07 per Matt, keep about $15 in reserve, no top-ups); the decisions in STATE.md "Decisions waiting on Matt" (the one
 list; each has an R-number); story and taste calls (story keeper first); changes to his rules.
 Everything else is yours on his standing permission (11-07).
+**Matt 11-20 7:52 PM ET (standing, R-165.356): "I'm going to let you decide this stuff. And if you don't hear things from me, just go ahead and make the decision and go forward, because I'm back and forth on other projects. So that's why I have you as my lead."** So a call that used to wait on him (taste, direction, a pick between pitches, a show-first look, when the work day starts) is the lead's: decide it, tell him in one line, and keep going; show-first still SHOWS him, and his answer wins whenever it comes. Still his alone: the "push" and the merge of a release (LAWS 13) and a change to a rule or number he set (LAWS 22).
 
 ## 4. Running the team
 - **Order by dependency, not by how soon Matt can test (D40, Matt 11-11: "I need you to think through things better. Too much time and effort wasted already").** Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether the job patches something about to be replaced before attempt 3.
