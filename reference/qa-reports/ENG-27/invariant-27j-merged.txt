@@ -1,0 +1,57 @@
+expert home normal 1: 16.37->4.54 x4722 3.79->4.54 x4722 5.17->3.67 x3303 4.60->3.67 x3303
+expert home normal 2: 3.83->5.18 x13140 7.65->5.63 x11440 4.29->6.14 x10018 17.48->3.48 x2006
+expert home normal 4: 2.15->4.54 x14222 10.44->6.09 x8618 11.61->4.35 x4596 8.07->3.38 x2004
+expert home normal 5: 4.34->5.05 x13493 6.59->5.57 x11736 5.48->6.03 x9012 5.74->5.03 x6295 4.45->4.20 x4866
+expert home normal 6: 0.99->4.22 x13317 4.62->4.86 x11576 15.56->4.63 x6265 5.34->3.17 x3419 3.78->3.47 x2002
+== expert home: 22 of 23 respawns on the leg break the invariant
+expert post normal 1: 0.76->4.69 x14991 11.86->6.36 x10320 5.77->6.82 x8894
+expert post normal 2: 4.20->5.24 x14424 4.60->6.30 x11302 6.67->6.30 x11302 10.57->6.98 x8592 6.17->6.98 x8592 6.59->6.48 x7296 6.75->4.60 x4586
+expert post normal 3: 6.57->6.72 x7187 8.68->3.44 x2003
+expert post normal 5: 9.66->6.12 x10404 6.99->6.12 x10404 10.11->4.21 x4840
+expert post normal 6: 3.77->4.95 x12929 10.58->4.96 x6187 4.83->4.21 x4772 5.82->3.44 x2059
+== expert post: 19 of 20 respawns on the leg break the invariant
+middle home normal 1: 1.19->4.64 x13663 12.14->6.26 x7568 6.06->6.26 x7568 5.72->4.54 x4722 4.57->3.67 x3303
+middle home normal 2: 0.69->5.63 x11440 3.60->6.53 x7308 5.66->4.33 x4716 4.46->4.33 x4716
+middle home normal 3: 3.77->5.67 x5906 3.50->5.67 x5906 6.75->4.59 x4610 3.17->3.50 x3314
+middle home normal 4: 1.04->5.54 x11210 4.93->5.54 x11210 2.67->5.54 x11210 5.96->5.54 x11210 2.60->6.09 x8618 6.86->6.09 x8618 6.11->4.97 x6026 7.87->4.35 x4596
+middle home normal 5: 2.70->6.03 x9012
+middle home normal 6: -0.10->4.22 x13317 1.31->4.86 x11576 7.95->5.69 x7561 6.42->5.69 x7561 4.29->3.17 x3419 2.35->3.47 x2002
+middle home easy 1: 4.15->4.99 x13913 15.74->3.83 x4841 7.32->3.23 x3399
+middle home easy 2: 1.88->5.53 x13478 11.84->3.66 x4836
+middle home easy 3: 6.48->6.13 x11763 6.71->6.13 x11763 12.96->4.38 x2066 1.58->4.38 x2066
+middle home easy 4: 2.43->5.05 x14634 11.63->4.81 x7534 11.61->2.99 x3396 3.95->2.99 x3396
+middle home easy 5: 10.42->4.43 x2083
+middle home easy 6: 1.69->5.63 x11857 11.08->4.57 x7724 4.76->3.81 x6380
+== middle home: 45 of 49 respawns on the leg break the invariant
+middle post normal 1: 2.07->4.69 x14991 2.29->4.69 x14991 8.33->5.90 x11747 2.88->5.90 x11747 6.54->6.82 x8894 8.80->6.48 x7478 7.75->4.81 x4629
+middle post normal 2: 4.07->6.30 x11302 7.47->6.48 x7296 8.22->3.51 x3290 3.02->3.51 x3290 3.03->3.46 x1994 3.63->3.46 x1994
+middle post normal 3: 3.15->6.28 x10021 5.61->6.28 x10021 9.03->6.72 x7187 9.25->5.64 x5891 4.04->4.57 x4595 4.69->4.57 x4595 5.37->3.44 x2003
+middle post normal 4: 8.29->5.79 x8875
+middle post normal 5: 1.16->5.63 x13128 4.93->5.63 x13128 5.09->5.63 x13128 3.50->5.08 x6258 5.35->5.08 x6258
+middle post normal 6: 2.38->5.14 x11633 7.74->4.96 x6187 4.39->4.21 x4772
+middle post easy 1: 2.72->5.05 x15287 13.09->4.64 x6215
+middle post easy 2: 4.01->6.38 x13082 9.55->7.17 x11638 10.08->5.22 x7512
+middle post easy 3: 23.39->4.36 x2051 3.85->4.36 x2051
+middle post easy 5: 6.24->6.68 x12060 10.26->6.20 x10611 7.44->6.20 x10611 12.45->2.95 x3497
+middle post easy 6: 3.03->5.12 x14763 2.97->6.50 x10192 5.45->5.76 x8848 7.05->5.76 x8848
+== middle post: 44 of 46 respawns on the leg break the invariant
+ride home normal 1: -0.91->5.29 x11852 -11.14->3.67 x3303 2.60->3.55 x2007
+ride home normal 2: -1.06->6.14 x10018 -1.07->5.43 x6012 -0.68->3.48 x2006
+ride home normal 3: -0.85->4.46 x13312
+ride home normal 4: -0.74->5.54 x11210 -3.84->-5.38 x2004
+ride home normal 5: -0.33->5.05 x13493 -10.92->4.20 x4866 4.41->4.20 x4866
+ride home normal 6: -4.26->5.69 x7561
+ride home easy 1: -4.82->4.41 x6291 1.78->3.83 x4841
+ride home easy 2: 1.86->6.59 x10306 -3.54->-5.37 x2054
+ride home easy 4: 1.71->5.05 x14634 3.96->4.81 x7534
+ride home easy 6: 1.89->5.63 x11857
+== ride home: 20 of 21 respawns on the leg break the invariant
+ride post normal 1: -6.98->6.48 x7478
+ride post normal 2: -1.07->6.98 x8592 -5.40->3.51 x3290 3.65->3.51 x3290
+ride post normal 3: 2.65->6.28 x10021
+ride post normal 4: 0.55->5.15 x12763
+ride post normal 5: 1.85->5.63 x13128 -1.56->6.12 x10404
+ride post normal 6: -7.39->4.96 x6187 2.53->4.21 x4772
+ride post easy 3: 1.70->6.23 x13092
+ride post easy 5: -12.61->2.95 x3497
+== ride post: 12 of 12 respawns on the leg break the invariant

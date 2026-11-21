@@ -63,6 +63,13 @@ F. **A FALL PAYS (the lead's concern on ride-only's two wins; measured, fallm-27
        quote (fallm-27j.ts.txt, merged head): home Normal ride-only seed 1: -0.91 -> +5.29, -10.32 -> +3.67, +3.20 -> +3.55; seed 2:
        -0.93 -> +6.14, -0.94 -> +5.43, -0.68 -> +3.48. (A respawn BEFORE the race leg still sets the boat back at its start, waiting:
        unchanged.)
+       MEASURED ON THE WHOLE GRID (invariant-27j.ts.txt, a probe, not the test; invariant-27j-merged.txt; tolerance 0.1 s): RED
+       nearly everywhere: middle home 45/49, middle post 44/46, expert home 22/23, expert post 19/20, ride-only home 20/21, post 12/12
+       respawns break it. Both ways: the floor PAYS a trailing player (ride-only post Easy 5: -12.61 -> +2.95; home Normal 1: -11.14 ->
+       +3.67) and TAKES a leading player's lead (expert home Normal 2: +17.48 -> +3.48; middle post Easy 3: +23.39 -> +4.36), so every
+       respawn resets him to about +3 to +7 s whatever he had. Two ride-only rows already go the other way (home Normal 4: -3.84 ->
+       -5.38; home Easy 2: -3.54 -> -5.37). The probe's pairing is rough where two lives are lost before he stands (repeated "after"
+       values at one x); the real test pairs each life lost with its own respawn.
    (2) THE RULE: pacerPiece records his margin when the life is lost (the frame before; pacerPiece.respawn, line 47-52, runs at the
        respawn, so the margin must be taken at the fall: hook the piece's per-frame update while he is on the leg, keep the last
        grounded or last pre-fall frame's margin), and at the respawn sets the clock so the boat stands that same margin from his
