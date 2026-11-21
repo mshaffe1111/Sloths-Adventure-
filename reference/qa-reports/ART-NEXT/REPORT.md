@@ -1,7 +1,20 @@
 # ART-NEXT-d (11-21, session_01FhBbYKPihmWKe7mdYAmiqq): R-165.354 + R-165.370 DONE on t-art-next (written 12:48 PM ET)
-## EXACT NEXT STEP
-Nothing open in this packet. If the lead wants more: (a) doze back via a two-stage bridge (plain -> crouch -> sit), roadmap item;
-(b) a clean 2-5 idle still needs a shoot pin that misses the "Normal" card and the hazard (idleshoot.mjs picks the middle solid).
+## EXACT NEXT STEP (HANDED OVER at the context line; the lead's polish point, not yet fixed)
+The bridges pop in COLOUR. `python3 -I tools/art/hfnext/clipde.py` (mean body Lab dE per frame step, motion-free) measured:
+plain->bridge f1 1.07-1.32 dE against 0.2 median inside (yawn, look, wave, scratch; plain->mid-clip ~7 dE: Wan frames are more
+orange/saturated, darker outline); and at step 64 (old clip's LAST frame -> reversed bridge) yawn 4.30, look 3.81, wave 3.69 dE,
+because each old clip drifts in colour over its 49 frames while the bridge out was built for its frame 0. Fix in bridgebake.py:
+1. Per bridge frame, a Lab mean/std (Reinhard) transfer over alpha > 200 px toward lerp(stats(plain), stats(target), u), u = i/(m-1):
+   bridge IN targets the clip's frame 0, bridge OUT the clip's LAST own frame (build bridge out as its own colour-matched list, not
+   bridge[::-1]). Scratch (--replace): ramp plain -> the take's mid stats -> plain.
+2. Restore the four original sheets first (`git show 6c157b2ba:src/assets/hero/clips/<c>.webp`; bridgebake reads the clip FROM the
+   sheet) and the old heroClipsData entries, then re-bake: B1-s23 -> idle-yawn,look-around; B3-s11 -> wave (--pin-feet); SC-s19 ->
+   belly-scratch (--pin-feet --replace).
+3. Bar: every step 0->1, N-2->N-1 and at the joins within 2x the inner median and under dE 1 (lead: never over 3, never above the
+   bridge's own steps). Then `idleends.py` (re-pins the JSON), `npx tsx --test src/game/heroClipsEnds.test.ts`, `catalogclips.py
+   idle-yawn,look-around,wave,belly-scratch` + `catalog_master.py --emit`, sizes, and re-shoot the 1-1 pair + yawn
+   (`node tools/art/hfnext/idleshoot.mjs <out> 1-1 3.7 4.7 40` and `... 1-1 0.3 9.0 60`), rebuild before-after-idle-start.jpg and
+   yawn-1-1-strip.jpg/mp4 (the inline python in this task's step-4 commit b33827a33 message is the recipe: see git log). Gates again.
 ## Picks and bakes (the lead's)
 - B1 s23 -> idle-yawn + look-around; B3 s11 -> wave (--pin-feet; feet off the line max 3.1 / 4.8 px before the pin). 81 frames each.
 - NEW belly-scratch = SC s19 (plain pinned first and last; bridgebake --replace; feet within 0.5 px; bag + strap every frame). 41 frames.
@@ -26,7 +39,7 @@ incl. doze 242). Decoded 42.8 MB (before 33.7); loaded at stage start (heroClips
 CATALOG-MASTER.csv frame rows = the sheets (tools/art/hfnext/catalogclips.py: 9,493 -> 9,532 rows; only clip rows touched);
 cast.json re-emitted (catalog_master.py --emit; no other world file changed).
 ## Gates
-tsc 0; artcheck 0; art tests + heroClipsEnds 0; unit suite (3 shards): UNITLINE
+tsc 0; artcheck 0; art tests + heroClipsEnds 0; unit suite (3 shards): running at hand-over, 0 failures so far (2,043 ok; logs in my scratchpad, lost with me): RE-RUN in the next step
 ## Pushback
 Packet step 4 asked for 2-5 stills: the shoot tool's pin cannot give a clean stop there today (above). bridgebake had two bugs
 (fixed, step 1): entry match failed on the cutter's "202.0"; the sheet was written before the entry check.
