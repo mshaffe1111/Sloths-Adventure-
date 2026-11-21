@@ -8,24 +8,29 @@ READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/
 STEP) and ENG-26o's section (its EXACT NEXT STEP: C, A and B, the third spot); level.md rules 4, 21, 22, 28, 29; reference/qa-reports/R-165.59/BOTS.md's
 calibration paragraph; LAWS headlines; LESSONS D96, D102, D107, D109, D111-D116.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-build-26 at the head BUILD-26f hands over (its REPORT names the sha; the lead ruled cut 5 fe3d3d6ca LANDS as one commit there; if it
-handed over unlanded, land it first per its step 1 and 4, tsc and castBots.test.ts on the landed head). You touch tools/inspect only;
-rebase on anything ENG-26o pushes (REPORT only); never force.
+BASE: t-build-26 at c99352a65 (BUILD-26f landed cut 5 as a59a144c0: tsc clean, castBots.test.ts 16/16 on it; ENG-26o's REPORT on top).
+You touch tools/inspect only; never force.
 0. D114: src/game/gen2 changed on this branch since ENG-26l's green suite (ENG-26n's lay fix: pipeline.ts, tower.ts, types.ts). If no
    REPORT on t-build-26 names a full-suite verdict on a head holding those files, run the CLAUDE.md suite on your base on a frozen worktree
    in the background now and append the verdict when it wakes you. A red there that is not yours comes to me at once.
 1. **C (PROVEN BOT, ENG-26o ff826a914): tools/inspect/towerRoute.ts:86.** The squeeze's strict span becomes "within a hand's reach of the
    span". D116: the number cites its source (GRAB_REACH's file:line, or half of it with the reason written beside the constant); ENG-26o's
    copy used 30 px. The toy and its plant FIRST (a turn's vine 5 px past the arrival: RED on today's line, GREEN with the fix).
-2. **A and B (PROVEN BOT, ENG-26o cbb93c5e1): firsttimer.ts:2734 says stop under the raised row, but KID/ADULT's release at 3764-3772
-   re-arms every frame and never lets go.** The fix: the stop at 2734 is one a KID/ADULT thumb can make (a lift a real thumb makes, timed as
+2. **A and B (PROVEN BOT, ENG-26o cbb93c5e1): firsttimer.ts says stop under the raised row (2746 on today's head, 2734 on 4b6ce810f), but
+   KID/ADULT's release (3776 today, 3764-3772 on 4b6ce810f) re-arms every frame and never lets go.** The fix: the stop at 2734 is one a KID/ADULT thumb can make (a lift a real thumb makes, timed as
    their calibrated release times everything else), NOT ENG-26o's diagnostic bypass. Rule 22 and R-165.59: the calibrated release stays for
    every other steer; tierBots 1-1 9/9 must hold, and any 1-1 row change re-runs the calibration and recommits
    reference/qa-reports/R-165.59/calibration-main.jsonl with it (R-165.59/BOTS.md). The toy and plant FIRST (a walk under a hop row with the way on
    above: RED on the base's bot, GREEN with the fix). One commit per cause.
-3. **Rule 28 on the two fixes together:** castBots x40 both settings on 1-4 and 2-6 against the landed cut 5's rows (b26f/rows/), row for
+2b. **The step-up lip (PROVEN BOT, ENG-26o c99352a65; 1-4 middle Easy 10 x 1102):** walking s14:b the middle draws a LATE press for the lip
+   (firsttimer.ts:2848 today: "a late press is a walk-off"), and the check above it (2832) turns late into a run only at a FACE; s14:c is a
+   thin bough 40 px up with no face, so he walks off under it and drops 320 px. ENG-26o's diagnostic (late becomes a run when a bough starts
+   within 80 px past him, 20-70 px up) cleared it with C's line. The general rule and its numbers cite their source (D116: a reach or
+   jump constant's file:line); toy and plant first. ENG-26o measured all three on 4b6ce810f, not cut 5: re-run all twelve rows (C's six,
+   A/B's five, middle Easy 10) on YOUR fix's own tree.
+3. **Rule 28 on the three fixes together:** castBots x40 both settings on 1-4 and 2-6 against the landed cut 5's rows (b26f/rows/), row for
    row. 1-4 is SHIPPED: its moved rows to me BEFORE the fixes land (the A/B rows kid N 7, kid N 12, adult N 36, adult E 17, adult E 19 and
-   C's six should flip to passes; anything else that moves is named). No tier's pass count may drop on either stage.
+   C's six and middle E 10 should flip to passes; anything else that moves is named). No tier's pass count may drop on either stage.
 4. **Then 2-6's moved rows, traced on the FINAL bot** (not before: steps 1-2 move rows; tracing first is patching what is being replaced):
    every lost row against 2f188c552 (BUILD-26f's seven: adult N 11 already traced, a separate spot on the leg's dip #41; adult N 37, kid N
    23 and 27, kid E 12, kid E 30, adult E 26), two runs per cause, BOT fixes general and planted, LAY to me. Then the gained rows: each a
@@ -33,7 +38,6 @@ rebase on anything ENG-26o pushes (REPORT only); never force.
 5. Then rule 28's rest on the final bot: 2-1..2-5 rows against 2f188c552 (2-3's sealed door is KNOWN on base: rows only), tierBots 1-1 9/9,
    castBots.test.ts whole. Then 1-4 relisted ONCE and 2-6 relisted under castBots --proven (every bot at or above 100 s on every listed
    roll: eraRoll.ts:28-30, minSeconds 120 less climbShort 20), the yield reported; under about 60%: the cause and a plan to me, no content without my GO.
-KNOWN, NOT YOURS: 1-4's third spot (middle Easy 10, x 1102, the 40 px step s14:b to s14:c): ENG-26o's trace; its class reaches you by me.
-2-3's castBots ends at a sealed door on base (the cage bot skill lives on t-build-23).
+KNOWN, NOT YOURS: 2-3's castBots ends at a sealed door on base (the cage bot skill lives on t-build-23).
 REPORT: a new top section of reference/qa-reports/BUILD-26/REPORT.md (EXACT NEXT STEP first). Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 Rulings arrive with priority 'next'.
