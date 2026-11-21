@@ -5,7 +5,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FOLLOW_STRIDE, FOLLOWER_W, HERON_LOOK_W, followerPose, heronPose, poseWidth } from './followArt.ts';
+import { FOLLOW_STRIDE, FOLLOWER_W, HERON_LOOK_W, followerPose, heronPose, lookInView, poseWidth } from './followArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import { DRESS_NEW_FRAMES } from './dressNewData.ts';
 import type { FollowKind } from './follow.ts';
@@ -62,4 +62,13 @@ test('the heron looks up while it warns and while it sweeps, and is plain while 
   assert.ok(Math.abs((HERON_LOOK_W * plain.w) / plain.units - 336) < 0.5, 'drawn at w2Heron\'s scale');
   assert.ok(Math.abs(look.w / look.h - 336 / 586) < 0.005, 'packed at the registered frame\'s shape');
   assert.ok(Math.abs(look.w / 336 - 0.72) < 0.005, 'packed at 0.72 of it');
+});
+
+test("a heron in view that looks shows its gaze even while the place it looks is off screen (BUILD-23b: 2-3's first sweep began left of the view and the head-up heron stood with no gaze)", () => {
+  const x0 = 5620, x1 = 6820;
+  // (planted: the old rule drew the look only while its wash was in view: the first case went RED)
+  assert.equal(lookInView({ lookX: 5464, foot: { x: 6290, b: 653 } }, x0, x1), true, 'heron in view, wash off the left edge: its gaze is drawn');
+  assert.equal(lookInView({ lookX: 6000, foot: { x: 9000, b: 653 } }, x0, x1), true, 'wash in view, heron off screen: the wash is drawn');
+  assert.equal(lookInView({ lookX: 3000, foot: { x: 9000, b: 653 } }, x0, x1), false, 'both off screen: nothing');
+  assert.equal(lookInView({ lookX: null, foot: { x: 6290, b: 653 } }, x0, x1), false, 'calm: no look');
 });

@@ -44,7 +44,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const info = () => p.evaluate((E) => {
     const e = eval(E), f = e.follow;
     const cages = e.collectibles.filter((c) => c.type === 'cage').map((c) => ({ x: Math.round(c.x), y: Math.round(c.y), critter: c.critter, shut: !c.collected }));
-    return { px: Math.round(e.player.x), follow: !!f, line: f ? f.line.map((q) => `${q.kind}:${q.state}@${Math.round(q.x)}${q.moved ? '*' : ''}`) : [], herons: f ? f.herons.map((hh) => `${hh.s.phase}@${Math.round(hh.z.x0)}-${Math.round(hh.z.x1)}`) : [], cages, bushes: (e.proto?.bushes ?? []).map((q) => [q.x, q.w]) };
+    return { px: Math.round(e.player.x), follow: !!f, line: f ? f.line.map((q) => `${q.kind}:${q.state}@${Math.round(q.x)}${q.moved ? '*' : ''}`) : [], herons: f ? f.herons.map((hh) => `${hh.s.phase}${hh.lookX !== null ? '~' + Math.round(hh.lookX) : ''}@${Math.round(hh.z.x0)}-${Math.round(hh.z.x1)}`) : [], cages, bushes: (e.proto?.bushes ?? []).map((q) => [q.x, q.w]) };
   }, E);
   const i0 = await info();
   console.log(tag, 'start', JSON.stringify(i0));
@@ -75,8 +75,22 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); }, E);
     look = await p.evaluate((E) => { const e = eval(E); return e.follow.herons.some((hh) => hh.s.phase === 'pass'); }, E);
   }
-  await settle(8);
-  await shot('3-heron-look', { look, ...(await info()) });
+  // (BUILD-23b: the sweep starts 160 px past its stretch, so 8 frames in its wash is still off the view's left: shoot the start (the
+  // gaze only), then step on until the wash is over the bed he hides in, and shoot that. Steps only: render() would paint each frame)
+  await p.evaluate((E) => { const e = eval(E); for (let i = 0; i < 8; i++) e.update(1 / 30); }, E);
+  await settle(1);
+  await shot('3a-heron-look-start', { look, ...(await info()) });
+  const over = await p.evaluate(([E, bx, bw]) => {
+    const e = eval(E);
+    for (let i = 0; i < 90; i++) {
+      const h = e.follow.herons.find((hh) => hh.lookX !== null);
+      if (h && Math.abs(h.lookX - (bx + bw / 2)) < 40) return Math.round(h.lookX);
+      e.update(1 / 30);
+    }
+    return null;
+  }, [E, bed[0], bed[1]]);
+  await settle(1);
+  await shot('3-heron-look', { look, over, ...(await info()) });
   // 4. the parade: him on the far bank past the stones, the line paddling across behind him on his path
   const stones = await p.evaluate((E) => { const e = eval(E); return (e.currentStage.rivers ?? []).filter((r) => r.safe && r.speed === 0).map((r) => [Math.round(r.x0), Math.round(r.x1)]); }, E);
   const pond = stones.find((r) => r[0] > i0.bushes[0][0] + 400);

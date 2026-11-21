@@ -121,8 +121,8 @@ function reedTuft(ctx: CanvasRenderingContext2D, x: number, y: number, t: number
 /** the herons in view, wading at their stretches' ends, and each one's look on the ground while it sweeps */
 export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: number, x0: number, x1: number): void {
   for (const h of fp.herons) {
-    if (h.lookX !== null && h.lookX > x0 - WATCH.sight && h.lookX < x1 + WATCH.sight) drawLook(ctx, h, fp);
-    if (h.foot.x < x0 - 120 || h.foot.x > x1 + 120) continue;
+    if (lookInView(h, x0, x1)) drawLook(ctx, h, fp);
+    if (h.foot.x < x0 - HERON_VIEW_PAD || h.foot.x > x1 + HERON_VIEW_PAD) continue;
     // (facing back along its stretch: the painting faces left, so the one wading past the stretch's start is turned)
     // (looking: its painted head-up pose from w2-props, at w2Heron's px a unit with its post on w2Heron's: only the bird moves)
     if (heronPose(h) === 'w2HeronLook' && riverArtReady()) drawW2Piece(ctx, 'w2HeronLook', h.foot.x, h.foot.b, HERON_LOOK_W, h.end < 0);
@@ -136,6 +136,21 @@ export function drawHerons(ctx: CanvasRenderingContext2D, fp: FollowPlay, t: num
       ctx.restore();
     }
   }
+}
+
+/** how far past the view's edges a heron's foot may stand and still be drawn (px: its painting's half width and its post) */
+const HERON_VIEW_PAD = 120;
+
+/**
+ * Whether a heron's look is drawn (pure: followArt.test.ts): while it looks, when its wash is in view OR the heron itself is. A heron on
+ * screen with its head up must show its gaze toward where it looks, even when that place is off the screen's edge (BUILD-23b: the sweep
+ * starts 160 px past its stretch, so at a sweep's start and end the wash is off view and the heron stood head-up with no gaze).
+ */
+export function lookInView(h: Pick<Heron, 'lookX' | 'foot'>, x0: number, x1: number): boolean {
+  if (h.lookX === null) return false;
+  const wash = h.lookX > x0 - WATCH.sight && h.lookX < x1 + WATCH.sight;
+  const bird = h.foot.x >= x0 - HERON_VIEW_PAD && h.foot.x <= x1 + HERON_VIEW_PAD;
+  return wash || bird;
 }
 
 /** the heron's painted pose: head-up looking while it warns or sweeps, its plain pose while calm (pure: followArt.test.ts) */
