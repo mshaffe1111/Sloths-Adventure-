@@ -39,9 +39,20 @@ R. **The race table on the merged head: DONE** (af127d21e, race-27j-merged.txt; 
    player never wins without a fall on the last crossing' (home seeds 1-3, both settings) PASSES, so each of those two wins carries a
    fall on the last crossing (the lead's ruling A: falling in is not winning without effort). Worth the lead's eye: home Normal 1 moved
    from a 21.5 s loss to a 0.4 s win with the merge and the re-plant, by the exemption, not by a clean ride.
-S. Then the packet's step 5: stills at 2x both ways (the boat waiting, setting off, docked; the door and letter), THE CLIP of the race leg
-   (D63), THE FULL SET (gates.md D96; lockall vs 0eefc707e: only 2-7's toy moves; `git fetch --unshallow` first). Known and NOT ours: the
-   wall end's shade seam and water fill and the stretched wall picture (R-165.380, after release 3).
+S. **Stills: a first pass on the merged head, NOT the set.** stills-27j/sheet-upright.jpg and sheet-sideways.jpg (2x, race-stills-27e.mjs on a
+   dev server at af127d21e, fixture seed 1 Normal; PW=/opt/node22/lib/node_modules/playwright/index.mjs because the script sits outside
+   node_modules). Spots (x:boatDx:tag:face:leg): 17420:none:waiting:L:low 16330:-330:settingoff:L:low 1050:211:docked:L:low
+   15700:none:door:R:up. Judged edge to edge: DOCKED sideways reads well (the boat and its rower at the far bank's edge, Pokey on the bank
+   beside it). DOOR AND LETTER on the out leg reads well both ways (the round door, the letter, the petal ring). WAITING and SETTING OFF
+   FAIL AS STILLS: the boat is not on screen. Waiting: its bow at 16519 (P.x0) is 900 px from Pokey at the wait river's near bank
+   (17420), past the view's edge both ways. Setting off at 16000: the boat is behind the 15703-16519 land (layer 'under', the lead's
+   ruling (a)). Upright, docked is off-screen too (211 px right of him in a ~440 px view). Pick the spots from the marks
+   (homeStage(1,'normal',POST_CODE).pacer.marks: 16519, 14911, 14173, ... 1261): waiting = Pokey on the wait river's water or a log
+   within ~400 px of 16519; setting off = the boat over the first crossing's open water, not over land. QUESTION FOR THE LEAD (law
+   zero): on this roll the waiting boat cannot be seen from the wait river's near bank (an 800 px river, a ~980 px view sideways); a
+   player meets it only partway across. Is that the design (2-7.md), or should the boat wait where he can see it from the bank?
+   Then THE CLIP of the race leg (D63) and THE FULL SET (gates.md D96; lockall vs 0eefc707e: only 2-7's toy moves; `git fetch --unshallow` first).
+   Known and NOT ours: the wall end's shade seam and water fill and the stretched wall picture (R-165.380, after release 3).
 ## What was done
 1. **The merge** (24d6ba567): origin/t-eng-ground 2d4e0752a into t-eng-27, --no-ff. The two conflicts ENG-27i mapped, nothing else.
    w2.ts lip(): OURS (`p.y >= y - 2 && p.y <= y + LIP_RISE`, a bank on the fall's own storey; it refuses the upper leg 600 over the fall
@@ -56,7 +67,9 @@ S. Then the packet's step 5: stills at 2x both ways (the boat waiting, setting o
    each a single). firsttimer.test.ts 13/13 PASS. pacerLay's post Normal 4 and 5 race tests keep their GREEN half (the middle wins both,
    PASS); their RED half moved to the laid toy (comment in place; title says where its RED lives). Not loosened: the skill's RED is
    still proven, now where its cause is laid rather than where the generator happened to lay it.
-POLISH CHECK: no screen changed in this packet (a merge and tests); stills and THE CLIP are step S, undone.
+POLISH CHECK: no screen changed in this packet (a merge and tests). The first stills (S) were looked at edge to edge on contact sheets:
+   docked (sideways) and the door and letter pass; waiting and setting off do not show the boat (spots, not the game; S says where).
+   THE CLIP is undone.
 LESSONS APPLIED: D111 (the box from `date`; long runs in the background on frozen worktrees from the start), D57 (inbox at each step and
    push), D102 (lean reads), D109 (no clock times in messages), law 22 / the lead's ruling (no test loosened; the failing RED half left
    failing and named rather than dropped), law 3 (the bare toy's first result checked frame by frame before calling it a plant: it was
