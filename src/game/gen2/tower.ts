@@ -321,13 +321,33 @@ const BOUNCE = LAND_FLIGHTS.normal.bounce;
 /** the most caps one walk-off is flown over before it is called no landing */
 const BOUNCES = 3;
 
+/** a flown path's least and most way along (dx) and depth (dy), px: the box fly reads its pieces from (each path once) */
+const SPANS = new WeakMap<FlightPath, { dx0: number; dx1: number; dy0: number; dy1: number }>();
+function spanOf(path: FlightPath): { dx0: number; dx1: number; dy0: number; dy1: number } {
+  let s = SPANS.get(path);
+  if (!s) {
+    s = { dx0: Infinity, dx1: -Infinity, dy0: Infinity, dy1: -Infinity };
+    for (const [dx, dy] of path) { s.dx0 = Math.min(s.dx0, dx); s.dx1 = Math.max(s.dx1, dx); s.dy0 = Math.min(s.dy0, dy); s.dy1 = Math.max(s.dy1, dy); }
+    SPANS.set(path, s);
+  }
+  return s;
+}
+
 /** one flight of walkOff: `path` from (ox, oy), his middle and feet; `resume`, whether he goes on at a run once he is under a wall that
  *  stopped him; `stopped`: a wall did, on this flight or a bounce after it */
 function fly(platforms: readonly Platform[], self: Platform | undefined, path: FlightPath, ox: number, oy: number, side: 1 | -1, width: number, resume: boolean, hops: number): { land?: { x: number; y: number }; stopped: boolean } {
   /** how far a wall has held him back along his way, px */
   let back = 0;
   let wall: Platform | undefined, stopped = false;
-  const xAt = (k: number) => Math.max(20, Math.min(width - 20, ox + side * (path[k][0] - back)));
+  const clampX = (x: number) => Math.max(20, Math.min(width - 20, x));
+  const xAt = (k: number) => clampX(ox + side * (path[k][0] - back));
+  // (ENG-26h, load speed: only the pieces the flight's box can meet are flown against; the same landings and walls as every piece. A
+  // wall only holds him back (back >= 0), and a stop sets him at most 2 px behind the frame before it, so his middle stays inside the
+  // path's way out, less 2 px a frame; a landing or a face is met within its reach of him, a top between his depths)
+  const s = spanOf(path), slack = 2 * path.length + Math.max(LAND_SIDE.px, CAP_SIDE.px, WALL_HALF.px) + 4;
+  const xa = clampX(ox + side * s.dx0), xb = clampX(ox + side * s.dx1);
+  const xlo = Math.min(xa, xb) - slack, xhi = Math.max(xa, xb) + slack, ylo = oy + s.dy0 - BODY_H - CATCH_DROP.px - 1, yhi = oy + s.dy1 + 1;
+  const near = platforms.filter((q) => q !== self && q.type !== 'fragile' && !q.broken && q.x <= xhi && q.x + q.width >= xlo && q.y <= yhi && q.y + q.height >= ylo);
   for (let k = 1; k < path.length; k++) {
     const d0 = path[k - 1][1], d1 = path[k][1], x0 = xAt(k - 1);
     // (held at a wall's face: while it is beside him, or for good when he is flown straight down it)
@@ -335,8 +355,7 @@ function fly(platforms: readonly Platform[], self: Platform | undefined, path: F
     else wall = undefined;
     const x = xAt(k);
     let land: Platform | undefined, stop: Platform | undefined;
-    for (const q of platforms) {
-      if (q === self || q.type === 'fragile' || q.broken) continue;
+    for (const q of near) {
       const top = q.y - oy;
       if (!wall && q.type === 'solid' && q.height >= WALL_H && d1 > top && d1 - BODY_H < top + q.height) {
         const face = side > 0 ? q.x : q.x + q.width;
