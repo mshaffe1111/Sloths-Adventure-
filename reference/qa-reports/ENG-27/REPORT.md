@@ -9,6 +9,12 @@
    "groundStack (t-eng-ground, NOT merged here yet)..." with its real line, pointing at §0zq-GROUND) and w2.ts lip() (ours
    `p.y >= y - 2 && p.y <= y + LIP_RISE` sits inside theirs `p.y <= y + LIP_RISE && p.y >= y - LIP_RISE`; ours also rejects their
    600-px upper leg; banks() takes y from the river's surface at its rivers call, so try OURS first and settle by both sides' tests).
+   **TRIED on 8a2257760 (scratch, never pushed): with OURS lip, tsc clean and 53/56 of the six files; groundStack, w2.test, postLay,
+   legsHome, pacerBehindBanks all pass. The 3 fails are pacerLay's planted RED halves, and they fail with THEIRS lip too (28/31):
+   ENG-27f's fromTakeoff plants post Normal seeds 4 and 5 and ENG-27g's boardLog plant home Easy seed 1, "without the skill the plant must
+   lose", now WIN without it (97.9 s vs boat 100.76; 100.5 vs 103.44; 85.2 vs 97.53): the merged ground took away the descent pools these
+   plants were set on (the lead's ruling), so the cause is no longer on the toy. Do NOT loosen them (law 22): ask the lead to re-plant each
+   on a roll where its cause still lives (2-x rule-28 rows the skill moved, e.g. ENG-27g's castdiff rows) or retire it with its cause.**
    Then tsc + pacerLay + pacerBehindBanks + groundStack + legsHome + postLay + w2.test (paths: src/game/gen2/{pacerLay,legsHome,postLay}.test.ts,
    src/game/gen2/worlds/w2.test.ts, src/game/{groundStack,pacerBehindBanks}.test.ts); engine-core.md.
 2. The race table on the merged head: raceprobe-27e.ts.txt as tools/inspect/_race.ts, `npx tsx tools/inspect/_race.ts <middle|expert|ride> <home|post>`
