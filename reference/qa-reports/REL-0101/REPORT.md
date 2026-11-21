@@ -3,15 +3,8 @@ Release member, session_01FhBbYLMy4W3acXCBoim6nH. Packet reference/packets/2026-
 Branch release-0.10.1 from origin/main 107870f5d. Times from `TZ=America/New_York date`.
 
 ## EXACT NEXT STEP (kept current)
-10:21 AM ET: merges a-e and the version commit are in, each green (6b8fda31c, pushed). Waiting on t-hud-vine's final (cutoff 11:30 AM ET);
-then THE FULL SET on the exact head. Seed lists timed alone on 6b8fda31c meanwhile (early, for the D99 table).
-Lead rulings: 10:25 AM ET, HUD-VINE ships with NO What's New line (the keeper's 7 stand). 10:33 AM ET (Matt 10:28, R-165.368): PICK-THUMBS
-(picture tiles, 'what the game is about', 'how to start'; base t-keeper-pick 599c4d5b3; about 12:30 PM ET) goes INTO release 2; THE FULL SET
-HOLDS for its hash (the 11:30 start-without rule withdrawn); no What's New line (page-only). Meanwhile: a TRIAL of the slow gates on
-6b8fda31c (early warning, not the set), the D99 table, the PR body draft.
-Early reads on 8224efdeb (not the final set): lockall vs main 107870f5's lock (recorded 9:58-10:06 AM ET, 3,264 builds of 102 stages)
---intended 2-5 PASS, 101/102 unchanged, only 2-5 moved (10:06-10:14 AM ET); funcheck the same as main's, run side by side (22 worse/new, 77 known;
-the two logs differ only in run time, 82 s vs 83 s).
+11:47 AM ET: merges a-g + the version commit + the timecheck correction are in, each green. Nothing else comes into release 2 (the lead).
+THE FULL SET runs on the commit that carries this line (frozen worktree); its gate table goes below when it is done.
 
 ## Merge table (MERGED with --no-ff, never rebased; tsc + the CI tool line (gates.yml, CI=1) after EACH, D92)
 | # | Branch @ head | Merge commit | Conflicts | tsc | CI tool line |
@@ -22,6 +15,7 @@ the two logs differ only in run time, 82 s vs 83 s).
 | d | t-link-room @ 4c1601fd3 | 8224efdeb | none | PASS | PASS: 336 / 335 / 0 / 1 todo (9:53-9:58 AM ET) |
 | e | t-keeper-pick @ 599c4d5b3 (the lead's final, 10:08 AM ET; words head 1fdf0a144; carries t-pick-w1 @ ef5622725) | a8824ad4a | reference/handoffs/engine-core.md: PICK-W1 and FIX-IDLE each added a top section; kept both, 0zq-PICK above 0zr-IDLE (each section once, checked) | PASS | PASS: 336 / 335 / 0 / 1 todo (10:17-10:21 AM ET) |
 | f | t-hud-vine @ 83b51c91f (the lead's final, 10:40 AM ET; code 2e3b17c99) | 008d82625 | none | PASS | PASS: 336 / 335 / 0 / 1 todo (10:39-10:54 AM ET, under the trial's load) |
+| g | t-pick-thumbs @ 77a84713e (the lead's final; code 2f0a7dae2; carries t-keeper-pick) | 933203aa5 | none; the corrected PICK-W1 REPORT:99 line kept (t-pick-thumbs does not touch it) | PASS | PASS: 336 / 335 / 0 / 1 todo (11:42-11:46 AM ET) |
 | v | version + What's New (not a merge) | 6b8fda31c | 0.10.0 -> 0.10.1 in package.json and package-lock's own two fields (as 0.10.0 did); whatsNew.ts top entry = the keeper's 7 lines, title "Count to four", copied by script from whats-new-0.10.1.md | PASS | whatsNew.test PASS 4/4 |
 | t | timecheck correction (not a merge; the lead's ruling) | 051e77b45 | reference/qa-reports/PICK-W1/REPORT.md:99 only: "The lead (9:26 PM ET)" (2:12 after its commit 1b5d2fff8, a typed-ahead stamp in the lead's message) -> "The lead (11-20, before 9:24 PM ET; first typed 9:26 PM)" | | timecheck PASS (112 commits, 110 stamps) |
 The todo each time: the open chase-bots line (child bot, Normal, 1 of 3 seeds; ENG-B4).
