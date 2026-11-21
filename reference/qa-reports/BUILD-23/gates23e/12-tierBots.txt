@@ -1,0 +1,2 @@
+== CI=1 npx tsx --test tools/inspect/tierBots.test.ts (head f9bafa012, cwd .) start 10:42 AM
+TAP version 13
