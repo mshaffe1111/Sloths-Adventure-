@@ -1,24 +1,46 @@
 # ENG-26f REPORT: 2-6 "The Water Wheels" readiness: the last x-only water reads, the full lock, rule 28's row diff, the table, stills, gates
-t-eng-26c from fb297bdc9. IN PROGRESS (first written 1:16 PM ET 11-21; kept current at each step). Commits: cfdca80e3 (step 0),
-721b9e672 (step 1 evidence), 4a0a8677c (R-165.375), c1fe87a6e (plantRow.ts).
+t-eng-26c from fb297bdc9. HANDED OVER on the lead's ruling (context about 280k by the lead's read; stills and the engine gates go to
+BUILD-26, no ENG-26g). Commits: cfdca80e3 (step 0), 721b9e672 (step 1 evidence), 4a0a8677c (R-165.375), c1fe87a6e (plantRow.ts),
+411638a73 (step 2), c50c8406f (step 3), a71c69427 (tsc).
 Lessons applied: D57/D87/D105 (inbox at every step and push), D75/D101 (proven on the draft row), D102 (grep and line ranges; the
 lead's context number is the one), D107, D109 (no clock times in messages), D40 (the draft bricks are throwaway; the fixes are general).
 MISS (owned): during step 0's plant I restored the three planted files with `git checkout`, which also threw away the fix itself; I
 re-applied it from a saved copy and the same edit script before any commit (tests 11/11 after). Countermeasure I used from then on:
 a plant is restored from a copy of the fixed file, never from git.
 
-## EXACT NEXT STEP (for whoever picks this up, in this order)
-1. **Rule 28 (step 2): DONE** (below).
-2. **The table (step 3): DONE** (below).
-3. **Stills (step 4):** tools/inspect/plantRow.ts is the DEV route's plant (nothing in src imports it, so no shipped build holds it):
-   a stills script starts a dev vite, and in the page `await import('/tools/inspect/plantRow.ts')` and the draft kit
-   (`/src/game/gen2/worlds/w2Arc26.ts` kitLib26/STAGE_26, `/src/game/gen2/worlds/w2.ts` w2Finish), calls plantRow(row, 1), then
-   `__play('2-6', 1)`. Plan for real moments: record a tier bot's run headless (wrap RealPlay.prototype.frame to log each pad and
-   Pokey's x/y/t), replay those pads in the page (replace the engine's input with a FakeInput-shaped object, step e.update(1/30) by
-   hand, check Pokey's x/y against the record each frame), and shoot at the board, ride, step-off, rightward wheel, great wheel and a
-   tower turn, upright 390x844 and sideways 844x390 at 2x. Buckets are placed from the game clock (wheel.ts bucketAt(host.t)), so the
-   replay reproduces the wheel too. With R-165.375 the painted noria preloads on the listed row; look at every still before sending.
-4. **Gates (step 5)** on the head, then rewrite reference/handoffs/engine-core.md (the wheel, riverAt/waterUnder/waterNear, the tower river).
+## EXACT NEXT STEP (for BUILD-26, the lead's ruling: no ENG-26g; BUILD-26 starts from this branch's head)
+1. **Step 0 of BUILD-26, the engine gates on this head (UNRUN here, name each result in your REPORT):** the planted tests
+   (`npx tsx --test src/game/gen2/towerWaterReads.test.ts src/game/gen2/listedWheelSheet.test.ts src/game/gen2/towerCatchWater.test.ts
+   src/game/stageSheets.test.ts tools/inspect/rowWheels.test.ts`), the CI tool line (`npx tsx --test tools/engine/library.test.ts
+   tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts`), generality (`npx tsx
+   tools/engine/generalitycheck.ts`), coverage (`npx tsx tools/difficulty/coveragecheck.ts`), `npx tsx tools/engine/seedlist.ts 1-1
+   --check`. RUN here: tsc on 411638a73 PASS (gates/01-tsc.txt); the planted tests each RED then GREEN in this session (towerWaterReads
+   11/11 at cfdca80e3, listedWheelSheet 1/1 + stageSheets 9/9 at 4a0a8677c, rowWheels.test 5/5 on c1fe87a6e's code); tierBots 1-1 9/9 and
+   lockall (102/102, both bases) above. Every other gate in CLAUDE.md's list (the vite build, chunkcheck, artcheck, drawcheck, clipcheck,
+   knowncheck, roadmapcheck, kbdcheck, buildcheck, the full suite): UNRUN, BUILD-26's or the merge's.
+2. **Write reference/handoffs/engine-core.md** from 'For engine-core.md' below (not rewritten here: context).
+3. **Stills are BUILD-26's own first look of the real stage** with the painted noria (the draft row's stills are throwaway, the lead's
+   ruling). If you want the bots' real moments on the page: tools/inspect/plantRow.ts plants a row in a dev page (`await
+   import('/tools/inspect/plantRow.ts')`, then `__play`); a bot's pads can be replayed through the page engine (buckets are placed from
+   the game clock, wheel.ts bucketAt(host.t), so the replay reproduces the wheel). With R-165.375 a listed row that lays a wheel preloads
+   the noria's sheet: the first frames must show the painted rim, not plain buckets.
+
+## For engine-core.md (the lines BUILD-26 writes, lead's ruling)
+- **River reads, one rule (river.ts):** riverAt(rivers, x, y) is the water he is in or over (window holds x, y no deeper than
+  RIVER_DEPTH 120 under the surface; of two, the higher); waterUnder(rivers, x, y, floors) is the FIRST thing a fall from (x, y) meets
+  (riverAt's river unless a storey's floor spanning x lies between, more than RIVER_DEPTH over the surface; nearer, a floor is ON the
+  river: a bank, island, lily, stone); waterNear(r, x, y, floors) asks it at the window point nearest x. Never judge water by x alone:
+  every reader now goes through these (pipeline.ts dropsOf, easyMode.ts clearOfWater/easyStones/easyWaterLandings/bankEdge/
+  easyPadsWider, lessons.ts pickLesson, waterTeach.ts floorWater, jumpTrails.ts routeGaps). Plants: gen2/towerWaterReads.test.ts.
+- **dropsOf's floor** is the HIGHEST floor under the fall's middle (the first one he meets), no longer the first in array order; only
+  `ends.y` of floor drops moved (12 shipped stages), and no reader uses it.
+- **The tower river:** wheelLay.ts waterFloors (every river's water lies under a tower's open ends, towerCatches and towerFalls; was
+  pondFloors, ponds only). Plant: gen2/towerCatchWater.test.ts.
+- **The wheel's art:** stageSheets 'w2-wheel' is asked for by any kit that lays a wheel (laysWheel(kit): GEN2_STAGES' or the listed
+  row's, pieces and sub-block versions, both settings): R-165.375, plant gen2/listedWheelSheet.test.ts. Buckets sit where wheel.ts
+  bucketAt(wheel, i, host.t) says each fixed step (pieces/wheelPiece.ts): no timer of its own.
+- **Bots:** firsttimer.ts SKILLS.trunkCatch (a jump that catches a trunk straight off the ground is over that frame): 0 of 360 rows
+  moved on 2-3 and on 2-5. rowWheels.ts plays a row not yet listed (plantRow.ts) with every wheel tallied (wheelCrossings.ts).
 
 ## Done
 | step | result | evidence |
@@ -54,3 +76,30 @@ Easy v1 never rides the teaching wheel, 'teachL never'), with 3 rescues and the 
 - The expert finished the draft in about 106 s, under the 2-minute stage rule: the real bricks must hold the expert over 2 minutes.
 - R-165.375: the listed row preloads its painted noria; check the first frames of a wheel on the phone show the painted rim, not plain.
 - (the rest: filled in at hand-over from ENG-26c/26e's list with the table and stills)
+- The bots ON are calm on the draft: 0-1 scrambles a wheel. The real bricks must keep them riding: the table's OFF column is what a
+  wheel nobody can ride looks like (up to 46 scrambles, rescues).
+- The gates in the EXACT NEXT STEP, step 1, are your step 0.
+
+## Polish check
+No stills shot (the lead's ruling: BUILD-26 shoots the real stage). Nothing here draws except R-165.375, which makes the painted noria
+load with the stage instead of popping in; checked by its test, not by a still.
+
+## Pushback
+None on the packet's substance. The drops fingerprint as the packet worded it ("identical on every shipped stage") could not hold after
+ENG-26e's dropsOf fix: it was reported as a STOP and ruled.
+
+## Suggestions
+- lockall could hash `gen2.drops` as its own part (it strips it with verdicts): this task's fingerprint took a side script
+  (lock/lockplus.ts); a part of its own would make the next move show by itself. A ready packet: tools/engine/lockall.ts, add
+  `parts['gen2.drops'] = h(st.gen2?.drops)`, re-record, check that only that part is new.
+
+## Unresolved
+- Step 4 (stills) and the step 5 gates named UNRUN above, moved to BUILD-26 by the lead's ruling. engine-core.md not rewritten (the
+  lines are above).
+
+## Method update
+level.md rule 28's row diff can be run against a branch's committed rows by applying ONLY the bot hunk in a worktree at that branch
+(`git show <commit> -- tools/inspect/firsttimer.ts | git apply`): it isolates the bot change from the engine's. rowdiff.py does the diff.
+
+## Turnover note
+reference/handoffs/engine-core.md: NOT rewritten (context, the lead's ruling); its lines are in 'For engine-core.md' for BUILD-26.
