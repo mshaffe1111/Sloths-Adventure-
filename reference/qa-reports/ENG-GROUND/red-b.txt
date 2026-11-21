@@ -1,0 +1,25 @@
+# ENG-GROUND-b planted RED: groundStack.test.ts tests 4-5 on 6c45381d0 + the unwired helpers (engine.ts drawRivers ran the out leg's pools to the view's foot)
+ok 1 - the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 2 - the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 3 - a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+not ok 4 - the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+    356 points of the race leg are under the out leg's river paint
+    +   'walk band at x 15371, 40 over the piece at y 1450',
+    +   'walk band at x 15371, 90 over the piece at y 1450',
+    +   'walk band at x 15371, 140 over the piece at y 1450',
+    +   'walk band at x 15395, 40 over the piece at y 1450',
+    +   'walk band at x 15395, 90 over the piece at y 1450',
+    +   'walk band at x 15395, 140 over the piece at y 1450',
+    +   'walk band at x 15419, 40 over the piece at y 1450',
+    +   'walk band at x 15419, 90 over the piece at y 1450',
+    +   'walk band at x 15419, 140 over the piece at y 1450',
+    +   'walk band at x 15443, 40 over the piece at y 1450',
+    +   'walk band at x 15443, 90 over the piece at y 1450',
+    +   'walk band at x 15443, 140 over the piece at y 1450'
+    0: 'walk band at x 15371, 40 over the piece at y 1450'
+    1: 'walk band at x 15371, 90 over the piece at y 1450'
+    2: 'walk band at x 15371, 140 over the piece at y 1450'
+    3: 'walk band at x 15395, 40 over the piece at y 1450'
+    4: 'walk band at x 15395, 90 over the piece at y 1450'
+    5: 'walk band at x 15395, 140 over the piece at y 1450'
+    6: 'walk band at x 15419, 40 over the piece at y 1450'

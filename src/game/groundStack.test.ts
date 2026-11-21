@@ -196,3 +196,65 @@ test('a stage whose lay stacks no leg has no stacked zone, so its ground draws e
   assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'down', x0: 5000, x1: 5600, y0: 760, y1: 1400 }, { travel: 'left', x0: 0, x1: 5000, y0: 1400, y1: 1600 }]), [{ x0: 0, x1: 5000, y0: 1400, y1: 1600 }]);
   assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'left', x0: 5000, x1: 9000, y0: 1400, y1: 1600 }]), []);
 });
+
+// ENG-GROUND-b: the upper leg's RIVERS end at the ceiling too. engine.ts drawRivers runs a river's water, its bed and the soil under it
+// down to the view's foot; on the out leg its still pools (between the out leg's banks) hung as columns of earth to just over the race
+// leg's banks and planks (2-7's re-shoot at x 15350, and the join at x 18450). This runs the engine's OWN river painter on the toy (a
+// World 2 engine with the toy's stage in it) into the recording canvas, over the race leg, both settings, and judges every fill:
+//   the race leg's walk band and its rivers' water are under no upper river's paint; each upper river is still drawn (to its ceiling).
+// Planted RED on 6c45381d0 (the engine ran the upper pools to the view's foot): see reference/qa-reports/ENG-GROUND/red-b.txt.
+const { RealPlay } = await import('./realPlay.ts');
+const { WORLDS_DATA } = await import('./worldsData.ts');
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)`, () => {
+    const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+    const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed: 1, difficulty }) as never, difficulty) as unknown as {
+      platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+    };
+    // (a World 2 engine, its stage swapped for the toy's: the river painter reads the stage's rivers and platforms, the camera and the clock)
+    const rp = new RealPlay('2-1', 1);
+    const e = rp.e;
+    e.currentStage = st;
+    e.platforms = st.platforms;
+    e.riverUnder = new WeakMap();
+    e.riverBankOf = new WeakMap();
+    e.paintKit = true;
+    setKitWorld(2);
+    setGroundLook(undefined);
+    setGroundPaint(true);
+    setStacks(st.gen2?.tower?.legs);
+    const world = WORLDS_DATA.find((w: { id: number }) => w.id === 2);
+    const banks = st.platforms.filter(paintedBank);
+    const under = (q: Platform) => banks.find((p) => p !== q && Math.min(p.x + p.width, q.x + q.width) - Math.max(p.x, q.x) > 8 && q.y >= p.y + p.height + 20);
+    const lower = st.platforms.filter((q) => solidish(q) && under(q));
+    assert.ok(lower.length >= 4, `the toy stacks its race leg under its out leg (${lower.length} pieces under earth)`);
+    const x0 = Math.min(...lower.map((q) => q.x)), x1 = Math.max(...lower.map((q) => q.x + q.width));
+    const lowY = Math.min(...lower.map((q) => q.y));
+    // (the upper leg's rivers over the race leg: their surface well over the race leg's pieces)
+    const uppers = st.rivers.filter((z) => z.x1 > x0 && z.x0 < x1 && z.surfaceY < lowY - 300);
+    const lows = st.rivers.filter((z) => z.x1 > x0 && z.x0 < x1 && z.surfaceY >= lowY - 60);
+    assert.ok(uppers.length >= 2, `the out leg has pools over the race leg (${uppers.length})`);
+    const misses: string[] = [];
+    const drawn = new Set<object>();
+    for (let vx = Math.floor(x0 / 400) * 400; vx < x1; vx += 400) {
+      const here = lower.filter((q) => q.x < vx + 900 && q.x + q.width > vx);
+      if (!here.length) continue;
+      const gy = Math.min(...here.map((q) => q.y));
+      Object.assign(e.camera, { x: vx, y: gy - 520, viewportWidth: 900, viewportHeight: 740 });
+      const r = new RecordingCtx();
+      e.drawRivers(r as unknown as CanvasRenderingContext2D, world, false);
+      // (only the upper rivers' paint: a fill inside an upper river's x whose box starts well over the race leg: its water, bed or soil)
+      const up = r.draws.filter((d) => uppers.some((z) => { const hit = d.box[0] < z.x1 + 200 && d.box[2] > z.x0 - 200 && d.box[1] < lowY - 200; if (hit) drawn.add(z); return hit; }));
+      const coveredUp = (x: number, y: number) => up.some((d) => d.clips.length > 0 && x >= d.box[0] && x <= d.box[2] && y >= d.box[1] && y <= d.box[3] && d.clips.every((c) => inside(c.polys, c.evenodd, x, y)));
+      for (const q of here)
+        for (let x = Math.max(q.x + 12, vx); x <= Math.min(q.x + q.width - 12, vx + 900); x += 24)
+          for (const dy of [40, 90, 140]) if (coveredUp(x, q.y - dy)) misses.push(`walk band at x ${Math.round(x)}, ${dy} over the piece at y ${Math.round(q.y)}`);
+      for (const z of lows) {
+        const a = z.x0 + (z.x1 - z.x0) * 0.2, b = z.x0 + (z.x1 - z.x0) * 0.8;
+        for (let x = Math.max(a, vx); x <= Math.min(b, vx + 900); x += 12) if (coveredUp(x, z.surfaceY - 12)) misses.push(`the race river at x ${Math.round(x)}, 12 over its surface ${Math.round(z.surfaceY)}`);
+      }
+    }
+    assert.deepEqual(misses.slice(0, 12), [], `${misses.length} points of the race leg are under the out leg's river paint`);
+    assert.ok(drawn.size >= 2, `the out leg's pools are still drawn (${drawn.size} of ${uppers.length})`);
+  });
+}

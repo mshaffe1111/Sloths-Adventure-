@@ -146,6 +146,30 @@ export function ceilingsOver(p: Platform, cs: readonly Ceiling[]): Ceiling[] {
   });
 }
 
+/**
+ * The ceilings over a stretch of an upper leg that is no bank: a river's water, its bed and the soil under it, which engine.ts drawRivers
+ * runs down to the view's foot as a bank's soil runs (its top above the line all along x0..x1: ceilingsOver's rule). ENG-GROUND-b.
+ */
+export function ceilingsOverSpan(x0: number, x1: number, top: number, cs: readonly Ceiling[]): Ceiling[] {
+  return ceilingsOver({ x: x0, width: x1 - x0, y: top } as Platform, cs);
+}
+
+/**
+ * Clip to the air ABOVE `cs`'s lines over x0..x1, from `top` down (the highest line where two meet): what a river of an upper leg keeps
+ * of its water, bed and soil. Only the stretch's own samples (a river's width, not the whole line). Call between save() and restore().
+ */
+export function clipAboveLines(ctx: CanvasRenderingContext2D, cs: readonly Ceiling[], x0: number, x1: number, top: number) {
+  const at = (x: number) => Math.min(...cs.map((c) => ceilingAt(c, x)));
+  ctx.beginPath();
+  ctx.moveTo(x0, top);
+  ctx.lineTo(x1, top);
+  ctx.lineTo(x1, at(x1));
+  for (let x = Math.floor(x1 / STEP) * STEP; x > x0; x -= STEP) ctx.lineTo(x, at(x));
+  ctx.lineTo(x0, at(x0));
+  ctx.closePath();
+  ctx.clip();
+}
+
 /** is q one of a ceiling's lower pieces (the lower leg) */
 export const underCeiling = (q: Platform, cs: readonly Ceiling[]) => cs.some((c) => c.lower.includes(q));
 

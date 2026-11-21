@@ -200,7 +200,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -6282,6 +6282,11 @@ export class GameEngine {
       ctx.beginPath();
       ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
       ctx.clip();
+      // (a river on a leg another leg runs under: its water, bed and soil end at the ceiling as its banks' earth does, the underside on its
+      // soil; they ran to the view's foot as columns of earth over the race leg's banks and planks, 2-7's re-shoot: groundStack.ts,
+      // ENG-GROUND-b. None where no leg is stacked)
+      const lid = riverLid(this.platforms, r.x0, r.x1, r.surfaceY);
+      if (lid) clipAboveLines(ctx, lid, x0, x1, r.surfaceY - 30);
       // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
       if ((ul || ur) && this.paintKit && protoArtReady()) {
         const bk = this.riverBanks(r);
@@ -6343,6 +6348,7 @@ export class GameEngine {
         // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
         if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
+      if (lid && !over) riverUnderside(ctx, lid, x0, x1, { x0: a, x1: b });
       ctx.restore();
     }
   }

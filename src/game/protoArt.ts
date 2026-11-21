@@ -28,7 +28,7 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
-import { ceilingsFor, ceilingsOver, clipAbove, drawUnderside, underCeiling, type StackZone } from './groundStack.ts';
+import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, type Ceiling, type StackZone } from './groundStack.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -75,6 +75,24 @@ let stackZones: readonly StackZone[] = [];
 export function setGroundStacks(z: readonly StackZone[] | undefined) {
   stackZones = z ?? [];
 }
+/**
+ * The ceilings over a river of an upper leg (its surface above the line all along x0..x1), or null: engine.ts drawRivers ends the river's
+ * water, bed and soil there (clipAboveLines) and draws the underside on its soil (riverUnderside), as each bank's earth ends (drawGround).
+ * The out leg's still pools ran down to the race leg as columns of earth over its banks and planks (ENG-GROUND-b, 2-7's re-shoot at
+ * x 15350 and the join). None where no leg is stacked, and none for the lower leg's own rivers (under the line).
+ */
+export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY: number): Ceiling[] | null {
+  if (!stackZones.length) return null;
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones);
+  const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
+  return over.length ? over : null;
+}
+/** a lidded river's underside along x0..x1 (the banks' own: painted strip or stand-in, groundStack.ts drawUnderside), inside its clip */
+export function riverUnderside(ctx: CanvasRenderingContext2D, lid: readonly Ceiling[], x0: number, x1: number, view: { x0: number; x1: number }) {
+  drawUnderside(ctx, kitWorld, { x: x0, width: x1 - x0 } as Platform, lid, view);
+}
+export { clipAboveLines };
 export function setGroundPaint(on: boolean) {
   groundOn = on;
 }
