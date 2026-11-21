@@ -1,8 +1,8 @@
 # PICK-W1 REPORT: the testers' link plays all of World 1, with a stage picker (R-165.343)
 
 Member: PICK-W1 (Engine + UI, Opus 5.5 high). Branch t-pick-w1 from t-int-15 @ 0eefc707e. Started 7:58 PM ET 11-20.
-FINAL HASH: __HASH__ (code head 7eb3aadb5; later commits are stills and report files only).
-EXACT NEXT STEP (if this member stops before its final): fill in the gate table's blanks from the logs (lane B: CI tool line, tipwalk, registrycheck, tierBots, paint 0/1/2 on 229966f9c; suite 1-4/6 on 7eb3aadb5), then run `node tools/perf/buildcheck.mjs` ALONE on 7eb3aadb5.
+FINAL HASH: the tip of t-pick-w1, this REPORT's own commit (the hash is in the final message to the lead; code head 7eb3aadb5; later commits are stills and report files only).
+EXACT NEXT STEP: none in this packet: every gate is run and PASS. Next: the keeper's check of the DRAFT words (Saturday morning), then the integrator merges t-pick-w1.
 
 ## Mock-up (item 0)
 Pushed 8:06 PM ET at 70144ed7e, within 8 minutes of start. These are stills of the REAL page (the picker was built first and shot), 2x:
@@ -108,10 +108,16 @@ Code head **7eb3aadb5** (later commits: stills and report only).
 | kbdcheck (pick 1-9 first, both ways) | 7eb3aadb5 | PASS (123 s) |
 | drawcheck | 7eb3aadb5 | PASS (788 s) |
 | registrycheck --lists + seedlist --check, all 13 lists (1-1..1-9, 2-1, 2-2, 2-4, 2-5) | 229966f9c | PASS (each) |
-| suite shards 5/6, 6/6 (started after the fix) | 7eb3aadb5 | __S56__ |
-| suite shards 1/6..4/6 (re-run on the final head) | 7eb3aadb5 | __S14__ |
-| CI tool line, tipwalk --layouts 4, registrycheck, tierBots, paintcheck 0/3 1/3 2/3 | 229966f9c | __LB__ |
-| buildcheck ALONE | 7eb3aadb5 | __BC__ |
+| suite shards 5/6, 6/6 (started after the fix) | 7eb3aadb5 | PASS (618/617/0/1; 679/679/0/0) |
+| suite shards 1/6..4/6 (re-run on the final head) | 7eb3aadb5 | PASS (719/719/0/0; 639/638/0/1; 642/642/0/0; 712/711/0/1) |
+| **suite, the line in full (6 shards)** | 7eb3aadb5 | **total 4009 / pass 4006 / fail 0 / todo 3** (the 3 todos are older TODO-marked tests: R-165.312, 4-3 real engine, one in 5/6) |
+| CI tool line | 229966f9c | PASS (331 pass, 0 fail) |
+| tipwalk --layouts 4 | 229966f9c | PASS |
+| registrycheck | 229966f9c | PASS (13 stages, 49 s) |
+| tierBots | 229966f9c | PASS (9/9) |
+| paintcheck 0/3, 1/3 | 229966f9c | PASS, PASS |
+| paintcheck 2/3 (lane B hit its 90-min limit as it began; re-run) | 7eb3aadb5 | PASS |
+| buildcheck ALONE | 7eb3aadb5 | PASS (1-1 p95 88 ms Normal, 52 ms Easy; budget 150 ms at CPU x4) |
 The first suite run on 229966f9c had two reds in shards 2/6 and 3/6, both mine, fixed at the root in 7eb3aadb5: the tick's glyph was 11 px
 (textSize UI-14; now 12 px), and the two new storage keys were not listed (storageKeys; now listed with the testers' keys). 229966f9c to
 7eb3aadb5 changes only src/index.css (.ct-played) and src/game/storageKeys.test.ts; the seed-list, paint, tipwalk, tierBots and tool gates
