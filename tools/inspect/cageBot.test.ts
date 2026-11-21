@@ -10,7 +10,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CAGE_SKILL, FirstTimerRun, FT_ADULT, FT_CHILD, FT_EXPERT, FT_KID, FT_MIDDLE, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { CAGE_SKILL, FirstTimerRun, vineReaches, FT_ADULT, FT_CHILD, FT_EXPERT, FT_KID, FT_MIDDLE, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 
 interface CageRun { end: string; freed: boolean; hp: number; inLine: boolean; t: number }
 
@@ -32,7 +32,7 @@ function cageRun(who: FirstTimer, seed: number, o: { post?: boolean; cap?: numbe
       let cage = cages[0];
       if (o.post) {
         const vines = run.sim.vines as Array<{ x: number; topY: number; bottomY: number }>;
-        const on = cages.map((c) => ({ c, v: vines.find((v) => Math.abs(v.x - c.x) < 40 && c.y > v.topY && c.y < v.bottomY - 60) })).find((q) => q.v);
+        const on = cages.map((c) => ({ c, v: vines.find((v) => vineReaches(c.x - v.x) && c.y > v.topY && c.y < v.bottomY - 60) })).find((q) => q.v);
         assert.ok(on, `seed ${seed}: a cage hung up a climbing vine (the mooring post)`);
         cage = on.c;
         run.sim.stand(on.v!.x - 220, on.v!.bottomY);

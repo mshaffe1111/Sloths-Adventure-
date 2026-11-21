@@ -19,7 +19,7 @@ import { stageSheets } from '../../stageSheets.ts';
 import { W2_NEW_FRAMES } from '../../w2NewArt.ts';
 import type { W2Decor } from '../../riverArt.ts';
 import { W2_FOLLOW } from './w2.ts';
-import { ARC_23, GOAL_LINES_23, HERON_CARD_23, LAG_23, LINES_23, MISSION_23, PADS_23, STAGE_23, kitLib23 } from './w2Arc23.ts';
+import { ARC_23, GOAL_LINES_23, HERON_CARD_23, LAG_23, LINES_23, MISSION_23, PADS_23, SHELF_DX, STAGE_23, kitLib23 } from './w2Arc23.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
 import type { Collectible, Platform, Vine } from '../../types.ts';
 import type { RiverZone } from '../../river.ts';
@@ -95,10 +95,11 @@ test('five little ones in reed cages (a duckling, an otter pup, a capybara pup, 
     assert.ok(cs.every((c) => c.x < st.exitTotemX), `${seed} ${d}: every cage before the exit`);
     // (the first is taught: nothing that hurts on the stage at all; the heron never takes a heart)
     assert.equal(st.enemies.length, 0, `${seed} ${d}: no animal`);
-    // (the post's cage hangs up its climbing vine, nothing to step off onto at the top: the line waits at its foot)
+    // (the post's cage SITS on the post's painted shelf beside its climbing vine (the lead's ruling 9:00 PM ET 11-20), out of his reach
+    // from the bank, nothing to step off onto at the top: the line waits at its foot)
     const up = cs[3];
-    const post = st.vines.find((v) => v.vineType === 'tree_climb' && Math.abs(v.x - up.x) < 40);
-    assert.ok(post && up.y < post.bottomY - 120 && up.y > post.topY - 10, `${seed} ${d}: the fourth cage hangs up the post`);
+    const post = st.vines.find((v) => v.vineType === 'tree_climb' && up.x - v.x === SHELF_DX);
+    assert.ok(post && up.y < post.bottomY - 120 && up.y > post.topY - 10, `${seed} ${d}: the fourth cage sits on the post's shelf`);
     assert.ok(st.proto.follow, `${seed} ${d}: the little ones follow him (proto.follow)`);
   }
 });

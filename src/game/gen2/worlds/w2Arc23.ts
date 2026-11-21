@@ -194,12 +194,31 @@ const clumps = (easy: boolean): Lay => {
     sockets: [flag('a', 0.2), heron('watch-clumps', 'b', 0.03), reeds('r1', 'b', 0.5, W), reeds('r2', 'c', 0.5, W), cage('cage3', 'c', 0.6, 'capy')],
   };
 };
-/** [Pr] beat 5, up the mooring post: cage 4 hung near the top of the post (a climbing vine, nothing to step off onto at its top); the line
- *  waits at its foot; the pup drops to the bank and walks to the line */
-const POST_H = 230;
+/** the mooring post (w2-new#mooring-post, reference/design/2-3.md beat 5): its rope is the climbing vine; the painted trunk's middle is
+ *  this share of the picture's width from its left (measured on the sheet: the trunk spans 10-80 of its 215 px), and it stands this far
+ *  over the rope's top and this deep into the bank's grass (px) */
+const POST_TRUNK = 0.21, POST_OVER = 30, POST_SINK = 6;
+/** the post's painted shelf (measured on the sheet's alpha, BUILD-23c): its top, where a cage stands at the trunk's side, is this share of
+ *  the picture's height down from its top (the plank's top runs 138-162 of 357 px there); the trunk's right edge is this share of its
+ *  width (75 of 215 px) */
+const SHELF_TOP = 0.43, TRUNK_RIGHT = 75 / 215;
+/** the rope's height (px): the cage on the shelf stands fully clear below the goal plank sideways with him at the post's foot (the lead's
+ *  ruling 9:00 PM ET 11-20), and his blows reach it only from the rope, up off the bank (ENG-CAGE: from a climbing vine 0-80 px below it) */
+const POST_H = 150;
+/** World 2's reed cage as drawn (riverArt.ts drawW2Cage: its picture's foot 28 px under the cage's y; 84 px wide, the bars 32-217 of 271) */
+const CAGE_FOOT = 28, CAGE_HALF = 29;
+/** the post's picture as laid (layW2New23): its height and width (px) */
+const POST_PIC_H = POST_H + POST_OVER + POST_SINK;
+const POST_PIC_W = (POST_PIC_H * W2_NEW_FRAMES['mooring-post'].w) / W2_NEW_FRAMES['mooring-post'].h;
+/** where cage 4 SITS on the shelf (the lead's ruling 9:00 PM ET 11-20): its height over the bank (the socket's dn) and how far right of the
+ *  rope it stands (px): the cage's bars against the trunk's right edge, its foot on the shelf's top */
+const SHELF_DN = Math.round(POST_H + POST_OVER - SHELF_TOP * POST_PIC_H + CAGE_FOOT);
+export const SHELF_DX = Math.round((TRUNK_RIGHT - POST_TRUNK) * POST_PIC_W + CAGE_HALF);
+/** [Pr] beat 5, up the mooring post: cage 4 sits on the post's painted shelf beside its rope (a climbing vine, nothing to step off onto at
+ *  its top), punched open from the rope; the line waits at its foot; the pup drops to the bank and walks to the line */
 const mooring: Lay = {
   pieces: [bank('a', null, 440), rock('ra', 'a', 0.5), bank('b', 'a', 360), post('pv', 'b', 360, 260, POST_H), rock('rc', 'c', 0.5), bank('c', 'b', 560), bank('z', 'c', 300)],
-  sockets: [cage('cage4', 'b', 260 / 360, 'otter', POST_H - 40)],
+  sockets: [cage('cage4', 'b', (260 + SHELF_DX) / 360, 'otter', SHELF_DN)],
 };
 /** [Wf] beat 6, TWIST: no stopping on the pond: 2-2's sinking pads over the watched pond to a reed isle (a short bank in its reeds) */
 const pondTwist = (easy: boolean): Lay => ({
@@ -260,10 +279,6 @@ type FinishStage = {
  *  a gap: stillLay watchedRun; here the look is ACROSS the water, 2-3.md beat 6 "the heron over the pond") */
 const POND_23 = 'w2-23-pond';
 const POST_23 = 'w2-23-post';
-/** the mooring post (w2-new#mooring-post, reference/design/2-3.md beat 5): its rope is the climbing vine; the painted trunk's middle is
- *  this share of the picture's width from its left (measured on the sheet: the trunk spans 10-80 of its 215 px), and it stands this far
- *  over the rope's top and this deep into the bank's grass (px) */
-const POST_TRUNK = 0.21, POST_OVER = 30, POST_SINK = 6;
 /**
  * 2-3's finish (listed.ts FINISH 'w2-23'): the little ones follow him (proto.follow = World 2's row); each watched stretch cut to its
  * reeds (clipWatches); on Normal beat 7's stretch gets its second heron, LAG_23 s out of step (WatchZone.lag); on Easy one.

@@ -58,7 +58,7 @@ import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
 import type { Enemy, Platform, PlayerState, Vine } from '../../src/game/types.ts';
-import { headRect } from '../../src/game/fight.ts';
+import { headRect, MOVES } from '../../src/game/fight.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import { engageOf } from '../../src/game/predators/core.ts';
@@ -142,6 +142,15 @@ export const LINE_SKILL = { waitTail: true, fetch: true, hopBack: true };
  * from the vine, then down. Any world's cage, by its data.
  */
 export const CAGE_SKILL = { punch: true, climb: true };
+/**
+ * A cage `dx` px across from him on a climbing vine (the way he faces) is in his blow's reach: the engine's airKick box (fight.ts MOVES,
+ * p.x + 4 to p.x + 78 the way he faces) against the cage's 48 px box (engine.ts strike), 8 px inside it either side. A cage on a post's
+ * shelf beside the rope (2-3's mooring post, BUILD-23c: 45 px right of it) is reached as one hung on the rope itself.
+ */
+export function vineReaches(dx: number): boolean {
+  const k = MOVES.airKick.to;
+  return dx > k.x - 24 + 8 && dx < k.x + k.w + 24 - 8;
+}
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -2109,7 +2118,7 @@ export class FirstTimerRun {
     // (p.y is his feet: stood on a floor, p.y is the floor's top)
     const feet = p.y;
     /** the climbing vine a cage hangs up, too high to punch from the ground (CLIMB) */
-    const postOf = (c: CageItem) => (CAGE_SKILL.climb ? this.sim.vines.find((v) => !v.isSwingingVine && v.vineType !== 'swing_liana' && Math.abs(v.x - c.x) < 40 && c.y > v.topY && c.y < v.bottomY - 60) : undefined);
+    const postOf = (c: CageItem) => (CAGE_SKILL.climb ? this.sim.vines.find((v) => !v.isSwingingVine && v.vineType !== 'swing_liana' && vineReaches(c.x - v.x) && c.y > v.topY && c.y < v.bottomY - 60) : undefined);
     let c = aim ? cages.find((q) => q.id === aim.id) : undefined;
     if (aim && !c) {
       // (it opened: on, down the vine first when he is on one)
@@ -2127,7 +2136,7 @@ export class FirstTimerRun {
       const d = (q.x - p.x) * p.facing;
       return d > -8 && d < 80 && q.y - p.y > -50 && q.y - p.y < 40;
     };
-    const onVine = (q: CageItem) => Math.abs(q.x - p.x) < 30 && p.y - q.y > 0 && p.y - q.y < 65;
+    const onVine = (q: CageItem) => vineReaches((q.x - p.x) * p.facing) && p.y - q.y > 0 && p.y - q.y < 65;
     if (!c) {
       // (a cage ahead at his height, on his way (or one just behind him he has walked or hopped past), or one up the vine he is at)
       c = cages.find((q) => {
