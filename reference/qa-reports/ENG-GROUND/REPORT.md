@@ -32,13 +32,15 @@
      y 1684 to the view's foot right of the face: the lead's 'backdrop shows below it'. Its x and why it runs past the stage's last
      platform are unmeasured (no platform past 20066, no river in e.rivers).
    So 2d4e0752a fixes one real fault at the corner (the soil outline crossing itself; planted), NOT the corner as the lead saw it.
+   THE LEAD'S RULING (D40): (a) and (b) belong to R-165.380, which redraws that wall and replaces that corner (planted first on
+   2d4e0752a). Not this packet's.
 4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages), on 2d4e0752a: PASS, 102/102 stages unchanged
    (lock-e.txt; the 'gained verdicts and drops (not hashed)' line is unhashed fields, not a move, as in ENG-GROUND-c).
 5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; suite 1/6 PASS 634/634; the rest of chain a (suite 2-6, tooltests, tierBots, tipwalk, coverage,
    registry, generality, known, roadmap, time, art) RUNNING at the handover; chain b (seedlists, paint x3, build, chunkcheck,
    clipcheck, kbdcheck, drawcheck, buildcheck) UNRUN.
 POLISH CHECK: wall-end upright before/after, corner crop at full size, and a contact sheet of the other five stills, each looked at
-   edge to edge. The corner is NOT polished yet (item 3).
+   edge to edge. The corner is NOT polished yet (item 3; its two remaining faults are R-165.380's by the lead's ruling).
 PUSHBACK: the column ruling's premise (the bank END frame) was wrong; checked on the recorded draw and the sheet before building
    (law 3). The lead re-ruled (A) as R-165.380.
 LESSONS APPLIED: D57 (inbox at each step and push), D102 (lean reads; images downscaled once, contact sheets), D109 (no clock times
@@ -49,16 +51,9 @@ LESSONS APPLIED: D57 (inbox at each step and push), D102 (lean reads; images dow
 EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD; code head 2d4e0752a):
  1. The lock: DONE on 2d4e0752a (PASS 102/102). Re-run it only on a new code head.
  2. The gates on a frozen worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then
-    `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green, and item 3 fixed
-    on top: that head is the green head for ENG-27i's merge (re-run the lock and the gates on it).
- 3. The corner (item 3 (a) and (b)), the ruled corner is not done until both are gone. (a) Plant first: in a recording ctx at the
-    wall's foot, the soil's depth shade at (floor end - 4, y) and (floor end + 4, y) matches for every y below the floor (no step);
-    then make the wall's soil below a lower floor's top darken from that floor's top (drawBankArt sy / groundLine). (b) Find the water
-    fill's owner (tools-e/who.mjs logs the page's canvas calls covering a CSS point; stack lines are vite's transformed lines, so read
-    the call by its file), then plant and fix. Re-shoot with
-    `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out> 19900:none:wall-end` on the scratch. Find the painter first: record the page's canvas calls whose box
-    covers world (20200, 1800) at wall-end-x19900 (the toy, seed 1), then plant and fix. Re-shoot with
-    `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out> 19900:none:wall-end` on the scratch.
+    `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green (chain a AND chain b):
+    send the lead 2d4e0752a as the green ground head for ENG-27i's merge. Any red: stop and report it with the log's tail.
+ 3. (The corner's (a) and (b) are R-165.380's, the lead's ruling: not this branch's.)
  4. REPORT a new top section; the hash to the lead.
 
 # ENG-GROUND-d REPORT (handover at the context line, the lead's D76; branch t-eng-ground, code head 42a0e5d8b, stills 0934faf40)
