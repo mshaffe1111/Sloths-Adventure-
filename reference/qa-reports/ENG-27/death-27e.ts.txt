@@ -1,0 +1,14 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+import { riverAt } from '../../src/game/river.ts';
+const [tier = 'middle', setting = 'normal', seedS = '4', codeS = 'home', lo = '0', hi = '0'] = process.argv.slice(2);
+let lives0: number | undefined; let f = 0, piece: any; const hist: string[] = [];
+homeRun(tier as never, setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player; const dl = lives0 !== undefined && e.lives < lives0; lives0 = e.lives; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  const r = riverAt(e.currentStage.rivers, p.x, p.y);
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  const line = `f ${f} x ${Math.round(p.x)} y ${Math.round(p.y)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy)} g ${p.grounded ? 1 : 0} clk ${piece?.clock?.toFixed(2) ?? '-'} on ${on ? `${on.id}:${on.type}${on.drift ? ':log' : ''}@${Math.round(on.x)}-${Math.round(on.x + on.width)},${Math.round(on.y)}` : '-'} river ${r ? `${r.x0}-${r.x1}/${r.surfaceY}${r.safe ? ' safe' : ''}` : '-'} died ${sim.died ? 1 : 0}`;
+  hist.push(line); if (hist.length > 40) hist.shift();
+  if (Number(hi) ? f >= Number(lo) && f <= Number(hi) : dl) { console.log(Number(hi) ? line : hist.join('\n') + '\n---'); }
+} } as never, codeS === 'post' ? POST_CODE : HOME_CODE);

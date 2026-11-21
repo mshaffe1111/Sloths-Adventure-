@@ -1,3 +1,83 @@
+# ENG-27e REPORT (handed over at the lead's D102 call; written 1:38 PM ET 11-21 by date). Base 580344077; branch t-eng-27, head below
+## EXACT NEXT STEP (ENG-27f, from t-eng-27 head; read only this section, D90)
+0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Probes here as .txt (copy to tools/inspect/ with a
+   leading underscore, never commit): raceprobe-27e (`_raceprobe.ts middle,ride|expert home|post [seeds]`; expert has no Easy bot, its
+   rows print 'no bot'), racetrace-27d (marks vs the bot), death-27e (`_death.ts tier setting seed home|post`: the 40 frames before each
+   life lost), ride-27e (ride-only: lives lost, the clock's re-placements), cliprec-27e (the clip's recorder). Vite dev on 5199
+   (`npx vite --port 5199 --strictPort --host 127.0.0.1`); PW=/opt/node-tools/node_modules/playwright/index.mjs.
+1. **The race table re-run after ruling A** (the lead: "Middle Normal home 4 and post 4 should win, and any that still loses gets named
+   and traced"): raceprobe on home and post, seeds 1-6, middle / expert / ride, into a file. Compare with race-27e-pre-ruling.txt
+   (head d3d1d3f15, before ruling A). Trace any middle loss with death-27e + racetrace (seed, x, frame, what took him; rule 28).
+   pacerLay.test is 15/15 on 316a7a18e (pacerLay-27e-bots.txt).
+2. **THE CLIP (D63)**: the tool is built and tested on 200 frames (it paints on the real page): `npx tsx tools/inspect/_clipRec.ts middle
+   normal 1 <rec.json>` (about 35 MB; the race leg of the fixture's roll, POST_CODE seed 1; it WON 99.2 s against 103.21 s before ruling
+   A), then `node reference/qa-reports/ENG-27/clip-27e.mjs 5199 <rec.json> <out> sideways` and `upright` (about 1,900 shots each at 2x;
+   ffmpeg joins them at 15 fps; its log names every shot where the boat's box is in view). Look at it whole. Known before you start:
+   the first stretch of the race leg runs UNDER the out leg (race point 16519 to the out leg's x0 14049 on seed 1) where the out leg's
+   painted earth is drawn over the race leg's river (stills 3), so the boat is hidden there until ENG-GROUND's ground paint lands; and
+   the boat is drawn only over water (the lead's ruling (a)): over a bank it is behind the bank. Count and name the shots without it.
+3. engine-core.md (ENG-27e's packet step 4, not reached): one line each: the pacer (shares, floor + cap, the floor uncapped on the last
+   crossing, a docked boat stays docked, DOCKED 0, lay (A), the lane counts the wait river); pacerWaters closed at both ends; the post;
+   'under'; w2NextArt; the home fixture; w2.ts banks() on the fall's own storey.
+4. THE FULL SET on the final head (gates.md D96; run-gates-27c.sh): lockall --layouts 16 vs 0eefc707e (only the toy may move; ENG-27e's
+   bank scan says no listed World 2 stage moves from banks()), funcheck same-run vs main, drawcheck (the pacer's window now also takes the
+   rivers touching its ends: no new draw on a stage without a pacer). Any gate without a verdict is UNRUN.
+
+## ENG-27e: what was done (each step, each plant)
+- **Step 1, the Easy put-back (d3d1d3f15):** traced by trapping every write to his x/y at frame 2583: engine.ts:2971-2972, the teaching
+  river's splash (`river.safe.backX/backY`), on a pond built by src/game/gen2/worlds/w2.ts `banks()`, which took the TOPMOST solid at each
+  lip with no floor; on the toy's stacked legs the out leg's ground (id 10, y 680) starts at the race-leg pond's far lip (14821), so the
+  splash set him 846 px up. riverAt was right; not one of ENG-26f's four x-only reads (none touches w2.ts), so nothing was cherry-picked
+  (the lead agreed). Fix: a bank lies on the fall's own storey (from its height `y` down to LIP_RISE under it). Evidence it moves only
+  the toy: all 744 falls and 576 log rivers on 2-1..2-10 x 16 layouts x both settings have one bank candidate per lip, none above y; on
+  the toy 5 falls had two (Normal seeds 3, 4, 5; Easy 2, 5). Plants (legsHome.test, RED on 580344077: red-27e-pond / red-27e-play):
+  a pond sets him back on its own storey (6 seeds x 2 settings; RED Normal seed 5 at y 730 on a 1503 bank); no one-frame lift off the
+  race leg without a life (RED middle Easy seed 2, frames 2584 and 4112).
+- **Rule 28:** tierBots 1-1 9/9 PASS. Easy castBots row for row: 2-3 (origin/t-build-23 + the fix) 160/160 identical to BUILD-23e's
+  castbots23e-rows; 2-5 (on this base) 160/160 identical base vs head.
+- **Step 2, the race table (before ruling A; race-27e-pre-ruling.txt):** middle Easy 12/12 WON (home Easy 2 now +6.3 s, was -0.1);
+  middle Normal 10/12, LOST home 4 (-0.1 s; the fix moved it from +2.9: a different early pond changed his timing, and he fell at the
+  last river: a hop off log 96's end at x 1353 toward the bank 125 px away peaked 19 px over its top and met its side, frame 4691) and
+  post 4 (-1.0 s, the same on the base: three short hops into log rivers, x 13707, 6109, 2582); expert Normal 12/12 WON; ride-only 23/24
+  lost, WON home Easy 1 by 0.43 s (on the base too). pacerLay.test was 3/4 on base AND head: ENG-27d's run stopped at its first
+  assertion and hid the ride-only one. PUSHBACK-27e.md traced every miss to one root (a fall on the last river, then pacerReplace):
+  (i) a DOCKED boat was rewound by a later fall (post Normal 1 and 3 ride-only had lost by 13 s and raced again); (ii) after a fall on
+  the last river the race is one crossing, and the capped floor served neither guarantee.
+- **The lead's ruling A (316a7a18e):** (i) pacerPiece.respawn: a docked boat stays docked (RED on the old piece: 95.37 -> 27.22,
+  red-27e-docked-oldpiece); (ii) pacer.ts pacerReplace: on the LAST crossing (past the far bank of the river before the last) the floor
+  holds uncapped; farther out the ride-only cap stands (RED on b05eeac5d: red-27e-lastcrossing). pacerLay.test: every race claim its own
+  test (12), the ride-only claim names and excludes a fall on the last crossing, with why (the floor is the child's safety net; falling in
+  is not winning without effort). GREEN 15/15; named: ride-only Normal 2 and Easy 1 fell on the last crossing and won (not judged).
+- **Step 3, a find in the stills (b05eeac5d):** the waiting boat (and the boat setting off) was NEVER drawn: pacerDraw.ts pacerWaters kept
+  rivers strictly inside the race point..dock window, and the river it waits over starts AT the race point; and pacerLay's lane (the
+  lowest surface) left that river out, so a lower wait river was cut too (home seed 6). Fixed both; planted pacerBehindBanks 5 (wait
+  and dock drawn whole, home and post, both settings, seeds 1-6; RED home Normal 1, then seed 6). ENG-27d's "seen at both ends" held in
+  its lay test, not on the page.
+- **Stills (stills-27e/, 2x, upright and sideways, fixture seed 1, Normal):** 1 the door shut with the letter in its slot; 2 at the door,
+  open, +100; 4 the boat setting off beside him over the first river (drawn now, but DIM: this stretch runs under the out leg); 5 docked
+  at the last river's far bank. **3, the boat waiting: NOT seen** (ROUGH, named): the out leg's painted earth covers the first race river
+  under it (he stands in front of a wall of earth). The ground paint is ENG-GROUND's (t-eng-ground, not yet pushed when I looked).
+  The clip: NOT made (the tool is ready, step 2 above).
+
+## Gates (316a7a18e): tsc PASS; legsHome 7/7; pacerLay 15/15; pacerBehindBanks 5/5; postLay 3/3; tierBots 1-1 9/9 (on d3d1d3f15).
+Every other gate UNRUN (THE FULL SET is step 4 above).
+
+## What the 2-7 builder needs
+- The dock rule: the boat waits with its bow at the far bank of the race leg's FIRST river that holds it whole and docks at the far bank
+  of the LAST; the race is judged at the dock line; a docked boat has won and no later fall rewinds it; after a fall on the last crossing
+  the boat keeps the setting's floor (Normal 2 s, Easy 3 s), farther out the floor is capped by the ride-only bound.
+- The ground paint is ENG-GROUND's: until it lands, the race leg under the out leg is buried by the out leg's earth (the wait unseen).
+- A soft fall's splash pond takes its banks on its own storey (w2.ts banks()); on stacked legs a lip can have two candidates.
+
+## Learned (for the next engine member)
+- A test that asserts many claims in one body hides every claim after the first miss: one test per claim (the lead's ruling).
+- "Seen" proven in a draw test on a toy box is not seen on the page: shoot the state (wait, set-off, dock) on the real page, fresh page
+  each (a spot that sets the race off spoils every spot after it).
+
+Lessons applied: D57/D87 (ReadNotifications at every step and push; long runs in the background), D63 (the clip named NOT made, its
+tool ready), D75/D101 (proven on the laid toy and the real page), D96 (gates named UNRUN, not passed), D102 (read by greps and ranges;
+handed over at the lead's call), D105, D107, D109 (no clock times in messages).
+
 # ENG-27d REPORT (handed over at the lead's D76 call, real context ~339k; written 12:59 PM ET 11-21 by date). Base 0eefc707e; branch t-eng-27
 ## EXACT NEXT STEP (ENG-27e, from t-eng-27 head; read only this section, D90)
 0. Setup as ENG-27c's step 1 (npm install --legacy-peer-deps, restore package-lock.json). Probes kept here as .txt (copy to tools/inspect/
