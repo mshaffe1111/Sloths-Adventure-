@@ -1,7 +1,7 @@
 # LINK-ROOM REPORT: R-165.252: Matt's test link gets room again
 
-Tools member, Opus 5.5 high. Started 8:35 PM ET 11-20; this report written __WRITTEN__ (times from `TZ=America/New_York date`).
-Base: origin/t-int-15 at 0eefc707e. Branch t-link-room. Code commit **d2349d924**; this report and the gate table: __HEAD__.
+Tools member, Opus 5.5 high. Started 8:35 PM ET 11-20; this report written 9:52 PM ET 11-20 (times from `TZ=America/New_York date`).
+Base: origin/t-int-15 at 0eefc707e. Branch t-link-room. Code commit **d2349d924**; this report and the gate table: the head of t-link-room (the commits after d2349d924 are report-only).
 Touches only tools/testlink/ (the test link's config, build script, its test, a new smoke tool), .gitignore (the smoke's stills) and
 HANDOFF §6 (two lines). Nothing in src/, vite.config.ts or any workflow changed. The artifact was NOT published (the packet).
 
@@ -99,7 +99,28 @@ in the new build's first run. Stills: `stills/before-*.webp` and `stills/after-*
   vite.config.ts) and chunkcheck's input are the same bytes.
 
 ## 8. Gates (the full CLAUDE.md list plus CI's extras, each once, D86)
-__GATES__
+Run on the code of **d2349d924** (the tree the gates ran on is byte-for-byte that commit's src/, tools/, configs and workflows; the
+commits after it add only this report, its stills and a .gitignore line). Each once, one at a time (clipcheck alone), logs to files.
+| gate | verdict |
+|---|---|
+| tsc (`npx tsc --noEmit -p .`; tsconfig excludes tools/, so the two changed .ts files were also checked directly: clean) | PASS |
+| suite (the CLAUDE.md glob, one process) | PASS: 4,003 tests / 4,000 pass / 0 fail / 3 todo (1,855 s) |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS (and identical to the base, §7) |
+| chunkcheck | PASS |
+| artcheck | PASS |
+| drawcheck | PASS (671 s) |
+| clipcheck (alone) | PASS (83 known; 370 s) |
+| knowncheck | PASS |
+| generalitycheck | PASS (26 literals, 26 known) |
+| roadmapcheck | PASS (first run FAIL only for the shallow clone, "proofs cannot be checked"; `git fetch --unshallow`, then PASS) |
+| kbdcheck | PASS (114 s; its rewritten stills restored, not committed) |
+| buildcheck | PASS |
+| seedlist 1-1 --check | PASS (161 seeds, each clean on both settings) |
+| the CLAUDE.md engine tool tests + tools/testlink/build.test.ts | PASS 47/47 |
+| tierBots.test | PASS 9/9 (nothing in 1-1 changed: no recalibration) |
+| CI's whole tool line (gates.yml `rolled`, 40 files with build.test.ts) | PASS: 336 tests / 335 pass / 0 fail / 1 todo |
+| tools/testlink/build.test.ts alone | PASS 8/8 |
+| smoke (tools/testlink/smoke.mjs), base and new | PASS / PASS (0 problems, §6) |
 
 ## Unresolved: the boot download (accepted by the lead 8:52 PM ET 11-20 for Matt's link; revisit here)
 96 KB costs boot download, because the newly inlined pictures are base64 (+33%) and load up front with the packs. Measured on the same
