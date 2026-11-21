@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.a
 SHEET = Image.open(os.path.join(ROOT, 'src/assets/ground/w2.webp')).convert('RGB')
 FILL = SHEET.crop((3, 3, 1021, 1021)).resize((600, 600), Image.LANCZOS)  # a fill tile at game size
 LIGHT, DARK = (176, 204, 196), (52, 70, 78)
-CORNER = piece == 'corner'
+CORNER = piece in ('corner', 'warmc')
 GW, GH = (200, 300) if CORNER else (512, 128)
 
 
