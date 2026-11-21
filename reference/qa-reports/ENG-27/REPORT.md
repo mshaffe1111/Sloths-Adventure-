@@ -3,7 +3,8 @@
 ORDER: G in the background first; then F (the respawn rule: RULED, option A on every respawn, below), then B (boardLog's toy), then S
 (stills, THE CLIP, THE FULL SET). R is done; re-run it after F (ride-only must lose all 24).
 G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
-   (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container stopped: suite 3-6 (run those by hand:
+   (1 todo, 0 fail), suite 3/6 PASS 809/810 (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container
+   stopped: suite 4-6 (run those by hand:
    `npx tsx --test --test-shard=<i>/6 <the SUITE glob in run-gates-d.sh>`, then the rest of chain a from tooltests on), tooltests, tierBots, tipwalk,
    coverage, registry, generality, known, roadmap, time, art (chain a) and all of chain b. Run them FIRST, in the background, on a frozen
    worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then `... b` ($G/../tooltests.cmd
