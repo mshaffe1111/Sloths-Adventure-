@@ -1,3 +1,82 @@
+# BUILD-26e (on t-build-26 from ea8ed97fd): cause A planted, cause C fixed (one fault behind 12 rows), 2-6's child, middle and expert 40/40. Started 6:08 PM ET 11-21 (by `date`)
+Commits: cc62d6b99 (the vine-foot toy planted in castBots.test.ts), cef59bafe (bot: the climb-jump for a vine steers to the vine's x and
+lets go there), this REPORT. Saved: b26e/ (rows/: castBots rows r26-*/r14-* for base 5be367dd8, head ea8ed97fd, fix cef59bafe; diff.py: row for row
+on (bot, setting, seed), per tier pass counts; win.mts: platforms and vines in a window; ft*.txt, traceC.txt: the traces).
+Trees (D115, frozen detached worktrees, node_modules linked): base 5be367dd8, head ea8ed97fd, fixc cef59bafe; traces on copies (tr, dbg:
+cef59bafe plus a stderr print in decide/startJump, never committed).
+
+## EXACT NEXT STEP (the next level builder; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
+1. **2-1..2-5 x40, base 5be367dd8 vs cef59bafe, row for row** (`castBots.ts --stage 2-N --seeds 1-40 --setting both --par 2 --rows ...`,
+   then `python3 reference/qa-reports/BUILD-26/b26e/diff.py <base rows> <fix rows>`): my serial chain had done 2-1 base only at the box
+   (about 4 min a run at --par 2 beside another heavy run). What may not move: any tier's pass count.
+2. **2-6's remaining misses are all kid and adult (the lead: the adult is the bar), unmoved by both fixes** (no kid or adult row moved).
+   On cef59bafe: kid N 29/40, kid E 24/40, adult N 33/40, adult E 24/40. Spread over many spots, not one fault (grouped by the
+   fell-back x or the last stuck x): adult E stuck near x 900 (4) and x 300 (3); kid N fell back at x 1130-1145 (3); kid E fell back
+   at x 1480 (2), 1070 (2), 960 (2), 930-1000 (2); many "in a dip ~300-350 px deep, a drop ahead, water ahead". Trace two runs per
+   spot (`tools/inspect/b26/trace.ts <bot> <setting> <seeds>` on a frozen tree, FT_TRACE=1 for the jumps), BOT causes fixed generally,
+   LAY causes to the lead. Then ENG-26m's 1-4 cause table (its BOT spots are this branch's).
+3. **Then the --proven relist and the yield** (methods/seed-list.md; `castBots --proven <file>` keeps a roll only when EVERY bot,
+   kid and adult included, holds at 100 s+): with kid E at 24/40 and adult E at 24/40 on the listed rolls, the yield on today's list
+   would be under 60%, so the plan goes to the lead FIRST (packet step 3).
+4. Then the stills (packet step 4) only on green bots (rule 29).
+
+## Step 1: cause A planted, cause C traced and fixed
+- **The toy, planted (cc62d6b99, castBots.test.ts, the last test):** BUILD-26d's toy decided from the vine's RIGHT (he drifted right in
+  his 1.2 s look delay), so both runs climbed. Now he decides from the traced frame's own state: x 236 (14 px left of the vine at 250),
+  `way` -1 (he came along the ledge going left), no look delay (mid-run), facing left. **RED on 5be367dd8's bot** (no climbUpVine; a
+  copy at 5be367dd8 with the test appended): "lowest y 1351", he doubles off the ledge's end onto the street. **GREEN** on ea8ed97fd and
+  on cef59bafe (never below y 1100, ends on the floor over the vine). The plant in the test (climbUpVine taken away) drops to the street.
+- **Cause C traced (two runs and more; all the same frame):** child N 23 t 130.5, child N 24 t 119.6 (child N 4 t 133.8, middle N 27
+  t 116.0 the same): on #66 (x 1327-1547, y 1556) the climb-jump branch (firsttimer.ts climb-jump, `intend`) fires at x 1495-1497 with
+  dir +1 toward the vine at x 1529 (the trial's direction was right), but he HOLDS right the whole double and flies past the vine and
+  off #66's end at 1547, to #90 175 px down (FT_TRACE `119.57 double from 1543,1556 hold 0.41 -> 1680,1731 FELL BACK`), 8 times,
+  rescued. The vine stands 18 px in from the ledge's end: cause A mirrored.
+- **Fix (cef59bafe, bot, general):** in that branch, with a climbing vine and no ledge, `climbToX = trunk.x`: he steers to the vine's x
+  and lets go there, as he already did for a ledge (startJump's toX). One line of logic; no stage data.
+- **Cause A's leftovers (child N 5, 7, 18)** traced on cef59bafe: all three now 0 rescues (153.3, 156.3, 151.4 s): the same overshoot.
+
+## Step 2: castBots x40 both settings, row for row (rule 28)
+| 2-6 tier | base 5be367dd8 | ea8ed97fd (26d trial) | cef59bafe (fix) |
+|---|---|---|---|
+| kid N / E | 29 / 24 | 29 / 24 | 29 / 24 (no row moved) |
+| adult N / E | 33 / 24 | 33 / 24 | 33 / 24 (no row moved) |
+| child N / E | 32 / 38 | 31 / 37 | **40 / 40** |
+| middle N / E | 39 / 40 | 39 / 40 | **40 / 40** |
+| expert N | 39 | 40 | **40** |
+2-6, base vs fix: **12 GAINED, 0 LOST** (child N 3, 5, 7, 8, 9, 18, 24, 28; child E 10, 11; expert N 12; middle N 29).
+| 1-4 tier (SHIPPED; sent to the lead before the push) | base 5be367dd8 | ea8ed97fd | cef59bafe |
+|---|---|---|---|
+| kid N / E | 19 / 32 | 19 / 32 | 19 / 32 |
+| adult N / E | 38 / 36 | 38 / 36 | 38 / 36 |
+| child N / E | 34 / 33 | 33 / 32 | **40 / 36** |
+| middle N / E | 37 / 37 | 38 / 38 | **39 / 38** |
+| expert N | 40 | 40 | 40 |
+1-4, base vs fix: 14 GAINED, **2 LOST: child E 4 and 24**, each rescued once, traced (one line each, two runs, the same cause):
+- child E 24: t 116.8, x 231 on #39 (x 234-1164, y 4644): he walks off its LEFT end and the tier bot's late press (the `lateArmed`
+  branch, firsttimer.ts ~2502) comes after the coyote time: a double left from the air, down to 20,4948, fell back 8 times, rescued t 121.8.
+- child E 4: t 145.5, x 852,2931: the same branch (a late single right off a ledge), down to 1045,3004, rescued t 152.5 at x 958 over #46.
+- No vine within 60 px at either (climbUpVine undefined), so neither is the new branch: the earlier decisions changed his random draws,
+  and the late press drawn there missed. A child-tier late press failing is the calibrated child (testers' late presses), not a bot
+  fault; the tier rose 33 -> 36. **Not fixed** (no cause to fix in the bot); the lead accepted the push (no tier drop vs 5be367dd8).
+- **The lead's 1-4 bar (OLD 4ea253b8c with the old bot vs the head) is NOT run here.**
+- **castBots.test.ts WHOLE on cef59bafe: 15/15 pass, 0 fail** (the toy included, GREEN with the steer).
+- **The hearts test (06096c3b4, w2Arc26 "the climb up the bank village"): GREEN; planted RED** (the rivers term counting `v.safe`
+  instead of `!v.safe`: "seed 1: nothing on Normal 2-6 costs a heart" fails), then restored (git checkout; no diff left).
+- **tierBots 1-1 on cef59bafe: 9/9 pass.** 2-1..2-5: NOT finished (EXACT NEXT STEP 1).
+
+## Steps 3-4: NOT STARTED (the box): the --proven relist and yield; the stills.
+
+## Lessons applied
+D111 (handed over at the box with the exact next step), D113 (runs in the background; one slip: I started one castBots run with a
+shell '&' inside a commit command; I killed it within the minute and re-ran it with run_in_background; its rows were never used),
+D115 (every run on a frozen worktree at a named hash; the traces on separate copies), D102 (read lean: BUILD-26d's section only),
+rule 21 (the plant RED on the base bot before the toy is called proof), rule 28 (row for row, every lost row traced before calling it clean).
+## Learned (for level.md, proposed)
+- A climb-jump "toward" a target must also STOP at it: a direction held for a whole double carries him about 140 px; at a vine within
+  20 px of a ledge's end, toward-the-vine still runs off the end. Proposed check: the toy's lowest y, not only where he ends.
+- FT_TRACE's time is the takeoff; a debug print keyed on `decide` misses jumps that come through `startJump` directly (the late
+  press). Print in startJump with its two callers.
+
 # ENG-26m (on t-build-26 from a840ac5ff): 1-4 (relisted) measured on two FIXED frozen trees. Started 5:43 PM ET 11-21 (by `date`)
 Trees (D115, frozen, never edited but as named): OLD = 4ea253b8c (1-4 before the walk-off judge), RELISTED = 626fac5ac (1-4 relisted, before
 BUILD-26c's bot fixes), each a detached worktree with the checkout's node_modules linked. ONE heavy run at a time, all in the background
