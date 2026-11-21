@@ -1,54 +1,6 @@
 {
- "note": "ART-HERO (R-165.378): hero sheets not regraded onto the plain pose yet, at the numbers measured on 700b4ef8d (tools/art/hfnext/herobody.py). Shrink-only (knowncheck.mjs); heroClipsBody.test.ts fails a row that got worse or now passes.",
+ "note": "ART-HERO (R-165.378): hero sheets not regraded onto the plain pose yet, at the numbers measured on 700b4ef8d (tools/art/hfnext/herobody.py). Shrink-only (knowncheck.mjs); heroClipsBody.test.ts fails a row that got worse or now passes. ART-HERO regraded walk, run and the six attacks too (their strips showed a step), so only the two-vine climb is left.",
  "known": [
-  {
-   "sheet": "move-walk",
-   "frame_max": 4.683,
-   "pooled": 3.523,
-   "why": "walk: off the plain pose by chroma+L (lighter, less red); regraded only if a start/stop strip shows a step (ART-HERO packet)"
-  },
-  {
-   "sheet": "move-run",
-   "frame_max": 4.688,
-   "pooled": 3.393,
-   "why": "run: the plain pose family but yellower (b +3.4); same rule as walk"
-  },
-  {
-   "sheet": "move-jab",
-   "frame_max": 4.564,
-   "pooled": 2.448,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
-  {
-   "sheet": "move-cross",
-   "frame_max": 3.002,
-   "pooled": 2.668,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
-  {
-   "sheet": "move-hook",
-   "frame_max": 3.344,
-   "pooled": 2.348,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
-  {
-   "sheet": "move-kick",
-   "frame_max": 3.877,
-   "pooled": 3.347,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
-  {
-   "sheet": "move-kick2",
-   "frame_max": 2.645,
-   "pooled": 1.925,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
-  {
-   "sheet": "move-mega",
-   "frame_max": 4.247,
-   "pooled": 2.865,
-   "why": "attack: not in the ART-HERO packet (short, fast moves); the next regrade if the lead wants it"
-  },
   {
    "sheet": "hero-climb2",
    "frame_max": 3.531,

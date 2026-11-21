@@ -121,6 +121,9 @@ for name in clips:
             per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
             R = np.array([pm - u.mean(0) for u in per])
             Rp = np.pad(R, ((1, 1), (0, 0)), mode=mode); EV = EV + (Rp[:-2] + 2 * Rp[1:-1] + Rp[2:]) / 4
+        for _ in range(3):                        # then exact per-frame passes: the smoothing cannot close a jump (push's seam stayed 0.66 dE)
+            per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
+            EV = EV + np.array([pm - u.mean(0) for u in per])
     nf = [apply(f, EV[k]) for k, f in enumerate(fr)]
     NF = shipped_fur(nf)
     print(f'{name}: fur mean {CF.mean(0).round(2)} -> {NF.mean(0).round(2)} (plain {pm.round(2)}); dE {np.linalg.norm(CF.mean(0) - pm):.2f} -> '
