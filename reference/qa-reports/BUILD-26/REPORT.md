@@ -1,19 +1,16 @@
 # ENG-26j (on t-build-26 from e420a2794): the lead's ruling (a): a gate section catches its own running exit; the lay adds nothing by a sealed piece. Started 4:23 PM ET 11-21 (by `date`)
 Commits: ecb86074e (revert of b73600b56 + 97bb2b73e, one commit), 8e21145f1 (the fix and its plants), this REPORT. Step 1 DONE and
-measured (the lead accepted it); the speed-ups cherry-picked on a side branch only (NOT pushed: its lock proof was running at the handover, not finished); the relist and after NOT
-started (the 28-minute box, D111). Saved: eng26j/ (gates.mts: each gate's step and run off both ends on a built roll, and whose wood catches it;
+measured (the lead accepted it); **the speed-ups PROVEN EXACT and on the branch** (d12ffcacf, the pick of 91e6c584e); the relist and after NOT started (the
+28-minute box, D111). Saved: eng26j/ (gates.mts: each gate's step and run off both ends on a built roll, and whose wood catches it;
 near.mts: what lies within a hop of each gate; onto.mts: the lead's question, can wood within a hop of a gate be reached from under it; sweep-1-400-8e21145f1.json).
 
 ## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND on frozen worktrees (D113)
-## ENG-26k: steps 3 and 4 of ENG-26j's packet, on this head (step 1 is done and the lead accepted it; (b) is NOT needed: the section catches
+## ENG-26k: step 4 of ENG-26j's packet, on this head (steps 1-3 done: the fix accepted by the lead; (b) NOT needed: the section catches
 ## every running exit, the yield is 400/400)
-1. **The speed-ups' lock proof**: the branch `eng26j-speed` (local to ENG-26j's container, NOT pushed) was only `git cherry-pick
-   91e6c584e` onto 8e21145f1 (clean, no conflicts). Redo it: `git cherry-pick 91e6c584e` onto this head, then on two frozen worktrees,
-   in the background, `npx tsx tools/engine/lockall.ts --layouts 16 --out <f>` WITHOUT (this head) and WITH (the pick); compare every
-   part hash of every build (`--check without.json` on the WITH tree, exit 0, nothing changed). Any difference: drop the piece that made
-   it. **ENG-26j started it on 8e21145f1 (WITHOUT) and the pick (WITH) in the background, all 102 stages x 16 layouts x both
-   settings at about 10 s a stage with the two in parallel (~17 min); it had not finished at the handover, so its result is not
-   known.** The relist (2) waits for it only if the speed-ups go in first (they make the relist and CI's check faster).
+1. **The speed-ups are DONE (ENG-26j)**: `git cherry-pick 91e6c584e` onto 8e21145f1, then `lockall.ts --layouts 16 --out` WITHOUT
+   (8e21145f1) and WITH (the pick) on frozen worktrees in parallel (~8 min each): **3,264 builds of 102 stages, 66,457 part hashes, 0
+   differ** (eng26j/lock-8e21145f1.json.gz, the WITHOUT record). Picked onto the branch as d12ffcacf (its src/tools identical to the tested
+   tree; tsc clean). Nothing to do but use them: the relist and CI's check now run with them.
 2. **1-4 relisted ONCE** (methods/seed-list.md): the old list is seeds 1-100 and **all 100 build clean on both settings on this head**
    (eng26j/sweep-1-400-8e21145f1.json), so the survivors in their old order are 1-100 and no new seed is needed: `seedlist.ts 1-4
    --merge <the four parts or the saved sweep> --in-order --count 100` (n 100) re-lays them and writes the list with the new plans (each
@@ -72,6 +69,8 @@ near.mts: what lies within a hop of each gate; onto.mts: the lead's question, ca
 | tsc | clean | |
 | generality | PASS (26 literals, 26 known) | |
 | knowncheck | PASS | |
+| the speed-ups' lock (91e6c584e) | WITH vs WITHOUT: 3,264 builds, 66,457 part hashes, **0 differ**; tsc clean on d12ffcacf | eng26j/lock-8e21145f1.json.gz |
+| seedlist 1-4 --check on 8e21145f1 | FAIL as expected: verdicts refuse 0 of 100; seeds 8, 18, 22, 31, 54, 59, 66 replay differently from their search (rebuild the list) | |
 | roadmapcheck | FAIL on this shallow clone only ("proofs cannot be checked (fetch-depth 0)"): ROADMAP not touched | |
 
 ## Lessons applied
