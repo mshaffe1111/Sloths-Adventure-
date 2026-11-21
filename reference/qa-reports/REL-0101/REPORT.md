@@ -5,6 +5,10 @@ Branch release-0.10.1 from origin/main 107870f5d. Times from `TZ=America/New_Yor
 ## EXACT NEXT STEP (kept current)
 10:21 AM ET: merges a-e and the version commit are in, each green (6b8fda31c, pushed). Waiting on t-hud-vine's final (cutoff 11:30 AM ET);
 then THE FULL SET on the exact head. Seed lists timed alone on 6b8fda31c meanwhile (early, for the D99 table).
+Lead rulings: 10:25 AM ET, HUD-VINE ships with NO What's New line (the keeper's 7 stand). 10:33 AM ET (Matt 10:28, R-165.368): PICK-THUMBS
+(picture tiles, 'what the game is about', 'how to start'; base t-keeper-pick 599c4d5b3; about 12:30 PM ET) goes INTO release 2; THE FULL SET
+HOLDS for its hash (the 11:30 start-without rule withdrawn); no What's New line (page-only). Meanwhile: a TRIAL of the slow gates on
+6b8fda31c (early warning, not the set), the D99 table, the PR body draft.
 Early reads on 8224efdeb (not the final set): lockall vs main 107870f5's lock (recorded 9:58-10:06 AM ET, 3,264 builds of 102 stages)
 --intended 2-5 PASS, 101/102 unchanged, only 2-5 moved (10:06-10:14 AM ET); funcheck the same as main's, run side by side (22 worse/new, 77 known;
 the two logs differ only in run time, 82 s vs 83 s).
