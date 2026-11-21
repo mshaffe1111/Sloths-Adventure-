@@ -21,5 +21,25 @@ the two logs differ only in run time, 82 s vs 83 s).
 | c | t-env-w2 @ 63afa83c1 | 60aea887b | none | PASS | PASS: 332 / 331 / 0 / 1 todo (9:48-9:53 AM ET) |
 | d | t-link-room @ 4c1601fd3 | 8224efdeb | none | PASS | PASS: 336 / 335 / 0 / 1 todo (9:53-9:58 AM ET) |
 | e | t-keeper-pick @ 599c4d5b3 (the lead's final, 10:08 AM ET; words head 1fdf0a144; carries t-pick-w1 @ ef5622725) | a8824ad4a | reference/handoffs/engine-core.md: PICK-W1 and FIX-IDLE each added a top section; kept both, 0zq-PICK above 0zr-IDLE (each section once, checked) | PASS | PASS: 336 / 335 / 0 / 1 todo (10:17-10:21 AM ET) |
+| f | t-hud-vine @ 83b51c91f (the lead's final, 10:40 AM ET; code 2e3b17c99) | 008d82625 | none | F_TSC | F_TOOL |
 | v | version + What's New (not a merge) | 6b8fda31c | 0.10.0 -> 0.10.1 in package.json and package-lock's own two fields (as 0.10.0 did); whatsNew.ts top entry = the keeper's 7 lines, title "Count to four", copied by script from whats-new-0.10.1.md | PASS | whatsNew.test PASS 4/4 |
 The todo each time: the open chase-bots line (child bot, Normal, 1 of 3 seeds; ENG-B4).
+
+## D99: CI's own time limits (release.md 4b), with the new seed-list plan
+Per-list CI times are read from main 107870f5's own gates run (run 44828148552, 11-20 5:21-5:43 PM ET; job logs, the "== <stage>" line
+times): 1-1 2.0, 1-6 8.9, 1-9 1.5, 2-4 7.2 | 1-4 2.1, 1-5 1.4, 1-8 0.6, 2-2 0.2 | 1-2 1.0, 1-3 0.5, 1-7 3.4, 2-1 5.5 min; setup 0.6-1.2 min.
+lockall: only 2-5 moved, so the other twelve lists' work is main's. 2-5 is new to the lists (about 0.5 min, from its 15 s locally in INT-15).
+The candidate's plan (registrycheck --shards --print): 13 lists in 4 shards (main: 12 lists in 3).
+| CI job | limit | expected on a runner | share | verdict |
+|---|---|---|---|---|
+| seedlists 1/4: 1-1 1-8 2-4 | 45 | 9.8 + 1.2 setup = 11.0 min | 24% | PASS |
+| seedlists 2/4: 1-5 1-7 2-2 | 45 | 5.0 + 1.2 = 6.2 min | 14% | PASS |
+| seedlists 3/4: 1-2 1-4 1-9 2-5 | 45 | 5.1 + 1.2 = 6.3 min | 14% | PASS |
+| seedlists 4/4: 1-3 1-6 2-1 | 45 | 14.9 + 1.2 = 16.1 min (24.8 if 1-6 runs as slow as 0.10.0's 17.6) | 36% (55%) | PASS |
+| gates (tsc ... clipcheck, kbdcheck) | 25 | main 10.8 min; this release adds 2 clipcheck judges + 1 kbdcheck pick | 43% | PASS |
+| drawcheck | 30 | main 11.4 min (no new scenario) | 38% | PASS |
+| paintcheck 0/1/2 | 25 | main 7.5 / 9.2 / 6.9 min | 37% max | PASS |
+| rolled (tool line, tipwalk, registrycheck, tierBots, buildcheck) | 60 | main 10.9 min (+4 tool tests) | 18% | PASS |
+| seedplan | 10 | main 0.8 min | 8% | PASS |
+| deploy test shards 1-6 | none set (GitHub's 360) | main 5.4-15.7 min | 4% | PASS |
+No job is within 20% of its limit: nothing to raise or split.
