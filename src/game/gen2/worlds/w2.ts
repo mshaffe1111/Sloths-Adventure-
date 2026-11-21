@@ -24,6 +24,7 @@
  * ('w2-21', 'w2-22'); this kit holds World 2's ground, art, rivers, pads, lianas, tips and finish. The river with its drifting logs is a
  * section of its own (gen2/riverLay.ts), and so is a pond of sinking pads (gen2/rideLay.ts layPads).
  */
+import type { PacerRow } from '../../pacer.ts';
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
 import type { W2Decor } from '../../riverArt.ts';
@@ -95,6 +96,22 @@ export const W2_RIVERS = {
   twin: { dir: 1, speed: 80, logW: 150, logs: 3 },
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
+
+/**
+ * World 2's PACER table (pacer.ts PacerRow; 2-7's mail boat, gen2/pacerLay.ts): the designer's flown numbers, as written
+ * (reference/design/2-7.md "FLOWN" and "THE MAIL BOAT", reference/specs/sims/river27.ts): a bank at a full run, 272 px/s; each HOME row's
+ * crossing (its water and 230 px of bank) at the careful middle's median rate and the ride-only rate; the boat's time is the middle's
+ * + 3 s (Easy + 5 s), never over the ride-only's less 2 s. No row was flown with the current but these three: a race leg that lays
+ * another is refused by name. Its art: the mail boat's two rowing frames (ART-NEXT-b, the inventory's w2-next rows).
+ */
+export const W2_RACE: PacerRow = {
+  bank: 272,
+  rivers: { ride: { middle: 103, rideOnly: 87 }, twin: { middle: 115, rideOnly: 97 }, long: { middle: 126, rideOnly: 104 } },
+  crossingBank: 230,
+  margin: { normal: 3, easy: 5 },
+  under: 2,
+  art: ['w2-next#mailBoat', 'w2-next#mailBoatB'],
+};
 
 /**
  * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).

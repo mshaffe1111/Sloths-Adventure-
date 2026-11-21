@@ -754,6 +754,9 @@ export interface GraphBrief {
    *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
    *  the stage's animals play as they always have */
   cast?: readonly string[];
+  /** a PACER to race on the stage's race leg (the run leg after its last column; pacer.ts, gen2/pacerLay.ts; 2-7's mail boat): the
+   *  world's flown table its time is set from. Absent: no pacer, the stage laid as it always was */
+  pacer?: import('../pacer.ts').PacerRow;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';

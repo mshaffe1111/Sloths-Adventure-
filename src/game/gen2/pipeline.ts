@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { layPacer } from './pacerLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -4203,7 +4204,11 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   settleLaid(st, kit.settle);
   const r = rollsOf(st as never, kit.manifest.rolls, easy);
   if (r.specs.length) st.rolling = r.specs;
-  return [...chase.problems, ...r.problems];
+  // (a brief that names a pacer: laid on the finished ground, its time from the laid race leg, pacerLay.ts)
+  const table = st.gen2.brief?.pacer;
+  const paced = table ? layPacer(st, table, kit.manifest.rivers ?? {}, easy) : { problems: [] };
+  if (paced.pacer) st.pacer = paced.pacer;
+  return [...chase.problems, ...r.problems, ...paced.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();

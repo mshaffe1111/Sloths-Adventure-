@@ -115,6 +115,8 @@ export interface GeneratedStage {
   /** a laid chase (any world; chase.ts ChaseLay, run by pieces/chasePiece.ts): its stretches, each ending at a living fork. The sections
    *  that fall are the platforms marked `chase`. (The hand-built 1-8's collapse is proto.chase, stepped by engine.ts until 1-8's build.) */
   chase?: import('./chase.ts').ChaseLay;
+  /** a laid pacer (any world; pacer.ts Pacer, gen2/pacerLay.ts, run by pieces/pacerPiece.ts): a runner ahead of him over the race leg */
+  pacer?: import('./pacer.ts').Pacer;
   /** the ground's look from its world data (gen2 WorldManifest.ground.look): 'bough', drawn as the painted bough (protoArt.ts setGroundLook) */
   groundLook?: 'bough';
   /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */

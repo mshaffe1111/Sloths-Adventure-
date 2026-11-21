@@ -5222,6 +5222,8 @@ export class GameEngine {
       punches: this.statPunches,
       kicks: this.statKicks,
       freed: this.player.crittersRescued,
+      // (a stage's pacer, pieces/pacerPiece.ts: the race's verdict when he reached the dock; a medal's, never a fail)
+      ...((v) => (v ? { race: v } : {}))((this.pieces.find((q) => q.kind === 'pacer') as { verdict?: StageStats['race'] } | undefined)?.verdict),
       ...(this.w5 ? this.w5.tally(this.collectibles, win) : {}),
       ...(this.dotRun ? { scratches: this.dotRun.fl.scratches } : {}),
       ...(this.mc ? { hints: this.mc.hintsAsked } : {}),

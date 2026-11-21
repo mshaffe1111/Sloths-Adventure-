@@ -49,6 +49,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { pacerOff, type Pacer } from '../../src/game/pacer.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
@@ -702,7 +703,9 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+/** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
+const RACE_MARGIN = 50;
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -2717,6 +2720,12 @@ export class FirstTimerRun {
       if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {});
     }
     if (dir !== 0) {
+      // (the ride-only player, SKILLS.rideOnly, off unless a test asks: the race's planted loser (2-7.md FLOWN: he boards, then lets the
+      // current carry him; he walks the banks): on a log running his way he stands, never walks along it or hops on)
+      if (SKILLS.rideOnly && p.grounded) {
+        const on = this.floorAt(p.x, p.y, 6);
+        if (on?.drift && on.drift.dir === dir) return {};
+      }
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       // (a tier bot looks his own press distance ahead, drawn afresh for each edge; a stand lets go at the press distance's p25 and
       // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
@@ -2775,6 +2784,16 @@ export class FirstTimerRun {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
           const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && lands(q));
+          // (racing, SKILLS.race: on a stage's race leg with its pacer off (pacer.ts, 2-7's mail boat) a log running his way is ridden only
+          // while nothing is in reach: the next log or the far bank in a hop, he hops now off its front end, as the flights' careful middle
+          // player does (2-7.md FLOWN: a hop the first frame its landing is sure, wanting 50 px of log each side); riding every log in is
+          // the ride-only player, who loses the race by its rule)
+          const pacer = (this.sim.stage as { pacer?: Pacer }).pacer;
+          const sure = (q: Platform) => hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0), RACE_MARGIN);
+          if (SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y) && (bank || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
+            this.edgeWait = -1;
+            return this.startJump(dir, this.jumpFor(p, dir, here), false);
+          }
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
           if (SKILLS.handed && here.drift && here.drift.dir === dir) {
             this.edgeWait = -1;
