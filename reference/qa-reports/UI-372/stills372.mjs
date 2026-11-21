@@ -32,7 +32,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     f.state = 'spooked'; f.back = true; f.backX = side === 'left' ? e.camera.x - 330 : e.camera.x + e.camera.viewportWidth + 330; f.x = f.backX;
     e.render();
     const m = e.spookMarks();
-    return { kind: f.kind, fx: Math.round(f.x), cam: Math.round(e.camera.x), marks: m.marks.slice(0, m.n).map((q) => ({ ...q })) };
+    return { kind: f.kind, fx: Math.round(f.x), cam: Math.round(e.camera.x), marks: m.marks.slice(0, m.n).map((q) => ({ ...q })), faces: (e.lineFaces() ?? []).map((q) => `${q.kind}:${q.st}`) };
   }, [E, side]);
   const shot = async (name, note) => {
     await p.waitForTimeout(400);
@@ -59,7 +59,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       }
       e.render();
       const m = e.spookMarks();
-      return { fx: Math.round(f.x), cam: Math.round(e.camera.x), n: m.n };
+      return { fx: Math.round(f.x), cam: Math.round(e.camera.x), n: m.n, faces: (e.lineFaces() ?? []).map((q) => `${q.kind}:${q.st}`), line: e.follow.line.map((q) => `${q.kind}:${q.state}@${Math.round(q.x)}`) };
     }, [E, step]);
     await shot(step, note);
   }
