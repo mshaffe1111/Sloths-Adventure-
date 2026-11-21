@@ -30,8 +30,10 @@ NOT DONE (the lead's finding on painted-scratch/right-end-x18760-sideways.jpg; I
    The earth column is most likely the same pool's soil run under its left bank (engine drawRivers riverUnderBanks ul ~195: 18955-195 =
    18760): VERIFY FIRST (a recording ctx over world (18780, 1350)). Headroom there is marginal: line = floor - (HEADROOM 233 + 40) = 1177,
    ABOVE the 1211 pool's surface, so the lid must stop at a pool's bed foot (as the line never cuts an upper bank's collider).
-GATES on 302c28f7e (run-gates-b.sh a, b, lock in the background): tsc PASS; suite 1/6 PASS (634/634); lock PASS. The rest were still
-   running at the handover (logs died with the container): UNRUN for the record. The next code change re-runs them all anyway.
+GATES on 302c28f7e (run-gates-b.sh a, b, lock in the background): tsc PASS; suite 1/6 PASS (634/634); suite 2/6 PASS (616/617, 1 todo);
+   lock PASS. UNRUN (stopped at the handover by the lead's word; logs died with the container): suite 3-6, the CI tool line, tierBots,
+   tipwalk, coveragecheck, registrycheck, generalitycheck, knowncheck, roadmapcheck, timecheck, artcheck, seedlists, paintcheck x3,
+   build, chunkcheck, clipcheck, kbdcheck, drawcheck, buildcheck. The next member runs them all after its fix (EXACT NEXT STEP 4).
 POLISH CHECK: after-b (2x, both ways): river and join PASS; close-up FIXED (stairs). painted-scratch: race leg seam FIXED, both ends'
    corners FIXED (pasted block faded in); right end sideways FAILS (the two columns, above). Upright views carry the underside; sideways
    the ceiling sits mostly above the frame.
