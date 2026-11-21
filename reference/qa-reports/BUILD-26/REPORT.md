@@ -4,15 +4,22 @@ Commits: 97bb2b73e (the cure and its plant), b73600b56 (the lead's proof: towerG
 `__tcWhy` lines of 97bb2b73e's debug, re-added by hand; plant.mts lays the plant). **The head refuses 1-4 seed 2 again** (the proof); the lead has the numbers and three options.
 
 ## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the background on frozen worktrees.
-0. **The lead's ruling on the proof first** (sent with b73600b56). The lead ruled the byGate reading stands PLUS a proof: a gate's run
-   catch is reached ONLY by a fall off its gate. That is in (towerGateCatches, named; the lay keeps to it), and under it no catch can
-   stand by seed 2's four gates. From 180 px under a gate down, the storey under it jumps on (leaps, generous); from 160 px up, a drop
-   from the storey ABOVE the gate reaches it. Counting only wood below the gate's level (towerGates' `under`) still refuses 4 of 4. Options
-   put to the lead: (a) keep the proof; the gate's own section lays the wood under its run; (b) judge "a way onto the gate" by a real
-   flown jump (physics reach) instead of LEAP's box; (c) the cure without the proof (`git revert b73600b56`: 100% yield).
-1. **The yield on the head** (b73600b56): if the table has no number, `seedlist.ts 1-4 --count 100000 --from 1 --to 401 --worker i/4
-   --part q<i>.json` on a frozen worktree (about 5 min a worker), against 49 (before) and 400 (the cure alone). After the ruling's
-   change, again; and `seedlist.ts 2-6 --check` (100/100 on 97bb2b73e).
+## ENG-26j: THE LEAD'S RULING IS (a) (it reached ENG-26i's queue during a foreground wait and was read about 5 min late: D87 repeated)
+0. **(a), not (c)**: a catch the gate's own foot can jump to is a stepping stone from the foot to the gate that skips the vine climb the
+   gate section exists for; a gate must be a gate. types.ts already promises it for a sealed piece: "its open ends are caught by its own
+   section's wood under them, or the roll is refused by name". The running walk-off judge showed that the section's own wood does not
+   catch a FULL-SPEED exit. So:
+   - **The lay adds nothing by a sealed piece again**: revert the lay-catch path for gates with its proof (`git revert --no-edit
+     b73600b56 97bb2b73e`, keeping 97bb2b73e's plant re-cast as a test that the lay lays nothing by a sealed piece, its run's fall named).
+   - **The fix goes in the gate section** (w1Arc14's field with a gate): GATE_RUN or the foot's reach sized from the flown full-speed
+     run-off, or the foot run on to the wall so the 10-46 px gap past the vine is gone, whichever the flights show (seed 2's four gates:
+     the foot 400-440 px under the gate, the vine hanging from the foot's tip at the wall side, the run coming down at x 1259 / x 20).
+     General (rule 22), planted (RED on this head: seed 2 refused; GREEN: its four gates' runs land on the gate's own wood).
+   - **Measure** 1-4's yield on seeds 1-400 with it (before 49, the reverted cure 400) and keep 2-6's list at 100/100.
+   - **Only if the section cannot catch a running exit** (no room before the wall): try (b), ways ON judged by real flown jumps from wood
+     UNDER the gate only (a drop from the storey above is already past the gate, not a bypass), and send the lead the numbers before any
+     relist.
+1. **Then** the yield and the 2-6 list on the ruled head, as in step 0.
 2. **The three exact speed-ups**: `git cherry-pick 91e6c584e` onto the ruled head; lockall --layouts 16 --out on a frozen copy WITH them and
    one WITHOUT (the ruled head): every part hash of every build identical; any difference, drop the piece that made it.
 3. **1-4 relisted ONCE** (methods/seed-list.md: old survivors in their order, then new seeds lowest first, --merge --in-order, n 100),
