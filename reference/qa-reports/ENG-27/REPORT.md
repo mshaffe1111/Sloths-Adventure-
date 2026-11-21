@@ -1,3 +1,72 @@
+# ENG-27l REPORT (handed over at the D111 box; base 1465822f7; branch t-eng-27 head 122193be4 + this REPORT; ground t-eng-ground 484199316)
+## EXACT NEXT STEP (ENG-27m, from t-eng-27 head; read only this section, D90)
+ORDER: (1) G's result; (2) M2's bank-to-log site, then the race table; (3) rule 28's castBots diff; (4) B; (5) S.
+(1) **G, the ground's gates on 484199316** (chain a then b, run-gates-d.sh, frozen worktree, node_modules symlinked, tooltests.cmd = the
+    ground's gates.yml line 157 without '- run:'; `git fetch --unshallow` done first). At the box: tsc PASS, suite 1/6 PASS 634/634, suite
+    2/6 onward still running in ENG-27l's container (logs in its scratch, lost if it stops; ENG-27l sends the lead the summary if it gets
+    it before stopping). If no result reached the lead: re-run `G=<logdir> H=<worktree at 484199316> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a`
+    then `b` (npm install needs `--legacy-peer-deps`, as CI's). All green: tell the lead 484199316 is the green ground head. A red: name it.
+(2) **M2's other site: a hop from a BANK onto a log drifting AWAY (his way) lands behind its back end.** The race-hop fix (M1, below) left
+    it, and it now costs home middle Normal 5 the race (93.9 vs 93.63, -0.3; it WON by 9.9 on 1465822f7). Its falls with the fix
+    (l/falls-home5-raceSure-on-27l.txt): x 8794 (takeoff from bank #64, log #68 ahead), 8704 (the same crossing after the respawn), 4664
+    (bank #81, log #85), 1691 (bank #93, log #95); without the fix the row fell once (x 8787, the same crossing). The other rows' bank-to-log
+    falls are the same kind: home N2 x 4427 (ENG-27k), x 9789 and 5678-5853 with the fix (l/falls-home2-raceSure-on-27l.txt).
+    WHERE (read, not proven): the edge wait for a float, firsttimer.ts `lands` (~line 2812: a hop at lag 0, 0.1 OR 0.2 s from where he
+    stands NOW, held who.hold[0]) sets `near`, and the wait ends; the jump is then pressed by the edge code below it (tierEdge: his aim
+    point, his thumb lag, a hold drawn from holdQ), so the hop judged is again not the hop flown (from another x, later, another hold).
+    TRIED AND DROPPED by ENG-27l (l/race-variantC-dropped-27l.txt): the edge hop ('run') to a log the wait judged, held at least
+    who.hold[0]: home N5's falls 4 -> 2 (x 4664 and 1691 gone; x 8794 stays, so that crossing has another cause, the press point or the
+    lag judged, not the hold), but middle 21/24 (home N2 -2.6, post N1 -0.8, post N4 -0.3): the hold alone is not the cause there.
+    Fix where the cause is, the same way as M1: the hop flown is the hop judged (judged from where and when he will press it, held at least
+    the hold judged, as the liana's, the wheel's and now the race hop are), two runs per cause, planted on these falls (RED off, GREEN on).
+    Then the race table (copy reference/qa-reports/ENG-27/raceprobe-27e.ts.txt to tools/inspect/_race27k.ts, `npx tsx
+    tools/inspect/_race27k.ts middle,expert,ride home` and `... post`, about 1 min each): middle 24/24, expert 12/12, ride-only 0/24; any
+    middle loss traced. The falls probe: copy l/falls-27l.ts.txt to tools/inspect/_falls.ts, `OFF=<skill> npx tsx tools/inspect/_falls.ts
+    <seed> <setting> home|post` (OFF turns that SKILLS flag off for the RED run).
+(3) **Rule 28's castBots diff**, base 1465822f7 vs head, 2-1..2-6 x40 both settings: `npx tsx tools/inspect/castBots.ts --stage <s>
+    --seeds 1-40 --setting both --par 3 --rows <s>-<side>.jsonl` on each worktree, then `python3 reference/qa-reports/ENG-27/castdiff-27g.py.txt
+    base.jsonl head.jsonl`. NOT RUN: ENG-27l started it, then stopped it before any row (its head side read the working tree, where the
+    M2 candidate was being tried: a diff of the wrong code). Run it on frozen worktrees (base 1465822f7, head the final). By construction no
+    2-1..2-6 row can move (SKILLS.raceSure lives only inside the race branch, which needs a stage pacer: only 2-7 lays one), but the diff
+    is the proof (rule 28): run it on the FINAL head after (2), row for row, every moved row explained, no tier's pass count down. Then
+    tierBots 1-1 9/9, pacerLay (now 18/19: the red is B's boardLog plant), and the invariant (pacerLay test 3) GREEN.
+(4) **B** unchanged from ENG-27k's (3) below: boardLog's scan first (skill on vs off, 2-1..2-7's listed seeds x40, both settings); no row
+    moves: retire it WITH its test; rows move: underLip sends him on to the lip and waits there (a bot change, the plant laid explicitly),
+    rule 28's diff.
+(5) **S** unchanged from ENG-27k's (4) below: stills at 2x both ways (the boat waiting, setting off, docked; the door and letter; a
+    respawn on the race leg), THE CLIP of the race leg with a fall in it (D63), THE FULL SET (gates.md D96; lockall vs 0eefc707e: only
+    2-7's toy moves). Known and not ours: R-165.380.
+## ENG-27l: what was done
+M1. **Proven and fixed: the racing hop off a log took the bank with no landing check and flew a hop of its own hold.** firsttimer.ts, the
+    race leg's hop off a log running his way (SKILLS.race): `bank` (any floor within 80 px of the log's end, 70 px of height) started the
+    hop with no landing check, and startJump drew the press's hold from holdQ (as short as a frame), so a tap off the log's front came down
+    19 px short of a bank 28 px up (k/falls-*-27k.txt: the hop 2 frames held, apex 47 px). **Two runs per cause** (l/falls-*-raceSure-
+    off/on-27l.txt): off, all ten of ENG-27k's falls come back at the same x; on, none of the four M1 falls (home N2 x 10683, 6551, 3959;
+    post N5 x 12371). **Fix (SKILLS.raceSure):** the bank is asked through hopLandsOn (its rise read, 24 px in) with who.hold[0], as the
+    next log already was; the hop flown is held at least who.hold[0] (raceHop, read in startJump after its draws, so the stream is as
+    ever; jumpFor still picks single or double), as the liana's and the wheel's hops are. **Plant** (pacerLay.test 'the racing hop off a
+    log lands where it was judged to'): the exact falls, RED with the skill off, GREEN on. **Tried and dropped** (variant A,
+    l/race-variantA-27l.txt): a forced single at exactly who.hold[0] with the bank asked 50 px in: he rode too many logs in and middle
+    lost five races (home N2, N4, N5; post N1, N5).
+    **Race table on the fix** (l/race-variantB-27l.txt): middle 23/24 (1465822f7: 22/24): home N2 WON +1.5 (was -3.0), post N5 WON +6.5
+    (was -0.2), home N5 LOST -0.3 (was +9.9: (2) above, M2's bank-to-log site, which this fix did not touch: his timing moved and the
+    misread met him there). Expert 12/12 (closest home N2 +11.1). Ride-only 0/24, identical to ENG-27k's (raceSure is inside the race
+    branch, which the ride-only player never runs). pacerLay.test 18/19: 'the careful middle player beats it, normal seed 2' (RED on
+    7c7fe2a9a) is GREEN; the one red is the known boardLog plant (B). The invariant (test 3) GREEN. tsc PASS.
+    R-165.381 (the ride's hop off a drifting log falls short on 2-1): NOT yet re-read on 2-1; it is the ride's drift code (`upstream`
+    and the edge wait), not the race branch, so it goes with (2).
+G. The ground's chain a and b on 484199316 started first (npm install needed `--legacy-peer-deps`): tsc PASS, suite 1/6 PASS 634/634 at
+    the box; the rest running ((1) above).
+Not reached: B, S, the castBots diff (started, then stopped: (3)).
+Lessons applied: D40 (no patch on what is being replaced: the fix is in the bot's own read, the race leg untouched), D57/D87
+(ReadNotifications at every step and push), D102/D90 (read lean: only ENG-27k's top section), D105/D107 (two runs per cause, the plant on
+the exact falls, RED then GREEN), D109 (no clock times to the lead), D111 (the box), D112 (the race and the invariant untouched; the bot
+fixed, never the margin), D113 (every long run in the background).
+Polish check: no screen changed this round (a bot change only); S not reached.
+Learned (for level.md, proposed): "the hop judged is the hop flown" is now three sites (liana, wheel, race) fixed one at a time; a
+proposed rule: every bot gate that judges a hop (hopLandsOn / hopCatches) hands the same hold and kind to startJump, checked by a test
+that the judged hold reaches the jump (PRESS_TRACE-style), so the fourth site (the bank's edge wait, (2)) is caught by a check.
+
 # ENG-27k REPORT (handed over at the D111 box; base d83358fad; branch t-eng-27; ground fix t-eng-ground 484199316; merge 154eb8366; F 7c7fe2a9a)
 ## EXACT NEXT STEP (ENG-27l, from t-eng-27 head; read only this section, D90)
 ORDER: (1) the lead's ruling on the two middle losses (RULED, below); (2) the race table and the gates; (3) B; (4) S.
