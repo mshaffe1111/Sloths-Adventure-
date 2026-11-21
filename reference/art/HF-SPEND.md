@@ -107,4 +107,4 @@ ART-NEXT-c reeds redo total: ~7.2 sandbox-min, **~$0.33** of its $0.50 cap. Bala
 ART-NEXT-c bridges total: ~9.7 sandbox-min, **~$0.44** of its $2 cap. ART-NEXT-c in all: ~$0.77. Balance ~$41.95 (from ~$42.39). Logged 12:11 PM ET.
 | 12:22-12:38 PM | ART-NEXT-d R-165.354 + R-165.370: sandbox 6b01d35defaf5e14f4b5e16d (rtx-pro-6000, --forward-hf-token, 12:22:50-12:38:12 PM by `date`, ~15.4 min: ~1.5 min image pull, Wan2.2-I2V-A14B load 65 s, 79-98 s a gen): bridgegpu.py via runbridge.sh 7dd1cfe93 spec-bridge2, first + last frame pinned, 8 gens (B4 sit-down x seeds 5, 37, 47, 61 at 33 frames; a NEW belly-scratch SC, plain pinned first AND last, x seeds 7, 19, 31, 43 at 41 frames), ALL 8 back, each repacked at WebP q80 in the sandbox (6 parts, not 10) and pulled + committed as it landed (D98: 8 pulls); terminated after the last pull. | ~$0.70 (cap $2) | 8 takes: ~$0.09 a take |
 
-ART-NEXT-d total: ~15.4 sandbox-min, **~$0.70** of its $2 cap. Balance ~$41.25 (from ~$41.95). Logged 12:39 PM ET.
+ART-NEXT-d total: ~15.4 sandbox-min, **~$0.70** of its $2 cap. Balance ~$41.25 (from ~$41.95). Logged 12:38 PM ET.
