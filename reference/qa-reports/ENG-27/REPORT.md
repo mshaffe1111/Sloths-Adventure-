@@ -1,3 +1,59 @@
+# ENG-27j REPORT (handed over at the D111 box; base d29258340; branch t-eng-27, head: this commit; merge 24d6ba567, re-plant af127d21e)
+## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
+G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634 (with ENG-GROUND-e's lock
+   PASS 102/102 and suite 1/6, the same two). Unrun or running when the container stopped: suite 2-6, tooltests, tierBots, tipwalk,
+   coverage, registry, generality, known, roadmap, time, art (chain a) and all of chain b. Run them FIRST, in the background, on a frozen
+   worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then `... b` ($G/../tooltests.cmd
+   = gates.yml line 157 with the leading '- run:' stripped; node_modules symlinked from the main checkout; `git fetch --unshallow` before
+   roadmapcheck and the lock). All green: tell the lead 2d4e0752a is the green ground head. ANY red: the merge 24d6ba567 is already on
+   t-eng-27 (safe-keeping, the container is temporary): name the red to the lead with its log tail and wait for the ruling (revert with
+   `git revert -m 1 24d6ba567` only on the lead's word).
+B. **boardLog's RED half is NOT re-planted yet** (pacerLay.test 'a log drifting his way, still mostly under the lip ... home Easy seed 1;
+   RED without it' FAILS on the merged head: 57/58 of the six files; the race now wins without the skill, 85.2 vs 97.53, ENG-27i). Left
+   failing on purpose: never loosen, never retire while the skill lives (the lead's ruling). Build its explicit toy in
+   tools/inspect/firsttimer.test.ts beside the fromTakeoff one: a bank ending at 1000 (top 600), one log his way 28 px under the lip, the
+   river a zone, a level put-back (levelHeight 700). My first toy, boardlog-probe-27j.ts.txt (copy to tools/inspect/_probe.ts; args none:
+   a sweep of the log's front at t0 and his start; never commit it as .ts): FT_MIDDLE_EASY from x 940 or 700, cap 4. FOUND: (1) the
+   engine's log x froze during his splash while driftX(t) ran on (log800 vs dx846 at t 1.4), so a bare toy's log and the bot's clock part
+   after a fall: judge only the first approach; (2) from x 940 with the front at 1000 he ran off the lip onto the log's front and off it
+   ON AND OFF ALIKE (the miss itself, but the skill did not engage: underLip reads fa = floorAt(p.x + look) and the log's front was
+   already behind his look, so fa was empty); (3) from x 700, fronts 960/975/986: ON fell (t 2.5-3.3), OFF did not; 1000/1015 and from
+   500: neither fell. (3) needs tracing before any toy is called a plant (is it the skill's own harm, a rule-28 concern, or the toy?).
+   The toy must put the log 64 px out of 240 at the moment his look first reaches it (the race's x 7650), not at t0.
+   Only if a scan of 2-1..2-7's listed seeds finds a log mostly under the lip at a running approach NOWHERE after the merge: retire
+   boardLog WITH its test, by a rule-28 row-for-row castBots diff showing nothing moves.
+R. **The race table on the merged head: DONE** (af127d21e, race-27j-merged.txt; raceprobe-27e.ts.txt on a frozen worktree). Middle: home
+   12/12 WON, post 12/12 WON (closest: home Easy 3 and post Easy 3/5 by 4.1-5.9 s; home Normal rows in the file). Expert (Normal only:
+   no expert bot on Easy): home 6/6, post 6/6 WON. No middle or expert loss, so none to trace. Ride-only: lost 22/24; WON home Normal
+   seed 1 (93.5 vs 93.89, +0.4; was lost by 21.5 at 27f) and seed 2 (91.8 vs 92.37, +0.6; won by 0.3 at 27f). pacerLay's 'the ride-only
+   player never wins without a fall on the last crossing' (home seeds 1-3, both settings) PASSES, so each of those two wins carries a
+   fall on the last crossing (the lead's ruling A: falling in is not winning without effort). Worth the lead's eye: home Normal 1 moved
+   from a 21.5 s loss to a 0.4 s win with the merge and the re-plant, by the exemption, not by a clean ride.
+S. Then the packet's step 5: stills at 2x both ways (the boat waiting, setting off, docked; the door and letter), THE CLIP of the race leg
+   (D63), THE FULL SET (gates.md D96; lockall vs 0eefc707e: only 2-7's toy moves; `git fetch --unshallow` first). Known and NOT ours: the
+   wall end's shade seam and water fill and the stretched wall picture (R-165.380, after release 3).
+## What was done
+1. **The merge** (24d6ba567): origin/t-eng-ground 2d4e0752a into t-eng-27, --no-ff. The two conflicts ENG-27i mapped, nothing else.
+   w2.ts lip(): OURS (`p.y >= y - 2 && p.y <= y + LIP_RISE`, a bank on the fall's own storey; it refuses the upper leg 600 over the fall
+   that theirs refused too), both comments folded into one. engine-core.md: both sections kept; the "groundStack (NOT merged here yet)"
+   line now names the merge and points at §0zq-GROUND. tsc PASS. The six files (pacerLay, pacerBehindBanks, groundStack, legsHome,
+   postLay, w2.test) after the re-plant: 57/58, the one fail boardLog's RED half (B above).
+2. **fromTakeoff's RED half re-planted on its cause laid explicitly** (af127d21e; the lead's ruling): tools/inspect/firsttimer.test.ts 'in
+   the real engine: a jump from a STAND over a laid pond reads the gap from where he stands ...' (sim.bare, the bot's own jumpFor read, as
+   ENG-27h's boardHop plant): (a) a stand 165 px before a laid 133 px pond (post Normal seed 5's x 6591), (b) a stand 107 px back on a log
+   with the bank 72 px past its front (seed 4's x 2749): each a double with SKILLS.fromTakeoff on, a single with it off (RED, checked);
+   and the narrowing rule 28 found holds on as off (running at the pond, a dry pit the same width, a stand 330 px before a 60 px pond:
+   each a single). firsttimer.test.ts 13/13 PASS. pacerLay's post Normal 4 and 5 race tests keep their GREEN half (the middle wins both,
+   PASS); their RED half moved to the laid toy (comment in place; title says where its RED lives). Not loosened: the skill's RED is
+   still proven, now where its cause is laid rather than where the generator happened to lay it.
+POLISH CHECK: no screen changed in this packet (a merge and tests); stills and THE CLIP are step S, undone.
+LESSONS APPLIED: D111 (the box from `date`; long runs in the background on frozen worktrees from the start), D57 (inbox at each step and
+   push), D102 (lean reads), D109 (no clock times in messages), law 22 / the lead's ruling (no test loosened; the failing RED half left
+   failing and named rather than dropped), law 3 (the bare toy's first result checked frame by frame before calling it a plant: it was
+   not one). LEARNED: a re-plant at the bot's read (jumpFor) on a bare toy is quick and exact; a re-plant of a floor-ahead read
+   (boardLog) needs the log placed relative to his look at arrival, and a bare world's log stops during a splash while the bot's clock
+   runs on: trace the first approach only.
+
 # ENG-27i REPORT (handed over at the D111 box, 28 min; rewritten 4:02 PM ET by date; first written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
 ## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90). 1a is done. ORDER (the lead's): G, R, then 1, 2, 3
 G. **The gates on 2d4e0752a first, IN THE BACKGROUND** (origin/t-eng-ground's head, ENG-GROUND-e: "the corner"): a frozen worktree at
