@@ -13,7 +13,8 @@
    eagle entry to make it pass, law 22): the sheet check reads the FINISHED roll (`playFinish(listedStage(id)!, structuredClone(st), d)`),
    as Play draws it. Both CI tool-line reds (registrycheck.test.ts 'the shipped table passes the gate' and 'planted on the real builds')
    are these 2-3 entries.
-4. castBots 2-3 1-40 x 5 bots x both, the meter 2-3 N + E (DIFFICULTY.md), THE FULL SET on the exact head (D96), lockall --layouts 16
+4. tierBots RED (2 of 200 1-1 runs moved: ENG-CAGE's set-down-loop fix, Gates below): the recalibration lands before the full set.
+   castBots 2-3 1-40 x 5 bots x both, the meter 2-3 N + E (DIFFICULTY.md), THE FULL SET on the exact head (D96), lockall --layouts 16
    --intended 2-3 vs main, the full clipcheck, drawcheck WITH 2-3 now in limits.json (see Gates).
 5. Final stills on the GREEN head (rule 29): Easy post stills (my Easy shot caught the title card on a loaded machine: the mooring beat has
    ONE lay for both settings, so the geometry is the same, but no Easy still exists); a 1-7 eagle-shadow still beside the new heron look
@@ -49,6 +50,10 @@ In line with ENG-CAGE's 1-40 at fix4 (child N 0/40, child E 37/40, middle 36/40 
 | drawcheck (the 19 listed) | 91e5a31fa tree | PASS (901 s) |
 | drawcheck 2-3 alone (list edited for the run, restored) | 2c9a0197d | PASS (49 s), BUT followArt.ts is not among its call sites: its 4 fixed spots never catch a heron look, so the look's 3 added strokes (gaze edge, rim) are UNMEASURED by the gate. They add no gradient, shadow or readback (the gate's hard limits); a spot on a look is a drawcheck harness change (the Critic's) |
 | castBots 2-3 1-10 child/middle/expert both | 2c9a0197d | table above |
+| tierBots.test.ts (1-1 calibration) | bcfcb4c2a AND ac4d299d8 (the merge, before any BUILD-23c change) | **FAIL 8/9 on both**: '2 of 200 runs moved' (child Normal variants 1 and 12: putbacks 9->8, 10->9). Same on the merge head, so born of ENG-CAGE's SET-DOWN LOOP fix (46bb80a30, its REPORT step 2 predicted it), not of vineReaches. Re-run the calibration and recommit calibration-main.jsonl (BOTS.md): ENG-CAGE-b's, the lead routes |
+| generalitycheck | bcfcb4c2a | PASS (26 literals, 26 known) |
+| knowncheck | bcfcb4c2a | PASS |
+| roadmapcheck | bcfcb4c2a | UNRUN: this container's clone is shallow ('proofs cannot be checked (fetch-depth 0)') |
 | The rest of THE FULL SET (the CLAUDE.md unit list in full, the shipping build, chunkcheck, artcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, kbdcheck, buildcheck, seedlist 1-1, tierBots, coveragecheck, tipwalk, lockall) | - | UNRUN (BUILD-23d) |
 
 ## Polish check
