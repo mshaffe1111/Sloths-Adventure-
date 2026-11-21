@@ -3069,6 +3069,20 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // (a stage of legs that ends on a run leg: laid left, the shrine and the totem are mirrored with it)
     if (routed) { const sum = leftSum; endLeg(legK); if (sum !== undefined) exitX = sum - exitX; }
   }
+  // (the start's back (ENG-27): a stage of legs whose later leg lies beyond where its first run leg begins (a leg laid back left, past the
+  // start) has no level edge behind the spawn. A wall stands there, as a mid-stage column's does (legs.ts WALL), from over the first leg to
+  // its foot: he leaves the start only the way the stage goes, never by dropping off its back onto the leg below (the toy's first bot ran
+  // left off the spawn, fell onto the home leg and walked to the shrine, the out leg and the column never entered)
+  const first = laidLegs[0];
+  if (routed && first && !upOrDown(first.travel)) {
+    const back = first.travel === 'right' ? -1 : 1;
+    if (laidLegs.slice(1).some((g) => (back < 0 ? g.x0 < first.x0 - 1 : g.x1 > first.x1 + 1))) {
+      const top = first.y0 - WALL.over;
+      const w = mk(back < 0 ? first.x0 - WALL.w : first.x1, top, WALL.w, 'block', first.y1 - top, M.tower?.wall ?? M.ground.style);
+      wallIds.add(w.id);
+      sections[first.i0]?.seam.push(w);
+    }
+  }
   clearClimbs(vines, platforms);
   // (a turn's x is its vine's, where clearClimbs left it)
   for (const t of turns) t.x = t.vine.x;
@@ -4241,14 +4255,17 @@ export const laidAsks = (st: Gen2Stage): NonNullable<Laid['asks']> => ASKS.get(s
 export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<typeof validateStage> {
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
+  // (a stage of legs: no run leg laid over another (legs.ts legOverlaps; 2-7's design, Pushback 1: a leg laid back left at the ground of
+  // the leg before it lies on top of it). The graph's own fault: refused by name and alone, so no repair swaps a section for it (a swap
+  // cannot mend it, and the swaps spent the pool: refuseNotThrow.test's rule), ENG-27)
+  const legsLaid = (st as Partial<Gen2Stage>).gen2?.tower?.legs;
+  const over = legsLaid ? legOverlaps(legsLaid) : [];
+  if (over.length) return { ...validateStage(held), ok: false, errors: over.map((e) => `legs: ${e}`) };
   // (1-1 links level jumps by the flown arcs too, R-165.61; every other stage exactly as before)
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  // (a stage of legs: no run leg laid over another (legs.ts legOverlaps; 2-7's design, Pushback 1: a leg laid back left at the ground of
-  // the leg before it lies on top of it). Only a stage laid as legs has any)
-  const legsLaid = (st as Partial<Gen2Stage>).gen2?.tower?.legs;
-  const wet = [...(legsLaid ? legOverlaps(legsLaid).map((e) => `legs: ${e}`) : []), ...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
+  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)

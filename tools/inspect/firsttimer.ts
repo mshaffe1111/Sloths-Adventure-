@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
@@ -1437,7 +1437,11 @@ export class FirstTimerRun {
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
       // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
-      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      // (a stage of LEGS (gen2 legs.ts): the stage's own laid route too, leg by leg. The inspector links one run leg to another under it
+      // and drops through a column's storeys and walls (ENG-27: the toy's route hopped from the out leg's end to the column's floor,
+      // 742 px down through its wall, and he stood at the top until rescued)
+      const legsLaid = (st as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'legs';
+      const tower = route.traced === 'failed' || legsLaid ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
@@ -1559,7 +1563,7 @@ export class FirstTimerRun {
   floorAt(x: number, y: number, down = 40): Platform | null {
     // (a top under the water is no floor to him: a cage's lift resting in its pool, 10 px under the surface, round 5 2-8, read as a
     // step down and was walked onto, a drowning, again and again; a person sees it is under water)
-    const river = (this.sim.stage.rivers ?? []).find((r) => x > r.x0 && x < r.x1);
+    const river = riverAt(this.sim.stage.rivers, x, y);
     for (const q of this.sim.platforms) {
       if (!this.solid(q)) continue;
       if (river && q.type !== 'drift' && q.y > river.surfaceY) continue;
@@ -1650,7 +1654,7 @@ export class FirstTimerRun {
       parts.push(top === null ? 'an open drop ahead' : `a drop of ${Math.round(top - p.y)} px ahead`);
     }
     const st = this.sim.stage as any;
-    const river = (st.rivers ?? []).find((rv: any) => p.x + dir * 120 > rv.x0 && p.x + dir * 120 < rv.x1);
+    const river = riverAt(st.rivers as RiverZone[] | undefined, p.x + dir * 120, p.y);
     if (river) parts.push('water ahead');
     const foe = (e.enemies as any[]).find((m) => !m.defeated && Math.abs(m.x - p.x) < 200 && Math.abs(m.y - p.y) < 160);
     if (foe) parts.push(`a ${foe.type} near`);

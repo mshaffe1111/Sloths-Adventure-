@@ -1,0 +1,10 @@
+import { homeRun, homeStage } from '../../../tools/inspect/homeToys.ts';
+const st = homeStage(1);
+const legs = st.gen2.tower!.legs!;
+const out = legs[0];
+console.log('out leg', out.x0, out.x1, out.y0, out.y1, 'spawn', st.spawnX, st.spawnY);
+for (const p of st.platforms.filter((q) => q.x < out.x0 + 1400 && q.x + q.width > out.x0 - 80 && q.y < out.y1 + 5).sort((a, b) => a.x - b.x)) console.log(p.id, p.type, p.style ?? '', 'x', Math.round(p.x), '-', Math.round(p.x + p.width), 'y', Math.round(p.y), 'h', Math.round(p.height));
+const gaps = (st.gen2 as unknown as { drops?: Array<{ x0: number; x1: number; ends: { kind: string } }> }).drops;
+console.log('drops', JSON.stringify((gaps ?? []).filter((d) => d.x0 < out.x0 + 1400 && d.x1 > out.x0).map((d) => [Math.round(d.x0), Math.round(d.x1), d.ends.kind])));
+let f = 0, prev = 0;
+homeRun('middle', 'normal', 1, 1, { onFrame: (sim: { t: number; p: { x: number; y: number; grounded: boolean } }) => { f++; if (sim.p.y > out.y1 && prev <= out.y1) console.log('fell at t', sim.t.toFixed(2), 'x', Math.round(sim.p.x)); prev = sim.p.y; } } as never);

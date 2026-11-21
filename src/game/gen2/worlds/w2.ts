@@ -203,7 +203,7 @@ export function w2World(): WorldKit {
 type FinishStage = {
   platforms: Platform[];
   rivers?: RiverZone[];
-  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number };
+  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number; tower?: { flow?: string; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
   proto?: { decor?: W2Decor[] };
 };
 
@@ -249,6 +249,17 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
     far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
   });
+  // (is the fall at x0-x1, lip y, on a leg laid LEFT? The run leg whose span holds it and whose heights lie nearest, gen2 tower.legs)
+  const runs = st.gen2?.tower?.flow === 'legs' ? (st.gen2.tower.legs ?? []).filter((g) => g.travel === 'left' || g.travel === 'right') : [];
+  const leftward = (x0: number, x1: number, y: number): boolean => {
+    let on: { travel: string; d: number } | undefined;
+    for (const g of runs) {
+      if (x0 < g.x0 - 1 || x1 > g.x1 + 1) continue;
+      const d = Math.max(0, g.y0 - y, y - g.y1);
+      if (!on || d < on.d) on = { travel: g.travel, d };
+    }
+    return on?.travel === 'left';
+  };
   // (a log river's reeds, as a fall's)
   for (const r of had) {
     if (r.speed === 0) continue;
@@ -263,7 +274,10 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     const top = Math.max(near.y, far.y);
     const safe = f.kind === 'soft';
     if (safe) for (const p of solids) if (p !== near && p !== far && p.x >= f.x0 - 1 && p.x + p.width <= f.x1 + 1 && p.y > top) drop.add(p.id);
-    rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: { backX: f.x0 - 70, backY: near.y } } : {}) });
+    // (a splash sets him back on the bank he came from: on a leg laid LEFT (gen2 legs.ts) that is the right one, ENG-27: the toy's home leg
+    // set him on the far bank, ahead, and he turned back)
+    const back = leftward(f.x0, f.x1, f.y);
+    rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: back ? { backX: f.x1 + 70, backY: far.y } : { backX: f.x0 - 70, backY: near.y } } : {}) });
     reeds(near, far, f.x0, f.x1);
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));

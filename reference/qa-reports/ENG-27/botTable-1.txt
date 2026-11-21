@@ -1,0 +1,13 @@
+middle normal 1 shrine 192.8 lives 2 putbacks 0 rescues 1
+middle normal 2 shrine 993.6 lives 56 putbacks 0 rescues 3
+middle normal 3 shrine 1112.5 lives 58 putbacks 0 rescues 5
+middle easy 1 shrine 204.3 lives 2 putbacks 0 rescues 1
+middle easy 2 shrine 233.9 lives 3 putbacks 0 rescues 1
+middle easy 3 time  lives 70 putbacks 0 rescues 2
+expert normal 1 shrine 205.3 lives 4 putbacks 0 rescues 1
+expert normal 2 shrine 929.1 lives 61 putbacks 0 rescues 2
+expert normal 3 shrine 984 lives 94 putbacks 0 rescues 5
+expert easy 1 THROW Error: no expert bot on easy
+expert easy 2 THROW Error: no expert bot on easy
+expert easy 3 THROW Error: no expert bot on easy
+exit 0

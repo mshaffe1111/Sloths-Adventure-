@@ -44,13 +44,14 @@ export const HOME_BRICKS: SectionTemplate[] = [
   crossing('home-practise-ride', 'practise', 'ride'),
   brick(stepRun, 'home-flow', 'flow', 'ground'),
   crossing('home-twist-twin', 'twist', 'twin'),
+  brick(logRun, 'home-twist-floating', 'twist', 'floating'),
   crossing('home-signature-long', 'signature', 'long'),
 ];
 
 /** the toy's graph: out right with the river at him, down a column, home left with the rivers (2-7's shape, its node string's legs) */
 export const HOME_CODE = 'A Pg1> Xw1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
 /** the same beats turned back at the out leg's own ground (no column): the overlay the 2-7 designer found (Pushback 1), refused by name */
-export const SAME_GROUND_CODE = 'A Pg1> Xw1> R /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
+export const SAME_GROUND_CODE = 'A Pg1> Xw1> R /L Pf1< Pw1> Mg1> Wf1> R Sw1> E';
 
 /** a kit whose one graph is `code`, for the stage `stageId` (the brief is keyed by the stage's id, which the caller names) */
 export const homeKit = (stageId: string, code = HOME_CODE): WorldKit => ({

@@ -73,3 +73,49 @@ test('home toy (planted): a river crossed right to left is judged in its own fra
   delete r.zone.way;
   assert.match(riverFaults(st).join(), /flows back at him/);
 });
+
+test('home toy (planted): the start\'s back is walled when the home leg runs on past it, and the way on never leaves the out leg but by the column', async () => {
+  const { findRoute } = await import('../../../tools/inspect/route.ts');
+  const { WALL } = await import('./legs.ts');
+  for (const seed of [1, 2]) {
+    const st = build(HOME_CODE, seed);
+    const [out, col, home] = st.gen2.tower!.legs!;
+    assert.ok(home.x0 < out.x0, `seed ${seed}: the home leg runs on past the start`);
+    // (a wall behind the spawn, from over the out leg to its foot: he cannot walk off the start's back onto the home leg)
+    const wall = st.platforms.find((p) => p.x === out.x0 - WALL.w && p.width === WALL.w);
+    assert.ok(wall && wall.y <= out.y0 - WALL.over && wall.y + wall.height >= out.y1 - 1, `seed ${seed}: the start's back wall`);
+    // (the inspector's way on: no move from the out leg lands on the home leg; it comes down in the column's frame (its floor runs out
+    //  through the doorway from col.x0 - WALL.w). Planted RED before ENG-27: 'walk 12274 -> 12167, drop to 1605' off the start's back,
+    //  then every bank of the out leg linked down to the home leg through itself. OPEN (ENG-27 REPORT): the inspector still hops from the
+    //  out leg's last bank to the column's floor through the column's wall (a way-down column's own, legsLay's DOWN_CODE too); the bots
+    //  follow the lay's own route on a stage of legs (firsttimer.ts, towerRoute.ts))
+    const r = findRoute(st as never, [], { spurs: true });
+    assert.notEqual(r.traced, 'failed');
+    for (const g of r.segs) {
+      const fromOut = g.y0 <= out.y1 + 1, toHome = g.y1 >= home.y0 - 1;
+      if (fromOut && toHome) assert.ok(g.x1 >= col.x0 - WALL.w - 1, `seed ${seed}: ${g.kind} ${Math.round(g.x0)},${Math.round(g.y0)} -> ${Math.round(g.x1)},${Math.round(g.y1)} lands on the home leg from the out leg`);
+    }
+  }
+});
+
+test('home toy (planted): the river he is in is found by where he is, never by x alone; a splash on the home leg sets him back on the bank he came from', async () => {
+  const { riverAt, RIVER_DEPTH } = await import('../river.ts');
+  const { w2Finish } = await import('./worlds/w2.ts');
+  // (two rivers sharing x: the out leg's over the home leg's. Planted RED: by x alone (the engine before ENG-27) the higher one is found
+  //  wherever he is, and on the home leg he was 'under its surface' and lost a life every frame there)
+  const up = { x0: 1000, x1: 1600, surfaceY: 700 }, down = { x0: 900, x1: 1500, surfaceY: 1500 };
+  assert.equal(riverAt([up, down], 1200, 650), up, 'on the out leg, over its river');
+  assert.equal(riverAt([up, down], 1200, 1450), down, 'on the home leg, under the out leg\'s river');
+  assert.equal(riverAt([up, down], 1550, 1450), undefined, 'on the home leg where only the out leg\'s river is over him');
+  assert.equal(riverAt([up], 1200, 700 + RIVER_DEPTH - 1), up, 'fallen into it: caught');
+  assert.equal([up, down].find((r) => 1550 > r.x0 && 1550 < r.x1), up, 'the plant: by x alone the out leg\'s river is found on the home leg');
+  // (World 2's finish fills a soft dip with a splash-back pond: on the home leg (laid left) its splash sets him on the RIGHT bank)
+  for (const seed of [1, 2]) {
+    const st = build(HOME_CODE, seed);
+    const home = st.gen2.tower!.legs![2];
+    const done = w2Finish(st as never) as typeof st;
+    const ponds = (done.rivers ?? []).filter((r) => r.speed === 0 && r.safe && r.x1 <= home.x1 + 1 && r.surfaceY > home.y0 - 100);
+    assert.ok(ponds.length >= 1, `seed ${seed}: a splash pond on the home leg`);
+    for (const r of ponds) assert.ok(r.safe!.backX > r.x1, `seed ${seed}: pond ${r.x0}-${r.x1} sets him back at ${r.safe!.backX}, on the bank he came from (right)`);
+  }
+});
