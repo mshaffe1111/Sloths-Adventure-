@@ -20,7 +20,7 @@ import type { RiverZone } from '../river.ts';
 import { LAND_FLIGHTS } from './landFlights.data.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateRoofs, towerGates, gateBand, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -595,6 +595,27 @@ test('a stage whose brief asks (GraphBrief.tags) has every laid piece tagged wit
   assert.ok(tags.includes('s2:foot') && tags.includes('s2:vine') && tags.includes('s2:top'), "the teach brick's foot, vine and top are found by key");
   // (the tags are the only difference: the same stage, piece for piece)
   assert.deepEqual(tagged.platforms.map((p) => [p.x, p.y, p.width]), plain.platforms.map((p) => [p.x, p.y, p.width]));
+});
+
+test('towerGateRoofs (planted, ENG-26n, 1-4 cause C): the lay\'s wood over a gate, up to the storey its way on climbs to, across its section\'s full width', () => {
+  // (1-4 Easy seed 10, gen2 19018, as laid on t-build-26 30570b384: s17's gate 481-841 @3342 over its foot 295-1027 @3702 (gateRun out
+  // at both ends); its way on, the vine x 786, climbs to s18:b 360-760 @3061; the lay ran s18:b on to the wall, 760-1280 @3061, so every
+  // inch of the gate was under wood 281 px up (LEAP.up is 221: towerGates' reach did not see it) and three bots stood on it 30 s and more)
+  const gate = solid(481, 3342, 360, 1), foot = solid(295, 3702, 732, 2), next = solid(360, 3061, 400, 3);
+  const vine = (x: number, id: number): Vine => ({ id, x, topY: 3342, bottomY: 3702, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' }) as Vine;
+  const way: Vine = { id: 9, x: 786, topY: 3061, bottomY: 3342, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const V = [vine(541, 5), vine(621, 6), vine(701, 7), vine(781, 8), way];
+  const own = [gate, foot];
+  assert.deepEqual(gateBand(gate, own, V), { x0: 295, x1: 1027, y0: 3053, y1: 3372 }, 'its band: the foot\'s full width, from just under its level up to its way on\'s top');
+  const bridge = solid(760, 3061, 520, 4);
+  assert.deepEqual(towerGateRoofs([{ g: gate, own }], [bridge], V), ['tower: the shut gate at x 481-841, y 3342 has the lay\'s wood in its band (x 295-1027, y 3053-3372): the piece at x 760-1280, y 3061'], 'the bridge over it: refused by name');
+  // (the next section's own bough over it is not the lay's; the lay's wood past the foot's end, or a storey up, or under its level, is clear)
+  assert.deepEqual(towerGateRoofs([{ g: gate, own }], [], [...V, { ...way }]), []);
+  assert.deepEqual(towerGateRoofs([{ g: gate, own }], [solid(1030, 3061, 250, 10), solid(300, 2740, 700, 11), solid(843, 3441, 180, 12)], V), []);
+  // (over the gate's foot past the bough, gateRun's run-out: inside the band, though a hop across from the bough is all it is)
+  assert.equal(towerGateRoofs([{ g: gate, own }], [solid(900, 3200, 100, 13)], V).length, 1);
+  // (with no way on yet, the band reaches a hop over it: LEAP.up)
+  assert.equal(gateBand(gate, own, V.slice(0, 4)).y0, 3342 - LEAP.up - 8);
 });
 
 test('towerGates (planted, B14\'s case): a bough the lay ran on beside a shut gate is one hop from a field vine\'s top; without it the gate holds', () => {

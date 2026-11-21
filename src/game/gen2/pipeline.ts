@@ -25,7 +25,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateRoofs, towerGates, gateBand, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
@@ -1755,7 +1755,7 @@ export interface Laid {
   /** a tower (graph.flow up or down, R-165.170): its width, its floor (an ascent's ground; a way down's last floor, the shrine's), each
    *  storey join that climbs or comes down (the vine's x, the heights it joins, whether the storey turned back), and how many plain
    *  boughs the lay ran on to a wall for a section too wide to turn where he stood (a design wants none) */
-  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of legs (R-165.196): each leg as laid */ legs?: LaidLeg[]; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[] };
+  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of legs (R-165.196): each leg as laid */ legs?: LaidLeg[]; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[]; /** each sealed piece's own section's platform ids, and the lay's own wood (towerGateRoofs) */ gates?: Array<{ id: number; own: number[] }>; lay?: number[] };
 }
 
 export interface LayOptions {
@@ -2066,6 +2066,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let storeyNow = 0;
   // (the sealed pieces, SectionPiece.sealed: the lay adds nothing level with one or within a hop of it, and never walks on from one)
   const sealedIds = new Set<number>();
+  /** each sealed piece's own section (its band runs its full width: tower.ts gateBand) */
+  const gateSec = new Map<number, { pieces: Array<{ platform: Platform }> }>();
   const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
     const p: Platform = crumble
       ? { id: pid++, x: R(x), y: R(y), width: CRUMBLE_TILE_W, height: CRUMBLE_H, type: 'fragile', crumbleAfter: crumbleTime(budget.stage), style: 'ruin' }
@@ -2566,6 +2568,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const doors: Array<{ side: -1 | 1; y: number }> = [];
   const laidLegs: Array<LaidLeg & { t0: number; t1: number }> = [];
   const wallIds = new Set<number>();
+  /** the lay's own wood: the catch boughs, bridges and run-ons towerCatches lays (a gate's band is judged against these: towerGateRoofs) */
+  const layIds = new Set<number>();
   /** a run leg's sections: the corridor each was laid in (its leg's own) */
   const corridorOf = new Map<string, [number, number]>();
   /** the catch boughs a column's open ends are owed (tower.ts towerCatches, which reads a tower from x 0: a mid-stage column's own
@@ -2582,10 +2586,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const mine = !routed ? sections : sections.slice(mark.s);
     // (and no catch bough lies in a wheel's sweep or over it where its rider rides: wheel.ts sweepBox, his body over the top floor)
     const keepOut = stageWheels(platforms).map((w) => { const b = sweepBox(w); return { x0: b.x0 - (routed ? fx : 0), x1: b.x1 - (routed ? fx : 0), y0: b.y0 - WHEEL_RIDER, y1: b.y1 }; });
+    // (and none in a sealed piece's band, across its section's full width up to the storey its way on climbs to: tower.ts gateBand)
+    for (const id of sealedIds) {
+      const g = P.find((q) => q.id === id);
+      const mineIds = new Set(gateSec.get(id)?.pieces.map((pp) => pp.platform.id) ?? []);
+      if (g) keepOut.push(gateBand(g, P.filter((q) => mineIds.has(q.id)), V));
+    }
     for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut)) {
       storeyNow = c.level;
       const cx = c.x + fx;
       const b = mk(cx, c.y, c.w, 'branch', 0);
+      layIds.add(b.id);
       (mine.find((q) => q.pieces.some((pp) => pp.platform.x < cx + c.w && pp.platform.x + pp.platform.width > cx && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
     }
   };
@@ -2830,7 +2841,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (tagged) (p as Platform & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
         if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
         if (lp.quiet) p.quiet = true;
-        if (lp.sealed) sealedIds.add(p.id);
+        if (lp.sealed) { sealedIds.add(p.id); gateSec.set(p.id, placed); }
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
       const pieceOf = (k: string) => {
@@ -3251,8 +3262,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     width: routed ? R(Math.max(...platforms.map((q) => q.x + q.width)) + 40) : tower ? TW : R(shrine.x + shrine.width + 40),
     bottom: routed ? R(Math.max(...platforms.map((q) => q.y + q.height))) : flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
     ...(routed
-      ? { tower: { flow: 'legs' as const, legs: laidLegs.map(({ t0, t1, ...g }) => ({ ...g, ...(g.frame ? { turns: turns.slice(t0, t1).map(({ x, from, to }) => ({ x, from, to })) } : {}) })), width: TW, floorY: Math.max(floorY + shiftedDown * 0, ...laidLegs.map((g) => g.floorY ?? -Infinity)), turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } }
-      : tower && vertical(flow) ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
+      ? { tower: { flow: 'legs' as const, legs: laidLegs.map(({ t0, t1, ...g }) => ({ ...g, ...(g.frame ? { turns: turns.slice(t0, t1).map(({ x, from, to }) => ({ x, from, to })) } : {}) })), width: TW, floorY: Math.max(floorY + shiftedDown * 0, ...laidLegs.map((g) => g.floorY ?? -Infinity)), turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds], gates: [...sealedIds].map((id) => ({ id, own: (gateSec.get(id)?.pieces ?? []).map((pp) => pp.platform.id) })), lay: [...layIds] } : {}) } }
+      : tower && vertical(flow) ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds], gates: [...sealedIds].map((id) => ({ id, own: (gateSec.get(id)?.pieces ?? []).map((pp) => pp.platform.id) })), lay: [...layIds] } : {}) } } : {}),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
@@ -4154,7 +4165,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
     ...hurtMeta(laid, req.kit.manifest),
-    ...(laid.tower ? { tower: { flow: laid.tower.flow, ...(laid.tower.legs ? { legs: laid.tower.legs } : {}), width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
+    ...(laid.tower ? { tower: { flow: laid.tower.flow, ...(laid.tower.legs ? { legs: laid.tower.legs } : {}), width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed, ...(laid.tower.gates ? { gates: laid.tower.gates } : {}), ...(laid.tower.lay ? { lay: laid.tower.lay } : {}) } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -4682,6 +4693,10 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
     // (and, going up, no storey is climbed by jumps alone: the turn's vine is the only way, tower.ts towerSkips)
     // (and no shut gate is passed without opening it: a sealed piece has nothing a hop reaches beside it, tower.ts towerGates)
     const gates = (T.sealed ?? []).flatMap((id) => st.platforms.filter((q) => q.id === id));
+    // (and no wood of the lay's in a gate's band: across its section's full width, level with it up to the storey its way on climbs to,
+    // tower.ts towerGateRoofs; ENG-26n, 1-4 cause C)
+    const gateOwn = (T.gates ?? []).flatMap(({ id, own }) => { const g = st.platforms.find((q) => q.id === id); const ids = new Set(own); return g ? [{ g, own: st.platforms.filter((q) => ids.has(q.id)) }] : []; });
+    const layOf = new Set(T.lay ?? []);
     // (a stage of legs: each column is judged by itself, its own pieces handed over moved to its frame; its walls stand outside it)
     const cols = T.flow === 'legs'
       ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
@@ -4689,7 +4704,7 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
     // (a river's water is what lies under the ends over it: wheelLay.ts waterFloors)
     const ponds = waterFloors(st.rivers ?? []);
-    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerGateRoofs(gateOwn, st.platforms.filter((q) => layOf.has(q.id)), st.vines), ...towerVaults(st.vines, st.platforms)];
     // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
     // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
     falls.push(...tipMisses(st, req.kit.manifest));

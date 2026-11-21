@@ -543,6 +543,38 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   return out;
 }
 
+/**
+ * A sealed piece's BAND (ENG-26n, 1-4 cause C): the box the lay keeps its own wood out of. Across its section's FULL width (`own`: the
+ * section's own wood, a gate field's foot with its gateRun out at both ends, not the bough alone), from just under its level
+ * (GATE_LEVEL, as towerGates reads level) up to a hop over it or the storey its own way on climbs to (the top of a vine standing on
+ * it), whichever is higher. Wood of the lay's there roofs the gate: 1-4 Easy seeds 10 and 37 ran the next storey's bough on to the wall
+ * over the whole gate, 281 px up (LEAP.up is 221), and three bots stood on the shut gate 30 s or more
+ */
+export function gateBand(g: Platform, own: readonly Platform[], vines: readonly Vine[]): { x0: number; x1: number; y0: number; y1: number } {
+  const wood = own.length ? own : [g];
+  const way = vines.filter((v) => v.vineType === 'tree_climb' && Math.abs(v.bottomY - g.y) <= 8 && v.x >= g.x - 4 && v.x <= g.x + g.width + 4 && v.topY < g.y);
+  return {
+    x0: Math.min(g.x, ...wood.map((q) => q.x)), x1: Math.max(g.x + g.width, ...wood.map((q) => q.x + q.width)),
+    y0: Math.min(g.y - LEAP.up, ...way.map((v) => v.topY)) - 8, y1: g.y + GATE_LEVEL,
+  };
+}
+
+/**
+ * A tower's gates roofed or crowded by the lay, each by name (empty: none): any of the lay's own wood (`lay`: catches, bridges, run-ons
+ * to a wall) inside a sealed piece's band (gateBand). types.ts SectionPiece.sealed promises the lay adds nothing level with a sealed
+ * piece or within a hop of it; towerGates only judges whether the gate is PASSED, so this is the promise's own verdict
+ */
+export function towerGateRoofs(gates: ReadonlyArray<{ g: Platform; own: readonly Platform[] }>, lay: readonly Platform[], vines: readonly Vine[]): string[] {
+  const R = Math.round;
+  const out: string[] = [];
+  for (const { g, own } of gates) {
+    const b = gateBand(g, own, vines);
+    const hit = lay.find((q) => q !== g && q.x < b.x1 - 2 && q.x + q.width > b.x0 + 2 && q.y >= b.y0 && q.y <= b.y1);
+    if (hit) out.push(`tower: the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} has the lay's wood in its band (x ${R(b.x0)}-${R(b.x1)}, y ${R(b.y0)}-${R(b.y1)}): the piece at x ${R(hit.x)}-${R(hit.x + hit.width)}, y ${R(hit.y)}`);
+  }
+  return out;
+}
+
 /** how far under a gate's top a piece still counts as level with it (px) */
 const GATE_LEVEL = 30;
 
