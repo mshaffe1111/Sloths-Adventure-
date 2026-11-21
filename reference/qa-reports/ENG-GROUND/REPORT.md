@@ -1,3 +1,60 @@
+# ENG-GROUND-d REPORT (handover at the context line, the lead's D76; branch t-eng-ground, code head 42a0e5d8b, stills 0934faf40)
+1. VERIFIED (no guess): there is NO under-bank earth column. Both of the lead's columns (right-end-x18760-sideways) were the descent's two
+   soft-gap pools (scale 0.749 at camera 18130): the "earth column" = R18955-19015's bed and soil (its surface 1087 above the frame's top
+   ~1144), the pond column = R19221-19288. Neither pool meets a bank (riverUnderBanks 0,0). Each lay UNDER the next stair down (out of his
+   reach: paint only) and ran to the view's foot over the floor P18666-20006 y1450 (no zone there, so no ceiling).
+2. PLANT A (groundStack.test 'no other leg's paint stands in his air anywhere over the race leg's band', seeds 1-3, both settings): his
+   air (28 and 46 over each band piece, above its 20-unit grass lip) is under no paint whose clips start over the band, both painters.
+   RED 6/6 on 72ea2daab, river paint only, at both pools (red-d.txt). GREEN.
+   FIX (groundStack.ts, protoArt.ts, riverArt.ts): stackZonesOf runs a band's zone on under a leg that comes DOWN into it (the descent's
+   x span); findCeilings counts, inside zones, the other leg's static pieces and its water (UpperWater from setGroundStacks' rivers,
+   riverArt riverPaintFoot: a shallow pool's bed foot, a deep river's strip foot); the line never runs above an upper water's foot (the
+   samples either side of it too). Lidded at its bed the pool then hung as a straight-sided box between the planks (stills/d-look):
+   the lead ruled (B).
+3. RULING (B), PLANT B (w2.test 'a soft gap between two thin pieces over a lower leg's floor is left open...', every roll of both toys,
+   both settings): w2Finish leaves such a gap open (no water) where every drop through it (both lips and the middle) lands on wood within
+   TOWER.see (tower.ts towerFalls, the live fall rule going down; catchUnder now exported) and in no water; else it keeps its water.
+   RED 32 filled gaps (red-d3.txt), no drop faults (each drop is 124-140 onto the next stair); GREEN. The bridge test's 'every soft fall
+   has its water' exempts exactly these gaps. One stacked-leg rule: gen2/legs.ts stackedUnder (groundStack and w2Finish read it).
+   THE RACE'S NUMBERS MOVE: two pools per roll are gone from the toy's descent; ENG-27h re-runs the table after the merge.
+4. PLANT C (groundStack.test 'a wall standing on the race leg's band is drawn whole, as with no ceiling', seeds 1-3, both settings): the
+   extended ceiling reached the descent's right end wall (x20006-20066 y585 h865, its foot on the floor), dived to its foot, clipped it
+   and drew an underside at floor level. standsOn (a bank whose foot is within his height of the nearest lower piece's top) is no earth
+   over the band: not over a ceiling, no line push. RED with the rule off (13-14 draws gained, red-d2.txt), GREEN.
+   Test 6 (the underside test) now lays its own ceiling WITH the stage's water (as the painter does) and its spill check counts paint, not
+   a box (a neighbouring pool's 476-wide water tile, clipped to its own span, was read as a spill). groundStack.test 14/14, w2.test 2/2.
+5. RE-SHOOT 2x (stills/painted-scratch-d, scratch worktree with t-art-under's w2.webp and '2' atlas rows, never pushed; upright and
+   sideways): PASS left end x13900, race under the out leg x14950, join x18450, the old right end x18760 (no columns), the descent x18990
+   and x19250 (plank stairs over the floor, no pools). FAIL, PRE-EXISTING (same at 72ea2daab; plant C proves this wall draws as with no
+   ceiling): the stage's bottom-right corner, wall-end-x19900 both ways (crop wall-end-x19900-upright-CROP-corner.jpg): past the floor's
+   end (x>=20006) the soil under the wall is a separate strip with a straight seam at x~20006, painted only to about y1693; under it the
+   backdrop shows to the frame's foot. Painter narrowed to the ground chunks (protoArt drawGround > drawBankArt > drawSoil, paintTile).
+   FOR THE LEAD'S JUDGMENT, pre-existing: the descent's left column wall x18666-18726 drawn with World 2's bank END frame stretched to 806
+   tall and 170 past the wall (src 455,0,552,537): its right side is one long near-straight painted cliff edge (CROP-column-wall.jpg).
+6. LOCK: lockall --layouts 16 --check vs 0eefc707e (base recorded on a worktree at 0eefc707e) was RUNNING at the handover (on 42a0e5d8b,
+   past 6-2 of 102); the result died with the container: UNRUN. Expected: 102/102 unchanged (the toy is no shipped stage; the lay rule
+   needs a stacked lay and a soft gap between thin pieces over its floor).
+7. GATES on 42a0e5d8b: tsc PASS. UNRUN (stopped at the handover): suite 1-6, the CI tool line (tooltests.cmd here, gates.yml line 157),
+   tierBots, tipwalk, coveragecheck, registrycheck, generalitycheck, knowncheck, roadmapcheck, timecheck, artcheck, seedlists, paintcheck
+   x3, build, chunkcheck, clipcheck, kbdcheck, drawcheck (PERFORMANCE-RULES §1), buildcheck.
+POLISH CHECK: every still above looked at whole, edges included (contact sheets, then crops at full size where something stood out).
+PUSHBACK: the packet's premise "he drops to the floor" was wrong: each gap's drop is onto the next stair (124-140). The "earth column at
+   x18760" was a misread of screen x for world x around Pokey.
+LESSONS APPLIED: D57/D87 (inbox at every step and push; lock, gates and shoot in the background), D96 (CI's own gate lines), D102 (lean
+   reads, images downscaled once, contact sheets), D105, D107, D109 (no clock times in messages). LEARNED: measure a still's world x from
+   the camera and Pokey's known x before naming a painter; a picture check reads paint inside clips, never a draw's box.
+EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD):
+ 1. The lock: record the base on a worktree at 0eefc707e (`npx tsx tools/engine/lockall.ts --layouts 16 --out <base>`), then on HEAD
+    `--check <base>`; expect 102/102 unchanged. Any shipped stage moving: stop and report it.
+ 2. The gates, in the background on a frozen worktree: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a`
+    and `... b` (copy tooltests.cmd beside the log dir as $G/../tooltests.cmd); drawcheck within PERFORMANCE-RULES §1.
+ 3. ONLY IF the lead rules it in: the bottom-right corner under the right end wall. Plant first (a recording ctx at the wall's x, view
+    down to its foot + 400: the soil under a wall standing on the band runs to the view's foot as the floor's does, no seam), then fix in
+    protoArt drawGround/drawBankArt (why the wall's soil stops at ~y1693 in the chunks while the floor's runs on). Re-shoot wall-end-x19900
+    with `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out>
+    19900:none:wall-end` on the scratch (w2.webp and the '2' atlas rows from 63963f54d; never pushed).
+ 4. REPORT a new top section; the hash to the lead.
+
 # ENG-GROUND-c REPORT (handover at the context line; branch t-eng-ground, code head 302c28f7e)
 a. LOCK vs 0eefc707e (base recorded in a worktree at 0eefc707e; `lockall --layouts 16 --check`, on 6bc57e280 and again on 302c28f7e):
    PASS, 102/102 shipped stages unchanged (the "gained verdicts and drops (not hashed)" line is new unhashed fields, not a move).
