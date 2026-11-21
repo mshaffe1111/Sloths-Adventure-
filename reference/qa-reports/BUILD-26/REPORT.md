@@ -3,9 +3,8 @@ Commits: ea3d7e7a2 (the head stills, stand.mjs, order.mts), fd3ce98b1 (the base 
 (stand.mjs: the stills tool to use, Pokey set down and left to stand with Dot's cards tapped away; order.mts: a listed stage's order; stills/).
 
 ## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND (D113), never with '&'
-## ENG-26m: step 0 whole, then step 2 of ENG-26l's packet (load speed, bots, lockall, THE FULL SET) on this head; the partial suite and the stills are below
-0. **Step 0 (D114): the suite was 3,214 ok, 0 failed (one TODO) and still running at ENG-26l's box** (see "Step 0" below). Run it WHOLE on
-   this head first (run_in_background; about 25 min on 4 cores), totals in your REPORT, unless the lead takes the partial.
+## ENG-26m: step 2 of ENG-26l's packet (load speed, bots, lockall, THE FULL SET) on this head; the suite verdict and the stills are below
+0. **Step 0 WHOLE (D114): the full src suite on 626fac5ac ended exit 0: 4,035 tests, 4,032 pass, 0 fail, 0 cancelled, 3 TODO (R-165.312's roost boa; 4-3's boulder wall check, two), 32 min on 4 cores beside the stills; src/ and tools/ are unchanged 626fac5ac..71cbb9bda (git diff empty); after it BUILD-26c's 06096c3b4 and 2b123df7c changed only src/game/gen2/worlds/w2Arc26.test.ts (re-run on this head: 5/5, 0 fail) and tools/inspect/towerRoute.ts (no src file imports it), so the verdict carries to this head and the next member skips a second suite (the lead's ruling); no red, no re-pin (rule 20).**
 1. **Frozen trees** (D99 needs quiet: nothing else running): `git worktree add --detach <S>/base 4ea253b8c` and `<S>/head <this head>`,
    each with `ln -s <checkout>/node_modules <tree>/node_modules` (`npm ci --legacy-peer-deps` once in the checkout, 5 s; package.json and the
    lock are the same on both). Then ONE heavy run at a time, base first, each with run_in_background:
@@ -26,6 +25,7 @@ Commits: ea3d7e7a2 (the head stills, stand.mjs, order.mts), fd3ce98b1 (the base 
    stills tool prints (layout 1 is seed 2 on 1-4): measure spots on THAT seed (eng26k/feet.mts, eng26j/gates.mts).
 
 ## Step 0 (D114): the full src suite on 626fac5ac
+- **Step 0 WHOLE (D114): the full src suite on 626fac5ac ended exit 0: 4,035 tests, 4,032 pass, 0 fail, 0 cancelled, 3 TODO (R-165.312's roost boa; 4-3's boulder wall check, two), 32 min on 4 cores beside the stills; src/ and tools/ are unchanged 626fac5ac..71cbb9bda (git diff empty); after it BUILD-26c's 06096c3b4 and 2b123df7c changed only src/game/gen2/worlds/w2Arc26.test.ts (re-run on this head: 5/5, 0 fail) and tools/inspect/towerRoute.ts (no src file imports it), so the verdict carries to this head and the next member skips a second suite (the lead's ruling); no red, no re-pin (rule 20).**
 - `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts
   src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts` on 626fac5ac (frozen: this REPORT changes no game code), started at the step's
   start with run_in_background, beside the stills.
