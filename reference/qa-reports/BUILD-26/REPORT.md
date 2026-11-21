@@ -1,34 +1,30 @@
 # BUILD-26f (on t-build-26 from 42304b76d, rebased on 2f188c552): the Progress rewind, toy first, five cuts on 2-6 x40. Started 6:32 PM ET 11-21 (by `date`)
 Commits on t-build-26: 0bc969bce (the first cut, pushed too early: before 1-4's rows, against the packet), 79e596bf2 (b26f/dbgOff.txt,
 b26f/win.mts), 007480469 (rows), **d18b03d5f (the lead's ruling: 0bc969bce REVERTED; the bot equals 2f188c552's)**, this REPORT.
-NOT on the branch (local branch b26f-wip, the lead's three conditions first): e5fc37273 (= bbc21cb2d, the third cut) and
-30ada3574 (the fourth cut) and **fe3d3d6ca (the fifth cut, the candidate)**. Rows (castBots x40 both settings, `--par 2`) in b26f/rows/, by the tree's hash.
+Cuts 2-5 were local (b26f-wip); **cut 5 landed as a59a144c0** (= fe3d3d6ca; b26f/cut5-fe3d3d6ca.patch). Rows (castBots x40 both settings, `--par 2`) in b26f/rows/, by the tree's hash.
 Trees (D115, frozen detached worktrees, node_modules linked): base 2f188c552, fix4 30ada3574, fix5 fe3d3d6ca (scratchpad; deleted at the box).
 
-## EXACT NEXT STEP (the next level builder)
-1. **The candidate is fe3d3d6ca on the local branch b26f-wip (NOT on t-build-26; t-build-26's bot = 2f188c552's since the revert
-   d18b03d5f).** Recreate it on the new tree: `git cherry-pick 0bc969bce 144d79032 bbc21cb2d 30ada3574 fe3d3d6ca` will conflict; take
-   instead the net diff, SAVED as b26f/cut5-fe3d3d6ca.patch (`git apply` it on t-build-26; made by `git diff 2f188c552 fe3d3d6ca` on the two files; fe3d3d6ca
-   is in this clone's objects; if the clone is gone, the change is: Progress.under + UNDER_REACH; relocate's `band`; in after() the
-   `far`/`under`/`rides` lines and `fell = far`; the toy, last test of castBots.test.ts, as this REPORT describes).
-2. **ONE of the 7 traced (adult N 11 on a copy of fe3d3d6ca, a print at the rewind):** three REAL falls (`far`, counted as before)
-   from the leg at x 1146 (#38/#41's dip, y 3739/3809) to the floor #35 at x 1278-1344 (t 50.5, 56.1, 61.3), then the rescue. The
-   new rewind did its job (back to the floor at the vine's side each time); he then falls off the same leg going left over the dip
-   #41 (x 1224-1317, 70 px down): the leg's own crossing, a SEPARATE bot spot (the same leg adult N 26/33 fell from on base). One run;
-   the second run of this cause is adult N 26's own fall on base (b26f/dbgOff.txt t 51.9-52.5, x 1239 -> 1156, the same dip).
-   **Trace the other 6 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
-   traces): adult N 11 + kid N 23 (fell back 3 times at x ~1140), adult N 37 (x 295/842), kid E 12, kid E 30 + adult E 26 (the dips).
-   Fix the bot cause generally, toy first, then 2-6 x40 again against b26f/rows/r26-2f188c552.jsonl: no tier drop, lost rows named.
-3. **1-4 x40 against b26f/rows/r14-2f188c552.jsonl:** **DONE on fe3d3d6ca: NO row moved** (every tier identical to 2f188c552: kid N/E 19/32, adult 37/36, child 39/36,
-   middle 36/37, expert 39; b26f/rows/r14-fe3d3d6ca.jsonl). Sent to the lead with the 2-6 table. The moved rows to the lead BEFORE the fix lands (packet; the lead's ruling).
-4. The lead's three conditions to land: 2-6 no tier drop (cut 5 meets it), toy and plant hold (they do on fe3d3d6ca), 1-4's moved rows
-   with the lead. Then push as ONE commit on t-build-26 (rebase; never force) and send the hash.
-5. Then rule 28 on the landed bot: castBots x40 both settings on 2-1..2-5 against 2f188c552 (2-3 ends at a sealed door on base too:
-   KNOWN, compare rows only), tierBots 1-1 9/9, castBots.test.ts whole.
-6. Then the lead's 1-4 spot C (PROVEN BOT by ENG-26o, ff826a914): tools/inspect/towerRoute.ts:86, the squeeze's strict span
+## EXACT NEXT STEP (the next member; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
+**LANDED: a59a144c0** (the lead's ruling: one commit on t-build-26, the same code as fe3d3d6ca; tsc clean and castBots.test.ts 16/16
+on the landed head). Rule 28's 'every moved row explained' gates RELEASE 3 (not this branch): before integration takes t-build-26,
+1. **Trace the 7 LOST 2-6 rows** (pass on 2f188c552, rescue on a59a144c0; two runs per cause; b26/trace.ts on a frozen tree, a stderr
+   print at the rewind as b26f's traces): adult E 26 (x 699, 1151); adult N 11 (x 1146); adult N 37 (x 603, 295); kid E 12 (x 1208, 926); kid E 30 (x 1173, 660); kid N 23 (x 1132); kid N 27 (x 1144).
+   **Adult N 11 is traced (one run, a copy of fe3d3d6ca):** three REAL falls (`far`, counted as before) from the leg at x 1146
+   (#38 / dip #41, y 3739/3809) to the floor #35 at x 1278-1344 (t 50.5, 56.1, 61.3), then the rescue: the rewind did its job each
+   time, and he falls off the same leg going left over the dip #41 (x 1224-1317, 70 px down), a SEPARATE bot spot (the leg adult N 26
+   fell from on base, b26f/dbgOff.txt t 51.9-52.5, x 1239 -> 1156: its second run). Kid N 23 and 27 (x 1132, 1144) are likely the same.
+2. **Check the 16 GAINED 2-6 rows for a pass from a wrong read** (each its rescues 0, its time, the route it took):
+   adult E 16, adult E 20, adult E 24, adult E 29, adult E 3, adult E 37, adult N 26, adult N 33, kid E 22, kid E 24, kid E 38, kid E 7, kid N 19, kid N 29, kid N 35, kid N 37.
+3. Then rule 28 on a59a144c0: castBots x40 both settings on 2-1..2-5 against 2f188c552 (2-3's sealed door is KNOWN on base: compare
+   rows only), tierBots 1-1 9/9, castBots.test.ts whole. 1-4 is done: no row moved (b26f/rows/r14-*.jsonl).
+4. Then the lead's 1-4 spot C (PROVEN BOT by ENG-26o, ff826a914): tools/inspect/towerRoute.ts:86, the squeeze's strict span
    `Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)` becomes 'within a hand's reach of the span' (pick and justify the number;
-   ENG-26o's trial used 30 px each side), a toy and its plant, x40 on 1-4 and 2-6, 1-4's moved rows to the lead before it lands. A and
-   B: whatever class ENG-26o names. Then the 2-6 relist under --proven and its yield (packet step 4).
+   ENG-26o's trial used 30 px each side), a toy and its plant, x40 on 1-4 and 2-6, 1-4's moved rows to the lead BEFORE it lands. A and
+   B: whatever class ENG-26o names. Then the 2-6 relist under --proven and its yield (packet step 4; under ~60%: the plan to the lead).
+**Own the misses (for the lead's log):** 0bc969bce was pushed before 1-4's rows (the packet: rows first), and its bot was worse
+(reverted, d18b03d5f); one `npm ci` was started with a shell '&' (it failed at once, rerun in the foreground); the disk filled with 8
+full worktrees (the next member: at most 3 at a time, each removed when done). Lessons applied: frozen trees per run, every long run in
+the background, the toy RED on the base before the fix, row-for-row diffs before landing, the lead's ruling before landing.
 
 ## The cause (BOT, settled by a print, b26f/dbgOff.txt: 2-6 adult N 26 on 2f188c552)
 After his fall from the leg (y 3741) to the floor (y 4118), the fall-back rewind (`prog.off(p) > 260` for 0.5 s, then grounded) never
