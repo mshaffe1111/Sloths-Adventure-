@@ -7,7 +7,7 @@
           fill and the strip). Mirrored in code for the other side.
 Prints: size, edge (the share of the height where the soil's ragged edge runs: the mean over columns of the first see-through row
 under the body), shade (the overhang's 40 px over the top band, brightness), wrap (mean abs RGB, wrap column, opaque rows).
-    python3 -I tools/art/hfunder/cut.py <take.png|webp> <out.png> strip|corner [fade 192] [feather 20]
+    python3 -I tools/art/hfunder/cut.py <take.png|webp> <out.png> strip|corner [fade 192] [feather 20] [--match]
 """
 import sys
 
@@ -16,8 +16,9 @@ from PIL import Image, ImageFilter
 from scipy import ndimage as nd
 
 src, out, kind = sys.argv[1], sys.argv[2], sys.argv[3]
-FADE = int(sys.argv[4]) if len(sys.argv) > 4 else 192
-FEATHER = int(sys.argv[5]) if len(sys.argv) > 5 else 20
+ARGS = [x for x in sys.argv[4:] if not x.startswith("--")]
+FADE = int(ARGS[0]) if ARGS else 192
+FEATHER = int(ARGS[1]) if len(ARGS) > 1 else 20
 a = np.asarray(Image.open(src).convert('RGB')).astype(np.float32)
 H, W = a.shape[:2]
 bg = np.median(a[-1], axis=0)
@@ -40,6 +41,14 @@ inner = nd.binary_erosion(solid, iterations=2)
 _, (iy, ix) = nd.distance_transform_edt(~inner, return_indices=True)
 rim = solid & ~inner
 a[rim] = a[iy[rim], ix[rim]]
+# --match: grade the take so its top band (the bank's own soil) has World 2's fill colour: per channel, the top band's mean and spread
+# moved to the fill's; the same line applied to every px, so the overhang keeps its share of the top's brightness
+if '--match' in sys.argv:
+    fill = np.asarray(Image.open(__import__('os').path.join(__import__('os').path.dirname(__file__), '../../../src/assets/ground/w2.webp'))
+                      .convert('RGB').crop((3, 3, 1021, 1021))).reshape(-1, 3).astype(np.float32)
+    band = a[int(0.04 * H):int(0.3 * H)][solid[int(0.04 * H):int(0.3 * H)]]
+    m0, s0, m1, s1 = band.mean(0), band.std(0) + 1e-3, fill.mean(0), fill.std(0)
+    a = np.clip((a - m0) * (s1 / s0) + m1, 0, 255)
 rgba = np.dstack([a, alpha])
 
 if kind == 'strip':
