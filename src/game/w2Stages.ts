@@ -31,7 +31,6 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-3': '2-3',
-  '2-6': '2-6',
   '2-7': '2-7',
   '2-8': '2-8',
   '2-9': '2-9',
@@ -65,27 +64,6 @@ const BANK_H = 90;
 export const SURFACE = G + surfaceBelowBank;
 const LOG_Y = G + LOG_DROP;
 
-/**
- * 2-6 (World 1's climb, built up the bank houses: protoStage.ts buildKapok): no animal's patch within 200 px of a flag (levelCheck
- * SAFE_APPROACH; 123 of 200 rolls had one, 2026-10-28). Its patrol is cut back to stop short of the flag; one standing too near to cut
- * back loses the flag instead (the flags either side of it still hold).
- */
-function clearFlags<S extends GeneratedStage>(st: S): S {
-  const away = SAFE_APPROACH + 8;
-  const flags = st.checkpoints ?? [];
-  for (const e of st.enemies) {
-    if (e.type === 'eagle') continue;
-    for (let i = flags.length - 1; i >= 0; i--) {
-      const f = flags[i];
-      if (Math.abs(e.y - f.y) >= 400) continue;
-      if (Math.abs(e.x - f.x) < away) flags.splice(i, 1);
-      else if (f.x < e.x) e.patrolMinX = Math.max(e.patrolMinX, f.x + away);
-      else e.patrolMaxX = Math.min(e.patrolMaxX, f.x - away);
-    }
-  }
-  return st;
-}
-
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8)
   const st = petalPass(teachWater(buildW2Plan(config, seed, plan)));
@@ -93,8 +71,6 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
 }
 
 function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
-  // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
-  if (plan === '2-6') return clearFlags(buildKapok(config, seed, true));
   const R = stream(seed * 7 + 2);
   const P: Platform[] = [];
   const V: Vine[] = [];
