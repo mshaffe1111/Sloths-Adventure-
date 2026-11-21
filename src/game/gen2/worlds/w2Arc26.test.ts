@@ -95,8 +95,11 @@ test('2-6: the climb up the bank village, with the bank behind it, doors on the 
     // heart can be lost (stageGenerator.ts `risky`, Matt 11-05 "a heart only after real risk"). Nothing on Normal 2-6 costs one: no
     // creature, no deadly water, every pond and fall soft; so it lays none, and one that could never be needed would be filler)
     const r = new RealPlay(STAGE_26, seed);
-    const played = r.stage as typeof r.stage & { heartFalls?: Array<{ soft?: boolean }>; proto?: { water?: Array<{ kind?: string }> } };
-    const costs = played.enemies.length + (played.waterY !== undefined ? 1 : 0) + (played.heartFalls ?? []).filter((z) => !z.soft).length + (played.proto?.water ?? []).filter((z) => z.kind === 'deadly').length;
+    // (BUILD-26c, the lead's ruling: every way a heart is lost is counted, so 0 is the rule's answer, not a loose one: a river without
+    // `safe` costs a life (engine.ts loseLife('water')), as a gen2 pit that is not soft does; 2-6's six rivers are all safe)
+    const played = r.stage as typeof r.stage & { heartFalls?: Array<{ soft?: boolean }>; proto?: { water?: Array<{ kind?: string }> }; gen2?: { budget?: { pit?: string } } };
+    const costs = played.enemies.length + (played.waterY !== undefined ? 1 : 0) + (played.heartFalls ?? []).filter((z) => !z.soft).length + (played.proto?.water ?? []).filter((z) => z.kind === 'deadly').length
+      + (played.rivers ?? []).filter((v) => !v.safe).length + ((played.gen2?.budget?.pit ?? 'soft') !== 'soft' ? 1 : 0);
     assert.equal(costs, 0, `seed ${seed}: nothing on Normal 2-6 costs a heart`);
     assert.equal(played.collectibles.filter((c) => c.type === 'heart').length, 0, `seed ${seed}: so Normal lays no heart`);
   }
