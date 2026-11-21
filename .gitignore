@@ -17,3 +17,5 @@ tools/board/dist/
 # the test link: the copy of what was last published (tools/testlink/build.py --published), never committed
 tools/testlink/dist-published/
 tools/testlink/dist-prev/
+# (the stills of node tools/testlink/smoke.mjs)
+tools/testlink/smoke-out/
