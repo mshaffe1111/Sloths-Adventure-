@@ -25,9 +25,15 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
    flips +1 / -1 between x ~1120 and ~1290-1350: the route's next point is straight UP at about x 1250 (under #41, y 3809), where no
    vine or step climbs; the vine at x 1587 is never his target (climbUpVine: undefined at every jump, it is 300+ px off). So the route
    he follows slants up through the floors here, as BUILD-26c's ENGINE-WORTHY note says of tools/inspect/route.ts on a tower turn.
-   **Likely a ROUTE cause (the way on the bot reads), not the jump:** next, print `this.prog.target(p, 200)` and the route's points
-   near cur on these frames; if the stage's route runs up at x ~1250, it goes to the lead as LAY/route (not a bot patch); if the
-   route goes to the vine and the bot's Progress picks a later point, it is the bot's (Progress), fixed generally with a toy.
+   **SETTLED (b26e/dbgAd2.txt: `this.prog.target(p, 200)` and the route's points from cur, same frames): a BOT cause, Progress.**
+   His Progress point is ALREADY on the floor above: cur at (1167, 3741), then (1262, 3741), the points running LEFT along y 3741
+   (#38/#37's leg). He fell from that leg onto the y 4118 floor, and Progress kept cur up there instead of rewinding to the way up
+   (the climb of V#6 at x 1587), so he steers under a point 379 px over his head, turning at it, and jumps the floor's seams. Not the
+   route's shape and not the lay. **Fix next (bot, general, a toy first, rule 21):** when he stands on ground well under the route's
+   current point (more than a double's reach, about 175 px) and no climb leads up within reach of it, Progress rewinds to the route's
+   last point on or near his own floor (the start of the climb that leads up: here x 1587) (`prog.relocate` and how cur advances,
+   firsttimer.ts Progress). Toy: two floors 379 px apart, a vine at one end, Progress on the upper leg, him on the lower floor; plant
+   (no rewind) RED = he never climbs. Then 2-6 and 1-4 x40 row for row, as above (1-4 is SHIPPED: rows to the lead before the push).
    **Then ENG-26m's 1-4 cause table (064911bf1; the lead: these are this branch's BOT causes):** A at x 1036 Normal (kid 7, 12, 13,
    18, 19, 34; adult 36) and B at x 1115 Easy (adult 17, 19), both by the s3 vine whose top is 26 px past s4:b's end (he falls back off
    it 3 times); D on seed 29 middle (a wall strip now reaching the wall; the route reads 'the way on is 281 px down' instead of the
