@@ -49,7 +49,7 @@ yawn 836 KB (was 827), look-around 805 (799), wave 833 (829), scratch 340 (uncha
 1440x2277), so decoded cost is unchanged at 42.9 MiB for the four. Catalog rows refreshed (catalogclips + catalog_master --emit, 9,532 rows).
 ## 6. Gates
 tsc clean; artcheck PASS; knowncheck PASS; clipde --check and idleends --check fresh; heroClipsBody + Seams + Ends 6/6; full unit suite:
-PENDING (running in the background at this commit).
+FINISHED, 3,794 tests, 3,792 pass, 0 fail, 0 cancelled, 2 todo (the repo's own TODOs, e.g. 4-3 boulder; nothing of this packet).
 ## Pushback / suggestions
 - The packet's "7 dE lighter" was a whole-body number; on the fur it is 4.5-6.4 dE of lost chroma. A colour gate on the whole body
   would have pushed the transfer to repaint the outline; the gate measures fur.
