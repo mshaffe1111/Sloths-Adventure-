@@ -1,0 +1,9 @@
+import json, sys
+def load(p): return {(r['bot'], r['setting'], r['seed']): r for r in map(json.loads, [l for l in open(p) if l.strip()])}
+old, new = load(sys.argv[1]), load(sys.argv[2])
+out = []
+for g in sorted({(k[0], k[1]) for k in old}):
+    ks = [k for k in old if (k[0], k[1]) == g]
+    lo, ln = sum(old[k]['lives'] for k in ks), sum(new[k]['lives'] for k in ks)
+    if lo != ln: out.append(f"{g[0]} {g[1][0].upper()} {lo}->{ln}")
+print(sys.argv[3], 'lives 27g head -> new:', '; '.join(out) or 'same')
