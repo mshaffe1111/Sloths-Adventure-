@@ -41,7 +41,25 @@ reference/qa-reports/PICK-THUMBS/mockup/: mockold-up-full, mockold-side-full, mo
 mockold-side-grid (2x tile crops), before-up-full (the page before).
 
 ## Gates on the final head
-__GATES__
+Code head 2f0a7dae2 (the commits after it add only this report and its stills). Every item of the CLAUDE.md list, plus the packet's:
+| Gate | Verdict |
+|---|---|
+| `npx tsc --noEmit -p .` | PASS (no output) |
+| ctestPicker + ctestSurvey + playerText + fonts + textSize | PASS: 96 tests, 96 pass, 0 fail |
+| The suite (CLAUDE.md line in full: src/audio, src/game, src/components, src/components/*/, gen2, gen2/worlds, art), 6 shards side by side | PASS: 612 files; shards 679/719/639/642/712/619 = 4010 tests, 4007 pass, 0 fail, 3 todo (R-165.312 roost boa; 4-3 boulder fixer; both known TODOs), every shard exit 0 |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` + `chunkcheck.mjs` | PASS (build exit 0; chunkcheck PASS) |
+| `artcheck.mjs` | PASS |
+| `drawcheck.mjs` | PASS (667 s) |
+| `clipcheck.mjs` (the testers' front page and its 1-5 pick, both ways, fresh save; every other screen on fresh/old/done) | PASS (83 known, none new; 579 s; no missed step) |
+| `knowncheck.mjs` | PASS |
+| `generalitycheck.ts` | PASS |
+| `roadmapcheck.mjs` | PASS (after `git fetch --unshallow`: the shallow clone refused first, as it must) |
+| `kbdcheck.mjs` | PASS (150 s; its regenerated stills were not committed) |
+| `buildcheck.mjs` | PASS: normal p95 94 ms, easy p95 53 ms (a first run during the 6 suite shards read p95 156 ms OVER on normal: CPU contention; re-run alone, PASS) |
+| `seedlist.ts 1-1 --check` | PASS (161 seeds, each clean on both settings) |
+| library/seedlist/yield/travelBots tool tests | PASS: 39/39 |
+| `tierBots.test.ts` | PASS: 9/9 (no 1-1 change, no recalibration needed) |
+| Test-link build count (`tools/testlink/build.py`) | 479 files, limit 480: PASS, no new files from this job |
 
 ## Polish check (law 1; every still at deviceScaleFactor 2; reference/qa-reports/PICK-THUMBS/final/)
 - final-up-full / final-side-full (fresh save: 1-1 picked, no ticks), finalold-up-full / finalold-side-full (old save: 1-4 picked, 1-1/1-2/1-4
