@@ -31,6 +31,7 @@ import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, rockSheetReady, warm
 import { rockSheetUrls } from './rockLooks.ts';
 import { protoStageEnabled } from './protoStage.ts';
 import { RIVER_LOOK, W2_PROPS_URL, riverArtReady, safeRiverArtReady } from './riverArt.ts';
+import { W2_NEXT_URL, w2NextReady } from './w2NextArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
@@ -192,6 +193,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'props2') {
       warmProto2();
       urls.push(PROTO2_URL);
+    } else if (k === 'w2-next') {
+      w2NextReady();
+      urls.push(W2_NEXT_URL);
     } else if (k === 'props3') {
       warmProto3();
       urls.push(PROTO3_URL);

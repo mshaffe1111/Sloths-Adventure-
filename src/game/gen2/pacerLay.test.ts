@@ -46,7 +46,7 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
   }
   // (2-7's own table, the design's margins as shares of the careful middle's time (the lead's ruling, 11-21): Normal 7% (2-7.md's +3 s on
   // its 42 s home leg), Easy 10% (+5 s on its 47.8 s Easy leg); under 2 s; the boat's two rowing frames)
-  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 0.07, easy: 0.1 }, 2, 272]);
+  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank, W2_RACE.floor], [{ normal: 0.07, easy: 0.1 }, 2, 272, { normal: 2, easy: 3 }]);
   assert.deepEqual(W2_RACE.art, ['w2-next#mailBoat', 'w2-next#mailBoatB']);
 });
 
@@ -83,8 +83,22 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   const left = P.middle - middleAt(P, flag);
   assert.ok(Math.abs(P.seconds - piece.clock! - (left * P.seconds) / P.middle) < 1e-6, 'its time left is his careful-middle time left, scaled by its own rate');
   assert.ok(Math.abs(piece.clock! - pacerReplace(P, flag)) < 1e-9);
-  assert.equal(pacerReplace(P, P.x0), 0);
-  assert.ok(Math.abs(pacerReplace(P, P.x1) - P.seconds) < 1e-6);
+  assert.ok(Math.abs(pacerReplace(P, P.x0)) < 1e-9);
+  // (planted, the lead's ruling 11-21: a respawn near the dock keeps the floor's margin, 2 s on Normal; the share alone left it none)
+  assert.equal(P.floor, W2_RACE.floor.normal);
+  // (a flag a fifth from the dock: the share there is under the floor, the ride-only bound over it: the floor holds)
+  const late = P.x1 - (P.x1 - P.x0) / 5;
+  const lateLeft = P.middle - middleAt(P, late);
+  const most = (P.rideOnly - P.under) / P.middle - 1;
+  assert.ok(lateLeft * (P.seconds / P.middle - 1) < P.floor && lateLeft * most > P.floor, `the late flag: share ${lateLeft * (P.seconds / P.middle - 1)} < 2 < bound ${lateLeft * most}`);
+  assert.ok(Math.abs(P.seconds - pacerReplace(P, late) - (lateLeft + P.floor)) < 1e-6, 'a respawn a fifth from the dock: his time left + 2 s');
+  assert.ok(Math.abs(pacerReplace({ ...P, floor: 0 }, late) - (P.seconds - (lateLeft * P.seconds) / P.middle)) < 1e-6, 'RED without the floor: the share alone');
+  // (at the dock the ride-only bound has no room: the floor gives way to it, so letting the current carry him never wins after a fall)
+  const dockSide = P.x1 - (P.x1 - P.x0) / 50;
+  const dockLeft = P.middle - middleAt(P, dockSide);
+  assert.ok(P.seconds - pacerReplace(P, dockSide) <= dockLeft * (1 + most) + 1e-6, 'near the dock: never past the ride-only bound');
+  assert.ok(P.seconds - pacerReplace({ ...P, under: -1e9 }, dockSide) > dockLeft * (1 + most) + 1e-6, 'RED without the bound: the floor alone passes it');
+  assert.equal(build(2, 'easy').pacer!.floor, W2_RACE.floor.easy);
   // (a respawn back before the race leg: it waits at the start again)
   Object.assign(player, { x: P.x0 + 300, y: P.yMin - 400 });
   piece.respawn(host);

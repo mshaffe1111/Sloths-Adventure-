@@ -529,8 +529,9 @@ export interface Collectible {
   isLocked?: boolean;
   /** the sanctuary door, sealed, with the new HUD (beta): how many of the goal are still missing (the door shows it) */
   missing?: number;
-  /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing */
-  mark?: 'meeca';
+  /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing; or a petal drawn
+   *  as the post (post.ts; 2-7): a letter in a door's slot, a reply on a river step */
+  mark?: 'meeca' | 'letter' | 'reply';
   /** her mark's arrow (World 1's finish, gen2/worlds/w1Marks.ts): 'up' where her road climbs next, 'on' along it */
   arrow?: 'up' | 'on';
   /** a story find (note, book or keepsake): which one (see finds.ts) */

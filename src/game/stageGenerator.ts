@@ -10,6 +10,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
 import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
 import { buildWheelFixtureStage, wheelFixtureFor } from './wheelFixtureStage.ts';
+import { buildHomeFixtureStage, homeFixtureFor } from './homeFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
@@ -117,6 +118,8 @@ export interface GeneratedStage {
   chase?: import('./chase.ts').ChaseLay;
   /** a laid pacer (any world; pacer.ts Pacer, gen2/pacerLay.ts, run by pieces/pacerPiece.ts): a runner ahead of him over the race leg */
   pacer?: import('./pacer.ts').Pacer;
+  /** a laid post (post.ts Post, gen2/postLay.ts, run by pieces/postPiece.ts): its doors and the letters their slots take */
+  post?: import('./post.ts').Post;
   /** the ground's look from its world data (gen2 WorldManifest.ground.look): 'bough', drawn as the painted bough (protoArt.ts setGroundLook) */
   groundLook?: 'bough';
   /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */
@@ -2906,6 +2909,8 @@ function generateStageOn(config: LevelConfig, difficulty: Difficulty): Generated
   if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
   // a real laid water wheel on World 2's ground, before 2-6 is built (a dev build only: wheelFixtureStage.ts, ENG-26b)
   if (wheelFixtureFor(config.id)) return buildWheelFixtureStage(config, difficulty);
+  // the out-and-back toy with the mail boat race and the post, before 2-7 is built (a dev build only: homeFixtureStage.ts, ENG-27c)
+  if (homeFixtureFor(config.id)) return buildHomeFixtureStage(config, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);

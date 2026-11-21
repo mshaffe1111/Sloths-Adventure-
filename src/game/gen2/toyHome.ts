@@ -11,7 +11,7 @@
 import type { SectionPiece, SectionTemplate, WorldKit } from './types.ts';
 import { dropsDown, landing, upManifest } from './toyTower.ts';
 import { logRun, pitHop, stepRun } from './toyLegs.ts';
-import { W2_GROUND, W2_RACE, W2_RIVERS } from './worlds/w2.ts';
+import { W2_GROUND, W2_POST_ART, W2_RACE, W2_RIVERS } from './worlds/w2.ts';
 
 type Job = NonNullable<SectionTemplate['jobs']>[number];
 type Content = NonNullable<SectionTemplate['content']>;
@@ -48,14 +48,21 @@ export const HOME_BRICKS: SectionTemplate[] = [
   crossing('home-signature-long', 'signature', 'long'),
 ];
 
+/** the post toy's doors on the way out (2-7 has 6 on its longer out leg, three on the weir's porches; POST_CODE's holds 2 walked pieces
+ *  clear of the spawn, its flags, each other, every log's landing and every double jump's on 11 rolls of 12, the 12th refused by name) */
+export const TOY_DOORS = 2;
 
 /** the toy's graph: out right with the river at him, down a column, home left with the rivers (2-7's shape, its node string's legs) */
 export const HOME_CODE = 'A Pg1> Xw1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
+/** the POST toy's (ENG-27c): the same with a flow of ground and a rest before the weir, 2-7's longer way out, where its doors stand (on
+ *  HOME_CODE's short out leg only one door stood clear of a log's and a double jump's landing on 3 rolls in 12). It lays the post */
+export const POST_CODE = 'A Pg1> Xw1> R Fg1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
 /** the same beats turned back at the out leg's own ground (no column): the overlay the 2-7 designer found (Pushback 1), refused by name */
 export const SAME_GROUND_CODE = 'A Pg1> Xw1> R /L Pf1< Pw1> Mg1> Wf1> R Sw1> E';
 
 /** a kit whose one graph is `code`, for the stage `stageId` (the brief is keyed by the stage's id, which the caller names) */
-export const homeKit = (stageId: string, code = HOME_CODE): WorldKit => ({
+/** the toy's kit for a graph code; `post`: its brief lays the post (POST_CODE's does unless asked otherwise) */
+export const homeKit = (stageId: string, code = HOME_CODE, post = code === POST_CODE): WorldKit => ({
   manifest: {
     ...upManifest,
     world: 2,
@@ -67,7 +74,7 @@ export const homeKit = (stageId: string, code = HOME_CODE): WorldKit => ({
     graphs: {
       list: [{ id: 'home', archetype: 'sprint', code }],
       // (the deal is the code's own content mix: 2 ground, 3 water, 1 climb, 1 floating of 7)
-      briefs: { [stageId]: { ends: 'quiet', trend: 'level', branching: 'none', teaches: [], deal: { ground: 200 / 7, water: 300 / 7, climb: 100 / 7, floating: 100 / 7 }, dealExact: true, pacer: W2_RACE } },
+      briefs: { [stageId]: { ends: 'quiet', trend: 'level', branching: 'none', teaches: [], deal: { ground: 200 / 7, water: 300 / 7, climb: 100 / 7, floating: 100 / 7 }, dealExact: true, pacer: W2_RACE, ...(post ? { post: { doors: TOY_DOORS, art: W2_POST_ART } } : {}) } },
       chunkSeconds: 10,
     },
   },

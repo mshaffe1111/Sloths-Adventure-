@@ -25,6 +25,7 @@
  * section of its own (gen2/riverLay.ts), and so is a pond of sinking pads (gen2/rideLay.ts layPads).
  */
 import type { PacerRow } from '../../pacer.ts';
+import type { PostArt } from '../../post.ts';
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
 import type { W2Decor } from '../../riverArt.ts';
@@ -97,6 +98,9 @@ export const W2_RIVERS = {
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
 
+/** an inventory id on World 2's next sheet (w2NextArt.ts), its frame named on its own (so tools/art/artuse.mjs sees the piece drawn) */
+const next = (frame: string) => `w2-next#${frame}`;
+
 /**
  * World 2's PACER table (pacer.ts PacerRow; 2-7's mail boat, gen2/pacerLay.ts): the designer's flown numbers, as written
  * (reference/design/2-7.md "FLOWN" and "THE MAIL BOAT", reference/specs/sims/river27.ts): a bank at a full run, 272 px/s; each HOME row's
@@ -111,7 +115,17 @@ export const W2_RACE: PacerRow = {
   crossingBank: 230,
   margin: { normal: 0.07, easy: 0.1 },
   under: 2,
-  art: ['w2-next#mailBoat', 'w2-next#mailBoatB'],
+  floor: { normal: 2, easy: 3 },
+  art: [next('mailBoat'), next('mailBoatB')],
+};
+
+/** World 2's POST art (post.ts PostArt; 2-7's doors): the PLEASE BE PATIENT door shut (w2-props) and open, a letter and a reply, two
+ *  flutter frames each (ART-NEXT-b, the inventory's w2-next rows) */
+export const W2_POST_ART: PostArt = {
+  door: 'w2-props#door',
+  open: next('doorOpen'),
+  letter: [next('letter'), next('letterB')],
+  reply: [next('reply'), next('replyB')],
 };
 
 /**

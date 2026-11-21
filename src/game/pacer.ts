@@ -5,7 +5,8 @@
  * (gen2/pacerLay.ts layPacer): the careful middle player's time for that leg plus the setting's share of it, and never more than the ride-only
  * time less `under`, so a careful middle player wins and letting the current carry him never does. Standing still loses by construction
  * (it never waits). It is a medal only: the race never locks the exit and never costs a life (the verdict is filed with the run's stats).
- * On a respawn on the race leg it is put back level with him plus the flown margin's share of the way left (pacerReplace).
+ * On a respawn on the race leg it is put back level with him plus the flown margin's share of the way left, never less than its floor
+ * (pacerReplace; the lead's ruling 11-21: 2 s on Normal, 3 s on Easy).
  *
  * Pure data and arithmetic: the runtime piece is pieces/pacerPiece.ts, the lay gen2/pacerLay.ts. No stage id, world number, seed or x.
  */
@@ -26,6 +27,9 @@ export interface PacerRow {
   margin: { normal: number; easy: number };
   /** s the pacer's time stays under the ride-only time */
   under: number;
+  /** s of margin a re-placed pacer keeps at the least after a respawn, by setting, over his careful-middle time left (the lead's ruling
+   *  11-21: a late fall never turns a race he was winning into a loss by a river's log clock alone) */
+  floor: { normal: number; easy: number };
   /** its art: inventory ids, its frames in order (two rowing frames) */
   art: readonly string[];
 }
@@ -47,6 +51,10 @@ export interface Pacer {
   rideOnly: number;
   /** the middle's time along the leg: [x, seconds from x0], in the order he meets them (the respawn's share reads it) */
   marks: ReadonlyArray<readonly [number, number]>;
+  /** s of margin it keeps at the least when re-placed on a respawn (PacerRow.floor, the setting's), and s it stays under the ride-only time
+   *  (PacerRow.under): the floor never gives the way left more than that bound's share of it */
+  floor: number;
+  under: number;
   /** its art (PacerRow.art) */
   art: readonly string[];
 }
@@ -70,11 +78,16 @@ export function middleAt(p: Pacer, x: number): number {
   return p.middle;
 }
 
-/** the pacer's clock after he is put back at `x` on its leg: level with him plus the margin's share of the way left (his careful-middle
- *  time from there to the dock, at the pacer's rate over the middle's). Before x0 the race has not begun: 0 */
+/** the pacer's clock after he is put back at `x` on its leg: his careful-middle time from there to the dock plus the margin's share of
+ *  it, and never less margin than its floor (the lead's ruling 11-21: a respawn near the dock keeps `floor` s) where the ride-only bound
+ *  allows it (the way left at the ride-only rate less `under`'s share). Before x0 the race has not begun: 0 */
 export function pacerReplace(p: Pacer, x: number): number {
   const left = p.middle - middleAt(p, x);
-  return Math.max(0, p.seconds - (left * p.seconds) / p.middle);
+  const share = p.seconds / p.middle - 1;
+  // (the floor, never past the ride-only bound's share of the way left (pacerFaults: letting the current carry him never wins; planted:
+  //  the ride-only bot won Easy seed 1 by 1.0 s on the 3 s floor after its respawns))
+  const most = (p.rideOnly - p.under) / p.middle - 1;
+  return Math.max(0, p.seconds - left - Math.max(left * share, Math.min(p.floor, left * most)));
 }
 
 /** is he on the race leg past its start (the pacer sets off) */

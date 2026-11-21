@@ -64,6 +64,6 @@ export function layPacer(st: Gen2Stage, table: PacerRow, rows: Readonly<Record<s
   const R = (v: number) => Math.round(v * 100) / 100;
   const yMin = race.y0 - ON_LEG;
   const lane = rivers.length ? Math.max(...rivers.map((r) => r.surfaceY)) : race.y1;
-  const pacer: Pacer = { x0, x1: dock, lane, dir, yMin, seconds: R(seconds), middle: R(middle), rideOnly: R(rideOnly), marks: marks.map(([x, t]) => [x, R(t)] as const), art: table.art };
+  const pacer: Pacer = { x0, x1: dock, lane, dir, yMin, seconds: R(seconds), middle: R(middle), rideOnly: R(rideOnly), marks: marks.map(([x, t]) => [x, R(t)] as const), floor: easy ? table.floor.easy : table.floor.normal, under: table.under, art: table.art };
   return { pacer, problems: pacerFaults(pacer, table.under) };
 }

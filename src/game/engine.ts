@@ -12,6 +12,7 @@ import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { drawPostItem } from './postDraw.ts';
 import { stretchAt } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
@@ -7701,6 +7702,8 @@ export class GameEngine {
       if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime, false, !!this.follow)) return;
       // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
       if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
+      // (the post's letters and replies, post.ts: their art, else the plain petal)
+      if ((item.mark === 'letter' || item.mark === 'reply') && !item.collected && this.currentStage.post && drawPostItem(ctx, item, this.gameTime, this.currentStage.post.art)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 

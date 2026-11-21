@@ -17,9 +17,10 @@ import { ROLLING_PIECE } from './rollingPiece.ts';
 import { RUNNER_LIANA_PIECE } from './runnerLianaPiece.ts';
 import { WHEEL_PIECE } from './wheelPiece.ts';
 import { PACER_PIECE } from './pacerPiece.ts';
+import { POST_PIECE } from './postPiece.ts';
 
 /** every kind of runtime piece, in the order they step and draw */
-export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE, PAD_PIECE, VINE_SNAKE_PIECE, RUNNER_LIANA_PIECE, CHASE_PIECE, ROLLING_PIECE, WHEEL_PIECE, PACER_PIECE];
+export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE, PAD_PIECE, VINE_SNAKE_PIECE, RUNNER_LIANA_PIECE, CHASE_PIECE, ROLLING_PIECE, WHEEL_PIECE, PACER_PIECE, POST_PIECE];
 
 /** the stage's pieces: each kind its data lays, in the registry's order */
 export function startPieces(stage: GeneratedStage, host: PieceHost): StagePiece[] {

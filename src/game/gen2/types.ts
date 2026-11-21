@@ -757,6 +757,9 @@ export interface GraphBrief {
   /** a PACER to race on the stage's race leg (the run leg after its last column; pacer.ts, gen2/pacerLay.ts; 2-7's mail boat): the
    *  world's flown table its time is set from. Absent: no pacer, the stage laid as it always was */
   pacer?: import('../pacer.ts').PacerRow;
+  /** the POST (post.ts, gen2/postLay.ts; 2-7's doors): doors on the way out whose slots take letters, replies on the way home. Absent:
+   *  none, the stage laid as it always was */
+  post?: import('../post.ts').PostSpec;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';

@@ -55,6 +55,7 @@ import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
 import { CHASE_FIXTURE_ID, chaseFixtureConfig } from './game/chaseFixtureStage.ts';
 import { wheelFixtureConfig, wheelFixtureFor } from './game/wheelFixtureStage.ts';
+import { homeFixtureConfig, homeFixtureFor } from './game/homeFixtureStage.ts';
 import { FeelPairClock } from './components/FeelPairClock.tsx';
 import { CTEST_LEVEL_ID, ctestEnabled, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
@@ -544,7 +545,8 @@ export default function App() {
     const params = new URLSearchParams(`${window.location.search.slice(1)}&${window.location.hash.slice(1)}`);
     // (dev only: ?fixture=chase opens a real laid chase with its nuts and fruit, before 1-8 exists: chaseFixtureStage.ts)
     // (and ?fixture=wheel / wheel-right [&wheel=<row>] a real laid water wheel on World 2's ground, before 2-6 is built: wheelFixtureStage.ts)
-    const fixture = params.get('fixture') === 'chase' ? chaseFixtureConfig() : wheelFixtureConfig(params.get('fixture'), params.get('wheel'));
+    // (and ?fixture=home [&seed=<n>] the out-and-back toy with the mail boat race and the post, before 2-7 is built: homeFixtureStage.ts)
+    const fixture = params.get('fixture') === 'chase' ? chaseFixtureConfig() : (wheelFixtureConfig(params.get('fixture'), params.get('wheel')) ?? homeFixtureConfig(params.get('fixture'), params.get('seed')));
     if (fixture) {
       setActiveLevel(fixture);
       launchEngine(fixture);
@@ -707,7 +709,7 @@ export default function App() {
     // (and the test link's 1-1 pick, for a still of a picked roll: stage.ts --roll, tools/engine/runs/stills-at.mjs; TEST-LINK ONLY)
     (window as unknown as { __setPick11?: typeof setPick11 }).__setPick11 = setPick11;
     (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
-      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : id === FEEL_PAIR_ID ? feelPairConfig() : id === CHASE_FIXTURE_ID ? chaseFixtureConfig() : (wheelFixtureFor(id) ?? allLevels.find((l) => l.id === id));
+      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : id === FEEL_PAIR_ID ? feelPairConfig() : id === CHASE_FIXTURE_ID ? chaseFixtureConfig() : (wheelFixtureFor(id) ?? homeFixtureFor(id) ?? allLevels.find((l) => l.id === id));
       if (lvl) {
         if (layout !== undefined) setLayoutVariant(layout);
         setActiveLevel(lvl);

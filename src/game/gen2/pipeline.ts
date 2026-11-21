@@ -15,6 +15,7 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { layPacer } from './pacerLay.ts';
+import { layPost } from './postLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -4169,7 +4170,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   };
   ASKS.set(stage, laid.asks ?? []);
   // (each section's own pieces (never its seam: a pit's floor and walls), for a chase's lay on the built stage, chaseLay.ts)
-  if (graph.nodes.some((n) => n.job === 'pressure')) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
+  // (and a brief's post: its doors stand on the route's own pieces, postLay.ts)
+  if (graph.nodes.some((n) => n.job === 'pressure') || req.kit.manifest.graphs?.briefs?.[budget.id]?.post) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
   // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
   if (graph.nodes.some((n) => n.asked)) {
     const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));
@@ -4208,7 +4210,11 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const table = st.gen2.brief?.pacer;
   const paced = table ? layPacer(st, table, kit.manifest.rivers ?? {}, easy) : { problems: [] };
   if (paced.pacer) st.pacer = paced.pacer;
-  return [...chase.problems, ...r.problems, ...paced.problems];
+  // (a brief's post: doors on the way out, replies home, postLay.ts)
+  const spec = st.gen2.brief?.post;
+  const posted = spec ? layPost(st, spec, piecesOf) : { problems: [] };
+  if (posted.post) st.post = posted.post;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...posted.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
