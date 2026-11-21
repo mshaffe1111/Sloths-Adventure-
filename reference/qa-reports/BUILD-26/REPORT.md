@@ -11,6 +11,12 @@ tools with a stage argument (STAGE env / 4th arg), copy them back to tools/inspe
    hold 0.52 -> 20,5278 FELL BACK`). Find dir's source there (FT_FRAMES on frames 1688-1692, or a one-line stderr print of dir, tgt,
    far in the climb-jump branch, firsttimer.ts ~2612), build that into the toy (likely: he arrives moving left from a jump, the target
    within 16 px across so d falls to his facing), confirm plant RED / fix GREEN, then append it to castBots.test.ts.
+   **Found after the first push (a DBG print in the branch, removed):** on the trial run of seed 8 the branch fires at x 289 with `fdir -1,
+   tgt 250,4835, far 250,4720, way -1` (he came along the leg going LEFT, so `this.way` is -1); from x 235 `far.x - p.x` is 15, inside the
+   16 px dead band, so d falls to fdir = way = -1: away from the vine. The toy with `way = -1` set by hand STILL climbs on the plant: in
+   the toy, during his look delay (1.2 s) he drifts right to x 277, so both runs decide from the vine's RIGHT, and toward the vine is left
+   either way. The toy must have him DECIDE from 1-15 px left of the vine with way -1: e.g. land him there from a jump (as seed 8 did,
+   397 -> 235), or skip the look delay, then plant.
 2. **Then castBots 2-6 x40 both settings on a frozen worktree of the trial** vs b26c/rows/cast-fix2.jsonl, row for row (python3 on
    (bot, setting, seed)); and 1-4 x40 vs b26c/rows/c14-fix2.jsonl: the fix is in the bot, so 1-4 MAY move: the lead is told before it lands.
 3. Then the packet's steps 1 (the remaining causes, below), 2, 3 and 4 as written (BUILD-26d.md).
