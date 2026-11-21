@@ -1,0 +1,22 @@
+castBots 2-3, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 0/40; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 28: shrine rescued x3  (seeds 5,9,21,29,33,37,4,12,16,20,24,28,32,40,6,10,18,22,26,30,34,3,7,15,23,31,35,39)
+        fail 8: shrine rescued x4  (seeds 13,25,8,36,2,38,19,27)
+        fail 4: shrine rescued x2  (seeds 1,17,14,11)
+kid    easy   PASS 0/40; under the floor 0; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 24: shrine rescued x3  (seeds 1,9,13,25,29,37,4,8,12,16,24,28,40,6,10,30,34,38,3,7,15,19,31,39)
+        fail 12: shrine rescued x4  (seeds 17,21,33,20,32,2,18,26,11,23,27,35)
+        fail 2: shrine rescued x2  (seeds 5,14)
+        fail 2: shrine rescued x5  (seeds 36,22)
+adult  normal PASS 39/40; under the floor 0; time median 245.4 s (min 220); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 10)
+adult  easy   PASS 40/40; under the floor 0; time median 209.9 s (min 188.3); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 40/40; under the floor 0; time median 404.8 s (min 363.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 291.8 s (min 277.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 237.3 s (min 228.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 223.4 s (min 216.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 230.2 s (min 219.9); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+
+real	1m1.790s
+user	3m55.781s
+sys	0m3.278s
