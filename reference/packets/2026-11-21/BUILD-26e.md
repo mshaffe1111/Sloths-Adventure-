@@ -3,7 +3,7 @@ Level build, Opus 5.5 high. Written 6:06 PM ET 11-21 (by `date` in the same comm
 2-6 green by Sunday about 8 PM ET, or release 3 ships without it).
 BOX: hand over at 320k REAL context OR 28 minutes after your start (from `date`), whichever comes FIRST (D111), with the EXACT NEXT STEP;
 stop by 10:45 PM ET. **run_in_background only (never '&' or nohup); never a foreground wait (D113); at most TWO heavy runs at once, watching
-free -m; every run on a FROZEN worktree at a fixed hash (D115). READ LEAN: members before you reached 320k in about 14 minutes; read only
+free -m; every run on a FROZEN worktree at a fixed hash (D115). READ LEAN: BUILD-26d used about 200k real context in about 14 minutes and stopped early; read the REAL number (your own estimate runs low), and read only
 what each step needs.** npm ci needs --legacy-peer-deps.
 READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/BUILD-26/REPORT.md` top section ONLY (BUILD-26d's EXACT NEXT
 STEP); level.md rules 21, 28, 29; LAWS headlines; LESSONS D96, D102, D107, D109, D111, D113, D114, D115, D116.
