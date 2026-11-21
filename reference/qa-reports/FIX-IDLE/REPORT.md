@@ -3,8 +3,11 @@ Engine (draw), session_01FhBbYLF1MdAmiwcDyxoKtA. Branch t-fix-idle from origin/m
 reference/packets/2026-11-20/FIX-IDLE.md (on ccr-ea739a2f-dfcee4). Started 7:13 PM ET 11-20 (by `date`).
 
 ## EXACT NEXT STEP (kept current)
-(8:20 PM ET) Every gate PASS so far (table below). Running: lockall --check on the branch against main's lock, and clipcheck. Then: fill
-those two lines, push, send the final hash to the lead. If stopped: rerun those two commands from the Gates table on the branch head.
+(8:21 PM ET) None for FIX-IDLE: every gate in the table is PASS on the fix's code; the final head is the commit that carries this
+report (hash sent to the lead). Next for the team: the integration merges t-fix-idle (heroSprite.ts + the new test only touch game code);
+R-165.354 (Content: re-anchor each clip's first/last frame to the plain 'idle' pose; doze's ends standing) removes the two faces and the
+doze ghost named below. Scratch worktrees used (not pushed): main 107870f5 (lock, before-stills), t-int-15 and t-int-15 + b81cfa1d3
+(the exact 2-5 spot).
 
 ## Commits (t-fix-idle)
 | Commit | What | Time (ET, by `date`) |
@@ -96,10 +99,10 @@ Every line is on the code at b81cfa1d3 (the fix; later commits add only referenc
 | Planted test | `npx tsx --test src/game/heroIdleMelt.test.ts` | RED on acefd5d80 (main + test), GREEN on b81cfa1d3 (2/2) |
 | drawcheck | `node tools/perf/drawcheck.mjs` | PASS (671 s, 8:01-8:12 PM). Its scenarios never stand Pokey still for 4 s, so they never reached drawMelt (no heroSprite drawMelt site in its raw results): see the melt-frame measure below |
 | drawcheck's instrument on melt frames | stills/logs/perfmelt.mjs (tools/perf/instrument.js on the real page, 1-1 seed 791759 x900, sideways, frames 117-130, both builds) | Melt frames 122-128 on the branch: 77 drawImage on the main canvas (the old melt drew 78; plain frames 77), +64k px drawn area (the 300x286 box laid once instead of two sprite draws), 0 gradients, 0 readbacks, 0 shadow, 0 filter, 0 composite sets on the main canvas; on the scratch canvas one clearRect of 85.8k px and 'lighter' (allowed). newCanvas 1 on the first melt only (the scratch canvas, made once), 0 after |
-| clipcheck | `node tools/perf/clipcheck.mjs` | __CLIP__ |
+| clipcheck | `node tools/perf/clipcheck.mjs` | PASS (83 known, none new; 383 s, 8:14-8:20 PM) |
 | CI tool line | `npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts` | PASS: 39 tests, 39 pass, 0 fail, 0 todo (7:27-7:28 PM) |
 | tierBots | `npx tsx --test tools/inspect/tierBots.test.ts` | PASS: 9 tests, 9 pass, 0 fail, 0 todo (7:58-8:01 PM) |
-| lockall vs main's lock | main (107870f5, scratch worktree): `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json` (3,264 builds of 102 stages, 7:58-8:06 PM); branch: `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-main.json` | __LOCK__ |
+| lockall vs main's lock | main (107870f5, scratch worktree): `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json` (3,264 builds of 102 stages, 7:58-8:06 PM); branch: `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-main.json` | PASS: 102/102 stages unchanged (8:06-8:15 PM; draw only, nothing moves) |
 | artcheck | `node tools/perf/artcheck.mjs` | PASS (7:27 PM) |
 | knowncheck | `node tools/perf/knowncheck.mjs` | PASS (7:27 PM) |
 | generality | `npx tsx tools/engine/generalitycheck.ts` | PASS: 66 engine files, 26 literals, 26 known (7:27 PM) |
