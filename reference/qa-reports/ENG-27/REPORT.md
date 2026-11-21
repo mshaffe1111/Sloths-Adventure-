@@ -25,15 +25,26 @@ ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule
     wheelHop); a beat later he STANDS for it (pending and lateArmed dropped, clockHeld, blockedT 0), the same at `upstream`. Result:
     seed 5 edgeWait rows all clean (0 elsewhere; the 4 left are race doubles); seed 2: 3 edgeWait rows still LOST (x 7269 lag 0.1,
     5980 lag 0.2, 4728 lag 0.2): standing kills the walk the lag-0.1/0.2 hop was judged on (x + vx*lag), so the lag-0 hop never lands
-    and the 0.5 s beat runs out. NEXT: judge the beat hop from where he STANDS (lags with x fixed at p.x, i.e. drop the vx*lag
-    projection once he stops) or keep his walk through the beat (side(dir)) only while the projected x is still on the bank; then
-    hopJudged GREEN on seeds 5 and 2 (RED with OFF=floatSure), the race table (copy raceprobe-27e.ts.txt to tools/inspect/_race27k.ts:
-    middle 24/24, expert 12/12, ride-only 0/24), pacerLay, pacerRespawn GREEN.
+    and the 0.5 s beat runs out; the press that drowned him then came from the stopped-dead read in the PLAIN edge wait
+    (`floats.length && !near`, 6 s), which never said he stands by choice.
+    **CANDIDATE 2 (m/floatSure-candidate2-27m.diff.txt, a diff against THIS head d26cbe22f: candidate 1 plus, in the plain edge wait
+    under SKILLS.floatSure, clockHeld = true, blockedT = 0, pending = null; strip its two HOPDIAG console lines before committing):**
+    hopJudged: seed 5: 10 judged hops, 0 came down elsewhere; seed 2: 16 judged, 0 came down elsewhere; EVERY edgeWait and upstream
+    row flown as judged; the only rows left are the race hop's drawn double (m/hopJudged-candidate2-27m.txt). Whole runs (2-7 home
+    middle Normal, m/candidate2-runs-27m.txt): seed 5 lives 4 -> 3 but 171 -> 205.7 s; seed 2 lives 6 -> 1, 203 -> 182.2 s.
+    Seed 5's +34.7 s is NOT explained yet (standing waits for a float on banks? it must be traced before anything else).
+    NEXT, in order: apply candidate 2 (`git apply`), trace seed 5's +34.7 s (where the extra time goes: rule 28, two runs per cause);
+    the race table (copy reference/qa-reports/ENG-27/raceprobe-27e.ts.txt to tools/inspect/_race27k.ts; `npx tsx tools/inspect/_race27k.ts
+    middle,expert,ride home` and `... post`: middle 24/24, expert 12/12, ride-only 0/24); hopJudged with OFF=floatSure RED and on GREEN
+    once the race kind is ruled; pacerLay; pacerRespawn GREEN; then (2). ENG-27m ran no race table: the base suite held the one heavy slot.
     **RULING ASKED (lead):** the race hop's kind: judged single, flown double (drawn). Force single at the judged hold (ENG-27l's variant A
     lost five races, but that also asked the bank 50 px in), or judge the double the bot will fly (hopLandsOn has no second press)?
 (2) Rule 28's castBots diff, 2-1..2-6 x40 both settings, base 1465822f7 vs the final head, frozen trees (ENG-27l (3) below); NOTE the
     candidate DOES reach 2-1..2-6 (the edge wait and upstream run on every W2 river), so rows WILL move: each traced, no tier's pass down.
 (3) B and (4) S: unchanged (ENG-27l (4), (5) below).
+**Checks on this head (d26cbe22f + REPORT):** tsc PASS; ciTests PASS 4/4 (hopJudged registered); roadmapcheck PASS, timecheck PASS (after
+`git fetch --unshallow`), knowncheck PASS, generalitycheck PASS; hopJudged RED 0/2 by design (the RED-first test). Not run: the
+rest of the full set (no screen or engine code changed: the bot only gained a trace that records).
 **Lessons applied:** D114 (the full suite first, on the base, background), D113 (no foreground wait; every run backgrounded or seconds
 long), D111 (28-min box by `date`), D57/D87 (ReadNotifications at each step), rule 28's own new clause (the test before the fix), D63
 not reached (no clip), D96 not reached (no full set). **Polish check:** no screen changed (bot and test only); none due.
