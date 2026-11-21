@@ -117,11 +117,11 @@ export const BEATS_26: SectionTemplate[] = [
     sockets: [petal('p', 'high', 0.6)] }),
   // [S p1^<] beat 12, the signature: the great wheel (R200 V70) lifts him the last bank
   wheelBrick('great-wheel', 'the great wheel', 'signature', 'great', 3, { sockets: tip('t-great', 'jetty', 0.2, 'great') }),
-  // [R] a rest street between beats: a doorstep, a boulder to hop, the next door. The stage's find stands on the first rest met
+  // [R] a rest street between beats: two doorsteps. The stage's find stands on the first rest met. No boulder: a rest often ends its
+  // storey, and its boulder stood 36 px from the tower turn's vine, so a bot stood on it under the climb until rescued (BUILD-26's castBots,
+  // kid Normal seed 11, middle Normal seed 1 x2; ENGINE-WORTHY: the tower lay keeps no turn's foot clear of a block)
   brick({ id: 'rest', name: 'a rest street', jobs: ['rest'], difficulty: 1, content: 'structural' as Content, phases: ['rest'], maxPerStage: 6, exitDy: 0,
-    pieces: [branch('a', 260, { kind: 'start' }), rock('r', 'b', 0.5), branch('b', 220, { kind: 'walk', after: 'a', dy: [0, 0] })],
-    // (the boulder listed BEFORE the street it stands on: a brick's exit is its last piece, and a boulder as the exit hangs the next
-    //  section off its top, BUILD-25d)
+    pieces: [branch('a', 260, { kind: 'start' }), branch('b', 220, { kind: 'walk', after: 'a', dy: [0, 0] })],
     sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] }),
 ];
 
