@@ -91,8 +91,14 @@ test('2-6: the climb up the bank village, with the bank behind it, doors on the 
     assert.ok(st.vines.some((v) => v.vineType === 'tree_climb'));
     assert.deepEqual(st.proto.decor!.find((d) => d.n === 'sign')?.text, [...SIGN_26], `seed ${seed}: the top house's sign`);
     assert.equal(st.proto.hollows?.length ?? 0, 0, 'the lit window stands in for the hollow');
+    // (hearts, the lead's ruling (BUILD-26b; level.md rule 3 over the design's "heart after beat 10"): Normal lays a heart only where a
+    // heart can be lost (stageGenerator.ts `risky`, Matt 11-05 "a heart only after real risk"). Nothing on Normal 2-6 costs one: no
+    // creature, no deadly water, every pond and fall soft; so it lays none, and one that could never be needed would be filler)
     const r = new RealPlay(STAGE_26, seed);
-    assert.ok(r.stage.collectibles.filter((c) => c.type === 'heart').length >= 2, `seed ${seed}: hearts`);
+    const played = r.stage as typeof r.stage & { heartFalls?: Array<{ soft?: boolean }>; proto?: { water?: Array<{ kind?: string }> } };
+    const costs = played.enemies.length + (played.waterY !== undefined ? 1 : 0) + (played.heartFalls ?? []).filter((z) => !z.soft).length + (played.proto?.water ?? []).filter((z) => z.kind === 'deadly').length;
+    assert.equal(costs, 0, `seed ${seed}: nothing on Normal 2-6 costs a heart`);
+    assert.equal(played.collectibles.filter((c) => c.type === 'heart').length, 0, `seed ${seed}: so Normal lays no heart`);
   }
 });
 
