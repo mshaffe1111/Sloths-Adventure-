@@ -52,7 +52,7 @@ Commits: 97bb2b73e (the cure and its plant), b73600b56 (the lead's proof: towerG
 | generality | **PASS** on 97bb2b73e and b73600b56 (26 literals, 26 known) | |
 | plant | RED on deaaf3a7c, GREEN on 97bb2b73e and b73600b56 (with the proof's two checks); tower.test.ts 33/33 | |
 | tsc | **PASS** on 97bb2b73e and b73600b56 (after `npm ci --legacy-peer-deps`; this container had no node_modules) | |
-| 1-4 yield, seeds 1-400 | before 49 kept (12%, eng26h/sweep-1-400.json). **The cure alone (97bb2b73e): 400 kept (100%)**, none of the 49 lost; each worker 100 of 100. **With the proof (b73600b56): YIELD_PROOF** | scratch sweep, `--worker i/4`, under load |
+| 1-4 yield, seeds 1-400 | before 49 kept (12%, eng26h/sweep-1-400.json). **The cure alone (97bb2b73e): 400 kept (100%)**, none of the 49 lost; each worker 100 of 100. **With the proof (b73600b56): NOT MEASURED**: its sweep was still running when the box closed (slower: refused rolls make every search re-roll); re-run it, step 1 | scratch sweep, `--worker i/4`, under load |
 | 1-4 seed 2 with the proof | **refused again, both settings, all four gates** (every fair height reached: the storey under from 180 px under the gate down, a drop from the storey above from 160 px up); the variant counting only wood under the gate's level: still 4 of 4 | why.mts; a scratch log in the lay (not committed) |
 | 2-6 list | `seedlist.ts 2-6 --check` on 97bb2b73e: **PASS** (100 seeds, both settings), 43 s. Not re-run on b73600b56 | |
 
