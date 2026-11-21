@@ -1,3 +1,60 @@
+# ENG-GROUND-c REPORT (handover at the context line; branch t-eng-ground, code head 302c28f7e)
+a. LOCK vs 0eefc707e (base recorded in a worktree at 0eefc707e; `lockall --layouts 16 --check`, on 6bc57e280 and again on 302c28f7e):
+   PASS, 102/102 shipped stages unchanged (the "gained verdicts and drops (not hashed)" line is new unhashed fields, not a move).
+   The lead accepted it.
+c. RE-SHOOT 2x (stills/after-b on 338029b7f's code: race leg x14950, river x15350, join x18450, upright and sideways): one river under the
+   bridge, no column at x15350, the race leg reads under the out leg. The CLOSE-UP found the underside's 16-unit columns each set level
+   at its LOWER end: the edge stepped by the line's rise, stairs every 16 (up to 13 units off the line, 49 at the slanted ends). FIX
+   (groundStack.ts drawUnderside): each column sheared to the line. PLANT groundStack.test 6 'edge on the line at both column ends':
+   RED red-c.txt (35 spans), GREEN. stills/after-c/underside-closeup-before-after.jpg.
+d. engine-core.md 0zq-GROUND written (groundStack, the clips, the underside, the join, the traps, the integration order).
+e. PAINTED UNDERSIDE (ART-UNDER's rows at origin/t-art-under 63963f54d; shot on a SCRATCH worktree that took only w2.webp and the '2'
+   atlas entry, never pushed; stills/painted-scratch/). The hook reads exactly `unders` (x,y,w,h,edge) and `underCorner` (x,y,w,h,edge,cx).
+   Two faults found and fixed (b0d6ed6af, 302c28f7e), planted in groundStack.test 6:
+   - a HARD SEAM at every strip change (each strip wraps only with itself): the next strip's tail fades in over 96 before each change.
+     RED red-c2.txt (7 seams on seed 1), GREEN.
+   - the underside ENDED IN A STRAIGHT CUT where a bank ends over open air (the toy's ceiling, both ends): the corner, face on the end,
+     sheared to the line, mirrored for a left end (protoArt drawGround `open`; setGroundStacks now takes the stage's rivers so an end
+     beside an upper river is not open). RED red-c3.txt (both ends, no corner), GREEN. Drawn whole the corner read as a pasted block:
+     its top (0.4) and inner side (0.45) fade in, baked once per world when the sheet loads (no per-frame gradient).
+   The lead: the seam fade and the corners are good; DUSK dropped (no dusk look exists in the engine).
+   INTEGRATION ORDER: t-art-under's rows land with the art (w2.webp, '2' unders/underCorner, GroundSheet's optional fields); the hook
+   draws them with no further change. Never merge t-art-under into an engine branch (t-art-next's lineage; it conflicts in 15+ files).
+NOT DONE (the lead's finding on painted-scratch/right-end-x18760-sideways.jpg; I passed over the pale band there as ENG-27's column without
+   checking it: my miss, lesson D-"check the fact before attributing"): TWO COLUMNS hang from the descent down to the race leg's floor
+   at the toy's right end (seed 1 normal, camera x 18130 sideways): an EARTH column at world x ~18760-18805 and a POND column at
+   x ~18955-19015. DIAGNOSIS (data, seed 1 normal): legs right 14049-18726 y680-850, DOWN 18726-20006 y905-1450, left 0-18666 y1400-1647.
+   The only zone is the race leg's box (x 0-18666), so the ceiling stops at 18832. The descent's stairs (thin pieces at y905/1045/1169)
+   and their still pools R18955-19015 (surface 1087) and R19221-19288 (surface 1211) stand OVER the floor P18666-20006 y1450 (where he
+   walks under the stairs), outside every zone: riverLid finds no ceiling, so each pool runs its water, bed and soil to the view's foot.
+   The earth column is most likely the same pool's soil run under its left bank (engine drawRivers riverUnderBanks ul ~195: 18955-195 =
+   18760): VERIFY FIRST (a recording ctx over world (18780, 1350)). Headroom there is marginal: line = floor - (HEADROOM 233 + 40) = 1177,
+   ABOVE the 1211 pool's surface, so the lid must stop at a pool's bed foot (as the line never cuts an upper bank's collider).
+GATES on 302c28f7e (run-gates-b.sh a, b, lock in the background): tsc PASS; suite 1/6 PASS (634/634); lock PASS. The rest were still
+   running at the handover (logs died with the container): UNRUN for the record. The next code change re-runs them all anyway.
+POLISH CHECK: after-b (2x, both ways): river and join PASS; close-up FIXED (stairs). painted-scratch: race leg seam FIXED, both ends'
+   corners FIXED (pasted block faded in); right end sideways FAILS (the two columns, above). Upright views carry the underside; sideways
+   the ceiling sits mostly above the frame.
+LESSONS APPLIED: D57/D87 (inbox read at every step and push; long runs in the background), D96 (CI's own gate lines), D102 (lean reads,
+   images downscaled once), D105, D107, D109 (no clock times in messages). LEARNED: a thing in a still that "belongs to another member"
+   is checked before it is passed over (the right-end columns).
+EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD):
+ 1. VERIFY the earth column's painter (recording ctx at world (18780, 1350), seed 1 normal, the toy '2-97' via buildGen2Stage + w2Finish as
+    groundStack.test 6 builds it; the engine's drawRivers and drawProtoScene).
+ 2. PLANT (groundStack.test, new case, both settings, seeds 1-3): over every piece of the lower band (top within the race leg's y0..y1)
+    that stands under another leg's paint, ends included (here the floor P18666-20006 under the DOWN leg), no upper paint (bank soil,
+    river water/bed/soil, under-bank soil) covers the air from the floor's top up HIS_H; RED on this head at x 18760-19015 (seed 1).
+ 3. FIX generally (groundStack.ts stackZonesOf/findCeilings, protoArt riverLid): a lower run leg's zone covers every place another leg's
+    ground or water stands over its band, ends included (a leg whose box comes down into the band, e.g. the DOWN leg, adds its x span);
+    the ceiling's upper side counts upper rivers (their bed foot is the line's highest point there) and thin upper pieces, not only
+    painted banks; a lidded river's under-bank soil is clipped with it (clipAboveLines already spans x0-ul..x1+ur). No stage id.
+ 4. Re-run groundStack.test, lockall --layouts 16 --check vs 0eefc707e (record the base in a worktree), then the gates
+    (reference/qa-reports/ENG-GROUND/run-gates-b.sh a, b, lock; CI's tool line from gates.yml line 157 in $G/../tooltests.cmd).
+ 5. Re-shoot with t-art-under's rows on a SCRATCH worktree (git checkout 63963f54d -- src/assets/ground/w2.webp; copy groundAtlasData '2'
+    from 63963f54d; never push it): BOTH ends (left x13900, right x18760) and the join (x18450), 2x, upright and sideways
+    (`DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out>
+    13900:none:left-end 18760:none:right-end 18450:none:join`); look at each the way Matt will. Then REPORT and the hash to the lead.
+
 # ENG-GROUND-b REPORT (handover at the context line, by the lead's D76; branch t-eng-ground, code head 7dc775c93)
 1. RE-SHOOT (stills/reshoot-6c45381d0/, 2x both ways): the river column at x15350 was NOT gone. Its cause was not the sag: the out leg's
    still pools ran their water, bed and soil to the view's foot (engine.ts drawRivers), outside the banks' ceiling clip. FIX (general):
