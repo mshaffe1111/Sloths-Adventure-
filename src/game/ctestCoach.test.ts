@@ -1,6 +1,7 @@
 /**
- * R-165.157: the testers' link (#ctest) plays playRecorder.ts CTEST_LEVEL_ID (1-5, Matt 11-13 8:48 PM ET), so a brand-new tester starts there, not on 1-1. The
- * first-play coach (touchCoach.ts: slide to run, slide up to jump) was 1-1's alone, so a new tester there got no coaching at all.
+ * R-165.157, R-165.343: the testers' link (#ctest) plays the stage the tester picks, any of World 1 (playRecorder.ts CTEST_STAGES, Matt 11-20
+ * 2:39 PM ET), so a brand-new tester can start on any of them, not on 1-1. The first-play coach (touchCoach.ts: slide to run, slide up to
+ * jump) was 1-1's alone, so a new tester there got no coaching at all.
  * Planted: with coachWanted's old rule (1-1 only) the #ctest case is false and this fails.
  */
 import test from 'node:test';
@@ -10,7 +11,7 @@ import { GameEngine } from './engine.ts';
 import { InputEngine } from './inputEngine.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { coachWanted } from './touchCoach.ts';
-import { CTEST_LEVEL_ID } from './playRecorder.ts';
+import { CTEST_STAGES } from './playRecorder.ts';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 
@@ -23,30 +24,32 @@ function freshPhone(hash: string) {
   loc.location.hash = hash;
 }
 
-test("the testers' stage is the one Matt named (1-5, Where She Walked: 11-13 8:48 PM ET), and it builds and plays", () => {
-  assert.equal(CTEST_LEVEL_ID, '1-5');
-  for (const setting of ['normal', 'easy'] as const) {
-    setDifficulty(setting);
-    const r = new RealPlay(CTEST_LEVEL_ID, 1);
-    assert.ok(r.platforms.length > 20, `${CTEST_LEVEL_ID} ${setting}: a stage was built`);
-    // (he moves off the spawn: a walk on a run, up the vines on a climb)
-    const [x0, y0] = [r.p.x, r.p.y];
-    for (let i = 0; i < 90; i++) r.frame({ right: i < 45, up: i >= 45 });
-    const moved = Math.hypot(r.p.x - x0, r.p.y - y0);
-    assert.ok(!r.died && moved > 30, `${CTEST_LEVEL_ID} ${setting}: he moved ${Math.round(moved)} px`);
-    (r.e as unknown as { stop(): void }).stop();
+test("the testers' stages are all of World 1 (Matt 11-20 2:39 PM ET: the picker), and each builds and plays on both settings", () => {
+  assert.deepEqual(CTEST_STAGES, ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9']);
+  for (const id of CTEST_STAGES) {
+    for (const setting of ['normal', 'easy'] as const) {
+      setDifficulty(setting);
+      const r = new RealPlay(id, 1);
+      assert.ok(r.platforms.length > 20, `${id} ${setting}: a stage was built`);
+      // (he moves off the spawn: a walk on a run, up the vines on a climb)
+      const [x0, y0] = [r.p.x, r.p.y];
+      for (let i = 0; i < 90; i++) r.frame({ right: i < 45, up: i >= 45 });
+      const moved = Math.hypot(r.p.x - x0, r.p.y - y0);
+      assert.ok(!r.died && moved > 30, `${id} ${setting}: he moved ${Math.round(moved)} px`);
+      (r.e as unknown as { stop(): void }).stop();
+    }
   }
   setDifficulty('normal');
 });
 
-test('a new tester on the #ctest link is coached on its stage; off the link the coach stays on 1-1 alone', () => {
+test('a new tester on the #ctest link is coached on the stage picked; off the link the coach stays on 1-1 alone', () => {
   try {
     freshPhone('#ctest');
-    assert.equal(coachWanted(CTEST_LEVEL_ID, undefined), true, 'the #ctest stage coaches a brand-new tester');
+    for (const id of CTEST_STAGES) assert.equal(coachWanted(id, undefined), true, `the #ctest stage ${id} coaches a brand-new tester`);
     assert.equal(coachWanted('1-1', undefined), true, '1-1 still coaches');
-    assert.equal(coachWanted('1-2', undefined), false, 'no other stage');
+    assert.equal(coachWanted('2-1', undefined), false, 'no stage the link does not offer');
     freshPhone('');
-    assert.equal(coachWanted(CTEST_LEVEL_ID, undefined), false, 'the full game: the testers\' stage is not a first stage');
+    for (const id of CTEST_STAGES.filter((x) => x !== '1-1')) assert.equal(coachWanted(id, undefined), false, `the full game: ${id} is not a first stage`);
     assert.equal(coachWanted('1-1', undefined), true);
   } finally {
     freshPhone('');
@@ -54,18 +57,20 @@ test('a new tester on the #ctest link is coached on its stage; off the link the 
   }
 });
 
-test('on the real engine, starting the #ctest stage on a new phone makes the coach (and only with #ctest)', () => {
+/** a stage a tester picks that is not 1-1 (1-1 coaches in the full game as well) */
+const PICKED = '1-4';
+test('on the real engine, starting a picked #ctest stage on a new phone makes the coach (and only with #ctest)', () => {
   const coachOn = (hash: string) => {
     freshPhone(hash);
-    const e = new GameEngine(headlessCanvas(), lvl(CTEST_LEVEL_ID), new InputEngine(), {} as never);
+    const e = new GameEngine(headlessCanvas(), lvl(PICKED), new InputEngine(), {} as never);
     e.start();
     const on = (e as unknown as { coach: unknown }).coach != null;
     e.stop();
     return on;
   };
   try {
-    assert.equal(coachOn('#ctest'), true, `no coach on ${CTEST_LEVEL_ID} for a new tester`);
-    assert.equal(coachOn(''), false, `the full game coaches ${CTEST_LEVEL_ID} too`);
+    assert.equal(coachOn('#ctest'), true, `no coach on ${PICKED} for a new tester`);
+    assert.equal(coachOn(''), false, `the full game coaches ${PICKED} too`);
   } finally {
     freshPhone('');
     loc.location.search = '';

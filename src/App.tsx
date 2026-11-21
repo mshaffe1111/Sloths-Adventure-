@@ -50,7 +50,7 @@ import { inAppOf } from './game/deviceInfo.ts';
 import { markSlowTipShown, slowTipShown, slowTipText } from './game/slowTip.ts';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
-import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
+import { ControlTestDone, ControlTestGate, RecordingBadge, ctestLevelFor } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
 import { CHASE_FIXTURE_ID, chaseFixtureConfig } from './game/chaseFixtureStage.ts';
@@ -774,7 +774,7 @@ export default function App() {
   // the testers' stage (#ctest): the one picked on the front page, any of World 1 (playRecorder.ts CTEST_STAGES, R-165.343), as Play
   // builds it, its own goal, a fresh roll of its proven list each run on the tester's own setting (stageGenerator.ts: provenSeedFor)
   const [ctestPick, setCtestPick] = useState<string | null>(null);
-  const ctestLevel = (id: string | null): LevelConfig | null => (id && isCtestStage(id) ? allLevels.find((l) => l.id === id) ?? null : null);
+  const ctestLevel = (id: string | null): LevelConfig | null => ctestLevelFor(allLevels, id);
   const ctestDraw = () => {
     setLayoutVariant(rollLayoutVariant());
   };

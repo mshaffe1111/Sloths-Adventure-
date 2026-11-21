@@ -239,6 +239,28 @@ const Step: React.FC<{ n: number }> = ({ n }) => (
 const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 className="ct-h">{children}</h2>;
 
 /**
+ * Start (the front page's go): the setting and the pick kept, recording begun (once a visit: a second pick only adds its lines), and
+ * the picked stage handed on to be played
+ */
+export function ctestBegin(stage: string, name: string, level: Difficulty, onStart: (stage: string) => void): void {
+  setDifficulty(level);
+  saveCtestStage(stage);
+  recorder.start(name);
+  // which touch rules this run used, so before and after can be compared
+  recorder.event('rules', refinedControls() ? 'refined' : 'old');
+  // and how hard it was set (difficulty.ts): Easy runs are not compared with Normal ones
+  recorder.event('difficulty', level);
+  // and which level was picked (R-165.343; its 'gen2' line names it again, with the seed, once the stage is built)
+  recorder.event('stage', stage);
+  onStart(stage);
+}
+
+/** the stage a pick plays: the game's own level of that id, as Play builds it (null for an id the link does not offer) */
+export function ctestLevelFor<L extends { id: string }>(levels: readonly L[], id: string | null): L | null {
+  return id && CTEST_STAGES.includes(id) ? levels.find((l) => l.id === id) ?? null : null;
+}
+
+/**
  * The testers' front door (only with #ctest in the address): which level (any of World 1's nine, R-165.343), who is playing, what gets
  * recorded, and Start. Recording begins on the first Start, and the picked level opens straight away (a fresh roll of its list each run,
  * on the setting picked here). `onPick` hears every pick, so its sheets load while the page is read.
@@ -258,16 +280,7 @@ export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPic
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!name.trim()) return;
-    setDifficulty(level);
-    saveCtestStage(stage);
-    recorder.start(name);
-    // which touch rules this run used, so before and after can be compared
-    recorder.event('rules', refinedControls() ? 'refined' : 'old');
-    // and how hard it was set (difficulty.ts): Easy runs are not compared with Normal ones
-    recorder.event('difficulty', level);
-    // and which level was picked (its 'gen2' line names it again with the seed)
-    recorder.event('stage', stage);
-    onStart(stage);
+    ctestBegin(stage, name, level, onStart);
   };
   return (
     <Scene label="Level test">
