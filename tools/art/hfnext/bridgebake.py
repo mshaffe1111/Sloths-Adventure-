@@ -103,11 +103,11 @@ for name in clips:
     for k, f in enumerate(frames):
         out.alpha_composite(f.crop((x0, y0, x1, y1)), ((k % cols) * w, (k // cols) * h))
     assert out.width <= 4096 and out.height <= 4096
-    p = f'src/assets/hero/clips/{name}.webp'; out.save(p, 'WEBP', quality=90, method=6)
     ent = {'n': len(frames), 'cols': cols, 'w': w, 'h': h, 'ax': round(float(AX - x0), 1), 'ay': round(float(AY - y0), 1), 'fps': CL[name]['fps']}
-    old = json.dumps({name: CL[name]}, indent=1)[2:-2]
-    assert old in src, f'{name}: entry not found in the cutter format'
-    src = src.replace(old, json.dumps({name: ent}, indent=1)[2:-2])
+    blk = re.compile(r'^ "' + re.escape(name) + r'": \{\n[^}]*\n \}', re.M)   # the cutter writes 202.0 where JSON round-trips 202: match the block
+    assert len(blk.findall(src)) == 1, f'{name}: entry not found in the cutter format'
+    src = blk.sub(lambda _m: json.dumps({name: ent}, indent=1)[2:-2], src)
+    p = f'src/assets/hero/clips/{name}.webp'; out.save(p, 'WEBP', quality=86, method=6)  # the clip cutter's own quality (tools/art/train/clips.py)   # written only once its entry matched
     print(name, 'frames', len(frames), 'sheet', out.size, f'{Path(p).stat().st_size / 1024:.0f} KB', ent)
 if not DRY:
     if 'bridgebake.py' not in src.split('\n')[0]:
