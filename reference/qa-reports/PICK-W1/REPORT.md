@@ -85,17 +85,17 @@ digits, ids or codes; 30 characters or fewer).
 
 **"What felt hardest?" chips** (ctestStretches.ts; each from its section's design name in the w1Arc file; rests, arrivals and exits are
 walking-only and never offered):
-| Stage | Chips |
-|---|---|
-| 1-2 | the first thorns · the mushrooms over thorns · the mushroom stair · the long mushroom chain · the hollow by the roots · the crossing by the island · the last mushrooms |
-| 1-4 | the first vines up · the rotten boughs · the wide field of vines · the falling pods · pushing up the figs · the creaking boughs · the two fig bunches · the figs under the pods · from vine to vine · the figs on the snake · the hollow in the tree · the top of the tree |
-| 1-5 | the hollow trunk · the first creaky limb · past the sleeping snake · the snake that woke up · the branch or the creek · riding the limb down · the fast creaky limbs |
-| 1-6 | the first liana · hanging low to swing far · liana to liana over thorns · the snakes on the vines · a snake on my vine · the creaky landing · the snakes coming up · the vine with a face · the big swing over the gorge |
-| 1-7 | hiding in the bush · run, stop, hide · the bare bark · hiding on the moss · the creaky limb · hiding on a mossy liana · when the eagle landed · the sunny gap |
-| 1-8 | the rolling nuts · the first race · the race over the lianas · the high bough · little and big nuts at once · the fork to stop at · the last stretch · the swing off the tip |
-| 1-9 | freezing like a branch · freezing on the stairs · bopping a boa · the creaky limb by the nest · the boa under a trap · the boa by the eagle's nest · the boa with nothing near · the two boas · the Old Boa |
+| Stage | Count | Chips |
+|---|---|---|
+| 1-2 | 7 | the first thorns · the mushrooms over thorns · the mushroom stair · the long mushroom chain · the hollow by the roots · the crossing by the island · the last mushrooms |
+| 1-4 | 12 | the first vines up · the rotten boughs · the wide field of vines · the falling pods · pushing up the figs · the creaking boughs · the two fig bunches · the figs under the pods · from vine to vine · the figs on the snake · the hollow in the tree · the top of the tree |
+| 1-5 | 7 | the hollow trunk · the first creaky limb · past the sleeping snake · the snake that woke up · the branch or the creek · riding the limb down · the fast creaky limbs |
+| 1-6 | 9 | the first liana · hanging low to swing far · liana to liana over thorns · the snakes on the vines · a snake on my vine · the creaky landing · the snakes coming up · the vine with a face · the big swing over the gorge |
+| 1-7 | 8 | hiding in the bush · run, stop, hide · the bare bark · hiding on the moss · the creaky limb · hiding on a mossy liana · when the eagle landed · the sunny gap |
+| 1-8 | 8 | the rolling nuts · the first race · the race over the lianas · the high bough · little and big nuts at once · the fork to stop at · the last stretch · the swing off the tip |
+| 1-9 | 9 | freezing like a branch · freezing on the stairs · bopping a boa · the creaky limb by the nest · the boa under a trap · the boa by the eagle's nest · the boa with nothing near · the two boas · the Old Boa |
 
-Worth the keeper's eye: 1-4 offers up to 12 chips on a long roll, and with Running and Nothing the list runs long. The keeper may
+The lead (9:26 PM ET): the keeper check trims each stage to its 6 clearest. The counts above are the most a roll can offer, before Running and Nothing are added; a single roll shows only the beats it lays (1-6 seed 1 showed 9, 1-9 showed 9).
 want to merge some (for example the three fig chips into one).
 
 ## Gate table (THE FULL SET, once, on code head __CODE__)
