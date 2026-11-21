@@ -1,8 +1,8 @@
 # ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): cheer, swim and ouch strips ACCEPTED by the lead; DONE when the queued gates are green
 ## EXACT NEXT STEP
-The lead ACCEPTED all three strips (cheer, swim, ouch; no bridge) and step-back/teeter by test. What remains is gates only: read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
-the base suite (step 0), then drawcheck on 208da39a7+, then the full suite on the head; if this container is gone, re-run drawcheck and the
-suite on t-art-next. Step-back and teeter are test-proven cuts but not yet shot (heroshoot has no ledge scene).
+The lead ACCEPTED all three strips (cheer, swim, ouch; no bridge) and step-back/teeter by test. What remains is gates only (box ran out at 3330 base tests passed, 0 failed, base suite still running): read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
+the base suite (step 0), then drawcheck on 208da39a7+, then the full suite on the head; if this container is gone, run on t-art-next (b3e9ce2b4 or later), one at a
+time with run_in_background: node tools/perf/drawcheck.mjs, then the full unit suite. R-165.382 is DONE when both are green (the lead). Step-back and teeter are test-proven cuts but not yet shot (heroshoot has no ledge scene).
 ## 1. VERIFY (on ec7f1070c)
 - Where cheer plays: only at the exit before the stage clears (engine.ts:3583 sets p.cheerAt, CHEER_SECONDS 1.9) and the journal replay
   (journalScenes.ts:686). No pickup plays it.
@@ -43,7 +43,7 @@ hero-ouch-frames-before-after.jpg (in t1.25-1.60 and out t3.62-3.97), hero-swim-
 - Step-back and teeter cut too: test-proven, NOT shot (heroshoot has no ledge-end scene); their look on screen is not yet judged.
 ## Gates (208da39a7, then fa4809c64)
 tsc PASS; heroClipsCut + heroClips + heroClipsEnds + w6Swim tests 18/18 PASS; artcheck PASS; knowncheck PASS; herobody.py --check exit 0 (no sheet
-changed, so no catalog rows). Base suite (step 0, ec7f1070c): still running at hand-over, 1678 run, 0 failed so far. drawcheck (the draw
+changed, so no catalog rows). Base suite (step 0, ec7f1070c): still running at hand-over (box), 3330 run, 0 failed so far. drawcheck (the draw
 changed: one draw fewer under a clip) and the full suite on the head: QUEUED after it, results not in at hand-over.
 ## Lessons applied
 D96 (the packet's gate list run as written, the ones not finished named), D102 (lean read; strips read downscaled; long runs in the
