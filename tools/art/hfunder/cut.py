@@ -28,6 +28,19 @@ seeds = set(lab[-1][near[-1]].tolist())
 if kind == 'corner':
     seeds |= set(lab[:, -1][near[:, -1]].tolist())
 bgm = np.isin(lab, list(seeds - {0}))
+# grey trapped between roots under the soil's edge is background too (a pocket the border flood can't reach came out as a grey, and
+# after the shade lift a WHITE, shard on the corner takes, 11-21): below each column's body edge, every grey-near px is keyed
+_y0 = int(0.3 * H)
+_e = np.array([_y0 + (int(np.argmin((~bgm)[_y0:, x])) if not (~bgm)[_y0:, x].all() else H - _y0) for x in range(W)])
+bgm |= near & (np.arange(H)[:, None] > _e[None, :] + 2)
+# and a pocket closed in by a root and the face: a FLAT grey region (within 10 of the key, 30 px or more) is the take's background
+_flat = np.abs(a - bg).max(axis=2) < 10
+_fl, _n = nd.label(_flat)
+if _n:
+    _sz = nd.sum(_flat, _fl, range(1, _n + 1))
+    _pk = np.isin(_fl, 1 + np.where(_sz >= 30)[0]) & ~bgm
+    print(f'pockets keyed {int(_pk.sum())} px (top band {int(_pk[:int(0.3 * H)].sum())})')
+    bgm |= nd.binary_dilation(_pk, iterations=1) & near
 solid = ~bgm
 # keep only what joins the body (a floating clod or root bit is junk: hf-art.md "loose pieces")
 sl, n = nd.label(solid)
@@ -66,7 +79,8 @@ if SH:
     es = nd.uniform_filter1d(nd.median_filter(e.astype(float), size=61, mode='wrap' if kind == 'strip' else 'nearest'), 61,
                              mode='wrap' if kind == 'strip' else 'nearest')
     yy = np.arange(H)[:, None]
-    s = np.clip((yy - y0) / np.maximum(1, (es[None, :] - bw) - y0), 0, 1)
+    r0 = np.maximum(y0, es - 2.2 * bw)[None, :]   # the lift ramps in over ~2 band widths above the band, not from 0.3 H (a glare band)
+    s = np.clip((yy - r0) / np.maximum(1, (es[None, :] - bw) - r0), 0, 1)
     s = s * s * (3 - 2 * s)
     below = np.clip((yy - e[None, :]) / 6.0, 0, 1)   # the roots under the edge keep their own dark (a 6 px blend)
     gl = 1 + (gain - 1) * s * (1 - below)
