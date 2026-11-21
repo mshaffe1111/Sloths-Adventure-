@@ -1,3 +1,91 @@
+# ENG-26j (on t-build-26 from e420a2794): the lead's ruling (a): a gate section catches its own running exit; the lay adds nothing by a sealed piece. Started 4:23 PM ET 11-21 (by `date`)
+Commits: ecb86074e (revert of b73600b56 + 97bb2b73e, one commit), 8e21145f1 (the fix and its plants), this REPORT. Step 1 DONE and
+measured (the lead accepted it); the speed-ups cherry-picked on a side branch only (NOT pushed: its lock proof was running at the handover, not finished); the relist and after NOT
+started (the 28-minute box, D111). Saved: eng26j/ (gates.mts: each gate's step and run off both ends on a built roll, and whose wood catches it;
+near.mts: what lies within a hop of each gate; onto.mts: the lead's question, can wood within a hop of a gate be reached from under it; sweep-1-400-8e21145f1.json).
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND on frozen worktrees (D113)
+## ENG-26k: steps 3 and 4 of ENG-26j's packet, on this head (step 1 is done and the lead accepted it; (b) is NOT needed: the section catches
+## every running exit, the yield is 400/400)
+1. **The speed-ups' lock proof**: the branch `eng26j-speed` (local to ENG-26j's container, NOT pushed) was only `git cherry-pick
+   91e6c584e` onto 8e21145f1 (clean, no conflicts). Redo it: `git cherry-pick 91e6c584e` onto this head, then on two frozen worktrees,
+   in the background, `npx tsx tools/engine/lockall.ts --layouts 16 --out <f>` WITHOUT (this head) and WITH (the pick); compare every
+   part hash of every build (`--check without.json` on the WITH tree, exit 0, nothing changed). Any difference: drop the piece that made
+   it. **ENG-26j started it on 8e21145f1 (WITHOUT) and the pick (WITH) in the background, all 102 stages x 16 layouts x both
+   settings at about 10 s a stage with the two in parallel (~17 min); it had not finished at the handover, so its result is not
+   known.** The relist (2) waits for it only if the speed-ups go in first (they make the relist and CI's check faster).
+2. **1-4 relisted ONCE** (methods/seed-list.md): the old list is seeds 1-100 and **all 100 build clean on both settings on this head**
+   (eng26j/sweep-1-400-8e21145f1.json), so the survivors in their old order are 1-100 and no new seed is needed: `seedlist.ts 1-4
+   --merge <the four parts or the saved sweep> --in-order --count 100` (n 100) re-lays them and writes the list with the new plans (each
+   gate's foot is 106-134 px longer at each end, so every 1-4 layout moves). `seedlist.ts 1-4 --check` FAILS on this head until then
+   (expected: the listed plans are e420a2794's). Then every test pinning a 1-4 roll (D29; `grep -rln "'1-4'" src tools --include=*.test.ts`:
+   20 files) and the FULL suite, re-pinned once on the final list (rule 20).
+3. **Then as the packet**: the phone's load speed of the listed 1-4 and 2-6 seeds (eng26h/tools/loadtime.mts base e420a2794 vs head;
+   `BUILDCHECK_STAGE=1-4` / `2-6` buildcheck), CI's `seedlist.ts 1-4 --check` timed against its 45-minute limit (D99); stills of 1-4
+   layout 1 before (e420a2794) and after at a gate, 2x, 390x844 and 844x390 (eng26h/tools/pin.mjs): judge the longer foot under the gate
+   reads as the field's own ground, not a shelf; castBots 1-4 seeds 1-40 both settings base vs head (rule 28), tierBots 1-1, qaW123,
+   generality, THE FULL SET (gates.md), lockall (only 1-4 and 2-6 may move), engine-core.md's tower lines (a sealed piece's own wood
+   catches its full-speed run: gateRun). Then BUILD-26c runs 2-6's bots.
+
+## Step 1: the gate section catches its own running exit (ruling (a))
+- **Cause, measured** (landFlights' walk, the flight towerFalls / walkOff fly, frame by frame): a run off a gate's end at full speed is
+  **164 px out at the frame he lands 360 px down, 173 px at 400, 191 px at 440** (the same on Normal and Easy; 8e21145f1's commit
+  message says 164-183: 183 is the frame BEFORE he reaches 440, the code takes the landing frame). A gate field's foot ran
+  out `GATE_RUN = GAP` = 80 px past its gate. So every gate's run came down past its own foot: where other wood was under the arc it was
+  caught by that (most gates), where there was none (the foot's tip at the tower's wall, the turn's vine hanging from it) it fell 641-721
+  px and the roll was refused. Not the lay: the section's own wood was simply too short for the run.
+- **Fix** (w1Arc14.ts `gateRun(H)`, replacing `GATE_RUN`): the foot runs out, at each end, the flown run at the frame he lands H px down
+  (the larger of the two settings) plus half his body (22 px), never under one vine spacing: **H 360 -> 186 px, 400 -> 195, 440 -> 214** (computed by gateRun on 8e21145f1).
+  So both feet land on the foot, never its lip. The foot is still walked onto, never landed on (`landing: false`: Easy's widening rules
+  unchanged, so Easy never pulls its vines out of two hands' reach); its vines stay 80 apart under the gate.
+- **The lay adds nothing by a sealed piece** (ecb86074e reverts the lay's gate-run catch, 97bb2b73e, and its proof, b73600b56, together).
+  tower.test.ts' 'towerCatches leaves a gate alone' (kept) and the new toy plant both check it.
+- **Found on the way and fixed (rule 22's "every place the pattern lives")**: `w1-14-drop-one` hand-sized its foot (520 px) for a
+  run-out of 0, and scaled field()'s vines to fit. Since GATE_RUN = 80 that put its four vines **55 px apart** (the design's 70-90) and
+  left its gate's run-out at 80 / 80 by coincidence. Rebuilt on field()'s own layout (vines 80 apart, gateRun at both ends), the snake
+  150 px past the figs' vine as before (within TRAP.scare 170), the foot run on further only if the snake's spot needs it (it does not).
+- **Planted** (w1Arc14.test.ts, three tests): (1) the toy (1-4 seed 2's first refused gate: 646-1086 @1000, the foot 400 px down, a vine
+  hanging from its tip to the storey under, out to the wall): the lay lays nothing by the gate with either foot; with the old 80 px foot
+  the run is named by towerFalls and comes down past it; with gateRun(400) towerFalls is clean and both runs land on the gate's own foot,
+  both feet on it; (2) every gate field's foot runs gateRun(H) past its gate at each end, and gateRun covers the flown run on both
+  settings; (3) **1-4 seed 2 builds on both settings, errors []**, and each gate's run, flown against the gate and its foot ALONE, lands on
+  its foot (the section's own wood catches it), and on the stage as laid within TOWER.fall. **RED**: with gateRun = GAP the three fail
+  (9/12); on e420a2794 seed 2 is refused (4 running walk-offs Normal, 8 Easy; eng26j/gates.mts). **GREEN**: 12/12; seed 2 Normal builds
+  in 0.7 s against 3.9 s on e420a2794 (no rerolls).
+- **Every tower (rule 22)**: the only other sealed piece in any world is toyTower.ts' gateKit (tests only, not shipped); its built-tower
+  test ('a sealed piece (a gate bough) in a built tower') runs its runs through towerFalls in the build (errors [] on every seed; 32/32 on 8e21145f1).
+- **Measured harmless (the lead asked: can it be reached without the gate's finish?)**: on seed 2 (head) wood lies within a hop under
+  three gates' level: a 180 px bough of the storey above **39 px under one end and 28 px beside it** (gates at y 2300 and 3342) and a row
+  99 px under the gate at 7214 (11 pieces Normal, 9 Easy). From each, a hop onto the gate is possible. But **nothing reaches any of them
+  from under** (eng26j/onto.mts: no lower wood within tower.ts `leaps`, generous: a double, a fall included, rise to 220 px; no vine top
+  within a hop), and each gate's own foot is 360-440 px under it. The only way onto that wood is a drop from the storey above, which is
+  past the gate. So no way ON to judge, and towerGates is not changed (the lead: harmless if only from past the gate).
+
+## Measures
+| what | result | where |
+|---|---|---|
+| 1-4 yield, seeds 1-400 | **400 kept of 400 (100%)**, each worker 100 of 100 in 137-139 s (the reverted cure: 400 in ~500 s under load; e420a2794's judge on 95cafaabc: 49, 12%). The old list (seeds 1-100): all 100 kept | eng26j/sweep-1-400-8e21145f1.json |
+| 2-6's list | **PASS** (100 seeds, each clean on both settings) | seedlist.ts 2-6 --check on 8e21145f1 |
+| tower.test.ts on 8e21145f1 | **32/32** (33 with the cure, less its plant, reverted with it); fieldGate.test.ts + vineFeel.test.ts 26/26 | |
+| w1Arc14.test.ts | RED 9/12 (gateRun = GAP), GREEN 12/12 | |
+| tsc | clean | |
+| generality | PASS (26 literals, 26 known) | |
+| knowncheck | PASS | |
+| roadmapcheck | FAIL on this shallow clone only ("proofs cannot be checked (fetch-depth 0)"): ROADMAP not touched | |
+
+## Lessons applied
+D111 (the box from `date`, handed over with the EXACT NEXT STEP), D113 (no foreground waits: the sweep and suites in the background, the
+REPORT written meanwhile), D102 (read lean), D40 (the lay's catch reverted before the fix, nothing patched that is replaced), D57/D87
+(ReadNotifications at every step and push), D109 (no clock times to the lead), D112 (the invariant, a sealed piece's ends caught by its
+own section's wood, named and tested: plant 3 flies each gate's run against its own wood alone).
+
+## Learned (for level.md, the lead decides)
+- A section that owns its own catches must size them from the FLOWN exit at full speed, not a spacing: proposed rule, "a sealed piece's
+  own wood under it runs out at least the flown full-speed run off its ends plus half his body", checked by plant 3's flight against the
+  section's own wood alone (a check, not a number in a comment).
+- A piece that rewrites field()'s output by hand must be rebuilt when field() grows (drop-one sat on GATE_RUN for days with vines 55 px
+  apart): world code should extend a builder's numbers, never re-derive them.
+
 # ENG-26i (on t-build-26 from deaaf3a7c): the walk-off judge REPAIRS a gate's run instead of refusing it; the lead's gate proof added. Started 3:55 PM ET 11-21 (by `date`)
 Commits: 97bb2b73e (the cure and its plant), b73600b56 (the lead's proof: towerGateCatches), this REPORT. Steps 2-4 NOT started
 (the 28-minute box, D111). Saved: eng26i/ (the cure's sweep; why2.mts prints each catch rule's verdict per end, with the
