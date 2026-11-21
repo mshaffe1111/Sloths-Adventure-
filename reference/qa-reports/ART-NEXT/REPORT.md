@@ -7,8 +7,10 @@ RATCHET, not a bar: each sheet's bands recorded at its accepted state, fail if a
 src/game/heroBands.ratchet.json, heroClipsBody.test.ts). The 18 clips are recorded at their accepted state now; the 7 non-clip sheets are not
 (the test is RED until they are, as heroClipsBody already was on e41c738bf).
 Next member, on t-art-next at this REPORT's commit or later, frozen worktrees, ONE heavy run at a time, run_in_background:
-1. Step 0 (R-165.382): this box's run on a frozen 4f0853b96 worktree: tsc exit 0; suite 1711 passed, 0 failed at hand-over, STILL
-   RUNNING; drawcheck queued after it in the same script. Its verdict is in the lead message at my stop if it landed; else re-run both.
+1. Step 0 (R-165.382), on a FROZEN 4f0853b96 worktree (npm install --legacy-peer-deps): tsc exit 0; the CLAUDE.md unit suite GREEN:
+   3800 tests, 3798 pass, 0 fail, 2 todo (27.8 min). drawcheck was NOT finished: the background run was stopped at its 30-minute limit
+   after 3 of 16 scenarios (ctest-mix14, 1-1, 1-3 measured; none judged). FIRST: drawcheck ALONE on a frozen 4f0853b96 worktree,
+   run_in_background with timeout 2400000 (40 min); green = R-165.382 done.
 2. ONE grade run, from a frozen worktree of this commit (cwd there; it reads the sheets from git 4f0853b96, the ORIGINALS):
    python3 -I tools/art/hfnext/sheetgrade.py rope,swim,vine,climb2,atlas,story,studies --group --affine --from 4f0853b96
    then copy src/assets/hero/{hero-rope,pokey-swim,hero-vine,hero-climb2,hero-atlas,hero-story,hero-studies}.webp and
