@@ -109,6 +109,60 @@
     "light": 0.679,
     "dark": 2.018
    }
+  },
+  "hero-rope": {
+   "all": {
+    "light": 5.876,
+    "dark": 7.203
+   }
+  },
+  "pokey-swim": {
+   "first": {
+    "light": 4.941,
+    "dark": 3.716
+   },
+   "surf": {
+    "light": 4.214,
+    "dark": 7.564
+   },
+   "tread": {
+    "light": 6.772,
+    "dark": 5.596
+   },
+   "under": {
+    "light": 3.487,
+    "dark": 6.079
+   }
+  },
+  "hero-vine": {
+   "all": {
+    "light": 1.428,
+    "dark": 1.362
+   }
+  },
+  "hero-climb2": {
+   "all": {
+    "light": 3.537,
+    "dark": 1.367
+   }
+  },
+  "hero-studies": {
+   "s1": {
+    "light": 5.175,
+    "dark": 4.531
+   },
+   "s3": {
+    "light": 4.594,
+    "dark": 5.315
+   },
+   "s4": {
+    "light": 3.999,
+    "dark": 4.31
+   },
+   "s5": {
+    "light": 1.106,
+    "dark": 0.929
+   }
   }
  }
 }

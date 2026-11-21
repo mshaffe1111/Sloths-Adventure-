@@ -29,7 +29,14 @@
    ],
    "step_median": 0.17,
    "step_max": 0.588,
-   "loop_seam": 1.333
+   "loop_seam": 1.333,
+   "bands": {
+    "all": {
+     "light": 3.622,
+     "dark": 2.572
+    }
+   },
+   "band_max": 3.622
   },
   "look-around": {
    "sheet": "src/assets/hero/clips/look-around.webp",
@@ -45,7 +52,14 @@
    ],
    "step_median": 0.159,
    "step_max": 0.802,
-   "loop_seam": 1.21
+   "loop_seam": 1.21,
+   "bands": {
+    "all": {
+     "light": 4.532,
+     "dark": 3.305
+    }
+   },
+   "band_max": 4.532
   },
   "hurt": {
    "sheet": "src/assets/hero/clips/hurt.webp",
@@ -61,7 +75,14 @@
    ],
    "step_median": 0.066,
    "step_max": 0.347,
-   "loop_seam": 0.052
+   "loop_seam": 0.052,
+   "bands": {
+    "all": {
+     "light": 5.213,
+     "dark": 3.592
+    }
+   },
+   "band_max": 5.213
   },
   "belly-scratch": {
    "sheet": "src/assets/hero/clips/belly-scratch.webp",
@@ -77,7 +98,14 @@
    ],
    "step_median": 0.107,
    "step_max": 0.292,
-   "loop_seam": 0.233
+   "loop_seam": 0.233,
+   "bands": {
+    "all": {
+     "light": 0.774,
+     "dark": 1.125
+    }
+   },
+   "band_max": 1.125
   },
   "wave": {
    "sheet": "src/assets/hero/clips/wave.webp",
@@ -93,7 +121,14 @@
    ],
    "step_median": 0.142,
    "step_max": 0.566,
-   "loop_seam": 1.432
+   "loop_seam": 1.432,
+   "bands": {
+    "all": {
+     "light": 2.918,
+     "dark": 2.235
+    }
+   },
+   "band_max": 2.918
   },
   "cheer": {
    "sheet": "src/assets/hero/clips/cheer.webp",
@@ -109,7 +144,14 @@
    ],
    "step_median": 0.069,
    "step_max": 0.157,
-   "loop_seam": 0.081
+   "loop_seam": 0.081,
+   "bands": {
+    "all": {
+     "light": 3.085,
+     "dark": 2.329
+    }
+   },
+   "band_max": 3.085
   },
   "push": {
    "sheet": "src/assets/hero/clips/push.webp",
@@ -125,7 +167,14 @@
    ],
    "step_median": 0.078,
    "step_max": 0.185,
-   "loop_seam": 0.061
+   "loop_seam": 0.061,
+   "bands": {
+    "all": {
+     "light": 4.839,
+     "dark": 5.351
+    }
+   },
+   "band_max": 5.351
   },
   "move-run": {
    "sheet": "src/assets/hero/clips/move-run.webp",
@@ -141,7 +190,14 @@
    ],
    "step_median": 0.074,
    "step_max": 0.267,
-   "loop_seam": 0.068
+   "loop_seam": 0.068,
+   "bands": {
+    "all": {
+     "light": 0.91,
+     "dark": 1.674
+    }
+   },
+   "band_max": 1.674
   },
   "move-jab": {
    "sheet": "src/assets/hero/clips/move-jab.webp",
@@ -157,7 +213,14 @@
    ],
    "step_median": 0.124,
    "step_max": 0.225,
-   "loop_seam": 0.06
+   "loop_seam": 0.06,
+   "bands": {
+    "all": {
+     "light": 0.681,
+     "dark": 0.558
+    }
+   },
+   "band_max": 0.681
   },
   "move-cross": {
    "sheet": "src/assets/hero/clips/move-cross.webp",
@@ -173,7 +236,14 @@
    ],
    "step_median": 0.093,
    "step_max": 0.151,
-   "loop_seam": 0.088
+   "loop_seam": 0.088,
+   "bands": {
+    "all": {
+     "light": 0.202,
+     "dark": 0.231
+    }
+   },
+   "band_max": 0.231
   },
   "move-hook": {
    "sheet": "src/assets/hero/clips/move-hook.webp",
@@ -189,7 +259,14 @@
    ],
    "step_median": 0.095,
    "step_max": 0.246,
-   "loop_seam": 0.111
+   "loop_seam": 0.111,
+   "bands": {
+    "all": {
+     "light": 2.279,
+     "dark": 1.377
+    }
+   },
+   "band_max": 2.279
   },
   "move-kick": {
    "sheet": "src/assets/hero/clips/move-kick.webp",
@@ -205,7 +282,14 @@
    ],
    "step_median": 0.069,
    "step_max": 0.184,
-   "loop_seam": 0.086
+   "loop_seam": 0.086,
+   "bands": {
+    "all": {
+     "light": 1.668,
+     "dark": 3.235
+    }
+   },
+   "band_max": 3.235
   },
   "move-kick2": {
    "sheet": "src/assets/hero/clips/move-kick2.webp",
@@ -221,7 +305,14 @@
    ],
    "step_median": 0.173,
    "step_max": 0.496,
-   "loop_seam": 0.076
+   "loop_seam": 0.076,
+   "bands": {
+    "all": {
+     "light": 1.816,
+     "dark": 1.447
+    }
+   },
+   "band_max": 1.816
   },
   "move-mega": {
    "sheet": "src/assets/hero/clips/move-mega.webp",
@@ -237,7 +328,14 @@
    ],
    "step_median": 0.075,
    "step_max": 0.322,
-   "loop_seam": 0.134
+   "loop_seam": 0.134,
+   "bands": {
+    "all": {
+     "light": 2.588,
+     "dark": 2.242
+    }
+   },
+   "band_max": 2.588
   },
   "teeter": {
    "sheet": "src/assets/hero/clips/teeter.webp",
@@ -253,7 +351,14 @@
    ],
    "step_median": 0.322,
    "step_max": 0.499,
-   "loop_seam": 0.4
+   "loop_seam": 0.4,
+   "bands": {
+    "all": {
+     "light": 2.35,
+     "dark": 0.788
+    }
+   },
+   "band_max": 2.35
   },
   "step-back": {
    "sheet": "src/assets/hero/clips/step-back.webp",
@@ -269,7 +374,14 @@
    ],
    "step_median": 0.31,
    "step_max": 0.929,
-   "loop_seam": 0.649
+   "loop_seam": 0.649,
+   "bands": {
+    "all": {
+     "light": 2.066,
+     "dark": 0.772
+    }
+   },
+   "band_max": 2.066
   },
   "move-climb": {
    "sheet": "src/assets/hero/clips/move-climb.webp",
@@ -285,7 +397,14 @@
    ],
    "step_median": 0.11,
    "step_max": 0.49,
-   "loop_seam": 0.058
+   "loop_seam": 0.058,
+   "bands": {
+    "all": {
+     "light": 5.289,
+     "dark": 5.796
+    }
+   },
+   "band_max": 5.796
   },
   "move-walk": {
    "sheet": "src/assets/hero/clips/move-walk.webp",
@@ -301,23 +420,331 @@
    ],
    "step_median": 0.093,
    "step_max": 0.201,
-   "loop_seam": 0.053
+   "loop_seam": 0.053,
+   "bands": {
+    "all": {
+     "light": 0.679,
+     "dark": 2.018
+    }
+   },
+   "band_max": 2.018
   },
   "hero-climb2": {
    "sheet": "src/assets/hero/hero-climb2.webp",
-   "sheet_sha256": "4c35618e38778976c4a60ed012049f9a71eb91a52276f54b5887d984c48ac5ef",
+   "sheet_sha256": "967d6ec44f2a4fb921a03b851a4ddd21acd68687512152549693fab65e4cd56d",
    "frames": 5,
-   "frame_max": 3.531,
-   "frame_max_at": 4,
-   "pooled": 2.813,
+   "frame_max": 0.712,
+   "frame_max_at": 3,
+   "pooled": 0.156,
    "fur_lab": [
-    58.75,
-    14.3,
-    30.07
+    60.54,
+    16.48,
+    29.53
    ],
-   "step_median": 0.983,
-   "step_max": 1.492,
-   "loop_seam": 1.559
+   "step_median": 0.781,
+   "step_max": 1.181,
+   "loop_seam": 0.214,
+   "bands": {
+    "all": {
+     "light": 3.537,
+     "dark": 1.367
+    }
+   },
+   "band_max": 3.537
+  },
+  "hero-rope": {
+   "sheet": "src/assets/hero/hero-rope.webp",
+   "sheet_sha256": "0ee968f7c1fd0c0d71241be5df96f666ef7c06bab9819c17fd23fac4a84a92d2",
+   "frames": 11,
+   "frame_max": 1.51,
+   "frame_max_at": 8,
+   "pooled": 0.055,
+   "fur_lab": [
+    60.46,
+    16.54,
+    29.59
+   ],
+   "step_median": 1.144,
+   "step_max": 1.834,
+   "loop_seam": 1.316,
+   "bands": {
+    "all": {
+     "light": 5.876,
+     "dark": 7.203
+    }
+   },
+   "band_max": 7.203
+  },
+  "pokey-swim": {
+   "sheet": "src/assets/hero/pokey-swim.webp",
+   "sheet_sha256": "fcb6f3d1903681e1b548a766c5cd5371b1dda96fa85a7c930a1eaf94a3209906",
+   "frames": 28,
+   "frame_max": 1.115,
+   "frame_max_at": 10,
+   "pooled": 0.078,
+   "fur_lab": [
+    60.33,
+    16.54,
+    29.6
+   ],
+   "step_median": 0.459,
+   "step_max": 1.665,
+   "loop_seam": 0.697,
+   "bands": {
+    "first": {
+     "light": 4.941,
+     "dark": 3.716
+    },
+    "surf": {
+     "light": 4.214,
+     "dark": 7.564
+    },
+    "tread": {
+     "light": 6.772,
+     "dark": 5.596
+    },
+    "under": {
+     "light": 3.487,
+     "dark": 6.079
+    }
+   },
+   "band_max": 7.564
+  },
+  "hero-vine": {
+   "sheet": "src/assets/hero/hero-vine.webp",
+   "sheet_sha256": "1d208464974870b4184eb4aed750536b21c0cc933ca8eba5ef7832335ecf713f",
+   "frames": 5,
+   "frame_max": 0.675,
+   "frame_max_at": 3,
+   "pooled": 0.013,
+   "fur_lab": [
+    60.4,
+    16.52,
+    29.59
+   ],
+   "step_median": 0.446,
+   "step_max": 0.882,
+   "loop_seam": 0.069,
+   "bands": {
+    "all": {
+     "light": 1.428,
+     "dark": 1.362
+    }
+   },
+   "band_max": 1.428
+  },
+  "hero-story": {
+   "sheet": "src/assets/hero/hero-story.webp",
+   "sheet_sha256": "1075e979f844ef1e84975454f96406aa70c941fc21b16504e5d3e613fcd4759c",
+   "frames": 31,
+   "frame_max": 9.786,
+   "frame_max_at": 30,
+   "pooled": 6.09,
+   "fur_lab": [
+    55.36,
+    14.8,
+    26.65
+   ],
+   "step_median": 1.69,
+   "step_max": 6.642,
+   "loop_seam": 8.116,
+   "bands": {
+    "alarm": {
+     "light": 6.872,
+     "dark": 5.905
+    },
+    "away": {
+     "light": 1.577,
+     "dark": 4.576
+    },
+    "cheer": {
+     "light": 7.266,
+     "dark": 7.071
+    },
+    "crossed": {
+     "light": 9.095,
+     "dark": 7.426
+    },
+    "farewell": {
+     "light": 5.651,
+     "dark": 8.171
+    },
+    "impatient": {
+     "light": 10.208,
+     "dark": 7.714
+    },
+    "look": {
+     "light": 4.18,
+     "dark": 4.125
+    },
+    "point": {
+     "light": 8.848,
+     "dark": 7.536
+    },
+    "resolve": {
+     "light": 9.232,
+     "dark": 7.842
+    },
+    "sad": {
+     "light": 6.699,
+     "dark": 6.587
+    },
+    "scared": {
+     "light": 10.314,
+     "dark": 8.537
+    },
+    "shock": {
+     "light": 9.781,
+     "dark": 8.117
+    },
+    "shout": {
+     "light": 8.599,
+     "dark": 7.821
+    },
+    "sleep": {
+     "light": 7.61,
+     "dark": 8.163
+    },
+    "slump": {
+     "light": 7.265,
+     "dark": 6.71
+    },
+    "sneak": {
+     "light": 8.746,
+     "dark": 7.809
+    },
+    "stance": {
+     "light": 8.734,
+     "dark": 7.771
+    },
+    "talk": {
+     "light": 5.143,
+     "dark": 5.144
+    },
+    "think": {
+     "light": 7.648,
+     "dark": 7.45
+    },
+    "thumbs": {
+     "light": 10.235,
+     "dark": 7.749
+    },
+    "tired": {
+     "light": 9.414,
+     "dark": 7.809
+    },
+    "wipe": {
+     "light": 8.793,
+     "dark": 7.383
+    },
+    "worried": {
+     "light": 11.143,
+     "dark": 8.838
+    }
+   },
+   "band_max": 11.143
+  },
+  "hero-studies": {
+   "sheet": "src/assets/hero/hero-studies.webp",
+   "sheet_sha256": "fed68b154f4f26014e1750d3bb39a308805f38b45e5c294d7dd116563ef141f1",
+   "frames": 29,
+   "frame_max": 2.133,
+   "frame_max_at": 21,
+   "pooled": 0.273,
+   "fur_lab": [
+    60.13,
+    16.54,
+    29.6
+   ],
+   "step_median": 0.887,
+   "step_max": 3.177,
+   "loop_seam": 0.31,
+   "bands": {
+    "s1": {
+     "light": 5.175,
+     "dark": 4.531
+    },
+    "s3": {
+     "light": 4.594,
+     "dark": 5.315
+    },
+    "s4": {
+     "light": 3.999,
+     "dark": 4.31
+    },
+    "s5": {
+     "light": 1.106,
+     "dark": 0.929
+    }
+   },
+   "band_max": 5.315
+  },
+  "hero-atlas": {
+   "sheet": "src/assets/hero/hero-atlas.webp",
+   "sheet_sha256": "bed6e6982cf37a93a450060e59ceb5ed754c52e7ab82de3b853b2744cdbea897",
+   "frames": 29,
+   "frame_max": 9.407,
+   "frame_max_at": 19,
+   "pooled": 4.192,
+   "fur_lab": [
+    58.74,
+    16.1,
+    33.42
+   ],
+   "step_median": 2.483,
+   "step_max": 6.73,
+   "loop_seam": 2.115,
+   "bands": {
+    "climb": {
+     "light": 10.368,
+     "dark": 6.375
+    },
+    "duck": {
+     "light": 5.927,
+     "dark": 4.251
+    },
+    "fall": {
+     "light": 6.127,
+     "dark": 3.447
+    },
+    "guard": {
+     "light": 3.522,
+     "dark": 2.652
+    },
+    "hurt": {
+     "light": 2.089,
+     "dark": 2.74
+    },
+    "idle": {
+     "light": 3.515,
+     "dark": 2.572
+    },
+    "jump": {
+     "light": 6.62,
+     "dark": 5.699
+    },
+    "kick": {
+     "light": 4.902,
+     "dark": 4.611
+    },
+    "land": {
+     "light": 0.898,
+     "dark": 1.966
+    },
+    "mega": {
+     "light": 5.505,
+     "dark": 4.747
+    },
+    "punch": {
+     "light": 5.245,
+     "dark": 3.842
+    },
+    "run": {
+     "light": 5.504,
+     "dark": 4.044
+    }
+   },
+   "band_max": 10.368
   }
  }
 }
