@@ -49,7 +49,10 @@ changed: one draw fewer under a clip) and the full suite on the head: QUEUED aft
 ## Lessons applied
 D96 (the packet's gate list run as written, the ones not finished named), D102 (lean read; strips read downscaled; long runs in the
 background, only tails read), D105 and the inbox (ReadNotifications at each step and push), D109 (no clock times to the lead), D111 (box:
-28 minutes from my start), D113 (no foreground wait on a background run: the heavy gates chained one after another in the background).
+28 minutes from my start). D113 BROKEN, owned: I waited on the heroshoot runs in the foreground (sleep, then a sleep-20 loop); the lead
+caught it. The heavy gates were chained one after another in the background, but the shoots should have been started with
+run_in_background and the turn ended. Countermeasure for the next art member: start every shoot and gate with run_in_background (it wakes
+you when it ends), read its tail once, never sleep.
 ## Learned (for the next art member)
 - Measure every clip's ends against the plain pose before trusting a melt: idleends.py's measure, pointed at any clip list, showed four
   ghosts in one run. Proposed rule: a pose switch is a cut on a matching or painted frame; heroClipsCut.test.ts holds it for heroClips;
