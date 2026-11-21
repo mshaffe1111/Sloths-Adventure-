@@ -1,3 +1,65 @@
+# BUILD-26f (on t-build-26 from 42304b76d, rebased on 2f188c552): the Progress rewind, toy first, four cuts on 2-6 x40. Started 6:32 PM ET 11-21 (by `date`)
+Commits on t-build-26: 0bc969bce (the first cut, pushed too early: before 1-4's rows, against the packet), 79e596bf2 (b26f/dbgOff.txt,
+b26f/win.mts), 007480469 (rows), **d18b03d5f (the lead's ruling: 0bc969bce REVERTED; the bot equals 2f188c552's)**, this REPORT.
+NOT on the branch (local branch b26f-wip, the lead's three conditions first): e5fc37273 (= bbc21cb2d, the third cut) and
+30ada3574 (the fourth cut) and **fe3d3d6ca (the fifth cut, the candidate)**. Rows (castBots x40 both settings, `--par 2`) in b26f/rows/, by the tree's hash.
+Trees (D115, frozen detached worktrees, node_modules linked): base 2f188c552, fix4 30ada3574, fix5 fe3d3d6ca (scratchpad; deleted at the box).
+
+## EXACT NEXT STEP (the next level builder)
+1. **The candidate is fe3d3d6ca on the local branch b26f-wip (NOT on t-build-26; t-build-26's bot = 2f188c552's since the revert
+   d18b03d5f).** Recreate it on the new tree: `git cherry-pick 0bc969bce 144d79032 bbc21cb2d 30ada3574 fe3d3d6ca` will conflict; take
+   instead the net diff `git diff 2f188c552 fe3d3d6ca -- tools/inspect/firsttimer.ts tools/inspect/castBots.test.ts` (fe3d3d6ca
+   is in this clone's objects; if the clone is gone, the change is: Progress.under + UNDER_REACH; relocate's `band`; in after() the
+   `far`/`under`/`rides` lines and `fell = far`; the toy, last test of castBots.test.ts, as this REPORT describes).
+2. **Trace the 7 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
+   traces): adult N 11 + kid N 23 (fell back 3 times at x ~1140), adult N 37 (x 295/842), kid E 12, kid E 30 + adult E 26 (the dips).
+   Fix the bot cause generally, toy first, then 2-6 x40 again against b26f/rows/r26-2f188c552.jsonl: no tier drop, lost rows named.
+3. **1-4 x40 against b26f/rows/r14-2f188c552.jsonl:** RUNNING on fe3d3d6ca when this was written (rows to b26f/rows/r14-fe3d3d6ca.jsonl, diff with b26e/diff.py). The moved rows to the lead BEFORE the fix lands (packet; the lead's ruling).
+4. The lead's three conditions to land: 2-6 no tier drop (cut 5 meets it), toy and plant hold (they do on fe3d3d6ca), 1-4's moved rows
+   with the lead. Then push as ONE commit on t-build-26 (rebase; never force) and send the hash.
+5. Then rule 28 on the landed bot: castBots x40 both settings on 2-1..2-5 against 2f188c552 (2-3 ends at a sealed door on base too:
+   KNOWN, compare rows only), tierBots 1-1 9/9, castBots.test.ts whole.
+6. Then the lead's 1-4 spot C (PROVEN BOT by ENG-26o, ff826a914): tools/inspect/towerRoute.ts:86, the squeeze's strict span
+   `Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)` becomes 'within a hand's reach of the span' (pick and justify the number;
+   ENG-26o's trial used 30 px each side), a toy and its plant, x40 on 1-4 and 2-6, 1-4's moved rows to the lead before it lands. A and
+   B: whatever class ENG-26o names. Then the 2-6 relist under --proven and its yield (packet step 4).
+
+## The cause (BOT, settled by a print, b26f/dbgOff.txt: 2-6 adult N 26 on 2f188c552)
+After his fall from the leg (y 3741) to the floor (y 4118), the fall-back rewind (`prog.off(p) > 260` for 0.5 s, then grounded) never
+fired: each of his hops along the floor brought `off` under 260 in the air (221, 230, 302 ...), and `offRoute` went back to 0 (0.17,
+0.20, 0.50 -> 0); a hop's top also pulled cur along the leg (Progress.step, `bd < 160`): cur 424 (1167,3741) -> 420 (1262,3741). So
+cur stayed on the leg 379 px over his head and he hopped under it until a late still moment or a rescue (19.6 s there).
+## The fix (bot, general, firsttimer.ts): Progress.under
+He stands more than a double's reach (UNDER_REACH 175 px) under cur's point and a route point lies about his height (|dy| <= 80, within
+LEVEL_REACH): the rewind clock runs through his hops; the rewind takes only points within 80 px of his height; and a rewind by `under`
+alone is never counted toward 'fell back down from here 3 times'.
+- **Toy (castBots.test.ts, the last test):** 2-6 seed 26's ground there (floors, the leg with its dips; the seams opened to 40 px gaps
+  so he hops as he did; the vine 790 px off so no hop drifts him to it). **RED on 2f188c552** (his place goes back to the floor at
+  4.5 s); **GREEN** on the fix (1.23 s, he climbs onto the leg, no rescue). **Plant** (`prog.under = () => false`): his place stays on
+  the leg through the hops (> 2.5 s). Honest limit: in the toy the planted bot does get back late (a still moment at ~5.6 s); on 2-6
+  none came. castBots.test.ts 16/16; tsc clean.
+## 2-6 x40, row for row against 2f188c552 (rule 28; b26e/diff.py)
+| tier | 2f188c552 | 0bc969bce (cut 1) | 144d79032 (cut 2) | bbc21cb2d (cut 3) | 30ada3574 (cut 4) | fe3d3d6ca (cut 5) |
+|---|---|---|---|---|---|---|
+| kid N / E | 29 / 24 | 20 / 17 | 29 / 24 | 29 / 25 | 30 / 26 | **31 / 26** |
+| adult N / E | 33 / 24 | 23 / 27 | 32 / 30 | 32 / 30 | **32** / 28 | **33 / 29** |
+| child N / E | 40 / 40 | 40 / 40 | 40 / 40 | 40 / 40 | 40 / 40 | 40 / 40 |
+| middle N / E | 40 / 40 | 40 / 39 | 40 / 39 | 40 / 39 | 40 / 40 | 40 / 40 |
+| expert N | 40 | 40 | 40 | 40 | 40 | 40 |
+- Cut 1: every `under` rewind counted as a fall-back: three hops = 'fell back down from here 3 times' and a rescue (most at x ~1102).
+- Cut 2 (counted only after a takeoff 175 px over the landing): falls of 175-370 px the old rewind never saw became counted rescues.
+- Cut 3 (never counted): adult N 3, 11, 37 still lost. Traced (adult N 3, a print on a copy of bbc21cb2d): at t 104.3, x 1023 y 1076,
+  the `under` rewind took cur to (1024,1577), **500 px UNDER him** (relocate's level rule takes any point at his height or below);
+  from there the far-off rewinds were three falls and a rescue. Cut 4: the band (|dy| <= 80) for an `under` rewind.
+- Cut 4: 16 gained, 10 lost; adult N still 33 -> 32 (3, 11, 37 lost; 33 gained). Traced again (adult N 3 on a copy of 30ada3574): at
+  t 104.3 he rides the great wheel's car at its bottom (x 1023, y 1076; wheel cx 1101 cy 879 R 200), under the route over the wheel by
+  design; the `under` rewind took cur 400 px on (1422,1002), then far-off rewinds, three falls, a rescue (base: no rescue, 119.8 s).
+  Cut 5: `under` never fires while he stands on a moving piece (type moving or drift, or a wheel's car).
+- **Cut 5 (fe3d3d6ca): NO tier drops against 2f188c552; 16 rows GAINED, 7 LOST** (b26f/rows, b26e/diff.py). Gains: kid N +2, kid E +2,
+  adult E +5. The 7 lost rows (each a rescue, not yet traced, two runs per cause still owed): adult N 11 and 37, kid N 23 and 27, all
+  'fell back down from here 3 times' at x 1132-1146 (the same leg's foot, y ~3740) or 295/842; kid E 12 at 926; kid E 30 and adult E 26
+  in the dips at x 1151-1208. Lost rows that are not a tier drop are still rows that moved: traced next, before the lead is asked to land.
+
 # ENG-26o (on t-build-26 from 4b6ce810f): 1-4 cause C PROVEN **BOT**, not LAY: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
 Commits: this REPORT and eng26o/ (trace-c-kid-easy-10.txt: the route's points around s17:top and the bot frame by frame; shape.mts: every
 climbable vine near a spot and the bough at each vine's top; towerRoute-oneline.diff: the line tried). Trees (D115): frozen detached
