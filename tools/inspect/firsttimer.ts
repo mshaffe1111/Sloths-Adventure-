@@ -1006,7 +1006,7 @@ export type ThumbAt = { last: -1 | 0 | 1; driftPx: number; armed: boolean; relea
  * own frame, a frame longer than the first press's count, as the engine flies it); and, falling over the small float he comes down on, the
  * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
  */
-export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt): boolean {
+export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt, from?: Platform | null): boolean {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   let until = h.hold;
   let pressed2 = false;
@@ -1056,11 +1056,16 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
         steer = th.last;
       } else th.last = steer;
     }
-    // (the second press's hold counts from its own frame, a frame longer than the first's: flown against the engine, 2-7 home middle
-    //  Normal 2 x 14674, the frames equal to the press, then the engine still held where this cut, n/double-flight-27n.txt)
-    const held = pressed2 ? age < until : age + DT < until;
+    // (each press is held on every frame whose pad carries jump, the press frame included (engine.ts, the cut reads this frame's
+    //  jumpHeld; the bot's jump pad: age < hold): ENG-27o, 2-7 home middle Easy 5: a one-frame tap judged cut on its press frame flew
+    //  20 px higher in the engine and came down past the log's end (x 15540, o/diag-easy5-q11-27o.txt); a 0.185 s hold cut a frame early
+    //  (x 13811, q49). The second press was already counted this way, ENG-27n)
+    const held = age < until;
     if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
     (i === 1 ? takeOffStep : airStep)(b, DT, steer, held);
+    // (ENG-27o: a flight that comes back down on what he hops from (the bank) lands there first: 2-7 home middle Easy 5 x 13811, judged
+    //  through the bank's top onto the log under its lip, came down on the bank, o/diag-easy5-q49-27o.txt)
+    if (from && from !== q && !from.drift && b.vy >= 0 && prev <= from.y && b.y >= from.y && b.x >= from.x && b.x <= from.x + from.width) return false;
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
       if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
       const lx = at(t0 + i * DT);
@@ -1702,7 +1707,7 @@ export class FirstTimerRun {
     // (a drawn hop, rule 28: judged as flown, at lag 0 from where he stands; the row carries its kind and hold)
     if (h) {
       for (const q of qs) {
-        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2(), this.thumbAt())) {
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2(), this.thumbAt(), this.floorAt(p.x, p.y, 6))) {
           this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
           return;
         }
@@ -2970,7 +2975,7 @@ export class FirstTimerRun {
             if (drifts.some((q) => lands(q))) {
               // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()))) {
+              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.floorAt(p.x, p.y, 6)))) {
                 this.edgeWait = -1;
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
@@ -3030,8 +3035,8 @@ export class FirstTimerRun {
             const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()));
-            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2(), this.thumbAt()))) {
+            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.floorAt(p.x, p.y, 6)));
+            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2(), this.thumbAt(), this.floorAt(p.x, p.y, 6)))) {
               this.edgeWait = -1;
               if (HOP_TRACE.on) {
                 this.judged = null;
@@ -3074,7 +3079,7 @@ export class FirstTimerRun {
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
               const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()))) {
+              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.floorAt(p.x, p.y, 6)))) {
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
