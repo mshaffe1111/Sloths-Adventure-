@@ -10,7 +10,8 @@ import hashlib, json, subprocess, sys
 import numpy as np
 from PIL import Image
 
-IDLE = ['idle-yawn', 'look-around', 'belly-scratch', 'wave', 'doze']      # heroClips.ts IDLE_CLIPS
+IDLE = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {IDLE_CLIPS} from './src/game/heroClips.ts'; console.log(JSON.stringify(IDLE_CLIPS))"],
+                                 capture_output=True, text=True, check=True).stdout)   # heroClips.ts IDLE_CLIPS itself
 OUT = 'src/game/heroClipsEnds.json'
 CL = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {HERO_CLIPS} from './src/game/heroClipsData.ts'; console.log(JSON.stringify(HERO_CLIPS))"],
                                capture_output=True, text=True, check=True).stdout)

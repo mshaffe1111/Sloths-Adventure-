@@ -29,12 +29,12 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "fps": 16
  },
  "belly-scratch": {
-  "n": 49,
+  "n": 41,
   "cols": 8,
-  "w": 145,
-  "h": 204,
-  "ax": 67.1,
-  "ay": 202.0,
+  "w": 132,
+  "h": 205,
+  "ax": 55.0,
+  "ay": 203.0,
   "fps": 16
  },
  "wave": {
@@ -44,15 +44,6 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "h": 207,
   "ax": 93.0,
   "ay": 205.0,
-  "fps": 16
- },
- "doze": {
-  "n": 49,
-  "cols": 8,
-  "w": 113,
-  "h": 132,
-  "ax": 62.2,
-  "ay": 129.8,
   "fps": 16
  },
  "cheer": {

@@ -30,8 +30,9 @@ export function heroClipsEnabled(): boolean {
   }
   return forced;
 }
-/** the idle clips, in the order he goes through them (only the ones that exist and have loaded play) */
-export const IDLE_CLIPS = ['idle-yawn', 'look-around', 'belly-scratch', 'wave', 'doze'];
+/** the idle clips, in the order he goes through them (only the ones that exist and have loaded play). Each starts and ends on his plain
+ * pose (R-165.354, heroClipsEnds.test.ts). The doze clip left the rotation 11-21 (the lead): no sit-down bridge held his model. */
+export const IDLE_CLIPS = ['idle-yawn', 'look-around', 'belly-scratch', 'wave'];
 /** seconds of standing still before the first idle clip, and between one and the next */
 export const IDLE_WAIT = 4;
 export const IDLE_REST = 5;
