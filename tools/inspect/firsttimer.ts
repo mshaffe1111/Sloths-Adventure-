@@ -996,7 +996,7 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
  * frames, uses them in place of its own draws (still made, so the main stream is as ever).
  */
 /** what else a judged flight may come down on first (hopFlies): the platforms near, where each is at a game time, his width, Easy, the help */
-export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number };
+export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number };
 export type DrawnThumb = { drift: number[]; slip: number[]; release: number[] };
 /** the thumb at a judgment (FirstTimerRun.thumbify's state): the steer it holds, its drift, the late lift-off armed and left, and when
  *  the travel and a slip end (s from the judgment), with the habit (thumbSpeed, a tier bot's one lift-off per let-go) */
@@ -1077,7 +1077,10 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
         const ox = others.at(o)(t0 + i * DT);
         const side = drift ? DRIFT_CATCH.side + (others.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * others.assist;
         const drop = drift ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * others.assist;
-        if (b.x + others.w * side > ox && b.x - others.w * side < ox + o.width && prev <= o.y + drop && b.y >= o.y) return false;
+        // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), taken either way he moves: Easy 5
+        //  x 12053, his centre 18 px past the bank's end, moving away, caught and nudged on, o/diag-easy5-q55-27o.txt)
+        const reach = drift && !others.easy ? 0 : others.land;
+        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) return false;
       }
     }
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
@@ -4150,9 +4153,9 @@ export class FirstTimerRun {
   /** the platforms a judged hop from here may come down on first (hopFlies, ENG-27o) */
   private flightOthers(): FlightOthers {
     const p = this.sim.p, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
-    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean };
+    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; forgive?: { landPx: number } };
     const list = this.sim.platforms.filter((o) => !o.broken && o.y > p.y - 160 && o.y < p.y + 220 && (o.drift ? o.drift.x1 > p.x - 700 && o.drift.x0 < p.x + 700 : o.x < p.x + 700 && o.x + o.width > p.x - 700));
-    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0 };
+    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0 };
   }
 
   /** the thumb now, for hopFlies (ENG-27o): thumbify's state, its ends counted from now */
