@@ -426,8 +426,6 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
 const PIN_AT = 50;
 /** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
 export const LEVEL_REACH = 600;
-/** px: more than a double's reach under the point he is at along the way: he fell off it (Progress.under, BUILD-26f) */
-export const UNDER_REACH = 175;
 export class Progress {
   cur = 0;
   hi = 0;
@@ -476,14 +474,6 @@ export class Progress {
   /** how far he stands from the point he is at along the way (0 with no route) */
   off(p: Pt): number {
     return this.pts.length ? this.d(this.cur, p) : 0;
-  }
-  /** he stands more than a double's reach under the point he is at, and the way has a point about his height near him to go back to:
-   *  he fell off the leg he was on, and the way on starts back at his height (the climb that leads up). BUILD-26f, 2-6 adult N 26 and 33:
-   *  he fell from the leg at y 3741 to the floor at y 4118; his hops along the floor kept `off` under 260 in the air, so the fall-back
-   *  rewind never fired, cur stayed on the leg 379 px over his head and he jumped to and fro under it, never to the vine at x 1587 */
-  under(p: Pt): boolean {
-    if (!this.pts.length || p.y - this.pts[this.cur].y <= UNDER_REACH) return false;
-    return this.pts.some((q, i) => i !== this.cur && this.cap(i) === i && i >= this.pinFloor && !q.rope && q.y >= p.y - 80 && Math.abs(q.x - p.x) <= LEVEL_REACH);
   }
   /** after a respawn or a rescue: find him anywhere along the way */
   relocate(p: Pt, level = false): void {
@@ -3985,8 +3975,7 @@ export class FirstTimerRun {
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
-    // (or he stands more than a double's reach under it, hopping or not: Progress.under, BUILD-26f; his hops took `off` under 260)
-    if ((this.prog.off(p) > 260 || this.prog.under(p)) && !held) {
+    if (this.prog.off(p) > 260 && !held) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
         const top = this.prog.best;
