@@ -248,3 +248,40 @@ test('a tower takes its own laid route even when the inspector traces it; a stag
   assert.ok(takesTowerRoute(tower as never, spawn, 'failed'), 'an untraced tower');
   assert.ok(!takesTowerRoute({ gen2: { plan: [] } } as never, spawn, 'extended'), 'a stage that is no tower left its trace');
 });
+
+// At a climbing vine's foot with no ledge over him, the tier bot's jump for the way up goes toward the vine (or straight up), never his
+// facing: a jump away from a trunk never grabs it (engine.ts wantGrab). 2-6 child Normal 3, 5, 7, 8, 18 (BUILD-26d, traced): he came
+// along the edge-wheel turn's ledge (x 225-465) going LEFT (way -1) and decided at x 235, 15 px left of its vine (x 250): the route's
+// far point inside the 16 px dead band, so the jump fell back to way -1 and he doubled left off the ledge's end onto the street 351 px
+// down, 8 times, rescued. The toy (BUILD-26e) decides from that frame's own state: 14 px left of the vine, way -1, no look delay (mid-run,
+// as on landing there). The plant (the skill taken away) must drop to the street, or the toy no longer shows the fault.
+test('at a climbing vine\'s foot, come in going away from it, the tier bot jumps for the vine and climbs: never off the ledge\'s end', async () => {
+  const { FirstTimerRun, FT_CHILD } = await import('./firsttimer.ts');
+  const plats = [
+    { id: 1, x: 225, y: 1000, width: 240, height: 24, type: 'solid' },
+    { id: 2, x: 0, y: 495, width: 1300, height: 24, type: 'solid' },
+    { id: 3, x: 0, y: 1351, width: 1300, height: 100, type: 'solid' },
+  ];
+  const vine = { id: 1, x: 250, topY: 495, bottomY: 1000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+  const route = [
+    ...Array.from({ length: 9 }, (_, i) => ({ x: 440 - i * 24, y: 1000 })),
+    ...Array.from({ length: 22 }, (_, i) => ({ x: 250, y: 1000 - i * 24 })),
+    ...Array.from({ length: 11 }, (_, i) => ({ x: 250 + i * 24, y: 495 })),
+  ];
+  const play = (plant: boolean) => {
+    let low = 0;
+    const run = new FirstTimerRun('1-1', 1, { ...FT_CHILD, look: 0 }, { route, cap: 12, rescueAfter: 100, onFrame: (s: { p: { y: number } }) => { low = Math.max(low, s.p.y); } });
+    run.sim.bare(plats as never, [vine as never]);
+    run.sim.stand(236, 1000);
+    run.sim.p.facing = -1;
+    (run as unknown as { way: number }).way = -1;
+    if (plant) (run as unknown as { climbUpVine: () => undefined }).climbUpVine = () => undefined;
+    run.prog.relocate(run.sim.p);
+    run.play();
+    return { x: Math.round(run.sim.p.x), y: Math.round(run.sim.p.y), low: Math.round(low) };
+  };
+  const up = play(false);
+  assert.ok(up.y < 600 && up.low < 1100, `he climbs the vine to the floor over it and never drops to the street (ends ${up.x},${up.y}, lowest y ${up.low})`);
+  const planted = play(true);
+  assert.ok(planted.low > 1300, `PLANT: with the skill taken away he doubles off the ledge's end onto the street (lowest y ${planted.low})`);
+});
