@@ -17,7 +17,7 @@ import { KIT } from './puzzleKit.ts';
 // (1-4's squirrel-lift rooms went with the hand-built 1-4: the gen2 1-4 replaced it, B14 11-13; its fig gates are field pieces, no room)
 // (1-6's seesaws and 1-7's acorn meadow left with their hand-built stages, R-165.238 and BUILD-17: the rolled 1-6 and 1-7 have no room)
 // (2-2's ferry room went with the hand-built 2-2, ENG-W2 11-14: the rolled 2-2 has no puzzle room)
-const STAGES = ['2-3', '2-8', '2-9', 'kit'];
+const STAGES = ['2-8', '2-9', 'kit'];
 const PHONES: Array<[number, number]> = [[390, 844], [360, 740], [844, 390]];
 
 type Room = {
@@ -184,9 +184,11 @@ test('the room camera centre moves smoothly: no jump as the key box grows past t
 
 test('leaving a room the view eases back out, with no jump in the zoom or the camera', () => {
   for (const [w, h] of [[390, 844], [360, 740]] as Array<[number, number]>) {
-    const { r, e } = engineFor('2-3', w, h);
+    // (2-9's court-bell room, BUILD-23 11-20: the room this stood in, 2-3's first cage on its bank, went with 2-3's hand build; 2-8's rooms
+    //  stand on islands in their basins, so walking out of one is a splash, and the court's room has plain ground at its edge)
+    const { r, e } = engineFor('2-9', w, h);
     const room = e.kit.rooms[0] as Room;
-    const src = room.sources[0];
+    const src = (room as unknown as { bells: Array<{ x: number; y: number }> }).bells[0];
     r.stand(src.x - 30, src.y);
     for (let i = 0; i < 90; i++) r.frame();
     const inZoom = e.zoom;

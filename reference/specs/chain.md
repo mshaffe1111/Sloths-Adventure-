@@ -86,6 +86,9 @@ bounce-air 308 / 298, gap 334. 2-2: single-hold 123 / 115, gap 135 / 219 / 244; 
 2-2: single-tap 87 / 78, gap 77 / 161 / 182; 2-2: double-hold 205 / 197, gap 290 / 375 / 403; 2-2: double-flick 204 / 196, gap 271 /
 357 / 384; 2-2: double-tap-tap 148 / 139, gap 189 / 274 / 299; 2-2: bounce 223 / 214, gap 177; 2-2: bounce-air 307 / 296, gap 333.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 2-3** (BUILD-23d, 11-21: flown on stage 2-3 on World 2's gen2 kit, `FLIGHT_STAGE=2-3 ... normal
+all`, the table in reference/qa-reports/BUILD-23/fly-2-3.txt; the same columns as 2-4's): 2-3: single-hold 123 / 114, gap 135 / 219 / 244; 2-3: single-flick 123 / 114, gap 126 / 209 / 237; 2-3: single-tap 87 / 78, gap 77 / 161 / 182; 2-3: double-hold 204 / 195, gap 290 / 375 / 402; 2-3: double-flick 204 / 195, gap 271 / 357 / 384; 2-3: double-tap-tap 147 / 138, gap 188 / 274 / 299; 2-3: bounce 223 / 214, gap 176; 2-3: bounce-air 307 / 296, gap 333.
+
 **Rows for src/game/gen2/reach.ts, scope Normal 2-4** (BUILD-24, 11-18: flown on stage 2-4 on World 2's gen2 kit, `FLIGHT_STAGE=2-4 ... normal
 all`, the table in reference/qa-reports/BUILD-24/fly-2-4.txt; the same columns as 2-2's): 2-4: single-hold 123 / 114, gap 135 / 219 / 244; 2-4: single-flick 123 / 113, gap 125 / 209 / 237; 2-4: single-tap 87 / 78, gap 77 / 161 / 182; 2-4: double-hold 204 / 194, gap 289 / 375 / 402; 2-4: double-flick 203 / 193, gap 271 / 357 / 381; 2-4: double-tap-tap 147 / 138, gap 188 / 273 / 299; 2-4: bounce 223 / 214, gap 176; 2-4: bounce-air 306 / 294, gap 331.
 

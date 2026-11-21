@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-3' | '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-6' | '2-7' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -94,7 +94,6 @@ export interface W2Kit {
 
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
@@ -115,7 +114,6 @@ export interface W2Picks {
  * 2-4 and 2-7 (swings and lifts). (2-1, 2-2, 2-4 and 2-5 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts)
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
@@ -298,105 +296,6 @@ class Crossings {
 }
 
 const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
-  // ======================================================================================================================
-  // 2-3 Stuck in the Reeds: little ones in reed cages hung over the water on ropes, each over its pulley with a counter-basket on the
-  // bank (Matt's sheet). Stones in the basket lift a cage out of the water, and all the way up its floor drops open. Learn with one
-  // stone over water that costs nothing; then the cages come in a rolled order (a heavier one, two stones; stones on a reed island across
-  // a channel, thrown over; a basket hung high, the stones flicked up into it), and between the cages the reeds: the mooring posts up
-  // onto the high banks, lily ponds and stepping stones, or snakes in the reeds and sandbars, by the roll.
-  '2-3': (k, flavour, rng) => {
-    const { R } = k;
-    const critters = R.shuffle<Critter>(['capy', 'duck', 'otter']);
-    const STONE = k.STONE;
-    // the four cages after the first, in the roll's order (each with its own tip the first time its kind comes)
-    type Cage = 'heavy' | 'across' | 'high' | 'high1';
-    const orders: Record<string, Cage[]> = {
-      posts: ['heavy', 'across', 'high', 'high1'],
-      ponds: ['across', 'heavy', 'high1', 'high'],
-      snakes: ['heavy', 'high', 'across', 'high1'],
-      vines: ['across', 'high1', 'heavy', 'high'],
-    };
-    const told = new Set<string>();
-    const cage = (c: Cage, i: number) => {
-      const critter = critters[i % 3];
-      const first = !told.has(c === 'high1' ? 'high' : c);
-      told.add(c === 'high1' ? 'high' : c);
-      // (a puzzle never costs a life, STAGE-RULES §3: a slip into a cage's pool is a splash and back to the bank, LV-8: 2-3 drowned the
-      // first-timer in the second cage's pool at 19 s)
-      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, safe: true, tips: first ? { enter: 'A heavy one! It barely moves.', nudge: 'One stone lifts it halfway.', move: 'Two stones in the basket.' } : undefined });
-      else if (c === 'across')
-        k.cageRoom({ need: STONE, mode: 'across', critter, safe: true, tips: first ? { enter: 'The stones are on the island.', hold: 'Hands full! Flick toward the bank to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the bank.' } : undefined });
-      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, safe: true, tips: first ? { enter: 'The basket hangs high.', nudge: 'Too high to drop it in.', move: 'Flick up to throw!' } : undefined });
-    };
-    /** the reeds between two cages, by the roll */
-    const kinds: Record<string, Kind[]> = {
-      posts: ['post', 'post', 'post', 'with'],
-      ponds: ['pond', 'stones', 'pond', 'stones'],
-      snakes: ['snake', 'snake', 'channels', 'snake'],
-      vines: ['swing2', 'swing3', 'swing2', 'stones'],
-    };
-    const cross = new Crossings(k, { speed: 58 });
-    const turns = new Turns<Kind>(rng, kinds[flavour], flavour === 'posts' || flavour === 'snakes' ? 0 : 1);
-    const order = orders[flavour];
-    k.beat('Learn: a cage on a rope', () => {
-      k.run(R.r(160, 200));
-      k.hint(150, 'Little ones are stuck in reed cages. Free them!');
-      k.cageRoom({
-        need: STONE, mode: 'bank', safe: true, critter: critters[0],
-        tips: { enter: 'A little one, in a cage on a rope!', hold: 'Tap by the basket to drop it in.', open: 'Up it comes! The little one is free!', nudge: 'That basket pulls the rope.', move: 'Drop a stone in the basket.', mech: 'cageLift' },
-      });
-      k.breath();
-      // the reeds' first way across costs no life
-      if (flavour === 'posts') {
-        cross.go('post');
-        narrow(k, 1, 55, { safe: true });
-        cross.know('with');
-      } else if (flavour === 'ponds') {
-        k.hint(k.x + 20, 'Lily pads hold you. Hop across!');
-        k.lilyPond(4, false, undefined, { safe: true });
-        cross.know('pond');
-      } else if (flavour === 'snakes') {
-        k.hint(k.x + 20, 'Reed islands. Hop from one to the next!');
-        k.channels(3, { safe: true });
-        cross.know('channels');
-      } else {
-        k.hint(k.x + 20, 'Swing over the water! Jump into a vine to grab it.');
-        k.swingRiver(2, { safe: true });
-        cross.know('swing2');
-      }
-      k.flag();
-    });
-    k.beat(`Develop: ${order[0] === 'heavy' ? 'a heavier cage' : 'stones across the water'}`, () => {
-      k.breath();
-      cage(order[0], 1);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2);
-    });
-    k.beat('Twist: stones across the water', () => {
-      k.breath();
-      cage(order[1], 2);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2, false);
-      cross.seedBank();
-      k.flag();
-    });
-    k.beat('Finish: the high baskets', () => {
-      k.breath();
-      cage(order[2], 3);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2, false);
-      k.breath();
-      cage(order[3], 4);
-      let n = 0;
-      const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? 2 : 12);
-      while (k.expert < target && n < 14) {
-        cross.step(turns.next(), n, turns.kinds);
-        if (++n % 2 === 0) k.flag();
-      }
-      k.rest(R.r(300, 400), false);
-    });
-  },
-
   // ======================================================================================================================
   // 2-7 The Mailman's Route: the long way round the river, the way the mailman goes: up the carved steps, along the porches over the
   // water, into the basket of a rope lift and up the bank, over the river on the logs and on the rope-swing frames, and past every door

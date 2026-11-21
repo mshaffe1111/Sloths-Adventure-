@@ -104,7 +104,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
@@ -225,6 +225,9 @@ import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
 import { FollowPlay } from './followPlay.ts';
 import { drawFollowers, drawHerons } from './followArt.ts';
+import { W2_FRAMES } from './w2PropsData.ts';
+import { drawEdgeMarks, edgeMarks, safeInsets, stillMarks, type EdgeMark, type MarkView } from './edgeMarker.ts';
+import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
 
@@ -1096,7 +1099,6 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
-    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
@@ -1221,6 +1223,9 @@ export class GameEngine {
       targetScaleX: 1,
       targetScaleY: 1,
     };
+    // (the little ones that follow him start behind him: so once he stands at the start (BUILD-23: called before the player was made, every
+    //  real stage carrying proto.follow threw in the constructor; ENG-23's toys started it again after, on a made engine)
+    this.startFollow();
 
     // Initialize Camera
     this.camera = {
@@ -7049,6 +7054,46 @@ export class GameEngine {
     return [...n].sort((a, b) => b[1] - a[1])[0]?.[0];
   }
 
+  /** on a stage whose little ones follow him (followPlay.ts): each one's face for the HUD's goal slots (followFaces.ts); null elsewhere */
+  /** the edge marks this frame (edgeMarker.ts), in a reused array and view: no allocation per frame */
+  private marks: EdgeMark[] = [];
+  private markView: MarkView = { camX: 0, camY: 0, vw: 0, vh: 0, zoom: 1, w: 0, h: 0, ins: { top: 0, right: 0, bottom: 0, left: 0 } };
+  /**
+   * A little one spooked back off the screen: an arrow at the edge on its side, at its height, with its face (R-165.372). How many, and
+   * where (the reused array: read it before the next frame). None on a stage without a following line.
+   */
+  public spookMarks(): { n: number; marks: readonly EdgeMark[] } {
+    return { n: this.countMarks(), marks: this.marks };
+  }
+  private drawSpookMarks(ctx: CanvasRenderingContext2D, dpr: number): void {
+    const img = w2Sheet();
+    if (!img || !this.follow) return;
+    const n = this.countMarks();
+    if (!n) return;
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawEdgeMarks(ctx, img, W2_FRAMES, this.marks, n, this.gameTime, stillMarks());
+    ctx.restore();
+  }
+  /** spookMarks without the returned object (the draw's own call: nothing allocated) */
+  private countMarks(): number {
+    if (!this.follow) return 0;
+    const v = this.markView;
+    v.camX = this.camera.x;
+    v.camY = this.camera.y;
+    v.vw = this.camera.viewportWidth;
+    v.vh = this.camera.viewportHeight;
+    v.zoom = this.zoom;
+    v.w = this.viewCssW || v.vw * v.zoom;
+    v.h = this.viewCssH || v.vh * v.zoom;
+    v.ins = safeInsets(v.w, v.h);
+    return edgeMarks(this.follow.line, v, this.marks);
+  }
+
+  public lineFaces(): Face[] | null {
+    return this.follow ? lineFaces(this.follow.line, this.follow.stage.covers) : null;
+  }
+
   public guideView(out: GuideView): GuideView {
     const p = this.player;
     const cam = this.camera;
@@ -8068,6 +8113,8 @@ export class GameEngine {
       }
       ctx.restore();
     }
+    // (a little one spooked back off the screen: its edge marker, under the iris)
+    if (this.follow) this.drawSpookMarks(ctx, dpr);
     this.drawIris(ctx);
 
     if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {

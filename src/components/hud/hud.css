@@ -182,3 +182,5 @@
   .vh-goal.bloom .vh-cplate { transform: none; }
   .vh-hearts.bloom .vh-heart { --s: 1.12; }
 }
+/* a little one's face in a goal slot (LineFace.tsx, 2-3): its '!' once spooked back (its tone, ring and filter: none are inline, over .vh-slot's silhouette) */
+.vh-face-bang { position: absolute; right: -3px; top: -5px; border-radius: 50%; background: #f59e0b; color: #1c1917; font-weight: 700; font-family: sans-serif; display: flex; align-items: center; justify-content: center; line-height: 1; }

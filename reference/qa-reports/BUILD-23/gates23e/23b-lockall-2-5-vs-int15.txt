@@ -1,0 +1,4 @@
+lockall --stages 2-5 on origin/t-int-15 23ac2e4bc: recorded
+2-5 
+lock: 1/1 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 2-5
