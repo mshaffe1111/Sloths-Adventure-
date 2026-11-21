@@ -8,3 +8,4 @@
 11-tipwalk PASS (exit 0, 0 min)
 10-registrycheck PASS (exit 0, 0 min)
 06-coveragecheck PASS (exit 0, 1 min)
+12-tierBots PASS (exit 0, 4 min)

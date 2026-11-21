@@ -1,0 +1,2 @@
+== npx tsx tools/engine/paintcheck.ts --part 1/3 (head b5b7c1b01, cwd .) start 10:46 AM
+paintcheck: stages per part 0/3: 34, 1/3: 34, 2/3: 34; this run part 1/3
