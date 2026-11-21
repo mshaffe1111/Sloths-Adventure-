@@ -39,7 +39,17 @@
 In line with ENG-CAGE's 1-40 at fix4 (child N 0/40, child E 37/40, middle 36/40 + 40/40, expert 35/40): no loss from the post move.
 
 ## Gates (on my head; THE FULL SET is BUILD-23d's)
-GATES_TABLE
+| Gate | Head | Verdict |
+|---|---|---|
+| tsc --noEmit | ecf09ba77, 91e5a31fa | PASS |
+| gen2 unit tests (src/game/gen2/*.test.ts + worlds/*.test.ts) | 91e5a31fa tree | PASS 944/944 (R-165.312 a marked TODO) |
+| w2Arc23.test, followArt.test, cageBot.test (+ its plant) | ecf09ba77 / 91e5a31fa | PASS 6/6, 5/5, 4/4 (plant RED as it must be) |
+| CI tool line (gates.yml:157, CI=1 FORCE_COLOR=1) | a3af5a5b7 tree | **FAIL 336 pass / 2 fail**: both registrycheck.test.ts, 2-3's 'sheets: foe:eagle' (the unfinished roll: NEXT STEP 3 iii) |
+| registrycheck | 2c9a0197d | **FAIL** on 2-3: seeds, flown, sheets (drawcheck line fixed in 2c9a0197d) |
+| drawcheck (the 19 listed) | 91e5a31fa tree | PASS (901 s) |
+| drawcheck 2-3 alone (list edited for the run, restored) | 2c9a0197d | PASS (49 s), BUT followArt.ts is not among its call sites: its 4 fixed spots never catch a heron look, so the look's 3 added strokes (gaze edge, rim) are UNMEASURED by the gate. They add no gradient, shadow or readback (the gate's hard limits); a spot on a look is a drawcheck harness change (the Critic's) |
+| castBots 2-3 1-10 child/middle/expert both | 2c9a0197d | table above |
+| The rest of THE FULL SET (the CLAUDE.md unit list in full, the shipping build, chunkcheck, artcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, kbdcheck, buildcheck, seedlist 1-1, tierBots, coveragecheck, tipwalk, lockall) | - | UNRUN (BUILD-23d) |
 
 ## Polish check
 - Post, sideways at his foot: the cage stands on the shelf against the trunk, its bars clear of the plank; the shelf's free end right of
