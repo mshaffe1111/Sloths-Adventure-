@@ -3,7 +3,7 @@
 **Matt's test link (play the candidate first):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb
 (the lead republishes it from this branch's head before the PR)
 
-Branch `release-0.10.1` = main 107870f5 + seven merges (below, MERGED, never rebased) + the version commit + one report-stamp fix. THE FULL SET ran on GATED_HEAD; the commits after it add only reference/qa-reports/REL-0101/.
+Branch `release-0.10.1` = main 107870f5 + seven merges (below, MERGED, never rebased) + the version commit + one report-stamp fix. THE FULL SET ran on 0e8cf8452; the commits after it add only reference/qa-reports/REL-0101/.
 
 ## What changed (the What's New lines, as players read them)
 Title: **Count to four**
@@ -31,26 +31,48 @@ about and how to start.
 | g | t-pick-thumbs @ 77a84713e | the testers' page: picture tiles for the nine levels, what the game is about, how to start | 933203aa5 | none |
 Plus 6b8fda31c (version 0.10.0 -> 0.10.1, What's New) and 051e77b45 (one typed-ahead time in a report corrected, so timecheck passes).
 
-## Gate table (THE FULL SET, gates.md D96, each once on GATED_HEAD)
-GATE_TABLE
+## Gate table (THE FULL SET, gates.md D96, each once on 0e8cf8452)
+| gate | verdict |
+|---|---|
+| tsc | PASS |
+| the full suite, 6 shards | PASS: 4,017 tests / 4,014 pass / 0 fail / 3 todo (known open items) |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` + chunkcheck | PASS / PASS |
+| npm run build:store | PASS |
+| artcheck / knowncheck / generalitycheck / coveragecheck | PASS each |
+| roadmapcheck (full history) / timecheck | PASS / PASS (after one report time fixed: a typed-ahead stamp in PICK-W1's report) |
+| clipcheck (CI=1) | PASS (83 known) |
+| kbdcheck (CI=1) | PASS |
+| drawcheck | PASS |
+| registrycheck | PASS (13 stages, each registered everywhere) |
+| every registered seed list --check (13) | PASS 13/13, 0 refused each (2-5's 100 seeds new) |
+| CI tool line, exactly gates.yml | PASS: 336 tests / 335 pass / 0 fail / 1 todo (the open chase-bots todo) |
+| paintcheck 0/3, 1/3, 2/3 | PASS each |
+| tipwalk --layouts 4 / tierBots | PASS / PASS 9/9 |
+| buildcheck (alone) | PASS (1-1 at CPU x4: Normal p95 103 ms, Easy p95 58 ms; budget 150 ms) |
+| lockall vs main 107870f5's lock --intended 2-5 | PASS: 101/102 stages unchanged; only 2-5 moved |
+| funcheck | FAIL, identical to main's own run in the same hour (22 worse/new, World 1's ruled debt; no new line). Not in gates.yml |
+| castBots 2-5, seeds 1-40, 5 bots x both | PASS: adult / child / middle 40/40 both settings, expert 40/40 Normal |
+| test link file count | PASS: 408 files (limit 480, 72 free) |
 
 ## CI's own time limits (release.md 4b, D99)
-D99_TABLE
+Every gates.yml job with a time limit, its expected time on a CI runner (per-list times read from main's own last run) vs the limit: seed
+lists 4 shards now (13 lists) at 11.0 / 6.2 / 6.3 / 16.1 min of 45 (the slowest 24.8 if 1-6 runs as slow as in 0.10.0's run); gates 10.8 of
+25; drawcheck 11.4 of 30; paintcheck 9.2 of 25; rolled 10.9 of 60; seedplan 0.8 of 10. None within 20% of its limit.
 
 ## Play Store check (PLAY-STORE-RULES §6, all 8)
 | # | item | proof, or "not checked, and why" |
 |---|---|---|
-| 1 | Nothing tappable or readable under the bars or notch, both ways, a foldable size | clipcheck: CLIP_VERDICT (every menu screen and pop-up, upright and sideways, fresh / old / finished saves; the testers' page picker is in its walk, tools/perf/clipcheck.mjs gained it in PICK-W1) |
+| 1 | Nothing tappable or readable under the bars or notch, both ways, a foldable size | clipcheck: PASS (every menu screen and pop-up, upright and sideways, fresh / old / finished saves; the testers' page picker is in its walk, tools/perf/clipcheck.mjs gained it in PICK-W1) |
 | 2 | Back does something sensible on the new screen | No new screen: the stage picker is a row of tiles on the testers' existing front page (#ctest only, not reachable from the game's menus); the end page's "Pick another level" returns to it (clipcheck walks both) |
-| 3 | Nothing new is sent off the phone | npm run build:store: STORE_VERDICT; the diff adds no fetch, XHR, socket, beacon or outside address in src/ (grep of the added lines) |
-| 4 | Nothing loads from the web; works in airplane mode | build:store STORE_VERDICT (no outside addresses); every new picture is bundled under src/assets (artcheck ART_VERDICT) |
+| 3 | Nothing new is sent off the phone | npm run build:store: PASS; the diff adds no fetch, XHR, socket, beacon or outside address in src/ (grep of the added lines) |
+| 4 | Nothing loads from the web; works in airplane mode | build:store PASS (no outside addresses); every new picture is bundled under src/assets (artcheck PASS) |
 | 5 | Sound stops in the background; nothing keeps the phone awake | No audio, lifecycle or wake code changed (no AudioContext, visibilitychange or wakeLock in the added lines; src/audio untouched) |
 | 6 | Leaving, coming back and rotating keeps the player's place | The game's save code is unchanged. The testers' page remembers its picked stage in localStorage (`sloth_qa_ctest_stage`, `sloth_qa_ctest_played`, both registered in storageKeys.test); a fresh phone starts on 1-1 |
-| 7 | No dead ends or placeholder screens in the store build | build:store STORE_VERDICT; the testers' page is behind #ctest |
-| 8 | Saves survive an update, the phone killing the app, a crash mid-stage, a full phone | No save format change; two new testers'-page keys only (above); clipcheck walks old and finished saves: CLIP_VERDICT |
+| 7 | No dead ends or placeholder screens in the store build | build:store PASS; the testers' page is behind #ctest |
+| 8 | Saves survive an update, the phone killing the app, a crash mid-stage, a full phone | No save format change; two new testers'-page keys only (above); clipcheck walks old and finished saves: PASS |
 
 ## Rough spots, named (not fixed in this release)
-- funcheck: FUNCHECK_LINE
+- funcheck: 22 lines flagged worse/new, all World 1 debt already on main: main 107870f5's own run in the same hour gives the same 22, line for line (reference/qa-reports/REL-0101/gates/funcheck-*.log); 2-5 has no line
 - Pokey's idle clips: a second face shows for about 3 frames at each clip's ends, and doze's standing ghost stays: the art's, R-165.354
   (FIX-IDLE fixed the see-through body only; the What's New line names only that).
 - World 2's front reed layer (`front: 'reed'`) and the drooping sway are still code-drawn (not in ENV-W2's packet).
