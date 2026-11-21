@@ -6,7 +6,7 @@ READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/
 STEP and its measures); types.ts SectionPiece.sealed (its doc comment); w1Arc14.ts field() (GATE_RUN); level.md rules 19, 20, 22, 28; LAWS
 headlines; LESSONS D40, D57/D87, D96, D102, D105, D107, D109, D111, D112.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-build-26 at d3433995c (ENG-26i's final). Push there.
+BASE: t-build-26 at e420a2794 (ENG-26i's final: it wrote ruling (a) into its EXACT NEXT STEP). Push there.
 WHY: the running walk-off judge refuses 1-4's shut gates (seed 2: four gates whose full-speed run-off comes down at the wall past the foot's
 tip, 641-721 px, a 10-46 px gap between the hanging vine and the wall). ENG-26i's lay-catch cure gave yield 400/400, but a catch the gate's
 own foot can jump to is a stepping stone that skips the vine climb the gate section exists for (the lead's proof refused all four again).
@@ -16,7 +16,7 @@ showed that wood does not catch a FULL-SPEED exit. So:
    full-speed run-off off each end, or run the foot to the tower's wall so the gap is gone, whichever the flights show is fair (the foot is
    walked onto, never landed on; Easy's widening rules kept). The lay goes back to adding NOTHING by a sealed piece: remove the lay-catch path
    for gates (97bb2b73e's gate branch) and its proof (b73600b56's towerGateCatches) together; keep a planted test that the lay lays nothing
-   by a sealed piece. Planted: 1-4 seed 2 RED on d3433995c's base behaviour (refused), GREEN (builds, each gate's running exit lands on its
+   by a sealed piece. Planted: 1-4 seed 2 RED on e420a2794's base behaviour (refused), GREEN (builds, each gate's running exit lands on its
    own foot). Every tower (rule 22): any other sealed piece in any world gets the same flight, or is named.
 2. Measure 1-4's yield on seeds 1-400 (4 workers, background) and 2-6's list (100/100). ONLY if the section cannot catch a running exit
    (no room before the wall): try (b) (ways ON judged by real flown jumps from wood UNDER the gate only; a drop from the storey above is past
