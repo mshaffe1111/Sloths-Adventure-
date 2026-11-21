@@ -1,3 +1,78 @@
+# ENG-26l (on t-build-26 from 626fac5ac): step 0 the full suite, step 1 the stills. Started 5:06 PM ET 11-21 (by `date`)
+Commits: ea3d7e7a2 (the head stills, stand.mjs, order.mts), fd3ce98b1 (the base stills), this REPORT. No game code changed. Saved: eng26l/
+(stand.mjs: the stills tool to use, Pokey set down and left to stand with Dot's cards tapped away; order.mts: a listed stage's order; stills/).
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND (D113), never with '&'
+## ENG-26m: step 0 whole, then step 2 of ENG-26l's packet (load speed, bots, lockall, THE FULL SET) on this head; the partial suite and the stills are below
+0. **Step 0 (D114): the suite was 3,214 ok, 0 failed (one TODO) and still running at ENG-26l's box** (see "Step 0" below). Run it WHOLE on
+   this head first (run_in_background; about 25 min on 4 cores), totals in your REPORT, unless the lead takes the partial.
+1. **Frozen trees** (D99 needs quiet: nothing else running): `git worktree add --detach <S>/base 4ea253b8c` and `<S>/head <this head>`,
+   each with `ln -s <checkout>/node_modules <tree>/node_modules` (`npm ci --legacy-peer-deps` once in the checkout, 5 s; package.json and the
+   lock are the same on both). Then ONE heavy run at a time, base first, each with run_in_background:
+   `OUT=<f> npx tsx reference/qa-reports/BUILD-26/eng26h/tools/loadtime.mts <tree> 1-4 3`, then `... 2-6 3` (every listed seed, both
+   settings; p50/p95/max per setting, "fell to search" must be 0);
+   `BUILDCHECK_STAGE=1-4 node tools/perf/buildcheck.mjs` then `=2-6`, base first;
+   `time npx tsx tools/engine/seedlist.ts 1-4 --check` ALONE (CI's seedlists job limit 45 min, gates.yml line 113) and the lock timed
+   against its own limit (D99). A breach: name it.
+2. **castBots, one chain (rule 28):** `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>` on base,
+   then head; row for row: no tier's pass count may drop, every moved row explained (two runs per cause, one line each: seed, x, frame,
+   what took him). tierBots 1-1 (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9). qaW123 ran in the suite (step 0).
+3. **THE FULL SET** (gates.md, D96; `git fetch --unshallow` first so roadmapcheck sees proofs), CI's tool line (gates.yml line 157)
+   included; lockall `npx tsx tools/engine/lockall.ts --layouts 16 --check reference/qa-reports/BUILD-26/eng26j/lock-8e21145f1.json.gz`:
+   only 1-4 and 2-6 may move. engine-core.md's tower lines (ENG-26g's list, ENG-26h's cost findings, ENG-26j's gateRun).
+4. Then BUILD-26c runs 2-6's bots.
+5. Any later stills: `node reference/qa-reports/BUILD-26/eng26l/stand.mjs <tree> <out> <stage> <layout> normal <port> <name:x:y,...>` (the
+   lead's ruling), never eng26h's pin.mjs (it draws Pokey frozen in the air under a paused card). The page's `?layout=N` builds the seed the
+   stills tool prints (layout 1 is seed 2 on 1-4): measure spots on THAT seed (eng26k/feet.mts, eng26j/gates.mts).
+
+## Step 0 (D114): the full src suite on 626fac5ac
+- `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts
+  src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts` on 626fac5ac (frozen: this REPORT changes no game code), started at the step's
+  start with run_in_background, beside the stills.
+- **At the box (D111) it was still running: 3,214 ok, 0 failed.** The one `not ok` is the R-165.312 TODO ("raw seed 1 keeps the roost boa on
+  its roost (flag placer) # TODO", not a failure; the same one ENG-26k saw). The two 2-6 tests ENG-26k re-pointed (listedWheelSheet,
+  towerWater) are among the passes; no 1-4 red. Still running at the box: the last src/game files (stageQuality, stageSheets, storyFrame
+  and on).
+- **NOT a whole run yet, so no re-pin is taken from it (rule 20)** and none was needed (no red). The lead's call: the next member finishes
+  step 0 (a whole run on this head, run_in_background, its totals in its REPORT) before anything in step 2, or the lead takes this 3,214/0.
+
+## Step 1: stills, 1-4 layout 1, base 4ea253b8c vs head 626fac5ac, 2x, upright and sideways
+- **Layout 1 on the page plays SEED 2, not seed 1** (the engine's own `gen2.seed`, printed by the stills tool on both trees; eng26l/order.mts:
+  the list is 1, 2, 3, 4 ... on both). ENG-26k's spots (`gate:1000:8215,land:1238:7293` / `gate:860:8159,land:1094:7293`) were measured on
+  seed 1, so on the page they would have put Pokey in the air. Seed 2's gates, measured (eng26k/feet.mts on both trees, eng26j/gates.mts on
+  the head):
+  - base: the bottom gate 646-1086@8120 over its foot 566-1166@8480 (80 px past each end); the next gate 310-750@7214 over 492-872@7313.
+  - head: the bottom gate 540-980@8120 over its foot 354-1166@8480 (186 px past each end); a run off its right end lands at x 1144 on its
+    own foot (the foot's tip 22 px past him). The next gate 319-759@7214: a run off its right end lands at x 840 on 501-978@7313.
+  - Spots (Pokey set down there and left to land): base `gate:1096:8480,land:831:7313` (the land spot is the head's run distance added to
+    the base gate's end; the base has no walkOff to measure it); head `gate:1080:8480,land:840:7313`. Grounded true at every spot, x unchanged.
+- **The stills tool was wrong two ways, fixed in eng26l/stand.mjs** (a copy of eng26h/tools/pin.mjs): (1) Dot's "Tap here when you've read it"
+  card was up and pauses the game, so Pokey was drawn frozen in his jump pose; (2) the render pin put him about 48 px above the wood. stand.mjs
+  taps her cards and Skip tips, sets him down once and lets the game land him. The pin stills are not used.
+- Stills (2x, 390x844 and 844x390), in reference/qa-reports/BUILD-26/eng26l/stills/: `head-1-4-normal-L1-{gate,land}-{up,side}.webp`,
+  `base-...` the same.
+- **Polish check, the way Matt sees it on a phone:**
+  - head gate-up: Pokey stands on the long log well past the fig branch's end; the log carries on to its post. It is the same log he walks
+    the field on, not a shelf, and it reads as wood he can stand on at his size (the log about a third of his height thick). PASS.
+  - head gate-side: the foot is one long log from the left of the trunk to the post, the branch above ending well before it. PASS.
+  - head land-up / land-side: he stands on the log just right of the gate's end with about 140 px of wood still ahead of him: a place to land,
+    not a tip. PASS.
+  - base gate: he stands at the very end of a shorter foot, by the post (80 px past the gate's end): this is what the fix lengthens.
+  - The base stills carry Dot's creak tip ("Hear it creak? Scoot a vine over!") in mid-screen: stand.mjs's Skip tips tap took on the head
+    but not on the base. It covers neither the foot nor the gate's end; kept as the before.
+  - **The lead's ruling: both head upright stills ACCEPTED** (the foot runs on past the gate's end to the post, solid wood to his scale, the
+    field's ground; at the landing he stands on a long log with room past him). stand.mjs is the stills tool to use. The nit (the fig branch's
+    hanging end drawn over the log 99 px under the 7214 gate, on the base too): the lead reads it as foliage in front of the wood, natural
+    layering: no row.
+
+## Lessons applied
+D114 (step 0 first: the full suite on the base, in the background, before anything else), D113 (every long run with run_in_background,
+no foreground wait: the waits were background until-loops), D111 (the box from `date`: started 5:06 PM ET, handed over inside 28 minutes
+with the EXACT NEXT STEP), D102 (read lean), D29 and rule 20 (no re-pin taken from a partial run), D109 (no clock times to the lead),
+D105/D57/D87 (ReadNotifications at every step and push), law 2 and law 3 (judged the real screen and checked the fact: the page's layout 1
+plays seed 2, not the seed 1 the spots were measured on; the old stills tool drew Pokey frozen in the air under a paused card, so the
+stills were re-shot with him standing), law 1 (no still sent with a card over the spot).
+
 # ENG-26k (on t-build-26 from 3310f3ac9): 1-4 relisted ONCE on the gate section's own catch. Started 4:46 PM ET 11-21 (by `date`)
 Commits: 5981c26c0 (the relist), c45496570 (the two 2-6 tests), this REPORT. Saved: eng26k/ (cmp.mts: an old and a new list compared seed by seed and plan by
 plan; feet.mts: each gate on a built roll and the wood under it, works on trees without walkOff).
