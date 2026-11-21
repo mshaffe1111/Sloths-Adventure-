@@ -52,7 +52,7 @@ import { sweepBox } from '../wheel.ts';
 /** the room a wheel's rider takes over its top floor (px): his body and a hop's margin, kept clear of catch boughs */
 const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
-import type { RiverZone } from '../river.ts';
+import { waterUnder, type RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
@@ -4557,9 +4557,12 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     // (a fall inside a river ends in its water, whatever floats on it (a log is no floor: it drifts away), ENG-W2b: a deep river a life,
     // drawn as the river's deep water; a splash-back river (`safe`) sets him back on the bank he left, drawn as the shallow backwater
     // (riverArt.ts RIVER_LOOK.safe, BUILD-21: the engine paints every safe river so), and the record says so)
-    const river = rivers.find((r) => mid >= r.x0 - 1 && mid <= r.x1 + 1);
+    // (ENG-26e: the FIRST thing under the lip, river.ts waterUnder: on a stage of storeys a river's window can share x with a storey
+    // above it or below the lip's floor, so water is found by x AND y, and ground between the lip and the water ends the fall first)
+    const floors = st.platforms.filter((p) => p.type !== 'bouncy' && p.type !== 'drift' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
+    const river = waterUnder(rivers, mid, f.y, floors);
     if (river?.safe) return { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}), ends: { kind: 'putback', to: 'take-off' }, look: 'safe-water-art' } as Drop;
-    const ground = river ? undefined : st.platforms.find((p) => p.type !== 'bouncy' && p.type !== 'drift' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
+    const ground = river ? undefined : floors.reduce<Platform | undefined>((g, p) => (!g || p.y < g.y ? p : g), undefined);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where

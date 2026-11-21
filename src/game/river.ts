@@ -100,6 +100,25 @@ export function riverAt<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(riv
   return best;
 }
 
+/** a floor that ends a fall before the water under it: still ground, not a pad (he bounces off it) nor a log (it drifts away) */
+type FloorLike = { x: number; width: number; y: number; type?: string; broken?: boolean };
+const floorsUnder = (p: FloorLike) => p.type !== 'bouncy' && p.type !== 'drift' && !p.broken;
+
+/** the water under (x, y), the FIRST thing a fall from there meets (ENG-26e: the readers that judged water by x alone, the drop judge,
+ *  Easy's flags and steps and the water lesson, read it here): riverAt's river (the water he is in, or the higher water under him), unless
+ *  a floor that spans x lies between y and its surface (a storey between him and lower water; the floor he stands on at y counts: he
+ *  cannot fall through it). One storey, no floor over the water: riverAt */
+export function waterUnder<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number, floors: readonly FloorLike[] = []): R | undefined {
+  const r = riverAt(rivers, x, y);
+  return r && !floors.some((p) => floorsUnder(p) && p.x <= x && p.x + p.width >= x && p.y >= y && p.y < r.surfaceY) ? r : undefined;
+}
+
+/** is r's water on the storey of (x, y): waterUnder at the point of r's window nearest x (he stands beside it, or over it). A river a storey
+ *  above (deeper than RIVER_DEPTH over him) or a storey below (a floor between) is not */
+export function waterNear<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(r: R, x: number, y: number, floors: readonly FloorLike[] = []): boolean {
+  return waterUnder([r], Math.min(r.x1 - 1, Math.max(r.x0 + 1, x)), y, floors) === r;
+}
+
 /** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */
 export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo, t: number): number {
   for (const r of rivers ?? []) if (r.flowT !== undefined && d.x0 >= r.x0 - 1 && d.x1 <= r.x1 + 1) return r.flowT;

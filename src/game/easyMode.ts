@@ -24,6 +24,7 @@ import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validat
 import { EASY_HOLD } from './physics.ts';
 import { easyGoalFor, goalHave } from './goals.ts';
 import { floorWater } from './waterTeach.ts';
+import { waterNear } from './river.ts';
 import { CLUMP_GAP, isPetal } from './petals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
@@ -67,10 +68,11 @@ export function easyStones(stage: Stage): Platform[] {
     if (plats.some((c) => c !== a && c !== b && !c.broken && jumpOK(a, c, false).ok && jumpOK(c, b, false).ok)) continue;
     if (vineXs.some((x) => x > ax1 - 60 && x < b!.x + 60)) continue;
     if (ropes.some((r) => r.x0 < b!.x && r.x1 > ax1)) continue;
-    if (rivers.some((r) => r.x0 < b!.x && r.x1 > ax1)) continue;
     // only where missing it costs something: no floor close under the gap
     const floorTop = Math.max(a.y, b.y);
     const mid = ax1 + gap / 2;
+    // (a river's own crossing: water on this gap's storey, river.ts waterNear, never a pond's window a storey above or below, ENG-26e)
+    if (rivers.some((r) => r.x0 < b!.x && r.x1 > ax1 && waterNear(r, mid, floorTop, plats))) continue;
     if (plats.some((c) => c !== a && c !== b && c.x < mid + 40 && c.x + c.width > mid - 40 && c.y > floorTop && c.y < floorTop + DROP)) continue;
     // a stone each jump can reach, clear of everything else
     const tries = [Math.round((a.y + b.y) / 2), Math.max(a.y, b.y), Math.min(a.y, b.y)];
@@ -251,7 +253,8 @@ function flagLedge(stage: Stage, p: Platform, reach: ReadonlySet<number>, x = p.
 export const FLAG_WATER_RUNUP = 320;
 /** (a river stage with no ledge that far from the water takes the best it has, at least this much) */
 export const FLAG_WATER_RUNUP_MIN = 200;
-const clearOfWater = (stage: Stage, x: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40);
+/** (the water on the flag's storey, river.ts waterNear: a pond's window a storey above or below the flag is no water ahead, ENG-26e) */
+export const clearOfWater = (stage: Stage, x: number, y: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40 && waterNear(r, x, y, stage.platforms));
 const flagSpot = (stage: Stage, x: number, y: number) =>
   !animalNear(stage, x, y) && !(stage.zones ?? []).some((z) => x > z.x0 - 40 && x < z.x1 + 40 && y > z.top - 40 && y < z.bottom + 40);
 
@@ -305,7 +308,7 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
           if (a > b) continue;
           const c = Math.max(a, Math.min(b, want));
           for (let d = 0; d <= b - a; d += 40) {
-            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, runup));
+            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, p.y, runup));
             if (x === undefined) continue;
             if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
               best = p;
@@ -379,7 +382,7 @@ export function easyWaterLandings(stage: Stage): number {
     if (!A) continue;
     const gap = B.x - (A.x + A.width);
     if (gap < WATER_GAP_MIN + 4 || gap > 320) continue;
-    if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width)) continue;
+    if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width && waterNear(r, B.x - gap / 2, Math.max(A!.y, B.y), stage.platforms))) continue;
     if (floor.some((q) => q !== A && q !== B && q.x < B.x && q.x + q.width > A!.x + A!.width)) continue;
     const d = Math.min(EASY_WATER_LAND, gap - (firstWater(B) ? FIRST_WATER_MIN : WATER_GAP_MIN));
     if (d <= 0) continue;
