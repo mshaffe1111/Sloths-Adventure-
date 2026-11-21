@@ -35,7 +35,7 @@ test('clips: at a ledge end he steps back once, then teeters in a loop; arriving
   const sb = HERO_CLIPS['step-back'];
   const te = HERO_CLIPS.teeter;
   assert.ok(sb && te, 'both sheets are cut');
-  assert.deepEqual(edgeClip(0, true, all), { name: 'step-back', i: 0, blend: 0 });
+  assert.deepEqual(edgeClip(0, true, all), { name: 'step-back', i: 0 });
   assert.equal(edgeClip((sb.n - 0.5) / sb.fps, true, all)?.name, 'step-back');
   const after = sb.n / sb.fps;
   assert.equal(edgeClip(after + 0.01, true, all)?.name, 'teeter');

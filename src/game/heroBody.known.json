@@ -1,0 +1,11 @@
+{
+ "note": "ART-HERO (R-165.378): hero sheets not regraded onto the plain pose yet, at the numbers measured on 700b4ef8d (tools/art/hfnext/herobody.py). Shrink-only (knowncheck.mjs); heroClipsBody.test.ts fails a row that got worse or now passes. ART-HERO regraded walk, run and the six attacks too (their strips showed a step), so only the two-vine climb is left.",
+ "known": [
+  {
+   "sheet": "hero-climb2",
+   "frame_max": 3.531,
+   "pooled": 2.813,
+   "why": "two-vine climb (Qwen sheet, 5 frames): not in the ART-HERO packet; regrade.py reads HERO_CLIPS grids only"
+  }
+ ]
+}

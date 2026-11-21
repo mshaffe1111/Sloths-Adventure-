@@ -17,6 +17,8 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - TRAP: clipcheck and kbdcheck now tap tiles by `.ct-pick[data-stage=...]`; renaming that class or attribute breaks both walks.
 
 ## 0zr-IDLE. FIX-IDLE (t-fix-idle from main 107870f5, 11-20 evening): Pokey's clip melt is a solid cross-dissolve (R-165.353)
+- **SUPERSEDED at INT-R3 (release-0.10.2, 11-21): R-165.382 (ART-CHEER, t-art-next) makes every clip switch a CUT, so drawMelt, its
+  scratch canvas and heroIdleMelt.test.ts are deleted (new replaces old); the cut's tests are heroClipsCut/heroClipsEnds.test.ts.**
 - **heroSprite.ts drawMelt:** on a clip's fade frames (blend < 1) the plain pose (1-b) and the clip (b, 'lighter') go onto ONE scratch
   canvas (module-level, grow-only, made once) lined up with the stage's pixels, then laid down whole. Never draw two poses part-clear
   straight onto the stage again: that paints only 1-(1-b)*b of him (the INT-15 x3268 see-through). Test: src/game/heroIdleMelt.test.ts
