@@ -117,7 +117,7 @@ for name in clips:
         # gets its own small offset onto the plain pose's fur mean, smoothed [1 2 1] over its neighbours (around the loop for a clip that
         # loops or cycles), so the frame-to-frame step only gets smaller: the drift goes, the pose's own colour stays.
         mode = 'wrap' if name in LOOPS else 'edge'
-        for _ in range(4):
+        for _ in range(10):                       # (4 passes left push's loop seam at 0.97 dE: a jump converges slowly under the smoothing)
             per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
             R = np.array([pm - u.mean(0) for u in per])
             Rp = np.pad(R, ((1, 1), (0, 0)), mode=mode); EV = EV + (Rp[:-2] + 2 * Rp[1:-1] + Rp[2:]) / 4
