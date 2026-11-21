@@ -1,10 +1,10 @@
-# ENG-27i REPORT (handed over at the D111 box, 28 min; rewritten 3:59 PM ET by date; first written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
-## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90)
+# ENG-27i REPORT (handed over at the D111 box, 28 min; rewritten 4:02 PM ET by date; first written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
+## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90). Start at step 1 (the merge, on the lead's hash); 1a is done
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
    Rule 28 is DONE for the refined boardHop (below): do not re-run it. Its tools: r28patch-27i.py.txt (the refined skill for every tree),
    r28-runner-27h.ts.txt, r28diff-27h.py.txt; probes r28moved/r28lives/r28fire-27i.py.txt, bhfire-27i.ts.txt (+ r28probe-27i.diff.txt:
    NO_HOP=1 turns boardHop alone off, __bhf logs each fire, __up each single the testers' dblShare turns into a double).
-1a. **DONE (the lead's ruling (3), before the merge): explain 2-4 child Normal's lives 185 -> 205 IN FULL (a shipped stage).** Done so far:
+1a. **DONE (the lead's ruling (3), before the merge): explain 2-4 child Normal's lives 185 -> 205 IN FULL (a shipped stage).**
    the four untraced lives, one line each (trace runs on hd3; none is a wrong boardHop read): child N 14 x 24458, walked onto log 107 and ran
    off its front (the named walk-off; the fire's single was not the move made); child N 18 x 16483, the same walk-off on log 76; middle N 22
    x 23087, boardHop's single came down on log 102 as read, then the ride's hop off the log fell short (R-165.381); middle N 38 x 16295,
@@ -21,10 +21,8 @@
    20, 21, 30, 33) by r28classify-27i.py.txt (r28-27i/2-4-c10rows-lives.txt): 55 lives, 39 from a log, 16 from a bank without a fire, 0 a
    boardHop jump. **ALL 16 rows that gained lives: 96 lives, 69 from a drifting log (R-165.381's hop or the named walk-off), 27 from a bank
    where boardHop did not fire, 0 from a boardHop jump.** Done with 1a: no wrong boardHop read on 2-4; the +20 is the same water met by
-   runs that parted at the first fire (it puts the child on logs, where the ride's own faults take him). Sent to the lead. (r28cmp-27h.py.txt on
-   r28trace runs, NO_HOP=1 for base) and test the hypothesis that a life lost at 24k/25k after a boardHop landing puts him back behind 23k's
-   hazard, so he crosses it again (re-exposure), against the other: that the runs diverge in the bot's r() draws (the trace's nr). One line
-   per life. If any is a wrong boardHop read: fix it generally and re-run rule 28 on 2-4 only. Lead's rulings in hand: dblShare's upgrade of a
+   runs that parted at the first fire (likely: it puts the child on logs, where the ride's own faults take him; the off runs' log share was not counted). Sent to the lead.
+   Lead's rulings in hand: dblShare's upgrade of a
    boarding single STAYS (BOTS.md calibration); the ride's hop off a drifting log falling short is R-165.381, after 2-7 ships, left alone.
 1. **The merge** (packet step 3): origin/t-eng-ground at the lead's green hash (ENG-GROUND-e; none had come at this handover), --no-ff.
    A trial on 8a2257760 gave the two conflicts ENG-27g mapped, nothing else: engine-core.md (keep both sections; replace our line 18
