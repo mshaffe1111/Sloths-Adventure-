@@ -2940,8 +2940,13 @@ export class FirstTimerRun {
               if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
               this.floatBeatLast = t;
               if (t - this.floatBeat < 0.5) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
+              // (the beat out with the drawn hop not landing: a new wait, its own draw, and he still stands by choice; the wait returned
+              //  with nothing held, so the stopped-dead read decided a hop no gate judged 2 frames on (2-7 home middle Normal 2, t 20.17,
+              //  x 14674, ENG-27n's trace) )
+              this.waitHop = null;
+              this.floatBeat = -1;
               if (this.edgeWait < 0) this.edgeWait = t;
-              if (t - this.edgeWait < 6) return {};
+              if (t - this.edgeWait < 6) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
             } else this.floatBeat = -1;
           }
           if (floats.length && !near) {
