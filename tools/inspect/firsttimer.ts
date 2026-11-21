@@ -1546,19 +1546,25 @@ export class FirstTimerRun {
       if (d >= 5 && d < gap) gap = d;
     }
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
-    // (SKILLS.fromTakeoff: a jump from a STAND is flown from where he stands, so the gap is read from there, his own ground to the lip
-    //  included: he stood 165 px before a 133 px safe pond and took a single, eight splashes (2-7's toy, post Normal seed 5, x 6591), and
-    //  stood 107 px back on a log toward the next 72 px past its front and fell in (post Normal seed 4, x 2749), ENG-27f. Only from a
-    //  stand (under 10 px/s, as `standing` reads a stand): a running single carries farther than this lip read's 175 px (207 px from
-    //  a press 70 px before the lip, flownArcs.ts single-hold from70, reach.md §2). Counted on every jump, it turned 2-3's running
-    //  singles, which carried, into doubles: 183 of 360 rows moved and child Normal seed 30 flipped to a rescue (x 20968; rule 28,
-    //  castdiff-2-3-27f.txt, ENG-27g). And only a run-up a single can carry: from farther back a single comes down on his own ground
-    //  before the lip, so the gap is not this jump's (2-3, every tier: a stand 330 px before a 60 px pond))
-    const stood = SKILLS.fromTakeoff && Math.abs(this.sim.p.vx) < 10 ? Math.max(0, (edgeX - p.x) * dir) : 0;
+    // (SKILLS.fromTakeoff: a jump from a STAND over WATER is flown from where he stands, so the gap is read from there, his own ground to
+    //  the lip included: he stood 165 px before a 133 px safe pond and took a single, eight splashes (2-7's toy, post Normal seed 5,
+    //  x 6591), and stood 107 px back on a log toward the next 72 px past its front and fell in (post Normal seed 4, x 2749), ENG-27f.
+    //  Narrowed to where that cause lives (rule 28, ENG-27g): counted on every jump it moved 183 of 360 of 2-3's rows and flipped child
+    //  Normal seed 30 to a rescue (x 20968, castdiff-2-3-27f.txt). So only from a stand (under 10 px/s, as `standing` reads one): a
+    //  running single carries farther than this lip read's 175 px (207 px from a press 70 px before the lip, flownArcs.ts single-hold
+    //  from70, reach.md §2), and 2-3's running singles carried. Only over water (wetBetween, FIX-21's read), the two misses: a dry pit
+    //  the same width is left to the lip read, as before. And only a run-up a single can carry: from farther back a single comes down on
+    //  his own ground before the lip, so the gap is not this jump's (2-3, every tier: a stand 330 px before a 60 px pond))
+    const stood = SKILLS.fromTakeoff && Math.abs(this.sim.p.vx) < 10 && gap < 600 && this.wetBetween(edgeX, edgeX + dir * gap) ? Math.max(0, (edgeX - p.x) * dir) : 0;
     const run = stood < one ? stood : 0;
     if (gap + run > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
     return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+  }
+
+  /** water (a river or a pond, safe or not) anywhere between two x: FIX-21's read of a gap over a creek, and SKILLS.fromTakeoff's */
+  private wetBetween(x0: number, x1: number): boolean {
+    return ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
   }
 
   /** a tier bot's read of a step up: a ledge ahead of the edge of `here` (within 260 px) over a single jump's height (90 px with margin) */
@@ -2749,8 +2755,7 @@ export class FirstTimerRun {
       const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
       // (only over WATER: the creek he walked into. A pit gap the same width is left to the edge's own press, as before: with this look
       //  on every gap the middle bot jumped 1-8's 120 px chase gaps from his full press distance and fell in, chaseBots, INT-11 11-15)
-      const wet = (x0: number, x1: number) => ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
-      const past = under && dir * (p.x + dir * look - lip) > 0 && wet(lip, p.x + dir * look);
+      const past = under && dir * (p.x + dir * look - lip) > 0 && this.wetBetween(lip, p.x + dir * look);
       const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
