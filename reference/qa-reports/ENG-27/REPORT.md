@@ -19,6 +19,16 @@ B. **boardLog's RED half is NOT re-planted yet** (pacerLay.test 'a log drifting 
    ON AND OFF ALIKE (the miss itself, but the skill did not engage: underLip reads fa = floorAt(p.x + look) and the log's front was
    already behind his look, so fa was empty); (3) from x 700, fronts 960/975/986: ON fell (t 2.5-3.3), OFF did not; 1000/1015 and from
    500: neither fell. (3) needs tracing before any toy is called a plant (is it the skill's own harm, a rule-28 concern, or the toy?).
+   TRACED (3) at front 975, start 700 (boardlog-trace-27j.ts.txt, frame rows every 0.1 s): ON, his look meets the log still mostly under
+   the lip, so underLip says no floor ahead and he STOPS where he is, 57 px short of the lip (x 943, t 1.1-1.7); he hops from there at
+   t 1.8 and comes down on the log at x 1089, 26 px from its front (log 875-1115), still moving, runs on and jumps off its front at
+   t 2.5 into the water (x 1347; no next log, the far bank 485 px on). OFF, he walks to the lip (x 1003, t 1.7), the plain ride wait
+   holds him there to t 2.6, he hops at t 2.7 and comes down 88 px in from the front (x 1057 on 905-1145) and rides at the log's speed.
+   So on this toy the skill's wait point is WRONG: it holds him at his look distance, not at the lip, and the longer hop lands near
+   the log's front. That is the same miss the skill was planted against (coming down near the front and off it), made by the skill.
+   Before re-planting: decide with the lead whether underLip should send him on to the lip (as the ride wait does) and only then
+   wait; that is a bot change, so rule 28 (row-for-row castBots diff) goes with it. One log only and a 600 px river make this toy
+   harsher than any listed row; a second log within a hop would let the ride's own hop save him, so lay ONE log to keep the cause bare.
    The toy must put the log 64 px out of 240 at the moment his look first reaches it (the race's x 7650), not at t0.
    Only if a scan of 2-1..2-7's listed seeds finds a log mostly under the lip at a running approach NOWHERE after the merge: retire
    boardLog WITH its test, by a rule-28 row-for-row castBots diff showing nothing moves.
