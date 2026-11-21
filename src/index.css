@@ -1870,8 +1870,8 @@
 .ct-nb { white-space: nowrap; }
 /* a stage this phone has finished: a small green tick on the tile's corner */
 .ct-pick { position: relative; }
-.ct-played { position: absolute; top: 4px; right: 5px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
-  background: #3f8f3a; color: #fff; font-size: 11px; font-weight: 900; line-height: 1; box-shadow: 0 1px 2px rgba(40, 30, 10, .35); }
+.ct-played { position: absolute; top: 4px; right: 5px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  background: #3f8f3a; color: #fff; font-size: 12px; font-weight: 900; line-height: 1; box-shadow: 0 1px 2px rgba(40, 30, 10, .35); }
 .ct-pick.on { border-color: #a85a17; background: linear-gradient(180deg, #ffe7b0, #f6cf7a); box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
 .ct-go.pm-go { margin-top: 10px; width: 100%; min-height: 56px; font-size: 26px; }
 .ct-go.pm-go:disabled { filter: grayscale(.75) brightness(.92); opacity: .6; cursor: default; }

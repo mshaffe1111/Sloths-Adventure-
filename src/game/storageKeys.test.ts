@@ -26,7 +26,8 @@ const DEVICE: Record<string, string> = {
   sloth_update_applied_at: 'the update check',
   // testers and debug switches
   sloth_perf: 'debug', sloth_polish: 'debug', sloth_rim: 'debug', sloth_test_unlock: 'testers', sloth_ctest_name: 'testers',
-  sloth_qa_tester_id: 'testers', sloth_play11_order: "the testers' 1-1 layouts in turn (testlink1_1.ts)",
+  sloth_qa_tester_id: 'testers', sloth_qa_ctest_stage: "the testers' last stage pick (R-165.343)", sloth_qa_ctest_played: "the testers' finished stages, ticked on the picker",
+  sloth_play11_order: "the testers' 1-1 layouts in turn (testlink1_1.ts)",
   // the picture switches (painted or classic art), one per creature or sheet
   sloth_birds: 'art switch', sloth_boa: 'art switch', sloth_butterflies: 'art switch', sloth_caiman: 'art switch', sloth_castles: 'art switch',
   sloth_eagle: 'art switch', sloth_flowers: 'art switch', sloth_frog: 'art switch', sloth_harpy: 'art switch', sloth_hero: 'art switch',
