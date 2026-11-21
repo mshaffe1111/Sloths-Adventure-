@@ -77,7 +77,8 @@ for n in REEDS:
                    worlds='USED none | COULD 2 Sunlit Riverbank: the flood-line reeds at the water\'s edge (the river rose and fell); 6 Deep Mangrove: swamp reeds',
                    no_fit='1 the home forest has no river bank; 3 dark grotto; 4 slate and mist; 7 sand-stone ruins; 8 blue night; 9 lava and ash; 10 stone-and-iron fortress',
                    engine_slot='new slot: World 2 river-edge reeds (decor at the bank, the flood line about level with the river\'s high mark)',
-                   footing='none (decor)', notes=f'Take {n} (the lead picks; the start was fixed so no clump touches the frame).'))
+                   footing='none (decor)', on_screen_px=f'{Image.open(C + n + ".png").width / 3:.0f}x{Image.open(C + n + ".png").height / 3:.0f} (world px: 3 cut px a unit; about one Pokey tall)',
+                   notes=f'Take {n} (the lead picked s41, 11-21: s23 second, its mud puddle would fight the engine water). The start was fixed so no clump touches the frame. Cleaned by reedsfix.py: the trapped grey slivers between stems keyed, the pale silt haze at each foot pulled to wet brown (no light ring on a dark ground).'))
 last = max(i for i, r in enumerate(rows) if r[0].startswith('w3-new#'))
 rows = rows[:last + 1] + new + rows[last + 1:]
 b = io.StringIO(); csv.writer(b, lineterminator='\r\n' if '\r\n' in raw[:2000] else '\n').writerows(rows)

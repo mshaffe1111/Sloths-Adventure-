@@ -94,8 +94,8 @@ test("every row's image exists: src/ on disk; a cut piece on its branch where fe
     if (!held) notHere.push(`${ref} (${rows.length})`);
   }
   assert.deepEqual(missing, []);
-  assert.equal([...onBranch.values()].flat().length, 216, 'the 216 cut pieces not packed yet (194 + ART-NEXT-b batch 1: 9, 11-20; + ART-NEXT-c batch 2: 13, 11-21)');
-  console.log(`  cut pieces not packed yet: 216; branches not in this checkout (files unchecked, rows checked not placed): ${notHere.join(', ') || 'none'}`);
+  assert.equal([...onBranch.values()].flat().length, 217, 'the 217 cut pieces not packed yet (194 + ART-NEXT-b batch 1: 9, 11-20; + ART-NEXT-c batch 2: 13 + the reeds s41, 11-21)');
+  console.log(`  cut pieces not packed yet: 217; branches not in this checkout (files unchecked, rows checked not placed): ${notHere.join(', ') || 'none'}`);
 });
 
 test('every footing lies inside its image', () => {
