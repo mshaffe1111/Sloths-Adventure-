@@ -1,0 +1,7 @@
+  14.97 single from 307,10139 hold 0.14 up 0.15 -> 462,10139 ok
+  15.93 single from 573,10167 hold 0.19 up 0.00 -> 730,10139 ok
+  56.30 single from 853,6700 hold 0.07 up 0.14 -> 954,6632 ok
+  73.57 single from 944,5045 hold 0.13 up 0.00 -> 1063,5005 ok
+  84.30 single from 921,4023 hold 0.07 up 0.00 -> 1022,3983 ok
+  94.17 single from 410,3061 hold 0.13 up 0.16 -> 289,3021 ok
+  107.87 single from 919,2019 hold 0.11 up 0.15 -> 1037,1979 ok

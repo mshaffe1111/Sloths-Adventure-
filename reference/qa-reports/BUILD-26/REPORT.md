@@ -10,6 +10,14 @@ Tree (D115): frozen detached worktree at 2f188c552, node_modules linked.
    "kid easy 10"`, plus a stderr print in the bot's decide on a COPY, as BUILD-26e's dbg tree did, never committed): from his arrival on
    the gate (about 98 s, x 607, y 3342) to the rescue (about 121 s) there is NO jump and no climb, though the way on, the vine x 786
    (3342 up to 3061), stands on the same bough 179 px away. Name it BOT (BUILD-26e) or LAY by what decide chooses there.
+   **The lead suspect (LAY, found at the box, not yet proven):** the way-on vine x 786 stands **5 px from the field's own vine f1 at
+   x 781** (f1 hangs 3342-3702 under the gate, the way on climbs 3342-3061 over it: two vines at one x, one ending where the other
+   starts). On OLD 4ea253b8c the gate was 712-1072, its field vines 889-1055, and the way on x 786 stood 103 px from the nearest
+   (OLD's kid: on the gate, a single jump from s18:b at 94.2 s, no rescue; eng26n/trace-kid-easy-10-OLD.txt). gateRun moved the field
+   left under the same turn. On Normal (all pass) the way on x 451 is 42 px from f4 at 493. So first: print which vine the engine
+   grabs when he presses up at x 781-790 on s17:top (the vine finder), on a COPY of 2f188c552. If it is f1 (or he flips between them),
+   the fix is general in the lay: a vine standing on a piece keeps a stand-off (at least his body, 44 px; CLIMB_CLEAR's sense) from every
+   vine hung under that piece, with a verdict planted RED on Easy 10 and 37; then the relist, the yield and castBots x40 as below.
 1. **Seed lists (heavy run 1, done):** 2-6 PASS 100/100 (it has no sealed piece; nothing of it moved). 1-4: the verdicts refuse 0 of 100
    listed seeds, but 10 replay a different layout from their search (seeds 1, 2, 5, 6, 7, 8, 10, 14, 16, 18, both settings: "rebuild the
    list"), so 1-4 MUST be relisted if 2f188c552 stays.
