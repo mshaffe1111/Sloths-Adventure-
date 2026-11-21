@@ -1,9 +1,9 @@
-# ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): FIX PUSHED, strip and clip for the lead to judge
+# ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): cheer ACCEPTED by the lead; swim and ouch strips for judging
 ## EXACT NEXT STEP
-The lead judges reference/art/hfnext/hero/cheer-cut/hero-cheer-frames-before-after.jpg (every game frame t0.93-1.30) and
-hero-cheer-game-speed.mp4. Then read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
+The lead ACCEPTED the cheer strip and ruled no bridge. The lead judges hero-swim-frames-before-after.jpg and
+hero-ouch-frames-before-after.jpg (reference/art/hfnext/hero/cheer-cut/, with their game-speed mp4s). Then read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
 the base suite (step 0), then drawcheck on 208da39a7+, then the full suite on the head; if this container is gone, re-run drawcheck and the
-suite on t-art-next. Two rulings wanted (below): the swim cross-fade (heroSwim.ts) and whether the cheer's start needs a painted bridge.
+suite on t-art-next. Step-back and teeter are test-proven cuts but not yet shot (heroshoot has no ledge scene).
 ## 1. VERIFY (on ec7f1070c)
 - Where cheer plays: only at the exit before the stage clears (engine.ts:3583 sets p.cheerAt, CHEER_SECONDS 1.9) and the journal replay
   (journalScenes.ts:686). No pickup plays it.
@@ -14,17 +14,20 @@ suite on t-art-next. Two rulings wanted (below): the swim cross-fade (heroSwim.t
   all two-pose ghosts. The idle clips (yawn, look-around, belly-scratch, wave) faded too, but their ends are painted onto the plain pose
   (heroClipsEnds.test.ts, xor < 2%, 2 px), so their fade was harmless and their cut is the same picture.
 - Walk, run, jab, push, climb: cuts already (blend 1). Vine (heroVine.ts:88) is always drawn at alpha 1.
-- FOUND, NOT FIXED (needs a ruling and its own strip): heroSwim.ts:101-103 cross-fades two DIFFERENT swim moves (tread / surf / under / the
-  first-swim flail) over 0.22 s, the same ghost pattern.
+- FOUND: heroSwim.ts:101-103 cross-faded two DIFFERENT swim moves (tread / surf / under / the first-swim flail) over 0.22 s, the same
+  ghost. The lead's ruling: same rule, this packet: FIXED in fa4809c64 (one move drawn a frame).
 ## 2. The fix (208da39a7): a cut, the fade deleted (new replaces old)
 ClipFrame has no blend; CLIP_FADE and fade() are gone; heroSprite.ts no longer draws the ordinary pose under a clip. The cheer cuts on its
 frame 0, the frame nearest the plain pose of all 30 (xor 31% vs 49-60% for the rest). No Hugging Face job (a cut, no painted frame).
 Planted: src/game/heroClipsCut.test.ts stubs the sheets as loaded and samples every clip moment at 30 fps (cheer arriving at a run and
 standing, a minute of idles, the ouch, the step-back and teeter): RED on ec7f1070c ("cheer (arriving at a run): 6 frames drawn over a
-second pose"), GREEN on 208da39a7; plus a source check that heroSprite.ts has no clip.blend.
+second pose"), GREEN on 208da39a7; plus a source check that heroSprite.ts has no clip.blend, and (fa4809c64) that drawSwimHero
+draws one move a frame with no fade (a source check: the swim draw needs the coat canvas, which node has not). All 3 tests RED on ec7f1070c.
 ## 3. Strip and clip (heroshoot.mjs 1-1 push,cheer, push first as the warm-up; BEFORE = a worktree at ec7f1070c, AFTER = 208da39a7)
 reference/art/hfnext/hero/cheer-cut/: hero-cheer-frames-before-after.jpg (every frame t0.93-1.30, the one to look at first),
-hero-cheer-before-after.jpg and hero-cheer-game-speed.mp4 (heropair.py), hero-all-before-after.jpg.
+hero-cheer-before-after.jpg and hero-cheer-game-speed.mp4 (heropair.py), hero-all-before-after.jpg. Then (fa4809c64+, heroshoot.mjs gained two scenes: ouch = a point
+of health lost at the switch, swim-surf = treading forced on, the crawl from the switch) hero-swim-frames-before-after.jpg (t0.93-1.30),
+hero-ouch-frames-before-after.jpg (in t1.25-1.60 and out t3.62-3.97), hero-swim-surf-game-speed.mp4, hero-ouch-game-speed.mp4.
 ## Polish check (looked at downscaled, the way Matt will on a phone)
 - No see-through double sloth: PASS. BEFORE t1.07, t1.10, t1.13 show two heads and two sets of arms; AFTER every frame is one solid sloth
   (hero-cheer-frames-before-after.jpg; the mp4 tiled frame by frame agrees: BEFORE ghosts t1.06-1.20, AFTER none).
@@ -33,10 +36,15 @@ hero-cheer-before-after.jpg and hero-cheer-game-speed.mp4 (heropair.py), hero-al
   (t1.03) with a heavier painted outline, in one frame. It reads like the jab's cut, not a glitch, but a painted bridge (a three-quarter
   turn, pinned to the plain pose and to cheer frame 0, like the idle bridges) would make it smooth: a Hugging Face job, this session is not
   in that environment: the lead's call.
-- Ouch, step-back and teeter now cut too: NOT shot in this box (the test proves no layering; their look on screen is not yet judged).
-## Gates (208da39a7)
-tsc PASS; heroClipsCut + heroClips + heroClipsEnds tests 11/11 PASS; artcheck PASS; knowncheck PASS; herobody.py --check exit 0 (no sheet
-changed, so no catalog rows). Base suite (step 0, ec7f1070c): still running at hand-over, 1186 run, 0 failed so far. drawcheck (the draw
+- The lead's ruling on the pop: ACCEPTED, "him turning to the camera to cheer: a clean cartoon change of pose"; no bridge.
+- Swim: PASS. BEFORE t1.07-1.20 a see-through upright sloth over the crawl; AFTER a crisp cut at t1.03 from treading to the crawl, one
+  sloth every frame (hero-swim-frames-before-after.jpg). The scene forces swim on 1-1's ground, so no water shows behind him.
+- Ouch: PASS. BEFORE ghosts going in (t1.40-1.50) and coming out (t3.77-3.90); AFTER cuts at t1.37 (the flinch to the front-facing ouch)
+  and t3.93 (back to the plain pose), one sloth every frame: the same change of pose as the cheer's (hero-ouch-frames-before-after.jpg).
+- Step-back and teeter cut too: test-proven, NOT shot (heroshoot has no ledge-end scene); their look on screen is not yet judged.
+## Gates (208da39a7, then fa4809c64)
+tsc PASS; heroClipsCut + heroClips + heroClipsEnds + w6Swim tests 18/18 PASS; artcheck PASS; knowncheck PASS; herobody.py --check exit 0 (no sheet
+changed, so no catalog rows). Base suite (step 0, ec7f1070c): still running at hand-over, 1678 run, 0 failed so far. drawcheck (the draw
 changed: one draw fewer under a clip) and the full suite on the head: QUEUED after it, results not in at hand-over.
 ## Lessons applied
 D96 (the packet's gate list run as written, the ones not finished named), D102 (lean read; strips read downscaled; long runs in the

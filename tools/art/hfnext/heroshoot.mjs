@@ -7,7 +7,7 @@
  * For each scene: pins Pokey standing on the stage's middle solid platform; from `switchSec` game seconds after the pin the render hook
  * FORCES the state the scene names every frame (the renderer, the sheets, the sizes and the blend are the game's own; the vine or the
  * block is not there): climb = p.climbing, and he rises at 60 units/s so the climb cycle runs; push = p.pushing; cheer = p.cheerAt set
- * once at the switch; walk / run = vx 60 / 150 for 0.8 s then a stop (x stays pinned, so he walks on the spot); jab = the jab twice. The page runs on a paused clock stepped `everyMs` (one 30 fps game frame) at a time; a crop around him is saved at each step, each file named <stage>-<scene>-t<game seconds>.png.
+ * once at the switch; walk / run = vx 60 / 150 for 0.8 s then a stop (x stays pinned, so he walks on the spot); jab = the jab twice; ouch = a point of health lost at the switch; swim-surf = treading in water, the crawl from the switch. The page runs on a paused clock stepped `everyMs` (one 30 fps game frame) at a time; a crop around him is saved at each step, each file named <stage>-<scene>-t<game seconds>.png.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -72,7 +72,13 @@ for (const scene of sceneArg.split(',')) {
           if ((pin.scene === 'walk' || pin.scene === 'run') && on) { q.vx = (pin.scene === 'walk' ? 60 : 150) * (q.facing || 1); q.walkCycle = (dt - pin.sw) * Math.abs(q.vx) * 0.08; }
           if (pin.scene === 'jab' && on) { q.attackMove = 'jab'; q.attackU = Math.min(1, ((dt - pin.sw) % 0.4) / 0.35); }
           if (pin.scene === 'jab' && !on) { q.attackMove = undefined; q.attackU = undefined; }
+          // ouch: one point of health lost at the switch (the flinch, then the ouch clip once he is calm, R-165.382)
+          if (pin.scene === 'ouch' && !pin.hurt) { q.hp = 2; pin.hurt = true; }
+          // swim-surf: treading from the start, the crawl from the switch (the change of move, R-165.382)
+          if (pin.scene === 'swim-surf') { q.vx = 100 * (q.facing || 1); }
         }
+        if (pin.scene === 'ouch' && dt < pin.sw) q.hp = 3;
+        if (pin.scene === 'swim-surf') { q.swim = { surfaceY: pin.y - 30, under: 0 }; q.grounded = false; q.vy = 0; q.y = pin.y - 10; }
       }
       R.call(this);
     };
