@@ -2,7 +2,14 @@
 ## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
 ORDER: G in the background first; then F (the respawn rule: RULED, option A on every respawn, below), then B (boardLog's toy), then S
 (stills, THE CLIP, THE FULL SET). R is done; re-run it after F (ride-only must lose all 24).
-G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
+G. **A RED ON THE GROUND (at the box end): suite 4/6 FAIL 615/617** (1 fail, 1 todo), gates-27j/suite4-fail-tail.txt:
+   src/game/stageModes.test.ts:131 'left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left
+   of the start)': "gen2 1-1 (normal): no seed of 24 from 769 builds cleanly (the first: seed #71 lies past the shrine, where he cannot
+   go)". NOT yet known: whether it is the ground's (2d4e0752a vs its base 0eefc707e) or older, or a load flake (six race runs and a
+   dev server shared the 4 CPUs while it ran). FIRST: run that one file alone on a frozen 2d4e0752a and on 0eefc707e
+   (`npx tsx --test src/game/stageModes.test.ts`); then on t-eng-27's head. Red on 2d4e0752a and green on 0eefc707e = the ground's:
+   name the commit to the lead and stop (the merge 24d6ba567 waits on the lead's ruling). The merge stands only on the lead's word.
+   Earlier on the same frozen tree: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
    (1 todo, 0 fail), suite 3/6 PASS 809/810 (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container
    stopped: suite 4-6 (run those by hand:
    `npx tsx --test --test-shard=<i>/6 <the SUITE glob in run-gates-d.sh>`, then the rest of chain a from tooltests on), tooltests, tierBots, tipwalk,
