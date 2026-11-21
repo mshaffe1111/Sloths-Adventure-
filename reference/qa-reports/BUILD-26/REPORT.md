@@ -1,3 +1,64 @@
+# ENG-26h (on t-build-26 from 95cafaabc): the walk-off judge's price. HANDED OVER by D111 (40 min), written 3:52 PM ET 11-21
+Commits: 93246fa93 (buildcheck takes BUILDCHECK_STAGE), 91e6c584e (three EXACT speed-ups, proof NOT yet run), this REPORT.
+Saved for the next member: reference/qa-reports/BUILD-26/eng26h/ (both locks gzipped, the 1-400 sweep, the scratch tools in tools/).
+
+## EXACT NEXT STEP (the next engine member, in this order; long runs in the background on frozen worktrees, 4 cores)
+1. **Prove 91e6c584e exact** (fly's piece box, roofedDrop's run once a piece a walk, physics reach tables indexed): on a frozen
+   worktree of 91e6c584e, `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-opt.json` (about 15-25 min), then compare it with
+   `gunzip -c reference/qa-reports/BUILD-26/eng26h/lock-head-95cafaabc.json.gz`: EVERY build's EVERY part hash identical (3264 builds).
+   Any difference: the speed-up is not exact; revert the piece that moved it. Then the tower/levelCheck/physics tests
+   (`npx tsx --test src/game/gen2/tower.test.ts src/game/*.test.ts` at least; the full suite before any non-safe-keeping push).
+2. **Relist 1-4 under the judge** (rule 19/20; the refusal is gen2.errors, the generator's own, so no listRules change). Seeds 1-400 are
+   swept: 49 kept (eng26h/sweep-1-400.json). Of the old list (1-100, every seed) only 14 survive: 5,7,8,18,19,22,23,28,36,46,54,57,69,83.
+   Sweep on to about 850 (12% yield): `npx tsx tools/engine/seedlist.ts 1-4 --count 100000 --from 401 --to 1001 --worker i/3 --part
+   p<i>.json` (3 workers; mine ran ~500 s per 100 seeds per worker under load and dies with my container), on 91e6c584e once step 1
+   passes (about 1.8x faster), else on 95cafaabc. Candidates (methods/seed-list.md step 3, "order is identity"): the 14 survivors in
+   their old order, then the new ones lowest first; `--merge cand.json --in-order` to 100 (SEED_LIST_MIN; provenIndex n 100). Then
+   `seedlist.ts 1-4 --check` (TIME it: D99, CI's 45-minute seedlists job; the base's check on the old list too, same machine), and
+   every test that pins a 1-4 roll or seed (D29; grep the suite for '1-4').
+3. **Load speed (the deciding step), on a QUIET machine (nothing else running)**: the phone REPLAYS a listed seed's plan (stageGenerator
+   playFinish(buildPlayStage)): `npx tsx reference/qa-reports/BUILD-26/eng26h/tools/loadtime.mts <worktree> 1-4 3` and `... 2-6 3`
+   (every listed seed, both settings, best of 3, p50/p95/max, and any seed that FELL to the search), on base 4ea253b8c and on the
+   relisted head. Then buildcheck ALONE: `BUILDCHECK_STAGE=1-4 node tools/perf/buildcheck.mjs` and 2-6, base and head (budget p95 150 ms
+   at CPU x4; measure the BASE first: 1-4 may be over it already). If the head's replay is meaningfully slower: profile it
+   (eng26h/tools/hot.sh bundles a build and ranks lines; tsx's own output is one line, so profile a bundle) and cut it before anything
+   ships. Also time the lock (486 s base vs 1431 s head here, both run side by side).
+4. **Stills** (eng26h/tools/pin.mjs <root> <out> 1-4 1 normal <port> name:x:y,...; dsf 2, sideways then upright; prints the built seed):
+   BEFORE (4ea253b8c, ?layout=1 = listed seed 2): first storey `storey1:1006:10984` (piece 856-1156 @10984), the old walk-off
+   `walkoff:1070:8120` (piece 646-1086 @8120: a run off its right end falls to y 8761, 641 px; off its left, x 400, 641 px) and
+   `walkoff2:220:4208` (194-714 @4208: left run to x 20 y 4909, 701 px). AFTER seed 7921: shoot on a worktree of 95cafaabc (old list:
+   seed 2 refused, so the game falls to the search: 2 + 7919); its spots from its own platforms (eng26h/tools/ends.mts lists a build's
+   lowest pieces and judges named pieces). After the relist, layout 1 is the new list's seeds[1]: say which. Look at all of them as Matt.
+5. castBots 1-4 seeds 1-40 both settings, base vs relisted head in one chain (no tier's pass count may drop); tierBots 1-1 9/9; qaW123
+   (19/19 at 95cafaabc, ENG-26g) re-run on the final head; tsc, generality, the CI tool line (methods/gates.md "THE FULL SET");
+   engine-core.md's tower lines (ENG-26g's list: walkOff, openEnds, towerCatches, clearFoot) plus this REPORT's cost findings.
+
+## Findings (numbers)
+| item | result | evidence |
+|---|---|---|
+| step 1: the full lock | lockall --layouts 16, 95cafaabc vs 4ea253b8c, both frozen: **100/102 unchanged; movers 1-4 and 2-6 only (both intended)**. 1-4: 32/32 builds moved; **layout 12 (seed 13) FAILS to build on both settings** ("no seed of 24 from 13 builds cleanly", first: flags none before the hard node n6). 2-6: 32/32 moved (platforms, collectibles, proto.decor). Lock time 486 s base vs 1431 s head (side by side) | eng26h/lock-*.json.gz; sent to the lead, accepted |
+| 2-6's list | `seedlist.ts 2-6 --check` on 95cafaabc: **PASS (100 seeds, each clean on both settings)**, 43 s | |
+| 1-4's list | seed 2 refused on the head: 4 running walk-offs drop 641-721 px (limit 450). Sweep 1-400 on 95cafaabc: **49 kept (12%)**; old list 1-100: **14 survive, 86 refused** | eng26h/sweep-1-400.json |
+| why 1-4 is slow | NOT mainly the flights. The judge refuses most ROLLS: seed 5's search build has rerolls 0 (base) vs **7** (head); each refused roll is a full lay + Normal and Easy checks: the stage check runs 4x a build on base, **32-56x** on head. Warm head search build ~10x base (seed 1 2678 vs 160 ms; seed 5 1535 vs 96 ms; under load). Pieces 97-105 -> 127-142 (the catches). This is paid by every SEARCH: relists, the lock, CI's seedlist job (it re-runs each listed seed's full search), the no-list fallback. The phone replays one plan: not measured yet (step 3) | eng26h/tools/repairs.mts, hot.sh |
+| profile of a head build (before 91e6c584e) | physics reachTable's linear scan ~27%, levelCheck roofedDrop ~20% (P^3 in a tower: every pair, each a pass over every piece), tower.ts fly ~13% (every piece every frame) | hot.sh |
+| 91e6c584e (exact by construction, PROOF PENDING) | fly reads only pieces in its path's box (x: the way out, a stop steps back <= 2 px a frame; y: its depths); roofedDrop's run and closed ends found once a piece a walk (cleared each walk); reach tables in Map<v0, Map<vx, list>>. Head build ~1.8x faster (seed 1 2678 -> 1469 ms, seed 5 1535 -> 932 ms, warm, under load); fly 1180 -> 114 samples. tsc PASS | lock proof: step 1 |
+| buildcheck | takes BUILDCHECK_STAGE=<listed stage> (its own kit, gen2/listed.ts); 1-1 unchanged by default. Not yet run for 1-4/2-6 | 93246fa93 |
+
+## Pushback
+- The packet's remedy (cache the flown arcs) aims at the wrong cost: the flights were ~13% of a head build; the price is the refused
+  rolls (7 of 8 for seed 5) and the check over the extra wood. Suggest (an engine packet, rule 22, every tower): towerCatches lays a
+  catch a refused run's arc lands on (seed 2's four ends, 'drops 641-721 px'), so rolls pass instead of being thrown away: that cures
+  the 12% yield, the search cost and the CI time together. A search that refuses a roll before its checks is NOT exact (the checks
+  repair the stage first: repairLandings takes caps up, and caps bounce a walk-off), so it is not a free speed-up.
+- Note for whoever reads the lock: its 1-4 builds ARE the game's path with the list in (layout 12 asked seed 13, the list's seeds[12];
+  with no list it would ask 12); a listed seed whose plan no longer replays falls to the search, as a phone would.
+
+## Lessons applied
+D57/D87/D105 (ReadNotifications at every step and push: the lead's D111 hand-over read at the push), D94 (base = 4ea253b8c, the
+integration base ENG-26g's lock used), D96 (the full CI set named in step 5), D102 (read lean: code by grep and line ranges; profiled
+instead of reading), D107/D109 (no clock times in messages), rule 22 (the cost fix goes in engine code every stage reads, not in 1-4).
+Owned miss: I did not time-box the investigation against D111's 28 minutes; the relist and the quiet measures are not done.
+
 # ENG-26g (on t-build-26 from 44dcbb41a): the tower's walk-off judge. HANDED OVER at the context line, STOPPED on step 3 (1-4 moves)
 Commits: de009b9f5 (the judge), ac2fd73b6 (water by his middle, a cap bounces him on), this REPORT.
 
