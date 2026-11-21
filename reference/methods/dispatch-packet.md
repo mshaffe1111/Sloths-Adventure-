@@ -72,3 +72,6 @@ Every packet says: **never wait in the foreground for a background run** (no unt
 
 ## Every engine packet starts the full suite on its base first (D114, 11-21)
 Step 0 of every engine packet: **the full unit suite on the BASE, started first with run_in_background**, its verdict in the REPORT; a red on the base is named to the lead before building on it (D40). Three members on t-build-26 handed over with the suite unrun (the box leaves no room for it at the end), so two reds (tests still laying 2-6 as a draft after it was listed) hid until the fourth member ran it.
+
+## Every run reads a frozen worktree (D115, 11-21)
+Every packet says: **every run (the suite, drawcheck, castBots, lockall, a grade) reads a FROZEN worktree (git worktree add --detach <hash>), never the tree being edited.** Twice on 11-21 a run read a tree that was changing under it (ENG-27l caught its own; ART-SHEETS' base suite did not count).
