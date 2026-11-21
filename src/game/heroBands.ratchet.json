@@ -1,0 +1,114 @@
+{
+ "note": "fur-only light/dark bands per move group at each sheet's accepted state (herobody.py --ratchet); heroClipsBody.test.ts fails a band > 1.0 dE worse",
+ "slack": 1.0,
+ "sheets": {
+  "idle-yawn": {
+   "all": {
+    "light": 3.622,
+    "dark": 2.572
+   }
+  },
+  "look-around": {
+   "all": {
+    "light": 4.532,
+    "dark": 3.305
+   }
+  },
+  "hurt": {
+   "all": {
+    "light": 5.213,
+    "dark": 3.592
+   }
+  },
+  "belly-scratch": {
+   "all": {
+    "light": 0.774,
+    "dark": 1.125
+   }
+  },
+  "wave": {
+   "all": {
+    "light": 2.918,
+    "dark": 2.235
+   }
+  },
+  "cheer": {
+   "all": {
+    "light": 3.085,
+    "dark": 2.329
+   }
+  },
+  "push": {
+   "all": {
+    "light": 4.839,
+    "dark": 5.351
+   }
+  },
+  "move-run": {
+   "all": {
+    "light": 0.91,
+    "dark": 1.674
+   }
+  },
+  "move-jab": {
+   "all": {
+    "light": 0.681,
+    "dark": 0.558
+   }
+  },
+  "move-cross": {
+   "all": {
+    "light": 0.202,
+    "dark": 0.231
+   }
+  },
+  "move-hook": {
+   "all": {
+    "light": 2.279,
+    "dark": 1.377
+   }
+  },
+  "move-kick": {
+   "all": {
+    "light": 1.668,
+    "dark": 3.235
+   }
+  },
+  "move-kick2": {
+   "all": {
+    "light": 1.816,
+    "dark": 1.447
+   }
+  },
+  "move-mega": {
+   "all": {
+    "light": 2.588,
+    "dark": 2.242
+   }
+  },
+  "teeter": {
+   "all": {
+    "light": 2.35,
+    "dark": 0.788
+   }
+  },
+  "step-back": {
+   "all": {
+    "light": 2.066,
+    "dark": 0.772
+   }
+  },
+  "move-climb": {
+   "all": {
+    "light": 5.289,
+    "dark": 5.796
+   }
+  },
+  "move-walk": {
+   "all": {
+    "light": 0.679,
+    "dark": 2.018
+   }
+  }
+ }
+}

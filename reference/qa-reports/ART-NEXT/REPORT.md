@@ -1,23 +1,26 @@
 # ART-SHEETS-b (11-21): bands PER MOVE GROUP on swim (R-165.379), the band gate planted red; R-165.382 step 0 running
 ## EXACT NEXT STEP
-THE LEAD'S RULING (this box): per-group QUANTILE rejected (mottled heads); AFFINE per group ACCEPTED as the method (smooth, same sloth,
-head nearer the plain orange-tan); no loosening a bar to fit and no bar the eye contradicts; the band is measured on FUR ONLY (cream belly,
-face mask, bandages out) for every sheet and graded clip, and the lead sets the bar from that table (sent; below). heroBody.json stays as
-it is until then. Clips failing: re-measure fur-only first; any that still read squashed get affine per group from their ORIGINAL sheets.
-Next member, on t-art-next at this REPORT's commit or later, frozen worktrees, one heavy run at a time, run_in_background:
-1. Step 0 (R-165.382): the verdict of this box's run is below if it landed; if not, re-run on a FROZEN 4f0853b96 worktree (npm install
-   --legacy-peer-deps; tsc; the CLAUDE.md suite; drawcheck), one at a time.
-2. Read the lead's bar ruling (inbox). Then sheetgrade.py rope,swim,vine,climb2,atlas,story,studies --group --affine from git 4f0853b96 (the
-   ORIGINAL sheets; never stacked on e41c738bf's mean grade), run from a frozen worktree of THIS commit, writing src/assets/hero + sheetgrade.json
-   (drop --out). The atlas/story/studies groups are the frame name less its trailing letter+digits (fam() in sheetgrade.py and herobody.py,
-   the same rule): print the groups first and check they are pose families. Before/after strips per sheet (scratchpad strip.py's layout:
-   plain | before | mean | after, game size 89.1/200 and 2x; the atlas with the bedroll in view, story/studies with a back view); lead judges.
-3. python3 -I tools/art/hfnext/herobody.py --write (bands are FUR ONLY now: L >= 72 out); set bar.band in herobody.py and the test to the
-   lead's number; heroBody.known.json: climb2's mean row off if it passes; band_max rows only for sheets the lead accepts as left.
-4. Gates: herobody.py --check, tsc (heroClipsBody.test.ts changed: NOT tsc-checked in this box), artcheck, knowncheck, the unit suite
-   (frozen), drawcheck.
-OPTION still open (the lead to rule): swim --group --base (the quantile map read off a box-blurred L, so the stretch moves shading but
-cannot amplify grain or q86 blocks) - the only map that closed the fur bands; it was running at hand-over (scratchpad out-base).
+THE LEAD'S RULINGS (this box): (1) per-group QUANTILE rejected (mottled heads); AFFINE per group is THE method unless the blurred-L
+variant reads clean - it does NOT (swim-tread5-base-2x.jpg: a soft pale patch on top of the head and a pale halo at the shoulder;
+swim-under7-base-2x.jpg: head and arm paler), so AFFINE SHIPS. (2) The gate keeps the pooled-mean bar as built; the fur-only bands are a
+RATCHET, not a bar: each sheet's bands recorded at its accepted state, fail if any band is > 1.0 dE worse (built: herobody.py --ratchet,
+src/game/heroBands.ratchet.json, heroClipsBody.test.ts). The 18 clips are recorded at their accepted state now; the 7 non-clip sheets are not
+(the test is RED until they are, as heroClipsBody already was on e41c738bf).
+Next member, on t-art-next at this REPORT's commit or later, frozen worktrees, ONE heavy run at a time, run_in_background:
+1. Step 0 (R-165.382): this box's run on a frozen 4f0853b96 worktree: tsc exit 0; suite 1711 passed, 0 failed at hand-over, STILL
+   RUNNING; drawcheck queued after it in the same script. Its verdict is in the lead message at my stop if it landed; else re-run both.
+2. ONE grade run, from a frozen worktree of this commit (cwd there; it reads the sheets from git 4f0853b96, the ORIGINALS):
+   python3 -I tools/art/hfnext/sheetgrade.py rope,swim,vine,climb2,atlas,story,studies --group --affine --from 4f0853b96
+   then copy src/assets/hero/{hero-rope,pokey-swim,hero-vine,hero-climb2,hero-atlas,hero-story,hero-studies}.webp and
+   tools/art/hfnext/sheetgrade.json back into the edit tree. FIRST print atlas/story/studies groups (fam(): the frame name less its trailing
+   letter+digits) and check they are pose families. Strips per sheet (scratchpad strip.py: plain | before | mean | after, game size
+   89.1/200 and 2x; atlas with the bedroll, story/studies with a back view; the strip script is NOT committed: rebuild it from this
+   layout); the lead judges story, studies and atlas.
+3. python3 -I tools/art/hfnext/herobody.py --write; then --ratchet <the sheets the lead accepted>; heroBody.known.json: climb2's mean row off
+   if it passes the mean bar. PLANT (the lead): re-apply the e41c738bf mean grade to swim (git show e41c738bf:src/assets/hero/pokey-swim.webp
+   into a scratch copy of the tree, herobody.py there) and see the ratchet test fail; then restore.
+4. Gates: herobody.py --check, tsc (heroClipsBody.test.ts changed in this box; NOT tsc-checked here), artcheck, knowncheck, the unit suite
+   on a frozen tree, drawcheck. Catalog rows: none (no byte/hash column).
 ## Fur-only band table (worst light/dark per group, dE vs the plain pose's fur-only bands; before = 4f0853b96, mean = e41c738bf)
 Non-clip: rope 13.35 -> 5.50 | swim 9.17 -> 7.83 | vine 8.08 -> 3.94 | climb2 5.03 -> 3.52 | story 11.14, studies 7.78, atlas 11.20 (ungraded).
 Swim affine per group (light/dark): first 4.94/3.72, surf 4.21/7.56, tread 6.77/5.60, under 3.49/6.08 (max 7.56) vs mean first 3.74/3.91,
@@ -55,6 +58,7 @@ AFFINE (swim-tread2-affine-2x.jpg): smooth, no mottle, same sloth, head a touch 
 the bands stay 4.4-5.6 off: swim's paint has a much narrower tonal range than the plain pose, and stretching it far enough to meet 2.0
 makes mottle. So no global per-group tone map meets a 2.0 band bar on swim cleanly; the gap is partly pose (see NEXT STEP 2b).
 ## Polish check
+- swim base-layer (blurred-L) quantile per group: no blocks, but soft pale smudges (head top, shoulder halo; swim-tread5-base-2x.jpg, swim-under7-base-2x.jpg): FAILS. Bands per group (all fur) 3.2-5.3. Not shipped.
 - swim quantile per group: FAILS (mottled heads, tread2/under7 at 2x). Not shipped.
 - swim affine per group: smooth, no artefacts, warm same-sloth read (swim-groups-affine.jpg 2x row); bands not at 2.0. Not shipped (ruling).
 - Nothing else shipped; no src/ asset changed.
