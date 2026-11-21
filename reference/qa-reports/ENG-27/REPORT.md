@@ -1,7 +1,7 @@
 # ENG-27m REPORT (handed over at the D111 box, 28 min; base 79196c2f6; branch t-eng-27, this commit)
 ## EXACT NEXT STEP (ENG-27n, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule 28's castBots diff; (3) B; (4) S.
-(0) **The full src suite on 79196c2f6** (6 shards, frozen worktree, run_in_background): suite 1/6 PASS 635/635; 2/6 onward were still
+(0) **The full src suite on 79196c2f6** (6 shards, frozen worktree, run_in_background): suite 1/6 PASS 635/635; 2/6 PASS 617 + 1 todo, 0 fail; 3/6 onward were still
     running in ENG-27m's container at the box (ENG-27m sends the lead the summary if it gets it). If no result reached the lead: re-run
     the 6 shards on a frozen worktree of the head (the CLAUDE.md src list, `--test-shard=i/6`). A red: name it, tell the lead.
 (1) **THE RULE'S TEST IS WRITTEN AND RED ON THE BASE: `tools/inspect/hopJudged.test.ts`** (in gates.yml's tool-test line; RED until M2
@@ -48,6 +48,12 @@ ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule
     at lag 0 from p.x, and startJump taking the drawn hop instead of drawing again. Candidate 2's stand (clockHeld, blockedT 0,
     pending/lateArmed null) is the wait. hopJudged.test.ts then asserts kind and hold EQUAL the judged ones (today: flown hold >=
     judged, kind single: change it to the drawn hop's), RED with OFF=floatSure, GREEN on. Then the race table, then (2).
+    WHAT THE DOUBLE'S FLIGHT MUST CARRY (read in the code, ENG-27m): the second press comes at d2 (or, d2 < 0, when vy > dblAt, drawn
+    in startJump: `between(this.r, who.dblAt)`), and ITS hold is drawn mid-air (`j.hold = age + flickHold(...)`, ~lines 2439 and 2453):
+    pre-draw it in drawHop too (a draw moves earlier in the stream: say so in the rule 28 diff). In the air the thumb steers back
+    over a small landing (overSmall, ~line 2445: side(-dir)); hopLandsOn flies dir held all the way, so judge with that steer or
+    the hop judged is still not the hop flown. tools/inspect/firsttimer.ts ~line 4556 (tryAt) already flies a double frame by frame
+    on the real sim: the pattern to copy for a test that pins the new flight against the engine.
 (2) Rule 28's castBots diff, 2-1..2-6 x40 both settings, base 1465822f7 vs the final head, frozen trees (ENG-27l (3) below); NOTE the
     candidate DOES reach 2-1..2-6 (the edge wait and upstream run on every W2 river), so rows WILL move: each traced, no tier's pass down.
 (3) B and (4) S: unchanged (ENG-27l (4), (5) below).
