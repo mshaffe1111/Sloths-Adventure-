@@ -1,0 +1,73 @@
+TAP version 13
+# Subtest: the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
+ok 1 - the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
+  ---
+  duration_ms: 1.632272
+  type: 'test'
+  ...
+# Subtest: every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
+ok 2 - every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
+  ---
+  duration_ms: 0.11098
+  type: 'test'
+  ...
+# Subtest: every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)
+ok 3 - every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)
+  ---
+  duration_ms: 6.199431
+  type: 'test'
+  ...
+# Subtest: every hero sheet is the same sloth as the plain pose (fur: each frame <= 2.0 dE, the sheet pooled <= 1.0 dE), or a known row no worse
+not ok 4 - every hero sheet is the same sloth as the plain pose (fur: each frame <= 2.0 dE, the sheet pooled <= 1.0 dE), or a known row no worse
+  ---
+  duration_ms: 1.238982
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/heroClipsBody.test.ts:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hero sheets off the plain pose
+    + actual - expected
+    
+    + [
+    +   'hurt frame 15: fur 5.444 dE off the plain pose (limit 2)',
+    +   "hurt: its frames' fur is 5.096 dE off the plain pose (limit 1)",
+    +   'cheer frame 8: fur 4.321 dE off the plain pose (limit 2)',
+    +   "cheer: its frames' fur is 3.837 dE off the plain pose (limit 1)",
+    +   'push frame 8: fur 8.825 dE off the plain pose (limit 2)',
+    +   "push: its frames' fur is 7.776 dE off the plain pose (limit 1)",
+    +   'move-climb frame 0: fur 8.131 dE off the plain pose (limit 2)',
+    +   "move-climb: its frames' fur is 6.488 dE off the plain pose (limit 1)"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'hurt frame 15: fur 5.444 dE off the plain pose (limit 2)'
+    1: "hurt: its frames' fur is 5.096 dE off the plain pose (limit 1)"
+    2: 'cheer frame 8: fur 4.321 dE off the plain pose (limit 2)'
+    3: "cheer: its frames' fur is 3.837 dE off the plain pose (limit 1)"
+    4: 'push frame 8: fur 8.825 dE off the plain pose (limit 2)'
+    5: "push: its frames' fur is 7.776 dE off the plain pose (limit 1)"
+    6: 'move-climb frame 0: fur 8.131 dE off the plain pose (limit 2)'
+    7: "move-climb: its frames' fur is 6.488 dE off the plain pose (limit 1)"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/heroClipsBody.test.ts:71:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133.579489

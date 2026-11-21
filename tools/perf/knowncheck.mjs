@@ -27,6 +27,8 @@ const LISTS = [
   { file: 'src/game/ciTests.known.json', ids: (j) => j.known.map((k) => k.file) },
   // the meter's known coverage gaps (METER-2a, R-165.272): a piece a built stage uses with no bot or no channel, one id per missing half
   { file: 'tools/difficulty/coverage.known.json', ids: (j) => j.known.flatMap((k) => k.missing.map((h) => `${k.id}|${h}`)) },
+  // hero sheets not on the plain pose's fur colour yet (ART-HERO, R-165.378; heroClipsBody.test.ts): one id per sheet
+  { file: 'src/game/heroBody.known.json', ids: (j) => j.known.map((k) => k.sheet) },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 

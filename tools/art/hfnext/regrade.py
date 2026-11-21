@@ -7,9 +7,13 @@ small global L shift, then 5 global passes that close the fur MEAN, measured thr
 whites (L > 80 and chroma < 8 none, full from chroma 14) are not touched. Fur px: alpha > 200, L >= 25, not eye white (fur() below; the gate
 heroClipsBody.test.ts measures the same mask through clipde.py).
     python3 -I tools/art/hfnext/regrade.py idle-yawn,look-around,wave [--from 6c157b2ba] [--dry]
+    python3 -I tools/art/hfnext/regrade.py move-climb,cheer,push,hurt --from 700b4ef8d --ship     (ART-HERO, R-165.378: no bridges)
 It reads each clip's ORIGINAL sheet (before any bridge) from git at --from, writes the regraded sheet LOSSLESS to
 src/assets/hero/clips/<clip>.webp and puts back the clip's original entry in src/game/heroClipsData.ts, ready for bridgebake.py; the
-transfer is recorded in tools/art/hfnext/regrade.json. --dry prints the before/after only.
+transfer is recorded in tools/art/hfnext/regrade.json. --dry prints the before/after only. --ship (a clip with no bridges, so nothing
+re-encodes it after this): writes the sheet as it ships, WebP q86 method 6, the same encode the fur mean was closed through. --even
+(ART-HERO): then each frame's own small offset, smoothed over its neighbours, takes out the clip's colour drift across its frames.
+    python3 -I tools/art/hfnext/regrade.py move-climb,cheer,push,hurt --from 700b4ef8d --ship --even
 """
 import io, json, re, subprocess, sys
 from pathlib import Path
@@ -19,6 +23,9 @@ from PIL import Image
 clips = sys.argv[1].split(',')
 REV = sys.argv[sys.argv.index('--from') + 1] if '--from' in sys.argv else '6c157b2ba'
 DRY = '--dry' in sys.argv
+SHIP = '--ship' in sys.argv
+EVEN = '--even' in sys.argv
+LOOPS = {'push', 'move-climb', 'move-walk', 'move-run'}   # clips the game loops or cycles through (heroClips.ts)
 _M = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]); _W = np.array([0.9505, 1.0, 1.089])
 
 
@@ -80,12 +87,12 @@ for name in clips:
     dL = float(PF[:, 0].mean() - CF[:, 0].mean())
     ctr = (BINS[:-1] + BINS[1:]) / 2
 
-    def apply(f):   # reads dL, da, db as they stand
+    def apply(f, ev=(0.0, 0.0, 0.0)):   # reads dL, da, db as they stand; ev = this frame's own (L, a, b) offset (--even)
         out = f.copy(); vis = f[..., 3] > 0; L = lab(f[..., :3][vis]); C = np.hypot(L[:, 1], L[:, 2])
         wt = np.clip((L[:, 0] - 18) / 10, 0, 1)                           # the outline stays
         wt *= np.where(L[:, 0] > 80, np.clip((C - 8) / 6, 0, 1), 1)      # the eyes' whites stay
-        L2 = L.copy(); L2[:, 0] += wt * dL
-        L2[:, 1] += wt * np.interp(L[:, 0], ctr, da); L2[:, 2] += wt * np.interp(L[:, 0], ctr, db)
+        L2 = L.copy(); L2[:, 0] += wt * (dL + ev[0])
+        L2[:, 1] += wt * (np.interp(L[:, 0], ctr, da) + ev[1]); L2[:, 2] += wt * (np.interp(L[:, 0], ctr, db) + ev[2])
         out[..., :3][vis] = np.round(rgb(L2)); return out
     pm = PF.mean(0)
     def sheet_of(nf):
@@ -94,25 +101,39 @@ for name in clips:
             out[(k // c['cols']) * c['h']:(k // c['cols'] + 1) * c['h'], (k % c['cols']) * c['w']:(k % c['cols'] + 1) * c['w']] = f
         return out
 
-    def shipped_fur(nf):   # the fur as it SHIPS: through the q86 WebP encode bridgebake.py writes (its chroma loss is ~0.6 dE)
+    def shipped_fur(nf, each=False):   # the fur as it SHIPS: through the q86 WebP encode bridgebake.py writes (its chroma loss is ~0.6 dE)
         b = io.BytesIO(); Image.fromarray(sheet_of(nf).astype(np.uint8), 'RGBA').save(b, 'WEBP', quality=86, method=6)
         s2 = np.asarray(Image.open(b).convert('RGBA')).astype(np.float32)
         f2 = [s2[(k // c['cols']) * c['h']:(k // c['cols'] + 1) * c['h'], (k % c['cols']) * c['w']:(k % c['cols'] + 1) * c['w']] for k in range(c['n'])]
-        return np.concatenate([L[fur(L)] for L in (lab(f[..., :3])[f[..., 3] > 200] for f in f2)])
+        per = [L[fur(L)] for L in (lab(f[..., :3])[f[..., 3] > 200] for f in f2)]
+        return per if each else np.concatenate(per)
     for _ in range(5):                            # the binned curve leaves a pose/mask residue and the encode its own: close the fur MEAN
         nf = [apply(f) for f in fr]               # as shipped with global passes
         NF = shipped_fur(nf)
         r = pm - NF.mean(0); dL += float(r[0]); da = da + r[1]; db = db + r[2]
-    nf = [apply(f) for f in fr]
+    EV = np.zeros((c['n'], 3))
+    if EVEN:
+        # ART-HERO: a Wan clip drifts in colour across its frames (push: L 59 -> 62, so its loop popped 3.3 dE at last -> f0). Each frame
+        # gets its own small offset onto the plain pose's fur mean, smoothed [1 2 1] over its neighbours (around the loop for a clip that
+        # loops or cycles), so the frame-to-frame step only gets smaller: the drift goes, the pose's own colour stays.
+        mode = 'wrap' if name in LOOPS else 'edge'
+        for _ in range(4):
+            per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
+            R = np.array([pm - u.mean(0) for u in per])
+            Rp = np.pad(R, ((1, 1), (0, 0)), mode=mode); EV = EV + (Rp[:-2] + 2 * Rp[1:-1] + Rp[2:]) / 4
+    nf = [apply(f, EV[k]) for k, f in enumerate(fr)]
     NF = shipped_fur(nf)
     print(f'{name}: fur mean {CF.mean(0).round(2)} -> {NF.mean(0).round(2)} (plain {pm.round(2)}); dE {np.linalg.norm(CF.mean(0) - pm):.2f} -> '
           f'{np.linalg.norm(NF.mean(0) - pm):.2f}; dL {dL:+.2f}; da by L {np.round(da, 1).tolist()}; db by L {np.round(db, 1).tolist()}')
-    rec[name] = {'from': REV, 'dL': round(dL, 3), 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(), 'db': np.round(db, 3).tolist(),
-                 'fur_mean_before': np.round(CF.mean(0), 2).tolist(), 'fur_mean_after': np.round(NF.mean(0), 2).tolist(), 'plain_fur_mean': np.round(pm, 2).tolist()}
+    rec[name] = {'from': REV, 'written': 'q86' if SHIP else 'lossless (bridgebake.py encodes it)', 'dL': round(dL, 3), 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(), 'db': np.round(db, 3).tolist(),
+                 'even': np.round(EV, 3).tolist() if EVEN else None, 'fur_mean_before': np.round(CF.mean(0), 2).tolist(), 'fur_mean_after': np.round(NF.mean(0), 2).tolist(), 'plain_fur_mean': np.round(pm, 2).tolist()}
     if DRY:
         continue
     out = sheet_of(nf)
-    Image.fromarray(out.astype(np.uint8), 'RGBA').save(f'src/assets/hero/clips/{name}.webp', 'WEBP', lossless=True, method=6)
+    if SHIP:
+        Image.fromarray(out.astype(np.uint8), 'RGBA').save(f'src/assets/hero/clips/{name}.webp', 'WEBP', quality=86, method=6)
+    else:
+        Image.fromarray(out.astype(np.uint8), 'RGBA').save(f'src/assets/hero/clips/{name}.webp', 'WEBP', lossless=True, method=6)
     cur = blk.findall(src); assert len(cur) == 1, f'{name}: entry not found'
     src = blk.sub(lambda _m: orig_ent[0], src)
 if not DRY:
