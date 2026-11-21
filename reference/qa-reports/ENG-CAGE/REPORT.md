@@ -1,4 +1,4 @@
-# ENG-CAGE-b REPORT (t-eng-cage @ 5bad38879 from b34352b58; 8:54-10:00 PM ET 11-20, every time by `date`)
+# ENG-CAGE-b REPORT (t-eng-cage @ 5bad38879 from b34352b58; 8:54-9:55 PM ET 11-20, every time by `date`; the end corrected by BUILD-23d to its commit time, timecheck)
 
 ## EXACT NEXT STEP
 1. LEAD: assign the cage CHANNEL (the last coveragecheck red): tools/difficulty/score.ts must price a cage beat (a `cageChallenges`, or an
