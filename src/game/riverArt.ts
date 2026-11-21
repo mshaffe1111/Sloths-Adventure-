@@ -45,6 +45,11 @@ export function riverArtReady(): boolean {
   return ready && !!img;
 }
 
+/** the World 2 pieces' sheet once it has loaded (null before): the edge marker cuts its faces from it (edgeMarker.ts) */
+export function w2Sheet(): HTMLImageElement | null {
+  return riverArtReady() ? img : null;
+}
+
 /** piece `n` filling the box (x, y, w, h); `flip` mirrors it */
 function blit(ctx: CanvasRenderingContext2D, n: W2Piece, x: number, y: number, w: number, h: number, flip = false) {
   const f = W2_FRAMES[n];
