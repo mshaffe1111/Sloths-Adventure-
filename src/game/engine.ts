@@ -225,6 +225,7 @@ import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
 import { FollowPlay } from './followPlay.ts';
 import { drawFollowers, drawHerons } from './followArt.ts';
+import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
 
@@ -7049,6 +7050,11 @@ export class GameEngine {
     const n = new Map<string, number>();
     for (const e of this.enemies) if (!e.minion && e.type !== 'boss') n.set(e.type, (n.get(e.type) ?? 0) + 1);
     return [...n].sort((a, b) => b[1] - a[1])[0]?.[0];
+  }
+
+  /** on a stage whose little ones follow him (followPlay.ts): each one's face for the HUD's goal slots (followFaces.ts); null elsewhere */
+  public lineFaces(): Face[] | null {
+    return this.follow ? lineFaces(this.follow.line, this.follow.stage.covers) : null;
   }
 
   public guideView(out: GuideView): GuideView {

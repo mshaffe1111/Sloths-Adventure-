@@ -31,6 +31,8 @@ interface GameHUDProps {
   goalCreature?: () => string | undefined;
   /** a new number each time the stage (re)starts: the new HUD plays its short goal card again */
   runKey?: number;
+  /** on a stage whose little ones follow him home: each one's face for the goal slots (engine.ts lineFaces) */
+  lineFaces?: () => import('../game/followFaces.ts').Face[] | null;
 }
 
 /** The in-game HUD: the hanging vine (hud/VineHud.tsx; Matt's pick B with D's bloom-on-change, 2026-10-26). */
