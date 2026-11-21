@@ -89,8 +89,27 @@ for nm, (p, fr) in sheets.items():
     r = res[nm]
     print(f"{nm:14s} {r['frames']:3d} frames | fur L a b {pooled.round(1)} | pooled {r['pooled']:5.2f} dE, worst frame {r['frame_max']:5.2f} (#{r['frame_max_at']}) | fur steps median {r['step_median']:4.2f} max {r['step_max']:4.2f}, last->first {r['loop_seam']:4.2f} | band max {r['band_max']:4.2f}")
 if '--write' in sys.argv or '--check' in sys.argv:
-    txt = json.dumps({'bar': {'frame_max': 2.0, 'pooled': 1.0, 'band': 2.0}, 'loop_bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'plain_sha256': sha(STDP), 'plain_fur_lab': np.round(PF, 2).tolist(), 'sheets': res},
+    txt = json.dumps({'bar': {'frame_max': 2.0, 'pooled': 1.0}, 'loop_bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'plain_sha256': sha(STDP), 'plain_fur_lab': np.round(PF, 2).tolist(), 'sheets': res},
                      indent=1) + '\n'
     if '--check' in sys.argv:
         sys.exit(0 if open(OUT).read() == txt else f'{OUT} is stale: re-run tools/art/hfnext/herobody.py --write')
     open(OUT, 'w').write(txt); print('wrote', OUT)
+
+# ART-SHEETS-b (the lead's ruling, 11-21): the fur-only bands are a RATCHET, not a bar (pose lighting moves the brown fur's shading, so a
+# fixed band bar contradicts the eye). --ratchet records every sheet's bands at its ACCEPTED state into src/game/heroBands.ratchet.json;
+# heroClipsBody.test.ts fails any band more than 1.0 dE WORSE than recorded (a grade cannot squash silently). Re-record only a sheet the
+# lead accepted; a recorded band may only go DOWN (this refuses a rise).
+RAT = 'src/game/heroBands.ratchet.json'
+if '--ratchet' in sys.argv:
+    old = json.load(open(RAT))['sheets'] if __import__('os').path.exists(RAT) else {}
+    only = sys.argv[sys.argv.index('--ratchet') + 1].split(',') if len(sys.argv) > sys.argv.index('--ratchet') + 1 else list(res)
+    new = dict(old)
+    for nm in only:
+        for g, b in res[nm]['bands'].items():
+            for side in ('light', 'dark'):
+                if nm in old and g in old[nm] and b[side] > old[nm][g][side]:
+                    sys.exit(f'{nm} {g} {side}: {b[side]} is worse than the recorded {old[nm][g][side]}; the ratchet only moves down')
+        new[nm] = res[nm]['bands']
+    open(RAT, 'w').write(json.dumps({'note': 'fur-only light/dark bands per move group at each sheet\'s accepted state (herobody.py --ratchet); '
+                                      'heroClipsBody.test.ts fails a band > 1.0 dE worse', 'slack': 1.0, 'sheets': new}, indent=1) + '\n')
+    print('wrote', RAT, len(new), 'sheets')
