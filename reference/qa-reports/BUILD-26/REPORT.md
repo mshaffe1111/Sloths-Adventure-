@@ -60,7 +60,7 @@ alone is never counted toward 'fell back down from here 3 times'.
   'fell back down from here 3 times' at x 1132-1146 (the same leg's foot, y ~3740) or 295/842; kid E 12 at 926; kid E 30 and adult E 26
   in the dips at x 1151-1208. Lost rows that are not a tier drop are still rows that moved: traced next, before the lead is asked to land.
 
-# ENG-26o (on t-build-26 from 4b6ce810f): 1-4 cause C PROVEN **BOT**, not LAY: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
+# ENG-26o (on t-build-26 from 4b6ce810f): 1-4 causes C, A and B all PROVEN **BOT**, none LAY. C: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
 Commits: this REPORT and eng26o/ (trace-c-kid-easy-10.txt: the route's points around s17:top and the bot frame by frame; shape.mts: every
 climbable vine near a spot and the bough at each vine's top; towerRoute-oneline.diff: the line tried). Trees (D115): frozen detached
 worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with stderr prints (never committed). Nothing on 0bc969bce.
@@ -88,13 +88,22 @@ worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with std
    281 px to 10348; rescued onto s4:b at 19.3 s. B (adult Easy 17): r1 366-524 @10139, r2 657-815, r3 775-933, z 933-1181, s3:s 334-1022
    @10219, vine 5 x 1163: the same, a jump off r1 lands at x 682 on s3:s, he walks under z and off at 1022 (141 px short), 281 px down.
    The vine's foot is out of his grab band from s3:s (80 px over him; the engine takes up to 25 px under a foot), so only a hop up
-   onto r2, r3 or z gets him to it, and in these traces no bot makes that hop. **BOT or LAY: NOT proven.** BOT if decide has no "the route is a
-   hop over my head on a thin bough: hop up" choice (the likelier, since 80 px is one plain jump); LAY if the floor under a hop row may
-   end short of the row's way on over a 281 px drop (a child walking it falls off the same end). Next: print decide's branch per frame
-   while he walks s3:s under z (A, kid Normal 7, 15.9-17.2 s), as C was traced.
+   onto r2, r3 or z reaches it. **A and B: PROVEN BOT** (each decision tagged with its source line on a COPY of 4b6ce810f; the intent
+   printed beside the final pad). Walking s3:s under the row, the bot's intent is `{}` from **firsttimer.ts:2734** (the tower's rise
+   over him: "stopped first", `if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, ...)`), but the final pad stays {right} for the
+   whole 1.2 s (vx 268 throughout): **thumbify's release, firsttimer.ts:3764-3772**, re-arms the late lift-off EVERY frame for KID and
+   ADULT (no holdQ; the R-165.59 note at 3764 says so: "the steer is never let go once held"), so the empty intent never lets go of
+   right, he never slows under 40, never hops, and walks off s3:s's end. Proof (diagnostic, NOT the fix): on the copy, the thumb lets go
+   at once when 2734 says stop. Every A and B row then finishes with no rescue: kid Normal 7 (head: rescued at 790), kid Normal 12 (head:
+   1106), adult Normal 36 (head: 1057), adult Easy 17 (head: 982), adult Easy 19 (head: 980). **For BUILD-26f:** the stop at 2734 must be
+   one a KID/ADULT thumb can make. The diagnostic bypasses their calibrated release, so the real fix must keep 1-1's calibration
+   (tierBots, R-165.59; any 1-1 change re-runs it), then the planted toy and x40 on 1-4 and 2-6. Lay: none needed. The floor running under
+   the row is the miss's safety net, and a hop of 80 px gets him back up.
    **A third spot, middle Easy 10 at x 1102 (also on the head):** a 40 px step UP from s14:b (520-960 @5045) to s14:c (960-1208 @5005,
    the turn vine 41 x 1190 on it). He walks right under s14:c's lip off s14:b's end and drops 320 px to 5365, 8 times. Same family as A
-   and B (a thin bough a hop above the floor he walks, never hopped onto). Not proven either.
+   and B in look, but a DIFFERENT branch: the middle (a tier bot) intends {right} (firsttimer.ts:2862, then 2640) up to s14:b's lip and
+   presses only in the air at x 1050 (2505). My guess, that 2734's strict `rise.y < p.y - 40` drops a step of exactly 40 px, is WRONG:
+   `<=` on the copy changed nothing (still rescued at 1102). **Unproven: the next trace is 2640's edge read at s14:b's lip (x 900-960).**
 
 ## How C was proven (packet step 1)
 - **The placement probe again: still not a proof, and not used.** RealPlay.stand(x, y) takes his FEET (y = the bough's top; the bots'
@@ -115,8 +124,9 @@ worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with std
 
 ## For the lead (rulings, priority 'next')
 - C is BOT: the exact line is above for BUILD-26f; no src change from me, so no src suite was run (packet step 3: "if src changed").
-- Do you want the lay to keep a stand-off between a way-on vine and a field vine hung under the same bough anyway (the packet's step 2)?
-  I advise NO for this release: the pair is vertically disjoint, it reads as one way up, and the bot fix alone clears all six rows.
+- The lay stand-off (packet step 2): the lead ruled NO (no overlap in height; reads as one way up). Nothing of the lay changes.
+- A and B are BOT too (firsttimer.ts:2734 with the KID/ADULT release at 3764): one bot fix for BUILD-26f, with care for 1-1's
+  calibration. Then 1-4 relists ONCE after C's and A/B's fixes land (the third spot, middle Easy 10, still open).
 
 ## Lessons applied
 D111 (the box by `date`), D113 (the install in the background; the trace runs were seconds, not heavy runs: no heavy run used), D115
