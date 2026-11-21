@@ -1,0 +1,2 @@
+== npx tsc --noEmit -p . (head 411638a73)
+exit=0
