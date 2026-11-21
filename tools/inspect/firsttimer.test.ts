@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
+  dotReport, edgesOf, firstHarms, firstTimer, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
@@ -173,6 +173,36 @@ test('in the real engine: a log drifting his way across the lip is the floor his
     assert.equal(read(under, true), 'double', `${why}: the 214 px to the next log is a double, with the skill on as off`);
     assert.equal(read(under, false), 'double', `${why}: (skill off)`);
   }
+});
+
+test('on the run it was found on, 2-2 child Normal seed 36: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; RED with it off)', () => {
+  // (the real stage and bot, as castBots rolls it; read by what he meets, never where: every stand at a bank's lip, a log drifting his
+  //  way across it a step down, and a life lost within 3 s of one. Off, he took the double over log 79 into the water, ENG-27h)
+  const meet = (on: boolean) => {
+    const was = SKILLS.boardHop;
+    let stood = -1, lost = 0, stands = 0, lives: number | undefined;
+    SKILLS.boardHop = on;
+    try {
+      firstTimer('2-2', 36, FT_CHILD, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+        const e = (sim as unknown as { e: { player: { x: number; vx: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null; lives: number } }).e;
+        const p = e.player, t = sim.t, here = e.platforms.find((q) => q.id === e.standingOnId);
+        if (p.grounded && here && here.type !== 'drift' && Math.abs(p.vx) < 10 && here.x + here.width - p.x < 60
+          && e.platforms.some((q) => q.type === 'drift' && q.drift?.dir === 1 && q.y - here.y > 6 && q.y - here.y <= 40 && q.x < here.x + here.width && q.x + q.width > here.x + here.width)) {
+          if (t - stood > 3) stands++;
+          stood = t;
+        }
+        if (lives !== undefined && e.lives < lives && stood >= 0 && t - stood < 3) lost++;
+        lives = e.lives;
+      } });
+    } finally {
+      SKILLS.boardHop = was;
+    }
+    return { stands, lost };
+  };
+  const v = meet(true), off = meet(false);
+  assert.ok(v.stands >= 1, `he stood at such a lip (${v.stands})`);
+  assert.equal(v.lost, 0, `with the skill: no life lost after one (${v.stands} stands)`);
+  assert.ok(off.lost >= 1, `RED: with SKILLS.boardHop off a life is lost after one (${off.lost} of ${off.stands} stands)`);
 });
 
 test('the findings name the rule each breaks', () => {
