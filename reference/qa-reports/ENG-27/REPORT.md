@@ -1,6 +1,25 @@
 # ENG-27k REPORT (handed over at the D111 box; base d83358fad; branch t-eng-27; ground fix t-eng-ground 484199316; merge 154eb8366; F 7c7fe2a9a)
 ## EXACT NEXT STEP (ENG-27l, from t-eng-27 head; read only this section, D90)
-ORDER: (1) the lead's ruling on middle home Normal 2 (asked, below); (2) the race table and the gates; (3) B; (4) S.
+ORDER: (1) the lead's ruling on the two middle losses (RULED, below); (2) the race table and the gates; (3) B; (4) S.
+(0) **THE LEAD'S RULING (after (1) below): (b) first.** A fall never PAYS; the respawn's own time is forgiven (the invariant);
+    re-crossing the river he fell in is play and its cost is his (engine-core.md now says it in those words). Trace each fall to its
+    parting frame: a bot misread (fix it generally, rule 28's row-for-row castBots diff, 2-1..2-6 x40 both settings, plus pacerLay) or a
+    real hazard a careful player meets. If after (b) any fall is real and middle still loses: (a), the claim becomes 'middle wins with no
+    fall, and with up to one real fall', the losing rows named with their falls. NOT (c).
+    **TRACED (ENG-27k, every fall on the race leg of both losing rows; k/falls-middle-home-normal2-27k.txt, k/falls-middle-post-
+    normal5-27k.txt; probe k/falls-27k.ts.txt, copy to tools/inspect/_falls.ts, args `<seed> <setting> home|post`: the frames before
+    each life lost and at each takeoff what lies ahead within 420 px): ALL TEN are bot misreads, of two general kinds, none a hazard:**
+    M1, a SINGLE hop off a drifting log's front to a HIGHER bank (28 px up) 80-95 px ahead: it comes down 19 px short every time.
+       home N2: x 10683 (log #58 front 10744, bank #55 edge 10664), x 6551 (log #75 front 6612, bank #72 edge 6532), x 3959 (bank #82
+       edge 3940); post N5: x 12371 (bank #50 edge 12352). He stands still on the log riding it (vx 0), then hops (vx -223..-285,
+       vy -513) at its front: the hop's reach with a 28 px rise is under the gap. A full jump or a double carries it.
+    M2, a hop onto a log drifting AWAY from him (with the current, his way): he aims at where it is at takeoff and lands behind its
+       back end as it moves on. home N2: x 4427 (log #84 back end 4404 at takeoff); post N5: x 12815 and 12831 (logs #51/#52, back end
+       12784-12880 as he left), x 6055 and 5907 (log #79, 15-30 px behind its back end).
+    NEXT: fix M1 and M2 in the bot where the cause is (firsttimer.ts: the hop off a log reads the rise to the far floor and the log's
+    drift over the hop's time; fromTakeoff reads a gap from where he takes off, so M1 is likely the same reading missing the RISE, and
+    M2 the target's motion), two runs per cause, the castBots 1-40 row diff on 2-1..2-6 both settings (every moved row traced), then
+    pacerLay and the race table. Only if a fall is still left and real: (a) as ruled.
 (1) **RULING ASKED: pacerLay 'the careful middle player beats it, normal seed 2' (home) is RED on 7c7fe2a9a: 95.4 s vs the boat's 92.37.**
     Traced (k/trace-middle-home-normal2-27k.txt; probe k/probe-27k.ts.txt, copy to tools/inspect/_probe.ts, args `2 normal`): the
     invariant holds at each of its 4 falls (+0.92 -> +0.92 at x 10683, -0.85 -> -0.85 at x 6551, -1.40 -> -1.40 at x 3959, -1.16 -> -1.16
