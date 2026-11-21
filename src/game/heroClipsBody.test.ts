@@ -91,7 +91,7 @@ test('a looping hero clip does not pop where it loops (fur mean, last frame -> f
 /**
  * R-165.379 (ART-SHEETS-b, 11-21): THE BAND GATE. A pooled fur mean is fooled by a grade that squashes the tonal range (the mean-graded
  * swim: pooled 0.01 dE, but its light fur 4.04 too dark and its dark fur 4.04 too light: a flat, pale head). herobody.py splits each
- * MOVE GROUP's fur (swim: surf / tread / under / first; atlas, story, studies: the pose family; a clip, climb2, rope, vine: the sheet) at
+ * MOVE GROUP's brown fur (L < 72: cream, face mask and bandages out, the lead 11-21; swim: surf / tread / under / first; atlas, story, studies: the pose family; a clip, climb2, rope, vine: the sheet) at
  * its own median L and holds the light half to the plain pose's light half, the dark half to its dark half: each <= 2.0 dE, or a
  * heroBody.known.json row's band_max no worse.
  */

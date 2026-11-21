@@ -25,6 +25,9 @@ if GROUP:                       # are each computed on the group's OWN fur (swim
 AFFINE = '--affine' in sys.argv  # ART-SHEETS-b: the group's L map is a STRAIGHT line through its light-band and dark-band means onto the
 if AFFINE:                         # plain pose's (slope 0.6-1.8): a quantile map's steep stretches turned small L steps (and q86 blocks)
     BANDS = True                   # into mottle on swim tread/under; a line keeps the paint smooth
+BASE = '--base' in sys.argv   # ART-SHEETS-b: the group's L map read off the fur's BLURRED L (a base layer, box radius 4 twice, fur only)
+if BASE:                       # so the stretch moves the shading but never amplifies the paint's grain or q86 blocks (quantile mottle)
+    BANDS = True
 OUTDIR = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else None   # write the sheet there instead (a variant to compare)
 JS = ("import {ROPE_FRAMES} from './src/game/heroRopeData.ts'; import {SWIM_MOVES} from './src/game/heroSwimData.ts';"
       "import {VINE_FRAMES} from './src/game/heroVineData.ts'; import {STORY_FRAMES} from './src/game/heroStoryData.ts';"
@@ -64,6 +67,20 @@ def bin_means(F):
     n = np.bincount(idx, minlength=len(BINS) - 1).astype(float)
     a = np.bincount(idx, F[:, 1], len(BINS) - 1) / np.maximum(n, 1); b = np.bincount(idx, F[:, 2], len(BINS) - 1) / np.maximum(n, 1)
     return n, a, b
+
+
+def box(a, r):   # a (h, w) box blur, edge-clamped, by cumulative sums
+    for ax in (0, 1):
+        a = np.moveaxis(a, ax, 0); n = a.shape[0]
+        c = np.cumsum(np.pad(a, [(r + 1, r)] + [(0, 0)] * (a.ndim - 1), mode='edge'), 0)
+        a = np.moveaxis((c[2 * r + 1:2 * r + 1 + n] - c[:n]) / (2 * r + 1), 0, ax)
+    return a
+
+
+def base_L(f):   # the fur's base-layer L (normalised blur over fur px only); other px keep their own L
+    L = lab(f[..., :3]); M = (f[..., 3] > 200) & furm(L); Lm = np.where(M, L[..., 0], 0.0); Mf = M.astype(float)
+    num, den = box(box(Lm, 4), 4), box(box(Mf, 4), 4)
+    return np.where(den > 0.05, num / np.maximum(den, 1e-6), L[..., 0])
 
 
 def smooth(v, w):
@@ -111,10 +128,11 @@ for name in NAMES:
     def apply(f, ev=(0.0, 0.0, 0.0), k=0):
         g = gi[k]
         out = f.copy(); vis = f[..., 3] > 0; L = lab(f[..., :3][vis]); C = np.hypot(L[:, 1], L[:, 2])
+        LB = base_L(f)[vis] if BASE else L[:, 0]
         wt = np.clip((L[:, 0] - 18) / 10, 0, 1)                           # the outline stays
         wt *= np.where(L[:, 0] > 80, np.clip((C - 8) / 6, 0, 1), 1)      # the eyes' whites stay
         wt *= ((L[:, 2] > -2) & (L[:, 1] > -4))                           # no prop (water, leaves)
-        L2 = L.copy(); L2[:, 0] += wt * (dL[g] + ev[0] + (np.interp(L[:, 0], qx[g], qd[g]) if BANDS else 0))
+        L2 = L.copy(); L2[:, 0] += wt * (dL[g] + ev[0] + (np.interp(LB, qx[g], qd[g]) if BANDS else 0))
         L2[:, 1] += wt * (np.interp(L[:, 0], ctr, da[g]) + ev[1]); L2[:, 2] += wt * (np.interp(L[:, 0], ctr, db[g]) + ev[2])
         out[..., :3][vis] = np.round(rgb(L2)); return out
 

@@ -62,7 +62,8 @@ def fam(k, n):   # ART-SHEETS-b: the move group a frame is graded and banded in 
     return re.sub(r'\d+$', '', n) if k == 'swim' else re.sub(r'(_?[a-z])?\d+$', '', n)
 
 
-def bands(F):   # the BAND check (the lead, 11-21): fur split at its OWN median L, light half and dark half (a mean is fooled by shading)
+def bands(F):   # the BAND check (the lead, 11-21): FUR ONLY (L >= 72 out: the cream belly, face mask and bandages, whose share is pose),
+    F = F[F[:, 0] < 72]   # split at its OWN median L, light half and dark half (a mean is fooled by a grade that squashes the range)
     m = np.median(F[:, 0]); return F[F[:, 0] >= m].mean(0), F[F[:, 0] < m].mean(0)
 for k, nm in SB.SHEET.items():
     if k == 'climb2':
