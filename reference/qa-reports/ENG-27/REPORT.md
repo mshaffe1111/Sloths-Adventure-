@@ -1,3 +1,45 @@
+# ENG-27m REPORT (handed over at the D111 box, 28 min; base 79196c2f6; branch t-eng-27, this commit)
+## EXACT NEXT STEP (ENG-27n, from t-eng-27 head; read only this section, D90)
+ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule 28's castBots diff; (3) B; (4) S.
+(0) **The full src suite on 79196c2f6** (6 shards, frozen worktree, run_in_background): suite 1/6 PASS 635/635; 2/6 onward were still
+    running in ENG-27m's container at the box (ENG-27m sends the lead the summary if it gets it). If no result reached the lead: re-run
+    the 6 shards on a frozen worktree of the head (the CLAUDE.md src list, `--test-shard=i/6`). A red: name it, tell the lead.
+(1) **THE RULE'S TEST IS WRITTEN AND RED ON THE BASE: `tools/inspect/hopJudged.test.ts`** (in gates.yml's tool-test line; RED until M2
+    is fixed, by design). HOP_TRACE (firsttimer.ts) records, for every hop a hopLandsOn gate judged and then pressed, the judgment (gate,
+    platform, frame, x, hold, lag), the hop flown (frame, x, hold, kind) and where he came down; it records only: the whole run result
+    of 2-7 home middle Normal 5 and 2 is identical with it off and on (m/trace-neutral-27m.txt). Gates traced: `edgeWait` (the bank's
+    wait for a float, ~line 2825), `race` (the racing hop, M1's), `upstream` (the hop off a log's front against the flow), `boardHop`
+    (jumpFor's judged single). NOT yet traced: the liana (hopCatches, lianaWait) and the wheel (wheelHop): add them (they judge with
+    hopCatches / the wheel's own read; landed = caught the vine / on the wheel).
+    **ON THE BASE (m/hopJudged-base-27m.log.txt):** seed 5: 16 judged hops, 10 flown not as judged, 2 came down elsewhere, BOTH LOST
+    and both the M2 site: `edgeWait q#68 judged t 100.97 x 8990 lag 0.1 hold 0.200 | flown t 101.67 x 8964 hold 0.169 single | LOST`
+    (ENG-27l's x 8794 fall) and `edgeWait q#85 judged t 136.70 x 4833 lag 0.2 | flown t 137.07 x 4825 hold 0.137 | LOST` (x 4664).
+    Seed 2: 23 judged, 17 not as judged, 6 elsewhere (3 LOST: edgeWait x 6000 lag 0.2, x 5978 lag 0.2; upstream x 14902 lag 0.1 flown
+    at once as a double). Every `race` row is flown as a DOUBLE (kind drawn, M1 kept the draw) though judged a single; all came down
+    where judged, but the rule says SAME hold AND kind: ruling needed (see below).
+    **M2's CAUSE, traced (two runs: seeds 5 and 2):** the edge wait ends on a hop judged from where he WILL BE (x + vx*lag, lag 0.1 or
+    0.2), then the press comes from other code: a pending thumb (decide's lag), the stopped-dead read (~line 2775, `blockedT >=
+    stopReact` decides a jump while he stands at the edge) or tierEdge, from another x, later, with a drawn hold and kind.
+    **A CANDIDATE, NOT PROVEN, NOT IN THE CODE (m/floatSure-candidate-27m.diff.txt, SKILLS.floatSure; result m/hopJudged-candidate-27m.txt):**
+    press only on the frame the lag-0 hop lands from where he stands, a single held exactly who.hold[0] (startJump's floatHop, like
+    wheelHop); a beat later he STANDS for it (pending and lateArmed dropped, clockHeld, blockedT 0), the same at `upstream`. Result:
+    seed 5 edgeWait rows all clean (0 elsewhere; the 4 left are race doubles); seed 2: 3 edgeWait rows still LOST (x 7269 lag 0.1,
+    5980 lag 0.2, 4728 lag 0.2): standing kills the walk the lag-0.1/0.2 hop was judged on (x + vx*lag), so the lag-0 hop never lands
+    and the 0.5 s beat runs out. NEXT: judge the beat hop from where he STANDS (lags with x fixed at p.x, i.e. drop the vx*lag
+    projection once he stops) or keep his walk through the beat (side(dir)) only while the projected x is still on the bank; then
+    hopJudged GREEN on seeds 5 and 2 (RED with OFF=floatSure), the race table (copy raceprobe-27e.ts.txt to tools/inspect/_race27k.ts:
+    middle 24/24, expert 12/12, ride-only 0/24), pacerLay, pacerRespawn GREEN.
+    **RULING ASKED (lead):** the race hop's kind: judged single, flown double (drawn). Force single at the judged hold (ENG-27l's variant A
+    lost five races, but that also asked the bank 50 px in), or judge the double the bot will fly (hopLandsOn has no second press)?
+(2) Rule 28's castBots diff, 2-1..2-6 x40 both settings, base 1465822f7 vs the final head, frozen trees (ENG-27l (3) below); NOTE the
+    candidate DOES reach 2-1..2-6 (the edge wait and upstream run on every W2 river), so rows WILL move: each traced, no tier's pass down.
+(3) B and (4) S: unchanged (ENG-27l (4), (5) below).
+**Lessons applied:** D114 (the full suite first, on the base, background), D113 (no foreground wait; every run backgrounded or seconds
+long), D111 (28-min box by `date`), D57/D87 (ReadNotifications at each step), rule 28's own new clause (the test before the fix), D63
+not reached (no clip), D96 not reached (no full set). **Polish check:** no screen changed (bot and test only); none due.
+**Learned (proposed for level.md):** a bot that STANDS to wait must say so (clockHeld) or the stopped-dead read decides a jump for it;
+a judgment made with a lag projects his walk, so the wait that follows must keep that walk or re-judge from where he stands.
+
 # ENG-27l REPORT (handed over at the D111 box; base 1465822f7; branch t-eng-27 head 122193be4 + this REPORT; ground t-eng-ground 484199316)
 ## EXACT NEXT STEP (ENG-27m, from t-eng-27 head; read only this section, D90)
 ORDER: (1) G's result; (2) M2's bank-to-log site, then the race table; (3) rule 28's castBots diff; (4) B; (5) S.

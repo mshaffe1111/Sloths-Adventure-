@@ -1,0 +1,149 @@
+TAP version 13
+# seed 5: 16 judged hops pressed (race, edgeWait); flown not as judged 10, came down elsewhere 2
+#   race q\#47 judged t 77.87 x 12785 lag 0 hold 0.200 | flown t 77.87 x 12785 hold 0.301 double | came down \#47
+#   race q\#54 judged t 89.67 x 11067 lag 0 hold 0.200 | flown t 89.67 x 11067 hold 0.199 double | came down \#54
+#   edgeWait q\#68 judged t 100.97 x 8990 lag 0.1 hold 0.200 | flown t 101.67 x 8964 hold 0.169 single | came down LOST
+#   edgeWait q\#67 judged t 102.87 x 8967 lag 0 hold 0.200 | flown t 102.87 x 8967 hold 0.039 double | came down \#67
+#   edgeWait q\#67 judged t 104.63 x 8978 lag 0 hold 0.200 | flown t 104.90 x 8978 hold 0.180 double | came down \#67
+#   race q\#65 judged t 109.87 x 8344 lag 0 hold 0.200 | flown t 109.87 x 8344 hold 0.427 double | came down \#65
+#   edgeWait q\#85 judged t 136.70 x 4833 lag 0.2 hold 0.200 | flown t 137.07 x 4825 hold 0.137 single | came down LOST
+#   race q\#82 judged t 144.43 x 4197 lag 0 hold 0.200 | flown t 144.43 x 4197 hold 0.200 double | came down \#82
+#   edgeWait q\#91 judged t 147.77 x 3422 lag 0 hold 0.200 | flown t 148.03 x 3407 hold 0.239 single | came down \#91
+#   edgeWait q\#97 judged t 159.23 x 2018 lag 0 hold 0.200 | flown t 160.10 x 1993 hold 0.137 double | came down \#97
+# seed 2: 23 judged hops pressed (edgeWait, upstream, race, boardHop); flown not as judged 17, came down elsewhere 6
+#   edgeWait q\#14 judged t 19.40 x 14666 lag 0 hold 0.200 | flown t 19.40 x 14666 hold 0.078 single | came down \#14
+#   upstream q\#13 judged t 21.23 x 14785 lag 0 hold 0.200 | flown t 21.23 x 14785 hold 0.145 single | came down \#13
+#   edgeWait q\#18 judged t 27.07 x 15813 lag 0.1 hold 0.200 | flown t 27.07 x 15813 hold 0.071 single | came down \#16
+#   edgeWait q\#14 judged t 39.50 x 14665 lag 0 hold 0.200 | flown t 39.87 x 14672 hold 0.270 double | came down \#13
+#   upstream q\#12 judged t 41.90 x 14902 lag 0.1 hold 0.200 | flown t 41.90 x 14902 hold 0.355 double | came down LOST
+#   edgeWait q\#19 judged t 61.63 x 15981 lag 0 hold 0.200 | flown t 61.93 x 15981 hold 0.149 double | came down \#18
+#   upstream q\#20 judged t 63.80 x 16307 lag 0 hold 0.200 | flown t 63.80 x 16307 hold 0.096 double | came down \#20
+#   race q\#55 judged t 132.83 x 10771 lag 0 hold 0.200 | flown t 132.83 x 10771 hold 0.200 double | came down \#55
+#   race q\#61 judged t 144.40 x 9349 lag 0 hold 0.200 | flown t 144.40 x 9349 hold 0.297 double | came down \#61
+#   boardHop q\#73 judged t 156.30 x 7186 lag 0 hold 0.200 | flown t 156.30 x 7186 hold 0.109 single | came down \#73
+#   edgeWait q\#79 judged t 163.60 x 6000 lag 0.2 hold 0.200 | flown t 163.60 x 6000 hold 0.079 single | came down LOST
+#   edgeWait q\#78 judged t 164.63 x 5978 lag 0.2 hold 0.200 | flown t 165.13 x 5978 hold 0.148 double | came down LOST
+#   edgeWait q\#78 judged t 167.27 x 5995 lag 0.1 hold 0.200 | flown t 167.70 x 5978 hold 0.351 double | came down \#78
+#   boardHop q\#84 judged t 173.23 x 4672 lag 0 hold 0.200 | flown t 173.23 x 4672 hold 0.153 single | came down \#84
+#   boardHop q\#90 judged t 185.27 x 3255 lag 0 hold 0.200 | flown t 185.27 x 3255 hold 0.172 single | came down \#90
+#   edgeWait q\#96 judged t 194.33 x 1981 lag 0 hold 0.200 | flown t 194.33 x 1981 hold 0.094 single | came down \#96
+#   race q\#93 judged t 198.97 x 1337 lag 0 hold 0.200 | flown t 198.97 x 1337 hold 0.200 double | came down \#93
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+not ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 1119.298551
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/hopJudged.test.ts:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'race q#47 judged t 77.87 x 12785 lag 0 hold 0.200 | flown t 77.87 x 12785 hold 0.301 double | came down #47',
+    +   'race q#54 judged t 89.67 x 11067 lag 0 hold 0.200 | flown t 89.67 x 11067 hold 0.199 double | came down #54',
+    +   'edgeWait q#68 judged t 100.97 x 8990 lag 0.1 hold 0.200 | flown t 101.67 x 8964 hold 0.169 single | came down LOST',
+    +   'edgeWait q#67 judged t 102.87 x 8967 lag 0 hold 0.200 | flown t 102.87 x 8967 hold 0.039 double | came down #67',
+    +   'edgeWait q#67 judged t 104.63 x 8978 lag 0 hold 0.200 | flown t 104.90 x 8978 hold 0.180 double | came down #67',
+    +   'race q#65 judged t 109.87 x 8344 lag 0 hold 0.200 | flown t 109.87 x 8344 hold 0.427 double | came down #65',
+    +   'edgeWait q#85 judged t 136.70 x 4833 lag 0.2 hold 0.200 | flown t 137.07 x 4825 hold 0.137 single | came down LOST',
+    +   'race q#82 judged t 144.43 x 4197 lag 0 hold 0.200 | flown t 144.43 x 4197 hold 0.200 double | came down #82',
+    +   'edgeWait q#91 judged t 147.77 x 3422 lag 0 hold 0.200 | flown t 148.03 x 3407 hold 0.239 single | came down #91',
+    +   'edgeWait q#97 judged t 159.23 x 2018 lag 0 hold 0.200 | flown t 160.10 x 1993 hold 0.137 double | came down #97'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'race q#47 judged t 77.87 x 12785 lag 0 hold 0.200 | flown t 77.87 x 12785 hold 0.301 double | came down #47'
+    1: 'race q#54 judged t 89.67 x 11067 lag 0 hold 0.200 | flown t 89.67 x 11067 hold 0.199 double | came down #54'
+    2: 'edgeWait q#68 judged t 100.97 x 8990 lag 0.1 hold 0.200 | flown t 101.67 x 8964 hold 0.169 single | came down LOST'
+    3: 'edgeWait q#67 judged t 102.87 x 8967 lag 0 hold 0.200 | flown t 102.87 x 8967 hold 0.039 double | came down #67'
+    4: 'edgeWait q#67 judged t 104.63 x 8978 lag 0 hold 0.200 | flown t 104.90 x 8978 hold 0.180 double | came down #67'
+    5: 'race q#65 judged t 109.87 x 8344 lag 0 hold 0.200 | flown t 109.87 x 8344 hold 0.427 double | came down #65'
+    6: 'edgeWait q#85 judged t 136.70 x 4833 lag 0.2 hold 0.200 | flown t 137.07 x 4825 hold 0.137 single | came down LOST'
+    7: 'race q#82 judged t 144.43 x 4197 lag 0 hold 0.200 | flown t 144.43 x 4197 hold 0.200 double | came down #82'
+    8: 'edgeWait q#91 judged t 147.77 x 3422 lag 0 hold 0.200 | flown t 148.03 x 3407 hold 0.239 single | came down #91'
+    9: 'edgeWait q#97 judged t 159.23 x 2018 lag 0 hold 0.200 | flown t 160.10 x 1993 hold 0.137 double | came down #97'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/hopJudged.test.ts:45:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+not ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 773.366978
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/tools/inspect/hopJudged.test.ts:35:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#14 judged t 19.40 x 14666 lag 0 hold 0.200 | flown t 19.40 x 14666 hold 0.078 single | came down #14',
+    +   'upstream q#13 judged t 21.23 x 14785 lag 0 hold 0.200 | flown t 21.23 x 14785 hold 0.145 single | came down #13',
+    +   'edgeWait q#18 judged t 27.07 x 15813 lag 0.1 hold 0.200 | flown t 27.07 x 15813 hold 0.071 single | came down #16',
+    +   'edgeWait q#14 judged t 39.50 x 14665 lag 0 hold 0.200 | flown t 39.87 x 14672 hold 0.270 double | came down #13',
+    +   'upstream q#12 judged t 41.90 x 14902 lag 0.1 hold 0.200 | flown t 41.90 x 14902 hold 0.355 double | came down LOST',
+    +   'edgeWait q#19 judged t 61.63 x 15981 lag 0 hold 0.200 | flown t 61.93 x 15981 hold 0.149 double | came down #18',
+    +   'upstream q#20 judged t 63.80 x 16307 lag 0 hold 0.200 | flown t 63.80 x 16307 hold 0.096 double | came down #20',
+    +   'race q#55 judged t 132.83 x 10771 lag 0 hold 0.200 | flown t 132.83 x 10771 hold 0.200 double | came down #55',
+    +   'race q#61 judged t 144.40 x 9349 lag 0 hold 0.200 | flown t 144.40 x 9349 hold 0.297 double | came down #61',
+    +   'boardHop q#73 judged t 156.30 x 7186 lag 0 hold 0.200 | flown t 156.30 x 7186 hold 0.109 single | came down #73',
+    +   'edgeWait q#79 judged t 163.60 x 6000 lag 0.2 hold 0.200 | flown t 163.60 x 6000 hold 0.079 single | came down LOST',
+    +   'edgeWait q#78 judged t 164.63 x 5978 lag 0.2 hold 0.200 | flown t 165.13 x 5978 hold 0.148 double | came down LOST',
+    +   'edgeWait q#78 judged t 167.27 x 5995 lag 0.1 hold 0.200 | flown t 167.70 x 5978 hold 0.351 double | came down #78',
+    +   'boardHop q#84 judged t 173.23 x 4672 lag 0 hold 0.200 | flown t 173.23 x 4672 hold 0.153 single | came down #84',
+    +   'boardHop q#90 judged t 185.27 x 3255 lag 0 hold 0.200 | flown t 185.27 x 3255 hold 0.172 single | came down #90',
+    +   'edgeWait q#96 judged t 194.33 x 1981 lag 0 hold 0.200 | flown t 194.33 x 1981 hold 0.094 single | came down #96',
+    +   'race q#93 judged t 198.97 x 1337 lag 0 hold 0.200 | flown t 198.97 x 1337 hold 0.200 double | came down #93'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#14 judged t 19.40 x 14666 lag 0 hold 0.200 | flown t 19.40 x 14666 hold 0.078 single | came down #14'
+    1: 'upstream q#13 judged t 21.23 x 14785 lag 0 hold 0.200 | flown t 21.23 x 14785 hold 0.145 single | came down #13'
+    2: 'edgeWait q#18 judged t 27.07 x 15813 lag 0.1 hold 0.200 | flown t 27.07 x 15813 hold 0.071 single | came down #16'
+    3: 'edgeWait q#14 judged t 39.50 x 14665 lag 0 hold 0.200 | flown t 39.87 x 14672 hold 0.270 double | came down #13'
+    4: 'upstream q#12 judged t 41.90 x 14902 lag 0.1 hold 0.200 | flown t 41.90 x 14902 hold 0.355 double | came down LOST'
+    5: 'edgeWait q#19 judged t 61.63 x 15981 lag 0 hold 0.200 | flown t 61.93 x 15981 hold 0.149 double | came down #18'
+    6: 'upstream q#20 judged t 63.80 x 16307 lag 0 hold 0.200 | flown t 63.80 x 16307 hold 0.096 double | came down #20'
+    7: 'race q#55 judged t 132.83 x 10771 lag 0 hold 0.200 | flown t 132.83 x 10771 hold 0.200 double | came down #55'
+    8: 'race q#61 judged t 144.40 x 9349 lag 0 hold 0.200 | flown t 144.40 x 9349 hold 0.297 double | came down #61'
+    9: 'boardHop q#73 judged t 156.30 x 7186 lag 0 hold 0.200 | flown t 156.30 x 7186 hold 0.109 single | came down #73'
+    10: 'edgeWait q#79 judged t 163.60 x 6000 lag 0.2 hold 0.200 | flown t 163.60 x 6000 hold 0.079 single | came down LOST'
+    11: 'edgeWait q#78 judged t 164.63 x 5978 lag 0.2 hold 0.200 | flown t 165.13 x 5978 hold 0.148 double | came down LOST'
+    12: 'edgeWait q#78 judged t 167.27 x 5995 lag 0.1 hold 0.200 | flown t 167.70 x 5978 hold 0.351 double | came down #78'
+    13: 'boardHop q#84 judged t 173.23 x 4672 lag 0 hold 0.200 | flown t 173.23 x 4672 hold 0.153 single | came down #84'
+    14: 'boardHop q#90 judged t 185.27 x 3255 lag 0 hold 0.200 | flown t 185.27 x 3255 hold 0.172 single | came down #90'
+    15: 'edgeWait q#96 judged t 194.33 x 1981 lag 0 hold 0.200 | flown t 194.33 x 1981 hold 0.094 single | came down #96'
+    16: 'race q#93 judged t 198.97 x 1337 lag 0 hold 0.200 | flown t 198.97 x 1337 hold 0.200 double | came down #93'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/tools/inspect/hopJudged.test.ts:45:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5571.575452
