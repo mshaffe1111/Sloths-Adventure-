@@ -1,7 +1,6 @@
-# ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): cheer ACCEPTED by the lead; swim and ouch strips for judging
+# ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): cheer, swim and ouch strips ACCEPTED by the lead; DONE when the queued gates are green
 ## EXACT NEXT STEP
-The lead ACCEPTED the cheer strip and ruled no bridge. The lead judges hero-swim-frames-before-after.jpg and
-hero-ouch-frames-before-after.jpg (reference/art/hfnext/hero/cheer-cut/, with their game-speed mp4s). Then read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
+The lead ACCEPTED all three strips (cheer, swim, ouch; no bridge) and step-back/teeter by test. What remains is gates only: read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
 the base suite (step 0), then drawcheck on 208da39a7+, then the full suite on the head; if this container is gone, re-run drawcheck and the
 suite on t-art-next. Step-back and teeter are test-proven cuts but not yet shot (heroshoot has no ledge scene).
 ## 1. VERIFY (on ec7f1070c)
