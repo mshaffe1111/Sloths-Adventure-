@@ -1,0 +1,18 @@
+hopJudged on a0ab91d33 (the ruling built; frozen tree), npx tsx --test tools/inspect/hopJudged.test.ts:
+# seed 5: 13 judged hops pressed (boardHop, race, edgeWait); flown not as judged 1, came down elsewhere 0
+#   boardHop q\#62 judged t 86.67 x 10467 lag 0 hold 0.200 | flown t 86.73 x 10458 hold 0.171 single | came down \#62
+# seed 2: 21 judged hops pressed (edgeWait, upstream, race); flown not as judged 2, came down elsewhere 0
+#   edgeWait q\#14 judged t 20.13 x 14674 lag 0 hold 0.200 | flown t 20.20 x 14677 hold 0.033 single | came down \#14
+#   upstream q\#20 judged t 36.47 x 16158 lag 0 hold 0.200 | flown t 36.47 x 16158 hold 0.041 single | came down \#20
+# pass 0
+# fail 2
+
+Who pressed (diagnostic copy of a0ab91d33: a print in startJump when a judged row is pressed with no gate hop, and in decide; firsttimer.ts line numbers of that copy):
+# DECIDE 86.67 10467 boardHop 2839:19) < 4015:27) < 4381:24)
+# UNGATED 86.73 10458 boardHop 2399:26) < 4015:27) < 4381:24)
+# DECIDE 20.17 14674 edgeWait 2839:19) < 4015:27) < 4381:24)
+# UNGATED 20.20 14677 edgeWait 2399:26) < 4015:27) < 4381:24)
+# UNGATED 21.67 14772 upstream 3038:40) < 4015:27) < 4381:24)
+# UNGATED 36.47 16158 upstream 3038:40) < 4015:27) < 4381:24)
+# UNGATED 39.33 16215 upstream 3038:40) < 4015:27) < 4381:24)
+2399 = the pending thumb's press; 2839 = the stopped-dead read (blockedT >= stopReact) deciding; 3038 = upstream's fall-through after the 0.5 s beat

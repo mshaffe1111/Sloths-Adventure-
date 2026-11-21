@@ -1,3 +1,66 @@
+# ENG-27n REPORT (handed over at the D111 box, written 6:05 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 174e3f54d + this REPORT)
+## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
+ORDER: (0) the suite's verdict; (1) pin hopFlies' DOUBLE against the engine, then the one LOST row; (2) boardHop onto the drawn hop;
+(3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's castBots diff; (7) B and S.
+(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background): at the box 1247 ok, 0
+    not ok, still running (in gen2 1-1's forks test). ENG-27n sends the lead the verdict when the run wakes it. If none reached the lead:
+    re-run it on a frozen tree of the head. A red: name it, tell the lead.
+(1) **hopJudged on 174e3f54d (n/hopJudged-174e3f54d-27n.txt): seed 5 GREEN** (10 judged hops, edgeWait and race: 0 flown not as judged,
+    0 came down elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x
+    14674 hold 0.235 double | LOST`. The drawn double is flown EXACTLY as judged and still drowns: hopFlies' double is not the engine's.
+    Suspects, in order: (a) v2: the engine's second impulse is PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * drowsyJump * dragJump
+    (engine.ts ~2671, the flightClear case aside); hopFlies uses PHYS.doubleV bare; (b) the second press's hold count (hopFlies: frame i
+    held while age + DT < age2 + hold2, the first press's convention; the touch layer's minimum, touchHeld, may restart at the second
+    press); (c) the overSmall steer, read in hopFlies for the judged float only (the bot reads every platform under him); (d) the d2
+    frame. HOW: a test on the real engine, copying firsttimer.ts tryAt (~line 4560: sim.stand, then frame by frame): fly drawn hops
+    (single and double, upOnly 0 and 0.1, a few holds, d2 and hold2) off a flat floor onto a static platform, and assert hopFlies (at =
+    () => q.x) comes down within 1 px of where the engine does, the landing frame equal; fix hopFlies until it is, then hopJudged again
+    (seeds 5 and 2), then TRACE=1 on seed 2 at x 14674 (startJump's jump lines: from, hold, d2, to). Two runs per cause (rule 28).
+(2) **boardHop** (jumpFor ~line 1616) still judges a single held who.hold[0], and its press comes through decide's thumb lag (on
+    a0ab91d33, seed 5 t 86.67: judged x 10467, pressed 2 frames on from x 10458, held 0.171, via the stopped-dead read; n/hopJudged-
+    a0ab91d33-27n.txt). Not reached on seeds 5 or 2 at 174e3f54d, but it must follow the ruling: under floatSure, the drawn hop
+    (waitHop ?? drawHop), judged by hopFlies at lag 0, gateHop set and pressed at once (decide keeps its gauss draw, then startJump now
+    when a gate hop is set). Also make gateHop good only on the frame it was set (gateAt === this.t), so a jumpFor read that is not
+    pressed can never leak into a later jump. Then the liana (hopCatches, lianaWait) and wheel (wheelHop) traces (ENG-27m's (1)).
+(3) **pacerLay.test, pacerRespawn.test: NOT run** (the suite held the one heavy slot). Run each on a frozen tree of the head: GREEN.
+(4) **The whole runs** (2-7 home middle Normal 5 and 2; ENG-27m's numbers in m/candidate2-runs-27m.txt: candidate 2 had seed 5 171 ->
+    205.7 s, seed 2 203 -> 182.2 s) re-measured on the head FIRST: the waits past the beat now stand by choice and redraw their hop each
+    0.5 s beat, which can move time either way. Then seed 5's extra seconds traced: where he waits, why (a wait that never ends is a miss).
+(5) the race table (middle 24/24, expert 12/12, ride-only 0/24; ENG-27m's (1) has the probe's recipe); (6) rule 28 on 2-1..2-6 x40 both
+    settings, base 1465822f7 vs head, frozen trees, row for row (the river gates run on every W2 river: rows WILL move, each traced);
+    tierBots 1-1 9/9; (7) B and S as ENG-27l's (4), (5).
+## ENG-27n: what was done
+- **Step 0:** the full src suite on b7a68a8bd, frozen worktree, background (above). npm install needs `--legacy-peer-deps` (CI's line).
+- **THE LEAD'S RULING BUILT** (a0ab91d33): candidate 2 applied (`git apply`, its two HOPDIAG lines stripped), plus:
+  `DrawnHop` { kind, hold, d2, dblAt, hold2, upOnly } and `drawHop()`: startJump's draws in the same order (flickHold with the same
+  floor, the dblShare draw, d2 from dbl2Q with the same climb/needs bounds, the kind's hold cap, upOnly, dblAt) and the second press's
+  hold, drawn ONCE per wait (`waitHop`, kept until a gate presses it, cleared when a beat runs out). `hopFlies()`: hopLandsOn's flight
+  plus no steer for upOnly, the double's second press (at d2, or past dblAt when d2 < 0) through the engine's secondJumpV, its hold, and
+  the overSmall let-go / steer-back over the judged float. **edgeWait, upstream and race** judge the drawn hop with hopFlies at lag 0
+  from p.x and press only if it lands (`gateHop`), else he stands by choice and it is judged again next frame. startJump flies the
+  gate's hop (kind, hold, d2, upOnly, dblAt, hold2) unchanged.
+- **THE RANDOM STREAM KEPT:** drawHop draws from its OWN seeded stream (`rHop`, the run's seed formula + 50021), read nowhere else;
+  startJump still makes every main-stream draw it made (and the mid-air second-hold draw is still made, its value replaced by hold2), and
+  the gates pass startJump the same kind as before ('single' at edgeWait/upstream, jumpFor's at the race), so each press consumes the
+  same main-stream draws; only WHEN he presses moves. Not yet proven by a run: rule 28's diff (6) shows it.
+- **hopJudged.test.ts**: a drawn row (it carries its kind) must be flown with the SAME kind and hold; boardHop's single as before.
+  On a0ab91d33: seed 5 13 judged, 1 flown not as judged, 0 elsewhere; seed 2 21 judged, 2 not as judged, 0 elsewhere.
+- **Traced (a diagnostic copy, run twice, the same rows both times; n/hopJudged-a0ab91d33-27n.txt):** every row flown not as judged
+  was a press no gate made: upstream's fall-through after the 0.5 s beat (seed 2 t 21.67, 36.47, 39.33), and the stopped-dead read
+  (blockedT) 2 frames after a judgment (seed 2 t 20.17 x 14674 edgeWait; seed 5 t 86.67 x 10467 boardHop). **Fixed:** 123876d28
+  (upstream: the beat out, a new draw, he stands on; the log hands him back) -> the upstream rows clean (n/hopJudged-123876d28-27n.txt);
+  174e3f54d (the edge wait past the beat returned with nothing held: now he stands by choice, clockHeld, and the next beat draws its own
+  hop) -> seed 5 GREEN, seed 2's one row left is (1).
+- **Checks on 174e3f54d:** the bot file type-checks alone (tsconfig excludes tools/; checked with node types: 0 errors) and loads;
+  hopJudged 1/2 (above). NOT run: pacerLay, pacerRespawn, the race table, rule 28's diff, tierBots, the rest of the full set.
+- **Lessons applied:** D114 (the suite first, on the base, background), D113 (every run backgrounded, no foreground wait), D115 (every
+  run on its own frozen worktree: base, three frozen heads, the diagnostic copy), D111 (28 min by `date`), D57/D87 (ReadNotifications
+  at each step and push), D109 (no clock times in messages), rule 28 (traced before fixed; the test RED-first, now asserting EQUAL).
+  **Polish check:** no screen changed (bot and test only); none due.
+- **Learned (proposed for level.md):** a wait that returns nothing must say he stands by choice on EVERY frame of it, not only the
+  first beat: the stopped-dead read takes any unflagged stand and presses a hop no gate judged. A gate that judges with a model of the
+  hop must have that model pinned against the engine for every kind it judges (the double here came down LOST, flown as judged).
+
 # ENG-27m REPORT (handed over at the D111 box, 28 min; base 79196c2f6; branch t-eng-27, this commit)
 ## EXACT NEXT STEP (ENG-27n, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule 28's castBots diff; (3) B; (4) S.
