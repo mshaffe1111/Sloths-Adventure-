@@ -4,7 +4,7 @@
    Rule 28 is DONE for the refined boardHop (below): do not re-run it. Its tools: r28patch-27i.py.txt (the refined skill for every tree),
    r28-runner-27h.ts.txt, r28diff-27h.py.txt; probes r28moved/r28lives/r28fire-27i.py.txt, bhfire-27i.ts.txt (+ r28probe-27i.diff.txt:
    NO_HOP=1 turns boardHop alone off, __bhf logs each fire, __up each single the testers' dblShare turns into a double).
-1a. **FIRST (the lead's ruling (3), before the merge): explain 2-4 child Normal's lives 185 -> 205 IN FULL (a shipped stage).** Done so far:
+1a. **DONE (the lead's ruling (3), before the merge): explain 2-4 child Normal's lives 185 -> 205 IN FULL (a shipped stage).** Done so far:
    the four untraced lives, one line each (trace runs on hd3; none is a wrong boardHop read): child N 14 x 24458, walked onto log 107 and ran
    off its front (the named walk-off; the fire's single was not the move made); child N 18 x 16483, the same walk-off on log 76; middle N 22
    x 23087, boardHop's single came down on log 102 as read, then the ride's hop off the log fell short (R-165.381); middle N 38 x 16295,
@@ -17,11 +17,11 @@
    points 900 px from the life at 280.6; 40's are 206.4 x 15973 and 360.7 x 24175, after its last life). The runs part at the first fire
    and the rest is the same water met at another log phase. Statistically +20 on 228/208 lives is about 1 sigma (sqrt 436 = 21).
    Seeds 10, 12, 13, 27 (+4, +5, +4, +5) the same way (r28-27i/2-4-c10c12c13c27-lives.txt): of 25 lives, 19 from a drifting log (a hop or a
-   walk-off: the ride's), 6 from a bank where boardHop did not fire, NONE a boardHop jump. So far, six rows carrying +29 of the +20 net
-   (the rest net -9): 41 lives, 30 from a log, 11 from a bank without a fire, 0 boardHop. Next: the remaining child N rows with a plus
-   (2, 4, 5, 8, 16, 18, 20, 21, 30, 33: +1 to +3 each) by the same classifier (the c4 script in this step's commit; one trace per row on
-   hd3-style tree: r28patch-27i + r28probe-27i.diff.txt + __run in pad()), then send the lead the full count. If any life is a
-   boardHop jump (a fire at its take-off within 0.05 s and 40 px), trace its parting frame (r28cmp-27h.py.txt) (r28cmp-27h.py.txt on
+   walk-off: the ride's), 6 from a bank where boardHop did not fire, NONE a boardHop jump. The other ten plus rows (2, 4, 5, 8, 16, 18,
+   20, 21, 30, 33) by r28classify-27i.py.txt (r28-27i/2-4-c10rows-lives.txt): 55 lives, 39 from a log, 16 from a bank without a fire, 0 a
+   boardHop jump. **ALL 16 rows that gained lives: 96 lives, 69 from a drifting log (R-165.381's hop or the named walk-off), 27 from a bank
+   where boardHop did not fire, 0 from a boardHop jump.** Done with 1a: no wrong boardHop read on 2-4; the +20 is the same water met by
+   runs that parted at the first fire (it puts the child on logs, where the ride's own faults take him). Sent to the lead. (r28cmp-27h.py.txt on
    r28trace runs, NO_HOP=1 for base) and test the hypothesis that a life lost at 24k/25k after a boardHop landing puts him back behind 23k's
    hazard, so he crosses it again (re-exposure), against the other: that the runs diverge in the bot's r() draws (the trace's nr). One line
    per life. If any is a wrong boardHop read: fix it generally and re-run rule 28 on 2-4 only. Lead's rulings in hand: dblShare's upgrade of a
