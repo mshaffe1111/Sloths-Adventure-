@@ -2,6 +2,15 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-27. ENG-27 (t-eng-27 from 0eefc707e, 11-20 evening; stopped 8:33 PM ET at real context ~427k): 2-7's left leg after a drop
+**Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** Done: the out-and-back toy (gen2/toyHome.ts, tools/inspect/homeToys.ts
+on a listed test row) lays clean; a left leg's rivers are mirrored (legs.ts reflectLeg, RiverZone.way); legOverlaps refuses a leg laid
+back over another; the start's back wall; river.ts riverAt (never find a river by x alone); levelCheck keeps run legs apart; w2Finish's
+splash side on a left leg; bots follow the lay's route on legs. **Traps:** an out-and-back puts one leg UNDER another: every lookup by
+x alone breaks (river under him, past the shrine, wet ahead, fall links); grep for them first. levelCheck's `plats` is rebuilt by
+layout() each walk: per-platform maps belong inside walk(). Open: bots drown on toy seeds 2-3; the column's last-storey rescue; the
+inspector's column-wall phantom; a sealed door's push-back assumes he came from the left (engine.ts:3607).
+
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
 against its face). drawGround's lower() took the FIRST one listed: at a wall with a stair of step banks standing on the floor at its foot (1-6,
