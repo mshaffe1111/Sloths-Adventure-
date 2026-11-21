@@ -1,0 +1,24 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+import { SKILLS } from './firsttimer.ts';
+const [tiers = 'middle', codes = 'home,post', seedsS = '1,2,3,4,5,6'] = process.argv.slice(2);
+for (const tier of tiers.split(',')) for (const codeS of codes.split(',')) for (const setting of ['normal', 'easy'] as const) for (const seed of seedsS.split(',').map(Number)) {
+  if (tier === 'expert' && setting === 'easy') continue;
+  const was = { race: SKILLS.race, rideOnly: SKILLS.rideOnly };
+  if (tier === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
+  let piece: any, l0: number | undefined, px: number | undefined, f = 0; const ev: string[] = [];
+  let pond = 0, pondS = 0, lastT = -1;
+  try {
+    homeRun((tier === 'ride' ? 'middle' : tier) as never, setting, seed, 1, { onFrame: (sim: any) => {
+      f++; const e = sim.e, p = e.player; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+      const clk = piece?.clock ?? null; const dl = l0 !== undefined && e.lives < l0; l0 = e.lives;
+      const racing = clk !== null && !piece.verdict;
+      if (dl && racing) ev.push(`fall x ${Math.round(p.x)} f ${f} clk ${clk.toFixed(1)}`);
+      if (!dl && px !== undefined && Math.abs(p.x - px) > 40 && racing) { pond++; if (lastT >= 0) pondS += clk - lastT; lastT = clk; ev.push(`pond x ${Math.round(px)}->${Math.round(p.x)} f ${f} clk ${clk.toFixed(1)}`); }
+      px = p.x;
+    } } as never, codeS === 'post' ? POST_CODE : HOME_CODE);
+  } finally { Object.assign(SKILLS, was); }
+  const v = piece?.verdict;
+  console.log(`${tier}\t${codeS}\t${setting}\t${seed}\t${v ? (v.won ? 'WON' : 'lost') + ` ${Math.round((v.boat - v.him) * 10) / 10}` : 'none'}\tponds ${pond}\t${ev.join('; ')}`);
+}
