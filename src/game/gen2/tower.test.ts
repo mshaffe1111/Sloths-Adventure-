@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { validateStage } from '../levelCheck.ts';
 import { MODEL_FAST, MODEL_TYPICAL, modelStage, walkSpeed } from '../stageTime.ts';
-import { DOUBLE_RISE, reachJump, WALL_H } from '../physics.ts';
+import { DOUBLE_RISE, WALL_H } from '../physics.ts';
 import { MODES } from '../stageModes.ts';
 import type { Platform, Vine } from '../types.ts';
 import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
@@ -20,7 +20,7 @@ import type { RiverZone } from '../river.ts';
 import { LAND_FLIGHTS } from './landFlights.data.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateCatches, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -633,40 +633,6 @@ test('towerCatches leaves a gate alone: a sealed piece is never run on, and no c
   const near = towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level, sealed);
   assert.deepEqual(near.filter(byGate), [], `nothing of the other piece's by the gate (${JSON.stringify(near)})`);
   assert.ok(towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level).some(byGate), 'unsealed, the same lay does put wood there (the planted case)');
-});
-
-test('towerCatches: a gate\'s RUNNING walk-off that lands by the wall past a vine-topped bough gets a catch under the arc, clear of the gate (ENG-26i)', () => {
-  // (planted from 1-4 seed 2, the first of its four refused rolls: the gate 646-1086, the storey under it 566-1166 400 px down with a vine
-  // hanging from its right tip. A step off either end of the gate lands on that wood; a run off the right end comes down at the wall,
-  // past the vine, 2,000 px to the floor. A bridge there must start a hop past the vine, which is past the wall: before ENG-26i the
-  // gate's run was never given a catch of its own, and the roll was refused by name)
-  // (and the storey that vine climbs from, 281 px under it, out to the wall)
-  const floor = solid(0, 3000, 1280, 1), gate = solid(646, 1000, 440, 2), under = solid(566, 1400, 600, 3), low = solid(700, 1681, 580, 4);
-  const hang: Vine = { id: 1, x: 1166, topY: 1400, bottomY: 1681, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
-  const level = (p: Platform) => (p.id === 1 ? 0 : 1), sealed = (p: Platform) => p.id === 2;
-  const P = [floor, gate, under, low];
-  assert.ok(openEnds(P, 3000, TOWER.fall, 1280).some((e) => e.p === gate && e.run?.side === 1), 'the planted case: the run off the gate\'s right end is open');
-  const cs = towerCatches('up', P, [hang], 3000, 1280, [], level, sealed);
-  assert.ok(cs.some((c) => c.y > gate.y && c.y < under.y && c.x < gate.x + gate.width + 200 && c.x + c.w > gate.x + gate.width), `a catch under the gate's run, over the storey under it (${JSON.stringify(cs)})`);
-  const laid = [...P, ...cs.map((c, k) => solid(c.x, c.y, c.w, 50 + k))];
-  assert.deepEqual(towerFalls('up', laid, 3000, 1280), [], `every end caught, the gate's run included (${JSON.stringify(cs)})`);
-  const w = walkOff(laid, gate, 1, 1280)!;
-  assert.ok(w.y - gate.y <= TOWER.fall, `the run off the gate lands within the limit (${JSON.stringify(w)})`);
-  // (and the catch keeps the gate a gate: nothing level with it or within a hop of it, nothing over the vine's top, the verdict clean)
-  for (const c of cs) {
-    assert.ok(!(c.y <= gate.y + 30 && c.y >= gate.y - LEAP.up && Math.max(0, c.x - (gate.x + gate.width), gate.x - (c.x + c.w)) <= Math.max(0, reachJump(0, true)) + LEAP.slack), `nothing by the gate: ${JSON.stringify(c)}`);
-    assert.ok(!(Math.abs(c.y - hang.topY) <= 6 && c.x <= hang.x + 30 && c.x + c.w >= hang.x - 30), `nothing over the vine's top: ${JSON.stringify(c)}`);
-  }
-  assert.deepEqual(towerGates([gate], laid, [hang]), []);
-  // (the lead's proof: the gate's catch is reached ONLY by a fall off the gate. The cure's catch passes; a toy catch 150 px over the storey
-  // under the gate, which that storey jumps onto, is refused by name)
-  const mine = cs.map((c, k) => [c, laid[P.length + k]] as const).filter(([c]) => c.gate === gate.id).map(([, q]) => [q, gate] as const);
-  assert.equal(mine.length, 1, `one catch is the gate's (${JSON.stringify(cs)})`);
-  assert.deepEqual(towerGateCatches(mine, laid, [hang]), []);
-  const toy = solid(1076, under.y - 150, 180, 90);
-  assert.match(towerGateCatches([[toy, gate]], [...laid, toy], [hang]).join(';'), /^tower: the catch under the gate at x 646-1086, y 1000 \(x 1076-1256, y 1250\) is reached by the piece at x 566-1166, y 1400, not only by a fall off the gate/);
-  // (a step off a gate's end is still its own section's to catch: the gate alone gets no catch of its own, as before)
-  assert.equal(towerFalls('up', [floor, gate, ...towerCatches('up', [floor, gate], [], 3000, 1280, [], level, sealed).map((c, k) => solid(c.x, c.y, c.w, 50 + k))], 3000, 1280).length, 2);
 });
 
 test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it', () => {

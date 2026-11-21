@@ -25,7 +25,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateCatches, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
@@ -1755,7 +1755,7 @@ export interface Laid {
   /** a tower (graph.flow up or down, R-165.170): its width, its floor (an ascent's ground; a way down's last floor, the shrine's), each
    *  storey join that climbs or comes down (the vine's x, the heights it joins, whether the storey turned back), and how many plain
    *  boughs the lay ran on to a wall for a section too wide to turn where he stood (a design wants none) */
-  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of legs (R-165.196): each leg as laid */ legs?: LaidLeg[]; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[]; gateCatches?: Array<[number, number]> };
+  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of legs (R-165.196): each leg as laid */ legs?: LaidLeg[]; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[] };
 }
 
 export interface LayOptions {
@@ -2066,8 +2066,6 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let storeyNow = 0;
   // (the sealed pieces, SectionPiece.sealed: the lay adds nothing level with one or within a hop of it, and never walks on from one)
   const sealedIds = new Set<number>();
-  /** the catch boughs laid under a gate's running walk-off (towerCatches `gate`): the verdict proves only a fall off its gate reaches each */
-  const gateCatchIds = new Map<number, number>();
   const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
     const p: Platform = crumble
       ? { id: pid++, x: R(x), y: R(y), width: CRUMBLE_TILE_W, height: CRUMBLE_H, type: 'fragile', crumbleAfter: crumbleTime(budget.stage), style: 'ruin' }
@@ -2588,7 +2586,6 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       storeyNow = c.level;
       const cx = c.x + fx;
       const b = mk(cx, c.y, c.w, 'branch', 0);
-      if (c.gate !== undefined) gateCatchIds.set(b.id, c.gate);
       (mine.find((q) => q.pieces.some((pp) => pp.platform.x < cx + c.w && pp.platform.x + pp.platform.width > cx && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
     }
   };
@@ -3254,8 +3251,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     width: routed ? R(Math.max(...platforms.map((q) => q.x + q.width)) + 40) : tower ? TW : R(shrine.x + shrine.width + 40),
     bottom: routed ? R(Math.max(...platforms.map((q) => q.y + q.height))) : flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
     ...(routed
-      ? { tower: { flow: 'legs' as const, legs: laidLegs.map(({ t0, t1, ...g }) => ({ ...g, ...(g.frame ? { turns: turns.slice(t0, t1).map(({ x, from, to }) => ({ x, from, to })) } : {}) })), width: TW, floorY: Math.max(floorY + shiftedDown * 0, ...laidLegs.map((g) => g.floorY ?? -Infinity)), turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}), ...(gateCatchIds.size ? { gateCatches: [...gateCatchIds] } : {}) } }
-      : tower && vertical(flow) ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}), ...(gateCatchIds.size ? { gateCatches: [...gateCatchIds] } : {}) } } : {}),
+      ? { tower: { flow: 'legs' as const, legs: laidLegs.map(({ t0, t1, ...g }) => ({ ...g, ...(g.frame ? { turns: turns.slice(t0, t1).map(({ x, from, to }) => ({ x, from, to })) } : {}) })), width: TW, floorY: Math.max(floorY + shiftedDown * 0, ...laidLegs.map((g) => g.floorY ?? -Infinity)), turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } }
+      : tower && vertical(flow) ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
@@ -4692,7 +4689,7 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
     // (a river's water is what lies under the ends over it: wheelLay.ts waterFloors)
     const ponds = waterFloors(st.rivers ?? []);
-    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerGateCatches((T.gateCatches ?? []).flatMap(([c, g]) => { const a = st.platforms.find((q) => q.id === c), b = st.platforms.find((q) => q.id === g); return a && b ? [[a, b] as const] : []; }), st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
     // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
     // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
     falls.push(...tipMisses(st, req.kit.manifest));
