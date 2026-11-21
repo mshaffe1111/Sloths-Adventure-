@@ -116,11 +116,11 @@ const BOUNCE: CtestMove = { frame: 'bounce_rise', name: 'Mushrooms', how: 'Land 
 const CREAKY: CtestMove = { frame: 'fall_a', name: 'Creaky limbs', how: 'They give way under you, but only down to the roots.' };
 export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
   '1-1': {
-    alt: 'Pokey running along the forest floor toward a mushroom',
+    alt: 'Pokey on a mossy mound by a mushroom and a row of petals',
     moves: [RUN, JUMP, DOUBLE, BOUNCE],
   },
   '1-2': {
-    alt: 'Pokey on a trail of petals between the roots',
+    alt: 'Pokey by a row of mushroom caps over a bed of thorns',
     moves: [
       RUN,
       JUMP,
@@ -138,7 +138,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
     ],
   },
   '1-6': {
-    alt: 'Pokey swinging on a liana over a gorge',
+    alt: 'Pokey near a hanging liana with a snake curled at its foot',
     moves: [
       { frame: 'swing_grip', name: 'Grab a liana', how: 'Jump at a liana to grab it. Hang on and it swings.' },
       { frame: 'swing_top', name: 'Leap', how: 'Let go when you glow: flick up as you swing forward.' },
@@ -147,7 +147,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
     ],
   },
   '1-7': {
-    alt: 'Pokey hiding in a bush while an eagle watches',
+    alt: 'Pokey between two bushes while an eagle flies overhead',
     moves: [
       RUN,
       { frame: 'idle', name: 'Hide', how: 'Stop in a bush or on moss. No wiggling: shaking leaves show.' },
@@ -156,7 +156,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
     ],
   },
   '1-8': {
-    alt: 'Pokey racing along a long branch',
+    alt: 'Pokey on the long branch under palms heavy with nuts',
     moves: [
       RUN,
       JUMP,
@@ -165,7 +165,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
     ],
   },
   '1-9': {
-    alt: 'Pokey standing still on a branch near a boa',
+    alt: "Pokey near a coiled boa by the eagle's nest",
     moves: [
       RUN,
       { frame: 'idle', name: 'Freeze', how: 'Boas only see wiggles. Stand still and you look like a branch.' },
