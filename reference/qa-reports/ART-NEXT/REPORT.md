@@ -1,19 +1,42 @@
-# ART-HERO (11-21, session_01FhBbYM5JjVuEt9DGSsqgwH): Pokey is one sloth in EVERY animation (R-165.378) HANDED OVER (D111)
+# ART-HERO-b (11-21, session_01FhBbYMVMLpHSwykEUVEq8j): Pokey is one sloth in EVERY animation (R-165.378): DONE (strips accepted by the lead, gates, catalog)
+(ART-HERO, session_01FhBbYM5JjVuEt9DGSsqgwH, made the sheets and the gate; this member finished its open steps 1-3.)
 ## EXACT NEXT STEP
-Sheets and gate are DONE and green on t-art-next; open: (1) after-strips, (2) the full gates, (3) this REPORT's final form.
-(1) S=<scratch>; `git worktree add --detach $S/wt-after HEAD && cd $S/wt-after && git merge origin/main` (the same 9 catalog/doc files
-conflict as ART-REGRADE's; for the scratch take main's side: `git checkout --theirs $(git diff --name-only --diff-filter=U)`, commit,
-never push), `npm install --no-audit --no-fund --legacy-peer-deps`, then `node tools/art/hfnext/heroshoot.mjs $S/shots-after 1-1
-climb,push,cheer,walk,run,jab 1.0 2.6` (about 4 min; every game frame on a paused clock). BEFORE shots: re-shoot the same way in a worktree of
-700b4ef8d merged with origin/main (this member's were in its scratchpad, gone with the container). Then
-`python3 -I tools/art/hfnext/heropair.py $S/shots-before $S/shots-after reference/art/hfnext/hero 1-1 climb,push,cheer,walk,run,jab 1.0`
-and LOOK at hero-all-before-after.jpg downscaled (D102) the way Matt will: one colour from standing into each move; no tint edge,
-the outline and eye whites untouched; climb was lifted L +6.75 (it read darker), check it does not look washed out on the vine.
-Also look at a push loop and the climb cycle in the mp4s (the seams are now 0.05-0.07 dE).
-(2) tsc, the full unit suite (background), artcheck (PASS here), knowncheck (PASS here: heroBody.known.json is a new list),
-`python3 -I tools/art/hfnext/herobody.py --check`, then catalog rows: `python3 -I tools/art/hfnext/catalogclips.py push,move-climb,cheer,
-hurt,move-walk,move-run,move-jab,move-cross,move-hook,move-kick,move-kick2,move-mega` + `python3 tools/art/catalog_master.py --emit`
-(file_kb changed; check catalogclips handles non-idle clips: its template is each clip's frame-0 row).
+R-165.378 is DONE: the lead ACCEPTED all six strips (walk, run, jab, push, cheer; then the re-shot climb at 1dc50e5ab). If the suite has no result here, the first thing is the full unit suite on t-art-next (about 20+ min, background).
+The next art slot is R-165.382 (the lead's find in the cheer mp4: plain pose and
+cheer cross-faded about 0.2 s, t1.03-1.23, a see-through double sloth for 6-7 frames, BEFORE and AFTER alike, live on main), ahead of
+R-165.379 (frame masks per non-clip sheet), which the lead took out of this packet. Merging t-art-next with origin/main conflicts on the same 10 catalog/doc/inventory files
+as ART-REGRADE's plus tools/perf/knowncheck.mjs (main's knowncheck vs this branch's heroBody.known.json line): the merge must keep both.
+## 0. Strips (heroshoot.mjs on a paused clock, every game frame; BEFORE = 700b4ef8d + origin/main, AFTER = 6530799ba + origin/main, scratch merges never pushed)
+reference/art/hfnext/hero/: hero-all-before-after.jpg (the one to look at first), hero-<scene>-before-after.jpg and
+hero-<scene>-game-speed.mp4 for climb, push, cheer, walk, run, jab.
+The climb scene was re-shot (push,climb: a warm-up first) because heroshoot's first scene sits under the stage-title card; the first
+climb strip's plain cells showed only the card.
+## Polish check (each looked at downscaled, the way Matt will on a phone)
+- One colour from standing into each move: PASS. AFTER push, cheer, walk, run, jab, climb keep the plain pose's warm tan from t0.93
+  into the move; BEFORE push and climb were visibly darker/greyer, cheer a shade darker (hero-all-before-after.jpg; hero-climb-before-after.jpg).
+- No tint edge; outline and eye whites untouched: PASS at full size on push t1.60, climb t1.60, cheer t2.00 (after shots, 2x crop):
+  dark outlines unchanged, eye whites white, no halo where the fur meets the outline.
+- Climb (lifted L +6.75) not washed out on the vine: PASS; it reads the same warm tan as standing against the teal forest, the bands and
+  bag keep their contrast (hero-climb-before-after.jpg, AFTER row).
+- Loops at game speed: PASS. hero-push-game-speed.mp4 and hero-climb-game-speed.mp4 frame by frame (every 3rd frame tiled): AFTER holds
+  one colour through the push loop and climb cycle; BEFORE drifts (push lightens across the loop, climb runs darker and redder).
+- NOT polished, named plainly (not this packet's): the cheer switch is a 0.2 s cross-fade (t1.03-1.23, hero-cheer-before-after.jpg t1.13
+  cell): a see-through double sloth for 6-7 frames, BEFORE and AFTER alike. Now R-165.382 (the lead's). Also cheer's painted outline is
+  heavier than the plain pose's (the art, not the grade).
+## Gates (on t-art-next, node_modules from the merged scratch; package.json differs from main only in version)
+tsc PASS; unit suite NOT FINISHED at hand-over (box): 3283 passed, 0 failed when the box ran out, still running in this member's container; artcheck PASS; knowncheck PASS; herobody.py --check exit 0 (heroBody.json matches the sheets).
+Catalog: catalogclips.py on the 12 non-idle clips handles them (its frame-0 template reproduces their rows exactly: only file_kb and
+file_kb_ship changed, on all 232 frame rows; ids, footing, slot, size identical); catalog_master.py --emit then changed nothing.
+## Lessons applied
+D96 (the packet's gate list run as written), D102 (strips read downscaled, long runs in the background, only tails read), D105 and the
+inbox (ReadNotifications at every step and push), D109 (no clock times in messages), D111 (box: 28 minutes from 4:09 PM ET).
+## Learned (for the next art member)
+- Two heroshoot runs at once share node_modules/.vite through a symlinked node_modules and the second hangs: run them one after another and
+  clear .vite between.
+- heroshoot's FIRST scene is shot under the stage-title card (t0.3-1.0): put a throwaway scene first (push,climb) or the first scene's
+  plain cells show the card. Proposed: heroshoot.mjs waits for the card to clear before the first pin (a check: the plain cells' crop is
+  not the card's cream).
+# ART-HERO (11-21, session_01FhBbYM5JjVuEt9DGSsqgwH): the sheets, the transfer and the gate (its sections, kept)
 ## 1. Measure (fur dE to the plain pose, pooled / worst frame / loop seam last->first; tools/art/hfnext/herobody.py)
 | sheet | 700b4ef8d | now |
 |---|---|---|
