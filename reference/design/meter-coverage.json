@@ -26,8 +26,9 @@
   },
   "beat:cages": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.cagePlan",
-   "channel": null,
-   "rows": []
+   "channel": "tools/difficulty/score.ts#cageChallenges",
+   "rows": [],
+   "note": "a reed cage by its data: at his height a stop and punch (CAGE_BITS.punch); hung up a climbing vine the climb plus a punch from the vine (CAGE_BITS.vine, the engine airKick reach); BUILD-23d"
   },
   "beat:cakes": {
    "bot": null,
