@@ -1,0 +1,12 @@
+middle	normal	1	shrine	lives 6	deaths ?	finish 169.2	WON him 88.6 boat 93.89 gap 5.3	P.middle 87.75
+middle	normal	2	shrine	lives 8	deaths ?	finish 176.3	WON him 86.2 boat 92.37 gap 6.2	P.middle 86.33
+middle	normal	3	shrine	lives 2	deaths ?	finish 172.4	WON him 88.1 boat 92.06 gap 4	P.middle 86.04
+middle	normal	4	shrine	lives 7	deaths ?	finish 239.5	WON him 95 boat 99.82 gap 4.8	P.middle 93.29
+middle	normal	5	shrine	lives 1	deaths ?	finish 152.3	WON him 81.2 boat 93.63 gap 12.4	P.middle 87.5
+middle	normal	6	shrine	lives 4	deaths ?	finish 164.8	WON him 90 boat 91.82 gap 1.8	P.middle 85.82
+middle	easy	1	shrine	lives 3	deaths ?	finish 149.9	WON him 86 boat 97.53 gap 11.5	P.middle 88.67
+middle	easy	2	shrine	lives 4	deaths ?	finish 180.8	WON him 90.3 boat 96.32 gap 6	P.middle 87.56
+middle	easy	3	shrine	lives 2	deaths ?	finish 144.9	WON him 77.6 boat 96.09 gap 18.5	P.middle 87.35
+middle	easy	4	shrine	lives 4	deaths ?	finish 164.8	WON him 92.8 boat 104.55 gap 11.8	P.middle 95.05
+middle	easy	5	shrine	lives 1	deaths ?	finish 156.5	WON him 92.9 boat 97.38 gap 4.5	P.middle 88.52
+middle	easy	6	shrine	lives 1	deaths ?	finish 135	WON him 79.8 boat 95.88 gap 16.1	P.middle 87.16

@@ -1,0 +1,12 @@
+expert	normal	1	shrine	lives 3	deaths ?	finish 148.6	WON him 87.5 boat 103.21 gap 15.7	P.middle 96.46
+expert	normal	2	shrine	lives 8	deaths ?	finish 168.6	WON him 93.8 boat 101.69 gap 7.9	P.middle 95.04
+expert	normal	3	shrine	lives 2	deaths ?	finish 156.9	WON him 96.8 boat 101.38 gap 4.6	P.middle 94.75
+expert	normal	4	shrine	lives 0	deaths ?	finish 132.9	WON him 82.5 boat 100.76 gap 18.3	P.middle 94.17
+expert	normal	5	shrine	lives 3	deaths ?	finish 144.1	WON him 97.3 boat 103.44 gap 6.1	P.middle 96.67
+expert	normal	6	shrine	lives 4	deaths ?	finish 145.6	WON him 95.8 boat 101.14 gap 5.3	P.middle 94.53
+expert	easy	1	no bot (no expert bot on easy)
+expert	easy	2	no bot (no expert bot on easy)
+expert	easy	3	no bot (no expert bot on easy)
+expert	easy	4	no bot (no expert bot on easy)
+expert	easy	5	no bot (no expert bot on easy)
+expert	easy	6	no bot (no expert bot on easy)

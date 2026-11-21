@@ -1,3 +1,44 @@
+# ENG-27i REPORT (handed over at the D111 box, 28 min; written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
+## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90)
+0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
+   Rule 28 is DONE for the refined boardHop (below): do not re-run it. Its tools: r28patch-27i.py.txt (the refined skill for every tree),
+   r28-runner-27h.ts.txt, r28diff-27h.py.txt; probes r28moved/r28lives/r28fire-27i.py.txt, bhfire-27i.ts.txt (+ r28probe-27i.diff.txt:
+   NO_HOP=1 turns boardHop alone off, __bhf logs each fire, __up each single the testers' dblShare turns into a double).
+1. **The merge** (packet step 3): origin/t-eng-ground at the lead's green hash (ENG-GROUND-e; none had come at this handover), --no-ff.
+   A trial on 8a2257760 gave the two conflicts ENG-27g mapped, nothing else: engine-core.md (keep both sections; replace our line 18
+   "groundStack (t-eng-ground, NOT merged here yet)..." with its real line, pointing at §0zq-GROUND) and w2.ts lip() (ours
+   `p.y >= y - 2 && p.y <= y + LIP_RISE` sits inside theirs `p.y <= y + LIP_RISE && p.y >= y - LIP_RISE`; ours also rejects their
+   600-px upper leg; banks() takes y from the river's surface at its rivers call, so try OURS first and settle by both sides' tests).
+   Then tsc + pacerLay + pacerBehindBanks + groundStack + legsHome + postLay + w2.test (paths: src/game/gen2/{pacerLay,legsHome,postLay}.test.ts,
+   src/game/gen2/worlds/w2.test.ts, src/game/{groundStack,pacerBehindBanks}.test.ts); engine-core.md.
+2. The race table on the merged head: raceprobe-27e.ts.txt as tools/inspect/_race.ts, `npx tsx tools/inspect/_race.ts <middle|expert|ride> <home|post>`
+   (six in parallel, about 1 min). The PRE-merge reference on 7d5200da8 is race-27i/: middle 12/12 WON home and post (both settings),
+   expert 6/6 WON (Normal; no Easy bot), ride-only 0/12 (lost every one, the ride-only claim). Any middle or expert loss after the merge: trace it.
+3. Stills 2x both ways (boat waiting, setting off, docked; door and letter: race-stills-27e.mjs, positions from the MERGED roll) and THE CLIP of
+   the race leg (cliprec-27e + clip-27e.mjs, D63); THE FULL SET (gates.md D96; lockall vs 0eefc707e: only the toy; git fetch --unshallow first).
+## Rule 28 for the refined boardHop (2-1..2-6, 40 seeds, both settings; r28-27i/<st>-head.jsonl and <st>-diff.txt)
+- Tier pass counts base / 27g head / new head: unchanged in every tier and setting, no drop (2-1..2-5 tiers 40/40; 2-6 0/40 at base too).
+- Flips vs base: boardHop moved NO kid or adult row; every flip is one of ENG-27g's traced eight (2-1 kid N 11, 2-2 kid N 4, 2-4 kid N
+  9/10/16/22/27, adult N 18). No flip from boardHop.
+- Moved rows (27g head -> new), every one with a log across a lip in jumpFor: 2-1 87, 2-2 24, 2-3 0, 2-4 111, 2-5 29, 2-6 0.
+- Lives 27g head -> new: 2-1 child N 102->93, middle N 51->58, expert N 40->42; 2-2 child N 215->204, child E 41->33, middle N 99->85,
+  middle E 13->14, expert N 76->72; 2-4 child N 185->205, middle N 121->116, expert N 137->131; 2-5 middle N 9->7; 2-3, 2-6 same.
+- Lives within 3 s after a boardHop FIRE, hop on vs NO_HOP=1 (2-1's 15 screened rows, 2-4's 111 moved rows; 2-2's 24: none after any
+  read). Lost the same way with it off: 2-1 4, 2-4 1. The rest, traced (r28-27i/upgrade-probe.jsonl; frames in the trace runs):
+  - The single came down ON the log as singleLands said, then a hop FROM the log (here = drift: the ride's, not boardHop's) fell short
+    0.3-1.3 s later: 2-1 child N 23 (x 24834), middle N 2 (14436), middle N 36 (24854); 2-4 middle N 22 (23087).
+  - The testers' double habit: 2-1 child N 23 t 248.3, startJump got boardHop's single, dblShare (firsttimer.ts:3845, about 24%) made it
+    a double that flew over log 114 (24606-24756) into the 72 px before log 111 (x 24791). Lead's call: exempt a boarding hop like aimedDrop?
+  - The named log-front walk-off (walked on, rode, ran off the front): 2-4 child N 14 (24458), child N 18 (16483), middle N 38 (16295).
+  - A fire logged 850 px from the life (a look-ahead point): 2-4 child N 12, child N 30: not his jump.
+- pacerLay 19/19 on 7d5200da8 (the refined head), pacerLay-27i.txt.
+## Done / not done
+- Done: packet 1 (r28patch-27i), 2 (the table, sent), the pre-merge race reference. NOT done: 3 (no hash), 4 on the merged head, 5.
+- Lessons applied: D57 (queue read at every step and push), D90/D102 (lean reads), D109 (no clock times to the lead), D111 (the box).
+- Polish check: no screen changed in what was done (bot and report only); the stills and the clip are step 3 above.
+- Learned: the rows run about 1 min per 90 rows on 4 cores (24 jobs in about 12 min, not 40). The __bh read log is a superset; log the fire
+  (__bhf) and the executed kind (__up / the trace's jmp) before tracing a life, since a logged single can still go up as a double.
+
 # ENG-27h REPORT (handed over at the lead's D76 call, real context ~325k; written 3:38 PM ET 11-21 by date). Base 71c3a293b; branch t-eng-27, head: this commit
 ## EXACT NEXT STEP (ENG-27i, from t-eng-27 head; read only this section, D90)
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
