@@ -51,8 +51,8 @@ The lead approved the design at 8:10 PM ET and added three asks: (1) a test that
    - (2) **The played tick:** a stage this phone finished (reached the shrine) wears a small green tick on its tile's corner
      (`sloth_qa_ctest_played`; aria-label "…, played"). A quit does not tick. Tested.
    - (3) **formatBuildTime shows the PHONE's local time.** version.ts:27 calls `d.toLocaleString(locale, {…})` with no `timeZone`, so
-     the browser formats in the device's own zone. Proof: `TZ=America/New_York` node prints __TZPROOF__ for the same ISO that a UTC
-     headless browser shows as "Nov 21, 2026, 1:20 AM". The mock-up's "11:33 PM" (and the polish stills' "1:20 AM") are the headless
+     the browser formats in the device's own zone. Proof (the same ISO, 2026-11-21T01:20:00Z, through formatBuildTime under
+     three TZ settings): America/New_York "Nov 20, 2026, 8:20 PM"; UTC "Nov 21, 2026, 1:20 AM"; America/Los_Angeles "Nov 20, 2026, 5:20 PM". The mock-up's "11:33 PM" (and the polish stills' "1:20 AM") are the headless
      browser's UTC, not a bug.
 8. **Front-page stills for the six stages that had none** (my widening, accepted 8:10 PM): src/assets/ui/ctest-1-1, 1-2, 1-6, 1-7, 1-8,
    1-9.webp. They are the real game, the designed roll (?layout=1), Normal, HUD hidden, 880x425, 34-48 KB each (1-5's is 45 KB). They
