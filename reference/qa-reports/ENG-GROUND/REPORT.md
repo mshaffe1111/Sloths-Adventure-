@@ -1,3 +1,50 @@
+# ENG-GROUND-b REPORT (handover at the context line, by the lead's D76; branch t-eng-ground, code head 7dc775c93)
+1. RE-SHOOT (stills/reshoot-6c45381d0/, 2x both ways): the river column at x15350 was NOT gone. Its cause was not the sag: the out leg's
+   still pools ran their water, bed and soil to the view's foot (engine.ts drawRivers), outside the banks' ceiling clip. FIX (general):
+   a river of an upper leg ends at the ceiling (groundStack.ts ceilingsOverSpan + clipAboveLines; protoArt.ts riverLid/riverUnderside;
+   engine.ts drawRivers). PLANT groundStack.test 4-5 (the engine's own river painter on the toy): RED 356/338 points, GREEN (red-b.txt).
+   1x re-still after: the column is gone (sideways x15350).
+2. JOIN (x18450): the "brown post" was the same pool column (gone with 1). The water slices and the dark band under the planks: World 2's
+   finish laid a pocket per gap, so no water ran under a plank (the backdrop's bottom showed) and the middle pocket stood 20 higher. FIX in
+   w2.ts w2Finish (general, no stage id): a run of falls joined by planks over the water is ONE river under a bridge, bank to bank, at one
+   surface; a fall's bank lies within LIP_RISE of its height (an upper-leg piece 600 px up had its edge 2 px from a plank's and was taken
+   for its bank); a fall has its river only when one spans it AT ITS HEIGHT (an x-only match left race-leg falls under the out leg's log
+   rivers dry, and one out-leg gap over the race leg dry: a drop-through). No shipped stage lays a plank between two pockets
+   (tools/engine/plankscan.ts, plankscan-16.txt: 3264 builds). PLANT w2.test 'bridge over ONE river': RED 50 faults, GREEN.
+   1x re-still after: one river under the two planks, the mail boat on it. The lead ruled (b): keep the height fix; nobody retunes the race.
+3. THE LEAD'S ART-UNDER RULING: the underside is drawn AFTER the ceiling's clip, over the bank's (or pool's) own span, with the strip's
+   roots hanging below the line (drawBankArt's `under` hook removed; drawUnderside cuts its columns at the span's ends). PLANT
+   groundStack.test 6: RED (0 roots under the line) on 0f5ca9999, GREEN. groundStack.test 6/6.
+4. SEED-2 TRACE (pacerLay.test 'careful middle player' normal seed 2 is RED: 114.9 s against the boat's 112.21 s, caused by the height fix):
+   9 lives against 5 on the old finish. All are on log rivers whose data is the same on both finishes; none is in a newly filled gap: hops
+   off a log f859 x16027, f1292 x14902, f1656 x14799, f5511 x4068; rode the log into the water f4739 x7069, f5094 x5763; walked off a
+   bank's edge f4212 x9936; short hop off a bank f5050 x5977, f6124 x1942. The old win leaned on leaving the out leg at f1122 (x17126 to
+   17471). Sent to the lead: ENG-27f's two log misplays plus the bot's carry-off and walk-off, not a new cause; stays red until ENG-27f merges.
+GATES on 7dc775c93: tsc PASS. Everything else UNRUN (the run was cut at the context line; scratch worktrees die with the container):
+  the full suite (6 shards), the CI tool line, tierBots, tipwalk, coveragecheck, registrycheck, generalitycheck, knowncheck, roadmapcheck,
+  timecheck, artcheck, seedlists, paintcheck x3, build, chunkcheck, clipcheck, kbdcheck, drawcheck, buildcheck, lockall vs 0eefc707e.
+  Known RED before running: pacerLay seed 2 (above).
+POLISH CHECK: river x15350 sideways: no column (1x re-still); join x18450 sideways: one river under a bridge (1x re-still). Upright and the
+  2x set NOT re-shot after the fixes; the underside close-up NOT shot.
+STEP 4 (painted underside): ART-UNDER's rows were NOT packed yet on origin/t-art-under at 17f2dbe08 (takes pulled; groundAtlasData.ts has
+  no `unders`); not drawn.
+LESSONS APPLIED: D57/D87 (inbox read at each step and push, long runs in the background), D96 (CI's own gate commands: run-gates-b.sh),
+  D102 (lean reads, but one wide grep on groundAtlasData cost context), D105, D107, D109 (no clock times in messages).
+EXACT NEXT STEP (ENG-GROUND-c, fresh, on t-eng-ground at its HEAD):
+ a. `npm install --legacy-peer-deps`. Base lock: a worktree at 0eefc707e, `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json`;
+    on HEAD `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-base.json`. Expect NO shipped stage to move. The finish change hits only
+    plank runs and falls under another leg's river; if one moves, name it with its cause.
+ b. Gates: `G=<logdir> H=<head worktree> bash reference/qa-reports/ENG-GROUND/run-gates-b.sh a` and `... b` (put CI's tool line, gates.yml
+    line 157, in $G/../tooltests.cmd first), in the background; read summary.txt. Expect only pacerLay seed 2 red until ENG-27f's merge.
+ c. Re-shoot 2x both ways (vite on 5191; `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs
+    5191 reference/qa-reports/ENG-GROUND/stills/after-b 14950:none:race-under 15350:none:river 18450:none:join`) plus an upright underside
+    close-up (a crop); look at each, once, downscaled.
+ d. Rewrite reference/handoffs/engine-core.md (a new top entry): §2 groundStack.ts (ceilings, clipAbove, clipAboveLines, drawUnderside after the
+    clip over its span, underFrames) + protoArt setGroundStacks/riverLid/riverUnderside + engine drawRivers' lid; §3 traps: soil and rivers
+    run to the view's foot (a stacked leg needs both lidded); w2Finish matches rivers and banks at a fall's HEIGHT (stacked legs share x);
+    a test that builds an engine must build it BEFORE setting protoArt's stacks/world (its stage start resets them).
+ e. Step 4 when ART-UNDER's `unders` land: draw them, re-shoot. Then REPORT and the hash to the lead.
+
 # ENG-GROUND REPORT (handover at the context line; branch t-eng-ground)
 1. LIST (sent to the lead, step 1): soil to the foot in protoArt drawBankArt (THE source), drawGround's W1 dip pockets, groundPaint endFace,
    terrain.ts drawn ground (kit off). Stacks (tools/engine/stackscan.ts; stackscan-gap233.txt): the out-and-back toy (every roll),
