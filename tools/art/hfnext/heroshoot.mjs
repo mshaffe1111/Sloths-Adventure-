@@ -7,7 +7,7 @@
  * For each scene: pins Pokey standing on the stage's middle solid platform; from `switchSec` game seconds after the pin the render hook
  * FORCES the state the scene names every frame (the renderer, the sheets, the sizes and the blend are the game's own; the vine or the
  * block is not there): climb = p.climbing, and he rises at 60 units/s so the climb cycle runs; push = p.pushing; cheer = p.cheerAt set
- * once at the switch; walk / run = vx 60 / 150 for 0.8 s then a stop (x stays pinned, so he walks on the spot); jab = the jab twice; ouch = a point of health lost at the switch; swim-surf = treading in water, the crawl from the switch. The page runs on a paused clock stepped `everyMs` (one 30 fps game frame) at a time; a crop around him is saved at each step, each file named <stage>-<scene>-t<game seconds>.png.
+ * once at the switch; walk / run = vx 60 / 150 for 0.8 s then a stop (x stays pinned, so he walks on the spot); jab = the jab twice; ouch = a point of health lost at the switch; swim-surf = treading in water, the crawl from the switch; rope = hanging on the spot (the still rope frame). The page runs on a paused clock stepped `everyMs` (one 30 fps game frame) at a time; a crop around him is saved at each step, each file named <stage>-<scene>-t<game seconds>.png.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -79,6 +79,8 @@ for (const scene of sceneArg.split(',')) {
         }
         if (pin.scene === 'ouch' && dt < pin.sw) q.hp = 3;
         if (pin.scene === 'swim-surf') { q.swim = { surfaceY: pin.y - 30, under: 0 }; q.grounded = false; q.vy = 0; q.y = pin.y - 10; }
+        // rope (ART-SHEETS-d): hanging on the spot from the start (the still rope frame; the rope itself is not there)
+        if (pin.scene === 'rope') { q.hanging = true; q.grounded = false; q.vy = 0; }
       }
       R.call(this);
     };
