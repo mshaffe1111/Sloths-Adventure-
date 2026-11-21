@@ -702,7 +702,13 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+/**
+ * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
+ * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
+ * and a double's second press flicks him off the trunk (2-6's draft tower: every tier, the expert too, off the turn's vine onto the catch
+ * bough under it, to a rescue; trunkCatch.test.ts). Always on outside a test.
+ */
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -3927,6 +3933,13 @@ export class FirstTimerRun {
         }
       }
       this.airFrom = null;
+      this.jump = null;
+    }
+    // (a jump that caught a trunk straight off the ground, no frame in the air, is over as a landing ends one: its hold and its second
+    // press, still to come, are a thumb that has gone to the climb. ENG-26e: a double's second press 0.43 s on flicked him off 2-6's
+    // tower vines (the turn at x 1369, every tier, the expert too) onto the catch bough under them, to a rescue)
+    if (SKILLS.trunkCatch && this.jump && !this.airFrom && p.climbing) {
+      this.mem.result(this.jump.x, this.jump.y, this.jump.kind, true);
       this.jump = null;
     }
     if (this.jump && !this.airFrom && t - this.jump.t0 > 0.5) {

@@ -76,3 +76,21 @@ test("the meter's wheel channel prices every wheel on 2-6's row: a board each (e
     }
   });
 });
+
+test("the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e)", () => {
+  for (const seed of [1, 2]) {
+    const runs = rowWheelRuns(ROW, seed, TIER_RUNS.filter(([t]) => t !== 'child'));
+    for (const r of runs) assert.equal(r.run.rescues, 0, `seed ${seed} ${runLine(r)} (stuck ${JSON.stringify(r.run.stuck.filter((s) => s.rescued))})`);
+  }
+});
+
+test('PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED)', () => {
+  SKILLS.trunkCatch = false;
+  try {
+    const runs = rowWheelRuns(ROW, 1, TIER_RUNS.filter(([t]) => t !== 'child'));
+    const n = runs.reduce((a, r) => a + r.run.rescues, 0);
+    assert.ok(n >= 2, `with the jump running on after the catch, rescues return (${n}: ${runs.map((r) => `${r.tier} ${r.setting} v${r.v} ${r.run.rescues}`).join(', ')})`);
+  } finally {
+    SKILLS.trunkCatch = true;
+  }
+});

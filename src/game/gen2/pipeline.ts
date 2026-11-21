@@ -47,7 +47,7 @@ import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
 import { castDef } from '../predators/registry.ts';
 import { checkOnClock } from '../predators/core.ts';
-import { layWheel, pondFloors, stageWheels, streetFromJetty, wheelFaults, wheelSpan } from './wheelLay.ts';
+import { layWheel, waterFloors, stageWheels, streetFromJetty, wheelFaults, wheelSpan } from './wheelLay.ts';
 import { sweepBox } from '../wheel.ts';
 /** the room a wheel's rider takes over its top floor (px): his body and a hop's margin, kept clear of catch boughs */
 const WHEEL_RIDER = 96;
@@ -2541,9 +2541,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const layCatches = (floorY: number) => {
     const fx = frame.x0;
     const P0 = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
-    // (a water wheel's pond catches a miss off its jetty, its street and its buckets (a splash back onto the jetty): to the catch boughs it is
-    // what lies under those ends, never wood to run on or a ledge with ends of its own (wheelLay.ts layWheel; its zone is the pond))
-    const ponds = pondFloors(rivers, routed ? fx : 0);
+    // (a river's water catches a miss off its bank, a wheel's jetty, street and buckets (a splash back, or a deep river's life): to the catch
+    // boughs it is what lies under those ends, never wood to run on or a ledge with ends of its own (wheelLay.ts waterFloors))
+    const ponds = waterFloors(rivers, routed ? fx : 0);
     const P = ponds.length ? [...P0, ...ponds] : P0;
     const V = !routed ? vines : vines.slice(mark.v).map((v) => ({ ...v, x: v.x - fx }));
     const Gp = !routed ? gaps : gaps.slice(mark.g).map((g) => ({ ...g, x0: g.x0 - fx, x1: g.x1 - fx }));
@@ -4655,8 +4655,8 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
       ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
-    // (a wheel's pond is what lies under the ends over it: wheelLay.ts pondFloors)
-    const ponds = pondFloors(st.rivers ?? []);
+    // (a river's water is what lies under the ends over it: wheelLay.ts waterFloors)
+    const ponds = waterFloors(st.rivers ?? []);
     const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
     // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
     // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
