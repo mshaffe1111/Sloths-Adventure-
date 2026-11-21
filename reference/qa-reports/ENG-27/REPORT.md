@@ -2,15 +2,14 @@
 ## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's verdict and its RED; (1) the thumb's travel in hopFlies (the one LOST row's root); (2) boardHop onto the drawn
 hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's diff; (7) B and S.
-(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background), at the box: 2580+ ok
-    (1 todo: w1Arc19 R-165.312, a known TODO), and
+(0) **The full src suite on b7a68a8bd: DONE after the box (n/suite-b7a68a8bd-27n.txt): 4060 tests, 4056 pass, 1 fail, 3 todo**
+    (the todos: w1Arc19 R-165.312, the 4-3 wall check, one more, all marked TODO). The one fail, the only red:
     **1 RED: src/game/gen2/pacerLay.test.ts:211** 'bot (planted): a log drifting his way, still mostly under the lip, is boarded by a
     hop, so the careful middle player wins home Easy seed 1; RED without it' fails its RED half: 'RED: without the skill the plant must
     lose (86.6 s against 97.53 s)'. **The lead's ruling: this is the KNOWN boardLog plant (failing on purpose since ENG-27j), step B's,
     not new.** B's scan rules it: boardLog on vs off over 2-1..2-7 x40; no row moves -> boardLog retires WITH its test; rows move ->
-    underLip sends him to the lip and waits (rule 28). No other red at the box; the run was still going (ENG-27n sends the final verdict).
-    **NOTE:** this container's disk allowance ran out for a moment while the suite ran (a worktree checkout failed; freed by removing
-    finished worktrees): a red in a test that writes files near that point must be re-run before it is believed.
+    underLip sends him to the lip and waits (rule 28). No other red. (This container's disk allowance ran out for a moment late in the
+    run, after this red had already been reported; it was freed, and no test failed after it.)
 (1) **hopJudged on 2f525cd72 (n/hopJudged-2f525cd72-27n.txt): seed 5 GREEN** (12 judged, edgeWait and race: 0 flown not as judged,
     0 elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x 14674 hold
     0.235 double | LOST`. **ROOT, traced frame by frame (n/double-flight-27n.txt, three runs):** the judged flight and the engine's are
