@@ -11,7 +11,12 @@ Trees (D115, frozen detached worktrees, node_modules linked): base 2f188c552, fi
    instead the net diff, SAVED as b26f/cut5-fe3d3d6ca.patch (`git apply` it on t-build-26; made by `git diff 2f188c552 fe3d3d6ca` on the two files; fe3d3d6ca
    is in this clone's objects; if the clone is gone, the change is: Progress.under + UNDER_REACH; relocate's `band`; in after() the
    `far`/`under`/`rides` lines and `fell = far`; the toy, last test of castBots.test.ts, as this REPORT describes).
-2. **Trace the 7 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
+2. **ONE of the 7 traced (adult N 11 on a copy of fe3d3d6ca, a print at the rewind):** three REAL falls (`far`, counted as before)
+   from the leg at x 1146 (#38/#41's dip, y 3739/3809) to the floor #35 at x 1278-1344 (t 50.5, 56.1, 61.3), then the rescue. The
+   new rewind did its job (back to the floor at the vine's side each time); he then falls off the same leg going left over the dip
+   #41 (x 1224-1317, 70 px down): the leg's own crossing, a SEPARATE bot spot (the same leg adult N 26/33 fell from on base). One run;
+   the second run of this cause is adult N 26's own fall on base (b26f/dbgOff.txt t 51.9-52.5, x 1239 -> 1156, the same dip).
+   **Trace the other 6 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
    traces): adult N 11 + kid N 23 (fell back 3 times at x ~1140), adult N 37 (x 295/842), kid E 12, kid E 30 + adult E 26 (the dips).
    Fix the bot cause generally, toy first, then 2-6 x40 again against b26f/rows/r26-2f188c552.jsonl: no tier drop, lost rows named.
 3. **1-4 x40 against b26f/rows/r14-2f188c552.jsonl:** **DONE on fe3d3d6ca: NO row moved** (every tier identical to 2f188c552: kid N/E 19/32, adult 37/36, child 39/36,
