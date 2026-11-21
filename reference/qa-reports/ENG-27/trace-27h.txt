@@ -1,0 +1,35 @@
+ENG-27h rule 28: the 8 P->F flips of SKILLS.boardLog (r28-27g/, base both skills off, head both on; frozen worktree at 71c3a293b + r28patch-27g)
+Probe: _r28trace (r28trace-27h.ts.txt): every frame (x, y, vx, on, lives), the bot's pending press / jump / ride wait (edgeWait), its draw count,
+and every boarding read. Each base and head run re-made the committed row exactly (time, lives, rescues). Take-off read: 0 reads on all 8.
+
+1. 2-1 kid N 11: parts f 3341 x 24554 (read: log 112 his way, 65 px out of 150, lip 24598). He means to wait; KID's late lift-off (thumbify,
+   R-165.59) keeps his steer held, so his path is the same frame for frame and only his draws move (9688 vs 9690 at f 3342). Both land on log
+   112 at full speed, 40 px from its front, and run off it (the named with-current walk-off: on the log both mean to ride it in, SKILLS.handed,
+   and the same late lift-off runs him on). The press comes in the air: base's at 109.63 (2 frames after leaving, inside the window), head's
+   at 109.77: splash x 24745 (f 3361). Then 5 lives at the upstream logs 116/117, x 25500-26100, where base also loses 2: rescue x 25697.
+   Shifted draws after a right read.
+2. 2-2 kid N 4: the same shape. Parts f 2884 x 20100 (log 80, 78-90 px out of 200, lip 20140); path the same, draws 8483 vs 8484; both run off
+   log 80's front; base's air press at 96.02 makes it, head's at 96.06 misses: splash x 20304 (f 2905). Then 6 lives at the lifts/pads
+   x 28400-29400 (113, 114, 109), 39-65 s after the last read: rescue x 29376. Shifted draws after a right read.
+3-8. 2-4, the six (kid 9, 10, 16, 22, 27; adult 18): every pair parts at the stage's first log river (x 2890-3020, t 10.7-11.1; kid 27 at
+   x 10500, t 59.1): log 13 his way, 43-75 px out of 200 (right reads). The adult stops 10 frames at the lip and hops on into the river's liana
+   (swing from f 344; base walks onto the log and jumps past it); the kid's path is the same at the lip, his draws shift. No life lost within
+   3 s of a boarding read in any of the six. Each head's extra lives come 80-150 s later at spots base also loses lives at, mostly off the
+   front of logs drifting his way:
+   kid 9   rescue x 23749: 4 lives there (logs 104, 105: 2 walk-offs, 2 short jumps), base 2 near (x 23199, 24362)
+   kid 10  rescue x 24406: 6 lives (logs 103, 106, 107, bank 94: short jumps), base none there (base 5 lives elsewhere)
+   kid 16  rescue x 22169: 4 lives (logs 101-103), base none there (base 6 elsewhere)
+   kid 22  rescue x 24888: 7 lives (logs 105, 106: 4 walk-offs, 3 jumps; bank 92), base 1 there (x 24862)
+   kid 27  rescue x 25512: 4 lives (logs 110, 111; bank 97), base none there (base 7 elsewhere)
+   adult 18 rescue x 16996: 3 walk-offs off logs 74, 75, 77; base 1 there (x 17154, a jump)
+   Shifted draws after a right read.
+Totals for the bots the flips touch fell with the skill: 2-1 kid N lives 229 -> 193, rescues 11 -> 8; 2-2 kid N 244 -> 226, 25 -> 18;
+2-4 kid N 318 -> 313, 11 -> 10; 2-4 adult N 142 -> 129, 2 -> 1.
+
+A WRONG READ, not one of the 8 (found tracing the child's 2-2 lives, 190 -> 215 Normal, 33 -> 41 Easy):
+9. 2-2 child N 36, x 20212, t 233.3: the read (log 79, 87 px out of 200) makes the lip an edge; the child (a tier bot) stands there and
+   jumpFor picks a DOUBLE: it skips a piece that starts behind the edge (d >= 5) and reads the 209 px to log 80. He flies over log 79 and comes
+   down in the 72 px of water between 79 and 80 (x 20514, f 7054). Base walks onto log 79. The skill's own hop: a single onto the log.
+
+Probes need r28patch-27g.py.txt plus one line in firsttimer.ts pad(): `(globalThis as any).__run = this;` (the bot run, for its pending press,
+jump, edgeWait, releaseLeft and draw count). Copy each .txt to tools/inspect/_<name>.ts in a frozen worktree; never commit.

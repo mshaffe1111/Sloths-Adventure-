@@ -1,0 +1,20 @@
+// scratch (ENG-27h rule 28 trace): one bot run, every frame (x, y, vx, on, lives) and every boarding-hop / take-off read, as JSON lines
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+const [stage, bot, setting, seedS] = process.argv.slice(2);
+const who = (CAST_BOTS as any)[bot][setting];
+(globalThis as any).__ft = []; (globalThis as any).__bl = [];
+let f = 0, nbl = 0, nft = 0; const out: string[] = [];
+const r = firstTimer(stage, Number(seedS), who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player;
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  const bl = (globalThis as any).__bl as any[], ft = (globalThis as any).__ft as any[];
+  const row: any = { f, t: Math.round(sim.t * 100) / 100, x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10, vx: Math.round(p.vx), vy: Math.round(p.vy), g: p.grounded ? 1 : 0, l: e.lives,
+    on: on ? `${on.id}:${on.type}${on.drift ? ':' + on.drift.dir : ''}@${Math.round(on.x)}-${Math.round(on.x + on.width)},${Math.round(on.y)}` : '-' };
+  const R = (globalThis as any).__run; if (R) { if (!R.__w) { R.__w = 1; R.__n = 0; const r0 = R.r; R.r = () => { R.__n++; return r0(); }; } row.nr = R.__n; row.rel = R.releaseLeft; row.ls = R.lastSteer; row.pend = R.pending ? `${Math.round(R.pending.at*100)/100}:${R.pending.kind}${R.pending.still?':still':''}` : null; row.jmp = R.jump ? `${Math.round(R.jump.t0*100)/100}:${R.jump.kind}` : null; row.ew = R.edgeWait; row.la = R.lateArmed ? 1 : 0; }
+  if (bl.length > nbl) { row.bl = bl.slice(nbl); nbl = bl.length; }
+  if (ft.length > nft) { row.ft = ft.slice(nft); nft = ft.length; }
+  out.push(JSON.stringify(row));
+} } as never);
+console.log(out.join('\n'));
+console.log(JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues, rescueXs: (r as any).rescueXs, harms: r.harms.map((h: any) => ({ k: h.kind, t: Math.round(h.t * 10) / 10, x: Math.round(h.x), c: h.cause })) }));
