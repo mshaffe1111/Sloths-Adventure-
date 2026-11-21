@@ -6,6 +6,12 @@
    "frame_max": 2.133,
    "pooled": 0.273,
    "why": "ART-SHEETS-d: affine per group ACCEPTED by the lead by eye on the game-size strips (11-21); one frame, s4_02 (#21), sits 0.13 dE over the 2.0 bar, the sheet pooled 0.27 passes"
+  },
+  {
+   "sheet": "hero-story",
+   "frame_max": 9.79,
+   "pooled": 6.09,
+   "why": "ART-SHEETS-d: the ORIGINAL kept, judged by eye by the lead on the game-size strips 11-21: the back views (away, away_a, away_b, farewell) and the close faces; a pooled mean grade (and the affine per group) washes them out to a pale pink, and a back in shade should read darker"
   }
  ]
 }
