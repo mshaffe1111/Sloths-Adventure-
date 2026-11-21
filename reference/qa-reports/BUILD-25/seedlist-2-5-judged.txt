@@ -1,0 +1,13 @@
+seedlist 2-5: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-5: FAIL
+  2-5 seed 1 normal: flags: 2518 px apart at x 20056 (900-2300, a life can be lost in it)
+  2-5 seed 1 easy: flags: 2518 px apart at x 20056 (900-2300, a life can be lost in it)
+  2-5 seed 2 normal: flags: 2590 px apart at x 20396 (900-2300, a life can be lost in it)
+  2-5 seed 2 easy: flags: 2590 px apart at x 20396 (900-2300, a life can be lost in it)
+  2-5 seed 3 normal: the quiet line: 4.4 s with nothing to do at x 10202, over 4 s (the goal run-out excluded)
+  2-5 seed 3 easy: the quiet line: 4.4 s with nothing to do at x 10202, over 4 s (the goal run-out excluded)
+  2-5 seed 4 normal: flags: 2518 px apart at x 20051 (900-2300, a life can be lost in it)
+  2-5 seed 4 easy: flags: 2518 px apart at x 20051 (900-2300, a life can be lost in it)
+  2-5 seed 5 normal: flags: 2600 px apart at x 20252 (900-2300, a life can be lost in it)
+  2-5 seed 5 easy: flags: 2600 px apart at x 20252 (900-2300, a life can be lost in it)
+12

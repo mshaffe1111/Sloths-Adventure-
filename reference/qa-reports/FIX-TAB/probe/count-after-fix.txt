@@ -1,0 +1,10 @@
+('1-6', 'easy') builds 4 tabs 0 lone 0
+('1-6', 'normal') builds 4 tabs 0 lone 0
+('1-7', 'easy') builds 4 tabs 0 lone 0
+('1-7', 'normal') builds 4 tabs 0 lone 0
+TOTAL builds 16 tabs 0 lone 0 builds with a tab 0
+
+# hole check: orphan lip runs (the tab/notch places), pixels changed when the run is drawn vs not
+fixed: 160 runs, max 0 px, 0 over 20 (the wall soil covers the notch: nothing shows through without it)
+base 453b69c2: 160 runs, max 559 px, 143 over 20
+non-orphan runs under art (a floor lip running on under a stone, its normal look): 51 both, unchanged

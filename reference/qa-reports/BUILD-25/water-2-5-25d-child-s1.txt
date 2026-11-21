@@ -1,0 +1,216 @@
+platforms near entry: solid 21110..21450 y593; drift(d) 21395..21555 y621; drift(d) 21627..21787 y621
+f8394 t279.80 x21457 y533 gr 0 vx 285 vy -103 jump 0 | under solid 21110..21450 y593
+f8395 t279.83 x21466 y531 gr 0 vx 268 vy -40 jump 0 | under solid 21110..21450 y593
+f8396 t279.87 x21476 y532 gr 0 vx 285 vy 23 jump 0 | under -
+f8397 t279.90 x21485 y536 gr 0 vx 285 vy 107 jump 0 | under -
+f8398 t279.93 x21495 y542 gr 0 vx 285 vy 190 jump 0 | under drift 21405..21565 y621
+f8399 t279.97 x21504 y551 gr 0 vx 285 vy 273 jump 0 | under drift 21408..21568 y621
+f8400 t280.00 x21514 y534 gr 0 vx 285 vy -504 jump 0 | under -
+f8401 t280.03 x21523 y529 gr 0 vx 268 vy -167 jump 0 | under -
+f8402 t280.07 x21532 y525 gr 0 vx 285 vy -103 jump 0 | under -
+f8403 t280.10 x21541 y524 gr 0 vx 268 vy -40 jump 0 | under -
+f8404 t280.13 x21550 y525 gr 0 vx 268 vy 23 jump 0 | under -
+f8405 t280.17 x21559 y528 gr 0 vx 268 vy 107 jump 0 | under -
+f8406 t280.20 x21568 y535 gr 0 vx 268 vy 190 jump 0 | under -
+f8407 t280.23 x21577 y544 gr 0 vx 268 vy 273 jump 0 | under drift 21428..21588 y621
+f8408 t280.27 x21586 y556 gr 0 vx 268 vy 357 jump 0 | under drift 21430..21590 y621
+f8409 t280.30 x21595 y570 gr 0 vx 268 vy 440 jump 0 | under drift 21433..21593 y621
+f8410 t280.33 x21604 y588 gr 0 vx 268 vy 523 jump 0 | under drift 21435..21595 y621
+f8411 t280.37 x21613 y608 gr 0 vx 268 vy 607 jump 0 | under drift 21438..21598 y621
+f8412 t280.40 x21621 y631 gr 0 vx 268 vy 690 jump 0 | under -
+f8413 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+LIFE LOST f8413 x21630
+f8414 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8415 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8416 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8417 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8418 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8419 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8420 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8421 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8422 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8423 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8424 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8425 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8426 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8427 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8428 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8429 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8430 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8431 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8432 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8433 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8434 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8435 t280.43 x21630 y657 gr 0 vx 0 vy 773 jump 0 | under -
+f8725 t290.07 x21453 y593 gr 1 vx 154 vy 0 jump 0 | under solid 21110..21450 y593
+f8726 t290.10 x21455 y593 gr 1 vx 41 vy 0 jump 0 | under solid 21110..21450 y593
+f8727 t290.13 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8728 t290.17 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8729 t290.20 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8730 t290.23 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8731 t290.27 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8732 t290.30 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8733 t290.33 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8734 t290.37 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8735 t290.40 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8736 t290.43 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8737 t290.47 x21455 y593 gr 1 vx 0 vy 0 jump 0 | under solid 21110..21450 y593
+f8738 t290.50 x21458 y593 gr 1 vx 87 vy 0 jump 0 | under solid 21110..21450 y593
+f8739 t290.53 x21463 y596 gr 0 vx 173 vy 83 jump 0 | under solid 21110..21450 y593
+f8740 t290.57 x21471 y601 gr 0 vx 230 vy 167 jump 0 | under -
+f8741 t290.60 x21481 y610 gr 0 vx 285 vy 250 jump 0 | under -
+f8742 t290.63 x21489 y621 gr 0 vx 268 vy 333 jump 0 | under -
+f8743 t290.67 x21499 y635 gr 0 vx 285 vy 417 jump 0 | under -
+f8744 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+LIFE LOST f8744 x21508
+f8745 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8746 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8747 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8748 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8749 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8750 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8751 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8752 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8753 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8754 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8755 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8756 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8757 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8758 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8759 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8760 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8761 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8762 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8763 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8764 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8765 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f8766 t290.70 x21508 y651 gr 0 vx 0 vy 500 jump 0 | under -
+f9056 t300.33 x21456 y509 gr 0 vx 268 vy -260 jump 0 | under -
+f9057 t300.37 x21465 y503 gr 0 vx 285 vy -197 jump 0 | under -
+f9058 t300.40 x21474 y498 gr 0 vx 268 vy -133 jump 0 | under -
+f9059 t300.43 x21484 y496 gr 0 vx 285 vy -70 jump 0 | under -
+f9060 t300.47 x21493 y496 gr 0 vx 268 vy -7 jump 0 | under -
+f9061 t300.50 x21502 y498 gr 0 vx 285 vy 57 jump 0 | under -
+f9062 t300.53 x21511 y502 gr 0 vx 268 vy 140 jump 0 | under -
+f9063 t300.57 x21521 y486 gr 0 vx 285 vy -504 jump 0 | under -
+f9064 t300.60 x21530 y471 gr 0 vx 268 vy -440 jump 0 | under -
+f9065 t300.63 x21539 y458 gr 0 vx 285 vy -377 jump 0 | under -
+f9066 t300.67 x21548 y448 gr 0 vx 268 vy -314 jump 0 | under -
+f9067 t300.70 x21558 y440 gr 0 vx 285 vy -250 jump 0 | under -
+f9068 t300.73 x21566 y434 gr 0 vx 268 vy -167 jump 0 | under -
+f9069 t300.77 x21576 y431 gr 0 vx 285 vy -103 jump 0 | under -
+f9070 t300.80 x21585 y429 gr 0 vx 268 vy -40 jump 0 | under -
+f9071 t300.83 x21594 y430 gr 0 vx 285 vy 23 jump 0 | under -
+f9072 t300.87 x21603 y434 gr 0 vx 268 vy 107 jump 0 | under -
+f9073 t300.90 x21613 y440 gr 0 vx 285 vy 190 jump 0 | under -
+f9074 t300.93 x21622 y449 gr 0 vx 268 vy 273 jump 0 | under -
+f9075 t300.97 x21631 y461 gr 0 vx 285 vy 357 jump 0 | under -
+f9076 t301.00 x21640 y476 gr 0 vx 268 vy 440 jump 0 | under -
+f9077 t301.03 x21650 y493 gr 0 vx 285 vy 523 jump 0 | under -
+f9078 t301.07 x21659 y513 gr 0 vx 268 vy 607 jump 0 | under -
+f9079 t301.10 x21668 y536 gr 0 vx 285 vy 690 jump 0 | under -
+f9080 t301.13 x21677 y562 gr 0 vx 268 vy 773 jump 0 | under drift 21603..21763 y621
+f9081 t301.17 x21686 y591 gr 0 vx 268 vy 857 jump 0 | under drift 21606..21766 y621
+f9082 t301.20 x21695 y621 gr 1 vx 268 vy 0 jump 0 | under drift 21608..21768 y621
+f9083 t301.23 x21702 y621 gr 1 vx 154 vy 0 jump 0 | under drift 21611..21771 y621
+f9084 t301.27 x21706 y621 gr 1 vx 41 vy 0 jump 0 | under drift 21613..21773 y621
+f9085 t301.30 x21709 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21616..21776 y621
+f9086 t301.33 x21711 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21618..21778 y621
+f9087 t301.37 x21714 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21621..21781 y621
+f9088 t301.40 x21716 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21623..21783 y621
+f9089 t301.43 x21719 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21626..21786 y621
+f9090 t301.47 x21721 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21628..21788 y621
+f9091 t301.50 x21724 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21631..21791 y621
+f9092 t301.53 x21726 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21633..21793 y621
+f9093 t301.57 x21729 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21636..21796 y621
+f9094 t301.60 x21731 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21638..21798 y621
+f9095 t301.63 x21734 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21641..21801 y621
+f9096 t301.67 x21742 y602 gr 0 vx 162 vy -577 jump 0 | under drift 21643..21803 y621
+f9097 t301.70 x21749 y585 gr 0 vx 218 vy -513 jump 0 | under drift 21646..21806 y621
+f9098 t301.73 x21758 y570 gr 0 vx 275 vy -450 jump 0 | under drift 21648..21808 y621
+f9099 t301.77 x21768 y557 gr 0 vx 285 vy -387 jump 0 | under drift 21651..21811 y621
+f9100 t301.80 x21777 y551 gr 0 vx 268 vy -167 jump 0 | under drift 21653..21813 y621
+f9101 t301.83 x21786 y548 gr 0 vx 285 vy -103 jump 0 | under drift 21656..21816 y621
+f9102 t301.87 x21795 y546 gr 0 vx 268 vy -40 jump 0 | under drift 21658..21818 y621
+f9103 t301.90 x21804 y547 gr 0 vx 268 vy 23 jump 0 | under drift 21661..21821 y621
+f9104 t301.93 x21813 y551 gr 0 vx 268 vy 107 jump 0 | under drift 21663..21823 y621
+f9105 t301.97 x21822 y557 gr 0 vx 268 vy 190 jump 0 | under drift 21666..21826 y621
+f9106 t302.00 x21831 y566 gr 0 vx 268 vy 273 jump 0 | under drift 21668..21828 y621
+f9107 t302.03 x21840 y578 gr 0 vx 268 vy 357 jump 0 | under drift 21671..21831 y621
+f9108 t302.07 x21849 y593 gr 0 vx 268 vy 440 jump 0 | under drift 21673..21833 y621
+f9109 t302.10 x21857 y610 gr 0 vx 268 vy 523 jump 0 | under -
+f9110 t302.13 x21866 y630 gr 0 vx 268 vy 607 jump 0 | under -
+f9111 t302.17 x21875 y653 gr 0 vx 0 vy 690 jump 0 | under -
+LIFE LOST f9111 x21875
+f9424 t311.83 x21453 y574 gr 0 vx 260 vy -577 jump 0 | under solid 21110..21450 y593
+f9425 t311.87 x21463 y557 gr 0 vx 285 vy -513 jump 0 | under solid 21110..21450 y593
+f9426 t311.90 x21471 y542 gr 0 vx 268 vy -450 jump 0 | under drift 21483..21643 y621
+f9427 t311.93 x21481 y529 gr 0 vx 285 vy -387 jump 0 | under -
+f9428 t311.97 x21490 y523 gr 0 vx 268 vy -167 jump 0 | under -
+f9429 t312.00 x21499 y520 gr 0 vx 285 vy -103 jump 0 | under -
+f9430 t312.03 x21508 y518 gr 0 vx 268 vy -40 jump 0 | under -
+f9431 t312.07 x21518 y519 gr 0 vx 285 vy 23 jump 0 | under -
+f9432 t312.10 x21527 y523 gr 0 vx 268 vy 107 jump 0 | under -
+f9433 t312.13 x21536 y529 gr 0 vx 285 vy 190 jump 0 | under -
+f9434 t312.17 x21545 y538 gr 0 vx 268 vy 273 jump 0 | under -
+f9435 t312.20 x21555 y550 gr 0 vx 285 vy 357 jump 0 | under drift 21505..21665 y621
+f9436 t312.23 x21564 y565 gr 0 vx 268 vy 440 jump 0 | under drift 21508..21668 y621
+f9437 t312.27 x21573 y582 gr 0 vx 268 vy 523 jump 0 | under drift 21510..21670 y621
+f9438 t312.30 x21581 y565 gr 0 vx 268 vy -504 jump 0 | under drift 21513..21673 y621
+f9439 t312.33 x21591 y551 gr 0 vx 285 vy -440 jump 0 | under drift 21515..21675 y621
+f9440 t312.37 x21600 y538 gr 0 vx 268 vy -377 jump 0 | under -
+f9441 t312.40 x21609 y533 gr 0 vx 285 vy -167 jump 0 | under -
+f9442 t312.43 x21618 y529 gr 0 vx 268 vy -103 jump 0 | under -
+f9443 t312.47 x21628 y528 gr 0 vx 285 vy -40 jump 0 | under -
+f9444 t312.50 x21637 y529 gr 0 vx 268 vy 23 jump 0 | under -
+f9445 t312.53 x21646 y532 gr 0 vx 268 vy 107 jump 0 | under -
+f9446 t312.57 x21655 y539 gr 0 vx 268 vy 190 jump 0 | under -
+f9447 t312.60 x21663 y548 gr 0 vx 268 vy 273 jump 0 | under drift 21535..21695 y621
+f9448 t312.63 x21672 y560 gr 0 vx 268 vy 357 jump 0 | under drift 21538..21698 y621
+f9449 t312.67 x21681 y574 gr 0 vx 268 vy 440 jump 0 | under drift 21540..21700 y621
+f9450 t312.70 x21690 y592 gr 0 vx 268 vy 523 jump 0 | under drift 21543..21703 y621
+f9451 t312.73 x21699 y612 gr 0 vx 268 vy 607 jump 0 | under drift 21545..21705 y621
+f9452 t312.77 x21705 y621 gr 1 vx 181 vy 0 jump 0 | under drift 21548..21708 y621
+f9453 t312.80 x21708 y621 gr 1 vx 21 vy 0 jump 0 | under drift 21550..21710 y621
+f9454 t312.83 x21706 y621 gr 1 vx -139 vy 0 jump 0 | under drift 21553..21713 y621
+f9455 t312.87 x21701 y621 gr 1 vx -226 vy 0 jump 0 | under drift 21555..21715 y621
+f9456 t312.90 x21694 y621 gr 1 vx -285 vy 0 jump 0 | under drift 21558..21718 y621
+f9457 t312.93 x21691 y621 gr 1 vx -172 vy 0 jump 0 | under drift 21560..21720 y621
+f9458 t312.97 x21692 y621 gr 1 vx -58 vy 0 jump 0 | under drift 21563..21723 y621
+f9459 t313.00 x21694 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21565..21725 y621
+f9460 t313.03 x21697 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21568..21728 y621
+f9461 t313.07 x21702 y621 gr 1 vx 87 vy 0 jump 0 | under drift 21570..21730 y621
+f9462 t313.10 x21710 y621 gr 1 vx 173 vy 0 jump 0 | under drift 21573..21733 y621
+f9463 t313.13 x21721 y621 gr 1 vx 260 vy 0 jump 0 | under drift 21575..21735 y621
+f9464 t313.17 x21736 y602 gr 0 vx 360 vy -577 jump 0 | under drift 21578..21738 y621
+f9465 t313.20 x21747 y585 gr 0 vx 343 vy -513 jump 0 | under drift 21580..21740 y621
+f9466 t313.23 x21758 y579 gr 0 vx 325 vy -167 jump 0 | under drift 21583..21743 y621
+f9467 t313.27 x21768 y576 gr 0 vx 308 vy -103 jump 0 | under -
+f9468 t313.30 x21778 y574 gr 0 vx 291 vy -40 jump 0 | under -
+f9469 t313.33 x21787 y575 gr 0 vx 273 vy 23 jump 0 | under -
+f9470 t313.37 x21797 y579 gr 0 vx 285 vy 107 jump 0 | under -
+f9471 t313.40 x21806 y585 gr 0 vx 268 vy 190 jump 0 | under -
+f9472 t313.43 x21815 y594 gr 0 vx 285 vy 273 jump 0 | under drift 21830..21990 y621
+f9473 t313.47 x21824 y606 gr 0 vx 268 vy 357 jump 0 | under drift 21832..21992 y621
+f9474 t313.50 x21834 y621 gr 0 vx 285 vy 440 jump 0 | under drift 21835..21995 y621
+f9475 t313.53 x21843 y621 gr 1 vx 268 vy 0 jump 0 | under drift 21837..21997 y621
+f9476 t313.57 x21855 y621 gr 1 vx 285 vy 0 jump 0 | under drift 21840..22000 y621
+f9477 t313.60 x21863 y621 gr 1 vx 172 vy 0 jump 0 | under drift 21842..22002 y621
+f9478 t313.63 x21867 y621 gr 1 vx 58 vy 0 jump 0 | under drift 21845..22005 y621
+f9479 t313.67 x21870 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21847..22007 y621
+f9480 t313.70 x21872 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21850..22010 y621
+f9481 t313.73 x21875 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21852..22012 y621
+f9482 t313.77 x21877 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21855..22015 y621
+f9483 t313.80 x21880 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21857..22017 y621
+f9484 t313.83 x21882 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21860..22020 y621
+f9485 t313.87 x21885 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21862..22022 y621
+f9486 t313.90 x21887 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21865..22025 y621
+f9487 t313.93 x21890 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21867..22027 y621
+f9488 t313.97 x21892 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21870..22030 y621
+f9489 t314.00 x21895 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21872..22032 y621
+f9490 t314.03 x21897 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21875..22035 y621
+f9491 t314.07 x21900 y621 gr 1 vx 0 vy 0 jump 0 | under drift 21877..22037 y621
+life water x21630 t280.4
+life water x21508 t290.7
+life water x21875 t302.2
+END shrine 391.1

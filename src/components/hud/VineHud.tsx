@@ -23,7 +23,7 @@ import { goalInfo, goalShown } from './goalInfo.ts';
 import { clearOfInsets, fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
-import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
+import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt, vineEndW } from './painted.tsx';
 import './hud.css';
 import { POWER_UP_SECS } from '../../game/powerUps.ts';
 
@@ -89,6 +89,9 @@ function readInsets(probe: HTMLElement | null): Insets {
 }
 
 const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+/** the lower-row counter's own short vine is drawn this much thinner than the hearts' vine (its curls rise this much less) */
+const STRIP_K = 0.6;
 
 export const VineHud: React.FC<VineHudProps> = (props) => {
   const { levelConfig, hp, maxHp, currentObjectiveCount, targetObjectiveCount, distanceRatio = 0, score, onMenu, activePowerUp, powerUpTimer, lives = 3, heroPoint } = props;
@@ -362,8 +365,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
           : { role: 'img', 'aria-label': label })}
       >
         {art ? (
-          // (painted: in the top row the hearts' vine runs on across it; lower down it hangs from a short vine of its own)
-          !(place.row === 1 && !underBoss) && <PaintedVine x0={2} x1={cw - 2} y={pv} k={k} />
+          // (painted: in the top row the hearts' vine runs on across it; lower down it hangs from a short vine of its own, curled at
+          // both ends like every painted run, the curls inside the plate's width; a thinner vine (STRIP_K) so its curls stay under the
+          // hearts' foot, not over it: R-165.364)
+          !(place.row === 1 && !underBoss) && <PaintedVine x0={Math.round(2 + vineEndW(k * STRIP_K))} x1={Math.round(cw - 2 - vineEndW(k * STRIP_K))} y={pv} k={k * STRIP_K} endL endR />
         ) : place.row === 1 && !underBoss ? (
           // in the top row its vine is the canopy strung from the hearts' vine across to the Menu's
           <Vine x0={Math.round(ins.left + vineEnd - 14 - place.x)} x1={Math.round(vp.w - ins.right - g.gutter - g.menu - 16 - place.x)} base={pv} amp={2.4} ph={1.3} />

@@ -138,3 +138,9 @@ ART-W2B total: ~25 GPU-min, **~$1.15** of its $4 cap (minutes x $2.75/60). Balan
 PAINT-292 total: about $0.01 of its $1 cap. Balance about $52.5 (main's last figure; unchanged at the cent level). Logged 6:10 PM ET.
 (INT-14 merge, 11-20: PAINT-292's "about $52.5" above is main's figure and does not count the INT-13 merges above. Combined: ~$49.0 - ~$0.01 = ~$49.0.)
 
+
+## 2026-11-20 (ENG-ROCK, t-eng-rock; the lead's ruling C, cap $2, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 12:54-1:00 PM | sandbox 6b0089504fdc5ab3c55bb2ae (rtx-pro-6000, ostris/aitoolkit), about 7 min creation to terminate (42 s model load, ~3 min of takes, ~3 min cutting): 9 Qwen-Image img2img takes (style LoRA 1.0, 1536x768, ~13 s each) from ONE start (tools/art/hfrock/starts.py: the World 2 kit boulder on flat grey, left stretched low-wide, right squeezed tall; s52/s60/s68 x seeds 11/23/37), each take two rocks; keyed and cut in the sandbox (tools/art/hfrock/cut.py), 18 cuts back by hf_sandbox_fs (the bucket refused the forwarded token, 403) | lead (ENG-ROCK ruling C; pick 1:05 PM) | ~$0.32 | 2 pieces shipped (src/assets/w2-rocks/w2-rocks.webp: rock-a = s68-11-L, rock-b = s60-37-L, each cut at the boulder's 388:179 shape): **~$0.16 a piece**; the 9 tall cuts (reference/art/hfrock/takes/*-R.webp) catalogued unassigned (a 50 px hop rock cannot seat them), the other 7 low cuts kept in the same folder |
+ENG-ROCK total: ~7 GPU-min, **~$0.32** of its $2 cap (minutes x $2.75/60). Balance ~$49.9 (from ~$50.2, ART-W2B's figure, origin/t-int-14 reference/art/HF-SPEND.md:131, as the lead ruled; the INT-14 merge note at :139 there gives a combined ~$49.0, so counting every branch: ~$48.7). Logged 1:08 PM ET.

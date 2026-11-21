@@ -41,6 +41,7 @@
  *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
  *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
+ *   rocks:<w>      the sheets beyond the kit a world's painted hop rocks are cut from (rockLooks.ts: World 2's river stones), with its kit
  *   w1-new         World 1's new painted pieces, the squirrels and hollow logs (w1NewArt.ts): 1-1
  *   pit-art:1      World 1's painted drops (w1Pits.ts): a stage the mixer builds (it marks its drops, pit: 'drop')
  *   creek:1        World 1's painted deadly creek body and its muddy splash (w1Creek.ts), for a stage's drawn water zones: a spec with water (1-5)
@@ -56,6 +57,7 @@ import { W2_PUZZLES, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { rockSheetUrls } from './rockLooks.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
@@ -175,6 +177,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built || (hasKit && sw.paint && cfg.objectiveType !== 'boss_lair')) {
     out.push('kit:1');
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
+    // (and the sheets its painted rocks are cut from beyond the kit: World 2's river stones, rockLooks.ts)
+    if (rockSheetUrls(w).length) out.push(`rocks:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
   // (Worlds 1, 2 and 5 on their built stages, and Worlds 8-10 on every stage: the dressing sets' sheet, artDress.ts dressSets)

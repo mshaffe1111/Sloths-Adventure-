@@ -1,0 +1,30 @@
+# 453b69c2, World 1, 72 builds
+('1-1', 'easy') builds 4 tabs 0 lone 0
+('1-1', 'normal') builds 4 tabs 0 lone 0
+('1-2', 'easy') builds 4 tabs 0 lone 0
+('1-2', 'normal') builds 4 tabs 0 lone 0
+('1-3', 'easy') builds 4 tabs 0 lone 0
+('1-3', 'normal') builds 4 tabs 0 lone 0
+('1-4', 'easy') builds 4 tabs 0 lone 0
+('1-4', 'normal') builds 4 tabs 0 lone 0
+('1-5', 'easy') builds 4 tabs 0 lone 0
+('1-5', 'normal') builds 4 tabs 0 lone 0
+('1-6', 'easy') builds 4 tabs 25 lone 28
+('1-6', 'normal') builds 4 tabs 51 lone 15
+('1-7', 'easy') builds 4 tabs 8 lone 0
+('1-7', 'normal') builds 4 tabs 16 lone 0
+('1-8', 'easy') builds 4 tabs 0 lone 0
+('1-8', 'normal') builds 4 tabs 0 lone 0
+('1-9', 'easy') builds 4 tabs 0 lone 0
+('1-9', 'normal') builds 4 tabs 0 lone 0
+TOTAL builds 72 tabs 100 lone 43 builds with a tab 16
+# main 6e7b85f8, 1-6 only
+('1-6', 'easy') builds 4 tabs 20 lone 36
+('1-6', 'normal') builds 4 tabs 51 lone 11
+TOTAL builds 8 tabs 71 lone 47 builds with a tab 8
+# EXPERIMENT (453b69c2 + lower() nearest neighbour, not committed), 1-6 + 1-7
+('1-6', 'easy') builds 4 tabs 0 lone 0
+('1-6', 'normal') builds 4 tabs 0 lone 0
+('1-7', 'easy') builds 4 tabs 0 lone 0
+('1-7', 'normal') builds 4 tabs 0 lone 0
+TOTAL builds 16 tabs 0 lone 0 builds with a tab 0

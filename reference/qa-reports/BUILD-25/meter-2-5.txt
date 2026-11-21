@@ -1,0 +1,11 @@
+1-1 normal score     4 (3.5-4.3 over 4 layouts)  3.07 min  points 24.5  mean 7.9/min  peak 20.45/min  {"single":64,"double":6,"bounce":1} route check
+2-4 normal score     4 (3.9-4.4 over 4 layouts)  4 min  points 23  mean 5.75/min  peak 22.8/min  {"single":39,"catch":7,"liana-drop":7,"ride-board":1,"ride-off":1,"swing":5,"double":2} route extended
+2-5 normal score   3.7 (3.3-3.7 over 4 layouts)  3.7 min  points 21.6  mean 5.9/min  peak 19.95/min  {"single":45,"snap-run":8,"creature-choice":1,"ride-board":2,"creature":8,"ride-off":2,"climb":1,"double":1} route check
+1-1 easy   score   2.6 (1.5-2.9 over 4 layouts)  3.26 min  points 16.6  mean 5.05/min  peak 13.5/min  {"single":65,"double":6,"bounce":1} route check
+2-4 easy   score     3 (2.9-3.1 over 4 layouts)  4.06 min  points 19.700000000000003  mean 4.85/min  peak 16.4/min  {"single":40,"catch":8,"liana-drop":5,"swing":7,"ride-board":1,"ride-off":1,"double":1} route extended
+2-5 easy   score   2.4 (2.1-2.4 over 4 layouts)  3.73 min  points 14.2  mean 3.8/min  peak 12.9/min  {"single":44,"snap-run":8,"creature-choice":1,"ride-board":2,"creature":8,"ride-off":2,"climb":1} route check
+SCALE 0.28194 (1 meter point = 3.5 raw points a minute)
+
+real	0m9.987s
+user	0m11.795s
+sys	0m0.283s

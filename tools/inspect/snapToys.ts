@@ -16,7 +16,7 @@ import { w2CastSpawn, w2Snappers } from '../../src/game/gen2/worlds/w2Cast.ts';
 import type { Gen2Stage, SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { ClockDef } from '../../src/game/stageKit.types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
-import { firstTimer, type FTRun } from './firsttimer.ts';
+import { firstTimer, type FirstTimer, type FTRun } from './firsttimer.ts';
 import { BOTS, type Setting, type Tier } from './tierBots.ts';
 
 /** the toys' snap rows (the toys' own data: 2-5's builder lays World 2's): 2-5.md's practice row (3 in step at count 0.75) and its wave
@@ -163,4 +163,47 @@ export function atSnapper(r: FTRun, st: Gen2Stage) {
     hits: r.harms.filter((h) => h.kind === 'hit' && near(h.x)).length, lives: r.harms.filter((h) => h.kind === 'life' && near(h.x)).length,
     causes: r.harms.filter((h) => near(h.x)).map((h) => `${h.kind}:${h.cause}@${Math.round(h.x)}`),
   };
+}
+
+/**
+ * (ENG-SNAP, R-165.339) a run over the snapper fixture with what he did around it, frame by frame (snapperTaught.test.ts):
+ *   bonks     how many times his landing on its back dazed it (bonkHops: of them, his bonk's hop; adopted: a landing he did not mean,
+ *             a hop off the last snap stone onto it, taken as his bonk)
+ *   past      the farthest he got past its middle, toward its far side, while it was dazed (his side: where he stood before it)
+ *   farLand   he came down on its far side while it was dazed (2-5's loop: he bonked again from there once it woke)
+ *   kickedIn  the snapper's phase the frame before his kick sent it off ('recover': right after its snap, the taught way; 'stunned': dazed by
+ *             his bonk; 'rest' asleep)
+ *   events    what happened, in order, with the frame: snap@dx (it snapped, him that far off), stun@dx (a bonk; dx from its middle, + on his
+ *             side, - past it) and his speed, land@dx (his first landing after it), woke (its daze ran out), kick@dx (and its phase)
+ */
+export function snapperWatch(which: ToySnapper, who: FirstTimer, seed: number, variant = 1) {
+  let side = 0, stood = 0, past = 0, farLand = false, bonks = 0, prev = '', kickedIn: string | null = null, snaps = 0, f = 0, air = false;
+  const events: string[] = [];
+  const at = (x: number, mx: number) => Math.round((x - mx) * (side || -1));
+  const r = onSnapper(which, seed, who.setting, () => firstTimer(SNAPPER_ID, variant, who, { cap: 600, onFrame: (sim) => {
+    const p = sim.p;
+    const c = (sim.e as unknown as { cast: { members: Array<{ e: { kitBeat?: unknown }; s: { phase: string; x: number; leaving?: boolean }; cleared: boolean }> } | null }).cast;
+    const m = c?.members.find((q) => !!q.e.kitBeat);
+    if (!m) return;
+    const ph = m.s.phase;
+    f++;
+    if (ph === 'act' && prev !== 'act') { snaps++; if (Math.abs(m.s.x - p.x) < 120) events.push(`snap@${Math.round(Math.abs(m.s.x - p.x))}:${f}`); }
+    if (ph === 'stunned' && !p.grounded) air = true;
+    if (ph === 'stunned' && p.grounded && air) { air = false; events.push(`land@${at(p.x, m.s.x)}:${f}`); }
+    if (prev === 'stunned' && ph !== 'stunned' && ph !== 'flee' && !m.s.leaving) events.push(`woke:${f}`);
+    if (ph !== 'stunned' && p.grounded && Math.abs(m.s.x - p.x) < 200) stood = p.x < m.s.x ? -1 : 1;
+    if (ph === 'stunned' && prev !== 'stunned') {
+      bonks++;
+      // (his side: the one his bonk's hop left the ground from, the first time)
+      if (!side) side = stood;
+      events.push(`stun@${at(p.x, m.s.x)}v${Math.round(Math.abs(p.vx))}:${f}`);
+    }
+    if (ph === 'stunned' && side) {
+      past = Math.max(past, (m.s.x - p.x) * side);
+      if (p.grounded && (p.x - m.s.x) * side < 0) farLand = true;
+    }
+    if (kickedIn === null && (m.cleared || m.s.leaving)) { kickedIn = prev; events.push(`kick@${Math.round(Math.abs(m.s.x - p.x))}(${prev}):${f}`); }
+    prev = ph;
+  } }));
+  return { ...atSnapper(r, snapperStage(which, seed, who.setting)), bonks, bonkHops: r.bonkHops ?? 0, adopted: r.adopted ?? 0, snaps, past: Math.round(past), farLand, kickedIn, events: events.join(' ') };
 }

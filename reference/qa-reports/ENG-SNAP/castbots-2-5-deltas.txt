@@ -1,0 +1,10 @@
+tier setting | pass | snapper bites | lives | rescues | mean time (s)   (before BUILD-25 -> after ENG-SNAP, seeds 1-40)
+adult easy | 40 -> 40 | 54 -> 54 | 0 -> 0 | 0 -> 0 | 162 -> 165
+adult normal | 40 -> 40 | 46 -> 54 | 11 -> 6 | 0 -> 0 | 157 -> 161
+child easy | 16 -> 40 | 10 -> 0 | 0 -> 0 | 48 -> 0 | 326 -> 285
+child normal | 7 -> 40 | 24 -> 0 | 19 -> 12 | 70 -> 0 | 522 -> 376
+expert normal | 40 -> 40 | 0 -> 0 | 4 -> 9 | 0 -> 0 | 199 -> 185
+kid easy | 0 -> 4 | 1710 -> 0 | 235 -> 0 | 176 -> 99 | 485 -> 238
+kid normal | 0 -> 0 | 776 -> 13 | 332 -> 223 | 462 -> 316 | 767 -> 557
+middle easy | 40 -> 40 | 0 -> 1 | 0 -> 0 | 0 -> 0 | 212 -> 198
+middle normal | 39 -> 40 | 2 -> 2 | 15 -> 10 | 1 -> 0 | 220 -> 203

@@ -1,0 +1,5 @@
+seedlist 2-5: PASS (100 seeds, each clean on both settings)
+
+real	0m12.072s
+user	0m15.598s
+sys	0m0.569s

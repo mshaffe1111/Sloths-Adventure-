@@ -1,0 +1,233 @@
+TAP version 13
+# Subtest: the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 1 - the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 220.693665
+  type: 'test'
+  ...
+# Subtest: planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+ok 2 - planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 98.259716
+  type: 'test'
+  ...
+# Subtest: step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 3 - step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3073.647327
+  type: 'test'
+  ...
+# Subtest: step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 4 - step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1918.019549
+  type: 'test'
+  ...
+# Subtest: step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 5 - step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2716.940579
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+ok 6 - planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 5346.866547
+  type: 'test'
+  ...
+# Subtest: the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 7 - the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 64.528346
+  type: 'test'
+  ...
+# Subtest: planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+ok 8 - planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 24.316928
+  type: 'test'
+  ...
+# Subtest: wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 9 - wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1524.960995
+  type: 'test'
+  ...
+# Subtest: wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 10 - wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1465.462268
+  type: 'test'
+  ...
+# Subtest: wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 11 - wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2138.336047
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+ok 12 - planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 4962.238155
+  type: 'test'
+  ...
+# Subtest: the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+ok 13 - the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+  ---
+  duration_ms: 269.24102
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 14 - snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3197.25191
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 15 - snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1905.053784
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 16 - snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3147.559396
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 17 - snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1307.719951
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+ok 18 - planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 3944.760777
+  type: 'test'
+  ...
+# Subtest: the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+ok 19 - the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+  ---
+  duration_ms: 111.975995
+  type: 'test'
+  ...
+# Subtest: snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 20 - snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1795.394798
+  type: 'test'
+  ...
+# Subtest: snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 21 - snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1697.595483
+  type: 'test'
+  ...
+# Subtest: snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 22 - snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2547.082376
+  type: 'test'
+  ...
+# Subtest: snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 23 - snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1445.795109
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+ok 24 - planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 3595.670114
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 25 - (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 7235.049076
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 26 - (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 4157.197094
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 27 - (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2418.860632
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 28 - (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2763.042182
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 29 - (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2114.831585
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: adult normal bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 30 - (a) bonkBrake: adult normal bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1966.373592
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: adult easy bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 31 - (a) bonkBrake: adult easy bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1913.960489
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 32 - (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 4670.91622
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 33 - (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 3227.550556
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+ok 34 - (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1616.935304
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+ok 35 - (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 1928.397018
+  type: 'test'
+  ...
+# Subtest: planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
+ok 36 - planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
+  ---
+  duration_ms: 8525.965579
+  type: 'test'
+  ...
+# Subtest: planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
+ok 37 - planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
+  ---
+  duration_ms: 12861.064047
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56603.974534
+EXIT=0

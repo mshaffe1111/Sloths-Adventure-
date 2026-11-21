@@ -8,7 +8,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FILL_INSET, fillSrc } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
-import { LIP_UNDER, lipUnder, stepFootLips } from './protoArt.ts';
+import { LIP_UNDER, faceCut, lipUnder, stepDownTo, stepFootLips } from './protoArt.ts';
 import { paintedBank } from './w1Pits.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
@@ -234,6 +234,36 @@ test("a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank
   assert.equal(lipUnder(lo, [floor, hi, lo], false), LIP_UNDER, 'the bank on its left is higher');
   assert.equal(lipUnder(floor, [floor, P(500, 530, 489)], true), 30, 'never past a narrow bank');
   assert.equal(lipUnder(P(0, 500, 580, { soil: true }), [P(0, 500, 580, { soil: true }), hi], true), 0, "a pit's low step keeps its own ends");
+});
+
+test("a wall's end face stops at the step that stands against it, not at the floor under that step: no grass tab hangs under a painted block in front of the wall, and nothing see-through where the floor's lip run filled the notch (R-165.344, FIX-TAB: 1-6's stairs of stones, 100 tabs in World 1)", () => {
+  // the 1-6 L0 Normal seed 1 x5977 spot: wall 22, floor 36 at its foot, step banks 39 and 38 standing on the floor flush against the wall
+  const wall = P(5567, 5827, 818, { height: 491 }), floor = P(5827, 6376, 1058, { height: 120 });
+  const step = P(5827, 5927, 878, { height: 180 }), step2 = P(5827, 6027, 938, { height: 120 });
+  // (the floor's lip still runs on under the wall: the notch between the face's curve and the wall's end is where it showed)
+  assert.equal(lipUnder(floor, [wall, floor, step2, step], false), LIP_UNDER);
+  // the painted block (stone 38's art, in front of the wall) ends at the floor's top + SINK; the floor's lip band is ~23 units deep (40 here)
+  const foot = floor.y + 3, LIP_BAND = 40;
+  // every order the stage may list them in (the floor first is 1-6's)
+  for (const banks of [[wall, floor, step2, step], [wall, step, step2, floor], [floor, step, wall, step2]]) {
+    const at = stepDownTo(wall, banks, 'r');
+    // the wall's soil is cut back along its face only down to `cut`; below it, straight down at its end, over the notch
+    const cut = faceCut(wall.y, at!);
+    let tab = 0;
+    for (let y = foot; y < floor.y + LIP_BAND; y++) if (y < cut) tab++;
+    assert.equal(tab, 0, `visible lip rows under the block in the notch (the first lower bank, the floor, gave ${floor.y + 24 - foot})`);
+    assert.equal(at, step.y, 'the step against the face, the highest lower bank there');
+    // (the hole check: from the block's foot down the notch is the wall's soil, so with or without the lip run nothing shows through)
+    assert.ok(cut <= foot, `the face stops at ${cut}, above the block's foot ${foot}`);
+  }
+  // a plain step down to one floor still steps to that floor, either side; no lower bank beside it: none
+  assert.equal(stepDownTo(wall, [wall, floor], 'r'), floor.y);
+  const left = P(5000, 5567, 1000);
+  assert.equal(stepDownTo(wall, [left, wall, P(5467, 5567, 900)], 'l'), 900);
+  assert.equal(stepDownTo(wall, [wall, P(5827, 6000, 700)], 'r'), undefined, 'a higher bank is no step down');
+  // (a short step, a plinth, under SHORT_STEP: the face stops at its top; a taller one 24 under it)
+  assert.equal(faceCut(818, 860), 860);
+  assert.equal(faceCut(818, 878), 902);
 });
 
 // R-165.243 (the lead's 1-1 x11560 / 1-7 stills, 11-14): a thin dark line straight across World 1's backdrop, one device row, at the

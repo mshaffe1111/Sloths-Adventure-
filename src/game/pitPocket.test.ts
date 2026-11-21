@@ -33,10 +33,13 @@ test("gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by high
   }
 });
 
-test('no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before', () => {
-  const levels = generateAllLevels().filter((l) => !l.secret && l.worldIndex <= 4 && !builtOnGen2(l)); // (builtOnGen2: the one definition, stageGenerator.ts; 1-1, 1-2 and 1-3 roll on gen2)
-  // (29 since 2-4 left for gen2, BUILD-24 (1-9 before it, BUILD-19): the floor keeps the walk from going quietly empty)
-  assert.ok(levels.length >= 29, `${levels.length} stages`);
+test('no stage outside gen2 World 1 (Worlds 2 to 4, whichever generator builds it, and any World 1 stage the old one builds) has a pocket: their ground draws exactly as before', () => {
+  // (BUILD-25c, 11-20: the walk was "the old generator's Worlds 1-4" with a hand-pinned floor (30, 29, 28) that went red each time a stage
+  //  left for gen2 (2-4, 2-5), and a stage that left stopped being walked although ownLook is only gen2 World 1's. Now every stage in
+  //  Worlds 2-4 is walked whoever builds it, so the set and its floor do not move when a stage changes generator)
+  const levels = generateAllLevels().filter((l) => !l.secret && l.worldIndex <= 4 && (l.worldIndex > 1 || !builtOnGen2(l))); // (builtOnGen2: the one definition, stageGenerator.ts)
+  // (Worlds 2-4 are 32 stages: the floor keeps the walk from going quietly empty)
+  assert.ok(levels.length >= 32, `${levels.length} stages`);
   for (const l of levels) {
     const st = generateStage(l, 'normal');
     assert.equal(st.platforms.filter((p) => p.ownLook).length, 0, `${l.id}: no ownLook piece`);

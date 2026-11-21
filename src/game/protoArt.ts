@@ -20,6 +20,7 @@ import type { Collectible, Platform } from './types.ts';
 import { sheetEpoch, trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { assignRockLooks, isPaintedRock, KIT_BOULDER, rockFramesOf, rockSheet, ROCK_SEAT, type RockLook } from './rockLooks.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround, type DepthAt } from './groundPaint.ts';
@@ -74,9 +75,8 @@ export function setGroundPaint(on: boolean) {
 export function bankPainted(p: Platform): boolean {
   return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
 }
-/** a rock the painted layer draws (drawProtoScene: a 50-unit moss stone, or art 'rock'): the drawn ground leaves it alone (terrain.ts),
- *  or it drew a code earth body under the painted boulder, three gradients a stone a frame (the mixer's 1-5 n4 fork, drawcheck) */
-export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+// (a rock the painted layer draws, and each rock's look: rockLooks.ts, R-165.338)
+export { isPaintedRock };
 // (engine-core, 11-05: only on a piece a builder marks, pit: 'drop', which only the mixer's stages do; every live stage keeps terrain's
 // earth under its painted rocks until taking this to every stage is its own tested change, R-165.46)
 export function rockPainted(p: Platform): boolean {
@@ -666,12 +666,60 @@ export function drawLogArt(ctx: CanvasRenderingContext2D, p: Platform, moving: b
   return true;
 }
 
-/** the low mossy rock the log stops against */
+/** each painted rock's look this stage (rockLooks.ts assignRockLooks: by id, never the same beside), by platform id */
+let rockLooks = new Map<number, RockLook>();
+/** the stage is starting: its painted rocks take their looks from the kit world's rock pictures (engine.ts, after setKitWorld) */
+export function setRockLooks(platforms: readonly Platform[]) {
+  rockLooks = assignRockLooks(platforms, rockFramesOf(kitWorld).length);
+}
+/** the sheets beyond the kit that rock pictures are cut from, by address (loaded with the stage: stagePreload.ts 'rocks:<w>') */
+const rockImgs = new Map<string, HTMLImageElement>();
+const rockReady = new Set<string>();
+/** start loading a sheet a world's rocks are cut from; whether it is in */
+export function rockSheetReady(url: string): boolean {
+  if (!rockImgs.has(url) && typeof Image !== 'undefined') {
+    const im = new Image();
+    rockImgs.set(url, im);
+    trackAtlas(im, url, () => { rockReady.add(url); }, () => { rockImgs.delete(url); }, () => { rockImgs.delete(url); rockReady.delete(url); });
+  }
+  return rockReady.has(url) && !!rockImgs.get(url);
+}
+
+/**
+ * The low mossy rock the log stops against, and every painted rock to hop: one of its world's rock pictures, plain or mirrored, as
+ * the stage assigned it (rockLooks.ts). Each is as wide as the kit boulder, its seat where the boulder's seat lies (the collider is
+ * unchanged), and its bottom bedded a little into the ground under it. A picture whose sheet is not in yet draws as the kit boulder.
+ */
 export function drawRockArt(ctx: CanvasRenderingContext2D, p: Platform): boolean {
   if (!protoArtReady()) return false;
+  const b = frameOf('boulder');
   // (World 4's little rocks to hop, art 'rock': sized by their height, a little over it, so the painted top is where he stands)
-  const w = p.art === 'rock' ? ((p.height + 10) * frameOf('boulder').f.w) / frameOf('boulder').f.h : p.width * 1.15;
-  stand(ctx, 'boulder', p.x + p.width / 2, p.y + p.height + 3, w);
+  const w = p.art === 'rock' ? ((p.height + 10) * b.f.w) / b.f.h : p.width * 1.15;
+  const cx = p.x + p.width / 2;
+  const bottom = p.y + p.height + 3;
+  const look = rockLooks.get(p.id) ?? { frame: 0, flip: false };
+  const ids = rockFramesOf(kitWorld);
+  const id = ids[look.frame] ?? KIT_BOULDER;
+  const sheet = look.frame > 0 ? rockSheet(id) : undefined;
+  const img = sheet && rockSheetReady(sheet.url) ? rockImgs.get(sheet.url)! : null;
+  if (look.flip) {
+    ctx.save();
+    ctx.translate(cx, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-cx, 0);
+  }
+  if (img && sheet) {
+    // (seated where the kit boulder's seat lies at this width: its mean top across the middle, ROCK_SEAT)
+    const hb = (w * b.f.h) / b.f.w;
+    const seatY = bottom - hb + hb * (ROCK_SEAT[ids[0]] ?? 0);
+    const f = sheet.f;
+    const h = (w * f.h) / f.w;
+    const top = seatY - h * (ROCK_SEAT[id] ?? ROCK_SEAT[ids[0]] ?? 0);
+    ctx.drawImage(img, f.x, f.y, f.w, f.h, cx - w / 2, top, w, h);
+  } else {
+    stand(ctx, 'boulder', cx, bottom, w);
+  }
+  if (look.flip) ctx.restore();
   return true;
 }
 
@@ -916,7 +964,7 @@ export function drawBankArt(
     const face = endFace(w, x, p.y, bottom, right);
     if (step === undefined) return face;
     // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
-    const cut = step - p.y < SHORT_STEP ? step : step + 24;
+    const cut = faceCut(p.y, step);
     const pts = face.filter((q) => q[1] < cut);
     return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
   };
@@ -1411,7 +1459,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
     const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
-    const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
+    const lower = (side: 'l' | 'r') => stepDownTo(p, banks, side) ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
     // (a World 7 high ledge's sides over a floor HIGH_LEDGE or more below: the soil wraps round the wall's corner there, w7TempleArt.ts)
     const drop = (side: 'l' | 'r') => {
@@ -1463,6 +1511,24 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   }
   shadeUpTo(-Infinity);
 }
+
+/**
+ * The top of the bank p's end steps down to on that side: of the lower banks that meet the end, the HIGHEST, the one that stands against
+ * its face (R-165.344, FIX-TAB). The first one in the list was taken: where a step stands on the floor at a wall's foot (1-6's stair of
+ * stones), that was the floor, so the wall's end face and its soil's cut-back ran down to the floor's top past the step, and the notch
+ * between them was left to the floor's lip run under the wall: a grass tab hanging under the painted stone in front (100 in World 1).
+ */
+export function stepDownTo(p: Platform, banks: readonly Platform[], side: 'l' | 'r'): number | undefined {
+  let y: number | undefined;
+  for (const q of banks) {
+    if (q === p || q.y <= p.y + 2 || Math.abs(side === 'l' ? q.x + q.width - p.x : p.x + p.width - q.x) >= 2) continue;
+    if (y === undefined || q.y < y) y = q.y;
+  }
+  return y;
+}
+/** where a bank's end face stops, stepping down from top to a lower bank at `step`: a short step (a plinth) at that bank's top, else
+ *  24 under it; below that the bank's soil runs straight down at its end (drawBankArt) */
+export const faceCut = (top: number, step: number): number => (step - top < SHORT_STEP ? step : step + 24);
 
 /** how far a floor's lip runs on under a higher bank beside it (world units: past the most a World 1 end face curves back in, 20, at 90 down) */
 export const LIP_UNDER = 60;

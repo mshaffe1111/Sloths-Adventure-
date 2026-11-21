@@ -1,0 +1,103 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/reference/art/hfrock/starts/",
+ "items": [
+  {
+   "name": "rock-s52-11",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s52-23",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s52-37",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.52,
+   "seed": 37,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s60-11",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s60-23",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s60-37",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.6,
+   "seed": 37,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s68-11",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s68-23",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "rock-s68-37",
+   "start": "rocks-w2.png",
+   "prompt": "a single sheet with two separate mossy river boulders standing apart on a plain flat mid grey background: on the left a LOW WIDE boulder with a broad gently rounded almost flat top a small animal could stand on, on the right a TALLER NARROWER rounded boulder; warm brown-grey stone with soft painterly gouache shading, a few small bright green moss tufts on top, a thin warm dark brown outline, a tiny pebble at the foot; hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic side view, soft warm sunlit riverbank light from the upper left, isolated on a flat plain mid grey background, nothing else",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, ground strip, cast shadow, sky, scenery, water, plants, grass, animals, people, sloth, thick black outline, grey granite, blue grey stone",
+   "strength": 0.68,
+   "seed": 37,
+   "w": 1536,
+   "h": 768
+  }
+ ]
+}

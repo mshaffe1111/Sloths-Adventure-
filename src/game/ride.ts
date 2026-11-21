@@ -134,6 +134,9 @@ export interface Pad {
    * (ENG-25; 2-5.md NEW 1): a floor always, that hurts him while 'on' (it claps shut on four), its jaw opening a notch a count before
    */
   on?: import('./beatBrick.ts').BrickOn;
+  /** a snap stone on a TEACHING row (gen2 PadRow.freeBite): its bite jolts and holds him as any bite does, but costs no heart (a
+   *  teach never costs a heart, the lead's ruling 11-20 for 2-5's first stone; pieces/padPiece.ts hurts) */
+  freeBite?: true;
 }
 
 /** the pad now: whether it holds him, and its tell */

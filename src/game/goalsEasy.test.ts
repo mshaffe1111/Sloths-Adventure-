@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gen2EasyGoal, goalHave, kidMedian, withGoals } from './goals.ts';
+import { gen2EasyGoal, goalHave, heldEasyGoal, kidMedian, withGoals } from './goals.ts';
+import { loadSeedList } from './gen2/seedList.ts';
 import { easyStage } from './easyMode.ts';
 import { generateStage } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -32,4 +33,19 @@ test('LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot
     assert.equal(st.config.targetCount, Math.min(Math.round(have * 0.65), kid ?? Infinity), `${l.id}: Easy asks ${st.config.targetCount} of ${have}`);
   }
   assert.ok(seen >= 2, `gen2 stages checked: ${seen}`);
+});
+
+test("R-165.336: a stage whose design sets its goal (countSet) asks THAT goal in Play, Normal as designed, Easy round(x 0.6), never a share of what it laid", async () => {
+  // (Play's own path, engine.ts: withGoals, then easyStage on Easy. BUILD-25b 11-20: 2-5 designed 8 of 9 and Play asked 7, Easy 6)
+  assert.equal(heldEasyGoal(8), 5);
+  assert.equal(heldEasyGoal(1), 1);
+  const set = generateAllLevels().filter((l) => l.countSet);
+  assert.ok(set.length >= 1, 'a countSet stage to check (2-5)');
+  for (const l of set) {
+    await loadSeedList(l.id);
+    const n = withGoals(generateStage({ ...l }, 'normal'));
+    assert.equal(n.config.targetCount, l.targetCount, `${l.id}: Normal asks the designed ${l.targetCount} (laid ${goalHave(n as never)})`);
+    const e = easyStage(withGoals(generateStage({ ...l }, 'easy')));
+    assert.equal(e.config.targetCount, heldEasyGoal(l.targetCount), `${l.id}: Easy asks round(${l.targetCount} x 0.6)`);
+  }
 });

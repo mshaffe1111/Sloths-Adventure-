@@ -1,0 +1,123 @@
+BUILD-25d THE FULL SET (gates.md D96) on c74a35542 (frozen worktree; node_modules linked); base for lockall/funcheck 6a61c36c9; repo unshallowed before roadmapcheck/timecheck
+
+PASS tsc exit=0 15:01:05-15:01:09 ET
+PASS artcheck exit=0 15:01:09-15:01:10 ET
+PASS vitebuild exit=0 15:01:10-15:01:15 ET
+PASS chunkcheck exit=0 15:01:15-15:01:15 ET
+PASS knowncheck exit=0 15:01:15-15:01:15 ET
+PASS generalitycheck exit=0 15:01:15-15:01:15 ET
+PASS coveragecheck exit=0 15:01:15-15:02:18 ET
+PASS roadmapcheck exit=0 15:02:18-15:02:22 ET
+PASS timecheck exit=0 15:02:22-15:02:25 ET
+PASS registrycheck exit=0 15:02:25-15:03:07 ET
+PASS tipwalk exit=0 15:03:07-15:03:25 ET
+PASS kbdcheck exit=0 15:03:25-15:05:23 ET
+PASS suite-shard1 exit=0 15:05:34-15:13:31 ET
+PASS citools exit=0 15:05:34-15:15:23 ET
+PASS lockall exit=0 15:11:04-15:20:00 ET
+PASS tierbots exit=0 15:15:23-15:20:09 ET
+PASS suite-shard2 exit=0 15:13:31-15:21:17 ET
+FAIL funcheck exit=1 15:20:00-15:21:29 ET
+PASS clipcheck exit=0 15:21:36-15:29:32 ET
+PASS paintcheck-1 exit=0 15:21:36-15:30:59 ET
+PASS suite-shard3 exit=0 15:21:17-15:36:41 ET
+PASS paintcheck-2 exit=0 15:30:59-15:38:34 ET
+PASS drawcheck exit=0 15:29:32-15:43:02 ET
+PASS suite-shard4 exit=0 15:36:41-15:46:15 ET
+PASS paintcheck-0 exit=0 15:42:30-15:47:37 ET
+PASS suite-shard5 exit=0 15:46:15-15:58:17 ET
+PASS suite-shard6 exit=0 15:58:17-16:02:30 ET
+PASS seedlists exit=0 15:20:09-16:13:08 ET
+PASS buildcheck exit=0 16:17:22-16:17:27 ET
+
+== suite shards (tests/pass/fail/todo)
+shard 1: tests 560  pass 560  fail 0  todo 0  
+shard 2: tests 605  pass 605  fail 0  todo 0  
+shard 3: tests 788  pass 788  fail 0  todo 0  
+shard 4: tests 648  pass 648  fail 0  todo 0  
+shard 5: tests 618  pass 617  fail 0  todo 1  
+shard 6: tests 761  pass 760  fail 0  todo 1  
+TOTAL tests 3980 pass 3978 fail 0 todo 2
+citools: tests 319  pass 318  fail 0  todo 1  
+tierbots: tests 9  pass 9  fail 0  todo 0  
+
+== seedlists
+seedlist 1-1: the verdicts refuse 0 of 161 listed seeds
+seedlist 1-1: PASS (161 seeds, each clean on both settings)
+seedlist 1-2: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-2: PASS (100 seeds, each clean on both settings)
+seedlist 1-3: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+seedlist 1-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-4: PASS (100 seeds, each clean on both settings)
+seedlist 1-5: the verdicts refuse 0 of 150 listed seeds
+seedlist 1-5: PASS (150 seeds, each clean on both settings)
+seedlist 1-6: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-6: PASS (100 seeds, each clean on both settings)
+seedlist 1-7: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-7: PASS (100 seeds, each clean on both settings)
+seedlist 1-8: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-8: PASS (100 seeds, each clean on both settings)
+seedlist 1-9: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-9: PASS (100 seeds, each clean on both settings)
+seedlist 2-1: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-1: PASS (100 seeds, each clean on both settings)
+seedlist 2-2: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-2: PASS (100 seeds, each clean on both settings)
+seedlist 2-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-4: PASS (100 seeds, each clean on both settings)
+seedlist 2-5: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-5: PASS (100 seeds, each clean on both settings)
+
+== lockall
+lock: 101/102 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 2-5, 5-7, 5-9, 6-1, 6-2, 6-3, 6-4, 6-5, 6-6, 6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9
+  2-5 (intended): size, platforms, ropes, rivers, enemies, collectibles, exitTotemX, exitTotemY, checkpoints, waterY, gen2, normalGoal, easyGoal, easyToday, proto.hints, proto.beats, proto.findSpot, proto.gen2, proto.decor, proto.dress
+
+== funcheck (exit 1 on the base too; head output identical to base's except its run time: diff empty; 2-5 lines 0)
+FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags; 87 s)
+FAIL (30 worse or new, 41 to lower or delete; 116 known, 1590 stage-layout flags; 90 s)
+
+== paintcheck parts 0/3 1/3 2/3 (an extra 3/3 ran empty: parts are 0-based)
+paintcheck: PASS, no new painted style falls through to code terrain (170 known ids seen, R-165.292)
+paintcheck: PASS, no new painted style falls through to code terrain (107 known ids seen, R-165.292)
+paintcheck: PASS, no new painted style falls through to code terrain (106 known ids seen, R-165.292)
+
+== coveragecheck
+meter coverage: 14 built stages (1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-4 2-5), 28 pieces used, 5 known gaps
+coveragecheck: PASS
+== registrycheck
+registrycheck: PASS (13 stages: 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 2-5, each registered everywhere; 13 lists checked in CI; 41 s)
+== tipwalk
+  after 20 s: x 1260 y 10984
+tipwalk: PASS
+== roadmapcheck
+  all: 1463.1 helper hours (Matt's own items and the decisions left out: 23)
+PASS
+== timecheck
+time-stamp check over 6e7b85f8f7da7653b9cf94b86c355605a662945e..HEAD: 371 commits, 33 files, 4939 lines they wrote, 276 stamps
+PASS
+== knowncheck
+✓ src/game/artUse.allow.json: 210 entries
+PASS
+== generalitycheck
+generality check: 66 engine files (198 exempt under the engine folders), 26 literals, 26 known
+PASS
+== chunkcheck
+  ok       254,365 B    3,739,939 spare  assets/w6-D-eq93kF.js
+chunkcheck: PASS
+== artcheck
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+PASS
+== clipcheck
+
+PASS (83 known) (474 s; contact sheet and breaches.json in /tmp/claude-0/-home-user-Sloths-Adventure-/0cbbe275-3206-5f9c-bd12-3238a222d0b3/scratchpad/gates/clipcheck-out)
+== kbdcheck
+
+PASS (117 s; stills in reference/qa/tester-page-1106/keyboard/)
+== drawcheck
+
+PASS (810 s; raw results in /tmp/drawcheck-AfuLhU)
+== buildcheck
+  normal: p50 39 ms, p95 84 ms, max 94 ms (30 builds, CPU x4)
+  easy: p50 33 ms, p95 49 ms, max 53 ms (30 builds, CPU x4)

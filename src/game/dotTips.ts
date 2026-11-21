@@ -32,7 +32,6 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.2-1.upstream': 'upstream',
   'hint.2-2.upstream': 'upstream',
   'hint.2-2.pads': 'lilyPads',
-  'hint.2-5.snappers': 'snapper',
   'hint.2-7.basket': 'basketLift',
   'hint.2-9.guards': 'spearGuard',
   // World 3
@@ -139,8 +138,6 @@ export const REMINDS_OF: Readonly<Record<string, string>> = {
   'Hide! Into a bush!': 'watcher',
   // World 2
   'hint.2-8.deep': 'lesson:water',
-  'hint.2-5.row': 'snapper',
-  'hint.2-5.kick': 'snapper',
   'hint.2-9.court': 'spearGuard',
   'hint.2-9.kick': 'spearGuard',
   // World 3

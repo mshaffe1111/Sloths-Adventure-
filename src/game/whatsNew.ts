@@ -20,6 +20,20 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.1',
+    date: '2026-11-21',
+    title: 'Count to four',
+    items: [
+      'River Snappers is rebuilt: the stones bite on four, so I hop off before four.',
+      'The snappers snap on four too. Right after one snaps, a kick sends it home.',
+      'No snapper is ever hurt: a kicked one just hurries off, grumpy.',
+      'The river’s rocks come in three painted shapes now, and no two in a row look alike.',
+      'The ground under the forest’s stones and stumps is tidy now, with no stray grass.',
+      'When I stand still to yawn, wave or scratch, I stay solid: nothing shows through me.',
+      'The riverbanks grow painted flowers and plants now, in place of the old bright stems.',
+    ],
+  },
+  {
     version: '0.10.0',
     date: '2026-11-20',
     title: 'Across the river',

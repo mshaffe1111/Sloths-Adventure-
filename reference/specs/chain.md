@@ -89,6 +89,9 @@ bounce-air 308 / 298, gap 334. 2-2: single-hold 123 / 115, gap 135 / 219 / 244; 
 **Rows for src/game/gen2/reach.ts, scope Normal 2-4** (BUILD-24, 11-18: flown on stage 2-4 on World 2's gen2 kit, `FLIGHT_STAGE=2-4 ... normal
 all`, the table in reference/qa-reports/BUILD-24/fly-2-4.txt; the same columns as 2-2's): 2-4: single-hold 123 / 114, gap 135 / 219 / 244; 2-4: single-flick 123 / 113, gap 125 / 209 / 237; 2-4: single-tap 87 / 78, gap 77 / 161 / 182; 2-4: double-hold 204 / 194, gap 289 / 375 / 402; 2-4: double-flick 203 / 193, gap 271 / 357 / 381; 2-4: double-tap-tap 147 / 138, gap 188 / 273 / 299; 2-4: bounce 223 / 214, gap 176; 2-4: bounce-air 306 / 294, gap 331.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 2-5** (BUILD-25c, 11-20: flown on stage 2-5 on World 2's gen2 kit, `FLIGHT_STAGE=2-5 ... normal
+all`, the table in reference/qa-reports/BUILD-25/fly-2-5.txt; the same columns as 2-4's): 2-5: single-hold 123 / 114, gap 135 / 218 / 244; 2-5: single-flick 123 / 113, gap 125 / 209 / 236; 2-5: single-tap 87 / 78, gap 77 / 160 / 181; 2-5: double-hold 203 / 193, gap 287 / 372 / 400; 2-5: double-flick 202 / 192, gap 268 / 354 / 381; 2-5: double-tap-tap 147 / 137, gap 188 / 273 / 299; 2-5: bounce 223 / 214, gap 176; 2-5: bounce-air 305 / 293, gap 323.
+
 Cause: the second jump's help is 0.958 of 1-1's on stage 2 (`easeAssist(2)`). No lesser move gained a pixel, so every block keeps its
 5 px, and the taught moves lost 1-2 px against margins of 70 px or more. So **bands.md §2 holds on 1-2 as written**, both settings
 (Easy's help is full on every stage). It must be flown again from about 1-5 on. One figure does move with it: a double flick lands

@@ -23,6 +23,10 @@ export interface StageSpec {
   desc?: string;
   /** the count {n} names: what the engine's goal is on every roll (stagePlanGoals.test.ts checks it) */
   goal?: number;
+  /** the goal's count AS DESIGNED (R-165.336, BUILD-25 11-20: 2-5.md lays 7 snappers and asks 6): it IS the stage's targetCount (worldsData.ts),
+   *  and gen2 lays the stage's own sockets' animals, never a top-up to the goal + 2 (pipeline.ts fightsForGoal; LevelConfig.countSet).
+   *  Unset, the mission's formula and its top-up */
+  count?: number;
   /** which way the route leads when it is not the mission's usual way (a climb goes up, the rest right): 4-7 goes down the cliff */
   travel?: import('./stageKit.types.ts').Travel;
   /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
@@ -73,7 +77,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the story keeper's line 6, reference/story/lines-2-4.md (t-keeper-24@fa3b0930): gen2/worlds/w2Arc24.ts MISSION_24, held equal by
     //  w2Arc24.test.ts; vine_runner, so its exit never locks (the keeper's conflict 4))
     S('vine_runner', 'Over the Water', 'Vines to logs, logs to vines. Cross the river to the jetty.'),
-    S('purge', 'River Snappers', 'Chase the snappers off the bank.'),
+    // (the story keeper's line 7, reference/story/lines-2-5.md (t-keeper-25@a7ad4455): gen2/worlds/w2Arc25.ts MISSION_25, held equal by
+    //  w2Arc25.test.ts; its goal the design's (2-5.md "Goal", every snapper laid but one: GOAL_25, R-165.336), no top-up)
+    { ...S('purge', 'River Snappers', 'The stones bite on four. Hop across and send the snappers home.'), count: 8 },
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
     S('rescue', 'Before the Water Rises', 'Free more little ones before the water rises.'),
@@ -219,8 +225,15 @@ export const SEALED_LINES: Readonly<Record<string, string>> = {
   '1:stealth': 'We left some of her petals behind. Sneak back for them!',
   // (World 1's only gauntlet is 1-9: the story keeper's (i), reference/story/lines-1-9.md, w1Arc19.ts SEALED_19)
   '1:gauntlet': 'We passed some of her petals. Back we creep!',
+  // (World 2's only purge is 2-5: the story keeper's line 8, reference/story/lines-2-5.md, w2Arc25.ts SEALED_25; nobody is hurt in World 2)
+  '2:purge': 'Some snappers are still back there. Send them home!',
 };
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
+/** a world whose purge animals are only chased off, never beaten (World 2: nobody is hurt; the story keeper's conflicts 1 and 4, KEEPER-25):
+ *  its animal's word, one and many. Dot's goal lines, the counter and the purge card (hud/goalInfo.ts) all say it */
+const PURGE_WORDS: Readonly<Record<number, readonly [string, string]>> = { 2: ['snapper', 'snappers'] };
+/** the purge card's noun for this world's own purge animal, or null where the stage's animal names itself (hud/goalInfo.ts) */
+export const purgeNoun = (world: number, n: number): string | null => (PURGE_WORDS[world] ? PURGE_WORDS[world][n === 1 ? 0 : 1] : null);
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
     const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
@@ -232,6 +245,9 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
   }
   // (4-9 The Aerie counts the capuchin guards, and its counter says "guards": the goal says the same)
   if (type === 'gauntlet' && world === 4) return { verb: 'Defeat', one: 'guard', many: 'guards' };
+  // (World 2's purge, 2-5: nobody is hurt in World 2, the snappers are only chased off (the story keeper's conflict 1, KEEPER-25))
+  const own = PURGE_WORDS[world];
+  if (type === 'purge' && own) return { verb: 'Chase off', one: own[0], many: own[1] };
   if (type === 'purge' || type === 'gauntlet') return { verb: 'Defeat', one: 'predator', many: 'predators' };
   if (type === 'rescue') return { verb: 'Free', one: 'animal', many: 'animals' };
   return null;
@@ -243,6 +259,7 @@ export function countWord(world: number, type: string): string {
   if (type === 'relic_hunt') return ({ 1: 'marks', 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
   // (4-9 The Aerie: the capuchin guards the wind blows off their ledges)
   if (type === 'gauntlet' && world === 4) return 'guards';
+  if (type === 'purge' && PURGE_WORDS[world]) return PURGE_WORDS[world][1];
   if (type === 'purge' || type === 'gauntlet') return 'predators';
   if (type === 'rescue') return 'animals freed';
   return '';
