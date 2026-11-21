@@ -1,3 +1,0 @@
-== npx tsx tools/engine/registrycheck.ts (head f9bafa012, cwd .) start 10:41 AM
-registrycheck: PASS (14 stages: 1-1, 1-2, 1-3, 1-4, 1-5, 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-3, 2-4, 2-5, each registered everywhere; 14 lists checked in CI; 52 s)
-== exit 0 PASS, 0 min, end 10:42 AM

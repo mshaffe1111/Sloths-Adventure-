@@ -1,2 +1,0 @@
-== npx tsc --noEmit -p . (head f9bafa012, cwd .) start 10:41 AM
-== exit 0 PASS, 0 min, end 10:41 AM
