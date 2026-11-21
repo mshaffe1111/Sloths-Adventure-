@@ -56,7 +56,7 @@ import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
 import { CHASE_FIXTURE_ID, chaseFixtureConfig } from './game/chaseFixtureStage.ts';
 import { wheelFixtureConfig, wheelFixtureFor } from './game/wheelFixtureStage.ts';
 import { FeelPairClock } from './components/FeelPairClock.tsx';
-import { CTEST_LEVEL_ID, ctestEnabled, recorder } from './game/playRecorder.ts';
+import { ctestEnabled, isCtestStage, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
@@ -771,24 +771,26 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
-  // the testers' stage (#ctest): playRecorder.ts CTEST_LEVEL_ID (1-5 from 0.9.8, 1-3 before: R-165.157; 1-1 from 11-06), as Play builds it,
-  // its own goal, a fresh roll of its proven list each run on the tester's own setting (stageGenerator.ts: provenSeedFor by the layout)
-  const ctestLevel = (): LevelConfig | null => allLevels.find((l) => l.id === CTEST_LEVEL_ID) ?? null;
+  // the testers' stage (#ctest): the one picked on the front page, any of World 1 (playRecorder.ts CTEST_STAGES, R-165.343), as Play
+  // builds it, its own goal, a fresh roll of its proven list each run on the tester's own setting (stageGenerator.ts: provenSeedFor)
+  const [ctestPick, setCtestPick] = useState<string | null>(null);
+  const ctestLevel = (id: string | null): LevelConfig | null => (id && isCtestStage(id) ? allLevels.find((l) => l.id === id) ?? null : null);
   const ctestDraw = () => {
     setLayoutVariant(rollLayoutVariant());
   };
   // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
   // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
   // 130-220 ms right after each 'sheet' line)
+  // (the stage picked: a new pick loads its own)
   useEffect(() => {
     if (!ctestGate) return;
-    const lvl = ctestLevel();
+    const lvl = ctestLevel(ctestPick);
     if (lvl) {
       void loadSeedList(lvl.id);
       void preloadStage(lvl, canvasRef.current, inPlay);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctestGate]);
+  }, [ctestGate, ctestPick]);
 
   // the questions after a tester's run are up: the stage's sheets are got ready again while they are answered (Play again rolls its layout)
   useEffect(() => {
@@ -946,7 +948,7 @@ export default function App() {
             // the testers' run is over at its shrine: thank the tester (nothing is saved, and the game does not go on to the next stage)
             // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
             // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
-            if (ctestEnabled() && lvl.id === CTEST_LEVEL_ID) {
+            if (ctestEnabled() && isCtestStage(lvl.id)) {
               engine.stop();
               setCtestDone(lvl);
               return;
@@ -1180,10 +1182,11 @@ export default function App() {
 
       {ctestGate && (
         <ControlTestGate
-          onStart={() => {
+          onPick={setCtestPick}
+          onStart={(id) => {
             setCtestGate(false);
             setRecording(true);
-            const lvl = ctestLevel();
+            const lvl = ctestLevel(id);
             if (lvl) {
               ctestDraw();
               setActiveLevel(lvl);
@@ -1193,7 +1196,7 @@ export default function App() {
           }}
         />
       )}
-      {recording && !ctestDone && (
+      {recording && !ctestDone && !ctestGate && (
         <RecordingBadge
           onDone={() => {
             // ending early: note where he was, stop the stage, and go to the questions
@@ -1205,7 +1208,14 @@ export default function App() {
       )}
       {ctestDone && (
         <ControlTestDone
+          stage={ctestDone.id}
           stretches={engineRef.current?.stretchNames() ?? []}
+          onPickAnother={() => {
+            // (back to the front page, still recording: the next pick is noted with its own 'stage' line)
+            setCtestDone(null);
+            recorder.event('pickAnother');
+            setCtestGate(true);
+          }}
           onAgain={() => {
             const lvl = ctestDone;
             setCtestDone(null);

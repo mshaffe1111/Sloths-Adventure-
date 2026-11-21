@@ -1,5 +1,6 @@
 import React from 'react';
-import { CTEST_LEVEL_ID, recorder, savedTesterName, testerId } from '../game/playRecorder.ts';
+import { CTEST_STAGES, recorder, saveCtestStage, savedCtestStage, savedTesterName, testerId } from '../game/playRecorder.ts';
+import { stageSpec } from '../game/stagePlan.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
@@ -104,18 +105,72 @@ export interface CtestPage {
 const RUN: CtestMove = { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' };
 const JUMP: CtestMove = { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' };
 /**
- * Each stage the testers' link can name (playRecorder.ts CTEST_LEVEL_ID: 1-5, Where She Walked, Matt 11-13 8:48 PM ET). The cards' words
- * are the story keeper's (t-story@57ce5589; 1-5's through the lead, REL-098), each checked against the built controls (FIX-B REPORT).
+ * Each stage the testers' link offers (playRecorder.ts CTEST_STAGES: all of World 1, picked on the front page, R-165.343). The cards' words
+ * for 1-3, 1-4 and 1-5 are the story keeper's (t-story@57ce5589; 1-5's through the lead, REL-098), each checked against the built
+ * controls (FIX-B REPORT); the other six are drafted from each stage's own lines (Dot's lessons in its w1Arc file), for the keeper's check
+ * (PICK-W1 REPORT, "DRAFT").
  */
 const CLIMB: CtestMove = { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' };
+const DOUBLE: CtestMove = { frame: 'rise_fast', name: 'Double jump', how: 'Flick up again in the air to jump twice.' };
+const BOUNCE: CtestMove = { frame: 'bounce_rise', name: 'Mushrooms', how: 'Land on a mushroom and it bounces you up high.' };
+const CREAKY: CtestMove = { frame: 'fall_a', name: 'Creaky limbs', how: 'They give way under you, but only down to the roots.' };
 export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
+  '1-1': {
+    alt: 'Pokey running along the forest floor toward a mushroom',
+    moves: [RUN, JUMP, DOUBLE, BOUNCE],
+  },
+  '1-2': {
+    alt: 'Pokey on a trail of petals between the roots',
+    moves: [
+      RUN,
+      JUMP,
+      { frame: 'hurt_a', name: 'Thorns', how: "Don't touch the thorns, not even a little." },
+      { ...BOUNCE, how: 'Hop on and let the mushrooms do the jumping.' },
+    ],
+  },
   '1-5': {
     alt: 'Pokey crossing a row of creaky limbs above the roots',
     moves: [
       RUN,
       JUMP,
       CLIMB,
-      { frame: 'fall_a', name: 'Creaky limbs', how: 'They give way under you, but only down to the roots.' },
+      CREAKY,
+    ],
+  },
+  '1-6': {
+    alt: 'Pokey swinging on a liana over a gorge',
+    moves: [
+      { frame: 'swing_grip', name: 'Grab a liana', how: 'Jump at a liana to grab it. Hang on and it swings.' },
+      { frame: 'swing_top', name: 'Leap', how: 'Let go when you glow: flick up as you swing forward.' },
+      CLIMB,
+      { frame: 'climb_5', name: 'Vine snakes', how: 'A snake coming down? Climb down ahead of it.' },
+    ],
+  },
+  '1-7': {
+    alt: 'Pokey hiding in a bush while an eagle watches',
+    moves: [
+      RUN,
+      { frame: 'idle', name: 'Hide', how: 'Stop in a bush or on moss. No wiggling: shaking leaves show.' },
+      { ...CREAKY, how: 'Never stop on a creaky limb. Cross it first, then hide.' },
+      { frame: 'swing_grip', name: 'Mossy lianas', how: 'A mossy liana hides you, swinging and all. Just hang on.' },
+    ],
+  },
+  '1-8': {
+    alt: 'Pokey racing along a long branch',
+    moves: [
+      RUN,
+      JUMP,
+      { frame: 'rise', name: 'Little nuts', how: 'Little nuts roll at you. Hop over them.' },
+      { frame: 'walk_3', name: 'Big nuts', how: 'Big ones bounce over you. Just keep walking.' },
+    ],
+  },
+  '1-9': {
+    alt: 'Pokey standing still on a branch near a boa',
+    moves: [
+      RUN,
+      { frame: 'idle', name: 'Freeze', how: 'Boas only see wiggles. Stand still and you look like a branch.' },
+      { frame: 'punch_2', name: 'Bop', how: 'When a boa misses, tap to punch its nose.' },
+      { frame: 'duck', name: 'The eagle', how: 'Eagle! Get into the green. Its eye scares boas off.' },
     ],
   },
   '1-4': {
@@ -147,8 +202,31 @@ try {
 }
 /** the still of a testers' stage, or null when it has not been shot yet */
 export const ctestStill = (id: string): string | null => STILLS[`../assets/ui/ctest-${id}.webp`] ?? null;
-/** the front page of the stage the link plays */
-export const ctestPage = (id: string = CTEST_LEVEL_ID): CtestPage => CTEST_PAGES[id];
+/** the front page of a stage the link offers */
+export const ctestPage = (id: string): CtestPage => CTEST_PAGES[id];
+/** a stage's name as the game gives it (stagePlan.ts: "Up the Kapok") */
+export const ctestStageName = (id: string): string => {
+  const [w, m] = id.split('-').map(Number);
+  return stageSpec(w, m)?.name ?? id;
+};
+/** the stage's number and name, as the pages say it: "1-4, Up the Kapok" */
+export const ctestStageTitle = (id: string): string => `${id}, ${ctestStageName(id)}`;
+
+/**
+ * The stage picker (R-165.343): the nine stages of World 1 as gold-edged tiles, three by three, the number big and the name under it.
+ * One tap picks (a radio group: one is always picked); the page above shows that stage's still and its moves.
+ */
+const StagePicker: React.FC<{ stage: string; onPick: (id: string) => void }> = ({ stage, onPick }) => (
+  <div className="ct-picks" role="radiogroup" aria-label="Which level">
+    {CTEST_STAGES.map((id) => (
+      <button key={id} type="button" role="radio" aria-checked={stage === id} onClick={() => onPick(id)} className={`ct-pick${stage === id ? ' on' : ''}`}
+        data-stage={id}>
+        <b>{id}</b>
+        <small>{ctestStageName(id)}</small>
+      </button>
+    ))}
+  </div>
+);
 
 /** a numbered step on the front door: a little gold token */
 const Step: React.FC<{ n: number }> = ({ n }) => (
@@ -161,12 +239,15 @@ const Step: React.FC<{ n: number }> = ({ n }) => (
 const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 className="ct-h">{children}</h2>;
 
 /**
- * The testers' front door (only with #ctest in the address): who is playing, what gets recorded, and Start. Recording begins on
- * Start, and the level opens straight away (playRecorder.ts CTEST_LEVEL_ID, a fresh roll of its list each run, on the setting picked here).
+ * The testers' front door (only with #ctest in the address): which level (any of World 1's nine, R-165.343), who is playing, what gets
+ * recorded, and Start. Recording begins on the first Start, and the picked level opens straight away (a fresh roll of its list each run,
+ * on the setting picked here). `onPick` hears every pick, so its sheets load while the page is read.
  */
-export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
-  const page = ctestPage();
-  const still = ctestStill(CTEST_LEVEL_ID);
+export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPick?: (stage: string) => void }> = ({ onStart, onPick }) => {
+  const [stage, setStage] = React.useState(savedCtestStage);
+  const page = ctestPage(stage);
+  const still = ctestStill(stage);
+  React.useEffect(() => onPick?.(stage), [stage]);
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
   // (the name box kept above the phone's keyboard while it is typed in)
@@ -178,28 +259,34 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
     e?.preventDefault();
     if (!name.trim()) return;
     setDifficulty(level);
+    saveCtestStage(stage);
     recorder.start(name);
     // which touch rules this run used, so before and after can be compared
     recorder.event('rules', refinedControls() ? 'refined' : 'old');
     // and how hard it was set (difficulty.ts): Easy runs are not compared with Normal ones
     recorder.event('difficulty', level);
-    onStart();
+    // and which level was picked (its 'gen2' line names it again with the seed)
+    recorder.event('stage', stage);
+    onStart(stage);
   };
   return (
     <Scene label="Level test">
       <form onSubmit={go}>
         {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
         <div className="ct-hero">
-          {still && <img className="ct-hero-still" src={still} alt={page.alt} draggable={false} />}
+          {still && <img key={stage} className="ct-hero-still" src={still} alt={page.alt} draggable={false} />}
           <span className="ct-new-tag ct-hero-new">NEW</span>
           <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
         </div>
-        <p className="ct-kicker">Level test · Brand-new levels</p>
-        <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
-        <p className="ct-p ct-lead">One level, a few minutes. Every run is different.</p>
+        <p className="ct-kicker">Level test · World 1</p>
+        <Plaque as="h1" className="ct-title">Pokey's World 1</Plaque>
+        <p className="ct-p ct-lead">Nine levels. Pick one, play a few minutes. Every run is different.</p>
         <FreshBuild />
 
-        <Head>The moves</Head>
+        <Head>Pick a level</Head>
+        <StagePicker stage={stage} onPick={setStage} />
+
+        <Head>The moves in {stage}</Head>
         <div className="ct-moves">
           {page.moves.map((m) => (
             <div key={m.name} className="ct-move">
@@ -256,7 +343,7 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           <p className="ct-label">{name.trim() ? 'Tap Start' : 'Type your name, then tap Start'}</p>
         </div>
         <button type="submit" disabled={!name.trim()} className="pm-go ct-go">
-          Start
+          Start {stage}
         </button>
         <p className="ct-small">
           While you play, it records where your fingers touch and what Pokey does, to fine-tune how the game plays. No camera, microphone,
@@ -396,8 +483,10 @@ const NoteBox: React.FC<{ id: string; value: string; onChange: (v: string) => vo
   );
 };
 
-export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string): Record<string, unknown> {
+export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string, stage?: string): Record<string, unknown> {
   const row: Record<string, unknown> = { v: 2 };
+  // (which level it is about, picked on the front page: R-165.343; in the Data cell, so the collector and the sheet need no change)
+  if (stage) row.stage = stage;
   if (ans.hard?.length) row.hard = [...ans.hard];
   for (const id of ['long', 'knew', 'tips', 'looked', 'next']) if (ans[id]?.length) row[id] = ans[id][0];
   const fun = FACES.findIndex((f) => f[1] === ans.fun?.[0]);
@@ -442,8 +531,14 @@ const Question: React.FC<{ q: SurveyQ; picked: readonly string[]; onPick: (a: st
   </div>
 );
 
-/** the end of the test (at the shrine, or "I'm done"): three required taps, the optional ones, thanks, and a way to play again */
-export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string[] }> = ({ onAgain, stretches = [] }) => {
+/** what the end screen says first: it names the level just played ("How was 1-4, Up the Kapok?") */
+export const surveyIntro = (stage: string): string => `How was ${ctestStageTitle(stage)}? Three quick taps help Matt a lot. The rest are up to you.`;
+
+/**
+ * The end of the test (at the shrine, or "I'm done"): it names the level, three required taps, the optional ones, thanks, and a way to
+ * play it again or pick another level (R-165.343)
+ */
+export const ControlTestDone: React.FC<{ stage: string; onAgain: () => void; onPickAnother?: () => void; stretches?: string[] }> = ({ stage, onAgain, onPickAnother, stretches = [] }) => {
   const QUESTIONS = React.useMemo(() => surveyQuestions(stretches), [stretches.join('|')]);
   const [ans, setAns] = React.useState<Record<string, string[]>>({});
   const [note, setNote] = React.useState('');
@@ -460,7 +555,7 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
   const left = REQUIRED.filter((id) => !(ans[id]?.length)).length;
   const send = () => {
     if (!ready) return;
-    recorder.event('survey', JSON.stringify(surveyRow(ans, note, lookedNote, recorder.lastRun)));
+    recorder.event('survey', JSON.stringify(surveyRow(ans, note, lookedNote, recorder.lastRun, stage)));
     setSent(true);
   };
   const ask = (q: SurveyQ) => (
@@ -475,14 +570,14 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
     <Scene label="Level test: thank you">
       <div className="ct-done-head">
         <span className="ct-done-t">
-          <p className="ct-kicker">Level test</p>
+          <p className="ct-kicker">Level test · {stage}</p>
           <Plaque as="h1" className="ct-title">{sent ? 'Sent!' : 'Thank you!'}</Plaque>
         </span>
         <HeroPose frame={sent ? 'cheer_b' : 'cheer_a'} h={96} className="ct-done-pokey" />
       </div>
       {!sent ? (
         <>
-          <p className="ct-p">You're done! Three quick taps help Matt a lot. The rest are up to you.</p>
+          <p className="ct-p">{surveyIntro(stage)}</p>
           {QUESTIONS.filter((q) => q.required).map(ask)}
           <Head>Optional</Head>
           {QUESTIONS.filter((q) => !q.required).map(ask)}
@@ -498,11 +593,16 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
           </button>
         </>
       ) : (
-        <p className="ct-p">Thank you! You can close this page now, or play again. Every run is a new level, and every run helps.</p>
+        <p className="ct-p">Thank you! You can close this page now, play {stage} again, or pick another level. Every run is different, and every run helps.</p>
       )}
       <button type="button" onClick={onAgain} className={`gx-plank ct-board${sent ? ' gx-plank-gold' : ''}`}>
-        Play again (a new level)
+        Play {stage} again
       </button>
+      {onPickAnother && (
+        <button type="button" onClick={onPickAnother} className="gx-plank ct-board">
+          Pick another level
+        </button>
+      )}
     </Scene>
   );
 };
