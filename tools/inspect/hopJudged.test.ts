@@ -17,7 +17,7 @@ import { HOP_TRACE, type HopRow } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
-  `${r.site} q#${r.q} judged t ${r.t.toFixed(2)} x ${Math.round(r.x)} lag ${r.lag} hold ${r.hold.toFixed(3)} | flown t ${r.flown!.t.toFixed(2)} x ${Math.round(r.flown!.x)} hold ${r.flown!.hold.toFixed(3)} ${r.flown!.kind} | came down ${r.landed === undefined ? '?' : r.landed === 'lost' ? 'LOST' : '#' + r.landed}`;
+  `${r.site} q#${r.q} judged t ${r.t.toFixed(2)} x ${Math.round(r.x)} lag ${r.lag} hold ${r.hold.toFixed(3)}${r.kind ? ' ' + r.kind : ''} | flown t ${r.flown!.t.toFixed(2)} x ${Math.round(r.flown!.x)} hold ${r.flown!.hold.toFixed(3)} ${r.flown!.kind} | came down ${r.landed === undefined ? '?' : r.landed === 'lost' ? 'LOST' : '#' + r.landed}`;
 
 function trace(seed: number): HopRow[] {
   HOP_TRACE.on = true;
@@ -35,8 +35,9 @@ for (const seed of [5, 2]) {
   test(`2-7 home, middle Normal seed ${seed}: every judged hop is flown as judged and comes down where the gate said`, () => {
     const rows = trace(seed);
     assert.ok(rows.length > 0, 'no judged hop was pressed: the trace is not wired');
-    // (the flight judged: the press on the frame judged plus its lag, a single held at least the hold judged)
-    const flownWrong = rows.filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold);
+    // (the flight judged: the press on the frame judged plus its lag; a drawn hop (the lead's ruling, a row with its kind) flown with the
+    //  SAME kind and hold; a gate still judging a single held who.hold[0] (boardHop), a single held at least that)
+    const flownWrong = rows.filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || (r.kind !== undefined ? r.flown!.kind !== r.kind || Math.abs(r.flown!.hold - r.hold) > 1e-9 : r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold));
     // (and where he came down: the platform the gate judged)
     const cameWrong = rows.filter((r) => r.landed !== undefined && r.landed !== r.q);
     const lines = [...new Set([...flownWrong, ...cameWrong])].map(show);
