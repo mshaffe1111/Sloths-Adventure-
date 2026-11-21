@@ -18,7 +18,6 @@ import { spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import type { WatchZone } from '../../src/game/watcher.ts';
 import type { Collectible, Platform } from '../../src/game/types.ts';
-import { W2_STAGES } from '../../src/game/w2Stages.ts';
 
 const Y = 800;
 const START = 300;
@@ -126,19 +125,13 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
   }
 });
 
-/** the bot on 2-3's gen2 row (the hand-built 2-3 in w2Stages.ts still stands ahead of the listed row on this base: stepped aside for
- *  the run and put back), stood in beat 4's far clump with the whole line spooked back to the stretch's start (the heron's zone x0) */
+/** the bot on 2-3's gen2 row, stood in beat 4's far clump with the whole line spooked back to the stretch's start (the heron's zone x0) */
 function hopBackRun(who: FirstTimer): { end: string; got: number; rescues: number; fetched: boolean } {
-  const hand = W2_STAGES as Record<string, unknown>;
-  const had = Object.hasOwn(hand, '2-3');
-  const old = hand['2-3'];
-  delete hand['2-3'];
   freshPhone(who.setting);
   const mr = Math.random;
   Math.random = rng(5 * 104729 + 1311);
   try {
-    let k = 0;
-    const run: FirstTimerRun = new FirstTimerRun('2-3', 5, who, { cap: 60, dotSetting: true, onFrame: (sim) => { if (process.env.HOPTRACE && k++ % 15 === 0) console.log(`t ${run.t.toFixed(1)} x ${Math.round(sim.p.x)} y ${Math.round(sim.p.y)} g${+sim.p.grounded} | ${(e.follow.line as Follower[]).map((f) => f.state[0] + Math.round(f.x)).join(' ')}`); } });
+    const run = new FirstTimerRun('2-3', 5, who, { cap: 60, dotSetting: true });
     const e = run.e as unknown as Record<string, any>;
     const cages = (e.collectibles as Collectible[]).filter((c) => c.type === 'cage').sort((a, b) => a.x - b.x);
     // (beat 4: the watched stretch whose clumps hold cage 3; the boulder on the mud between its clumps)
@@ -166,7 +159,6 @@ function hopBackRun(who: FirstTimer): { end: string; got: number; rescues: numbe
     return { end: run.end, got: e.follow.home(), rescues: run.rescues, fetched };
   } finally {
     Math.random = mr;
-    if (had) hand['2-3'] = old;
   }
 }
 

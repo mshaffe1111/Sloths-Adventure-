@@ -11,21 +11,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CAGE_SKILL, FirstTimerRun, FT_ADULT, FT_CHILD, FT_EXPERT, FT_KID, FT_MIDDLE, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
-import { W2_STAGES } from '../../src/game/w2Stages.ts';
-
-/** 2-3 as gen2 lays it: the hand-built 2-3 (w2Stages.ts) still stands ahead of the listed row on this base, so it is stepped aside for
- *  the run and put back after (a no-op once the hand-built builder is deleted: new replaces old) */
-function onGen2Row<T>(fn: () => T): T {
-  const hand = W2_STAGES as Record<string, unknown>;
-  const had = Object.hasOwn(hand, '2-3');
-  const old = hand['2-3'];
-  delete hand['2-3'];
-  try {
-    return fn();
-  } finally {
-    if (had) hand['2-3'] = old;
-  }
-}
 
 interface CageRun { end: string; freed: boolean; hp: number; inLine: boolean; t: number }
 
@@ -39,7 +24,7 @@ function cageRun(who: FirstTimer, seed: number, o: { post?: boolean; cap?: numbe
   const mr = Math.random;
   Math.random = rng(seed * 7919 + 13);
   try {
-    return onGen2Row(() => {
+    {
       const run = new FirstTimerRun('2-3', seed, who, { cap: o.cap ?? 45 });
       const e = run.e as unknown as Record<string, any>;
       const cages = (e.collectibles as Cage[]).filter((c) => c.type === 'cage').sort((a, b) => a.x - b.x);
@@ -58,7 +43,7 @@ function cageRun(who: FirstTimer, seed: number, o: { post?: boolean; cap?: numbe
       run.play();
       const inLine = ((e.follow.line ?? []) as Array<{ critter?: string; kind?: string; state: string }>).some((f) => f.state !== 'home');
       return { end: run.end, freed: cage.collected, hp: cage.cageHp ?? 2, inLine: inLine || e.follow.home() > 0, t: +run.t.toFixed(1) };
-    });
+    }
   } finally {
     Math.random = mr;
     Object.assign(CAGE_SKILL, was);
