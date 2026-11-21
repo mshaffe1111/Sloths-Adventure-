@@ -39,6 +39,19 @@ R. **The race table on the merged head: DONE** (af127d21e, race-27j-merged.txt; 
    player never wins without a fall on the last crossing' (home seeds 1-3, both settings) PASSES, so each of those two wins carries a
    fall on the last crossing (the lead's ruling A: falling in is not winning without effort). Worth the lead's eye: home Normal 1 moved
    from a 21.5 s loss to a 0.4 s win with the merge and the re-plant, by the exemption, not by a clean ride.
+F. **A FALL PAYS (the lead's concern on ride-only's two wins; measured, fallm-27j.ts.txt: copy to tools/inspect/_fallm.ts, run with tsx).**
+   His margin to the boat in seconds (lead = (him - boat) x dir / the boat's speed; + is ahead) the frame before a life lost on the race
+   leg -> the first frame he stands after the respawn, home Normal ride-only, merged head:
+   seed 1: -0.91 -> +5.29 (mid-leg); -10.32 -> +3.67 (the crossing before the last: the boat 1657 px ahead, nearly docked, put back
+   behind him); +3.20 -> +3.55 (the last crossing). WON by 0.4. seed 2: -0.93 -> +6.14; -0.94 -> +5.43; -0.68 -> +3.48 (the last
+   crossing: behind, then ahead). WON by 0.6. So EVERY respawn on the leg resets the race to him plus the floor (pacerReplace: level
+   with him plus max(share, floor)), whatever he trailed by. The lead's ruling (11-21, to ENG-27j): on the last crossing a fall costs
+   nothing and pays nothing: the respawn restores the margin he had when he fell (the respawn's lost time forgiven), never more;
+   planted both ways (a losing fall stays losing; a winning fall stays winning); pacerLay re-run; race table re-run. PUSHBACK SENT:
+   on the last crossing alone it does not fix seed 1 (the pay came one crossing earlier); proposed the same rule on every respawn
+   (option A) or the floor capped at the margin before the fall plus the lost time (option B). BUILD WHAT THE LEAD RULES; check the
+   inbox for the ruling first. The pacerLay test 'the ride-only player never wins without a fall on the last crossing' and ruling A's
+   exemption change with it (plant first, D40: the respawn rule is the thing; nothing patched around it).
 S. **Stills: a first pass on the merged head, NOT the set.** stills-27j/sheet-upright.jpg and sheet-sideways.jpg (2x, race-stills-27e.mjs on a
    dev server at af127d21e, fixture seed 1 Normal; PW=/opt/node22/lib/node_modules/playwright/index.mjs because the script sits outside
    node_modules). Spots (x:boatDx:tag:face:leg): 17420:none:waiting:L:low 16330:-330:settingoff:L:low 1050:211:docked:L:low

@@ -1,0 +1,29 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { SKILLS } from './firsttimer.ts';
+import { pacerX } from '../../src/game/pacer.ts';
+for (const seed of [1, 2]) {
+  Object.assign(SKILLS, { race: false, rideOnly: true });
+  let piece: any, lives: number | undefined, t = 0, prev: any = null, fall: any = null, after: any = null, wasGround = true;
+  const rows: string[] = [];
+  const r = homeRun('middle', 'normal', seed, 1, { onFrame: (sim: any) => {
+    const e = sim.e; t += 1 / 30;
+    piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+    if (!piece) return;
+    const P = piece.pacer, bx = piece.clock === null ? P.x0 : pacerX(P, piece.clock);
+    const v = Math.abs(P.x1 - P.x0) / P.seconds;
+    const lead = (e.player.x - bx) * P.dir;
+    const now = { t: +t.toFixed(2), x: Math.round(e.player.x), y: Math.round(e.player.y), bx: Math.round(bx), clock: piece.clock === null ? null : +piece.clock.toFixed(2), leadPx: Math.round(lead), leadS: +(lead / v).toFixed(2) };
+    if (lives !== undefined && e.lives < lives && e.player.y >= P.yMin) {
+      const last = (e.player.x - P.marks.at(-3)[0]) * P.dir >= 0 || (prev && (prev.x - P.marks.at(-3)[0]) * P.dir >= 0);
+      rows.push(`LIFE LOST${last ? ' (LAST CROSSING)' : ''}: before ${JSON.stringify(prev)} at ${JSON.stringify(now)}`);
+      fall = now; after = null;
+    }
+    if (fall && !after && e.player.grounded && t > fall.t + 0.2) { after = now; rows.push(`  first grounded after: ${JSON.stringify(now)}`); }
+    if (e.player.grounded) prev = now; else if (!prev || t - prev.t > 0) {}
+    lives = e.lives;
+  } } as never);
+  const vd = piece.verdict;
+  console.log(`== home Normal seed ${seed} ride-only: end ${r.end}, ${vd.won ? 'WON' : 'lost'} him ${vd.him} boat ${vd.boat}`);
+  console.log(rows.join('\n'));
+}
