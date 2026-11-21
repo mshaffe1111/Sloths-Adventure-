@@ -27,10 +27,10 @@ const Y = 800;
 const START = 300;
 const EXIT = 3000;
 
-interface LineRun { end: string; spooks: number; home: number; t: number }
+interface LineRun { end: string; spooks: number; home: number; t: number; x: number }
 
 /** the bot plays the toy marsh: 3 cages by the start, then clumps A and B under a heron, then the exit (the goal: 3 home) */
-function lineRun(who: FirstTimer, seed: number, preSpook = false): LineRun {
+function lineRun(who: FirstTimer, seed: number, preSpook = false, noLine = false): LineRun {
   freshPhone(who.setting);
   const mr = Math.random;
   Math.random = rng(seed * 104729 + 7);
@@ -48,14 +48,15 @@ function lineRun(who: FirstTimer, seed: number, preSpook = false): LineRun {
     st.exitTotemY = Y;
     st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
     e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
-    const A = { x: 1000, w: 300, y: Y, kind: 'wide' as const };
+    // (no line: clump A starts 60 px before the stretch, so he stops in its first 40 px off the stretch, where the heron's calm never runs)
+    const A = { x: noLine ? 840 : 1000, w: 300, y: Y, kind: 'wide' as const };
     const B = { x: 1700, w: 300, y: Y, kind: 'wide' as const };
     const zone: WatchZone = { x0: 900, x1: 2100, calm: [5, 5] };
     e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [A, B], watch: [zone], follow: W2_FOLLOW };
     run.sim.stand(START, Y);
     e.startFollow();
     // (the three little ones already out of their cages, bunched behind him: the toy is the crossing, not the punch)
-    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    if (!noLine) for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
     for (let i = 0; i < 30; i++) run.sim.frame({});
     run.prog.relocate(run.sim.p);
     let spooks = 0;
@@ -72,7 +73,7 @@ function lineRun(who: FirstTimer, seed: number, preSpook = false): LineRun {
       return ev;
     };
     run.play();
-    return { end: run.end, spooks, home: e.follow.home(), t: +run.t.toFixed(1) };
+    return { end: run.end, spooks, home: e.follow.home(), t: +run.t.toFixed(1), x: Math.round(run.sim.p.x) };
   } finally {
     Math.random = mr;
   }
@@ -206,6 +207,28 @@ test('planted: with the fetch clock off the child is rescued while he is still w
     assert.ok(r.rescues > 0, `planted child: no rescue with the clock running through the fetch ${JSON.stringify(r)}`);
   } finally {
     LINE_SKILL.fetchClock = true;
+  }
+});
+
+test('no-line-go: nobody in his line (the cages left shut), he walks through the reeds that start before the stretch and on to the sealed door, no wait for a look', () => {
+  for (const [name, who] of WHO) for (const seed of SEEDS) {
+    const r = lineRun(who, seed, false, true);
+    assert.equal(r.end, 'sealed door', `${name} seed ${seed}: ${JSON.stringify(r)}`);
+    assert.ok(r.t < 120, `${name} seed ${seed}: ${JSON.stringify(r)}`);
+  }
+});
+
+test('planted: with no-line-go off the middle stands in the clump before the stretch waiting for a look that never comes, until the clock runs out', () => {
+  LINE_SKILL.noLineGo = false;
+  try {
+    // (the middle, as in 2-3's traced run: the adult's late thumb slides him onto the stretch, where the calm runs, so he never deadlocked)
+    for (const seed of SEEDS) {
+      const r = lineRun(FT_MIDDLE, seed, false, true);
+      assert.equal(r.end, 'time', `planted middle seed ${seed}: ${JSON.stringify(r)}`);
+      assert.ok(r.x >= 860 && r.x < 900, `planted middle seed ${seed}: stopped off the stretch's first 40 px ${JSON.stringify(r)}`);
+    }
+  } finally {
+    LINE_SKILL.noLineGo = true;
   }
 });
 
