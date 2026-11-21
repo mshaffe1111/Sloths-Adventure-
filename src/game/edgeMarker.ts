@@ -95,10 +95,15 @@ export function drawEdgeMarks(ctx: CanvasRenderingContext2D, img: CanvasImageSou
     const R = MARK_R;
     const { x, y, side } = m;
     ctx.save();
-    // (the soft shadow under it all, so it reads on the bright sky)
-    ctx.shadowColor = 'rgba(20, 10, 2, 0.55)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 2;
+    // (the soft shadow under it all, so it reads on the bright sky: two stacked translucent discs, never shadowBlur: PERFORMANCE-RULES §1)
+    ctx.fillStyle = 'rgba(20, 10, 2, 0.16)';
+    ctx.beginPath();
+    ctx.arc(x, y + 2, R + 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(20, 10, 2, 0.22)';
+    ctx.beginPath();
+    ctx.arc(x, y + 2, R + 5, 0, Math.PI * 2);
+    ctx.fill();
     // the arrow: an amber wedge from the circle out to the edge
     ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
@@ -112,9 +117,6 @@ export function drawEdgeMarks(ctx: CanvasRenderingContext2D, img: CanvasImageSou
     ctx.beginPath();
     ctx.arc(x, y, R + 2, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
     ctx.strokeStyle = 'rgba(40, 20, 4, 0.85)';
     ctx.lineWidth = 2;
     ctx.beginPath();

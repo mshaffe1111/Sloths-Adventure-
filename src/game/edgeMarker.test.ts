@@ -47,7 +47,11 @@ test('the real engine marks a little one spooked back off the screen, on its sid
 
 test('the draw: one face cut from the sheet per mark, its Sad painting; nothing drawn for none', () => {
   const blits: number[][] = [];
-  const ctx = new Proxy({}, { get: (_t, k) => (k === 'drawImage' ? (...a: number[]) => void blits.push(a.slice(1)) : () => {}), set: () => true }) as never as CanvasRenderingContext2D;
+  const slow: string[] = [];
+  const ctx = new Proxy({}, {
+    get: (_t, k) => (k === 'drawImage' ? (...a: number[]) => void blits.push(a.slice(1)) : String(k).startsWith('create') ? (slow.push(String(k)), () => ({ addColorStop() {} })) : () => {}),
+    set: (_t, k, v) => ((k === 'shadowBlur' && v) || (k === 'filter' && v !== 'none') ? slow.push(String(k)) : 0, true),
+  }) as never as CanvasRenderingContext2D;
   const out: EdgeMark[] = [];
   const n = edgeMarks([one({ state: 'spooked', x: 500 }), one({ kind: 'capy', state: 'spooked', x: 2000 })], view(), out);
   drawEdgeMarks(ctx, {} as CanvasImageSource, W2_FRAMES, out, n, 0, false);
@@ -56,6 +60,7 @@ test('the draw: one face cut from the sheet per mark, its Sad painting; nothing 
   assert.deepEqual(blits[1].slice(0, 4), [W2_FRAMES.capySad.x, W2_FRAMES.capySad.y, W2_FRAMES.capySad.w, W2_FRAMES.capySad.h]);
   drawEdgeMarks(ctx, {} as CanvasImageSource, W2_FRAMES, out, 0, 0, false);
   assert.equal(blits.length, 2, 'none: nothing drawn');
+  assert.deepEqual(slow, [], 'no shadowBlur, filter or gradient in a frame (PERFORMANCE-RULES §1)');
 });
 
 test('the mark sits at its height, clamped clear of the HUD and the pad, inside the insets, and two on one side never overlap', () => {
