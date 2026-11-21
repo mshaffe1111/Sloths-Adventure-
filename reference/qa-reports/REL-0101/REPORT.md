@@ -44,3 +44,12 @@ The candidate's plan (registrycheck --shards --print): 13 lists in 4 shards (mai
 | seedplan | 10 | main 0.8 min | 8% | PASS |
 | deploy test shards 1-6 | none set (GitHub's 360) | main 5.4-15.7 min | 4% | PASS |
 No job is within 20% of its limit: nothing to raise or split.
+
+## Trial (early warning, NOT the set): the slow gates on 6b8fda31c (merges a-e + version), 10:31-11:32 AM ET, 3 chains at once
+Every line PASS but two: timecheck FAIL (the PICK-W1:99 stamp, fixed in 051e77b45, PASS after) and funcheck FAIL, IDENTICAL to main
+107870f5's run in the same hour (22 worse/new, 0 to lower, 77 known, 1,067 stage-layout flags; the two logs differ only in run time).
+Suite 6 shards: 759 + 625 + 537 + 789 + 698 + 606 = 4,014 tests, 4,011 pass, 0 fail, 3 todo. lockall --intended 2-5: 101/102 unchanged.
+castBots 2-5 1-40 x 5 bots x both: the same numbers as INT-15's / BUILD-25d's, line for line (adult 160 / 165.8 s; child 379.6 / 281.9 s,
+24 water lives on Normal; middle 204.5 / 203.3 s; expert 184.2 s; kid 0/40, not the bar). clipcheck 963 s, kbdcheck, drawcheck 793 s,
+paintcheck 0/1/2, tipwalk, tierBots, coveragecheck, registrycheck, roadmapcheck, build:store: PASS. Not in the trial: seed lists, tool
+line (run after each merge instead), test-link count, buildcheck.
