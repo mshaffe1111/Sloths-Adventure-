@@ -1,3 +1,52 @@
+# ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): FIX PUSHED, strip and clip for the lead to judge
+## EXACT NEXT STEP
+The lead judges reference/art/hfnext/hero/cheer-cut/hero-cheer-frames-before-after.jpg (every game frame t0.93-1.30) and
+hero-cheer-game-speed.mp4. Then read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):
+the base suite (step 0), then drawcheck on 208da39a7+, then the full suite on the head; if this container is gone, re-run drawcheck and the
+suite on t-art-next. Two rulings wanted (below): the swim cross-fade (heroSwim.ts) and whether the cheer's start needs a painted bridge.
+## 1. VERIFY (on ec7f1070c)
+- Where cheer plays: only at the exit before the stage clears (engine.ts:3583 sets p.cheerAt, CHEER_SECONDS 1.9) and the journal replay
+  (journalScenes.ts:686). No pickup plays it.
+- What cross-faded it: heroClips.ts:309 gave the cheer blend = t/0.2 s; heroSprite.ts:315-322 drew the plain pose at (1 - blend) under the
+  clip at blend: two different poses at half strength, 6 frames.
+- The same fade hit the ouch (heroClips.ts:355 fade(), both ends), the step-back (:99) and the teeter (:104). Their frames against the plain
+  pose (idleends.py's measure, silhouette xor / worst px): cheer first 31% / 16, hurt first 30% / 16, step-back 48% / 51, teeter 70% / 49:
+  all two-pose ghosts. The idle clips (yawn, look-around, belly-scratch, wave) faded too, but their ends are painted onto the plain pose
+  (heroClipsEnds.test.ts, xor < 2%, 2 px), so their fade was harmless and their cut is the same picture.
+- Walk, run, jab, push, climb: cuts already (blend 1). Vine (heroVine.ts:88) is always drawn at alpha 1.
+- FOUND, NOT FIXED (needs a ruling and its own strip): heroSwim.ts:101-103 cross-fades two DIFFERENT swim moves (tread / surf / under / the
+  first-swim flail) over 0.22 s, the same ghost pattern.
+## 2. The fix (208da39a7): a cut, the fade deleted (new replaces old)
+ClipFrame has no blend; CLIP_FADE and fade() are gone; heroSprite.ts no longer draws the ordinary pose under a clip. The cheer cuts on its
+frame 0, the frame nearest the plain pose of all 30 (xor 31% vs 49-60% for the rest). No Hugging Face job (a cut, no painted frame).
+Planted: src/game/heroClipsCut.test.ts stubs the sheets as loaded and samples every clip moment at 30 fps (cheer arriving at a run and
+standing, a minute of idles, the ouch, the step-back and teeter): RED on ec7f1070c ("cheer (arriving at a run): 6 frames drawn over a
+second pose"), GREEN on 208da39a7; plus a source check that heroSprite.ts has no clip.blend.
+## 3. Strip and clip (heroshoot.mjs 1-1 push,cheer, push first as the warm-up; BEFORE = a worktree at ec7f1070c, AFTER = 208da39a7)
+reference/art/hfnext/hero/cheer-cut/: hero-cheer-frames-before-after.jpg (every frame t0.93-1.30, the one to look at first),
+hero-cheer-before-after.jpg and hero-cheer-game-speed.mp4 (heropair.py), hero-all-before-after.jpg.
+## Polish check (looked at downscaled, the way Matt will on a phone)
+- No see-through double sloth: PASS. BEFORE t1.07, t1.10, t1.13 show two heads and two sets of arms; AFTER every frame is one solid sloth
+  (hero-cheer-frames-before-after.jpg; the mp4 tiled frame by frame agrees: BEFORE ghosts t1.06-1.20, AFTER none).
+- Colour holds across the cut: PASS (the same warm tan at t1.00 and t1.03 AFTER).
+- NOT polished, named plainly: the cut is a pose POP. He goes from his side-on plain pose (t1.00) to the cheer's front-facing first frame
+  (t1.03) with a heavier painted outline, in one frame. It reads like the jab's cut, not a glitch, but a painted bridge (a three-quarter
+  turn, pinned to the plain pose and to cheer frame 0, like the idle bridges) would make it smooth: a Hugging Face job, this session is not
+  in that environment: the lead's call.
+- Ouch, step-back and teeter now cut too: NOT shot in this box (the test proves no layering; their look on screen is not yet judged).
+## Gates (208da39a7)
+tsc PASS; heroClipsCut + heroClips + heroClipsEnds tests 11/11 PASS; artcheck PASS; knowncheck PASS; herobody.py --check exit 0 (no sheet
+changed, so no catalog rows). Base suite (step 0, ec7f1070c): still running at hand-over, 1186 run, 0 failed so far. drawcheck (the draw
+changed: one draw fewer under a clip) and the full suite on the head: QUEUED after it, results not in at hand-over.
+## Lessons applied
+D96 (the packet's gate list run as written, the ones not finished named), D102 (lean read; strips read downscaled; long runs in the
+background, only tails read), D105 and the inbox (ReadNotifications at each step and push), D109 (no clock times to the lead), D111 (box:
+28 minutes from my start), D113 (no foreground wait on a background run: the heavy gates chained one after another in the background).
+## Learned (for the next art member)
+- Measure every clip's ends against the plain pose before trusting a melt: idleends.py's measure, pointed at any clip list, showed four
+  ghosts in one run. Proposed rule: a pose switch is a cut on a matching or painted frame; heroClipsCut.test.ts holds it for heroClips;
+  the swim draw is the next place the pattern lives.
+
 # ART-HERO-b (11-21, session_01FhBbYMVMLpHSwykEUVEq8j): Pokey is one sloth in EVERY animation (R-165.378): DONE (strips accepted by the lead, gates, catalog)
 (ART-HERO, session_01FhBbYM5JjVuEt9DGSsqgwH, made the sheets and the gate; this member finished its open steps 1-3.)
 ## EXACT NEXT STEP
