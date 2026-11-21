@@ -211,6 +211,37 @@ function underBand(deep: readonly number[]): HTMLCanvasElement | null {
   return cv;
 }
 
+/** the corner's top fades in over this share of its height, its inner side (away from the face) over this share of its body: drawn
+ *  whole it stood as a pasted block over the bank's soil and the strip (ENG-GROUND-c's painted shoot) */
+const CORNER_TOP = 0.4, CORNER_IN = 0.45;
+/** the corner with its top and inner side faded, made once per world when the sheet has loaded (no gradient per frame: PERFORMANCE-RULES
+ *  §8); until then, or with no canvas, the corner straight from the sheet */
+let faded: { w: number; cv: HTMLCanvasElement } | null = null;
+function fadedCorner(w: number, sheet: CanvasImageSource, cn: UnderFrame & { cx: number }): CanvasImageSource | null {
+  if (faded?.w === w) return faded.cv;
+  const im = sheet as { naturalWidth?: number; width?: number | SVGAnimatedLength; complete?: boolean };
+  const iw = im.naturalWidth ?? (typeof im.width === 'number' ? im.width : 0);
+  if (!(iw > 0) || im.complete === false || typeof document === 'undefined') return null;
+  const cv = document.createElement('canvas');
+  cv.width = cn.w;
+  cv.height = cn.h;
+  const g = cv.getContext('2d');
+  if (!g || typeof g.createLinearGradient !== 'function') return null;
+  g.drawImage(sheet, cn.x, cn.y, cn.w, cn.h, 0, 0, cn.w, cn.h);
+  g.globalCompositeOperation = 'destination-in';
+  const top = g.createLinearGradient(0, 0, 0, cn.h * CORNER_TOP);
+  top.addColorStop(0, 'rgba(0,0,0,0)');
+  top.addColorStop(1, 'rgba(0,0,0,1)');
+  g.fillStyle = top;
+  g.fillRect(0, 0, cn.w, cn.h);
+  const side = g.createLinearGradient(0, 0, cn.w * cn.cx * CORNER_IN, 0);
+  side.addColorStop(0, 'rgba(0,0,0,0)');
+  side.addColorStop(1, 'rgba(0,0,0,1)');
+  g.fillStyle = side;
+  g.fillRect(0, 0, cn.w, cn.h);
+  faded = { w, cv };
+  return cv;
+}
 /** a painted underside strip's frame in a world's ground sheet: its box, and the share of its height where the soil's edge runs */
 export interface UnderFrame { x: number; y: number; w: number; h: number; edge: number }
 /**
@@ -288,7 +319,9 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
       ctx.transform(1, k, 0, 1, 0, -k * x);
       ctx.translate(x, 0);
       if (side === 'l') ctx.scale(-1, 1);
-      ctx.drawImage(s!, cn.x, cn.y, cn.w, cn.h, -body, y - cn.edge * ch, cw, ch);
+      const fc = fadedCorner(w, s!, cn);
+      if (fc) ctx.drawImage(fc, 0, 0, cn.w, cn.h, -body, y - cn.edge * ch, cw, ch);
+      else ctx.drawImage(s!, cn.x, cn.y, cn.w, cn.h, -body, y - cn.edge * ch, cw, ch);
       ctx.restore();
     }
   }

@@ -363,7 +363,8 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
       const r = new RecordingCtx();
       drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
       // (the corner: 288 tall, its face (cx of its width) at the end, its body over the bank's side, mirrored on a left end)
-      const k = r.draws.filter((d) => d.src && d.src[0] === 1408 && d.src[1] === 2208 && d.src[2] === 384 && Math.abs(d.box[3] - d.box[1] - 288) < 40);
+      // (from the sheet, or from the corner faded once: its whole frame, 192 x 288 shown)
+      const k = r.draws.filter((d) => d.src && d.quad && d.src[2] === 384 && d.src[3] === 576 && ((d.src[0] === 1408 && d.src[1] === 2208) || (d.src[0] === 0 && d.src[1] === 0)) && Math.abs(Math.abs(d.quad[1][0] - d.quad[0][0]) - 192) < 2 && Math.abs(d.box[3] - d.box[1] - 288) < 40);
       const ok = k.some((d) => (end.side === 'r' ? !d.flip && d.box[0] < end.x - 100 && d.box[2] > end.x : d.flip && d.box[2] > end.x + 100 && d.box[0] < end.x) && d.box[1] < ly && d.box[3] > ly);
       if (!ok) corner.push(`${end.side === 'l' ? 'left' : 'right'} end x ${Math.round(end.x)}: no corner (${k.length} corner draws)`);
     }
