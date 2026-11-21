@@ -32,6 +32,8 @@ import type { W2Decor } from '../../riverArt.ts';
 import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { hash01 } from '../stillLay.ts';
+import { stackedUnder } from '../legs.ts';
+import { catchUnder, TOWER } from '../tower.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
 import type { FollowRow } from '../../follow.ts';
@@ -304,6 +306,9 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     if (near && far) reeds(near, far, r.x0, r.x1);
   }
   const sorted = [...falls].sort((a, b) => a.x0 - b.x0);
+  // (a floor of a run leg laid under another (gen2 legs.ts stackedUnder), its top in that leg's band, under the whole of x0..x1)
+  const lows = stackedUnder(st.gen2?.tower?.legs);
+  const overLowFloor = (x0: number, x1: number) => lows.some((l) => solids.some((p) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2 && p.x <= x0 + 1 && p.x + p.width >= x1 - 1));
   // (a fall has its river when one spans it AT ITS HEIGHT, its surface just under the fall's lip: where one leg runs under another, the
   //  upper leg's log river spans the lower leg's falls in x, and they were left with no water at all, ENG-GROUND-b, the toy's race leg)
   const hasRiver = (f: (typeof sorted)[number]) => had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
@@ -342,6 +347,15 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     for (const g of joined) taken.add(g);
     const x0 = f.x0;
     const safe = f.kind === 'soft';
+    // (the lead's ruling (B), ENG-GROUND-d: on a stage that lays a run leg under another, a soft gap between two thin pieces over that
+    //  leg's floor is left open. Filled, its water stood under the next stair down, out of his reach, and ran its paint to the view's foot
+    //  as a column over the floor he walks (2-7's toy, the descent); lidded at its bed it hung as a box of water between the planks. Only
+    //  where every drop through it (either lip and its middle) lands on wood within the live fall rule going down (tower.ts towerFalls:
+    //  TOWER.see) and in no water; else it keeps its water as before)
+    if (safe && near.height < THIN && far.height < THIN && overLowFloor(x0, x1) && [x0 + 8, (x0 + x1) / 2, x1 - 8].every((x) => {
+      const land = catchUnder(st.platforms, x, f.y, TOWER.see);
+      return land !== undefined && !rivers.some((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > f.y && r.surfaceY < land);
+    })) continue;
     if (safe) for (const p of solids) if (p !== near && p !== far && !run.includes(p) && p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > top) drop.add(p.id);
     // (a splash sets him back on the bank he came from: on a leg laid LEFT (gen2 legs.ts) that is the right one, ENG-27: the toy's home leg
     // set him on the far bank, ahead, and he turned back)

@@ -18,6 +18,7 @@ import type { Platform } from './types.ts';
 import { DOUBLE_RISE } from './physics.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { groundSheetImage } from './groundPaint.ts';
+import { stackedUnder } from './gen2/legs.ts';
 
 /** his collider's height */
 const HIS_H = 48;
@@ -144,10 +145,12 @@ function line(g: Platform[], banks: readonly Platform[], others: readonly Platfo
   // its collider's foot there), nor another upper piece's; and never higher than an upper water's own paint over it (the samples either
   // side of it too, so the line between them stays under it): the pool stands whole, its bed on the line, and only its soil ends there
   // (a pool whose surface was under the line kept no lid at all and ran to the view's foot: ENG-GROUND-d)
+  // (a bank that stands on the band, its foot down in the lower pieces' air, is no earth over them: the line does not dive to its foot)
+  const standing = new Set(banks.filter((p) => p.x < b && p.x + p.width > a && standsOn(p, g)));
   const ys = c.map((y, i) => {
     const x = a + i * STEP;
     let v = y - wobble(x);
-    for (const p of banks) if (x >= p.x && x <= p.x + p.width && p.y < v && p.y + p.height + 6 > v) v = p.y + p.height + 6;
+    for (const p of banks) if (x >= p.x && x <= p.x + p.width && p.y < v && p.y + p.height + 6 > v && !standing.has(p)) v = p.y + p.height + 6;
     for (const p of others) if (x >= p.x && x <= p.x + p.width && p.y < v && p.y + p.height + 6 > v) v = p.y + p.height + 6;
     for (const w of wet) if (x > w.x0 - STEP && x < w.x1 + STEP && v < w.foot) v = w.foot;
     return v;
@@ -163,11 +166,21 @@ export function ceilingAt(c: Ceiling, x: number): number {
   return c.ys[i] + (c.ys[Math.min(i + 1, c.ys.length - 1)] - c.ys[i]) * (f - i);
 }
 
-/** the ceilings bank p stands over: it spans the line's own run (not only its slanted ends) and its top is above the line all along it */
+/** does bank p stand ON the lower band (its collider reaching down into the air over the band's highest piece): a wall of that level
+ *  (the descent's end wall, its foot on the floor), not earth over it. Cut at the line, its soil left a hole under it (ENG-GROUND-d) */
+const standsOn = (p: Pick<Platform, 'x' | 'width' | 'y' | 'height'>, lower: readonly Platform[]) => p.y + (p.height ?? 0) > nearTop(p, lower) - HIS_H;
+/** the highest top of the lower pieces under or beside p (within SIDE), else of them all */
+function nearTop(p: Pick<Platform, 'x' | 'width'>, lower: readonly Platform[]): number {
+  const near = lower.filter((q) => q.x < p.x + p.width + SIDE && q.x + q.width > p.x - SIDE);
+  return Math.min(...(near.length ? near : lower).map((q) => q.y));
+}
+
+/** the ceilings bank p stands over: it spans the line's own run (not only its slanted ends), its top is above the line all along it and
+ *  it does not stand on the lower band */
 export function ceilingsOver(p: Platform, cs: readonly Ceiling[]): Ceiling[] {
   return cs.filter((c) => {
     const a = Math.max(p.x, c.x0), b = Math.min(p.x + p.width, c.x1);
-    if (b - a <= 8 || c.lower.includes(p)) return false;
+    if (b - a <= 8 || c.lower.includes(p) || standsOn(p, c.lower)) return false;
     for (let x = a; x <= b; x += STEP) if (p.y >= ceilingAt(c, x)) return false;
     return true;
   });
@@ -376,8 +389,7 @@ interface LegBox { travel: string; x0: number; x1: number; y0: number; y1: numbe
  */
 export function stackZonesOf(legs: readonly LegBox[] | undefined): StackZone[] {
   const all = legs ?? [];
-  const run = all.filter((l) => l.travel === 'left' || l.travel === 'right');
-  const lowers = run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + HIS_H));
+  const lowers = stackedUnder(all);
   const zones: StackZone[] = lowers.map((l) => ({ x0: l.x0, x1: l.x1, y0: l.y0, y1: l.y1 }));
   for (const l of lowers)
     for (const d of all)

@@ -143,8 +143,24 @@ test('the finish: a fall with no bank at one end throws (such a roll is never li
 // over the surface; the river's splash-back is on the bank he came from; every water fall has its river at its height (under the out
 // leg's log river a race-leg fall had none: the finish matched rivers by x only). Planted RED on 0f5ca9999 (16 of 16 rolls: plankscan-16.txt).
 const { buildGen2Stage } = await import('../pipeline.ts');
+const { TOWER } = await import('../tower.ts');
 const { towerCfg } = await import('../toyTower.ts');
 const { homeKit, POST_CODE, HOME_CODE } = await import('../toyHome.ts');
+/** ENG-GROUND-d, the lead's ruling (B): on a stage that lays a run leg under another, a soft gap between two thin pieces over the lower
+ *  leg's floor is left open (its water could only hang in mid-air between the planks over that floor). Stated here, not read from the
+ *  code under test: the run legs laid wholly under another (his height clear), and a gap whose two lips are thin pieces with a floor of
+ *  such a leg (its top in the leg's band) under its whole width */
+type LegBox = { travel: string; x0: number; x1: number; y0: number; y1: number };
+function openOverFloor(st: { platforms: Platform[]; gen2: { tower?: { legs?: LegBox[] } } }, f: { x0: number; x1: number; y: number; kind: string }): boolean {
+  if (f.kind !== 'soft') return false;
+  const run = (st.gen2.tower?.legs ?? []).filter((l) => l.travel === 'left' || l.travel === 'right');
+  const lows = run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + 48));
+  const solid = st.platforms.filter((p) => p.type === 'solid' && !p.broken);
+  const lip = (p: Platform) => Math.abs(p.y - f.y) <= 160;
+  const near = solid.filter((p) => Math.abs(p.x + p.width - f.x0) <= 2 && lip(p)), far = solid.filter((p) => Math.abs(p.x - f.x1) <= 2 && lip(p));
+  if (!near.length || !far.length || near.some((p) => p.height >= 90) || far.some((p) => p.height >= 90)) return false;
+  return lows.some((l) => solid.some((p) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2 && p.x <= f.x0 + 1 && p.x + p.width >= f.x1 - 1));
+}
 test('World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)', () => {
   const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
   const bad: string[] = [];
@@ -155,8 +171,9 @@ test('World 2 finish: planks between falls are a bridge over ONE river, bank to 
         const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', code), seed, difficulty }) as never, difficulty) as unknown as { platforms: Platform[]; rivers: RiverZone[]; gen2: { falls: Array<{ x0: number; x1: number; y: number; kind: string }> } };
         const at = `${name} ${difficulty} seed ${seed}`;
         // (every water fall has its river AT ITS HEIGHT: under the out leg's log river the race leg's falls had none)
+        // (but a soft gap between two thin pieces over a lower leg's floor, left open by the ruling (B): its own test below)
         for (const f of st.gen2.falls)
-          if ((f.kind === 'water' || f.kind === 'soft') && !st.rivers.some((r) => r.x0 <= f.x0 + 2 && r.x1 >= f.x1 - 2 && r.surfaceY > f.y - 20 && r.surfaceY < f.y + 260))
+          if ((f.kind === 'water' || f.kind === 'soft') && !openOverFloor(st as never, f) && !st.rivers.some((r) => r.x0 <= f.x0 + 2 && r.x1 >= f.x1 - 2 && r.surfaceY > f.y - 20 && r.surfaceY < f.y + 260))
             bad.push(`${at}: the fall x ${f.x0}..${f.x1} (lip ${f.y}) has no water`);
         for (const p of st.platforms) {
           if (p.broken || p.type !== 'solid' || p.height >= 90) continue;
@@ -175,4 +192,36 @@ test('World 2 finish: planks between falls are a bridge over ONE river, bank to 
       }
   assert.deepEqual(bad.slice(0, 12), [], `${bad.length} faults`);
   assert.ok(bridges >= 16, `the toy's bridges over one river (${bridges} planks)`);
+});
+
+// ENG-GROUND-d, the lead's ruling (B): the toy's descent comes down over the race leg's floor by thin stairs, and its soft gaps were filled
+// with water from the stairs' height. Each pool lay under the next stair down (he could never reach it) and its paint ran to the view's
+// foot as a column over the floor he walks (the lead's painted still, right end sideways); lidded at its bed it hung as a box of water
+// between the planks. A soft gap between two thin pieces over a lower leg's floor is left open: no water, and a drop through it, at either
+// lip and its middle, lands on wood within the live fall rule going down (tower.ts towerFalls: TOWER.see, a landing he can see), never in
+// water. Every roll of both toys, both settings. Planted RED on 8a903ba10: reference/qa-reports/ENG-GROUND/red-d3.txt.
+test('World 2 finish: a soft gap between two thin pieces over a lower leg\'s floor is left open, its drop onto wood within the fall rule (the out-and-back toy, every roll, both settings)', () => {
+  const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+  const bad: string[] = [];
+  let open = 0;
+  for (const [name, code] of [['post', POST_CODE], ['home', HOME_CODE]] as const)
+    for (const difficulty of ['normal', 'easy'] as const)
+      for (let seed = 1; seed <= 4; seed++) {
+        const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', code), seed, difficulty }) as never, difficulty) as unknown as { platforms: Platform[]; rivers: RiverZone[]; gen2: { falls: Array<{ x0: number; x1: number; y: number; kind: string }>; tower?: { legs?: LegBox[] } } };
+        const at = `${name} ${difficulty} seed ${seed}`;
+        for (const f of st.gen2.falls) {
+          if (!openOverFloor(st, f)) continue;
+          open++;
+          const wet = st.rivers.filter((r) => r.x1 > f.x0 + 2 && r.x0 < f.x1 - 2 && r.surfaceY > f.y - 20 && r.surfaceY < f.y + 400);
+          if (wet.length) bad.push(`${at}: the gap x ${f.x0}..${f.x1} (lip ${f.y}) is filled (surface ${Math.round(wet[0].surfaceY)})`);
+          for (const x of [f.x0 + 8, (f.x0 + f.x1) / 2, f.x1 - 8]) {
+            const land = Math.min(...st.platforms.filter((p) => p.type !== 'fragile' && !p.broken && x >= p.x && x <= p.x + p.width && p.y > f.y + 1).map((p) => p.y));
+            const splash = st.rivers.find((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > f.y && r.surfaceY < land);
+            if (!(land - f.y <= TOWER.see)) bad.push(`${at}: a drop at x ${Math.round(x)} through the gap x ${f.x0}..${f.x1} falls ${Number.isFinite(land) ? Math.round(land - f.y) : 'out'} (the fall rule: ${TOWER.see})`);
+            else if (splash) bad.push(`${at}: a drop at x ${Math.round(x)} through the gap lands in water`);
+          }
+        }
+      }
+  assert.ok(open >= 16, `the toy's descent has its soft gaps over the race leg's floor (${open})`);
+  assert.deepEqual(bad.slice(0, 12), [], `${bad.length} faults`);
 });

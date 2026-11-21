@@ -453,3 +453,49 @@ for (const difficulty of ['normal', 'easy'] as const) {
     });
   }
 }
+
+// ENG-GROUND-d: a bank that stands ON the race leg's band (a tall wall of another leg whose collider comes down to the band: the toy's
+// descent ends at one, its foot on the floor) is a wall of that level, not earth over it. With the band's zone run on under the descent the
+// ceiling reached it: its line dived to the wall's foot, the wall's paint took the ceiling's clip and an underside was drawn along its foot,
+// at the floor's own top, its corners turning up either side. Around such a wall the ground draws exactly as on a stage that stacks nothing.
+// Planted RED with the rule off (groundStack.ts standsOn): reference/qa-reports/ENG-GROUND/red-d2.txt.
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): a wall standing on the race leg's band is drawn whole, as with no ceiling`, () => {
+    let walls = 0;
+    const diffs: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
+      };
+      const legs = st.gen2?.tower?.legs ?? [];
+      const run = legs.filter((l) => l.travel === 'left' || l.travel === 'right');
+      const race = run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + 48));
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      const banks = st.platforms.filter(paintedBank);
+      for (const band of race) {
+        // (a tall bank whose top stands well over the band and whose foot is down at it)
+        for (const w of banks.filter((p) => p.y < band.y0 - 300 && p.y + p.height >= band.y0 - 2 && p.y + p.height <= band.y1 + 2)) {
+          walls++;
+          const mid = w.x + w.width / 2, foot = w.y + w.height;
+          const view = { x0: mid - 450, x1: mid + 450, y0: foot - 520, y1: foot + 220 };
+          // (every draw over the wall's span: its box and how many clips hold it)
+          const shot = (stacked: boolean) => {
+            setStacks(stacked ? legs : undefined, st.rivers);
+            const r = new RecordingCtx();
+            drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+            r.off = true;
+            return r.draws.filter((d) => d.box[2] > w.x + 4 && d.box[0] < w.x + w.width - 4).map((d) => `${d.box.map((v) => Math.round(v)).join(',')} clips ${d.clips.length}`).sort();
+          };
+          const plain = shot(false), stacked = shot(true);
+          const gained = stacked.filter((d) => !plain.includes(d)), lost = plain.filter((d) => !stacked.includes(d));
+          if (gained.length || lost.length) diffs.push(`seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)} (foot ${Math.round(foot)}): ${gained.length} draws gained (${gained.slice(0, 2).join('; ')}), ${lost.length} lost`);
+        }
+      }
+    }
+    assert.ok(walls >= 3, `the toy's descent ends at a wall on the floor (${walls})`);
+    assert.deepEqual(diffs, [], 'a wall standing on the band is drawn as earth over it');
+  });
+}
