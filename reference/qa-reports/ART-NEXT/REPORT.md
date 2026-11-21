@@ -1,17 +1,23 @@
 # ART-SHEETS-c (11-21): R-165.382 drawcheck GREEN (cheer cut DONE); pose families + the single-pose clamp; the affine-per-group grade of the seven non-clip sheets
 ## EXACT NEXT STEP
-Status: R-165.382 DONE (drawcheck green). R-165.379: the seven graded candidates are made but NOT in src/ yet (parked in
-reference/art/hfnext/hero/sheets/c8d47c90e/: the .webp sheets, sheetgrade.json, grade-log.txt, strips <sheet>-strip-game.jpg / -2x.jpg,
-columns plain | before 4f0853b96 | mean e41c738bf | after; strip.py.txt rebuilds them). src/ on t-art-next is unchanged (heroClipsBody.test
-still RED for the 7 unrecorded sheets, as before).
-1. THE LEAD judges each strip (2x first), sheet by sheet. My own look at atlas-strip-2x.jpg (see Polish check): NOT clean on every pose.
-2. Per sheet the lead accepts: cp reference/art/hfnext/hero/sheets/c8d47c90e/<sheet>.webp src/assets/hero/; then (frozen worktree of that
-   commit, run_in_background) python3 -I tools/art/hfnext/herobody.py --write, then --ratchet <accepted sheet names>; heroBody.known.json:
-   climb2's mean row off if it now passes; the plant (git show e41c738bf:src/assets/hero/pokey-swim.webp into a scratch copy, herobody.py there,
-   see the ratchet fail; restore); heroClipsBody.test GREEN; tsc, artcheck, knowncheck, herobody --check; tools/art/hfnext/sheetgrade.json
-   from the parked copy (only the accepted sheets' rows).
-3. A sheet the lead rejects: the likely lever is the clamp (atlas: 7 of 8 single poses clamped; story: 14 of 22), e.g. clamp to the pooled
-   sheet line instead of the families' min-max, or fold the singles into one 'body' group; re-grade that sheet alone on a frozen tree.
+THE LEAD'S RULINGS (after the box, on the game-size strips): ACCEPT affine per group for rope, swim, vine, climb2, studies. REJECT it
+for atlas (run, climb_b, duck, fall, hurt go pale and pink) and story (the back views away/away_a/away_b/farewell, sleep, tired, sneak and
+the two faces wash out). The lead asked for the per-sheet MEAN grade on atlas and story. CORRECTION I sent the lead: in my strips the
+'mean e41c738bf' column for atlas, story and studies IS THE UNGRADED ORIGINAL (same blob at 4f0853b96 and e41c738bf: atlas ea18e13804,
+story b6ca588205); only rope/swim/vine/climb2 were mean-graded there. So a real mean grade of atlas and story has not been seen yet.
+Next member, on t-art-next at 83d3893cf or later, frozen worktrees, ONE heavy run at a time, run_in_background:
+1. Install the five accepted sheets: cp reference/art/hfnext/hero/sheets/c8d47c90e/{hero-rope,pokey-swim,hero-vine,hero-climb2,hero-studies}.webp
+   src/assets/hero/; tools/art/hfnext/sheetgrade.json = the parked c8d47c90e/sheetgrade.json's rope, swim, vine, climb2, studies rows.
+2. ONE run on a frozen worktree of 83d3893cf (node_modules linked): python3 -I tools/art/hfnext/sheetgrade.py atlas,story --from 4f0853b96
+   (NO --group: the per-sheet mean grade + --even, as R-165.378), about 6-8 min. Strips with the scratch strip script
+   (reference/art/hfnext/hero/sheets/c8d47c90e/strip.py.txt; fix its column label: plain | original 4f0853b96 | MEAN (this run) |
+   affine c8d47c90e), game size and 2x; LOOK at run, climb_b, duck, fall, hurt, the back views, sleep, tired, sneak, faces. Send the lead the
+   paths; the lead's last look decides: mean, or the original with known rows (heroBody.known.json), or another method.
+3. On the lead's yes: install atlas and story (and their sheetgrade.json rows); then herobody.py --write and --ratchet
+   rope,swim,vine,climb2,atlas,story,studies; heroBody.known.json: climb2's mean row off if it now passes; THE PLANT (git show
+   e41c738bf:src/assets/hero/pokey-swim.webp into a scratch copy of the tree, herobody.py there; the ratchet must fail; restore);
+   heroClipsBody.test GREEN; tsc, artcheck, knowncheck, herobody --check; catalog rows if the master catalog carries file sizes for these
+   sheets. Push, send the lead the hash, stop.
 ## What this box did (no Hugging Face spend)
 - R-165.382 step 1: drawcheck ALONE on a frozen 4f0853b96 worktree (fresh container, npm install --legacy-peer-deps): PASS, 32 of 32
   (16 scenarios x upright/sideways, 0 fail), 574 s, about 35 s a scenario. ART-SHEETS-b's run hit its 30-minute limit at 3 of 16 because it
@@ -35,7 +41,10 @@ still RED for the 7 unrecorded sheets, as before).
   untouched (masked). BUT after is visibly PALER and pinker than the plain pose on climb_b, duck, hurt and fall (climb_b the worst: washed,
   pinkish arms and legs), and the run frames read lighter than plain; mega, kick, punch_3, idle_a, guard read as the same sloth. Not clean
   on every pose: the lead judges; I would not ship climb and the clamped tumble poses as they are.
-- rope, swim, vine, climb2, story, studies strips: made, NOT opened by me (box). Named, not hidden.
+- rope, swim, vine, climb2, story, studies strips: made, NOT opened by me (box); the lead judged all seven at game size (rulings above).
+- MISS (mine): the strip's 'mean e41c738bf' column is the ungraded original for atlas, story and studies; the label misled the lead's
+  atlas/story ruling. Why: strip.py labelled the column by commit, not by what the sheet at that commit is; I did not check the blobs
+  differ. Countermeasure: the strip script must label a column 'original' when its blob equals the before column's (fix in step 2).
 - Nothing shipped to src/.
 ## Lessons applied
 D115 (drawcheck on frozen 4f0853b96; the grade on frozen c8d47c90e, sheets read from git 4f0853b96; edits only in a third tree), D113 (every
