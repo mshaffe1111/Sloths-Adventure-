@@ -4,7 +4,9 @@ colour against the plain pose's: the same mask as regrade.py and clipde.py (soli
 whites L > 85 and chroma < 12; plain = hero-standard.webp's idle crop). Per sheet: frame_max (and where), and pooled (every fur px of
 the sheet's frames together; an idle clip's bridges are left out, as clipde.py does). It writes src/game/heroBody.json, which
 src/game/heroClipsBody.test.ts holds to the shipped sheets by SHA-256 and to the bar (frame_max <= 2.0, pooled <= 1.0) or, for a
-sheet not regraded yet, to its row in src/game/heroBody.known.json (shrink-only: knowncheck.mjs).
+sheet not regraded yet, to its row in src/game/heroBody.known.json (shrink-only: knowncheck.mjs). Also per sheet the fur-mean step
+between frames (median, max) and the LOOP SEAM, last frame -> first: a clip the game loops or cycles (push, climb, walk, run) must not
+pop there (the test: loop_seam <= max(2 x step_median, 0.5) and <= 1.0; push's was 3.3 dE before ART-HERO).
     python3 -I tools/art/hfnext/herobody.py            print the table
     python3 -I tools/art/hfnext/herobody.py --write    also write src/game/heroBody.json
     python3 -I tools/art/hfnext/herobody.py --check    exit 1 if that JSON is stale
@@ -53,12 +55,14 @@ res = {}
 for nm, (p, fr) in sheets.items():
     FU = [fur(f) for f in fr]; fd = [float(np.linalg.norm(u.mean(0) - PF)) for u in FU]
     pooled = np.concatenate(FU).mean(0)
+    mu = [u.mean(0) for u in FU]; st = [float(np.linalg.norm(mu[k + 1] - mu[k])) for k in range(len(mu) - 1)]
     res[nm] = {'sheet': p, 'sheet_sha256': sha(p), 'frames': len(fr), 'frame_max': round(max(fd), 3), 'frame_max_at': int(np.argmax(fd)),
-               'pooled': round(float(np.linalg.norm(pooled - PF)), 3), 'fur_lab': np.round(pooled, 2).tolist()}
+               'pooled': round(float(np.linalg.norm(pooled - PF)), 3), 'fur_lab': np.round(pooled, 2).tolist(),
+               'step_median': round(float(np.median(st)), 3), 'step_max': round(max(st), 3), 'loop_seam': round(float(np.linalg.norm(mu[0] - mu[-1])), 3)}
     r = res[nm]
-    print(f"{nm:14s} {r['frames']:3d} frames | fur L a b {pooled.round(1)} | pooled {r['pooled']:5.2f} dE, worst frame {r['frame_max']:5.2f} (#{r['frame_max_at']})")
+    print(f"{nm:14s} {r['frames']:3d} frames | fur L a b {pooled.round(1)} | pooled {r['pooled']:5.2f} dE, worst frame {r['frame_max']:5.2f} (#{r['frame_max_at']}) | fur steps median {r['step_median']:4.2f} max {r['step_max']:4.2f}, last->first {r['loop_seam']:4.2f}")
 if '--write' in sys.argv or '--check' in sys.argv:
-    txt = json.dumps({'bar': {'frame_max': 2.0, 'pooled': 1.0}, 'plain_sha256': sha(STDP), 'plain_fur_lab': np.round(PF, 2).tolist(), 'sheets': res},
+    txt = json.dumps({'bar': {'frame_max': 2.0, 'pooled': 1.0}, 'loop_bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'plain_sha256': sha(STDP), 'plain_fur_lab': np.round(PF, 2).tolist(), 'sheets': res},
                      indent=1) + '\n'
     if '--check' in sys.argv:
         sys.exit(0 if open(OUT).read() == txt else f'{OUT} is stale: re-run tools/art/hfnext/herobody.py --write')

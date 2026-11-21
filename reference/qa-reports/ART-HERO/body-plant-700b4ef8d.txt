@@ -2,27 +2,27 @@ TAP version 13
 # Subtest: the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
 ok 1 - the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
   ---
-  duration_ms: 1.632272
+  duration_ms: 1.819559
   type: 'test'
   ...
 # Subtest: every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
 ok 2 - every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
   ---
-  duration_ms: 0.11098
+  duration_ms: 0.115395
   type: 'test'
   ...
 # Subtest: every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)
 ok 3 - every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)
   ---
-  duration_ms: 6.199431
+  duration_ms: 6.868144
   type: 'test'
   ...
 # Subtest: every hero sheet is the same sloth as the plain pose (fur: each frame <= 2.0 dE, the sheet pooled <= 1.0 dE), or a known row no worse
 not ok 4 - every hero sheet is the same sloth as the plain pose (fur: each frame <= 2.0 dE, the sheet pooled <= 1.0 dE), or a known row no worse
   ---
-  duration_ms: 1.238982
+  duration_ms: 1.409615
   type: 'test'
-  location: '/home/user/Sloths-Adventure-/src/game/heroClipsBody.test.ts:57:1'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/c617a5b1-c366-57db-9a05-280f27fe847a/scratchpad/wt-before/src/game/heroClipsBody.test.ts:60:1'
   failureType: 'testCodeFailure'
   error: |-
     hero sheets off the plain pose
@@ -54,7 +54,7 @@ not ok 4 - every hero sheet is the same sloth as the plain pose (fur: each frame
     7: "move-climb: its frames' fur is 6.488 dE off the plain pose (limit 1)"
   operator: 'deepStrictEqual'
   stack: |-
-    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/heroClipsBody.test.ts:71:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/c617a5b1-c366-57db-9a05-280f27fe847a/scratchpad/wt-before/src/game/heroClipsBody.test.ts:74:10)
     Test.runInAsyncScope (node:async_hooks:214:14)
     Test.run (node:internal/test_runner/test:1047:25)
     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
@@ -62,12 +62,49 @@ not ok 4 - every hero sheet is the same sloth as the plain pose (fur: each frame
     Test.run (node:internal/test_runner/test:1101:12)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
-1..4
-# tests 4
+# Subtest: a looping hero clip does not pop where it loops (fur mean, last frame -> first <= max(2 x its median step, 0.5) and <= 1.0 dE)
+not ok 5 - a looping hero clip does not pop where it loops (fur mean, last frame -> first <= max(2 x its median step, 0.5) and <= 1.0 dE)
+  ---
+  duration_ms: 0.374421
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/c617a5b1-c366-57db-9a05-280f27fe847a/scratchpad/wt-before/src/game/heroClipsBody.test.ts:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    looping hero clips that pop at the loop
+    + actual - expected
+    
+    + [
+    +   'push: last -> first frame steps 3.034 dE (limit 0.500, its median step 0.169)',
+    +   'move-climb: last -> first frame steps 1.948 dE (limit 0.500, its median step 0.249)',
+    +   'move-walk: last -> first frame steps 1.284 dE (limit 0.758, its median step 0.379)',
+    +   'move-run: last -> first frame steps 3.003 dE (limit 1.000, its median step 1.662)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'push: last -> first frame steps 3.034 dE (limit 0.500, its median step 0.169)'
+    1: 'move-climb: last -> first frame steps 1.948 dE (limit 0.500, its median step 0.249)'
+    2: 'move-walk: last -> first frame steps 1.284 dE (limit 0.758, its median step 0.379)'
+    3: 'move-run: last -> first frame steps 3.003 dE (limit 1.000, its median step 1.662)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/c617a5b1-c366-57db-9a05-280f27fe847a/scratchpad/wt-before/src/game/heroClipsBody.test.ts:84:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
 # suites 0
 # pass 3
-# fail 1
+# fail 2
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 133.579489
+# duration_ms 178.101507

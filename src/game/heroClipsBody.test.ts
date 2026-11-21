@@ -42,13 +42,16 @@ import { HERO_CLIPS } from './heroClipsData.ts';
 import BODY from './heroBody.json' with { type: 'json' };
 import KNOWN from './heroBody.known.json' with { type: 'json' };
 
-type Sheet = { sheet: string; sheet_sha256: string; frames: number; frame_max: number; frame_max_at: number; pooled: number };
-const B = BODY as unknown as { bar: { frame_max: number; pooled: number }; plain_sha256: string; sheets: Record<string, Sheet> };
+type Sheet = { sheet: string; sheet_sha256: string; frames: number; frame_max: number; frame_max_at: number; pooled: number; step_median: number; loop_seam: number };
+const B = BODY as unknown as { bar: { frame_max: number; pooled: number }; loop_bar: unknown; plain_sha256: string; sheets: Record<string, Sheet> };
+/** the clips the game loops or cycles through (heroClips.ts: push loops; climb, walk and run follow a cycle): last -> first is a seam */
+const LOOPING = ['push', 'move-climb', 'move-walk', 'move-run'];
 const K = KNOWN as unknown as { known: Array<{ sheet: string; frame_max: number; pooled: number; why: string }> };
 const HERO_SHEETS = [...Object.keys(HERO_CLIPS), 'hero-climb2'];
 
 test('every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)', () => {
   assert.deepEqual(B.bar, { frame_max: 2.0, pooled: 1.0 }, 'the bar is fixed here, not in the JSON');
+  assert.deepEqual(B.loop_bar, { times_median: 2, floor: 0.5, ceiling: 1.0 }, 'the loop bar is fixed here, not in the JSON');
   assert.equal(B.plain_sha256, sha('../assets/hero/hero-standard.webp'), 'hero-standard.webp changed since measuring');
   assert.deepEqual(Object.keys(B.sheets).sort(), [...HERO_SHEETS].sort(), 'heroBody.json measures a different set of sheets than the game draws');
   for (const n of HERO_SHEETS) assert.equal(B.sheets[n].sheet_sha256, sha(`../../${B.sheets[n].sheet}`), `${n}: ${B.sheets[n].sheet} changed since measuring`);
@@ -70,4 +73,13 @@ test('every hero sheet is the same sloth as the plain pose (fur: each frame <= 2
   }
   assert.deepEqual(bad, [], 'hero sheets off the plain pose');
   for (const k of K.known) assert.ok(HERO_SHEETS.includes(k.sheet), `heroBody.known.json lists ${k.sheet}, which is not a hero sheet`);
+});
+
+test('a looping hero clip does not pop where it loops (fur mean, last frame -> first <= max(2 x its median step, 0.5) and <= 1.0 dE)', () => {
+  const bad: string[] = [];
+  for (const n of LOOPING) {
+    const s = B.sheets[n]; const lim = Math.min(Math.max(2 * s.step_median, 0.5), 1.0);
+    if (s.loop_seam > lim) bad.push(`${n}: last -> first frame steps ${s.loop_seam} dE (limit ${lim.toFixed(3)}, its median step ${s.step_median})`);
+  }
+  assert.deepEqual(bad, [], 'looping hero clips that pop at the loop');
 });

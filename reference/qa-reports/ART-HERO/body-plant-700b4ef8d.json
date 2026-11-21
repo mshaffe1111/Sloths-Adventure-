@@ -3,6 +3,11 @@
   "frame_max": 2.0,
   "pooled": 1.0
  },
+ "loop_bar": {
+  "times_median": 2,
+  "floor": 0.5,
+  "ceiling": 1.0
+ },
  "plain_sha256": "91c0b0ac77ed7cdad67a7ba0b060c32c8701c9331aac54f063c678048f074f11",
  "plain_fur_lab": [
   60.4,
@@ -21,7 +26,10 @@
     60.43,
     16.52,
     29.57
-   ]
+   ],
+   "step_median": 0.17,
+   "step_max": 0.588,
+   "loop_seam": 1.333
   },
   "look-around": {
    "sheet": "src/assets/hero/clips/look-around.webp",
@@ -34,7 +42,10 @@
     60.44,
     16.53,
     29.56
-   ]
+   ],
+   "step_median": 0.159,
+   "step_max": 0.802,
+   "loop_seam": 1.21
   },
   "hurt": {
    "sheet": "src/assets/hero/clips/hurt.webp",
@@ -47,7 +58,10 @@
     60.72,
     12.83,
     26.1
-   ]
+   ],
+   "step_median": 0.284,
+   "step_max": 0.923,
+   "loop_seam": 0.601
   },
   "belly-scratch": {
    "sheet": "src/assets/hero/clips/belly-scratch.webp",
@@ -60,7 +74,10 @@
     60.32,
     16.06,
     29.79
-   ]
+   ],
+   "step_median": 0.107,
+   "step_max": 0.292,
+   "loop_seam": 0.233
   },
   "wave": {
    "sheet": "src/assets/hero/clips/wave.webp",
@@ -73,7 +90,10 @@
     60.43,
     16.62,
     29.54
-   ]
+   ],
+   "step_median": 0.142,
+   "step_max": 0.566,
+   "loop_seam": 1.432
   },
   "cheer": {
    "sheet": "src/assets/hero/clips/cheer.webp",
@@ -86,7 +106,10 @@
     59.24,
     13.55,
     27.47
-   ]
+   ],
+   "step_median": 0.437,
+   "step_max": 1.048,
+   "loop_seam": 1.779
   },
   "push": {
    "sheet": "src/assets/hero/clips/push.webp",
@@ -99,7 +122,10 @@
     53.39,
     13.44,
     28.27
-   ]
+   ],
+   "step_median": 0.169,
+   "step_max": 0.588,
+   "loop_seam": 3.034
   },
   "move-run": {
    "sheet": "src/assets/hero/clips/move-run.webp",
@@ -112,7 +138,10 @@
     60.66,
     16.51,
     32.97
-   ]
+   ],
+   "step_median": 1.662,
+   "step_max": 3.131,
+   "loop_seam": 3.003
   },
   "move-jab": {
    "sheet": "src/assets/hero/clips/move-jab.webp",
@@ -125,7 +154,10 @@
     60.28,
     15.54,
     31.83
-   ]
+   ],
+   "step_median": 1.246,
+   "step_max": 4.763,
+   "loop_seam": 2.96
   },
   "move-cross": {
    "sheet": "src/assets/hero/clips/move-cross.webp",
@@ -138,7 +170,10 @@
     61.28,
     14.08,
     30.17
-   ]
+   ],
+   "step_median": 0.474,
+   "step_max": 0.992,
+   "loop_seam": 0.459
   },
   "move-hook": {
    "sheet": "src/assets/hero/clips/move-hook.webp",
@@ -151,7 +186,10 @@
     59.74,
     14.78,
     31.01
-   ]
+   ],
+   "step_median": 0.893,
+   "step_max": 4.013,
+   "loop_seam": 0.223
   },
   "move-kick": {
    "sheet": "src/assets/hero/clips/move-kick.webp",
@@ -164,7 +202,10 @@
     58.45,
     16.59,
     32.31
-   ]
+   ],
+   "step_median": 0.775,
+   "step_max": 1.593,
+   "loop_seam": 0.108
   },
   "move-kick2": {
    "sheet": "src/assets/hero/clips/move-kick2.webp",
@@ -177,7 +218,10 @@
     59.9,
     16.34,
     31.44
-   ]
+   ],
+   "step_median": 0.327,
+   "step_max": 1.427,
+   "loop_seam": 1.162
   },
   "move-mega": {
    "sheet": "src/assets/hero/clips/move-mega.webp",
@@ -190,7 +234,10 @@
     57.74,
     15.68,
     30.2
-   ]
+   ],
+   "step_median": 0.491,
+   "step_max": 3.236,
+   "loop_seam": 1.135
   },
   "teeter": {
    "sheet": "src/assets/hero/clips/teeter.webp",
@@ -203,7 +250,10 @@
     59.48,
     16.34,
     29.29
-   ]
+   ],
+   "step_median": 0.322,
+   "step_max": 0.499,
+   "loop_seam": 0.4
   },
   "step-back": {
    "sheet": "src/assets/hero/clips/step-back.webp",
@@ -216,7 +266,10 @@
     59.75,
     16.23,
     29.43
-   ]
+   ],
+   "step_median": 0.31,
+   "step_max": 0.929,
+   "loop_seam": 0.649
   },
   "move-climb": {
    "sheet": "src/assets/hero/clips/move-climb.webp",
@@ -229,7 +282,10 @@
     54.41,
     16.69,
     32.08
-   ]
+   ],
+   "step_median": 0.249,
+   "step_max": 0.955,
+   "loop_seam": 1.948
   },
   "move-walk": {
    "sheet": "src/assets/hero/clips/move-walk.webp",
@@ -242,7 +298,10 @@
     62.21,
     14.04,
     31.31
-   ]
+   ],
+   "step_median": 0.379,
+   "step_max": 1.372,
+   "loop_seam": 1.284
   },
   "hero-climb2": {
    "sheet": "src/assets/hero/hero-climb2.webp",
@@ -255,7 +314,10 @@
     58.75,
     14.3,
     30.07
-   ]
+   ],
+   "step_median": 0.983,
+   "step_max": 1.492,
+   "loop_seam": 1.559
   }
  }
 }
