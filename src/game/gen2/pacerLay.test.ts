@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
-import { HOME_CODE, homeKit, TOY_RACE } from './toyHome.ts';
+import { HOME_CODE, homeKit } from './toyHome.ts';
 import { layPacer } from './pacerLay.ts';
 import { W2_RACE, W2_RIVERS } from './worlds/w2.ts';
 import { middleAt, pacerFaults, pacerOff, pacerReplace, pacerX } from '../pacer.ts';
@@ -29,32 +29,34 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
       assert.equal(P.dir, -1, at);
       assert.equal(P.x0, home.x1, at);
       assert.equal(P.x1, st.exitTotemX, at);
-      // (the rule: the careful middle's time + the setting's margin, never over the ride-only's less 2 s)
-      const margin = difficulty === 'easy' ? TOY_RACE.margin.easy : TOY_RACE.margin.normal;
-      assert.ok(Math.abs(P.seconds - Math.min(P.middle + margin, P.rideOnly - TOY_RACE.under)) < 0.02, `${at}: ${P.seconds} s`);
-      assert.ok(P.middle < P.seconds && P.seconds <= P.rideOnly - TOY_RACE.under, `${at}: ${P.middle} < ${P.seconds} <= ${P.rideOnly} - 2`);
-      assert.deepEqual(pacerFaults(P, TOY_RACE.under), [], at);
+      // (the rule: the careful middle's time + the setting's SHARE of it, never over the ride-only's less 2 s; the toy races on World 2's
+      // own table, the share the same on any leg's length)
+      const share = difficulty === 'easy' ? W2_RACE.margin.easy : W2_RACE.margin.normal;
+      assert.ok(Math.abs(P.seconds - Math.min(P.middle * (1 + share), P.rideOnly - W2_RACE.under)) < 0.02, `${at}: ${P.seconds} s against ${P.middle} s x ${1 + share}`);
+      assert.ok(P.middle < P.seconds && P.seconds <= P.rideOnly - W2_RACE.under, `${at}: ${P.middle} < ${P.seconds} <= ${P.rideOnly} - 2`);
+      assert.deepEqual(pacerFaults(P, W2_RACE.under), [], at);
       // (the middle's marks run from 0 at the start to its whole time at the dock, never back)
       assert.equal(middleAt(P, P.x0), 0, at);
       assert.ok(Math.abs(middleAt(P, P.x1) - P.middle) < 0.02, at);
       for (let i = 1; i < P.marks.length; i++) assert.ok(P.marks[i][1] >= P.marks[i - 1][1] && (P.marks[i][0] - P.marks[i - 1][0]) * P.dir >= 0, `${at}: mark ${i}`);
       // planted RED: a boat no slower than the careful middle (he cannot win), and one slower than the ride-only less 2 s (riding wins)
-      assert.match(pacerFaults({ ...P, seconds: P.middle }, TOY_RACE.under).join('\n'), /is not over the careful middle's .*: he cannot win the race/, at);
-      assert.match(pacerFaults({ ...P, seconds: P.rideOnly - 1 }, TOY_RACE.under).join('\n'), /is over the ride-only .* less 2 s: letting the current carry him wins/, at);
+      assert.match(pacerFaults({ ...P, seconds: P.middle }, W2_RACE.under).join('\n'), /is not over the careful middle's .*: he cannot win the race/, at);
+      assert.match(pacerFaults({ ...P, seconds: P.rideOnly - 1 }, W2_RACE.under).join('\n'), /is over the ride-only .* less 2 s: letting the current carry him wins/, at);
     }
   }
-  // (2-7's own table, the design's margins: Normal 3 s, Easy 5 s, under 2 s, the boat's two rowing frames)
-  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 3, easy: 5 }, 2, 272]);
+  // (2-7's own table, the design's margins as shares of the careful middle's time (the lead's ruling, 11-21): Normal 7% (2-7.md's +3 s on
+  // its 42 s home leg), Easy 10% (+5 s on its 47.8 s Easy leg); under 2 s; the boat's two rowing frames)
+  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 0.07, easy: 0.1 }, 2, 272]);
   assert.deepEqual(W2_RACE.art, ['w2-next#mailBoat', 'w2-next#mailBoatB']);
 });
 
 test('pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none', () => {
   const st = build(1);
-  const { long: _long, ...flown } = TOY_RACE.rivers;
-  const r = layPacer(st, { ...TOY_RACE, rivers: flown }, W2_RIVERS, false);
+  const { long: _long, ...flown } = W2_RACE.rivers;
+  const r = layPacer(st, { ...W2_RACE, rivers: flown }, W2_RIVERS, false);
   assert.equal(r.pacer, undefined);
   assert.match(r.problems.join('\n'), /pacer: the river at x \d+-\d+ \(80 px\/s, logs 240 px\) matches no flown row/);
-  assert.deepEqual(layPacer({ ...st, gen2: { ...st.gen2, tower: undefined } } as never, TOY_RACE, W2_RIVERS, false).problems, ['pacer: no run leg laid after a column to race on']);
+  assert.deepEqual(layPacer({ ...st, gen2: { ...st.gen2, tower: undefined } } as never, W2_RACE, W2_RIVERS, false).problems, ['pacer: no run leg laid after a column to race on']);
 });
 
 test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin\'s share', () => {

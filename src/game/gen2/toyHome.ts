@@ -48,10 +48,6 @@ export const HOME_BRICKS: SectionTemplate[] = [
   crossing('home-signature-long', 'signature', 'long'),
 ];
 
-/** the toy's pacer table: World 2's flown rates, its margins scaled to the toy's race leg. The design's +3 s (Easy +5 s) is 7% of 2-7's
- *  42 s home leg (2-7.md THE MAIL BOAT); the toy's home leg runs about 105 s (the lay pads its last leg to the stage's 150 s), so its
- *  margins are 2.5 times (the same share): the engine's rule (pacerLay.ts) is the same, only the toy's numbers are its own */
-export const TOY_RACE = { ...W2_RACE, margin: { normal: W2_RACE.margin.normal * 2.5, easy: W2_RACE.margin.easy * 2.5 } };
 
 /** the toy's graph: out right with the river at him, down a column, home left with the rivers (2-7's shape, its node string's legs) */
 export const HOME_CODE = 'A Pg1> Xw1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
@@ -71,7 +67,7 @@ export const homeKit = (stageId: string, code = HOME_CODE): WorldKit => ({
     graphs: {
       list: [{ id: 'home', archetype: 'sprint', code }],
       // (the deal is the code's own content mix: 2 ground, 3 water, 1 climb, 1 floating of 7)
-      briefs: { [stageId]: { ends: 'quiet', trend: 'level', branching: 'none', teaches: [], deal: { ground: 200 / 7, water: 300 / 7, climb: 100 / 7, floating: 100 / 7 }, dealExact: true, pacer: TOY_RACE } },
+      briefs: { [stageId]: { ends: 'quiet', trend: 'level', branching: 'none', teaches: [], deal: { ground: 200 / 7, water: 300 / 7, climb: 100 / 7, floating: 100 / 7 }, dealExact: true, pacer: W2_RACE } },
       chunkSeconds: 10,
     },
   },

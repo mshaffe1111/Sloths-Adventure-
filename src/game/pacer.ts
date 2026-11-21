@@ -2,7 +2,7 @@
  * The PACER (2-7's mail boat, reference/design/2-7.md NEW 1): a runner AHEAD of him over a stage's race leg, where a chase's front runs
  * behind (chase.ts). It waits at the race leg's start (2-7: the weir pool at the column's foot), sets off as he steps onto that leg, and
  * runs it at one steady speed to the dock (the stage's exit). Its time is set from the laid leg by the design's flown rule
- * (gen2/pacerLay.ts layPacer): the careful middle player's time for that leg plus the setting's margin, and never more than the ride-only
+ * (gen2/pacerLay.ts layPacer): the careful middle player's time for that leg plus the setting's share of it, and never more than the ride-only
  * time less `under`, so a careful middle player wins and letting the current carry him never does. Standing still loses by construction
  * (it never waits). It is a medal only: the race never locks the exit and never costs a life (the verdict is filed with the run's stats).
  * On a respawn on the race leg it is put back level with him plus the flown margin's share of the way left (pacerReplace).
@@ -21,7 +21,8 @@ export interface PacerRow {
   rivers: Readonly<Record<string, PacerRate>>;
   /** the bank px each flown crossing holds beside its water (the flights' 200 before and 30 after) */
   crossingBank: number;
-  /** s over the careful middle's time, by setting */
+  /** the share of the careful middle's time the pacer takes over it, by setting (0.07: 7% slower than the middle), so the margin is the
+   *  same share of any leg's length (the lead's ruling, 11-21) */
   margin: { normal: number; easy: number };
   /** s the pacer's time stays under the ride-only time */
   under: number;

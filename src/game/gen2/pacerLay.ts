@@ -3,7 +3,7 @@
  * brief names a pacer table (GraphBrief.pacer). The race leg is the run leg laid straight after the stage's last column (gen2 legs.ts:
  * 2-7's home leg after the weir), and the dock is the stage's exit, on that leg. Its time is the design's rule, from the laid leg:
  *   the careful middle's time = each river on the leg crossed at its row's flown rate (with `crossingBank` px of bank) + the rest of the
- *   leg at the bank rate; the pacer's = that + the setting's margin, and never more than the ride-only time (the same, at the ride-only
+ *   leg at the bank rate; the pacer's = that x (1 + the setting's share), and never more than the ride-only time (the same, at the ride-only
  *   rates) less `under`. A river's row is found by what it is (its current's speed and its logs' length, the world's river rows): a
  *   river no flown row matches, or two with different rates, is refused by name, as is a stage with no race leg or no fair race.
  * No stage id, world number, seed or x.
@@ -60,7 +60,7 @@ export function layPacer(st: Gen2Stage, table: PacerRow, rows: Readonly<Record<s
   middle += banks;
   rideOnly += banks;
   marks.push([dock, middle]);
-  const seconds = Math.min(middle + (easy ? table.margin.easy : table.margin.normal), rideOnly - table.under);
+  const seconds = Math.min(middle * (1 + (easy ? table.margin.easy : table.margin.normal)), rideOnly - table.under);
   const R = (v: number) => Math.round(v * 100) / 100;
   const yMin = race.y0 - ON_LEG;
   const lane = rivers.length ? Math.max(...rivers.map((r) => r.surfaceY)) : race.y1;

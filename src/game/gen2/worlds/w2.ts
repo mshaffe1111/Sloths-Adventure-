@@ -101,14 +101,15 @@ export const W2_RIVERS = {
  * World 2's PACER table (pacer.ts PacerRow; 2-7's mail boat, gen2/pacerLay.ts): the designer's flown numbers, as written
  * (reference/design/2-7.md "FLOWN" and "THE MAIL BOAT", reference/specs/sims/river27.ts): a bank at a full run, 272 px/s; each HOME row's
  * crossing (its water and 230 px of bank) at the careful middle's median rate and the ride-only rate; the boat's time is the middle's
- * + 3 s (Easy + 5 s), never over the ride-only's less 2 s. No row was flown with the current but these three: a race leg that lays
+ * + 7% (Easy + 10%: the design's +3 s on its 42 s home leg and +5 s on its 47.8 s Easy leg, as shares, the lead's ruling 11-21, so any
+ * leg's length keeps the same race), never over the ride-only's less 2 s. No row was flown with the current but these three: a race leg that lays
  * another is refused by name. Its art: the mail boat's two rowing frames (ART-NEXT-b, the inventory's w2-next rows).
  */
 export const W2_RACE: PacerRow = {
   bank: 272,
   rivers: { ride: { middle: 103, rideOnly: 87 }, twin: { middle: 115, rideOnly: 97 }, long: { middle: 126, rideOnly: 104 } },
   crossingBank: 230,
-  margin: { normal: 3, easy: 5 },
+  margin: { normal: 0.07, easy: 0.1 },
   under: 2,
   art: ['w2-next#mailBoat', 'w2-next#mailBoatB'],
 };
