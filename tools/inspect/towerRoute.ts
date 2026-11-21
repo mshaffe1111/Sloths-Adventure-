@@ -10,6 +10,8 @@ export interface Pt { x: number; y: number }
 
 /** px of height a plain hop takes him (the bots step or jump it; more is a climb) */
 const HOP = 60;
+/** px from a turn's vine within which a leg's entry is the vine's own top: a step off the vine (Pokey's width and his carry) lands past it */
+const ENTRY_NEAR = 90;
 type StageLike = { gen2?: unknown; exitTotemX?: number; exitTotemY?: number; vines?: ReadonlyArray<{ x: number; topY: number; bottomY: number; vineType?: string }> };
 
 interface TowerMeta {
@@ -62,8 +64,14 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     out.push({ x: b.x, y: b.y });
   };
   T.route.legs.forEach((leg, k) => {
-    if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++]);
-    out.push({ x: leg.entry.x, y: leg.entry.y });
+    const turn = g.plan[k]?.join === 'turn' ? T.turns[ti] : undefined;
+    if (turn) { climb(turn); ti++; }
+    // (a leg that starts at the top of the turn just climbed, beside its vine: no corner at its entry. Off the vine he lands up to a
+    // step past that entry, and a corner there sent him BACK for it, over the climb's hole or off the ledge into the shaft beside the
+    // vine: 2-6 child Easy 2 (entry 599, off at 635, back to 553, down the hole 8 times, rescued) and the expert Normal 1 (about 8 s
+    // re-climbing), BUILD-26c. From the vine's top straight on along the leg, as a player does)
+    const atTop = turn && Math.abs(leg.entry.y - turn.to) <= HOP && Math.abs(leg.entry.x - turn.x) <= ENTRY_NEAR;
+    if (!atTop) out.push({ x: leg.entry.x, y: leg.entry.y });
     within(leg.entry, leg.exit);
   });
   if (T.turns[ti]) climb(T.turns[ti]);
