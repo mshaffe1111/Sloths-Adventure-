@@ -1,5 +1,7 @@
 # ENG-27j REPORT (handed over at the D111 box; base d29258340; branch t-eng-27, head: this commit; merge 24d6ba567, re-plant af127d21e)
 ## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
+ORDER: G in the background first; then F (the respawn rule, on the lead's ruling: check the inbox), then B (boardLog's toy), then S
+(stills, THE CLIP, THE FULL SET). R is done; re-run it after F changes the respawn.
 G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
    (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container stopped: suite 3-6 (run those by hand:
    `npx tsx --test --test-shard=<i>/6 <the SUITE glob in run-gates-d.sh>`, then the rest of chain a from tooltests on), tooltests, tierBots, tipwalk,
