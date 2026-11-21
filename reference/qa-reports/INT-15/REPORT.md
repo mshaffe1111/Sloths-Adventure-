@@ -2,13 +2,11 @@
 Integration (Opus 5.5 xhigh), session_01FhBbYL5weS2PSfgDeDQ4kd. Branch t-int-15 from origin/main 107870f5 (0.10.0 live + PR #76).
 Packet: reference/packets/2026-11-20/INT-15.md (on ccr-ea739a2f-dfcee4). Started 6:14 PM ET 11-20 (by `date`).
 
-## EXACT NEXT STEP (kept current; written 7:39 PM ET)
-THE FULL SET on the frozen worktree /home/user/wt-final at 0eefc707e: green so far (gates/full/summary-*.txt): tsc, artcheck, vite build
-(deploy base), chunkcheck, knowncheck, generalitycheck, coveragecheck, roadmapcheck, timecheck, registrycheck, clipcheck, kbdcheck,
-drawcheck, build:store, the suite (6 shards: 4,003 tests / 4,000 pass / 0 fail / 3 todo), the CI tool line (332/331/0/1), seed lists
-1-1..2-2. Still running (job 3, in order): seedlist 2-4, 2-5, paintcheck 0/3 1/3 2/3, tipwalk, tierBots, lockall --intended 2-5, funcheck,
-castBots 2-5, the test-link count; then buildcheck ALONE. If stopped: rerun the missing lines (/home/user/int15-out/job3.sh's commands)
-on 0eefc707e, then buildcheck alone, then the gate table here and the final hash to the lead.
+## EXACT NEXT STEP (kept current; written 8:13 PM ET)
+DONE. THE FULL SET ran once on the final code head 0eefc707e (frozen worktree, 6:40-8:13 PM ET): every line PASS but funcheck, whose output
+is IDENTICAL to main 107870f5's (the 22 ruled lines, 0 to lower, no 2-5 line). The table below; logs in gates/full/. Final hash: the commit
+carrying this line (sent to the lead). Next is the lead's: the release-candidate steps (version + What's New from the draft below, the
+test link rebuild), and the idle fix joins release 2 tomorrow (t-fix-idle, the lead's note; not taken here).
 
 ## Merge table (MERGED, never rebased; tsc + the CI tool line (gates.yml, CI=1) after each)
 | # | Branch @ head | Merge commit | Conflicts | tsc | CI tool line |
@@ -47,6 +45,54 @@ partly see-through, two poses showing). Proof: the same spot and build shot fres
 page's clock (the 4th spot in a row). heroSprite.ts / heroClips.ts / heroStandard.ts are unchanged by these merges (on main as live).
 NAMED for the lead (a game look, not tonight's): while he idles, a clip melting in or out shows him see-through for those frames.
 
+## Item 3: THE FULL SET (gates.md D96) on 0eefc707e, frozen worktree /home/user/wt-final, 6:40-8:13 PM ET (three jobs side by side, then buildcheck ALONE on an idle machine; every line its own exit; logs gates/full/)
+| Gate | Result |
+|---|---|
+| tsc | PASS (6:40:50 PM-6:41:01 PM ET, 11 s) |
+| artcheck | PASS (6:41:01 PM-6:41:01 PM ET, 0 s) |
+| vite build, deploy base (BASE_PATH=/Sloths-Adventure-/) | PASS (6:41:01 PM-6:41:12 PM ET, 11 s) |
+| chunkcheck (CHUNKCHECK_BASE=/Sloths-Adventure-/) | PASS (6:41:12 PM-6:41:12 PM ET, 0 s) |
+| knowncheck | PASS (6:41:12 PM-6:41:12 PM ET, 0 s) |
+| generalitycheck | PASS (6:41:12 PM-6:41:13 PM ET, 1 s) |
+| coveragecheck | PASS (6:41:13 PM-6:42:32 PM ET, 79 s) |
+| roadmapcheck (repo unshallowed) | PASS (6:42:32 PM-6:42:36 PM ET, 4 s) |
+| timecheck (repo unshallowed) | PASS (6:42:36 PM-6:42:38 PM ET, 2 s) |
+| registrycheck | PASS (6:42:38 PM-6:43:47 PM ET, 69 s) |
+| clipcheck | PASS (6:43:47 PM-6:55:42 PM ET, 715 s) |
+| kbdcheck (its rewritten keyboard stills restored, never committed) | PASS (6:55:42 PM-6:58:00 PM ET, 138 s) |
+| drawcheck (2-5 in its stage list) | PASS (6:58:00 PM-7:11:44 PM ET, 824 s) |
+| the suite, 6 shards (deploy.yml's split) | PASS: 695 + 654 + 684 + 639 + 647 + 684 = **4,003 tests, 4,000 pass, 0 fail, 3 todo** (6:40-7:37 PM ET) |
+| the CI tool line (gates.yml, CI=1; 37 tool tests incl. snapperTaught) | PASS (6:40:50 PM-6:54:30 PM ET, 820 s): 332 tests, 331 pass, 0 fail, 1 todo |
+| every registered seed list --check (13, registrycheck --lists) | PASS 13/13, 0 refused each: 1-1 191 s; 1-2 79 s; 1-3 39 s; 1-4 196 s; 1-5 131 s; 1-6 858 s; 1-7 199 s; 1-8 41 s; 1-9 125 s; 2-1 302 s; 2-2 16 s; 2-4 541 s; 2-5 15 s |
+| paintcheck 0/3, 1/3, 2/3 | PASS, PASS, PASS (269 / 359 / 341 s) |
+| tipwalk --layouts 4 | PASS (7:56:13 PM-7:56:27 PM ET, 14 s) |
+| tierBots | PASS (7:56:27 PM-7:59:23 PM ET, 176 s) |
+| lockall --layouts 16 --check vs main 107870f5's lock --intended 2-5 | PASS (7:59:23 PM-8:06:44 PM ET, 441 s): **101/102 stages unchanged; only 2-5 (intended) moved**. The draw-only merges moved nothing |
+| funcheck | **FAIL, exit 1, IDENTICAL to main**: the same run on main 107870f5 (gates/full/funcheck-main-107870f5.log) flags the same 22 worse/new lines (World 1's ruled debt), 0 to lower, 77 known; the two outputs differ only in run time; **2-5 lines: none**. Not in gates.yml |
+| castBots 2-5, seeds 1-40, 5 bots x both settings | PASS (8:08:02 PM-8:12:58 PM ET, 296 s): adult / child / middle 40/40 on both settings, expert 40/40 Normal; kid 0/40 both (not the bar, level.md rule 4). **The same numbers as BUILD-25d's**, line for line (adult 160 / 165.8 s, child 379.6 / 281.9 s with 24 water lives on Normal, middle 204.5 / 203.3 s, expert 184.2 s) |
+| npm run build:store | PASS (7:19:35 PM-7:19:43 PM ET, 8 s) |
+| test-link count (tools/testlink/build.py) | PASS (8:12:58 PM-8:13:01 PM ET, 3 s): **479 files, limit 480: ONE file of room** (see Unresolved) |
+| buildcheck, ALONE (load 0.9) | PASS (8:13:10 PM-8:13:15 PM ET, 5 s): Normal p95 86 ms, Easy p95 52 ms (limit 150) |
+
+## Unresolved / named plainly
+- **The test link is at 479 of its 480-file limit** (R-165.252's cap: the artifact holds 511 a version). The next release that adds a file
+  (Pokey's new clips, the art batches) fails build.py. Not a fail today; it needs an owner before the next round grows the build.
+- funcheck: World 1's 22 ruled lines, unchanged here (main's own output).
+- The idle clip's see-through melt (x3268, above): a live game look on main, named for the lead; the fix (t-fix-idle) is release 2's.
+- 2-5's flag sockets are dead on a rolled stage (BUILD-25d's pushback, carried; not this packet's).
+
+## Lessons applied / method
+- Merged, never rebased, in the packet's order; tsc + the CI tool line after EACH merge (D92); conflicts kept both intents (gates.yml's
+  tool tests from both sides). Each merge was gated in a side worktree while the previous gate ran, then made again on t-int-15 and its
+  tree checked equal (`git diff` = this report only), so no gate was skipped and the branch never held an ungated merge.
+- Check the fact before acting (law 3): the lead's x list checked against the real build (rocks at 818/1494/1958/3212/3620); the x3268
+  "stillness" reading checked on the page (it was the idle clip's cross-fade).
+- Every clock time from `date` in the same command (D30); CI's UTC times converted with `date`, not by hand.
+- THE FULL SET by name (D96), with funcheck judged by a same-run diff against main, not by its exit (BUILD-25d's method update).
+- D99: the seed-list shards' CI times read from the last deploy run's own log stamps, per list.
+Method update (proposed): integration.md / release.md: "gate a merge in a side worktree while the previous merge's tool line runs, then
+re-make it on the branch and prove the tree equal by `git diff` (report files only)": it cut the three merges to 16 minutes.
+
 ## Release notes draft (player words; for the lead's approval; whatsNew.test caps checked: 3-8 lines (5), each <= 90 characters, no workshop word)
 Title: **Count to four** (13 chars). Lines (characters | line | checked TRUE against):
 | chars | line | checked |
@@ -59,13 +105,12 @@ Title: **Count to four** (13 chars). Lines (characters | line | checked TRUE aga
 
 ## D99 / release.md 4b: CI's own time limits with 2-5's list added (CI times read from main's last deploy run, 44828148552, on 107870f5, 11-20 5:20-5:43 PM ET; per-list times from each seed-list job's log stamps)
 Per seed list on a CI runner: 1-1 2:00, 1-2 0:58, 1-3 0:27, 1-4 2:03, 1-5 1:22, 1-6 8:53, 1-7 3:27, 1-8 0:33, 1-9 1:31, 2-1 5:27, 2-2 0:14,
-2-4 7:15; 2-5 is new (here: 19 s on the merged code, about as long as 2-2 here; CI estimate below from the same-run ratio once job 3's
-lists finish). With 2-5 the registry makes **4 shards** (registrycheck --shards: [1,2,3,4]), each about 1 min of setup plus:
+2-4 7:15; 2-5 is new (here 15 s in the full set, the same as 2-2's 16 s; 2-2 is 0:14 on CI). With 2-5 the registry makes **4 shards** (registrycheck --shards: [1,2,3,4]), each about 1 min of setup plus:
 | Seed-list shard (4 on this head) | Lists | Expected CI time | Limit | Share |
 |---|---|---|---|---|
 | 1/4 | 1-1 1-8 2-4 | 9:48 + ~1 setup = ~11 min | 45 | 24% |
 | 2/4 | 1-5 1-7 2-2 | 5:03 + ~1 = ~6 min | 45 | 13% |
-| 3/4 | 1-2 1-4 1-9 2-5 | 4:32 + 2-5 + ~1 = ~6-7 min | 45 | ~15% |
+| 3/4 | 1-2 1-4 1-9 2-5 | 4:32 + 2-5 (~0:15-0:20: here 15 s, the same as 2-2's 16 s, which is 0:14 on CI) + ~1 = ~6 min | 45 | 13% |
 | 4/4 | 1-3 1-6 2-1 | 14:47 + ~1 = ~16 min | 45 | 36% |
 The other jobs with a limit (main's run, minutes): gates 10.8 / 25 (43%), drawcheck 11.4 / 30 (38%; +2-5's two builds), seedplan 0.8 / 10,
 paintcheck 7.5 / 9.2 / 6.9 of 25 (max 37%; 2-5 joins one part), rolled 10.9 / 60 (18%; + snapperTaught.test). deploy.yml's jobs carry no
