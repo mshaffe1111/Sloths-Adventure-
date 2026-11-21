@@ -2,8 +2,8 @@
 t-eng-26c from e67e01113. Commits: 5a67dba93 + dfc90a509 + fd8c39590 (step 1), 9346f3948 (step 2).
 Lessons applied: D57/D87/D105 (inbox at each step and push), D75/D101 (proven on the draft row, played), D102 (grep and line ranges;
 I still read my context about 130k low, D55: the lead's number is the one to use), D103, D107, D40 (the draft bricks are throwaway; the
-fixes are general). MISSES: (1) one message to the lead carried a guessed stamp '1:07 PM ET' (sent about 12:37 PM, D106/D30), corrected
-the same minute. No commit or REPORT line carries it. (2) 5a67dba93 moved shipped stages (below); I stopped and reported, the lead ruled.
+fixes are general). MISSES: (1) one message to the lead carried a guessed clock time instead of one read from date (D106/D30), corrected
+the same minute. No commit or REPORT line carries it (checked by grep). (2) 5a67dba93 moved shipped stages (below); I stopped and reported, the lead ruled.
 
 ## EXACT NEXT STEP (for the next engine member, in this order)
 1. **The lock, ALL stages, on the head (fd8c39590 or later):** `npx tsx tools/engine/lockall.ts --layouts 16 --intended 2-6 --check <lock>`
