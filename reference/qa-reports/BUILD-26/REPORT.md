@@ -1,3 +1,54 @@
+# BUILD-26b (on t-build-26 from 4ea253b8c): HANDED OVER at the context line
+Commits: c29b8332d (step 1 deletion), 60234ead0 (6 pins re-pointed), 1be132415 (step 2 ENGINE: turn's foot clear), this REPORT
+(+ walkoff-wip.patch, + qaW123 dead-end test on TOWER.fall).
+
+## EXACT NEXT STEP (BUILD-26c, in this order)
+1. **The walk-off ENGINE PIECE (lead's ruling; rule 26), NOT LANDED.** Ruling: the tower judges a walk-off where a RUNNING walk-off lands
+   (STAGE-RULES :418), one general place, planted RED/GREEN, generality PASS; **if lockall moves a shipped tower (1-4, 2-6, any), STOP and
+   send the lead which.** My draft: `git apply reference/qa-reports/BUILD-26/walkoff-wip.patch` (tower.ts: `walkOffLand` arc at
+   PHYS.maxRun/gravDown/maxFall inside the walls; openEnds judges the step AND the run; towerCatches lays its catch where the arc crosses
+   its height; towerFalls names "a running walk-off"). It is RED: tower.test.ts 5 fail (#2, #5, #10, #16, #28), the toy tower `up`
+   13/24 rolls keep an uncaught running walk-off (e.g. normal 1: the piece x 708-888 y 4475 drops 604 px): towerCatches finds no FAIR
+   catch on the arc (the arc lands 90-200 px out, by the next turn's vine / under the storey above, where `fair` refuses). #10's planted
+   catches (200 wide at x 380/640) are the old model's and must widen to cover the arc (it lands ~182 px out at 400 px down). The 1-4
+   seed list check against the draft: UNRUN (stopped). Expect it to move 1-4: ask the lead before landing.
+2. **qaW123 '2-6: a plain walk to a street's dead end'** now reads TOWER.fall (lead's ruling) and stays RED until step 1 lands
+   (Normal ~505/617 px ends every roll; Easy 5-6 ends, 406-761 px; walked in the real engine).
+3. **Step 2 (turn's foot)** landed at 1be132415: clearFoot in pipeline.ts towerJoin slides a block off a turn's foot (TOWER.foot 70 +
+   CLIMB_CLEAR) clear of every climb on its ledge, else the roll fails by name. towerFoot.test.ts: RED 530 misses without, GREEN with
+   (37/48 toy rolls; 11 Easy refused by towerSkips: a slid boulder can be a step under the next storey; named, never laid). generality
+   and lockall --intended 2-6 vs 4ea253b8c: see "Gates" (LOCKALL_RESULT). If lockall shows any other stage moved, STOP and tell the lead.
+4. Then the packet's steps 3-5 as written (cause table to the lead BEFORE fixing a bot/engine cause; the expert's beat-by-beat seconds
+   on the MIN seed; stills only on a green head). Run castBots 1-40 both settings on the head after steps 1-3 first: the turn's foot
+   and the walk-off both change what the kid/adult dither 87-90 px short of a turn's vine may be (not traced: no time).
+
+## Done
+| item | result | evidence |
+|---|---|---|
+| base gates, frozen 8b2438c74 | tsc PASS; shards 1/2 PASS, 3: 1 fail `listed.test.ts` 'nothing in the game calls withTestStage' (w2Arc26.ts header comment, ENG-26f's): GONE on this head (BUILD-26 rewrote the header); CI tools/generality/coverage/knowncheck/roadmap/timecheck/tipwalk/registrycheck/seedlist 1-1: G0_TAIL | scratchpad g0out/ (this container) |
+| deletion | buildKapok `village` param and every branch (first post + log, windows, porch dressing, knots' floor/doubt walk-off, doubt-knot judging, bankWall, decor); stageSheets '2-6' goldsnake; levelSeeds '2-6': 0 READ, KEPT (registrycheck needs LEVEL_ATTEMPTS per row stage; 2-5 the same); 2-6.md :47-48 hearts ruling, :59 deletion | c29b8332d |
+| pins | qaW123: the first climb (only climb from the bank, tops on the first wheel's jetty, a hopping walk rests by it) + Dot's ride line on the bank before the climb (both settings/views/taught): PASS; dotBox 2-6 'Ride a bucket up!' at 200 (where the boulder stops a plain walk) and the ground pick honours the hint's band (it took the tower's TOP storey): 9/9; towerBots climb framing (4-1 for the old climb, 2-6 held as a tower): PASS; w2Arc26 hearts (nothing costs one on Normal, 0 laid): 5/5; edgeFooting, w1NewArt, wheel.test read: still true | 60234ead0 |
+
+## Pushback
+- lines-2-6.md "Why" 5 says the new 2-6 has no post before the first wheel; the BUILT stage has one (the tower's first turn, x 1562
+  Normal / 1610 Easy, from the bank to the jetty): so dotBox stands him where the line goes up, not at 'lip' (rule 27).
+
+## Owned miss
+Started step 2 before the lead's walk-off ruling was read (it sat 8 min in the queue while I wrote the turn's-foot test). Nothing built
+on a stop; the order cost the walk-off piece its box. Countermeasure: ReadNotifications before starting each new piece, not only at pushes.
+
+## Learned
+- A turned storey's vine stands TOWER.vineIn (44) in from the ledge end, exactly where an end boulder sits: moving the vine can't keep the
+  storey's room, moving the block can (toy: 48/48 refused vs 37/48 built).
+- The running walk-off is the tower's real fall: a catch under the end does not catch him at a run.
+
+## Lessons applied
+D57/D105 (inbox at each step), D59 (the stopped 1-4 check named UNRUN), D102 (lean reads), D109 (no clock times), D40, rule 27 (built
+numbers: spawn 140, jetty 1296-1536 y 6161, vine 1562), rule 26 (engine gaps reported, fixed in the engine).
+
+## Turnover note
+engine-core.md NOT rewritten (no context left): BUILD-26c writes clearFoot + walkOffLand there.
+
 # BUILD-26 REPORT: 2-6 "Up the Bank Houses: The Water Wheels", laid by its design on a real row (HANDED OVER at the context line)
 Branch t-build-26 from 8b2438c74. Commits: 0c906c4ff (step 0 probe), fab3a8a20 (the lay, the row, the seed list, the hand build's route
 deleted), 8f3bcb3b6 (rule 28: the rest lays no boulder), 4a9e38e67 (the words), this REPORT.

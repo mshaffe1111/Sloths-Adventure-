@@ -11,6 +11,7 @@ import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
 import { reachJump } from './physics.ts';
 import { RealPlay } from './realPlay.ts';
+import { TOWER } from './gen2/tower.ts';
 import { setDifficulty } from './difficulty.ts';
 import { pickLesson } from './lessons.ts';
 import { harmlessPass, newWatch, stepWatch, type WatchZone } from './watcher.ts';
@@ -220,7 +221,7 @@ test("2-6: Dot's ride line goes up while a plain walk stands on the bank before 
 // walk off a dead end falls 400 px or more, or onto the floor (where he first lands). (Not dead ends: a hop gap, the way on; and the
 // secret side ledge, where a knot at the stub by its ladder would be a double jump up to the porch above, past the ladder, the rope and
 // two porches: the level check takes it away. 0 open dead ends over rolls 1-40.)
-test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or more, none onto the floor (every roll, Normal and Easy)', () => {
+test('2-6: a plain walk to a street\'s dead end falls no further than TOWER.fall, never onto the floor (every roll, Normal and Easy)', () => {
   const bad: string[] = [];
   for (const diff of ['normal', 'easy'] as const) {
     setDifficulty(diff);
@@ -247,7 +248,8 @@ test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or
             else if (left) break;
           }
           const fell = r.p.y - p.y;
-          if (fell >= 400 || Math.abs(r.p.y - floor.y) < 4) bad.push(`${diff} roll ${s}: walking ${side > 0 ? 'right' : 'left'} on the porch at ${p.x}-${end} (y ${p.y}) fell ${Math.round(fell)} px`);
+          // (the live rule's number, the lead's ruling BUILD-26b: TOWER.fall, a miss in a climb costs a storey; 400 was the hand build's knot)
+          if (fell > TOWER.fall || Math.abs(r.p.y - floor.y) < 4) bad.push(`${diff} roll ${s}: walking ${side > 0 ? 'right' : 'left'} on the porch at ${p.x}-${end} (y ${p.y}) fell ${Math.round(fell)} px`);
         }
       }
       assert.ok(ends > 20, `roll ${s}: ${ends} porch ends walked`);
