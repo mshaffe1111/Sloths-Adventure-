@@ -60,3 +60,6 @@ already existed by name.
 
 ## Every packet carries the inbox rule (D105, 11-21)
 Every packet's READ line names D57/D87 and says, in bold: run ReadNotifications at EVERY step boundary and at every push. A lead ruling sent with priority 'next' still waits until the member reads its inbox (BUILD-23d read four rulings 20-80 minutes late; the packet listed D103 but not D57/D87).
+
+## Every packet carries the no-clock-times rule for messages (D109, 11-21)
+Every packet says: **messages to the lead carry no clock times** (the notification already says when it was sent); a time goes only in a commit or a REPORT line, taken from `date` in the same command, where timecheck checks it. Three members typed a time ahead of the real one in messages on 11-21 (by 2, 1 and 29 minutes); D30 alone, a sentence, did not stop it.
