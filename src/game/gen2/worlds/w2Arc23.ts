@@ -18,11 +18,11 @@
  *   Tm the heron, safe: `heron` + `look` 800+ px before; one wide reed bed (Normal 300, Easy 340); its first look only warns (free first),
  *      the long calm; the flag before
  *   Pw the parade swims: stones over splash-back water, the line paddles behind him; cage 2 (an otter pup) on the far bank
- *   Xm clump to clump: two clumps over open mud (Normal G 400, W 300; Easy G 350, W 340); the heron; cage 3 (a capybara pup) in the far
+ *   Xm clump to clump: two clumps over open mud (CLUMPS_G_23: Normal G 200, W 300; Easy G 180, W 340; R-165.363); the heron; cage 3 (a capybara pup) in the far
  *      clump; the flag before
  *   Pr up the mooring post: cage 4 hung on the post (a climbing vine with nothing to step off onto at its top); the line waits at its foot
  *   Wf TWIST: no stopping on the pond: 2-2's sinking pads over a watched pond to a reed isle; the heron over the pond
- *   Cm everything: cage 5 mid-way, three clumps over G 350; Normal two herons out of step (the second 3.2 s late), Easy one; the flag before
+ *   Cm everything: cage 5 mid-way, three clumps over EVERY_G_23 (180, Easy 160), calm CALM_TWO_23; Normal two herons out of step (the second 3.2 s late), Easy one; the flag before
  *   S  home: the village boardwalk, the families' jetty 200 px before the door
  *   E  the village gate
  *   R  a rest on the bank after Tm, Xm, Wf and Cm
@@ -185,12 +185,25 @@ const parade: Lay = {
   pieces: [bank('a', null, 440), rock('ra', 'a', 0.4), pond('c', 'a', 'parade23', 520), rock('rd', 'd', 0.5), bank('d', 'c', 520), bank('z', 'd', 300)],
   sockets: [cage('cage2', 'c', 0.6, 'otter'), petal('pa', 'a', 0.4)],
 };
-/** [Xm] beat 4, clump to clump: two clumps over open mud, the heron on its calm; cage 3 (a capybara pup) in the far clump; the flag before.
- *  Normal G 400 (the dial, <= 500 one heron), W 300; Easy G 350, W 340 */
+/**
+ * R-165.363 (BUILD-23d): the open mud between beat 4's clumps and beat 7's, and beat 7's calm between looks, fitted to the CALIBRATED CHILD
+ * (lineFaults childCross, flown: 40 px/s, the line's tail behind him) as well as the design's adult rules. Was beat 4 G 400 / Easy 350 with
+ * a boulder on the mud, beat 7 G 350 with two boulders and the late calm 5-5.5 s: the child lost the line there on every roll (ENG-CAGE-b's
+ * trace, child Normal 1/40). The designer's three levers, each used where it is the cause: the boulders OFF the watched mud (the child
+ * stands ~3 s at a face in the open); beat 4's clumps CLOSER (one heron: the window, calm + screech, is ~7 s, so 2+1 behind him cross
+ * ~225 px; 200 kept); beat 7's LONGER CALM (two herons 3.2 s out of step leave ~3.8 s, too short to pull a line of 4-5 out of one clump
+ * at a child's pace at ANY gap: the calm 8.5-9 s leaves ~7.3 s, the herons still out of step; then 180). Easy: one heron, the same calm,
+ * 20 px less mud (never harder in any number). The width taken off the mud goes on the bank after the stretch (the stage keeps its length).
+ */
+export const CLUMPS_G_23 = { normal: 200, easy: 180 } as const;
+export const EVERY_G_23 = { normal: 180, easy: 160 } as const;
+export const CALM_TWO_23: readonly [number, number] = [8.5, 9];
+/** [Xm] beat 4, clump to clump: two clumps over open mud (CLUMPS_G_23), the heron on its calm; cage 3 (a capybara pup) in the far clump;
+ *  the flag before. W 300; Easy W 340 */
 const clumps = (easy: boolean): Lay => {
-  const W: Reed = easy ? 340 : 300, G = easy ? 350 : 400;
+  const W: Reed = easy ? 340 : 300, G = easy ? CLUMPS_G_23.easy : CLUMPS_G_23.normal;
   return {
-    pieces: [bank('a', null, 460), rock('ra', 'a', 0.6), bank('b', 'a', W), rock('rm', 'm', 0.5), bank('m', 'b', G), bank('c', 'm', W), rock('rd', 'd', 0.5), bank('d', 'c', 520), bank('z', 'd', 300)],
+    pieces: [bank('a', null, 460), rock('ra', 'a', 0.6), bank('b', 'a', W), bank('m', 'b', G), bank('c', 'm', W), rock('rd', 'd', 0.5), bank('d', 'c', 520 + (easy ? 350 : 400) - G), bank('z', 'd', 300)],
     sockets: [flag('a', 0.2), heron('watch-clumps', 'b', 0.03), reeds('r1', 'b', 0.5, W), reeds('r2', 'c', 0.5, W), cage('cage3', 'c', 0.6, 'capy')],
   };
 };
@@ -225,11 +238,12 @@ const pondTwist = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 440), rock('ra', 'a', 0.4), bank('b', 'a', easy ? 360 : 320), pond('i', 'b', 'sink23', easy ? 380 : 340), bank('d', 'i', 560), rock('rd', 'd', 0.5), bank('z', 'd', 300)],
   sockets: [heron('watch-pond', 'b', 0.03), reeds('r0', 'b', 0.5, easy ? 340 : 300), reeds('ri', 'i', 0.5, easy ? 340 : 300)],
 });
-/** [Cm] beat 7, everything: three clumps over G 350, cage 5 in the middle one; Normal two herons out of step (the finish's lag), Easy one */
+/** [Cm] beat 7, everything: three clumps over EVERY_G_23, cage 5 in the middle one; Normal two herons out of step (the finish's lag), Easy
+ *  one; its calm CALM_TWO_23 (the finish) */
 const everything = (easy: boolean): Lay => {
-  const W: Reed = easy ? 340 : 300, G = 350;
+  const W: Reed = easy ? 340 : 300, G = easy ? EVERY_G_23.easy : EVERY_G_23.normal;
   return {
-    pieces: [bank('a', null, 460), rock('ra', 'a', 0.6), bank('b', 'a', W), rock('rm', 'm', 0.5), bank('m', 'b', G), bank('c', 'm', W), rock('rn', 'n', 0.5), bank('n', 'c', G), bank('d', 'n', W), rock('re', 'e', 0.5), bank('e', 'd', 420), bank('z', 'e', 300)],
+    pieces: [bank('a', null, 460), rock('ra', 'a', 0.6), bank('b', 'a', W), bank('m', 'b', G), bank('c', 'm', W), bank('n', 'c', G), bank('d', 'n', W), rock('re', 'e', 0.5), bank('e', 'd', 420 + 2 * (350 - G)), bank('z', 'e', 300)],
     sockets: [flag('a', 0.2), heron('watch-two', 'b', 0.03), reeds('r1', 'b', 0.5, W), reeds('r2', 'c', 0.5, W), reeds('r3', 'd', 0.5, W), cage('cage5', 'c', 0.6, 'capy')],
   };
 };
@@ -281,7 +295,8 @@ const POND_23 = 'w2-23-pond';
 const POST_23 = 'w2-23-post';
 /**
  * 2-3's finish (listed.ts FINISH 'w2-23'): the little ones follow him (proto.follow = World 2's row); each watched stretch cut to its
- * reeds (clipWatches); on Normal beat 7's stretch gets its second heron, LAG_23 s out of step (WatchZone.lag); on Easy one.
+ * reeds (clipWatches); beat 7's stretch waits CALM_TWO_23 between looks, and on Normal gets its second heron, LAG_23 s out of step
+ * (WatchZone.lag); on Easy one.
  */
 export function finish23<T extends FinishStage>(st: T, difficulty: Difficulty): T {
   const sink = st as unknown as Pick<StageSink, 'proto'>;
@@ -296,13 +311,13 @@ export function finish23<T extends FinishStage>(st: T, difficulty: Difficulty): 
   }
   clipWatches(sink);
   layW2New23(st);
-  if (difficulty !== 'easy') {
-    const zones = sink.proto.watch ?? [];
-    const bushes = sink.proto.bushes ?? [];
-    // (beat 7 is the stretch with three clumps in it: the only one; its second heron reads the same stretch, out of step)
-    const two = zones.filter((z) => bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1).length >= 3);
-    for (const z of two) zones.push({ ...z, freeFirst: undefined, lag: LAG_23 } as WatchZone);
-  }
+  const zones = sink.proto.watch ?? [];
+  const bushes = sink.proto.bushes ?? [];
+  // (beat 7 is the stretch with three clumps in it: the only one; its heron waits CALM_TWO_23 between looks, both settings)
+  const two = zones.filter((z) => bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1).length >= 3);
+  for (const z of two) z.calm = [...CALM_TWO_23];
+  // (on Normal its second heron reads the same stretch, out of step)
+  if (difficulty !== 'easy') for (const z of two) zones.push({ ...z, freeFirst: undefined, lag: LAG_23 } as WatchZone);
   return st;
 }
 

@@ -15,7 +15,7 @@
 import { FollowPlay } from '../followPlay.ts';
 import { PHYS } from '../physics.ts';
 import { WATCH, type Bush, type WatchZone } from '../watcher.ts';
-import type { FollowRow } from '../follow.ts';
+import { lineInCover, type FollowRow } from '../follow.ts';
 import type { Collectible, Platform, Rope, Vine } from '../types.ts';
 
 /** 2-3.md's numbers for the line (Designer numbers, from the flights) */
@@ -28,6 +28,12 @@ export const LINE_RULE = {
   pond: 360,
   /** under two herons, the shortest longest-safe-time to leave a clump (s) */
   window: 2.0,
+  /**
+   * the calibrated child (R-165.363; ENG-CAGE-b's trace of the child bot on 2-3, the bot matched to the testers on 1-1, BOTS.md): his pace
+   * on open ground (px/s: steer p50 120 ms, gap p50 630 ms), how long he stands at a face before he hops it (s: his stop reaction counts
+   * only his pushes, P13), and the rise that is a face (px). The line's tail is the row's gap x the little ones he leads there.
+   */
+  child: { pace: 40, face: 3, rise: 12 },
 } as const;
 
 /** what lineFaults reads of a laid stage */
@@ -96,6 +102,104 @@ export function safeWindow(row: FollowRow, easy: boolean, A: Bush, B: Bush, zone
   return best * 0.1;
 }
 
+/** the top of the highest still ground over x (null: none): the surface he walks on */
+function topAt(platforms: readonly Platform[], x: number): number | null {
+  let best = Infinity;
+  for (const pl of platforms) if (pl.type === 'solid' && !pl.pad && x >= pl.x && x <= pl.x + pl.width) best = Math.min(best, pl.y);
+  return best === Infinity ? null : best;
+}
+
+/** the faces (a rise of more than LINE_RULE.child.rise px in his travel) between a and b: where each one stands */
+export function facesOn(platforms: readonly Platform[], a: number, b: number, dir: 1 | -1 = 1): number[] {
+  const out: number[] = [];
+  const step = 4;
+  const lo = Math.min(a, b);
+  const hi = Math.max(a, b);
+  let prev = topAt(platforms, dir === 1 ? lo : hi);
+  for (let i = 1; lo + i * step <= hi; i++) {
+    const x = dir === 1 ? lo + i * step : hi - i * step;
+    const y = topAt(platforms, x);
+    if (prev !== null && y !== null && prev - y > LINE_RULE.child.rise) out.push(Math.round(x));
+    prev = y;
+  }
+  return out;
+}
+
+/**
+ * R-165.363: the calibrated child leads the line over one watched stretch (its herons, its reeds), FLOWN with the game's own line and herons
+ * (followPlay.ts) at the herons' shortest calm: he walks in at LINE_RULE.child.pace, stands LINE_RULE.child.face s at each face before he
+ * hops it, waits at each clump's far end until a look has come and gone (the careful child: he leaves as a look ends, the herons all calm),
+ * and goes; at a screech or a look he freezes wherever the whole line is hidden (in the reeds, still), else he hurries on. A little one seen on the way is the fault: the stretch's open ground plus the line's tail does not fit the look-free window at
+ * his pace. Returns where (null: he brings them all through).
+ */
+export function childCross(row: FollowRow, easy: boolean, zones: readonly WatchZone[], covers: readonly Bush[], platforms: readonly Platform[], safeWater: LineStage['safeWater'], n: number, dir: 1 | -1 = 1, joins: readonly number[] = [], wetAt: (x: number) => boolean = () => false): { x: number; t: number } | null {
+  const C = LINE_RULE.child;
+  const x0 = Math.min(...zones.map((z) => z.x0));
+  const x1 = Math.max(...zones.map((z) => z.x1));
+  const startX = dir === 1 ? x0 - 400 : x1 + 400;
+  const endX = dir === 1 ? x1 + row.gap * (n + joins.length) + 60 : x0 - row.gap * (n + joins.length) - 60;
+  const yAt = (x: number) => topAt(platforms, x) ?? topAt(platforms, startX) ?? 0;
+  const fp = new FollowPlay(row, easy, { exitX: dir * 1e9, dir, zones, covers, platforms, safeWater: safeWater ?? [] }, { x: startX, y: yAt(startX) });
+  const dt = 1 / 30;
+  const zero = () => 0;
+  const hero = (x: number) => ({ x, y: yAt(x), vy: 0, grounded: true });
+  // (the line bunched behind him before the stretch)
+  fp.step(dt, hero(startX), undefined, zero);
+  for (let i = 0; i < n; i++) fp.free('duck', { x: startX - dir * row.gap * (i + 1), y: yAt(startX) }, { x: startX - dir * row.gap * (i + 1), y: yAt(startX) });
+  for (let i = 0; i < 30; i++) fp.step(dt, hero(startX), undefined, zero);
+  // (where he waits: each clump's far end, 30 px in)
+  const stops = covers.filter((b) => (dir === 1 ? b.x + b.w > x0 && b.x < x1 : b.x < x1 && b.x + b.w > x0)).map((b) => (dir === 1 ? b.x + b.w - 30 : b.x + 30)).sort((a, b) => (a - b) * dir);
+  // (a face out of the water is a hop off a pad, not a face he stands at)
+  const faces = new Set(facesOn(platforms, x0 - 400, x1 + 400, dir).filter((f) => !wetAt(f - dir * 8)));
+  const join = [...joins].sort((a, b) => (a - b) * dir);
+  let x = startX;
+  let stall = 0;
+  let waiting = false;
+  let sawLook = false;
+  let next = 0;
+  const looking = () => fp.herons.some((h) => h.s.phase !== 'calm');
+  // (the whole line hidden: each little one in a clump, or off the watched stretch)
+  const hidden = () => fp.line.every((f) => f.x < x0 || f.x > x1 || lineInCover(covers, f));
+  for (let t = 0; t < 240; t += dt) {
+    if (waiting) {
+      if (looking()) sawLook = true;
+      else if (sawLook) waiting = false;
+    }
+    // (at a screech or a look he freezes where the line is hidden, as the game teaches: the heron sees movement in the reeds too)
+    const freeze = !waiting && looking() && hidden();
+    if (!waiting && !freeze) {
+      if (stall > 0) stall -= dt;
+      else {
+        // (over water he hops pad to bank at his run, the path 1.3 x as long: LINE_RULE.pond's flight)
+        const nx = x + dir * (wetAt(x) ? PHYS.maxRun / 1.3 : C.pace) * dt;
+        // (a face in the next step: he stands at it, then hops it)
+        const hit = [...faces].find((f) => (f - x) * dir > 0 && (f - nx) * dir <= 0);
+        if (hit !== undefined) {
+          faces.delete(hit);
+          stall = C.face;
+          x = hit - dir;
+        } else x = nx;
+        // (a cage he reaches: its little one joins the line behind him)
+        while (join.length && (x - join[0]) * dir >= 0) {
+          const at = join.shift()!;
+          fp.free('duck', { x: at, y: yAt(at) - 40 }, { x: at, y: yAt(at) });
+        }
+        if (next < stops.length && (x - stops[next]) * dir >= 0) {
+          x = stops[next];
+          next++;
+          waiting = true;
+          sawLook = false;
+        }
+      }
+    }
+    const ev = fp.step(dt, hero(x), undefined, zero);
+    // (where HE is when a little one is seen: the spooked one is already set back)
+    if (ev.spooked.length) return { x: Math.round(x), t: Math.round(t * 10) / 10 };
+    if ((x - endX) * dir >= 0) return null;
+  }
+  return { x: Math.round(x), t: 240 };
+}
+
 /** what is unfair to the little ones in a laid stage, in words (none: it may be laid) */
 export function lineFaults(st: LineStage, row: FollowRow, easy = false): string[] {
   const out: string[] = [];
@@ -129,6 +233,34 @@ export function lineFaults(st: LineStage, row: FollowRow, easy = false): string[
         if (w < LINE_RULE.window - 1e-6) out.push(`${name}: under two herons the longest safe time to leave the reeds at ${R(A.x)} is ${w.toFixed(1)} s, under ${LINE_RULE.window} s`);
       }
     }
+  }
+  // R-165.363: no face on watched mud (the child stands at it ~3 s in the open), and the calibrated child brings the line over each
+  // watched stretch (its herons together) without a little one seen: flown, both settings (Easy's first looks only warn, the game's rule)
+  for (const z of zones) {
+    const inside = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1);
+    for (const f of facesOn(st.platforms, z.x0, z.x1, dir)) {
+      if (inside.some((b) => f >= b.x && f <= b.x + b.w) || wet(f - 2, f + 2)) continue;
+      out.push(`watch ${R(z.x0)}-${R(z.x1)}: a face at ${f} on the watched mud (the child stands at it ${LINE_RULE.child.face} s in the open)`);
+    }
+  }
+  const groups: WatchZone[][] = [];
+  for (const z of [...zones].sort((a, b) => a.x0 - b.x0)) {
+    const g = groups.find((q) => q.some((o) => o.x0 < z.x1 && o.x1 > z.x0));
+    if (g) g.push(z);
+    else groups.push([z]);
+  }
+  const cages = st.collectibles.filter((c) => c.type === 'cage');
+  for (const g of groups) {
+    const gx0 = Math.min(...g.map((z) => z.x0));
+    const gx1 = Math.max(...g.map((z) => z.x1));
+    // (the little ones he leads in: every cage before the stretch's approach; a cage on it joins the line as he reaches it)
+    const before = (c: Collectible) => (dir === 1 ? c.x < gx0 - 400 : c.x > gx1 + 400);
+    const on = (c: Collectible) => !before(c) && (dir === 1 ? c.x < gx1 : c.x > gx0);
+    const n = Math.max(1, cages.filter(before).length);
+    const joins = cages.filter(on).map((c) => c.x);
+    const covers = bushes.filter((b) => b.x + b.w > gx0 - 400 && b.x < gx1 + 400);
+    const miss = childCross(row, easy, g, covers, st.platforms, st.safeWater, n, dir, joins, (x) => wet(x - 1, x + 1));
+    if (miss) out.push(`watch ${R(gx0)}-${R(gx1)}: the calibrated child (${LINE_RULE.child.pace} px/s, ${LINE_RULE.child.face} s at a face, ${n}${joins.length ? `+${joins.length}` : ''} behind him) loses a little one with him at ${miss.x} (${miss.t} s in): its open mud and the line's tail do not fit the look-free window`);
   }
   // climbs, swings, rides: the line never climbs, swings or rides; it waits at the foot and rejoins him on that ground
   for (const v of st.vines ?? []) {

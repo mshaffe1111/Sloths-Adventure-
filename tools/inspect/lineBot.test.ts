@@ -130,7 +130,8 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
 });
 
 /** the bot on 2-3's gen2 row, stood in beat 4's far clump with the whole line spooked back to the stretch's start (the heron's zone x0) */
-function hopBackRun(who: FirstTimer, cap = 60): { end: string; got: number; rescues: number; fetched: boolean } {
+/** beat 4 (cage 3's stretch, the boulder set on its mud) or beat 7 (cage 5's: three clumps, the longest walk back on the lay; no boulder) */
+function hopBackRun(who: FirstTimer, cap = 60, at: 'clumps' | 'everything' = 'clumps'): { end: string; got: number; rescues: number; fetched: boolean } {
   freshPhone(who.setting);
   const mr = Math.random;
   Math.random = rng(5 * 104729 + 1311);
@@ -138,17 +139,23 @@ function hopBackRun(who: FirstTimer, cap = 60): { end: string; got: number; resc
     const run = new FirstTimerRun('2-3', 5, who, { cap, dotSetting: true });
     const e = run.e as unknown as Record<string, any>;
     const cages = (e.collectibles as Collectible[]).filter((c) => c.type === 'cage').sort((a, b) => a.x - b.x);
-    // (beat 4: the watched stretch whose clumps hold cage 3; the boulder on the mud between its clumps)
-    const zone = (e.proto.watch as WatchZone[]).find((z) => cages[2].x > z.x0 && cages[2].x < z.x1)!;
-    const rock = (run.sim.platforms as Platform[]).find((q) => (q as { style?: string }).style === 'moss_stone' && q.x > zone.x0 + 200 && q.x < cages[2].x)!;
-    assert.ok(zone && rock, 'seed 5: beat 4 with its boulder between the clumps');
-    const far = (e.proto.bushes as Array<{ x: number; w: number; y: number }>).find((b) => b.x > rock.x && b.x < zone.x1)!;
-    for (const c of cages.slice(0, 3)) c.collected = true;
+    // (beat 4: the watched stretch whose clumps hold cage 3; the boulder on the mud between its clumps. R-165.363 (BUILD-23d) took 2-3's
+    // boulder OFF the watched mud (lineFaults: no face there), so the toy sets the same rock (World 2's 50 px moss_stone, 117 wide, as
+    // rolled on 11-20) back on this run's mud: the skill is proved on 2-3's real row with the face it is for)
+    const ci = at === 'clumps' ? 2 : 4;
+    const zone = (e.proto.watch as WatchZone[]).find((z) => cages[ci].x > z.x0 && cages[ci].x < z.x1)!;
+    const clumps = (e.proto.bushes as Array<{ x: number; w: number; y: number }>).filter((b) => b.x + b.w > zone.x0 && b.x < zone.x1).sort((a, b) => a.x - b.x);
+    assert.ok(zone && clumps.length >= 2, 'seed 5: beat 4, two clumps over open mud');
+    const mud = { x0: clumps[0].x + clumps[0].w, x1: clumps[1].x };
+    const rock = { id: 99001, x: Math.round((mud.x0 + mud.x1) / 2 - 58), y: clumps[0].y - 50, width: 117, height: 50, type: 'solid', style: 'moss_stone', landing: true } as unknown as Platform;
+    if (at === 'clumps') (run.sim.platforms as Platform[]).push(rock);
+    const far = at === 'clumps' ? clumps[1] : clumps[clumps.length - 1];
+    for (const c of cages.slice(0, ci + 1)) c.collected = true;
     run.sim.stand(far.x + far.w / 2, far.y);
     for (let i = 0; i < 20; i++) run.sim.frame({});
     run.prog.relocate(run.sim.p);
     // (freed beside him in the far clump, in the line, then the heron's look sends them all back to the stretch's start, as in play)
-    for (const c of cages.slice(0, 3)) e.follow.free((c as { critter: string }).critter, { x: far.x + 40, y: far.y }, { x: far.x + 40, y: far.y });
+    for (const c of cages.slice(0, ci + 1)) e.follow.free((c as { critter: string }).critter, { x: far.x + 40, y: far.y }, { x: far.x + 40, y: far.y });
     for (let i = 0; i < 90; i++) run.sim.frame({});
     for (const f of e.follow.line as Follower[]) spook(f, zone.x0);
     let fetched = false;
@@ -186,8 +193,8 @@ test('planted: with hop-back off he stands against the boulder until he is rescu
   }
 });
 
-test('fetch-clock (2-3 gen2 row, seed 5): the child, at his own slow pace, fetches the whole line back with no rescue: the way back is not stuck', () => {
-  const r = hopBackRun(FT_CHILD, 90);
+test('fetch-clock (2-3 gen2 row, seed 5, beat 7: three clumps, the longest walk back): the child, at his own slow pace, fetches the whole line back with no rescue: the way back is not stuck', () => {
+  const r = hopBackRun(FT_CHILD, 90, 'everything');
   assert.ok(r.fetched, `child: never fetched ${JSON.stringify(r)}`);
   assert.equal(r.rescues, 0, `child: ${JSON.stringify(r)}`);
 });
@@ -195,7 +202,7 @@ test('fetch-clock (2-3 gen2 row, seed 5): the child, at his own slow pace, fetch
 test('planted: with the fetch clock off the child is rescued while he is still walking back for them', () => {
   LINE_SKILL.fetchClock = false;
   try {
-    const r = hopBackRun(FT_CHILD, 90);
+    const r = hopBackRun(FT_CHILD, 90, 'everything');
     assert.ok(r.rescues > 0, `planted child: no rescue with the clock running through the fetch ${JSON.stringify(r)}`);
   } finally {
     LINE_SKILL.fetchClock = true;

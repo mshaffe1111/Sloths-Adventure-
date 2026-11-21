@@ -4,7 +4,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { lineFaults, LINE_RULE, safeWindow, type LineStage } from './lineFaults.ts';
+import { childCross, facesOn, lineFaults, LINE_RULE, safeWindow, type LineStage } from './lineFaults.ts';
 import { W2_FOLLOW } from './worlds/w2.ts';
 import type { Bush, WatchZone } from '../watcher.ts';
 import type { Collectible, Platform, Vine } from '../types.ts';
@@ -21,10 +21,50 @@ function crossing(W: number, G: number, herons: 1 | 2 = 1, lag = 3.2, more: Part
   return { platforms: [floor], collectibles: [], exitTotemX: 8000, bushes: [A, B], watch: herons === 2 ? [z, { ...z, lag }] : [z], ...more };
 }
 
-test('the design\'s clump to clump passes: Normal W 260 over G 350 and 500 (one heron); Easy W 340 over G 350', () => {
-  assert.deepEqual(lineFaults(crossing(260, 350), W2_FOLLOW), []);
-  assert.deepEqual(lineFaults(crossing(260, 500), W2_FOLLOW), []);
-  assert.deepEqual(lineFaults(crossing(340, 350), W2_FOLLOW, true), []);
+/** the design's adult rules alone (the child's, R-165.363, judged on its own below) */
+const CHILD = /calibrated child/;
+const adult = (f: string[]) => f.filter((l) => !CHILD.test(l));
+
+test('the design\'s clump to clump passes the adult rules: Normal W 260 over G 350 and 500 (one heron); Easy W 340 over G 350', () => {
+  assert.deepEqual(adult(lineFaults(crossing(260, 350), W2_FOLLOW)), []);
+  assert.deepEqual(adult(lineFaults(crossing(260, 500), W2_FOLLOW)), []);
+  assert.deepEqual(adult(lineFaults(crossing(340, 350), W2_FOLLOW, true)), []);
+});
+
+/** a cage before the crossing for each little one he leads in (the line's tail is the row's gap x them) */
+const leading = (n: number): Partial<LineStage> => ({ collectibles: Array.from({ length: n }, (_, i) => ({ type: 'cage', x: 100 + i * 50, y: Y - 60 }) as Collectible) });
+
+test('R-165.363 planted: the calibrated child loses the line over 2-3\'s old lays (beat 4 G 400 with its boulder, 2 behind; beat 7 G 350 under two herons 3.2 s apart, 4 behind) and brings it over the new ones', () => {
+  // (beat 4 as rolled on 11-20 (seed 5): W 300, G 400, the 50 px moss_stone boulder mid-mud, the heron's calm 5 s)
+  const rock: Platform = { id: 2, x: 1442, y: Y - 50, width: 117, height: 50, type: 'solid' } as Platform;
+  const old4 = crossing(300, 400, 1, 0, { ...leading(2), platforms: [floor, rock] });
+  assert.match(lineFaults(old4, W2_FOLLOW).join('\n'), CHILD, 'beat 4 as it was');
+  assert.match(lineFaults(old4, W2_FOLLOW).join('\n'), /a face at 14\d\d on the watched mud/);
+  // (beat 7 as it was: two herons, the late calm 5 s, 3.2 s out of step)
+  assert.match(lineFaults(crossing(300, 350, 2, 3.2, leading(4)), W2_FOLLOW).join('\n'), CHILD, 'beat 7 as it was');
+  // (the clumps closer, no boulder: beat 4 at 200; beat 7 at 180 with the calm 8.5 s still out of step)
+  assert.deepEqual(lineFaults(crossing(300, 200, 1, 0, leading(2)), W2_FOLLOW), []);
+  const new7 = crossing(300, 180, 2, 3.2, leading(4));
+  for (const z of new7.watch!) (z as { calm: [number, number] }).calm = [8.5, 9];
+  assert.deepEqual(lineFaults(new7, W2_FOLLOW), []);
+  // (and the gap alone does not do it under two herons at the short calm: the line cannot leave one clump at a child's pace)
+  assert.match(lineFaults(crossing(300, 60, 2, 3.2, leading(4)), W2_FOLLOW).join('\n'), CHILD);
+});
+
+test('R-165.363: childCross flies the game\'s own line: the line\'s tail counts (one behind crosses what six cannot)', () => {
+  const at = (G: number, n: number) => { const st = crossing(300, G, 1, 0); return childCross(W2_FOLLOW, false, st.watch!, st.bushes!, st.platforms, [], n); };
+  assert.ok(at(400, 2), 'G 400, 2 behind: lost');
+  assert.equal(at(150, 1), null, 'G 150, 1 behind: through');
+  assert.ok(at(150, 6), 'G 150, 6 behind: the tail does not fit');
+});
+
+test('R-165.363 planted: a face on the watched mud is refused; the same rock in the reeds, or past the stretch, is not a mud face', () => {
+  const at = (x: number): Platform => ({ id: 3, x, y: Y - 50, width: 110, height: 50, type: 'solid' }) as Platform;
+  assert.deepEqual(facesOn([floor, at(1400)], 900, 2000), [1400]);
+  const face = (x: number) => lineFaults(crossing(300, 200, 1, 0, { platforms: [floor, at(x)] }), W2_FOLLOW).filter((l) => /a face at/.test(l));
+  assert.equal(face(1350).length, 1, 'on the mud');
+  assert.deepEqual(face(1100), [], 'in the first clump');
+  assert.deepEqual(face(2400), [], 'past the stretch');
 });
 
 test('planted: a clump under 260 px (Easy 340) is refused', () => {
@@ -48,7 +88,7 @@ test('two herons out of step (beat 7): G 350, the second 3.2 s later, leaves a s
   const ok = crossing(260, 350, 2, 3.2);
   const w = safeWindow(W2_FOLLOW, false, ok.bushes![0], ok.bushes![1], ok.watch!, ok.platforms);
   assert.ok(w >= LINE_RULE.window, `window ${w.toFixed(1)} s (the flight: 2.6 s)`);
-  assert.deepEqual(lineFaults(ok, W2_FOLLOW), []);
+  assert.deepEqual(adult(lineFaults(ok, W2_FOLLOW)), []);
   // (G 500 is over the two-heron mud limit, and its window is short too: the flight's 0.4 s)
   const bad = crossing(260, 500, 2, 4.8);
   const f = lineFaults(bad, W2_FOLLOW).join('\n');
