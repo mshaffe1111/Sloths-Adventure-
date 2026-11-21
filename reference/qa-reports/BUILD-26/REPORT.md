@@ -2,20 +2,20 @@
 Trees (D115, frozen, never edited but as named): OLD = 4ea253b8c (1-4 before the walk-off judge), RELISTED = 626fac5ac (1-4 relisted, before
 BUILD-26c's bot fixes), each a detached worktree with the checkout's node_modules linked. ONE heavy run at a time, all in the background
 (D113), in one serial chain. Commits: 75d68eea8 (engine-core.md §0zr-26, the tower lines), this REPORT. No game code changed.
-Saved: eng26m/ (rowdiff.mjs: castBots rows row for row; the logs and rows).
+Saved: eng26m/ (rowdiff.mjs: castBots rows row for row, rowdiff.txt; trace.mts: one line a run, traces.txt (26 x 2); near.mts: the wood
+and vines at a spot, near.txt; jumps.txt: FT_TRACE OLD vs RELISTED; rows-old/rel.jsonl; the locks; every run's log).
 
-## EXACT NEXT STEP
-1. **castBots 1-4 seeds 1-40, both settings, every tier, --par 4, OLD then RELISTED (one chain, still running in MY container at the box:
-   eng26m chain2; I append the verdict when it wakes me).** If my container is gone, re-run it on fresh frozen worktrees of 4ea253b8c and
-   626fac5ac (`git worktree add --detach <S>/old 4ea253b8c`, `<S>/rel 626fac5ac`, node_modules linked), one at a time, in the background:
-   `cd <tree> && npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --par 4 --rows <S>/rows-<old|rel>.jsonl`, then
-   `node reference/qa-reports/BUILD-26/eng26m/rowdiff.mjs <S>/rows-old.jsonl <S>/rows-rel.jsonl` (per tier OLD/REL pass counts, DROP if any
-   tier fell; every NEW miss listed), and trace each new miss on RELISTED twice (rule 28):
-   `npx tsx reference/qa-reports/BUILD-26/eng26m/trace.mts <S>/rel 1-4 "<bot> <setting> <seed>" ...` (one line: seed, x, frame, what took him).
-   45 plans were re-laid, so rows move by design; what may not move: any tier's pass count.
-2. **tierBots 1-1 on RELISTED** (`cd <S>/rel && npx tsx --test tools/inspect/tierBots.test.ts`, 9/9): queued after castBots in the same chain.
-3. **THE FULL SET** runs in release 3's integration, on the head that ships (the packet). Not run here (D96: none is claimed).
-4. **The lead's call on 1-4's build over budget** (step 1): it was already over on OLD; a packet or a known item.
+## EXACT NEXT STEP (STOPPED on the lead's word after step 3's cause table; every number below is on the two frozen trees)
+1. **1-4's relist does NOT ship (the lead's ruling): six tiers drop** (kid N 24 -> 18, kid E 34 -> 32, adult N 40 -> 39, adult E 40 -> 36,
+   middle N 39 -> 37, middle E 39 -> 37). The cause table is in step 3: A, B, D are **BOT** -> BUILD-26e (the bot's recovery after a first
+   miss that the judge's new catches and wall wood now hold near the spot); C is **LAY** -> the lead (s17's moved gate, fully roofed on
+   Easy by a new bridge 760-1280 @3061). 9 singles are traced but UNCLASSED: compare each on OLD with
+   `npx tsx reference/qa-reports/BUILD-26/eng26m/near.mts <tree> 1-4 <setting> <seed> <x> <y>` and
+   `FT_TRACE=1 npx tsx reference/qa-reports/BUILD-26/eng26m/trace.mts <tree> 1-4 "<bot> <setting> <seed>"` (stderr: every jump).
+2. **The final bar for 1-4** (the lead): castBots 1-4 seeds 1-40 both settings every tier, OLD 4ea253b8c with the old bot vs the release head
+   with the relist and every bot fix (one chain, frozen trees, `--par 4`, eng26m/rowdiff.mjs): no tier's pass count may drop.
+3. **1-4's build over the 150 ms 4x-CPU budget on both trees** (step 1): the lead's call (a packet or a known item).
+4. **THE FULL SET** runs in release 3's integration on the head that ships (not run here: none is claimed, D96).
 
 ## Step 1: the phone's load speed (OLD vs RELISTED)
 | run | OLD 4ea253b8c | RELISTED 626fac5ac | limit | verdict |
@@ -45,8 +45,41 @@ Saved: eng26m/ (rowdiff.mjs: castBots rows row for row; the logs and rows).
   1-6 was 17.6 min on a runner); the shard's whole time on a runner is R-165.352's measure, not taken here.
 
 ## Step 3: castBots 1-4 seeds 1-40, both settings, every tier, OLD vs RELISTED (rule 28); tierBots
-- **PENDING at the box (D111):** castBots OLD then RELISTED, --par 4, then tierBots 1-1 on RELISTED, one chain in the background. The
-  verdict is appended below when the run wakes me.
+**VERDICT: FAIL (the lead's ruling: 1-4's relist cannot ship while any tier drops; 1-4 is live).** castBots 1-4, seeds 1-40, both
+settings, every tier, `--par 4`, run alone in the chain on each tree (87 s OLD, 82 s RELISTED). The bot code is identical on both
+trees (`git diff 4ea253b8c 626fac5ac -- tools/inspect/` is empty), so every move comes from the stage. Rows: eng26m/rows-old.jsonl,
+rows-rel.jsonl; diff: `node eng26m/rowdiff.mjs` (eng26m/rowdiff.txt).
+
+| tier | OLD 4ea253b8c | RELISTED 626fac5ac | lost (seeds) | won |
+|---|---|---|---|---|
+| kid Normal | 24/40 | **18/40 DROP** | 3, 7, 12, 13, 18, 19, 34 | 16 |
+| kid Easy | 34/40 | **32/40 DROP** | 10, 37 | - |
+| adult Normal | 40/40 | **39/40 DROP** | 36 | - |
+| adult Easy | 40/40 | **36/40 DROP** | 10, 17, 19, 37 | - |
+| child Normal | 28/40 | 35/40 | 24, 26, 30, 32 | 2, 5, 7, 10, 15, 19, 20, 34, 36, 39, 40 |
+| child Easy | 28/40 | 33/40 | 3, 12 | 4, 8, 17, 21, 28, 29, 40 |
+| middle Normal | 39/40 | **37/40 DROP** | 6, 15, 29 | 23 |
+| middle Easy | 39/40 | **37/40 DROP** | 10, 29, 37 | 4 |
+| expert Normal | 40/40 | 40/40 | - | - |
+| tierBots 1-1 (RELISTED) | | **9/9 PASS** (every one of the 200 committed runs replays exactly), 180 s | | |
+
+**The cause table (rule 28).** All 26 new misses were re-run TWICE on RELISTED with eng26m/trace.mts: both runs are identical, line for
+line (eng26m/traces.txt). All but one end "shrine rescued x1"; child Normal 26 ends "time, goal 0/1". Each spot was compared on BOTH
+trees: the wood and vines at the spot (eng26m/near.mts) and the bot's jumps (FT_TRACE) for one run each, OLD vs RELISTED (eng26m/jumps.txt).
+| spot | runs (bot setting seed) | one line: x, y, frame, what took him | class |
+|---|---|---|---|
+| **A: x 1036, Normal** (section s3's vine from s3:z up to s4:b, its top 26 px past s4:b's end) | kid 7, 12, 13, 18, 19, 34; adult 36 | kid 12: the first jump 15.3 s (316,9706 -> 516,9786) FELL BACK on BOTH trees (same jump, same miss); OLD: the fall leaves him at 10348, he re-does the double at 26.8 s and passes. RELISTED: he stays at x 1036, y 9706 and "fell back down from here 3 times" by f570, rescued at x 1067. adult 36: the same (first jump 13.9 s fails on both; RELISTED stuck x 1036 y 10043 f525). New wood on RELISTED beside the spot, not on OLD: 1154-1245 @9706 and 1088-1280 @10067 (seed 12), 1110-1280 @9762 and 996-1176 @10042 (seed 36), untagged (the walk-off judge's catches) | **BOT** (trigger: LAY's new catches). The vine and s4:b are the same on both trees, and OLD's kid already failed here on 15 seeds (21 on RELISTED). The judge's catches now hold him by it after the first miss, and the bot's recovery takes the vine and falls back from its top. -> BUILD-26e |
+| **B: x 1115, Easy** (the same s3 vine, x 1163, 26 px past s4:b's end 1137) | adult 17, 19 | adult 17: the first miss 14.8 s (485,10139 -> 655,10219) is identical on both; OLD falls to 10764 and re-does it (26.3 s ok); RELISTED stuck x 1115 y 10139 f546, "fell back down 3 times", rescued x 982. New on RELISTED under the spot: 1136-1256 @10500 | **BOT** (trigger: LAY), the same cause as A -> BUILD-26e |
+| **C: x 583-610, Easy, seeds 10 and 37** (s17's gate under s18) | kid 10, 37; adult 10, 37; middle 10, 37 | kid 10: on the gate s17:top (481-841 @3342), "in a dip 281 px deep" at x 607, f2946, 34 s with no jump (OLD: 10 s), rescued x 610. middle 10: the same at x 583, rescued x 609. **The plan moved**: OLD's gate 712-1072 stood out past s18:b (360-760 @3061) into the open; RELISTED's gate is 481-841 (gateRun's foot 295-1027, 732 px wide against OLD's 520), and a NEW bridge 760-1280 @3061 (untagged, not on OLD) roofs the rest. So every inch of the gate is under wood 281 px up, and the one way up is the vine x 786. On Normal the same seeds lay the gate at 433-793 @2965 under s18:b (477-877 @2684) with its left 44 px open and no bridge, and adult, middle and expert pass both seeds there | **LAY** (a moved plan plus the judge's new bridge roof the gate; three bots, two seeds, Easy only) -> the lead |
+| **D: x 61-135, seed 29** (a wall pocket) | middle Normal 29, middle Easy 29 | Normal: the double from 145,9458 toward x 20 FELL BACK on both trees (29.7 s / 30.4 s). OLD's wall strip was 36-150 @9746 (a 36 px gap at the wall) and he fell through it to 10388 and re-did it; RELISTED's strip is 0-150 @9858, up to the wall, so the same miss lands on it (beside the gate foot s5:foot 150-590), stuck x 61 f867, "the way on is 281 px down", rescued x 134 (the gate's vines up are 149 px away). Easy: the plan moved (OLD's 0-378 @4925 alone at that height); RELISTED: a double at 84.6 s toward x 43 lands on the wall pocket 0-281 @5285 (under 0-345 @4925, 360 px up), "in a dip 360 px deep, the way on is 341 px down", then 8 fall-backs at the vine x 135, rescued x 138 | **BOT** (trigger: LAY's wall wood, which reaches the wall where OLD's left a gap): from wood that joins a gate's foot, the bot's route says "down" instead of the vines -> BUILD-26e |
+| singles, traced, NOT compared on OLD (the box) | kid Normal 3; middle Normal 6, 15; child Normal 24, 26, 30, 32; child Easy 3, 12 | kid N 3: x 182, y 1885, f3630, fell back 3 times, rescued x 228. middle N 6: x 801, y 6799, f1845, fell back 8 times, rescued x 884. middle N 15: x 1183, y 7273, f1638, "the way on is 301 px down", then 1187, y 6853 fell back 8 times, rescued x 1260. child N 24: x 463, y 6753, f2709, fell back 8. child N 26: time (1200 s) at x 600, 83%, goal 0/1, a life lost at x 772, y 2733. child N 30: x 996, y 9441, "a dip 400 px deep, the way on is 321 px down", then 936 fell back 8. child N 32: x 60, y 9666, "the way on is 321 px down" (a wall, like D), then 388 fell back 8. child E 3: x 442, y 596, f5343, fell back 8. child E 12: x 1044, y 1602, f5001, fell back 8 | **UNCLASSED** (the lead's next member compares each on OLD with near.mts + FT_TRACE, as A to D). The child tiers did not drop (+7, +5) |
+- **What this says** (for the lead and BUILD-26e): the same first misses happen on both trees. What changed is where a miss leaves him.
+  The walk-off judge's catches and wall wood (ENG-26g's towerCatches, the [20, W-20] sides) now hold a falling Pokey near the spot
+  instead of dropping him to the floor below, where on OLD he re-did the jump. From there the bot's recovery takes a way it cannot do
+  (A, B: the s3 vine whose top is 26 px past s4:b's end; D: "the way on is down" from wood joined to a gate's foot). One spot, C, is the
+  layout itself: the moved gate fully roofed by the new bridge on Easy.
+- **The bar going forward** (the lead's ruling): OLD 4ea253b8c with the old bot, against the release head with the relist and every bot
+  fix; no tier's pass count may drop. Bot causes go to BUILD-26e, LAY causes to the lead.
 
 ## Step 4: lockall --layouts 16, RELISTED vs OLD; engine-core.md's tower lines
 - **lockall RELISTED `--check` OLD's lock: 100/102 stages unchanged; the movers are 1-4 and 2-6 only (both intended)**, the same as
@@ -64,7 +97,12 @@ D96 (no gate called run that was not: THE FULL SET is release 3's), D99 (CI time
 the packet's sections only), D105/D57/D87 (ReadNotifications at every step boundary and push), D107/D111 (the 28-minute box by `date`),
 D109 (no clock times to the lead), D113 (every run in the background; the chain waits, I do not), D114 (no second suite: step 0 carried),
 D115 (two frozen trees at fixed hashes; BUILD-26c's towerRoute moves on the branch, not under these runs), rule 28 (40 seeds, both
-settings, every new miss traced), law 3 (the named commits checked as ancestors before they were written into engine-core.md).
+settings, every new miss run twice and its spot compared on both trees), law 3 (the named commits checked as ancestors before they were
+written into engine-core.md; the bot code checked identical on both trees before the drops were called the stage's).
+**Own miss (law zero): one D113 slip.** Once, after the box, I waited in the FOREGROUND for 20 s (`sleep 20` before reading the
+jump traces). The inbox was empty before and after it. Countermeasure: a trace's result is read only from its completion notice.
+**Changed on the way (named):** castBots' default is `--par 1` (one seed at a time). The chain was taken over at its castBots step by a
+second chain with `--par 4` (still one heavy run at a time), after lockall had finished; nothing measured was lost.
 
 # BUILD-26d (on t-build-26 from 5be367dd8): the lost runs traced (2-6 and 1-4), one bot fix as an UNPLANTED TRIAL. Started 5:52 PM ET 11-21 (by `date`); handed over at the 28-minute box
 Commits: this one (TRIAL: firsttimer.ts climbUpVine, the climb-jump toward a vine beside him, never his facing; this REPORT; b26d/).

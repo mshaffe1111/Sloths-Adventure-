@@ -8,6 +8,6 @@ for (const k of keys) {
   const [bot, setting, seedS] = k.split(' ');
   const r: any = firstTimer(stage, Number(seedS), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
   const last = r.harms.slice(-3).map((h: any) => `${h.kind} ${h.cause} @x${Math.round(h.x)},y${Math.round(h.y)} f${Math.round(h.t * 30)}`).join('; ');
-  const st = (r.stuck ?? []).slice(-3).map((s: any) => `${Math.round(s.x)}${s.what ? ' ' + s.what : ''}`).join(', ');
-  console.log(`${stage} ${k}: end ${r.end} at x ${Math.round(r.x)} f${Math.round(r.time * 30)} (${r.time} s, progress ${(r.progress * 100).toFixed(0)}%), goal ${r.goal ? `${r.goal.got}/${r.goal.need}` : '-'}, harms ${r.harms.length} [${last}]${st ? `, stuck ${st}` : ''}`);
+  const st = (r.stuck ?? []).slice(-2).map((s: any) => `x${Math.round(s.x)},y${Math.round(s.y)} f${Math.round(s.t * 30)} ${s.what ?? ''}`.slice(0, 140)).join(' | ');
+  console.log(`${stage} ${k}: end ${r.end} at x ${Math.round(r.x)} f${Math.round(r.time * 30)} (${r.time} s, progress ${(r.progress * 100).toFixed(0)}%), goal ${r.goal ? `${r.goal.got}/${r.goal.need}` : '-'}, rescued at x [${(r.rescueXs ?? []).map((x: number) => Math.round(x)).join(',')}], layout seed ${r.stageSeed ?? '?'}, harms ${r.harms.length} [${last}]${st ? `, stuck ${st}` : ''}`);
 }
