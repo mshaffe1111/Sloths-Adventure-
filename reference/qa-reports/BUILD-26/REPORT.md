@@ -8,7 +8,9 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
 ## EXACT NEXT STEP (the next level builder; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
 1. **2-1..2-5 x40, base 5be367dd8 vs cef59bafe, row for row** (`castBots.ts --stage 2-N --seeds 1-40 --setting both --par 2 --rows ...`,
    then `python3 reference/qa-reports/BUILD-26/b26e/diff.py <base rows> <fix rows>`): **2-1 and 2-2 DONE: unmoved, no row moved** (2-1: kid N 32, every other tier 40/40; 2-2: kid N 24, every
-   other tier 40/40; rows in b26e/rows/). 2-3, 2-4, 2-5 remain (about 2-4 min a run at --par 2). What may not move: any tier's pass count.
+   other tier 40/40; rows in b26e/rows/). **2-3: all 360 rows IDENTICAL base vs fix (unmoved), but RED on BOTH: 359 of 360 runs end
+   at a 'sealed door' with the goal 0/5** (one 'time'), every bot, both settings, on 5be367dd8 too: a finding for the lead, not caused
+   by this branch's bot (not traced: is castBots playing 2-3's goal at all?). 2-4 and 2-5 remain (stopped at the box). What may not move: any tier's pass count.
 2. **2-6's remaining misses are all kid and adult (the lead: the adult is the bar), unmoved by both fixes** (no kid or adult row moved).
    On cef59bafe: kid N 29/40, kid E 24/40, adult N 33/40, adult E 24/40. Spread over many spots, not one fault (grouped by the
    fell-back x or the last stuck x): adult E stuck near x 900 (4) and x 300 (3); kid N fell back at x 1130-1145 (3); kid E fell back
