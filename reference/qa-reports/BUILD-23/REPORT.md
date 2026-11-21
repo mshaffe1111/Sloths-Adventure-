@@ -1,3 +1,73 @@
+# BUILD-23e REPORT: 2-3 GREEN (t-build-23 from 777b55d4b; this section written 12:26 PM ET by `date`)
+
+**Final hash: see the last commit on t-build-23 (this REPORT's own commit); code unchanged since e9b1b5778.**
+
+## EXACT NEXT STEP (for the integrator)
+Merge t-build-23 (2-3 GREEN). Nothing open on 2-3 from this packet. Named, not fixed (rule 4 / ruled): kid 0/40 both (spook loops,
+rescued); adult N s10 (accepted 10:17); 2-3's meter far under World 2's band (accepted 10:17); funcheck = main's World 1 debt.
+
+## Done (each pushed on t-build-23)
+| Commit | What |
+|---|---|
+| 5ba9ef44d | ENGINE PIECE (bot: no line, no wait): LINE_SKILL.noLineGo in lineMove; planted toy in lineBot.test (clump 60 px before the stretch, cages shut): GREEN middle+adult s1-3 'sealed door'; off -> the middle stands at x 860-900 until 'time' (the adult's late thumb slides him onto the stretch, where the calm runs) |
+| e9b1b5778 | ENGINE PIECE b: narrowed to 'nobody out of home'. The first cut (follow|join) also sent him on when his WHOLE line was spooked and running back: castBots moved 10 non-kid runs' times + every kid run. Narrowed: those runs give BUILD-23d's exact rows. cageBot 4/4 (skill off = 'sealed door' at cap 600), lineBot 10/10, tierBots 9/9 CI=1 with no calibration change |
+| a7e6f4093 | UI-22 (the lead ACCEPTED 10:36): root BUILD-23 81dd325de took the keeper's line 8 (no count: the goal counts who gets HOME) but stagePlanGoals still pinned 'Free 5 little ones' + a floor of 6. Now floor 5, 2-3 == MISSION_23 with no digit, every named count checked on Easy too. Planted 'Free 3 little ones' -> RED |
+| f9bafa012 | castBots 2-3 1-40 x 5 bots x both on e9b1b5778 (castbots23e.txt + rows) |
+| ebd221955 | THE FULL SET logs (gates23e/) + final stills and clip (stills/23e/, CAPTIONS.md) + the still tools (final23e, parade23e, look17e, clip23e; stills23/faces23/post23c now set Easy by localStorage) |
+
+## castBots 2-3 1-40 on e9b1b5778 (the fixed bot): ALL 360 ROWS IDENTICAL to castbots23d-rows
+| bot | Normal | Easy |
+|---|---|---|
+| child | 40/40 (median 404.8 s) | 40/40 (291.8 s) |
+| middle | 40/40 (237.3 s) | 40/40 (223.4 s) |
+| expert | 40/40 (230.2 s) | - |
+| adult | 39/40 (s10, accepted) | 40/40 |
+| kid | 0/40 (rescued, named) | 0/40 (named) |
+
+## THE FULL SET (gates23e/, verdicts.txt; head 9191d988b, code = e9b1b5778; started 10:41 AM ET)
+| Gate | Verdict |
+|---|---|
+| tsc; artcheck; vite build (BASE_PATH) + chunkcheck; knowncheck; generalitycheck; coveragecheck; roadmapcheck; timecheck (unshallowed); registrycheck; tipwalk --layouts 4 | PASS each |
+| tierBots (CI=1) 9/9; the CI tool line (gates.yml:157) 346/0 | PASS |
+| paintcheck 0/3, 1/3, 2/3 | PASS each |
+| every seed list, today's 4 shards (1-1 161, 1-5 150, the other 12 at 100, 2-3 100/100) | PASS (my first 3-shard try VOID: today is 4) |
+| unit suite, 3 shards: 4014 tests, 4011 pass, 0 fail, 3 TODO (4-3/4-8 boulder wall x2, R-165.312 flag placer; none 2-3) | PASS |
+| clipcheck; kbdcheck; drawcheck; buildcheck ALONE (p95 109 ms of 150) | PASS each |
+| lockall --layouts 16 vs main 107870f5d --intended 2-3,2-5 | PASS (the lead's ruling 11:48 AM: 2-5 inherited from t-int-15; lockall --stages 2-5 vs origin/t-int-15: 32/32 unchanged) |
+| funcheck | FAIL = main's line for line (22 World 1 breaches, 77 known; the ruled debt). 2-3 flags: none (funcheck reads World 1 only) |
+
+## Stills + clip (stills/23e/; CAPTIONS.md names the setting the page BUILT for each)
+Normal and Easy, upright and sideways: the whole stage at 8 points; the first cage shut and open; the line behind him; the heron's look over
+the reeds; a spooked one out on the mud and its fetch; the HUD faces (open, hiding, spooked); the mooring post (foot, on the rope; Easy too);
+the parade swim; the jetty home ("Touch the door!", every face lit). 1-7's eagle look beside 2-3's heron look. The clip: beat 4 under the
+heron, two looks, nobody spooked.
+
+## Polish check
+- Fixed before handing over: Dot's cards stayed up in my first stills (a tap in a card's first 400 ms of GAME time does nothing, and the
+  shots step paused): the tool steps half a second, then taps. stills23's '4-parade' took a 131 px gap and splashed: replaced by the
+  parade-swim still on the pond. Pokey drawn half-transparent (the tool's invincible flicker) and floating over the water: fixed. The
+  video recorder drew the game into 60% of the frame: the clip is now stepped frames.
+- Named: upright, the spooked one 330 px back is off the 412 px screen (the HUD's grey face with its amber '!' carries it); sideways it
+  reads small at the left edge. The look languages differ: 1-7's eagle is a ground shadow, 2-3's heron a dotted sight line and a pale
+  wash (the lead's call whether that is the family look).
+
+## Learned (for the next builder) + proposed level.md rules
+- A bot fix is judged by castBots row for row against the last table, not by pass counts: my first cut passed every count and still
+  moved 10 runs; the diff showed it did more than the ruling. PROPOSED: "A bot change ships with a row-for-row castBots diff against the
+  last committed rows; any moved row is traced or the change is narrowed."
+- Easy is a saved setting (localStorage sloth_difficulty), not a URL switch: a still tool must set it and the caption must say what the
+  page BUILT (its geometry), not what was asked. PROPOSED: "Every Easy still names the page's built setting by a fact on the page."
+- Read the shard count from registrycheck --shards --print; never assume 3.
+- Dot's cards need game time to take a tap; paused shots must step before tapping.
+
+## Lessons applied
+D30 (one slip: my 12:04 message stamp was typed, not from date; caught by the lead; every stamp here and in commits from date), D57/D87
++ D103/D105 (ReadNotifications at every step boundary and push; gates in the background so rulings reached me), D76 (handing over at the
+lead's 320k line), D86/D96 (THE FULL SET named, every line run), D94 (UI-22 traced to its source commit; 2-5 checked against t-int-15,
+its base), D102 (reads by grep and line ranges).
+
+---
+
 # BUILD-23d REPORT: 2-3 toward GREEN (t-build-23 from b173bd298; this section written 10:21 AM ET 11-21 by `date`)
 
 ## EXACT NEXT STEP (for BUILD-23e), in order. Head: the last BUILD-23d commit on t-build-23.
