@@ -1096,7 +1096,6 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
-    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
@@ -1221,6 +1220,8 @@ export class GameEngine {
       targetScaleX: 1,
       targetScaleY: 1,
     };
+    // (the little ones line up behind him where he stands: after he is made, a stage's first start has no player before this)
+    this.startFollow();
 
     // Initialize Camera
     this.camera = {
