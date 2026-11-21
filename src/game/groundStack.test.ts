@@ -198,8 +198,11 @@ test('a stage whose lay stacks no leg has no stacked zone, so its ground draws e
   // a tower (one up leg) and a run (one right leg): nothing stacked
   assert.deepEqual(stack!.stackZonesOf([{ travel: 'up', x0: 0, x1: 900, y0: 0, y1: 9000 }]), []);
   assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 0, x1: 9000, y0: 600, y1: 700 }]), []);
-  // out right, down a column, home left under the way out: the home leg is the zone; a left leg beside (not under) it is not
-  assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'down', x0: 5000, x1: 5600, y0: 760, y1: 1400 }, { travel: 'left', x0: 0, x1: 5000, y0: 1400, y1: 1600 }]), [{ x0: 0, x1: 5000, y0: 1400, y1: 1600 }]);
+  // out right, down a column, home left under the way out: the home leg is the zone, and (ENG-GROUND-d) the home leg's band runs on under
+  // the column that comes down into it (its stairs and pools stand over the floor at its foot); a left leg beside (not under) it is not
+  assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'down', x0: 5000, x1: 5600, y0: 760, y1: 1400 }, { travel: 'left', x0: 0, x1: 5000, y0: 1400, y1: 1600 }]), [{ x0: 0, x1: 5000, y0: 1400, y1: 1600 }, { x0: 5000, x1: 5600, y0: 1400, y1: 1600 }]);
+  // (a column wholly over the band, its foot short of it, adds nothing)
+  assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'down', x0: 5000, x1: 5600, y0: 760, y1: 1300 }, { travel: 'left', x0: 0, x1: 5000, y0: 1400, y1: 1600 }]), [{ x0: 0, x1: 5000, y0: 1400, y1: 1600 }]);
   assert.deepEqual(stack!.stackZonesOf([{ travel: 'right', x0: 100, x1: 5000, y0: 600, y1: 760 }, { travel: 'left', x0: 5000, x1: 9000, y0: 1400, y1: 1600 }]), []);
 });
 
@@ -210,6 +213,7 @@ test('a stage whose lay stacks no leg has no stacked zone, so its ground draws e
 //   the race leg's walk band and its rivers' water are under no upper river's paint; each upper river is still drawn (to its ceiling).
 // Planted RED on 6c45381d0 (the engine ran the upper pools to the view's foot): see reference/qa-reports/ENG-GROUND/red-b.txt.
 const { RealPlay } = await import('./realPlay.ts');
+const { riverPaintFoot } = await import('./riverArt.ts');
 const { WORLDS_DATA } = await import('./worldsData.ts');
 for (const difficulty of ['normal', 'easy'] as const) {
   test(`the out-and-back toy (${difficulty}): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)`, () => {
@@ -291,7 +295,10 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
     setGroundPaint(true);
     setStacks(st.gen2?.tower?.legs, st.rivers);
     const banks = st.platforms.filter(paintedBank);
-    const cs = stack!.findCeilings(st.platforms, banks, stack!.stackZonesOf(st.gen2?.tower?.legs as never));
+    // (the painter's own ceilings: the stage's rivers go in with the foot of their paint, as protoArt.ts setGroundStacks gives them. Laid
+    //  without them, this line ran through the descent's first pool where the painter's runs at its bed foot, ENG-GROUND-d)
+    const waters = st.rivers.map((z) => ({ x0: z.x0, x1: z.x1, top: z.surfaceY, foot: riverPaintFoot(z.surfaceY, !!(z as { safe?: unknown }).safe) }));
+    const cs = stack!.findCeilings(st.platforms, banks, stack!.stackZonesOf(st.gen2?.tower?.legs as never), waters);
     assert.ok(cs.length >= 1, 'the toy has a ceiling');
     const line = (x: number) => Math.min(...cs.filter((c) => x >= c.x0 && x <= c.x1).map((c) => stack!.ceilingAt(c, x)));
     Object.assign(e, { currentStage: st, platforms: st.platforms, riverUnder: new WeakMap(), riverBankOf: new WeakMap(), paintKit: true });
@@ -322,7 +329,10 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
       }
       if (n && hit < n * 0.9) bare.push(`${s.what}: roots under the line at ${hit} of ${n} points`);
       // (the strip stays over its own span: no strip-sized draw starts left of x0 or ends right of x1, under the line)
-      const out = r.draws.filter((d) => d.box[3] - d.box[1] > 60 && d.box[3] - d.box[1] < 200 && d.box[1] < line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) && d.box[3] > line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) + 4 && (d.box[0] < s.x0 - 0.01 || d.box[2] > s.x1 + 0.51) && d.box[2] > s.x0 - 40 && d.box[0] < s.x1 + 40);
+      // (paint, not a box: a fill whose clips hold a point just past an end, under the line. A neighbouring pool's water tile is 476 wide
+      //  and clipped to its own span; with the descent's pools lidded (ENG-GROUND-d) the second pool's tile box reached over the first's end)
+      const past = (d: RecordingCtx['draws'][number]) => [s.x0 - 1, s.x0 - 8, s.x1 + 1, s.x1 + 8].some((x) => { const y = line(x) + 6; return Number.isFinite(y) && x >= d.box[0] && x <= d.box[2] && y >= d.box[1] && y <= d.box[3] && d.clips.every((c) => inside(c.polys, c.evenodd, x, y)); });
+      const out = r.draws.filter((d) => d.box[3] - d.box[1] > 60 && d.box[3] - d.box[1] < 200 && d.box[1] < line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) && d.box[3] > line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) + 4 && (d.box[0] < s.x0 - 0.01 || d.box[2] > s.x1 + 0.51) && d.box[2] > s.x0 - 40 && d.box[0] < s.x1 + 40 && past(d));
       if (s.river && out.length) spill.push(`${s.what}: ${out.length} strip columns past its ends`);
       // (the strip's ragged edge runs ON the line along every column, both ends: ENG-GROUND-c's re-shoot found each 16-unit column
       //  set at the lower of its two ends, so the edge stepped by up to the line's rise over a column: stairs every 16 units)

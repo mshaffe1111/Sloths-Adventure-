@@ -28,7 +28,8 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
-import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, type Ceiling, type StackZone } from './groundStack.ts';
+import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, type Ceiling, type StackZone, type UpperWater } from './groundStack.ts';
+import { riverPaintFoot } from './riverArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -75,9 +76,12 @@ let stackZones: readonly StackZone[] = [];
 /** the stage's rivers (its x0..x1 and surface), set with the zones: a bank's underside that ends beside an upper leg's river runs on
  *  under the river's own (riverUnderside), so its end is not open to the air (the painted corner goes only where it is) */
 let stackRivers: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }> = [];
-export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }>) {
+/** the same rivers as the ceilings see them: each with the foot of its own paint (an upper leg's pool is never cut above its bed) */
+let stackWaters: readonly UpperWater[] = [];
+export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: ReadonlyArray<{ x0: number; x1: number; surfaceY: number; safe?: unknown }>) {
   stackZones = z ?? [];
   stackRivers = stackZones.length ? rivers ?? [] : [];
+  stackWaters = stackRivers.map((r) => ({ x0: r.x0, x1: r.x1, top: r.surfaceY, foot: riverPaintFoot(r.surfaceY, !!(r as { safe?: unknown }).safe) }));
 }
 /**
  * The ceilings over a river of an upper leg (its surface above the line all along x0..x1), or null: engine.ts drawRivers ends the river's
@@ -88,7 +92,7 @@ export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: Re
 export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY: number): Ceiling[] | null {
   if (!stackZones.length) return null;
   const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
-  const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones);
+  const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
   return over.length ? over : null;
 }
@@ -1429,7 +1433,7 @@ function groundLine(banks: Platform[]): DepthAt {
 function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }) {
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
   // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts. None where no leg is stacked)
-  const cs = stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones) : [];
+  const cs = stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters) : [];
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);

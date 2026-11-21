@@ -245,6 +245,22 @@ export function drawRiverWater(
   return true;
 }
 
+/**
+ * How far down a river's own paint reaches under its surface before the soil under it (drawRiverWater): a still pool's shallow strip down
+ * to its bed's foot, a deep river's painted strip (the flat deep fill below it is water too, but has no picture to slice). A ceiling over an
+ * upper leg's river never runs higher than this, so the water stands whole and only the soil under it ends there (groundStack.ts
+ * UpperWater, ENG-GROUND-d). Pure: from the river's kind, not from whether its sheet has loaded, so the ceiling is the same every frame.
+ */
+export function riverPaintFoot(surfaceY: number, safe: boolean): number {
+  if (safe) {
+    const L = RIVER_LOOK.safe;
+    return surfaceY - L.h * L.crest + L.h - 2;
+  }
+  const f = W2_FRAMES.water;
+  const th = (WATER_TILE * f.h) / f.w;
+  return surfaceY - th * 0.045 + (th * (f.h - WATER_FRAY)) / f.h - 1;
+}
+
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */
 /** a floating log's bob on the current (px): its painting and its waterline (drawSafeRiverOver) move together */
 export const logBob = (p: Pick<Platform, 'id'>, t: number): number => Math.sin(t * 2.3 + p.id * 1.7) * 1.5;

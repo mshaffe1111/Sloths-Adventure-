@@ -39,6 +39,13 @@ const END_SLOPE = 1.1;
 /** an area a lay marks as a lower leg (gen2 legs.ts LaidLeg: a run leg laid under another): only pieces inside one feed a ceiling */
 export interface StackZone { x0: number; x1: number; y0: number; y1: number }
 
+/**
+ * An upper leg's water as the ceiling sees it (protoArt.ts setGroundStacks, from the stage's rivers): its x, its surface and the foot of its
+ * own paint (the water and, for a still pool, its bed: riverArt.ts riverPaintFoot). The line never runs higher than that foot over it, so a
+ * pool stands whole over the lower leg and only the soil under its bed ends at the ceiling (ENG-GROUND-d: the descent's pools on the toy).
+ */
+export interface UpperWater { x0: number; x1: number; top: number; foot: number }
+
 export interface Ceiling {
   /** the line: ys[i] is the ceiling at x0 + i * STEP (the wobble in); x1 its last sample's x */
   x0: number;
@@ -67,12 +74,28 @@ export function wobble(x: number): number {
 /**
  * The stage's ceilings: every static piece he stands on that lies under a bank of earth with a clear gap of HEADROOM or more under the
  * bank's collider (a pit's floor tucked under a bank's end is not: no headroom), inside `zones` when given; grouped by x (a river's width
- * apart is one group), each group's line laid as above.
+ * apart is one group), each group's line laid as above. Inside zones, whatever another leg stands over the band counts too, not only its
+ * painted banks: its other static pieces (the descent's stairs) and its water (`waters`, the still pools between the stairs), each with his
+ * height and the underside's hang clear under it (ENG-GROUND-d: the pools ran their water, bed and soil down over the floor at the
+ * descent's foot, two columns, because no bank stood over that floor).
  */
-export function findCeilings(platforms: readonly Platform[], banks: readonly Platform[], zones?: readonly StackZone[]): Ceiling[] {
-  const inZone = (q: Platform) => !zones || zones.some((z) => q.x + q.width / 2 >= z.x0 && q.x + q.width / 2 <= z.x1 && q.y >= z.y0 - 2 && q.y <= z.y1 + 2);
+export function findCeilings(platforms: readonly Platform[], banks: readonly Platform[], zones?: readonly StackZone[], waters: readonly UpperWater[] = []): Ceiling[] {
+  const inZone = (x: number, y: number) => !zones || zones.some((z) => x >= z.x0 && x <= z.x1 && y >= z.y0 - 2 && y <= z.y1 + 2);
+  const zoned = (q: Platform) => inZone(q.x + q.width / 2, q.y);
+  const bankSet = new Set(banks);
+  // (the other leg's pieces and water over a zone's band: only where zones are given, so a stage that stacks no leg draws as before)
+  const others = zones ? platforms.filter((p) => isStatic(p) && !bankSet.has(p) && !zoned(p)) : [];
+  const wet = zones ? waters.filter((w) => !inZone((w.x0 + w.x1) / 2, w.top)) : [];
+  const clear = HIS_H + UNDER_HANG;
   const lower = platforms
-    .filter((q) => isStatic(q) && inZone(q) && banks.some((p) => p !== q && overlap(p, q) > 8 && q.y >= p.y + p.height + HEADROOM))
+    .filter(
+      (q) =>
+        isStatic(q) &&
+        zoned(q) &&
+        (banks.some((p) => p !== q && overlap(p, q) > 8 && q.y >= p.y + p.height + HEADROOM) ||
+          others.some((p) => p !== q && overlap(p, q) > 8 && q.y >= p.y + p.height + clear) ||
+          wet.some((w) => Math.min(w.x1, q.x + q.width) - Math.max(w.x0, q.x) > 8 && q.y >= w.foot + clear)),
+    )
     .sort((a, b) => a.x - b.x);
   const groups: Platform[][] = [];
   let end = -Infinity;
@@ -85,10 +108,10 @@ export function findCeilings(platforms: readonly Platform[], banks: readonly Pla
     }
     end = Math.max(end, q.x + q.width);
   }
-  return groups.map((g) => line(g, banks));
+  return groups.map((g) => line(g, banks, others, wet));
 }
 
-function line(g: Platform[], banks: readonly Platform[]): Ceiling {
+function line(g: Platform[], banks: readonly Platform[], others: readonly Platform[], wet: readonly UpperWater[]): Ceiling {
   const a = Math.floor((Math.min(...g.map((q) => q.x)) - SIDE) / STEP) * STEP;
   const b = Math.max(...g.map((q) => q.x + q.width)) + SIDE;
   const n = Math.ceil((b - a) / STEP) + 1;
@@ -118,11 +141,15 @@ function line(g: Platform[], banks: readonly Platform[]): Ceiling {
   for (let i = n - 1; i >= 0; i--) right[i] = Math.min(c[i], i < n - 1 ? right[i + 1] : Infinity);
   for (let i = 0; i < n; i++) c[i] = Math.min(c[i], Math.max(left[i], right[i]));
   // the wobble, upward; and never into an upper bank's own collider (a lay that leaves him less air keeps its earth's body: its line is
-  // its collider's foot there)
+  // its collider's foot there), nor another upper piece's; and never higher than an upper water's own paint over it (the samples either
+  // side of it too, so the line between them stays under it): the pool stands whole, its bed on the line, and only its soil ends there
+  // (a pool whose surface was under the line kept no lid at all and ran to the view's foot: ENG-GROUND-d)
   const ys = c.map((y, i) => {
     const x = a + i * STEP;
     let v = y - wobble(x);
     for (const p of banks) if (x >= p.x && x <= p.x + p.width && p.y < v && p.y + p.height + 6 > v) v = p.y + p.height + 6;
+    for (const p of others) if (x >= p.x && x <= p.x + p.width && p.y < v && p.y + p.height + 6 > v) v = p.y + p.height + 6;
+    for (const w of wet) if (x > w.x0 - STEP && x < w.x1 + STEP && v < w.foot) v = w.foot;
     return v;
   });
   return { x0: a, x1: a + (n - 1) * STEP, ys, lower: g };
@@ -331,10 +358,10 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
 const underSheet = (w: number): CanvasImageSource | null => (underFrames(w) ? groundSheetImage(w) : null);
 
 /** the stage's ceilings, kept while its platforms, banks and zones are the same (the painted ground asks once a square) */
-let memo: { plats: readonly Platform[]; sig: number; zones: readonly StackZone[] | undefined; cs: Ceiling[] } | null = null;
-export function ceilingsFor(platforms: readonly Platform[], banks: readonly Platform[], sig: number, zones: readonly StackZone[] | undefined): Ceiling[] {
-  if (memo && memo.plats === platforms && memo.sig === sig && memo.zones === zones) return memo.cs;
-  memo = { plats: platforms, sig, zones, cs: findCeilings(platforms, banks, zones) };
+let memo: { plats: readonly Platform[]; sig: number; zones: readonly StackZone[] | undefined; waters: readonly UpperWater[]; cs: Ceiling[] } | null = null;
+export function ceilingsFor(platforms: readonly Platform[], banks: readonly Platform[], sig: number, zones: readonly StackZone[] | undefined, waters: readonly UpperWater[] = []): Ceiling[] {
+  if (memo && memo.plats === platforms && memo.sig === sig && memo.zones === zones && memo.waters === waters) return memo.cs;
+  memo = { plats: platforms, sig, zones, waters, cs: findCeilings(platforms, banks, zones, waters) };
   return memo.cs;
 }
 
@@ -343,11 +370,17 @@ interface LegBox { travel: string; x0: number; x1: number; y0: number; y1: numbe
 /**
  * The zones the lay stacks (ENG-GROUND, the lead's ruling (b)): each run leg (right or left) laid wholly under another run leg it shares
  * x with. Only these feed a ceiling, so a stage whose lay stacks no leg draws exactly as before (1-4's summit and 7-4's ruin banks stand
- * over walkable ground without being legs: R-165.376).
+ * over walkable ground without being legs: R-165.376). A leg that comes DOWN into such a band from over it (the toy's descent: its stairs
+ * and still pools stand over the floor at their foot, past the out leg's end) stands over the band along its whole x, so the band's zone
+ * runs on under it, ends included (ENG-GROUND-d: no zone there, no ceiling, and the descent's pools ran to the view's foot).
  */
 export function stackZonesOf(legs: readonly LegBox[] | undefined): StackZone[] {
-  const run = (legs ?? []).filter((l) => l.travel === 'left' || l.travel === 'right');
-  return run
-    .filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + HIS_H))
-    .map((l) => ({ x0: l.x0, x1: l.x1, y0: l.y0, y1: l.y1 }));
+  const all = legs ?? [];
+  const run = all.filter((l) => l.travel === 'left' || l.travel === 'right');
+  const lowers = run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + HIS_H));
+  const zones: StackZone[] = lowers.map((l) => ({ x0: l.x0, x1: l.x1, y0: l.y0, y1: l.y1 }));
+  for (const l of lowers)
+    for (const d of all)
+      if (d !== l && !lowers.includes(d) && d.y0 < l.y0 - HIS_H && d.y1 >= l.y0 && (d.x0 < l.x0 || d.x1 > l.x1)) zones.push({ x0: d.x0, x1: d.x1, y0: l.y0, y1: l.y1 });
+  return zones;
 }
