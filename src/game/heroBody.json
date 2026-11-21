@@ -681,70 +681,70 @@
   },
   "hero-atlas": {
    "sheet": "src/assets/hero/hero-atlas.webp",
-   "sheet_sha256": "bed6e6982cf37a93a450060e59ceb5ed754c52e7ab82de3b853b2744cdbea897",
+   "sheet_sha256": "710885770503c4b6797a1cfed11fae4fc4ef90c00e4df097a773f07378d8e4cf",
    "frames": 29,
-   "frame_max": 9.407,
-   "frame_max_at": 19,
-   "pooled": 4.192,
+   "frame_max": 0.148,
+   "frame_max_at": 11,
+   "pooled": 0.01,
    "fur_lab": [
-    58.74,
-    16.1,
-    33.42
+    60.4,
+    16.52,
+    29.59
    ],
-   "step_median": 2.483,
-   "step_max": 6.73,
-   "loop_seam": 2.115,
+   "step_median": 0.064,
+   "step_max": 0.156,
+   "loop_seam": 0.051,
    "bands": {
     "climb": {
-     "light": 10.368,
-     "dark": 6.375
+     "light": 4.344,
+     "dark": 2.563
     },
     "duck": {
-     "light": 5.927,
-     "dark": 4.251
+     "light": 6.199,
+     "dark": 6.035
     },
     "fall": {
-     "light": 6.127,
-     "dark": 3.447
+     "light": 4.321,
+     "dark": 3.202
     },
     "guard": {
-     "light": 3.522,
-     "dark": 2.652
+     "light": 0.526,
+     "dark": 1.642
     },
     "hurt": {
-     "light": 2.089,
-     "dark": 2.74
+     "light": 2.512,
+     "dark": 3.168
     },
     "idle": {
-     "light": 3.515,
-     "dark": 2.572
+     "light": 0.544,
+     "dark": 1.665
     },
     "jump": {
-     "light": 6.62,
-     "dark": 5.699
+     "light": 3.239,
+     "dark": 1.65
     },
     "kick": {
-     "light": 4.902,
-     "dark": 4.611
+     "light": 4.169,
+     "dark": 3.764
     },
     "land": {
-     "light": 0.898,
-     "dark": 1.966
+     "light": 1.414,
+     "dark": 0.783
     },
     "mega": {
-     "light": 5.505,
-     "dark": 4.747
+     "light": 3.058,
+     "dark": 2.555
     },
     "punch": {
-     "light": 5.245,
-     "dark": 3.842
+     "light": 3.955,
+     "dark": 2.9
     },
     "run": {
-     "light": 5.504,
-     "dark": 4.044
+     "light": 4.23,
+     "dark": 3.08
     }
    },
-   "band_max": 10.368
+   "band_max": 6.199
   }
  }
 }

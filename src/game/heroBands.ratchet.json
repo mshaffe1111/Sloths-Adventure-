@@ -163,6 +163,150 @@
     "light": 1.106,
     "dark": 0.929
    }
+  },
+  "hero-atlas": {
+   "climb": {
+    "light": 4.344,
+    "dark": 2.563
+   },
+   "duck": {
+    "light": 6.199,
+    "dark": 6.035
+   },
+   "fall": {
+    "light": 4.321,
+    "dark": 3.202
+   },
+   "guard": {
+    "light": 0.526,
+    "dark": 1.642
+   },
+   "hurt": {
+    "light": 2.512,
+    "dark": 3.168
+   },
+   "idle": {
+    "light": 0.544,
+    "dark": 1.665
+   },
+   "jump": {
+    "light": 3.239,
+    "dark": 1.65
+   },
+   "kick": {
+    "light": 4.169,
+    "dark": 3.764
+   },
+   "land": {
+    "light": 1.414,
+    "dark": 0.783
+   },
+   "mega": {
+    "light": 3.058,
+    "dark": 2.555
+   },
+   "punch": {
+    "light": 3.955,
+    "dark": 2.9
+   },
+   "run": {
+    "light": 4.23,
+    "dark": 3.08
+   }
+  },
+  "hero-story": {
+   "alarm": {
+    "light": 6.872,
+    "dark": 5.905
+   },
+   "away": {
+    "light": 1.577,
+    "dark": 4.576
+   },
+   "cheer": {
+    "light": 7.266,
+    "dark": 7.071
+   },
+   "crossed": {
+    "light": 9.095,
+    "dark": 7.426
+   },
+   "farewell": {
+    "light": 5.651,
+    "dark": 8.171
+   },
+   "impatient": {
+    "light": 10.208,
+    "dark": 7.714
+   },
+   "look": {
+    "light": 4.18,
+    "dark": 4.125
+   },
+   "point": {
+    "light": 8.848,
+    "dark": 7.536
+   },
+   "resolve": {
+    "light": 9.232,
+    "dark": 7.842
+   },
+   "sad": {
+    "light": 6.699,
+    "dark": 6.587
+   },
+   "scared": {
+    "light": 10.314,
+    "dark": 8.537
+   },
+   "shock": {
+    "light": 9.781,
+    "dark": 8.117
+   },
+   "shout": {
+    "light": 8.599,
+    "dark": 7.821
+   },
+   "sleep": {
+    "light": 7.61,
+    "dark": 8.163
+   },
+   "slump": {
+    "light": 7.265,
+    "dark": 6.71
+   },
+   "sneak": {
+    "light": 8.746,
+    "dark": 7.809
+   },
+   "stance": {
+    "light": 8.734,
+    "dark": 7.771
+   },
+   "talk": {
+    "light": 5.143,
+    "dark": 5.144
+   },
+   "think": {
+    "light": 7.648,
+    "dark": 7.45
+   },
+   "thumbs": {
+    "light": 10.235,
+    "dark": 7.749
+   },
+   "tired": {
+    "light": 9.414,
+    "dark": 7.809
+   },
+   "wipe": {
+    "light": 8.793,
+    "dark": 7.383
+   },
+   "worried": {
+    "light": 11.143,
+    "dark": 8.838
+   }
   }
  }
 }
