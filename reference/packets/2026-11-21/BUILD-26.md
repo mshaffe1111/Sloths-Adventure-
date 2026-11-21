@@ -10,7 +10,7 @@ appearances :45, flags by the live rule :47, the phone both ways :49, the hand b
 PICKS-26-28.md lines 6-28 (the lead's picks); the ENGINE hand-over: `git show origin/t-eng-26c:reference/qa-reports/ENG-26f/REPORT.md`
 (its EXACT NEXT STEP for you and "What the 2-6 builder needs", which carries ENG-26c's G3/G4 data calls). Code by grep and line ranges.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: a new branch t-build-26 from origin/t-eng-26c at ENG-26f's final hash (the lead sends it; the top of its REPORT names it). Push there.
+BASE: a new branch t-build-26 from origin/t-eng-26c at 8b2438c74 (ENG-26f's hand-over). Push there.
 0. STEP 0 (rule 25): (a) in the BACKGROUND, the engine gates on your base head (tsc, the planted tests, the CI tool line, generality,
    coverage): any red is the engine's, tell me at once. (b) Your PLAN to me, then wait for my GO: the node string; one line per beat (piece,
    data field, the brick that replaces the draft's); G3 (a wider tower for 2-6, or a narrower millrace) and G4 (the flag spot before beat 5)
