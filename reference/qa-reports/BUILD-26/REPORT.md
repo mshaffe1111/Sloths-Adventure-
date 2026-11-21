@@ -18,11 +18,21 @@ worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with std
    132.1 s, all with no rescue. Then the plant (a toy in the towerRoute test: a turn's vine 5 px past the arrival, RED on today's line),
    castBots 1-4 and 2-6 x40 both settings row for row (any tower stage's route can move; 2-6 is a tower), rule 28.
 2. **Then 1-4 relists ONCE** (the lead's ruling), after every fix for its spots lands, and the yield on 1-400 (methods/seed-list.md).
-3. **Spots A (x 1036 Normal) and B (x 1115 Easy): NOT the C shape.** No two climbable vines a few px apart there; the shape is a turn vine
-   whose top stands **26 px past its bough's right end** (B: vine 5 x 1163 over s4:b 677-1137 @9858). That 26 px is EVERY turn vine on
-   1-4 (shape.mts on Normal 7 and Easy 17: s2, s4, s7, s9, s12, s15, s16, s17, s19, s21 all read "top 26 px past its right end"), the
-   bots climb the rest, so the stand-off alone is not the cause. BOT or LAY there is NOT proven in this box: trace the middle on Easy 10 at
-   x 1190 y 5005 (his 8 falls back) the way C was traced (print Progress cur/next and the pad per frame, on a frozen copy).
+3. **Spots A (x 1036 Normal) and B (x 1115 Easy): ONE shape, and NOT C's** (no two vines a few px apart; eng26o/trace-a-b.txt,
+   plats.mts). Section s3 is a raised row r1, r2, r3, z, 80 px over a lower floor s3:s, with the way-on vine 5 standing on z.
+   A (kid Normal 7): r1 364-474 @9987, r2 634-744, r3 744-854, z 854-1054, s3:s 334-974 @10067, vine 5 x 1036 (9706-9987). His hop
+   off r1 (a press at x 478, 15.07 s) rises 57 px and comes down at x 613 y 10058, short of r2's left end 634: onto s3:s. He walks
+   right on s3:s with the route 80 px over his head (pad {right}, no jump), off s3:s's end at 974 (62 px short of the vine) and down
+   281 px to 10348; rescued onto s4:b at 19.3 s. B (adult Easy 17): r1 366-524 @10139, r2 657-815, r3 775-933, z 933-1181, s3:s 334-1022
+   @10219, vine 5 x 1163: the same, a jump off r1 lands at x 682 on s3:s, he walks under z and off at 1022 (141 px short), 281 px down.
+   The vine's foot is out of his grab band from s3:s (80 px over him; the engine takes up to 25 px under a foot), so only a hop up
+   onto r2, r3 or z gets him to it, and in these traces no bot makes that hop. **BOT or LAY: NOT proven.** BOT if decide has no "the route is a
+   hop over my head on a thin bough: hop up" choice (the likelier, since 80 px is one plain jump); LAY if the floor under a hop row may
+   end short of the row's way on over a 281 px drop (a child walking it falls off the same end). Next: print decide's branch per frame
+   while he walks s3:s under z (A, kid Normal 7, 15.9-17.2 s), as C was traced.
+   **A third spot, middle Easy 10 at x 1102 (also on the head):** a 40 px step UP from s14:b (520-960 @5045) to s14:c (960-1208 @5005,
+   the turn vine 41 x 1190 on it). He walks right under s14:c's lip off s14:b's end and drops 320 px to 5365, 8 times. Same family as A
+   and B (a thin bough a hop above the floor he walks, never hopped onto). Not proven either.
 
 ## How C was proven (packet step 1)
 - **The placement probe again: still not a proof, and not used.** RealPlay.stand(x, y) takes his FEET (y = the bough's top; the bots'
