@@ -46,7 +46,13 @@ ORDER: (1) the lead's ruling on the two middle losses (RULED, below); (2) the ra
     634/634; suite 2/6 onward running. If the container died, re-run: `G=<logdir> H=<worktree at 484199316> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a`
     then `b`; `git fetch --unshallow` before roadmapcheck and the lock. All green: tell the lead 484199316 is the green ground head.
     Then THE FULL SET on t-eng-27's head (gates.md D96: chain a, b and the lock vs 0eefc707e: only 2-7's toy moves).
-(3) **B, boardLog's RED half**: unchanged from ENG-27j's B below (pacerLay.test 'a log drifting his way ... home Easy seed 1; RED without
+(3) **B: THE LEAD'S RULING (11-21, to ENG-27k): SCAN FIRST.** boardLog ON vs OFF (firsttimer.ts SKILLS.boardLog, line 708; its read
+    is underLip, line ~2786) over 2-1..2-7's listed seeds x40, both settings: `npx tsx tools/inspect/castBots.ts --stage <stage> --seeds
+    1-40` each way (level.md rule 28), plus 2-7's toy rows. NO row moves: retire boardLog WITH its test (the row diff is the proof).
+    Rows move: fix the wait point (underLip sends him on to the lip and waits THERE), the plant laid explicitly (one log, 64 px out of
+    240 when his look first reaches it), RED without the skill, GREEN with it; then rule 28's diff. The lead also: four falls at one
+    crossing inside 10 s is a bot that cannot read that crossing, not a fair race; the race and the invariant stay untouched.
+    Background, unchanged from ENG-27j's B below (pacerLay.test 'a log drifting his way ... home Easy seed 1; RED without
     it' still FAILS on 7c7fe2a9a: 85.2 vs 97.53, the race now wins without the skill). ENG-27j's trace (3) found the skill's wait point
     WRONG on the toy (it holds him at his look distance, 57 px short of the lip, and the longer hop lands near the log's front: the miss
     the skill was planted against, made by the skill). That is a bot change: ask the lead whether underLip should send him on to the
