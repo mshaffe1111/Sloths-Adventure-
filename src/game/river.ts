@@ -86,6 +86,20 @@ export interface RiverZone {
   raft?: boolean;
 }
 
+/** how deep a river's water runs under its surface (px): deeper than this he is UNDER the river, not in it (a leg laid under another,
+ *  gen2/legs.ts, runs beneath the out leg's rivers). A fall into a river is caught in its first frames (PHYS.maxFall 950 px/s is 32 px a
+ *  frame, and the engine takes him 8 px under the surface), so on a stage of one ground nothing changes */
+export const RIVER_DEPTH = 120;
+
+/** the river whose water he is in, or over, at (x, y): its window holds x and y is no deeper than RIVER_DEPTH under its surface; of two
+ *  that share x (a leg laid under another), the higher water. Never by x alone (ENG-27: on the home leg under the out leg's river the
+ *  engine read him as under its surface and took a life on every frame there) */
+export function riverAt<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number): R | undefined {
+  let best: R | undefined;
+  for (const r of rivers ?? []) if (x > r.x0 && x < r.x1 && y < r.surfaceY + RIVER_DEPTH && (!best || r.surfaceY < best.surfaceY)) best = r;
+  return best;
+}
+
 /** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */
 export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo, t: number): number {
   for (const r of rivers ?? []) if (r.flowT !== undefined && d.x0 >= r.x0 - 1 && d.x1 <= r.x1 + 1) return r.flowT;

@@ -108,7 +108,7 @@ import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawR
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, type DriftInfo } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, riverAt, type DriftInfo } from './river.ts';
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -2948,7 +2948,7 @@ export class GameEngine {
       if (this.splashedIn && (p.grounded || p.climbing || p.y < this.splashedIn.y - 30)) this.splashedIn = null;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
-      const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
+      const river = riverAt(this.currentStage.rivers, p.x, p.y);
       // a teaching pool under the floor (waterTeach.ts, LV-8): a splash and back on the bank, no life
       const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
