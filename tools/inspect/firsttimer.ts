@@ -134,7 +134,7 @@ const SNAP_THUMB = 0.1;
  * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home. HOP-BACK:
  * on that walk back, stopped dead against a face (a boulder on the mud), a plain hop over it (ENG-CAGE). FETCH-CLOCK: the stuck clock holds
  * while he walks back for a spooked one and starts over when he has it; three fetches with no step further are a loop (ENG-CAGE-b).
- * NO-LINE-GO: with nobody following him (no little one in his line) there is nothing for a look to catch: he does not wait in the reeds
+ * NO-LINE-GO: with nobody following him (none freed yet, or all home) there is nothing for a look to catch: he does not wait in the reeds
  * for one (BUILD-23e; a heron's calm runs only with him or a follower on its stretch, so in a clump's first 40 px before it he waited
  * for a look that never came: cageBot's skill-off run timed out at 900 s instead of reaching the sealed door).
  */
@@ -2219,8 +2219,9 @@ export class FirstTimerRun {
     }
     if (!LINE_SKILL.waitTail || !p.grounded) return null;
     if (!mine.length) return null;
-    // (no line, no wait: nobody follows him, so no look can catch one; he walks on through the reeds and the stretch)
-    if (LINE_SKILL.noLineGo && !fp.line.some((f) => f.state === 'follow' || f.state === 'join')) {
+    // (no line, no wait: nobody freed yet, or all home, so no look can catch one; he walks on through the reeds and the stretch. A line
+    // all spooked and running back is still his line: he waits for it as before, so no other run moved, castBots 2-3 BUILD-23e)
+    if (LINE_SKILL.noLineGo && !fp.line.some((f) => f.state !== 'home')) {
       this.lineGo = null;
       this.lineWait = null;
       return null;
