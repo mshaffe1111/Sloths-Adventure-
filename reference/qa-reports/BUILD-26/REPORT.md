@@ -18,6 +18,13 @@ Tree (D115): frozen detached worktree at 2f188c552, node_modules linked.
    grabs when he presses up at x 781-790 on s17:top (the vine finder), on a COPY of 2f188c552. If it is f1 (or he flips between them),
    the fix is general in the lay: a vine standing on a piece keeps a stand-off (at least his body, 44 px; CLIMB_CLEAR's sense) from every
    vine hung under that piece, with a verdict planted RED on Easy 10 and 37; then the relist, the yield and castBots x40 as below.
+   What I read at the box: the engine's pick (src/game/engine.ts, the tree_climb loop near `fromAbove`) skips a field vine from on top of
+   its gate (`fromAbove`: not taken by its very top from above; `overShut`: not from on a shut gate's bough), and takes the FIRST vine in
+   the list within climbReach. So the engine alone may well take the way on; the bot's choice is then the suspect (BOT), and the 5 px
+   pair still the likeliest thing that misleads it. My probe (eng26n/probe.mts: stand him on s17:top at x 600-764, hold up 60 frames)
+   is **INCONCLUSIVE, not claimed**: `RealPlay.stand(x, y)` sets his body's top, and both my placements dropped him off the bough on
+   BOTH trees (OLD too), so it says nothing yet. Fix the placement (feet on the bough: y = bough.y - p.height, then settle a frame on it)
+   before reading it.
 1. **Seed lists (heavy run 1, done):** 2-6 PASS 100/100 (it has no sealed piece; nothing of it moved). 1-4: the verdicts refuse 0 of 100
    listed seeds, but 10 replay a different layout from their search (seeds 1, 2, 5, 6, 7, 8, 10, 14, 16, 18, both settings: "rebuild the
    list"), so 1-4 MUST be relisted if 2f188c552 stays.
