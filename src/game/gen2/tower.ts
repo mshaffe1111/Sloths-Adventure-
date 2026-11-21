@@ -413,13 +413,14 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
  */
 export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false,
   /** boxes no bough may lie in (a water wheel's sweep and its rider over it, ENG-26: a bough there knocks him out of his bucket) */
-  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = []): Array<{ x: number; y: number; w: number; level: number; gate?: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
-  const out: Array<{ x: number; y: number; w: number; level: number }> = [];
-  const put = (x0: number, x1: number, y: number, L: number) => {
-    const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
+  const out: Array<{ x: number; y: number; w: number; level: number; gate?: number }> = [];
+  /** `gate`: the id of the shut gate whose running walk-off this bough catches (towerGateCatches proves it) */
+  const put = (x0: number, x1: number, y: number, L: number, gate?: number) => {
+    const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L, ...(gate !== undefined ? { gate } : {}) };
     out.push(c);
     const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
     all.push(p);
@@ -516,14 +517,41 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       for (const q of all) if (q.type === 'solid' && q.y > top && q.y <= last && q.x < x0At(q.y) + TOWER.catchW && q.x + q.width > x0At(q.y)) ys.push(q.y);
       for (const y of ys.sort((a, b) => a - b)) {
         const x0 = x0At(y);
-        const L = takes(x0, x0 + TOWER.catchW, y) ? fair(x0, x0 + TOWER.catchW, y, Le, []) : -1;
+        // (under a gate's run, reached by nothing but a fall off that gate: the verdict's own proof, towerGateCatches)
+        const gateRun = sealed(e.p);
+        const L = takes(x0, x0 + TOWER.catchW, y) && !(gateRun && gateCatchReached({ x: x0, y, width: TOWER.catchW }, e.p, all, vines)) ? fair(x0, x0 + TOWER.catchW, y, Le, []) : -1;
         if (L < 0) continue;
-        put(x0, x0 + TOWER.catchW, y, L);
+        put(x0, x0 + TOWER.catchW, y, L, gateRun ? e.p.id : undefined);
         added++;
         break;
       }
     }
     if (!added) break;
+  }
+  return out;
+}
+
+/** what reaches a catch laid under a gate's running walk-off (towerCatches) other than a fall off that gate: a jump or a drop (LEAP,
+ *  generous: `leaps`) from any other standable piece, or a hop off the top of a climbing vine; undefined: nothing */
+function gateCatchReached(c: Box, gate: Platform, platforms: readonly Platform[], vines: readonly Vine[]): string | undefined {
+  const R = Math.round;
+  const q = platforms.find((p) => p !== gate && p.type !== 'bouncy' && p.type !== 'fragile' && !(p.x === c.x && p.y === c.y && p.width === c.width) && leaps(p, c));
+  if (q) return `the piece at x ${R(q.x)}-${R(q.x + q.width)}, y ${R(q.y)}`;
+  const v = vines.find((t) => t.vineType === 'tree_climb' && leaps({ x: t.x - 1, y: t.topY, width: 2 }, c));
+  return v ? `the top of the vine at x ${R(v.x)}` : undefined;
+}
+
+/**
+ * A gate's run catches (towerCatches: the bough under where a running walk-off off a shut gate comes down), each by name when anything
+ * but a fall off its gate reaches it (empty: none). A gate must be a gate (types.ts `sealed`): its catch is a recovery, a hop back onto
+ * the gate, never a way onto the gate from the storey under it or from anywhere else. `catches`: each bough with its gate.
+ */
+export function towerGateCatches(catches: ReadonlyArray<readonly [Platform, Platform]>, platforms: readonly Platform[], vines: readonly Vine[]): string[] {
+  const R = Math.round;
+  const out: string[] = [];
+  for (const [c, g] of catches) {
+    const by = gateCatchReached(c, g, platforms.filter((p) => p !== c), vines);
+    if (by) out.push(`tower: the catch under the gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} (x ${R(c.x)}-${R(c.x + c.width)}, y ${R(c.y)}) is reached by ${by}, not only by a fall off the gate`);
   }
   return out;
 }

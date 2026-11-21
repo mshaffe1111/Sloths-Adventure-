@@ -20,7 +20,7 @@ import type { RiverZone } from '../river.ts';
 import { LAND_FLIGHTS } from './landFlights.data.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateCatches, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -658,6 +658,13 @@ test('towerCatches: a gate\'s RUNNING walk-off that lands by the wall past a vin
     assert.ok(!(Math.abs(c.y - hang.topY) <= 6 && c.x <= hang.x + 30 && c.x + c.w >= hang.x - 30), `nothing over the vine's top: ${JSON.stringify(c)}`);
   }
   assert.deepEqual(towerGates([gate], laid, [hang]), []);
+  // (the lead's proof: the gate's catch is reached ONLY by a fall off the gate. The cure's catch passes; a toy catch 150 px over the storey
+  // under the gate, which that storey jumps onto, is refused by name)
+  const mine = cs.map((c, k) => [c, laid[P.length + k]] as const).filter(([c]) => c.gate === gate.id).map(([, q]) => [q, gate] as const);
+  assert.equal(mine.length, 1, `one catch is the gate's (${JSON.stringify(cs)})`);
+  assert.deepEqual(towerGateCatches(mine, laid, [hang]), []);
+  const toy = solid(1076, under.y - 150, 180, 90);
+  assert.match(towerGateCatches([[toy, gate]], [...laid, toy], [hang]).join(';'), /^tower: the catch under the gate at x 646-1086, y 1000 \(x 1076-1256, y 1250\) is reached by the piece at x 566-1166, y 1400, not only by a fall off the gate/);
   // (a step off a gate's end is still its own section's to catch: the gate alone gets no catch of its own, as before)
   assert.equal(towerFalls('up', [floor, gate, ...towerCatches('up', [floor, gate], [], 3000, 1280, [], level, sealed).map((c, k) => solid(c.x, c.y, c.w, 50 + k))], 3000, 1280).length, 2);
 });
