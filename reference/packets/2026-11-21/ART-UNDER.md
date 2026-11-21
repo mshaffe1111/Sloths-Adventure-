@@ -16,6 +16,6 @@ THE ORDER (ENG-GROUND's spec, the lead's GO, CAP $1.50, terminate at the cap, pu
 2. One CORNER, 384x576, where the underside turns up into a bank's end face (mirrored in code for the other side).
 3. Takes: 4 per piece; a contact sheet per piece at game size beside Pokey, light and dark, frame-edge flags; send me the sheets; I pick.
 4. After my pick: cut, catalogue (inventory rows: World 2, layer, footing none, ship size, how the engine uses it: 'ground underside' and
-   'underside corner'), artcheck PASS, the art tests; tell ENG-GROUND's successor the inventory ids (the engine hook draws them by id).
+   'underside corner'), artcheck PASS, the art tests; match the engine hook already on origin/t-eng-ground (groundStack.ts underFrames: it reads the ground sheet's `unders`, ids w2#under0..2, each with an `edge` field; read its doc comment by grep and give the rows exactly those ids and fields; the corner's id as the hook names it, or tell me if it names none).
 REPORT reference/qa-reports/ART-UNDER/REPORT.md: spend, takes, picks, cuts, rows, gates, EXACT NEXT STEP, lessons applied.
 Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Rulings arrive with priority 'next'.
