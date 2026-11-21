@@ -1,5 +1,14 @@
 # ENG-27i REPORT (handed over at the D111 box, 28 min; rewritten 4:02 PM ET by date; first written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
-## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90). Start at step 1 (the merge, on the lead's hash); 1a is done
+## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90). 1a is done. ORDER (the lead's): G, R, then 1, 2, 3
+G. **The gates on 2d4e0752a first, IN THE BACKGROUND** (origin/t-eng-ground's head, ENG-GROUND-e: "the corner"): a frozen worktree at
+   2d4e0752a, CLAUDE.md "Checks" in order (gates.md); read only tails and failures. Nothing else edits that tree while they run.
+R. **The re-plant (the lead's ruling on pacerLay's three planted RED halves; see the TRIED note in step 1):** never loosen, never retire a
+   test while its skill lives. Re-plant each where its cause still lives: build the toy so the cause is laid EXPLICITLY (the pool or gap it
+   needs, not whatever the generator lays there), RED without the skill and GREEN with it, on the MERGED ground (so: on the trial merge
+   with ours lip, then carried into the real merge). The three: ENG-27f's fromTakeoff plants, post Normal seeds 4 and 5 (a stand 165 px
+   before a 133 px safe pond, x 6591; a stand 107 px back on a log, 72 px past its front, x 2749), and ENG-27g's boardLog plant, home
+   Easy seed 1 (a log drifting his way still mostly under the lip). Only if a scan of 2-1..2-7's listed seeds finds the cause NOWHERE after
+   the merge, retire the skill WITH its test, proven by a rule-28 row-for-row diff showing nothing moves.
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
    Rule 28 is DONE for the refined boardHop (below): do not re-run it. Its tools: r28patch-27i.py.txt (the refined skill for every tree),
    r28-runner-27h.ts.txt, r28diff-27h.py.txt; probes r28moved/r28lives/r28fire-27i.py.txt, bhfire-27i.ts.txt (+ r28probe-27i.diff.txt:
@@ -24,7 +33,7 @@
    runs that parted at the first fire (likely: it puts the child on logs, where the ride's own faults take him; the off runs' log share was not counted). Sent to the lead.
    Lead's rulings in hand: dblShare's upgrade of a
    boarding single STAYS (BOTS.md calibration); the ride's hop off a drifting log falling short is R-165.381, after 2-7 ships, left alone.
-1. **The merge** (packet step 3): origin/t-eng-ground at the lead's green hash (ENG-GROUND-e; none had come at this handover), --no-ff.
+1. **The merge** (packet step 3): origin/t-eng-ground at the lead's green hash (2d4e0752a once G is green), --no-ff.
    A trial on 8a2257760 gave the two conflicts ENG-27g mapped, nothing else: engine-core.md (keep both sections; replace our line 18
    "groundStack (t-eng-ground, NOT merged here yet)..." with its real line, pointing at §0zq-GROUND) and w2.ts lip() (ours
    `p.y >= y - 2 && p.y <= y + LIP_RISE` sits inside theirs `p.y <= y + LIP_RISE && p.y >= y - LIP_RISE`; ours also rejects their
@@ -33,8 +42,7 @@
    legsHome, pacerBehindBanks all pass. The 3 fails are pacerLay's planted RED halves, and they fail with THEIRS lip too (28/31):
    ENG-27f's fromTakeoff plants post Normal seeds 4 and 5 and ENG-27g's boardLog plant home Easy seed 1, "without the skill the plant must
    lose", now WIN without it (97.9 s vs boat 100.76; 100.5 vs 103.44; 85.2 vs 97.53): the merged ground took away the descent pools these
-   plants were set on (the lead's ruling), so the cause is no longer on the toy. Do NOT loosen them (law 22): ask the lead to re-plant each
-   on a roll where its cause still lives (2-x rule-28 rows the skill moved, e.g. ENG-27g's castdiff rows) or retire it with its cause.**
+   plants were set on (the lead's ruling), so the cause is no longer on the toy. Do NOT loosen them (law 22): the lead's ruling is step R above.**
    Then tsc + pacerLay + pacerBehindBanks + groundStack + legsHome + postLay + w2.test (paths: src/game/gen2/{pacerLay,legsHome,postLay}.test.ts,
    src/game/gen2/worlds/w2.test.ts, src/game/{groundStack,pacerBehindBanks}.test.ts); engine-core.md.
 2. The race table on the merged head: raceprobe-27e.ts.txt as tools/inspect/_race.ts, `npx tsx tools/inspect/_race.ts <middle|expert|ride> <home|post>`
