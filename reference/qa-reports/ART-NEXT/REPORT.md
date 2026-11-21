@@ -13,8 +13,8 @@ because each old clip drifts in colour over its 49 frames while the bridge out w
 3. Bar: every step 0->1, N-2->N-1 and at the joins within 2x the inner median and under dE 1 (lead: never over 3, never above the
    bridge's own steps). Then `idleends.py` (re-pins the JSON), `npx tsx --test src/game/heroClipsEnds.test.ts`, `catalogclips.py
    idle-yawn,look-around,wave,belly-scratch` + `catalog_master.py --emit`, sizes, and re-shoot the 1-1 pair + yawn
-   (`node tools/art/hfnext/idleshoot.mjs <out> 1-1 3.7 4.7 40` and `... 1-1 0.3 9.0 60`), rebuild before-after-idle-start.jpg and
-   yawn-1-1-strip.jpg/mp4 (the inline python in this task's step-4 commit b33827a33 message is the recipe: see git log). Gates again.
+   (`node tools/art/hfnext/idleshoot.mjs <out> 1-1 3.7 4.7 40` and `... 1-1 0.3 9.0 60`), then `python3 -I tools/art/hfnext/idlepair.py <after dir> <yawn dir>`
+   (rebuilds before-after-idle-start.jpg, yawn-1-1-strip.jpg, yawn-1-1-game-speed.mp4). Gates again, the full unit suite included.
 ## Picks and bakes (the lead's)
 - B1 s23 -> idle-yawn + look-around; B3 s11 -> wave (--pin-feet; feet off the line max 3.1 / 4.8 px before the pin). 81 frames each.
 - NEW belly-scratch = SC s19 (plain pinned first and last; bridgebake --replace; feet within 0.5 px; bag + strap every frame). 41 frames.
