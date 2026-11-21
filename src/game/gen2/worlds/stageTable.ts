@@ -66,7 +66,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '2-2': { kit: 'w2-22', judged: 'normal-2-2' },
   // (2-3 Stuck in the Reeds: the designed arc, w2Arc23.ts, its own kit 'w2-23' (kitLib23, finish23), BUILD-23 11-20: the little ones
   //  follow him home (ENG-23's follow.ts) past the heron (World 2's watcher through stillLay.ts); the hand-built 2-3 (w2Stages.ts) is deleted)
-  '2-3': { kit: 'w2-23' },
+  // (judged on its own flown rows, flownArcs.ts normal-2-3, BUILD-23d 11-21)
+  '2-3': { kit: 'w2-23', judged: 'normal-2-3' },
   // (2-4 Never Touch the Bank: the designed arc, w2Arc24.ts, its own kit 'w2-24' (kitLib24), BUILD-24 11-18: lianas over log rivers
   //  (ENG-24's place `river` after a liana); the hand-built 2-4 (w2Stages.ts) is deleted. Judged on its own flown rows, flownArcs.ts normal-2-4)
   '2-4': { kit: 'w2-24', judged: 'normal-2-4' },
