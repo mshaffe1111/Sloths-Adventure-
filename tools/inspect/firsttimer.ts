@@ -987,7 +987,18 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
  * (`hold2`), and the beat with no steer (`upOnly`). Drawn once per wait (FirstTimerRun.drawHop, by the testers' habit), judged by
  * hopFlies from where he stands, and flown unchanged by startJump.
  */
-export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; dblAt: number; hold2: number; upOnly: number };
+export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; dblAt: number; hold2: number; upOnly: number; thumb?: DrawnThumb };
+/**
+ * The thumb's fumbles for a gate's hop (ENG-27o; ENG-27n's root for 2-7 home middle Normal 2 x 14674's lost double: the steer back came
+ * the thumb's travel late, which the judge did not fly), pre-drawn on the judge's own stream (rHop) with the hop, one entry per frame
+ * from the press (index 0: the press frame): `drift`, the px the thumb drifts held the same way; `slip`, a slip's frames with no steer
+ * (-1: none); `release`, the late lift-off's frames at a let-go (clamped to releaseMax). hopFlies flies them; thumbify, on the gate hop's
+ * frames, uses them in place of its own draws (still made, so the main stream is as ever).
+ */
+export type DrawnThumb = { drift: number[]; slip: number[]; release: number[] };
+/** the thumb at a judgment (FirstTimerRun.thumbify's state): the steer it holds, its drift, the late lift-off armed and left, and when
+ *  the travel and a slip end (s from the judgment), with the habit (thumbSpeed, a tier bot's one lift-off per let-go) */
+export type ThumbAt = { last: -1 | 0 | 1; driftPx: number; armed: boolean; releaseLeft: number; travel: number; slip: number; speed: number; once: boolean };
 /**
  * Does the drawn hop `h`, pressed from (x, y) at game time t0 (at `vx0`), come down on float `q` (`at(t)`: where it is), `margin` px in
  * from either end, inside its river's window? hopLandsOn's flight, flown as FirstTimerRun's jump steer flies it: no steer for the first
@@ -995,10 +1006,12 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
  * own frame, a frame longer than the first press's count, as the engine flies it); and, falling over the small float he comes down on, the
  * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
  */
-export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV): boolean {
+export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt): boolean {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   let until = h.hold;
   let pressed2 = false;
+  // (the thumb's own state, flown frame by frame as thumbify plays it: a copy, so each float judged starts from the same thumb)
+  const th = thumb && h.thumb ? { ...thumb } : null;
   for (let i = 1; i < 75; i++) {
     const age = (i - 1) * DT;
     const prev = b.y;
@@ -1010,10 +1023,38 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
       if (past > q.width * 0.15) steer = dir === 1 ? -1 : 1;
       else if (past > -q.width * 0.25) steer = 0;
     }
+    let press = i === 1;
     if (h.kind === 'double' && !pressed2 && i > 1 && (h.d2 >= 0 ? age >= h.d2 - 1e-6 : age > h.hold + DT && b.vy > h.dblAt)) {
       pressed2 = true;
+      press = true;
       b.vy = secondJumpV(b.vy, v2);
       until = age + h.hold2;
+    }
+    // (ENG-27o: what the engine gets is the steer after the thumb's fumbles, thumbify's order: the drift held the same way, the travel
+    //  when turning, a slip, the late lift-off at a let-go (not on a press frame))
+    if (th && h.thumb) {
+      const k = i - 1, w = h.thumb;
+      if (steer !== 0 && steer === th.last) th.driftPx = Math.min(30, th.driftPx + w.drift[k]);
+      if (steer !== 0 && th.last !== 0 && steer !== th.last) {
+        th.travel = age + (2 * 16 + th.driftPx) / th.speed;
+        th.driftPx = 0;
+      }
+      if (steer !== 0 && w.slip[k] >= 0) th.slip = age + w.slip[k] * DT;
+      if (steer === 0 && th.last !== 0 && !press && !(th.once && th.armed)) {
+        th.releaseLeft = w.release[k];
+        th.armed = true;
+      }
+      if (steer !== 0) {
+        th.releaseLeft = 0;
+        th.armed = false;
+      }
+      if (age < th.travel || age < th.slip) {
+        th.last = steer;
+        steer = 0;
+      } else if (steer === 0 && th.releaseLeft > 0) {
+        th.releaseLeft--;
+        steer = th.last;
+      } else th.last = steer;
     }
     // (the second press's hold counts from its own frame, a frame longer than the first's: flown against the engine, 2-7 home middle
     //  Normal 2 x 14674, the frames equal to the press, then the engine still held where this cut, n/double-flight-27n.txt)
@@ -1356,6 +1397,8 @@ export class FirstTimerRun {
   private waitHop: DrawnHop | null = null;
   /** the hop a gate judged and is pressing now: startJump flies it unchanged (its own draws are still made, so the stream is as ever) */
   private gateHop: DrawnHop | null = null;
+  /** the gate hop's pre-drawn thumb (DrawnHop.thumb) and the frame of it thumbify is on, from the press until he is down (ENG-27o) */
+  private flyThumb: { th: DrawnThumb; k: number } | null = null;
   /** drawHop's own stream: a hop drawn ahead for a gate never moves the bot's other draws (rule 28's row diff stays readable) */
   private readonly rHop: () => number;
   /** SKILLS.floatSure: when he began standing for a hop that lands a beat later (s; -1: not waiting) */
@@ -1659,7 +1702,7 @@ export class FirstTimerRun {
     // (a drawn hop, rule 28: judged as flown, at lag 0 from where he stands; the row carries its kind and hold)
     if (h) {
       for (const q of qs) {
-        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2())) {
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2(), this.thumbAt())) {
           this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
           return;
         }
@@ -2927,7 +2970,7 @@ export class FirstTimerRun {
             if (drifts.some((q) => lands(q))) {
               // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()))) {
+              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()))) {
                 this.edgeWait = -1;
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
@@ -2987,8 +3030,8 @@ export class FirstTimerRun {
             const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()));
-            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2()))) {
+            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()));
+            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2(), this.thumbAt()))) {
               this.edgeWait = -1;
               if (HOP_TRACE.on) {
                 this.judged = null;
@@ -3031,7 +3074,7 @@ export class FirstTimerRun {
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
               const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()))) {
+              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt()))) {
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
@@ -3987,7 +4030,16 @@ export class FirstTimerRun {
       delete out.right;
       delete out.left;
     };
-    if (steer !== 0 && steer === this.lastSteer) this.driftPx = Math.min(30, this.driftPx + Math.max(0, gauss(this.r, who.drift)) * DT);
+    // (ENG-27o: on a gate hop's frames, the fumbles hopFlies judged it with, pre-drawn on rHop (DrawnHop.thumb); this.r's draws are
+    //  still made, so the main stream is as ever)
+    const ft = this.flyThumb;
+    const k = ft ? ft.k++ : 0;
+    if (ft && (k >= ft.th.drift.length || (k > 0 && this.sim.p.grounded))) this.flyThumb = null;
+    const pre = this.flyThumb ? ft!.th : null;
+    if (steer !== 0 && steer === this.lastSteer) {
+      const g = Math.max(0, gauss(this.r, who.drift)) * DT;
+      this.driftPx = Math.min(30, this.driftPx + (pre ? pre.drift[k] : g));
+    }
     if (steer !== 0 && this.lastSteer !== 0 && steer !== this.lastSteer) {
       const lag = (2 * 16 + this.driftPx) / who.thumbSpeed;
       this.travelUntil = t + lag;
@@ -3995,12 +4047,17 @@ export class FirstTimerRun {
       this.turnLag += lag;
       this.driftPx = 0;
     }
-    if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
+    if (steer !== 0) {
+      const n = this.r() < who.slip * DT ? Math.round(between(this.r, who.slipFrames)) : -1;
+      const m = pre ? pre.slip[k] : n;
+      if (m >= 0) this.driftUntil = t + m * DT;
+    }
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
     // never let go once held; a tier bot arms it once per let-go, as the thumb does)
     if (steer === 0 && this.lastSteer !== 0 && !want.press && !(who.holdQ && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
-      this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
+      const n = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
+      this.releaseLeft = pre ? pre.release[k] : n;
       this.releaseArmed = true;
     }
     if (steer !== 0) {
@@ -4060,7 +4117,21 @@ export class FirstTimerRun {
     const upOnly = r() < who.upOnly ? between(r, who.upOnlyT) : 0;
     const dblAt = between(r, who.dblAt);
     const hold2 = flickHold(r, who, needs ? (who.readHold ?? 0) : 0);
-    return { kind, hold, d2, dblAt, hold2, upOnly };
+    // (ENG-27o: the thumb's fumbles for the flight, one per frame, drawn after the hop's own so its draws are as they were)
+    const thumb: DrawnThumb = { drift: [], slip: [], release: [] };
+    const [rlo, rhi] = who.releaseMax;
+    for (let k = 0; k < 75; k++) {
+      thumb.drift.push(Math.max(0, gauss(r, who.drift)) * DT);
+      thumb.slip.push(r() < who.slip * DT ? Math.round(between(r, who.slipFrames)) : -1);
+      thumb.release.push(Math.max(rlo, Math.min(rhi, Math.round(Math.exp(gauss(r, who.release))))));
+    }
+    return { kind, hold, d2, dblAt, hold2, upOnly, thumb };
+  }
+
+  /** the thumb now, for hopFlies (ENG-27o): thumbify's state, its ends counted from now */
+  private thumbAt(): ThumbAt {
+    const t = this.t;
+    return { last: this.lastSteer, driftPx: this.driftPx, armed: this.releaseArmed, releaseLeft: this.releaseLeft, travel: this.travelUntil - t, slip: this.driftUntil - t, speed: this.who.thumbSpeed, once: !!this.who.holdQ };
   }
 
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
@@ -4117,6 +4188,7 @@ export class FirstTimerRun {
     if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; if (bonk.beside) this.jump.bonkUp = true; }
     if (snapFrom !== undefined && snapFrom >= 0) this.jump.snapFrom = snapFrom;
     if (gate) { this.jump.dblAt = gate.dblAt; this.jump.hold2 = gate.hold2; }
+    this.flyThumb = gate?.thumb ? { th: gate.thumb, k: 0 } : null;
     if (this.lianaHop) {
       this.jump.liana = true;
       this.lianaHop = false;
