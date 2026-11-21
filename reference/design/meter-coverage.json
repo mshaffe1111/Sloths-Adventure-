@@ -25,7 +25,7 @@
    "rows": []
   },
   "beat:cages": {
-   "bot": null,
+   "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.cagePlan",
    "channel": null,
    "rows": []
   },
