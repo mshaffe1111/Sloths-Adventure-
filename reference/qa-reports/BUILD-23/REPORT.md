@@ -1,20 +1,27 @@
 # BUILD-23b REPORT: 2-3 continued (t-build-23 from b51e4f0df; this section written 9:25 PM ET by `date`)
 
-## EXACT NEXT STEP (for BUILD-23c)
-1. **Three decisions from the lead first** (sent 8:59 PM ET): (a) THE ISLE: the pond's last bank is the far shore with dry ground past
-   it, so w2-new#reed-isle-a is NOT laid (it sank into the soil: stills/b23-L1-normal-w2new-reed-isle-a-REJECTED-sideways.jpg). The fix
-   is water past the isle, which changes beat 6's flown G 360/510 numbers: Designer/lead. Once ruled, lay it in w2Arc23.ts layW2New23
-   (walk line 83/208 of the picture on the isle bank's top; the comment there says how). (b) The post's painted plank shelf, just under
-   the cage, reads as a ledge he cannot stand on: a real ledge (Designer) or a post with no shelf (HF). (c) **Rule 8 breach:** sideways,
-   with him on the ground at the post, cage 4 sits under the HUD goal plank (stills/b23-L1-normal-w2new-mooring-post-sideways.jpg).
-2. **The bots stay RED until ENG-CAGE's GREEN hash lands** (the lead sends it; do NOT touch firsttimer.ts or castBots). Then castBots
-   1-6 as a look, then relist (seedlist.ts; 2-3's row has NO `judged` yet), castBots 1-40 both settings (rule 28), the meter.
-3. **THE FULL SET on the exact head** (D96: CLAUDE.md's list AND every CI gate: coveragecheck, registrycheck, tipwalk; kbdcheck,
-   buildcheck, seedlist 1-1, the engine tools' tests, tierBots), plus `lockall --layouts 16 --intended 2-3 --check lock-main.json`
-   against main (UNRUN tonight: the lead's 8:35 PM ruling): only 2-3 may move. clipcheck in full: tonight only its new '2-3 HUD faces'
-   step ran (CLIPCHECK_STEPS), seen both ways, no breaches.
-4. Then the final stills on the GREEN head (rule 29): every beat both ways, both settings, the HUD faces in each state with the line
-   really spooked by a look (tonight's 'spooked' is set by hand, follow.ts spook's fields).
+## EXACT NEXT STEP (for BUILD-23c), in the lead's order (9:21 PM ET message)
+(a) **Merge t-eng-cage @ 1f276d32e** (or ENG-CAGE-b's later GREEN hash) into t-build-23: NOT merged by BUILD-23b. It touches
+    firsttimer.ts and the bot tests, not 2-3's files.
+(b) **The lead's 9:00 PM rulings:** (1) NO reed-isle picture on 2-3: nothing lays it (layW2New23 lays only the post); w2-new#reed-isle-a
+    is kept for a stage with water on both sides. (2) The cage SITS on the post's painted shelf (move cage4's socket height/x in
+    w2Arc23.ts `mooring` so the cage rests on the shelf drawn by layW2New23: shelf top is about 0.42 of the post picture down from its
+    top, on the trunk's right). If the shelf is still wider than the cage with standable-looking room, name it with a crop still (art
+    fix: tomorrow's art member). (3) Post + cage LOWER (POST_H 230 and the cage's dn) until the cage is fully clear below the goal plank
+    with him at the post's foot, upright AND sideways, keeping a real climb (ENG-CAGE: punches land 0-80 px below the cage from the
+    vine). Stills both ways (reference/qa-reports/BUILD-23/w2new23.mjs shoots the post).
+(c) **The heron look's strength** (the lead's 8:45 PM send-back, a number the lead ruled): the dashed gaze is thin and the wash nearly
+    invisible on a sunlit bank. Raise followArt.ts LOOK (alpha / gaze weight) until it reads at phone size on a sunlit and a shaded bank,
+    matching 1-7's watched stretch's strength (its own heron colour). One small commit, before/after stills both ways (stills23.mjs 3/3a).
+    Also the lead's 8:45 item 2 (NOT checked by BUILD-23b): upright, a straight vine strip runs above the goal plank (x ~225-600 px) and
+    stops square (stills/b23-L1-normal-3-heron-look-upright.jpg, top). Check 2-5 at 0eefc707e upright: there too means a HUD defect (name
+    it with a still for the lead); only on 2-3 means yours.
+(d) **Child Normal stops at a boulder's face on the watched mud** and the line is caught (ENG-CAGE's castBots): ENG-CAGE-b names the spot;
+    if it is data, fix it in w2Arc23.ts.
+Then relist (seedlist.ts; 2-3's row has no `judged` yet), castBots 1-40 both settings, the meter, THE FULL SET on the exact head (D96:
+CLAUDE.md's list AND every CI gate incl. coveragecheck, registrycheck, tipwalk; full clipcheck; lockall --layouts 16 --intended 2-3
+--check lock-main.json vs main, UNRUN tonight), then the final stills on the GREEN head (rule 29), the HUD faces with a REAL spook.
+Full suite at 3d714c920 (started 9:12 PM on 1974d9294's tree): see 'Suite' below.
 
 ## Done (each pushed on t-build-23)
 | Commit | What | Evidence |
@@ -26,6 +33,13 @@
 | 1974d9294 | **The HUD faces** (BUILD-23.md item 2): followFaces.ts (pure, the heron's own rule: in cover and still is hidden), engine.ts lineFaces(), App -> GameHUD -> VineHud prop (polled 150 ms, redrawn only on change), LineFace.tsx (cut from w2-props' Happy paintings; the sheet's size read, not assumed: it is 2592 tall now, the mock assumed 2166) | followFaces.test.ts planted; stills/b23-L1-normal-hud-faces-{open,hiding,spooked}-*.jpg and -plank-crops.jpg: dim / lit green / grey with amber ring and '!', both ways; clipcheck step '2-3 HUD faces' seen both ways, no breaches |
 | cc9288f9b | 2-3's find off the rest's boulder: finds.test.ts and flowerReach.test.ts were RED on b51e4f0df (find #15 at (7020, 627) inside platform 26: the rest brick's findSpot sat on its own boulder) | finds + flowerReach + w2Arc23 + designedCage 17/17; planted |
 | (this commit) | REPORT, engine-core.md 0zq-23b | |
+
+## Suite (NOT complete: name it as unrun)
+CLAUDE.md's unit list started 9:12 PM ET on 1974d9294's tree; at 9:25 PM ET it had 1981 results and was still running when I stopped (D76
+hand-over). Its only reds so far: finds.test.ts x2 and flowerReach.test.ts (2-3's find inside a boulder: red on b51e4f0df too, fixed in
+cc9288f9b, those files 17/17 with w2Arc23 + designedCage). planted-faults.py and w2Arc23 edits ran WHILE it ran, so a red it reports
+later must be re-run on the head before it is trusted. Not run tonight: the shipping build, chunkcheck (the HUD chunk now imports
+followFaces.ts -> follow.ts), the perf gates, the full clipcheck, lockall. BUILD-23c runs THE FULL SET.
 
 ## Polish check (each still looked at, as Matt will on a phone)
 - 3-heron-look (both): head-up heron, dashed gaze down to the reed bed, the three little ones' heads in the reeds: reads. **Named:** the
@@ -50,7 +64,7 @@
   place is the check (the isle cost one round here).
 
 ## Unresolved
-- The isle, the shelf, the cage under the HUD (step 1). The bots RED (ENG-CAGE). Full set, lockall and full clipcheck UNRUN tonight.
+- The shelf and the cage under the HUD (ruled 9:00 PM: step b); the isle ruled NOT laid (kept for a stage with water on both sides). The bots RED (ENG-CAGE). Full set, lockall and full clipcheck UNRUN tonight.
 - Faint heron wash (Designer's colour). Dot's `spooked` line on the first spook and the locked-gate line by state (BUILD-23's ENGINE-WORTHY 4) still open.
 - The art inventory still says w2-new#mooring-post 'ready (not in the build: no code loads the sheet)': Content's file, now stale.
 

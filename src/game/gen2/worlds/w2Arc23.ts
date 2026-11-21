@@ -305,9 +305,8 @@ function layW2New23(st: FinishStage): void {
       const w = Math.round((h * W2_NEW_FRAMES['mooring-post'].w) / W2_NEW_FRAMES['mooring-post'].h);
       (proto.decor ??= []).push({ nw: 'mooring-post', x: Math.round(v.x + (0.5 - POST_TRUNK) * w), b: v.bottomY + POST_SINK, w });
     }
-    // (the pond's reed isle, w2-new#reed-isle-a, is NOT laid: the pond's last bank is the far shore, dry ground on past it, so the isle
-    // picture sank into the soil as a blob (stills/b23-L1-normal-w2new-reed-isle-a-*.jpg, BUILD-23b). It waits on the lay: water past the
-    // isle (the design's 'pads across the pond to a reed isle'), then it is laid here with its walk line on the isle's top: the inventory's walk_y 83 of 208)
+    // (no reed isle on 2-3, the lead's ruling 9:00 PM ET 11-20: the pond's far shore is a bank with its painted reed clumps, as flown;
+    // w2-new#reed-isle-a is kept for a stage with water on both sides)
   }
 }
 
