@@ -1,0 +1,11 @@
+const [root, setting, seedS, y0S, y1S] = process.argv.slice(2);
+await import(root + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(root + '/src/game/difficulty.ts'); setDifficulty(setting as never);
+const { RealPlay } = await import(root + '/src/game/realPlay.ts');
+const { towerCorners } = await import(root + '/tools/inspect/towerRoute.ts');
+const r: any = new RealPlay('2-6', Number(seedS)); const st = r.stage; const y0 = Number(y0S), y1 = Number(y1S);
+console.log('turns', JSON.stringify(st.gen2.tower.turns.filter((t: any) => t.from >= y0 - 400 && t.from <= y1 + 400)));
+console.log('legs', JSON.stringify(st.gen2.tower.route.legs.filter((l: any) => l.entry.y >= y0 - 400 && l.entry.y <= y1 + 400)));
+console.log('plan joins', st.gen2.plan.map((p: any) => p.join ?? '-').join(' '));
+console.log('vines', st.vines.filter((v: any) => v.bottomY >= y0 && v.topY <= y1).map((v: any) => `${v.vineType} x${Math.round(v.x)} ${Math.round(v.topY)}-${Math.round(v.bottomY)}`).join('; '));
+const c = towerCorners(st, r.p); console.log('corners', c.filter((p: any) => p.y >= y0 && p.y <= y1).map((p: any) => `${Math.round(p.x)},${Math.round(p.y)}`).join(' '));

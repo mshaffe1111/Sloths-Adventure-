@@ -1,3 +1,125 @@
+# BUILD-26c (on t-build-26 from fd3ce98b1): 2-6's bots on the current engine, every miss traced, the beat table, the hearts question. Started 5:27 PM ET 11-21 (by `date`)
+Commits: 06096c3b4 (hearts test counts every cost), 2b123df7c (towerRoute: no entry corner beside a turn's top), b039ee3fb (its planted
+test), 4ed9af678 (TRIAL: the bots take a tower's own route on every tower), this REPORT. Saved: b26c/ (beats.mts: a bot's run as footing
+segments with seconds; hearts.mts: each risk term per stage and setting; corners.mts, rivers.mts, route.mts: the tower route, the rivers
+and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base and each fix).
+
+## EXACT NEXT STEP (the next level builder; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND on frozen worktrees
+## BUILD-26d: land the bot fix (4ed9af678), then the 15th beat. The lead's rulings above stand. In this order:
+1. **The trial fix, proven (rule 28; the lead's (b)).** 4ed9af678 (tools/inspect/firsttimer.ts:1446): the bots take a tower's own
+   route (towerRoutePts) whenever towerCorners is non-null, not only when the inspector's trace fails. 2-6 x40 vs the base, row for
+   row: 139 runs gained, 9 lost (b26c/rows/cast-base.jsonl vs cast-fix2.jsonl, compared by `python3` on (bot, setting, seed); the table
+   is above). Then:
+   a. **Trace the 9 lost runs** (child N 3, 5, 7, 8, 18, 24, 28; child E 11; expert N 12), two runs per cause, one line each.
+      `npx tsx tools/inspect/b26/trace.ts child normal 3,5` and `b26/frames.ts` on a frozen worktree of 4ed9af678 (or later).
+      Fix each where its cause is; a planted test for each.
+   b. **1-4 diff**: castBots 1-4 x40 both settings was running at hand-over, first on frozen 4ed9af678, then on frozen fd3ce98b1
+      (scratchpad rows c14-fix2.jsonl / c14-base.jsonl; lost with the container, so RE-RUN them). 1-4's trace fails, so its bots
+      already took the tower route: expect it to be identical. Any moved row: explain it.
+   c. **2-1..2-5 x40**: no tower there, so towerCorners is null and nothing should move. Prove it (castBots base vs head per stage),
+      then tierBots 1-1 (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9).
+   d. **A planted test for the route choice** (castBots.test.ts, beside b039ee3fb's): a tower stage whose trace SUCCEEDS gets the
+      tower's route; RED with line 1446 as on fd3ce98b1. Then `npx tsx --test tools/inspect/castBots.test.ts`, all of it.
+   e. The hearts test (06096c3b4) is UNRUN: `npx tsx --test --test-name-pattern="bank village" src/game/gen2/worlds/w2Arc26.test.ts`;
+      plant it RED (count `v.safe` rivers instead of `!v.safe`), then restore.
+   f. Drop the "(trial)" from 4ed9af678's subject in the REPORT. Commit messages stay as they are; no rewriting of history.
+2. **Step 0's suite**: frozen fd3ce98b1, still running at hand-over: 1,867 ok, 0 not ok (`scratchpad/suite.log`, lost with the
+   container). ENG-26l's 626fac5ac run reached 3,214 ok, 0 failed. Run it WHOLE on the head after step 1, since it then carries code
+   (D114).
+3. **The 2-minute bar got WORSE with the fix**: expert MIN 103.1 s (seed 32; 105.4 seed 27, 106.7 seed 17), median 114.2; adult N
+   median 105.6 with 8 runs under the 100 s climb floor. The bar is 125 s over 80 runs. The lead's ruling: the 15th beat (CONTENT, a
+   new turn of the wheel idea, ~12-15 s for the expert, before the crest, taught per rule 2). **Send its plan FIRST** (rule 25: piece,
+   data field, Dot's words if any) and wait for the GO. The gap is now ~22 s at the MIN, so ask the lead whether one beat is enough or
+   it takes two. Get the beat table for seed 32 (`npx tsx reference/qa-reports/BUILD-26/b26c/beats.mts <tree> expert normal 32`).
+4. **ENGINE-WORTHY (for the lead's roadmap)**: easyMode.ts:431 costsHere counts safe rivers (Easy lays 8 hearts on 2-6 where nothing
+   costs one; Normal's stageGenerator.ts:2952 `risky` leaves rivers out); one shared reading of risk, a survey of every stage first.
+   And the inspector's route (tools/inspect/route.ts) slants a tower turn's climb through the floors (`traced: extended` on 2-6):
+   any tool reading findRoute on a tower reads a wrong way on.
+
+## The lead's rulings (received after the cause table)
+(a) castBots beside the suite, two heavy runs only, pause castBots under ~1.5 GB free. (b) Causes 1-3 are BUILD-26c's, on t-build-26:
+two runs per cause, the fix where the cause is, general, planted, rule 28's row-for-row diff on 2-1..2-6 x40 and 1-4, tierBots 1-1 9/9.
+2-MINUTE: no slowing the wheels, no filler; the lever is CONTENT: a 15th beat that turns the wheel idea a new way (two wheels turning
+opposite ways, a hop bucket to bucket), ~12-15 s for the expert, before the crest, taught per rule 2; its plan to the lead FIRST (rule
+25) and wait for the GO; the new MIN over 80 runs after causes 1-3. HEARTS: Normal 0 is correct; the test says why; the Easy defect is
+ENGINE-WORTHY (roadmap, an engine member, a survey first), not touched here.
+
+## Step 0: the full src suite on frozen fd3ce98b1
+Running in the background at hand-over: **1,867 ok, 0 not ok** (not finished; see the EXACT NEXT STEP 2). ENG-26l's REPORT section
+was not on fd3ce98b1 (only its stills), so it had no verdict to read.
+
+## Step 1: castBots 2-6, seeds 1-40, both settings (rule 28), frozen fd3ce98b1 (rows: b26c/rows/cast-base.jsonl)
+| head | kid N/E | adult N/E | child N/E | middle N/E | expert N | expert MIN |
+|---|---|---|---|---|---|---|
+| 8f3bcb3b6 (BUILD-26b) | 0/40, 0/40 | 0/40, 0/40 | 28/40, 27/40 | 38/40, 33/40 | 39/40 | 112.3 s |
+| fd3ce98b1 (this base) | 0/40, 0/40 | 0/40, 0/40 | 34/40, 28/40 | 35/40, 33/40 | 38/40 (17, 26) | **108.8 s** (seed 10; 30: 110.9; 34: 111.2; median 121.5, seed 1) |
+| 2b123df7c (entry corner) | identical, row for row (0 gained, 0 lost, every tier's rescues the same): the bots do not read towerRoute on 2-6 (below) | | | | | |
+| **4ed9af678 (TRIAL: the tower's own route)** | **29/40, 24/40** | **33/40, 24/40** | 32/40, **38/40** | **39/40, 40/40** | **39/40** (12) | **103.1 s** (seed 32; median 114.2) |
+Trial vs base, row for row: 139 runs gained, 9 lost (child N 3, 5, 7, 8, 18, 24, 28; child E 11; expert N 12); rescues kid 199 -> 34,
+adult 202 -> 29, child 21 -> 10, middle 14 -> 1, expert 2 -> 1. Adult N: 8 runs under the 100 s climb floor (median 105.6 s).
+Every miss is a rescue (hits 0, lives 0).
+
+## Step 2: the cause table (rule 28; frame = t x 30; single-bot traces on frozen fd3ce98b1)
+| # | runs (bot setting seed: t, frame, x, y) | what took him | cause |
+|---|---|---|---|
+| 1 | adult E 2: 83.2, f 2496, x 1527 y 4315, 20 s; adult E 20: 80.4, f 2412, x 1526 y 4316; the same on more turns (adult E 2/20 x ~1065 y 1799, x ~1059-1073 y 3067; kid N 11: 119.3, x 1087 y 2824) | short of a tower turn's vine (x 1612) he dithers L/R 1512-1535, never presses up | **BOT (the route it follows)**: 2-6's route TRACES (`traced: extended`, tools/inspect/route.ts), so firsttimer.ts:1446 never takes the tower's own route (towerRoutePts, only on `failed`); the trace draws the turn's climb as a SLANT, `climb 1612,4315 -> 1346,4034`, through the floors, and the way on 120 px ahead is on the slant over x ~1530: he stands under it. (1-4's trace fails, so 1-4's bots use the tower route and pass: kid/adult 1-4 seeds 1-2 PASS 7/8.) Not ENG-27m's (no hop) |
+| 2 | child E 2: 139.8, f 4194, x 635 y 4315 (8 falls, rescued at 141.1) | up the vine x 573 (4624 -> 4315), off at 635, he turns LEFT and walks into the vine's hole at 553 | **BOT (the same traced route)**: its climb is `573,4624 -> 859,4315`, a slant; first diagnosed as the tower route's entry corner (599, 26 px past the vine): 2b123df7c fixed that corner and moved NOTHING, so it is the trace. Second run: TO DO |
+| 3 | expert N 1: 60.4, f 1812, x 1562 -> 1618 y 3741 (twice, ~8 s); expert N 8: 56.8, x 1610 y 3740 (once, ~2.7 s) | up a rest street's turn, off left at 1509, walks right and runs off the ledge's end into the shaft, falls ~360 px, climbs again | **BOT (the same traced route)**, as 2. Costs time, not a miss: fixed, the expert is FASTER |
+The vines and the tower's own route are right (b26c/corners.mts on the played Easy 2: `1127,4315 1612,4315 1612,3964 1586,3964 376,3964`,
+vine x 1612 3964-4315): not the engine, not the lay.
+
+## Step 3: the 2-minute beat table (expert N; b26c/beats.mts, footing segments; design seconds in [])
+| beat | seed 8 (117.7 s) | seed 1 (121.5 s, the median) | design |
+|---|---|---|---|
+| 0 millpond | 8.3 | 7.9 | 10 |
+| 1 the first wheel | 7.5 (ride 6.2) | 10.6 (ride 9.4) | 18 |
+| 2 the first street | 5.0 | 4.4 | 10 |
+| 3 through a house | 8.3 | 7.7 | 12 |
+| 4 the millrace | 14.0 | 12.7 | 12 |
+| 5 off at the edge | 9.1 (7.7) | 8.8 (7.3) | 18+6 |
+| rest | 7.3 (2.7 of it cause 3) | 13.5 (~8 of it cause 3) | - |
+| 7 the hanging porches | 11.0 | 9.1 | 10 |
+| 8 jump off the top | 7.3 (5.6) | 8.4 (6.2) | 16+6 |
+| rest | 1.9 | 1.9 | - |
+| 10 wheel to bounce | 16.5 (9.3) | 13.8 (7.2) | 16+6 |
+| rest | 4.9 | 6.2 | - |
+| 12 the great wheel | 11.3 (10.2) | 10.4 (9.1) | 20 |
+| 13 the crest | 5.3 | 6.1 | 8 |
+The walking beats sit near the design; the five wheel beats are ~51 s against the design's 106: he boards at once and rides under half a
+turn (the design's seconds are a watcher's). A ride swings ~3 s with the bucket's phase (the teach wheel 6.2 vs 9.4). The MIN seed (10,
+108.8 s) is 16.2 s short of 125, more once cause 3 stops costing the expert time. (MIN seed 10's own beat table: TO DO, after the fix.)
+
+## Step 4: the hearts question
+- **Normal**: stageGenerator.ts:2952 `risky` (a creature, `waterY`, a heartFall that is not soft, deadly proto water, a gen2 pit that is
+  not soft; not rivers); :2955 lays a heart by every second flag when risky or the stage is in GEN2_STAGES. Normal 2-6 (b26c/hearts.mts,
+  layout 1): 0 creatures, no waterY, 0 heartFalls, pit soft, 6 rivers ALL `safe` (splash, back to the bank, no life: engine.ts:2965);
+  listed, not in GEN2_STAGES: **0 hearts, correct by Matt's 11-05 rule** (2-4's 6 come from waterY 1186; 2-5's 7 from 9 creatures and
+  waterY 897).
+- **Easy (ENGINE-WORTHY, the lead's ruling: roadmap, an engine member, a survey first; not touched)**: easyMode.ts:431 `costsHere`
+  counts `(stage.rivers ?? []).length > 0` with no `safe` test, so flagHeartsOwed (:438) is true and :560 lays a heart at all 8 flags
+  where nothing on Easy 2-6 costs one. Two copies of the one H1 reading disagree on rivers.
+- The test (06096c3b4, the lead's ruling): w2Arc26.test.ts now counts every way a heart is lost (adds a river without `safe` and a
+  non-soft pit), so its 0 is the rule's answer. NOT RUN yet (two heavy runs going).
+
+## Polish check
+No stills (rule 29: the bots are red).
+
+## Owned miss
+I fixed a route the bots never read (2b123df7c). I diagnosed the overrun from towerCorners' output without first checking which route the bot
+FOLLOWS on 2-6 (firsttimer.ts:1446 takes the tower route only when the trace fails). The row-for-row diff caught it: 0 moved.
+Countermeasure (for level.md rule 28, the lead decides): a bot trace names the route the bot follows (traced, or the tower's own) before
+any route is blamed.
+
+## Learned (proposed, the lead decides)
+- A tower whose inspector trace succeeds is still a tower: the bots read its own laid route (the trial fix; a planted test to come).
+- Run castBots 1-40 on the fix BEFORE writing its planted test: it took 1.5 min at --par 2 beside the suite and showed the first fix moved nothing.
+
+## Lessons applied
+D111 (the box from Sat Nov 21 22:44:57 UTC 2026: started 5:27 PM ET, handed over at the box with the EXACT NEXT STEP), D113 (every long run with
+run_in_background), D115 (every run on a frozen worktree: base, fix1, fix2, t3, plant), D114 (the suite as step 0), D57/D87/D105
+(ReadNotifications at every step and push; the ruling was read the moment it came), D109 (no clock times to the lead), D102 (read lean),
+D40 (the Easy hearts defect left for the engine member who will survey it), law 3 (the route the bot follows measured, after the miss).
+
 # ENG-26l (on t-build-26 from 626fac5ac): step 0 the full suite, step 1 the stills. Started 5:06 PM ET 11-21 (by `date`)
 Commits: ea3d7e7a2 (the head stills, stand.mjs, order.mts), fd3ce98b1 (the base stills), this REPORT. No game code changed. Saved: eng26l/
 (stand.mjs: the stills tool to use, Pokey set down and left to stand with Dot's cards tapped away; order.mts: a listed stage's order; stills/).
