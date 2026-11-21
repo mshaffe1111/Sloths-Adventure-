@@ -2124,10 +2124,10 @@ export class FirstTimerRun {
     };
     const onVine = (q: CageItem) => Math.abs(q.x - p.x) < 30 && p.y - q.y > 0 && p.y - q.y < 65;
     if (!c) {
-      // (a cage ahead at his height, on his way (or one a step behind him he has just walked onto), or one up the vine he is at)
+      // (a cage ahead at his height, on his way (or one just behind him he has walked or hopped past), or one up the vine he is at)
       c = cages.find((q) => {
         const ahead = (q.x - p.x) * fdir;
-        if (p.grounded && ahead > -30 && ahead < 140 && q.y - p.y > -50 && q.y - p.y < 40) return true;
+        if (p.grounded && ahead > -60 && ahead < 140 && q.y - p.y > -50 && q.y - p.y < 40) return true;
         const v = postOf(q);
         return !!v && Math.abs(v.x - p.x) < 140 && Math.abs(v.bottomY - feet) < 40 && (v.x - p.x) * fdir > -40;
       });
@@ -2348,6 +2348,11 @@ export class FirstTimerRun {
     // its way threw him off halfway up, round 5 2026-10-29)
     if (p.climbing && !this.wasClimbing) this.pending = null;
     this.wasClimbing = !!p.climbing;
+    // a cage within his reach, or hung up the climbing vine he stands at (CAGE_SKILL): stop, his own hesitation, punch it open. Ahead of
+    // the line's reeds and the heron (a cage stands in 2-3's last clump: hopping in past it he stood hiding beside it and was rescued past
+    // it, middle Normal seed 1), never in a jump he has begun
+    const cg = this.jump ? null : this.cagePlan(p, t, fdir, side);
+    if (cg) return cg;
     // a press he has decided on comes when his thumb gets there (the reaction noise)
     if (this.pending && t >= this.pending.at && !this.jump) {
       const q = this.pending;
@@ -2486,9 +2491,6 @@ export class FirstTimerRun {
     const ba = this.bonkAir();
     if (ba) return ba;
 
-    // a cage within his reach, or hung up the climbing vine he stands at (CAGE_SKILL): stop, his own hesitation, punch it open
-    const cg = this.cagePlan(p, t, fdir, side);
-    if (cg) return cg;
 
     // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
     if (p.climbing) {
