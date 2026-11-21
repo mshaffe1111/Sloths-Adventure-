@@ -3,8 +3,7 @@
 **Matt's test link (play the candidate first):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb
 (the lead republishes it from this branch's head before the PR)
 
-Branch `release-0.10.1` = main 107870f5 + six merges (below, MERGED, never rebased) + one commit (version 0.10.0 -> 0.10.1 and the What's
-New entry). THE FULL SET ran on GATED_HEAD; the commits after it add only reference/qa-reports/REL-0101/.
+Branch `release-0.10.1` = main 107870f5 + seven merges (below, MERGED, never rebased) + the version commit + one report-stamp fix. THE FULL SET ran on GATED_HEAD; the commits after it add only reference/qa-reports/REL-0101/.
 
 ## What changed (the What's New lines, as players read them)
 Title: **Count to four**
@@ -17,10 +16,20 @@ Title: **Count to four**
 7. The riverbanks grow painted flowers and plants now, in place of the old bright stems.
 
 Also in, with no What's New line (the lead's rulings): the testers' page (#ctest) plays all of World 1 from a stage picker; Matt's test link
-gets room again (408 files of 480); HUD_VINE_LINE PICK_THUMBS_LINE
+gets room again (408 files of 480); the HUD's lower-row vine ends in its painted curl; the testers' page has picture tiles for the nine levels, what the game is
+about and how to start.
 
 ## What is merged in (oldest first)
-MERGE_TABLE
+| # | merged | what it brings | merge commit | conflicts |
+|---|---|---|---|---|
+| a | t-int-15 @ 23ac2e4bc | River Snappers (2-5) rebuilt; World 2's three painted rock shapes (ENG-ROCK); a bank's end steps down to the bank beside it (FIX-TAB) | 08fe52244 | none |
+| b | t-fix-idle @ 9763d4f39 | Pokey's idle clips melt solid (no see-through body) | ab621d1df | a handoff note (both kept) |
+| c | t-env-w2 @ 63afa83c1 | World 2's code-drawn plants gone; its ground takes the painted flora | 60aea887b | none |
+| d | t-link-room @ 4c1601fd3 | Matt's test link: 408 files of 480 (72 free; build.py refuses under 40 free) | 8224efdeb | none |
+| e | t-keeper-pick @ 599c4d5b3 (carries t-pick-w1 @ ef5622725) | the testers' page plays all of World 1 from a stage picker; the keeper's words | a8824ad4a | a handoff note (both kept) |
+| f | t-hud-vine @ 83b51c91f | the lower-row counter's painted vine ends in the painted curl at both ends | 008d82625 | none |
+| g | t-pick-thumbs @ 77a84713e | the testers' page: picture tiles for the nine levels, what the game is about, how to start | 933203aa5 | none |
+Plus 6b8fda31c (version 0.10.0 -> 0.10.1, What's New) and 051e77b45 (one typed-ahead time in a report corrected, so timecheck passes).
 
 ## Gate table (THE FULL SET, gates.md D96, each once on GATED_HEAD)
 GATE_TABLE
