@@ -43,6 +43,7 @@
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
  *   rocks:<w>      the sheets beyond the kit a world's painted hop rocks are cut from (rockLooks.ts: World 2's river stones), with its kit
  *   w1-new         World 1's new painted pieces, the squirrels and hollow logs (w1NewArt.ts): 1-1
+ *   w2-new         World 2's new painted pieces, the mooring post and the reed isles (w2NewArt.ts): 2-3
  *   pit-art:1      World 1's painted drops (w1Pits.ts): a stage the mixer builds (it marks its drops, pit: 'drop')
  *   creek:1        World 1's painted deadly creek body and its muddy splash (w1Creek.ts), for a stage's drawn water zones: a spec with water (1-5)
  *
@@ -83,6 +84,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:eagle', 'props2'], // (the still fork's eagle and its moss cover's bushes; no gold snake since the hand-built 1-8 went, INT-10c)
   '1-9': ['foe:boa', 'foe:eagle', 'props2'], // (the kit's boas, the eagle over the hunters and the Old Boa, its moss cover's bushes; no gold snake since the hand-built 1-9 went, BUILD-19)
+  '2-3': ['w2-new'], // (the mooring post and the pond's reed isle, w2NewArt.ts; BUILD-23b)
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
   '2-7': ['foe:goldsnake'],

@@ -15,6 +15,9 @@ import { listedStage, playFinish } from '../listed.ts';
 import { lineFaults } from '../lineFaults.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_TABLE } from './stageTable.ts';
+import { stageSheets } from '../../stageSheets.ts';
+import { W2_NEW_FRAMES } from '../../w2NewArt.ts';
+import type { W2Decor } from '../../riverArt.ts';
 import { W2_FOLLOW } from './w2.ts';
 import { ARC_23, GOAL_LINES_23, HERON_CARD_23, LAG_23, LINES_23, MISSION_23, PADS_23, STAGE_23, kitLib23 } from './w2Arc23.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
@@ -25,7 +28,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..',
 const cfg = generateAllLevels().find((c) => c.id === STAGE_23 && !c.secret)!;
 type Played = {
   platforms: Platform[]; vines: Vine[]; rivers?: RiverZone[]; enemies: unknown[]; collectibles: Collectible[]; exitTotemX: number;
-  proto: { hints?: Array<{ x: number; text: string }>; bushes?: Bush[]; watch?: WatchZone[]; follow?: unknown };
+  proto: { hints?: Array<{ x: number; text: string }>; bushes?: Bush[]; watch?: WatchZone[]; follow?: unknown; decor?: W2Decor[] };
   gen2: { errors?: string[]; sections: Array<{ template: string; x0: number; x1: number }> };
 };
 const memo = new Map<string, Played>();
@@ -127,4 +130,22 @@ test('the line on the stage as played: lineFaults clean on both settings (reeds 
   }
   // (the ponds splash him back on both settings: nobody is lost to the parade or the pond)
   assert.ok(Object.values(PADS_23).every((r) => r.safe));
+});
+
+test("the mooring post is World 2's new painting (w2-new#mooring-post, the lead's ruling 8:05 PM ET 11-20): the sheet preloads on 2-3, the post stands on the rope's bank as its climb's look (no kapok trunk), both settings", () => {
+  // (planted: 2-3's STAGE_DRAWS row 'w2-new' removed -> the first assert RED; finish23's layW2New23 call removed -> the post's RED)
+  assert.ok(stageSheets(cfg, { hand: true, paint: true }).includes('w2-new'), "2-3 asks for the w2-new sheet before it starts (stagePreload)");
+  assert.ok(W2_NEW_FRAMES['mooring-post'], 'the piece is on the sheet');
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const st = played(seed, d);
+    const posts = (st.proto.decor ?? []).filter((q) => q.nw === 'mooring-post');
+    assert.equal(posts.length, 1, `${seed} ${d}: one post`);
+    const p = posts[0], w = p.w!;
+    const rope = st.vines.find((v) => v.vineType === 'tree_climb' && Math.abs(v.x - p.x) < w / 2) as (Vine & { rope?: boolean }) | undefined;
+    assert.ok(rope, `${seed} ${d}: the post stands at the climb`);
+    assert.equal(rope!.rope, true, `${seed} ${d}: the post is the climb's look (no kapok trunk under it)`);
+    assert.ok(p.b >= rope!.bottomY && p.b - rope!.bottomY < 12, `${seed} ${d}: its foot in the bank's grass`);
+    assert.ok(p.b - (w * W2_NEW_FRAMES['mooring-post'].h) / W2_NEW_FRAMES['mooring-post'].w < rope!.topY, `${seed} ${d}: it stands over the rope's top`);
+    assert.ok(!(st.proto.decor ?? []).some((q) => q.nw && q.nw.startsWith('reed-isle')), `${seed} ${d}: no isle until the lay has water past it`);
+  }
 });

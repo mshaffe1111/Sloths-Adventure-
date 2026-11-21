@@ -32,6 +32,8 @@ import { clipWatches, STILL, stillEmitters, stillProps, type StillRow } from '..
 import type { PadRow } from '../rideLay.ts';
 import type { Difficulty } from '../../difficulty.ts';
 import type { WatchZone } from '../../watcher.ts';
+import type { W2Decor } from '../../riverArt.ts';
+import { W2_NEW_FRAMES } from '../../w2NewArt.ts';
 import type { GraphBrief, NodeJob, PropDef, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../types.ts';
 
 export const STAGE_23 = '2-3';
@@ -248,11 +250,19 @@ export const EXIT_23: SectionTemplate = {
 /** every section that is 2-3's own */
 export const SECTIONS_23: SectionTemplate[] = [...BEATS_23, EXIT_23];
 
-type FinishStage = { proto?: Partial<StageSink['proto']>; gen2?: { sections: Array<{ uid: string; template: string; x0: number; x1: number }> } };
+type FinishStage = {
+  proto?: Partial<StageSink['proto']>;
+  gen2?: { sections: Array<{ uid: string; template: string; x0: number; x1: number }> };
+  vines?: Array<{ x: number; topY: number; bottomY: number; vineType?: string; rope?: boolean }>;
+};
 /** the twist's brick: its heron watches the whole pond, from the near bank's clump over the pads to the isle (a watched stretch ends at
  *  a gap: stillLay watchedRun; here the look is ACROSS the water, 2-3.md beat 6 "the heron over the pond") */
 const POND_23 = 'w2-23-pond';
-
+const POST_23 = 'w2-23-post';
+/** the mooring post (w2-new#mooring-post, reference/design/2-3.md beat 5): its rope is the climbing vine; the painted trunk's middle is
+ *  this share of the picture's width from its left (measured on the sheet: the trunk spans 10-80 of its 215 px), and it stands this far
+ *  over the rope's top and this deep into the bank's grass (px) */
+const POST_TRUNK = 0.21, POST_OVER = 30, POST_SINK = 6;
 /**
  * 2-3's finish (listed.ts FINISH 'w2-23'): the little ones follow him (proto.follow = World 2's row); each watched stretch cut to its
  * reeds (clipWatches); on Normal beat 7's stretch gets its second heron, LAG_23 s out of step (WatchZone.lag); on Easy one.
@@ -269,6 +279,7 @@ export function finish23<T extends FinishStage>(st: T, difficulty: Difficulty): 
     z.x1 = Math.round(isle.x + isle.w + STILL.past - STILL.inset);
   }
   clipWatches(sink);
+  layW2New23(st);
   if (difficulty !== 'easy') {
     const zones = sink.proto.watch ?? [];
     const bushes = sink.proto.bushes ?? [];
@@ -277,6 +288,26 @@ export function finish23<T extends FinishStage>(st: T, difficulty: Difficulty): 
     for (const z of two) zones.push({ ...z, freeFirst: undefined, lag: LAG_23 } as WatchZone);
   }
   return st;
+}
+
+/** World 2's new painted pieces on 2-3 (w2NewArt.ts, the lead's ruling 8:05 PM ET 11-20): the mooring post as beat 5's climb (World 2's
+ *  dressing, proto.decor, behind Pokey) */
+function layW2New23(st: FinishStage): void {
+  const proto = (st.proto ??= {}) as { decor?: W2Decor[] };
+  for (const sec of st.gen2?.sections ?? []) {
+    if (sec.template === POST_23) {
+      const v = (st.vines ?? []).find((q) => q.vineType === 'tree_climb' && q.x >= sec.x0 && q.x <= sec.x1);
+      if (!v) throw new Error(`2-3 finish: the post (${sec.uid}) has no rope`);
+      // (the post is the climb's look: no kapok trunk drawn under it, Vine.rope: 'not a tree's trunk: its stage draws it', protoArt.ts)
+      v.rope = true;
+      const h = v.bottomY - v.topY + POST_OVER + POST_SINK;
+      const w = Math.round((h * W2_NEW_FRAMES['mooring-post'].w) / W2_NEW_FRAMES['mooring-post'].h);
+      (proto.decor ??= []).push({ nw: 'mooring-post', x: Math.round(v.x + (0.5 - POST_TRUNK) * w), b: v.bottomY + POST_SINK, w });
+    }
+    // (the pond's reed isle, w2-new#reed-isle-a, is NOT laid: the pond's last bank is the far shore, dry ground on past it, so the isle
+    // picture sank into the soil as a blob (stills/b23-L1-normal-w2new-reed-isle-a-*.jpg, BUILD-23b). It waits on the lay: water past the
+    // isle (the design's 'pads across the pond to a reed isle'), then it is laid here with its walk line on the isle's top: the inventory's walk_y 83 of 208)
+  }
 }
 
 /**

@@ -83,7 +83,9 @@ test('every sheet a built stage draws is in its preload list, for every stage an
           const st = generateStage(l, d);
           // (rooms, or kit decor: drawKitDecor draws from the kit's pieces sheet (puzzleArt.ts), 1-4's nest door, INT-10c: the check read rooms alone)
           if (l.worldIndex === 1 && !l.secret && (st.kit?.rooms.length || (st as { proto?: { kitDecor?: unknown[] } }).proto?.kitDecor?.length)) w1Rooms.add(l.id);
-          const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])];
+          // (and World 2's new sheet where its dressing lays a piece from it: riverArt.ts drawW2Decor `nw`, w2NewArt.ts; 2-3's post, BUILD-23b)
+          const w2New = ((st as { proto?: { decor?: Array<{ nw?: string }> } }).proto?.decor ?? []).some((q) => !!q.nw);
+          const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : []), ...(w2New ? ['w2-new'] : [])];
           for (const k of keys) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k}`);
           // the painted hazards (zoneArt.ts, w4Play.ts): spore mushrooms on World 3's sheet, web bridges on World 5's and web patches on Dot's, 4-3's pool log on the kit, World 4's falls on its sheet
           const hazards = new Set<string>();

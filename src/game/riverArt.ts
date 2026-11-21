@@ -12,6 +12,7 @@ import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
 import { drawSoil } from './groundPaint.ts';
 import { drawKitArt } from './puzzleArt.ts';
+import { drawW2New, type W2NewPiece } from './w2NewArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -476,6 +477,8 @@ export function drawReedClump(ctx: CanvasRenderingContext2D, b: { x: number; w: 
  */
 export interface W2Decor {
   n?: W2Piece;
+  /** a piece from World 2's new sheet (w2NewArt.ts: the mooring post, the reed isles), drawn `w` wide in its own shape on `b` */
+  nw?: W2NewPiece;
   cel?: string;
   /** the folk's pose while walking (cel is the pose while standing) */
   celWalk?: string;
@@ -520,6 +523,11 @@ export function drawW2Decor(ctx: CanvasRenderingContext2D, items: W2Decor[], x0:
       if (CELS[pose]) warmCels([CELS[pose].a]);
       const bob = wk.moving ? Math.abs(Math.sin(t * 3)) * 1.5 : 0;
       drawCel(ctx, pose, wk.x, d.b - bob, d.k ?? 0.42, wk.face);
+      continue;
+    }
+    if (d.nw) {
+      const ww = d.w ?? 100;
+      if (d.x + ww >= x0 - 40 && d.x - ww <= x1 + 40) drawW2New(ctx, d.nw, d.x, d.b, ww, d.flip);
       continue;
     }
     if (!d.n) continue;

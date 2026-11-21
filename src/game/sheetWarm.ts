@@ -37,9 +37,12 @@ export interface StageDraws {
   proto?: {
     /** the animals a ring drops in (a snake ring, 3-9's prowlers) */
     ring?: { waves: ReadonlyArray<ReadonlyArray<{ kind: string }>> };
-    /** the stretches the eagle watches */
+    /** the stretches the eagle watches (on a stage whose little ones follow him, `follow`, herons read them instead: no eagle) */
     watch?: readonly unknown[];
-    bushes?: readonly unknown[];
+    /** the little ones follow him home (followPlay.ts): its watched stretches are herons' (followArt.ts), never the eagle's */
+    follow?: unknown;
+    /** a bush (World 1's second sheet), or World 2's reed clump (kind 'reeds': riverArt.ts drawReedClump, w2-props) */
+    bushes?: ReadonlyArray<{ kind?: string }>;
     /** hollows in climb trunks (1-4) */
     hollows?: readonly unknown[];
   } | null;
@@ -50,7 +53,8 @@ export function stageAnims(st: StageDraws): string[] {
   const out = new Set<string>();
   for (const e of st.enemies) out.add(animOf(e.type, e.royal));
   for (const w of st.proto?.ring?.waves ?? []) for (const d of w) out.add(animOf(d.kind));
-  if (st.proto?.watch?.length) out.add('eagle');
+  // (engine.ts: a follow stage steps and draws its herons in the watcher's place, updateFollow / drawHerons; no eagle, BUILD-23b)
+  if (st.proto?.watch?.length && !st.proto.follow) out.add('eagle');
   return [...out];
 }
 
@@ -60,7 +64,8 @@ export function stageAnims(st: StageDraws): string[] {
  */
 export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean; rope: boolean; vineRope: boolean } {
   const vine = (st.vines ?? []).some((v) => !v.rope && v.vineType !== 'tree_climb');
-  const props2 = !!st.proto?.bushes?.length || !!st.proto?.hollows?.length;
+  // (a reed clump is World 2's painting, engine.ts drawBushes -> drawReedClump: not this sheet, BUILD-23b)
+  const props2 = !!st.proto?.bushes?.some((b) => b.kind !== 'reeds') || !!st.proto?.hollows?.length;
   const rope = !!st.ropes?.length;
   // (and a draped pair of climbing strands, pairArt.ts, or a vine field, vineFieldArt.ts: the same painted vine)
   const vineRope = !!st.ropes?.some((r) => r.look === 'vine') || (st.vines ?? []).some((v) => !!(v as { pair?: number; field?: unknown }).pair || !!(v as { field?: unknown }).field);
