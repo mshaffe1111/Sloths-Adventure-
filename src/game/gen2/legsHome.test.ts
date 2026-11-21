@@ -120,6 +120,29 @@ test('home toy (planted): the river he is in is found by where he is, never by x
   }
 });
 
+test('home toy (planted): a splash pond sets him back on its own storey, never on the leg laid over it (its banks are the solids at its lips on the fall\'s height, never the topmost solid at that x)', async () => {
+  const { w2Finish, LIP_RISE } = await import('./worlds/w2.ts');
+  const { surfaceBelowBank } = await import('../river.ts');
+  // (planted RED on w2.ts banks() before ENG-27e, the topmost solid at each lip: on Easy seeds 2 and 5 and Normal seed 5 the out leg's
+  //  ground starts at a home-leg pond's far lip, and the splash set him 790 px up on the out leg in the middle of the race)
+  let under = 0;
+  for (const difficulty of ['normal', 'easy'] as const) {
+    for (let seed = 1; seed <= 6; seed++) {
+      const done = w2Finish(build(HOME_CODE, seed, difficulty) as never, difficulty) as ReturnType<typeof build>;
+      const solids = done.platforms.filter((p) => p.type === 'solid');
+      for (const r of done.rivers ?? []) {
+        if (!r.safe) continue;
+        const { backX, backY } = r.safe, bank = r.surfaceY - surfaceBelowBank;
+        const at = `${difficulty} seed ${seed}: the pond at ${r.x0}-${r.x1} (its lower bank's top ${bank}) sets him back at (${backX}, ${backY})`;
+        assert.ok(backY <= bank && backY >= bank - LIP_RISE, `${at}: on its own storey`);
+        assert.ok(solids.some((p) => p.y === backY && p.x <= backX && p.x + p.width >= backX), `${at}: on a solid`);
+        if (solids.some((p) => p.x <= backX && p.x + p.width >= backX && p.y < bank - LIP_RISE)) under++;
+      }
+    }
+  }
+  assert.ok(under >= 3, `the plant's case is laid: ${under} ponds have another leg's ground over their set-back`);
+});
+
 test('home toy (planted): the column\'s last turn is climbed at the column\'s foot, and the bots walk home: every seed finishes, no rescue', async () => {
   const { towerCorners } = await import('../../../tools/inspect/towerRoute.ts');
   const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
@@ -146,9 +169,26 @@ test('home toy (planted): the column\'s last turn is climbed at the column\'s fo
   // (the bots on the home leg: before ENG-27b seeds 2 and 3 drowned 56-94 times, walked back from the home leg's end to the column, and
   //  every seed stood ~13 s on the column's last storey until rescued)
   const RIGHT = HOME_CODE.replace('/L Pf1<', '/R Pf1>');
+  // (and once on the race leg nothing lifts him back over it in one frame but a life lost: planted RED on w2.ts banks() before ENG-27e,
+  //  Easy seed 2's splash pond at the dip set him on the out leg, 846 px up, at frames 2584 and 4112, no life lost)
+  const lifts: string[] = [];
+  let watched = 0;
+  const watch = (at: string) => {
+    let f = 0, y0 = NaN, lost = -1e9, n0 = 0;
+    return { onFrame: (sim: import('../realPlay.ts').RealPlay) => {
+      f++;
+      const e = sim.e as unknown as { player: { x: number; y: number }; statLivesLost: number; pieces: Array<{ kind?: string; pacer?: { yMin: number } }> };
+      const yMin = e.pieces.find((q) => q.kind === 'pacer')?.pacer?.yMin;
+      if (e.statLivesLost !== n0) { n0 = e.statLivesLost; lost = f; }
+      const p = e.player;
+      if (yMin !== undefined && p.y >= yMin) watched++;
+      if (yMin !== undefined && y0 >= yMin && p.y < yMin && y0 - p.y > 150 && f - lost > 150) lifts.push(`${at} frame ${f}: at x ${Math.round(p.x)} from y ${Math.round(y0)} to ${Math.round(p.y)}`);
+      y0 = p.y;
+    } };
+  };
   for (const [tier, setting] of [['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal']] as const) {
     for (const seed of [1, 2, 3]) {
-      const r = homeRun(tier, setting, seed);
+      const r = homeRun(tier, setting, seed, 1, watch(`${tier} ${setting} seed ${seed}`));
       assert.equal(r.end, 'shrine', `${tier} ${setting} seed ${seed}: finishes`);
       assert.equal(r.rescues, 0, `${tier} ${setting} seed ${seed}: no rescue`);
       if (tier === 'middle' && setting === 'normal' && seed === 2) {
@@ -157,4 +197,6 @@ test('home toy (planted): the column\'s last turn is climbed at the column\'s fo
       }
     }
   }
+  assert.ok(watched > 0, 'the race leg is watched (its pacer laid)');
+  assert.deepEqual(lifts, [], 'on the race leg he is never lifted back over it but by a life lost');
 });

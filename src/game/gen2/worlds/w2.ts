@@ -243,7 +243,7 @@ type FinishStage = {
 const REED_OFF = 20;
 /** how far under a fall's height (its higher lip) the other lip may stand and still be its bank (px): a liana perch's highest rise over
  *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
-const LIP_RISE = 170;
+export const LIP_RISE = 170;
 const REED_BANK = 200;
 
 /**
@@ -274,12 +274,15 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
       decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
     }
   };
-  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each. A lip may
-  //  stand up to LIP_RISE under the fall's height: a liana's perch is laid up to 160 px over the bank it leaves (pipeline place 'land'),
-  //  so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1)
+  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each ON THE
+  //  FALL'S OWN STOREY: from its height `y` (the higher lip) down to LIP_RISE under it. A liana's perch is laid up to 160 px over the bank
+  //  it leaves (pipeline place 'land'), so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1.
+  //  Never a solid over the fall's height: on a tower's stacked legs another leg's ground can end or start at the same x, and taken as
+  //  the bank its splash set him on that leg (ENG-27e: the home toy's Easy seed 2 put him back on the out leg, 790 px up, mid-race))
+  const lip = (p: Platform, y: number) => p.y >= y - 2 && p.y <= y + LIP_RISE;
   const banks = (x0: number, x1: number, y: number) => ({
-    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
-    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
   });
   // (is the fall at x0-x1, lip y, on a leg laid LEFT? The run leg whose span holds it and whose heights lie nearest, gen2 tower.legs)
   const runs = st.gen2?.tower?.flow === 'legs' ? (st.gen2.tower.legs ?? []).filter((g) => g.travel === 'left' || g.travel === 'right') : [];
