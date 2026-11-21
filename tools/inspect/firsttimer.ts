@@ -54,7 +54,8 @@ import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { drowsyJump } from '../../src/game/zones.ts';
+import { airStep, ASSIST, canGrabSwing, DOUBLE_RISE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -994,7 +995,7 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
  * own frame, a frame longer than the first press's count, as the engine flies it); and, falling over the small float he comes down on, the
  * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
  */
-export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2 = PHYS.doubleV): boolean {
+export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV): boolean {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   let until = h.hold;
   let pressed2 = false;
@@ -1658,7 +1659,7 @@ export class FirstTimerRun {
     // (a drawn hop, rule 28: judged as flown, at lag 0 from where he stands; the row carries its kind and hold)
     if (h) {
       for (const q of qs) {
-        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin)) {
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2())) {
           this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
           return;
         }
@@ -2926,7 +2927,7 @@ export class FirstTimerRun {
             if (drifts.some((q) => lands(q))) {
               // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx))) {
+              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()))) {
                 this.edgeWait = -1;
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
@@ -2986,8 +2987,8 @@ export class FirstTimerRun {
             const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx));
-            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN))) {
+            const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()));
+            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2()))) {
               this.edgeWait = -1;
               if (HOP_TRACE.on) {
                 this.judged = null;
@@ -3030,7 +3031,7 @@ export class FirstTimerRun {
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
               const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
               const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx))) {
+              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2()))) {
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
@@ -4035,6 +4036,12 @@ export class FirstTimerRun {
    * the beat with no steer, then the second press's hold), from its own stream (rHop), once per wait: kept until a gate presses it, so
    * the hop judged frame to frame is one hop and no other draw of the bot's moves (level.md rule 28; the lead's ruling, ENG-27n).
    */
+  /** the engine's second-jump speed now (engine.ts, the air press: the early-stage and Easy help, a drag zone, the spore cloud's drowse) */
+  private v2(): number {
+    const e = this.e as unknown as { assistNow?: () => number; dragJump?: number; flightClear?: boolean; drowsy?: number };
+    return PHYS.doubleV * (1 + ASSIST.doubleJump * (e.assistNow?.() ?? 0)) * (e.flightClear ? 1 : drowsyJump(e.drowsy ?? 0)) * (e.dragJump ?? 1);
+  }
+
   private drawHop(dir: -1 | 1): DrawnHop {
     const p = this.sim.p, who = this.who, r = this.rHop;
     const needs = who.readHold !== undefined && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40));
