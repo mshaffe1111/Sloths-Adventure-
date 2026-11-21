@@ -705,7 +705,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -1188,6 +1188,8 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
+  /** SKILLS.raceSure: the racing hop off a log is flown as it was judged, a single held this long (s; 0: no racing hop) */
+  private raceHop = 0;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
@@ -2833,8 +2835,17 @@ export class FirstTimerRun {
           // the ride-only player, who loses the race by its rule)
           const pacer = (this.sim.stage as { pacer?: Pacer }).pacer;
           const sure = (q: Platform) => hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0), RACE_MARGIN);
-          if (SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y) && (bank || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
+          // (SKILLS.raceSure, ENG-27l M1: the bank too is asked whether the hop comes down on it (hopLandsOn, its rise read), and the hop
+          //  flown is held at least as long as the hop judged (who.hold[0]): the bank within 80 px of the log's end was taken with no landing
+          //  check and the press drew its own hold (holdQ, as short as a frame), so a tap off a log's front came down 19 px short of a bank
+          //  28 px up, four falls on the race leg (2-7 home middle Normal 2 x 10683, 6551, 3959; post Normal 5 x 12371; k/falls-*-27k.txt).
+          //  A single forced at exactly that hold, the bank asked 50 px in, rode too many logs in and lost five races (l/race-variantA-27l.txt).
+          //  Not sure: he rides on, and the log hands him to the bank, SKILLS.handed)
+          const bankIn = (q: Platform) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX);
+          const reach = SKILLS.raceSure ? this.sim.platforms.some((q) => bankIn(q) && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0))) : bank;
+          if (SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y) && (reach || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
             this.edgeWait = -1;
+            if (SKILLS.raceSure) this.raceHop = who.hold[0];
             return this.startJump(dir, this.jumpFor(p, dir, here), false);
           }
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
@@ -3858,6 +3869,13 @@ export class FirstTimerRun {
       hold = Math.max(hold, this.wheelHop);
       d2 = -1;
       this.wheelHop = 0;
+    }
+    // (a racing hop off a log, SKILLS.raceSure: held at least as long as the hop judged (hopLandsOn with who.hold[0]), as the liana's
+    //  and the wheel's hops are; the draws above are kept, so the stream is as ever)
+    if (this.raceHop > 0) {
+      hold = Math.max(hold, this.raceHop);
+      if (kind === 'double') hold = Math.min(hold, d2 - DT);
+      this.raceHop = 0;
     }
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;

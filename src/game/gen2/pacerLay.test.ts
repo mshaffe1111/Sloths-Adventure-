@@ -228,3 +228,37 @@ test('bot (planted): a log drifting his way, still mostly under the lip, is boar
   assert.ok(v.won, `home Easy seed 1: ${v.him} s against the boat's ${v.boat} s`);
   assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
 });
+
+// (the racing hop off a log is judged as it is flown, SKILLS.raceSure (firsttimer.ts, the race leg's hop off a log running his way):
+//  the far bank within 80 px of the log's end was taken with no landing check, and the press drew its own hold (holdQ, as short as a
+//  frame), so a tap off the log's front came down 19 px short of a bank 28 px up. Planted on the exact falls (level.md rule 21, RED
+//  with the skill off): home middle Normal seed 2 fell at x 10683, 6551 and 3959, post Normal seed 5 at x 12371 (ENG-27k traced all
+//  ten of the two losing rows' falls: k/falls-*-27k.txt; RED and GREEN here: ENG-27/l/falls-*-27l.txt, ENG-27l)
+test('bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it', async () => {
+  const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
+  const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
+  const falls = (seed: number, code: string, on: boolean) => {
+    const was = SKILLS.raceSure;
+    const at: number[] = [];
+    let piece: PacerPiece | undefined, lives: number | undefined;
+    try {
+      SKILLS.raceSure = on;
+      homeRun('middle', 'normal', seed, 1, { onFrame: (sim: { e: unknown }) => {
+        const e = sim.e as { pieces: unknown[]; lives: number; player: { x: number } };
+        piece ??= e.pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
+        if (lives !== undefined && e.lives < lives && piece && piece.clock !== null) at.push(Math.round(e.player.x));
+        lives = e.lives;
+      } } as never, code);
+    } finally {
+      SKILLS.raceSure = was;
+    }
+    return at;
+  };
+  for (const [seed, code, xs] of [[2, HOME_CODE, [10683, 6551, 3959]], [5, POST_CODE, [12371]]] as const) {
+    const on = falls(seed, code, true), off = falls(seed, code, false);
+    for (const x of xs) {
+      assert.ok(off.some((f) => Math.abs(f - x) < 30), `RED: without the skill seed ${seed} falls short at x ${x} (falls ${off.join(', ')})`);
+      assert.ok(!on.some((f) => Math.abs(f - x) < 30), `seed ${seed}: no fall short of the bank at x ${x} (falls ${on.join(', ')})`);
+    }
+  }
+});
