@@ -1,3 +1,67 @@
+# BUILD-23c REPORT: 2-3 items (a)-(d) (t-build-23 from 6db2da0fd; this section written 9:59 PM ET by `date`)
+
+## EXACT NEXT STEP (for BUILD-23d), in order
+1. **Read the lead's newest rulings first** (they arrive with priority 'next', D103). Head: the last BUILD-23c commit on t-build-23.
+2. **Child Normal 0/10 (every run rescued, goal 5/5, shrine reached)**: castBots 2-3 1-10 on 2c9a0197d (rows:
+   reference/qa-reports/BUILD-23/castbots23c-rows.jsonl). ENG-CAGE-b's trace names the boulder spot (cause B): if it is data, fix it in
+   w2Arc23.ts (a rock's place); a bot cause is ENG-CAGE-b's (firsttimer.ts), routed by the lead.
+3. **registrycheck FAIL on 2-3 (3 left)**: (i) no proven seed list: relist (`npx tsx tools/engine/seedlist.ts 2-3`) once (ii) is done;
+   (ii) its row not `judged`: fly it (`FLIGHT_STAGE=2-3 npx tsx reference/specs/sims/flight.ts normal all`, then easy); (iii) 'sheets:
+   foe:eagle (seeds 1-3 both)': NOT a missing sheet. registrycheck.ts:86 builds the roll with libstage.buildStage, which returns the
+   roll BEFORE its finish (playFinish runs only on a clone inside listJudge, listRules.ts:80), so finish23 never sets proto.follow and
+   sheetWarm.ts stageAnims (:57) counts 2-3's watch zones as an eagle. Root fix (a gate change: the lead routes it, never a stageSheets
+   eagle entry to make it pass, law 22): the sheet check reads the FINISHED roll (`playFinish(listedStage(id)!, structuredClone(st), d)`),
+   as Play draws it. Both CI tool-line reds (registrycheck.test.ts 'the shipped table passes the gate' and 'planted on the real builds')
+   are these 2-3 entries.
+4. castBots 2-3 1-40 x 5 bots x both, the meter 2-3 N + E (DIFFICULTY.md), THE FULL SET on the exact head (D96), lockall --layouts 16
+   --intended 2-3 vs main, the full clipcheck, drawcheck WITH 2-3 now in limits.json (see Gates).
+5. Final stills on the GREEN head (rule 29): Easy post stills (my Easy shot caught the title card on a loaded machine: the mooring beat has
+   ONE lay for both settings, so the geometry is the same, but no Easy still exists); a 1-7 eagle-shadow still beside the new heron look
+   (the lead: BUILD-23d's stills; 1-7's eagle stays at 'rest' when he is forced in place: walk him in instead).
+6. Named for the lead, not 2-3's: the HUD vine strip (VineHud.tsx:393, below).
+
+## Done (each pushed on t-build-23)
+| Commit | What | Evidence |
+|---|---|---|
+| ac4d299d8 | (a) merge t-eng-cage @ b34352b58 (its newest pushed head) | tsc clean |
+| ecf09ba77 | (b) cage 4 SITS on the post's painted shelf: POST_H 230 -> 150; the cage's dn and x computed from the sheet's alpha (shelf top 0.43 of the picture at the cage's place, trunk's right edge 75/215): SHELF_DX 45 px right of the rope, its foot on the shelf. Bots: firsttimer.ts `vineReaches` (the engine's airKick box from fight.ts MOVES, 8 px inside) replaces the 30/40 px window (lead 9:40 PM: stays) | stills b23c-normal-post-{foot,rope}-{upright,sideways}.jpg + BEFORE-sideways (the cage behind the plank); sideways at his foot the cage's top is ~13 css px under the plank's slider. cageBot.test 4/4; planted: the old 30 px window -> the post test RED. w2Arc23.test 6/6 (the shelf assert). ACCEPTED by the lead 9:40 PM |
+| 91e5a31fa | (c) the heron look: gaze 5 px dash at 0.95 over an 8 px dark warm edge at 0.5; wash core 0.57 + 2 px warm rim, wide 0.38 (was 0.275 each, gaze 3 px at 0.45) | stills b23c-normal-look-{A-reeds-shaded,B-open-sunlit}-{before,after}-{upright,sideways}.jpg + two side-by-side crops; shot by state (lookX within 30 px of the place). followArt.test 5/5. ACCEPTED by the lead 9:45 PM |
+| a3af5a5b7 | (d) the upright vine strip is a HUD defect: 2-5 at 0eefc707e has it too; 1-1 (trail counter) does not | still b23c-hud-vine-strip-upright-2-5-base-0eefc707e-vs-2-5-mine-vs-1-1.jpg; source VineHud.tsx:393 (painted counter on the LOWER row: a straight PaintedVine 2..cw-2, no curl or leaf; the unpainted branch at :397 curls) |
+| 2c9a0197d | '2-3' in tools/perf/limits.json scenarios (registrycheck: 'drawcheck never plays it') | registrycheck's drawcheck line gone |
+| f8397e13c | castBots 2-3 1-10 child/middle/expert both settings | rows file; table below |
+
+## castBots 2-3 seeds 1-10 (2c9a0197d; every one of 50 runs reached the shrine with the goal 5/5: the shelf cage freed in all)
+| bot | Normal | Easy |
+|---|---|---|
+| child | 0/10 (all rescued: 1-5 rescues a run) | 9/10 |
+| middle | 10/10 | 10/10 |
+| expert | 9/10 (seed 2: one rescue) | - |
+In line with ENG-CAGE's 1-40 at fix4 (child N 0/40, child E 37/40, middle 36/40 + 40/40, expert 35/40): no loss from the post move.
+
+## Gates (on my head; THE FULL SET is BUILD-23d's)
+GATES_TABLE
+
+## Polish check
+- Post, sideways at his foot: the cage stands on the shelf against the trunk, its bars clear of the plank; the shelf's free end right of
+  the cage (~22 css px) does not read as a step. Upright: lots of room. On the rope: his paw at the cage, both in view. PASS.
+- Heron look, before: the gaze nearly invisible on the pink sky, the wash a smear. After: the gaze reads beak to spot, the wash ring marks
+  the place, on the reeds and the open mud, both ways. PASS. The ring's warm rim reads a little like a drawn plate up close; at phone size it
+  reads as a spot of light (judged, kept).
+- Named, not checked: Easy post stills; a 1-7 side-by-side.
+
+## Learned (for the next builder)
+- Measure a painted piece's standing place on the sheet's alpha (a column scan) and derive the socket from it in code: the cage sat right
+  on the first try, and a future POST_H change keeps it there.
+- A bot's reach rule copied as a pixel window drifts from the engine; read it from the engine's own move box (fight.ts MOVES).
+- A gate red on your stage can be the gate reading the wrong stage (the unfinished roll): check what the gate builds before adding data
+  to make it pass.
+
+## Lessons applied
+D30 (every time from `date`), D76 (stopped clean before 10:45 with the next step on top), D101 (the post's geometry checked on the real
+page before calling it done), D102 (lean reads: grep and line ranges only), D103 (the lead's rulings read and answered as they came).
+
+---
+
 # BUILD-23b REPORT: 2-3 continued (t-build-23 from b51e4f0df; this section written 9:25 PM ET by `date`)
 
 ## EXACT NEXT STEP (for BUILD-23c), in the lead's order (9:21 PM ET message)
