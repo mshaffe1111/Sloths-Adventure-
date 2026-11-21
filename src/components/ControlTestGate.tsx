@@ -213,8 +213,9 @@ export const ctestStageName = (id: string): string => {
 export const ctestStageTitle = (id: string): string => `${id}, ${ctestStageName(id)}`;
 
 /**
- * The stage picker (R-165.343): the nine stages of World 1 as gold-edged tiles, three by three, the number big and the name under it.
- * One tap picks (a radio group: one is always picked); the page above shows that stage's still and its moves. A stage this phone has
+ * The stage picker (R-165.343; pictures R-165.368, Matt 11-21: "smaller pictures of the ... 9 different levels, letting somebody pick"):
+ * the nine stages of World 1 as picture tiles, each its own still from the real game with the number and name under it, three by three
+ * upright and five over four sideways. One tap picks (a radio group: one is always picked); the moves below follow the pick. A stage this phone has
  * finished wears a small green tick in its corner, so testers spread out over all nine.
  */
 const StagePicker: React.FC<{ stage: string; onPick: (id: string) => void }> = ({ stage, onPick }) => {
@@ -229,13 +230,22 @@ const StagePicker: React.FC<{ stage: string; onPick: (id: string) => void }> = (
               ✓
             </span>
           )}
-          <b>{id}</b>
-          <small>{ctestStageName(id)}</small>
+          <span className="ct-pick-pic">{ctestStill(id) && <img src={ctestStill(id)!} alt="" draggable={false} loading="lazy" decoding="async" />}</span>
+          <span className="ct-pick-t">
+            <b>{id}</b>
+            <small>{ctestStageName(id)}</small>
+          </span>
         </button>
       ))}
     </div>
   );
 };
+
+/** what the game is, for a tester who has never seen it (R-165.368; DRAFT for the story keeper: built from the game's own lines, 1-2's
+ *  letter "Follow the petals" and STORY-KEEPER §2, Meeca taken north by the General) */
+export const CTEST_ABOUT = 'Pokey is a little sloth with a long way to go. Meeca has been taken, and she left him one job: follow the petals through the rainforest!';
+/** how to start, in the page's own order (R-165.368; DRAFT for the story keeper): Refresh, a picture, then the name, setting and Start */
+export const CTEST_HOW: readonly string[] = ['Tap Refresh, just below.', 'Tap a picture to pick a level.', 'Type your name, choose Easy or Normal, then tap Start.'];
 
 /** a numbered step on the front door: a little gold token */
 const Step: React.FC<{ n: number }> = ({ n }) => (
@@ -277,7 +287,6 @@ export function ctestLevelFor<L extends { id: string }>(levels: readonly L[], id
 export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPick?: (stage: string) => void }> = ({ onStart, onPick }) => {
   const [stage, setStage] = React.useState(savedCtestStage);
   const page = ctestPage(stage);
-  const still = ctestStill(stage);
   React.useEffect(() => onPick?.(stage), [stage]);
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
@@ -294,15 +303,26 @@ export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPic
   return (
     <Scene label="Level test">
       <form onSubmit={go}>
-        {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
-        <div className="ct-hero">
-          {still && <img key={stage} className="ct-hero-still" src={still} alt={page.alt} draggable={false} />}
-          <span className="ct-new-tag ct-hero-new">NEW</span>
-          <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
-        </div>
+        {/* the top (R-165.368, Matt 11-21: "a brief explanation of what the game is about and how to start it"): the title, what the game
+            is in a line or two with Pokey cheering beside it, then the three steps; the level pictures below replace the one big still */}
         <p className="ct-kicker">Level test · World 1</p>
-        <Plaque as="h1" className="ct-title">Pokey's World 1</Plaque>
-        <p className="ct-p ct-lead">Nine levels. Pick one, play a few minutes. Every run is different.</p>
+        <div className="ct-titlebar">
+          <Plaque as="h1" className="ct-title">Pokey's World 1</Plaque>
+          <span className="ct-new-tag ct-title-new">NEW</span>
+        </div>
+        <div className="ct-about">
+          <p className="ct-p ct-lead">{CTEST_ABOUT}</p>
+          <HeroPose frame="cheer_a" h={104} className="ct-about-pokey" />
+        </div>
+        <Head>How to start</Head>
+        <ol className="ct-how">
+          {CTEST_HOW.map((t, i) => (
+            <li key={t} className="ct-how-row">
+              <Step n={i + 1} />
+              <span>{t}</span>
+            </li>
+          ))}
+        </ol>
         <FreshBuild />
 
         <Head>Pick a level</Head>
