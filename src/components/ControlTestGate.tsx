@@ -345,7 +345,6 @@ export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPic
 
         <Head>Get started</Head>
         <div className="ct-row">
-          <Step n={1} />
           <label className="ct-label" htmlFor="ctest-name">
             Your name or a nickname
           </label>
@@ -364,7 +363,6 @@ export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPic
           placeholder="e.g. Matt"
         />
         <div className="ct-row">
-          <Step n={2} />
           <p className="ct-label">How hard?</p>
         </div>
         <div className="ct-modes" role="radiogroup" aria-label="How hard">
@@ -381,7 +379,6 @@ export const ControlTestGate: React.FC<{ onStart: (stage: string) => void; onPic
           ))}
         </div>
         <div className="ct-row">
-          <Step n={3} />
           <p className="ct-label">{name.trim() ? 'Tap Start' : 'Type your name, then tap Start'}</p>
         </div>
         <button type="submit" disabled={!name.trim()} className="pm-go ct-go">

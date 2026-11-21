@@ -9,7 +9,7 @@ import '../game/headlessDom.ts';
 import { existsSync } from 'node:fs';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { ControlTestDone, ControlTestGate, ctestBegin, ctestLevelFor, ctestStageTitle, surveyIntro, surveyRow } from './ControlTestGate.tsx';
+import { CTEST_ABOUT, CTEST_HOW, ControlTestDone, ControlTestGate, ctestBegin, ctestLevelFor, ctestStageTitle, surveyIntro, surveyRow } from './ControlTestGate.tsx';
 import { CTEST_STAGES, recorder, savedCtestStage } from '../game/playRecorder.ts';
 import { generateAllLevels } from '../game/worldsData.ts';
 import { stageSpec } from '../game/stagePlan.ts';
@@ -133,4 +133,29 @@ test("a stage this phone finished wears a tick on its tile (the lead 11-20: test
   assert.equal((html.match(/class="ct-played"/g) ?? []).length, 1);
   assert.match(html, /aria-label="1-6, First Lianas, played"[^>]*>\s*<span class="ct-played"/);
   localStorage.clear();
+});
+
+test("the front page (R-165.368, Matt 11-21): what the game is, how to start in three steps in the page's order, then nine picture tiles", () => {
+  localStorage.clear();
+  const html = renderToStaticMarkup(React.createElement(ControlTestGate, { onStart: () => {} }));
+  const at = (t: string) => html.indexOf(t.replace(/'/g, '&#x27;'));
+  // the about line: Pokey, Meeca, the petals; short enough for a child (two sentences)
+  assert.ok(at(CTEST_ABOUT) > 0, 'the about line is on the page');
+  assert.match(CTEST_ABOUT, /Pokey/);
+  assert.ok(CTEST_ABOUT.split(/[.!?](\s|$)/).filter((x) => x && x.trim()).length <= 2, 'one or two sentences');
+  // how to start: three steps, Refresh first, a picture second, Start last; and the page holds them in that order
+  assert.equal(CTEST_HOW.length, 3);
+  assert.match(CTEST_HOW[0], /Refresh/);
+  assert.match(CTEST_HOW[1], /pick a level/);
+  assert.match(CTEST_HOW[2], /name.*Easy or Normal.*Start/);
+  const order = [at(CTEST_ABOUT), at(CTEST_HOW[0]), at(CTEST_HOW[2]), at('ct-fresh'), at('class="ct-picks"'), at('The moves in'), at('id="ctest-name"')];
+  assert.ok(order.every((x) => x > 0), `every part is on the page (${order})`);
+  assert.deepEqual([...order].sort((a, b) => a - b), order, 'about, how to start, Refresh, the tiles, the moves, the name');
+  // nine tiles, each with its picture slot (the still itself comes from the bundler: ctestStill; its file is pinned above) and its words
+  assert.equal((html.match(/class="ct-pick-pic"/g) ?? []).length, CTEST_STAGES.length, 'a picture on every tile');
+  assert.equal((html.match(/class="ct-pick-t"/g) ?? []).length, CTEST_STAGES.length, 'a number and name on every tile');
+  // one numbered list on the page (the lead 11-21): How to start's three tokens; Get started keeps its fields without numbers
+  assert.equal((html.match(/class="ct-step"/g) ?? []).length, 3, 'only How to start is numbered');
+  // the one big still is gone (the tiles replace it)
+  assert.ok(!html.includes('ct-hero'), 'no hero still');
 });
