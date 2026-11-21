@@ -8,8 +8,8 @@ STEP, its two candidates in m/); level.md rule 28 (the hop judged is the hop flo
 D109, D111, D112, D113, D114, D115.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
 BASE: t-eng-27 at b7a68a8bd (ENG-27m's final; hopJudged.test.ts RED by design). Push there.
-0. Step 0 (D114): ENG-27m's suite on 79196c2f6 (src unchanged since: check with git diff --stat 79196c2f6 HEAD -- src) is its verdict; the
-   lead sends it when it lands. Do not start a second suite unless I say.
+0. FIRST (D114): the full src suite on b7a68a8bd, frozen, run_in_background (ENG-27m's run on 79196c2f6 was lost when its session was
+   archived for the slot). A red: name it, tell me.
 1. BUILD THE RULING (ENG-27m wrote the parts): the kind and hold drawn FIRST by the testers' habit (a drawHop() drawn once per wait), then
    THAT hop judged from where he IS, fired only if it lands, else he waits and it is judged again; the flight flies the drawn kind (a double:
    d2/dblAt and the second press's hold); the overSmall steer judged as flown; candidate 2's plain edge wait (no unjudged press: a pending
