@@ -1,7 +1,35 @@
 # UI-372: an edge marker for a spooked little one off screen (R-165.372)
 Designer, Opus 5.5 high. Base origin/t-build-23 @ 66775dabf (2-3 GREEN). Branch t-ui-372. Started 4:05 PM ET (by `date`).
 
-## UI-372b: the stills re-shot on the 48 px ruling, and THE FULL SET one heavy run at a time (top section, newest)
+## UI-372c: the heavy gates one at a time, and the slot-state confirm (top section, newest)
+Designer, Opus 5.5 high, a fresh member. Base origin/t-ui-372 @ af8afe835. Started 5:02 PM ET (by `date`). Push: t-ui-372. No code change.
+
+### Slot-state confirm (law 3)
+PENDING
+
+### Gates (THE FULL SET, gates.md D96; one heavy run at a time on af8afe835 + this report only)
+| Gate | Verdict |
+|---|---|
+| unit suite (CLAUDE.md line) | PENDING |
+| vite build + chunkcheck | NOT RUN |
+| drawcheck (2-3 within limits.json) | NOT RUN |
+| clipcheck (no new entry; marker inside the insets) | NOT RUN |
+| lockall --check vs 66775dabf | NOT RUN |
+| paintcheck 0/3, 1/3, 2/3 | NOT RUN |
+| registry seed lists | NOT RUN |
+| tipwalk | NOT RUN |
+| registrycheck | NOT RUN |
+| the CI tool line (gates.yml), kbdcheck, buildcheck, seedlist 1-1, tierBots | NOT RUN |
+| from UI-372b, unchanged base: tsc, artcheck, knowncheck, generalitycheck, coveragecheck, timecheck, roadmapcheck (own ROADMAP) | PASS (UI-372b) |
+| roadmapcheck on the lead's ROADMAP | FAIL (6), not this work: 5 rows name PR #77 (on main, not in this branch) and BUILD-PLAN's count; they clear on the integration head that holds main |
+
+### EXACT NEXT STEP
+PENDING
+
+### Learned
+- This container had no node_modules (a fresh one): the first suite start failed on `react` not found. `npm install --no-audit --no-fund --legacy-peer-deps` (gates.yml's own line) comes first in a fresh container; check `ls node_modules` before any gate.
+
+## UI-372b: the stills re-shot on the 48 px ruling, and THE FULL SET one heavy run at a time (previous)
 Designer, Opus 5.5 high, a fresh member. Base origin/t-ui-372 @ 7a638985c. Started 4:31 PM ET (by `date`). Push: t-ui-372.
 
 ### Stills (re-shot on 7a638985c; CAPTIONS.md updated; commit 6b4d65a00)
