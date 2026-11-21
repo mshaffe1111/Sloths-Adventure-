@@ -91,6 +91,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `controls` | the tester switched control style (`pad on the left/right` or `screen gestures`) |
 | `rules` | `refined` or `old` touch rules |
 | `difficulty` | the difficulty picked |
+| `stage` | (from builds after 2026-11-20) the World 1 stage the tester picked on the front page (`1-1` .. `1-9`, R-165.343), once per Start; the run's `gen2` line names it again with its seed |
 | `mix` | the test stage's layout seed (`?mix=<seed>` rebuilds it) |
 | `env` | once a run, at Start: the system version, graphics chip, memory, cores, language and screen settings (`src/game/deviceInfo.ts`), then (from builds after 2026-11-06) ` \| build <git commit> list <seed list version> round <test round>`. See "Which build" below |
 | `tester` | (from builds after 2026-11-06) the tester code: 6 random letters (no 0/O, 1/I) made once on the device and kept under `sloth_qa_tester_id`; random only, nothing read from the phone. A leading `~` means storage was blocked, so the code lasts this visit only. The sheet's Player cell is `Name · CODE` from these builds on: join a tester's runs by the code, not the name |
@@ -104,7 +105,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `stomp` | stomped a foe (its type, or `boss`) |
 | `stuckHelp` | the game helped him out of a stuck spot (x) |
 | `finish` | reached the end (game time) |
-| `survey` | the tester's answers (JSON). From builds after 2026-11-06 (the level test, `v: 2`), only what the log cannot tell (Matt: no redundant questions). REQUIRED, Send waits for them: `fun` (1 to 5 faces), `long` (`Too short`, `About right`, `Too long`), `knew` (`Always`, `Mostly`, `I got lost`). Optional, absent when skipped: `hard` (a list, the plain words the tester saw: `src/components/ctestStretches.ts`), `tips` (`Yes`, `A bit`, `No`, `Didn't notice them`), `looked` (`No` or `Yes`) with `lookedNote`, `next` (`Yes`, `Maybe`, `No`), and `note`. `run` is that run's `gen2` line. Not asked any more (older rows have them): `hand`, `held` (read them from the log: below) and the short-lived `age` (never asked in a shipped build) |
+| `survey` | the tester's answers (JSON). From builds after 2026-11-06 (the level test, `v: 2`), only what the log cannot tell (Matt: no redundant questions). REQUIRED, Send waits for them: `fun` (1 to 5 faces), `long` (`Too short`, `About right`, `Too long`), `knew` (`Always`, `Mostly`, `I got lost`). Optional, absent when skipped: `hard` (a list, the plain words the tester saw: `src/components/ctestStretches.ts`), `tips` (`Yes`, `A bit`, `No`, `Didn't notice them`), `looked` (`No` or `Yes`) with `lookedNote`, `next` (`Yes`, `Maybe`, `No`), and `note`. `run` is that run's `gen2` line. `stage` (from builds after 2026-11-20) is the stage the survey is about (`1-4`), in the same Data cell, so the collector and the sheet are unchanged. Not asked any more (older rows have them): `hand`, `held` (read them from the log: below) and the short-lived `age` (never asked in a shipped build) |
 | `pickup` | (from builds after 2026-11-06) something he took: `<kind> <x>`. Kinds: `flower` (a petal), `leaf`, `fruit`, `heart` (only when he could take it: at full hearts a heart stays put and logs nothing), `super_heart`, the powerups, and `seed` (a golden seed). Count them against the stage's own collectibles for the find rate |
 | `softFall` | a put-back with no life lost: `<x>` where he went over. Easy's soft falls, 8-4's lantern falls, and (from builds after 2026-11-06) gen2's level double-gap blocks, which put him back on the take-off. Only `lostLife` costs a life |
 | `help` | 1-1's help ladder (from builds after 2026-11-11, R-165.62): `<rung> <piece> <count> <E\|N>`. The rung reached at that put-back count in that piece: `move` (Dot says the move, 3), `pad` (Easy: a Pad tap is a full jump there, 5), `step` (the steps grew: Easy at 8, Normal on a yes), `offer` (Normal, 12), `reask` (Normal, 8 after a no). `<piece>` is the piece he was trying to reach (the stage's piece key); `E`/`N` the setting |
@@ -113,7 +114,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `move` | (from builds after 2026-11-06) the FIRST use of a move in this stage (start or restart): `double <x>` (the double jump) or `bounce <x>` (a mushroom). Later uses are in the `i` and `p` lines already |
 | `pause` | (from builds after 2026-11-06) the pause menu opened. Many in one run is a frustration sign |
 | `restart` | (from builds after 2026-11-06) `menu`: the stage restarted from the pause menu (a frustration sign; `resumeRestart` is the game starting it again by itself) |
-| `playAgain` / `quit` | the tester's choice at the end |
+| `playAgain` / `pickAnother` / `quit` | the tester's choice at the end (`pickAnother`, from builds after 2026-11-20: back to the front page to pick another level; its next Start adds a `stage` line) |
 | `capped` | `<name>`: that glitch event reached its cap and logs nothing more this session |
 
 ## Dot's netting flight (4-D)

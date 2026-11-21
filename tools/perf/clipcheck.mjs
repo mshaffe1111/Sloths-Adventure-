@@ -840,6 +840,11 @@ async function walk(browser, base, save, size, devBase) {
     await opens('#ctest-name');
     await settle();
     await judge('testers: front page');
+    // (the stage picker, R-165.343: a pick, then the page again with that stage's still and moves; 1-5, the stage this walk played before
+    // the picker, so the walk below is the one it always was)
+    await click('.ct-pick[data-stage="1-5"]');
+    await settle();
+    await judge('testers: front page, a pick');
     await page.fill('#ctest-name', 'clipcheck');
     await click('button[type=submit]');
     // (until 11-19 a 7 s sleep stood in for the level starting: now its own HUD up and its goal card gone)
@@ -877,6 +882,11 @@ async function walk(browser, base, save, size, devBase) {
     await click('button:text-is("Send")');
     await judge('testers: sent');
     scope = '';
+    // and back to the picker from the end ("Pick another level"), the last pick still picked
+    await click('button:text-is("Pick another level")');
+    await opens('.ct-picks');
+    await settle();
+    await judge('testers: front page, back from the end');
   });
 
   await ctx.close();
