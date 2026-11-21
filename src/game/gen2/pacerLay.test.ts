@@ -7,11 +7,11 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
-import { HOME_CODE, homeKit } from './toyHome.ts';
+import { HOME_CODE, POST_CODE, homeKit } from './toyHome.ts';
 import { layPacer, pacerShoreFaults } from './pacerLay.ts';
 import { PACER_SHORE, pacerLength } from '../pacerDraw.ts';
 import { W2_RACE, W2_RIVERS } from './worlds/w2.ts';
-import { middleAt, pacerFaults, pacerOff, pacerReplace, pacerX } from '../pacer.ts';
+import { middleAt, pacerFaults, pacerOff, pacerReplace, pacerX, riversLeft, type Pacer } from '../pacer.ts';
 import { PacerPiece } from '../pieces/pacerPiece.ts';
 
 const ID = '2-97';
@@ -63,6 +63,38 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
   assert.deepEqual(W2_RACE.art, ['w2-next#mailBoat', 'w2-next#mailBoatB']);
 });
 
+// (the lead's ruling (1), 11-21, ENG-27f: after a fall the floor counts each crossing he must still make from where he respawns (a fall
+//  that sends him a river back costs that river's log wait again: post Normal seed 4 respawned two crossings out with the one floor's
+//  2 s, and the re-crossing's log wait cost 2.8 s over the flown marks), never more than a clean run's margin (a fall must never pay),
+//  never less than the one floor; the ride-only bound still caps it except on the last crossing. Planted RED both ways: the old single
+//  floor gives two crossings out 2.0 s, where the cap allows 2.29; per crossing alone, the first river's respawn got 11.7 s, a clean
+//  run 6.6)
+test('pacer (planted): after a fall the floor counts each crossing left, never more than a clean run\'s margin, post Normal seed 4', () => {
+  const P = buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: homeKit(ID, POST_CODE), seed: 4, difficulty: 'normal' }).pacer!;
+  const margin = (q: Pacer, x: number) => q.seconds - pacerReplace(q, x) - (q.middle - middleAt(q, x));
+  const share = P.seconds / P.middle - 1, most = (P.rideOnly - P.under) / P.middle - 1, clean = P.seconds - P.middle;
+  // (each far bank is a crossing made: the marks are x0, then each crossing's near and far bank, the dock last)
+  assert.equal(riversLeft(P, P.x0), (P.marks.length - 1) / 2);
+  assert.equal(riversLeft(P, P.x1), 0);
+  // (two crossings out: the bank before the river before the last, as a flag there stands)
+  const two = P.marks.at(-4)![0] - P.dir * 80, twoLeft = P.middle - middleAt(P, two);
+  assert.equal(riversLeft(P, two), 2);
+  const want2 = Math.max(twoLeft * share, Math.min(2 * P.floor, twoLeft * most, clean));
+  assert.ok(want2 > P.floor + 0.2, `two crossings out the rule gives ${want2} s, over the one floor`);
+  assert.ok(Math.abs(margin(P, two) - want2) < 1e-6, `two crossings out: ${margin(P, two)} s, want ${want2} (RED on the one floor: ${P.floor})`);
+  // (the first river's respawn, ten crossings out: never more than a clean run's margin)
+  const early = P.marks[1][0] + P.dir * 60;
+  assert.ok(riversLeft(P, early) >= 8 && (P.middle - middleAt(P, early)) * most > clean, 'early: per crossing and the cap alone are over a clean run');
+  assert.ok(Math.abs(margin(P, early) - clean) < 1e-6, `early: ${margin(P, early)} s, a clean run's ${clean} (RED per crossing alone: 12.6 here)`);
+  // (every respawn on the leg keeps at least the one floor (on the last crossing whole, ruling A), and never more than a clean run)
+  for (let i = 1; i < P.marks.length; i++) {
+    const x = P.marks[i][0] - P.dir * 30, left = P.middle - middleAt(P, x);
+    const m = margin(P, x);
+    assert.ok(m <= Math.max(clean, left * share) + 1e-6, `x ${x}: ${m} s, over a clean run's ${clean}`);
+    if (riversLeft(P, x) <= 1 || left * most >= P.floor) assert.ok(m >= Math.min(P.floor, P.seconds - left) - 1e-6, `x ${x}: ${m} s, under the floor`);
+  }
+});
+
 test('pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none', () => {
   const st = build(1);
   const { long: _long, ...flown } = W2_RACE.rivers;
@@ -89,12 +121,15 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   for (let i = 0; i < 300; i++) piece.step(1 / 30, host);
   assert.ok(Math.abs(piece.clock! - 10) < 1e-6);
   assert.ok(Math.abs(piece.x - pacerX(P, 10)) < 1e-6 && piece.x < P.x0);
-  // (a respawn at a flag a third of the way home: level with him plus the margin's share of the way left)
+  // (a respawn at a flag a third of the way home: level with him plus the margin's share of the way left, or the floor for each crossing
+  //  left where that is more, within the ride-only bound and a clean run's margin (the lead's ruling (1), 11-21, ENG-27f))
   const flag = P.x0 + (P.x1 - P.x0) / 3;
   Object.assign(player, { x: flag, y: P.yMin + 60 });
   piece.respawn(host);
   const left = P.middle - middleAt(P, flag);
-  assert.ok(Math.abs(P.seconds - piece.clock! - (left * P.seconds) / P.middle) < 1e-6, 'its time left is his careful-middle time left, scaled by its own rate');
+  const keep = Math.max(left * (P.seconds / P.middle - 1), Math.min(riversLeft(P, flag) * P.floor, left * ((P.rideOnly - P.under) / P.middle - 1), P.seconds - P.middle));
+  assert.ok(riversLeft(P, flag) > 1, 'a third of the way home is not the last crossing');
+  assert.ok(Math.abs(P.seconds - piece.clock! - left - keep) < 1e-6, 'its time left is his careful-middle time left and the margin the rule keeps');
   assert.ok(Math.abs(piece.clock! - pacerReplace(P, flag)) < 1e-9);
   assert.ok(Math.abs(pacerReplace(P, P.x0)) < 1e-9);
   // (planted, the lead's ruling 11-21: a respawn near the dock keeps the floor's margin, 2 s on Normal; the share alone left it none)
@@ -104,7 +139,9 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   const lateLeft = P.middle - middleAt(P, late);
   const most = (P.rideOnly - P.under) / P.middle - 1;
   assert.ok(lateLeft * (P.seconds / P.middle - 1) < P.floor && lateLeft * most > P.floor, `the late flag: share ${lateLeft * (P.seconds / P.middle - 1)} < 2 < bound ${lateLeft * most}`);
-  assert.ok(Math.abs(P.seconds - pacerReplace(P, late) - (lateLeft + P.floor)) < 1e-6, 'a respawn a fifth from the dock: his time left + 2 s');
+  // (the floor for each crossing left there, within the bound and a clean run's margin: ruling (1), ENG-27f)
+  const lateKeep = Math.max(P.floor, Math.min(riversLeft(P, late) * P.floor, lateLeft * most, P.seconds - P.middle));
+  assert.ok(Math.abs(P.seconds - pacerReplace(P, late) - (lateLeft + lateKeep)) < 1e-6, `a respawn a fifth from the dock: his time left + ${lateKeep} s (${riversLeft(P, late)} crossings left)`);
   assert.ok(Math.abs(pacerReplace({ ...P, floor: 0 }, late) - (P.seconds - (lateLeft * P.seconds) / P.middle)) < 1e-6, 'RED without the floor: the share alone');
   // (the lead's ruling A, 11-21: on the LAST crossing (no river left between him and the dock's) the floor holds whole: the floor is the
   //  child's safety net after a fall. Planted RED on the cap there (before ENG-27e the ride-only bound cut it to ~1 s near the dock))

@@ -6,7 +6,7 @@
  * time less `under`, so a careful middle player wins and letting the current carry him never does. Standing still loses by construction
  * (it never waits). It is a medal only: the race never locks the exit and never costs a life (the verdict is filed with the run's stats).
  * On a respawn on the race leg it is put back level with him plus the flown margin's share of the way left, never less than its floor
- * (pacerReplace; the lead's ruling 11-21: 2 s on Normal, 3 s on Easy).
+ * for each crossing still to make (pacerReplace; the lead's rulings 11-21: 2 s on Normal, 3 s on Easy, a crossing at a time).
  *
  * Pure data and arithmetic: the runtime piece is pieces/pacerPiece.ts, the lay gen2/pacerLay.ts. No stage id, world number, seed or x.
  */
@@ -27,8 +27,8 @@ export interface PacerRow {
   margin: { normal: number; easy: number };
   /** s the pacer's time stays under the ride-only time */
   under: number;
-  /** s of margin a re-placed pacer keeps at the least after a respawn, by setting, over his careful-middle time left (the lead's ruling
-   *  11-21: a late fall never turns a race he was winning into a loss by a river's log clock alone) */
+  /** s of margin a re-placed pacer keeps at the least after a respawn, by setting, over his careful-middle time left, for each crossing
+   *  he must still make (the lead's rulings 11-21: a late fall never turns a race he was winning into a loss by a river's log clock alone) */
   floor: { normal: number; easy: number };
   /** its art: inventory ids, its frames in order (two rowing frames) */
   art: readonly string[];
@@ -54,7 +54,7 @@ export interface Pacer {
   rideOnly: number;
   /** the middle's time along the leg: [x, seconds from x0], in the order he meets them (the respawn's share reads it) */
   marks: ReadonlyArray<readonly [number, number]>;
-  /** s of margin it keeps at the least when re-placed on a respawn (PacerRow.floor, the setting's), and s it stays under the ride-only time
+  /** s of margin it keeps at the least for each crossing left when re-placed on a respawn (PacerRow.floor, the setting's), and s it stays under the ride-only time
    *  (PacerRow.under): the floor never gives the way left more than that bound's share of it */
   floor: number;
   under: number;
@@ -81,20 +81,35 @@ export function middleAt(p: Pacer, x: number): number {
   return p.middle;
 }
 
+/** the race's crossings he has still to make from `x`: those whose far bank is ahead of him (the marks are x0, then each crossing's near
+ *  and far bank in his order, the last crossing's far bank the dock, gen2/pacerLay.ts) */
+export function riversLeft(p: Pacer, x: number): number {
+  let n = 0;
+  for (let i = 2; i < p.marks.length; i += 2) if ((p.marks[i][0] - x) * p.dir > 0) n++;
+  return n;
+}
+
 /** the pacer's clock after he is put back at `x` on its leg: his careful-middle time from there to the dock plus the margin's share of
- *  it, and never less margin than its floor (the lead's ruling 11-21: a respawn near the dock keeps `floor` s): on the last crossing whole
- *  (ruling A, ENG-27e), farther out where the ride-only bound allows it (the way left at the ride-only rate less `under`'s share). Before
- *  x0 the race has not begun: 0 */
+ *  it, and never less margin than its floor for EACH crossing he must still make from there, up to a clean run's margin (the lead's
+ *  ruling (1), 11-21, ENG-27f: a fall that sends him a river back costs that river's log wait again; a fall never pays): on the last crossing whole (ruling A, ENG-27e), farther out where
+ *  the ride-only bound allows it (the way left at the ride-only rate less `under`'s share). Before x0 the race has not begun: 0 */
 export function pacerReplace(p: Pacer, x: number): number {
   const left = p.middle - middleAt(p, x);
   const share = p.seconds / p.middle - 1;
-  // (the floor, never past the ride-only bound's share of the way left (pacerFaults: letting the current carry him never wins; planted:
-  //  the ride-only bot won Easy seed 1 by 1.0 s on the 3 s floor after its respawns))
+  // (the floor, a crossing at a time: post Normal seed 4 respawned two crossings out with the one floor's 2 s and the re-crossing's log
+  //  wait alone cost 2.8 s over the flown marks, ENG-27f)
+  const n = Math.max(1, riversLeft(p, x));
+  // (and never more than a clean run's margin, the boat's lead over the flown middle at the dock: a fall must never pay (the lead's
+  //  ruling (1), 11-21: per crossing alone, post Normal 4's first fall, 10 crossings out, put the boat back to its start, 11.7 s against
+  //  a clean run's 6.6). Every respawn keeps at least the one floor)
+  const floor = Math.max(p.floor, Math.min(p.floor * n, p.seconds - p.middle));
+  // (never past the ride-only bound's share of the way left (pacerFaults: letting the current carry him never wins; planted: the
+  //  ride-only bot won Easy seed 1 by 1.0 s on the 3 s floor after its respawns))
   const most = (p.rideOnly - p.under) / p.middle - 1;
   // (on the LAST crossing, no river left between him and the dock's, the floor holds whole: the lead's ruling A, 11-21: after a fall the
   //  child always keeps a fair chance to win; falling in is not winning without effort. Farther out the ride-only bound still caps it)
-  const lastCrossing = p.marks.length >= 3 && (x - p.marks[p.marks.length - 3][0]) * p.dir >= 0;
-  return Math.max(0, p.seconds - left - Math.max(left * share, lastCrossing ? p.floor : Math.min(p.floor, left * most)));
+  const lastCrossing = n === 1;
+  return Math.max(0, p.seconds - left - Math.max(left * share, lastCrossing ? floor : Math.min(floor, left * most)));
 }
 
 /** is he on the race leg past its start (the pacer sets off) */
