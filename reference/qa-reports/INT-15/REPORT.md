@@ -2,13 +2,13 @@
 Integration (Opus 5.5 xhigh), session_01FhBbYL5weS2PSfgDeDQ4kd. Branch t-int-15 from origin/main 107870f5 (0.10.0 live + PR #76).
 Packet: reference/packets/2026-11-20/INT-15.md (on ccr-ea739a2f-dfcee4). Started 6:14 PM ET 11-20 (by `date`).
 
-## EXACT NEXT STEP (kept current; written 7:07 PM ET)
-THE FULL SET is running on the frozen worktree /home/user/wt-final at 0eefc707e (three jobs, started 6:40 PM ET; logs in
-/home/user/int15-out/gates/, one PASS/FAIL line each in summary-1/2/3.txt). Green so far: tsc, artcheck, vite build (deploy base),
-chunkcheck, knowncheck, generalitycheck, coveragecheck, roadmapcheck, timecheck, registrycheck, clipcheck, kbdcheck, suite shards 1-2 of 6,
-the CI tool line, seed lists 1-1..1-5. Still to land: drawcheck, suite shards 3-6, seed lists 1-6..2-5, paintcheck 0-2/3, tipwalk,
-tierBots, lockall --intended 2-5, funcheck, castBots 2-5, the test-link count; then build:store and buildcheck ALONE. If stopped: rerun
-the missing lines with /home/user/int15-out/job*.sh's own commands on 0eefc707e.
+## EXACT NEXT STEP (kept current; written 7:39 PM ET)
+THE FULL SET on the frozen worktree /home/user/wt-final at 0eefc707e: green so far (gates/full/summary-*.txt): tsc, artcheck, vite build
+(deploy base), chunkcheck, knowncheck, generalitycheck, coveragecheck, roadmapcheck, timecheck, registrycheck, clipcheck, kbdcheck,
+drawcheck, build:store, the suite (6 shards: 4,003 tests / 4,000 pass / 0 fail / 3 todo), the CI tool line (332/331/0/1), seed lists
+1-1..2-2. Still running (job 3, in order): seedlist 2-4, 2-5, paintcheck 0/3 1/3 2/3, tipwalk, tierBots, lockall --intended 2-5, funcheck,
+castBots 2-5, the test-link count; then buildcheck ALONE. If stopped: rerun the missing lines (/home/user/int15-out/job3.sh's commands)
+on 0eefc707e, then buildcheck alone, then the gate table here and the final hash to the lead.
 
 ## Merge table (MERGED, never rebased; tsc + the CI tool line (gates.yml, CI=1) after each)
 | # | Branch @ head | Merge commit | Conflicts | tsc | CI tool line |
@@ -46,6 +46,16 @@ partly see-through, two poses showing). Proof: the same spot and build shot fres
 (stills/logs/x3268-settle-8-20-40.jpg): solid at 8 and 20, see-through with a doubled head at 40; the pushed still was shot later in the
 page's clock (the 4th spot in a row). heroSprite.ts / heroClips.ts / heroStandard.ts are unchanged by these merges (on main as live).
 NAMED for the lead (a game look, not tonight's): while he idles, a clip melting in or out shows him see-through for those frames.
+
+## Release notes draft (player words; for the lead's approval; whatsNew.test caps checked: 3-8 lines (5), each <= 90 characters, no workshop word)
+Title: **Count to four** (13 chars). Lines (characters | line | checked TRUE against):
+| chars | line | checked |
+|---|---|---|
+| 84 | River Snappers is rebuilt: every snap stone bites on four, so I hop off before four. | TRUE: w2Arc25.ts ONE idea: 'every snap stone bites on four, so hop on one-two-three and be off before four'; stagePlan.ts 2-5 is rebuilt as the designed arc (stageTable.ts '2-5' kit w2-25; the hand-built 2-5 deleted) |
+| 87 | The snappers keep the same count. Right after one snaps, a kick sends it paddling home. | TRUE: w2Arc25.ts: 'The snappers keep the SAME count (their snap on four): kick one right after it snaps and it paddles off downstream' (TURTLE: the kick only when open); stagePlan desc 'send the snappers home' |
+| 73 | No snapper is ever hurt: a kicked one just paddles off downstream, huffy. | TRUE: w2Arc25.ts 'huffy, never hurt'; stagePlan.ts '2:purge' / PURGE_WORDS: World 2's snappers are only chased off ('Chase off'), nobody is hurt in World 2 |
+| 83 | The river’s rocks come in three painted shapes now, and no two in a row look alike. | TRUE: rockLooks.ts ROCK_FRAMES[2] = the kit boulder + rock-a + rock-b; assignRockLooks: never the same look as the rock before it (rockLooks.test.ts); every 2-x stage's rocks |
+| 81 | The ground under the forest’s stones and stumps is tidy now, with no stray grass. | TRUE: FIX-TAB: the grass tab (floor lip under a wall) under World 1's painted stones/stumps on 1-6 and 1-7, 100 -> 0 (protoArt.ts stepDownTo); 1-6 x5977 still |
 
 ## D99 / release.md 4b: CI's own time limits with 2-5's list added (CI times read from main's last deploy run, 44828148552, on 107870f5, 11-20 5:20-5:43 PM ET; per-list times from each seed-list job's log stamps)
 Per seed list on a CI runner: 1-1 2:00, 1-2 0:58, 1-3 0:27, 1-4 2:03, 1-5 1:22, 1-6 8:53, 1-7 3:27, 1-8 0:33, 1-9 1:31, 2-1 5:27, 2-2 0:14,
