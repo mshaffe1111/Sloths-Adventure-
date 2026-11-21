@@ -16,6 +16,10 @@ from PIL import Image
 NAMES = sys.argv[1].split(',')
 REV = sys.argv[sys.argv.index('--from') + 1] if '--from' in sys.argv else '4f0853b96'
 DRY = '--dry' in sys.argv
+LHALF = '--lhalf' in sys.argv   # the lead (swim): a/b in full, HALF the L shift, no per-frame L (pose shading fooled the mean's L)
+BANDS = '--bands' in sys.argv   # the lead (swim): L by BAND, the sheet's fur L quantiles mapped onto the plain pose's (light fur onto light
+                                # fur, dark onto dark: keeps the tonal range), a/b per L as before; per-frame offsets a/b only
+OUTDIR = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else None   # write the sheet there instead (a variant to compare)
 JS = ("import {ROPE_FRAMES} from './src/game/heroRopeData.ts'; import {SWIM_MOVES} from './src/game/heroSwimData.ts';"
       "import {VINE_FRAMES} from './src/game/heroVineData.ts'; import {STORY_FRAMES} from './src/game/heroStoryData.ts';"
       "import {STUDY_FRAMES} from './src/game/heroStudiesData.ts'; import {HERO_FRAMES} from './src/game/heroAtlasData.ts';"
@@ -80,12 +84,16 @@ for name in NAMES:
     da, db = smooth(da, np.where(ok, w, 1.0)), smooth(db, np.where(ok, w, 1.0))
     dL = float(pm[0] - CF[:, 0].mean()); ctr = (BINS[:-1] + BINS[1:]) / 2
 
+    QS = np.linspace(2, 98, 25); qx = np.percentile(CF[:, 0], QS); qd = np.percentile(PF[:, 0], QS) - qx
+    if BANDS:
+        dL = 0.0
+
     def apply(f, ev=(0.0, 0.0, 0.0)):
         out = f.copy(); vis = f[..., 3] > 0; L = lab(f[..., :3][vis]); C = np.hypot(L[:, 1], L[:, 2])
         wt = np.clip((L[:, 0] - 18) / 10, 0, 1)                           # the outline stays
         wt *= np.where(L[:, 0] > 80, np.clip((C - 8) / 6, 0, 1), 1)      # the eyes' whites stay
         wt *= ((L[:, 2] > -2) & (L[:, 1] > -4))                           # no prop (water, leaves)
-        L2 = L.copy(); L2[:, 0] += wt * (dL + ev[0])
+        L2 = L.copy(); L2[:, 0] += wt * (dL + ev[0] + (np.interp(L[:, 0], qx, qd) if BANDS else 0))
         L2[:, 1] += wt * (np.interp(L[:, 0], ctr, da) + ev[1]); L2[:, 2] += wt * (np.interp(L[:, 0], ctr, db) + ev[2])
         out[..., :3][vis] = np.round(rgb(L2)); return out
 
@@ -102,15 +110,19 @@ for name in NAMES:
         return per if each else np.concatenate([u for k, u in enumerate(per) if not FACE[k]])
     for _ in range(5):
         NF = shipped_fur([apply(f) for f in fr]); r_ = pm - NF.mean(0); dL += float(r_[0]); da = da + r_[1]; db = db + r_[2]
+    if LHALF:
+        dL *= 0.5
     EV = np.zeros((len(fr), 3)); mode = 'wrap' if name in LOOPS else 'edge'
     big = [len(L) > 50 and not FACE[k] for k, L in enumerate(shipped_fur(fr, each=True))]
     for _ in range(10):
         per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
         Rr = np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)])
+        if LHALF or BANDS:
+            Rr[:, 0] = 0
         Rp = np.pad(Rr, ((1, 1), (0, 0)), mode=mode); EV = (EV + (Rp[:-2] + 2 * Rp[1:-1] + Rp[2:]) / 4) * ~np.array(FACE)[:, None]
     for _ in range(3):
         per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
-        EV = EV + np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)])
+        EV = EV + np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)]) * ([0, 1, 1] if LHALF or BANDS else 1)
     nf = [apply(f, EV[k]) for k, f in enumerate(fr)]
     per = shipped_fur(nf, each=True); NF = shipped_fur(nf)
     fd = [float(np.linalg.norm(u.mean(0) - pm)) for k, u in enumerate(per) if big[k]]
@@ -121,6 +133,8 @@ for name in NAMES:
                  'fur_mean_after': np.round(NF.mean(0), 2).tolist(), 'plain_fur_mean': np.round(pm, 2).tolist()}
     if DRY:
         continue
-    Image.fromarray(sheet_of(nf).astype(np.uint8), 'RGBA').save(path, 'WEBP', quality=86, method=6)
-if not DRY:
+    Image.fromarray(sheet_of(nf).astype(np.uint8), 'RGBA').save(f'{OUTDIR}/{SHEET[name]}.webp' if OUTDIR else path, 'WEBP', quality=86, method=6)
+    if OUTDIR:
+        continue
+if not DRY and not OUTDIR:
     Path('tools/art/hfnext/sheetgrade.json').write_text(json.dumps(rec, indent=1) + '\n')
