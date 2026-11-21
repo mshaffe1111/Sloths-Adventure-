@@ -87,6 +87,13 @@ test('the mark sits at its height, clamped clear of the HUD and the pad, inside 
   const first = out[0];
   edgeMarks([one({ state: 'spooked', x: 500 })], view(), out);
   assert.equal(out[0], first, 'reused, not reallocated');
-  // a sliver still on the screen counts as on it
-  assert.equal(edgeMarks([one({ state: 'spooked', x: 990 })], view(), out), 0, 'half on the screen: none');
+  // (planted, the lead's ruling: a body half off the edge, or just inside it, is not yet seen: the marker stays. RED on 0199a3475)
+  assert.equal(edgeMarks([one({ state: 'spooked', x: 1010 })], view(), out), 1, 'half off the left edge: marked');
+  assert.equal(out[0].side, -1);
+  assert.equal(edgeMarks([one({ state: 'spooked', x: 1060 })], view(), out), 1, 'just inside the left edge, crouched at it: marked');
+  assert.equal(edgeMarks([one({ state: 'spooked', x: 1390 })], view(), out), 1, 'half off the right edge: marked');
+  assert.equal(out[0].side, 1);
+  // its whole body inside by the margin, either side: gone
+  assert.equal(edgeMarks([one({ state: 'spooked', x: 1000 + 48 + 24 })], view(), out), 0, 'inside the left edge by the margin: none');
+  assert.equal(edgeMarks([one({ state: 'spooked', x: 1400 - 48 - 24 })], view(), out), 0, 'inside the right edge by the margin: none');
 });

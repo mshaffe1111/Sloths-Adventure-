@@ -19,8 +19,13 @@ export const MARK_R = 22;
 export const MARK_EDGE = 10;
 /** the arrow's length past the circle (css px) */
 export const MARK_TIP = 13;
-/** how much of a little one must be off the screen before it counts as off (world px: about half its painted width) */
+/** about half a little one's painted width (world px) */
 export const OFF_PAD = 24;
+/**
+ * the marker goes only once its WHOLE body is inside the screen by this much (world px), both sides: a little one crouched in the reeds at
+ * the very edge is not yet seen (the lead's ruling on UI-372's 'gone' stills)
+ */
+export const INSIDE = 48;
 /** the bands kept clear (css px from the safe inset): the HUD's top plates and the pad's buttons at the bottom */
 export const CLEAR_TOP = 130;
 export const CLEAR_BOTTOM = 150;
@@ -54,7 +59,7 @@ const blank = (): EdgeMark => ({ kind: 'duck', side: -1, x: 0, y: 0 });
 
 /**
  * The marks for this frame, written into `out` (grown once, never shrunk); returns how many. A little one counts when it is spooked
- * (running back or hiding where it ran to) and wholly off the screen. Its mark sits at its body's height, clamped clear of the HUD's
+ * (running back or hiding where it ran to) and its whole body is not yet inside the screen by INSIDE. Its mark sits at its body's height, clamped clear of the HUD's
  * band and the pad's, and stacked away from another mark on the same side.
  */
 export function edgeMarks(line: readonly Follower[], v: MarkView, out: EdgeMark[]): number {
@@ -64,8 +69,9 @@ export function edgeMarks(line: readonly Follower[], v: MarkView, out: EdgeMark[
   for (let i = 0; i < line.length; i++) {
     const f = line[i];
     if (f.state !== 'spooked') continue;
-    const side: -1 | 1 | 0 = f.x + OFF_PAD < v.camX ? -1 : f.x - OFF_PAD > v.camX + v.vw ? 1 : 0;
-    if (side === 0) continue;
+    const seen = f.x - OFF_PAD >= v.camX + INSIDE && f.x + OFF_PAD <= v.camX + v.vw - INSIDE;
+    if (seen) continue;
+    const side: -1 | 1 = f.x < v.camX + v.vw / 2 ? -1 : 1;
     let y = Math.max(yMin, Math.min(yMax, (f.y - 30 - v.camY) * v.zoom));
     for (let j = 0; j < n; j++) if (out[j].side === side && Math.abs(out[j].y - y) < STACK) y = out[j].y + (y >= out[j].y ? STACK : -STACK);
     if (n === out.length) out.push(blank());

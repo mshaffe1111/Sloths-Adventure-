@@ -53,7 +53,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
         e.player.x -= 6; e.player.facing = -1;
         e.update(1 / 30);
         f.state = 'spooked'; f.back = true; f.x = f.backX;
-        const on = f.x - 24 > e.camera.x;
+        const on = e.spookMarks().n === 0;
         if (step === 'nearing' && f.x + 24 < e.camera.x && f.x + 24 > e.camera.x - 60) break;
         if (step === 'gone' && on) break;
       }

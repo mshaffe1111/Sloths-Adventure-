@@ -73,14 +73,21 @@ Run on t-ui-372 at 0ad902c41 (the code; this REPORT commit adds no code). At han
 
 
 ## EXACT NEXT STEP
-Merge-ready once THE FULL SET is green. On t-ui-372 @ (this commit), with node_modules installed (`npm install --legacy-peer-deps`):
-1. Read the tails of the runs still going (scratchpad suite.txt, draw.txt, clip.txt, lockcheck.txt, ci5.txt); if this container is gone,
-   re-run them: the suite line from CLAUDE.md; `node tools/perf/drawcheck.mjs` (2-3 within limits.json); `node tools/perf/clipcheck.mjs`
-   (no new entry); lockall: on 66775dabf `npx tsx tools/engine/lockall.ts --layouts 4 --out /tmp/lock-base.json`, then on t-ui-372
-   `--check /tmp/lock-base.json` (expect nothing moved: no layout code changed); then the engine tools' tests, `node tools/perf/buildcheck.mjs`,
-   `node tools/perf/kbdcheck.mjs`, `npx tsx --test tools/inspect/tierBots.test.ts`.
-2. `git fetch --unshallow` and `node tools/roadmapcheck.mjs`; if it asks for an R-165.372 row (none on this base), the lead adds it.
-3. Fill this table with each verdict; anything red is fixed at its root before the merge after t-build-23.
+0. The lead's ruling on 'gone' is BUILT at the hand-over commit (edgeMarker.ts INSIDE = 48 world px: the marker goes only when the whole
+   body is inside the screen by 48 px, both sides; edgeMarker.test.ts test 2 planted: RED on 0199a3475 'half off the left edge: marked',
+   GREEN here, 3/3). FIRST: re-shoot the stills, the 'gone' pair above all (the shooter now stops on the first frame spookMarks().n === 0):
+   `npx vite --port 5181 --host 127.0.0.1 &` then `node reference/qa-reports/UI-372/stills372.mjs reference/qa-reports/UI-372/stills`
+   and the same with `easy`; judge `ui372-*-gone-*` (the otter must be plainly visible, clear of the edge) and update CAPTIONS.md
+   (the 'nearing'/'gone' lines). The stills in the folder now are from 0ad902c41 (before the font and the margin).
+1. THE FULL SET again from scratch on the hand-over commit, ONE heavy run at a time: the kernel killed a process for memory while
+   the suite, drawcheck, clipcheck, lockall and the stills ran together, so none of the in-flight verdicts below count. Verdicts that DID
+   finish before that: tsc, build, chunkcheck, artcheck, knowncheck, generalitycheck, seedlist PASS; the suite had caught one failure
+   (fonts.test, fixed, GREEN alone). Order: the suite line from CLAUDE.md; `node tools/perf/drawcheck.mjs`; `node tools/perf/clipcheck.mjs`;
+   lockall (on 66775dabf `npx tsx tools/engine/lockall.ts --layouts 4 --out /tmp/lock-base.json`, then on t-ui-372 `--check
+   /tmp/lock-base.json`: nothing should move); the engine tools' tests, `node tools/perf/buildcheck.mjs`, `node tools/perf/kbdcheck.mjs`,
+   `npx tsx --test tools/inspect/tierBots.test.ts`.
+2. `git fetch --unshallow`, then `node tools/roadmapcheck.mjs`; if it asks for an R-165.372 row (none on this base), the lead adds it.
+3. Fill the gates table with each verdict; anything red is fixed at its root before the merge after t-build-23.
 
 ## Learned
 - Canvas text in a new draw uses the game's font constants (fonts.ts), never a bare family: fonts.test catches it, but only in the full suite.
