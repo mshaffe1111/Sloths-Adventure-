@@ -1,0 +1,134 @@
+// BUILD-23e: 2-3's final stills on the real page (a vite dev server on 5181), the engine paused and stepped by hand (stills23.mjs's way),
+// 2x, upright 412 x 915 and sideways 915 x 412, Normal or Easy. Each still is written with what is true on its frame printed beside it:
+//   0-whole-k   the whole stage, him stood at 8 points from the start to the exit (the camera on him)
+//   5-spooked   one little one spooked back to its stretch's start (the engine's own spook state), him on in the reeds
+//   5b-fetched  him walked back to it: it has rejoined the line
+//   6-jetty     him at the jetty with the whole line behind him, stepped until they are home
+//   7-look-1-7  1-7's eagle mid-pass over the green he hides in (walked into its watched stretch, then stepped): the side-by-side's left
+//   node reference/qa-reports/BUILD-23/final23e.mjs <out dir> [easy]
+import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import path from 'node:path';
+const [out, easy] = process.argv.slice(2);
+const set = easy ? 'easy' : 'normal';
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
+  const open = async (id) => {
+    const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 })).newPage();
+    p.on('pageerror', (e) => console.log('ERR', e.message));
+    await p.goto(`http://127.0.0.1:5181/?lessons=off${easy ? '&difficulty=easy' : ''}`);
+    await p.waitForTimeout(2500);
+    await p.evaluate(([id]) => window.__play(id, 1), [id]);
+    await p.waitForTimeout(4000);
+    await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+    await p.waitForTimeout(3000);
+    return p;
+  };
+  const tools = (p) => {
+    const shot = async (name, note) => {
+      const file = path.join(out, `b23e-${set}-${name}-${tag}.jpg`);
+      await p.screenshot({ path: file, type: 'jpeg', quality: 82 });
+      console.log('wrote', path.basename(file), JSON.stringify(note));
+    };
+    const settle = async (n = 20) => {
+      for (let i = 0; i < n; i++) {
+        await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+        await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+      }
+    };
+    const stand = (x, n = 60) => p.evaluate(([x, n, E]) => {
+      const e = eval(E);
+      e.isPaused = true;
+      const under = e.platforms.filter((q) => !q.broken && !q.decorative && q.type === 'solid' && x >= q.x && x <= q.x + q.width).sort((a, c) => a.y - c.y)[0];
+      Object.assign(e.player, { x, y: under ? under.y : 580, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 });
+      for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+      for (let i = 0; i < n; i++) e.update(1 / 30);
+      return { x: Math.round(e.player.x), y: Math.round(e.player.y), ground: !!under };
+    }, [x, n, E]);
+    const info = () => p.evaluate((E) => {
+      const e = eval(E), f = e.follow;
+      return { px: Math.round(e.player.x), line: f ? f.line.map((q) => `${q.kind}:${q.state}@${Math.round(q.x)}`) : [], home: f ? f.home() : null, herons: f ? f.herons.map((hh) => `${hh.s.phase}${hh.lookX !== null ? '~' + Math.round(hh.lookX) : ''}`) : [], watch: e.watch ? e.watch.phase : null };
+    }, E);
+    return { shot, settle, stand, info };
+  };
+
+  // ---- 2-3
+  const p = await open('2-3');
+  const { shot, settle, stand, info } = tools(p);
+  const g = await p.evaluate((E) => {
+    const e = eval(E);
+    return { spawn: Math.round(e.currentStage.spawnX), exit: Math.round(e.currentStage.exitTotemX), bushes: (e.proto?.bushes ?? []).map((q) => [q.x, q.w]),
+      herons: e.follow.herons.map((hh) => [Math.round(hh.z.x0), Math.round(hh.z.x1)]), cages: e.collectibles.filter((c) => c.type === 'cage').map((c) => Math.round(c.x)).sort((a, c) => a - c) };
+  }, E);
+  console.log(tag, 'geometry', JSON.stringify(g));
+  // 0. the whole stage, 8 points from the start to the exit
+  for (let k = 0; k < 8; k++) {
+    const x = Math.round(g.spawn + ((g.exit - 120 - g.spawn) * k) / 7);
+    const s = await stand(x, 30);
+    await settle(8);
+    await shot(`0-whole-${k}`, { x, ...s });
+  }
+  // 5. a spooked one and its fetch: every cage freed by the engine's own freeing, him in the first heron's reeds with the line behind
+  await p.evaluate((E) => { const e = eval(E); for (const c of e.collectibles.filter((q) => q.type === 'cage' && !q.collected)) { e.freeCritter(c); c.collected = true; } }, E);
+  const hz = g.herons[0];
+  const bed = g.bushes.find((q) => q[0] >= hz[0] - 1 && q[0] <= hz[1]) ?? g.bushes[0];
+  await stand(bed[0] - 200, 10);
+  // (walk him into the bed so the trail carries the line in behind him)
+  await p.evaluate(([E, to]) => { const e = eval(E); for (let i = 0; i < 200 && e.player.x < to; i++) { e.player.x += 8; e.player.facing = 1; e.update(1 / 30); } for (let i = 0; i < 60; i++) e.update(1 / 30); }, [E, bed[0] + bed[1] - 30]);
+  // (the engine's own spook state (follow.ts spook): the last little one runs back to its stretch's start and hides there; him held
+  // still at the bed's far end, so no look is needed to stage it)
+  const sp = await p.evaluate(([E, x0]) => {
+    const e = eval(E);
+    const f = e.follow.line.filter((q) => q.state === 'follow').at(-1);
+    if (!f) return null;
+    Object.assign(f, { state: 'spooked', backX: x0, back: false, slot: f.s });
+    const px = e.player.x;
+    for (let i = 0; i < 240 && !f.back; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; }
+    return { kind: f.kind, x: Math.round(f.x), back: f.back };
+  }, [E, hz[0]]);
+  await settle(2);
+  await shot('5-spooked', { sp, ...(await info()) });
+  // 5b. him back to it: it rejoins the line (follow.ts rejoin, within the row's rejoin reach)
+  const fx = await p.evaluate(([E, kind]) => {
+    const e = eval(E);
+    const f = e.follow.line.find((q) => q.kind === kind && q.state === 'spooked');
+    if (!f) return null;
+    for (let i = 0; i < 300 && f.state === 'spooked'; i++) { const d = f.x - e.player.x; e.player.facing = d < 0 ? -1 : 1; e.player.x += Math.sign(d) * Math.min(8, Math.abs(d)); e.update(1 / 30); }
+    for (let i = 0; i < 25; i++) e.update(1 / 30);
+    return { kind, state: f.state };
+  }, [E, sp?.kind]);
+  await settle(2);
+  await shot('5b-fetched', { fx, ...(await info()) });
+  // 6. the jetty home: him walked to the exit with the whole line, stepped until they are home
+  await stand(g.exit - 420, 10);
+  await p.evaluate(([E, to]) => {
+    const e = eval(E);
+    for (const q of e.follow.line) if (q.state !== 'home') Object.assign(q, { state: 'follow', x: e.player.x - 40, back: undefined });
+    for (let i = 0; i < 160 && e.player.x < to; i++) { e.player.x += 6; e.player.facing = 1; e.update(1 / 30); }
+    for (let i = 0; i < 150 && e.follow.home() < e.follow.line.length; i++) e.update(1 / 30);
+  }, [E, g.exit - 60]);
+  await settle(2);
+  await shot('6-jetty', await info());
+  await p.context().close();
+
+  // ---- 1-7: the eagle's look over the green he hides in (walked in from 160 px before its first watched stretch)
+  const q = await open('1-7');
+  const t7 = tools(q);
+  const w7 = await q.evaluate((E) => { const e = eval(E); const z = (e.proto?.watch ?? [])[0]; const b = (e.proto?.bushes ?? []).find((k) => z && k.x >= z.x0 && k.x <= z.x1); return { z: z ? [z.x0, z.x1] : null, bush: b ? [b.x, b.w] : null }; }, E);
+  if (w7.z && w7.bush) {
+    await t7.stand(w7.z[0] - 160, 10);
+    const r = await q.evaluate(([E, bx, bw]) => {
+      const e = eval(E);
+      const at = bx + bw / 2;
+      for (let i = 0; i < 200 && e.player.x < at; i++) { e.player.x += 6; e.player.facing = 1; e.update(1 / 30); }
+      // (held in the green, the eagle's look stepped to its middle)
+      const px = e.player.x;
+      for (let i = 0; i < 1800; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; if (e.watch.phase === 'pass' && e.watch.t >= e.watch.dur * 0.45) return { phase: e.watch.phase, t: +e.watch.t.toFixed(2), dur: e.watch.dur, px: Math.round(px), i }; }
+      return { miss: true, phase: e.watch.phase };
+    }, [E, w7.bush[0], w7.bush[1]]);
+    await t7.settle(1);
+    await t7.shot('7-look-1-7', { w7, r });
+  } else console.log('1-7: no watched stretch with a bush on this page', JSON.stringify(w7));
+  await q.context().close();
+}
+await b.close();
