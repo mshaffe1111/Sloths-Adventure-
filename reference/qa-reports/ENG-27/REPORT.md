@@ -1,7 +1,7 @@
 # ENG-27j REPORT (handed over at the D111 box; base d29258340; branch t-eng-27, head: this commit; merge 24d6ba567, re-plant af127d21e)
 ## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
-ORDER: G in the background first; then F (the respawn rule, on the lead's ruling: check the inbox), then B (boardLog's toy), then S
-(stills, THE CLIP, THE FULL SET). R is done; re-run it after F changes the respawn.
+ORDER: G in the background first; then F (the respawn rule: RULED, option A on every respawn, below), then B (boardLog's toy), then S
+(stills, THE CLIP, THE FULL SET). R is done; re-run it after F (ride-only must lose all 24).
 G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
    (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container stopped: suite 3-6 (run those by hand:
    `npx tsx --test --test-shard=<i>/6 <the SUITE glob in run-gates-d.sh>`, then the rest of chain a from tooltests on), tooltests, tierBots, tipwalk,
@@ -50,11 +50,30 @@ F. **A FALL PAYS (the lead's concern on ride-only's two wins; measured, fallm-27
    crossing: behind, then ahead). WON by 0.6. So EVERY respawn on the leg resets the race to him plus the floor (pacerReplace: level
    with him plus max(share, floor)), whatever he trailed by. The lead's ruling (11-21, to ENG-27j): on the last crossing a fall costs
    nothing and pays nothing: the respawn restores the margin he had when he fell (the respawn's lost time forgiven), never more;
-   planted both ways (a losing fall stays losing; a winning fall stays winning); pacerLay re-run; race table re-run. PUSHBACK SENT:
-   on the last crossing alone it does not fix seed 1 (the pay came one crossing earlier); proposed the same rule on every respawn
-   (option A) or the floor capped at the margin before the fall plus the lost time (option B). BUILD WHAT THE LEAD RULES; check the
-   inbox for the ruling first. The pacerLay test 'the ride-only player never wins without a fall on the last crossing' and ruling A's
-   exemption change with it (plant first, D40: the respawn rule is the thing; nothing patched around it).
+   planted both ways; pacerLay re-run; race table re-run. PUSHBACK SENT (it would not fix seed 1, whose pay came one crossing earlier).
+   **THE LEAD'S RULING (after the pushback): OPTION A, ON EVERY RESPAWN.** The respawn's lost time is forgiven and he keeps EXACTLY the
+   margin he had when he fell: a fall neither costs nor pays race time (it still costs the heart). Not B (a capped floor keeps the
+   loophole's shape). NEW REPLACES OLD: the floor (pacer.ts Pacer.floor, PacerRow.floor, W2_RACE.floor, pacerReplace's floor lines
+   96-105) and ruling A(ii)'s last-crossing exemption are DELETED, not switched off; engine-core.md says why (this measure).
+   BUILD, in this order (D40: the rule first, nothing patched around it):
+   (1) THE INVARIANT, planted RED first on the merged head: on every listed 2-7 seed (the toy's rows: home and post, the seeds the
+       race table uses, 1-6), both settings, every bot (middle, expert on Normal, ride-only), every respawn on the race leg: his margin
+       to the boat the first frame he stands after the respawn == his margin the frame before the life was lost (within a frame of
+       the boat's travel). Margin = (him.x - boat.x) x dir / the boat's speed |x1-x0|/seconds, boat.x = pacerPiece.x. RED numbers to
+       quote (fallm-27j.ts.txt, merged head): home Normal ride-only seed 1: -0.91 -> +5.29, -10.32 -> +3.67, +3.20 -> +3.55; seed 2:
+       -0.93 -> +6.14, -0.94 -> +5.43, -0.68 -> +3.48. (A respawn BEFORE the race leg still sets the boat back at its start, waiting:
+       unchanged.)
+   (2) THE RULE: pacerPiece records his margin when the life is lost (the frame before; pacerPiece.respawn, line 47-52, runs at the
+       respawn, so the margin must be taken at the fall: hook the piece's per-frame update while he is on the leg, keep the last
+       grounded or last pre-fall frame's margin), and at the respawn sets the clock so the boat stands that same margin from his
+       respawn x: clock = clock of the x = respawnX - dir x margin x speed (pacerX is linear in clock: invert it). pacerReplace's
+       floor arithmetic goes; whatever pacerLay laid from the floor goes with it.
+   (3) pacerLay.test: the floor claims (lines ~62-130: 'after a fall the floor counts each crossing left', the floor-per-crossing
+       checks, the ride-only "last crossing" exemption test) are REWRITTEN to the invariant, never loosened. 'the ride-only player never
+       wins without a fall on the last crossing' becomes 'the ride-only player never wins' (no exemption).
+   (4) The race table re-run (race-27j-merged.txt's method): ride-only must lose all 24; middle and expert must still win all theirs;
+       any middle or expert loss traced (seed, x, frame, what took him). Rule 28 for the pacer change: the cast bots row for row on
+       2-7's toy (no other stage has a pacer; say so with the grep).
 S. **Stills: a first pass on the merged head, NOT the set.** stills-27j/sheet-upright.jpg and sheet-sideways.jpg (2x, race-stills-27e.mjs on a
    dev server at af127d21e, fixture seed 1 Normal; PW=/opt/node22/lib/node_modules/playwright/index.mjs because the script sits outside
    node_modules). Spots (x:boatDx:tag:face:leg): 17420:none:waiting:L:low 16330:-330:settingoff:L:low 1050:211:docked:L:low
