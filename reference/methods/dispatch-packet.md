@@ -57,3 +57,6 @@ A packet that hands a member player-facing words (What's New lines, Dot lines, s
 BEFORE it goes out (whatsNew.test: an entry has 3-8 lines, each at most 90 characters; playerText.test), and checks each line is TRUE
 in the code. 11-20: the lead sent 9 What's New lines; 3 were over 90 characters, one was untrue, two said "New stage" for stages that
 already existed by name.
+
+## Every packet carries the inbox rule (D105, 11-21)
+Every packet's READ line names D57/D87 and says, in bold: run ReadNotifications at EVERY step boundary and at every push. A lead ruling sent with priority 'next' still waits until the member reads its inbox (BUILD-23d read four rulings 20-80 minutes late; the packet listed D103 but not D57/D87).
