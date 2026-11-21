@@ -1,4 +1,4 @@
-# BUILD-26f (on t-build-26 from 42304b76d, rebased on 2f188c552): the Progress rewind, toy first, four cuts on 2-6 x40. Started 6:32 PM ET 11-21 (by `date`)
+# BUILD-26f (on t-build-26 from 42304b76d, rebased on 2f188c552): the Progress rewind, toy first, five cuts on 2-6 x40. Started 6:32 PM ET 11-21 (by `date`)
 Commits on t-build-26: 0bc969bce (the first cut, pushed too early: before 1-4's rows, against the packet), 79e596bf2 (b26f/dbgOff.txt,
 b26f/win.mts), 007480469 (rows), **d18b03d5f (the lead's ruling: 0bc969bce REVERTED; the bot equals 2f188c552's)**, this REPORT.
 NOT on the branch (local branch b26f-wip, the lead's three conditions first): e5fc37273 (= bbc21cb2d, the third cut) and
@@ -8,7 +8,7 @@ Trees (D115, frozen detached worktrees, node_modules linked): base 2f188c552, fi
 ## EXACT NEXT STEP (the next level builder)
 1. **The candidate is fe3d3d6ca on the local branch b26f-wip (NOT on t-build-26; t-build-26's bot = 2f188c552's since the revert
    d18b03d5f).** Recreate it on the new tree: `git cherry-pick 0bc969bce 144d79032 bbc21cb2d 30ada3574 fe3d3d6ca` will conflict; take
-   instead the net diff `git diff 2f188c552 fe3d3d6ca -- tools/inspect/firsttimer.ts tools/inspect/castBots.test.ts` (fe3d3d6ca
+   instead the net diff, SAVED as b26f/cut5-fe3d3d6ca.patch (`git apply` it on t-build-26; made by `git diff 2f188c552 fe3d3d6ca` on the two files; fe3d3d6ca
    is in this clone's objects; if the clone is gone, the change is: Progress.under + UNDER_REACH; relocate's `band`; in after() the
    `far`/`under`/`rides` lines and `fell = far`; the toy, last test of castBots.test.ts, as this REPORT describes).
 2. **Trace the 7 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
