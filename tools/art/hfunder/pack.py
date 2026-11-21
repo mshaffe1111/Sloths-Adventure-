@@ -66,6 +66,9 @@ note = (' *   unders       (World 2) the painted underside strips (ENG-GROUND, g
         ' *                tools/art/hfunder/pack.py: re-run it after pack.py / packfill.py\n')
 if 'unders ' not in t:
     t = t.replace(" *   deep   the soil's darkest tone (the darkening with depth)\n", " *   deep   the soil's darkest tone (the darkening with depth)\n" + note)
+if 'unders?:' not in t:
+    t = t.replace("  deep: [number, number, number];\n}", "  deep: [number, number, number];\n"
+                  "  unders?: Array<GroundFrame & { edge: number }>;\n  underCorner?: GroundFrame & { edge: number; cx: number };\n}")
 DATA.write_text(t)
 print('sheet', old, '->', N.size, f'decoded {old[0] * old[1] * 4 / 2**20:.1f} -> {N.size[0] * N.size[1] * 4 / 2**20:.1f} MiB',
       'file', SHEET.stat().st_size)
