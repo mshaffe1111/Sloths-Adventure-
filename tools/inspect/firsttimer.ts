@@ -262,6 +262,10 @@ export interface FirstTimer {
    *  every moving ground press near an edge, hops along flat ground among them): a tuning field */
   readAim?: number;
 }
+/** whether a bot follows the tower's own laid route (towerRoute.ts): on any stage laid as a tower, and wherever the inspector cannot
+ * trace the stage; a tower's trace slants each turn's climb through the floors (2-6, BUILD-26c) */
+export const takesTowerRoute = (stage: Parameters<typeof towerCorners>[0], spawn: { x: number; y: number }, traced: string): boolean =>
+  traced === 'failed' || !!towerCorners(stage, spawn);
 export const FT_KID: FirstTimer = {
   name: 'KID', setting: 'easy', look: 1.2, heed: 1.1, stopReact: 0.4, thumb: [0.09, 0.065], hold: [0.16, 0.08], short: 0.08, upOnly: 0.45,
   upOnlyT: [0.08, 0.2], edgeAim: 32, dblAt: [-260, 160], hopFoe: 0.55, hesitate: 0.4, swap: [0.133, 0.2], drift: [4, 2], thumbSpeed: 180,
@@ -1446,7 +1450,7 @@ export class FirstTimerRun {
       // (and a tower the inspector DOES trace: its trace draws each turn's climb as a slant from the vine's foot to a point on the storey
       // above, through the floors, and he stood under the slant short of the vine: 2-6 adult Easy 2 at x 1527 under 1612,4315->1346,4034,
       // kid and adult 0/40, BUILD-26c. A tower's own laid route is the way on whenever the stage has one)
-      const tower = route.traced === 'failed' || towerCorners(st, this.sim.p) ? towerRoutePts(st, this.sim.p) : null;
+      const tower = takesTowerRoute(st, this.sim.p, route.traced) ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));

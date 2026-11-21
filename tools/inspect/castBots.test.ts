@@ -234,3 +234,17 @@ test('castBots --input: touch drives the touch layer (its minimum hold), pad the
   assert.equal(realInputOf('pad'), PAD_HOP_MS);
   assert.equal(realInputOf('fake'), undefined);
 });
+
+// (BUILD-26c: a tower whose trace SUCCEEDS still takes its own route: 2-6's trace ('extended') slanted each turn's climb through the
+// floors and the kid and adult stood under the slant, 0/40 on both settings. Planted: the base (fd3ce98b1) took it only on 'failed')
+test('a tower takes its own laid route even when the inspector traces it; a stage that is no tower keeps its trace', async () => {
+  const { takesTowerRoute } = await import('./firsttimer.ts');
+  const tower = {
+    gen2: { plan: [{ join: 'turn' }], tower: { route: { legs: [{ entry: { x: 400, y: 700 }, exit: { x: 100, y: 700 } }], spawn: { x: 900, y: 1000 } }, turns: [{ x: 600, from: 1000, to: 700 }] } },
+    vines: [{ x: 600, topY: 700, bottomY: 1000, vineType: 'tree_climb' }],
+  };
+  const spawn = { x: 900, y: 1000 };
+  assert.ok(takesTowerRoute(tower as never, spawn, 'extended'), 'a traced tower follows the trace');
+  assert.ok(takesTowerRoute(tower as never, spawn, 'failed'), 'an untraced tower');
+  assert.ok(!takesTowerRoute({ gen2: { plan: [] } } as never, spawn, 'extended'), 'a stage that is no tower left its trace');
+});
