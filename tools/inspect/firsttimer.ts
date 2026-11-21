@@ -71,7 +71,7 @@ const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntl
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
-import { towerRoutePts } from './towerRoute.ts';
+import { towerCorners, towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
@@ -1443,7 +1443,10 @@ export class FirstTimerRun {
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
       // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
-      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      // (and a tower the inspector DOES trace: its trace draws each turn's climb as a slant from the vine's foot to a point on the storey
+      // above, through the floors, and he stood under the slant short of the vine: 2-6 adult Easy 2 at x 1527 under 1612,4315->1346,4034,
+      // kid and adult 0/40, BUILD-26c. A tower's own laid route is the way on whenever the stage has one)
+      const tower = route.traced === 'failed' || towerCorners(st, this.sim.p) ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
