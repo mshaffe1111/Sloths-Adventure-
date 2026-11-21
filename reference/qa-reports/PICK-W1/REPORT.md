@@ -1,7 +1,8 @@
 # PICK-W1 REPORT: the testers' link plays all of World 1, with a stage picker (R-165.343)
 
 Member: PICK-W1 (Engine + UI, Opus 5.5 high). Branch t-pick-w1 from t-int-15 @ 0eefc707e. Started 7:58 PM ET 11-20.
-FINAL HASH: __HASH__ (code head __CODE__; later commits are report files only).
+FINAL HASH: __HASH__ (code head 7eb3aadb5; later commits are stills and report files only).
+EXACT NEXT STEP (if this member stops before its final): fill in the gate table's blanks from the logs (lane B: CI tool line, tipwalk, registrycheck, tierBots, paint 0/1/2 on 229966f9c; suite 1-4/6 on 7eb3aadb5), then run `node tools/perf/buildcheck.mjs` ALONE on 7eb3aadb5.
 
 ## Mock-up (item 0)
 Pushed 8:06 PM ET at 70144ed7e, within 8 minutes of start. These are stills of the REAL page (the picker was built first and shot), 2x:
@@ -98,8 +99,23 @@ walking-only and never offered):
 The lead (9:26 PM ET): the keeper check trims each stage to its 6 clearest. The counts above are the most a roll can offer, before Running and Nothing are added; a single roll shows only the beats it lays (1-6 seed 1 showed 9, 1-9 showed 9).
 want to merge some (for example the three fig chips into one).
 
-## Gate table (THE FULL SET, once, on code head __CODE__)
-__GATES__
+## Gate table (THE FULL SET)
+Code head **7eb3aadb5** (later commits: stills and report only).
+| Gate | Head | Verdict |
+|---|---|---|
+| tsc, artcheck, vite build (deploy base) + chunkcheck, knowncheck, generalitycheck, coveragecheck, roadmapcheck, timecheck | 7eb3aadb5 | PASS (each) |
+| clipcheck (walks the picker: a pick, and back from the end) | 7eb3aadb5 | PASS (83 known, 730 s, no missed steps) |
+| kbdcheck (pick 1-9 first, both ways) | 7eb3aadb5 | PASS (123 s) |
+| drawcheck | 7eb3aadb5 | PASS (788 s) |
+| registrycheck --lists + seedlist --check, all 13 lists (1-1..1-9, 2-1, 2-2, 2-4, 2-5) | 229966f9c | PASS (each) |
+| suite shards 5/6, 6/6 (started after the fix) | 7eb3aadb5 | __S56__ |
+| suite shards 1/6..4/6 (re-run on the final head) | 7eb3aadb5 | __S14__ |
+| CI tool line, tipwalk --layouts 4, registrycheck, tierBots, paintcheck 0/3 1/3 2/3 | 229966f9c | __LB__ |
+| buildcheck ALONE | 7eb3aadb5 | __BC__ |
+The first suite run on 229966f9c had two reds in shards 2/6 and 3/6, both mine, fixed at the root in 7eb3aadb5: the tick's glyph was 11 px
+(textSize UI-14; now 12 px), and the two new storage keys were not listed (storageKeys; now listed with the testers' keys). 229966f9c to
+7eb3aadb5 changes only src/index.css (.ct-played) and src/game/storageKeys.test.ts; the seed-list, paint, tipwalk, tierBots and tool gates
+read neither file.
 
 ## Polish check (law 1, STAGE-RULES §5b)
 These are full-size stills of the real page on this head, 2x, upright (390x844) and sideways (844x390), on a fresh save (pick 1-6) and an
@@ -145,7 +161,8 @@ What I looked at and fixed:
 - Analyst: report.py should split rows by the `stage` line, now that one tester can play several stages in one session.
 
 ## Unresolved
-__UNRESOLVED__
+- R-165.343 is not on ROADMAP.md at this base (the lead's file; not edited here).
+- The DRAFT words wait on the keeper (Saturday morning).
 
 ## Learned
 - A table checked against one list (w1World's shared sections) looked complete while seven stages laid sections it never saw.
@@ -169,4 +186,4 @@ __UNRESOLVED__
 - New replaces old: CTEST_LEVEL_ID is deleted, not switched.
 
 ## Turnover note
-reference/handoffs/engine-core.md §0zq-PICK (commit __TURN__).
+reference/handoffs/engine-core.md §0zq-PICK (commit 7eb3aadb5's parent 229966f9c).
