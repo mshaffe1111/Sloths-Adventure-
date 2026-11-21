@@ -7,7 +7,10 @@ stop by 10:45 PM ET. **Never wait in the foreground for a background run (D113).
 READ LEAN (D102): this packet; ROADMAP rows R-165.382, R-165.373 (why doze left the idles), R-165.377; art-director.md §0m; STAGE-RULES.md §4
 and §5b; LAWS headlines; LESSONS D96, D102, D105, D107, D109, D111, D113.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-art-next at ART-HERO-b's final head (the top line of reference/qa-reports/ART-NEXT/REPORT.md; at least 1dc50e5ab). Push there.
+BASE: t-art-next at ec7f1070c (ART-HERO-b's final). Push there.
+0. FIRST, in the background: the full unit suite on ec7f1070c (ART-HERO-b's ran out of box at 3283 passed, 0 failed); its count goes in
+   your REPORT. Learned from ART-HERO-b: two heroshoots sharing node_modules/.vite hang (one at a time); heroshoot's first scene sits under
+   the stage-title card (shoot a warm-up scene first).
 WHY: in hero-cheer-game-speed.mp4 (t-art-next, t 1.03 to 1.23) the plain pose and the cheer are cross-faded for about 0.2 s, so Pokey is a
 see-through double sloth (two heads, two sets of arms) for 6-7 frames; live on main. Walk, run, jab and push switch cleanly.
 1. VERIFY FIRST: where cheer plays (every stage's end? a pickup?), what does the cross-fade (grep the hero draw and clip switch for the blend)
