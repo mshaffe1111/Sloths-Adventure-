@@ -106,11 +106,12 @@ const floorsUnder = (p: FloorLike) => p.type !== 'bouncy' && p.type !== 'drift' 
 
 /** the water under (x, y), the FIRST thing a fall from there meets (ENG-26e: the readers that judged water by x alone, the drop judge,
  *  Easy's flags and steps and the water lesson, read it here): riverAt's river (the water he is in, or the higher water under him), unless
- *  a floor that spans x lies between y and its surface (a storey between him and lower water; the floor he stands on at y counts: he
- *  cannot fall through it). One storey, no floor over the water: riverAt */
+ *  a STOREY lies between: a floor that spans x, at or under y (the floor he stands on counts), more than RIVER_DEPTH over the surface.
+ *  Nearer the surface a floor is ON the river (a bank, an island, a lily, a stone: World 2's rivers carry them in their windows), and the
+ *  water is his storey's, as by x alone. One storey: riverAt */
 export function waterUnder<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number, floors: readonly FloorLike[] = []): R | undefined {
   const r = riverAt(rivers, x, y);
-  return r && !floors.some((p) => floorsUnder(p) && p.x <= x && p.x + p.width >= x && p.y >= y && p.y < r.surfaceY) ? r : undefined;
+  return r && !floors.some((p) => floorsUnder(p) && p.x <= x && p.x + p.width >= x && p.y >= y && p.y < r.surfaceY - RIVER_DEPTH) ? r : undefined;
 }
 
 /** is r's water on the storey of (x, y): waterUnder at the point of r's window nearest x (he stands beside it, or over it). A river a storey
