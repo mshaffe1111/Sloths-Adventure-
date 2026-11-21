@@ -16,8 +16,12 @@
    bank where boardHop did NOT fire (the bot's own gap read); NONE is a boardHop jump (39's fires 280.6/281.4 at x 21131/21222 are look-ahead
    points 900 px from the life at 280.6; 40's are 206.4 x 15973 and 360.7 x 24175, after its last life). The runs part at the first fire
    and the rest is the same water met at another log phase. Statistically +20 on 228/208 lives is about 1 sigma (sqrt 436 = 21).
-   Next: the same per-life trace for seeds 10, 12, 13, 27 (the other big rows; tools as above), so the lead has the full count. Then the
-   parting frame (r28cmp-27h.py.txt on
+   Seeds 10, 12, 13, 27 (+4, +5, +4, +5) the same way (r28-27i/2-4-c10c12c13c27-lives.txt): of 25 lives, 19 from a drifting log (a hop or a
+   walk-off: the ride's), 6 from a bank where boardHop did not fire, NONE a boardHop jump. So far, six rows carrying +29 of the +20 net
+   (the rest net -9): 41 lives, 30 from a log, 11 from a bank without a fire, 0 boardHop. Next: the remaining child N rows with a plus
+   (2, 4, 5, 8, 16, 18, 20, 21, 30, 33: +1 to +3 each) by the same classifier (the c4 script in this step's commit; one trace per row on
+   hd3-style tree: r28patch-27i + r28probe-27i.diff.txt + __run in pad()), then send the lead the full count. If any life is a
+   boardHop jump (a fire at its take-off within 0.05 s and 40 px), trace its parting frame (r28cmp-27h.py.txt) (r28cmp-27h.py.txt on
    r28trace runs, NO_HOP=1 for base) and test the hypothesis that a life lost at 24k/25k after a boardHop landing puts him back behind 23k's
    hazard, so he crosses it again (re-exposure), against the other: that the runs diverge in the bot's r() draws (the trace's nr). One line
    per life. If any is a wrong boardHop read: fix it generally and re-run rule 28 on 2-4 only. Lead's rulings in hand: dblShare's upgrade of a
