@@ -119,3 +119,42 @@ test('home toy (planted): the river he is in is found by where he is, never by x
     for (const r of ponds) assert.ok(r.safe!.backX > r.x1, `seed ${seed}: pond ${r.x0}-${r.x1} sets him back at ${r.safe!.backX}, on the bank he came from (right)`);
   }
 });
+
+test('home toy (planted): the column\'s last turn is climbed at the column\'s foot, and the bots walk home: every seed finishes, no rescue', async () => {
+  const { towerCorners } = await import('../../../tools/inspect/towerRoute.ts');
+  const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
+  for (const seed of [1, 2, 3]) {
+    const st = build(HOME_CODE, seed);
+    const T = st.gen2.tower!;
+    const col = T.legs!.find((L) => L.frame)!, home = T.legs!.at(-1)!;
+    const foot = col.turns!.at(-1)!;
+    const spawn = { x: st.spawnX, y: st.spawnY };
+    const at = (c: Array<{ x: number; y: number }>) => c.findIndex((q) => q.x === foot.x && q.y === foot.to);
+    // GREEN: down the column's last vine, then home: past that corner the way never runs back right of the column's foot
+    const c = towerCorners(st as never, spawn)!;
+    const i = at(c);
+    assert.ok(i > 0, `seed ${seed}: the column's last turn (x ${foot.x}, ${foot.from} -> ${foot.to}) is on the way`);
+    const onHome = (q: { x: number; y: number }) => q.y >= foot.to - 80 && q.x < (col.frame as { x0: number }).x0 - 200;
+    assert.ok(!c.slice(0, i).some(onHome), `seed ${seed}: the column's foot comes before the home leg`);
+    assert.ok(c.slice(i + 1).every((q) => q.x <= foot.x && q.y >= foot.to - 80 && q.x <= home.x1 + 1), `seed ${seed}: after the column's foot the way stays on the home leg`);
+    // planted RED: read as a tower with no legs (the route before ENG-27b), that turn is left for after the stage's last leg, and the way
+    // runs from the home leg's end back to the column
+    const { legs: _legs, ...bare } = T;
+    const old = towerCorners({ ...st, gen2: { ...st.gen2, tower: bare } } as never, spawn)!;
+    assert.ok(old.slice(0, at(old)).some((q) => onHome(q) && q.x < home.x0 + 2000), `seed ${seed}: the plant: the old way climbs the column's last turn after the home leg`);
+  }
+  // (the bots on the home leg: before ENG-27b seeds 2 and 3 drowned 56-94 times, walked back from the home leg's end to the column, and
+  //  every seed stood ~13 s on the column's last storey until rescued)
+  const RIGHT = HOME_CODE.replace('/L Pf1<', '/R Pf1>');
+  for (const [tier, setting] of [['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal']] as const) {
+    for (const seed of [1, 2, 3]) {
+      const r = homeRun(tier, setting, seed);
+      assert.equal(r.end, 'shrine', `${tier} ${setting} seed ${seed}: finishes`);
+      assert.equal(r.rescues, 0, `${tier} ${setting} seed ${seed}: no rescue`);
+      if (tier === 'middle' && setting === 'normal' && seed === 2) {
+        const right = homeRun(tier, setting, seed, 1, {}, RIGHT);
+        assert.ok(r.lives <= 2 * Math.max(1, right.lives), `seed 2 laid left: ${r.lives} lives, laid right ${right.lives} (within 2x)`);
+      }
+    }
+  }
+});

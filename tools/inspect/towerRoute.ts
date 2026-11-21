@@ -17,6 +17,8 @@ interface TowerMeta {
   tower?: {
     route: { legs: ReadonlyArray<{ entry: Pt; exit: Pt }>; spawn: Pt };
     turns: ReadonlyArray<{ x: number; from: number; to: number }>;
+    /** a stage of legs (gen2 legs.ts): each leg as laid, its sections `i0`..`i1` (the route's legs by index); a column's own turns */
+    legs?: ReadonlyArray<{ i0: number; i1: number; frame?: unknown; turns?: ReadonlyArray<{ x: number; from: number; to: number }> }>;
   };
 }
 
@@ -65,6 +67,11 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++]);
     out.push({ x: leg.entry.x, y: leg.entry.y });
     within(leg.entry, leg.exit);
+    // (a column in a stage of legs: the way off its last storey is its own last turn, down to the next leg's ground, climbed at the
+    // column's end. Left for after the stage's last leg, it sent him back from the home leg's end to the column (ENG-27b: 2-7's toy,
+    // 17,500 px back and again, drowning in every river) and, at the column's foot, read the way on as straight down through its floor)
+    const col = T.legs?.find((L) => L.frame && L.i1 - 1 === k);
+    while (col && T.turns[ti] && col.turns?.some((u) => u.x === T.turns[ti].x && u.from === T.turns[ti].from && u.to === T.turns[ti].to)) climb(T.turns[ti++]);
   });
   if (T.turns[ti]) climb(T.turns[ti]);
   if (stage.exitTotemX !== undefined) out.push({ x: stage.exitTotemX, y: stage.exitTotemY ?? out[out.length - 1].y });
