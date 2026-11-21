@@ -224,6 +224,14 @@ export function underFrames(w: number): UnderFrame[] | null {
 }
 /** the painted strip's shown width (world units) and height (its own aspect) */
 const UNDER_W = 512;
+/** where one strip gives way to the next, the next fades in over this much before the change: each strip wraps only with itself (its tail
+ *  runs on into its head), so a hard seam stood at every change (ENG-GROUND-c's painted shoot) */
+const BLEND = 96;
+/** the corner where a bank's underside ends over open air and turns up into its end face (ART-UNDER's `underCorner`, w<n>#undercorner:
+ *  painted for a right end, `cx` the share of its width where the face runs, `edge` the share of its height where the underside runs) */
+export function underCorner(w: number): (UnderFrame & { cx: number }) | null {
+  return (GROUND_FRAMES[w] as unknown as { underCorner?: UnderFrame & { cx: number } } | undefined)?.underCorner ?? null;
+}
 
 /**
  * The underside along each line under bank p (or a lidded river's stretch), over p's own x span only (each column cut at its ends: no
@@ -233,9 +241,10 @@ const UNDER_W = 512;
  * the world's origin. STAND-IN until the strip lands (allowed on the toy only, the lead's ruling; 2-7 ships with the painted one): the
  * soil's own edge darkened as ground seen from below is, over the last 56 units to the line.
  */
-export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<Platform, 'x' | 'width'>, cs: readonly Ceiling[], view: { x0: number; x1: number }) {
+export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<Platform, 'x' | 'width'>, cs: readonly Ceiling[], view: { x0: number; x1: number }, open?: { l: boolean; r: boolean }) {
   const s = underSheet(w);
   const frames = underFrames(w);
+  const frameAt = (n: number) => frames![((n % frames!.length) + frames!.length) % frames!.length];
   const img = frames && s ? null : underBand(GROUND_FRAMES[w]?.deep ?? [20, 14, 10]);
   if (!frames && !img) return;
   ctx.save();
@@ -251,12 +260,36 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
       const y = ceilingAt(c, xs), k = (ceilingAt(c, xs + dw) - y) / dw;
       ctx.transform(1, k, 0, 1, 0, -k * xs);
       if (frames && s) {
-        const n = Math.floor(xs / UNDER_W), f = frames[((n % frames.length) + frames.length) % frames.length];
+        const n = Math.floor(xs / UNDER_W), f = frameAt(n);
         const h = (UNDER_W * f.h) / f.w;
         const sx = f.x + ((xs - n * UNDER_W) / UNDER_W) * f.w, sw = ((xe - xs) * f.w) / UNDER_W;
         ctx.drawImage(s, sx, f.y, sw, f.h, xs, y - f.edge * h, dw, h);
+        // (the next strip's tail over the last BLEND before the change, fading in: at the change it runs on into its own head)
+        const to = (n + 1) * UNDER_W - xs;
+        if (frames.length > 1 && to <= BLEND) {
+          const g = frameAt(n + 1), hg = (UNDER_W * g.h) / g.w, a0 = ctx.globalAlpha;
+          ctx.globalAlpha = a0 * Math.min(1, Math.max(0, 1 - (to - (xe - xs) / 2) / BLEND));
+          ctx.drawImage(s, g.x + g.w - (to / UNDER_W) * g.w, g.y, ((xe - xs) * g.w) / UNDER_W, g.h, xs, y - g.edge * hg, dw, hg);
+          ctx.globalAlpha = a0;
+        }
       } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - 56, dw, 58);
       ctx.transform(1, -k, 0, 1, 0, k * xs);
+    }
+    // (an end over open air: the painted corner, its face on the end and its underside on the line, sheared to the line's slope over
+    //  its body; mirrored for a left end. The stand-in has no corner)
+    const cn = frames && s ? underCorner(w) : null;
+    if (cn && open) for (const side of ['l', 'r'] as const) {
+      const x = side === 'l' ? p.x : p.x + p.width;
+      if (!open[side] || x <= c.x0 + STEP || x >= c.x1 - STEP || x < view.x0 - UNDER_W / 2 || x > view.x1 + UNDER_W / 2) continue;
+      const sc = UNDER_W / frames![0].w, cw = cn.w * sc, ch = cn.h * sc, body = cn.cx * cw;
+      const y = ceilingAt(c, x), far = side === 'l' ? Math.min(c.x1, x + body) : Math.max(c.x0, x - body);
+      const k = (ceilingAt(c, far) - y) / (far - x || 1);
+      ctx.save();
+      ctx.transform(1, k, 0, 1, 0, -k * x);
+      ctx.translate(x, 0);
+      if (side === 'l') ctx.scale(-1, 1);
+      ctx.drawImage(s!, cn.x, cn.y, cn.w, cn.h, -body, y - cn.edge * ch, cw, ch);
+      ctx.restore();
     }
   }
   ctx.restore();

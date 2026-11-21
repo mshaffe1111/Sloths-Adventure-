@@ -1163,7 +1163,7 @@ export class GameEngine {
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
     // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts; none on any other stage)
-    setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs));
+    setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs), this.currentStage.rivers);
     // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
     if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)

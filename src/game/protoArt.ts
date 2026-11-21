@@ -72,8 +72,12 @@ let groundOn = false;
 /** the zones the stage's lay stacks a leg under another (groundStack.ts stackZonesOf; engine.ts sets them at a stage's start): over each,
  *  the upper leg's soil ends at a ceiling (ENG-GROUND). None on a stage whose lay stacks no leg: it draws exactly as before */
 let stackZones: readonly StackZone[] = [];
-export function setGroundStacks(z: readonly StackZone[] | undefined) {
+/** the stage's rivers (its x0..x1 and surface), set with the zones: a bank's underside that ends beside an upper leg's river runs on
+ *  under the river's own (riverUnderside), so its end is not open to the air (the painted corner goes only where it is) */
+let stackRivers: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }> = [];
+export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }>) {
   stackZones = z ?? [];
+  stackRivers = stackZones.length ? rivers ?? [] : [];
 }
 /**
  * The ceilings over a river of an upper leg (its surface above the line all along x0..x1), or null: engine.ts drawRivers ends the river's
@@ -1513,7 +1517,14 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
       ctx.restore();
       // (its underside AFTER the ceiling's clip, over its own x span only: the painted strip's edge on the line and its roots hanging
       // below it; drawn inside the soil's clip they were cut off at the line, the lead's ruling for ART-UNDER, ENG-GROUND-b)
-      drawUnderside(ctx, kitWorld, p, over, view);
+      // (an end with no upper bank or upper river beside it is open to the air: the painted corner turns the underside up into its end
+      // face there; of two banks ending together, the wider draws it)
+      const open = (side: 'l' | 'r') => {
+        const ex = side === 'l' ? p.x : p.x + p.width, out = side === 'l' ? ex - 4 : ex + 4;
+        if (banks.some((q) => q !== p && (q.x <= out && q.x + q.width >= out ? ceilingsOver(q, cs).length > 0 : (side === 'l' ? q.x + q.width : q.x) === ex && q.width > p.width))) return false;
+        return !stackRivers.some((r) => r.x0 <= out && r.x1 >= out && ceilingsOverSpan(r.x0, r.x1, r.surfaceY, cs).length > 0);
+      };
+      drawUnderside(ctx, kitWorld, p, over, view, { l: open('l'), r: open('r') });
     }
   }
   // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a

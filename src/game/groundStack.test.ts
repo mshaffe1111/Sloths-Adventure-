@@ -27,7 +27,7 @@ const { drawProtoScene, protoArtReady, setGroundLook, setGroundPaint, setKitWorl
 // (the stacked zones the lay marks, as engine.ts sets them at a stage's start; tolerant, so on a base without them this fails on the
 // picture, not on a missing name)
 const stack = await import('./groundStack.ts').catch(() => null);
-const setStacks = (legs: unknown) => (protoArt as { setGroundStacks?: (z: unknown) => void }).setGroundStacks?.(stack?.stackZonesOf(legs as never));
+const setStacks = (legs: unknown, rivers?: unknown) => (protoArt as { setGroundStacks?: (z: unknown, r?: unknown) => void }).setGroundStacks?.(stack?.stackZonesOf(legs as never), rivers);
 const { paintedBank } = await import('./w1Pits.ts');
 const { buildGen2Stage } = await import('./gen2/pipeline.ts');
 const { towerCfg } = await import('./gen2/toyTower.ts');
@@ -38,7 +38,8 @@ type Pt = [number, number];
 
 /** a 2D context that keeps, for every image and rect it fills, the box filled and the clips in force (paths in world units) */
 class RecordingCtx {
-  draws: Array<{ box: [number, number, number, number]; clips: Array<{ polys: Pt[][]; evenodd: boolean }>; quad?: Pt[] }> = [];
+  draws: Array<{ box: [number, number, number, number]; clips: Array<{ polys: Pt[][]; evenodd: boolean }>; quad?: Pt[]; src?: number[]; alpha?: number; flip?: boolean }> = [];
+  private src: number[] | undefined;
   private m = [1, 0, 0, 1, 0, 0];
   private clips: Array<{ polys: Pt[][]; evenodd: boolean }> = [];
   private stack: Array<{ m: number[]; n: number }> = [];
@@ -75,12 +76,14 @@ class RecordingCtx {
     // (the four corners as drawn: a sheared column's box is not its two corners)
     const quad = [a, this.tp(x + w, y), b, this.tp(x, y + h)];
     const xs = quad.map((q) => q[0]), ys = quad.map((q) => q[1]);
-    this.draws.push({ box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], clips: [...this.clips], quad });
+    this.draws.push({ box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], clips: [...this.clips], quad, src: this.src, alpha: this.globalAlpha, flip: this.m[0] < 0 });
   }
   drawImage(_img: unknown, ...a: number[]) {
     if (a.length === 2) return; // (no size: an image drawn at its own size, never the soil)
     const [x, y, w, h] = a.length === 4 ? a : a.slice(4);
+    this.src = a.length === 8 ? a.slice(0, 4) : undefined;
     this.box(x, y, w, h);
+    this.src = undefined;
   }
   fillRect(x: number, y: number, w: number, h: number) { this.box(x, y, w, h); }
   fill() {
@@ -272,6 +275,9 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
   const g2 = GROUND_FRAMES[2] as unknown as { unders?: Array<{ x: number; y: number; w: number; h: number; edge: number }> };
   const had = g2.unders;
   g2.unders = [0, 1, 2].map((i) => ({ x: 0, y: 2368 + i * 256, w: 1024, h: 256, edge: 0.75 }));
+  const g2c = GROUND_FRAMES[2] as unknown as { underCorner?: { x: number; y: number; w: number; h: number; edge: number; cx: number } };
+  const hadC = g2c.underCorner;
+  g2c.underCorner = { x: 1408, y: 2208, w: 384, h: 576, edge: 0.7, cx: 0.83 };
   try {
     const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
     const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed: 1, difficulty: 'normal' }) as never, 'normal') as unknown as {
@@ -283,7 +289,7 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
     setKitWorld(2);
     setGroundLook(undefined);
     setGroundPaint(true);
-    setStacks(st.gen2?.tower?.legs);
+    setStacks(st.gen2?.tower?.legs, st.rivers);
     const banks = st.platforms.filter(paintedBank);
     const cs = stack!.findCeilings(st.platforms, banks, stack!.stackZonesOf(st.gen2?.tower?.legs as never));
     assert.ok(cs.length >= 1, 'the toy has a ceiling');
@@ -295,7 +301,7 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
       ...st.rivers.filter((z) => stack!.ceilingsOverSpan(z.x0, z.x1, z.surfaceY, cs).length).map((z) => ({ what: `pool x ${Math.round(z.x0)}`, x0: z.x0, x1: z.x1, river: true })),
     ];
     assert.ok(spans.filter((s) => s.river).length >= 2 && spans.filter((s) => !s.river).length >= 4, `the out leg's banks and pools over the race leg (${spans.length})`);
-    const bare: string[] = [], spill: string[] = [], stair: string[] = [];
+    const bare: string[] = [], spill: string[] = [], stair: string[] = [], seam: string[] = [], corner: string[] = [];
     for (const s of spans) {
       const mid = (s.x0 + s.x1) / 2;
       const ly = line(mid);
@@ -329,11 +335,45 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
         worst = Math.max(worst, lineNear(q[0][0], q[0][1] + 0.75 * (q[3][1] - q[0][1])), lineNear(q[1][0], q[1][1] + 0.75 * (q[2][1] - q[1][1])));
       }
       if (cols && worst > 1) stair.push(`${s.what}: the strip's edge ${worst.toFixed(1)} off the line at a column's end (${cols} columns)`);
+      // (where one strip gives way to the next (every 512 units, each strip wrapping only with itself) the next is already drawn over the
+      //  column before the change, faded in: ENG-GROUND-c's painted shoot showed a hard seam there)
+      const strips = r.draws.filter((d) => d.src && d.quad && Math.abs(d.quad[3][1] - d.quad[0][1] - 128) <= 1 && d.quad[1][0] - d.quad[0][0] <= 17);
+      for (let B = Math.ceil((s.x0 + 48) / 512) * 512; B < s.x1 - 48; B += 512) {
+        if (!Number.isFinite(line(B))) continue;
+        const after = strips.find((d) => d.quad![0][0] >= B - 0.01 && d.quad![0][0] < B + 1)?.src?.[1];
+        const before = strips.filter((d) => d.quad![1][0] <= B + 0.6 && d.quad![1][0] > B - 1 && d.src![1] === after);
+        if (after === undefined || !before.some((d) => (d.alpha ?? 1) >= 0.8)) seam.push(`${s.what}: a hard seam at x ${B}`);
+      }
+    }
+    // (a bank's underside that ends over open air (no bank or river of the upper leg beside it, inside the ceiling's run) turns up into its
+    //  end face with the painted corner, mirrored for a left end; it stopped in a straight cut, ENG-GROUND-c's painted shoot)
+    const upper = [
+      ...banks.filter((p) => stack!.ceilingsOver(p, cs).length).map((p) => ({ x0: p.x, x1: p.x + p.width })),
+      ...st.rivers.filter((z) => stack!.ceilingsOverSpan(z.x0, z.x1, z.surfaceY, cs).length).map((z) => ({ x0: z.x0, x1: z.x1 })),
+    ];
+    const ends: Array<{ x: number; side: 'l' | 'r' }> = [];
+    for (const u of upper) for (const side of ['l', 'r'] as const) {
+      const x = side === 'l' ? u.x0 : u.x1, out = side === 'l' ? x - 4 : x + 4;
+      if (!upper.some((o) => o.x0 <= out && o.x1 >= out) && cs.some((c) => x > c.x0 + 8 && x < c.x1 - 8) && !ends.some((e) => Math.abs(e.x - x) < 2)) ends.push({ x, side });
+    }
+    assert.ok(ends.length >= 1, `the toy's underside ends over open air somewhere (${ends.length})`);
+    for (const end of ends) {
+      const ly = line(end.x);
+      const view = { x0: end.x - 450, x1: end.x + 450, y0: ly - 500, y1: ly + 240 };
+      const r = new RecordingCtx();
+      drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+      // (the corner: 288 tall, its face (cx of its width) at the end, its body over the bank's side, mirrored on a left end)
+      const k = r.draws.filter((d) => d.src && d.src[0] === 1408 && d.src[1] === 2208 && d.src[2] === 384 && Math.abs(d.box[3] - d.box[1] - 288) < 40);
+      const ok = k.some((d) => (end.side === 'r' ? !d.flip && d.box[0] < end.x - 100 && d.box[2] > end.x : d.flip && d.box[2] > end.x + 100 && d.box[0] < end.x) && d.box[1] < ly && d.box[3] > ly);
+      if (!ok) corner.push(`${end.side === 'l' ? 'left' : 'right'} end x ${Math.round(end.x)}: no corner (${k.length} corner draws)`);
     }
     assert.deepEqual(bare, [], 'the roots are cut off at the line');
     assert.deepEqual(spill, [], 'the strip spills past its span');
     assert.deepEqual(stair, [], "the strip's edge steps off the line between columns");
+    assert.deepEqual(seam, [], 'a hard seam where one strip gives way to the next');
+    assert.deepEqual(corner, [], 'an end over open air has no corner');
   } finally {
     g2.unders = had;
+    g2c.underCorner = hadC;
   }
 });
