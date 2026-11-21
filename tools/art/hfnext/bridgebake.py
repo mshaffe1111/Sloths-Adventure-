@@ -4,7 +4,11 @@ A take is the bridge from the plain pose (Wan frame 0) to the clip's frame 0 (Wa
 canvas px a sheet px with the feet anchor at (240, 552). Each Wan frame is keyed off its flat grey (flood from the border), scaled to
 sheet px and placed on the anchor; then frame 0 is REPLACED by the exact plain frame (heroStandardData idle) and the last by the clip's
 exact frame 0, so both ends are pixel for pixel what they join. The clip becomes: bridge in (Wan 0..m-2), the clip's own frames, bridge
-out (Wan m-2..0, reversed): its first and last frames are the plain pose. --pin-feet shifts each in-between frame sideways onto that line (a standing turn; never the sit-down, whose feet move by design). The sheet box grows to the union of all
+out (Wan m-2..0, reversed): its first and last frames are the plain pose. COLOUR RAMP (ART-NEXT-e): every in-between frame gets a Lab
+mean/std (Reinhard) transfer over its solid px (alpha > 200) toward lerp(stats(plain), stats(target), u), u = i/(m-1): bridge IN
+targets the clip's frame 0, bridge OUT (its own list, not bridge in reversed) the clip's LAST frame, so the old clips' colour drift
+over their 49 frames never pops at the join; --replace ramps plain -> the take's mean stats -> plain (a tent). Writes the layout
+to tools/art/hfnext/bridges.json, which clipde.py reads to find the seams (the gate: src/game/heroClipsSeams.test.ts). --pin-feet shifts each in-between frame sideways onto that line (a standing turn; never the sit-down, whose feet move by design). The sheet box grows to the union of all
 frames; heroClipsData.ts's entry (n, w, h, ax, ay) is rewritten in the clip cutter's own format. --dry writes only the check sheet.
 Prints, per in-between frame, how far its feet centre sits off the straight line between the two ends' feet (a slide; the turn itself
 moves the stance by up to ~10 px), before any pin (the lead's bar: within 2 px across a standing bridge).
@@ -24,11 +28,44 @@ src = DATA.read_text()
 CL = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {HERO_CLIPS} from './src/game/heroClipsData.ts'; console.log(JSON.stringify(HERO_CLIPS))"],
                                capture_output=True, text=True, check=True).stdout)
 STD = Image.open('src/assets/hero/hero-standard.webp').convert('RGBA')
+LAYP = Path('tools/art/hfnext/bridges.json'); LAY = json.loads(LAYP.read_text()) if LAYP.exists() else {}
 AW, AH, AX, AY = 420, 300, 210, 270          # the working canvas (sheet px) and its feet anchor
 
 
 def on_anchor(im, ax, ay):
     c = Image.new('RGBA', (AW, AH), (0, 0, 0, 0)); c.alpha_composite(im, (int(round(AX - ax)), int(round(AY - ay)))); return c
+
+
+_M = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]); _W = np.array([0.9505, 1.0, 1.089])
+
+
+def lab(rgb):   # the same sRGB -> Lab (D65) as clipde.py
+    c = rgb / 255.0; c = np.where(c > 0.04045, ((c + 0.055) / 1.055) ** 2.4, c / 12.92)
+    f = (c @ _M.T) / _W; f = np.where(f > 0.008856, np.cbrt(f), 7.787 * f + 16 / 116)
+    return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
+
+
+def rgb(L):
+    fy = (L[..., 0] + 16) / 116; f = np.stack([fy + L[..., 1] / 500, fy, fy - L[..., 2] / 200], -1)
+    xyz = np.where(f > 0.206893, f ** 3, (f - 16 / 116) / 7.787) * _W
+    c = np.clip(xyz @ np.linalg.inv(_M).T, 0, 1); c = np.where(c > 0.0031308, 1.055 * np.power(c, 1 / 2.4) - 0.055, 12.92 * c)
+    return np.clip(c * 255, 0, 255)
+
+
+def cstats(im):
+    a = np.asarray(im).astype(np.float32); L = lab(a[..., :3][a[..., 3] > 200]); return L.mean(0), L.std(0)
+
+
+def ramp(im, A, B, u):
+    """Move im's solid-px Lab mean/std to lerp(A, B, u) (A, B = cstats); every visible px moves with it. Two more mean-only passes
+    take out what the RGB clip and the 8-bit round shift."""
+    a = np.asarray(im).astype(np.float32); vis = a[..., 3] > 0
+    tm, ts = A[0] + (B[0] - A[0]) * u, A[1] + (B[1] - A[1]) * u
+    mu, sd = cstats(im); L = (lab(a[..., :3][vis]) - mu) * (ts / np.maximum(sd, 1e-3)) + tm
+    for _ in range(3):
+        out = a.copy(); out[..., :3][vis] = np.round(rgb(L)); mu, _sd = cstats(Image.fromarray(out.astype(np.uint8), 'RGBA'))
+        L = L + (tm - mu)
+    return Image.fromarray(out.astype(np.uint8), 'RGBA')
 
 
 def key(path):
@@ -81,8 +118,18 @@ if PIN:
            for i, im in enumerate(wan)]
 for name in clips:
     own = [plain] if REPLACE else clip_frames(name)
-    bridge = [plain] + wan[1:-1]                  # Wan 0 -> the exact plain frame; Wan m-1 -> the clip's own frame 0 (not repeated)
-    frames = bridge + own if REPLACE else bridge + own + bridge[::-1]   # --replace: plain, the take's in-betweens, plain
+    m = len(wan); P = cstats(plain)               # Wan 0 -> the exact plain frame; Wan m-1 -> the clip's own frame 0 (not repeated)
+    if REPLACE:                                   # plain, the take's in-betweens (tent ramp plain -> the take's mean -> plain), plain
+        T = [cstats(im) for im in wan[1:-1]]; MID = (np.mean([t[0] for t in T], 0), np.mean([t[1] for t in T], 0))
+        bridge = [plain] + [ramp(wan[i], P, MID, 1 - abs(2 * i / (m - 1) - 1)) for i in range(1, m - 1)]
+        frames = bridge + own
+    else:
+        F0, FL = cstats(own[0]), cstats(own[-1])
+        bridge = [plain] + [ramp(wan[i], P, F0, i / (m - 1)) for i in range(1, m - 1)]
+        out_b = [ramp(wan[i], P, FL, i / (m - 1)) for i in range(m - 2, 0, -1)] + [plain]
+        frames = bridge + own + out_b
+    LAY[name] = {'take': Path(take).name, 'bridge': len(bridge) if not REPLACE else len(frames), 'own': 0 if REPLACE else len(own),
+                 'replace': REPLACE, 'pin_feet': PIN}
     if SHEET:
         ims = [plain] + wan[1:-1] + [own[0]]
         tw = 2 * 170; th = 2 * 230
@@ -113,3 +160,4 @@ if not DRY:
     if 'bridgebake.py' not in src.split('\n')[0]:
         src = src.replace('Do not edit by hand. */', 'Do not edit by hand. The idle clips\' bridge frames: tools/art/hfnext/bridgebake.py (R-165.354). */', 1)
     DATA.write_text(src)
+    LAYP.write_text('{\n' + ',\n'.join(f' {json.dumps(k)}: {json.dumps(v)}' for k, v in LAY.items()) + '\n}\n')

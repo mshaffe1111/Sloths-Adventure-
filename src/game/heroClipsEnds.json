@@ -19,7 +19,7 @@
  },
  "clips": {
   "idle-yawn": {
-   "sheet_sha256": "0fa8d8fd3e690de2b428fe7aec398a138a490de84d313b3f8050478e3fe5f5fc",
+   "sheet_sha256": "b69533711f58b400390c284891e39e244f09b00444bd872dbab0c43935d09640",
    "n": 81,
    "first": {
     "box": [
@@ -59,7 +59,7 @@
    }
   },
   "look-around": {
-   "sheet_sha256": "869145444e468d419fff0f6b329e5dae13844665bc273fb1147ec3de1bd44791",
+   "sheet_sha256": "91fa01b07bc3c6921f4f0908d774311f8f5010adb1ed688f19891ebe40cfc818",
    "n": 81,
    "first": {
     "box": [
@@ -99,7 +99,7 @@
    }
   },
   "belly-scratch": {
-   "sheet_sha256": "f75c28288bd91b272ecf5e267cc338ec152426ef9dd5f62dabd614b26f782fa4",
+   "sheet_sha256": "dde50e2ffe16c5af6a6225cb7b06b8aed0c50279fb1be0e3e408e91cd1769a63",
    "n": 41,
    "first": {
     "box": [
@@ -139,7 +139,7 @@
    }
   },
   "wave": {
-   "sheet_sha256": "578c6c1f790b4f0b09e50b4c7afe221c30b834ffcfcc1b606b652c946b14aa52",
+   "sheet_sha256": "c91ac89c9eea9f0a869c9fc8cc14f70e912922d5a29197b3d56eae366175be5b",
    "n": 81,
    "first": {
     "box": [

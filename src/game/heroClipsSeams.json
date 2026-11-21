@@ -1,0 +1,51 @@
+{
+ "bar": {
+  "times_median": 2,
+  "floor": 0.5,
+  "ceiling": 1.0
+ },
+ "clips": {
+  "idle-yawn": {
+   "sheet_sha256": "b69533711f58b400390c284891e39e244f09b00444bd872dbab0c43935d09640",
+   "n": 81,
+   "bridge_median": 0.372,
+   "seams": {
+    "0": 0.375,
+    "15": 0.397,
+    "64": 0.457,
+    "79": 0.4
+   }
+  },
+  "look-around": {
+   "sheet_sha256": "91fa01b07bc3c6921f4f0908d774311f8f5010adb1ed688f19891ebe40cfc818",
+   "n": 81,
+   "bridge_median": 0.371,
+   "seams": {
+    "0": 0.4,
+    "15": 0.377,
+    "64": 0.517,
+    "79": 0.483
+   }
+  },
+  "belly-scratch": {
+   "sheet_sha256": "dde50e2ffe16c5af6a6225cb7b06b8aed0c50279fb1be0e3e408e91cd1769a63",
+   "n": 41,
+   "bridge_median": 0.1,
+   "seams": {
+    "0": 0.103,
+    "39": 0.126
+   }
+  },
+  "wave": {
+   "sheet_sha256": "c91ac89c9eea9f0a869c9fc8cc14f70e912922d5a29197b3d56eae366175be5b",
+   "n": 81,
+   "bridge_median": 0.451,
+   "seams": {
+    "0": 0.437,
+    "15": 0.338,
+    "64": 0.475,
+    "79": 0.469
+   }
+  }
+ }
+}

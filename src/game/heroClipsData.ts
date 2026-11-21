@@ -13,9 +13,9 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
  "look-around": {
   "n": 81,
   "cols": 8,
-  "w": 148,
+  "w": 149,
   "h": 206,
-  "ax": 69.0,
+  "ax": 70.0,
   "ay": 203.0,
   "fps": 16
  },
