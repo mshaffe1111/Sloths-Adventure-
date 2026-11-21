@@ -1538,11 +1538,13 @@ export class FirstTimerRun {
     const plan = this.mem.plan(p.x, p.y);
     if (plan === 'double' || !(this.learned.has('double') || this.who.knowsDouble) || !here || dir === 0) return plan;
     const edgeX = dir > 0 ? here.x + here.width : here.x;
-    // (SKILLS.boardHop: a log drifting his way across the lip, a step down (river.ts LOG_DROP), is the floor this jump is for: the boarding
-    //  hop, SKILLS.boardLog, waits at the lip until a hop comes down on it. Read past it, as a piece that starts behind the edge, the gap was
-    //  the next log's: 2-2 child Normal seed 36 stood at the lip with log 79 under it, read the 214 px to log 80 as a double, flew over 79
-    //  and came down in the 72 px of water between them (x 20212; trace-27h.txt 9, rule 28 for the boarding hop, ENG-27h))
-    if (SKILLS.boardHop && SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir)) return 'single';
+    // (SKILLS.boardHop: a log drifting his way across the lip, a step down (river.ts LOG_DROP), is the floor the boarding hop is for
+    //  (SKILLS.boardLog waits at the lip until a hop comes down on a log): where a single from here comes down on a log, it is a single.
+    //  Read past it, as a piece that starts behind the edge, the gap was the next log's: 2-2 child Normal seed 36 stood at the lip with log
+    //  79 under it, read the 214 px to log 80 as a double, flew over 79 and came down in the 72 px of water between them (x 20212;
+    //  trace-27h.txt 9). Only where the single lands: with log 79 only 75 px out, middle Normal seed 17's single from a stand 35 px back
+    //  came down 20 px past its front, in the water, where the gap read's double reached log 80 (x 20114; rule 28 for it, ENG-27h))
+    if (SKILLS.boardHop && SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir) && this.singleLands(p, dir)) return 'single';
     let gap = Infinity;
     for (const q of this.sim.platforms) {
       if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;
@@ -1573,6 +1575,12 @@ export class FirstTimerRun {
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && q.drift?.dir === dir && q.y - here.y > 6 && q.y - here.y <= 40
       && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
+  }
+
+  /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
+  private singleLands(p: { x: number; y: number }, dir: -1 | 1): boolean {
+    const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir, this.who.hold[0], this.t, this.sim.p.vx));
   }
 
   /** water (a river or a pond, safe or not) anywhere between two x: FIX-21's read of a gap over a creek, and SKILLS.fromTakeoff's */

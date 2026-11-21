@@ -1,3 +1,48 @@
+# ENG-27h REPORT (handed over at the lead's D76 call, real context ~325k; written 3:38 PM ET 11-21 by date). Base 71c3a293b; branch t-eng-27, head: this commit
+## EXACT NEXT STEP (ENG-27i, from t-eng-27 head; read only this section, D90)
+0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
+   Patch a worktree for rule 28 with `python3 reference/qa-reports/ENG-27/r28patch-27h.py.txt <wt>` (runs r28patch-27g.py.txt, then adds SKILLS.boardHop where missing,
+   all three skills read off with R28_BASE=1, and a log __bh of every jumpFor that meets a log across a lip). NOTE: r28patch-27h's boardHop hunk
+   for trees WITHOUT it (t-build-23, t-build-25) is the FIRST cut (no singleLands): update its HOP line and helper to match firsttimer.ts now
+   (`&& this.singleLands(p, dir)` and the singleLands helper) before running 2-3/2-5. Runner: r28-runner-27h.ts.txt -> tools/inspect/_r28run.ts
+   (prints bhReads/bhFirst). Diff: `python3 reference/qa-reports/ENG-27/r28diff-27h.py.txt <stage> r28-27g/<st>-base.jsonl r28-27g/<st>-head.jsonl <new>.jsonl`.
+1. **Rule 28 re-diff for the NARROWED boardHop (this head), 2-1..2-6, 40 seeds both settings: RUN NOTHING YET ON IT.** Trees: 2-1, 2-2, 2-4,
+   2-6 on this head; 2-3 on origin/t-build-23 66775dabf; 2-5 on origin/t-build-25 6ddeeead2 (the trees r28-27g's base/head rows ran on, so
+   only new head rows are needed: about 40 min on 4 cores, 24 jobs of 10 seeds). The lead's bar: no flip from a wrong read; every moved row
+   explained (bhReads > 0); no tier count drops. Then for every moved row run bhev-27h.ts.txt (`_bhev.ts <stage> bot:setting:seed ...`): any
+   life within 3 s after a boardHop read gets traced (r28trace-27h.ts.txt + r28cmp-27h.py.txt, NO_HOP=1 for the comparison run; the trace
+   needs `(globalThis as any).__run = this;` at the top of pad()). The first cut (a235ceec1, a single wherever a log crossed the lip) gave on
+   2-2: 46 moved, no new flip, no count drop, but 4 lives right after its read (middle N 3, 6, 17; expert N 10): middle N 17 traced, the single
+   from a stand 35 px back came down 20 px past log 79's front (75 px out) where the double reached log 80. Hence the refinement here: a single
+   only where hopLandsOn says a single comes down on a log. Rows of that first cut are obsolete (not committed).
+2. pacerLay 19/19 was run on the FIRST cut only: re-run it on this head (and it is in the merge check below).
+3. The merge: origin/t-eng-ground at the lead's green hash (ENG-GROUND-d). --no-ff. Trial merge on ef38ee2fd: two conflicts as ENG-27g mapped:
+   engine-core.md (two new sections at one spot: keep both; replace our "groundStack (NOT merged here yet)" line with its real line) and
+   w2.ts lip(): ours `p.y >= y - 2 && p.y <= y + LIP_RISE` (never over the fall's height) sits inside theirs `p.y <= y + LIP_RISE && p.y >= y -
+   LIP_RISE`; settle by both sides' tests. After: tsc + pacerLay 19/19 + pacerBehindBanks + groundStack + legsHome + postLay + firsttimer.test.
+4. The packet's steps 3-5 (UNDONE): race table on the merged head (raceprobe-27e.ts.txt; home and post, seeds 1-6, both settings, middle /
+   expert / ride-only; any middle or expert loss traced; the named log-front walk-off is not to fix unless it loses a race); stills 2x both
+   ways (boat waiting, setting off, docked; door and letter) and THE CLIP of the race leg (cliprec-27e, D63); THE FULL SET (gates.md D96;
+   lockall vs 0eefc707e: only the toy; funcheck same-run vs main; git fetch --unshallow first). Then REPORT, "What the 2-7 builder needs".
+
+## ENG-27h: what was done
+- **Step 1, the 8 flips: TRACED and ACCEPTED by the lead** (trace-27h.txt): all 8 the boarding hop, all shifted draws after a right read. The
+  kid's late lift-off (R-165.59) holds his steer through the wait, so his path is the same and only his draws move; base's air press off a
+  log's front made the coyote window and head's did not (2-1, 2-2); on 2-4 the pairs part at the first log river and the extra lives come
+  80-150 s later at spots base also loses lives at. The skill lowers those bots' totals (2-1 kid N lives 229 to 193, rescues 11 to 8).
+- **A wrong read found off the 8, the lead's GO to narrow:** 2-2 child N 36, jumpFor read the gap past the log under the lip as a double
+  over it into the water. **SKILLS.boardHop** (firsttimer.ts jumpFor, logAcross, singleLands): a log his way across the lip, a step down,
+  where a single from here comes down on a log: a single. Planted (firsttimer.test, 12/12): the read in a toy (RED with it off; controls:
+  a log only 40 px out, plant-checked RED without singleLands; no log; all under the bank; against the flow) and the run it was found on
+  (2-2 child N 36, no life within 3 s of such a stand; RED with it off) with middle N 17 as a guard (NOT plant-checked against the first cut).
+  tsc clean. Child N 36: 7 lives to 3, the boarding a single onto log 79.
+- NOT done: the re-diff on the refined skill, the merge (no hash yet), the race table, stills, THE CLIP, THE FULL SET.
+
+## Lessons applied
+D57/D87 (inbox at every step and push), D102 (lean reads; handed over at the call), D109 (no clock times in messages), LAW 3 (each trace
+claim checked: rows re-made, draws counted, the liana catch read off the engine), rule 28 (every flip traced; the narrowing's own lives
+traced before trusting its re-diff, which caught the first cut's short single).
+
 # ENG-27g REPORT (handed over at the context line). Base 64d1b14f8; branch t-eng-27, head: this commit
 ## EXACT NEXT STEP (ENG-27h, from t-eng-27 head; read only this section, D90)
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Worktrees are 2.7 GB each and the disk fills: make
