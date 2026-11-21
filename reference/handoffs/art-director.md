@@ -3,7 +3,7 @@
 Last task: ART-NEXT-e (§0k, t-art-next). Before it: ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
 
-## 0l. 11-21 ART-UNDER (t-art-under): World 2's earth UNDERSIDE takes in, picks pending (REPORT: reference/qa-reports/ART-UNDER/)
+## 0l. 11-21 ART-UNDER (t-art-under): World 2's earth UNDERSIDE packed into ground/w2.webp + groundAtlasData (unders, underCorner), rows w2#under0..2 + w2#undercorner, NOT placed (ENG-GROUND-c); REPORT reference/qa-reports/ART-UNDER/
 - Tools: tools/art/hfunder/ starts.py (paste-ups from W2's own fill), spec-under2.json + run.sh (Qwen-Image-Edit-2511, one sandbox),
   sheet.py (raw | the SHIP CUT at game size over the fill, light/dark, Pokey, FRAME EDGE/shade/wrap numbers), cut.py (key from the
   bottom (+right for the corner), grey pockets keyed, --match gain to the fill, --shade lift, wrap closed, top feathered), pack.py
