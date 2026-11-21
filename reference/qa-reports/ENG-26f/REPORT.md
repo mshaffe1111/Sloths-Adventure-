@@ -17,8 +17,7 @@ a plant is restored from a copy of the fixed file, never from git.
      BUILD-25d at 74b72c84b). Engine changes since 25d (ENG-26d/e) can move rows too: any moved row is traced with trunkCatch OFF
      (SKILLS.trunkCatch = false) on that seed before it is blamed on the bot fix.
    - Trace every moved row (seed, x, frame, what took him), or narrow trunkCatch. tierBots 1-1 stays 9/9.
-2. **The table (step 3):** `SEED=1 npx tsx tools/inspect/rowWheels.ts`, `SEED=2 ...`, and each with `OFF=1`; runLine prints rescues.
-   Middle and expert must be at 0 rescues ON.
+2. **The table (step 3): DONE** (below).
 3. **Stills (step 4):** tools/inspect/plantRow.ts is the DEV route's plant (nothing in src imports it, so no shipped build holds it):
    a stills script starts a dev vite, and in the page `await import('/tools/inspect/plantRow.ts')` and the draft kit
    (`/src/game/gen2/worlds/w2Arc26.ts` kitLib26/STAGE_26, `/src/game/gen2/worlds/w2.ts` w2Finish), calls plantRow(row, 1), then
@@ -38,6 +37,19 @@ a plant is restored from a copy of the fixed file, never from git.
 | 1: the drops fingerprint | MOVED on 12 shipped stages (1-1, 1-6, 1-7, 1-8, 2-1, 2-5, 5-7, 5-9, 8-2, 8-5, 8-6, 8-9); the two bases identical to each other. All 1243 moved entries: the same fall (x0, x1, lip), the same ends.kind 'floor' and look 'ground'; ONLY ends.y, now 35-75 px higher. Example: 1-1 normal v1, the fall at x 6116-6371, lip 1180: floor y 1250 -> 1215. Verdicts identical on every build. Cause: ENG-26e's dropsOf (5a67dba93/dfc90a509): the base took the FIRST platform in array order under the fall's middle, the head the HIGHEST, the first floor a fall really meets. Readers: none reads ends.y on a floor drop (verdicts.ts, promises11.ts and pipeline.ts:4219 falls read kind, cause and look). STOP sent; **lead ruled ACCEPTED** (a correction, not a player change) | lock/drops-diff-e67e01113-vs-head.txt; lock/lockplus.ts, alldrops.ts, cmp.mjs (run from tools/engine/) |
 | R-165.375 | a LISTED stage that lays a water wheel never asked for the painted noria's sheet (stageSheets laysWheel read GEN2_STAGES only, which holds no stageTable row: R-165.288's rafts miss again), so 2-6, once listed, would pop its noria in. laysWheel now reads a kit (GEN2_STAGES' or the listed row's), its pieces and sub-block versions, both settings | 4a0a8677c; src/game/gen2/listedWheelSheet.test.ts RED with the listed branch false; stageSheets.test.ts 9/9 |
 | plantRow.ts | rowWheels' row plant lifted into tools/inspect/plantRow.ts (returns its undo), for the bots and the DEV stills page | c1fe87a6e; rowWheels.test.ts 5/5 |
+
+## The table (step 3): rowWheels on the draft row, finish / rescues (table/*.txt; every run: lives 0, put-backs 0)
+| run | s1 ON v1 | s1 ON v2 | s2 ON v1 | s2 ON v2 | s1 OFF v1 | s1 OFF v2 | s2 OFF v1 | s2 OFF v2 |
+|---|---|---|---|---|---|---|---|---|
+| child Easy | 157.6 / 0 | 167.1 / 0 | 156.9 / 0 | 142.8 / 0 | 143.3 / 0 | 116.2 / 0 | 181.3 / 0 | 125.6 / 0 |
+| child Normal | 137.6 / 0 | 191.9 / 0 | 142.1 / 0 | 157.5 / 0 | 224.3 / 0 | 327.0 / 0 | 409.5 / **1** | 272.8 / 0 |
+| middle Normal | 133.3 / 0 | 123.1 / 0 | 110.9 / 0 | 110.9 / 0 | 219.4 / **2** | 156.6 / 0 | 191.6 / 0 | 285.4 / 0 |
+| middle Easy | 127.0 / 0 | 130.3 / 0 | 123.3 / 0 | 124.9 / 0 | 170.1 / 0 | 94.9 / 0 | 107.6 / 0 | 133.2 / 0 |
+| expert Normal | 105.6 / 0 | 108.7 / 0 | 102.4 / 0 | 121.0 / 0 | 90.5 / 0 | 121.6 / 0 | 175.3 / 0 | 173.7 / 0 |
+ON (the shipped bots): 20/20 reach the shrine, **0 rescues on every run; middle and expert 0**. Seed 1 ON is ENG-26e's table exactly.
+OFF (the plant, SKILLS.rideWheel off): the wheels are scrambled up, not ridden (scrambles per wheel up to 46 against 0-1 ON; the child
+Easy v1 never rides the teaching wheel, 'teachL never'), with 3 rescues and the slowest runs (409.5 s). The expert ON finishes in
+102-121 s, under the 2-minute rule on 3 of 4 runs: the real bricks must hold him over 120 s.
 
 ## What the 2-6 builder needs (ENG-26c's list, updated)
 - The expert finished the draft in about 106 s, under the 2-minute stage rule: the real bricks must hold the expert over 2 minutes.
