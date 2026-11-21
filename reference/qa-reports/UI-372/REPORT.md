@@ -5,12 +5,12 @@ Designer, Opus 5.5 high. Base origin/t-build-23 @ 66775dabf (2-3 GREEN). Branch 
 Designer, Opus 5.5 high, a fresh member. Base origin/t-ui-372 @ af8afe835. Started 5:02 PM ET (by `date`). Push: t-ui-372. No code change.
 
 ### Slot-state confirm (law 3)
-PENDING
+NOT RUN (box: the suite was still running at hand-over; one heavy run at a time).
 
 ### Gates (THE FULL SET, gates.md D96; one heavy run at a time on af8afe835 + this report only)
 | Gate | Verdict |
 |---|---|
-| unit suite (CLAUDE.md line) | PENDING |
+| unit suite (CLAUDE.md line) | RUNNING at hand-over: 3491 ok, 0 failed (one `not ok` is a `# TODO` test, R-165.312 flag placer, which node counts as todo, not fail); log /tmp/claude-0/u372c/suite.log, verdict = its `# fail` and `suite rc` lines |
 | vite build + chunkcheck | NOT RUN |
 | drawcheck (2-3 within limits.json) | NOT RUN |
 | clipcheck (no new entry; marker inside the insets) | NOT RUN |
@@ -23,11 +23,18 @@ PENDING
 | from UI-372b, unchanged base: tsc, artcheck, knowncheck, generalitycheck, coveragecheck, timecheck, roadmapcheck (own ROADMAP) | PASS (UI-372b) |
 | roadmapcheck on the lead's ROADMAP | FAIL (6), not this work: 5 rows name PR #77 (on main, not in this branch) and BUILD-PLAN's count; they clear on the integration head that holds main |
 
-### EXACT NEXT STEP
-PENDING
+### EXACT NEXT STEP (UI-372d)
+0. `ls node_modules` first; in a fresh container run `npm install --no-audit --no-fund --legacy-peer-deps` (about 5 s).
+1. Suite: if /tmp/claude-0/u372c/suite.log exists, read `grep -E "^# (pass|fail|todo)|^suite rc"`; if the container is gone, re-run
+   the CLAUDE.md suite line ALONE with run_in_background (about 25+ minutes here; give it its own member box, do light work meanwhile).
+2. Then the rest of UI-372b's EXACT NEXT STEP 2-4 unchanged (the shooter faces confirm; build + chunkcheck; drawcheck; clipcheck;
+   lockall vs 66775dabf (base worktree ready at /tmp/claude-0/u372c/base with node_modules symlinked, if this container lives);
+   paintcheck x3; seed lists; tipwalk; registrycheck; the CI tool line; kbdcheck; tierBots; buildcheck ALONE), one at a time.
 
 ### Learned
 - This container had no node_modules (a fresh one): the first suite start failed on `react` not found. `npm install --no-audit --no-fund --legacy-peer-deps` (gates.yml's own line) comes first in a fresh container; check `ls node_modules` before any gate.
+- The suite alone takes longer than a 28-minute box here (over 22 minutes and still going at 3491 ok). A packet that puts the suite and the heavy gates in one box cannot finish; the suite needs its own box, or the lead runs it while a member does the browser gates.
+- I ended my turn to wait for the background suite and was idle about 20 minutes (the lead had to nudge me). The repeat of UI-372b's lesson: in a wait, do every light step (report, worktrees, reading the shooter) first, then wake on the run's end, and check the clock against the box before ending a turn.
 
 ## UI-372b: the stills re-shot on the 48 px ruling, and THE FULL SET one heavy run at a time (previous)
 Designer, Opus 5.5 high, a fresh member. Base origin/t-ui-372 @ 7a638985c. Started 4:31 PM ET (by `date`). Push: t-ui-372.
