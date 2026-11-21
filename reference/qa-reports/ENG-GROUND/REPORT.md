@@ -32,8 +32,9 @@
      y 1684 to the view's foot right of the face: the lead's 'backdrop shows below it'. Its x and why it runs past the stage's last
      platform are unmeasured (no platform past 20066, no river in e.rivers).
    So 2d4e0752a fixes one real fault at the corner (the soil outline crossing itself; planted), NOT the corner as the lead saw it.
-4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages): RUNNING at the handover on 2d4e0752a.
-5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; chain a (suite 1-6, tooltests, tierBots, tipwalk, coverage,
+4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages), on 2d4e0752a: PASS, 102/102 stages unchanged
+   (lock-e.txt; the 'gained verdicts and drops (not hashed)' line is unhashed fields, not a move, as in ENG-GROUND-c).
+5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; suite 1/6 PASS 634/634; the rest of chain a (suite 2-6, tooltests, tierBots, tipwalk, coverage,
    registry, generality, known, roadmap, time, art) RUNNING at the handover; chain b (seedlists, paint x3, build, chunkcheck,
    clipcheck, kbdcheck, drawcheck, buildcheck) UNRUN.
 POLISH CHECK: wall-end upright before/after, corner crop at full size, and a contact sheet of the other five stills, each looked at
@@ -46,11 +47,10 @@ LESSONS APPLIED: D57 (inbox at each step and push), D102 (lean reads; images dow
    world x and y from the camera BEFORE planting (I planted the outline fault first and only then found the lead's strip was a shade
    step and the box a water fill); a render with one painter skipped names what a pixel is.
 EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD; code head 2d4e0752a):
- 1. The lock: base = lockall --layouts 16 --out on a worktree at 0eefc707e (or the saved base if still present); on 2d4e0752a
-    `npx tsx tools/engine/lockall.ts --layouts 16 --check <base>`; expect 102/102 unchanged (paint only). A shipped stage moving: stop, report.
+ 1. The lock: DONE on 2d4e0752a (PASS 102/102). Re-run it only on a new code head.
  2. The gates on a frozen worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then
-    `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green:
-    2d4e0752a is the green head for ENG-27i's merge.
+    `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green, and item 3 fixed
+    on top: that head is the green head for ENG-27i's merge (re-run the lock and the gates on it).
  3. The corner (item 3 (a) and (b)), the ruled corner is not done until both are gone. (a) Plant first: in a recording ctx at the
     wall's foot, the soil's depth shade at (floor end - 4, y) and (floor end + 4, y) matches for every y below the floor (no step);
     then make the wall's soil below a lower floor's top darken from that floor's top (drawBankArt sy / groundLine). (b) Find the water
