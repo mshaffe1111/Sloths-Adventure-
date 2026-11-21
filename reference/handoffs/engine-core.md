@@ -2,6 +2,19 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-23b. BUILD-23b (t-build-23, 11-20 evening; this entry 9:24 PM ET by `date`): two engine pieces and three engine-side fixes on 2-3
+- **Designed cage socket** (pipeline.ts fillSockets, 3f958e630 + its planted test ad2d9e15a, src/game/gen2/designedCage.test.ts): a
+  socket with role 'objective' whose allow holds 'cage' (and a little one's kind) lays that cage where it stands, every one. A rolled graph's
+  nodes carry no objective quota, so without it a designed stage lays no cage. Any world's designed cage uses it.
+- **Heron look** (followArt.ts lookInView, cd44b43fa): the look (gaze + wash) is drawn while its wash OR the heron is in view. Trap: the
+  wash's sight is 70 px and a sweep starts 160 px past its stretch, so a still shot at a sweep's start shows a head-up heron with no wash.
+- **World 2's new sheet** (w2NewArt.ts; riverArt.ts W2Decor.nw drawn by drawW2Decor; stageSheets 'w2-new'; stagePreload): a stage lays a
+  w2-new piece as World 2 dressing. A climb whose look is a painting sets Vine.rope (protoArt.ts skips the kapok trunk; no play change).
+- **sheetWarm** (stageAnims, stageExtras): no eagle on a follow stage (herons in the watcher's place), no props2 for reed clumps.
+- **HUD faces** (followFaces.ts pure; engine.ts lineFaces(); VineHud lineFaces prop polled every 150 ms, redrawn on facesKey change;
+  components/hud/LineFace.tsx). Trap: `.vh-slot:not(.on) > *` silhouettes any slot child; LineFace sets filter none inline, its tone on
+  an inner layer so the '!' keeps its amber.
+
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
 against its face). drawGround's lower() took the FIRST one listed: at a wall with a stair of step banks standing on the floor at its foot (1-6,

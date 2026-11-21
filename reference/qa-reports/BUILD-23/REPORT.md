@@ -1,3 +1,74 @@
+# BUILD-23b REPORT: 2-3 continued (t-build-23 from b51e4f0df; this section written 9:25 PM ET by `date`)
+
+## EXACT NEXT STEP (for BUILD-23c)
+1. **Three decisions from the lead first** (sent 8:59 PM ET): (a) THE ISLE: the pond's last bank is the far shore with dry ground past
+   it, so w2-new#reed-isle-a is NOT laid (it sank into the soil: stills/b23-L1-normal-w2new-reed-isle-a-REJECTED-sideways.jpg). The fix
+   is water past the isle, which changes beat 6's flown G 360/510 numbers: Designer/lead. Once ruled, lay it in w2Arc23.ts layW2New23
+   (walk line 83/208 of the picture on the isle bank's top; the comment there says how). (b) The post's painted plank shelf, just under
+   the cage, reads as a ledge he cannot stand on: a real ledge (Designer) or a post with no shelf (HF). (c) **Rule 8 breach:** sideways,
+   with him on the ground at the post, cage 4 sits under the HUD goal plank (stills/b23-L1-normal-w2new-mooring-post-sideways.jpg).
+2. **The bots stay RED until ENG-CAGE's GREEN hash lands** (the lead sends it; do NOT touch firsttimer.ts or castBots). Then castBots
+   1-6 as a look, then relist (seedlist.ts; 2-3's row has NO `judged` yet), castBots 1-40 both settings (rule 28), the meter.
+3. **THE FULL SET on the exact head** (D96: CLAUDE.md's list AND every CI gate: coveragecheck, registrycheck, tipwalk; kbdcheck,
+   buildcheck, seedlist 1-1, the engine tools' tests, tierBots), plus `lockall --layouts 16 --intended 2-3 --check lock-main.json`
+   against main (UNRUN tonight: the lead's 8:35 PM ruling): only 2-3 may move. clipcheck in full: tonight only its new '2-3 HUD faces'
+   step ran (CLIPCHECK_STEPS), seen both ways, no breaches.
+4. Then the final stills on the GREEN head (rule 29): every beat both ways, both settings, the HUD faces in each state with the line
+   really spooked by a look (tonight's 'spooked' is set by hand, follow.ts spook's fields).
+
+## Done (each pushed on t-build-23)
+| Commit | What | Evidence |
+|---|---|---|
+| ad2d9e15a | **ENGINE PIECE (designed cage socket)**: the planted test for 3f958e630 (the branch itself is BUILD-23's, kept unrewritten) | src/game/gen2/designedCage.test.ts: a rolled 2-3, seeds 1-2 both settings: 5 designed cages each with its little one, goal Normal 5 / Easy 3, a burst one joins the line. Branch off: 'expected 5, actual 0' RED; on GREEN. generalitycheck PASS. No STOPGAP. lockall UNRUN (step 3) |
+| cd44b43fa | **ENGINE PIECE (heron look)**: the cause, found on the page: pose and art were right (w2HeronLook drawn, riverArtReady true); drawHerons culled the whole look while its wash (70 px sight) was off view, and the sweep starts 160 px past its stretch. BUILD-23's still was shot 8 frames in (lookX 5464, view 5620-6820). followArt.ts lookInView: wash OR heron in view | followArt.test.ts planted (old rule RED, new GREEN); stills/b23-L1-normal-3-heron-look-*.jpg (mid-sweep, wash over his bed) and 3a-heron-look-start-*.jpg (the gaze off the left edge), both ways |
+| 14839fa18 | **w2-new wired** (ruling 8:05 PM): w2NewArt.ts; W2Decor.nw + one branch in drawW2Decor; 2-3's STAGE_DRAWS 'w2-new'; stagePreload. The mooring post stands over beat 5's rope as its look (vine.rope true: no kapok trunk doubled). **sheetWarm**: no eagle on a follow stage, no props2 for reed clumps (stageSheets.test.ts was RED on t-build-23 @ b51e4f0df from BUILD-23's own 2-3, not inherited: D94) | w2Arc23.test.ts test 6 (planted x3); on the page 1 drawImage from w2-new on the post's frame, both ways (w2new23.mjs); stills/b23-L1-normal-w2new-mooring-post-*.jpg; stageSheets.test 8/8 |
+| 9bb9e851a + cc9288f9b | **Planted faults** (rule 12): reference/qa-reports/BUILD-23/planted-faults.py, 16 plants: all six w2Arc23 tests, the three engine pieces, sheetWarm x2, the find, the HUD face | planted-faults.txt (14/14 CAUGHT at 9bb9e851a; the 2 added at cc9288f9b each CAUGHT by hand) |
+| 1974d9294 | **The HUD faces** (BUILD-23.md item 2): followFaces.ts (pure, the heron's own rule: in cover and still is hidden), engine.ts lineFaces(), App -> GameHUD -> VineHud prop (polled 150 ms, redrawn only on change), LineFace.tsx (cut from w2-props' Happy paintings; the sheet's size read, not assumed: it is 2592 tall now, the mock assumed 2166) | followFaces.test.ts planted; stills/b23-L1-normal-hud-faces-{open,hiding,spooked}-*.jpg and -plank-crops.jpg: dim / lit green / grey with amber ring and '!', both ways; clipcheck step '2-3 HUD faces' seen both ways, no breaches |
+| cc9288f9b | 2-3's find off the rest's boulder: finds.test.ts and flowerReach.test.ts were RED on b51e4f0df (find #15 at (7020, 627) inside platform 26: the rest brick's findSpot sat on its own boulder) | finds + flowerReach + w2Arc23 + designedCage 17/17; planted |
+| (this commit) | REPORT, engine-core.md 0zq-23b | |
+
+## Polish check (each still looked at, as Matt will on a phone)
+- 3-heron-look (both): head-up heron, dashed gaze down to the reed bed, the three little ones' heads in the reeds: reads. **Named:** the
+  ground wash is faint (cream at alpha 0.55/2 on a sunlit bank, mostly behind the reeds); the gaze carries it. Colour: a Designer number.
+- 3a-heron-look-start (both): the gaze runs off the left edge toward where it looks: reads (before the fix: no gaze at all).
+- w2new-mooring-post (both): one post, cage 4 on its top, Pokey to scale beside it; upright reads well. **Named:** the plank shelf reads
+  as a ledge (step 1b); sideways the cage is under the HUD plank (step 1c, rule 8).
+- w2new-reed-isle-a-REJECTED: the isle mound sunk in dry soil: rejected, not laid (step 1a).
+- hud-faces open / hiding / spooked (both): match ENG-23's mock. First try: the '!' was grey (the face's grayscale greyed it): moved the
+  tone to an inner layer. Second: blank discs (.vh-slot's silhouette rule): filter none inline. Final crops: plank-crops.jpg.
+- World 2's neon stems and teal sprouts (ENV[2]) are on screen in these stills: R-165.362's member, not mine (named, not fixed).
+- Every still is a LOOK CHECK on a RED-bot head (rule 29): the final shoot waits for GREEN.
+
+## Pushback
+- Two touches outside a builder's walls, named: riverArt.ts's W2Decor type gained one optional field (`nw`) for the ruled "one painter",
+  and tools/perf/clipcheck.mjs (the Critic's gate) gained the '2-3 HUD faces' step the packet asked for. Both small; the Architect and
+  the Critic may want to review.
+- The isle as designed (the pond's far end) cannot carry an isle picture made to stand in water: the design and the art disagree.
+
+## Suggestions
+- level.md rule 11 could say: a painted piece made to stand in water is laid only where water surrounds it; a still with the piece in
+  place is the check (the isle cost one round here).
+
+## Unresolved
+- The isle, the shelf, the cage under the HUD (step 1). The bots RED (ENG-CAGE). Full set, lockall and full clipcheck UNRUN tonight.
+- Faint heron wash (Designer's colour). Dot's `spooked` line on the first spook and the locked-gate line by state (BUILD-23's ENGINE-WORTHY 4) still open.
+- The art inventory still says w2-new#mooring-post 'ready (not in the build: no code loads the sheet)': Content's file, now stale.
+
+## Method update (level.md)
+- Shoot a watcher's look at the middle of its sweep, by state (lookX over the cover), never N frames after the phase flips.
+- A designed objective is proven on a ROLLED row with its plant (designedCage.test.ts is the model).
+
+## Learned (for the next builder)
+- A still that "shows nothing" can be a timing artifact: read the state at the frame (lookX vs the view) before blaming the art.
+- A full-suite red on your own stage is yours even when it predates you on the branch: check it on the branch's pre-you head (D94).
+
+## Lessons applied
+D30 (every time from `date`), D94 (stageSheets and finds reds checked on b51e4f0df, worded as BUILD-23's, not inherited), D96 (the full
+CI list named as UNRUN, not "the gates"), D101 (the isle and shelf reported, not coded around), D102 (lean reads: grep and line ranges).
+Turnover note: reference/handoffs/engine-core.md 0zq-23b (this commit).
+
+---
+
 # BUILD-23 REPORT: 2-3 "Stuck in the Reeds: Walk Them Home" (handover at the lead's STOP, 8:31 PM ET 11-20, D76: context past 400k)
 
 ## EXACT NEXT STEP (for BUILD-23b)
