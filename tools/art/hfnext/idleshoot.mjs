@@ -75,3 +75,4 @@ for (const st of stageArg.split(',')) {
 }
 await browser.close();
 vite.kill();
+process.exit(0);   // (ART-NEXT-d: vite.kill stops only the npx wrapper; without this the run never returned)
