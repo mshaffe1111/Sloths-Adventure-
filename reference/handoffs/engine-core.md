@@ -2,6 +2,17 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-CAGE. ENG-CAGE + ENG-CAGE-b (t-eng-cage, 11-20 evening; this entry 9:56 PM ET): the cage bot and the line's fetch clock (R-165.359)
+- Where: tools/inspect/firsttimer.ts CAGE_SKILL { punch, climb } + FirstTimerRun.cagePlan (any world's cage by its data: in the engine's strike
+  reach at his height, or hung up a climbing vine at whose foot he stands); LINE_SKILL.hopBack (a plain hop over a face on the way back for a
+  spooked one) and LINE_SKILL.fetchClock (the stuck clock holds through a fetch and starts over after it; three fetches with no step further
+  are a loop); the SET-DOWN LOOP (set down by the game at one place tries3 times, no further: put past it). Toys: cageBot.test, lineBot.test
+  (hop-back, fetch-clock on 2-3's gen2 row seed 5), firsttimer.test 'set down'.
+- Traps: the set-down loop rule reaches 1-1 (2 child Normal runs moved; calibration recommitted 11-20). The stop reaction at a face counts
+  only his pushes (P13): counting it in real time breaks 1-1's calibration (tried and rejected, ENG-CAGE-b REPORT). RealPlay.frame's real-input
+  branch drops pad.punch: castBots --input touch|pad never punches.
+- Open: the cage meter CHANNEL (score.ts; coveragecheck's last red); 2-3 child Normal 1/40 is the lay (the watched mud, REPORT); the kid 0/40 untraced.
+
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
 against its face). drawGround's lower() took the FIRST one listed: at a wall with a stair of step banks standing on the floor at its foot (1-6,
