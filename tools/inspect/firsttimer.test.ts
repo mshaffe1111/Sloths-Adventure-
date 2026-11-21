@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SpotMemory, teaches,
+  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
@@ -143,6 +143,35 @@ test("in the real engine: after a put-back the game's steer hold is not a wall; 
     assert.equal(r.rescues, 0, `seed ${seed}: never rescued (${tries})`);
     assert.ok(r.sim.p.x > 1300, `seed ${seed}: over the gap (x ${Math.round(r.sim.p.x)})`);
     for (const t of r.tries) assert.ok(t.x >= 1000 - FT_ADULT.edgeAim - 60 && t.running, `seed ${seed}: every jump from a run-up near the lip, never where he was set down (${tries})`);
+  }
+});
+
+test('in the real engine: a log drifting his way across the lip is the floor his boarding hop is for, a single, never a double read past it to the next log (SKILLS.boardHop; RED with it off)', () => {
+  // (SKILLS.boardLog has him wait at a bank's lip while a log his way is still mostly under it, then hop on. jumpFor skipped that log
+  // (a piece starting behind the edge) and read the gap to the NEXT log: 2-2 child Normal seed 36 stood at the lip with log 79 under it,
+  // took the 214 px to log 80 for a double, flew over 79 and came down in the water between them (x 20212; trace-27h.txt 9, ENG-27h).
+  // Planted at the read itself: the toy is 2-2's lip, bank 600 px down the screen, the river's logs 28 px under it (river.ts LOG_DROP))
+  const bank = { id: 1, x: 0, y: 600, width: 1000, height: 90, type: 'solid' } as Platform;
+  const log = (id: number, x: number, dir: 1 | -1 = 1) => ({ id, x, y: 628, width: 200, height: 24, type: 'drift', drift: { x0: 1000, x1: 3000, dir, speed: 60, width: 200 } }) as unknown as Platform;
+  const read = (under: Platform | null, on: boolean) => {
+    const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 1, rescueAfter: 1000 });
+    run.sim.bare([bank, ...(under ? [under] : []), log(3, 1214)]);
+    const was = SKILLS.boardHop;
+    SKILLS.boardHop = on;
+    try {
+      return (run as unknown as { jumpFor(p: { x: number; y: number }, dir: 1, here: Platform): 'single' | 'double' }).jumpFor({ x: 970, y: 600 }, 1, bank);
+    } finally {
+      SKILLS.boardHop = was;
+    }
+  };
+  // (log 79 as he stood: 63 px behind the lip, 137 px past it)
+  assert.equal(read(log(2, 937), true), 'single', 'a log his way across the lip: a single onto it');
+  assert.equal(read(log(2, 937), false), 'double', 'RED: with SKILLS.boardHop off the gap to the next log (214 px) is read, a double');
+  // (and nothing else moves: no log across the lip (one still all under the bank, one running against him) reads the next log's gap as before)
+  for (const [under, why] of [[null, 'no log at the lip'], [log(2, 700), 'a log still all under the bank'], [log(2, 937, -1), 'a log running back at him']] as const) {
+    assert.equal(read(under, true), 'double', `${why}: the 214 px to the next log is a double, with the skill on as off`);
+    assert.equal(read(under, false), 'double', `${why}: (skill off)`);
   }
 });
 

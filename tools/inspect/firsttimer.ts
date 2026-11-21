@@ -705,7 +705,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -1538,6 +1538,11 @@ export class FirstTimerRun {
     const plan = this.mem.plan(p.x, p.y);
     if (plan === 'double' || !(this.learned.has('double') || this.who.knowsDouble) || !here || dir === 0) return plan;
     const edgeX = dir > 0 ? here.x + here.width : here.x;
+    // (SKILLS.boardHop: a log drifting his way across the lip, a step down (river.ts LOG_DROP), is the floor this jump is for: the boarding
+    //  hop, SKILLS.boardLog, waits at the lip until a hop comes down on it. Read past it, as a piece that starts behind the edge, the gap was
+    //  the next log's: 2-2 child Normal seed 36 stood at the lip with log 79 under it, read the 214 px to log 80 as a double, flew over 79
+    //  and came down in the 72 px of water between them (x 20212; trace-27h.txt 9, rule 28 for the boarding hop, ENG-27h))
+    if (SKILLS.boardHop && SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir)) return 'single';
     let gap = Infinity;
     for (const q of this.sim.platforms) {
       if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;
@@ -1560,6 +1565,14 @@ export class FirstTimerRun {
     if (gap + run > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
     return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+  }
+
+  /** a log drifting `dir`'s way that crosses the lip of `here` (its back behind the lip, its front past it), a step down (6-40 px):
+   *  SKILLS.boardHop's floor ahead */
+  private logAcross(here: Platform, dir: -1 | 1): boolean {
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && q.drift?.dir === dir && q.y - here.y > 6 && q.y - here.y <= 40
+      && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
   }
 
   /** water (a river or a pond, safe or not) anywhere between two x: FIX-21's read of a gap over a creek, and SKILLS.fromTakeoff's */
