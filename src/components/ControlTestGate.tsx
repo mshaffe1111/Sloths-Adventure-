@@ -158,7 +158,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
   '1-8': {
     alt: 'Pokey on the long branch under palms heavy with nuts',
     moves: [
-      { ...RUN, how: "It's cracking behind you! Keep your thumb down and run." },
+      { ...RUN, how: 'The branch breaks behind you! Keep your thumb down and run.' },
       JUMP,
       { frame: 'rise', name: 'Little nuts', how: 'Little nuts roll at you. Hop over them.' },
       { frame: 'walk_3', name: 'Big nuts', how: 'Big ones bounce over you. Just keep walking.' },
