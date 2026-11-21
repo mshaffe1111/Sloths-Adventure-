@@ -64,7 +64,9 @@ Easy 1 by 1.0 s, Easy 4 by 1.4). POST_CODE (the longer way out), seed 1 Normal: 
 - The lane over banks is open (item 3 above). The hand build w2Stages.ts '2-7' is the builder's to delete.
 
 ## Gates (head ad23f8b0a; verdicts appended as they finish)
-Started 11:15 AM ET. tsc PASS (7 s). Others: running at hand-over (UNRUN until listed).
+Started 11:15 AM ET. tsc PASS (7 s) on ad23f8b0a. EVERY OTHER GATE IS UNRUN: the lead stopped ENG-27c at 11:19 AM ET (D76, real context
+~375k) with suite shard 1, the seed lists and the lock's base record mid-run (partial log tails in gates-27c/, no verdicts). THE FULL SET
+is ENG-27d's, on its final head after the boat-behind-banks draw change (run-gates-27c.sh, the same chains).
 
 ## Learned
 - A pickup the engine lays AFTER the trail's pass is planned can still be taken by the pass in the PLAYED stage (buildGen2Stage has no
