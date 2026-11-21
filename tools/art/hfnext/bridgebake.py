@@ -85,10 +85,10 @@ for name in clips:
     frames = bridge + own + bridge[::-1]
     if SHEET:
         ims = [plain] + wan[1:-1] + [own[0]]
-        tw = 2 * 140; th = 2 * 230
+        tw = 2 * 170; th = 2 * 230
         sh = Image.new('RGB', (len(ims) * tw, th * 2 + 40), (0, 0, 0)); d = ImageDraw.Draw(sh)
         for i, im in enumerate(ims):
-            cr = im.crop((AX - 70, AY - 220, AX + 70, AY + 10)).resize((tw, th), Image.LANCZOS)
+            cr = im.crop((AX - 80, AY - 220, AX + 90, AY + 10)).resize((tw, th), Image.LANCZOS)
             for r, bgc in enumerate([(226, 230, 214, 255), (26, 30, 42, 255)]):
                 b = Image.new('RGBA', cr.size, bgc); b.alpha_composite(cr); sh.paste(b.convert('RGB'), (i * tw, 20 + r * (th + 20)))
             d.text((i * tw + 4, 4), 'PLAIN' if i == 0 else ('CLIP f0' if i == len(ims) - 1 else str(i)), fill=(255, 230, 90))
