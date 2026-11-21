@@ -38,6 +38,15 @@ BUILT (stills/logs/shoot-*.log: the BUILT line, the platform he stands on, his f
 | 2-4 L1 (seed 65370) | x4646 on the rock (4590-4702, rock-b) | both | ENG-ROCK's spot again |
 | 1-6 L0 (seed 1) | x5977, on floor 36 (5827, top 1058: FACTS.md's floor) | sideways | FIX-TAB's tab spot; the crop holds world x 5775-6175, y 888-1138 (the tab was at 5792-5827, 1061-1081) |
 
+The lead ACCEPTED the item 2 stills (message read 7:08 PM ET). The lead's one question, x3268 (him drawn see-through), checked 7:11 PM ET:
+**NOT the stillness fade.** stills/logs/probe.mjs read the page at each of the five 2-5 rock spots after the shot's frames: cast on, still
+true, covered false, moss (calmNow) 0, invincibleTimer 0 at every spot, x3268 included: the same state as the four solid ones. It is the
+**idle clip's cross-fade** (src/game/heroSprite.ts:313-322: the plain pose drawn at 1-blend under the clip at blend, so mid-melt he is
+partly see-through, two poses showing). Proof: the same spot and build shot fresh after 8, 20 and 40 settle frames
+(stills/logs/x3268-settle-8-20-40.jpg): solid at 8 and 20, see-through with a doubled head at 40; the pushed still was shot later in the
+page's clock (the 4th spot in a row). heroSprite.ts / heroClips.ts / heroStandard.ts are unchanged by these merges (on main as live).
+NAMED for the lead (a game look, not tonight's): while he idles, a clip melting in or out shows him see-through for those frames.
+
 ## D99 / release.md 4b: CI's own time limits with 2-5's list added (CI times read from main's last deploy run, 44828148552, on 107870f5, 11-20 5:20-5:43 PM ET; per-list times from each seed-list job's log stamps)
 Per seed list on a CI runner: 1-1 2:00, 1-2 0:58, 1-3 0:27, 1-4 2:03, 1-5 1:22, 1-6 8:53, 1-7 3:27, 1-8 0:33, 1-9 1:31, 2-1 5:27, 2-2 0:14,
 2-4 7:15; 2-5 is new (here: 19 s on the merged code, about as long as 2-2 here; CI estimate below from the same-run ratio once job 3's
