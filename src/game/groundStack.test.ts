@@ -378,3 +378,68 @@ test('the out-and-back toy: the painted underside hangs its roots below the ceil
     g2c.underCorner = hadC;
   }
 });
+
+// ENG-GROUND-d: the race leg's band is under no other leg's paint ANYWHERE, ends included. The zones fed only the race leg's own box, so
+// where another leg comes DOWN into its band (the toy's descent: stairs and still pools standing over the floor he walks at their foot,
+// past the out leg's end) no ceiling stood: each pool ran its water, bed and soil to the view's foot, two straight-sided columns over the
+// floor (the lead's painted still right-end-x18760-sideways: an earth column (the first pool's bed and soil, its water above the frame)
+// and a pond column). Here, over every piece whose top lies in the race leg's band, at every x, his body's air (over the piece's own grass
+// lip, which stands 20 over its top, up to his height) is under no paint from above the band (a fill whose clips all start over the band's top: another leg's bank soil, a river's
+// water, bed and soil, a river's soil under its banks), by both painters (the ground's and the engine's own river painter), seeds 1-3,
+// both settings. Planted RED on 72ea2daab: reference/qa-reports/ENG-GROUND/red-d.txt.
+for (const difficulty of ['normal', 'easy'] as const) {
+  for (const seed of [1, 2, 3]) {
+    test(`the out-and-back toy (${difficulty}, seed ${seed}): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included`, () => {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
+      };
+      const legs = st.gen2?.tower?.legs ?? [];
+      // (the race leg: a run leg laid wholly under another run leg it shares x with, his height clear between them; stated here, not read
+      //  from the code under test)
+      const run = legs.filter((l) => l.travel === 'left' || l.travel === 'right');
+      const race = run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + 48));
+      assert.ok(race.length >= 1, 'the toy lays its race leg under its out leg');
+      const rp = new RealPlay('2-1', 1);
+      const e = rp.e;
+      Object.assign(e, { currentStage: st, platforms: st.platforms, riverUnder: new WeakMap(), riverBankOf: new WeakMap(), paintKit: true });
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      // (as engine.ts sets them at a stage's start: the zones and the stage's rivers)
+      setStacks(legs, st.rivers);
+      const world = WORLDS_DATA.find((w: { id: number }) => w.id === 2);
+      // (the most restrictive clip's top: a fill can paint nothing above it)
+      const clipTop = (d: RecordingCtx['draws'][number]) => Math.max(...d.clips.map((c) => Math.min(...c.polys.flat().map((p) => p[1]))));
+      const misses: string[] = [];
+      let pieces = 0;
+      for (const band of race) {
+        const inBand = st.platforms.filter((q) => solidish(q) && q.y >= band.y0 - 2 && q.y <= band.y1 + 2);
+        pieces += inBand.length;
+        const x0 = Math.min(...inBand.map((q) => q.x)), x1 = Math.max(...inBand.map((q) => q.x + q.width));
+        for (let vx = Math.floor(x0 / 400) * 400; vx < x1; vx += 400) {
+          const here = inBand.filter((q) => q.x < vx + 900 && q.x + q.width > vx);
+          if (!here.length) continue;
+          const gy = Math.min(...here.map((q) => q.y));
+          const view = { x0: vx, x1: vx + 900, y0: gy - 520, y1: gy + 220 };
+          const r = new RecordingCtx();
+          drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+          r.off = true;
+          Object.assign(e.camera, { x: view.x0, y: view.y0, viewportWidth: 900, viewportHeight: 740 });
+          const rr = new RecordingCtx();
+          e.drawRivers(rr as unknown as CanvasRenderingContext2D, world, false);
+          const from = [...r.draws.map((d) => ({ d, who: 'ground' })), ...rr.draws.map((d) => ({ d, who: 'river' }))].filter(({ d }) => d.clips.length > 0 && clipTop(d) < band.y0 - 8);
+          for (const q of here)
+            for (let x = Math.max(q.x + 12, vx); x <= Math.min(q.x + q.width - 12, vx + 900); x += 24)
+              for (const dy of [28, 46]) {
+                const y = q.y - dy;
+                const hit = from.find(({ d }) => x >= d.box[0] && x <= d.box[2] && y >= d.box[1] && y <= d.box[3] && d.clips.every((c) => inside(c.polys, c.evenodd, x, y)));
+                if (hit && !misses.some((m) => m.startsWith(`x ${Math.round(x)},`))) misses.push(`x ${Math.round(x)}, ${dy} over the piece at y ${Math.round(q.y)} (x ${Math.round(q.x)}-${Math.round(q.x + q.width)}): ${hit.who} paint from y ${Math.round(clipTop(hit.d))}`);
+              }
+        }
+      }
+      assert.ok(pieces >= 6, `the race leg's band has its pieces (${pieces})`);
+      assert.deepEqual(misses.slice(0, 16), [], `${misses.length} points of his air over the race leg's band are under another leg's paint`);
+    });
+  }
+}
