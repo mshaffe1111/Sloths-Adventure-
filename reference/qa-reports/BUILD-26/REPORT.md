@@ -1,17 +1,20 @@
-# ENG-26i (on t-build-26 from deaaf3a7c): the walk-off judge REPAIRS a gate's run instead of refusing it. Started 3:55 PM ET 11-21 (by `date`)
-Commits: 97bb2b73e (the cure and its plant), this REPORT. Step 1 done and planted; steps 2-4 NOT started (the 28-minute box, D111).
+# ENG-26i (on t-build-26 from deaaf3a7c): the walk-off judge REPAIRS a gate's run instead of refusing it; the lead's gate proof added. Started 3:55 PM ET 11-21 (by `date`)
+Commits: 97bb2b73e (the cure and its plant), b73600b56 (the lead's proof: towerGateCatches), this REPORT. Steps 2-4 NOT started
+(the 28-minute box, D111). Saved: eng26i/ (the cure's sweep; why2.mts prints each catch rule's verdict per end, with the
+`__tcWhy` lines of 97bb2b73e's debug, re-added by hand; plant.mts lays the plant). **The head refuses 1-4 seed 2 again** (the proof); the lead has the numbers and three options.
 
 ## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the background on frozen worktrees.
-0. **The lead's ruling first** (sent with 97bb2b73e): the cure keeps a gate's run catch out of `byGate` (nothing level with the gate,
-   nothing within a hop across of it up to a jump over it) and the `towerGates` verdict after. That is the engine's own reading of
-   R-165.170's "within a hop of it". The stricter reading (no jump from the catch reaches the gate at all) cures only 1 of seed 2's 4
-   gates. If the lead rules strict, add `!(sealed(e.p) && gates.some((g) => leaps({ x: x0, y, width: TOWER.catchW }, g)))` to rule 4's
-   `L` in towerCatches and re-measure.
-1. **The yield, after** (if this REPORT's table does not have it): on a frozen worktree of 97bb2b73e,
-   `seedlist.ts 1-4 --count 100000 --from 1 --to 401 --worker i/4 --part p<i>.json` (i 0-3), against eng26h/sweep-1-400.json (49 kept);
-   and `seedlist.ts 2-6 --check` (must stay 100/100).
-2. **The three exact speed-ups**: `git cherry-pick 91e6c584e` onto 97bb2b73e; lockall --layouts 16 --out on a frozen copy WITH them and
-   one WITHOUT (97bb2b73e): every part hash of every build identical; any difference, drop the piece that made it.
+0. **The lead's ruling on the proof first** (sent with b73600b56). The lead ruled the byGate reading stands PLUS a proof: a gate's run
+   catch is reached ONLY by a fall off its gate. That is in (towerGateCatches, named; the lay keeps to it), and under it no catch can
+   stand by seed 2's four gates. From 180 px under a gate down, the storey under it jumps on (leaps, generous); from 160 px up, a drop
+   from the storey ABOVE the gate reaches it. Counting only wood below the gate's level (towerGates' `under`) still refuses 4 of 4. Options
+   put to the lead: (a) keep the proof; the gate's own section lays the wood under its run; (b) judge "a way onto the gate" by a real
+   flown jump (physics reach) instead of LEAP's box; (c) the cure without the proof (`git revert b73600b56`: 100% yield).
+1. **The yield on the head** (b73600b56): if the table has no number, `seedlist.ts 1-4 --count 100000 --from 1 --to 401 --worker i/4
+   --part q<i>.json` on a frozen worktree (about 5 min a worker), against 49 (before) and 400 (the cure alone). After the ruling's
+   change, again; and `seedlist.ts 2-6 --check` (100/100 on 97bb2b73e).
+2. **The three exact speed-ups**: `git cherry-pick 91e6c584e` onto the ruled head; lockall --layouts 16 --out on a frozen copy WITH them and
+   one WITHOUT (the ruled head): every part hash of every build identical; any difference, drop the piece that made it.
 3. **1-4 relisted ONCE** (methods/seed-list.md: old survivors in their order, then new seeds lowest first, --merge --in-order, n 100),
    every test pinning a 1-4 seed (D29), the full suite; then on a quiet machine: loadtime.mts base vs head for 1-4 and 2-6,
    `BUILDCHECK_STAGE=1-4` / `2-6` buildcheck, CI's `seedlist.ts 1-4 --check` timed against its 45-minute limit, and the lock's time.
@@ -38,15 +41,20 @@ Commits: 97bb2b73e (the cure and its plant), this REPORT. Step 1 done and plante
   700-1280 @1681). **RED on deaaf3a7c (fail 1), GREEN on 97bb2b73e**; it also checks nothing lies by the gate or over the vine's top,
   towerGates is clean, and a lone gate still gets no catch (its two step falls named, as before). tower.test.ts **33/33**.
 
+- **The lead's proof** (b73600b56, tower.ts `gateCatchReached` / `towerGateCatches`, pipeline `gen2.tower.gateCatches`: each catch with
+  its gate's id, so the verdict needs no guess). Planted in the same test: the plant's own catch passes; a toy catch 150 px over the
+  storey under the gate is refused by name ('reached by the piece at x 566-1166, y 1400, not only by a fall off the gate').
+
 ## Findings (numbers)
 | item | result | evidence |
 |---|---|---|
 | 1-4 seed 2 | before: 4 running walk-offs off gates refused (641-721 px). After: **errors [] on Normal and Easy** (Easy's own build 1,245 ms, under load) | scratch why-dump (debug hook, not committed); eng26h/tools/why.mts |
-| generality | **PASS** (26 literals, 26 known) | |
-| plant | RED on deaaf3a7c, GREEN on 97bb2b73e; tower.test.ts 33/33 | |
-| tsc | **PASS** on 97bb2b73e (after `npm ci --legacy-peer-deps`; this container had no node_modules) | |
-| 1-4 yield, seeds 1-400 | before 49 kept (12%, eng26h/sweep-1-400.json). After: YIELD_AFTER | YIELD_EVIDENCE |
-| 2-6 list | LIST26 | |
+| generality | **PASS** on 97bb2b73e and b73600b56 (26 literals, 26 known) | |
+| plant | RED on deaaf3a7c, GREEN on 97bb2b73e and b73600b56 (with the proof's two checks); tower.test.ts 33/33 | |
+| tsc | **PASS** on 97bb2b73e and b73600b56 (after `npm ci --legacy-peer-deps`; this container had no node_modules) | |
+| 1-4 yield, seeds 1-400 | before 49 kept (12%, eng26h/sweep-1-400.json). **The cure alone (97bb2b73e): 400 kept (100%)**, none of the 49 lost; each worker 100 of 100. **With the proof (b73600b56): YIELD_PROOF** | scratch sweep, `--worker i/4`, under load |
+| 1-4 seed 2 with the proof | **refused again, both settings, all four gates** (every fair height reached: the storey under from 180 px under the gate down, a drop from the storey above from 160 px up); the variant counting only wood under the gate's level: still 4 of 4 | why.mts; a scratch log in the lay (not committed) |
+| 2-6 list | `seedlist.ts 2-6 --check` on 97bb2b73e: **PASS** (100 seeds, both settings), 43 s. Not re-run on b73600b56 | |
 
 ## Lessons applied
 D40 (cure the judge before relisting: no relist was started), D57/D87/D105 (ReadNotifications at each step and push; long runs in the
@@ -89,6 +97,10 @@ Saved for the next member: reference/qa-reports/BUILD-26/eng26h/ (both locks gzi
    1-40 both settings base vs head in one chain (no tier's pass count may drop), tierBots 1-1 9/9, qaW123 (19/19 at 95cafaabc), the
    full suite, tsc, generality, the CI tool line (methods/gates.md "THE FULL SET"), engine-core.md's tower lines (ENG-26g's list plus
    this REPORT's cost findings). Then BUILD-26c runs 2-6's bots.
+
+- **The lead's proof** (b73600b56, tower.ts `gateCatchReached` / `towerGateCatches`, pipeline `gen2.tower.gateCatches`: each catch with
+  its gate's id, so the verdict needs no guess). Planted in the same test: the plant's own catch passes; a toy catch 150 px over the
+  storey under the gate is refused by name ('reached by the piece at x 566-1166, y 1400, not only by a fall off the gate').
 
 ## Findings (numbers)
 | item | result | evidence |
