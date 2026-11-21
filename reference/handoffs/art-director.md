@@ -1,7 +1,16 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-NEXT-e (§0k); §0j and below still true unless marked
+# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-UNDER (§0l); §0k and below still true unless marked
 
 Last task: ART-NEXT-e (§0k, t-art-next). Before it: ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0l. 11-21 ART-UNDER (t-art-under): World 2's earth UNDERSIDE takes in, picks pending (REPORT: reference/qa-reports/ART-UNDER/)
+- Tools: tools/art/hfunder/ starts.py (paste-ups from W2's own fill), spec-under2.json + run.sh (Qwen-Image-Edit-2511, one sandbox),
+  sheet.py (raw | the SHIP CUT at game size over the fill, light/dark, Pokey, FRAME EDGE/shade/wrap numbers), cut.py (key from the
+  bottom (+right for the corner), grey pockets keyed, --match gain to the fill, --shade lift, wrap closed, top feathered), pack.py
+  (into ground/w2.webp + groundAtlasData "2": unders + underCorner; RE-RUN it after hfground/pack.py or packfill.py).
+- Traps: "cool shadow" in a prompt paints NAVY; ask "darker, warm brown, never blue". A mean+spread colour match lifts the darks:
+  match by gain. A per-column lift streaks: smooth the edge. The border flood misses grey pockets closed in by a root: key flat grey.
+- Engine: the underside draws inside the soil clip on t-eng-ground; ENG-GROUND-b moves it after the restore (the lead's ruling).
 
 ## 0k. 11-21 ART-NEXT-e (t-art-next): the idle bridges carry Pokey's colours; seam dE gate (R-165.354) DONE
 - bridgebake.py now colour-ramps every bridge frame (Lab mean/std toward lerp(plain, target), target = clip f0 going in, the clip's

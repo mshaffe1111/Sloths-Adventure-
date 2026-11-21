@@ -11,6 +11,8 @@ One sandbox 6b01e811efaf5e14f4b631ad (rtx-pro-6000, --forward-hf-token, timeout 
 - spec-under2 (30 steps, "warm dark earthy brown, never blue"; neg blue/navy/purple): warmu0, warmc, warmu1, warmu2, 4 each.
 - Sheets: reference/art/hfunder/sheet-<piece>.jpg: raw take | the SHIP CUT at game size (strip 512 wide, tiled twice, hanging from
   W2's own fill; corner 200x300) beside Pokey's 89 px, light (day) and dark (dusk). Numbers on each row.
+- FRAME EDGE (reject before the pick): warmu2 s37 (bottom 1.0%), s41 (1.2%): roots run off the frame. Pickable: warmu0 x4,
+  warmu1 x4, warmu2 s11/s23, warmc x4.
 - Corner: s23/s37 carry a dark stone dome at the rim that reads like a cave mouth (from my start); s11 and s41 are clean.
 
 ## The cut (tools/art/hfunder/cut.py, what the sheets show)
@@ -30,7 +32,7 @@ corner top + left feathered. Strip comes out 1024 x 293 (roots reach past 256): 
 ## EXACT NEXT STEP
 1. Lead picks one take per strip (warmu0/1/2) and one corner (warmc). 2. For each pick:
    `python3 -I tools/art/hfunder/cut.py reference/art/hfunder/takes/<p>/<p>-s<N>.webp reference/art/hfunder/cut/<id>.png strip --match --shade=0.60`
-   (corner: `corner`). 3. `python3 -I tools/art/hfunder/pack.py cut/under0.png cut/under1.png cut/under2.png cut/undercorner.png`
+   (corner: `corner --match --shade=0.72`: its band is measured differently; 0.60 lands it at 0.47-0.49, 0.72 at 0.55-0.59). 3. `python3 -I tools/art/hfunder/pack.py cut/under0.png cut/under1.png cut/under2.png cut/undercorner.png`
    (writes w2.webp + groundAtlasData "2": unders + underCorner). 4. Catalogue rows w2#under0..2 + w2#undercorner in
    reference/art/CATALOG-MASTER.csv (copy w2#lip0's row shape: World 2, layer platform-underside, footing none, ship size, engine use
    'ground underside' / 'underside corner', used_in 'none (not placed)' until ENG-GROUND-b lands), then `catalog_master.py --emit`.
