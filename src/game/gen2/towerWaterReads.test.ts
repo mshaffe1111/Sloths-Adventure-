@@ -109,3 +109,16 @@ test("the water lesson: at this storey's water, never at a pond's window a store
   assert.equal(pickLesson(scene(450, HIGH), seen), 'water', "on the pond's bank: the water lesson");
   assert.equal(pickLesson(scene(1750, LOW), seen), 'water', "on the lower river's bank: the water lesson");
 });
+
+test("an island in a river is ON the river (one storey): a flag on it is not clear of water and the water lesson comes there, as by x alone", () => {
+  // (World 2's rivers carry islands and lilies in their windows: 2-3 v2 Normal, a solid at 4850-4990 y 600 in the river 4170-5047, surface
+  // 622. A floor is a storey between him and the water only more than RIVER_DEPTH over its surface; RED on 5a67dba93, where any floor was)
+  const river: RiverZone = { x0: 4170, x1: 5047, surfaceY: 622, speed: 60, dir: 1 };
+  const island = solid(1, 4850, 600, 140), lily = { ...solid(2, 4400, 614, 90), lily: true } as Platform;
+  const stage = { platforms: [solid(3, 3600, 600, 570), island, lily, solid(4, 5047, 600, 600)], rivers: [river] };
+  assert.ok(!clearOfWater(stage as never, 4910, 600), 'a flag on the island: not clear');
+  assert.ok(!clearOfWater(stage as never, 4440, 614), 'a flag on the lily: not clear');
+  const seen = new Set((Object.keys(LESSONS) as LessonId[]).filter((id) => id !== 'water'));
+  const scene: LessonScene = { px: 4440, py: 614, view: { x0: 4040, x1: 4840, y0: 300, y1: 900 }, enemies: [], collectibles: [], vines: [], checkpoints: [], platforms: stage.platforms, rivers: [river] };
+  assert.equal(pickLesson(scene, seen), 'water', 'on the lily: the water lesson');
+});
