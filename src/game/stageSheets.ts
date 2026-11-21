@@ -71,6 +71,8 @@ import { W6_SWIM_STAGES } from './gen2/worlds/w6Rooms.ts';
 import { W8_ROOM_STAGES } from './gen2/worlds/w8Rooms.ts';
 import { specFor } from './mixer/stages.ts';
 import type { LevelConfig } from './types.ts';
+import type { Difficulty } from './difficulty.ts';
+import type { WorldKit } from './gen2/types.ts';
 
 /**
  * What each hand-built stage draws beyond its kit and dressing, the same in every roll of it: its creatures (foe:, sheetWarm.ts
@@ -229,7 +231,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (a required room's lever drawn in its world's pictures, World 6's sluice wheel: its sheets with the stage, never a pop-in)
   if (isGen2Stage(cfg) && wheelRoom(cfg.id)) out.push('w6-wheels');
   // (a gen2 stage whose sections lay a water wheel, place 'wheel': World 2's painted noria, its buckets and the millrace wall, wheelDraw.ts)
-  if (isGen2Stage(cfg) && laysWheel(cfg.id)) out.push('w2-wheel');
+  // (a LISTED stage too, rolled from its stageTable kit, which GEN2_STAGES does not hold, as R-165.288's rafts: ENG-26f found 2-6's draft
+  // row, once listed, asking for no wheel sheet, so its painted noria would pop in on the first frames)
+  if (isGen2Stage(cfg) ? laysWheel(GEN2_STAGES[cfg.id].kit) : listed && laysWheel(listedStage(cfg.id)!.kit)) out.push('w2-wheel');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // (hf-props, 2026-10-31: Worlds 1-7 on every stage but a lair or a secret: the world's new dressing sheet, and on an old-generator
@@ -253,9 +257,11 @@ export function everyStage(w: number): string[] {
 /** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
 export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];
 
-/** a gen2 stage any of whose sections lays a water wheel (a piece placed `{ kind: 'wheel' }`: gen2/wheelLay.ts) */
-function laysWheel(id: string): boolean {
-  return !!GEN2_STAGES[id]?.kit('normal').manifest.sections.some((s) => s.pieces.some((pc) => pc.place?.kind === 'wheel'));
+/** a kit any of whose sections lays a water wheel (a piece placed `{ kind: 'wheel' }`: gen2/wheelLay.ts), in its pieces or a sub-block's
+ *  versions, on either setting (as laysRafts reads a kit) */
+function laysWheel(kit: (difficulty?: Difficulty) => WorldKit): boolean {
+  return (['normal', 'easy'] as const).some((d) => kit(d).manifest.sections.some((s) =>
+    [...s.pieces, ...(s.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].some((pc) => pc.place?.kind === 'wheel')));
 }
 
 /** a gen2 stage whose required room (its manifest's `required`) has a lever drawn in its world's own pictures (a lever spec's `looks`) */
