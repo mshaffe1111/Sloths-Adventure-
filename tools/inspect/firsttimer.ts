@@ -990,8 +990,8 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
 /**
  * Does the drawn hop `h`, pressed from (x, y) at game time t0 (at `vx0`), come down on float `q` (`at(t)`: where it is), `margin` px in
  * from either end, inside its river's window? hopLandsOn's flight, flown as FirstTimerRun's jump steer flies it: no steer for the first
- * `upOnly` s; the second press on its frame (the engine's secondJumpV at `v2`, engine.ts), held `hold2` s from there (the same frame
- * count as the first: frame i held while (i - 1) * DT + DT < the hold's end); and, falling over the small float he comes down on, the
+ * `upOnly` s; the second press on its frame (the engine's secondJumpV at `v2`, engine.ts), held `hold2` s from there (counted from its
+ * own frame, a frame longer than the first press's count, as the engine flies it); and, falling over the small float he comes down on, the
  * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
  */
 export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2 = PHYS.doubleV): boolean {
@@ -1014,7 +1014,9 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
       b.vy = secondJumpV(b.vy, v2);
       until = age + h.hold2;
     }
-    const held = age + DT < until;
+    // (the second press's hold counts from its own frame, a frame longer than the first's: flown against the engine, 2-7 home middle
+    //  Normal 2 x 14674, the frames equal to the press, then the engine still held where this cut, n/double-flight-27n.txt)
+    const held = pressed2 ? age < until : age + DT < until;
     if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
     (i === 1 ? takeOffStep : airStep)(b, DT, steer, held);
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
