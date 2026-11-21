@@ -11,7 +11,7 @@
  *   P f  the hanging porches (four spans)                  W p1>  the twist: the 'up' wheel, the street 80 px over the top (Easy 60)
  *   C b  a wheel then World 2's bounce to the next street  S p1^< the great wheel (R200 V70), the street in over the top
  *   R    a rest street (a boulder; the find on the first)  E      the crest, the exit totem, the top house's sign
- * Its words are the story keeper's (LINES_26, empty until the lead approves them); its flags and hearts the pipeline's (ROLLED_FLAGS).
+ * Its words are the story keeper's (LINES_26, KEEPER-26); its flags and hearts the pipeline's (ROLLED_FLAGS).
  */
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { Platform, Vine } from '../../types.ts';
@@ -58,16 +58,30 @@ const wheelBrick = (id: string, name: string, job: NodeJob, row: keyof typeof W2
     pieces: [branch('jetty', 240, { kind: 'start' }, { landing: false }), branch('street', 300, { kind: 'wheel', after: 'jetty', row })], ...more });
 
 /**
- * the story keeper's lines for 2-6 (KEEPER-26, reference/story/lines-2-6.md), verbatim once the lead approves them; EMPTY until then (the
- * lead's GO: no placeholder ships). A tip socket is laid only for a line that is here (`tip`): a tip with no words fails the roll by name
- * (pipeline rollErrors), so until the words come the stage has no Dot line, and the rule-6 distances are held by the bricks' own lengths
+ * the story keeper's lines for 2-6, verbatim (reference/story/lines-2-6.md, KEEPER-26 t-keeper-26@19f90520b, approved by the lead 11-21). The
+ * only player words this file holds; w2Arc26.test.ts holds each equal to the keeper's file
  */
-export const LINES_26: Partial<Record<'wheel' | 'top' | 'great', string>> = {};
+export const LINES_26 = {
+  /** Dot, THE teach, 800+ px before beat 1 (the first wheel), on the millpond bank */
+  ride: 'Ride a bucket up! Step off at the top.',
+  /** Dot, teach, 800+ px before beat 8 (the twist: the street above the top bucket) */
+  jump: "The wheel won't reach. Jump at the very top!",
+  /** Pokey, once, on the great wheel (beat 12), as he boards: said on the way up */
+  view: "Look at it all. Didn't lift a claw.",
+} as const;
+/** the stage card (stagePlan.ts World 2's 2-6 row): the keeper's line 7 */
+export const MISSION_26 = "Ride the village's water wheels up to the top of the bank.";
+/** the journal's page on the noria (the keeper's line 4a; a page, no card) */
+export const NORIA_PAGE_26 = 'The river turns a noria by itself. Its buckets scoop water at the bottom and pour it out at the top, up by the houses. It creaks all day.';
+/** Pokey's journal line after the stage (pokeyJournal.ts '2-6'): the keeper's line 4c */
+export const JOURNAL_26 = "Rode the water wheels up the bank in buckets meant for water. The water didn't mind sharing.";
+/** the Stage Cleared clue (stageClue.ts '2-6'): the keeper's line 6, its title and words */
+export const CLUE_26 = { title: 'A Welcome Sign', text: 'A sign on the top house says TAKE YOUR TIME. They mean it.' } as const;
 /** a line's id in the kit: its own, `w26.<key>` */
 export const lineId26 = (line: keyof typeof LINES_26): string => `w26.${line}`;
 /** the lines Dot says as TEACH lines (said on Normal's default Tips as on Help, D50): the wheel, before beat 1; the jump off the top, before beat 8 */
-export const TEACH_26 = ['wheel', 'top'] as const;
-const tip = (id: string, on: string, t: number, line: keyof typeof LINES_26): Socket[] => (LINES_26[line] ? [{ id, role: 'tip', on, t, allow: [lineId26(line)] }] : []);
+export const TEACH_26 = ['ride', 'jump'] as const;
+const tip = (id: string, on: string, t: number, line: keyof typeof LINES_26): Socket => ({ id, role: 'tip', on, t, allow: [lineId26(line)] });
 
 /** World 2's boulder to hop on a street (w2.ts rock: a moss stone exactly 50 px tall is the kit's painted rock) */
 const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'block', w: [110, 120], place: { kind: 'on', on, at: [at, at], h: [50, 50] }, style: 'moss_stone', landing: true });
@@ -83,7 +97,7 @@ export const BEATS_26: SectionTemplate[] = [
   brick({ id: 'millpond', name: 'the millpond bank', jobs: ['arrive'], difficulty: 1, content: 'structural' as Content, phases: ['start'], exitDy: 0,
     pieces: [{ key: 'bank', shape: 'bank', w: [560, 560], place: { kind: 'start' }, style: 'log', main: true, landing: true }, rock('r', 'bank', 0.62),
       { key: 'shore', shape: 'bank', w: [380, 380], place: { kind: 'walk', after: 'bank', dy: [0, 0] }, style: 'log', main: true, landing: true }],
-    sockets: [...tip('t-wheel', 'bank', 0.1, 'wheel'), petal('p', 'shore', 0.4)] }),
+    sockets: [tip('t-ride', 'bank', 0.1, 'ride'), petal('p', 'shore', 0.4)] }),
   // [T p1^ soft] beat 1: the teach wheel (R160 V60, Easy V50), boarded off its jetty, the street in over the top, its own soft pond
   wheelBrick('first-wheel', 'the first wheel, safe', 'teach', 'teach', 2, { teaches: WHEEL_LESSON, uses: [] }),
   // [P g1<] beat 2: the first street: a porch step up, a hop over the washing-line gap, the next doorstep
@@ -106,9 +120,10 @@ export const BEATS_26: SectionTemplate[] = [
   brick({ id: 'porches', name: 'the hanging porches', jobs: ['practise'], difficulty: 1, content: 'floating', exitDy: 0,
     pieces: [branch('a', 240, { kind: 'start' }, { landing: false }), branch('b', 200, { kind: 'jump', after: 'a', dy: 0, share: [0.4, 0.55] }), branch('c', 200, { kind: 'jump', after: 'b', dy: 0, share: [0.4, 0.55] }),
       branch('d', 240, { kind: 'jump', after: 'c', dy: 0, share: [0.4, 0.55] })],
-    sockets: [petal('p', 'b', 0.5), petal('q', 'c', 0.5)] }),
+    // (Dot's `jump` at the first span's start: the four spans and their gaps put it 800+ px before beat 8's jetty, rule 6)
+    sockets: [tip('t-jump', 'a', 0.05, 'jump'), petal('p', 'b', 0.5), petal('q', 'c', 0.5)] }),
   // [W p1>] beat 8, the twist: the next street 80 px ABOVE the top bucket (Easy 60): only a jump off the top reaches it
-  wheelBrick('top-wheel', 'twist: jump off the top', 'twist', 'top', 5, { sockets: tip('t-top', 'jetty', 0.2, 'top') }),
+  wheelBrick('top-wheel', 'twist: jump off the top', 'twist', 'top', 5),
   // [C b1^] beat 10: off a wheel's street onto World 2's bounce, up to the highest street
   brick({ id: 'wheel-bounce', name: 'wheel to bounce', jobs: ['combine'], difficulty: 5, content: 'bounce', uses: [WHEEL_LESSON], exitDy: -300,
     pieces: [branch('jetty', 160, { kind: 'start' }, { landing: false }), branch('street', 240, { kind: 'wheel', after: 'jetty', row: 'edge' }),
@@ -116,7 +131,8 @@ export const BEATS_26: SectionTemplate[] = [
       branch('high', 240, { kind: 'walk', after: 'street', dy: [-180, -174] }, { block: 'bounce', from: 'spring' })],
     sockets: [petal('p', 'high', 0.6)] }),
   // [S p1^<] beat 12, the signature: the great wheel (R200 V70) lifts him the last bank
-  wheelBrick('great-wheel', 'the great wheel', 'signature', 'great', 3, { sockets: tip('t-great', 'jetty', 0.2, 'great') }),
+  // (Pokey's `view` as he steps into the bucket at the jetty's lip: said on the way up)
+  wheelBrick('great-wheel', 'the great wheel', 'signature', 'great', 3, { sockets: [tip('t-view', 'jetty', 0.9, 'view')] }),
   // [R] a rest street between beats: two doorsteps. The stage's find stands on the first rest met. No boulder: a rest often ends its
   // storey, and its boulder stood 36 px from the tower turn's vine, so a bot stood on it under the climb until rescued (BUILD-26's castBots,
   // kid Normal seed 11, middle Normal seed 1 x2; ENGINE-WORTHY: the tower lay keeps no turn's foot clear of a block)
@@ -147,18 +163,15 @@ export function kitLib26(): WorldKit {
       wheels: W2_WHEELS,
       rivers: { ...W2_RIVERS },
       lessons: { ...M.lessons, [WHEEL_LESSON]: STAGE_26 },
-      tips: { ...M.tips, ...Object.fromEntries(Object.entries(LINES_26).map(([key, text]) => [lineId26(key as keyof typeof LINES_26), text])) },
-      teachTips: [...(M.teachTips ?? []), ...TEACH_26.filter((l) => LINES_26[l]).map(lineId26)],
+      tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_26) as Array<keyof typeof LINES_26>).map((key) => [lineId26(key), LINES_26[key]])) },
+      teachTips: [...(M.teachTips ?? []), ...TEACH_26.map(lineId26)],
       required: {},
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'ascent'), ...Object.entries(ARC_26).map(([id, code]) => ({ id, archetype: 'ascent' as const, code }))], briefs: { ...G.briefs, [STAGE_26]: BRIEF_26 } },
     } } as WorldKit;
 }
 
-/**
- * the top house's sign at the crest (the story clue's promise, stageClue '2-6': the lead's ruling 11-21, KEEPER-26 rewords the clue to name a
- * World 2 sign): its words the keeper's, verbatim, once approved; null until then (no placeholder ships, so no sign stands)
- */
-export const SIGN_26: readonly string[] | null = null;
+/** the top house's sign at the crest (the keeper's clue 6, CLUE_26: a World 2 sign reading TAKE YOUR TIME), on two lines as 2-1's PLEASE BE PATIENT */
+export const SIGN_26: readonly string[] = ['TAKE YOUR', 'TIME'];
 
 type Finish26 = {
   platforms: Platform[]; vines: Vine[]; exitTotemX: number;
@@ -205,7 +218,7 @@ export function finish26<T extends Finish26>(st: T): T {
     const far = toward > 0 ? crest.x + crest.width - 60 : crest.x + 60;
     decor.push({ n: 'rooftop', x: st.exitTotemX + toward * 170, b: crest.y + 4, w: 170 });
     decor.push({ n: 'bell', x: st.exitTotemX - toward * 120, b: crest.y + 4, w: 96 });
-    if (SIGN_26) decor.push({ n: 'sign', x: st.exitTotemX + toward * 290, b: crest.y + 4, w: 132, text: [...SIGN_26] });
+    decor.push({ n: 'sign', x: st.exitTotemX + toward * 290, b: crest.y + 4, w: 132, text: [...SIGN_26] });
     decor.push({ cel: 'tc.hat_shout', x: far, b: crest.y + 2, k: 0.42, ...(toward > 0 ? { flip: true } : {}) });
   }
   return st;

@@ -1,5 +1,5 @@
 /**
- * 2-6's READINESS CHECK (ENG-26c; level.md rule 23, D101): the design's own node string (2-6.md:43) laid by gen2 on a DRAFT row (w2Arc26.ts:
+ * 2-6's ARC TEST (BUILD-26: the listed row; first ENG-26c's readiness check on the draft, level.md rule 23, D101): the design's own node string (2-6.md:43) laid by gen2 on a DRAFT row (w2Arc26.ts:
  * not listed, not shipped), rolled the way a listed row is rolled (listed.ts withTestStage, World 2's finish), seeds 1-12 on both settings,
  * every designed object COUNTED per beat: each wheel with its jetty, street, pond and buckets (both ways round), the millrace's logs, the
  * bounce, the house's ladder, the crest. RED on the base 0eefc707e: 24 of 24 rolls threw at the millrace (G2), and every roll's four wheel
@@ -12,22 +12,20 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { onRiver, type RiverZone } from '../../river.ts';
 import type { Platform, Vine } from '../../types.ts';
 import { WHEEL, type Wheel } from '../../wheel.ts';
-import { listedStage, playFinish, withTestStage } from '../listed.ts';
+import { listedStage, playFinish } from '../listed.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { riverFaults } from '../riverLay.ts';
-import { w2Finish, W2_WHEELS } from './w2.ts';
-import { BEATS_26, kitLib26, STAGE_26 } from './w2Arc26.ts';
+import { W2_WHEELS } from './w2.ts';
+import { BEATS_26, CLUE_26, JOURNAL_26, LINES_26, MISSION_26, NORIA_PAGE_26, SIGN_26, STAGE_26 } from './w2Arc26.ts';
 
 const cfg = generateAllLevels().find((c) => c.id === STAGE_26 && !c.secret)!;
 type Rolled = { platforms: Platform[]; vines: Vine[]; rivers?: RiverZone[]; exitTotemX: number; gen2: { errors?: string[]; sections: Array<{ template: string }> } };
 const SEEDS = Array.from({ length: 12 }, (_, i) => i + 1);
 const BOTH = ['normal', 'easy'] as const;
 
-/** every roll, as Play finishes a listed row (its kit, World 2's finish) */
-const rolls = withTestStage({ [STAGE_26]: { kit: kitLib26, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
-  const row = listedStage(STAGE_26)!;
-  return BOTH.flatMap((d) => SEEDS.map((seed) => ({ d, seed, st: playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as never, d) as unknown as Rolled })));
-});
+/** every roll, as Play finishes the listed row (its kit 'w2-26', World 2's finish, 2-6's own) */
+const row = listedStage(STAGE_26)!;
+const rolls = BOTH.flatMap((d) => SEEDS.map((seed) => ({ d, seed, st: playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as never, d) as unknown as Rolled })));
 
 /** the beats in order (the arc's node string), by the draft's brick names */
 const ORDER = ['millpond', 'first-wheel', 'first-street', 'through-house', 'millrace', 'edge-wheel', 'rest', 'porches', 'top-wheel', 'rest', 'wheel-bounce', 'rest', 'great-wheel', 'crest'];
@@ -64,17 +62,43 @@ test('every wheel the design names lays with its jetty, its street, its pond and
   assert.ok(right >= rolls.length && left >= rolls.length, `right ${right}, left ${left} over ${rolls.length} rolls`);
 });
 
-test("beat 4's millrace lays 2-1's ride logs (soft), crossed right to left on this draft's storey, fair; beat 10 its bounce; the crest its totem", () => {
+test("beat 4's millrace lays 2-1's ride logs (soft), crossed either way, fair; beat 10 its bounce; the crest its totem", () => {
   for (const { d, seed, st } of rolls) {
     const at = `${d} ${seed}`;
     const rivers = (st.rivers ?? []).filter((r) => !r.wheelPond);
     assert.equal(rivers.length, 1, `${at}: one millrace`);
     const r = rivers[0];
     assert.ok(r.safe, `${at}: the millrace is soft (:#soft): a splash back`);
-    assert.equal(r.way, -1, `${at}: crossed right to left (the readiness list's G2)`);
+    // (the draft always crossed it right to left (G2's proof); the real bricks lay it either way round by the storey it falls on)
+    assert.ok(r.way === -1 || r.way === 1 || r.way === undefined, `${at}: crossed one way`);
     assert.ok(st.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).length >= 2, `${at}: its logs`);
     assert.deepEqual(riverFaults(st), [], at);
     assert.equal(st.platforms.filter((p) => p.type === 'bouncy').length, 1, `${at}: the bounce`);
     assert.ok(Number.isFinite(st.exitTotemX), `${at}: the crest's totem`);
   }
+});
+
+// (moved from w2Stages.test.ts when the hand build was deleted, BUILD-26: the village's look, its assertions kept on the listed stage; its
+//  hearts are the live rule's, laid as the stage is played, so they are counted on the played stage)
+test('2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top', async () => {
+  const { RealPlay } = await import('../../realPlay.ts');
+  for (const seed of SEEDS.slice(0, 8)) {
+    const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: 'normal' }) as never, 'normal') as unknown as Rolled & { proto: { bankWall?: object; ladders?: boolean; decor?: Array<{ n?: string; cel?: string; text?: string[] }>; hollows?: unknown[] } };
+    assert.ok(st.proto.bankWall, `seed ${seed}`);
+    assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${seed}: doors`);
+    assert.ok(st.proto.ladders, 'the climbs are ladders');
+    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('tc.')), `seed ${seed}: Gruntlewick`);
+    assert.ok(st.vines.some((v) => v.vineType === 'tree_climb'));
+    assert.deepEqual(st.proto.decor!.find((d) => d.n === 'sign')?.text, [...SIGN_26], `seed ${seed}: the top house's sign`);
+    assert.equal(st.proto.hollows?.length ?? 0, 0, 'the lit window stands in for the hollow');
+    const r = new RealPlay(STAGE_26, seed);
+    assert.ok(r.stage.collectibles.filter((c) => c.type === 'heart').length >= 2, `seed ${seed}: hearts`);
+  }
+});
+
+test("2-6's words are the story keeper's, verbatim (reference/story/lines-2-6.md, KEEPER-26 @19f90520b)", async () => {
+  const fs = await import('node:fs');
+  const md = fs.readFileSync(new URL('../../../../reference/story/lines-2-6.md', import.meta.url), 'utf8');
+  for (const line of [...Object.values(LINES_26), MISSION_26, NORIA_PAGE_26, JOURNAL_26, CLUE_26.text]) assert.ok(md.includes(line), line);
+  assert.ok(md.includes(CLUE_26.title));
 });
