@@ -7,6 +7,8 @@ ARC = 'src/game/gen2/worlds/w2Arc23.test.ts'
 CAGE = 'src/game/gen2/designedCage.test.ts'
 LOOK = 'src/game/followArt.test.ts'
 SHEETS = 'src/game/stageSheets.test.ts'
+FINDS = 'src/game/finds.test.ts'
+FACES = 'src/game/followFaces.test.ts'
 A = 'src/game/gen2/worlds/w2Arc23.ts'
 PLANTS = [
     # w2Arc23.test.ts: the keeper's lines, the row, the cages, the teach distances, the line's rules, the post
@@ -20,6 +22,8 @@ PLANTS = [
     ("the w2-new sheet not preloaded on 2-3", ARC, 'src/game/stageSheets.ts', "  '2-3': ['w2-new'],", "  '2-3': [],"),
     ('the mooring post not laid', ARC, A, "  layW2New23(st);\n", "\n"),
     ("the post's kapok trunk drawn under it too (rope not set)", ARC, A, "      v.rope = true;\n", "\n"),
+    ("the find back on the rest's first bank (inside its boulder)", FINDS, A, "{ id: 'find', role: 'findSpot', on: 'b', t: 0.5 }", "{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }"),
+    ("a HUD face that ignores movement (lit while a moving one is seen)", FACES, 'src/game/followFaces.ts', "lineInCover(covers, f) && !f.moved ? 'hid' : 'open'", "lineInCover(covers, f) ? 'hid' : 'open'"),
     # the engine pieces
     ('ENGINE PIECE (designed cage socket): the branch off', CAGE, 'src/game/gen2/pipeline.ts', "} else if (s.role === 'objective' && s.allow?.includes('cage')) {", "} else if (s.role === 'objective' && s.allow?.includes('cage') && false) {"),
     ("ENGINE PIECE (heron look): the look drawn only while its wash is in view", LOOK, 'src/game/followArt.ts', "  return wash || bird;", "  return wash;"),

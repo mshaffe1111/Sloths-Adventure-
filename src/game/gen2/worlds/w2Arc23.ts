@@ -219,10 +219,11 @@ const homecoming: Lay = {
   pieces: [bank('a', null, 440), rock('ra', 'a', 0.4), bank('b', 'a', 900), rock('rb', 'b', 0.6), rock('rc', 'c', 0.5), bank('c', 'b', 620), bank('z', 'c', 300)],
   sockets: [],
 };
-/** [R] a rest on the bank between beats: a boulder to hop, petals */
+/** [R] a rest on the bank between beats: a boulder to hop, petals; the find on the bank past the boulder (on its own bank 'a' at 0.5 it
+ *  stood inside the boulder: finds.test.ts, BUILD-23b) */
 const rest: Lay = {
   pieces: [bank('a', null, 360), rock('ra', 'a', 0.5), bank('b', 'a', 460), rock('rc', 'c', 0.6), bank('c', 'b', 360), bank('z', 'c', 300)],
-  sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }, petal('pz', 'z', 0.5)],
+  sockets: [{ id: 'find', role: 'findSpot', on: 'b', t: 0.5 }, petal('pz', 'z', 0.5)],
 };
 
 /** THE ARC'S BRICKS (2-3.md), one job each */
