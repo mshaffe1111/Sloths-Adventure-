@@ -18,9 +18,15 @@ out-and-back: the race leg under the out leg), that buried the lower leg in the 
   the lines a river's whole stretch stands over) and `clipAboveLines` in engine.ts drawRivers, so an upper leg's river ends at the
   ceiling as its banks do. **The underside** (`drawUnderside`) is drawn AFTER the clip is lifted (the lead's ART-UNDER ruling), over the
   bank's or the river's own span only (each 16-unit column cut at the span's ends), the strip's ragged edge on the line (`edge`) and its
-  roots hanging below into UNDER_HANG. Painted when the world's ground sheet has `unders` (groundAtlasData.ts, ids `w<n>#under0..2`;
-  `underFrames(w)` is the hook), else the code stand-in (the soil's edge darkened, a 4 x 64 band made once): the stand-in is allowed on
-  the toy only; 2-7 ships with the painted strip.
+  roots hanging below into UNDER_HANG. Each column is SHEARED to the line (its edge on the line at both ends; set level it stepped by the
+  line's rise, stairs every 16). Painted when the world's ground sheet has `unders` (groundAtlasData.ts, ids `w<n>#under0..2`;
+  `underFrames(w)` is the hook), the strips taking turns every 512 units; each strip wraps only with itself, so the next one fades in
+  over BLEND (96) before each change (its tail runs on into its head). Where a bank's underside ends over OPEN AIR (no upper bank or
+  upper river beside it, inside the ceiling's run: protoArt drawGround `open`; the stage's rivers come in with `setGroundStacks(zones,
+  rivers)`) the painted corner (`underCorner`, `w<n>#undercorner`: `cx` where the face runs, `edge` where the underside runs) turns it up
+  into the end face, sheared to the line, mirrored for a left end; its top (0.4 of its height) and inner side (0.45 of its body) fade in,
+  baked once per world when the sheet loads (`fadedCorner`; drawn whole it stood as a pasted block). Else the code stand-in (the soil's
+  edge darkened, a 4 x 64 band made once; no corner): allowed on the toy only; 2-7 ships with the painted strip.
 - **The join (w2.ts w2Finish).** A run of falls joined by planks (pieces under 90 deep over the water) is ONE river under a bridge, bank
   to bank, at one surface (it was a pocket per gap: water in slices, the backdrop under each plank, the middle pocket 20 higher). A fall's
   bank is found within LIP_RISE of the fall's HEIGHT, and a fall has its river only when one spans it at its height. No shipped stage
@@ -29,10 +35,15 @@ out-and-back: the race leg under the out leg), that buried the lower leg in the 
   over the lower leg. (2) Stacked legs share x: w2Finish (and every finish or lookup) must match banks and rivers at a fall's HEIGHT, never
   by x alone (ENG-27's riverAt rule). (3) A test that builds an engine must build it BEFORE it sets protoArt's stacks or world: the stage
   start resets them. (4) The underside drawn INSIDE the clip loses its roots at the line (groundStack.test 6 plants it).
-- **Proof.** groundStack.test.ts (6: the toy's real gen2 roll both settings; 1-4/7-4 untouched; the engine's own river painter; the
-  roots below the line), w2.test 'bridge over ONE river'. Tools: stackscan.ts (which stages stack), plankscan.ts (planks between pockets).
-- **Open.** The painted strip (ART-UNDER) drawn and re-shot when its rows are packed; 1-4's summit column can take the same rule once the
-  tower lay marks its storeys as stacked (R-165.376).
+- **Proof.** groundStack.test.ts (6: the toy's real gen2 roll both settings; 1-4/7-4 untouched; the engine's own river painter; test 6:
+  the roots below the line, the edge on the line at every column's ends, no hard seam at a strip change, a corner at every open end),
+  w2.test 'bridge over ONE river'. Tools: stackscan.ts (which stages stack), plankscan.ts (planks between pockets).
+- **Integration order.** ART-UNDER's rows (origin/t-art-under: w2.webp + groundAtlasData '2' `unders`/`underCorner`, the GroundSheet
+  type's optional fields) land with the art; this hook draws them with no further change. Never merge t-art-under into an engine branch
+  (it carries t-art-next's lineage); the scratch shoot took only w2.webp and the '2' atlas entry.
+- **Open.** No dusk look exists in the engine for 2-7 or the toy (nothing to shoot "dusk" with); 1-4's summit column can take the same
+  rule once the tower lay marks its storeys as stacked (R-165.376); the stand-in shows faint stripes where its see-through columns overlap
+  (replaced by the painted strip, not patched).
 
 ## 0zq-27. ENG-27 (t-eng-27 from 0eefc707e, 11-20 evening; stopped 8:33 PM ET at real context ~427k): 2-7's left leg after a drop
 **Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** Done: the out-and-back toy (gen2/toyHome.ts, tools/inspect/homeToys.ts
