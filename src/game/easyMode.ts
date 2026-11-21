@@ -24,7 +24,7 @@ import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validat
 import { EASY_HOLD } from './physics.ts';
 import { easyGoalFor, goalHave } from './goals.ts';
 import { floorWater } from './waterTeach.ts';
-import { waterNear } from './river.ts';
+import { waterNear, type RiverZone } from './river.ts';
 import { CLUMP_GAP, isPetal } from './petals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
@@ -98,6 +98,31 @@ interface HoldOut {
   reach?: readonly number[];
 }
 
+/** is B's edge on that side (1: its left, -1: its right) a river's bank, where the water ends or begins on B's storey (river.ts waterNear,
+ *  ENG-26f): a pond a storey above, or a river a storey below, whose window ends at that x is not (they were, by x alone) */
+export function bankEdge(rivers: readonly RiverZone[], B: Platform, side: 1 | -1, floors: readonly Platform[]): boolean {
+  const x = side === 1 ? B.x : B.x + B.width;
+  return rivers.some((r) => Math.abs(x - (side === 1 ? r.x1 : r.x0)) <= 2 && waterNear(r, x, B.y, floors));
+}
+
+/** World 2's lily pads 40 px wider on Easy (QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
+ *  gaps between them shrink to match, and Easy's other ledge widening leaves pads alone); and its creek stones and reed islands
+ *  (2026-10-29, the moss stones standing up out of still water) 30 px wider; never one that is a river's bank (bankEdge, its storey's
+ *  water), a reed island or the landing step at the foot of a bank: the river keeps its banks where it ends */
+export function easyPadsWider(stage: Stage): void {
+  const rivers = stage.rivers ?? [];
+  const bankOf = (p: Platform) => bankEdge(rivers, p, 1, stage.platforms) || bankEdge(rivers, p, -1, stage.platforms);
+  const creek = (p: Platform) => stage.config.worldIndex === 2 && p.style === 'moss_stone' && p.height === 110 && p.type === 'solid' && !bankOf(p);
+  // (read every stone before any grows: a widened pad must not make its neighbour a bank)
+  const grow = stage.platforms.map((p) => (p.lily ? 20 : creek(p) ? 15 : 0));
+  stage.platforms.forEach((p, i) => {
+    const d = grow[i];
+    if (!d) return;
+    p.x -= d;
+    p.width += 2 * d;
+  });
+}
+
 /**
  * Easy never needs a full-hold jump (Gemini G8, STAGE-RULES §1b: soften the jump, don't remove it). The level check walks the stage
  * twice, with the full jump and with a ~70% hold (levelCheck.ts); every ledge the first reaches and the second does not is softened
@@ -160,7 +185,7 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
     const others = stage.platforms.filter((q) => q !== B && q.id !== A.id && !q.broken);
     // (never the edge of a bank where a river begins or ends: it grew out over the water, the bank no longer stood where the water stops,
     // and the river check failed on 110 of 200 control-test rolls on Easy, 2026-10-29; a catch ledge below does the job instead)
-    const riverEdge = side === 1 ? rivers.some((r) => Math.abs(B.x - r.x1) <= 2) : side === -1 ? rivers.some((r) => Math.abs(B.x + B.width - r.x0) <= 2) : false;
+    const riverEdge = side !== 0 && bankEdge(rivers, B, side, stage.platforms);
     if (room >= 0 && side !== 0 && widenable(B) && !riverEdge) {
       // a wider landing: the ledge reaches toward him, as far as the held jump needs (and never past the gap)
       const d = Math.min(Math.max(0, gap - 4), Math.ceil(gap - room) + 6);
@@ -431,18 +456,8 @@ function easyStageOn(stage: Stage): Stage {
   // (the pieces Easy adds from here on: stones, steps and catch ledges, numbered after the stage's own)
   const firstAdded = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
 
-  // (World 2's lily pads 40 px wider on Easy, QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
-  // gaps between them shrink to match, and Easy's other ledge widening leaves pads alone)
-  // (and its creek stones and reed islands, 2026-10-29, the moss stones standing up out of still water: 30 px wider)
-  // (never one that is a river's bank, a reed island or the landing step at the foot of a bank: the river keeps its banks where it ends)
-  const bankOf = (p: Platform) => (stage.rivers ?? []).some((r) => Math.abs(p.x - r.x1) <= 2 || Math.abs(p.x + p.width - r.x0) <= 2);
-  const creek = (p: Platform) => stage.config.worldIndex === 2 && p.style === 'moss_stone' && p.height === 110 && p.type === 'solid' && !bankOf(p);
-  for (const p of stage.platforms) {
-    const d = p.lily ? 20 : creek(p) ? 15 : 0;
-    if (!d) continue;
-    p.x -= d;
-    p.width += 2 * d;
-  }
+  // (World 2's lily pads and creek stones wider on Easy, never a river's bank: easyPadsWider)
+  easyPadsWider(stage);
   // the rivers run slower (LV-5): every drifting log in slow motion, its spacing kept (speed x EASY_DRIFT, its phase / EASY_DRIFT, so
   // where it is at time t is where Normal's is at EASY_DRIFT x t), and the streaks with it
   if (!gen2) easyDrift(stage);

@@ -15,6 +15,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform } from './types.ts';
 import type { ProtoExtras, StageHint } from './protoStage.ts';
 import { WATER_WARN } from './gen2/types.ts';
+import { waterNear } from './river.ts';
 
 /** Dot's water warning on a hand-built stage (Matt's words, 2026-10-28; gen2 Worlds 6-10 have their own, WATER_LINE) */
 export const HAND_WATER_LINE = 'Careful, water! Flick up and over.';
@@ -45,7 +46,10 @@ export function floorWater(stage: Stage): WaterSpot[] {
   const out: WaterSpot[] = [];
   const rivers = stage.rivers ?? [];
   const safe = stage.safeWater ?? [];
-  const covered = (x0: number, x1: number) => rivers.some((r) => r.x0 < x1 && r.x1 > x0) || safe.some((s) => s.x0 < x1 && s.x1 > x0);
+  // (a river is this floor's water when its water is on the floor's storey, river.ts waterNear: never a pond a storey above that shares
+  // its x, nor a river a storey below, ENG-26f; the openings it covers are read at their lip)
+  const covered = (x0: number, x1: number, y: number) =>
+    rivers.some((r) => r.x0 < x1 && r.x1 > x0 && waterNear(r, (x0 + x1) / 2, y, stage.platforms)) || safe.some((s) => s.x0 < x1 && s.x1 > x0);
   const floorY = stage.spawnY ?? 580;
   // (floor: a ledge at about the floor's height, or a bank or block standing up from the ground, however tall)
   const isFloor = (p: Platform) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && !p.chase && (p.y >= floorY - FLOOR_RISE || p.y + p.height >= floorY - 10) && p.y < (stage.waterY ?? Infinity);
@@ -56,7 +60,10 @@ export function floorWater(stage: Stage): WaterSpot[] {
     if (!best) for (const p of stage.platforms) if (isFloor(p) && x0 - 30 >= p.x && x0 - 30 <= p.x + p.width && (!best || p.y < best.y)) best = p;
     return best?.y ?? floorY;
   };
-  for (const r of rivers) if (!r.safe && r.x1 - r.x0 >= MIN_GAP) out.push({ x0: r.x0, x1: r.x1, bankY: bankAt(r.x0), river: true });
+  for (const r of rivers) {
+    const bankY = bankAt(r.x0);
+    if (!r.safe && r.x1 - r.x0 >= MIN_GAP && waterNear(r, r.x0, bankY, stage.platforms)) out.push({ x0: r.x0, x1: r.x1, bankY, river: true });
+  }
   const waterY = stage.waterY;
   if (waterY !== undefined) {
     const floor = stage.platforms
@@ -65,14 +72,14 @@ export function floorWater(stage: Stage): WaterSpot[] {
       .sort((a, b) => a[0] - b[0]);
     let end = -Infinity;
     for (const [a, b] of floor) {
-      if (end > -Infinity && a - end >= MIN_GAP && end > stage.spawnX && !covered(end, a)) out.push({ x0: end, x1: a, bankY: bankAt(end), river: false });
+      if (end > -Infinity && a - end >= MIN_GAP && end > stage.spawnX && !covered(end, a, bankAt(end))) out.push({ x0: end, x1: a, bankY: bankAt(end), river: false });
       end = Math.max(end, b);
     }
   }
   // (the water a stage draws, proto.water (the mixer's creeks): deadly unless it is a teaching pool or calm swim water; the near bank is the
   // floor piece whose end the water reaches in under)
   for (const z of stage.proto?.water ?? []) {
-    if (z.kind === 'calm' || z.kind === 'teaching' || covered(z.x0, z.x1)) continue;
+    if (z.kind === 'calm' || z.kind === 'teaching' || covered(z.x0, z.x1, z.y)) continue;
     const near = stage.platforms.filter((p) => p.x < z.x0 && p.x + p.width >= z.x0 && p.y < z.y).sort((p, q) => p.y - q.y)[0];
     out.push({ x0: near ? near.x + near.width : z.x0, x1: z.x1, bankY: near?.y ?? bankAt(z.x0), river: false });
   }

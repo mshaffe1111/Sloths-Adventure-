@@ -8,6 +8,10 @@
  * The toy tower: a lower storey at LOW with a deep river (1900-2300); an upper storey at HIGH with a splash-back pond (600-1400) over the
  * lower storey's gap, and a ledge over the lower river.
  * RED on the x-only reads (river.ts waterUnder = the river whose window holds x, waterNear = its window near x): every test below.
+ * ENG-26f (the lead's ruling, one lock for all): the last four that read water by x alone, the floor's water (waterTeach.ts floorWater:
+ * Dot's warning, the sign and the teaching pools), the flower trails' crossings (jumpTrails.ts routeGaps), Easy's wider creek stones
+ * (easyMode.ts easyPadsWider) and Easy's wider landings at a river's edge (easyHoldSoften's bankEdge), read it by the same rule; the last
+ * four tests are RED with waterNear read as x alone in those three files.
  */
 import '../headlessDom.ts';
 import { test } from 'node:test';
@@ -15,7 +19,9 @@ import assert from 'node:assert/strict';
 import type { RiverZone } from '../river.ts';
 import type { Platform } from '../types.ts';
 import { jumpOK } from '../levelCheck.ts';
-import { clearOfWater, easyStones, easyWaterLandings } from '../easyMode.ts';
+import { bankEdge, clearOfWater, easyPadsWider, easyStones, easyWaterLandings } from '../easyMode.ts';
+import { floorWater } from '../waterTeach.ts';
+import { routeGaps } from '../jumpTrails.ts';
 import { LESSONS, pickLesson, type LessonId, type LessonScene } from '../lessons.ts';
 import { dropsOf } from './pipeline.ts';
 
@@ -121,4 +127,46 @@ test("an island in a river is ON the river (one storey): a flag on it is not cle
   const seen = new Set((Object.keys(LESSONS) as LessonId[]).filter((id) => id !== 'water'));
   const scene: LessonScene = { px: 4440, py: 614, view: { x0: 4040, x1: 4840, y0: 300, y1: 900 }, enemies: [], collectibles: [], vines: [], checkpoints: [], platforms: stage.platforms, rivers: [river] };
   assert.equal(pickLesson(scene, seen), 'water', 'on the lily: the water lesson');
+});
+
+test("the floor's water (waterTeach floorWater): this storey's river and the opening under a pond a storey above, never the pond", () => {
+  const gap = 200;
+  const stage = { platforms: tower(gap), rivers: [pond, deep], spawnX: 100, spawnY: LOW, waterY: LOW + 600 };
+  const spots = floorWater(stage as never);
+  const seen = JSON.stringify(spots);
+  assert.ok(!spots.some((s) => s.river && s.x0 === pond.x0), `the pond a storey above is not the floor's water (${seen})`);
+  assert.ok(spots.some((s) => !s.river && s.x0 === 800 && s.x1 === 800 + gap && s.bankY === LOW), `the opening in the floor under the pond's window is (${seen})`);
+  assert.ok(spots.some((s) => s.river && s.x0 === deep.x0 && s.bankY === LOW), `this storey's river is (${seen})`);
+});
+
+test("the flower trails (jumpTrails routeGaps): a gap under a pond a storey above gets its trail; this storey's river is crossed its own way", () => {
+  const gap = 200;
+  // (without the upper ledge over the lower river, so the walk meets the lower river's gap too)
+  const plats = tower(gap).filter((p) => p.id !== 6);
+  const stage = { platforms: plats, rivers: [pond, deep], vines: [], ropes: [], zones: [], lanes: [] };
+  const gaps = routeGaps(stage as never, new Set(plats.map((p) => p.id)));
+  const seen = JSON.stringify(gaps);
+  assert.ok(gaps.some((g) => g.x0 === 800 && g.x1 === 800 + gap), `the lower gap under the pond's window is a route gap (${seen})`);
+  assert.ok(!gaps.some((g) => g.x0 < deep.x1 && g.x1 > deep.x0), `the lower river is not: it is crossed its own way (${seen})`);
+});
+
+test("Easy's wider creek stones (easyPadsWider): a stone under a pond's end a storey above grows; the pond's own bank does not", () => {
+  const stone = (id: number, x: number, y: number) => ({ id, x, y, width: 120, height: 110, type: 'solid', style: 'moss_stone' } as Platform);
+  // (on the lower storey, standing on its floor, one ending under the pond's near end and one starting under its far end; on the upper
+  // storey, the stone that IS the pond's near bank)
+  const lowNear = stone(7, pond.x0 - 120, LOW - 110), lowFar = stone(8, pond.x1, LOW - 110), bank = stone(9, pond.x0 - 120, HIGH);
+  const stage = { platforms: [...tower(200), lowNear, lowFar, bank], rivers: [pond, deep], config: { worldIndex: 2 } };
+  easyPadsWider(stage as never);
+  assert.deepEqual([lowNear.x, lowNear.width], [pond.x0 - 135, 150], 'the lower stone under the near end: 30 px wider');
+  assert.deepEqual([lowFar.x, lowFar.width], [pond.x1 - 15, 150], 'the lower stone under the far end: 30 px wider');
+  assert.deepEqual([bank.x, bank.width], [pond.x0 - 120, 120], "the pond's own bank keeps where it ends");
+});
+
+test("Easy's wider landings (easyHoldSoften bankEdge): a ledge's edge is a river's bank on the river's own storey only", () => {
+  const plats = tower(200);
+  const rivers = [pond, deep];
+  const under = solid(10, pond.x1, LOW - 200, 200);
+  assert.ok(!bankEdge(rivers, under, 1, plats), "a ledge on the lower storey starting under the pond's far end is no bank (it may grow)");
+  assert.ok(bankEdge(rivers, plats[4], 1, plats), "the pond's far bank on its own storey is (solid 5)");
+  assert.ok(bankEdge(rivers, plats[1], -1, plats), "the lower river's near bank on its own storey is (solid 2)");
 });

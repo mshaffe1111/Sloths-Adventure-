@@ -10,6 +10,7 @@
  */
 import type { Collectible, Platform } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
+import { waterNear } from './river.ts';
 
 /** gaps this wide (px, edge to edge) get an arc: narrower is a step, wider is not a jump the route asks for */
 export const TRAIL_MIN_GAP = 100;
@@ -57,7 +58,9 @@ export function routeGaps(stage: GeneratedStage, reachable: Set<number>): TrailG
         stage.vines.some((v) => v.x > x0 - 60 && v.x < x1 + 60) ||
         (stage.ropes ?? []).some((r) => Math.min(r.x0, r.x1) < x1 + 40 && Math.max(r.x0, r.x1) > x0 - 40) ||
         (stage.zones ?? []).some((z) => z.x0 < x1 + 40 && z.x1 > x0 - 40) ||
-        (stage.rivers ?? []).some((r) => r.x0 < x1 + 40 && r.x1 > x0 - 40) ||
+        // (a river is crossed its own way when its water is on this gap's storey, river.ts waterNear at the lower lip: never a pond a
+        // storey above, nor a river a storey below, that shares its x, ENG-26f)
+        (stage.rivers ?? []).some((r) => r.x0 < x1 + 40 && r.x1 > x0 - 40 && waterNear(r, (x0 + x1) / 2, Math.max(reachY, q.y), stage.platforms)) ||
         forks.some((f) => x1 > f.x0 - 20 && x0 < f.x1 + 20);
       // a gap a step either way in height is a jump; a wall or a cliff edge is something else
       const dy = q.y - reachY;
