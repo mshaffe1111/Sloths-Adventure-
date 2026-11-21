@@ -35,7 +35,10 @@ test('node asks (planted): each element asked and not laid is named; laid, it pa
   assert.equal(m('Pg'), '');
   assert.match(m('Pf'), /content 'f' \(floating\): 1 of 1 sections are ground/);
   assert.match(m('Pg', { sections: [{ double: false, dy: 0 }] }), /1 of 1 sections are untyped/);
-  for (const l of ['s', 'v', 'p', 't', 'x']) assert.match(m(`P${l}`), new RegExp(`content '${l}' .*Later`));
+  for (const l of ['s', 'v', 't', 'x']) assert.match(m(`P${l}`), new RegExp(`content '${l}' .*Later`));
+  // p (beat) is laid now, checked by its clock (G1, lead's ruling A): a 'p' node with no piece on a clock is named; with one it passes
+  assert.match(m('Pp'), /content 'p' \(beat\): no piece on a clock laid/);
+  assert.equal(m('Pp', { clocked: 1 }), '');
   // move, shape
   assert.match(m('Pg2'), /move 2 \(the double\): no section there asks for it/);
   assert.equal(m('Pg2', { sections: [{ content: 'ground', double: true, dy: 0 }] }), '');

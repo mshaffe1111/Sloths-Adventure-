@@ -61,14 +61,12 @@ export interface RiverZone {
   /** its logs' TAIL (DriftInfo.tail, RiverRow.tail): the last `tail` px before the far bank are log-free; the logs go under World 2's painted
    *  end at `x1 - tail` (riverArt.ts drawRiverTail) */
   tail?: number;
-  /** the way he crosses it (ENG-26c): -1 right to left, a river on a tower's storey that runs left (gen2 riverLay.ts layRiver, laid as
-   *  the mirror of the same row run right: its current `dir` is the world's, so a row flowing with him flows left here). Unset: left to
-   *  right, its near bank ending at `x0`, as every river before it. The checks that read the current against him (levelCheck's hop,
-   *  riverFaults) read `dir * way` */
-  way?: -1;
   /** a water wheel's pond (gen2/wheelLay.ts layWheel, ENG-26): still water under a wheel's whole sweep, its jetty and its street standing
    *  over it, so it has no banks at its ends (levelCheck asks none); a fall into it splashes him back onto the jetty (`safe`) */
   wheelPond?: true;
+  /** he crosses it right to left (a river in a leg laid left, gen2/legs.ts reflectLeg): `dir` is still the screen's (-1 flows left, WITH
+   *  him), and its fairness is judged in its own frame, as if he crossed it rightwards (gen2/riverLay.ts riverFaults). Unset: left to right */
+  way?: -1;
   /**
    * 2-8 Reed Cages: still water that rises once he passes `trigger`, from where it starts to `y1` over `seconds`, covering the low reed
    * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).

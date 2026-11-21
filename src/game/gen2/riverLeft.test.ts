@@ -1,7 +1,8 @@
 /**
  * A river crossed RIGHT TO LEFT (ENG-26c, readiness gap G2: 2-6's millrace on a tower storey that runs left; before it, pipeline.ts threw
  * "far's river runs right to left, which is not laid yet" on 24 of 24 rolls of the draft row). layRiver `way` -1 lays the exact mirror of
- * the same row run right; riverFaults judges it as that mirror; levelCheck reads its current against him (`dir * way`). And the tower:
+ * the same row run right; riverFaults judges it in its own frame (riverLay.ts rightwards, the one meaning of RiverZone.way it shares
+ * with a leg laid left, t-eng-27); levelCheck reads its current against him (`dir * way`). And the tower:
  * a section too long for the storey turned at the wall fails by name instead of being laid through the wall (gap G5).
  */
 import '../headlessDom.ts';
@@ -51,11 +52,51 @@ test('riverFaults judges a river crossed right to left as its mirror: fair rows 
     assert.deepEqual(riverFaults(crossing(row, 1)), [], 'right');
     assert.deepEqual(riverFaults(crossing(row, -1)), [], 'left');
   }
-  // (logs flowing with him 120 px apart: past a hop's 80; the same fault, the river named as crossed right to left)
+  // (logs flowing with him 120 px apart: past a hop's 80; the same fault in the same words, judged in its own frame (riverLay.ts
+  //  rightwards, one meaning with a leg laid left, ENG-26d), only the river's x differs)
   const wide: RiverRow = { ...W2_RIVERS.ride, gap: 120 };
   const right = riverFaults(crossing(wide, 1)), left = riverFaults(crossing(wide, -1));
   assert.ok(right.some((f) => /past a hop \(80\)/.test(f)), right.join(' | '));
-  assert.deepEqual(left.map((f) => f.replace(/^river at x=-?\d+ \(crossed right to left\)/, 'R')), right.map((f) => f.replace(/^river at x=-?\d+/, 'R')));
+  assert.deepEqual(left.map((f) => f.replace(/^river at x=-?\d+/, 'R')), right.map((f) => f.replace(/^river at x=-?\d+/, 'R')));
+});
+
+/** a river crossed right as a LEFT LEG turns it (t-eng-27's gen2/legs.ts reflectLeg, its river steps line for line: x becomes `sum - x`,
+ *  each log's window and current turned, the river's water and current turned, `way` marked, the splash-back on the other bank). When
+ *  t-eng-27 lands, this is reflectLeg itself */
+function asLeftLeg(st: { platforms: Platform[]; rivers: RiverZone[] }, sum: number): { platforms: Platform[]; rivers: RiverZone[] } {
+  const platforms = st.platforms.map((p) => {
+    const q: Platform = { ...p, x: sum - p.x - p.width };
+    if (p.drift) q.drift = { ...p.drift, x0: sum - p.drift.x1, x1: sum - p.drift.x0, dir: -p.drift.dir as 1 | -1 };
+    return q;
+  });
+  const rivers = st.rivers.map((r) => {
+    const q: RiverZone = { ...r, x0: sum - r.x1, x1: sum - r.x0, dir: -r.dir as 1 | -1 };
+    if (r.way === -1) delete q.way; else q.way = -1;
+    if (r.safe) q.safe = { ...r.safe, backX: sum - r.safe.backX };
+    return q;
+  });
+  return { platforms, rivers };
+}
+
+test('RiverZone.way has ONE meaning: a left leg\'s river and a leftward storey\'s river of the same row are the same river, judged in the same words', () => {
+  const fair = [W2_RIVERS.ride, W2_RIVERS.deep, W2_RIVERS.back] as RiverRow[];
+  // (unfair: logs past a hop with him, a log too seldom, past a hop on the deep row, and a row flowing BACK at him whose next log comes out
+  //  of sight: that rule reads the current's sign and the near bank, so a wrong frame would show here first)
+  const unfair = [{ ...W2_RIVERS.ride, gap: 120 }, { ...W2_RIVERS.ride, speed: 30 }, { ...W2_RIVERS.deep, gap: 140 }, { ...W2_RIVERS.back, gap: 200 }] as RiverRow[];
+  let faulted = 0;
+  for (const row of [...fair, ...unfair]) for (const difficulty of ['normal', 'easy'] as const) {
+    // (the storey's: laid right to left from a near bank starting at 2000; the leg's: the same row laid right from 2000, turned about 2000)
+    const storey = crossing(row, -1), leg = asLeftLeg(crossing(row, 1), 4000);
+    const [s, l] = [storey.rivers[0], leg.rivers[0]];
+    assert.deepEqual([l.x0, l.x1, l.dir, l.way, l.safe?.backX], [s.x0, s.x1, s.dir, s.way, s.safe?.backX], `${row.logs} logs gap ${row.gap}: the same water, current, way and splash-back`);
+    const sf = riverFaults(storey, difficulty), lf = riverFaults(leg, difficulty);
+    assert.deepEqual(lf, sf, `${row.logs} logs gap ${row.gap} ${difficulty}: the same fault words`);
+    // (and both judge as the row crossed left to right: the same faults, only the river's x differs)
+    assert.deepEqual(sf.map((f) => f.replace(/^river at x=-?\d+/, 'R')), riverFaults(crossing(row, 1), difficulty).map((f) => f.replace(/^river at x=-?\d+/, 'R')));
+    if (sf.length) faulted++;
+    if (row === unfair[3]) assert.ok(sf.some((f) => /flows back at him/.test(f)), sf.join(' | '));
+  }
+  assert.equal(faulted, unfair.length * 2, 'every unfair row faults, both settings, on both rivers');
 });
 
 test("levelCheck reads a leftward river's current against him: logs flowing WITH him 100 px apart are too far to hop (80), as crossed right", () => {
