@@ -75,6 +75,17 @@ test('planted on the real builds: a stage whose rolls lay a creature, with the c
   assert.ok(caught.length >= 1, 'a stage-table stage lays a creature and is caught');
 });
 
+test('R-165.365 planted: the sheet check reads the FINISHED roll; on the unfinished roll a follow stage (2-3) counts its herons as an eagle', async () => {
+  // (2-3's finish sets proto.follow, so sheetWarm draws herons in the watcher's place; the roll before its finish has no follow and asks
+  // for foe:eagle, which 2-3 never draws: the old read failed the gate on a sheet Play never loads)
+  const id = '2-3';
+  assert.ok(real.stages.includes(id), `${id} is a stage-table row`);
+  const raw = await realSheetMisses(id, undefined, (_id, st) => st);
+  assert.ok(raw.some((k) => k.startsWith('foe:eagle')), `the unfinished read asks for an eagle: ${raw.join(', ')}`);
+  const played = await realSheetMisses(id);
+  assert.ok(!played.some((k) => k.startsWith('foe:eagle')), `the finished read draws no eagle: ${played.join(', ')}`);
+});
+
 test('planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes', async () => {
   const bare = 'jobs:\n  g:\n    steps:\n      - run: npx tsx tools/engine/seedlist.ts 1-1 --check\n';
   assert.ok(ciChecks(bare, '1-1') && !ciChecks(bare, '1-3'));
