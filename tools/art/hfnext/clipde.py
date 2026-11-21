@@ -5,6 +5,10 @@ the plain pose or the clip (tools/art/hfnext/bridges.json, written by bridgebake
  bridged clip  plain -> bridge in (step 0), bridge in -> clip f0, clip LAST -> bridge out, bridge out -> plain (step N-2)
  --replace     plain -> take (step 0), take -> plain (step N-2)
 The bar (ART-NEXT-e, D108 gate): each seam's MEAN step <= max(2 x the median MEAN step inside its clip's bridges, 0.5) and < 1.0.
+ONE SLOTH (ART-REGRADE, R-165.377; heroClipsBody.test.ts): each frame's mean FUR colour (solid px, not the outline L < 25, not the eyes'
+whites L > 85 and chroma < 12; tools/art/hfnext/regrade.py's mask) against the plain pose's (hero-standard.webp, the idle crop): every
+frame <= 2.0 dE, and the clip's own frames pooled (the bridges left out) <= 1.0 dE. The whole-body mean is NOT the measure there: the
+old clips carry about 5x the plain pose's outline px, which no colour fix should touch.
     python3 -I tools/art/hfnext/clipde.py [clip,...]        print the table
     python3 -I tools/art/hfnext/clipde.py --write           also write src/game/heroClipsSeams.json (read by heroClipsSeams.test.ts)
     python3 -I tools/art/hfnext/clipde.py --check           exit 1 if that JSON is stale
@@ -39,6 +43,12 @@ def seams(n, lay):
     return [0, b - 1, b + o - 1, n - 2], list(range(1, b - 1)) + list(range(b + o, n - 2))
 
 
+def fur_mean(f):
+    L = lab(f[..., :3])[f[..., 3] > 200]; C = np.hypot(L[:, 1], L[:, 2]); return L[(L[:, 0] >= 25) & ~((L[:, 0] > 85) & (C < 12))]
+
+
+STDP = 'src/assets/hero/hero-standard.webp'
+PF = fur_mean(np.asarray(Image.open(STDP).convert('RGBA')).astype(np.float32)[478:478 + 209, 674:674 + 127]).mean(0)   # bridgebake's plain crop
 res = {}
 for nm in clips:
     c = CL[nm]; p = f'src/assets/hero/clips/{nm}.webp'
@@ -54,14 +64,20 @@ for nm in clips:
     sm, inn = seams(c['n'], LAY[nm])
     med = float(np.median([dm[k] for k in inn]))
     lim = min(max(2 * med, 0.5), 1.0)
+    FU = [fur_mean(f) for f in fr]; fd = [float(np.linalg.norm(u.mean(0) - PF)) for u in FU]
+    lay = LAY[nm]; own = range(1, c['n'] - 1) if lay['replace'] else range(lay['bridge'], lay['bridge'] + lay['own'])
+    pooled = float(np.linalg.norm(np.concatenate([FU[k] for k in own]).mean(0) - PF))
     res[nm] = {'sheet_sha256': hashlib.sha256(open(p, 'rb').read()).hexdigest(), 'n': c['n'], 'bridge_median': round(med, 3),
-               'seams': {str(k): round(dm[k], 3) for k in sm}}
+               'seams': {str(k): round(dm[k], 3) for k in sm},
+               'body': {'frame_max': round(max(fd), 3), 'frame_max_at': int(np.argmax(fd)), 'own_pooled': round(pooled, 3)}}
     print(f"{nm:14s} n {c['n']} bridge median {med:4.2f} limit {lim:4.2f} | seams MEAN " +
           ' '.join(f"s{k} {dm[k]:4.2f}{'' if dm[k] <= lim else '!'}" for k in sm) +
-          f" | px 0->1 {px[0]:4.2f} N-2->N-1 {px[-1]:4.2f} | inner max {max(dm[k] for k in inn):4.2f}; plain->mid-clip {float(np.linalg.norm(mu[c['n'] // 2] - mu[0])):4.2f}")
+          f" | px 0->1 {px[0]:4.2f} N-2->N-1 {px[-1]:4.2f} | inner max {max(dm[k] for k in inn):4.2f}; plain->mid-clip {float(np.linalg.norm(mu[c['n'] // 2] - mu[0])):4.2f}"
+          f"\n{'':14s} FUR to plain: frame max {max(fd):4.2f} (f{int(np.argmax(fd))}), own frames pooled {pooled:4.2f}")
 if '--write' in sys.argv or '--check' in sys.argv:
     assert clips == IDLE, 'write/check measure every idle clip'
-    txt = json.dumps({'bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'clips': res}, indent=1) + '\n'
+    txt = json.dumps({'bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'body_bar': {'frame_max': 2.0, 'own_pooled': 1.0},
+                      'plain_sha256': hashlib.sha256(open(STDP, 'rb').read()).hexdigest(), 'clips': res}, indent=1) + '\n'
     if '--check' in sys.argv:
         sys.exit(0 if open(OUT).read() == txt else f'{OUT} is stale: re-run tools/art/hfnext/clipde.py --write')
     open(OUT, 'w').write(txt); print('wrote', OUT)

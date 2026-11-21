@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
+ok 1 - the idle clips were measured against the plain pose that ships (re-run tools/art/hfnext/clipde.py --write after it changes)
+  ---
+  duration_ms: 1.528215
+  type: 'test'
+  ...
+# Subtest: every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
+not ok 2 - every idle clip is the same sloth as the plain pose (fur colour: each frame <= 2.0 dE, the clip pooled <= 1.0 dE)
+  ---
+  duration_ms: 0.574229
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/6615309b-fc32-5ad4-b80b-156c783e705f/scratchpad/plant/src/game/heroClipsBody.test.ts:26:1'
+  failureType: 'testCodeFailure'
+  error: 'idle-yawn frame 20: fur 5.271 dE off the plain pose (limit 2)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/6615309b-fc32-5ad4-b80b-156c783e705f/scratchpad/plant/src/game/heroClipsBody.test.ts:29:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 80.44062
