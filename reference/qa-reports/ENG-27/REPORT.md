@@ -1,13 +1,13 @@
-# ENG-27n REPORT (handed over at the D111 box, written 6:09 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 2f525cd72 + this REPORT)
+# ENG-27n REPORT (handed over at the D111 box, written 6:10 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 2f525cd72 + this REPORT)
 ## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's verdict and its RED; (1) the thumb's travel in hopFlies (the one LOST row's root); (2) boardHop onto the drawn
 hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's diff; (7) B and S.
 (0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background), at the box: 1873 ok,
     **1 RED: src/game/gen2/pacerLay.test.ts:211** 'bot (planted): a log drifting his way, still mostly under the lip, is boarded by a
     hop, so the careful middle player wins home Easy seed 1; RED without it' fails its RED half: 'RED: without the skill the plant must
-    lose (86.6 s against 97.53 s)'. With the skill off he now wins anyway, so the plant no longer proves the skill (the lead has it,
-    priority next). Trace it (rule 28: two runs, skill off, what wins him the race now) and re-plant it where the skill is the
-    difference; never loosen the assertion (law 22). The run was still going at the box; ENG-27n sends the lead the final verdict.
+    lose (86.6 s against 97.53 s)'. **The lead's ruling: this is the KNOWN boardLog plant (failing on purpose since ENG-27j), step B's,
+    not new.** B's scan rules it: boardLog on vs off over 2-1..2-7 x40; no row moves -> boardLog retires WITH its test; rows move ->
+    underLip sends him to the lip and waits (rule 28). No other red at the box; the run was still going (ENG-27n sends the final verdict).
 (1) **hopJudged on 2f525cd72 (n/hopJudged-2f525cd72-27n.txt): seed 5 GREEN** (12 judged, edgeWait and race: 0 flown not as judged,
     0 elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x 14674 hold
     0.235 double | LOST`. **ROOT, traced frame by frame (n/double-flight-27n.txt, three runs):** the judged flight and the engine's are
@@ -16,9 +16,17 @@ hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's tim
     268): thumbify's travel when turning (`who.swap`, 0.133-0.2 s, drawn from this.r at the reversal) holds no steer through a reversal,
     so he comes down at x 14889, past the log's far end (14880). hopFlies steered back at once and judged it landed. **FIX:** pre-draw the
     swap in drawHop (its own stream, DrawnHop.swap) and fly it in hopFlies (a reversal: no steer for `swap` s, then the steer back; a
-    let-go (small 1) then a reversal: read thumbify for whether lastSteer survives a let-go); thumbify takes the gate hop's swap for
-    that jump (its own draw still made, so the stream is as ever). Then hopJudged seeds 5 and 2 GREEN. Also read thumbify's other
-    fumbles (drift into the dead zone, a late lift-off) for anything else that changes the flown steer in the air.
+    let-go then a reversal, below); the lead agrees the judge must fly the thumb's turn time. **thumbify, read (firsttimer.ts ~line
+    3990): what the engine gets in the air is the steer AFTER three fumbles:** (i) the late lift-off: a let-go (overSmall 1) keeps the
+    old steer for `releaseLeft` frames (drawn at the let-go: exp(gauss(release)), clamped to releaseMax; a tier bot arms it once per
+    let-go), and lastSteer is NOT moved on while it runs; (ii) the travel: a reversal against lastSteer gives no steer for (2 * 16 +
+    driftPx) / thumbSpeed s (driftPx grows each frame held the same way by gauss(drift) * DT, to 30; ADULT/MIDDLE thumbSpeed 320: 0.1 s
+    at least); (iii) a slip: each frame with a steer, r() < slip * DT drops it for round(between(slipFrames)) frames. **FIX (the same
+    pattern as drawHop):** hopFlies takes the thumb's state at the judgment (lastSteer, driftPx, releaseArmed, travelUntil - t,
+    driftUntil - t) and a pre-drawn thumb from rHop (the release count, the per-frame drift steps and slip outcomes for ~40 frames), and
+    flies (i)-(iii) frame by frame; thumbify, on the gate hop's frames, uses those pre-drawn values (its own draws still made, so the
+    stream is as ever). Pin it: the per-frame trace (n/double-flight-27n.txt's A/P lines) equal frame for frame on seed 2 x 14674, then
+    hopJudged seeds 5 and 2 GREEN.
 (2) **boardHop** (jumpFor ~line 1630) still judges a single held who.hold[0] and its press comes through decide's thumb lag (a0ab91d33,
     seed 5 t 86.67: judged x 10467, pressed 2 frames on from x 10458 held 0.171 via the stopped-dead read; n/hopJudged-a0ab91d33-27n.txt;
     not reached on seeds 5 and 2 since). Under floatSure: the drawn hop judged by hopFlies at lag 0, gateHop set, pressed at once (decide
