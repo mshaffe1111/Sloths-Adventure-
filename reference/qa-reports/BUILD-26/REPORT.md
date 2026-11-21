@@ -1,3 +1,61 @@
+# ENG-26i (on t-build-26 from deaaf3a7c): the walk-off judge REPAIRS a gate's run instead of refusing it. Started 3:55 PM ET 11-21 (by `date`)
+Commits: 97bb2b73e (the cure and its plant), this REPORT. Step 1 done and planted; steps 2-4 NOT started (the 28-minute box, D111).
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the background on frozen worktrees.
+0. **The lead's ruling first** (sent with 97bb2b73e): the cure keeps a gate's run catch out of `byGate` (nothing level with the gate,
+   nothing within a hop across of it up to a jump over it) and the `towerGates` verdict after. That is the engine's own reading of
+   R-165.170's "within a hop of it". The stricter reading (no jump from the catch reaches the gate at all) cures only 1 of seed 2's 4
+   gates. If the lead rules strict, add `!(sealed(e.p) && gates.some((g) => leaps({ x: x0, y, width: TOWER.catchW }, g)))` to rule 4's
+   `L` in towerCatches and re-measure.
+1. **The yield, after** (if this REPORT's table does not have it): on a frozen worktree of 97bb2b73e,
+   `seedlist.ts 1-4 --count 100000 --from 1 --to 401 --worker i/4 --part p<i>.json` (i 0-3), against eng26h/sweep-1-400.json (49 kept);
+   and `seedlist.ts 2-6 --check` (must stay 100/100).
+2. **The three exact speed-ups**: `git cherry-pick 91e6c584e` onto 97bb2b73e; lockall --layouts 16 --out on a frozen copy WITH them and
+   one WITHOUT (97bb2b73e): every part hash of every build identical; any difference, drop the piece that made it.
+3. **1-4 relisted ONCE** (methods/seed-list.md: old survivors in their order, then new seeds lowest first, --merge --in-order, n 100),
+   every test pinning a 1-4 seed (D29), the full suite; then on a quiet machine: loadtime.mts base vs head for 1-4 and 2-6,
+   `BUILDCHECK_STAGE=1-4` / `2-6` buildcheck, CI's `seedlist.ts 1-4 --check` timed against its 45-minute limit, and the lock's time.
+4. **Stills** at 2x, upright 390x844 and sideways 844x390 (eng26h/tools/pin.mjs): 1-4 layout 1 before (4ea253b8c, seed 2:
+   `storey1:1006:10984,walkoff:1070:8120,walkoff2:220:4208`) and after, pinned at a catch the cure laid (on seed 2, about 100 to 140 px
+   under each gate's end, at the wall). Judge each: the catch must read as a bough he was meant to land on, not a shelf stuck to the
+   wall. Then castBots 1-4 seeds 1-40 both settings base vs head, tierBots 1-1, qaW123, generality, the CI tool line (gates.md
+   "THE FULL SET"), lockall (only 1-4 and 2-6 may move), engine-core.md's tower lines. Then BUILD-26c runs 2-6's bots.
+
+## The cure (step 1)
+- **Cause, measured** (a dump of towerCatches' inputs for 1-4 seed 2 Normal, every rule's verdict per end): all four refused ends
+  (646-1086 @8120, 194-714 @4208, 670-1030 @3342, 196-716 @2300) are **shut gates** (sealed). The step off each lands on the storey
+  400-440 px under it; the RUN off it comes down at the tower's wall (x 1259 / x 20), past that storey's tip. A vine hangs DOWN from
+  that tip (its top at the storey's height, bottom 281 px under), so rule 2's bridge must start a hop past the vine, which is past the
+  wall (spans 1256-1266, 14-24, 1210-1256, 16-24: under the 60 px floor). Rules 3 and 4 were barred for every sealed piece, so
+  nothing was laid and the roll was refused. Not the arc, not the flights: one rule (`if (sealed(e.p)) continue`) shut both fallbacks.
+- **Cure** (tower.ts towerCatches, every tower, rule 22): a sealed piece's RUNNING walk-off (its step already caught) may take rule 4,
+  a 180 px bough of its own under where the arc comes down. It must pass every rule of a fair lay: not cramped, no storey climbed,
+  out of `byGate` and any kept-out box. `towerGates` judges after. The step off a gate is still its own section's; a gate is still
+  never run on (rule 3 skips sealed pieces). On seed 2 each gate gets a bough about 100 to 140 px under its end, at the wall; seed 2
+  Normal builds with errors [].
+- **Plant** (tower.test.ts, 'a gate's RUNNING walk-off that lands by the wall past a vine-topped bough gets a catch under the arc'):
+  seed 2's first gate in a toy tower (gate 646-1086 @1000, storey 566-1166 @1400 with a vine hanging from its tip, the vine's storey
+  700-1280 @1681). **RED on deaaf3a7c (fail 1), GREEN on 97bb2b73e**; it also checks nothing lies by the gate or over the vine's top,
+  towerGates is clean, and a lone gate still gets no catch (its two step falls named, as before). tower.test.ts **33/33**.
+
+## Findings (numbers)
+| item | result | evidence |
+|---|---|---|
+| 1-4 seed 2 | before: 4 running walk-offs off gates refused (641-721 px). After: **errors [] on Normal and Easy** (Easy's own build 1,245 ms, under load) | scratch why-dump (debug hook, not committed); eng26h/tools/why.mts |
+| generality | **PASS** (26 literals, 26 known) | |
+| plant | RED on deaaf3a7c, GREEN on 97bb2b73e; tower.test.ts 33/33 | |
+| tsc | **PASS** on 97bb2b73e (after `npm ci --legacy-peer-deps`; this container had no node_modules) | |
+| 1-4 yield, seeds 1-400 | before 49 kept (12%, eng26h/sweep-1-400.json). After: YIELD_AFTER | YIELD_EVIDENCE |
+| 2-6 list | LIST26 | |
+
+## Lessons applied
+D40 (cure the judge before relisting: no relist was started), D57/D87/D105 (ReadNotifications at each step and push; long runs in the
+background so the queue is read), D96 (step 4 names the full CI set, gates.md), D102 (read lean: the packet, the REPORT's top, rules
+19/20/22/28, the code by line range), D107/D111 (handed over at the 28-minute box with the exact next step), D109 (no clock times in
+messages to the lead; this REPORT's start time is from `date`), D30 (times from `date`), law 3 (checked the fact: tsc was not counted
+as a pass until it ran with its dependencies), law 22 (the gate rule kept by its own reading, the stricter reading put to the lead
+instead of chosen quietly).
+
 # ENG-26h (on t-build-26 from 95cafaabc): the walk-off judge's price. HANDED OVER by D111 (40 min), written 3:52 PM ET 11-21
 Commits: 93246fa93 (buildcheck takes BUILDCHECK_STAGE), 91e6c584e (three EXACT speed-ups, proof NOT run) REVERTED off the head by
 the lead's ruling (cherry-pick it in step 2), this REPORT. The branch's src is 95cafaabc's, proven.
