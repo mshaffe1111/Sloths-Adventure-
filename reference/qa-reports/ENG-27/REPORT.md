@@ -3,7 +3,7 @@
 ORDER: (1) G's result; (2) M2's bank-to-log site, then the race table; (3) rule 28's castBots diff; (4) B; (5) S.
 (1) **G, the ground's gates on 484199316** (chain a then b, run-gates-d.sh, frozen worktree, node_modules symlinked, tooltests.cmd = the
     ground's gates.yml line 157 without '- run:'; `git fetch --unshallow` done first). At the box: tsc PASS, suite 1/6 PASS 634/634, suite
-    2/6 onward still running in ENG-27l's container (logs in its scratch, lost if it stops; ENG-27l sends the lead the summary if it gets
+    2/6 PASS 616 + 1 todo, 0 fail (l/ground-gates-at-box-27l.txt); suite 3/6 onward still running in ENG-27l's container (logs in its scratch, lost if it stops; ENG-27l sends the lead the summary if it gets
     it before stopping). If no result reached the lead: re-run `G=<logdir> H=<worktree at 484199316> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a`
     then `b` (npm install needs `--legacy-peer-deps`, as CI's). All green: tell the lead 484199316 is the green ground head. A red: name it.
 (2) **M2's other site: a hop from a BANK onto a log drifting AWAY (his way) lands behind its back end.** The race-hop fix (M1, below) left
@@ -25,8 +25,10 @@ ORDER: (1) G's result; (2) M2's bank-to-log site, then the race table; (3) rule 
     <seed> <setting> home|post` (OFF turns that SKILLS flag off for the RED run).
 (3) **Rule 28's castBots diff**, base 1465822f7 vs head, 2-1..2-6 x40 both settings: `npx tsx tools/inspect/castBots.ts --stage <s>
     --seeds 1-40 --setting both --par 3 --rows <s>-<side>.jsonl` on each worktree, then `python3 reference/qa-reports/ENG-27/castdiff-27g.py.txt
-    base.jsonl head.jsonl`. NOT RUN: ENG-27l started it, then stopped it before any row (its head side read the working tree, where the
-    M2 candidate was being tried: a diff of the wrong code). Run it on frozen worktrees (base 1465822f7, head the final). By construction no
+    base.jsonl head.jsonl`. ENG-27l's first run was stopped before any row (its head side read the working tree, where the M2 candidate
+    was being tried: a diff of the wrong code). Re-run on frozen worktrees: **2-1 DONE, base 1465822f7 vs 2e77837cb: 0 of 360 rows moved,
+    every tier's pass count the same** (l/castdiff-2-1-27l.txt, rows l/castrows-2-1-27l.jsonl; 251 s a side at --par 2). **2-2..2-6 NOT
+    RUN.** **tierBots 1-1 9/9 on 2e77837cb.** Run 2-2..2-6 on the final head after (2), and 2-1 again if (2) moves code. By construction no
     2-1..2-6 row can move (SKILLS.raceSure lives only inside the race branch, which needs a stage pacer: only 2-7 lays one), but the diff
     is the proof (rule 28): run it on the FINAL head after (2), row for row, every moved row explained, no tier's pass count down. Then
     tierBots 1-1 9/9, pacerLay (now 18/19: the red is B's boardLog plant), and the invariant (pacerLay test 3) GREEN.
