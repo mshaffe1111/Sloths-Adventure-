@@ -19,8 +19,15 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
    t 73.8, x 1099, y 4116, 9.2 s; the same: on the floor #28/#35/#36/#84 (x 825-1700, y 4118) with "the way on is 379 px up" (the
    floor #37/#38/#39 at y 3739, dips #41/#42 at 3809). The way up there is the climbing vine V#6 at x **1587** (3739-4118) at the floor's
    right, or the edge wheel at the left (cx 668, cy 4270). He jumps to and fro along the floor between x ~1040-1130 and x 1270-1540
-   (FT_TRACE: 11 and 13 jumps, every one FELL BACK, none reaching x 1587), then is rescued. Not yet found: what turns him back short
-   of the vine (next: the stderr print in decide/startJump, b26e's method in this REPORT's Learned, on frames t 52-72 of adult N 26).
+   (FT_TRACE: 11 and 13 jumps, every one FELL BACK, none reaching x 1587), then is rescued.
+   **What turns him (b26e/dbgAd.txt, a stderr print in decide/startJump, adult N 26 t 52-58):** every jump comes from the EDGE branch
+   (firsttimer.ts:2839 `if (!drops) return this.decide(dir, ...)`, the floor's seams at x 1125 and 1385 read as edges), and his `way`
+   flips +1 / -1 between x ~1120 and ~1290-1350: the route's next point is straight UP at about x 1250 (under #41, y 3809), where no
+   vine or step climbs; the vine at x 1587 is never his target (climbUpVine: undefined at every jump, it is 300+ px off). So the route
+   he follows slants up through the floors here, as BUILD-26c's ENGINE-WORTHY note says of tools/inspect/route.ts on a tower turn.
+   **Likely a ROUTE cause (the way on the bot reads), not the jump:** next, print `this.prog.target(p, 200)` and the route's points
+   near cur on these frames; if the stage's route runs up at x ~1250, it goes to the lead as LAY/route (not a bot patch); if the
+   route goes to the vine and the bot's Progress picks a later point, it is the bot's (Progress), fixed generally with a toy.
    **Then ENG-26m's 1-4 cause table (064911bf1; the lead: these are this branch's BOT causes):** A at x 1036 Normal (kid 7, 12, 13,
    18, 19, 34; adult 36) and B at x 1115 Easy (adult 17, 19), both by the s3 vine whose top is 26 px past s4:b's end (he falls back off
    it 3 times); D on seed 29 middle (a wall strip now reaching the wall; the route reads 'the way on is 281 px down' instead of the
