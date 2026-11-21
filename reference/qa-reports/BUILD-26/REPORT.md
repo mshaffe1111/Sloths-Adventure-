@@ -1,3 +1,67 @@
+# ENG-26g (on t-build-26 from 44dcbb41a): the tower's walk-off judge. HANDED OVER at the context line, STOPPED on step 3 (1-4 moves)
+Commits: de009b9f5 (the judge), ac2fd73b6 (water by his middle, a cap bounces him on), this REPORT.
+
+## EXACT NEXT STEP (the next engine member, in this order)
+1. **WAIT for the lead's ruling on 1-4** (packet step 3: a shipped stage's lay changes only on the lead's ruling). 1-4 MOVES: Normal
+   layout 1 was seed 2 at 44dcbb41a, is seed 7921 at ac2fd73b6 (seed 2 refused by the walk-off judge, so another tower is drawn). The
+   lead asked for: which towers move (the full lock), before/after stills of the moved spots (upright and sideways, 2x), 1-4's seed list
+   --check. None of the three is finished: they were started in the background on a frozen ac2fd73b6 in MY container and die with it,
+   so RE-RUN them on a fresh frozen worktree of ac2fd73b6:
+   - `npx tsx tools/engine/lockall.ts --layouts 16 --intended 2-6 --check lock-base.json` where lock-base.json is
+     `git worktree add <dir> 4ea253b8c` + `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json` there (7.5 min each).
+     Note: on de009b9f5 the lock sat on 1-4 for over 10 min (one 1-4 build is 1.4 s at the head, 5.5 s on ac2fd73b6; the list's
+     seeds now fail and a build searches on): expect 1-4 to be slow; time it, it is a perf finding for the judge (towerCatches calls
+     walkOff per end per pass and per candidate catch).
+   - `npx tsx tools/engine/seedlist.ts 1-4 --check` and `2-6 --check` (how many listed seeds the judge now refuses, by name).
+   - stills: which spots moved come from a platform diff of the same build before/after (a script that dumps `generateStage` platforms
+     for a stage/layout/setting the lockall way, then a set diff); pin Pokey there with a dsf-2 copy of tools/art/kitaudit/shoot.mjs
+     (pin at {x, y}, `localStorage sloth_difficulty` for Easy), upright 390x844 and sideways 844x390, on both worktrees.
+   Send the lead: the lock's movers, the seed-list counts, the stills. Then do as ruled (relist 1-4 under the judge, or not).
+2. **qaW123 '2-6: a plain walk to a street's dead end'** (TOWER.fall, the lead's ruling): on de009b9f5 it fell from every Normal end
+   and 5-6 Easy ends (406-761 px) to 2 ends a Normal roll and 1 an Easy roll, all walking LEFT, ~505 px, at the same two spots on rolls
+   1/2/3/7/12: (a) the left end x 114 by the turn vine's top (x 88): the run is held by the wall at x 20 and fell past the wheel pond,
+   which starts at x 30 (water takes him by his middle, river.ts riverAt; the judge had given it a foot's 11 px): FIXED in ac2fd73b6;
+   (b) the end at x 827, y 1556: the run comes down on a mushroom cap (706-776, y 1704) the judge read as a landing; the engine bounces
+   him on (roll 1 lands 150 px down, others 505-510): FIXED in ac2fd73b6 (walkOff flies the flown 'bounce' off a cap). qaW123 on
+   ac2fd73b6: UNRUN to its end (started in the background, dies with my container): re-run `npx tsx --test src/game/qaW123.test.ts`;
+   if an end is left, trace it in the real engine (RealPlay('2-6', roll), stand mid-porch, hold the way, log x,y per frame) BEFORE fixing.
+   Also UNRUN on ac2fd73b6: towerFoot, towerCatchWater, wheel*.test.ts (on de009b9f5 all GREEN: 18/19 with only qaW123's dead end red).
+3. Gates (packet step 4), on the head after 1-2: tsc (PASS at ac2fd73b6), generality, the FULL suite and the CI tool line
+   (reference/methods/gates.md "THE FULL SET, named"), lockall again.
+4. engine-core.md's tower lines: NOT rewritten (no context left). Write: tower.ts walkOff (the flown run; wall faces flown straight down
+   and on again, the deeper judged; water by his middle; caps bounce along the flown bounce, BOUNCES 3), openEnds judges step + run,
+   towerCatches lays a run's catch where the arc comes down (runX) and only if the flown run lands on it (`takes`), a contiguous bridge
+   needs no 60 px; BUILD-26b's clearFoot (TOWER.foot) in pipeline.ts towerJoin.
+5. Then BUILD-26c runs the bots (the cause table, the 2-minute beat table) on the ruled head.
+
+## Done
+| item | result | evidence |
+|---|---|---|
+| step 1: turn's-foot piece re-checked | lockall --layouts 16 --intended 2-6, 44dcbb41a vs 4ea253b8c: **102/102 unchanged** (2-6's 32 builds too: clearFoot moves none of them); generality PASS (26 literals, 26 known) | /tmp/claude-0/-home-user-Sloths-Adventure-/65bc8b33-3d54-5e90-8b15-8de7c46842d6/scratchpad/lock-head.log (my container) |
+| step 2: the walk-off judge | tower.ts `walkOff` flies the engine's own full-speed walk-off (landFlights.data.ts 'walk', proven the engine's by landFlights.test.ts; the same path both settings, asserted), held at the tower's sides [20, W-20] and at a wall's face; `openEnds` judges the step AND the run; `towerFalls` names "a running walk-off"; `towerCatches` lays each run's catch where the arc comes down to its height (`runX`), only if the flown run lands on it; a bridge that runs its own wood on needs no 60 px (2 gate rolls had a 16 px slot by the wall) | de009b9f5 |
+| planted RED/GREEN (toy tower) | new test "a running walk-off off any end of a built tower..." judged by landings.ts `Landings.walk` (an independent flier): **old code 24/24 rolls, 420/4376 ends past 450 px; judge 0/24, 0/5307**; none of the 24 refused (BUILD-26b's draft: 13/24 left open). Unit plants: 200-wide step catches named as runs, 300-wide close them; wall clamp, wall face (down / hoist), pond from x 30 (falls) vs x 10 (caught), cap with nothing past (floor) / wood past (lands there), a cap end named | tower.test.ts 32/32 at ac2fd73b6 |
+| #16 filter | 'every piece of a storey, its hops' catch boughs included...' took every seam piece in a y band; a run's catch (a lower-storey bough by `fair`, judged by towerSkips) was filed in the upper section's seam ("hangs under") and read as a storey piece 41 px over the ledge. The filter now takes its hops' catch boughs lip to lip (its own words); the assertion is unchanged | ac2fd73b6 |
+| step 3 | **STOPPED: 1-4 moves** (seed 2 -> 7921 on Normal layout 1). Full lock, seed lists, stills: UNFINISHED (see EXACT NEXT STEP 1) | |
+
+## Pushback
+- A walk-off at less than full speed (a kid starting to walk near an end) lands between the step and the run; the judge flies only
+  those two (the packet's), so a gap between the step's wood and the run's catch could still drop a slow walker. Suggest: judge a
+  second flown walk-off from a short run-up (flyLandFlights could fly it) if the bots show it.
+- After a wall stops him the engine's air drive (how fast he goes on) is not flown; the judge flies both bounds and takes the deeper.
+
+## Unresolved
+1-4's ruling, the full lock, seed-list checks, stills, qaW123 on ac2fd73b6, the full suite and CI line, engine-core.md (all above).
+
+## Learned
+- The running walk-off already had an engine-true model in the repo (landings.ts, landFlights 'walk'): reuse a flown path, never a
+  second closed form; and an independent flier makes the planted test honest.
+- Water, caps and walls are where a walk-off model goes wrong: trace the real engine on every end a model says is caught.
+
+## Lessons applied
+D57/D87/D105 (inbox at each step and push), D102 (lean reads: line ranges and greps), D107/D109 (no clock times to the lead), D96
+(gates named from gates.md, not run: named UNRUN), rule 26 (engine gap fixed in the engine, every tower), rule 28 (each 2-6 miss traced
+in the real engine before its fix), LAWS 3 (the BUILD-26b draft's model checked against the flown table before reuse).
+
 # BUILD-26b (on t-build-26 from 4ea253b8c): HANDED OVER at the context line
 Commits: c29b8332d (step 1 deletion), 60234ead0 (6 pins re-pointed), 1be132415 (step 2 ENGINE: turn's foot clear), this REPORT
 (+ walkoff-wip.patch, + qaW123 dead-end test on TOWER.fall).
