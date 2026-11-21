@@ -6348,8 +6348,9 @@ export class GameEngine {
         // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
         if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
-      if (lid && !over) riverUnderside(ctx, lid, x0, x1, { x0: a, x1: b });
       ctx.restore();
+      // (its underside after the clip is lifted, over the river's own span: the strip's roots hang below the line, ENG-GROUND-b)
+      if (lid && !over) riverUnderside(ctx, lid, r.x0, r.x1, { x0: a, x1: b });
     }
   }
 

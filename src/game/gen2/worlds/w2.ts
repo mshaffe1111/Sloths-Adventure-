@@ -245,6 +245,8 @@ const REED_OFF = 20;
  *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
 const LIP_RISE = 170;
 const REED_BANK = 200;
+/** a piece under this deep is a plank, not a bank (a bank of earth is 90 or more: w1Pits.ts paintedBank) */
+const THIN = 90;
 
 /**
  * World 2's finish (listed.ts BASE 'w2', run where World 1's runs w1Finish): every fall of the built stage becomes its river between the
@@ -277,9 +279,12 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
   // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each. A lip may
   //  stand up to LIP_RISE under the fall's height: a liana's perch is laid up to 160 px over the bank it leaves (pipeline place 'land'),
   //  so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1)
+  //  (and never another leg's: where one leg runs under another, an upper leg's piece 600 over the fall had its edge within 2 of a plank's
+  //  and was taken for its bank, ENG-GROUND-b, the toy's race leg: a lip stands within LIP_RISE of the fall's height, either way)
+  const lip = (p: Platform, y: number) => p.y <= y + LIP_RISE && p.y >= y - LIP_RISE;
   const banks = (x0: number, x1: number, y: number) => ({
-    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
-    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
   });
   // (is the fall at x0-x1, lip y, on a leg laid LEFT? The run leg whose span holds it and whose heights lie nearest, gen2 tower.legs)
   const runs = st.gen2?.tower?.flow === 'legs' ? (st.gen2.tower.legs ?? []).filter((g) => g.travel === 'left' || g.travel === 'right') : [];
@@ -298,19 +303,51 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     const { near, far } = banks(r.x0, r.x1, r.surfaceY - surfaceBelowBank);
     if (near && far) reeds(near, far, r.x0, r.x1);
   }
-  for (const f of [...falls].sort((a, b) => a.x0 - b.x0)) {
-    if (f.kind !== 'water' && f.kind !== 'soft') continue;
-    if (had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1)) continue;
-    const { near, far } = banks(f.x0, f.x1, f.y);
-    if (!near || !far) throw new Error(`World 2 finish: the fall at x=${f.x0}-${f.x1} has no bank at one end`);
-    const top = Math.max(near.y, far.y);
+  const sorted = [...falls].sort((a, b) => a.x0 - b.x0);
+  // (a fall has its river when one spans it AT ITS HEIGHT, its surface just under the fall's lip: where one leg runs under another, the
+  //  upper leg's log river spans the lower leg's falls in x, and they were left with no water at all, ENG-GROUND-b, the toy's race leg)
+  const hasRiver = (f: (typeof sorted)[number]) => had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
+  const water = (f: (typeof sorted)[number]) => (f.kind === 'water' || f.kind === 'soft') && !hasRiver(f);
+  const taken = new Set<(typeof sorted)[number]>();
+  for (const f of sorted) {
+    if (!water(f) || taken.has(f)) continue;
+    const { near, far: far0 } = banks(f.x0, f.x1, f.y);
+    if (!near || !far0) throw new Error(`World 2 finish: the fall at x=${f.x0}-${f.x1} has no bank at one end`);
+    // (a run of falls joined by planks, thin pieces over the water between them, is ONE river under a bridge, bank to bank: laid pocket
+    //  by pocket, its water showed in slices between the planks with the backdrop under each plank, and a pocket between two planks
+    //  stood 20 higher than its neighbours (its lip the planks'): ENG-GROUND-b, the out-and-back toy's join. Each plank stands at or
+    //  over the run's banks' lower top and its foot over the water. The next fall is the one that starts at the plank's end (another
+    //  leg's falls lie between them in x). No shipped stage lays one: tools/engine/plankscan.ts)
+    let far = far0, x1 = f.x1;
+    const run: Platform[] = [], joined: Array<(typeof sorted)[number]> = [];
+    while (far.height < THIN) {
+      const end = far.x + far.width;
+      const g = sorted.find((o) => o !== f && !taken.has(o) && !joined.includes(o) && o.kind === f.kind && water(o) && Math.abs(o.x0 - end) <= 2 && Math.abs(o.y - f.y) <= LIP_RISE);
+      const next = g && banks(g.x0, g.x1, g.y).far;
+      if (!g || !next) break;
+      run.push(far);
+      joined.push(g);
+      far = next;
+      x1 = g.x1;
+    }
+    let top = Math.max(near.y, far.y);
+    if (run.length && (near.height < THIN || far.height < THIN || run.some((p) => p.y > top || p.y + p.height > top + surfaceBelowBank - 8))) {
+      // (not a bridge between two banks: the fall alone, as before)
+      far = far0;
+      x1 = f.x1;
+      run.length = 0;
+      joined.length = 0;
+      top = Math.max(near.y, far.y);
+    }
+    for (const g of joined) taken.add(g);
+    const x0 = f.x0;
     const safe = f.kind === 'soft';
-    if (safe) for (const p of solids) if (p !== near && p !== far && p.x >= f.x0 - 1 && p.x + p.width <= f.x1 + 1 && p.y > top) drop.add(p.id);
+    if (safe) for (const p of solids) if (p !== near && p !== far && !run.includes(p) && p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > top) drop.add(p.id);
     // (a splash sets him back on the bank he came from: on a leg laid LEFT (gen2 legs.ts) that is the right one, ENG-27: the toy's home leg
     // set him on the far bank, ahead, and he turned back)
-    const back = leftward(f.x0, f.x1, f.y);
-    rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: back ? { backX: f.x1 + 70, backY: far.y } : { backX: f.x0 - 70, backY: near.y } } : {}) });
-    reeds(near, far, f.x0, f.x1);
+    const back = leftward(x0, x1, f.y);
+    rivers.push({ x0, x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: back ? { backX: x1 + 70, backY: far.y } : { backX: x0 - 70, backY: near.y } } : {}) });
+    reeds(near, far, x0, x1);
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));
   st.rivers = rivers.sort((a, b) => a.x0 - b.x0);

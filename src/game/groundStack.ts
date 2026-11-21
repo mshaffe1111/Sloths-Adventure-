@@ -226,12 +226,14 @@ export function underFrames(w: number): UnderFrame[] | null {
 const UNDER_W = 512;
 
 /**
- * The underside along each line under bank p, drawn inside its soil's outline (so only on its earth). Painted (underFrames): the strip
- * laid along the line a 16-unit column at a time, each column's edge on the line, the strips taking turns from the world's origin.
- * STAND-IN until the strip lands (allowed on the toy only, the lead's ruling; 2-7 ships with the painted one): the soil's own edge
- * darkened as ground seen from below is, over the last 56 units to the line.
+ * The underside along each line under bank p (or a lidded river's stretch), over p's own x span only (each column cut at its ends: no
+ * clip), drawn AFTER the ceiling's clip is lifted (the lead's ruling for ART-UNDER, ENG-GROUND-b): the painted strip's ragged edge sits
+ * on the line (its `edge`) and its roots hang below it, into the UNDER_HANG the line keeps clear of his headroom; inside the clip they
+ * were cut off at the line. Painted (underFrames): the strip laid along the line a 16-unit column at a time, the strips taking turns from
+ * the world's origin. STAND-IN until the strip lands (allowed on the toy only, the lead's ruling; 2-7 ships with the painted one): the
+ * soil's own edge darkened as ground seen from below is, over the last 56 units to the line.
  */
-export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Platform, cs: readonly Ceiling[], view: { x0: number; x1: number }) {
+export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<Platform, 'x' | 'width'>, cs: readonly Ceiling[], view: { x0: number; x1: number }) {
   const s = underSheet(w);
   const frames = underFrames(w);
   const img = frames && s ? null : underBand(GROUND_FRAMES[w]?.deep ?? [20, 14, 10]);
@@ -239,13 +241,17 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Platf
   for (const c of cs) {
     const a = Math.max(p.x, c.x0, view.x0 - STEP), b = Math.min(p.x + p.width, c.x1, view.x1 + STEP);
     for (let x = Math.floor(a / STEP) * STEP; x < b; x += STEP) {
-      const y = Math.max(ceilingAt(c, x), ceilingAt(c, x + STEP));
+      const xs = Math.max(x, a), xe = Math.min(x + STEP, b);
+      if (xe <= xs) continue;
+      const y = Math.max(ceilingAt(c, xs), ceilingAt(c, xe));
+      // (each column overlaps the next by half a unit so no hairline shows between them; the last stops on the span's end)
+      const dw = xe - xs + (xe < b ? 0.5 : 0);
       if (frames && s) {
-        const k = Math.floor(x / UNDER_W), f = frames[((k % frames.length) + frames.length) % frames.length];
-        const h = (UNDER_W * f.h) / f.w, sw = (f.w * STEP) / UNDER_W;
-        const sx = f.x + (((x - k * UNDER_W) / UNDER_W) * f.w);
-        ctx.drawImage(s, sx, f.y, sw, f.h, x, y - f.edge * h, STEP + 0.5, h);
-      } else if (img) ctx.drawImage(img, 0, 0, 4, 64, x, y - 56, STEP + 0.5, 58);
+        const k = Math.floor(xs / UNDER_W), f = frames[((k % frames.length) + frames.length) % frames.length];
+        const h = (UNDER_W * f.h) / f.w;
+        const sx = f.x + ((xs - k * UNDER_W) / UNDER_W) * f.w, sw = ((xe - xs) * f.w) / UNDER_W;
+        ctx.drawImage(s, sx, f.y, sw, f.h, xs, y - f.edge * h, dw, h);
+      } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - 56, dw, 58);
     }
   }
 }

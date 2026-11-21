@@ -23,3 +23,20 @@ not ok 4 - the out-and-back toy (normal): the out leg's rivers end at the ceilin
     4: 'walk band at x 15395, 90 over the piece at y 1450'
     5: 'walk band at x 15395, 140 over the piece at y 1450'
     6: 'walk band at x 15419, 40 over the piece at y 1450'
+# fail 1
+    +   'bank x 14049: roots under the line at 0 of 40 points',
+    +   'bank x 14689: roots under the line at 0 of 25 points',
+    +   'bank x 15102: roots under the line at 0 of 19 points',
+    +   'bank x 15519: roots under the line at 0 of 21 points',
+# test 6 (the ruling: roots below the line) RED on 0f5ca9999 (hook inside the clips): above
+# the join test (w2.test.ts 'bridge over ONE river') RED on 0f5ca9999's w2.ts:
+not ok 1 - World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)
+    50 faults
+# pass 0
+# fail 1
+    +   'post normal seed 1: plank x 18178 stands between two pockets (surfaces 1472 | 1492)',
+    +   'post normal seed 1: plank x 17927 stands between two pockets (surfaces 1492 | 1472)',
+    +   'post normal seed 2: plank x 17942 stands between two pockets (surfaces 1452 | 1472)',
+    +   'post normal seed 2: plank x 17706 stands between two pockets (surfaces 1472 | 1452)',
+    +   'post normal seed 3: plank x 17748 stands between two pockets (surfaces 1502 | 1522)',
+    +   'post normal seed 3: plank x 17485 stands between two pockets (surfaces 1522 | 1502)',

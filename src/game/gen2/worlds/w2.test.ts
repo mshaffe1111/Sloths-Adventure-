@@ -135,3 +135,44 @@ test('the finish: a fall with no bank at one end throws (such a roll is never li
   assert.equal(JSON.stringify(w2Finish(ok)), once);
   assert.equal((ok as { rivers?: RiverZone[] }).rivers?.[0].safe?.backX, 230);
 });
+
+// ENG-GROUND-b, the join of the out-and-back toy (2-7's shape): a run of falls joined by planks (thin pieces over the water between them)
+// is ONE river under a bridge, bank to bank, at one surface. Laid pocket by pocket, its water showed in slices between the planks with
+// the backdrop under each plank, and the pocket between two planks stood 20 higher than its neighbours. Every roll of both toys, both
+// settings: no plank stands between two pockets; every plank over a river's water has the same river under its whole width, its foot
+// over the surface; the river's splash-back is on the bank he came from; every water fall has its river at its height (under the out
+// leg's log river a race-leg fall had none: the finish matched rivers by x only). Planted RED on 0f5ca9999 (16 of 16 rolls: plankscan-16.txt).
+const { buildGen2Stage } = await import('../pipeline.ts');
+const { towerCfg } = await import('../toyTower.ts');
+const { homeKit, POST_CODE, HOME_CODE } = await import('../toyHome.ts');
+test('World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)', () => {
+  const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+  const bad: string[] = [];
+  let bridges = 0;
+  for (const [name, code] of [['post', POST_CODE], ['home', HOME_CODE]] as const)
+    for (const difficulty of ['normal', 'easy'] as const)
+      for (let seed = 1; seed <= 4; seed++) {
+        const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', code), seed, difficulty }) as never, difficulty) as unknown as { platforms: Platform[]; rivers: RiverZone[]; gen2: { falls: Array<{ x0: number; x1: number; y: number; kind: string }> } };
+        const at = `${name} ${difficulty} seed ${seed}`;
+        // (every water fall has its river AT ITS HEIGHT: under the out leg's log river the race leg's falls had none)
+        for (const f of st.gen2.falls)
+          if ((f.kind === 'water' || f.kind === 'soft') && !st.rivers.some((r) => r.x0 <= f.x0 + 2 && r.x1 >= f.x1 - 2 && r.surfaceY > f.y - 20 && r.surfaceY < f.y + 260))
+            bad.push(`${at}: the fall x ${f.x0}..${f.x1} (lip ${f.y}) has no water`);
+        for (const p of st.platforms) {
+          if (p.broken || p.type !== 'solid' || p.height >= 90) continue;
+          const l = st.rivers.find((r) => Math.abs(r.x1 - p.x) <= 4 && r.surfaceY > p.y && r.surfaceY - p.y < 120);
+          const r = st.rivers.find((r) => Math.abs(r.x0 - (p.x + p.width)) <= 4 && r.surfaceY > p.y && r.surfaceY - p.y < 120);
+          if (l && r) bad.push(`${at}: plank x ${Math.round(p.x)} stands between two pockets (surfaces ${Math.round(l.surfaceY)} | ${Math.round(r.surfaceY)})`);
+          const under = st.rivers.find((z) => z.x0 < p.x - 1 && z.x1 > p.x + p.width + 1 && z.surfaceY > p.y && z.surfaceY - p.y < 120);
+          if (!under) continue;
+          bridges++;
+          if (p.y + p.height > under.surfaceY) bad.push(`${at}: plank x ${Math.round(p.x)} has its foot in the water`);
+          // (the river runs bank to bank: a bank of earth at each end, its top over the water)
+          const bank = (x: number) => st.platforms.find((q) => q.type === 'solid' && q.height >= 90 && Math.abs((x === under.x0 ? q.x + q.width : q.x) - x) <= 2 && q.y < under.surfaceY);
+          if (!bank(under.x0) || !bank(under.x1)) bad.push(`${at}: the river under plank x ${Math.round(p.x)} (${Math.round(under.x0)}..${Math.round(under.x1)}) has no bank at one end`);
+          if (under.safe && !(under.safe.backX < under.x0 || under.safe.backX > under.x1)) bad.push(`${at}: the splash-back is in the river`);
+        }
+      }
+  assert.deepEqual(bad.slice(0, 12), [], `${bad.length} faults`);
+  assert.ok(bridges >= 16, `the toy's bridges over one river (${bridges} planks)`);
+});

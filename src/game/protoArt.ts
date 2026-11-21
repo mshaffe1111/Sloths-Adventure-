@@ -88,9 +88,10 @@ export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY
   const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
   return over.length ? over : null;
 }
-/** a lidded river's underside along x0..x1 (the banks' own: painted strip or stand-in, groundStack.ts drawUnderside), inside its clip */
+/** a lidded river's underside over its own x0..x1 (between its banks, whose own undersides meet it there): the banks' painted strip or
+ *  stand-in (groundStack.ts drawUnderside), drawn after the river's clip is lifted so the strip's roots hang below the line */
 export function riverUnderside(ctx: CanvasRenderingContext2D, lid: readonly Ceiling[], x0: number, x1: number, view: { x0: number; x1: number }) {
-  drawUnderside(ctx, kitWorld, { x: x0, width: x1 - x0 } as Platform, lid, view);
+  drawUnderside(ctx, kitWorld, { x: x0, width: x1 - x0 }, lid, view);
 }
 export { clipAboveLines };
 export function setGroundPaint(on: boolean) {
@@ -958,7 +959,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number; under?: (ctx: CanvasRenderingContext2D) => void }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -1016,8 +1017,6 @@ export function drawBankArt(
   // block under the thorns, the lead 11-12)
   const sy = open.shadeFrom ?? p.y;
   drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, sy + DEPTH_BELOW * depthView, sy - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
-  // (`under`: a bank a stacked leg runs under ends at a ceiling; its underside is drawn here, on its own soil: groundStack.ts)
-  open.under?.(ctx);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -1509,8 +1508,13 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true), under: over.length ? (g) => drawUnderside(g, kitWorld, p, over, view) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
-    if (over.length) ctx.restore();
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+    if (over.length) {
+      ctx.restore();
+      // (its underside AFTER the ceiling's clip, over its own x span only: the painted strip's edge on the line and its roots hanging
+      // below it; drawn inside the soil's clip they were cut off at the line, the lead's ruling for ART-UNDER, ENG-GROUND-b)
+      drawUnderside(ctx, kitWorld, p, over, view);
+    }
   }
   // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
   // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)

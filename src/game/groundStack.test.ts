@@ -258,3 +258,67 @@ for (const difficulty of ['normal', 'easy'] as const) {
     assert.ok(drawn.size >= 2, `the out leg's pools are still drawn (${drawn.size} of ${uppers.length})`);
   });
 }
+
+// ENG-GROUND-b, the lead's ruling for ART-UNDER: the underside is drawn AFTER the ceiling's clip, over the bank's (or the pool's) own x
+// span only, the painted strip's `edge` on the line and its roots hanging below it (into UNDER_HANG). Drawn inside the clip, as ENG-GROUND
+// laid it, the roots were cut off at the line. With a strip in World 2's sheet (a test frame: edge 0.75, so 32 units hang), a point 12
+// under the line over every upper bank and pool of the toy over its race leg is painted, and nothing is painted past the span's ends.
+// Planted RED on 0f5ca9999 (the hook inside drawBankArt's soil clip and the river's ceiling clip): see red-b.txt.
+const { GROUND_FRAMES } = await import('./groundAtlasData.ts');
+test('the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only', () => {
+  const g2 = GROUND_FRAMES[2] as unknown as { unders?: Array<{ x: number; y: number; w: number; h: number; edge: number }> };
+  const had = g2.unders;
+  g2.unders = [0, 1, 2].map((i) => ({ x: 0, y: 2368 + i * 256, w: 1024, h: 256, edge: 0.75 }));
+  try {
+    const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+    const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed: 1, difficulty: 'normal' }) as never, 'normal') as unknown as {
+      platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+    };
+    // (the engine first: its stage start sets the painter's world and stacked zones for ITS stage)
+    const rp = new RealPlay('2-1', 1);
+    const e = rp.e;
+    setKitWorld(2);
+    setGroundLook(undefined);
+    setGroundPaint(true);
+    setStacks(st.gen2?.tower?.legs);
+    const banks = st.platforms.filter(paintedBank);
+    const cs = stack!.findCeilings(st.platforms, banks, stack!.stackZonesOf(st.gen2?.tower?.legs as never));
+    assert.ok(cs.length >= 1, 'the toy has a ceiling');
+    const line = (x: number) => Math.min(...cs.filter((c) => x >= c.x0 && x <= c.x1).map((c) => stack!.ceilingAt(c, x)));
+    Object.assign(e, { currentStage: st, platforms: st.platforms, riverUnder: new WeakMap(), riverBankOf: new WeakMap(), paintKit: true });
+    const world = WORLDS_DATA.find((w: { id: number }) => w.id === 2);
+    const spans = [
+      ...banks.filter((p) => stack!.ceilingsOver(p, cs).length).map((p) => ({ what: `bank x ${Math.round(p.x)}`, x0: p.x, x1: p.x + p.width, river: false })),
+      ...st.rivers.filter((z) => stack!.ceilingsOverSpan(z.x0, z.x1, z.surfaceY, cs).length).map((z) => ({ what: `pool x ${Math.round(z.x0)}`, x0: z.x0, x1: z.x1, river: true })),
+    ];
+    assert.ok(spans.filter((s) => s.river).length >= 2 && spans.filter((s) => !s.river).length >= 4, `the out leg's banks and pools over the race leg (${spans.length})`);
+    const bare: string[] = [], spill: string[] = [];
+    for (const s of spans) {
+      const mid = (s.x0 + s.x1) / 2;
+      const ly = line(mid);
+      if (!Number.isFinite(ly)) continue;
+      const view = { x0: mid - 450, x1: mid + 450, y0: ly - 500, y1: ly + 240 };
+      const r = new RecordingCtx();
+      if (s.river) {
+        Object.assign(e.camera, { x: view.x0, y: view.y0, viewportWidth: 900, viewportHeight: 740 });
+        e.drawRivers(r as unknown as CanvasRenderingContext2D, world, false);
+      } else drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+      let hit = 0, n = 0;
+      for (let x = s.x0 + 8; x <= s.x1 - 8; x += 16) {
+        const y = line(x);
+        if (!Number.isFinite(y)) continue;
+        n++;
+        // (painted there by a draw whose clips all hold the point: a strip column, its root band 12 under the line)
+        if (r.draws.some((d) => x >= d.box[0] && x <= d.box[2] && y + 12 >= d.box[1] && y + 12 <= d.box[3] && d.box[3] - d.box[1] > 60 && d.box[3] - d.box[1] < 200 && d.clips.every((c) => inside(c.polys, c.evenodd, x, y + 12)))) hit++;
+      }
+      if (n && hit < n * 0.9) bare.push(`${s.what}: roots under the line at ${hit} of ${n} points`);
+      // (the strip stays over its own span: no strip-sized draw starts left of x0 or ends right of x1, under the line)
+      const out = r.draws.filter((d) => d.box[3] - d.box[1] > 60 && d.box[3] - d.box[1] < 200 && d.box[1] < line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) && d.box[3] > line(Math.max(s.x0, Math.min(s.x1, d.box[0]))) + 4 && (d.box[0] < s.x0 - 0.01 || d.box[2] > s.x1 + 0.51) && d.box[2] > s.x0 - 40 && d.box[0] < s.x1 + 40);
+      if (s.river && out.length) spill.push(`${s.what}: ${out.length} strip columns past its ends`);
+    }
+    assert.deepEqual(bare, [], 'the roots are cut off at the line');
+    assert.deepEqual(spill, [], 'the strip spills past its span');
+  } finally {
+    g2.unders = had;
+  }
+});
