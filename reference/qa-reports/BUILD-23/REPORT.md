@@ -1,8 +1,16 @@
 # BUILD-23 REPORT: 2-3 "Stuck in the Reeds: Walk Them Home" (handover at the lead's STOP, 8:31 PM ET 11-20, D76: context past 400k)
 
 ## EXACT NEXT STEP (for BUILD-23b)
-1. **Read the lead's rulings first** (cage-lay branch (a)/(b), the bot cage skill, World 2's env plants). Until they come back, 2-3's
-   bots are RED (0/18) and nothing is GREEN.
+1. **The lead's rulings (8:10 and 8:21 PM ET, read by BUILD-23 only after its STOP):** ruling (a): the designed-cage branch is the
+   BUILDER's, kept as a GENERAL engine piece. Its conditions are NOT yet met, all for BUILD-23b: (1) its own commit with a message starting
+   'ENGINE PIECE (designed cage socket)': 3f958e630 is pushed with a "PENDING" message, and ENG-CAGE branches from it, so do NOT rewrite
+   it: add a follow-up commit with that message that holds the planted test, and name both in this REPORT; (2) the plant: branch off ->
+   a 2-3 roll lays 0 cages (RED); on -> Normal 5 / Easy 3 with critters (GREEN); plus one assert that a designed cage's little one joins
+   the line (engine.ts:4517 c.critter); (3) generalitycheck PASS; (4) lockall vs main shows ONLY 2-3 moving (any other stage moving: stop
+   and tell the lead); (5) no STOPGAP. The cage BOT skill is ENG-CAGE's (t-eng-cage, from 3f958e630), with the climb-punch question:
+   do NOT touch firsttimer.ts or castBots. (A) the startFollow move is KEPT, in its own commit affa08d81; ENG-CAGE reviews it.
+   (B) reeds as h: accepted, R-165.360 carries realisedCode 'm'. The 9:45 PM stills are a LOOK CHECK; the final shoot waits for green
+   bots (rule 29). Until ENG-CAGE lands, 2-3's bots are RED (0/18) and nothing is GREEN.
 2. **The heron's look is not visible on the real page.** stills/b23-L1-normal-3-heron-look-*.jpg are taken while the engine says the
    first heron is in its `pass` phase (followPlay herons[0].s.phase), but the heron is drawn in its CALM pose with no gaze and no wash.
    There is NO dress heron in 2-3 (proto.dress has none, checked). The heron's foot is at x 6290, b 653 (seed 1). So drawHerons
@@ -45,7 +53,8 @@ lineBot, lineChannel (103 tests, 4 red, all 4 since fixed). **NOT run: the whole
 ## Rulings and GO (verbatim sources: the lead's messages)
 - GO 8:05 PM ET on the plan as written; (1) w2-new.webp: the builder wires it, before stills of Pr/Wf; (2) 2-3 out of W2_PUZZLES: yes;
   (3) prove the cage punch early: done, the answer is NO (below).
-- Asked 8:15-ish, NOT yet ruled: the designed-cage lay branch (a) builder or (b) engine member (commit 3f958e630).
+- The designed-cage branch: ruling (a) at 8:10 PM ET (the builder's, a general engine piece; conditions in step 1). The 8:21 PM ruling:
+  the bot skill goes to ENG-CAGE; startFollow kept; reeds as h accepted (R-165.360).
 
 ## ENGINE-WORTHY (named, not coded around)
 1. **The bots cannot punch a cage** (castBots 2-3 seeds 1-3, child/middle/expert x both: 0/18, every run "sealed door, goal 0/5 (Easy
@@ -77,4 +86,4 @@ lineBot, lineChannel (103 tests, 4 red, all 4 since fixed). **NOT run: the whole
 
 ## Lessons applied / missed
 Applied: D40 (engine gaps reported, not worked around in data, except the h-for-m precedent named), D30 for most times. **Missed D30 once:**
-my 8:15 PM message to the lead was a guessed time, not from `date` (it was about 8:09). D76 handover at the lead's STOP.
+my "8:15 PM" message to the lead was a typed-ahead time; it arrived at 8:05 PM by the clock (the lead's note). D76 handover at the lead's STOP.
