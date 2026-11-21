@@ -3,7 +3,17 @@
 Packet: reference/packets/2026-11-21/INT-R3.md. Integration, a fresh member. NO PR, no version bump.
 
 ## EXACT NEXT STEP
-(filled at the hand-over)
+THE FULL SET is still running (one chain, one gate at a time) on the frozen tree /home/user/frz-b = e5eecab9a; its lines go to the
+scratchpad's fullset.txt (the scripts are copied to reference/qa-reports/INT-R3/tools/). When it wakes me (or the next member):
+1. Read fullset.txt; copy each new line into the gate table below with its PASS/FAIL words.
+2. castbots23: `python3 -I tools/castcmp.py reference/qa-reports/BUILD-23/castbots23e-rows.jsonl <scratchpad>/cast23-rows.jsonl` (row for row
+   vs BUILD-23e, 360 rows: 9 bot x setting x 40 seeds); any difference is named to the lead.
+3. After the chain ends (never beside it): `node tools/slotconfirm.mjs /home/user/frz-b <out>` with run_in_background (its own vite on
+   5181, UI-372's shooter, Normal + Easy): every 'gone' line must read duck:open and capybara:open (not spooked).
+4. The ONE red so far, roadmapcheck (below), waits on the lead's ruling; no fix until then.
+5. If this container is gone: `git worktree add --detach <dir> e5eecab9a`, `npm ci --legacy-peer-deps`, `git fetch --unshallow origin`, then
+   tools/fullset.sh <dir> <a worktree of 2a87f4cda> from the first gate not in the table (edit out the done lines).
+Not now (packet step 3): the version bump, What's New, 2-6's merge, the EnK5 test link, the PR.
 
 ## What merged (in order, MERGED never rebased; tsc + the CI tool line after each)
 | # | Branch at hash | Merge commit | tsc | CI tool line |
@@ -35,6 +45,47 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 - Judged: ONE solid sloth on every frame (no second head, no see-through body, no rock through him); neither cut is bigger than a step of
   the yawn itself, so no pop. NAMED, small: the plain pose has a rosy cheek the yawn's first and last frames lack, so the blush goes off at
   the cut in and comes back at the cut out (2x sheet: 5.80 vs 5.83, 10.83 vs 10.90). Art, not code; the lead judges it.
+- **The lead: ACCEPTED at 2x** (one solid sloth every frame, no pop; the cut over the melt stands). The cheek blush is filed as a roadmap
+  row for an art slot after release 3, not a blocker.
 
 ## THE FULL SET on e5eecab9a (gates.md D96; one heavy run at a time on the frozen worktree /home/user/frz-b)
 (filled as each gate ends)
+| Gate | Verdict | Notes |
+|---|---|---|
+| tsc | PASS | TypeScript 7.0.2 |
+| CI tool line (gates.yml) | PASS | 351 tests, 350 pass, 0 fail (merge (b)'s D92 check) |
+| artcheck | PASS | |
+| `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS | |
+| chunkcheck | PASS | |
+| knowncheck | PASS | both new lists (paintcheck, heroBody) read |
+| generalitycheck | PASS | |
+| coveragecheck | PASS | 65 s |
+| **roadmapcheck** | **FAIL (1)** | `src/game/heroBody.known.json still lists 1 known defects, but no open R-item cites it in its Source` (hero-climb2, ART-HERO R-165.378). Brought by merge (b): t-art-next at 4f0853b96 alone has 0 ROADMAP citations of the file. NOT fixed; told the lead. (The chain's first roadmapcheck ran before the unshallow and said 'shallow clone': my order; the verdict above is the re-run on the unshallowed frozen tree.) |
+| timecheck | PASS | after `git fetch --unshallow` |
+| registrycheck | PASS | 48 s |
+| drawcheck (2-3 within limits.json) | running at the box | |
+| clipcheck (no new entry; marker inside the insets) | pending | |
+| kbdcheck | pending | |
+| lockall vs main 2a87f4cda, --layouts 4, --intended 2-3 | pending | base recorded on /home/user/frz-main |
+| castBots 2-3 seeds 1-40, both settings, every tier, vs BUILD-23e rows | pending | the lead's addition |
+| tipwalk --layouts 4 | pending | |
+| every registered seed list | pending | |
+| paintcheck 0/3, 1/3, 2/3 | pending | |
+| tierBots | pending | |
+| funcheck | pending | |
+| buildcheck (alone) | pending | |
+| the unit suite | pending | |
+| slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
+
+## Learned
+- Put `git fetch --unshallow` FIRST in a full-set chain: roadmapcheck needs it as much as timecheck (gates.md names it only for both
+  together); I put it between them and lost one roadmapcheck run.
+- A merge conflict in code that a named branch's own rule supersedes (the melt vs the cut) cannot be resolved by keeping both: the newer
+  branch removed the field the old code reads. Name it to the lead at once with the resolution and keep going; the lead's judging condition
+  (a game-speed strip) is cheap with heroshoot (about 1 minute here).
+
+## Lessons applied
+D29 (no PR, gates first), D42 (every time from `date`/the hook), D92 (tsc + the CI tool line after each merge), D96 (THE FULL SET by
+gates.yml, coveragecheck/registrycheck/tipwalk/paintcheck/timecheck added), D102 (lean reads: line ranges and greps), D105 (ReadNotifications
+at every step and push), D109 (no clock times to the lead), D111 (28-minute box: handed over at it), D113 (no foreground wait: ended turns
+and a wake-up), D115 (every run on a frozen worktree; commits only on /home/user/rel3).
