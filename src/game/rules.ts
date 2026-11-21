@@ -211,6 +211,8 @@ export function calculateHitScore(
 /**
  * In a stage that runs to the right (not a climb), the engine stops him this far past the shrine (exitTotemX + SHRINE_STOP), so a pickup
  * further than PAST_SHRINE beyond it (his reach, less a little) can never be picked up. The stage builders and the level check keep to it.
+ * A stage that travels left (config.travel 'left') has its wall on the shrine's left, so there beyond is leftward (stageModes walls; the
+ * level check reads the travel, planted in realPlay.test 'the engine's own wall').
  */
 export const SHRINE_STOP = 35;
 export const PAST_SHRINE = 60;
