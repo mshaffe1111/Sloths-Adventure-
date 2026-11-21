@@ -23,9 +23,8 @@ Commits: de009b9f5 (the judge), ac2fd73b6 (water by his middle, a cap bounces hi
    which starts at x 30 (water takes him by his middle, river.ts riverAt; the judge had given it a foot's 11 px): FIXED in ac2fd73b6;
    (b) the end at x 827, y 1556: the run comes down on a mushroom cap (706-776, y 1704) the judge read as a landing; the engine bounces
    him on (roll 1 lands 150 px down, others 505-510): FIXED in ac2fd73b6 (walkOff flies the flown 'bounce' off a cap). qaW123 on
-   ac2fd73b6: UNRUN to its end (started in the background, dies with my container): re-run `npx tsx --test src/game/qaW123.test.ts`;
-   if an end is left, trace it in the real engine (RealPlay('2-6', roll), stand mid-porch, hold the way, log x,y per frame) BEFORE fixing.
-   Also UNRUN on ac2fd73b6: towerFoot, towerCatchWater, wheel*.test.ts (on de009b9f5 all GREEN: 18/19 with only qaW123's dead end red).
+   ac2fd73b6: **GREEN** (with towerFoot, towerCatchWater, wheel*.test.ts: 19/19 pass, 0 fail, on a frozen ac2fd73b6). Done unless
+   the lead's 1-4 ruling changes the judge.
 3. Gates (packet step 4), on the head after 1-2: tsc (PASS at ac2fd73b6), generality, the FULL suite and the CI tool line
    (reference/methods/gates.md "THE FULL SET, named"), lockall again.
 4. engine-core.md's tower lines: NOT rewritten (no context left). Write: tower.ts walkOff (the flown run; wall faces flown straight down
@@ -50,7 +49,7 @@ Commits: de009b9f5 (the judge), ac2fd73b6 (water by his middle, a cap bounces hi
 - After a wall stops him the engine's air drive (how fast he goes on) is not flown; the judge flies both bounds and takes the deeper.
 
 ## Unresolved
-1-4's ruling, the full lock, seed-list checks, stills, qaW123 on ac2fd73b6, the full suite and CI line, engine-core.md (all above).
+1-4's ruling, the full lock, seed-list checks, stills, the full suite and CI line, engine-core.md (all above).
 
 ## Learned
 - The running walk-off already had an engine-true model in the repo (landings.ts, landFlights 'walk'): reuse a flown path, never a
