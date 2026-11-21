@@ -66,3 +66,6 @@ Every packet says: **messages to the lead carry no clock times** (the notificati
 
 ## Every packet carries a time box as well as the context line (D111, 11-21)
 Every packet's BOX says: **hand over at 320k REAL context OR 28 minutes after your start (from `date`), whichever comes first.** Members misread their own context by 100k+ (ENG-26e, -27f), and xhigh members add about 10k a minute, so between two lead reads 12-15 minutes apart a member can pass its line (ENG-27h at 325k, ENG-GROUND-d at 346k, 11-21). The clock is the one measure a member reads right.
+
+## Every packet forbids a foreground wait on a background run (D113, 11-21)
+Every packet says: **never wait in the foreground for a background run** (no until/sleep loop, no blocking Monitor, no foreground tail -f): read its tail, do other work, or END YOUR TURN; the run finishing and any lead message both wake you. A member in a foreground wait reads nothing (ENG-26i read a ruling about 5 minutes late while it sat waiting on its own background sweep, 11-21: a D87 repeat; "run long commands in the background" alone did not cover waiting on them).
