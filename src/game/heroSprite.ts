@@ -18,7 +18,7 @@ import { drawFx, fxFrame } from './bossFx.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
-import { clipPick, heroClipsAreLive, heroClipsLive, pairSway } from './heroClips.ts';
+import { clipPick, heroClipsAreLive, heroClipsLive, pairSway, type ClipFrame } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
 import { drawSwimHero } from './heroSwim.ts';
 import { drawRopeHang } from './heroRope.ts';
@@ -311,22 +311,17 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const jarF = jarHero && ch && jarHero.img.complete && jarHero.img.naturalWidth ? jarHero.frame(ch.name) : undefined;
   if (jarF && drawStandard(ctx, p, time, ch!, jarHero!.img, jarF)) return true;
   if (clip) {
-    // at each end of a clip the ordinary pose shows through, so the change of pose melts instead of popping
-    if (clip.blend < 1 && ch && stdFrame(ch.name)) {
-      ctx.save();
-      ctx.globalAlpha *= 1 - clip.blend;
-      drawStandard(ctx, p, time, ch, stdImg!);
-      ctx.restore();
-    }
-    ctx.save();
-    ctx.globalAlpha *= clip.blend;
     // (on the ground the run start's lean and the end of a turn's squeeze ride on the redrawn run too)
     // (and on a draped pair, the sway toward the strand the reaching hand takes: heroClips.ts pairSway)
     // (the painted two-hand climb carries its own reach, so no code sway rides on it: clip.k is set only on that sheet)
     const lean = p.grounded ? ch?.rot : p.climbing && p.climbPair && !clip.k ? pairSway(p) : undefined;
-    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: clip.sx ?? ch?.sx, rot: lean }, clip.img, clip.f, clip.k);
-    ctx.restore();
-    if (drew) return true;
+    const clipCh: StdChoice = { name: clip.name, bob: 0, sx: clip.sx ?? ch?.sx, rot: lean };
+    // at each end of a clip the ordinary pose melts into it, so the change of pose never pops: a true cross-dissolve, both poses
+    // added on a scratch canvas and laid down whole, so his body is solid on every frame of the melt (R-165.353: each pose drawn
+    // part-clear straight onto the stage left the rock showing through him, and a doubled head)
+    if (clip.blend < 1 && ch && stdFrame(ch.name) && drawMelt(ctx, p, time, clip, clipCh, ch, stdImg!)) return true;
+    // (nothing plain to melt with, or no scratch canvas: the clip itself, solid)
+    if (drawStandard(ctx, p, time, clipCh, clip.img, clip.f, clip.k)) return true;
   }
   const mainLoaded = ready && !!atlas;
   const source = heroSource(!!(stdImg && ch && stdFrame(ch.name)), mainLoaded);
@@ -404,6 +399,71 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const dx = choice.centred ? -(f.w * fk) / 2 : -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * fk;
   const dy = choice.centred ? -pivot - (f.h * fk) / 2 : -f.ay * fk + choice.bob;
   drawSheet(ctx, src, f.x, f.y, f.w, f.h, dx, dy, f.w * fk, f.h * fk);
+  ctx.restore();
+  return true;
+}
+
+/**
+ * The melt between his plain pose and a clip (R-165.353), as a true cross-dissolve: on a scratch canvas lined up with the stage's
+ * pixels, the plain pose at 1-blend and the clip at blend ADDED to it ('lighter'), then the whole laid on the stage at once. Where both
+ * poses cover him the two shares sum to all of him, so he is solid on every frame; only the edges one pose has and the other lacks
+ * fade, which is the melt itself. Drawing each pose part-clear straight onto the stage (the old way) painted only 1-(1-b)*b of his
+ * body (three quarters half way): the rock showed through him. Used only for the few frames at each end of a clip (CLIP_FADE).
+ * False when there is no canvas to use (the caller then draws the clip solid).
+ */
+let meltCv: HTMLCanvasElement | null = null;
+/** the room the melt is drawn in, about his feet, in heights of the standing hero: wide and tall enough for a raised arm, the cheer
+ *  and the shield's aura (miloVariants.ts drawAuras, about 0.8 of a height round his middle) */
+const MELT_BOX = { left: 1.0, right: 1.0, up: 1.5, down: 0.6 };
+/** the largest scratch canvas the melt may use (device px a side); past it (a huge zoom) the clip draws solid instead */
+const MELT_MAX = 2048;
+function drawMelt(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, clip: ClipFrame, clipCh: StdChoice, ch: StdChoice, stdImg: HTMLImageElement): boolean {
+  const blend = clip.blend;
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return false;
+  const m = ctx.getTransform();
+  const H = HERO_UNITS * HERO_SPRITE_SCALE;
+  const fx = p.x + (p.grounded ? p.drawDx ?? 0 : 0);
+  const fy = p.y;
+  // the box on the stage's pixels: its middle, and its half-sizes along each axis (the camera may scale it; it never turns it, but
+  // this does not assume so)
+  const cx = fx + ((MELT_BOX.right - MELT_BOX.left) * H) / 2;
+  const cy = fy + ((MELT_BOX.down - MELT_BOX.up) * H) / 2;
+  const hw = ((MELT_BOX.left + MELT_BOX.right) * H) / 2;
+  const hh = ((MELT_BOX.up + MELT_BOX.down) * H) / 2;
+  const ex = Math.abs(m.a) * hw + Math.abs(m.c) * hh;
+  const ey = Math.abs(m.b) * hw + Math.abs(m.d) * hh;
+  const mx = m.a * cx + m.c * cy + m.e;
+  const my = m.b * cx + m.d * cy + m.f;
+  const x0 = Math.floor(mx - ex);
+  const y0 = Math.floor(my - ey);
+  const w = Math.ceil(mx + ex) - x0;
+  const h = Math.ceil(my + ey) - y0;
+  if (!(w > 0 && h > 0) || w > MELT_MAX || h > MELT_MAX) return false;
+  if (!meltCv) meltCv = document.createElement('canvas');
+  // (it only grows, so a melt never reallocates it after the first few)
+  if (meltCv.width < w) meltCv.width = w;
+  if (meltCv.height < h) meltCv.height = h;
+  const g = meltCv.getContext('2d');
+  if (!g) return false;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1;
+  g.globalCompositeOperation = 'source-over';
+  g.clearRect(0, 0, w, h);
+  // the stage's own transform, moved so the box's corner is the scratch canvas's corner: every pixel lands where it would on the stage
+  g.setTransform(m.a, m.b, m.c, m.d, m.e - x0, m.f - y0);
+  g.save();
+  g.globalAlpha = 1 - blend;
+  drawStandard(g, p, time, ch, stdImg);
+  g.restore();
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  g.globalAlpha = blend;
+  const drew = drawStandard(g, p, time, clipCh, clip.img, clip.f, clip.k);
+  g.restore();
+  if (!drew) return false;
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(meltCv, 0, 0, w, h, x0, y0, w, h);
   ctx.restore();
   return true;
 }
