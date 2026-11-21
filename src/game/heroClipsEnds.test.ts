@@ -1,5 +1,5 @@
 /**
- * R-165.354 (ART-NEXT-c, 11-21): every idle clip starts and ends on Pokey's plain standing pose, so the melt between the plain hero and
+ * R-165.354 (ART-NEXT-c, 11-21): every idle clip starts and ends on Pokey's plain standing pose, so the cut between the plain hero and
  * a clip never shows two outlines. The numbers are measured from the shipped sheets by tools/art/hfnext/idleends.py into
  * heroClipsEnds.json (CI has no image decoder); this test holds the JSON to the sheets by SHA-256, so a sheet changed without
  * re-measuring fails here, then holds every end frame to the plain frame: feet, body box and head within 2 px, silhouette xor under 2%.

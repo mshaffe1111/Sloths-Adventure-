@@ -5,7 +5,7 @@
  *
  * Like tools/art/kitaudit/shoot.mjs (its vite, its pin): loads each stage (?layout=1&lessons=off), pins Pokey standing on the middle
  * solid platform, then saves a crop around him (dsf 2, sideways 844x390) every `everyMs` of real time from `fromSec` to `toSec` after
- * the pin (the first idle clip starts IDLE_WAIT = 4 s after he stands still; its melt is CLIP_FADE = 0.2 s). Each file is named by the
+ * the pin (the first idle clip starts IDLE_WAIT = 4 s after he stands still, on a cut: R-165.382). Each file is named by the
  * game seconds since the pin. Also writes <stage>-sheet.png: every crop in a row, the time over each.
  */
 import { spawn } from 'node:child_process';
