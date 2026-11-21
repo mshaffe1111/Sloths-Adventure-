@@ -1,0 +1,73 @@
+{
+ "tag": "under",
+ "edits": [
+  {
+   "name": "under0",
+   "src": "gh:COMMIT:reference/art/hfunder/starts/under0.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfunder/starts/ref.png"
+   ],
+   "w": 1536,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the first image as the underside of a thick bank of packed brown earth seen from below, in exactly the hand-painted storybook style of the soil in the second image: soft painterly gouache shading, fine thin dark-brown linework. The top band is that same warm brown soil with its grey stones and dark root lines, filling the image's top edge from side to side. Below it the earth hangs down in a ragged, lumpy, uneven overhang edge, in cool deep shadow, with a few small clods of earth and many thin dark tree roots and root tips dangling down from it. Keep its shape, size and colours. Keep the flat plain grey background below it, with empty grey space under the roots and along the bottom edge.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, sky, grass, moss, leaves, plants, flowers, water, cave, ground plane, straight edge, ruler-straight line, flat vector, clip art, extra objects, cast shadow, sloth, animal"
+  },
+  {
+   "name": "corner",
+   "src": "gh:COMMIT:reference/art/hfunder/starts/corner.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfunder/starts/ref.png"
+   ],
+   "w": 512,
+   "h": 768,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the first image as the corner of a bank of packed brown earth, in exactly the hand-painted storybook style of the soil in the second image: soft painterly gouache shading, fine thin dark-brown linework. The same warm brown soil with its grey stones and dark root lines fills the top-left and the image's top edge. Its right side is a rough vertical earth face; at the bottom it turns round a rounded corner into the bank's underside, a ragged, lumpy overhang in cool deep shadow seen from below. Thin dark tree roots and root tips dangle from the underside and from the face. Keep its shape, size and colours. Keep the flat plain grey background to the right of it and below it, with empty grey space along the right and bottom edges.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, sky, grass, moss, leaves, plants, flowers, water, cave, ground plane, straight edge, ruler-straight line, flat vector, clip art, extra objects, cast shadow, sloth, animal"
+  },
+  {
+   "name": "under1",
+   "src": "gh:COMMIT:reference/art/hfunder/starts/under1.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfunder/starts/ref.png"
+   ],
+   "w": 1536,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the first image as the underside of a thick bank of packed brown earth seen from below, in exactly the hand-painted storybook style of the soil in the second image: soft painterly gouache shading, fine thin dark-brown linework. The top band is that same warm brown soil with its grey stones and dark root lines, filling the image's top edge from side to side. Below it the earth hangs down in a ragged, lumpy, uneven overhang edge, in cool deep shadow, with a few small clods of earth and many thin dark tree roots and root tips dangling down from it. Keep its shape, size and colours. Keep the flat plain grey background below it, with empty grey space under the roots and along the bottom edge.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, sky, grass, moss, leaves, plants, flowers, water, cave, ground plane, straight edge, ruler-straight line, flat vector, clip art, extra objects, cast shadow, sloth, animal"
+  },
+  {
+   "name": "under2",
+   "src": "gh:COMMIT:reference/art/hfunder/starts/under2.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfunder/starts/ref.png"
+   ],
+   "w": 1536,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37,
+    41
+   ],
+   "prompt": "Repaint the first image as the underside of a thick bank of packed brown earth seen from below, in exactly the hand-painted storybook style of the soil in the second image: soft painterly gouache shading, fine thin dark-brown linework. The top band is that same warm brown soil with its grey stones and dark root lines, filling the image's top edge from side to side. Below it the earth hangs down in a ragged, lumpy, uneven overhang edge, in cool deep shadow, with a few small clods of earth and many thin dark tree roots and root tips dangling down from it. Keep its shape, size and colours. Keep the flat plain grey background below it, with empty grey space under the roots and along the bottom edge.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, sky, grass, moss, leaves, plants, flowers, water, cave, ground plane, straight edge, ruler-straight line, flat vector, clip art, extra objects, cast shadow, sloth, animal"
+  }
+ ]
+}
