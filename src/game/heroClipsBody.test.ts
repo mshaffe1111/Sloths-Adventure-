@@ -42,18 +42,19 @@ import { HERO_CLIPS } from './heroClipsData.ts';
 import BODY from './heroBody.json' with { type: 'json' };
 import KNOWN from './heroBody.known.json' with { type: 'json' };
 
-type Sheet = { sheet: string; sheet_sha256: string; frames: number; frame_max: number; frame_max_at: number; pooled: number; step_median: number; loop_seam: number };
-const B = BODY as unknown as { bar: { frame_max: number; pooled: number }; loop_bar: unknown; plain_sha256: string; sheets: Record<string, Sheet> };
+type Sheet = { sheet: string; sheet_sha256: string; frames: number; frame_max: number; frame_max_at: number; pooled: number; step_median: number; loop_seam: number;
+  bands: Record<string, { light: number; dark: number }>; band_max: number };
+const B = BODY as unknown as { bar: { frame_max: number; pooled: number; band: number }; loop_bar: unknown; plain_sha256: string; sheets: Record<string, Sheet> };
 /** the clips the game loops or cycles through (heroClips.ts: push loops; climb, walk and run follow a cycle): last -> first is a seam */
 const LOOPING = ['push', 'move-climb', 'move-walk', 'move-run'];
-const K = KNOWN as unknown as { known: Array<{ sheet: string; frame_max: number; pooled: number; why: string }> };
+const K = KNOWN as unknown as { known: Array<{ sheet: string; frame_max?: number; pooled?: number; band_max?: number; why: string }> };
 /** R-165.379 (ART-SHEETS, 11-21): and every hero sheet that is NOT a clip (rope, swim, vine, story, studies, atlas), measured by herobody.py
  * through the game's own frame tables with sheetbody.py's frame mask (no water blue, no leaf green; the atlas's face_* close-ups left out) */
 const NON_CLIP_SHEETS = ['hero-rope', 'pokey-swim', 'hero-vine', 'hero-story', 'hero-studies', 'hero-atlas'];
 const HERO_SHEETS = [...Object.keys(HERO_CLIPS), 'hero-climb2', ...NON_CLIP_SHEETS];
 
 test('every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)', () => {
-  assert.deepEqual(B.bar, { frame_max: 2.0, pooled: 1.0 }, 'the bar is fixed here, not in the JSON');
+  assert.deepEqual(B.bar, { frame_max: 2.0, pooled: 1.0, band: 2.0 }, 'the bar is fixed here, not in the JSON');
   assert.deepEqual(B.loop_bar, { times_median: 2, floor: 0.5, ceiling: 1.0 }, 'the loop bar is fixed here, not in the JSON');
   assert.equal(B.plain_sha256, sha('../assets/hero/hero-standard.webp'), 'hero-standard.webp changed since measuring');
   assert.deepEqual(Object.keys(B.sheets).sort(), [...HERO_SHEETS].sort(), 'heroBody.json measures a different set of sheets than the game draws');
@@ -61,7 +62,7 @@ test('every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobo
 });
 
 test('every hero sheet is the same sloth as the plain pose (fur: each frame <= 2.0 dE, the sheet pooled <= 1.0 dE), or a known row no worse', () => {
-  const known = new Map(K.known.map((k) => [k.sheet, k]));
+  const known = new Map(K.known.filter((k) => k.frame_max !== undefined).map((k) => [k.sheet, k as { frame_max: number; pooled: number }]));
   const bad: string[] = [];
   for (const n of HERO_SHEETS) {
     const s = B.sheets[n]; const k = known.get(n);
@@ -85,4 +86,32 @@ test('a looping hero clip does not pop where it loops (fur mean, last frame -> f
     if (s.loop_seam > lim) bad.push(`${n}: last -> first frame steps ${s.loop_seam} dE (limit ${lim.toFixed(3)}, its median step ${s.step_median})`);
   }
   assert.deepEqual(bad, [], 'looping hero clips that pop at the loop');
+});
+
+/**
+ * R-165.379 (ART-SHEETS-b, 11-21): THE BAND GATE. A pooled fur mean is fooled by a grade that squashes the tonal range (the mean-graded
+ * swim: pooled 0.01 dE, but its light fur 4.04 too dark and its dark fur 4.04 too light: a flat, pale head). herobody.py splits each
+ * MOVE GROUP's fur (swim: surf / tread / under / first; atlas, story, studies: the pose family; a clip, climb2, rope, vine: the sheet) at
+ * its own median L and holds the light half to the plain pose's light half, the dark half to its dark half: each <= 2.0 dE, or a
+ * heroBody.known.json row's band_max no worse.
+ */
+test('every hero sheet keeps the plain pose\'s light AND dark fur, per move group (each band <= 2.0 dE), or a known row no worse', () => {
+  const known = new Map(K.known.filter((k) => k.band_max !== undefined).map((k) => [k.sheet, k.band_max as number]));
+  const bad: string[] = [];
+  for (const n of HERO_SHEETS) {
+    const s = B.sheets[n]; const k = known.get(n);
+    assert.ok(s.bands && Object.keys(s.bands).length, `${n}: its fur bands were not measured`);
+    const worst = Math.max(...Object.values(s.bands).flatMap((b) => [b.light, b.dark]));
+    assert.equal(worst, s.band_max, `${n}: band_max is not its worst band`);
+    if (k !== undefined) {
+      if (worst <= B.bar.band) bad.push(`${n} now passes the band bar (worst band ${worst}): take band_max off its heroBody.known.json row`);
+      else if (worst > k) bad.push(`${n}: a fur band got further from the plain pose (${worst} vs ${k} listed)`);
+      continue;
+    }
+    for (const [g, b] of Object.entries(s.bands)) {
+      if (b.light > B.bar.band) bad.push(`${n} ${g}: light fur ${b.light} dE off the plain pose's light fur (limit ${B.bar.band})`);
+      if (b.dark > B.bar.band) bad.push(`${n} ${g}: dark fur ${b.dark} dE off the plain pose's dark fur (limit ${B.bar.band})`);
+    }
+  }
+  assert.deepEqual(bad, [], 'hero sheets whose light or dark fur is off the plain pose');
 });

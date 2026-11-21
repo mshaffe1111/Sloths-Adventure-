@@ -1,3 +1,54 @@
+# ART-SHEETS-b (11-21): bands PER MOVE GROUP on swim (R-165.379), the band gate planted red; R-165.382 step 0 running
+## EXACT NEXT STEP
+The lead rules first (below: neither per-group L map meets a 2.0 band bar on swim without harm). Then, on t-art-next at this REPORT's commit or later:
+1. Step 0 (R-165.382): if the step-0 run in this container finished, its verdict is below; if not, re-run it on a FROZEN 4f0853b96 worktree
+   (npm install --legacy-peer-deps; tsc; the CLAUDE.md suite; then drawcheck), one at a time, run_in_background.
+2. By the lead's ruling on swim: (a) the band bar is LOOSER for the non-clip sheets (affine reaches about 4.4-5.6 per swim group;
+   the mean method about 2.4-5.6), or (b) the band check compares like with like (the plain pose's light half holds its cream belly and
+   face mask in its own proportion; a swim or back-view pose shows a different share of cream, so part of every band gap is POSE, not
+   colour), e.g. bands taken on the fur BELOW the cream threshold only, or per body part; then re-run sheetgrade.py swim --group
+   [--affine] --out <scratch> on a frozen e41c738bf worktree, the strip (scratchpad strip.py layout is in this commit's
+   reference/art/hfnext/hero/sheets/swim-groups-*.jpg: plain | before | mean | after, game size and 2x), and send the lead the path.
+3. Then, on the lead's yes: rope, vine, climb2, atlas, story, studies by the same method; heroBody.json rewritten
+   (python3 -I tools/art/hfnext/herobody.py --write); heroBody.known.json: climb2's mean row off if it passes, band_max rows only for
+   sheets the lead accepts as left (the clips below fail the band bar at 2.0 TODAY: the lead decides bar or rows).
+## What this box did (no Hugging Face spend)
+- tools/art/hfnext/sheetgrade.py --group: the quantile map, the a/b-per-L curve and the 5-pass mean close are each computed on the MOVE
+  GROUP's own fur (swim surf/tread/under/first; rope/vine/climb2 one group; atlas/story/studies the frame name less its trailing
+  letter+digits). --affine (with --group): the group's L map is a straight line through its light-band and dark-band means onto the plain
+  pose's, slope held to 0.6-1.8. Both ran from a frozen e41c738bf worktree reading the sheets from git 4f0853b96, written to scratch only
+  (no sheet in src/ changed by this box).
+- tools/art/hfnext/herobody.py: per sheet and per move group, the fur split at its own median L, light half vs the plain pose's light
+  half, dark vs dark (dE): 'bands' and 'band_max' in heroBody.json, bar.band 2.0 (the lead sets it). heroClipsBody.test.ts: the band
+  gate test (each band <= bar, or a known row's band_max no worse; a band-only known row does not excuse the mean test). heroBody.json
+  NOT rewritten (red on t-art-next, as before this box, until the ruling).
+- PLANTED RED: herobody.py on e41c738bf's sheets (reference/art/hfnext/hero/sheets/bands-e41c738bf.txt): pokey-swim band max 5.54
+  (mean-graded; surf 5.55/5.43) FAILS; also rope 3.91, vine 3.02, climb2 2.66, and story 18.12, studies 9.76, atlas 13.86 (ungraded
+  and pose-heavy). NEW: five graded CLIPS and climb2 fail a 2.0 band bar too (move-climb 4.20, hurt 3.08, look-around 2.83, idle-yawn 2.31,
+  move-mega 2.03; climb2 2.66) - the mean method of R-165.377/378 squashed them the same way.
+## Swim, per group (light / dark dE vs the plain pose's bands; pooled)
+| group | before 4f0853b96 | mean (e41c738bf) | --group quantile | --group --affine |
+|---|---|---|---|---|
+| first | 7.13 / 9.36 | 2.41 / 2.38 | 2.01 / 2.00 | 2.79 / 2.50 |
+| surf | 10.50 / 8.36 | 5.55 / 5.43 | 2.59 / 2.60 | 5.56 / 5.53 |
+| tread | 5.98 / 7.38 | 3.78 / 3.82 | 2.86 / 2.87 | 5.07 / 5.10 |
+| under | 7.15 / 5.74 | 4.72 / 4.84 | 1.50 / 1.48 | 4.43 / 4.36 |
+Pooled after: quantile 0.02, affine 0.08; worst frame quantile 1.79 (surf0), affine 1.12.
+VERDICT (my eyes at 2x, swim-tread2-quantile-2x.jpg, swim-under7-quantile-2x.jpg): per-group QUANTILE still MOTTLES tread2's and
+under7's heads (blocky pale patches: the map's steep stretch turns small L steps and q86 blocks into blotches) - NOT shippable.
+AFFINE (swim-tread2-affine-2x.jpg): smooth, no mottle, same sloth, head a touch lighter than the mean method, but the slope hits 1.8 and
+the bands stay 4.4-5.6 off: swim's paint has a much narrower tonal range than the plain pose, and stretching it far enough to meet 2.0
+makes mottle. So no global per-group tone map meets a 2.0 band bar on swim cleanly; the gap is partly pose (see NEXT STEP 2b).
+## Polish check
+- swim quantile per group: FAILS (mottled heads, tread2/under7 at 2x). Not shipped.
+- swim affine per group: smooth, no artefacts, warm same-sloth read (swim-groups-affine.jpg 2x row); bands not at 2.0. Not shipped (ruling).
+- Nothing else shipped; no src/ asset changed.
+## Lessons applied
+D115 (every grade and measure read a frozen worktree: e41c738bf for tools/tables, sheets from git 4f0853b96; step 0 on its own frozen
+4f0853b96 worktree), D113 (all runs run_in_background, no foreground wait), D111 (box by date), D109 (no clock times to the lead),
+D105 (ReadNotifications at each boundary), D114 (step 0 first). Deviation, named: the swim grades (one Python process each, nice 19)
+ran while the step-0 suite ran; the suite and drawcheck themselves were never run together.
+
 # ART-SHEETS (11-21): Pokey one sloth on every NON-clip sheet too (R-165.379); R-165.382's last gates (step 0)
 ## EXACT NEXT STEP
 The lead's ruling (this box): if sheetgrade.py --bands reads right on swim's head beside the plain pose, --bands becomes THE method for

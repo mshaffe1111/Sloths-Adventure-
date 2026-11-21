@@ -8,7 +8,7 @@ neighbours in table order (10 passes), then 3 exact per-frame passes. Pixels out
     python3 -I tools/art/hfnext/sheetgrade.py rope,swim,vine,climb2 [--from 4f0853b96] [--dry]
 Reads each sheet from git at --from, writes it to src/assets/hero/ (q86), records the transfer in tools/art/hfnext/sheetgrade.json.
 """
-import io, json, subprocess, sys
+import io, json, re, subprocess, sys
 from pathlib import Path
 import numpy as np
 from PIL import Image
@@ -19,6 +19,12 @@ DRY = '--dry' in sys.argv
 LHALF = '--lhalf' in sys.argv   # the lead (swim): a/b in full, HALF the L shift, no per-frame L (pose shading fooled the mean's L)
 BANDS = '--bands' in sys.argv   # the lead (swim): L by BAND, the sheet's fur L quantiles mapped onto the plain pose's (light fur onto light
                                 # fur, dark onto dark: keeps the tonal range), a/b per L as before; per-frame offsets a/b only
+GROUP = '--group' in sys.argv  # ART-SHEETS-b (R-165.379): --bands PER MOVE GROUP: the quantile map, the a/b-per-L curve and the mean close
+if GROUP:                       # are each computed on the group's OWN fur (swim: surf / tread / under / first; rope, vine, climb2: the sheet;
+    BANDS = True                # atlas, story, studies: the pose family), so moves with different shading are not pulled by one map
+AFFINE = '--affine' in sys.argv  # ART-SHEETS-b: the group's L map is a STRAIGHT line through its light-band and dark-band means onto the
+if AFFINE:                         # plain pose's (slope 0.6-1.8): a quantile map's steep stretches turned small L steps (and q86 blocks)
+    BANDS = True                   # into mottle on swim tread/under; a line keeps the paint smooth
 OUTDIR = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else None   # write the sheet there instead (a variant to compare)
 JS = ("import {ROPE_FRAMES} from './src/game/heroRopeData.ts'; import {SWIM_MOVES} from './src/game/heroSwimData.ts';"
       "import {VINE_FRAMES} from './src/game/heroVineData.ts'; import {STORY_FRAMES} from './src/game/heroStoryData.ts';"
@@ -74,27 +80,42 @@ for name in NAMES:
     R = list(FRAMES[name].values())
     FACE = [n.startswith('face_') for n in FRAMES[name]]   # atlas face close-ups (HeroFaceIcon): the face is lighter than the body by design,
                                                            # so they take the sheet's curve but no per-frame pull and do not steer the mean
+    def fam(n):   # the move group of a frame (one group per sheet without --group)
+        if not GROUP or name in ('rope', 'vine', 'climb2'):
+            return 'all'
+        return re.sub(r'(_?[a-z])?\d+$', '', n) if name != 'swim' else re.sub(r'\d+$', '', n)
+    grp = [fam(n) for n in FRAMES[name]]; G = sorted(set(grp)); gi = np.array([G.index(g) for g in grp])
     crop = lambda s, r: s[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']]
     fr = [crop(sheet, r) for r in R]
-    CF = np.concatenate([L[furm(L)] for k, L in enumerate(lab(f[..., :3])[f[..., 3] > 200] for f in fr) if not FACE[k]])
-    pn, pa, pb = bin_means(PF); cn, ca, cb = bin_means(CF)
-    w = np.minimum(pn, cn); ok = w >= 200
-    ga, gb = pm[1] - CF[:, 1].mean(), pm[2] - CF[:, 2].mean()
-    da = np.where(ok, pa - ca, ga); db = np.where(ok, pb - cb, gb)
-    da, db = smooth(da, np.where(ok, w, 1.0)), smooth(db, np.where(ok, w, 1.0))
-    dL = float(pm[0] - CF[:, 0].mean()); ctr = (BINS[:-1] + BINS[1:]) / 2
+    FL = [L[furm(L)] for L in (lab(f[..., :3])[f[..., 3] > 200] for f in fr)]
+    CF = np.concatenate([u for k, u in enumerate(FL) if not FACE[k]])
+    ctr = (BINS[:-1] + BINS[1:]) / 2; pn, pa, pb = bin_means(PF)
+    QS = np.linspace(2, 98, 25); qd_p = np.percentile(PF[:, 0], QS)
+    dL, da, db, qx, qd = [], [], [], [], []
+    for g in range(len(G)):
+        Cg = np.concatenate([u for k, u in enumerate(FL) if gi[k] == g and not FACE[k]] or [u for k, u in enumerate(FL) if gi[k] == g])
+        cn, ca, cb = bin_means(Cg); w = np.minimum(pn, cn); ok = w >= 200
+        ga, gb = pm[1] - Cg[:, 1].mean(), pm[2] - Cg[:, 2].mean()
+        dag = np.where(ok, pa - ca, ga); dbg = np.where(ok, pb - cb, gb)
+        da.append(smooth(dag, np.where(ok, w, 1.0))); db.append(smooth(dbg, np.where(ok, w, 1.0)))
+        qxg = np.percentile(Cg[:, 0], QS); qx.append(qxg); qd.append(qd_p - qxg)
+        if AFFINE:
+            def bm(F):
+                m = np.median(F[:, 0]); return F[F[:, 0] >= m, 0].mean(), F[F[:, 0] < m, 0].mean()
+            (cl, cd), (pl_, pd_) = bm(Cg), bm(PF)
+            sl = float(np.clip((pl_ - pd_) / max(cl - cd, 1e-6), 0.6, 1.8)); c0 = (pl_ + pd_) / 2 - sl * (cl + cd) / 2
+            qx[-1] = np.array([0.0, 100.0]); qd[-1] = np.array([c0, c0 + (sl - 1) * 100])   # delta L = c0 + (sl - 1) L: a line
+        dL.append(0.0 if BANDS else float(pm[0] - Cg[:, 0].mean()))
+    dL, da, db = np.array(dL), np.array(da), np.array(db)
 
-    QS = np.linspace(2, 98, 25); qx = np.percentile(CF[:, 0], QS); qd = np.percentile(PF[:, 0], QS) - qx
-    if BANDS:
-        dL = 0.0
-
-    def apply(f, ev=(0.0, 0.0, 0.0)):
+    def apply(f, ev=(0.0, 0.0, 0.0), k=0):
+        g = gi[k]
         out = f.copy(); vis = f[..., 3] > 0; L = lab(f[..., :3][vis]); C = np.hypot(L[:, 1], L[:, 2])
         wt = np.clip((L[:, 0] - 18) / 10, 0, 1)                           # the outline stays
         wt *= np.where(L[:, 0] > 80, np.clip((C - 8) / 6, 0, 1), 1)      # the eyes' whites stay
         wt *= ((L[:, 2] > -2) & (L[:, 1] > -4))                           # no prop (water, leaves)
-        L2 = L.copy(); L2[:, 0] += wt * (dL + ev[0] + (np.interp(L[:, 0], qx, qd) if BANDS else 0))
-        L2[:, 1] += wt * (np.interp(L[:, 0], ctr, da) + ev[1]); L2[:, 2] += wt * (np.interp(L[:, 0], ctr, db) + ev[2])
+        L2 = L.copy(); L2[:, 0] += wt * (dL[g] + ev[0] + (np.interp(L[:, 0], qx[g], qd[g]) if BANDS else 0))
+        L2[:, 1] += wt * (np.interp(L[:, 0], ctr, da[g]) + ev[1]); L2[:, 2] += wt * (np.interp(L[:, 0], ctr, db[g]) + ev[2])
         out[..., :3][vis] = np.round(rgb(L2)); return out
 
     def sheet_of(nf):
@@ -109,26 +130,31 @@ for name in NAMES:
         per = [L[furm(L)] for L in (lab(crop(s2, r)[..., :3])[crop(s2, r)[..., 3] > 200] for r in R)]
         return per if each else np.concatenate([u for k, u in enumerate(per) if not FACE[k]])
     for _ in range(5):
-        NF = shipped_fur([apply(f) for f in fr]); r_ = pm - NF.mean(0); dL += float(r_[0]); da = da + r_[1]; db = db + r_[2]
+        per = shipped_fur([apply(f, k=k) for k, f in enumerate(fr)], each=True)
+        for g in range(len(G)):   # each group's fur mean closed onto the plain pose's (the sheet's, without --group)
+            ug = [u for k, u in enumerate(per) if gi[k] == g and not FACE[k]]
+            if ug:
+                r_ = pm - np.concatenate(ug).mean(0); dL[g] += float(r_[0]); da[g] = da[g] + r_[1]; db[g] = db[g] + r_[2]
     if LHALF:
         dL *= 0.5
     EV = np.zeros((len(fr), 3)); mode = 'wrap' if name in LOOPS else 'edge'
     big = [len(L) > 50 and not FACE[k] for k, L in enumerate(shipped_fur(fr, each=True))]
     for _ in range(10):
-        per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
+        per = shipped_fur([apply(f, EV[k], k) for k, f in enumerate(fr)], each=True)
         Rr = np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)])
         if LHALF or BANDS:
             Rr[:, 0] = 0
         Rp = np.pad(Rr, ((1, 1), (0, 0)), mode=mode); EV = (EV + (Rp[:-2] + 2 * Rp[1:-1] + Rp[2:]) / 4) * ~np.array(FACE)[:, None]
     for _ in range(3):
-        per = shipped_fur([apply(f, EV[k]) for k, f in enumerate(fr)], each=True)
+        per = shipped_fur([apply(f, EV[k], k) for k, f in enumerate(fr)], each=True)
         EV = EV + np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)]) * ([0, 1, 1] if LHALF or BANDS else 1)
-    nf = [apply(f, EV[k]) for k, f in enumerate(fr)]
+    nf = [apply(f, EV[k], k) for k, f in enumerate(fr)]
     per = shipped_fur(nf, each=True); NF = shipped_fur(nf)
     fd = [float(np.linalg.norm(u.mean(0) - pm)) for k, u in enumerate(per) if big[k]]
     print(f'{name}: fur mean {CF.mean(0).round(2)} -> {NF.mean(0).round(2)} (plain {pm.round(2)}); pooled dE {np.linalg.norm(CF.mean(0) - pm):.2f} -> '
-          f'{np.linalg.norm(NF.mean(0) - pm):.2f}; worst frame after {max(fd):.2f}; dL {dL:+.2f}; |even| max {np.abs(EV).max():.2f}')
-    rec[name] = {'sheet': path, 'from': REV, 'written': 'q86 method 6', 'dL': round(dL, 3), 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(),
+          f'{np.linalg.norm(NF.mean(0) - pm):.2f}; worst frame after {max(fd):.2f}; dL {np.round(dL, 2).tolist()} {G}; |even| max {np.abs(EV).max():.2f}')
+    rec[name] = {'sheet': path, 'from': REV, 'written': 'q86 method 6', 'groups': G, 'frame_group': grp, 'dL': np.round(dL, 3).tolist(), 'bands_q': QS.tolist() if BANDS else None,
+                 'L_q_from': np.round(qx, 2).tolist() if BANDS else None, 'L_q_to': np.round(qd_p, 2).tolist() if BANDS and not AFFINE else None, 'L_line': AFFINE, 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(),
                  'db': np.round(db, 3).tolist(), 'even': np.round(EV, 3).tolist(), 'fur_mean_before': np.round(CF.mean(0), 2).tolist(),
                  'fur_mean_after': np.round(NF.mean(0), 2).tolist(), 'plain_fur_mean': np.round(pm, 2).tolist()}
     if DRY:
