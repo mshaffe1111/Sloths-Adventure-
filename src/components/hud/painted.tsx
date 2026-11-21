@@ -130,6 +130,8 @@ const TILE = HUD_PIECES.vineTile;
 const END = HUD_PIECES.vineEnd;
 /** the end curl is drawn a little smaller than painted (as in the review scenes) */
 const END_K = 0.8;
+/** how wide the painted end curl draws at scale k (a run that must keep its curls inside a box stops its tiles this far in) */
+export const vineEndW = (k = 1): number => (END.w / S) * k * END_K;
 
 /**
  * A painted vine from x0 to x1 with its centre line at y (px in its box), at scale k: the lead piece (with its leaves) where it starts
@@ -140,7 +142,7 @@ export const PaintedVine: React.FC<{ x0: number; x1: number; y: number; k?: numb
     const lw = (LEAD.w / S) * k;
     const th = (TILE.h / S) * k;
     const tx0 = lead ? x0 + lw - 1 : x0;
-    const ew = (END.w / S) * k * END_K;
+    const ew = vineEndW(k);
     const ey = y - (82 / S) * k * END_K;
     return (
       <span aria-hidden="true" className={className} style={{ position: 'absolute', left: 0, top: 0, ...style }}>
