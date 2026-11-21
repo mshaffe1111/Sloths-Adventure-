@@ -26,7 +26,7 @@ export const STAGE_CLUES: Record<string, StageClue> = {
   // ── World 2 · Sunlit Riverbank
   '2-1': C('PLEASE BE PATIENT', 'Every door in the bank village has the same sign. You like it here already.'),
   '2-2': C('A Bare Stem', 'A flower stem with no petals left on it. She used them all on the crown.'),
-  '2-3': C('Wet Footprints', 'Little wet footprints run off into the reeds, very fast, very grateful.'),
+  '2-3': C('Wet Footprints', 'Little wet footprints run up the jetty, very fast, very grateful.'),
   '2-4': C('Dry Bootprints', 'On the jetty the bootprints start again, perfectly dry. Somebody carried them over.'),
   '2-5': C('The Raft', 'The village has started on your raft. They have agreed on the wood.'),
   '2-6': C('A Welcome Mat', 'A mat outside the top house says TAKE YOUR TIME. They mean it.'),

@@ -59,7 +59,7 @@ export const STAGE_LINES: Record<string, string> = {
   // World 2 · Sunlit Riverbank
   '2-1': 'Hopped the logs drifting down to the village. They were in no hurry at all. I liked them right away.',
   '2-2': 'Picked flowers for a crocodile\'s crown. Not a sentence I ever expected to write. Meeca started it.',
-  '2-3': 'Little ones hung in reed cages over the river. I let each one down gently. Gently is my only speed.',
+  '2-3': "Led a line of little ones home past a heron. For once I was the fast one. I waited for them anyway.",
   '2-4': "Dropped from the vines onto passing logs and jumped back up. Meeca's note said don't swim, so I flew instead.",
   '2-5': 'Snapping turtles. They snap. It says so right in the name. I respected the honesty, and asked them to leave.',
   '2-6': 'Climbed up past every front door in the village. Each one said PLEASE BE PATIENT. I already was.',
