@@ -51,7 +51,7 @@ In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artchec
 - **knowncheck**: `✗ <file>: N entries ADDED` lists them. Remove them and fix the defect; a known list never grows.
 - **roadmapcheck**: each `✗` names the orphan (a defect D#, a list file, a clipknown group, a NEXT.md) or the bad proof. Add the R-item (or cite the source on the right one) in reference/ROADMAP.md; never delete the source to get green. Method: reference/methods/roadmap.md.
 - **generalitycheck**: `✗ NEW <kind>: <file>:<line>  <code>` is engine code naming one stage: move the fact into world data, the stage brief or a per-stage script, never into the known list. `✗ FIXED, still listed` means a known literal is gone or fewer: lower its `count` (or delete the entry) in `tools/engine/generality.known.json`. `--list` prints every hit with its line. A false positive (a name that is not a place) is renamed in the code, not listed.
-- **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line).
+- **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line). A PASS covers only the draw paths its scenarios reach (FIX-IDLE 11-20: no scenario stands Pokey still 4 s, so the idle melt was never measured): for a draw change, grep the raw results for the changed function, and measure it with drawcheck's own instrument when no scenario reaches it (R-165.361 adds an idle scenario).
 
 ## Known lists: shrink-only (LAWS.md law 5)
 A new gate may start with the defects that already exist only if:
