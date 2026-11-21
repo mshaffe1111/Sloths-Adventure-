@@ -1,7 +1,19 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-NEXT-e (§0k); §0j and below still true unless marked
+# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-REGRADE (§0l); §0k and below still true unless marked
 
-Last task: ART-NEXT-e (§0k, t-art-next). Before it: ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
+Last task: ART-REGRADE (§0l, t-art-next). Before it: ART-NEXT-e (§0k), ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0l. 11-21 ART-REGRADE (t-art-next): Pokey is one sloth in every idle (R-165.377) DONE
+- tools/art/hfnext/regrade.py: one Lab transfer per idle clip (a/b offset by L band, plain minus clip over the FUR px, plus global passes
+  that close the fur mean as it ships through the q86 encode); the outline (L < 18) and the eyes' whites stay. Record: regrade.json.
+- RE-BAKE ORDER now: `regrade.py idle-yawn,look-around,wave` (it restores the 49-frame originals from 6c157b2ba AND their
+  heroClipsData blocks itself), then bridgebake.py (B1-s23 -> yawn,look-around; B3-s11 -> wave --pin-feet), then idleends.py and
+  clipde.py --write. Do NOT run bridgebake on an un-regraded original: heroClipsBody.test.ts goes red.
+- Gate: src/game/heroClipsBody.test.ts (reads heroClipsSeams.json's body + body_bar + plain_sha256): each frame's fur <= 2.0 dE of the
+  plain pose, a clip's own frames pooled <= 1.0. Measure on FUR, never the whole body: the old clips have ~5x the outline px.
+- The bridge ramp stays on whole-body stats: a fur-space ramp popped the whole-body seams 1-2.2 dE (outline amount jumps); tried, reverted.
+- Other animations off the plain pose (fur dE): walk 3.6, run 3.7, climb 6.5, cheer ~7, push ~12 (whole-body). Not idles; the same tool
+  can regrade them if the lead wants (they are not bridged: no rebake, just regrade + their own tests).
 
 ## 0k. 11-21 ART-NEXT-e (t-art-next): the idle bridges carry Pokey's colours; seam dE gate (R-165.354) DONE
 - bridgebake.py now colour-ramps every bridge frame (Lab mean/std toward lerp(plain, target), target = clip f0 going in, the clip's

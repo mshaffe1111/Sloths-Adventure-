@@ -1,3 +1,66 @@
+# ART-REGRADE (11-21, session_01FhBbYMgsdpkvjvz82WyuJj): Pokey is one sloth in every idle (R-165.377) (written 2:55 PM ET)
+## EXACT NEXT STEP
+The integrator merges t-art-next (heroClipsBody/Seams/Ends tests ride with it). Any later idle-sheet change runs, in order:
+`python3 -I tools/art/hfnext/regrade.py idle-yawn,look-around,wave` (it restores the 6c157b2ba originals and their heroClipsData blocks
+itself), bridgebake.py (takes B1-s23 -> idle-yawn,look-around; B3-s11 -> wave --pin-feet), `idleends.py`, `clipde.py --write`. The
+merge with release-0.10.1 conflicts in the same 9 catalog/doc files as ART-NEXT-e; resolve, then `catalogclips.py idle-yawn,look-around,wave`
++ `catalog_master.py --emit`. Open for the lead's call: the non-idle animations are off the plain pose too (below).
+## 1. Measure (fur = solid px, not the outline L < 25, not the eyes' whites L > 85 and chroma < 12; plain = hero-standard.webp's idle crop)
+| clip | fur L a b (own frames) | fur dE to plain | outline px (L < 25) |
+|---|---|---|---|
+| plain pose | 60.4 16.5 29.6 | - | 2.2% |
+| idle-yawn | 60.0 12.9 27.0 | 4.5 | 11.0% |
+| look-around | 60.5 12.9 26.8 | 4.5 | 10.9% |
+| wave | 62.5 11.7 26.0 | 6.4 | 11.8% |
+| belly-scratch (the SC-s19 take, drawn from the plain pose) | 60.3 16.1 29.8 | 0.5 | 3.6% |
+| move-walk / move-run / move-climb (reference) | 62.2 14.0 31.3 / 60.7 16.5 33.0 / 54.4 16.7 32.1 | 3.6 / 3.7 / 6.5 | 6.3 / 4.1 / 6.6% |
+The defect is CHROMA, not lightness: the old clips' fur is less red (a -3.6 to -4.8) and less yellow (b -2.8 to -3.6); only wave is
+lighter (L +2.1). The lead's whole-body ~7 dE also counts the old clips' ~5x outline px, which a colour fix must not touch. Is the plain
+pose his true colour? It is the one he walks and runs nearest (3.6-3.7 dE; walk/run are the plain pose's own family), so it is the target.
+Other animations off it: climb 6.5 fur dE (darker, L 54), cheer ~7 and push ~12 whole-body; none idle, not in this packet (§4).
+## 2. The transfer (tools/art/hfnext/regrade.py; record tools/art/hfnext/regrade.json)
+One transfer per clip, the same for all 49 frames (no flicker): an a/b offset that depends on L (plain minus clip per 5-L bin of fur px,
+weighted [1 2 1] smoothing; bins under 200 px take the global offset), a global L shift, then 5 global passes that close the fur MEAN as it
+SHIPS (measured through the q86 WebP encode; that encode alone loses ~0.6 dE of chroma). Per pixel weight: 0 at L <= 18 rising to 1 at
+L 28 (the outline stays), 0 for L > 80 at chroma <= 8 rising to 1 at 14 (the eyes' whites stay). Offsets: yawn a about +5 to +7 in the
+darks, less in the lights; wave L -2.9 and a up to +9.5. Then the bridges re-baked (bridgebake.py unchanged, same takes and flags).
+Own-frame fur dE: yawn 4.77 -> 0.03, look-around 4.81 -> 0.05, wave 6.64 -> 0.10; every frame's max 1.28 / 1.11 / 1.16 (pose, not
+colour). belly-scratch untouched (0.52 pooled, 0.96 max: already the plain pose's palette). Seams (clipde): every seam 0.10-0.33 dE
+(ART-NEXT-e: 0.34-0.52); bridge medians 0.22 / 0.23 / 0.36 (were 0.37 / 0.37 / 0.45): the ramp has almost nothing left to carry.
+Ends: 0 px / 0% xor at both ends of all four (idleends --check fresh).
+Tried and reverted: the bridge ramp on FUR stats instead of whole-body. Fur barely improved (max 1.28 -> 1.18) but the whole-body seams
+popped 0.8-2.3 dE (the outline amount jumps from a Wan frame to the clip's f0), so the whole-body ramp stays.
+## 3. The gate (D108): src/game/heroClipsBody.test.ts
+clipde.py --write now also writes, per clip, `body` {frame_max, frame_max_at, own_pooled} (fur dE to the plain pose), `body_bar`
+{frame_max 2.0, own_pooled 1.0} and `plain_sha256` (hero-standard.webp) into heroClipsSeams.json (sheets already sha-pinned). The test
+fixes the bar in code, checks the plain pose's hash, and fails any idle clip with a frame over 2.0 dE or its own frames pooled over 1.0.
+PLANTED RED on 3b27e3efe's sheets (scratch worktree): `idle-yawn frame 20: fur 5.271 dE off the plain pose (limit 2)`
+(reference/qa-reports/ART-NEXT/body-plant-3b27e3efe.json/.txt; look 5.44, wave 6.99 would fail too). Green now; in src/game/*.test.ts so CI runs it.
+## 4. Strips (reference/art/hfnext/bridge/, tools/art/hfnext/regradepair.py from two idleshoot.mjs runs on 1-1)
+BEFORE = 3b27e3efe merged with origin/release-0.10.1, AFTER = this branch merged with it (scratch worktrees, never pushed): what ships.
+- regrade-1-1-before-after.jpg: a stop at the same game times (t3.5 plain, the bridge, the yawn, back). Looked at it as Matt will: before,
+  the yawn is a visibly paler, beige sloth than the orange-brown one standing; after, one colour from standing through the whole yawn.
+- regrade-yawn-1-1-strip.jpg: the whole yawn after; colour steady, the outline and the eyes untouched, no tint edge or artefact.
+- regrade-1-1-game-speed.mp4: before | after side by side, each pair held for its own game time.
+Polish check: both stills looked at downscaled (D102); nothing rough found. Named plainly: the old clips carry about 5x the plain pose's outline px (11% vs 2.2%,
+measured); at the strip's scale it does not read as a different sloth, and it is shape, not colour (new art, not a regrade).
+## 5. Sizes and decoded cost (PERFORMANCE-RULES §2.13)
+yawn 836 KB (was 827), look-around 805 (799), wave 833 (829), scratch 340 (unchanged); sheet sizes unchanged (1712x2310, 1192x2266,
+1440x2277), so decoded cost is unchanged at 42.9 MiB for the four. Catalog rows refreshed (catalogclips + catalog_master --emit, 9,532 rows).
+## 6. Gates
+tsc clean; artcheck PASS; knowncheck PASS; clipde --check and idleends --check fresh; heroClipsBody + Seams + Ends 6/6; full unit suite:
+PENDING (running in the background at this commit).
+## Pushback / suggestions
+- The packet's "7 dE lighter" was a whole-body number; on the fur it is 4.5-6.4 dE of lost chroma. A colour gate on the whole body
+  would have pushed the transfer to repaint the outline; the gate measures fur.
+- Ready packet if wanted: regrade move-climb (6.5 fur dE, darker), cheer and push the same way (regrade.py takes any clip; they have
+  no bridges, so no rebake), and extend heroClipsBody to every hero clip with its own bar. About 1 h.
+## Learned
+- Measure the part that should match (fur), not the whole sprite: outline amount and pose bias whole-sprite means by several dE.
+- Close a colour target through the encoder that ships: q86 WebP alone cost 0.6 dE of chroma.
+- Lessons applied: D57/D87 (inbox at every step and push; the suite and shoots in the background), D102 (read lean, numbers first,
+  two downscaled looks), D105, D108 (a gate with a plant, not a note), D109 (no clock times in messages).
+
 # ART-NEXT-e (11-21, session_01FhBbYLPBVR5dWE8QmqFjaH): the idle bridges carry Pokey's colours; seam gate live (written 1:19 PM ET)
 ## EXACT NEXT STEP
 The integrator merges t-art-next (heroClipsSeams.test.ts + heroClipsEnds.test.ts ride with it; any later idle-sheet change re-runs
