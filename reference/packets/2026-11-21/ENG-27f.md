@@ -1,5 +1,5 @@
 # ENG-27f: 2-7 "The Way Home" READY for its builder: the ground merged in, the race table after ruling A, THE CLIP, engine-core.md, THE FULL SET
-Engine, Opus 5.5 xhigh. Written 1:39 PM ET 11-21 (by `date` in the same command). A FRESH member. Starts after ENG-GROUND-b reports its head green.
+Engine, Opus 5.5 xhigh. Written 1:39 PM ET 11-21 (by `date` in the same command). A FRESH member. STARTED EARLY (1:49 PM ET, a slot freed): do step 1 and step 3 FIRST; step 0's merge waits for the lead's message with ENG-GROUND-b's green hash; then step 2 and step 4.
 BOX: hand over at 320k REAL context (the lead reads it at 20 minutes and every 15 after 250k) with the EXACT NEXT STEP; stop by 10:45 PM ET.
 READ LEAN (D102, D90): this packet; `git show origin/t-eng-27:reference/qa-reports/ENG-27/REPORT.md` top section ONLY (ENG-27e's EXACT NEXT
 STEP); level.md rules 21, 23, 28; LAWS headlines; LESSONS D57/D87, D63, D94, D96, D102, D105, D107, D109. Code by grep and line ranges.
