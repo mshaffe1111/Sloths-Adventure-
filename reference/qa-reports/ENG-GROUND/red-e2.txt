@@ -1,0 +1,86 @@
+TAP version 13
+# Subtest: the out-and-back toy (normal): no wall's painted face is stretched past its frame's own height
+not ok 1 - the out-and-back toy (normal): no wall's painted face is stretched past its frame's own height
+  ---
+  duration_ms: 826.994695
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:554:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's painted face is stretched past its frame's height
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 18666-18726: its face drawn 244x806 from 552x537, x3.40 out of shape',
+    +   'seed 1: the wall x 20006-20066: its face drawn 244x901 from 552x537, x3.80 out of shape',
+    +   'seed 2: the wall x 18477-18537: its face drawn 244x786 from 552x537, x3.31 out of shape',
+    +   'seed 2: the wall x 19817-19877: its face drawn 244x881 from 552x537, x3.71 out of shape',
+    +   'seed 3: the wall x 13775-14415: its face drawn 244x835 from 552x537, x3.52 out of shape',
+    +   'seed 3: the wall x 18239-18299: its face drawn 244x811 from 552x537, x3.42 out of shape',
+    +   'seed 3: the wall x 19579-19639: its face drawn 244x871 from 552x537, x3.67 out of shape'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 18666-18726: its face drawn 244x806 from 552x537, x3.40 out of shape'
+    1: 'seed 1: the wall x 20006-20066: its face drawn 244x901 from 552x537, x3.80 out of shape'
+    2: 'seed 2: the wall x 18477-18537: its face drawn 244x786 from 552x537, x3.31 out of shape'
+    3: 'seed 2: the wall x 19817-19877: its face drawn 244x881 from 552x537, x3.71 out of shape'
+    4: 'seed 3: the wall x 13775-14415: its face drawn 244x835 from 552x537, x3.52 out of shape'
+    5: 'seed 3: the wall x 18239-18299: its face drawn 244x811 from 552x537, x3.42 out of shape'
+    6: 'seed 3: the wall x 19579-19639: its face drawn 244x871 from 552x537, x3.67 out of shape'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:588:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the out-and-back toy (easy): no wall's painted face is stretched past its frame's own height
+not ok 2 - the out-and-back toy (easy): no wall's painted face is stretched past its frame's own height
+  ---
+  duration_ms: 375.101913
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:554:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's painted face is stretched past its frame's height
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 19118-19178: its face drawn 244x806 from 552x537, x3.40 out of shape',
+    +   'seed 1: the wall x 20458-20518: its face drawn 244x901 from 552x537, x3.80 out of shape',
+    +   'seed 2: the wall x 18973-19033: its face drawn 244x786 from 552x537, x3.31 out of shape',
+    +   'seed 2: the wall x 20313-20373: its face drawn 244x881 from 552x537, x3.71 out of shape',
+    +   'seed 3: the wall x 18784-18844: its face drawn 244x807 from 552x537, x3.40 out of shape',
+    +   'seed 3: the wall x 20124-20184: its face drawn 244x871 from 552x537, x3.67 out of shape'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 19118-19178: its face drawn 244x806 from 552x537, x3.40 out of shape'
+    1: 'seed 1: the wall x 20458-20518: its face drawn 244x901 from 552x537, x3.80 out of shape'
+    2: 'seed 2: the wall x 18973-19033: its face drawn 244x786 from 552x537, x3.31 out of shape'
+    3: 'seed 2: the wall x 20313-20373: its face drawn 244x881 from 552x537, x3.71 out of shape'
+    4: 'seed 3: the wall x 18784-18844: its face drawn 244x807 from 552x537, x3.40 out of shape'
+    5: 'seed 3: the wall x 20124-20184: its face drawn 244x871 from 552x537, x3.67 out of shape'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:588:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2341.84881

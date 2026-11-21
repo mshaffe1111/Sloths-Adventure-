@@ -52,6 +52,11 @@ out-and-back: the race leg under the out leg), that buried the lower leg in the 
   over the lower leg. (2) Stacked legs share x: w2Finish (and every finish or lookup) must match banks and rivers at a fall's HEIGHT, never
   by x alone (ENG-27's riverAt rule). (3) A test that builds an engine must build it BEFORE it sets protoArt's stacks or world: the stage
   start resets them. (4) The underside drawn INSIDE the clip loses its roots at the line (groundStack.test 6 plants it).
+- **End faces on narrow banks (ENG-GROUND-e, 2d4e0752a).** groundPaint endFace takes the bank's other side (`inner`): below the end
+  piece the wobble's centre keeps FACE_CLEAR (28) out from it, eased over FACE_EASE (120). Without it a 60-wide wall's face swung back past
+  its closed side and the soil outline crossed itself (groundStack.test 'no seam at the floor's end'). Trap: a narrow bank's soil BELOW a
+  lower floor's top still darkens from its own top (a shade seam at the floor's end) and the root-wall picture is stretched (drawWallArt):
+  both are R-165.380's, plant at reference/qa-reports/ENG-GROUND/plant-R-165.380-column-wall.ts.txt.
 - **Proof.** groundStack.test.ts (6: the toy's real gen2 roll both settings; 1-4/7-4 untouched; the engine's own river painter; test 6:
   the roots below the line, the edge on the line at every column's ends, no hard seam at a strip change, a corner at every open end),
   w2.test 'bridge over ONE river'. Tools: stackscan.ts (which stages stack), plankscan.ts (planks between pockets).

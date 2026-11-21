@@ -1,3 +1,62 @@
+# ENG-GROUND-e REPORT (handover at the 28-minute box, D111; branch t-eng-ground, code head 2d4e0752a)
+1. THE CORNER (the lead's ruling): ONE FAULT FIXED AND PLANTED (2d4e0752a); THE CORNER STILL FAILS on two measured faults (item 3). CAUSE (measured, groundPaint endFace): World 2's end frame brings its face to
+   its foot 7 units inside a 60-wide wall's closed side (x20013 on 20006-20066), then the wobble below it (+-19) swings back past that side;
+   the soil's outline crossed itself and past the floor's end (its soil stops straight at x20007) only a 0-25 sliver or nothing was painted.
+   FIX: endFace takes the bank's other side (`inner`, drawBankArt passes it); below the end piece the wobble's centre keeps FACE_CLEAR (28)
+   out from it, eased in over FACE_EASE (120), the wobble kept. Banks wide enough that the face never comes near their other side draw as
+   before. PLANT groundStack.test 'a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end' (seeds
+   1-3, both settings; soil at the floor's end +2 at every depth from the wall's foot to the view's foot): RED with the fix off,
+   red-e1.txt (9 walls, both ends of the descent and the left-end walls), GREEN. Ground tests (groundEnd, groundSeams, groundStack,
+   groundwork, riverLook, riverTail, w1Pits) 62/62; tsc PASS.
+2. THE STRETCHED COLUMN: R-165.380's (the lead's ruling (A), its own packet after release 3 and before 2-7 ships; NOT in this branch).
+   FACT: it is not the bank END frame. It is drawWallArt (protoArt.ts:1232), each world's 'wall' frame (W2 src 455,0,552,537: a square
+   soil cutaway, grass strip on top, straight opaque sides on every row) blitted once at 244 wide x (foot-top+30) on every high canopy wall
+   in all ten worlds and the puzzle rooms (puzzlePlay.ts:2093, 2482): 806 tall here, x3.4 out of shape, and 170 past a 60-wide column
+   into the air. Its straight side is the long vertical edge. Ruled fix (A): the frame once at its own aspect, its foot faded into the
+   bank's soil (baked once per world), clipped to the bank's soil outline plus its yard-side lip; the bank's soil and end face run on
+   below. PLANT for that packet (never committed as a test: a red test can't land): plant-R-165.380-column-wall.ts.txt (append to
+   groundStack.test.ts): 'no wall's painted face is stretched past its frame's own height' (TILE_STRETCH 1.1). RED red-e2.txt: 13 walls
+   on 3 rolls x 2 settings, x3.31-3.80.
+3. RE-SHOOT 2x (stills/e-reshoot, scratch worktree at 2d4e0752a + t-art-under 63963f54d's w2.webp and '2' atlas rows, never pushed;
+   upright and sideways): right end x18760 and the descent x18990 PASS (no change from painted-scratch-d; the column's stretched face
+   is R-165.380's). THE WALL END x19900 (CROP-corner-before-after): the soil under the wall now runs to the view's foot along a
+   wobbling face. MEASURED from the upright camera (x 19636, 0.936; CSS x = (world - cam) * 0.936), with a render that skips
+   scenery.ts's draws (wall-end-corner-normal-vs-no-backdrop.jpg, tools-e/nobd.mjs):
+   - the 'flat brown slab' right of the face (world x 20011-20076, y 1510-1690) is the BACKDROP (black with scenery skipped): right of
+     a bank's end face, as at any bank end. Not a fault of the ground.
+   - STILL FAILING (a), the shade seam: from the floor's top to the view's foot, x 20006 to the face (~20034) is a darker band with a
+     straight left side at the floor's end, in both renders and in the old still: the wall's soil darkens by depth from its own top
+     (585) while the floor's darkens from 1450 (drawBankArt's sy / the chunk painter's groundLine). This is the lead's 'separate
+     strip with a straight vertical seam'. 2d4e0752a did not fix it.
+   - STILL FAILING (b): a pale green water fill (terrain.ts's water polygon with foam crests, drawn behind the ground) from about
+     y 1684 to the view's foot right of the face: the lead's 'backdrop shows below it'. Its x and why it runs past the stage's last
+     platform are unmeasured (no platform past 20066, no river in e.rivers).
+   So 2d4e0752a fixes one real fault at the corner (the soil outline crossing itself; planted), NOT the corner as the lead saw it.
+   THE LEAD'S RULING (D40): (a) and (b) belong to R-165.380, which redraws that wall and replaces that corner (planted first on
+   2d4e0752a). Not this packet's.
+4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages), on 2d4e0752a: PASS, 102/102 stages unchanged
+   (lock-e.txt; the 'gained verdicts and drops (not hashed)' line is unhashed fields, not a move, as in ENG-GROUND-c).
+5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; suite 1/6 PASS 634/634. On the docs head (D53): roadmapcheck PASS
+   (after `git fetch --unshallow`: a shallow clone fails it), knowncheck PASS, generalitycheck PASS. UNRUN at the hand-over: the rest of chain a (suite 2-6, tooltests, tierBots, tipwalk, coverage,
+   registry, generality, known, roadmap, time, art) RUNNING at the handover; chain b (seedlists, paint x3, build, chunkcheck,
+   clipcheck, kbdcheck, drawcheck, buildcheck) UNRUN.
+POLISH CHECK: wall-end upright before/after, corner crop at full size, and a contact sheet of the other five stills, each looked at
+   edge to edge. The corner is NOT polished yet (item 3; its two remaining faults are R-165.380's by the lead's ruling).
+PUSHBACK: the column ruling's premise (the bank END frame) was wrong; checked on the recorded draw and the sheet before building
+   (law 3). The lead re-ruled (A) as R-165.380.
+LESSONS APPLIED: D57 (inbox at each step and push), D102 (lean reads; images downscaled once, contact sheets), D109 (no clock times
+   in messages), D111 (the box: lock and gates in the background from the start), law 3 (the frame's identity checked before tiling it).
+   LEARNED: a ruling's named art piece is checked against the recorded draw's src and the sheet before any fix; measure the defect's
+   world x and y from the camera BEFORE planting (I planted the outline fault first and only then found the lead's strip was a shade
+   step and the box a water fill); a render with one painter skipped names what a pixel is.
+EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD; code head 2d4e0752a):
+ 1. The lock: DONE on 2d4e0752a (PASS 102/102). Re-run it only on a new code head.
+ 2. The gates on a frozen worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then
+    `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green (chain a AND chain b):
+    send the lead 2d4e0752a as the green ground head for ENG-27i's merge. Any red: stop and report it with the log's tail.
+ 3. (The corner's (a) and (b) are R-165.380's, the lead's ruling: not this branch's.)
+ 4. REPORT a new top section; the hash to the lead.
+
 # ENG-GROUND-d REPORT (handover at the context line, the lead's D76; branch t-eng-ground, code head 42a0e5d8b, stills 0934faf40)
 1. VERIFIED (no guess): there is NO under-bank earth column. Both of the lead's columns (right-end-x18760-sideways) were the descent's two
    soft-gap pools (scale 0.749 at camera 18130): the "earth column" = R18955-19015's bed and soil (its surface 1087 above the frame's top
