@@ -13,6 +13,7 @@ THE ASKS (design :64-65; rule 17: the keeper's words only, nobody else's):
 3. A line of wonder at the great wheel (beat 12; Pokey's own, short).
 4. A journal entry: the norias of the bank village (as World 2's other journal entries are written).
 5. dotBox.test.ts:199's old 'Up through the village!' at 'post' replaced (a line the new stage shows there, or the test re-pointed: say which).
+6. stageClue '2-6' today reads 'A mat outside the top house says TAKE YOUR TIME', but no mat is laid (rule 10: what the words promise is on screen): reword it to name a World 2 SIGN on the top house (BUILD-26 lays the sign as decor and holds your words verbatim), keeping its meaning.
 Plus: the stage's goal line and mission card if 2-6 has one (as 2-3's MISSION_23: no digit unless the goal counts), and a What's New line for
 release 3 in the 0.10.1 style (first person, a child can read it).
 Each line: in Dot's or Pokey's voice as World 2 already speaks, true to the stage (a wheel lifts him; nobody is hurt), within the caps the tests
