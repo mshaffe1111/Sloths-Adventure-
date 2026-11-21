@@ -1,5 +1,5 @@
 // The testers' link (#ctest): on only when the address asks for it. The old control course it once opened is deleted (R-165.151); the
-// link now plays playRecorder.ts CTEST_LEVEL_ID (ctestCoach.test.ts, ctestCourseGone.test.ts).
+// link now plays the World 1 stage the tester picks, playRecorder.ts CTEST_STAGES (ctestCoach.test.ts, ctestCourseGone.test.ts).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ctestEnabled, qaBuild } from './playRecorder.ts';

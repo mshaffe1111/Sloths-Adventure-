@@ -2,6 +2,20 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
+- WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
+  ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,
+  ctestBegin (the Start path, testable), ctestLevelFor (App's lookup), CTEST_PAGES for all nine (six DRAFT), the end screen's
+  "Play 1-x again" / "Pick another level". App.tsx: ctestPick preloads the picked stage; victory on any offered stage ends the run and
+  ticks it. touchCoach: any offered stage coaches a new tester on #ctest.
+- The record: a 'stage' line at every Start, 'pickAnother' at the end, survey row key `stage`; all in the Data cell, collector unchanged.
+- Chips: ctestStretches.ts names every section of 1-2 and 1-4..1-9 (DRAFT words for the story keeper). ctestPicker.test.ts flies every
+  offered stage, both settings, two seeds, and fails if any stretch is unnamed or a stage offers only the generic four: a new arc
+  section must be named before it ships (the old table test read w1World's shared sections only, which is how 1-2/1-4..1-9 slipped).
+- Stills: src/assets/ui/ctest-<id>.webp for all nine (880x425, real game, designed roll ?layout=1, Normal, HUD hidden: shot at
+  660x319 dsf 4/3, the pin released so he stands); ctestPicker.test fails if one is missing.
+- TRAP: clipcheck and kbdcheck now tap tiles by `.ct-pick[data-stage=...]`; renaming that class or attribute breaks both walks.
+
 ## 0zr-IDLE. FIX-IDLE (t-fix-idle from main 107870f5, 11-20 evening): Pokey's clip melt is a solid cross-dissolve (R-165.353)
 - **heroSprite.ts drawMelt:** on a clip's fade frames (blend < 1) the plain pose (1-b) and the clip (b, 'lighter') go onto ONE scratch
   canvas (module-level, grow-only, made once) lined up with the stage's pixels, then laid down whole. Never draw two poses part-clear
