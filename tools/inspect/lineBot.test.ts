@@ -5,6 +5,10 @@
  *     he crosses with nobody spooked; without it (he runs straight on) the look catches the line out on the mud.
  *   - FETCH-THE-SPOOKED: one little one is spooked back to the stretch's start before he sets off; with the skill he goes back for it
  *     and brings all three home (the door opens); without it the door stays sealed.
+ *   - HOP-BACK (ENG-CAGE), on 2-3's OWN gen2 row (D75): seed 5 Normal, beat 4's two clumps over open mud with World 2's 50 px boulder
+ *     between them; the line spooked back to the stretch's start, he stands in the far clump. He walks back, stopped dead against the
+ *     boulder's face he hops it, and fetches them with no rescue; without the hop he stood against it until rescued (castBots 2-3 child
+ *     Normal seed 5 x 11590, the traced miss).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -118,6 +122,63 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
     }
   } finally {
     LINE_SKILL.fetch = true;
+  }
+});
+
+/** the bot on 2-3's gen2 row, stood in beat 4's far clump with the whole line spooked back to the stretch's start (the heron's zone x0) */
+function hopBackRun(who: FirstTimer): { end: string; got: number; rescues: number; fetched: boolean } {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(5 * 104729 + 1311);
+  try {
+    const run = new FirstTimerRun('2-3', 5, who, { cap: 60, dotSetting: true });
+    const e = run.e as unknown as Record<string, any>;
+    const cages = (e.collectibles as Collectible[]).filter((c) => c.type === 'cage').sort((a, b) => a.x - b.x);
+    // (beat 4: the watched stretch whose clumps hold cage 3; the boulder on the mud between its clumps)
+    const zone = (e.proto.watch as WatchZone[]).find((z) => cages[2].x > z.x0 && cages[2].x < z.x1)!;
+    const rock = (run.sim.platforms as Platform[]).find((q) => (q as { style?: string }).style === 'moss_stone' && q.x > zone.x0 + 200 && q.x < cages[2].x)!;
+    assert.ok(zone && rock, 'seed 5: beat 4 with its boulder between the clumps');
+    const far = (e.proto.bushes as Array<{ x: number; w: number; y: number }>).find((b) => b.x > rock.x && b.x < zone.x1)!;
+    for (const c of cages.slice(0, 3)) c.collected = true;
+    run.sim.stand(far.x + far.w / 2, far.y);
+    for (let i = 0; i < 20; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    // (freed beside him in the far clump, in the line, then the heron's look sends them all back to the stretch's start, as in play)
+    for (const c of cages.slice(0, 3)) e.follow.free((c as { critter: string }).critter, { x: far.x + 40, y: far.y }, { x: far.x + 40, y: far.y });
+    for (let i = 0; i < 90; i++) run.sim.frame({});
+    for (const f of e.follow.line as Follower[]) spook(f, zone.x0);
+    let fetched = false;
+    const step = e.follow.step.bind(e.follow);
+    e.follow.step = (...a: unknown[]) => {
+      const ev = step(...a);
+      if ((e.follow.line as Follower[]).every((f) => f.state !== 'spooked')) fetched = true;
+      return ev;
+    };
+    // (until he has them back, and the line has walked on to the far clump: the crossing itself is the clump toy's, not this one's)
+    run.play();
+    return { end: run.end, got: e.follow.home(), rescues: run.rescues, fetched };
+  } finally {
+    Math.random = mr;
+  }
+}
+
+test('hop-back (2-3 gen2 row, seed 5): the line spooked back past the boulder, he hops it on his way back and fetches them, no rescue', () => {
+  for (const [name, who] of [['middle', FT_MIDDLE], ['adult', FT_ADULT]] as Array<[string, FirstTimer]>) {
+    const r = hopBackRun(who);
+    assert.ok(r.fetched, `${name}: never fetched ${JSON.stringify(r)}`);
+    assert.equal(r.rescues, 0, `${name}: ${JSON.stringify(r)}`);
+  }
+});
+
+test('planted: with hop-back off he stands against the boulder until he is rescued past it', () => {
+  LINE_SKILL.hopBack = false;
+  try {
+    for (const [name, who] of [['middle', FT_MIDDLE], ['adult', FT_ADULT]] as Array<[string, FirstTimer]>) {
+      const r = hopBackRun(who);
+      assert.ok(!r.fetched || r.rescues > 0, `planted ${name}: fetched with no hop and no rescue ${JSON.stringify(r)}`);
+    }
+  } finally {
+    LINE_SKILL.hopBack = true;
   }
 });
 

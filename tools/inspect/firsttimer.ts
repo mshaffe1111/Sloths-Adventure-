@@ -131,9 +131,17 @@ const SNAP_THUMB = 0.1;
  * Heron, its '!' and the pale wash on the ground) and where the little ones are. WAIT-FOR-THE-TAIL: on a watched stretch, in the reeds he
  * walks to their far end and stands while a heron warns or looks, and goes on only right after a look has ended with the whole line in
  * the reeds and still (2-3.md: "go right after a look"). FETCH-THE-SPOOKED: one the heron spooked, hiding where it ran to, he walks back
- * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home.
+ * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home. HOP-BACK:
+ * on that walk back, stopped dead against a face (a boulder on the mud), a plain hop over it (ENG-CAGE).
  */
-export const LINE_SKILL = { waitTail: true, fetch: true };
+export const LINE_SKILL = { waitTail: true, fetch: true, hopBack: true };
+/**
+ * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
+ * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
+ * it opens (its cageHp), then carries on. CLIMB: a cage hung up a climbing vine he is at the foot of: up the vine to it, the same punches
+ * from the vine, then down. Any world's cage, by its data.
+ */
+export const CAGE_SKILL = { punch: true, climb: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -1248,6 +1256,13 @@ export class FirstTimerRun {
   /** s he has held up beside a trunk standing still, and till when he lets it be */
   private trunkUpT = 0;
   private trunkIgnoreUntil = -1;
+  /** CAGE_SKILL: the cage he is opening (its id), when his next blow comes (Infinity: not stood at it yet), the climbing vine it hangs
+   *  up (its x; null: at his height on the ground), and whether he is on his way back down that vine after it opened */
+  private cageAim: { id: number; at: number; vineX: number | null; down: boolean } | null = null;
+  /** LINE_SKILL.fetch: how long (s) he has stood stopped dead on his way back for a spooked little one */
+  private fetchStill = 0;
+  /** where the game last set him down (a splash-back, a put-back), his best progress then, and how often in a row at that place */
+  private setDowns: { x: number; y: number; top: number; n: number } | null = null;
   /** when he was last put past each puzzle room */
   private roomAt = new Map<number, number>();
   /** the trunk he is on, and whether climbing down it got him nowhere */
@@ -2068,6 +2083,91 @@ export class FirstTimerRun {
   }
 
   /**
+   * CAGE_SKILL (any world's cage, by its data): a cage a puzzle kit does not hold, in his reach at his height ahead (PUNCH), or hung up the
+   * climbing vine at whose foot he stands (CLIMB): he stops (on the vine: up to it first), waits his tier's hesitation, and punches until
+   * it opens (its cageHp), a press at a time at his own swap gap; then on (down the vine first). His blow's reach is the engine's own:
+   * engine.ts strike, the cage's 48 x 52 box against fight.ts sweptBox (on the ground a cage 10-85 px ahead of him at his height; from a
+   * climbing vine 0-80 px above him: proved through the Pad's punch, InputEngine.triggerTouchPunch, ENG-CAGE). Null: no cage his business.
+   */
+  private cagePlan(p: PlayerState, t: number, fdir: -1 | 1, side: (d: -1 | 0 | 1) => Pad): Pad | null {
+    if (!CAGE_SKILL.punch) {
+      this.cageAim = null;
+      return null;
+    }
+    const kit = this.e.kit as { holdsCage?: (c: unknown) => boolean } | null | undefined;
+    type CageItem = { id: number; x: number; y: number; type: string; collected: boolean };
+    const shut = (c: CageItem) => c.type === 'cage' && !c.collected && !kit?.holdsCage?.(c);
+    const cages = (this.sim.collectibles as unknown as CageItem[]).filter(shut);
+    const aim = this.cageAim;
+    // (opened from a vine: down it to its foot, then on, and the trunk let be a moment so the way on does not take him back up it)
+    if (aim?.down) {
+      if (p.climbing) return { down: true };
+      this.cageAim = null;
+      this.trunkIgnoreUntil = t + 2;
+      return null;
+    }
+    // (p.y is his feet: stood on a floor, p.y is the floor's top)
+    const feet = p.y;
+    /** the climbing vine a cage hangs up, too high to punch from the ground (CLIMB) */
+    const postOf = (c: CageItem) => (CAGE_SKILL.climb ? this.sim.vines.find((v) => !v.isSwingingVine && v.vineType !== 'swing_liana' && Math.abs(v.x - c.x) < 40 && c.y > v.topY && c.y < v.bottomY - 60) : undefined);
+    let c = aim ? cages.find((q) => q.id === aim.id) : undefined;
+    if (aim && !c) {
+      // (it opened: on, down the vine first when he is on one)
+      if (aim.vineX !== null && p.climbing) {
+        this.cageAim = { ...aim, down: true };
+        return { down: true };
+      }
+      this.cageAim = null;
+      return null;
+    }
+    if (!p.grounded && !p.climbing) return null;
+    // (a blow lands on the cage at this place of his: the engine's strike box (p.x + 4 to p.x + 78 the way he faces) against the cage's
+    // 48 px box, a margin inside it either side; either way he faces on a vine)
+    const onGround = (q: CageItem) => {
+      const d = (q.x - p.x) * p.facing;
+      return d > -8 && d < 80 && q.y - p.y > -50 && q.y - p.y < 40;
+    };
+    const onVine = (q: CageItem) => Math.abs(q.x - p.x) < 30 && p.y - q.y > 0 && p.y - q.y < 65;
+    if (!c) {
+      // (a cage ahead at his height, on his way (or one just behind him he has walked or hopped past), or one up the vine he is at)
+      c = cages.find((q) => {
+        const ahead = (q.x - p.x) * fdir;
+        if (p.grounded && ahead > -60 && ahead < 140 && q.y - p.y > -50 && q.y - p.y < 40) return true;
+        const v = postOf(q);
+        return !!v && Math.abs(v.x - p.x) < 140 && Math.abs(v.bottomY - feet) < 40 && (v.x - p.x) * fdir > -40;
+      });
+      if (!c) return null;
+      const v = postOf(c);
+      this.cageAim = { id: c.id, at: Infinity, vineX: v && c.y - p.y < -50 ? v.x : null, down: false };
+    }
+    const a = this.cageAim!;
+    const toward: -1 | 1 = c.x >= p.x ? 1 : -1;
+    let there = false;
+    if (a.vineX !== null) {
+      if (!p.climbing) {
+        // (to the post's foot, then up it: holding up at a climbing vine catches it)
+        if (Math.abs(a.vineX - p.x) > 14 && !this.e.nearTreeVine) return side(a.vineX > p.x ? 1 : -1);
+        return { up: true };
+      }
+      if (p.y - c.y >= 50) return { up: true };
+      if (p.y - c.y < 5) return { down: true };
+      there = onVine(c);
+    } else {
+      if (!p.grounded) return null;
+      there = onGround(c);
+      // (not yet where his blow reaches it: a step toward it; carried past it by his thumb's late lift, he turns to face it)
+      if (!there) return side(toward);
+    }
+    if (!there) return {};
+    // (stood at it: his own hesitation first, then a tap at a time, never right on top of a jump press)
+    if (a.at === Infinity) a.at = t + this.who.hesitate;
+    if (t < a.at || t - this.lastPress < this.swapGap) return {};
+    a.at = t + 0.2 + between(this.r, this.who.swap);
+    this.lastPress = t;
+    return { punch: true };
+  }
+
+  /**
    * The little ones (followPlay.ts), LINE_SKILL: a spooked one hiding where it ran to, he goes back for; in the reeds on a watched
    * stretch he waits for the tail and goes right after a look. Null: nothing to do with them this frame (the route goes on).
    */
@@ -2087,7 +2187,16 @@ export class FirstTimerRun {
         this.lineGo = null;
         this.lineWait = null;
         if (look && LINE_SKILL.waitTail) return {};
-        return side(lost.x > p.x ? 1 : -1);
+        const back: -1 | 1 = lost.x > p.x ? 1 : -1;
+        // (a boulder on the way back (2-3's 50 px moss stone on the mud between clumps): stopped dead against its face, after his stop
+        // reaction a plain hop over it, as on the way on. He stood against it until rescued: castBots 2-3 middle Normal seed 1 x 20828,
+        // child Normal seeds 5 x 11590 and 8 x 11841, ENG-CAGE)
+        this.fetchStill = p.grounded && Math.abs(this.moveX) < 0.8 ? this.fetchStill + DT : 0;
+        if (LINE_SKILL.hopBack && this.fetchStill >= this.who.stopReact && !this.pending && !this.jump) {
+          this.fetchStill = 0;
+          return this.decide(back, 'single', false, side(back));
+        }
+        return side(back);
       }
     }
     if (!LINE_SKILL.waitTail || !p.grounded) return null;
@@ -2253,6 +2362,11 @@ export class FirstTimerRun {
     // its way threw him off halfway up, round 5 2026-10-29)
     if (p.climbing && !this.wasClimbing) this.pending = null;
     this.wasClimbing = !!p.climbing;
+    // a cage within his reach, or hung up the climbing vine he stands at (CAGE_SKILL): stop, his own hesitation, punch it open. Ahead of
+    // the line's reeds and the heron (a cage stands in 2-3's last clump: hopping in past it he stood hiding beside it and was rescued past
+    // it, middle Normal seed 1), never in a jump he has begun
+    const cg = this.jump ? null : this.cagePlan(p, t, fdir, side);
+    if (cg) return cg;
     // a press he has decided on comes when his thumb gets there (the reaction noise)
     if (this.pending && t >= this.pending.at && !this.jump) {
       const q = this.pending;
@@ -2390,6 +2504,7 @@ export class FirstTimerRun {
     // (bonkBrake: bounced again off a dazed snapper's back with no jump of his own: he steers for his side, clear of it)
     const ba = this.bonkAir();
     if (ba) return ba;
+
 
     // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
     if (p.climbing) {
@@ -4057,8 +4172,24 @@ export class FirstTimerRun {
     //  the calibrated tiers were rescued for it. pitClimb.test.ts 'set down by the game'. Not on the run's first frame: its last place is
     //  wherever the run was made, and a harness that stands him after (pitClimb's shallow pit) has already found his place)
     if (step >= 100 && !this.placed && this.frames > 1) {
+      const top = this.prog.best;
       this.prog.relocate(p);
       this.climbBack = null;
+      // (set down at the same place again and again, never getting further: three are a loop, as three falls back are, and he is put
+      // past. A splash-back costs no life, and each relocate wound his progress back, so the walk on to the same pond counted as
+      // progress and no rescue ever came: 2-3's sinking-pad pond, the kid Normal set down at its near bank every 20 s to the 1200 s cap,
+      // 34 of 40 seeds, ENG-CAGE)
+      const sd = this.setDowns;
+      // ("no further": within two route points, about a step, of his best at the first set-down; the frame he is caught on varies)
+      if (sd && Math.abs(sd.x - p.x) < 80 && Math.abs(sd.y - p.y) < 40 && top <= sd.top + 2) sd.n++;
+      else this.setDowns = { x: p.x, y: p.y, top, n: 1 };
+      if (this.setDowns!.n >= this.tries3) {
+        this.setDowns = null;
+        const at = this.prog.pts[top] ?? p;
+        this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +this.t.toFixed(1), dur: 0, what: `set down here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: false });
+        this.prog.hi = Math.max(this.prog.hi, top);
+        if (!this.rescue()) this.end = 'stranded';
+      }
     }
     this.placed = false;
     this.lastX = p.x;
