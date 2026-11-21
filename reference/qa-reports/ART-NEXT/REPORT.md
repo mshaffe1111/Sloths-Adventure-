@@ -41,7 +41,8 @@ Decoded 42.9 MiB for the four, +0.07 MiB on 60144a5ba; under the ~300 MB a stage
   1 s bridge (about 0.4 dE a frame) instead of jumping. Making them one colour means regrading the old clips, only if the lead wants it.
 ## Gates
 tsc clean; artcheck PASS; knowncheck PASS; idleends --check and clipde --check fresh; heroClipsEnds + heroClipsSeams 4/4; full unit
-suite: UNIT_LINE.
+suite: FINISHED, 3,792 tests, 3,790 pass, 0 fail, 0 cancelled, 2 todo (the
+repo's own TODOs, e.g. w4RealReach 4-3 boulder; nothing of this packet).
 ## Learned
 - Before proposing an engine fix, check the release branch: the see-through melt was already fixed (R-165.353) after my base.
 - Gate every join, not only the one reported: the bridge-in -> clip join was 3.3 dE and hid under the reported 4.3 max.
