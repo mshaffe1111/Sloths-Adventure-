@@ -1,3 +1,54 @@
+# ART-HERO (11-21, session_01FhBbYM5JjVuEt9DGSsqgwH): Pokey is one sloth in EVERY animation (R-165.378) HANDED OVER (D111)
+## EXACT NEXT STEP
+Sheets and gate are DONE and green on t-art-next; open: (1) after-strips, (2) the full gates, (3) this REPORT's final form.
+(1) S=<scratch>; `git worktree add --detach $S/wt-after HEAD && cd $S/wt-after && git merge origin/main` (the same 9 catalog/doc files
+conflict as ART-REGRADE's; for the scratch take main's side: `git checkout --theirs $(git diff --name-only --diff-filter=U)`, commit,
+never push), `npm install --no-audit --no-fund --legacy-peer-deps`, then `node tools/art/hfnext/heroshoot.mjs $S/shots-after 1-1
+climb,push,cheer,walk,run,jab 1.0 2.6` (about 4 min; every game frame on a paused clock). BEFORE shots: re-shoot the same way in a worktree of
+700b4ef8d merged with origin/main (this member's were in its scratchpad, gone with the container). Then
+`python3 -I tools/art/hfnext/heropair.py $S/shots-before $S/shots-after reference/art/hfnext/hero 1-1 climb,push,cheer,walk,run,jab 1.0`
+and LOOK at hero-all-before-after.jpg downscaled (D102) the way Matt will: one colour from standing into each move; no tint edge,
+the outline and eye whites untouched; climb was lifted L +6.75 (it read darker), check it does not look washed out on the vine.
+Also look at a push loop and the climb cycle in the mp4s (the seams are now 0.05-0.07 dE).
+(2) tsc, the full unit suite (background), artcheck (PASS here), knowncheck (PASS here: heroBody.known.json is a new list),
+`python3 -I tools/art/hfnext/herobody.py --check`, then catalog rows: `python3 -I tools/art/hfnext/catalogclips.py push,move-climb,cheer,
+hurt,move-walk,move-run,move-jab,move-cross,move-hook,move-kick,move-kick2,move-mega` + `python3 tools/art/catalog_master.py --emit`
+(file_kb changed; check catalogclips handles non-idle clips: its template is each clip's frame-0 row).
+## 1. Measure (fur dE to the plain pose, pooled / worst frame / loop seam last->first; tools/art/hfnext/herobody.py)
+| sheet | 700b4ef8d | now |
+|---|---|---|
+| push | 7.78 / 8.82 / 3.03 | 0.01 / 0.17 / 0.06 |
+| move-climb | 6.49 / 8.13 / 1.95 | 0.01 / 0.34 / 0.06 |
+| hurt | 5.10 / 5.44 | 0.01 / 0.18 |
+| cheer | 3.84 / 4.32 | 0.00 / 0.14 |
+| move-walk | 3.52 / 4.68 / 1.28 | 0.02 / 0.14 / 0.05 |
+| move-run | 3.39 / 4.69 / 3.00 | 0.01 / 0.19 / 0.07 |
+| jab, cross, hook, kick, kick2, mega | 1.9-3.4 / 2.6-4.6 | 0.01-0.09 / 0.12-0.42 |
+| hero-climb2 (known list) | 2.81 / 3.53 | unchanged |
+Walk, run and the attacks were added on the before-strip evidence (the lead's rule): walk and run start paler and yellower than
+standing; the jab's first frames darker. Not in this packet (the lead's NEXT packet), whole-sheet fur dE on 700b4ef8d, props inflate it:
+vine 4.8, rope 10.2, swim 6.1, story 5.2, studies 5.5, atlas 4.0.
+## 2. The transfer: regrade.py --ship --even (record regrade.json)
+The same per-clip Lab transfer as ART-REGRADE (outline and eye whites weighted out), then --even: push's colour DRIFTED across its frames
+(L 59 -> 62), so its loop popped 3.3 dE every 3 s and climb's cycle 2.0: no single transfer can fix that. 10 passes of a per-frame offset
+smoothed [1 2 1] (around the loop for push/climb/walk/run) left push's seam at 0.66, so 3 exact per-frame passes close it. Frame-to-frame
+fur steps only got smaller (push median 0.17 -> 0.08, max 0.59 -> 0.18). Pushback on the packet: "one transfer per sheet" was the right
+aim (no flicker) but the drift needed per-frame offsets; the lead accepted it.
+## 3. The gate (D108): heroClipsBody.test.ts tests 3-5 + heroBody.json + heroBody.known.json (in knowncheck's lists)
+Every HERO_CLIPS sheet + hero-climb2, sha-pinned; fur each frame <= 2.0, pooled <= 1.0, or a known row no worse (and a known row that
+passes fails); the LOOP SEAM (lead's ask) for push/climb/walk/run <= max(2 x median step, 0.5), <= 1.0. PLANTED RED on 700b4ef8d's sheets:
+reference/qa-reports/ART-HERO/body-plant-700b4ef8d.txt/.json (cheer, hurt, climb, push colour; push 3.03, run 3.00, climb 1.95,
+walk 1.28 seams). Green now: 5/5.
+## 4. Sizes (q86 WebP, the same dims, so decoded cost unchanged)
+push 404 -> 439 KB, climb 167 -> 177, cheer 342 -> 359, hurt 392 -> 411, walk 119 -> 123, run 104 -> 109, attacks +2-6 KB each.
+## Learned
+- Gate the loop seam, not only the mean: a clip can sit on the right colour pooled and still pop every loop (push 3.0 dE).
+- A smoothed per-frame fix converges slowly at a jump; end with exact passes.
+- The scratch worktree has no node_modules here: CI's `npm install --legacy-peer-deps` (npm ci fails on an esbuild peer).
+- Shoot on Playwright's paused clock (tools/perf/run.mjs's way): real-time shots got 6 a second, the paused clock every game frame.
+- Lessons applied: D57/D87 (inbox at every step; long runs in the background), D102 (read lean; images downscaled, one look so far),
+  D105, D108 (gate with a plant), D109 (no clock times to the lead), D111 (handed over at the line).
+
 # ART-REGRADE (11-21, session_01FhBbYMgsdpkvjvz82WyuJj): Pokey is one sloth in every idle (R-165.377) (written 2:55 PM ET)
 ## EXACT NEXT STEP
 The integrator merges t-art-next (heroClipsBody/Seams/Ends tests ride with it). Any later idle-sheet change runs, in order:
