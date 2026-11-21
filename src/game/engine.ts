@@ -101,6 +101,7 @@ import { swimHeadY } from './heroSwim.ts';
 import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
+import { stackZonesOf } from './groundStack.ts';
 import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
@@ -199,7 +200,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -1161,6 +1162,8 @@ export class GameEngine {
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves, this.platforms, this.proto?.water);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
+    // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts; none on any other stage)
+    setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs));
     // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
     if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)

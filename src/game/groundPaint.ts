@@ -54,6 +54,8 @@ function sheet(w: number): { img: HTMLImageElement; g: GroundSheet } | null {
   const img = imgs.get(w);
   return img ? { img, g: GROUND_FRAMES[w] } : null;
 }
+/** a world's ground sheet once it has loaded (groundStack.ts draws a painted underside strip from it), or null */
+export const groundSheetImage = (w: number): HTMLImageElement | null => sheet(w)?.img ?? null;
 
 /**
  * which soil tile (col, row) wears. With four (the clean sweep, G1): (col + 2 row) mod 4, so a tile never matches the one beside it or

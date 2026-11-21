@@ -28,6 +28,7 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
+import { ceilingsFor, ceilingsOver, clipAbove, drawUnderside, underCeiling, type StackZone } from './groundStack.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -68,6 +69,12 @@ export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: 
 const SHORT_STEP = 60;
 let groundOn = false;
 /** whether this stage paints its banks (engine.ts paintKit): the drawn ground then leaves them to the painted soil (bankPainted) */
+/** the zones the stage's lay stacks a leg under another (groundStack.ts stackZonesOf; engine.ts sets them at a stage's start): over each,
+ *  the upper leg's soil ends at a ceiling (ENG-GROUND). None on a stage whose lay stacks no leg: it draws exactly as before */
+let stackZones: readonly StackZone[] = [];
+export function setGroundStacks(z: readonly StackZone[] | undefined) {
+  stackZones = z ?? [];
+}
 export function setGroundPaint(on: boolean) {
   groundOn = on;
 }
@@ -933,7 +940,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number; under?: (ctx: CanvasRenderingContext2D) => void }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -991,6 +998,8 @@ export function drawBankArt(
   // block under the thorns, the lead 11-12)
   const sy = open.shadeFrom ?? p.y;
   drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, sy + DEPTH_BELOW * depthView, sy - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
+  // (`under`: a bank a stacked leg runs under ends at a ceiling; its underside is drawn here, on its own soil: groundStack.ts)
+  open.under?.(ctx);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -1398,6 +1407,8 @@ function groundLine(banks: Platform[]): DepthAt {
  */
 function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }) {
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
+  // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts. None where no leg is stacked)
+  const cs = stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones) : [];
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);
@@ -1407,8 +1418,10 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a hollow's hurt floor, gen2 pit 'hurt': its hole is painted whole by World 1's pit painter, w1Pits.ts. This shade's straight sides
     // stood under its thorns as a blue-grey box, the lead 11-12)
     if (p.pit === 'hurt') continue;
-    const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
-    const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
+    // (a piece of a stacked lower leg is no pit's floor between two banks of the leg over it)
+    const walls = cs.length && underCeiling(p, cs) ? tall.filter((q) => !ceilingsOver(q, cs).length) : tall;
+    const L = walls.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const R = walls.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
     if (!L || !R) continue;
     const x0 = L.x + L.width, x1 = R.x;
     if (x1 - x0 < 20 || x1 - x0 > 700) continue;
@@ -1440,6 +1453,12 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
     // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
     const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+    // (a bank a stacked leg runs under: all its paint is clipped clear of the air under the ceiling, its underside drawn on its soil)
+    const over = cs.length ? ceilingsOver(p, cs) : [];
+    if (over.length) {
+      ctx.save();
+      clipAbove(ctx, over, p.x - 400, p.x + p.width + 400, p.y - 400, Math.max(view.y1 ?? 0, ...over.map((c) => Math.max(...c.ys))) + 400);
+    }
     // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
     const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
@@ -1472,7 +1491,8 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true), under: over.length ? (g) => drawUnderside(g, kitWorld, p, over, view) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
+    if (over.length) ctx.restore();
   }
   // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
   // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
