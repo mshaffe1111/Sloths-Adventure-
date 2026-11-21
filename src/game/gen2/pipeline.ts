@@ -2181,6 +2181,37 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let dir: 1 | -1 = 1;
   const turns: Array<{ x: number; from: number; to: number; turned: boolean; vine: Vine }> = [];
   let runouts = 0;
+  // (a turn's foot kept clear of blocks, going up: its vine stands on the ledge he leaves, and anything standing on that ledge (a
+  // boulder, a stump, a step) nearer its x than TOWER.foot takes the spot he climbs from: 2-6's rest boulder stood 36 px from a turn's
+  // vine and the bots stood on it under the climb, BUILD-26b. A turned storey's vine stands TOWER.vineIn in from the ledge's end, where
+  // a brick's end boulder is, and the storey's room fixes the vine; so the BLOCK slides along its ledge, the least way, until it is
+  // TOWER.foot clear of the foot (CLIMB_CLEAR more: clearClimbs may move the vine that far after) and of every other climb standing on
+  // or arriving at that ledge, wholly on the ledge, never onto another block. The lay runs before the sockets, so nothing placed by it
+  // has moved; the level check judges the stage as built. No such spot: the roll fails by name)
+  const clearFoot = (x: number, what: string): void => {
+    const y = cur.y;
+    const at = platforms.filter((q) => q.type !== 'fragile' && Math.abs(q.y - y) <= 1);
+    // (the ledge: the run of wood at his height under x, pieces end to end counted as one)
+    let s0 = x, s1 = x;
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of at) if (q.x <= s1 + 1 && q.x + q.width >= s0 - 1 && (q.x < s0 || q.x + q.width > s1)) { s0 = Math.min(s0, q.x); s1 = Math.max(s1, q.x + q.width); grew = true; }
+    }
+    const need = TOWER.foot + CLIMB_CLEAR;
+    const gap = (v: number, x0: number, w: number) => Math.max(x0 - v, v - (x0 + w), 0);
+    const blocks = platforms.filter((q) => q.y < y - 2 && Math.abs(q.y + q.height - y) <= 2 && q.x < s1 && q.x + q.width > s0);
+    // (the other climbs on this ledge: a vine standing on it, or one whose top he steps off onto it)
+    const feet = [x, ...vines.filter((v) => v.vineType === 'tree_climb' && v.x >= s0 && v.x <= s1 && (Math.abs(v.bottomY - y) <= 2 || Math.abs(v.topY - y) <= 30)).map((v) => v.x)];
+    for (const q of blocks) {
+      if (gap(x, q.x, q.width) >= need) continue;
+      // (a block something else stands on stays: moving it would move that too)
+      if (platforms.some((o) => o !== q && Math.abs(o.y + o.height - q.y) <= 2 && o.x < q.x + q.width && o.x + o.width > q.x)) throw new Error(`gen2 ${budget.id}: ${what}'s turn at x ${R(x)} (y ${R(y)}) stands ${R(gap(x, q.x, q.width))} px from a block at x ${q.x}-${q.x + q.width} that carries another piece`);
+      const fits = (x0: number) => x0 >= s0 && x0 + q.width <= s1 && feet.every((v) => gap(v, x0, q.width) >= need) && blocks.every((o) => o === q || o.x >= x0 + q.width || o.x + o.width <= x0);
+      const spots = [...feet.map((v) => v - need - q.width), ...feet.map((v) => v + need), s0, s1 - q.width].map(R).filter(fits).sort((a, b) => Math.abs(a - q.x) - Math.abs(b - q.x));
+      if (!spots.length) throw new Error(`gen2 ${budget.id}: ${what}'s turn at x ${R(x)} (y ${R(y)}) stands by a block on its ledge (x ${R(s0)}-${R(s1)}), and no spot on that ledge is ${need} px clear of its climbs`);
+      q.x = spots[0];
+    }
+  };
   const towerJoin = (ext: { x0: number; x1: number; low: number; high: number; hang?: number }, opts: { keepFloor?: boolean; toFloor?: boolean; /** the way the storey must run (a column's ledge out, toward the wall he leaves by) */ way?: 1 | -1; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
     const usable = TW - 2 * TOWER.wall;
     const ahead = ext.x1, behind = -ext.x0;
@@ -2227,6 +2258,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (roomIn(way, tipOf(way)) < ahead) throw new Error(`gen2 ${budget.id}: ${opts.what} runs ${R(ahead)} px on from its entry, and the storey turned at the wall holds ${R(roomIn(way, tipOf(way)))} px`);
     }
     const ox = sealedOx ?? tipOf(way);
+    if (flow === 'up') clearFoot(ox, opts.what);
     const a = Math.min(ox + way * ext.x0, ox + way * ext.x1), b = Math.max(ox + way * ext.x0, ox + way * ext.x1);
     const lim = limitAt(a, b);
     // (going up, its gaps' catch boughs hang under its entry: they too lie a turn over the ledge he leaves, so none is a rung up to it)

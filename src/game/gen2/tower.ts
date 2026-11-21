@@ -11,7 +11,7 @@
 import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
-import { ledgeOut, vaultSide } from '../vineTop.ts';
+import { CLIMB_CLEAR, ledgeOut, vaultSide } from '../vineTop.ts';
 
 /** which way a graph is laid (MissionGraph.flow) */
 export type Flow = 'right' | 'up' | 'down' | 'legs';
@@ -43,6 +43,10 @@ export const TOWER = {
   fall: 450,
   see: 300,
   vineIn: 44,
+  /** a turn's foot (going up, where its vine stands on the ledge he leaves): nothing standing on that ledge (a boulder, a stump, a step)
+   *  comes nearer the vine's x than his body's width (44, engine.ts) and the vine's stand-off from a face (CLIMB_CLEAR: clearClimbs may
+   *  move it that far), so he climbs from the ledge, never from a block's top under the climb (BUILD-26b; 2-6's castBots) */
+  foot: 44 + CLIMB_CLEAR,
   /** a catch bough (STAGE-RULES §2 "Falls in climbs": a catch branch under the gap): under a storey's own gap it lies `hop` px under
    *  the lower lip, lip to lip (a fall in is one plain hop out, the tower's soft pit); under a storey's open end, where nothing
    *  else would catch within `fall` (or, going down, `see`), it is `catchW` wide, one storey's clearance down */
