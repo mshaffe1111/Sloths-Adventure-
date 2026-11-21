@@ -24,6 +24,7 @@ import { FIELD_FEEL, gateFaults, type ClusterGate, type VineCluster } from '../.
 import { podBeat, podFaults, type PodColumn } from '../../podfall.ts';
 import type { KitDecor } from '../../puzzleArt.ts';
 import { nestDoorAt } from '../../artDress.ts';
+import { LAND_FLIGHTS } from '../landFlights.data.ts';
 
 /** the stage these rows are for: the tag its sections carry (stagePool) and the key of its brief */
 export const STAGE_14 = '1-4';
@@ -67,9 +68,25 @@ export const JOURNAL_14 = 'Climbed the kapok between falling pods. From the top 
 export const GAP = 80;
 /** a field's foot runs this far past its first and last vine (px): room to stand at each end */
 const MARGIN = 60;
-/** how far a gate field's foot runs out past its sealed bough at each end (px): one vine spacing, so a step off either end of the gate
- *  lands on the field's own foot one storey down (tower.ts towerFalls; FA's sealed piece gets no catch from the lay) */
-export const GATE_RUN = GAP;
+/**
+ * how far a gate field's foot runs out past its sealed bough at each end (px), for a gate `H` px over it: the lay adds nothing by a sealed
+ * piece (SectionPiece.sealed), so the gate's OWN section catches both its exits, the step off an end AND the run off it at full speed
+ * (ENG-26j, the lead's ruling (a): 1-4 seed 2's four gates ran out one vine spacing, 80 px, and the run came down 160-172 px out, past
+ * the foot, at the tower's wall). Sized from the flown run (landFlights' walk, the same on both settings: how far out he is at the frame
+ * he comes down H) plus half his body, so he lands on the foot with both feet, never on its lip; never under one vine spacing
+ */
+export function gateRun(H: number): number {
+  const out = Math.max(...(['normal', 'easy'] as const).map((s) => runOut(LAND_FLIGHTS[s].walk, H)));
+  return Math.max(GAP, Math.ceil(out + BODY_W / 2));
+}
+/** his body's width (px; engine.ts p.width 44) */
+const BODY_W = 44;
+/** how far along a flown path he is at the frame he has come down `d` px (the frame he lands on wood `d` px under: landings are flown
+ *  frame by frame, tower.ts fly), or its last point if it never does */
+function runOut(path: ReadonlyArray<readonly [number, number]>, d: number): number {
+  for (let k = 1; k < path.length; k++) if (path[k][1] >= d) return path[k][0];
+  return path[path.length - 1][0];
+}
 /** a pod's bottom hangs this far under its bough's top (px): a drawn pod's length (vineFieldArt.ts drawPod) */
 const POD_HANG = 110;
 /** a fig bunch's height (px) */
@@ -117,8 +134,9 @@ export const FIELD_ROWS: Record<string, FieldRow> = {};
 function field(id: string, name: string, o: { jobs: NonNullable<SectionTemplate['jobs']>; job: SectionTemplate['phases']; teaches?: string; uses?: string[]; difficulty: number; row: FieldRow; tips?: Socket[]; content?: 'climb' | 'hazard' }): SectionTemplate {
   const W = 2 * MARGIN + (o.row.n - 1) * GAP;
   // (a gate's bough is SEALED (FA, SectionPiece.sealed): the lay adds nothing level with it or within a hop, so the fruit is the only
-  //  way on, and nothing of the lay's catches a step off its ends: its own foot runs GATE_RUN out under both, one storey down)
-  const run = o.row.gate ? GATE_RUN : 0;
+  //  way on, and nothing of the lay's catches its ends: its own foot runs gateRun(H) out under both, one storey down, so the step off
+  //  either end AND the full-speed run off it land on the field's own wood)
+  const run = o.row.gate ? gateRun(o.row.H) : 0;
   const WF = W + 2 * run;
   // (a field's foot is walked onto, never landed on: no `landing`, so Easy does not widen it and pull its vines out of two hands' reach)
   const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, WF, { landing: false })];
@@ -243,10 +261,14 @@ const DROP_ONE = (() => {
     jobs: ['twist'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6,
     row: { n: 4, H: 360, figs: [{ vine: 4, over: 160 }], pods: [{ vine: 2, shift: 0 }], beat: 'grown', gate: true },
   });
-  // (the foot runs on past the last vine to the snake's spot, within TRAP.scare (170) of where the bunch comes down)
-  const W = 2 * MARGIN + 3 * GAP + 160;
-  t.pieces = t.pieces.map((p) => (p.key === 'foot' ? { ...p, w: [W, W] } : p.shape === 'vine' && p.place.kind === 'climb' ? { ...p, place: { ...p.place, at: [((p.place.at as R2)[0] * (W - 160)) / W, ((p.place.at as R2)[0] * (W - 160)) / W] } } : p.key === 'top' ? { ...p, w: [W - 160, W - 160] } : p));
-  t.sockets = [{ id: 'e1', role: 'enemy', on: 'foot', t: (W - 70) / W, dn: 0, allow: ['snake-asleep'], easy: 'keep' }];
+  // (the foot runs on past the last vine to the snake's spot, within TRAP.scare (170) of where the bunch comes down: 150 px past the figs'
+  //  vine, the last. field() lays the vines 80 apart and the gate's own run-out, gateRun(H), at both ends; the foot runs on only if the
+  //  snake's spot (70 px in from its end) needs more than that. ENG-26j: the old hand-sized foot (520, its vines scaled to fit) was written
+  //  before the gate's run-out: with it the vines stood 55 px apart and the gate's run off its ends came down past the foot)
+  const row = FIELD_ROWS['w1-14-drop-one'], run = gateRun(row.H), lastVine = run + MARGIN + (row.n - 1) * GAP, snake = lastVine + 150;
+  const WF = 2 * MARGIN + (row.n - 1) * GAP + 2 * run, W = Math.max(WF, snake + 70);
+  t.pieces = t.pieces.map((p) => (p.key === 'foot' ? { ...p, w: [W, W] } : p.place.kind === 'climb' || p.key === 'top' ? { ...p, place: { ...p.place, at: ((p.place as unknown as { at: R2 }).at.map((a) => (a * WF) / W) as R2) } } : p)) as SectionPiece[];
+  t.sockets = [{ id: 'e1', role: 'enemy', on: 'foot', t: snake / W, dn: 0, allow: ['snake-asleep'], easy: 'keep' }];
   return t;
 })();
 /** [S] the hollow: the tallest field, a gate of three, pods on the quicker beat down one push vine */

@@ -5,12 +5,17 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import '../../headlessDom.ts';
 import type { Platform, Vine } from '../../types.ts';
 import { checkCode, parseCode } from '../nodeCode.ts';
-import { stagePool } from '../pipeline.ts';
+import { buildGen2Stage, stagePool } from '../pipeline.ts';
 import { stageLine } from '../../wayside.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
-import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
+import { listedStage } from '../listed.ts';
+import { generateAllLevels } from '../../worldsData.ts';
+import { LAND_FLIGHTS } from '../landFlights.data.ts';
+import { TOWER, towerCatches, towerFalls, towerGates, walkOff } from '../tower.ts';
+import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, gateRun, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
 import { w1World } from './w1.ts';
 import { FIELD_FEEL } from '../../vineField.ts';
 import { POD, podFaults } from '../../podfall.ts';
@@ -178,5 +183,76 @@ test('the pods are PODS_14\'s: speed, tell and beats from the one block; on: fal
     assert.equal(finish14(laidField('w1-14-pods'), 'normal').pods!.length, 0, 'on: false lays no pods');
   } finally {
     (PODS_14 as { on: boolean }).on = was;
+  }
+});
+
+test("a gate's running exit is its own section's to catch: the lay lays nothing by it, a foot one vine spacing out leaves the run named, the foot run out gateRun(H) catches it (ENG-26j, the lead's ruling (a))", () => {
+  // (planted from 1-4 seed 2's first refused gate on e420a2794: the gate 646-1086, its foot 400 px down run out one vine spacing (80 px),
+  //  a vine hanging from the foot's right tip to the storey under it, out to the wall. The step off either end lands on the foot; the RUN
+  //  off the right end came down at the wall, past the foot and the vine, 681 px to the storey under, and the roll was refused by name)
+  const solid = (x: number, y: number, width: number, id: number): Platform => ({ id, x, y, width, height: 24, type: 'solid' }) as Platform;
+  const H = 400, floor = solid(0, 3000, 1280, 1), gate = solid(646, 1000, 440, 2), low = solid(700, 1681, 580, 4);
+  const level = (p: Platform) => (p.id === 1 ? 0 : 1), sealed = (p: Platform) => p.id === 2;
+  const byGate = (c: { x: number; y: number; w: number }) => c.y <= gate.y + 30 && c.y >= gate.y - 200 && Math.max(0, c.x - (gate.x + gate.width), gate.x - (c.x + c.w)) <= 300;
+  const footed = (run: number) => {
+    const foot = solid(gate.x - run, gate.y + H, gate.width + 2 * run, 3);
+    const hang: Vine = { id: 1, x: foot.x + foot.width, topY: foot.y, bottomY: low.y, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+    const P = [floor, gate, foot, low];
+    const cs = towerCatches('up', P, [hang], 3000, 1280, [], level, sealed);
+    // (the lay lays NOTHING by a sealed piece, whatever its foot: no catch of the gate's run, nothing level with it or a hop from it)
+    assert.deepEqual(cs.filter(byGate), [], `the lay lays nothing by the gate (run ${run}: ${JSON.stringify(cs)})`);
+    const laid = [...P, ...cs.map((c, k) => solid(c.x, c.y, c.w, 50 + k))];
+    assert.deepEqual(towerGates([gate], laid, [hang]), [], `run ${run}: the gate is still a gate`);
+    return { foot, laid, falls: towerFalls('up', laid, 3000, 1280) };
+  };
+  // (RED, e420a2794's foot: one vine spacing out; the run off the gate's right end is named, the lay having added nothing)
+  const old = footed(GAP);
+  assert.ok(old.falls.some((f) => f.includes(`${gate.x}-${gate.x + gate.width}`) || f.includes(`${gate.y}`)), `the planted case: the run off the gate is named (${JSON.stringify(old.falls)})`);
+  const w0 = walkOff(old.laid, gate, 1, 1280)!;
+  assert.ok(!w0 || w0.y - gate.y > TOWER.fall, `the planted case: the run comes down past the foot (${JSON.stringify(w0)})`);
+  // (GREEN: the foot run out gateRun(H), sized from the flown full-speed run; both runs land on the gate's own foot, both feet on it)
+  const now = footed(gateRun(H));
+  assert.deepEqual(now.falls, [], 'every end caught by the gate section\'s own wood');
+  for (const side of [-1, 1] as const) {
+    const w = walkOff([gate, now.foot], gate, side, 1280)!;
+    assert.ok(w && w.y === now.foot.y && w.x - 22 >= now.foot.x && w.x + 22 <= now.foot.x + now.foot.width, `side ${side}: the run off the gate lands on its own foot, both feet on it (${JSON.stringify(w)})`);
+  }
+});
+
+test("gateRun(H) is the flown full-speed run off a gate H px up, plus half his body, on both settings; every gate field's foot runs out that far (ENG-26j)", () => {
+  const along = (H: number, d: 'normal' | 'easy') => { const p = LAND_FLIGHTS[d].walk; const k = p.findIndex((q) => q[1] >= H); return p[k][0]; };
+  let gates = 0;
+  for (const t of SECTIONS_14) {
+    const row = FIELD_ROWS[t.id];
+    if (!row?.gate) continue;
+    gates++;
+    const run = gateRun(row.H), foot = t.pieces.find((q) => q.key === 'foot')!, top = t.pieces.find((q) => q.key === 'top')!;
+    for (const d of ['normal', 'easy'] as const) assert.ok(run >= along(row.H, d) + 22 - 10, `${t.id}: ${run} px covers the run's ${along(row.H, d)} px on ${d}`);
+    const fw = Array.isArray(foot.w) ? foot.w[0] : foot.w, tw = Array.isArray(top.w) ? top.w[0] : top.w;
+    assert.equal(fw, tw + 2 * run, `${t.id}: the foot runs ${run} px past the gate at each end`);
+    assert.ok(top.sealed, `${t.id}: its gate is sealed`);
+  }
+  assert.ok(gates >= 2, `gate fields judged: ${gates}`);
+});
+
+test('1-4 seed 2 builds on both settings with every gate\'s running exit on its own foot (planted: refused on e420a2794, its four gates\' runs at the wall)', () => {
+  const cfg = generateAllLevels().find((l) => l.id === '1-4')!;
+  for (const d of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: { ...cfg, unlocked: true }, kit: listedStage('1-4')!.kit(), seed: 2, difficulty: d });
+    assert.deepEqual(st.gen2.errors ?? [], [], `1-4 seed 2 ${d}`);
+    const P = st.platforms, W = st.config.levelWidth;
+    const gates = (st.gen2.tower?.sealed ?? []).map((id) => P.find((p) => p.id === id)!);
+    assert.ok(gates.length >= 4, `${d}: its gates (${gates.length})`);
+    for (const g of gates) {
+      // (its own foot: the nearest wood under it that runs at least one vine spacing past both its ends)
+      const foot = P.filter((q) => q.y > g.y && q.x <= g.x - GAP && q.x + q.width >= g.x + g.width + GAP).sort((a, b) => a.y - b.y)[0];
+      assert.ok(foot, `${d}: the gate at ${g.x}-${g.x + g.width}, y ${g.y} has its foot`);
+      for (const side of [-1, 1] as const) {
+        const w = walkOff([g, foot], g, side, W);
+        assert.ok(w && w.y === foot.y, `${d}: the run off the gate at ${g.x}-${g.x + g.width}, y ${g.y}, side ${side} lands on its own foot (${JSON.stringify(w)})`);
+        const all = walkOff(P, g, side, W);
+        assert.ok(all && all.y - g.y <= TOWER.fall, `${d}: and on the stage as laid within ${TOWER.fall} px (${JSON.stringify(all)})`);
+      }
+    }
   }
 });
