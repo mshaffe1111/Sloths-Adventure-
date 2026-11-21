@@ -113,7 +113,7 @@ for name in NAMES:
     CF = np.concatenate([u for k, u in enumerate(FL) if not FACE[k]])
     ctr = (BINS[:-1] + BINS[1:]) / 2; pn, pa, pb = bin_means(PF)
     QS = np.linspace(2, 98, 25); qd_p = np.percentile(PF[:, 0], QS)
-    dL, da, db, qx, qd = [], [], [], [], []
+    dL, da, db, qx, qd = [], [], [], [], []; LN = []   # LN: each group's (light mean, dark mean, mean L) of its fur (the clamp below)
     for g in range(len(G)):
         Cg = np.concatenate([u for k, u in enumerate(FL) if (gi[k] == g or G[g] == 'face') and not FACE[k]] or [u for k, u in enumerate(FL) if gi[k] == g])
         cn, ca, cb = bin_means(Cg); w = np.minimum(pn, cn); ok = w >= 200
@@ -124,7 +124,7 @@ for name in NAMES:
         if AFFINE:
             def bm(F):
                 m = np.median(F[:, 0]); return F[F[:, 0] >= m, 0].mean(), F[F[:, 0] < m, 0].mean()
-            (cl, cd), (pl_, pd_) = bm(Cg), bm(PF)
+            (cl, cd), (pl_, pd_) = bm(Cg), bm(PF); LN.append((cl, cd, float(Cg[:, 0].mean())))
             sl = float(np.clip((pl_ - pd_) / max(cl - cd, 1e-6), 0.6, 1.8)); c0 = (pl_ + pd_) / 2 - sl * (cl + cd) / 2
             qx[-1] = np.array([0.0, 100.0]); qd[-1] = np.array([c0, c0 + (sl - 1) * 100])   # delta L = c0 + (sl - 1) L: a line
         dL.append(0.0 if BANDS else float(pm[0] - Cg[:, 0].mean()))
@@ -160,6 +160,26 @@ for name in NAMES:
                 r_ = pm - np.concatenate(ug).mean(0); dL[g] += float(r_[0]); da[g] = da[g] + r_[1]; db[g] = db[g] + r_[2]
     if LHALF:
         dL *= 0.5
+    # ART-SHEETS-c (the lead's condition): a ONE-POSE group (atlas mega/kick/fall..., story think/shock...) is not left to fit itself: its
+    # L shift at its light and dark band means and its a/b shift at its mean L are held inside the range the sheet's POSE FAMILIES
+    # (groups of 2+ body frames) take; the frames that hit the clamp are recorded ('clamped') and named in the strip's caption.
+    NB = np.bincount(gi[~np.array(FACE)], minlength=len(G)) if any(not x for x in FACE) else np.zeros(len(G), int)
+    FAMS = [g for g in range(len(G)) if NB[g] >= 2 and G[g] != 'face']; SING = [g for g in range(len(G)) if NB[g] == 1]
+    CLAMPED = {}
+    def sh(g):   # (L shift at light mean, at dark mean, a shift, b shift) of group g
+        cl, cd, ml = LN[g]
+        line = lambda v: float(np.interp(v, qx[g], qd[g]))
+        return np.array([dL[g] + line(cl), dL[g] + line(cd), float(np.interp(ml, ctr, da[g])), float(np.interp(ml, ctr, db[g]))])
+    if AFFINE and GROUP and FAMS and SING:
+        ref = np.array([sh(g) for g in FAMS]); lo, hi = ref.min(0), ref.max(0)
+        for g in SING:
+            v = sh(g); c = np.clip(v, lo, hi)
+            if np.abs(c - v).max() > 1e-6:
+                cl, cd, _ = LN[g]; s_ = float(np.clip(1 + (c[0] - c[1]) / max(cl - cd, 1e-6), 0.6, 1.8))   # refit the line through
+                c0 = (c[0] - (s_ - 1) * cl + c[1] - (s_ - 1) * cd) / 2                                       # the clamped points
+                dL[g] = 0.0; qx[g] = np.array([0.0, 100.0]); qd[g] = np.array([c0, c0 + (s_ - 1) * 100])
+                da[g] = da[g] + (c[2] - v[2]); db[g] = db[g] + (c[3] - v[3])
+                CLAMPED[G[g]] = {'from': np.round(v, 2).tolist(), 'to': np.round(c, 2).tolist()}
     EV = np.zeros((len(fr), 3)); mode = 'wrap' if name in LOOPS else 'edge'
     big = [len(L) > 50 and not FACE[k] for k, L in enumerate(shipped_fur(fr, each=True))]
     for _ in range(10):
@@ -171,13 +191,17 @@ for name in NAMES:
     for _ in range(3):
         per = shipped_fur([apply(f, EV[k], k) for k, f in enumerate(fr)], each=True)
         EV = EV + np.array([pm - u.mean(0) if big[k] else np.zeros(3) for k, u in enumerate(per)]) * ([0, 1, 1] if LHALF or BANDS else 1)
+    if CLAMPED:   # the per-frame a/b pull (--even) may not carry a clamped pose back out of the families' range
+        for k in range(len(fr)):
+            if G[gi[k]] in CLAMPED:
+                EV[k, 1:] = 0.0
     nf = [apply(f, EV[k], k) for k, f in enumerate(fr)]
     per = shipped_fur(nf, each=True); NF = shipped_fur(nf)
     fd = [float(np.linalg.norm(u.mean(0) - pm)) for k, u in enumerate(per) if big[k]]
     print(f'{name}: fur mean {CF.mean(0).round(2)} -> {NF.mean(0).round(2)} (plain {pm.round(2)}); pooled dE {np.linalg.norm(CF.mean(0) - pm):.2f} -> '
-          f'{np.linalg.norm(NF.mean(0) - pm):.2f}; worst frame after {max(fd):.2f}; dL {np.round(dL, 2).tolist()} {G}; |even| max {np.abs(EV).max():.2f}')
+          f'{np.linalg.norm(NF.mean(0) - pm):.2f}; worst frame after {max(fd):.2f}; dL {np.round(dL, 2).tolist()} {G}; |even| max {np.abs(EV).max():.2f}' + (f'; CLAMPED {CLAMPED}' if CLAMPED else ''))
     rec[name] = {'sheet': path, 'from': REV, 'written': 'q86 method 6', 'groups': G, 'frame_group': grp, 'dL': np.round(dL, 3).tolist(), 'bands_q': QS.tolist() if BANDS else None,
-                 'L_q_from': np.round(qx, 2).tolist() if BANDS else None, 'L_q_to': np.round(qd_p, 2).tolist() if BANDS and not AFFINE else None, 'L_line': AFFINE, 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(),
+                 'L_q_from': np.round(qx, 2).tolist() if BANDS else None, 'L_q_to': np.round(qd_p, 2).tolist() if BANDS and not AFFINE else None, 'L_line': AFFINE, 'clamped': CLAMPED, 'L_bin_centres': ctr.tolist(), 'da': np.round(da, 3).tolist(),
                  'db': np.round(db, 3).tolist(), 'even': np.round(EV, 3).tolist(), 'fur_mean_before': np.round(CF.mean(0), 2).tolist(),
                  'fur_mean_after': np.round(NF.mean(0), 2).tolist(), 'plain_fur_mean': np.round(pm, 2).tolist()}
     if DRY:
