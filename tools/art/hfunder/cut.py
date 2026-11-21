@@ -41,14 +41,39 @@ inner = nd.binary_erosion(solid, iterations=2)
 _, (iy, ix) = nd.distance_transform_edt(~inner, return_indices=True)
 rim = solid & ~inner
 a[rim] = a[iy[rim], ix[rim]]
-# --match: grade the take so its top band (the bank's own soil) has World 2's fill colour: per channel, the top band's mean and spread
-# moved to the fill's; the same line applied to every px, so the overhang keeps its share of the top's brightness
+# --match: grade the take so its top band (the bank's own soil) has World 2's fill colour: a per-channel GAIN (top band mean -> the fill's
+# mean), the same on every px, so the overhang keeps its share of the top's brightness (a mean+spread match lifted the darks: 0.33 -> 0.67)
 if '--match' in sys.argv:
     fill = np.asarray(Image.open(__import__('os').path.join(__import__('os').path.dirname(__file__), '../../../src/assets/ground/w2.webp'))
                       .convert('RGB').crop((3, 3, 1021, 1021))).reshape(-1, 3).astype(np.float32)
     band = a[int(0.04 * H):int(0.3 * H)][solid[int(0.04 * H):int(0.3 * H)]]
-    m0, s0, m1, s1 = band.mean(0), band.std(0) + 1e-3, fill.mean(0), fill.std(0)
-    a = np.clip((a - m0) * (s1 / s0) + m1, 0, 255)
+    a = np.clip(a * (fill.mean(0) / band.mean(0)), 0, 255)
+# --shade=R: the order puts the overhang in shadow at 55-65% of the fill's brightness; the takes paint it near a third. Lift the band
+# above each column's soil edge so its median is R of the top band's (a smooth ramp in from 0.3 of the height; the roots below the edge
+# keep their own dark)
+SH = [float(x[8:]) for x in sys.argv if x.startswith('--shade=')]
+if SH:
+    lum = a.mean(axis=2)
+    y0 = int(0.3 * H)
+    e = np.array([y0 + (int(np.argmin(solid[y0:, x])) if not solid[y0:, x].all() else H - y0) for x in range(W)])
+    bw = int(0.13 * H)
+    meas = range(W) if kind == 'strip' else range(int(0.6 * W))
+    band = np.concatenate([lum[max(y0, e[x] - bw):max(y0, e[x] - int(0.03 * H)), x] for x in meas if e[x] - bw > y0])
+    topm = np.median(lum[int(0.04 * H):y0][solid[int(0.04 * H):y0]])
+    gain = float(np.clip(SH[0] / (np.median(band) / topm), 1, 2.4))
+    # the ramp follows a SMOOTHED edge (a per-column gain left vertical streaks, 11-21), and the chroma lifts at 0.4 of the light, so a
+    # dark brown band does not turn orange
+    es = nd.uniform_filter1d(nd.median_filter(e.astype(float), size=61, mode='wrap' if kind == 'strip' else 'nearest'), 61,
+                             mode='wrap' if kind == 'strip' else 'nearest')
+    yy = np.arange(H)[:, None]
+    s = np.clip((yy - y0) / np.maximum(1, (es[None, :] - bw) - y0), 0, 1)
+    s = s * s * (3 - 2 * s)
+    below = np.clip((yy - e[None, :]) / 6.0, 0, 1)   # the roots under the edge keep their own dark (a 6 px blend)
+    gl = 1 + (gain - 1) * s * (1 - below)
+    gc = 1 + (gain - 1) * 0.4 * s * (1 - below)
+    L = a.mean(axis=2, keepdims=True)
+    a = np.clip(L * gl[..., None] + (a - L) * gc[..., None], 0, 255)
+    print(f'shade gain {gain:.2f} (band {np.median(band) / topm:.2f} -> {SH[0]})')
 rgba = np.dstack([a, alpha])
 
 if kind == 'strip':
@@ -89,9 +114,9 @@ for x in cols:
     c = al[FEATHER:, x]
     e = FEATHER + (int(np.argmin(c)) if not c.all() else len(c))
     edges.append(e)
-    if e > 30:
-        over.append(lum[e - 27:e, x].mean())
-top = lum[FEATHER:int(0.3 * h)][al[FEATHER:int(0.3 * h)]].mean()
+    if e > 40:
+        over.append(np.median(lum[e - 34:e - 7, x]))
+top = np.median(lum[FEATHER:int(0.3 * h)][al[FEATHER:int(0.3 * h)]])
 wrap = ''
 if kind == 'strip':
     rows = al[:, 0] & al[:, -1]

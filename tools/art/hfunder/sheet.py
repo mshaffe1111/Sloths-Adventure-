@@ -2,7 +2,7 @@
 twice, the corner 200 x 300) hanging from World 2's own soil fill, Pokey's drawn height (89 px, D41) standing under it, on a LIGHT (day)
 and a DARK (dusk) ground. Numbers per take, printed and on the sheet:
   FRAME EDGE  paint on an edge that must be clear (a strip: bottom; the corner: right and bottom), over 1% = reject before the pick
-  shade       the overhang's brightness (the 40 px above the edge, mean) over the top band's: the order asks 0.55-0.65
+  shade       the overhang's brightness (median of the band 10-50 px above the edge, clear of the rim line) over the top band's median: the order asks 0.55-0.65
   wrap        a strip's left-vs-right column difference (mean abs RGB over the soil rows) before any wrap fix
   top         the top band's mean RGB against the fill's (143,103,70)
     python3 -I tools/art/hfunder/sheet.py <takes dir> <piece> <out.jpg>
@@ -49,7 +49,7 @@ def numbers(raw, bgm, bg):
     solid = ~bgm
     # the edge: per column, the last solid row of the main body (ignore thin roots: a run of 6+ solid rows from the top)
     lum = a.mean(axis=2)
-    top = lum[: int(0.3 * h)][solid[: int(0.3 * h)]].mean()
+    top = np.median(lum[: int(0.3 * h)][solid[: int(0.3 * h)]])
     tops = a[: int(0.3 * h)][solid[: int(0.3 * h)]].mean(axis=0)
     cols = range(0, int(w * (0.7 if CORNER else 1.0)))
     over = []
@@ -59,8 +59,8 @@ def numbers(raw, bgm, bg):
         run = np.where(~c)[0]
         e = run[0] if len(run) else h
         edge_rows.append(e)
-        if e > 45:
-            over.append(lum[e - 40:e, x].mean())
+        if e > 60:
+            over.append(np.median(lum[e - 50:e - 10, x]))
     shade = float(np.mean(over) / top) if over else 0.0
     wrap = None
     if not CORNER:
@@ -70,16 +70,16 @@ def numbers(raw, bgm, bg):
 
 
 def game(cut, bgc):
-    g = cut.resize((GW, GH), Image.LANCZOS)
+    g = cut.resize((GW, round(GW * cut.height / cut.width)), Image.LANCZOS)
     reps = 1 if CORNER else 2
-    W, H = GW * reps + 140, GH + 150
+    W, H = GW * reps + 140, g.height + 170
     C = Image.new('RGBA', (W, H), bgc + (255,))
     # the bank's soil above, then the strip over it (as drawUnderside lays it), Pokey on the lower leg under it
     soil = None
     if not CORNER:
-        soil = Image.new('RGB', (GW * reps, 40))
+        soil = Image.new('RGB', (GW * reps, 70))
         for x in range(0, GW * reps, FILL.width):
-            soil.paste(FILL.crop((0, 0, FILL.width, 40)), (x, 0))
+            soil.paste(FILL.crop((0, 0, FILL.width, 70)), (x, 0))
     y0 = 40
     if soil:
         C.paste(soil, (20, 0))
@@ -100,14 +100,21 @@ for f in files:
     raw = Image.open(f).convert('RGB')
     cut, bgm, bg = key(raw)
     edges, shade, wrap, tops, er = numbers(raw, bgm, bg)
+    # the game-size looks show the SHIP cut (cut.py --match --shade=0.60: the fill's colour, the overhang at 0.60, the wrap closed)
+    import subprocess, tempfile
+    cp = tempfile.mktemp(suffix='.png')
+    r = subprocess.run([sys.executable, '-I', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cut.py'), f, cp,
+                        'corner' if CORNER else 'strip', '--match', '--shade=0.60'], capture_output=True, text=True)
+    cutline = r.stdout.strip().splitlines()[-1].split(' ', 1)[1]
+    cut = Image.open(cp).convert('RGBA')
     bad = {k: v for k, v in edges.items() if v > 0.01}
     small = raw.resize((360, round(raw.height * 360 / raw.width)))
     L, D = game(cut, LIGHT), game(cut, DARK)
     R = Image.new('RGB', (360 + L.width * 2 + 30, max(small.height, L.height) + 20), (18, 18, 22))
     R.paste(small, (0, 20)); R.paste(L, (370, 20)); R.paste(D, (380 + L.width, 20))
     dr = ImageDraw.Draw(R)
-    txt = (f"{name}  shade {shade:.2f}  edge-row {er:.2f}" + (f"  wrap {wrap:.1f}" if wrap is not None else '') +
-           f"  top {tuple(int(v) for v in tops)}   (yellow = Pokey 89 px)")
+    txt = (f"{name}  RAW shade {shade:.2f}" + (f" wrap {wrap:.1f}" if wrap is not None else '') +
+           f" top {tuple(int(v) for v in tops)}  | SHIP CUT {cutline}   (yellow = Pokey 89 px)")
     dr.text((4, 4), txt, fill=(255, 230, 90))
     if bad:
         dr.rectangle((0, 0, R.width - 1, R.height - 1), outline=(230, 40, 40), width=4)
