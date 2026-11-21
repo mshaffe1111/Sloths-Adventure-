@@ -3,6 +3,20 @@
 Last task: ART-REGRADE (§0l, t-art-next). Before it: ART-NEXT-e (§0k), ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
 
+## 0m. 11-21 ART-HERO (t-art-next): Pokey is one sloth in EVERY animation (R-165.378) HANDED OVER (strips + gates + REPORT open)
+- regrade.py now also takes the NON-idle clips: `python3 -I tools/art/hfnext/regrade.py push,move-walk,move-run,move-jab,move-cross,
+  move-hook,move-kick,move-kick2,move-mega,move-climb,cheer,hurt --from 700b4ef8d --ship --even` (about 15 min). --ship writes WebP q86
+  (no bridgebake follows); --even takes out a clip's colour DRIFT across its frames (push went L 59 -> 62, so its loop popped 3.3 dE):
+  10 passes of a per-frame offset smoothed [1 2 1] (around the loop for push/climb/walk/run), then 3 exact per-frame passes.
+- Gate: tools/art/hfnext/herobody.py --write -> src/game/heroBody.json (every HERO_CLIPS sheet + hero-climb2, sha-pinned), read by
+  heroClipsBody.test.ts: fur frame <= 2.0 / pooled <= 1.0 dE of the plain pose, or a row in heroBody.known.json (shrink-only, knowncheck
+  lists it); and a LOOP SEAM check (push, climb, walk, run: last -> first <= max(2 x median step, 0.5), <= 1.0). Planted RED on 700b4ef8d:
+  reference/qa-reports/ART-HERO/body-plant-700b4ef8d.txt (cheer/hurt/climb/push colour; push 3.03, run 3.00, climb 1.95, walk 1.28 seams).
+- Known: only hero-climb2 (2.81 pooled; two-vine climb, not a HERO_CLIPS grid). Next packet (lead): the non-clip sheets, whole-sheet fur dE
+  on 700b4ef8d (props inflate it; need frame masks): vine 4.8, rope 10.2, swim 6.1, story 5.2, studies 5.5, atlas 4.0, climb2 2.8.
+- Strip tools: tools/art/hfnext/heroshoot.mjs (Playwright paused clock, every game frame; forces climb/push/cheer/walk/run/jab state on a
+  real stage) and heropair.py (before/after strips + game-speed mp4). The scratch worktree needs `npm install --legacy-peer-deps` (CI's).
+
 ## 0l. 11-21 ART-REGRADE (t-art-next): Pokey is one sloth in every idle (R-165.377) DONE
 - tools/art/hfnext/regrade.py: one Lab transfer per idle clip (a/b offset by L band, plain minus clip over the FUR px, plus global passes
   that close the fur mean as it ships through the q86 encode); the outline (L < 18) and the eyes' whites stay. Record: regrade.json.
