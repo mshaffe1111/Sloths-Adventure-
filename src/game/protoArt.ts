@@ -995,7 +995,7 @@ export function drawBankArt(
     const x = right ? p.x + p.width : p.x, d = right ? 1 : -1;
     if (!(right ? open.right : open.left)) return [[x + d, soilTop], [x + d, bottom]];
     const step = right ? open.rightStep : open.leftStep;
-    const face = endFace(w, x, p.y, bottom, right);
+    const face = endFace(w, x, p.y, bottom, right, right ? p.x : p.x + p.width);
     if (step === undefined) return face;
     // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
     const cut = faceCut(p.y, step);

@@ -499,3 +499,48 @@ for (const difficulty of ['normal', 'easy'] as const) {
     assert.deepEqual(diffs, [], 'a wall standing on the band is drawn as earth over it');
   });
 }
+
+// ENG-GROUND-e, the lead's ruling (the corner, wall-end-x19900): a tall bank standing beside a lower floor (a wall, its closed side on the
+// floor's end) runs its soil to the view's foot as any bank does, with no seam against the floor's soil. Its open end's face wobbles on down
+// below the end piece (groundPaint endFace); on a wall 60 wide that wobble swung back in past the wall's own closed side, the soil's outline
+// crossed itself and, from about y1693 down, nothing was painted past the floor's end: a straight seam at the floor's end and the backdrop
+// beyond it. Judged on the toy's own roll (its descent ends at such a wall, the stage's bottom-right corner), both settings.
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end`, () => {
+    let walls = 0;
+    const gaps: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+      };
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      for (const w of banks.filter((p) => p.height >= 300 && p.width <= 120)) {
+        // (closed on one side by a floor whose end meets it, 150 or more below its top; nothing on the other side)
+        const floorL = banks.find((q) => q !== w && Math.abs(q.x + q.width - w.x) < 2 && q.y - w.y > 150);
+        const floorR = banks.find((q) => q !== w && Math.abs(w.x + w.width - q.x) < 2 && q.y - w.y > 150);
+        if (!!floorL === !!floorR) continue;
+        const outside = floorL ? banks.some((q) => q !== w && q.x <= w.x + w.width + 4 && q.x + q.width > w.x + w.width + 4) : banks.some((q) => q !== w && q.x < w.x - 4 && q.x + q.width >= w.x - 4);
+        if (outside) continue;
+        walls++;
+        const foot = w.y + w.height;
+        const view = { x0: w.x - 450, x1: w.x + w.width + 450, y0: foot - 300, y1: foot + 700 };
+        const r = new RecordingCtx();
+        drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+        r.off = true;
+        // (just past the floor's end, where its soil stops straight, at every depth from the wall's foot to the view's foot)
+        const xs = floorL ? [w.x + 2] : [w.x + w.width - 2];
+        const miss: number[] = [];
+        for (let y = foot + 10; y <= view.y1 - 10; y += 20) if (xs.some((x) => !covered(r, x, y))) miss.push(y);
+        if (miss.length) gaps.push(`seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)} (foot ${Math.round(foot)}): no soil at ${miss.length} depths, first y ${miss[0]}`);
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy's descent ends at a wall beside its floor (${walls})`);
+    assert.deepEqual(gaps, [], 'a wall\'s soil stops short of the view\'s foot');
+  });
+}
