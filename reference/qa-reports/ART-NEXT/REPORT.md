@@ -1,3 +1,52 @@
+# ART-SHEETS-d (11-21): R-165.379 the seven non-clip hero sheets at their accepted states (five affine, atlas real mean, story original); ratchet, plant, gates
+## EXACT NEXT STEP
+DONE within the box; nothing of this packet is left open. The next member: (a) the lead judges the in-game before/after stills of one
+swim and one rope frame (reference/art/hfnext/hero/sheets/mean-d/ingame-*.png, Polish check below); (b) the full CI gate list (gates.md,
+D96: the suite, drawcheck, clipcheck, coveragecheck, registrycheck, tipwalk and the rest) on a frozen worktree of this branch's final hash,
+ONE heavy run at a time, before t-art-next goes toward main. I ran only the packet's list (heroClipsBody, herobody --check, tsc, artcheck,
+knowncheck), not the full CI list.
+## What was done (every run on a frozen worktree, run_in_background, one heavy run at a time; no Hugging Face spend)
+1. INSTALLED (2a5d869b2) the five sheets the lead accepted, affine per group, byte-for-byte from reference/art/hfnext/hero/sheets/c8d47c90e/:
+   hero-rope, pokey-swim, hero-vine, hero-climb2, hero-studies (same names, sizes and dims; frame tables untouched) and their rows in
+   tools/art/hfnext/sheetgrade.json (that file was not in the tree at dfa06f524; it now holds the six graded sheets' rows).
+2. THE REAL MEAN GRADE of atlas and story (frozen dfa06f524: python3 -I tools/art/hfnext/sheetgrade.py atlas,story --from 4f0853b96; no
+   --group, so one curve per sheet, plus the per-frame passes, which always run): atlas pooled 4.19 -> 0.01 dE, worst frame 0.15, dL +2.04;
+   story pooled 6.09 -> 0.01, worst frame 0.32, dL +5.38. Parked with strips in reference/art/hfnext/hero/sheets/mean-d/ (74042b588):
+   {atlas,story}-strip-{game,2x}.jpg, columns plain | original 4f08 | REAL MEAN | affine c8d4 (strip.py.txt: the corrected labels).
+   THE LEAD'S RULING (on the game-size strips; my read matched it): ATLAS takes the REAL MEAN (warm brown like the plain pose, climb_b's
+   orange cast gone, duck, fall and hurt a touch lighter, not pink). STORY keeps the ORIGINAL (the mean flattens the back views away, away_a,
+   away_b and farewell to a pale pink; a back in shade should read darker): a known row in src/game/heroBody.known.json (9.786 / 6.09) with
+   that reason. Atlas installed (cbcd9e97b).
+3. herobody.py --write and --ratchet at the accepted states (frozen 74042b588 for the five, frozen cbcd9e97b for atlas and story):
+   src/game/heroBody.json now measures all 25 sheets; src/game/heroBands.ratchet.json holds 25. heroBody.known.json: climb2 OFF (it passes
+   now: worst frame 0.71, pooled 0.16); hero-studies ON (the accepted affine's s4_02 frame is 2.133 dE, 0.13 over the 2.0 bar; pooled 0.27
+   passes; the lead accepted the sheet by eye; NAMED here for the lead to confirm or reject); hero-story ON (the original, by the ruling).
+   knowncheck passes because heroBody.known.json is not on main yet (a new list); it must not grow after it reaches main.
+4. THE PLANT (scratch worktree, thrown away): e41c738bf's mean-graded pokey-swim.webp in place of the accepted one. herobody.py --ratchet
+   pokey-swim REFUSED ('first dark: 3.914 is worse than the recorded 3.716'); after --write, heroClipsBody.test test 6 FAILED: 'pokey-swim
+   under: light fur 5.303 dE vs 3.487 recorded', 'dark fur 7.329 vs 6.079'. The ratchet catches the squashed swim. Restored (worktree removed).
+5. GATES on frozen a1dd3726b: heroClipsBody.test 6/6 GREEN; herobody.py --check exit 0; tsc exit 0; artcheck PASS; knowncheck PASS.
+6. CATALOG: reference/art/CATALOG-MASTER.csv's hero-climb2 row carried the 4f0853b96 file size (125.2 KB); now 103.5 KB (the shipped file).
+   The other rows of these sheets are per-frame crop estimates, not the sheet's file size, and catalogclips.py rebuilds only HERO_CLIPS
+   rows, so they are left as they are (named, not hidden). src/game/art/inventory/cast.json carries no file size: --emit not needed.
+7. tools/art/hfnext/heroshoot.mjs: a 'rope' scene (hanging on the spot: the still rope frame; the rope itself is not drawn) (ae67a19e7).
+## Polish check (looked at at game size, the way Matt will see it on a phone)
+- IN GAME, before (dfa06f524) | after, 2x, stage 1-1 (heroshoot.mjs, cheer as the warm-up scene, frozen worktrees):
+  reference/art/hfnext/hero/sheets/mean-d/ingame-swim-rope-before-after.png. The cheer clip (already graded to the plain pose's colour) is
+  the reference row. SWIM crawl: the after is the same warm brown as the cheer clip, the shading on the back and the arm kept; it differs from
+  the before only slightly, since the before (e41c738bf's mean grade) was close in colour (the ratchet, not the eye, is what catches that
+  grade's squashed 'under' bands). ROPE still: the after is a touch richer brown, nearer the cheer clip than the before's paler fur; no blotch,
+  no halo, the outline and the bandages untouched. Not art: the rope itself is not drawn in that scene (heroshoot pins him; there is no rope
+  there), and in the swim crop a stage sign sits behind him; in the before's cheer the stage card is still fading out.
+- ATLAS real mean and STORY original: the four strips in mean-d/ (judged by the lead and by me, see 2).
+- Not seen in game: atlas, vine, climb2 and studies after the grade (their strips are the only look); a moving rope creep (the scene holds
+  the still frame).
+## Lessons applied
+D115 (every grade, ratchet, gate and shoot on a frozen worktree at a fixed hash, never the tree being edited); D113 (every long run in the
+background, no foreground wait: the lead's ruling was read while the ratchet ran); D96 (the gate list I ran is the packet's, and the full
+CI list is named as NOT run); D102/D111 (lean reads: the packet, the REPORT's top section, the LAWS headlines, the seven LESSONS lines);
+D109 (no clock times in messages to the lead); law 0 (the studies 2.13 frame and the catalog rows I left are named, not hidden).
+
 # ART-SHEETS-c (11-21): R-165.382 drawcheck GREEN (cheer cut DONE); pose families + the single-pose clamp; the affine-per-group grade of the seven non-clip sheets
 ## EXACT NEXT STEP
 THE LEAD'S RULINGS (after the box, on the game-size strips): ACCEPT affine per group for rope, swim, vine, climb2, studies. REJECT it
