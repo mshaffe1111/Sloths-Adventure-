@@ -8,10 +8,12 @@
  *
  * Nothing here names a stage, a seed or a place: a tower's width is its world's data (WorldManifest.tower).
  */
-import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
+import { PHYS, DOUBLE_RISE, reachJump, WALL_H } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 import { CLIMB_CLEAR, ledgeOut, vaultSide } from '../vineTop.ts';
+import { LAND_FLIGHTS } from './landFlights.data.ts';
+import { CATCH_DROP, LAND_SIDE, MANTLE, WALL_HALF } from './landings.ts';
 
 /** which way a graph is laid (MissionGraph.flow) */
 export type Flow = 'right' | 'up' | 'down' | 'legs';
@@ -270,19 +272,109 @@ function catchUnder(platforms: readonly Platform[], x: number, y: number, reach:
   return best;
 }
 
-/** where stepping off either end of a standable piece falls further than `most` px (or out of the tower): the open ends a catch is
- *  owed. An end at a wall is no end: the engine keeps him inside [20, width - 20] */
-export function openEnds(platforms: readonly Platform[], floorY: number, most: number, width: number): Array<{ p: Platform; x: number; drop: number }> {
-  const out: Array<{ p: Platform; x: number; drop: number }> = [];
+/**
+ * A RUNNING walk-off (ENG-26g; STAGE-RULES :418 "A dead end's fall is where a walk off lands"): a plain walk off a ledge's end at full
+ * speed carries him on 90-200 px past the end as he falls, over wood a step straight down lands on. His path is the real engine's, flown
+ * (landFlights.ts 'walk': his middle's [dx, dy] per frame from the last frame he stood, holding the way; the same path on both settings,
+ * tower.test.ts), never a closed form; the tower's sides stop him at [20, width - 20] (the engine's walls, stageModes.ts bounds).
+ */
+const RUN = LAND_FLIGHTS.normal.walk;
+
+/** the frame of the running walk-off whose step brings his feet down across a top `d` px under the take-off (the engine's catch: his
+ *  feet cross it within CATCH_DROP; landings.ts catchFrame); past the flown depth, its last frame */
+function runFrame(d: number): number {
+  for (let k = 1; k < RUN.length; k++) if (RUN[k][1] > RUN[k - 1][1] && RUN[k - 1][1] <= d + CATCH_DROP.px && RUN[k][1] >= d) return k;
+  return RUN.length - 1;
+}
+
+/** his middle's x on a running walk-off off the end at `end` (`side` 1 its right end, -1 its left) where his feet come down onto a top
+ *  `d` px under the take-off (past the flown depth: on down at his run and the fall cap), kept inside the tower's sides */
+export function runX(end: number, side: 1 | -1, d: number, width: number): number {
+  const k = runFrame(d), last = RUN[RUN.length - 1];
+  const dx = k < RUN.length - 1 || d <= last[1] ? RUN[k][0] : last[0] + ((d - last[1]) * PHYS.maxRun) / PHYS.maxFall;
+  return Math.max(20, Math.min(width - 20, end + side * dx));
+}
+
+/**
+ * Where a running walk-off off one end of `p` (`side` 1 its right end, -1 its left) first lands, flown frame by frame as the engine
+ * catches him (landings.ts events): on the first top his feet come down across within CATCH_DROP with his middle within LAND_SIDE of its
+ * ends (a 'fragile' piece never: it gives way). A solid piece WALL_H or taller met from the side stops his way at its face: hoisted onto
+ * it when his feet are within MANTLE of its top; else he comes down along the face, and once his head is under its underside he is
+ * free of it, his way still held, so he goes on. How far on is the engine's air drive, unflown here: so both are flown, straight down
+ * the face and on again at a run, and the deeper landing is the one judged. Undefined: nothing catches him (out of the tower).
+ */
+export function walkOff(platforms: readonly Platform[], p: Platform, side: 1 | -1, width: number): { x: number; y: number } | undefined {
+  const a = flyRun(platforms, p, side, width, false);
+  if (!a.stopped) return a.land;
+  const b = flyRun(platforms, p, side, width, true);
+  return !a.land || !b.land ? undefined : a.land.y >= b.land.y ? a.land : b.land;
+}
+
+/** one running walk-off (walkOff): `resume`, whether he goes on at a run once he is under a wall that stopped him; `stopped`: a wall did */
+function flyRun(platforms: readonly Platform[], p: Platform, side: 1 | -1, width: number, resume: boolean): { land?: { x: number; y: number }; stopped: boolean } {
+  const end = side > 0 ? p.x + p.width : p.x;
+  /** how far a wall has held him back along his way, px */
+  let back = 0;
+  let wall: Platform | undefined, stopped = false;
+  const xAt = (k: number) => Math.max(20, Math.min(width - 20, end + side * (RUN[k][0] - back)));
+  for (let k = 1; k < RUN.length; k++) {
+    const d0 = RUN[k - 1][1], d1 = RUN[k][1], x0 = xAt(k - 1);
+    // (held at a wall's face: while it is beside him, or for good when he is flown straight down it)
+    if (wall && (!resume || d1 - BODY_H < wall.y - p.y + wall.height)) back += RUN[k][0] - RUN[k - 1][0];
+    else wall = undefined;
+    const x = xAt(k);
+    if (d1 <= d0) continue;
+    let land: Platform | undefined, stop: Platform | undefined;
+    for (const q of platforms) {
+      if (q === p || q.type === 'fragile' || q.broken) continue;
+      const top = q.y - p.y;
+      if (!wall && q.type === 'solid' && q.height >= WALL_H && d1 > top && d1 - BODY_H < top + q.height) {
+        const face = side > 0 ? q.x : q.x + q.width;
+        if (side > 0 ? x0 + WALL_HALF.px <= face + 2 && x + WALL_HALF.px > face : x0 - WALL_HALF.px >= face - 2 && x - WALL_HALF.px < face) {
+          if (!stop || q.y < stop.y) stop = q;
+          continue;
+        }
+      }
+      if (d0 <= top + CATCH_DROP.px && d1 >= top && x + LAND_SIDE.px > q.x && x - LAND_SIDE.px < q.x + q.width && (!land || q.y < land.y)) land = q;
+    }
+    if (land) return { land: { x, y: land.y }, stopped };
+    if (stop) {
+      if (d1 - (stop.y - p.y) <= MANTLE.px) return { land: { x, y: stop.y }, stopped };
+      // (his middle held half his body off the face from this frame on)
+      const fx = side > 0 ? stop.x - WALL_HALF.px : stop.x + stop.width + WALL_HALF.px;
+      back = RUN[k][0] - side * (fx - end);
+      wall = stop;
+      stopped = true;
+    }
+  }
+  // (past the flown depth: the first wood under where it ends)
+  const k = RUN.length - 1, y = catchUnder(platforms.filter((q) => q !== p && !q.broken), xAt(k), p.y + RUN[k][1], 100000);
+  return { land: y === undefined ? undefined : { x: xAt(k), y }, stopped };
+}
+
+/** an open end: the piece, where a step off it comes down (`x`, a body's width out), how far it falls; `run`: the step is caught, but a
+ *  RUNNING walk-off off that end (walkOff, the end's x and way) falls `drop` */
+export interface OpenEnd { p: Platform; x: number; drop: number; run?: { end: number; side: 1 | -1 } }
+
+/** where stepping off either end of a standable piece, or running off it (walkOff), falls further than `most` px (or out of the tower):
+ *  the open ends a catch is owed. An end at a wall is no end: the engine keeps him inside [20, width - 20] */
+export function openEnds(platforms: readonly Platform[], floorY: number, most: number, width: number): OpenEnd[] {
+  const out: OpenEnd[] = [];
   for (const p of platforms) {
     if (p.type !== 'solid' || p.y >= floorY - 1) continue;
-    for (const x of [p.x - 24, p.x + p.width + 24]) {
+    for (const side of [-1, 1] as const) {
+      const end = side < 0 ? p.x : p.x + p.width;
+      const x = end + side * 24;
       if (x < 20 || x > width - 20) continue;
       // (a neighbour at the same height, or one he walks onto: no fall there)
       if (platforms.some((q) => q !== p && q.type !== 'fragile' && x >= q.x && x <= q.x + q.width && q.y <= p.y + 1 && q.y + q.height > p.y)) continue;
       const land = catchUnder(platforms, x, p.y, 100000);
       const drop = land === undefined ? Infinity : land - p.y;
-      if (drop > most) out.push({ p, x, drop });
+      if (drop > most) { out.push({ p, x, drop }); continue; }
+      // (the step is caught: and the run off it, past that wood?)
+      const run = walkOff(platforms, p, side, width);
+      const rd = run ? run.y - p.y : Infinity;
+      if (rd > most) out.push({ p, x, drop: rd, run: { end, side } });
     }
   }
   return out;
@@ -347,8 +439,16 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     if (!ends.length) break;
     let added = 0;
     for (const e of ends) {
+      // (a running walk-off: where its arc comes down, and whether wood there catches it within the limit)
+      const run = e.run;
+      const runs = (more?: Platform) => { const w = walkOff(more ? [...all, more] : all, e.p, run!.side, width); return w !== undefined && w.y - e.p.y <= most; };
       // (an earlier bough of this pass may already catch it)
-      if (catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
+      if (run ? runs() : catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
+      /** where he comes down to a height `y`: a body's width out for a step off the end, along the arc for a running walk-off */
+      const exAt = (y: number) => (run ? runX(run.end, run.side, y - e.p.y, width) : e.x);
+      /** and a catch at (x0-x1, y) catches him there: for a step, it lies under the step (every rule lays it so); for a running
+       *  walk-off, the flown run lands on it */
+      const takes = (x0: number, x1: number, y: number) => !run || runs({ id: -1, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform);
       const Le = lv.get(e.p) ?? 0;
       const leftEnd = e.x < e.p.x;
       // 1. (an end near a side of the tower: the piece runs on into the wall, at its own height, so no slot is left to fall down)
@@ -360,17 +460,21 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       }
       // 2. (wood under him from a body's height down: wood nearer than a storey is his own storey's, a jump back up to where he fell)
       const lo = e.p.y + BODY_H + 12, hi = Math.min(e.p.y + most, floorY - 1);
-      const gapTo = (q: Platform) => (e.x < q.x ? q.x - e.x : e.x - (q.x + q.width));
-      const anchor = all.filter((q) => q !== e.p && !sealed(q) && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y)[0];
+      // (for a running walk-off, the wood nearest where the arc comes down to its height)
+      const gapTo = (q: Platform) => { const x = exAt(q.y); return x < q.x ? q.x - x : x - (q.x + q.width); };
+      const anchor = all.filter((q) => q !== e.p && !sealed(q) && q.type === 'solid' && q.y >= lo && q.y <= hi && gapTo(q) > 0).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y)[0];
       if (anchor) {
-        const left = e.x < anchor.x;
+        const ax = exAt(anchor.y);
+        const left = ax < anchor.x;
         // (a vine whose top stands at the anchor's end: the bridge starts a hop past it)
         const tip = left ? anchor.x : anchor.x + anchor.width;
         const vine = vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - tip) <= 44 && anchor.y >= v.topY - 6 && anchor.y <= v.bottomY + 6);
         const near = vine ? tip + (left ? -1 : 1) * (TOWER.hop + 30) : tip;
-        const far = left ? Math.max(24, e.x - TOWER.catchW / 2) : Math.min(width - 24, e.x + TOWER.catchW / 2);
+        const far = left ? Math.max(24, ax - TOWER.catchW / 2) : Math.min(width - 24, ax + TOWER.catchW / 2);
         const x0 = Math.min(near, far), x1 = Math.max(near, far);
-        const L = x1 - x0 >= 60 && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
+        // (a bough of its own a hop past a vine is 60 px or more; the wood itself run on, from its tip, is any length: by a side of the
+        // tower it is that wood run on to where the engine's wall holds him, so no slot is left to fall down)
+        const L = (x1 - x0 >= 60 || (near === tip && x1 > x0)) && !overGap(x0, x1, anchor.y) && takes(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
         if (L >= 0) { put(x0, x1, anchor.y, L); added++; continue; }
       }
       // (a sealed piece is never run on, and no shelf is hung at its end: the wood under it is its own section's, or the fall is named)
@@ -381,16 +485,17 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const L = overGap(x0, x1, e.p.y) ? -1 : fair(x0, x1, e.p.y, Le, [e.p]);
         if (L >= 0) { put(x0, x1, e.p.y, L); added++; continue; }
       }
-      // 4. (a bough of its own under the end)
-      const x0 = Math.max(24, Math.min(width - 24 - TOWER.catchW, e.x - TOWER.catchW / 2));
+      // 4. (a bough of its own under the end; for a running walk-off, centred where the arc comes down to its height)
+      const x0At = (y: number) => Math.max(24, Math.min(width - 24 - TOWER.catchW, exAt(y) - TOWER.catchW / 2));
       // (the highest fair height under the end, never past the limit: every 20 px, and the height of any wood it would lie across,
       // where it is that wood run on)
       const top = Math.min(e.p.y + (flow === 'up' ? 40 : TOWER.clear + 30), floorY - TOWER.hop), last = e.p.y + most - 4;
       const ys: number[] = [];
       for (let y = top; y <= last; y += 20) ys.push(y);
-      for (const q of all) if (q.type === 'solid' && q.x < x0 + TOWER.catchW && q.x + q.width > x0 && q.y > top && q.y <= last) ys.push(q.y);
+      for (const q of all) if (q.type === 'solid' && q.y > top && q.y <= last && q.x < x0At(q.y) + TOWER.catchW && q.x + q.width > x0At(q.y)) ys.push(q.y);
       for (const y of ys.sort((a, b) => a - b)) {
-        const L = fair(x0, x0 + TOWER.catchW, y, Le, []);
+        const x0 = x0At(y);
+        const L = takes(x0, x0 + TOWER.catchW, y) ? fair(x0, x0 + TOWER.catchW, y, Le, []) : -1;
         if (L < 0) continue;
         put(x0, x0 + TOWER.catchW, y, L);
         added++;
@@ -490,9 +595,9 @@ export function towerVaults(vines: readonly Vine[], platforms: readonly Platform
  */
 export function towerFalls(flow: 'up' | 'down', platforms: readonly Platform[], floorY: number, width: number): string[] {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
-  const out = openEnds(platforms, floorY, most, width).map(({ p, drop }) => (flow === 'up'
-    ? `tower: a fall off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} drops ${drop === Infinity ? 'out of the tower' : `${Math.round(drop)} px`} (sound wood within ${TOWER.fall})`
-    : `tower: a blind drop off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)}: ${drop === Infinity ? 'nothing under it' : `${Math.round(drop)} px to its landing`} (in view: within ${TOWER.see})`));
+  const out = openEnds(platforms, floorY, most, width).map(({ p, drop, run }) => (flow === 'up'
+    ? `tower: a ${run ? 'running walk-off' : 'fall'} off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} drops ${drop === Infinity ? 'out of the tower' : `${Math.round(drop)} px`} (sound wood within ${TOWER.fall})`
+    : `tower: a blind ${run ? 'running walk-off' : 'drop'} off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)}: ${drop === Infinity ? 'nothing under it' : `${Math.round(drop)} px to its landing`} (in view: within ${TOWER.see})`));
   // (a piece that gives way under him, a crumbling tile or a creaky limb: where it drops him, at its middle and a body in from each
   // end, sound wood catches him inside the same limit)
   for (const p of platforms) {

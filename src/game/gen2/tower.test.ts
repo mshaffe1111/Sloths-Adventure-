@@ -9,14 +9,16 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { validateStage } from '../levelCheck.ts';
 import { MODEL_FAST, MODEL_TYPICAL, modelStage, walkSpeed } from '../stageTime.ts';
-import { DOUBLE_RISE } from '../physics.ts';
+import { DOUBLE_RISE, WALL_H } from '../physics.ts';
 import { MODES } from '../stageModes.ts';
 import type { Platform, Vine } from '../types.ts';
 import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
+import { landingsOf } from './landings.ts';
+import { LAND_FLIGHTS } from './landFlights.data.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, runX, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical, walkOff } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -200,19 +202,67 @@ test('towerFalls: going up, a step off any end is caught by sound wood within a 
   assert.equal(miss.length, 2, 'both ends');
   assert.match(miss[0], /tower: a fall off the piece at x 500-700, y 1100 drops 800 px \(sound wood within 450\)/);
   assert.equal(openEnds([floor, high], 1900, TOWER.fall, 1280).length, 2);
-  // (a catch bough under each end closes them; a crumbling tile catches nothing)
-  const caught = [floor, high, solid(380, 1500, 200, 3), solid(640, 1500, 200, 4)];
+  // (planted, ENG-26g: a catch bough under each end catches a STEP off it, but a running walk-off carries him on past it, 182 px out at
+  // 400 px down: named as a running walk-off, both ends; boughs out under where the run comes down close them; a crumbling tile catches
+  // nothing)
+  const stepOnly = [floor, high, solid(380, 1500, 200, 3), solid(640, 1500, 200, 4)];
+  const runs = towerFalls('up', stepOnly, 1900, 1280);
+  assert.equal(runs.length, 2, `a step off each end is caught, the run off it is not: ${runs}`);
+  assert.match(runs.join(';'), /^tower: a running walk-off off the piece at x 500-700, y 1100 drops 800 px \(sound wood within 450\);tower: a running walk-off off the piece at x 500-700, y 1100 drops 800 px/);
+  assert.equal(openEnds(stepOnly, 1900, TOWER.fall, 1280).filter((e) => e.run).length, 2);
+  assert.ok(Math.abs(runX(700, 1, 400, 1280) - 700 - 182) < 10 && Math.abs(500 - runX(500, -1, 400, 1280) - 182) < 10, 'the run comes down about 182 px out at 400 px down');
+  const caught = [floor, high, solid(280, 1500, 300, 3), solid(640, 1500, 300, 4)];
   assert.deepEqual(towerFalls('up', caught, 1900, 1280), []);
-  assert.equal(towerFalls('up', [floor, high, { ...solid(380, 1500, 200, 3), type: 'fragile' } as Platform, solid(640, 1500, 200, 4)], 1900, 1280).length, 1);
+  assert.equal(towerFalls('up', [floor, high, { ...solid(280, 1500, 300, 3), type: 'fragile' } as Platform, solid(640, 1500, 300, 4)], 1900, 1280).length, 1);
   // (a piece that gives way: sound wood under it inside a trunk section, or it is named; another piece that gives way is no catch)
   const limb = { ...solid(500, 1100, 200, 7), type: 'fragile' } as Platform;
   assert.match(towerFalls('up', [floor, limb], 1900, 1280).join(';'), /^tower: the piece at x 500-700, y 1100 gives way over a 800 px drop \(sound wood within 450\)$/);
   assert.deepEqual(towerFalls('up', [floor, limb, solid(380, 1500, 440, 8)], 1900, 1280), [], 'a short drop over sound wood: kept');
   assert.equal(towerFalls('up', [floor, limb, { ...solid(480, 1300, 240, 9), type: 'fragile' } as Platform], 1900, 1280).length, 2, 'a rotting bough under a rotting bough catches nothing');
   // (an end at the wall is no end: the engine keeps him inside the tower)
-  assert.deepEqual(towerFalls('up', [floor, solid(0, 1100, 300, 5), solid(240, 1500, 200, 6)], 1900, 1280), []);
+  assert.deepEqual(towerFalls('up', [floor, solid(0, 1100, 300, 5), solid(240, 1500, 300, 6)], 1900, 1280), []);
+  // (and the run is held by the tower's sides: off an end 100 px from a wall it slides down the wall, at x 20 / width - 20, onto
+  // wood that reaches the wall's clamp, LAND_SIDE inside it; wood stopping short of it lets him fall past)
+  assert.equal(runX(1180, 1, 400, 1280), 1260);
+  assert.deepEqual(walkOff([floor, solid(980, 1100, 200, 5), solid(1150, 1400, 130, 6)], solid(980, 1100, 200, 5), 1, 1280), { x: 1260, y: 1400 });
+  assert.equal(walkOff([floor, solid(980, 1100, 200, 5), solid(1150, 1400, 90, 6)], solid(980, 1100, 200, 5), 1, 1280)?.y, 1900);
+  // (a wall in the way, a solid piece WALL_H or taller met from the side: he slides down its face onto the wood under it, or is hoisted
+  // onto it when his feet are within the hoist of its top)
+  const ledge = solid(300, 1100, 200, 5);
+  assert.deepEqual(walkOff([floor, ledge, { ...solid(560, 1000, 60, 6), height: 400 }, solid(300, 1450, 280, 7)], ledge, 1, 1280), { x: 541, y: 1450 });
+  assert.equal(walkOff([floor, ledge, { ...solid(560, 1106, 60, 6), height: 200 }], ledge, 1, 1280)?.y, 1106);
   assert.equal(fallSeconds(0), 0);
   assert.ok(Math.abs(fallSeconds(4 * TOWER.fall) - 2 * fallSeconds(TOWER.fall)) < 1e-9 && fallSeconds(TOWER.fall) > 0.4 && fallSeconds(TOWER.fall) < 1.5, 'a fall is timed from rest');
+});
+
+test('a running walk-off off any end of a built tower lands on sound wood within a trunk section (landings.ts Landings.walk, the engine\'s flown walk; every roll, both settings)', () => {
+  // (ENG-26g, planted: before the judge flew the run, 24/24 of these rolls had an end whose step was caught and whose run fell 480-700
+  // px or out of the tower. Judged here by the landing judge's own flights, not by tower.ts: the two must agree. An end whose run reaches
+  // a side of the tower is the engine's wall's (walkOff, the planted cases above): Landings.walk has no wall)
+  assert.deepEqual(LAND_FLIGHTS.easy.walk, LAND_FLIGHTS.normal.walk, 'a walk-off is the same flight on both settings (tower.ts flies the one path)');
+  let ends = 0, walled = 0;
+  for (const d of SETTINGS) for (const seed of SEEDS) {
+    const st = up(seed, d);
+    const T = st.gen2.tower!;
+    const L = landingsOf(st.platforms, d);
+    const bad: string[] = [];
+    for (const p of st.platforms) {
+      if (p.type !== 'solid' || p.y >= T.floorY - 1) continue;
+      L.walk(p).forEach((w, k) => {
+        const side = k === 0 ? 1 : -1, end = side > 0 ? p.x + p.width : p.x;
+        const at = runX(end, side, TOWER.fall, T.width);
+        if (end + side * 24 < 20 || end + side * 24 > T.width - 20 || at <= 20 || at >= T.width - 20) return;
+        // (a wall in the run's way, a solid piece WALL_H or taller beside his fall: Landings.walk stops the flight there; walkOff flies on
+        // down it, judged by its planted cases above and by towerFalls)
+        if (!w.piece && st.platforms.some((q) => q !== p && q.type === 'solid' && q.height >= WALL_H && q.y < p.y + TOWER.fall && q.y + q.height > p.y && (side > 0 ? q.x >= end - 2 && q.x < at + 30 : q.x + q.width <= end + 2 && q.x + q.width > at - 30))) { walled++; return; }
+        ends++;
+        const drop = w.piece ? w.piece.y - p.y : Infinity;
+        if (drop > TOWER.fall) bad.push(`x ${p.x}-${p.x + p.width}, y ${p.y} ${side > 0 ? 'right' : 'left'}: ${Math.round(drop)} px`);
+      });
+    }
+    assert.deepEqual(bad, [], `up ${d} ${seed}`);
+  }
+  assert.ok(ends > 500 && walled < ends / 10, `${ends} ends run off (${walled} met a wall)`);
 });
 
 test('towerCatches: every open end of a planted tower is given a catch, and no catch lets a jump climb a storey', () => {
@@ -315,7 +365,11 @@ test('every piece of a storey, its hops\' catch boughs included, lies a turn or 
     laid.sections.forEach((q, k) => {
       if (laid.plan[k].join !== 'turn') return;
       const t = laid.tower!.turns[ti++];
-      const catches = q.seam.filter((p) => p.y > q.entry.y + 30 && p.y < t.from - 30);
+      // (its hops' catch boughs: lip to lip under a gap between two of its own pieces. A tower catch bough filed in its seam, laid where
+      // a running walk-off off one of its ends comes down, is of the storey `fair` reads it as, and towerSkips judges it with all the wood)
+      const own = q.pieces.map((pp) => pp.platform);
+      const lips = (p: Platform) => own.some((a) => Math.abs(a.x + a.width - p.x) <= 2) && own.some((b) => Math.abs(b.x - (p.x + p.width)) <= 2);
+      const catches = q.seam.filter((p) => p.y > q.entry.y + 30 && p.y < t.from - 30 && lips(p));
       if (catches.length) withCatch++;
       for (const p of [...q.pieces.map((pp) => pp.platform), ...catches]) assert.ok(t.from - p.y >= TOWER.turn, `up ${seed} ${q.uid}: the piece at x ${p.x}, y ${p.y} is ${t.from - p.y} px over the ledge at y ${t.from} (a turn: ${TOWER.turn})`);
     });
