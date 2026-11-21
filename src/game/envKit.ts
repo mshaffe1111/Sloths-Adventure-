@@ -897,9 +897,13 @@ const PLANTS: Record<string, PlantDef> = {
 };
 
 ENV[1] = { near: [], decor: [['snakeskin', 1.5], ['hollowlog', 1.5], ['pflower', 3], ['pplant', 3]], decorChance: 0.35 };
+// (no code-drawn reeds, nipa, hyacinth, prop roots, driftwood or nest mound: their flat neon-green stems and teal sprouts clashed with the
+// painted reeds and props on every World 2 stage, R-165.362. Its ground keeps Matt's painted flora at the share it had (about 3 slots in
+// 10); the rest take the shared slot, as World 1's do. No near plants: World 2 is painted strips, so its near layer is the painting.)
 ENV[2] = {
-  near: [['reedclump', 3], ['nipa', 2], ['hyacinth', 2], ['proproot', 3]],
-  decor: [['reedclump', 4], ['nipa', 2], ['pflower', 2.5], ['pplant', 2], ['proproot', 2], ['driftwood', 1.5], ['crocnest', 1]],
+  near: [],
+  decor: [['pflower', 2.5], ['pplant', 2]],
+  decorChance: 0.3,
   sway: 'droop', front: 'reed',
 };
 ENV[3] = {
