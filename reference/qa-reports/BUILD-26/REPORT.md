@@ -1,6 +1,7 @@
 # BUILD-26c (on t-build-26 from fd3ce98b1): 2-6's bots on the current engine, every miss traced, the beat table, the hearts question. Started 5:27 PM ET 11-21 (by `date`)
 Commits: 06096c3b4 (hearts test counts every cost), 2b123df7c (towerRoute: no entry corner beside a turn's top), b039ee3fb (its planted
-test), 4ed9af678 (TRIAL: the bots take a tower's own route on every tower), this REPORT. Saved: b26c/ (beats.mts: a bot's run as footing
+test), 4ed9af678 (TRIAL: the bots take a tower's own route on every tower), ca9ba7d38 (that choice as takesTowerRoute, planted
+test RED/GREEN), this REPORT. Saved: b26c/ (beats.mts: a bot's run as footing
 segments with seconds; hearts.mts: each risk term per stage and setting; corners.mts, rivers.mts, route.mts: the tower route, the rivers
 and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base and each fix).
 
@@ -18,8 +19,8 @@ and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base
       already took the tower route: expect it to be identical. Any moved row: explain it.
    c. **2-1..2-5 x40**: no tower there, so towerCorners is null and nothing should move. Prove it (castBots base vs head per stage),
       then tierBots 1-1 (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9).
-   d. **A planted test for the route choice** (castBots.test.ts, beside b039ee3fb's): a tower stage whose trace SUCCEEDS gets the
-      tower's route; RED with line 1446 as on fd3ce98b1. Then `npx tsx --test tools/inspect/castBots.test.ts`, all of it.
+   d. DONE at ca9ba7d38: the choice is `takesTowerRoute` (firsttimer.ts), its planted test in castBots.test.ts: GREEN 3/3 (the
+      `tower` tests), RED with the base's rule (`traced === 'failed'` alone). Still run the WHOLE castBots.test.ts once.
    e. The hearts test (06096c3b4) is UNRUN: `npx tsx --test --test-name-pattern="bank village" src/game/gen2/worlds/w2Arc26.test.ts`;
       plant it RED (count `v.safe` rivers instead of `!v.safe`), then restore.
    f. Drop the "(trial)" from 4ed9af678's subject in the REPORT. Commit messages stay as they are; no rewriting of history.
