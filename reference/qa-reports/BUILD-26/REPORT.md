@@ -28,7 +28,7 @@ and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base
    e. The hearts test (06096c3b4) is UNRUN: `npx tsx --test --test-name-pattern="bank village" src/game/gen2/worlds/w2Arc26.test.ts`;
       plant it RED (count `v.safe` rivers instead of `!v.safe`), then restore.
    f. Drop the "(trial)" from 4ed9af678's subject in the REPORT. Commit messages stay as they are; no rewriting of history.
-2. **Step 0's suite**: frozen fd3ce98b1, still running at hand-over: 1,867 ok, 0 not ok (`scratchpad/suite.log`, lost with the
+2. **Step 0's suite**: frozen fd3ce98b1, still running at hand-over: 2,559 ok, 0 failed (one TODO, R-165.312) (`scratchpad/suite.log`, lost with the
    container). ENG-26l's 626fac5ac run reached 3,214 ok, 0 failed. Run it WHOLE on the head after step 1, since it then carries code
    (D114).
 3. **THE BAR (the lead's correction, after the trial, replaces the 125 s bar and the two-beat plan):** Matt's STAGE-RULES.md:84,
@@ -63,7 +63,7 @@ opposite ways, a hop bucket to bucket), ~12-15 s for the expert, before the cres
 ENGINE-WORTHY (roadmap, an engine member, a survey first), not touched here.
 
 ## Step 0: the full src suite on frozen fd3ce98b1
-Running in the background at hand-over: **1,867 ok, 0 not ok** (not finished; see the EXACT NEXT STEP 2). ENG-26l's REPORT section
+Running in the background at hand-over: **2,559 ok, 0 failed** (one `not ok` is the known TODO R-165.312, not a failure; not finished; see the EXACT NEXT STEP 2). ENG-26l's REPORT section
 was not on fd3ce98b1 (only its stills), so it had no verdict to read.
 
 ## Step 1: castBots 2-6, seeds 1-40, both settings (rule 28), frozen fd3ce98b1 (rows: b26c/rows/cast-base.jsonl)
