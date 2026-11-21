@@ -6,9 +6,13 @@ run at a time when memory is tight (a container killed a process with four runni
 READ LEAN (D102, D90): this packet; `git show origin/t-eng-27:reference/qa-reports/ENG-27/REPORT.md` top section ONLY (ENG-27j's EXACT NEXT
 STEP: G, F, B, S and the RED numbers); level.md rule 28; LAWS headlines; LESSONS D40, D57/D87, D63, D96, D102, D105, D107, D109, D111, D112, D113.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-27 at ENG-27j's final head (the top line of its REPORT section; at least e32809aca). Push there.
-G. The ground's gates on 2d4e0752a, in the background on a frozen worktree (run-gates-d.sh): tsc, suite 1/6, 2/6, 3/6 PASS already; the rest
-   of chain a and all of chain b. A red: name it, tell me (the merge 24d6ba567 stays unless I say revert).
+BASE: t-eng-27 at d83358fad (ENG-27j's final). Push there.
+G. FIRST, THE RED: suite 4/6 FAILED on 2d4e0752a (615/617): src/game/stageModes.test.ts:131 'left in the engine' (a fixture: 1-1 read
+   leftward, its shrine moved left of the start): 'no seed of 24 from 769 builds cleanly (seed #71 lies past the shrine, where he cannot go)';
+   tail in gates-27j/suite4-fail-tail.txt. Run that ONE file alone on frozen 2d4e0752a, on 0eefc707e (the ground's base) and on t-eng-27's
+   head: tell me in one line whether it is the ground's, older, or load (six race runs and a dev server shared the CPUs). The ground's:
+   root cause, a general fix on t-eng-ground with a plant, the merge refreshed. Then, in the background, one at a time: suite 5/6, 6/6, the
+   rest of chain a and chain b on the ground head (tsc, 1/6-3/6 PASS already). The merge 24d6ba567 stays unless I say revert.
 F. THE LEAD'S RULING, Option A (D112): on EVERY respawn the respawn's lost time is forgiven and he keeps exactly the margin he had when he fell;
    a fall neither costs nor pays race time (it still costs the heart). The floor per river and the last-crossing exemption are DELETED (new
    replaces old; engine-core.md says why). The test is the INVARIANT, not a toy: on every listed 2-7 seed, both settings, every bot, every
