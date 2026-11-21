@@ -1,3 +1,61 @@
+# ENG-26o (on t-build-26 from 4b6ce810f): 1-4 cause C PROVEN **BOT**, not LAY: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
+Commits: this REPORT and eng26o/ (trace-c-kid-easy-10.txt: the route's points around s17:top and the bot frame by frame; shape.mts: every
+climbable vine near a spot and the bough at each vine's top; towerRoute-oneline.diff: the line tried). Trees (D115): frozen detached
+worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with stderr prints (never committed). Nothing on 0bc969bce.
+
+## EXACT NEXT STEP (BUILD-26f, the bot member; base t-build-26 after its revert of 0bc969bce)
+1. **The fix is the bot's, in tools/inspect/towerRoute.ts line 86** (towerCorners, "no going on past the climb and back along one floor"):
+   `Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)` drops the walk out to the leg's exit b only when the next turn's vine d lies
+   BETWEEN where he came onto the floor (a) and b. On 1-4 Easy 10 he comes onto s17:top up the field vine f1 at a.x 781, the leg's exit is
+   the bough's left end b.x 481, and the way on d.x 786 stands **5 px past a**: the squeeze does not fire, the route walks 781 to 481 and
+   back to 786 over the same bough, and Progress flips between the outbound point 874 (619, next 596) and the return point 885 (598, next
+   622), 21 px apart, every 1.2 s: he stands at x 607-610 from 95.1 s to the rescue at 117.9 s (eng26o/trace-c-kid-easy-10.txt).
+   **The general form:** d within a hand's reach of the span, not strictly inside it. Tried on the COPY: `- 30` / `+ 30` (30 px: about half
+   GRAB_REACH 54, so a vine he could take from where he stands on arrival counts as "here"; the bot member picks the final number and says
+   why, GRAB_REACH itself is the other candidate). Result on the copy, castBots' own call (cap 1200, dotSetting), Easy:
+   kid 10 shrine 128.2 s no rescue (was rescued at 610); adult 10 115.7 s none; middle 10 134.3 s rescued only at 1102 (the head: 1102
+   AND 559; 1102 is a different, older spot: x 1190 y 5005 "fell back down 8 times"); kid 37 125.0 s, adult 37 118.3 s, middle 37
+   132.1 s, all with no rescue. Then the plant (a toy in the towerRoute test: a turn's vine 5 px past the arrival, RED on today's line),
+   castBots 1-4 and 2-6 x40 both settings row for row (any tower stage's route can move; 2-6 is a tower), rule 28.
+2. **Then 1-4 relists ONCE** (the lead's ruling), after every fix for its spots lands, and the yield on 1-400 (methods/seed-list.md).
+3. **Spots A (x 1036 Normal) and B (x 1115 Easy): NOT the C shape.** No two climbable vines a few px apart there; the shape is a turn vine
+   whose top stands **26 px past its bough's right end** (B: vine 5 x 1163 over s4:b 677-1137 @9858). That 26 px is EVERY turn vine on
+   1-4 (shape.mts on Normal 7 and Easy 17: s2, s4, s7, s9, s12, s15, s16, s17, s19, s21 all read "top 26 px past its right end"), the
+   bots climb the rest, so the stand-off alone is not the cause. BOT or LAY there is NOT proven in this box: trace the middle on Easy 10 at
+   x 1190 y 5005 (his 8 falls back) the way C was traced (print Progress cur/next and the pad per frame, on a frozen copy).
+
+## How C was proven (packet step 1)
+- **The placement probe again: still not a proof, and not used.** RealPlay.stand(x, y) takes his FEET (y = the bough's top; the bots'
+  own takeoff harness calls stand(sx, from.y)); ENG-26n's drop was real, but on this tree a stand on s17:top still settles off it at
+  x 600-790 (y 3359 after 3 frames), and on OLD an up press took no vine anywhere, so a hand placement says nothing about the engine's
+  pick. I traced the real run instead.
+- **The real run, frame by frame** (kid Easy 10, head copy): he climbs field vine 53 (x 541) to the bough, lands at 610 @3342 at 95.1 s,
+  and from then to 117.9 s his pad is {} or a brief {right} while Progress' cur flips 874 <-> 885. The route (towerRoutePts, the
+  tower's own laid route) is: up f1 x 781 to 3366, out onto the bough at 758, LEFT to 481, back RIGHT to 763, up x 786. So the engine
+  never got an up press at the way on: the stall is the bot's route, not the vine pick (the engine's pick skips f1 from on the shut gate:
+  overShut, fromAbove; ENG-26n read the same).
+- **Why OLD passed and Normal passes:** OLD's field was 889-1055 under the gate 712-1072: he came on at a field vine right of 786 and the
+  exit 712 lay left of it, so 786 was inside the span and the squeeze fired. Normal: the way on 451, f4 at 493: inside again. gateRun
+  moving the field left put the arrival vine 5 px short of the way on: the lay made the case, the bot's rule failed it.
+- **Is the 5 px pair itself LAY?** My read: no. The two do not overlap in height: f1 hangs 3342-3702 under the bough, the way on stands
+  3061-3342 over it, so at any height there is one vine; a child sees one vine running up through the bough, and that IS the way on.
+  The engine never offers f1 from on the bough. The lead rules (below).
+
+## For the lead (rulings, priority 'next')
+- C is BOT: the exact line is above for BUILD-26f; no src change from me, so no src suite was run (packet step 3: "if src changed").
+- Do you want the lay to keep a stand-off between a way-on vine and a field vine hung under the same bough anyway (the packet's step 2)?
+  I advise NO for this release: the pair is vertically disjoint, it reads as one way up, and the bot fix alone clears all six rows.
+
+## Lessons applied
+D111 (the box by `date`), D113 (the install in the background; the trace runs were seconds, not heavy runs: no heavy run used), D115
+(every measurement on frozen 4b6ce810f / 4ea253b8c or a copy of 4b6ce810f, none on 0bc969bce, per the lead's heads-up), D109 (no clock
+times to the lead), D102 (read lean), rule 28 (traced before fixed; the fix not mine to land), rule 22 (the fix is the general squeeze,
+not a 1-4 case). I did not find D96, D107 or D114 by those ids in reference/LESSONS.md on this checkout and did not read them: said plainly.
+
+## Learned (for level.md, proposed)
+- A route squeeze that asks "is the next point strictly between" fails when two pieces stand a few px apart: compare within a reach,
+  not strictly inside. When a lay change moves pieces closer (gateRun), re-run the bots' route corners on the moved spots first.
+
 # ENG-26n (on t-build-26 from 30570b384): 1-4 cause C: the gate-band verdict planted RED and the lay fixed GREEN, BUT THE BOTS STILL STALL (0/6): cause C is NOT the bridge and stays OPEN. Started 6:22 PM ET 11-21 (by `date`)
 Commits: 2f188c552 (the verdict towerGateRoofs, the band gateBand, the lay's keep-out, the unit test), this REPORT. Saved: eng26n/gate.mts
 (`npx tsx eng26n/gate.mts <tree> 1-4 <setting> <seeds...>`: the gen2 roll, its tower misses, the gate-band refusals, the lay's wood by s17).
