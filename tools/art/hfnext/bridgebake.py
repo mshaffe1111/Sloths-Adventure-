@@ -1,5 +1,5 @@
 """ART-NEXT-c (R-165.354): bake a picked bridge take into its idle clips' sheets, so every idle clip starts AND ends on Pokey's plain pose.
-    python3 -I tools/art/hfnext/bridgebake.py <take dir of Wan frames> <clip>[,<clip>...] [--sheet out.jpg] [--pin-feet] [--dry]
+    python3 -I tools/art/hfnext/bridgebake.py <take dir of Wan frames> <clip>[,<clip>...] [--sheet out.jpg] [--pin-feet] [--dry] [--replace]
 A take is the bridge from the plain pose (Wan frame 0) to the clip's frame 0 (Wan's last frame), drawn by bridgestarts.py at S = 2.4
 canvas px a sheet px with the feet anchor at (240, 552). Each Wan frame is keyed off its flat grey (flood from the border), scaled to
 sheet px and placed on the anchor; then frame 0 is REPLACED by the exact plain frame (heroStandardData idle) and the last by the clip's
@@ -17,7 +17,7 @@ from scipy import ndimage as nd
 
 S, FX, FY = 2.4, 240, 552
 take, clips = sys.argv[1], sys.argv[2].split(',')
-PIN, DRY = '--pin-feet' in sys.argv, '--dry' in sys.argv
+PIN, DRY, REPLACE = '--pin-feet' in sys.argv, '--dry' in sys.argv, '--replace' in sys.argv   # --replace: the take IS the clip (plain first and last)
 SHEET = sys.argv[sys.argv.index('--sheet') + 1] if '--sheet' in sys.argv else None
 DATA = Path('src/game/heroClipsData.ts')
 src = DATA.read_text()
@@ -69,7 +69,7 @@ plain = on_anchor(STD.crop((674, 478, 674 + 127, 478 + 209)), 57.0, 205.0)
 wan = [key(f) for f in sorted(glob.glob(take + '/*.webp'))]
 assert len(wan) >= 9, f'{take}: {len(wan)} frames'
 f0x, f0y = feet_cx(plain)
-f1x, f1y = feet_cx(clip_frames(clips[0])[0])
+f1x, f1y = feet_cx(plain if REPLACE else clip_frames(clips[0])[0])
 drift = []   # each in-between frame's feet centre against the straight line from the plain pose's feet to the clip's: a SLIDE, not the turn
 for i, im in enumerate(wan[1:-1], 1):
     x, y = feet_cx(im); u = i / (len(wan) - 1)
@@ -80,9 +80,9 @@ if PIN:
     wan = [im if i in (0, len(wan) - 1) else im.transform(im.size, Image.AFFINE, (1, 0, feet_cx(im)[0] - (f0x + (f1x - f0x) * i / (len(wan) - 1)), 0, 1, 0), Image.BICUBIC)
            for i, im in enumerate(wan)]
 for name in clips:
-    own = clip_frames(name)
+    own = [plain] if REPLACE else clip_frames(name)
     bridge = [plain] + wan[1:-1]                  # Wan 0 -> the exact plain frame; Wan m-1 -> the clip's own frame 0 (not repeated)
-    frames = bridge + own + bridge[::-1]
+    frames = bridge + own if REPLACE else bridge + own + bridge[::-1]   # --replace: plain, the take's in-betweens, plain
     if SHEET:
         ims = [plain] + wan[1:-1] + [own[0]]
         tw = 2 * 170; th = 2 * 230
