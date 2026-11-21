@@ -1,3 +1,75 @@
+# ENG-26k (on t-build-26 from 3310f3ac9): 1-4 relisted ONCE on the gate section's own catch. Started 4:46 PM ET 11-21 (by `date`)
+Commits: 5981c26c0 (the relist), c45496570 (the two 2-6 tests), this REPORT. Saved: eng26k/ (cmp.mts: an old and a new list compared seed by seed and plan by
+plan; feet.mts: each gate on a built roll and the wood under it, works on trees without walkOff).
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit). Long runs in the BACKGROUND (D113), never with '&'
+## ENG-26l: steps 1 (rest) to 4 of ENG-26k's packet, on this head (the relist DONE and checked)
+1. **The re-pins.** The full src suite on 5981c26c0 (the relist) was still running at the box (D111): **2,003 ok when the box ended, no 1-4 red**; the only reds
+   were the two 2-6 tests below (fixed in c45496570) and one TODO (R-165.312, not a failure). **Step 0 (D114): re-run the FULL suite on
+   this head in the background** (`npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts
+   src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts`, about 20+ min on 4 cores; its result is what the re-pins
+   are taken on, rule 20).
+   Still to run for the re-pins (rule 20: once, on this list, then re-pin): the tools tests that read 1-4 (CI's engine-tools job runs them):
+   `npx tsx --test tools/engine/tipwalk.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/score.test.ts tools/inspect/bands.test.ts tools/inspect/castBots.test.ts tools/inspect/travelBots.test.ts`
+   (then the whole CI tool line, gates.yml line 157). A red that names a 1-4 roll or seed: re-pin it from the new list (eng26k/cmp.mts
+   says which seeds' plans moved), never loosen it. **Two reds that are NOT the relist** (the same two fail on 3310f3ac9, measured):
+   listedWheelSheet.test.ts and towerWater.test.ts, `withTestStage: 2-6 is already listed` (2-6 is listed, n 100; the tests still lay 2-6
+   as a draft). Sent to the lead for a ruling; do not count them as re-pins.
+2. **Load speed (quiet: nothing else running).** Frozen trees: `git worktree add --detach <dir> 4ea253b8c` and `... 5981c26c0` (or the
+   head with the re-pins: same src/game/gen2), each with a node_modules link (`npm ci --legacy-peer-deps` once in the checkout; plain
+   `npm ci` fails ERESOLVE). Then, one at a time:
+   `npx tsx reference/qa-reports/BUILD-26/eng26h/tools/loadtime.mts <tree> 1-4 3` and `... 2-6 3`, base then head (OUT=file for rows);
+   `BUILDCHECK_STAGE=1-4 node tools/perf/buildcheck.mjs` and `=2-6`, base first. Time `seedlist.ts 1-4 --check` alone: 1 m 44 s here WITH
+   the suite beside it (CI's seedlists limit 45 min, gates.yml line 113); the lock timed against its own limit (D99). A breach: name it.
+3. **Stills at 2x (eng26h/tools/pin.mjs, 390x844 and 844x390), layout 1 = seed 1 on both** (eng26k/feet.mts found the wood):
+   base 4ea253b8c: the gate 534-974@7855 over its foot 454-1054@8215 (80 px past each end); the gate 634-1074@6893 over 554-1154 and
+   1154-1280@7293. Head: the gate 300-740@7799 over its foot 114-926@8159 (186 px past each end); the gate 481-921@6893 over 286-1116@7293,
+   whose run off the right end lands at x 1094 (eng26j/gates.mts). Spots (Pokey's feet on the wood):
+   base `gate:1000:8215,land:1238:7293`; head `gate:860:8159,land:1094:7293`
+   `node reference/qa-reports/BUILD-26/eng26h/tools/pin.mjs <tree> <out> 1-4 1 normal 5191 <spots>` (a different port per tree). Judge:
+   the longer foot reads as the field's own ground, not a shelf; the landing reads as a place to land.
+   castBots, one chain (rule 28): `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>` base, then head;
+   no tier's pass count may drop, every moved row explained. tierBots 1-1 (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9); qaW123
+   is in the src suite (src/game/qaW123.test.ts).
+4. **THE FULL SET** (gates.md, D96; `git fetch --unshallow` first so roadmapcheck can see proofs); lockall `--layouts 16 --check` against
+   eng26j/lock-8e21145f1.json.gz: only 1-4 and 2-6 may move; engine-core.md's tower lines (ENG-26g's list, ENG-26h's cost findings,
+   ENG-26j's gateRun: a sealed piece's own wood catches its full-speed run). Then BUILD-26c runs 2-6's bots.
+
+## Step 1: the relist (methods/seed-list.md)
+- Candidates: seeds 1-100 in their old order (all 100 build clean on both settings on 3310f3ac9's code, eng26j/sweep-1-400-8e21145f1.json:
+  no new seed needed). `npx tsx tools/engine/seedlist.ts 1-4 --merge cand.json --in-order --count 100`: **100 proven of 100 tried, 43 s**;
+  quiet line longest 2.8 s (median 2 s, under 4 s on 100 of 100); outro 420 px.
+- Proof nothing moved but what the fix moves (eng26k/cmp.mts, old list vs new): **the seeds are the same 100 in the same order** (layout
+  variant N is still seed N); **45 of 100 packed plans changed** (seeds 6, 7, 8, 9, 10, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 31, 34, 42,
+  46, 48, 50, 52, 54, 59, 60, 62, 63, 64, 66, 67, 69, 72, 75, 76, 79, 81, 83, 84, 86, 89, 91, 94, 95, 97, 100), 55 the same; it includes
+  ENG-26j's seven that replayed differently (8, 18, 22, 31, 54, 59, 66). provenIndex 1-4: n 100, version 6b772e6e -> b3feea99.
+- `seedlist.ts 1-4 --check`: **PASS** (the verdicts refuse 0 of 100 listed seeds; 100 seeds, each clean on both settings; 1 m 44 s on a
+  4-core container with the suite starting beside it).
+
+## The lead's ruling: two 2-6 tests re-pointed at the LISTED 2-6 (c45496570)
+- Found in the suite: `listedWheelSheet.test.ts` and `towerWater.test.ts` failed `withTestStage: 2-6 is already listed`. **Measured on
+  3310f3ac9 itself: the same 2 fail there** (not the relist; 2-6 is listed, n 100, and the hand-built 2-6 is gone from W2_STAGES).
+- listedWheelSheet: asserts no hand-built 2-6 is routed and the listed row asks for 'w2-wheel'. **RED with stageSheets.ts line 235 reading
+  GEN2_STAGES alone** (planted, measured: "the listed row asks for the wheel sheet (kit:1, ... gate:2)"), green restored.
+- towerWater: the listed 2-6, layouts 1-3 from the real list (`loadSeedList`), both settings: water is stacked over the spawn and the first
+  4 frames keep him there, no life lost. **RED with river.ts riverAt reading x alone** (planted, measured: "layout 1 easy: at the spawn
+  (140, 7551), not set on a pond's jetty (he is at 234, 2281)"), green restored. Both files 3/3, tsc clean.
+
+## Gates on this head
+| Gate | Result | Where |
+|---|---|---|
+| seedlist 1-4 --check | **PASS** (0 of 100 refused, 100 clean on both settings) | 5981c26c0 |
+| full src suite | 2,003 ok at the box, still running; reds only the two 2-6 tests (fixed) | 5981c26c0; RE-RUN as step 0 |
+| listedWheelSheet + towerWater | 3/3; each RED on its planted cause | c45496570 |
+| tsc | clean | c45496570 |
+| tools tests that read 1-4, load speed, stills, castBots, tierBots, lockall, THE FULL SET | NOT RUN (the box) | the EXACT NEXT STEP |
+
+## Lessons applied
+D111 (the box from `date`: started 4:46 PM ET, handed over at 28 minutes with the EXACT NEXT STEP), D113 (every long run with
+run_in_background; none waited on in the foreground), D102 (read lean), D29 (the full suite after the relist; the pins it names re-pinned
+once, rule 20), D57/D87 (ReadNotifications at every step and push), D109 (no clock times to the lead), law 3 (the two reds measured on
+the base before calling them not mine), D114 (the lead's new step 0, named for the next member).
+
 # ENG-26j (on t-build-26 from e420a2794): the lead's ruling (a): a gate section catches its own running exit; the lay adds nothing by a sealed piece. Started 4:23 PM ET 11-21 (by `date`)
 Commits: ecb86074e (revert of b73600b56 + 97bb2b73e, one commit), 8e21145f1 (the fix and its plants), this REPORT. Step 1 DONE and
 measured (the lead accepted it); **the speed-ups PROVEN EXACT and on the branch** (d12ffcacf, the pick of 91e6c584e); the relist and after NOT started (the
