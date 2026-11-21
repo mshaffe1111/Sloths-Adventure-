@@ -16,6 +16,13 @@ ORDER: (1) the lead's ruling on the two middle losses (RULED, below); (2) the ra
     M2, a hop onto a log drifting AWAY from him (with the current, his way): he aims at where it is at takeoff and lands behind its
        back end as it moves on. home N2: x 4427 (log #84 back end 4404 at takeoff); post N5: x 12815 and 12831 (logs #51/#52, back end
        12784-12880 as he left), x 6055 and 5907 (log #79, 15-30 px behind its back end).
+    WHERE (read, not yet proven by two runs per cause): both are in the racing hop off a log, firsttimer.ts ~2826-2836 (SKILLS.race,
+    'a log running his way is ridden only while nothing is in reach ... he hops now off its front end'). Its condition is `bank || <a
+    log where sure(q)>`: `bank` is any non-log floor within 80 px of the LOG's edge and 70 px of height, taken with NO landing check
+    (M1: the bank 80-95 px from his takeoff and 28 px up, counted from the log's edge, never asked whether the hop lands on it); `sure(q)`
+    asks hopLandsOn with `who.hold[0]`, but the jump made is `jumpFor(p, dir, here)` (mem.plan: single or double, its own hold), so the
+    hop judged is not always the hop flown (M2: check that hopLandsOn moves the log over the hop's time and that the flown hop is the one
+    judged). Fix there: the bank asked through the same landing check (its rise included), and the jump flown = the jump judged.
     NEXT: fix M1 and M2 in the bot where the cause is (firsttimer.ts: the hop off a log reads the rise to the far floor and the log's
     drift over the hop's time; fromTakeoff reads a gap from where he takes off, so M1 is likely the same reading missing the RISE, and
     M2 the target's motion), two runs per cause, the castBots 1-40 row diff on 2-1..2-6 both settings (every moved row traced), then
