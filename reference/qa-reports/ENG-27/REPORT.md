@@ -1,3 +1,65 @@
+# ENG-27f REPORT (handed over at the context line; written 2:17 PM ET 11-21 by date). Base 0d8d56a65; branch t-eng-27, head: this commit
+## EXACT NEXT STEP (ENG-27g, from t-eng-27 head; read only this section, D90)
+0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Probes as .txt here (copy each to tools/inspect/_<name>.ts,
+   never commit): raceprobe-27e (`middle,expert,ride home|post [seeds]`), splash-27f (pond put-backs and falls per run: `middle home,post`),
+   jumps-27f (frames and re-placements: `tier setting seed home|post [clk0 clk1 every]`), trapx-27f (who wrote his x), riv-27f, under-27f
+   (the laid platforms/rivers in an x window), racetrace-27d, death-27e, ride-27e.
+1. **Rule 28 for SKILLS.fromTakeoff (d54a47d42)**, the lead's ask: a row-for-row castBots diff on 2-3 and 2-5, and tierBots 1-1 9/9.
+   Trace any moved row, or narrow the fix.
+   - 2-3 DONE, RED by the rule: castdiff-2-3-27f.txt. On origin/t-build-23 66775dabf with the jumpFor hunk only, against BUILD-23e's
+     castbots23e-rows, 183 of 360 rows moved: kid and adult 0; child, middle and expert 33-38 of 40 each. One pass flips: child Normal
+     seed 30, P to F (a rescue, time 401.8 to 438.2). The rest are time shifts: any changed jump shifts every later random draw.
+     Rows: castrows-2-3-27f-fromTakeoff.jsonl.
+   - Do next: (i) confirm the baseline. Run t-build-23 unpatched; it should equal castbots23e (ENG-27e matched Easy 160/160).
+     (ii) Trace child Normal 30, two runs per cause. (iii) Narrow the fix and re-diff. Candidate: count the run-up only over WATER
+     (the gap between the lip and the landing holds a river or a safe pond, like FIX-21's `past` read): both of 2-7's misses are over
+     water. Or ask the lead whether wholesale time shifts with no pass change are accepted.
+   - 2-5 NOT DONE: the run here was edited mid-run and is discarded. Do: castBots 2-5 --seeds 1-40 --bots kid,adult,child,middle,expert
+     --setting both --rows, on this head with and without the hunk, against reference/qa-reports/BUILD-25/castrows-2-5-25d.jsonl.
+     A worktree per run: two runs in one tree race on firsttimer.ts.
+   - tierBots 1-1: NOT RUN (`npx tsx --test tools/inspect/tierBots.test.ts`).
+2. **The table on the final head (both fixes)**: raceprobe home and post, seeds 1-6, middle/expert/ride, both settings, plus splash-27f.
+   Trace every loss (rule 28). Known with the bot fix on the OLD floor (race-27f-fromTakeoff-oldfloor.txt): middle 23/24; post Normal 4
+   and 5 now WIN (+1.6, +3.0); NEW losses: middle post Normal 6 (-0.7, four falls) and expert post Normal 4 (-1.1, six falls). No fall
+   follows a jump the fix turned into a double: the falls moved with the shifted draws. Ride-only home Easy 1 won +1.5: check its last
+   crossing.
+3. The packet's step 0: merge origin/t-eng-ground when the lead sends its green hash (--no-ff; tsc + pacerLay 18/18 + pacerBehindBanks
+   5/5 + groundStack + legsHome + postLay after). Then the stills and THE CLIP (packet step 2; ENG-27e's commands in the section below),
+   groundStack's line in engine-core.md §0zq-27f, and THE FULL SET (gates.md D96; lockall vs 0eefc707e: only the toy may move).
+
+## ENG-27f: what was done
+- **Step 1, the race table after ruling A** (dc7b583e8: race-27f-after-ruling.txt, trace-27f.txt). Middle home 12/12 WON. Middle post
+  Easy 6/6; post Normal LOST seed 4 (-1.0) and seed 5 (-8.3, NEW: before ruling A it won only by the rewind of a docked boat). Expert
+  Normal 12/12 WON. Ride-only 21/24 lost; its 3 wins each fell on the last crossing (named, not judged).
+  - CORRECTION to trace-27f's pond line: the bot did NOT read the notch as a step down (its `drops` was false). It took a single from
+    157 px before the pond (jumpFor sized the gap from the lip), then late presses and standing jumps from the put-back spot.
+- **(b) the floor, the lead's ruling (1)** (4a7584fb4). pacer.ts riversLeft: after a fall the floor counts each crossing left from the
+  respawn, never more than a clean run's margin, never less than one floor; the ride-only cap holds except on the last crossing.
+  Planted on post Normal 4: RED on the one floor (2.0 against 2.29: red-27f-floor-single.txt) and per crossing alone (12.6 against a
+  clean 6.59: red-27f-floor-percrossing.txt). Two assertions that pinned the one floor now read the ruled rule. pacerLay 16/16.
+  - PUSHBACK taken: per crossing alone, an early fall paid 5 s. Post 4's loss was the hop's (a), not the floor's.
+- **(a) the bot** (d54a47d42). SKILLS.fromTakeoff: jumpFor counts his ground to the lip with the gap. One root under both misses (the
+  pond single from 157 px back; the log hop from 107 px back toward a bank 77 px past the log's front). Planted in pacerLay.test, post
+  Normal 4 and 5, RED with the skill off (red-27f-fromTakeoff.txt: 101.5 and 111.7 s against 100.76 and 103.44). pacerLay 18/18; tsc
+  clean.
+- **Step 3, engine-core.md §0zq-27f** written (groundStack's line waits for the merge).
+- NOT done: the merge (no green hash yet), the stills and THE CLIP, THE FULL SET (every gate UNRUN on this head), and rule 28's rest.
+
+## What the 2-7 builder needs
+- **The dock rule:** the race is judged at the far bank of the last river that holds the boat whole (lay (A)). DOCKED 0. A docked boat
+  stays docked.
+- **Fairness after a fall:** the boat is re-placed from the RESPAWN point. It keeps at least one floor (2 s Normal / 3 s Easy) for each
+  crossing left, never more than a clean run's margin. Off the last crossing the ride-only cap holds, so a fall a river back with a slow
+  log wait can still lose: the middle bot's clean play is what wins.
+- **The ground rule (groundStack, t-eng-ground):** not merged here yet. Until then the waiting boat is hidden under the out leg's earth.
+- **The bot:** 2-7's tier rows depend on SKILLS.fromTakeoff, and its rule 28 is open (step 1 above).
+
+## Lessons applied
+D57/D87 (inbox read at every step and push; long runs in the background), D63 (the clip is still owed: named, not skipped), D94 (2-3's
+baseline is BUILD-23e's committed rows on the integration branch, and the baseline re-run is step 1 (i)), D96 (THE FULL SET named as
+UNRUN, not claimed), D102 (lean reads; handed over at the line), D105/D109 (no clock times in messages), D107 (none), LAW 3 (my first pond
+cause was wrong; checked the fact, corrected it to the lead and here).
+
 # ENG-27e REPORT (handed over at the lead's D102 call; written 1:38 PM ET 11-21 by date). Base 580344077; branch t-eng-27, head below
 ## EXACT NEXT STEP (ENG-27f, from t-eng-27 head; read only this section, D90)
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Probes here as .txt (copy to tools/inspect/ with a
