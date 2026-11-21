@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-24' | 'w2-25';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -64,6 +64,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '2-1': { kit: 'w2-21', judged: 'normal-2-1' },
   // (2-2 Petals for the Crown: the designed arc, w2Arc22.ts, its own kit 'w2-22' (kitLib22), BUILD-22 11-15; its placeholder arc is gone)
   '2-2': { kit: 'w2-22', judged: 'normal-2-2' },
+  // (2-3 Stuck in the Reeds: the designed arc, w2Arc23.ts, its own kit 'w2-23' (kitLib23, finish23), BUILD-23 11-20: the little ones
+  //  follow him home (ENG-23's follow.ts) past the heron (World 2's watcher through stillLay.ts); the hand-built 2-3 (w2Stages.ts) is deleted)
+  '2-3': { kit: 'w2-23' },
   // (2-4 Never Touch the Bank: the designed arc, w2Arc24.ts, its own kit 'w2-24' (kitLib24), BUILD-24 11-18: lianas over log rivers
   //  (ENG-24's place `river` after a liana); the hand-built 2-4 (w2Stages.ts) is deleted. Judged on its own flown rows, flownArcs.ts normal-2-4)
   '2-4': { kit: 'w2-24', judged: 'normal-2-4' },
