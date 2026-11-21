@@ -705,7 +705,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -2756,7 +2756,14 @@ export class FirstTimerRun {
       // (only over WATER: the creek he walked into. A pit gap the same width is left to the edge's own press, as before: with this look
       //  on every gap the middle bot jumped 1-8's 120 px chase gaps from his full press distance and fell in, chaseBots, INT-11 11-15)
       const past = under && dir * (p.x + dir * look - lip) > 0 && this.wetBetween(lip, p.x + dir * look);
-      const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      // (SKILLS.boardLog: a log drifting his way that is still mostly under the bank's lip is no floor ahead until he can stop on it,
+      //  so he waits at the lip and hops on as at any river (the ride wait below). Read as floor, 28 px down (river.ts LOG_DROP) inside
+      //  this look's 40, he ran off the lip at full speed, came down a few px from its front and ran off it into the water: 2-7's toy,
+      //  home Easy seed 1, the careful middle player, x 7650 onto a log 64 px out (of 240), again at x 5788 and 3191; 2-4 of the 4-8
+      //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
+      const fa = this.floorAt(p.x + dir * look, p.y, 40);
+      const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
+      const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
       //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:

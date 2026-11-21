@@ -234,15 +234,17 @@ for (const seed of [4, 5]) {
     const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
     const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
     const race = (on: boolean) => {
-      const was = SKILLS.fromTakeoff;
+      const was = { ...SKILLS };
       let piece: PacerPiece | undefined;
       try {
-        SKILLS.fromTakeoff = on;
+        // (the boarding hop off: with it on he wins both races either way (post Normal 5 by 8.1 s with the take-off read, 1.0 s
+        //  without), so the two misses this skill was planted on are read where they happen, the boarding of a log left as it was, ENG-27g)
+        Object.assign(SKILLS, { fromTakeoff: on, boardLog: false });
         homeRun('middle', 'normal', seed, 1, { onFrame: (sim: { e: unknown }) => {
           piece ??= (sim.e as { pieces: unknown[] }).pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
         } } as never, POST_CODE);
       } finally {
-        SKILLS.fromTakeoff = was;
+        Object.assign(SKILLS, was);
       }
       return piece!.verdict!;
     };
@@ -251,3 +253,28 @@ for (const seed of [4, 5]) {
     assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
   });
 }
+
+// (the bot boards a log by a hop, SKILLS.boardLog (firsttimer.ts): a log drifting his way that is still mostly under the bank's lip is no
+//  floor ahead until he can stop on it. Planted on the toy's own race leg (level.md rule 21: RED with the skill off): home Easy seed 1's
+//  middle ran off the lip at full speed onto a log 64 px out of 240, came down near its front and ran off it into the water, three of
+//  the race's four lives lost, and lost the race by 0.9 s (trace-27g.txt 5, ENG-27g)
+test('bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it', async () => {
+  const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
+  const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
+  const race = (on: boolean) => {
+    const was = SKILLS.boardLog;
+    let piece: PacerPiece | undefined;
+    try {
+      SKILLS.boardLog = on;
+      homeRun('middle', 'easy', 1, 1, { onFrame: (sim: { e: unknown }) => {
+        piece ??= (sim.e as { pieces: unknown[] }).pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
+      } } as never);
+    } finally {
+      SKILLS.boardLog = was;
+    }
+    return piece!.verdict!;
+  };
+  const v = race(true), off = race(false);
+  assert.ok(v.won, `home Easy seed 1: ${v.him} s against the boat's ${v.boat} s`);
+  assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
+});
