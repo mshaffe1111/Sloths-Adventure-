@@ -3033,6 +3033,9 @@ export class FirstTimerRun {
               if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
               this.floatBeatLast = t;
               if (t - this.floatBeat < 0.5) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
+              // (the beat out with no judged hop landing: the old press here fired a hop no gate judged (2-7 home middle Normal 2, t 21.67,
+              //  36.47, 39.33, ENG-27n's trace); now the wait ends, the next draws its own hop, and he stands on (the log hands him back))
+              if (next) { this.floatBeat = -1; this.waitHop = null; this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
             }
             this.floatBeat = -1;
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
