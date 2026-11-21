@@ -34,7 +34,9 @@ corner top + left feathered. Strip comes out 1024 x 293 (roots reach past 256): 
 - unders: w2#under0 (0,2368 1024x293 edge 0.6169), w2#under1 (0,2665 1024x293 edge 0.6146), w2#under2 (0,2962 1024x293 edge 0.6229);
   underCorner w2#undercorner (1408,2208 384x576 edge 0.7002 cx 0.8262). Shade 0.58-0.62, wrap 1.9-4.6. GroundSheet gains optional
   `unders?`/`underCorner?`. Sheet 239.8 -> 349.0 KB, decoded 23.0 -> 25.4 MiB; re-encode (q82, as pack.py) left the old frames at
-  PSNR fills 47.0, lips 37.4-37.8, end 34.3 dB, alpha unchanged.
+  PSNR (visible px) fills 47.0, lips 37.4-37.8, end 42.6 dB (34.3 counted invisible transparent px), alpha unchanged. No lossless
+  source exists (pack.py read webp takes from an uncommitted raw dir; sheet re-edited 11-18). 2x game-size end, before|after:
+  reference/art/hfunder/end-before-after-2x.jpg: no visible difference. q90 would give lips 41.1 / end 44.3 at 442 KB (q95: 630 KB).
 - Rows: CATALOG-MASTER.csv (part UNDER, after w2#end0; layer decor mid, footing none, float hangs, used_in 'none (not placed)'), emitted.
 
 ## Gates
