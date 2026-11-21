@@ -1,0 +1,32 @@
+# usage: python3 r28patch-27i.py <worktree> (ENG-27i: r28patch-27h with boardHop's REFINED skill, singleLands, as firsttimer.ts at 7d5200da8): ENG-27g's patch (r28patch-27g.py.txt: both its skills, R28_BASE=1 as both off, their logs) and
+# ENG-27h's SKILLS.boardHop (added where missing), read off with R28_BASE=1 too, with a log of every jumpFor that meets a log across the lip
+import sys, os
+w = sys.argv[1]; f = w + '/tools/inspect/firsttimer.ts'; s = open(f).read()
+had = 'boardHop' in s
+if had: s = s.replace("fromTakeoff: true, boardLog: true, boardHop: true };", "fromTakeoff: true, boardLog: true };", 1)
+open(f, 'w').write(s)
+here = os.path.dirname(os.path.abspath(__file__))
+exec(open(os.path.join(here, 'r28patch-27g.py.txt')).read().replace('sys.argv[1]', repr(w)))
+s = open(f).read()
+s = s.replace("boardLog: process.env.R28_BASE !== '1' };", "boardLog: process.env.R28_BASE !== '1', boardHop: process.env.R28_BASE !== '1' };", 1)
+assert "boardHop: process.env.R28_BASE" in s
+HOP = "    if (SKILLS.boardHop && SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir) && this.singleLands(p, dir)) return 'single';\n"
+if not had:
+    old = "    let gap = Infinity;\n    for (const q of this.sim.platforms) {\n      if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;\n"; assert s.count(old) == 1
+    s = s.replace(old, HOP + old, 1)
+    old = "  floorAt(x: number, y: number, down = 40): Platform | null {\n"; assert s.count(old) == 1
+    s = s.replace(old, """  private logAcross(here: Platform, dir: -1 | 1): boolean {
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && q.drift?.dir === dir && q.y - here.y > 6 && q.y - here.y <= 40
+      && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
+  }
+
+  private singleLands(p: { x: number; y: number }, dir: -1 | 1): boolean {
+    const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir, this.who.hold[0], this.t, this.sim.p.vx));
+  }
+
+""" + old, 1)
+assert s.count(HOP) == 1
+s = s.replace(HOP, "    if (SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir)) ((globalThis as any).__bh ??= []).push({ t: Math.round(this.t * 10) / 10, x: Math.round(p.x) });\n" + HOP, 1)
+open(f, 'w').write(s); print('r28-27i patched', 'had boardHop' if had else 'boardHop added')
