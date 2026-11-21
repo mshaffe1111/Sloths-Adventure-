@@ -8,6 +8,10 @@
  * has already loaded. Written into a reused array: no allocation per frame (PERFORMANCE-RULES §1).
  */
 import type { Follower, FollowKind } from './follow.ts';
+import { FONT_UI } from './fonts.ts';
+
+/** the '!' badge's font: the game's own UI face (no bare family: fonts test), made once */
+const BANG_FONT = `800 13px ${FONT_UI}`;
 
 /** the face's radius (css px): a 44 px circle, the HUD's smallest tap size, read at arm's length */
 export const MARK_R = 22;
@@ -159,7 +163,7 @@ export function drawEdgeMarks(ctx: CanvasRenderingContext2D, img: CanvasImageSou
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.fillStyle = '#1c1206';
-    ctx.font = '900 13px sans-serif';
+    ctx.font = BANG_FONT;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('!', bx, by + 1);

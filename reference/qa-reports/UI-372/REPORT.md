@@ -58,7 +58,7 @@ Run on t-ui-372 at 0ad902c41 (the code; this REPORT commit adds no code). At han
 |---|---|
 | `npx tsc --noEmit -p .` | PASS (clean) |
 | `src/game/edgeMarker.test.ts` | PASS 3/3; plant RED on 66775dabf; the shadowBlur plant RED |
-| THE SUITE (the full `npx tsx --test ...` line) | RUNNING at hand-over: 1031 ok, 0 not ok so far (log: scratchpad suite.txt; started on 6f43157d5, before the shadow swap, which only touched edgeMarker.ts, re-run alone GREEN) |
+| THE SUITE (the full `npx tsx --test ...` line) | RUNNING at hand-over. It CAUGHT one of mine: fonts.test 'no fourth family' (the '!' badge used a bare `sans-serif`); fixed at the root (the game's FONT_UI, made once), fonts.test and edgeMarker.test GREEN alone; the rest 1179 ok, no other failure so far (log: scratchpad suite.txt; started on 6f43157d5, before the shadow swap, which only touched edgeMarker.ts, re-run alone GREEN) |
 | `BASE_PATH=/Sloths-Adventure-/ npx vite build` | PASS |
 | `node tools/perf/chunkcheck.mjs` | PASS |
 | `node tools/perf/artcheck.mjs` | PASS |
@@ -83,6 +83,7 @@ Merge-ready once THE FULL SET is green. On t-ui-372 @ (this commit), with node_m
 3. Fill this table with each verdict; anything red is fixed at its root before the merge after t-build-23.
 
 ## Learned
+- Canvas text in a new draw uses the game's font constants (fonts.ts), never a bare family: fonts.test catches it, but only in the full suite.
 - The ban list in PERFORMANCE-RULES §1 (no shadowBlur) is easy to forget on a "small code-drawn touch"; a stub-context test that records
   setters catches it in seconds and is cheaper than waiting for drawcheck, which never builds a spooked-off-screen state on 2-3 anyway.
   Proposed: any new per-frame draw ships with a stub-context guard like edgeMarker.test.ts test 3.
