@@ -9,11 +9,15 @@
  *     between them; the line spooked back to the stretch's start, he stands in the far clump. He walks back, stopped dead against the
  *     boulder's face he hops it, and fetches them with no rescue; without the hop he stood against it until rescued (castBots 2-3 child
  *     Normal seed 5 x 11590, the traced miss).
+ *   - FETCH-CLOCK (ENG-CAGE-b), the same setup with the CHILD (his testers' slow steer rhythm): the fetch and the walk on take him longer
+ *     than the 20 s stuck clock; with the clock held through the fetch he brings them back with no rescue; with it running (the old bot)
+ *     he is rescued mid-fetch (castBots 2-3 child Normal seeds 5 and 8, x 11166-11968: a rescue put him past his line, the next look
+ *     spooked it, and so on).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DT } from '../../src/game/realPlay.ts';
-import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_MIDDLE, LINE_SKILL, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 import { spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import type { WatchZone } from '../../src/game/watcher.ts';
@@ -126,12 +130,12 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
 });
 
 /** the bot on 2-3's gen2 row, stood in beat 4's far clump with the whole line spooked back to the stretch's start (the heron's zone x0) */
-function hopBackRun(who: FirstTimer): { end: string; got: number; rescues: number; fetched: boolean } {
+function hopBackRun(who: FirstTimer, cap = 60): { end: string; got: number; rescues: number; fetched: boolean } {
   freshPhone(who.setting);
   const mr = Math.random;
   Math.random = rng(5 * 104729 + 1311);
   try {
-    const run = new FirstTimerRun('2-3', 5, who, { cap: 60, dotSetting: true });
+    const run = new FirstTimerRun('2-3', 5, who, { cap, dotSetting: true });
     const e = run.e as unknown as Record<string, any>;
     const cages = (e.collectibles as Collectible[]).filter((c) => c.type === 'cage').sort((a, b) => a.x - b.x);
     // (beat 4: the watched stretch whose clumps hold cage 3; the boulder on the mud between its clumps)
@@ -179,6 +183,22 @@ test('planted: with hop-back off he stands against the boulder until he is rescu
     }
   } finally {
     LINE_SKILL.hopBack = true;
+  }
+});
+
+test('fetch-clock (2-3 gen2 row, seed 5): the child, at his own slow pace, fetches the whole line back with no rescue: the way back is not stuck', () => {
+  const r = hopBackRun(FT_CHILD, 90);
+  assert.ok(r.fetched, `child: never fetched ${JSON.stringify(r)}`);
+  assert.equal(r.rescues, 0, `child: ${JSON.stringify(r)}`);
+});
+
+test('planted: with the fetch clock off the child is rescued while he is still walking back for them', () => {
+  LINE_SKILL.fetchClock = false;
+  try {
+    const r = hopBackRun(FT_CHILD, 90);
+    assert.ok(r.rescues > 0, `planted child: no rescue with the clock running through the fetch ${JSON.stringify(r)}`);
+  } finally {
+    LINE_SKILL.fetchClock = true;
   }
 });
 

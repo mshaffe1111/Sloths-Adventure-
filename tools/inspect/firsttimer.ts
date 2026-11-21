@@ -132,9 +132,10 @@ const SNAP_THUMB = 0.1;
  * walks to their far end and stands while a heron warns or looks, and goes on only right after a look has ended with the whole line in
  * the reeds and still (2-3.md: "go right after a look"). FETCH-THE-SPOOKED: one the heron spooked, hiding where it ran to, he walks back
  * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home. HOP-BACK:
- * on that walk back, stopped dead against a face (a boulder on the mud), a plain hop over it (ENG-CAGE).
+ * on that walk back, stopped dead against a face (a boulder on the mud), a plain hop over it (ENG-CAGE). FETCH-CLOCK: the stuck clock holds
+ * while he walks back for a spooked one and starts over when he has it; three fetches with no step further are a loop (ENG-CAGE-b).
  */
-export const LINE_SKILL = { waitTail: true, fetch: true, hopBack: true };
+export const LINE_SKILL = { waitTail: true, fetch: true, hopBack: true, fetchClock: true };
 /**
  * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
  * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
@@ -1270,6 +1271,10 @@ export class FirstTimerRun {
   private cageAim: { id: number; at: number; vineX: number | null; down: boolean } | null = null;
   /** LINE_SKILL.fetch: how long (s) he has stood stopped dead on his way back for a spooked little one */
   private fetchStill = 0;
+  /** LINE_SKILL.fetch: on his way back for a spooked little one this frame; how many fetches since he last got further (FETCH-CLOCK) */
+  private fetching = false;
+  private wasFetching = false;
+  private fetchLoops = 0;
   /** where the game last set him down (a splash-back, a put-back), his best progress then, and how often in a row at that place */
   private setDowns: { x: number; y: number; top: number; n: number } | null = null;
   /** when he was last put past each puzzle room */
@@ -2193,6 +2198,7 @@ export class FirstTimerRun {
       // (back for it once the heron has looked away: walking back under its look, the line he leads back is seen moving)
       const lost = fp.line.find((f) => f.state === 'spooked' && f.back);
       if (lost && Math.abs(lost.x - p.x) > fp.row.rejoin - 20) {
+        this.fetching = true;
         this.lineGo = null;
         this.lineWait = null;
         if (look && LINE_SKILL.waitTail) return {};
@@ -2336,6 +2342,7 @@ export class FirstTimerRun {
     const side = (d: -1 | 0 | 1): Pad => (d > 0 ? { right: true } : d < 0 ? { left: true } : {});
     this.takeIn();
     this.hiding = false;
+    this.fetching = false;
 
     // a puzzle room: stand at its entrance a moment, then on past it
     if (this.puzzleWait) {
@@ -4088,11 +4095,20 @@ export class FirstTimerRun {
     // stuck: no progress for 8 s (not while standing at a puzzle)
     // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
     // (and not while he climbs back out of a pit, pitWayBack: the way back up is a person's retry, and three of them are a loop there)
-    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
+    // (FETCH-CLOCK: back for a spooked little one is the line's own demand, not a spot he cannot pass: the clock HOLDS while he fetches,
+    //  as it does while he hides. Three fetches with no step further are a loop, as three falls back are, and the clock runs again. The
+    //  clock had run through every fetch: on 2-3's watched mud the child (his testers' steer rhythm, about 40 px a second on open ground)
+    //  was rescued mid-fetch, the rescue put him past his line, the next look spooked it, and so on: child Normal 0 of 40, ENG-CAGE-b)
+    if (this.fetching && !this.wasFetching) this.fetchLoops++;
+    // (and the walk on again after a fetch is a fresh try, over ground he had already covered: its clock starts over)
+    const fetched = LINE_SKILL.fetchClock && this.wasFetching && !this.fetching && this.fetchLoops < this.tries3;
+    this.wasFetching = this.fetching;
+    if (more) this.fetchLoops = 0;
+    if (more || fetched || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
-    } else if (this.hiding) {
+    } else if (this.hiding || (LINE_SKILL.fetchClock && this.fetching && this.fetchLoops < this.tries3)) {
       // (holding still for a watcher, its glance or its pass: he is waiting, not stuck. The clock HOLDS, it does not start over, so a spot
       //  he cannot get past is still a spot he cannot get past: ENG-WATCH, the glance's freezes inside 1-7's dip had read as 'stuck')
     } else {

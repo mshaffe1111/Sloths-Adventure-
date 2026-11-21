@@ -15,6 +15,17 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   components/hud/LineFace.tsx). Trap: `.vh-slot:not(.on) > *` silhouettes any slot child; LineFace sets filter none inline, its tone on
   an inner layer so the '!' keeps its amber.
 
+## 0zq-CAGE. ENG-CAGE + ENG-CAGE-b (t-eng-cage, 11-20 evening; this entry 9:56 PM ET): the cage bot and the line's fetch clock (R-165.359)
+- Where: tools/inspect/firsttimer.ts CAGE_SKILL { punch, climb } + FirstTimerRun.cagePlan (any world's cage by its data: in the engine's strike
+  reach at his height, or hung up a climbing vine at whose foot he stands); LINE_SKILL.hopBack (a plain hop over a face on the way back for a
+  spooked one) and LINE_SKILL.fetchClock (the stuck clock holds through a fetch and starts over after it; three fetches with no step further
+  are a loop); the SET-DOWN LOOP (set down by the game at one place tries3 times, no further: put past it). Toys: cageBot.test, lineBot.test
+  (hop-back, fetch-clock on 2-3's gen2 row seed 5), firsttimer.test 'set down'.
+- Traps: the set-down loop rule reaches 1-1 (2 child Normal runs moved; calibration recommitted 11-20). The stop reaction at a face counts
+  only his pushes (P13): counting it in real time breaks 1-1's calibration (tried and rejected, ENG-CAGE-b REPORT). RealPlay.frame's real-input
+  branch drops pad.punch: castBots --input touch|pad never punches.
+- Open: the cage meter CHANNEL (score.ts; coveragecheck's last red); 2-3 child Normal 1/40 is the lay (the watched mud, REPORT); the kid 0/40 untraced.
+
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
 against its face). drawGround's lower() took the FIRST one listed: at a wall with a stair of step banks standing on the floor at its foot (1-6,
