@@ -1,0 +1,17 @@
+import { FirstTimerRun, FT_MIDDLE_EASY, FT_MIDDLE, SKILLS } from './firsttimer.ts';
+import type { Platform } from '../../src/game/types.ts';
+const bank = { id: 1, x: 0, y: 600, width: 1000, height: 90, type: 'solid' } as Platform;
+const far = { id: 3, x: 1600, y: 600, width: 3000, height: 90, type: 'solid' } as Platform;
+const lives = (on: boolean, front: number, who = FT_MIDDLE_EASY, seed = 1) => {
+  const log = { id: 2, x: front - 240, y: 628, width: 240, height: 24, type: 'drift',
+    drift: { x0: 1000, x1: 1600, dir: 1, speed: 60, width: 240, baseY: 628, offset: (front - 1000) / 60 } } as unknown as Platform;
+  const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  const run = new FirstTimerRun('1-1', seed, who, { route: line, cap: 8, rescueAfter: 1000 });
+  run.sim.bare([bank, log, far]);
+  const st = (run.sim as any).e.currentStage;
+  st.config.levelHeight = 700; st.rivers = [{ x0: 1000, x1: 1600 }];
+  run.sim.stand(940, 600); run.prog.relocate(run.sim.p);
+  const was = SKILLS.boardLog; SKILLS.boardLog = on;
+  try { const r = run.play(); return JSON.stringify(r.softFalls.map((f: any) => [Math.round(f.t*10)/10, Math.round(f.x)])); } finally { SKILLS.boardLog = was; }
+};
+for (const front of [990, 1000, 1010, 1020, 1030, 1050, 1064]) console.log(front, 'on', lives(true, front), 'off', lives(false, front));

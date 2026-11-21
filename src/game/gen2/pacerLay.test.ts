@@ -230,7 +230,7 @@ for (const setting of ['normal', 'easy'] as const) {
 //  times there (x 6591), and lost the race by 8.3 s; seed 4's took a single from 107 px back on a log toward a bank 77 px past its
 //  front, came down on the log's end and walked off it into the water (x 2856), and lost by 0.7 s. ENG-27f)
 for (const seed of [4, 5]) {
-  test(`bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed ${seed}; RED without it`, async () => {
+  test(`bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed ${seed} (its RED: firsttimer.test's laid pond)`, async () => {
     const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
     const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
     const race = (on: boolean) => {
@@ -248,9 +248,12 @@ for (const seed of [4, 5]) {
       }
       return piece!.verdict!;
     };
-    const v = race(true), off = race(false);
+    // (the RED half is re-planted on its cause laid explicitly, tools/inspect/firsttimer.test.ts 'a jump from a STAND over a laid pond'
+    //  (a stand 165 px before a 133 px pond; a stand 107 px back on a log 72 px short of the bank; each a single with the skill off): the
+    //  merged ground (t-eng-ground, groundStack) took away the descent pools these races stood on, so here he wins without it (97.9 s vs
+    //  100.76; 100.5 vs 103.44, ENG-27i). The lead's ruling 11-21, ENG-27j: never loosen; re-plant where the cause is laid)
+    const v = race(true);
     assert.ok(v.won, `post Normal seed ${seed}: ${v.him} s against the boat's ${v.boat} s`);
-    assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
   });
 }
 

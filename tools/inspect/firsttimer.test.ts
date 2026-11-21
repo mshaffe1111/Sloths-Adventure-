@@ -214,6 +214,50 @@ test('on the runs it was found on, 2-2 child Normal seed 36 and middle Normal se
   assert.ok(mid.stands >= 1 && mid.lost === 0, `the middle, seed 17: no life lost after such a stand (${mid.lost} of ${mid.stands})`);
 });
 
+test('in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)', () => {
+  // (re-planted by ENG-27j on its cause laid EXPLICITLY, the lead's ruling 11-21: the race plants it was first planted on (2-7's toy,
+  //  post Normal seeds 4 and 5, ENG-27f) won without it once the merged ground took away the descent pools they stood on. The two
+  //  misses, each laid here: (a) post Normal seed 5's middle stood 165 px before a 133 px safe pond and took a single, splashed back eight
+  //  times (x 6591); (b) seed 4's stood 107 px back on a log with the bank 72 px past its front and took a single, came down on the log's
+  //  end and walked off it into the water (x 2749). The bank's top at 600, a log 28 px under it (river.ts LOG_DROP), the water a river zone)
+  const solid = (id: number, x: number, w: number, y = 600) => ({ id, x, y, width: w, height: 90, type: 'solid' }) as Platform;
+  const log = (id: number, x: number) => ({
+    id, x, y: 628, width: 240, height: 24, type: 'drift',
+    drift: { x0: 0, x1: 6000, dir: 1, speed: 0.001, width: 240, baseY: 628, offset: (x + 240) / 0.001 },
+  }) as unknown as Platform;
+  const read = (pieces: Platform[], water: Array<[number, number]>, at: number, here: Platform, on: boolean, vx = 0) => {
+    const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    const run = new FirstTimerRun('1-1', 1, FT_MIDDLE, { route: line, cap: 1, rescueAfter: 1000 });
+    run.sim.bare(pieces);
+    (run.sim.stage as unknown as { rivers: Array<{ x0: number; x1: number }> }).rivers = water.map(([x0, x1]) => ({ x0, x1 }));
+    run.sim.stand(at, here.y);
+    run.sim.p.vx = vx;
+    const was = SKILLS.fromTakeoff;
+    SKILLS.fromTakeoff = on;
+    try {
+      return (run as unknown as { jumpFor(p: { x: number; y: number }, dir: 1, here: Platform): 'single' | 'double' }).jumpFor({ x: at, y: here.y }, 1, here);
+    } finally {
+      SKILLS.fromTakeoff = was;
+    }
+  };
+  // (a) the pond: the near bank ends at 1000, 133 px of safe water, the far bank at 1133; he stands 165 px before the lip
+  const near = solid(1, 0, 1000), far = solid(2, 1133, 3000);
+  assert.equal(read([near, far], [[1000, 1133]], 835, near, true), 'double', '(a) 165 px of his own ground and a 133 px pond from a stand: a double');
+  assert.equal(read([near, far], [[1000, 1133]], 835, near, false), 'single', 'RED (a): with SKILLS.fromTakeoff off the 133 px gap alone is read, a single');
+  // (b) the log: he stands on a log 107 px back from its front (x 1240), the bank 72 px past it (x 1312), water from the near bank on
+  const lg = log(3, 1000), bank = solid(4, 1312, 3000);
+  assert.equal(read([solid(1, 0, 900), lg, bank], [[900, 1312]], 1133, lg, true), 'double', '(b) 107 px of log and a 72 px gap to the bank from a stand: a double');
+  assert.equal(read([solid(1, 0, 900), lg, bank], [[900, 1312]], 1133, lg, false), 'single', 'RED (b): with it off the 72 px gap alone is read, a single');
+  // (and nothing else moves, the narrowing rule 28 found (ENG-27g): a RUNNING single (his own run carries it), a DRY pit the same width,
+  //  and a run-up longer than a single carries (2-3: a stand 330 px before a 60 px pond) read the gap alone, a single, on as off)
+  for (const on of [true, false]) {
+    assert.equal(read([near, far], [[1000, 1133]], 835, near, on, 300), 'single', `running at the pond: a single (skill ${on ? 'on' : 'off'})`);
+    assert.equal(read([near, far], [], 835, near, on), 'single', `a dry pit the same width: a single (skill ${on ? 'on' : 'off'})`);
+    const far60 = solid(2, 1060, 3000);
+    assert.equal(read([near, far60], [[1000, 1060]], 670, near, on), 'single', `a stand 330 px before a 60 px pond: a single (skill ${on ? 'on' : 'off'})`);
+  }
+});
+
 test('the findings name the rule each breaks', () => {
   const base = { who: 'KID', setting: 'easy', seed: 1, end: 'shrine', time: 120, x: 9000, progress: 1, goal: null, opening: [], harms: [], perMin: { hits: 0, lives: 0 }, gameOvers: 0, firstHarm: [], stuck: [], loops: [], stops: { n: 0, firstJumpFailed: 0, heights: [] }, puzzles: [], rescues: 0, dot: dotReport([], 120), flags: [], tries: [], turns: { n: 0, lag: 0 }, backtrack: { route: 1, bot: 1 }, noRoute: false, frames: 0, ms: 0 } as const;
   const f = flagsFor({ ...base, holdOn: { hit: null, life: { kind: 'life', t: 1.3, x: 504, y: 640, cause: 'water', onScreen: null } }, stuck: [{ x: 600, y: 580, t: 10, dur: 9, what: 'a 60 px waist-high step ahead', step: 60, dip: null, puzzle: false, rescued: false }] } as never);
