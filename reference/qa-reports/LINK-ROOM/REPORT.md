@@ -29,7 +29,7 @@ What each option costs:
 | larger inline limit alone | 42 at 80 KB | index.js 18.7 MB at 80 KB: over the artifact's 16 MB a file | dead |
 | merge small JS chunks | about 30 at most (39 js) | not 40; world chunks would grow the eager script | not enough |
 | drop dev-only files | 0 found | every file in dist is referenced by the game (vite emits only what is imported) | nothing to drop |
-| **art packs + larger inline limit** (chosen) | 71 at 96 KB | boot download +5.2 MB (below) | **meets the goal** |
+| **art packs + larger inline limit** (chosen) | 71 at 96 KB | boot download +7.5 MB up front (below) | **meets the goal** |
 | texture atlas | many | touches how the engine draws; not a test-link-only change | out of scope |
 
 ## 2. The option chosen (tools/testlink/vite.testlink.config.ts, test link only)
@@ -52,13 +52,13 @@ exactly as the inlined pictures did inside it (index.html preloads both packs), 
 | largest file that is not an audio pack | 14.65 MB (index.js) | **10.10 MB** (artpack) |
 | art packs | none | 2: 10.10 + 7.41 MB |
 | audio packs | 4 webm (15.0 / 14.7 / 14.6 / 11.9 MB) + 1 mp3 | unchanged (same bytes, same names) |
-| download by page load, title screen (headless, served bytes) | 40.5 MB | 45.7 MB (+5.2) |
+| scripts + css index.html loads up front | 15.04 MB | 22.49 MB (+7.5) |
 | download in all after 12 s: title / 1-1 / 2-5 | 42.8 / 73.0 / 65.2 MB | 50.1 / 79.6 / 72.0 MB |
 | first publish after this change | | 93 map entries: 11 files sent (26.7 MB), 82 removed (null): one publish (limits 255 files, 64 MB) |
 
-**The cost, named:** the boot download grows about 5-7 MB, because the 73 newly inlined pictures (64-96 KB) are base64 (+33%) and load up
-front with the packs. 80 KB would cost about half that but leaves only 41 free (the picker's six stills would take it under 40 at once);
-96 KB is the smallest step with real room. Raise `INLINE_KB` only when the room runs low again: every step trades boot bytes for files.
+**The cost, named:** the boot download grows about 7.5 MB, because the 73 newly inlined pictures (64-96 KB) are base64 (+33%) and load
+up front with the packs. 80 KB would cost about half that but leaves only 41 free (the picker's six stills would take it under 40 at once);
+96 KB is the smallest step with real room. The lead accepted it (8:52 PM ET); the measured numbers for both are under Unresolved below.
 
 ## 4. The planted check
 - **build.py** (`room_problems`, run in `finish()` before any map is written): refuses (exit 1, no map, no page) when the build is over
@@ -100,6 +100,21 @@ in the new build's first run. Stills: `stills/before-*.webp` and `stills/after-*
 
 ## 8. Gates (the full CLAUDE.md list plus CI's extras, each once, D86)
 __GATES__
+
+## Unresolved: the boot download (accepted by the lead 8:52 PM ET 11-20 for Matt's link; revisit here)
+96 KB costs boot download, because the newly inlined pictures are base64 (+33%) and load up front with the packs. Measured on the same
+tree (INLINE_KB is the only difference), headless, portrait phone:
+| | base 64 KB, into index.js | 80 KB, art packs | **96 KB, art packs (shipped on t-link-room)** |
+|---|---|---|---|
+| files (free under 480) | 479 (1) | 439 (41) | **408 (72)** |
+| largest non-audio file | 14.65 MB index.js | 8.39 MB artpack | 10.10 MB artpack |
+| scripts + css index.html loads up front | 15.04 MB | 18.73 MB (+3.7) | 22.49 MB (+7.5) |
+| served bytes on the title after 12 s | 42.8 MB | 46.5 MB (+3.7) | 50.1 MB (+7.3) |
+| smoke (title, 1-1, 2-5) | 0 problems | 0 problems | 0 problems |
+(Served bytes "by page load" are not in this table: they swung 26-46 MB between runs while the gates were loading the CPU; the up-front
+script bytes are counted from the files and do not move.) 80 KB would cost half as much, but its 41 free drop under 40 with the picker's
+six stills at once. Ways to win the bytes back later, none needed now: inline only pictures the title or 1-1 needs (a list), or a pack
+per world loaded with that world's chunk; or go back down to 80 KB once the room is not needed.
 
 ## Learned (for the next tools member)
 - Measure the file before trusting the size in a packet: the "page" was 34 KB; the script beside it was the one at the wall.
