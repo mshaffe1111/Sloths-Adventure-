@@ -11,8 +11,9 @@ import type { PieceHost, PieceKind, PieceLayer, StagePiece } from '../stagePiece
 import { pacerOff, pacerReplace, pacerX, type Pacer } from '../pacer.ts';
 import { drawPacer, pacerWaters, type PacerWater } from '../pacerDraw.ts';
 
-/** how near the dock (px, along its way) he counts as there: the exit totem's touch */
-const DOCKED = 80;
+/** how near the dock (px, along its way) he counts as there: none. The dock is a river's far bank (gen2/pacerLay.ts, ENG-27d): he is
+ *  there when he reaches the bank's edge (80 px short, the exit totem's touch it was, is ~1 s of a log's ride: the ride-only bot won by it) */
+const DOCKED = 0;
 
 export interface PacerVerdict { won: boolean; boat: number; him: number }
 

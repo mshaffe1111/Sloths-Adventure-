@@ -1,0 +1,33 @@
+// scratch (ENG-27d, never committed): where on the race leg a bot falls behind the flown marks
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { SKILLS } from './firsttimer.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [tier, setting, seedS, codeS] = process.argv.slice(2);
+const code = codeS === 'post' ? POST_CODE : HOME_CODE;
+let piece: any, lastLives: number | undefined;
+const passed: Array<[number, number]> = [];
+const deaths: string[] = [];
+const ride = tier === 'ride';
+const was = { race: SKILLS.race, rideOnly: SKILLS.rideOnly };
+if (ride) Object.assign(SKILLS, { race: false, rideOnly: true });
+try {
+  homeRun(ride ? 'middle' : (tier as never), setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+    piece ??= sim.e.pieces.find((q: any) => q.kind === 'pacer');
+    const e = sim.e, p = e.player;
+    if (lastLives !== undefined && e.lives < lastLives) deaths.push(`death at x ${Math.round(p.x)} clock ${piece?.clock?.toFixed(1) ?? 'pre'}`);
+    lastLives = e.lives;
+    if (!piece || piece.clock === null) return;
+    const P = piece.pacer;
+    for (const [mx] of P.marks) if (!passed.some(([x]) => x === mx) && (p.x - mx) * P.dir >= 0 && p.y >= P.yMin) passed.push([mx, piece.clock]);
+  } } as never, code);
+} finally { Object.assign(SKILLS, was); }
+const P = piece.pacer;
+console.log(`${tier} ${setting} ${seedS} ${codeS ?? 'home'}: boat ${P.seconds} middle ${P.middle} rideOnly ${P.rideOnly} verdict ${JSON.stringify(piece.verdict)}`);
+let prevE = 0, prevA = 0;
+for (const [mx, mt] of P.marks) {
+  const a = passed.find(([x]) => x === mx)?.[1];
+  console.log(`  mark ${Math.round(mx)}\test ${mt.toFixed(1)}\tbot ${a?.toFixed(1) ?? '-'}\tseg est ${(mt - prevE).toFixed(1)} bot ${a !== undefined ? (a - prevA).toFixed(1) : '-'}\tbehind ${a !== undefined ? (a - mt).toFixed(1) : '-'}`);
+  prevE = mt; if (a !== undefined) prevA = a;
+}
+console.log('  ' + deaths.join('; '));

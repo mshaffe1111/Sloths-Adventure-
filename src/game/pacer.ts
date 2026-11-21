@@ -36,7 +36,10 @@ export interface PacerRow {
 
 /** a laid pacer (GeneratedStage.pacer) */
 export interface Pacer {
-  /** where it waits and sets off (the race leg's start) and where it docks (the exit), on its lane at height `lane` */
+  /** its race point (its bow; its hull trails it, pacerDraw.ts pacerHull) where it waits and sets off (the far bank of the race leg's first
+   *  river that holds it whole: he crosses that river beside it and sets it off reaching its bow) and where it docks (the far bank of the
+   *  leg's last such river before the exit: the race is judged there), its hull seen over that river's water at both (gen2/pacerLay.ts, the
+   *  lead's ruling 11-21); `lane` is the lowest river surface between them (pacerDraw.ts puts its waterline on each river's own) */
   x0: number;
   x1: number;
   lane: number;
@@ -44,7 +47,7 @@ export interface Pacer {
   dir: -1 | 1;
   /** he sets it off stepping past `x0` on the race leg: his feet at or below `yMin` (the race leg's highest top, less a hop) */
   yMin: number;
-  /** its time from x0 to the dock (s) */
+  /** its time from its wait (x0) to its dock (x1) (s) */
   seconds: number;
   /** the flown times for the same leg (s): the careful middle player's and the ride-only player's */
   middle: number;

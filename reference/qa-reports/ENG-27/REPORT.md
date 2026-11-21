@@ -1,3 +1,78 @@
+# ENG-27d REPORT (handed over at the lead's D76 call, real context ~339k; written 12:59 PM ET 11-21 by date). Base 0eefc707e; branch t-eng-27
+## EXACT NEXT STEP (ENG-27e, from t-eng-27 head; read only this section, D90)
+0. Setup as ENG-27c's step 1 (npm install --legacy-peer-deps, restore package-lock.json). Probes kept here as .txt (copy to tools/inspect/
+   with a leading underscore, never commit them): raceprobe-27d.ts.txt (`npx tsx tools/inspect/_raceprobe.ts middle|expert|ride home|post
+   [seeds]`; expert has no Easy bot, so its Easy rows throw), racestart-27d.ts.txt (per-frame x/y/down/clock/checkpoint/softAt in a frame
+   window), racetrace-27d.ts.txt (the bot's time at each flown mark against the estimate), jumps-27d.ts.txt (every frame he moves > 150 px).
+   Stills: race-stills-27d.mjs (DSF=2 for 2x; PW=/opt/node-tools/node_modules/playwright/index.mjs; vite on 5199; shoot on-river spots LAST:
+   a spot on a log carries him on the next spot).
+1. **THE EASY PUT-BACK (the lead's ruling: fix it in this packet, Option 1; a PLAY change, so rule 28 applies).** Symptom: HOME_CODE Easy
+   seed 2, middle bot: on the race leg he drops into the dip at x 14724-14821 (moss_stone piece id 42, top 1530, h 90; banks 14486-14724 and
+   14821-15189 at 1470) and at frame 2584 he is set at (14891, 680), on the OUT leg's piece 14822-15102 (id 10), with no life lost and no
+   bot rescue (rescues 0). The boat keeps racing, he walks the out leg and the column again, and he loses by 0.08 s. Same jump at frame 4112.
+   What it is NOT: softFall/heartFall's softAt. softAt was ON the race leg {x 15000, y 1470, x0 14821, x1 15189} at frames 2570-2583,
+   and only became (14891, 680) at frame 2585, after he stood there. No river, no safe pool (st.safeWater null), no down beat.
+   NEXT CHECK: what moves him in the frame he is at (14788, 1500) falling into the dip. Suspects, by x alone on a stacked leg: (a) the
+   side-push / unstick out of a solid's box (he enters id 42's box from the side and the push puts him on the top of the platform found
+   by x: id 10 at 680); (b) a step-up or ledge-grab that picks the top surface at x without his y; (c) a kit's pit/pond set-back (w2Finish).
+   Method: in racestart, at frame 2583 copy the engine, step once with a recorder on player.x/y writes, or grep engine.ts for code that
+   sets p.y from a platform's y and a find() by x alone (`q.x <= p.x` without `q.y` near `p.y`). Fix the lookup to his leg (as ENG-27b
+   did for riverAt), planted RED on this frame (a test: after the race leg's first flag, no frame lifts him from y >= Pacer.yMin to
+   y < yMin without a lost life). The flag-as-put-back line the lead approved is NOT made: softAt was right, so it was not the cause;
+   make it only if the trace shows a put-back reads softAt.
+   Rule 28 after the fix: tierBots 1-1 still 9/9 (npx tsx --test tools/inspect/tierBots.test.ts) and a row-for-row castBots diff on Easy
+   for the stages with committed rows (2-3: BUILD-23e rows on origin/t-build-23; 2-5 if on this base). Trace any moved row or narrow the fix.
+2. **Then the race table, both settings, after the fix:** raceprobe on home and post, seeds 1-6, middle / expert / ride. Every number in
+   the table; name the middle's thinnest win; any middle loss at 7%: which roll and why (racetrace: the mark where he falls behind,
+   respawns, log waits). Then `npx tsx --test src/game/gen2/pacerLay.test.ts` must be 4/4 (its bot test is RED today on middle Easy seed 2,
+   96.4 s against 96.32 s, from step 1's put-back). A table on lay (A) WITHOUT the fix ran into this session's scratch and is lost with
+   it: do not quote it.
+3. reference/handoffs/engine-core.md (step 5 of ENG-27d's packet, not reached): one line each on the pacer (shares, floor + cap, DOCKED 0),
+   lay (A) (bow race point, wait and dock at far banks, pacerShoreFaults), layer 'under' (the lead's condition 3), the post (postLay's
+   cuts, petals.ts marked letters), w2NextArt.ts, the home fixture (?fixture=home, DEV only), and the softAt finding from step 1.
+4. THE FULL SET on the final head (gates.md D96; run-gates-27c.sh): lockall --layouts 16 vs 0eefc707e (only the toy may move), funcheck
+   same-run vs main (World 1's 22 ruled lines are standing debt), drawcheck PASS (the lead's condition 2: 'under' adds one drawPieces pass
+   over the pieces list, no draw on a stage without a pacer), the test-link floor. Any gate without a verdict is UNRUN.
+5. Stills of the WAIT and the DOCK under lay (A) (the lead: "your stills show the start"): the boat waiting with its bow at the first wide
+   river's far bank, him crossing beside it, and docked at the last wide river's far bank; both ways, 2x. Then THE CLIP (D63, ENG-27d's
+   step 3, not reached): the race leg with the boat in every frame, both ways; the door and letter stills on the OUT leg (a HIGH pick).
+
+## ENG-27d: what was done
+- **Step 2, the boat behind the banks (2460568a9; the lead's ruling (a) and its follow-up):** a fifth piece layer 'under' in
+  stagePiece.types.ts (doc: over the river's body, BEHIND the ground's earth and every platform), drawn once in render() before the drawn
+  platforms, the water's sheet and the painted ground (no protoArt hook needed: the painted ground is drawn after all of them). The pacer
+  is on 'under' and shows only over the race leg's water (pacerDraw.ts pacerWaters/pacerShown: clipped to each river's x0..x1), its
+  waterline on THAT river's surface: the toy's leg has rivers 1427-1507 apart (seed 3), so the lane alone would sink it up to 80 px; its
+  ~100 px over its waterline against banks 42-120 px over the lane would show over the grass without the clip. Planted
+  (src/game/pacerBehindBanks.test.ts, 4 tests): RED with the boat on 'back' (drawn after the ground) and RED with the clip removed
+  ('241 px of it over the bank 0-560: floating over the land'; the high river sinks it); pieceHook.test has 'under' in the frame order.
+  Stills 2x, upright and sideways: stills-27d/1-slipping-behind-bank, 2-back-out-of-bank, 3-on-river (looked at: the bow goes under the
+  bank's lip and reeds with no hard cut; the hull sits on the water; logs pass in front).
+- **The lead's dock ruling, lay (A) (this head):** the race point is the boat's BOW (pacerDraw.ts pacerHull: the hull trails it,
+  PACER_SHORE 20 px); gen2/pacerLay.ts waits it with its bow at the far bank of the race leg's FIRST river that holds it whole (its
+  length from its art, pacerLength, + 20 px each end) and docks it at the far bank of the LAST such river, so the race is whole flown
+  crossings (a first try timed from mid-river charged him a share of a log wait he never pays: the ride-only bot won by 0.5 s).
+  pacerShoreFaults (general, by name): its hull at the wait and at the dock lies wholly over one river's water; planted RED in
+  pacerLay.test on today's old ends (the column's foot and the exit, both on land). Pacer's doc updated. DOCKED 80 -> 0 (the lead
+  accepted): the race is judged at the dock line; 80 px on a log was a free ~1 s (the ride-only bot won by 0.17 s on it); the lay
+  test's dock check now asserts no verdict 20 px short and one at the line.
+- **Found, not mine (the lead: a separate packet):** wherever the race leg runs UNDER the out leg, the out leg's painted earth is drawn
+  down over it (protoArt ground soil runs to the foot): seed 1 POST_CODE x ~14000-18600, Pokey walks in front of solid earth and the
+  river at 14173-14911 does not show. stills-27d/4-race-leg-under-out-leg-buried-x14950-*.jpg.
+
+## Gates (this head): tsc PASS; pacerBehindBanks 4/4, pieceHook 8/8, pacerLay 3/4 (the bot test RED: step 1's put-back, named above).
+Every other gate UNRUN (THE FULL SET is step 4).
+
+## What the 2-7 builder needs (adds to ENG-27c's list below)
+- The boat is seen only over water: its race leg needs TWO rivers that hold it whole (241 px + 20 each end), one near each end; a roll
+  without is refused by name. It waits beside the first one's far bank and the race is judged at the last one's far bank, not the exit.
+- Stacked legs: the race leg under the out leg is buried in the out leg's painted earth (separate packet) and an Easy put-back can lift
+  him to the out leg (step 1). Do not judge 2-7's Easy race before step 1 lands.
+
+## Lessons applied: D57/D87/D105 (notifications at each step; two rulings sat ~10 min once while I traced: own miss), D30/D109 (times
+from date, none in messages), D63 (the clip is named open, not skipped), D76/D102 (read lean; handed over at the lead's call),
+D86/D96 (every unrun gate named UNRUN), D94 (lock base 0eefc707e named). D101 and D107 are not written anywhere on this checkout.
+
 # ENG-27c REPORT (hand-over at the lead's context line, written 11:17 AM ET 11-21 by date). Base 0eefc707e; branch t-eng-27; code head ad23f8b0a
 ## EXACT NEXT STEP (ENG-27d, from t-eng-27 head; read only this section, D90)
 1. Setup: `npm install --legacy-peer-deps` (restore package-lock.json after). Probes and the stills script are kept here as files:

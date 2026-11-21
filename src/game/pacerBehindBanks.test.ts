@@ -12,7 +12,7 @@ import { towerCfg } from './gen2/toyTower.ts';
 import { HOME_CODE, POST_CODE, homeKit } from './gen2/toyHome.ts';
 import { PACER_PIECE, PacerPiece } from './pieces/pacerPiece.ts';
 import { drawPieces } from './pieces/index.ts';
-import { PACER_WATERLINE } from './pacerDraw.ts';
+import { PACER_WATERLINE, pacerHull, pacerLength } from './pacerDraw.ts';
 import { w2NextReady } from './w2NextArt.ts';
 import { pacerX, type Pacer } from './pacer.ts';
 import { PIECE_LAYERS, type PieceHost } from './stagePiece.types.ts';
@@ -92,14 +92,18 @@ test("pacer behind the banks 1: drawn BEFORE the bank's face, where a bank stand
   const edgeOf = (b: Platform) => (P.dir < 0 ? b.x + b.width : b.x);
   const bank = banksOver(P, st.platforms).filter((b) => piece.waters.some((w) => Math.abs(w.x0 - edgeOf(b)) < 1 || Math.abs(w.x1 - edgeOf(b)) < 1)).sort((a, b) => b.width - a.width)[0];
   assert.ok(bank, 'a bank stands over the lane on the race leg beside a river (the ruling\'s case)');
-  // (the boat at the bank's edge, half over the river beside it: the bank's face stands over its lane there)
+  // (the boat's hull half over the river beside the bank, half behind it: the bank's face stands over its lane there)
   const edge = edgeOf(bank);
-  put(piece, edge);
+  const len = pacerLength(P.art)!;
+  const at = edge + P.dir * (len / 2 + 20);
+  const hull = pacerHull(P, at, len);
+  assert.ok(hull.x0 < edge && hull.x1 > edge, 'the hull straddles the bank\'s edge');
+  put(piece, at);
   // (the engine's frame, layer by layer in its order, the painted ground (its earth: the bank's face) where engine.ts draws it)
   const { ctx, draws, mark } = recorder();
   for (const layer of PIECE_LAYERS) {
     if (layer === 'back') mark('ground');
-    drawPieces([piece], ctx, layer, hostAt(edge));
+    drawPieces([piece], ctx, layer, hostAt(at));
   }
   const boat = draws.findIndex((d) => !d.mark);
   const ground = draws.findIndex((d) => d.mark === 'ground');
@@ -145,9 +149,10 @@ for (const [name, code] of [['HOME_CODE', HOME_CODE], ['POST_CODE', POST_CODE]] 
           assert.ok(Math.abs(waterline - r.surfaceY) < 0.5, `seed ${seed} boat at ${x}: waterline ${Math.round(waterline)} on a river at ${r.surfaceY} (sunk or floating)`);
           onWater++;
         }
-        // (its middle over a river's water, wider than the boat: it shows there, whole)
-        const mid = rivers.find((w) => x - 125 > w.x0 && x + 125 < w.x1);
-        if (mid) assert.ok(draws.length === 1 && shown(draws[0]).x1 - shown(draws[0]).x0 > 230, `seed ${seed} boat at ${x}: whole over the river ${Math.round(mid.x0)}-${Math.round(mid.x1)}`);
+        // (its hull wholly over a river's water: it shows there, whole)
+        const h = pacerHull(P, x, pacerLength(P.art)!);
+        const mid = rivers.find((w) => h.x0 > w.x0 && h.x1 < w.x1);
+        if (mid) assert.ok(draws.length === 1 && Math.abs(shown(draws[0]).x1 - shown(draws[0]).x0 - (h.x1 - h.x0)) < 0.5, `seed ${seed} boat at ${x}: whole over the river ${Math.round(mid.x0)}-${Math.round(mid.x1)}`);
       }
       assert.ok(onWater > 20, `seed ${seed}: seen on the water along the leg (${onWater} draws)`);
     }
@@ -164,7 +169,8 @@ test('pacer behind the banks 3: the leg\'s rivers stand at different heights, an
   assert.ok(heights.length >= 3 && Math.max(...heights) - Math.min(...heights) >= 40, `the rivers stand apart: ${heights.join(', ')}`);
   const high = piece.waters.filter((w) => w.surfaceY <= P.lane - 40 && w.x1 - w.x0 > 300)[0];
   assert.ok(high, 'a river 40 px+ over the lane');
-  const x = (high.x0 + high.x1) / 2;
+  // (its hull's middle on the river's middle)
+  const x = (high.x0 + high.x1) / 2 + P.dir * (pacerLength(P.art)! / 2 + 20);
   put(piece, x);
   const { ctx, draws } = recorder();
   drawPieces([piece], ctx, 'under', hostAt(x));

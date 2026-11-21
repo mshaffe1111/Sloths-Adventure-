@@ -8,7 +8,8 @@ import '../headlessDom.ts';
 import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
 import { HOME_CODE, homeKit } from './toyHome.ts';
-import { layPacer } from './pacerLay.ts';
+import { layPacer, pacerShoreFaults } from './pacerLay.ts';
+import { PACER_SHORE, pacerLength } from '../pacerDraw.ts';
 import { W2_RACE, W2_RIVERS } from './worlds/w2.ts';
 import { middleAt, pacerFaults, pacerOff, pacerReplace, pacerX } from '../pacer.ts';
 import { PacerPiece } from '../pieces/pacerPiece.ts';
@@ -25,10 +26,22 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
       const P = st.pacer!;
       assert.ok(P, `${at}: a pacer`);
       const home = st.gen2.tower!.legs!.at(-1)!;
-      // (it sets off at the home leg's start, the column's foot, and docks at the exit; it runs left, the way home)
+      // (it runs left, the way home: it waits in the home leg's first river that holds it whole and docks in its last before the exit, each
+      //  seen over its river's water (the lead's ruling 11-21, ENG-27d); planted RED: today's lay before it, the column's foot and the exit,
+      //  both on land)
       assert.equal(P.dir, -1, at);
-      assert.equal(P.x0, home.x1, at);
-      assert.equal(P.x1, st.exitTotemX, at);
+      const len = pacerLength(P.art)!;
+      const leg = (st.rivers ?? []).filter((r) => r.x0 >= home.x0 - 1 && r.x1 <= home.x1 + 1 && r.surfaceY >= home.y0 - 60).sort((a, b) => b.x0 - a.x0);
+      const holds = leg.filter((r) => r.x1 - r.x0 >= len + 2 * PACER_SHORE);
+      assert.ok(holds.length >= 2, `${at}: rivers to wait and dock in`);
+      assert.equal(P.x0, holds[0].x0, `${at}: its bow waits at the first river's far bank`);
+      assert.equal(P.x1, holds.at(-1)!.x0, `${at}: its bow docks at the last river's far bank`);
+      assert.ok(P.x0 < home.x1 && P.x1 > st.exitTotemX!, `${at}: inside the leg, short of the exit`);
+      assert.deepEqual(pacerShoreFaults(P, len, leg), [], at);
+      assert.deepEqual(pacerShoreFaults({ x0: home.x1, x1: st.exitTotemX!, dir: P.dir }, len, leg).map((m) => m.replace(/ \(x \d+\)/, '')), [
+        `pacer: where it waits its ${Math.round(len)} px hull is not wholly over one river's water: the child must see it`,
+        `pacer: where it docks its ${Math.round(len)} px hull is not wholly over one river's water: the child must see it`,
+      ], `${at}: RED on the column's foot and the exit`);
       // (the rule: the careful middle's time + the setting's SHARE of it, never over the ride-only's less 2 s; the toy races on World 2's
       // own table, the share the same on any leg's length)
       const share = difficulty === 'easy' ? W2_RACE.margin.easy : W2_RACE.margin.normal;
@@ -106,9 +119,13 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   // (he reaches the dock before it: won, never a fail; a verdict stands through a later respawn)
   Object.assign(player, { x: P.x0 - 10, y: P.yMin + 60 });
   piece.step(1 / 30, host);
+  // (judged at the dock line itself, the far bank it docks at (ENG-27d): 20 px short of it on the water is not there yet)
   Object.assign(player, { x: P.x1 + 20 });
   piece.step(1 / 30, host);
-  assert.deepEqual(piece.verdict, { won: true, boat: P.seconds, him: 0 });
+  assert.equal(piece.verdict as unknown, null, 'short of the dock line: no verdict yet');
+  Object.assign(player, { x: P.x1 });
+  piece.step(1 / 30, host);
+  assert.deepEqual(piece.verdict, { won: true, boat: P.seconds, him: 0.1 });
   piece.respawn(host);
   assert.equal(piece.verdict!.won, true);
 });

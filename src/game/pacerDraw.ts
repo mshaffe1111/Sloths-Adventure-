@@ -35,12 +35,31 @@ export function pacerWaters(p: Pacer, rivers: ReadonlyArray<PacerWater> | undefi
     .sort((a, b) => a.x0 - b.x0);
 }
 
-/** its box at `x` (world px): the frame's size at the sheet's scale, its waterline on `surface` (the lane unless a river's is given) */
+/** px of open water its hull keeps behind its bow's race point, and from each bank where it waits and docks (a bank's painted lip
+ *  overhangs the water; gen2/pacerLay.ts) */
+export const PACER_SHORE = 20;
+
+/** its hull's x span when its race point (pacerX: its bow, less PACER_SHORE) is at `x`: the hull trails the bow, over the water it has come
+ *  along (gen2/pacerLay.ts puts the bow at a river's far bank where it waits and docks, so the hull lies wholly over that river) */
+export function pacerHull(p: Pick<Pacer, 'dir'>, x: number, len: number): { x0: number; x1: number } {
+  const bow = x - p.dir * PACER_SHORE, stern = bow - p.dir * len;
+  return { x0: Math.min(bow, stern), x1: Math.max(bow, stern) };
+}
+
+/** how long it is (world px): its longest frame at the sheet's scale; undefined when no frame of its art is known (gen2/pacerLay.ts lays it
+ *  where a river holds it whole) */
+export function pacerLength(art: readonly string[]): number | undefined {
+  const w = Math.max(0, ...art.map((id) => (w2NextFrame(id)?.w ?? 0) / W2_NEXT_SCALE));
+  return w > 0 ? w : undefined;
+}
+
+/** its box with its race point at `x` (world px; pacerHull: the hull trails the bow): the frame's size at the sheet's scale, its waterline on
+ *  `surface` (the lane unless a river's is given) */
 export function pacerBox(p: Pacer, x: number, clock: number, surface = p.lane): { x: number; y: number; w: number; h: number } | undefined {
   const f = w2NextFrame(pacerFrame(p, clock));
   if (!f) return undefined;
   const w = f.w / W2_NEXT_SCALE, h = f.h / W2_NEXT_SCALE;
-  return { x: x - w / 2, y: surface - h * PACER_WATERLINE, w, h };
+  return { x: pacerHull(p, x, w).x0, y: surface - h * PACER_WATERLINE, w, h };
 }
 
 /** what of it shows at `x`: one box per river it is over, clipped to that river's water (none over a bank); a pacer with no water on its
