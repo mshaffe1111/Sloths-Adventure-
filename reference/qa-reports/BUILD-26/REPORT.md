@@ -62,9 +62,9 @@ alone is never counted toward 'fell back down from here 3 times'.
   'fell back down from here 3 times' at x 1132-1146 (the same leg's foot, y ~3740) or 295/842; kid E 12 at 926; kid E 30 and adult E 26
   in the dips at x 1151-1208. Lost rows that are not a tier drop are still rows that moved: traced next, before the lead is asked to land.
 
-# ENG-26o (on t-build-26 from 4b6ce810f): 1-4 causes C, A and B all PROVEN **BOT**, none LAY. C: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
+# ENG-26o (on t-build-26 from 4b6ce810f): 1-4 causes C, A, B and a third spot all PROVEN **BOT**, none LAY (three bot lines for BUILD-26f). C: the bot's tower route (tools/inspect/towerRoute.ts line 86, the out-and-back squeeze) misses by 5 px; one line widened clears all six of C's rows. No src change, no fix committed (BUILD-26f owns the bot). Started 6:40 PM ET 11-21 (by `date`)
 Commits: this REPORT and eng26o/ (trace-c-kid-easy-10.txt: the route's points around s17:top and the bot frame by frame; shape.mts: every
-climbable vine near a spot and the bough at each vine's top; towerRoute-oneline.diff: the line tried). Trees (D115): frozen detached
+climbable vine near a spot and the bough at each vine's top; experiments.txt: the three diagnostic lines, each gated, and the lip trace; trace-a-b.txt, plats.mts). Trees (D115): frozen detached
 worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with stderr prints (never committed). Nothing on 0bc969bce.
 
 ## EXACT NEXT STEP (BUILD-26f, the bot member; base t-build-26 after its revert of 0bc969bce)
@@ -101,11 +101,17 @@ worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with std
    one a KID/ADULT thumb can make. The diagnostic bypasses their calibrated release, so the real fix must keep 1-1's calibration
    (tierBots, R-165.59; any 1-1 change re-runs it), then the planted toy and x40 on 1-4 and 2-6. Lay: none needed. The floor running under
    the row is the miss's safety net, and a hop of 80 px gets him back up.
-   **A third spot, middle Easy 10 at x 1102 (also on the head):** a 40 px step UP from s14:b (520-960 @5045) to s14:c (960-1208 @5005,
-   the turn vine 41 x 1190 on it). He walks right under s14:c's lip off s14:b's end and drops 320 px to 5365, 8 times. Same family as A
-   and B in look, but a DIFFERENT branch: the middle (a tier bot) intends {right} (firsttimer.ts:2862, then 2640) up to s14:b's lip and
-   presses only in the air at x 1050 (2505). My guess, that 2734's strict `rise.y < p.y - 40` drops a step of exactly 40 px, is WRONG:
-   `<=` on the copy changed nothing (still rescued at 1102). **Unproven: the next trace is 2640's edge read at s14:b's lip (x 900-960).**
+   **The third spot, middle Easy 10 at x 1102 (on the head too): PROVEN BOT** (the lead ruled it BOT, layout stays). A 40 px step UP
+   from s14:b (520-960 @5045) to s14:c (960-1208 @5005, the turn vine 41 x 1190 on it). The middle walks right (2862, the plain walk),
+   and at x 931 it draws a LATE press for s14:b's lip (**firsttimer.ts:2836**, `this.lateArmed`: "a late press is a walk-off"); the
+   check just above it (**2820**) turns a late draw into a run only when a FACE is ahead, and s14:c is a thin bough with no face, so he
+   walks off the lip under s14:c, the press comes in the air at x 1050, 125 px down (2505), and he drops 320 px to 5365; rescued.
+   (My first guess, 2734's strict `rise.y < p.y - 40`, was WRONG: the tower route draws s14 as one slant from 517 to 1190, so the rise
+   240 px ahead is under 40 px; `<=` changed nothing.) Diagnostic: at 2820 a late draw also becomes 'run' when a bough starts within
+   80 px past him 20-70 px above (EXP_C): with C's line (EXP_R) the middle on Easy 10 then finishes with NO rescue (127.5 s); C's line
+   alone leaves 1102. **For BUILD-26f:** at 2820, the way on rising onto a ledge just past the lip is no walk-off, as a face is not.
+   **Each diagnostic was re-run ALONE** (eng26o/experiments.txt): EXP_A alone gives the same five A/B passes; EXP_R alone gives C's
+   passes (kid Easy 10 clean, middle Easy 10 left at 1102); EXP_R + EXP_C clears middle Easy 10.
 
 ## How C was proven (packet step 1)
 - **The placement probe again: still not a proof, and not used.** RealPlay.stand(x, y) takes his FEET (y = the bough's top; the bots'
@@ -128,7 +134,8 @@ worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with std
 - C is BOT: the exact line is above for BUILD-26f; no src change from me, so no src suite was run (packet step 3: "if src changed").
 - The lay stand-off (packet step 2): the lead ruled NO (no overlap in height; reads as one way up). Nothing of the lay changes.
 - A and B are BOT too (firsttimer.ts:2734 with the KID/ADULT release at 3764): one bot fix for BUILD-26f, with care for 1-1's
-  calibration. Then 1-4 relists ONCE after C's and A/B's fixes land (the third spot, middle Easy 10, still open).
+  calibration; and the third spot (firsttimer.ts:2820/2836, a late walk-off at a lip whose way on rises onto a bough). Then 1-4
+  relists ONCE after all three land.
 
 ## Lessons applied
 D111 (the box by `date`), D113 (the install in the background; the trace runs were seconds, not heavy runs: no heavy run used), D115

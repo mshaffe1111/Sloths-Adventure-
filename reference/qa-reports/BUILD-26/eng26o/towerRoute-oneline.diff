@@ -1,7 +1,0 @@
-diff --git a/tools/inspect/towerRoute.ts b/tools/inspect/towerRoute.ts
-index a199c068b..e2f1b2a69 100644
---- a/tools/inspect/towerRoute.ts
-+++ b/tools/inspect/towerRoute.ts
-@@ -86 +86 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
--    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)) c.splice(i, 1);
-+    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) - 30 <= d.x && d.x <= Math.max(a.x, b.x) + 30) c.splice(i, 1);
