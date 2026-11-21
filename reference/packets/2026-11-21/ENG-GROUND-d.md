@@ -5,7 +5,7 @@ Long runs in the BACKGROUND on a frozen worktree; images downscaled, once each.
 READ LEAN (D102): this packet; `git show origin/t-eng-ground:reference/qa-reports/ENG-GROUND/REPORT.md` top section ONLY (ENG-GROUND-c's
 diagnosis and EXACT NEXT STEP 1-5); LAWS headlines; LESSONS D57/D87, D96, D102, D105, D107, D109. Code by grep and line ranges.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-ground at ba8246e55 (code 302c28f7e). Push there.
+BASE: t-eng-ground at 72ea2daab (code 302c28f7e; ENG-GROUND-c's final). Push there.
 THE FAULT (the lead saw it on painted-scratch/right-end-x18760-sideways.jpg; ENG-GROUND-c diagnosed it): the only stack zone is the race leg's
 box, so the ceiling stops at 18832; the DESCENT's stairs and their pools (R18955-19015 surface 1087, R19221-19288 surface 1211) stand over the
 floor P18666-20006 y1450 outside every zone: each pool runs its water, bed and soil to the view's foot (a pond column), and an earth column
