@@ -107,6 +107,9 @@ test("piece hook: render() draws every layer once, in the frame's order: 'back' 
   const platforms = at('else renderWorldObjects(');
   const under = at('this.drawRivers(ctx, world, false)');
   assert.ok(under < layer.back && layer.back < platforms, "'back' is over the water's body, BEHIND the platforms (a wheel turning behind its jetty and street)");
+  // ('under' (ENG-27d, the lead's ruling 11-21): over the water's body, BEHIND the ground's earth and every platform, either ground: drawn
+  //  once, before the drawn platforms, the water's sheet and the painted ground; pacerBehindBanks.test.ts proves the boat behind the banks)
+  assert.ok(under < layer.under && layer.under < at('if (!paintedGround) drawBack();') && layer.under < body.indexOf('this.drawRivers(ctx, world, true)') && layer.under < body.indexOf('drawProtoScene(ctx, this.platforms'), "'under' is over the water's body, before 'back' is drawn, the water's sheet and the painted ground");
   // (painted ground: the same one 'back' draw goes to protoArt.ts drawProtoScene, which draws it over its soil (a bank above runs its soil
   //  down through a wheel's sweep: ENG-26b's fixture stills) and before its trunks and ledges; drawn ground: before the platforms, once)
   assert.ok(body.includes("const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };"), 'the one back draw');

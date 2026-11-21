@@ -7519,6 +7519,9 @@ export class GameEngine {
     //  bank above runs down through the wheel's sweep); drawn ground: here, before the platforms. Once a frame either way)
     const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };
     const paintedGround = this.paintKit && protoArtReady();
+    // (layer 'under': over the river's body, BEHIND the ground's earth and every platform, either ground: here, before the drawn
+    //  platforms, the water's sheet and the painted ground (drawProtoScene, below). 2-7's mail boat passes behind the banks, ENG-27d)
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'under', this.pieceHost);
     if (!paintedGround) drawBack();
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
