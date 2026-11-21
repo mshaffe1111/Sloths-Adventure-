@@ -14,9 +14,13 @@ and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base
    a. **Trace the 9 lost runs** (child N 3, 5, 7, 8, 18, 24, 28; child E 11; expert N 12), two runs per cause, one line each.
       `npx tsx tools/inspect/b26/trace.ts child normal 3,5` and `b26/frames.ts` on a frozen worktree of 4ed9af678 (or later).
       Fix each where its cause is; a planted test for each.
-   b. **1-4 diff**: castBots 1-4 x40 both settings was running at hand-over, first on frozen 4ed9af678, then on frozen fd3ce98b1
-      (scratchpad rows c14-fix2.jsonl / c14-base.jsonl; lost with the container, so RE-RUN them). 1-4's trace fails, so its bots
-      already took the tower route: expect it to be identical. Any moved row: explain it.
+   b. **1-4 diff: MEASURED at hand-over, and 1-4 MOVES** (b26c/rows/c14-base.jsonl vs c14-fix2.jsonl, 360 rows, frozen fd3ce98b1 vs
+      4ed9af678). My expectation that it would be identical was WRONG: 1-4's trace does not fail on most rolls either, so its bots also
+      followed the trace until now. 110 rows moved. Gained 5: child E 2, 12, 30; kid N 3; middle E 37. Lost 6: adult N 23; child E 17,
+      35, 37; child N 20; middle E 35. 64 passes changed time only, on 37 of 40 seeds (-41.2 to +32.8 s, mean -1.0). Pass counts
+      base -> trial: kid 18 -> 19 N, 32 E; adult 39 -> 38 N, 36 E; child 35 -> 34 N, 33 E; middle 37, 37; expert 40/40 (MIN 125.8 on
+      both). Rule 28: trace the 6 lost runs (two runs per cause), and confirm the time moves follow from the route change. 1-4 is a
+      shipped tower, so its seed list may need `seedlist.ts 1-4 --check` re-run on the fix and the lead told before landing (rule 22).
    c. **2-1..2-5 x40**: no tower there, so towerCorners is null and nothing should move. Prove it (castBots base vs head per stage),
       then tierBots 1-1 (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9).
    d. DONE at ca9ba7d38: the choice is `takesTowerRoute` (firsttimer.ts), its planted test in castBots.test.ts: GREEN 3/3 (the
