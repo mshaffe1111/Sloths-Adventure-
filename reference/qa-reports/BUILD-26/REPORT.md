@@ -1,37 +1,36 @@
 # ENG-26h (on t-build-26 from 95cafaabc): the walk-off judge's price. HANDED OVER by D111 (40 min), written 3:52 PM ET 11-21
-Commits: 93246fa93 (buildcheck takes BUILDCHECK_STAGE), 91e6c584e (three EXACT speed-ups, proof NOT yet run), this REPORT.
+Commits: 93246fa93 (buildcheck takes BUILDCHECK_STAGE), 91e6c584e (three EXACT speed-ups, proof NOT run) REVERTED off the head by
+the lead's ruling (cherry-pick it in step 2), this REPORT. The branch's src is 95cafaabc's, proven.
 Saved for the next member: reference/qa-reports/BUILD-26/eng26h/ (both locks gzipped, the 1-400 sweep, the scratch tools in tools/).
 
-## EXACT NEXT STEP (the next engine member, in this order; long runs in the background on frozen worktrees, 4 cores)
-1. **Prove 91e6c584e exact** (fly's piece box, roofedDrop's run once a piece a walk, physics reach tables indexed): on a frozen
-   worktree of 91e6c584e, `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-opt.json` (about 15-25 min), then compare it with
-   `gunzip -c reference/qa-reports/BUILD-26/eng26h/lock-head-95cafaabc.json.gz`: EVERY build's EVERY part hash identical (3264 builds).
-   Any difference: the speed-up is not exact; revert the piece that moved it. Then the tower/levelCheck/physics tests
-   (`npx tsx --test src/game/gen2/tower.test.ts src/game/*.test.ts` at least; the full suite before any non-safe-keeping push).
-2. **Relist 1-4 under the judge** (rule 19/20; the refusal is gen2.errors, the generator's own, so no listRules change). Seeds 1-400 are
-   swept: 49 kept (eng26h/sweep-1-400.json). Of the old list (1-100, every seed) only 14 survive: 5,7,8,18,19,22,23,28,36,46,54,57,69,83.
-   Sweep on to about 850 (12% yield): `npx tsx tools/engine/seedlist.ts 1-4 --count 100000 --from 401 --to 1001 --worker i/3 --part
-   p<i>.json` (3 workers; mine ran ~500 s per 100 seeds per worker under load and dies with my container), on 91e6c584e once step 1
-   passes (about 1.8x faster), else on 95cafaabc. Candidates (methods/seed-list.md step 3, "order is identity"): the 14 survivors in
-   their old order, then the new ones lowest first; `--merge cand.json --in-order` to 100 (SEED_LIST_MIN; provenIndex n 100). Then
-   `seedlist.ts 1-4 --check` (TIME it: D99, CI's 45-minute seedlists job; the base's check on the old list too, same machine), and
-   every test that pins a 1-4 roll or seed (D29; grep the suite for '1-4').
-3. **Load speed (the deciding step), on a QUIET machine (nothing else running)**: the phone REPLAYS a listed seed's plan (stageGenerator
-   playFinish(buildPlayStage)): `npx tsx reference/qa-reports/BUILD-26/eng26h/tools/loadtime.mts <worktree> 1-4 3` and `... 2-6 3`
-   (every listed seed, both settings, best of 3, p50/p95/max, and any seed that FELL to the search), on base 4ea253b8c and on the
-   relisted head. Then buildcheck ALONE: `BUILDCHECK_STAGE=1-4 node tools/perf/buildcheck.mjs` and 2-6, base and head (budget p95 150 ms
-   at CPU x4; measure the BASE first: 1-4 may be over it already). If the head's replay is meaningfully slower: profile it
-   (eng26h/tools/hot.sh bundles a build and ranks lines; tsx's own output is one line, so profile a bundle) and cut it before anything
-   ships. Also time the lock (486 s base vs 1431 s head here, both run side by side).
-4. **Stills** (eng26h/tools/pin.mjs <root> <out> 1-4 1 normal <port> name:x:y,...; dsf 2, sideways then upright; prints the built seed):
-   BEFORE (4ea253b8c, ?layout=1 = listed seed 2): first storey `storey1:1006:10984` (piece 856-1156 @10984), the old walk-off
-   `walkoff:1070:8120` (piece 646-1086 @8120: a run off its right end falls to y 8761, 641 px; off its left, x 400, 641 px) and
-   `walkoff2:220:4208` (194-714 @4208: left run to x 20 y 4909, 701 px). AFTER seed 7921: shoot on a worktree of 95cafaabc (old list:
-   seed 2 refused, so the game falls to the search: 2 + 7919); its spots from its own platforms (eng26h/tools/ends.mts lists a build's
-   lowest pieces and judges named pieces). After the relist, layout 1 is the new list's seeds[1]: say which. Look at all of them as Matt.
-5. castBots 1-4 seeds 1-40 both settings, base vs relisted head in one chain (no tier's pass count may drop); tierBots 1-1 9/9; qaW123
-   (19/19 at 95cafaabc, ENG-26g) re-run on the final head; tsc, generality, the CI tool line (methods/gates.md "THE FULL SET");
-   engine-core.md's tower lines (ENG-26g's list: walkOff, openEnds, towerCatches, clearFoot) plus this REPORT's cost findings.
+## EXACT NEXT STEP (ENG-26i; the lead's ruling by D40: the 401-1000 sweep and the relist STOPPED, never relist against a judge that throws
+## 88% of rolls away and then again after the cure). Long runs in the background on frozen worktrees (4 cores). In this order:
+1. **towerCatches lays a catch where a refused RUNNING walk-off lands**, so rolls pass instead of being thrown away: general (every tower,
+   rule 22), planted first (a toy tower whose run-off end drops past TOWER.fall with a fair catch in reach: RED on 95cafaabc, GREEN after).
+   The refused ends to start from, 1-4 seed 2 Normal on 95cafaabc (eng26h/tools/why.mts prints a build's errors; ends.mts judges named
+   pieces with the head's walkOff): 646-1086 @8120 (runs off both ends land y 8761, 641 px: left at x 400, right at x 1260), 194-714
+   @4208 (left run to x 20 y 4909, 701 px; right to x 979 y 4909), 670-1030 @3342 (right run to x 1260 y 3983, 641 px), 196-716 @2300
+   (left run to x 20 y 3021, 721 px). Read why towerCatches' run branch (tower.ts `runs`/`takes`/`exAt`, the bridge, run-on and own-bough
+   rules) lays none there: the arc comes down at the tower's side (x 20 / x 1260) or past the lower storey's wood. **Measure 1-4's yield
+   before and after** on the same seeds: before, seeds 1-400 kept 49 (12%; eng26h/sweep-1-400.json, `seedlist.ts 1-4 --count 100000
+   --from 1 --to 401 --worker i/4 --part p<i>.json`, ~500 s a worker under load); and rerolls per search build (repairs.mts prints
+   gen2.rerolls: seed 5 was 0 on base, 7 on the head). 2-6 rides the same judge: its list passed 100/100 on the head; re-check it after.
+2. **The three exact speed-ups**: `git cherry-pick 91e6c584e` (fly's piece box; roofedDrop's run once a piece a walk; physics reach
+   tables indexed) onto step 1's head; prove them: lockall --layouts 16 --out on a frozen copy WITH them vs one WITHOUT them (step 1's
+   head), every part hash of all 3264 builds identical. (Against 95cafaabc's lock only if step 1 is not in yet:
+   eng26h/lock-head-95cafaabc.json.gz.) Any difference: drop the piece that made it.
+3. **Then relist 1-4 ONCE** (methods/seed-list.md; the survivors of the old list in their old order first, then new seeds lowest
+   first, --merge --in-order, n 100), every test that pins a 1-4 roll or seed (D29), then on a QUIET machine: the phone's load
+   (eng26h/tools/loadtime.mts <worktree> 1-4 3 and 2-6: every listed seed's replay as stageGenerator builds it, both settings, any seed
+   that fell to the search), base 4ea253b8c vs head; buildcheck alone (BUILDCHECK_STAGE=1-4 / 2-6 node tools/perf/buildcheck.mjs, base
+   first: 1-4 may be over 150 ms already); CI's seedlist 1-4 job timed (D99, the 45-minute limit: `seedlist.ts 1-4 --check` base vs
+   head on one machine) and the lock's time (486 s base vs 1431 s head here, side by side).
+4. **Stills** of 1-4 layout 1 before and after (eng26h/tools/pin.mjs <root> <out> 1-4 1 normal <port> name:x:y,...; dsf 2, sideways and
+   upright; prints the seed it built): before on 4ea253b8c (listed seed 2): `storey1:1006:10984,walkoff:1070:8120,walkoff2:220:4208`;
+   after on the relisted head (layout 1 = the new list's seeds[1]: say which), its spots from its own platforms. Then castBots 1-4 seeds
+   1-40 both settings base vs head in one chain (no tier's pass count may drop), tierBots 1-1 9/9, qaW123 (19/19 at 95cafaabc), the
+   full suite, tsc, generality, the CI tool line (methods/gates.md "THE FULL SET"), engine-core.md's tower lines (ENG-26g's list plus
+   this REPORT's cost findings). Then BUILD-26c runs 2-6's bots.
 
 ## Findings (numbers)
 | item | result | evidence |
@@ -41,7 +40,7 @@ Saved for the next member: reference/qa-reports/BUILD-26/eng26h/ (both locks gzi
 | 1-4's list | seed 2 refused on the head: 4 running walk-offs drop 641-721 px (limit 450). Sweep 1-400 on 95cafaabc: **49 kept (12%)**; old list 1-100: **14 survive, 86 refused** | eng26h/sweep-1-400.json |
 | why 1-4 is slow | NOT mainly the flights. The judge refuses most ROLLS: seed 5's search build has rerolls 0 (base) vs **7** (head); each refused roll is a full lay + Normal and Easy checks: the stage check runs 4x a build on base, **32-56x** on head. Warm head search build ~10x base (seed 1 2678 vs 160 ms; seed 5 1535 vs 96 ms; under load). Pieces 97-105 -> 127-142 (the catches). This is paid by every SEARCH: relists, the lock, CI's seedlist job (it re-runs each listed seed's full search), the no-list fallback. The phone replays one plan: not measured yet (step 3) | eng26h/tools/repairs.mts, hot.sh |
 | profile of a head build (before 91e6c584e) | physics reachTable's linear scan ~27%, levelCheck roofedDrop ~20% (P^3 in a tower: every pair, each a pass over every piece), tower.ts fly ~13% (every piece every frame) | hot.sh |
-| 91e6c584e (exact by construction, PROOF PENDING) | fly reads only pieces in its path's box (x: the way out, a stop steps back <= 2 px a frame; y: its depths); roofedDrop's run and closed ends found once a piece a walk (cleared each walk); reach tables in Map<v0, Map<vx, list>>. Head build ~1.8x faster (seed 1 2678 -> 1469 ms, seed 5 1535 -> 932 ms, warm, under load); fly 1180 -> 114 samples. tsc PASS | lock proof: step 1 |
+| 91e6c584e (exact by construction, PROOF NOT RUN; reverted off the head) | fly reads only pieces in its path's box (x: the way out, a stop steps back <= 2 px a frame; y: its depths); roofedDrop's run and closed ends found once a piece a walk (cleared each walk); reach tables in Map<v0, Map<vx, list>>. Head build ~1.8x faster (seed 1 2678 -> 1469 ms, seed 5 1535 -> 932 ms, warm, under load); fly 1180 -> 114 samples. tsc PASS | lock proof: step 1 |
 | buildcheck | takes BUILDCHECK_STAGE=<listed stage> (its own kit, gen2/listed.ts); 1-1 unchanged by default. Not yet run for 1-4/2-6 | 93246fa93 |
 
 ## Pushback
