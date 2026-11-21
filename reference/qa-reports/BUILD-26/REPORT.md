@@ -68,6 +68,9 @@ climbable vine near a spot and the bough at each vine's top; experiments.txt: th
 worktrees at 4b6ce810f (head), 4ea253b8c (OLD), and a COPY of 4b6ce810f with stderr prints (never committed). Nothing on 0bc969bce.
 
 ## EXACT NEXT STEP (BUILD-26f, the bot member; base t-build-26 after its revert of 0bc969bce)
+0. **Line numbers:** every number below is on 4b6ce810f, where all of this was measured. On t-build-26 after BUILD-26f's cut 5
+   (a59a144c0) the same lines are: firsttimer.ts 2734 -> **2746**, 3764 -> **3776**, 2820 -> **2832**, 2836 -> **2848**; towerRoute.ts
+   86 unchanged. Cut 5 was NOT under these measurements: re-run C's six rows, A/B's five and the middle Easy 10 on the fix's own tree.
 1. **The fix is the bot's, in tools/inspect/towerRoute.ts line 86** (towerCorners, "no going on past the climb and back along one floor"):
    `Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)` drops the walk out to the leg's exit b only when the next turn's vine d lies
    BETWEEN where he came onto the floor (a) and b. On 1-4 Easy 10 he comes onto s17:top up the field vine f1 at a.x 781, the leg's exit is
