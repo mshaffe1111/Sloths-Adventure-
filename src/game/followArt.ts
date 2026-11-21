@@ -40,8 +40,13 @@ export function followerPose(f: Pick<Follower, 'kind' | 'x' | 'state' | 'paddle'
 export function poseWidth(kind: FollowKind, n: W2Piece): number {
   return (FOLLOWER_W * W2_FRAMES[n].w) / W2_FRAMES[HAPPY[kind]].w;
 }
-/** the heron's look: a pale wash on the ground where it is looking (its sight, WATCH.sight either side) and its gaze down to it */
-const LOOK = { rgb: '255, 244, 196', alpha: 0.55, gaze: 0.45 };
+/**
+ * the heron's look: a pale wash on the ground where it is looking (its sight, WATCH.sight either side) and its gaze down to it. Its
+ * strength (the lead's 8:45 PM ET 11-20 send-back, BUILD-23c): as plain at phone size as 1-7's eagle shadow, on a sunlit bank and in the
+ * reeds' shade, in the heron's own pale light: the gaze a bold dash over a dark warm edge (so it reads on the pink sky and the pale mud),
+ * the wash a firm core with a warm rim (so it reads on the sunlit mud, where a pale wash alone vanished). Was alpha 0.55, gaze 0.45, 3 px.
+ */
+const LOOK = { rgb: '255, 244, 196', alpha: 0.95, gaze: 0.95, gazeW: 5, edge: '92, 60, 20', edgeA: 0.5, rimA: 0.55 };
 /**
  * where the heron's eye is on its LOOKING painting (w2HeronLook: the gaze is drawn only while it looks), from its foot (units; the
  * painting faces left: its beak at the left). Measured on the packed frame (ART-W2A: eye at 107,33 of 336x586 px, 84.52 units wide).
@@ -165,21 +170,30 @@ function drawLook(ctx: CanvasRenderingContext2D, h: Heron, fp: FollowPlay): void
   ctx.save();
   const ex = h.foot.x + HERON_EYE.dx * (h.end < 0 ? -1 : 1);
   const ey = h.foot.b + HERON_EYE.dy;
-  ctx.strokeStyle = `rgba(${LOOK.rgb}, ${LOOK.gaze})`;
-  ctx.lineWidth = 3;
-  ctx.setLineDash([10, 9]);
+  // (the gaze: one path stroked twice, its dark warm edge under its pale dash)
+  ctx.setLineDash([12, 8]);
+  ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(ex, ey);
   ctx.lineTo(x, y - 14);
+  ctx.strokeStyle = `rgba(${LOOK.edge}, ${LOOK.edgeA})`;
+  ctx.lineWidth = LOOK.gazeW + 3;
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(${LOOK.rgb}, ${LOOK.gaze})`;
+  ctx.lineWidth = LOOK.gazeW;
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = `rgba(${LOOK.rgb}, ${LOOK.alpha / 2})`;
+  // (the wash: the wide one fainter, the core firmer with its warm rim)
+  ctx.fillStyle = `rgba(${LOOK.rgb}, ${LOOK.alpha * 0.4})`;
   ctx.beginPath();
   ctx.ellipse(x, y - 6, WATCH.sight, 24, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = `rgba(${LOOK.rgb}, ${LOOK.alpha / 2})`;
+  ctx.fillStyle = `rgba(${LOOK.rgb}, ${LOOK.alpha * 0.6})`;
   ctx.beginPath();
   ctx.ellipse(x, y - 6, WATCH.sight * 0.6, 15, 0, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = `rgba(${LOOK.edge}, ${LOOK.rimA})`;
+  ctx.lineWidth = 2;
+  ctx.stroke();
   ctx.restore();
 }
