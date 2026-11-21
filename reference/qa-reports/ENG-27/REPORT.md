@@ -37,8 +37,17 @@ ORDER: (0) the suite's result; (1) M2, turning hopJudged.test.ts GREEN; (2) rule
     the race table (copy reference/qa-reports/ENG-27/raceprobe-27e.ts.txt to tools/inspect/_race27k.ts; `npx tsx tools/inspect/_race27k.ts
     middle,expert,ride home` and `... post`: middle 24/24, expert 12/12, ride-only 0/24); hopJudged with OFF=floatSure RED and on GREEN
     once the race kind is ruled; pacerLay; pacerRespawn GREEN; then (2). ENG-27m ran no race table: the base suite held the one heavy slot.
-    **RULING ASKED (lead):** the race hop's kind: judged single, flown double (drawn). Force single at the judged hold (ENG-27l's variant A
-    lost five races, but that also asked the bank 50 px in), or judge the double the bot will fly (hopLandsOn has no second press)?
+    **THE LEAD'S RULING (received after the first push): judge the hop he FLIES.** Draw the kind and the hold FIRST, by the testers'
+    habit as now (dblShare, flickHold, d2: calibration, BOTS.md; do NOT force a single), then judge THAT hop, from where he IS when
+    pressed (no x+vx*lag projection), and press only if it lands; if not, he waits (a careful child hesitating at an edge) and it is
+    judged again next frame. No other press (a pending thumb, the stopped-dead read blockedT, tierEdge) may fire a hop the gate did
+    not judge. HOW (ENG-27m's read, not built): split startJump's draws (flickHold, the dblShare draw, d2, upOnly, in the SAME order)
+    into a drawHop() that returns { kind, hold, d2, upOnly } and is drawn ONCE per wait (kept until pressed, so the stream does not
+    change frame to frame), a flight that flies the double's second press at d2 (hopLandsOn flies a single only: add the second
+    impulse as the engine does, airStep/hopFrame), every hopLandsOn gate (edgeWait, race, upstream, boardHop) judging the drawn hop
+    at lag 0 from p.x, and startJump taking the drawn hop instead of drawing again. Candidate 2's stand (clockHeld, blockedT 0,
+    pending/lateArmed null) is the wait. hopJudged.test.ts then asserts kind and hold EQUAL the judged ones (today: flown hold >=
+    judged, kind single: change it to the drawn hop's), RED with OFF=floatSure, GREEN on. Then the race table, then (2).
 (2) Rule 28's castBots diff, 2-1..2-6 x40 both settings, base 1465822f7 vs the final head, frozen trees (ENG-27l (3) below); NOTE the
     candidate DOES reach 2-1..2-6 (the edge wait and upstream run on every W2 river), so rows WILL move: each traced, no tier's pass down.
 (3) B and (4) S: unchanged (ENG-27l (4), (5) below).
