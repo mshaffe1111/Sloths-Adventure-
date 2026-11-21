@@ -13,7 +13,9 @@ import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 import { CLIMB_CLEAR, ledgeOut, vaultSide } from '../vineTop.ts';
 import { LAND_FLIGHTS } from './landFlights.data.ts';
-import { CATCH_DROP, LAND_SIDE, MANTLE, WALL_HALF } from './landings.ts';
+import { CAP_SIDE, CATCH_DROP, LAND_SIDE, MANTLE, WALL_HALF } from './landings.ts';
+import type { FlightPath } from './landFlights.ts';
+import { isWaterFloor } from './wheelLay.ts';
 
 /** which way a graph is laid (MissionGraph.flow) */
 export type Flow = 'right' | 'up' | 'down' | 'legs';
@@ -298,36 +300,44 @@ export function runX(end: number, side: 1 | -1, d: number, width: number): numbe
 /**
  * Where a running walk-off off one end of `p` (`side` 1 its right end, -1 its left) first lands, flown frame by frame as the engine
  * catches him (landings.ts events): on the first top his feet come down across within CATCH_DROP with his middle within LAND_SIDE of its
- * ends (a 'fragile' piece never: it gives way). A solid piece WALL_H or taller met from the side stops his way at its face: hoisted onto
- * it when his feet are within MANTLE of its top; else he comes down along the face, and once his head is under its underside he is
- * free of it, his way still held, so he goes on. How far on is the engine's air drive, unflown here: so both are flown, straight down
- * the face and on again at a run, and the deeper landing is the one judged. Undefined: nothing catches him (out of the tower).
+ * ends (a 'fragile' piece never: it gives way). A river's water (wheelLay.ts waterFloors) takes him by his middle, strictly inside its
+ * ends (river.ts riverAt). A mushroom's cap is no landing: it bounces him on, along the flown bounce off a cap at a run (landFlights.ts
+ * 'bounce', holding the way), and where that comes down is judged. A solid piece WALL_H or taller met from the side stops his way at its
+ * face: hoisted onto it when his feet are within MANTLE of its top; else he comes down along the face, and once his head is under its
+ * underside he is free of it, his way still held, so he goes on. How far on is the engine's air drive, unflown here: so both are flown,
+ * straight down the face and on again at a run, and the deeper landing is the one judged. Undefined: nothing catches him (out of the
+ * tower, or more bounces than BOUNCES).
  */
 export function walkOff(platforms: readonly Platform[], p: Platform, side: 1 | -1, width: number): { x: number; y: number } | undefined {
-  const a = flyRun(platforms, p, side, width, false);
+  const end = side > 0 ? p.x + p.width : p.x;
+  const a = fly(platforms, p, RUN, end, p.y, side, width, false, 0);
   if (!a.stopped) return a.land;
-  const b = flyRun(platforms, p, side, width, true);
+  const b = fly(platforms, p, RUN, end, p.y, side, width, true, 0);
   return !a.land || !b.land ? undefined : a.land.y >= b.land.y ? a.land : b.land;
 }
 
-/** one running walk-off (walkOff): `resume`, whether he goes on at a run once he is under a wall that stopped him; `stopped`: a wall did */
-function flyRun(platforms: readonly Platform[], p: Platform, side: 1 | -1, width: number, resume: boolean): { land?: { x: number; y: number }; stopped: boolean } {
-  const end = side > 0 ? p.x + p.width : p.x;
+/** the flown bounce off a cap at a run, holding the way (the same on both settings, tower.test.ts) */
+const BOUNCE = LAND_FLIGHTS.normal.bounce;
+/** the most caps one walk-off is flown over before it is called no landing */
+const BOUNCES = 3;
+
+/** one flight of walkOff: `path` from (ox, oy), his middle and feet; `resume`, whether he goes on at a run once he is under a wall that
+ *  stopped him; `stopped`: a wall did, on this flight or a bounce after it */
+function fly(platforms: readonly Platform[], self: Platform | undefined, path: FlightPath, ox: number, oy: number, side: 1 | -1, width: number, resume: boolean, hops: number): { land?: { x: number; y: number }; stopped: boolean } {
   /** how far a wall has held him back along his way, px */
   let back = 0;
   let wall: Platform | undefined, stopped = false;
-  const xAt = (k: number) => Math.max(20, Math.min(width - 20, end + side * (RUN[k][0] - back)));
-  for (let k = 1; k < RUN.length; k++) {
-    const d0 = RUN[k - 1][1], d1 = RUN[k][1], x0 = xAt(k - 1);
+  const xAt = (k: number) => Math.max(20, Math.min(width - 20, ox + side * (path[k][0] - back)));
+  for (let k = 1; k < path.length; k++) {
+    const d0 = path[k - 1][1], d1 = path[k][1], x0 = xAt(k - 1);
     // (held at a wall's face: while it is beside him, or for good when he is flown straight down it)
-    if (wall && (!resume || d1 - BODY_H < wall.y - p.y + wall.height)) back += RUN[k][0] - RUN[k - 1][0];
+    if (wall && (!resume || d1 - BODY_H < wall.y - oy + wall.height)) back += path[k][0] - path[k - 1][0];
     else wall = undefined;
     const x = xAt(k);
-    if (d1 <= d0) continue;
     let land: Platform | undefined, stop: Platform | undefined;
     for (const q of platforms) {
-      if (q === p || q.type === 'fragile' || q.broken) continue;
-      const top = q.y - p.y;
+      if (q === self || q.type === 'fragile' || q.broken) continue;
+      const top = q.y - oy;
       if (!wall && q.type === 'solid' && q.height >= WALL_H && d1 > top && d1 - BODY_H < top + q.height) {
         const face = side > 0 ? q.x : q.x + q.width;
         if (side > 0 ? x0 + WALL_HALF.px <= face + 2 && x + WALL_HALF.px > face : x0 - WALL_HALF.px >= face - 2 && x - WALL_HALF.px < face) {
@@ -335,20 +345,27 @@ function flyRun(platforms: readonly Platform[], p: Platform, side: 1 | -1, width
           continue;
         }
       }
-      if (d0 <= top + CATCH_DROP.px && d1 >= top && x + LAND_SIDE.px > q.x && x - LAND_SIDE.px < q.x + q.width && (!land || q.y < land.y)) land = q;
+      if (d1 <= d0 || d0 > top + CATCH_DROP.px || d1 < top) continue;
+      const reach = isWaterFloor(q) ? 0 : q.type === 'bouncy' ? CAP_SIDE.px : LAND_SIDE.px;
+      if (x + reach > q.x && x - reach < q.x + q.width && (!land || q.y < land.y)) land = q;
+    }
+    if (land?.type === 'bouncy') {
+      if (hops >= BOUNCES) return { stopped };
+      const b = fly(platforms, undefined, BOUNCE, x, land.y, side, width, resume, hops + 1);
+      return { land: b.land, stopped: stopped || b.stopped };
     }
     if (land) return { land: { x, y: land.y }, stopped };
     if (stop) {
-      if (d1 - (stop.y - p.y) <= MANTLE.px) return { land: { x, y: stop.y }, stopped };
+      if (d1 - (stop.y - oy) <= MANTLE.px) return { land: { x, y: stop.y }, stopped };
       // (his middle held half his body off the face from this frame on)
       const fx = side > 0 ? stop.x - WALL_HALF.px : stop.x + stop.width + WALL_HALF.px;
-      back = RUN[k][0] - side * (fx - end);
+      back = path[k][0] - side * (fx - ox);
       wall = stop;
       stopped = true;
     }
   }
   // (past the flown depth: the first wood under where it ends)
-  const k = RUN.length - 1, y = catchUnder(platforms.filter((q) => q !== p && !q.broken), xAt(k), p.y + RUN[k][1], 100000);
+  const k = path.length - 1, y = catchUnder(platforms.filter((q) => q !== self && !q.broken), xAt(k), oy + path[k][1], 100000);
   return { land: y === undefined ? undefined : { x: xAt(k), y }, stopped };
 }
 

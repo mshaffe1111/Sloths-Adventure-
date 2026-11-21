@@ -15,6 +15,8 @@ import type { Platform, Vine } from '../types.ts';
 import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { landingsOf } from './landings.ts';
+import { isWaterFloor, waterFloors } from './wheelLay.ts';
+import type { RiverZone } from '../river.ts';
 import { LAND_FLIGHTS } from './landFlights.data.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
@@ -231,6 +233,18 @@ test('towerFalls: going up, a step off any end is caught by sound wood within a 
   const ledge = solid(300, 1100, 200, 5);
   assert.deepEqual(walkOff([floor, ledge, { ...solid(560, 1000, 60, 6), height: 400 }, solid(300, 1450, 280, 7)], ledge, 1, 1280), { x: 541, y: 1450 });
   assert.equal(walkOff([floor, ledge, { ...solid(560, 1106, 60, 6), height: 200 }], ledge, 1, 1280)?.y, 1106);
+  // (a river's water takes him by his middle, strictly inside its ends (river.ts riverAt): a run held at the wall, x 20, falls past
+  // water that starts at x 30 (2-6's wheel pond, ENG-26g), and lands in water that starts at x 10)
+  const nook = solid(114, 1100, 160, 5);
+  assert.equal(walkOff([floor, nook, ...waterFloors([{ x0: 30, x1: 830, surfaceY: 1290 } as RiverZone])], nook, -1, 1280)?.y, 1900);
+  assert.equal(walkOff([floor, nook, ...waterFloors([{ x0: 10, x1: 830, surfaceY: 1290 } as RiverZone])], nook, -1, 1280)?.y, 1290);
+  assert.ok(isWaterFloor(waterFloors([{ x0: 0, x1: 10, surfaceY: 0 } as RiverZone])[0]) && !isWaterFloor(ledge));
+  // (a mushroom's cap is no landing: it bounces him on along the flown bounce at a run, and where that comes down is judged)
+  const cap = { ...solid(560, 1200, 60, 6), height: 30, type: 'bouncy' } as Platform;
+  assert.equal(walkOff([floor, ledge, cap], ledge, 1, 1280)?.y, 1900, 'bounced on past everything: the floor');
+  const on = walkOff([floor, ledge, cap, solid(700, 1300, 300, 7)], ledge, 1, 1280);
+  assert.ok(on?.y === 1300 && on.x > 760, `the bounce comes down on the wood past the cap (${JSON.stringify(on)})`);
+  assert.equal(towerFalls('up', [floor, ledge, cap, solid(100, 1400, 440, 8)], 1900, 1280).filter((l) => l.startsWith('tower: a running walk-off off the piece at x 300-500')).length, 1, 'a cap under the run is named, not counted as wood');
   assert.equal(fallSeconds(0), 0);
   assert.ok(Math.abs(fallSeconds(4 * TOWER.fall) - 2 * fallSeconds(TOWER.fall)) < 1e-9 && fallSeconds(TOWER.fall) > 0.4 && fallSeconds(TOWER.fall) < 1.5, 'a fall is timed from rest');
 });
