@@ -14,7 +14,8 @@ Trees (D115, frozen detached worktrees, node_modules linked): base 2f188c552, fi
 2. **Trace the 7 lost 2-6 rows on fe3d3d6ca, two runs per cause** (b26/trace.ts with a stderr print at the rewind, as b26f's cut-3/4
    traces): adult N 11 + kid N 23 (fell back 3 times at x ~1140), adult N 37 (x 295/842), kid E 12, kid E 30 + adult E 26 (the dips).
    Fix the bot cause generally, toy first, then 2-6 x40 again against b26f/rows/r26-2f188c552.jsonl: no tier drop, lost rows named.
-3. **1-4 x40 against b26f/rows/r14-2f188c552.jsonl:** RUNNING on fe3d3d6ca when this was written (rows to b26f/rows/r14-fe3d3d6ca.jsonl, diff with b26e/diff.py). The moved rows to the lead BEFORE the fix lands (packet; the lead's ruling).
+3. **1-4 x40 against b26f/rows/r14-2f188c552.jsonl:** **DONE on fe3d3d6ca: NO row moved** (every tier identical to 2f188c552: kid N/E 19/32, adult 37/36, child 39/36,
+   middle 36/37, expert 39; b26f/rows/r14-fe3d3d6ca.jsonl). Sent to the lead with the 2-6 table. The moved rows to the lead BEFORE the fix lands (packet; the lead's ruling).
 4. The lead's three conditions to land: 2-6 no tier drop (cut 5 meets it), toy and plant hold (they do on fe3d3d6ca), 1-4's moved rows
    with the lead. Then push as ONE commit on t-build-26 (rebase; never force) and send the hash.
 5. Then rule 28 on the landed bot: castBots x40 both settings on 2-1..2-5 against 2f188c552 (2-3 ends at a sealed door on base too:
