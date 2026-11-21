@@ -37,9 +37,14 @@ and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base
        likely reason: FT_ADULT has no stand time (no standQ; the tier bots stand 0.2-0.8 of the time from the testers' numbers), so it
        boards and walks without a pause. To check: is the adult (not tester-calibrated) a quick player by Matt's rule, or a bot
        quicker than any tester? Bring it to the lead; do not change the stage for it.
-   (2) After the 9 lost runs (step 1a) are fixed: the expert MIN over 80 runs (seeds 1-80, or 1-40 twice per the lead) again. If it
-       is still under 105 s, bring the lead a plan for the smallest honest content (a longer street between two wheels, or one beat)
-       FIRST (rule 25).
+   **The lead's ruling on the fast adult (it REPLACES (2) and the 105 s margin):** a route with no standing is one a quick player
+   can really play, so the adult is a fair quick-player bound, and the tool's floor applies to it as on every shipped stage (no rule
+   change). The expert +5 s margin is retired.
+   (2) After the 9 lost runs (step 1a) are fixed: **relist 2-6 under `castBots --proven`** (a roll where ANY bot runs under 100 s is
+       refused; methods/seed-list.md, `tools/engine/seedlist.ts 2-6 --merge <proven.json>`) and report the YIELD (rolls kept of
+       rolls tried). At about 60% or more, no content is needed for release 3. Below that, bring the lead a plan for the smallest
+       honest content (a longer street between two wheels, or one beat) FIRST (rule 25).
+   (3) Then the 1-4 base-vs-trial row diff (rule 28; 1b above).
 4. **ENGINE-WORTHY (for the lead's roadmap)**: easyMode.ts:431 costsHere counts safe rivers (Easy lays 8 hearts on 2-6 where nothing
    costs one; Normal's stageGenerator.ts:2952 `risky` leaves rivers out); one shared reading of risk, a survey of every stage first.
    And the inspector's route (tools/inspect/route.ts) slants a tower turn's climb through the floors (`traced: extended` on 2-6):
