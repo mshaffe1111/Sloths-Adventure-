@@ -38,17 +38,22 @@ def load(p):
     return np.asarray(Image.open(p).convert('RGBA')).astype(np.float32)
 
 
-PF = fur(load('src/assets/hero/hero-standard.webp')[478:478 + 209, 674:674 + 127]).mean(0)
-res = {}
-for k, fr in FRAMES.items():
-    im = load(f'src/assets/hero/{SHEET[k]}.webp')
-    FU = {n: fur(im[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']]) for n, r in fr.items()}
-    fd = {n: round(float(np.linalg.norm(u.mean(0) - PF)), 2) for n, u in FU.items() if len(u) > 50}
-    pooled = np.concatenate(list(FU.values())).mean(0); w = max(fd, key=fd.get)
-    res[k] = {'sheet': f'src/assets/hero/{SHEET[k]}.webp', 'frames': len(fr), 'pooled': round(float(np.linalg.norm(pooled - PF)), 2),
-              'frame_max': fd[w], 'frame_max_at': w, 'fur_lab': pooled.round(2).tolist(), 'frame_de': fd}
-    print(f"{k:8s} {len(fr):3d} frames | fur L a b {pooled.round(1)} | pooled {res[k]['pooled']:5.2f} dE, worst frame {fd[w]:5.2f} ({w}) | "
-          f"over the clips' bar (frame 2.0 / pooled 1.0): {'YES' if fd[w] > 2.0 or res[k]['pooled'] > 1.0 else 'no'}")
-print('plain fur L a b', PF.round(2))
-if '--json' in sys.argv:
-    json.dump(res, open(sys.argv[sys.argv.index('--json') + 1], 'w'), indent=1)
+def main():
+    PF = fur(load('src/assets/hero/hero-standard.webp')[478:478 + 209, 674:674 + 127]).mean(0)
+    res = {}
+    for k, fr in FRAMES.items():
+        im = load(f'src/assets/hero/{SHEET[k]}.webp')
+        FU = {n: fur(im[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']]) for n, r in fr.items()}
+        fd = {n: round(float(np.linalg.norm(u.mean(0) - PF)), 2) for n, u in FU.items() if len(u) > 50}
+        pooled = np.concatenate(list(FU.values())).mean(0); w = max(fd, key=fd.get)
+        res[k] = {'sheet': f'src/assets/hero/{SHEET[k]}.webp', 'frames': len(fr), 'pooled': round(float(np.linalg.norm(pooled - PF)), 2),
+                  'frame_max': fd[w], 'frame_max_at': w, 'fur_lab': pooled.round(2).tolist(), 'frame_de': fd}
+        print(f"{k:8s} {len(fr):3d} frames | fur L a b {pooled.round(1)} | pooled {res[k]['pooled']:5.2f} dE, worst frame {fd[w]:5.2f} ({w}) | "
+              f"over the clips' bar (frame 2.0 / pooled 1.0): {'YES' if fd[w] > 2.0 or res[k]['pooled'] > 1.0 else 'no'}")
+    print('plain fur L a b', PF.round(2))
+    if '--json' in sys.argv:
+        json.dump(res, open(sys.argv[sys.argv.index('--json') + 1], 'w'), indent=1)
+
+
+if __name__ == '__main__':
+    main()
