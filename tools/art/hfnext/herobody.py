@@ -59,7 +59,7 @@ PROPMASKED = set(); GROUPS = {}
 def fam(k, n):   # ART-SHEETS-b: the move group a frame is graded and banded in (sheetgrade.py --group's): swim by move, rope/vine/climb2
     if k in ('rope', 'vine', 'climb2'):   # one group, atlas/story/studies by pose family; a clip is one group
         return 'all'
-    return re.sub(r'\d+$', '', n) if k == 'swim' else re.sub(r'(_?[a-z])?\d+$', '', n)
+    return re.sub(r'\d+$', '', n) if k == 'swim' else re.sub(r'_(?:[a-z]|\d+|rec|blink|up|down)$', '', n)   # ART-SHEETS-c: sheetgrade.py's pose family
 
 
 def bands(F):   # the BAND check (the lead, 11-21): FUR ONLY (L >= 72 out: the cream belly, face mask and bandages, whose share is pose),

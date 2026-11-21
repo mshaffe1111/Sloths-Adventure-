@@ -100,7 +100,12 @@ for name in NAMES:
     def fam(n):   # the move group of a frame (one group per sheet without --group)
         if not GROUP or name in ('rope', 'vine', 'climb2'):
             return 'all'
-        return re.sub(r'(_?[a-z])?\d+$', '', n) if name != 'swim' else re.sub(r'\d+$', '', n)
+        if name == 'swim':
+            return re.sub(r'\d+$', '', n)
+        if n.startswith('face_'):   # ART-SHEETS-c: the close-ups take the curve of the sheet's whole body (group 'face', below)
+            return 'face'
+        return re.sub(r'_(?:[a-z]|\d+|rec|blink|up|down)$', '', n)   # ART-SHEETS-c: the POSE FAMILY (run_a..j, climb_a..d, idle_a/blink,
+                                                                     # punch_2..5/rec, look_a/up/down, away_a..c, s1_05..), not one per name
     grp = [fam(n) for n in FRAMES[name]]; G = sorted(set(grp)); gi = np.array([G.index(g) for g in grp])
     crop = lambda s, r: s[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']]
     fr = [crop(sheet, r) for r in R]
@@ -110,7 +115,7 @@ for name in NAMES:
     QS = np.linspace(2, 98, 25); qd_p = np.percentile(PF[:, 0], QS)
     dL, da, db, qx, qd = [], [], [], [], []
     for g in range(len(G)):
-        Cg = np.concatenate([u for k, u in enumerate(FL) if gi[k] == g and not FACE[k]] or [u for k, u in enumerate(FL) if gi[k] == g])
+        Cg = np.concatenate([u for k, u in enumerate(FL) if (gi[k] == g or G[g] == 'face') and not FACE[k]] or [u for k, u in enumerate(FL) if gi[k] == g])
         cn, ca, cb = bin_means(Cg); w = np.minimum(pn, cn); ok = w >= 200
         ga, gb = pm[1] - Cg[:, 1].mean(), pm[2] - Cg[:, 2].mean()
         dag = np.where(ok, pa - ca, ga); dbg = np.where(ok, pb - cb, gb)
