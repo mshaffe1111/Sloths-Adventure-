@@ -1096,7 +1096,6 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
-    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
@@ -1221,6 +1220,9 @@ export class GameEngine {
       targetScaleX: 1,
       targetScaleY: 1,
     };
+    // (the little ones that follow him start behind him: so once he stands at the start (BUILD-23: called before the player was made, every
+    //  real stage carrying proto.follow threw in the constructor; ENG-23's toys started it again after, on a made engine)
+    this.startFollow();
 
     // Initialize Camera
     this.camera = {
