@@ -30,3 +30,4 @@ EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD):
  b. Lock: on 0eefc707e `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json` (a worktree), then here
     `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-base.json` (expect NO change: the fix is paint only; the toy is not in lockall).
  c. paintcheck x3 (`--part 0/3`, 1/3, 2/3), drawcheck, the full suite, the CI tool line; then REPORT gates and send the lead the hash.
+ d. Turnover note NOT rewritten yet: rewrite reference/handoffs/engine-core.md (§2 groundStack.ts + setGroundStacks; §3 trap: soil runs to the foot, stacked legs need lay zones; the painted-strip hook underFrames).
