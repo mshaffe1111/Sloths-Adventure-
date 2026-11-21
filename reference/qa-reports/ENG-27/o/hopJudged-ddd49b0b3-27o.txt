@@ -1,0 +1,90 @@
+TAP version 13
+# normal seed 5: 10 judged hops pressed (edgeWait, race); flown not as judged 0, came down elsewhere 0
+# normal seed 2: 20 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 0
+# easy seed 5: 17 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#55 judged t 105.90 x 12053 lag 0 hold 0.277 single | flown t 105.90 x 12053 hold 0.277 single | came down \#53
+# easy seed 2: 18 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#52 judged t 81.20 x 13569 lag 0 hold 0.366 single | flown t 81.20 x 13569 hold 0.366 single | came down \#47
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 841.787643
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 644.959246
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+not ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 609.338188
+  type: 'test'
+  location: '/home/user/f-ddd49b0b3/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#55 judged t 105.90 x 12053 lag 0 hold 0.277 single | flown t 105.90 x 12053 hold 0.277 single | came down #53'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#55 judged t 105.90 x 12053 lag 0 hold 0.277 single | flown t 105.90 x 12053 hold 0.277 single | came down #53'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-ddd49b0b3/tools/inspect/hopJudged.test.ts:47:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+not ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 530.226699
+  type: 'test'
+  location: '/home/user/f-ddd49b0b3/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#52 judged t 81.20 x 13569 lag 0 hold 0.366 single | flown t 81.20 x 13569 hold 0.366 single | came down #47'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#52 judged t 81.20 x 13569 lag 0 hold 0.366 single | flown t 81.20 x 13569 hold 0.366 single | came down #47'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-ddd49b0b3/tools/inspect/hopJudged.test.ts:47:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5223.080497
