@@ -48,6 +48,7 @@ three priorities from the plan, not from whatever arrived last.
 **Each supervisor digest:** act only on yellow and red; audit one green in three myself (gemba: open the real thing).
 **Once a day:** walk the newest build myself on a phone-size screen, upright and sideways, fresh/old/finished saves.
 **Each decision for Matt:** one at a time, multiple choice, with my recommendation and the cost.
+**Each plan for Matt (D100):** read the stage list first (WORLD-MAP rows + ROADMAP status) and name every stage left with its status and what blocks it; never from memory of the day's work.
 **End of day:** ARM THE MORNING START FIRST (D89: a send_later at 8:20 AM ET with the start list; name its id in STATE) before telling Matt any start time; scorecards into HELPERS.md; proven method updates merged; tomorrow's three priorities; the numbers below updated.
 **Each release:** debrief (right / wrong / stop / continue) with the trend numbers; every STOP becomes a law, gate or method edit.
 **Each week:** review the system itself: are the laws, roles, gates and methods working? One improvement to the system, not the game.
