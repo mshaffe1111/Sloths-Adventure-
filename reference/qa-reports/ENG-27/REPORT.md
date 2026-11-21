@@ -1,3 +1,54 @@
+# ENG-27g REPORT (handed over at the context line). Base 64d1b14f8; branch t-eng-27, head: this commit
+## EXACT NEXT STEP (ENG-27h, from t-eng-27 head; read only this section, D90)
+0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Worktrees are 2.7 GB each and the disk fills: make
+   them sparse (no reference/ except reference/qa-reports/R-165.59/), as ENG-27g's mkwt.sh did (below). Probes: copy each .txt here to
+   tools/inspect/_<name>.ts, never commit. ENG-27g's rule-28 runner and patch: r28-runner-27g.ts.txt and r28patch-27g.py.txt here.
+1. **Rule 28 for SKILLS.boardLog (c92cf743c)** on every log-river stage (the lead's GO): ENG-27g started the chain (base = both of
+   ENG-27g's skills off, head = both on, same frozen tree; 2-3 on origin/t-build-23 and 2-5 on origin/t-build-25 with both hunks
+   patched in, their base checked equal to BUILD-23e's / BUILD-25d's committed rows). If its rows are not committed here as
+   r28-<stage>-base.jsonl / -head.jsonl, re-run: per stage `python3 r28patch-27g.py <worktree>`, then in it
+   `R28_BASE=1 npx tsx tools/inspect/_r28.ts <stage> <seeds>` (base) and without R28_BASE (head), seeds 1-40 split in two processes;
+   then `python3 r28diff-27g.py <stage> base.jsonl head.jsonl [committed rows]` (2-3: BUILD-23e castbots23e-rows on t-build-23;
+   2-5: reference/qa-reports/BUILD-25/castrows-2-5-25d.jsonl). The bar (the lead): no pass may flip; every moved row explained (each
+   has a stand over water or a log under the lip on its base run: the script names any that has neither). Send the lead the table.
+2. The merge: origin/t-eng-ground at the hash the lead sends (ENG-GROUND-c has one more fix first). --no-ff. Two conflicts known
+   (trial merge on 3e805121d): reference/handoffs/engine-core.md, and src/game/gen2/worlds/w2.ts `lip()` in banks(): this branch has
+   `p.y >= y - 2 && p.y <= y + LIP_RISE` (ENG-27e: never over the fall's height), t-eng-ground `p.y <= y + LIP_RISE && p.y >= y - LIP_RISE`
+   (ENG-GROUND-b). Settle by running BOTH sides' tests: legsHome, pacerLay, pacerBehindBanks, postLay (this side) and groundStack (its).
+   After: tsc + pacerLay 19/19 + pacerBehindBanks + groundStack + legsHome + postLay; engine-core.md's groundStack line.
+3. The packet's steps 3-5 (UNDONE): the race table on the final head (home and post, seeds 1-6, both settings, middle / expert /
+   ride-only; any middle or expert loss traced); stills 2x both ways (the boat waiting, setting off, docked; the door and letter) and
+   THE CLIP of the race leg (D63; ENG-27e's tools, cliprec-27e); THE FULL SET (gates.md D96; lockall vs 0eefc707e: only the toy;
+   funcheck same-run vs main; git fetch --unshallow first).
+4. A second fault, NOT fixed (name it to the lead): after boarding, riding a log his way at full speed, he can still run off its front
+   (2-7 home Easy seed 2 with the boarding hop: x 11554 off log 57; 9974; 5567). Lives lost per home race with both skills: 2-10.
+
+## ENG-27g: what was done
+- **Step 1, rule 28 for the take-off read: ACCEPTED by the lead.** Baselines re-run: 2-3 (t-build-23 unpatched) = BUILD-23e 360/360,
+  2-5 (t-build-25 unpatched) = BUILD-25d 360/360 (castdiff-2-3-27g-base.txt, castdiff-2-5-27g-base.txt). Child Normal 30 traced
+  (trace-27g.txt 1): the whole fix doubled three of his jumps, all over water; the rescue at x 20968 came from shifted draws, so the
+  water-only candidate narrowed nothing. Both 2-7 misses were jumps from a STAND (post 5: 165 px before a 133 px pond; post 4: 107 px
+  back on a log); running singles carry 207 px from a press 70 px back (flownArcs single-hold from70). Narrowed (5ef30a5cc): the
+  run-up counts only from a stand (under 10 px/s), over water (wetBetween, FIX-21's read made one helper), and while a single can
+  carry it. Re-diff: 2-3 75/360 moved, 2-5 104/360, no flips, every tier's pass count held, every moved row a stand over water the
+  skill changes on its baseline run (75/75, 104/104; on 30 and 46 of them the baseline single splashed): castdiff-2-3-27g.txt,
+  castdiff-2-5-27g.txt, rows castrows-2-3-27g.jsonl / castrows-2-5-27g.jsonl. A stand-only first try (no water test) moved 96 of 2-3,
+  some at dry pits (castdiff-2-3-27g-stand.txt). tierBots 1-1 9/9 (tierBots-27g.txt).
+- **pacerLay went 17/18 on the narrowing** (home Easy seed 1, middle: 98.4 s vs 97.53): traced (trace-27g.txt 5) to a pre-existing
+  walk-off, the bot running off a bank lip onto a log drifting his way still mostly under it, then off its front; 2-4 of the 4-8
+  lives EVERY home race lost. The lead: GO, fix it where it lives.
+- **SKILLS.boardLog (c92cf743c):** a log drifting his way, a step down, less than half its length past the lip, is no floor ahead, so
+  he waits and hops on (the ride wait). Planted (pacerLay.test, home Easy seed 1: wins with it, RED without). With it on, both post
+  races win whether the take-off read is on or off (post 5 by 8.1 s with it, 1.0 s without), so the take-off plants run with the
+  boarding hop off (where their misses happen). pacerLay 19/19 (pacerLay-27g.txt). Home races, middle, seeds 1-3 both settings: all
+  six win with both skills.
+- NOT done: rule 28 for boardLog (running, step 1 above), the merge (no hash yet), the race table, stills, THE CLIP, THE FULL SET.
+
+## Lessons applied
+D57/D87 (inbox read at every step and push), D94 (both baselines re-run before any diff), D96 (gates named UNRUN), D102 (lean reads;
+handed over at the line), D105/D109 (no clock times in messages), LAW 3 (a prediction from a collapsed probe was wrong by 80 rows:
+checked against the real diff before claiming it), rule 28 (every moved row traced to a read the change makes; two runs per cause).
+
 # ENG-27f REPORT (handed over at the context line; written 2:17 PM ET 11-21 by date). Base 0d8d56a65; branch t-eng-27, head: this commit
 ## EXACT NEXT STEP (ENG-27g, from t-eng-27 head; read only this section, D90)
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Probes as .txt here (copy each to tools/inspect/_<name>.ts,
