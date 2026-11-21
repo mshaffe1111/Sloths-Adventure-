@@ -111,6 +111,12 @@ function line(g: Platform[], banks: readonly Platform[]): Ceiling {
   const c = [...raw];
   for (let i = 1; i < n; i++) c[i] = Math.min(c[i], c[i - 1] + SLOPE * STEP);
   for (let i = n - 2; i >= 0; i--) c[i] = Math.min(c[i], c[i + 1] + SLOPE * STEP);
+  // (no sag: the line never dips between two higher stretches. A static piece on a river's bed pulled it down over the water, and the
+  // upper bank's earth hung there as a column to just over the race leg's banks: ENG-GROUND's first stills, x 15100-15400)
+  const left: number[] = [], right: number[] = [];
+  for (let i = 0; i < n; i++) left[i] = Math.min(c[i], i ? left[i - 1] : Infinity);
+  for (let i = n - 1; i >= 0; i--) right[i] = Math.min(c[i], i < n - 1 ? right[i + 1] : Infinity);
+  for (let i = 0; i < n; i++) c[i] = Math.min(c[i], Math.max(left[i], right[i]));
   // the wobble, upward; and never into an upper bank's own collider (a lay that leaves him less air keeps its earth's body: its line is
   // its collider's foot there)
   const ys = c.map((y, i) => {
