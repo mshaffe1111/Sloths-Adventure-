@@ -50,10 +50,19 @@ for nm, c in CL.items():
 p = 'src/assets/hero/hero-climb2.webp'
 im = np.asarray(Image.open(p).convert('RGBA')).astype(np.float32)
 sheets['hero-climb2'] = (p, [im[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']] for r in C2['frames'].values()])
+# ART-SHEETS (R-165.379): the non-clip sheets too, by the game's own frame tables, with sheetbody.py's frame mask (no water blue, no leaf
+# green: a prop never counts as fur); the atlas's face_* close-ups (HeroFaceIcon) are faces, lighter by design, and are left out.
+sys.path.insert(0, 'tools/art/hfnext'); import sheetbody as SB  # noqa: E402
+PROPMASKED = set()
+for k, nm in SB.SHEET.items():
+    if k == 'climb2':
+        continue
+    p = f'src/assets/hero/{nm}.webp'; im = np.asarray(Image.open(p).convert('RGBA')).astype(np.float32)
+    sheets[nm] = (p, [im[r['y']:r['y'] + r['h'], r['x']:r['x'] + r['w']] for n, r in SB.FRAMES[k].items() if not n.startswith('face_')]); PROPMASKED.add(nm)
 
 res = {}
 for nm, (p, fr) in sheets.items():
-    FU = [fur(f) for f in fr]; fd = [float(np.linalg.norm(u.mean(0) - PF)) for u in FU]
+    FU = [SB.fur(f) if nm in PROPMASKED else fur(f) for f in fr]; FU = [u for u in FU if len(u) > 50]; fd = [float(np.linalg.norm(u.mean(0) - PF)) for u in FU]
     pooled = np.concatenate(FU).mean(0)
     mu = [u.mean(0) for u in FU]; st = [float(np.linalg.norm(mu[k + 1] - mu[k])) for k in range(len(mu) - 1)]
     res[nm] = {'sheet': p, 'sheet_sha256': sha(p), 'frames': len(fr), 'frame_max': round(max(fd), 3), 'frame_max_at': int(np.argmax(fd)),

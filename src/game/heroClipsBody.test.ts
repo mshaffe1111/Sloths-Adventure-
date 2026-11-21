@@ -47,7 +47,10 @@ const B = BODY as unknown as { bar: { frame_max: number; pooled: number }; loop_
 /** the clips the game loops or cycles through (heroClips.ts: push loops; climb, walk and run follow a cycle): last -> first is a seam */
 const LOOPING = ['push', 'move-climb', 'move-walk', 'move-run'];
 const K = KNOWN as unknown as { known: Array<{ sheet: string; frame_max: number; pooled: number; why: string }> };
-const HERO_SHEETS = [...Object.keys(HERO_CLIPS), 'hero-climb2'];
+/** R-165.379 (ART-SHEETS, 11-21): and every hero sheet that is NOT a clip (rope, swim, vine, story, studies, atlas), measured by herobody.py
+ * through the game's own frame tables with sheetbody.py's frame mask (no water blue, no leaf green; the atlas's face_* close-ups left out) */
+const NON_CLIP_SHEETS = ['hero-rope', 'pokey-swim', 'hero-vine', 'hero-story', 'hero-studies', 'hero-atlas'];
+const HERO_SHEETS = [...Object.keys(HERO_CLIPS), 'hero-climb2', ...NON_CLIP_SHEETS];
 
 test('every hero sheet was measured, as it ships (re-run tools/art/hfnext/herobody.py --write after any hero sheet changes)', () => {
   assert.deepEqual(B.bar, { frame_max: 2.0, pooled: 1.0 }, 'the bar is fixed here, not in the JSON');
