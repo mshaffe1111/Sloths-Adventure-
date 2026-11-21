@@ -97,3 +97,48 @@ test('legs: what the mirror cannot turn yet is refused by name, never laid wrong
   assert.throws(() => reflectLeg({ ...none, vines: [liana], sections: [] }, 0), /a liana in a leg laid left/);
   assert.throws(() => reflectLeg({ ...none, vines: [], sections: [{ uid: 's4', entry: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, x0: 0, x1: 0, vines: [], sockets: [], beats: [], room: {} }] }, 0), /s4 holds a puzzle room/);
 });
+
+test('legs (ENG-27): a river in a leg laid left is turned with it: its logs drift where their mirror would, its current flows the other way', async () => {
+  const { layRiver } = await import('./riverLay.ts');
+  const { driftX } = await import('../river.ts');
+  let id = 100;
+  const r = layRiver({ dir: 1, speed: 70, logW: 170, logs: 3, safe: true, petals: 1 }, 5300, 500, () => id++);
+  const before = r.logs.map((p) => ({ ...p.drift! }));
+  const laid: LegLaid = { platforms: [...r.logs], vines: [], ropes: [], zones: [], gaps: [], asks: [], heartFalls: [], rivers: [r.zone], riverPetals: r.petals.map((q) => ({ log: q.log, dx: q.dx })), sections: [] };
+  const sum = 5000 + 1000;
+  const x0 = r.zone.x0, x1 = r.zone.x1, back = r.zone.safe!.backX;
+  reflectLeg(laid, sum);
+  // (the water: turned about the line, flowing LEFT (with him, who now runs left), marked as crossed right to left)
+  assert.deepEqual([r.zone.x0, r.zone.x1, r.zone.dir, r.zone.way], [sum - x1, sum - x0, -1, -1]);
+  // (a splash-back sets him on the bank he came from: now the right one, as far onto it)
+  assert.equal(r.zone.safe!.backX, sum - back);
+  // (every log, at every moment, is where its mirror would be: driftX of the turned window = the line less the old log's right edge)
+  r.logs.forEach((p, k) => {
+    for (const t of [0, 1.3, 4.7, 11]) assert.ok(Math.abs(driftX(p.drift!, t) - (sum - driftX(before[k], t) - before[k].width)) < 1e-9, `log ${k} at ${t} s`);
+  });
+  // (a petal riding a log keeps its place on it, measured from its new left edge)
+  assert.equal(laid.riverPetals![0].dx, r.logs[0].width - r.petals[0].dx);
+  // (twice is where it began, the way mark with it)
+  reflectLeg(laid, sum);
+  assert.deepEqual([r.zone.x0, r.zone.x1, r.zone.dir, r.zone.way], [x0, x1, 1, undefined]);
+});
+
+test('legs (ENG-27, planted): what the river mirror cannot turn yet is refused by name: a tail, a water wheel\'s pond', () => {
+  const none = { vines: [], ropes: [], zones: [], gaps: [], asks: [], heartFalls: [], sections: [] };
+  const tailed = { id: 1, x: 0, y: 0, width: 100, height: 20, type: 'drift', drift: { x0: 0, x1: 400, dir: 1, speed: 70, width: 100, offset: 0, baseY: 0, tail: 200 } } as Platform;
+  assert.throws(() => reflectLeg({ ...none, platforms: [tailed] }, 0), /a river with a tail in a leg laid left/);
+  assert.throws(() => reflectLeg({ ...none, platforms: [], rivers: [{ x0: 0, x1: 300, surfaceY: 0, dir: 1, speed: 0, wheelPond: true }] }, 0), /a water wheel in a leg laid left/);
+});
+
+test('legs (ENG-27, planted): two run legs whose boxes meet in x must keep a jump and his height apart; a column between is never judged', async () => {
+  const { legOverlaps, LEG_CLEAR } = await import('./legs.ts');
+  const out = { travel: 'right' as const, i0: 0, i1: 3, x0: 0, x1: 5000, y0: 500, y1: 780 };
+  const col = { travel: 'down' as const, i0: 3, i1: 4, x0: 5000, x1: 6280, y0: 840, y1: 1400 };
+  // (home at the out leg's own ground: on top of it)
+  assert.match(legOverlaps([out, { travel: 'left', i0: 3, i1: 6, x0: 0, x1: 4940, y0: 480, y1: 760 }]).join(), /leg 2 \(left\) overlays leg 1 \(right\) at x 0-4940/);
+  // (home down a column: its top more than LEG_CLEAR under the out leg's foot is clear; LEG_CLEAR less one px is not)
+  assert.deepEqual(legOverlaps([out, col, { travel: 'left', i0: 4, i1: 7, x0: 0, x1: 4940, y0: 780 + LEG_CLEAR, y1: 1600 }]), []);
+  assert.equal(legOverlaps([out, col, { travel: 'left', i0: 4, i1: 7, x0: 0, x1: 4940, y0: 780 + LEG_CLEAR - 1, y1: 1600 }]).length, 1);
+  // (legs that never meet in x are never judged, whatever their heights: a right run on past a column)
+  assert.deepEqual(legOverlaps([out, col, { travel: 'right', i0: 4, i1: 7, x0: 6340, x1: 9000, y0: 480, y1: 760 }]), []);
+});

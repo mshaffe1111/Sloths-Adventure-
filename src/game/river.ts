@@ -64,6 +64,9 @@ export interface RiverZone {
   /** a water wheel's pond (gen2/wheelLay.ts layWheel, ENG-26): still water under a wheel's whole sweep, its jetty and its street standing
    *  over it, so it has no banks at its ends (levelCheck asks none); a fall into it splashes him back onto the jetty (`safe`) */
   wheelPond?: true;
+  /** he crosses it right to left (a river in a leg laid left, gen2/legs.ts reflectLeg): `dir` is still the screen's (-1 flows left, WITH
+   *  him), and its fairness is judged in its own frame, as if he crossed it rightwards (gen2/riverLay.ts riverFaults). Unset: left to right */
+  way?: -1;
   /**
    * 2-8 Reed Cages: still water that rises once he passes `trigger`, from where it starts to `y1` over `seconds`, covering the low reed
    * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).

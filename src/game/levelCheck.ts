@@ -1004,8 +1004,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
-    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up)
-    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && c.x > stage.exitTotemX + PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
+    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up. Beyond is the way he travels
+    //  at the end: a stage whose last leg runs LEFT (config.travel 'left', gen2 legs) has its shrine at its left end, ENG-27)
+    const ahead = cfg.travel === 'left' ? -1 : 1;
+    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && (c.x - stage.exitTotemX) * ahead > PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
     for (const p of stage.platforms) {
       if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
       if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {
@@ -1077,7 +1079,8 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = hopLimit(d.dir);
+      // (the current against him or with him: a river he crosses right to left (RiverZone.way, a leg laid left) flows with him at dir -1)
+      const limit = hopLimit((d.dir * (r.way ?? 1)) as 1 | -1);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24; a
       //  liana over the river's TAIL throws over open water, so the logs before it are hopped as ever: river.ts lianasOverLogs, ENG-24f)

@@ -116,19 +116,31 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
  *     carries him within a jump of the far bank.
  * Still water (speed 0, a splash-back pond, a lily pond) and open water (crossed some other way) are not log rivers: none of this applies.
  */
+/** a stage turned about a river he crosses right to left (RiverZone.way): x becomes `x0 + x1 - x`, the current and the logs' windows with it,
+ *  so the river reads as one crossed rightwards (gen2/legs.ts reflectLeg's own mirror, for the judge only: the stage is not changed) */
+function rightwards(r: RiverZone, platforms: readonly Platform[], vines: readonly Vine[]): { r: RiverZone; platforms: Platform[]; vines: Vine[] } {
+  const sum = r.x0 + r.x1;
+  const turn = (p: Platform): Platform => ({ ...p, x: sum - p.x - p.width, ...(p.drift ? { drift: { ...p.drift, x0: sum - p.drift.x1, x1: sum - p.drift.x0, dir: -p.drift.dir as 1 | -1 } } : {}) });
+  const { way: _w, ...rest } = r;
+  return { r: { ...rest, x0: sum - r.x1, x1: sum - r.x0, dir: -r.dir as 1 | -1 }, platforms: platforms.map(turn), vines: vines.map((v) => ({ ...v, x: sum - v.x })) };
+}
+
 export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty = 'normal'): string[] {
   const out: string[] = [];
-  const solids = st.platforms.filter((p) => p.type === 'solid' && !p.broken);
-  for (const r of st.rivers ?? []) {
-    if (r.speed === 0 || r.open || r.raft || r.flood) continue;
-    const at = `river at x=${Math.round(r.x0)}`;
+  for (const r0 of st.rivers ?? []) {
+    if (r0.speed === 0 || r0.open || r0.raft || r0.flood) continue;
+    const at = `river at x=${Math.round(r0.x0)}`;
+    // (a river he crosses right to left (a leg laid left, RiverZone.way) is judged in its own frame: the stage turned about it, so his near
+    //  bank is on the left and `dir` is the current against or with him, as every rule below reads it)
+    const { r, platforms, vines } = r0.way === -1 ? rightwards(r0, st.platforms, st.vines ?? []) : { r: r0, platforms: st.platforms, vines: st.vines ?? [] };
+    const solids = platforms.filter((p) => p.type === 'solid' && !p.broken);
     // (a liana hung over it (place `river` after a liana, ENG-24): its logs are a let-go's landing, crossed by the vine, never hopped log
     //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands. ENG-24f, the lead's ruling 11-19 9:12 PM
     //  ET: a liana is judged by what is under its throw. One hung over the TAIL (river.ts lianasOverLogs: its anchor at or past the logs'
     //  window end) throws over open water: World 1's vine rules (tailLianaFaults), never the share, and the logs before it are hopped)
-    const over = lianasOverLogs(st.vines ?? [], r);
-    const overTail = lianasOver(st.vines ?? [], r).filter((v) => !over.includes(v));
-    const logs = st.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
+    const over = lianasOverLogs(vines, r);
+    const overTail = lianasOver(vines, r).filter((v) => !over.includes(v));
+    const logs = platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
     if (logs.length < 2) { out.push(`${at}: ${logs.length} logs, under 2`); continue; }
     const d = logs[0];
     const spacing = (d.x1 - d.x0 + d.width) / logs.length;

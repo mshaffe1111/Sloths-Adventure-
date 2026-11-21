@@ -1,0 +1,35 @@
+normal s1 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1056281)
+normal s2 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1056814)
+easy s1 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1056281)
+easy s2 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1056814)
+normal s1 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1055131)
+normal s2 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1055541)
+easy s1 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1055131)
+easy s2 THROW Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1055541)
+A Pg1> Xw1> R Pf1> Pw1> Mg1> Ww1> R Sw1> E | fills 22 flowers 87 errs node code: V11 at token 8: 3 of 6 content nodes are 'w' (cap 2)
+A Pg1> Xw1> R /D Dc_ /R Pf1> Pw1> Mg1> Ww1> R Sw1> E | fills 21 flowers 81 errs 
+/home/user/eng27-base/src/game/gen2/pipeline.ts:2646
+      if (rivers.length > mark.rv) throw new Error(`gen2 legs: a river in a leg laid left is not mirrored yet (at x ${R(rivers[mark.rv].x0)})`);
+                                         ^
+
+Error: gen2 legs: a river in a leg laid left is not mirrored yet (at x 1055131)
+    at endLeg (/home/user/eng27-base/src/game/gen2/pipeline.ts:2646:42)
+    at layStage (/home/user/eng27-base/src/game/gen2/pipeline.ts:3070:40)
+    at assemble (/home/user/eng27-base/src/game/gen2/pipeline.ts:4050:16)
+    at buildRolledOn (/home/user/eng27-base/src/game/gen2/pipeline.ts:4877:15)
+    at <anonymous> (/home/user/eng27-base/src/game/gen2/pipeline.ts:4775:44)
+    at withSetting (/home/user/eng27-base/src/game/settingDials.ts:45:12)
+    at buildRolled (/home/user/eng27-base/src/game/gen2/pipeline.ts:4775:10)
+    at buildGen2StageOn (/home/user/eng27-base/src/game/gen2/pipeline.ts:4726:14)
+    at <anonymous> (/home/user/eng27-base/src/game/gen2/pipeline.ts:4719:44)
+    at withSetting (/home/user/eng27-base/src/game/settingDials.ts:45:12)
+
+Node.js v22.23.5
+
+## Plants RED without each fix (eng27-red worktree: base 0eefc707e + this branch's files, one fix taken out at a time)
+# levelCheck.ts as on the base (past the shrine read rightwards), everything else ENG-27's:
+probe3 /L: A Pg1> Xw1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E | fills 21 flowers 0 errs
+legsHome.test: not ok 2 - home toy (GREEN) ... error: 'normal seed 1: 0 petals on the home leg'
+# pipeline.ts without the legOverlaps verdict:
+legsHome.test: not ok 1 - home toy (planted RED): turned back LEFT at the out leg's own ground ... refused by name on every roll
+# riverFaults' own frame: planted inside legsHome.test 3 (the way mark taken off: /flows back at him/)

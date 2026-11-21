@@ -60,7 +60,7 @@ import { rollsOf } from './rollLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
 import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
-import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
+import { columnFrame, columnWalls, legMarks, legOverlaps, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
@@ -2527,7 +2527,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ASIDE = 1 << 20;
   let legK = 0, leftSum: number | undefined, firstLeft = false;
   /** where the leg he is on began in each of the lay's lists */
-  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0, rv: 0 };
+  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0, rv: 0, rp: 0 };
   const doors: Array<{ side: -1 | 1; y: number }> = [];
   const laidLegs: Array<LaidLeg & { t0: number; t1: number }> = [];
   const wallIds = new Set<number>();
@@ -2567,7 +2567,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const beginLeg = (k: number) => {
     const t = legs[k].travel;
-    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length, rv: rivers.length };
+    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length, rv: rivers.length, rp: riverPetals.length };
     flow = upOrDown(t) ? t : 'right';
     tower = vertical(flow);
     doors.length = 0;
@@ -2642,9 +2642,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     const mine = sections.slice(mark.s), own = platforms.slice(mark.p);
     if (leftSum !== undefined) {
-      // (a river in a leg laid left: its current and its fairness are read for a player running right; ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7)
-      if (rivers.length > mark.rv) throw new Error(`gen2 legs: a river in a leg laid left is not mirrored yet (at x ${R(rivers[mark.rv].x0)})`);
-      reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), sections: mine }, leftSum);
+      // (a river in a leg laid left is turned with it, its current flowing the other way and marked as crossed right to left, so its
+      // fairness is judged in its own frame (river.ts RiverZone.way, riverLay.ts riverFaults); the petals riding its logs with it. ENG-27)
+      reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), rivers: rivers.slice(mark.rv), riverPetals: riverPetals.slice(mark.rp), sections: mine }, leftSum);
       cur = { ...cur, x: leftSum - cur.x };
       dir = -1;
     } else dir = 1;
@@ -4245,7 +4245,10 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
   // next log's tell in view; riverFaults, the same rule the hand-built World 2 is held to. A stage with no log river gets nothing)
-  const wet = [...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
+  // (a stage of legs: no run leg laid over another (legs.ts legOverlaps; 2-7's design, Pushback 1: a leg laid back left at the ground of
+  // the leg before it lies on top of it). Only a stage laid as legs has any)
+  const legsLaid = (st as Partial<Gen2Stage>).gen2?.tower?.legs;
+  const wet = [...(legsLaid ? legOverlaps(legsLaid).map((e) => `legs: ${e}`) : []), ...riverFaults(st, budget.difficulty).map((e) => `river: ${e}`), ...padFaults(st).map((e) => `pads: ${e}`), ...snapFaults(st, budget.difficulty).map((e) => `snap: ${e}`), ...beatCastFaults(st, budget.world).map((e) => `cast: ${e}`), ...wheelFaults(st, budget.difficulty).map((e) => `wheel: ${e}`)];
   const res = wet.length ? { ...res0, ok: false, errors: [...res0.errors, ...wet] } : res0;
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
