@@ -1,3 +1,82 @@
+# BUILD-23d REPORT: 2-3 toward GREEN (t-build-23 from b173bd298; this section written 10:21 AM ET 11-21 by `date`)
+
+## EXACT NEXT STEP (for BUILD-23e), in order. Head: the last BUILD-23d commit on t-build-23.
+1. **ENGINE PIECE (bot: no line, no wait)** (the lead's ruling 9:57 + 10:09 AM ET, rule-26 amendment; its OWN commit with that name):
+   tools/inspect/firsttimer.ts lineMove (~:2216-2245): with an empty line (inLine empty) he does not wait for a look: return null before
+   the wait. Cause (traced, tools/engine/runs/_plant23.ts 300): cageBot 'bank cage, skill off' (middle, seed 1, no line) stops in beat 7's
+   first clump at x 20300, before the stretch's x0 (clipWatches puts x0 40 px in); the heron's calm runs only with him or a follower ON
+   its stretch (followPlay.ts:151 active, watcher.ts:108), so the look he waits for never comes: 'time' at 900 s, not 'sealed door'.
+   PLANT a toy (lineBot.test or cageBot.test): he stops in a clump's first 40 px before x0 with an empty line: RED times out, GREEN walks
+   on. Then tierBots 9/9 with NO calibration change (CI=1 npx tsx --test tools/inspect/tierBots.test.ts), cageBot.test 'skill off' back to
+   'sealed door' at its own cap 600, the CI tool line (gates.yml:157) green.
+2. **castBots 2-3 1-40 x 5 bots x both on the fixed bot** (the lead: the table must be on the fixed bot): compare with castbots23d.txt
+   (below); any moved run traced (rule 28).
+3. **stagePlanGoals UI-22** ("a stage's map line names a count only where it is the engine's goal on every layout roll"): RED on
+   t-build-23, PASS on origin/t-int-15 0eefc707e (checked 10:20 AM ET): born in BUILD-23/23b/23c, 2-3's (ENG-CAGE: 5 stages name a count,
+   it needs 6): fix at the source (D94).
+4. **THE FULL SET on that head** (gates.md, D96): every gates.yml run line + the suite in 3 shards + funcheck (name 2-3's flags) + lockall
+   --layouts 16 vs main --intended 2-3 (any other stage moving: stop, tell the lead) + castBots + coveragecheck + registrycheck + tipwalk
+   + paintcheck 0/3 1/3 2/3 + timecheck (`git fetch --unshallow` first). My partial runs below were on 981e214d7's code, BEFORE the fix:
+   they do not count for the head.
+5. **Final stills + clip once GREEN** (packet step 7, rule 29): the whole stage both ways, Normal + Easy, incl. the post on Easy and a
+   1-7 watched-stretch side-by-side with the heron look (walk him into 1-7's, the eagle stays at 'rest' when forced); one clip of the line
+   crossing under the heron. NOT SHOT by me (the bots were not final).
+
+## Done (each pushed on t-build-23)
+| Commit | What |
+|---|---|
+| c53fda1e3 | step 0: merged t-eng-cage @ 1fb53d026 (conflict engine-core.md: both entries kept) |
+| b4e375d1f | step 1 R-165.365: registrycheck realSheetMisses reads the FINISHED roll (PLAY_FINISH = listed.ts playFinish, as listJudge); planted test (the unfinished read asks foe:eagle). No stageSheets eagle entry |
+| e0af13f2e | step 2 R-165.363: lineFaults childCross (flown with FollowPlay: LINE_RULE.child 40 px/s, 3 s at a face, rise 12; tail = gap x the little ones led, a cage on the stretch joins as reached; waits at a clump end for a look to come and go, freezes when the line is hidden; over water his hop, maxRun/1.3) + no face on watched mud. Planted RED on the old lays (check off -> 2 red). LAY (the lead ACCEPTED 9:57): boulders off the watched mud; beat 4 G 400/350 -> 200/180 (CLUMPS_G_23); beat 7 calm 5-5.5 -> 8.5-9 s both settings (CALM_TWO_23), lag 3.2 kept, G 350 -> 180/160 (EVERY_G_23); the width moved to the bank after each stretch. lineBot: hop-back toy sets the 117 px moss_stone in-test (accepted); fetch-clock toy on beat 7 |
+| 9ef1612ff | step 3: score.ts cageChallenges + CAGE_BITS {punch 0.5 = OTHER_BITS.puzzle, vine = climb + punch 0.75} (cageVine: the engine's airKick reach); meter-coverage beat:cages.channel; cageChannel.test on gates.yml:157; coveragecheck PASS |
+| edbfcecbe | step 4: FLIGHT_STAGE=2-3 flight.ts normal all (fly-2-3.txt; easy too, fly-2-3-easy.txt); flownArcs normal-2-3 (8 rows); chain.md §1; stageTable judged; judgedTable.test |
+| 981e214d7 | step 4: seedlist 2-3: 6 fresh builds 6/6 first, then 100 of 100 kept, --check PASS; registrycheck PASS (14 stages); stageSheets/sheetWarm/registrycheck tests 23/23 |
+| b09c213db | timecheck: ENG-CAGE-b REPORT's stamp 10:00 PM was 4.5 min after its commit: corrected to 9:55 PM |
+| ba3f88a03, 42bf7e832 | trace tools (tools/engine/runs/_*23*.ts, not gates); castbots23d.txt + rows, meter23d.txt |
+
+## castBots 2-3 1-40 on 981e214d7 (BEFORE the bot fix; castbots23d.txt) — every run shrine, goal 5/5
+| bot | Normal | Easy |
+|---|---|---|
+| child | 40/40 (ENG-CAGE head: 1/40) | 40/40 |
+| middle | 40/40 | 40/40 |
+| expert | 40/40 | - |
+| adult | 39/40 | 40/40 |
+| kid | 0/40 | 0/40 |
+Traces (rule 28; _trace23.ts): adult N s10: beat 7, leaves as heron A's look ends, B looks 0.6 s later: 8 spooks t166-259, rescued x20666
+t262.8 (accepted by the lead 10:17). Kid N s5/s9, E s5/s9: spook loops at beat 4 (x11100-12000, t104-134), the pond (x16800-17900,
+t177-280) and beat 7 (x20400-21500, t258-377), each rescued after 20 s no progress (rule 4: not the bar; named).
+
+## Meter (game order 1-1..2-3, seeds 1-4; meter23d.txt)
+2-3 N 3.0 (2.8-3.4), E 0.9; the old lay on the merge base: N 3.2, E 0.7. World 2 band 9..21, slot target 14.5: far under before and after
+(the lead 10:17: named, not tuned). Easy/Normal 0.30 (<= 0.6). Since the judged rows the meter's route doubles over the pond (269 px)
+instead of boarding the sinking pad (the lead: a fair skill reward, kept).
+
+## Gates (partial, on 981e214d7's code, BEFORE the bot fix: they do not count for the final head)
+tsc PASS; artcheck PASS; vite build (BASE_PATH) PASS; chunkcheck PASS; knowncheck PASS; generalitycheck PASS; coveragecheck PASS;
+roadmapcheck PASS (unshallowed); timecheck PASS after b09c213db; registrycheck PASS; 2-3 test files 106/107 (red: cageBot skill-off plant =
+NEXT STEP 1); stagePlanGoals UI-22 RED (NEXT STEP 3). UNRUN to completion by me: the suite shards, every seed list, tipwalk, drawcheck,
+clipcheck, kbdcheck, buildcheck, paintcheck, tierBots, the CI tool line, lockall vs main, funcheck.
+
+## Polish check
+No stills or clips taken: the bots are not final (rule 29). Rough spots named: beat 7 is now three clumps with 180 px gaps and a long calm
+(a quieter climax than the design's 350 px; the lead accepted); 2-3's meter reads far under World 2's band.
+
+## Learned (for the next builder) + proposed level.md rules
+- Fly a design's crossing at the CALIBRATED CHILD's pace with the line's tail before laying it: the design's 350-500 px of open mud were
+  flown at the adult's run; the child needs about (calm + screech) x 40 px/s minus the tail. PROPOSED rule: "Every timed crossing is flown at
+  the calibrated child's pace (lineFaults childCross for a line) as well as the adult's; check: the kit's fault function, planted."
+- Two independent herons out of step leave a window no gap can fix at a child's pace (3.8 s): the lever is the rhythm (the calm), not the
+  gap. Find the lever by a toy sweep (_toy23.ts) before editing the lay.
+- A bot that waits for a world clock must know when that clock does not run (out of its stretch): a wait with nothing to protect deadlocks.
+- Read the lead's rulings as they come: mine arrived while I worked through long tool calls (D103); check notifications between steps.
+
+## Lessons applied
+D30 (two times I typed from memory were caught and corrected to the lead the same minute; every stamp here from date), D76 (handing over
+before 350k with the next step on top), D94 (UI-22 checked on origin/t-int-15, not on my own commits), D96 (the full set named, the partial
+runs marked as not counting), D101 (the lay judged on the built stage), D102 (reads by grep and line ranges), D103 (rulings read and acted on).
+
+---
+
 # BUILD-23c REPORT: 2-3 items (a)-(d) (t-build-23 from 6db2da0fd; this section written 9:59 PM ET by `date`)
 
 ## EXACT NEXT STEP (for BUILD-23d), in order
