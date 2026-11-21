@@ -1,7 +1,8 @@
 # ENG-27j REPORT (handed over at the D111 box; base d29258340; branch t-eng-27, head: this commit; merge 24d6ba567, re-plant af127d21e)
 ## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
-G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634 (with ENG-GROUND-e's lock
-   PASS 102/102 and suite 1/6, the same two). Unrun or running when the container stopped: suite 2-6, tooltests, tierBots, tipwalk,
+G. **The ground's gates on 2d4e0752a are NOT all green yet.** At the hand-over: tsc PASS, suite 1/6 PASS 634/634, suite 2/6 PASS 616/617
+   (1 todo, 0 fail) (with ENG-GROUND-e's lock PASS 102/102). Unrun or running when the container stopped: suite 3-6 (run those by hand:
+   `npx tsx --test --test-shard=<i>/6 <the SUITE glob in run-gates-d.sh>`, then the rest of chain a from tooltests on), tooltests, tierBots, tipwalk,
    coverage, registry, generality, known, roadmap, time, art (chain a) and all of chain b. Run them FIRST, in the background, on a frozen
    worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then `... b` ($G/../tooltests.cmd
    = gates.yml line 157 with the leading '- run:' stripped; node_modules symlinked from the main checkout; `git fetch --unshallow` before
