@@ -1,3 +1,43 @@
+# ART-NEXT-c (11-21, session_01FhBbYMHgd7Bqz5k9Pq8XfC): reeds redo + NEXT2 catalogue DONE; R-165.354 bridges generated, WAIT ON THE LEAD'S PICK
+## EXACT NEXT STEP (for ART-NEXT-d; written 12:12 PM ET at the lead's D76 hand-over)
+HF: reeds ~$0.33 + bridges ~$0.44 = ~$0.77 (balance ~$41.95), both sandboxes TERMINATED, HF-SPEND rows in. Nothing is running.
+1. LEAD PICKS one take per bridge from reference/art/hfnext/bridge/<B>-s<seed>-sheet.jpg (every frame at 2x, PLAIN first, CLIP f0 last;
+   light row and dark row). Frames: reference/art/hfnext/bridge/takes/<B>-s<seed>/ (Wan 480x576 WebP). My read:
+   - B1 (plain->front; serves idle-yawn AND look-around): **s23** (smooth turn, bag/strap/wraps on model every frame; feet off the
+     end-to-end line max 3.1 px raw). s11 good too (a blink smear frames 7-9; 2.4 px).
+   - B2 (plain->belly-scratch): BOTH lose the bag + strap: the belly-scratch CLIP ITSELF has no bag or strap (its frame 0), so any bridge
+     must. s23 drops it at frame 2 (clean otherwise), s11 at 12-15 with arm smears. NEEDS A LEAD RULING: bake s23 and log the clip's
+     missing bag as a defect, or take belly-scratch out of IDLE_CLIPS (heroClips.ts, not art's file), or a repaint (not costed).
+   - B3 (plain->wave start): s11 holds his model (turn, then the paw rises); s23 not yet judged by me (sheet pushed).
+   - B4 (plain->sit, doze): s11's hunch frames 6-9 go blobby (bag/wraps smear); s23 not yet judged by me. Feet move by design here.
+2. BAKE each pick: `python3 -I tools/art/hfnext/bridgebake.py reference/art/hfnext/bridge/takes/<take> <clip>[,<clip>] --pin-feet`
+   (B4 WITHOUT --pin-feet). B1 bakes into idle-yawn,look-around. It rewrites src/assets/hero/clips/<clip>.webp and the clip's entry in
+   src/game/heroClipsData.ts (frame 0 = the exact plain frame, last = exact plain frame; bridge in, clip, bridge reversed out).
+   Check every sheet <= 4096 px and 4 MiB; idle sheets total BEFORE = 2,050 KB (yawn 476, look 450, belly 384, wave 499, doze 242): report the new total.
+3. END-FRAME TEST: move reference/art/hfnext/bridge/pending/heroClipsEnds.test.ts.txt to src/game/heroClipsEnds.test.ts, run
+   `python3 -I tools/art/hfnext/idleends.py` (writes src/game/heroClipsEnds.json, sha256-pinned to each sheet; CI has no image decoder),
+   then `npx tsx --test src/game/heroClipsEnds.test.ts`. BEFORE numbers (pending/heroClipsEnds.before.json): every end frame 12-76 px
+   off the plain pose, xor 28-62%. Bar: <= 2 px, xor < 2%. (Parked out of src/ so the branch never carries a red test.)
+4. STILLS: `node tools/art/hfnext/idleshoot.mjs <out> 1-1,2-5 3.7 4.7 40` (needs `npm install --legacy-peer-deps` in the worktree;
+   the main checkout has NO node_modules; restore package-lock.json after). Before: reference/art/hfnext/bridge/before-idle-start.jpg
+   (1-1 t4.33 shows the doubled outline) and before-idle-start-2-5.jpg (that window may have missed the melt; widen to 3.9-5.2).
+   Screenshots run ~4 a game second: for the full-yawn clip at game speed, shoot ~0-9 s after the pin (bridge in, yawn, bridge out).
+5. Hurt is NOT bridged (lead 12:00 PM: it is the hit reaction, starts from any pose); it stays as the dissolve leaves it. Name it in the report.
+6. Then: tsc, the full unit tests, artcheck, the art tests; rewrite reference/handoffs/art-director.md (NOT done by ART-NEXT-c).
+## Done-items
+1. REEDS REDO: DONE. 4/4 takes (spec-b2r, ~$0.33), sheet reference/art/hfnext/batch2r-takes.jpg; s37 frame-edge reject. Lead picked s41;
+   cut + cleaned by tools/art/hfnext/reedsfix.py (300 px trapped grey keyed between stems; the pale silt haze at each foot pulled to wet
+   brown: no light ring on dark, checked at 2x beside Pokey).
+2. NEXT2: DONE. 14 rows w3-next#* (lipA s11/s23/s37, lipB s23/s37, mat s23, rimLong s11, rimS s11/s23, rimShort s11, shelfS s37,
+   sleepy s23/s37, reedsR-s41), tools/art/hfnext/catalog2.py + contact2.py, walk lines measured (shelfS: mid top face y 48),
+   catalog_master --emit, inventory.test 203 -> 217, art tests 16/16, artcheck PASS. Sheet reference/art/hfnext/batch2-cuts.jpg.
+   cut.py gained `glow`: the lit rims, the mat and the sleepy caps cut as opaque grey-mint halos with ragged edges; now see-through light.
+3. R-165.354: PLAN sent + GO (no hurt, cap $2). 8 bridge takes back (~$0.44); NOT baked (waits on picks); test parked; stills before only.
+## Lessons applied
+D57/D87 (ReadNotifications at every step and push; long shoots in the background), D97 (no blocking HF call), D98 (every take pulled +
+committed as it landed: 12 pulls), D102 (lean reads), D105, frame-edge reject before picking, show-first (starts.jpg before spend).
+New: a bare `pip -U diffusers` in the aitoolkit image pulls huggingface-hub 2.x and breaks transformers (cost ~1 min; runbridge.sh pins it).
+
 # ART-NEXT-b (11-20, session_01FhBbYMKsqUrH74YuYsLf9J): batch 1 cut + catalogued, special stages in NEEDS, batch 2 RUNNING
 ## EXACT NEXT STEP (kept current; ART-NEXT-b stopped 6:17 PM ET at the lead's line, run finished)
 Batch 2 is DONE and paid (~$1.40 of $2.50; both sandboxes TERMINATED; HF-SPEND row 5:45-6:15 PM; balance ~$42.72). All 26 takes are in
