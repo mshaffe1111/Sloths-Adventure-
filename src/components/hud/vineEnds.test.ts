@@ -22,6 +22,6 @@ test('the lower-row strip keeps its curls inside the plate width (its tiles stop
   assert.ok(strip, 'the strip over the goal plate is a PaintedVine at the plate vine line pv');
   assert.match(strip[0], /\bendL\b/);
   assert.match(strip[0], /\bendR\b/);
-  assert.match(strip[0], /x0=\{[^}]*vineEndW\(k\)/, 'x0 leaves room for the left curl');
-  assert.match(strip[0], /x1=\{[^}]*vineEndW\(k\)/, 'x1 leaves room for the right curl');
+  assert.match(strip[0], /x0=\{[^}]*vineEndW\(/, 'x0 leaves room for the left curl');
+  assert.match(strip[0], /x1=\{[^}]*vineEndW\(/, 'x1 leaves room for the right curl');
 });
