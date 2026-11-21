@@ -18,7 +18,8 @@ near.mts: what lies within a hop of each gate; onto.mts: the lead's question, ca
    (eng26j/sweep-1-400-8e21145f1.json), so the survivors in their old order are 1-100 and no new seed is needed: `seedlist.ts 1-4
    --merge <the four parts or the saved sweep> --in-order --count 100` (n 100) re-lays them and writes the list with the new plans (each
    gate's foot is 106-134 px longer at each end, so every 1-4 layout moves). `seedlist.ts 1-4 --check` FAILS on this head until then
-   (expected: the listed plans are e420a2794's). Then every test pinning a 1-4 roll (D29; `grep -rln "'1-4'" src tools --include=*.test.ts`:
+   (measured on 8e21145f1: the verdicts refuse 0 of 100 listed seeds; 7 seeds' replays differ from their search on both settings,
+   seeds 8, 18, 22, 31, 54, 59, 66: "rebuild the list"; the other 93 replay as they search). Then every test pinning a 1-4 roll (D29; `grep -rln "'1-4'" src tools --include=*.test.ts`:
    20 files) and the FULL suite, re-pinned once on the final list (rule 20).
 3. **Then as the packet**: the phone's load speed of the listed 1-4 and 2-6 seeds (eng26h/tools/loadtime.mts base e420a2794 vs head;
    `BUILDCHECK_STAGE=1-4` / `2-6` buildcheck), CI's `seedlist.ts 1-4 --check` timed against its 45-minute limit (D99); stills of 1-4
