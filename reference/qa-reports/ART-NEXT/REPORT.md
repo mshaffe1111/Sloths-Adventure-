@@ -1,3 +1,44 @@
+# ART-NEXT-d (11-21, session_01FhBbYKPihmWKe7mdYAmiqq): R-165.354 + R-165.370 DONE on t-art-next (written 12:48 PM ET)
+## EXACT NEXT STEP
+Nothing open in this packet. If the lead wants more: (a) doze back via a two-stage bridge (plain -> crouch -> sit), roadmap item;
+(b) a clean 2-5 idle still needs a shoot pin that misses the "Normal" card and the hazard (idleshoot.mjs picks the middle solid).
+## Picks and bakes (the lead's)
+- B1 s23 -> idle-yawn + look-around; B3 s11 -> wave (--pin-feet; feet off the line max 3.1 / 4.8 px before the pin). 81 frames each.
+- NEW belly-scratch = SC s19 (plain pinned first and last; bridgebake --replace; feet within 0.5 px; bag + strap every frame). 41 frames.
+- B4: no take passed (s5 back blob f11-16 + grey smear f17; s37 bag missing f8-12; s47 feet ghost f6-9; s61 double outlines f9-16).
+  Doze LEFT IDLE_CLIPS (lead's ruling); nothing else draws it, so doze.webp, its heroClipsData entry and 49 catalog rows are deleted.
+- Hurt is not bridged: the hit reaction starts from any pose (lead); it stays as the dissolve leaves it.
+## Spend
+One sandbox, 6b01d35defaf5e14f4b5e16d, ~15.4 min by `date`, **~$0.70** of the $2 cap; 8 gens all pulled + committed one by one
+(D98); terminated after the last. Balance ~$41.25. HF-SPEND row in.
+## End-frame test (src/game/heroClipsEnds.test.ts, live; sha256-pinned JSON from tools/art/hfnext/idleends.py)
+Before: ends 12-76 px off the plain pose, xor 28-62%. After: all 4 idle clips first AND last frame 0 px, xor 0%. Planted: a stale sheet
+fails test 1; a 5 px end fails test 2.
+## Stills and clip (reference/art/hfnext/bridge/)
+- before-after-idle-start.jpg (1-1 at 2x): before t4.33 doubled outline; after, the plain pose holds through the melt, then the turn.
+- yawn-1-1-game-speed.mp4 + yawn-1-1-strip.jpg: 0.4-8.9 s after the pin: plain, bridge turn, yawn, back, one outline, bag on.
+- 2-5: NOT obtained. Two shoots: a "Normal" card covers him at the pin to ~4.5 s, then he takes a hit. Named, not hidden.
+- Take sheets: B4-s{5,37,47,61}-sheet.jpg, SC-s{7,19,31,43}-sheet.jpg (every frame, light + dark, beside PLAIN).
+## Sizes (all under 4096 px and 4 MiB)
+yawn 813 KB 1712x2310, look 783 KB 1184x2266, wave 831 KB 1440x2277, scratch 342 KB 1056x1230. Idle total 2,768 KB (before 2,050
+incl. doze 242). Decoded 42.8 MB (before 33.7); loaded at stage start (heroClips.ts startClips, plainSheets.ts), not per frame.
+## Catalog
+CATALOG-MASTER.csv frame rows = the sheets (tools/art/hfnext/catalogclips.py: 9,493 -> 9,532 rows; only clip rows touched);
+cast.json re-emitted (catalog_master.py --emit; no other world file changed).
+## Gates
+tsc 0; artcheck 0; art tests + heroClipsEnds 0; unit suite (3 shards): UNITLINE
+## Pushback
+Packet step 4 asked for 2-5 stills: the shoot tool's pin cannot give a clean stop there today (above). bridgebake had two bugs
+(fixed, step 1): entry match failed on the cutter's "202.0"; the sheet was written before the entry check.
+## Suggestions (outside my walls)
+- Engine: the translucent Pokey in the 2-5 shots (before t4.57, after t5.03) looks like R-165.353's dissolve or a hit blink: check.
+- Clip sheets carry ~32 near-duplicate bridge frames each; a frame-index list (play bridge frames reversed from the same cells) would
+  cut ~40% of idle bytes. Engine + data-format packet.
+## Lessons applied
+D30 (times from date; a typed log time fixed), D57/D87/D105 (queue at every step and push), D97 (no approval waits), D98 (pull per
+take), D102 (sheets downscaled, numbers first), D109 (no clock times in messages). LESSONS.md read only as the packet listed (lean).
+## Turnover: reference/handoffs/art-director.md §0j rewritten (this commit).
+
 # ART-NEXT-c (11-21, session_01FhBbYMHgd7Bqz5k9Pq8XfC): reeds redo + NEXT2 catalogue DONE; R-165.354 bridges generated, WAIT ON THE LEAD'S PICK
 ## EXACT NEXT STEP (for ART-NEXT-d; written 12:12 PM ET at the lead's D76 hand-over)
 HF: reeds ~$0.33 + bridges ~$0.44 = ~$0.77 (balance ~$41.95), both sandboxes TERMINATED, HF-SPEND rows in. Nothing is running.

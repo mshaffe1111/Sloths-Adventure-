@@ -1,7 +1,26 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-20 for ART-NEXT-b (§0i); §0h and below still true
+# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-NEXT-d (§0j); §0i and below still true unless marked
 
-Last task: ART-W2 (§0f). Before it: ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
-art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+Last task: ART-NEXT-d (§0j, t-art-next). Before it: ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
+ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0j. 11-21 ART-NEXT-c/-d (t-art-next): Pokey's idle clips start and end on his plain pose (R-165.354, R-165.370) DONE
+- Shipped on the branch: idle-yawn + look-around bridged with B1 s23, wave with B3 s11 (81 frames each, bridge in, clip, bridge
+  reversed out); belly-scratch REPLACED by a new 41-frame clip (SC s19: plain pinned first AND last; bag + strap every frame);
+  doze OUT of IDLE_CLIPS (the lead: no sit-down take held his model), its sheet + heroClipsData entry + 49 catalog rows deleted.
+  Hurt is not bridged (the hit reaction; starts from any pose).
+- Gate: src/game/heroClipsEnds.test.ts + heroClipsEnds.json (sha256-pinned; CI has no decoder). ANY change to an idle sheet or
+  hero-standard.webp: re-run `python3 -I tools/art/hfnext/idleends.py` (writes the JSON; `--check` verifies) or the test fails.
+- Tools (tools/art/hfnext/): bridgebake.py `<take> <clip>[,..] [--pin-feet] [--replace] [--dry]` (reads the clip's frames FROM THE
+  SHIPPED SHEET: restore the original with git before re-baking a clip); takesheet.py (every frame keyed, light/dark, feet + xor
+  numbers); catalogclips.py (per-frame catalog rows = the sheets; then `catalog_master.py --emit`); runbridge.sh `<commit> [spec]`;
+  spec-bridge2.json; idleshoot.mjs (now exits). Takes: reference/art/hfnext/bridge/takes/ (B4 s5/37/47/61 and SC s7/31/43 unused).
+- Open: doze back only via a two-stage bridge (plain -> crouch -> sit), on the roadmap, the lead's call. 2-5 stills: the pin lands
+  under a "Normal" card and then a hit, so no clean 2-5 stop was shot (fix the shoot's pin or pick another stage). Idle sheets now
+  2,768 KB / 42.8 MB decoded (were 2,050 KB / 33.7 MB incl. doze), loaded at stage start by heroClips.ts startClips / plainSheets.
+- Traps: Wan with first == last frame still moves (the scratch worked); a sit-down in 33 frames morphs or blobs the back (8 seeds
+  tried in all). Repack Wan frames at WebP q80 in the sandbox before pulling (6 parts a take, not 10); the cutter's sheets are q86.
+  bridgestarts.py reads each clip's frame 0 from the CURRENT sheet: after a bake, B1-B3 starts can no longer be rebuilt from it.
+  heroClipsData.ts writes 202.0 (JSON round-trips 202): match an entry as a block, never by json.dumps.
 
 ## 0i. 11-20 ART-NEXT + ART-NEXT-b (t-art-next): batch 1 cut + catalogued (ACCEPTED); special stages in NEEDS; batch 2 run
 - Needs: reference/art/NEEDS-W2W3.md: regular stages, the SPECIAL stages (The Rapids has no design; no new W2/W3 puzzle room is
