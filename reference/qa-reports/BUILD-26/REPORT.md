@@ -27,18 +27,19 @@ and the inspector's traced route on the PLAYED stage; rows/: castBots rows, base
 2. **Step 0's suite**: frozen fd3ce98b1, still running at hand-over: 1,867 ok, 0 not ok (`scratchpad/suite.log`, lost with the
    container). ENG-26l's 626fac5ac run reached 3,214 ok, 0 failed. Run it WHOLE on the head after step 1, since it then carries code
    (D114).
-3. **The 2-minute bar got WORSE with the fix**: expert MIN 103.1 s (seed 32; 105.4 seed 27, 106.7 seed 17), median 114.2; adult N
-   median 105.6 with 8 runs under the 100 s climb floor. The bar is 125 s over 80 runs. The lead's ruling: the 15th beat (CONTENT, a
-   new turn of the wheel idea, ~12-15 s for the expert, before the crest, taught per rule 2). **Send its plan FIRST** (rule 25: piece,
-   data field, Dot's words if any) and wait for the GO. The gap is now ~22 s at the MIN, so ask the lead whether one beat is enough or
-   it takes two. **The lead's ruling (after the trial): about 22 s more for the expert is likely TWO new beats, not one; you plan
-   them** (rule 25, STEP 0, with these numbers). Get the beat table for seed 32 (`npx tsx reference/qa-reports/BUILD-26/b26c/beats.mts <tree> expert normal 32`).
-   **The '100 s climb floor' (the lead asked: which rule, bar or measure):** STAGE-RULES.md:84 ("Every stage takes at least 2 minutes
-   for a quick player, on every roll ... Climbs count 20 s short"; castBots.ts:116 still prints the stale ':77'), the numbers in
-   tools/inspect/eraRoll.ts:30 (`climbShort: 20`, 120 - 20 = 100 for a climb), applied by castBots.ts:26-30 (floorSeconds, runHolds).
-   In castBots' table it is a MEASURE (the 'under the floor' count; the PASS count does not drop). With `--proven` it is a BAR: a seed
-   with any bot's run under it is refused from the proven-seed list (castBots.ts:107), so 2-6's relist after the fix would lose the 8
-   adult N seeds. The lead's 125 s over 80 runs is the expert's bar on top of it.
+3. **THE BAR (the lead's correction, after the trial, replaces the 125 s bar and the two-beat plan):** Matt's STAGE-RULES.md:84,
+   a climb's floor is 100 s: EVERY bot at or above 100 s on every listed roll (`castBots --proven`, castBots.ts:107, eraRoll.ts:30),
+   and as a margin the expert MIN over 80 runs at or above 105 s. On the trial the expert MIN is 103.1 s (seed 32), 2 s short. The
+   two new beats are NOT needed for release 3. In this order:
+   (1) **The 8 adult Normal runs under 100 s, measured at hand-over (b26c/rows/cast-fix2.jsonl): all REAL runs, none rescued.**
+       seed 29: 96.1 s, 14: 96.2, 21: 98.8, 5: 98.9, 10: 99.1, 12: 99.1, 18: 99.1, 23: 99.2. Every one has 0 rescues and 0 turn-backs
+       (23 has 1 stuck spot). On the same seeds the expert takes 111.1-133.9 s, so the adult is 12-35 s FASTER than the expert. The
+       likely reason: FT_ADULT has no stand time (no standQ; the tier bots stand 0.2-0.8 of the time from the testers' numbers), so it
+       boards and walks without a pause. To check: is the adult (not tester-calibrated) a quick player by Matt's rule, or a bot
+       quicker than any tester? Bring it to the lead; do not change the stage for it.
+   (2) After the 9 lost runs (step 1a) are fixed: the expert MIN over 80 runs (seeds 1-80, or 1-40 twice per the lead) again. If it
+       is still under 105 s, bring the lead a plan for the smallest honest content (a longer street between two wheels, or one beat)
+       FIRST (rule 25).
 4. **ENGINE-WORTHY (for the lead's roadmap)**: easyMode.ts:431 costsHere counts safe rivers (Easy lays 8 hearts on 2-6 where nothing
    costs one; Normal's stageGenerator.ts:2952 `risky` leaves rivers out); one shared reading of risk, a survey of every stage first.
    And the inspector's route (tools/inspect/route.ts) slants a tower turn's climb through the floors (`traced: extended` on 2-6):
