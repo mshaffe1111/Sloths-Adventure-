@@ -285,3 +285,60 @@ test('at a climbing vine\'s foot, come in going away from it, the tier bot jumps
   const planted = play(true);
   assert.ok(planted.low > 1300, `PLANT: with the skill taken away he doubles off the ledge's end onto the street (lowest y ${planted.low})`);
 });
+
+test('fallen from a leg to the floor 379 px under it, Progress rewinds to the way up: he walks to the vine and climbs, never hops under the leg (BUILD-26f, 2-6 adult N 26)', async () => {
+  const { FirstTimerRun, FT_ADULT } = await import('./firsttimer.ts');
+  // (2-6 Normal seed 26's ground there, 3118 px higher: the floor #28/#35/#36/#84 at y 1000, its seams opened to 40 px gaps so he hops
+  //  along it as he did there (every hop took `off` under 260 in the air: b26f/dbgOff.txt), the leg #37/#38/#39 at y 621
+  //  with the dips #41/#42 at 691 between them, the climbing vine V#6 from the floor to the leg, here at the
+  //  leg's right end 790 px from him (x 1900; there 1587, 480 px), so no hop of his drifts him to it; b26e/win.mts)
+  const plats = [
+    { id: 1, x: 400, y: 1000, width: 425, height: 100, type: 'solid' },
+    { id: 28, x: 825, y: 1000, width: 280, height: 24, type: 'solid' },
+    { id: 35, x: 1145, y: 1000, width: 220, height: 24, type: 'solid' },
+    { id: 36, x: 1405, y: 1000, width: 200, height: 24, type: 'solid' },
+    { id: 90, x: 0, y: 1400, width: 2000, height: 100, type: 'solid' },
+    { id: 84, x: 1605, y: 1000, width: 395, height: 24, type: 'solid' },
+    { id: 37, x: 1321, y: 621, width: 594, height: 24, type: 'solid' },
+    { id: 38, x: 1029, y: 621, width: 200, height: 24, type: 'solid' },
+    { id: 39, x: 744, y: 621, width: 200, height: 24, type: 'solid' },
+    { id: 41, x: 1229, y: 691, width: 92, height: 24, type: 'solid' },
+    { id: 42, x: 944, y: 691, width: 85, height: 24, type: 'solid' },
+  ];
+  const vine = { id: 6, x: 1900, topY: 621, bottomY: 1000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+  const legY = (x: number) => (x > 1229 && x < 1321) || (x > 944 && x < 1029) ? 691 : 621;
+  const floor = Array.from({ length: 62 }, (_, i) => ({ x: 430 + i * 24, y: 1000 }));
+  const climb = Array.from({ length: 16 }, (_, i) => ({ x: 1900, y: 1000 - i * 24 }));
+  const leg = Array.from({ length: 47 }, (_, i) => ({ x: 1876 - i * 24, y: legY(1876 - i * 24) }));
+  const route = [...floor, ...climb, ...leg];
+  const at = floor.length + climb.length + leg.findIndex((q) => q.x < 1170);
+  const back = floor.length + climb.length;
+  const play = (plant: boolean) => {
+    let top = 9999, frames = 0, rewound = -1;
+    // eslint-disable-next-line prefer-const
+    let run: InstanceType<typeof FirstTimerRun>;
+    const onFrame = (s: { p: { y: number } }) => {
+      top = Math.min(top, s.p.y);
+      frames++;
+      if (rewound < 0 && run.prog.cur < back) rewound = frames / 30;
+    };
+    run = new FirstTimerRun('1-1', 1, { ...FT_ADULT, look: 0 }, { route, cap: 20, rescueAfter: 100, onFrame });
+    run.sim.bare(plats as never, [vine as never]);
+    run.sim.stand(1109, 1000);
+    run.sim.p.facing = 1;
+    if (plant) (run.prog as unknown as { under: () => boolean }).under = () => false;
+    // (his place along the way is still on the leg over his head, as Progress kept it after the fall: #38's point at x ~1167)
+    run.prog.cur = run.prog.hi = run.prog.best = at;
+    run.play();
+    return { x: Math.round(run.sim.p.x), y: Math.round(run.sim.p.y), top: Math.round(top), rewound, rescues: (run as unknown as { rescueXs: number[] }).rescueXs.length };
+  };
+  // (the fix: Progress goes back to the floor within 1.5 s whatever his hops do, and he walks to the vine and climbs onto the leg)
+  const up = play(false);
+  // (1.5 s: the rewind waits out 0.5 s of the clock and his first hop; 1.23 s on the fix, 4.5 s on 2f188c552)
+  assert.ok(up.rewound >= 0 && up.rewound <= 1.5, `his place along the way goes back to the floor within 1.5 s (at ${up.rewound} s)`);
+  assert.ok(up.top < 700 && up.rescues === 0, `he climbs the vine onto the leg, no rescue (ends ${up.x},${up.y}, highest y ${up.top}, rescues ${up.rescues})`);
+  // (the plant: every hop resets the fall-back clock in the air, so it stays on the leg while he hops under it. Here a still moment
+  //  between hops lets the old rewind fire late (about 5.6 s); on 2-6 none came, and he hopped 19.6 s to a rescue)
+  const planted = play(true);
+  assert.ok(planted.rewound < 0 || planted.rewound > 2.5, `PLANT: with the rewind taken away his place stays on the leg through his hops (back at ${planted.rewound} s)`);
+});

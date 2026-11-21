@@ -426,6 +426,8 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
 const PIN_AT = 50;
 /** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
 export const LEVEL_REACH = 600;
+/** px: more than a double's reach under the point he is at along the way: he fell off it (Progress.under, BUILD-26f) */
+export const UNDER_REACH = 175;
 export class Progress {
   cur = 0;
   hi = 0;
@@ -475,13 +477,23 @@ export class Progress {
   off(p: Pt): number {
     return this.pts.length ? this.d(this.cur, p) : 0;
   }
+  /** he stands more than a double's reach under the point he is at, and the way has a point about his height near him to go back to:
+   *  he fell off the leg he was on, and the way on starts back at his height (the climb that leads up). BUILD-26f, 2-6 adult N 26 and 33:
+   *  he fell from the leg at y 3741 to the floor at y 4118; his hops along the floor kept `off` under 260 in the air, so the fall-back
+   *  rewind never fired, cur stayed on the leg 379 px over his head and he jumped to and fro under it, never to the vine at x 1587 */
+  under(p: Pt): boolean {
+    if (!this.pts.length || p.y - this.pts[this.cur].y <= UNDER_REACH) return false;
+    return this.pts.some((q, i) => i !== this.cur && this.cap(i) === i && i >= this.pinFloor && !q.rope && Math.abs(q.y - p.y) <= 80 && Math.abs(q.x - p.x) <= LEVEL_REACH);
+  }
   /** after a respawn or a rescue: find him anywhere along the way */
-  relocate(p: Pt, level = false): void {
+  relocate(p: Pt, level = false, band = Infinity): void {
     let bi = 0, bd = Infinity;
     // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
     //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
     const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
-      && (!level || (this.pts[i].y >= p.y - 80 && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
+      && (!level || (this.pts[i].y >= p.y - 80 && this.pts[i].y <= p.y + band && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
+    // (`band`: a rewind by `under` takes only the points about his own height: with the plain 'his height or below' it took a point
+    //  500 px under him (2-6 adult N 3 at x 1023, y 1076 -> 1024,1577), and the far-off rewinds from there were three falls and a rescue)
     if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
       if (!ok(i)) continue;
@@ -3975,18 +3987,28 @@ export class FirstTimerRun {
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
-    if (this.prog.off(p) > 260 && !held) {
+    // (or he stands more than a double's reach under it, hopping or not: Progress.under, BUILD-26f; his hops took `off` under 260)
+    const far = this.prog.off(p) > 260;
+    // (never on a moving piece: riding a wheel's car he is under the route over the wheel by design; the rewind pulled him off it at the
+    //  car's bottom, 2-6 adult N 3 at x 1023 y 1076 on the great wheel, then three far-off falls and a rescue. BUILD-26f)
+    const rides = this.sim.platforms.find((q) => q.id === this.e.standingOnId);
+    const under = !(p.grounded && rides && (rides.type === 'moving' || rides.type === 'drift' || (rides as { wheel?: unknown }).wheel)) && this.prog.under(p);
+    if ((far || under) && !held) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
         const top = this.prog.best;
-        this.prog.relocate(p, true);
+        this.prog.relocate(p, true, far ? Infinity : 80);
         this.offRoute = 0;
+        // (a rewind by `under` alone is never counted as a fall-back: a hop's top pulls his place back up onto the leg over him
+        //  (Progress.step), and counted, three hops were 'fell back down from here 3 times' and a rescue (2-6 adult N 33 -> 23); counted
+        //  after a takeoff over 175 px up, falls the old rewind never saw (off under 260) became rescues (kid E 15 rows moved). BUILD-26f)
+        const fell = far;
         // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
         // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
         // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
         // (a pod's knock off a vine field is a hit, counted as one, never a missed climb: figPush.ts knockedRecently)
-        if (top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
-        else {
+        if (fell && top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
+        else if (fell) {
           this.fallTop = top;
           this.fallBacks = 1;
         }
