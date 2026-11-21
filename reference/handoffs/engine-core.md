@@ -2,6 +2,18 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-IDLE. FIX-IDLE (t-fix-idle from main 107870f5, 11-20 evening): Pokey's clip melt is a solid cross-dissolve (R-165.353)
+- **heroSprite.ts drawMelt:** on a clip's fade frames (blend < 1) the plain pose (1-b) and the clip (b, 'lighter') go onto ONE scratch
+  canvas (module-level, grow-only, made once) lined up with the stage's pixels, then laid down whole. Never draw two poses part-clear
+  straight onto the stage again: that paints only 1-(1-b)*b of him (the INT-15 x3268 see-through). Test: src/game/heroIdleMelt.test.ts
+  (real drawHeroSprite, a fake 2D context that tracks alpha + compositing; fails on a see-through body or a pop).
+- **What it cannot fix (the art, R-165.354):** every clip's ends are ~10 sheet px off the plain 'idle' pose and face front (two faces for
+  ~0.1 s); doze's ends are sitting (a standing ghost for ~6 frames). Table: reference/qa-reports/FIX-IDLE/REPORT.md.
+- **Trap:** drawcheck's scenarios never stand him still 4 s, so idle-only draw paths (clips, melts) never reach the perf gate. Measure them
+  with tools/perf/instrument.js on frames you step yourself (reference/qa-reports/FIX-IDLE/stills/logs/perfmelt.mjs).
+- **Seeing a blend fault:** draw the hero ALONE on a transparent canvas after each real render and count solid vs part-clear pixels
+  (stills/logs/melt2.mjs ISO mode); stage haze fooled the eye at one frame on both builds.
+
 ## 0zq-25d. ENG-25d (t-eng-25c, 11-19 9:50-11:10 PM ET): ENG-25c finished: lock, gates, stills, REPORT (no game code; code head c794249d)
 - **REPORT: reference/qa-reports/ENG-25c/REPORT.md** (the gate table, the lock, the stills, Learned). lockall vs BASE d36638be 102/102
   unchanged; so vs main's 17 are the base's own. funcheck FAILs identically on base and branch (the base's flags).

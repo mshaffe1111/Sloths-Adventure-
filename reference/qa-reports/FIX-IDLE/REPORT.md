@@ -3,9 +3,8 @@ Engine (draw), session_01FhBbYLF1MdAmiwcDyxoKtA. Branch t-fix-idle from origin/m
 reference/packets/2026-11-20/FIX-IDLE.md (on ccr-ea739a2f-dfcee4). Started 7:13 PM ET 11-20 (by `date`).
 
 ## EXACT NEXT STEP (kept current)
-(8:01 PM ET) Suite PASS (3 shards, 7:29-7:58 PM ET). Running: tierBots on the branch, lockall --layouts 16 on main (scratch worktree
-of 107870f5) for the compare. Then: lockall --check on the branch, drawcheck, clipcheck; fill the Gates table; push; final hash to the
-lead. If stopped: rerun the missing gate lines with the commands in the Gates table on the branch head.
+(8:20 PM ET) Every gate PASS so far (table below). Running: lockall --check on the branch against main's lock, and clipcheck. Then: fill
+those two lines, push, send the final hash to the lead. If stopped: rerun those two commands from the Gates table on the branch head.
 
 ## Commits (t-fix-idle)
 | Commit | What | Time (ET, by `date`) |
@@ -88,10 +87,47 @@ being replaced by R-165.354). What a player can still see, and why:
    The cure is the art (R-165.354: doze's first and last frames standing; each clip end re-anchored to the plain pose), not the draw.
 
 ## Gates (draw-only branch, gates.md scoping)
-__GATES__
+Every line is on the code at b81cfa1d3 (the fix; later commits add only reference/ files). Times ET by `date`.
+
+| Gate | Command | Result |
+|---|---|---|
+| tsc | `npx tsc --noEmit -p .` | PASS (exit 0, 7:27 PM) |
+| Suite, 3 shards | the CLAUDE.md glob (609 files), `awk 'NR%3==i'`, run in a worktree pinned at 0f9316f8a | PASS: 3,984 tests, 3,981 pass, 0 fail, 3 todo, 0 cancelled, 0 skipped (shards 1,369 / 1,286 / 1,329; 7:29-7:58 PM) |
+| Planted test | `npx tsx --test src/game/heroIdleMelt.test.ts` | RED on acefd5d80 (main + test), GREEN on b81cfa1d3 (2/2) |
+| drawcheck | `node tools/perf/drawcheck.mjs` | PASS (671 s, 8:01-8:12 PM). Its scenarios never stand Pokey still for 4 s, so they never reached drawMelt (no heroSprite drawMelt site in its raw results): see the melt-frame measure below |
+| drawcheck's instrument on melt frames | stills/logs/perfmelt.mjs (tools/perf/instrument.js on the real page, 1-1 seed 791759 x900, sideways, frames 117-130, both builds) | Melt frames 122-128 on the branch: 77 drawImage on the main canvas (the old melt drew 78; plain frames 77), +64k px drawn area (the 300x286 box laid once instead of two sprite draws), 0 gradients, 0 readbacks, 0 shadow, 0 filter, 0 composite sets on the main canvas; on the scratch canvas one clearRect of 85.8k px and 'lighter' (allowed). newCanvas 1 on the first melt only (the scratch canvas, made once), 0 after |
+| clipcheck | `node tools/perf/clipcheck.mjs` | __CLIP__ |
+| CI tool line | `npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts` | PASS: 39 tests, 39 pass, 0 fail, 0 todo (7:27-7:28 PM) |
+| tierBots | `npx tsx --test tools/inspect/tierBots.test.ts` | PASS: 9 tests, 9 pass, 0 fail, 0 todo (7:58-8:01 PM) |
+| lockall vs main's lock | main (107870f5, scratch worktree): `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json` (3,264 builds of 102 stages, 7:58-8:06 PM); branch: `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-main.json` | __LOCK__ |
+| artcheck | `node tools/perf/artcheck.mjs` | PASS (7:27 PM) |
+| knowncheck | `node tools/perf/knowncheck.mjs` | PASS (7:27 PM) |
+| generality | `npx tsx tools/engine/generalitycheck.ts` | PASS: 66 engine files, 26 literals, 26 known (7:27 PM) |
 
 ## Polish check
-__POLISH__
+Looked at as Matt will on a phone, 2x crops, both orientations:
+- stills/2-5-rock/SHEET-...-melt-in-sideways.jpg, frames 123-126: BEFORE the rock and the stump show through his legs and body, and
+  his body is a pale wash. AFTER his body is solid on every frame; you cannot see the stump through him. PASS for see-through.
+- Same sheet: a second face (the clip's front-facing one) shows over his 3/4 face for about 3 frames (124-126), and a faint second
+  outline about 4 world units to one side. NOT fixed by this job: it is the clip art (table above), logged by the lead as R-165.354.
+- stills/1-1/SHEET-...-alone-doze-in-*.jpg: the standing ghost above the sitting doze for about 6 frames. NOT fixed: art, R-165.354.
+- stills/2-5-rock/SHEET-...-settle-8-20-40-60-*.jpg: settle frames 8/20/40/60 are the plain pose, solid on both builds (no clip yet).
+- Melt timing on screen: the same frames melt on both builds (the timings did not move).
 
 ## Method used, lessons applied, method update, learned
-__METHOD__
+- **Method used:** reference/methods/render-fix.md (shoot the spot headless, find the draw call from the page, a test that fails on the
+  base, main stays the same, gates on the final code), with a new measure: draw the hero ALONE onto a transparent canvas after each real
+  render and count solid vs part-clear pixels. That number settled what eyes on a hazy stage could not (he looked pale on BOTH builds at
+  one frame; the count showed the haze, not the melt).
+- **Lessons applied:** D1/D2 (judge the real screen, both orientations); D7/D24 (checked the art itself before choosing the fix: the
+  clip ends do not match the plain pose, so a hard cut would pop); D19 (a gate must call the same code the screen calls: the planted
+  test drives the real drawHeroSprite, and drawcheck was checked for whether it reached drawMelt at all: it did not, so the melt frames
+  were measured with its own instrument); D30 (times by `date`; one message to the lead was headed by guess, 7:31 for 7:28, corrected
+  in the next message); D23 (stills stamped with the build they came from; the exact spot needed t-int-15's 2-5, so the after build is
+  t-int-15 + the fix, not pushed).
+- **Method update (proposed for render-fix.md):** (1) when a fault is about how something blends (see-through, doubled, washed out),
+  measure the sprite ALONE on a transparent canvas (perfmelt.mjs / melt2.mjs ISO mode) before judging stills: stage haze and lighting
+  fool the eye. (2) Before trusting a drawcheck PASS for a change, grep its raw results for the changed function: a path its scenarios
+  never reach passes by default.
+- **Learned (for the next engine member):** drawcheck's scenarios never idle Pokey for 4 s, so every idle-only draw path (clips, melts)
+  is outside the perf gate today. A drawcheck scenario that stands him still for ~5 s would close that (a gate first, not a note).
