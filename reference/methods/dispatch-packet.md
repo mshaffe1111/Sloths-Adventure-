@@ -69,3 +69,6 @@ Every packet's BOX says: **hand over at 320k REAL context OR 28 minutes after yo
 
 ## Every packet forbids a foreground wait on a background run (D113, 11-21)
 Every packet says: **never wait in the foreground for a background run** (no until/sleep loop, no blocking Monitor, no foreground tail -f): read its tail, do other work, or END YOUR TURN; the run finishing and any lead message both wake you. **Start every long run with the Bash tool's run_in_background flag, not a trailing '&' or nohup inside a command**: only a run_in_background task wakes the member when it ends (UI-372b sat idle about 10 minutes on a '&' suite, 11-21). A member in a foreground wait reads nothing (ENG-26i read a ruling about 5 minutes late while it sat waiting on its own background sweep, 11-21: a D87 repeat; "run long commands in the background" alone did not cover waiting on them).
+
+## Every engine packet starts the full suite on its base first (D114, 11-21)
+Step 0 of every engine packet: **the full unit suite on the BASE, started first with run_in_background**, its verdict in the REPORT; a red on the base is named to the lead before building on it (D40). Three members on t-build-26 handed over with the suite unrun (the box leaves no room for it at the end), so two reds (tests still laying 2-6 as a draft after it was listed) hid until the fourth member ran it.
