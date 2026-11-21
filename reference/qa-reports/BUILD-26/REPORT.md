@@ -9,12 +9,13 @@ plan; feet.mts: each gate on a built roll and the wood under it, works on trees 
    this head in the background** (`npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts
    src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts`, about 20+ min on 4 cores; its result is what the re-pins
    are taken on, rule 20).
-   Still to run for the re-pins (rule 20: once, on this list, then re-pin): the tools tests that read 1-4 (CI's engine-tools job runs them):
-   `npx tsx --test tools/engine/tipwalk.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/score.test.ts tools/inspect/bands.test.ts tools/inspect/castBots.test.ts tools/inspect/travelBots.test.ts`
-   (then the whole CI tool line, gates.yml line 157). A red that names a 1-4 roll or seed: re-pin it from the new list (eng26k/cmp.mts
+   **DONE on 5981c26c0: the tools tests that read 1-4 pass 55/55, none needs a re-pin** (`npx tsx --test tools/engine/tipwalk.test.ts
+   tools/difficulty/coveragecheck.test.ts tools/difficulty/score.test.ts tools/inspect/bands.test.ts tools/inspect/castBots.test.ts
+   tools/inspect/travelBots.test.ts`).
+   Then the whole CI tool line (gates.yml line 157) in THE FULL SET. A red that names a 1-4 roll or seed: re-pin it from the new list (eng26k/cmp.mts
    says which seeds' plans moved), never loosen it. **Two reds that are NOT the relist** (the same two fail on 3310f3ac9, measured):
    listedWheelSheet.test.ts and towerWater.test.ts, `withTestStage: 2-6 is already listed` (2-6 is listed, n 100; the tests still lay 2-6
-   as a draft). Sent to the lead for a ruling; do not count them as re-pins.
+   as a draft). FIXED in c45496570 on the lead's ruling (re-pointed at the listed 2-6); they are not re-pins.
 2. **Load speed (quiet: nothing else running).** Frozen trees: `git worktree add --detach <dir> 4ea253b8c` and `... 5981c26c0` (or the
    head with the re-pins: same src/game/gen2), each with a node_modules link (`npm ci --legacy-peer-deps` once in the checkout; plain
    `npm ci` fails ERESOLVE). Then, one at a time:
@@ -62,7 +63,8 @@ plan; feet.mts: each gate on a built roll and the wood under it, works on trees 
 | full src suite | 2,003 ok at the box, still running; reds only the two 2-6 tests (fixed) | 5981c26c0; RE-RUN as step 0 |
 | listedWheelSheet + towerWater | 3/3; each RED on its planted cause | c45496570 |
 | tsc | clean | c45496570 |
-| tools tests that read 1-4, load speed, stills, castBots, tierBots, lockall, THE FULL SET | NOT RUN (the box) | the EXACT NEXT STEP |
+| tools tests that read 1-4 (tipwalk, coveragecheck, score, bands, castBots, travelBots) | **55/55** | 5981c26c0 |
+| load speed, stills, castBots, tierBots, lockall, THE FULL SET | NOT RUN (the box) | the EXACT NEXT STEP |
 
 ## Lessons applied
 D111 (the box from `date`: started 4:46 PM ET, handed over at 28 minutes with the EXACT NEXT STEP), D113 (every long run with
