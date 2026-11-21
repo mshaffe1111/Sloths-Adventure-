@@ -1,7 +1,7 @@
 # PICK-THUMBS: the testers' World 1 page, Matt's layout (R-165.368)
 
 Member: PICK-THUMBS (UI, Opus 5.5 high). Branch `t-pick-thumbs` from `origin/t-keeper-pick` @ 599c4d5b3.
-Final head: __HEAD__ (written __TIME__ ET by `date`).
+Final head: 8b77dd527 (code 2f0a7dae2) (written 11:41 AM ET by `date`).
 
 Matt, 11-21 10:28 AM ET: "smaller pictures of the ... 9 different levels, letting somebody pick which level they want to play. And then also
 have some of the controls like we have. And then a brief explanation of how to start it." + "a brief explanation of what the game is about".
