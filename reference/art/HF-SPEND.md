@@ -108,3 +108,10 @@ ART-NEXT-c bridges total: ~9.7 sandbox-min, **~$0.44** of its $2 cap. ART-NEXT-c
 | 12:22-12:38 PM | ART-NEXT-d R-165.354 + R-165.370: sandbox 6b01d35defaf5e14f4b5e16d (rtx-pro-6000, --forward-hf-token, 12:22:50-12:38:12 PM by `date`, ~15.4 min: ~1.5 min image pull, Wan2.2-I2V-A14B load 65 s, 79-98 s a gen): bridgegpu.py via runbridge.sh 7dd1cfe93 spec-bridge2, first + last frame pinned, 8 gens (B4 sit-down x seeds 5, 37, 47, 61 at 33 frames; a NEW belly-scratch SC, plain pinned first AND last, x seeds 7, 19, 31, 43 at 41 frames), ALL 8 back, each repacked at WebP q80 in the sandbox (6 parts, not 10) and pulled + committed as it landed (D98: 8 pulls); terminated after the last pull. | ~$0.70 (cap $2) | 8 takes: ~$0.09 a take |
 
 ART-NEXT-d total: ~15.4 sandbox-min, **~$0.70** of its $2 cap. Balance ~$41.25 (from ~$41.95). Logged 12:38 PM ET.
+
+## 2026-11-21 (ART-UNDER, t-art-under; the lead's cap $1.50, ONE sandbox)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 1:50:57-2:16:46 PM | sandbox 6b01e811efaf5e14f4b631ad (rtx-pro-6000, --forward-hf-token, timeout 32m at the cap; 25.8 min creation to terminate by `date`): Qwen-Image-Edit-2511 via tools/art/hfunder/run.sh. spec-under (40 steps, ~75-94 s a 1536x384 take): under0 x4 + corner s11/s23, REJECTED (overhang painted navy: "cool deep shadow" in the prompt), stopped. spec-under2 (30 steps, warm-brown shadow): warmu0/warmc/warmu1/warmu2 x4 (~56 s a strip, ~50 s a corner). ALL 22 takes back, each piece pulled + committed as it landed (D98: 6 pulls); terminated at the last pull | lead (ART-UNDER packet) | ~$1.18 | 16 usable takes for World 2's earth underside (3 strips x4, corner x4) + 6 rejected; picks pending. ~$0.07 a usable take |
+
+ART-UNDER total: 25.8 sandbox-min, **~$1.18** of its $1.50 cap (minutes x $2.75/60). Balance ~$40.07 (from ~$41.25). Logged 2:17 PM ET.

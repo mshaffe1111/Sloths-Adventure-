@@ -3,7 +3,7 @@
 Status: takes IN, sheets sent to the lead for the pick. NOT cut into the sheet yet (waits on the pick, packet step 4).
 
 ## Spend
-One sandbox 6b01e811efaf5e14f4b631ad (rtx-pro-6000, --forward-hf-token, timeout 32m set at the $1.50 cap). SPEND_LINE
+One sandbox 6b01e811efaf5e14f4b631ad (rtx-pro-6000, --forward-hf-token, timeout 32m at the cap): 25.8 min creation to terminate, **~$1.18** of $1.50. Balance ~$40.07. HF-SPEND row in.
 
 ## Takes (reference/art/hfunder/takes/, every one pulled + committed as its piece landed, D98)
 - spec-under (40 steps): under0 x4, corner s11/s23. REJECTED: the overhang painted NAVY/blue-black (my prompt said "cool deep
