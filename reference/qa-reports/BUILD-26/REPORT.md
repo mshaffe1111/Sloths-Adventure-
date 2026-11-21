@@ -1,3 +1,71 @@
+# ENG-26m (on t-build-26 from a840ac5ff): 1-4 (relisted) measured on two FIXED frozen trees. Started 5:43 PM ET 11-21 (by `date`)
+Trees (D115, frozen, never edited but as named): OLD = 4ea253b8c (1-4 before the walk-off judge), RELISTED = 626fac5ac (1-4 relisted, before
+BUILD-26c's bot fixes), each a detached worktree with the checkout's node_modules linked. ONE heavy run at a time, all in the background
+(D113), in one serial chain. Commits: 75d68eea8 (engine-core.md §0zr-26, the tower lines), this REPORT. No game code changed.
+Saved: eng26m/ (rowdiff.mjs: castBots rows row for row; the logs and rows).
+
+## EXACT NEXT STEP
+1. **castBots 1-4 seeds 1-40, both settings, every tier, --par 4, OLD then RELISTED (one chain, still running in MY container at the box:
+   eng26m chain2; I append the verdict when it wakes me).** If my container is gone, re-run it on fresh frozen worktrees of 4ea253b8c and
+   626fac5ac (`git worktree add --detach <S>/old 4ea253b8c`, `<S>/rel 626fac5ac`, node_modules linked), one at a time, in the background:
+   `cd <tree> && npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --par 4 --rows <S>/rows-<old|rel>.jsonl`, then
+   `node reference/qa-reports/BUILD-26/eng26m/rowdiff.mjs <S>/rows-old.jsonl <S>/rows-rel.jsonl` (per tier OLD/REL pass counts, DROP if any
+   tier fell; every NEW miss listed), and trace each new miss on RELISTED twice (rule 28):
+   `npx tsx reference/qa-reports/BUILD-26/eng26m/trace.mts <S>/rel 1-4 "<bot> <setting> <seed>" ...` (one line: seed, x, frame, what took him).
+   45 plans were re-laid, so rows move by design; what may not move: any tier's pass count.
+2. **tierBots 1-1 on RELISTED** (`cd <S>/rel && npx tsx --test tools/inspect/tierBots.test.ts`, 9/9): queued after castBots in the same chain.
+3. **THE FULL SET** runs in release 3's integration, on the head that ships (the packet). Not run here (D96: none is claimed).
+4. **The lead's call on 1-4's build over budget** (step 1): it was already over on OLD; a packet or a known item.
+
+## Step 1: the phone's load speed (OLD vs RELISTED)
+| run | OLD 4ea253b8c | RELISTED 626fac5ac | limit | verdict |
+|---|---|---|---|---|
+| loadtime.mts 1-4 Normal (100 listed seeds, best of 3, desktop) | p50 39.2, p95 46.6, max 60.2 ms | p50 41.4, p95 48.2, max 50.0 ms | fell to search 0 | 0 fell, both |
+| loadtime.mts 1-4 Easy | 38.7 / 44.9 / 48.1 | 40.1 / 45.1 / 46.6 | 0 | 0 fell, both |
+| loadtime.mts 2-6 Normal | 7.8 / 10.1 / 13.2 | 6.3 / 7.9 / 15.0 | 0 | 0 fell, both |
+| loadtime.mts 2-6 Easy | 8.2 / 9.4 / 11.6 | 7.4 / 8.9 / 11.8 | 0 | 0 fell, both |
+| buildcheck 1-4 (4x CPU, 30 builds a setting) Normal | p50 192, p95 **581**, max 596 ms | p50 197, p95 **455**, max 791 ms | p95 150 ms | **FAIL on BOTH** |
+| buildcheck 1-4 Easy | p50 162, p95 **210**, max 251 | p50 175, p95 **205**, max 218 | 150 | **FAIL on BOTH** |
+| buildcheck 2-6 Normal | p50 34, p95 48, max 76 | p50 30, p95 44, max 60 | 150 | PASS both |
+| buildcheck 2-6 Easy | p50 39, p95 53, max 66 | p50 31, p95 39, max 41 | 150 | PASS both |
+- **The breach, named (sent to the lead):** 1-4's build at the start of Play is over PERFORMANCE-RULES §1's 150 ms p95 at 4x CPU on BOTH
+  trees, Normal and Easy; even the p50 is over (162-197 ms). It was over on OLD, before the walk-off judge, so the relist did not cause it
+  and is not worse (p50 +5 / +13 ms, p95 lower; one run each, so the p95s are noisy). CI's buildcheck times 1-1 only (gates.yml), so no
+  job reds. The lead's call: a packet (the build's own cost on a tower: ENG-26h's profile, reachTable and roofedDrop), or a known item.
+- OLD's tree had no BUILDCHECK_STAGE (93246fa93 came after it): its tools/perf/buildcheck.mjs and buildtime.ts were replaced by
+  93246fa93's for these two runs (measurement tools only; OLD's src untouched; the page builds the stage on its own kit, listed.ts).
+
+## Step 2: CI timing (D99)
+| run | OLD 4ea253b8c | RELISTED 626fac5ac | CI limit | verdict |
+|---|---|---|---|---|
+| `seedlist.ts 1-4 --check`, ALONE (nothing else running) | **PASS**, 100 seeds clean on both settings, verdicts refuse 0; **152 s** | **PASS**, same; **99 s** | the seedlists job's 45 min (gates.yml line 113), a SHARD | inside |
+| `lockall.ts --layouts 16`, alone | 452 s (3,264 builds of 102 stages) | 435 s | **none: lockall is in no workflow** (grep of .github/) | no CI limit to breach |
+- 1-4 is in **shard 3 of 4** on RELISTED (`registrycheck.ts --shards --print`: 1-2, 1-4, 1-9, 2-5). The relist made 1-4's check 53 s
+  FASTER here (gateRun: no rerolls), so the shard's time cannot have grown from 1-4. A CI runner is slower than this container (D99:
+  1-6 was 17.6 min on a runner); the shard's whole time on a runner is R-165.352's measure, not taken here.
+
+## Step 3: castBots 1-4 seeds 1-40, both settings, every tier, OLD vs RELISTED (rule 28); tierBots
+- **PENDING at the box (D111):** castBots OLD then RELISTED, --par 4, then tierBots 1-1 on RELISTED, one chain in the background. The
+  verdict is appended below when the run wakes me.
+
+## Step 4: lockall --layouts 16, RELISTED vs OLD; engine-core.md's tower lines
+- **lockall RELISTED `--check` OLD's lock: 100/102 stages unchanged; the movers are 1-4 and 2-6 only (both intended)**, the same as
+  ENG-26h's lock. 1-4: size, platforms, vines, collectibles, exitTotemX, checkpoints, gen2, clusters, gates, pods, proto.hints,
+  proto.beats, proto.kitDecor, proto.dress, spawnY (the relist re-laid it). 2-6: platforms, collectibles, proto.decor. Exit 1 only
+  because no `--intended` was passed (on purpose: so every mover is printed). "gen2 gained verdicts and drops (not hashed)" lists 37
+  stages: that is the field the lock strips, not a change.
+- **engine-core.md §0zr-26 written** (75d68eea8): ENG-26g's judge list (walkOff, wall faces, water by his middle, caps bounce,
+  openEnds step + run, towerCatches runX / takes, clearFoot), ENG-26j's gateRun (164/173/191 px flown run -> 186/195/214 px foot) and "the lay
+  adds nothing by a sealed piece", ENG-26h's cost findings (refused rolls, not flights; the profile; the three exact speed-ups d12ffcacf,
+  checked on the branch and in RELISTED, not in OLD), the seed-2 / stand.mjs traps, and the 1-4 build breach above.
+
+## Lessons applied
+D96 (no gate called run that was not: THE FULL SET is release 3's), D99 (CI time measured alone against each job's limit), D102 (lean reads:
+the packet's sections only), D105/D57/D87 (ReadNotifications at every step boundary and push), D107/D111 (the 28-minute box by `date`),
+D109 (no clock times to the lead), D113 (every run in the background; the chain waits, I do not), D114 (no second suite: step 0 carried),
+D115 (two frozen trees at fixed hashes; BUILD-26c's towerRoute moves on the branch, not under these runs), rule 28 (40 seeds, both
+settings, every new miss traced), law 3 (the named commits checked as ancestors before they were written into engine-core.md).
+
 # BUILD-26d (on t-build-26 from 5be367dd8): the lost runs traced (2-6 and 1-4), one bot fix as an UNPLANTED TRIAL. Started 5:52 PM ET 11-21 (by `date`); handed over at the 28-minute box
 Commits: this one (TRIAL: firsttimer.ts climbUpVine, the climb-jump toward a vine beside him, never his facing; this REPORT; b26d/).
 Saved: b26d/ (trace-childN-base.txt, trace-childN-trial.txt, trace-14-base.txt; traceS.ts, framesS.ts, dumpS.ts, cornersS.mts: the b26
