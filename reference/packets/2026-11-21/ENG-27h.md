@@ -5,9 +5,12 @@ Long runs in the BACKGROUND on a frozen worktree; never edit the tree a run read
 READ LEAN (D102, D90): this packet; `git show origin/t-eng-27:reference/qa-reports/ENG-27/REPORT.md` top section ONLY (ENG-27g's EXACT NEXT
 STEP); level.md rules 21, 28; LAWS headlines; LESSONS D57/D87, D63, D96, D102, D105, D107, D109. Code by grep and line ranges.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-27 at its head when you start (ENG-27g's hand-over; its REPORT names it). Push there.
-1. Rule 28 for ENG-27g's two bot skills (fromTakeoff narrowed, boardLog): read its chain's table (2-3, 2-5 vs committed rows; 2-1, 2-2, 2-3, 2-4,
-   2-5, 2-6 base vs head); if it died, re-run it. No pass may flip; every moved row explained by the skill. Send me the table.
+BASE: t-eng-27 at 71c3a293b (ENG-27g's final). Push there.
+1. Rule 28 for ENG-27g's two bot skills is RED by the lead's bar: its table (r28-27g/: base both skills off, head both on, same frozen tree)
+   shows every tier's pass count ROSE and every moved row explained, but 8 pass-to-fail FLIPS untraced: 2-1 kid N 11; 2-2 kid N 4; 2-4 kid N
+   9, 10, 16, 22, 27 and adult N 18. Trace each (the frame the base and head runs part, what the skill decided there, what then took him). A
+   flip the skill CAUSES by a wrong read: narrow the skill and re-diff. A flip from shifted random draws after a right read: show the parting
+   frame and name it. Send me the 8 lines before the merge.
 2. The merge: origin/t-eng-ground at the hash the lead sends (ENG-GROUND-d is finishing the descent's pools), --no-ff; then tsc + pacerLay 19/19
    + pacerBehindBanks + groundStack + legsHome + postLay; engine-core.md's groundStack line.
 3. The race table on the merged head (home and post, seeds 1-6, both settings, middle / expert / ride-only); any middle or expert loss traced.
