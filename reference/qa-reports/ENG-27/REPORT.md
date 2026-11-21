@@ -1,9 +1,21 @@
-# ENG-27i REPORT (handed over at the D111 box, 28 min; written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
+# ENG-27i REPORT (handed over at the D111 box, 28 min; rewritten 3:59 PM ET by date; first written 3:57 PM ET 11-21 by date). Base 7d5200da8; branch t-eng-27, head: this commit
 ## EXACT NEXT STEP (ENG-27j, from t-eng-27 head; read only this section, D90)
 0. Setup: `npm install --legacy-peer-deps`, then `git checkout package-lock.json`. Sparse worktrees: mkwt-27g.sh.txt (set S to your scratchpad).
    Rule 28 is DONE for the refined boardHop (below): do not re-run it. Its tools: r28patch-27i.py.txt (the refined skill for every tree),
    r28-runner-27h.ts.txt, r28diff-27h.py.txt; probes r28moved/r28lives/r28fire-27i.py.txt, bhfire-27i.ts.txt (+ r28probe-27i.diff.txt:
    NO_HOP=1 turns boardHop alone off, __bhf logs each fire, __up each single the testers' dblShare turns into a double).
+1a. **FIRST (the lead's ruling (3), before the merge): explain 2-4 child Normal's lives 185 -> 205 IN FULL (a shipped stage).** Done so far:
+   the four untraced lives, one line each (trace runs on hd3; none is a wrong boardHop read): child N 14 x 24458, walked onto log 107 and ran
+   off its front (the named walk-off; the fire's single was not the move made); child N 18 x 16483, the same walk-off on log 76; middle N 22
+   x 23087, boardHop's single came down on log 102 as read, then the ride's hop off the log fell short (R-165.381); middle N 38 x 16295,
+   the single came down on the bank's last 5 px (16126 of 16121), then he walked onto log 73 and off its front. Per row and per zone:
+   r28-27i/2-4-childN-lives.txt (hop on vs NO_HOP=1, 35 moved rows, +20): by 1000-px zone, lives on/off (fires): 16k 33/30 (6), 21k 19/23 (4),
+   22k 38/37 (12), **23k 41/28 (0)**, 24k 24/22 (13), **25k 23/17 (0)**. So the extra lives sit where boardHop NEVER fires (23k +13, 25k +6).
+   Next: for the rows with extra 23k/25k lives (seeds 10, 12, 13, 27, 39, 40 carry most), find the parting frame (r28cmp-27h.py.txt on
+   r28trace runs, NO_HOP=1 for base) and test the hypothesis that a life lost at 24k/25k after a boardHop landing puts him back behind 23k's
+   hazard, so he crosses it again (re-exposure), against the other: that the runs diverge in the bot's r() draws (the trace's nr). One line
+   per life. If any is a wrong boardHop read: fix it generally and re-run rule 28 on 2-4 only. Lead's rulings in hand: dblShare's upgrade of a
+   boarding single STAYS (BOTS.md calibration); the ride's hop off a drifting log falling short is R-165.381, after 2-7 ships, left alone.
 1. **The merge** (packet step 3): origin/t-eng-ground at the lead's green hash (ENG-GROUND-e; none had come at this handover), --no-ff.
    A trial on 8a2257760 gave the two conflicts ENG-27g mapped, nothing else: engine-core.md (keep both sections; replace our line 18
    "groundStack (t-eng-ground, NOT merged here yet)..." with its real line, pointing at §0zq-GROUND) and w2.ts lip() (ours
@@ -31,11 +43,12 @@
   middle E 13->14, expert N 76->72; 2-4 child N 185->205, middle N 121->116, expert N 137->131; 2-5 middle N 9->7; 2-3, 2-6 same.
 - Lives within 3 s after a boardHop FIRE, hop on vs NO_HOP=1 (2-1's 15 screened rows, 2-4's 111 moved rows; 2-2's 24: none after any
   read). Lost the same way with it off: 2-1 4, 2-4 1. The rest, traced (r28-27i/upgrade-probe.jsonl; frames in the trace runs):
-  - The single came down ON the log as singleLands said, then a hop FROM the log (here = drift: the ride's, not boardHop's) fell short
+  - The single came down ON the log as singleLands said, then a hop FROM the log (here = drift: the ride's, not boardHop's; R-165.381, the lead's) fell short
     0.3-1.3 s later: 2-1 child N 23 (x 24834), middle N 2 (14436), middle N 36 (24854); 2-4 middle N 22 (23087).
   - The testers' double habit: 2-1 child N 23 t 248.3, startJump got boardHop's single, dblShare (firsttimer.ts:3845, about 24%) made it
-    a double that flew over log 114 (24606-24756) into the 72 px before log 111 (x 24791). Lead's call: exempt a boarding hop like aimedDrop?
+    a double that flew over log 114 (24606-24756) into the 72 px before log 111 (x 24791). Lead's ruling: it STAYS (the testers' habit).
   - The named log-front walk-off (walked on, rode, ran off the front): 2-4 child N 14 (24458), child N 18 (16483), middle N 38 (16295).
+  - 2-4 child N +20 NOT yet explained in full: step 1a.
   - A fire logged 850 px from the life (a look-ahead point): 2-4 child N 12, child N 30: not his jump.
 - pacerLay 19/19 on 7d5200da8 (the refined head), pacerLay-27i.txt.
 ## Done / not done
