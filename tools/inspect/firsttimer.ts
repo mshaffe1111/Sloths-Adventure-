@@ -2613,9 +2613,12 @@ export class FirstTimerRun {
       // A jump away from a trunk never grabs it (engine.ts wantGrab), and his facing ran off the ledge's end: 2-6 child Normal 3, 5,
       // 7, 8, 18, from x 235 on the edge-wheel turn's ledge (x 225-465), 15 px left of its vine (x 250), a double left off the end,
       // 351 px down to the street, 8 times, rescued (BUILD-26d))
+      // (and he steers to the vine's x and lets go there, as for a ledge: held the whole double he flew past it, off the ledge's far
+      // end: 2-6 child Normal 4, 8, 23, 24, middle Normal 27, from x 1497 on #66 (x 1327-1547), the vine at 1529, a double right to the
+      // floor 175 px down, 8 times, rescued (BUILD-26e))
       const trunk = q ? undefined : this.climbUpVine(p);
-      const d: -1 | 0 | 1 = trunk ? (trunk.x > p.x + 6 ? 1 : trunk.x < p.x - 6 ? -1 : 0) : far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
-      const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : null;
+      const d: -1 | 1 = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
+      const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : trunk ? trunk.x : null;
       this.climbJump = true;
       this.climbToX = toX;
       return this.decide(toX === null ? d : toX > p.x + 6 ? 1 : toX < p.x - 6 ? -1 : 0, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
