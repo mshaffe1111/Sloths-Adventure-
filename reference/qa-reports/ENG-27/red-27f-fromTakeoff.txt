@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+not ok 1 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+  ---
+  duration_ms: 1834.710626
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:233:3'
+  failureType: 'testCodeFailure'
+  error: "post Normal seed 4: 101.5 s against the boat's 100.76 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:250:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+not ok 2 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+  ---
+  duration_ms: 1035.351339
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:233:3'
+  failureType: 'testCodeFailure'
+  error: "post Normal seed 5: 111.7 s against the boat's 103.44 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:250:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3200.490155

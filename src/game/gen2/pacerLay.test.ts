@@ -223,3 +223,31 @@ for (const setting of ['normal', 'easy'] as const) {
     });
   }
 }
+
+// (the bot reads a gap from where he takes off, SKILLS.fromTakeoff (firsttimer.ts jumpFor): a press made before the lip needs the
+//  ground to the lip as well as the gap, so a single that cannot carry it is a double. Planted on the toy's own water (level.md rule 21:
+//  RED with the skill off): post Normal seed 5's middle took a single from 157 px before a 133 px safe pond and was splashed back eight
+//  times there (x 6591), and lost the race by 8.3 s; seed 4's took a single from 107 px back on a log toward a bank 77 px past its
+//  front, came down on the log's end and walked off it into the water (x 2856), and lost by 0.7 s. ENG-27f)
+for (const seed of [4, 5]) {
+  test(`bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed ${seed}; RED without it`, async () => {
+    const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
+    const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
+    const race = (on: boolean) => {
+      const was = SKILLS.fromTakeoff;
+      let piece: PacerPiece | undefined;
+      try {
+        SKILLS.fromTakeoff = on;
+        homeRun('middle', 'normal', seed, 1, { onFrame: (sim: { e: unknown }) => {
+          piece ??= (sim.e as { pieces: unknown[] }).pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
+        } } as never, POST_CODE);
+      } finally {
+        SKILLS.fromTakeoff = was;
+      }
+      return piece!.verdict!;
+    };
+    const v = race(true), off = race(false);
+    assert.ok(v.won, `post Normal seed ${seed}: ${v.him} s against the boat's ${v.boat} s`);
+    assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
+  });
+}

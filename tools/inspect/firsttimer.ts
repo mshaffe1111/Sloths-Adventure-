@@ -705,7 +705,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -1546,7 +1546,12 @@ export class FirstTimerRun {
       if (d >= 5 && d < gap) gap = d;
     }
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
-    if (gap > one && gap < 600) return 'double';
+    // (SKILLS.fromTakeoff: a jump's reach is flown from where he takes off, so the gap is read from there, his own ground to the lip
+    //  included, not from the lip: a press 157 px before a 133 px pond, or a hop from 107 px back on a log toward a bank 77 px past its
+    //  front, needs more than a single's 175 px. Read from the lip, he took a single and came down short: eight splashes at one pond
+    //  (2-7's toy, post Normal seed 5, x 6591) and a fall off a log's end short of the far bank (post Normal seed 4, x 2856), ENG-27f)
+    const run = SKILLS.fromTakeoff ? Math.max(0, (edgeX - p.x) * dir) : 0;
+    if (gap + run > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
     return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
   }
