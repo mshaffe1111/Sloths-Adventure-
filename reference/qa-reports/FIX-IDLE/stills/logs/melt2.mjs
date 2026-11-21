@@ -41,11 +41,11 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await p.evaluate(() => window.__freezeNow?.());
   const built = await p.evaluate((E) => { const e = eval(E); const g = e?.currentStage?.gen2; return { id: e?.currentStage?.config?.id, seed: g?.seed ?? e?.currentStage?.seed }; }, E);
   console.log('BUILT', btag, tag, JSON.stringify(built));
-  const info = await p.evaluate(async ([X, E]) => {
+  const info = await p.evaluate(async ([X, E, process_pick]) => {
     const e = eval(E);
     e.isPaused = true;
     const under = e.platforms.filter((q) => q.x <= X && X <= q.x + q.width && !q.hidden).sort((a, c) => c.y - a.y);
-    const pl = under[0];
+    const pl = process_pick === 'top' ? under[under.length - 1] : under[0];
     if (!pl) return { none: true };
     Object.assign(e.player, { x: X - e.player.width / 2, y: pl.y, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 0 });
     for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
@@ -53,7 +53,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const hc = await import('/src/game/heroClips.ts');
     hc.resetHeroClips();
     return { plat: pl.id, top: Math.round(pl.y) };
-  }, [+xs, E]);
+  }, [+xs, E, process.env.PICK ?? 'low']);
   console.log('PLACED', JSON.stringify(info));
   for (let f = 1; f <= MAXF; f++) {
     const r = await p.evaluate((E) => { const e = eval(E); window.__alphas = []; window.__watch = false; window.__tick?.(33.3); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); return { px: e.player.x, py: e.player.y, cx: e.camera.x, cy: e.camera.y, z: e.zoom, g: e.player.grounded, vx: e.player.vx }; }, E);
