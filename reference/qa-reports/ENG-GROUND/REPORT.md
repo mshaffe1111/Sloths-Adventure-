@@ -1,5 +1,5 @@
 # ENG-GROUND-e REPORT (handover at the 28-minute box, D111; branch t-eng-ground, code head 2d4e0752a)
-1. THE CORNER (the lead's ruling): ONE FAULT FIXED AND PLANTED (2d4e0752a); THE CORNER'S LOOK STILL FAILS (item 3). CAUSE (measured, groundPaint endFace): World 2's end frame brings its face to
+1. THE CORNER (the lead's ruling): ONE FAULT FIXED AND PLANTED (2d4e0752a); THE CORNER STILL FAILS on two measured faults (item 3). CAUSE (measured, groundPaint endFace): World 2's end frame brings its face to
    its foot 7 units inside a 60-wide wall's closed side (x20013 on 20006-20066), then the wobble below it (+-19) swings back past that side;
    the soil's outline crossed itself and past the floor's end (its soil stops straight at x20007) only a 0-25 sliver or nothing was painted.
    FIX: endFace takes the bank's other side (`inner`, drawBankArt passes it); below the end piece the wobble's centre keeps FACE_CLEAR (28)
@@ -19,14 +19,19 @@
    on 3 rolls x 2 settings, x3.31-3.80.
 3. RE-SHOOT 2x (stills/e-reshoot, scratch worktree at 2d4e0752a + t-art-under 63963f54d's w2.webp and '2' atlas rows, never pushed;
    upright and sideways): right end x18760 and the descent x18990 PASS (no change from painted-scratch-d; the column's stretched face
-   is R-165.380's). THE WALL END x19900 (CROP-corner-before-after): the straight seam at the floor's end is gone, the soil under the
-   wall now meets the floor's soil along a wobbling face and runs on. STILL FAILS THE LOOK, a separate fault: right of that face,
-   beyond the stage's last platform (x > 20066, where the live page has no platform and no river), a flat featureless brown slab with a
-   straight right side, and under it from about the race's water height a pale green box to the frame's foot. Painter NOT identified
-   (not drawEarthWall: 2-6 only). The same slab and box are in the old still (painted-scratch-d): pre-existing, not from 2d4e0752a, and
-   most likely what the lead's crop called 'a separate strip ... the backdrop below it'. So 2d4e0752a fixes a real fault there (the soil
-   outline crossing itself; planted) but NOT the corner as the lead saw it. The slab's world x was read off the still, not measured from
-   the camera: confirm it from the camera and Pokey's x before naming a painter (ENG-GROUND-d's LEARNED).
+   is R-165.380's). THE WALL END x19900 (CROP-corner-before-after): the soil under the wall now runs to the view's foot along a
+   wobbling face. MEASURED from the upright camera (x 19636, 0.936; CSS x = (world - cam) * 0.936), with a render that skips
+   scenery.ts's draws (wall-end-corner-normal-vs-no-backdrop.jpg, tools-e/nobd.mjs):
+   - the 'flat brown slab' right of the face (world x 20011-20076, y 1510-1690) is the BACKDROP (black with scenery skipped): right of
+     a bank's end face, as at any bank end. Not a fault of the ground.
+   - STILL FAILING (a), the shade seam: from the floor's top to the view's foot, x 20006 to the face (~20034) is a darker band with a
+     straight left side at the floor's end, in both renders and in the old still: the wall's soil darkens by depth from its own top
+     (585) while the floor's darkens from 1450 (drawBankArt's sy / the chunk painter's groundLine). This is the lead's 'separate
+     strip with a straight vertical seam'. 2d4e0752a did not fix it.
+   - STILL FAILING (b): a pale green water fill (terrain.ts's water polygon with foam crests, drawn behind the ground) from about
+     y 1684 to the view's foot right of the face: the lead's 'backdrop shows below it'. Its x and why it runs past the stage's last
+     platform are unmeasured (no platform past 20066, no river in e.rivers).
+   So 2d4e0752a fixes one real fault at the corner (the soil outline crossing itself; planted), NOT the corner as the lead saw it.
 4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages): RUNNING at the handover on 2d4e0752a.
 5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; chain a (suite 1-6, tooltests, tierBots, tipwalk, coverage,
    registry, generality, known, roadmap, time, art) RUNNING at the handover; chain b (seedlists, paint x3, build, chunkcheck,
@@ -37,15 +42,21 @@ PUSHBACK: the column ruling's premise (the bank END frame) was wrong; checked on
    (law 3). The lead re-ruled (A) as R-165.380.
 LESSONS APPLIED: D57 (inbox at each step and push), D102 (lean reads; images downscaled once, contact sheets), D109 (no clock times
    in messages), D111 (the box: lock and gates in the background from the start), law 3 (the frame's identity checked before tiling it).
-   LEARNED: a ruling's named art piece is checked against the recorded draw's src and the sheet before any fix; a face-shape plant
-   checks the seam line the ruling names, not a stricter point.
+   LEARNED: a ruling's named art piece is checked against the recorded draw's src and the sheet before any fix; measure the defect's
+   world x and y from the camera BEFORE planting (I planted the outline fault first and only then found the lead's strip was a shade
+   step and the box a water fill); a render with one painter skipped names what a pixel is.
 EXACT NEXT STEP (fresh member, on t-eng-ground at its HEAD; code head 2d4e0752a):
  1. The lock: base = lockall --layouts 16 --out on a worktree at 0eefc707e (or the saved base if still present); on 2d4e0752a
     `npx tsx tools/engine/lockall.ts --layouts 16 --check <base>`; expect 102/102 unchanged (paint only). A shipped stage moving: stop, report.
  2. The gates on a frozen worktree at 2d4e0752a: `G=<logdir> H=<worktree> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a` then
     `... b` ($G/../tooltests.cmd = gates.yml line 157 with the leading '- run:' stripped); drawcheck within PERFORMANCE-RULES §1. All green:
     2d4e0752a is the green head for ENG-27i's merge.
- 3. The corner's slab and box (item 3): the ruled corner is not done until they are gone (ask the lead whether it is this packet's). Find the painter first: record the page's canvas calls whose box
+ 3. The corner (item 3 (a) and (b)), the ruled corner is not done until both are gone. (a) Plant first: in a recording ctx at the
+    wall's foot, the soil's depth shade at (floor end - 4, y) and (floor end + 4, y) matches for every y below the floor (no step);
+    then make the wall's soil below a lower floor's top darken from that floor's top (drawBankArt sy / groundLine). (b) Find the water
+    fill's owner (tools-e/who.mjs logs the page's canvas calls covering a CSS point; stack lines are vite's transformed lines, so read
+    the call by its file), then plant and fix. Re-shoot with
+    `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out> 19900:none:wall-end` on the scratch. Find the painter first: record the page's canvas calls whose box
     covers world (20200, 1800) at wall-end-x19900 (the toy, seed 1), then plant and fix. Re-shoot with
     `DSF=2 PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/ENG-27/race-stills-27d.mjs <port> <out> 19900:none:wall-end` on the scratch.
  4. REPORT a new top section; the hash to the lead.
