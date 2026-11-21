@@ -178,3 +178,30 @@ test('pacer behind the banks 3: the leg\'s rivers stand at different heights, an
   const waterline = draws[0].box.y0 + (draws[0].box.y1 - draws[0].box.y0) * PACER_WATERLINE;
   assert.ok(Math.abs(waterline - high.surfaceY) < 0.5, `on the river at ${high.surfaceY}: waterline ${Math.round(waterline)} (the lane ${P.lane} would sink it ${P.lane - high.surfaceY} px)`);
 });
+
+test('pacer seen at both ends: waiting at its race point (before he sets it off) and docked, its whole hull is drawn over the river it lies on; home and post, both settings, seeds 1-6', async () => {
+  await sheetIn();
+  // (planted RED on pacerDraw.ts pacerWaters before ENG-27e: it kept the rivers strictly inside the race point..dock window, and the
+  //  river the boat WAITS over starts at its race point (its bow at that river's far bank, gen2/pacerLay.ts), so that river was left
+  //  out and the waiting boat, and the boat setting off, were never drawn: the lead's ruling (the child sees the rival leave) unmet on
+  //  the page, ENG-27e's stills)
+  for (const code of [HOME_CODE, POST_CODE]) {
+    for (const difficulty of ['normal', 'easy'] as const) {
+      for (let seed = 1; seed <= 6; seed++) {
+        const st = build(seed, code, difficulty);
+        const P = st.pacer!;
+        const piece = PACER_PIECE.start(st as never, {} as PieceHost) as PacerPiece;
+        const len = pacerLength(P.art)!;
+        for (const [what, clock] of [['waiting', null], ['docked', P.seconds]] as const) {
+          piece.clock = clock;
+          const x = piece.x;
+          const { ctx, draws } = recorder();
+          drawPieces([piece], ctx, 'under', hostAt(x));
+          const seen = draws.filter((d) => !d.mark).map(shown).reduce((s, d) => s + Math.max(0, d.x1 - d.x0), 0);
+          const at = `${code === HOME_CODE ? 'home' : 'post'} ${difficulty} seed ${seed}: the boat ${what} at x ${Math.round(x)}`;
+          assert.ok(seen > len - 2, `${at} shows ${Math.round(seen)} px of its ${Math.round(len)} px hull`);
+        }
+      }
+    }
+  }
+});

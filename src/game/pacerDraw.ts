@@ -30,7 +30,9 @@ export interface PacerWater { x0: number; x1: number; surfaceY: number }
 export function pacerWaters(p: Pacer, rivers: ReadonlyArray<PacerWater> | undefined): PacerWater[] {
   const lo = Math.min(p.x0, p.x1), hi = Math.max(p.x0, p.x1);
   return (rivers ?? [])
-    .filter((r) => r.x1 > lo && r.x0 < hi && r.surfaceY >= p.yMin && r.surfaceY <= p.lane + 1)
+    // (the window is closed at both ends: the river it WAITS over starts at its race point and the one it docks on ends at the dock,
+    //  each only touching the race point..dock window; open, the waiting boat was never drawn, ENG-27e)
+    .filter((r) => r.x1 > lo - 1 && r.x0 < hi + 1 && r.surfaceY >= p.yMin && r.surfaceY <= p.lane + 1)
     .map((r) => ({ x0: r.x0, x1: r.x1, surfaceY: r.surfaceY }))
     .sort((a, b) => a.x0 - b.x0);
 }
