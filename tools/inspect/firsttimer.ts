@@ -134,6 +134,13 @@ const SNAP_THUMB = 0.1;
  * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home.
  */
 export const LINE_SKILL = { waitTail: true, fetch: true };
+/**
+ * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
+ * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
+ * it opens (its cageHp), then carries on. CLIMB: a cage hung up a climbing vine he is at the foot of: up the vine to it, the same punches
+ * from the vine, then down. Any world's cage, by its data. (PLANTED: not read yet; the toy is RED until the skill lands)
+ */
+export const CAGE_SKILL = { punch: true, climb: true };
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
