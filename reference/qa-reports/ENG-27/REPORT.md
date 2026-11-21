@@ -1,13 +1,16 @@
-# ENG-27n REPORT (handed over at the D111 box, written 6:10 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 2f525cd72 + this REPORT)
+# ENG-27n REPORT (handed over at the D111 box, written 6:12 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 40242a902 + this REPORT)
 ## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's verdict and its RED; (1) the thumb's travel in hopFlies (the one LOST row's root); (2) boardHop onto the drawn
 hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's diff; (7) B and S.
-(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background), at the box: 1873 ok,
+(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background), at the box: 2580+ ok
+    (1 todo: w1Arc19 R-165.312, a known TODO), and
     **1 RED: src/game/gen2/pacerLay.test.ts:211** 'bot (planted): a log drifting his way, still mostly under the lip, is boarded by a
     hop, so the careful middle player wins home Easy seed 1; RED without it' fails its RED half: 'RED: without the skill the plant must
     lose (86.6 s against 97.53 s)'. **The lead's ruling: this is the KNOWN boardLog plant (failing on purpose since ENG-27j), step B's,
     not new.** B's scan rules it: boardLog on vs off over 2-1..2-7 x40; no row moves -> boardLog retires WITH its test; rows move ->
     underLip sends him to the lip and waits (rule 28). No other red at the box; the run was still going (ENG-27n sends the final verdict).
+    **NOTE:** this container's disk allowance ran out for a moment while the suite ran (a worktree checkout failed; freed by removing
+    finished worktrees): a red in a test that writes files near that point must be re-run before it is believed.
 (1) **hopJudged on 2f525cd72 (n/hopJudged-2f525cd72-27n.txt): seed 5 GREEN** (12 judged, edgeWait and race: 0 flown not as judged,
     0 elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x 14674 hold
     0.235 double | LOST`. **ROOT, traced frame by frame (n/double-flight-27n.txt, three runs):** the judged flight and the engine's are
@@ -31,9 +34,9 @@ hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's tim
     seed 5 t 86.67: judged x 10467, pressed 2 frames on from x 10458 held 0.171 via the stopped-dead read; n/hopJudged-a0ab91d33-27n.txt;
     not reached on seeds 5 and 2 since). Under floatSure: the drawn hop judged by hopFlies at lag 0, gateHop set, pressed at once (decide
     keeps its gauss draw, then startJump now when a gate hop is set); gateHop good only on the frame it was set (gateAt === this.t).
-    **v2 on Easy:** the engine's second impulse is PHYS.doubleV * (1 + ASSIST.doubleJump * assistNow()) * dragJump * (flightClear ? 1 :
-    drowsyJump(drowsy)) (engine.ts ~2671; assistNow() is 1 on Easy, 0 on 2-7 Normal: read 0 in the trace); hopFlies uses PHYS.doubleV
-    bare, so every Easy double is judged 12% short. Pass the engine's own v2 to every hopFlies call (5 calls). Then the liana and wheel
+    **v2 on Easy: DONE (40242a902):** every hopFlies call takes the engine's own second-jump speed (FirstTimerRun.v2(): PHYS.doubleV *
+    (1 + ASSIST.doubleJump * assistNow()) * drowse * dragJump, engine.ts ~2671; 1.12x on Easy); hopJudged on Normal unchanged (n/hopJudged-
+    40242a902-27n.txt). Easy doubles are still unproven: add an Easy seed to hopJudged once (1) is GREEN. Then the liana and wheel
     traces (ENG-27m's (1)).
 (3) **pacerLay.test (with (0)'s RED), pacerRespawn.test: NOT run on the head** (the suite held the heavy slot). Frozen tree, GREEN.
 (4) **The whole runs** (2-7 home middle Normal 5 and 2; candidate 2's: seed 5 171 -> 205.7 s, seed 2 203 -> 182.2 s, m/candidate2-
@@ -65,7 +68,7 @@ hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's tim
   174e3f54d (the edge wait past the beat returned with nothing held: now he stands by choice, clockHeld, and the next beat draws its own
   hop) -> seed 5 GREEN, seed 2's one row left is (1); 2f525cd72 (hopFlies: the second press's hold counted from its own frame, flown
   frame-exact against the engine) -> the same row, its root traced to the thumb's travel (1).
-- **Checks on 2f525cd72:** the bot file type-checks alone (tsconfig excludes tools/; checked with node types: 0 errors) and loads;
+- **Checks on 40242a902:** the bot file type-checks alone (tsconfig excludes tools/; checked with node types: 0 errors) and loads;
   hopJudged 1/2 (above). NOT run: pacerLay, pacerRespawn, the race table, rule 28's diff, tierBots, the rest of the full set.
 - **Lessons applied:** D114 (the suite first, on the base, background), D113 (every run backgrounded, no foreground wait), D115 (every
   run on its own frozen worktree: base, three frozen heads, the diagnostic copy), D111 (28 min by `date`), D57/D87 (ReadNotifications
