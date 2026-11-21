@@ -1,12 +1,18 @@
-# ENG-26n (on t-build-26 from 30570b384): 1-4 cause C, the lay keeps its wood out of a gate's band; planted RED, fixed GREEN. Started 6:22 PM ET 11-21 (by `date`)
+# ENG-26n (on t-build-26 from 30570b384): 1-4 cause C: the gate-band verdict planted RED and the lay fixed GREEN, BUT THE BOTS STILL STALL (0/6): cause C is NOT the bridge and stays OPEN. Started 6:22 PM ET 11-21 (by `date`)
 Commits: 2f188c552 (the verdict towerGateRoofs, the band gateBand, the lay's keep-out, the unit test), this REPORT. Saved: eng26n/gate.mts
 (`npx tsx eng26n/gate.mts <tree> 1-4 <setting> <seeds...>`: the gen2 roll, its tower misses, the gate-band refusals, the lay's wood by s17).
 Tree (D115): frozen detached worktree at 2f188c552, node_modules linked.
 
 ## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
-1. **Read the seed-list result below** (heavy run 1: `seedlist.ts 1-4 --check`, then `2-6 --check`, frozen 2f188c552). 2-6 has no sealed
-   piece, so nothing of it moves by construction (the band is pushed only for sealedIds; T.gates/T.lay only when a stage has one); its
-   check is the proof. If 1-4's check fails, the listed rolls the band refuses are named there: that is the relist's input, not a defect.
+0. **The lead rules first** (below, 'For the lead'): keep 2f188c552 (the verdict is the types.ts promise's own; it moves 10 of 1-4's 100
+   listed layouts) or revert it, since it does NOT clear the stall. Then the stall itself: **trace the bot on s17:top, Easy seed 10**
+   (frozen 2f188c552 and OLD 4ea253b8c side by side; `FT_TRACE=1 npx tsx reference/qa-reports/BUILD-26/eng26m/trace.mts <tree> 1-4
+   "kid easy 10"`, plus a stderr print in the bot's decide on a COPY, as BUILD-26e's dbg tree did, never committed): from his arrival on
+   the gate (about 98 s, x 607, y 3342) to the rescue (about 121 s) there is NO jump and no climb, though the way on, the vine x 786
+   (3342 up to 3061), stands on the same bough 179 px away. Name it BOT (BUILD-26e) or LAY by what decide chooses there.
+1. **Seed lists (heavy run 1, done):** 2-6 PASS 100/100 (it has no sealed piece; nothing of it moved). 1-4: the verdicts refuse 0 of 100
+   listed seeds, but 10 replay a different layout from their search (seeds 1, 2, 5, 6, 7, 8, 10, 14, 16, 18, both settings: "rebuild the
+   list"), so 1-4 MUST be relisted if 2f188c552 stays.
 2. **1-4's yield on seeds 1-400** (keep it high; compare with ENG-26m's relist count) and **1-4 relisted once more** (methods/seed-list.md:
    survivors in their order first), **pins re-pointed after the whole suite** (D29, rule 20), **lockall** (only 1-4 and 2-6 may move).
 3. **castBots 1-4 x40 both settings** (the final bar): OLD 4ea253b8c with the old bot vs the new head with every bot fix (BUILD-26e's
@@ -43,10 +49,32 @@ Tree (D115): frozen detached worktree at 2f188c552, node_modules linked.
 - **NOT RUN here** (the box): the castBots rows for seeds 10 and 37 (so the bots' pass on the new layout is NOT claimed), the yield,
   the relist, pins, lockall, the src suite (D96: none is claimed).
 
-## Heavy run 1: seed lists (frozen 2f188c552)
-PENDING (appended when it wakes me).
+## Heavy run 1: seed lists (frozen 2f188c552; eng26n/list-1-4.txt, list-2-6.txt)
+- `seedlist.ts 2-6 --check`: **PASS** (100 seeds, each clean on both settings), 15 s.
+- `seedlist.ts 1-4 --check`: **FAIL**, 125 s: "the verdicts refuse 0 of 100 listed seeds", but seeds 1, 2, 5, 6, 7, 8, 10, 14, 16, 18
+  replay differently from their search on both settings (the lay's catches by the gates moved): the relist's input.
+
+## Heavy run 2: castBots 1-4, cause C's six rows (frozen 2f188c552 = BUILD-26e's 42304b76d with every bot fix + this lay fix; eng26n/cast-c.jsonl)
+`castBots.ts --stage 1-4 --seeds 10,37 --bots kid,adult,middle --setting easy --json`, 9 s:
+
+| bot | Easy 10 | Easy 37 |
+|---|---|---|
+| kid | FAIL, rescued 1, stuck x 607 "in a dip 281 px deep" | FAIL, rescued 1, stuck x 607 the same |
+| adult | FAIL, rescued 1, stuck x 610 the same | FAIL, rescued 1, stuck x 610 the same |
+| middle | FAIL, rescued 2 (x 1190 fell back 8; x 617 the dip) | FAIL, rescued 1, stuck x 580 and 583 the dip |
+
+**0 of 6: the stall is unchanged.** All six reach the shrine with the goal 1/1 but are rescued off s17:top. The kid's trace
+(eng26n/trace-kid-easy-10.txt): jumps at 87.4 s (814,4023 -> 943,3983) and then none until 121.6 s, from s18:b (377,3061) after the
+rescue. So the bridge was not what held them: with it gone the gate has 81 px of open sky (760-841) and the way on, the vine x 786, stands
+in it, its top 26 px past s18:b's right end (760) (cause A's shape: a vine top 26 px past a bough's end). On Normal, where all three pass,
+the way on is the vine x 451 standing on the gate 433-793, its top 26 px past s18:b's LEFT end (477): the mirror. What differs is not yet
+known; it is the next step's trace.
 
 ## For the lead (rulings, priority 'next')
+- **Cause C is NOT fixed; ENG-26m's table read the roof as the cause and the bots say otherwise** (0/6 with the roof gone). My view as
+  the one who built it: keep the verdict and the keep-out (the promise in types.ts was broken silently and now has a check), but it is
+  not the stall's fix, and it costs a 1-4 relist (10 listed layouts moved). If the relist cannot ride with the stall's real fix, revert
+  2f188c552 rather than relist twice.
 - **The band's height is the gate's own way on, not a hop.** The packet says "within a hop"; by the tower's own numbers 281 px is past a
   hop (LEAP.up 221; TOWER.clear 257), so a hop-tall band would have stayed GREEN on the base. I measured it by the vine standing on the
   gate (the storey it opens onto), which is what roofs it. Your call whether that is the rule's wording in types.ts SectionPiece.sealed.

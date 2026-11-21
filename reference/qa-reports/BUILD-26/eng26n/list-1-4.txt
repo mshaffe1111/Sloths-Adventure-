@@ -1,0 +1,27 @@
+seedlist 1-4: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-4: FAIL
+  1-4 seed 1 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 1 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 2 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 2 easy: its replay differs from its search (platforms, vines, collectibles, exitTotemX): rebuild the list
+  1-4 seed 5 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 5 easy: its replay differs from its search (platforms, vines, collectibles, exitTotemX): rebuild the list
+  1-4 seed 6 normal: its replay differs from its search (platforms, vines, collectibles, checkpoints): rebuild the list
+  1-4 seed 6 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 7 normal: its replay differs from its search (platforms, vines, collectibles, exitTotemX): rebuild the list
+  1-4 seed 7 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 8 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 8 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 10 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 10 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 14 normal: its replay differs from its search (platforms, vines, collectibles, exitTotemX): rebuild the list
+  1-4 seed 14 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 16 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 16 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 18 normal: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+  1-4 seed 18 easy: its replay differs from its search (platforms, vines, collectibles, spawnY): rebuild the list
+
+real	2m5.081s
+user	2m29.991s
+sys	0m2.130s
+1-4 exit 1
