@@ -8,7 +8,9 @@
    0-2 + build + chunkcheck + clipcheck + kbdcheck + drawcheck + buildcheck; chain3 lockall --layouts 16 base 0eefc707e vs head). Its
    verdicts are appended below under "Gates" if ENG-27c lived to see them; any gate not listed there with a verdict is UNRUN: run it.
    lockall: ONLY the toy may move (no shipped stage has a pacer, a post or a marked petal: petals.ts's change touches marked letters only).
-3. THE LANE (the lead's call, show first): stills-27c/ show the boat on its lane (the race leg's lowest river surface, y 1524): over a
+3. THE LANE: RULED (a) by the lead 11:18 AM ET: the boat passes BEHIND the banks (drawn behind the bank's front face: it slips out of
+   sight over each bank and comes back in the next river), never in the earth, never floating over land. A draw change: planted (a test
+   that the boat is drawn before the bank's face where a bank stands over its lane, RED when drawn over it) + stills both ways. Before: stills-27c/ show the boat on its lane (the race leg's lowest river surface, y 1524): over a
    river, sideways, it reads well (race-bank-both-ways-small.jpg right); upright it sits at the screen's left edge. Over a BANK the lane is
    42 px under the bank top: the hull would sit in the earth (pieces/pacerPiece.ts layer 'back'). Options to show the lead: (a) hidden
    over banks (drawn behind the bank: it 'closes on every river', 2-7.md); (b) a lane in front of the banks' water strip (layer 'front' at
