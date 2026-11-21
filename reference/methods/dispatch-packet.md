@@ -63,3 +63,6 @@ Every packet's READ line names D57/D87 and says, in bold: run ReadNotifications 
 
 ## Every packet carries the no-clock-times rule for messages (D109, 11-21)
 Every packet says: **messages to the lead carry no clock times** (the notification already says when it was sent); a time goes only in a commit or a REPORT line, taken from `date` in the same command, where timecheck checks it. Three members typed a time ahead of the real one in messages on 11-21 (by 2, 1 and 29 minutes); D30 alone, a sentence, did not stop it.
+
+## Every packet carries a time box as well as the context line (D111, 11-21)
+Every packet's BOX says: **hand over at 320k REAL context OR 28 minutes after your start (from `date`), whichever comes first.** Members misread their own context by 100k+ (ENG-26e, -27f), and xhigh members add about 10k a minute, so between two lead reads 12-15 minutes apart a member can pass its line (ENG-27h at 325k, ENG-GROUND-d at 346k, 11-21). The clock is the one measure a member reads right.
