@@ -1,0 +1,66 @@
+== CI=1 npx tsx --test tools/inspect/tierBots.test.ts (head f9bafa012, cwd .) start 10:42 AM
+TAP version 13
+# Subtest: child easy: every mapped number is its profile field
+ok 1 - child easy: every mapped number is its profile field
+  ---
+  duration_ms: 1.690415
+  type: 'test'
+  ...
+# Subtest: child normal: every mapped number is its profile field
+ok 2 - child normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.38739
+  type: 'test'
+  ...
+# Subtest: middle easy: every mapped number is its profile field
+ok 3 - middle easy: every mapped number is its profile field
+  ---
+  duration_ms: 0.495298
+  type: 'test'
+  ...
+# Subtest: middle normal: every mapped number is its profile field
+ok 4 - middle normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.293969
+  type: 'test'
+  ...
+# Subtest: expert normal: every mapped number is its profile field
+ok 5 - expert normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.264793
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 3.364417
+  type: 'test'
+  ...
+# Subtest: every tier and setting in the table has its 40 variants committed, once each
+ok 7 - every tier and setting in the table has its 40 variants committed, once each
+  ---
+  duration_ms: 0.218495
+  type: 'test'
+  ...
+# Subtest: the replay check (planted, R-165.317): one moved run among 200, outside the first three variants, is named, and every run is replayed
+ok 8 - the replay check (planted, R-165.317): one moved run among 200, outside the first three variants, is named, and every run is replayed
+  ---
+  duration_ms: 15.248704
+  type: 'test'
+  ...
+# Subtest: every committed run (all 200) replays exactly as committed
+ok 9 - every committed run (all 200) replays exactly as committed
+  ---
+  duration_ms: 243447.780471
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 244196.324277
+== exit 0 PASS, 4 min, end 10:46 AM

@@ -8,6 +8,9 @@ const E = "(typeof window.__engine === 'function' ? window.__engine() : window._
 for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 })).newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message));
+  // (Easy is the saved setting (difficulty.ts DIFFICULTY_KEY in localStorage); the page has no URL switch for it: '&difficulty=easy' alone
+  // loaded Normal, BUILD-23e found)
+  if (easy) await p.addInitScript(() => localStorage.setItem('sloth_difficulty', 'easy'));
   await p.goto(`http://127.0.0.1:5181/?lessons=off${easy ? '&difficulty=easy' : ''}`);
   await p.waitForTimeout(2500);
   await p.evaluate(([id, v]) => window.__play(id, v), ['2-3', 1]);

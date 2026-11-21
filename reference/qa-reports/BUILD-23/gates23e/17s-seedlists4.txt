@@ -1,0 +1,14 @@
+== L=$(npx tsx tools/engine/registrycheck.ts --lists --shard 4/4) || exit 1; for s in $L; do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done (head 9191d988b, cwd .) start 11:15 AM
+== 1-3
+seedlist 1-3: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+== 1-6
+seedlist 1-6: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-6: PASS (100 seeds, each clean on both settings)
+== 2-1
+seedlist 2-1: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-1: PASS (100 seeds, each clean on both settings)
+== 2-5
+seedlist 2-5: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-5: PASS (100 seeds, each clean on both settings)
+== exit 0 PASS, 23 min, end 11:38 AM

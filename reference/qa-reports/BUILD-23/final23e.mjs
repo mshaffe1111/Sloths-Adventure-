@@ -4,7 +4,7 @@
 //   5-spooked   one little one spooked back to its stretch's start (the engine's own spook state), him on in the reeds
 //   5b-fetched  him walked back to it: it has rejoined the line
 //   6-jetty     him at the jetty with the whole line behind him, stepped until they are home
-//   7-look-1-7  1-7's eagle mid-pass over the green he hides in (walked into its watched stretch, then stepped): the side-by-side's left
+//   (1-7's eagle look for the side-by-side: look17e.mjs)
 //   node reference/qa-reports/BUILD-23/final23e.mjs <out dir> [easy]
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
 import path from 'node:path';
@@ -16,6 +16,9 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const open = async (id) => {
     const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 })).newPage();
     p.on('pageerror', (e) => console.log('ERR', e.message));
+  // (Easy is the saved setting (difficulty.ts DIFFICULTY_KEY in localStorage); the page has no URL switch for it: '&difficulty=easy' alone
+  // loaded Normal, BUILD-23e found)
+  if (easy) await p.addInitScript(() => localStorage.setItem('sloth_difficulty', 'easy'));
     await p.goto(`http://127.0.0.1:5181/?lessons=off${easy ? '&difficulty=easy' : ''}`);
     await p.waitForTimeout(2500);
     await p.evaluate(([id]) => window.__play(id, 1), [id]);
@@ -27,6 +30,23 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const tools = (p) => {
     const shot = async (name, note) => {
       const file = path.join(out, `b23e-${set}-${name}-${tag}.jpg`);
+      // (Dot's cards tapped through, as a player does, then one paint without stepping)
+      // (twice: a card can come up on the paint after the first pass)
+      for (let pass = 0; pass < 2; pass++) {
+        for (let k = 0; k < 4; k++) {
+          const card = p.getByText("Tap here when you've read it", { exact: false });
+          if (!(await card.count())) break;
+          // (a tap in a card's first TAP_MIN_MS of GAME time does nothing (dotGuide.ts tap): half a second of steps first, him held still)
+          const hold = (n) => p.evaluate(([E, n]) => { const e = eval(E); const x = e.player.x, y = e.player.y; for (let i = 0; i < n; i++) { e.update(1 / 30); Object.assign(e.player, { x, y, vx: 0, vy: 0 }); } }, [E, n]);
+          await hold(15);
+          await card.first().click({ timeout: 2000 }).catch(() => {});
+          await hold(3);
+          await p.waitForTimeout(400);
+        }
+        await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; e.render(); }, E);
+        await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+        await p.waitForTimeout(600);
+      }
       await p.screenshot({ path: file, type: 'jpeg', quality: 82 });
       console.log('wrote', path.basename(file), JSON.stringify(note));
     };
@@ -82,12 +102,16 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const f = e.follow.line.filter((q) => q.state === 'follow').at(-1);
     if (!f) return null;
     Object.assign(f, { state: 'spooked', backX: x0, back: false, slot: f.s });
+    // (the engine's own mark over a spooked one, engine.ts updateFollow: '!' at its head)
+    e.addFloatingText('!', f.x, f.y - 50, '#fde68a');
     const px = e.player.x;
-    for (let i = 0; i < 240 && !f.back; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; }
-    return { kind: f.kind, x: Math.round(f.x), back: f.back };
+    // (shot while it is still running back, out of the reed bed on the open mud: 330 px behind him, the bed starts 270 px back)
+    for (let i = 0; i < 240 && !f.back && f.x > px - 330; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; }
+    return { kind: f.kind, x: Math.round(f.x), back: f.back, behind: Math.round(px - f.x) };
   }, [E, hz[0]]);
-  await settle(2);
   await shot('5-spooked', { sp, ...(await info()) });
+  // (then on to where it hides: its stretch's start)
+  await p.evaluate(([E, kind]) => { const e = eval(E); const f = e.follow.line.find((q) => q.kind === kind && q.state === 'spooked'); const px = e.player.x; for (let i = 0; i < 240 && f && !f.back; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; } }, [E, sp?.kind]);
   // 5b. him back to it: it rejoins the line (follow.ts rejoin, within the row's rejoin reach)
   const fx = await p.evaluate(([E, kind]) => {
     const e = eval(E);
@@ -111,24 +135,5 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   await shot('6-jetty', await info());
   await p.context().close();
 
-  // ---- 1-7: the eagle's look over the green he hides in (walked in from 160 px before its first watched stretch)
-  const q = await open('1-7');
-  const t7 = tools(q);
-  const w7 = await q.evaluate((E) => { const e = eval(E); const z = (e.proto?.watch ?? [])[0]; const b = (e.proto?.bushes ?? []).find((k) => z && k.x >= z.x0 && k.x <= z.x1); return { z: z ? [z.x0, z.x1] : null, bush: b ? [b.x, b.w] : null }; }, E);
-  if (w7.z && w7.bush) {
-    await t7.stand(w7.z[0] - 160, 10);
-    const r = await q.evaluate(([E, bx, bw]) => {
-      const e = eval(E);
-      const at = bx + bw / 2;
-      for (let i = 0; i < 200 && e.player.x < at; i++) { e.player.x += 6; e.player.facing = 1; e.update(1 / 30); }
-      // (held in the green, the eagle's look stepped to its middle)
-      const px = e.player.x;
-      for (let i = 0; i < 1800; i++) { e.update(1 / 30); e.player.x = px; e.player.vx = 0; if (e.watch.phase === 'pass' && e.watch.t >= e.watch.dur * 0.45) return { phase: e.watch.phase, t: +e.watch.t.toFixed(2), dur: e.watch.dur, px: Math.round(px), i }; }
-      return { miss: true, phase: e.watch.phase };
-    }, [E, w7.bush[0], w7.bush[1]]);
-    await t7.settle(1);
-    await t7.shot('7-look-1-7', { w7, r });
-  } else console.log('1-7: no watched stretch with a bush on this page', JSON.stringify(w7));
-  await q.context().close();
 }
 await b.close();

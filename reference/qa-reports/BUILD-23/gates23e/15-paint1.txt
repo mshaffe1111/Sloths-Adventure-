@@ -1,0 +1,12 @@
+== npx tsx tools/engine/paintcheck.ts --part 1/3 (head b5b7c1b01, cwd .) start 10:46 AM
+paintcheck: stages per part 0/3: 34, 1/3: 34, 2/3: 34; this run part 1/3
+1-2 1-5 1-8 2-1 2-4 2-7 2-10 3-3 3-6 3-9 4-2 4-5 4-7 4-10 5-2 5-5 5-8 6-1 6-4 6-7 6-10 7-3 7-6 7-9 8-2 8-5 8-8 9-1 9-4 9-7 9-10 10-3 10-6 10-9 
+paintcheck: 2028 builds of 34 stages (part 1/3) (listed stages on every listed seed, the rest on layouts 1-16), both settings
+  3-3: 22/32 builds breach (5 known ids, 0 new)
+  3-6: 14/32 builds breach (1 known ids, 0 new)
+  3-9: 8/32 builds breach (1 known ids, 0 new)
+  4-2: 10/32 builds breach (3 known ids, 0 new)
+  5-2: 32/32 builds breach (49 known ids, 0 new)
+  5-5: 32/32 builds breach (48 known ids, 0 new)
+paintcheck: PASS, no new painted style falls through to code terrain (107 known ids seen, R-165.292)
+== exit 0 PASS, 12 min, end 10:59 AM
