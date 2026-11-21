@@ -1,0 +1,18 @@
+== 2-4 child normal seed 40 (boardHop on)
+  life t 212.73 x 16851.4: last ground t 212.17 x 16691.8 on 72:drift:1@16530-16680; jump 212.27:single; air 0.56 s
+  life t 278.63 x 22219.6: last ground t 277.67 x 21953.8 on 101:drift:1@21791-21941; jump 277.7:double; air 0.96 s
+  life t 282.4 x 21508.2: last ground t 279.33 x 21052.7 on 90:solid@20824-21124; jump 282.03:single; air 3.07 s
+  life t 294.57 x 21908.6: last ground t 294.1 x 21757.4 on 100:drift:1@21684-21834; jump 294.1:single; air 0.47 s
+  life t 310.27 x 23063.2: last ground t 308.43 x 22657.3 on 91:solid@22374-22714; jump 309.93:single; air 1.84 s
+  life t 319.6 x 23521.6: last ground t 319.07 x 23351.4 on 103:drift:1@23261-23411; jump 319.07:single; air 0.53 s
+  life t 349.27 x 25286.1: last ground t 348.17 x 25021.5 on 105:drift:1@24932-25082; jump 348.17:double; air 1.1 s
+  life t 359.07 x 25063: last ground t 358.53 x 24886.7 on 105:drift:1@24783-24933; jump 358.53:single; air 0.54 s
+== 2-4 child normal seed 39 (boardHop on)
+  life t 212.67 x 16977.5: last ground t 212.2 x 16842.7 on 74:drift:1@16741-16891; jump 212.2:single; air 0.47 s
+  life t 280.6 x 22030.8: last ground t 279.93 x 21841.6 on 101:drift:1@21754-21904; jump 279.93:single; air 0.67 s
+  life t 305.23 x 22412: last ground t 304.27 x 22469.9 on 92:solid@22461-22801; jump 304.27:double; air 0.96 s
+  life t 331.1 x 23577.6: last ground t 330.47 x 23415.7 on 104:drift:1@23312-23462; jump 330.47:single; air 0.63 s
+  life t 331.9 x 22899: last ground t 331.2 x 22721 on 92:solid@22461-22801; jump 331.2:single; air 0.7 s
+  life t 339.83 x 23663.4: last ground t 339 x 23410.8 on 105:drift:1@23391-23541; jump 339:double; air 0.83 s
+  life t 370.4 x 25108.6: last ground t 369.8 x 24927.4 on 106:drift:1@24819-24969; jump 369.8:single; air 0.6 s
+  life t 371.13 x 24362.3: last ground t 370.5 x 24201 on 94:solid@23941-24281; jump 370.5:single; air 0.63 s
