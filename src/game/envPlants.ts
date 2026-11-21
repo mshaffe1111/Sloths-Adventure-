@@ -3,7 +3,7 @@
  *
  * Every entry answers "what would grow or lie here because of this place, and who lives here?":
  *   W6 peat swamp: pitcher plants, peg and knee roots poking out of black water, mud bubbles.
- *   W2 estuary (the crocodile): reeds, nipa palms, water hyacinth, mangrove seedlings, driftwood, a nest mound.
+ *   W2 estuary (the crocodile): none drawn here; its ground grows Matt's painted flora only (envKit.ts ENV[2], R-165.362).
  *   W3 dark understory and cave (the panther): bird's-nest ferns, bracket fungi, claw-scarred rock, bones, glowworm threads.
  *   W5 understory (the spider queen): heliconia, orchids, bromeliads, golden orb webs, silk cocoons.
  *   W7 overgrown temple: a half-buried idol face, fallen carved blocks, fig roots, aerial roots.
@@ -259,164 +259,6 @@ const kneeroot: PlantFn = (ctx, x, y, s, look, r) => {
 const bogfern: PlantFn = (ctx, x, y, s, look, r) => {
   const t = lt(look, r, 1);
   for (let f = 0; f < 7; f++) fernFrond(ctx, x, y, s * (0.75 + r() * 0.3), -Math.PI / 2 + (f - 3) * 0.48, t, r, 0.8);
-};
-
-// ───────────────────────────── W2: estuary, where the crocodile lives ─────────────────────────────
-
-const reedclump: PlantFn = (ctx, x, y, s, look, r) => {
-  const t = lt(look, r, 1);
-  const n = 7 + ((r() * 5) | 0);
-  ctx.lineCap = 'round';
-  for (let i = 0; i < n; i++) {
-    const bx = x + (i - n / 2) * 4 + (r() - 0.5) * 4;
-    const bh = s * (0.7 + r() * 0.7);
-    const lean = (r() - 0.5) * s * 0.5;
-    ctx.strokeStyle = i % 2 ? t.mid : t.light;
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(bx, y + 2);
-    ctx.quadraticCurveTo(bx + lean * 0.3, y - bh * 0.6, bx + lean, y - bh);
-    ctx.stroke();
-    if (r() > 0.65) {
-      ctx.fillStyle = '#6a4a2a';
-      ctx.beginPath();
-      ctx.roundRect(bx + lean - 3, y - bh - 16, 6, 18, 3);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255,230,180,0.35)';
-      ctx.fillRect(bx + lean - 2, y - bh - 14, 1.5, 13);
-    }
-  }
-};
-
-const nipa: PlantFn = (ctx, x, y, s, look, r) => {
-  const t = lt(look, r, 0);
-  for (let f = 0; f < 7; f++) fernFrond(ctx, x, y, s * (1 + r() * 0.3), -Math.PI / 2 + (f - 3) * 0.42, t, r, 0.18);
-};
-
-const hyacinth: PlantFn = (ctx, x, y, s, _look, r) => {
-  const g = '#6ab04a';
-  for (let k = 0; k < 5; k++) {
-    const a = -Math.PI / 2 + (k - 2) * 0.55;
-    const lx = x + Math.cos(a) * s * 0.3;
-    const ly = y + Math.sin(a) * s * 0.28;
-    ctx.fillStyle = g;
-    ctx.strokeStyle = '#2f6a2a';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.ellipse(lx, ly, s * 0.16, s * 0.24, a + Math.PI / 2, 0, TAU);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#9ad070';
-    ctx.beginPath();
-    ctx.ellipse(lx, ly + s * 0.08, s * 0.08, s * 0.1, a + Math.PI / 2, 0, TAU);
-    ctx.fill();
-  }
-  ctx.strokeStyle = '#4a7a3a';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x, y - s * 0.75);
-  ctx.stroke();
-  for (let k = 0; k < 6; k++) {
-    const a = (k / 6) * TAU;
-    ctx.fillStyle = k % 2 ? '#c8a0e8' : '#b088d8';
-    ctx.beginPath();
-    ctx.ellipse(x + Math.cos(a) * s * 0.1, y - s * 0.8 + Math.sin(a) * s * 0.08, s * 0.08, s * 0.1, a, 0, TAU);
-    ctx.fill();
-  }
-  ctx.fillStyle = '#ffe66a';
-  ctx.beginPath();
-  ctx.arc(x, y - s * 0.8, s * 0.04, 0, TAU);
-  ctx.fill();
-};
-
-const proproot: PlantFn = (ctx, x, y, s, look, r) => {
-  const bark = tone('#6a4a30', '#120a06');
-  const t = lt(look, r, 0);
-  ctx.lineCap = 'round';
-  for (let k = -2; k <= 2; k++) {
-    ctx.strokeStyle = k % 2 ? bark.mid : bark.dark;
-    ctx.lineWidth = s * 0.07;
-    ctx.beginPath();
-    ctx.moveTo(x + k * s * 0.32, y + 2);
-    ctx.quadraticCurveTo(x + k * s * 0.12, y - s * 0.3, x, y - s * 0.55);
-    ctx.stroke();
-  }
-  ctx.strokeStyle = bark.mid;
-  ctx.lineWidth = s * 0.1;
-  ctx.beginPath();
-  ctx.moveTo(x, y - s * 0.5);
-  ctx.lineTo(x, y - s * 0.8);
-  ctx.stroke();
-  for (let k = 0; k < 6; k++) leaf(ctx, x, y - s * 0.78, s * 0.34, s * 0.1, -Math.PI / 2 + (k - 2.5) * 0.55, t, 0.1);
-  // propagules: green cigars hanging among the leaves
-  ctx.strokeStyle = '#7ab050';
-  ctx.lineWidth = 3;
-  for (let k = 0; k < 3; k++) {
-    ctx.beginPath();
-    ctx.moveTo(x + (k - 1) * 9, y - s * 0.75);
-    ctx.lineTo(x + (k - 1) * 9 + 1, y - s * 0.75 + 10 + r() * 6);
-    ctx.stroke();
-  }
-};
-
-const driftwood: PlantFn = (ctx, x, y, s, _look, r) => {
-  const wd = tone('#a89a84', '#2a2218');
-  ctx.fillStyle = wd.mid;
-  ctx.strokeStyle = rgba(wd.deep, 0.9);
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.roundRect(x - s, y - s * 0.3, s * 2, s * 0.36, s * 0.18);
-  ctx.fill();
-  ctx.stroke();
-  ctx.strokeStyle = rgba(wd.deep, 0.5);
-  ctx.lineWidth = 1;
-  for (let k = 0; k < 3; k++) {
-    ctx.beginPath();
-    ctx.moveTo(x - s * 0.8, y - s * (0.08 + k * 0.08));
-    ctx.lineTo(x + s * 0.8, y - s * (0.06 + k * 0.08) + (r() - 0.5) * 2);
-    ctx.stroke();
-  }
-  ctx.strokeStyle = wd.dark;
-  ctx.lineWidth = 3;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(x + s * 0.3, y - s * 0.3);
-  ctx.lineTo(x + s * 0.55, y - s * 0.72);
-  ctx.stroke();
-};
-
-/** the crocodile's nest: a mound of rotting leaves and sticks scraped together, with leathery eggs just showing */
-const crocnest: PlantFn = (ctx, x, y, s, _look, r) => {
-  const dirt = tone('#6a5a3a', '#140e06');
-  ctx.fillStyle = dirt.mid;
-  ctx.strokeStyle = rgba(dirt.deep, 0.9);
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(x - s * 1.1, y + 2);
-  ctx.quadraticCurveTo(x - s * 0.8, y - s * 0.7, x, y - s * 0.75);
-  ctx.quadraticCurveTo(x + s * 0.8, y - s * 0.7, x + s * 1.1, y + 2);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  ctx.lineCap = 'round';
-  for (let k = 0; k < 16; k++) {
-    const sx = x + (r() - 0.5) * s * 1.7;
-    const sy = y - r() * s * 0.6;
-    const a = (r() - 0.5) * 2.6;
-    ctx.strokeStyle = k % 2 ? dirt.light : dirt.dark;
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.lineTo(sx + Math.cos(a) * s * 0.4, sy + Math.sin(a) * s * 0.2);
-    ctx.stroke();
-  }
-  ctx.fillStyle = '#e8e2cc';
-  for (const dx of [-0.18, 0.12]) {
-    ctx.beginPath();
-    ctx.ellipse(x + s * dx, y - s * 0.62, s * 0.11, s * 0.08, 0.3, 0, TAU);
-    ctx.fill();
-  }
 };
 
 // ───────────────────────────── W3: the panther's dark understory and cave mouth ─────────────────────────────
@@ -1415,12 +1257,6 @@ export const EXTRA_PLANTS: Record<string, PlantDef> = {
   pegs: { draw: pegs, near: 1.5, decor: [24, 34] },
   kneeroot: { draw: kneeroot, near: 1.4, decor: [24, 34] },
   bogfern: { draw: bogfern, near: 1.4, decor: [26, 36] },
-  reedclump: { draw: reedclump, near: 1.5, decor: [26, 40] },
-  nipa: { draw: nipa, near: 1.5, decor: [26, 36] },
-  hyacinth: { draw: hyacinth, near: 1.3, decor: [20, 28] },
-  proproot: { draw: proproot, near: 1.4, decor: [28, 38] },
-  driftwood: { draw: driftwood, near: 1.2, decor: [14, 22] },
-  crocnest: { draw: crocnest, near: 1.3, decor: [18, 26] },
   birdnest: { draw: birdnest, near: 1.5, decor: [24, 32] },
   bracket: { draw: bracket, near: 1.4, decor: [28, 38] },
   clawrock: { draw: clawrock, near: 1.4, decor: [22, 30] },
