@@ -21,8 +21,9 @@ the two logs differ only in run time, 82 s vs 83 s).
 | c | t-env-w2 @ 63afa83c1 | 60aea887b | none | PASS | PASS: 332 / 331 / 0 / 1 todo (9:48-9:53 AM ET) |
 | d | t-link-room @ 4c1601fd3 | 8224efdeb | none | PASS | PASS: 336 / 335 / 0 / 1 todo (9:53-9:58 AM ET) |
 | e | t-keeper-pick @ 599c4d5b3 (the lead's final, 10:08 AM ET; words head 1fdf0a144; carries t-pick-w1 @ ef5622725) | a8824ad4a | reference/handoffs/engine-core.md: PICK-W1 and FIX-IDLE each added a top section; kept both, 0zq-PICK above 0zr-IDLE (each section once, checked) | PASS | PASS: 336 / 335 / 0 / 1 todo (10:17-10:21 AM ET) |
-| f | t-hud-vine @ 83b51c91f (the lead's final, 10:40 AM ET; code 2e3b17c99) | 008d82625 | none | F_TSC | F_TOOL |
+| f | t-hud-vine @ 83b51c91f (the lead's final, 10:40 AM ET; code 2e3b17c99) | 008d82625 | none | PASS | PASS: 336 / 335 / 0 / 1 todo (10:39-10:54 AM ET, under the trial's load) |
 | v | version + What's New (not a merge) | 6b8fda31c | 0.10.0 -> 0.10.1 in package.json and package-lock's own two fields (as 0.10.0 did); whatsNew.ts top entry = the keeper's 7 lines, title "Count to four", copied by script from whats-new-0.10.1.md | PASS | whatsNew.test PASS 4/4 |
+| t | timecheck correction (not a merge; the lead's ruling) | 051e77b45 | reference/qa-reports/PICK-W1/REPORT.md:99 only: "The lead (9:26 PM ET)" (2:12 after its commit 1b5d2fff8, a typed-ahead stamp in the lead's message) -> "The lead (11-20, before 9:24 PM ET; first typed 9:26 PM)" | | timecheck PASS (112 commits, 110 stamps) |
 The todo each time: the open chase-bots line (child bot, Normal, 1 of 3 seeds; ENG-B4).
 
 ## D99: CI's own time limits (release.md 4b), with the new seed-list plan
