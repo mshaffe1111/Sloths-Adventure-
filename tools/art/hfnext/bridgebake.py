@@ -4,10 +4,10 @@ A take is the bridge from the plain pose (Wan frame 0) to the clip's frame 0 (Wa
 canvas px a sheet px with the feet anchor at (240, 552). Each Wan frame is keyed off its flat grey (flood from the border), scaled to
 sheet px and placed on the anchor; then frame 0 is REPLACED by the exact plain frame (heroStandardData idle) and the last by the clip's
 exact frame 0, so both ends are pixel for pixel what they join. The clip becomes: bridge in (Wan 0..m-2), the clip's own frames, bridge
-out (Wan m-2..0, reversed): its first and last frames are the plain pose. --pin-feet shifts each in-between frame sideways so its feet
-centre stays on the anchor (a standing turn; never the sit-down, whose feet move by design). The sheet box grows to the union of all
+out (Wan m-2..0, reversed): its first and last frames are the plain pose. --pin-feet shifts each in-between frame sideways onto that line (a standing turn; never the sit-down, whose feet move by design). The sheet box grows to the union of all
 frames; heroClipsData.ts's entry (n, w, h, ax, ay) is rewritten in the clip cutter's own format. --dry writes only the check sheet.
-Prints, per in-between frame, the RAW feet drift in sheet px before any pin (the lead's bar: within 2 px across a standing bridge).
+Prints, per in-between frame, how far its feet centre sits off the straight line between the two ends' feet (a slide; the turn itself
+moves the stance by up to ~10 px), before any pin (the lead's bar: within 2 px across a standing bridge).
 """
 import glob, json, re, subprocess, sys
 from pathlib import Path
@@ -69,13 +69,15 @@ plain = on_anchor(STD.crop((674, 478, 674 + 127, 478 + 209)), 57.0, 205.0)
 wan = [key(f) for f in sorted(glob.glob(take + '/*.webp'))]
 assert len(wan) >= 9, f'{take}: {len(wan)} frames'
 f0x, f0y = feet_cx(plain)
-drift = []
+f1x, f1y = feet_cx(clip_frames(clips[0])[0])
+drift = []   # each in-between frame's feet centre against the straight line from the plain pose's feet to the clip's: a SLIDE, not the turn
 for i, im in enumerate(wan[1:-1], 1):
-    x, y = feet_cx(im); drift.append((i, round(x - f0x, 1), int(y - f0y)))
-print('raw feet drift (frame, dx, dy) sheet px:', drift)
+    x, y = feet_cx(im); u = i / (len(wan) - 1)
+    drift.append((i, round(x - (f0x + (f1x - f0x) * u), 1), int(y - round(f0y + (f1y - f0y) * u))))
+print(f'feet: plain x {f0x} y {f0y}, clip f0 x {f1x} y {f1y}; off the line per frame (frame, dx, dy) sheet px:', drift)
 print('max |dx|', max(abs(d[1]) for d in drift), 'max |dy|', max(abs(d[2]) for d in drift))
 if PIN:
-    wan = [im if i in (0, len(wan) - 1) else im.transform(im.size, Image.AFFINE, (1, 0, feet_cx(im)[0] - f0x, 0, 1, 0), Image.BICUBIC)
+    wan = [im if i in (0, len(wan) - 1) else im.transform(im.size, Image.AFFINE, (1, 0, feet_cx(im)[0] - (f0x + (f1x - f0x) * i / (len(wan) - 1)), 0, 1, 0), Image.BICUBIC)
            for i, im in enumerate(wan)]
 for name in clips:
     own = clip_frames(name)
