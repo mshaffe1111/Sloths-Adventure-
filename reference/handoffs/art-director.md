@@ -1,7 +1,17 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-NEXT-d (§0j); §0i and below still true unless marked
+# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-NEXT-e (§0k); §0j and below still true unless marked
 
-Last task: ART-NEXT-d (§0j, t-art-next). Before it: ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
+Last task: ART-NEXT-e (§0k, t-art-next). Before it: ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0k. 11-21 ART-NEXT-e (t-art-next): the idle bridges carry Pokey's colours; seam dE gate (R-165.354) DONE
+- bridgebake.py now colour-ramps every bridge frame (Lab mean/std toward lerp(plain, target), target = clip f0 going in, the clip's
+  LAST frame coming out; --replace: tent plain -> take mean -> plain) and writes tools/art/hfnext/bridges.json (the layout).
+- Gate: src/game/heroClipsSeams.test.ts + heroClipsSeams.json, written by `python3 -I tools/art/hfnext/clipde.py --write` (`--check`
+  verifies). ANY idle-sheet change: re-run idleends.py AND clipde.py --write. Bar: each seam <= max(2x bridge median, 0.5) and < 1.0 dE.
+- To re-bake: restore the 49-frame originals (`git show 6c157b2ba:src/assets/hero/clips/<c>.webp`) and their heroClipsData blocks
+  first (bridgebake reads the clip from the shipped sheet); belly-scratch needs no restore (--replace). Needs scipy (pip install scipy)
+  and `npm install --legacy-peer-deps` (npm ci fails on peer deps) before idleshoot.mjs.
+- The see-through melt in t-art-next strips is fixed on release-0.10.1 (R-165.353); shoot "what ships" on a scratch merge with it.
 
 ## 0j. 11-21 ART-NEXT-c/-d (t-art-next): Pokey's idle clips start and end on his plain pose (R-165.354, R-165.370) DONE
 - Shipped on the branch: idle-yawn + look-around bridged with B1 s23, wave with B3 s11 (81 frames each, bridge in, clip, bridge

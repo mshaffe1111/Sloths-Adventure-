@@ -1,3 +1,54 @@
+# ART-NEXT-e (11-21, session_01FhBbYLPBVR5dWE8QmqFjaH): the idle bridges carry Pokey's colours; seam gate live (written 1:19 PM ET)
+## EXACT NEXT STEP
+The integrator merges t-art-next (heroClipsSeams.test.ts + heroClipsEnds.test.ts ride with it; any later idle-sheet change re-runs
+`python3 -I tools/art/hfnext/idleends.py` AND `python3 -I tools/art/hfnext/clipde.py --write`). Merging into release-0.10.1 conflicts
+in 9 catalog/doc files (CATALOG-MASTER.csv, HF-SPEND.md, art-director.md, inventory.test.ts, inventory cast/w1/w2/w6/w8.json): after
+resolving, re-run `catalogclips.py idle-yawn,look-around,wave,belly-scratch` + `catalog_master.py --emit` so the idle rows match the sheets.
+## The fix (tools/art/hfnext/bridgebake.py)
+Every bridge in-between gets a Lab mean/std (Reinhard) transfer over its solid px (alpha > 200) toward lerp(stats(plain),
+stats(target), u = i/(m-1)), then 3 mean-only passes for the RGB clip and 8-bit round. Bridge IN targets the clip's frame 0; bridge
+OUT is built as its own list targeting the clip's LAST frame (no longer bridge in reversed). Scratch (--replace): a tent ramp plain ->
+the take's mean -> plain. The layout (take, bridge, own, replace, pin) is written to tools/art/hfnext/bridges.json, which clipde.py
+reads to find the seams. Originals restored from 6c157b2ba first; re-baked B1-s23 -> idle-yawn, look-around; B3-s11 -> wave
+(--pin-feet); SC-s19 -> belly-scratch (--pin-feet --replace).
+## Seams, mean body Lab dE (clipde.py; 60144a5ba -> now)
+| clip | plain->bridge | bridge->clip f0 | clip last->bridge | bridge->plain | median inside the bridges |
+|---|---|---|---|---|---|
+| idle-yawn | 1.25 -> 0.37 | 3.30 -> 0.40 | 4.30 -> 0.46 | 1.25 -> 0.40 | 0.40 -> 0.37 |
+| look-around | 1.32 -> 0.40 | 3.31 -> 0.38 | 3.81 -> 0.52 | 1.32 -> 0.48 | 0.42 -> 0.37 |
+| wave | 1.07 -> 0.44 | 2.89 -> 0.34 | 3.69 -> 0.48 | 1.06 -> 0.47 | 0.49 -> 0.45 |
+| belly-scratch | 1.24 -> 0.10 | (none: the take is the clip) | | 0.80 -> 0.13 | 0.22 -> 0.10 |
+Find beyond the packet: the bridge-IN -> clip join also popped (2.9-3.3 dE), not only the way out; the ramp fixes both.
+Ends still 0 px / 0% xor at both ends of all four (idleends.py; heroClipsEnds.test.ts green).
+## The gate (D108): src/game/heroClipsSeams.test.ts + heroClipsSeams.json
+`clipde.py --write` measures every seam and the bridges' median from the shipped sheets (sha256-pinned; `--check` verifies the JSON).
+The test fails a stale JSON (sha, frame count) and any seam over max(2 x the bridge median, 0.5) dE or at/over 1.0 dE (the lead's
+ceiling, tighter than the packet). PLANTED RED on 60144a5ba's sheets: `idle-yawn step 0: 1.247 dE colour jump at a seam (limit 0.80;
+bridge median 0.402)` (reference/qa-reports/ART-NEXT/seams-plant-60144a5ba.json/.txt). Green now (4/4 with the ends test). It is in
+src/game/*.test.ts, so CI runs it (ciTests.test.ts green).
+## Sizes and decoded cost (PERFORMANCE-RULES §2.13)
+yawn 1712x2310 827 KB (was 813), look 1192x2266 799 KB (783; 8 px wider), wave 1440x2277 829 KB (831), scratch 1056x1230 341 KB (342).
+Decoded 42.9 MiB for the four, +0.07 MiB on 60144a5ba; under the ~300 MB a stage. catalogclips.py + catalog_master.py --emit run
+(9,532 rows, unchanged count; file_kb and look-around's box updated).
+## Strips (reference/art/hfnext/bridge/)
+- On the branch: before-after-idle-start.jpg, yawn-1-1-strip.jpg, yawn-1-1-game-speed.mp4 (idlepair.py). A seam contact (frames
+  0,1,14,15,16,64,65,66,79,80 of yawn and wave, half size): one colour across every seam, no tint or outline artefacts.
+- WHAT SHIPS (lead's ruling): after-idle-start-release.jpg (top: this branch alone, the old melt goes see-through at t4.33; bottom:
+  this branch merged with origin/release-0.10.1 in a scratch worktree, never pushed, R-165.353's cross-dissolve: solid on every
+  frame, no colour pop) and yawn-1-1-strip-release.jpg (the full yawn on that merge: solid, clean). Fewer crops than the branch
+  strip because the unit suite ran alongside (the shoot is real-time).
+- Named, not a pop: the plain pose is more orange than the old clips (about 7 dE plain -> mid-clip). That change now spreads over the
+  1 s bridge (about 0.4 dE a frame) instead of jumping. Making them one colour means regrading the old clips, only if the lead wants it.
+## Gates
+tsc clean; artcheck PASS; knowncheck PASS; idleends --check and clipde --check fresh; heroClipsEnds + heroClipsSeams 4/4; full unit
+suite: UNIT_LINE.
+## Learned
+- Before proposing an engine fix, check the release branch: the see-through melt was already fixed (R-165.353) after my base.
+- Gate every join, not only the one reported: the bridge-in -> clip join was 3.3 dE and hid under the reported 4.3 max.
+- A seam's colour target is the frame it touches (clip f0 in, clip LAST out); a reversed bridge carries the wrong end's colour.
+- Lessons applied: D57/D87 (inbox at every step and push; shoots and the suite run in the background), D102 (read lean; images only
+  downscaled, three looks), D105, D108 (a gate with a plant, not a note), D109 (no clock times in messages).
+
 # ART-NEXT-d (11-21, session_01FhBbYKPihmWKe7mdYAmiqq): R-165.354 + R-165.370 DONE on t-art-next (written 12:48 PM ET)
 ## EXACT NEXT STEP (HANDED OVER at the context line; the lead's polish point, not yet fixed)
 The bridges pop in COLOUR. `python3 -I tools/art/hfnext/clipde.py` (mean body Lab dE per frame step, motion-free) measured:
