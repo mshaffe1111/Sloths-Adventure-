@@ -56,7 +56,7 @@ import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
 import { CHASE_FIXTURE_ID, chaseFixtureConfig } from './game/chaseFixtureStage.ts';
 import { wheelFixtureConfig, wheelFixtureFor } from './game/wheelFixtureStage.ts';
 import { FeelPairClock } from './components/FeelPairClock.tsx';
-import { ctestEnabled, isCtestStage, recorder } from './game/playRecorder.ts';
+import { ctestEnabled, isCtestStage, markCtestPlayed, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
@@ -950,6 +950,8 @@ export default function App() {
             // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
             if (ctestEnabled() && isCtestStage(lvl.id)) {
               engine.stop();
+              // (finished: its tile on the front page is ticked from now on)
+              markCtestPlayed(lvl.id);
               setCtestDone(lvl);
               return;
             }

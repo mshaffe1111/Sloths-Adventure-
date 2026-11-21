@@ -108,6 +108,27 @@ export function saveCtestStage(id: string): void {
     /* ignore */
   }
 }
+const PLAYED_KEY = 'sloth_qa_ctest_played';
+/** the stages this device has finished on the testers' link (reached the shrine), so the picker can tick them and testers spread out
+ *  over all nine (the lead, 11-20: the data wanted is every stage) */
+export function ctestPlayed(): string[] {
+  try {
+    const had = JSON.parse(localStorage.getItem(PLAYED_KEY) ?? '[]');
+    return Array.isArray(had) ? had.filter((x): x is string => typeof x === 'string' && isCtestStage(x)) : [];
+  } catch {
+    return [];
+  }
+}
+/** a testers' stage finished on this device */
+export function markCtestPlayed(id: string): void {
+  if (!isCtestStage(id)) return;
+  try {
+    const had = ctestPlayed();
+    if (!had.includes(id)) localStorage.setItem(PLAYED_KEY, JSON.stringify([...had, id]));
+  } catch {
+    /* ignore */
+  }
+}
 
 export function ctestEnabled(): boolean {
   if (STORE) return false;

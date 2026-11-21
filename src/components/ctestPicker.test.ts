@@ -81,7 +81,9 @@ test(`the survey names ${PICK} ("How was 1-4, Up the Kapok?"), its row carries i
   const row = surveyRow({ fun: ['Fun'], long: ['About right'], knew: ['Mostly'] }, '', '', '1-4 seed 7 normal', PICK);
   assert.equal(row.stage, PICK, "the survey row's stage, in the Data cell the collector already stores");
   const html = renderToStaticMarkup(React.createElement(ControlTestDone, { stage: PICK, onAgain: () => {}, onPickAnother: () => {} }));
-  assert.ok(html.includes('How was 1-4, Up the Kapok?'), 'the end screen names the stage');
+  const text = html.replace(/<[^>]+>/g, '');
+  assert.ok(text.includes(surveyIntro(PICK)), 'the end screen names the stage, in the words surveyIntro gives');
+  assert.ok(html.includes('<span class="ct-nb">1-4</span>'), "the stage's number is kept on one line");
   assert.ok(/Play <!-- -->1-4<!-- --> again|Play 1-4 again/.test(html), 'Play 1-4 again');
   assert.ok(html.includes('Pick another level'));
   assert.ok(!/1-5|Where She Walked/.test(html), 'nothing of the old single stage');
@@ -114,4 +116,19 @@ test("every stage the link offers names its own stretches for \"What felt hardes
     }
   }
   setDifficulty('normal');
+});
+
+test("a stage this phone finished wears a tick on its tile (the lead 11-20: testers spread over all nine); none on a fresh phone", async () => {
+  const { markCtestPlayed, ctestPlayed } = await import('../game/playRecorder.ts');
+  localStorage.clear();
+  const tiles = () => renderToStaticMarkup(React.createElement(ControlTestGate, { onStart: () => {} }));
+  assert.equal((tiles().match(/ct-played/g) ?? []).length, 0, 'a fresh phone: no ticks');
+  markCtestPlayed('1-6');
+  markCtestPlayed('1-6');
+  markCtestPlayed('2-1');
+  assert.deepEqual(ctestPlayed(), ['1-6'], 'once each, and only a stage the link offers');
+  const html = tiles();
+  assert.equal((html.match(/class="ct-played"/g) ?? []).length, 1);
+  assert.match(html, /aria-label="1-6, First Lianas, played"[^>]*>\s*<span class="ct-played"/);
+  localStorage.clear();
 });

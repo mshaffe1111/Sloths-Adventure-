@@ -1,5 +1,5 @@
 import React from 'react';
-import { CTEST_STAGES, recorder, saveCtestStage, savedCtestStage, savedTesterName, testerId } from '../game/playRecorder.ts';
+import { CTEST_STAGES, ctestPlayed, recorder, saveCtestStage, savedCtestStage, savedTesterName, testerId } from '../game/playRecorder.ts';
 import { stageSpec } from '../game/stagePlan.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
@@ -214,19 +214,28 @@ export const ctestStageTitle = (id: string): string => `${id}, ${ctestStageName(
 
 /**
  * The stage picker (R-165.343): the nine stages of World 1 as gold-edged tiles, three by three, the number big and the name under it.
- * One tap picks (a radio group: one is always picked); the page above shows that stage's still and its moves.
+ * One tap picks (a radio group: one is always picked); the page above shows that stage's still and its moves. A stage this phone has
+ * finished wears a small green tick in its corner, so testers spread out over all nine.
  */
-const StagePicker: React.FC<{ stage: string; onPick: (id: string) => void }> = ({ stage, onPick }) => (
-  <div className="ct-picks" role="radiogroup" aria-label="Which level">
-    {CTEST_STAGES.map((id) => (
-      <button key={id} type="button" role="radio" aria-checked={stage === id} onClick={() => onPick(id)} className={`ct-pick${stage === id ? ' on' : ''}`}
-        data-stage={id}>
-        <b>{id}</b>
-        <small>{ctestStageName(id)}</small>
-      </button>
-    ))}
-  </div>
-);
+const StagePicker: React.FC<{ stage: string; onPick: (id: string) => void }> = ({ stage, onPick }) => {
+  const played = React.useMemo(() => new Set(ctestPlayed()), []);
+  return (
+    <div className="ct-picks" role="radiogroup" aria-label="Which level">
+      {CTEST_STAGES.map((id) => (
+        <button key={id} type="button" role="radio" aria-checked={stage === id} onClick={() => onPick(id)} className={`ct-pick${stage === id ? ' on' : ''}`}
+          data-stage={id} aria-label={`${id}, ${ctestStageName(id)}${played.has(id) ? ', played' : ''}`}>
+          {played.has(id) && (
+            <span className="ct-played" aria-hidden="true">
+              ✓
+            </span>
+          )}
+          <b>{id}</b>
+          <small>{ctestStageName(id)}</small>
+        </button>
+      ))}
+    </div>
+  );
+};
 
 /** a numbered step on the front door: a little gold token */
 const Step: React.FC<{ n: number }> = ({ n }) => (
@@ -546,6 +555,8 @@ const Question: React.FC<{ q: SurveyQ; picked: readonly string[]; onPick: (a: st
 
 /** what the end screen says first: it names the level just played ("How was 1-4, Up the Kapok?") */
 export const surveyIntro = (stage: string): string => `How was ${ctestStageTitle(stage)}? Three quick taps help Matt a lot. The rest are up to you.`;
+/** a stage's number inside a sentence, kept on one line (a narrow phone broke "1-6" at its hyphen: "play 1-" / "6 again") */
+const Num: React.FC<{ id: string }> = ({ id }) => <span className="ct-nb">{id}</span>;
 
 /**
  * The end of the test (at the shrine, or "I'm done"): it names the level, three required taps, the optional ones, thanks, and a way to
@@ -590,7 +601,9 @@ export const ControlTestDone: React.FC<{ stage: string; onAgain: () => void; onP
       </div>
       {!sent ? (
         <>
-          <p className="ct-p">{surveyIntro(stage)}</p>
+          <p className="ct-p">
+            How was <Num id={stage} />, {ctestStageName(stage)}? Three quick taps help Matt a lot. The rest are up to you.
+          </p>
           {QUESTIONS.filter((q) => q.required).map(ask)}
           <Head>Optional</Head>
           {QUESTIONS.filter((q) => !q.required).map(ask)}
@@ -606,7 +619,9 @@ export const ControlTestDone: React.FC<{ stage: string; onAgain: () => void; onP
           </button>
         </>
       ) : (
-        <p className="ct-p">Thank you! You can close this page now, play {stage} again, or pick another level. Every run is different, and every run helps.</p>
+        <p className="ct-p">
+          Thank you! You can close this page now, play <Num id={stage} /> again, or pick another level. Every run is different, and every run helps.
+        </p>
       )}
       <button type="button" onClick={onAgain} className={`gx-plank ct-board${sent ? ' gx-plank-gold' : ''}`}>
         Play {stage} again
