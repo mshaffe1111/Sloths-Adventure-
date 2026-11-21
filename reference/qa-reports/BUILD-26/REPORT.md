@@ -1,3 +1,70 @@
+# ENG-26n (on t-build-26 from 30570b384): 1-4 cause C, the lay keeps its wood out of a gate's band; planted RED, fixed GREEN. Started 6:22 PM ET 11-21 (by `date`)
+Commits: 2f188c552 (the verdict towerGateRoofs, the band gateBand, the lay's keep-out, the unit test), this REPORT. Saved: eng26n/gate.mts
+(`npx tsx eng26n/gate.mts <tree> 1-4 <setting> <seeds...>`: the gen2 roll, its tower misses, the gate-band refusals, the lay's wood by s17).
+Tree (D115): frozen detached worktree at 2f188c552, node_modules linked.
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
+1. **Read the seed-list result below** (heavy run 1: `seedlist.ts 1-4 --check`, then `2-6 --check`, frozen 2f188c552). 2-6 has no sealed
+   piece, so nothing of it moves by construction (the band is pushed only for sealedIds; T.gates/T.lay only when a stage has one); its
+   check is the proof. If 1-4's check fails, the listed rolls the band refuses are named there: that is the relist's input, not a defect.
+2. **1-4's yield on seeds 1-400** (keep it high; compare with ENG-26m's relist count) and **1-4 relisted once more** (methods/seed-list.md:
+   survivors in their order first), **pins re-pointed after the whole suite** (D29, rule 20), **lockall** (only 1-4 and 2-6 may move).
+3. **castBots 1-4 x40 both settings** (the final bar): OLD 4ea253b8c with the old bot vs the new head with every bot fix (BUILD-26e's
+   42304b76d and after) on one chain, frozen trees, `--par 4`, eng26m/rowdiff.mjs: no tier's pass count may drop; seeds 10 and 37 Easy
+   (kid, adult, middle) are cause C's rows and must pass; any miss left traced and named BOT (BUILD-26e) or LAY.
+4. **The src suite** on the new head, run_in_background, its verdict appended.
+
+## Step 1: the plant, then the fix (frozen nothing: single rolls on this checkout, seconds each)
+- **Where the bridge came from.** 1-4 Easy seed 10 (gen2 19018) on 30570b384: s17:top 481-841 @3342 (sealed), its foot 295-1027 @3702
+  (gateRun's run-out at both ends), the way on the vine x 786 (3342 up to 3061), s18:b 360-760 @3061, and the lay's run-on of s18:b to the
+  right wall, 760-1280 @3061 (towerCatches step 3, "the piece itself run on to the wall": the run off s18:b at full speed comes down
+  past the gate's end). Seed 37 (46261) is the same shape 377 px higher (bridge 760-1280 @2684 over s17:top @2965).
+- **Why nothing refused it.** towerCatches' byGate keeps the lay's wood out from just under a gate's level (GATE_LEVEL 30) up to
+  LEAP.up (221 px) over it, within a hop ACROSS of the bough's own span. The bridge is 281 px up (the storey the gate's way on climbs
+  to), so it was outside; and towerGates only asks whether wood above the gate is REACHED by a hop, so a roof was never its question.
+- **The verdict (planted first):** tower.ts `gateBand(g, own, vines)` = across the sealed section's FULL width (its own wood: the foot
+  with gateRun), from g.y + GATE_LEVEL up to the higher of LEAP.up over it and the top of a vine standing on it (minus 8 px);
+  `towerGateRoofs` names any of the lay's own wood (towerCatches' boughs, recorded as tower.lay; each gate's own section as tower.gates)
+  in it: `tower: the shut gate at x .., y .. has the lay's wood in its band (x ..-.., y ..-..): the piece at ...`. Judged with the
+  tower's other verdicts (pipeline: towerMiss), so a roll with one is refused by name.
+- **RED** (the verdict in, the lay's keep-out out, on this checkout): 1-4 Easy seeds 10 and 37 both THROW "no seed of 24 ... builds
+  cleanly (... tower: the shut gate at x 540-980, y 7895 has the lay's wood in its band (x 354-1166, y 7606-7925): the piece at x 0-584,
+  y 7614 ...)": every roll of the search is refused, listed ones included.
+- **The fix in the lay (rule 22: general, every sealed piece, no stage named):** the same bands go into towerCatches' keepOut before it
+  lays (pipeline: one box per sealed id, in the column's frame), so its run-ons, bridges and shelves are placed outside them and the roll
+  is not thrown away.
+- **GREEN** (2f188c552): Easy 10 builds on 19018 and Easy 37 on 46261 (their listed rolls), no tower miss, no band refusal; Normal 10
+  and 37 the same (19018, 46261). The bridge is gone: the gate 481-841 now has 81 px of open sky past s18:b's end (760), as Normal's
+  passing layout had 44 px, and the run off s18:b is caught at 843-1023 @3441 + 1023-1280 @3441 (under the gate's level, outside the band;
+  a hop back onto the gate's end, which is the gate's own way on again, not a way round it).
+- **Tests:** `npx tsc --noEmit -p .` clean; tower.test.ts `towerGateRoofs (planted, ENG-26n, 1-4 cause C)` with seed 10's numbers
+  (the band 295-1027 x 3053-3372; the bridge named; the next storey, past the foot, and under the level clear; a shelf over gateRun's
+  run-out named; with no way on, LEAP.up) and towerGates' planted test: 2/2.
+- **NOT RUN here** (the box): the castBots rows for seeds 10 and 37 (so the bots' pass on the new layout is NOT claimed), the yield,
+  the relist, pins, lockall, the src suite (D96: none is claimed).
+
+## Heavy run 1: seed lists (frozen 2f188c552)
+PENDING (appended when it wakes me).
+
+## For the lead (rulings, priority 'next')
+- **The band's height is the gate's own way on, not a hop.** The packet says "within a hop"; by the tower's own numbers 281 px is past a
+  hop (LEAP.up 221; TOWER.clear 257), so a hop-tall band would have stayed GREEN on the base. I measured it by the vine standing on the
+  gate (the storey it opens onto), which is what roofs it. Your call whether that is the rule's wording in types.ts SectionPiece.sealed.
+- **Under the gate's level is not in the band** (GATE_LEVEL 30, as towerGates reads level): the lay's shelves 39 px under s17:top at
+  246-426 @3381 (55 px from its end) stay, as on the base. Wood within a hop UNDER a gate is a way ONTO it that skips the field's vines;
+  whether that is a sealed piece's promise too is the lead's ruling (widening it moves more of 1-4's rolls).
+
+## Lessons applied
+D102 (read lean: the packet's list only), D111 (the box by `date`: start 6:22 PM ET, hand over by 6:50), D113 (every long run in the
+background), D115 (the heavy run on a frozen detached worktree), D109 (no clock times to the lead), D96 (nothing claimed that did not run),
+D29/rule 20 (no pins re-pointed: the relist and the suite are not done), rule 22 (the fix is general: every sealed piece's band),
+rule 19 (the refusal sits in the roll's own verdicts, which the list's check asks).
+
+## Learned (for level.md, proposed)
+- A promise in a doc comment ("the lay adds nothing within a hop of a sealed piece") needs its own verdict, or a change elsewhere (here
+  gateRun's wider foot moving the gate under the next storey's run-on) breaks it silently. Proposed check: every SectionPiece flag that
+  restricts the lay has a named verdict in the roll's tower misses, planted with a toy.
+
 # BUILD-26e (on t-build-26 from ea8ed97fd): cause A planted, cause C fixed (one fault behind 12 rows), 2-6's child, middle and expert 40/40. Started 6:08 PM ET 11-21 (by `date`)
 Commits: cc62d6b99 (the vine-foot toy planted in castBots.test.ts), cef59bafe (bot: the climb-jump for a vine steers to the vine's x and
 lets go there), this REPORT. Saved: b26e/ (rows/: castBots rows r26-*/r14-* for base 5be367dd8, head ea8ed97fd, fix cef59bafe; diff.py: row for row
