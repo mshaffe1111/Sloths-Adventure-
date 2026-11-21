@@ -143,7 +143,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
       { frame: 'swing_grip', name: 'Grab a liana', how: 'Jump at a liana to grab it. Hang on and it swings.' },
       { frame: 'swing_top', name: 'Leap', how: 'Let go when you glow: flick up as you swing forward.' },
       CLIMB,
-      { frame: 'climb_5', name: 'Vine snakes', how: 'A snake coming down? Climb down ahead of it.' },
+      { frame: 'climb_5', name: 'Vine snakes', how: 'A snake on your vine? Climb the way it goes, ahead of it.' },
     ],
   },
   '1-7': {
@@ -158,7 +158,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
   '1-8': {
     alt: 'Pokey on the long branch under palms heavy with nuts',
     moves: [
-      RUN,
+      { ...RUN, how: "It's cracking behind you! Keep your thumb down and run." },
       JUMP,
       { frame: 'rise', name: 'Little nuts', how: 'Little nuts roll at you. Hop over them.' },
       { frame: 'walk_3', name: 'Big nuts', how: 'Big ones bounce over you. Just keep walking.' },

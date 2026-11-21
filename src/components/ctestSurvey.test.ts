@@ -60,7 +60,7 @@ test("ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at lea
       for (const l of labels) assert.ok(l.split(':')[0] in STRETCH_WORDS, `${l} has no words`);
       const choices = stretchChoices(labels);
       assert.ok(choices.length >= 4, choices.join(', '));
-      assert.ok(choices.length <= 10, choices.join(', '));
+      assert.ok(choices.length <= 6, choices.join(', '));
     }
   } finally {
     clearPlay11();
@@ -156,10 +156,10 @@ test('a key typed into a text box is the text, never the game (the notes ate P, 
   assert.match(inp, /private handleKeyDown = \(e: KeyboardEvent\) => \{[\s\S]{0,300}TEXTAREA[\s\S]{0,80}return;/);
 });
 
-test("1-3's chips are the story keeper's words (11-12 1:40 PM, and the two snakes on a log's, 2:10 PM), each beat once", () => {
+test("1-3's chips are the story keeper's words (11-12; trimmed to six, KEEPER-PICK 11-21: the awake snakes one chip, the punch one chip)", () => {
   const want: Record<string, string> = {
-    'w1-13-lesson': 'the first hive', 'w1-13-again': 'the snake on watch', 'w1-13-stone-stair': 'the stone on the steps', 'w1-13-other-way': 'the branches with no vine',
-    'w1-13-perch': 'the high branch', 'w1-13-gallery': 'three traps in a row', 'w1-13-two-snakes': 'the two snakes on a log', 'w1-13-finale': 'the last two snakes',
+    'w1-13-lesson': 'the first hive', 'w1-13-again': 'the snakes on watch', 'w1-13-stone-stair': 'the snakes on watch', 'w1-13-other-way': 'punching the snakes',
+    'w1-13-perch': 'the high branch', 'w1-13-gallery': 'three traps in a row', 'w1-13-two-snakes': 'the two snakes on a log', 'w1-13-finale': 'punching the snakes',
   };
   for (const [id, words] of Object.entries(want)) assert.equal(STRETCH_WORDS[id], words, id);
 });

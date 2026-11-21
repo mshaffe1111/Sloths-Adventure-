@@ -111,6 +111,8 @@ test("every stage the link offers names its own stretches for \"What felt hardes
         assert.deepEqual(unnamed, [], `${id} ${setting} seed ${seed}: name these in ctestStretches.ts`);
         const chips = stretchChoices(labels);
         assert.ok(chips.length >= 2, `${id} ${setting} seed ${seed}: ${chips.length} chip(s)`);
+        // (the story keeper, KEEPER-PICK 11-21: each stage keeps its 6 clearest, plus Running and Nothing beside them)
+        assert.ok(chips.length <= 6, `${id} ${setting} seed ${seed}: ${chips.length} chips, the most is 6 (${chips.join(', ')})`);
         assert.ok(chips.some((c) => !generic.includes(c)) || id === '1-1', `${id} ${setting} seed ${seed}: only the generic chips (${chips.join(', ')})`);
       }
     }
