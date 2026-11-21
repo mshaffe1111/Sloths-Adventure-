@@ -19,7 +19,7 @@
  },
  "clips": {
   "idle-yawn": {
-   "sheet_sha256": "b69533711f58b400390c284891e39e244f09b00444bd872dbab0c43935d09640",
+   "sheet_sha256": "b2596aa9d89695a3d4af398675f36e227c3dacfad92569f37c5501aa3659a2a4",
    "n": 81,
    "first": {
     "box": [
@@ -59,7 +59,7 @@
    }
   },
   "look-around": {
-   "sheet_sha256": "91fa01b07bc3c6921f4f0908d774311f8f5010adb1ed688f19891ebe40cfc818",
+   "sheet_sha256": "ba35caaf096d06aceb15184da60ef652fae34b09414706eeb6373e34b54ce546",
    "n": 81,
    "first": {
     "box": [
@@ -139,7 +139,7 @@
    }
   },
   "wave": {
-   "sheet_sha256": "c91ac89c9eea9f0a869c9fc8cc14f70e912922d5a29197b3d56eae366175be5b",
+   "sheet_sha256": "aa013179b374882f8778d68db6be1fb4cf1bbd66afad8e4bab4a8e451ec0a321",
    "n": 81,
    "first": {
     "box": [
