@@ -1,3 +1,71 @@
+# ENG-27k REPORT (handed over at the D111 box; base d83358fad; branch t-eng-27; ground fix t-eng-ground 484199316; merge 154eb8366; F 7c7fe2a9a)
+## EXACT NEXT STEP (ENG-27l, from t-eng-27 head; read only this section, D90)
+ORDER: (1) the lead's ruling on middle home Normal 2 (asked, below); (2) the race table and the gates; (3) B; (4) S.
+(1) **RULING ASKED: pacerLay 'the careful middle player beats it, normal seed 2' (home) is RED on 7c7fe2a9a: 95.4 s vs the boat's 92.37.**
+    Traced (k/trace-middle-home-normal2-27k.txt; probe k/probe-27k.ts.txt, copy to tools/inspect/_probe.ts, args `2 normal`): the
+    invariant holds at each of its 4 falls (+0.92 -> +0.92 at x 10683, -0.85 -> -0.85 at x 6551, -1.40 -> -1.40 at x 3959, -1.16 -> -1.16
+    at x 4427). The loss is (a) its thin pace: +0.4 to +2.2 s mid-leg BEFORE any fall (the boat is 7% slower than the FLOWN middle, this
+    bot is slower than the flown middle on this seed), and (b) each respawn is a river back from the fall, so it re-crosses the river it
+    fell in and pays that river's log wait again (-0.85 at x 7308 -> -2.86 by x 6750). Under the floor it WON by 2.5 (the floor's pay).
+    Options sent to the lead: (a) accept, the test becomes 'wins with no fall' and fall rows named; (b) the four falls are bot misses:
+    rule 28 trace (two runs per cause), the fix where the cause is, castBots row diff (my recommendation); (c) change what the respawn
+    keeps. Do what the lead rules; never loosen the margin or the test to get green (law 22).
+(2) **The race table on 7c7fe2a9a** (home and post, seeds 1-6, both settings, middle / expert / ride-only): DONE (k/race-27k.txt).
+    Ride-only LOST ALL 24 (home 0/12, post 0/12; closest post Easy 4 by 5.1 s, home Easy 4 by 6.2). Expert WON all 12 (Normal only; no
+    expert bot on Easy; closest home Normal 5 by 7.5 s, post Normal 3 by 10.2). Middle 22/24: LOST home Normal 2 (95.4 vs 92.37, -3.0;
+    (1) above) and post Normal 5 (103.6 vs 103.44, -0.2). Post Normal 5 traced (k/trace-middle-post-normal5-27k.txt; the probe's 4th
+    arg `post`): 6 falls, each margin kept (+1.60, +1.75, +1.26, +1.47, -0.23, +0.15); FOUR of them at one crossing in 10 s (x 12984,
+    12815, 12371, 12831, each put back at x 13128) and two at x 6055 / 5907 (back at 6258); its margin hovers -1.6 to +2.6 s the whole
+    leg. Both losses: a thin careful-middle pace plus repeated falls at one crossing; under the floor both were WON by its pay. Same
+    ruling as (1): I recommend (b), the repeated falls at one crossing as bot misses, traced by rule 28.
+    Re-run: copy reference/qa-reports/ENG-27/raceprobe-27e.ts.txt to tools/inspect/_race27k.ts on a frozen worktree, then
+    `npx tsx tools/inspect/_race27k.ts middle,expert,ride home` and `... post` (about 30 s each). Ride-only must lose all 24; middle and
+    expert win; any middle or expert loss traced (rule 28).
+    **The gates on the ground head 484199316** (chain a then b, run-gates-d.sh, frozen worktree, node_modules symlinked, tooltests.cmd =
+    THE GROUND's gates.yml line 157 without '- run:' (my first try read the wrong checkout's line 157: empty; fixed before tooltests ran)):
+    running at the box in this container (logs in its scratch, lost if it stops): tsc PASS, suite 1/6 PASS
+    634/634; suite 2/6 onward running. If the container died, re-run: `G=<logdir> H=<worktree at 484199316> bash reference/qa-reports/ENG-GROUND/run-gates-d.sh a`
+    then `b`; `git fetch --unshallow` before roadmapcheck and the lock. All green: tell the lead 484199316 is the green ground head.
+    Then THE FULL SET on t-eng-27's head (gates.md D96: chain a, b and the lock vs 0eefc707e: only 2-7's toy moves).
+(3) **B, boardLog's RED half**: unchanged from ENG-27j's B below (pacerLay.test 'a log drifting his way ... home Easy seed 1; RED without
+    it' still FAILS on 7c7fe2a9a: 85.2 vs 97.53, the race now wins without the skill). ENG-27j's trace (3) found the skill's wait point
+    WRONG on the toy (it holds him at his look distance, 57 px short of the lip, and the longer hop lands near the log's front: the miss
+    the skill was planted against, made by the skill). That is a bot change: ask the lead whether underLip should send him on to the
+    lip first, then wait; rule 28 (row-for-row castBots diff) goes with it; then the explicit toy (one log, 64 px out of 240 when his look
+    first reaches it), RED without the skill, GREEN with it. Never loosened, never retired while the skill lives.
+(4) **S**: stills at 2x both ways (the boat waiting, setting off, docked; the door and letter; a respawn on the race leg: now the boat
+    held level with him while he drops onto the flag) and THE CLIP of the race leg (D63) with a fall in it; THE FULL SET. Known, not ours:
+    the wall end's shade seam and water fill, the stretched wall picture (R-165.380).
+
+## ENG-27k: what was done
+G. **The ground's suite 4/6 red was the ground's own, not load** (k/../../ENG-GROUND/k/red-green-27k.txt on t-eng-ground): stageModes.test
+   alone, unloaded: RED on 2d4e0752a and d83358fad (8/9), GREEN on 0eefc707e (9/9). Cause: 988f7ce24 (ENG-27 step 0) made levelCheck's
+   'past the shrine' read config.travel, which matches the engine's own left-mode wall (stageModes walls(-1)); the test's fixture asked
+   the 1-1 builder for travel 'left', but 1-1 lays rightward (its shrine at its right end), so every pickup lay beyond a left shrine and
+   no seed could build. The check is right; the fixture asked for a stage the game cannot lay (the lead accepted). Fix (484199316): the
+   fixture builds 1-1 as the game lays it and makes its leftward reading after the build (config.travel with the start and shrine it
+   already moved, then travelStart): the engine's left mode is still run end to end. Plant: realPlay.test "the level check's 'past the
+   shrine' is the engine's own wall, whichever way the stage travels": RED on 0eefc707e's check (left: a flower beyond a left shrine not
+   refused), GREEN. rules.ts says so. tsc PASS. The merge refreshed on t-eng-27 (154eb8366); the merge 24d6ba567 stands.
+F. **Option A built (7c7fe2a9a)**, the rule first (D40), the old deleted (new replaces old): PacerPiece records his margin at the start
+   of every step it runs (pacer.ts pacerMargin = pacerAt(his x) - clock); the world holds through the life-lost beat (engine.ts down),
+   so after a fall that is the margin the frame before the life was lost. A respawn on the leg sets the clock so he keeps exactly it
+   (pacerKeep) and holds the boat level with him until he stands; a respawn before the leg: back at its start, waiting; a decided race
+   is never rewound (unchanged). A lead bigger than the way from the start leaves the clock negative: the boat waits at its start that
+   long (the verdict reads the clock). DELETED: Pacer.floor, PacerRow.floor, W2_RACE.floor, pacerReplace, riversLeft, middleAt and the
+   lay's marks (they fed only the respawn share); engine-core.md says why with ENG-27j's numbers.
+   THE INVARIANT on the grid: tools/inspect/pacerRespawn.test.ts (added to CI's tool line, gates.yml 157): home and post, seeds 1-6,
+   both settings, middle / expert (Normal) / ride-only, each life lost on the race leg paired with its own first stand after the
+   respawn (a second life lost before a stand is a failure by name), tolerance 2 frames. RED on 154eb8366: home 90 of 91, post 76 of 78
+   respawns moved his margin (k/inv-red-27k.txt; e.g. middle home Normal 1 at x 7407: +12.51 -> +6.26, a lead taken). GREEN on
+   7c7fe2a9a (k/inv-green-27k.txt, 35 s). The pacerLay unit test now drops him ahead and behind the boat: the respawn keeps +/- exactly,
+   holds while he is in the air, runs on the step he stands. The ride-only claim is 'never wins' (the exemption is gone).
+   pacerLay.test on 7c7fe2a9a: 16/18 (k/pacerLay-27k.txt): the two reds are (1) above and B.
+Lessons applied: D40 (the rule first, the old path deleted, nothing patched around it), D57/D87 (ReadNotifications at each step and
+push), D102 (read lean: the packet's list only), D109 (no clock times in messages), D111 (the box by `date`), D112 (the test is the
+invariant on the grid, not a toy of a mechanism), D113 (every long run in the background; foreground only single files of seconds).
+NOT done (the box): (2)'s full set on t-eng-27, B, S (the stills and THE CLIP).
+
 # ENG-27j REPORT (handed over at the D111 box; base d29258340; branch t-eng-27, head: this commit; merge 24d6ba567, re-plant af127d21e)
 ## EXACT NEXT STEP (ENG-27k, from t-eng-27 head; read only this section, D90)
 ORDER: G in the background first; then F (the respawn rule: RULED, option A on every respawn, below), then B (boardLog's toy), then S
