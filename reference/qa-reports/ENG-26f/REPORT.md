@@ -8,15 +8,7 @@ re-applied it from a saved copy and the same edit script before any commit (test
 a plant is restored from a copy of the fixed file, never from git.
 
 ## EXACT NEXT STEP (for whoever picks this up, in this order)
-1. **Rule 28 (step 2), runs started 1:16 PM ET in the background (scratchpad, lost with this container: re-run if gone):**
-   - 2-3: in a worktree at origin/t-build-23 (66775dabf) with ONLY 9346f3948's tools/inspect/firsttimer.ts hunk applied (`git show
-     9346f3948 -- tools/inspect/firsttimer.ts | git apply`): `npx tsx tools/inspect/castBots.ts --stage 2-3 --seeds 1-40 --setting both
-     --par 2 --rows rows23-tc.jsonl`; diff row for row against `git show origin/t-build-23:reference/qa-reports/BUILD-23/castbots23e-rows.jsonl`
-     (key bot+setting+seed; compare end, pass, time, rescues, goal, hits, lives, stuck).
-   - 2-5: on the head, `--stage 2-5 ... --rows rows25-head.jsonl` against reference/qa-reports/BUILD-25/castrows-2-5-25d.jsonl (360 rows,
-     BUILD-25d at 74b72c84b). Engine changes since 25d (ENG-26d/e) can move rows too: any moved row is traced with trunkCatch OFF
-     (SKILLS.trunkCatch = false) on that seed before it is blamed on the bot fix.
-   - Trace every moved row (seed, x, frame, what took him), or narrow trunkCatch. tierBots 1-1 stays 9/9.
+1. **Rule 28 (step 2): DONE** (below).
 2. **The table (step 3): DONE** (below).
 3. **Stills (step 4):** tools/inspect/plantRow.ts is the DEV route's plant (nothing in src imports it, so no shipped build holds it):
    a stills script starts a dev vite, and in the page `await import('/tools/inspect/plantRow.ts')` and the draft kit
@@ -37,6 +29,13 @@ a plant is restored from a copy of the fixed file, never from git.
 | 1: the drops fingerprint | MOVED on 12 shipped stages (1-1, 1-6, 1-7, 1-8, 2-1, 2-5, 5-7, 5-9, 8-2, 8-5, 8-6, 8-9); the two bases identical to each other. All 1243 moved entries: the same fall (x0, x1, lip), the same ends.kind 'floor' and look 'ground'; ONLY ends.y, now 35-75 px higher. Example: 1-1 normal v1, the fall at x 6116-6371, lip 1180: floor y 1250 -> 1215. Verdicts identical on every build. Cause: ENG-26e's dropsOf (5a67dba93/dfc90a509): the base took the FIRST platform in array order under the fall's middle, the head the HIGHEST, the first floor a fall really meets. Readers: none reads ends.y on a floor drop (verdicts.ts, promises11.ts and pipeline.ts:4219 falls read kind, cause and look). STOP sent; **lead ruled ACCEPTED** (a correction, not a player change) | lock/drops-diff-e67e01113-vs-head.txt; lock/lockplus.ts, alldrops.ts, cmp.mjs (run from tools/engine/) |
 | R-165.375 | a LISTED stage that lays a water wheel never asked for the painted noria's sheet (stageSheets laysWheel read GEN2_STAGES only, which holds no stageTable row: R-165.288's rafts miss again), so 2-6, once listed, would pop its noria in. laysWheel now reads a kit (GEN2_STAGES' or the listed row's), its pieces and sub-block versions, both settings | 4a0a8677c; src/game/gen2/listedWheelSheet.test.ts RED with the listed branch false; stageSheets.test.ts 9/9 |
 | plantRow.ts | rowWheels' row plant lifted into tools/inspect/plantRow.ts (returns its undo), for the bots and the DEV stills page | c1fe87a6e; rowWheels.test.ts 5/5 |
+
+## Rule 28 (step 2): the trunkCatch bot fix, row for row (rows/rowdiff.txt, rowdiff.py; key bot + setting + seed; end, pass, time, rescues, goal, hits, lives, turnBacks, stuck)
+- **2-3**: origin/t-build-23 66775dabf with ONLY 9346f3948's tools/inspect/firsttimer.ts hunk applied, `castBots --stage 2-3 --seeds 1-40
+  --setting both`, vs BUILD-23e's committed castbots23e-rows.jsonl: **360 compared, 0 moved.**
+- **2-5**: the head, vs BUILD-25d's castrows-2-5-25d.jsonl (74b72c84b): **360 compared, 0 moved** (the bot fix and every engine change
+  since 25d, ENG-26d/e and step 0 here, together).
+- Nothing to trace; trunkCatch is not narrowed. **tierBots 1-1: 9/9** on the head (rows/tierBots-1-1.txt).
 
 ## The table (step 3): rowWheels on the draft row, finish / rescues (table/*.txt; every run: lives 0, put-backs 0)
 | run | s1 ON v1 | s1 ON v2 | s2 ON v1 | s2 ON v2 | s1 OFF v1 | s1 OFF v2 | s2 OFF v1 | s2 OFF v2 |
