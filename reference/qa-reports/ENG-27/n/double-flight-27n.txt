@@ -64,3 +64,31 @@
 # A i 39 x 14897.6 y 735.4 vx 0 vy 940 g false log 14728 qx 14728
 # A i 40 x 14897.6 y 735.4 vx 0 vy 940 g false log 14728 qx 14728
 # A i 41 x 14897.6 y 735.4 vx 0 vy 940 g false log 14728 qx 14728
+
+On 174e3f54d + the bot's own reads (diagnostic copy): small = overSmall(j.dir) each frame; the pad's steer back (small 2, from frame 20) never reaches the engine (vx stays 268): thumbify's travel when turning (who.swap, 0.133-0.2 s) holds no steer through the reversal, and he comes down past the log's far end.
+# A i 1 x 14676.7 y 660.8 vx 87 vy -577 g false log 14786 qx 14786 small 0 toX undefined liana undefined bonk undefined back undefined hasJu
+# A i 2 x 14681.5 y 643.7 vx 143 vy -513 g false log 14784 qx 14784 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 3 x 14688.1 y 628.7 vx 200 vy -450 g false log 14782 qx 14782 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 4 x 14696.7 y 615.8 vx 257 vy -387 g false log 14779 qx 14779 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 5 x 14706.2 y 605.0 vx 285 vy -323 g false log 14777 qx 14777 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 6 x 14715.1 y 596.3 vx 268 vy -260 g false log 14775 qx 14775 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 7 x 14724.6 y 589.8 vx 285 vy -197 g false log 14772 qx 14772 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 8 x 14733.5 y 585.3 vx 268 vy -133 g false log 14770 qx 14770 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 9 x 14743.0 y 583.0 vx 285 vy -70 g false log 14768 qx 14768 small 0 toX undefined liana undefined bonk undefined back undefined hasJu
+# A i 10 x 14752.0 y 567.0 vx 268 vy -481 g false log 14765 qx 14765 small 0 toX undefined liana undefined bonk undefined back undefined has
+# A i 11 x 14761.5 y 553.0 vx 285 vy -418 g false log 14763 qx 14763 small 0 toX undefined liana undefined bonk undefined back undefined has
+# A i 12 x 14770.4 y 547.5 vx 268 vy -167 g false log 14761 qx 14761 small 0 toX undefined liana undefined bonk undefined back undefined has
+# A i 13 x 14779.9 y 544.0 vx 285 vy -103 g false log 14758 qx 14758 small 0 toX undefined liana undefined bonk undefined back undefined has
+# A i 14 x 14788.8 y 542.7 vx 268 vy -40 g false log 14756 qx 14756 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 15 x 14798.3 y 543.5 vx 285 vy 23 g false log 14754 qx 14754 small 0 toX undefined liana undefined bonk undefined back undefined hasJu
+# A i 16 x 14807.2 y 547.0 vx 268 vy 107 g false log 14751 qx 14751 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 17 x 14816.7 y 553.4 vx 285 vy 190 g false log 14749 qx 14749 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 18 x 14825.7 y 562.5 vx 268 vy 273 g false log 14747 qx 14747 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 19 x 14835.2 y 574.4 vx 285 vy 357 g false log 14744 qx 14744 small 1 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 20 x 14844.1 y 589.0 vx 268 vy 440 g false log 14742 qx 14742 small 2 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 21 x 14853.0 y 606.5 vx 268 vy 523 g false log 14740 qx 14740 small 2 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 22 x 14861.9 y 626.7 vx 268 vy 607 g false log 14737 qx 14737 small 2 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 23 x 14870.8 y 649.7 vx 268 vy 690 g false log 14735 qx 14735 small 2 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 24 x 14879.8 y 675.5 vx 268 vy 773 g false log 14733 qx 14733 small 2 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 25 x 14888.7 y 704.0 vx 268 vy 857 g false log 14730 qx 14730 small 0 toX undefined liana undefined bonk undefined back undefined hasJ
+# A i 26 x 14897.6 y 735.4 vx 0 vy 940 g false log 14728 qx 14728 small nojump toX undefined liana undefined bonk undefined back undefined h

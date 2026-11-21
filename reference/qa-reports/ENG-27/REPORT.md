@@ -1,32 +1,37 @@
-# ENG-27n REPORT (handed over at the D111 box, written 6:05 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 174e3f54d + this REPORT)
+# ENG-27n REPORT (handed over at the D111 box, written 6:09 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 2f525cd72 + this REPORT)
 ## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
-ORDER: (0) the suite's verdict; (1) pin hopFlies' DOUBLE against the engine, then the one LOST row; (2) boardHop onto the drawn hop;
-(3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's castBots diff; (7) B and S.
-(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background): at the box 1247 ok, 0
-    not ok, still running (in gen2 1-1's forks test). ENG-27n sends the lead the verdict when the run wakes it. If none reached the lead:
-    re-run it on a frozen tree of the head. A red: name it, tell the lead.
-(1) **hopJudged on 174e3f54d (n/hopJudged-174e3f54d-27n.txt): seed 5 GREEN** (10 judged hops, edgeWait and race: 0 flown not as judged,
-    0 came down elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x
-    14674 hold 0.235 double | LOST`. The drawn double is flown EXACTLY as judged and still drowns: hopFlies' double is not the engine's.
-    Suspects, in order: (a) v2: the engine's second impulse is PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * drowsyJump * dragJump
-    (engine.ts ~2671, the flightClear case aside); hopFlies uses PHYS.doubleV bare; (b) the second press's hold count (hopFlies: frame i
-    held while age + DT < age2 + hold2, the first press's convention; the touch layer's minimum, touchHeld, may restart at the second
-    press); (c) the overSmall steer, read in hopFlies for the judged float only (the bot reads every platform under him); (d) the d2
-    frame. HOW: a test on the real engine, copying firsttimer.ts tryAt (~line 4560: sim.stand, then frame by frame): fly drawn hops
-    (single and double, upOnly 0 and 0.1, a few holds, d2 and hold2) off a flat floor onto a static platform, and assert hopFlies (at =
-    () => q.x) comes down within 1 px of where the engine does, the landing frame equal; fix hopFlies until it is, then hopJudged again
-    (seeds 5 and 2), then TRACE=1 on seed 2 at x 14674 (startJump's jump lines: from, hold, d2, to). Two runs per cause (rule 28).
-(2) **boardHop** (jumpFor ~line 1616) still judges a single held who.hold[0], and its press comes through decide's thumb lag (on
-    a0ab91d33, seed 5 t 86.67: judged x 10467, pressed 2 frames on from x 10458, held 0.171, via the stopped-dead read; n/hopJudged-
-    a0ab91d33-27n.txt). Not reached on seeds 5 or 2 at 174e3f54d, but it must follow the ruling: under floatSure, the drawn hop
-    (waitHop ?? drawHop), judged by hopFlies at lag 0, gateHop set and pressed at once (decide keeps its gauss draw, then startJump now
-    when a gate hop is set). Also make gateHop good only on the frame it was set (gateAt === this.t), so a jumpFor read that is not
-    pressed can never leak into a later jump. Then the liana (hopCatches, lianaWait) and wheel (wheelHop) traces (ENG-27m's (1)).
-(3) **pacerLay.test, pacerRespawn.test: NOT run** (the suite held the one heavy slot). Run each on a frozen tree of the head: GREEN.
-(4) **The whole runs** (2-7 home middle Normal 5 and 2; ENG-27m's numbers in m/candidate2-runs-27m.txt: candidate 2 had seed 5 171 ->
-    205.7 s, seed 2 203 -> 182.2 s) re-measured on the head FIRST: the waits past the beat now stand by choice and redraw their hop each
-    0.5 s beat, which can move time either way. Then seed 5's extra seconds traced: where he waits, why (a wait that never ends is a miss).
-(5) the race table (middle 24/24, expert 12/12, ride-only 0/24; ENG-27m's (1) has the probe's recipe); (6) rule 28 on 2-1..2-6 x40 both
+ORDER: (0) the suite's verdict and its RED; (1) the thumb's travel in hopFlies (the one LOST row's root); (2) boardHop onto the drawn
+hop, v2 on Easy; (3) pacerLay, pacerRespawn; (4) the whole runs and seed 5's time; (5) the race table; (6) rule 28's diff; (7) B and S.
+(0) **The full src suite on b7a68a8bd** (unsharded, the CLAUDE.md src list, frozen worktree, run_in_background), at the box: 1873 ok,
+    **1 RED: src/game/gen2/pacerLay.test.ts:211** 'bot (planted): a log drifting his way, still mostly under the lip, is boarded by a
+    hop, so the careful middle player wins home Easy seed 1; RED without it' fails its RED half: 'RED: without the skill the plant must
+    lose (86.6 s against 97.53 s)'. With the skill off he now wins anyway, so the plant no longer proves the skill (the lead has it,
+    priority next). Trace it (rule 28: two runs, skill off, what wins him the race now) and re-plant it where the skill is the
+    difference; never loosen the assertion (law 22). The run was still going at the box; ENG-27n sends the lead the final verdict.
+(1) **hopJudged on 2f525cd72 (n/hopJudged-2f525cd72-27n.txt): seed 5 GREEN** (12 judged, edgeWait and race: 0 flown not as judged,
+    0 elsewhere); **seed 2 RED by ONE row:** `edgeWait q#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x 14674 hold
+    0.235 double | LOST`. **ROOT, traced frame by frame (n/double-flight-27n.txt, three runs):** the judged flight and the engine's are
+    EQUAL through the second press (frame 10); the second press's hold count was a frame short (fixed, 2f525cd72); then from frame 20
+    the bot's own overSmall reads 2 (steer back over log #14), but NO steer reaches the engine for the 5 frames to touch-down (vx stays
+    268): thumbify's travel when turning (`who.swap`, 0.133-0.2 s, drawn from this.r at the reversal) holds no steer through a reversal,
+    so he comes down at x 14889, past the log's far end (14880). hopFlies steered back at once and judged it landed. **FIX:** pre-draw the
+    swap in drawHop (its own stream, DrawnHop.swap) and fly it in hopFlies (a reversal: no steer for `swap` s, then the steer back; a
+    let-go (small 1) then a reversal: read thumbify for whether lastSteer survives a let-go); thumbify takes the gate hop's swap for
+    that jump (its own draw still made, so the stream is as ever). Then hopJudged seeds 5 and 2 GREEN. Also read thumbify's other
+    fumbles (drift into the dead zone, a late lift-off) for anything else that changes the flown steer in the air.
+(2) **boardHop** (jumpFor ~line 1630) still judges a single held who.hold[0] and its press comes through decide's thumb lag (a0ab91d33,
+    seed 5 t 86.67: judged x 10467, pressed 2 frames on from x 10458 held 0.171 via the stopped-dead read; n/hopJudged-a0ab91d33-27n.txt;
+    not reached on seeds 5 and 2 since). Under floatSure: the drawn hop judged by hopFlies at lag 0, gateHop set, pressed at once (decide
+    keeps its gauss draw, then startJump now when a gate hop is set); gateHop good only on the frame it was set (gateAt === this.t).
+    **v2 on Easy:** the engine's second impulse is PHYS.doubleV * (1 + ASSIST.doubleJump * assistNow()) * dragJump * (flightClear ? 1 :
+    drowsyJump(drowsy)) (engine.ts ~2671; assistNow() is 1 on Easy, 0 on 2-7 Normal: read 0 in the trace); hopFlies uses PHYS.doubleV
+    bare, so every Easy double is judged 12% short. Pass the engine's own v2 to every hopFlies call (5 calls). Then the liana and wheel
+    traces (ENG-27m's (1)).
+(3) **pacerLay.test (with (0)'s RED), pacerRespawn.test: NOT run on the head** (the suite held the heavy slot). Frozen tree, GREEN.
+(4) **The whole runs** (2-7 home middle Normal 5 and 2; candidate 2's: seed 5 171 -> 205.7 s, seed 2 203 -> 182.2 s, m/candidate2-
+    runs-27m.txt) re-measured on the head first: the waits past the beat now stand by choice and redraw each 0.5 s beat, which can move
+    time either way. Then seed 5's extra seconds traced: where he waits, why (a wait that never ends is a miss).
+(5) the race table (middle 24/24, expert 12/12, ride-only 0/24; the probe's recipe in ENG-27m's (1)); (6) rule 28 on 2-1..2-6 x40 both
     settings, base 1465822f7 vs head, frozen trees, row for row (the river gates run on every W2 river: rows WILL move, each traced);
     tierBots 1-1 9/9; (7) B and S as ENG-27l's (4), (5).
 ## ENG-27n: what was done
@@ -50,8 +55,9 @@ ORDER: (0) the suite's verdict; (1) pin hopFlies' DOUBLE against the engine, the
   (blockedT) 2 frames after a judgment (seed 2 t 20.17 x 14674 edgeWait; seed 5 t 86.67 x 10467 boardHop). **Fixed:** 123876d28
   (upstream: the beat out, a new draw, he stands on; the log hands him back) -> the upstream rows clean (n/hopJudged-123876d28-27n.txt);
   174e3f54d (the edge wait past the beat returned with nothing held: now he stands by choice, clockHeld, and the next beat draws its own
-  hop) -> seed 5 GREEN, seed 2's one row left is (1).
-- **Checks on 174e3f54d:** the bot file type-checks alone (tsconfig excludes tools/; checked with node types: 0 errors) and loads;
+  hop) -> seed 5 GREEN, seed 2's one row left is (1); 2f525cd72 (hopFlies: the second press's hold counted from its own frame, flown
+  frame-exact against the engine) -> the same row, its root traced to the thumb's travel (1).
+- **Checks on 2f525cd72:** the bot file type-checks alone (tsconfig excludes tools/; checked with node types: 0 errors) and loads;
   hopJudged 1/2 (above). NOT run: pacerLay, pacerRespawn, the race table, rule 28's diff, tierBots, the rest of the full set.
 - **Lessons applied:** D114 (the suite first, on the base, background), D113 (every run backgrounded, no foreground wait), D115 (every
   run on its own frozen worktree: base, three frozen heads, the diagnostic copy), D111 (28 min by `date`), D57/D87 (ReadNotifications
@@ -59,7 +65,8 @@ ORDER: (0) the suite's verdict; (1) pin hopFlies' DOUBLE against the engine, the
   **Polish check:** no screen changed (bot and test only); none due.
 - **Learned (proposed for level.md):** a wait that returns nothing must say he stands by choice on EVERY frame of it, not only the
   first beat: the stopped-dead read takes any unflagged stand and presses a hop no gate judged. A gate that judges with a model of the
-  hop must have that model pinned against the engine for every kind it judges (the double here came down LOST, flown as judged).
+  hop must have that model pinned against the engine for every kind it judges, the thumb's own fumbles included (the double here was
+  flown as judged and came down LOST: the steer back took the thumb's travel time, which the judge did not fly).
 
 # ENG-27m REPORT (handed over at the D111 box, 28 min; base 79196c2f6; branch t-eng-27, this commit)
 ## EXACT NEXT STEP (ENG-27n, from t-eng-27 head; read only this section, D90)
