@@ -36,7 +36,8 @@
    2d4e0752a). Not this packet's.
 4. LOCK vs 0eefc707e (base recorded on a worktree at 0eefc707e: 3264 builds of 102 stages), on 2d4e0752a: PASS, 102/102 stages unchanged
    (lock-e.txt; the 'gained verdicts and drops (not hashed)' line is unhashed fields, not a move, as in ENG-GROUND-c).
-5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; suite 1/6 PASS 634/634; the rest of chain a (suite 2-6, tooltests, tierBots, tipwalk, coverage,
+5. GATES on 2d4e0752a (run-gates-d.sh, frozen worktree): tsc PASS; suite 1/6 PASS 634/634. On the docs head (D53): roadmapcheck PASS
+   (after `git fetch --unshallow`: a shallow clone fails it), knowncheck PASS, generalitycheck PASS. UNRUN at the hand-over: the rest of chain a (suite 2-6, tooltests, tierBots, tipwalk, coverage,
    registry, generality, known, roadmap, time, art) RUNNING at the handover; chain b (seedlists, paint x3, build, chunkcheck,
    clipcheck, kbdcheck, drawcheck, buildcheck) UNRUN.
 POLISH CHECK: wall-end upright before/after, corner crop at full size, and a contact sheet of the other five stills, each looked at
