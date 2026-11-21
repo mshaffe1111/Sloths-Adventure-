@@ -1077,7 +1077,8 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = hopLimit(d.dir);
+      // (the current against him: a river crossed right to left (RiverZone.way -1) flows with him when its world current runs left)
+      const limit = hopLimit((d.dir * (r.way ?? 1)) as 1 | -1);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24; a
       //  liana over the river's TAIL throws over open water, so the logs before it are hopped as ever: river.ts lianasOverLogs, ENG-24f)

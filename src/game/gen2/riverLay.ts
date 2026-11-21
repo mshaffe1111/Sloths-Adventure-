@@ -84,8 +84,14 @@ export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / r
  * Lay one river: the water from `x0` (the near bank's end) across `riverWidth(row)` to the far bank's start, under banks whose top is
  * `bankY`, and its logs (platforms 'drift', ids from `nextId`) across the logs' window (carrierWidth: the water less its tail). The zone's
  * `safe` sets him back 70 px short of the edge on the near bank.
+ *
+ * `way` -1 (ENG-26c, a tower's storey that runs left): he crosses right to left, `x0` is the near bank's START and the water runs left
+ * from it. Laid as the exact mirror of the same row run right about `x0`: the window, every log at every moment (driftX of the mirror is
+ * the mirror of driftX), the current turned (`dir` is the world's: a row that flows with him flows left), the petals on the same logs and
+ * the splash-back 70 px in from the near bank's edge. A row with a TAIL is not laid this way yet (its log-free water is drawn past `x1`).
  */
-export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; logs: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number, way: 1 | -1 = 1): { zone: RiverZone; logs: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+  if (way === -1) return layRiverLeft(row, x0, bankY, nextId);
   const gap = rowGap(row);
   const width = carrierWidth(row);
   const tail = row.tail ?? 0;
@@ -102,6 +108,35 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}) };
   const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
   return { zone, logs, petals };
+}
+
+/** layRiver's way -1: the mirror about `x0` (the near bank's start) of the same row laid right from it */
+function layRiverLeft(row: RiverRow, x0: number, bankY: number, nextId: () => number): ReturnType<typeof layRiver> {
+  if (row.tail) throw new Error(`layRiver: a river with a tail (${row.tail} px) crossed right to left is not laid yet`);
+  const R = layRiver(row, x0, bankY, nextId);
+  const M = 2 * x0;
+  for (const p of R.logs) {
+    const d = p.drift!;
+    p.drift = { ...d, x0: M - d.x1, x1: M - d.x0, dir: -d.dir as 1 | -1 };
+    p.x = driftX(p.drift, 0);
+  }
+  const z = R.zone;
+  const zone: RiverZone = { ...z, x0: M - z.x1, x1: M - z.x0, dir: -z.dir as 1 | -1, way: -1, ...(z.safe ? { safe: { backX: M - z.safe.backX, backY: z.safe.backY } } : {}) };
+  return { zone, logs: R.logs, petals: R.petals };
+}
+
+/** a way -1 river (RiverZone.way) and what stands round it, as the mirror image about its own middle: the same river run left to right,
+ *  for the checks written for one (riverFaults). Platforms, logs and vines are mirrored; nothing else is read */
+function mirroredRiver(st: { platforms: readonly Platform[]; vines?: readonly Vine[] }, r: RiverZone): { platforms: Platform[]; rivers: RiverZone[]; vines: Vine[] } {
+  const M = r.x0 + r.x1;
+  const platforms = st.platforms.map((p) => {
+    const q: Platform = { ...p, x: M - p.x - p.width };
+    if (p.drift) q.drift = { ...p.drift, x0: M - p.drift.x1, x1: M - p.drift.x0, dir: -p.drift.dir as 1 | -1 };
+    return q;
+  });
+  const { way: _w, ...rest } = r;
+  const rivers = [{ ...rest, dir: -r.dir as 1 | -1, ...(r.safe ? { safe: { backX: M - r.safe.backX, backY: r.safe.backY } } : {}) }];
+  return { platforms, rivers, vines: (st.vines ?? []).map((v) => ({ ...v, x: M - v.x })) };
 }
 
 /**
@@ -122,6 +157,8 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
   for (const r of st.rivers ?? []) {
     if (r.speed === 0 || r.open || r.raft || r.flood) continue;
     const at = `river at x=${Math.round(r.x0)}`;
+    // (one crossed right to left (way -1, a tower's leftward storey): judged as its mirror image, the same river run right, word for word)
+    if (r.way === -1) { const m = mirroredRiver(st, r); out.push(...riverFaults(m, difficulty).map((f) => f.replace(/^river at x=-?\d+/, `${at} (crossed right to left)`))); continue; }
     // (a liana hung over it (place `river` after a liana, ENG-24): its logs are a let-go's landing, crossed by the vine, never hopped log
     //  to log, so the hop rule gives way to the drop's (lianaRiverFaults); every other rule stands. ENG-24f, the lead's ruling 11-19 9:12 PM
     //  ET: a liana is judged by what is under its throw. One hung over the TAIL (river.ts lianasOverLogs: its anchor at or past the logs'

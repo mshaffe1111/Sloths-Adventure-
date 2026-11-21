@@ -59,7 +59,7 @@ import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
-import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
+import { askMisses, asksOf, hazardMiss, onClock, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
 import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -2221,7 +2221,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         cur = { x: cur.x + dir * run, y: cur.y, kind: 'ledge', piece: p };
         runouts++;
       }
-      if (roomIn(way, tipOf(way)) < ahead) way = dir;
+      // (run out to the wall and still too long for the storey turned back from it, whose near end stands a vine's step in from the
+      // wall (tipOf): laid on the old way it would run through the wall (ENG-26c: 2-6's Easy millrace, 1126 px against 1096 of room,
+      // then failed the level check as wood out of reach). The roll fails by name instead)
+      if (roomIn(way, tipOf(way)) < ahead) throw new Error(`gen2 ${budget.id}: ${opts.what} runs ${R(ahead)} px on from its entry, and the storey turned at the wall holds ${R(roomIn(way, tipOf(way)))} px`);
     }
     const ox = sealedOx ?? tipOf(way);
     const a = Math.min(ox + way * ext.x0, ox + way * ext.x1), b = Math.max(ox + way * ext.x0, ox + way * ext.x1);
@@ -2819,9 +2822,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const row = M.rivers?.[lp.river.row];
         if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays river row "${lp.river.row}" and world ${budget.world} has no river row of that name`);
         const near = pieceOf(lp.river.from), far = pieceOf(lp.key);
-        if (far.x < near.x) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river runs right to left, which is not laid yet`);
-        const r = layRiver(row, near.x + near.width, near.y, () => pid++);
-        if (Math.abs(r.zone.x1 - far.x) > 1) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river ends at ${r.zone.x1}, its far bank starts at ${far.x}`);
+        // (a tower's storey that runs left lays it the other way round, crossed right to left (riverLay layRiver way -1, ENG-26c); a run's
+        // mirrored section would swap which bank he meets first, so on a run it is still refused)
+        const way: 1 | -1 = far.x < near.x ? -1 : 1;
+        if (way < 0 && !tower) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river runs right to left, which is not laid yet`);
+        const r = way > 0 ? layRiver(row, near.x + near.width, near.y, () => pid++) : layRiver(row, near.x, near.y, () => pid++, -1);
+        const farLip = way > 0 ? far.x : far.x + far.width, end = way > 0 ? r.zone.x1 : r.zone.x0;
+        if (Math.abs(end - farLip) > 1) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river ends at ${end}, its far bank's lip is at ${farLip}`);
         platforms.push(...r.logs);
         placed.seam.push(...r.logs);
         rivers.push(r.zone);
@@ -4161,7 +4168,9 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     LAID_NODES.set(stage, new Map(graph.nodes.map((n) => [n.id, laid.sections.filter((q) => q.node === n.id).map((q) => {
       const t = byId.get(q.template);
       const double = !!t && (t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double'));
-      return { ...(t?.content ? { content: t.content } : {}), double, dy: q.exit.y - q.entry.y };
+      // (and whether it laid a piece on a clock, its own wood or what a lay hung on it: a wheel's buckets, a pond's beat pads; nodeAsks CLOCK_LETTER)
+      const clocked = [...q.pieces.map((x) => x.platform), ...q.seam].some(onClock);
+      return { ...(t?.content ? { content: t.content } : {}), double, dy: q.exit.y - q.entry.y, ...(clocked ? { clocked: true as const } : {}) };
     })])));
   }
   return { stage, laid };
@@ -4192,7 +4201,7 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   return [...chase.problems, ...r.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
-const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
+const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number; clocked?: true }>>>();
 
 /** each designer's ask the built stage did not lay, by name (nodeAsks.ts): the creatures that stayed, the finds, the pickups and the
  *  falls under each node's span, read off the finished stage */
@@ -4221,6 +4230,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
       finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
       pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (f.count ?? tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
       props: fills.filter((f) => f.role === 'prop' && f.what).map((f) => propTags.get(f.what!) ?? []),
+      clocked: (laidNodes?.get(n.id) ?? []).filter((q) => q.clocked).length,
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));
