@@ -14,7 +14,17 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
    fell-back x or the last stuck x): adult E stuck near x 900 (4) and x 300 (3); kid N fell back at x 1130-1145 (3); kid E fell back
    at x 1480 (2), 1070 (2), 960 (2), 930-1000 (2); many "in a dip ~300-350 px deep, a drop ahead, water ahead". Trace two runs per
    spot (`tools/inspect/b26/trace.ts <bot> <setting> <seeds>` on a frozen tree, FT_TRACE=1 for the jumps), BOT causes fixed generally,
-   LAY causes to the lead. Then ENG-26m's 1-4 cause table (its BOT spots are this branch's).
+   LAY causes to the lead.
+   **The first adult spot, TRACED (two runs, b26e/ftAd.txt, on cef59bafe):** adult N 26 t 52.1, x 1109, y 4120, 19.6 s; adult N 33
+   t 73.8, x 1099, y 4116, 9.2 s; the same: on the floor #28/#35/#36/#84 (x 825-1700, y 4118) with "the way on is 379 px up" (the
+   floor #37/#38/#39 at y 3739, dips #41/#42 at 3809). The way up there is the climbing vine V#6 at x **1587** (3739-4118) at the floor's
+   right, or the edge wheel at the left (cx 668, cy 4270). He jumps to and fro along the floor between x ~1040-1130 and x 1270-1540
+   (FT_TRACE: 11 and 13 jumps, every one FELL BACK, none reaching x 1587), then is rescued. Not yet found: what turns him back short
+   of the vine (next: the stderr print in decide/startJump, b26e's method in this REPORT's Learned, on frames t 52-72 of adult N 26).
+   **Then ENG-26m's 1-4 cause table (064911bf1; the lead: these are this branch's BOT causes):** A at x 1036 Normal (kid 7, 12, 13,
+   18, 19, 34; adult 36) and B at x 1115 Easy (adult 17, 19), both by the s3 vine whose top is 26 px past s4:b's end (he falls back off
+   it 3 times); D on seed 29 middle (a wall strip now reaching the wall; the route reads 'the way on is 281 px down' instead of the
+   vines). C (Easy 10, 37) is a LAY defect, ENG-26n's in src/game/gen2: do not touch; rebase on its pushes.
 3. **Then the --proven relist and the yield** (methods/seed-list.md; `castBots --proven <file>` keeps a roll only when EVERY bot,
    kid and adult included, holds at 100 s+): with kid E at 24/40 and adult E at 24/40 on the listed rolls, the yield on today's list
    would be under 60%, so the plan goes to the lead FIRST (packet step 3).
