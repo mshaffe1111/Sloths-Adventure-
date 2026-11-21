@@ -82,15 +82,19 @@ export function middleAt(p: Pacer, x: number): number {
 }
 
 /** the pacer's clock after he is put back at `x` on its leg: his careful-middle time from there to the dock plus the margin's share of
- *  it, and never less margin than its floor (the lead's ruling 11-21: a respawn near the dock keeps `floor` s) where the ride-only bound
- *  allows it (the way left at the ride-only rate less `under`'s share). Before x0 the race has not begun: 0 */
+ *  it, and never less margin than its floor (the lead's ruling 11-21: a respawn near the dock keeps `floor` s): on the last crossing whole
+ *  (ruling A, ENG-27e), farther out where the ride-only bound allows it (the way left at the ride-only rate less `under`'s share). Before
+ *  x0 the race has not begun: 0 */
 export function pacerReplace(p: Pacer, x: number): number {
   const left = p.middle - middleAt(p, x);
   const share = p.seconds / p.middle - 1;
   // (the floor, never past the ride-only bound's share of the way left (pacerFaults: letting the current carry him never wins; planted:
   //  the ride-only bot won Easy seed 1 by 1.0 s on the 3 s floor after its respawns))
   const most = (p.rideOnly - p.under) / p.middle - 1;
-  return Math.max(0, p.seconds - left - Math.max(left * share, Math.min(p.floor, left * most)));
+  // (on the LAST crossing, no river left between him and the dock's, the floor holds whole: the lead's ruling A, 11-21: after a fall the
+  //  child always keeps a fair chance to win; falling in is not winning without effort. Farther out the ride-only bound still caps it)
+  const lastCrossing = p.marks.length >= 3 && (x - p.marks[p.marks.length - 3][0]) * p.dir >= 0;
+  return Math.max(0, p.seconds - left - Math.max(left * share, lastCrossing ? p.floor : Math.min(p.floor, left * most)));
 }
 
 /** is he on the race leg past its start (the pacer sets off) */

@@ -45,7 +45,9 @@ export class PacerPiece implements StagePiece {
   }
 
   respawn(host: PieceHost) {
-    if (this.verdict) return;
+    // (a boat that has docked has won the race: no later fall rewinds it (the lead's ruling A (i), 11-21, ENG-27e: a ride-only run lost
+    //  by 13 s fell in after the dock and raced again))
+    if (this.verdict || (this.clock !== null && this.clock >= this.pacer.seconds)) return;
     const p = host.player;
     this.clock = this.clock !== null && pacerOff(this.pacer, p.x, p.y) ? pacerReplace(this.pacer, p.x) : null;
   }

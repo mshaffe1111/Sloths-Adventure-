@@ -174,12 +174,14 @@ test('home toy (planted): the column\'s last turn is climbed at the column\'s fo
   const lifts: string[] = [];
   let watched = 0;
   const watch = (at: string) => {
-    let f = 0, y0 = NaN, lost = -1e9, n0 = 0;
+    let f = 0, y0 = NaN, lost = -1e9, n0: number | undefined;
     return { onFrame: (sim: import('../realPlay.ts').RealPlay) => {
       f++;
-      const e = sim.e as unknown as { player: { x: number; y: number }; statLivesLost: number; pieces: Array<{ kind?: string; pacer?: { yMin: number } }> };
+      const e = sim.e as unknown as { player: { x: number; y: number }; lives: number; pieces: Array<{ kind?: string; pacer?: { yMin: number } }> };
       const yMin = e.pieces.find((q) => q.kind === 'pacer')?.pacer?.yMin;
-      if (e.statLivesLost !== n0) { n0 = e.statLivesLost; lost = f; }
+      // (the bots' harness takes a life by `lives` (realPlay.ts loseLife), so a life lost is read there)
+      if (n0 !== undefined && e.lives < n0) lost = f;
+      n0 = e.lives;
       const p = e.player;
       if (yMin !== undefined && p.y >= yMin) watched++;
       if (yMin !== undefined && y0 >= yMin && p.y < yMin && y0 - p.y > 150 && f - lost > 150) lifts.push(`${at} frame ${f}: at x ${Math.round(p.x)} from y ${Math.round(y0)} to ${Math.round(p.y)}`);
