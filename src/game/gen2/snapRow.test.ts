@@ -25,6 +25,8 @@ import type { LevelConfig, Platform } from '../types.ts';
 const ROWS = {
   step: { by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } },
   wave: { by: 'snap', pads: ['snap', 'snap', 'snap', 'stone', 'snap'], gap: 30, snap: { count: 0.75, wave: true } },
+  /** a TEACHING row (R-165.337, the lead's ruling 11-20: a teach never costs a heart): its bite jolts and holds, no heart */
+  teach: { by: 'snap', pads: ['snap'], gap: 30, snap: { count: 0.75 }, safe: true, freeBite: true },
 } as const satisfies Record<string, PadRow>;
 
 test('the bar: four counts, the bite the fourth, out of a creak at the end of the third; Easy stretches it; the count reads 1-4', () => {
@@ -116,6 +118,43 @@ test('snapFaults: each rule, planted on a built pond, is caught and names itself
   // (2-5.md's own rows lay fair: the teach, the practice, the quickening, Easy's wave of 3 and Normal's wave of 5 on Normal's own window)
   assert.equal(plant({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 40, snap: { count: 0.6 } }), '', 'the quickening (3 in step at 0.6)');
   assert.equal(plant({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75, wave: true } }), '', 'a wave of 3');
+});
+
+test("snapFaults by setting (BUILD-25): a Normal build skips Easy's comparison (its Easy twin is what Easy plays); an Easy build, and a call with no setting, still judge it", () => {
+  const { st } = built({ p: { by: 'snap', pads: ['snap', 'snap', 'snap', 'snap', 'snap'], gap: 40, snap: { count: 0.75, wave: true } } }, 'p');
+  const easyLine = /Easy's window .* under Normal's/;
+  assert.doesNotMatch(snapFaults(st, 'normal').join(' | '), easyLine, 'Normal: its row is never played on Easy');
+  assert.match(snapFaults(st, 'easy').join(' | '), easyLine, 'Easy: the row it lays is judged against Normal');
+  assert.match(snapFaults(st).join(' | '), easyLine, 'no setting: both');
+});
+
+/** a section with two snap ponds in a row, each on its own row (near, mid, far) */
+const twoPonds = (a: string, b: string): SectionTemplate => ({
+  id: 'toy-snap-two', name: 'two snap ponds', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [340, 340], place: { kind: 'start' }, main: true },
+    { key: 'mid', shape: 'bank', w: [300, 300], place: { kind: 'pads', after: 'near', row: a }, main: true, landing: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'pads', after: 'mid', row: b }, main: true, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+});
+function builtTwo(rows: Record<string, PadRow>) {
+  const kit: WorldKit = { ...kitOf(rows, 'a'), manifest: { ...kitOf(rows, 'a').manifest, sections: [...kitOf(rows, 'a').manifest.sections.filter((q) => !q.id.startsWith('toy-snap-')), twoPonds('a', 'b')] } };
+  for (let seed = 1; seed <= 40; seed++) {
+    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    if (st.platforms.filter((p) => p.pad?.on === 'bites').length === 2) return st;
+  }
+  throw new Error('no roll lays the two ponds');
+}
+
+test('PadRow.clock (BUILD-25, 2-5.md "one count for the whole river"): two rows naming one clock keep ONE bar; two bars under one name throw; unnamed, each row its own', () => {
+  const one = { by: 'snap', pads: ['snap'], gap: 30, snap: { count: 0.75 }, clock: 'river' } as const satisfies PadRow;
+  const st = builtTwo({ a: one, b: one });
+  assert.deepEqual(st.platforms.filter((p) => p.pad?.on === 'bites').map((p) => p.pad!.clock), ['snap-river', 'snap-river']);
+  assert.deepEqual((st.clocks ?? []).filter((c) => c.id.startsWith('snap-')).map((c) => c.id), ['snap-river'], 'one bar, listed once');
+  assert.throws(() => builtTwo({ a: one, b: { ...one, snap: { count: 0.6 } } }), /keeps clock snap-river on another bar/);
+  const own = builtTwo({ a: { ...one, clock: undefined }, b: { ...one, clock: undefined } });
+  assert.deepEqual(own.platforms.filter((p) => p.pad?.on === 'bites').map((p) => p.pad!.clock), ['snap-a', 'snap-b']);
 });
 
 test('level with the banks (ENG-25c): every floor of a snap pond stands with its top level with the banks, as 2-5.md\'s flight flew it', () => {
@@ -236,4 +275,42 @@ test('the jaw\'s frames read as the bar: counts 1-3 open a notch each; four clap
   assert.equal(SNAP_ART.frames, 5);
   assert.deepEqual([1, 2, 3].map((c) => snapFrame(c, false)), [1, 2, 3], 'OPEN-1, OPEN-2, OPEN-3');
   assert.deepEqual([0, 0.2, 0.39, 0.5, 0.99].map((u) => snapFrame(4, true, u)), [4, 4, 4, 0, 0], 'the bite: SNAP, then SHUT');
+});
+
+test('a teaching row (R-165.337): the bite jolts and holds him as any bite does, and costs no heart; planted: the same row without freeBite costs one', () => {
+  const bite = (rows: Record<string, PadRow>) => {
+    const { kit, seed, st } = built(rows, 'teach');
+    const dict: string[] = [];
+    const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+    setDifficulty('normal');
+    return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+      const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+      try {
+        return withFixtureConfig(cfg, () => {
+          const sim = new RealPlay(ID, seed, cfg);
+          const stone = (sim as unknown as { platforms: Platform[] }).platforms.find((p) => p.pad?.on === 'bites')!;
+          sim.p.x = stone.x + stone.width / 2;
+          sim.p.y = stone.y - 60;
+          sim.p.vx = sim.p.vy = 0;
+          sim.safe = false;
+          sim.p.invincibleTimer = 0;
+          const hp0 = sim.p.hp;
+          let jolted = false, vx = NaN;
+          for (let f = 0; f < 30 * 4 && !jolted; f++) {
+            sim.frame();
+            if (sim.p.invincibleTimer > 0) { jolted = true; vx = sim.p.vx; }
+          }
+          return { free: stone.pad?.freeBite === true, jolted, vx, lost: hp0 - sim.p.hp };
+        });
+      } finally {
+        undo();
+      }
+    });
+  };
+  const t = bite(ROWS);
+  assert.ok(t.free && t.jolted, 'the teaching stone bites (the jolt, its safe time)');
+  assert.equal(t.vx, 0, 'it holds him on the stone');
+  assert.equal(t.lost, 0, 'no heart for a teach');
+  const plant = bite({ ...ROWS, teach: { ...ROWS.teach, freeBite: undefined } as PadRow });
+  assert.ok(!plant.free && plant.jolted && plant.lost === 1, `the plant: the same row without freeBite costs a heart (lost ${plant.lost})`);
 });

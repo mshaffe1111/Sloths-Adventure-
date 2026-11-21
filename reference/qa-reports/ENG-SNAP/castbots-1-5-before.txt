@@ -1,0 +1,11 @@
+castBots 1-5, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 39/40; under the floor 0; time median 131.9 s (min 126.9); hits 1 lives 0 (foe:snake 1); cleared stomp 25; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 157
+        fail 1: shrine rescued x1  (seeds 14)
+kid    easy   PASS 40/40; under the floor 0; time median 128.2 s (min 124.2); hits 0 lives 0 (none); cleared stomp 24; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 118
+adult  normal PASS 40/40; under the floor 0; time median 131.9 s (min 127.7); hits 1 lives 0 (foe:snake 1); cleared stomp 20, punch 48; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 114
+adult  easy   PASS 40/40; under the floor 0; time median 129.5 s (min 126.4); hits 0 lives 0 (none); cleared punch 26, stomp 22; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 94
+child  normal PASS 40/40; under the floor 0; time median 391.4 s (min 361.3); hits 27 lives 41 (foe:snake 28, pit 37, other 3); cleared stomp 25, punch 46, kick 1; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 110
+child  easy   PASS 40/40; under the floor 0; time median 269.9 s (min 249.2); hits 8 lives 0 (foe:snake 8); cleared punch 38, stomp 3; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 101
+middle normal PASS 40/40; under the floor 0; time median 195.6 s (min 179.8); hits 6 lives 13 (pit 13, foe:snake 6); cleared stomp 23, punch 58; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 101
+middle easy   PASS 40/40; under the floor 0; time median 178.1 s (min 166.6); hits 0 lives 0 (none); cleared stomp 17, punch 38; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 87
+expert normal PASS 40/40; under the floor 0; time median 166.3 s (min 156.6); hits 1 lives 7 (pit 7, foe:snake 1); cleared stomp 18, punch 54; told of traps 0/40; first trap sprung 0/40; traps sprung 0/80; turned back 0; left 110

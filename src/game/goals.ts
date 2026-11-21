@@ -34,6 +34,17 @@ export const EASY_SHARE = 0.65;
 /** (how Easy's goal was set before LV-6: the stage's own quota, at most this share of Normal's; never asked for less than that now) */
 export const EASY_UNDER_OLD = 0.8;
 
+/** the share of a goal Easy is HELD to where the goal is the design's (LevelConfig.countSet) or a fight's top-up (pipeline.ts) */
+export const EASY_HELD = 0.6;
+/**
+ * Easy's goal of a goal the stage's design sets, or of a fight gen2 tops up: round(goal x 0.6), at least 1. ONE number: the pipeline holds
+ * an Easy roll to it (pipeline.ts, the lay's check) and withGoals asks it in Play (R-165.336: 2-5's goal 8 reached Play as 7 / Easy 6,
+ * the share of what it laid, BUILD-25b 11-20)
+ */
+export function heldEasyGoal(goal: number): number {
+  return Math.max(1, Math.round(goal * EASY_HELD));
+}
+
 /** Easy's goal from Normal's: round(Normal x 0.65), never under `today` (the goal before LV-6), never more than Normal */
 export function easyGoalFor(normal: number, today = 0): number {
   return Math.max(1, Math.min(normal, Math.max(Math.round(normal * EASY_SHARE), today)));
@@ -136,6 +147,15 @@ export function gen2EasyGoal(have: number, kidReach?: number): number {
  */
 export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.boss) return st;
+  // (a goal the stage's design sets, LevelConfig.countSet (stagePlan.ts StageSpec.count, R-165.336): that IS the goal, on Normal as laid,
+  //  on Easy the share the pipeline held the Easy roll to; never a share of what the stage laid)
+  if (st.config.countSet) {
+    const g = st.config.targetCount;
+    st.normalGoal = g;
+    st.easyGoal = heldEasyGoal(g);
+    st.easyToday = st.easyGoal;
+    return st;
+  }
   const gen2Easy = (st as Stage & { gen2?: { budget: { difficulty: string } } }).gen2?.budget.difficulty === 'easy';
   if (st.easyGoal !== undefined) {
     // (a goal the kid bot measured: it stays the stage's own, under the floor's cap)

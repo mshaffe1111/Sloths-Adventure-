@@ -1,0 +1,7 @@
+yield 2-5: seeds 1..1000, 24 s (LISTABLE: the finish and the quiet line held too)
+NORMAL: clean 1000 of 1000 (100%)
+  stopped | first | alone | rule
+EASY (carries Normal's errors): clean 1000 of 1000 (100%)
+  stopped | first | alone | rule
+EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): 0 rolls
+

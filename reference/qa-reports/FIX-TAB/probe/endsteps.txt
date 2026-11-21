@@ -1,0 +1,11 @@
+world 1: 80 builds, 100 open ends change step, stages: 1-6 1-7
+world 2: 80 builds, 0 open ends change step, stages: -
+world 3: 80 builds, 0 open ends change step, stages: -
+world 4: 88 builds, 0 open ends change step, stages: -
+world 5: 88 builds, 8 open ends change step, stages: 5-M
+world 6: 80 builds, 0 open ends change step, stages: -
+world 7: 80 builds, 53 open ends change step, stages: 7-5 7-9
+world 8: 80 builds, 264 open ends change step, stages: 8-2 8-3 8-5 8-6 8-9
+world 9: 80 builds, 0 open ends change step, stages: -
+world 10: 80 builds, 0 open ends change step, stages: -
+TOTAL changed ends: 425

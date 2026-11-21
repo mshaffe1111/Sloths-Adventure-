@@ -2,7 +2,7 @@
  * What a stage's goal is, in the new HUD's words and pictures: the counter's icon, and the stage-start goal card's line
  * ("This stage: collect 33 petals"). Pure, so it is tested without a screen.
  */
-import { relicArt, stageLooks } from '../../game/stagePlan.ts';
+import { purgeNoun, relicArt, stageLooks } from '../../game/stagePlan.ts';
 import { stageFlowers } from '../../game/flowerSprites.ts';
 import { MEECA_STAGE_ID } from '../../game/extraStages.ts';
 import { countedGoal } from '../../game/goals.ts';
@@ -118,7 +118,8 @@ export function goalInfo(cfg: Cfg, dotStage = false, creature?: string): GoalInf
   }
   const n = cfg.targetCount;
   const purge = type === 'purge';
-  const noun = purge ? creatureNoun(creature ?? 'animal', n) : n === 1 ? g.one : g.many;
+  // (a world whose purge animals have their own word, World 2's snappers: the card says what every line says, stagePlan.ts purgeNoun)
+  const noun = purge ? purgeNoun(w, n) ?? creatureNoun(creature ?? 'animal', n) : n === 1 ? g.one : g.many;
   const line = purge ? `This stage: send ${n} ${noun} on ${n === 1 ? 'its' : 'their'} way` : `This stage: ${g.verb} ${n} ${noun}`;
   let icon: GoalIcon;
   let slotIcon: (i: number) => GoalIcon;

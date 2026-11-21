@@ -2,6 +2,20 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
+**Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
+against its face). drawGround's lower() took the FIRST one listed: at a wall with a stair of step banks standing on the floor at its foot (1-6,
+1-7, 8-x, 7-5/7-9 Easy, 5-M), that was the buried floor, so the wall's end face and its soil's cut-back (`faceCut`, drawBankArt side()) ran
+down past the steps, and the notch was left to the floor's lip run under the wall (lipUnder) or to nothing: a grass tab under World 1's painted
+stones (100 in W1), a see-through box (7-5, 5-M), a column of chopped lip pieces (W8). Planted: groundSeams.test 'R-165.344' (21 visible lip
+rows -> 0). Reach: 425 open ends in W1/W5/W7/W8, all drawn, before/after in reference/qa-reports/FIX-TAB/stills/before-after/.
+**Traps:** (1) a module imported from the page by `import('/src/...')` is a SECOND copy once Vite has HMR'd it (?t=): its state is not the
+game's; force the live draw with a hook instead. (2) `lockall.ts --help` is not help: it starts a full record. (3) The probes need two
+probe-only hook lines (probe/lipprobe.mjs header); never commit them.
+**Open (named):** a deep plinth (step 48-59 below) stops its face flat at the step's top with straight soil below: a straight foot edge,
+already on the base's unchanged plinths (8-6 x18365, 2-1 x1400); the fix makes 8-2's first stair step one more. A packet: draw the lower
+bank's lip over a plinth's foot after the banks, as stepFootLips does between two floors. R-165.345 (the depth-shade step) not touched.
+
 ## 0zq-25d. ENG-25d (t-eng-25c, 11-19 9:50-11:10 PM ET): ENG-25c finished: lock, gates, stills, REPORT (no game code; code head c794249d)
 - **REPORT: reference/qa-reports/ENG-25c/REPORT.md** (the gate table, the lock, the stills, Learned). lockall vs BASE d36638be 102/102
   unchanged; so vs main's 17 are the base's own. funcheck FAILs identically on base and branch (the base's flags).
@@ -377,6 +391,24 @@ STOPPED on the lead's D76 STOP (real context ~414k). Branch t-eng-24e: 1778d54a 
   not a dev fixture; 2-6's hand build (w2Stages.ts '2-6') is untouched (new replaces old when 2-6 is built).
 - **Traps:** a JSON copy of a stage breaks the buckets' shared `w` (re-link by axle, stills.mjs); a short street can be overshot by a
   step-off (the tower runs its storey on, so it still counts); ENG-285 (in-air turn) changes the air model: re-fly the table after it.
+
+## 0zm-snap. ENG-SNAP (t-eng-snap from t-build-25 76c05cbc, 11-20, R-165.339): the snapper bots play 2-5 the taught way
+- **Two skills** (tools/inspect/firsttimer.ts SKILLS; toys tools/inspect/snapperTaught.test.ts on snapToys.ts's awake row, `snapperWatch`
+  logs every stun/landing/kick): `bonkBrake` (a bonk's bounce keeps his side) and `letItSnap` (FirstTimer.letSnap: the child and the kid
+  stand off its bite inside its engage, walk in only in the bar's quiet, step back on its creak, kick in its recovery after its snap).
+  Middle, expert and adult still bonk. castBots 2-5: child 40/40 both settings (was 7/16), every other tier 40/40, kid 0 N / 4 E.
+- **Physics the bot must respect** (each one cost a trace): (1) refined controls keep his speed on a mid-air let-go (engine.ts: only Down
+  brakes), so a hop is steered by where its coast comes down (`steerToLand`, with the jump's `cutV` cut once his hold ends), never "toward
+  it until there"; (2) a dazed snapper is still stomped (fight.ts stompTest: within its head's half-width + 18 px), so his bounce comes
+  down 6 px clear of that (`offItsBack`, BONK.landTol 3) and inside the kick's 58; (3) the engine re-checks a landing as a stomp for
+  0.09 s, so no steer in his last 0.15 s of air (BONK.lastPush); (4) KID/ADULT thumbs re-arm their late lift-off every frame (R-165.59:
+  a KID steer is never let go) and the child's runs up to 4 frames, so those thumbs hop straight up from beside it (`bonkBeside`);
+  (5) TURTLE sees only movement (no seesStill; stillness.ts calmIn 0.5/0.35 s): standing still in its band he is lost to it, so the
+  creak step back is what it tells on; (6) tier thumbs pause between steers (rhythm): a step that must happen now sets `steady`.
+- **Adoption** (`adoptBonk`, `bonkAir`): a stomp he did not mean (a hop off the last snap stone onto it; a bounce loop on its back) is
+  taken as his bonk. FTRun.bonkHops / adopted count them. The kid lands on it this way in most toy runs (its route hop off the stones).
+- **Traps:** the toy's stones are level with the banks, so a wait must not run on a pad (`floorAt(...).pad` → crossing logic first);
+  the kid cannot hold a stand at all (its thumb), so its toy rows hold only "no bonk by choice, never hurt, kicks in its recovery".
 
 ## 0zm-25b. ENG-25b (t-eng-25b from origin/t-eng-25 21668b61, 11-18): the snapper bot skill and the meter's snap run
 - **BONK-AFTER-THE-SNAP** (tools/inspect/firsttimer.ts `SKILLS.bonkAfterSnap`, `snapperPlan`, `bonkAim`, `BONK`): a cast animal a kick ends
