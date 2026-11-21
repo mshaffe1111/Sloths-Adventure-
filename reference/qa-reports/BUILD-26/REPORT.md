@@ -7,8 +7,8 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
 
 ## EXACT NEXT STEP (the next level builder; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND on frozen worktrees)
 1. **2-1..2-5 x40, base 5be367dd8 vs cef59bafe, row for row** (`castBots.ts --stage 2-N --seeds 1-40 --setting both --par 2 --rows ...`,
-   then `python3 reference/qa-reports/BUILD-26/b26e/diff.py <base rows> <fix rows>`): my serial chain had done 2-1 base only at the box
-   (about 4 min a run at --par 2 beside another heavy run). What may not move: any tier's pass count.
+   then `python3 reference/qa-reports/BUILD-26/b26e/diff.py <base rows> <fix rows>`): **2-1 and 2-2 DONE: unmoved, no row moved** (2-1: kid N 32, every other tier 40/40; 2-2: kid N 24, every
+   other tier 40/40; rows in b26e/rows/). 2-3, 2-4, 2-5 remain (about 2-4 min a run at --par 2). What may not move: any tier's pass count.
 2. **2-6's remaining misses are all kid and adult (the lead: the adult is the bar), unmoved by both fixes** (no kid or adult row moved).
    On cef59bafe: kid N 29/40, kid E 24/40, adult N 33/40, adult E 24/40. Spread over many spots, not one fault (grouped by the
    fell-back x or the last stuck x): adult E stuck near x 900 (4) and x 300 (3); kid N fell back at x 1130-1145 (3); kid E fell back
@@ -23,12 +23,12 @@ cef59bafe plus a stderr print in decide/startJump, never committed).
    **What turns him (b26e/dbgAd.txt, a stderr print in decide/startJump, adult N 26 t 52-58):** every jump comes from the EDGE branch
    (firsttimer.ts:2839 `if (!drops) return this.decide(dir, ...)`, the floor's seams at x 1125 and 1385 read as edges), and his `way`
    flips +1 / -1 between x ~1120 and ~1290-1350: the route's next point is straight UP at about x 1250 (under #41, y 3809), where no
-   vine or step climbs; the vine at x 1587 is never his target (climbUpVine: undefined at every jump, it is 300+ px off). So the route
-   he follows slants up through the floors here, as BUILD-26c's ENGINE-WORTHY note says of tools/inspect/route.ts on a tower turn.
+   vine or step climbs; the vine at x 1587 is never his target (climbUpVine: undefined at every jump, it is 300+ px off). (My first
+   reading, that the route slants up through the floors, was WRONG: see the next paragraph.)
    **SETTLED (b26e/dbgAd2.txt: `this.prog.target(p, 200)` and the route's points from cur, same frames): a BOT cause, Progress.**
    His Progress point is ALREADY on the floor above: cur at (1167, 3741), then (1262, 3741), the points running LEFT along y 3741
    (#38/#37's leg). He fell from that leg onto the y 4118 floor, and Progress kept cur up there instead of rewinding to the way up
-   (the climb of V#6 at x 1587), so he steers under a point 379 px over his head, turning at it, and jumps the floor's seams. Not the
+   (the climb of V#6 at x 1587; printed on adult N 26; adult N 33 is the same floor, the same 'way on 379 px up', not yet printed), so he steers under a point 379 px over his head, turning at it, and jumps the floor's seams. Not the
    route's shape and not the lay. **Fix next (bot, general, a toy first, rule 21):** when he stands on ground well under the route's
    current point (more than a double's reach, about 175 px) and no climb leads up within reach of it, Progress rewinds to the route's
    last point on or near his own floor (the start of the climb that leads up: here x 1587) (`prog.relocate` and how cur advances,
