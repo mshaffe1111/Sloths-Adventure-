@@ -494,10 +494,14 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const L = (x1 - x0 >= 60 || (near === tip && x1 > x0)) && !overGap(x0, x1, anchor.y) && takes(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
         if (L >= 0) { put(x0, x1, anchor.y, L); added++; continue; }
       }
-      // (a sealed piece is never run on, and no shelf is hung at its end: the wood under it is its own section's, or the fall is named)
-      if (sealed(e.p)) continue;
+      // (a sealed piece is never run on, and no shelf is hung at its end: a STEP off it is caught by its own section's wood under it, or
+      // the fall is named. A RUNNING walk-off off it, the step caught, is laid a bough of its own under where the arc comes down (4.),
+      // held by every rule of a fair lay, the gate's own (byGate: nothing level with it or a hop from it) first, and the verdict
+      // (towerGates) after: by a side of the tower a bridge there must start a hop past the vine that hangs from the storey's tip, past
+      // the wall, so without it the roll was thrown away (ENG-26i, 1-4: 88% of rolls))
+      if (sealed(e.p) && !run) continue;
       // 3. (going up: the piece itself run on to the wall on that side)
-      if (flow === 'up') {
+      if (flow === 'up' && !sealed(e.p)) {
         const [x0, x1] = leftEnd ? [0, e.p.x] : [e.p.x + e.p.width, width];
         const L = overGap(x0, x1, e.p.y) ? -1 : fair(x0, x1, e.p.y, Le, [e.p]);
         if (L >= 0) { put(x0, x1, e.p.y, L); added++; continue; }
