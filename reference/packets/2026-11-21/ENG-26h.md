@@ -6,7 +6,7 @@ READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/
 STEP); level.md rules 19, 20, 22, 28; reference/methods/gates.md (seed lists, lockall --intended); LAWS headlines; LESSONS D57/D87, D94, D96,
 D102, D105, D107, D109. Code by grep and line ranges.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-build-26 at ENG-26g's final head (its REPORT's top line). Push there.
+BASE: t-build-26 at 95cafaabc (ENG-26g's final; qaW123's dead-end test + towerFoot + towerCatchWater + the wheel tests 19/19 there). Push there.
 THE LEAD'S RULING: the walk-off judge (de009b9f5, ac2fd73b6) is right and it ships for EVERY tower, 1-4 included: a roll with a running walk-off
 that falls past the live rule is unfair, shipped or not, and keeping 1-4 on the old judge would be a patch for one level (rule 22). 1-4 Normal
 layout 1 moved (seed 2 refused, now seed 7921): that is intended. The price: 1-4 is re-proven, every other mover named and judged.
@@ -17,7 +17,11 @@ layout 1 moved (seed 2 refused, now seed 7921): that is intended. The price: 1-4
    one chain: no tier's pass count may drop; tierBots 1-1 9/9.
 3. Stills at 2x, upright and sideways: 1-4 Normal layout 1 before (seed 2) and after (seed 7921) at its first tower storey and at the spot the
    old roll's walk-off fell; look at both the way Matt will.
-4. qaW123 (2-6's dead-end test on TOWER.fall) green; tsc, generality, the CI tool line; engine-core.md's tower lines (walkOff, openEnds,
+4. LOAD SPEED (the phone builds the stage when it loads): ENG-26g saw one 1-4 build go from 1.4 s to 5.5 s under the new judge (under load,
+   with refusals). Measure on a quiet machine: the build time of each LISTED seed of 1-4 and 2-6 before and after (the game builds a listed
+   seed directly), and buildcheck ALONE for 1-4 and 2-6 against its budget (PERFORMANCE-RULES; gates.md). If the walk-off flights cost the
+   phone time, make them cheap (cache the flown arc per run speed and height, judge by lookup), planted, before anything else ships.
+5. qaW123 (2-6's dead-end test on TOWER.fall) green; tsc, generality, the CI tool line; engine-core.md's tower lines (walkOff, openEnds,
    towerCatches, the turn's foot).
 REPORT: a new top section of reference/qa-reports/BUILD-26/REPORT.md: the movers, 1-4's re-proof, stills, gates, EXACT NEXT STEP (BUILD-26c runs
 2-6's bots: the cause table, the 2-minute beat table), lessons applied.
