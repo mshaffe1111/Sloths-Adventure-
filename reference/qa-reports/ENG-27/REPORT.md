@@ -1,3 +1,86 @@
+# ENG-27c REPORT (hand-over at the lead's context line, written 11:17 AM ET 11-21 by date). Base 0eefc707e; branch t-eng-27; code head ad23f8b0a
+## EXACT NEXT STEP (ENG-27d, from t-eng-27 head; read only this section, D90)
+1. Setup: `npm install --legacy-peer-deps` (restore package-lock.json after). Probes and the stills script are kept here as files:
+   raceprobe-27c.ts.txt (copy to tools/inspect/_raceprobe.ts), race-stills-27c.mjs (copy to tools/inspect/, run with
+   PW=/opt/node-tools/node_modules/playwright/index.mjs, vite on 5199; the toy is on the page as `?fixture=home[&seed=n]` or __play('2-97')).
+2. GATES: ENG-27c started THE FULL SET at 11:15 AM ET on ad23f8b0a (run-gates-27c.sh: chain1 tsc + suite shards 1-6 + CI tool tests +
+   tierBots + tipwalk + funcheck + coverage/registry/generality/known/roadmap/time/artcheck; chain2 every seed list --check + paintcheck
+   0-2 + build + chunkcheck + clipcheck + kbdcheck + drawcheck + buildcheck; chain3 lockall --layouts 16 base 0eefc707e vs head). Its
+   verdicts are appended below under "Gates" if ENG-27c lived to see them; any gate not listed there with a verdict is UNRUN: run it.
+   lockall: ONLY the toy may move (no shipped stage has a pacer, a post or a marked petal: petals.ts's change touches marked letters only).
+3. THE LANE (the lead's call, show first): stills-27c/ show the boat on its lane (the race leg's lowest river surface, y 1524): over a
+   river, sideways, it reads well (race-bank-both-ways-small.jpg right); upright it sits at the screen's left edge. Over a BANK the lane is
+   42 px under the bank top: the hull would sit in the earth (pieces/pacerPiece.ts layer 'back'). Options to show the lead: (a) hidden
+   over banks (drawn behind the bank: it 'closes on every river', 2-7.md); (b) a lane in front of the banks' water strip (layer 'front' at
+   the bank's foot); (c) lift it over banks (reads as flying). Then: the door stills (him at a slot on the OUT leg: race-stills' spot picks
+   the LOWEST piece under x, so for the out leg use a 'high' pick; ENG-27c's door shot landed him on the home leg, deleted) and THE CLIP
+   of the race leg with the boat in every frame, both ways (D63): a bot run (homeRun 'middle' with onFrame) recorded, or the page with
+   tools/inspect/clip.mjs.
+4. Name for the 2-7 builder (below, "What the 2-7 builder needs").
+
+## ENG-27c: what was done
+- **Step 1, the shares (ff60ced1b):** PacerRow.margin is a share of the careful middle's time: seconds = min(middle x (1 + share),
+  rideOnly - under); W2_RACE.margin {normal 0.07, easy 0.1}; TOY_RACE deleted (the toy races on W2_RACE). Planted: pacerLay.test asserted
+  the share first, RED ('normal seed 1: 112.91 s against 105.41 s x 4'), then GREEN.
+- **The lead's ruling (b), the respawn floor (ad23f8b0a):** PacerRow.floor {normal 2, easy 3}; pacerReplace keeps max(share x left,
+  floor) of margin over his middle time left, the floor capped at the ride-only bound's share of the way left (the ride-only bot WON Easy
+  seed 1, 116.6 vs 117.59 s, on the bare floor; the lead ruled the cap stands, 11:13 AM). Planted both ways in pacerLay.test (a respawn a
+  fifth from the dock keeps 2 s, RED without the floor; near the dock never past the ride-only bound, RED without it). pacerReplace is
+  written so the start is exactly 0 (the share made the old form 1.4e-14).
+- **Step 2, the art (ad23f8b0a):** 2-7's 7 frames packed into src/assets/w2-next/w2-next.webp (2313x357, 175 KB; pack-w2-next.py) +
+  w2-next.json; 7 catalog rows (from t-art-next, file = the sheet's cells, status 'packed and drawn by id', part ENG-27c) and
+  catalog_master.py --emit (w2.json: mailBoat/B, doorOpen; cast.json: letter/B, reply/B). w2NextArt.ts loads and draws by inventory id;
+  stageManifest 'w2-next' for a stage with a pacer or a post (stageManifest.test planted both ways); stagePreload starts it. pacerDraw:
+  two rowing frames (0.35 s each), waterline on the lane (0.85 of the frame, measured), bow first (mirrored running right). postDraw: the
+  shut door w2-props#door 170 px wide (patientDoor's), the open one in its box; letters/replies flutter (0.3 s) at the sheet's 3 cut px a
+  unit. World 2's tables name frames on their own (artuse sees them). artUse PASS, artcheck PASS, no code-drawn stand-in.
+- **Step 3, NEW 2 the post (ad23f8b0a, from ENG-27b's patch):** the bot failure had FOUR roots, each traced on the bots' own runs and
+  fixed, planted: (1) a far bank's slot in the landing of a jump off a LOG (expert Normal 1: off the log 106 px short of the bank, down 172
+  px in, over the slot; walkedSpan has no log footing): postLay cuts a full run's jump off the log at the bank's edge, and the take-off
+  onto a log ahead; (2) a piece between two gaps the expert DOUBLES across (expert Normal 3): cut a double jump's landing off the piece
+  behind; (3) the played stage's petal pass (petals.ts screenExtras) TOOK THE LETTER (middle Normal 3: the letter, lowered to his middle,
+  was the lowest petal nearest its neighbours): petalTrail never thins a marked letter (no shipped stage has one); (4) petals inside a
+  slot's clearance give way to it (the nearest becomes the letter, the rest are lifted) instead of refusing the spot. The post runs on its
+  own toy code POST_CODE ('A Pg1> Xw1> R Fg1> R /D ...': 2-7's longer way out): 11 of 12 rolls lay 2 doors, Easy 6 refused BY NAME (the
+  test asserts the name and >= 11 of 12); HOME_CODE stays the legs/race toy ENG-27 measured (homeKit lays the post only on POST_CODE). The
+  door test now walks between the two doors, then onto the second. postLay.test 3/3, legsHome 4/4, pacerLay 4/4 (incl. the race bots).
+- **The page fixture:** homeFixtureStage.ts, `?fixture=home[&seed=n]` / __play('2-97'), DEV only (as the wheel fixture), POST_CODE.
+
+## The race table (the toy, ENG-27c probe; boat at the ruled shares; Normal 7%, Easy 10%)
+HOME_CODE before the floor (seeds 1-6): MIDDLE Normal won 1 (+0.2 s), 2 (+2.9), 3 (+0.6), 4 (+10.8), 6 (+0.8), LOST 5 (-2.7: 4 respawns,
+then -2.4 s on the last two crossings waiting for logs, 70-90 px/s against the flown 104-126); MIDDLE Easy won all: +5.6, +5.6, +2.0, +3.7,
++0.3, +0.2; EXPERT Normal lost 1 (-0.1), won 6 by 0.04 s, others +3.8 to +9.1 (no expert bot on Easy); RIDE-ONLY lost all 12 (thinnest
+Easy 1 by 1.0 s, Easy 4 by 1.4). POST_CODE (the longer way out), seed 1 Normal: the middle lost by 0.77 s before the floor. The floor
+(capped) is in; the table was NOT re-run after it: re-run raceprobe on both codes (seeds 1-6) for the final numbers.
+
+## What the 2-7 builder needs
+- The race is THIN at a 7% share: on the toy the middle bot won 5 of 6 Normal rolls, three by under 1 s; a roll's log phase on the
+  last reaches decides it. Run the race bots on every listed 2-7 seed (not 1-3) and expect to drop rolls the middle loses; (c) the boat's
+  time from the roll's own log phases is the named refinement (the lead: later, not now).
+- The post asks wide WALKED ground on the way out: a door never stands in a log's landing, a double jump's landing, beside a flag
+  (140 px) or nearer another door than 360 px. 2-7's 6 doors need a long out leg of flat bank; a roll short of room is refused by name.
+- The lane over banks is open (item 3 above). The hand build w2Stages.ts '2-7' is the builder's to delete.
+
+## Gates (head ad23f8b0a; verdicts appended as they finish)
+Started 11:15 AM ET. tsc PASS (7 s). Others: running at hand-over (UNRUN until listed).
+
+## Learned
+- A pickup the engine lays AFTER the trail's pass is planned can still be taken by the pass in the PLAYED stage (buildGen2Stage has no
+  petal pass; generateStage does): compare the built stage with the played one (sim.e.collectibles at frame 0) before blaming the lay.
+- 'On his path' must include where every tier is in the AIR: logs (no footing) and optional doubles are both outside walkedSpan.
+- A rule added by ruling can break another rule of the same feature (the floor let ride-only win): run the whole feature's bots after
+  every rule change, not only the test the ruling names.
+- Proposed level.md rule: "every pickup a mechanic lays on the path is checked in the PLAYED stage by the bots of every tier".
+
+## Unresolved, named: the lane over banks (lead's call); the door/letter-into-slot stills on the OUT leg and THE CLIP (D63); the race table
+re-run after the floor; the gates still running; reference/handoffs/engine-core.md NOT rewritten by ENG-27c (context line): ENG-27d adds
+the pacer (shares, floor + cap), the post (postLay's cuts, petals.ts letters), w2NextArt.ts and the home fixture.
+
+## Lessons applied: D30 (times from date; one hand-typed time slipped in a message at 11:00 AM, own miss, corrected), D57/D87/D105
+(ReadNotifications at each step and push; long runs in the background), D76/D102 (read lean, handed over at the line), D86/D96 (the
+full CI list in the runner, verdicts by name, UNRUN named), D94 (lock against the integration base 0eefc707e), D103 (rulings read
+between steps).
+
 # ENG-27b REPORT (stopped by the lead at 10:46 AM ET 11-21, D76: real context ~369k). Base 0eefc707e; branch t-eng-27; code head 5a579bb16
 ## EXACT NEXT STEP (ENG-27c, from t-eng-27 head; read only this section, D90)
 1. Setup: worktree of t-eng-27, `npm install --legacy-peer-deps` (restore package-lock.json after). Every engine step below is on THIS head.
