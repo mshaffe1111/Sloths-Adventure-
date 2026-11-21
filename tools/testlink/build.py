@@ -7,7 +7,8 @@
    leaves no map to publish).
 2. Appends an HTML comment to index.html naming the build (so every publish differs).
 3. Counts the build's files and FAILS (exit 1, no map written) above MAX_FILES (480; the artifact holds at most 511 a version, R-165.252:
-   link #3 built to 523 and was refused only at publish). The count is printed either way.
+   link #3 built to 523 and was refused only at publish), or with under MIN_ROOM (40) of them free, or with any file over MAX_FILE_MB
+   (13; 15 for pack_audio's packs; the artifact takes 16 MB a file). The count is printed either way.
 4. Writes tools/testlink/filesmap.json against tools/testlink/dist-published, the copy of the build that was LAST PUBLISHED (never the
    last local build: a build that was never published, e.g. a pre-build, made the next map miss what was live; D72): every new or
    changed file under assets/ mapped to its path, and every file that is live but not in this build mapped to null (removed).
@@ -29,6 +30,13 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 # (the artifact takes at most 511 files a version; 480 leaves room for the page and a round's growth, R-165.252)
 MAX_FILES = 480
+# (LINK-ROOM 11-20: a build must leave at least this many files free under MAX_FILES, room for the next rounds' art, so it refuses above
+# 440; link #3 found the wall only at publish (523), and release 2's head stood at 479 of 480 with the picker's six stills still to come)
+MIN_ROOM = 40
+# (and no file over this: the artifact takes 16 MB a file; index.js stood at 14.6 MB with the pictures inlined into it, 11-20)
+MAX_FILE_MB = 13
+# (the audio packs only: pack_audio fills each to at most 15 MB by design, so they are held to that)
+AUDIO_PACK_MB = 15
 
 
 def md5s(root: Path) -> dict:
@@ -40,6 +48,11 @@ def md5s(root: Path) -> dict:
 def count_files(dist: Path) -> int:
     """every file the artifact will hold after this publish: the build's files (its index.html is the page)"""
     return sum(1 for p in dist.rglob('*') if p.is_file())
+
+
+def largest_mb(dist: Path) -> float:
+    """the largest file that is not an audio pack (those are held to AUDIO_PACK_MB)"""
+    return max((p.stat().st_size for p in dist.rglob('*') if p.is_file() and not p.name.startswith('audio-pack-')), default=0) / 1e6
 
 
 def files_map(dist: Path, published: Path) -> dict:
@@ -88,17 +101,35 @@ def pack_audio(dist: Path) -> None:
         (dist / 'index.html').write_text(html.replace('<head>', '<head>\n    ' + shim, 1))
 
 
+def room_problems(dist: Path, max_files: int = MAX_FILES, min_room: int = MIN_ROOM, max_file_mb: float = MAX_FILE_MB) -> list:
+    """what keeps this build from publishing with room to spare: over the cap, under MIN_ROOM free, or a file over MAX_FILE_MB"""
+    out = []
+    n = count_files(dist)
+    if n > max_files:
+        out.append(f'{n} files, over the {max_files} limit (the artifact holds at most 511 a version)')
+    elif max_files - n < min_room:
+        out.append(f'{n} files leave {max_files - n} of room under the {max_files} limit; at least {min_room} must stay free for the next rounds')
+    for p in sorted(dist.rglob('*')):
+        cap = AUDIO_PACK_MB if p.name.startswith('audio-pack-') else max_file_mb
+        if p.is_file() and p.stat().st_size > cap * 1e6:
+            out.append(f'{p.relative_to(dist)} is {p.stat().st_size / 1e6:.1f} MB, over {cap} MB (the artifact takes 16 MB a file)')
+    return out
+
+
 def finish(here: Path, note: str, max_files: int = MAX_FILES) -> int:
     """after the vite build: name it, check the count, write the map against the published copy; 0 = ready to publish, 1 = refused"""
     dist, published = here / 'dist', here / 'dist-published'
     with open(dist / 'index.html', 'a') as f:
         f.write(f'\n<!-- test build: {note} -->\n')
     n = count_files(dist)
-    if n > max_files:
-        print(f'test link: FAIL: {n} files, over the {max_files} limit (the artifact holds at most 511 a version); no map written. '
-              'Inline more small files (vite.testlink.config.ts) or pack them before publishing.')
+    bad = room_problems(dist, max_files)
+    if bad:
+        for b in bad:
+            print(f'test link: FAIL: {b}')
+        print('test link: no map written. Inline more small pictures or pack them (INLINE_KB and ART_PACK in vite.testlink.config.ts) '
+              'before publishing.')
         return 1
-    print(f'test link: {n} files (limit {max_files})')
+    print(f'test link: {n} files (limit {max_files}, {max_files - n} free; largest file {largest_mb(dist):.1f} MB, limit {MAX_FILE_MB})')
     if not published.exists():
         print('test link: no dist-published (a fresh machine): the map lists every file and removes none; add every live path not in '
               'dist as null first (Artifact list, scope "files"), and run build.py --published once it is published')
