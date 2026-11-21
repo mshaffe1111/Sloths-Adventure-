@@ -1859,20 +1859,36 @@
 .ct-mode b { font-family: var(--font-fun); font-weight: 400; font-size: 18px; line-height: 1.1; }
 .ct-mode small { font-size: 12.5px; line-height: 1.3; font-weight: 600; color: var(--gx-ink-soft); }
 .ct-mode.on { border-color: #a85a17; background: linear-gradient(180deg, #ffe7b0, #f6cf7a); box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
-/* the stage picker (R-165.343): World 1's nine levels, three by three, each a 64 px tile like the setting's: the number big, the name under */
-.ct-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 8px; }
-.ct-pick { min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center;
-  padding: 6px 4px; border-radius: 14px; cursor: pointer; color: var(--gx-ink);
-  background: rgba(255, 250, 240, .7); border: 2.5px solid rgba(120, 80, 30, .35); -webkit-tap-highlight-color: transparent; }
-.ct-pick b { font-family: var(--font-fun); font-weight: 400; font-size: 20px; line-height: 1; color: #4a2a10; }
+/* the stage picker (R-165.343; pictures R-165.368): World 1's nine levels as picture tiles, three by three upright: each its own still
+   (the real game, 880 x 425, cropped a little at the sides so Pokey stays in), the number and name under it */
+.ct-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ct-pick { min-height: 64px; display: flex; flex-direction: column; align-items: stretch; gap: 0; text-align: center; overflow: hidden;
+  padding: 0; border-radius: 14px; cursor: pointer; color: var(--gx-ink); font: inherit;
+  background: rgba(255, 250, 240, .7); border: 2.5px solid rgba(120, 80, 30, .35); box-shadow: 0 2px 0 rgba(120, 80, 30, .18);
+  -webkit-tap-highlight-color: transparent; transition: transform .12s ease, box-shadow .12s ease; }
+.ct-pick-pic { display: block; aspect-ratio: 16 / 10; background: #2a4a32; border-bottom: 2px solid rgba(58, 32, 12, .55); }
+.ct-pick-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ct-pick-t { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 5px 3px 6px; }
+.ct-pick b { font-family: var(--font-fun); font-weight: 400; font-size: 19px; line-height: 1; color: #4a2a10; }
 .ct-pick small { font-size: 12px; line-height: 1.2; font-weight: 700; color: var(--gx-ink-soft); overflow-wrap: anywhere; }
 /* a stage's number in a sentence: never broken at its hyphen */
 .ct-nb { white-space: nowrap; }
 /* a stage this phone has finished: a small green tick on the tile's corner */
 .ct-pick { position: relative; }
-.ct-played { position: absolute; top: 4px; right: 5px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
-  background: #3f8f3a; color: #fff; font-size: 12px; font-weight: 900; line-height: 1; box-shadow: 0 1px 2px rgba(40, 30, 10, .35); }
-.ct-pick.on { border-color: #a85a17; background: linear-gradient(180deg, #ffe7b0, #f6cf7a); box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
+.ct-played { position: absolute; top: 4px; right: 4px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: #3f8f3a; color: #fff; font-size: 12px; font-weight: 900; line-height: 1; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(20, 15, 5, .5); }
+/* the picked tile: a thick gold frame with a glow, lifted, its label gold; the picture keeps its colour */
+.ct-pick.on { border: 3.5px solid #a85a17; background: linear-gradient(180deg, #ffe7b0, #f6cf7a); transform: translateY(-2px);
+  box-shadow: 0 0 0 3px #f0b04a, 0 5px 10px rgba(90, 50, 10, .35); }
+.ct-pick.on .ct-pick-pic { border-bottom-color: #a85a17; }
+/* the top (R-165.368): the title with its NEW tag, what the game is with Pokey cheering, and how to start in three steps */
+.ct-titlebar { position: relative; display: flex; align-items: center; gap: 8px; }
+.ct-title-new { font-size: 18px; transform: rotate(6deg); }
+.ct-about { display: flex; align-items: center; gap: 4px; }
+.ct-about .ct-lead { flex: 1; min-width: 0; }
+.ct-about-pokey { margin: 0 -6px -6px 0; filter: drop-shadow(0 4px 5px rgba(40, 20, 5, .4)); }
+.ct-how { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.ct-how-row { display: flex; align-items: center; gap: 9px; font-size: 15px; line-height: 1.3; font-weight: 700; }
 .ct-go.pm-go { margin-top: 10px; width: 100%; min-height: 56px; font-size: 26px; }
 .ct-go.pm-go:disabled { filter: grayscale(.75) brightness(.92); opacity: .6; cursor: default; }
 .ct-close { margin-top: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 14px; font-weight: 800; line-height: 1.3; }
@@ -1893,13 +1909,8 @@
 .ct-send-hint.ready { color: #2f7a23; }
 .ct-scene > .ct-wrap > .ct-card > .ct-board, .ct-card form > .ct-board { margin-top: 10px; }
 .ct-card > .gx-plank.ct-board { margin-top: 12px; }
-/* v3 (the lead and Matt, 11-06: "this is the level"): the hero, the real 1-1 with Pokey big in front of it; the moves as painted poses */
+/* v3 (the lead and Matt, 11-06): the moves as painted poses (the hero still went for the level pictures, R-165.368) */
 .ct-pose { display: block; flex: none; background-repeat: no-repeat; }
-.ct-hero { position: relative; margin: 30px 0 18px; padding-left: 92px; }
-.ct-hero-still { display: block; width: 100%; aspect-ratio: 880 / 425; object-fit: cover; border-radius: 14px; border: 3px solid #3a200c;
-  box-shadow: inset 0 0 0 2px rgba(255, 232, 190, .3), 0 4px 0 #24130a, 0 8px 16px rgba(0, 0, 0, .3); background: #2a4a32; }
-.ct-hero-pokey { position: absolute; left: -6px; bottom: -10px; filter: drop-shadow(0 5px 6px rgba(40, 20, 5, .45)); animation: kit-in .5s cubic-bezier(.2, 1.3, .4, 1) .15s backwards; }
-.ct-hero-new { position: absolute; top: -8px; right: -6px; font-size: 20px; transform: rotate(6deg); }
 .ct-lead { margin-top: 8px; font-size: 16px; font-weight: 700; }
 .ct-moves { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .ct-move { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; min-width: 0; padding: 2px 4px 6px;
@@ -1915,5 +1926,9 @@
 @media (orientation: landscape) and (max-height: 560px) {
   .ct-wrap { max-width: 700px; }
   .ct-moves { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .ct-hero { padding-left: 120px; max-width: 560px; margin-left: auto; margin-right: auto; }
+  /* sideways: five over four, the four centred under the five, each picture at the still's own shape */
+  .ct-picks { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .ct-pick { grid-column: span 2; }
+  .ct-pick:nth-child(6) { grid-column: 2 / span 2; }
+  .ct-pick-pic { aspect-ratio: 880 / 425; }
 }
