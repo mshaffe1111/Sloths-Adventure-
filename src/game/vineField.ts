@@ -367,8 +367,11 @@ export const PICKUP_REACH = 38;
  * fruits... side by side, so it shows there's a benefit"): a petal on a field vine's line moves to the middle of that vine and its
  * nearest field vine in reach (FIELD_FEEL.reach) over the same height, a vine no pod falls down first. A two-hand hang there takes it;
  * one hand passes 40 px by. Run last, after every pickup is placed (stageGenerator.ts finishStage).
+ * A petal moves only to a middle at least `apart` px (the level check's PICKUP_APART) from every other pickup (a find, a heart, another
+ * petal): the next mate's middle when the nearest one's is taken, else it stays where it was laid. (1-4 ?layout=72140, ENG-26q: the
+ * middle of 847/927 put flower #27 28 px from the Notch at 911; the middle of 767/847 is clear.)
  */
-export function pairPetals(items: Array<{ type: string; x: number; y: number }>, vines: readonly Vine[], podded: ReadonlySet<number>): number {
+export function pairPetals(items: Array<{ type: string; x: number; y: number }>, vines: readonly Vine[], podded: ReadonlySet<number>, apart: number): number {
   const field = vines.filter((v) => v.field);
   let moved = 0;
   if (!field.length) return 0;
@@ -382,7 +385,10 @@ export function pairPetals(items: Array<{ type: string; x: number; y: number }>,
     const mates = field.filter((v) => v !== on && Math.abs(v.x - on.x) <= FIELD_FEEL.reach && c.y >= v.topY + 10 && c.y <= v.bottomY - 10);
     if (!mates.length) continue;
     mates.sort((a, b) => Number(podded.has(a.id)) - Number(podded.has(b.id)) || Math.abs(a.x - on.x) - Math.abs(b.x - on.x) || b.x - a.x);
-    c.x = (on.x + mates[0].x) / 2;
+    const clear = (x: number) => items.every((o) => o === c || o.type === 'exit_totem' || Math.hypot(o.x - x, o.y - c.y) >= apart);
+    const mate = mates.find((m) => clear((on.x + m.x) / 2));
+    if (!mate) continue;
+    c.x = (on.x + mate.x) / 2;
     moved++;
   }
   return moved;
