@@ -1,0 +1,64 @@
+TAP version 13
+# normal seed 5: 10 judged hops pressed (edgeWait, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# normal seed 2: 20 judged hops pressed (edgeWait, upstream, race); unjudged or stale 0, flown not as judged 1, came down elsewhere 0
+#   edgeWait q\#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down \#40
+# easy seed 5: 21 judged hops pressed (edgeWait, upstream, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# easy seed 2: 20 judged hops pressed (edgeWait, upstream, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 908.125246
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+not ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 621.092432
+  type: 'test'
+  location: '/home/user/f-39e19d036/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down #40'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down #40'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-39e19d036/tools/inspect/hopJudged.test.ts:49:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 630.148144
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 553.417504
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5378.130701

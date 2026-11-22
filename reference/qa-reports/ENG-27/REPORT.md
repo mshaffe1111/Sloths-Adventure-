@@ -1,3 +1,53 @@
+# ENG-27p REPORT (start 7:04 PM ET by `date`; handed over at the D111 box; base df0cd9638 (code d2408e867); branch t-eng-27 head fb6bd156e + this REPORT)
+## EXACT NEXT STEP (ENG-27q, from t-eng-27 head; read only this section, D90)
+ORDER (ENG-27o's (2)-(6), on fb6bd156e, frozen, one at a time): (2) pacerLay (its one red is B's KNOWN plant) and pacerRespawn (the invariant
+GREEN): STARTED on /home/user/f-fb6bd156e at the box, result below if it came in, else re-run (seconds); (3) the race table (middle 24/24, expert
+12/12, ride-only 0/24; recipe: raceprobe-27e.ts.txt as tools/inspect/_race.ts, `npx tsx tools/inspect/_race.ts <middle|expert|ride> <home|post>`);
+(4) rule 28 castBots x40 on 2-1..2-6, base 1465822f7 vs head, row for row (the judge changed on EVERY gate hop AND the edge stand now waits:
+rows WILL move, each traced; no tier's count may drop), tierBots 1-1 9/9; (5) seed 5's +34.7 s traced (where he waits, why: NOTE the new
+stand-by-choice may add wait time; read it first); (6) B, S. src/ unchanged (bot and test only): no suite.
+**(1) DONE: ruling A built, its invariant planted RED first, hopJudged GREEN on all four (Normal 5, 2; Easy 5, 2) on fb6bd156e** (p/hopJudged-fb6bd156e-GREEN-27p.txt).
+## ENG-27p: what was done
+- **The invariant (D112), as the lead agreed it on my measure:** every press from a river's bank with drift logs near its edge (edgeWait's
+  own window: within 400 px of the edge, |dy| < 70; `edgeFloats`) either flies on a judgment made on its OWN press frame, or, pressed with
+  no judgment, comes down on SOLID. A judgment left from an earlier frame or another branch ('stale') always fails; an unjudged press that
+  comes down on a log, in the water or nowhere seen ('unjudged') fails. Named in hopJudged's test titles. The judged-row checks (flown as
+  judged, came down where judged) now read judged rows only.
+- **Why not edgeWait's `near` read as "a float within reach":** planted first on 39e19d036 with that read (a single held who.hold[0], lags
+  0..0.2): NO stale row at x 15632 (p/hopJudged-39e19d036-narrow-27p.txt): on the stand's press frame that read is false, because he flew a DOUBLE
+  onto log #40. Measured with the wider window: 14 bank presses flagged over the four runs; 13 came down on solid (bank to bank, the way home),
+  only x 15632 on a log. Lead told (priority next); the lead agreed and tightened (b) to "solid only".
+- **RED proof:** cd7c0da5b's code (d2408e867 + the trace only) with the final test (6ac2bab34's): Normal 5 RED (2 rows), Normal 2 RED (`stale
+  edgeWait q#40 judged t 79.30 x 15632 | flown t 79.67 double | came down #40 drift`), Easy 5 RED (1 row), Easy 2 GREEN
+  (p/hopJudged-RED-cd7c0da5b+6ac2bab34test-27p.txt). The three Normal 5/Easy 5 rows were 'came down #-1': traced (scratch copy, not a frozen
+  tree): he came down on his OWN bank (#70 x 6620..6940 y 1517; #76; #70), on a landing frame where the engine had not set standingOn
+  (engine.ts:2829 resets it to -1 each frame). A trace miss, not a fall: the row now reads the floor under him then (fb6bd156e). So the
+  REAL red on d2408e867 is the one row the packet named, x 15632.
+- **The fix (A), 7c5f25239 + fb6bd156e:** at the edge stand (intend, the `this.standing` branch), drift logs in the window and
+  SKILLS.floatSure: the hop he will fly (`waitHop`, drawn once per wait on rHop) through hopFlies at lag 0 from where he stands; it lands ->
+  judged (`edgeStand`), gateHop, pressed. It does not -> `this.judged` cleared, and: a bank in reach past the edge (within 400 px, -120..+300 px
+  of his feet) -> the stand's own press as before (no stand-forever, no bank hop forced onto a log); NO bank in reach -> he stands by choice
+  (clockHeld, pending and lateArmed dropped), the drawn hop drawn anew each 0.5 s beat (edgeWait's). edgeWait clears the `near` probe's
+  judgment when its gate refuses. With the fallback alone (6ac2bab34) x 15632 still flew the double onto #40 unjudged
+  (p/hopJudged-6ac2bab34-27p.txt): traced (scratch probe at every refused stand): of 12 refused stands over the four runs, 11 had a solid bank
+  300-430 px on (each came down on it); x 15632 had NONE (logs #39, #40 only) and its drawn hop was a 0.033 s tap: the fallback cannot know
+  where its unjudged hop lands, so there (only there) he stands by choice, as the lead said.
+- **hopJudged on fb6bd156e: GREEN 4/4.** Normal 5: 15 judged hops, 5 bank presses all on solid. Normal 2: 27 judged hops (was 22: the run
+  moved after x 15632, it now waits there and flies an `edgeStand` gate hop), 3 bank presses all on solid. Easy 5: 23, 2 on solid. Easy 2: 23,
+  3 on solid. **The 14 flagged presses on d2408e867 and how each came down:** Normal 5 x 6657 solid (own bank #70), x 6648 #75 solid,
+  x 5258 solid (own bank #76), x 2358 #93 solid; Normal 2 x 15632 #40 LOG (stale), x 7686 #71 solid, x 6255 #76 solid; Easy 5 x 6748 solid
+  (own bank #70), x 2402 #93 solid; Easy 2 x 10647 #60, x 7854 #71, x 6420 #76, x 3730 #87, all solid. (13 of 14 solid.)
+- **Checks:** hopJudged on each head, each on its own frozen worktree (/home/user/f-39e19d036, f-cd7c0da5b, f-red3 (cd7c0da5b + the final
+  test, a local commit a900b63a1, not pushed), f-6ac2bab34, f-fb6bd156e); traces on /home/user/s-probe only. NOT run: tsc on the bot file,
+  the race table, rule 28's diff, tierBots, seed 5's time, B, S (the box went to the invariant's definition and two traces).
+- **Lessons applied:** D111 (28 min from 7:04 PM ET), D113 (every run backgrounded, waited on its notification), D115 (every run on its own
+  frozen tree; traces on a separate copy), D114 (src/ unchanged: no suite), D109 (no clock times in messages), D96/D102 (lean reads),
+  D112 (the invariant is the principle, "every press at a float flies on its own judgment", tested on the real runs, not a mechanism's toy),
+  rule 28 (each red traced before its fix; the fix where the cause is). Law 3: the ruling's trigger read was checked against the real row
+  before building on it (it was false there). **Polish check:** no screen changed (bot and test only); none due.
+- **Learned (proposed for level.md, rule 28's check):** a gate's TRIGGER must be checked on the row it is for: "a float within reach" read
+  as a single's reach misses every double, so a test built on it passes the very hop it was written to catch. Define the trigger by the
+  window a person sees (the logs near the edge) and judge by where he comes down (solid only, unless a gate judged it on that frame).
 # ENG-27o REPORT (handed over at the D111 box; base 3ca307dc7; branch t-eng-27 head d2408e867 + this REPORT)
 ## EXACT NEXT STEP (ENG-27p, from t-eng-27 head; read only this section, D90)
 ORDER: (1) hopJudged's last RED rows (below) traced and fixed, the test GREEN on all four (Normal 5, 2; Easy 5, 2); (2) pacerLay (its one
