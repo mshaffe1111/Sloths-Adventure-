@@ -490,20 +490,22 @@ export class Progress {
   /** after a respawn or a rescue: find him anywhere along the way */
   relocate(p: Pt, level = false, band = Infinity, climb?: { x: number; topY: number }): void {
     let bi = 0, bd = Infinity;
-    // (`climb`: a climbing vine that rises from his feet (climbUpVine): the way up it is ground he can reach, so its points, up to its top
-    //  and within a vine's step across, are about his height too. Without it a pod's knock off 1-4's vine fields left him on the field's
-    //  floor with only the leg 320 px UNDER that floor in reach: he stood under the field, each rewind a 'fall', to a rescue (child N 8
-    //  and 14, BUILD-26k))
-    const upTo = (q: Pt) => climb && Math.abs(q.x - climb.x) <= CLIMB_ACROSS && q.y >= climb.topY - 40 ? Math.min(climb.topY - 40, p.y - 80) : p.y - 80;
-    // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
-    //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
+    // (`climb`: a climbing vine that rises from his feet (climbUpVine). After a fall, the points he can reach from where he stands come
+    //  first: the way on his own floor (about his height) and up that vine (within CLIMB_ACROSS of it, to its top); only with none of
+    //  those, the points under him. Ranked by distance alone, a leg 320 px UNDER the floor he stood on (y weighs 0.7) beat the way along
+    //  that floor 325 px off: a pod's knock off 1-4's vine field left him standing over a leg he could not drop to, each rewind a 'fall',
+    //  to a rescue (child N 8 and 14, BUILD-26k))
     const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
-      && (!level || (this.pts[i].y >= upTo(this.pts[i]) && this.pts[i].y <= p.y + band && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
+      && (!level || (this.pts[i].y >= p.y - 80 && this.pts[i].y <= p.y + band && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
     // (`band`: a rewind by `under` takes only the points about his own height: with the plain 'his height or below' it took a point
     //  500 px under him (2-6 adult N 3 at x 1023, y 1076 -> 1024,1577), and the far-off rewinds from there were three falls and a rescue)
-    if (level && !this.pts.some((_, i) => ok(i))) level = false;
+    const reach = (i: number) => { const q = this.pts[i]; return this.cap(i) === i && i >= this.pinFloor && !q.rope && Math.abs(q.x - p.x) <= LEVEL_REACH
+      && (Math.abs(q.y - p.y) <= 80 || (!!climb && Math.abs(q.x - climb.x) <= CLIMB_ACROSS && q.y >= climb.topY - 40 && q.y < p.y)); };
+    let pick = ok;
+    if (level && this.pts.some((_, i) => reach(i))) pick = reach;
+    else if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
-      if (!ok(i)) continue;
+      if (!pick(i)) continue;
       const d = this.d(i, p);
       if (d < bd) {
         bd = d;
