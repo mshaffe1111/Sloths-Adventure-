@@ -13,7 +13,7 @@ import { SKILLS } from './firsttimer.ts';
 import { fixtureSeed, TOY_WHEELS, wheelCrossing, type WheelToy } from './wheelToys.ts';
 import { turnTime } from '../../src/game/wheel.ts';
 
-const RUNS = [['child', 'easy'], ['child', 'normal'], ['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal']] as const;
+const RUNS = [['kid', 'easy'], ['kid', 'normal'], ['child', 'easy'], ['child', 'normal'], ['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal']] as const;
 const VARIANTS = [1, 2];
 const ROWS: WheelToy[] = ['sparse', 'top'];
 
