@@ -1,21 +1,44 @@
 # BUILD-26o (on t-build-26-wip-26o from a07ed1bd7): the --proven relists (1-4 first: ENG-26r had not landed), the yields, rule 28's rest on 2-6. Started 4:29 PM ET 11-22 (by `date`)
 
 ## EXACT NEXT STEP
-1. **Two castBots --proven runs are RUNNING** on the frozen worktree /home/user/f26o (a07ed1bd7, `chattr -R +i src tools`; never touch it
-   while they read it): 1-4 and 2-6, `--seeds 1-100` (the 100 LISTED rolls, variant n = the list's n-th seed), every bot, both settings,
-   1-4 `--par 3`, 2-6 `--par 2`, timeout 7,200,000 ms each. Outputs /home/user/x40/b26o/: cast14.txt / cast26.txt (summary, the
-   `proven: K of 100` line, each `seed N out:` line, rc and end time), rows14.jsonl / rows26.jsonl, proven14.json / proven26.json (VARIANT
-   numbers, not gen2 seeds: map each through the list file's `seeds[n-1]` before any `seedlist --merge`).
-2. **The yield** = K/100 per stage. Under about 60%: the cause (which bot, which section is short, from the `out:` lines and the rows'
-   times and stuck spots) and a plan to the lead; NO content change without the lead's GO.
-3. **The write is BLOCKED on one question to the lead (sent):** SEED_LIST_MIN is 100 and `--check` fails under it, so dropping the rolls
-   that fail leaves each list short. Plan A (proposed): keep the passing listed seeds in old order, fill to 100 with NEW gen2 seeds swept
-   past the list's top seed and bot-proven the same way on test-side rolls (a scratch worktree where the stage's provenIndex line is
-   removed, so the layout variant IS the gen2 seed: stageGenerator.ts listedRoll path, seedListReady false), appended at the end. Plan B:
-   yields only, the drop/fill decided on the numbers. Act on the lead's ruling only.
-4. 2-6's list is written ONLY on top of ENG-26r's landed head (rebase, no force); seedlist --check on 1-1, 1-4, 2-6 on that merged head.
-5. Rule 28 on 2-6's flips (kid N 32, 34; the 'water ahead / in a dip' 7; the 19 gains as real finishes): NOT started (at most two heavy
-   runs; it starts when one of the castBots runs ends).
+1. **Two castBots --proven runs are RUNNING** (started at the box's start, background, timeout 7,200,000 ms each) on the frozen worktree
+   /home/user/f26o (a07ed1bd7, `chattr -R +i src tools`; never touch it while they read it; its node_modules is the one every tree
+   here links): 1-4 and 2-6, `--seeds 1-100` (the 100 LISTED rolls: variant n = the list's n-th seed), every bot, both settings, 1-4
+   `--par 3`, 2-6 `--par 2`. Outputs /home/user/x40/b26o/: cast14.txt / cast26.txt (the per-bot summary, `proven: K of 100`, each
+   `seed N out:` line, then `rc=` and the end time: the run is done when rc is there), rows14.jsonl / rows26.jsonl, proven14.json /
+   proven26.json (VARIANT numbers 1-100, not gen2 seeds). No progress shows until a run ends (castBots buffers its children's rows).
+2. **Send the lead the yields first** (K of 100 per stage; per failing slot which bot and setting failed and why, from the `out:` lines).
+   **The lead's RULING (this box): fill IN PLACE, not appended** (the game plays `seeds[variant % n]`, game.ts:11):
+   - every listed seed that passes --proven keeps its slot; each failing slot gets a NEW gen2 seed swept past the list's top seed (1-4: top
+     100; 2-6: top 101), in sweep order;
+   - each new seed passes the list's own judge (the seedlist search) AND castBots --proven, every bot, both settings;
+   - the list is WRITTEN BY THE TOOL (`seedlist.ts <stage> --merge order.json --in-order`), never a hand edit; if the tool cannot place a
+     seed in its slot (a --merge re-lay refuses one, so the slots after it shift), say so and append instead, naming the indices moved;
+   - yield >= 60: go straight on to that stage's fill; under 60: the cause and a plan to the lead, NO fill;
+   - 1-4 is SHIPPED: its side-by-side table (slot, old seed, new seed) to the lead BEFORE it lands;
+   - 2-6's list is written and --checked only on ENG-26r's merged head.
+3. **The fill, per stage S (when its yield is >= 60 and F slots fail):**
+   a. Sweep on the list's judge (writes no list): in /home/user/f26o, background,
+      `npx tsx tools/engine/seedlist.ts S --count <2F+4> --from <top+1> --to <top+400> --part /home/user/x40/b26o/sweepS.json`.
+   b. Bot-prove them on the TEST-SIDE tree /home/user/t26o (a07ed1bd7 with only the '1-4' and '2-6' lines removed from
+      src/game/gen2/provenIndex.ts, frozen, node_modules linked to f26o's: with no list the layout variant IS the gen2 seed,
+      stageGenerator.ts's listed path, seedListReady false): background,
+      `npx tsx tools/inspect/castBots.ts --stage S --seeds <the sweep's seeds, comma list> --setting both --par 3 --rows .../freshS.rows.jsonl --proven /home/user/x40/b26o/freshS.json`.
+      (here --proven holds gen2 seeds, since the variant is the seed.) Too few? sweep further and repeat.
+   c. The order: `node reference/qa-reports/BUILD-26/b26o/fillorder.mjs src/game/gen2/proven/seeds-S.ts /home/user/x40/b26o/provenS.json /home/user/x40/b26o/freshS.json /home/user/x40/b26o/orderS.json`
+      (prints kept/filled and the side-by-side table; commit its output to b26o/).
+   d. Write: in the WRITABLE worktree /home/user/w26o (branch t-build-26-wip-26o; link node_modules to f26o's first), for 2-6 only after
+      rebasing on ENG-26r's landed head: `npx tsx tools/engine/seedlist.ts S --merge /home/user/x40/b26o/orderS.json --in-order --count 100000`;
+      check the written list has 100 seeds equal to orderS.json in order (else: the indices moved, to the lead).
+   e. `npx tsx tools/engine/seedlist.ts S --check` on that head, and 1-1's (CI does). Then the lead: head, hashes, yields, the check.
+4. **Rule 28 on 2-6's flips** (kid N 32, 34, expected the old climb loop R-165.390; the 'water ahead / in a dip' 7, two runs each; the 19
+   gains as real finishes): NOT started (at most two heavy runs). b26n/rows/cmp26-cand.txt lists each flip with its last stuck spot; pad
+   logs with b26m/k22wrap.mts.txt (STAGE=2-6, SET, BOT=FT_KID or FT_ADULT), on f26o. NOTE: the new rows26.jsonl (seeds 1-100 on the
+   landed head a07ed1bd7) re-judge those 40-seed rows too: read the 19 gains' rescues and times from it first (no new run needed).
+
+## Notes
+- npm ci needs `--legacy-peer-deps` (as CI's workflows run it): a plain `npm ci` fails ERESOLVE (vite 8.3.8 vs esbuild 0.25).
+- castBots `--proven` on a LISTED stage writes variant numbers; only on the test-side tree are they gen2 seeds. Map before any merge.
 
 # BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**
