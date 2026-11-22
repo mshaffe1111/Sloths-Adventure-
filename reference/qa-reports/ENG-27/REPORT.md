@@ -17,14 +17,14 @@
   (bank 24 px, logs RACE_MARGIN), upstream :3148-3149. The press flies that same h: `gateHop = h`, startJump :4258-4262 takes its kind, hold,
   d2, upOnly, and `flyThumb = gate.thumb` :4271, played by thumbify :4105-4110. So B presses only when the noise already drawn for this
   press lands: FORESIGHT, one draw held, redrawn whole (noise too) every 0.5 s beat (:2786-2788, :3058-3060, :3156-3158). **On b0c6dd586:** the
-  same read, but `gateDraw` :~3000 (`return this.drawHop(dir)`, called at :2771 edgeStand, :3041 edgeWait, and the race and upstream sites)
+  same read, but `gateDraw` :4172 (`return this.drawHop(dir)`, called at :2771 edgeStand, :3041 edgeWait, :3094 race, :3141 upstream)
   draws a fresh hop, noise included, on EVERY frame judged: foresight with about 30 tries a second, as the lead said.
 - **Step 2, candidate D (t-eng-27-wip-27r):** plant 78979d13b first: the four gates (5 call sites) read through one exported `gateLands`
   (B's read kept: noise and thumbAt) and a toy in hopJudged.test.ts ('no foresight, ENG-27r'): a single held 0.2 s at a solid 120 px on;
   aimed it lands, with a 24-frame slip drawn on the press frame it falls short; the gate must press it. **RED on the plant** ('the gate read the
   slip drawn for the hop before he pressed'; the toy's own first assert, the aim lands, passed). **D e75664cde:** `gateLands` judges
   `{ ...h, thumb: undefined }` with no thumbAt: the aim (kind, holds, second press, beat: the tier's draws, held for the wait on B's beat),
-  the log, the gap. The press still flies h with its drawn noise (flyThumb, unchanged). judge() :~1727 still flies the FULL drawn hop and
+  the log, the gap. The press still flies h with its drawn noise (flyThumb, unchanged). judge() (D :1736) still flies the FULL drawn hop and
   now records a fall too (q -2) so the hop judged is the hop flown; hopJudged's came-down check reads q -2 as right only if `landed === 'lost'`.
   **Toy GREEN on D**; tsc clean on D. Nothing else run on D.
 ## Pushback
