@@ -1437,13 +1437,17 @@ let depthView = 900;
 /** where the view's middle and bottom fall above and below the walking line he stands on (cameraFollow.ts FRAME.feetAt 0.55) */
 const DEPTH_ABOVE = 0.55;
 const DEPTH_BELOW = 0.45;
-export function setDepthView(vh: number) {
+/** the scale the ground's squares are baked at over the frame's own: the zoom every ease is heading to over this frame's (engine.ts applyZoom) */
+let bakeOver = 1;
+export function setDepthView(vh: number, over = 1) {
   if (vh > 0) depthView = vh;
+  if (over > 0) bakeOver = over;
 }
 /** what the ground's squares are keyed and baked on, for a frame drawn at this scale: the bake scale and the view the darkening is laid
  * out for (drawGroundChunks' key; groundBake.test.ts) */
 export function groundBakeKey(frameScale: number): { scale: number; view: number } {
-  return { scale: frameScale, view: Math.round(depthView) };
+  // (baked at the scale the zoom is heading to and drawn at this frame's: a dolly or an ease keeps every square, R-165.380)
+  return { scale: frameScale * bakeOver, view: Math.round(depthView) };
 }
 /** how far either side of a spot the ground line takes in (world units): the darkening's line eases from one bank's top to the next over this */
 const LINE_REACH = 240;

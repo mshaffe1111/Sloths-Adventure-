@@ -768,6 +768,11 @@ export class GameEngine {
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
   private roomZoom = 1;
+  /** where each zoom ease is heading (its `want`): the painted ground is baked at the zoom these make, restZoom, never at a frame mid-ease */
+  private roomWant = 1;
+  private revealWant = 1;
+  private swimWant = 1;
+  private restZoom = 1;
   /** 6-8's crown: the view pulls back as he stands on it (1: no pull; proto.reveal), and its chime has sounded */
   private revealZoom = 1;
   private revealHeard = false;
@@ -1091,6 +1096,7 @@ export class GameEngine {
     const jarImg = this.lanternRun ? jarHeroImage() : null;
     setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
+    this.revealWant = 1;
     this.revealHeard = false;
     setReveal(0, null);
     this.tideSet = this.easy ? TIDE.easy : TIDE.normal;
@@ -1345,12 +1351,15 @@ export class GameEngine {
     this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom * this.swimZoom / this.swingWide;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
+    // (the zoom every ease is heading to: the intro's dolly at its end, each other ease at its want)
+    const restUsual = Math.max(base * this.bossZoom, bossFight ? 0.4 : h / levelH);
+    this.restZoom = bossFight ? Math.max(base * this.bossZoom * this.roomWant, 0.4) : restUsual * this.roomWant * this.revealWant * this.swimWant / this.swingWideWant;
   }
 
   /** the view the ground's squares and darkening are laid out for (vh, world units) and the bake's scale over this frame's (protoArt.ts
    * setDepthView; groundBake.test.ts) */
   private groundView(): { vh: number; over: number } {
-    return { vh: this.camera.viewportHeight, over: 1 };
+    return { vh: this.viewCssH / this.restZoom, over: this.restZoom / this.zoom };
   }
 
   /** the stage as built, for stageReady.ts to read what it can draw before its first frame */
@@ -7248,6 +7257,7 @@ export class GameEngine {
     // the camera eases in on him in the water (further for the first-swim moment), and back out on land
     const want = p.swim ? (p.swim.first !== undefined ? SWIM_CAM.first : SWIM_CAM.swim) : 1;
     const was = this.swimZoom;
+    this.swimWant = want;
     this.swimZoom += (want - this.swimZoom) * Math.min(1, dt * SWIM_CAM.ease);
     if (Math.abs(want - this.swimZoom) < 0.002) this.swimZoom = want;
     if (this.swimZoom !== was) this.applyZoom();
@@ -7601,7 +7611,10 @@ export class GameEngine {
     // World 8's set dressing, behind the boughs (w8DecorArt.ts: the generator's scenery and decor, the buttress corners at the banks' ends)
     const w8set = (this.proto?.gen2 as { w8?: W8DecorSet } | undefined)?.w8;
     if (w8set) drawW8Decor(ctx, w8set, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
-    setDepthView(this.groundView().vh);
+    // (the ground's squares and its darkening are laid out for the view every ease is heading to: a dolly mid-way neither re-bakes the
+    // squares nor moves the shade, R-165.380)
+    const gv = this.groundView();
+    setDepthView(gv.vh, gv.over);
     if (!(paintedGround && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene, drawBack)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
@@ -8675,6 +8688,7 @@ export class GameEngine {
     // the firefly tree: as the swarm rises the view pulls back to take in the tree and its crown (6-8's reveal does the same)
     const want = lr.swarm >= 0 ? (this.viewCssH > this.viewCssW ? 0.86 : 0.7) : 1;
     const prev = this.revealZoom;
+    this.revealWant = want;
     this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
     if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
     if (this.revealZoom !== prev) this.applyZoom();
@@ -8803,6 +8817,7 @@ export class GameEngine {
     // sideways not so far that he is lost in it: the lead's review, 2026-10-29)
     const want = onCrown ? (this.viewCssH > this.viewCssW ? 0.9 : 0.8) : 1;
     const prev = this.revealZoom;
+    this.revealWant = want;
     this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
     if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
     if (this.revealZoom !== prev) this.applyZoom();
@@ -9509,6 +9524,7 @@ export class GameEngine {
     const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
     const prev = this.roomZoom;
+    this.roomWant = want;
     this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);
     if (Math.abs(want - this.roomZoom) < 0.002) this.roomZoom = want;
     if (this.roomZoom !== prev) this.applyZoom();
