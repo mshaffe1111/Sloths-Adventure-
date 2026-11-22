@@ -1,8 +1,9 @@
 # ENG-WALL REPORT (R-165.380; start 7:03 PM ET by `date`; branch t-eng-wall off 484199316)
-EXACT NEXT STEP: fix (a) on the ground's squares: append plants-R-165.380.ts.txt's last block ('the ground's squares', chunkDark) to
-groundStack.test.ts; find what darkens the wall's soil and the floor's soil differently in paintTile (both shade by groundDepth =
-groundLine(banks) at the same x strip, so the step is from something else: measure each fill chunkDark counts at x w.x-6 and w.x+6, seed 1
-wall 20006 y 1690 (0.18) and seed 2 wall 14604 y 1850 (0.70)); fix so the soil under the floor darkens from the floor's top; then (b).
+EXACT NEXT STEP: (a) at the corner is NOT a darkening step on the game's path (item 2 ii, measured): shoot the x 20006 corner at 2x
+from the squares and name the PICTURE that makes the band (the column's end piece, drawEnd, is the first suspect: images are not
+fills, so chunkDark can't see them); bring the lead the measurement and a plant on that picture (RED on 484199316) before any fix.
+Separately the two wide walls' unshaded soil (seed 2 x14604, seed 3 x13775, normal) is a real step on the squares: why their soil
+under the floor's top gets no depth band (a stacked leg's ceiling clip is the first suspect). Then (b), puzzle rooms, stills.
 
 1. Step 0 (D114): the CLAUDE.md suite on 484199316, frozen worktree, in the background: tsc PASS; tests still running at hand-over
    (scratch suite-base.test). BREACH (D115): I copied a test file into that frozen worktree for about 10 s to re-check plant (i) RED,
@@ -13,10 +14,13 @@ wall 20006 y 1690 (0.18) and seed 2 wall 14604 y 1850 (0.70)); fix so the soil u
    (i) no wall's face stretched past its frame's aspect (both ways) nor showing past its bank's span. TILE_STRETCH 1.1 cites
        STAGE-RULES.md:275 ('no texture stretched in strips') + 10% beside the constant (D116). red-i.txt: 7 walls normal, x3.31-3.80,
        each 164 past a 60-wide column; NEW: seed 2's wall x14604-15024 squashed to 244x36 (x6.59 the other way).
-   (ii) the soil below a lower floor darkens from that floor's top. Live path: red-ii.txt (0.36-0.45 steps). The lead's ruling: the
-       game draws the ground's squares, so the plant reads them: chunkDark hands paintTile recording canvases (document.createElement
-       swapped for the run) and reads each square's own fills. red-ii-chunks.txt: RED on 484199316, 10 walls, steps 0.18-0.70.
-       Not proven yet: that chunkDark counts no fill twice (the 0.70 on the two wide walls wants a look before the fix is judged by it).
+   (ii) the soil below a lower floor darkens from that floor's top. Live path: red-ii.txt (0.36-0.45). The lead's ruling: read the
+       squares the game draws: chunkDark hands paintTile recording canvases (document.createElement swapped for the run) and reads each
+       square's own fills plus the frame's last-call fills. My first chunk run (0.18-0.70) was WRONG: inclusive box edges counted a
+       16-unit strip twice at its edge, it kept the live fallback draws of the calls before the squares were painted, and it compared
+       points where a stacked leg leaves no soil. Fixed: half-open boxes, the frame's last call only, soil both sides. red-ii-chunks.txt
+       on 484199316: easy PASS; normal RED on 2 wide walls only (14604-15024, 13775-14415: 0.45 at floor+40, the wall's soil there
+       has no depth band). Every narrow descent wall, the x 20006 corner included: equal darkening both sides, no step.
    (iii) no water fill shows past a wall's end face inside its bank (stage.waterY, drawn across the view by engine
        drawWaterAndFlags): red-iii.txt, 6 walls, 170-184 spots each below the water line. Not fixed.
 3. FIX (i), the lead's ruling (A), commit 5a8f86166: protoArt drawWallFace: the wall frame once at its own shape (244 x 244*h/w), drawn

@@ -80,7 +80,8 @@ function darkAt(r: ShadeCtx, x: number, y: number): number {
   let keep = 1;
   for (const f of r.fills) {
     const d = r.draws[f.i];
-    if (!(x >= d.box[0] && x <= d.box[2] && y >= d.box[1] && y <= d.box[3]) || !d.clips.every((c) => inside(c.polys, c.evenodd, x, y))) continue;
+    // (half-open: two strips sharing an edge are not both over it)
+    if (!(x >= d.box[0] && x < d.box[2] && y >= d.box[1] && y < d.box[3]) || !d.clips.every((c) => inside(c.polys, c.evenodd, x, y))) continue;
     let a = 0;
     if (f.g && f.g.stops.length >= 2) {
       const t = Math.max(0, Math.min(1, (y - f.g.y0) / (f.g.y1 - f.g.y0 || 1)));
@@ -187,7 +188,13 @@ function chunkDark(platforms: Platform[], view: { x0: number; x1: number; y0: nu
   const host = new HostCtx();
   try {
     (protoArt as { releaseGroundChunks?: () => void }).releaseGroundChunks?.();
-    for (let i = 0; i < 60; i++) drawProtoScene(host as unknown as CanvasRenderingContext2D, platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { host.off = true; });
+    for (let i = 0; i < 60; i++) {
+      // (the frame's own draws from the last call only: the calls before it drew the squares not yet painted live)
+      host.draws.length = 0;
+      host.fills.length = 0;
+      host.off = false;
+      drawProtoScene(host as unknown as CanvasRenderingContext2D, platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { host.off = true; });
+    }
   } finally { doc.createElement = orig; }
   const squares = tiles.filter((t) => t.ox !== undefined && t.fills.length);
   return {
@@ -196,6 +203,7 @@ function chunkDark(platforms: Platform[], view: { x0: number; x1: number; y0: nu
       const t = squares.find((q) => x >= q.ox! && x < q.ox! + CHUNK_SIDE && y >= q.oy! && y < q.oy! + CHUNK_SIDE);
       return 1 - (1 - (t ? darkAt(t, x, y) : 0)) * (1 - darkAt(host, x, y));
     },
+    soil: (x: number, y: number) => squares.some((q) => x >= q.ox! && x < q.ox! + CHUNK_SIDE && y >= q.oy! && y < q.oy! + CHUNK_SIDE && covered(q, x, y)),
   };
 }
 for (const difficulty of ['normal', 'easy'] as const) {
@@ -220,6 +228,7 @@ for (const difficulty of ['normal', 'easy'] as const) {
         walls++;
         let worst = 0, at = 0;
         for (let y = floor.y + 40; y < view.y1 - 10; y += 20) {
+          if (!c.soil(w.x - 6, y) || !c.soil(w.x + 6, y)) continue;
           const step = Math.abs(c.at(w.x - 6, y) - c.at(w.x + 6, y));
           if (step > worst) { worst = step; at = y; }
         }

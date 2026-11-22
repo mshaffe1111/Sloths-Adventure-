@@ -9,12 +9,8 @@ not ok 1 - the out-and-back toy (normal), the ground's squares: the soil below a
     + actual - expected
     
     + [
-    +   "seed 1: the wall x 18666-18726 over the floor at 1450: a shade step of 0.22 across the floor's end at y 1490",
-    +   "seed 1: the wall x 20006-20066 over the floor at 1450: a shade step of 0.18 across the floor's end at y 1690",
-    +   "seed 2: the wall x 14604-15024 over the floor at 1430: a shade step of 0.70 across the floor's end at y 1850",
-    +   "seed 2: the wall x 19817-19877 over the floor at 1430: a shade step of 0.27 across the floor's end at y 1470",
-    +   "seed 3: the wall x 13775-14415 over the floor at 1479: a shade step of 0.70 across the floor's end at y 1899",
-    +   "seed 3: the wall x 19579-19639 over the floor at 1445: a shade step of 0.28 across the floor's end at y 1485"
+    +   "seed 2: the wall x 14604-15024 over the floor at 1430: a shade step of 0.45 across the floor's end at y 1470",
+    +   "seed 3: the wall x 13775-14415 over the floor at 1479: a shade step of 0.45 across the floor's end at y 1519"
     + ]
     - []
     
@@ -22,63 +18,29 @@ not ok 1 - the out-and-back toy (normal), the ground's squares: the soil below a
   name: 'AssertionError'
   expected:
   actual:
-    0: "seed 1: the wall x 18666-18726 over the floor at 1450: a shade step of 0.22 across the floor's end at y 1490"
-    1: "seed 1: the wall x 20006-20066 over the floor at 1450: a shade step of 0.18 across the floor's end at y 1690"
-    2: "seed 2: the wall x 14604-15024 over the floor at 1430: a shade step of 0.70 across the floor's end at y 1850"
-    3: "seed 2: the wall x 19817-19877 over the floor at 1430: a shade step of 0.27 across the floor's end at y 1470"
-    4: "seed 3: the wall x 13775-14415 over the floor at 1479: a shade step of 0.70 across the floor's end at y 1899"
-    5: "seed 3: the wall x 19579-19639 over the floor at 1445: a shade step of 0.28 across the floor's end at y 1485"
+    0: "seed 2: the wall x 14604-15024 over the floor at 1430: a shade step of 0.45 across the floor's end at y 1470"
+    1: "seed 3: the wall x 13775-14415 over the floor at 1479: a shade step of 0.45 across the floor's end at y 1519"
   operator: 'deepStrictEqual'
   stack: |-
-    TestContext.<anonymous> (src/game/groundStack.test.ts:777:12)
+    TestContext.<anonymous> (src/game/groundStack.test.ts:786:12)
     Test.runInAsyncScope (node:async_hooks:214:14)
     Test.run (node:internal/test_runner/test:1047:25)
     Test.start (node:internal/test_runner/test:944:17)
     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
     run (node:internal/test_runner/harness:307:12)
     test (node:internal/test_runner/harness:316:12)
-    <anonymous> (src/game/groundStack.test.ts:748:3)
+    <anonymous> (src/game/groundStack.test.ts:756:3)
   ...
 # Subtest: the out-and-back toy (easy), the ground's squares: the soil below a lower floor darkens from that floor's top, no seam
-not ok 2 - the out-and-back toy (easy), the ground's squares: the soil below a lower floor darkens from that floor's top, no seam
+ok 2 - the out-and-back toy (easy), the ground's squares: the soil below a lower floor darkens from that floor's top, no seam
   ---
   type: 'test'
-  failureType: 'testCodeFailure'
-  error: |-
-    a straight shade seam stands at a lower floor's end under a wall, in the ground's squares
-    + actual - expected
-    
-    + [
-    +   "seed 1: the wall x 19118-19178 over the floor at 1450: a shade step of 0.22 across the floor's end at y 1530",
-    +   "seed 1: the wall x 20458-20518 over the floor at 1450: a shade step of 0.38 across the floor's end at y 1490",
-    +   "seed 2: the wall x 20313-20373 over the floor at 1430: a shade step of 0.27 across the floor's end at y 1470",
-    +   "seed 3: the wall x 20124-20184 over the floor at 1444: a shade step of 0.28 across the floor's end at y 1484"
-    + ]
-    - []
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-  actual:
-    0: "seed 1: the wall x 19118-19178 over the floor at 1450: a shade step of 0.22 across the floor's end at y 1530"
-    1: "seed 1: the wall x 20458-20518 over the floor at 1450: a shade step of 0.38 across the floor's end at y 1490"
-    2: "seed 2: the wall x 20313-20373 over the floor at 1430: a shade step of 0.27 across the floor's end at y 1470"
-    3: "seed 3: the wall x 20124-20184 over the floor at 1444: a shade step of 0.28 across the floor's end at y 1484"
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (src/game/groundStack.test.ts:777:12)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
   ...
 1..2
 # tests 2
 # suites 0
-# pass 0
-# fail 2
+# pass 1
+# fail 1
 # cancelled 0
 # skipped 0
 # todo 0
