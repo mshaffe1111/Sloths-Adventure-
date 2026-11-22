@@ -1,20 +1,23 @@
 # BUILD-26p (on t-build-26-wip-26p from 9e1e30b27): R-165.390 traced: a BOT fault on every row, not a level fact. The bot read a river by x alone (firsttimer.ts floorAt), so 2-6's high rivers made every branch under their windows 'under water'. Candidate 86bb3b145 (toy RED on base, GREEN on fix). Started 5:47 PM ET 11-22 (by `date`)
 
-## EXACT NEXT STEP (after box 2)
-1. The suite on 86bb3b145 (frozen /home/user/c26p; runner b26p/suite.sh.txt, 3 shards + the CI tools tests, output /home/user/x40p/suite/)
-   is RUNNING at hand-over; read each file's 'ℹ pass/fail' lines. tierBots on the candidate: 9 pass, 0 fail.
-2. The lead rules the candidate on the full table below (nothing lands on t-build-26 before). No list writes, no fill.
-3. Next bot work for 2-6's yield (51 of 100 now; Easy is the bottleneck: kid E 32 fails, adult E 28): cause B (riding a moving piece,
-   R-165.393) and this family's residue (below: a walk off a raised block that lands him inside his stop of the next lip).
+## EXACT NEXT STEP (release 4, the lead's ruling: ACCEPTED, 29 -> 51; landed on t-build-26 on a GREEN suite, hash below)
+In this order, each a toy first (rule 21), rule 28 x40 after; tools: b26o rescuelog, b26p/trace.mts.txt, probe.mts.txt:
+1. **Cause B, the adult E wheel-bucket stall (R-165.393):** `rescuelog` on cut 5 RE-JUDGED (064ca6df6) for 2-6 adult E 11 and 45: if cut 5
+   rides out, the brake holds him. Its unmasked rows here: adult E 9, 14, 25, 30, 40 (x40), each 'base pass from the wrong read'.
+2. **The lip family's residue:** kid E 40 (x40), middle E 58 (--proven): a walk off a raised block lands him 0.04-0.06 s from the next lip
+   at run speed and he runs off it (b26p/c26p-mE58.tr.txt).
+3. **child E 50's 281 px dip** (--proven; 645,1799, the way on 281 px up, rescued).
+4. **adult N 4** (x40): rides log #24 off the river's end (x 486) under bank #22 (28 px up), drops 323 px (b26p/cand-aN4.tr.txt).
+5. **The floor:** 8 rolls pass under 100 s (adult N), named in b26p/cast26-cand.txt.
+**2-3 on this branch:** 0/40 'sealed door' on both trees because t-build-26 branched before 2-3's cage-bot engine piece (BUILD-23e, on
+main since 0.10.2), not this change: release 4's integration must show 2-3 matching INT-R4's rows on the merged head. 2-5's kid 0/40 on
+both trees is known (R-165.339). Suite on 86bb3b145: SUITE_VERDICT. tierBots: 9 pass, 0 fail.
 
 ## The yield (castBots --proven, 2-6, the 100 listed rolls, every bot, both settings, on 86bb3b145; b26p/cast26-cand.txt, proven26-cand.json)
 **51 of 100 (BUILD-26o: 29 on a07ed1bd7).** By bot, 26o -> now: kid N 86 -> 99, kid E 64 -> 68, adult N 89 -> 99 (under the floor 27 -> 8),
 adult E 69 -> 72, child N 100 -> 100, child E 100 -> 99, middle N 99 -> 100, middle E 100 -> 99, expert N 99 -> 100.
 The 49 out: 41 by a fail/rescue alone, 7 by the floor alone, 1 by both. The fails: kid E 32, adult E 28, kid N 1, adult N 1, child E 1, middle E 1.
-The two tier rows that moved down (both pass on the base tree, traced on both, b26p/c26p-*.rl.txt):
-- middle E 58 (fell back 8 times at 981,6385): this family's RESIDUE at the foot: he walks off raised block #16 at 268-285 px/s, lands on #15
-  0.04 s from its lip and on #18 0.06 s from its lip, runs off both (b26p/c26p-mE58.tr.txt); kid E 40 in the x40 is the same piece.
-- child E 50 (in a 281 px dip at 645,1799, the way on 281 px up, rescued): a new spot near the top, named, not traced further.
+The two tier rows that moved down (middle E 58, child E 50) pass on the base tree; traced on both (b26p/c26p-*.rl.txt): next step 2, 3.
 
 ## Step 1: the six rows traced (b26p/trace-*-base.txt, tool b26p/trace.mts.txt; geometry b26p/plats.mts.txt, probe b26p/probe-kidN34-base.txt)
 Every loop is the same piece of 2-6: a SUNKEN STEP, a short branch 70 px down between two branches at one height.
@@ -44,15 +47,12 @@ top against `riverAt(rivers, x, q.y)`. No stage id, no x (generalitycheck PASS).
 - adult E 9, 14, 25, 30, 40: a stall while riding a moving piece (vx 0, x and y moving with it; 14/25/30 at x 985-995 y 1041, the
   wheel bucket of BUILD-26o's cause B), rescued about 9 s later. **The lead's ruling: each is 'base pass from the wrong read, now meets
   cause B'** (R-165.393, next on the list); the wrong read is not kept to hide it.
-- kid E 40: the same sunken step at the foot (#15, #18, #17 near y 6369): he now reads the floors right, but a walk-off lands him 6 px
-  before #15's lip at 285 px/s (his stop takes 12 px): slid off. A narrower residue of this family (a drop that lands inside his stop).
-- adult N 4: rides the drifting log #24 on the river at x 486-1284 to its end and drops 323 px instead of stepping 28 px up onto the
-  bank #22: a log-ride bank-end fault, a new family; on the base he was elsewhere at that time.
-**2-1 x40: 0 flips, 0 moved rows (360 rows).** The child's 2-6 time (Normal median 152.5 -> 188.2 s, every seed +9 to +57 s, 40/40) is
+- kid E 40: the sunken step at the foot (near y 6369): floors read right now, but a walk-off lands him 6 px before #15's lip at 285 px/s
+  (his stop takes 12 px): the residue. adult N 4: the log-ride bank end (next step 4); on the base he was elsewhere then.
+The child's 2-6 time (Normal median 152.5 -> 188.2 s, every seed +9 to +57 s, 40/40) is
 explained (child N 1, b26p/why.mts.txt): on the base he read the floor as water, stood at false 'edges' and hopped edge to edge, and
 rhythm() is skipped while he stands or jumps; now he walks the floor he sees, with his tester steer/gap rhythm (gapQ to 1.49 s).
 **Rule 28 on 2-1..2-5 and 1-4 (b26p/diff-others.txt, tables-others.txt): 0 pass flips and 0 moved rows on every stage (360 rows each).**
-2-3 reads 0/40 on every bot ('sealed door', goal 0 of 4-5) and 2-5's kid 0/40 (rescues) on BOTH trees, row for row: not this change; named.
 **Not done (named plainly):** the suite verdict (running). The same x-alone river read lives at
 firsttimer.ts 1702 (describe, labels only) and 2788 (`wet`); left alone to keep the change narrow (Suggestions).
 ## Lessons applied
