@@ -14,9 +14,13 @@ the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
    engine.ts to physics.ts so the piece can count the beat the clock holds through), 7501bf2fb (tools/inspect/pacerRespawn.test.ts: the old
    at-the-stand test replaced by the end-to-end invariant over its whole grid: home and post, seeds 1-6, both settings, middle, expert,
    ride-only). **Checked:** tsc PASS on db4f97f81; the table-row plant GREEN on db4f97f81 (was RED on e8c4d0153); home N1 falls now cost
-   -0.34..-2.35 s (paid +0.56..+0.59). **The full-grid run on 7501bf2fb was running when I handed over: RE-RUN it** (frozen worktree;
-   `node_modules/.bin/tsx --test tools/inspect/pacerRespawn.test.ts`), then the suite on 7501bf2fb (pacerLay was RED 9/19 on the base and
-   on D' before the fix: name any change), and send the lead the rows (rows first).
+   -0.34..-2.35 s (paid +0.56..+0.59). **The full grid on 7501bf2fb is RED: 7 of 89 race-leg falls still pay** (s/fallpays-grid-RED-
+   7501bf2fb.txt): home middle Normal 5 x 7425 +0.84, Easy 2 x 10049 +0.33, Easy 5 x 4656 +0.69, Easy 6 x 3198 +0.10, ride Easy 5 x 7533
+   +0.50; post middle Normal 6 x 10125 +0.68, expert Normal 1 x 10076 +0.73. **Trace two of them first (rule 28: seed, x, frame, what
+   happened).** My unverified guess: his second crossing from the respawn to the fall is faster than his first (a log already in reach the
+   second time, where he stood for one the first time), so the first-pass margin is not enough. If so, the ruling's formula cannot keep the
+   invariant by itself; the lead rules the form (D112: name the invariant before any cap). Then the suite on the fix (pacerLay was RED 9/19
+   on the base and on D': name any change), and send the lead the rows (rows first).
 1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
    with 50 px is pressed instead), and (3) the judge fix with hopJudged GREEN 4/4; then (4).
 2. **The base suite 16698b8a1** ran in my container: tsc PASS; unit 1846 ok, 9 not ok when I handed over, all nine pacerLay's (the same 9 ENG-27p
