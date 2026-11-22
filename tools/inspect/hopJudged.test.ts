@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, type HopRow } from './firsttimer.ts';
+import { HOP_TRACE, gateLands, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -54,3 +54,16 @@ for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy
     assert.deepEqual(lines, [], 'a gate judged one hop and the bot flew another');
   });
 }
+
+// (ENG-27r, the lead's concern: no foresight. A player sees the log, the gap and his aim, presses, and only then does his thumb slip. The
+//  toy: a single held 0.2 s at a solid 120 px on; aimed, it lands; with a 24-frame slip drawn on the press frame it falls short. The gate
+//  must press it (the aim lands): it may not read the noise he cannot see. RED on 74a97ad44's read, GREEN on the no-foresight gate)
+test('a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)', () => {
+  const n = 75, z = (v: number) => Array<number>(n).fill(v);
+  const q = { id: 1, x: 220, y: 500, width: 120, height: 20, type: 'solid' } as never;
+  const aim: DrawnHop = { kind: 'single', hold: 0.2, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 };
+  const noisy: DrawnHop = { ...aim, thumb: { drift: z(0), slip: [24, ...z(-1).slice(1)], release: z(0) } };
+  const th: ThumbAt = { last: 1, driftPx: 0, armed: false, releaseLeft: 0, travel: -1, slip: -1, speed: 600, once: false };
+  assert.equal(gateLands(q, () => 220, 100, 500, 1, aim, 0, 0, 24, 1e9, th), true, 'the aimed hop lands (the toy)');
+  assert.equal(gateLands(q, () => 220, 100, 500, 1, noisy, 0, 0, 24, 1e9, th), true, 'the gate read the slip drawn for the hop before he pressed');
+});
