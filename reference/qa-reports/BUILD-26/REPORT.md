@@ -1,4 +1,4 @@
-# BUILD-26h (on t-build-26 from 27e20ebf9): tierBots 9/9 before cut 5, so the calibration was recommitted on the head (9/9); the lip traced on child N 14 (a knock-on, and its toy proves nothing); the suite and the 1-4 table still RUNNING at my box. Started 7:27 PM ET 11-21 (by `date`)
+# BUILD-26h (on t-build-26 from 27e20ebf9): tierBots 9/9 before cut 5, so the calibration was recommitted on the head (9/9); the lip traced on child N 14 (a knock-on, and its toy proves nothing); 1-4's table on C + A/B (no lip): child Easy DROPS 36 -> 35 (child E 37), adult N 9 lost; the suite RUNNING at my box. Started 7:27 PM ET 11-21 (by `date`)
 Commits: **47b57a3e8** (calibration-main.jsonl recommitted; t-build-26 fast-forwarded to it after tierBots 9/9 on its own frozen tree; the
 same commit safe-kept first on t-build-26-wip-26h), this REPORT with b26h/ evidence. No bot code changed. The lip stays OFF.
 Frozen trees (D115, detached, node_modules linked): 2f188c552 (tierBots), 27e20ebf9 (suite + castBots whole; then the 1-4 x40 table),
@@ -8,9 +8,9 @@ b746b9a87 (27e20ebf9 + b26g/lip.patch, local only), 47b57a3e8 (tierBots on the r
 0. **The two runs that were RUNNING at my box, on 27e20ebf9 (bot code = 47b57a3e8's):** (a) the full CLAUDE.md suite plus
    tools/inspect/castBots.test.ts whole, one process (TSC clean; at my box about 1250 passes, **0 fails**, not finished). Re-run it
    (it dies with the container): any red that 2f188c552's suite would not have -> revert the commit that brought it, tell the lead.
-   (b) Step 1's table: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>` on 27e20ebf9 (C + A/B,
-   no lip: the same bot as 7b81e2ee2, which is not on the remote), then `python3 reference/qa-reports/BUILD-26/b26g/cmp.py
-   reference/qa-reports/BUILD-26/b26f/rows/r14-fe3d3d6ca.jsonl <f>`. No tier may drop; rows to the lead.
+   (b) Step 1's table is DONE (below): **child Easy drops 36 -> 35** (child E 37 lost) and adult N 9 is lost (adult N holds 37 by
+   adult N 36's gain). The lead rules on C + A/B with that drop. My proposal: step 3 FIRST (trace adult N 9 at x 508 and child E 37
+   at x 252, two runs per cause, C's or A/B's), since they are the two rows that cost the table.
 1. **The lip (step 2): the toy first.** b26g/toylip.mts drops 31/40 with the fix AND 31/40 planted, on the lip tree and on the base
    (b26h/lip-childN14.txt): it does not reach the lip, so it is not RED/GREEN (D96 unmet). Rewrite it so the lip line fires (log at
    the lip's line, as b26h/lip-childN14.txt did) before any 1-4/2-6 rows for the lip. Then the second run for child N 14's cause.
@@ -31,7 +31,13 @@ b746b9a87 (27e20ebf9 + b26g/lip.patch, local only), 47b57a3e8 (tierBots on the r
   both runs land on, 8 px apart). After that the runs differ by draws and position: at x 890 the base takes the vine, the lip run
   presses a jump past it, then stalls on #47 for 10 s -> rescue. **A knock-on, not a walk-off under a ledge: one run; the second run
   for the cause is not done.** The lip's toy does not prove it (above).
-- **Not done in my box:** step 0 (ii)'s verdict, step 1's table, steps 3-4.
+- **Step 1, 1-4 x40, all five bots, both settings, on frozen 27e20ebf9 (C + A/B, no lip), against cut 5 (b26f/rows/r14-fe3d3d6ca.jsonl)**
+  (b26h/rows/r14-27e20ebf9.jsonl, b26h/cmp14-fe3d3d6ca-vs-27e20ebf9.txt; pass = shrine with no rescue): kid N 19 -> 40, kid E 32 -> 40,
+  adult N 37 -> 37, adult E 36 -> 40, **child N 39 -> 39, child E 36 -> 35 DROP**, middle N 36 -> 36, middle E 37 -> 38, expert 39 -> 39.
+  LOST 2: **adult N 9** (shrine 123.7 s, 1 rescue, x 508 fell back 3 times) and **child E 37** (shrine 176.6 s, 1 rescue, x 252 fell
+  back 8 times): the packet's step-3 rows, so they are on the no-lip tree, not the lip's. GAINED 35 (kid N 21 of them): not yet checked
+  as real finishes (rule 28). Expert's one miss is seed 8 (time goal 0/1), the same as on cut 5.
+- **Not done in my box:** step 0 (ii)'s verdict (the suite), steps 3-4.
 
 ## Learned
 - A toy that fails the same way planted and unplanted is not a toy: run its plant arm before trusting it (D96 says RED and GREEN; here

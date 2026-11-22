@@ -1,0 +1,11 @@
+('adult', 'easy') 36 -> 40 
+('adult', 'normal') 37 -> 37 
+('child', 'easy') 36 -> 35 DROP
+('child', 'normal') 39 -> 39 
+('expert', 'normal') 39 -> 39 
+('kid', 'easy') 32 -> 40 
+('kid', 'normal') 19 -> 40 
+('middle', 'easy') 37 -> 38 
+('middle', 'normal') 36 -> 36 
+LOST 2 adult N 9 child E 37
+GAINED 35 adult E 10 adult E 17 adult E 19 adult E 37 adult N 36 kid E 2 kid E 10 kid E 11 kid E 24 kid E 31 kid E 35 kid E 37 kid E 40 kid N 7 kid N 9 kid N 10 kid N 11 kid N 12 kid N 13 kid N 17 kid N 18 kid N 19 kid N 20 kid N 21 kid N 22 kid N 23 kid N 24 kid N 33 kid N 34 kid N 35 kid N 36 kid N 37 kid N 39 kid N 40 middle E 37
