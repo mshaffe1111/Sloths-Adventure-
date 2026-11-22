@@ -1,11 +1,17 @@
 {
- "note": "ART-HERO (R-165.378): hero sheets not regraded onto the plain pose yet, at the numbers measured on 700b4ef8d (tools/art/hfnext/herobody.py). Shrink-only (knowncheck.mjs); heroClipsBody.test.ts fails a row that got worse or now passes. ART-HERO regraded walk, run and the six attacks too (their strips showed a step), so only the two-vine climb is left.",
+ "note": "ART-HERO (R-165.378): hero sheets not regraded onto the plain pose yet, at the numbers measured on 700b4ef8d (tools/art/hfnext/herobody.py). Shrink-only (knowncheck.mjs); heroClipsBody.test.ts fails a row that got worse or now passes. ART-HERO regraded walk, run and the six attacks too (their strips showed a step), so only the two-vine climb is left. ART-SHEETS-d: climb2 now passes (affine, worst frame 0.71) and is off.",
  "known": [
   {
-   "sheet": "hero-climb2",
-   "frame_max": 3.531,
-   "pooled": 2.813,
-   "why": "two-vine climb (Qwen sheet, 5 frames): not in the ART-HERO packet; regrade.py reads HERO_CLIPS grids only"
+   "sheet": "hero-studies",
+   "frame_max": 2.133,
+   "pooled": 0.273,
+   "why": "ART-SHEETS-d: affine per group ACCEPTED by the lead by eye on the game-size strips (11-21); one frame, s4_02 (#21), sits 0.13 dE over the 2.0 bar, the sheet pooled 0.27 passes"
+  },
+  {
+   "sheet": "hero-story",
+   "frame_max": 9.786,
+   "pooled": 6.09,
+   "why": "ART-SHEETS-d: the ORIGINAL kept, judged by eye by the lead on the game-size strips 11-21: the back views (away, away_a, away_b, farewell) and the close faces; a pooled mean grade (and the affine per group) washes them out to a pale pink, and a back in shade should read darker"
   }
  ]
 }

@@ -1,0 +1,8 @@
+rope      11 frames | fur L a b [56.1 13.  21.1] | pooled 10.16 dE, worst frame 11.00 (t23) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+swim      28 frames | fur L a b [55.3 13.2 28.8] | pooled  6.17 dE, worst frame  9.51 (surf0) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+vine       5 frames | fur L a b [58.4 15.  25.5] | pooled  4.77 dE, worst frame  6.53 (stillback) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+story     43 frames | fur L a b [57.2 14.1 26.3] | pooled  5.22 dE, worst frame  9.79 (farewell) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+studies   29 frames | fur L a b [55.4 15.1 27.6] | pooled  5.54 dE, worst frame  8.55 (s3_06) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+atlas     36 frames | fur L a b [59.7 15.6 33.1] | pooled  3.70 dE, worst frame  9.72 (face_calm) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+climb2     5 frames | fur L a b [58.8 14.3 30.1] | pooled  2.81 dE, worst frame  3.53 (c2-hangdangle-s2) | over the clips' bar (frame 2.0 / pooled 1.0): YES
+plain fur L a b [60.4  16.53 29.59]

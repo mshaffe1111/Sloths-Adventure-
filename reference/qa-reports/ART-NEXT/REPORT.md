@@ -1,3 +1,248 @@
+# ART-SHEETS-d (11-21): R-165.379 the seven non-clip hero sheets at their accepted states (five affine, atlas real mean, story original); ratchet, plant, gates
+## EXACT NEXT STEP
+DONE within the box; nothing of this packet is left open. The next member: (a) the lead judges the in-game before/after stills of one
+swim and one rope frame (reference/art/hfnext/hero/sheets/mean-d/ingame-*.png, Polish check below); (b) the full CI gate list (gates.md,
+D96: the suite, drawcheck, clipcheck, coveragecheck, registrycheck, tipwalk and the rest) on a frozen worktree of this branch's final hash,
+ONE heavy run at a time, before t-art-next goes toward main. I ran only the packet's list (heroClipsBody, herobody --check, tsc, artcheck,
+knowncheck), not the full CI list.
+## What was done (every run on a frozen worktree, run_in_background, one heavy run at a time; no Hugging Face spend)
+1. INSTALLED (2a5d869b2) the five sheets the lead accepted, affine per group, byte-for-byte from reference/art/hfnext/hero/sheets/c8d47c90e/:
+   hero-rope, pokey-swim, hero-vine, hero-climb2, hero-studies (same names, sizes and dims; frame tables untouched) and their rows in
+   tools/art/hfnext/sheetgrade.json (that file was not in the tree at dfa06f524; it now holds the six graded sheets' rows).
+2. THE REAL MEAN GRADE of atlas and story (frozen dfa06f524: python3 -I tools/art/hfnext/sheetgrade.py atlas,story --from 4f0853b96; no
+   --group, so one curve per sheet, plus the per-frame passes, which always run): atlas pooled 4.19 -> 0.01 dE, worst frame 0.15, dL +2.04;
+   story pooled 6.09 -> 0.01, worst frame 0.32, dL +5.38. Parked with strips in reference/art/hfnext/hero/sheets/mean-d/ (74042b588):
+   {atlas,story}-strip-{game,2x}.jpg, columns plain | original 4f08 | REAL MEAN | affine c8d4 (strip.py.txt: the corrected labels).
+   THE LEAD'S RULING (on the game-size strips; my read matched it): ATLAS takes the REAL MEAN (warm brown like the plain pose, climb_b's
+   orange cast gone, duck, fall and hurt a touch lighter, not pink). STORY keeps the ORIGINAL (the mean flattens the back views away, away_a,
+   away_b and farewell to a pale pink; a back in shade should read darker): a known row in src/game/heroBody.known.json (9.786 / 6.09) with
+   that reason. Atlas installed (cbcd9e97b).
+3. herobody.py --write and --ratchet at the accepted states (frozen 74042b588 for the five, frozen cbcd9e97b for atlas and story):
+   src/game/heroBody.json now measures all 25 sheets; src/game/heroBands.ratchet.json holds 25. heroBody.known.json: climb2 OFF (it passes
+   now: worst frame 0.71, pooled 0.16); hero-studies ON (the accepted affine's s4_02 frame is 2.133 dE, 0.13 over the 2.0 bar; pooled 0.27
+   passes; the lead accepted the sheet by eye; NAMED here for the lead to confirm or reject); hero-story ON (the original, by the ruling).
+   knowncheck passes because heroBody.known.json is not on main yet (a new list); it must not grow after it reaches main.
+4. THE PLANT (scratch worktree, thrown away): e41c738bf's mean-graded pokey-swim.webp in place of the accepted one. herobody.py --ratchet
+   pokey-swim REFUSED ('first dark: 3.914 is worse than the recorded 3.716'); after --write, heroClipsBody.test test 6 FAILED: 'pokey-swim
+   under: light fur 5.303 dE vs 3.487 recorded', 'dark fur 7.329 vs 6.079'. The ratchet catches the squashed swim. Restored (worktree removed).
+5. GATES on frozen a1dd3726b: heroClipsBody.test 6/6 GREEN; herobody.py --check exit 0; tsc exit 0; artcheck PASS; knowncheck PASS.
+6. CATALOG: reference/art/CATALOG-MASTER.csv's hero-climb2 row carried the 4f0853b96 file size (125.2 KB); now 103.5 KB (the shipped file).
+   The other rows of these sheets are per-frame crop estimates, not the sheet's file size, and catalogclips.py rebuilds only HERO_CLIPS
+   rows, so they are left as they are (named, not hidden). src/game/art/inventory/cast.json carries no file size: --emit not needed.
+7. tools/art/hfnext/heroshoot.mjs: a 'rope' scene (hanging on the spot: the still rope frame; the rope itself is not drawn) (ae67a19e7).
+## Polish check (looked at at game size, the way Matt will see it on a phone)
+- IN GAME, before (dfa06f524) | after, 2x, stage 1-1 (heroshoot.mjs, cheer as the warm-up scene, frozen worktrees):
+  reference/art/hfnext/hero/sheets/mean-d/ingame-swim-rope-before-after.png. The cheer clip (already graded to the plain pose's colour) is
+  the reference row. SWIM crawl: the after is the same warm brown as the cheer clip, the shading on the back and the arm kept; it differs from
+  the before only slightly, since the before (e41c738bf's mean grade) was close in colour (the ratchet, not the eye, is what catches that
+  grade's squashed 'under' bands). ROPE still: the after is a touch richer brown, nearer the cheer clip than the before's paler fur; no blotch,
+  no halo, the outline and the bandages untouched. Not art: the rope itself is not drawn in that scene (heroshoot pins him; there is no rope
+  there), and in the swim crop a stage sign sits behind him; in the before's cheer the stage card is still fading out.
+- ATLAS real mean and STORY original: the four strips in mean-d/ (judged by the lead and by me, see 2).
+- Not seen in game: atlas, vine, climb2 and studies after the grade (their strips are the only look); a moving rope creep (the scene holds
+  the still frame).
+## Lessons applied
+D115 (every grade, ratchet, gate and shoot on a frozen worktree at a fixed hash, never the tree being edited); D113 (every long run in the
+background, no foreground wait: the lead's ruling was read while the ratchet ran); D96 (the gate list I ran is the packet's, and the full
+CI list is named as NOT run); D102/D111 (lean reads: the packet, the REPORT's top section, the LAWS headlines, the seven LESSONS lines);
+D109 (no clock times in messages to the lead); law 0 (the studies 2.13 frame and the catalog rows I left are named, not hidden).
+
+# ART-SHEETS-c (11-21): R-165.382 drawcheck GREEN (cheer cut DONE); pose families + the single-pose clamp; the affine-per-group grade of the seven non-clip sheets
+## EXACT NEXT STEP
+THE LEAD'S RULINGS (after the box, on the game-size strips): ACCEPT affine per group for rope, swim, vine, climb2, studies. REJECT it
+for atlas (run, climb_b, duck, fall, hurt go pale and pink) and story (the back views away/away_a/away_b/farewell, sleep, tired, sneak and
+the two faces wash out). The lead asked for the per-sheet MEAN grade on atlas and story. CORRECTION I sent the lead: in my strips the
+'mean e41c738bf' column for atlas, story and studies IS THE UNGRADED ORIGINAL (same blob at 4f0853b96 and e41c738bf: atlas ea18e13804,
+story b6ca588205); only rope/swim/vine/climb2 were mean-graded there. So a real mean grade of atlas and story has not been seen yet.
+Next member, on t-art-next at 83d3893cf or later, frozen worktrees, ONE heavy run at a time, run_in_background:
+1. Install the five accepted sheets: cp reference/art/hfnext/hero/sheets/c8d47c90e/{hero-rope,pokey-swim,hero-vine,hero-climb2,hero-studies}.webp
+   src/assets/hero/; tools/art/hfnext/sheetgrade.json = the parked c8d47c90e/sheetgrade.json's rope, swim, vine, climb2, studies rows.
+2. ONE run on a frozen worktree of 83d3893cf (node_modules linked): python3 -I tools/art/hfnext/sheetgrade.py atlas,story --from 4f0853b96
+   (NO --group: the per-sheet mean grade + --even, as R-165.378), about 6-8 min. Strips with the scratch strip script
+   (reference/art/hfnext/hero/sheets/c8d47c90e/strip.py.txt; fix its column label: plain | original 4f0853b96 | MEAN (this run) |
+   affine c8d47c90e), game size and 2x; LOOK at run, climb_b, duck, fall, hurt, the back views, sleep, tired, sneak, faces. Send the lead the
+   paths; the lead's last look decides: mean, or the original with known rows (heroBody.known.json), or another method.
+3. On the lead's yes: install atlas and story (and their sheetgrade.json rows); then herobody.py --write and --ratchet
+   rope,swim,vine,climb2,atlas,story,studies; heroBody.known.json: climb2's mean row off if it now passes; THE PLANT (git show
+   e41c738bf:src/assets/hero/pokey-swim.webp into a scratch copy of the tree, herobody.py there; the ratchet must fail; restore);
+   heroClipsBody.test GREEN; tsc, artcheck, knowncheck, herobody --check; catalog rows if the master catalog carries file sizes for these
+   sheets. Push, send the lead the hash, stop.
+## What this box did (no Hugging Face spend)
+- R-165.382 step 1: drawcheck ALONE on a frozen 4f0853b96 worktree (fresh container, npm install --legacy-peer-deps): PASS, 32 of 32
+  (16 scenarios x upright/sideways, 0 fail), 574 s, about 35 s a scenario. ART-SHEETS-b's run hit its 30-minute limit at 3 of 16 because it
+  shared the 4 cores with the unit suite and the swim grades (its own named deviation); alone it takes under 10 minutes. With step 0's suite
+  (3,798 pass, 0 fail on the same hash) R-165.382 (the cheer cut) is DONE.
+- The groups printed first (fam(): name less trailing letter+digits) were NOT pose families: atlas 36 frames -> 33 groups (run_a..run_j ten
+  groups, climb_a..d four, idle_a/idle_blink apart), story 43 -> 43 (every frame alone); studies fine (s1 8, s3 12, s4 7, s5 2). Lead ruled:
+  a trailing _letter, _digits, _rec, _blink (and _up/_down: look_a/up/down) is stripped, face_* one group taking the sheet's whole-body curve
+  (0c15af0c7, in sheetgrade.py AND herobody.py so the bands are measured on the same groups): atlas run(10) climb(4) idle(2) punch(5) +
+  mega kick jump fall hurt duck land guard alone; story look(3) talk(2) sneak(2) point(2) away(4) + 22 alone.
+- The lead's condition (c8d47c90e): a one-pose group's L shift at its light and dark band means and its a/b shift at its mean L are held
+  inside the min-max the sheet's pose families take; its per-frame a/b pull (--even) is off; clamped groups recorded in sheetgrade.json
+  'clamped' and named in each strip's caption.
+- THE GRADE (frozen c8d47c90e, sheets from git 4f0853b96, alone, about 12.5 min). Pooled fur dE before -> after / worst frame after:
+  rope 10.16 -> 0.05 / 1.51; swim 6.17 -> 0.08 / 1.12; vine 4.77 -> 0.01 / 0.67; climb2 2.81 -> 0.03 / 0.83; atlas 4.19 -> 0.12 / 2.45;
+  story 6.09 -> 0.49 / 2.65; studies 5.54 -> 0.27 / 2.13. CLAMPED: atlas duck, fall, guard, hurt, jump, land, mega (7 of 8 singles; land's
+  b went -0.57 -> -3.2, i.e. the clamp PUSHED it to the families' range, look at it); story alarm, cheer, crossed, impatient, resolve,
+  scared, shock, shout, sleep, slump, thumbs, tired, wipe, worried (14 of 22). Full numbers: c8d47c90e/grade-log.txt.
+## Polish check
+- atlas-strip-2x.jpg (my look at 2x, the only strip I opened before the box): smooth fur, no mottle, no blocks, the green pack and bedroll
+  untouched (masked). BUT after is visibly PALER and pinker than the plain pose on climb_b, duck, hurt and fall (climb_b the worst: washed,
+  pinkish arms and legs), and the run frames read lighter than plain; mega, kick, punch_3, idle_a, guard read as the same sloth. Not clean
+  on every pose: the lead judges; I would not ship climb and the clamped tumble poses as they are.
+- rope, swim, vine, climb2, story, studies strips: made, NOT opened by me (box); the lead judged all seven at game size (rulings above).
+- MISS (mine): the strip's 'mean e41c738bf' column is the ungraded original for atlas, story and studies; the label misled the lead's
+  atlas/story ruling. Why: strip.py labelled the column by commit, not by what the sheet at that commit is; I did not check the blobs
+  differ. Countermeasure: the strip script must label a column 'original' when its blob equals the before column's (fix in step 2).
+- Nothing shipped to src/.
+## Lessons applied
+D115 (drawcheck on frozen 4f0853b96; the grade on frozen c8d47c90e, sheets read from git 4f0853b96; edits only in a third tree), D113 (every
+run run_in_background, no foreground wait), D111 (box by date: started 5:57 PM ET, 28 minutes), D109 (no clock times to the lead), D105
+(ReadNotifications at each boundary and push), D102 (read lean), D114 (drawcheck first, alone). One heavy run at a time held: drawcheck
+ran alone, the grade ran after it.
+
+# ART-SHEETS-b (11-21): bands PER MOVE GROUP on swim (R-165.379), the band gate planted red; R-165.382 step 0 running
+## EXACT NEXT STEP
+THE LEAD'S RULINGS (this box): (1) per-group QUANTILE rejected (mottled heads); AFFINE per group is THE method unless the blurred-L
+variant reads clean - it does NOT (swim-tread5-base-2x.jpg: a soft pale patch on top of the head and a pale halo at the shoulder;
+swim-under7-base-2x.jpg: head and arm paler), so AFFINE SHIPS. (2) The gate keeps the pooled-mean bar as built; the fur-only bands are a
+RATCHET, not a bar: each sheet's bands recorded at its accepted state, fail if any band is > 1.0 dE worse (built: herobody.py --ratchet,
+src/game/heroBands.ratchet.json, heroClipsBody.test.ts). The 18 clips are recorded at their accepted state now; the 7 non-clip sheets are not
+(the test is RED until they are, as heroClipsBody already was on e41c738bf).
+Next member, on t-art-next at this REPORT's commit or later, frozen worktrees, ONE heavy run at a time, run_in_background:
+1. Step 0 (R-165.382), on a FROZEN 4f0853b96 worktree (npm install --legacy-peer-deps): tsc exit 0; the CLAUDE.md unit suite GREEN:
+   3800 tests, 3798 pass, 0 fail, 2 todo (27.8 min). drawcheck was NOT finished: the background run was stopped at its 30-minute limit
+   after 3 of 16 scenarios (ctest-mix14, 1-1, 1-3 measured; none judged). FIRST: drawcheck ALONE on a frozen 4f0853b96 worktree,
+   run_in_background with timeout 2400000 (40 min); green = R-165.382 done.
+2. ONE grade run, from a frozen worktree of this commit (cwd there; it reads the sheets from git 4f0853b96, the ORIGINALS):
+   python3 -I tools/art/hfnext/sheetgrade.py rope,swim,vine,climb2,atlas,story,studies --group --affine --from 4f0853b96
+   then copy src/assets/hero/{hero-rope,pokey-swim,hero-vine,hero-climb2,hero-atlas,hero-story,hero-studies}.webp and
+   tools/art/hfnext/sheetgrade.json back into the edit tree. FIRST print atlas/story/studies groups (fam(): the frame name less its trailing
+   letter+digits) and check they are pose families. Strips per sheet (scratchpad strip.py: plain | before | mean | after, game size
+   89.1/200 and 2x; atlas with the bedroll, story/studies with a back view; the strip script is NOT committed: rebuild it from this
+   layout); the lead judges story, studies and atlas.
+3. python3 -I tools/art/hfnext/herobody.py --write; then --ratchet <the sheets the lead accepted>; heroBody.known.json: climb2's mean row off
+   if it passes the mean bar. PLANT (the lead): re-apply the e41c738bf mean grade to swim (git show e41c738bf:src/assets/hero/pokey-swim.webp
+   into a scratch copy of the tree, herobody.py there) and see the ratchet test fail; then restore.
+4. Gates: herobody.py --check, tsc (heroClipsBody.test.ts changed in this box; NOT tsc-checked here), artcheck, knowncheck, the unit suite
+   on a frozen tree, drawcheck. Catalog rows: none (no byte/hash column).
+## Fur-only band table (worst light/dark per group, dE vs the plain pose's fur-only bands; before = 4f0853b96, mean = e41c738bf)
+Non-clip: rope 13.35 -> 5.50 | swim 9.17 -> 7.83 | vine 8.08 -> 3.94 | climb2 5.03 -> 3.52 | story 11.14, studies 7.78, atlas 11.20 (ungraded).
+Swim affine per group (light/dark): first 4.94/3.72, surf 4.21/7.56, tread 6.77/5.60, under 3.49/6.08 (max 7.56) vs mean first 3.74/3.91,
+surf 4.11/7.84, tread 7.23/4.27, under 5.30/7.33 (max 7.84): on FUR ONLY affine is NOT measurably closer than the mean method (its gain is
+in the light fur and face the cut drops). Quantile per group: 1.09-3.08 (closed, but mottled).
+Graded clips (current; pre-R-165.377 originals not measured): idle-yawn 3.62, look-around 4.53, hurt 5.21, belly-scratch 1.12, wave 2.92,
+cheer 3.08, push 5.35, move-run 1.67, move-jab 0.68, move-cross 0.23, move-hook 2.28, move-kick 3.23, move-kick2 1.82, move-mega 2.59,
+teeter 2.35, step-back 2.07, move-climb 5.80, move-walk 2.02: 13 of 18 over 2.0 (my message to the lead said 14: wrong, 13 is right).
+Files: reference/art/hfnext/hero/sheets/bands-fur-4f0853b96.txt, bands-fur-e41c738bf.txt, bands-fur-swim-variants.txt.
+## What this box did (no Hugging Face spend)
+- tools/art/hfnext/sheetgrade.py --group: the quantile map, the a/b-per-L curve and the 5-pass mean close are each computed on the MOVE
+  GROUP's own fur (swim surf/tread/under/first; rope/vine/climb2 one group; atlas/story/studies the frame name less its trailing
+  letter+digits). --affine (with --group): the group's L map is a straight line through its light-band and dark-band means onto the plain
+  pose's, slope held to 0.6-1.8. Both ran from a frozen e41c738bf worktree reading the sheets from git 4f0853b96, written to scratch only
+  (no sheet in src/ changed by this box).
+- tools/art/hfnext/herobody.py: per sheet and per move group, the brown fur (L < 72, the lead's fur-only ruling) split at its own median L, light half vs the plain pose's light
+  half, dark vs dark (dE): 'bands' and 'band_max' in heroBody.json, bar.band 2.0 (the lead sets it). heroClipsBody.test.ts: the band
+  gate test (each band <= bar, or a known row's band_max no worse; a band-only known row does not excuse the mean test). heroBody.json
+  NOT rewritten (red on t-art-next, as before this box, until the ruling).
+- PLANTED RED (still red fur-only: swim 7.83): herobody.py (all-fur bands, first version) on e41c738bf's sheets (reference/art/hfnext/hero/sheets/bands-e41c738bf.txt): pokey-swim band max 5.54
+  (mean-graded; surf 5.55/5.43) FAILS; also rope 3.91, vine 3.02, climb2 2.66, and story 18.12, studies 9.76, atlas 13.86 (ungraded
+  and pose-heavy). NEW: five graded CLIPS and climb2 fail a 2.0 band bar too (move-climb 4.20, hurt 3.08, look-around 2.83, idle-yawn 2.31,
+  move-mega 2.03; climb2 2.66) - the mean method of R-165.377/378 squashed them the same way.
+## Swim, per group (light / dark dE vs the plain pose's bands; pooled)
+| group | before 4f0853b96 | mean (e41c738bf) | --group quantile | --group --affine |
+|---|---|---|---|---|
+| first | 7.13 / 9.36 | 2.41 / 2.38 | 2.01 / 2.00 | 2.79 / 2.50 |
+| surf | 10.50 / 8.36 | 5.55 / 5.43 | 2.59 / 2.60 | 5.56 / 5.53 |
+| tread | 5.98 / 7.38 | 3.78 / 3.82 | 2.86 / 2.87 | 5.07 / 5.10 |
+| under | 7.15 / 5.74 | 4.72 / 4.84 | 1.50 / 1.48 | 4.43 / 4.36 |
+Pooled after: quantile 0.02, affine 0.08; worst frame quantile 1.79 (surf0), affine 1.12.
+VERDICT (my eyes at 2x, swim-tread2-quantile-2x.jpg, swim-under7-quantile-2x.jpg): per-group QUANTILE still MOTTLES tread2's and
+under7's heads (blocky pale patches: the map's steep stretch turns small L steps and q86 blocks into blotches) - NOT shippable.
+AFFINE (swim-tread2-affine-2x.jpg): smooth, no mottle, same sloth, head a touch lighter than the mean method, but the slope hits 1.8 and
+the bands stay 4.4-5.6 off: swim's paint has a much narrower tonal range than the plain pose, and stretching it far enough to meet 2.0
+makes mottle. So no global per-group tone map meets a 2.0 band bar on swim cleanly; the gap is partly pose (see NEXT STEP 2b).
+## Polish check
+- swim base-layer (blurred-L) quantile per group: no blocks, but soft pale smudges (head top, shoulder halo; swim-tread5-base-2x.jpg, swim-under7-base-2x.jpg): FAILS. Bands per group (all fur) 3.2-5.3. Not shipped.
+- swim quantile per group: FAILS (mottled heads, tread2/under7 at 2x). Not shipped.
+- swim affine per group: smooth, no artefacts, warm same-sloth read (swim-groups-affine.jpg 2x row); bands not at 2.0. Not shipped (ruling).
+- Nothing else shipped; no src/ asset changed.
+## Lessons applied
+D115 (every grade and measure read a frozen worktree: e41c738bf for tools/tables, sheets from git 4f0853b96; step 0 on its own frozen
+4f0853b96 worktree), D113 (all runs run_in_background, no foreground wait), D111 (box by date), D109 (no clock times to the lead),
+D105 (ReadNotifications at each boundary), D114 (step 0 first). Deviation, named: the swim grades (one Python process each, nice 19)
+ran while the step-0 suite ran; the suite and drawcheck themselves were never run together.
+
+# ART-SHEETS (11-21): Pokey one sloth on every NON-clip sheet too (R-165.379); R-165.382's last gates (step 0)
+## EXACT NEXT STEP
+The lead's ruling (this box): if sheetgrade.py --bands reads right on swim's head beside the plain pose, --bands becomes THE method for
+every non-clip sheet (rope re-run too); the gate then checks the LIGHT and DARK fur bands against the plain pose, not only the pooled mean.
+Next member, on t-art-next at this REPORT's commit or later, ONE heavy run at a time, each with run_in_background:
+1. --bands as written is NOT the method (this member's verdict on reference/art/hfnext/hero/sheets/swim-variants.jpg, sent to the lead):
+   it fixes surf0/surf1 (head orange-tan like the plain pose; bands 2.14 / 2.12 dE) but over-lightens under3 and tread2 (pale, pinkish,
+   MOTTLED head; worst frame 5.32): one quantile map for the whole sheet is fooled by moves with different shading. Next: --bands PER MOVE
+   GROUP (swim: surf / tread / under / first; story, studies, atlas: per frame or per pose family; rope, vine, climb2: per sheet), i.e. the
+   quantile map computed on each group's own fur, then the same a/b-per-L curve, per-frame a/b only. Add a --group option to
+   tools/art/hfnext/sheetgrade.py (the --bands code is there: QS/qx/qd), run swim --group --out <scratch> first, look at under3 and tread2
+   at 2x for mottling, send the lead the strip (tools: scratchpad swim3.py layout is: plain | before | mean | half L | bands per frame).
+   If the lead accepts: run it on rope,swim,vine,climb2,atlas,story,studies (reads git 4f0853b96; writes q86 + tools/art/hfnext/sheetgrade.json,
+   which this box never wrote: its batch was stopped before the end).
+2. Before/after strips per sheet (scratchpad ba.py's layout: plain, before, after, 6 frames, game size and 2x), atlas with the bedroll in view, story and studies
+   with a back view; the lead judges each.
+3. The band gate: herobody.py measures, per sheet, the fur split at the sheet's own median L, light half vs the plain pose's light half and
+   dark vs dark (dE), written to heroBody.json; heroClipsBody.test.ts holds each band to a bar (the lead sets it; 2.0 is the obvious one)
+   for the non-clip sheets (and the clips, with a known list for any that fail). PLANT RED: run it on the current swim (mean method, light
+   and dark 4.04) and see it fail; then green on the --bands sheets. herobody.py already lists the six non-clip sheets (d8025a4f8) and
+   heroClipsBody.test.ts already includes them (red until heroBody.json is rewritten: python3 -I tools/art/hfnext/herobody.py --write).
+   heroBody.known.json: take the hero-climb2 row OFF (it passes now); add a row only for a sheet the lead accepts as left.
+4. Gates: herobody.py --check, artcheck, knowncheck, the full unit suite (heroClipsBody included), drawcheck; catalog rows do not change
+   (the cast inventory has no byte or hash column; checked).
+## 0. Step 0 (D114): the base gates on 4f0853b96
+Base suite on 4f0853b96 (npm ci fails on a peer conflict; installed as CI does, npm install --legacy-peer-deps): STILL RUNNING at hand-over: 1846 passed, 0 failed so far (top-level count; the base had 3330 passed 0 failed per ART-CHEER). If this container is gone, re-run it on a clean 4f0853b96 worktree.
+heroClipsBody.test.ts on a CLEAN base worktree: 5 pass, 0 fail (the main suite run shares this working tree, where that test and climb2
+changed mid-run, so its heroClipsBody verdict does not count). drawcheck: NOT RUN in this box (the suite was still running; one heavy run
+at a time) - it is the next member's first heavy run. R-165.382 is therefore NOT closed by this box.
+## 1. Measure (R-165.379 step 1): every non-clip sheet is off the plain pose by more than the clips' bar
+tools/art/hfnext/sheetbody.py: herobody.py's fur mask (alpha > 200, not the outline L < 25, not the eye whites) PLUS a frame mask for props
+(water blue b < -2, leaf green a < -4 never count as fur), frames taken from the game's own tables (ROPE_FRAMES, SWIM_MOVES, VINE_FRAMES,
+STORY_FRAMES, STUDY_FRAMES, HERO_FRAMES, hero-climb2.json). It reproduces herobody.py's climb2 exactly (2.81 / 3.53), so the mask adds
+nothing where there is no prop. Base numbers (reference/art/hfnext/hero/sheets/sheetbody-base.txt), pooled / worst frame dE vs the plain
+pose, bar 1.0 / 2.0: rope 10.16 / 11.00, swim 6.17 / 9.51, studies 5.54 / 8.55, story 5.22 / 9.79, vine 4.77 / 6.53, atlas 3.70 / 9.41
+(body frames; the face_* close-ups are faces and are left out), climb2 2.81 / 3.53. ALL SEVEN are off.
+Strip (game size, plain left of each sheet's worst body frame): reference/art/hfnext/hero/sheets/sheets-vs-plain-game-size.jpg. The lead
+judged it at 2x and agreed: rope a greyer washed-out sloth, swim a darker red-brown one, atlas brighter and more orange, vine and climb2
+mildly darker; story's back view and studies' tumble are partly pose (no cream belly in view), pooled 5+ still says darker.
+## 2. The transfer (R-165.379 step 2)
+tools/art/hfnext/sheetgrade.py: regrade.py --ship --even's exact passes (L-binned a/b curve + L shift, 5 global passes closing the fur
+mean through the q86 WebP encode, 10 smoothed per-frame passes, 3 exact per-frame passes) on each sheet's frame rects; outline and eye
+whites weight 0 as in regrade.py, and props weight 0 (the same colour mask). Pixels outside every frame rect untouched; the atlas's
+overlapping idle_a / guard rects each graded from the original px (nothing twice); atlas face_* take the sheet curve but no per-frame pull.
+Transfer recorded in tools/art/hfnext/sheetgrade.json. No Hugging Face spend.
+Shipped on t-art-next (mean method, as regrade.py; strips judged by the lead): rope 10.16 -> 0.03 pooled, worst 11.0 -> 0.16 (ACCEPTED;
+its arm wraps moved 6.5-7.3 dE TOWARD the plain cream, 8.34 -> 2.17 dE off it: kept in, ACCEPTED); swim 6.17 -> 0.01, worst 9.51 -> 0.70;
+vine 4.77 -> 0.10; climb2 2.81 -> 0.04 (its heroBody.known.json row must come off). Atlas, story, studies: NOT graded (stopped).
+BUT the band check found the mean method squashes the tonal range (light fur too dark, dark fur too light): bands off the plain pose
+(light / dark dE) rope 3.88 / 3.91, swim 4.04 / 4.04, vine 2.88 / 3.02, climb2 2.66 / 2.37 (before: rope 9.99 / 13.10, swim 7.26 / 7.48,
+vine 5.21 / 7.45, climb2 4.10 / 3.85). Swim's head reads flat and paler than the plain pose's (the lead saw it). The lead ruled one method
+for all, re-run included, once a method reads right. Variants on swim: --lhalf light 4.69 / dark 2.53, worst frame 6.13 (worse light fur);
+--bands 2.14 / 2.12 but mottled pale under3/tread2. Strips: reference/art/hfnext/hero/sheets/ (sheets-vs-plain-game-size, rope-, swim-,
+vine-, climb2-before-after, swim-variants). Tools: sheetbody.py (measure), sheetgrade.py (transfer, --lhalf, --bands, --out), sheetbands.py
+(band check).
+## Polish check
+- Rope: same warm brown sloth as the plain pose, no blotch/banding/tint edge at the grip, outline and eyes intact (rope-before-after.jpg, 2x row). Bands 3.9 off: a re-run by the final method will tighten it.
+- Swim: dark red-brown gone, no artefacts (swim-before-after.jpg), but the head reads flat/pale: NOT polished; the next method fixes it (swim-variants.jpg).
+- Vine, climb2: warm, same sloth, no artefacts (vine-, climb2-before-after.jpg); bands 2.4-3.0 off: re-run by the final method.
+- Atlas, story, studies: not done. Gate (band + heroBody.json rewrite): not done; heroClipsBody.test.ts is RED on t-art-next until it is.
+## Learned
+- herobody.py's measure carries to any sheet once the frames come from the game's own frame tables; a colour-only prop mask is enough for
+  water and leaves but NOT for a prop painted in fur colours (the atlas bedroll): that needs a per-frame spatial mask.
+- A pose with no cream belly in view (back views, tumbles) reads darker on the fur mean; the exact per-frame pass then lifts it to the
+  plain mean. Proposed rule: per-frame closure only for frames that show the belly; back views take the sheet curve only (lead to rule).
+## Lessons applied
+D111 (box by date, hand over with the exact next step), D113 (every long run with run_in_background, no foreground wait), D114 (base suite
+first), D109 (no clock times to the lead), D102 (lean read), D96/D105/D107 (judge the real strip at game size, not the number alone).
+Miss, owned: the grade ran while the base suite was still running (two heavy runs at once, against "ONE heavy run at a time").
+
 # ART-CHEER (11-21): Pokey's cheer starts clean, no see-through double sloth (R-165.382): cheer, swim and ouch strips ACCEPTED by the lead; DONE when the queued gates are green
 ## EXACT NEXT STEP
 The lead ACCEPTED all three strips (cheer, swim, ouch; no bridge) and step-back/teeter by test. What remains is gates only (box ran out at 3330 base tests passed, 0 failed, base suite still running): read the queued gates in this member's container (scratchpad chain.sh, one heavy run at a time):

@@ -1,0 +1,10 @@
+cut L<72: plain brown share 0.72
+  first  | before 7.88/9.17 share 0.81 | mean 3.74/3.91 share 0.80 | quant 1.09/2.31 share 0.72 | affine 4.94/3.72 share 0.82
+  surf   | before 6.44/7.38 share 0.83 | mean 4.11/7.84 share 0.83 | quant 2.20/2.53 share 0.72 | affine 4.21/7.56 share 0.77
+  tread  | before 6.60/7.25 share 0.84 | mean 7.23/4.27 share 0.83 | quant 1.36/3.08 share 0.74 | affine 6.77/5.60 share 0.58
+  under  | before 5.40/5.65 share 0.83 | mean 5.30/7.33 share 0.83 | quant 1.40/1.92 share 0.72 | affine 3.49/6.08 share 0.69
+cut L<78: plain brown share 0.74
+  first  | before 7.66/9.21 share 0.83 | mean 3.00/3.83 share 0.82 | quant 0.73/2.33 share 0.75 | affine 4.33/3.69 share 0.84
+  surf   | before 6.00/7.43 share 0.86 | mean 3.75/7.79 share 0.87 | quant 1.29/2.55 share 0.74 | affine 5.99/7.98 share 0.90
+  tread  | before 5.77/7.30 share 0.85 | mean 6.39/4.26 share 0.85 | quant 0.72/3.10 share 0.74 | affine 10.33/6.21 share 0.92
+  under  | before 5.10/5.70 share 0.85 | mean 5.52/7.40 share 0.88 | quant 0.69/1.84 share 0.75 | affine 6.64/6.93 share 0.89
