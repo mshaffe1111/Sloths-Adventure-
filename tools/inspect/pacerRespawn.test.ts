@@ -38,8 +38,8 @@ const EASE_PEAK = 0.5;
 /** the ease's breaches of one run: a frame the boat moved more than (1 + EASE_PEAK) of its step, a verdict that dropped the excess owed */
 const easeBad: string[] = [];
 let eased = 0;
-/** the boat's re-placements seen (frames it moved over the bound), and those with the view live (the iris not shut) */
-let replaced = 0;
+/** the boat's re-placements seen (frames it moved over the bound), those on a Game Over continue, and those with the view live */
+let replaced = 0, continued = 0;
 const irisBad: string[] = [];
 
 /** the iris the engine draws after this frame (engine.ts drawIris's k: 1 is shut, the whole view black; 0 is open) */
@@ -69,11 +69,17 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
       const step = Math.abs(P.x1 - P.x0) / P.seconds / 30;
       if ((piece.owed ?? 0) > 0) eased++;
       // (any move over the bound is a re-placement, and it must fall on a frame the iris shuts: the respawn's, never with the view live)
+      //  A Game Over continue is judged as the real screen draws it: a player taps Continue on the Game Over card, which shows only once
+      //  the beat is over (engine.ts stepDown -> onDefeat), so the view is behind the card and then the respawn's iris is shut (k = 1).
+      //  The bots continue the frame after the last life is lost (firsttimer.ts: isGameOver is set at the beat's START), mid-beat, where
+      //  drawIris would read the beat's k; that is the harness's early tap, not a frame a player sees (named for the lead, ENG-27u)
+      const cont = lives !== undefined && e.lives > lives;
       if (x !== null && bx !== null && Math.abs(x - bx) > (1 + EASE_PEAK) * step + 1e-6) {
-        const k = irisK(e);
+        const k = cont ? e.irisOpen / IRIS_OPEN_SECS : irisK(e);
         if (wasDown && !e.down) replaced++;
-        if (k < 1 - 1e-9 || !(wasDown && !e.down))
-          (k < 1 - 1e-9 ? irisBad : easeBad).push(`${bot} ${setting} ${seed} frame ${frame}: the boat moved ${Math.abs(x - bx).toFixed(2)} px in a frame (its step ${step.toFixed(2)}, bound ${((1 + EASE_PEAK) * step).toFixed(2)}), the iris ${k.toFixed(3)} (1 is shut)${wasDown && !e.down ? ' on the respawn' : ''}`);
+        if (cont) continued++;
+        if (k < 1 - 1e-9 || !((wasDown && !e.down) || cont))
+          (k < 1 - 1e-9 ? irisBad : easeBad).push(`${bot} ${setting} ${seed} frame ${frame}: the boat moved ${Math.abs(x - bx).toFixed(2)} px in a frame (its step ${step.toFixed(2)}, bound ${((1 + EASE_PEAK) * step).toFixed(2)}), the iris ${k.toFixed(3)} (1 is shut)${wasDown && !e.down ? ' on the respawn' : cont ? ' on a Game Over continue' : ''}`);
       }
       if (piece.verdict && !judged) {
         judged = true;
@@ -114,6 +120,8 @@ for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const) 
   test(`2-7 ${name}: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)`, () => {
     const bad: string[] = [];
     let n = 0;
+    // (the run-wide tallies are this test's own: home's do not carry into post)
+    easeBad.length = 0; irisBad.length = 0; eased = 0; replaced = 0; continued = 0;
     const rows: Array<['middle' | 'expert' | 'ride', 'normal' | 'easy', number]> = [];
     for (const bot of ['middle', 'expert', 'ride'] as const)
       for (const setting of ['normal', 'easy'] as const) {
@@ -131,8 +139,8 @@ for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const) 
     assert.ok(n > 0, `${name}: no race-leg fall in the grid (the test judges nothing)`);
     assert.deepEqual(bad, [], `${name}: ${bad.length} of ${n} race-leg falls paid:\n${bad.join('\n')}`);
     assert.deepEqual(easeBad, [], `${name}: the ease broke ${easeBad.length} times:\n${easeBad.join('\n')}`);
-    assert.ok(replaced > 0, `${name}: no re-placement of the boat on the grid (the iris check judges nothing)`);
+    assert.ok(replaced + continued > 0, `${name}: no re-placement of the boat on the grid (the iris check judges nothing)`);
     assert.deepEqual(irisBad, [], `${name}: ${irisBad.length} re-placements of the boat with the view live:\n${irisBad.join('\n')}`);
-    console.log(`# ${name}: ${n} race-leg falls judged; ${eased} frames of ease on the grid; ${replaced} re-placements of the boat, every one inside the iris's shut frame`);
+    console.log(`# ${name}: ${n} race-leg falls judged; ${eased} frames of ease on the grid; ${replaced} re-placements of the boat on a respawn and ${continued} on a Game Over continue, every one inside the iris's shut frame`);
   });
 }
