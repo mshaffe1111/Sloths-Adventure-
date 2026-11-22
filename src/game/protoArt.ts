@@ -55,6 +55,7 @@ let stageWorld = 1;
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { drawDrapedPair } from './pairArt.ts';
 import { drawFieldVine } from './vineFieldArt.ts';
+import { cachedLinearGradient } from './gradCache.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1148,15 +1149,16 @@ function drawWallChunks(
   const col = `${Math.round(deep[0] * (1 - sa) + sr * sa)},${Math.round(deep[1] * (1 - sa) + sg * sa)},${Math.round(deep[2] * (1 - sa) + sb * sa)}`;
   const y0 = view.y0 + (view.y1 - view.y0) * 0.5;
   if (bottom > y0) {
-    const gr = ctx.createLinearGradient(0, y0, 0, view.y1);
-    gr.addColorStop(0, `rgba(${col},0)`);
-    gr.addColorStop(1, `rgba(${col},${DEPTH_DARK})`);
-    ctx.fillStyle = gr;
+    // (its span is the view's lower half: built once per view height at the origin and drawn translated to the view, gradCache.ts;
+    // the context is saved above and restored below, so the translation ends with it)
+    const h = view.y1 - y0;
+    ctx.translate(0, y0);
+    ctx.fillStyle = cachedLinearGradient(ctx, 0, 0, 0, h, [[0, `rgba(${col},0)`], [1, `rgba(${col},${DEPTH_DARK})`]]);
     const t = Math.max(top, y0);
-    ctx.fillRect(a, t, b - a, Math.min(bottom, view.y1) - t);
+    ctx.fillRect(a, t - y0, b - a, Math.min(bottom, view.y1) - t);
     if (bottom > view.y1) {
       ctx.fillStyle = `rgba(${col},${DEPTH_DARK})`;
-      ctx.fillRect(a, view.y1, b - a, bottom - view.y1);
+      ctx.fillRect(a, h, b - a, bottom - view.y1);
     }
   }
   ctx.restore();

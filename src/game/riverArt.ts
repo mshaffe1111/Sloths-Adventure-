@@ -12,6 +12,7 @@ import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
 import { drawSoil } from './groundPaint.ts';
 import { drawKitArt } from './puzzleArt.ts';
+import { cachedLinearGradient } from './gradCache.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -216,10 +217,9 @@ export function drawRiverWater(
       ctx.clip();
       const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
       ctx.restore();
-      const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
-      g.addColorStop(0, soil ? SAFE_SHADE[0] : SAFE_EARTH[0]);
-      g.addColorStop(1, soil ? SAFE_SHADE[1] : SAFE_EARTH[1]);
-      ctx.fillStyle = g;
+      // (the shade's span is the bed's, in world space, and its colours fixed: made once and reused, gradCache.ts)
+      const c = soil ? SAFE_SHADE : SAFE_EARTH;
+      ctx.fillStyle = cachedLinearGradient(ctx, 0, bed, 0, bed + 160, [[0, c[0]], [1, c[1]]]);
       ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
     }
     const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
