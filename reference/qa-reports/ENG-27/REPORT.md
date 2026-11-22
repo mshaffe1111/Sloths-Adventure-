@@ -26,7 +26,10 @@ the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
    if it finished in my box). If the cause is river timing on the second try (a log in reach that was not the first time), the lead rules
    between (a) a strict hold: back at the fall's x his margin is clamped to the one at the fall, the boat EASED over about a second, never
    snapped on screen; (b) the mechanics invariant (no stretch credited twice) plus a floor that every fall costs at least the beat, the
-   residual named. Each names its invariant and test (D112, D121). The candidate stays on wip. If so, the ruling's formula cannot keep the
+   residual named. Each names its invariant and test (D112, D121). The candidate stays on wip.
+   **The per-bot grid on 7501bf2fb (MEASURED, s/grid-7501bf2fb.txt, every fall listed):** middle 38 falls, 5 pay, mean -1.12 s, worst gain
+   +0.84, worst cost -6.10; expert 10, 1 pay, mean -0.98, worst gain +0.73, worst cost -1.89; ride-only 41, 1 pay, mean -1.54, worst gain
+   +0.50, worst cost -5.82 (89 falls, 7 pay: the test's seven). Still to bring: the trace of a second paying fall (what slowed the first crossing). If so, the ruling's formula cannot keep the
    invariant by itself; the lead rules the form (D112: name the invariant before any cap). Then the suite on the fix (pacerLay was RED 9/19
    on the base and on D': name any change), and send the lead the rows (rows first).
 1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
