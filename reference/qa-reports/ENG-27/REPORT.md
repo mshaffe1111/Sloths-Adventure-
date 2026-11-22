@@ -1,12 +1,26 @@
-# ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D' and two plants on t-eng-27-wip-27s e8c4d0153 (D117), NOT on t-eng-27)
+# ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D', two plants and the fall-pays fix candidate on t-eng-27-wip-27s 7501bf2fb (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27t, read only this section, D90)
-0. **The suite on the base 16698b8a1 (= 74a97ad44's code)** ran in MY container (scratchpad suite.sh, frozen worktree): tsc PASS; unit shard
-   at 1247 ok / 0 not ok and still running when I handed over; it dies with my container: RE-RUN it (D114/D118), and the same suite on
-   wip-27s e8c4d0153 beside it (D' + both plants; tsc PASS on it; the fall-pays plant is RED there BY DESIGN until the lead's race ruling).
-1. **Waiting on the lead (sent, rows below):** the honest middle (A, B, C or D'), then the race (the fall-pays cause in (4)). No race retune,
-   no boat or lay change, nothing on t-eng-27 but this REPORT before that.
-2. Not run (box): pacerLay and pacerRespawn (its existing invariant) per bot; the open hopJudged row on D' (q -2 safe, Easy 2 x 15087) and
-   D's two (Normal 2 x 15982): trace judge()'s noisy flight against the real one (the Normal 2 #66 kind).
+**The lead's rulings (received in my box, for this step):** (1) fall-pays is an engine bug: on a respawn his margin is the one he had when he
+FIRST passed the respawn point, less the time from the fall to his stand (the boat waits for no one); invariant (D112): back at a race-leg
+fall's x his margin is never better than at the fall; pacerRespawn's at-the-stand test deleted (new replaces old); engine change on wip, rows
+first. (2) The honest middle is NOT D': build **E**: the decision picks the SMALLEST hop from the tier's calibrated kinds and nominal holds
+whose AIMED flight lands with RACE_MARGIN (firsttimer.ts:708, 50 px) on the far side; no noise, no thumbAt; he presses when that aimed hop
+lands; the press flies the drawn hold spread and thumb noise; falls come only from the thumb. (3) D's judge must fly exactly what the engine
+flies: trace and fix the q -2 rows that came down safe (D' Easy 2 x 15087 #14; D Normal 2 x 15982 #20, #19) in the same change. (4) Table E
+beside A and D' on the 7 rows (finish, race, lives, falls per press), pacerLay and pacerRespawn; the lead then rules the race (boat pace or
+the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
+0. **(1) is BUILT on t-eng-27-wip-27s (candidate, NOT on t-eng-27):** db4f97f81 (pieces/pacerPiece.ts: `first[]`, his margin the first time
+   he reached each 16 px of the leg; respawn() sets the clock from first[k] - DOWN_SECS and the boat runs on, no hold; DOWN_SECS moved from
+   engine.ts to physics.ts so the piece can count the beat the clock holds through), 7501bf2fb (tools/inspect/pacerRespawn.test.ts: the old
+   at-the-stand test replaced by the end-to-end invariant over its whole grid: home and post, seeds 1-6, both settings, middle, expert,
+   ride-only). **Checked:** tsc PASS on db4f97f81; the table-row plant GREEN on db4f97f81 (was RED on e8c4d0153); home N1 falls now cost
+   -0.34..-2.35 s (paid +0.56..+0.59). **The full-grid run on 7501bf2fb was running when I handed over: RE-RUN it** (frozen worktree;
+   `node_modules/.bin/tsx --test tools/inspect/pacerRespawn.test.ts`), then the suite on 7501bf2fb (pacerLay was RED 9/19 on the base and
+   on D' before the fix: name any change), and send the lead the rows (rows first).
+1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
+   with 50 px is pressed instead), and (3) the judge fix with hopJudged GREEN 4/4; then (4).
+2. **The base suite 16698b8a1** ran in my container: tsc PASS; unit 1846 ok, 9 not ok when I handed over, all nine pacerLay's (the same 9 ENG-27p
+   named on B); the rest dies with my container: RE-RUN (D114/D118).
 ## Done-items
 - **(1) The lead's ruling built (t-eng-27-wip-27s, from D e75664cde):** one exported `WaitAim` (tools/inspect/firsttimer.ts, above gateLands)
   holds each gate's aim: `at(dir, t, draw)` draws (drawHop: the tier's kind and hold) ONCE when a wait begins, returns it unchanged until
@@ -52,7 +66,7 @@
 - D' answers the foresight question but loses every race and is the slowest bot; with hopJudged's q -2 rows open on D and D', the judge
   that records the noisy flight is not yet trustworthy enough to rule D' on land rate alone.
 ## Unresolved
-- pacerLay and pacerRespawn per bot; the q -2 judge flight rows; the suite past unit on the base and the suite on e8c4d0153: NOT done.
+- pacerLay on D' e8c4d0153: RED 9/19, the same nine as B; pacerRespawn's old invariant GREEN on D' (now replaced). Per bot A, C: not run. The q -2 judge flight rows; the suite past unit on the base and the suite on e8c4d0153: NOT done.
 - I told the lead C's post N5 row was lost; it was not (I read the file before the run finished); corrected in a second message.
 - The disk allowance filled once (2.7 GB a worktree); I removed finished worktrees; no run's result was lost to it.
 - LESSONS read: D107, D109, D111-D120 (headline and countermeasure); D96, D102 not read in full (box). Applied: D111, D113, D114/D118,
