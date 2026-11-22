@@ -1,7 +1,8 @@
-// ENG-WALL-d: the descent's frame 0 vs its settled re-render, upright, DSF 1: the two shots side by side and where they differ (rows).
+// ENG-WALL-d: the descent's frame 0 vs its settled re-render, upright or sideways (3rd arg), DSF 1: the two shots side by side and where they differ (rows).
 const { chromium } = await import('/opt/node-tools/node_modules/playwright/index.mjs');
-const [port, out] = process.argv.slice(2);
-const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1 })).newPage();
+const [port, out, orient = 'upright'] = process.argv.slice(2);
+const [W, H] = orient === 'upright' ? [412, 915] : [915, 412];
+const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 })).newPage();
 await p.goto(`http://127.0.0.1:${port}/?lessons=off`); await p.waitForTimeout(3000);
 await p.evaluate(() => window.__play('2-97', 1)); await p.waitForTimeout(6000);
 await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
@@ -22,6 +23,6 @@ const r = await p.evaluate(() => {
   return { a, s, rows, cam: [Math.round(cam.x), Math.round(cam.y)], w: main.width, h: main.height };
 });
 const fs = await import('node:fs');
-fs.writeFileSync(`${out}/f0.png`, Buffer.from(r.a.split(',')[1], 'base64')); fs.writeFileSync(`${out}/settled.png`, Buffer.from(r.s.split(',')[1], 'base64'));
+fs.writeFileSync(`${out}/f0-${orient}.png`, Buffer.from(r.a.split(',')[1], 'base64')); fs.writeFileSync(`${out}/settled-${orient}.png`, Buffer.from(r.s.split(',')[1], 'base64'));
 console.log('cam', r.cam, 'canvas', r.w, r.h, 'diff by 40-px row band:', JSON.stringify(r.rows));
 await b.close();

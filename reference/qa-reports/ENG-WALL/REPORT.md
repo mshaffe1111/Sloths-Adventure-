@@ -7,7 +7,7 @@ in front of the left column, the soil 0.0-0.2); the mask must leave out cells wh
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
 MY MISS: I started the suite (about 35 min) 23 minutes before the box's end, and drawcheck after the lead's "no long run you can't
 finish" message, sure of about 6 minutes; under the suite's load it ran at about a stage a minute (3 of 19 stages done at the hand-over).
-At hand-over: shards 414 / 387 / 444 tests passed, 0 failed so far (still running); drawcheck 10 of 19 stages, no breach printed so
+At hand-over: shards 414 / 387 / 560 tests passed, 0 failed so far (still running); drawcheck 9 of 19 stages, no breach printed so
 far. Neither is a verdict. On the frozen head afdd5060c also: tsc 0; generalitycheck PASS; knowncheck PASS; artcheck PASS; roadmapcheck
 could not check (exit 2: "shallow clone, proofs cannot be checked"): NOT a pass, needs a full-depth clone.
 
@@ -36,7 +36,9 @@ could not check (exit 2: "shallow clone, proofs cannot be checked"): NOT a pass,
   sideways; descent frames 1-39 at most 0.03 upright, 0.40 sideways** (were 10.49 / 20.14). **Descent frame 0 RED: 2.62 upright, 9.33
   sideways**: the probe's own teleport from the previous case (cam 14663 -> 18594); its other layers differ too (5.11 / 3.17). Most
   d/zoom0.mjs: sideways that frame's zoom is 0.7316, the end's 0.763, but re-rendering at the frame's own zoom changes nothing (9.31):
-  the zoom is REFUTED; sideways unnamed. Upright (zoom 0.9364 throughout) it is not the re-render's Pokey at the descent's end (the
+  the zoom is REFUTED. frame0.mjs sideways (cam 17835,452, NOT the flip probe's 998: no lead-in cases) shows the soil 0.0-0.5 and the
+  difference in rows 0-200 only (plants, the pit's water, the pickups; d/descent-frame0-top-vs-settled-bottom-sideways.jpg): the
+  flip probe's own frame 0 is not yet re-shot. Upright (zoom 0.9364 throughout) it is not the re-render's Pokey at the descent's end (the
   probe now leaves those cells out too: the same 12139 ground cells, 2.74; d/after-C2-upright-v2.txt). LOCATED (d/frame0.mjs, the still
   d/descent-frame0-left-vs-settled-right-upright.jpg, DSF 1): by 40-px row band the frame differs only in rows 280-600 (3.6-15.2 luma),
   the reeds and plants in front of the left rock column; the soil under the grass line is 0.0-0.2. The mask counts that band as ground
