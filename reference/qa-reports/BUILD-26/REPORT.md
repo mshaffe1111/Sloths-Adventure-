@@ -14,7 +14,7 @@
 State at handover: 2-6 alone is GREEN on f78a3a66d (Step 4). The base suite on a07ed1bd7 was still running in the background (tsc
 green; the unit step running, one long file), logs scratchpad suite-base/ (this container only: a fresh member re-runs the base drawcheck
 row it needs from the CI run of a07ed1bd7 or its own). NOT run on the candidate: the full drawcheck, the suite, lockall. Waiting on the
-lead's OK of the foot stills (sent at 5452d5db9), per the ruling's order: stills first, then the full gates. Tools used (to copy into a
+lead's OK of the foot stills (sent at 5452d5db9), per the ruling's order: stills first, then the full gates. Tools used (in BUILD-26/eng26r/*.txt; to copy into a
 fresh container): suite.sh, dc26.sh (2-6 alone through run.mjs + drawcheck's own judge), stills.mjs (run.mjs with deviceScaleFactor 2 and
 a still per spot), cmpshift.py: their logic is described in Step 1 and the Polish check.
 

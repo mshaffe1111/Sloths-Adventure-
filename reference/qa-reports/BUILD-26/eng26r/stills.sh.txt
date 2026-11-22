@@ -1,0 +1,7 @@
+#!/bin/bash
+# usage: stills.sh <worktree> <outdir> <port-base>: 2x stills of 2-6 at drawcheck's 4 spots, upright then sideways
+W="$1"; O="$2"; P="$3"; mkdir -p "$O"; cd "$W" || exit 9
+S=$(dirname "$0")
+STILLS_HERE="$W/tools/perf" PERF_SPOTS=4 PERF_TIME_FRAMES=0 node "$S/stills.mjs" port "$W" "$P" "$O" 2-6 port > "$O/port.log" 2>&1
+STILLS_HERE="$W/tools/perf" PERF_SPOTS=4 PERF_TIME_FRAMES=0 node "$S/stills.mjs" land "$W" "$((P+1))" "$O" 2-6 land > "$O/land.log" 2>&1
+ls "$O/stills" > "$O/done.txt"
