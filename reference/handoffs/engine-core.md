@@ -11,7 +11,7 @@ LANDED (ENG-WALL-d, 018086a32 seam + test, afdd5060c fix, pushed): C's first hal
 CANDIDATE (branch t-eng-wall-c2 at b04579a95, on t-eng-wall's afdd5060c; NOT judged by the lead, not on t-eng-wall): C's second half: every square in view painted that
 frame (no budget fall to the live path) and the margin ahead one square (CHUNK_AHEAD, sized from maxFall physics.ts:27). The layer
 probe d/flip-layers.mjs (ground-only mask) goes GREEN on the stage start and cold respawns both ways and on descent frames 1-39; its
-frame 0 (the probe's own teleport cut) is RED and unnamed; the burst's cost at 4x CPU is NOT measured (d/burst-ms.mjs: needs an
+frame 0 (the probe's own teleport cut) is RED, most likely the probe (it re-renders at the end zoom, not the frame's: d/zoom0.mjs); the burst's cost at 4x CPU is NOT measured (d/burst-ms.mjs: needs an
 idle machine). TRAPS: a paused, settled probe cannot see a zoom ease; a node test never reaches the squares (no getTransform): check
 every ground change in a browser, first frame AND settled, and judge by the ground mask (other layers differ for their own reasons:
 the settled re-render moves Pokey and the animated layers); never time on a machine running the suite (4x CPU numbers went 10x).
