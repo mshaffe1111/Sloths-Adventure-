@@ -1028,6 +1028,11 @@ export const touchHeld = (own: number, minMs: number): number => Math.max(own, m
 
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
+/** a step UP at a lip (stepUpAtLip): a ledge whose near end is within `seam` px of the lip (jumpFor's own 'a piece that starts at the
+ *  edge itself carries the same ground on', d < 5 there) and whose top is over `low` px up (the tower stop's 'higher than a seam',
+ *  q.y < p.y - 30 in intend) and under STAIR_HOP: the floor goes on a step up with no face to walk into (1-4 Easy 10 s14:b -> s14:c,
+ *  Easy 37 #44 -> #45, each a thin bough 40 px up starting at the lip, BUILD-26j) */
+const LIP_STEP = { seam: 5, low: 30 };
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
 
 interface Jump {
@@ -2835,6 +2840,11 @@ export class FirstTimerRun {
           // (a late press is a walk-off: with a face ahead (a stump at a log's end, middle v3 on 164e4cf8: 9.4 s pressed against it,
           // the plan re-armed every second) there is no lip to walk off, so he jumps)
           if (tierEdge.how === 'late' && this.faceAhead(dir, 40) !== null) tierEdge.how = 'run';
+          // (nor where the floor goes on a step UP from the lip with no face: a thin bough starting at the lip a hop up. A late press there
+          // walks him off under it: middle Easy 10 dropped 320 px under s14:c (BUILD-26g); child Easy 37, once the way is read as one
+          // slant (C), walked off #44 at 360 under #45 and fell back 8 times, rescued (BUILD-26j b26j/c37-lip.txt). He presses on the run,
+          // as at a face; measured from the LIP, not from him: he presses `look` px before it)
+          if (tierEdge.how === 'late' && this.stepUpAtLip(lip, p, dir) !== null) tierEdge.how = 'run';
           if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
             tierEdge.read = true;
             const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
@@ -3735,6 +3745,13 @@ export class FirstTimerRun {
     delete out.left;
     delete out.right;
     return out;
+  }
+
+  /** the ledge the floor steps UP onto at `lip` on `dir`'s side (LIP_STEP: its near end at the lip, its top a hop up), or null */
+  stepUpAtLip(lip: number, p: { y: number }, dir: -1 | 1): Platform | null {
+    if (!Number.isFinite(lip)) return null;
+    return this.sim.platforms.find((q) => this.solid(q) && q.y < p.y - LIP_STEP.low && q.y > p.y - STAIR_HOP &&
+      Math.abs((dir > 0 ? q.x : q.x + q.width) - lip) < LIP_STEP.seam) ?? null;
   }
 
   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
