@@ -3,7 +3,8 @@ EXACT NEXT STEP: on an IDLE machine (nothing else running), time the candidate's
 against a vite on t-eng-wall (afdd5060c) and one on t-eng-wall-c2 (b04579a95), PERFORMANCE-RULES §1 (no frame over 50 ms in play, 120
 at a stage start); then fix d/flip-layers.mjs to keep and restore each frame's ZOOM with its camera (it restores x,y only) and re-judge
 the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-rendered at 0.763; upright the zoom holds at 0.9364,
-so upright's 2.62 needs its own cause: shoot frame 0 vs settled, the ground mask's cells marked). If
+upright's 2.62 is the plant band in front of the left column, the soil 0.0-0.2: d/frame0.mjs; the mask must leave out cells where
+another layer draws over a bank). If
 both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
 MY MISS: I started the suite (about 35 min) 23 minutes before the box's end, and drawcheck after the lead's "no long run you can't
@@ -38,7 +39,11 @@ At hand-over: shards 414 / 387 / 444 tests passed, 0 failed so far; drawcheck 3 
   likely the PROBE: d/zoom0.mjs (same moves, sideways) reads that frame at zoom 0.7316 and the end at 0.763 (an ease from the x 14800
   case still unwinding), and the probe re-renders every frame at the END zoom (it restores the camera's x,y, not the zoom). UPRIGHT the
   zoom does not move (0.9364 on every frame), so upright's 2.62 is NOT that; nor is it the re-render's Pokey at the descent's end (the
-  probe now leaves those cells out too: the same 12139 ground cells, 2.74; d/after-C2-upright-v2.txt). Unnamed. Neither re-judged.
+  probe now leaves those cells out too: the same 12139 ground cells, 2.74; d/after-C2-upright-v2.txt). LOCATED (d/frame0.mjs, the still
+  d/descent-frame0-left-vs-settled-right-upright.jpg, DSF 1): by 40-px row band the frame differs only in rows 280-600 (3.6-15.2 luma),
+  the reeds and plants in front of the left rock column; the soil under the grass line is 0.0-0.2. The mask counts that band as ground
+  (the column's bank runs down through it). So the SOIL equals settled on frame 0; the plant layer differs on its own first frame
+  (ENG-WALL-b's other lazily painted layer): a separate item, not the ground's.
 - NOT measured: the burst's cost (up to all in-view squares painted in one frame at a cold view). d/burst-ms.mjs ran once under the
   suite's load and its numbers are void (the settled frame read 45.9 ms, the descent 1105 ms at 4x); stopped, nothing recorded.
   drawcheck on b04579a95: started, NOT finished in the box.
