@@ -85,3 +85,6 @@ Every bot or level packet says: **safe-keeping pushes of a CANDIDATE (a bot or l
 `<work-branch>-wip-<member>`, never the shared work branch.** The shared branch takes the candidate only after the lead's ruling on its
 rows. Twice on 11-21 a bot member pushed a candidate to t-build-26 before its rows reached the lead (BUILD-26f 0bc969bce, worse, reverted;
 BUILD-26g 9df2f0d11 'for safe-keeping').
+
+## A question to the lead never ends a box (D120, 11-21)
+Every packet says: **a question to the lead never ends your box: send it, then keep working on every step that does not depend on the answer** (the suite, a split, a measurement, the REPORT). Stop only at the box, or when nothing left is independent of the answer, and say which in the message. On 11-21 ENG-27r handed over 21 minutes early to wait for a ruling while its suite, a split and a measurement were still to do.
