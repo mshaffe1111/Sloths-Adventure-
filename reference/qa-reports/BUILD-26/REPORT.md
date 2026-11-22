@@ -18,7 +18,15 @@ takes the way he can reach first; **195db372c** the toy (castBots.test.ts); this
 shrine), **kid E 25: a TIER DROP (kid E 22, a pass on the candidate, now rescued once: 'in a dip 311 px deep, a drop of 311 px ahead, water
 ahead, the way on is 206 px down' at x 1192)**, kid N 31, the rest 40. No other row moved.
 0. **Trace the two new faults (rule 28, two runs per cause), both from F2 (the floor-first rewind):**
-   (a) **1-4 adult N 39 (and child N 10, middle N 1, 36): a stall on a vine with no stuck clock.** where.mts.txt (`BOT=FT_ADULT ... 39`): from
+   (a) **TRACED (adult N 39, b26k/a39.txt, one run): a FigPush shuffle with every clock off, EXPOSED by F1, not made by F2's pick.** Pods
+   knock him off the upper field at y ~2264 three times (k 0.97 t 107.4, 1.03 t 111.0, 1.2 t 114.2); on the candidate those knocks counted
+   as falls and the rescue ended it. With F1 they do not, he is back down at 554,5193 (lives 1), holds the field vines 591/631 at their
+   foot (y 5186) and FigPush pushes him left, let go, right, let go, forever (pad left/{}/right, x 591 <-> 631). `FigPush.busy` (figPush.ts:47)
+   keeps the bot's no-progress clock off while it acts, and `held` keeps the fall-back rewind off (firsttimer.ts, the `(far || under) &&
+   !held` line): nothing ends the run. Proposed general fix: FigPush's work counts as progress only while his place (prog.best) or the
+   field's state (a fig freed, a gate opened) moves; after a bound with neither, the no-progress clock runs again and the miss is named
+   (rule 28: a fail never becomes a silent cap). Second run and child N 10 / middle N 1, 36 to confirm the same family.
+   Original note: **1-4 adult N 39 (and child N 10, middle N 1, 36): a stall on a vine with no stuck clock.** where.mts.txt (`BOT=FT_ADULT ... 39`): from
    about t 110 to the cap he holds a vine at 631,5186 (C), cur 696, best 955, off 288, fallBacks 1, never moving. On the candidate the same
    rows end with a rescue. **The variant without the vine arm (relocate without `climb`) stalls the same way (591,5186, cur 667)**, so it is
    the floor-first ranking that leads him there. Find the decide branch that keeps him still on the vine (firsttimer.ts:2436 FigPush or the
