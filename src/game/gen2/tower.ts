@@ -529,13 +529,26 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       const ys: number[] = [];
       for (let y = top; y <= last; y += 20) ys.push(y);
       for (const q of all) if (q.type === 'solid' && q.y > top && q.y <= last && q.x < x0At(q.y) + TOWER.catchW && q.x + q.width > x0At(q.y)) ys.push(q.y);
-      for (const y of ys.sort((a, b) => a - b)) {
-        const x0 = x0At(y);
-        const L = takes(x0, x0 + TOWER.catchW, y) ? fair(x0, x0 + TOWER.catchW, y, Le, []) : -1;
-        if (L < 0) continue;
-        put(x0, x0 + TOWER.catchW, y, L);
-        added++;
-        break;
+      // (centred where he comes down; or, where that bough would lie in a kept-out box (a gate's band, a wheel's sweep), slid clear of
+      // the box on the side he comes down, so long as it still lies under him: an end by a box's edge is never left uncaught for want
+      // of a centred bough. ENG-26p: gateKit Easy seed 4, the bridge's end at 1068 over gate 28's band edge (1035) fell 647 px)
+      const slid = (y: number): number[] => {
+        const ex = exAt(y), c = x0At(y), xs = [c];
+        for (const k of keepOut) {
+          if (y < k.y0 || y > k.y1 || c >= k.x1 || c + TOWER.catchW <= k.x0) continue;
+          const s = ex >= k.x1 ? k.x1 : ex <= k.x0 ? k.x0 - TOWER.catchW : NaN;
+          if (s >= 24 && s + TOWER.catchW <= width - 24 && ex >= s && ex <= s + TOWER.catchW) xs.push(s);
+        }
+        return xs;
+      };
+      laid4: for (const y of ys.sort((a, b) => a - b)) {
+        for (const x0 of slid(y)) {
+          const L = takes(x0, x0 + TOWER.catchW, y) ? fair(x0, x0 + TOWER.catchW, y, Le, []) : -1;
+          if (L < 0) continue;
+          put(x0, x0 + TOWER.catchW, y, L);
+          added++;
+          break laid4;
+        }
       }
     }
     if (!added) break;

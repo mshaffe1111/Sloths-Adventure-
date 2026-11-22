@@ -656,6 +656,23 @@ test('towerCatches leaves a gate alone: a sealed piece is never run on, and no c
   assert.ok(towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level).some(byGate), 'unsealed, the same lay does put wood there (the planted case)');
 });
 
+test('towerCatches (planted, ENG-26p): an end that steps off just past a kept-out box is caught by a bough slid clear of the box, never left to fall', () => {
+  // (gateKit Easy seed 4 on t-build-26 43c4c6776: the bridge 1068-1199 @4720 stepped off at x 1044, 9 px past gate 28's band edge 1035;
+  // the centred bough 954-1134 lay in the band, so the fall went 647 px. The same shape here: a box whose right edge is 14 px short of
+  // where he comes down off the piece's right end, and no wood under him within the limit)
+  const floor = solid(0, 3000, 1280, 1), p = solid(600, 2000, 200, 2);
+  const box = { x0: 0, x1: 810, y0: 1900, y1: 2600 };
+  const ex = p.x + p.width + 24;
+  const cs = towerCatches('up', [floor, p], [], 3000, 1280, [], () => 0, () => false, [box]);
+  const under = cs.find((c) => c.x <= ex && c.x + c.w >= ex && c.y > p.y && c.y - p.y <= TOWER.fall);
+  assert.ok(under, `the right end is caught (${JSON.stringify(cs)})`);
+  assert.equal(under!.x, box.x1, 'slid to the box\'s edge, not centred into it');
+  assert.deepEqual(cs.filter((c) => c.x < box.x1 && c.x + c.w > box.x0 && c.y >= box.y0 && c.y <= box.y1), [], 'and nothing of it lies in the box');
+  // (the planted case: with no box the bough is centred where he comes down, as before)
+  const free = towerCatches('up', [floor, p], [], 3000, 1280, [], () => 0, () => false, []);
+  assert.ok(free.some((c) => c.x === ex - TOWER.catchW / 2 || (c.y === p.y && c.x === p.x + p.width)), `no box: laid as before (${JSON.stringify(free)})`);
+});
+
 test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it', () => {
   let gatesSeen = 0;
   for (const d of SETTINGS) for (const seed of SEEDS) {

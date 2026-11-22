@@ -2,6 +2,14 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-26q. ENG-26q (t-build-26-wip-26q 4e0888c5d, 11-21 evening): pairPetals keeps the level check's spacing
+- vineField.ts pairPetals (run last in stageGenerator finishStage, after addFinds, fixPickups and petalPass) moves a field petal to the
+  middle of its vine and a mate. It now takes `apart` (finishStage passes levelCheck's PICKUP_APART) and moves only to a middle at least that
+  far from every other pickup: the nearest mate's, else the next mate's, else it stays. Before, it checked nothing: 1-4 ?layout=72140 put
+  flower #27 28 px from the Notch (rollGuard red, exposed when 2f188c552's gate band changed the catch boughs and so addFinds' hashed spot).
+  Trap: any pass that MOVES a placed pickup must re-check spacing against every other pickup; addFinds' 110 px only holds at its own time.
+  Plants: rollGuard.test.ts 1-4; vineField.test.ts 'pairPetals (planted, ENG-26q)'.
+
 ## 0zr-26. The tower's walk-off judge (t-build-26, ENG-26g to ENG-26m, 11-21): what the next engineer must know (1-4, 2-6, every tower)
 **The judge (ENG-26g, de009b9f5 + ac2fd73b6):** tower.ts `walkOff` flies the engine's own full-speed walk-off (landFlights.data.ts 'walk',
 proven the engine's by landFlights.test.ts; the same path on both settings), held at the tower's sides [20, W-20] and at a wall's face (a
@@ -35,6 +43,12 @@ search, as it would on a phone. So after an engine change, `seedlist.ts <id> --c
 (methods/seed-list.md). (4) Every bot number is taken on a FROZEN tree at a fixed hash (D115); BUILD-26c's towerRoute.ts moves the bot's route.
 **Open (named):** 1-4's build over budget at 4x CPU (above). A walk-off at less than full speed (a slow walker) lands between the step and the
 run, and only those two are flown (ENG-26g's pushback: fly a short run-up too if the bots show it).
+**Kept-out boxes and the catch lay (ENG-26n 2f188c552, ENG-26p 7d663daee):** a sealed piece's BAND (tower.ts gateBand: its section's full
+width, from just under its level up to the storey its way on climbs to) joins the wheel sweeps in towerCatches' `keepOut`; towerGateRoofs
+names any lay wood in it. A box is a new wall every catch rule must step round: with the band in, gateKit Easy seed 4's run-on was refused
+and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
+red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
+lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
 
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
