@@ -8,6 +8,10 @@
  * never rewound (pacerPiece). It replaces the at-the-stand invariant (Option A: his margin kept whole where he stood after the respawn),
  * which credited the stretch from the respawn to the fall twice: RED on e8c4d0153 (3 of 5 race-leg falls on the table paid, +0.56..0.59 s;
  * every bot paid, ENG-27s table: A 12 of 20, B 6 of 15, C 2 of 4, D' 3 of 5).
+ * THE STRICT HOLD (the lead's ruling (a), ENG-27t): the first-pass rewind alone left 7 of 89 falls paying (RED on 7501bf2fb, +0.10..0.84 s);
+ * back at the fall's x the boat makes up the excess EASED. So his margin back at the x is read against the boat's clock with the excess
+ * still owed counted (the race the verdict judges), and the ease itself is checked: on no frame does the boat move more than (1 + EASE_PEAK)
+ * of its own step (no jump; respawn frames excepted, the respawn re-places it), and a verdict counts the excess still owed.
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -15,27 +19,52 @@ import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
 import { SKILLS } from './firsttimer.ts';
 import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
-import { pacerMargin } from '../../src/game/pacer.ts';
+import { pacerMargin, pacerX } from '../../src/game/pacer.ts';
 
 /** a frame of the fixed loop (30 fps) of the boat's travel, and as much again for his own step on the frame he lands */
 const TOL = 2 / 30;
 const SEEDS = [1, 2, 3, 4, 5, 6];
 
 /** every race-leg fall of one run: his margin the frame before, and his margin the first frame he stands back at (or past) its x */
-function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal' | 'easy', seed: number): { x: number; m: number; back?: number }[] {
+/** the test's own bound on the ease (pieces/pacerPiece.ts EASE_PEAK is the piece's): on no frame does the boat move more than half again
+ *  its own step (a speed-up, never a jump; the ruling's 'no boat visibly jumps', judged on the clip too) */
+const EASE_PEAK = 0.5;
+/** the ease's breaches of one run: a frame the boat moved more than (1 + EASE_PEAK) of its step, a verdict that dropped the excess owed */
+const easeBad: string[] = [];
+let eased = 0;
+
+function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal' | 'easy', seed: number): { x: number; m: number; back?: number; pend?: number }[] {
   const was = { ...SKILLS };
   if (bot === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
-  const out: { x: number; m: number; back?: number }[] = [];
-  let piece: { kind: string; pacer: { dir: number }; clock: number | null; verdict: unknown } | undefined;
-  let mLast: number | null = null, lives: number | undefined;
+  const out: { x: number; m: number; back?: number; pend?: number }[] = [];
+  let piece: { kind: string; pacer: { dir: number; x0: number; x1: number; seconds: number }; clock: number | null; owed?: number; verdict: { him: number } | null } | undefined;
+  let mLast: number | null = null, lives: number | undefined, bx: number | null = null, judged = false, wasDown = false;
   try {
     homeRun(bot === 'expert' ? 'expert' : 'middle', setting, seed, 1, { onFrame: (sim: { e: Record<string, any> }) => {
       const e = sim.e, p = e.player;
       piece ??= (e.pieces as Array<typeof piece>).find((q) => q!.kind === 'pacer');
       if (!piece) return;
-      const m = piece.clock === null || piece.verdict ? null : pacerMargin(piece.pacer as never, p.x, piece.clock);
-      if (lives !== undefined && e.lives < lives && mLast !== null) out.push({ x: p.x, m: mLast });
-      for (const f of out) if (f.back === undefined && m !== null && !e.down && p.grounded && (p.x - f.x) * piece.pacer.dir >= 0) f.back = m;
+      const P = piece.pacer;
+      const m = piece.clock === null || piece.verdict ? null : pacerMargin(P as never, p.x, piece.clock + (piece.owed ?? 0));
+      const fell = lives !== undefined && e.lives < lives;
+      if (fell && mLast !== null) out.push({ x: p.x, m: mLast });
+      // (the ease: the boat's move this frame against its own step; a respawn's frame re-places it and is excepted)
+      const x = piece.clock === null ? null : pacerX(P as never, piece.clock);
+      const step = Math.abs(P.x1 - P.x0) / P.seconds / 30;
+      if ((piece.owed ?? 0) > 0) eased++;
+      if (x !== null && bx !== null && !fell && !e.down && !wasDown && Math.abs(x - bx) > (1 + EASE_PEAK) * step + 1e-6)
+        easeBad.push(`${bot} ${setting} ${seed}: the boat moved ${Math.abs(x - bx).toFixed(2)} px in a frame (its step ${step.toFixed(2)}, bound ${((1 + EASE_PEAK) * step).toFixed(2)})`);
+      if (piece.verdict && !judged) {
+        judged = true;
+        if (piece.verdict.him + 0.05 + 1e-9 < (piece.clock ?? 0) + (piece.owed ?? 0) - 1 / 30)
+          easeBad.push(`${bot} ${setting} ${seed}: the verdict ${piece.verdict.him} s dropped the excess owed (clock ${(piece.clock ?? 0).toFixed(2)} + owed ${(piece.owed ?? 0).toFixed(2)})`);
+      }
+      bx = x;
+      wasDown = !!e.down;
+      // (the boat learns where he stands one frame later (the pieces step before he moves): his margin back at the x is read against
+      //  the boat's whole clock, the excess it then owes counted, on the frame after: clock + owed there, less that frame's step)
+      for (const f of out) if (f.pend !== undefined && piece.clock !== null) { f.back = pacerMargin(P as never, f.pend, piece.clock + (piece.owed ?? 0) - 1 / 30); f.pend = undefined; }
+      for (const f of out) if (f.back === undefined && f.pend === undefined && m !== null && !e.down && p.grounded && (p.x - f.x) * piece.pacer.dir >= 0) f.pend = p.x;
       mLast = m;
       lives = e.lives;
     } } as never, code);
@@ -65,5 +94,7 @@ for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const) 
     }
     assert.ok(n > 0, `${name}: no race-leg fall in the grid (the test judges nothing)`);
     assert.deepEqual(bad, [], `${name}: ${bad.length} of ${n} race-leg falls paid:\n${bad.join('\n')}`);
+    assert.deepEqual(easeBad, [], `${name}: the ease broke ${easeBad.length} times:\n${easeBad.join('\n')}`);
+    console.log(`# ${name}: ${n} race-leg falls judged; ${eased} frames of ease on the grid`);
   });
 }
