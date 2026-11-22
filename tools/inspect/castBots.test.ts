@@ -386,3 +386,40 @@ test('fallen from a leg to the floor 379 px under it, Progress rewinds to the wa
   const planted = play(true);
   assert.ok(planted.rewound < 0 || planted.rewound > 2.5, `PLANT: with the rewind taken away his place stays on the leg through his hops (back at ${planted.rewound} s)`);
 });
+
+test('at a lip where the floor goes on a hop UP with no face (a thin bough starting at the lip), a late press is made on the run: he jumps, never walks off under it (BUILD-26j, 1-4 child Easy 37)', async () => {
+  const { FirstTimerRun, FT_CHILD_EASY } = await import('./firsttimer.ts');
+  // (1-4 Easy 37's lip, y less 1684: #44 360-760 @1000, #45 starts AT its lip 40 px up; #45 runs on far past the way's end so only
+  //  the lip is measured; the way as C reads it, one slant from the vine top to the far vine)
+  const plats = [
+    { id: 44, x: 360, y: 1000, width: 400, height: 16, type: 'solid' },
+    { id: 45, x: -428, y: 960, width: 788, height: 16, type: 'solid' },
+    { id: 9, x: -1000, y: 1348, width: 3000, height: 100, type: 'solid' },
+  ];
+  const route = Array.from({ length: 30 }, (_, i) => ({ x: 786 - i * 24, y: 1000 - (40 * i * 24) / 696 })).filter((q) => q.x >= 90);
+  const leaves = (seed: number, plant: boolean) => {
+    let g = true, vy: number | null = null;
+    const run = new FirstTimerRun('1-1', seed, { ...FT_CHILD_EASY, look: 0 }, { route, cap: 6, rescueAfter: 100, onFrame: (s: { p: { grounded: boolean; vy: number } }) => {
+      if (g && !s.p.grounded && vy === null) vy = s.p.vy;
+      g = s.p.grounded;
+    } });
+    run.sim.bare(plats as never, []);
+    run.sim.stand(700, 1000);
+    run.sim.p.facing = -1;
+    const r = run as unknown as { lastSteer: number; edgePlan: () => { how: string }; stepUpAtLip: unknown };
+    r.lastSteer = -1;
+    // (every edge drawn late unless it is a run: the walk-off the rule is for)
+    const ep = r.edgePlan.bind(run);
+    r.edgePlan = () => { const e = ep(); if (e.how !== 'run') e.how = 'late'; return e; };
+    if (plant) r.stepUpAtLip = () => null;
+    run.prog.relocate(run.sim.p);
+    run.play();
+    return vy ?? 0;
+  };
+  let walked = 0;
+  for (const seed of [1, 2, 3, 4, 5, 6]) {
+    assert.ok(leaves(seed, false) < 0, `roll ${seed}: he left the lip without a press (vy ${leaves(seed, false)})`);
+    if (leaves(seed, true) > 0) walked++;
+  }
+  assert.ok(walked >= 3, `PLANT: with stepUpAtLip off he still pressed at the lip in ${6 - walked} of 6 rolls (expected walk-offs)`);
+});
