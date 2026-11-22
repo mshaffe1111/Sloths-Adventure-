@@ -117,7 +117,15 @@ export class FigPush {
       if (dir !== 0 && (h.b || this.sideVine(v, h.a, dir, p.y))) return this.push(dir);
       return {};
     }
-    // the figs: only under a shut gate's bough, or on the way to one already chosen
+    // the figs: only under a shut gate's bough, or on the way to one already chosen, and only one on a vine he can reach from his hands'
+    // row (one he holds, or one spanning the height his hands are at: the way across to it his own). A fall off the gate's row with the
+    // target held left him pushing left and right between two vines of a lower row under its x for ever, the no-progress clock held by
+    // the target, until a rescue (BUILD-26m/n, 1-4 adult N 9 and expert N 20 at x 871, child N 38); out of reach, his own climb takes him
+    const reach = (c: VineCluster) => {
+      const cv = v.vines.find((q) => q.id === c.vine);
+      return !!cv && (holds(cv.id) || (p.y >= cv.topY - 4 && p.y <= cv.bottomY + 4));
+    };
+    if (this.target && !this.target.falling && !this.target.gone && !reach(this.target)) this.target = null;
     if (!this.target || this.target.falling || this.target.gone) {
       this.target = null;
       const top = h.b && h.b.topY > h.a.topY ? h.b : h.a;
@@ -128,7 +136,7 @@ export class FigPush {
       let best: VineCluster | null = null, bd = Infinity;
       for (const c of this.held(v)) {
         const cv = v.vines.find((q) => q.id === c.vine);
-        if (!cv) continue;
+        if (!cv || !reach(c)) continue;
         const d = Math.abs(cv.x - p.x) + Math.abs(c.y - p.y) * 0.5;
         if (d < bd) { bd = d; best = c; }
       }
