@@ -2,8 +2,12 @@
 ## EXACT NEXT STEP (ENG-27r, read only this section, D90)
 1. **The lead rules the re-aim's rows (table below) before t-eng-27 takes b0c6dd586.** Then, on wip-27q, frozen: trace hopJudged Normal 2's ONE red
    row (`race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown same | came down #66 solid`, q/green-b0c6dd586.txt): hopFlies judged log
-   #69 and the engine caught him first on bank #66 (solid, safe). Each frame now aims a fresh draw, so the race tries hops ENG-27p never flew; check
-   whether #66 is in flightOthers' list at that frame and which catch (side 0.26 w, drop 14, `land`) the engine used. hopJudged must be 4/4.
+   #69 and the engine caught him first on bank #66 (solid, safe). TRACED (q/diag-n2-x8256b.txt; its clock is onFrame-counted, +0.76 s on game t):
+   a DOUBLE off log #68 from x 8256 y 1527 (second press about 0.4 s in); he came down at x 7952 y 1499 ON bank #66 (x 7626..7946, 28 px above the
+   logs), 6 px past its end, inside the engine's side catch (0.26 w = 11.4 px); log #69 was under him then (x 7805..8045). #66 IS in flightOthers'
+   list (y and x filters pass), so the judged flight came down a few px further on, past the bank's catch: a hopFlies flight error of a few px at a
+   bank's end on a double. Next: fly hopFlies frame by frame beside the engine for this hop (the second press's frame, the steer's vx -268/-285
+   alternation) and fix the judge, never the hop. Each frame now aims a fresh draw, so the race tries hops ENG-27p never flew. hopJudged must be 4/4.
 2. The suite on 4df2d084c (step 0) ran in MY container: tsc PASS; shards 1-3 had 414/387/444 pass, 0 fail when the box closed, not finished. Re-run it.
 3. Not done (box): the race table (middle 24/24, expert 12/12, ride-only 0/24; raceprobe-27e.ts.txt as tools/inspect/_race.ts), split (b) the 72 px,
    split (c) b7a68a8bd's 6 lives, then ENG-27p's ORDER (4) castBots x40 2-1..2-6 1465822f7 vs head, tierBots 1-1 9/9, seed 5's +34.7 s, B, S.
