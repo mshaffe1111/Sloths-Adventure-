@@ -2844,7 +2844,15 @@ export class FirstTimerRun {
           // walks him off under it: middle Easy 10 dropped 320 px under s14:c (BUILD-26g); child Easy 37, once the way is read as one
           // slant (C), walked off #44 at 360 under #45 and fell back 8 times, rescued (BUILD-26j b26j/c37-lip.txt). He presses on the run,
           // as at a face; measured from the LIP, not from him: he presses `look` px before it)
-          if (tierEdge.how === 'late' && this.stepUpAtLip(lip, p, dir) !== null) tierEdge.how = 'run';
+          // (bounded by the jump's own reach: the run press comes only where a jump from where he stands lands on the step, reachJump /
+          // reachJumpHeld (src/game/physics.ts:477, :485, jumpFor's own pick by setting) at the step's height; out of it he walks on to
+          // it. Unbounded, child Normal 1-4 seed 8 pressed 227 px out from lip 955, a single reaching 156 there, BUILD-26j)
+          const stepUp = tierEdge.how === 'late' ? this.stepUpAtLip(lip, p, dir) : null;
+          if (stepUp) {
+            const reach = this.who.setting === 'easy' ? reachJumpHeld(p.y - stepUp.y, kind === 'double') : reachJump(p.y - stepUp.y, kind === 'double');
+            if (Math.abs(lip - p.x) > reach) return side(dir);
+            tierEdge.how = 'run';
+          }
           if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
             tierEdge.read = true;
             const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
