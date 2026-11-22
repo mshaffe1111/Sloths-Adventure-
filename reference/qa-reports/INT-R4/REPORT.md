@@ -4,19 +4,19 @@ Packet: reference/packets/2026-11-22/INT-R4.md. Integration, a fresh member. Sta
 NO PR (it waits for Matt's "push").
 
 ## EXACT NEXT STEP
-RUN 1 IS DONE on the code head 5d8a7eb79: every gate PASS but funcheck (the ruled debt: fundiff IDENTICAL 22/22, carried) and roadmapcheck
-(red on 5d8a7eb79: R-165.386's row cites R-165.379, which had no row on the release). Fixed by carrying R-165.379's row VERBATIM from the
-lead branch in 15d518c1a (reference/ROADMAP.md only); roadmapcheck PASS on 15d518c1a. Since 5d8a7eb79 only reference/ files changed
-(`git diff --stat 5d8a7eb79 HEAD` names nothing outside reference/), so every other verdict holds for the final head.
-RUN 2 (the suite alone) is RUNNING on frozen /home/user/frz4 = 5d8a7eb79 (reference/qa-reports/INT-R4/tools/run2.sh, background,
-timeout 7,200,000 ms; about 31 min by INT-R3's time). Next, in order:
-1. When run 2 ends: its line in the scratchpad's fs/fullset.txt and the TAP totals of fs/g-suite.log go in the table below. 0 fail = the
-   fallback candidate is GREEN; any fail is a red (bisect, root cause, or the lead with options).
-2. Hand the lead the final head (the release-0.10.2 tip) + this table: the lead builds Matt's EnK5 test link from it and asks Matt for "push".
-3. If the lead says t-build-26 is FINAL: packet step 4 (merge origin/t-build-26 into release-0.10.2, tsc + the CI tool line, 2-6/1-4 What's
-   New lines to the lead first, THE FULL SET again + lockall --intended 2-3,2-6,1-4 + castBots 2-6/1-4 vs t-build-26's final rows + seedlist
-   --check on every list). If the lead says the checkpoint is missed, this fallback IS release 3.
-No PR: it waits for Matt's "push".
+THE FALLBACK release 3 is GREEN. THE FULL SET is complete on the code head 5d8a7eb79: every gate PASS (the suite 4042 tests, 0 fail) but
+funcheck, the ruled debt (fundiff IDENTICAL 22/22, carried; the lead accepted run 1). roadmapcheck was red on 5d8a7eb79 (R-165.386's row
+cites R-165.379, which had no row on the release) and is PASS on 15d518c1a, which carries R-165.379's row VERBATIM from the lead branch (the
+lead: right; ticked done at the after-merge step). Since 5d8a7eb79 only reference/ files changed (`git diff --stat 5d8a7eb79 <tip>` names
+nothing outside reference/), so every verdict holds for the release-0.10.2 tip. The HUD's grey rings in the 'gone' stills: judged by the lead, by design.
+Next, in order:
+1. The lead builds Matt's EnK5 test link from the release-0.10.2 tip and asks Matt for "push". No PR from this member.
+2. HOLDING on t-build-26 (the lead's word: its bot work landed at a07ed1bd7; 2-6's draw budget and the relists still in progress). When the
+   lead says t-build-26 is FINAL: packet step 4 (merge origin/t-build-26 into release-0.10.2, tsc + the CI tool line, 2-6/1-4 What's New
+   lines to the lead first, THE FULL SET again in two runs on a new frozen tree + lockall --intended 2-3,2-6,1-4 + castBots 2-6/1-4 vs
+   t-build-26's final rows + seedlist --check on every list + release.md step 6's seed-pin tests if a list was rebuilt). If the lead says
+   the checkpoint is missed, this fallback IS release 3.
+Worktrees here: /home/user/rel4 (release-0.10.2), /home/user/frz4 (5d8a7eb79, frozen), /home/user/frzm (main 2a87f4cda, frozen).
 
 ## What merged (MERGED never rebased; tsc + the CI tool line after each, D92)
 | # | Branch at hash | Merge commit | tsc | CI tool line |
@@ -66,7 +66,7 @@ Scripts and logs: the scratchpad copies are reproduced in reference/qa-reports/I
 | buildcheck (alone) | PASS | 1-1 p95 106 ms normal, 62 ms easy (budget 150 ms at CPU x4) |
 | npm run build:store | PASS | store build check: no tracking, ads, collector, service worker or outside addresses |
 | slot confirm (tools/slotconfirm.mjs) | PASS | 95 s; Normal + Easy, upright + sideways: all 4 'gone' frames n = 0 (marker gone), faces duck:open, otter:spooked, capy:open. The otter's 'spooked' face IS the stage's own state at that frame: each 'gone' line reads `otter:spooked@<x>` (e.g. normal upright `otter:spooked@5620`), not the marker's. Looked at normal-gone-upright: marker gone, the otter back on screen at the left by the reeds, its HUD slot keeps the amber '!'. In the 'gone' frames the duck and capybara HUD slots have grey rings where the 'left' frames have green: **JUDGED BY THE LEAD, BY DESIGN, not a defect** (followFaces.ts, the 11-20 HUD ruling: 'open' is dim = out in the open where the heron's look would see it; 'hid' is lit green = hiding still in a reed clump; in 'left' the duck and capybara sit in reeds, in 'gone' they stand in the open by Pokey). Stills: reference/qa-reports/INT-R4/slot/ (Normal, gone and left, upright and sideways, 2x) |
-| **the unit suite (run 2)** | RUNNING | on frozen 5d8a7eb79 |
+| **the unit suite (run 2, alone)** | **PASS** | 1863 s on frozen 5d8a7eb79: **4042 tests, 4039 pass, 0 fail**, 3 todo, 0 cancelled (INT-R3 on e5eecab9a: 4041/4038/0/3) |
 
 ## PLAY-STORE §6 (the check before a merge)
 This release adds no screen, menu, sound, save, setting or network call beyond 2-3 (on main's frame since INT-R3) and art regrades: §6 items

@@ -6,7 +6,8 @@ methods/release.md "Before the PR", this note, and the last INT REPORT (referenc
 ## Open now (release 3 = 0.10.2, target Mon 11-23)
 - release-0.10.2 at 5d8a7eb79 = the FALLBACK candidate: main 2a87f4cda + t-ui-372 01cc35139 (2-3 + the edge marker) + t-art-next
   8feca1123 (R-165.379 sheet grades) + the 0.10.2 bump and the lead-approved What's New 'Walk them home'. Reports ride on top of it.
-- THE FULL SET on 5d8a7eb79: see INT-R4/REPORT.md's table (run 1 without the suite, then the suite alone).
+- THE FULL SET on 5d8a7eb79: GREEN (every gate PASS, the suite 4042/0 fail) but funcheck, the ruled debt (IDENTICAL 22/22); roadmapcheck
+  green once R-165.379's row was carried too (a carried ROADMAP row can cite another row: carry the chain, check with roadmapcheck at once).
 - Packet step 4 waits on the lead: if t-build-26 is FINAL, merge origin/t-build-26 (2-6 + 1-4), 2-6/1-4 What's New lines to the lead
   first, THE FULL SET again. If the lead calls the checkpoint missed, 5d8a7eb79 is release 3. No PR until Matt's "push".
 

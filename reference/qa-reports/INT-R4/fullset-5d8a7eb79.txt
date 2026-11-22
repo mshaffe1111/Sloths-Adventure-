@@ -31,3 +31,4 @@ buildstore PASS (exit 0, 4 s)
 slotconfirm PASS (exit 0, 95 s)
 == FULL SET run 1 done
 == SUITE on 5d8a7eb79
+suite PASS (exit 0, 1863 s)
