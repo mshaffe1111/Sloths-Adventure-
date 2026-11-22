@@ -1,3 +1,44 @@
+# ENG-27q REPORT (start 7:27 PM ET by `date`; box 7:55 PM ET; base t-eng-27 4df2d084c; bot change on t-eng-27-wip-27q b0c6dd586 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27r, read only this section, D90)
+1. **The lead rules the re-aim's rows (table below) before t-eng-27 takes b0c6dd586.** Then, on wip-27q, frozen: trace hopJudged Normal 2's ONE red
+   row (`race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown same | came down #66 solid`, q/green-b0c6dd586.txt): hopFlies judged log
+   #69 and the engine caught him first on bank #66 (solid, safe). Each frame now aims a fresh draw, so the race tries hops ENG-27p never flew; check
+   whether #66 is in flightOthers' list at that frame and which catch (side 0.26 w, drop 14, `land`) the engine used. hopJudged must be 4/4.
+2. The suite on 4df2d084c (step 0) ran in MY container: tsc PASS; shards 1-3 had 414/387/444 pass, 0 fail when the box closed, not finished. Re-run it.
+3. Not done (box): the race table (middle 24/24, expert 12/12, ride-only 0/24; raceprobe-27e.ts.txt as tools/inspect/_race.ts), split (b) the 72 px,
+   split (c) b7a68a8bd's 6 lives, then ENG-27p's ORDER (4) castBots x40 2-1..2-6 1465822f7 vs head, tierBots 1-1 9/9, seed 5's +34.7 s, B, S.
+## Done-items
+- **Plant RED first (8e825b614: GATE_TRACE, records only; the re-aim test in hopJudged.test.ts, already on the CI tool line):** RED on the base logic,
+  `gate frames 1293 (edgeWait 60, upstream 70, race 1161, edgeStand 2); judged on a draw held from an earlier frame 1265 (edgeWait 52, upstream 61,
+  race 1152)`; first held row `edgeWait t 12.87 x 14855 drawn t 12.83` (q/reaim-RED-8e825b614.txt).
+- **The fix (b0c6dd586), cadence = EVERY FRAME:** `gateDraw` draws the hop on the frame each gate judges it (edgeStand, edgeWait, race, upstream); the
+  0.5 s beat (floatBeat) and waitHop DELETED. Source, cited beside it: BOTS.md (R-165.59) keeps stopReact and thumb from KID/ADULT, "no profile
+  measures reaction, thumb latency", so no calibrated decision or reaction time exists; the re-aim is each frame, the press on the judged frame at
+  lag 0 and its flight with the thumb's own state (hopFlies' thumbAt). drawHop unchanged; rHop is its own stream (the main stream as ever). tsc PASS.
+- **GREEN (q/green-b0c6dd586.txt):** the re-aim test GREEN (281 gate frames, 0 held, 12 refused-then-pressed-next-frame); pacerRespawn GREEN 2/2;
+  **hopJudged 3/4: Normal 2 RED (one row, above; it came down on SOLID). NOT MET.**
+- **pacerLay on b0c6dd586: 13/19 (ENG-27p: 9 red on fb6bd156e).** Now pass of those 9: middle beats the boat home Normal 2, Easy 1, Easy 3. Still red: Normal 1, Normal 3,
+  post Normal 4/5, the boardLog plant (B), the racing-hop plant (q/pacerLay-b0c6dd586.txt).
+## The wait table, home middle Normal 1/2/3 (q/gateprobe-27q.mts.txt; q/gate-*.txt). Base logic 8e825b614 -> re-aim b0c6dd586
+| seed | finish s | lives lost | race judged s (refused) | edgeWait judged s | upstream judged s | race land rate per fresh draw |
+|---|---|---|---|---|---|---|
+| 1 | 190.0 -> **246.3** | 1 -> 3 | 38.7 (38.4) -> 8.4 (8.0) | 2.0 -> 0.5 | 2.3 -> 0.3 | 4.8% |
+| 2 | 215.8 -> 167.1 | 1 -> 1 | 24.8 (24.5) -> 4.4 (4.0) | 3.6 -> 0.3 | 0.2 -> 0.0 | 10.5% |
+| 3 | 215.9 -> 203.8 | 4 -> 5 | 34.0 (33.7) -> 4.7 (4.3) | 1.1 -> 0.9 | 1.8 -> 0.3 | 9.2% |
+All gates' judged time falls 78-84% (seed 1 43.1 -> 9.4 s; race 38.7 -> 8.4). Seed 1 finishes 56 s SLOWER with 2 more lives lost: the faster hop is the riskier hop (more
+draws tried, first to land is pressed; 3 falls). The big race sites now hold 0.7-3.1 s (seed 1 x 2750 3.1 s, 0% of draws land); per-draw land rates
+2-25% by site, as ENG-27p's 2-21%: the river's real difficulty, the lead's design call. (Base 'land rate' per frame is not comparable: one draw repeated.)
+## Split (a): does he ride the log anyway while the race gate refuses? YES, ALL of it.
+The race gate runs only on a log drifting HIS way (raceLegal: here.drift.dir === dir), and a refused frame falls to SKILLS.handed (no input): the log
+carries him toward the bank every refused frame (base seed 1: x 13464 -> 12967 in 6.2 s, about 80 px/s). Of 32 base episodes (seeds 1-3) 30 ended in a hop
+before the log's end and 2 were 'carried->air' (off the log, not onto the bank). So the refused seconds were never a stand: they were ride time; what
+the hold cost was hopping late, not standing still. (b) and (c): NOT measured (box).
+## Polish check: no screen changed (bot code and a test). ## Pushback: none on the ruling. One flag: on seed 1 the re-aim makes him faster to hop and
+more often to fall (lives 1 -> 3, finish +56 s); the race call should read that row. ## Suggestions: none new. ## Unresolved: hopJudged Normal 2
+(above), the race table, (b), (c), the ORDER, the suite's end. ## Method update: a gate that judges a drawn hop draws it on the frame it judges
+(GATE_TRACE row-checks it); a cadence literal needs a cited source or it is every frame. ## Turnover note: engine-core.md §0zq-27q (this commit).
+Lessons applied: D96, D102, D107, D109, D111-D119 (frozen trees, background runs, wip branch, no clock times to the lead).
+
 # ENG-27p REPORT (start 7:04 PM ET by `date`; handed over at the D111 box; base df0cd9638 (code d2408e867); branch t-eng-27 head 16698b8a1 (code fb6bd156e + a type-only fix) + this REPORT)
 ## EXACT NEXT STEP (ENG-27q, from t-eng-27 head; read only this section, D90)
 **STEP 0: the full CLAUDE.md suite on the head, frozen, in the BACKGROUND while you work (the lead, D118; mine was still running at the box

@@ -1,0 +1,38 @@
+head 8e825b61433c2a9750927cf049ae3d0ad7aa3210
+gate frames 1293 (edgeWait 60, upstream 70, race 1161, edgeStand 2); refused 1271; judged on a draw held from an earlier frame 1265 (edgeWait 52, upstream 61, race 1152); refused then pressed the next frame 14
+  held: edgeWait t 12.87 x 14855 drawn t 12.83 (0.03 s held) refused
+  held: edgeWait t 12.90 x 14859 drawn t 12.83 (0.07 s held) refused
+  held: edgeWait t 12.93 x 14861 drawn t 12.83 (0.10 s held) refused
+  held: edgeWait t 12.97 x 14861 drawn t 12.83 (0.13 s held) refused
+  held: edgeWait t 13.00 x 14861 drawn t 12.83 (0.17 s held) refused
+✖ 2-7 home, middle Normal seed 1: every frame a drawn-hop gate judges, the hop it judges is aimed that frame (no draw held from an earlier frame), and a refused aim is followed by fresh aims that land (1581.227544ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5219.479402
+
+✖ failing tests:
+
+test at tools/inspect/hopJudged.test.ts:64:1
+✖ 2-7 home, middle Normal seed 1: every frame a drawn-hop gate judges, the hop it judges is aimed that frame (no draw held from an earlier frame), and a refused aim is followed by fresh aims that land (1581.227544ms)
+  AssertionError [ERR_ASSERTION]: a gate judged a hop drawn on an earlier frame: one draw held him
+  
+  1265 !== 0
+  
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/tools/inspect/hopJudged.test.ts:83:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1265,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+exit 1
