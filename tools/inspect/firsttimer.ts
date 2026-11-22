@@ -984,7 +984,7 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
 /**
  * A hop as the bot will press it (level.md rule 28, the hop judged is the hop flown; the lead's ruling 11-21, ENG-27n): its kind, the
  * first press's hold, the second press (`d2` s after the first, a tier bot's dbl2Q; -1: at `dblAt`, falling past it) and its hold
- * (`hold2`), and the beat with no steer (`upOnly`). Drawn once per wait (FirstTimerRun.drawHop, by the testers' habit), judged by
+ * (`hold2`), and the beat with no steer (`upOnly`). Drawn each frame a gate judges (FirstTimerRun.gateDraw, drawHop: the testers' habit), judged by
  * hopFlies from where he stands, and flown unchanged by startJump.
  */
 export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; dblAt: number; hold2: number; upOnly: number; thumb?: DrawnThumb };
@@ -1420,19 +1420,14 @@ export class FirstTimerRun {
   private lianaWaitT = 0;
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
   private lianaHop = false;
-  /** SKILLS.floatSure (rule 28, the lead's ruling): the hop a wait drew, kept until a gate presses it (drawn once per wait, drawHop) */
-  private waitHop: DrawnHop | null = null;
-  /** GATE_TRACE: the frame the hop a gate judges was drawn on */
-  private waitHopT = -1;
+  /** GATE_TRACE: the frame the hop a gate judges was drawn on (gateDraw: always the frame it judges, ENG-27q) */
+  private gateAimT = -1;
   /** the hop a gate judged and is pressing now: startJump flies it unchanged (its own draws are still made, so the stream is as ever) */
   private gateHop: DrawnHop | null = null;
   /** the gate hop's pre-drawn thumb (DrawnHop.thumb) and the frame of it thumbify is on, from the press until he is down (ENG-27o) */
   private flyThumb: { th: DrawnThumb; k: number } | null = null;
   /** drawHop's own stream: a hop drawn ahead for a gate never moves the bot's other draws (rule 28's row diff stays readable) */
   private readonly rHop: () => number;
-  /** SKILLS.floatSure: when he began standing for a hop that lands a beat later (s; -1: not waiting) */
-  private floatBeat = -1;
-  private floatBeatLast = -1;
   /** HOP_TRACE: the latest hop a gate judged, waiting for the press; the hop in the air, waiting for its landing */
   private judged: (HopRow & { on: number }) | null = null;
   private hopOpen: { row: HopRow; air: boolean; lives: number } | null = null;
@@ -2765,7 +2760,7 @@ export class FirstTimerRun {
       if (s.until < 0 && Math.abs(p.vx) < 10) s.until = t + (this.edge?.stand ?? 0.2);
       if (s.until < 0 || t < s.until) return {};
       // (the lead's ruling A, ENG-27p (rule 28: every bot gate that judges a hop): at a river's edge with a float within reach, the
-      //  stand's jump goes through edgeWait's drawn-hop gate: the hop he will fly, drawn once for the wait by the testers' habit, judged
+      //  stand's jump goes through edgeWait's drawn-hop gate: the hop he will fly, drawn by the testers' habit on the frame judged (gateDraw), judged
       //  from where he stands at lag 0 and pressed when it lands. When it does not, the stand's own press as before: from these banks
       //  13 of 14 such presses over the four hopJudged runs were bank-to-bank hops (came down on solid), and hopJudged fails any that
       //  comes down on a log unjudged. 2-7 home middle Normal 2 x 15632: the stand pressed its own jumpFor hop 0.37 s after the gate
@@ -2780,21 +2775,17 @@ export class FirstTimerRun {
           this.standing = null;
           if (HOP_TRACE.on) { this.judged = null; this.judge('edgeStand', drifts, [0], dir1, h.hold, p.vx, 0, 24, h); }
           this.gateHop = h;
-          this.waitHop = null;
           return this.startJump(dir1, 'single', false);
         }
         if (HOP_TRACE.on) this.judged = null;
         // (and no bank in reach past the edge (within 400 px, -120..+300 px of his feet): the stand's own hop, drawn in startJump and
         //  flown unjudged, could only come down on a log or in the water, so he stands by choice (the lead: 'stands by choice only when the
-        //  trace shows the fallback cannot know'), the drawn hop drawn anew each 0.5 s beat as edgeWait's. Traced, ENG-27p: of the twelve
+        //  trace shows the fallback cannot know'), the hop aimed anew each frame (gateDraw). Traced, ENG-27p: of the twelve
         //  refused stands over the four hopJudged runs, eleven had a bank 300-430 px on (all came down on it); x 15632 had none (logs #39,
         //  #40 only) and its drawn hop was a 0.033 s tap)
         const here = this.floorAt(p.x, p.y, 6), edgeX = here ? (dir1 > 0 ? here.x + here.width : here.x) : p.x;
         const bank = this.sim.platforms.some((q) => q.type !== 'drift' && q !== here && !q.broken && q.y - p.y > -120 && q.y - p.y < 300 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) > -10 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) < 400);
         if (!bank) {
-          if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
-          this.floatBeatLast = t;
-          if (t - this.floatBeat >= 0.5) { this.waitHop = null; this.floatBeat = -1; }
           this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
           return {};
         }
@@ -3046,37 +3037,27 @@ export class FirstTimerRun {
             const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
             const drifts = floats.filter((q) => q.type === 'drift');
             if (drifts.some((q) => lands(q))) {
-              // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
+              // (the lead's ruling: the hop he will fly, drawn by the testers' habit on this frame (gateDraw), judged from where he stands)
               const h = this.gateDraw(dir as -1 | 1);
               const flies = drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
               this.gateRow('edgeWait', flies);
               if (flies) {
                 this.edgeWait = -1;
-                this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
-                this.waitHop = null;
                 return this.startJump(dir, 'single', false);
               }
               // (the gate refused: the `near` probe's judgment above is no judgment of a hop he will press (the lead's ruling A, ENG-27p:
               //  left in place, the edge stand's press 0.37 s later picked it up, 2-7 home middle Normal 2 x 15632))
               if (HOP_TRACE.on) this.judged = null;
-              // (the beat is waited for even past the 6 s wait: the 6 s gave up on a float never near, not on one a beat away; seed 2 x
-              //  13086 pressed the old hop 0.34 s after a lag-0.1 judgment, as the wait ran out, and fell)
-              // (and a press decided before the judgment (a pending thumb, a late walk-off armed) is dropped while he stands for it, and
-              //  the stand is his choice (clockHeld), so the stopped-dead read never decides a jump of its own: one came 0.07 s into the
-              //  beat as a double from x 11408 and came down on another log, seed 2)
-              if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
-              this.floatBeatLast = t;
-              if (t - this.floatBeat < 0.5) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
-              // (the beat out with the drawn hop not landing: a new wait, its own draw, and he still stands by choice; the wait returned
-              //  with nothing held, so the stopped-dead read decided a hop no gate judged 2 frames on (2-7 home middle Normal 2, t 20.17,
-              //  x 14674, ENG-27n's trace) )
-              this.waitHop = null;
-              this.floatBeat = -1;
+              // (refused: he stands by choice and aims again next frame (gateDraw); a press decided before the judgment (a pending thumb,
+              //  a late walk-off armed) is dropped while he stands, and the stand is his choice (clockHeld), so the stopped-dead read never
+              //  decides a jump of its own: one came 0.07 s into a stand as a double from x 11408 and came down on another log, seed 2; the
+              //  wait returned with nothing held and it decided a hop no gate judged 2 frames on, 2-7 home middle Normal 2, t 20.17, x 14674,
+              //  ENG-27n's trace)
               if (this.edgeWait < 0) this.edgeWait = t;
               if (t - this.edgeWait < 6) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
-            } else this.floatBeat = -1;
+            }
           }
           if (floats.length && !near) {
             if (this.edgeWait < 0) this.edgeWait = t;
@@ -3104,7 +3085,7 @@ export class FirstTimerRun {
           //  Not sure: he rides on, and the log hands him to the bank, SKILLS.handed)
           const bankIn = (q: Platform) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX);
           const reach = SKILLS.raceSure ? this.sim.platforms.some((q) => bankIn(q) && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0))) : bank;
-          // (SKILLS.floatSure, the lead's ruling (rule 28): the hop he will fly, drawn once for the ride by the testers' habit (a double
+          // (SKILLS.floatSure, the lead's ruling (rule 28): the hop he will fly, drawn by the testers' habit each frame of the ride (gateDraw) (a double
           //  as often as they press one), is the hop judged, from where he stands, onto the bank or the next log; not sure, he rides on.
           //  It was judged a single held who.hold[0] and flown as jumpFor and the draws made it: every race row a double, hopJudged.test)
           const raceLegal = SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y);
@@ -3124,7 +3105,6 @@ export class FirstTimerRun {
                 else this.judge('race', logs, [0], dir as -1 | 1, h.hold, vx, 0, RACE_MARGIN, h);
               }
               this.gateHop = h;
-              this.waitHop = null;
               return this.startJump(dir, this.jumpFor(p, dir, here), false);
             }
           } else if (raceLegal && (reach || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
@@ -3162,20 +3142,15 @@ export class FirstTimerRun {
               const flies = logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
               this.gateRow('upstream', flies);
               if (flies) {
-                this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
-                this.waitHop = null;
                 return this.startJump(dir, 'single', false);
               }
-              if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
-              this.floatBeatLast = t;
-              if (t - this.floatBeat < 0.5) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
-              // (the beat out with no judged hop landing: the old press here fired a hop no gate judged (2-7 home middle Normal 2, t 21.67,
-              //  36.47, 39.33, ENG-27n's trace); now the wait ends, the next draws its own hop, and he stands on (the log hands him back))
-              if (next) { this.floatBeat = -1; this.waitHop = null; this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
+              // (refused: he stands on (the log hands him back) and aims again next frame (gateDraw); the old press here fired a hop no gate
+              //  judged, 2-7 home middle Normal 2, t 21.67, 36.47, 39.33, ENG-27n's trace)
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
+              return {};
             }
-            this.floatBeat = -1;
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
           }
           if (!bank && !next) {
@@ -4177,8 +4152,8 @@ export class FirstTimerRun {
   /** a flick up: short, sometimes straight up for a moment; a second flick only where a single one failed before */
   /**
    * The hop he will press at a gate, drawn by the testers' habit as startJump draws it (the hold, the double's share and second press,
-   * the beat with no steer, then the second press's hold), from its own stream (rHop), once per wait: kept until a gate presses it, so
-   * the hop judged frame to frame is one hop and no other draw of the bot's moves (level.md rule 28; the lead's ruling, ENG-27n).
+   * the beat with no steer, then the second press's hold), from its own stream (rHop), on each frame a gate judges (gateDraw, ENG-27q),
+   * so the hop judged is the hop flown and no other draw of the bot's moves (level.md rule 28; the lead's rulings, ENG-27n, ENG-27q).
    */
   /** the engine's second-jump speed now (engine.ts, the air press: the early-stage and Easy help, a drag zone, the spore cloud's drowse) */
   private v2(): number {
@@ -4186,15 +4161,22 @@ export class FirstTimerRun {
     return PHYS.doubleV * (1 + ASSIST.doubleJump * (e.assistNow?.() ?? 0)) * (e.flightClear ? 1 : drowsyJump(e.drowsy ?? 0)) * (e.dragJump ?? 1);
   }
 
-  /** the hop a drawn-hop gate judges this frame (rule 28): the wait's hop, drawn once and kept until a gate presses it */
+  /**
+   * the hop a drawn-hop gate (edgeStand, edgeWait, race, upstream) judges this frame (rule 28): drawn ON this frame, every frame he is at
+   * the gate. The cadence's source (the lead's ruling, ENG-27q): a tester re-aims every moment, and no profile measures a reaction or a
+   * decision time (BOTS.md, R-165.59: stopReact and thumb are KID/ADULT's, kept: "no profile measures reaction, thumb latency"), so the
+   * re-aim is each frame (DT), the press the judged hop's frame at lag 0 and its flight with the thumb's own state (thumbAt). It was one
+   * draw held until a gate pressed it (the race) or for a 0.5 s beat with no source (edgeWait, upstream, the edge stand): 1,265 of 1,293
+   * gate frames on 2-7 home middle Normal 1 were judged on a draw from an earlier frame (hopJudged.test.ts, the re-aim test)
+   */
   private gateDraw(dir: -1 | 1): DrawnHop {
-    if (!this.waitHop) { this.waitHop = this.drawHop(dir); this.waitHopT = this.t; }
-    return this.waitHop;
+    this.gateAimT = this.t;
+    return this.drawHop(dir);
   }
 
   /** GATE_TRACE: a gate judged this frame (records only) */
   private gateRow(site: string, pressed: boolean): void {
-    if (GATE_TRACE.on) GATE_TRACE.rows.push({ site, t: +this.t.toFixed(4), x: this.sim.p.x, drawnAt: +this.waitHopT.toFixed(4), pressed });
+    if (GATE_TRACE.on) GATE_TRACE.rows.push({ site, t: +this.t.toFixed(4), x: this.sim.p.x, drawnAt: +this.gateAimT.toFixed(4), pressed });
   }
 
   private drawHop(dir: -1 | 1): DrawnHop {
