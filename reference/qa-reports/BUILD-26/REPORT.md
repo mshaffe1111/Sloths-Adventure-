@@ -15,8 +15,13 @@ compares two row files (pass = shrine with no rescue).
    ruling. My doubt, sent to the lead: A/B's line cannot reach these runs (stopMeant is set only at the tower's "stopped first";
    1-1 is no tower; child has holdQ, its release rule unchanged), so the red may be C's or the base's. **tierBots on base c99352a65
    (= cut 5's code; src/tools diff to a59a144c0 empty) was RUNNING at my box** (scratchpad tierbots-base-c99352a65.txt, lost with
-   the container): re-run it. Base 9/9: the red is C's or A/B's; run tierBots on a tree with C alone (9df2f0d11) to tell. Base
-   8/9: it is not ours, and A/B comes back only on the lead's word (revert 6567d3557). NOT RUN on the head: castBots.test.ts whole,
+   the container): re-run it. **The lead's ruling on it:** (a) base ALSO 8/9: the red is not A/B's; A/B comes back (revert
+   6567d3557); then tierBots on 2f188c552 (before cut 5). If that is 9/9, cut 5's Progress rewind moved child normal 7 and 18:
+   re-run the calibration and recommit reference/qa-reports/R-165.59/calibration-main.jsonl WITH the bot (R-165.59/BOTS.md), and
+   only if tierBots' other eight checks (the tiers matching the testers) still pass on the recommitted head; if any fails, tell
+   the lead BEFORE recommitting. (b) base 9/9: the revert stands; trace how A/B reaches 1-1's child (holdQ, no tower), two runs.
+   Then castBots.test.ts whole and the full suite on the final head (D118), then the per-tier table for 7b81e2ee2 (step 1).
+   NOT RUN on the head: castBots.test.ts whole,
    the full suite. The base suite (D114) was still running at my box: TSC clean on base; the tests had not finished.
 1. **The per-tier table for the C + A/B tree with no lip (7b81e2ee2):** 1-4 x40, all five bots, both settings, against cut 5
    (b26f/rows/r14-fe3d3d6ca.jsonl), b26g/cmp.py: NOT RUN. No tier there may drop. (On 2132bddf8, with the lip, child N dropped
