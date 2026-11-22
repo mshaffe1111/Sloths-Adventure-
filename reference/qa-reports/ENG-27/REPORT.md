@@ -17,8 +17,10 @@ the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
    -0.34..-2.35 s (paid +0.56..+0.59). **The full grid on 7501bf2fb is RED: 7 of 89 race-leg falls still pay** (s/fallpays-grid-RED-
    7501bf2fb.txt): home middle Normal 5 x 7425 +0.84, Easy 2 x 10049 +0.33, Easy 5 x 4656 +0.69, Easy 6 x 3198 +0.10, ride Easy 5 x 7533
    +0.50; post middle Normal 6 x 10125 +0.68, expert Normal 1 x 10076 +0.73. **Trace two of them first (rule 28: seed, x, frame, what
-   happened).** My unverified guess: his second crossing from the respawn to the fall is faster than his first (a log already in reach the
-   second time, where he stood for one the first time), so the first-pass margin is not enough. If so, the ruling's formula cannot keep the
+   happened).** ONE traced (s/cross-e6-7501bf2fb.txt, probe s/cross-27s.mts.txt): home middle Easy 6 x 3198: first pass at the respawn
+   x 3490 margin 5.77, at the fall 5.43 (the first crossing LOST 0.34 s to the boat); respawn 5.77 - 0.75 = 5.02; the second crossing of the
+   292 px took 1.57 s and GAINED 0.52 s, back at x 3198 5.54 (+0.10). So his second crossing beat his first by 0.86 s, more than the 0.75 s
+   beat: the first-pass margin is not enough wherever the first crossing was slow (what slowed it is not traced yet; the other six not traced). If so, the ruling's formula cannot keep the
    invariant by itself; the lead rules the form (D112: name the invariant before any cap). Then the suite on the fix (pacerLay was RED 9/19
    on the base and on D': name any change), and send the lead the rows (rows first).
 1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
