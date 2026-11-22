@@ -26,7 +26,7 @@ Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + c
    family as adult N 9's end-vine spot). NOT yet proven: the frames at the vine tops with and without the rule are the next run.
 2. **2-6 x40 on d6350d3e7: DONE** (b26j/rows/r26-d6350d3e7.jsonl, b26j/tab26-d6350d3e7.txt): against cut 5 (b26f/rows/r26-fe3d3d6ca.jsonl)
    NO row moved in any tier (adult E 29, adult N 33, child E/N 40, expert 40, kid E 26, kid N 31, middle E/N 40). Rows sent to the lead.
-3. **The suite on c00d2fd17** (RUNNING: tsc 0; unit tests 1247 run, none red at my box): re-run if it died
+3. **The suite on c00d2fd17** (RUNNING: tsc 0; unit tests 2502 run at my box, red only the two KNOWN: tower.test 'a sealed piece...' and R-165.312's todo): re-run if it died
    (scratchpad suite.sh: the CLAUDE.md list + castBots.test.ts whole + tierBots). KNOWN: tower.test 'a sealed piece...', R-165.312's todo.
 4. **Then C on top (f4eab7721): 1-4 and 2-6 x40,** rows to the lead. Child E 37 on c00d2fd17 + C + the rule: shrine, 0 rescues (one run;
    the x40 confirms it); C's adult/kid/middle E 10/37 should come back (on the base they stick at x 607 'in a dip 281 px deep', C's spot).
