@@ -70,11 +70,11 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | castBots 2-3 seeds 1-40, both settings, every tier, vs BUILD-23e rows | PASS, IDENTICAL | 216 s; 360 rows (9 bot x setting, 40 seeds); `tools/castcmp.py` vs reference/qa-reports/BUILD-23/castbots23e-rows.jsonl: **0 of 360 rows differ**. Passes: adult 39/40 normal, 40/40 easy; child, middle 40/40 both; expert 40/40 normal; kid 0/40 both (as BUILD-23e: the shrine, its known open item). Rows: castbots/castbots23-rows-e5eecab9a.jsonl |
 | tipwalk --layouts 4 | PASS | 15 s |
 | every registered seed list | PASS | 2548 s here; 14 lists, each clean on both settings: 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 2-1 2-2 2-3 2-4 2-5 |
-| paintcheck 0/3, 1/3, 2/3 | 0/3 PASS (284 s); 1/3 running | |
-| tierBots | pending | |
-| funcheck | pending | |
-| buildcheck (alone) | pending | |
-| the unit suite | pending | |
+| paintcheck 0/3, 1/3, 2/3 | PASS x3 | 0/3 284 s (170 known ids seen); 1/3 (107 known ids); 2/3 387 s (106 known ids); no new painted style through code terrain |
+| tierBots | PASS | 179 s; # pass 9 # fail 0 |
+| **funcheck** | **FAIL (22 worse/new, 0 to lower)** | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Told the lead. |
+| buildcheck (alone) | PASS | 1-1 p95 99 ms normal, 64 ms easy (budget 150 ms at CPU x4) |
+| the unit suite | running | |
 | slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
 
 ## Learned
