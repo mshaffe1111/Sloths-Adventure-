@@ -1,20 +1,40 @@
-# BUILD-26k (on t-build-26-wip-26k from 9f8b81346): the blocker traced and fixed generally. Child N 8 and 14 were NOT the step-up rule's spots: a knock-on (the rule's one fire 30 s earlier put him at 1-4's vine fields at another moment, a fig pod knocked him off, and the bot's rewind then stranded him on the field's floor). Two general bot faults, fixed in 4185812c7 + 54cad4125, toy 195db372c (RED on 9f8b81346, GREEN on the fix, both arms). On the fix, child N 8 and 14 and adult N 9 (A/B's end vine) all pass, rule on and planted. x40s and both suites RUNNING at my box. Started 8:46 PM ET 11-21 (by `date`)
+# BUILD-26k (on t-build-26-wip-26k from 9f8b81346): child N 8 and 14 traced: a KNOCK-ON (the rule's one fire 30 s earlier moved when he met 1-4's fig pods; a pod knock, then the bot's rewind stranded him). The fix 54cad4125 clears them and adult N 9, and 1-4 has NO tier under cut 5. But it is NOT LANDABLE: 2-6 kid E 26 -> 25 (kid E 22 lost), and on 1-4 four rescued fails became silent 1200 s vine stalls. Toy 195db372c RED/GREEN. Started 8:46 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26k (NOT on t-build-26, D117): **4185812c7** FigPush.sawKnock + Progress.relocate's `climb`; **54cad4125** relocate
 takes the way he can reach first; **195db372c** the toy (castBots.test.ts); this REPORT with b26k/ evidence.
 
 ## EXACT NEXT STEP (base t-build-26-wip-26k at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
-0. **Read the results of the runs that were going at my box** (they die with my container: re-run whatever is missing, scratchpad paths below):
-   (a) the suite on the CANDIDATE 9f8b81346 (packet step 0: CLAUDE.md list + castBots.test.ts whole + tierBots; b26k/suite.sh.txt is the
-   script: `suite.sh <frozen tree> <log dir>`, one summary.txt line per gate with rc); (b) the SAME suite on my head 195db372c (D114: tools/
-   changed); (c) the x40s on 54cad4125 (same bot code as 195db372c), 1-4 then 2-6, both settings:
-   `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --par 6 --rows r14-54cad4125.jsonl` (then 2-6).
-   Known reds: tower.test 'a sealed piece...', rollGuard 1-4 (ENG-26q's), R-165.312's todo. tierBots 1-1 must be 9/9.
-1. **Rows to the lead** (packet step 2): 1-4 and 2-6 vs cut 5 (1-4 cut 5: adult E 36, adult N 37, child E 36, child N 39, expert N 39, kid E
-   32, kid N 19, middle E 37, middle N 36; 2-6 cut 5 rows: b26f/rows/r26-fe3d3d6ca.jsonl) AND row-for-row vs the candidate's
-   (b26j/rows/r14-83018b453.jsonl; 2-6: b26j/rows/r26-f4eab7721.jsonl): NO tier drop on either. Expected: child N 39 back (8, 14) and adult
-   N 9 back (38). **The rewind change touches every fall-back rewind on every stage**: any moved row on 2-6 is traced (rule 28), never
-   waved through. Then the bound's toy arms (BUILD-26j's (a), not done) and the gains as real finishes (rule 28; kid N's 21 first).
-2. On the lead's word only: land on t-build-26 rebased on ENG-26q's head (never force); then the relists as the packet's step 3.
+**The fix (4185812c7 + 54cad4125) does not land as is.** Its x40s (b26k/rows/, on 54cad4125, both settings):
+| 1-4 tier | cut 5 | candidate 83018b453 | fix | rows moved vs the candidate |
+|---|---|---|---|---|
+| adult E | 36 | 40 | 40 | - |
+| adult N | 37 | 37 | **39** | +9, +23 (shrine, goal 1/1, 0 rescues: real); 39 rescued -> **1200 s stall** |
+| child E | 36 | 40 | 40 | - |
+| child N | 39 | 37 | **39** | +8, +14 (real finishes, 207 s / 214 s); 10 rescued -> **1200 s stall** |
+| expert N | 39 | 40 | 40 | - |
+| kid E / kid N | 32 / 19 | 40 / 40 | 40 / 40 | - |
+| middle E | 37 | 40 | 40 | - |
+| middle N | 36 | 37 | **38** | +10 (real); 1 and 36 rescued -> **1200 s stall** |
+2-6 vs cut 5 (adult E 29, adult N 33, child E/N 40, expert 40, kid E 26, kid N 31, middle E/N 40): fix adult E 29, **adult N 34** (+37, a real
+shrine), **kid E 25: a TIER DROP (kid E 22, a pass on the candidate, now rescued once: 'in a dip 311 px deep, a drop of 311 px ahead, water
+ahead, the way on is 206 px down' at x 1192)**, kid N 31, the rest 40. No other row moved.
+0. **Trace the two new faults (rule 28, two runs per cause), both from F2 (the floor-first rewind):**
+   (a) **1-4 adult N 39 (and child N 10, middle N 1, 36): a stall on a vine with no stuck clock.** where.mts.txt (`BOT=FT_ADULT ... 39`): from
+   about t 110 to the cap he holds a vine at 631,5186 (C), cur 696, best 955, off 288, fallBacks 1, never moving. On the candidate the same
+   rows end with a rescue. **The variant without the vine arm (relocate without `climb`) stalls the same way (591,5186, cur 667)**, so it is
+   the floor-first ranking that leads him there. Find the decide branch that keeps him still on the vine (firsttimer.ts:2436 FigPush or the
+   trunk branch :2440); then the general fix may be BOTH: (i) a stall while held counted as no progress (the rescue the row had before, so a
+   miss is never hidden: rule 28), and (ii) the rewind's pick. Never let a fail turn into a silent cap.
+   (b) **2-6 kid E 22** at x 1192: trace with and without the fix (the rewind is the only change): which relocate pick moved.
+1. Re-run both x40s on the new fix; NO tier under cut 5 on either and no silent caps; rows to the lead. Then the toy gets the new arm.
+2. **Read the runs that were going at my box** (they die with my container): (a) the suite on the CANDIDATE 9f8b81346 (packet step 0;
+   b26k/suite.sh.txt: `suite.sh <frozen tree> <log dir>`, one summary.txt line per gate); (b) the same suite on 195db372c. At my box only
+   tsc had returned (0) on 9f8b81346; the unit tests were still running. Known reds: tower.test 'a sealed piece...', rollGuard 1-4
+   (ENG-26q's), R-165.312's todo; tierBots 1-1 9/9.
+3. **A second finding for the lead (the bound, BUILD-26j's (a)):** b26k/bound.mts.txt, the step-up toy's own lip with the child Easy's look set
+   to 1.2 or 2.5 (the toy uses 0): he walks off the lip WITHOUT a press (vy +83) in 2 of 6 rolls at 1.2 and 3 of 6 at 2.5, the SAME on the
+   unbounded rule (d6350d3e7) and on the bounded one. The bound moves one roll (129 -> 101 px out). So the toy's look 0 hides walk-offs the
+   rule does not cover at a real look. Not traced.
+4. On the lead's word only: land on t-build-26 rebased on ENG-26q's head (never force); then the relists as the packet's step 3.
 
 ## The trace (1-4 child Normal, two runs per arm, every run deterministic; b26k/*.txt, vt.mts.txt prints the frames)
 - **Reproduced on 9f8b81346:** N 14 fires the rule once (t 161.03 x 415,3646) and fails 634,1923 t 192.7 'fell back down 8 times'; N 8 fires
@@ -49,7 +69,7 @@ takes the way he can reach first; **195db372c** the toy (castBots.test.ts); this
 - Pushback: none on the packet. Own slip: to get the toy's RED run I copied the toy into the frozen suite tree (9f8b81346) for about a minute
   and copied the original back (git status clean; the suite was still in the unit tests, before castBots.test.ts ran). D115: the RED run
   belongs on its own frozen tree; the next one does it that way.
-- Unresolved: the x40s, both suites (step 0), the bound's toy arms, the gains as real finishes, the landing.
+- Unresolved: the two new faults (step 0), both suites (step 2), the bound's arms at a real look (step 3), the landing. Done: the x40s, the gains checked as real finishes.
 - Learned (for level.md, proposed): a fail far from a changed rule's spot is first checked for a clock shift (when he reaches each timed
   hazard), then the spot itself; and a rewind is judged by where he can WALK or CLIMB from where he stands, never by distance alone.
 - Lessons applied: D96 (both toy arms), D111 (box by `date`), D113/D122 (background runs with timeouts, no foreground waits), D114 (the suite
