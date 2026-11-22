@@ -14,7 +14,9 @@ drawn past it below. UNVERIFIED: the toy world's width was not read (my probe's 
 view on a shot before calling it.
 **Done since the first rows:** pacerRespawn now also proves the boat's PLACE pays (D121, 7559289ca on t-eng-27-wip-27t): while it owes,
 its clock + owed grows by exactly a frame's dt, and the owed drains within the ease's named length. GREEN on frozen 7559289ca (2 of 2).
-The plant for it (an ease that never drains, a detached commit on 7559289ca): RUNNING at hand-over (scratchpad grid-plant-drain.txt, dies with my container): re-run it (sed the eased() guard to return 0, commit detached, pacerRespawn must fail with "the boat still owed ... past the ease's length").
+The plant for it (an ease that never drains, a detached commit on 7559289ca): RED, as it must be (8202e11b3, a detached commit, not pushed: the eased() guard returns 0; t/grid-RED-drainplant-8202e11b3.txt):
+  home and post both fail, 52 breaches 'the boat still owed ... past the ease's length' (home middle Normal 5 0.84 s, Easy 2 0.28, Easy 5
+  0.65, Easy 6 0.06, ride Easy 5 0.50, ...). GREEN on 7559289ca (t/grid-GREEN-7559289ca.txt). The check bites.
 **(1) THE STRICT HOLD IS BUILT AND GREEN on the grid; the lead rules its rows. Then (2) E, (3) D's judge, (4) the table, as ENG-27t's
 packet wrote them (unchanged, none started: box).**
 - **Before (2), finish (1)'s two open checks:** (i) THE CLIP (D63) of the ease: the recording is made (tools/inspect/cliprec27t.ts on
