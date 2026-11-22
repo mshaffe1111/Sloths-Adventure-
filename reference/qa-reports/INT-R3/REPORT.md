@@ -75,7 +75,7 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | tierBots | PASS | 179 s; # pass 9 # fail 0 |
 | **funcheck** | **FAIL, ruled debt (identical to INT-14, 22/22), carried** (22 worse/new, 0 to lower) | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Lead's ruling: carried as the named debt of releases 1 and 2; at the final integration the same diff must still show 22/22 identical, and any new or worse flag there is a red. |
 | buildcheck (alone) | PASS | 1-1 p95 99 ms normal, 64 ms easy (budget 150 ms at CPU x4) |
-| the unit suite | re-running alone | the chain hit the 2 h background limit mid-suite (3221 results, 0 failed, 1 TODO: R-165.312): no verdict from that run; re-started alone on the same frozen tree |
+| the unit suite | PASS | re-run alone on the frozen tree (the chain hit the 2 h limit mid-suite at 3221 results, 0 failed): 4041 tests, 4038 pass, **0 fail**, 3 todo; 1840 s |
 | slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
 
 ## Learned
