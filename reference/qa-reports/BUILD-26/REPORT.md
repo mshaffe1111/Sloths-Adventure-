@@ -14,12 +14,24 @@ table), 43c4c6776 + b26i/probe-switches.patch (local only: B26I_REACH=0 turns C'
    (cut 5 against the head). **Send the rows to the lead.** No tier may drop; adult N 9 is expected lost (A/B's knock-on, step 2).
    Then tierBots on 9c2ce855d (C touched only the tower route; 1-1 has no tower, so the recommitted calibration should hold: check it,
    do not assume it), then castBots.test.ts whole and the suite on the final head (D118).
-1. **Then the packet's step 4:** the 1-4 kid N gains checked as real finishes (21 of 35: rule 28), then BUILD-26g's packet steps 4-5
+1. **THE LEAD'S RULING (after my trace; the revert stands for now), in dependency order (D40):** (1) ONE general step-up rule that
+   covers BOTH branches of the 40 px step-up family: child E 37 (a bough exactly 40 px up, walked under) and middle E 10 (the middle's
+   late press at a faceless lip, 2832/2848, b26g/lip.patch). Its number cites its source (the jump's reach constant's file:line, D116),
+   not 40 by eye. Its toy RED on 9c2ce855d and GREEN on the fix (the lip's old toy proved nothing). (2) Then C re-applied on top.
+   (3) x40 on 1-4 and 2-6 against cut 5, rows to the lead BEFORE anything lands (wip-26j). Adult N 9's frame-level why stays on the list.
+   **What I read for (1), not yet tested:** firsttimer.ts about 2738-2751: `rise = this.prog.target(p, 240)` reads 240 px ALONG the way,
+   and on E 37 the way from the vine top 786,2684 to 90,2644 is one slant corner (40 px over 696 px), so from x 544 the point 240 px on (x about 304) is
+   only about 28 px up (2684 - 40 * 482 / 696; by arithmetic on the corners, not printed from a run): the `rise.y < p.y - 40` gate fails by the slant, not only by its strict `<`; making it `<=` alone would NOT fire there. The
+   `over` test (q.y < p.y - 30 && q.y > p.y - STAIR_HOP, STAIR_HOP = 100 at firsttimer.ts:1030) WOULD find bough #45 (2644 is p.y - 40).
+   The edge read below it ("sees the gap only if nothing stands just past that end") likely misses #44's end at 360 because #45 stands
+   just past and above it: that is the faceless-lip branch. Trace both before writing the rule.
+2. **Then the packet's step 4:** the 1-4 kid N gains checked as real finishes (21 of 35: rule 28), then BUILD-26g's packet steps 4-5
    (2-6's moved rows on the FINAL bot (9c2ce855d's); rule 28's rest; 1-4 relisted ONCE; 2-6 relisted under castBots --proven with the yield).
-2. **Open, for the lead to place (a cause of its own, not C's or A/B's):** (i) the 40 px step over a drop: in firsttimer.ts the tower's
+3. **Open (the lead placed (i) as step 1 above):** (i) the 40 px step over a drop: in firsttimer.ts the tower's
    'stopped first' rise check is `rise && rise.y < p.y - 40` (line about 2747), so a rise of exactly 40 px (1-4 E 37's bough 2684 -> 2644)
    never takes that branch; on that roll he walks under the higher branch and off. (ii) the vine field's end vine (1-4 N 9, x 505,
-   7230-7630): a right press at the last vine takes him off it (cl 0, vx -93, b26i/fr9on-46-47.txt). Each needs its own two runs, toy and
+   7230-7630): a RIGHT press at the last vine takes him off it (not a late-lifted 'left': at t 46.4 left is pressed for one frame and let
+   go; at 47.1 right; 47.2 off) (cl 0, vx -93, b26i/fr9on-46-47.txt). Each needs its own two runs, toy and
    plant before any fix (rule 21, 22, 28); neither is in this packet.
 
 ## Step 1: the second run per cause (done, on 43c4c6776 with an on/off switch; one each was done on c99352a65 by BUILD-26h)
