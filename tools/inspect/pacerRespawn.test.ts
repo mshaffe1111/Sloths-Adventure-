@@ -76,3 +76,35 @@ for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const) 
     assert.deepEqual(bad, [], `${name}: ${bad.length} of ${n} respawns on the race leg changed his margin:\n${bad.join('\n')}`);
   });
 }
+
+// (ENG-27s, the fall-pays measure END TO END (D112: the principle 'a fall never pays' as its own test, not the respawn mechanism): the
+//  respawn above keeps his margin where he STANDS after it, which is behind the fall's x; back at the fall's x his margin must be no better
+//  than it was the frame before the fall. PLANT: RED where a fall pays (ENG-27s table, every bot A, B, C, D': the stretch from the respawn to
+//  the fall is credited twice, once when he first crossed it and again as he re-crosses it from a margin kept whole, 0.01-0.81 s a fall))
+const CASES = [['home', 'normal', 1], ['home', 'normal', 2], ['home', 'normal', 3], ['home', 'easy', 1], ['home', 'easy', 3], ['post', 'normal', 4], ['post', 'normal', 5]] as const;
+test('2-7 home and post, the careful middle: back at a race-leg fall\'s x, his margin is never better than at the fall (a fall never pays, end to end)', () => {
+  const bad: string[] = [];
+  let n = 0;
+  for (const [where, setting, seed] of CASES) {
+    let piece: { kind: string; pacer: { dir: number }; clock: number | null; verdict: unknown } | undefined;
+    let mLast: number | null = null, lives: number | undefined;
+    const falls: { x: number; m: number; back?: number }[] = [];
+    homeRun('middle', setting, seed, 1, { onFrame: (sim: { e: Record<string, any> }) => {
+      const e = sim.e, p = e.player;
+      piece ??= (e.pieces as Array<typeof piece>).find((q) => q!.kind === 'pacer');
+      if (!piece) return;
+      const m = piece.clock === null || piece.verdict ? null : pacerMargin(piece.pacer as never, p.x, piece.clock);
+      if (lives !== undefined && e.lives < lives && mLast !== null) falls.push({ x: p.x, m: mLast });
+      for (const f of falls) if (f.back === undefined && m !== null && !e.down && p.grounded && (p.x - f.x) * piece.pacer.dir >= 0) f.back = m;
+      mLast = m;
+      lives = e.lives;
+    } } as never, where === 'post' ? POST_CODE : HOME_CODE);
+    for (const f of falls) {
+      if (f.back === undefined) continue;
+      n++;
+      if (f.back > f.m + TOL) bad.push(`${where} ${setting} ${seed} x ${Math.round(f.x)}: ${f.m.toFixed(2)} at the fall -> ${f.back.toFixed(2)} s back at its x (+${(f.back - f.m).toFixed(2)})`);
+    }
+  }
+  assert.ok(n > 0, 'no race-leg fall in the table (the test judges nothing)');
+  assert.deepEqual(bad, [], `${bad.length} of ${n} race-leg falls paid:\n${bad.join('\n')}`);
+});
