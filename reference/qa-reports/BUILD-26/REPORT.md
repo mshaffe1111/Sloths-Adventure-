@@ -11,9 +11,8 @@
 2. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head: name any castBots mover (the wall's bottom is lay data on
    the stage object; expected none, to be proven).
 3. Lands on the lead's word, rebased on t-build-26's head (REPORT.md conflicts: keep both sides' sections).
-State at handover: the base suite on a07ed1bd7 still running in the background (tsc green; unit step running), logs scratchpad
-suite-base/. Spot 0 numbers before the ruling: port screens 9.39, land screens 11.22, land clips 23.75 (RED); spots 1-2 and gradients
-GREEN on 89fb84b0f.
+State at handover: 2-6 alone is GREEN on f78a3a66d (Step 4). The base suite on a07ed1bd7 was still running in the background (tsc
+green; the unit step running, one long file), logs scratchpad suite-base/. NOT run on the candidate: the full drawcheck, the suite, lockall.
 
 ## Step 1: the plant, base a07ed1bd7, drawcheck for 2-6 alone, verbose: RED (5 breaches)
 (How: tools/perf/run.mjs for 2-6 alone at PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4, port then land, then `DRAWCHECK_VERBOSE=1
@@ -60,6 +59,21 @@ Per spot, per frame, candidate (gradients / clips / drawImage Mpx), base in brac
 (3/20/11.4), s3 0/18/8.7 (1/18/8.7). The wall fills the view at spots 1-2 (the cull is on: the backdrop's 1.5-2.3 screens, the vignette's
 1, the rivers' soil 1.9-2.7 and the rivers' clips gone); at spot 0 (the foot, below the wall's bottom) and spot 3 (the crest, above its
 top) it does not, and nothing there changes except the gradients.
+
+## Step 4: the lead's ruling (a), show first (f78a3a66d; stills in BUILD-26/eng26r/, sent to the lead before anything lands)
+w2Arc26.ts finish26: `bankWall.bottom = max(lowest street + 10, config.levelHeight + 20)` (the camera's floor is config.levelHeight).
+Stills at the foot, 2x, before | after: foot-port.jpg, foot-land.jpg, foot-land-band.jpg (sideways band under the streets, before over
+after), corner.jpg (sideways bottom-left, 3x). The dark patch in the sideways corner was the backdrop showing through a gap at the street
+soil's edge: now the wall's earth, one bank; no seam at the old bottom, either way up. Every still away from the foot unchanged (cmpshift
+on stills-c2 vs base: only moving things). **Named, not fixed:** under the streets, the streets' own soil (drawn after the wall) shows in
+blocks of slightly different shade (sideways, edges near x 120 and x 780 CSS; upright, a faint lighter vertical band near x 240 CSS), in
+the before too. The lead judges whether that blocks.
+**drawcheck for 2-6 alone on f78a3a66d (frozen, chattr-immutable tree), verbose: GREEN both ways (judge exit 0).** port: gradients 0,
+drawImageScreens 6.20 (limit 7.5), clips 17 (19); land: gradients 0, screens 6.14, clips 18 (19). Per spot (gradients / clips /
+drawImage Mpx): port s0 0/7/4.27 (base 5/16/13.2), s1 0/7/4.7, s2 0/8/4.6, s3 0/17/8.7; land s0 0/11/4.4 (base 7/23/15.8), s1 0/13/5.2,
+s2 0/12/5.1, s3 0/18/8.7. The worst spot is now the crest (s3, above the wall's top, the backdrop shows): unchanged from the base there;
+land clips 18 of 19 is the closest margin (drawRivers' clips + drawSafeRiverOver + drawLadder), worth a look if anything is added at the
+crest.
 
 ## Polish check (stills, 2x, Pokey pinned at drawcheck's four spots on the fixed clock, base vs candidate, pixel for pixel)
 Tool: scratchpad stills.mjs (run.mjs's own load and pin, deviceScaleFactor 2, a still per spot instead of the counts), cmpshift.py (the
