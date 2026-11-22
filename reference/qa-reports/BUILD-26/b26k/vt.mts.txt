@@ -1,0 +1,16 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT = await import(W + '/tools/inspect/firsttimer.ts'); const FirstTimerRun = FT.FirstTimerRun; const FT_CHILD = (FT as any)[process.env.BOT ?? 'FT_CHILD'];
+setDifficulty('normal');
+const seed = Number(process.argv[2]); const fx = Number(process.argv[3]), fy = Number(process.argv[4]);
+const lines: string[] = []; let fires = 0;
+let lastPad: any = null; const run: any = new FirstTimerRun('1-4', seed, FT_CHILD, { onFrame: (s: any) => {
+  const p = s.p; if (process.env.WIN ? (run.t > Number(process.env.WIN.split(",")[0]) && run.t < Number(process.env.WIN.split(",")[1])) : (Math.abs(p.x - fx) < 260 && Math.abs(p.y - fy) < 260)) lines.push(`t ${run.t.toFixed(2)} x ${Math.round(p.x)},${Math.round(p.y)} v ${Math.round(p.vx)},${Math.round(p.vy)} ${p.grounded?'G':''}${p.climbing?'C':''}${p.isVineSwinging?'S':''}${p.hanging?'H':''} pad ${JSON.stringify(lastPad)} k ${(run.e as any).knocked ?? ""} fb ${run.fallBacks} off ${Math.round(run.prog.off(p))} cur ${run.prog.cur} best ${run.prog.best} tg ${(()=>{const q=run.prog.target(p);return q?Math.round(q.x)+","+Math.round(q.y):"-"})()} nv ${(run.e as any).nearTreeVine?.x ?? "-"}`);
+} });
+const op = run.pad.bind(run); run.pad = () => { const r = op(); lastPad = r; return r; };
+const orig = run.stepUpAtLip.bind(run);
+run.stepUpAtLip = process.env.PLANT ? () => null : (...a: any[]) => { const r = orig(...a); if (r) { fires++; console.log('FIRE t', run.t.toFixed(2), Math.round(run.sim.p.x), Math.round(run.sim.p.y)); } return r; };
+const res = run.play();
+console.log(JSON.stringify({ seed, plant: !!process.env.PLANT, fires, rescues: res.rescues, finished: res.finished ?? res.done, stuck: res.stuck?.map((x: any) => [x.x, x.y, x.t, x.what]) }));
+if (process.env.TRACE) console.log(lines.join('\n'));

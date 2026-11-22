@@ -1,0 +1,20 @@
+FIRE t 161.03 415 3646
+{"seed":14,"plant":false,"fires":1,"rescues":1,"stuck":[[634,1923,192.7,"fell back down from here 8 times"]]}
+t 180.57 x 890,2183 v 0,0 C pad {"up":true}
+t 180.63 x 890,2174 v 0,0 C pad {"up":true}
+t 180.70 x 890,2165 v 0,0 C pad {"up":true}
+t 180.77 x 890,2156 v 0,0 C pad {"up":true}
+t 180.83 x 890,2147 v 0,0 C pad {"up":true}
+t 180.90 x 890,2139 v 0,0 C pad {"up":true}
+t 180.97 x 890,2127 v 0,0 C pad {"up":true}
+t 181.03 x 890,2156 v 0,0 C pad {"down":true}
+t 181.73 x 730,2178 v 0,0 C pad {"up":true}
+t 181.80 x 730,2164 v 0,0 C pad {"up":true}
+t 181.87 x 730,2149 v 0,0 C pad {"up":true}
+t 181.93 x 730,2137 v 0,0 C pad {"up":true}
+t 182.00 x 690,2137 v 0,0 C pad {"left":true}
+t 182.07 x 684,2132 v -180,-167  pad {}
+t 182.13 x 667,2127 v -285,-40  pad {"left":true}
+t 182.20 x 648,2131 v -285,107  pad {"left":true}
+t 182.27 x 630,2147 v -285,273  pad {"left":true}
+t 182.33 x 611,2173 v -285,440  pad {"left":true}

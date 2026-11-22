@@ -1,3 +1,60 @@
+# BUILD-26k (on t-build-26-wip-26k from 9f8b81346): the blocker traced and fixed generally. Child N 8 and 14 were NOT the step-up rule's spots: a knock-on (the rule's one fire 30 s earlier put him at 1-4's vine fields at another moment, a fig pod knocked him off, and the bot's rewind then stranded him on the field's floor). Two general bot faults, fixed in 4185812c7 + 54cad4125, toy 195db372c (RED on 9f8b81346, GREEN on the fix, both arms). On the fix, child N 8 and 14 and adult N 9 (A/B's end vine) all pass, rule on and planted. x40s and both suites RUNNING at my box. Started 8:46 PM ET 11-21 (by `date`)
+Commits on t-build-26-wip-26k (NOT on t-build-26, D117): **4185812c7** FigPush.sawKnock + Progress.relocate's `climb`; **54cad4125** relocate
+takes the way he can reach first; **195db372c** the toy (castBots.test.ts); this REPORT with b26k/ evidence.
+
+## EXACT NEXT STEP (base t-build-26-wip-26k at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
+0. **Read the results of the runs that were going at my box** (they die with my container: re-run whatever is missing, scratchpad paths below):
+   (a) the suite on the CANDIDATE 9f8b81346 (packet step 0: CLAUDE.md list + castBots.test.ts whole + tierBots; b26k/suite.sh.txt is the
+   script: `suite.sh <frozen tree> <log dir>`, one summary.txt line per gate with rc); (b) the SAME suite on my head 195db372c (D114: tools/
+   changed); (c) the x40s on 54cad4125 (same bot code as 195db372c), 1-4 then 2-6, both settings:
+   `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --par 6 --rows r14-54cad4125.jsonl` (then 2-6).
+   Known reds: tower.test 'a sealed piece...', rollGuard 1-4 (ENG-26q's), R-165.312's todo. tierBots 1-1 must be 9/9.
+1. **Rows to the lead** (packet step 2): 1-4 and 2-6 vs cut 5 (1-4 cut 5: adult E 36, adult N 37, child E 36, child N 39, expert N 39, kid E
+   32, kid N 19, middle E 37, middle N 36; 2-6 cut 5 rows: b26f/rows/r26-fe3d3d6ca.jsonl) AND row-for-row vs the candidate's
+   (b26j/rows/r14-83018b453.jsonl; 2-6: b26j/rows/r26-f4eab7721.jsonl): NO tier drop on either. Expected: child N 39 back (8, 14) and adult
+   N 9 back (38). **The rewind change touches every fall-back rewind on every stage**: any moved row on 2-6 is traced (rule 28), never
+   waved through. Then the bound's toy arms (BUILD-26j's (a), not done) and the gains as real finishes (rule 28; kid N's 21 first).
+2. On the lead's word only: land on t-build-26 rebased on ENG-26q's head (never force); then the relists as the packet's step 3.
+
+## The trace (1-4 child Normal, two runs per arm, every run deterministic; b26k/*.txt, vt.mts.txt prints the frames)
+- **Reproduced on 9f8b81346:** N 14 fires the rule once (t 161.03 x 415,3646) and fails 634,1923 t 192.7 'fell back down 8 times'; N 8 fires
+  once (t 134.17 x 728,5005) and fails 866,4451 t 158.1. Planted (stepUpAtLip null): both pass, 0 rescues. Both arms twice: identical.
+- **N 14, frame by frame (b26k/n14-plant.txt vs n14-plant1.txt):** with the rule he reaches the vine field (vines x 490-890 by 80, 1923-2363)
+  4.0 s EARLIER (t 180.57 vs 184.57). Climbing vine 730 at y 2137 (t 181.97) a pod knocks him off (engine `knocked` 1.2 at t 182.07, vx -180
+  vy -167): the rule's spot is 30 s and 1700 px away, so **knock-on, proven**: the rule moves when he meets the pods' clock, nothing else.
+  Planted, the pod is not there at 730 and he climbs 490 to the top.
+- **What then took him (both seeds, the same family; b26k/n14-win2.txt, n8-win.txt):** he lands on the field's floor (y 2363; N 8: y 4684 at
+  t 143.6, knocked k 1.2 at 498,4551) and stands. Two bot faults:
+  **F1 (figPush.ts:81):** FigPush.step reads `knocked` only while he climbs (firsttimer.ts:2436 runs it under `p.climbing`), and the knock's own
+  frame ends the climb: lastKnock was never set, so knockedRecently (firsttimer.ts:4041, 'a knock is never a missed climb') never held and
+  the knock counted as fall 1.
+  **F2 (Progress.relocate, firsttimer.ts:489):** the level rewind ranks by distance with y weighted 0.7, so the leg 321 px UNDER the floor he
+  stood on (pt 884, 542,2684; d 248) beat the route's own points ON his floor (x 890-1190 at 2363, d 325) and up the vine at his feet. He
+  headed for a point under a floor he could not drop through, stood, `off` hovered at 226-300 across the 260 line, and every rewind counted
+  another fall: 1 -> 8 in 10 s with no new fall, to the rescue.
+- **The fix (general; every stage's fall-back rewind):** F1: `FigPush.sawKnock(knocked, t)`, read in the bot's after() every frame. F2:
+  relocate(p, level, band, climb) ranks first the points he can reach from where he stands: about his height (within 80) or up the climbing
+  vine at his feet (climbUpVine, within CLIMB_ACROSS 90 px of it, to its top); only with none of those, the old set (his height or below).
+  F1 alone (4185812c7 first cut): N 8 passes, N 14 still fails (t 196.8): the count held at 1 for the knock's 6 s, then ran up again. F1+F2
+  (54cad4125): **N 14 0 rescues, N 8 0 rescues, rule on AND planted** (the rule's second fire in N 14, t 195.63 x 781,1642, is on the way on).
+- **Adult N 9 (A/B's end vine at x 505):** on 9f8b81346 rescued at 508,7230 'fell back down from here 3 times' t 49.5; on 54cad4125 0 rescues,
+  rule on and planted: **one fix serves both** (one run per arm; the x40 confirms).
+- **The toy (castBots.test.ts, 195db372c):** N 14's route points as built, him on the floor at 565,2363, the field vine at 570: the rewind must
+  take a point on his floor or up the vine; with no vine, his floor; **the other arm:** with nothing reachable it falls back to the points
+  under him; and FigPush.sawKnock holds knockedRecently 6 s. **RED on 9f8b81346** ('the rewind took 565,2683: under the floor he stands on'),
+  **GREEN on the fix.**
+
+## Polish check / Pushback / Unresolved / Learned
+- Polish check: bot tooling only, no screen changed.
+- Pushback: none on the packet. Own slip: to get the toy's RED run I copied the toy into the frozen suite tree (9f8b81346) for about a minute
+  and copied the original back (git status clean; the suite was still in the unit tests, before castBots.test.ts ran). D115: the RED run
+  belongs on its own frozen tree; the next one does it that way.
+- Unresolved: the x40s, both suites (step 0), the bound's toy arms, the gains as real finishes, the landing.
+- Learned (for level.md, proposed): a fail far from a changed rule's spot is first checked for a clock shift (when he reaches each timed
+  hazard), then the spot itself; and a rewind is judged by where he can WALK or CLIMB from where he stands, never by distance alone.
+- Lessons applied: D96 (both toy arms), D111 (box by `date`), D113/D122 (background runs with timeouts, no foreground waits), D114 (the suite
+  re-runs on my tools/ change), D115 (frozen trees; one slip named above), D117 (wip only), D118 (the suite on the candidate first).
+
 # BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); 2-6 x40 on the rule: identical to cut 5 in every tier; the bounded rule + C on 1-4 the same; the suite on c00d2fd17 RUNNING at my box (it dies with the container: re-run). Started 8:22 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26j (NOT on t-build-26, D117): **d6350d3e7** the rule (firsttimer.ts stepUpAtLip + LIP_STEP), **f348115a2** its toy
 (castBots.test.ts), **f4eab7721** C re-applied (git revert 9c2ce855d), this REPORT with b26j/ evidence.
