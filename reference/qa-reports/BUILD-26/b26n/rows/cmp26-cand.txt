@@ -1,0 +1,43 @@
+| tier | cut 5 RE-JUDGED | candidate | time-only moves |
+|---|---|---|---|
+| adult E | 29 | 31 | 34 |
+| adult N | 33 | 36 | 33 |
+| child E | 40 | 40 | 0 |
+| child N | 40 | 40 | 0 |
+| expert N | 40 | 40 | 0 |
+| kid E | 26 | 26 | 35 |
+| kid N | 31 | 33 | 25 |
+| middle E | 40 | 40 | 0 |
+| middle N | 40 | 40 | 0 |
+flips:
+adult E 1: 146 FAIL -> 149.6 a drop of 246 px ahead, water ahead, the way on is 179 px do @240,None
+adult E 11: 139.1 -> 127.1 FAIL r1 in a dip 77 px deep, water ahead, the way on is 194 px up @995,None
+adult E 26: 132 FAIL -> 149.7 
+adult E 27: 153.2 -> 121.3 FAIL r1 in a dip 379 px deep, an open drop ahead, water ahead, the w @961,None
+adult E 32: 170.6 FAIL -> 132.2 in a dip 325 px deep, water ahead, the way on is 197 px down @911,None
+adult E 40: 153 FAIL -> 146.1 in a dip 294 px deep, a drop of 375 px ahead, water ahead, t @993,None
+adult N 1: 140.9 FAIL -> 99 
+adult N 11: 108.1 FAIL -> 99.1 water ahead, the way on is 203 px down @1219,None
+adult N 13: 111.1 -> 113.5 FAIL r1 fell back down from here 3 times @1142,None
+adult N 23: 99.2 -> 123 FAIL r1 water ahead, the way on is 204 px down @1187,None
+adult N 32: 119.5 FAIL -> 104.9 
+adult N 37: 104.9 FAIL -> 99.1 water ahead, the way on is 213 px down @1230,None
+adult N 40: 143.7 FAIL -> 99.2 water ahead, the way on is 218 px down @1254,None
+kid E 16: 195.7 -> 126 FAIL r1 fell back down from here 3 times @870,None
+kid E 27: 146.8 -> 118.8 FAIL r2 fell back down from here 3 times @1183,None
+kid E 30: 192.2 FAIL -> 129.4 a drop of 147 px ahead, water ahead, the way on is 209 px do @330,None
+kid E 40: 157.3 FAIL -> 129.7 in a dip 295 px deep, a drop of 156 px ahead, water ahead, t @939,None
+kid N 9: 144.4 FAIL -> 132.7 water ahead, the way on is 189 px down @1141,None
+kid N 13: 132.7 -> 171.6 FAIL r1 in a dip 281 px deep, an open drop ahead, water ahead, the w @1025,None
+kid N 14: 147.4 -> 144.5 FAIL r1 water ahead, the way on is 173 px down @1245,None
+kid N 17: 150.7 -> 144.3 FAIL r1 in a dip 368 px deep, an open drop ahead, water ahead, the w @777,None
+kid N 23: 153.1 FAIL -> 102.9 water ahead, the way on is 199 px down @1170,None
+kid N 24: 240.1 FAIL -> 108.6 in a dip 337 px deep, an open drop ahead, water ahead, the w @1231,None
+kid N 25: 204 FAIL -> 129.9 water ahead, the way on is 207 px down @1222,None
+kid N 27: 189.3 FAIL -> 102.4 
+kid N 29: 195.3 -> 150.3 FAIL r1 water ahead, the way on is 201 px down @335,None
+kid N 30: 204.4 FAIL -> 102.9 
+kid N 31: 174.3 FAIL -> 94.2 
+kid N 32: 168.3 -> 126.3 FAIL r1 fell back down from here 3 times @894,None
+kid N 34: 153.3 -> 114.7 FAIL r1 fell back down from here 3 times @1170,None
+kid N 38: 171.5 FAIL -> 105.9 water ahead, the way on is 207 px down @1236,None
