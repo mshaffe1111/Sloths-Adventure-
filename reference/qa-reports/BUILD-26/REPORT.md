@@ -8,9 +8,23 @@ b746b9a87 (27e20ebf9 + b26g/lip.patch, local only), 47b57a3e8 (tierBots on the r
 0. **The two runs that were RUNNING at my box, on 27e20ebf9 (bot code = 47b57a3e8's):** (a) the full CLAUDE.md suite plus
    tools/inspect/castBots.test.ts whole, one process (TSC clean; at my box about 1250 passes, **0 fails**, not finished). Re-run it
    (it dies with the container): any red that 2f188c552's suite would not have -> revert the commit that brought it, tell the lead.
-   (b) Step 1's table is DONE (below): **child Easy drops 36 -> 35** (child E 37 lost) and adult N 9 is lost (adult N holds 37 by
-   adult N 36's gain). The lead rules on C + A/B with that drop. My proposal: step 3 FIRST (trace adult N 9 at x 508 and child E 37
-   at x 252, two runs per cause, C's or A/B's), since they are the two rows that cost the table.
+   (b) Step 1's table is DONE (below): **child Easy drops 36 -> 35**, which fails the lead's condition for C + A/B staying.
+   **THE LEAD'S RULING (top of this step): name the commit, C or A/B, for each lost row (two runs per cause); that commit is
+   reverted on t-build-26. The one exception: a general fix that clears the row with no tier drop on 1-4 and 2-6, rows to the lead
+   BEFORE it lands (on wip-26h, D117). Then the kid N gains checked as real finishes.** ONE run per cause is done (below):
+   **child E 37 is C's** (C alone on c99352a65 gives the same loss: 176.6 s, 1 rescue, x 252) and **adult N 9 is A/B's** (A/B's
+   firsttimer.ts alone on c99352a65 gives 123.7 s, 1 rescue, x 508; C alone passes it, 132.9 s, 0 rescues). NEXT: the second run
+   per cause (another 1-4 or 2-6 row that C alone, or A/B alone, loses the same way, from b26h/rows/r14-27e20ebf9.jsonl against
+   b26f/rows/r14-fe3d3d6ca.jsonl), then the revert(s) as ruled: C (9df2f0d11) costs the tier drop; A/B (9631000b9 + its back
+   commit 7fb134d44) costs adult N 9 with no tier drop (adult N holds 37), so tell the lead which you revert before you do it.
+   Trial trees (local, rebuild them): c99352a65 + `git diff 9df2f0d11~1 9df2f0d11 -- tools/inspect/towerRoute.ts` (C only) and +
+   `git diff 9631000b9~1 9631000b9 -- tools/inspect/firsttimer.ts` (A/B only); trace with b26h/traceS.ts.txt (ST=1-4).
+   **The suite on 27e20ebf9 at my box: about 2005 passes, 2 fails, not finished.** (1) src/game/gen2/tower.test.ts `a sealed piece (a
+   gate bough) in a built tower...`: it fails ALONE on 27e20ebf9 AND on c99352a65's src too; src is identical from 2f188c552 to
+   27e20ebf9 (`git diff --stat 2f188c552 27e20ebf9 -- src` empty), so it is older than these commits: not a revert, but a red the
+   lead must know of (D114). (2) `R-165.312: raw seed 1 keeps the roost boa on its roost` carries a `# R-165.312 ... engine job
+   after release 1` marker (read whether it is a todo). The container's disk filled mid-run once (worktrees); re-run the suite
+   whole on a clean tree.
 1. **The lip (step 2): the toy first.** b26g/toylip.mts drops 31/40 with the fix AND 31/40 planted, on the lip tree and on the base
    (b26h/lip-childN14.txt): it does not reach the lip, so it is not RED/GREEN (D96 unmet). Rewrite it so the lip line fires (log at
    the lip's line, as b26h/lip-childN14.txt did) before any 1-4/2-6 rows for the lip. Then the second run for child N 14's cause.
