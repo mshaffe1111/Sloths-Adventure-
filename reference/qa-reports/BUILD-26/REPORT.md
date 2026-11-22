@@ -49,6 +49,19 @@ rescue he frees three figs in 5 s and finishes (154 s). **middle N 14** (fig-m14
 fig to his right each tell stepped him away from it. **Fix:** the dodge tries the side toward his target fig first when that side is free.
 **Toy** (castBots.test.ts 'a pod's tell on the vine he holds...'): RED on 1f42b4323 (he steps left), GREEN on 567e2fbd7. Rows: next step 2.
 
+## 1-4 x40 on 3d75a90df (8 s bound + the dodge toward the fig; b26l/rows/r14-3d75a90df.jsonl, tab14-3d75a90df.txt)
+| 1-4 Normal | cut 5 committed | cut 5 re-judged (EXPECTED, not run: its 320-940 s passes as fails) | 3d75a90df |
+|---|---|---|---|
+| adult N | 37 | 34 (a5, a32, a34) | **38** (fails 9, 32) |
+| child N | 39 | 39 | **38 (fails 10, 38): UNDER cut 5** |
+| middle N | 36 | 34 (m12, m22) | **39** (fail 36) |
+| expert N | 39 | 37 (e32, e34) | **39** (fail 20) |
+Every Easy and kid N 40/40. **No silent cap; no pass over 300 s.** New fails against cut 5: **adult N 9** (cut 5 132.9 s; now rescued 'on a
+vine at 871,5659 with no way on'), **expert N 20** (cut 5 130.2 s; rescued 'on a vine at 871,5146'), **child N 38** (cut 5 210.2 s; rescued
+'in a dip 380 px deep, a trunk beside him': NOT a field stall). **305 of 360 rows moved in time against cut 5**, adult EASY too (5-20 s
+faster): NOT traced; rule 28 says trace or narrow. The two changes (bound 20 -> 8 s, the dodge) are not yet split: run each alone to
+see which moves Easy. Traces next: child N 38, adult N 9 / expert N 20 (both at x 871: one cause?), and Easy's time shift.
+
 ## Step 2: 2-6 kid E 22 traced (candidate 9f8b81346 a pass, 139.7 s; fix 064ca6df6 (= 54cad4125's bot) rescued once, 199.1 s)
 b26l/rw.mts.txt logs every Progress.relocate; k22-cand.txt / k22-fix.txt (1 s positions + rewinds), *-jumps.txt (FT_TRACE), k22-fix-lift.txt.
 - **First difference: the rewind at t 41.0** (fallen to y 5785 at x 1312): the candidate takes route point 222 at 1115,6049, **264 px under
