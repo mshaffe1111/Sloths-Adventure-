@@ -1,3 +1,112 @@
+# ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
+
+## EXACT NEXT STEP
+1. **The lead's ruling on spot 0 (the foot, x 320), sent with the interim message.** Spot 0 is still RED (port screens 9.39, land screens
+   11.22, land clips 23.75), unchanged, because w2Arc26.ts sets `bankWall.bottom = lowest street + 10`: at the foot the view runs below
+   the wall and things show there (a dark patch in the bottom-left corner sideways, soil of other shades under the streets), so the cull
+   rightly stays off. (a) Extend the wall down past the foot (bottom = the stage's floor): a LOOK CHANGE below the lowest street. Show
+   before/after stills first; then the same cull covers spot 0 (expected about 4.7 / 5.2 Mpx, as at spots 1-2). Or (b) a cut at the foot
+   that keeps the look (the rivers' under pass and the backdrop under the foot's ground), which is more work.
+2. Then, on a FROZEN worktree at the new head: drawcheck, all scenarios (about 6 min, `DRAWCHECK_VERBOSE=1`): 2-6 GREEN at every spot, no
+   other scenario worse (scenario rows to compare: the base suite's drawcheck log, scratchpad suite-base/drawcheck.log, when it finishes).
+3. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head (drawing only: no castBots row may move).
+4. Lands on the lead's word, rebased on t-build-26's head (REPORT.md conflicts: keep both sides' sections).
+State: the base suite on a07ed1bd7 was still running at handover (tsc green; the unit step was running); its logs are in the scratchpad
+suite-base/. The candidate's full drawcheck, suite and lockall were NOT run.
+
+## Step 1: the plant, base a07ed1bd7, drawcheck for 2-6 alone, verbose: RED (5 breaches)
+(How: tools/perf/run.mjs for 2-6 alone at PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4, port then land, then `DRAWCHECK_VERBOSE=1
+DRAWCHECK_RESULTS=<dir> node tools/perf/drawcheck.mjs` judges it, so the verdict is drawcheck's own. Scripts: scratchpad dc26.sh.)
+| 2-6 | gradients (2) | drawImageScreens (7.5) | clips (19) |
+|---|---|---|---|
+| port | **5** at spot 0 (x 320) | **9.39** at spot 0 | 17 |
+| land | **7** at spot 0 (x 320) | **11.22** at spot 0 | **24** at spot 1 (x 64) |
+Per spot, per frame (gradients / clips / drawImage Mpx): port s0 5/16/13.2, s1 4/13/12.1, s2 2/13/9.6, s3 1/17/8.8; land s0 7/23/15.8,
+s1 6/24/15.8, s2 3/20/11.4, s3 1/18/8.7.
+- Gradients: exactly two sites, both on the main canvas: riverArt.ts:219 drawRiverWater (one per safe river under its bed, up to 4 a frame
+  upright and 6 sideways at spot 0) and protoArt.ts:1151 drawWallChunks (the depth darkening, 1 a frame).
+- drawImageScreens: drawSoil (groundPaint.ts:157; the soil under each safe river's bed) 1.86 / 2.72, drawFitted (scenery.ts:2085, the
+  painted backdrop strips) 1.53 / 2.28, drawVignette 1.00, drawGroundChunks 1.00 / 0.98, drawWallChunks 0.93 / 0.88 (port / land, per
+  frame over the four spots).
+- Clips (land spot 1): drawRivers engine.ts:6278 6 + 6, drawSafeRiverOver 3.5, drawRiverWater 3.25, drawLadder 1.5.
+- **Which layers draw the excess (the still at spot 0 and spot 1):** the whole view is 2-6's opaque earth wall (drawEarthWall, drawn after
+  the backdrop and after the rivers' water). The backdrop (sky, strips via drawFitted, its frame, the vignette, the weather) and the rivers'
+  water and the soil under their beds (drawSoil, with their clips) are drawn in full every frame and then covered completely by the wall.
+
+## Step 2: gradients, general (5e1cd1003)
+New src/game/gradCache.ts `cachedLinearGradient(ctx, x0, y0, x1, y1, stops)`: one gradient per context per (line, stops), reused; the map
+empties itself past 48 entries (a caller whose key changes every frame costs a miss, never a leak). A CanvasGradient fills in the user
+space of the transform current when it fills, so the same object under the same transform paints what a fresh one would.
+- riverArt.ts drawRiverWater: the under-bed shade's line is the bed's, in world space (r.surfaceY is fixed), colours fixed: cached.
+- protoArt.ts drawWallChunks: the depth darkening's line is the view's lower half: built once per view height at the origin, filled under
+  ctx.translate(0, y0) inside the save/restore that is already there (the solid fill below it in the same translated space).
+Every other per-frame createLinearGradient in src/ (305 calls in all) can use the same helper; only these two run every frame on 2-6.
+
+## Step 3: the overdraw and the clips (89fb84b0f)
+protoArt.ts `earthWallCovers(wall, view, slack)`: true when drawEarthWall will paint the whole view this frame (its sheets in, the wall
+past every edge of the view by more than 10 units, the margin drawEarthWall already draws outside the view) and the shake + snap
+(`slack`) under 10. engine.ts render: when it is true, renderScenery + renderDrift (the backdrop) and drawRivers(…, false) (the water and
+its soil, under the wall) are not drawn. Nothing drawn after the wall changes (the rivers' over pass, the logs, platforms, Pokey, the HUD).
+General in the sense that it keys on the wall's geometry, not a stage id or x; today only 2-6 has a bankWall, so only 2-6 gains.
+| 2-6, drawcheck verbose | gradients (2) | drawImageScreens (7.5) | clips (19) | breaches |
+|---|---|---|---|---|
+| port, base a07ed1bd7 | 5 (spot 0) | 9.39 (spot 0) | 17 | 2 |
+| port, candidate 89fb84b0f | **0** | 9.39 (spot 0, unchanged) | 17 | 1 |
+| land, base | 7 (spot 0) | 11.22 (spot 0) | 24 (spot 1) | 3 |
+| land, candidate | **0** | 11.22 (spot 0, unchanged) | 23.75 (spot 0) | 2 |
+Per spot, per frame, candidate (gradients / clips / drawImage Mpx), base in brackets: port s0 0/15/13.2 (5/16/13.2), s1 0/7/4.7
+(4/13/12.1), s2 0/8/4.6 (2/13/9.6), s3 0/17/8.7 (1/17/8.8); land s0 0/23/15.8 (7/23/15.8), s1 0/13/5.2 (6/24/15.8), s2 0/12/5.1
+(3/20/11.4), s3 0/18/8.7 (1/18/8.7). The wall fills the view at spots 1-2 (the cull is on: the backdrop's 1.5-2.3 screens, the vignette's
+1, the rivers' soil 1.9-2.7 and the rivers' clips gone); at spot 0 (the foot, below the wall's bottom) and spot 3 (the crest, above its
+top) it does not, and nothing there changes except the gradients.
+
+## Polish check (stills, 2x, Pokey pinned at drawcheck's four spots on the fixed clock, base vs candidate, pixel for pixel)
+Tool: scratchpad stills.mjs (run.mjs's own load and pin, deviceScaleFactor 2, a still per spot instead of the counts), cmpshift.py (the
+best whole-pixel shift, then pixels over 1 luma below the HUD). Stills: scratchpad stills-base/ and stills-c1/; side by sides
+diff-port-s0.png, diff-port-s2.png, s3crop.png, land-s1-cmp.png, land-s2-cmp.png.
+**The harness's stills are not repeatable to the pixel**: anything moving on the game clock (the turning wheels, the drifting logs, Pokey's
+cheer, the door's glow, the plant sway) and the DOM intro card (it fades on the real clock) land at a different phase run to run, and
+upright spot 2's camera settled 1 px lower. So "identical" below means identical except named moving things:
+| still | cull | over 1 luma (after alignment) | where, and what |
+|---|---|---|---|
+| port s1 | on | **0** (max 1) | identical |
+| port s2 | on | 0.44% of pixels, max 5 (after a 1 px shift) | resampling from the camera's sub-pixel offset, everywhere evenly; no shape |
+| land s1 | on | 1.13% | only the drifting logs (positions) and a rope end; the wall, the backdrop's absence: identical |
+| land s2 | on | 14.2% | only the turning wheel (its angle); everything else identical |
+| port s0 / land s0 | off | 18.8% / 14.6% | the intro card (mid fade) and the plant sway; the wall identical |
+| port s3 / land s3 | off | 2.2% / 10.1% | Pokey's cheer pose, the door's glow, the hanging leaves; the backdrop identical |
+No difference over 1 luma traces to the change. A repeatable still (the game clock pinned, the card dismissed) is a tool fix for next time.
+
+## Gates
+- drawcheck 2-6 alone, verbose: base RED 5 breaches; candidate RED 3 breaches (spot 0 only; numbers above).
+- tsc on the candidate: green (both commits).
+- The CLAUDE.md suite on the base a07ed1bd7 (frozen worktree, background): tsc green; the unit step was still running at handover.
+- NOT run on the candidate: the full drawcheck (all scenarios), the suite, lockall. A drawing-only change moves no castBots row by
+  construction (render() only; no update path touched), but that is to be PROVEN with lockall, not assumed.
+
+## Pre-existing, seen in the stills, not in this packet (named plainly)
+- 2-6 sideways spot 1: the floating logs high on the right show bright strips of water under them standing in the earth wall: the river
+  body is behind the wall (drawn first, then covered) but the over pass (drawSafeRiverOver) is drawn on top of it, so only the strip
+  shows. Unchanged by this candidate (the over pass is after the wall). A look question for the lead / art.
+- Faint vertical bands of a different shade in the wall (sideways spot 1, near x 650-700 and x 1130 on the 2x still). Unchanged.
+
+## Not done in this box
+- Spot 0 (the foot): still RED, needs the lead's ruling (EXACT NEXT STEP 1).
+- The full drawcheck, the suite and lockall on the candidate.
+- gradCache.ts has no unit test (a small one: the same key returns the same object; past 48 keys it empties).
+
+## Lessons applied
+D111 (the box from `date`), D113/D122 (every long run backgrounded with a timeout, no shell '&'), D114 (the suite first, frozen),
+D117 (candidates on the wip branch only), D119 (no heredoc in a commit chain), D109 (no clock times to the lead), law 22 (no limit
+raised, no known entry added). **D115 broken once and owned:** I edited the fix tree while its first drawcheck run was reading it; that run
+was stopped and thrown away unread, every later run went on a separate frozen worktree (wt-c1 at 89fb84b0f).
+
+## Learned (for the next builder)
+- Before cutting draw cost, look at the still at the breach spot: on 2-6 the excess was not one heavy layer but everything under one
+  opaque full-view layer. An opaque layer that fills the view should cull what is under it; that is the general rule worth a line in
+  PERFORMANCE-RULES §8 (proposed, the lead's call).
+- Proposed rule: every per-frame gradient goes through gradCache.ts (a check could grep createLinearGradient inside draw functions).
+
 # BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**
 fix 1 traces, **eae5b1ff7** fix 3 (wheel toy GREEN) = THE FINAL CANDIDATE, plus this REPORT and b26n/rows.
