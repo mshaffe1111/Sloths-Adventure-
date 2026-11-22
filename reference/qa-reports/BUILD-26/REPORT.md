@@ -85,6 +85,94 @@ knock-on is not taken for the commit's own defect.
 Lessons applied: D102 (read lean), D109 (no clock times to the lead), D111 (the box), D113 (every long run in the background), D115
 (frozen trees), D117 (no candidate on t-build-26: only the ruled revert went there), D118 (the suite on the final head: queued).
 
+# ENG-26p (engine; started 7:52 PM ET by `date`): the tower.test red ('a sealed piece (a gate bough) in a built tower') is the LAY's, brought by 2f188c552; the fix is general (towerCatches rule 4 slides a bough clear of a kept-out box); LANDED on t-build-26 by the lead's ruling; one OPEN red on t-build-26 (rollGuard 1-4, also 2f188c552's) to the next engine member
+Commits on t-build-26 (rebased onto c00d2fd17, no force): **7d3330aad** (the fix, tower.ts; = 7d663daee), **14acf0ec0** (its toy; = cd2a64b2d),
+this REPORT. Safe-kept first on t-build-26-wip-26p (7d663daee, cd2a64b2d, f2452595f).
+Frozen trees (D115, detached, node_modules linked): 43c4c6776 (the test alone; lockall base), 626fac5ac and 2f188c552 (the bisect),
+06096c3b4 (the old lay printed), 4f9b8244b (= 7d663daee's code before the rebase: tower.test whole; lockall fix). Each removed when its run ended.
+
+## EXACT NEXT STEP (the next engine member; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees)
+1. **OPEN RED on t-build-26, blocks release 3 (the lead):** `src/game/rollGuard.test.ts:42` '1-4: every sampled roll is long enough and
+   passes the level check': actual `['?layout=72140: flower #27 and find #13 overlap']` (KNOWN in that file is empty: on no known list).
+   **Bisected (the test alone, frozen trees): 626fac5ac GREEN, 2f188c552 RED** (the same ENG-26n band as the tower red; 06096c3b4 between
+   touches no game code), and RED on 9c2ce855d without my commits, so not this fix's. Next: build 1-4 `?layout=72140` (rollVariants(10, 1028),
+   v = 72141) on 626fac5ac and on the head, print flower #27 and find #13 and the platforms near them, and find which band-driven change
+   to the catch lay put the two together; then fix the placer or the lay generally (planted: this test is the plant), lockall, rule 28.
+2. Re-read the suite verdict below; if the 73-file re-run says RUNNING, run those files (the list is in Done) on a frozen worktree of
+   t-build-26's head with the Bash tool's timeout at its 2-hour maximum (D118); its 30-minute default stopped my first run.
+
+## The failing assert (step 1; alone, frozen 43c4c6776)
+tower.test.ts:663 `assert.deepEqual(st.gen2.errors ?? [], [], 'gates easy 4')`: gateKit (toyTower.ts, the '5-93' ascent) **Easy seed 4**,
+errors = `['tower: a fall off the piece at x 1068-1199, y 4720 drops 647 px (sound wood within 450)']` (the same line is its towerMiss).
+Not a towerGates/towerGateRoofs verdict, not the 300 px neighbour check, not gatesSeen.
+
+## The bisect (step 2)
+`git log 626fac5ac..2f188c552 -- src` is two commits: 06096c3b4 (BUILD-26c, `src/game/gen2/worlds/w2Arc26.test.ts` only: no tower code)
+and 2f188c552 (ENG-26n's gate band). The named d12ffcacf, 97bb2b73e, b73600b56, ecb86074e are all ANCESTORS of 626fac5ac (checked with
+`git merge-base --is-ancestor`), so they are not in the range. The test alone: **626fac5ac ok 1 (GREEN), 2f188c552 not ok 1 (RED, the same
+line)**. First red: **2f188c552**, the line `if (g) keepOut.push(gateBand(g, P.filter((q) => mineIds.has(q.id)), V));` (pipeline.ts, the
+tower's catch lay). ENG-26n's commit message cites `tower.test.ts towerGate* 2/2`: a name filter, so this test in the same file never ran.
+
+## The cause (step 3: the lay broke the fall promise next to a gate band; the test's numbers are right)
+Easy seed 4, gate 28 (sealed, 746-1012 @5067; its section 27+28; band x 484-1035, y 4712-5097; its way on the vine at 994 climbs to 4720).
+- OLD lay (06096c3b4, printed): 29 (553-968 @4720) ran on to the wall, **968-1280 @4720**: every end caught.
+- NEW lay (2f188c552): that run-on lies in the band (968-1035 at 4720), so it is refused (right). The lay then bridges **1068-1199 @4720**
+  (a hop past the vine at 994). Its LEFT end steps off at x 1044 (end - 24, openEnds), **9 px past the band's edge (1035)**. towerCatches
+  rule 2 (a bridge from 5100's wood) is cramped under the gate; rule 3 (run on to the wall) lies in the band; rule 4 only ever tried a
+  bough CENTRED where he comes down, 954-1134, which lies in the band at every height. So the end was left open: 647 px to 5367.
+- So the defect is general, not 1-4's or the toy's: **any end that steps off within half a catch bough (90 px) of a kept-out box's edge,
+  outside the box, could not be caught by rule 4**: gate bands and wheel sweeps alike.
+
+## The fix (general, tower.ts towerCatches rule 4; 7d663daee)
+Rule 4 tries, at each height, the centred bough first; where that one lies in a kept-out box, it also tries the bough slid to the box's
+edge on the side he comes down (x0 = box.x1 when he comes down right of the box, x1 = box.x0 when left), only when that bough still lies
+under him (ex inside it) and inside the walls. Nothing else in the lay changed; a fall with no box near it is laid exactly as before.
+Seed 4 Easy with it: errors [], no miss; the end is caught by **1035-1215 @4780** (run on to the wall 1215-1280), clear of the band
+(towerGateRoofs judges `q.x < b.x1 - 2`).
+
+## Done
+- The plant (the test is the plant, Law 22: the test unchanged): 'a sealed piece (a gate bough) in a built tower' **RED on 43c4c6776, GREEN
+  on 4f9b8244b**; `tower.test.ts` WHOLE on 4f9b8244b: **33/33, 0 fail**.
+- A direct toy (cd2a64b2d): 'towerCatches (planted, ENG-26p): an end that steps off just past a kept-out box is caught by a bough slid
+  clear of the box' **GREEN with the fix, RED with 43c4c6776's tower.ts** (`the right end is caught ([])`).
+- `npx tsc --noEmit -p .` on cd2a64b2d: **clean** (exit 0).
+- **lockall x16, both settings, every stage: 43c4c6776 vs 4f9b8244b (= 7d663daee's src): 3264 builds of 102 stages each, 0 error builds,
+  the two lock files IDENTICAL (sha256 b440909f92b74b22...): NO STAGE MOVES.** So no castBots rows to run under rule 28 (no mover; the bot
+  is untouched), and no listed seed replays differently (lockall builds the game's path with each list in). The slide only fires where
+  a centred bough meets a box and the shifted one is fair; on shipped stages that never happens today, so it guards the next gate field.
+- The full suite on cd2a64b2d: on cd2a64b2d, ONE process, stopped by the tool's 30-minute background limit before it finished: **3564
+  results, two reds: the allowed R-165.312 todo and rollGuard 1-4 (the base's, EXACT NEXT STEP 1), nothing else.** 73 files had not
+  reported (about 50 never ran: src/game/controlTest, ctestCourseGone, w1Overhang..zones; 23 more have only template names, so not
+  confirmable from the log); they were re-run alone on the same frozen tree: RUNNING at this commit.
+
+## Pushback
+- The packet's FACT lists d12ffcacf, 97bb2b73e, b73600b56 and ecb86074e as 'between' 626fac5ac and 2f188c552 on src: they are ancestors of
+  626fac5ac, so the range held two src commits only (checked, above). It did not change the work.
+- ENG-26n ran its own file's tests by a name filter (`towerGate*`); a lay change ran 2 of 33 tests in the file it edited. Proposed below.
+
+## Suggestions (outside my walls)
+- methods/gates.md / dispatch-packet.md (the lead's): an engine packet that changes the lay names 'the WHOLE test file it edits, then the
+  suite (D118)' as a done-item, never a name-filtered subset; a check could be a CI shard that already runs the file (it does), so the
+  countermeasure is the packet line, not a new gate.
+
+## Polish check
+No screen changes: lockall shows every stage's build identical, so there is nothing new on a phone to look at and no stills were taken.
+The one roll that changes is the toy gateKit Easy seed 4 (a test fixture, never shipped): its new catch 1035-1215 @4780 sits 287 px over
+the gate (LEAP.up 221, so it is no way round) and clear of the band; checked by the numbers printed, not by a still.
+
+## Unresolved
+- rollGuard.test.ts:42, 1-4 `?layout=72140` (EXACT NEXT STEP 1): an open red on t-build-26 from 2f188c552, not fixed by me.
+
+## Learned (proposed for level.md, the lead rules)
+- A keep-out box added to the lay (a gate's band, a wheel's sweep) is a NEW wall every catch rule must step round: run the WHOLE tower.test
+  (33 tests, about 2 minutes) and the gateKit sweep, not the tests named for the box.
+
+## Lessons applied
+D40 (built on t-build-26's lay; nothing planned replaces towerCatches this sprint), D96/D118 (the whole file and the suite on the fix
+head, not a filter), D102/D111 (my box from `date`; lean reads), D109 (no clock times to the lead), D113 (every long run backgrounded;
+no foreground waits), D114, D115 (frozen detached trees, removed after), D117 (the candidate on the wip branch only), D119 (no chained
+heredoc edits), Law 22 (the test untouched: its numbers were right).
+
 # BUILD-26h (on t-build-26 from 27e20ebf9): tierBots 9/9 before cut 5, so the calibration was recommitted on the head (9/9); the lip traced on child N 14 (a knock-on, and its toy proves nothing); 1-4's table on C + A/B (no lip): child Easy DROPS 36 -> 35 (child E 37), adult N 9 lost; the suite RUNNING at my box. Started 7:27 PM ET 11-21 (by `date`)
 Commits: **47b57a3e8** (calibration-main.jsonl recommitted; t-build-26 fast-forwarded to it after tierBots 9/9 on its own frozen tree; the
 same commit safe-kept first on t-build-26-wip-26h), this REPORT with b26h/ evidence. No bot code changed. The lip stays OFF.

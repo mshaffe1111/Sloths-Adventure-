@@ -35,6 +35,12 @@ search, as it would on a phone. So after an engine change, `seedlist.ts <id> --c
 (methods/seed-list.md). (4) Every bot number is taken on a FROZEN tree at a fixed hash (D115); BUILD-26c's towerRoute.ts moves the bot's route.
 **Open (named):** 1-4's build over budget at 4x CPU (above). A walk-off at less than full speed (a slow walker) lands between the step and the
 run, and only those two are flown (ENG-26g's pushback: fly a short run-up too if the bots show it).
+**Kept-out boxes and the catch lay (ENG-26n 2f188c552, ENG-26p 7d663daee):** a sealed piece's BAND (tower.ts gateBand: its section's full
+width, from just under its level up to the storey its way on climbs to) joins the wheel sweeps in towerCatches' `keepOut`; towerGateRoofs
+names any lay wood in it. A box is a new wall every catch rule must step round: with the band in, gateKit Easy seed 4's run-on was refused
+and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
+red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
+lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
 
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
