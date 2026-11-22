@@ -5,6 +5,10 @@ the stamped squares there. So the band is from (1) t-art-under's w2.webp sheet (
 probes ran on the repo's sheets), or (2) a draw outside drawProtoScene (engine scenery or water). Next: a 2x still of that corner on
 the scratch merge, sample its pixels in the band and left of the floor's end, then turn the engine's draws off one at a time to name
 the source; bring the lead that and a plant RED on 484199316 before any fix. Separately: the two wide walls' unshaded soil (item 2 ii).
+THE LEAD'S RULING on the pushback: what is ruled is the LOOK (no straight shade seam at a floor's end on the game's screen); the fix
+follows the measurement. If the band is in t-art-under's sheet (the under corner), the fix is in how that piece is drawn or cut: name it.
+THE BASE SUITE (item 1): when its verdict lands, check whether any red is groundStack.test.ts (the file copied in, D115); if one is,
+re-run that file alone on a clean frozen tree at 484199316 before the verdict counts.
 
 1. Step 0 (D114): the CLAUDE.md suite on 484199316, frozen worktree, in the background: tsc PASS; tests still running at hand-over
    (scratch suite-base.test). BREACH (D115): I copied a test file into that frozen worktree for about 10 s to re-check plant (i) RED,
