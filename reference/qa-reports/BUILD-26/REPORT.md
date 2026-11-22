@@ -1,4 +1,4 @@
-# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; step 0 (land ENG-26p) and lockall still RUNNING at my box, so t-build-26 is NOT moved
+# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; lockall x16 IDENTICAL (no stage moves); step 0's suite (land ENG-26p) still RUNNING at my box, so t-build-26 is NOT moved
 Commits: **4e0888c5d** (the fix + its toy, base cb9372ead) and this REPORT, on t-build-26-wip-26q only (D117: not on t-build-26 until the lead rules).
 Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; the roll; lockall base), 626fac5ac (the roll; removed),
 4e0888c5d (the plant; lockall fix), cb9372ead + the toy only (the toy's RED; removed).
@@ -7,15 +7,17 @@ Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; t
 1. **Step 0 (land ENG-26p) is NOT done.** cd2a64b2d is on no branch any more (wip-26p was rebased: its code is 14acf0ec0, head cb9372ead),
    and the 73 files' list is written nowhere (ENG-26p's REPORT says 'the list is in Done'; it is not). So the WHOLE CLAUDE.md suite (619
    files, one process per file, 3 at a time, per-file verdicts) runs on a frozen tree of **cb9372ead itself**, the 53 named files first
-   (src/game/controlTest, ctestCourseGone, w1Overhang..zones). At my box: 48+ files done, 0 reds; it needs about 100 minutes in all.
+   (src/game/controlTest, ctestCourseGone, w1Overhang..zones). At my box: 269 of 619 files done, 0 reds; **all 53 named files clean**
+   (w1Overhang 12 pass, the slowest); the 23 template-named ones are among the rest.
    When it is clean but for rollGuard 1-4 and R-165.312's todo: fast-forward t-build-26 to cb9372ead (`git push origin
    cb9372ead:refs/heads/t-build-26`, a fast-forward from c00d2fd17; never force) and send the lead the hash. Any other red: the lead first.
    If this session is gone, re-run it the same way: `xargs -P 3` over the CLAUDE.md file list, `npx tsx --test <file>` each, writing
    each file's exit code and its '# pass / # fail / # todo' lines, in the Bash tool's background with its 2-hour limit (D118).
-2. **lockall x16, both settings, every stage: base cb9372ead vs fix 4e0888c5d, RUNNING at my box** (each recorded to its own json; compare
-   per stage/part). A mover is only a stage where a field petal's nearest middle lay within 36 px of another pickup (it now takes the next
-   mate's middle or stays), so expect few. Every mover named; castBots x40 on each mover against the head's rows (rule 28); **a 1-4 mover's
-   rows go to the lead first (1-4 is SHIPPED)**. Then the suite on the fix head (frozen) before 4e0888c5d goes on t-build-26.
+2. **lockall x16, both settings, every stage: base cb9372ead vs fix 4e0888c5d: 3264 builds of 102 stages each, 0 error builds, the two
+   lock files IDENTICAL (sha256 b440909f92b74b22..., the same hash ENG-26p recorded): NO STAGE MOVES**, so rule 28 has no mover to cast
+   (the bot is untouched). The fix fires only where a petal's nearest middle lies within 36 px of another pickup, which no layout 1-16 of
+   any stage has; it guards rolls like 72140. NEXT: the suite on the fix head, RUNNING (frozen 4e0888c5d, one file at a time so the base
+   suite keeps its speed); clean but for R-165.312's todo (rollGuard 1-4 now GREEN) -> the lead rules 4e0888c5d onto t-build-26.
 
 ## The roll (step 1; the test alone and a print, frozen cb9372ead)
 - 1-4 `?layout=72140` = rollVariants(10, 1028)'s v 72141; gen2 seed 42, 0 rerolls. Failing line: `flower #27 and find #13 overlap`
@@ -45,11 +47,13 @@ where pairPetals' unchecked move lands. The defect is pairPetals'.
   holds 'both middles taken: unmoved' and 'nothing near: the nearest mate's middle (887), as before'.
 - fieldPetals.test.ts (R-165.229, the two-hand climb takes every paired petal, 1-4 Normal and Easy): **6 pass, 0 fail** on the fix.
   vineField.test.ts 8 pass. `npx tsc --noEmit -p .`: clean.
-- Not run yet (my box): lockall and rule 28 (step 2 above), the suite on the fix head, the build/chunkcheck (vineField.ts gained no import).
+- lockall x16: identical (step 2 above). Not run yet (my box): the suite on the fix head (RUNNING), the build/chunkcheck (vineField.ts
+  gained no import).
 
 ## Polish check
-No screen judged: the only change moves a petal on a vine field by one pair (80 px) where it would sit on a find, and lockall has not
-reported which stages that touches. The next step's movers get stills (tools/art/kitaudit/shoot.mjs) before landing.
+No screen changes: lockall x16 shows every stage's build identical, so nothing new on a phone to look at and no stills were taken. The
+one roll that changes is 1-4 ?layout=72140 (outside the lock's layouts): flower #27 hangs 80 px left (807, between vines 767/847) instead
+of on the Notch.
 
 ## Pushback
 - The packet's step 0 names 'frozen cd2a64b2d' and 'the 73 files': cd2a64b2d is not on any branch I could fetch (the wip-26p rebase
@@ -61,7 +65,7 @@ reported which stages that touches. The next step's movers get stills (tools/art
   branch), never 'the list is in Done' without it; a runner that prints per-file verdicts makes the list a by-product.
 
 ## Unresolved
-- Step 0's suite and the fast-forward; lockall movers, rule 28, the suite on the fix head; the build and chunkcheck on the fix.
+- Step 0's suite and the fast-forward; the suite on the fix head; the build and chunkcheck on the fix.
 - My slip: one diagnostic (two quick roll prints) used a shell '&' inside a background command (the packet: never); not repeated.
 
 ## Method update
