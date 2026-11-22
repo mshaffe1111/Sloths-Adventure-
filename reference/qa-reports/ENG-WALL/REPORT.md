@@ -1,5 +1,14 @@
 # ENG-WALL-b REPORT (R-165.380 continued; start 7:47 PM ET by `date`; branch t-eng-wall at c884525bf; box to 8:15 PM ET)
-EXACT NEXT STEP: build the lead's ruling C (the frame never flips ground path) against the plant b/flip-probe.mjs, which is RED now.
+EXACT NEXT STEP: FIRST find WHY the frame takes the live path (my 'budget' trigger is REFUTED, see CORRECTION), then build the
+lead's ruling C (the frame never flips ground path) against the plant b/flip-probe.mjs, which is RED now.
+CORRECTION (measured last, after the ruling): an experiment tree (scratch merge + drawGroundChunks painting every in-view square
+whatever CHUNK_BUDGET, local c8ee2297f, never pushed, served on its own port; the served protoArt.ts carried the change) gave the SAME
+flip-probe numbers to the decimal (b/flip-experiment-nobudget-STILL-RED.txt: upright descent 7.17/12.9, sideways 11.97/29.7). So the
+budget is NOT what sends those frames to the live path. The live path is still the source (census: first frame = live draws, no
+square blit). The other ways drawGroundChunks gives up: protoArt.ts:1738 (the canvas transform has a turn/skew or unequal scale:
+camera shake / trauma?), and a chunk KEY change (protoArt.ts:1741: kitWorld, groundLook, scale.toFixed(4), depthView, bankSig): a zoom
+ease or a depthView change drops every square each frame. Next member: log drawGroundChunks' exit reason per frame in the browser on
+the descent and the cold view, name it, then design C around it (the margin/budget design below only matters if the budget shows up).
 THE LEAD'S RULING C, four conditions: (1) the plant covers the whole soil: first frame == settled within 1 luma (mean; worst 8-px
 column <= 4) on a stage start, a respawn and the fastest descent, upright and sideways; (2) the cold paint measured at 4x CPU, riding
 inside the respawn's own frames, never one frame over PERFORMANCE-RULES §1; drawcheck passes; (3) the prefetch margin sized from the

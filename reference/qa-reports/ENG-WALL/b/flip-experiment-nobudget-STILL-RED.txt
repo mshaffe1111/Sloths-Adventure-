@@ -1,0 +1,8 @@
+RED   upright cold x 19900: 1 frames, worst mean 2.09 worstCol 15.7 at cam 19768,913
+RED   upright cold x 14800: 1 frames, worst mean 2.98 worstCol 7.5 at cam 14663,941
+GREEN upright control (settled vs settled): 1 frames, worst mean 0 worstCol 0 at cam 14663,941
+RED   upright descent x 18990: 40 frames, worst mean 7.17 worstCol 12.9 at cam 18594,790
+RED   sideways cold x 19900: 1 frames, worst mean 1.29 worstCol 16.4 at cam 19450,1153
+RED   sideways cold x 14800: 1 frames, worst mean 2.99 worstCol 8.4 at cam 14345,1181
+GREEN sideways control (settled vs settled): 1 frames, worst mean 0 worstCol 0 at cam 14345,1181
+RED   sideways descent x 18990: 40 frames, worst mean 11.97 worstCol 29.7 at cam 17971,618
