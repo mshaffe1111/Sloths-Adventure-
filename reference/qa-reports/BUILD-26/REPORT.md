@@ -1,4 +1,4 @@
-# BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); 2-6 x40 on the rule: identical to cut 5 in every tier; the suite on c00d2fd17 RUNNING at my box. Started 8:22 PM ET 11-21 (by `date`)
+# BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); 2-6 x40 on the rule: identical to cut 5 in every tier; the bounded rule + C on 1-4 the same; the suite on c00d2fd17 RUNNING at my box (it dies with the container: re-run). Started 8:22 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26j (NOT on t-build-26, D117): **d6350d3e7** the rule (firsttimer.ts stepUpAtLip + LIP_STEP), **f348115a2** its toy
 (castBots.test.ts), **f4eab7721** C re-applied (git revert 9c2ce855d), this REPORT with b26j/ evidence.
 Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + castBots whole), d6350d3e7 (1-4 then 2-6 x40), c00d2fd17 + C
@@ -38,6 +38,9 @@ passes), **child N 39 -> 37 (37; lost 8, 14: the same two as the rule alone, so 
 kid N 19 -> 40, middle E 37 -> **40**, middle N 36 -> 37. 2-6: no row moved in any tier. C's adult, kid and middle E rows are back and
 child E 37 passes; the one blocker left is child N 8 and 14 (step 0 (b)). These rows are on the UNBOUNDED rule: the bounded one
 (83018b453) needs its own x40 (step 0 (c)).
+**Bounded rule + C (83018b453), 1-4 x40 (b26j/rows/r14-83018b453.jsonl): identical to the unbounded + C in every tier** (adult E 40, adult N
+37, child E 40, child N 37 (8, 14), expert 40, kid E 40, kid N 40, middle E 40, middle N 37). Still to run on it: 2-6 x40 (the unbounded
+moved nothing there); the bounded rule WITHOUT C (step 0 (c)).
 
 ## What the rule is, and why lip.patch failed both ways
 - **Child E 37 under C is NOT the rise read.** Traced frame by frame on c00d2fd17 + C (b26j/c37-lip.txt): from a stand at 544 he walks left
