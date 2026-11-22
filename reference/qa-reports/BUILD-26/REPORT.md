@@ -12,10 +12,8 @@ Base t-build-26-wip-26m at this REPORT's commit; long runs in the BACKGROUND wit
    pushes left/right between those two vines under it, the clock held by `target`, until a rescue. The general fix to try: FigPush goes for a
    fig only on a vine he can reach from his hands' row (its column in reach, the climb to it his own), else no target and the bot's own climb
    (figPush.ts choose/target pick). RED on 223f72c05's tree, GREEN on the fix, each on its own fresh worktree.
-2. **child N 38 (the one tier drop vs cut 5 RE-JUDGED, 38 vs 39):** not traced yet. Run b26m's fig tool (`WT=<tree> BOT=FT_CHILD npx tsx
-   b26l/fig.mts.txt 38`) on 3d75a90df AND on ee92bcc44 (bound alone, where it passes 210.2 s); find the first frame they part (the dodge, as for
-   the pair: the dodge-alone rows say whether child N 38 fails with the dodge alone). Second run per cause from any other row that flips with
-   the dodge.
+2. **child N 38 (the one tier drop vs cut 5 RE-JUDGED, 38 vs 39):** traced in this box (Step 3): the same chain as the pair (a fall
+   to row 35-37 with fig 7's unreachable target held). Re-run its fig trace on fix 1; it must pass with no stuck spot.
 3. **2-6 kid E 22 (wheel bucket #51, Step 4):** the toy is in (223f72c05, RED). The settle-band fix is TRIED and RED (b26m/settle-band-TRIED-RED.patch,
    9 scrambles): the kid's thumb never lets a steer go (R-165.59), so wheelRide's `{}` leaves his last press held and he walks off at full
    speed (b26m/toykid-settleband-steer.txt 13.6-14.1 s). The fix to try: the settle as a BRAKE for a thumb that does not let go (`!who.holdQ`):
@@ -95,7 +93,11 @@ settle steering a thumb that does not let go as if it did.** The patch is kept a
 - **expert N 20**: the same spot and the same shuffle (vines 35-37 at y 5146, `target 7 vine 47 y 4027`, t 97.8 to the rescue at x 791).
 - **One cause, two runs:** FigPush keeps a target on a vine he cannot reach from his row and shuffles under it. The dodge only took these two
   runs there (the bound-alone run never falls to that row); the shuffle is FigPush's target pick. Fix: EXACT NEXT STEP 1.
-- **child N 38: not traced in this box.**
+- **child N 38 (b26m/fig-c38-dodge.txt vs fig-c38-bound8.txt): the SAME chain, a third run.** The runs match to t 141; with the dodge he
+  shuffles 580-740 on row 42-46 going for fig 7 on vine 47 (dodge true on most steps, 141.5-152), falls to row 35 (y 5507) at 172.3 with
+  `target 7 vine 47 y 4388` still set, and stalls there (stuck 160.1 'in a dip 380 px', 174.1 'on a vine at 871,5507 with no way on', ...),
+  rescued at x 791, 307.1 s. Without the dodge (the bound alone) he passes 210.2 s, no stuck spot. So fix 1 (FigPush targets only a fig he
+  can reach from his row) is expected to cover all three dodge fails; its toy and the x40 decide it.
 
 ## Step 5: rule 28 on moved rows: the bound's moves explained (Step 2); the dodge's not yet (EXACT NEXT STEP 4)
 
