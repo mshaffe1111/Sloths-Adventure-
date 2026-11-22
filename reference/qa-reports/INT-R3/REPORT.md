@@ -10,7 +10,7 @@ scratchpad's fullset.txt (the scripts are copied to reference/qa-reports/INT-R3/
    vs BUILD-23e, 360 rows: 9 bot x setting x 40 seeds); any difference is named to the lead.
 3. After the chain ends (never beside it): `node tools/slotconfirm.mjs /home/user/frz-b <out>` with run_in_background (its own vite on
    5181, UI-372's shooter, Normal + Easy): every 'gone' line must read duck:open and capybara:open (not spooked).
-4. The ONE red so far, roadmapcheck (below), waits on the lead's ruling; no fix until then.
+4. roadmapcheck's red is RULED (R-165.386, carried at the final integration with t-art-next 8feca1123): no fix on e5eecab9a.
 5. If this container is gone: `git worktree add --detach <dir> e5eecab9a`, `npm ci --legacy-peer-deps`, `git fetch --unshallow origin`, then
    tools/fullset.sh <dir> <a worktree of 2a87f4cda> from the first gate not in the table (edit out the done lines).
 Not now (packet step 3): the version bump, What's New, 2-6's merge, the EnK5 test link, the PR.
@@ -60,10 +60,10 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | knowncheck | PASS | both new lists (paintcheck, heroBody) read |
 | generalitycheck | PASS | |
 | coveragecheck | PASS | 65 s |
-| **roadmapcheck** | **FAIL (1)** | `src/game/heroBody.known.json still lists 1 known defects, but no open R-item cites it in its Source` (hero-climb2, ART-HERO R-165.378). Brought by merge (b): t-art-next at 4f0853b96 alone has 0 ROADMAP citations of the file. NOT fixed; told the lead. (The chain's first roadmapcheck ran before the unshallow and said 'shallow clone': my order; the verdict above is the re-run on the unshallowed frozen tree.) |
+| **roadmapcheck** | **FAIL (1)** | `src/game/heroBody.known.json still lists 1 known defects, but no open R-item cites it in its Source` (hero-climb2, ART-HERO R-165.378). Brought by merge (b): t-art-next at 4f0853b96 alone has 0 ROADMAP citations of the file. NOT fixed. **Ruled (lead): R-165.386, carried at the final integration** (the final takes t-art-next at 8feca1123, where climb2 passes and is off the list; R-165.386 on the lead branch 6de0eaab2, Source src/game/heroBody.known.json, carried by the commit that merges 8feca1123, as GATE-292 carried R-165.292). (The chain's first roadmapcheck ran before the unshallow and said 'shallow clone': my order; the verdict above is the re-run on the unshallowed frozen tree.) |
 | timecheck | PASS | after `git fetch --unshallow` |
 | registrycheck | PASS | 48 s |
-| drawcheck (2-3 within limits.json) | running at the box | |
+| drawcheck (2-3 within limits.json) | PASS | 705 s; 2-3 upright and sideways both within limits.json (32 counted frames each, 94 / 89 sites) |
 | clipcheck (no new entry; marker inside the insets) | pending | |
 | kbdcheck | pending | |
 | lockall vs main 2a87f4cda, --layouts 4, --intended 2-3 | pending | base recorded on /home/user/frz-main |
