@@ -1,23 +1,22 @@
-# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; lockall x16 IDENTICAL (no stage moves); step 0's suite (land ENG-26p) still RUNNING at my box, so t-build-26 is NOT moved
+# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; lockall x16 IDENTICAL (no stage moves); step 0 DONE: the whole suite on cb9372ead clean by the allowed list, t-build-26 fast-forwarded c00d2fd17..cb9372ead
 Commits: **4e0888c5d** (the fix + its toy, base cb9372ead) and this REPORT, on t-build-26-wip-26q only (D117: not on t-build-26 until the lead rules).
 Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; the roll; lockall base), 626fac5ac (the roll; removed),
 4e0888c5d (the plant; lockall fix), cb9372ead + the toy only (the toy's RED; removed).
 
 ## EXACT NEXT STEP (the next engine member, or this session if the lead keeps it)
-1. **Step 0 (land ENG-26p) is NOT done.** cd2a64b2d is on no branch any more (wip-26p was rebased: its code is 14acf0ec0, head cb9372ead),
-   and the 73 files' list is written nowhere (ENG-26p's REPORT says 'the list is in Done'; it is not). So the WHOLE CLAUDE.md suite (619
-   files, one process per file, 3 at a time, per-file verdicts) runs on a frozen tree of **cb9372ead itself**, the 53 named files first
-   (src/game/controlTest, ctestCourseGone, w1Overhang..zones). At my box: 269 of 619 files done, 0 reds; **all 53 named files clean**
-   (w1Overhang 12 pass, the slowest); the 23 template-named ones are among the rest.
-   When it is clean but for rollGuard 1-4 and R-165.312's todo: fast-forward t-build-26 to cb9372ead (`git push origin
-   cb9372ead:refs/heads/t-build-26`, a fast-forward from c00d2fd17; never force) and send the lead the hash. Any other red: the lead first.
-   If this session is gone, re-run it the same way: `xargs -P 3` over the CLAUDE.md file list, `npx tsx --test <file>` each, writing
-   each file's exit code and its '# pass / # fail / # todo' lines, in the Bash tool's background with its 2-hour limit (D118).
+1. **Step 0 (land ENG-26p) DONE.** cd2a64b2d is on no branch any more (wip-26p was rebased: its code is 14acf0ec0, head cb9372ead) and the
+   73 files' list is written nowhere (ENG-26p's REPORT says 'the list is in Done'; it is not), so the WHOLE CLAUDE.md suite ran on a frozen
+   tree of **cb9372ead itself** (619 files, one process per file, 3 at a time, per-file verdicts; the 53 named files first): **619 of 619
+   reported, 4033 pass, 1 fail, 3 todo.** Non-zero exit: rollGuard.test.ts only (1-4 ?layout=72140, the allowed red). Todos: R-165.312
+   (w1Arc19, not ok # TODO); w4RealReach.test.ts:26 4-3 (not ok # TODO, 'the engine's wall check has no bottom', R-6.26); w4Runtime.test.ts:392
+   (ok # TODO). The two w4 ones were not on the packet's list only because ENG-26p never reached the w4 files; both are todo-marked in source
+   since bcd664f84 (10-26) and byte-identical on main: I held and asked, **the lead ruled them the same allowed class** (release 3's dry run on
+   e5eecab9a shows the same 3). **t-build-26 fast-forwarded c00d2fd17..cb9372ead** (no force).
 2. **lockall x16, both settings, every stage: base cb9372ead vs fix 4e0888c5d: 3264 builds of 102 stages each, 0 error builds, the two
    lock files IDENTICAL (sha256 b440909f92b74b22..., the same hash ENG-26p recorded): NO STAGE MOVES**, so rule 28 has no mover to cast
    (the bot is untouched). The fix fires only where a petal's nearest middle lies within 36 px of another pickup, which no layout 1-16 of
-   any stage has; it guards rolls like 72140. NEXT: the suite on the fix head, RUNNING (frozen 4e0888c5d, one file at a time so the base
-   suite keeps its speed); clean but for R-165.312's todo (rollGuard 1-4 now GREEN) -> the lead rules 4e0888c5d onto t-build-26.
+   any stage has; it guards rolls like 72140. NEXT: the suite on the fix head, RUNNING (frozen 4e0888c5d, two runners: files 1-350 and
+   351-619); the lead RULED: clean by the same list (rollGuard GREEN there, the three todos) -> fast-forward t-build-26 on to wip-26q.
 
 ## The roll (step 1; the test alone and a print, frozen cb9372ead)
 - 1-4 `?layout=72140` = rollVariants(10, 1028)'s v 72141; gen2 seed 42, 0 rerolls. Failing line: `flower #27 and find #13 overlap`
@@ -65,7 +64,7 @@ of on the Notch.
   branch), never 'the list is in Done' without it; a runner that prints per-file verdicts makes the list a by-product.
 
 ## Unresolved
-- Step 0's suite and the fast-forward; the suite on the fix head; the build and chunkcheck on the fix.
+- The suite on the fix head (RUNNING) and t-build-26's fast-forward to it; the build and chunkcheck on the fix.
 - My slip: one diagnostic (two quick roll prints) used a shell '&' inside a background command (the packet: never); not repeated.
 
 ## Method update
