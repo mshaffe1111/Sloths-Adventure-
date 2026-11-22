@@ -1,0 +1,249 @@
+TAP version 13
+# Subtest: pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+ok 1 - pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+  ---
+  duration_ms: 875.304281
+  type: 'test'
+  ...
+# Subtest: pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+ok 2 - pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+  ---
+  duration_ms: 56.100816
+  type: 'test'
+  ...
+# Subtest: pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell
+not ok 3 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell
+  ---
+  duration_ms: 118.200422
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:71:1'
+  failureType: 'testCodeFailure'
+  error: 'the respawn keeps his 2.041175604007078 s'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:101:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+not ok 4 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+  ---
+  duration_ms: 1824.279261
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:161:5'
+  failureType: 'testCodeFailure'
+  error: "middle normal seed 1: 132.8 s against the boat's 93.89 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:163:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 1
+ok 5 - pacer race (the bots): the ride-only player never wins, normal seed 1
+  ---
+  duration_ms: 640.384766
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+not ok 6 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+  ---
+  duration_ms: 878.930185
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:161:5'
+  failureType: 'testCodeFailure'
+  error: "middle normal seed 2: 119.4 s against the boat's 92.37 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:163:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 2
+ok 7 - pacer race (the bots): the ride-only player never wins, normal seed 2
+  ---
+  duration_ms: 829.961228
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+not ok 8 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+  ---
+  duration_ms: 674.907223
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:161:5'
+  failureType: 'testCodeFailure'
+  error: "middle normal seed 3: 140.4 s against the boat's 92.06 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:163:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 3
+ok 9 - pacer race (the bots): the ride-only player never wins, normal seed 3
+  ---
+  duration_ms: 623.437566
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+not ok 10 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+  ---
+  duration_ms: 625.818393
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:161:5'
+  failureType: 'testCodeFailure'
+  error: "middle easy seed 1: 102.3 s against the boat's 97.53 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:163:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 1
+ok 11 - pacer race (the bots): the ride-only player never wins, easy seed 1
+  ---
+  duration_ms: 592.244523
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+ok 12 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+  ---
+  duration_ms: 556.721937
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 2
+ok 13 - pacer race (the bots): the ride-only player never wins, easy seed 2
+  ---
+  duration_ms: 585.120624
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+not ok 14 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+  ---
+  duration_ms: 537.741607
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:161:5'
+  failureType: 'testCodeFailure'
+  error: "middle easy seed 3: 100.3 s against the boat's 96.09 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:163:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 3
+ok 15 - pacer race (the bots): the ride-only player never wins, easy seed 3
+  ---
+  duration_ms: 481.417338
+  type: 'test'
+  ...
+# Subtest: bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond)
+not ok 16 - bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond)
+  ---
+  duration_ms: 629.692241
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:180:3'
+  failureType: 'testCodeFailure'
+  error: "post Normal seed 4: 141.9 s against the boat's 100.76 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:203:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond)
+not ok 17 - bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond)
+  ---
+  duration_ms: 559.750169
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:180:3'
+  failureType: 'testCodeFailure'
+  error: "post Normal seed 5: 133.8 s against the boat's 103.44 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:203:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+not ok 18 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+  ---
+  duration_ms: 942.145324
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:211:1'
+  failureType: 'testCodeFailure'
+  error: "home Easy seed 1: 102.3 s against the boat's 97.53 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:228:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+not ok 19 - bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+  ---
+  duration_ms: 1326.826808
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:237:1'
+  failureType: 'testCodeFailure'
+  error: 'RED: without the skill seed 2 falls short at x 10683 (falls )'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fF/src/game/gen2/pacerLay.test.ts:260:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 9
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13900.004901
+EXIT 1 20:48:36 bf92d3daf

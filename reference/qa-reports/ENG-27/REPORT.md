@@ -7,7 +7,7 @@ packet wrote them (unchanged, none started: box).**
   after); film it on the dev page (`?fixture=home` is POST_CODE at the asked seed: `npx vite --port 5199` on a frozen bf92d3daf tree, then
   `PW=/opt/node-tools/node_modules/playwright/index.js node reference/qa-reports/ENG-27/t/clip27t.mjs 5199 <rec.json> <out> upright 6`
   and `sideways 6`), LOOK at both at game speed: the boat on screen while it eases; no visible jump or lurch. FILMED in my box (t/ease-upright.mp4, t/ease-sideways.mp4, stills t/sheet-*.jpg, on frozen bf92d3daf's dev page, the recording from a6bb1ef05, the same piece): the boat in view in 86 of 97 upright shots; in the recording its move per frame is 4.86 px at its pace and peaks at 6.76 px (1.39x) on the ease, a smooth rise and fall; the one big move (228 px) is the RESPAWN's re-placement (the first-pass rewind, db4f97f81: clock 43.43 -> 41.89 as the down ends), with the boat out of view in that shot. I looked at the stills, not the clip played at speed: WATCH both at game speed and judge 'no visible jump or lurch' (D63) before the lead rules.
-  (ii) the full suite on bf92d3daf (D114): the base suite on 7501bf2fb ran in my container (tsc PASS; unit still running at hand-over, 10 not ok so far: pacerLay's known 9 (the race bots: 1504, 1506, 1508, 1510, 1514, 1516-1519) AND A TENTH, NEW: src/game/gen2/pacerLay.test.ts:71 'on a respawn keeps exactly the margin he had when he fell' (`the respawn keeps his 2.04 s`): it pins Option A, which db4f97f81 replaced (the lead's ruling); new replaces old: rewrite its respawn clause to the ruled rule (first-pass margin less DOWN_SECS, the hold eased) as a planted test, the lead's call since it is a unit test outside pacerRespawn); the suite on the fix is NOT run.
+  (ii) the full suite on bf92d3daf (D114; pacerLay alone already run on it: the same ten reds as the base, no change): the base suite on 7501bf2fb ran in my container (tsc PASS; unit still running at hand-over, 10 not ok so far: pacerLay's known 9 (the race bots: 1504, 1506, 1508, 1510, 1514, 1516-1519) AND A TENTH, NEW: src/game/gen2/pacerLay.test.ts:71 'on a respawn keeps exactly the margin he had when he fell' (`the respawn keeps his 2.04 s`): it pins Option A, which db4f97f81 replaced (the lead's ruling); new replaces old: rewrite its respawn clause to the ruled rule (first-pass margin less DOWN_SECS, the hold eased) as a planted test, the lead's call since it is a unit test outside pacerRespawn); the suite on the fix is NOT run.
 - **Then (2) E toy-first** (RED on D', GREEN on E: a toy where a short drawn single would fall short of the 72 px gap and the smallest aimed
   hop that lands 50 px past it is pressed), **(3)** trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D (a predicted fall that came down
   safe) and fix the judge, hopJudged 4/4 GREEN, **(4)** the table on the 7 rows (E beside A b7a68a8bd and D'), pacerLay and pacerRespawn on
@@ -57,11 +57,18 @@ packet wrote them (unchanged, none started: box).**
 ## Polish check
 - The ease, stills upright and sideways (t/sheet-upright.jpg, t/sheet-sideways.jpg): the boat on the water beside and past him, no snap in the stills; numbers above. ROUGH, named, not mine and not fixed: the fixture page draws a black band past the toy world's right edge in both orientations (the camera shows past the toy's end); Pokey draws over the boat where he stands on the log above it (the 'under' layer, the lead's ruling (a)). The clip is not yet watched at speed (above).
 ## Unresolved
-- The clip (above) filmed, stills looked at, not watched at speed; the suite on the fix; pacerLay on the fix (it was RED 9/19 on the base: name any change); (2), (3), (4).
+- The clip (above) filmed, stills looked at, not watched at speed; the suite on the fix (pacerLay alone on frozen bf92d3daf: 9 pass, 10
+  fail, the SAME ten as the base with the same error lines: the known nine and :71's Option A; t/pacerLay-bf92d3daf.txt; no change from the
+  hold); (2), (3), (4).
 - One interim grid ran on my WORK tree, not a frozen one (the look-ahead, uncommitted: 2 of 89 paid); its result only told me the look-ahead
   was wrong; every row above is from a frozen tree at a named hash (D115).
 - I restacked my own t-eng-27-wip-27t (force-with-lease from 13bbf0d7a, mine alone) so the plant is its own commit on 7501bf2fb.
-- LESSONS read: the headlines (LAWS) and the packet's list by name; not each in full (box). Applied: D111 (box), D113 (every long run in the
+- **D121 on my own test (a proxy, named):** pacerRespawn reads the piece's `owed` (clock + owed is the race the verdict judges, and the
+  verdict check proves the excess counts at the dock), but nothing yet proves the boat's PLACE pays it: a piece whose ease never drained
+  `owed` would still pass (the race honest by the verdict, the boat on screen not). Add to pacerRespawn: after each ease, the boat's
+  clock has advanced by its frames' dt plus the excess (owed back to 0) before the dock, or the verdict counts the rest. Not done (box).
+- LESSONS read: the packet's list by headline (D63, D96, D102, D107, D109, D111-D121); not each in full (box). Applied: D96 (the
+  suite script runs the five CI-only gates too), D121 (above), D111 (box), D113 (every long run in the
   background), D114/D118 (the base suite first), D115 (frozen trees; one breach named above), D117 (the candidate on wip), D120, D109,
   D112/D121 (the invariant named before the ease), D116 (the ease's reason in the code), D63 (the clip: filmed, stills looked at, not watched at speed).
 ## Method update (proposed, the lead rules)
