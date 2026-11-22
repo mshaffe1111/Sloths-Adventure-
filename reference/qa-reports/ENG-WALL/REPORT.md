@@ -6,6 +6,9 @@ the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-r
 so upright's 2.62 needs its own cause: shoot frame 0 vs settled, the ground mask's cells marked). If
 both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
+MY MISS: I started the suite (about 35 min) 23 minutes before the box's end, and drawcheck after the lead's "no long run you can't
+finish" message, sure of about 6 minutes; under the suite's load it ran at about a stage a minute (3 of 19 stages done at the hand-over).
+At hand-over: shards 414 / 387 / 444 tests passed, 0 failed so far; drawcheck 3 of 19 stages, no breach printed so far. Neither is a verdict.
 
 ## 1. C's first half LANDED (done, pushed: t-eng-wall afdd5060c; `git ls-remote` = HEAD at the push)
 - 018086a32: one seam, no change in behaviour: protoArt.ts groundBakeKey (the key's scale and view), engine.ts groundView (what the

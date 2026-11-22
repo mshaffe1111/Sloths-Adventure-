@@ -40,8 +40,11 @@ const res = await p.evaluate(async (E) => {
     for (const f of frames) {
       if (f.introT !== undefined) { e.introT = f.introT; e.applyZoom(); }
       Object.assign(e.camera, f.cam); for (let i = 0; i < 30; i++) e.render(); Object.assign(e.camera, f.cam); e.render();
+      // (and the cells near where Pokey is drawn on the re-render: after the descent he is at its end, maybe inside an earlier frame's view)
+      const k2 = main.width / e.camera.viewportWidth, ex = e.player.x + (e.player.width ?? 0) / 2, ey = e.player.y + (e.player.height ?? 0) / 2;
+      const near = (i) => { const x = (i % cols) * 8, y = Math.floor(i / cols) * 8; return Math.hypot(e.camera.x + x / k2 - ex, e.camera.y + y / k2 - ey) <= 160; };
       const s = cells(); let sum = 0, gs = 0, gn = 0; const colD = new Array(cols).fill(0), colN = new Array(cols).fill(0);
-      for (let i = 0; i < s.length; i++) { const d = Math.abs(s[i] - f.l[i]); sum += d; colD[i % cols] += d; colN[i % cols]++; if (f.m[i]) { gs += d; gn++; } }
+      for (let i = 0; i < s.length; i++) { const d = Math.abs(s[i] - f.l[i]); sum += d; colD[i % cols] += d; colN[i % cols]++; if (f.m[i] && !near(i)) { gs += d; gn++; } }
       const worst = Math.max(...colD.map((v, i) => v / colN[i]));
       rows.push({ cam: [Math.round(f.cam.x), Math.round(f.cam.y)], mean: +(sum / s.length).toFixed(2), worstCol: +worst.toFixed(1), ground: gn ? +(gs / gn).toFixed(2) : null, groundCells: gn, other: +((sum - gs) / Math.max(1, s.length - gn)).toFixed(2) });
     }
