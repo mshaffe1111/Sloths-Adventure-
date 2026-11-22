@@ -198,7 +198,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, earthWallCovers, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -7454,7 +7454,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) {
+    // 2-6: when the bank's opaque earth wall fills the whole view (sheets in, past every edge by more than the shake and the snap), the
+    // backdrop and the rivers under the wall are hidden under it: they are left undrawn (protoArt.ts earthWallCovers; 2-6's draw budget,
+    // ENG-26r: the backdrop, its vignette and the rivers' soil were drawn in full and then covered, 4 to 6 screens of image a frame)
+    const wallView = { x0: this.camera.x, x1: this.camera.x + vw, y0: this.camera.y, y1: this.camera.y + vh };
+    const walled = !!this.proto?.bankWall && earthWallCovers(this.proto.bankWall, wallView, Math.max(Math.abs(shakeX), Math.abs(shakeY)) + 1);
+    if (!ownScene && !walled) {
       renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
       // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
       setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -7485,12 +7490,11 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
-    this.drawRivers(ctx, world, false);
+    if (!walled) this.drawRivers(ctx, world, false);
     // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
     this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
-    if (this.proto?.bankWall)
-      drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    if (this.proto?.bankWall) drawEarthWall(ctx, this.proto.bankWall, wallView);
 
     // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours): about the painted cap itself, and none while the
     // cap is not in (a rim over nothing read as an empty pickup ring, F12: bounceArt.ts bounceAuraBox)
