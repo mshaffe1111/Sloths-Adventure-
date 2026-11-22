@@ -10,8 +10,9 @@ scratchpad's fullset.txt (the scripts are copied to reference/qa-reports/INT-R3/
    vs BUILD-23e, 360 rows: 9 bot x setting x 40 seeds); any difference is named to the lead.
 3. After the chain ends (never beside it): `node tools/slotconfirm.mjs /home/user/frz-b <out>` with run_in_background (its own vite on
    5181, UI-372's shooter, Normal + Easy): every 'gone' line must read duck:open and capybara:open (not spooked).
-4. roadmapcheck's red is RULED (R-165.386, carried at the final integration with t-art-next 8feca1123): no fix on e5eecab9a.
-5. If this container is gone: `git worktree add --detach <dir> e5eecab9a`, `npm ci --legacy-peer-deps`, `git fetch --unshallow origin`, then
+4. funcheck's FAIL is ruled debt: at the FINAL integration re-run it and diff flag for flag vs INT-14's table (`tools/fundiff.sh <funcheck output> <repo>`: stage|setting|rule|layouts|known); 22/22 identical or it is a red.
+5. roadmapcheck's red is RULED (R-165.386, carried at the final integration with t-art-next 8feca1123): no fix on e5eecab9a.
+6. If this container is gone: `git worktree add --detach <dir> e5eecab9a`, `npm ci --legacy-peer-deps`, `git fetch --unshallow origin`, then
    tools/fullset.sh <dir> <a worktree of 2a87f4cda> from the first gate not in the table (edit out the done lines).
 Not now (packet step 3): the version bump, What's New, 2-6's merge, the EnK5 test link, the PR.
 
@@ -72,7 +73,7 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | every registered seed list | PASS | 2548 s here; 14 lists, each clean on both settings: 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 2-1 2-2 2-3 2-4 2-5 |
 | paintcheck 0/3, 1/3, 2/3 | PASS x3 | 0/3 284 s (170 known ids seen); 1/3 (107 known ids); 2/3 387 s (106 known ids); no new painted style through code terrain |
 | tierBots | PASS | 179 s; # pass 9 # fail 0 |
-| **funcheck** | **FAIL (22 worse/new, 0 to lower)** | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Told the lead. |
+| **funcheck** | **FAIL, ruled debt (identical to INT-14, 22/22), carried** (22 worse/new, 0 to lower) | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Lead's ruling: carried as the named debt of releases 1 and 2; at the final integration the same diff must still show 22/22 identical, and any new or worse flag there is a red. |
 | buildcheck (alone) | PASS | 1-1 p95 99 ms normal, 64 ms easy (budget 150 ms at CPU x4) |
 | the unit suite | running | |
 | slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
