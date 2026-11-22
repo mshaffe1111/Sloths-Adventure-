@@ -3571,10 +3571,14 @@ export class FirstTimerRun {
     if (here.wheel) {
       const w = here.wheel.w, lay = w.lay;
       if (!lay) return null;
+      // (a thumb that does not let go (no holdQ: the kid, R-165.59) keeps his last press held through a `{}`: in a bucket every stand is a
+      // brake for him, a press against his motion while he moves, nothing once still; else he runs on off the bucket's end (2-6 kid E 22,
+      // bucket #51; the wheel toy, sparse kid Easy v1, boarding by the window). BUILD-26m/n)
+      const stand = (): Pad => !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
       const f = WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: lay.street, up: lay.up }, who.setting === 'easy' ? 'easy' : 'normal')];
       const read = !f ? undefined : lay.street === 'up' ? f.jump : lay.street === 'edge' ? f.tap : undefined;
       // (a street in over the top sets him down on it: he rides; an unflown wheel he only rides)
-      if (!read || read.from === undefined || read.to === undefined) { this.wheelSeen = -1; return {}; }
+      if (!read || read.from === undefined || read.to === undefined) { this.wheelSeen = -1; return stand(); }
       const phi = bucketAngle(w, here.wheel.i, e.gameTime);
       const past = (((phi - Math.PI) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
       if (past < read.from || past > read.to) {
@@ -3583,14 +3587,24 @@ export class FirstTimerRun {
         // it as the window opened left him still sliding back as he stepped off): a step off from its front end goes early and falls short
         // of the street, the expert on the sparse toy)
         const off = p.x - (here.x + here.width / 2);
-        return past < read.from - 0.6 && Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
+        if (past >= read.from - 0.6) return stand();
+        // (the kid: toward the middle from outside his stand distance of it, a brake inside it (a press toward the middle carried him past it
+        // and off the far end, a full swing every ~0.9 s))
+        if (!who.holdQ) {
+          if (Math.abs(off) > 22 + who.edgeAim) return off > 0 ? { left: true } : { right: true };
+          return stand();
+        }
+        return Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
       }
       // (the window is open: he reacts to it, as to a ride coming to a stand (clockRide), and goes only while it is still open)
       if (this.wheelSeen < 0) {
         this.wheelSeen = t;
         this.wheelDelay = who.stopReact + (who.lateQ && this.r() < (who.lateShare ?? 0) ? drawQ(this.r, who.lateQ) : 0);
       }
-      if (t - this.wheelSeen < this.wheelDelay) return {};
+      if (t - this.wheelSeen < this.wheelDelay) return stand();
+      // (the kid's step-off waits for the brake to have him still: a hop decided while a brake's press still carried him went off the wrong
+      // end (the wheel toy, top kid Normal v2, 15.4 s))
+      if (!who.holdQ && Math.abs(p.vx) > BONK.still) return stand();
       this.wheelSeen = -1;
       // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
       // the flight's jump)
@@ -3606,7 +3620,9 @@ export class FirstTimerRun {
     const lip = w.way > 0 ? here.x + here.width : here.x;
     const toLip = (lip - p.x) * w.way;
     if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return w.way > 0 ? { right: true } : { left: true };
-    if (Math.abs(p.vx) > 10) return {};
+    // (the stand at the lip: a thumb that does not let go (no holdQ) keeps the walk-up press held through a `{}` and walks off the lip
+    // into the pond (the wheel toy, sparse kid Normal v2, 6.1 s): for him the stand is a brake, a press against his motion. BUILD-26n)
+    if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
     this.wheelHop = who.hold[0];
     const out = this.decide(w.way, 'single', true, {});
     // (decide may have set a press to come: he stands while it comes, as off a log, vineFromLog)
