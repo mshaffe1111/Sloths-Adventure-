@@ -1,0 +1,143 @@
+# Subtest: 2c: the rock is solid from its face in to the rim, down to its last rows; it is only ever raised
+ok 1 - 2c: the rock is solid from its face in to the rim, down to its last rows; it is only ever raised
+# Subtest: 2c: every world's face line (the soil's and the river's cut) has 25 points (World 1: its old 9), starting at the corner or in
+ok 2 - 2c: every world's face line (the soil's and the river's cut) has 25 points (World 1: its old 9), starting at the corner or in
+# Subtest: 2c: the solid bank end and its step copies are baked again when the phone takes their canvas back (LESSONS D6)
+ok 3 - 2c: the solid bank end and its step copies are baked again when the phone takes their canvas back (LESSONS D6)
+# Subtest: every soil fill, in every world, is sampled at least 3 sheet pixels in from each edge (the WebP bleed: World 1 fill 2 falls 60 -> 36 over its last 3 rows, a hairline along every soil row, R-165.146 / R-165.129)
+ok 4 - every soil fill, in every world, is sampled at least 3 sheet pixels in from each edge (the WebP bleed: World 1 fill 2 falls 60 -> 36 over its last 3 rows, a hairline along every soil row, R-165.146 / R-165.129)
+# Subtest: a floor's lip runs on under a short raised bank between two floors, and only there (R-165.146: W1C's 1-3 box under the bank)
+ok 5 - a floor's lip runs on under a short raised bank between two floors, and only there (R-165.146: W1C's 1-3 box under the bank)
+# Subtest: on 1-3's designed roll, every short raised bank between two floors gets the floor's lip under it
+ok 6 - on 1-3's designed roll, every short raised bank between two floors gets the floor's lip under it
+# Subtest: a backdrop strip's foot (below its painted bottom, over a chasm) is its bottom edge averaged into soft columns and darkened downward, never its last rows stretched into streaks (R-165.129: 1-1's low log)
+ok 7 - a backdrop strip's foot (below its painted bottom, over a chasm) is its bottom edge averaged into soft columns and darkened downward, never its last rows stretched into streaks (R-165.129: 1-1's low log)
+# Subtest: a dip pocket's soil (gen2 World 1) is painted into the ground's squares with its banks, never live over them: live, laid from the view, it stood as a lighter box between 1-1's earth pillars (R-165.129)
+ok 8 - a dip pocket's soil (gen2 World 1) is painted into the ground's squares with its banks, never live over them: live, laid from the view, it stood as a lighter box between 1-1's earth pillars (R-165.129)
+# Subtest: a sheet arriving in play never throws the painted ground away: the squares already painted are drawn while they are painted again, a few a frame (FIX-22b)
+ok 9 - a sheet arriving in play never throws the painted ground away: the squares already painted are drawn while they are painted again, a few a frame (FIX-22b)
+# Subtest: a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank's end face, curving back in above the floor, never shows the backdrop as a box (W1C's 91-up bank, 1-3's 76-up banks)
+ok 10 - a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank's end face, curving back in above the floor, never shows the backdrop as a box (W1C's 91-up bank, 1-3's 76-up banks)
+# Subtest: a wall's end face stops at the step that stands against it, not at the floor under that step: no grass tab hangs under a painted block in front of the wall, and nothing see-through where the floor's lip run filled the notch (R-165.344, FIX-TAB: 1-6's stairs of stones, 100 tabs in World 1)
+ok 11 - a wall's end face stops at the step that stands against it, not at the floor under that step: no grass tab hangs under a painted block in front of the wall, and nothing see-through where the floor's lip run filled the notch (R-165.344, FIX-TAB: 1-6's stairs of stones, 100 tabs in World 1)
+# Subtest: every ground lip, in every world, is sampled clear of the soil row packed above it, and drawn where its frame puts it (R-165.243)
+ok 12 - every ground lip, in every world, is sampled clear of the soil row packed above it, and drawn where its frame puts it (R-165.243)
+# Subtest: the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 13 - the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+# Subtest: the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 14 - the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+# Subtest: a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+ok 15 - a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+# Subtest: the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 16 - the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+# Subtest: the out-and-back toy (easy): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 17 - the out-and-back toy (easy): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+# Subtest: the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+ok 18 - the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+# Subtest: the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 19 - the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 20 - the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 21 - the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 22 - the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 23 - the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 24 - the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+# Subtest: the out-and-back toy (normal): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 25 - the out-and-back toy (normal): a wall standing on the race leg's band is drawn whole, as with no ceiling
+# Subtest: the out-and-back toy (easy): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 26 - the out-and-back toy (easy): a wall standing on the race leg's band is drawn whole, as with no ceiling
+# Subtest: the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+ok 27 - the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+# Subtest: the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+ok 28 - the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+# Subtest: the out-and-back toy (normal): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+ok 29 - the out-and-back toy (normal): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+# Subtest: the out-and-back toy (easy): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+ok 30 - the out-and-back toy (easy): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+# Subtest: goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+ok 31 - goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+# Subtest: goals: free every animal there is to free; beat about three quarters of the predators
+ok 32 - goals: free every animal there is to free; beat about three quarters of the predators
+# Subtest: goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+ok 33 - goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+# Subtest: goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+ok 34 - goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+# Subtest: regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+ok 35 - regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+# Subtest: P-03: 7-3: jumping at the room's shut gate never brings the "jump twice" line
+ok 36 - P-03: 7-3: jumping at the room's shut gate never brings the "jump twice" line
+# Subtest: P-03: 3-2: jumping at the room's shut gate never brings the "jump twice" line
+ok 37 - P-03: 3-2: jumping at the room's shut gate never brings the "jump twice" line
+# Subtest: P-03: 2-9: jumping at the room's shut gate never brings the "jump twice" line
+ok 38 - P-03: 2-9: jumping at the room's shut gate never brings the "jump twice" line
+# Subtest: P-03: 6-7: jumping at the room's shut gate never brings the "jump twice" line
+ok 39 - P-03: 6-7: jumping at the room's shut gate never brings the "jump twice" line
+# Subtest: 2b: a safe river log's waterline crosses its painted bark at least 60% of the way down (long and short logs)
+ok 40 - 2b: a safe river log's waterline crosses its painted bark at least 60% of the way down (long and short logs)
+# Subtest: 2c: the river under a painted bank stops at the bank's own painted face, both ends; a side with no bank runs straight down
+ok 41 - 2c: the river under a painted bank stops at the bank's own painted face, both ends; a side with no bank runs straight down
+# Subtest: toy (2-1's first river, normal): crossed on a log as built; with a tail of two spacings, never
+ok 42 - toy (2-1's first river, normal): crossed on a log as built; with a tail of two spacings, never
+# Subtest: toy, normal: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+ok 43 - toy, normal: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+# Subtest: toy (2-1's first river, easy): crossed on a log as built; with a tail of two spacings, never
+ok 44 - toy (2-1's first river, easy): crossed on a log as built; with a tail of two spacings, never
+# Subtest: toy, easy: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+ok 45 - toy, easy: a rider carried into the tail goes on into the water, never stepped up onto a bank that is not there
+# Subtest: 2-4 (seed 1): beats 4 and 6 are never crossed on a log alone on Normal (the liana each is built on is the way); on Easy, ridden across
+ok 46 - 2-4 (seed 1): beats 4 and 6 are never crossed on a log alone on Normal (the liana each is built on is the way); on Easy, ridden across
+# Subtest: a tail is judged against the flown reach: riverFaults names a tail inside it, and passes one past it
+ok 47 - a tail is judged against the flown reach: riverFaults names a tail inside it, and passes one past it
+# Subtest: a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall
+ok 48 - a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall
+# Subtest: a tall stump standing on the ground is ground, not a gap; a breaking branch over a gap is not a floor
+ok 49 - a tall stump standing on the ground is ground, not a gap; a breaking branch over a gap is not a floor
+# Subtest: the way out of a soft pit: a step in it, or a floor within a sunk step of its lower lip; deeper with no step is a trap
+ok 50 - the way out of a soft pit: a step in it, or a floor within a sunk step of its lower lip; deeper with no step is a trap
+# Subtest: 1-8's long branch: the holes between the chase's sections are falls
+ok 51 - 1-8's long branch: the holes between the chase's sections are falls
+# Subtest: World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; the only unmarked floorless gaps outside 1-8 are 1-6's water
+ok 52 - World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; the only unmarked floorless gaps outside 1-8 are 1-6's water
+# Subtest: 1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall, by realFalls and by findW1Pits
+ok 53 - 1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall, by realFalls and by findW1Pits
+# Subtest: a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop
+ok 54 - a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop
+# Subtest: a marked drop is painted only between two banks of earth with nothing standing in it; beside a slab, a branch or with ground in it, it is open air (R-164.6, R-164.8, Matt's stills 03-08)
+ok 55 - a marked drop is painted only between two banks of earth with nothing standing in it; beside a slab, a branch or with ground in it, it is open air (R-164.6, R-164.8, Matt's stills 03-08)
+# Subtest: a drop's dark follows its banks' own painted faces all the way down, and is closed where they meet (R-164.8)
+ok 56 - a drop's dark follows its banks' own painted faces all the way down, and is closed where they meet (R-164.8)
+# Subtest: PLANTED: a hollow's own hurt floor is its bottom, not ground in it; a block standing in that hollow is still caught
+ok 57 - PLANTED: a hollow's own hurt floor is its bottom, not ground in it; a block standing in that hollow is still caught
+# Subtest: World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; only the mixer's stages mark drops (engine-core)
+ok 58 - World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; only the mixer's stages mark drops (engine-core)
+# Subtest: a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)
+ok 59 - a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)
+# Subtest: a floorless gap inside a soft heartFalls zone is a soft pit, not water; one outside it still counts (planted)
+ok 60 - a floorless gap inside a soft heartFalls zone is a soft pit, not water; one outside it still counts (planted)
+# Subtest: a hollow's torn lips each hang into at most a quarter of it, so over a narrow hollow they never meet as a column of roots (EN-W Rough 1)
+ok 61 - a hollow's torn lips each hang into at most a quarter of it, so over a narrow hollow they never meet as a column of roots (EN-W Rough 1)
+# Subtest: a hollow has two painted walls, World 1's own bank end face (not one mirrored picture), standing at most HOLLOW_JUT into it and rounded into its floor, never a box; its dark and its thorns stay between its walls, so close hollows share a clean bank (the lead 11-12)
+ok 62 - a hollow has two painted walls, World 1's own bank end face (not one mirrored picture), standing at most HOLLOW_JUT into it and rounded into its floor, never a box; its dark and its thorns stay between its walls, so close hollows share a clean bank (the lead 11-12)
+# Subtest: a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)
+ok 63 - a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)
+# Subtest: per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix World 1 string 57: its log chain)
+ok 64 - per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix World 1 string 57: its log chain)
+# Subtest: per-gap ruler: a hole between two banks off the stage's commonest top is judged by its own lips
+ok 65 - per-gap ruler: a hole between two banks off the stage's commonest top is judged by its own lips
+# Subtest: per-gap ruler: a log chain over a hole is one gap between the banks, judged against the earth below; the logs are never lips
+ok 66 - per-gap ruler: a log chain over a hole is one gap between the banks, judged against the earth below; the logs are never lips
+# Subtest: per-gap ruler: a hole wider than 1,600 px between two banks is judged (no cap)
+ok 67 - per-gap ruler: a hole wider than 1,600 px between two banks is judged (no cap)
+# Subtest: per-gap ruler: a piece lying on the ground is no pit wall (1-2 layout 3, seed 3, x14136..14684: a 124 px log on a falling stair)
+ok 68 - per-gap ruler: a piece lying on the ground is no pit wall (1-2 layout 3, seed 3, x14136..14684: a 124 px log on a falling stair)
+# tests 68
+# suites 0
+# pass 68
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -967,7 +967,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number; wallFace?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -1030,6 +1030,8 @@ export function drawBankArt(
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
   // (Worlds 8-10: pieces painted into their own soil, set into the face: w810FaceArt.ts)
   if (w >= 8 && view) drawW810Face(ctx, w, p, bottom, view);
+  // (a high canopy wall: its painted root wall inside the soil's outline, its foot faded into this soil: drawWallFace)
+  if (open.wallFace) drawWallFace(ctx, p.x, p.y);
   ctx.restore();
   // (a World 7 high ledge is faced with the old temple's carved wall to its own edge, w7TempleArt.ts; the painted end then wraps its
   // soil round the wall's corner, over the stone, where the soil's outline slopes back in: inside that outline the corner showed the
@@ -1226,7 +1228,46 @@ function releaseWallChunks() {
   wallChunks = null;
 }
 
-/** the face of the high canopy wall: the painted root wall, once, from its mossy lip down to the ground */
+/** the painted root wall's width on a high canopy wall (its frame is drawn at its own shape: R-165.380) */
+const WALL_FACE_W = 244;
+/** how much of the wall frame, from its foot up, fades into the bank's soil under it */
+const WALL_FADE = 0.45;
+/** each world's wall frame with its foot faded out, baked once per world (nothing new per frame), keyed by the sheet it was cut from */
+const wallFaces = new Map<number, { img: HTMLImageElement; cv: HTMLCanvasElement | null }>();
+function wallFaceArt(): { img: CanvasImageSource; sx: number; sy: number; sw: number; sh: number } {
+  const { img, f } = frameOf('wall');
+  let e = wallFaces.get(kitWorld);
+  if (!e || e.img !== img) {
+    let cv: HTMLCanvasElement | null = document.createElement('canvas');
+    cv.width = f.w;
+    cv.height = f.h;
+    const g = cv.getContext('2d');
+    if (g && typeof g.createLinearGradient === 'function') {
+      g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+      g.globalCompositeOperation = 'destination-in';
+      const gr = g.createLinearGradient(0, f.h * (1 - WALL_FADE), 0, f.h);
+      gr.addColorStop(0, 'rgba(0, 0, 0, 1)');
+      gr.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      g.fillStyle = gr;
+      g.fillRect(0, 0, f.w, f.h);
+      g.globalCompositeOperation = 'source-over';
+    } else cv = null;
+    e = { img, cv };
+    wallFaces.set(kitWorld, e);
+  }
+  return e.cv ? { img: e.cv, sx: 0, sy: 0, sw: f.w, sh: f.h } : { img, sx: f.x, sy: f.y, sw: f.w, sh: f.h };
+}
+/**
+ * The high canopy wall's painted root wall: its frame once at its own shape from the mossy lip down, its foot faded into the bank's
+ * soil (drawn inside the soil's outline by drawBankArt, the yard-side lip by drawGround). Below it the bank's own soil and end face run
+ * on. Blitted from the lip to the ground it was stretched x3.4 out of shape, its straight side one long edge in the air (R-165.380).
+ */
+function drawWallFace(ctx: CanvasRenderingContext2D, x: number, top: number) {
+  const a = wallFaceArt();
+  ctx.drawImage(a.img, a.sx, a.sy, a.sw, a.sh, x - 14, top - 14, WALL_FACE_W, (WALL_FACE_W * a.sh) / a.sw);
+}
+
+/** the face of a puzzle room's wall over its door: the painted root wall, once, from its mossy lip down to the door */
 export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number, w: number): boolean {
   if (!protoArtReady()) return false;
   blit(ctx, 'wall', x - 14, top - 14, w + 14, bottom - top + 30);
@@ -1489,17 +1530,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
     // (World 5: the bank's soil covers the trunk piece, all but the 14 units it starts left of the face, which showed as a pale sliver of
     // root flare against the dirt edge, right where Meeca stands at room 5's far wall: warmup-5m, 2026-11-01. Cut to the face there)
-    if (isWall && !high) {
-      const wallBottom = banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6;
-      if (kitWorld === 5) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(p.x, p.y - 20, 260, wallBottom - p.y + 60);
-        ctx.clip();
-        drawWallArt(ctx, p.x, p.y, wallBottom, 230);
-        ctx.restore();
-      } else drawWallArt(ctx, p.x, p.y, wallBottom, 230);
-    }
+    const wallFace = isWall && !high && protoArtReady();
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
     const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
@@ -1516,7 +1547,17 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true), wallFace }, false, view.y1 ?? 0, view, wall || undefined);
+    // (the wall face's yard-side lip, left of the soil's outline: World 5 cuts it to the face, its trunk piece's root flare showed as a
+    // pale sliver against the dirt edge there, warmup-5m, 2026-11-01)
+    if (wallFace && kitWorld !== 5) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(p.x - 14, p.y - 14, 13, WALL_FACE_W + 14);
+      ctx.clip();
+      drawWallFace(ctx, p.x, p.y);
+      ctx.restore();
+    }
     if (over.length) {
       ctx.restore();
       // (its underside AFTER the ceiling's clip, over its own x span only: the painted strip's edge on the line and its roots hanging

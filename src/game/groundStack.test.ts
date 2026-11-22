@@ -544,3 +544,56 @@ for (const difficulty of ['normal', 'easy'] as const) {
     assert.deepEqual(gaps, [], 'a wall\'s soil stops short of the view\'s foot');
   });
 }
+
+// ENG-WALL (R-165.380, the lead's ruling (A); ENG-GROUND-e's plant): a tall wall's painted face is never stretched past its frame's own
+// aspect, and none of it shows past its bank's span. The high canopy wall's root-wall picture (protoArt drawWallArt, each world's 'wall'
+// frame, a square soil cutaway with straight sides) was blitted once from its lip to the ground: on the toy's descent 806 tall from a
+// 537-row frame squeezed to 244 wide, x3.4 out of shape, its straight side one long vertical edge, and 170 past a 60-wide column.
+// TILE_STRETCH: STAGE-RULES.md:275 (5b 2, 'no texture stretched in strips') + 10%, the slack of a frame fitted to its bank's lip.
+const TILE_STRETCH = 1.1;
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): no wall's painted face is stretched past its frame's own aspect, nor past its bank`, async () => {
+    const { KIT_FRAMES } = await import('./kitAtlasData.ts');
+    const f = KIT_FRAMES[2].wall;
+    let walls = 0;
+    const bad: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+      };
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      // (a high canopy wall: a bank with a floor 150 or more below its top meeting its left end, as drawGround's isWall)
+      for (const w of banks.filter((p) => banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150))) {
+        const r = new RecordingCtx();
+        const foot = banks.find((q) => Math.abs(q.x + q.width - w.x) < 2)!.y;
+        const view = { x0: w.x - 300, x1: w.x + 500, y0: w.y - 200, y1: foot + 200 };
+        drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+        r.off = true;
+        // (the frame from the sheet, or its copy baked once per world: the same size)
+        const pics = r.draws.filter((d) => d.src && d.src[2] > 0 && Math.abs(d.src[2] - f.w) < f.w * 0.05 + 1 && Math.abs(d.src[3] - f.h) < f.h * 0.05 + 1 && d.box[0] < w.x + 20 && d.box[2] > w.x);
+        if (!pics.length) continue;
+        walls++;
+        const tag = `seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)}`;
+        for (const d of pics) {
+          const [, , sw, sh] = d.src!, dw = d.box[2] - d.box[0], dh = d.box[3] - d.box[1];
+          const k = Math.max((dh / sh) / (dw / sw), (dw / sw) / (dh / sh));
+          if (k > TILE_STRETCH) bad.push(`${tag}: its face drawn ${Math.round(dw)}x${Math.round(dh)} from ${sw}x${sh}, x${k.toFixed(2)} out of shape`);
+          // (past its bank: any of the face's box right of the bank's end, inside every clip in force, shows in the air)
+          let past = 0;
+          for (let x = w.x + w.width + 4; x < d.box[2]; x += 8) for (let y = d.box[1] + 4; y < d.box[3]; y += 16) {
+            if (d.clips.every((c) => inside(c.polys, c.evenodd, x, y))) past = Math.max(past, x - (w.x + w.width));
+          }
+          if (past > 0) bad.push(`${tag}: its face shows ${Math.round(past)} past the bank's end`);
+        }
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy has high canopy walls with the root-wall face (${walls})`);
+    assert.deepEqual(bad, [], 'a wall\'s painted face is stretched past its frame\'s aspect or shows past its bank');
+  });
+}
