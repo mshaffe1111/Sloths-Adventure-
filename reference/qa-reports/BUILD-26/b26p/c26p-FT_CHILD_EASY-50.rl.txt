@@ -1,0 +1,24 @@
+STUCK @24.73 {"x":1264,"y":6742,"t":16.7,"dur":8,"what":"in a dip 22 px deep, an open drop ahead, water ahead, the way on is 138 px down","step":null,"dip":22,"puzzle":false
+STUCK @87.97 {"x":1174,"y":4638,"t":79.9,"dur":8,"what":"in a dip 324 px deep, water ahead, the way on is 185 px down","step":null,"dip":324,"puzzle":false,"rescued":false}
+STUCK @145.17 {"x":332,"y":1972,"t":137.1,"dur":8,"what":"water ahead, the way on is 192 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+STUCK @173.53 {"x":645,"y":1799,"t":165.5,"dur":8,"what":"in a dip 281 px deep, water ahead, the way on is 281 px up","step":null,"dip":281,"puzzle":false,"rescued":false}
+RESCUE 1 @175.63 x 653; the 3 s before (every 5th frame):
+  172.67 754,1626 vx -268 vy 131 tgt 772,1518
+  172.83 708,1689 vx -285 vy 547 tgt 726,1518
+  173.00 662,1799 vx -268 vy 0 tgt 702,1518
+  173.17 645,1799 vx 0 vy 0 tgt 702,1518
+  173.33 645,1735 vx 0 vy -387 tgt 702,1518
+  173.50 657,1702 vx 170 vy -70 tgt 656,1518
+  173.67 701,1718 vx 285 vy 248 tgt 702,1518
+  173.83 747,1649 vx 268 vy -288 tgt 749,1518
+  174.00 794,1632 vx 285 vy 11 tgt 795,1518
+  174.17 839,1669 vx 268 vy 381 tgt 842,1518
+  174.33 886,1774 vx 285 vy 797 tgt 865,1518
+  174.50 912,1799 vx 0 vy 0 tgt 865,1518
+  174.67 906,1724 vx -113 vy -323 tgt 912,1518
+  174.83 865,1701 vx -268 vy -24 tgt 865,1518
+  175.00 819,1676 vx -285 vy -478 tgt 819,1518
+  175.17 773,1628 vx -268 vy -161 tgt 772,1518
+  175.33 727,1633 vx -285 vy 177 tgt 726,1518
+  175.50 681,1704 vx -268 vy 594 tgt 679,1518
+{"t":199.1,"end":"shrine","rescues":1,"rescueXs":[653]}

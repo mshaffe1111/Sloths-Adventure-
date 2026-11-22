@@ -1,0 +1,67 @@
+proven: 51 of 100 seeds (every bot passes, none under 100 s) -> /home/user/x40p/proven26-cand.json
+   seed 2 out: kid easy shrine rescued x1; adult easy shrine rescued x2
+   seed 4 out: adult normal shrine rescued x1
+   seed 5 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 9 out: adult easy shrine rescued x1
+   seed 10 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 11 out: kid normal shrine rescued x1
+   seed 14 out: adult easy shrine rescued x1
+   seed 17 out: adult normal 98.8 s
+   seed 18 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 19 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 22 out: adult normal 99.2 s
+   seed 23 out: adult normal 95.9 s
+   seed 25 out: adult easy shrine rescued x1
+   seed 26 out: adult normal 99.1 s
+   seed 27 out: kid easy shrine rescued x1
+   seed 30 out: adult easy shrine rescued x1
+   seed 32 out: kid easy shrine rescued x1
+   seed 34 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 36 out: kid easy shrine rescued x1
+   seed 40 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 41 out: adult normal 98.8 s
+   seed 42 out: kid easy shrine rescued x1; adult normal 99.1 s
+   seed 43 out: kid easy shrine rescued x1
+   seed 45 out: adult easy shrine rescued x1
+   seed 46 out: adult easy shrine rescued x1
+   seed 48 out: adult easy shrine rescued x1
+   seed 50 out: child easy shrine rescued x1
+   seed 52 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 54 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 58 out: kid easy shrine rescued x1; adult easy shrine rescued x1; middle easy shrine rescued x1
+   seed 61 out: adult normal 99 s
+   seed 62 out: kid easy shrine rescued x1
+   seed 65 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 66 out: kid easy shrine rescued x1
+   seed 74 out: adult normal 98.6 s
+   seed 75 out: kid easy shrine rescued x1
+   seed 77 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 79 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 80 out: kid easy shrine rescued x1; adult easy shrine rescued x2
+   seed 84 out: kid easy shrine rescued x1
+   seed 85 out: kid easy shrine rescued x1; adult easy shrine rescued x2
+   seed 86 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 87 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 88 out: kid easy shrine rescued x1
+   seed 95 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 96 out: kid easy shrine rescued x1
+   seed 97 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 99 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+   seed 100 out: kid easy shrine rescued x1; adult easy shrine rescued x1
+castBots 2-6, seeds 1-100; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 99/100; under the floor 0; time median 111.4 s (min 102.3); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 11)
+kid    easy   PASS 68/100; under the floor 0; time median 126.1 s (min 118.8); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 32: shrine rescued x1  (seeds 5,19,27,43,65,75,77,79,85,87,95,97,99,2,10,18,32,34,36,40,42,52,54,58,62,66,80,84,86,88,96,100)
+adult  normal PASS 99/100; under the floor 8; time median 104.8 s (min 95.9); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 4)
+adult  easy   PASS 72/100; under the floor 0; time median 132.2 s (min 114.5); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 25: shrine rescued x1  (seeds 5,9,19,25,45,65,77,79,87,95,97,99,10,14,18,30,34,40,46,48,52,54,58,86,100)
+        fail 3: shrine rescued x2  (seeds 85,2,80)
+child  normal PASS 100/100; under the floor 0; time median 187 s (min 167.6); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 99/100; under the floor 0; time median 183.1 s (min 157.7); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 50)
+middle normal PASS 100/100; under the floor 0; time median 125.1 s (min 114.9); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 99/100; under the floor 0; time median 143.9 s (min 129.5); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 58)
+expert normal PASS 100/100; under the floor 0; time median 115.1 s (min 105.2); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0

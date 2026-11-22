@@ -1,0 +1,6 @@
+2-1: rows 360; pass flips 0; other moved rows 0
+2-2: rows 360; pass flips 0; other moved rows 0
+2-3: rows 360; pass flips 0; other moved rows 0
+2-4: rows 360; pass flips 0; other moved rows 0
+2-5: rows 360; pass flips 0; other moved rows 0
+1-4: rows 360; pass flips 0; other moved rows 0
