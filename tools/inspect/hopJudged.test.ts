@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, gateLands, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
+import { HOP_TRACE, WaitAim, gateLands, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -67,4 +67,24 @@ test('a drawn-hop gate decides on the hop as aimed, never on the thumb noise dra
   const th: ThumbAt = { last: 1, driftPx: 0, armed: false, releaseLeft: 0, travel: -1, slip: -1, speed: 600, once: false };
   assert.equal(gateLands(q, () => 220, 100, 500, 1, aim, 0, 0, 24, 1e9, th), true, 'the aimed hop lands (the toy)');
   assert.equal(gateLands(q, () => 220, 100, 500, 1, noisy, 0, 0, 24, 1e9, th), true, 'the gate read the slip drawn for the hop before he pressed');
+});
+
+// (ENG-27s, the lead's ruling on D's aim: the aim is drawn ONCE when a wait begins, from the tier's kind and hold draws (R-165.59: a
+//  player picks his hop when he sees the log), and HELD until he presses or the target leaves reach; no redraw inside a wait. The toy:
+//  a 1 s wait, the target in reach every frame, a gate that presses only a hold of 0.3 s or more; the first draw holds 0.1 s, a redraw
+//  would hold 0.4 s (the lucky hold). He must not press: the held aim never lands. RED on D's 0.5 s beat, GREEN with it deleted)
+test('a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead\'s ruling)', () => {
+  const base: DrawnHop = { kind: 'single', hold: 0.1, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 };
+  const holds = [0.1, 0.4, 0.4, 0.4];
+  let k = 0;
+  const draw = (): DrawnHop => ({ ...base, hold: holds[Math.min(k++, holds.length - 1)] });
+  const aim = new WaitAim();
+  let pressed = -1;
+  for (let f = 0; f < 30 && pressed < 0; f++) if (aim.at(1, f * DT, draw).hold >= 0.3) pressed = f;
+  assert.equal(pressed, -1, `he pressed a redrawn lucky hold at frame ${pressed} (${aim.draws} draws in one wait)`);
+  assert.equal(aim.draws, 1, 'one draw per wait');
+  // (the target left reach: the next wait draws its own aim, once)
+  aim.end();
+  for (let f = 30; f < 60; f++) aim.at(1, f * DT, draw);
+  assert.equal(aim.draws, 2, 'the next wait draws once');
 });

@@ -1107,6 +1107,24 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  *  from, the hop flown (the press's frame, x, hold and kind) and where he came down (a platform id, or 'lost'). Records only: no draw,
  *  no decision reads it (tools/inspect/hopJudged.test.ts) */
 /**
+ * The aim of a wait at a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28): the hop he will press, drawn by the testers'
+ * habit (drawHop) when the wait begins. PLANT (ENG-27s): D's 0.5 s beat redraws it inside the wait (`beat`; the race gate has none).
+ */
+export class WaitAim {
+  private hop: DrawnHop | null = null;
+  private since = -1;
+  /** draws made (the toy reads it) */
+  draws = 0;
+  at(dir: -1 | 1, t: number, draw: (dir: -1 | 1) => DrawnHop, beat = true): DrawnHop {
+    if (this.hop && beat && t - this.since >= 0.5) this.hop = null;
+    if (!this.hop) { this.hop = draw(dir); this.since = t; this.draws++; }
+    return this.hop;
+  }
+  /** the wait is over: he pressed, or the target left reach */
+  end(): void { this.hop = null; }
+}
+
+/**
  * What a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28) reads when it decides to press (ENG-27r, the lead's concern: a
  * player cannot see his thumb slip before he presses). The hop AS AIMED: its kind, holds, second press and beat with no steer (the
  * tier's draws, his plan), the log and the gap; never the thumb's noise drawn for it (drift, slip, late let-go) nor the thumb's state now.
@@ -1426,7 +1444,7 @@ export class FirstTimerRun {
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
   private lianaHop = false;
   /** SKILLS.floatSure (rule 28, the lead's ruling): the hop a wait drew, kept until a gate presses it (drawn once per wait, drawHop) */
-  private waitHop: DrawnHop | null = null;
+  private readonly aim = new WaitAim();
   /** the hop a gate judged and is pressing now: startJump flies it unchanged (its own draws are still made, so the stream is as ever) */
   private gateHop: DrawnHop | null = null;
   /** the gate hop's pre-drawn thumb (DrawnHop.thumb) and the frame of it thumbify is on, from the press until he is down (ENG-27o) */
@@ -2783,12 +2801,12 @@ export class FirstTimerRun {
       const drifts = SKILLS.floatSure ? this.edgeFloats(s.dir) : null;
       if (drifts) {
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir;
-        const h = this.waitHop ?? (this.waitHop = this.drawHop(dir1));
+        const h = this.aim.at(dir1, t, (d) => this.drawHop(d));
         if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24))) {
           this.standing = null;
           if (HOP_TRACE.on) { this.judged = null; this.judge('edgeStand', drifts, [0], dir1, h.hold, p.vx, 0, 24, h); }
           this.gateHop = h;
-          this.waitHop = null;
+          this.aim.end();
           return this.startJump(dir1, 'single', false);
         }
         if (HOP_TRACE.on) this.judged = null;
@@ -2802,7 +2820,6 @@ export class FirstTimerRun {
         if (!bank) {
           if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
           this.floatBeatLast = t;
-          if (t - this.floatBeat >= 0.5) { this.waitHop = null; this.floatBeat = -1; }
           this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
           return {};
         }
@@ -3055,13 +3072,13 @@ export class FirstTimerRun {
             const drifts = floats.filter((q) => q.type === 'drift');
             if (drifts.some((q) => lands(q))) {
               // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
-              const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
               if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
                 this.edgeWait = -1;
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
-                this.waitHop = null;
+                this.aim.end();
                 return this.startJump(dir, 'single', false);
               }
               // (the gate refused: the `near` probe's judgment above is no judgment of a hop he will press (the lead's ruling A, ENG-27p:
@@ -3078,7 +3095,6 @@ export class FirstTimerRun {
               // (the beat out with the drawn hop not landing: a new wait, its own draw, and he still stands by choice; the wait returned
               //  with nothing held, so the stopped-dead read decided a hop no gate judged 2 frames on (2-7 home middle Normal 2, t 20.17,
               //  x 14674, ENG-27n's trace) )
-              this.waitHop = null;
               this.floatBeat = -1;
               if (this.edgeWait < 0) this.edgeWait = t;
               if (t - this.edgeWait < 6) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
@@ -3116,7 +3132,7 @@ export class FirstTimerRun {
           const raceLegal = SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y);
           if (SKILLS.floatSure && raceLegal) {
             const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
-            const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
+            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d), false);
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
             const onBank = banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24));
@@ -3128,7 +3144,7 @@ export class FirstTimerRun {
                 else this.judge('race', logs, [0], dir as -1 | 1, h.hold, vx, 0, RACE_MARGIN, h);
               }
               this.gateHop = h;
-              this.waitHop = null;
+              this.aim.end();
               return this.startJump(dir, this.jumpFor(p, dir, here), false);
             }
           } else if (raceLegal && (reach || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
@@ -3162,12 +3178,12 @@ export class FirstTimerRun {
             if (SKILLS.floatSure && next) {
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
               const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-              const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
               if (logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
-                this.waitHop = null;
+                this.aim.end();
                 return this.startJump(dir, 'single', false);
               }
               if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
@@ -3175,7 +3191,7 @@ export class FirstTimerRun {
               if (t - this.floatBeat < 0.5) { this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
               // (the beat out with no judged hop landing: the old press here fired a hop no gate judged (2-7 home middle Normal 2, t 21.67,
               //  36.47, 39.33, ENG-27n's trace); now the wait ends, the next draws its own hop, and he stands on (the log hands him back))
-              if (next) { this.floatBeat = -1; this.waitHop = null; this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
+              if (next) { this.floatBeat = -1; this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {}; }
             }
             this.floatBeat = -1;
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
