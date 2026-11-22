@@ -12,6 +12,15 @@ packet wrote them (unchanged, none started: box).**
   hop that lands 50 px past it is pressed), **(3)** trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D (a predicted fall that came down
   safe) and fix the judge, hopJudged 4/4 GREEN, **(4)** the table on the 7 rows (E beside A b7a68a8bd and D'), pacerLay and pacerRespawn on
   E; then the race call goes to the lead. No race retune before it.
+- **Where E goes (read on bf92d3daf, not built):** the race gate is tools/inspect/firsttimer.ts:3122-3140 (`SKILLS.floatSure && raceLegal`):
+  today `h = this.aim.at(dir, t, (d) => this.drawHop(d))` (D': ONE drawn hop held, 1115 WaitAim) and `gateSees(q, ..., h, ..., RACE_MARGIN)` on
+  the far bank (24) or the next logs (RACE_MARGIN, :708). E replaces the drawn aim AT THIS GATE ONLY (the packet: 'the decision picks'):
+  candidates = the tier's calibrated kinds x their nominal holds (drawHop's own tables, firsttimer.ts:4193, without the noise), smallest
+  first; the first whose AIMED flight `gateLands(q, at, x, y, dir, cand, t, vx, margin, v2)` (:1136, no thumb arg) lands -> press it now;
+  `this.gateHop` = that candidate with the drawn hold spread and thumb noise applied at the press (what flies). None lands -> ride on.
+  The toy (hopJudged.test.ts beside the held-aim toy): a 72 px gap, a candidate list [single 0.1 s (aimed lands 20 px short), single
+  0.3 s (lands 60 px past), double ...]: D' (the held draw = the short single) never presses; E presses the 0.3 s single the first frame
+  it lands with 50 px. RED on bf92d3daf (D'), GREEN on E.
 ## Done-items
 - **(0) The suite on 7501bf2fb, frozen, in the background first:** started 8:33 PM ET on a frozen 7501bf2fb tree (s/suite-7501.log in my container): npm ci and tsc PASS; unit at hand-over: 10 not ok, the known nine plus pacerLay.test.ts:71 (above). Its later gates did not finish in my box.
 - **(1) The strict hold (the lead's ruling (a)), src/game/pieces/pacerPiece.ts on bf92d3daf:** a respawn on the race leg (the first-pass
