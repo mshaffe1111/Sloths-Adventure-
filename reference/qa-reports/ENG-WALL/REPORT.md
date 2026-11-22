@@ -2,7 +2,8 @@
 EXACT NEXT STEP: on an IDLE machine (nothing else running), time the candidate's burst: `node d/burst-ms.mjs <port> upright|sideways 4`
 against a vite on t-eng-wall (afdd5060c) and one on t-eng-wall-c2 (b04579a95), PERFORMANCE-RULES §1 (no frame over 50 ms in play, 120
 at a stage start); then fix d/flip-layers.mjs to keep and restore each frame's ZOOM with its camera (it restores x,y only) and re-judge
-the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-rendered at 0.763, an ease still unwinding). If
+the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-rendered at 0.763; upright the zoom holds at 0.9364,
+so upright's 2.62 needs its own cause: shoot frame 0 vs settled, the ground mask's cells marked). If
 both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
 
@@ -32,7 +33,8 @@ both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted t
   sideways; descent frames 1-39 at most 0.03 upright, 0.40 sideways** (were 10.49 / 20.14). **Descent frame 0 RED: 2.62 upright, 9.33
   sideways**: the probe's own teleport from the previous case (cam 14663 -> 18594); its other layers differ too (5.11 / 3.17). Most
   likely the PROBE: d/zoom0.mjs (same moves, sideways) reads that frame at zoom 0.7316 and the end at 0.763 (an ease from the x 14800
-  case still unwinding), and the probe re-renders every frame at the END zoom (it restores the camera's x,y, not the zoom). Not re-judged.
+  case still unwinding), and the probe re-renders every frame at the END zoom (it restores the camera's x,y, not the zoom). UPRIGHT the
+  zoom does not move (0.9364 on every frame), so upright's 2.62 is NOT that: unnamed. Neither re-judged.
 - NOT measured: the burst's cost (up to all in-view squares painted in one frame at a cold view). d/burst-ms.mjs ran once under the
   suite's load and its numbers are void (the settled frame read 45.9 ms, the descent 1105 ms at 4x); stopped, nothing recorded.
   drawcheck on b04579a95: started, NOT finished in the box.
