@@ -1,3 +1,77 @@
+# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; step 0 (land ENG-26p) and lockall still RUNNING at my box, so t-build-26 is NOT moved
+Commits: **4e0888c5d** (the fix + its toy, base cb9372ead) and this REPORT, on t-build-26-wip-26q only (D117: not on t-build-26 until the lead rules).
+Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; the roll; lockall base), 626fac5ac (the roll; removed),
+4e0888c5d (the plant; lockall fix), cb9372ead + the toy only (the toy's RED; removed).
+
+## EXACT NEXT STEP (the next engine member, or this session if the lead keeps it)
+1. **Step 0 (land ENG-26p) is NOT done.** cd2a64b2d is on no branch any more (wip-26p was rebased: its code is 14acf0ec0, head cb9372ead),
+   and the 73 files' list is written nowhere (ENG-26p's REPORT says 'the list is in Done'; it is not). So the WHOLE CLAUDE.md suite (619
+   files, one process per file, 3 at a time, per-file verdicts) runs on a frozen tree of **cb9372ead itself**, the 53 named files first
+   (src/game/controlTest, ctestCourseGone, w1Overhang..zones). At my box: 48+ files done, 0 reds; it needs about 100 minutes in all.
+   When it is clean but for rollGuard 1-4 and R-165.312's todo: fast-forward t-build-26 to cb9372ead (`git push origin
+   cb9372ead:refs/heads/t-build-26`, a fast-forward from c00d2fd17; never force) and send the lead the hash. Any other red: the lead first.
+   If this session is gone, re-run it the same way: `xargs -P 3` over the CLAUDE.md file list, `npx tsx --test <file>` each, writing
+   each file's exit code and its '# pass / # fail / # todo' lines, in the Bash tool's background with its 2-hour limit (D118).
+2. **lockall x16, both settings, every stage: base cb9372ead vs fix 4e0888c5d, RUNNING at my box** (each recorded to its own json; compare
+   per stage/part). A mover is only a stage where a field petal's nearest middle lay within 36 px of another pickup (it now takes the next
+   mate's middle or stays), so expect few. Every mover named; castBots x40 on each mover against the head's rows (rule 28); **a 1-4 mover's
+   rows go to the lead first (1-4 is SHIPPED)**. Then the suite on the fix head (frozen) before 4e0888c5d goes on t-build-26.
+
+## The roll (step 1; the test alone and a print, frozen cb9372ead)
+- 1-4 `?layout=72140` = rollVariants(10, 1028)'s v 72141; gen2 seed 42, 0 rerolls. Failing line: `flower #27 and find #13 overlap`
+  (levelCheck.ts:1035, PICKUP_APART 36).
+- **find #13**: the Notch (`w1_notch`, hidden) at (911, 3299), laid by stageGenerator.ts **addFinds** (finishStage) on branch 42 (x 441-1173
+  @ 3325, gate 43's own section): x 911 = 441 + 70 + 5 x 80, its spot grid; clearOf keeps 110 px from every pickup there THEN (12 pickups).
+- **flower #27**: laid by **petalPass** at x 838, y 3285 (73 px from the find: clear), then **moved by vineField.ts pairPetals** (line 385,
+  `c.x = (on.x + mates[0].x) / 2`) to 887, the middle of field vines 52 (847) and 53 (927, s17:f3/f4): 28 px from the find. pairPetals
+  checked no other pickup. Traced by logging finishStage between passes on an edit tree (reverted): postFind find only; postPetal 838;
+  postPair 887.
+- The other mate, vine 51 (767), was as near (80 px): its middle 807 is 104 px from the find.
+
+## The line in 2f188c552 (step 2)
+pipeline.ts layStage, the new `if (g) keepOut.push(gateBand(g, P.filter((q) => mineIds.has(q.id)), V));` (a sealed piece's band kept out of
+towerCatches). On this roll the sections' wood (ids 1-59) is IDENTICAL on 626fac5ac and the head; the lay's catch boughs fall 63 -> 56. That
+shifts addFinds' pool (the higher third, sorted by id, picked by hash32('1-4:w1_notch')): on 626fac5ac the Notch is on branch 56 (858, 615;
+the roll GREEN), on the head on branch 42 at 911, under the 847/927 pair. The band moved neither piece onto the other; it put the find
+where pairPetals' unchecked move lands. The defect is pairPetals'.
+
+## The fix (step 3; general, planted)
+- vineField.ts pairPetals takes `apart` (stageGenerator.ts finishStage passes levelCheck's PICKUP_APART; an argument, so the engine's
+  vineField imports no levelCheck): a petal moves only to a middle at least `apart` from every other pickup (a find, a heart, a petal; not
+  the exit totem): the nearest mate's middle as before, else the next mate's, else it stays where petalPass laid it (clear). Any placer's
+  pickup is respected, since it runs last. Here: 807, between 767 and 847, still a paired petal, still taken two-handed.
+- **The plant (rollGuard.test.ts, unchanged, no KNOWN line): RED on cb9372ead, GREEN on 4e0888c5d: 36 pass, 0 fail** (frozen 4e0888c5d).
+- Toy, vineField.test.ts 'pairPetals (planted, ENG-26q)...': **RED on cb9372ead's pairPetals (`887 !== 807`), GREEN on the fix**; it also
+  holds 'both middles taken: unmoved' and 'nothing near: the nearest mate's middle (887), as before'.
+- fieldPetals.test.ts (R-165.229, the two-hand climb takes every paired petal, 1-4 Normal and Easy): **6 pass, 0 fail** on the fix.
+  vineField.test.ts 8 pass. `npx tsc --noEmit -p .`: clean.
+- Not run yet (my box): lockall and rule 28 (step 2 above), the suite on the fix head, the build/chunkcheck (vineField.ts gained no import).
+
+## Polish check
+No screen judged: the only change moves a petal on a vine field by one pair (80 px) where it would sit on a find, and lockall has not
+reported which stages that touches. The next step's movers get stills (tools/art/kitaudit/shoot.mjs) before landing.
+
+## Pushback
+- The packet's step 0 names 'frozen cd2a64b2d' and 'the 73 files': cd2a64b2d is not on any branch I could fetch (the wip-26p rebase
+  replaced it with 14acf0ec0), and the 73's list is not in ENG-26p's REPORT. I ran the superset on cb9372ead, the commit that lands.
+- The fix belongs to vineField.ts pairPetals, not src/game/gen2 (the lay) or a placer the packet names; it is engine code (my card).
+
+## Suggestions (outside my walls)
+- methods/gates.md (the lead's): a member that hands over a partial suite writes the unreported FILE LIST into its REPORT (or a file on the
+  branch), never 'the list is in Done' without it; a runner that prints per-file verdicts makes the list a by-product.
+
+## Unresolved
+- Step 0's suite and the fast-forward; lockall movers, rule 28, the suite on the fix head; the build and chunkcheck on the fix.
+- My slip: one diagnostic (two quick roll prints) used a shell '&' inside a background command (the packet: never); not repeated.
+
+## Method update
+level.md / STAGE-RULES (the lead's): a pass that MOVES a placed pickup checks the level check's spacing against every other pickup at the
+new spot (pairPetals did not; petalPass and addFinds do). Lessons applied: D113 (no foreground waits), D114/D118 (the full suite, not
+targeted tests), D115 (frozen trees, removed when done), D117 (the candidate only on wip-26q), D109 (no clock times to the lead).
+
+## Turnover note
+reference/handoffs/engine-core.md: section 0zr-26q added (pairPetals' spacing), in this commit.
+
 # BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); the lead ACCEPTED cut 5 + A/B; child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d DONE: no tier drops against cut 5 (lost only adult N 9, A/B's); the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
 Commits: **9c2ce855d** (git revert 9df2f0d11: towerRoute.ts back to the strict span; C's toy removed from castBots.test.ts, A/B's toy kept;
 tsc clean on it), this REPORT with b26i/ evidence. A/B stays. No other bot code changed.
