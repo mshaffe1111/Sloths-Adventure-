@@ -88,3 +88,6 @@ BUILD-26g 9df2f0d11 'for safe-keeping').
 
 ## A question to the lead never ends a box (D120, 11-21)
 Every packet says: **a question to the lead never ends your box: send it, then keep working on every step that does not depend on the answer** (the suite, a split, a measurement, the REPORT). Stop only at the box, or when nothing left is independent of the answer, and say which in the message. On 11-21 ENG-27r handed over 21 minutes early to wait for a ruling while its suite, a split and a measurement were still to do.
+
+## Every background run sets its timeout to fit (D122, 11-21)
+Every packet says: **a run_in_background call sets `timeout` to fit the run (the default stops it at 30 minutes; the most is 2 hours, 7200000 ms), and a chain that may pass 2 hours is split into runs, each with its own verdict line.** On 11-21 ENG-26p's suite stopped at the 30-minute default with 73 files unreported, and INT-R3's FULL SET chain stopped at the 2-hour limit inside the unit suite, its last gate: both runs had to be redone.
