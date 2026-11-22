@@ -66,6 +66,8 @@ import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
 import { FigPush, type FieldView } from './figPush.ts';
+/** s the figs' work keeps the no-progress clock off with nothing moving (no fig freed, no gate opened, no step further on) */
+const FIG_GRACE = 20;
 /** the objectives whose goal is a count (engine.ts isQuotaType); every other stage's goal is the shrine */
 const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntlet']);
 import { buildRoll } from './eraRoll.ts';
@@ -1293,6 +1295,10 @@ export class FirstTimerRun {
   private climbVine: unknown = null;
   /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
   private figs: FigPush | null = null;
+  /** the figs' work: when its stretch began, his best place and when it last rose (the no-progress clock's bound on it, figsWork) */
+  private figFrom = 0;
+  private figBest = 0;
+  private figBestAt = 0;
   /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
   private figTap = false;
   /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
@@ -4066,7 +4072,15 @@ export class FirstTimerRun {
     // stuck: no progress for 8 s (not while standing at a puzzle)
     // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
     // (and not while he climbs back out of a pit, pitWayBack: the way back up is a person's retry, and three of them are a loop there)
-    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
+    // (the figs' work is the way on only while it gets somewhere: a fig freed, a gate opened, his best place further on; with none of
+    //  those for FIG_GRACE s the clock runs as at any stall, so a miss ends in a rescue, never a silent cap. BUILD-26l: 1-4 adult N 39
+    //  was pushed left, let go, right, let go between two field vines from t 110 to the 1200 s cap with every clock off)
+    if (this.prog.best > this.figBest) {
+      this.figBest = this.prog.best;
+      this.figBestAt = t;
+    }
+    const figsWork = this.figs?.busy(t) ? t - Math.max(this.figFrom, this.figs.changedAt, this.figBestAt) < FIG_GRACE : ((this.figFrom = t), false);
+    if (more || this.huntMore || this.puzzleWait || this.stillSpot || figsWork || this.climbBack) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
@@ -4080,9 +4094,10 @@ export class FirstTimerRun {
         const g = this.ground;
         const w = p.grounded ? null : this.whatAt.find((q) => Math.abs(q.x - g.x) < 80 && Math.abs(q.y - g.y) < 40);
         const dir = (this.prog.target(p)?.x ?? p.x + 1) >= p.x ? 1 : -1;
-        const d = w ?? (p.grounded ? this.describe(dir) : null);
+        // (on a vine, his hands on it and no way on: named too, so a stall there is never a run with no stuck spot. BUILD-26l)
+        const d = w ?? (p.grounded ? this.describe(dir) : held ? { what: `on a vine at ${Math.round(p.x)},${Math.round(p.y)} with no way on`, step: null, dip: null, puzzle: false } : null);
         if (d) {
-          const at = p.grounded ? p : g;
+          const at = p.grounded || held ? p : g;
           this.stuckOpen = { x: Math.round(at.x), y: Math.round(at.y), t: +(t - this.noProg).toFixed(1), dur: 8, what: d.what, step: d.step, dip: d.dip, puzzle: d.puzzle, rescued: false };
           this.stuck.push(this.stuckOpen);
         }

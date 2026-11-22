@@ -48,6 +48,11 @@ export class FigPush {
     return !!this.target || t - this.lastAct < 4;
   }
 
+  /** when the field last moved under his work (a fig bunch torn free or gone, a gate sprung open): the bot's no-progress clock lets his
+   *  work off only while it gets somewhere (firsttimer.ts figsWork; BUILD-26l, 1-4 adult N 39's shuffle under a gate, 1200 s) */
+  changedAt = -1e9;
+  private sig = -1;
+
   /** a knock read off the engine (FieldView.knocked) on any frame, climbing or not: the knock's own frame takes him off the vine */
   sawKnock(knocked: number | undefined, t: number): void {
     if ((knocked ?? 0) > 0) this.lastKnock = t;
@@ -84,6 +89,13 @@ export class FigPush {
   /** this frame's thumb, or null (the bot's own climb) */
   step(v: FieldView, p: PlayerState, t: number): Pad | null {
     if ((v.knocked ?? 0) > 0) this.lastKnock = t;
+    if (v.field) {
+      const sig = v.clusters.filter((c) => c.falling || c.gone).length * 1000 + v.field.gates.filter((g) => gateLeft(g, v.clusters) === 0).length;
+      if (sig !== this.sig) {
+        if (this.sig >= 0) this.changedAt = t;
+        this.sig = sig;
+      }
+    }
     if (Math.abs(p.x - this.movedAt.x) > 2 || Math.abs(p.y - this.movedAt.y) > 2) this.movedAt = { x: p.x, y: p.y, t };
     const pad = this.choose(v, p, t);
     if (pad) this.lastAct = t;

@@ -472,3 +472,40 @@ test('knocked off a vine field to its floor, the rewind takes the way he can rea
   fp.sawKnock(0, 20);
   assert.equal(fp.knockedRecently(21), false);
 });
+
+test('a vine field\'s work that gets nowhere (no fig freed, no gate opened, no step on) runs the no-progress clock: a stall on a vine ends in a rescue and a stuck spot, never a silent cap (BUILD-26l, 1-4 adult N 39)', async () => {
+  const { FirstTimerRun, FT_ADULT } = await import('./firsttimer.ts');
+  // (a floor, a climbing vine to a top with no way on, the way going on along a ledge far off and out of reach: he climbs to the
+  //  vine's top and holds it. The figs' work is stood in by one that never ends and moves nothing, as 1-4 adult N 39's shuffle
+  //  between the field vines 591/631 under a shut gate: FigPush.busy true every frame, every clock off, to the 1200 s cap)
+  const plats = [
+    { id: 1, x: 0, y: 1000, width: 900, height: 100, type: 'solid' },
+    { id: 2, x: 1500, y: 300, width: 600, height: 24, type: 'solid' },
+  ];
+  const vine = { id: 6, x: 600, topY: 500, bottomY: 1000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+  const route = [
+    ...Array.from({ length: 12 }, (_, i) => ({ x: 330 + i * 24, y: 1000 })),
+    ...Array.from({ length: 21 }, (_, i) => ({ x: 600, y: 1000 - i * 24 })),
+    ...Array.from({ length: 30 }, (_, i) => ({ x: 1520 + i * 18, y: 300 })),
+  ];
+  const play = (busy: boolean) => {
+    const run = new FirstTimerRun('1-1', 1, { ...FT_ADULT, look: 0 }, { route, cap: 90 });
+    run.sim.bare(plats as never, [vine as never]);
+    run.sim.stand(560, 1000);
+    run.sim.p.facing = 1;
+    const fig = { busy: () => busy, changedAt: -1e9, step: () => null, sawKnock() {}, knockedRecently: () => false };
+    (run as unknown as { figs: unknown }).figs = fig;
+    let held = 0;
+    (run as unknown as { opts: { onFrame?: (s: { p: { climbing: boolean } }) => void } }).opts.onFrame = (s) => { if (s.p.climbing) held++; };
+    run.prog.relocate(run.sim.p);
+    run.play();
+    const r = run as unknown as { rescueXs: number[]; stuck: { what: string; rescued: boolean }[]; t: number };
+    return { rescues: r.rescueXs.length, stuck: r.stuck.length, held: held / 30, t: r.t };
+  };
+  const work = play(true);
+  assert.ok(work.held > 20, `he climbed and held the vine (held ${work.held.toFixed(1)} s)`);
+  assert.ok(work.rescues >= 1 && work.stuck >= 1, `the stall on the vine ended in a rescue and a stuck spot (rescues ${work.rescues}, stuck ${work.stuck}, t ${work.t.toFixed(1)})`);
+  // (the same stall with no figs' work at all: the clock ran as it always did)
+  const none = play(false);
+  assert.ok(none.rescues >= 1, `with no figs' work the stall ends in a rescue (rescues ${none.rescues})`);
+});
