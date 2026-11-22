@@ -1,4 +1,4 @@
-# BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d and the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
+# BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d DONE: no tier drops against cut 5 (lost only adult N 9, A/B's); the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
 Commits: **9c2ce855d** (git revert 9df2f0d11: towerRoute.ts back to the strict span; C's toy removed from castBots.test.ts, A/B's toy kept;
 tsc clean on it), this REPORT with b26i/ evidence. A/B stays. No other bot code changed.
 Frozen trees (D115, detached, node_modules linked from wt-clean): 43c4c6776 (the clean suite + castBots whole), 9c2ce855d (the 1-4 x40
@@ -11,7 +11,12 @@ table), 43c4c6776 + b26i/probe-switches.patch (local only: B26I_REACH=0 turns C'
    bough)...' red; 'R-165.312: raw seed 1 keeps the roost boa' a todo. Any OTHER red: to the lead. (b) **the 1-4 x40 table on
    9c2ce855d (cut 5 + A/B, no C)**: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows r14-9c2ce855d.jsonl`,
    then `python3 reference/qa-reports/BUILD-26/b26g/cmp.py reference/qa-reports/BUILD-26/b26f/rows/r14-fe3d3d6ca.jsonl r14-9c2ce855d.jsonl`
-   (cut 5 against the head). **Send the rows to the lead.** No tier may drop; adult N 9 is expected lost (A/B's knock-on, step 2).
+   (cut 5 against the head). **DONE in my box, rows sent to the lead** (b26i/rows/r14-9c2ce855d.jsonl, b26i/cmp14-fe3d3d6ca-vs-9c2ce855d.txt):
+   cut 5 -> 9c2ce855d: adult E 36 -> 38, adult N 37 -> 37, child E 36 -> 36, child N 39 -> 39, expert N 39 -> 39, kid E 32 -> 38,
+   kid N 19 -> 40, middle E 37 -> 37, middle N 36 -> 36: **NO tier drop**. LOST 1: adult N 9 (A/B's knock-on, step 3). GAINED 30
+   (adult E 17, 19; adult N 36; kid E 2, 11, 24, 31, 35, 40; kid N 7, 9-13, 17-24, 33-37, 39, 40). Against C + A/B (27e20ebf9) the
+   revert costs adult E 40 -> 38, kid E 40 -> 38, middle E 38 -> 37 (lost adult/kid E 10 and 37, middle E 37; gained child E 37):
+   C's gains, which come back when C is re-applied on top of the step-up rule (step 1).
    Then tierBots on 9c2ce855d (C touched only the tower route; 1-1 has no tower, so the recommitted calibration should hold: check it,
    do not assume it), then castBots.test.ts whole and the suite on the final head (D118).
 1. **THE LEAD'S RULING (after my trace; the revert stands for now), in dependency order (D40):** (1) ONE general step-up rule that
