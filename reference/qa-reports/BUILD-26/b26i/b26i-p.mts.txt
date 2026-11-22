@@ -1,0 +1,7 @@
+import '../../src/game/headlessDom.ts';
+import { setDifficulty } from '../../src/game/difficulty.ts';
+import { RealPlay } from '../../src/game/realPlay.ts';
+const [id, setting, seed, ...ids] = process.argv.slice(2);
+setDifficulty(setting as any);
+const sim: any = new RealPlay(id, Number(seed));
+for (const p of sim.stage.platforms.filter((p: any) => ids.includes(String(p.id)))) console.log(JSON.stringify(p, (k, v) => (typeof v === 'object' && v && k && !Array.isArray(v) && Object.keys(v).length > 12 ? '[obj]' : v)).slice(0, 700));

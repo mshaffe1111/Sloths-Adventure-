@@ -1,3 +1,75 @@
+# BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d and the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
+Commits: **9c2ce855d** (git revert 9df2f0d11: towerRoute.ts back to the strict span; C's toy removed from castBots.test.ts, A/B's toy kept;
+tsc clean on it), this REPORT with b26i/ evidence. A/B stays. No other bot code changed.
+Frozen trees (D115, detached, node_modules linked from wt-clean): 43c4c6776 (the clean suite + castBots whole), 9c2ce855d (the 1-4 x40
+table), 43c4c6776 + b26i/probe-switches.patch (local only: B26I_REACH=0 turns C's widening off, B26I_NOAB=1 turns A/B's stopMeant off).
+
+## EXACT NEXT STEP (base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
+0. **Re-run the two runs that were RUNNING at my box (they die with the container):** (a) the full CLAUDE.md suite plus
+   tools/inspect/castBots.test.ts whole on a clean frozen tree at 43c4c6776 (`npm ci --legacy-peer-deps`: plain `npm ci` fails here,
+   and my first try died on it): at my box TSC 0, the unit tests not finished. KNOWN, not ours: tower.test.ts 'a sealed piece (a gate
+   bough)...' red; 'R-165.312: raw seed 1 keeps the roost boa' a todo. Any OTHER red: to the lead. (b) **the 1-4 x40 table on
+   9c2ce855d (cut 5 + A/B, no C)**: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows r14-9c2ce855d.jsonl`,
+   then `python3 reference/qa-reports/BUILD-26/b26g/cmp.py reference/qa-reports/BUILD-26/b26f/rows/r14-fe3d3d6ca.jsonl r14-9c2ce855d.jsonl`
+   (cut 5 against the head). **Send the rows to the lead.** No tier may drop; adult N 9 is expected lost (A/B's knock-on, step 2).
+   Then tierBots on 9c2ce855d (C touched only the tower route; 1-1 has no tower, so the recommitted calibration should hold: check it,
+   do not assume it), then castBots.test.ts whole and the suite on the final head (D118).
+1. **Then the packet's step 4:** the 1-4 kid N gains checked as real finishes (21 of 35: rule 28), then BUILD-26g's packet steps 4-5
+   (2-6's moved rows on the FINAL bot (9c2ce855d's); rule 28's rest; 1-4 relisted ONCE; 2-6 relisted under castBots --proven with the yield).
+2. **Open, for the lead to place (a cause of its own, not C's or A/B's):** (i) the 40 px step over a drop: in firsttimer.ts the tower's
+   'stopped first' rise check is `rise && rise.y < p.y - 40` (line about 2747), so a rise of exactly 40 px (1-4 E 37's bough 2684 -> 2644)
+   never takes that branch; on that roll he walks under the higher branch and off. (ii) the vine field's end vine (1-4 N 9, x 505,
+   7230-7630): a right press at the last vine takes him off it (cl 0, vx -93, b26i/fr9on-46-47.txt). Each needs its own two runs, toy and
+   plant before any fix (rule 21, 22, 28); neither is in this packet.
+
+## Step 1: the second run per cause (done, on 43c4c6776 with an on/off switch; one each was done on c99352a65 by BUILD-26h)
+| row | commit ON (head) | commit OFF | evidence |
+|---|---|---|---|
+| child Easy 37 | C on: shrine 176.6 s, 1 rescue, t 149.2 x 252 y 2653 "fell back down 8 times" | C off (B26I_REACH=0): shrine 183.8 s, **0 rescues** | b26i/trace37.txt |
+| adult Normal 9 | A/B on: shrine 123.7 s, 1 rescue, t 49.5 x 508 y 7230 "fell back down 3 times" | A/B off (B26I_NOAB=1): shrine 132.9 s, **0 rescues** | b26i/trace9.txt |
+So child E 37 is C's and adult N 9 is A/B's: two runs each (BUILD-26h's single-commit runs on c99352a65 plus these on the head).
+
+## Step 2: C's ruling: no general fix exists; C REVERTED (9c2ce855d)
+- **Why no narrower rule:** C's cut on child E 37 is the SAME shape as the Easy 10 it was made for: up the vine to 781,2965, the leg's
+  exit back at 481,2965, the next turn's vine at 786 (5 px past the arrival). b26i/b26i-corners.mts.txt prints the corners before the
+  squeeze and each cut: strict and wide differ ONLY by `cut 481,2965 (a 781,2965 d 786,2965)`; every corner from 786 on is identical.
+  The lead's narrower rule (the squeeze fires only where the way on is a hand's reach from where he stands) still fires here (5 px is
+  inside GRAB_REACH 54, vinePair.ts:17), so it cannot keep E 37 and E 10 both. No toy was written: there was no rule to plant.
+- **Why E 37 is lost (frames, b26i/fr37on.txt vs fr37off.txt):** with C he goes straight up vine 786 (t 137-138), steps left onto the
+  y 2684 bough #44 (x 360-760), stands at 587 then 544 (t 139-143), walks left at vx -285 and at x 352 passes UNDER bough #45 (x 72-360,
+  y 2644, 40 px higher, a branch he can pass under) and drops: t 144.3 y 2837, lands at 20,3325, rescued to 160,2644 at t 149.3 (the
+  row's x 252). Without C (out to 481 and back first) he doubles up onto it: `142.13 double from 389,2684 -> 277,2644 ok`
+  (b26i/ft37off.txt). So C moves the arrival, not the route; the loss is the 40 px step over a 640 px drop (step 0 item 2(i) above).
+- **Revert:** `git revert 9df2f0d11` conflicted only in castBots.test.ts (A/B's toy sits next to C's): resolved by removing C's toy
+  alone. tsc clean on 9c2ce855d. Pushed to t-build-26 (the ruled path). **The 1-4 x40 re-table is RUNNING (step 0 (b)).**
+
+## Step 3: A/B's adult N 9 explained (a knock-on; no fix, A/B stays)
+- **Where A/B first acts (b26i/ft9on.txt vs ft9off.txt):** both runs fall back at `14.27 single from 478,10195 -> 600,10275`; then
+  with A/B he stops under the 10195 row and hops back up at `14.90 from 662,10275`, without it he runs on to `15.93 from 894,10275`.
+  That is A/B's designed case (the stop under a raised row, one late lift-off), about 1 s sooner. From there every draw differs.
+- **Where the row is lost (b26i/fr9on.txt, fr9on-46-47.txt):** 33 s later, in the vine field (vines 505-825, 80 px apart,
+  7230-7630). He crosses left at y 7429 to the field's last vine (x 505), dithers near its top (t 45-47), and at t 47.1 a RIGHT
+  press takes him off the vine (t 47.2 cl 0, vx -93) down to the 7630 floor; three times, then rescued to 509,6949. Without A/B he is
+  in the same field at least 40-48 s (b26i/fr9off.txt: across, down, back, up) and gets through. So the loss is the field's end vine,
+  not A/B's stop. A fix inside A/B would only undo the stop it was made for; none is proposed (rule 28's explanation, no row cost).
+
+## Steps 4-5: NOT RUN (the box ended on the table and the suite)
+
+## Polish check
+No screen changed (tools/inspect only, and a revert). No stills or clips (rule 29: the bots are not green).
+
+## Learned (for the next builder)
+- A row that a commit "loses" can be lost far from the commit's own spot: diff the jump traces ON vs OFF (FT_TRACE) and find the FIRST
+  divergence before tracing the loss. Both rows here were knock-ons (an earlier arrival, then a hard spot of its own).
+- An on/off env switch on a local probe tree gives the second run per cause in one minute, without a second frozen tree per commit.
+- `npm ci` needs `--legacy-peer-deps` in this container. Check node_modules exists before you trust a suite log (mine ran tsc with no
+  node_modules first: TSC=2, void).
+Proposed rule change (the lead decides): rule 28's "two runs per cause" also names the first divergence (time, x, what), so a
+knock-on is not taken for the commit's own defect.
+
+Lessons applied: D102 (read lean), D109 (no clock times to the lead), D111 (the box), D113 (every long run in the background), D115
+(frozen trees), D117 (no candidate on t-build-26: only the ruled revert went there), D118 (the suite on the final head: queued).
+
 # BUILD-26h (on t-build-26 from 27e20ebf9): tierBots 9/9 before cut 5, so the calibration was recommitted on the head (9/9); the lip traced on child N 14 (a knock-on, and its toy proves nothing); 1-4's table on C + A/B (no lip): child Easy DROPS 36 -> 35 (child E 37), adult N 9 lost; the suite RUNNING at my box. Started 7:27 PM ET 11-21 (by `date`)
 Commits: **47b57a3e8** (calibration-main.jsonl recommitted; t-build-26 fast-forwarded to it after tierBots 9/9 on its own frozen tree; the
 same commit safe-kept first on t-build-26-wip-26h), this REPORT with b26h/ evidence. No bot code changed. The lip stays OFF.
