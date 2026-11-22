@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, type HopRow } from './firsttimer.ts';
+import { HOP_TRACE, GATE_TRACE, type HopRow, type GateRow } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -54,3 +54,32 @@ for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy
     assert.deepEqual(lines, [], 'a gate judged one hop and the bot flew another');
   });
 }
+
+// (the lead's ruling, ENG-27q: the one-draw hold is a bot misread. A tester re-aims every moment; the gates kept ONE drawn hop until a
+//  gate pressed it (the race) or for a 0.5 s beat (edgeWait, upstream, the edge stand), a bare literal with no source, so one bad draw held
+//  him at the edge or on the log while a fresh aim the next frame would land (ENG-27p: 2-21% of the calibrated draws land at the race
+//  sites). No profile measures a reaction or a decision time (BOTS.md, the kept KID/ADULT row: "no profile measures reaction, thumb
+//  latency"), so the cadence is every frame: the hop a gate judges is drawn on the frame it judges it. 2-7 home middle Normal 1, the run
+//  ENG-27p measured (finish 190.0 s, 104.6 s standing still))
+test('2-7 home, middle Normal seed 1: every frame a drawn-hop gate judges, the hop it judges is aimed that frame (no draw held from an earlier frame), and a refused aim is followed by fresh aims that land', () => {
+  GATE_TRACE.on = true;
+  GATE_TRACE.rows.length = 0;
+  let rows: GateRow[];
+  try {
+    homeRun('middle', 'normal', 1, 1);
+    rows = GATE_TRACE.rows.slice();
+  } finally {
+    GATE_TRACE.on = false;
+    GATE_TRACE.rows.length = 0;
+  }
+  assert.ok(rows.length > 0, 'no gate judged a hop: the trace is not wired');
+  const held = rows.filter((r) => Math.abs(r.drawnAt - r.t) > 1e-6);
+  const bySite = (rs: GateRow[]) => [...new Set(rs.map((r) => r.site))].map((s) => `${s} ${rs.filter((r) => r.site === s).length}`).join(', ');
+  const refused = rows.filter((r) => !r.pressed);
+  // (a refused aim, then a press on the same gate the next frame: the next aim landed)
+  const reaimed = refused.filter((r) => rows.some((n) => n.site === r.site && n.pressed && Math.abs(n.t - (r.t + DT)) < 1e-3));
+  console.log(`gate frames ${rows.length} (${bySite(rows)}); refused ${refused.length}; judged on a draw held from an earlier frame ${held.length}${held.length ? ' (' + bySite(held) + ')' : ''}; refused then pressed the next frame ${reaimed.length}`);
+  for (const r of held.slice(0, 5)) console.log(`  held: ${r.site} t ${r.t.toFixed(2)} x ${Math.round(r.x)} drawn t ${r.drawnAt.toFixed(2)} (${(r.t - r.drawnAt).toFixed(2)} s held)${r.pressed ? ' pressed' : ' refused'}`);
+  assert.equal(held.length, 0, 'a gate judged a hop drawn on an earlier frame: one draw held him');
+  assert.ok(reaimed.length > 0, 'no refused aim was followed by a fresh aim that landed');
+});

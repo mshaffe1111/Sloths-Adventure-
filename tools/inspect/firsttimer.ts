@@ -1108,6 +1108,11 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  *  no decision reads it (tools/inspect/hopJudged.test.ts) */
 export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
 export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
+/** TEST (the lead's ruling, ENG-27q: a tester re-aims every moment): when on, every frame a drawn-hop gate judged (edgeStand, edgeWait,
+ *  race, upstream): the gate, the frame, x, the frame the hop it judged was drawn on, and whether it pressed. Records only: no draw, no
+ *  decision reads it (tools/inspect/hopJudged.test.ts, the re-aim test) */
+export type GateRow = { site: string; t: number; x: number; drawnAt: number; pressed: boolean };
+export const GATE_TRACE: { on: boolean; rows: GateRow[] } = { on: false, rows: [] };
 export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
 export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
 /**
@@ -1417,6 +1422,8 @@ export class FirstTimerRun {
   private lianaHop = false;
   /** SKILLS.floatSure (rule 28, the lead's ruling): the hop a wait drew, kept until a gate presses it (drawn once per wait, drawHop) */
   private waitHop: DrawnHop | null = null;
+  /** GATE_TRACE: the frame the hop a gate judges was drawn on */
+  private waitHopT = -1;
   /** the hop a gate judged and is pressing now: startJump flies it unchanged (its own draws are still made, so the stream is as ever) */
   private gateHop: DrawnHop | null = null;
   /** the gate hop's pre-drawn thumb (DrawnHop.thumb) and the frame of it thumbify is on, from the press until he is down (ENG-27o) */
@@ -2766,8 +2773,10 @@ export class FirstTimerRun {
       const drifts = SKILLS.floatSure ? this.edgeFloats(s.dir) : null;
       if (drifts) {
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir;
-        const h = this.waitHop ?? (this.waitHop = this.drawHop(dir1));
-        if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24, this.v2(), this.thumbAt(), this.flightOthers()))) {
+        const h = this.gateDraw(dir1);
+        const flies = drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
+        this.gateRow('edgeStand', flies);
+        if (flies) {
           this.standing = null;
           if (HOP_TRACE.on) { this.judged = null; this.judge('edgeStand', drifts, [0], dir1, h.hold, p.vx, 0, 24, h); }
           this.gateHop = h;
@@ -3038,8 +3047,10 @@ export class FirstTimerRun {
             const drifts = floats.filter((q) => q.type === 'drift');
             if (drifts.some((q) => lands(q))) {
               // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
-              const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()))) {
+              const h = this.gateDraw(dir as -1 | 1);
+              const flies = drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
+              this.gateRow('edgeWait', flies);
+              if (flies) {
                 this.edgeWait = -1;
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
@@ -3099,11 +3110,13 @@ export class FirstTimerRun {
           const raceLegal = SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y);
           if (SKILLS.floatSure && raceLegal) {
             const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
-            const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
+            const h = this.gateDraw(dir as -1 | 1);
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
             const onBank = banks.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
-            if (onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2(), this.thumbAt(), this.flightOthers()))) {
+            const flies = onBank || logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN, this.v2(), this.thumbAt(), this.flightOthers()));
+            this.gateRow('race', flies);
+            if (flies) {
               this.edgeWait = -1;
               if (HOP_TRACE.on) {
                 this.judged = null;
@@ -3145,8 +3158,10 @@ export class FirstTimerRun {
             if (SKILLS.floatSure && next) {
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
               const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-              const h = this.waitHop ?? (this.waitHop = this.drawHop(dir as -1 | 1));
-              if (logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()))) {
+              const h = this.gateDraw(dir as -1 | 1);
+              const flies = logs.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, this.v2(), this.thumbAt(), this.flightOthers()));
+              this.gateRow('upstream', flies);
+              if (flies) {
                 this.floatBeat = -1;
                 if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
                 this.gateHop = h;
@@ -4169,6 +4184,17 @@ export class FirstTimerRun {
   private v2(): number {
     const e = this.e as unknown as { assistNow?: () => number; dragJump?: number; flightClear?: boolean; drowsy?: number };
     return PHYS.doubleV * (1 + ASSIST.doubleJump * (e.assistNow?.() ?? 0)) * (e.flightClear ? 1 : drowsyJump(e.drowsy ?? 0)) * (e.dragJump ?? 1);
+  }
+
+  /** the hop a drawn-hop gate judges this frame (rule 28): the wait's hop, drawn once and kept until a gate presses it */
+  private gateDraw(dir: -1 | 1): DrawnHop {
+    if (!this.waitHop) { this.waitHop = this.drawHop(dir); this.waitHopT = this.t; }
+    return this.waitHop;
+  }
+
+  /** GATE_TRACE: a gate judged this frame (records only) */
+  private gateRow(site: string, pressed: boolean): void {
+    if (GATE_TRACE.on) GATE_TRACE.rows.push({ site, t: +this.t.toFixed(4), x: this.sim.p.x, drawnAt: +this.waitHopT.toFixed(4), pressed });
   }
 
   private drawHop(dir: -1 | 1): DrawnHop {
