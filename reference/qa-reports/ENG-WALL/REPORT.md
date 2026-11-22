@@ -1,9 +1,30 @@
 # ENG-WALL-b REPORT (R-165.380 continued; start 7:47 PM ET by `date`; branch t-eng-wall at c884525bf; box to 8:15 PM ET)
-EXACT NEXT STEP: the lead rules the corner band's fix (item 1, options A/B/C below; my pick C). Then: the plant for the chosen fix,
-RED on 484199316 in a browser (the test recorder has no getTransform, so a node test only ever draws the live path): 'the first frame
-at x 19900 (seed 1 normal, 2-97) matches the settled frame within 1 luma across x 20006' (probe: b/corner-probe.mjs, numbers below).
-Then item 2 (ii) wide walls and (iii) water, item 3 (puzzle rooms: show first), items 4-5. Scratch merge (never pushed): worktree at
-c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.json, local commit e3bbf076a; vite on it, frozen.
+EXACT NEXT STEP: build the lead's ruling C (the frame never flips ground path) against the plant b/flip-probe.mjs, which is RED now.
+THE LEAD'S RULING C, four conditions: (1) the plant covers the whole soil: first frame == settled within 1 luma (mean; worst 8-px
+column <= 4) on a stage start, a respawn and the fastest descent, upright and sideways; (2) the cold paint measured at 4x CPU, riding
+inside the respawn's own frames, never one frame over PERFORMANCE-RULES §1; drawcheck passes; (3) the prefetch margin sized from the
+fastest fall/scroll, its constant citing file:line (D116); a square that can still be missing draws from the SAME darkening model,
+never the live path; (4) the faint line left at x 20006 on the settled frame: FIX it (the lead saw it on the phone stills). PLUS (the
+lead's still notes): (b) the floor's grass strip runs about 25 px past the wall column's right side and ends in a straight vertical
+cut (upright CSS ~x585, sideways ~x495, right halves of b/corner20006-*.jpg): the floor ends under the wall's lip or the wall stands
+behind the grass. Fix both in the same redraw as C, with before/after stills.
+DESIGN (my read, not built): CHUNK 256 (protoArt.ts:1679), CHUNK_BUDGET 3 (:1688), maxFall 950 u/s (physics.ts:27) = 31.7 u a frame
+at 30 fps; a 6-square row (sideways) paints in 2 frames at budget 3 while the camera takes 8 frames to cross a square, so ONE square of
+margin ahead of the camera's travel covers the fall 4x. CAREFUL: CHUNK_BYTES 40 MB (:1686) keeps only 12 squares at 3.5x (each ~3.4
+MB); a full ring of margin (upright ~5x7 = 35 squares) blows it, so the margin is DIRECTIONAL (the side the camera moves to) and the
+cap must keep view + margin. Proposed shape: drawGroundChunks paints every missing square IN VIEW that frame (no budget in view, never
+returns false for a missing one), spends CHUNK_BUDGET on the margin ahead; the cold burst (respawn/stage start) is measured at 4x CPU
+(condition 2); if it breaks §1, spread it over the respawn's own frames (hidden behind its fade) and say so. drawGround's live path
+then serves only the no-getTransform case. Re-run the 1-1 seed list and the tests that read the live path (the node recorder has no
+getTransform: groundStack/groundEnd/... still exercise the live path; plant (ii) live stays a live-path test).
+PLANT (b/flip-probe.mjs, `node flip-probe.mjs <port> <out> upright|sideways` on a vite of the tree): on the scratch merge (same chunk
+code as 484199316: no CHUNK/drawGroundChunks/paintTile line differs) upright: cold x 19900 mean 2.09 worstCol 15.7, cold x 14800 2.89 /
+7.5, descent x 18990 (40 frames from y 600 at maxFall) worst 7.2 / 12.9: RED. CONTROL (settled vs settled): 0 / 0, GREEN (the measure is
+clean). Sideways: cold 19900 1.29 / 16.4, cold 14800 2.99 / 8.4, control 0 / 0, descent 12.0 / 32.6: RED (b/red-flip-scratchmerge.txt,
+b/flip-*.json). Not yet in it: a real respawn (respawnAtCheckpoint, engine.ts:6163) and a stage start (the probe's cold case stands in
+for both; condition (1) wants each by name).
+D96: run it once on a vite of 484199316 itself before the fix (RED expected), then on the fix (GREEN), both ways.
+Scratch merge (never pushed): c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.json, local e3bbf076a.
 
 1. THE CORNER BAND'S SOURCE, NAMED (measured on the scratch merge, 2x, upright and sideways; b/corner20006-firstframe-vs-settled-*.jpg,
    left the first frame, right the settled frame): the band is the LIVE ground path, not the squares and not t-art-under's sheet.
@@ -45,6 +66,10 @@ c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.js
    Options sent to the lead: (a) MY PICK: a tall gate-pillar piece per world (3, 6, 7, 5?) painted on Hugging Face at about 1:3, drawn
    at its own shape, fitted by cutting the top behind its cap; (b) as-is under a named exception (only with the lead's ruling);
    (c) whole frames stacked (worse). Not built.
+   THE LEAD'S RULING: (a), OUT of this scope: its own row R-165.387 (an art member after release 3; the lead's HF call). puzzlePlay's
+   drawWallArt calls stay exactly as they are live. CONFIRMED fix (i) did not touch them: `git diff 484199316 c884525bf --
+   src/game/puzzlePlay.ts` is empty, and drawWallArt's body (protoArt.ts:1271) is identical on both; protoArt no longer calls it itself
+   (the canopy walls draw through drawWallFace). The as-is and rejected-mock stills are pushed for the art member (b/puzzle-gates-*).
 2, 4-5. NOT STARTED: (ii) wide walls, (iii) water past a face, the stills of item 4, lockall, drawcheck, gates.
 Polish check: the x 20006 corner, upright and sideways, 2x: FAILS on the first frames (the band, 14-17 luma); settled still a faint
 straight line (2.7-3.8). Nothing else shot. Nothing lands.
