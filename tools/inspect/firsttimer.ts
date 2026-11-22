@@ -1106,7 +1106,7 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  *  that followed it: the gate (`site`), the float or bank it judged he comes down on (`q`), the frame, x, hold and thumb lag it judged
  *  from, the hop flown (the press's frame, x, hold and kind) and where he came down (a platform id, or 'lost'). Records only: no draw,
  *  no decision reads it (tools/inspect/hopJudged.test.ts) */
-export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost' };
+export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
 export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
 export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
 export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
@@ -1739,19 +1739,18 @@ export class FirstTimerRun {
     }
   }
 
-  /** rule 28, the lead's ruling A (ENG-27p): standing on a river's bank (not a float) facing `dir`, the drifting logs near its edge when
-   *  one of them is within reach (edgeWait's `near` read: a hop held who.hold[0] from where he stands, now or a beat later as his thumb
-   *  gets there, lags 0..0.2, comes down on it where it will be, hopLandsOn), else null. Draws nothing, moves nothing: the edge stand's
-   *  gate and hopJudged's invariant (every press here flies on a judgment of its own frame) read it */
+  /** rule 28, the lead's ruling A (ENG-27p): standing on a river's bank (not a float) facing `dir`, the drifting logs near its edge
+   *  (edgeWait's window: within 400 px of the edge, within 70 px of his feet), else null. NOT edgeWait's `near` read (a single held
+   *  who.hold[0], lags 0..0.2): at 2-7 home middle Normal 2 x 15632 that read was false on the stand's press frame and he flew a double
+   *  onto log #40. Draws nothing, moves nothing: the edge stand's gate and hopJudged's invariant read it */
   private edgeFloats(dir: -1 | 1): Platform[] | null {
-    const p = this.sim.p, t = this.t, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    const p = this.sim.p;
     if (!p.grounded) return null;
     const here = this.floorAt(p.x, p.y, 6);
     if (!here || here.type === 'drift' || here.type === 'moving') return null;
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     const drifts = this.sim.platforms.filter((q) => q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x + q.width / 2 - edgeX) < 400);
-    const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + p.vx * lag, p.y, dir, this.who.hold[0], t + lag, p.vx));
-    return drifts.some(lands) ? drifts : null;
+    return drifts.length ? drifts : null;
   }
 
   /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
@@ -4525,7 +4524,7 @@ export class FirstTimerRun {
         const o = this.hopOpen;
         if (e.lives < o.lives) { o.row.landed = 'lost'; this.hopOpen = null; }
         else if (!this.sim.p.grounded) o.air = true;
-        else if (o.air) { o.row.landed = this.sim.standingOn; this.hopOpen = null; }
+        else if (o.air) { o.row.landed = this.sim.standingOn; o.row.landedType = this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type; this.hopOpen = null; }
       }
       if (HOP_TRACE.on && !this.sim.p.grounded && !this.hopOpen) this.judged = null;
       this.opts.onFrame?.(this.sim);

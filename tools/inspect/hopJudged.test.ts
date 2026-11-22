@@ -17,7 +17,7 @@ import { HOP_TRACE, type HopRow } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
-  `${r.site} q#${r.q} judged t ${r.t.toFixed(2)} x ${Math.round(r.x)} lag ${r.lag} hold ${r.hold.toFixed(3)}${r.kind ? ' ' + r.kind : ''} | flown t ${r.flown!.t.toFixed(2)} x ${Math.round(r.flown!.x)} hold ${r.flown!.hold.toFixed(3)} ${r.flown!.kind} | came down ${r.landed === undefined ? '?' : r.landed === 'lost' ? 'LOST' : '#' + r.landed}`;
+  `${r.site} q#${r.q} judged t ${r.t.toFixed(2)} x ${Math.round(r.x)} lag ${r.lag} hold ${r.hold.toFixed(3)}${r.kind ? ' ' + r.kind : ''} | flown t ${r.flown!.t.toFixed(2)} x ${Math.round(r.flown!.x)} hold ${r.flown!.hold.toFixed(3)} ${r.flown!.kind} | came down ${r.landed === undefined ? '?' : r.landed === 'lost' ? 'LOST' : '#' + r.landed}${r.landedType ? ' ' + r.landedType : ''}`;
 
 function trace(seed: number, setting: 'normal' | 'easy'): HopRow[] {
   HOP_TRACE.on = true;
@@ -42,7 +42,9 @@ for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy
     // (and where he came down: the platform the gate judged)
     const cameWrong = rows.filter((r) => r.landed !== undefined && r.landed !== r.q);
     // (the lead's ruling A, ENG-27p: every press at a river's edge with a float within reach flies on a judgment of its own frame)
-    const unjudged = rows.filter((r) => r.site === 'unjudged' || r.site.startsWith('stale'));
+    //  (a judgment left from an earlier frame or another branch always fails; a press no gate judged fails when it came down on a log:
+    //   from these banks most such presses are hops to the next bank, 13 of 14 on d2408e867's four runs)
+    const unjudged = rows.filter((r) => r.site.startsWith('stale') || (r.site === 'unjudged' && r.landedType === 'drift'));
     const lines = [...new Set([...unjudged, ...flownWrong, ...cameWrong])].map(show);
     console.log(`${setting} seed ${seed}: ${rows.length} judged hops pressed (${[...new Set(rows.map((r) => r.site))].join(', ')}); unjudged or stale ${unjudged.length}, flown not as judged ${flownWrong.length}, came down elsewhere ${cameWrong.length}`);
     for (const l of lines) console.log('  ' + l);
