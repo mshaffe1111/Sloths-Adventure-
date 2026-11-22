@@ -28,6 +28,13 @@ the landed head; checkpoint about 8 PM ET.
    'water ahead / in a dip' (adult E 11, 27; adult N 23; kid N 13, 14, 17, 29). Read whether any fall starts IN a wheel bucket (a brake
    fault) or later on the climb (timing only). (2-6 kid E 22, the row fix 3 is for, PASSES 143.2 s; cut 5 139.7; its stuck spots are at
    x 1273 and 824, none at bucket #51.)
+   **Started in this box (b26n/bl-26kidE-16-27.txt, tool b26n/bucketleave.mts.txt, on the candidate tree; times match the rows, 126.0 and
+   118.8 s):** kid E 16's and 27's 'fell back down from here 3 times' sit at y 3962 (x 870 at 88.4 s; x 1183 at 77.9 s, and 27 also at
+   927,6384 at 40.1 s). That is a climb ABOVE the last bucket leave (to plat 29 at y 4622), not in a wheel. **A lead to check:** in both runs
+   the FIRST bucket leave is bucket 11 dropping into a neighbouring bucket (16: at 10.93 s, 1273,6915, vx -87 into bucket 10; 27: at
+   14.87 s, vx -87 into bucket 12). -87 is the brake's blip size, so this may be a brake slip at a bucket's end. Run the same tool on the cut 5
+   re-judged tree for these two seeds: if cut 5 has no bucket 11 drop, the brake needs an end guard (no brake press toward an end he
+   is within BONK.half of), toy first.
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
