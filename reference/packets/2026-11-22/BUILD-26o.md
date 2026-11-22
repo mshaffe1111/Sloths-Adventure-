@@ -5,7 +5,8 @@ members; the account's WEEKLY limit is in warning: each run once, on the exact h
 BOX: hand over at 320k REAL context OR 28 minutes after your start (from `date`), whichever comes FIRST (D111), with the EXACT NEXT STEP;
 a long run may carry past the box when its verdict carries (D114). **A question to the lead never ends your box (D120). Every long run
 with run_in_background AND a fitting timeout (D122), NEVER a shell '&' (D113); at most TWO heavy runs, watching free -m AND df; every run on
-a FROZEN worktree never touched while a run reads it (D115). No heredoc in a commit chain (D119).**
+a FROZEN worktree never touched while a run reads it, made immutable with `chattr -R +i <tree>/src <tree>/tools` right after its
+node_modules link, `chattr -R -i` before removal (D115). No heredoc in a commit chain (D119).**
 READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/BUILD-26/REPORT.md` BUILD-26n's top section ONLY; the
 seed-list method (tools/engine/seedlist.ts --help; castBots --proven; eraRoll.ts:28-30, the 100 s climb floor); level.md rules 4, 21, 28,
 29; LAWS headlines; LESSONS D96, D102, D107, D109, D111-D122.
@@ -22,6 +23,6 @@ BASE: t-build-26 at a07ed1bd7 (BUILD-26n landed: the final bot candidate eae5b1f
    head (rebase, no force) and step 3's --check runs on that merged head, never on a head without it.
 4. Beside them (it gates the RELEASE, not the relists): rule 28's rest on 2-6's 31 flips: kid N 32 and 34 (expected the same old climb loop,
    R-165.390), the 'water ahead / in a dip' 7 (two runs), and the 19 gains checked as real finishes.
-5. Send the lead: the landed head, both lists' hashes and yields, the check, the rule-28 table. The lead then tells INT-R4 t-build-26 is final.
+5. Send the lead: the landed head, both lists' hashes and yields, the check, the rule-28 table. The lead then starts the final integration (INT-R4 is archived: the fallback is GREEN on 5d8a7eb79, tip 9195d855b).
 REPORT: a new top section of reference/qa-reports/BUILD-26/REPORT.md on t-build-26 (EXACT NEXT STEP first). Lead:
 session_01FhBbYN2CVHnFXg7XzqKXpM. Rulings arrive with priority 'next'.
