@@ -4,8 +4,7 @@ against a vite on t-eng-wall (afdd5060c) and one on t-eng-wall-c2 (b04579a95), P
 at a stage start); then fix d/flip-layers.mjs to keep and restore each frame's ZOOM with its camera (it restores x,y only) and re-judge
 the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-rendered at 0.763; upright the zoom holds at 0.9364,
 upright's 2.62 is the plant band in front of the left column, the soil 0.0-0.2: d/frame0.mjs; the mask must leave out cells where
-another layer draws over a bank). If
-both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
+another layer draws over a bank). If both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
 MY MISS: I started the suite (about 35 min) 23 minutes before the box's end, and drawcheck after the lead's "no long run you can't
 finish" message, sure of about 6 minutes; under the suite's load it ran at about a stage a minute (3 of 19 stages done at the hand-over).
@@ -21,8 +20,7 @@ could not check (exit 2: "shallow clone, proofs cannot be checked"): NOT a pass,
   0.9364|977)" upright, (0.6867|600 -> 0.7630|540) sideways** (ENG-WALL-c's measured 1086 -> 977 and 600 -> 540 exactly).
 - afdd5060c: the accepted prototype's hunks WITHOUT its log (restZoom from roomWant/revealWant/swimWant/swingWideWant in applyZoom;
   groundView = viewCssH / restZoom, over restZoom / zoom; the bake scale m.a * bakeOver). **GREEN on a fresh worktree: 2/2.** tsc 0.
-- Gates on the frozen head afdd5060c: seed list 1-1 **PASS (161 seeds, each clean on both settings)**. The CLAUDE.md suite (3 shards)
-  and drawcheck: started, NOT finished in the box (see the top).
+- Gates on the frozen head afdd5060c: seed list 1-1 **PASS (161 seeds)**; the suite and drawcheck NOT finished (see the top).
 - The per-frame look BY LAYER (d/flip-layers.mjs: b/flip-probe.mjs plus a ground-only mask: 8-px cells in a painted bank, 16 under its
   top, over 160 from Pokey; plus the stage start: squares released, the dolly's first frame), 2-97 seed 1, DSF 2, on afdd5060c
   (d/before-C2-*.txt). Ground mean luma, first frame vs settled; bar 1:
@@ -51,26 +49,14 @@ could not check (exit 2: "shallow clone, proofs cannot be checked"): NOT a pass,
   drawcheck on b04579a95: started, NOT finished in the box.
 
 ## 3. The corner (a)/(b), (ii), (iii): NOT started (this box went to items 1 and 2).
-
-## Polish check
-No stills shot this box: item 1 changes no settled look (the lead judged ENG-WALL-c's dolly stills); the layer probe's numbers are the
-first-frame check. The candidate needs stills (first frame and settled, 2x, both ways) before the lead can judge it.
-
-## Learned
-- A planted test for a key must be able to fail at an assertion on the base: land a no-behaviour seam first (018086a32), RED there.
-- A whole-canvas flip measure mixes layers: with the ground mask the ground goes to 0.00 while "other layers" stay 1-12 (the settled
-  re-render moves Pokey and the animated layers), so judge the ground by its mask.
-- Never time on a machine running the suite (4x CPU numbers read 10x).
-
-## Lessons applied
-D40 (C's second half built on the landed first half, not the prototype), D102/D111 (the box by `date`), D109 (no clock times in
-messages), D113/D122 (every long run in the background with a timeout; one launch with a shell '&' inside was stopped and relaunched as
-three runs), D115 (every run on a frozen worktree: wt-red, wt-green, wt-c2), D117 (the candidate on its own branch, not on t-eng-wall),
-D119 (no heredoc in a commit chain), D120 (no question to the lead).
-
-## Suggestions
-- flip-layers.mjs re-places the camera on the descent with a cut from the previous case: a frame-0 cut is a respawn, so judge it as its
-  own case, and add a "warm" descent that starts settled at the column's top.
+**Polish check:** one still judged (d/descent-frame0-left-vs-settled-right-upright.jpg: the soil identical, the reeds band differs);
+item 1 changes no settled look (the lead judged ENG-WALL-c's dolly stills); the candidate needs 2x stills, first frame and settled.
+**Learned:** land a no-behaviour seam first so a planted test is RED at an assertion on the base; judge the ground by its mask and
+check the mask (a bank's column runs under the plant band); never time on a machine running the suite (4x numbers read 10x).
+**Lessons applied:** D40 (C's second half on the landed first half), D102/D111 (the box by `date`), D109, D113/D122 (background runs
+with timeouts; one launch with a shell '&' inside was stopped and relaunched as three), D115 (frozen worktrees wt-red, wt-green, wt-c2),
+D117 (the candidate on its own branch), D119, D120. **Suggestion:** flip-layers' descent starts with a camera cut from the previous
+case; judge that as its own respawn case and add a warm descent that starts settled at the column's top.
 
 # ENG-WALL-c REPORT (R-165.380 continued; start 8:54 PM ET by `date`; branch t-eng-wall; box to 9:22 PM ET)
 EXACT NEXT STEP: land C's first half on t-eng-wall from c/proto-C-bake-at-target.patch (apply c/exp-log.patch first: the
