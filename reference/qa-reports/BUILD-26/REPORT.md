@@ -1,43 +1,41 @@
-# BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d DONE: no tier drops against cut 5 (lost only adult N 9, A/B's); the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
+# BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); the lead ACCEPTED cut 5 + A/B; child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d DONE: no tier drops against cut 5 (lost only adult N 9, A/B's); the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
 Commits: **9c2ce855d** (git revert 9df2f0d11: towerRoute.ts back to the strict span; C's toy removed from castBots.test.ts, A/B's toy kept;
 tsc clean on it), this REPORT with b26i/ evidence. A/B stays. No other bot code changed.
 Frozen trees (D115, detached, node_modules linked from wt-clean): 43c4c6776 (the clean suite + castBots whole), 9c2ce855d (the 1-4 x40
 table), 43c4c6776 + b26i/probe-switches.patch (local only: B26I_REACH=0 turns C's widening off, B26I_NOAB=1 turns A/B's stopMeant off).
 
 ## EXACT NEXT STEP (base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
-0. **Re-run the two runs that were RUNNING at my box (they die with the container):** (a) the full CLAUDE.md suite plus
-   tools/inspect/castBots.test.ts whole on a clean frozen tree at 43c4c6776 (`npm ci --legacy-peer-deps`: plain `npm ci` fails here,
-   and my first try died on it): at my box TSC 0, the unit tests not finished. KNOWN, not ours: tower.test.ts 'a sealed piece (a gate
-   bough)...' red; 'R-165.312: raw seed 1 keeps the roost boa' a todo. Any OTHER red: to the lead. (b) **the 1-4 x40 table on
-   9c2ce855d (cut 5 + A/B, no C)**: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows r14-9c2ce855d.jsonl`,
-   then `python3 reference/qa-reports/BUILD-26/b26g/cmp.py reference/qa-reports/BUILD-26/b26f/rows/r14-fe3d3d6ca.jsonl r14-9c2ce855d.jsonl`
-   (cut 5 against the head). **DONE in my box, rows sent to the lead** (b26i/rows/r14-9c2ce855d.jsonl, b26i/cmp14-fe3d3d6ca-vs-9c2ce855d.txt):
-   cut 5 -> 9c2ce855d: adult E 36 -> 38, adult N 37 -> 37, child E 36 -> 36, child N 39 -> 39, expert N 39 -> 39, kid E 32 -> 38,
-   kid N 19 -> 40, middle E 37 -> 37, middle N 36 -> 36: **NO tier drop**. LOST 1: adult N 9 (A/B's knock-on, step 3). GAINED 30
-   (adult E 17, 19; adult N 36; kid E 2, 11, 24, 31, 35, 40; kid N 7, 9-13, 17-24, 33-37, 39, 40). Against C + A/B (27e20ebf9) the
-   revert costs adult E 40 -> 38, kid E 40 -> 38, middle E 38 -> 37 (lost adult/kid E 10 and 37, middle E 37; gained child E 37):
-   C's gains, which come back when C is re-applied on top of the step-up rule (step 1).
-   Then tierBots on 9c2ce855d (C touched only the tower route; 1-1 has no tower, so the recommitted calibration should hold: check it,
-   do not assume it), then castBots.test.ts whole and the suite on the final head (D118).
-1. **THE LEAD'S RULING (after my trace; the revert stands for now), in dependency order (D40):** (1) ONE general step-up rule that
-   covers BOTH branches of the 40 px step-up family: child E 37 (a bough exactly 40 px up, walked under) and middle E 10 (the middle's
-   late press at a faceless lip, 2832/2848, b26g/lip.patch). Its number cites its source (the jump's reach constant's file:line, D116),
-   not 40 by eye. Its toy RED on 9c2ce855d and GREEN on the fix (the lip's old toy proved nothing). (2) Then C re-applied on top.
-   (3) x40 on 1-4 and 2-6 against cut 5, rows to the lead BEFORE anything lands (wip-26j). Adult N 9's frame-level why stays on the list.
-   **What I read for (1), not yet tested:** firsttimer.ts about 2738-2751: `rise = this.prog.target(p, 240)` reads 240 px ALONG the way,
-   and on E 37 the way from the vine top 786,2684 to 90,2644 is one slant corner (40 px over 696 px), so from x 544 the point 240 px on (x about 304) is
-   only about 28 px up (2684 - 40 * 482 / 696; by arithmetic on the corners, not printed from a run): the `rise.y < p.y - 40` gate fails by the slant, not only by its strict `<`; making it `<=` alone would NOT fire there. The
-   `over` test (q.y < p.y - 30 && q.y > p.y - STAIR_HOP, STAIR_HOP = 100 at firsttimer.ts:1030) WOULD find bough #45 (2644 is p.y - 40).
-   The edge read below it ("sees the gap only if nothing stands just past that end") likely misses #44's end at 360 because #45 stands
-   just past and above it: that is the faceless-lip branch. Trace both before writing the rule.
-2. **Then the packet's step 4:** the 1-4 kid N gains checked as real finishes (21 of 35: rule 28), then BUILD-26g's packet steps 4-5
-   (2-6's moved rows on the FINAL bot (9c2ce855d's); rule 28's rest; 1-4 relisted ONCE; 2-6 relisted under castBots --proven with the yield).
-3. **Open (the lead placed (i) as step 1 above):** (i) the 40 px step over a drop: in firsttimer.ts the tower's
-   'stopped first' rise check is `rise && rise.y < p.y - 40` (line about 2747), so a rise of exactly 40 px (1-4 E 37's bough 2684 -> 2644)
-   never takes that branch; on that roll he walks under the higher branch and off. (ii) the vine field's end vine (1-4 N 9, x 505,
-   7230-7630): a RIGHT press at the last vine takes him off it (not a late-lifted 'left': at t 46.4 left is pressed for one frame and let
-   go; at 47.1 right; 47.2 off) (cl 0, vx -93, b26i/fr9on-46-47.txt). Each needs its own two runs, toy and
-   plant before any fix (rule 21, 22, 28); neither is in this packet.
+**The lead ACCEPTED cut 5 + A/B (9c2ce855d) on t-build-26:** no tier drop on 1-4 against cut 5, the one lost row (adult N 9) traced as
+a knock-on, 30 gained. The lead's order:
+1. **tierBots 1-1 on 9c2ce855d and the full suite on the head, frozen, in the background (D118).** At my box: tierBots on 9c2ce855d
+   RUNNING (see the result line below if it landed); the clean suite on 43c4c6776 RUNNING (TSC 0, unit tests not finished). Re-run
+   whichever has no result here (`npm ci --legacy-peer-deps`: plain `npm ci` fails in this container). KNOWN, not ours: tower.test.ts
+   'a sealed piece (a gate bough)...' red; 'R-165.312: raw seed 1 keeps the roost boa' a todo. Any OTHER red: to the lead. If tierBots
+   is not 9/9, tell the lead BEFORE any recommit of calibration-main.jsonl.
+2. **The step-up rule, then C on top, on wip (t-build-26-wip-26j), rows to the lead first,** so C's adult, kid and middle E rows
+   (E 10, E 37) come back. ONE general rule covering both branches of the 40 px step-up family: child E 37 (a bough exactly 40 px up,
+   walked under) and middle E 10 (the middle's late press at a faceless lip, 2832/2848, b26g/lip.patch). Its number cites its source
+   (the jump's reach constant's file:line, D116), not 40 by eye. Toy RED on 9c2ce855d, GREEN on the fix (the lip's old toy proved
+   nothing). Then x40 on 1-4 and 2-6 against cut 5.
+   **What I read for it, not yet tested:** firsttimer.ts about 2738-2751: `rise = this.prog.target(p, 240)` reads 240 px ALONG the way;
+   on E 37 the way from the vine top 786,2684 to 90,2644 is one slant corner (40 px over 696 px), so from x 544 the point 240 px on
+   (x about 304) is only about 28 px up (2684 - 40 * 482 / 696; arithmetic on the corners, not printed from a run): the
+   `rise.y < p.y - 40` gate fails by the slant, not only by its strict `<`; making it `<=` alone would NOT fire there. The `over` test
+   (q.y < p.y - 30 && q.y > p.y - STAIR_HOP, STAIR_HOP = 100 at firsttimer.ts:1030) WOULD find bough #45 (2644 is p.y - 40). The edge
+   read below it ("sees the gap only if nothing stands just past that end") likely misses #44's end at 360 because #45 stands just
+   past and above it: the faceless-lip branch. Trace both before writing the rule.
+3. **The 30 gains checked as real finishes (rule 28)** (list in step 2's table result below: adult E 17, 19; adult N 36; kid E 2, 11,
+   24, 31, 35, 40; kid N 7, 9-13, 17-24, 33-37, 39, 40).
+4. **The relists WAIT** for the final bot AND ENG-26p's lay fix (it moves stages), so each list is proven once.
+Still on the list: adult N 9's end-vine spot (1-4 N 9, x 505, 7230-7630): a RIGHT press at the field's last vine takes him off it
+(not a late-lifted 'left': at t 46.4 left is pressed one frame and let go; at 47.1 right; 47.2 off; b26i/fr9on-46-47.txt). Its own two
+runs, toy and plant before any fix (rules 21, 22, 28).
+
+**1-4 x40 on 9c2ce855d (DONE in my box, rows sent to the lead;** b26i/rows/r14-9c2ce855d.jsonl, b26i/cmp14-fe3d3d6ca-vs-9c2ce855d.txt):
+cut 5 -> 9c2ce855d: adult E 36 -> 38, adult N 37 -> 37, child E 36 -> 36, child N 39 -> 39, expert N 39 -> 39, kid E 32 -> 38, kid N
+19 -> 40, middle E 37 -> 37, middle N 36 -> 36: **NO tier drop**. LOST 1: adult N 9 (A/B's knock-on, step 3 below). GAINED 30.
+Against C + A/B (27e20ebf9) the revert costs adult E 40 -> 38, kid E 40 -> 38, middle E 38 -> 37 (lost adult/kid E 10 and 37, middle
+E 37; gained child E 37): C's gains, back when C is re-applied on the step-up rule.
 
 ## Step 1: the second run per cause (done, on 43c4c6776 with an on/off switch; one each was done on c99352a65 by BUILD-26h)
 | row | commit ON (head) | commit OFF | evidence |
