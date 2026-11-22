@@ -529,3 +529,32 @@ test('a pod\'s tell on the vine he holds, a free vine on both sides: he steps to
   for (let i = 0; i < 3 && !(pad?.left || pad?.right); i++) pad = fp.step(view(1) as never, p as never, 10 + i / 30) as never;
   assert.ok(pad?.right && !pad.left, `the dodge stepped ${JSON.stringify(pad)}: away from the fig on vine 48 to his right`);
 });
+
+test('a fig whose vine stands far over his row (out of his hands\' reach): FigPush lets it go and hands back his own climb, never a push left and right under it holding the clock (BUILD-26n, 1-4 adult N 9, expert N 20 at x 871; child N 38)', async () => {
+  const { FigPush } = await import('./figPush.ts');
+  // (his row: field vines 43/44 at x 420/500, 3800-4700, he holds 43 alone at y 4300; the fig he was going for is on vine 48 at x 460,
+  //  BETWEEN them, its vine 2500-3200: 1100 px over his hands. A fall (a knock or a missed reach) took him down off the gate's row with
+  //  the target still held)
+  const vine = (id: number, x: number, topY: number, bottomY: number) => ({ id, x, topY, bottomY, field: true, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' });
+  const run = (fv: ReturnType<typeof vine>) => {
+    const vines = [vine(43, 420, 3800, 4700), vine(44, 500, 3800, 4700), fv];
+    const fig = { id: 7, vine: fv.id, y: fv.topY + 200, falling: false, gone: false };
+    const view = { hands: { a: vines[0], b: null }, clusters: [fig], vines, field: { gates: [], pods: [], blocksTop: () => true, capY: () => 0 }, clock: { read: () => ({ phase: 'rest', u: 0, into: 0, cycle: 0 }) } };
+    const fp = new FigPush(0.45);
+    (fp as unknown as { target: unknown }).target = fig;
+    const p = { x: 420, y: 4300, climbing: true };
+    let sides = 0;
+    for (let i = 0; i < 90; i++) {
+      const pad = fp.step(view as never, p as never, 100 + i / 30) as { left?: boolean; right?: boolean } | null;
+      if (pad?.left || pad?.right) sides++;
+    }
+    return { sides, busy: fp.busy(110) };
+  };
+  // RED on 223f72c05's tree: he pushes across toward vine 48's x for ever (it spans no height his hands are at), busy the whole time
+  const far = run(vine(48, 460, 2500, 3200));
+  assert.equal(far.sides, 0, `a fig out of reach: ${far.sides} side pushes in 3 s under it`);
+  assert.equal(far.busy, false, 'a fig out of reach still holds the no-progress clock (busy)');
+  // (the other arm: a fig on a vine of his own row, a step over, is still gone for: across toward it)
+  const near = run(vine(48, 500, 3800, 4700));
+  assert.ok(near.sides > 0, 'a fig on a vine of his row (a step over): he no longer goes across for it');
+});
