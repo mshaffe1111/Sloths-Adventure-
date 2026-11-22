@@ -1,0 +1,4 @@
+plant normal 1: finish 246.3 lives lost 3 verdict {"won":false,"boat":93.89,"him":108.4}
+  fall t 26.0 x 16519 race leg false margin before undefined | back at that x t 26.8 (0.8 s later) margin undefined | race time lost ? s
+  fall t 56.0 x 16296 race leg false margin before undefined | back at that x t 56.8 (0.8 s later) margin undefined | race time lost ? s
+  fall t 70.3 x 15448 race leg false margin before undefined | back at that x t 71.1 (0.8 s later) margin undefined | race time lost ? s

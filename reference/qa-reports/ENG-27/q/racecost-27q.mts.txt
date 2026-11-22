@@ -1,0 +1,18 @@
+// each life lost on 2-7 home middle: on the race leg? his margin to the boat the frame before, and when he is next back at that x
+// node_modules/.bin/tsx racecost-27q.mts <tree> <setting> <seed>
+const [tree, setting = 'normal', seed = '1'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { pacerMargin, pacerOff } = await import(`${tree}/src/game/pacer.ts`);
+let t = 0, lives = -1, mLast: number | null = null, piece: any;
+const falls: any[] = [];
+const r = homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e as any, p = sim.p;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  const m = piece && piece.clock !== null ? pacerMargin(piece.pacer, p.x, piece.clock) : null;
+  if (lives >= 0 && e.lives < lives) falls.push({ t, x: p.x, m: mLast, race: !!piece && piece.clock !== null && pacerOff(piece.pacer, p.x, p.y), back: null as any });
+  for (const f of falls) if (!f.back && t > f.t + 0.5 && piece && (p.x - f.x) * piece.pacer.dir >= 0 && p.grounded) f.back = { t, m };
+  lives = e.lives; mLast = m;
+} } as never);
+console.log(`${tree.split('/').pop()} ${setting} ${seed}: finish ${r.finishSeconds} lives lost ${r.lives} verdict ${JSON.stringify(piece?.verdict ?? null)}`);
+for (const f of falls) console.log(`  fall t ${f.t.toFixed(1)} x ${Math.round(f.x)} race leg ${f.race} margin before ${f.m?.toFixed(2)} | back at that x t ${f.back?.t.toFixed(1)} (${f.back ? (f.back.t - f.t).toFixed(1) : '?'} s later) margin ${f.back?.m?.toFixed(2)} | race time lost ${f.back && f.m !== null && f.back.m !== null ? (f.m - f.back.m).toFixed(2) : '?'} s`);
