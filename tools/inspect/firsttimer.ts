@@ -1739,6 +1739,21 @@ export class FirstTimerRun {
     }
   }
 
+  /** rule 28, the lead's ruling A (ENG-27p): standing on a river's bank (not a float) facing `dir`, the drifting logs near its edge when
+   *  one of them is within reach (edgeWait's `near` read: a hop held who.hold[0] from where he stands, now or a beat later as his thumb
+   *  gets there, lags 0..0.2, comes down on it where it will be, hopLandsOn), else null. Draws nothing, moves nothing: the edge stand's
+   *  gate and hopJudged's invariant (every press here flies on a judgment of its own frame) read it */
+  private edgeFloats(dir: -1 | 1): Platform[] | null {
+    const p = this.sim.p, t = this.t, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    if (!p.grounded) return null;
+    const here = this.floorAt(p.x, p.y, 6);
+    if (!here || here.type === 'drift' || here.type === 'moving') return null;
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    const drifts = this.sim.platforms.filter((q) => q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x + q.width / 2 - edgeX) < 400);
+    const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + p.vx * lag, p.y, dir, this.who.hold[0], t + lag, p.vx));
+    return drifts.some(lands) ? drifts : null;
+  }
+
   /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
   private singleLands(p: { x: number; y: number }, dir: -1 | 1): boolean {
     const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -4230,7 +4245,15 @@ export class FirstTimerRun {
     if (HOP_TRACE.on) {
       const j = this.judged;
       this.judged = null;
-      if (j && j.on === this.sim.standingOn && this.t - j.t <= 1) {
+      // (the lead's ruling A's invariant (D112): a press at a river's edge with a float within reach flies on a judgment made at its OWN
+      //  press frame; one with none ('unjudged') or one left from an earlier frame or another branch ('stale') is a row the test fails.
+      //  2-7 home middle Normal 2 x 15632: the edge stand pressed 0.37 s after the edgeWait probe's judgment, ENG-27o)
+      const fresh = !!j && j.on === this.sim.standingOn && Math.abs(this.t - j.t) < DT / 2;
+      if (dir !== 0 && !fresh && this.edgeFloats(dir)) {
+        const row: HopRow = { site: j ? `stale ${j.site}` : 'unjudged', q: j?.q ?? -1, t: j?.t ?? this.t, x: j?.x ?? p.x, hold: j?.hold ?? this.jump.hold, lag: j?.lag ?? 0, kind: j?.kind, flown: { t: this.t, x: p.x, hold: this.jump.hold, kind: this.jump.kind } };
+        HOP_TRACE.rows.push(row);
+        this.hopOpen = { row, air: false, lives: this.e.lives };
+      } else if (j && j.on === this.sim.standingOn && this.t - j.t <= 1) {
         const row: HopRow = { site: j.site, q: j.q, t: j.t, x: j.x, hold: j.hold, lag: j.lag, kind: j.kind, flown: { t: this.t, x: p.x, hold: this.jump.hold, kind: this.jump.kind } };
         HOP_TRACE.rows.push(row);
         this.hopOpen = { row, air: false, lives: this.e.lives };

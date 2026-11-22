@@ -41,8 +41,10 @@ for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy
     const flownWrong = rows.filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || (r.kind !== undefined ? r.flown!.kind !== r.kind || Math.abs(r.flown!.hold - r.hold) > 1e-9 : r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold));
     // (and where he came down: the platform the gate judged)
     const cameWrong = rows.filter((r) => r.landed !== undefined && r.landed !== r.q);
-    const lines = [...new Set([...flownWrong, ...cameWrong])].map(show);
-    console.log(`${setting} seed ${seed}: ${rows.length} judged hops pressed (${[...new Set(rows.map((r) => r.site))].join(', ')}); flown not as judged ${flownWrong.length}, came down elsewhere ${cameWrong.length}`);
+    // (the lead's ruling A, ENG-27p: every press at a river's edge with a float within reach flies on a judgment of its own frame)
+    const unjudged = rows.filter((r) => r.site === 'unjudged' || r.site.startsWith('stale'));
+    const lines = [...new Set([...unjudged, ...flownWrong, ...cameWrong])].map(show);
+    console.log(`${setting} seed ${seed}: ${rows.length} judged hops pressed (${[...new Set(rows.map((r) => r.site))].join(', ')}); unjudged or stale ${unjudged.length}, flown not as judged ${flownWrong.length}, came down elsewhere ${cameWrong.length}`);
     for (const l of lines) console.log('  ' + l);
     assert.deepEqual(lines, [], 'a gate judged one hop and the bot flew another');
   });
