@@ -35,6 +35,12 @@ the landed head; checkpoint about 8 PM ET.
    14.87 s, vx -87 into bucket 12). -87 is the brake's blip size, so this may be a brake slip at a bucket's end. Run the same tool on the cut 5
    re-judged tree for these two seeds: if cut 5 has no bucket 11 drop, the brake needs an end guard (no brake press toward an end he
    is within BONK.half of), toy first.
+   **Checked on 064ca6df6 (2-6 kid E rows identical to cut 5 RE-JUDGED for these seeds: 195.7, 146.8 s; b26n/bl-26kidE-16-27-base064.txt):**
+   the bucket 11 drop is NOT the brake's. Base kid E 27 drops bucket 11 -> 10 at 9.67 s too, at full speed (vx -268). The brake only slows
+   it. Base kid E 16 is the old fault fix 3 removes: 29 leaves off buckets 71-76 between 144 and 180 s, every one a swing off an end at vx
+   268-285. So the two new 'fell back 3 times' fails sit on the climb at y 3962, which the base runs passed later. Next: what at y
+   3962 (x 870 / 1183) changes with his arrival time (a clocked hazard or ride there?). Two runs, one cause: read the pad log
+   (b26m/k22wrap.mts.txt, STAGE=2-6 SET=easy BOT=FT_KID, T0/T1 around 85-89 s for seed 16, 75-78 s for seed 27) for what drops him.
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
