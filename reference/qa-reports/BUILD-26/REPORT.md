@@ -91,7 +91,10 @@ crest.
   0; generality 0; kbdcheck 0; buildcheck 0; seedlist 1-1 PASS (161 seeds); engine tool tests 39/39; tierBots 9/9.
   **roadmapcheck: NOT RUN (exit 2): this container's clone is shallow** (history back to 11-15, .git 3.7 GB) and it refuses a shallow
   clone; unshallowing is not safe on the 2.8 GB of disk left. Its inputs (reference/ROADMAP.md, the known lists, NEXT.md) are unchanged
-  from the base (git diff empty), so this candidate cannot move its verdict; it runs in CI (gates.yml, fetch-depth 0) on the deploy.
+  from the base, so this candidate cannot move its verdict: `git diff --stat a07ed1bd7 3ecb87eaa -- reference/ROADMAP.md
+  tools/perf/*known*.json tools/engine/generality.known.json $(git ls-files | grep -E 'NEXT\.md$')` prints nothing. **The lead's ruling
+  (a):** accepted on that ground, no CI triggered; this landing is on a work branch, not a release, and release 4's integration runs the
+  full set, roadmapcheck included, on a full clone.
   kbdcheck rewrites tracked screenshots under reference/qa/tester-page-1106/keyboard/ in the tree it runs on (not committed here).
 - The base suite was killed at the 40 min background limit I gave it (the miss, D123); the lead ruled no base suite is needed (BUILD-26n's
   unit 4,035/0 on 2904961b8 carries to a07ed1bd7, D118).
