@@ -49,7 +49,7 @@ castBots x40 on 2-1..2-6 base 1465822f7 vs head, row for row (the judge changed 
   whose press came 0.37 s later by another path (came down where judged). NOT traced: which path pressed it (ENG-27n's Learned: the
   stopped-dead read presses a hop no gate judged).
 - **Checks:** the bot file and the test type-check alone (tsc on firsttimer.ts with node types, --ignoreConfig: 0 errors in tools/; the 23
-  reported are all src/ import.meta.glob, vite's types not loaded); hopJudged as above on every head, each on its own frozen worktree.
+  reported are all src/ import.meta.glob, vite's types not loaded); hopJudged as above on every head, each on its own frozen worktree. Docs push (D53): knowncheck PASS; roadmapcheck could not run its proofs here ('shallow clone, proofs cannot be checked (fetch-depth 0): FAIL', this container's clone, not the content; CI runs it full-depth).
   NOT run: pacerLay, pacerRespawn, the race table, rule 28's diff, tierBots, seed 5's time, B, S (the box went to step 1's four roots
   and the fifth row's probe). Frozen trees left: /home/user/f-b53c49e49, f-ddd49b0b3, f-4f78f9cb3, f-d2408e867 (this container only).
 - **Lessons applied:** D111 (28 min by `date`, start 6:44 PM ET), D113 (every run backgrounded; no foreground wait: the harness refused one
