@@ -4,21 +4,30 @@ fix 1 traces, **eae5b1ff7** fix 3 (wheel toy GREEN) = THE FINAL CANDIDATE, plus 
 
 ## EXACT NEXT STEP
 Base t-build-26-wip-26n at this REPORT's commit. Long runs in the BACKGROUND with fitting timeouts, frozen trees, at most two heavy.
-1. **Rows are with the lead (both messages sent: the rows, then a flip-count correction).** NO tier drop on either stage vs cut 5
-   RE-JUDGED (Step 5). Wait for the ruling; keep working on 2 and 3 while waiting (D120).
-2. **The suites on eae5b1ff7 are RUNNING** (b26l/suite.sh.txt on the frozen worktree /home/user/f26n-cand, logs /home/user/x40/suite-cand/,
-   summary.txt one line per gate, ALLDONE at the end; timeout 7,200,000 ms). Read summary.txt; copy it into b26n/ and commit it. Any rc != 0:
-   open its log and trace it before anything lands. The wheel toy (tools/inspect/wheelRide.test.ts) is not in that script: it was run
-   GREEN on this tree's code (b26n/toy-4-GREEN.txt).
-3. **Rule 28 on 2-6's 31 flips (all fix 3's, kid and adult only; b26n/rows/cmp26-cand.txt lists each with its stuck spot).** Trace two
-   runs per cause with b26n/k22wrap-style pad logs (b26m/k22wrap.mts.txt, STAGE=2-6). Hypothesis to test: the brake changes the ride's
-   timing (cleaner, faster ride), so every later moment moves. The 12 new fails sit at 'fell back down from here 3 times' or
-   'water ahead / in a dip': read whether any is IN a wheel bucket (a brake fault) or later on the climb (timing only). (2-6 kid E 22,
-   the row fix 3 is for, PASSES 143.2 s; cut 5 139.7; its stuck spots are at x 1273 and 824, none at bucket #51.)
-4. On the lead's word: rebase onto t-build-26 at 86625c5ae (never force), the hash to the lead; nothing on t-build-26 before.
-5. Then the relists (packet step 8): 1-4 once; 2-6 under castBots --proven (every bot >= 100 s on every listed roll). **Note:** passes
-   under the 100 s floor rose on 2-6 (adult N 8 -> 13, kid N 0 -> 4, min 94.2 s), so the yield may drop; under about 60%, the cause and a
-   plan to the lead. Then seedlist --check on both.
+**The lead RULED on the rows (this box):** (1) eae5b1ff7 LANDS on t-build-26 when its suites are green (the CLAUDE.md suite + castBots.test.ts
+whole + tierBots 9/9; the R-165.312 todo and the two w4 todos allowed), rebased onto 86625c5ae, never force, the hash to the lead.
+(2) Rule 28 on 2-6's 31 flips gates the RELEASE, not the landing: trace the 12 pass -> FAIL by cause (two runs per cause) and confirm the
+19 gains are real finishes, BESIDE the relists. (3) The adult's brake is right (same thumb, same brake). (4) The --proven relist next, on
+the landed head; checkpoint about 8 PM ET.
+1. **The suites on eae5b1ff7 are RUNNING** (b26l/suite.sh.txt on the frozen worktree /home/user/f26n-cand, logs /home/user/x40/suite-cand/;
+   summary.txt has one line per gate and ALLDONE at the end; timeout 7,200,000 ms). Read summary.txt, copy the logs' summary into b26n/
+   and commit it. Any rc != 0: open its log and trace it; nothing lands red. The wheel toy (wheelRide.test.ts) is not in the script: it ran
+   GREEN on this code (b26n/toy-4-GREEN.txt).
+2. **Land (on green):** a dry rebase of be579bc01 onto 86625c5ae (scratch worktree /home/user/r26n, branch t-build-26n-rebase-dry, local
+   only) stops on the FIRST of 33 replayed commits (c98a40f06, BUILD-26j's REPORT). The ONLY file changed on both sides is
+   reference/qa-reports/BUILD-26/REPORT.md (src/ and tools/ do not overlap; 8 commits on t-build-26 since the merge base c00d2fd17).
+   So each stop is a REPORT.md conflict: keep BOTH sides' sections (the wip's BUILD-26 sections and t-build-26's ENG-26p/q lines),
+   `git add`, `git rebase --continue`. Then tsc on the rebased tree and a check that `git diff eae5b1ff7 <rebased> -- src tools` equals
+   `git diff c00d2fd17 86625c5ae -- src tools` (t-build-26's own changes, nothing else). Push the rebased head to t-build-26 as a
+   fast-forward (never force) and send the lead the hash.
+3. **The relists on the landed head (packet step 8):** 2-6 under castBots --proven (every bot >= 100 s on every listed roll, eraRoll.ts:28-30).
+   Passes under the 100 s floor rose (adult N 8 -> 13, kid N 0 -> 4, min 94.2 s), so report the yield honestly; under about 60%: the cause
+   and a plan to the lead, NO content change without the lead's GO. Then 1-4 relisted ONCE, then seedlist --check on both.
+4. **Beside 3: rule 28 on 2-6's flips** (b26n/rows/cmp26-cand.txt lists each with its last stuck spot; pad logs with b26m/k22wrap.mts.txt,
+   STAGE=2-6, BOT=FT_KID or FT_ADULT). The 12 new fails: 'fell back down from here 3 times' (kid E 16, 27; kid N 32, 34; adult N 13) or
+   'water ahead / in a dip' (adult E 11, 27; adult N 23; kid N 13, 14, 17, 29). Read whether any fall starts IN a wheel bucket (a brake
+   fault) or later on the climb (timing only). (2-6 kid E 22, the row fix 3 is for, PASSES 143.2 s; cut 5 139.7; its stuck spots are at
+   x 1273 and 824, none at bucket #51.)
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
