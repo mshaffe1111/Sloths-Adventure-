@@ -96,6 +96,16 @@ crest.
   (a):** accepted on that ground, no CI triggered; this landing is on a work branch, not a release, and release 4's integration runs the
   full set, roadmapcheck included, on a full clone.
   kbdcheck rewrites tracked screenshots under reference/qa/tester-page-1106/keyboard/ in the tree it runs on (not committed here).
+- **Row-by-row compare (the packet's bar), the base's full verbose drawcheck run ALONE on the frozen base a07ed1bd7:** base FAIL, the
+  same 5 breaches, all on 2-6 (the plant confirmed in full); candidate PASS. 2-6: port gradients 5 -> 0, screens 9.39 -> 6.20, clips
+  17 -> 17; land gradients 7 -> 0, screens 11.22 -> 6.15, clips 24 -> 18. **13 rows read higher on the candidate, all small, all under
+  their limits, all named to the lead before landing:** 1-1/1-6/2-1/3-3 port drawImageCalls +0.5 to +0.8, 3-3 land +0.9; shrunkOver2_5x
+  1-3 land 8 -> 9.88, 1-4 land 9 -> 9.38, 1-7 land 7 -> 9, 1-9 land 7 -> 7.38, 2-5 land 6.13 -> 6.5, 8-4 land 6 -> 6.5; 2-4 land clips
+  6 -> 6.75, screens 5.73 -> 5.81. Traced per (file, function) in drawcheck's raw per-site counts (eng26r/drawcheck-compare.txt,
+  sitediff.py.txt): every one sits in code this change does not touch (sheetBake drawSheet: whether a sheet's bake had landed; renderWeather,
+  vineSnakePiece, drawCheckpointArt, vine-field fluff, auras, blitAt: things moving on the game clock; 2-4's drawSafeRiverOver: the logs'
+  drift, a pass this change does not edit), and the counted frames differ run to run (e.g. 34 vs 31). None is in gradCache, the wall cull
+  or the wall's bottom (the only edits; my line shifts in protoArt/riverArt are folded out by grouping per function).
 - The base suite was killed at the 40 min background limit I gave it (the miss, D123); the lead ruled no base suite is needed (BUILD-26n's
   unit 4,035/0 on 2904961b8 carries to a07ed1bd7, D118).
 
