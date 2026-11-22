@@ -2,6 +2,14 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-27q. ENG-27q (t-eng-27-wip-27q b0c6dd586, 11-21): the gates re-aim every frame
+- **gateDraw (firsttimer.ts):** edgeStand, edgeWait, race and upstream draw their hop (drawHop, unchanged) ON the frame they judge it; the one-draw
+  hold (waitHop) and the 0.5 s beat (floatBeat) are deleted. Source of the cadence: BOTS.md keeps stopReact/thumb from KID/ADULT ("no profile measures
+  reaction"), so no calibrated decision time exists: every frame. GATE_TRACE (records only) + hopJudged.test.ts's re-aim test guard it.
+- **Open on it:** hopJudged Normal 2's race row x 8256 (judged log #69, caught on bank #66); pacerLay 13/19; the lead rules the rows before t-eng-27
+  takes it (ENG-27/REPORT.md, ENG-27q). Probe: ENG-27/q/gateprobe-27q.mts.txt (run with the project's node_modules/.bin/tsx, a tree path arg).
+
+
 ## 0zq-27f. ENG-27b..f (t-eng-27, 11-21; this entry 2:16 PM ET): 2-7's mail boat (the pacer), the post, 'under'; what the 2-7 builder and the next engineer need
 **Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** One line each:
 - **The pacer** (pacer.ts data and arithmetic, gen2/pacerLay.ts lays it, pieces/pacerPiece.ts runs it, pacerDraw.ts draws it; World 2's table w2.ts W2_RACE). Its time = the careful middle's flown time for the race leg x (1 + share: 7% Normal, 10% Easy), never over the ride-only time less `under` (2 s) (pacerFaults).

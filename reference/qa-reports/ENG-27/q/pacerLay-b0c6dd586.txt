@@ -1,0 +1,115 @@
+head b0c6dd58647c4d64b7d0e14f2695d5e6369f08a3
+✔ pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound (771.333009ms)
+✔ pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none (52.07618ms)
+✔ pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell (159.396906ms)
+✖ pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1 (1619.867924ms)
+✔ pacer race (the bots): the ride-only player never wins, normal seed 1 (881.338909ms)
+✔ pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2 (502.29856ms)
+✔ pacer race (the bots): the ride-only player never wins, normal seed 2 (565.945778ms)
+✖ pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3 (515.7767ms)
+✔ pacer race (the bots): the ride-only player never wins, normal seed 3 (686.627478ms)
+✔ pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1 (525.050564ms)
+✔ pacer race (the bots): the ride-only player never wins, easy seed 1 (502.572713ms)
+✔ pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2 (467.622597ms)
+✔ pacer race (the bots): the ride-only player never wins, easy seed 2 (510.708989ms)
+✔ pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3 (426.807771ms)
+✔ pacer race (the bots): the ride-only player never wins, easy seed 3 (563.874768ms)
+✖ bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond) (551.913067ms)
+✖ bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond) (533.404008ms)
+✖ bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it (866.525035ms)
+✖ bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it (1037.128852ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 13
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12375.063198
+
+✖ failing tests:
+
+test at src/game/gen2/pacerLay.test.ts:161:5
+✖ pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1 (1619.867924ms)
+  AssertionError [ERR_ASSERTION]: middle normal seed 1: 108.4 s against the boat's 93.89 s
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:163:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/pacerLay.test.ts:161:5
+✖ pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3 (515.7767ms)
+  AssertionError [ERR_ASSERTION]: middle normal seed 3: 93 s against the boat's 92.06 s
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:163:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/pacerLay.test.ts:180:3
+✖ bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond) (551.913067ms)
+  AssertionError [ERR_ASSERTION]: post Normal seed 4: 105 s against the boat's 100.76 s
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:203:12)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/pacerLay.test.ts:180:3
+✖ bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond) (533.404008ms)
+  AssertionError [ERR_ASSERTION]: post Normal seed 5: 115.6 s against the boat's 103.44 s
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:203:12)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/pacerLay.test.ts:211:1
+✖ bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it (866.525035ms)
+  AssertionError [ERR_ASSERTION]: RED: without the skill the plant must lose (75.6 s against 97.53 s)
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:229:10)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at src/game/gen2/pacerLay.test.ts:237:1
+✖ bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it (1037.128852ms)
+  AssertionError [ERR_ASSERTION]: RED: without the skill seed 2 falls short at x 10683 (falls )
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/src/game/gen2/pacerLay.test.ts:260:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+exit 1
