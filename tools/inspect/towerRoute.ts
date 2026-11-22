@@ -6,6 +6,8 @@
  * the storey above and dithered (1-4, INT-4, 11-13). The same order tools/engine/towerFly.ts flies: the turn's foot, its top, the
  * leg's entry, the leg's exit; after the last leg, a last turn (if laid) to the shrine's ledge, then the shrine. No stage id or x.
  */
+import { GRAB_REACH } from '../../src/game/vinePair.ts';
+
 export interface Pt { x: number; y: number }
 
 /** px of height a plain hop takes him (the bots step or jump it; more is a climb) */
@@ -78,12 +80,19 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   if (stage.exitTotemX !== undefined) out.push({ x: stage.exitTotemX, y: stage.exitTotemY ?? out[out.length - 1].y });
   // (a corner on top of the one before it adds nothing)
   const c = out.filter((p, i) => i === 0 || Math.abs(p.x - out[i - 1].x) + Math.abs(p.y - out[i - 1].y) > 0.5);
-  // (no going on past the climb and back along one floor: a leg's exit beyond the turn's vine (1-4's gate bough runs on past its way
-  // up) made the way on point both ways at once over the bough, and he stood there turning: straight to the vine)
+  return noOutAndBack(c);
+}
+
+/** (no going on past the climb and back along one floor: a leg's exit beyond the turn's vine (1-4's gate bough runs on past its way
+ *  up) made the way on point both ways at once over the bough, and he stood there turning: straight to the vine. The vine counts as on
+ *  the way out when it stands within GRAB_REACH (vinePair.ts:17, how far from a climb's line his middle may be to take hold of it) of
+ *  that span: one he can take from where he stood on arrival is "here", not "back". BUILD-26g, 1-4 Easy 10: he came up onto s17:top at
+ *  781, the exit was 481 and the way on 786, 5 px past the arrival, and the strict span walked him out and back for 23 s, rescued) */
+export function noOutAndBack(c: Pt[]): Pt[] {
   for (let i = 1; i + 1 < c.length; ) {
     const a = c[i - 1], b = c[i], d = c[i + 1];
     const flat = Math.abs(b.y - a.y) <= HOP && Math.abs(d.y - b.y) <= HOP;
-    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)) c.splice(i, 1);
+    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) - GRAB_REACH <= d.x && d.x <= Math.max(a.x, b.x) + GRAB_REACH) c.splice(i, 1);
     else i++;
   }
   return c;
