@@ -435,3 +435,40 @@ test('at a lip where the floor goes on a hop UP with no face (a thin bough start
   }
   assert.ok(walked >= 3, `PLANT: with stepUpAtLip off he still pressed at the lip in ${6 - walked} of 6 rolls (expected walk-offs)`);
 });
+
+test('knocked off a vine field to its floor, the rewind takes the way he can reach (his floor, or up the vine at his feet), never a leg under that floor; with none, the points under him (BUILD-26k, 1-4 child N 8 and 14)', async () => {
+  const { Progress } = await import('./firsttimer.ts');
+  const { FigPush } = await import('./figPush.ts');
+  // (1-4 child Normal seed 14's way there, its route points as built: the leg at y ~2684 under the field (542-1190), up to the
+  //  field's floor at x 1190 and back left along it at y 2363 to x 890, up the field vine at x 890 to its top at 1923, along the vine
+  //  tops to x 448; he lands on the floor at x 565 after a pod's knock, the field vine at x 570 (1923-2363) at his feet)
+  const pts: { x: number; y: number }[] = [];
+  for (let x = 542; x <= 1190; x += 23) pts.push({ x, y: 2684 - (x - 542) * 0.06 });
+  for (let y = 2621; y >= 2363; y -= 23) pts.push({ x: 1190, y });
+  for (let x = 1167; x >= 890; x -= 23) pts.push({ x, y: 2363 });
+  for (let y = 2340; y >= 1923; y -= 23) pts.push({ x: 890, y });
+  for (let x = 867; x >= 448; x -= 23) pts.push({ x, y: 1923 });
+  const p = { x: 565, y: 2363 };
+  const at = (climb?: { x: number; topY: number }, keep = (_q: { x: number; y: number }) => true) => {
+    const pr = new Progress(pts.filter(keep));
+    pr.relocate(p, true, Infinity, climb);
+    return pr.pts[pr.cur];
+  };
+  // RED on 9f8b81346 (ranked by distance alone: the leg's point at 542,2684, 321 px under the floor he stands on)
+  const q = at({ x: 570, topY: 1923 });
+  assert.ok(q.y <= p.y + 80 && q.y >= 1923 - 40, `the rewind took ${Math.round(q.x)},${Math.round(q.y)}: under the floor he stands on`);
+  // (no vine at his feet: still the way along his own floor, x 890-1167 at y 2363)
+  const f = at(undefined);
+  assert.ok(Math.abs(f.y - p.y) <= 80, `with no vine: ${Math.round(f.x)},${Math.round(f.y)}`);
+  // (the other arm: nothing he can reach from where he stands, so the points under him, as before)
+  const u = at(undefined, (r) => r.y > 2500);
+  assert.ok(u.y > 2500, `with nothing reachable it must fall back to the points under him: ${Math.round(u.x)},${Math.round(u.y)}`);
+  // the knock's own frame takes him off the vine: read on any frame, it is a hit for the next few seconds, never a missed climb
+  const fp = new FigPush(0.45);
+  assert.equal(fp.knockedRecently(10), false);
+  fp.sawKnock(1.2, 10);
+  assert.equal(fp.knockedRecently(12), true);
+  assert.equal(fp.knockedRecently(17), false);
+  fp.sawKnock(0, 20);
+  assert.equal(fp.knockedRecently(21), false);
+});
