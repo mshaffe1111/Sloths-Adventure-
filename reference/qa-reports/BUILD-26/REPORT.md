@@ -47,6 +47,12 @@ the landed head; checkpoint about 8 PM ET.
    88.4 s. No wheel line acts in this window, so fix 3 can only have changed his ARRIVAL TIME here. Next: the same window on 064ca6df6
    (which passes; it reaches 795,3065 by 91.0 s) to see what is different at x 1010-1090 when he gets there (a clocked piece?), then seed 27
    at 75-78 s. Two runs, one cause, before the release (the lead's ruling 2).
+   **Base read (b26n/k16-26E-pad-base064-60-95.txt, 064ca6df6, passes 195.7 s):** the SAME loop, 18.5 s earlier. He climbs the vine at
+   1612, leaves it left at 66.7 s, runs and jumps along y 3962-4032, falls short at 1111,4313 (68.5 s), runs right back to the vine at 1612
+   (70.2 s), and tries again. The base gets out within its count; the candidate's third fall there is a rescue. **Cause (one run so far):**
+   an OLD route loop (the jump left near x 1080-1180 falls short), not fix 3's code. Fix 3 only shifts when and how often he tries it.
+   Second run of this cause: seed 27 (77.9 s at 1183,3962: same spot, likely the same loop). If it is, the 'fell back 3 times' cause is
+   pre-existing and RELEASE-gating only by the lead's call; the loop itself is a route fix after release 3.
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
