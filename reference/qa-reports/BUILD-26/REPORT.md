@@ -1,3 +1,93 @@
+# BUILD-26g (on t-build-26 from c99352a65): C fixed in the bot and STAYS; A/B fixed, then REVERTED (6567d3557) on the lead's ruling (tierBots 1-1 8/9), the lip written but OFF (b26g/lip.patch), x40 on 1-4 and 2-6. Started 7:00 PM ET 11-21 (by `date`)
+Commits on t-build-26: **9df2f0d11** (C), **9631000b9** (A/B, REVERTED by **6567d3557**), 436d98a36 and 51345740a (evidence), this REPORT. C went up before
+1-4's rows reached the lead: my miss, logged by the lead as **D117** (safe-keeping now goes on t-build-26-wip-<member>; the shared
+branch takes a candidate only after the lead's ruling). The lip is NOT committed: b26g/lip.patch.
+Trees (D115, frozen detached worktrees, node_modules linked): base c99352a65 (the full suite), 7b81e2ee2 (C + A/B: the same bot
+code as 9631000b9, diffed), 9631000b9 (the head), 2132bddf8 (C + A/B + lip). Rows in b26g/rows/ by the tree's hash; b26g/cmp.py
+compares two row files (pass = shrine with no rescue).
+
+## EXACT NEXT STEP (the lead's ruling, in its order; base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees)
+0. **FIRST (the lead, D118): the condition on C (and on A/B coming back):** tierBots 1-1 9/9, castBots.test.ts WHOLE and the FULL
+   CLAUDE.md suite on the head, each on a frozen tree in the background. Any red that cut 5 (a59a144c0) did not have: revert the
+   commit that brought it and tell the lead. **Status at my box:** tierBots on 7b81e2ee2 (C + A/B) **8/9**: "every committed run
+   (all 200) replays exactly as committed", child normal variants 7 (397.2 -> 395.7 s, putbacks 8 -> 5, rescues 1 -> 0) and 18
+   (402.3 -> 398.8, putbacks 2 -> 1) moved (b26g/tierbots-7b81e2ee2.txt). **A/B reverted at once (6567d3557, pushed)** per the
+   ruling. My doubt, sent to the lead: A/B's line cannot reach these runs (stopMeant is set only at the tower's "stopped first";
+   1-1 is no tower; child has holdQ, its release rule unchanged), so the red may be C's or the base's. **tierBots on base c99352a65
+   (= cut 5's code; src/tools diff to a59a144c0 empty) was RUNNING at my box** (scratchpad tierbots-base-c99352a65.txt, lost with
+   the container): re-run it. Base 9/9: the red is C's or A/B's; run tierBots on a tree with C alone (9df2f0d11) to tell. Base
+   8/9: it is not ours, and A/B comes back only on the lead's word (revert 6567d3557). NOT RUN on the head: castBots.test.ts whole,
+   the full suite. The base suite (D114) was still running at my box: TSC clean on base; the tests had not finished.
+1. **The per-tier table for the C + A/B tree with no lip (7b81e2ee2):** 1-4 x40, all five bots, both settings, against cut 5
+   (b26f/rows/r14-fe3d3d6ca.jsonl), b26g/cmp.py: NOT RUN. No tier there may drop. (On 2132bddf8, with the lip, child N dropped
+   39 -> 38 from child N 14, the lip's.)
+2. **The lip stays OFF.** Trace child N 14 (x 634, fell back 8 times, rescued; passes without the lip) against it, and make the
+   lip's toy (b26g/toylip.mts, s14's copy y less 4000: s14:b 520-960 @1045, s14:c 960-1208 @1005, vine 41 x 1190) RED on the base
+   and GREEN on the fix: today it drops 31/40 BOTH ways (he drops for another reason on the toy: print where he leaves s14:b and
+   which intend line returned; likely the slant route or a missing s14:d). The fix: firsttimer.ts ledgeJustPast + LIP_LEDGE {low
+   30: the tower stop's own q.y < p.y - 30; ahead 80: the tier bots' aimQ between median and p75; the upper bound STAIR_HOP,
+   firsttimer.ts:1030}. It lands only with no tier drop (on 1-4 it cleared middle E 10 and cost child N 14).
+3. **Trace adult N 9 (x 508, 3 times) and child E 37 (x 252, 8 times):** both lost on 7b81e2ee2 (C + A/B), so C or A/B? (child has
+   holdQ, which A/B's line does not reach: child E 37 is likely C's.) Two runs per cause, the fix general and planted.
+4. **Check the kid N gains as real finishes** (rule 28: each its rescues 0, its time, the route it took).
+5. Then the packet's steps 4-5: 2-6's moved rows are EMPTY on this bot (no row moved against cut 5, below); BUILD-26f's seven lost
+   rows against 2f188c552 still need their trace (adult N 37, kid N 23 and 27, kid E 12, kid E 30, adult E 26; adult N 11 traced);
+   2-1..2-5 rows; the relists (1-4 ONCE; 2-6 under --proven) and the yield.
+
+## Done
+- **C (towerRoute.ts noOutAndBack):** the squeeze takes the next turn's vine when it stands within GRAB_REACH (src/game/vinePair.ts:17,
+  "how far from a climb's line his middle may be to take hold of it") of the out-and-back span: a vine he can take from where he
+  stood on arrival is "here". Toy `the tower route takes a turn's vine a hand's reach past the arrival straight...` (castBots.test.ts):
+  GREEN with the fix; planted (the base line) RED: `out to 481 and back for a vine 5 px past the arrival`. A vine 200 px past keeps
+  the exit's corner.
+- **A/B (firsttimer.ts stopMeant):** the tower's "stopped first" sets stopMeant for the frame; thumbify arms the calibrated late
+  lift-off ONCE for that let-go (the tier bots' own rule: `(who.holdQ || this.stopMeant) && this.releaseArmed`), so KID/ADULT's thumb
+  lets go of the run late by their own release draw; every other steer keeps R-165.59's held steer. Not ENG-26o's bypass. Toy `under
+  a raised row on a tower, KID stops...` (1-4 s3's shape, y less 9000): GREEN with the fix (kid and adult rolls 1-3 never below the
+  lower floor); RED on the base bot's firsttimer.ts (`kid roll 1 ran off the floor under the row (lowest y 1348)`).
+- **The twelve rows on 7b81e2ee2 (C + A/B, no lip), against cut 5 (b26f/rows/r14-fe3d3d6ca.jsonl):** every named row flips to a pass
+  with no rescue: kid N 7, kid N 12, adult N 36, adult E 17, adult E 19 (A/B); kid E 10, adult E 10, kid E 37, adult E 37, middle E 37
+  (C). Middle E 10: 2 rescues -> 1 (the lip at 1102 left, as ENG-26o found). Also gained (not named): kid N 10, 17, 19, 36, 37 (A/B
+  rows of the same shape, to be checked as real finishes). Nothing in that set lost. (b26g/rows/rows14-twelve-7b81e2ee2.jsonl)
+- **2-6 x40, all five bots, both settings, on 2132bddf8 (all three), against cut 5 (b26f/rows/r26-fe3d3d6ca.jsonl):** every tier's
+  pass count equal (kid N 31, kid E 26, adult N 33, adult E 29, child 40/40 both, middle 40/40 both, expert 40); LOST 0, GAINED 0;
+  21 rows changed time only. (b26g/rows/r26-2132bddf8.jsonl)
+- **The full suite on base c99352a65 (D114):** tsc clean; the tests were still running at my box (no verdict: see step 0).
+
+## 1-4 x40
+On 2132bddf8 (C + A/B + lip), all five bots, both settings, against cut 5 (b26g/rows/r14-2132bddf8.jsonl; **sent to the lead before
+anything more lands**). Pass = shrine, no rescue:
+kid N 19 -> 40, kid E 32 -> 40, adult N 37 -> 37, adult E 36 -> 40, child N **39 -> 38 (DROP)**, child E 36 -> 38, middle N 36 -> 37,
+middle E 37 -> 40, expert N 39 -> 39. GAINED 41 (adult E 10, 17, 19, 37; adult N 36; child E 6, 10, 24; kid E 2, 10, 11, 24, 31, 35,
+37, 40; kid N 7, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 33, 34, 35, 36, 37, 39, 40; middle E 10, 19, 37; middle N 15).
+**LOST 3, isolated** on 7b81e2ee2 (C + A/B, no lip; b26g/rows/lost3-7b81e2ee2.jsonl): adult N 9 (x 508, fell back 3 times, rescued)
+and child E 37 (x 252, 8 times) are lost there too: C's or A/B's (child has holdQ, so A/B cannot reach it: child E 37 is C's).
+Child N 14 (x 634, 8 times) passes there: it is the LIP's, and it is the tier drop. **Neither C nor the lip may land as is under
+rule 28 until these three are traced** (two runs per cause). The gains are not yet checked as real finishes (rule 28).
+
+## Pushback
+- **I pushed C (9df2f0d11) to t-build-26 before 1-4's rows reached the lead** (a safe-keeping push, but the packet says the rows come
+  BEFORE the fixes land). If the lead reads that as landing, it is my miss; it reverts cleanly (one file + one test).
+- My first background suite ran with no node_modules in the checkout (the base worktree linked an empty path) and failed tsc on
+  types: not a verdict. I installed (npm install --legacy-peer-deps, as gates.yml) and re-ran it.
+- My first x40 runs named --bots kid,adult,middle; I stopped them and re-ran the default five (rule 28: no tier may drop).
+
+## Polish check
+No screen: bot-only change in tools/inspect. The proofs are the toys (RED/GREEN above) and rows.
+
+## Unresolved
+Steps 0-5 above: tierBots on the base, castBots.test.ts whole and the full suite on the head, the per-tier table on 7b81e2ee2, the
+lip's toy and child N 14, adult N 9 and child E 37, the kid N gains checked, 2-6's seven lost rows, 2-1..2-5, the relists.
+The turnover note (reference/handoffs/) was NOT rewritten: the box ran out; this section is the handover.
+
+## Learned (proposed for level.md)
+- A tier-bot toy for KID or ADULT must use FT_KID / FT_ADULT: FT_CHILD carries holdQ and takes a different branch (my first A/B toy
+  never reached the stop). Seat the toy in the trace's state (x, vx, the held steer) rather than at rest.
+
+## Lessons applied
+D96, D102 (read lean), D109 (no clock times to the lead), D111 (the box), D113 (every run in the background), D114 (the suite on
+base first), D115 (frozen trees), D116 (each number cites its source).
+
 # BUILD-26f (on t-build-26 from 42304b76d, rebased on 2f188c552): the Progress rewind, toy first, five cuts on 2-6 x40. Started 6:32 PM ET 11-21 (by `date`)
 Commits on t-build-26: 0bc969bce (the first cut, pushed too early: before 1-4's rows, against the packet), 79e596bf2 (b26f/dbgOff.txt,
 b26f/win.mts), 007480469 (rows), **d18b03d5f (the lead's ruling: 0bc969bce REVERTED; the bot equals 2f188c552's)**, this REPORT.
