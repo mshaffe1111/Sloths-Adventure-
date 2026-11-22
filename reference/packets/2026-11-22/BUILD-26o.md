@@ -10,7 +10,7 @@ READ LEAN (D102): this packet; `git show origin/t-build-26:reference/qa-reports/
 seed-list method (tools/engine/seedlist.ts --help; castBots --proven; eraRoll.ts:28-30, the 100 s climb floor); level.md rules 4, 21, 28,
 29; LAWS headlines; LESSONS D96, D102, D107, D109, D111-D122.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-build-26 at the head BUILD-26n lands (the final bot candidate eae5b1ff7's code merged with 86625c5ae; its REPORT names the hash).
+BASE: t-build-26 at a07ed1bd7 (BUILD-26n landed: the final bot candidate eae5b1ff7 merged with 86625c5ae + the 1-1 recalibration; unit 4,035/0, castBots.test 23/23, tierBots 9/9). ENG-26r fixes 2-6's draw budget beside you (drawing only: no castBots row moves).
 1. **2-6 relisted under castBots --proven** (every bot at or above the 100 s climb floor on every listed roll, eraRoll.ts:28-30), the list
    committed with its proof, and the YIELD reported honestly: the wheel brake made the ride faster, so passes under the floor rose (adult N
    8 -> 13, kid N 0 -> 4, min 94.2 s on the x40). Under about 60%: the cause (which bot, which section is short) and a plan to the lead; NO

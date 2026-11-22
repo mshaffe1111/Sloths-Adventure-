@@ -9,7 +9,7 @@ BOX: hand over at 320k REAL context OR 28 minutes after your start (from `date`)
 READ LEAN (D102): this packet; PERFORMANCE-RULES.md §1 and §8; tools/perf/limits.json (the limits and each one's 'why'); methods/gates.md
 (drawcheck: how to read a breach); LAWS headlines; LESSONS D40, D96, D102, D109, D111-D122.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-build-26 at its head (86625c5ae, or the bot candidate's landing on it: src is identical either way).
+BASE: t-build-26 at a07ed1bd7 (BUILD-26n landed the final bot candidate + the 1-1 recalibration: unit 4,035/0, castBots.test 23/23, tierBots 9/9).
 THE FACT (BUILD-26n, read from drawcheck's raw per-frame counts on the candidate, src = 86625c5ae's): five breaches, ALL on 2-6, counted after
 the 1.5 s settle and equal on every counted frame (so not the start's zoom ease): port gradients 5 > 2, drawImageScreens 9.39 > 7.5; land
 gradients 7 > 2, drawImageScreens 11.22 > 7.5, clips 24 > 19 at x 64; spot 1 (mid-stage) also over on gradients (4 / 6). Gradients come from
