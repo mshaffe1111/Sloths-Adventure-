@@ -152,3 +152,19 @@ test('the findings name the rule each breaks', () => {
   assert.equal(f[0].rule, 'opening');
   assert.ok(f.some((x) => x.rule === 'plainWalk' && x.kind === 'stuck'));
 });
+
+test('floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)', () => {
+  // (a climb stage: one river high up the stage (surface y 1239) and another at its foot (6348), their windows over the same x; the
+  //  climb's branches between them stand in neither. Read by x alone, every branch under the high river's window was 'under the water':
+  //  no floor under him or ahead, so he jumped 166 px short of a lip and ran off the next lip in the landing's beat, 2-6 kid N 32 and 34)
+  const branch = (id: number, x: number, y: number, width: number) => ({ id, x, y, width, height: 24, type: 'solid' }) as unknown as Platform;
+  const fake = {
+    sim: { stage: { rivers: [{ x0: 681, x1: 1521, surfaceY: 1239 }, { x0: 766, x1: 1526, surfaceY: 6348 }] },
+      platforms: [branch(1, 1333, 3738, 240), branch(2, 900, 1249, 200), branch(3, 900, 6000, 200)] },
+    solid: () => true,
+  };
+  const floorAt = (x: number, y: number, down = 40) => (FirstTimerRun.prototype.floorAt as (this: unknown, x: number, y: number, down?: number) => Platform | null).call(fake, x, y, down);
+  assert.equal(floorAt(1445, 3738)?.id, 1, 'a branch 2,500 px under the high river, over no water of its own, is floor');
+  assert.equal(floorAt(1000, 1249), null, 'a top 10 px under the high river\'s surface is in its water: no floor');
+  assert.equal(floorAt(1000, 6000)?.id, 3, 'a top over the low river\'s surface is floor');
+});
