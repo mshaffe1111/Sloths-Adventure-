@@ -1,5 +1,9 @@
 # ENG-27q REPORT (start 7:27 PM ET by `date`; box 7:55 PM ET; base t-eng-27 4df2d084c; bot change on t-eng-27-wip-27q b0c6dd586 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27r, read only this section, D90)
+0. **The lead (on this report): b0c6dd586 is NOT ruled; it stays on wip-27q.** The gates press only when the hop drawn WITH the thumb's noise lands,
+   and a player cannot see his thumb slip before he presses, so the gate has foresight; re-aiming every frame gives it about 30 tries a second at a
+   lucky thumb. **Table FOUR bots** (packet ENG-27r.md): ungated (b7a68a8bd), one-draw hold (4df2d084c), the re-aim (b0c6dd586), and a NO-FORESIGHT
+   gate (decides on the hop as aimed, flies it with the drawn noise). Then the lead rules the honest middle, then the race. Items 1-3 below come after.
 1. **The lead rules the re-aim's rows (table below) before t-eng-27 takes b0c6dd586.** Then, on wip-27q, frozen: trace hopJudged Normal 2's ONE red
    row (`race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown same | came down #66 solid`, q/green-b0c6dd586.txt): hopFlies judged log
    #69 and the engine caught him first on bank #66 (solid, safe). TRACED (q/diag-n2-x8256b.txt; its clock is onFrame-counted, +0.76 s on game t):
@@ -10,7 +14,7 @@
    alternation) and fix the judge, never the hop. Each frame now aims a fresh draw, so the race tries hops ENG-27p never flew. hopJudged must be 4/4.
 2. The suite on 4df2d084c (step 0) ran in MY container: tsc PASS; shards 1-3 had 414/387/444 pass, 0 fail when the box closed, not finished. Re-run it.
 3. Not done (box): the race table (middle 24/24, expert 12/12, ride-only 0/24; raceprobe-27e.ts.txt as tools/inspect/_race.ts), split (b) the 72 px,
-   split (c) b7a68a8bd's 6 lives, then ENG-27p's ORDER (4) castBots x40 2-1..2-6 1465822f7 vs head, tierBots 1-1 9/9, seed 5's +34.7 s, B, S.
+   then ENG-27p's ORDER (4) castBots x40 2-1..2-6 1465822f7 vs head, tierBots 1-1 9/9, seed 5's +34.7 s, B, S.
 ## Done-items
 - **Plant RED first (8e825b614: GATE_TRACE, records only; the re-aim test in hopJudged.test.ts, already on the CI tool line):** RED on the base logic,
   `gate frames 1293 (edgeWait 60, upstream 70, race 1161, edgeStand 2); judged on a draw held from an earlier frame 1265 (edgeWait 52, upstream 61,
@@ -36,10 +40,16 @@ draws tried, first to land is pressed; 3 falls). The big race sites now hold 0.7
 The race gate runs only on a log drifting HIS way (raceLegal: here.drift.dir === dir), and a refused frame falls to SKILLS.handed (no input): the log
 carries him toward the bank every refused frame (base seed 1: x 13464 -> 12967 in 6.2 s, about 80 px/s). Of 32 base episodes (seeds 1-3) 30 ended in a hop
 before the log's end and 2 were 'carried->air' (off the log, not onto the bank). So the refused seconds were never a stand: they were ride time; what
-the hold cost was hopping late, not standing still. (b) and (c): NOT measured (box).
+the hold cost was hopping late, not standing still.
+## Split (c): b7a68a8bd's 6 lost lives, home middle Normal 1 (q/racecost-b7a68a8bd-n1.txt; probe q/racecost-27q.mts.txt). Won 85.4 s vs the boat 93.89.
+4 fell ON the race leg (t 88.7 x 13473, 110.2 x 10103, 121.1 x 8787, 149.1 x 4523), 2 before it (x 15147, 15235). Each race-leg fall: back at that x 2.0-2.3 s
+later with his margin 1.59->1.65, 4.83->5.44, 5.66->5.62, 8.49->8.50 s: race time lost -0.06, **-0.61**, +0.03, -0.01 s. **Under Option A a fall costs
+him about nothing in race time (only the heart), and one PAID him 0.61 s by the time he was back at that x** (the invariant holds at the first stand; the
+re-crossing then beat the boat's pace). So the race does not punish a reckless hop. The re-aim (b0c6dd586) Normal 1: 3 lives lost, NONE on the race
+leg, race LOST 108.4 vs 93.89. Split (b), the 72 px: NOT measured (box).
 ## Polish check: no screen changed (bot code and a test). ## Pushback: none on the ruling. One flag: on seed 1 the re-aim makes him faster to hop and
 more often to fall (lives 1 -> 3, finish +56 s); the race call should read that row. ## Suggestions: none new. ## Unresolved: hopJudged Normal 2
-(above), the race table, (b), (c), the ORDER, the suite's end. ## Method update: a gate that judges a drawn hop draws it on the frame it judges
+(above), the race table, (b), the ORDER, the suite's end. ## Method update: a gate that judges a drawn hop draws it on the frame it judges
 (GATE_TRACE row-checks it); a cadence literal needs a cited source or it is every frame. ## Turnover note: engine-core.md §0zq-27q (this commit).
 Lessons applied: D96, D102, D107, D109, D111-D119 (frozen trees, background runs, wip branch, no clock times to the lead).
 
