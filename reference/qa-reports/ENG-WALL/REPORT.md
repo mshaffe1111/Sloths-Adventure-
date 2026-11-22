@@ -9,6 +9,12 @@ square blit). The other ways drawGroundChunks gives up: protoArt.ts:1738 (the ca
 camera shake / trauma?), and a chunk KEY change (protoArt.ts:1741: kitWorld, groundLook, scale.toFixed(4), depthView, bankSig): a zoom
 ease or a depthView change drops every square each frame. Next member: log drawGroundChunks' exit reason per frame in the browser on
 the descent and the cold view, name it, then design C around it (the margin/budget design below only matters if the budget shows up).
+RULED OUT (b/why-probe.mjs, cold x 19900 upright, 6 first frames and settled): the transform drawGroundChunks reads is a plain
+1.87273 scale every frame (no turn/skew: protoArt.ts:1738 is not it); zoom 1 = targetZoom; trauma 0 (the scale part of the key holds).
+LEFT: (1) the key's depthView or bankSig changing after an update; (2) `chunks.plats !== platforms` (protoArt.ts:1742): a new platforms
+array after e.update() would drop every square each played frame (the probe's settled renders have no update, so they keep them);
+(3) the experiment's frames no longer take the live path but ANOTHER lazily painted layer differs (sheetBake.ts:104 is in both
+censuses; the backdrop): flip-probe compares the whole canvas, so split it by layer (ground pixels only) before judging C.
 THE LEAD'S RULING C, four conditions: (1) the plant covers the whole soil: first frame == settled within 1 luma (mean; worst 8-px
 column <= 4) on a stage start, a respawn and the fastest descent, upright and sideways; (2) the cold paint measured at 4x CPU, riding
 inside the respawn's own frames, never one frame over PERFORMANCE-RULES §1; drawcheck passes; (3) the prefetch margin sized from the
