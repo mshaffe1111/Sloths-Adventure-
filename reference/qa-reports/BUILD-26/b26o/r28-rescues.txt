@@ -1,0 +1,210 @@
+##### FT_KID normal 32
+STUCK @21.43 {"x":1170,"y":5884,"t":13.4,"dur":8,"what":"in a dip 333 px deep, a drop of 300 px ahead, water ahead, the way on is 138 px down","step":null,"dip":333,"puzzle"
+STUCK @55.53 {"x":894,"y":5558,"t":55.5,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @55.53 x 845; the 3 s before (every 5th frame):
+  52.57 315,5520 vx 285 vy 273 tgt 396,5580
+  52.73 361,5594 vx 268 vy 0 tgt 467,5577
+  52.90 407,5575 vx 285 vy -577 tgt 515,5575
+  53.07 453,5510 vx 268 vy -260 tgt 538,5574
+  53.23 499,5504 vx 285 vy 107 tgt 562,5573
+  53.40 545,5501 vx 268 vy 0 tgt 610,5571
+  53.57 591,5501 vx 285 vy 0 tgt 657,5569
+  53.73 637,5501 vx 268 vy 0 tgt 704,5567
+  53.90 683,5543 vx 285 vy 417 tgt 776,5564
+  54.07 729,5554 vx 268 vy 83 tgt 823,5561
+  54.23 775,5609 vx 285 vy 500 tgt 870,5559
+  54.40 821,5624 vx 268 vy 83 tgt 894,5558
+  54.57 868,5679 vx 285 vy 500 tgt 847,5560
+  54.73 913,5804 vx 268 vy 917 tgt 894,5558
+  54.90 954,5902 vx 154 vy 0 tgt 894,5558
+  55.07 947,5902 vx -173 vy 0 tgt 894,5558
+  55.23 918,5842 vx -173 vy -103 tgt 894,5558
+  55.40 873,5860 vx -268 vy 273 tgt 894,5558
+{"t":126.3,"end":"shrine","rescues":1,"rescueXs":[845]}
+##### FT_KID normal 34
+STUCK @68.60 {"x":1170,"y":3738,"t":68.6,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @68.60 x 1407; the 3 s before (every 5th frame):
+  65.63 1583,3720 vx -273 vy -63 tgt 1480,3738
+  65.80 1536,3738 vx -285 vy 0 tgt 1432,3738
+  65.97 1491,3738 vx -268 vy 0 tgt 1385,3738
+  66.13 1444,3687 vx -285 vy -450 tgt 1361,3738
+  66.30 1398,3664 vx -268 vy 23 tgt 1337,3738
+  66.47 1352,3710 vx -285 vy 440 tgt 1266,3738
+  66.63 1306,3746 vx -268 vy 167 tgt 1194,3738
+  66.80 1260,3808 vx -285 vy 0 tgt 1194,3738
+  66.97 1214,3836 vx -268 vy 333 tgt 1218,3738
+  67.13 1168,3933 vx -285 vy 750 tgt 1170,3738
+  67.30 1121,4086 vx -285 vy 950 tgt 1170,3738
+  67.47 1107,4117 vx 87 vy 0 tgt 1170,3738
+  67.63 1149,4081 vx 285 vy -513 tgt 1170,3738
+  67.80 1195,4033 vx 268 vy -103 tgt 1170,3738
+  67.97 1241,4005 vx 285 vy -438 tgt 1170,3738
+  68.13 1287,3963 vx 268 vy -121 tgt 1170,3738
+  68.30 1333,3979 vx 285 vy 256 tgt 1170,3738
+  68.47 1379,4063 vx 268 vy 672 tgt 1170,3738
+{"t":114.7,"end":"shrine","rescues":1,"rescueXs":[1407]}
+##### FT_ADULT easy 11
+STUCK @89.20 {"x":394,"y":1961,"t":81.1,"dur":8,"what":"water ahead, the way on is 185 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+STUCK @111.30 {"x":995,"y":1039,"t":103.2,"dur":8,"what":"in a dip 77 px deep, water ahead, the way on is 194 px up","step":null,"dip":77,"puzzle":false,"rescued":false}
+RESCUE 1 @123.27 x 900; the 3 s before (every 5th frame):
+  120.30 949,918 vx 268 vy -133 tgt 1018,836
+  120.47 994,930 vx 268 vy 223 tgt 1018,836
+  120.63 1039,1009 vx 268 vy 640 tgt 1018,836
+  120.80 1049,1024 vx 0 vy 0 tgt 1039,827
+  120.97 1039,1028 vx 0 vy 0 tgt 1039,827
+  121.13 1029,1031 vx 0 vy 0 tgt 1018,836
+  121.30 1019,1034 vx 0 vy 0 tgt 1018,836
+  121.47 1009,1037 vx 0 vy 0 tgt 1018,836
+  121.63 999,1038 vx 0 vy 0 tgt 996,846
+  121.80 989,1040 vx 0 vy 0 tgt 996,846
+  121.97 978,1041 vx 0 vy 0 tgt 975,855
+  122.13 968,1041 vx 0 vy 0 tgt 975,855
+  122.30 957,1041 vx 0 vy 0 tgt 953,864
+  122.47 947,1040 vx 0 vy 0 tgt 953,864
+  122.63 937,1039 vx 0 vy 0 tgt 932,874
+  122.80 929,1037 vx 0 vy 0 tgt 932,874
+  122.97 918,1035 vx 0 vy 0 tgt 910,883
+  123.13 908,1033 vx 0 vy 0 tgt 910,883
+{"t":127.1,"end":"shrine","rescues":1,"rescueXs":[900]}
+##### FT_ADULT easy 27
+STUCK @47.83 {"x":961,"y":6755,"t":39.8,"dur":8,"what":"in a dip 379 px deep, an open drop ahead, water ahead, the way on is 371 px up","step":null,"dip":379,"puzzle":false,
+RESCUE 1 @49.57 x 967; the 3 s before (every 5th frame):
+  46.60 816,6589 vx 268 vy -288 tgt 807,6390
+  46.77 863,6572 vx 285 vy 28 tgt 855,6388
+  46.93 908,6619 vx 268 vy 445 tgt 903,6385
+  47.10 955,6735 vx 285 vy 862 tgt 903,6385
+  47.27 970,6755 vx 0 vy 0 tgt 903,6385
+  47.43 934,6704 vx -268 vy -450 tgt 903,6385
+  47.60 888,6660 vx -285 vy -133 tgt 903,6385
+  47.77 842,6589 vx -268 vy -303 tgt 855,6388
+  47.93 796,6571 vx -285 vy 23 tgt 807,6390
+  48.10 750,6617 vx -268 vy 440 tgt 759,6392
+  48.27 704,6732 vx -285 vy 857 tgt 759,6392
+  48.43 688,6755 vx 0 vy 0 tgt 759,6392
+  48.60 714,6704 vx 173 vy -450 tgt 759,6392
+  48.77 756,6660 vx 285 vy -133 tgt 759,6392
+  48.93 801,6626 vx 268 vy -478 tgt 759,6392
+  49.10 848,6578 vx 285 vy -161 tgt 831,6389
+  49.27 894,6584 vx 268 vy 195 tgt 879,6386
+  49.43 940,6659 vx 285 vy 612 tgt 903,6385
+{"t":121.3,"end":"shrine","rescues":1,"rescueXs":[967]}
+##### FT_ADULT normal 23
+STUCK @67.63 {"x":1132,"y":3739,"t":67.6,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @67.63 x 1388; the 3 s before (every 5th frame):
+  64.67 1555,3721 vx -285 vy 0 tgt 1463,3739
+  64.83 1509,3739 vx -268 vy 0 tgt 1416,3739
+  65.00 1462,3703 vx -285 vy -513 tgt 1368,3739
+  65.17 1416,3649 vx -285 vy -197 tgt 1416,3739
+  65.33 1370,3648 vx -268 vy 140 tgt 1368,3739
+  65.50 1324,3713 vx -285 vy 557 tgt 1227,3739
+  65.67 1278,3756 vx -285 vy 250 tgt 1179,3739
+  65.83 1231,3809 vx -268 vy 0 tgt 1156,3739
+  66.00 1184,3837 vx -285 vy 333 tgt 1203,3739
+  66.17 1139,3934 vx -268 vy 750 tgt 1156,3739
+  66.33 1092,4087 vx -285 vy 950 tgt 1132,3739
+  66.50 1084,4118 vx 188 vy 0 tgt 1132,3739
+  66.67 1130,4067 vx 268 vy -450 tgt 1132,3739
+  66.83 1177,4025 vx 285 vy -103 tgt 1132,3739
+  67.00 1222,3997 vx 268 vy -438 tgt 1132,3739
+  67.17 1269,3956 vx 285 vy -121 tgt 1250,3739
+  67.33 1314,3971 vx 268 vy 256 tgt 1297,3739
+  67.50 1361,4056 vx 285 vy 672 tgt 1297,3739
+STUCK @98.97 {"x":349,"y":1711,"t":90.9,"dur":8,"what":"a drop of 129 px ahead, water ahead, the way on is 200 px down","step":null,"dip":null,"puzzle":false,"rescued":false
+STUCK @115.77 {"x":1187,"y":690,"t":107.7,"dur":8,"what":"water ahead, the way on is 204 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":123,"end":"shrine","rescues":1,"rescueXs":[1388]}
+##### FT_KID normal 13
+STUCK @21.23 {"x":1219,"y":5888,"t":13.2,"dur":8,"what":"in a dip 337 px deep, a drop of 130 px ahead, water ahead, the way on is 158 px down","step":null,"dip":337,"puzzle"
+STUCK @96.77 {"x":1025,"y":5902,"t":88.7,"dur":8,"what":"in a dip 281 px deep, an open drop ahead, water ahead, the way on is 346 px up","step":null,"dip":281,"puzzle":false
+RESCUE 1 @97.90 x 1017; the 3 s before (every 5th frame):
+  94.93 777,5838 vx 257 vy -387 tgt 815,5562
+  95.10 823,5805 vx 285 vy -70 tgt 815,5562
+  95.27 869,5751 vx 268 vy -311 tgt 862,5560
+  95.43 915,5730 vx 285 vy 6 tgt 909,5558
+  95.60 961,5773 vx 268 vy 422 tgt 956,5556
+  95.77 1008,5885 vx 285 vy 839 tgt 956,5556
+  95.93 1025,5902 vx 0 vy 0 tgt 956,5556
+  96.10 1013,5842 vx -170 vy -103 tgt 956,5556
+  96.27 968,5813 vx -285 vy -438 tgt 956,5556
+  96.43 923,5772 vx -268 vy -121 tgt 933,5557
+  96.60 876,5788 vx -285 vy 256 tgt 886,5559
+  96.77 831,5872 vx -268 vy 672 tgt 886,5559
+  96.93 806,5902 vx 0 vy 0 tgt 886,5559
+  97.10 809,5902 vx 87 vy 0 tgt 886,5559
+  97.27 851,5845 vx 285 vy -167 tgt 886,5559
+  97.43 897,5779 vx 268 vy -272 tgt 886,5559
+  97.60 943,5765 vx 285 vy 45 tgt 933,5557
+  97.77 989,5814 vx 268 vy 462 tgt 956,5556
+{"t":171.6,"end":"shrine","rescues":1,"rescueXs":[1017]}
+##### FT_KID normal 14
+STUCK @63.53 {"x":892,"y":5563,"t":63.5,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @63.53 x 832; the 3 s before (every 5th frame):
+  60.57 734,5885 vx -268 vy 773 tgt 773,5568
+  60.73 717,5906 vx 0 vy 0 tgt 773,5568
+  60.90 723,5887 vx 87 vy -577 tgt 773,5568
+  61.07 737,5833 vx 87 vy -103 tgt 773,5568
+  61.23 775,5777 vx 268 vy -312 tgt 773,5568
+  61.40 822,5759 vx 285 vy 23 tgt 821,5566
+  61.57 868,5805 vx 268 vy 440 tgt 844,5565
+  61.73 914,5906 vx 285 vy 0 tgt 844,5565
+  61.90 922,5906 vx 0 vy 0 tgt 844,5565
+  62.07 899,5842 vx -257 vy -387 tgt 844,5565
+  62.23 852,5794 vx -285 vy -517 tgt 844,5565
+  62.40 807,5756 vx -268 vy -40 tgt 821,5566
+  62.57 760,5787 vx -285 vy 357 tgt 773,5568
+  62.73 714,5888 vx -268 vy 773 tgt 773,5568
+  62.90 697,5906 vx 0 vy 0 tgt 773,5568
+  63.07 715,5906 vx 260 vy 0 tgt 773,5568
+  63.23 758,5846 vx 260 vy -103 tgt 773,5568
+  63.40 804,5864 vx 285 vy 273 tgt 773,5568
+STUCK @135.17 {"x":1245,"y":751,"t":127.1,"dur":8,"what":"water ahead, the way on is 173 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":144.5,"end":"shrine","rescues":1,"rescueXs":[832]}
+##### FT_KID normal 17
+STUCK @22.97 {"x":1285,"y":5901,"t":14.9,"dur":8,"what":"in a dip 374 px deep, a drop of 265 px ahead, water ahead, the way on is 137 px down","step":null,"dip":374,"puzzle"
+STUCK @60.87 {"x":914,"y":5534,"t":60.8,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @60.87 x 453; the 3 s before (every 5th frame):
+  57.90 61,5562 vx -160 vy 167 tgt 159,5569
+  58.07 43,5631 vx 13 vy 583 tgt 112,5571
+  58.23 88,5624 vx 0 vy 0 tgt 159,5569
+  58.40 88,5588 vx 0 vy 0 tgt 182,5568
+  58.57 123,5556 vx 268 vy 83 tgt 230,5565
+  58.73 169,5572 vx 285 vy 0 tgt 277,5563
+  58.90 215,5572 vx 268 vy 0 tgt 324,5561
+  59.07 261,5553 vx 268 vy -577 tgt 371,5559
+  59.23 305,5491 vx 268 vy -167 tgt 371,5559
+  59.40 352,5497 vx 285 vy 190 tgt 442,5556
+  59.57 397,5571 vx 268 vy 607 tgt 489,5553
+  59.73 444,5580 vx 285 vy 167 tgt 537,5551
+  59.90 489,5650 vx 268 vy 583 tgt 489,5553
+  60.07 536,5787 vx 285 vy 950 tgt 537,5551
+  60.23 571,5878 vx 58 vy 0 tgt 537,5551
+  60.40 569,5878 vx -87 vy 0 tgt 537,5551
+  60.57 527,5818 vx -285 vy -103 tgt 537,5551
+  60.73 481,5836 vx -268 vy 273 tgt 537,5551
+STUCK @107.03 {"x":777,"y":2908,"t":99,"dur":8,"what":"in a dip 368 px deep, an open drop ahead, water ahead, the way on is 142 px down","step":null,"dip":368,"puzzle":false,
+{"t":144.3,"end":"shrine","rescues":1,"rescueXs":[453]}
+##### FT_KID normal 29
+STUCK @18.83 {"x":1230,"y":5863,"t":10.8,"dur":8,"what":"in a dip 329 px deep, a drop of 308 px ahead, water ahead, the way on is 166 px down","step":null,"dip":329,"puzzle"
+STUCK @63.47 {"x":703,"y":5885,"t":55.4,"dur":8,"what":"in a dip 351 px deep, an open drop ahead, water ahead, the way on is 338 px up","step":null,"dip":351,"puzzle":false,
+STUCK @76.10 {"x":1094,"y":5534,"t":76.1,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @76.10 x 646; the 3 s before (every 5th frame):
+  73.13 579,5474 vx 268 vy 390 tgt 627,5554
+  73.30 625,5484 vx 285 vy 0 tgt 697,5551
+  73.47 671,5501 vx 268 vy 250 tgt 768,5547
+  73.63 717,5534 vx 285 vy 0 tgt 815,5545
+  73.80 763,5562 vx 268 vy 333 tgt 861,5543
+  73.97 809,5607 vx 285 vy 83 tgt 885,5542
+  74.13 855,5662 vx 268 vy 500 tgt 838,5544
+  74.30 901,5787 vx 285 vy 917 tgt 885,5542
+  74.47 945,5885 vx 172 vy 0 tgt 885,5542
+  74.63 938,5885 vx -173 vy 0 tgt 885,5542
+  74.80 893,5866 vx -268 vy -577 tgt 885,5542
+  74.97 846,5801 vx -285 vy -260 tgt 885,5542
+  75.13 801,5790 vx -268 vy 57 tgt 885,5542
+  75.30 754,5730 vx -285 vy -167 tgt 768,5547
+  75.47 709,5736 vx -268 vy 190 tgt 721,5550
+  75.63 662,5809 vx -285 vy 607 tgt 697,5551
+  75.80 628,5885 vx -41 vy 0 tgt 697,5551
+  75.97 628,5885 vx 0 vy 0 tgt 697,5551
+STUCK @128.70 {"x":335,"y":1712,"t":120.6,"dur":8,"what":"water ahead, the way on is 201 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":150.3,"end":"shrine","rescues":1,"rescueXs":[646]}
+done

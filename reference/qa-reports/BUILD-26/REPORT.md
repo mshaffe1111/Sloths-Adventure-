@@ -1,44 +1,79 @@
-# BUILD-26o (on t-build-26-wip-26o from a07ed1bd7): the --proven relists (1-4 first: ENG-26r had not landed), the yields, rule 28's rest on 2-6. Started 4:29 PM ET 11-22 (by `date`)
+# BUILD-26o (on t-build-26-wip-26o from a07ed1bd7): the --proven yields on the landed head: 1-4 97/100, 2-6 29/100 (under 60: NO fill; the lead: 2-6 does NOT ship in release 3, the fallback ships). Rule 28 on 2-6's flips: three causes, two runs each, none a list fault. Started 4:29 PM ET 11-22 (by `date`)
 
-## EXACT NEXT STEP
-1. **Two castBots --proven runs are RUNNING** (started at the box's start, background, timeout 7,200,000 ms each) on the frozen worktree
-   /home/user/f26o (a07ed1bd7, `chattr -R +i src tools`; never touch it while they read it; its node_modules is the one every tree
-   here links): 1-4 and 2-6, `--seeds 1-100` (the 100 LISTED rolls: variant n = the list's n-th seed), every bot, both settings, 1-4
-   `--par 3`, 2-6 `--par 2`. Outputs /home/user/x40/b26o/: cast14.txt / cast26.txt (the per-bot summary, `proven: K of 100`, each
-   `seed N out:` line, then `rc=` and the end time: the run is done when rc is there), rows14.jsonl / rows26.jsonl, proven14.json /
-   proven26.json (VARIANT numbers 1-100, not gen2 seeds). No progress shows until a run ends (castBots buffers its children's rows).
-2. **Send the lead the yields first** (K of 100 per stage; per failing slot which bot and setting failed and why, from the `out:` lines).
-   **The lead's RULING (this box): fill IN PLACE, not appended** (the game plays `seeds[variant % n]`, game.ts:11):
-   - every listed seed that passes --proven keeps its slot; each failing slot gets a NEW gen2 seed swept past the list's top seed (1-4: top
-     100; 2-6: top 101), in sweep order;
-   - each new seed passes the list's own judge (the seedlist search) AND castBots --proven, every bot, both settings;
-   - the list is WRITTEN BY THE TOOL (`seedlist.ts <stage> --merge order.json --in-order`), never a hand edit; if the tool cannot place a
-     seed in its slot (a --merge re-lay refuses one, so the slots after it shift), say so and append instead, naming the indices moved;
-   - yield >= 60: go straight on to that stage's fill; under 60: the cause and a plan to the lead, NO fill;
-   - 1-4 is SHIPPED: its side-by-side table (slot, old seed, new seed) to the lead BEFORE it lands;
-   - 2-6's list is written and --checked only on ENG-26r's merged head.
-3. **The fill, per stage S (when its yield is >= 60 and F slots fail):**
-   a. Sweep on the list's judge (writes no list): in /home/user/f26o, background,
-      `npx tsx tools/engine/seedlist.ts S --count <2F+4> --from <top+1> --to <top+400> --part /home/user/x40/b26o/sweepS.json`.
-   b. Bot-prove them on the TEST-SIDE tree /home/user/t26o (a07ed1bd7 with only the '1-4' and '2-6' lines removed from
-      src/game/gen2/provenIndex.ts, frozen, node_modules linked to f26o's: with no list the layout variant IS the gen2 seed,
-      stageGenerator.ts's listed path, seedListReady false): background,
-      `npx tsx tools/inspect/castBots.ts --stage S --seeds <the sweep's seeds, comma list> --setting both --par 3 --rows .../freshS.rows.jsonl --proven /home/user/x40/b26o/freshS.json`.
-      (here --proven holds gen2 seeds, since the variant is the seed.) Too few? sweep further and repeat.
-   c. The order: `node reference/qa-reports/BUILD-26/b26o/fillorder.mjs src/game/gen2/proven/seeds-S.ts /home/user/x40/b26o/provenS.json /home/user/x40/b26o/freshS.json /home/user/x40/b26o/orderS.json`
-      (prints kept/filled and the side-by-side table; commit its output to b26o/).
-   d. Write: in the WRITABLE worktree /home/user/w26o (branch t-build-26-wip-26o; link node_modules to f26o's first), for 2-6 only after
-      rebasing on ENG-26r's landed head: `npx tsx tools/engine/seedlist.ts S --merge /home/user/x40/b26o/orderS.json --in-order --count 100000`;
-      check the written list has 100 seeds equal to orderS.json in order (else: the indices moved, to the lead).
-   e. `npx tsx tools/engine/seedlist.ts S --check` on that head, and 1-1's (CI does). Then the lead: head, hashes, yields, the check.
-4. **Rule 28 on 2-6's flips** (kid N 32, 34, expected the old climb loop R-165.390; the 'water ahead / in a dip' 7, two runs each; the 19
-   gains as real finishes): NOT started (at most two heavy runs). b26n/rows/cmp26-cand.txt lists each flip with its last stuck spot; pad
-   logs with b26m/k22wrap.mts.txt (STAGE=2-6, SET, BOT=FT_KID or FT_ADULT), on f26o. NOTE: the new rows26.jsonl (seeds 1-100 on the
-   landed head a07ed1bd7) re-judge those 40-seed rows too: read the 19 gains' rescues and times from it first (no new run needed).
+## EXACT NEXT STEP (release 4; the lead's ruling (c))
+1. **R-165.390 first, traced frame by frame:** settle whether the jump near x 1080-1180 at y ~3962 (and the same family below, cause A
+   here) is too far for a kid at all (a LEVEL fact: measure the gap and height against the kid's jump on both settings) or a bot AIMING
+   fault (FigPush/route picks a target it cannot reach from his run-up), with a toy that is RED on a07ed1bd7. Tools: b26o/rescuelog.mts.txt
+   (copy to a .mts; `WT=<frozen tree> STAGE=2-6 SET=normal BOT=FT_KID npx tsx rescuelog.mts <seed>`: each rescue with the 3 s before it),
+   b26m/k22wrap.mts.txt for the pad lines in a window.
+2. **Then 2-6's floor as a design question for the lead:** the fast first-timer adult on Normal finishes in ~99 s on 27 of 100 rolls
+   (92.8-99.7 s; kid N 8 rolls, min 94.2 s), the climb floor is 100 s (eraRoll.ts RULES). No rule change (law 22).
+3. **Cause B below (adult Easy stalls IN a wheel bucket and is rescued there) is an open lead for the brake:** run rescuelog on the cut 5
+   RE-JUDGED tree (064ca6df6) for 2-6 adult E 11 and 45; if cut 5 rides out of that bucket, the brake (firsttimer.ts wheelRide) holds him
+   in it: a toy first.
+4. **1-4's fill is READY but HELD (the lead's ruling (d): no list writes, no fill, no sweep):** 3 slots out (66, 67, 88). A 1-4 sweep past
+   seed 100 had already run before that ruling arrived (b26o/sweep14.json: seeds 101-110, 10 of 10 kept by the list's judge, 6 s); their
+   castBots run on the test-side tree was STOPPED unfinished on the ruling, so none is bot-proven and nothing was written. If the lead
+   reopens it: the fill steps below. 1-4's live list is unchanged (b3feea99).
+Trees left for the next member (D115: `chattr -R -i <tree>/src <tree>/tools` before removal): /home/user/f26o (a07ed1bd7, frozen, has
+node_modules: `npm ci --legacy-peer-deps`), /home/user/t26o (a07ed1bd7 with the '1-4' and '2-6' lines removed from provenIndex.ts, so a
+castBots variant IS the gen2 seed; frozen; node_modules -> f26o's), /home/user/w26o (this branch, writable).
 
-## Notes
-- npm ci needs `--legacy-peer-deps` (as CI's workflows run it): a plain `npm ci` fails ERESOLVE (vite 8.3.8 vs esbuild 0.25).
-- castBots `--proven` on a LISTED stage writes variant numbers; only on the test-side tree are they gen2 seeds. Map before any merge.
+## The yields (castBots --proven, the 100 LISTED rolls = variants 1-100, every bot, both settings, on a07ed1bd7; 900 rows each, expert has no Easy row)
+Files: b26o/cast14.txt, cast26.txt (summaries and each `seed N out:` line), rows14.jsonl, rows26.jsonl, proven14.json, proven26.json (variants).
+The landed head reproduces BUILD-26n's 360 2-6 candidate rows (seeds 1-40, b26n/rows/r26-cand.jsonl) exactly: 360/360 same pass, time, rescues.
+
+**1-4: 97 of 100.** kid N/E, adult N/E, child E, middle E 100/100, none under the floor (mins: kid N 123.3, adult E 108.4 s).
+| slot | bot setting | end | time s | the stuck spot that rescued him |
+|---|---|---|---|---|
+| 66 | middle N | shrine, rescued x1 | 178.2 | x 247: in a dip 341 px deep, the way on is 281 px down |
+| 67 | expert N | shrine, rescued x1 | 180.5 | x 602: a trunk beside him, the way on is 281 px down |
+| 88 | child N | shrine, rescued x1 | 198.5 | x 881: fell back down from here 8 times |
+(One tier bot each, Normal only; three different spots; not traced in this box.)
+
+**2-6: 29 of 100 (UNDER 60).**
+| bot setting | pass | rescued | passes under 100 s |
+|---|---|---|---|
+| kid N | 86 | 14 (x1) | 8 (min 94.2) |
+| kid E | 64 | 36 (6 of them x2) | 0 |
+| adult N | 89 | 11 | 27 (92.8-99.7) |
+| adult E | 69 | 31 (9 x2, 2 x3) | 0 |
+| child N / E | 100 / 100 | 0 | 0 |
+| middle N / E | 99 / 100 | 1 (seed 50) | 0 |
+| expert N | 99 | 1 (seed 65) | 0 |
+By seed, the 71 out: 39 by a rescue alone, 16 by the floor alone (every one 0.3-7.2 s under; 31 of the 35 slow passes within 4 s), 16
+by both. Ignoring the floor the yield is 45: the rescues alone keep 2-6 under 60.
+
+## Rule 28 on 2-6's flips (the lead's ruling 2; b26o/r28-rescues.txt, r28-adultE-995.txt, gains26.md)
+**The 19 gains are real finishes:** each ends at the shrine, goal 1/1, 0 rescues (b26o/gains26.md, with each run's stuck spots); 5 of
+them are under the 100 s floor (adult N 1, 11, 37, 40; kid N 31), so --proven keeps them out anyway. The route each took is not traced.
+**The 12 new fails, by the stuck spot that RESCUED him** (the rows' 'last stuck spot', which BUILD-26n's table filed them by, is in most
+runs a LATER harmless 'water ahead' stall, not the rescue):
+| cause | runs (bot setting seed: rescue t, where) | what took him | class |
+|---|---|---|---|
+| A 'fell back 3 times' on a run-and-jump row | kid N 32 (55.5 s, 894,5558), kid N 14 (63.5, 892,5563), kid N 17 (60.9, 914,5534), kid N 29 (76.1, 1094,5534); kid N 34 (68.6, 1170,3738), adult N 23 (67.6, 1132,3739) | full run speed (vx 268-285) along a row of targets, the jump falls short into the dip under it (y ~5900 / ~4086), he runs back and tries again; the third fall is the rescue. kid N 34 and adult N 23 are the SAME frames (running left from x ~1580, lands 1121-1092,4086) | the old climb-route loop (R-165.390 family); no wheel in the 3 s before any of them |
+| B a stall IN a wheel bucket (adult Easy) | adult E 11 (123.3 s, rescued at x 900), adult E 45 (126.7 s, x 904) | rides a bucket at x ~1050 -> 900, y 1024-1041 ('in a dip 75-77 px deep, the way on is 193 px up'), vx 0 (he stands, the bucket moves; the target is the next bucket, moving with the wheel), seed 45 shows the brake's 87 blip at 126.3 s; he never steps off and is rescued in the bucket ~20 s after the stall opens. adult E 41 has the same stall and passes; adult E 79 has it too (not its rescue) | OPEN: a brake-hold or a leave-timing fault; next step 3 above |
+| C a deep dip near the start | adult E 27 (49.6 s, 967), adult E 79 (72.4 s, 1022), kid N 13 (97.9 s, 1017, a 281 px dip at y 5902) | jumps right from x ~910 toward a target ~370 px up and drops into the dip (970-986,6755-6763, 379 px deep), runs back left, jumps again, rescued | route (a jump too far from where he takes it); not a wheel |
+No fall starts in a wheel bucket; cause B is a rescue while riding one, so the brake is not cleared of it yet.
+
+## The fill steps (READY, HELD by the lead; for 1-4 if reopened)
+Ruling (earlier in this box): fill IN PLACE (the game plays `seeds[variant % n]`, game.ts:11): every passing seed keeps its slot, each
+failing slot takes a NEW seed swept past the list's top seed, in sweep order, that passes the list's judge AND castBots --proven; the list
+written by the tool, never by hand; 1-4's side-by-side table to the lead before it lands.
+a. Sweep (done for 1-4: b26o/sweep14.json). b. On /home/user/t26o: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds <sweep, comma
+list> --setting both --par 3 --rows /home/user/x40/b26o/fresh14.rows.jsonl --proven /home/user/x40/b26o/fresh14.json` (gen2 seeds here).
+c. `node reference/qa-reports/BUILD-26/b26o/fillorder.mjs src/game/gen2/proven/seeds-1-4.ts b26o/proven14.json /home/user/x40/b26o/fresh14.json /home/user/x40/b26o/order14.json`
+(prints the table). d. In a writable tree: `npx tsx tools/engine/seedlist.ts 1-4 --merge /home/user/x40/b26o/order14.json --in-order --count 100000`,
+check the written seeds equal order14.json in order. e. `seedlist.ts 1-4 --check` and 1-1's.
+
+## Notes and lessons applied
+- `npm ci` needs `--legacy-peer-deps` (as CI runs it): plain fails ERESOLVE (vite 8.3.8 vs esbuild 0.25).
+- castBots `--proven` on a LISTED stage writes VARIANT numbers; only on a tree without the stage's list are they gen2 seeds.
+- A castBots run over 100 rolls x 9 bot-settings took ~3 min (2-6, --par 2) and ~5 min (1-4, --par 3) here: cheap; run the full 100.
+- Lessons: every long run in the background with a timeout, no shell '&' (D113, D122); both runs on a frozen tree never touched (D115);
+  messages without clock times (D109); each run once on the exact head (the weekly warning); the yield reported as measured (law zero).
+- Learned (for the next builder): BUILD-26n's flip table filed fails by the LAST stuck spot; read the spot that RESCUED him
+  (rescuelog) before naming a family: 4 of the 7 'water ahead / in a dip' fails were the climb loop.
 
 # BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**

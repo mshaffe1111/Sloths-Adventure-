@@ -1,0 +1,19 @@
+proven: 97 of 100 seeds (every bot passes, none under 100 s) -> /home/user/x40/b26o/proven14.json
+   seed 66 out: middle normal shrine rescued x1
+   seed 67 out: expert normal shrine rescued x1
+   seed 88 out: child normal shrine rescued x1
+castBots 1-4, seeds 1-100; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 100/100; under the floor 0; time median 133.8 s (min 123.3); hits 121 lives 5 (other 126); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 100/100; under the floor 0; time median 124.8 s (min 118.9); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 100/100; under the floor 0; time median 121.6 s (min 114.1); hits 125 lives 5 (other 130); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 100/100; under the floor 0; time median 112.1 s (min 108.4); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 99/100; under the floor 0; time median 213.4 s (min 188.2); hits 165 lives 3 (other 168); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 88)
+child  easy   PASS 100/100; under the floor 0; time median 164 s (min 149.9); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 99/100; under the floor 0; time median 141.5 s (min 127.8); hits 136 lives 4 (other 140); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 66)
+middle easy   PASS 100/100; under the floor 0; time median 131.8 s (min 124.5); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 99/100; under the floor 0; time median 131.7 s (min 122); hits 129 lives 3 (other 132); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 67)
+rc=0
+16:38:03

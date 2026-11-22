@@ -1,0 +1,19 @@
+// BUILD-26o: each rescue of a first-timer run, with the 3 s of frames before it (x, y, vx, target, standing) and the stuck record.
+//   WT=<tree> STAGE=2-6 SET=easy|normal BOT=FT_KID|FT_ADULT npx tsx <this as .mts> <seed>
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'easy'; setDifficulty(set);
+const ring: string[] = []; const out: string[] = []; let run: any; let seen = 0; let lastStuck = 0;
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  const tg = run.prog.target(s.p);
+  ring.push(`${run.t.toFixed(2)} ${Math.round(s.p.x)},${Math.round(s.p.y)} vx ${Math.round(s.p.vx)} vy ${Math.round(s.p.vy ?? 0)} tgt ${tg ? Math.round(tg.x) + ',' + Math.round(tg.y ?? 0) : '-'}`);
+  if (ring.length > 90) ring.shift();
+  const st = run.stuck ?? []; if (st.length > lastStuck) { for (const z of st.slice(lastStuck)) out.push(`STUCK @${run.t.toFixed(2)} ${JSON.stringify(z).slice(0, 160)}`); lastStuck = st.length; }
+  const n = (run.rescueXs ?? []).length;
+  if (n > seen) { out.push(`RESCUE ${n} @${run.t.toFixed(2)} x ${JSON.stringify(run.rescueXs[n - 1])}; the 3 s before (every 5th frame):`); ring.forEach((l, i) => { if (i % 5 === 0) out.push('  ' + l); }); seen = n; }
+} });
+const res = run.play();
+console.log(out.join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), end: res.end, rescues: res.rescues, rescueXs: run.rescueXs }));

@@ -1,0 +1,49 @@
+##### FT_ADULT easy 45
+STUCK @50.50 {"x":1126,"y":4629,"t":42.4,"dur":8,"what":"in a dip 21 px deep, an open drop ahead, water ahead, the way on is 178 px down","step":null,"dip":21,"puzzle":false
+STUCK @114.77 {"x":995,"y":1039,"t":106.7,"dur":8,"what":"in a dip 75 px deep, water ahead, the way on is 193 px up","step":null,"dip":75,"puzzle":false,"rescued":false}
+RESCUE 1 @126.73 x 904; the 3 s before (every 5th frame):
+  123.77 941,923 vx 285 vy -197 tgt 996,846
+  123.93 986,922 vx 268 vy 140 tgt 1018,836
+  124.10 1031,987 vx 268 vy 557 tgt 1018,836
+  124.27 1050,1024 vx 0 vy 0 tgt 1039,827
+  124.43 1040,1028 vx 0 vy 0 tgt 1039,827
+  124.60 1031,1031 vx 0 vy 0 tgt 1039,827
+  124.77 1021,1034 vx 0 vy 0 tgt 1018,836
+  124.93 1010,1036 vx 0 vy 0 tgt 1018,836
+  125.10 1000,1038 vx 0 vy 0 tgt 996,846
+  125.27 990,1040 vx 0 vy 0 tgt 996,846
+  125.43 979,1041 vx 0 vy 0 tgt 975,855
+  125.60 969,1041 vx 0 vy 0 tgt 975,855
+  125.77 959,1041 vx 0 vy 0 tgt 953,864
+  125.93 948,1040 vx 0 vy 0 tgt 953,864
+  126.10 938,1039 vx 0 vy 0 tgt 932,874
+  126.27 930,1038 vx 87 vy 0 tgt 932,874
+  126.43 920,1036 vx 73 vy 0 tgt 910,883
+  126.60 910,1033 vx 73 vy 0 tgt 910,883
+{"t":130.5,"end":"shrine","rescues":1,"rescueXs":[904]}
+##### FT_ADULT easy 79
+STUCK @70.80 {"x":986,"y":6763,"t":62.7,"dur":8,"what":"in a dip 379 px deep, an open drop ahead, water ahead, the way on is 370 px up","step":null,"dip":379,"puzzle":false,
+RESCUE 1 @72.43 x 1022; the 3 s before (every 5th frame):
+  69.47 822,6613 vx 268 vy -351 tgt 768,6400
+  69.63 868,6586 vx 285 vy -35 tgt 861,6396
+  69.80 914,6618 vx 268 vy 362 tgt 908,6394
+  69.97 960,6720 vx 285 vy 779 tgt 908,6394
+  70.13 986,6763 vx 0 vy 0 tgt 908,6394
+  70.30 984,6699 vx -57 vy -387 tgt 908,6394
+  70.47 948,6666 vx -285 vy -70 tgt 908,6394
+  70.63 902,6606 vx -268 vy -352 tgt 908,6394
+  70.80 856,6579 vx -285 vy -35 tgt 861,6396
+  70.97 810,6612 vx -268 vy 362 tgt 814,6398
+  71.13 764,6714 vx -285 vy 778 tgt 814,6398
+  71.30 738,6763 vx 0 vy 0 tgt 814,6398
+  71.47 764,6712 vx 285 vy -450 tgt 814,6398
+  71.63 810,6668 vx 268 vy -133 tgt 814,6398
+  71.80 856,6634 vx 285 vy -478 tgt 814,6398
+  71.97 902,6586 vx 268 vy -161 tgt 885,6395
+  72.13 948,6592 vx 285 vy 195 tgt 932,6393
+  72.30 994,6667 vx 268 vy 612 tgt 955,6392
+STUCK @84.53 {"x":1124,"y":4631,"t":76.5,"dur":8,"what":"in a dip 16 px deep, an open drop ahead, water ahead, the way on is 181 px down","step":null,"dip":16,"puzzle":false
+STUCK @149.63 {"x":997,"y":1039,"t":141.6,"dur":8,"what":"in a dip 73 px deep, a drop of 479 px ahead, water ahead, the way on is 193 px up","step":null,"dip":73,"puzzle":fal
+STUCK @161.03 {"x":825,"y":720,"t":153,"dur":8,"what":"in a dip 360 px deep, a drop of 293 px ahead, water ahead, the way on is 200 px down","step":null,"dip":360,"puzzle":fa
+{"t":170.8,"end":"shrine","rescues":1,"rescueXs":[1022]}
+done

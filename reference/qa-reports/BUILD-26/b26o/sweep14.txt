@@ -1,0 +1,3 @@
+seedlist 1-4 worker : 10 kept of 10 tried, 6 s -> /home/user/x40/b26o/sweep14.json
+  yield, graph ascent-14-arc: 10 kept of 10 fresh seeds tried (100%)
+rc=0
