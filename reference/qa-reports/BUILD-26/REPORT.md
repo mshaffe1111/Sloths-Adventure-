@@ -51,8 +51,13 @@ the landed head; checkpoint about 8 PM ET.
    1612, leaves it left at 66.7 s, runs and jumps along y 3962-4032, falls short at 1111,4313 (68.5 s), runs right back to the vine at 1612
    (70.2 s), and tries again. The base gets out within its count; the candidate's third fall there is a rescue. **Cause (one run so far):**
    an OLD route loop (the jump left near x 1080-1180 falls short), not fix 3's code. Fix 3 only shifts when and how often he tries it.
-   Second run of this cause: seed 27 (77.9 s at 1183,3962: same spot, likely the same loop). If it is, the 'fell back 3 times' cause is
-   pre-existing and RELEASE-gating only by the lead's call; the loop itself is a route fix after release 3.
+   **Second run, seed 27 (b26n/k27-26E-pad-60-80.txt, candidate): the SAME loop, confirmed.** Vine at 1612 (62.2-64.0 s), left along
+   y 3962 (64.3 s), short at 1134,4313 (66.2 s), back right to 1612 (67.8 s), around again, rescued at x 1165 (row: rescues 2, xs 814,
+   1165). **Cause 'fell back down 3 times' (kid E 16, 27, two runs): an old route loop on 2-6's climb (the jump left from the vine at x
+   1612 along y 3962-4030 falls short near x 1110-1145), which the base runs too. Fix 3 only changes how often he tries it.** Still to trace for
+   the release (the lead's ruling 2): the other 2-6 new fails (kid N 32, 34 and adult N 13, also 'fell back 3 times': check that it is the
+   same loop, one read each; then the 'water ahead / in a dip' group: adult E 11, 27; adult N 23; kid N 13, 14, 17, 29, two runs) and
+   the 19 gains as real finishes (rows: end 'shrine', no rescue).
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,

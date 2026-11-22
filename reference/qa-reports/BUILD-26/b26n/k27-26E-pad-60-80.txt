@@ -1,0 +1,2696 @@
+== 60.03 1043,4238 vx 285 tgt 1104 standing null clb false gr false knock 0
+60.03 intend() -> {"right":true}
+60.03 rhythm() -> {"right":true}
+60.03 thumbify() -> {"right":true}
+60.03 pad() -> {"right":true}
+== 60.07 1052,4247 vx 268 tgt 1127 standing null clb false gr false knock 0
+60.07 intend() -> {"right":true}
+60.07 rhythm() -> {"right":true}
+60.07 thumbify() -> {"right":true}
+60.07 pad() -> {"right":true}
+== 60.10 1062,4259 vx 285 tgt 1150 standing null clb false gr false knock 0
+60.10 intend() -> {"right":true}
+60.10 rhythm() -> {"right":true}
+60.10 thumbify() -> {"right":true}
+60.10 pad() -> {"right":true}
+== 60.13 1071,4274 vx 268 tgt 1173 standing null clb false gr false knock 0
+60.13 intend() -> {"right":true}
+60.13 rhythm() -> {"right":true}
+60.13 thumbify() -> {"right":true}
+60.13 pad() -> {"right":true}
+== 60.17 1080,4291 vx 285 tgt 1173 standing null clb false gr false knock 0
+60.17 intend() -> {"right":true}
+60.17 rhythm() -> {"right":true}
+60.17 thumbify() -> {"right":true}
+60.17 pad() -> {"right":true}
+== 60.20 1089,4312 vx 268 tgt 1196 standing null clb false gr false knock 0
+60.20 intend() -> {"right":true}
+60.20 rhythm() -> {"right":true}
+60.20 thumbify() -> {"right":true}
+60.20 pad() -> {"right":true}
+== 60.23 1099,4313 vx 285 tgt 1196 standing null clb false gr true knock 0
+60.23 intend() -> {"right":true}
+60.23 rhythm() -> {"right":true}
+60.23 thumbify() -> {"right":true}
+60.23 pad() -> {"right":true}
+== 60.27 1107,4313 vx 268 tgt 1219 standing null clb false gr true knock 0
+60.27 intend() -> {"right":true}
+60.27 rhythm() -> {"right":true}
+60.27 thumbify() -> {"right":true}
+60.27 pad() -> {"right":true}
+== 60.30 1117,4313 vx 285 tgt 1219 standing null clb false gr true knock 0
+60.30 intend() -> {"right":true}
+60.30 rhythm() -> {"right":true}
+60.30 thumbify() -> {"right":true}
+60.30 pad() -> {"right":true}
+== 60.33 1126,4313 vx 268 tgt 1219 standing null clb false gr true knock 0
+60.33 intend() -> {"right":true}
+60.33 rhythm() -> {"right":true}
+60.33 thumbify() -> {"right":true}
+60.33 pad() -> {"right":true}
+== 60.37 1135,4313 vx 285 tgt 1242 standing null clb false gr true knock 0
+60.37 intend() -> {"press":true,"jump":true}
+60.37 thumbify() -> {"press":true,"jump":true}
+== 60.40 1145,4294 vx 285 tgt 1242 standing null clb false gr false knock 0
+60.40 intend() -> {"jump":true}
+60.40 thumbify() -> {"jump":true}
+== 60.43 1154,4277 vx 285 tgt 1242 standing null clb false gr false knock 0
+60.43 intend() -> {"jump":true}
+60.43 thumbify() -> {"jump":true}
+== 60.47 1164,4262 vx 285 tgt 1242 standing null clb false gr false knock 0
+60.47 intend() -> {}
+60.47 thumbify() -> {}
+== 60.50 1173,4256 vx 285 tgt 1266 standing null clb false gr false knock 0
+60.50 intend() -> {}
+60.50 thumbify() -> {}
+== 60.53 1183,4253 vx 285 tgt 1266 standing null clb false gr false knock 0
+60.53 intend() -> {}
+60.53 thumbify() -> {}
+== 60.57 1192,4251 vx 285 tgt 1266 standing null clb false gr false knock 0
+60.57 intend() -> {"right":true}
+60.57 rhythm() -> {"right":true}
+60.57 thumbify() -> {"right":true}
+60.57 pad() -> {"right":true}
+== 60.60 1201,4252 vx 268 tgt 1289 standing null clb false gr false knock 0
+60.60 intend() -> {"right":true}
+60.60 rhythm() -> {"right":true}
+60.60 thumbify() -> {"right":true}
+60.60 pad() -> {"right":true}
+== 60.63 1211,4256 vx 285 tgt 1289 standing null clb false gr false knock 0
+60.63 intend() -> {"right":true}
+60.63 rhythm() -> {"right":true}
+60.63 thumbify() -> {"right":true}
+60.63 pad() -> {"right":true}
+== 60.67 1220,4262 vx 268 tgt 1312 standing null clb false gr false knock 0
+60.67 intend() -> {"right":true}
+60.67 rhythm() -> {"right":true}
+60.67 thumbify() -> {"right":true}
+60.67 pad() -> {"right":true}
+== 60.70 1229,4271 vx 285 tgt 1312 standing null clb false gr false knock 0
+60.70 intend() -> {"right":true}
+60.70 rhythm() -> {"right":true}
+60.70 thumbify() -> {"right":true}
+60.70 pad() -> {"right":true}
+== 60.73 1238,4283 vx 268 tgt 1335 standing null clb false gr false knock 0
+60.73 intend() -> {"right":true}
+60.73 rhythm() -> {"right":true}
+60.73 thumbify() -> {"right":true}
+60.73 pad() -> {"right":true}
+== 60.77 1248,4298 vx 285 tgt 1358 standing null clb false gr false knock 0
+60.77 intend() -> {"right":true}
+60.77 rhythm() -> {"right":true}
+60.77 thumbify() -> {"right":true}
+60.77 pad() -> {"right":true}
+== 60.80 1257,4313 vx 268 tgt 1358 standing null clb false gr true knock 0
+60.80 intend() -> {"right":true}
+60.80 rhythm() -> {"right":true}
+60.80 thumbify() -> {"right":true}
+60.80 pad() -> {"right":true}
+== 60.83 1266,4313 vx 285 tgt 1358 standing null clb false gr true knock 0
+60.83 intend() -> {"right":true}
+60.83 rhythm() -> {"right":true}
+60.83 thumbify() -> {"right":true}
+60.83 pad() -> {"right":true}
+== 60.87 1275,4313 vx 268 tgt 1381 standing null clb false gr true knock 0
+60.87 intend() -> {"right":true}
+60.87 rhythm() -> {"right":true}
+60.87 thumbify() -> {"right":true}
+60.87 pad() -> {"right":true}
+== 60.90 1284,4313 vx 285 tgt 1381 standing null clb false gr true knock 0
+60.90 intend() -> {"right":true}
+60.90 rhythm() -> {"right":true}
+60.90 thumbify() -> {"right":true}
+60.90 pad() -> {"right":true}
+== 60.93 1293,4313 vx 268 tgt 1404 standing null clb false gr true knock 0
+60.93 decide(1,false) -> {"right":true}
+60.93 intend() -> {"right":true}
+60.93 rhythm() -> {"right":true}
+60.93 thumbify() -> {"right":true}
+60.93 pad() -> {"right":true}
+== 60.97 1303,4313 vx 285 tgt 1404 standing null clb false gr true knock 0
+60.97 intend() -> {"right":true}
+60.97 rhythm() -> {"right":true}
+60.97 thumbify() -> {"right":true}
+60.97 pad() -> {"right":true}
+== 61.00 1312,4313 vx 268 tgt 1404 standing null clb false gr true knock 0
+61.00 intend() -> {"right":true}
+61.00 rhythm() -> {"right":true}
+61.00 thumbify() -> {"right":true}
+61.00 pad() -> {"right":true}
+== 61.03 1321,4313 vx 285 tgt 1427 standing null clb false gr true knock 0
+61.03 intend() -> {"press":true,"jump":true}
+61.03 thumbify() -> {"press":true,"jump":true}
+== 61.07 1331,4294 vx 285 tgt 1427 standing null clb false gr false knock 0
+61.07 intend() -> {"jump":true}
+61.07 thumbify() -> {"jump":true}
+== 61.10 1340,4277 vx 285 tgt 1427 standing null clb false gr false knock 0
+61.10 intend() -> {"jump":true}
+61.10 thumbify() -> {"jump":true}
+== 61.13 1350,4262 vx 285 tgt 1427 standing null clb false gr false knock 0
+61.13 intend() -> {"jump":true}
+61.13 thumbify() -> {"jump":true}
+== 61.17 1359,4249 vx 285 tgt 1427 standing null clb false gr false knock 0
+61.17 intend() -> {"right":true}
+61.17 rhythm() -> {"right":true}
+61.17 thumbify() -> {"right":true}
+61.17 pad() -> {"right":true}
+== 61.20 1368,4243 vx 268 tgt 1427 standing null clb false gr false knock 0
+61.20 intend() -> {"right":true}
+61.20 rhythm() -> {"right":true}
+61.20 thumbify() -> {"right":true}
+61.20 pad() -> {"right":true}
+== 61.23 1378,4240 vx 285 tgt 1450 standing null clb false gr false knock 0
+61.23 intend() -> {"right":true}
+61.23 rhythm() -> {"right":true}
+61.23 thumbify() -> {"right":true}
+61.23 pad() -> {"right":true}
+== 61.27 1387,4238 vx 268 tgt 1450 standing null clb false gr false knock 0
+61.27 intend() -> {"right":true}
+61.27 rhythm() -> {"right":true}
+61.27 thumbify() -> {"right":true}
+61.27 pad() -> {"right":true}
+== 61.30 1396,4239 vx 285 tgt 1450 standing null clb false gr false knock 0
+61.30 intend() -> {"right":true}
+61.30 rhythm() -> {"right":true}
+61.30 thumbify() -> {"right":true}
+61.30 pad() -> {"right":true}
+== 61.33 1405,4243 vx 268 tgt 1473 standing null clb false gr false knock 0
+61.33 intend() -> {"right":true}
+61.33 rhythm() -> {"right":true}
+61.33 thumbify() -> {"right":true}
+61.33 pad() -> {"right":true}
+== 61.37 1415,4249 vx 285 tgt 1497 standing null clb false gr false knock 0
+61.37 intend() -> {"right":true}
+61.37 rhythm() -> {"right":true}
+61.37 thumbify() -> {"right":true}
+61.37 pad() -> {"right":true}
+== 61.40 1424,4258 vx 268 tgt 1497 standing null clb false gr false knock 0
+61.40 intend() -> {"right":true}
+61.40 rhythm() -> {"right":true}
+61.40 thumbify() -> {"right":true}
+61.40 pad() -> {"right":true}
+== 61.43 1433,4270 vx 285 tgt 1520 standing null clb false gr false knock 0
+61.43 intend() -> {"right":true}
+61.43 rhythm() -> {"right":true}
+61.43 thumbify() -> {"right":true}
+61.43 pad() -> {"right":true}
+== 61.47 1442,4285 vx 268 tgt 1543 standing null clb false gr false knock 0
+61.47 intend() -> {"right":true}
+61.47 rhythm() -> {"right":true}
+61.47 thumbify() -> {"right":true}
+61.47 pad() -> {"right":true}
+== 61.50 1451,4302 vx 285 tgt 1543 standing null clb false gr false knock 0
+61.50 intend() -> {"right":true}
+61.50 rhythm() -> {"right":true}
+61.50 thumbify() -> {"right":true}
+61.50 pad() -> {"right":true}
+== 61.53 1460,4313 vx 268 tgt 1566 standing null clb false gr true knock 0
+61.53 intend() -> {"right":true}
+61.53 rhythm() -> {"right":true}
+61.53 thumbify() -> {"right":true}
+61.53 pad() -> {"right":true}
+== 61.57 1470,4313 vx 285 tgt 1566 standing null clb false gr true knock 0
+61.57 intend() -> {"right":true}
+61.57 rhythm() -> {"right":true}
+61.57 thumbify() -> {"right":true}
+61.57 pad() -> {"right":true}
+== 61.60 1479,4313 vx 268 tgt 1589 standing null clb false gr true knock 0
+61.60 intend() -> {"right":true}
+61.60 rhythm() -> {"right":true}
+61.60 thumbify() -> {"right":true}
+61.60 pad() -> {"right":true}
+== 61.63 1488,4313 vx 285 tgt 1589 standing null clb false gr true knock 0
+61.63 intend() -> {"right":true}
+61.63 rhythm() -> {"right":true}
+61.63 thumbify() -> {"right":true}
+61.63 pad() -> {"right":true}
+== 61.67 1497,4313 vx 268 tgt 1589 standing null clb false gr true knock 0
+61.67 intend() -> {"right":true}
+61.67 rhythm() -> {"right":true}
+61.67 thumbify() -> {"right":true}
+61.67 pad() -> {"right":true}
+== 61.70 1507,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+61.70 intend() -> {"right":true}
+61.70 rhythm() -> {"right":true}
+61.70 thumbify() -> {"right":true}
+61.70 pad() -> {"right":true}
+== 61.73 1516,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+61.73 intend() -> {"right":true}
+61.73 rhythm() -> {"right":true}
+61.73 thumbify() -> {"right":true}
+61.73 pad() -> {"right":true}
+== 61.77 1525,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+61.77 intend() -> {"right":true}
+61.77 rhythm() -> {"right":true}
+61.77 thumbify() -> {"right":true}
+61.77 pad() -> {"right":true}
+== 61.80 1534,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+61.80 intend() -> {"right":true}
+61.80 rhythm() -> {"right":true}
+61.80 thumbify() -> {"right":true}
+61.80 pad() -> {"right":true}
+== 61.83 1544,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+61.83 intend() -> {"right":true}
+61.83 rhythm() -> {"right":true}
+61.83 thumbify() -> {"right":true}
+61.83 pad() -> {"right":true}
+== 61.87 1552,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+61.87 intend() -> {"right":true}
+61.87 rhythm() -> {"right":true}
+61.87 thumbify() -> {"right":true}
+61.87 pad() -> {"right":true}
+== 61.90 1562,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+61.90 intend() -> {"right":true}
+61.90 rhythm() -> {"right":true}
+61.90 thumbify() -> {"right":true}
+61.90 pad() -> {"right":true}
+== 61.93 1571,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+61.93 intend() -> {"up":true}
+61.93 thumbify() -> {"up":true,"right":true}
+61.93 pad() -> {"up":true,"right":true}
+== 61.97 1612,4306 vx 0 tgt 1612 standing null clb true gr false knock 0
+61.97 intend() -> {"up":true}
+61.97 thumbify() -> {"up":true,"right":true}
+61.97 pad() -> {"up":true,"right":true}
+== 62.00 1612,4298 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.00 intend() -> {"up":true}
+62.00 thumbify() -> {"up":true,"right":true}
+62.00 pad() -> {"up":true,"right":true}
+== 62.03 1612,4291 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.03 intend() -> {"up":true}
+62.03 thumbify() -> {"up":true,"right":true}
+62.03 pad() -> {"up":true,"right":true}
+== 62.07 1612,4284 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.07 intend() -> {"up":true}
+62.07 thumbify() -> {"up":true,"right":true}
+62.07 pad() -> {"up":true,"right":true}
+== 62.10 1612,4276 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.10 intend() -> {"up":true}
+62.10 thumbify() -> {"up":true,"right":true}
+62.10 pad() -> {"up":true,"right":true}
+== 62.13 1612,4269 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.13 intend() -> {"up":true}
+62.13 thumbify() -> {"up":true,"right":true}
+62.13 pad() -> {"up":true,"right":true}
+== 62.17 1612,4262 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.17 intend() -> {"up":true}
+62.17 thumbify() -> {"up":true,"right":true}
+62.17 pad() -> {"up":true,"right":true}
+== 62.20 1612,4254 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.20 intend() -> {"up":true}
+62.20 thumbify() -> {"up":true,"right":true}
+62.20 pad() -> {"up":true,"right":true}
+== 62.23 1612,4247 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.23 intend() -> {"up":true}
+62.23 thumbify() -> {"up":true,"right":true}
+62.23 pad() -> {"up":true,"right":true}
+== 62.27 1612,4240 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.27 intend() -> {"up":true}
+62.27 thumbify() -> {"up":true,"right":true}
+62.27 pad() -> {"up":true,"right":true}
+== 62.30 1612,4232 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.30 intend() -> {"up":true}
+62.30 thumbify() -> {"up":true,"right":true}
+62.30 pad() -> {"up":true,"right":true}
+== 62.33 1612,4225 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.33 intend() -> {"up":true}
+62.33 thumbify() -> {"up":true,"right":true}
+62.33 pad() -> {"up":true,"right":true}
+== 62.37 1612,4218 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.37 intend() -> {"up":true}
+62.37 thumbify() -> {"up":true,"right":true}
+62.37 pad() -> {"up":true,"right":true}
+== 62.40 1612,4210 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.40 intend() -> {"up":true}
+62.40 thumbify() -> {"up":true,"right":true}
+62.40 pad() -> {"up":true,"right":true}
+== 62.43 1612,4203 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.43 intend() -> {"up":true}
+62.43 thumbify() -> {"up":true,"right":true}
+62.43 pad() -> {"up":true,"right":true}
+== 62.47 1612,4196 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.47 intend() -> {"up":true}
+62.47 thumbify() -> {"up":true,"right":true}
+62.47 pad() -> {"up":true,"right":true}
+== 62.50 1612,4188 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.50 intend() -> {"up":true}
+62.50 thumbify() -> {"up":true,"right":true}
+62.50 pad() -> {"up":true,"right":true}
+== 62.53 1612,4181 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.53 intend() -> {"up":true}
+62.53 thumbify() -> {"up":true,"right":true}
+62.53 pad() -> {"up":true,"right":true}
+== 62.57 1612,4174 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.57 intend() -> {"up":true}
+62.57 thumbify() -> {"up":true,"right":true}
+62.57 pad() -> {"up":true,"right":true}
+== 62.60 1612,4166 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.60 intend() -> {"up":true}
+62.60 thumbify() -> {"up":true,"right":true}
+62.60 pad() -> {"up":true,"right":true}
+== 62.63 1612,4159 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.63 intend() -> {"up":true}
+62.63 thumbify() -> {"up":true,"right":true}
+62.63 pad() -> {"up":true,"right":true}
+== 62.67 1612,4152 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.67 intend() -> {"up":true}
+62.67 thumbify() -> {"up":true,"right":true}
+62.67 pad() -> {"up":true,"right":true}
+== 62.70 1612,4144 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.70 intend() -> {"up":true}
+62.70 thumbify() -> {"up":true,"right":true}
+62.70 pad() -> {"up":true,"right":true}
+== 62.73 1612,4137 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.73 intend() -> {"up":true}
+62.73 thumbify() -> {"up":true,"right":true}
+62.73 pad() -> {"up":true,"right":true}
+== 62.77 1612,4130 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.77 intend() -> {"up":true}
+62.77 thumbify() -> {"up":true,"right":true}
+62.77 pad() -> {"up":true,"right":true}
+== 62.80 1612,4122 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.80 intend() -> {"up":true}
+62.80 thumbify() -> {"up":true,"right":true}
+62.80 pad() -> {"up":true,"right":true}
+== 62.83 1612,4115 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.83 intend() -> {"up":true}
+62.83 thumbify() -> {"up":true,"right":true}
+62.83 pad() -> {"up":true,"right":true}
+== 62.87 1612,4108 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.87 intend() -> {"up":true}
+62.87 thumbify() -> {"up":true,"right":true}
+62.87 pad() -> {"up":true,"right":true}
+== 62.90 1612,4100 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.90 intend() -> {"up":true}
+62.90 thumbify() -> {"up":true,"right":true}
+62.90 pad() -> {"up":true,"right":true}
+== 62.93 1612,4093 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.93 intend() -> {"up":true}
+62.93 thumbify() -> {"up":true,"right":true}
+62.93 pad() -> {"up":true,"right":true}
+== 62.97 1612,4086 vx 0 tgt 1612 standing null clb true gr false knock 0
+62.97 intend() -> {"up":true}
+62.97 thumbify() -> {"up":true,"right":true}
+62.97 pad() -> {"up":true,"right":true}
+== 63.00 1612,4078 vx 0 tgt 1612 standing null clb true gr false knock 0
+63.00 intend() -> {"up":true}
+63.00 thumbify() -> {"up":true,"right":true}
+63.00 pad() -> {"up":true,"right":true}
+== 63.03 1612,4071 vx 0 tgt 1612 standing null clb true gr false knock 0
+63.03 intend() -> {"up":true}
+63.03 thumbify() -> {"up":true,"right":true}
+63.03 pad() -> {"up":true,"right":true}
+== 63.07 1612,4064 vx 0 tgt 1612 standing null clb true gr false knock 0
+63.07 intend() -> {"up":true}
+63.07 thumbify() -> {"up":true,"right":true}
+63.07 pad() -> {"up":true,"right":true}
+== 63.10 1612,4056 vx 0 tgt 1612 standing null clb true gr false knock 0
+63.10 intend() -> {"up":true}
+63.10 thumbify() -> {"up":true,"right":true}
+63.10 pad() -> {"up":true,"right":true}
+== 63.13 1612,4049 vx 0 tgt 1588 standing null clb true gr false knock 0
+63.13 intend() -> {"up":true}
+63.13 thumbify() -> {"up":true,"right":true}
+63.13 pad() -> {"up":true,"right":true}
+== 63.17 1612,4042 vx 0 tgt 1564 standing null clb true gr false knock 0
+63.17 intend() -> {"up":true}
+63.17 thumbify() -> {"up":true,"right":true}
+63.17 pad() -> {"up":true,"right":true}
+== 63.20 1612,4034 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.20 intend() -> {"up":true}
+63.20 thumbify() -> {"up":true,"right":true}
+63.20 pad() -> {"up":true,"right":true}
+== 63.23 1612,4027 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.23 intend() -> {"up":true}
+63.23 thumbify() -> {"up":true,"right":true}
+63.23 pad() -> {"up":true,"right":true}
+== 63.27 1612,4020 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.27 intend() -> {"up":true}
+63.27 thumbify() -> {"up":true,"right":true}
+63.27 pad() -> {"up":true,"right":true}
+== 63.30 1612,4012 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.30 intend() -> {"up":true}
+63.30 thumbify() -> {"up":true,"right":true}
+63.30 pad() -> {"up":true,"right":true}
+== 63.33 1612,4005 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.33 intend() -> {"up":true}
+63.33 thumbify() -> {"up":true,"right":true}
+63.33 pad() -> {"up":true,"right":true}
+== 63.37 1612,3998 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.37 intend() -> {"up":true}
+63.37 thumbify() -> {"up":true,"right":true}
+63.37 pad() -> {"up":true,"right":true}
+== 63.40 1612,3990 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.40 intend() -> {"up":true}
+63.40 thumbify() -> {"up":true,"right":true}
+63.40 pad() -> {"up":true,"right":true}
+== 63.43 1612,3983 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.43 intend() -> {"up":true}
+63.43 thumbify() -> {"up":true,"right":true}
+63.43 pad() -> {"up":true,"right":true}
+== 63.47 1612,3976 vx 0 tgt 1517 standing null clb true gr false knock 0
+63.47 intend() -> {"up":true}
+63.47 thumbify() -> {"up":true,"right":true}
+63.47 pad() -> {"up":true,"right":true}
+== 63.50 1612,3950 vx 160 tgt 1517 standing null clb false gr false knock 0
+63.50 intend() -> {"left":true}
+63.50 rhythm() -> {"left":true}
+63.50 thumbify() -> {}
+== 63.53 1617,3946 vx 160 tgt 1517 standing null clb false gr false knock 0
+63.53 intend() -> {"left":true}
+63.53 rhythm() -> {"left":true}
+63.53 thumbify() -> {}
+== 63.57 1623,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+63.57 intend() -> {"left":true}
+63.57 rhythm() -> {"left":true}
+63.57 thumbify() -> {}
+== 63.60 1628,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+63.60 intend() -> {"left":true}
+63.60 rhythm() -> {"left":true}
+63.60 thumbify() -> {}
+== 63.63 1633,3946 vx 160 tgt 1541 standing null clb false gr false knock 0
+63.63 intend() -> {"left":true}
+63.63 rhythm() -> {"left":true}
+63.63 thumbify() -> {}
+== 63.67 1639,3952 vx 160 tgt 1541 standing null clb false gr false knock 0
+63.67 intend() -> {"left":true}
+63.67 rhythm() -> {"left":true}
+63.67 thumbify() -> {}
+== 63.70 1644,3960 vx 160 tgt 1541 standing null clb false gr false knock 0
+63.70 intend() -> {"left":true}
+63.70 rhythm() -> {"left":true}
+63.70 thumbify() -> {}
+== 63.73 1649,3971 vx 160 tgt 1541 standing null clb false gr false knock 0
+63.73 intend() -> {"left":true}
+63.73 rhythm() -> {"left":true}
+63.73 thumbify() -> {}
+== 63.77 1655,3985 vx 160 tgt 1564 standing null clb false gr false knock 0
+63.77 intend() -> {"left":true}
+63.77 rhythm() -> {"left":true}
+63.77 thumbify() -> {"left":true}
+63.77 pad() -> {"left":true}
+== 63.80 1657,4002 vx 73 tgt 1564 standing null clb false gr false knock 0
+63.80 intend() -> {"left":true}
+63.80 rhythm() -> {"left":true}
+63.80 thumbify() -> {"left":true}
+63.80 pad() -> {"left":true}
+== 63.83 1657,4021 vx -13 tgt 1588 standing null clb false gr false knock 0
+63.83 intend() -> {"left":true}
+63.83 rhythm() -> {"left":true}
+63.83 thumbify() -> {"left":true}
+63.83 pad() -> {"left":true}
+== 63.87 1654,4044 vx -70 tgt 1612 standing null clb false gr false knock 0
+63.87 intend() -> {"left":true,"up":true}
+63.87 rhythm() -> {"left":true,"up":true}
+63.87 thumbify() -> {"left":true,"up":true}
+63.87 pad() -> {"left":true,"up":true}
+== 63.90 1612,4036 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.90 intend() -> {"up":true}
+63.90 thumbify() -> {"up":true,"left":true}
+63.90 pad() -> {"up":true,"left":true}
+== 63.93 1612,4029 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.93 intend() -> {"up":true}
+63.93 thumbify() -> {"up":true,"left":true}
+63.93 pad() -> {"up":true,"left":true}
+== 63.97 1612,4022 vx 0 tgt 1541 standing null clb true gr false knock 0
+63.97 intend() -> {"up":true}
+63.97 thumbify() -> {"up":true,"left":true}
+63.97 pad() -> {"up":true,"left":true}
+== 64.00 1612,4014 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.00 intend() -> {"up":true}
+64.00 thumbify() -> {"up":true,"left":true}
+64.00 pad() -> {"up":true,"left":true}
+== 64.03 1612,4007 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.03 intend() -> {"up":true}
+64.03 thumbify() -> {"up":true,"left":true}
+64.03 pad() -> {"up":true,"left":true}
+== 64.07 1612,4000 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.07 intend() -> {"up":true}
+64.07 thumbify() -> {"up":true,"left":true}
+64.07 pad() -> {"up":true,"left":true}
+== 64.10 1612,3992 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.10 intend() -> {"up":true}
+64.10 thumbify() -> {"up":true,"left":true}
+64.10 pad() -> {"up":true,"left":true}
+== 64.13 1612,3985 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.13 intend() -> {"up":true}
+64.13 thumbify() -> {"up":true,"left":true}
+64.13 pad() -> {"up":true,"left":true}
+== 64.17 1612,3978 vx 0 tgt 1517 standing null clb true gr false knock 0
+64.17 intend() -> {"up":true}
+64.17 thumbify() -> {"up":true,"left":true}
+64.17 pad() -> {"up":true,"left":true}
+== 64.20 1612,3950 vx -160 tgt 1517 standing null clb false gr false knock 0
+64.20 intend() -> {"left":true}
+64.20 rhythm() -> {"left":true}
+64.20 thumbify() -> {"left":true}
+64.20 pad() -> {"left":true}
+== 64.23 1605,3946 vx -217 tgt 1493 standing null clb false gr false knock 0
+64.23 intend() -> {"left":true}
+64.23 rhythm() -> {"left":true}
+64.23 thumbify() -> {"left":true}
+64.23 pad() -> {"left":true}
+== 64.27 1596,3944 vx -273 tgt 1493 standing null clb false gr false knock 0
+64.27 intend() -> {"left":true}
+64.27 rhythm() -> {"left":true}
+64.27 thumbify() -> {"left":true}
+64.27 pad() -> {"left":true}
+== 64.30 1586,3944 vx -285 tgt 1493 standing null clb false gr false knock 0
+64.30 intend() -> {"left":true}
+64.30 rhythm() -> {"left":true}
+64.30 thumbify() -> {"left":true}
+64.30 pad() -> {"left":true}
+== 64.33 1577,3946 vx -268 tgt 1469 standing null clb false gr false knock 0
+64.33 intend() -> {"left":true}
+64.33 rhythm() -> {"left":true}
+64.33 thumbify() -> {"left":true}
+64.33 pad() -> {"left":true}
+== 64.37 1568,3952 vx -285 tgt 1469 standing null clb false gr false knock 0
+64.37 intend() -> {"left":true}
+64.37 rhythm() -> {"left":true}
+64.37 thumbify() -> {"left":true}
+64.37 pad() -> {"left":true}
+== 64.40 1559,3960 vx -268 tgt 1445 standing null clb false gr false knock 0
+64.40 intend() -> {"left":true}
+64.40 rhythm() -> {"left":true}
+64.40 thumbify() -> {"left":true}
+64.40 pad() -> {"left":true}
+== 64.43 1549,3962 vx -285 tgt 1445 standing null clb false gr true knock 0
+64.43 intend() -> {"left":true}
+64.43 rhythm() -> {"left":true}
+64.43 thumbify() -> {"left":true}
+64.43 pad() -> {"left":true}
+== 64.47 1540,3962 vx -268 tgt 1445 standing null clb false gr true knock 0
+64.47 intend() -> {"left":true}
+64.47 rhythm() -> {"left":true}
+64.47 thumbify() -> {"left":true}
+64.47 pad() -> {"left":true}
+== 64.50 1531,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+64.50 intend() -> {"left":true}
+64.50 rhythm() -> {"left":true}
+64.50 thumbify() -> {"left":true}
+64.50 pad() -> {"left":true}
+== 64.53 1522,3962 vx -268 tgt 1422 standing null clb false gr true knock 0
+64.53 intend() -> {"left":true}
+64.53 rhythm() -> {"left":true}
+64.53 thumbify() -> {"left":true}
+64.53 pad() -> {"left":true}
+== 64.57 1512,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+64.57 intend() -> {"left":true}
+64.57 rhythm() -> {"left":true}
+64.57 thumbify() -> {"left":true}
+64.57 pad() -> {"left":true}
+== 64.60 1504,3962 vx -268 tgt 1398 standing null clb false gr true knock 0
+64.60 decide(-1,false) -> {"left":true}
+64.60 intend() -> {"left":true}
+64.60 rhythm() -> {"left":true}
+64.60 thumbify() -> {"left":true}
+64.60 pad() -> {"left":true}
+== 64.63 1494,3962 vx -285 tgt 1398 standing null clb false gr true knock 0
+64.63 intend() -> {"left":true}
+64.63 rhythm() -> {"left":true}
+64.63 thumbify() -> {"left":true}
+64.63 pad() -> {"left":true}
+== 64.67 1485,3962 vx -268 tgt 1374 standing null clb false gr true knock 0
+64.67 startJump(-1,false) -> {"left":true,"press":true,"jump":true}
+64.67 intend() -> {"left":true,"press":true,"jump":true}
+64.67 rhythm() -> {"left":true,"press":true,"jump":true}
+64.67 thumbify() -> {"left":true,"press":true,"jump":true}
+64.67 pad() -> {"left":true,"press":true,"jump":true}
+== 64.70 1476,3943 vx -285 tgt 1374 standing null clb false gr false knock 0
+64.70 intend() -> {"left":true,"jump":true}
+64.70 rhythm() -> {"left":true,"jump":true}
+64.70 thumbify() -> {"left":true,"jump":true}
+64.70 pad() -> {"left":true,"jump":true}
+== 64.73 1467,3926 vx -268 tgt 1374 standing null clb false gr false knock 0
+64.73 intend() -> {"left":true,"jump":true}
+64.73 rhythm() -> {"left":true,"jump":true}
+64.73 thumbify() -> {"left":true,"jump":true}
+64.73 pad() -> {"left":true,"jump":true}
+== 64.77 1457,3911 vx -285 tgt 1374 standing null clb false gr false knock 0
+64.77 intend() -> {"left":true}
+64.77 rhythm() -> {"left":true}
+64.77 thumbify() -> {"left":true}
+64.77 pad() -> {"left":true}
+== 64.80 1448,3905 vx -268 tgt 1374 standing null clb false gr false knock 0
+64.80 intend() -> {"left":true}
+64.80 rhythm() -> {"left":true}
+64.80 thumbify() -> {"left":true}
+64.80 pad() -> {"left":true}
+== 64.83 1439,3902 vx -285 tgt 1350 standing null clb false gr false knock 0
+64.83 intend() -> {"left":true}
+64.83 rhythm() -> {"left":true}
+64.83 thumbify() -> {"left":true}
+64.83 pad() -> {"left":true}
+== 64.87 1430,3900 vx -268 tgt 1350 standing null clb false gr false knock 0
+64.87 intend() -> {"left":true}
+64.87 rhythm() -> {"left":true}
+64.87 thumbify() -> {"left":true}
+64.87 pad() -> {"left":true}
+== 64.90 1420,3901 vx -285 tgt 1350 standing null clb false gr false knock 0
+64.90 intend() -> {"left":true}
+64.90 rhythm() -> {"left":true}
+64.90 thumbify() -> {"left":true}
+64.90 pad() -> {"left":true}
+== 64.93 1411,3905 vx -268 tgt 1326 standing null clb false gr false knock 0
+64.93 intend() -> {"left":true}
+64.93 rhythm() -> {"left":true}
+64.93 thumbify() -> {"left":true}
+64.93 pad() -> {"left":true}
+== 64.97 1402,3911 vx -285 tgt 1326 standing null clb false gr false knock 0
+64.97 intend() -> {"left":true}
+64.97 rhythm() -> {"left":true}
+64.97 thumbify() -> {"left":true}
+64.97 pad() -> {"left":true}
+== 65.00 1393,3920 vx -268 tgt 1303 standing null clb false gr false knock 0
+65.00 intend() -> {"left":true}
+65.00 rhythm() -> {"left":true}
+65.00 thumbify() -> {"left":true}
+65.00 pad() -> {"left":true}
+== 65.03 1384,3932 vx -285 tgt 1279 standing null clb false gr false knock 0
+65.03 intend() -> {"left":true}
+65.03 rhythm() -> {"left":true}
+65.03 thumbify() -> {"left":true}
+65.03 pad() -> {"left":true}
+== 65.07 1375,3947 vx -268 tgt 1279 standing null clb false gr false knock 0
+65.07 intend() -> {"left":true}
+65.07 rhythm() -> {"left":true}
+65.07 thumbify() -> {"left":true}
+65.07 pad() -> {"left":true}
+== 65.10 1365,3962 vx -285 tgt 1255 standing null clb false gr true knock 0
+65.10 intend() -> {"left":true}
+65.10 rhythm() -> {"left":true}
+65.10 thumbify() -> {"left":true}
+65.10 pad() -> {"left":true}
+== 65.13 1356,3962 vx -268 tgt 1255 standing null clb false gr true knock 0
+65.13 intend() -> {"left":true}
+65.13 rhythm() -> {"left":true}
+65.13 thumbify() -> {"left":true}
+65.13 pad() -> {"left":true}
+== 65.17 1347,3962 vx -285 tgt 1255 standing null clb false gr true knock 0
+65.17 intend() -> {"left":true}
+65.17 rhythm() -> {"left":true}
+65.17 thumbify() -> {"left":true}
+65.17 pad() -> {"left":true}
+== 65.20 1338,3962 vx -268 tgt 1231 standing null clb false gr true knock 0
+65.20 intend() -> {"left":true}
+65.20 rhythm() -> {"left":true}
+65.20 thumbify() -> {"left":true}
+65.20 pad() -> {"left":true}
+== 65.23 1328,3965 vx -285 tgt 1231 standing null clb false gr false knock 0
+65.23 intend() -> {"left":true}
+65.23 rhythm() -> {"left":true}
+65.23 thumbify() -> {"left":true}
+65.23 pad() -> {"left":true}
+== 65.27 1319,3970 vx -268 tgt 1207 standing null clb false gr false knock 0
+65.27 intend() -> {}
+65.27 thumbify() -> {"left":true}
+65.27 pad() -> {"left":true}
+== 65.30 1310,3979 vx -285 tgt 1207 standing null clb false gr false knock 0
+65.30 intend() -> {}
+65.30 thumbify() -> {"left":true}
+65.30 pad() -> {"left":true}
+== 65.33 1301,3990 vx -268 tgt 1207 standing null clb false gr false knock 0
+65.33 intend() -> {}
+65.33 thumbify() -> {"left":true}
+65.33 pad() -> {"left":true}
+== 65.37 1291,4004 vx -285 tgt 1207 standing null clb false gr false knock 0
+65.37 intend() -> {}
+65.37 thumbify() -> {"left":true}
+65.37 pad() -> {"left":true}
+== 65.40 1282,4020 vx -268 tgt 1207 standing null clb false gr false knock 0
+65.40 intend() -> {}
+65.40 thumbify() -> {"left":true}
+65.40 pad() -> {"left":true}
+== 65.43 1273,4032 vx -285 tgt 1207 standing null clb false gr true knock 0
+65.43 intend() -> {"left":true}
+65.43 rhythm() -> {"left":true}
+65.43 thumbify() -> {"left":true}
+65.43 pad() -> {"left":true}
+== 65.47 1264,4032 vx -268 tgt 1207 standing null clb false gr true knock 0
+65.47 intend() -> {"left":true}
+65.47 rhythm() -> {"left":true}
+65.47 thumbify() -> {"left":true}
+65.47 pad() -> {"left":true}
+== 65.50 1255,4035 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.50 intend() -> {"left":true}
+65.50 rhythm() -> {"left":true}
+65.50 thumbify() -> {"left":true}
+65.50 pad() -> {"left":true}
+== 65.53 1246,4040 vx -268 tgt 1183 standing null clb false gr false knock 0
+65.53 intend() -> {"left":true}
+65.53 rhythm() -> {"left":true}
+65.53 thumbify() -> {"left":true}
+65.53 pad() -> {"left":true}
+== 65.57 1236,4049 vx -285 tgt 1207 standing null clb false gr false knock 0
+65.57 intend() -> {"left":true}
+65.57 rhythm() -> {"left":true}
+65.57 thumbify() -> {"left":true}
+65.57 pad() -> {"left":true}
+== 65.60 1227,4060 vx -268 tgt 1231 standing null clb false gr false knock 0
+65.60 intend() -> {"left":true}
+65.60 rhythm() -> {"left":true}
+65.60 thumbify() -> {"left":true}
+65.60 pad() -> {"left":true}
+== 65.63 1218,4074 vx -285 tgt 1231 standing null clb false gr false knock 0
+65.63 intend() -> {"left":true}
+65.63 rhythm() -> {"left":true}
+65.63 thumbify() -> {"left":true}
+65.63 pad() -> {"left":true}
+== 65.67 1209,4090 vx -268 tgt 1207 standing null clb false gr false knock 0
+65.67 intend() -> {"left":true}
+65.67 rhythm() -> {"left":true}
+65.67 thumbify() -> {"left":true}
+65.67 pad() -> {"left":true}
+== 65.70 1199,4110 vx -285 tgt 1207 standing null clb false gr false knock 0
+65.70 intend() -> {"left":true}
+65.70 rhythm() -> {"left":true}
+65.70 thumbify() -> {"left":true}
+65.70 pad() -> {"left":true}
+== 65.73 1190,4132 vx -268 tgt 1207 standing null clb false gr false knock 0
+65.73 intend() -> {"left":true}
+65.73 rhythm() -> {"left":true}
+65.73 thumbify() -> {"left":true}
+65.73 pad() -> {"left":true}
+== 65.77 1181,4157 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.77 intend() -> {"left":true}
+65.77 rhythm() -> {"left":true}
+65.77 thumbify() -> {"left":true}
+65.77 pad() -> {"left":true}
+== 65.80 1172,4185 vx -268 tgt 1183 standing null clb false gr false knock 0
+65.80 intend() -> {"left":true}
+65.80 rhythm() -> {"left":true}
+65.80 thumbify() -> {"left":true}
+65.80 pad() -> {"left":true}
+== 65.83 1162,4215 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.83 intend() -> {"right":true}
+65.83 rhythm() -> {"right":true}
+65.83 thumbify() -> {}
+== 65.87 1153,4247 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.87 intend() -> {"right":true}
+65.87 rhythm() -> {"right":true}
+65.87 thumbify() -> {}
+== 65.90 1143,4279 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.90 intend() -> {"right":true}
+65.90 rhythm() -> {"right":true}
+65.90 thumbify() -> {}
+== 65.93 1134,4310 vx -285 tgt 1183 standing null clb false gr false knock 0
+65.93 intend() -> {"right":true}
+65.93 rhythm() -> {"right":true}
+65.93 thumbify() -> {}
+== 65.97 1124,4313 vx -285 tgt 1183 standing null clb false gr true knock 0
+65.97 intend() -> {"right":true}
+65.97 rhythm() -> {"right":true}
+65.97 thumbify() -> {}
+== 66.00 1119,4313 vx -172 tgt 1183 standing null clb false gr true knock 0
+66.00 intend() -> {"right":true}
+66.00 rhythm() -> {"right":true}
+66.00 thumbify() -> {}
+== 66.03 1117,4313 vx -58 tgt 1183 standing null clb false gr true knock 0
+66.03 intend() -> {"right":true}
+66.03 rhythm() -> {"right":true}
+66.03 thumbify() -> {}
+== 66.07 1117,4313 vx 0 tgt 1183 standing null clb false gr true knock 0
+66.07 intend() -> {"right":true}
+66.07 rhythm() -> {"right":true}
+66.07 thumbify() -> {"right":true}
+66.07 pad() -> {"right":true}
+== 66.10 1120,4313 vx 87 tgt 1183 standing null clb false gr true knock 0
+66.10 decide(1,false) -> {"right":true}
+66.10 intend() -> {"right":true}
+66.10 rhythm() -> {"right":true}
+66.10 thumbify() -> {"right":true}
+66.10 pad() -> {"right":true}
+== 66.13 1125,4313 vx 173 tgt 1183 standing null clb false gr true knock 0
+66.13 intend() -> {"right":true}
+66.13 rhythm() -> {"right":true}
+66.13 thumbify() -> {"right":true}
+66.13 pad() -> {"right":true}
+== 66.17 1134,4313 vx 260 tgt 1183 standing null clb false gr true knock 0
+66.17 intend() -> {"right":true}
+66.17 rhythm() -> {"right":true}
+66.17 thumbify() -> {"right":true}
+66.17 pad() -> {"right":true}
+== 66.20 1144,4313 vx 285 tgt 1183 standing null clb false gr true knock 0
+66.20 intend() -> {"right":true}
+66.20 rhythm() -> {"right":true}
+66.20 thumbify() -> {"right":true}
+66.20 pad() -> {"right":true}
+== 66.23 1153,4313 vx 268 tgt 1183 standing null clb false gr true knock 0
+66.23 intend() -> {"press":true,"jump":true}
+66.23 thumbify() -> {"press":true,"jump":true}
+== 66.27 1161,4294 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.27 intend() -> {"jump":true}
+66.27 thumbify() -> {"jump":true}
+== 66.30 1170,4277 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.30 intend() -> {"jump":true}
+66.30 thumbify() -> {"jump":true}
+== 66.33 1179,4262 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.33 intend() -> {"jump":true}
+66.33 thumbify() -> {"jump":true}
+== 66.37 1188,4249 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.37 intend() -> {"jump":true}
+66.37 thumbify() -> {"jump":true}
+== 66.40 1197,4238 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.40 intend() -> {"right":true}
+66.40 rhythm() -> {"right":true}
+66.40 thumbify() -> {"right":true}
+66.40 pad() -> {"right":true}
+== 66.43 1207,4232 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.43 intend() -> {"right":true}
+66.43 rhythm() -> {"right":true}
+66.43 thumbify() -> {"right":true}
+66.43 pad() -> {"right":true}
+== 66.47 1216,4229 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.47 intend() -> {"right":true}
+66.47 rhythm() -> {"right":true}
+66.47 thumbify() -> {"right":true}
+66.47 pad() -> {"right":true}
+== 66.50 1225,4228 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.50 intend() -> {"right":true}
+66.50 rhythm() -> {"right":true}
+66.50 thumbify() -> {"right":true}
+66.50 pad() -> {"right":true}
+== 66.53 1234,4228 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.53 intend() -> {"right":true}
+66.53 rhythm() -> {"right":true}
+66.53 thumbify() -> {"right":true}
+66.53 pad() -> {"right":true}
+== 66.57 1244,4232 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.57 intend() -> {"right":true}
+66.57 rhythm() -> {"right":true}
+66.57 thumbify() -> {"right":true}
+66.57 pad() -> {"right":true}
+== 66.60 1252,4238 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.60 intend() -> {"right":true}
+66.60 rhythm() -> {"right":true}
+66.60 thumbify() -> {"right":true}
+66.60 pad() -> {"right":true}
+== 66.63 1262,4247 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.63 intend() -> {"right":true}
+66.63 rhythm() -> {"right":true}
+66.63 thumbify() -> {"right":true}
+66.63 pad() -> {"right":true}
+== 66.67 1271,4259 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.67 intend() -> {"right":true}
+66.67 rhythm() -> {"right":true}
+66.67 thumbify() -> {"right":true}
+66.67 pad() -> {"right":true}
+== 66.70 1280,4274 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.70 intend() -> {"right":true}
+66.70 rhythm() -> {"right":true}
+66.70 thumbify() -> {"right":true}
+66.70 pad() -> {"right":true}
+== 66.73 1289,4291 vx 268 tgt 1183 standing null clb false gr false knock 0
+66.73 intend() -> {"right":true}
+66.73 rhythm() -> {"right":true}
+66.73 thumbify() -> {"right":true}
+66.73 pad() -> {"right":true}
+== 66.77 1299,4312 vx 285 tgt 1183 standing null clb false gr false knock 0
+66.77 intend() -> {"right":true}
+66.77 rhythm() -> {"right":true}
+66.77 thumbify() -> {"right":true}
+66.77 pad() -> {"right":true}
+== 66.80 1308,4313 vx 268 tgt 1183 standing null clb false gr true knock 0
+66.80 intend() -> {"right":true}
+66.80 rhythm() -> {"right":true}
+66.80 thumbify() -> {"right":true}
+66.80 pad() -> {"right":true}
+== 66.83 1317,4313 vx 285 tgt 1427 standing null clb false gr true knock 0
+66.83 intend() -> {"right":true}
+66.83 rhythm() -> {"right":true}
+66.83 thumbify() -> {"right":true}
+66.83 pad() -> {"right":true}
+== 66.87 1326,4313 vx 268 tgt 1427 standing null clb false gr true knock 0
+66.87 intend() -> {"right":true}
+66.87 rhythm() -> {"right":true}
+66.87 thumbify() -> {"right":true}
+66.87 pad() -> {"right":true}
+== 66.90 1336,4313 vx 285 tgt 1427 standing null clb false gr true knock 0
+66.90 intend() -> {"right":true}
+66.90 rhythm() -> {"right":true}
+66.90 thumbify() -> {"right":true}
+66.90 pad() -> {"right":true}
+== 66.93 1345,4313 vx 268 tgt 1450 standing null clb false gr true knock 0
+66.93 decide(1,false) -> {"right":true}
+66.93 intend() -> {"right":true}
+66.93 rhythm() -> {"right":true}
+66.93 thumbify() -> {"right":true}
+66.93 pad() -> {"right":true}
+== 66.97 1354,4313 vx 285 tgt 1450 standing null clb false gr true knock 0
+66.97 intend() -> {"right":true}
+66.97 rhythm() -> {"right":true}
+66.97 thumbify() -> {"right":true}
+66.97 pad() -> {"right":true}
+== 67.00 1363,4313 vx 268 tgt 1473 standing null clb false gr true knock 0
+67.00 intend() -> {"right":true}
+67.00 rhythm() -> {"right":true}
+67.00 thumbify() -> {"right":true}
+67.00 pad() -> {"right":true}
+== 67.03 1372,4313 vx 285 tgt 1473 standing null clb false gr true knock 0
+67.03 intend() -> {"right":true}
+67.03 rhythm() -> {"right":true}
+67.03 thumbify() -> {"right":true}
+67.03 pad() -> {"right":true}
+== 67.07 1381,4313 vx 268 tgt 1473 standing null clb false gr true knock 0
+67.07 intend() -> {"right":true}
+67.07 rhythm() -> {"right":true}
+67.07 thumbify() -> {"right":true}
+67.07 pad() -> {"right":true}
+== 67.10 1391,4313 vx 285 tgt 1497 standing null clb false gr true knock 0
+67.10 intend() -> {"right":true}
+67.10 rhythm() -> {"right":true}
+67.10 thumbify() -> {"right":true}
+67.10 pad() -> {"right":true}
+== 67.13 1400,4313 vx 268 tgt 1497 standing null clb false gr true knock 0
+67.13 intend() -> {"right":true}
+67.13 rhythm() -> {"right":true}
+67.13 thumbify() -> {"right":true}
+67.13 pad() -> {"right":true}
+== 67.17 1409,4313 vx 285 tgt 1520 standing null clb false gr true knock 0
+67.17 intend() -> {"press":true,"jump":true}
+67.17 thumbify() -> {"press":true,"jump":true}
+== 67.20 1419,4294 vx 285 tgt 1520 standing null clb false gr false knock 0
+67.20 intend() -> {"jump":true}
+67.20 thumbify() -> {"jump":true}
+== 67.23 1428,4277 vx 285 tgt 1520 standing null clb false gr false knock 0
+67.23 intend() -> {"jump":true}
+67.23 thumbify() -> {"jump":true}
+== 67.27 1438,4262 vx 285 tgt 1520 standing null clb false gr false knock 0
+67.27 intend() -> {}
+67.27 thumbify() -> {}
+== 67.30 1447,4256 vx 285 tgt 1520 standing null clb false gr false knock 0
+67.30 intend() -> {}
+67.30 thumbify() -> {}
+== 67.33 1457,4253 vx 285 tgt 1543 standing null clb false gr false knock 0
+67.33 intend() -> {"right":true}
+67.33 rhythm() -> {"right":true}
+67.33 thumbify() -> {"right":true}
+67.33 pad() -> {"right":true}
+== 67.37 1466,4251 vx 268 tgt 1543 standing null clb false gr false knock 0
+67.37 intend() -> {"right":true}
+67.37 rhythm() -> {"right":true}
+67.37 thumbify() -> {"right":true}
+67.37 pad() -> {"right":true}
+== 67.40 1475,4252 vx 285 tgt 1543 standing null clb false gr false knock 0
+67.40 intend() -> {"right":true}
+67.40 rhythm() -> {"right":true}
+67.40 thumbify() -> {"right":true}
+67.40 pad() -> {"right":true}
+== 67.43 1484,4256 vx 268 tgt 1566 standing null clb false gr false knock 0
+67.43 intend() -> {"right":true}
+67.43 rhythm() -> {"right":true}
+67.43 thumbify() -> {"right":true}
+67.43 pad() -> {"right":true}
+== 67.47 1494,4262 vx 285 tgt 1589 standing null clb false gr false knock 0
+67.47 intend() -> {"right":true}
+67.47 rhythm() -> {"right":true}
+67.47 thumbify() -> {"right":true}
+67.47 pad() -> {"right":true}
+== 67.50 1503,4271 vx 268 tgt 1589 standing null clb false gr false knock 0
+67.50 intend() -> {"right":true}
+67.50 rhythm() -> {"right":true}
+67.50 thumbify() -> {"right":true}
+67.50 pad() -> {"right":true}
+== 67.53 1512,4283 vx 285 tgt 1612 standing null clb false gr false knock 0
+67.53 intend() -> {"right":true}
+67.53 rhythm() -> {"right":true}
+67.53 thumbify() -> {"right":true}
+67.53 pad() -> {"right":true}
+== 67.57 1521,4298 vx 268 tgt 1612 standing null clb false gr false knock 0
+67.57 intend() -> {"right":true}
+67.57 rhythm() -> {"right":true}
+67.57 thumbify() -> {"right":true}
+67.57 pad() -> {"right":true}
+== 67.60 1530,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+67.60 intend() -> {"right":true}
+67.60 rhythm() -> {"right":true}
+67.60 thumbify() -> {"right":true}
+67.60 pad() -> {"right":true}
+== 67.63 1539,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+67.63 intend() -> {"right":true}
+67.63 rhythm() -> {"right":true}
+67.63 thumbify() -> {"right":true}
+67.63 pad() -> {"right":true}
+== 67.67 1549,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+67.67 intend() -> {"right":true}
+67.67 rhythm() -> {"right":true}
+67.67 thumbify() -> {"right":true}
+67.67 pad() -> {"right":true}
+== 67.70 1558,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+67.70 intend() -> {"right":true}
+67.70 rhythm() -> {"right":true}
+67.70 thumbify() -> {"right":true}
+67.70 pad() -> {"right":true}
+== 67.73 1567,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+67.73 intend() -> {"right":true}
+67.73 rhythm() -> {"right":true}
+67.73 thumbify() -> {"right":true}
+67.73 pad() -> {"right":true}
+== 67.77 1576,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+67.77 intend() -> {"up":true}
+67.77 thumbify() -> {"up":true,"right":true}
+67.77 pad() -> {"up":true,"right":true}
+== 67.80 1612,4306 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.80 intend() -> {"up":true}
+67.80 thumbify() -> {"up":true,"right":true}
+67.80 pad() -> {"up":true,"right":true}
+== 67.83 1612,4298 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.83 intend() -> {"up":true}
+67.83 thumbify() -> {"up":true,"right":true}
+67.83 pad() -> {"up":true,"right":true}
+== 67.87 1612,4291 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.87 intend() -> {"up":true}
+67.87 thumbify() -> {"up":true,"right":true}
+67.87 pad() -> {"up":true,"right":true}
+== 67.90 1612,4284 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.90 intend() -> {"up":true}
+67.90 thumbify() -> {"up":true,"right":true}
+67.90 pad() -> {"up":true,"right":true}
+== 67.93 1612,4276 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.93 intend() -> {"up":true}
+67.93 thumbify() -> {"up":true,"right":true}
+67.93 pad() -> {"up":true,"right":true}
+== 67.97 1612,4269 vx 0 tgt 1612 standing null clb true gr false knock 0
+67.97 intend() -> {"up":true}
+67.97 thumbify() -> {"up":true,"right":true}
+67.97 pad() -> {"up":true,"right":true}
+== 68.00 1612,4262 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.00 intend() -> {"up":true}
+68.00 thumbify() -> {"up":true,"right":true}
+68.00 pad() -> {"up":true,"right":true}
+== 68.03 1612,4254 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.03 intend() -> {"up":true}
+68.03 thumbify() -> {"up":true,"right":true}
+68.03 pad() -> {"up":true,"right":true}
+== 68.07 1612,4247 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.07 intend() -> {"up":true}
+68.07 thumbify() -> {"up":true,"right":true}
+68.07 pad() -> {"up":true,"right":true}
+== 68.10 1612,4240 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.10 intend() -> {"up":true}
+68.10 thumbify() -> {"up":true,"right":true}
+68.10 pad() -> {"up":true,"right":true}
+== 68.13 1612,4232 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.13 intend() -> {"up":true}
+68.13 thumbify() -> {"up":true,"right":true}
+68.13 pad() -> {"up":true,"right":true}
+== 68.17 1612,4225 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.17 intend() -> {"up":true}
+68.17 thumbify() -> {"up":true,"right":true}
+68.17 pad() -> {"up":true,"right":true}
+== 68.20 1612,4218 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.20 intend() -> {"up":true}
+68.20 thumbify() -> {"up":true,"right":true}
+68.20 pad() -> {"up":true,"right":true}
+== 68.23 1612,4210 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.23 intend() -> {"up":true}
+68.23 thumbify() -> {"up":true,"right":true}
+68.23 pad() -> {"up":true,"right":true}
+== 68.27 1612,4203 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.27 intend() -> {"up":true}
+68.27 thumbify() -> {"up":true,"right":true}
+68.27 pad() -> {"up":true,"right":true}
+== 68.30 1612,4196 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.30 intend() -> {"up":true}
+68.30 thumbify() -> {"up":true,"right":true}
+68.30 pad() -> {"up":true,"right":true}
+== 68.33 1612,4188 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.33 intend() -> {"up":true}
+68.33 thumbify() -> {"up":true,"right":true}
+68.33 pad() -> {"up":true,"right":true}
+== 68.37 1612,4181 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.37 intend() -> {"up":true}
+68.37 thumbify() -> {"up":true,"right":true}
+68.37 pad() -> {"up":true,"right":true}
+== 68.40 1612,4174 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.40 intend() -> {"up":true}
+68.40 thumbify() -> {"up":true,"right":true}
+68.40 pad() -> {"up":true,"right":true}
+== 68.43 1612,4166 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.43 intend() -> {"up":true}
+68.43 thumbify() -> {"up":true,"right":true}
+68.43 pad() -> {"up":true,"right":true}
+== 68.47 1612,4159 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.47 intend() -> {"up":true}
+68.47 thumbify() -> {"up":true,"right":true}
+68.47 pad() -> {"up":true,"right":true}
+== 68.50 1612,4152 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.50 intend() -> {"up":true}
+68.50 thumbify() -> {"up":true,"right":true}
+68.50 pad() -> {"up":true,"right":true}
+== 68.53 1612,4144 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.53 intend() -> {"up":true}
+68.53 thumbify() -> {"up":true,"right":true}
+68.53 pad() -> {"up":true,"right":true}
+== 68.57 1612,4137 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.57 intend() -> {"up":true}
+68.57 thumbify() -> {"up":true,"right":true}
+68.57 pad() -> {"up":true,"right":true}
+== 68.60 1612,4130 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.60 intend() -> {"up":true}
+68.60 thumbify() -> {"up":true,"right":true}
+68.60 pad() -> {"up":true,"right":true}
+== 68.63 1612,4122 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.63 intend() -> {"up":true}
+68.63 thumbify() -> {"up":true,"right":true}
+68.63 pad() -> {"up":true,"right":true}
+== 68.67 1612,4115 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.67 intend() -> {"up":true}
+68.67 thumbify() -> {"up":true,"right":true}
+68.67 pad() -> {"up":true,"right":true}
+== 68.70 1612,4108 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.70 intend() -> {"up":true}
+68.70 thumbify() -> {"up":true,"right":true}
+68.70 pad() -> {"up":true,"right":true}
+== 68.73 1612,4100 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.73 intend() -> {"up":true}
+68.73 thumbify() -> {"up":true,"right":true}
+68.73 pad() -> {"up":true,"right":true}
+== 68.77 1612,4093 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.77 intend() -> {"up":true}
+68.77 thumbify() -> {"up":true,"right":true}
+68.77 pad() -> {"up":true,"right":true}
+== 68.80 1612,4086 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.80 intend() -> {"up":true}
+68.80 thumbify() -> {"up":true,"right":true}
+68.80 pad() -> {"up":true,"right":true}
+== 68.83 1612,4078 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.83 intend() -> {"up":true}
+68.83 thumbify() -> {"up":true,"right":true}
+68.83 pad() -> {"up":true,"right":true}
+== 68.87 1612,4071 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.87 intend() -> {"up":true}
+68.87 thumbify() -> {"up":true,"right":true}
+68.87 pad() -> {"up":true,"right":true}
+== 68.90 1612,4064 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.90 intend() -> {"up":true}
+68.90 thumbify() -> {"up":true,"right":true}
+68.90 pad() -> {"up":true,"right":true}
+== 68.93 1612,4056 vx 0 tgt 1612 standing null clb true gr false knock 0
+68.93 intend() -> {"up":true}
+68.93 thumbify() -> {"up":true,"right":true}
+68.93 pad() -> {"up":true,"right":true}
+== 68.97 1612,4049 vx 0 tgt 1588 standing null clb true gr false knock 0
+68.97 intend() -> {"up":true}
+68.97 thumbify() -> {"up":true,"right":true}
+68.97 pad() -> {"up":true,"right":true}
+== 69.00 1612,4042 vx 0 tgt 1564 standing null clb true gr false knock 0
+69.00 intend() -> {"up":true}
+69.00 thumbify() -> {"up":true,"right":true}
+69.00 pad() -> {"up":true,"right":true}
+== 69.03 1612,4034 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.03 intend() -> {"up":true}
+69.03 thumbify() -> {"up":true,"right":true}
+69.03 pad() -> {"up":true,"right":true}
+== 69.07 1612,4027 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.07 intend() -> {"up":true}
+69.07 thumbify() -> {"up":true,"right":true}
+69.07 pad() -> {"up":true,"right":true}
+== 69.10 1612,4020 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.10 intend() -> {"up":true}
+69.10 thumbify() -> {"up":true,"right":true}
+69.10 pad() -> {"up":true,"right":true}
+== 69.13 1612,4012 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.13 intend() -> {"up":true}
+69.13 thumbify() -> {"up":true,"right":true}
+69.13 pad() -> {"up":true,"right":true}
+== 69.17 1612,4005 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.17 intend() -> {"up":true}
+69.17 thumbify() -> {"up":true,"right":true}
+69.17 pad() -> {"up":true,"right":true}
+== 69.20 1612,3998 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.20 intend() -> {"up":true}
+69.20 thumbify() -> {"up":true,"right":true}
+69.20 pad() -> {"up":true,"right":true}
+== 69.23 1612,3990 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.23 intend() -> {"up":true}
+69.23 thumbify() -> {"up":true,"right":true}
+69.23 pad() -> {"up":true,"right":true}
+== 69.27 1612,3983 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.27 intend() -> {"up":true}
+69.27 thumbify() -> {"up":true,"right":true}
+69.27 pad() -> {"up":true,"right":true}
+== 69.30 1612,3976 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.30 intend() -> {"up":true}
+69.30 thumbify() -> {"up":true,"right":true}
+69.30 pad() -> {"up":true,"right":true}
+== 69.33 1612,3950 vx 160 tgt 1517 standing null clb false gr false knock 0
+69.33 intend() -> {"left":true}
+69.33 rhythm() -> {"left":true}
+69.33 thumbify() -> {}
+== 69.37 1617,3946 vx 160 tgt 1517 standing null clb false gr false knock 0
+69.37 intend() -> {"left":true}
+69.37 rhythm() -> {"left":true}
+69.37 thumbify() -> {}
+== 69.40 1623,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+69.40 intend() -> {"left":true}
+69.40 rhythm() -> {"left":true}
+69.40 thumbify() -> {}
+== 69.43 1628,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+69.43 intend() -> {"left":true}
+69.43 rhythm() -> {"left":true}
+69.43 thumbify() -> {}
+== 69.47 1633,3946 vx 160 tgt 1541 standing null clb false gr false knock 0
+69.47 intend() -> {"left":true}
+69.47 rhythm() -> {"left":true}
+69.47 thumbify() -> {}
+== 69.50 1639,3952 vx 160 tgt 1541 standing null clb false gr false knock 0
+69.50 intend() -> {"left":true}
+69.50 rhythm() -> {"left":true}
+69.50 thumbify() -> {}
+== 69.53 1644,3960 vx 160 tgt 1541 standing null clb false gr false knock 0
+69.53 intend() -> {"left":true}
+69.53 rhythm() -> {"left":true}
+69.53 thumbify() -> {}
+== 69.57 1649,3971 vx 160 tgt 1541 standing null clb false gr false knock 0
+69.57 intend() -> {"left":true}
+69.57 rhythm() -> {"left":true}
+69.57 thumbify() -> {"left":true}
+69.57 pad() -> {"left":true}
+== 69.60 1652,3985 vx 73 tgt 1564 standing null clb false gr false knock 0
+69.60 intend() -> {"left":true}
+69.60 rhythm() -> {"left":true}
+69.60 thumbify() -> {"left":true}
+69.60 pad() -> {"left":true}
+== 69.63 1651,4002 vx -13 tgt 1564 standing null clb false gr false knock 0
+69.63 intend() -> {"left":true}
+69.63 rhythm() -> {"left":true}
+69.63 thumbify() -> {"left":true}
+69.63 pad() -> {"left":true}
+== 69.67 1649,4021 vx -70 tgt 1564 standing null clb false gr false knock 0
+69.67 intend() -> {"left":true}
+69.67 rhythm() -> {"left":true}
+69.67 thumbify() -> {"left":true}
+69.67 pad() -> {"left":true}
+== 69.70 1645,4044 vx -127 tgt 1588 standing null clb false gr false knock 0
+69.70 intend() -> {"left":true,"up":true}
+69.70 rhythm() -> {"left":true,"up":true}
+69.70 thumbify() -> {"left":true,"up":true}
+69.70 pad() -> {"left":true,"up":true}
+== 69.73 1612,4036 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.73 intend() -> {"up":true}
+69.73 thumbify() -> {"up":true,"left":true}
+69.73 pad() -> {"up":true,"left":true}
+== 69.77 1612,4029 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.77 intend() -> {"up":true}
+69.77 thumbify() -> {"up":true,"left":true}
+69.77 pad() -> {"up":true,"left":true}
+== 69.80 1612,4022 vx 0 tgt 1541 standing null clb true gr false knock 0
+69.80 intend() -> {"up":true}
+69.80 thumbify() -> {"up":true,"left":true}
+69.80 pad() -> {"up":true,"left":true}
+== 69.83 1612,4014 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.83 intend() -> {"up":true}
+69.83 thumbify() -> {"up":true,"left":true}
+69.83 pad() -> {"up":true,"left":true}
+== 69.87 1612,4007 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.87 intend() -> {"up":true}
+69.87 thumbify() -> {"up":true,"left":true}
+69.87 pad() -> {"up":true,"left":true}
+== 69.90 1612,4000 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.90 intend() -> {"up":true}
+69.90 thumbify() -> {"up":true,"left":true}
+69.90 pad() -> {"up":true,"left":true}
+== 69.93 1612,3992 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.93 intend() -> {"up":true}
+69.93 thumbify() -> {"up":true,"left":true}
+69.93 pad() -> {"up":true,"left":true}
+== 69.97 1612,3985 vx 0 tgt 1517 standing null clb true gr false knock 0
+69.97 intend() -> {"up":true}
+69.97 thumbify() -> {"up":true,"left":true}
+69.97 pad() -> {"up":true,"left":true}
+== 70.00 1612,3978 vx 0 tgt 1517 standing null clb true gr false knock 0
+70.00 intend() -> {"up":true}
+70.00 thumbify() -> {"up":true,"left":true}
+70.00 pad() -> {"up":true,"left":true}
+== 70.03 1612,3950 vx -160 tgt 1517 standing null clb false gr false knock 0
+70.03 intend() -> {"left":true}
+70.03 rhythm() -> {"left":true}
+70.03 thumbify() -> {"left":true}
+70.03 pad() -> {"left":true}
+== 70.07 1605,3946 vx -217 tgt 1493 standing null clb false gr false knock 0
+70.07 intend() -> {"left":true}
+70.07 rhythm() -> {"left":true}
+70.07 thumbify() -> {"left":true}
+70.07 pad() -> {"left":true}
+== 70.10 1596,3944 vx -273 tgt 1493 standing null clb false gr false knock 0
+70.10 intend() -> {"left":true}
+70.10 rhythm() -> {"left":true}
+70.10 thumbify() -> {"left":true}
+70.10 pad() -> {"left":true}
+== 70.13 1586,3944 vx -285 tgt 1493 standing null clb false gr false knock 0
+70.13 intend() -> {"left":true}
+70.13 rhythm() -> {"left":true}
+70.13 thumbify() -> {"left":true}
+70.13 pad() -> {"left":true}
+== 70.17 1577,3946 vx -268 tgt 1469 standing null clb false gr false knock 0
+70.17 intend() -> {"left":true}
+70.17 rhythm() -> {"left":true}
+70.17 thumbify() -> {"left":true}
+70.17 pad() -> {"left":true}
+== 70.20 1568,3952 vx -285 tgt 1469 standing null clb false gr false knock 0
+70.20 intend() -> {"left":true}
+70.20 rhythm() -> {"left":true}
+70.20 thumbify() -> {"left":true}
+70.20 pad() -> {"left":true}
+== 70.23 1559,3960 vx -268 tgt 1445 standing null clb false gr false knock 0
+70.23 intend() -> {"left":true}
+70.23 rhythm() -> {"left":true}
+70.23 thumbify() -> {"left":true}
+70.23 pad() -> {"left":true}
+== 70.27 1549,3962 vx -285 tgt 1445 standing null clb false gr true knock 0
+70.27 intend() -> {"left":true}
+70.27 rhythm() -> {"left":true}
+70.27 thumbify() -> {"left":true}
+70.27 pad() -> {"left":true}
+== 70.30 1540,3962 vx -268 tgt 1445 standing null clb false gr true knock 0
+70.30 intend() -> {"left":true}
+70.30 rhythm() -> {"left":true}
+70.30 thumbify() -> {"left":true}
+70.30 pad() -> {"left":true}
+== 70.33 1531,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+70.33 intend() -> {"left":true}
+70.33 rhythm() -> {"left":true}
+70.33 thumbify() -> {"left":true}
+70.33 pad() -> {"left":true}
+== 70.37 1522,3962 vx -268 tgt 1422 standing null clb false gr true knock 0
+70.37 intend() -> {"left":true}
+70.37 rhythm() -> {"left":true}
+70.37 thumbify() -> {"left":true}
+70.37 pad() -> {"left":true}
+== 70.40 1512,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+70.40 intend() -> {"left":true}
+70.40 rhythm() -> {"left":true}
+70.40 thumbify() -> {"left":true}
+70.40 pad() -> {"left":true}
+== 70.43 1504,3962 vx -268 tgt 1398 standing null clb false gr true knock 0
+70.43 decide(-1,false) -> {"left":true}
+70.43 intend() -> {"left":true}
+70.43 rhythm() -> {"left":true}
+70.43 thumbify() -> {"left":true}
+70.43 pad() -> {"left":true}
+== 70.47 1494,3962 vx -285 tgt 1398 standing null clb false gr true knock 0
+70.47 intend() -> {"left":true}
+70.47 rhythm() -> {"left":true}
+70.47 thumbify() -> {"left":true}
+70.47 pad() -> {"left":true}
+== 70.50 1485,3962 vx -268 tgt 1374 standing null clb false gr true knock 0
+70.50 intend() -> {"left":true}
+70.50 rhythm() -> {"left":true}
+70.50 thumbify() -> {"left":true}
+70.50 pad() -> {"left":true}
+== 70.53 1476,3962 vx -285 tgt 1374 standing null clb false gr true knock 0
+70.53 startJump(-1,false) -> {"left":true,"press":true,"jump":true}
+70.53 intend() -> {"left":true,"press":true,"jump":true}
+70.53 rhythm() -> {"left":true,"press":true,"jump":true}
+70.53 thumbify() -> {"left":true,"press":true,"jump":true}
+70.53 pad() -> {"left":true,"press":true,"jump":true}
+== 70.57 1467,3943 vx -268 tgt 1374 standing null clb false gr false knock 0
+70.57 intend() -> {"left":true,"jump":true}
+70.57 rhythm() -> {"left":true,"jump":true}
+70.57 thumbify() -> {"left":true,"jump":true}
+70.57 pad() -> {"left":true,"jump":true}
+== 70.60 1457,3926 vx -285 tgt 1374 standing null clb false gr false knock 0
+70.60 intend() -> {"left":true,"jump":true}
+70.60 rhythm() -> {"left":true,"jump":true}
+70.60 thumbify() -> {"left":true,"jump":true}
+70.60 pad() -> {"left":true,"jump":true}
+== 70.63 1448,3911 vx -268 tgt 1374 standing null clb false gr false knock 0
+70.63 intend() -> {"left":true}
+70.63 rhythm() -> {"left":true}
+70.63 thumbify() -> {"left":true}
+70.63 pad() -> {"left":true}
+== 70.67 1439,3905 vx -285 tgt 1350 standing null clb false gr false knock 0
+70.67 intend() -> {"left":true}
+70.67 rhythm() -> {"left":true}
+70.67 thumbify() -> {"left":true}
+70.67 pad() -> {"left":true}
+== 70.70 1430,3902 vx -268 tgt 1350 standing null clb false gr false knock 0
+70.70 intend() -> {"left":true}
+70.70 rhythm() -> {"left":true}
+70.70 thumbify() -> {"left":true}
+70.70 pad() -> {"left":true}
+== 70.73 1420,3900 vx -285 tgt 1350 standing null clb false gr false knock 0
+70.73 intend() -> {"left":true}
+70.73 rhythm() -> {"left":true}
+70.73 thumbify() -> {"left":true}
+70.73 pad() -> {"left":true}
+== 70.77 1411,3901 vx -268 tgt 1326 standing null clb false gr false knock 0
+70.77 intend() -> {"left":true}
+70.77 rhythm() -> {"left":true}
+70.77 thumbify() -> {"left":true}
+70.77 pad() -> {"left":true}
+== 70.80 1402,3905 vx -285 tgt 1326 standing null clb false gr false knock 0
+70.80 intend() -> {"left":true}
+70.80 rhythm() -> {"left":true}
+70.80 thumbify() -> {"left":true}
+70.80 pad() -> {"left":true}
+== 70.83 1393,3911 vx -268 tgt 1303 standing null clb false gr false knock 0
+70.83 intend() -> {"left":true}
+70.83 rhythm() -> {"left":true}
+70.83 thumbify() -> {"left":true}
+70.83 pad() -> {"left":true}
+== 70.87 1384,3920 vx -285 tgt 1303 standing null clb false gr false knock 0
+70.87 intend() -> {"left":true}
+70.87 rhythm() -> {"left":true}
+70.87 thumbify() -> {"left":true}
+70.87 pad() -> {"left":true}
+== 70.90 1375,3932 vx -268 tgt 1279 standing null clb false gr false knock 0
+70.90 intend() -> {"left":true}
+70.90 rhythm() -> {"left":true}
+70.90 thumbify() -> {"left":true}
+70.90 pad() -> {"left":true}
+== 70.93 1365,3947 vx -285 tgt 1255 standing null clb false gr false knock 0
+70.93 intend() -> {"left":true}
+70.93 rhythm() -> {"left":true}
+70.93 thumbify() -> {"left":true}
+70.93 pad() -> {"left":true}
+== 70.97 1356,3962 vx -268 tgt 1255 standing null clb false gr true knock 0
+70.97 intend() -> {"left":true}
+70.97 rhythm() -> {"left":true}
+70.97 thumbify() -> {"left":true}
+70.97 pad() -> {"left":true}
+== 71.00 1347,3962 vx -285 tgt 1255 standing null clb false gr true knock 0
+71.00 intend() -> {"left":true}
+71.00 rhythm() -> {"left":true}
+71.00 thumbify() -> {"left":true}
+71.00 pad() -> {"left":true}
+== 71.03 1338,3962 vx -268 tgt 1231 standing null clb false gr true knock 0
+71.03 intend() -> {"left":true}
+71.03 rhythm() -> {"left":true}
+71.03 thumbify() -> {"left":true}
+71.03 pad() -> {"left":true}
+== 71.07 1328,3965 vx -285 tgt 1231 standing null clb false gr false knock 0
+71.07 intend() -> {"left":true}
+71.07 rhythm() -> {"left":true}
+71.07 thumbify() -> {"left":true}
+71.07 pad() -> {"left":true}
+== 71.10 1319,3970 vx -268 tgt 1207 standing null clb false gr false knock 0
+71.10 intend() -> {}
+71.10 thumbify() -> {"left":true}
+71.10 pad() -> {"left":true}
+== 71.13 1310,3979 vx -285 tgt 1207 standing null clb false gr false knock 0
+71.13 intend() -> {}
+71.13 thumbify() -> {"left":true}
+71.13 pad() -> {"left":true}
+== 71.17 1301,3990 vx -268 tgt 1207 standing null clb false gr false knock 0
+71.17 intend() -> {}
+71.17 thumbify() -> {"left":true}
+71.17 pad() -> {"left":true}
+== 71.20 1291,4004 vx -285 tgt 1207 standing null clb false gr false knock 0
+71.20 intend() -> {}
+71.20 thumbify() -> {"left":true}
+71.20 pad() -> {"left":true}
+== 71.23 1282,4020 vx -268 tgt 1207 standing null clb false gr false knock 0
+71.23 intend() -> {}
+71.23 thumbify() -> {"left":true}
+71.23 pad() -> {"left":true}
+== 71.27 1273,4032 vx -285 tgt 1207 standing null clb false gr true knock 0
+71.27 intend() -> {"left":true}
+71.27 rhythm() -> {"left":true}
+71.27 thumbify() -> {"left":true}
+71.27 pad() -> {"left":true}
+== 71.30 1264,4032 vx -268 tgt 1207 standing null clb false gr true knock 0
+71.30 intend() -> {"left":true}
+71.30 rhythm() -> {"left":true}
+71.30 thumbify() -> {"left":true}
+71.30 pad() -> {"left":true}
+== 71.33 1255,4035 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.33 intend() -> {"left":true}
+71.33 rhythm() -> {"left":true}
+71.33 thumbify() -> {"left":true}
+71.33 pad() -> {"left":true}
+== 71.37 1246,4040 vx -268 tgt 1183 standing null clb false gr false knock 0
+71.37 intend() -> {"left":true}
+71.37 rhythm() -> {"left":true}
+71.37 thumbify() -> {"left":true}
+71.37 pad() -> {"left":true}
+== 71.40 1236,4049 vx -285 tgt 1207 standing null clb false gr false knock 0
+71.40 intend() -> {"left":true}
+71.40 rhythm() -> {"left":true}
+71.40 thumbify() -> {"left":true}
+71.40 pad() -> {"left":true}
+== 71.43 1227,4060 vx -268 tgt 1231 standing null clb false gr false knock 0
+71.43 intend() -> {"left":true}
+71.43 rhythm() -> {"left":true}
+71.43 thumbify() -> {"left":true}
+71.43 pad() -> {"left":true}
+== 71.47 1218,4074 vx -285 tgt 1231 standing null clb false gr false knock 0
+71.47 intend() -> {"left":true}
+71.47 rhythm() -> {"left":true}
+71.47 thumbify() -> {"left":true}
+71.47 pad() -> {"left":true}
+== 71.50 1209,4090 vx -268 tgt 1207 standing null clb false gr false knock 0
+71.50 intend() -> {"left":true}
+71.50 rhythm() -> {"left":true}
+71.50 thumbify() -> {"left":true}
+71.50 pad() -> {"left":true}
+== 71.53 1199,4110 vx -285 tgt 1207 standing null clb false gr false knock 0
+71.53 intend() -> {"left":true}
+71.53 rhythm() -> {"left":true}
+71.53 thumbify() -> {"left":true}
+71.53 pad() -> {"left":true}
+== 71.57 1190,4132 vx -268 tgt 1207 standing null clb false gr false knock 0
+71.57 intend() -> {"left":true}
+71.57 rhythm() -> {"left":true}
+71.57 thumbify() -> {"left":true}
+71.57 pad() -> {"left":true}
+== 71.60 1181,4157 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.60 intend() -> {"left":true}
+71.60 rhythm() -> {"left":true}
+71.60 thumbify() -> {"left":true}
+71.60 pad() -> {"left":true}
+== 71.63 1172,4185 vx -268 tgt 1183 standing null clb false gr false knock 0
+71.63 intend() -> {"left":true}
+71.63 rhythm() -> {"left":true}
+71.63 thumbify() -> {"left":true}
+71.63 pad() -> {"left":true}
+== 71.67 1162,4215 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.67 intend() -> {"right":true}
+71.67 rhythm() -> {"right":true}
+71.67 thumbify() -> {}
+== 71.70 1153,4247 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.70 intend() -> {"right":true}
+71.70 rhythm() -> {"right":true}
+71.70 thumbify() -> {}
+== 71.73 1143,4279 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.73 intend() -> {"right":true}
+71.73 rhythm() -> {"right":true}
+71.73 thumbify() -> {}
+== 71.77 1134,4310 vx -285 tgt 1183 standing null clb false gr false knock 0
+71.77 intend() -> {"right":true}
+71.77 rhythm() -> {"right":true}
+71.77 thumbify() -> {}
+== 71.80 1124,4313 vx -285 tgt 1183 standing null clb false gr true knock 0
+71.80 intend() -> {"right":true}
+71.80 rhythm() -> {"right":true}
+71.80 thumbify() -> {}
+== 71.83 1119,4313 vx -172 tgt 1183 standing null clb false gr true knock 0
+71.83 intend() -> {"right":true}
+71.83 rhythm() -> {"right":true}
+71.83 thumbify() -> {}
+== 71.87 1117,4313 vx -58 tgt 1183 standing null clb false gr true knock 0
+71.87 intend() -> {"right":true}
+71.87 rhythm() -> {"right":true}
+71.87 thumbify() -> {}
+== 71.90 1117,4313 vx 0 tgt 1183 standing null clb false gr true knock 0
+71.90 intend() -> {"right":true}
+71.90 rhythm() -> {"right":true}
+71.90 thumbify() -> {"right":true}
+71.90 pad() -> {"right":true}
+== 71.93 1120,4313 vx 87 tgt 1183 standing null clb false gr true knock 0
+71.93 decide(1,false) -> {"right":true}
+71.93 intend() -> {"right":true}
+71.93 rhythm() -> {"right":true}
+71.93 thumbify() -> {"right":true}
+71.93 pad() -> {"right":true}
+== 71.97 1125,4313 vx 173 tgt 1183 standing null clb false gr true knock 0
+71.97 intend() -> {"right":true}
+71.97 rhythm() -> {"right":true}
+71.97 thumbify() -> {"right":true}
+71.97 pad() -> {"right":true}
+== 72.00 1134,4313 vx 260 tgt 1183 standing null clb false gr true knock 0
+72.00 intend() -> {"right":true}
+72.00 rhythm() -> {"right":true}
+72.00 thumbify() -> {"right":true}
+72.00 pad() -> {"right":true}
+== 72.03 1144,4313 vx 285 tgt 1183 standing null clb false gr true knock 0
+72.03 intend() -> {"right":true}
+72.03 rhythm() -> {"right":true}
+72.03 thumbify() -> {"right":true}
+72.03 pad() -> {"right":true}
+== 72.07 1153,4313 vx 268 tgt 1183 standing null clb false gr true knock 0
+72.07 intend() -> {"right":true}
+72.07 rhythm() -> {"right":true}
+72.07 thumbify() -> {"right":true}
+72.07 pad() -> {"right":true}
+== 72.10 1162,4313 vx 285 tgt 1183 standing null clb false gr true knock 0
+72.10 startJump(1,false) -> {"right":true,"press":true,"jump":true}
+72.10 intend() -> {"right":true,"press":true,"jump":true}
+72.10 rhythm() -> {"right":true,"press":true,"jump":true}
+72.10 thumbify() -> {"right":true,"press":true,"jump":true}
+72.10 pad() -> {"right":true,"press":true,"jump":true}
+== 72.13 1171,4294 vx 268 tgt 1266 standing null clb false gr false knock 0
+72.13 intend() -> {"right":true,"jump":true}
+72.13 rhythm() -> {"right":true,"jump":true}
+72.13 thumbify() -> {"right":true,"jump":true}
+72.13 pad() -> {"right":true,"jump":true}
+== 72.17 1180,4277 vx 285 tgt 1266 standing null clb false gr false knock 0
+72.17 intend() -> {"right":true,"jump":true}
+72.17 rhythm() -> {"right":true,"jump":true}
+72.17 thumbify() -> {"right":true,"jump":true}
+72.17 pad() -> {"right":true,"jump":true}
+== 72.20 1189,4262 vx 268 tgt 1266 standing null clb false gr false knock 0
+72.20 intend() -> {"right":true}
+72.20 rhythm() -> {"right":true}
+72.20 thumbify() -> {"right":true}
+72.20 pad() -> {"right":true}
+== 72.23 1199,4256 vx 285 tgt 1289 standing null clb false gr false knock 0
+72.23 intend() -> {"right":true}
+72.23 rhythm() -> {"right":true}
+72.23 thumbify() -> {"right":true}
+72.23 pad() -> {"right":true}
+== 72.27 1208,4253 vx 268 tgt 1289 standing null clb false gr false knock 0
+72.27 intend() -> {"right":true}
+72.27 rhythm() -> {"right":true}
+72.27 thumbify() -> {"right":true}
+72.27 pad() -> {"right":true}
+== 72.30 1217,4251 vx 285 tgt 1289 standing null clb false gr false knock 0
+72.30 intend() -> {"right":true}
+72.30 rhythm() -> {"right":true}
+72.30 thumbify() -> {"right":true}
+72.30 pad() -> {"right":true}
+== 72.33 1226,4252 vx 268 tgt 1312 standing null clb false gr false knock 0
+72.33 intend() -> {"right":true}
+72.33 rhythm() -> {"right":true}
+72.33 thumbify() -> {"right":true}
+72.33 pad() -> {"right":true}
+== 72.37 1236,4256 vx 285 tgt 1312 standing null clb false gr false knock 0
+72.37 intend() -> {"right":true}
+72.37 rhythm() -> {"right":true}
+72.37 thumbify() -> {"right":true}
+72.37 pad() -> {"right":true}
+== 72.40 1245,4262 vx 268 tgt 1335 standing null clb false gr false knock 0
+72.40 intend() -> {"right":true,"press":true,"jump":true}
+72.40 rhythm() -> {"right":true,"press":true,"jump":true}
+72.40 thumbify() -> {"right":true,"press":true,"jump":true}
+72.40 pad() -> {"right":true,"press":true,"jump":true}
+== 72.43 1254,4244 vx 285 tgt 1335 standing null clb false gr false knock 0
+72.43 intend() -> {"right":true,"jump":true}
+72.43 rhythm() -> {"right":true,"jump":true}
+72.43 thumbify() -> {"right":true,"jump":true}
+72.43 pad() -> {"right":true,"jump":true}
+== 72.47 1263,4228 vx 268 tgt 1312 standing null clb false gr false knock 0
+72.47 intend() -> {"right":true,"jump":true}
+72.47 rhythm() -> {"right":true,"jump":true}
+72.47 thumbify() -> {"right":true,"jump":true}
+72.47 pad() -> {"right":true,"jump":true}
+== 72.50 1273,4214 vx 285 tgt 1266 standing null clb false gr false knock 0
+72.50 intend() -> {"right":true}
+72.50 rhythm() -> {"right":true}
+72.50 thumbify() -> {"right":true}
+72.50 pad() -> {"right":true}
+== 72.53 1282,4209 vx 268 tgt 1266 standing null clb false gr false knock 0
+72.53 intend() -> {"right":true}
+72.53 rhythm() -> {"right":true}
+72.53 thumbify() -> {"right":true}
+72.53 pad() -> {"right":true}
+== 72.57 1291,4205 vx 285 tgt 1289 standing null clb false gr false knock 0
+72.57 intend() -> {"right":true}
+72.57 rhythm() -> {"right":true}
+72.57 thumbify() -> {"right":true}
+72.57 pad() -> {"right":true}
+== 72.60 1300,4204 vx 268 tgt 1289 standing null clb false gr false knock 0
+72.60 intend() -> {"right":true}
+72.60 rhythm() -> {"right":true}
+72.60 thumbify() -> {"right":true}
+72.60 pad() -> {"right":true}
+== 72.63 1309,4205 vx 285 tgt 1289 standing null clb false gr false knock 0
+72.63 intend() -> {"right":true}
+72.63 rhythm() -> {"right":true}
+72.63 thumbify() -> {"right":true}
+72.63 pad() -> {"right":true}
+== 72.67 1318,4208 vx 268 tgt 1312 standing null clb false gr false knock 0
+72.67 intend() -> {"right":true}
+72.67 rhythm() -> {"right":true}
+72.67 thumbify() -> {"right":true}
+72.67 pad() -> {"right":true}
+== 72.70 1328,4215 vx 285 tgt 1312 standing null clb false gr false knock 0
+72.70 intend() -> {"right":true}
+72.70 rhythm() -> {"right":true}
+72.70 thumbify() -> {"right":true}
+72.70 pad() -> {"right":true}
+== 72.73 1337,4224 vx 268 tgt 1358 standing null clb false gr false knock 0
+72.73 intend() -> {"right":true}
+72.73 rhythm() -> {"right":true}
+72.73 thumbify() -> {"right":true}
+72.73 pad() -> {"right":true}
+== 72.77 1346,4236 vx 285 tgt 1404 standing null clb false gr false knock 0
+72.77 intend() -> {"right":true}
+72.77 rhythm() -> {"right":true}
+72.77 thumbify() -> {"right":true}
+72.77 pad() -> {"right":true}
+== 72.80 1355,4250 vx 268 tgt 1427 standing null clb false gr false knock 0
+72.80 intend() -> {"right":true}
+72.80 rhythm() -> {"right":true}
+72.80 thumbify() -> {"right":true}
+72.80 pad() -> {"right":true}
+== 72.83 1365,4268 vx 285 tgt 1450 standing null clb false gr false knock 0
+72.83 intend() -> {"right":true}
+72.83 rhythm() -> {"right":true}
+72.83 thumbify() -> {"right":true}
+72.83 pad() -> {"right":true}
+== 72.87 1374,4288 vx 268 tgt 1473 standing null clb false gr false knock 0
+72.87 intend() -> {"right":true}
+72.87 rhythm() -> {"right":true}
+72.87 thumbify() -> {"right":true}
+72.87 pad() -> {"right":true}
+== 72.90 1383,4311 vx 285 tgt 1473 standing null clb false gr false knock 0
+72.90 intend() -> {"right":true}
+72.90 rhythm() -> {"right":true}
+72.90 thumbify() -> {"right":true}
+72.90 pad() -> {"right":true}
+== 72.93 1392,4313 vx 268 tgt 1497 standing null clb false gr true knock 0
+72.93 intend() -> {"right":true}
+72.93 rhythm() -> {"right":true}
+72.93 thumbify() -> {"right":true}
+72.93 pad() -> {"right":true}
+== 72.97 1402,4313 vx 285 tgt 1497 standing null clb false gr true knock 0
+72.97 intend() -> {"right":true}
+72.97 rhythm() -> {"right":true}
+72.97 thumbify() -> {"right":true}
+72.97 pad() -> {"right":true}
+== 73.00 1410,4313 vx 268 tgt 1520 standing null clb false gr true knock 0
+73.00 intend() -> {"right":true}
+73.00 rhythm() -> {"right":true}
+73.00 thumbify() -> {"right":true}
+73.00 pad() -> {"right":true}
+== 73.03 1420,4313 vx 285 tgt 1520 standing null clb false gr true knock 0
+73.03 intend() -> {"right":true}
+73.03 rhythm() -> {"right":true}
+73.03 thumbify() -> {"right":true}
+73.03 pad() -> {"right":true}
+== 73.07 1429,4313 vx 268 tgt 1520 standing null clb false gr true knock 0
+73.07 intend() -> {"right":true}
+73.07 rhythm() -> {"right":true}
+73.07 thumbify() -> {"right":true}
+73.07 pad() -> {"right":true}
+== 73.10 1438,4313 vx 285 tgt 1543 standing null clb false gr true knock 0
+73.10 intend() -> {"right":true}
+73.10 rhythm() -> {"right":true}
+73.10 thumbify() -> {"right":true}
+73.10 pad() -> {"right":true}
+== 73.13 1447,4313 vx 268 tgt 1543 standing null clb false gr true knock 0
+73.13 intend() -> {"right":true}
+73.13 rhythm() -> {"right":true}
+73.13 thumbify() -> {"right":true}
+73.13 pad() -> {"right":true}
+== 73.17 1457,4313 vx 285 tgt 1566 standing null clb false gr true knock 0
+73.17 intend() -> {"right":true}
+73.17 rhythm() -> {"right":true}
+73.17 thumbify() -> {"right":true}
+73.17 pad() -> {"right":true}
+== 73.20 1466,4313 vx 268 tgt 1566 standing null clb false gr true knock 0
+73.20 intend() -> {"right":true}
+73.20 rhythm() -> {"right":true}
+73.20 thumbify() -> {"right":true}
+73.20 pad() -> {"right":true}
+== 73.23 1475,4313 vx 285 tgt 1566 standing null clb false gr true knock 0
+73.23 intend() -> {"right":true}
+73.23 rhythm() -> {"right":true}
+73.23 thumbify() -> {"right":true}
+73.23 pad() -> {"right":true}
+== 73.27 1484,4313 vx 268 tgt 1589 standing null clb false gr true knock 0
+73.27 intend() -> {"right":true}
+73.27 rhythm() -> {"right":true}
+73.27 thumbify() -> {"right":true}
+73.27 pad() -> {"right":true}
+== 73.30 1494,4313 vx 285 tgt 1589 standing null clb false gr true knock 0
+73.30 intend() -> {"right":true}
+73.30 rhythm() -> {"right":true}
+73.30 thumbify() -> {"right":true}
+73.30 pad() -> {"right":true}
+== 73.33 1503,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+73.33 intend() -> {"right":true}
+73.33 rhythm() -> {"right":true}
+73.33 thumbify() -> {"right":true}
+73.33 pad() -> {"right":true}
+== 73.37 1512,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+73.37 intend() -> {"right":true}
+73.37 rhythm() -> {"right":true}
+73.37 thumbify() -> {"right":true}
+73.37 pad() -> {"right":true}
+== 73.40 1521,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+73.40 intend() -> {"right":true}
+73.40 rhythm() -> {"right":true}
+73.40 thumbify() -> {"right":true}
+73.40 pad() -> {"right":true}
+== 73.43 1530,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+73.43 intend() -> {"right":true}
+73.43 rhythm() -> {"right":true}
+73.43 thumbify() -> {"right":true}
+73.43 pad() -> {"right":true}
+== 73.47 1539,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+73.47 intend() -> {"right":true}
+73.47 rhythm() -> {"right":true}
+73.47 thumbify() -> {"right":true}
+73.47 pad() -> {"right":true}
+== 73.50 1549,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+73.50 intend() -> {"right":true}
+73.50 rhythm() -> {"right":true}
+73.50 thumbify() -> {"right":true}
+73.50 pad() -> {"right":true}
+== 73.53 1558,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+73.53 intend() -> {"right":true}
+73.53 rhythm() -> {"right":true}
+73.53 thumbify() -> {"right":true}
+73.53 pad() -> {"right":true}
+== 73.57 1567,4313 vx 285 tgt 1612 standing null clb false gr true knock 0
+73.57 intend() -> {"right":true}
+73.57 rhythm() -> {"right":true}
+73.57 thumbify() -> {"right":true}
+73.57 pad() -> {"right":true}
+== 73.60 1576,4313 vx 268 tgt 1612 standing null clb false gr true knock 0
+73.60 intend() -> {"up":true}
+73.60 thumbify() -> {"up":true,"right":true}
+73.60 pad() -> {"up":true,"right":true}
+== 73.63 1612,4306 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.63 intend() -> {"up":true}
+73.63 thumbify() -> {"up":true,"right":true}
+73.63 pad() -> {"up":true,"right":true}
+== 73.67 1612,4298 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.67 intend() -> {"up":true}
+73.67 thumbify() -> {"up":true,"right":true}
+73.67 pad() -> {"up":true,"right":true}
+== 73.70 1612,4291 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.70 intend() -> {"up":true}
+73.70 thumbify() -> {"up":true,"right":true}
+73.70 pad() -> {"up":true,"right":true}
+== 73.73 1612,4284 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.73 intend() -> {"up":true}
+73.73 thumbify() -> {"up":true,"right":true}
+73.73 pad() -> {"up":true,"right":true}
+== 73.77 1612,4276 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.77 intend() -> {"up":true}
+73.77 thumbify() -> {"up":true,"right":true}
+73.77 pad() -> {"up":true,"right":true}
+== 73.80 1612,4269 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.80 intend() -> {"up":true}
+73.80 thumbify() -> {"up":true,"right":true}
+73.80 pad() -> {"up":true,"right":true}
+== 73.83 1612,4262 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.83 intend() -> {"up":true}
+73.83 thumbify() -> {"up":true,"right":true}
+73.83 pad() -> {"up":true,"right":true}
+== 73.87 1612,4254 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.87 intend() -> {"up":true}
+73.87 thumbify() -> {"up":true,"right":true}
+73.87 pad() -> {"up":true,"right":true}
+== 73.90 1612,4247 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.90 intend() -> {"up":true}
+73.90 thumbify() -> {"up":true,"right":true}
+73.90 pad() -> {"up":true,"right":true}
+== 73.93 1612,4240 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.93 intend() -> {"up":true}
+73.93 thumbify() -> {"up":true,"right":true}
+73.93 pad() -> {"up":true,"right":true}
+== 73.97 1612,4232 vx 0 tgt 1612 standing null clb true gr false knock 0
+73.97 intend() -> {"up":true}
+73.97 thumbify() -> {"up":true,"right":true}
+73.97 pad() -> {"up":true,"right":true}
+== 74.00 1612,4225 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.00 intend() -> {"up":true}
+74.00 thumbify() -> {"up":true,"right":true}
+74.00 pad() -> {"up":true,"right":true}
+== 74.03 1612,4218 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.03 intend() -> {"up":true}
+74.03 thumbify() -> {"up":true,"right":true}
+74.03 pad() -> {"up":true,"right":true}
+== 74.07 1612,4210 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.07 intend() -> {"up":true}
+74.07 thumbify() -> {"up":true,"right":true}
+74.07 pad() -> {"up":true,"right":true}
+== 74.10 1612,4203 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.10 intend() -> {"up":true}
+74.10 thumbify() -> {"up":true,"right":true}
+74.10 pad() -> {"up":true,"right":true}
+== 74.13 1612,4196 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.13 intend() -> {"up":true}
+74.13 thumbify() -> {"up":true,"right":true}
+74.13 pad() -> {"up":true,"right":true}
+== 74.17 1612,4188 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.17 intend() -> {"up":true}
+74.17 thumbify() -> {"up":true,"right":true}
+74.17 pad() -> {"up":true,"right":true}
+== 74.20 1612,4181 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.20 intend() -> {"up":true}
+74.20 thumbify() -> {"up":true,"right":true}
+74.20 pad() -> {"up":true,"right":true}
+== 74.23 1612,4174 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.23 intend() -> {"up":true}
+74.23 thumbify() -> {"up":true,"right":true}
+74.23 pad() -> {"up":true,"right":true}
+== 74.27 1612,4166 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.27 intend() -> {"up":true}
+74.27 thumbify() -> {"up":true,"right":true}
+74.27 pad() -> {"up":true,"right":true}
+== 74.30 1612,4159 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.30 intend() -> {"up":true}
+74.30 thumbify() -> {"up":true,"right":true}
+74.30 pad() -> {"up":true,"right":true}
+== 74.33 1612,4152 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.33 intend() -> {"up":true}
+74.33 thumbify() -> {"up":true,"right":true}
+74.33 pad() -> {"up":true,"right":true}
+== 74.37 1612,4144 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.37 intend() -> {"up":true}
+74.37 thumbify() -> {"up":true,"right":true}
+74.37 pad() -> {"up":true,"right":true}
+== 74.40 1612,4137 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.40 intend() -> {"up":true}
+74.40 thumbify() -> {"up":true,"right":true}
+74.40 pad() -> {"up":true,"right":true}
+== 74.43 1612,4130 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.43 intend() -> {"up":true}
+74.43 thumbify() -> {"up":true,"right":true}
+74.43 pad() -> {"up":true,"right":true}
+== 74.47 1612,4122 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.47 intend() -> {"up":true}
+74.47 thumbify() -> {"up":true,"right":true}
+74.47 pad() -> {"up":true,"right":true}
+== 74.50 1612,4115 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.50 intend() -> {"up":true}
+74.50 thumbify() -> {"up":true,"right":true}
+74.50 pad() -> {"up":true,"right":true}
+== 74.53 1612,4108 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.53 intend() -> {"up":true}
+74.53 thumbify() -> {"up":true,"right":true}
+74.53 pad() -> {"up":true,"right":true}
+== 74.57 1612,4100 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.57 intend() -> {"up":true}
+74.57 thumbify() -> {"up":true,"right":true}
+74.57 pad() -> {"up":true,"right":true}
+== 74.60 1612,4093 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.60 intend() -> {"up":true}
+74.60 thumbify() -> {"up":true,"right":true}
+74.60 pad() -> {"up":true,"right":true}
+== 74.63 1612,4086 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.63 intend() -> {"up":true}
+74.63 thumbify() -> {"up":true,"right":true}
+74.63 pad() -> {"up":true,"right":true}
+== 74.67 1612,4078 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.67 intend() -> {"up":true}
+74.67 thumbify() -> {"up":true,"right":true}
+74.67 pad() -> {"up":true,"right":true}
+== 74.70 1612,4071 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.70 intend() -> {"up":true}
+74.70 thumbify() -> {"up":true,"right":true}
+74.70 pad() -> {"up":true,"right":true}
+== 74.73 1612,4064 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.73 intend() -> {"up":true}
+74.73 thumbify() -> {"up":true,"right":true}
+74.73 pad() -> {"up":true,"right":true}
+== 74.77 1612,4056 vx 0 tgt 1612 standing null clb true gr false knock 0
+74.77 intend() -> {"up":true}
+74.77 thumbify() -> {"up":true,"right":true}
+74.77 pad() -> {"up":true,"right":true}
+== 74.80 1612,4049 vx 0 tgt 1588 standing null clb true gr false knock 0
+74.80 intend() -> {"up":true}
+74.80 thumbify() -> {"up":true,"right":true}
+74.80 pad() -> {"up":true,"right":true}
+== 74.83 1612,4042 vx 0 tgt 1564 standing null clb true gr false knock 0
+74.83 intend() -> {"up":true}
+74.83 thumbify() -> {"up":true,"right":true}
+74.83 pad() -> {"up":true,"right":true}
+== 74.87 1612,4034 vx 0 tgt 1541 standing null clb true gr false knock 0
+74.87 intend() -> {"up":true}
+74.87 thumbify() -> {"up":true,"right":true}
+74.87 pad() -> {"up":true,"right":true}
+== 74.90 1612,4027 vx 0 tgt 1541 standing null clb true gr false knock 0
+74.90 intend() -> {"up":true}
+74.90 thumbify() -> {"up":true,"right":true}
+74.90 pad() -> {"up":true,"right":true}
+== 74.93 1612,4020 vx 0 tgt 1541 standing null clb true gr false knock 0
+74.93 intend() -> {"up":true}
+74.93 thumbify() -> {"up":true,"right":true}
+74.93 pad() -> {"up":true,"right":true}
+== 74.97 1612,4012 vx 0 tgt 1517 standing null clb true gr false knock 0
+74.97 intend() -> {"up":true}
+74.97 thumbify() -> {"up":true,"right":true}
+74.97 pad() -> {"up":true,"right":true}
+== 75.00 1612,4005 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.00 intend() -> {"up":true}
+75.00 thumbify() -> {"up":true,"right":true}
+75.00 pad() -> {"up":true,"right":true}
+== 75.03 1612,3998 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.03 intend() -> {"up":true}
+75.03 thumbify() -> {"up":true,"right":true}
+75.03 pad() -> {"up":true,"right":true}
+== 75.07 1612,3990 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.07 intend() -> {"up":true}
+75.07 thumbify() -> {"up":true,"right":true}
+75.07 pad() -> {"up":true,"right":true}
+== 75.10 1612,3983 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.10 intend() -> {"up":true}
+75.10 thumbify() -> {"up":true,"right":true}
+75.10 pad() -> {"up":true,"right":true}
+== 75.13 1612,3976 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.13 intend() -> {"up":true}
+75.13 thumbify() -> {"up":true,"right":true}
+75.13 pad() -> {"up":true,"right":true}
+== 75.17 1612,3950 vx 160 tgt 1517 standing null clb false gr false knock 0
+75.17 intend() -> {"left":true}
+75.17 rhythm() -> {"left":true}
+75.17 thumbify() -> {}
+== 75.20 1617,3946 vx 160 tgt 1517 standing null clb false gr false knock 0
+75.20 intend() -> {"left":true}
+75.20 rhythm() -> {"left":true}
+75.20 thumbify() -> {}
+== 75.23 1623,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+75.23 intend() -> {"left":true}
+75.23 rhythm() -> {"left":true}
+75.23 thumbify() -> {}
+== 75.27 1628,3944 vx 160 tgt 1517 standing null clb false gr false knock 0
+75.27 intend() -> {"left":true}
+75.27 rhythm() -> {"left":true}
+75.27 thumbify() -> {}
+== 75.30 1633,3946 vx 160 tgt 1541 standing null clb false gr false knock 0
+75.30 intend() -> {"left":true}
+75.30 rhythm() -> {"left":true}
+75.30 thumbify() -> {}
+== 75.33 1639,3952 vx 160 tgt 1541 standing null clb false gr false knock 0
+75.33 intend() -> {"left":true}
+75.33 rhythm() -> {"left":true}
+75.33 thumbify() -> {}
+== 75.37 1644,3960 vx 160 tgt 1541 standing null clb false gr false knock 0
+75.37 intend() -> {"left":true}
+75.37 rhythm() -> {"left":true}
+75.37 thumbify() -> {}
+== 75.40 1649,3971 vx 160 tgt 1541 standing null clb false gr false knock 0
+75.40 intend() -> {"left":true}
+75.40 rhythm() -> {"left":true}
+75.40 thumbify() -> {"left":true}
+75.40 pad() -> {"left":true}
+== 75.43 1652,3985 vx 73 tgt 1564 standing null clb false gr false knock 0
+75.43 intend() -> {"left":true}
+75.43 rhythm() -> {"left":true}
+75.43 thumbify() -> {"left":true}
+75.43 pad() -> {"left":true}
+== 75.47 1651,4002 vx -13 tgt 1564 standing null clb false gr false knock 0
+75.47 intend() -> {"left":true}
+75.47 rhythm() -> {"left":true}
+75.47 thumbify() -> {"left":true}
+75.47 pad() -> {"left":true}
+== 75.50 1649,4021 vx -70 tgt 1564 standing null clb false gr false knock 0
+75.50 intend() -> {"left":true}
+75.50 rhythm() -> {"left":true}
+75.50 thumbify() -> {"left":true}
+75.50 pad() -> {"left":true}
+== 75.53 1645,4044 vx -127 tgt 1588 standing null clb false gr false knock 0
+75.53 intend() -> {"left":true,"up":true}
+75.53 rhythm() -> {"left":true,"up":true}
+75.53 thumbify() -> {"left":true,"up":true}
+75.53 pad() -> {"left":true,"up":true}
+== 75.57 1612,4036 vx 0 tgt 1541 standing null clb true gr false knock 0
+75.57 intend() -> {"up":true}
+75.57 thumbify() -> {"up":true,"left":true}
+75.57 pad() -> {"up":true,"left":true}
+== 75.60 1612,4029 vx 0 tgt 1541 standing null clb true gr false knock 0
+75.60 intend() -> {"up":true}
+75.60 thumbify() -> {"up":true,"left":true}
+75.60 pad() -> {"up":true,"left":true}
+== 75.63 1612,4022 vx 0 tgt 1541 standing null clb true gr false knock 0
+75.63 intend() -> {"up":true}
+75.63 thumbify() -> {"up":true,"left":true}
+75.63 pad() -> {"up":true,"left":true}
+== 75.67 1612,4014 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.67 intend() -> {"up":true}
+75.67 thumbify() -> {"up":true,"left":true}
+75.67 pad() -> {"up":true,"left":true}
+== 75.70 1612,4007 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.70 intend() -> {"up":true}
+75.70 thumbify() -> {"up":true,"left":true}
+75.70 pad() -> {"up":true,"left":true}
+== 75.73 1612,4000 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.73 intend() -> {"up":true}
+75.73 thumbify() -> {"up":true,"left":true}
+75.73 pad() -> {"up":true,"left":true}
+== 75.77 1612,3992 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.77 intend() -> {"up":true}
+75.77 thumbify() -> {"up":true,"left":true}
+75.77 pad() -> {"up":true,"left":true}
+== 75.80 1612,3985 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.80 intend() -> {"up":true}
+75.80 thumbify() -> {"up":true,"left":true}
+75.80 pad() -> {"up":true,"left":true}
+== 75.83 1612,3978 vx 0 tgt 1517 standing null clb true gr false knock 0
+75.83 intend() -> {"up":true}
+75.83 thumbify() -> {"up":true,"left":true}
+75.83 pad() -> {"up":true,"left":true}
+== 75.87 1612,3950 vx -160 tgt 1517 standing null clb false gr false knock 0
+75.87 intend() -> {"left":true}
+75.87 rhythm() -> {"left":true}
+75.87 thumbify() -> {"left":true}
+75.87 pad() -> {"left":true}
+== 75.90 1605,3946 vx -217 tgt 1493 standing null clb false gr false knock 0
+75.90 intend() -> {"left":true}
+75.90 rhythm() -> {"left":true}
+75.90 thumbify() -> {"left":true}
+75.90 pad() -> {"left":true}
+== 75.93 1596,3944 vx -273 tgt 1493 standing null clb false gr false knock 0
+75.93 intend() -> {"left":true}
+75.93 rhythm() -> {"left":true}
+75.93 thumbify() -> {"left":true}
+75.93 pad() -> {"left":true}
+== 75.97 1586,3944 vx -285 tgt 1493 standing null clb false gr false knock 0
+75.97 intend() -> {"left":true}
+75.97 rhythm() -> {"left":true}
+75.97 thumbify() -> {"left":true}
+75.97 pad() -> {"left":true}
+== 76.00 1577,3946 vx -268 tgt 1469 standing null clb false gr false knock 0
+76.00 intend() -> {"left":true}
+76.00 rhythm() -> {"left":true}
+76.00 thumbify() -> {"left":true}
+76.00 pad() -> {"left":true}
+== 76.03 1568,3952 vx -285 tgt 1469 standing null clb false gr false knock 0
+76.03 intend() -> {"left":true}
+76.03 rhythm() -> {"left":true}
+76.03 thumbify() -> {"left":true}
+76.03 pad() -> {"left":true}
+== 76.07 1559,3960 vx -268 tgt 1445 standing null clb false gr false knock 0
+76.07 intend() -> {"left":true}
+76.07 rhythm() -> {"left":true}
+76.07 thumbify() -> {"left":true}
+76.07 pad() -> {"left":true}
+== 76.10 1549,3962 vx -285 tgt 1445 standing null clb false gr true knock 0
+76.10 intend() -> {"left":true}
+76.10 rhythm() -> {"left":true}
+76.10 thumbify() -> {"left":true}
+76.10 pad() -> {"left":true}
+== 76.13 1540,3962 vx -268 tgt 1445 standing null clb false gr true knock 0
+76.13 intend() -> {"left":true}
+76.13 rhythm() -> {"left":true}
+76.13 thumbify() -> {"left":true}
+76.13 pad() -> {"left":true}
+== 76.17 1531,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+76.17 intend() -> {"left":true}
+76.17 rhythm() -> {"left":true}
+76.17 thumbify() -> {"left":true}
+76.17 pad() -> {"left":true}
+== 76.20 1522,3962 vx -268 tgt 1422 standing null clb false gr true knock 0
+76.20 intend() -> {"left":true}
+76.20 rhythm() -> {"left":true}
+76.20 thumbify() -> {"left":true}
+76.20 pad() -> {"left":true}
+== 76.23 1512,3962 vx -285 tgt 1422 standing null clb false gr true knock 0
+76.23 intend() -> {"left":true}
+76.23 rhythm() -> {"left":true}
+76.23 thumbify() -> {"left":true}
+76.23 pad() -> {"left":true}
+== 76.27 1504,3962 vx -268 tgt 1398 standing null clb false gr true knock 0
+76.27 decide(-1,false) -> {"left":true}
+76.27 intend() -> {"left":true}
+76.27 rhythm() -> {"left":true}
+76.27 thumbify() -> {"left":true}
+76.27 pad() -> {"left":true}
+== 76.30 1494,3962 vx -285 tgt 1398 standing null clb false gr true knock 0
+76.30 intend() -> {"left":true}
+76.30 rhythm() -> {"left":true}
+76.30 thumbify() -> {"left":true}
+76.30 pad() -> {"left":true}
+== 76.33 1485,3962 vx -268 tgt 1374 standing null clb false gr true knock 0
+76.33 intend() -> {"left":true}
+76.33 rhythm() -> {"left":true}
+76.33 thumbify() -> {"left":true}
+76.33 pad() -> {"left":true}
+== 76.37 1476,3962 vx -285 tgt 1374 standing null clb false gr true knock 0
+76.37 intend() -> {"press":true,"jump":true}
+76.37 thumbify() -> {"press":true,"jump":true}
+== 76.40 1466,3943 vx -285 tgt 1374 standing null clb false gr false knock 0
+76.40 intend() -> {"jump":true}
+76.40 thumbify() -> {"jump":true}
+== 76.43 1457,3926 vx -285 tgt 1374 standing null clb false gr false knock 0
+76.43 intend() -> {"jump":true}
+76.43 thumbify() -> {"jump":true}
+== 76.47 1447,3911 vx -285 tgt 1350 standing null clb false gr false knock 0
+76.47 intend() -> {"left":true}
+76.47 rhythm() -> {"left":true}
+76.47 thumbify() -> {"left":true}
+76.47 pad() -> {"left":true}
+== 76.50 1438,3905 vx -268 tgt 1350 standing null clb false gr false knock 0
+76.50 intend() -> {"left":true}
+76.50 rhythm() -> {"left":true}
+76.50 thumbify() -> {"left":true}
+76.50 pad() -> {"left":true}
+== 76.53 1429,3902 vx -285 tgt 1350 standing null clb false gr false knock 0
+76.53 intend() -> {"left":true}
+76.53 rhythm() -> {"left":true}
+76.53 thumbify() -> {"left":true}
+76.53 pad() -> {"left":true}
+== 76.57 1420,3900 vx -268 tgt 1350 standing null clb false gr false knock 0
+76.57 intend() -> {"left":true}
+76.57 rhythm() -> {"left":true}
+76.57 thumbify() -> {"left":true}
+76.57 pad() -> {"left":true}
+== 76.60 1410,3901 vx -285 tgt 1326 standing null clb false gr false knock 0
+76.60 intend() -> {"left":true}
+76.60 rhythm() -> {"left":true}
+76.60 thumbify() -> {"left":true}
+76.60 pad() -> {"left":true}
+== 76.63 1401,3905 vx -268 tgt 1326 standing null clb false gr false knock 0
+76.63 intend() -> {"left":true}
+76.63 rhythm() -> {"left":true}
+76.63 thumbify() -> {"left":true}
+76.63 pad() -> {"left":true}
+== 76.67 1392,3911 vx -285 tgt 1303 standing null clb false gr false knock 0
+76.67 intend() -> {"left":true}
+76.67 rhythm() -> {"left":true}
+76.67 thumbify() -> {"left":true}
+76.67 pad() -> {"left":true}
+== 76.70 1383,3920 vx -268 tgt 1303 standing null clb false gr false knock 0
+76.70 intend() -> {"left":true}
+76.70 rhythm() -> {"left":true}
+76.70 thumbify() -> {"left":true}
+76.70 pad() -> {"left":true}
+== 76.73 1373,3932 vx -285 tgt 1279 standing null clb false gr false knock 0
+76.73 intend() -> {"left":true}
+76.73 rhythm() -> {"left":true}
+76.73 thumbify() -> {"left":true}
+76.73 pad() -> {"left":true}
+== 76.77 1365,3947 vx -268 tgt 1255 standing null clb false gr false knock 0
+76.77 intend() -> {"left":true}
+76.77 rhythm() -> {"left":true}
+76.77 thumbify() -> {"left":true}
+76.77 pad() -> {"left":true}
+== 76.80 1355,3962 vx -285 tgt 1255 standing null clb false gr true knock 0
+76.80 intend() -> {"left":true}
+76.80 rhythm() -> {"left":true}
+76.80 thumbify() -> {"left":true}
+76.80 pad() -> {"left":true}
+== 76.83 1346,3962 vx -268 tgt 1255 standing null clb false gr true knock 0
+76.83 intend() -> {"left":true}
+76.83 rhythm() -> {"left":true}
+76.83 thumbify() -> {"left":true}
+76.83 pad() -> {"left":true}
+== 76.87 1337,3962 vx -285 tgt 1231 standing null clb false gr true knock 0
+76.87 intend() -> {"left":true}
+76.87 rhythm() -> {"left":true}
+76.87 thumbify() -> {"left":true}
+76.87 pad() -> {"left":true}
+== 76.90 1328,3965 vx -268 tgt 1231 standing null clb false gr false knock 0
+76.90 intend() -> {}
+76.90 thumbify() -> {"left":true}
+76.90 pad() -> {"left":true}
+== 76.93 1318,3970 vx -285 tgt 1207 standing null clb false gr false knock 0
+76.93 intend() -> {}
+76.93 thumbify() -> {"left":true}
+76.93 pad() -> {"left":true}
+== 76.97 1309,3979 vx -268 tgt 1207 standing null clb false gr false knock 0
+76.97 intend() -> {}
+76.97 thumbify() -> {"left":true}
+76.97 pad() -> {"left":true}
+== 77.00 1300,3990 vx -285 tgt 1207 standing null clb false gr false knock 0
+77.00 intend() -> {}
+77.00 thumbify() -> {"left":true}
+77.00 pad() -> {"left":true}
+== 77.03 1291,4004 vx -268 tgt 1207 standing null clb false gr false knock 0
+77.03 intend() -> {}
+77.03 thumbify() -> {"left":true}
+77.03 pad() -> {"left":true}
+== 77.07 1281,4020 vx -285 tgt 1207 standing null clb false gr false knock 0
+77.07 intend() -> {}
+77.07 thumbify() -> {"left":true}
+77.07 pad() -> {"left":true}
+== 77.10 1272,4032 vx -268 tgt 1207 standing null clb false gr true knock 0
+77.10 intend() -> {"left":true}
+77.10 rhythm() -> {"left":true}
+77.10 thumbify() -> {"left":true}
+77.10 pad() -> {"left":true}
+== 77.13 1263,4032 vx -285 tgt 1183 standing null clb false gr true knock 0
+77.13 intend() -> {"left":true}
+77.13 rhythm() -> {"left":true}
+77.13 thumbify() -> {"left":true}
+77.13 pad() -> {"left":true}
+== 77.17 1254,4035 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.17 intend() -> {"left":true}
+77.17 rhythm() -> {"left":true}
+77.17 thumbify() -> {"left":true}
+77.17 pad() -> {"left":true}
+== 77.20 1244,4040 vx -285 tgt 1183 standing null clb false gr false knock 0
+77.20 intend() -> {"left":true}
+77.20 rhythm() -> {"left":true}
+77.20 thumbify() -> {"left":true}
+77.20 pad() -> {"left":true}
+== 77.23 1236,4049 vx -268 tgt 1207 standing null clb false gr false knock 0
+77.23 intend() -> {"left":true}
+77.23 rhythm() -> {"left":true}
+77.23 thumbify() -> {"left":true}
+77.23 pad() -> {"left":true}
+== 77.27 1226,4060 vx -285 tgt 1231 standing null clb false gr false knock 0
+77.27 intend() -> {"left":true}
+77.27 rhythm() -> {"left":true}
+77.27 thumbify() -> {"left":true}
+77.27 pad() -> {"left":true}
+== 77.30 1217,4074 vx -268 tgt 1231 standing null clb false gr false knock 0
+77.30 intend() -> {"left":true}
+77.30 rhythm() -> {"left":true}
+77.30 thumbify() -> {"left":true}
+77.30 pad() -> {"left":true}
+== 77.33 1208,4090 vx -285 tgt 1207 standing null clb false gr false knock 0
+77.33 intend() -> {"left":true}
+77.33 rhythm() -> {"left":true}
+77.33 thumbify() -> {"left":true}
+77.33 pad() -> {"left":true}
+== 77.37 1199,4110 vx -268 tgt 1207 standing null clb false gr false knock 0
+77.37 intend() -> {"left":true}
+77.37 rhythm() -> {"left":true}
+77.37 thumbify() -> {"left":true}
+77.37 pad() -> {"left":true}
+== 77.40 1189,4132 vx -285 tgt 1207 standing null clb false gr false knock 0
+77.40 intend() -> {"left":true}
+77.40 rhythm() -> {"left":true}
+77.40 thumbify() -> {"left":true}
+77.40 pad() -> {"left":true}
+== 77.43 1180,4157 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.43 intend() -> {"left":true}
+77.43 rhythm() -> {"left":true}
+77.43 thumbify() -> {"left":true}
+77.43 pad() -> {"left":true}
+== 77.47 1171,4185 vx -285 tgt 1183 standing null clb false gr false knock 0
+77.47 intend() -> {"left":true}
+77.47 rhythm() -> {"left":true}
+77.47 thumbify() -> {"left":true}
+77.47 pad() -> {"left":true}
+== 77.50 1162,4215 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.50 intend() -> {"right":true}
+77.50 rhythm() -> {"right":true}
+77.50 thumbify() -> {}
+== 77.53 1153,4247 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.53 intend() -> {"right":true}
+77.53 rhythm() -> {"right":true}
+77.53 thumbify() -> {}
+== 77.57 1144,4279 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.57 intend() -> {"right":true}
+77.57 rhythm() -> {"right":true}
+77.57 thumbify() -> {}
+== 77.60 1135,4310 vx -268 tgt 1183 standing null clb false gr false knock 0
+77.60 intend() -> {"right":true}
+77.60 rhythm() -> {"right":true}
+77.60 thumbify() -> {}
+== 77.63 1126,4313 vx -268 tgt 1183 standing null clb false gr true knock 0
+77.63 intend() -> {"right":true}
+77.63 rhythm() -> {"right":true}
+77.63 thumbify() -> {}
+== 77.67 1121,4313 vx -154 tgt 1183 standing null clb false gr true knock 0
+77.67 intend() -> {"right":true}
+77.67 rhythm() -> {"right":true}
+77.67 thumbify() -> {}
+== 77.70 1120,4313 vx -41 tgt 1183 standing null clb false gr true knock 0
+77.70 intend() -> {"right":true}
+77.70 rhythm() -> {"right":true}
+77.70 thumbify() -> {}
+== 77.73 1120,4313 vx 0 tgt 1183 standing null clb false gr true knock 0
+77.73 intend() -> {"right":true}
+77.73 rhythm() -> {"right":true}
+77.73 thumbify() -> {"right":true}
+77.73 pad() -> {"right":true}
+== 77.77 1123,4313 vx 87 tgt 1183 standing null clb false gr true knock 0
+77.77 decide(1,false) -> {"right":true}
+77.77 intend() -> {"right":true}
+77.77 rhythm() -> {"right":true}
+77.77 thumbify() -> {"right":true}
+77.77 pad() -> {"right":true}
+== 77.80 1128,4313 vx 173 tgt 1183 standing null clb false gr true knock 0
+77.80 intend() -> {"right":true}
+77.80 rhythm() -> {"right":true}
+77.80 thumbify() -> {"right":true}
+77.80 pad() -> {"right":true}
+== 77.83 1137,4313 vx 260 tgt 1183 standing null clb false gr true knock 0
+77.83 intend() -> {"right":true}
+77.83 rhythm() -> {"right":true}
+77.83 thumbify() -> {"right":true}
+77.83 pad() -> {"right":true}
+== 77.87 1147,4313 vx 285 tgt 1183 standing null clb false gr true knock 0
+77.87 intend() -> {"right":true}
+77.87 rhythm() -> {"right":true}
+77.87 thumbify() -> {"right":true}
+77.87 pad() -> {"right":true}
+== 77.90 1155,4313 vx 268 tgt 1183 standing null clb false gr true knock 0
+77.90 intend() -> {"right":true}
+77.90 rhythm() -> {"right":true}
+77.90 thumbify() -> {"right":true}
+77.90 pad() -> {"right":true}
+== 77.93 1165,4313 vx 285 tgt 1183 standing null clb false gr true knock 0
+77.93 intend() -> {"press":true,"jump":true}
+77.93 thumbify() -> {"press":true,"jump":true}
+== 77.97 908,3166 vx 0 tgt 1015 standing null clb false gr false knock 0
+77.97 intend() -> {"jump":true}
+77.97 thumbify() -> {"jump":true}
+== 78.00 908,3149 vx 0 tgt 1015 standing null clb false gr false knock 0
+78.00 intend() -> {"jump":true}
+78.00 thumbify() -> {"jump":true}
+== 78.03 908,3134 vx 0 tgt 1015 standing null clb false gr false knock 0
+78.03 intend() -> {"right":true,"jump":true}
+78.03 rhythm() -> {"right":true,"jump":true}
+78.03 thumbify() -> {"right":true,"jump":true}
+78.03 pad() -> {"right":true,"jump":true}
+== 78.07 910,3121 vx 57 tgt 1015 standing null clb false gr false knock 0
+78.07 intend() -> {"right":true}
+78.07 rhythm() -> {"right":true}
+78.07 thumbify() -> {"right":true}
+78.07 pad() -> {"right":true}
+== 78.10 913,3116 vx 113 tgt 1015 standing null clb false gr false knock 0
+78.10 intend() -> {"right":true}
+78.10 rhythm() -> {"right":true}
+78.10 thumbify() -> {"right":true}
+78.10 pad() -> {"right":true}
+== 78.13 919,3112 vx 170 tgt 1015 standing null clb false gr false knock 0
+78.13 intend() -> {"right":true,"press":true,"jump":true}
+78.13 rhythm() -> {"right":true,"press":true,"jump":true}
+78.13 thumbify() -> {"right":true,"press":true,"jump":true}
+78.13 pad() -> {"right":true,"press":true,"jump":true}
+== 78.17 927,3094 vx 227 tgt 1015 standing null clb false gr false knock 0
+78.17 intend() -> {"right":true,"jump":true}
+78.17 rhythm() -> {"right":true,"jump":true}
+78.17 thumbify() -> {"right":true,"jump":true}
+78.17 pad() -> {"right":true,"jump":true}
+== 78.20 936,3078 vx 283 tgt 929 standing null clb false gr false knock 0
+78.20 intend() -> {"right":true,"jump":true}
+78.20 rhythm() -> {"right":true,"jump":true}
+78.20 thumbify() -> {"right":true,"jump":true}
+78.20 pad() -> {"right":true,"jump":true}
+== 78.23 946,3064 vx 285 tgt 950 standing null clb false gr false knock 0
+78.23 intend() -> {"right":true}
+78.23 rhythm() -> {"right":true}
+78.23 thumbify() -> {"right":true}
+78.23 pad() -> {"right":true}
+== 78.27 955,3058 vx 268 tgt 950 standing null clb false gr false knock 0
+78.27 intend() -> {"right":true}
+78.27 rhythm() -> {"right":true}
+78.27 thumbify() -> {"right":true}
+78.27 pad() -> {"right":true}
+== 78.30 964,3055 vx 285 tgt 950 standing null clb false gr false knock 0
+78.30 intend() -> {"right":true}
+78.30 rhythm() -> {"right":true}
+78.30 thumbify() -> {"right":true}
+78.30 pad() -> {"right":true}
+== 78.33 973,3053 vx 268 tgt 972 standing null clb false gr false knock 0
+78.33 intend() -> {"right":true}
+78.33 rhythm() -> {"right":true}
+78.33 thumbify() -> {"right":true}
+78.33 pad() -> {"right":true}
+== 78.37 982,3054 vx 285 tgt 972 standing null clb false gr false knock 0
+78.37 intend() -> {"right":true}
+78.37 rhythm() -> {"right":true}
+78.37 thumbify() -> {"right":true}
+78.37 pad() -> {"right":true}
+== 78.40 991,3058 vx 268 tgt 993 standing null clb false gr false knock 0
+78.40 intend() -> {"right":true}
+78.40 rhythm() -> {"right":true}
+78.40 thumbify() -> {"right":true}
+78.40 pad() -> {"right":true}
+== 78.43 1001,3064 vx 285 tgt 1100 standing null clb false gr false knock 0
+78.43 intend() -> {"right":true}
+78.43 rhythm() -> {"right":true}
+78.43 thumbify() -> {"right":true}
+78.43 pad() -> {"right":true}
+== 78.47 1010,3065 vx 268 tgt 1100 standing null clb false gr true knock 0
+78.47 intend() -> {"right":true}
+78.47 rhythm() -> {"right":true}
+78.47 thumbify() -> {"right":true}
+78.47 pad() -> {"right":true}
+== 78.50 1019,3065 vx 285 tgt 1121 standing null clb false gr true knock 0
+78.50 intend() -> {"right":true}
+78.50 rhythm() -> {"right":true}
+78.50 thumbify() -> {"right":true}
+78.50 pad() -> {"right":true}
+== 78.53 1028,3065 vx 268 tgt 1121 standing null clb false gr true knock 0
+78.53 intend() -> {"right":true}
+78.53 rhythm() -> {"right":true}
+78.53 thumbify() -> {"right":true}
+78.53 pad() -> {"right":true}
+== 78.57 1038,3065 vx 285 tgt 1143 standing null clb false gr true knock 0
+78.57 intend() -> {"right":true}
+78.57 rhythm() -> {"right":true}
+78.57 thumbify() -> {"right":true}
+78.57 pad() -> {"right":true}
+== 78.60 1047,3065 vx 268 tgt 1143 standing null clb false gr true knock 0
+78.60 intend() -> {"right":true}
+78.60 rhythm() -> {"right":true}
+78.60 thumbify() -> {"right":true}
+78.60 pad() -> {"right":true}
+== 78.63 1056,3065 vx 285 tgt 1164 standing null clb false gr true knock 0
+78.63 intend() -> {"right":true}
+78.63 rhythm() -> {"right":true}
+78.63 thumbify() -> {"right":true}
+78.63 pad() -> {"right":true}
+== 78.67 1065,3065 vx 268 tgt 1164 standing null clb false gr true knock 0
+78.67 intend() -> {"right":true}
+78.67 rhythm() -> {"right":true}
+78.67 thumbify() -> {"right":true}
+78.67 pad() -> {"right":true}
+== 78.70 1075,3065 vx 285 tgt 1146 standing null clb false gr true knock 0
+78.70 intend() -> {"right":true}
+78.70 rhythm() -> {"right":true}
+78.70 thumbify() -> {"right":true}
+78.70 pad() -> {"right":true}
+== 78.73 1083,3065 vx 268 tgt 1146 standing null clb false gr true knock 0
+78.73 intend() -> {"right":true}
+78.73 rhythm() -> {"right":true}
+78.73 thumbify() -> {"right":true}
+78.73 pad() -> {"right":true}
+== 78.77 1093,3065 vx 285 tgt 1146 standing null clb false gr true knock 0
+78.77 intend() -> {"right":true}
+78.77 rhythm() -> {"right":true}
+78.77 thumbify() -> {"right":true}
+78.77 pad() -> {"right":true}
+== 78.80 1102,3065 vx 268 tgt 1146 standing null clb false gr true knock 0
+78.80 intend() -> {"up":true}
+78.80 thumbify() -> {"up":true,"right":true}
+78.80 pad() -> {"up":true,"right":true}
+== 78.83 1146,3058 vx 0 tgt 1146 standing null clb true gr false knock 0
+78.83 intend() -> {"up":true}
+78.83 thumbify() -> {"up":true,"right":true}
+78.83 pad() -> {"up":true,"right":true}
+== 78.87 1146,3050 vx 0 tgt 1146 standing null clb true gr false knock 0
+78.87 intend() -> {"up":true}
+78.87 thumbify() -> {"up":true,"right":true}
+78.87 pad() -> {"up":true,"right":true}
+== 78.90 1146,3043 vx 0 tgt 1146 standing null clb true gr false knock 0
+78.90 intend() -> {"up":true}
+78.90 thumbify() -> {"up":true,"right":true}
+78.90 pad() -> {"up":true,"right":true}
+== 78.93 1146,3036 vx 0 tgt 1146 standing null clb true gr false knock 0
+78.93 intend() -> {"up":true}
+78.93 thumbify() -> {"up":true,"right":true}
+78.93 pad() -> {"up":true,"right":true}
+== 78.97 1146,3028 vx 0 tgt 1146 standing null clb true gr false knock 0
+78.97 intend() -> {"up":true}
+78.97 thumbify() -> {"up":true,"right":true}
+78.97 pad() -> {"up":true,"right":true}
+== 79.00 1146,3021 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.00 intend() -> {"up":true}
+79.00 thumbify() -> {"up":true,"right":true}
+79.00 pad() -> {"up":true,"right":true}
+== 79.03 1146,3014 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.03 intend() -> {"up":true}
+79.03 thumbify() -> {"up":true,"right":true}
+79.03 pad() -> {"up":true,"right":true}
+== 79.07 1146,3006 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.07 intend() -> {"up":true}
+79.07 thumbify() -> {"up":true,"right":true}
+79.07 pad() -> {"up":true,"right":true}
+== 79.10 1146,2999 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.10 intend() -> {"up":true}
+79.10 thumbify() -> {"up":true,"right":true}
+79.10 pad() -> {"up":true,"right":true}
+== 79.13 1146,2992 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.13 intend() -> {"up":true}
+79.13 thumbify() -> {"up":true,"right":true}
+79.13 pad() -> {"up":true,"right":true}
+== 79.17 1146,2984 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.17 intend() -> {"up":true}
+79.17 thumbify() -> {"up":true,"right":true}
+79.17 pad() -> {"up":true,"right":true}
+== 79.20 1146,2977 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.20 intend() -> {"up":true}
+79.20 thumbify() -> {"up":true,"right":true}
+79.20 pad() -> {"up":true,"right":true}
+== 79.23 1146,2970 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.23 intend() -> {"up":true}
+79.23 thumbify() -> {"up":true,"right":true}
+79.23 pad() -> {"up":true,"right":true}
+== 79.27 1146,2962 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.27 intend() -> {"up":true}
+79.27 thumbify() -> {"up":true,"right":true}
+79.27 pad() -> {"up":true,"right":true}
+== 79.30 1146,2955 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.30 intend() -> {"up":true}
+79.30 thumbify() -> {"up":true,"right":true}
+79.30 pad() -> {"up":true,"right":true}
+== 79.33 1146,2948 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.33 intend() -> {"up":true}
+79.33 thumbify() -> {"up":true,"right":true}
+79.33 pad() -> {"up":true,"right":true}
+== 79.37 1146,2940 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.37 intend() -> {"up":true}
+79.37 thumbify() -> {"up":true,"right":true}
+79.37 pad() -> {"up":true,"right":true}
+== 79.40 1146,2933 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.40 intend() -> {"up":true}
+79.40 thumbify() -> {"up":true,"right":true}
+79.40 pad() -> {"up":true,"right":true}
+== 79.43 1146,2926 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.43 intend() -> {"up":true}
+79.43 thumbify() -> {"up":true,"right":true}
+79.43 pad() -> {"up":true,"right":true}
+== 79.47 1146,2918 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.47 intend() -> {"up":true}
+79.47 thumbify() -> {"up":true,"right":true}
+79.47 pad() -> {"up":true,"right":true}
+== 79.50 1146,2911 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.50 intend() -> {"up":true}
+79.50 thumbify() -> {"up":true,"right":true}
+79.50 pad() -> {"up":true,"right":true}
+== 79.53 1146,2904 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.53 intend() -> {"up":true}
+79.53 thumbify() -> {"up":true,"right":true}
+79.53 pad() -> {"up":true,"right":true}
+== 79.57 1146,2896 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.57 intend() -> {"up":true}
+79.57 thumbify() -> {"up":true,"right":true}
+79.57 pad() -> {"up":true,"right":true}
+== 79.60 1146,2889 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.60 intend() -> {"up":true}
+79.60 thumbify() -> {"up":true,"right":true}
+79.60 pad() -> {"up":true,"right":true}
+== 79.63 1146,2882 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.63 intend() -> {"up":true}
+79.63 thumbify() -> {"up":true,"right":true}
+79.63 pad() -> {"up":true,"right":true}
+== 79.67 1146,2874 vx 0 tgt 1146 standing null clb true gr false knock 0
+79.67 intend() -> {"up":true}
+79.67 thumbify() -> {"up":true,"right":true}
+79.67 pad() -> {"up":true,"right":true}
+== 79.70 1146,2867 vx 0 tgt 1100 standing null clb true gr false knock 0
+79.70 intend() -> {"up":true}
+79.70 thumbify() -> {"up":true,"right":true}
+79.70 pad() -> {"up":true,"right":true}
+== 79.73 1146,2860 vx 0 tgt 1077 standing null clb true gr false knock 0
+79.73 intend() -> {"up":true}
+79.73 thumbify() -> {"up":true,"right":true}
+79.73 pad() -> {"up":true,"right":true}
+== 79.77 1146,2852 vx 0 tgt 1077 standing null clb true gr false knock 0
+79.77 intend() -> {"up":true}
+79.77 thumbify() -> {"up":true,"right":true}
+79.77 pad() -> {"up":true,"right":true}
+== 79.80 1146,2845 vx 0 tgt 1077 standing null clb true gr false knock 0
+79.80 intend() -> {"up":true}
+79.80 thumbify() -> {"up":true,"right":true}
+79.80 pad() -> {"up":true,"right":true}
+== 79.83 1146,2838 vx 0 tgt 1054 standing null clb true gr false knock 0
+79.83 intend() -> {"up":true}
+79.83 thumbify() -> {"up":true,"right":true}
+79.83 pad() -> {"up":true,"right":true}
+== 79.87 1146,2830 vx 0 tgt 1054 standing null clb true gr false knock 0
+79.87 intend() -> {"up":true}
+79.87 thumbify() -> {"up":true,"right":true}
+79.87 pad() -> {"up":true,"right":true}
+== 79.90 1146,2823 vx 0 tgt 1054 standing null clb true gr false knock 0
+79.90 intend() -> {"up":true}
+79.90 thumbify() -> {"up":true,"right":true}
+79.90 pad() -> {"up":true,"right":true}
+== 79.93 1146,2816 vx 0 tgt 1054 standing null clb true gr false knock 0
+79.93 intend() -> {"up":true}
+79.93 thumbify() -> {"up":true,"right":true}
+79.93 pad() -> {"up":true,"right":true}
+== 79.97 1146,2808 vx 0 tgt 1054 standing null clb true gr false knock 0
+79.97 intend() -> {"up":true}
+79.97 thumbify() -> {"up":true,"right":true}
+79.97 pad() -> {"up":true,"right":true}
+== 80.00 1146,2801 vx 0 tgt 1054 standing null clb true gr false knock 0
+80.00 intend() -> {"up":true}
+80.00 thumbify() -> {"up":true,"right":true}
+80.00 pad() -> {"up":true,"right":true}
+{"t":118.8,"rescues":2,"rescueXs":[814,1165]}
