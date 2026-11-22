@@ -41,6 +41,12 @@ the landed head; checkpoint about 8 PM ET.
    268-285. So the two new 'fell back 3 times' fails sit on the climb at y 3962, which the base runs passed later. Next: what at y
    3962 (x 870 / 1183) changes with his arrival time (a clocked hazard or ride there?). Two runs, one cause: read the pad log
    (b26m/k22wrap.mts.txt, STAGE=2-6 SET=easy BOT=FT_KID, T0/T1 around 85-89 s for seed 16, 75-78 s for seed 27) for what drops him.
+   **Seed 16 read (b26n/k16-26E-pad-84-89.txt, candidate tree; the run ends 126.0 s, rescue x 1241 as the row):** NOT a wheel. He climbs a
+   vine at x 1612 (y 4049 -> 3946), loses it at 84.5 s and grabs again, leaves it left at 85.2 s, and runs and jumps left along y 3962-4030
+   toward target x ~1040-1090. At 87.0-87.4 s he drops to 1010,4313 ('fell back'), climbs back toward 1232,4302, and is rescued at
+   88.4 s. No wheel line acts in this window, so fix 3 can only have changed his ARRIVAL TIME here. Next: the same window on 064ca6df6
+   (which passes; it reaches 795,3065 by 91.0 s) to see what is different at x 1010-1090 when he gets there (a clocked piece?), then seed 27
+   at 75-78 s. Two runs, one cause, before the release (the lead's ruling 2).
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
