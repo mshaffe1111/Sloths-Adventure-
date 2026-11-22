@@ -106,6 +106,12 @@ crest.
   vineSnakePiece, drawCheckpointArt, vine-field fluff, auras, blitAt: things moving on the game clock; 2-4's drawSafeRiverOver: the logs'
   drift, a pass this change does not edit), and the counted frames differ run to run (e.g. 34 vs 31). None is in gradCache, the wall cull
   or the wall's bottom (the only edits; my line shifts in protoArt/riverArt are folded out by grouping per function).
+  **The lead's ruling: ACCEPTED as harness noise, not this change.** Reasoning: `walled` is true only when `proto.bankWall` exists (2-6
+  alone), so renderScenery and drawRivers run exactly as before on every other stage; the only other edits are gradCache in
+  drawRiverWater and drawWallChunks (they can only remove gradients) and finish26's bankWall bottom (2-6); none of the 13 rows sits in a
+  function the diff touches; the counted frames differ run to run; every row is under its limit. (The diff a07ed1bd7..head in src/:
+  gradCache.ts + its test, riverArt.ts drawRiverWater, protoArt.ts earthWallCovers + drawWallChunks, engine.ts render, w2Arc26.ts
+  finish26; drawBankArt is NOT edited, it only moved one line down with the new import.)
 - The base suite was killed at the 40 min background limit I gave it (the miss, D123); the lead ruled no base suite is needed (BUILD-26n's
   unit 4,035/0 on 2904961b8 carries to a07ed1bd7, D118).
 
