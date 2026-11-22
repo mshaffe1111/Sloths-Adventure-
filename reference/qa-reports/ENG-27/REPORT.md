@@ -1,3 +1,68 @@
+# ENG-27t REPORT (start 8:31 PM ET by `date`; box 8:59 PM ET; base t-eng-27-wip-27s 7501bf2fb; the strict hold on t-eng-27-wip-27t: plant cc66545df, fix bf92d3daf (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27u, read only this section, D90)
+**(1) THE STRICT HOLD IS BUILT AND GREEN on the grid; the lead rules its rows. Then (2) E, (3) D's judge, (4) the table, as ENG-27t's
+packet wrote them (unchanged, none started: box).**
+- **Before (2), finish (1)'s two open checks:** (i) THE CLIP (D63) of the ease: the recording is made (tools/inspect/cliprec27t.ts on
+  bf92d3daf: post, middle, Normal, seed 6, the +0.68 paying fall; the ease from run frame 3498 to 3585, 193 frames with 60 before and 45
+  after); film it on the dev page (`?fixture=home` is POST_CODE at the asked seed: `npx vite --port 5199` on a frozen bf92d3daf tree, then
+  `PW=/opt/node-tools/node_modules/playwright/index.js node reference/qa-reports/ENG-27/t/clip27t.mjs 5199 <rec.json> <out> upright 6`
+  and `sideways 6`), LOOK at both at game speed: the boat on screen while it eases; no visible jump or lurch. FILMED in my box (t/ease-upright.mp4, t/ease-sideways.mp4, stills t/sheet-*.jpg, on frozen bf92d3daf's dev page, the recording from a6bb1ef05, the same piece): the boat in view in 86 of 97 upright shots; in the recording its move per frame is 4.86 px at its pace and peaks at 6.76 px (1.39x) on the ease, a smooth rise and fall; the one big move (228 px) is the RESPAWN's re-placement (the first-pass rewind, db4f97f81: clock 43.43 -> 41.89 as the down ends), with the boat out of view in that shot. I looked at the stills, not the clip played at speed: WATCH both at game speed and judge 'no visible jump or lurch' (D63) before the lead rules.
+  (ii) the full suite on bf92d3daf (D114): the base suite on 7501bf2fb ran in my container (tsc PASS; unit still running at hand-over, 10 not ok so far: pacerLay's known 9 (the race bots: 1504, 1506, 1508, 1510, 1514, 1516-1519) AND A TENTH, NEW: src/game/gen2/pacerLay.test.ts:71 'on a respawn keeps exactly the margin he had when he fell' (`the respawn keeps his 2.04 s`): it pins Option A, which db4f97f81 replaced (the lead's ruling); new replaces old: rewrite its respawn clause to the ruled rule (first-pass margin less DOWN_SECS, the hold eased) as a planted test, the lead's call since it is a unit test outside pacerRespawn); the suite on the fix is NOT run.
+- **Then (2) E toy-first** (RED on D', GREEN on E: a toy where a short drawn single would fall short of the 72 px gap and the smallest aimed
+  hop that lands 50 px past it is pressed), **(3)** trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D (a predicted fall that came down
+  safe) and fix the judge, hopJudged 4/4 GREEN, **(4)** the table on the 7 rows (E beside A b7a68a8bd and D'), pacerLay and pacerRespawn on
+  E; then the race call goes to the lead. No race retune before it.
+## Done-items
+- **(0) The suite on 7501bf2fb, frozen, in the background first:** started 8:33 PM ET on a frozen 7501bf2fb tree (s/suite-7501.log in my container): npm ci and tsc PASS; unit at hand-over: 10 not ok, the known nine plus pacerLay.test.ts:71 (above). Its later gates did not finish in my box.
+- **(1) The strict hold (the lead's ruling (a)), src/game/pieces/pacerPiece.ts on bf92d3daf:** a respawn on the race leg (the first-pass
+  rewind of db4f97f81 kept under it, unchanged: the clock from `first[k] - DOWN_SECS`) now also HOLDS the fall: its x (his x the frame
+  before the life was lost) and his margin there. The first frame he STANDS at or past that x with a better margin, the excess is owed
+  and eased off: the boat's clock runs ahead of dt on a raised cosine (`EASE_PEAK` 0.5: at most half again its own pace, never a step in
+  its speed; `EASE_MIN` 1 s; length max(1, 2E/0.5) s, so 0.84 s takes 3.4 s). The verdict counts the excess still owed (if he docks
+  mid-ease); a new fall mid-ease ends the ease (the respawn's clock re-places him) and holds the new fall. **The ease's length cites its
+  reason** (D116, in the code): half again its pace reads as the boat pushing on, not jumping; the bound is checked per frame.
+- **The plant, cc66545df (the test only, on 7501bf2fb's code): RED on exactly ENG-27s's seven** (t/grid-RED-cc66545df.txt): home middle
+  Normal 5 x 7425 +0.84, Easy 2 x 10049 +0.33, Easy 5 x 4656 +0.69, Easy 6 x 3198 +0.10, ride Easy 5 x 7533 +0.50; post middle Normal 6
+  x 10125 +0.68, expert Normal 1 x 10076 +0.73. **GREEN on the fix** (frozen a6bb1ef05, the same piece as bf92d3daf:
+  t/grid-GREEN-a6bb1ef05.txt; and again on frozen bf92d3daf itself after the restack: t/grid-GREEN-bf92d3daf.txt, 2 of 2 ok): 89 race-leg falls judged, none pays; 830 frames of ease on the grid, no frame's boat move over
+  1.5x its step, no verdict drops the excess.
+- **What the test reads (pacerRespawn.test.ts):** his margin back at the fall's x against the boat's WHOLE clock (clock + the excess it
+  owes); the ease's own checks (the boat's move per frame at most 1.5x its own step, a respawn's frame excepted; a verdict at least clock +
+  owed). Its bound is its own named constant (0.5), not the piece's (a test that imports what it tests proves nothing); a piece with no
+  `owed` (the base) reads 0, so the plant is RED there, not NaN-green (I caught that hole in my own first test before the plant).
+- **Traced, two (rule 28):** (a) home middle Normal 5 x 7425 on 13bbf0d7a (t/trace-home-middle-n5-13bbf0d7a.txt): the hold fired, ONE
+  FRAME LATE: he stood back at x 7425 on frame 3449 (margin -1.34 against -2.17 at the fall), the boat owed 0.84 from frame 3450. Why: the
+  pieces step BEFORE he moves (engine.ts), so the piece reads where the last frame left him. (This fall was lives 1 -> 0 -> 3: the
+  game-over restart; the hold holds through it.) (b) post expert Normal 1 x 10076 with a look-ahead by his last step (work tree,
+  uncommitted, t/trace-post-expert-n1-lookahead.txt): it fired mid-jump OVER the x (grounded read from the frame before), margin 2.71 there,
+  no excess; he landed past it at 3.75 (+0.73). So the look-ahead was wrong and the stale read is the EXACT one: the frame-start state is
+  the previous frame's end, the very frame the test calls "back". The fix resolves the hold there; the test counts the owed from the frame
+  after (clock + owed there, less one step). The boat starts the ease 33 ms after he stands there; the race verdict loses nothing.
+## The rows (to the lead, rows first)
+| check | 7501bf2fb (base) | cc66545df (plant, base code) | bf92d3daf / a6bb1ef05 (fix) |
+|---|---|---|---|
+| pacerRespawn home | RED 5 of 41 (ENG-27s) | RED 5 of 41 | GREEN 0 of 41; 299 ease frames |
+| pacerRespawn post | RED 2 of 48 (ENG-27s) | RED 2 of 48 | GREEN 0 of 48; 531 ease frames |
+| the ease's bound (move per frame vs 1.5x the boat's step) | (no ease) | (no ease) | 0 breaches; the clip's ease: base step 4.86 px, peak 6.76 px (1.39x) |
+| verdict keeps the owed excess | (no ease) | (no ease) | 0 breaches |
+## Polish check
+- The ease, stills upright and sideways (t/sheet-upright.jpg, t/sheet-sideways.jpg): the boat on the water beside and past him, no snap in the stills; numbers above. ROUGH, named, not mine and not fixed: the fixture page draws a black band past the toy world's right edge in both orientations (the camera shows past the toy's end); Pokey draws over the boat where he stands on the log above it (the 'under' layer, the lead's ruling (a)). The clip is not yet watched at speed (above).
+## Unresolved
+- The clip (above) filmed, stills looked at, not watched at speed; the suite on the fix; pacerLay on the fix (it was RED 9/19 on the base: name any change); (2), (3), (4).
+- One interim grid ran on my WORK tree, not a frozen one (the look-ahead, uncommitted: 2 of 89 paid); its result only told me the look-ahead
+  was wrong; every row above is from a frozen tree at a named hash (D115).
+- I restacked my own t-eng-27-wip-27t (force-with-lease from 13bbf0d7a, mine alone) so the plant is its own commit on 7501bf2fb.
+- LESSONS read: the headlines (LAWS) and the packet's list by name; not each in full (box). Applied: D111 (box), D113 (every long run in the
+  background), D114/D118 (the base suite first), D115 (frozen trees; one breach named above), D117 (the candidate on wip), D120, D109,
+  D112/D121 (the invariant named before the ease), D116 (the ease's reason in the code), D63 (the clip: filmed, stills looked at, not watched at speed).
+## Method update (proposed, the lead rules)
+- level.md / engine-core.md trap: **a piece steps BEFORE Pokey moves** (engine.ts): any piece rule keyed on "he is at x" sees the last
+  frame's x, one frame late; a test reading the same frame's end must count what the piece does on the next frame, or the piece must not
+  guess ahead (a look-ahead by his last step misreads a jump). Check: pacerRespawn's frame-after read.
+- A plant that reads a new field must default it (`?? 0`), or the plant passes NaN-green on the base.
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over.
+
 # ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D', two plants and the fall-pays fix candidate on t-eng-27-wip-27s 7501bf2fb (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27t, read only this section, D90)
 **FIRST, THE LEAD'S LATEST RULING (after my one traced fall), which overrides the fall-pays lines below where they differ: RULED (a), the
