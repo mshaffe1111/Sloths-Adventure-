@@ -32,6 +32,13 @@ Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + c
    the x40 confirms it); C's adult/kid/middle E 10/37 should come back (on the base they stick at x 607 'in a dip 281 px deep', C's spot).
 5. The gains as real finishes (rule 28) and the relists still WAIT (packet steps 3-4).
 
+## C on top of the unbounded rule (f4eab7721), x40 both settings (b26j/rows/r14-f4eab7721.jsonl, r26-f4eab7721.jsonl)
+1-4 against cut 5 (the rule alone in brackets): adult E 36 -> **40** (38), adult N 37 -> 37 (lost 9, A/B's), child E 36 -> **40** (39; E 37
+passes), **child N 39 -> 37 (37; lost 8, 14: the same two as the rule alone, so C adds no loss)**, expert N 39 -> 40, kid E 32 -> **40**,
+kid N 19 -> 40, middle E 37 -> **40**, middle N 36 -> 37. 2-6: no row moved in any tier. C's adult, kid and middle E rows are back and
+child E 37 passes; the one blocker left is child N 8 and 14 (step 0 (b)). These rows are on the UNBOUNDED rule: the bounded one
+(83018b453) needs its own x40 (step 0 (c)).
+
 ## What the rule is, and why lip.patch failed both ways
 - **Child E 37 under C is NOT the rise read.** Traced frame by frame on c00d2fd17 + C (b26j/c37-lip.txt): from a stand at 544 he walks left
   with left held and runs off #44's lip at 360 with NO press (airborne at x 343, vy +83), under #45 (72-360 @2644, a thin bough 40 px up
