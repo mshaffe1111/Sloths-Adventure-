@@ -24,6 +24,12 @@ clean). Sideways: cold 19900 1.29 / 16.4, cold 14800 2.99 / 8.4, control 0 / 0, 
 b/flip-*.json). Not yet in it: a real respawn (respawnAtCheckpoint, engine.ts:6163) and a stage start (the probe's cold case stands in
 for both; condition (1) wants each by name).
 D96: run it once on a vite of 484199316 itself before the fix (RED expected), then on the fix (GREEN), both ways.
+(b) FACTS (browser, 2-97 seed 1 normal): platform 21 the floor x 18666-20006 y 1450 h 90; platform 26 the wall x 20006-20066 y 585
+h 865 (its foot on 1450); nothing at that height right of 20066. The grass strip in the stills ends at world ~20067 (the wall
+platform's right end), while the column's painted face wobbles at ~20034: the grass runs under the platform's full width and the
+face is drawn narrower than its platform. Candidates, not yet measured: the floor's right end piece (GROUND_FRAMES end, cx ~0.94:
+the part past cx overhangs the bank's end) or the wall bank's own foot/lip. Measure with the squares' recorder (chunkDark) at
+x 20040-20066, y 1440-1458 before any change.
 Scratch merge (never pushed): c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.json, local e3bbf076a.
 
 1. THE CORNER BAND'S SOURCE, NAMED (measured on the scratch merge, 2x, upright and sideways; b/corner20006-firstframe-vs-settled-*.jpg,
@@ -70,7 +76,19 @@ Scratch merge (never pushed): c884525bf + t-art-under 0ebcb8f7e's w2.webp, groun
    drawWallArt calls stay exactly as they are live. CONFIRMED fix (i) did not touch them: `git diff 484199316 c884525bf --
    src/game/puzzlePlay.ts` is empty, and drawWallArt's body (protoArt.ts:1271) is identical on both; protoArt no longer calls it itself
    (the canopy walls draw through drawWallFace). The as-is and rejected-mock stills are pushed for the art member (b/puzzle-gates-*).
-2, 4-5. NOT STARTED: (ii) wide walls, (iii) water past a face, the stills of item 4, lockall, drawcheck, gates.
+2, 4-5. NOT STARTED: C itself (no src changed by ENG-WALL-b), (ii) wide walls, (iii) water past a face, the stills of item 4,
+   lockall, drawcheck, gates. The suite was not run (no src change: nothing to carry, D118).
+Done-items (evidence): the band's source named with file:line, measured both ways, census and per-source switch-off (item 1, b/
+corner-probe.mjs, b/corner20006-firstframe-vs-settled-*.jpg); the plant for ruling C written and RED both ways with a clean control
+(b/flip-probe.mjs, b/red-flip-scratchmerge.txt); puzzle rooms shown first, my mock rejected, ruled out of scope, fix (i) confirmed
+not touching them (item 3).
+Suggestions: every ground still records which path its frame drew (squares or live) in its file name; and flip-probe joins the
+CI gates once C is green (a frame flipping path is a regression no node test can see).
+Unresolved: C and its four conditions, (a) the settled line at 20006, (b) the grass past the column, (ii), (iii), item 4 stills,
+lockall, drawcheck, the gates. flip-probe does not yet drive a real respawn or stage start by name (condition 1).
+Method update (gates.md / methods): a ground plant in node only sees the live path (no getTransform); the frame the phone shows is
+the squares OR the live path. Every ground fix is checked in a browser on BOTH: first frame and settled.
+Turnover note: reference/handoffs/engine-core.md §0zq-WALL-b added (the two paths; the ruling; browser checks).
 Polish check: the x 20006 corner, upright and sideways, 2x: FAILS on the first frames (the band, 14-17 luma); settled still a faint
 straight line (2.7-3.8). Nothing else shot. Nothing lands.
 Pushback: the packet's 'turn the engine's draws off one at a time' found nothing on a settled frame: the band is TIME-dependent (which
